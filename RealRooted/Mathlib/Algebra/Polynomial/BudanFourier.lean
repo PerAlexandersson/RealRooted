@@ -2,6 +2,7 @@ import Mathlib.Algebra.Polynomial.RuleOfSigns
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # The Budan–Fourier theorem
@@ -150,16 +151,13 @@ lemma firstNonzero_derivEvalList {c : ℝ} {k : ℕ} :
     simp only [derivEvalList, List.firstNonzero, hq0, ↓reduceIte]
     exact key
 
-lemma rootMultiplicity_le_natDegree' (q : ℝ[X]) (c : ℝ) : q.rootMultiplicity c ≤ q.natDegree :=
-  (count_roots (a := c) q).symm.le.trans ((Multiset.count_le_card _ _).trans (card_roots' q))
-
 lemma firstNonzero_derivEvalList_eq {q : ℝ[X]} (hq : q ≠ 0) (c : ℝ) :
     (derivEvalList q c q.natDegree).firstNonzero =
       (q.rootMultiplicity c).factorial * (q /ₘ (X - C c) ^ q.rootMultiplicity c).eval c := by
   have hval := eval_iterate_derivative_rootMultiplicity (p := q) (t := c)
   rw [nsmul_eq_mul] at hval
   rw [← hval]
-  refine firstNonzero_derivEvalList (rootMultiplicity_le_natDegree' q c)
+  refine firstNonzero_derivEvalList (Polynomial.rootMultiplicity_le_natDegree q c)
     (fun i hi => isRoot_iterate_derivative_of_lt_rootMultiplicity hi) ?_
   rw [hval]
   exact mul_ne_zero (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _))

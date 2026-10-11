@@ -434,23 +434,13 @@ lemma iff_add_left {f g : ℝ[X]} :
       (C lam * f + g).Splits) := by
   constructor
   · intro h lam hlam
-    simpa [one_mul] using h (lam := lam) (μ := 1) hlam zero_lt_one
-  · intro h lam μ hlam hμ
-    have hbase : ((C (lam / μ) * f + g) ≠ 0 ∧
-      (C (lam / μ) * f + g).Splits) := h (lam := lam / μ) (by simp_all)
-    have hscaled :
-        ((C μ * (C (lam / μ) * f + g)) ≠ 0 ∧
-          (C μ * (C (lam / μ) * f + g)).Splits) := by
-      simp_all [hμ.ne', splits_mul_iff_right]
-    have hEq : C μ * (C (lam / μ) * f + g) = C lam * f + C μ * g := by
-      rw [mul_add]
-      have hleft : C μ * (C (lam / μ) * f) = C lam * f := by
-        calc
-          C μ * (C (lam / μ) * f) = (C μ * C (lam / μ)) * f := by grind
-          _ = C (μ * (lam / μ)) * f := by simp
-          _ = C lam * f := by grind
-      lia
-    lia
+    simpa [add_comm] using
+      ((iff_add_right (f := g) (g := f)).1 h.comm (μ := lam) hlam)
+  · intro h
+    apply PosComboRealRooted.comm
+    refine (iff_add_right (f := g) (g := f)).2 ?_
+    intro μ hμ
+    simpa [add_comm] using h (lam := μ) hμ
 
 lemma of_add_right {f g : ℝ[X]}
     (h : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
@@ -592,12 +582,11 @@ lemma family_no_common_left {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {lam₁ lam₂ : ℝ} (hlam : lam₁ ≠ lam₂) :
     ∀ r, (C lam₁ * f + g).IsRoot r → ¬ (C lam₂ * f + g).IsRoot r := by
-  intro r hr₁ hr₂
-  have h₁ : lam₁ * f.eval r + g.eval r = 0 := by simp_all
-  have h₂ : lam₂ * f.eval r + g.eval r = 0 := by simp_all
-  have hmul : (lam₁ - lam₂) * f.eval r = 0 := by grind
-  have hf0 : f.eval r = 0 := by grind
-  simp_all
+  have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
+    intro r hgr hfr
+    exact hno r hfr hgr
+  simpa [add_comm] using
+    family_no_common_right (f := g) (g := f) hno' hlam
 
 lemma family_isCoprime_right {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
@@ -614,10 +603,12 @@ lemma family_isCoprime_left {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam : lam₁ ≠ lam₂) :
     IsCoprime (C lam₁ * f + g) (C lam₂ * f + g) :=
-  isCoprime_of_no_common_real_root_of_isRealRooted
-    (hfg.isRealRooted_add_left hlam₁).1
-    (hfg.isRealRooted_add_left hlam₁).2
-    (family_no_common_left hno hlam)
+  by
+    have hno' : ∀ r, g.IsRoot r → ¬ f.IsRoot r := by
+      intro r hgr hfr
+      exact hno r hfr hgr
+    simpa [add_comm] using
+      family_isCoprime_right (f := g) (g := f) hfg.comm hno' hlam₁ hlam
 
 /-- No two distinct closed-segment members `C (1 - βᵢ) * f + C βᵢ * g` share a
 real root, provided `f` and `g` have no common real root. -/

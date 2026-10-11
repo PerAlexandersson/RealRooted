@@ -1498,11 +1498,7 @@ theorem hasSimpleRoots_iterateTDeriv_of_natDegree
   simp at h0
   -- But rootMultiplicity ≤ natDegree = n
   have : f.rootMultiplicity a ≤ n := by
-    calc f.rootMultiplicity a
-      _ = f.roots.count a := (count_roots f).symm
-      _ ≤ f.roots.card := f.roots.count_le_card a
-      _ ≤ f.natDegree := card_roots' f
-      _ = n := hdeg
+    simpa only [hdeg] using Polynomial.rootMultiplicity_le_natDegree f a
   lia
 
 /-- Iterating the nonnegative derivative regularization `p ↦ p + eps * p'`

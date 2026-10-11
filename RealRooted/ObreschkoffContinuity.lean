@@ -32,6 +32,32 @@ lemma comm {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
   intro lam μ hlam hμ
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hfg hμ hlam
 
+lemma C_mul_left_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
+    PosComboRealRooted (C a * f) g ↔ PosComboRealRooted f g := by
+  constructor
+  · intro h lam μ hlam hμ
+    have hbase := h (div_pos hlam ha) hμ
+    rw [← mul_assoc, ← C_mul, div_mul_cancel₀ _ (ne_of_gt ha)] at hbase
+    exact hbase
+  · intro h lam μ hlam hμ
+    rw [← mul_assoc, ← C_mul]
+    exact h (mul_pos hlam ha) hμ
+
+lemma C_mul_right_iff {f g : ℝ[X]} {b : ℝ} (hb : 0 < b) :
+    PosComboRealRooted f (C b * g) ↔ PosComboRealRooted f g := by
+  constructor
+  · intro h lam μ hlam hμ
+    have hbase := h hlam (div_pos hμ hb)
+    rw [← mul_assoc, ← C_mul, div_mul_cancel₀ _ (ne_of_gt hb)] at hbase
+    exact hbase
+  · intro h lam μ hlam hμ
+    rw [← mul_assoc, ← C_mul]
+    exact h hlam (mul_pos hμ hb)
+
+lemma C_mul_C_mul_iff {f g : ℝ[X]} {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+    PosComboRealRooted (C a * f) (C b * g) ↔ PosComboRealRooted f g := by
+  rw [C_mul_left_iff ha, C_mul_right_iff hb]
+
 lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using h zero_lt_one hμ
@@ -200,13 +226,8 @@ theorem isRealRooted_left_of_sameDegree
     rw [natDegree_C_mul (inv_ne_zero hf_lc_ne),
       natDegree_C_mul (inv_ne_zero hg_lc_ne), hdeg]
   have hfg₀ : PosComboRealRooted f₀ g₀ := by
-    intro lam μ hlam hμ
-    have hlam' : 0 < lam * f.leadingCoeff⁻¹ :=
-      mul_pos hlam (inv_pos.mpr hf_pos)
-    have hμ' : 0 < μ * g.leadingCoeff⁻¹ :=
-      mul_pos hμ (inv_pos.mpr hg_pos)
-    have hcombo := hfg hlam' hμ'
-    grind
+    unfold f₀ g₀
+    exact (C_mul_C_mul_iff (inv_pos.mpr hf_pos) (inv_pos.mpr hg_pos)).mpr hfg
   have hf₀_rr : (f₀ ≠ 0 ∧ f₀.Splits) :=
     isRealRooted_left_of_monic_sameDegree
       (hfg := hfg₀) hf₀_monic hg₀_monic hdeg₀
