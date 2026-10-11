@@ -319,6 +319,15 @@ theorem listWordWeight_ofFn {R : Type*} [CommSemiring R]
     listWordWeight weight (List.ofFn word) = signedWordWeight weight word := by
   simp [listWordWeight, signedWordWeight, List.prod_ofFn]
 
+/-- The list descent statistic agrees with the existing signed-word
+statistic. -/
+theorem descentCount_ofFn {q p n : ℕ}
+    (word : Fin n → SignedLetter q p) :
+    (List.ofFn word).descentCount = signedDescentNumber word := by
+  cases n with
+  | zero => simp [signedDescentNumber]
+  | succ n => rfl
+
 /-- The list collision statistic agrees with the existing signed-word
 statistic. -/
 theorem listCollisionNumber_ofFn {q p n : ℕ}
@@ -346,13 +355,13 @@ theorem sum_runLengths_compress_ofFn {q p n : ℕ}
 theorem descentNumber_representatives_compress_ofFn {q p n : ℕ}
     (word : Fin n → SignedLetter q p) :
     (compressRunLengthData (List.ofFn word)).representatives.descentCount =
-      (List.ofFn word).descentCount := by
+      signedDescentNumber word := by
   calc
     _ = (compressRunLengthData (List.ofFn word)).expand.descentCount :=
       (compressRunLengthData (List.ofFn word)).descentCount_expand.symm
     _ = (List.ofFn word).descentCount := by
       rw [expand_compressRunLengthData]
-    _ = (List.ofFn word).descentCount := rfl
+    _ = signedDescentNumber word := descentCount_ofFn word
 
 /-- The collision number is the sum of `runLength - 1`. -/
 theorem excess_compress_ofFn {q p n : ℕ}
@@ -411,7 +420,7 @@ theorem signedWordSummand_eq_runSummand {R : Type*} [CommSemiring R]
     {q p n : ℕ} (weight : SignedLetter q p → R)
     (word : Fin n → SignedLetter q p) :
     C (signedWordWeight weight word) *
-        X ^ (List.ofFn word).descentCount *
+        X ^ signedDescentNumber word *
           (1 + X) ^ signedCollisionNumber word =
       (compressRunLengthData (List.ofFn word)).runSummand weight := by
   rw [RunLengthData.runSummand, runWeight_compress_ofFn,

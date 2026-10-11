@@ -30,7 +30,7 @@ def signedWordEnumerator {q p : ℕ} (weight : SignedLetter q p → R)
     (n : ℕ) : R[X] :=
   ∑ w ∈ signedWords q p n,
     C (signedWordWeight weight w) *
-      X ^ (List.ofFn w).descentCount *
+      X ^ signedDescentNumber w *
       (1 + X) ^ signedCollisionNumber w
 
 /-- The weight function coming from finite positive and negative lists. -/
@@ -130,7 +130,8 @@ theorem signedWordEnumerator_one {q p : ℕ}
     intro w _
     exact isSignedWord_one w
   rw [signedWordEnumerator, hwords]
-  simpa [signedWordWeight, signedCollisionNumber, collisionSet, List.descentCount] using
+  simpa [signedWordWeight, signedDescentNumber, signedCollisionNumber,
+    collisionSet, List.descentCount] using
     Fintype.sum_equiv (Equiv.funUnique (Fin 1) (SignedLetter q p))
       (fun w => C (weight (w 0))) (fun a => C (weight a)) (fun _ => rfl)
 
@@ -159,15 +160,16 @@ theorem mapSignedWord_injective {q p q' p' n : ℕ}
   exact e.injective (congrFun huv i)
 
 /-- Order embeddings preserve the descent statistic of a word. -/
-theorem descentCount_mapSignedWord {q p q' p' n : ℕ}
+theorem signedDescentNumber_map {q p q' p' n : ℕ}
     (e : SignedLetter q p ↪o SignedLetter q' p')
     (w : Fin n → SignedLetter q p) :
-    (List.ofFn (mapSignedWord e.toEmbedding w)).descentCount =
-      (List.ofFn w).descentCount := by
+    signedDescentNumber (mapSignedWord e.toEmbedding w) =
+      signedDescentNumber w := by
   cases n with
   | zero => simp
   | succ n =>
-      rw [← RealRooted.ParkingFunctions.card_descentSet,
+      rw [signedDescentNumber_succ, signedDescentNumber_succ,
+        ← RealRooted.ParkingFunctions.card_descentSet,
         ← RealRooted.ParkingFunctions.card_descentSet]
       apply congrArg Finset.card
       ext i
@@ -263,11 +265,11 @@ theorem signedWordEnumerator_extend {q p q' p' : ℕ}
   let targetWords := signedWords q' p' n
   let mappedWords := sourceWords.map wordEmbedding
   let sourceTerm : (Fin n → SignedLetter q p) → R[X] := fun w =>
-    C (signedWordWeight weight w) * X ^ (List.ofFn w).descentCount *
+    C (signedWordWeight weight w) * X ^ signedDescentNumber w *
       (1 + X) ^ signedCollisionNumber w
   let targetTerm : (Fin n → SignedLetter q' p') → R[X] := fun w =>
     C (signedWordWeight (extendSignedLetterWeight e.toEmbedding weight) w) *
-      X ^ (List.ofFn w).descentCount * (1 + X) ^ signedCollisionNumber w
+      X ^ signedDescentNumber w * (1 + X) ^ signedCollisionNumber w
   have hmapped : mappedWords ⊆ targetWords := by
     intro w hw
     simp only [mappedWords, Finset.mem_map] at hw
@@ -283,7 +285,7 @@ theorem signedWordEnumerator_extend {q p q' p' : ℕ}
     rw [signedWordWeight_map e.toEmbedding weight
         (extendSignedLetterWeight e.toEmbedding weight)
         (extendSignedLetterWeight_apply e.toEmbedding weight) w,
-      descentCount_mapSignedWord e w,
+      signedDescentNumber_map e w,
       signedCollisionNumber_map e.toEmbedding w]
   have houtside : ∀ w ∈ targetWords, w ∉ mappedWords → targetTerm w = 0 := by
     intro w hw hnot

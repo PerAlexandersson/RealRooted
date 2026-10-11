@@ -36,7 +36,7 @@ theorem mem_fixedContentSmirnovWords_iff {n m : ℕ}
 def fixedContentSmirnovPolynomial {n m : ℕ}
     (μ : Multiset (Fin m)) : ℤ[X] :=
   ∑ w ∈ fixedContentSmirnovWords (n := n) μ,
-    X ^ (List.ofFn w).descentCount
+    X ^ BrandenVecchi.smirnovDescentNumber w
 
 /-- The universal monomial weight of a word is the monomial of its content
 exponent. -/
@@ -70,13 +70,13 @@ theorem coeff_fixedContentSmirnovPolynomial {n m k : ℕ}
   by_cases hc : wordContent w = μ
   · have he : wordExponent w = μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent, hc]
-    by_cases hk : k = (List.ofFn w).descentCount
+    by_cases hk : k = BrandenVecchi.smirnovDescentNumber w
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
   · have he : wordExponent w ≠ μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent]
       exact fun h => hc (Multiset.toFinsupp.injective h)
-    by_cases hk : k = (List.ofFn w).descentCount
+    by_cases hk : k = BrandenVecchi.smirnovDescentNumber w
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
 
