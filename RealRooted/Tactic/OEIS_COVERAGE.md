@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **233 IDs**; **5 formalized**, **225 shells**, **3 fragments**, and **0 documented-only**.
+Current totals: **234 IDs**; **5 formalized**, **226 shells**, **3 fragments**, and **0 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -199,6 +199,7 @@ Current totals: **233 IDs**; **5 formalized**, **225 shells**, **3 fragments**, 
 | A181332 | `shell` | constant affine Favard row `P_m=(t+3)P_{m-1}-2P_{m-2}`. | `rr_favard_base_one`, `rr_favard_const_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
 | A181738 | `shell` | OEIS shape : a negative-definite monic quadratic lag can be<br>OEIS shape : automatic discriminant discharge for a monic<br>+2 additional test intents | `rr_lw_coeff_nonneg_term`, `rr_lw_negative_monic_quadratic`, `rr_lw_negative_monic_quadratic_auto`, `rr_lw_negative_monic_quadratic_sequence`, `rr_lw_quadratic_discriminant`, `rr_sign` | `base`, `degree_lower`, `degree_succ`, `degree_upper`, `discriminant`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `pos_lc`, `recurrence`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A181996 | `shell` | Family C2 direct-outer Ma--Wang shell for the `/` bucket. | `rr_mw_derivative_neg_X_one_add_outer_auto` | `degree_lower`, `degree_upper`, `root_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
+| A186370 | `shell` | The alternating-runs rows () are `fPolynomial n (Q n)` for the peak-type rows<br>Alternating runs ().<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A186695 | `shell` | `/`: inner-window shape `2t(1+t)P'`. | `rr_mw_derivative_C_mul_X_one_add_X_sequence_nonneg_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `root_lower` | concrete row definition and proofs of the listed certificates |
 | A188440 | `shell` | A two-step product `P (n + 2) = (1 + 2 X) P n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A191935 | `shell` | Reversed rows again ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

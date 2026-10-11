@@ -1695,6 +1695,21 @@ After merging the root-polynomial streamlining, these modules import both new li
 
 The recurrence-root-windows challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+f-transform theory: new modules `SymmetricDecomposition.FPolynomialRecurrence` (the transform of a
+first-order derivative recurrence), `SymmetricDecomposition.FPolynomialSequence` (interlacing of
+transforms of half-growth sequences) and the route `Tactic.Row.FTransform`. The budgets of
+`RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise by two or three.
+
+The catalog page `Challenges.FPolynomialRecurrences` adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The root-amplitude and coefficient-dominance challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The reciprocal-shift and product-sequence challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The new module Interlacing/RemainderCertificate adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calculus/LocalExtr/Polynomial now sit low in the graph (FamilyClosure, FieldDivision), giving one or two extra modules in the closures above them. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Challenges.Hadamard`, `HermiteBiehler.Forward`, `Derivative`, `Derivative.FamilyClosure`, `WagnerX.ProperPosition`, `Kurtz`, `Challenges.Kurtz`, `Challenges.Narayana`, `LiuWang`, `LiuWang.OneAddXPositive`, `Wronskian.Converse`, `RootBounds`, `Favard.Affine.Basic`, `Favard.Affine.Denominator`, `Favard.Affine.RowSign`, `Favard.Affine`, `Tactic.Favard`, `Tactic.Favard.Basic`, `Tactic.Favard.DirectSyntax`, `Tactic.Favard.DenominatorSyntax`, `Tactic.Favard.RowSignSyntax`, `Tactic.Favard.Direct`, `Tactic.Favard.Denominator`, `Tactic.Favard.RowSign`, `Tactic.OEIS.Basic`, `Tactic.OEIS.NegativeLag`, `Transforms.BrandenE.BasisImage`, `Tactic`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts`, `MaWang.CountBounds`, `MaWang.StrictSigns.RootSigns`, `MaWang.StrictSigns.Assembly`, `MaWang.StrictSigns`, `MaWang.Strong`, `MaWang.Weak.Regularization`, `MaWang.DerivativeSequence`, `MaWang.DerivativeDenominator`, `MaWang.Derivative`, `Interlacing.Residue`, `Tactic.MaWang.Basic`, `Tactic.MaWang.StepSyntax`, `Tactic.MaWang.SequenceSyntax`, `Tactic.MaWang.DenominatorSyntax`, `Tactic.MaWang.FactorSyntax`, `Tactic.MaWang.Steps`, `Tactic.MaWang.Sequences`, `Tactic.MaWang.Denominator`, `Tactic.MaWang.Factors`, `Tactic.MaWang`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`, `Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`, `Tactic.Product.Syntax.Lifts` rise to the new closure sizes.
 
 Run the architecture check with:
