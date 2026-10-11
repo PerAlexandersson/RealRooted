@@ -3,6 +3,7 @@ import RealRooted.AffineFamily
 import RealRooted.Linear
 import RealRooted.SequenceClosure
 import RealRooted.WagnerX
+import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Linear-power families
@@ -16,6 +17,9 @@ interlacing of powers of a single linear factor.
 open Polynomial
 
 namespace RealRooted
+
+@[deprecated interlaces_of_natDegree_eq_zero_of_natDegree_eq_one (since := "2026-10-11")]
+alias interlaces_const_linear := interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
 
 /-- `StrictInterl (X^n) (X^(n+1))`: repeated root at `0`. -/
 theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
@@ -156,24 +160,6 @@ theorem hasNonnegCoeffs_linear_pow {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
   · simp [ha]
   · rcases m with _ | m <;> simp [hb]
 
-/-- A nonzero constant interlaces any degree-one polynomial. -/
-theorem interlaces_const_linear {c p : ℝ[X]}
-    (hc₀ : c ≠ 0) (hcdeg : c.natDegree = 0) (hp_deg : p.natDegree = 1) :
-    Interlaces c p := by
-  have hc_rr : c ≠ 0 ∧ c.Splits := isRealRooted_of_deg_zero hc₀ hcdeg
-  have hp_rr : p ≠ 0 ∧ p.Splits := isRealRooted_of_degree_one hp_deg
-  have hp_deg' : p.degree = 1 := by simpa [hp_deg] using degree_eq_natDegree hp_rr.1
-  have hc_roots : c.roots = 0 := by
-    rw [← Multiset.card_eq_zero]
-    have hcard := card_roots_of_splits hc_rr.2
-    rw [hcdeg] at hcard
-    lia
-  refine ⟨hp_rr, hc_rr, by simp [hcdeg, hp_deg], ?_⟩
-  refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, ?_,
-    by simp [ListInterlaces]⟩
-  · simpa [hp_deg'] using (Polynomial.roots_degree_eq_one (p := p) hp_deg').symm
-  · simp [hc_roots]
-
 /-- Nonvanishing for a sequence with constant and linear bases and fixed linear tail. -/
 theorem linear_tail_sequence_ne_zero {A : ℕ → ℝ[X]} {c a b u v : ℝ}
     (hc : c ≠ 0) (hb : b ≠ 0) (hv : v ≠ 0)
@@ -306,7 +292,7 @@ theorem linear_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u v : ℝ}
     ∀ n, Interlaces (A n) (A (n + 1))
   | 0 => by
       exact
-        interlaces_const_linear
+        interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
           (linear_tail_sequence_ne_zero (A := A) hc.ne' hb.ne' hv.ne' h0 h1 hstep 0)
           (linear_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hv.ne' h0 h1 hstep 0)
           (linear_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hv.ne' h0 h1 hstep 1)
@@ -417,7 +403,7 @@ theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
     ∀ n, Interlaces (A n) (A (n + 1))
   | 0 => by
       exact
-        interlaces_const_linear
+        interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
           (monomial_tail_sequence_ne_zero (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 0)
           (monomial_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 0)
           (monomial_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 1)

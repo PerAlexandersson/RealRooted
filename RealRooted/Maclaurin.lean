@@ -1,4 +1,5 @@
 import RealRooted.NewtonAux
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Newton's and Maclaurin's inequalities
@@ -20,13 +21,6 @@ For a multiset `t` of `n` real numbers write `e_k = t.esymm k` and `E k = e_k / 
 open Polynomial
 
 namespace RealRooted.Maclaurin
-
-/-- Elementary symmetric functions of a multiset of nonnegative reals are nonnegative. -/
-theorem esymm_nonneg {t : Multiset ℝ} (ht : ∀ x ∈ t, 0 ≤ x) (k : ℕ) : 0 ≤ t.esymm k := by
-  refine Multiset.sum_nonneg fun x hx => ?_
-  obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hx
-  exact Multiset.prod_nonneg fun y hy =>
-    ht y (Multiset.subset_of_le (Multiset.mem_powersetCard.mp hs).1 hy)
 
 /-- For a multiset of nonnegative reals, `e_{k+1} > 0` forces `e_k > 0`. -/
 theorem esymm_pos_of_esymm_succ_pos {t : Multiset ℝ} (ht : ∀ x ∈ t, 0 ≤ x) {k : ℕ}
@@ -156,7 +150,8 @@ theorem esymm_div_choose_rpow_le (t : Multiset ℝ) {n k : ℕ} (hn : Multiset.c
     (t.esymm (k + 1) / n.choose (k + 1)) ^ ((1 : ℝ) / (k + 1)) ≤
       (t.esymm k / n.choose k) ^ ((1 : ℝ) / k) := by
   set E : ℕ → ℝ := fun j => t.esymm j / n.choose j with hE
-  have hnn : ∀ j, 0 ≤ E j := fun j => div_nonneg (esymm_nonneg ht j) (Nat.cast_nonneg _)
+  have hnn : ∀ j, 0 ≤ E j := fun j =>
+    div_nonneg (Multiset.esymm_nonneg_of_forall_nonneg ht j) (Nat.cast_nonneg _)
   have h0 : E 0 = 1 := by simp [hE, Multiset.esymm]
   have hpos : ∀ j, j < n → 0 < E (j + 1) → 0 < E j := by
     intro j hj h

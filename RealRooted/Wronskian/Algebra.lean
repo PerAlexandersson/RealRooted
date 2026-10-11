@@ -44,14 +44,6 @@ open Polynomial
 
 namespace RealRooted
 
-private theorem iterate_derivative_eq_zero_or_splits_of_splits
-    {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
-    (derivative^[k]) p = 0 ∨ ((derivative^[k]) p).Splits := by
-  induction k with
-  | zero => exact Or.inr hp
-  | succ k ih =>
-      simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
-
 /-! ### The star SOS identity: `W(p, X*p) = p^2` -/
 
 /-- General product form: multiplying the right argument by `X` scales the
@@ -140,7 +132,7 @@ theorem iterated_laguerre_form_nonneg {p : ℝ[X]} (hp : p.Splits) (k : ℕ)
     0 ≤ (derivative ((derivative^[k]) p)).eval t ^ 2 -
       ((derivative^[k]) p).eval t *
         (derivative (derivative ((derivative^[k]) p))).eval t := by
-  rcases iterate_derivative_eq_zero_or_splits_of_splits hp k with h | h
+  rcases iterate_derivative_eq_zero_or_splits hp k with h | h
   · simp [h]
   · exact laguerre_form_nonneg h t
 

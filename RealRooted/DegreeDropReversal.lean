@@ -26,6 +26,12 @@ theorem splits_reverse_X_add_C (a : K) :
     (Polynomial.reverse_natDegree_le (X + C a)).trans <| by
       simp
 
+@[deprecated Polynomial.roots_reverse_eq_map_inv (since := "2026-10-11")]
+alias roots_reverse_eq_map_inv_of_splits_coeff_zero_ne := Polynomial.roots_reverse_eq_map_inv
+
+@[deprecated Polynomial.multiset_prod_X_sub_C_ne_zero (since := "2026-10-11")]
+alias prod_X_sub_C_ne_zero := Polynomial.multiset_prod_X_sub_C_ne_zero
+
 /-- Predicate root-count transport across `reverse`: filtering roots of the
 reverse by `q` counts exactly the original roots whose inverse satisfies `q`. -/
 theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)

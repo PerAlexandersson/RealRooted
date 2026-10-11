@@ -6,6 +6,7 @@ import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Data.Multiset.Sort
 import RealRooted.Derivative.Algebra
 import RealRooted.Derivative.Interlacing
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 open Polynomial Set
 
@@ -28,12 +29,17 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   · have hdeg2 : 2 ≤ p.natDegree := by lia
     exact Or.inr (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
 
-/-- The derivative of a real-rooted polynomial is real-rooted (Rolle). -/
-theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with h | h
-  · rw [h]
-    exact Splits.zero
-  · exact h
+/-- Iterating the zero-aware derivative closure preserves splitting. -/
+theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
+    (n : ℕ) :
+    (derivative^[n]) p = 0 ∨ ((derivative^[n]) p).Splits := by
+  induction n with
+  | zero => exact Or.inr hsplit
+  | succ n ih =>
+      simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
+
+@[deprecated Polynomial.Splits.derivative (since := "2026-10-11")]
+alias splits_derivative := Polynomial.Splits.derivative
 
 /-- Strict real-rootedness is preserved by differentiation unless the
 derivative vanishes. -/

@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Algebra.Polynomial.Sturm
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
 import RealRooted.RootCountJump
 import RealRooted.SimpleRoots
@@ -105,13 +106,6 @@ private theorem eventually_sturmVariations_eq_of_not_isRoot
     eventually_variations_pair_eq hp.noCommonRoot_derivative
       ((Polynomial.not_isRoot_iff_eval_ne_zero p x).mp hx)
 
-private theorem eval_divByMonic_X_sub_C_eq_derivative_of_isRoot
-    {p : ℝ[X]} {x : ℝ} (_hx : p.IsRoot x) :
-    (p /ₘ (X - C x)).eval x = p.derivative.eval x := by
-  have h := congrArg (fun q : ℝ[X] ↦ q.eval x)
-    (Polynomial.divByMonic_add_X_sub_C_mul_derivative_divByMonic_eq_derivative p x)
-  simpa using h
-
 private theorem eventually_sturmVariations_root_formula
     {p : ℝ[X]} (hp : HasSimpleRoots p) {x : ℝ}
     (hx : p.IsRoot x) :
@@ -134,7 +128,7 @@ private theorem eventually_sturmVariations_root_formula
     simpa [tail, r] using eventually_variations_pair_eq hnext hderx
   let c := p /ₘ (X - C x)
   have hcx : c.eval x = p.derivative.eval x :=
-    eval_divByMonic_X_sub_C_eq_derivative_of_isRoot hx
+    Polynomial.eval_divByMonic_at_root hx
   have hcne : c.eval x ≠ 0 := hcx ▸ hderx
   have hfactor : (X - C x) * c = p :=
     (Polynomial.mul_divByMonic_eq_iff_isRoot).2 hx
