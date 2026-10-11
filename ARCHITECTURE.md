@@ -1693,6 +1693,8 @@ Streamlining: the shim `Mathlib.Algebra.Polynomial.Degree.Lemmas` holds `coeff_c
 
 After merging the root-polynomial streamlining, these modules import both new light modules. The budgets of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
 
+The root-amplitude and coefficient-dominance challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash
