@@ -1788,3 +1788,5 @@ import RealRooted.MultiplierSequence.ProperPosition
 
 
 import RealRooted.Tactic.Row.ClosedFormInterlaces
+import RealRooted.Challenges.EndpointDerivative
+import RealRooted.Challenges.RootContinuity
