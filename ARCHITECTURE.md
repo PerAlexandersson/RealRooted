@@ -1714,6 +1714,10 @@ dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calcu
 
 The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The finite-family Liu-Wang module (#1425) adds one module; the MaWangLiuWang page now imports it and MaWang.CriticalSign. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `LiuWang`, `Tactic.OEIS.NegativeLag`, `Tactic`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts` rise to the new closure sizes.
+
+Three new modules (#1426 MatrixInterlacing/Composition, #1429 DerivativeRecurrence/EndpointWindow, #1432 MultiplierSequence/ProperPosition) and their catalog imports. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 The closed-form interlacing route (Tactic/Row/ClosedFormInterlaces) adds one module under RowInterlacing. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise to the new closure sizes.
 
 Run the architecture check with:
