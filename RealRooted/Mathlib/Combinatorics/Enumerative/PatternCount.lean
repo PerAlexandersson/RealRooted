@@ -248,25 +248,6 @@ private theorem Equiv.Perm.ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
   · intro i hi hj
     simp [Equiv.Perm.complement, Fin.revPerm_apply]
 
-/-- The one-line word of a reversed permutation is the reversed word. -/
-private theorem Equiv.Perm.ofFn_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (Equiv.Perm.reverse σ) = (List.ofFn σ).reverse := by
-  change List.ofFn (fun i : Fin n => σ i.rev) = (List.ofFn σ).reverse
-  apply List.ext_get
-  · simp
-  · intro i hi hj
-    have hlen : (List.ofFn σ).length = n := List.length_ofFn
-    have hi_n : i < n := by
-      simpa only [List.length_ofFn] using hi
-    have hbound : (List.ofFn σ).length - 1 - i < (List.ofFn σ).length := by
-      simpa only [hlen] using (show n - 1 - i < n by lia)
-    rw [List.get_ofFn, List.get_reverse' _ _ hbound, List.get_ofFn]
-    apply congrArg σ
-    apply Fin.ext
-    rw [Fin.val_rev, Fin.val_cast, Fin.val_cast]
-    simp only [hlen]
-    lia
-
 /-- Complementing both permutations preserves their pattern count. -/
 theorem Equiv.Perm.patternCount_complement {n k : ℕ}
     (σ : Equiv.Perm (Fin n)) (τ : Equiv.Perm (Fin k)) :
