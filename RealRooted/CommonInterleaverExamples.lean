@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaverTwo
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
 
 open Polynomial
 
@@ -598,35 +599,6 @@ private lemma orientCex_posComboRealRooted :
     exact ((Polynomial.Splits.C _).mul (Polynomial.Splits.X_sub_C _)).mul
       (Polynomial.Splits.X_sub_C _)
 
-private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
-    (hsorted : l.Pairwise (· ≤ ·)) (hcoe : (↑l : Multiset ℝ) = {a, b}) :
-    l = [a, b] := by
-  have hlen : l.length = 2 := by
-    have h := congrArg Multiset.card hcoe
-    simpa using h
-  obtain ⟨x, y, rfl⟩ := List.length_eq_two.mp hlen
-  have hxy : x ≤ y := (List.pairwise_cons.mp hsorted).1 y (by simp)
-  have hne : a ≠ b := ne_of_lt hab
-  have hxab : x = a ∨ x = b := by
-    have hx : x ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  have hyab : y = a ∨ y = b := by
-    have hy : y ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  rcases hxab with rfl | rfl <;> rcases hyab with rfl | rfl
-  · exfalso
-    have hcount := congrArg (Multiset.count b) hcoe
-    simp [Ne.symm hne] at hcount
-  · simp
-  · grind
-  · exfalso
-    have hcount := congrArg (Multiset.count a) hcoe
-    simp [hne] at hcount
-
 private lemma orientCex_not_strictInterl :
     ¬ (StrictInterl orientCexF orientCexG ∨ StrictInterl orientCexG orientCexF) := by
   rintro (h | h)
@@ -634,9 +606,11 @@ private lemma orientCex_not_strictInterl :
     rw [orientCexF_roots] at hss_eq
     rw [orientCexG_roots] at hrs_eq
     have hsseq : ss = [-1, 1] :=
-      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 1 (-1))
+      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hss
+        (by rw [hss_eq]; exact Multiset.pair_comm 1 (-1))
     have hrseq : rs = [-2, 2] :=
-      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 2 (-2))
+      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hrs
+        (by rw [hrs_eq]; exact Multiset.pair_comm 2 (-2))
     subst hsseq
     subst hrseq
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
@@ -647,9 +621,11 @@ private lemma orientCex_not_strictInterl :
     rw [orientCexG_roots] at hss_eq
     rw [orientCexF_roots] at hrs_eq
     have hsseq : ss = [-2, 2] :=
-      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 2 (-2))
+      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hss
+        (by rw [hss_eq]; exact Multiset.pair_comm 2 (-2))
     have hrseq : rs = [-1, 1] :=
-      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 1 (-1))
+      List.eq_pair_of_pairwise_le_of_coe_eq (by norm_num) hrs
+        (by rw [hrs_eq]; exact Multiset.pair_comm 1 (-1))
     subst hsseq
     subst hrseq
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩

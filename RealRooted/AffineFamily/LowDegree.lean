@@ -423,7 +423,7 @@ protected lemma AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn

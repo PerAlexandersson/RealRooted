@@ -307,7 +307,7 @@ private lemma strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (strictInterl_of_strictInterl_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
     hfnn hgnn
 
@@ -396,7 +396,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
         (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
     have hstrictInterl_fg : StrictInterl f g :=
       StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
-    exact strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl_fg hfnn hgnn
+    exact strictInterl_mul_X_of_strictInterl_of_nonneg hstrictInterl_fg hfnn hgnn
 
 private lemma strictInterl_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
@@ -564,7 +564,7 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
 

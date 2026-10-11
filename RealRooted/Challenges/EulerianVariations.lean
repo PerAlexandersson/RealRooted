@@ -1,6 +1,6 @@
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.PeakValues
 import RealRooted.Applications.EulerianVariations.TernaryRuns
+import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 import RealRooted.CombinatorialExamples.SuperEulerian
 
 /-!
@@ -50,9 +50,8 @@ module = "RealRooted.CombinatorialExamples.PeakValues.Stability"
 label = "The peak-value polynomial is real stable"
 
 [[theorems]]
-name = """RealRooted.Applications.EulerianVariations.\
-peakValueWeightedDiagonal_consecutive_strictInterl"""
-module = "RealRooted.Applications.EulerianVariations.PeakValues"
+name = "RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl"
+module = "RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving"
 label = "Weighted peak-value diagonals interlace"
 
 [[theorems]]

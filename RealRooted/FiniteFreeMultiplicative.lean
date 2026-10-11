@@ -1,5 +1,6 @@
 import RealRooted.DegreeDropReversal
 import RealRooted.Hadamard.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Finite-free multiplicative convolution
@@ -28,11 +29,6 @@ def signedReciprocal (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
 The global sign is essential in odd degree. -/
 def finiteFreeMultiplicativeConvolution (d : ℕ) (p q : ℝ[X]) : ℝ[X] :=
   C ((-1 : ℝ) ^ d) * (schurSzegoComp d p q).comp (-X)
-
-private theorem coeff_comp_neg_X (p : ℝ[X]) (j : ℕ) :
-    (p.comp (-X)).coeff j = p.coeff j * (-1 : ℝ) ^ j := by
-  simpa using
-    Polynomial.comp_C_mul_X_coeff (p := p) (r := (-1 : ℝ)) (n := j)
 
 private theorem neg_one_pow_add_eq_sub {d j : ℕ} (hj : j ≤ d) :
     (-1 : ℝ) ^ d * (-1 : ℝ) ^ j = (-1 : ℝ) ^ (d - j) := by

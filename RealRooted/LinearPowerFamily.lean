@@ -53,7 +53,7 @@ theorem strictInterl_X_pow_mul_X_pow_succ_of_reverse_strictInterl_nonneg {f g : 
     (n : ℕ) :
     StrictInterl (X ^ n * f) (X ^ (n + 1) * g) := by
   have hbase : StrictInterl f (X * g) :=
-    strictInterl_to_strictInterl_mul_X_of_nonneg hgf hgnn hfnn
+    strictInterl_mul_X_of_strictInterl_of_nonneg hgf hgnn hfnn
   have hbase_nonneg : HasNonnegCoeffs (X * g) := hasNonnegCoeffs_X.mul hgnn
   simpa [pow_succ, mul_assoc] using
     strictInterl_X_pow_mul_both_of_strictInterl_nonneg hbase hfnn hbase_nonneg n
