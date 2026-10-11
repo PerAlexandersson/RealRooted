@@ -1732,6 +1732,10 @@ The endpoint-derivative and root-continuity challenge pages add two modules. The
 
 Merged with main: the two new challenge pages and the finite-order Weyl modules together. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
+The Poisson star modules (#1423) add two modules. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
+
+The Poisson star modules (#1423) add two modules. The budgets of `Challenges.BorceaBranden` rise to the new closure sizes.
+
 The iterated-derivative-shift challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
 Run the architecture check with:

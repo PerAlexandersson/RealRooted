@@ -1,5 +1,6 @@
 import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+import RealRooted.BorceaBranden.Applications.PoissonStability
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.FiniteSymbolClassification
 import RealRooted.BorceaBranden.UnivariateFiniteSymbol
@@ -53,6 +54,16 @@ label = "Coordinate PF multipliers preserve multivariate stability"
 name = "RealRooted.BorceaBranden.finiteOrderWeylOperator_preserves_stability"
 module = "RealRooted.BorceaBranden.FiniteOrderWeylPreserver"
 label = "A stable signed Weyl symbol gives a stability preserver of any degree"
+
+[[theorems]]
+name = "RealRooted.Poisson.star_assoc"
+module = "RealRooted.BorceaBranden.Applications.PoissonStar"
+label = "The Poisson star product is associative"
+
+[[theorems]]
+name = "RealRooted.Poisson.spectatorAction_stable"
+module = "RealRooted.BorceaBranden.Applications.PoissonStability"
+label = "Poisson left multiplication preserves real stability"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -73,6 +84,12 @@ Combining the falling-factorial multiplier with the finite-symbol theorem on eac
 gives the finite-order Weyl-symbol theorem: if $T = \sum_{j \le m} Q_j(x) \partial_q^j$ has a
 stable signed symbol $\sum_j Q_j(x) (-w)^j$, then $T$ maps every stable polynomial, of any
 degree, to a stable polynomial or to zero.
+
+One application is the Poisson star product
+$f \star g = \sum_{a,b} f_{a,b} z^a v^b (1 + \partial_v)^{a+b} g$. It is associative, and left
+multiplication by a nonzero real stable $f(z, v)$ with nonnegative coefficients preserves real
+stability of any right input, spectator variables included. The signed Weyl symbol of this
+operator is $f(z(1-w), v(1-w))$.
 
 ## References
 

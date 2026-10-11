@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 1790
+      "max_modules": 1792
     },
     "RealRooted.Production": {
-      "max_modules": 1650
+      "max_modules": 1652
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 708
@@ -643,7 +643,7 @@
       "max_modules": 42
     },
     "RealRooted.Challenges.BorceaBranden": {
-      "max_modules": 155
+      "max_modules": 169
     },
     "RealRooted.Derivative": {
       "max_modules": 16
