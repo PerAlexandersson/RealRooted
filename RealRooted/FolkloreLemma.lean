@@ -28,19 +28,18 @@ lemma eval_sub_X_mul_at_root {f g : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
     (f - X * g).eval r = -r * g.eval r := by
   simp [eval_sub, eval_mul, eval_X, IsRoot.def.mp hr]
 
-/-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `(f - X*g) ≪₀ f`.
-Again this is stated in the zero-aware convention to allow complete
-cancellation. -/
-theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
+private theorem strictInterl_sub_X_mul_core {f g : ℝ[X]}
     (hgf : StrictInterl g f)
     (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : g.natDegree + 1 = f.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Interl (f - X * g) f := by
+    Interl g (f - X * g) ∧ Interl (f - X * g) f := by
   set q : ℝ[X] := f - X * g
   by_cases hq0 : q = 0
-  · simpa [q, hq0] using interl_zero_left f
+  · constructor
+    · simpa [q, hq0] using interl_zero_right g
+    · simpa [q, hq0] using interl_zero_left f
   · have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
     have hf : (f ≠ 0 ∧ f.Splits) := hgf.2.1
     have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
@@ -93,9 +92,52 @@ theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
       have hrs_len : rs.length = q.natDegree := by
         rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
       lia
-    rcases hstrictInterl_or with hqf | hfq
-    · exact hqf.toInterl
-    · lia
+    have hqf : StrictInterl q f := by
+      rcases hstrictInterl_or with hqf | hfq
+      · exact hqf
+      · exact False.elim (hnot_strictInterl_fq hfq)
+    have hall_qXg : AllComboRealRooted q (X * g) := by
+      intro α β
+      have hrew :
+          C α * q + C β * (X * g) =
+            C (α - β) * q + C β * f := by
+        grind
+      simpa [hrew] using hall_qf (α - β) β
+    have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) :=
+      isRealRooted_X_mul hg.1 hg.2
+    have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
+    have hstrictInterl_qXg_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
+      strictInterl_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg
+        (Or.inl hdeg_qXg)
+    have hnot_strictInterl_Xgq : ¬ StrictInterl (X * g) q := by
+      intro hXgq
+      rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
+      have hss_len : ss.length = (X * g).natDegree := by
+        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hXg.2]
+      have hrs_len : rs.length = q.natDegree := by
+        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+      lia
+    have hstrictInterl_qXg : StrictInterl q (X * g) := by
+      rcases hstrictInterl_qXg_or with hqXg | hXgq
+      · exact hqXg
+      · exact False.elim (hnot_strictInterl_Xgq hXgq)
+    have hdeg_gq : g.natDegree = q.natDegree := by lia
+    refine ⟨?_, hqf.toInterl⟩
+    exact
+      (strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
+        (f := g) (g := q) hstrictInterl_qXg hdeg_gq hg_nonpos).toInterl
+
+/-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `(f - X*g) ≪₀ f`.
+Again this is stated in the zero-aware convention to allow complete
+cancellation. -/
+theorem strictInterl_sub_X_mul_left {f g : ℝ[X]}
+    (hgf : StrictInterl g f)
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    Interl (f - X * g) f :=
+  (strictInterl_sub_X_mul_core hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos).2
 
 /-- If `g ⊳ f` (differ-by-1), monic, all roots ≤ 0, then `g ≪₀ (f - X*g)`.
 This zero-aware form is the right endpoint behavior when cancellation
@@ -106,64 +148,8 @@ theorem strictInterl_sub_X_mul_right {f g : ℝ[X]}
     (hdeg : g.natDegree + 1 = f.natDegree)
     (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    Interl g (f - X * g) := by
-  set q : ℝ[X] := f - X * g
-  by_cases hq0 : q = 0
-  · simpa [q, hq0] using interl_zero_right g
-  · have hleft0 : Interl q f := by
-      simpa [q] using strictInterl_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
-    have hf0 : f ≠ 0 := hgf.2.1.1
-    have hqf : StrictInterl q f := by rcases hleft0 with hqz | hfz | hqf <;> lia
-    have hall_qf : AllComboRealRooted q f := allComboRealRooted_of_strictInterl hqf
-    have hall_qXg : AllComboRealRooted q (X * g) := by
-      intro α β
-      have hrew :
-          C α * q + C β * (X * g) =
-            C (α - β) * q + C β * f := by
-        grind
-      simpa [hrew] using hall_qf (α - β) β
-    have hq : (q ≠ 0 ∧ q.Splits) := hqf.1
-    have hg : (g ≠ 0 ∧ g.Splits) := hgf.1
-    have hXg : ((X * g) ≠ 0 ∧ (X * g).Splits) := isRealRooted_X_mul hg.1 hg.2
-    have hq_lt : q.natDegree < f.natDegree := by
-      have hq_le : q.natDegree ≤ f.natDegree := by
-        have hXg_le : (X * g).natDegree ≤ f.natDegree := by simp_all
-        have hsub : (f - X * g).natDegree ≤ f.natDegree :=
-          (natDegree_sub_le_iff_left hXg_le).mpr le_rfl
-        lia
-      by_contra hnot
-      have hf_le_q : f.natDegree ≤ q.natDegree := le_of_not_gt hnot
-      have hq_eq : q.natDegree = f.natDegree := le_antisymm hq_le hf_le_q
-      have hq_top_ne : q.coeff f.natDegree ≠ 0 := by
-        rw [← hq_eq, coeff_natDegree]
-        simp_all
-      have hq_top_zero : q.coeff f.natDegree = 0 := by
-        calc
-          q.coeff f.natDegree
-              = f.coeff f.natDegree - (X * g).coeff f.natDegree := by simp [q, coeff_sub]
-          _ = 1 - (X * g).coeff f.natDegree := by simp_all
-          _ = 1 - g.coeff g.natDegree := by rw [← hdeg, coeff_X_mul]
-          _ = 1 - g.leadingCoeff := by simp
-          _ = 0 := by simp [hg_monic.leadingCoeff]
-      lia
-    have hclose_qf := natDegree_close_of_allComboRealRooted hall_qf hq0 hf0
-    have hdeg_qf : q.natDegree + 1 = f.natDegree := by lia
-    have hdeg_qXg : q.natDegree + 1 = (X * g).natDegree := by simp_all
-    have hstrictInterl_or : StrictInterl q (X * g) ∨ StrictInterl (X * g) q :=
-      strictInterl_of_allComboRealRooted hq.1 hq.2 hXg.1 hXg.2 hall_qXg (Or.inl hdeg_qXg)
-    have hnot_strictInterl_Xgq : ¬ StrictInterl (X * g) q := by
-      intro hXgq
-      rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-      have hss_len : ss.length = (X * g).natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hXg.2]
-      have hrs_len : rs.length = q.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
-      lia
-    have hstrictInterl_qXg : StrictInterl q (X * g) := by lia
-    have hdeg_gq : g.natDegree = q.natDegree := by lia
-    exact
-      (strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos
-        (f := g) (g := q) hstrictInterl_qXg hdeg_gq hg_nonpos).toInterl
+    Interl g (f - X * g) :=
+  (strictInterl_sub_X_mul_core hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos).1
 
 /-- Brändén--Saud minus-sign step in the nonzero `StrictInterl` convention.
 
@@ -179,11 +165,11 @@ theorem strictInterl_sub_X_mul_pair_of_posLeadingCoeff {f g : ℝ[X]}
     (hsub_pos : HasPosLeadingCoeff (f - X * g)) :
     StrictInterl g (f - X * g) ∧ StrictInterl (f - X * g) f := by
   have hsub_ne : f - X * g ≠ 0 := hsub_pos.ne_zero
+  have hpair := strictInterl_sub_X_mul_core
+    hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos
   constructor
-  · exact (strictInterl_sub_X_mul_right hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
-      |>.toStrictInterl_of_ne hgf.1.1 hsub_ne
-  · exact (strictInterl_sub_X_mul_left hgf hf_monic hg_monic hdeg hf_nonpos hg_nonpos)
-      |>.toStrictInterl_of_ne hsub_ne hgf.2.1.1
+  · exact hpair.1.toStrictInterl_of_ne hgf.1.1 hsub_ne
+  · exact hpair.2.toStrictInterl_of_ne hsub_ne hgf.2.1.1
 
 /-- Brändén--Saud minus-sign step after scaling by a common positive leading
 coefficient.

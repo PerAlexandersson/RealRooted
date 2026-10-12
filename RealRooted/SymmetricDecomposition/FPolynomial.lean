@@ -167,21 +167,8 @@ lemma eval_neg_one_fPolynomial (d : ℕ) (h : ℝ[X]) :
 
 lemma eval_one_pos_of_hasNonnegCoeffs {h : ℝ[X]}
     (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) :
-    0 < h.eval 1 := by
-  have heval :
-      h.eval 1 = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i := by
-    simpa [one_pow, mul_one] using (Polynomial.eval_eq_sum_range (p := h) (x := (1 : ℝ)))
-  rw [heval]
-  have htop_coeff : 0 < h.coeff h.natDegree := by
-    rw [coeff_natDegree]
-    exact hh.pos_leadingCoeff h0
-  have hle :
-      h.coeff h.natDegree ≤
-        ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i :=
-    Finset.single_le_sum
-      (fun i hi => hh i)
-      (Finset.mem_range.mpr (Nat.lt_succ_self _))
-  grind
+    0 < h.eval 1 :=
+  eval_pos_of_hasNonnegCoeffs hh h0 zero_lt_one
 
 @[deprecated eval_pos_of_hasNonnegCoeffs (since := "2026-10-06")]
 alias eval_pos_of_hasNonnegCoeffs_of_pos := eval_pos_of_hasNonnegCoeffs

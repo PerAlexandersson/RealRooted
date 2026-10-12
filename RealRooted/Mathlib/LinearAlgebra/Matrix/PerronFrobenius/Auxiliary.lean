@@ -24,16 +24,6 @@ Prefer Mathlib statements when they already exist; this file keeps only what dow
 -/
 
 /-!
-## Standard Simplex Properties
--/
-
--- Standard simplex is nonempty when ι is nonempty
-theorem stdSimplex_nonempty {ι : Type*} [Fintype ι] [Nonempty ι] :
-    (RealRooted.standardSimplex ℝ ι).Nonempty :=
-  ⟨(Fintype.card ι : ℝ)⁻¹ • 1,
-    by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
-
-/-!
 ## Helper Lemmas for Continuity
 -/
 
@@ -53,20 +43,6 @@ theorem eventually_to_open {α : Type*} [TopologicalSpace α] {p : α → Prop} 
       apply hU_open
       simp_all only
 
--- Continuous infimum over finset
-theorem continuousOn_finset_inf' {α β : Type*} [TopologicalSpace α] [LinearOrder β]
-    [TopologicalSpace β] [OrderTopology β] {ι : Type*}
-    {s : Finset ι} {U : Set α} (hs : s.Nonempty) {f : ι → α → β}
-    (hf : ∀ i ∈ s, ContinuousOn (f i) U) :
-    ContinuousOn (fun x => s.inf' hs (fun i => f i x)) U :=
-  ContinuousOn.finset_inf'_apply hs hf
-
--- Infimum monotonicity for subsets
-theorem finset_inf'_mono_subset {α β : Type*} [LinearOrder β] {s t : Finset α} (h : s ⊆ t)
-    {f : α → β} {hs : s.Nonempty} {ht : t.Nonempty} :
-    t.inf' ht f ≤ s.inf' hs f :=
-  inf'_mono f h hs
-
 /-!
 ## Matrix & Vector Operations
 -/
@@ -77,23 +53,6 @@ theorem mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j
   intro i
   simp only [Matrix.mulVec, dotProduct]
   exact Finset.sum_nonneg fun j _ => mul_nonneg (hA i j) (hx j)
-
-/-!
-## Utility Lemmas
--/
-
--- Existence of positive element in sum of non-negative elements
-theorem exists_pos_of_sum_one_of_nonneg {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
-    (hsum : ∑ i, x i = 1) (hnonneg : ∀ i, 0 ≤ x i) : ∃ j, 0 < x j := by
-  by_contra h
-  push Not at h
-  have h_all_zero : ∀ i, x i = 0 := by
-    intro i
-    exact le_antisymm (h i) (hnonneg i)
-  have h_sum_zero : ∑ i, x i = 0 := by
-    simp only [h_all_zero, Finset.sum_const_zero]
-  have : 1 = 0 := by linarith
-  exact absurd this (by norm_num)
 
 -- Matrix power multiplication
 theorem pow_mulVec_succ {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ}
@@ -110,22 +69,6 @@ theorem pow_mulVec_succ {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A 
 namespace Fintype
 
 end Fintype
-
-/-!
-## Additional Helper Theorems
--/
-
--- Sum of non-negative terms is positive if at least one term is positive
-theorem sum_pos_of_mem {α : Type*} {s : Finset α} {f : α → ℝ}
-    (h_nonneg : ∀ a ∈ s, 0 ≤ f a) (a : α) (ha_mem : a ∈ s) (ha_pos : 0 < f a) :
-    0 < ∑ x ∈ s, f x := by
-  classical
-  have h_sum_split : ∑ x ∈ s, f x = f a + ∑ x ∈ s.erase a, f x :=
-    Eq.symm (add_sum_erase s f ha_mem)
-  have h_erase_nonneg : 0 ≤ ∑ x ∈ s.erase a, f x :=
-    Finset.sum_nonneg (fun x hx => h_nonneg x (Finset.mem_of_mem_erase hx))
-  rw [h_sum_split]
-  exact add_pos_of_pos_of_nonneg ha_pos h_erase_nonneg
 
 /-- The infimum over a non-empty finset is equal to the infimum over the corresponding subtype. -/
 lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Finset α}
@@ -214,7 +157,7 @@ lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n]
   rcases h_exists_pos with ⟨i, hi⟩
   have hi_mem : i ∈ Finset.univ := Finset.mem_univ i
   have h_pos : 0 < u i * v i := mul_pos (hu_pos i) hi
-  exact sum_pos_of_mem h_nonneg i hi_mem h_pos
+  exact Finset.sum_pos' h_nonneg ⟨i, hi_mem, h_pos⟩
 
 /-- Dot‐product is linear in the first argument. -/
 lemma dotProduct_smul_left {n : Type*} [Fintype n]

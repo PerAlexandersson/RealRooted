@@ -128,12 +128,12 @@ theorem secondKind_mul_signedFirstKind_sum (z : R) (n j : ℕ) :
           rw [hrec]
           have hweighted :
               ∑ k ∈ Finset.range (n + 1),
-                  secondKindWeight z k * secondKind z n (k + 1) *
+                  weight z k * secondKind z n (k + 1) *
                     signedFirstKind z (k + 1) (j + 1) =
                 ∑ k ∈ Finset.range (n + 1), g (k + 1) := by
             apply Finset.sum_congr rfl
             intro k hk
-            simp [g, secondKindWeight, mul_assoc]
+            simp [g, weight, mul_assoc]
           rw [hweighted, hshift, sub_add_cancel]
           simpa using ih j
 

@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.MultiplierSequence
 import Mathlib.Analysis.Analytic.OfScalars
 import Mathlib.Analysis.Normed.Group.Tannery
@@ -52,22 +53,9 @@ def rescaledJensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
 theorem coeff_rescaledJensenPolynomial (n k : ℕ) (gamma : ℕ → ℝ) :
     (rescaledJensenPolynomial n gamma).coeff k =
       if k ≤ n then (n.choose k : ℝ) * gamma k * ((n : ℝ)⁻¹) ^ k else 0 := by
-  classical
-  unfold rescaledJensenPolynomial
-  by_cases hk : k ≤ n
-  · have hmem : k ∈ Finset.range (n + 1) := by simp_all
-    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-    · simp [hk]
-    · intro b hb hbk
-      simp [Polynomial.coeff_monomial, hbk]
-    · simp_all
-  · rw [Polynomial.finsetSum_coeff, Finset.sum_eq_zero]
-    · simp [hk]
-    · intro b hb
-      have hb_le : b ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
-      have hne : k ≠ b := by grind
-      have hbk : b ≠ k := Ne.symm hne
-      simp [Polynomial.coeff_monomial, hbk]
+  simpa only [rescaledJensenPolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun k => (n.choose k : ℝ) * gamma k * ((n : ℝ)⁻¹) ^ k) (n + 1) k
 
 /-- The coefficient-form rescaling agrees with substitution by `X / n`. -/
 theorem rescaledJensenPolynomial_eq_jensenPolynomial_comp (n : ℕ)

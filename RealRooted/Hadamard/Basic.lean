@@ -71,12 +71,9 @@ def schurSzegoComp (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
 theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
       if k ≤ n then f.coeff k * g.coeff k / (Nat.choose n k : ℝ) else 0 := by
-  rw [schurSzegoComp, finsetSum_coeff]
-  by_cases hk : k ≤ n
-  · rw [ite_eq_left hk]
-    simp [coeff_monomial, hk]
-  · rw [ite_eq_right hk]
-    simp [coeff_monomial, Nat.not_lt.mpr (Nat.succ_le_of_lt (Nat.lt_of_not_le hk))]
+  simpa only [schurSzegoComp, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => f.coeff i * g.coeff i / (Nat.choose n i : ℝ)) (n + 1) k
 
 theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =

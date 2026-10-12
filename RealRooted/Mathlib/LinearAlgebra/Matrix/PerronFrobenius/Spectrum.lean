@@ -16,6 +16,7 @@ import Mathlib.Analysis.Normed.Algebra.Spectrum
 import Mathlib.Analysis.RCLike.Lemmas
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.LinearAlgebra.Eigenspace.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Matrix
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 import Mathlib.RingTheory.DedekindDomain.Dvr
 import Mathlib.RingTheory.FiniteLength
@@ -101,8 +102,6 @@ Matrix n n R (Square matrices, often n is a Fintype).
 Matrix.det (A : Matrix n n R) : R.
 Matrix.det_mul, Matrix.det_one, Matrix.det_transpose.
 Matrix.isUnit_iff_isUnit_det.
-Matrix.det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) :
-  det (μ • 1 - A) = (Matrix.charpoly A).eval μ.
 Matrix.toLin' (A : Matrix n n R) : (Fin n → R) →ₗ[R] (Fin n → R)
   (matrix as a linear map on Fin n → R).
 LinearMap.toMatrix (b₁ : Basis ι R M) (b₂ : Basis ι' R N) (f : M →ₗ[R] N) : Matrix ι' ι R.
@@ -129,7 +128,7 @@ LinearMap.charpoly_toMatrix (b : Basis ι R M) f : (Matrix.toMatrix b b f).charp
 LinearMap.minpoly_dvd_charpoly {K V} [Field K] [FiniteDimensional K V] (f : End K V).
 spectrum R a (for a : A in an R-algebra A).
 spectrum.mem_iff : μ ∈ spectrum R a ↔ ¬IsUnit (algebraMap R A μ - a).
-Matrix.spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ).
+Matrix.spectrum_toLin' (A : Matrix n n R).
 Module.End.hasEigenvalue_iff_mem_spectrum {f : End K V} {μ : K}.
 Matrix.mem_spectrum_iff_isRoot_charpoly (A : Matrix n n ℝ) (μ : ℝ).
 Module.End.HasEigenvalue (f : End R M) (μ : R) : Prop.
@@ -142,13 +141,10 @@ Module.End.genEigenspace (f : End R M) (μ : R) (k : ℕ∞).
 Module.End.maxGenEigenspace (f : End R M) (μ : R) := ⨆ k, genEigenspace f μ k.
 Module.End.iSup_maxGenEigenspace_eq_top [IsAlgClosed K] [FiniteDimensional K V] (f : End K V).
 Module.End.IsFinitelySemisimple.genEigenspace_eq_eigenspace (hf : f.IsFinitelySemisimple).
-Module.End.isRoot_of_hasEigenvalue {f : End K V} {μ : K} (h : HasEigenvalue f μ) :
-  (minpoly K f).IsRoot μ.
 Module.End.hasEigenvalue_of_isRoot {f : End K V} {μ : K} (h : (minpoly K f).IsRoot μ) :
   HasEigenvalue f μ.
 LinearMap.hasEigenvalue_zero_tfae (φ : End K M): List of equivalent conditions for 0 being an
   eigenvalue (e.g., det φ = 0, ker φ ≠ ⊥).
-Matrix.hasEigenvalue_toLin'_iff_det_sub_eq_zero (A : Matrix n n ℝ) (μ : ℝ).
 Module.End.exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V).
 Module.End.eigenvectors_linearIndependent [NoZeroSMulDivisors R M] (f : End R M) (μs : Set R)
   (xs : μs → M) (h_eigenvec).
@@ -168,94 +164,4 @@ omit [DecidableEq n] in
 lemma stdSimplex_nonempty [Nonempty n] : (RealRooted.standardSimplex ℝ n).Nonempty :=
   ⟨(Fintype.card n : ℝ)⁻¹ • 1, by simp [RealRooted.standardSimplex, Finset.sum_const, nsmul_eq_mul]⟩
 
-/-!
-## Spectral Properties of Matrices
--/
-
-/-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map
-`Matrix.toLin' A`. -/
-lemma spectrum_eq_spectrum_toLin' (A : Matrix n n ℝ) :
-    spectrum ℝ A = spectrum ℝ (Matrix.toLin' A) :=
-  Eq.symm (AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun ℝ n)) A)
-
-/-- The determinant of `μ • 1 - A` is the evaluation of the characteristic polynomial of `A` at
-`μ`. -/
-lemma det_smul_sub_eq_eval_charpoly (A : Matrix n n ℝ) (μ : ℝ) :
-    det (μ • 1 - A) = (Matrix.charpoly A).eval μ := by
-  have h : μ • 1 = Matrix.scalar n μ := by
-    ext i j
-    simp [Matrix.scalar, Matrix.one_apply, smul_apply]
-    rfl
-  rw [h]
-  rw [← eval_charpoly A μ]
-
-
-/-!
-## Determinant, Kernel, and Invertibility
--/
-open Module
-
-/-!
-# Perron-Frobenius Theory for Matrices
-
-This file provides core lemmas and theorems related to the Perron-Frobenius theory for non-negative,
-irreducible matrices.
--/
-
-open LinearMap
-
-variable {R : Type*} [CommRing R] {n : Type*} [Fintype n] [DecidableEq n]
-
-/-- A real number `μ` is an eigenvalue of a matrix `A` if and only if `det(μ • 1 - A) = 0`. -/
-lemma hasEigenvalue_toLin'_iff_det_sub_eq_zero (A : Matrix n n ℝ) (μ : ℝ) :
-    Module.End.HasEigenvalue (toLin' A) μ ↔ det (μ • 1 - A) = 0 := by
-  rw [Module.End.hasEigenvalue_iff_mem_spectrum, ← spectrum_eq_spectrum_toLin',
-    mem_spectrum_iff_isRoot_charpoly, Polynomial.IsRoot.def, det_smul_sub_eq_eval_charpoly]
-
-/-! ## Spectral Radius Theory for Matrices -/
-
-
-
-
-lemma vecMul_eq_mulVec_transpose {n : Type*} [Fintype n] (A : Matrix n n ℝ) (v : n → ℝ) :
-    v ᵥ* A = Aᵀ *ᵥ v := by
-  ext j
-  change v ⬝ᵥ (fun i => A i j) = (fun i => A i j) ⬝ᵥ v
-  rw [@dotProduct_comm]
-
-lemma Module.End.exists_eigenvector_of_mem_spectrum {K V : Type*}
-  [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-  {f : V →ₗ[K] V} {μ : K} (h_is_eigenvalue : μ ∈ spectrum K f) :
-  ∃ v, v ≠ 0 ∧ f v = μ • v := by
-  rw [spectrum.mem_iff, LinearMap.isUnit_iff_ker_eq_bot] at h_is_eigenvalue
-  obtain ⟨v, hv_mem, hv_ne_zero⟩ := Submodule.exists_mem_ne_zero_of_ne_bot h_is_eigenvalue
-  use v, hv_ne_zero
-  rw [LinearMap.mem_ker, LinearMap.sub_apply, Module.algebraMap_end_apply] at hv_mem
-  exact (sub_eq_zero.mp hv_mem).symm
-
-/-! ## Core Perron-Frobenius Theory -/
-
-/-- If a scalar `μ` is an eigenvalue of a matrix `A`, then it is a root of its
-characteristic polynomial. -/
-lemma isRoot_of_hasEigenvalue {A : Matrix n n ℝ} {μ : ℝ}
-    (h_eig : Module.End.HasEigenvalue (toLin' A) μ) :
-    (charpoly A).IsRoot μ := by
-  rw [← mem_spectrum_iff_isRoot_charpoly, spectrum_eq_spectrum_toLin']
-  exact Module.End.hasEigenvalue_iff_mem_spectrum.mp h_eig
-
-/-- The spectrum of a matrix `A` is equal to the spectrum of its corresponding linear map
-`Matrix.toLin' A`. -/
-theorem spectrum.Matrix_toLin'_eq_spectrum {R n : Type*} [CommRing R] [Fintype n] [DecidableEq n]
-    (A : Matrix n n R) :
-    spectrum R (Matrix.toLin' A) = spectrum R A :=
-  AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (Pi.basisFun R n)) A
 end Matrix
-
-/-- If a linear map `f` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum
-of `f`. -/
-lemma Module.End.mem_spectrum_of_hasEigenvector {K V : Type*} [Field K] [AddCommGroup V]
-    [Module K V] [FiniteDimensional K V]
-    {f : V →ₗ[K] V} {μ : K} {v : V} (h : HasEigenvector f μ v) :
-    μ ∈ spectrum K f := by
-  rw [← Module.End.hasEigenvalue_iff_mem_spectrum]
-  exact Module.End.hasEigenvalue_of_hasEigenvector h

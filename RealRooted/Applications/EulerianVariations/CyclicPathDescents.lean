@@ -1,5 +1,6 @@
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.SimpleRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Cyclic descents of northeast lattice paths
@@ -39,20 +40,11 @@ def cyclicPathDescentPolynomial (n : ℕ) : ℝ[X] :=
       if k ∈ Finset.Icc 1 n then
         2 * (Nat.choose n k : ℝ) * Nat.choose (n - 1) (k - 1)
       else 0 := by
-  rw [cyclicPathDescentPolynomial, Polynomial.finsetSum_coeff]
-  by_cases hk : k ∈ Finset.Icc 1 n
-  · rw [ite_eq_left hk, Finset.sum_eq_single k]
-    · simp
-    · intro b hb hbk
-      simp [Polynomial.coeff_monomial, hbk]
-    · exact fun h ↦ (h hk).elim
-  · rw [ite_eq_right hk]
-    apply Finset.sum_eq_zero
-    intro b hb
-    have hbk : b ≠ k := by
-      rintro rfl
-      exact hk hb
-    simp [Polynomial.coeff_monomial, hbk]
+  simpa only [cyclicPathDescentPolynomial] using
+    Polynomial.coeff_sum_finset_monomial
+      (Finset.Icc 1 n)
+      (fun k =>
+        2 * (Nat.choose n k : ℝ) * Nat.choose (n - 1) (k - 1)) k
 
 /-- The coefficient formula is `X` times the derivative of the type-B
 Narayana polynomial, with the paper's normalization. -/

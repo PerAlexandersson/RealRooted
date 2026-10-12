@@ -20,11 +20,6 @@ open Finset Real Complex Matrix
 namespace Complex
 
 
-variable {z : ℂ}
-
-/-- The norm of a real number embedded in the complex numbers is its absolute value. -/
-lemma norm_ofReal (r : ℝ) : ‖(r : ℂ)‖ = |r| := by simp
-
 variable {ι : Type*} {z : ℂ}
 
 /-- The square of the norm of a complex number is the sum of the squares of its real and imaginary
@@ -33,27 +28,10 @@ lemma norm_sq_eq_re_sq_add_im_sq (z : ℂ) : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 :
   rw [Complex.sq_norm]; rw [← normSq_add_mul_I]
   simp [normSq_apply]
 
-/-- The norm of the conjugate of a complex number is the same as the norm of the original number. -/
-@[simp]
-lemma RCLike.norm_conj {K} [RCLike K] (z : K) : ‖star z‖ = ‖z‖ := norm_star z
-
 /-- The real part of a sum is the sum of the real parts. -/
 lemma RCLike.re_sum {F : Type*} [RCLike F] {v : ι → F} {s : Finset ι} :
     RCLike.re (∑ i ∈ s, v i) = ∑ i ∈ s, RCLike.re (v i) :=
   map_sum RCLike.re v s
-
-/-- If a sum of `f i` equals a sum of `g i`, and `f i ≤ g i` for all `i`, then `f i = g i` for all
-`i`. -/
-lemma eq_of_sum_eq_of_le {s : Finset ι} {f g : ι → ℝ}
-    (h_le : ∀ i ∈ s, f i ≤ g i) (h_sum_eq : ∑ i ∈ s, f i = ∑ i ∈ s, g i) :
-    ∀ i ∈ s, f i = g i := by
-  intro i hi
-  have h_sum_diff_eq_zero : ∑ j ∈ s, (g j - f j) = 0 := by
-    rw [Finset.sum_sub_distrib, h_sum_eq, sub_self]
-  have h_nonneg : ∀ j ∈ s, 0 ≤ g j - f j := fun j hj => sub_nonneg.mpr (h_le j hj)
-  have h_all_zero : ∀ j ∈ s, g j - f j = 0 :=
-    Finset.sum_eq_zero_iff_of_nonneg h_nonneg |>.mp h_sum_diff_eq_zero
-  exact (sub_eq_zero.mp (h_all_zero i hi)).symm
 
 /-- A complex number whose norm equals its real part is a non-negative real number. -/
 lemma eq_re_of_norm_eq (h : ‖z‖ = z.re) : z = z.re := by
@@ -74,18 +52,16 @@ lemma eq_coe_re_of_mul_eq_norm_mul {z w : ℂ} (h : re (z * star w) = ‖z‖ * 
     rw [norm_mul, norm_star, h]
   exact eq_re_of_norm_eq (id (Eq.symm h_re_eq))
 
-/-- The product of a complex number and its conjugate is the square of its norm,
-as a real number embedded in the complex plane. -/
-lemma star_mul_self (z : ℂ) : z * star z = ↑(‖z‖ ^ 2) := by
-  simpa [Matrix.star_eq_conjTranspose, normSq_eq_norm_sq] using mul_conj z
-
 /-- The square of the norm of a sum is the sum of the real parts of the products of each term
 with the conjugate of the sum. -/
 lemma norm_sq_eq_sum_re_mul_star {u : ℂ} {v : ι → ℂ} {s : Finset ι}
   (h_eq : u = ∑ i ∈ s, v i) :
   ‖u‖ ^ 2 = ∑ i ∈ s, re (v i * star u) := by
   calc
-    ‖u‖ ^ 2 = re (u * star u) := by rw [star_mul_self, ofReal_re]
+    ‖u‖ ^ 2 = u.re ^ 2 + u.im ^ 2 := norm_sq_eq_re_sq_add_im_sq u
+    _ = re (u * star u) := by
+      rw [RCLike.star_def, Complex.mul_re, Complex.conj_re, Complex.conj_im]
+      ring
     _ = re ((∑ i ∈ s, v i) * star u) := by rw [h_eq]
     _ = re (∑ i ∈ s, (v i * star u)) := by rw [sum_mul]
     _ = ∑ i ∈ s, re (v i * star u) := by rw [re_sum]
@@ -102,7 +78,7 @@ lemma re_mul_star_eq_norm_mul_norm_of_triangle_eq {u : ℂ} {v : ι → ℂ} {s 
     calc re (v i * star u) ≤ ‖v i * star u‖ := re_le_norm _
     _ = ‖v i‖ * ‖star u‖ := by rw [norm_mul]
     _ = ‖v i‖ * ‖u‖ := by rw [norm_star]
-  apply eq_of_sum_eq_of_le h_le
+  apply (Finset.sum_eq_sum_iff_of_le h_le).mp
   calc
     ∑ i ∈ s, re (v i * star u) = ‖u‖ ^ 2 := h_norm_u_sq.symm
     _ = (∑ i ∈ s, ‖v i‖) * ‖u‖ := by rw [h_sum, pow_two]
@@ -134,7 +110,9 @@ lemma each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq {u : ℂ}
     v i = (v i * star u) * u / (u * star u) := by
       rw [mul_assoc, mul_comm (star u),
         mul_div_cancel_right₀ _ ((CStarRing.mul_star_self_ne_zero_iff u).mpr h_ne)]
-    _ = (‖v i‖ * ‖u‖ : ℂ) * u / (‖u‖ ^ 2 : ℂ) := by rw [h, star_mul_self, ofReal_pow]
+    _ = (‖v i‖ * ‖u‖ : ℂ) * u / (↑‖u‖ : ℂ) ^ 2 := by
+      rw [h, RCLike.star_def, RCLike.mul_conj]
+      rfl
     _ = (k : ℂ) * u := by
       rw [ofReal_div, ← ofReal_mul]
       simp only [ofReal_mul]
@@ -149,7 +127,13 @@ lemma coeff_of_aligned_vector {u vi : ℂ} {k : ℝ}
     k = ‖vi‖ / ‖u‖ := by
   have u_norm_ne_zero : ‖u‖ ≠ 0 := norm_ne_zero_iff.mpr u_ne_zero
   have h_norm_eq : ‖vi‖ = k * ‖u‖ := by
-    rw [h_aligned, norm_mul, norm_ofReal, abs_of_nonneg k_nonneg]
+    calc
+      ‖vi‖ = ‖(k : ℂ) * u‖ := by rw [h_aligned]
+      _ = ‖(k : ℂ)‖ * ‖u‖ := by rw [norm_mul]
+      _ = |k| * ‖u‖ := by
+        simpa only [RCLike.ofReal_eq_complex_ofReal] using
+          congrArg (fun r : ℝ => r * ‖u‖) (RCLike.norm_ofReal (K := ℂ) k)
+      _ = k * ‖u‖ := by rw [abs_of_nonneg k_nonneg]
   by_cases hvi_zero : vi = 0
   · have k_zero : k = 0 := by
       rw [h_aligned, mul_eq_zero] at hvi_zero

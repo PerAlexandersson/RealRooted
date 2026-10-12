@@ -28,13 +28,11 @@ namespace RealRooted
 /-- Coefficients of the Schur–Szegő composition (for `k > n` both sides vanish). -/
 theorem coeff_schurSzegoComp_eq_div (n : ℕ) (f g : ℝ[X]) (k : ℕ) :
     (schurSzegoComp n f g).coeff k = f.coeff k * g.coeff k / (n.choose k : ℝ) := by
-  rw [schurSzegoComp, finsetSum_coeff]
-  simp only [coeff_monomial]
-  rw [Finset.sum_ite_eq']
-  split_ifs with h
-  · rfl
-  · rw [Finset.mem_range, not_lt] at h
-    rw [Nat.choose_eq_zero_of_lt (by lia), Nat.cast_zero, div_zero]
+  rw [coeff_schurSzegoComp]
+  by_cases hk : k ≤ n
+  · simp [hk]
+  · have hnk : n < k := Nat.lt_of_not_ge hk
+    simp [hk, Nat.choose_eq_zero_of_lt hnk]
 
 /-- Multiplying the first argument by `X` raises the degree index and differentiates `g`. -/
 theorem schurSzegoComp_X_mul (N : ℕ) (f g : ℝ[X]) :

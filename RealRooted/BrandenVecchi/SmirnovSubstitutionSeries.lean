@@ -47,7 +47,7 @@ theorem smirnovSubstitutionFixed_eq_eval {m : ℕ} (t : A)
   change _ =
     (Polynomial.evalRingHom (PowerSeries.C t))
       (∑ word ∈ smirnovWords m k,
-        C (smirnovWordWeight weight word) *
+        C (wordWeight weight word) *
           X ^ (List.ofFn word).descentCount)
   simp_rw [map_sum]
   apply Finset.sum_congr rfl
@@ -55,9 +55,9 @@ theorem smirnovSubstitutionFixed_eq_eval {m : ℕ} (t : A)
   change PowerSeries.C (t ^ (List.ofFn word).descentCount) *
       (∏ i, weight (word i)) =
     Polynomial.eval (PowerSeries.C t)
-      (C (smirnovWordWeight weight word) *
+      (C (wordWeight weight word) *
         X ^ (List.ofFn word).descentCount)
-  rw [eval_C_mul, eval_X_pow, smirnovWordWeight]
+  rw [eval_C_mul, eval_X_pow, wordWeight]
   simp only [map_pow]
   ring
 
@@ -126,8 +126,8 @@ theorem coeff_smirnovWordWeight_eq_zero_of_lt {m k : ℕ}
     (weight : Fin m → PowerSeries A)
     (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0)
     (word : Fin k → Fin m) {n : ℕ} (hnk : n < k) :
-    PowerSeries.coeff n (smirnovWordWeight weight word) = 0 := by
-  rw [smirnovWordWeight]
+    PowerSeries.coeff n (wordWeight weight word) = 0 := by
+  rw [wordWeight]
   apply PowerSeries.coeff_of_lt_order
   have hprod : (k : ℕ∞) ≤ (∏ i, weight (word i)).order := by
     calc
@@ -154,7 +154,7 @@ theorem coeff_smirnovSubstitutionFixed_eq_zero_of_lt {m : ℕ}
   intro word hword
   rw [PowerSeries.coeff_C_mul]
   change _ * PowerSeries.coeff n
-      (smirnovWordWeight weight word) = 0
+      (wordWeight weight word) = 0
   rw [coeff_smirnovWordWeight_eq_zero_of_lt weight hweight word hnk]
   simp
 
@@ -180,7 +180,7 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
   · rw [ite_eq_left hword]
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
-        (C (smirnovWordWeight weight (Fin.snoc word i)) *
+        (C (wordWeight weight (Fin.snoc word i)) *
           X ^ (List.ofFn (Fin.snoc word i)).descentCount)) = 0
     rw [eval_C_mul, eval_X_pow]
     rw [← map_pow, PowerSeries.coeff_mul_C]

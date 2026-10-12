@@ -25,21 +25,6 @@ open scoped ENNReal
 variable {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
 
 omit [Fintype n] [DecidableEq n] in
-/-- A complex number with norm `1` is nonzero. -/
-lemma _root_.Complex.ne_zero_of_norm_eq_one {c : ℂ} (hc : ‖c‖ = 1) : c ≠ 0 := by
-  rintro rfl
-  norm_num at hc
-
-omit [Fintype n] [DecidableEq n] in
-/-- Cancel a nonzero scalar multiplying two dependent functions over a division ring. -/
-lemma _root_.Pi.smul_left_cancel₀ {ι 𝕜 : Type*} [DivisionRing 𝕜] {c : 𝕜}
-    (hc : c ≠ 0) {v w : ι → 𝕜} (h : c • v = c • w) :
-    v = w := by
-  ext i
-  exact mul_left_cancel₀ hc <| by
-    simpa [Pi.smul_apply, smul_eq_mul] using congr_fun h i
-
-omit [Fintype n] [DecidableEq n] in
 /-- If `x : n → ℂ` is nonzero, then `fun i ↦ ‖x i‖` is nonzero as a dependent function. -/
 lemma normFun_complex_ne_zero_of_ne_zero {x : n → ℂ} (hx : x ≠ 0) : (fun i ↦ ‖x i‖) ≠ 0 := by
   contrapose! hx
@@ -84,12 +69,11 @@ theorem exists_eigenvector_of_mem_spectrum
     ∃ x, x ≠ 0 ∧ (A'.map (algebraMap ℝ ℂ)) *ᵥ x = μ • x := by
   let B := A'.map (algebraMap ℝ ℂ)
   have h_spec : μ ∈ spectrum ℂ (toLin' B) := by
-    rwa [spectrum.Matrix_toLin'_eq_spectrum]
-  rcases Module.End.exists_eigenvector_of_mem_spectrum h_spec with ⟨x, hx_ne_zero, hx_eig⟩
+    rwa [Matrix.spectrum_toLin']
+  obtain ⟨x, hx_eig, hx_ne_zero⟩ :=
+    (Module.End.hasEigenvalue_iff_mem_spectrum.mpr h_spec).exists_hasEigenvector
   refine ⟨x, hx_ne_zero, ?_⟩
-  have h_mul_eq := hx_eig
-  rw [toLin'_apply] at h_mul_eq
-  exact h_mul_eq
+  simpa only [toLin'_apply] using Module.End.mem_eigenspace_iff.mp hx_eig
 
 variable [Nonempty n]
 
@@ -103,7 +87,9 @@ lemma sum_component_norms_eq_perron_power_norm
     mulVec_pow_eq_smul_pow_of_mulVec_smul h_x_abs_eig k
   calc ∑ l, ‖((A ^ k) m l : ℂ) * x l‖
     = ∑ l, |(A ^ k) m l| * ‖x l‖ := by
-        simp_rw [norm_mul, Complex.norm_ofReal]
+        apply Finset.sum_congr rfl
+        intro l _
+        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     _ = ∑ l, (A ^ k) m l * ‖x l‖ := by
       simp_rw [abs_of_pos (hAk_pos m _)]
     _ = ((A ^ k) *ᵥ (fun i ↦ ‖x i‖)) m := by
@@ -274,9 +260,11 @@ theorem eigenvalue_abs_le_perron_root
     {μ : ℂ} (h_is_eigenvalue : μ ∈ spectrum ℂ (A.map (algebraMap ℝ ℂ))) :
     ‖μ‖ ≤ perronRoot A := by
   let B := A.map (algebraMap ℝ ℂ)
-  have h_spec : μ ∈ spectrum ℂ (toLin' B) := by rwa [spectrum.Matrix_toLin'_eq_spectrum]
-  rcases Module.End.exists_eigenvector_of_mem_spectrum h_spec with ⟨x, hx_ne_zero, hx_eig_lin⟩
-  have hx_eig : B *ᵥ x = μ • x := by rwa [toLin'_apply] at hx_eig_lin
+  have h_spec : μ ∈ spectrum ℂ (toLin' B) := by rwa [Matrix.spectrum_toLin']
+  obtain ⟨x, hx_eig_lin, hx_ne_zero⟩ :=
+    (Module.End.hasEigenvalue_iff_mem_spectrum.mpr h_spec).exists_hasEigenvector
+  have hx_eig : B *ᵥ x = μ • x := by
+    simpa only [toLin'_apply] using Module.End.mem_eigenspace_iff.mp hx_eig_lin
   let x_abs := fun i => ‖x i‖
   have hx_abs_nonneg : ∀ i, 0 ≤ x_abs i := fun i => norm_nonneg _
   have hx_abs_ne_zero : x_abs ≠ 0 := normFun_complex_ne_zero_of_ne_zero hx_ne_zero
@@ -307,12 +295,6 @@ lemma perron_root_eq_positive_eigenvalue (hA_irred : A.IsIrreducible)
 If a matrix `A` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum of `A`.
 This is a direct consequence of the definition of an eigenvalue and the spectrum.
 -/
-lemma mem_spectrum_of_hasEigenvector {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
-    [FiniteDimensional K V] {f : V →ₗ[K] V} {μ : K} {v : V} (h : Module.End.HasEigenvector f μ v) :
-    μ ∈ spectrum K f := by
-  rw [← Module.End.hasEigenvalue_iff_mem_spectrum]
-  exact Module.End.hasEigenvalue_of_hasEigenvector h
-
 lemma mem_spectrum_of_eigenvalue
     {K : Type*} [Field K] {n : Type*} [Fintype n] [DecidableEq n]
     {A : Matrix n n K} {μ : K} {v : n → K}
@@ -326,8 +308,9 @@ lemma mem_spectrum_of_eigenvalue
       rwa [← Module.End.mem_eigenspace_iff] at h_eig_f,
       hv_ne_zero⟩
   have h_mem_f : μ ∈ spectrum K f :=
-    mem_spectrum_of_hasEigenvector h_has_eigvec
-  simpa [f, spectrum.Matrix_toLin'_eq_spectrum] using h_mem_f
+    Module.End.hasEigenvalue_iff_mem_spectrum.mp
+      (Module.End.hasEigenvalue_of_hasEigenvector h_has_eigvec)
+  simpa [f, Matrix.spectrum_toLin'] using h_mem_f
 
 /-- The Perron root of an irreducible, non-negative matrix is an eigenvalue. -/
 theorem perron_root_is_eigenvalue (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
@@ -348,9 +331,9 @@ theorem perron_root_is_spectral_radius (hA_irred : A.IsIrreducible) (hA_nonneg :
   · intro μ hμ
     have hμ_complex : (μ : ℂ) ∈ spectrum ℂ (A.map (algebraMap ℝ ℂ)) := by
       have hμ_lin : μ ∈ spectrum ℝ (toLin' A) := by
-        simpa [spectrum.Matrix_toLin'_eq_spectrum] using hμ
-      obtain ⟨v, hv_ne_zero, hv_eig⟩ :=
-        Module.End.exists_eigenvector_of_mem_spectrum hμ_lin
+        simpa only [Matrix.spectrum_toLin'] using hμ
+      obtain ⟨v, hv_eig, hv_ne_zero⟩ :=
+        (Module.End.hasEigenvalue_iff_mem_spectrum.mpr hμ_lin).exists_hasEigenvector
       let v_complex : n → ℂ := fun i => (v i : ℂ)
       have hvc_ne_zero : v_complex ≠ 0 := by
         intro h
@@ -360,7 +343,7 @@ theorem perron_root_is_spectral_radius (hA_irred : A.IsIrreducible) (hA_nonneg :
           exact_mod_cast this
         exact hv_ne_zero this
       have hv_eig_vec : A *ᵥ v = μ • v := by
-        simpa [toLin'_apply] using hv_eig
+        simpa only [toLin'_apply] using Module.End.mem_eigenspace_iff.mp hv_eig
       have hvc_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ v_complex = (μ : ℂ) • v_complex := by
         ext i
         have h_eq : (A *ᵥ v) i = μ * v i := by
@@ -369,7 +352,7 @@ theorem perron_root_is_spectral_radius (hA_irred : A.IsIrreducible) (hA_nonneg :
           congrArg (fun x : ℝ => (x : ℂ)) h_eq
       exact mem_spectrum_of_eigenvalue hvc_ne_zero hvc_eig
     have h_bound := eigenvalue_abs_le_perron_root hA_irred hA_nonneg hμ_complex
-    rwa [Complex.norm_ofReal] at h_bound
+    simpa using h_bound
 
 /- The two `spectralRadius` bridge theorems from the original file are omitted:
 they were `sorry`d upstream and are not needed by the Gantmacher-Krein route,
@@ -527,7 +510,7 @@ lemma mulVec_eq_smul_of_smul_eigenvector
     {B : Matrix n n ℂ} {μ c : ℂ} {x y : n → ℂ} (hc : c ≠ 0)
     (hx : x = c • y) (h_eig : B *ᵥ x = μ • x) :
     B *ᵥ y = μ • y := by
-  apply Pi.smul_left_cancel₀ hc
+  apply (isUnit_iff_ne_zero.mpr hc).smul_left_cancel.mp
   simpa [hx, Matrix.mulVec_smul, smul_comm μ c y] using h_eig
 
 omit [Nonempty n] [DecidableEq n] in
@@ -560,8 +543,11 @@ lemma eigenvalue_eq_of_phase_aligned
     rw [h_phase j]
   have h_cancelled :
       (A.map (algebraMap ℝ ℂ)) *ᵥ xAbsC = μ • xAbsC := by
+    have hc : c ≠ 0 := by
+      rw [← norm_ne_zero_iff, hc_norm]
+      exact one_ne_zero
     exact mulVec_eq_smul_of_smul_eigenvector
-      (Complex.ne_zero_of_norm_eq_one hc_norm) hx_repr hx_eig
+      hc hx_repr hx_eig
   have h_real_C :
       ((A.map (algebraMap ℝ ℂ)) *ᵥ xAbsC) i = (r : ℂ) * xAbsC i := by
     simpa [xAbs, xAbsC] using

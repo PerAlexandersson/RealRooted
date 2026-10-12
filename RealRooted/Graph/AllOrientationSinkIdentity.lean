@@ -291,7 +291,8 @@ theorem allOrientationSinkPolynomial_comp_X_add_one {V : Type u} [Fintype V]
     rw [allOrientationEdgeCount, Nat.card_eq_fintype_card]
   have hdeg : ∀ v, allOrientationDegree G v = G.degree v := by
     intro v
-    rw [allOrientationDegree, Nat.card_eq_fintype_card, G.card_neighborSet_eq_degree]
+    change Nat.card (G.neighborSet v) = G.degree v
+    rw [Nat.card_eq_fintype_card, G.card_neighborSet_eq_degree]
   simp only [hE, hdeg]
   split_ifs
   · rw [C_mul, map_prod, mul_assoc]

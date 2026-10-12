@@ -2247,7 +2247,7 @@ theorem wronskian_quadraticInterlacingTangent_pencil
       wronskian (quadraticInterlacingTangent F G a)
         (quadraticInterlacingRight G H a) := by
   rw [quadraticInterlacingPencil_eq_right_add_tangent,
-    wronskian_add_right, wronskian_C_mul_right,
+    wronskian_add_right, Polynomial.wronskian_C_mul_right,
     wronskian_self_eq_zero, mul_zero, add_zero]
 
 /-- The tangent/right pair and the tangent/pencil pair span the same real

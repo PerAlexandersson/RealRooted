@@ -21,10 +21,8 @@ noncomputable def borosMollRow (n : ℕ) : ℝ[X] :=
 
 private lemma borosMollRow_coeff (n i : ℕ) :
     (borosMollRow n).coeff i = if i < n + 1 then bmCoeff n i else 0 := by
-  unfold borosMollRow
-  simp only [finsetSum_coeff, coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq]
-  simp
+  simpa only [borosMollRow, C_mul_X_pow_eq_monomial] using
+    Polynomial.coeff_sum_range_monomial (bmCoeff n) (n + 1) i
 
 private lemma bmCoeff_nonneg (n i : ℕ) : 0 ≤ bmCoeff n i := by
   unfold bmCoeff
@@ -57,17 +55,14 @@ private lemma logConcavityTransform_borosMollRow (n : ℕ) :
     RealRooted.Branden.logConcavityTransform (borosMollRow n) = bmM n := by
   ext i
   rw [RealRooted.Branden.coeff_logConcavityTransform, borosMollRow_natDegree]
-  unfold bmM
-  rw [finsetSum_coeff]
-  simp only [coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq]
+  rw [coeff_bmM]
   by_cases hi : i ≤ n
   · have hi' : i < n + 1 := by lia
-    rw [ite_eq_left hi]
+    rw [ite_eq_left hi, ite_eq_left hi']
     simp only [borosMollRow_coeff, ite_eq_left hi']
     by_cases hi0 : i = 0
     · subst hi0
-      simp [bmL, hi]
+      simp [bmL]
     · simp only [ite_eq_right hi0]
       have him : i - 1 < n + 1 := by lia
       rw [ite_eq_left him]
@@ -78,27 +73,21 @@ private lemma logConcavityTransform_borosMollRow (n : ℕ) :
             _ = 0 := bmCoeff_succ_self n
         unfold bmL
         rw [ite_eq_right hi0, hzero]
-        simp [hi, hilast]
+        simp [hilast]
       · have hip : i + 1 < n + 1 := by lia
         rw [ite_eq_left hip]
-        simp [bmL, hi, hi0]
+        simp [bmL, hi0]
   · have hi' : ¬i < n + 1 := by lia
-    rw [ite_eq_right hi, ite_eq_right (by simp [hi'])]
+    rw [ite_eq_right hi, ite_eq_right hi']
 
 private lemma bmM_hasNonnegCoeffs (n : ℕ) (hn : 1 ≤ n) :
     HasNonnegCoeffs (bmM n) := by
-  obtain ⟨hm0, hdeg, hs, _, hroots⟩ := bmM_roots n hn
+  obtain ⟨_, _, hs, _, hroots⟩ := bmM_roots n hn
   intro i
   rw [hs.eq_prod_roots]
   rw [coeff_C_mul]
   refine mul_nonneg ?_ (RealRooted.Branden.coeff_prod_X_sub_C_nonneg _ ?_ i)
-  · rw [leadingCoeff, hdeg]
-    unfold bmM
-    simp only [finsetSum_coeff, coeff_C_mul_X_pow]
-    rw [Finset.sum_ite_eq]
-    simp only [mem_range, lt_add_iff_pos_right, Order.lt_one_iff, ↓reduceIte, bmL,
-        bmCoeff_succ_self, mul_zero, sub_zero]
-    exact sq_nonneg _
+  · exact (bmM_leadingCoeff_pos n).le
   · intro r hr
     exact (hroots r hr).le
 

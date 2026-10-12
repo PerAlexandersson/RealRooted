@@ -186,7 +186,7 @@ theorem signedWordEnumerator_one_zero_negative_eq_smirnov
     rw [signedWordWeight_one]
     rw [signedCollisionNumber_eq_zero_of_isSignedWord_zero_negative hw]
     rw [descentCount_positiveWordEquiv]
-    simp [smirnovWordWeight]
+    simp [wordWeight]
   · rw [ite_eq_right hw]
     rw [ite_eq_right (by
       simpa [isSignedWord_zero_negative_iff_isSmirnovWord] using hw)]
