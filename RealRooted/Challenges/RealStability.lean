@@ -54,7 +54,7 @@ module = "RealRooted.MultivariateStability.Inversion"
 label = "Inversion z^d P(−1/z) in one variable"
 
 [[definitions]]
-name = "RealRooted.detPencil"
+name = "RealRooted.mvDetPencil"
 module = "RealRooted.DeterminantalStability"
 label = "Determinant of a linear matrix pencil"
 

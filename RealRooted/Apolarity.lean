@@ -298,30 +298,12 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
       if j ≤ n then
         (-1 : R) ^ (n - j) * (Nat.choose n (n - j) : R) * f.coeff (n - j) * b
       else 0 := by
-  classical
+  rw [apolarPairing_comm_sign, apolarPairing_monomial_left]
   by_cases hj : j ≤ n
-  · rw [ite_eq_left hj, apolarPairing]
-    have hmem : n - j ∈ Finset.range (n + 1) :=
-      Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.sub_le n j))
-    rw [Finset.sum_eq_single_of_mem (n - j) hmem]
-    · have hsub : n - (n - j) = j := Nat.sub_sub_self hj
-      simp [hsub]
-    · intro k hk hk_ne
-      have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-      have hneq : j ≠ n - k := by
-        intro h
-        apply hk_ne
-        lia
-      simp [coeff_monomial, hneq]
-  · rw [ite_eq_right hj, apolarPairing]
-    refine Finset.sum_eq_zero ?_
-    intro k hk
-    have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    have hneq : j ≠ n - k := by
-      intro h
-      have : j ≤ n := by lia
-      exact hj this
-    simp [coeff_monomial, hneq]
+  · rw [ite_eq_left hj, ite_eq_left hj, Nat.choose_symm hj,
+      neg_one_pow_sub_eq_mul hj]
+    ring
+  · simp [hj]
 
 /-- The apolar pairing of two monomials is supported exactly on complementary
 degrees. -/

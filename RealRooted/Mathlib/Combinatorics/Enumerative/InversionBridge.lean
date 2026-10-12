@@ -302,12 +302,6 @@ private theorem patternCount_12_add_inversion {α : Type*} [LinearOrder α]
 
 end List
 
-/-- The decreasing pattern of length two. -/
-def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
-
-/-- The increasing pattern of length two. -/
-def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
-
 private theorem fin_two_list_val_get (a b : Fin 2) (i : Fin 2) :
     (([a, b] : List (Fin 2)).get i).val =
       ([a.val, b.val] : List Nat).get i := by
