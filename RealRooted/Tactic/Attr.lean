@@ -108,7 +108,8 @@ def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
 private def taggedDecls (env : Environment) (attr : Lean.TagAttribute) : Array Name :=
   (attr.getDecls env).qsort Name.quickLt
 
-private def namesString (names : Array Name) : String :=
+/-- Format a list of declaration names for tactic diagnostics. -/
+def formatNameList (names : Array Name) : String :=
   if names.isEmpty then
     "(none)"
   else
@@ -119,7 +120,7 @@ private def logTaggedCertificates [Monad m] [MonadEnv m] [MonadLog m]
   let env ← getEnv
   for (attrName, attr) in rrCertificateAttributes do
     let names := taggedDecls env attr
-    logInfo m!"[{attrName}] {names.size}: {namesString names}"
+    logInfo m!"[{attrName}] {names.size}: {formatNameList names}"
 
 end Tactic
 end RealRooted

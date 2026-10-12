@@ -4,6 +4,7 @@ import RealRooted.DegreeDropReversal
 import RealRooted.Favard
 import RealRooted.Hadamard.Grace
 import RealRooted.IteratedDerivativeShift
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.SimpleRoots
 
 /-!
@@ -33,22 +34,17 @@ def pathMatchingPolynomial (N : ℕ) : ℝ[X] :=
 @[simp] theorem coeff_pathMatchingPolynomial_of_le {N k : ℕ}
     (hk : k ≤ N / 2) :
     (pathMatchingPolynomial N).coeff k = (Nat.choose (N - k) k : ℝ) := by
-  rw [pathMatchingPolynomial, Polynomial.finsetSum_coeff,
-    Finset.sum_eq_single_of_mem k (by simpa using hk)]
-  · simp
-  · intro j hj hjk
-    simp [Polynomial.coeff_monomial, hjk]
+  simpa only [pathMatchingPolynomial, Nat.lt_succ_iff, hk, ↓reduceIte] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => (Nat.choose (N - i) i : ℝ)) (N / 2 + 1) k
 
 @[simp] theorem coeff_pathMatchingPolynomial_of_lt {N k : ℕ}
     (hk : N / 2 < k) :
     (pathMatchingPolynomial N).coeff k = 0 := by
-  rw [pathMatchingPolynomial, Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro j hj
-  have hjk : j ≠ k := by
-    have hjle : j ≤ N / 2 := by simpa using hj
-    lia
-  simp [Polynomial.coeff_monomial, hjk]
+  simpa only [pathMatchingPolynomial, Nat.lt_succ_iff,
+    not_le_of_gt hk, ↓reduceIte] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => (Nat.choose (N - i) i : ℝ)) (N / 2 + 1) k
 
 @[simp] theorem coeff_pathMatchingPolynomial (N k : ℕ) :
     (pathMatchingPolynomial N).coeff k = (Nat.choose (N - k) k : ℝ) := by
@@ -561,27 +557,31 @@ def rescaledBinaryRunDeformation (n : ℕ) (p : ℝ[X]) (t : ℝ) : ℝ[X] :=
       (∑ m ∈ Finset.range (n + 1),
         p.coeff m * (binaryRunPolynomial n m).coeff k * t ^ (m - k))
 
+@[simp] theorem coeff_rescaledBinaryRunDeformation
+    (n : ℕ) (p : ℝ[X]) (t : ℝ) (k : ℕ) :
+    (rescaledBinaryRunDeformation n p t).coeff k =
+      if k ≤ (n + 1) / 2 then
+        ∑ m ∈ Finset.range (n + 1),
+          p.coeff m * (binaryRunPolynomial n m).coeff k * t ^ (m - k)
+      else 0 := by
+  simpa only [rescaledBinaryRunDeformation, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun k =>
+        ∑ m ∈ Finset.range (n + 1),
+          p.coeff m * (binaryRunPolynomial n m).coeff k * t ^ (m - k))
+      ((n + 1) / 2 + 1) k
+
 theorem coeff_rescaledBinaryRunDeformation_of_le
     {n k : ℕ} (p : ℝ[X]) (t : ℝ) (hk : k ≤ (n + 1) / 2) :
     (rescaledBinaryRunDeformation n p t).coeff k =
       ∑ m ∈ Finset.range (n + 1),
         p.coeff m * (binaryRunPolynomial n m).coeff k * t ^ (m - k) := by
-  rw [rescaledBinaryRunDeformation, Polynomial.finsetSum_coeff,
-    Finset.sum_eq_single_of_mem k (by simpa using hk)]
-  · simp
-  · intro j hj hjk
-    simp [Polynomial.coeff_monomial, hjk]
+  simp [hk]
 
 theorem coeff_rescaledBinaryRunDeformation_of_lt
     {n k : ℕ} (p : ℝ[X]) (t : ℝ) (hk : (n + 1) / 2 < k) :
     (rescaledBinaryRunDeformation n p t).coeff k = 0 := by
-  rw [rescaledBinaryRunDeformation, Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro j hj
-  have hjk : j ≠ k := by
-    have hjle : j ≤ (n + 1) / 2 := by simpa using hj
-    lia
-  simp [Polynomial.coeff_monomial, hjk]
+  simp [not_le_of_gt hk]
 
 theorem natDegree_rescaledBinaryRunDeformation_le
     (n : ℕ) (p : ℝ[X]) (t : ℝ) :

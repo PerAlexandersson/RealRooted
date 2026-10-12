@@ -57,8 +57,7 @@ theorem hadamardProduct_assoc (p q r : ℝ[X]) :
 
 @[simp] theorem hadamardProduct_zero_right (p : ℝ[X]) :
     hadamardProduct p 0 = 0 := by
-  ext n
-  simp
+  rw [hadamardProduct_comm, hadamardProduct_zero_left]
 
 theorem hadamardProduct_add_left (p q r : ℝ[X]) :
     hadamardProduct (p + q) r =
@@ -69,8 +68,8 @@ theorem hadamardProduct_add_left (p q r : ℝ[X]) :
 theorem hadamardProduct_add_right (p q r : ℝ[X]) :
     hadamardProduct p (q + r) =
       hadamardProduct p q + hadamardProduct p r := by
-  ext n
-  simp [mul_add]
+  rw [hadamardProduct_comm p (q + r), hadamardProduct_add_left,
+    hadamardProduct_comm q p, hadamardProduct_comm r p]
 
 theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct (C a * p) q = C a * hadamardProduct p q := by
@@ -80,7 +79,7 @@ theorem hadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
 theorem hadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     hadamardProduct p (C a * q) =
       C a * hadamardProduct p q := by
-  ext n
-  simp [mul_comm, mul_left_comm]
+  rw [hadamardProduct_comm p (C a * q), hadamardProduct_C_mul_left,
+    hadamardProduct_comm q p]
 
 end RealRooted

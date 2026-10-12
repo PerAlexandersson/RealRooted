@@ -1,6 +1,8 @@
 import RealRooted.Apolarity
 import RealRooted.DegreeDropReversal
 import RealRooted.Hadamard.Product
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 import RealRooted.PFPolynomial
 
 open Polynomial
@@ -96,6 +98,39 @@ theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n :=
   natDegree_le_iff_coeff_eq_zero.mpr fun _ hk =>
     coeff_schurSzegoComp_eq_zero_of_lt hk f g
+
+theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
+    reflect n (schurSzegoComp n f p) =
+      schurSzegoComp n (reflect n f) (reflect n p) := by
+  ext k
+  rw [coeff_reflect]
+  by_cases hk : k ≤ n
+  · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
+      coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
+      revAt_le hk, Nat.choose_symm hk]
+  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk),
+      revAt_eq_self_of_lt (Nat.lt_of_not_le hk),
+      coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+/-- Negating the variable in both inputs leaves fixed-degree Schur--Szegő
+composition unchanged. -/
+theorem schurSzegoComp_comp_neg_X_both (n : ℕ) (P Q : ℝ[X]) :
+    schurSzegoComp n (P.comp (-X)) (Q.comp (-X)) = schurSzegoComp n P Q := by
+  ext k
+  rw [coeff_schurSzegoComp, coeff_schurSzegoComp, coeff_comp_neg_X,
+    coeff_comp_neg_X]
+  by_cases hk : k ≤ n
+  · simp only [ite_eq_left hk]
+    let s : ℝ := (-1 : ℝ) ^ k
+    have hs : s * s = 1 := by
+      simpa [pow_two] using (_root_.neg_one_pow_sq k)
+    change (P.coeff k * s) * (Q.coeff k * s) / (Nat.choose n k : ℝ) =
+      P.coeff k * Q.coeff k / (Nat.choose n k : ℝ)
+    calc
+      (P.coeff k * s) * (Q.coeff k * s) / (Nat.choose n k : ℝ) =
+          (s * s) * (P.coeff k * Q.coeff k / (Nat.choose n k : ℝ)) := by ring
+      _ = P.coeff k * Q.coeff k / (Nat.choose n k : ℝ) := by rw [hs, one_mul]
+  · simp only [ite_eq_right hk]
 
 /-- The fixed-degree Schur--Szegő composition of two binomial lifts is the
 binomial lift of the coefficientwise Hadamard product of the underlying

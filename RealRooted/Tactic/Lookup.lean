@@ -29,12 +29,6 @@ open Lean.Elab.Tactic
 namespace RealRooted
 namespace Tactic
 
-private def namesString (names : Array Name) : String :=
-  if names.isEmpty then
-    "(none)"
-  else
-    String.intercalate ", " (names.toList.map toString)
-
 private def instantiateCertificateProof? (proof : Expr) : TacticM (Option Expr) := do
   let proof ← instantiateMVars proof
   return if proof.hasMVar then none else some proof
@@ -124,7 +118,7 @@ private def provenanceCandidates (found : Array (Name × Expr)) :
 
 private def provenanceCandidatesString (candidates : Array (Name × Array Name)) : String :=
   String.intercalate ", " <| candidates.toList.map fun (decl, tags) =>
-    s!"{toString decl} [{namesString tags}]"
+    s!"{toString decl} [{formatNameList tags}]"
 
 private def requestedAttributeSuffix (attrName? : Option Name) : String :=
   match attrName? with

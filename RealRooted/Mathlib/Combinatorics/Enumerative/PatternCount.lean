@@ -258,9 +258,11 @@ theorem Equiv.Perm.patternCount_reverse {n k : ℕ}
   rw [Equiv.Perm.ofFn_reverse, Equiv.Perm.ofFn_reverse]
   exact List.patternCount_reverse _ _
 
-private def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
+/-- The decreasing pattern of length two. -/
+def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
 
-private def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
+/-- The increasing pattern of length two. -/
+def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
 
 /-- The 21-occurrence check agrees with inversion count on permutations of
 length four. -/
