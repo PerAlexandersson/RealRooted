@@ -29,6 +29,10 @@ variable [Semiring R]
 def basisTransform (B : ℕ → R[X]) (p : R[X]) : R[X] :=
   p.sum fun n a => C a * B n
 
+/-- The degree-`d` magic-basis expansion with coefficients `c`. -/
+def magicExpansion (d : ℕ) (c : ℕ → R) : R[X] :=
+  ∑ k ∈ Finset.range (d + 1), C (c k) * (X ^ k * (1 + X) ^ (d - k))
+
 theorem coeff_basisTransform (B : ℕ → R[X]) (p : R[X]) (j : ℕ) :
     (basisTransform B p).coeff j = p.sum fun n a => a * (B n).coeff j := by
   simp [basisTransform, Polynomial.coeff_sum, Polynomial.coeff_C_mul]

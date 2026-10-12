@@ -1015,7 +1015,7 @@ theorem exists_hasDerivAt_shiftedJacobiMonic_root_alpha
     shiftedJacobiMonic_derivative_eval_ne_zero n hα (by norm_num) hr
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hspatial
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hspatial
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ α = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv

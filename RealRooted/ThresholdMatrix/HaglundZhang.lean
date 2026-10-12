@@ -793,11 +793,8 @@ private lemma coeff_zero_matPolyAction
 
 private lemma coeff_zero_thresholdEntry_one_add_X (t j : ℕ) :
     (thresholdEntry t (1 + X : ℝ[X]) j).coeff 0 = hzConstEntry t j := by
-  by_cases hlt : j < t
-  · simp [thresholdEntry, hzConstEntry, hlt]
-  · by_cases heq : j = t
-    · simp [thresholdEntry, hzConstEntry, heq]
-    · simp [thresholdEntry, hzConstEntry, hlt, heq]
+  simp only [thresholdEntry, hzConstEntry]
+  split_ifs <;> simp
 
 private lemma coeff_zero_hzBinomialMatrix (q n : ℕ) :
     (binomialMatrix q (binomialThresholds n)).map

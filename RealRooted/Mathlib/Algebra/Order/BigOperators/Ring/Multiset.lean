@@ -13,6 +13,36 @@ interval.
 
 namespace Multiset
 
+/-- The sign of a product records the parity of factors larger than a cut. -/
+theorem prod_sub_sign
+    {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+    {m : Multiset K} {x : K} (h : ∀ ξ ∈ m, ξ ≠ x) :
+    0 < (-1 : K) ^ (m.filter (fun ξ => x < ξ)).card *
+      (m.map (fun ξ => x - ξ)).prod := by
+  classical
+  induction m using Multiset.induction with
+  | empty => simp
+  | cons a t ih =>
+      have hta : ∀ ξ ∈ t, ξ ≠ x := fun ξ hξ => h ξ (Multiset.mem_cons_of_mem hξ)
+      have hane : a ≠ x := h a (Multiset.mem_cons_self a t)
+      have hIH := ih hta
+      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.filter_cons]
+      rcases lt_or_gt_of_ne hane with hlt | hgt
+      · have hnot : ¬ x < a := by linarith
+        rw [ite_eq_right hnot]
+        simp only [zero_add]
+        have hfac : (0 : K) < x - a := by linarith
+        nlinarith [hIH, hfac]
+      · rw [ite_eq_left hgt]
+        rw [Multiset.card_add, Multiset.card_singleton]
+        have hfac : x - a < 0 := by linarith
+        have hpow : (-1 : K) ^ (1 + (t.filter (fun ξ => x < ξ)).card) =
+            -((-1 : K) ^ (t.filter (fun ξ => x < ξ)).card) := by
+          rw [pow_add, pow_one]
+          ring
+        rw [hpow]
+        nlinarith [hIH, hfac]
+
 /-- For a multiset of values in `[0, 1]`, the product of their complements is
 at least one minus their sum. -/
 theorem one_sub_sum_le_prod_one_sub {R : Type*} [CommRing R] [LinearOrder R]

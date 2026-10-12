@@ -1303,16 +1303,16 @@
       "max_modules": 101
     },
     "RealRooted.RootCounting": {
-      "max_modules": 63
+      "max_modules": 64
     },
     "RealRooted.RootCounting.Finite": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold": {
-      "max_modules": 62
+      "max_modules": 63
     },
     "RealRooted.RootCounting.Threshold.Anchor": {
-      "max_modules": 5
+      "max_modules": 6
     },
     "RealRooted.RootCounting.Threshold.Basic": {
       "max_modules": 3
@@ -1321,13 +1321,13 @@
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.DominanceFamily": {
-      "max_modules": 51
+      "max_modules": 52
     },
     "RealRooted.RootCounting.Threshold.LogConcavity": {
       "max_modules": 10
     },
     "RealRooted.RootCounting.Threshold.Signs": {
-      "max_modules": 46
+      "max_modules": 47
     },
     "RealRooted.RootCounting.Threshold.Sorted": {
       "max_modules": 5

@@ -241,7 +241,7 @@ private theorem exists_hasDerivAt_isRoot_add_C_mul {P Q : ℝ[X]} {ρ : ℝ}
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular
   let branch : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hbase : branch 0 = ρ :=
     hcont.implicitFunction_apply_self (by simp) hAinv

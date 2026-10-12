@@ -48,11 +48,8 @@ theorem A046802_refined_realRooted (n : ℕ) :
   HaglundZhang.binomialRefined_realRooted n
 
 theorem A046802_ne_zero (n : ℕ) :
-    A046802 n ≠ 0 := by
-  intro h
-  have hcoeff := coeff_zero_A046802 n
-  rw [h] at hcoeff
-  norm_num at hcoeff
+    A046802 n ≠ 0 :=
+  HaglundZhang.binomialEulerianPolynomial_ne_zero n
 
 theorem A046802_realRooted (n : ℕ) :
     A046802 n ≠ 0 ∧ (A046802 n).Splits :=

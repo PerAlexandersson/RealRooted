@@ -34,6 +34,11 @@ def binomialUnlift (n : ℕ) (p : ℂ[X]) : ℂ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     Polynomial.monomial k (p.coeff k / (n.choose k : ℂ))
 
+@[simp] theorem coeff_binomialUnlift_of_le (n : ℕ) (p : ℂ[X])
+    {k : ℕ} (hk : k ≤ n) :
+    (binomialUnlift n p).coeff k = p.coeff k / (n.choose k : ℂ) := by
+  simp [binomialUnlift, hk, Polynomial.coeff_monomial]
+
 /-- The binomial unlift is a right inverse on polynomials of degree at most
 `n`. -/
 theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
@@ -43,14 +48,8 @@ theorem binomialLift_binomialUnlift {n : ℕ} {p : ℂ[X]}
   rw [coeff_binomialLift]
   by_cases hk : k ≤ n
   · rw [ite_eq_left hk]
-    unfold binomialUnlift
-    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-    · simp only [Polynomial.coeff_monomial_same]
-      rw [mul_div_cancel₀ _ (Nat.cast_choose_ne_zero (R := ℂ) hk)]
-    · intro j hj hjk
-      simp [Polynomial.coeff_monomial, hjk]
-    · intro hknot
-      exact (hknot (by simpa [Finset.mem_range, Nat.lt_succ_iff] using hk)).elim
+    rw [coeff_binomialUnlift_of_le n p hk]
+    rw [mul_div_cancel₀ _ (Nat.cast_choose_ne_zero (R := ℂ) hk)]
   · rw [ite_eq_right hk]
     exact (Polynomial.coeff_eq_zero_of_natDegree_lt
       (lt_of_le_of_lt hp (Nat.lt_of_not_ge hk))).symm
@@ -66,16 +65,10 @@ theorem polarization_eq_sum (n : ℕ) (p : ℂ[X]) :
       ∑ k ∈ Finset.range (n + 1),
         MvPolynomial.C (p.coeff k / (n.choose k : ℂ)) *
           MvPolynomial.esymm (Fin n) ℂ k := by
-  unfold polarization reducedPolarization binomialUnlift
+  unfold polarization reducedPolarization
   apply Finset.sum_congr rfl
   intro k hk
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-  · simp
-  · intro j hj hjk
-    rw [Polynomial.coeff_monomial]
-    simp [hjk]
-  · intro hkn
-    exact (hkn (by simpa [Finset.mem_range] using hk)).elim
+  rw [coeff_binomialUnlift_of_le n p (Nat.le_of_lt_succ (Finset.mem_range.mp hk))]
 
 /-- The polarization of a bounded monomial is its normalized elementary
 symmetric polynomial. -/
@@ -83,18 +76,11 @@ theorem polarization_X_pow {n r : ℕ} (hr : r ≤ n) :
     polarization n (Polynomial.X ^ r) =
       MvPolynomial.C ((n.choose r : ℂ)⁻¹) *
         MvPolynomial.esymm (Fin n) ℂ r := by
-  unfold polarization reducedPolarization binomialUnlift
+  rw [polarization_eq_sum]
   rw [Finset.sum_eq_single r]
-  · rw [Polynomial.finsetSum_coeff]
-    rw [Finset.sum_eq_single r]
-    · simp
-    · intro j hj hjr
-      simp [hjr]
-    · intro hrange
-      exact (hrange (by simpa [Finset.mem_range] using hr)).elim
+  · simp
   · intro k hk hkr
-    rw [Polynomial.finsetSum_coeff]
-    simp [Polynomial.coeff_monomial, hkr]
+    simp [hkr]
   · intro hrange
     exact (hrange (by simpa [Finset.mem_range] using hr)).elim
 
@@ -383,12 +369,7 @@ theorem eval_polarization (n : ℕ) (p : ℂ[X]) (z : Fin n → ℂ) :
   apply Finset.sum_congr rfl
   intro k hk
   have hkn : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  unfold binomialUnlift
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-  · simp
-  · intro j hj hjk
-    simp [Polynomial.coeff_monomial, hjk]
-  · simp [hkn]
+  rw [coeff_binomialUnlift_of_le n p hkn]
 
 /-- The top elementary symmetric function is the product of all entries. -/
 theorem esymm_card_eq_prod {R : Type*} [CommSemiring R] (s : Multiset R) :

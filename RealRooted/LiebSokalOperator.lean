@@ -21,6 +21,20 @@ def iteratedPDerivAt {R sigma : Type*} [CommSemiring R] (i : sigma) :
   | 0, P => P
   | n + 1, P => MvPolynomial.pderiv i (iteratedPDerivAt i n P)
 
+theorem iteratedPDerivAt_eq_pow
+    {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ)
+    (P : MvPolynomial sigma R) :
+    ((MvPolynomial.pderiv i).toLinearMap ^ n) P =
+      iteratedPDerivAt i n P := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      rw [pow_succ']
+      change MvPolynomial.pderiv i
+          (((MvPolynomial.pderiv i).toLinearMap ^ n) P) = _
+      rw [ih]
+      simp only [iteratedPDerivAt]
+
 /-- A fixed enumeration of a finite variable type, used to define iterated
 partial differentiation without imposing an order on the variable type. -/
 def differentialVariableOrder (sigma : Type*) [Fintype sigma] : List sigma :=
@@ -240,9 +254,8 @@ def contractVariablePairs {R sigma : Type*} [CommRing R]
 @[simp] theorem iteratedPDerivAt_zero
     {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ) :
     iteratedPDerivAt i n (0 : MvPolynomial sigma R) = 0 := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [iteratedPDerivAt, ih]
+  rw [← iteratedPDerivAt_eq_pow]
+  exact map_zero _
 
 @[simp] theorem applyMonomialDifferential_zero_right
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
@@ -271,9 +284,8 @@ theorem iteratedPDerivAt_add
     (P Q : MvPolynomial sigma R) :
     iteratedPDerivAt i n (P + Q) =
       iteratedPDerivAt i n P + iteratedPDerivAt i n Q := by
-  induction n with
-  | zero => rfl
-  | succ n ih => simp [iteratedPDerivAt, ih, map_add]
+  rw [← iteratedPDerivAt_eq_pow, ← iteratedPDerivAt_eq_pow,
+    ← iteratedPDerivAt_eq_pow, map_add]
 
 theorem applyMonomialDifferential_add
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
@@ -315,11 +327,9 @@ theorem iteratedPDerivAt_C_mul
     (c : R) (P : MvPolynomial sigma R) :
     iteratedPDerivAt i n (MvPolynomial.C c * P) =
       MvPolynomial.C c * iteratedPDerivAt i n P := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_C_mul]
-      rfl
+  rw [← iteratedPDerivAt_eq_pow, ← iteratedPDerivAt_eq_pow]
+  simpa [MvPolynomial.smul_eq_C_mul] using
+    ((MvPolynomial.pderiv i).toLinearMap ^ n).map_smul c P
 
 theorem applyMonomialDifferential_C_mul
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]

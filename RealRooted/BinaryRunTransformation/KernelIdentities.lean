@@ -178,19 +178,13 @@ private theorem linearMap_eq_of_X_pow {Φ Ψ : ℝ[X] →ₗ[ℝ] ℝ[X]} {n : �
   exact Finset.sum_congr rfl fun m hm => by
     rw [h m ((Finset.mem_range_succ_iff.mp hm).trans hp)]
 
-private def binaryRunLM (n : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := binaryRunTransform n
-  map_add' := binaryRunTransform_add n
-  map_smul' a p := by
-    simpa [Polynomial.smul_eq_C_mul] using binaryRunTransform_smul n a p
-
 private def thetaLM : ℝ[X] →ₗ[ℝ] ℝ[X] :=
   LinearMap.mulLeft ℝ X ∘ₗ derivative
 
 /-- The combination `J_n(Θp) + (1 - X) J_n(p)'` as a linear map. -/
 private def edgeLM (n : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] :=
-  binaryRunLM n ∘ₗ thetaLM +
-    LinearMap.mulLeft ℝ (1 - X) ∘ₗ derivative ∘ₗ binaryRunLM n
+  binaryRunTransformLinearMap n ∘ₗ thetaLM +
+    LinearMap.mulLeft ℝ (1 - X) ∘ₗ derivative ∘ₗ binaryRunTransformLinearMap n
 
 private theorem edgeLM_apply (n : ℕ) (p : ℝ[X]) :
     edgeLM n p = binaryRunTransform n (theta p) +
@@ -257,7 +251,8 @@ theorem balancedRunTransform_polarTheta_eq {n : ℕ} {p : ℝ[X]}
           balancedRunTransform n (derivative p) := by
   refine linearMap_eq_of_X_pow
     (Φ := balancedRunTransformLinearMap n ∘ₗ polarLM (n + 1))
-    (Ψ := binaryRunLM n ∘ₗ polarLM (n + 1) - binaryRunLM n ∘ₗ thetaLM +
+    (Ψ := binaryRunTransformLinearMap n ∘ₗ polarLM (n + 1) -
+      binaryRunTransformLinearMap n ∘ₗ thetaLM +
       balancedRunTransformLinearMap n ∘ₗ derivative) (fun m hm => ?_) hp
   change balancedRunTransform n (polarTheta (n + 1) (X ^ m)) =
     binaryRunTransform n (polarTheta (n + 1) (X ^ m)) -
@@ -281,8 +276,9 @@ theorem binaryRunTransform_succ_eq {n : ℕ} {p : ℝ[X]}
       binaryRunTransform n (polarTheta (n + 1) p) +
         X * balancedRunTransform n (derivative p) := by
   refine linearMap_eq_of_X_pow
-    (Φ := LinearMap.mulLeft ℝ (C ((n : ℝ) + 1)) ∘ₗ binaryRunLM (n + 1))
-    (Ψ := binaryRunLM n ∘ₗ polarLM (n + 1) +
+    (Φ := LinearMap.mulLeft ℝ (C ((n : ℝ) + 1)) ∘ₗ
+      binaryRunTransformLinearMap (n + 1))
+    (Ψ := binaryRunTransformLinearMap n ∘ₗ polarLM (n + 1) +
       LinearMap.mulLeft ℝ X ∘ₗ balancedRunTransformLinearMap n ∘ₗ derivative)
     (fun m hm => ?_) hp
   change C ((n : ℝ) + 1) * binaryRunTransform (n + 1) (X ^ m) =

@@ -260,24 +260,12 @@ theorem sum_C_mul_range_succ_eq_fin_sum_add [Semiring R]
 theorem coeff_rowPolynomial_of_le [Semiring R] (A : LowerTriangularMatrix R) {i j : ℕ}
     (hij : j ≤ i) :
     (rowPolynomial A i).coeff j = A i j := by
-  rw [rowPolynomial, Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single j]
-  · simp
-  · intro b hb hbj
-    rw [coeff_C_mul, coeff_X_pow, ite_eq_right hbj.symm, mul_zero]
-  · intro hj
-    exact (hj (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hij))).elim
+  simp [rowPolynomial, hij]
 
 theorem coeff_rowPolynomial_of_gt [Semiring R] (A : LowerTriangularMatrix R) {i j : ℕ}
     (hij : i < j) :
     (rowPolynomial A i).coeff j = 0 := by
-  rw [rowPolynomial, Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro b hb
-  rw [coeff_C_mul, coeff_X_pow, ite_eq_right, mul_zero]
-  intro hbj
-  have hbi : b ≤ i := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
-  exact (not_le_of_gt hij) (hbj ▸ hbi)
+  simp [rowPolynomial, not_le_of_gt hij]
 
 /-- Coefficients of a row polynomial recover every entry of a lower-triangular
 matrix, including the zero entries above the diagonal. -/
