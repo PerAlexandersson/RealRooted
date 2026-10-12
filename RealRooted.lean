@@ -1846,3 +1846,4 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
 import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
 import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+import RealRooted.BorceaBranden.Applications.PoissonStarClose
