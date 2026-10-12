@@ -64,16 +64,16 @@ theorem finiteToeplitz_kernelRows_pf_and_interl
     · simp [hji]
   have hGdiag : ∀ i, G i i = g 0 := by
     intro i
-    simp [G, finiteToeplitz_apply]
+    simp [G]
   have hHdiag : ∀ m i, H m i i = a m 0 := by
     intro m i
-    simp [H, finiteToeplitz_apply]
+    simp [H]
   have hlim : ∀ i j, Tendsto (fun m => H m i j) atTop (𝓝 (K i j)) := by
     intro i j
     by_cases hji : j ≤ i
     · simpa [H, K, finiteToeplitz_apply, hji] using
         halim (i.val - j.val)
-    · simp [H, K, finiteToeplitz_apply, hji]
+    · simp [H, K, hji]
   change
     (∀ i : Fin (N + 1), IsPFPolynomial (kernelRow G K i)) ∧
       ∀ i : Fin N, Interl (kernelRow G K i.castSucc)
