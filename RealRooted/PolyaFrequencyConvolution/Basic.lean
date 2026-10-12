@@ -1,6 +1,7 @@
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.NatCauchyConvolution
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.RingTheory.PowerSeries.Basic
 
@@ -15,10 +16,6 @@ that operation.
 open Matrix
 
 namespace RealRooted
-
-/-- Cauchy convolution of two sequences indexed by the natural numbers. -/
-def natCauchyConvolution (a b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  ∑ k ∈ Finset.range (n + 1), a k * b (n - k)
 
 /-- Coefficients of a product of power series are the Cauchy convolution of
 their coefficient sequences. -/

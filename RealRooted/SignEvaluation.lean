@@ -109,6 +109,13 @@ lemma eval_C_mul_X_mul_C_sub_C_mul_X_nonpos
   simpa [Polynomial.eval_mul, Polynomial.eval_sub, mul_assoc] using
     mul_nonpos_of_nonpos_of_nonneg hcr htail
 
+lemma eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
+    {c : ℝ} {q : ℝ[X]} {r : ℝ}
+    (hc : 0 ≤ c) (hq : q.eval r ≤ 0) :
+    (C c * q).eval r ≤ 0 := by
+  simpa [Polynomial.eval_mul] using
+    mul_nonpos_of_nonneg_of_nonpos hc hq
+
 lemma eval_one_add_X_nonpos_of_le_neg_one {r : ℝ} (hr : r ≤ -1) :
     (1 + X : ℝ[X]).eval r ≤ 0 := by
   have hone : 1 + r ≤ 0 := by linarith
@@ -116,9 +123,9 @@ lemma eval_one_add_X_nonpos_of_le_neg_one {r : ℝ} (hr : r ≤ -1) :
 
 lemma eval_C_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one {c r : ℝ}
     (hc : 0 ≤ c) (hr : r ≤ -1) :
-    (C c * (1 + X) : ℝ[X]).eval r ≤ 0 := by
-  have hone : 1 + r ≤ 0 := by linarith
-  simpa [Polynomial.eval_mul, add_comm] using mul_nonpos_of_nonneg_of_nonpos hc hone
+    (C c * (1 + X) : ℝ[X]).eval r ≤ 0 :=
+  eval_C_mul_nonpos_of_nonneg_of_eval_nonpos hc
+    (eval_one_add_X_nonpos_of_le_neg_one hr)
 
 lemma eval_C_add_X_nonpos_of_le_neg {a r : ℝ} (hr : r ≤ -a) :
     (C a + X : ℝ[X]).eval r ≤ 0 := by
@@ -127,10 +134,9 @@ lemma eval_C_add_X_nonpos_of_le_neg {a r : ℝ} (hr : r ≤ -a) :
 
 lemma eval_C_mul_C_add_X_nonpos_of_nonneg_of_le_neg {c a r : ℝ}
     (hc : 0 ≤ c) (hr : r ≤ -a) :
-    (C c * (C a + X) : ℝ[X]).eval r ≤ 0 := by
-  have htail : (C a + X : ℝ[X]).eval r ≤ 0 :=
-    eval_C_add_X_nonpos_of_le_neg hr
-  simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos hc htail
+    (C c * (C a + X) : ℝ[X]).eval r ≤ 0 :=
+  eval_C_mul_nonpos_of_nonneg_of_eval_nonpos hc
+    (eval_C_add_X_nonpos_of_le_neg hr)
 
 lemma eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
     {c a b r : ℝ} (hc : 0 ≤ c) (hb : 0 ≤ b) (hba : b ≤ a) (hlo : -1 ≤ r) :
@@ -178,19 +184,10 @@ lemma eval_X_mul_one_add_X_nonpos_of_mem_Icc {r : ℝ}
 lemma eval_X_add_X_sq_nonpos_of_mem_Icc {r : ℝ}
     (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (C (1 : ℝ) * X + C (1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hone : 0 ≤ 1 + r := by linarith
-  have hprod : r * (1 + r) ≤ 0 :=
-    mul_nonpos_of_nonpos_of_nonneg hhi hone
-  have heval :
-      (C (1 : ℝ) * X + C (1 : ℝ) * X ^ 2 : ℝ[X]).eval r =
-        r * (1 + r) := by
-    simp [
-      Polynomial.eval_add,
-      Polynomial.eval_pow,
-      Polynomial.eval_X]
-    ring
-  rw [heval]
-  exact hprod
+  convert eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi using 1
+  simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_pow,
+    Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one]
+  ring
 
 lemma eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
@@ -203,22 +200,11 @@ lemma eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
 lemma eval_C_mul_X_add_C_mul_X_sq_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (C c * X + C c * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  have hcr : c * r ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hc hhi
-  have hone : 0 ≤ 1 + r := by linarith
-  have hprod : c * r * (1 + r) ≤ 0 :=
-    mul_nonpos_of_nonpos_of_nonneg hcr hone
-  have heval :
-      (C c * X + C c * X ^ 2 : ℝ[X]).eval r =
-        c * r * (1 + r) := by
-    simp [
-      Polynomial.eval_add,
-      Polynomial.eval_mul,
-      Polynomial.eval_pow,
-      Polynomial.eval_C,
-      Polynomial.eval_X]
-    ring
-  rw [heval]
-  exact hprod
+  convert eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
+    hc hlo hhi using 1
+  simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_pow,
+    Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one]
+  ring
 
 lemma eval_X_mul_one_add_C_mul_X_nonpos_of_nonpos_of_linear_nonneg
     {c r : ℝ} (hhi : r ≤ 0) (hlin : 0 ≤ 1 + c * r) :
@@ -258,9 +244,9 @@ lemma eval_X_sq_sub_one_nonpos_of_mem_Icc {r : ℝ}
 
 lemma eval_C_mul_X_sq_sub_one_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
-    (C c * (X ^ 2 - 1) : ℝ[X]).eval r ≤ 0 := by
-  have htail := eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi
-  simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos hc htail
+    (C c * (X ^ 2 - 1) : ℝ[X]).eval r ≤ 0 :=
+  eval_C_mul_nonpos_of_nonneg_of_eval_nonpos hc
+    (eval_X_sq_sub_one_nonpos_of_mem_Icc hlo hhi)
 
 lemma eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one {c r : ℝ}
     (hc : 0 ≤ c) (hr : r ≤ -1) :
@@ -332,22 +318,16 @@ lemma eval_C_mul_X_mul_one_sub_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
 lemma eval_X_sub_X_pow_three_nonpos_of_mem_Icc {r : ℝ}
     (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (X - X ^ 3 : ℝ[X]).eval r ≤ 0 := by
-  have hleft : r * (1 - r) ≤ 0 := by
-    have hone_sub : 0 ≤ 1 - r := by linarith
-    exact mul_nonpos_of_nonpos_of_nonneg hhi hone_sub
-  have hone_add : 0 ≤ 1 + r := by linarith
-  have hprod : r * (1 - r) * (1 + r) ≤ 0 :=
-    mul_nonpos_of_nonpos_of_nonneg hleft hone_add
-  have heq : (X - X ^ 3 : ℝ[X]).eval r = r * (1 - r) * (1 + r) := by
-    simp [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X]
-    ring
-  simp_all
+  convert eval_X_mul_one_sub_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi using 1
+  simp only [Polynomial.eval_sub, Polynomial.eval_add, Polynomial.eval_mul,
+    Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_one]
+  ring
 
 lemma eval_C_mul_X_sub_X_pow_three_nonpos_of_nonneg_of_mem_Icc {c r : ℝ}
     (hc : 0 ≤ c) (hlo : -1 ≤ r) (hhi : r ≤ 0) :
-    (C c * (X - X ^ 3) : ℝ[X]).eval r ≤ 0 := by
-  have htail := eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi
-  simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos hc htail
+    (C c * (X - X ^ 3) : ℝ[X]).eval r ≤ 0 :=
+  eval_C_mul_nonpos_of_nonneg_of_eval_nonpos hc
+    (eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
 
 lemma eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg {c r : ℝ}
     (hc : 0 ≤ c) :

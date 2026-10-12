@@ -1235,6 +1235,7 @@ import RealRooted.NarayanaTransformation.Recurrences.Interlacing
 import RealRooted.NarayanaTransformation.Rising
 import RealRooted.NarayanaTransformation.RootGeometry
 import RealRooted.NarayanaTransformation.SimpleRoots
+import RealRooted.NatCauchyConvolution
 import RealRooted.NewtonAux
 import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity

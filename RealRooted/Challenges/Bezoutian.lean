@@ -12,8 +12,8 @@ authors = ["Hermite", "Krein", "Naimark", "Fisk"]
 years = [1856, 1936, 2006]
 
 [[definitions]]
-name = "RealRooted.bezoutMatrix"
-module = "RealRooted.Bezoutian.MatrixBasics"
+name = "Polynomial.bezoutMatrix"
+module = "RealRooted.Mathlib.Algebra.Polynomial.Bezoutian"
 label = "Bézout matrix"
 
 [[definitions]]

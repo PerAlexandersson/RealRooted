@@ -164,4 +164,53 @@ lemma bezoutEntry.comm {R : Type*} [CommRing R] (p q : R[X]) (i j : ℕ) :
     bezoutEntry p q i j = bezoutEntry p q j i :=
   bezoutSeqEntry.comm p.coeff q.coeff i j
 
+lemma bezoutEntry.eq_zero_of_le_left {R : Type*} [CommRing R] (p q : R[X])
+    {n : ℕ} {i j : ℕ}
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hi : n ≤ i) :
+    bezoutEntry p q i j = 0 :=
+  bezoutSeqEntry.eq_zero_of_le_left p.coeff q.coeff
+    (fun _ hk ↦ coeff_eq_zero_of_natDegree_lt (hp.trans_lt hk))
+    (fun _ hk ↦ coeff_eq_zero_of_natDegree_lt (hq.trans_lt hk)) hi
+
+lemma bezoutEntry.eq_zero_of_le_right {R : Type*} [CommRing R] (p q : R[X])
+    {n : ℕ} {i j : ℕ}
+    (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hj : n ≤ j) :
+    bezoutEntry p q i j = 0 :=
+  bezoutSeqEntry.eq_zero_of_le_right p.coeff q.coeff
+    (fun _ hk ↦ coeff_eq_zero_of_natDegree_lt (hp.trans_lt hk))
+    (fun _ hk ↦ coeff_eq_zero_of_natDegree_lt (hq.trans_lt hk)) hj
+
+lemma bezoutEntry.telescoping {R : Type*} [CommRing R] (p q : R[X]) (i j : ℕ) :
+    bezoutEntry p q i (j + 1) - bezoutEntry p q (i + 1) j =
+      p.coeff (i + 1) * q.coeff (j + 1) - p.coeff (j + 1) * q.coeff (i + 1) :=
+  bezoutSeqEntry.telescoping p.coeff q.coeff i j
+
+lemma bezoutEntry.coeff_mul_sub_coeff_mul {R : Type*} [CommRing R] (p q : R[X])
+    (i j : ℕ) :
+    p.coeff i * q.coeff j - p.coeff j * q.coeff i =
+      (if i ≠ 0 then bezoutEntry p q (i - 1) j else 0) -
+        (if j ≠ 0 then bezoutEntry p q i (j - 1) else 0) :=
+  bezoutSeqEntry.coeff_mul_sub_coeff_mul p.coeff q.coeff i j
+
+lemma bezoutEntry.bilinear_mul_sub {R : Type*} [CommRing R] (p q : R[X]) {n : ℕ}
+    (t₁ t₂ : R) (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
+    (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
+    bezoutEntry p q i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
+    p.eval t₁ * q.eval t₂ - p.eval t₂ * q.eval t₁ := by
+  have hp_zero (k : ℕ) (hk : n < k) : p.coeff k = 0 :=
+    coeff_eq_zero_of_natDegree_lt (hp.trans_lt hk)
+  have hq_zero (k : ℕ) (hk : n < k) : q.coeff k = 0 :=
+    coeff_eq_zero_of_natDegree_lt (hq.trans_lt hk)
+  have h_eq :
+      (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
+        bezoutSeqEntry p.coeff q.coeff i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
+      (∑ i ∈ Finset.range (n + 1), p.coeff i * t₁ ^ i) *
+        (∑ j ∈ Finset.range (n + 1), q.coeff j * t₂ ^ j) -
+      (∑ i ∈ Finset.range (n + 1), p.coeff i * t₂ ^ i) *
+        (∑ j ∈ Finset.range (n + 1), q.coeff j * t₁ ^ j) :=
+    bezoutSeqEntry.bilinear_mul_sub p.coeff q.coeff n t₁ t₂ hp_zero hq_zero
+  simp_rw [eval_eq_sum_range' (Nat.lt_succ_of_le hp),
+    eval_eq_sum_range' (Nat.lt_succ_of_le hq)]
+  exact h_eq
+
 end Polynomial

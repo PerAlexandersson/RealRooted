@@ -73,12 +73,9 @@ theorem coeff_finiteFreeMultiplicativeConvolution
 theorem natDegree_signedReciprocal_le {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     (signedReciprocal d p).natDegree ≤ d := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  rw [coeff_signedReciprocal, revAt_eq_self_of_lt hj]
-  have hpj : p.coeff j = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hj)
-  simp [hpj]
+  unfold signedReciprocal
+  simpa only [Polynomial.natDegree_comp_neg_X, max_eq_left hp] using
+    (Polynomial.natDegree_reflect_le (N := d) (p := p.comp (-X)))
 
 /-- Finite-free multiplicative convolution has degree at most its ambient
 degree. -/
@@ -107,9 +104,7 @@ theorem natDegree_finiteFreeMultiplicativeConvolution_le
 /-- Signed reciprocal reversal commutes with scalar multiplication. -/
 theorem signedReciprocal_C_mul (d : ℕ) (a : ℝ) (p : ℝ[X]) :
     signedReciprocal d (C a * p) = C a * signedReciprocal d p := by
-  ext j
-  simp only [coeff_signedReciprocal, coeff_C_mul]
-  ring
+  simp only [signedReciprocal, mul_comp, C_comp, reflect_C_mul]
 
 /-- Finite-free multiplicative convolution is commutative. -/
 theorem finiteFreeMultiplicativeConvolution_comm
@@ -124,12 +119,9 @@ theorem finiteFreeMultiplicativeConvolution_C_mul_left
     (d : ℕ) (a : ℝ) (p q : ℝ[X]) :
     finiteFreeMultiplicativeConvolution d (C a * p) q =
       C a * finiteFreeMultiplicativeConvolution d p q := by
-  ext j
-  by_cases hj : j ≤ d
-  · simp only [coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
-      coeff_C_mul]
-    ring
-  · simp [coeff_finiteFreeMultiplicativeConvolution, hj]
+  simp only [finiteFreeMultiplicativeConvolution,
+    schurSzegoComp_C_mul_left, mul_comp, C_comp]
+  ring
 
 /-- Scalar multiplication in the right convolution input scales the output. -/
 theorem finiteFreeMultiplicativeConvolution_C_mul_right
@@ -148,12 +140,7 @@ theorem finiteFreeMultiplicativeConvolution_C_mul_right
 private theorem natDegree_comp_neg_X_le {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     (p.comp (-X)).natDegree ≤ d := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  rw [coeff_comp_neg_X]
-  have hpj : p.coeff j = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hj)
-  simp [hpj]
+  simpa only [Polynomial.natDegree_comp_neg_X] using hp
 
 /-- A nonzero constant coefficient makes the signed reciprocal have exactly
 the ambient degree. -/

@@ -173,9 +173,11 @@ theorem RowGeneratingFunctionsPF.mul_affineSubstitutionMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M)
     {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
     RowGeneratingFunctionsPF (mul M (affineSubstitutionMatrix a d)) := by
-  intro i
-  rw [rowPolynomial_mul_affineSubstitutionMatrix]
-  exact (hM.row i).comp_C_mul_X_add_C ha hd
+  simpa [affineSubstitutionMatrix] using
+    hM.mul_basisCoefficientMatrix (natDegree_affineBasisPolynomial_le a d)
+      (fun p hp => by
+        simpa [basisTransform_affineBasisPolynomial] using
+          hp.comp_C_mul_X_add_C ha hd)
 
 theorem affineSubstitutionMatrix_rightPreservesRowGeneratingFunctionsPF
     {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
@@ -297,9 +299,9 @@ theorem rowPolynomial_mul_touchardMatrix
 theorem RowGeneratingFunctionsPF.mul_touchardMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M) :
     RowGeneratingFunctionsPF (mul M touchardMatrix) := by
-  intro i
-  rw [rowPolynomial_mul_touchardMatrix]
-  exact touchardTransformPreservesPF (hM.row i)
+  simpa [touchardMatrix] using
+    hM.mul_basisCoefficientMatrix natDegree_touchard_le
+      (fun p hp => touchardTransformPreservesPF hp)
 
 theorem touchardMatrix_rightPreservesRowGeneratingFunctionsPF :
     RightPreservesRowGeneratingFunctionsPF touchardMatrix := by
@@ -335,9 +337,9 @@ theorem RowGeneratingFunctionsPF.mul_risingFactorialMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M)
     {μ : ℝ} (hμ : 0 < μ) :
     RowGeneratingFunctionsPF (mul M (risingFactorialMatrix μ)) := by
-  intro i
-  rw [rowPolynomial_mul_risingFactorialMatrix]
-  exact generalizedRisingFactorialPreservesPF hμ (hM.row i)
+  simpa [risingFactorialMatrix] using
+    hM.mul_basisCoefficientMatrix (natDegree_risingFactorialPolynomial_le μ)
+      (fun p hp => generalizedRisingFactorialPreservesPF hμ hp)
 
 theorem risingFactorialMatrix_rightPreservesRowGeneratingFunctionsPF
     {μ : ℝ} (hμ : 0 < μ) :
@@ -375,9 +377,9 @@ theorem rowPolynomial_mul_narayanaMatrix
 theorem RowGeneratingFunctionsPF.mul_narayanaMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M) (m : ℕ) :
     RowGeneratingFunctionsPF (mul M (narayanaMatrix m)) := by
-  intro i
-  rw [rowPolynomial_mul_narayanaMatrix]
-  exact narayanaTransformPreservesPF m (hM.row i)
+  simpa [narayanaMatrix, narayanaTransform] using
+    hM.mul_basisCoefficientMatrix (natDegree_narayanaPolynomial_le m)
+      (fun p hp => narayanaTransformPreservesPF m hp)
 
 theorem narayanaMatrix_rightPreservesRowGeneratingFunctionsPF (m : ℕ) :
     RightPreservesRowGeneratingFunctionsPF (narayanaMatrix m) := by
