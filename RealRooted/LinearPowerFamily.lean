@@ -235,40 +235,53 @@ theorem linear_tail_sequence_natDegree {A : ℕ → ℝ[X]} {c a b u v : ℝ}
         linear_tail_sequence_natDegree (A := A) hc hb hv h0 h1 hstep (n + 1)]
       lia
 
-/-- Multiplication by a positive linear factor appends a negative root and interlaces. -/
+/-- Multiplication by a linear factor with nonnegative constant term appends a negative root
+and interlaces. -/
 theorem interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs {f : ℝ[X]}
     (hne : f ≠ 0) (hsplits : f.Splits) (_hnn : HasNonnegCoeffs f)
-    {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
+    {a b : ℝ} (ha : 0 ≤ a) (hb : 0 < b) :
     Interlaces f ((C a + C b * X) * f) := by
-  have h1X : StrictInterl (1 : ℝ[X]) X :=
-    (interlaces_one_linear (p := X) (by simp)).toStrictInterl
-  have hXpos : HasPosLeadingCoeff (X : ℝ[X]) := by
-    unfold HasPosLeadingCoeff
-    simp
-  have hstrictInterl : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
-    StrictInterl.convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
-      hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
-  rw [mul_one] at hstrictInterl
-  have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by ring
-  rw [heq] at hstrictInterl
-  have hlin_ne : (C a + C b * X : ℝ[X]) ≠ 0 := by
-    intro hzero
-    have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
+  rcases ha.eq_or_lt with rfl | ha
+  · have hstrictInterlX : StrictInterl f (X * f) :=
+      strictInterl_self_X_mul_of_nonneg hne hsplits _hnn
+    have hstrictInterl : StrictInterl f ((C b * X) * f) := by
+      have hscaled := StrictInterl.C_mul_right hstrictInterlX hb.ne'
+      simpa [mul_assoc] using hscaled
+    have htail_ne : (C b * X : ℝ[X]) ≠ 0 :=
+      mul_ne_zero (C_ne_zero.mpr hb.ne') X_ne_zero
+    have hdeg : f.natDegree + 1 = ((C b * X) * f).natDegree := by
+      rw [natDegree_mul htail_ne hne, natDegree_C_mul_X b hb.ne']
+      ring
+    simpa using hstrictInterl.toInterlaces hdeg
+  · have h1X : StrictInterl (1 : ℝ[X]) X :=
+      (interlaces_one_linear (p := X) (by simp)).toStrictInterl
+    have hXpos : HasPosLeadingCoeff (X : ℝ[X]) := by
+      unfold HasPosLeadingCoeff
+      simp
+    have hstrictInterl : StrictInterl (f * 1) (C a * (f * 1) + C b * (f * X)) :=
+      StrictInterl.convex_left_of_common_factor (d := f) (f' := 1) (g' := X)
+        hne hsplits (by ring) (by ring) h1X hasPosLeadingCoeff_one hXpos ha hb
+    rw [mul_one] at hstrictInterl
+    have heq : C a * f + C b * (f * X) = (C a + C b * X) * f := by ring
+    rw [heq] at hstrictInterl
+    have hlin_ne : (C a + C b * X : ℝ[X]) ≠ 0 := by
+      intro hzero
+      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
+        compute_degree!
+        exact hb.ne'
+      rw [hzero] at hdeg
+      simp at hdeg
+    have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
       compute_degree!
       exact hb.ne'
-    rw [hzero] at hdeg
-    simp at hdeg
-  have hlin_deg : (C a + C b * X : ℝ[X]).natDegree = 1 := by
-    compute_degree!
-    exact hb.ne'
-  have hdeg : f.natDegree + 1 = ((C a + C b * X) * f).natDegree := by
-    rw [natDegree_mul hlin_ne hne, hlin_deg]
-    ring
-  exact hstrictInterl.toInterlaces hdeg
+    have hdeg : f.natDegree + 1 = ((C a + C b * X) * f).natDegree := by
+      rw [natDegree_mul hlin_ne hne, hlin_deg]
+      ring
+    exact hstrictInterl.toInterlaces hdeg
 
 /-- Consecutive interlacing for a positive constant/linear-base fixed-linear-tail sequence. -/
 theorem linear_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u v : ℝ}
-    (hc : 0 < c) (ha : 0 ≤ a) (hb : 0 < b) (hu : 0 < u) (hv : 0 < v)
+    (hc : 0 < c) (ha : 0 ≤ a) (hb : 0 < b) (hu : 0 ≤ u) (hv : 0 < v)
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u + C v * X) * A (n + 1)) :
     ∀ n, Interlaces (A n) (A (n + 1))
@@ -287,7 +300,7 @@ theorem linear_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u v : ℝ}
             (n + 1))
           (linear_tail_sequence_splits (A := A) (c := c) (a := a) (b := b) (u := u)
             (v := v) h0 h1 hstep (n + 1))
-          (linear_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le hv.le h0 h1 hstep
+          (linear_tail_sequence_nonneg (A := A) hc.le ha hb.le hu hv.le h0 h1 hstep
             (n + 1))
           hu hv
 
@@ -296,120 +309,51 @@ theorem monomial_tail_sequence_ne_zero {A : ℕ → ℝ[X]} {c a b u : ℝ}
     (hc : c ≠ 0) (hb : b ≠ 0) (hu : u ≠ 0)
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
-    ∀ n, A n ≠ 0
-  | 0 => by
-      rw [h0]
-      exact C_ne_zero.mpr hc
-  | 1 => by
-      rw [h1]
-      intro hzero
-      have hdeg : (C a + C b * X : ℝ[X]).natDegree = 1 := by compute_degree!
-      rw [hzero] at hdeg
-      simp at hdeg
-  | n + 2 => by
-      rw [hstep n]
-      have htail : (C u * X : ℝ[X]) ≠ 0 :=
-        mul_ne_zero (C_ne_zero.mpr hu) X_ne_zero
-      exact mul_ne_zero htail
-        (monomial_tail_sequence_ne_zero (A := A) hc hb hu h0 h1 hstep (n + 1))
+    ∀ n, A n ≠ 0 := by
+  apply linear_tail_sequence_ne_zero (u := 0) (v := u) hc hb hu h0 h1
+  intro n
+  simpa using hstep n
 
 /-- Splitting for a sequence with fixed monomial tail recurrence. -/
 theorem monomial_tail_sequence_splits {A : ℕ → ℝ[X]} {c a b u : ℝ}
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
-    ∀ n, (A n).Splits
-  | 0 => by
-      rw [h0]
-      exact Polynomial.Splits.C c
-  | 1 => by
-      rw [h1]
-      apply Polynomial.Splits.of_natDegree_le_one
-      compute_degree!
-  | n + 2 => by
-      rw [hstep n]
-      have htail_splits : (C u * X : ℝ[X]).Splits := by
-        apply Polynomial.Splits.of_natDegree_le_one
-        compute_degree!
-      exact htail_splits.mul
-        (monomial_tail_sequence_splits (A := A) (c := c) (a := a) (b := b) (u := u)
-          h0 h1 hstep (n + 1))
+    ∀ n, (A n).Splits := by
+  apply linear_tail_sequence_splits (u := 0) (v := u) h0 h1
+  intro n
+  simpa using hstep n
 
 /-- Coefficientwise nonnegativity for a sequence with fixed monomial tail recurrence. -/
 theorem monomial_tail_sequence_nonneg {A : ℕ → ℝ[X]} {c a b u : ℝ}
     (hc : 0 ≤ c) (ha : 0 ≤ a) (hb : 0 ≤ b) (hu : 0 ≤ u)
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
-    ∀ n, HasNonnegCoeffs (A n)
-  | 0 => by
-      rw [h0]
-      simpa [pow_one] using
-        hasNonnegCoeffs_linear_pow (a := c) (b := 0) hc (by norm_num) 1
-  | 1 => by
-      rw [h1]
-      simpa [pow_one] using hasNonnegCoeffs_linear_pow (a := a) (b := b) ha hb 1
-  | n + 2 => by
-      rw [hstep n]
-      have htail_nonneg : HasNonnegCoeffs (C u * X : ℝ[X]) := by
-        simpa [pow_one, zero_add] using
-          hasNonnegCoeffs_linear_pow (a := 0) (b := u) (by norm_num) hu 1
-      exact htail_nonneg.mul
-        (monomial_tail_sequence_nonneg (A := A) hc ha hb hu h0 h1 hstep (n + 1))
+    ∀ n, HasNonnegCoeffs (A n) := by
+  apply linear_tail_sequence_nonneg (u := 0) (v := u)
+    hc ha hb (by norm_num) hu h0 h1
+  intro n
+  simpa using hstep n
 
 /-- Degree profile for constant/linear bases and fixed nonzero monomial tail. -/
 theorem monomial_tail_sequence_natDegree {A : ℕ → ℝ[X]} {c a b u : ℝ}
     (hc : c ≠ 0) (hb : b ≠ 0) (hu : u ≠ 0)
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
-    ∀ n, (A n).natDegree = n
-  | 0 => by
-      rw [h0]
-      simp
-  | 1 => by
-      rw [h1]
-      compute_degree!
-  | n + 2 => by
-      rw [hstep n]
-      have htail_ne : (C u * X : ℝ[X]) ≠ 0 :=
-        mul_ne_zero (C_ne_zero.mpr hu) X_ne_zero
-      rw [natDegree_mul htail_ne
-        (monomial_tail_sequence_ne_zero (A := A) hc hb hu h0 h1 hstep (n + 1)),
-        natDegree_C_mul_X u hu,
-        monomial_tail_sequence_natDegree (A := A) hc hb hu h0 h1 hstep (n + 1)]
-      lia
+    ∀ n, (A n).natDegree = n := by
+  apply linear_tail_sequence_natDegree (u := 0) (v := u) hc hb hu h0 h1
+  intro n
+  simpa using hstep n
 
 /-- Consecutive interlacing for a positive constant/linear-base monomial-tail sequence. -/
 theorem monomial_tail_sequence_interlaces {A : ℕ → ℝ[X]} {c a b u : ℝ}
     (hc : 0 < c) (ha : 0 ≤ a) (hb : 0 < b) (hu : 0 < u)
     (h0 : A 0 = C c) (h1 : A 1 = C a + C b * X)
     (hstep : ∀ n, A (n + 2) = (C u * X) * A (n + 1)) :
-    ∀ n, Interlaces (A n) (A (n + 1))
-  | 0 => by
-      exact
-        interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
-          (monomial_tail_sequence_ne_zero (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 0)
-          (monomial_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 0)
-          (monomial_tail_sequence_natDegree (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep 1)
-  | n + 1 => by
-      change Interlaces (A (n + 1)) (A (n + 2))
-      rw [hstep n]
-      have hne :=
-        monomial_tail_sequence_ne_zero (A := A) hc.ne' hb.ne' hu.ne' h0 h1 hstep (n + 1)
-      have hsplits :=
-        monomial_tail_sequence_splits (A := A) (c := c) (a := a) (b := b) (u := u)
-          h0 h1 hstep (n + 1)
-      have hnn :=
-        monomial_tail_sequence_nonneg (A := A) hc.le ha hb.le hu.le h0 h1 hstep (n + 1)
-      have hstrictInterlX : StrictInterl (A (n + 1)) (X * A (n + 1)) :=
-        strictInterl_self_X_mul_of_nonneg hne hsplits hnn
-      have hstrictInterl : StrictInterl (A (n + 1)) ((C u * X) * A (n + 1)) := by
-        have hscaled := StrictInterl.C_mul_right hstrictInterlX hu.ne'
-        simpa [mul_assoc] using hscaled
-      have htail_ne : (C u * X : ℝ[X]) ≠ 0 :=
-        mul_ne_zero (C_ne_zero.mpr hu.ne') X_ne_zero
-      have hdeg : (A (n + 1)).natDegree + 1 = ((C u * X) * A (n + 1)).natDegree := by
-        rw [natDegree_mul htail_ne hne, natDegree_C_mul_X u hu.ne']
-        ring
-      exact hstrictInterl.toInterlaces hdeg
+    ∀ n, Interlaces (A n) (A (n + 1)) := by
+  apply linear_tail_sequence_interlaces (u := 0) (v := u)
+    hc ha hb (by norm_num) hu h0 h1
+  intro n
+  simpa using hstep n
 
 /-- A linear factor interlaces the factored quadratic when its root is between the two roots. -/
 theorem interlaces_linear_quadratic_of_roots_between {α r s c : ℝ} (hc : c ≠ 0)
