@@ -287,6 +287,125 @@ theorem fallingFactorialTransform_poisson_affine_recurrence
         fallingFactorialTransform_starC_affine, ih, Finset.prod_range_succ]
       ring
 
+
+/-! ## Full multiplicativity and associativity -/
+
+/-- The falling-factorial transform fixes the constant polynomial one. -/
+theorem fallingFactorialTransform_one (c : ℝ) :
+    fallingFactorialTransform c 1 = 1 := by
+  simpa only [pow_zero, stepFallingFactorial, Finset.range_zero, Finset.prod_empty]
+    using fallingFactorialTransform_X_pow c 0
+
+private theorem shift_coeff (c : ℝ) (k : ℕ) :
+    C (c ^ (k + 1) / ((k + 1).factorial : ℝ)) * C ((k + 1 : ℕ) : ℝ) =
+      C c * C (c ^ k / (k.factorial : ℝ)) := by
+  rw [← C_mul, ← C_mul]
+  congr 1
+  rw [Nat.factorial_succ]
+  push_cast
+  field_simp
+  ring
+
+/-- Leibniz rule for `starC` in the left factor. -/
+theorem starC_X_mul_left (c : ℝ) (f g : ℝ[X]) :
+    starC c (X * f) g = X * starC c f g + C c * X * starC c f g.derivative := by
+  obtain ⟨M, hM⟩ : ∃ M, M = f.natDegree + 1 := ⟨_, rfl⟩
+  have hXf : (X * f).natDegree < M + 1 :=
+    natDegree_mul_le.trans_lt (by rw [natDegree_X]; lia)
+  rw [starC_eq_sum_range hXf, starC_eq_sum_range (N := M + 1) (by lia),
+    starC_eq_sum_range (N := M) (by lia), Finset.mul_sum, Finset.mul_sum,
+    Finset.sum_range_succ', Finset.sum_range_succ', add_right_comm,
+    ← Finset.sum_add_distrib]
+  congr 1
+  · apply Finset.sum_congr rfl
+    intro k _
+    rw [mul_comm X f, iterate_derivative_mul_X, nsmul_eq_mul,
+      Nat.add_sub_cancel, ← map_natCast C (k + 1)]
+    simp only [Function.iterate_succ_apply]
+    have h := shift_coeff c k
+    linear_combination (X ^ (k + 1) * (derivative^[k]) f *
+      (derivative^[k]) (derivative g)) * h
+  · simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one, map_one,
+      Function.iterate_zero_apply]
+    ring
+
+/-- Derivative of a Poisson product. -/
+theorem derivative_starC (c : ℝ) (f g : ℝ[X]) :
+    derivative (starC c f g) =
+      starC c f.derivative g + starC c f g.derivative +
+        C c * starC c f.derivative g.derivative := by
+  obtain ⟨M, hM⟩ : ∃ M, M = f.natDegree + 1 := ⟨_, rfl⟩
+  have hf' : f.derivative.natDegree < M :=
+    (natDegree_derivative_le f).trans_lt (by lia)
+  rw [starC_eq_sum_range (N := M + 1) (by lia),
+    starC_eq_sum_range (N := M + 1) (hf'.trans (by lia)),
+    starC_eq_sum_range (N := M + 1) (by lia),
+    starC_eq_sum_range (N := M) hf', derivative_sum, Finset.mul_sum,
+    ← Finset.sum_add_distrib, Finset.sum_range_succ', Finset.sum_range_succ',
+    add_right_comm, ← Finset.sum_add_distrib]
+  congr 1
+  · apply Finset.sum_congr rfl
+    intro k _
+    simp only [derivative_mul, derivative_C, derivative_X_pow, zero_mul, zero_add,
+      Nat.add_sub_cancel, ← Function.iterate_succ_apply' derivative,
+      Function.iterate_succ_apply]
+    have h := shift_coeff c k
+    linear_combination (X ^ k * (derivative^[k]) (derivative f) *
+      (derivative^[k]) (derivative g)) * h
+  · simp only [derivative_mul, pow_zero, derivative_one,
+      Nat.factorial_zero, Nat.cast_one, div_one, map_one,
+      Function.iterate_zero_apply]
+    ring
+
+/-- Inductive step: multiplicativity passes from `f` to `X * f` whenever
+`X f' = r f` (true for monomials). -/
+private theorem fallingFactorialTransform_starC_X_mul (c r : ℝ) {f : ℝ[X]}
+    (hXf' : X * f.derivative = C r * f)
+    (ih : ∀ g, fallingFactorialTransform c (starC c f g) =
+      fallingFactorialTransform c f * fallingFactorialTransform c g) (g : ℝ[X]) :
+    fallingFactorialTransform c (starC c (X * f) g) =
+      fallingFactorialTransform c (X * f) * fallingFactorialTransform c g := by
+  -- `X (f ⋆ g)' = (X f') ⋆ g + X (f ⋆ g')`
+  have hkey : X * derivative (starC c f g) =
+      starC c (X * f.derivative) g + X * starC c f g.derivative := by
+    rw [derivative_starC, starC_X_mul_left]
+    ring
+  have hT : fallingFactorialTransform c (X * starC c f g.derivative) =
+      fallingFactorialTransform c (X * derivative (starC c f g)) -
+        fallingFactorialTransform c (starC c (X * f.derivative) g) := by
+    rw [hkey, fallingFactorialTransform_add]; ring
+  rw [starC_X_mul_left, fallingFactorialTransform_add, mul_assoc,
+    fallingFactorialTransform_C_mul, fallingFactorialTransform_X_mul, hT,
+    fallingFactorialTransform_X_mul c f, hXf', starC_C_mul_left c r f g,
+    fallingFactorialTransform_C_mul, fallingFactorialTransform_C_mul, ih]
+  ring
+
+/-- The falling-factorial transform is multiplicative for `starC`. -/
+theorem fallingFactorialTransform_starC (c : ℝ) (f g : ℝ[X]) :
+    fallingFactorialTransform c (starC c f g) =
+      fallingFactorialTransform c f * fallingFactorialTransform c g := by
+  induction f using Polynomial.induction_on generalizing g with
+  | C a =>
+      rw [← mul_one (C a), starC_C_mul_left, starC_one_left,
+        fallingFactorialTransform_C_mul, fallingFactorialTransform_C_mul,
+        fallingFactorialTransform_one, mul_one]
+  | add p q hp hq =>
+      rw [starC_add_left, fallingFactorialTransform_add, fallingFactorialTransform_add,
+        hp, hq, add_mul]
+  | monomial n a ih =>
+      have hXf' : X * (C a * X ^ n).derivative = C (n : ℝ) * (C a * X ^ n) := by
+        rw [derivative_C_mul, derivative_X_pow]
+        cases n with
+        | zero => simp
+        | succ n => rw [Nat.add_sub_cancel]; ring
+      rw [show C a * X ^ (n + 1) = X * (C a * X ^ n) by ring]
+      exact fallingFactorialTransform_starC_X_mul c n hXf' ih g
+
+/-- Associativity of `starC`, by injectivity of the falling-factorial transform. -/
+theorem starC_assoc (c : ℝ) (f g h : ℝ[X]) :
+    starC c (starC c f g) h = starC c f (starC c g h) := by
+  apply fallingFactorialTransform_injective c
+  simp only [fallingFactorialTransform_starC, mul_assoc]
 end
 
 end RealRooted.Poisson
