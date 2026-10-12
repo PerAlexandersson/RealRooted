@@ -96,6 +96,11 @@ noncomputable def exponentialKernelMatrix {i j : Type*}
     exponentialKernelMatrix x y r c = Real.exp (x r * y c) :=
   rfl
 
+@[simp] lemma exponentialKernelMatrix_transpose {i j : Type*} (x : i → ℝ) (y : j → ℝ) :
+    (exponentialKernelMatrix x y).transpose = exponentialKernelMatrix y x := by
+  ext
+  simp [mul_comm]
+
 /-- Adjacent exponential-kernel row differences are interval integrals. -/
 lemma exponentialKernelMatrix_succ_sub_castSucc_eq_intervalIntegral {n : ℕ}
     (x : Fin (n + 1) → ℝ) (y : Fin n → ℝ) (i j : Fin n) :
@@ -163,16 +168,10 @@ theorem det_exponentialKernelMatrix_add_const_right {q : ℕ}
     (exponentialKernelMatrix x (fun j => y j + c)).det =
       (∏ i, Real.exp (x i * c)) *
         (exponentialKernelMatrix x y).det := by
-  have hmatrix :
-      exponentialKernelMatrix x (fun j => y j + c) =
-        of fun i j =>
-          Real.exp (x i * c) * exponentialKernelMatrix x y i j := by
-    ext i j
-    simp only [exponentialKernelMatrix_apply, of_apply]
-    rw [show x i * (y j + c) = x i * c + x i * y j by ring,
-      Real.exp_add]
-  rw [hmatrix]
-  exact det_mul_column (fun i => Real.exp (x i * c)) (exponentialKernelMatrix x y)
+  rw [← det_transpose, exponentialKernelMatrix_transpose]
+  rw [det_exponentialKernelMatrix_add_const_left]
+  rw [← det_transpose, exponentialKernelMatrix_transpose]
+  simp only [mul_comm]
 
 theorem det_exponentialKernelMatrix_add_const_left_pos_iff {q : ℕ}
     (x y : Fin q → ℝ) (c : ℝ) :

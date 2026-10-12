@@ -266,12 +266,6 @@ private theorem hasNonnegCoeffs_polynomial (n : ℕ) : HasNonnegCoeffs (polynomi
   | zero => simpa [polynomial] using hasNonnegCoeffs_one
   | succ n => simpa [polynomial] using sturmDerangementsExc_nonnegCoeffs (n + 1)
 
-private theorem eval_one_nonneg_of_nonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    0 ≤ p.eval 1 := by
-  by_cases hp0 : p = 0
-  · simp [hp0]
-  · exact (eval_pos_of_hasNonnegCoeffs hp hp0 one_pos).le
-
 private theorem transform_X_pow_mul_one_add_X_pow (k m : ℕ) :
     transform (X ^ k * (1 + X) ^ m) =
       ∑ i ∈ Finset.range (m + 1), C (m.choose i : ℝ) * polynomial (k + i) := by
@@ -289,7 +283,7 @@ private theorem polynomial_eval_one_le_transform {d : ℕ} {k : ℕ} (hk : k ≤
       polynomial (k + i)).eval 1) (fun i _ => by
         rw [eval_mul, eval_C]
         exact mul_nonneg (Nat.cast_nonneg _)
-          (eval_one_nonneg_of_nonnegCoeffs (hasNonnegCoeffs_polynomial _))) hmem
+          ((hasNonnegCoeffs_polynomial _).eval_nonneg zero_le_one)) hmem
   simpa [show k + (d - k) = d by lia] using hterm
 
 /-- For `2 ≤ d`, a nonnegative magic-basis combination with some positive coordinate has a

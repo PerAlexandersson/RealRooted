@@ -126,11 +126,8 @@ theorem hasSimpleRoots_of_natDegree_le_one {p : ℝ[X]}
   intro r hr
   have hpos : 0 < p.rootMultiplicity r :=
     (rootMultiplicity_pos hp).mpr hr
-  have hle : p.rootMultiplicity r ≤ p.natDegree := by
-    calc
-      p.rootMultiplicity r = p.roots.count r := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card r
-      _ ≤ p.natDegree := card_roots' p
+  have hle : p.rootMultiplicity r ≤ p.natDegree :=
+    Polynomial.rootMultiplicity_le_natDegree p r
   lia
 
 /-- Multiplying by `X` preserves simple real roots when zero was not already a

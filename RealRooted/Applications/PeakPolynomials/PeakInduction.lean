@@ -51,10 +51,6 @@ namespace RealRooted.Applications.PeakPolynomials
 
 /-! ## Utility lemmas -/
 
-private lemma eval_zero_nonneg {p : ℝ[X]} (hp : HasNonnegCoeffs p) : 0 ≤ p.eval 0 := by
-  rw [← coeff_zero_eq_eval_zero]
-  exact hp 0
-
 /-- `W = X * D + U` is nonzero when `A = D + U` is nonzero. -/
 private lemma X_mul_add_ne_zero {D U : ℝ[X]}
     (hD : HasNonnegCoeffs D) (hU : HasNonnegCoeffs U) (hA : D + U ≠ 0) :
@@ -700,7 +696,7 @@ theorem interl_next_A_W (hC : F.Conditions) (j l : Fin m') :
     have hH_interl : Interl H ((F.next m' ι).A j) :=
       interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
     have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
+      have := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
       rw [hW_eq] at this
       simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
       linarith
@@ -763,7 +759,7 @@ theorem interl_next_A_W (hC : F.Conditions) (j l : Fin m') :
     have hH_interl : Interl H ((F.next m' ι).A j) :=
       interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
     have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
+      have := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
       rw [hW_eq] at this
       simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
       linarith
@@ -841,7 +837,7 @@ theorem interl_next_A_A_of_lt (hC : F.Conditions) (hι : Monotone ι) (j j' : Fi
   have hA_eq : (F.next m' ι).A j' = (F.next m' ι).A j + (X - C 1) * H := by
     linear_combination hident
   have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-    have h1 := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_A j')
+    have h1 := ((F.next m' ι).hasNonnegCoeffs_A j').eval_nonneg (le_refl (0 : ℝ))
     rw [hA_eq, eval_add, eval_mul, eval_sub, eval_X, eval_C] at h1
     linarith
   rw [hA_eq]
@@ -903,7 +899,7 @@ theorem interl_next_W_W_of_le (hC : F.Conditions) (hι : Monotone ι) (j l : Fin
   have hW_eq : (F.next m' ι).W l = (F.next m' ι).W j + (X - C 1) * H := by
     linear_combination hident
   have hbound : H.eval 0 ≤ ((F.next m' ι).W j).eval 0 := by
-    have h1 := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
+    have h1 := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
     rw [hW_eq, eval_add, eval_mul, eval_sub, eval_X, eval_C] at h1
     linarith
   rw [hW_eq]
@@ -990,7 +986,7 @@ lemma interl_nextBoundary_A_last_A_castSucc (hC : F.Conditions) (k : Fin m) :
   have hK_nn : HasNonnegCoeffs (F.S k + Utail) :=
     (F.hasNonnegCoeffs_S k).add (hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i))
   have hbound : H.eval 0 ≤ F.P.eval 0 := by
-    have hK0 := eval_zero_nonneg hK_nn
+    have hK0 := hK_nn.eval_nonneg (le_refl (0 : ℝ))
     rw [hP_eq, eval_add]
     linarith
   rw [nextBoundary_A_last, F.nextBoundary_A_castSucc_eq k]
@@ -1029,7 +1025,7 @@ lemma interl_nextBoundary_A_last_W_castSucc (hC : F.Conditions) (k : Fin m) :
       (interl_add_right hS_tailU htailD_tailU (F.hasNonnegCoeffs_S k) htailD_nn)
       hH_nn htailU_nn hC.splits_P
   have hbound : H.eval 0 ≤ F.P.eval 0 := by
-    have h0 := eval_zero_nonneg htailU_nn
+    have h0 := htailU_nn.eval_nonneg (le_refl (0 : ℝ))
     rw [hP_eq, eval_add (p := H)]
     linarith
   rw [nextBoundary_A_last, nextBoundary_W_castSucc, hW_eq]

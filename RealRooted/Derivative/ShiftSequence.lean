@@ -107,11 +107,8 @@ theorem hasSimpleRoots_applyTDerivList_of_natDegree_le_length
   have hmult : 2 ≤ (applyTDerivList epss p).rootMultiplicity a := by lia
   have hback :=
     rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two hpos hsplit hmult
-  have hmult_le : p.rootMultiplicity a ≤ p.natDegree := by
-    calc
-      p.rootMultiplicity a = p.roots.count a := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card a
-      _ ≤ p.natDegree := card_roots' p
+  have hmult_le : p.rootMultiplicity a ≤ p.natDegree :=
+    Polynomial.rootMultiplicity_le_natDegree p a
   lia
 
 end

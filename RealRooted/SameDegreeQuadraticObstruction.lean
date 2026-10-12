@@ -146,22 +146,8 @@ theorem not_posComboRealRooted_pos_scaled_quadratic_roots_separated
       (C A * ((X - C a) * (X - C b)))
       (C B * ((X - C c) * (X - C d))) := by
   intro hscaled
-  have hmonic :
-      PosComboRealRooted ((X - C a) * (X - C b)) ((X - C c) * (X - C d)) := by
-    intro lam μ hlam hμ
-    have hbase := hscaled (lam := lam / A) (μ := μ / B)
-      (div_pos hlam hA) (div_pos hμ hB)
-    have hEq :
-        C (lam / A) * (C A * ((X - C a) * (X - C b))) +
-            C (μ / B) * (C B * ((X - C c) * (X - C d))) =
-          C lam * ((X - C a) * (X - C b)) +
-            C μ * ((X - C c) * (X - C d)) := by
-      apply Polynomial.funext
-      intro x
-      simp only [eval_add, eval_mul, eval_C, eval_sub, eval_X]
-      grind
-    simp_all
-  exact not_posComboRealRooted_quadratic_roots_separated hab hcd hsep hmonic
+  rw [PosComboRealRooted.C_mul_C_mul_iff hA hB] at hscaled
+  exact not_posComboRealRooted_quadratic_roots_separated hab hcd hsep hscaled
 
 /-- Gap form of the separated-root obstruction. -/
 theorem not_posComboRealRooted_pos_scaled_quadratic_roots_gap

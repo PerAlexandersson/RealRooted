@@ -34,18 +34,10 @@ theorem fst_mem_of_mem_zip {α β : Type*} {xs : List α} {ys : List β}
 in the second list. -/
 theorem snd_mem_of_mem_zip {α β : Type*} {xs : List α} {ys : List β}
     {p : α × β} (hp : p ∈ xs.zip ys) : p.2 ∈ ys := by
-  induction xs generalizing ys with
-  | nil =>
-      simp at hp
-  | cons _ xs ih =>
-      cases ys with
-      | nil =>
-          simp at hp
-      | cons y ys =>
-          simp only [zip_cons_cons, mem_cons] at hp
-          rcases hp with hp | hp
-          · simp [hp]
-          · exact List.mem_cons_of_mem y (ih hp)
+  have hp' : p.swap ∈ ys.zip xs := by
+    rw [← List.zip_swap xs ys]
+    exact List.mem_map.mpr ⟨p, hp, rfl⟩
+  simpa using fst_mem_of_mem_zip hp'
 
 /-- A pair in `xs.zip xs.tail` consists of adjacent entries, so an `IsChain`
 proof relates its two coordinates. -/
