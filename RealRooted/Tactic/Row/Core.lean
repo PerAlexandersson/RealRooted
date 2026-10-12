@@ -52,16 +52,16 @@ private inductive WindowKind where
   | plain
   /-- the degree-bounded condition beyond `U` -/
   | degree
-  /-- roots only (three-term recurrences) -/
+  /-- roots only (a recurrence obtained from another shape) -/
   | roots
   /-- `A n > 0` beyond the window, with `B n ≥ 0` above and `B n ≤ 0` below -/
   | posA
 
 /-- A cheap numeric veto for a root window `[lo, U]` (`(-∞, U]` without `lo`) of the shifted
 sequence `m ↦ P (m + s + k)`: the computed rows `0, …, 8` must have their roots in the window,
-and for first-order derivative recurrences the sign conditions of the window theorem must hold
-at sample points for `n ≤ 8`.  When it fails, the theorem cannot apply and is not
-elaborated; when the rows cannot be computed, nothing is vetoed. -/
+and the sign conditions of the derivative or three-term window theorem must hold at sample
+points for `n ≤ 8`.  When it fails, the theorem cannot apply and is not elaborated; when the
+rows cannot be computed, nothing is vetoed. -/
 private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : Rat)
     (kind : WindowKind) : MetaM Bool := do
   let some L ← linRec? r.P | return true
@@ -74,7 +74,6 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
     if let some l := lo then
       unless p.rootsGe l do return false
   if kind matches .roots then return true
-  unless r.shape == .deriv₁ do return true
   let (some Af, some Bf) := (r.coeffs[0]?, r.coeffs[1]?) | return true
   let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
   for i in [0:9] do
@@ -83,6 +82,15 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
     let inside : List Rat := match lo with
       | some l => [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
       | none => offs.map (u - ·) ++ [u]
+    if r.shape == .lag then
+      unless inside.all (b.eval · ≤ 0) do return false
+      unless offs.all (fun d => 0 < a.eval (u + d) && 0 ≤ b.eval (u + d)) do
+        return false
+      if let some l := lo then
+        unless offs.all (fun d => a.eval (l - d) < 0 && 0 ≤ b.eval (l - d)) do
+          return false
+      continue
+    unless r.shape == .deriv₁ do return true
     unless inside.all (a.eval · ≤ 0) do return false
     for d in offs do
       let x := u + d
@@ -102,35 +110,67 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
           unless 0 ≤ a.eval x && b.eval x < 0 do return false
   return true
 
-/-- The numeric gate of the barrier windows
-(`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`) of a three-term recurrence: a
-window `[L, U]` holding the roots of the computed rows, with `b n ≤ 0` inside and
-`a n < 0 ≤ b n` below `L`, and a constant `ρ ∈ {1, 2}` with `ρ ≤ a n`,
-`ρ ^ 2 ≤ a n ρ + b n` and `ρ P 0 ≤ P 1` above `U`, all at sample points. -/
-private def barrierFit? (r : RowRec) (k : Nat) : MetaM (Option (Rat × Rat × Rat)) := do
-  let some L ← linRec? r.P | return none
+/-- The numeric gate for
+`RealRooted.threeTerm_interlaces_of_roots_le_of_ratio`: roots of the computed rows lie below
+`u`, the lag is nonpositive below `u`, `ρ` bounds consecutive leading-coefficient ratios,
+and the two conditions above `u` hold at the standard rational sample points. -/
+private def ratioWindowPlausible (r : RowRec) (k : Nat) (u ρ : Rat) : MetaM Bool := do
+  let some L ← linRec? r.P | return true
   let base := r.shift + k
-  let some rows ← linRecRows? L (base + 9) | return none
-  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return none
+  let some rows ← linRecRows? L (base + 9) | return true
+  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return true
+  let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
+  let below := offs.map (u - ·) ++ [u]
+  for i in [0:9] do
+    let (some p, some q) := (rows[base + i]?, rows[base + i + 1]?) | return true
+    unless p.rootsLe u && ρ * p.lead ≤ q.lead do return false
+    let (some a, some b) := (← evalCoeffAt? af (i + k), ← evalCoeffAt? bf (i + k))
+      | return true
+    unless below.all (b.eval · ≤ 0) do return false
+    unless offs.all (fun d =>
+        let x := u + d
+        0 ≤ a.eval x && 0 < a.eval x * ρ * (x - u) + b.eval x) do
+      return false
+  return true
+
+/-- Read a rational-valued tactic hint exactly, when it is built from the operations supported
+by `evalRat?`. -/
+private def ratHint? (t : Term) : TacticM (Option Rat) := do
+  let e ← elabTermEnsuringType t (mkConst ``Real)
+  Term.synthesizeSyntheticMVarsNoPostponing
+  evalRat? (← instantiateMVars e)
+
+/-- The numeric gate of one barrier window
+(`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`), at the standard rational
+sample points. -/
+private def barrierWindowPlausible (r : RowRec) (k : Nat) (l u ρ : Rat) : MetaM Bool := do
+  let some L ← linRec? r.P | return false
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 9) | return false
+  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return false
   let mut abs : Array (QPoly × QPoly) := #[]
   for i in [0:9] do
     let (some a, some b) := (← evalCoeffAt? af (i + k), ← evalCoeffAt? bf (i + k))
-      | return none
+      | return false
     abs := abs.push (a, b)
-  let (some p0, some p1) := (rows[base]?, rows[base + 1]?) | return none
+  let (some p0, some p1) := (rows[base]?, rows[base + 1]?) | return false
   let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
+  let inWindow (m : Nat) : Bool := match rows[base + m]? with
+    | some p => p.isZero || (p.rootsLe u && p.rootsGe l)
+    | none => false
+  unless (List.range 9).all inWindow do return false
+  let inside := [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
+  unless abs.all (fun (a, b) => inside.all (b.eval · ≤ 0) &&
+      offs.all fun d => a.eval (l - d) < 0 && 0 ≤ b.eval (l - d)) do return false
+  return abs.all (fun (a, b) => offs.all fun d =>
+      ρ ≤ a.eval (u + d) && ρ * ρ ≤ a.eval (u + d) * ρ + b.eval (u + d)) &&
+    offs.all (fun d => ρ * p0.eval (u + d) ≤ p1.eval (u + d))
+
+/-- The first default barrier window confirmed by `barrierWindowPlausible`. -/
+private def barrierFit? (r : RowRec) (k : Nat) : MetaM (Option (Rat × Rat × Rat)) := do
   for (l, u) in [((-1 : Rat), (0 : Rat)), (-1 / 2, 0), (-2, 0), (-4, 0)] do
-    let inWindow (m : Nat) : Bool := match rows[base + m]? with
-      | some p => p.isZero || (p.rootsLe u && p.rootsGe l)
-      | none => false
-    unless (List.range 9).all inWindow do continue
-    let inside := [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
-    unless abs.all (fun (a, b) => inside.all (b.eval · ≤ 0) &&
-        offs.all fun d => a.eval (l - d) < 0 && 0 ≤ b.eval (l - d)) do continue
     for ρ in [(1 : Rat), 2] do
-      if abs.all (fun (a, b) => offs.all fun d =>
-            ρ ≤ a.eval (u + d) && ρ * ρ ≤ a.eval (u + d) * ρ + b.eval (u + d)) &&
-          offs.all (fun d => ρ * p0.eval (u + d) ≤ p1.eval (u + d)) then
+      if ← barrierWindowPlausible r k l u ρ then
         return some (l, u, ρ)
   return none
 
@@ -390,6 +430,45 @@ private def movingUpper? (r : RowRec) (k D₀ : Nat) : MetaM (Option MovingUpper
     return some { a, b, d, ρ }
   return none
 
+/-- Whether the cheap exact checks confirm an automatic growth-one interlacing route after
+dropping `k` rows.  The probe checks the degree and leading-coefficient law, adjacent weak
+interlacing, and the sampled sign conditions of every applicable fixed, ratio, barrier, or
+moving window.  It returns `true` when exact rows are unavailable, so lack of probe data never
+vetoes a proof. -/
+def rowInterlacesPlausibleAt (r : RowRec) (k : Nat) : MetaM Bool := do
+  if r.shape == .product || r.shape == .lagRight then return true
+  if r.shape == .lagLeft then return false
+  let some L ← linRec? r.P | return true
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 9) | return true
+  let some p := rows[base]? | return true
+  let D₀ := p.natDegree
+  if (← rowsProbe r.P base D₀).isSome then return false
+  if r.shape == .deriv₂ then
+    if k != 0 then return false
+    if (← eigenODE? r.P (shift := r.shift)).isSome then return true
+    return (← eulerFit? r) matches .ok _
+  if ← plainPlausible r k false then return true
+  if ← plainPlausible r k true then return true
+  let windows : List (Option Rat × Rat) :=
+    [(some (-1), 0), (some (-1 / 2), 0), (some (-2), 0), (some (-4), 0),
+      (none, -1), (none, -1 / 2), (none, -2)]
+  for (lo, u) in windows do
+    if ← windowPlausible r k D₀ lo u .plain then return true
+    if r.shape == .deriv₁ && lo.isSome && D₀ != 0 &&
+        (← windowPlausible r k D₀ lo u .posA) then
+      return true
+  if r.shape == .deriv₁ then
+    for u in [(-1 : Rat), 0, -1 / 2, -2] do
+      if ← windowPlausible r k D₀ none u .degree then return true
+    if (← movingWindow? r k).isSome || (← movingUpper? r k D₀).isSome then return true
+  if r.shape == .lag then
+    for u in [(0 : Rat), -1] do
+      for ρ in [(1 : Rat), 2] do
+        if ← ratioWindowPlausible r k u ρ then return true
+    if (← barrierFit? r k).isSome then return true
+  return false
+
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
 a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
@@ -555,6 +634,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     match ← rowAttempt (applyThenSideFull P main) with
     | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀, drop := (dropHint k) })
     | .error e => failures := failures.push (m!"{thm}", e)
+  let mut triedWindow := false
   -- root windows `[L, U]` and `(-∞, U]`
   if shape == .deriv₁ || shape == .lag then
     let (icc, iic) := if shape == .deriv₁ then
@@ -579,19 +659,23 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       vals := vals ++ [v]
     let hinted := hints.window.isSome || hints.upper.isSome || hints.thm.isSome
     windows := match hints.window, hints.upper with
-      | some (l, u), _ => [(some l, u)]
-      | none, some u => [(none, u)]
+      | some (l, u), _ =>
+          if hints.thm.isNone || hints.thm == some icc || hints.thm == some iccPos then
+            [(some l, u)]
+          else []
+      | none, some u =>
+          if hints.thm.isNone || hints.thm == some iic then [(none, u)] else []
       | none, none => match hints.thm with
         | some t => if t == icc || t == iccPos then windows.filter (·.1.isSome)
             else if t == iic then windows.filter (·.1.isNone) else []
         | none => windows
     for ((lo, U), v) in windows.zip (vals ++ List.replicate windows.length (none, 0)) do
+      if triedWindow then continue
       -- `B n` may vanish beyond a window `[L, U]` when `A n > 0` there and the rows have
       -- positive degree (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_pos`)
       let mut icc := if hints.thm == some iccPos then iccPos else icc
       unless hinted do
-        let kind := if shape == .deriv₁ && r.shape == .deriv₁ then WindowKind.plain
-          else .roots
+        let kind := if shape == r.shape then WindowKind.plain else .roots
         unless ← windowPlausible r k D₀ v.1 v.2 kind do
           if kind matches .plain && lo.isSome && D₀ != 0 &&
               (← windowPlausible r k D₀ v.1 v.2 .posA) then
@@ -600,6 +684,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             failures := failures.push (m!"{if lo.isSome then icc else iic}", m!"vetoed: the \
               computed rows or the sign conditions rule the window out")
             continue
+      triedWindow := true
       let extra ← if icc == iccPos then
           pure #[← `(Lean.Parser.Term.namedArgument| (hD := Nat.succ_ne_zero _))]
         else pure #[]
@@ -634,10 +719,12 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       else pure us
     let uvals : List Rat := [-1, 0, -1 / 2, -2]
     for (U, uv) in us.zip (uvals ++ List.replicate us.length 0) do
+      if triedWindow then continue
       if hints.upper.isNone && r.shape == .deriv₁ then
         unless ← windowPlausible r k D₀ none uv .degree do
           failures := failures.push (m!"{degWin}", m!"vetoed on (-∞, {uv}]")
           continue
+      triedWindow := true
       let main ← apply' degWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
       match ← rowAttempt (applyThenSideFull P main) with
       | .ok tac =>
@@ -660,13 +747,19 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
         | throwError "rr_row_interlaces: bad ratio {r}"
       return (⟨t⟩ : Term)
-    let uvals : List Rat := [0, -1]
-    for (U, uv) in us.zip (uvals ++ List.replicate us.length 0) do
-      if hints.upper.isNone then
-        unless ← windowPlausible r k D₀ none uv .roots do
-          failures := failures.push (m!"{ratioWin}", m!"vetoed on (-∞, {uv}]")
-          continue
-      for ρ in ρs do
+    let uvals : List (Option Rat) ← match hints.upper with
+      | some u => pure [← ratHint? u]
+      | none => pure [some 0, some (-1)]
+    let ρvals : List Rat := [1, 2]
+    for (U, uv) in us.zip uvals do
+      for (ρ, ρv) in ρs.zip ρvals do
+        if triedWindow then continue
+        if let some uv := uv then
+          unless ← ratioWindowPlausible r k uv ρv do
+            failures := failures.push (m!"{ratioWin}",
+              m!"vetoed on (-∞, {uv}], ρ = {ρv}")
+            continue
+        triedWindow := true
         let main ← apply' ratioWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ))),
           ← `(Lean.Parser.Term.namedArgument| (ρ := fun _ => ($ρ : ℝ)))]
         match ← rowAttempt (applyThenSideFull P main) with
@@ -678,17 +771,24 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` there
   -- (`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`)
   let barWin := ``RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier
-  if shape == .lag && hints.upper.isNone &&
+  if !triedWindow && shape == .lag && hints.upper.isNone &&
       (hints.thm.isNone || hints.thm == some barWin) then
-    -- the window and `ρ` of the numeric gate, or the hinted window with `ρ = 1, 2`
+    -- the first numerically confirmed window and `ρ`, including a rational hinted window
     let mut fits : List (Term × Term × Nat) := []
     if let some (l, u) := hints.window then
-      fits := [(l, u, 1), (l, u, 2)]
+      match ← ratHint? l, ← ratHint? u with
+      | some lv, some uv =>
+          for ρ in [(1 : Nat), 2] do
+            if fits.isEmpty && (← barrierWindowPlausible r k lv uv (ρ : Rat)) then
+              fits := [(l, u, ρ)]
+      | _, _ => fits := [(l, u, 1)]
     else
       match ← barrierFit? r k with
       | some (l, u, ρ) => fits := [(← ratTerm l, ← ratTerm u, if ρ == 1 then 1 else 2)]
       | none => failures := failures.push (m!"{barWin}", m!"no ratio barrier fits the rows")
     for (lo, U, ρ) in fits do
+      if triedWindow then continue
+      triedWindow := true
       -- `0 < ρ` as a term, so that the certificate has no `by` block
       let hρ ← if ρ == 1 then `(fun _ _ => one_pos) else `(fun _ _ => two_pos)
       let main ← apply' barWin #[← `(Lean.Parser.Term.namedArgument| (L := ($lo : ℝ))),
@@ -703,11 +803,13 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- root windows whose lower bound is a root of `A n` moving with `n`
   -- (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`)
   let movIcc := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div
-  if shape == .deriv₁ && r.shape == .deriv₁ && given.isNone && hints.window.isNone &&
+  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
+      hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movIcc) then
     match ← movingWindow? r k with
     | none => failures := failures.push (m!"{movIcc}", m!"no moving root window fits the rows")
     | some w =>
+        triedWindow := true
         let mI := mkIdent `m
         let pT ← `(fun $mI:ident : ℕ => $(← ratTerm w.a) + $(← ratTerm w.b) * ($mI : ℝ))
         let qT ← `(fun $mI:ident : ℕ => 1 + $(← ratTerm w.d) * ($mI : ℝ))
@@ -726,11 +828,13 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- root bounds `U n = p n / q n` moving up with `n`, split at a common root `ρ` of the `A n`
   -- (`RealRooted.derivRec_interlaces_of_roots_le_mono_div`)
   let movUp := ``RealRooted.derivRec_interlaces_of_roots_le_mono_div
-  if shape == .deriv₁ && r.shape == .deriv₁ && given.isNone && hints.window.isNone &&
+  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
+      hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movUp) then
     match ← movingUpper? r k D₀ with
     | none => failures := failures.push (m!"{movUp}", m!"no moving upper root bound fits the rows")
     | some w =>
+        triedWindow := true
         let (mI, xI, yI) := (mkIdent `m, mkIdent `x, mkIdent `y)
         let (aT, bT, dT, ρT) := (← ratTerm w.a, ← ratTerm w.b, ← ratTerm w.d, ← ratTerm w.ρ)
         let pAt (t : Term) : TacticM Term := `(($aT + $bT * $t : ℝ))
