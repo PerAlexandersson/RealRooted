@@ -1813,3 +1813,4 @@ import RealRooted.Challenges.UnivariatePoissonStar
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+import RealRooted.Tactic.Examples.LinRecCancellation
