@@ -1742,6 +1742,8 @@ Dedup foundation batch 2 The budgets of `Tactic.Examples`, `Applications.OEIS.A1
 
 Dedup leaf batch 2: shared helper imports The budgets of `Tactic.Examples`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative`, `Challenges.Hadamard`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `Challenges.Narayana`, `Tactic` rise to the new closure sizes.
 
+Dedup leaf batch 4 The budgets of `RealRooted`, `Tactic.Examples` rise to the new closure sizes.
+
 Dedup leaf batch 3: shared helper imports The budgets of `RootCounting`, `RootCounting.Threshold`, `RootCounting.Threshold.Anchor`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs` rise to the new closure sizes.
 
 Run the architecture check with:

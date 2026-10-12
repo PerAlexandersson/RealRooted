@@ -122,6 +122,7 @@ import RealRooted.Tactic.Examples.RootCount.Core
 import RealRooted.Tactic.Examples.RootCount.Filters
 import RealRooted.Tactic.Examples.RootCount.LowDegree
 import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.ScalarDen
