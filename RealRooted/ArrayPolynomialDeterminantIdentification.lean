@@ -285,22 +285,22 @@ lemma arrayBandPolynomialMatrix_eq (N : ℕ) :
   by_cases hij : i = j
   · subst j
     simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
-      upperBidiagonalFin_apply]
+]
   · have hji : j ≠ i := Ne.symm hij
     by_cases hsuper : j.val = i.val + 1
     · have hfalse1 : i.val ≠ i.val + 1 + 1 := by lia
       have hfalse2 : i.val ≠ i.val + 1 + 2 := by lia
       simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
-        upperBidiagonalFin_apply, hij, hji, hsuper, hfalse1, hfalse2]
+        hij, hsuper, hfalse1, hfalse2]
     · by_cases hsub : i.val = j.val + 1
       · have hsub2 : i.val ≠ j.val + 2 := by lia
         simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
-          upperBidiagonalFin_apply, hij, hji, hsub]
+          hij, hsub]
         have hfalse : j.val ≠ j.val + 1 + 1 := by lia
         simp [hfalse]
       · by_cases hsub2 : i.val = j.val + 2
         · simp [arrayBandBaseFin_apply, lowerHessenbergTwo,
-            upperBidiagonalFin_apply, hij, hji, hsub2]
+            hij, hsub2]
           have hfalse : j.val ≠ j.val + 2 + 1 := by lia
           simp [hfalse]
         · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
