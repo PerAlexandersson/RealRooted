@@ -413,7 +413,8 @@ theorem ofFn_reverse {n : ℕ} (σ : Perm (Fin n)) :
     simp only [hlen]
     lia
 
-private theorem ofFn_complement {n : ℕ} (σ : Perm (Fin n)) :
+/-- The one-line word of a complemented permutation is pointwise complemented. -/
+theorem ofFn_complement {n : ℕ} (σ : Perm (Fin n)) :
     List.ofFn (complement σ) = (List.ofFn σ).map Fin.rev := by
   apply List.ext_get
   · simp

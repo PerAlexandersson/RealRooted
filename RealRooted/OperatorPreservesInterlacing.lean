@@ -72,7 +72,7 @@ theorem interl_or_reverse_of_allComboRealRooted {f g : ℝ[X]}
   · exact (strictInterl_of_allComboRealRooted hf.1 hf.2 hg.1 hg.2 hall
       (Or.inl hsucc)).imp (·.toInterl) (·.toInterl)
   · exact ((strictInterl_of_allComboRealRooted hg.1 hg.2 hf.1 hf.2
-      (allComboRealRooted_comm hall) (Or.inl hrevsucc)).imp
+      (hall.comm) (Or.inl hrevsucc)).imp
         (·.toInterl) (·.toInterl)).symm
 
 /-- Pencil-local version of the operator-preserver consequence.  If a linear

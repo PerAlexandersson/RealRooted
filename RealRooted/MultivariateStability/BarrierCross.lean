@@ -46,20 +46,8 @@ private theorem barrierLine_eq_ratio {m : ℕ} (i j : Fin m)
       simp
     · simp [hkj]
 
-private def ratioDerivative (F G : ℝ[X]) (t : ℝ) : ℝ :=
-  (G.derivative.eval t * F.eval t - G.eval t * F.derivative.eval t) / (F.eval t) ^ 2
-
-private theorem ratio_has_deriv (F G : ℝ[X]) {t : ℝ} (hF : F.eval t ≠ 0) :
-    HasDerivAt (fun s => G.eval s / F.eval s) (ratioDerivative F G t) t := by
-  have h := (G.hasDerivAt t).mul ((F.hasDerivAt t).inv hF)
-  convert h using 1
-  · rfl
-  · dsimp [ratioDerivative]
-    field_simp
-    ring_nf
-
 private theorem ratioDerivative_differentiableAt (F G : ℝ[X]) {t : ℝ}
-    (hF : F.eval t ≠ 0) : DifferentiableAt ℝ (ratioDerivative F G) t := by
+    (hF : F.eval t ≠ 0) : DifferentiableAt ℝ (PickRatio.polynomialRatioDerivative F G) t := by
   have hnum := (G.derivative.hasDerivAt t).mul (F.hasDerivAt t)
   have hnum' := (G.hasDerivAt t).mul (F.derivative.hasDerivAt t)
   have hnum'' := hnum.sub hnum'
@@ -141,7 +129,7 @@ theorem barrierLine_antitoneOn_of_aboveRoots {m : ℕ}
     rw [show barrierLine i j p z = fun s => G.eval s / F.eval s by
       funext s
       exact barrierLine_eq_ratio i j p z s]
-    exact (ratio_has_deriv F G
+    exact (PickRatio.polynomialRatio_hasDerivAt F G
       (hFpos t (Set.mem_Ici.mpr (le_of_lt ht))).ne').differentiableAt.differentiableWithinAt
   apply antitoneOn_of_deriv_nonpos (convex_Ici 0) hcont
     (by simpa only [interior_Ici] using hdiff)
@@ -172,16 +160,16 @@ theorem barrierLine_convexOn_of_aboveRoots {m : ℕ}
       exact (hFpos t ht).ne'
   have hdiff : DifferentiableOn ℝ R (Set.Ioi 0) := by
     intro t ht
-    have h := ratio_has_deriv F G
+    have h := PickRatio.polynomialRatio_hasDerivAt F G
       (hFpos t (Set.mem_Ici.mpr (le_of_lt ht))).ne'
     simpa [R] using h.differentiableAt.differentiableWithinAt
   have hdiff2 : DifferentiableOn ℝ (deriv R) (Set.Ioi 0) := by
     intro t ht
     have hR' := ratioDerivative_differentiableAt F G
       (hFpos t (Set.mem_Ici.mpr (le_of_lt ht))).ne'
-    have heq : ratioDerivative F G =ᶠ[nhds t] deriv R := by
+    have heq : PickRatio.polynomialRatioDerivative F G =ᶠ[nhds t] deriv R := by
       filter_upwards [isOpen_Ioi.mem_nhds ht] with s hs
-      exact (ratio_has_deriv F G
+      exact (PickRatio.polynomialRatio_hasDerivAt F G
         (hFpos s (Set.mem_Ici.mpr (le_of_lt hs))).ne').deriv.symm
     exact hR'.congr_of_eventuallyEq heq.symm |>.differentiableWithinAt
   rw [hline]

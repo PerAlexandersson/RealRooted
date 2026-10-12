@@ -163,18 +163,6 @@ private theorem applyMonomialDifferential_single_nat
         iteratedPDerivAt i 1 (iteratedPDerivAt i n P)
       exact iteratedPDerivAt_comm i i n 1 P
 
-private theorem iteratedPDerivAt_rename
-    {R sigma tau : Type*} [CommSemiring R]
-    (f : sigma → tau) (hf : Function.Injective f)
-    (i : sigma) (n : ℕ) (P : MvPolynomial sigma R) :
-    iteratedPDerivAt (f i) n (MvPolynomial.rename f P) =
-      MvPolynomial.rename f (iteratedPDerivAt i n P) := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-      simp only [iteratedPDerivAt, ih]
-      rw [MvPolynomial.pderiv_rename hf]
-
 private theorem iteratedPDerivAt_inr_mul_rename
     {R sigma tau : Type*} [CommRing R]
     (j : tau) (n : ℕ) (G : MvPolynomial sigma R)

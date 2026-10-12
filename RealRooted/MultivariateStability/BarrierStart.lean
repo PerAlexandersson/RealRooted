@@ -19,21 +19,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem eval_realDetPencil
-    (B : Fin m → Matrix (Fin n) (Fin n) ℝ)
-    (z : Fin m → ℝ) :
-    MvPolynomial.eval z (realDetPencil 0 B) =
-      (∑ k, z k • B k).det := by
-  unfold realDetPencil
-  erw [RingHom.map_det]
-  congr 1
-  apply Matrix.ext
-  intro i j
-  change MvPolynomial.eval z
-      (MvPolynomial.C (0 : ℝ) + ∑ k, MvPolynomial.X k *
-        MvPolynomial.C (B k i j)) = _
-  simp [Matrix.sum_apply, Matrix.smul_apply]
-
 /-- Evaluation of the real determinant pencil is the determinant of the
 evaluated matrix pencil. -/
 theorem realDetPencil_eval
@@ -41,7 +26,7 @@ theorem realDetPencil_eval
     (z : Fin m → ℝ) :
     MvPolynomial.eval z (realDetPencil 0 As) =
       (∑ k, z k • As k).det := by
-  exact eval_realDetPencil As z
+  simpa using eval_realDetPencil (A := 0) As z
 
 /-- A normalized PSD determinant pencil is positive above the constant point
 `t • 1` for every positive `t`. -/

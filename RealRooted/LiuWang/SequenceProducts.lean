@@ -329,11 +329,4 @@ end RealRooted.LiuWang
 
 namespace RealRooted
 
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_lw_tR_lag_sequence := LiuWang.isRealRooted_of_positive_X_mul_lag_sequence
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_lw_current_one_add_X_positive_t_lag_sequence :=
-  LiuWang.strictInterl_current_one_add_X_positive_t_lag_sequence
-
 end RealRooted

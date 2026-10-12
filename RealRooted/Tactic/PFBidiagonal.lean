@@ -19,9 +19,6 @@ noncomputable section
 
 namespace RealRooted
 
-@[deprecated (since := "2026-10-05")] alias splits_of_isPFPolynomial :=
-  RealRooted.Tactic.pf_splits
-
 /-- Sequence wrapper for first-order recurrences by coefficient-bidiagonal
 PF-preserving operators. -/
 theorem isPFPolynomial_of_bidiagonalOperator_sequence

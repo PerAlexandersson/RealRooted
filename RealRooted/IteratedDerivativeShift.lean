@@ -1543,28 +1543,4 @@ theorem hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
       _ ≤ p.natDegree := card_roots' p
   lia
 
-@[deprecated (since := "2026-10-05")]
-alias TDeriv := tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias natDegree_TDeriv := natDegree_tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias HasPosLeadingCoeff.TDeriv := HasPosLeadingCoeff.tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_ne_zero := tDeriv_ne_zero
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_add := tDeriv_add
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_C_mul := tDeriv_C_mul
-
-@[deprecated (since := "2026-10-05")]
-alias splits_tderiv := splits_tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias splits_tderiv_all := splits_tDeriv_all
-
 end RealRooted

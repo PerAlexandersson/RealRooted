@@ -61,7 +61,7 @@ theorem allComboRealRooted_of_strictInterl_or_reverse
     AllComboRealRooted f g
   | Or.inl hstrictInterl => allComboRealRooted_of_strictInterl hstrictInterl
   | Or.inr hstrictInterl =>
-      allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
+      (allComboRealRooted_of_strictInterl hstrictInterl).comm
 
 namespace Compatible
 

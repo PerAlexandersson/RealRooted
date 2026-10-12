@@ -241,13 +241,6 @@ def Equiv.Perm.patternCount {n k : ℕ} (σ : Equiv.Perm (Fin n))
     σ.patternCount τ = 0 ↔ σ.Avoids τ := by
   exact List.patternCount_eq_zero_iff _ _
 
-private theorem Equiv.Perm.ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (Equiv.Perm.complement σ) = (List.ofFn σ).map Fin.rev := by
-  apply List.ext_get
-  · simp
-  · intro i hi hj
-    simp [Equiv.Perm.complement, Fin.revPerm_apply]
-
 /-- Complementing both permutations preserves their pattern count. -/
 theorem Equiv.Perm.patternCount_complement {n k : ℕ}
     (σ : Equiv.Perm (Fin n)) (τ : Equiv.Perm (Fin k)) :

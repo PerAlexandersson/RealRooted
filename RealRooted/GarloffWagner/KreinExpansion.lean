@@ -19,57 +19,19 @@ theorem exists_kreinRootDeletedExpansion_right {f g : ℝ[X]}
       (∀ ap ∈ l, ∃ u : ℝ, g = (X - C u) * ap.2) ∧
         (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         f = C c * g + weightedSum l := by
-  classical
   rcases exists_C_mul_sub_natDegree_lt_of_le hfg.2.1.1 hgdeg
       hfg.natDegree_le with ⟨c, hcdeg⟩
-  let roots : List ℝ := g.roots.toFinset.toList
-  have hroots_nodup : roots.Nodup := Finset.nodup_toList _
-  have hroot : ∀ u ∈ roots, g.IsRoot u :=
-    fun _ hu => (mem_roots hfg.2.1.1).mp
-      (Multiset.mem_toFinset.mp (Finset.mem_toList.mp hu))
-  have hdata : ∀ u ∈ roots, ∃ a : ℝ, ∃ q : ℝ[X],
-      g = (X - C u) * q ∧
-        IsKreinSummand g q ∧
-        (X - C u) ^ (g.rootMultiplicity u) ∣
-          f - C c * g - C a * q :=
-    fun u hu => exists_kreinCoefficientData_of_right_isRoot hfg hfg.2.1.2 c (hroot u hu)
-  choose a q hfactor hsummand hgain using hdata
-  let a' : ℝ → ℝ := fun u => if hu : u ∈ roots then a u hu else 0
-  let q' : ℝ → ℝ[X] := fun u => if hu : u ∈ roots then q u hu else 0
-  let l : List (ℝ × ℝ[X]) := roots.map fun u => (a' u, q' u)
-  have hfactor' : ∀ u ∈ roots, g = (X - C u) * q' u := by
-    intro u hu
-    simp [q', hu, hfactor u hu]
-  have hgain' : ∀ u ∈ roots,
-      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - C (a' u) * q' u := by
-    intro u hu
-    simp [a', q', hu, hgain u hu]
-  have hdiv_roots : ∀ u ∈ roots,
-      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l := by
-    simpa [l] using
-      fullRootMultiplicity_dvd_sub_weightedSum_rootDeleted
-        hfg.2.1.1 roots hroots_nodup a' q' hfactor' hgain'
-  have hdiv_all_roots : ∀ u ∈ g.roots,
-      (X - C u) ^ (g.rootMultiplicity u) ∣ f - C c * g - weightedSum l :=
-    fun u hu => hdiv_roots u (by
-      rw [Finset.mem_toList, Multiset.mem_toFinset]
-      exact hu)
-  have hdiv : g ∣ f - C c * g - weightedSum l :=
-    dvd_of_roots_fullRootMultiplicity_dvd hfg.2.1.1 hfg.2.1.2 hdiv_all_roots
+  rcases exists_kreinRootDeletedSub_dvd_right hfg c with ⟨l, hfactor, hsummand, hdiv⟩
   have hwsdeg : (weightedSum l).natDegree < g.natDegree := by
-    simpa [l] using
-      natDegree_weightedSum_deletedFactors_lt hfg.2.1.1 hgdeg roots a' q' hfactor'
+    apply natDegree_weightedSum_lt_of_forall hgdeg
+    intro ap hap
+    rcases hfactor ap hap with ⟨u, hfactor⟩
+    exact natDegree_lt_of_kreinDeleted_factor hfg.2.1.1 hfactor
   have hresdeg : (f - C c * g - weightedSum l).natDegree < g.natDegree :=
     natDegree_sub_lt_of_both_lt hgdeg hcdeg hwsdeg
   have hzero : f - C c * g - weightedSum l = 0 :=
     eq_zero_of_dvd_of_natDegree_lt hdiv hresdeg
-  refine ⟨c, l, ?_, ?_, ?_⟩
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
-    exact ⟨u, hfactor' u hu⟩
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
-    simp [q', hu, hsummand u hu]
+  refine ⟨c, l, hfactor, hsummand, ?_⟩
   · have hsub : f - C c * g = weightedSum l := sub_eq_zero.mp hzero
     rw [← hsub]
     ring

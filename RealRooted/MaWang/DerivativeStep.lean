@@ -377,27 +377,4 @@ end RealRooted.MaWang
 
 namespace RealRooted
 
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_of_nonpos_of_pos_natDegree :=
-  MaWang.strictInterl_derivative_of_nonpos_of_pos_natDegree
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_of_nonpos := MaWang.strictInterl_derivative_of_nonpos
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_of_nonpos_of_recurrence :=
-  MaWang.strictInterl_derivative_of_nonpos_of_recurrence
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_C_mul_X_mul_of_nonneg_on_roots :=
-  MaWang.strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_X_mul_one_add_X_of_roots_in_Icc :=
-  MaWang.strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc
-
-@[deprecated (since := "2026-10-05")]
-alias strictInterl_mw_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one :=
-  MaWang.strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-
 end RealRooted

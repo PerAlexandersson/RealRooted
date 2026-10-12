@@ -215,11 +215,10 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
   · have hfx_ne : f.eval x ≠ 0 := fun hfx0 => by simp_all
     refine ⟨p, f, rfl, Or.inl ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hfx_ne⟩
     · exact
-        allComboRealRooted_linear_recombination
+        hall.linear_recombination
           (p := p) (q := f)
           (a := g.eval x) (b := -f.eval x) (c := 1) (d := 0)
           (by lia) (by simp)
-          hall
     · exact
         no_common_root_linear_change
           (p := p) (q := f)
@@ -229,11 +228,10 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
           hno
   · refine ⟨p, g, rfl, Or.inr ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hgx0⟩
     · exact
-        allComboRealRooted_linear_recombination
+        hall.linear_recombination
           (p := p) (q := g)
           (a := g.eval x) (b := -f.eval x) (c := 0) (d := 1)
           (by lia) (by simp)
-          hall
     · exact
         no_common_root_linear_change
           (p := p) (q := g)
@@ -364,7 +362,7 @@ lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and
     have hprod_neg : p.derivative.derivative.eval x * q.eval x < 0 := by grind
     have hneg_pos : 0 < p.derivative.derivative.eval x * (-q).eval x := by simp_all
     have hall_neg : AllComboRealRooted p (-q) := by
-      simpa using (allComboRealRooted_C_mul_right (f := p) (g := q) (c := (-1 : ℝ)) hall)
+      simpa using (hall.C_mul_right (c := (-1 : ℝ)))
     have hq_neg_eval_ne : (-q).eval x ≠ 0 := by simp_all
     exact
       false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
