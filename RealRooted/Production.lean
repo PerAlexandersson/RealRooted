@@ -1675,6 +1675,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
 import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
 import RealRooted.MultivariateStability.ExpectedCharpoly
 import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+import RealRooted.CoefficientShape.LocalLimit
+import RealRooted.Mathlib.Probability.LocalLimit
 
 /-!
 # RealRooted production umbrella
