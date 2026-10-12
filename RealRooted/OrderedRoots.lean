@@ -26,6 +26,14 @@ theorem orderedRoot_mem_roots {p : ℝ[X]} {n : ℕ} (hcard : p.roots.card = n) 
     ← Multiset.mem_sort (· ≤ ·)]
   exact List.getElem_mem hi
 
+/-- The `i`th ordered root is a root of a split polynomial of the corresponding degree. -/
+theorem orderedRoot_isRoot_of_splits
+    {p : ℝ[X]} {n : ℕ} (hp : p.Splits)
+    (hdeg : p.natDegree = n) (i : Fin n) :
+    p.IsRoot (orderedRoot p n i) :=
+  Polynomial.isRoot_of_mem_roots <|
+    orderedRoot_mem_roots (by rw [card_roots_of_splits hp, hdeg]) i
+
 /-- For two nonzero, split polynomials of degree `n`, interlacing is
 equivalent to the coordinate bounds on their canonically ordered roots. -/
 theorem strictInterl_iff_orderedRoot_bounds

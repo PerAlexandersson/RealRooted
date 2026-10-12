@@ -559,13 +559,8 @@ coefficient. -/
 lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam₁ lam₂ : ℝ} (hlam₁ : 0 < lam₁) (hlam₂ : 0 < lam₂) :
     PosComboRealRooted (C lam₁ * f + g) (C lam₂ * f + g) := by
-  intro lam μ hlam hμ
-  have hcomb_pos : 0 < lam * lam₁ + μ * lam₂ := by positivity
-  have hsum_pos : 0 < lam + μ := add_pos hlam hμ
-  have hbase : ((C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g) ≠ 0 ∧
-    (C (lam * lam₁ + μ * lam₂) * f + C (lam + μ) * g).Splits) :=
-    h hcomb_pos hsum_pos
-  grind
+  rw [add_comm (C lam₁ * f) g, add_comm (C lam₂ * f) g]
+  exact family_pair_right (f := g) (g := f) h.comm hlam₁ hlam₂
 
 lemma family_no_common_right {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)

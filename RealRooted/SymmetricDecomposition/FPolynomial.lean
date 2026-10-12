@@ -228,9 +228,13 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
           rw [fPolynomial_succ_of_natDegree_le hp]
     _ = (C (1 - r) * X - C r) * fPolynomial d p := by grind
 
+/-- Forward Möbius root transform `r ↦ r / (1-r)`. -/
+def transformedRoot (r : ℝ) : ℝ := r / (1 - r)
+
 lemma transformedRoot_nonpos {r : ℝ} (hr : r ≤ 0) :
-    r / (1 - r) ≤ 0 :=
-  div_nonpos_of_nonpos_of_nonneg hr (by linarith)
+    transformedRoot r ≤ 0 := by
+  change r / (1 - r) ≤ 0
+  exact div_nonpos_of_nonpos_of_nonneg hr (by linarith)
 
 /-- Inverse Möbius map to `r ↦ r / (1-r)` on `(-1, ∞)`. -/
 def untransformRoot (x : ℝ) : ℝ := x / (1 + x)

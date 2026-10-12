@@ -81,12 +81,7 @@ theorem coeff_rectangularLeftSlice_of_le (m n : ℕ) (p : ℂ[X])
     (rectangularLeftSlice m n p y).coeff k =
       p.coeff k / ((m + n).choose (m + k) : ℂ) *
         (Finset.univ.val.map y).esymm (m + k) := by
-  unfold rectangularLeftSlice
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-  · simp
-  · intro j hj hjk
-    simp [Polynomial.coeff_monomial, hjk]
-  · simp [hk]
+  simp [rectangularLeftSlice, hk, Polynomial.coeff_monomial]
 
 theorem natDegree_rectangularLeftSlice_le (m n : ℕ) (p : ℂ[X])
     (y : Fin (m + n) → ℂ) :
@@ -126,22 +121,13 @@ def rectangularRightSlice (m n : ℕ) (p : ℂ[X]) (x : ℂ) : ℂ[X] :=
 theorem coeff_rectangularRightSlice_add_of_le (m n : ℕ) (p : ℂ[X])
     (x : ℂ) {k : ℕ} (hk : k ≤ n) :
     (rectangularRightSlice m n p x).coeff (m + k) = p.coeff k * x ^ k := by
-  unfold rectangularRightSlice
-  rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single k]
-  · simp
-  · intro j hj hjk
-    simp [Polynomial.coeff_monomial, Nat.add_left_cancel_iff, hjk]
-  · simp [hk]
+  simp [rectangularRightSlice, hk, Polynomial.coeff_monomial]
 
 theorem coeff_rectangularRightSlice_eq_zero_of_lt (m n : ℕ) (p : ℂ[X])
     (x : ℂ) {j : ℕ} (hj : j < m) :
     (rectangularRightSlice m n p x).coeff j = 0 := by
-  unfold rectangularRightSlice
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [Polynomial.coeff_monomial, ite_eq_right]
-  exact (hj.trans_le (Nat.le_add_right m k)).ne'
+  simp [rectangularRightSlice, Polynomial.coeff_monomial,
+    fun k => (hj.trans_le (Nat.le_add_right m k)).ne']
 
 theorem natDegree_rectangularRightSlice_le (m n : ℕ) (p : ℂ[X]) (x : ℂ) :
     (rectangularRightSlice m n p x).natDegree ≤ m + n := by
