@@ -113,16 +113,14 @@ lemma natDegree_stirlingPermutations (n : Nat) :
     (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk))
     (ne_of_gt htop)
 
-lemma stirlingPermutations_ne_zero (n : Nat) :
-    stirlingPermutations n ≠ 0 := by
-  rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, _⟩
-  exact fun h0 => by
-    simp [h0] at htop
-
 lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (stirlingPermutations n) := by
   simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_stirlingPermutations] using
     (coeff_stirlingPermutations_top_pos_and_above n).1
+
+lemma stirlingPermutations_ne_zero (n : Nat) :
+    stirlingPermutations n ≠ 0 :=
+  (stirlingPermutations_posLeadingCoeff n).ne_zero
 
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n)

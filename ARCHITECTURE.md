@@ -1758,6 +1758,8 @@ Dedup leaf batch 4 The budgets of `RealRooted`, `Tactic.Examples` rise to the ne
 
 Dedup leaf batch 3: shared helper imports The budgets of `RootCounting`, `RootCounting.Threshold`, `RootCounting.Threshold.Anchor`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs` rise to the new closure sizes.
 
+leaf 8 The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 leaf 7 The budgets of `RealRooted`, `Production`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `CombinatorialExamples.JacobiStirling.FirstKind`, `CombinatorialExamples.JacobiStirling.Inverse`, `CombinatorialExamples.JacobiStirling.SecondKind`, `FiniteFreeAdditive.HalfIntegerPreservation`, `FiniteFreeAdditive.Identity`, `FiniteFreeAdditive.Preservation` rise to the new closure sizes.
 
 Run the architecture check with:

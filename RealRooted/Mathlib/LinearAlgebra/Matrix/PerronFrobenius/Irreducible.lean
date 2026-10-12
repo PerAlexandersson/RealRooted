@@ -345,8 +345,8 @@ theorem pft_primitive
 /-- Adding the identity to an irreducible nonnegative matrix makes it primitive. -/
 lemma one_add_isPrimitive_of_irreducible [Nonempty n]
     {A : Matrix n n ℝ} (hA_irred : A.IsIrreducible) :
-    (1 + A).IsPrimitive := by
-  exact IsPrimitive.of_irreducible_pos_diagonal (1 + A)
+    (1 + A).IsPrimitive :=
+  IsPrimitive.of_irreducible_pos_diagonal (1 + A)
     (fun i j => Matrix.one_add_apply_nonneg hA_irred.nonneg i j)
     (Irreducible.add_one (A := A) hA_irred)
     (fun i => Matrix.one_add_diag_pos (fun j => hA_irred.nonneg j j) i)

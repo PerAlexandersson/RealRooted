@@ -356,8 +356,8 @@ theorem arrayNormalizedDeterminant_recurrence (n : ℕ) :
         Polynomial.C (alphaC (n + 3)) * Polynomial.X *
           arrayNormalizedDeterminant (n + 1) +
         Polynomial.C (betaC (n + 3)) * Polynomial.X ^ 2 *
-          arrayNormalizedDeterminant n := by
-  exact lowerHessenbergTwo_det_recurrence
+          arrayNormalizedDeterminant n :=
+  lowerHessenbergTwo_det_recurrence
     (fun m => Polynomial.C (alphaC m))
     (fun m => Polynomial.C (betaC m)) Polynomial.X n
 

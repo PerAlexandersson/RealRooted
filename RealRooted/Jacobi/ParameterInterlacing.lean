@@ -538,9 +538,7 @@ private theorem shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
     rw [coeff_eq_zero_of_natDegree_lt hpoly,
       coeff_eq_zero_of_natDegree_lt hq]
 
-private theorem shiftedJacobiMonic_two_neg_half_one :
-    shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
-      X ^ 2 - C (2 / 3 : ℝ) * X + C (1 / 21 : ℝ) := by
+local macro "verify_shiftedJacobiMonic_explicit" : tactic => `(tactic| (
   apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
     (by norm_num) (by norm_num) (by compute_degree!)
   intro k hk
@@ -548,43 +546,27 @@ private theorem shiftedJacobiMonic_two_neg_half_one :
   interval_cases k <;>
     norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
       smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]))
+
+private theorem shiftedJacobiMonic_two_neg_half_one :
+    shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
+      X ^ 2 - C (2 / 3 : ℝ) * X + C (1 / 21 : ℝ) := by
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_two_one_one :
     shiftedJacobiMonic 2 (1 : ℝ) 1 =
       X ^ 2 - X + C (1 / 5 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_two_half_one :
     shiftedJacobiMonic 2 (1 / 2 : ℝ) 1 =
       X ^ 2 - C (10 / 11 : ℝ) * X + C (5 / 33 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_two_two_one :
     shiftedJacobiMonic 2 (2 : ℝ) 1 =
       X ^ 2 - C (8 / 7 : ℝ) * X + C (2 / 7 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 /-- In degree two, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/
@@ -632,53 +614,25 @@ private theorem shiftedJacobiMonic_three_neg_half_one :
     shiftedJacobiMonic 3 (-(1 / 2) : ℝ) 1 =
       X ^ 3 - C (15 / 13 : ℝ) * X ^ 2 +
         C (45 / 143 : ℝ) * X - C (5 / 429 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_three_one_one :
     shiftedJacobiMonic 3 (1 : ℝ) 1 =
       X ^ 3 - C (3 / 2 : ℝ) * X ^ 2 +
         C (9 / 14 : ℝ) * X - C (1 / 14 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_three_half_one :
     shiftedJacobiMonic 3 (1 / 2 : ℝ) 1 =
       X ^ 3 - C (7 / 5 : ℝ) * X ^ 2 +
         C (7 / 13 : ℝ) * X - C (7 / 143 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 private theorem shiftedJacobiMonic_three_two_one :
     shiftedJacobiMonic 3 (2 : ℝ) 1 =
       X ^ 3 - C (5 / 3 : ℝ) * X ^ 2 +
         C (5 / 6 : ℝ) * X - C (5 / 42 : ℝ) := by
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]
+  verify_shiftedJacobiMonic_explicit
 
 /-- In degree three, the fractional first-parameter comparison needed by the
 two parking-function parity classes is strictly interleaving. -/

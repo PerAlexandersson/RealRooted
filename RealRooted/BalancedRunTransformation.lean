@@ -50,8 +50,8 @@ theorem coeff_balancedRunPolynomial (n m k : ℕ) (hm : m ≤ n) :
 
 private theorem coeff_balancedRunPolynomial_eq_balancedRunCoeff
     (n m k : ℕ) (hm : m ≤ n) :
-    (balancedRunPolynomial n m).coeff k = balancedRunCoeff n m k := by
-  exact coeff_balancedRunPolynomial n m k hm
+    (balancedRunPolynomial n m).coeff k = balancedRunCoeff n m k :=
+  coeff_balancedRunPolynomial n m k hm
 
 @[simp] theorem balancedRunPolynomial_zero (n : ℕ) :
     balancedRunPolynomial n 0 = 1 := by

@@ -613,8 +613,8 @@ theorem splits_step_X_sub_C_mul {a b : ℝ} {d : ℕ} (q : ℝ[X])
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b)
     (hq : IsNegativeSimple q) (hd : 1 ≤ d) (hqd : q.natDegree = d) :
     ∀ ρ : ℝ, (step a b ((X - C ρ) * q)).Splits ∧
-      HasSimpleRoots (step a b ((X - C ρ) * q)) := by
-  exact splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd
+      HasSimpleRoots (step a b ((X - C ρ) * q)) :=
+  splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd
 
 private theorem isNegativeSimple_step_of_natDegree_zero {a b : ℝ}
     (hab : 0 < a * b) {q : ℝ[X]}

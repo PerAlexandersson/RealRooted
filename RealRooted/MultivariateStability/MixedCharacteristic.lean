@@ -261,8 +261,8 @@ theorem mvRealStable_mixedCharacteristicMv
 theorem mixedCharacteristic_splits
     (As : Fin m → Matrix (Fin n) (Fin n) ℝ)
     (hAs : ∀ i, (As i).PosSemidef) :
-    (mixedCharacteristic As).Splits := by
-  exact (mvRealStable_mixedCharacteristicMv As hAs).samePhaseStable
+    (mixedCharacteristic As).Splits :=
+  (mvRealStable_mixedCharacteristicMv As hAs).samePhaseStable
     (outputWeights m) (by
       intro i
       cases i <;> simp [outputWeights])

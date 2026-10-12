@@ -171,8 +171,8 @@ every Pólya-frequency polynomial. -/
 theorem isPFPolynomial_map_of_isNegativeSimple
     (T : ℝ[X] →ₗ[ℝ] ℝ[X])
     (hT : ∀ {q : ℝ[X]}, IsNegativeSimple q → IsPFPolynomial (T q)) {p : ℝ[X]}
-    (hp : IsPFPolynomial p) : IsPFPolynomial (T p) := by
-  exact isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le T
+    (hp : IsPFPolynomial p) : IsPFPolynomial (T p) :=
+  isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le T
     (fun hq _ => hT hq) hp le_rfl
 
 end RealRooted
