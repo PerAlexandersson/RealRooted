@@ -23,198 +23,167 @@ theorem motzkinRef_0 : (motzkinRef 0 : ℝ[X]) = ofList [1] := by
 theorem motzkinRef_1 : (motzkinRef 1 : ℝ[X]) = ofList [2] := by
   simp [two_eq_ofList]
 
-theorem motzkinRef_2 : (motzkinRef 2 : ℝ[X]) = ofList [4, 1] := by
+attribute [local simp] motzkinRef_0 motzkinRef_1
+
+private theorem motzkinRow_2 : (motzkinRef 2 : ℝ[X]) = ofList [4, 1] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceSub, zero_add, two_eq_ofList,
-    motzkinRef_0, motzkinRef_1]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_2
 
-theorem motzkinRef_3 : (motzkinRef 3 : ℝ[X]) = ofList [8, 6] := by
+private theorem motzkinRow_3 : (motzkinRef 3 : ℝ[X]) = ofList [8, 6] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_3
 
-theorem motzkinRef_4 : (motzkinRef 4 : ℝ[X]) = ofList [16, 24, 2] := by
+private theorem motzkinRow_4 : (motzkinRef 4 : ℝ[X]) = ofList [16, 24, 2] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_4
 
-theorem motzkinRef_5 : (motzkinRef 5 : ℝ[X]) = ofList [32, 80, 20] := by
+private theorem motzkinRow_5 : (motzkinRef 5 : ℝ[X]) = ofList [32, 80, 20] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_5
 
-theorem motzkinRef_6 : (motzkinRef 6 : ℝ[X]) = ofList [64, 240, 120, 5] := by
+private theorem motzkinRow_6 : (motzkinRef 6 : ℝ[X]) = ofList [64, 240, 120, 5] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_6
 
-theorem motzkinRef_7 : (motzkinRef 7 : ℝ[X]) = ofList [128, 672, 560, 70] := by
+private theorem motzkinRow_7 : (motzkinRef 7 : ℝ[X]) = ofList [128, 672, 560, 70] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_7
 
-theorem motzkinRef_8 : (motzkinRef 8 : ℝ[X]) = ofList [256, 1792, 2240, 560, 14] := by
+private theorem motzkinRow_8 : (motzkinRef 8 : ℝ[X]) = ofList [256, 1792, 2240, 560, 14] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_8
 
-theorem motzkinRef_9 : (motzkinRef 9 : ℝ[X]) = ofList [512, 4608, 8064, 3360, 252] := by
+private theorem motzkinRow_9 : (motzkinRef 9 : ℝ[X]) = ofList [512, 4608, 8064, 3360, 252] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_9
 
-theorem motzkinRef_10 : (motzkinRef 10 : ℝ[X]) = ofList [1024, 11520, 26880, 16800, 2520, 42] := by
+private theorem motzkinRow_10 : (motzkinRef 10 : ℝ[X]) = ofList [1024, 11520, 26880, 16800, 2520, 42] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_10
 
-theorem motzkinRef_11 : (motzkinRef 11 : ℝ[X]) = ofList [2048, 28160, 84480, 73920, 18480, 924]
+private theorem motzkinRow_11 : (motzkinRef 11 : ℝ[X]) = ofList [2048, 28160, 84480, 73920, 18480, 924]
     := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_11
 
-theorem motzkinRef_12 : (motzkinRef 12 : ℝ[X]) = ofList [4096, 67584, 253440, 295680, 110880, 11088,
+private theorem motzkinRow_12 : (motzkinRef 12 : ℝ[X]) = ofList [4096, 67584, 253440, 295680, 110880, 11088,
     132] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_12
 
-theorem motzkinRef_13 : (motzkinRef 13 : ℝ[X]) = ofList [8192, 159744, 732160, 1098240, 576576,
+private theorem motzkinRow_13 : (motzkinRef 13 : ℝ[X]) = ofList [8192, 159744, 732160, 1098240, 576576,
     96096, 3432] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_13
 
-theorem motzkinRef_14 : (motzkinRef 14 : ℝ[X]) = ofList [16384, 372736, 2050048, 3843840, 2690688,
+private theorem motzkinRow_14 : (motzkinRef 14 : ℝ[X]) = ofList [16384, 372736, 2050048, 3843840, 2690688,
     672672, 48048, 429] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_14
 
-theorem motzkinRef_15 : (motzkinRef 15 : ℝ[X]) = ofList [32768, 860160, 5591040, 12812800, 11531520,
+private theorem motzkinRow_15 : (motzkinRef 15 : ℝ[X]) = ofList [32768, 860160, 5591040, 12812800, 11531520,
     4036032, 480480, 12870] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_15
 
-theorem motzkinRef_16 : (motzkinRef 16 : ℝ[X]) = ofList [65536, 1966080, 14909440, 41000960,
+private theorem motzkinRow_16 : (motzkinRef 16 : ℝ[X]) = ofList [65536, 1966080, 14909440, 41000960,
     46126080, 21525504, 3843840, 205920, 1430] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_16
 
-theorem motzkinRef_17 : (motzkinRef 17 : ℝ[X]) = ofList [131072, 4456448, 38993920, 126730240,
+private theorem motzkinRow_17 : (motzkinRef 17 : ℝ[X]) = ofList [131072, 4456448, 38993920, 126730240,
     174254080, 104552448, 26138112, 2333760, 48620] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_17
 
-theorem motzkinRef_18 : (motzkinRef 18 : ℝ[X]) = ofList [262144, 10027008, 100270080, 380190720,
+private theorem motzkinRow_18 : (motzkinRef 18 : ℝ[X]) = ofList [262144, 10027008, 100270080, 380190720,
     627314688, 470486016, 156828672, 21003840, 875160, 4862] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16,
-    motzkinRef_17]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_18
 
-theorem motzkinRef_19 : (motzkinRef 19 : ℝ[X]) = ofList [524288, 22413312, 254017536, 1111326720,
+private theorem motzkinRow_19 : (motzkinRef 19 : ℝ[X]) = ofList [524288, 22413312, 254017536, 1111326720,
     2167087104, 1986496512, 851355648, 159629184, 11085360, 184756] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16,
-    motzkinRef_17, motzkinRef_18]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_19
 
-theorem motzkinRef_20 : (motzkinRef 20 : ℝ[X]) = ofList [1048576, 49807360, 635043840, 3175219200,
+private theorem motzkinRow_20 : (motzkinRef 20 : ℝ[X]) = ofList [1048576, 49807360, 635043840, 3175219200,
     7223623680, 7945986048, 4256778240, 1064194560, 110853600, 3695120, 16796] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16,
-    motzkinRef_17, motzkinRef_18, motzkinRef_19]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_20
 
-theorem motzkinRef_21 : (motzkinRef 21 : ℝ[X]) = ofList [2097152, 110100480, 1568931840, 8890613760,
+private theorem motzkinRow_21 : (motzkinRef 21 : ℝ[X]) = ofList [2097152, 110100480, 1568931840, 8890613760,
     23337861120, 30339219456, 19864965120, 6385167360, 931170240, 51731680, 705432] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16,
-    motzkinRef_17, motzkinRef_18, motzkinRef_19, motzkinRef_20]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_21
 
-theorem motzkinRef_22 : (motzkinRef 22 : ℝ[X]) = ofList [4194304, 242221056, 3835166720,
+private theorem motzkinRow_22 : (motzkinRef 22 : ℝ[X]) = ofList [4194304, 242221056, 3835166720,
     24449187840, 73347563520, 111243804672, 87405846528, 35118420480, 6828581760, 569048480,
     15519504, 58786] := by
   rw [motzkinRef_add_two]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    two_eq_ofList, motzkinRef_0, motzkinRef_1, motzkinRef_2, motzkinRef_3, motzkinRef_4,
-    motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8, motzkinRef_9, motzkinRef_10,
-    motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14, motzkinRef_15, motzkinRef_16,
-    motzkinRef_17, motzkinRef_18, motzkinRef_19, motzkinRef_20, motzkinRef_21]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, two_eq_ofList]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] motzkinRow_22
 
 theorem bigDescentPoly_0 : (bigDescentPoly 0 : ℝ[X]) = ofList [1] := by
   simp [ofList_singleton]
@@ -225,280 +194,264 @@ theorem bigDescentPoly_1 : (bigDescentPoly 1 : ℝ[X]) = ofList [1] := by
 theorem bigDescentPoly_2 : (bigDescentPoly 2 : ℝ[X]) = ofList [2] := by
   simp [ofList_singleton, bigDescentPoly_two, map_ofNat]
 
-theorem bigDescentPoly_3 : (bigDescentPoly 3 : ℝ[X]) = ofList [3, 2] := by
+attribute [local simp] bigDescentPoly_0 bigDescentPoly_1 bigDescentPoly_2
+
+private theorem bigDescentRow_3 : (bigDescentPoly 3 : ℝ[X]) = ofList [3, 2] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1,
-    bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_3
 
-theorem bigDescentPoly_4 : (bigDescentPoly 4 : ℝ[X]) = ofList [5, 8, 1] := by
+private theorem bigDescentRow_4 : (bigDescentPoly 4 : ℝ[X]) = ofList [5, 8, 1] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_4
 
-theorem bigDescentPoly_5 : (bigDescentPoly 5 : ℝ[X]) = ofList [8, 26, 8] := by
+private theorem bigDescentRow_5 : (bigDescentPoly 5 : ℝ[X]) = ofList [8, 26, 8] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3,
-    bigDescentPoly_4]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_5
 
-theorem bigDescentPoly_6 : (bigDescentPoly 6 : ℝ[X]) = ofList [13, 72, 45, 2] := by
+private theorem bigDescentRow_6 : (bigDescentPoly 6 : ℝ[X]) = ofList [13, 72, 45, 2] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2,
-    bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_6
 
-theorem bigDescentPoly_7 : (bigDescentPoly 7 : ℝ[X]) = ofList [21, 184, 196, 28] := by
+private theorem bigDescentRow_7 : (bigDescentPoly 7 : ℝ[X]) = ofList [21, 184, 196, 28] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2,
-    bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_7
 
-theorem bigDescentPoly_8 : (bigDescentPoly 8 : ℝ[X]) = ofList [34, 444, 732, 214, 6] := by
+private theorem bigDescentRow_8 : (bigDescentPoly 8 : ℝ[X]) = ofList [34, 444, 732, 214, 6] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, bigDescentPoly_0, bigDescentPoly_1,
-    bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6,
-    bigDescentPoly_7]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_8
 
-theorem bigDescentPoly_9 : (bigDescentPoly 9 : ℝ[X]) = ofList [55, 1030, 2454, 1220, 103] := by
+private theorem bigDescentRow_9 : (bigDescentPoly 9 : ℝ[X]) = ofList [55, 1030, 2454, 1220, 103] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, bigDescentPoly_0,
-    bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5,
-    bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_9
 
-theorem bigDescentPoly_10 : (bigDescentPoly 10 : ℝ[X]) = ofList [89, 2320, 7607, 5776, 986, 18]
+private theorem bigDescentRow_10 : (bigDescentPoly 10 : ℝ[X]) = ofList [89, 2320, 7607, 5776, 986, 18]
     := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4,
-    bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_10
 
-theorem bigDescentPoly_11 : (bigDescentPoly 11 : ℝ[X]) = ofList [144, 5110, 22216, 24024, 6910, 382]
+private theorem bigDescentRow_11 : (bigDescentPoly 11 : ℝ[X]) = ofList [144, 5110, 22216, 24024, 6910, 382]
     := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3,
-    bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8,
-    bigDescentPoly_9, bigDescentPoly_10]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_11
 
-theorem bigDescentPoly_12 : (bigDescentPoly 12 : ℝ[X]) = ofList [233, 11060, 61923, 90754, 39575,
+private theorem bigDescentRow_12 : (bigDescentPoly 12 : ℝ[X]) = ofList [233, 11060, 61923, 90754, 39575,
     4410, 57] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2,
-    bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7,
-    bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_12
 
-theorem bigDescentPoly_13 : (bigDescentPoly 13 : ℝ[X]) = ofList [377, 23608, 166254, 318220, 196281,
+private theorem bigDescentRow_13 : (bigDescentPoly 13 : ℝ[X]) = ofList [377, 23608, 166254, 318220, 196281,
     36728, 1432] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, bigDescentPoly_0, bigDescentPoly_1,
-    bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6,
-    bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11,
-    bigDescentPoly_12]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_13
 
-theorem bigDescentPoly_14 : (bigDescentPoly 14 : ℝ[X]) = ofList [610, 49832, 432896, 1051390,
+private theorem bigDescentRow_14 : (bigDescentPoly 14 : ℝ[X]) = ofList [610, 49832, 432896, 1051390,
     873284, 246884, 19358, 186] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, bigDescentPoly_0, bigDescentPoly_1,
-    bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6,
-    bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11,
-    bigDescentPoly_12, bigDescentPoly_13]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_14
 
-theorem bigDescentPoly_15 : (bigDescentPoly 15 : ℝ[X]) = ofList [987, 104234, 1098828, 3309068,
+private theorem bigDescentRow_15 : (bigDescentPoly 15 : ℝ[X]) = ofList [987, 104234, 1098828, 3309068,
     3567638, 1421874, 186808, 5408] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, bigDescentPoly_0,
-    bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5,
-    bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10,
-    bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_15
 
-theorem bigDescentPoly_16 : (bigDescentPoly 16 : ℝ[X]) = ofList [1597, 216408, 2729933, 10002200,
+private theorem bigDescentRow_16 : (bigDescentPoly 16 : ℝ[X]) = ofList [1597, 216408, 2729933, 10002200,
     13603845, 7277606, 1441643, 83816, 622] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4,
-    bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9,
-    bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14,
-    bigDescentPoly_15]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_16
 
-theorem bigDescentPoly_17 : (bigDescentPoly 17 : ℝ[X]) = ofList [2584, 446546, 6659288, 29218544,
+private theorem bigDescentRow_17 : (bigDescentPoly 17 : ℝ[X]) = ofList [2584, 446546, 6659288, 29218544,
     49000850, 33921896, 9454704, 919832, 20546] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3,
-    bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8,
-    bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13,
-    bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_17
 
-theorem bigDescentPoly_18 : (bigDescentPoly 18 : ℝ[X]) = ofList [4181, 916736, 15990585, 82896786,
+private theorem bigDescentRow_18 : (bigDescentPoly 18 : ℝ[X]) = ofList [4181, 916736, 15990585, 82896786,
     168246522, 146500506, 54707366, 8014702, 359196, 2120] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2,
-    bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7,
-    bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12,
-    bigDescentPoly_13, bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16, bigDescentPoly_17]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_18
 
-theorem bigDescentPoly_19 : (bigDescentPoly 19 : ℝ[X]) = ofList [6765, 1874040, 37875992, 229323740,
+private theorem bigDescentRow_19 : (bigDescentPoly 19 : ℝ[X]) = ofList [6765, 1874040, 37875992, 229323740,
     554560814, 593750540, 286409460, 58965208, 4418195, 78436] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, bigDescentPoly_0, bigDescentPoly_1,
-    bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6,
-    bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11,
-    bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16,
-    bigDescentPoly_17, bigDescentPoly_18]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_19
 
-theorem bigDescentPoly_20 : (bigDescentPoly 20 : ℝ[X]) = ofList [10946, 3817460, 88648436,
+private theorem bigDescentRow_20 : (bigDescentPoly 20 : ℝ[X]) = ofList [10946, 3817460, 88648436,
     620566518, 1764577818, 2280327816, 1381202590, 380534824, 42899572, 1527102, 7338] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, motzkinRef_18, bigDescentPoly_0, bigDescentPoly_1,
-    bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6,
-    bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11,
-    bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16,
-    bigDescentPoly_17, bigDescentPoly_18, bigDescentPoly_19]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_20
 
-theorem bigDescentPoly_21 : (bigDescentPoly 21 : ℝ[X]) = ofList [17711, 7753230, 205308018,
+private theorem bigDescentRow_21 : (bigDescentPoly 21 : ℝ[X]) = ofList [17711, 7753230, 205308018,
     1647047652, 5444798265, 8362219428, 6217782720, 2210342232, 349886898, 20810230, 300636] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, motzkinRef_18, motzkinRef_19, bigDescentPoly_0,
-    bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5,
-    bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10,
-    bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14, bigDescentPoly_15,
-    bigDescentPoly_16, bigDescentPoly_17, bigDescentPoly_18, bigDescentPoly_19, bigDescentPoly_20]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_21
 
-theorem bigDescentPoly_22 : (bigDescentPoly 22 : ℝ[X]) = ofList [28657, 15707680, 471075379,
+private theorem bigDescentRow_22 : (bigDescentPoly 22 : ℝ[X]) = ofList [28657, 15707680, 471075379,
     4296965312, 16352325660, 29458750794, 26396876846, 11770187316, 2491359453, 222809650, 6451169,
     25724] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, motzkinRef_18, motzkinRef_19, motzkinRef_20,
-    bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3, bigDescentPoly_4,
-    bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8, bigDescentPoly_9,
-    bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13, bigDescentPoly_14,
-    bigDescentPoly_15, bigDescentPoly_16, bigDescentPoly_17, bigDescentPoly_18, bigDescentPoly_19,
-    bigDescentPoly_20, bigDescentPoly_21]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_22
 
-theorem bigDescentPoly_23 : (bigDescentPoly 23 : ℝ[X]) = ofList [46368, 31756782, 1071931992,
+private theorem bigDescentRow_23 : (bigDescentPoly 23 : ℝ[X]) = ofList [46368, 31756782, 1071931992,
     11039859480, 47947815318, 100188675090, 106534932000, 58254010008, 15897732240, 1995219372,
     96478812, 1156188] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, motzkinRef_18, motzkinRef_19, motzkinRef_20,
-    motzkinRef_21, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2, bigDescentPoly_3,
-    bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7, bigDescentPoly_8,
-    bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12, bigDescentPoly_13,
-    bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16, bigDescentPoly_17, bigDescentPoly_18,
-    bigDescentPoly_19, bigDescentPoly_20, bigDescentPoly_21, bigDescentPoly_22]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_23
 
-theorem bigDescentPoly_24 : (bigDescentPoly 24 : ℝ[X]) = ofList [75025, 64091628, 2421110607,
+private theorem bigDescentRow_24 : (bigDescentPoly 24 : ℝ[X]) = ofList [75025, 64091628, 2421110607,
     27976810610, 137616526617, 330294577122, 411386295915, 270816518004, 92634608430, 15537132878,
     1129197822, 27111522, 91144] := by
   rw [bigDescentPoly_succ]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add,
-    firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul, motzkinRef_1, motzkinRef_2,
-    motzkinRef_3, motzkinRef_4, motzkinRef_5, motzkinRef_6, motzkinRef_7, motzkinRef_8,
-    motzkinRef_9, motzkinRef_10, motzkinRef_11, motzkinRef_12, motzkinRef_13, motzkinRef_14,
-    motzkinRef_15, motzkinRef_16, motzkinRef_17, motzkinRef_18, motzkinRef_19, motzkinRef_20,
-    motzkinRef_21, motzkinRef_22, bigDescentPoly_0, bigDescentPoly_1, bigDescentPoly_2,
-    bigDescentPoly_3, bigDescentPoly_4, bigDescentPoly_5, bigDescentPoly_6, bigDescentPoly_7,
-    bigDescentPoly_8, bigDescentPoly_9, bigDescentPoly_10, bigDescentPoly_11, bigDescentPoly_12,
-    bigDescentPoly_13, bigDescentPoly_14, bigDescentPoly_15, bigDescentPoly_16, bigDescentPoly_17,
-    bigDescentPoly_18, bigDescentPoly_19, bigDescentPoly_20, bigDescentPoly_21, bigDescentPoly_22,
-    bigDescentPoly_23]
+  simp [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceAdd, Nat.reduceSub, zero_add, firstReturn_one, firstReturn_two, firstReturn_add_three, one_mul]
   simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]
   exact congrArg ofList (by decide +kernel)
+attribute [local simp] bigDescentRow_24
+
+theorem motzkinRef_2 : (motzkinRef 2 : ℝ[X]) = ofList [4, 1] := motzkinRow_2
+
+theorem motzkinRef_3 : (motzkinRef 3 : ℝ[X]) = ofList [8, 6] := motzkinRow_3
+
+theorem motzkinRef_4 : (motzkinRef 4 : ℝ[X]) = ofList [16, 24, 2] := motzkinRow_4
+
+theorem motzkinRef_5 : (motzkinRef 5 : ℝ[X]) = ofList [32, 80, 20] := motzkinRow_5
+
+theorem motzkinRef_6 : (motzkinRef 6 : ℝ[X]) = ofList [64, 240, 120, 5] := motzkinRow_6
+
+theorem motzkinRef_7 : (motzkinRef 7 : ℝ[X]) = ofList [128, 672, 560, 70] := motzkinRow_7
+
+theorem motzkinRef_8 : (motzkinRef 8 : ℝ[X]) = ofList [256, 1792, 2240, 560, 14] := motzkinRow_8
+
+theorem motzkinRef_9 : (motzkinRef 9 : ℝ[X]) = ofList [512, 4608, 8064, 3360, 252] := motzkinRow_9
+
+theorem motzkinRef_10 : (motzkinRef 10 : ℝ[X]) = ofList [1024, 11520, 26880, 16800, 2520, 42] := motzkinRow_10
+
+theorem motzkinRef_11 : (motzkinRef 11 : ℝ[X]) = ofList [2048, 28160, 84480, 73920, 18480, 924] := motzkinRow_11
+
+theorem motzkinRef_12 : (motzkinRef 12 : ℝ[X]) = ofList [4096, 67584, 253440, 295680, 110880, 11088, 132] := motzkinRow_12
+
+theorem motzkinRef_13 : (motzkinRef 13 : ℝ[X]) = ofList [8192, 159744, 732160, 1098240, 576576, 96096, 3432] := motzkinRow_13
+
+theorem motzkinRef_14 : (motzkinRef 14 : ℝ[X]) = ofList [16384, 372736, 2050048, 3843840, 2690688, 672672, 48048, 429] := motzkinRow_14
+
+theorem motzkinRef_15 : (motzkinRef 15 : ℝ[X]) = ofList [32768, 860160, 5591040, 12812800, 11531520, 4036032, 480480, 12870] := motzkinRow_15
+
+theorem motzkinRef_16 : (motzkinRef 16 : ℝ[X]) = ofList [65536, 1966080, 14909440, 41000960, 46126080, 21525504, 3843840, 205920, 1430] := motzkinRow_16
+
+theorem motzkinRef_17 : (motzkinRef 17 : ℝ[X]) = ofList [131072, 4456448, 38993920, 126730240, 174254080, 104552448, 26138112, 2333760, 48620] := motzkinRow_17
+
+theorem motzkinRef_18 : (motzkinRef 18 : ℝ[X]) = ofList [262144, 10027008, 100270080, 380190720, 627314688, 470486016, 156828672, 21003840, 875160, 4862] := motzkinRow_18
+
+theorem motzkinRef_19 : (motzkinRef 19 : ℝ[X]) = ofList [524288, 22413312, 254017536, 1111326720, 2167087104, 1986496512, 851355648, 159629184, 11085360, 184756] := motzkinRow_19
+
+theorem motzkinRef_20 : (motzkinRef 20 : ℝ[X]) = ofList [1048576, 49807360, 635043840, 3175219200, 7223623680, 7945986048, 4256778240, 1064194560, 110853600, 3695120, 16796] := motzkinRow_20
+
+theorem motzkinRef_21 : (motzkinRef 21 : ℝ[X]) = ofList [2097152, 110100480, 1568931840, 8890613760, 23337861120, 30339219456, 19864965120, 6385167360, 931170240, 51731680, 705432] := motzkinRow_21
+
+theorem motzkinRef_22 : (motzkinRef 22 : ℝ[X]) = ofList [4194304, 242221056, 3835166720, 24449187840, 73347563520, 111243804672, 87405846528, 35118420480, 6828581760, 569048480, 15519504, 58786] := motzkinRow_22
+
+theorem bigDescentPoly_3 : (bigDescentPoly 3 : ℝ[X]) = ofList [3, 2] := bigDescentRow_3
+
+theorem bigDescentPoly_4 : (bigDescentPoly 4 : ℝ[X]) = ofList [5, 8, 1] := bigDescentRow_4
+
+theorem bigDescentPoly_5 : (bigDescentPoly 5 : ℝ[X]) = ofList [8, 26, 8] := bigDescentRow_5
+
+theorem bigDescentPoly_6 : (bigDescentPoly 6 : ℝ[X]) = ofList [13, 72, 45, 2] := bigDescentRow_6
+
+theorem bigDescentPoly_7 : (bigDescentPoly 7 : ℝ[X]) = ofList [21, 184, 196, 28] := bigDescentRow_7
+
+theorem bigDescentPoly_8 : (bigDescentPoly 8 : ℝ[X]) = ofList [34, 444, 732, 214, 6] := bigDescentRow_8
+
+theorem bigDescentPoly_9 : (bigDescentPoly 9 : ℝ[X]) = ofList [55, 1030, 2454, 1220, 103] := bigDescentRow_9
+
+theorem bigDescentPoly_10 : (bigDescentPoly 10 : ℝ[X]) = ofList [89, 2320, 7607, 5776, 986, 18] := bigDescentRow_10
+
+theorem bigDescentPoly_11 : (bigDescentPoly 11 : ℝ[X]) = ofList [144, 5110, 22216, 24024, 6910, 382] := bigDescentRow_11
+
+theorem bigDescentPoly_12 : (bigDescentPoly 12 : ℝ[X]) = ofList [233, 11060, 61923, 90754, 39575, 4410, 57] := bigDescentRow_12
+
+theorem bigDescentPoly_13 : (bigDescentPoly 13 : ℝ[X]) = ofList [377, 23608, 166254, 318220, 196281, 36728, 1432] := bigDescentRow_13
+
+theorem bigDescentPoly_14 : (bigDescentPoly 14 : ℝ[X]) = ofList [610, 49832, 432896, 1051390, 873284, 246884, 19358, 186] := bigDescentRow_14
+
+theorem bigDescentPoly_15 : (bigDescentPoly 15 : ℝ[X]) = ofList [987, 104234, 1098828, 3309068, 3567638, 1421874, 186808, 5408] := bigDescentRow_15
+
+theorem bigDescentPoly_16 : (bigDescentPoly 16 : ℝ[X]) = ofList [1597, 216408, 2729933, 10002200, 13603845, 7277606, 1441643, 83816, 622] := bigDescentRow_16
+
+theorem bigDescentPoly_17 : (bigDescentPoly 17 : ℝ[X]) = ofList [2584, 446546, 6659288, 29218544, 49000850, 33921896, 9454704, 919832, 20546] := bigDescentRow_17
+
+theorem bigDescentPoly_18 : (bigDescentPoly 18 : ℝ[X]) = ofList [4181, 916736, 15990585, 82896786, 168246522, 146500506, 54707366, 8014702, 359196, 2120] := bigDescentRow_18
+
+theorem bigDescentPoly_19 : (bigDescentPoly 19 : ℝ[X]) = ofList [6765, 1874040, 37875992, 229323740, 554560814, 593750540, 286409460, 58965208, 4418195, 78436] := bigDescentRow_19
+
+theorem bigDescentPoly_20 : (bigDescentPoly 20 : ℝ[X]) = ofList [10946, 3817460, 88648436, 620566518, 1764577818, 2280327816, 1381202590, 380534824, 42899572, 1527102, 7338] := bigDescentRow_20
+
+theorem bigDescentPoly_21 : (bigDescentPoly 21 : ℝ[X]) = ofList [17711, 7753230, 205308018, 1647047652, 5444798265, 8362219428, 6217782720, 2210342232, 349886898, 20810230, 300636] := bigDescentRow_21
+
+theorem bigDescentPoly_22 : (bigDescentPoly 22 : ℝ[X]) = ofList [28657, 15707680, 471075379, 4296965312, 16352325660, 29458750794, 26396876846, 11770187316, 2491359453, 222809650, 6451169, 25724] := bigDescentRow_22
+
+theorem bigDescentPoly_23 : (bigDescentPoly 23 : ℝ[X]) = ofList [46368, 31756782, 1071931992, 11039859480, 47947815318, 100188675090, 106534932000, 58254010008, 15897732240, 1995219372, 96478812, 1156188] := bigDescentRow_23
+
+theorem bigDescentPoly_24 : (bigDescentPoly 24 : ℝ[X]) = ofList [75025, 64091628, 2421110607, 27976810610, 137616526617, 330294577122, 411386295915, 270816518004, 92634608430, 15537132878, 1129197822, 27111522, 91144] := bigDescentRow_24
 
 end RealRooted.BigDescents321.SmallCases

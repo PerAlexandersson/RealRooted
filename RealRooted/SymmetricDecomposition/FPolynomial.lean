@@ -228,8 +228,11 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
           rw [fPolynomial_succ_of_natDegree_le hp]
     _ = (C (1 - r) * X - C r) * fPolynomial d p := by grind
 
+/-- Forward Möbius root transform `r ↦ r / (1-r)`. -/
+def transformedRoot (r : ℝ) : ℝ := r / (1 - r)
+
 lemma transformedRoot_nonpos {r : ℝ} (hr : r ≤ 0) :
-    r / (1 - r) ≤ 0 :=
+    transformedRoot r ≤ 0 :=
   div_nonpos_of_nonpos_of_nonneg hr (by linarith)
 
 /-- Inverse Möbius map to `r ↦ r / (1-r)` on `(-1, ∞)`. -/
@@ -240,13 +243,13 @@ lemma untransformRoot_nonpos {x : ℝ} (hx1 : -1 < x) (hx0 : x ≤ 0) :
   div_nonpos_of_nonpos_of_nonneg hx0 (by linarith)
 
 lemma transformedRoot_untransformRoot {x : ℝ} (hx1 : -1 < x) :
-    untransformRoot x / (1 - untransformRoot x) = x := by
-  unfold untransformRoot
+    transformedRoot (untransformRoot x) = x := by
+  unfold transformedRoot untransformRoot
   grind
 
 lemma untransformRoot_transformedRoot {r : ℝ} (hr : r ≤ 0) :
-    untransformRoot (r / (1 - r)) = r := by
-  unfold untransformRoot
+    untransformRoot (transformedRoot r) = r := by
+  unfold transformedRoot untransformRoot
   grind
 
 lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
@@ -279,24 +282,24 @@ lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
 
 
 lemma transformedLinearFactor_eq {r : ℝ} (h1r_ne : 1 - r ≠ 0) :
-    C (1 - r) * X - C r = C (1 - r) * (X - C (r / (1 - r))) := by
+    C (1 - r) * X - C r = C (1 - r) * (X - C (transformedRoot r)) := by
   grind
 
 lemma fPolynomial_X_sub_C_mul_succ_of_ne_one (d : ℕ) {r : ℝ} (hr1 : r ≠ 1) {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     fPolynomial (d + 1) ((X - C r) * p) =
-      C (1 - r) * (X - C (r / (1 - r))) * fPolynomial d p := by
+      C (1 - r) * (X - C (transformedRoot r)) * fPolynomial d p := by
   have h1r_ne : 1 - r ≠ 0 := by grind
   rw [fPolynomial_X_sub_C_mul_succ d r hp, transformedLinearFactor_eq h1r_ne]
 
 lemma transformedLinearFactor_eq_of_nonpos {r : ℝ} (hr : r ≤ 0) :
-    C (1 - r) * X - C r = C (1 - r) * (X - C (r / (1 - r))) := by
+    C (1 - r) * X - C r = C (1 - r) * (X - C (transformedRoot r)) := by
   exact transformedLinearFactor_eq (by linarith)
 
 lemma fPolynomial_X_sub_C_mul_succ' (d : ℕ) {r : ℝ} (hr : r ≤ 0) {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     fPolynomial (d + 1) ((X - C r) * p) =
-      C (1 - r) * (X - C (r / (1 - r))) * fPolynomial d p := by
+      C (1 - r) * (X - C (transformedRoot r)) * fPolynomial d p := by
   exact fPolynomial_X_sub_C_mul_succ_of_ne_one d (by linarith) hp
 
 
@@ -321,7 +324,7 @@ private lemma fPolynomial_natDegree_factor_of_isRoot_of_ne_one
     (hr1 : r ≠ 1) (hr : p.IsRoot r) :
     ∃ q, p = (X - C r) * q ∧
       fPolynomial p.natDegree p =
-        C (1 - r) * (X - C (r / (1 - r))) * fPolynomial q.natDegree q := by
+        C (1 - r) * (X - C (transformedRoot r)) * fPolynomial q.natDegree q := by
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr
   have hq' : p = (X - C r) * q := by lia
   have hq_ne : q ≠ 0 := by simp_all
@@ -336,11 +339,11 @@ private lemma fPolynomial_natDegree_factor_of_isRoot_of_ne_one
 /-- The root multiset is transported by the Möbius map. -/
 theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
     (h1 : ¬ p.IsRoot 1) :
-    (fPolynomial p.natDegree p).roots = p.roots.map (fun r => r / (1 - r)) := by
+    (fPolynomial p.natDegree p).roots = p.roots.map transformedRoot := by
   have hP :
       ∀ n (p : ℝ[X]), p.natDegree = n → (p ≠ 0 ∧ p.Splits) →
         ¬ p.IsRoot 1 →
-        (fPolynomial p.natDegree p).roots = p.roots.map (fun r : ℝ => r / (1 - r)) :=
+        (fPolynomial p.natDegree p).roots = p.roots.map transformedRoot :=
     fun n => Nat.strong_induction_on n (fun n ih => by
       intro p hpdeg hp h1p
       by_cases hn : n = 0
@@ -378,7 +381,7 @@ theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.S
         have hqdeg_lt : q.natDegree < n := by lia
         have ihq :
             (fPolynomial q.natDegree q).roots =
-              q.roots.map (fun s : ℝ => s / (1 - s)) :=
+              q.roots.map transformedRoot :=
           ih q.natDegree hqdeg_lt q rfl hq_rr hq1
         have hqf_ne : fPolynomial q.natDegree q ≠ 0 :=
           fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hq1
@@ -389,47 +392,49 @@ theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.S
         have h1r_ne : 1 - r ≠ 0 := by grind
         have hroots_f :
             (fPolynomial p.natDegree p).roots =
-              ({r / (1 - r)} : Multiset ℝ) + (fPolynomial q.natDegree q).roots := by
+              ({transformedRoot r} : Multiset ℝ) + (fPolynomial q.natDegree q).roots := by
           rw [hfac, mul_assoc, roots_C_mul _ h1r_ne,
-            roots_mul (mul_ne_zero (X_sub_C_ne_zero (r / (1 - r))) hqf_ne),
+            roots_mul (mul_ne_zero (X_sub_C_ne_zero (transformedRoot r)) hqf_ne),
             roots_X_sub_C]
         have hp_roots : p.roots = ({r} : Multiset ℝ) + q.roots := by
           rw [hq', roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hq_ne), roots_X_sub_C]
         calc
           (fPolynomial p.natDegree p).roots
-              = ({r / (1 - r)} : Multiset ℝ) + (fPolynomial q.natDegree q).roots := hroots_f
-          _ = ({r / (1 - r)} : Multiset ℝ) +
-                q.roots.map (fun s : ℝ => s / (1 - s)) := by rw [ihq]
-          _ = ({r} : Multiset ℝ).map (fun s : ℝ => s / (1 - s)) +
-                q.roots.map (fun s : ℝ => s / (1 - s)) := by simp
-          _ = (({r} : Multiset ℝ) + q.roots).map (fun s : ℝ => s / (1 - s)) := by simp
-          _ = p.roots.map (fun s : ℝ => s / (1 - s)) := by rw [hp_roots])
+              = ({transformedRoot r} : Multiset ℝ) + (fPolynomial q.natDegree q).roots := hroots_f
+          _ = ({transformedRoot r} : Multiset ℝ) +
+                q.roots.map transformedRoot := by rw [ihq]
+          _ = ({r} : Multiset ℝ).map transformedRoot +
+                q.roots.map transformedRoot := by simp
+          _ = (({r} : Multiset ℝ) + q.roots).map transformedRoot := by simp
+          _ = p.roots.map transformedRoot := by rw [hp_roots])
   exact hP p.natDegree p rfl ⟨hp, hs⟩ h1
 
 
 
 
 private lemma transformedRoot_mono_of_lt_one {r s : ℝ} (hrs : r ≤ s) (hs : s < 1) :
-    r / (1 - r) ≤ s / (1 - s) := by
+    transformedRoot r ≤ transformedRoot s := by
+  change r / (1 - r) ≤ s / (1 - s)
   have h1r : 0 < 1 - r := by linarith
   have h1s : 0 < 1 - s := by linarith
   rw [div_le_div_iff₀ h1r h1s]
   nlinarith
 
 private lemma transformedRoot_mono_of_one_lt {r s : ℝ} (hrs : r ≤ s) (hr : 1 < r) :
-    r / (1 - r) ≤ s / (1 - s) := by
+    transformedRoot r ≤ transformedRoot s := by
+  change r / (1 - r) ≤ s / (1 - s)
   have h1r : 0 < r - 1 := by linarith
   have h1s : 0 < s - 1 := by linarith
-  have hr' : r / (1 - r) = -(r / (r - 1)) := by
+  have hr' : transformedRoot r = -(r / (r - 1)) := by
     rw [show 1 - r = -(r - 1) by ring, div_neg]
-  have hs' : s / (1 - s) = -(s / (s - 1)) := by
+  have hs' : transformedRoot s = -(s / (s - 1)) := by
     rw [show 1 - s = -(s - 1) by ring, div_neg]
   rw [hr', hs', neg_le_neg_iff, div_le_div_iff₀ h1s h1r]
   nlinarith
 
 private lemma pairwise_map_transformedRoot_of_lt_one :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → (∀ r ∈ rs, r < 1) →
-      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·)
+      (rs.map transformedRoot).Pairwise (· ≤ ·)
   | [], _, _ => by simp
   | r :: rs, hrs, hbound => by
       rw [List.pairwise_cons] at hrs
@@ -444,8 +449,8 @@ private lemma pairwise_map_transformedRoot_of_lt_one :
 
 private lemma listInterlaces_map_transformedRoot_of_lt_one :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ r ∈ rs, r < 1) →
-      ListInterlaces (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
+      ListInterlaces (ss.map transformedRoot)
+        (rs.map transformedRoot)
   | [], [], _, _ => by simp [ListInterlaces]
   | [], [_], _, _ => by simp [ListInterlaces]
   | s :: ss, r₁ :: r₂ :: rs, h, hbound => by
@@ -462,8 +467,8 @@ private lemma listInterlaces_map_transformedRoot_of_lt_one :
 
 private lemma listAlternates_map_transformedRoot_of_lt_one :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs → (∀ r ∈ rs, r < 1) →
-      ListAlternates (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
+      ListAlternates (ss.map transformedRoot)
+        (rs.map transformedRoot)
   | [], [], _, _ => by simp [ListAlternates]
   | s :: ss, r :: rs, h, hbound => by
       rcases h with ⟨hsr, htail⟩
@@ -516,15 +521,15 @@ theorem StrictInterl.fPolynomial_natDegree_of_roots_lt_one {f g : ℝ[X]}
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr hr
   have hss_map_eq :
-      (↑(ss.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        f.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hss_eq
+      (↑(ss.map transformedRoot) : Multiset ℝ) =
+        f.roots.map transformedRoot := by
+    simpa using congrArg (fun t : Multiset ℝ => t.map transformedRoot) hss_eq
   have hrs_map_eq :
-      (↑(rs.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        g.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hrs_eq
-  refine ⟨hfr, hgr, ss.map (fun r => r / (1 - r)),
-    rs.map (fun r => r / (1 - r)), ?_, ?_, ?_, ?_, ?_⟩
+      (↑(rs.map transformedRoot) : Multiset ℝ) =
+        g.roots.map transformedRoot := by
+    simpa using congrArg (fun t : Multiset ℝ => t.map transformedRoot) hrs_eq
+  refine ⟨hfr, hgr, ss.map transformedRoot,
+    rs.map transformedRoot, ?_, ?_, ?_, ?_, ?_⟩
   · exact pairwise_map_transformedRoot_of_lt_one hss
       hss_bound
   · exact pairwise_map_transformedRoot_of_lt_one hrs
@@ -543,7 +548,7 @@ theorem StrictInterl.fPolynomial_natDegree_of_roots_lt_one {f g : ℝ[X]}
 
 private lemma pairwise_map_transformedRoot_of_one_lt :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → (∀ r ∈ rs, 1 < r) →
-      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·)
+      (rs.map transformedRoot).Pairwise (· ≤ ·)
   | [], _, _ => by simp
   | r :: rs, hrs, hbound => by
       rw [List.pairwise_cons] at hrs
@@ -559,8 +564,8 @@ private lemma pairwise_map_transformedRoot_of_one_lt :
 private lemma listInterlaces_map_transformedRoot_of_one_lt :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ s ∈ ss, 1 < s) →
       (∀ r ∈ rs, 1 < r) →
-      ListInterlaces (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
+      ListInterlaces (ss.map transformedRoot)
+        (rs.map transformedRoot)
   | [], [], _, _, _ => by simp [ListInterlaces]
   | [], [_], _, _, _ => by simp [ListInterlaces]
   | s :: ss, r₁ :: r₂ :: rs, h, hss, hrs => by
@@ -577,8 +582,8 @@ private lemma listInterlaces_map_transformedRoot_of_one_lt :
 private lemma listAlternates_map_transformedRoot_of_one_lt :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs → (∀ s ∈ ss, 1 < s) →
       (∀ r ∈ rs, 1 < r) →
-      ListAlternates (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
+      ListAlternates (ss.map transformedRoot)
+        (rs.map transformedRoot)
   | [], [], _, _, _ => by simp [ListAlternates]
   | s :: ss, r :: rs, h, hss, hrs => by
       rcases h with ⟨hsr, htail⟩
@@ -618,15 +623,15 @@ theorem StrictInterl.fPolynomial_natDegree_of_one_lt_roots {f g : ℝ[X]}
     rw [← hrs_eq]
     exact Multiset.mem_coe.mpr hr
   have hss_map_eq :
-      (↑(ss.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        f.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hss_eq
+      (↑(ss.map transformedRoot) : Multiset ℝ) =
+        f.roots.map transformedRoot := by
+    simpa using congrArg (fun t : Multiset ℝ => t.map transformedRoot) hss_eq
   have hrs_map_eq :
-      (↑(rs.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        g.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hrs_eq
-  refine ⟨hfr, hgr, ss.map (fun r => r / (1 - r)),
-    rs.map (fun r => r / (1 - r)), ?_, ?_, ?_, ?_, ?_⟩
+      (↑(rs.map transformedRoot) : Multiset ℝ) =
+        g.roots.map transformedRoot := by
+    simpa using congrArg (fun t : Multiset ℝ => t.map transformedRoot) hrs_eq
+  refine ⟨hfr, hgr, ss.map transformedRoot,
+    rs.map transformedRoot, ?_, ?_, ?_, ?_, ?_⟩
   · exact pairwise_map_transformedRoot_of_one_lt hss
       hss_bound
   · exact pairwise_map_transformedRoot_of_one_lt hrs
@@ -644,7 +649,8 @@ theorem StrictInterl.fPolynomial_natDegree_of_one_lt_roots {f g : ℝ[X]}
           hss_bound hrs_bound⟩
 
 lemma neg_one_lt_transformedRoot {r : ℝ} (hr : r ≤ 0) :
-    -1 < r / (1 - r) := by
+    -1 < transformedRoot r := by
+  change -1 < r / (1 - r)
   have h1r_pos : 0 < 1 - r := by linarith
   have hmul : (-1 : ℝ) * (1 - r) < r := by simp
   exact (lt_div_iff₀ h1r_pos).2 hmul
@@ -660,13 +666,14 @@ lemma untransformRoot_mono_of_neg_one_lt {x y : ℝ}
 
 lemma transformedRoot_mono_of_nonpos {r s : ℝ}
     (hrs : r ≤ s) (hs : s ≤ 0) :
-    r / (1 - r) ≤ s / (1 - s) := by
+    transformedRoot r ≤ transformedRoot s := by
+  change r / (1 - r) ≤ s / (1 - s)
   exact transformedRoot_mono_of_lt_one hrs (lt_of_le_of_lt hs zero_lt_one)
 
 lemma pairwise_map_transformedRoot_of_nonpos :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →
       (∀ r ∈ rs, r ≤ 0) →
-      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·) := by
+      (rs.map transformedRoot).Pairwise (· ≤ ·) := by
   intro rs hrs hnonpos
   exact pairwise_map_transformedRoot_of_lt_one hrs
     (fun r hr => lt_of_le_of_lt (hnonpos r hr) zero_lt_one)
@@ -674,8 +681,8 @@ lemma pairwise_map_transformedRoot_of_nonpos :
 lemma listInterlaces_map_transformedRoot_of_nonpos :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs →
       (∀ r ∈ rs, r ≤ 0) →
-      ListInterlaces (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r))) := by
+      ListInterlaces (ss.map transformedRoot)
+        (rs.map transformedRoot) := by
   intro ss rs hnonempty hnonpos
   exact listInterlaces_map_transformedRoot_of_lt_one hnonempty
     (fun r hr => lt_of_le_of_lt (hnonpos r hr) zero_lt_one)
@@ -683,8 +690,8 @@ lemma listInterlaces_map_transformedRoot_of_nonpos :
 lemma listAlternates_map_transformedRoot_of_nonpos :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs →
       (∀ r ∈ rs, r ≤ 0) →
-      ListAlternates (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r))) := by
+      ListAlternates (ss.map transformedRoot)
+        (rs.map transformedRoot) := by
   intro ss rs hnonempty hnonpos
   exact listAlternates_map_transformedRoot_of_lt_one hnonempty
     (fun r hr => lt_of_le_of_lt (hnonpos r hr) zero_lt_one)
@@ -692,8 +699,8 @@ lemma listAlternates_neg_one_cons_map_of_listInterlaces_of_nonpos
     {ss : List ℝ} {r₁ : ℝ} {rs : List ℝ}
     (hint : ListInterlaces ss (r₁ :: rs))
     (hnonpos : ∀ r ∈ (r₁ :: rs), r ≤ 0) :
-    ListAlternates ((-1) :: ss.map (fun r : ℝ => r / (1 - r)))
-      ((r₁ :: rs).map (fun r : ℝ => r / (1 - r))) := by
+    ListAlternates ((-1) :: ss.map transformedRoot)
+      ((r₁ :: rs).map transformedRoot) := by
   refine ⟨le_of_lt (neg_one_lt_transformedRoot (hnonpos r₁ (by simp))), ?_⟩
   exact listInterlaces_map_transformedRoot_of_nonpos hint hnonpos
 
@@ -750,7 +757,7 @@ lemma fPolynomial_natDegree_factor_of_isRoot
     (hr : p.IsRoot r) :
     ∃ q, p = (X - C r) * q ∧
       fPolynomial p.natDegree p =
-        C (1 - r) * (X - C (r / (1 - r))) * fPolynomial q.natDegree q := by
+        C (1 - r) * (X - C (transformedRoot r)) * fPolynomial q.natDegree q := by
   have hr_mem : r ∈ p.roots := (mem_roots hp_ne).mpr hr
   have hr_nonpos : r ≤ 0 :=
     roots_nonpos_of_nonneg_coeffs hp_splits hpnn r hr_mem
@@ -763,7 +770,7 @@ lemma fPolynomial_natDegree_factor_of_isRoot
 lemma isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
-    (fPolynomial p.natDegree p).IsRoot (r / (1 - r)) := by
+    (fPolynomial p.natDegree p).IsRoot (transformedRoot r) := by
   rcases fPolynomial_natDegree_factor_of_isRoot hp_ne hp_splits hpnn hr with ⟨q, _, hfac⟩
   simp_all
 
@@ -771,9 +778,9 @@ lemma isRoot_transformedRoot_fPolynomial_of_isRoot
     {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d)
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) {r : ℝ}
     (hr : p.IsRoot r) :
-    (fPolynomial d p).IsRoot (r / (1 - r)) := by
+    (fPolynomial d p).IsRoot (transformedRoot r) := by
   have hroot_min :
-      (fPolynomial p.natDegree p).IsRoot (r / (1 - r)) :=
+      (fPolynomial p.natDegree p).IsRoot (transformedRoot r) :=
     isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot hp_ne hp_splits hpnn hr
   rw [Polynomial.IsRoot.def, fPolynomial_pad_by_X_add_one_pow (m := p.natDegree) le_rfl hd]
   simp_all
@@ -875,14 +882,14 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
           have h1r_pos : 0 < 1 - r := by linarith
           have h1r_ne : 1 - r ≠ 0 := ne_of_gt h1r_pos
           rw [transformedLinearFactor_eq h1r_ne]
-          exact isRealRooted_C_mul (isRealRooted_X_sub_C (r / (1 - r))).1
-            (isRealRooted_X_sub_C (r / (1 - r))).2 h1r_ne
+          exact isRealRooted_C_mul (isRealRooted_X_sub_C (transformedRoot r)).1
+            (isRealRooted_X_sub_C (transformedRoot r)).2 h1r_ne
         simp_all
 
 theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) :
     (fPolynomial p.natDegree p).roots =
-      p.roots.map (fun r : ℝ => r / (1 - r)) := by
+      p.roots.map transformedRoot := by
   apply roots_fPolynomial_natDegree_eq_map hp_ne hp_splits
   intro hp_root
   have hmem : (1 : ℝ) ∈ p.roots := (mem_roots hp_ne).mpr hp_root
@@ -895,7 +902,7 @@ theorem roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) :
     (fPolynomial d p).roots =
       Multiset.replicate (d - p.natDegree) (-1) +
-        p.roots.map (fun r : ℝ => r / (1 - r)) := by
+        p.roots.map transformedRoot := by
   let n := p.natDegree
   have hpad : fPolynomial d p = (X + 1) ^ (d - n) * fPolynomial n p := by
     simpa [n] using fPolynomial_pad_by_X_add_one_pow (m := n) (p := p) le_rfl hd
@@ -968,7 +975,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
           calc
             fPolynomial n p
                 = (C (1 - r) * X - C r) * fPolynomial u.natDegree u := hq_fac0
-            _ = (C (1 - r) * (X - C (r / (1 - r)))) * fPolynomial u.natDegree u := by grind
+            _ = (C (1 - r) * (X - C (transformedRoot r))) * fPolynomial u.natDegree u := by grind
             _ = (C (1 - r) * (X - C x)) * fPolynomial u.natDegree u := by
                   rw [transformedRoot_untransformRoot (x := x) hx_gt]
             _ = (X - C x) * (C (1 - r) * fPolynomial u.natDegree u) := by grind
@@ -1056,6 +1063,3 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs
 
 
 end RealRooted
-
-
-

@@ -132,8 +132,7 @@ theorem posCombo_sameDegree_rootCount_degree_le_two_sequence
         (((G i).roots.filter (· ≤ x i)).card : ℤ) -
           ((F i).roots.filter (· ≤ x i)).card ≤ (1 : ℤ) := fun i =>
   rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i) (x i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i) (x i)
 
 theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
@@ -151,8 +150,7 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
         (((G i).roots.filter (x i < ·)).card : ℤ) -
           ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
   rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i) (x i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i) (x i)
 
 /-- The proved analytic cubic second-root bound closes the degree-`≤ 3`
 same-degree root-count route. -/
@@ -172,7 +170,7 @@ theorem posCombo_sameDegree_rootCount_degree_le_three
         (f.roots.filter (· ≤ x)).card ≤ 1 := by
   rcases Nat.le_or_eq_of_le_succ hfdeg with hle | hfdeg3
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+      hf_pos hg_pos hfg hdeg hle x
   · exact sameDegree_cubic_rootCount_le_one hfdeg3 (hdeg.trans hfdeg3)
       (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
       (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2

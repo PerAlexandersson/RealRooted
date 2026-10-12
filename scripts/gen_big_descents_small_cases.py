@@ -16,6 +16,7 @@ Requires sympy.  Usage: python3 scripts/gen_big_descents_small_cases.py
 from functools import reduce
 from math import comb, lcm
 from pathlib import Path
+import re
 
 import sympy as sp
 
@@ -193,8 +194,39 @@ theorem bigDescentPoly_2 : (bigDescentPoly 2 : ℝ[X]) = ofList [2] := by
                    simp_only(items) +
                    "\n  simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]"
                    "\n  exact congrArg ofList (by decide +kernel)\n")
-    out.append("\nend RealRooted.BigDescents321.SmallCases\n")
-    return "".join(out)
+    text = "".join(out)
+    text = re.sub(r"\bmotzkinRef_([2-9]|1[0-9]|2[0-2])\b", r"motzkinRow_\1", text)
+    text = re.sub(r"(?m)^theorem motzkinRow_", "private theorem motzkinRow_", text)
+    text = re.sub(r"\bbigDescentPoly_([3-9]|1[0-9]|2[0-4])\b", r"bigDescentRow_\1", text)
+    text = re.sub(r"(?m)^theorem bigDescentRow_", "private theorem bigDescentRow_", text)
+    text = text.replace("private theorem motzkinRow_2 :", "attribute [local simp] motzkinRef_0 motzkinRef_1\n\nprivate theorem motzkinRow_2 :")
+    text = text.replace("private theorem bigDescentRow_3 :", "attribute [local simp] bigDescentPoly_0 bigDescentPoly_1 bigDescentPoly_2\n\nprivate theorem bigDescentRow_3 :")
+
+    def compact(prefix):
+        nonlocal text
+        def simp(match):
+            items = [item.strip() for item in match.group(3).replace("\n", " ").split(",")
+                     if not re.fullmatch(r"\s*(?:motzkin(?:Ref|Row)|bigDescent(?:Poly|Row))_\d+", item)]
+            return match.group(1) + "  simp [" + ", ".join(items) + "]\n"
+        text = re.sub(
+            rf"(private theorem {prefix}_(\d+) .*?  rw \[[^\n]+\]\n)  simp only \[(.*?)\]\n",
+            simp, text, flags=re.DOTALL)
+        text = re.sub(
+            rf"(private theorem {prefix}_(\d+) .*?^  exact congrArg ofList \(by decide \+kernel\)\n)",
+            lambda match: match.group(1) + f"attribute [local simp] {prefix}_{match.group(2)}\n",
+            text, flags=re.DOTALL | re.MULTILINE)
+
+    compact("motzkinRow")
+    compact("bigDescentRow")
+    projections = []
+    for k in range(2, N - 1):
+        projections.append(f"theorem motzkinRef_{k} : (motzkinRef {k} : ℝ[X]) = "
+                           f"ofList {motzkin(k)} := motzkinRow_{k}\n")
+    for n in range(3, N + 1):
+        projections.append(f"theorem bigDescentPoly_{n} : (bigDescentPoly {n} : ℝ[X]) = "
+                           f"ofList {rows[n]} := bigDescentRow_{n}\n")
+    return text + "\n" + "\n".join(projections) + \
+        "\nend RealRooted.BigDescents321.SmallCases\n"
 
 
 def to_poly(coeffs):
