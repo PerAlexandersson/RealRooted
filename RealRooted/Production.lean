@@ -1672,6 +1672,8 @@ import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
 import RealRooted.DerivativeRecurrence.OuterSelectedHeight
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+import RealRooted.MultivariateStability.ExpectedCharpoly
 
 /-!
 # RealRooted production umbrella

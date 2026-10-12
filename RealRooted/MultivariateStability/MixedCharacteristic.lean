@@ -32,15 +32,15 @@ the right block.  This makes the `z = 0` specialization a common-phase
 restriction with weights `1` on the output variable and `0` on the parameters.
 -/
 
-private def operatorList (m : ℕ) : List (Sum (Fin 1) (Fin m)) :=
+def operatorList (m : ℕ) : List (Sum (Fin 1) (Fin m)) :=
   List.ofFn (fun i : Fin m => Sum.inr i)
 
-private def pencilMatrices (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
+def pencilMatrices (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     Sum (Fin 1) (Fin m) → Matrix (Fin n) (Fin n) ℝ
   | Sum.inl _ => 1
   | Sum.inr j => As j
 
-private def pencil (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
+def pencil (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     MvPolynomial (Sum (Fin 1) (Fin m)) ℝ :=
   realDetPencil 0 (pencilMatrices As)
 
@@ -191,7 +191,7 @@ private theorem oneSubPderiv_isHomogeneous_zero
   rw [pderiv_eq_zero_of_isHomogeneous_zero hH i]
   simp
 
-private def outputWeights (m : ℕ) : Sum (Fin 1) (Fin m) → ℝ
+def outputWeights (m : ℕ) : Sum (Fin 1) (Fin m) → ℝ
   | Sum.inl _ => 1
   | Sum.inr _ => 0
 
