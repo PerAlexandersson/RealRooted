@@ -634,9 +634,9 @@ theorem splits_binaryRunPolynomial_adjacent_pencil_all
     rw [heq]
     rw [← add_mul, ← C_add]
     exact hsuccsplit.C_mul (α + β)
-  · exact allComboRealRooted_comm
+  · exact
       (allComboRealRooted_of_strictInterl
-        (strictInterl_binaryRunPolynomial_succ_reverse n m hm hafter)) α β
+        (strictInterl_binaryRunPolynomial_succ_reverse n m hm hafter)).comm α β
 
 /-- The binary-run transform sends every real signed pencil supported on two
 adjacent monomials to a real-rooted polynomial (or zero). -/

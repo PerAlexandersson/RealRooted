@@ -383,7 +383,8 @@ Garloff--Wagner Lemma 7 expansion, before the final degree and sign arguments. -
 theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
     (hfg : StrictInterl f g) (c : ℝ) :
     ∃ l : List (ℝ × ℝ[X]),
-      (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
+      (∀ ap ∈ l, ∃ u : ℝ, g = (X - C u) * ap.2) ∧
+        (∀ ap ∈ l, IsKreinSummand g ap.2) ∧
         g ∣ f - C c * g - weightedSum l := by
   classical
   let roots : List ℝ := g.roots.toFinset.toList
@@ -418,10 +419,13 @@ theorem exists_kreinRootDeletedSub_dvd_right {f g : ℝ[X]}
     fun u hu => hdiv_roots u (by
       rw [Finset.mem_toList, Multiset.mem_toFinset]
       exact hu)
-  refine ⟨l, ?_, dvd_of_roots_fullRootMultiplicity_dvd hfg.2.1.1 hfg.2.1.2 hdiv_all_roots⟩
-  intro ap hap
-  rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
-  simp [q', hu, hsummand u hu]
+  refine ⟨l, ?_, ?_, dvd_of_roots_fullRootMultiplicity_dvd hfg.2.1.1 hfg.2.1.2 hdiv_all_roots⟩
+  · intro ap hap
+    rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
+    exact ⟨u, hfactor' u hu⟩
+  · intro ap hap
+    rcases List.mem_map.mp hap with ⟨u, hu, rfl⟩
+    simp [q', hu, hsummand u hu]
 
 /-- Degree bound for a finite weighted sum, assuming every summand has degree
 at most the same bound. -/

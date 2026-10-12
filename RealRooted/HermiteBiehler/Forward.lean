@@ -388,9 +388,6 @@ theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
         exact hermiteBiehlerForwardPos_of_distinct hf hg h hfnd hgnd
           (fun s hsf hsg ↦ hcom s hsf hsg) h_deg₁
 
-@[deprecated (since := "2026-10-05")]
-alias hermiteBiehlerForwardPos_general := hermiteBiehlerForwardPos
-
 @[deprecated HasNonnegCoeffs.pos_leadingCoeff (since := "2026-10-06")]
 alias hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero := HasNonnegCoeffs.pos_leadingCoeff
 

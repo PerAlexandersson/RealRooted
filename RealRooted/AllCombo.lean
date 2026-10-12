@@ -41,27 +41,29 @@ lemma isRealRooted_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g
 
 end AllComboRealRooted
 
-lemma allComboRealRooted_comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+namespace AllComboRealRooted
+
+lemma comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by
   intro α β
   simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hall β α
 
-lemma allComboRealRooted_common_root_reduction
+lemma common_root_reduction
     {f g qf qg : ℝ[X]} {r : ℝ}
+    (hall : AllComboRealRooted f g)
     (hf_def : f = (X - C r) * qf)
-    (hg_def : g = (X - C r) * qg)
-    (hall : AllComboRealRooted f g) :
+    (hg_def : g = (X - C r) * qg) :
     AllComboRealRooted qf qg :=
   fun α β ↦ by simpa [hf_def, hg_def, mul_left_comm (C _), ← mul_add,
     splits_mul_iff_right (X_sub_C_ne_zero _) (.X_sub_C _)] using hall α β
 
-lemma allComboRealRooted_C_mul_left
+lemma C_mul_left
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
     AllComboRealRooted (C c * f) g := by
   intro α β
   simpa [C_mul, mul_assoc, mul_left_comm, mul_comm] using hall (α * c) β
 
-lemma allComboRealRooted_C_mul_right
+lemma C_mul_right
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f (C c * g) := by
   intro α β
@@ -72,11 +74,11 @@ the `(f, g)`-plane.
 
 No invertibility is needed for this forward direction: every linear combination
 of the new pair is visibly a linear combination of the old pair. -/
-lemma allComboRealRooted_linear_recombination
+lemma linear_recombination
     {f g p q : ℝ[X]} {a b c d : ℝ}
+    (hall : AllComboRealRooted f g)
     (hp : p = C a * f + C b * g)
-    (hq : q = C c * f + C d * g)
-    (hall : AllComboRealRooted f g) :
+    (hq : q = C c * f + C d * g) :
     AllComboRealRooted p q := by
   intro α β
   have hrewrite :
@@ -86,7 +88,7 @@ lemma allComboRealRooted_linear_recombination
   rw [hrewrite]
   exact hall (α * a + β * c) (α * b + β * d)
 
-lemma allComboRealRooted_splits_of_eq_combo
+lemma splits_of_eq_combo
     {f g p : ℝ[X]} {a b : ℝ}
     (hall : AllComboRealRooted f g)
     (hp : p = C a * f + C b * g) :
@@ -94,50 +96,60 @@ lemma allComboRealRooted_splits_of_eq_combo
   rw [hp]
   exact hall a b
 
-lemma allComboRealRooted_ne_zero_and_splits_of_eq_combo
+lemma ne_zero_and_splits_of_eq_combo
     {f g p : ℝ[X]} {a b : ℝ}
     (hall : AllComboRealRooted f g)
     (hp : p = C a * f + C b * g)
     (hp0 : p ≠ 0) :
     p ≠ 0 ∧ p.Splits :=
-  ⟨hp0, allComboRealRooted_splits_of_eq_combo hall hp⟩
+  ⟨hp0, hall.splits_of_eq_combo hp⟩
 
-theorem allComboRealRooted_splits_sequence_of_eq_combo
+theorem splits_sequence_of_eq_combo
     {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
     (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
     (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n) :
     ∀ n : ℕ, (P n).Splits := fun n =>
-  allComboRealRooted_splits_of_eq_combo (hall n) (hP n)
+  (hall n).splits_of_eq_combo (hP n)
 
-theorem allComboRealRooted_ne_zero_and_splits_sequence_of_eq_combo
+theorem ne_zero_and_splits_sequence_of_eq_combo
     {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
     (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
     (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n)
     (hP0 : ∀ n : ℕ, P n ≠ 0) :
     ∀ n : ℕ, P n ≠ 0 ∧ (P n).Splits := fun n =>
-  allComboRealRooted_ne_zero_and_splits_of_eq_combo (hall n) (hP n) (hP0 n)
+  (hall n).ne_zero_and_splits_of_eq_combo (hP n) (hP0 n)
 
 /-- Multiplying both polynomials by the same real-rooted factor preserves
 `AllComboRealRooted`. This is the multiplication-back step for common-root
 reductions in Obreschkoff-style arguments. -/
-lemma allComboRealRooted_mul_common_factor
-    {d f g : ℝ[X]} (hd : d.Splits) (hall : AllComboRealRooted f g) :
+lemma mul_common_factor
+    {d f g : ℝ[X]} (hall : AllComboRealRooted f g) (hd : d.Splits) :
     AllComboRealRooted (d * f) (d * g) :=
   fun α β ↦ by simp [mul_left_comm, ← mul_add, hd, hall α β]
 
-lemma allComboRealRooted_derivative
+lemma derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f.derivative g.derivative :=
   fun α β ↦ by simpa using Polynomial.Splits.derivative <| hall α β
 
-lemma allComboRealRooted_iterate_derivative
+lemma iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    ∀ n : ℕ, AllComboRealRooted ((derivative^[n]) f) ((derivative^[n]) g)
+    ∀ n : ℕ,
+      AllComboRealRooted ((Polynomial.derivative^[n]) f) ((Polynomial.derivative^[n]) g)
   | 0 => hall
   | n + 1 => by
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-      exact allComboRealRooted_derivative
-        (allComboRealRooted_iterate_derivative hall n)
+      exact (hall.iterate_derivative n).derivative
+
+lemma iterateTDeriv {f g : ℝ[X]} (hall : AllComboRealRooted f g)
+    {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
+    AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
+  fun α β ↦ by simpa [iterateTDeriv_linear_combo] using splits_iterateTDeriv heps <| hall α β
+
+end AllComboRealRooted
+
+@[deprecated AllComboRealRooted.comm (since := "2026-10-11")]
+alias allComboRealRooted_comm := AllComboRealRooted.comm
 
 lemma tDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
     tDeriv eps p = 0 ↔ p = 0 := by
@@ -169,12 +181,6 @@ lemma iterateTDeriv_injective (eps : ℝ) :
       intro p q hpq
       rw [iterateTDeriv_succ, iterateTDeriv_succ] at hpq
       exact iterateTDeriv_injective eps n ((tDeriv_injective eps) hpq)
-
-lemma allComboRealRooted_iterateTDeriv
-    {f g : ℝ[X]} (hall : AllComboRealRooted f g)
-    {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
-    AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
-  fun α β ↦ by simpa [iterateTDeriv_linear_combo] using splits_iterateTDeriv heps <| hall α β
 
 /-- Applying the same iterated derivative shift to both members preserves the
 full real-rooted pencil, with no sign restriction on the shift. -/
@@ -258,7 +264,7 @@ lemma simple_pair_of_allComboRealRooted_iterateTDeriv
       ((iterateTDeriv eps n f).natDegree + 1 = (iterateTDeriv eps n g).natDegree ∨
         (iterateTDeriv eps n f).natDegree = (iterateTDeriv eps n g).natDegree) := by
   dsimp
-  refine ⟨allComboRealRooted_iterateTDeriv hall heps _, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨hall.iterateTDeriv heps _, ?_, ?_, ?_, ?_, ?_⟩
   · exact ⟨iterateTDeriv_ne_zero hf₀, splits_iterateTDeriv heps hf⟩
   · exact ⟨iterateTDeriv_ne_zero hg₀, splits_iterateTDeriv heps hg⟩
   · exact
@@ -300,71 +306,6 @@ namespace AllComboRealRooted
 lemma splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) (α β : ℝ) :
     (C α * f + C β * g).Splits :=
   hall α β
-
-lemma comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted g f :=
-  allComboRealRooted_comm hall
-
-lemma C_mul_left {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted (C c * f) g :=
-  allComboRealRooted_C_mul_left hall
-
-lemma C_mul_right {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted f (C c * g) :=
-  allComboRealRooted_C_mul_right hall
-
-lemma linear_recombination {f g p q : ℝ[X]} {a b c d : ℝ}
-    (hall : AllComboRealRooted f g)
-    (hp : p = C a * f + C b * g)
-    (hq : q = C c * f + C d * g) :
-    AllComboRealRooted p q :=
-  allComboRealRooted_linear_recombination hp hq hall
-
-lemma splits_of_eq_combo {f g p : ℝ[X]} {a b : ℝ}
-    (hall : AllComboRealRooted f g)
-    (hp : p = C a * f + C b * g) :
-    p.Splits :=
-  allComboRealRooted_splits_of_eq_combo hall hp
-
-lemma ne_zero_and_splits_of_eq_combo {f g p : ℝ[X]} {a b : ℝ}
-    (hall : AllComboRealRooted f g)
-    (hp : p = C a * f + C b * g)
-    (hp0 : p ≠ 0) :
-    p ≠ 0 ∧ p.Splits :=
-  allComboRealRooted_ne_zero_and_splits_of_eq_combo hall hp hp0
-
-theorem splits_sequence_of_eq_combo
-    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
-    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
-    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n) :
-    ∀ n : ℕ, (P n).Splits :=
-  allComboRealRooted_splits_sequence_of_eq_combo hall hP
-
-theorem ne_zero_and_splits_sequence_of_eq_combo
-    {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
-    (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
-    (hP : ∀ n : ℕ, P n = C (a n) * F n + C (b n) * G n)
-    (hP0 : ∀ n : ℕ, P n ≠ 0) :
-    ∀ n : ℕ, P n ≠ 0 ∧ (P n).Splits :=
-  allComboRealRooted_ne_zero_and_splits_sequence_of_eq_combo hall hP hP0
-
-lemma mul_common_factor {d f g : ℝ[X]} (hall : AllComboRealRooted f g)
-    (hd : d.Splits) :
-    AllComboRealRooted (d * f) (d * g) :=
-  allComboRealRooted_mul_common_factor hd hall
-
-lemma derivative {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted f.derivative g.derivative :=
-  allComboRealRooted_derivative hall
-
-lemma iterate_derivative {f g : ℝ[X]} (hall : AllComboRealRooted f g) (n : ℕ) :
-    AllComboRealRooted ((Polynomial.derivative^[n]) f) ((Polynomial.derivative^[n]) g) :=
-  allComboRealRooted_iterate_derivative hall n
-
-lemma iterateTDeriv {f g : ℝ[X]} (hall : AllComboRealRooted f g)
-    {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
-    AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
-  allComboRealRooted_iterateTDeriv hall heps n
 
 /-- Convert all-combination real-rootedness to the positive-combination
 hypothesis once nonvanishing of positive combinations has been supplied. -/

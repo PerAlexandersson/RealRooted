@@ -78,12 +78,6 @@ private theorem exists_rel_le_of_clusters
     simpa using (hcard r hr).symm
   simp_all
 
-/-- A point cannot lie in two `δ`-balls whose centers are `2δ`-separated. -/
-private theorem not_mem_ball_of_mem_ball_of_separated {a b q δ : ℝ}
-    (hsep : 2 * δ ≤ |a - b|) (hqa : |q - a| < δ) :
-    ¬ |q - b| < δ := by
-  grind
-
 /--
 Under `2δ`-separation of the centers, the `δ`-balls carved from `t` sum to a
 submultiset of `t`.

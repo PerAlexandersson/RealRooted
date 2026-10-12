@@ -570,7 +570,7 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
     lia
   have hall_fg : AllComboRealRooted f g :=
     allComboRealRooted_of_strictInterl hstrictInterl_fg
-  exact allComboRealRooted_comm hall_fg
+  exact hall_fg.comm
 
 protected lemma AffineFamily.allComboRealRooted_of_affine_family_succDegree
     {f g : ℝ[X]}

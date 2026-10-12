@@ -111,17 +111,16 @@ theorem sum_erase_lt {t : ℕ → ℝ} {N j : ℕ} (hpositive : ∀ k, k < N →
   rw [hsplit]
   nlinarith [hhi, hlo, hupper_tail, hlower_tail, hmiddle]
 
-/-- A polynomial with positive log-concave coefficients has no negative root at
-a point whose two adjacent coefficient terms are each below one third of the
-central term. -/
-theorem eval_neg_ne_zero_of_dominant {p : ℝ[X]} {N : ℕ} (hdegree : p.natDegree = N)
+/-- Positive log-concavity and small adjacent coefficient terms make the central
+absolute coefficient term dominate the other terms at a positive evaluation point. -/
+theorem sum_abs_coeff_mul_pow_erase_lt_of_logConcave {p : ℝ[X]} {N : ℕ}
     (hpositive : ∀ i, i ≤ N → 0 < p.coeff i)
     (hlog_concave : ∀ i, 0 < i → i < N →
       p.coeff (i - 1) * p.coeff (i + 1) ≤ (p.coeff i) ^ 2)
     {s : ℝ} (hs : 0 < s) (j : ℕ) (hj : 1 ≤ j) (hnext : j + 1 ≤ N)
     (hupper : (p.coeff (j + 1) * s ^ (j + 1)) / (p.coeff j * s ^ j) < 1 / 3)
     (hlower : (p.coeff (j - 1) * s ^ (j - 1)) / (p.coeff j * s ^ j) < 1 / 3) :
-    p.eval (-s) ≠ 0 := by
+    ∑ i ∈ (range (N + 1)).erase j, |p.coeff i| * s ^ i < |p.coeff j| * s ^ j := by
   classical
   set t : ℕ → ℝ := fun i => p.coeff i * s ^ i with ht
   have hpositive_t : ∀ i, i < N + 1 → 0 < t i := by
@@ -146,16 +145,27 @@ theorem eval_neg_ne_zero_of_dominant {p : ℝ[X]} {N : ℕ} (hdegree : p.natDegr
         simp only
         ring
   have hdominates := sum_erase_lt hpositive_t hlog_concave_t hj (by lia) hupper hlower
-  refine Polynomial.eval_neg_ne_zero_of_abs_coeff_term_dominates hs (j := j) (N := N + 1)
-    (by rw [hdegree]; lia) (by lia) ?_
   have habs : ∀ i ∈ (range (N + 1)).erase j, |p.coeff i| * s ^ i = t i := by
     intro i hi
-    have hindex : i < N + 1 := by
-      have hmem := Finset.mem_of_mem_erase hi
-      rw [mem_range] at hmem
-      exact hmem
-    rw [abs_of_pos (hpositive i (by lia))]
+    have hindex : i < N + 1 := Finset.mem_range.mp (Finset.mem_of_mem_erase hi)
+    rw [abs_of_pos (hpositive i (by lia)), ht]
   rw [Finset.sum_congr rfl habs, abs_of_pos (hpositive j (by lia))]
   exact hdominates
+
+/-- A polynomial with positive log-concave coefficients has no negative root at
+a point whose two adjacent coefficient terms are each below one third of the
+central term. -/
+theorem eval_neg_ne_zero_of_dominant {p : ℝ[X]} {N : ℕ} (hdegree : p.natDegree = N)
+    (hpositive : ∀ i, i ≤ N → 0 < p.coeff i)
+    (hlog_concave : ∀ i, 0 < i → i < N →
+      p.coeff (i - 1) * p.coeff (i + 1) ≤ (p.coeff i) ^ 2)
+    {s : ℝ} (hs : 0 < s) (j : ℕ) (hj : 1 ≤ j) (hnext : j + 1 ≤ N)
+    (hupper : (p.coeff (j + 1) * s ^ (j + 1)) / (p.coeff j * s ^ j) < 1 / 3)
+    (hlower : (p.coeff (j - 1) * s ^ (j - 1)) / (p.coeff j * s ^ j) < 1 / 3) :
+    p.eval (-s) ≠ 0 := by
+  refine Polynomial.eval_neg_ne_zero_of_abs_coeff_term_dominates hs (j := j) (N := N + 1)
+    (by rw [hdegree]; lia) (by lia) ?_
+  exact sum_abs_coeff_mul_pow_erase_lt_of_logConcave hpositive hlog_concave hs j hj
+    hnext hupper hlower
 
 end RealRooted.CoefficientDominance

@@ -190,6 +190,19 @@ theorem isHermitian_map_ofReal {A : Matrix m m ℝ} (hA : A.IsHermitian) :
 def realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) : MvPolynomial sigma ℝ :=
   Matrix.det fun i j => C (A i j) + ∑ k : sigma, X k * C (B k i j)
 
+/-- Evaluating the real pencil determinant is the determinant of the evaluated pencil. -/
+theorem eval_realDetPencil
+    (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) (z : sigma → ℝ) :
+    MvPolynomial.eval z (realDetPencil A B) = (A + ∑ k : sigma, z k • B k).det := by
+  classical
+  unfold realDetPencil
+  erw [RingHom.map_det]
+  congr 1
+  apply Matrix.ext
+  intro i j
+  change MvPolynomial.eval z (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
+  simp [Matrix.add_apply, Matrix.sum_apply, Matrix.smul_apply, mul_comm]
+
 /-- Complexifying the real pencil determinant gives the complex pencil
 determinant of the complexified data. -/
 theorem complexifyMv_realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) :

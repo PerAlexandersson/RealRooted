@@ -80,7 +80,7 @@ theorem orderedRoot_sub_C_mul_of_interlaces
     rw [hq_eq]
     exact hall (-c) 1
   have hall_qf : AllComboRealRooted q f :=
-    allComboRealRooted_linear_recombination hq_eq hf_eq hall
+    hall.linear_recombination hq_eq hf_eq
   have horient : StrictInterl q f ∨ StrictInterl f q :=
     strictInterl_of_allComboRealRooted hq_ne hq_splits hgf.1.1 hgf.1.2
       hall_qf (Or.inr hqdeg)

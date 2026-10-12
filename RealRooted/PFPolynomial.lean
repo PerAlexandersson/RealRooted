@@ -265,9 +265,6 @@ theorem of_interl_self {p : ℝ[X]}
 
 end IsPFPolynomial
 
-@[deprecated (since := "2026-10-05")]
-alias isPFPolynomial_one := IsPFPolynomial.one
-
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
   simpa [mul_one] using IsPFPolynomial.one.X_mul
 

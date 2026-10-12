@@ -1268,7 +1268,4 @@ theorem BrandenSolus.strictInterl_iff_of_isIdDecomposition :
           hd hd2 hid ha_nonneg hb_nonneg ha0 hb0 ha_lt hb_lt hprev
   simpa [P] using hmain
 
-@[deprecated (since := "2026-10-05")]
-alias brandenSolusTheorem26 := BrandenSolus.strictInterl_iff_of_isIdDecomposition
-
 end RealRooted

@@ -129,19 +129,6 @@ private theorem gammaOperatorNumerator_coeff_top_odd
   have hsecond : 0 < (2 : ℝ) * f.leadingCoeff := by positivity
   nlinarith
 
-private theorem gammaOperatorNumerator_coeff_even_next
-    {m : ℕ} {a : ℝ} {f : ℝ[X]} (hf : SimpleNegRooted f m) :
-    (gammaOperatorNumerator (2 * m) a f).coeff (m + 1) = 0 := by
-  rw [coeff_gammaOperatorNumerator]
-  have hzero : f.coeff (m + 1) = 0 := by
-    exact coeff_eq_zero_of_natDegree_lt (by rw [hf.natDegree_eq]; lia)
-  rw [hzero, show m + 1 - 1 = m by lia]
-  have htop : f.coeff m = f.leadingCoeff := by
-    simp [leadingCoeff, hf.natDegree_eq]
-  rw [htop]
-  push_cast
-  ring
-
 private theorem gammaOperatorNumerator_natDegree_even
     {m : ℕ} {a : ℝ} {f : ℝ[X]} (hf : SimpleNegRooted f m) (ha : 0 < a) :
     (gammaOperatorNumerator (2 * m) a f).natDegree = m := by
@@ -188,15 +175,6 @@ private theorem gammaOperatorNumerator_natDegree_odd
     rw [hfzero, hfprev]
     ring
   · exact le_natDegree_of_ne_zero htop.ne'
-
-private theorem gammaOperatorNumerator_natDegree
-    {d m : ℕ} {a : ℝ} {f : ℝ[X]} (hf : SimpleNegRooted f m) (ha : 0 < a)
-    (hd : d = 2 * m ∨ d = 2 * m + 1) :
-    (gammaOperatorNumerator d a f).natDegree = m ∨
-      (gammaOperatorNumerator d a f).natDegree = m + 1 := by
-  rcases hd with rfl | rfl
-  · exact Or.inl (gammaOperatorNumerator_natDegree_even hf ha)
-  · exact Or.inr (gammaOperatorNumerator_natDegree_odd hf ha)
 
 /-- At an input root, the numerator evaluates to the derivative term. -/
 theorem gammaOperatorNumerator_eval_of_isRoot

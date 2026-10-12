@@ -212,32 +212,4 @@ theorem shiftedSeparableEnumerator_cubic_recurrence (R : Type*) [CommRing R] {n 
   simp only [Nat.add_sub_cancel]
 
 
-/-! ### Small cases from the cubic recurrence -/
-
-private theorem shifted_zero : shiftedSeparableEnumerator ℤ 0 = 0 := by
-  simp only [shiftedSeparableEnumerator, ↓reduceIte]
-
-private theorem shifted_one : shiftedSeparableEnumerator ℤ 1 = 1 := by
-  rw [shiftedSeparableEnumerator_of_pos ℤ one_pos, separableDescentEnumerator_one]
-
-private theorem shifted_two : shiftedSeparableEnumerator ℤ 2 = 1 + X := by
-  rw [shiftedSeparableEnumerator_cubic_recurrence ℤ (le_refl 2)]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceSub, Nat.reduceAdd,
-    shifted_zero, shifted_one]
-  ring
-
-private theorem shifted_three : shiftedSeparableEnumerator ℤ 3 = 1 + 4 * X + X ^ 2 := by
-  rw [shiftedSeparableEnumerator_cubic_recurrence ℤ (by lia : 2 ≤ 3)]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceSub, Nat.reduceAdd,
-    shifted_zero, shifted_one, shifted_two]
-  ring
-
-private theorem shifted_four :
-    shiftedSeparableEnumerator ℤ 4 = 1 + 10 * X + 10 * X ^ 2 + X ^ 3 := by
-  rw [shiftedSeparableEnumerator_cubic_recurrence ℤ (by lia : 2 ≤ 4)]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, Nat.reduceSub, Nat.reduceAdd,
-    shifted_zero, shifted_one, shifted_two, shifted_three]
-  ring
-
-
 end Equiv.Perm

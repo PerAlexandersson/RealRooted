@@ -72,18 +72,6 @@ lemma signVariations_cons_eq (x : ℝ) (l : List ℝ) :
     · rw [signVariations_cons_cons_of_ne_zero l hx hy, firstNonzero, ite_eq_right hy,
         ite_sign_eq_ite_mul_neg hx hy]
 
-/-- The number of sign changes in a list of reals, after removing the zero entries; a
-recursive helper equal to `List.signVariations`. -/
-private def signChanges : List ℝ → ℕ
-  | [] => 0
-  | x :: l => signChanges l + if x * firstNonzero l < 0 then 1 else 0
-
-private theorem signChanges_eq_signVariations (l : List ℝ) :
-    l.signChanges = l.signVariations := by
-  induction l with
-  | nil => rfl
-  | cons x l ih => rw [signChanges, ih, signVariations_cons_eq]
-
 end List
 
 namespace Polynomial

@@ -230,20 +230,6 @@ theorem coefficientTransitionMatrix_isTotallyNonneg {p r : ℕ} :
   · intro i j hij
     exact hij
 
-private theorem coefficientFactor_apply_active {N d : ℕ} {a : ℝ} (j : Fin N)
-    (i : Fin N) (hj : j.val ≤ d) (hi : i.val ≤ d + 1) :
-    coefficientFactor N d a i j =
-      if i.val = j.val then ((j.val : ℝ) + a) / a
-      else if i.val = j.val + 1 then ((d : ℝ) + a - j.val) / a else 0 := by
-  rw [coefficientFactor, Matrix.lowerBidiagonalFin_apply]
-  by_cases hij : i = j
-  · subst i
-    simp [factorDiagonal, hj]
-  · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
-    by_cases hsucc : i.val = j.val + 1
-    · simp [hij, hsucc, factorSubdiagonal, hj]
-    · simp [hij, hval, hsucc]
-
 private theorem step_coeff_zero {d : ℕ} {a : ℝ} {f : ℝ[X]} (ha : 0 < a) :
     (step d a f).coeff 0 = f.coeff 0 := by
   simp only [step, coeff_C_mul]

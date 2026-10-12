@@ -173,6 +173,18 @@ theorem chowDerangement_pascal :
     | zero => simp [polynomial]
     | succ n => simpa [polynomial] using natDegree_le_sturmDerangementsExc (n + 1)
 
+/-- The derangement polynomial is fixed by reflection at its natural bound. -/
+theorem reflect_polynomial (j : ℕ) : (polynomial j).reflect j = polynomial j := by
+  rw [← chowDerangement_pascal]
+  exact BrandenVecchi.reflect_chowDerangement pascal j
+
+/-- Reflecting a derangement polynomial at a larger bound appends a power of `X`. -/
+theorem reflect_polynomial_of_le {j N : ℕ} (hj : j ≤ N) :
+    (polynomial j).reflect N = polynomial j * X ^ (N - j) := by
+  have h := reflect_add_right_of_reflect (N - j) (natDegree_polynomial_le j)
+    (reflect_polynomial j)
+  rwa [show j + (N - j) = N by lia] at h
+
 /-- The Chow-deranged transform of the Pascal matrix is the deranged map. -/
 theorem chowDerangedTransform_pascal :
     BrandenVecchi.chowDerangedTransform pascal = transform := by
