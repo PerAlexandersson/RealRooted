@@ -1702,8 +1702,12 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
 import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
 import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 import RealRooted.BorceaBranden.Applications.PoissonStarClose
+<<<<<<< HEAD
 import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
 import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
+=======
+import RealRooted.BorceaBranden.Applications.PoissonStarFinal
+>>>>>>> origin/main
 
 /-!
 # RealRooted production umbrella
