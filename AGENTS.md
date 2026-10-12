@@ -27,6 +27,10 @@ This guide applies to the `RealRooted` Lean project.
 - Before adding a reusable lemma, ask where it would live in Mathlib, what its
   namespace-qualified name should be, and how general the statement can be
   without making the proof brittle.
+- Before formalizing a well-known theorem or lemma that Mathlib lacks, also
+  check [Tau Ceti](https://github.com/TauCetiProject/TauCeti), a Lean library
+  downstream of Mathlib, for existing code. Port what fits, credit the source
+  in the docstring, and check its license, toolchain, and transitive axioms.
 - Put upstreamable compatibility lemmas in `RealRooted/Mathlib/...` using the
   corresponding Mathlib namespace and typeclass generality when practical.
   Lemmas in `RealRooted.Mathlib.X` are meant to be upstreamed to file

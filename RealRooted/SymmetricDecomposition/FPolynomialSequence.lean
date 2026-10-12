@@ -195,7 +195,7 @@ private lemma fPolynomial_roots_ge_neg_one
     simp [hs']
   · rcases Multiset.mem_map.mp hs with ⟨r, hr, rfl⟩
     exact le_of_lt (neg_one_lt_transformedRoot
-      (roots_nonpos_of_nonneg_coeffs hps hpnn r hr))
+      (roots_nonpos_of_hasNonnegCoeffs hpnn r hr))
 
 /-- Transfers consecutive strict interlacing through the `f`-polynomial
     transform for a nonnegative, split, nonzero sequence with the

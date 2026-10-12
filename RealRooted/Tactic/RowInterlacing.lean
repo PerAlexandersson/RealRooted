@@ -54,8 +54,8 @@ only the successful attempt, and the certificate.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq` (residue
-classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
+`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq`
+(residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
 `halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
 derivative rows whose degree grows by zero or one,
@@ -223,7 +223,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
   let hd := mkIdent `hd
   let strategies : Array (TSyntax `tactic) ← if r.shape.isLag then
       pure #[← `(tactic| (
-        have key : ∀ $m:ident : ℕ, 0 < ($(← row s)).eval 0 ∧ 0 < ($(← row (s + 1))).eval 0 := by
+        have key : ∀ $m:ident : ℕ, 0 < ($(← row s)).eval 0 ∧
+            0 < ($(← row (s + 1))).eval 0 := by
           intro $m:ident
           induction $m:ident with
           | zero => exact ⟨by rr_row_side, by rr_row_side⟩
@@ -252,9 +253,10 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
               $(← finish hs):tactic
           exact key $t))
       pure #[← step #[] #[h₁],
-        ← step #[← `(tactic| have $hd:ident : 0 ≤ (Polynomial.derivative $(← row s)).eval 0 := by
+        ← step #[← `(tactic| have $hd:ident : 0 ≤
+          (Polynomial.derivative $(← row s)).eval 0 := by
           exact (RealRooted.HasNonnegCoeffs.derivative (by rr_row_nonneg_coeffs)).eval_nonneg
-            (by positivity))] #[h₁, hd]]
+            le_rfl)] #[h₁, hd]]
   let mut failures := #[]
   for tac in strategies do
     match ← rowAttempt (do
@@ -271,6 +273,36 @@ private def splitsRoutes : List Name :=
   [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
+
+/-- Whether the exact rows and sampled multiplier signs confirm the half-growth route after
+dropping `k` rows.  The rows must have degree `D₀ + (n + e) / 2`, positive leading
+coefficients, and weak interlacing two steps apart; the recurrence multipliers must satisfy
+the numeric counterparts of the three hypotheses of `threeTermHalf_ne_zero_and_splits`.
+Unavailable exact data does not veto the route. -/
+def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
+  unless r.shape == .lag do return false
+  let some L ← linRec? r.P | return true
+  let base := r.shift + k
+  let some rows ← linRecRows? L (base + 9) | return true
+  let (some p₀, some p₁) := (rows[base]?, rows[base + 1]?) | return true
+  if p₀.isZero || p₁.isZero then return false
+  let D₀ := p₀.natDegree
+  unless p₁.natDegree == D₀ || p₁.natDegree == D₀ + 1 do return false
+  let e := p₁.natDegree - D₀
+  for m in [0:9] do
+    let some p := rows[base + m]? | return true
+    unless !p.isZero && p.natDegree == D₀ + (m + e) / 2 && 0 < p.lead do return false
+  for m in [0:7] do
+    unless rows[base + m]!.interlaces rows[base + m + 2]! do return false
+  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return true
+  let xs : List Rat := [-20, -5, -2, -1, -1 / 2, -1 / 8, 0, 1 / 8, 1 / 2, 1, 2, 5, 20]
+  for n in [0:9] do
+    let (some a, some b₀, some b₁) :=
+      (← evalCoeffAt? af (n + k), ← evalCoeffAt? bf (n + k),
+        ← evalCoeffAt? bf (n + k + 1)) | return true
+    unless a.natDegree ≤ 0 && 0 < a.coeff 0 do return false
+    unless xs.all (fun x => 0 ≤ b₁.eval x * b₀.eval x) do return false
+  return true
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
@@ -455,7 +487,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
   -- (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`)
   let viaDegreePattern := do
-    unless r.shape == .deriv₁ do throwError "rr_row_splits: not a first-order derivative recurrence"
+    unless r.shape == .deriv₁ do
+      throwError "rr_row_splits: not a first-order derivative recurrence"
     let some L ← linRec? r.P | throwError "rr_row_splits: no linear recurrence"
     let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
     let c := (rows[r.shift]!).natDegree
@@ -535,7 +568,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
   let half (k : Nat) : TacticM RowHints := do
     viaHalf k
     return { via := some `halfGrowth, drop := some k }
-  for (r, k, what, tac) in [
+  let mut probeConfirmed := false
+  for (routeName, k, what, tac) in [
       (`twoStep, 0, "a two-step product", route `twoStep viaTwoStep),
       (`shiftedProduct, 0, "a shifted product", route `shiftedProduct viaLagLeft),
       (`subseq, 0, "residue subsequences", route `subseq viaSubseq),
@@ -553,13 +587,28 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       (`reversed, 0, "the reversed rows", route `reversed (reverseRowGoal true)),
       (`fTransform, 0, "the f-polynomial transform of the rows",
         route `fTransform fTransformSplitsGoal)] do
-    unless use r do continue
+    unless use routeName do continue
+    -- `nextRow` and `prevRow` ask for the same interlacing statement.  In automatic mode the
+    -- former comes first, so the latter can never be the first probe-confirmed shape.
+    if hints.via.isNone && routeName == `prevRow then continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&
-        (r == `nextRow || r == `prevRow || r == `halfGrowth) then continue
+        (routeName == `nextRow || routeName == `prevRow || routeName == `halfGrowth) then continue
+    let shapeRoute := routeName == `nextRow || routeName == `halfGrowth
+    if hints.via.isNone && shapeRoute then
+      let plausible ← if routeName == `halfGrowth then halfGrowthPlausible r k
+        else rowInterlacesPlausibleAt r k
+      unless plausible do continue
+      probeConfirmed := true
     match ← rowAttempt tac with
     | .ok h => return h
-    | .error e => failures := failures.push (m!"{what}", e)
+    | .error e =>
+        failures := failures.push (m!"{what}", e)
+        if hints.via.isNone && shapeRoute then
+          throwRowFailures
+            m!"rr_row_splits: the first strategy confirmed by the probe failed for {P}" failures
+  if hints.via.isNone && !probeConfirmed then
+    throwError "rr_row_splits: no strategy (probe) for {P}"
   throwRowFailures m!"rr_row_splits: no strategy proves the goal for {P}" failures
 
 elab_rules : tactic

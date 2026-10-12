@@ -772,7 +772,7 @@ theorem isPolyaFreqSeq_veroneseSectionPolynomial_of_splits_of_hasNonnegCoeffs
     (hr : 0 < r) (hk : k < r) :
     IsPolyaFreqSeq (veroneseSectionPolynomial r k p).coeff :=
   isPolyaFreqSeq_veroneseSectionPolynomial_coeff (p := p)
-    (aissenSchoenbergWhitney_reverse hpnn hprr (roots_nonpos_of_nonneg_coeffs hprr hpnn))
+    (aissenSchoenbergWhitney_reverse hpnn hprr (roots_nonpos_of_hasNonnegCoeffs hpnn))
     hr hk
 
 /-- Real-rootedness of Veronese sections of real-rooted

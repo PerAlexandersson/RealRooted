@@ -177,7 +177,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
               hgf.roots_le_of_right
-                (roots_nonpos_of_nonneg_coeffs hsplits hnn)
+                (roots_nonpos_of_hasNonnegCoeffs hnn)
             have hgpos : HasPosLeadingCoeff g := by
               unfold HasPosLeadingCoeff
               dsimp only [g]

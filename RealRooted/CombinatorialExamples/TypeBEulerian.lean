@@ -144,9 +144,9 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
     typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) (by norm_num)
 
-lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :
+lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (typeBEulerian_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (typeBEulerian_nonnegCoeffs n)
 
 lemma interlaces_typeBEulerian_zero_one :
     Interlaces (typeBEulerian 0) (typeBEulerian 1) :=

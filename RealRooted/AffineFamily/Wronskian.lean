@@ -224,10 +224,10 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
   have hr₂_mem : r₂ ∈ g.roots := (mem_roots hg0).mpr hr₂
   have hr₁_neg : r₁ < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
-      hg_rr.1 hg_rr.2 hgnn hno_right r₁ hr₁_mem
+      hg_rr.1 hgnn hno_right r₁ hr₁_mem
   have hr₂_neg : r₂ < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
-      hg_rr.1 hg_rr.2 hgnn hno_right r₂ hr₂_mem
+      hg_rr.1 hgnn hno_right r₂ hr₂_mem
   let m : ℝ := (r₁ + r₂) / 2
   have hm_mem : m ∈ Set.Ioo r₁ r₂ := by
     dsimp [m]

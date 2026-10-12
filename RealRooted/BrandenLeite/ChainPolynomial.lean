@@ -76,7 +76,7 @@ theorem roots_fPolynomial_mem_Icc {d : ℕ} {p : ℝ[X]}
   · have hx_eq : x = -1 := Multiset.eq_of_mem_replicate hx
     simp [hx_eq]
   · rcases Multiset.mem_map.mp hx with ⟨r, hr, rfl⟩
-    have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hp_splits hpnn r hr
+    have hr0 : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hpnn r hr
     exact ⟨(neg_one_lt_transformedRoot hr0).le, transformedRoot_nonpos hr0⟩
 
 private theorem staircaseSum_range_map (f : ℕ → ℝ[X])

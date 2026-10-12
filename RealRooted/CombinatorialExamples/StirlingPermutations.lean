@@ -139,10 +139,9 @@ lemma stirlingPermutations_nonnegCoeffs :
     stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
     (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
 
-lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
-    (hrr : (stirlingPermutations n).Splits) :
+lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat} :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (stirlingPermutations_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (stirlingPermutations_nonnegCoeffs n)
 
 lemma interlaces_stirlingPermutations_zero_one :
     Interlaces (stirlingPermutations 0) (stirlingPermutations 1) := by

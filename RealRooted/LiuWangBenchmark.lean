@@ -209,12 +209,12 @@ lemma zero_not_isRoot_liuWangPoly (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1)
     simp_all
   linarith
 
-lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat} (hrr : (liuWangPoly d n).Splits)
+lemma roots_neg_liuWangPoly_of_isRealRooted {d n : Nat}
     (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     ∀ r ∈ (liuWangPoly d n).roots, r < 0 := by
   intro r hr
   have hnonpos : r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hrr (liuWangPoly_nonnegCoeffs d n) r hr
+    roots_nonpos_of_hasNonnegCoeffs (liuWangPoly_nonnegCoeffs d n) r hr
   by_contra hnot
   have hzero : r = 0 := by grind
   have hr0 : (liuWangPoly d n).IsRoot 0 := by simp_all
@@ -644,8 +644,9 @@ lemma interlaces_liuWangRec_of_ge_threshold_of_nonnegCoeffs (d k : Nat)
         lia
       have hnonpos :
           ∀ r, (liuWangRec d ((d + 1 + k) + 1)).IsRoot r → r ≤ 0 :=
-        fun r hr => roots_nonpos_of_nonneg_coeffs hInter.1.2
-          (hnonneg ((d + 1 + k) + 1)) r ((mem_roots hInter.1.1).mpr hr)
+        fun r hr =>
+          roots_nonpos_of_hasNonnegCoeffs (hnonneg ((d + 1 + k) + 1)) r
+            ((mem_roots hInter.1.1).mpr hr)
       have hStrictInterl :
           StrictInterl (liuWangRec d (d + 2 + k)) (liuWangRec d (d + 3 + k)) :=
         by simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using

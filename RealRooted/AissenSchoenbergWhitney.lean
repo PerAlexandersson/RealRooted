@@ -594,7 +594,7 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
       have hnn : HasNonnegCoeffs (p + C μ * q) :=
         hpnn.add (nonnegCoeffs_C_mul hμ.le hqnn)
       convert aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
-        (roots_nonpos_of_nonneg_coeffs (hfamily hμ) hnn) using 1
+        (roots_nonpos_of_hasNonnegCoeffs hnn) using 1
       funext n
       simp [Polynomial.coeff_add, Polynomial.coeff_C_mul])
 

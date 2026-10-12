@@ -52,7 +52,7 @@ theorem zero : IsPFPolynomial (0 : ℝ[X]) :=
 theorem of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) :
     IsPFPolynomial p :=
-  ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_nonneg_coeffs hprr_splits hpnn⟩
+  ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_hasNonnegCoeffs hpnn⟩
 
 theorem one : IsPFPolynomial (1 : ℝ[X]) :=
   IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
@@ -108,7 +108,7 @@ theorem of_X_sub_C_mul_factor {p q : ℝ[X]} {u : ℝ}
     apply hasPosLeadingCoeff_of_X_sub_C_mul
     rwa [← hfactor]
   have hqnn : HasNonnegCoeffs q :=
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff hp0 hprr.2
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff hp0
       hp.hasNonnegCoeffs hq0 hq_splits hq_pos hq_dvd
   exact IsPFPolynomial.of_realRooted_nonneg hqnn hq_splits
 

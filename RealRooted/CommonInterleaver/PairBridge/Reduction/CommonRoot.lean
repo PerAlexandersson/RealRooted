@@ -69,8 +69,8 @@ private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
   have hq_pos : HasPosLeadingCoeff (qf + C μ * qg) :=
     hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hp_eq] using hp_pos)
   exact
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hp_rr.1 hp_rr.2 hp_nn hq_rr.1 hq_rr.2 hq_pos
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+      hp_rr.1 hp_nn hq_rr.1 hq_rr.2 hq_pos
       ⟨X - C r, by grind⟩
 
 private lemma common_root_reduction_data_of_posCombo_nonneg
