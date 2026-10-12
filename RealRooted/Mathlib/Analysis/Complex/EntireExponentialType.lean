@@ -59,6 +59,62 @@ private theorem eq_zero_of_mul_sq_le {x A B : ℝ} (hx : 0 ≤ x) (hA : 0 ≤ A)
     ring
   nlinarith
 
+private theorem eq_zero_of_mul_sq_le_rpow {x A B : ℝ} (hx : 0 ≤ x) (hA : 0 ≤ A)
+    (hB : 0 ≤ B)
+    (h : ∀ R : ℝ, 1 ≤ R → x * R ^ 2 ≤ A + B * R ^ (3 / 2 : ℝ)) : x = 0 := by
+  by_contra hne
+  have hxp : 0 < x := lt_of_le_of_ne hx (Ne.symm hne)
+  set t := (A + B) / x + 1 with ht
+  have ht1 : 1 ≤ t := by
+    have : 0 ≤ (A + B) / x := by positivity
+    linarith
+  have ht0 : 0 ≤ t := by linarith
+  have hh := h (t ^ 2) (one_le_pow₀ ht1)
+  have hpow : (t ^ 2) ^ (3 / 2 : ℝ) = t ^ 3 := by
+    rw [← Real.rpow_natCast t 2, ← Real.rpow_mul ht0, ← Real.rpow_natCast t 3]
+    norm_num
+  rw [hpow] at hh
+  have hxt : x * t = A + B + x := by
+    rw [ht]
+    field_simp
+  have h3 : 1 ≤ t ^ 3 := one_le_pow₀ ht1
+  have hAt : A ≤ A * t ^ 3 := le_mul_of_one_le_right hA h3
+  have h4 : x * t * t ^ 3 ≤ (A + B) * t ^ 3 := by nlinarith
+  have h5 : x * t ≤ A + B := le_of_mul_le_mul_right h4 (by positivity)
+  linarith
+
+private theorem norm_le_of_re_le_rpow {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C : ℝ}
+    (h : ∀ z, (g z).re ≤ C * (1 + ‖z‖) ^ (3 / 2 : ℝ)) {ρ : ℝ} (hρ : 0 < ρ) {z : ℂ}
+    (hz : ‖z‖ ≤ ρ) :
+    ‖g z‖ ≤ 2 * (|C| * (1 + 2 * ρ) ^ (3 / 2 : ℝ) + 1) + 3 * ‖g 0‖ := by
+  set M := |C| * (1 + 2 * ρ) ^ (3 / 2 : ℝ) + 1
+  have hM : 0 < M := by positivity
+  have hzb : z ∈ Metric.ball (0 : ℂ) (2 * ρ) := by
+    rw [mem_ball_zero_iff]
+    linarith
+  have key := Complex.borelCaratheodory (f := g) (M := M) (R := 2 * ρ) hM
+    hg.differentiableOn ?_ (by linarith) hzb
+  · have hd : 0 < 2 * ρ - ‖z‖ := by linarith
+    have h1 : 2 * M * ‖z‖ / (2 * ρ - ‖z‖) ≤ 2 * M := by
+      rw [div_le_iff₀ hd]
+      nlinarith [norm_nonneg z]
+    have h2 : ‖g 0‖ * (2 * ρ + ‖z‖) / (2 * ρ - ‖z‖) ≤ 3 * ‖g 0‖ := by
+      rw [div_le_iff₀ hd]
+      nlinarith [norm_nonneg z, norm_nonneg (g 0)]
+    linarith
+  · intro w hw
+    rw [mem_ball_zero_iff] at hw
+    change (g w).re ≤ M
+    calc
+      (g w).re ≤ C * (1 + ‖w‖) ^ (3 / 2 : ℝ) := h w
+      _ ≤ |C| * (1 + ‖w‖) ^ (3 / 2 : ℝ) := by
+        apply mul_le_mul_of_nonneg_right (le_abs_self C)
+        positivity
+      _ ≤ |C| * (1 + 2 * ρ) ^ (3 / 2 : ℝ) := by
+        apply mul_le_mul_of_nonneg_left _ (abs_nonneg C)
+        apply Real.rpow_le_rpow (by positivity) (by linarith) (by norm_num)
+      _ ≤ M := by linarith
+
 end Complex
 
 namespace Differentiable
@@ -92,6 +148,58 @@ theorem exists_affine_of_re_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C 
       (eq_zero_of_mul_sq_le (norm_nonneg _) (by positivity) (by positivity) hdd)
   set a := _root_.deriv g 0
   have ha : ∀ z, _root_.deriv g z = a := fun z => is_const_of_deriv_eq_zero hd1 h2 z 0
+  have hk : Differentiable ℂ (fun z => g z - a * z) := hg.sub (by fun_prop)
+  have hk' : ∀ z, _root_.deriv (fun z => g z - a * z) z = 0 := by
+    intro z
+    have hderiv : HasDerivAt (fun z => g z - a * z) (_root_.deriv g z - a * 1) z :=
+      (hg z).hasDerivAt.sub ((hasDerivAt_id z).const_mul a)
+    rw [hderiv.deriv, ha]
+    ring
+  refine ⟨a, g 0, fun z => ?_⟩
+  have hconst := is_const_of_deriv_eq_zero hk hk' z 0
+  simp at hconst
+  linear_combination hconst
+
+/-- An entire complex function whose real part grows at most like
+`(1 + ‖z‖) ^ (3 / 2)` is affine. -/
+theorem exists_affine_of_re_le_rpow {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C : ℝ}
+    (h : ∀ z, (g z).re ≤ C * (1 + ‖z‖) ^ (3 / 2 : ℝ)) :
+    ∃ a b : ℂ, ∀ z, g z = a * z + b := by
+  have hd1 : Differentiable ℂ (_root_.deriv g) := fun z =>
+    ((hg.analyticAt z).deriv).differentiableAt
+  have h2 : ∀ c, _root_.deriv (_root_.deriv g) c = 0 := by
+    intro c
+    have hdd : ∀ R : ℝ, 1 ≤ R → ‖_root_.deriv (_root_.deriv g) c‖ * R ^ 2 ≤
+        2 * (2 * 1 + 3 * ‖g 0‖) +
+          (4 * |C| * (3 + 2 * ‖c‖) ^ (3 / 2 : ℝ)) * R ^ (3 / 2 : ℝ) := by
+      intro R hR
+      have hR0 : 0 < R := by linarith
+      have hbound := norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le
+        (c := c) (f := g) 2 hR0 hg.diffContOnCl
+        (C := 2 * (|C| * (1 + 2 * (‖c‖ + R)) ^ (3 / 2 : ℝ) + 1) + 3 * ‖g 0‖) (by
+          intro z hz
+          apply Complex.norm_le_of_re_le_rpow hg h (by positivity)
+          rw [mem_sphere_iff_norm] at hz
+          calc
+            ‖z‖ = ‖(z - c) + c‖ := by ring_nf
+            _ ≤ ‖z - c‖ + ‖c‖ := norm_add_le _ _
+            _ = ‖c‖ + R := by rw [hz]; ring)
+      rw [iteratedDeriv_succ, iteratedDeriv_one] at hbound
+      rw [le_div_iff₀ (by positivity)] at hbound
+      have hp : (1 + 2 * (‖c‖ + R)) ^ (3 / 2 : ℝ) ≤
+          (3 + 2 * ‖c‖) ^ (3 / 2 : ℝ) * R ^ (3 / 2 : ℝ) := by
+        rw [← Real.mul_rpow (by positivity) hR0.le]
+        apply Real.rpow_le_rpow (by positivity) _ (by norm_num)
+        nlinarith [norm_nonneg c]
+      have hC : 0 ≤ |C| := abs_nonneg C
+      simp only [Nat.factorial] at hbound
+      norm_num at hbound
+      nlinarith [mul_le_mul_of_nonneg_left hp hC]
+    exact norm_eq_zero.mp
+      (Complex.eq_zero_of_mul_sq_le_rpow (norm_nonneg _) (by positivity) (by positivity) hdd)
+  set a := _root_.deriv g 0
+  have ha : ∀ z, _root_.deriv g z = a := fun z =>
+    is_const_of_deriv_eq_zero hd1 h2 z 0
   have hk : Differentiable ℂ (fun z => g z - a * z) := hg.sub (by fun_prop)
   have hk' : ∀ z, _root_.deriv (fun z => g z - a * z) z = 0 := by
     intro z
