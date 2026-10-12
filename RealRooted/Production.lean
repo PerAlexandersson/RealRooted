@@ -1670,6 +1670,7 @@ import RealRooted.Challenges.ProperPositionPF
 import RealRooted.Challenges.UnivariatePoissonStar
 import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+import RealRooted.DerivativeRecurrence.OuterSelectedHeight
 
 /-!
 # RealRooted production umbrella

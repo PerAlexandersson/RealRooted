@@ -1814,3 +1814,4 @@ import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
 import RealRooted.Tactic.Examples.LinRecCancellation
+import RealRooted.DerivativeRecurrence.OuterSelectedHeight
