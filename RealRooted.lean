@@ -1815,3 +1815,4 @@ import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
 import RealRooted.Tactic.Examples.LinRecCancellation
 import RealRooted.DerivativeRecurrence.OuterSelectedHeight
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
