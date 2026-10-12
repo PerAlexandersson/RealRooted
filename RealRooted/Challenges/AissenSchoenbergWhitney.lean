@@ -25,7 +25,7 @@ label = "Pólya frequency sequence"
 
 [[definitions]]
 name = "RealRooted.natCauchyConvolution"
-module = "RealRooted.PolyaFrequencyConvolution.Basic"
+module = "RealRooted.NatCauchyConvolution"
 label = "Cauchy convolution of sequences"
 
 [[theorems]]
