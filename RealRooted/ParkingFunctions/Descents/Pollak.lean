@@ -186,7 +186,7 @@ private theorem isParkingWord_cyclicValueShift_iff (c : Fin (n + 1)) (s : ℕ) (
 private def parkingShiftStart (n c : ℕ) : ℕ :=
   if c = 0 then 0 else n + 1 - c
 
-private theorem parkingShiftStart_le (c : ℕ) (_hc : c ≤ n) : parkingShiftStart n c ≤ n := by
+private theorem parkingShiftStart_le (c : ℕ) : parkingShiftStart n c ≤ n := by
   unfold parkingShiftStart
   split <;> lia
 
@@ -209,7 +209,7 @@ theorem existsUnique_isParkingWord_cyclicValueShift :
       (parkingHeight_add_period w)
   have hs₀le : s₀ ≤ n := by lia
   refine ⟨⟨parkingShiftStart n s₀, by
-    have := parkingShiftStart_le s₀ hs₀le
+    have := parkingShiftStart_le (n := n) s₀
     lia⟩, ?_, ?_⟩
   · dsimp only
     rw [isParkingWord_cyclicValueShift_iff w _ s₀ hs₀le ?_]
@@ -219,10 +219,10 @@ theorem existsUnique_isParkingWord_cyclicValueShift :
     have hcle : (c : ℕ) ≤ n := by have := c.isLt; lia
     have hstart := parkingShiftStart_add (n := n) (c : ℕ) hcle
     rw [isParkingWord_cyclicValueShift_iff w c (parkingShiftStart n (c : ℕ))
-      (parkingShiftStart_le _ hcle) hstart] at hc
+      (parkingShiftStart_le _) hstart] at hc
     have : parkingShiftStart n (c : ℕ) = s₀ :=
       huniq _ ⟨by
-        have := parkingShiftStart_le (n := n) (c : ℕ) hcle
+        have := parkingShiftStart_le (n := n) (c : ℕ)
         lia, hc⟩
     apply Fin.ext
     simp only
