@@ -331,71 +331,27 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
 interleaver for the pair `f`, `g`. -/
 theorem hasCommonInterleaver_pair {f g : ℝ[X]} :
     HasCommonInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  constructor
-  · rintro ⟨h, hh⟩
-    exact ⟨h, hh f (by simp), hh g (by simp)⟩
-  · rintro ⟨h, hfh, hgh⟩
-    refine ⟨h, ?_⟩
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl
-    · exact hfh
-    · exact hgh
+  simp [HasCommonInterleaver]
 
 /-- `HasCommonLeftInterleaver [f, g]` is exactly the existence of a common
 left interleaver for the pair `f`, `g`. -/
 theorem hasCommonLeftInterleaver_pair {f g : ℝ[X]} :
     HasCommonLeftInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
-  constructor
-  · rintro ⟨h, hh⟩
-    exact ⟨h, hh f (by simp), hh g (by simp)⟩
-  · rintro ⟨h, hfh, hgh⟩
-    refine ⟨h, ?_⟩
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl
-    · exact hfh
-    · exact hgh
+  simp [HasCommonLeftInterleaver]
 
 /-- For a two-element list, the pairwise common-interleaver condition reduces
 to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonInterleaver [f, g] ↔
       ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  constructor
-  · intro H
-    obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
-    exact ⟨h, hfh, hgh⟩
-  · rintro ⟨h, hfh, hgh⟩
-    intro i j hij
-    obtain ⟨i, hi⟩ := i
-    obtain ⟨j, hj⟩ := j
-    simp only [List.length_cons, List.length_nil] at hi hj
-    match i, hi, j, hj, hij with
-    | 0, _, 1, _, _ => exact ⟨h, hfh, hgh⟩
-    | 0, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 1, _, hij => exact absurd hij (by simp)
+  simp [PairwiseHasCommonInterleaver]
 
 /-- For a two-element list, the pairwise common-left-interleaver condition
 reduces to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonLeftInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonLeftInterleaver [f, g] ↔
       ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
-  constructor
-  · intro H
-    obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
-    exact ⟨h, hfh, hgh⟩
-  · rintro ⟨h, hfh, hgh⟩
-    intro i j hij
-    obtain ⟨i, hi⟩ := i
-    obtain ⟨j, hj⟩ := j
-    simp only [List.length_cons, List.length_nil] at hi hj
-    match i, hi, j, hj, hij with
-    | 0, _, 1, _, _ => exact ⟨h, hfh, hgh⟩
-    | 0, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 1, _, hij => exact absurd hij (by simp)
+  simp [PairwiseHasCommonLeftInterleaver]
 
 /-! #### Existential-shape bridges for downstream pair endpoints -/
 

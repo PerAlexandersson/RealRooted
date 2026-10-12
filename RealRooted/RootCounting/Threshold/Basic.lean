@@ -4,6 +4,7 @@ import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Thresholded polynomial-root counts
@@ -42,30 +43,8 @@ theorem card_rootsAbove_mono (p : K[X]) {s s' : K} (h : s ≤ s') :
 /-- The sign of a product records the parity of its factors above `-s`. -/
 theorem prod_sign {m : Multiset K} {s : K} (h : ∀ ξ ∈ m, ξ ≠ -s) :
     0 < (-1 : K) ^ (Multiset.card (m.filter (fun ξ => -s < ξ)))
-      * (m.map (fun ξ => -s - ξ)).prod := by
-  classical
-  induction m using Multiset.induction with
-  | empty => simp
-  | cons a t ih =>
-      have hta : ∀ ξ ∈ t, ξ ≠ -s := fun ξ hξ => h ξ (Multiset.mem_cons_of_mem hξ)
-      have hane : a ≠ -s := h a (Multiset.mem_cons_self a t)
-      have hIH := ih hta
-      rw [Multiset.map_cons, Multiset.prod_cons, Multiset.filter_cons]
-      rcases lt_or_gt_of_ne hane with hlt | hgt
-      · have hnot : ¬ (-s < a) := by linarith
-        rw [ite_eq_right hnot]
-        simp only [zero_add]
-        have hfac : (0 : K) < -s - a := by linarith
-        nlinarith [hIH, hfac]
-      · rw [ite_eq_left hgt]
-        rw [Multiset.card_add, Multiset.card_singleton]
-        have hfac : (-s - a) < 0 := by linarith
-        have hpow : (-1 : K) ^ (1 + Multiset.card (t.filter (fun ξ => -s < ξ)))
-            = -((-1 : K) ^ (Multiset.card (t.filter (fun ξ => -s < ξ)))) := by
-          rw [pow_add, pow_one]
-          ring
-        rw [hpow]
-        nlinarith [hIH, hfac]
+      * (m.map (fun ξ => -s - ξ)).prod :=
+  Multiset.prod_sub_sign h
 
 /-- The sign of `p (-s)` is the parity of the roots above `-s`. -/
 theorem sign_eval_neg {p : K[X]} (hcard : Multiset.card p.roots = p.natDegree)

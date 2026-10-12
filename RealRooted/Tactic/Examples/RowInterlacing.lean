@@ -1,4 +1,5 @@
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # Three-term recurrence examples
@@ -12,6 +13,7 @@ three, summands in other orders, and the certificates and hints of `rr_row_inter
 -/
 
 open Polynomial
+open RealRooted.Tactic.RowFixtures
 
 namespace RealRooted.Tactic.RowInterlacingExamples
 
@@ -69,12 +71,6 @@ def A008459 : ℕ → ℝ[X]
 
 theorem A008459_natDegree (n : ℕ) : (A008459 n).natDegree = n := by rr_row_natDegree
 theorem A008459_ne_zero (n : ℕ) : A008459 n ≠ 0 := by rr_row_ne_zero
-
-/-- Stirling numbers of the second kind: a derivative recurrence with
-nonnegative `A`, `B` (A008277). -/
-def A008277 : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => X * (A008277 n).derivative + (1 + X) * A008277 n
 
 theorem A008277_interlaces (n : ℕ) : Interlaces (A008277 n) (A008277 (n + 1)) := by
   rr_row_interlaces
@@ -178,24 +174,10 @@ example (n : ℕ) : Interlaces (A111006 n) (A111006 (n + 1)) := by rr_row_interl
 
 /-! ### Offset three: explicit rows `0, 1, 2` -/
 
-/-- `b = -X ^ 2 ≤ 0` (A084534). -/
-def A084534 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1 + 2 * X
-  | 2 => 1 + 4 * X + 2 * X ^ 2
-  | n + 3 => ((1 + (2 * X))) * A084534 (n + 2) + ((-1 * (X) ^ (2))) * A084534 (n + 1)
-
 theorem A084534_interlaces (n : ℕ) : Interlaces (A084534 n) (A084534 (n + 1)) := by
   rr_row_interlaces
 theorem A084534_eval_zero_pos (n : ℕ) : 0 < (A084534 n).eval 0 := by rr_row_eval_zero_pos
 theorem A084534_splits (n : ℕ) : (A084534 n).Splits := by rr_row_splits
-
-/-- Rows with nonnegative coefficients and `b = X` (A102413). -/
-def A102413 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1 + X
-  | 2 => 1 + 4 * X + X ^ 2
-  | n + 3 => ((1 + X)) * A102413 (n + 2) + (X) * A102413 (n + 1)
 
 theorem A102413_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A102413 n) := by
   rr_row_nonneg_coeffs
@@ -203,14 +185,6 @@ theorem A102413_interlaces (n : ℕ) : Interlaces (A102413 n) (A102413 (n + 1)) 
   rr_row_interlaces
 theorem A102413_eval_zero_pos (n : ℕ) : 0 < (A102413 n).eval 0 := by rr_row_eval_zero_pos
 theorem A102413_splits (n : ℕ) : (A102413 n).Splits := by rr_row_splits
-
-/-- `b = -(1 + X) ^ 2` (A103450). -/
-def A103450 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1 + X
-  | 2 => 1 + 3 * X + X ^ 2
-  | n + 3 => ((2 + (2 * X))) * A103450 (n + 2) +
-      ((-1 + (-1 * (X) ^ (2)) + (-2 * X))) * A103450 (n + 1)
 
 theorem A103450_interlaces (n : ℕ) : Interlaces (A103450 n) (A103450 (n + 1)) := by
   rr_row_interlaces
@@ -227,31 +201,14 @@ example (n : ℕ) : Interlaces (A103450 n) (A103450 (n + 1)) := by rr_row_interl
 
 /-! ### Summands in other orders -/
 
-/-- The recurrence of A008288 with the summands and factors swapped. -/
-def swappedLag : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1 + X
-  | n + 2 => X * swappedLag n + swappedLag (n + 1) * (1 + X)
-
 theorem swappedLag_interlaces (n : ℕ) : Interlaces (swappedLag n) (swappedLag (n + 1)) := by
   rr_row_interlaces
 theorem swappedLag_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedLag n) := by
   rr_row_nonneg_coeffs
 
-/-- The recurrence of A056241 with a subtracted summand. -/
-def subtractedLag : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1 + X
-  | n + 2 => (2 + 2 * X) * subtractedLag (n + 1) - (1 + X + X ^ 2) * subtractedLag n
-
 theorem subtractedLag_interlaces (n : ℕ) :
     Interlaces (subtractedLag n) (subtractedLag (n + 1)) := by
   rr_row_interlaces
-
-/-- The recurrence of A008277 with the derivative summand last. -/
-def swappedDeriv : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => (1 + X) * swappedDeriv n + X * (swappedDeriv n).derivative
 
 theorem swappedDeriv_interlaces (n : ℕ) :
     Interlaces (swappedDeriv n) (swappedDeriv (n + 1)) := by
@@ -261,11 +218,6 @@ theorem swappedDeriv_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedDeriv n
 theorem swappedDeriv_eval_zero_pos (n : ℕ) : 0 < (swappedDeriv n).eval 0 := by
   rr_row_eval_zero_pos
 theorem swappedDeriv_splits (n : ℕ) : (swappedDeriv n).Splits := by rr_row_splits
-
-/-- A product with the factor on the right. -/
-def swappedProduct : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => swappedProduct n * (2 + X)
 
 theorem swappedProduct_interlaces (n : ℕ) :
     Interlaces (swappedProduct n) (swappedProduct (n + 1)) := by
@@ -392,12 +344,6 @@ def A036969 : ℕ → ℝ[X]
 theorem A036969_interlaces (n : ℕ) : Interlaces (A036969 n) (A036969 (n + 1)) := by
   rr_row_interlaces
 theorem A036969_splits (n : ℕ) : (A036969 n).Splits := by rr_row_splits
-
-/-- `κ = 4`, `a = b = 1 / 2` (A160562). -/
-def A160562 : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => (4 * X ^ 2) * (A160562 n).derivative.derivative + (8 * X) * (A160562 n).derivative +
-      (1 + X) * A160562 n
 
 theorem A160562_splits (n : ℕ) : (A160562 n).Splits := by rr_row_splits
 
@@ -567,14 +513,6 @@ def A118931 : ℕ → ℝ[X]
 theorem A118931_splits (n : ℕ) : (A118931 n).Splits := by
   rr_row_splits
 
-/-- The feedback term `(X - 1) P n`: the same windows in the variable `X - 1` (A118884). -/
-def A118884 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 2
-  | 2 => 4
-  | 3 => 8
-  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
-
 theorem A118884_splits (n : ℕ) : (A118884 n).Splits := by
   rr_row_splits
 
@@ -611,13 +549,6 @@ def A236471 : ℕ → ℝ[X]
 
 theorem A236471_interlaces (n : ℕ) : Interlaces (A236471 n) (A236471 (n + 1)) := by
   rr_row_interlaces
-
-/-- `B n = 0`: beyond the window `[-1, 0]` the multiplier `A = X + X ^ 2` is positive and the
-rows have positive degree (A142071). -/
-def A142071 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => X
-  | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
 
 theorem A142071_interlaces (n : ℕ) : Interlaces (A142071 n) (A142071 (n + 1)) := by
   rr_row_interlaces

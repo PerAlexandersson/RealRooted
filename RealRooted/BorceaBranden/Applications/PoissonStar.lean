@@ -93,20 +93,6 @@ theorem shiftDeriv_monomial {R σ : Type*} [CommSemiring R]
       ∑ j ∈ Finset.range (n + 1),
         MvPolynomial.monomial (d - Finsupp.single q j)
           ((n.choose j : R) * (d q).descFactorial j * c) := by
-  have hpow : ∀ j : ℕ,
-      ((MvPolynomial.pderiv q).toLinearMap ^ j)
-          (MvPolynomial.monomial d c) =
-        iteratedPDerivAt q j (MvPolynomial.monomial d c) := by
-    intro j
-    induction j with
-    | zero => rfl
-    | succ j ih =>
-        rw [pow_succ']
-        change MvPolynomial.pderiv q
-            (((MvPolynomial.pderiv q).toLinearMap ^ j)
-              (MvPolynomial.monomial d c)) = _
-        rw [ih]
-        rfl
   rw [shiftDeriv, shiftMap,
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
@@ -115,7 +101,7 @@ theorem shiftDeriv_monomial {R σ : Type*} [CommSemiring R]
   rw [Module.End.mul_apply, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • MvPolynomial.monomial d c) = _
-  rw [map_nsmul, hpow, iteratedPDerivAt_monomial]
+  rw [map_nsmul, iteratedPDerivAt_eq_pow, iteratedPDerivAt_monomial]
   rw [nsmul_eq_mul]
   change MvPolynomial.C (n.choose j : R) *
       MvPolynomial.monomial (d - Finsupp.single q j)
@@ -130,18 +116,6 @@ theorem shiftDeriv_eq_sum_iterated {R σ : Type*} [CommSemiring R]
     shiftDeriv q n P =
       ∑ j ∈ Finset.range (n + 1),
         MvPolynomial.C (n.choose j : R) * iteratedPDerivAt q j P := by
-  have hpow : ∀ j : ℕ,
-      ((MvPolynomial.pderiv q).toLinearMap ^ j) P =
-        iteratedPDerivAt q j P := by
-    intro j
-    induction j with
-    | zero => rfl
-    | succ j ih =>
-        rw [pow_succ']
-        change MvPolynomial.pderiv q
-          (((MvPolynomial.pderiv q).toLinearMap ^ j) P) = _
-        rw [ih]
-        rfl
   rw [shiftDeriv, shiftMap,
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
@@ -150,7 +124,7 @@ theorem shiftDeriv_eq_sum_iterated {R σ : Type*} [CommSemiring R]
   rw [Module.End.mul_apply, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • P) = _
-  rw [map_nsmul, hpow, nsmul_eq_mul]
+  rw [map_nsmul, iteratedPDerivAt_eq_pow, nsmul_eq_mul]
   change MvPolynomial.C (n.choose j : R) * iteratedPDerivAt q j P = _
   rfl
 

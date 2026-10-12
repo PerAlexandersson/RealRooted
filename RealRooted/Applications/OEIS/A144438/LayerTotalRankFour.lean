@@ -89,38 +89,38 @@ theorem decoBottomTotal_four_rayleighDifference_three_four :
   norm_num [MvPolynomial.rayleighDifference, MvPolynomial.pderiv_mul]
   ring
 
+private theorem pos_of_scaled_eq_weighted_sq_add_sq_add
+    {a b u v e q : ℝ} (ha : 0 < a) (hb : 0 ≤ b) (he : 0 < e)
+    (h : a * q = b * u ^ 2 + v ^ 2 + e) :
+    0 < q := by
+  have : 0 < a * q := by
+    rw [h]
+    positivity
+  nlinarith
+
 private theorem quartic_one_pos (x : ℝ) :
     0 < 839 * x ^ 4 + 5514 * x ^ 3 + 22491 * x ^ 2 + 36612 * x + 31500 := by
-  have hprod : 0 < (839 * 11268900 : ℝ) *
-      (839 * x ^ 4 + 5514 * x ^ 3 + 22491 * x ^ 2 + 36612 * x + 31500) := by
-    rw [show (839 * 11268900 : ℝ) *
-        (839 * x ^ 4 + 5514 * x ^ 3 + 22491 * x ^ 2 + 36612 * x + 31500) =
-      11268900 * (839 * x ^ 2 + 2757 * x) ^ 2 +
-        (11268900 * x + 15358734) ^ 2 + 839 * 73813365396 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (839 * 11268900 : ℝ)) (b := 11268900)
+    (u := 839 * x ^ 2 + 2757 * x) (v := 11268900 * x + 15358734)
+    (e := 839 * 73813365396) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 private theorem quartic_two_pos (x : ℝ) :
     0 < 1436 * x ^ 4 + 4444 * x ^ 3 + 13431 * x ^ 2 + 9088 * x + 9176 := by
-  have hprod : 0 < (1436 * 14349632 : ℝ) *
-      (1436 * x ^ 4 + 4444 * x ^ 3 + 13431 * x ^ 2 + 9088 * x + 9176) := by
-    rw [show (1436 * 14349632 : ℝ) *
-        (1436 * x ^ 4 + 4444 * x ^ 3 + 13431 * x ^ 2 + 9088 * x + 9176) =
-      14349632 * (1436 * x ^ 2 + 2222 * x) ^ 2 +
-        (14349632 * x + 6525184) ^ 2 + 1436 * 102021787136 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (1436 * 14349632 : ℝ)) (b := 14349632)
+    (u := 1436 * x ^ 2 + 2222 * x) (v := 14349632 * x + 6525184)
+    (e := 1436 * 102021787136) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 private theorem quartic_three_pos (x : ℝ) :
     0 < 8876 * x ^ 4 + 9076 * x ^ 3 + 13683 * x ^ 2 + 5086 * x + 1583 := by
-  have hprod : 0 < (8876 * 100856864 : ℝ) *
-      (8876 * x ^ 4 + 9076 * x ^ 3 + 13683 * x ^ 2 + 5086 * x + 1583) := by
-    rw [show (8876 * 100856864 : ℝ) *
-        (8876 * x ^ 4 + 9076 * x ^ 3 + 13683 * x ^ 2 + 5086 * x + 1583) =
-      100856864 * (8876 * x ^ 2 + 4538 * x) ^ 2 +
-        (100856864 * x + 22571668) ^ 2 + 8876 * 102256663988 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (8876 * 100856864 : ℝ)) (b := 100856864)
+    (u := 8876 * x ^ 2 + 4538 * x) (v := 100856864 * x + 22571668)
+    (e := 8876 * 102256663988) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 private theorem quadratic_one_pos (x : ℝ) : 0 < 8 * x ^ 2 + 58 * x + 150 := by
   simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
@@ -372,47 +372,29 @@ theorem
 private theorem companion_slope_quartic_one_pos (x : ℝ) :
     0 < 1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
       41864 * x + 35207 := by
-  have hprod : 0 < (1071 * 16629350 : ℝ) *
-      (1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
-        41864 * x + 35207) := by
-    rw [show (1071 * 16629350 : ℝ) *
-          (1071 * x ^ 4 + 6808 * x ^ 3 + 26346 * x ^ 2 +
-            41864 * x + 35207) =
-        16629350 * (1071 * x ^ 2 + 3404 * x) ^ 2 +
-          (16629350 * x + 22418172) ^ 2 +
-          1071 * 116212349146 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (1071 * 16629350 : ℝ)) (b := 16629350)
+    (u := 1071 * x ^ 2 + 3404 * x) (v := 16629350 * x + 22418172)
+    (e := 1071 * 116212349146) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 private theorem companion_slope_quartic_two_pos (x : ℝ) :
     0 < 1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
       10424 * x + 10188 := by
-  have hprod : 0 < (1856 * 20957696 : ℝ) *
-      (1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
-        10424 * x + 10188) := by
-    rw [show (1856 * 20957696 : ℝ) *
-          (1856 * x ^ 4 + 5536 * x ^ 3 + 15420 * x ^ 2 +
-            10424 * x + 10188) =
-        20957696 * (1856 * x ^ 2 + 2768 * x) ^ 2 +
-          (20957696 * x + 9673472) ^ 2 +
-          1856 * 163098870784 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (1856 * 20957696 : ℝ)) (b := 20957696)
+    (u := 1856 * x ^ 2 + 2768 * x) (v := 20957696 * x + 9673472)
+    (e := 1856 * 163098870784) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 private theorem companion_slope_quartic_three_pos (x : ℝ) :
     0 < 11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
       4860 * x + 1583 := by
-  have hprod : 0 < (11648 * 144737792 : ℝ) *
-      (11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
-        4860 * x + 1583) := by
-    rw [show (11648 * 144737792 : ℝ) *
-          (11648 * x ^ 4 + 8768 * x ^ 3 + 14076 * x ^ 2 +
-            4860 * x + 1583) =
-        144737792 * (11648 * x ^ 2 + 4384 * x) ^ 2 +
-          (144737792 * x + 28304640) ^ 2 +
-          11648 * 160339649536 by ring]
-    positivity
-  linarith
+  refine pos_of_scaled_eq_weighted_sq_add_sq_add
+    (a := (11648 * 144737792 : ℝ)) (b := 144737792)
+    (u := 11648 * x ^ 2 + 4384 * x) (v := 144737792 * x + 28304640)
+    (e := 11648 * 160339649536) (by norm_num) (by norm_num) (by norm_num) ?_
+  ring
 
 /-- Every affine Rayleigh discriminant between the rank-two companion and
 its successor slope is nonpositive.  The finite-support theorem reduces the

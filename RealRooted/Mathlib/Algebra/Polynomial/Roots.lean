@@ -12,6 +12,13 @@ namespace Polynomial
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
+/-- A root multiplicity is at most the degree of its polynomial. -/
+lemma rootMultiplicity_le_natDegree (p : R[X]) (a : R) :
+    p.rootMultiplicity a ≤ p.natDegree := by
+  classical
+  exact (count_roots p).symm.le.trans
+    ((Multiset.count_le_card a p.roots).trans (card_roots' p))
+
 /-- Multiplying a polynomial by `X` does not change the sum of its roots. -/
 @[simp] theorem sum_roots_X_mul (p : R[X]) :
     (X * p).roots.sum = p.roots.sum := by

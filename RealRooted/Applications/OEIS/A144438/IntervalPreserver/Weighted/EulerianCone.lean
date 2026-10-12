@@ -54,7 +54,7 @@ def shiftMagicCoeffs (c : ℕ → ℝ) : ℕ → ℝ
 theorem X_mul_magicExpansion (d : ℕ) (c : ℕ → ℝ) :
     X * magicExpansion d c =
       magicExpansion (d + 1) (shiftMagicCoeffs c) := by
-  unfold magicExpansion
+  unfold magicExpansion Polynomial.magicExpansion
   rw [Finset.mul_sum]
   conv_rhs => rw [Finset.sum_range_succ']
   simp only [shiftMagicCoeffs, map_zero, zero_mul, add_zero]
