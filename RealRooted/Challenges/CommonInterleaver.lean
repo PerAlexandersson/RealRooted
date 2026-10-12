@@ -14,6 +14,7 @@ import RealRooted.Compatibility.Leander
 version = 1
 section = "concepts"
 slug = "common-interleavers"
+formalized = "2026-07-03"
 authors = ["Chudnovsky", "Seymour", "Leander"]
 years = [2007, 2016]
 

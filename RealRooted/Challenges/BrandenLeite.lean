@@ -14,6 +14,7 @@ import RealRooted.BrandenLeite.ZeroConstant
 version = 1
 section = "theorems"
 slug = "branden-leite"
+formalized = "2026-09-24"
 authors = ["Brändén", "Saud Leite"]
 years = [2024]
 

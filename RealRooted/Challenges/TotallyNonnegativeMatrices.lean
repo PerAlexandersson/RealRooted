@@ -13,6 +13,7 @@ import RealRooted.TotallyNonnegInterlacing
 version = 1
 section = "theorems"
 slug = "totally-nonnegative-matrices"
+formalized = "2026-09-05"
 authors = ["Gantmacher", "Krein", "Karlin", "Cryer", "Fisk"]
 years = [1937, 1968, 1976, 2006]
 

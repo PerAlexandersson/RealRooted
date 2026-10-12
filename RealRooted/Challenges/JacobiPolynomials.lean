@@ -13,6 +13,7 @@ import RealRooted.Legendre.Roots
 version = 1
 section = "families"
 slug = "jacobi-polynomials"
+formalized = "2026-09-07"
 authors = ["Jacobi", "Markoff", "Szegő"]
 years = [1859, 1886, 1939]
 

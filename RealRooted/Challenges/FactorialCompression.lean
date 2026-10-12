@@ -8,6 +8,7 @@ import RealRooted.Hadamard.SchurSzegoStrict
 version = 1
 section = "theorems"
 slug = "factorial-compression"
+formalized = "2026-10-09"
 authors = ["Zhanhe Zhang"]
 years = [2026]
 

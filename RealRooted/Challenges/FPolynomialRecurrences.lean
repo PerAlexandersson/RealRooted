@@ -8,6 +8,7 @@ import RealRooted.SymmetricDecomposition.FPolynomialSequence
 version = 1
 section = "theorems"
 slug = "f-transform-recurrences"
+formalized = "2026-10-11"
 
 [[theorems]]
 name = "RealRooted.fPolynomial_derivative"

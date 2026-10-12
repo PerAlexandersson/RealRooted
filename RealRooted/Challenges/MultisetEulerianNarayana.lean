@@ -10,6 +10,7 @@ import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicit
 version = 1
 section = "families"
 slug = "multiset-eulerian-narayana"
+formalized = "2026-10-07"
 authors = ["Lin", "Ma", "Zhou", "Zhang", "Zhao"]
 years = [2021, 2026]
 

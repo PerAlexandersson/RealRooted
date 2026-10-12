@@ -7,6 +7,7 @@ import RealRooted.LiuOppositeSigns.CompatibilityCriterion
 version = 1
 section = "theorems"
 slug = "liu-opposite-signs"
+formalized = "2026-10-02"
 authors = ["Liu"]
 years = [2012]
 

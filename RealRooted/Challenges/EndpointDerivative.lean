@@ -8,6 +8,7 @@ import RealRooted.EndpointDerivative.Sequence
 version = 1
 section = "theorems"
 slug = "endpoint-derivative"
+formalized = "2026-09-26"
 
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative"

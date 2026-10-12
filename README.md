@@ -194,6 +194,8 @@ curated in the `RealRooted/Challenges/` entry points and rendered by
 - An explicit metadata block opts a module into the catalog. Only selected
   definitions and checked theorems are published, never conjectures, examples,
   or statement scaffolds.
+- Each catalog metadata block requires `formalized = "YYYY-MM-DD"`, the date its
+  selected headline result (or first theorem) was first formalized.
 - The bounded module comment holds the explanatory prose and the primary
   references.
 - After the ordinary build, `scripts/audit_challenge_catalog.py` verifies the

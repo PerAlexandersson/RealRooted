@@ -8,6 +8,7 @@ import RealRooted.SeparablePermutations.Interlacing
 version = 1
 section = "theorems"
 slug = "separable-permutations"
+formalized = "2026-10-09"
 authors = ["Zhanhe Zhang", "Fu", "Lin", "Zeng"]
 years = [2016, 2026]
 

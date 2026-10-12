@@ -9,6 +9,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 version = 1
 section = "families"
 slug = "jacobi-stirling-numbers"
+formalized = "2026-09-13"
 authors = ["Gelineau", "Zeng", "Mongelli"]
 years = [2010, 2012]
 

@@ -10,6 +10,7 @@ import RealRooted.PolyaFrequencyConvolution.Basic
 version = 1
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
+formalized = "2026-10-05"
 authors = ["Aissen", "Schoenberg", "Whitney"]
 years = [1952]
 

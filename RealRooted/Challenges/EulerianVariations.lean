@@ -10,6 +10,7 @@ import RealRooted.CombinatorialExamples.SuperEulerian
 version = 1
 section = "theorems"
 slug = "eulerian-variations"
+formalized = "2026-09-09"
 authors = ["Alexandersson", "Shankar"]
 years = [2026]
 

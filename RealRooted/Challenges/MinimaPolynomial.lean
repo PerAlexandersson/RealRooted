@@ -7,6 +7,7 @@ import RealRooted.Graph.MinimaForest
 version = 1
 section = "families"
 slug = "minima-polynomial"
+formalized = "2026-10-02"
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 

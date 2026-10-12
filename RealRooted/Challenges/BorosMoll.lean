@@ -8,6 +8,7 @@ import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 version = 1
 section = "theorems"
 slug = "boros-moll-log-concavity-transform"
+formalized = "2026-10-08"
 authors = ["Xie", "Zhang"]
 years = [2026]
 

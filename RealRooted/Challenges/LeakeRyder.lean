@@ -8,6 +8,7 @@ import RealRooted.Graph.MatchingPolynomial.Multivariate
 version = 1
 section = "theorems"
 slug = "leake-ryder"
+formalized = "2026-09-06"
 authors = ["Leake", "Ryder"]
 years = [2019]
 

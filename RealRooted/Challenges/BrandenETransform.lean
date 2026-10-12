@@ -8,6 +8,7 @@ import RealRooted.Transforms.BrandenE.IntervalPreserver
 version = 1
 section = "theorems"
 slug = "branden-e-transform"
+formalized = "2026-09-14"
 authors = ["Brändén"]
 years = [2006]
 

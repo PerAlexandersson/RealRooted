@@ -10,6 +10,7 @@ import RealRooted.LGV.TotallyNonnegative
 version = 1
 section = "theorems"
 slug = "lindstrom-gessel-viennot"
+formalized = "2026-09-17"
 authors = ["Lindström", "Gessel", "Viennot"]
 years = [1973, 1985]
 

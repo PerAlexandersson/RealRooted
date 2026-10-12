@@ -19,6 +19,7 @@ import posixpath
 import re
 import subprocess
 import tomllib
+from datetime import date
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from typing import Any, Iterable
@@ -92,6 +93,7 @@ class CatalogPage:
     slug: str
     authors: tuple[str, ...]
     years: tuple[int, ...]
+    formalized: str
     definitions: tuple[CatalogItem, ...]
     theorems: tuple[CatalogItem, ...]
     content: str
@@ -287,7 +289,30 @@ def _read_attribution(
     return tuple(raw_authors), tuple(raw_years)
 
 
-def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
+def _read_formalized(
+    path: str, metadata: dict[str, Any], commit_date: date | None
+) -> str:
+    """Read the required, revision-bounded catalog formalization date."""
+    value = metadata.get("formalized")
+    if value is None:
+        raise _source_error(
+            path,
+            'metadata requires formalized = "YYYY-MM-DD"; use the date the selected result was added',
+        )
+    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise _source_error(path, 'formalized must be an ISO date written as "YYYY-MM-DD"')
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as error:
+        raise _source_error(path, 'formalized must be a valid ISO date written as "YYYY-MM-DD"') from error
+    if commit_date is not None and parsed > commit_date:
+        raise _source_error(path, f"formalized {value} is after this revision's commit date {commit_date}")
+    return value
+
+
+def parse_challenge_source(
+    source_path: str, text: str, commit_date: date | None = None
+) -> CatalogPage | None:
     """Parse one opted-in module, or return ``None`` if it is not curated."""
     comments = _doc_comments(text)
     metadata_matches: list[tuple[int, re.Match[str]]] = []
@@ -312,7 +337,16 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         raise _source_error(source_path, f"invalid TOML metadata: {error}") from error
     if not isinstance(metadata, dict):
         raise _source_error(source_path, "metadata must be a TOML table")
-    allowed = {"version", "section", "slug", "authors", "years", "definitions", "theorems"}
+    allowed = {
+        "version",
+        "section",
+        "slug",
+        "authors",
+        "years",
+        "formalized",
+        "definitions",
+        "theorems",
+    }
     unknown = set(metadata) - allowed
     if unknown:
         raise _source_error(source_path, f"unknown metadata keys: {', '.join(sorted(unknown))}")
@@ -325,6 +359,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
     if not isinstance(slug, str) or not SLUG_RE.fullmatch(slug):
         raise _source_error(source_path, "slug must be lowercase hyphenated text")
     authors, years = _read_attribution(source_path, metadata)
+    formalized = _read_formalized(source_path, metadata, commit_date)
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
     if not definitions and not theorems:
@@ -336,6 +371,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         slug=slug,
         authors=authors,
         years=years,
+        formalized=formalized,
         definitions=definitions,
         theorems=theorems,
         content=content,
@@ -362,12 +398,28 @@ def _tracked_challenge_paths(repo_root: pathlib.Path) -> list[pathlib.Path]:
     return sorted(paths)
 
 
+def _commit_date_at(repo_root: pathlib.Path) -> date | None:
+    """Return the current revision's calendar date when Git is available."""
+    try:
+        result = subprocess.run(
+            ["git", "show", "-s", "--format=%cs", "HEAD"],
+            cwd=repo_root,
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+        return date.fromisoformat(result.stdout.strip())
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return None
+
+
 def load_catalog(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
     """Load and validate every opted-in tracked challenge module."""
     pages: list[CatalogPage] = []
+    commit_date = _commit_date_at(repo_root)
     for path in _tracked_challenge_paths(repo_root):
         page = parse_challenge_source(
-            path.relative_to(repo_root).as_posix(), path.read_text(encoding="utf-8")
+            path.relative_to(repo_root).as_posix(), path.read_text(encoding="utf-8"), commit_date
         )
         if page is not None:
             pages.append(page)
@@ -388,6 +440,7 @@ def canonical_catalog_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
                 "source_path": page.source_path,
                 "section": page.section,
                 "slug": page.slug,
+                "formalized": page.formalized,
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
             }
@@ -945,6 +998,10 @@ def _attribution(page: CatalogPage) -> str:
     return " · ".join(parts)
 
 
+def _formalized_label(page: CatalogPage) -> str:
+    return f"formalized {page.formalized}"
+
+
 def _count(count: int, word: str, symbol: str, kind: str) -> str:
     words = _plural(count, word)
     return (
@@ -979,13 +1036,15 @@ def _page_card(page: CatalogPage, href: str) -> str:
         )
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
-        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}">'
+        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}" '
+        f'data-formalized="{page.formalized}">'
         f'<a href="{html.escape(href, quote=True)}">'
         f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
         + _counts(page)
         + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
         + headline_html
         + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        + f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -996,13 +1055,15 @@ def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
     title = item.label or item.name
     return (
         '<li class="catalog-card catalog-card--theorem catalog-card--headline" '
-        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}">'
+        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}" '
+        f'data-formalized="{page.formalized}">'
         f'<a href="{html.escape(href, quote=True)}">'
         '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
         '<span aria-hidden="true">⊢</span> Theorem</span></span>'
         f'<strong class="card-title">{html.escape(title)}</strong>'
         f'<span class="card-context">from <em>{html.escape(page.title)}</em></span>'
         f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -1015,7 +1076,9 @@ def _sort_controls() -> str:
         'value="name" checked><span class="catalog-sort-indicator" aria-hidden="true"></span>'
         '<span>Name</span></label><label class="catalog-sort-option"><input type="radio" '
         'name="catalog-sort" value="year"><span class="catalog-sort-indicator" '
-        'aria-hidden="true"></span><span>Year</span></label></div>'
+        'aria-hidden="true"></span><span>Year</span></label><label class="catalog-sort-option">'
+        '<input type="radio" name="catalog-sort" value="newest"><span class="catalog-sort-indicator" '
+        'aria-hidden="true"></span><span>Newest</span></label></div>'
     )
 
 
@@ -1245,7 +1308,8 @@ def render_site(
             + "</div>"
             + f"<p class=\"verification\"><span>Lean source</span> "
             + f"<a href=\"{source}\">{html.escape(page.source_path)}</a> at revision "
-            + f"<code>{html.escape(revision[:8])}</code>.</p></main>"
+            + f"<code>{html.escape(revision[:8])}</code>. <span class=\"formalized\">"
+            + f"Formalized {page.formalized}</span>.</p></main>"
         )
         files[f"{page.section}/{page.slug}/index.html"] = _template(
             repo_root, body, page.title, page.url
@@ -1264,6 +1328,7 @@ def render_site(
                 "source_path": page.source_path,
                 "authors": list(page.authors),
                 "years": list(page.years),
+                "formalized": page.formalized,
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
                 "headlines": [item.name for item in page.theorems if item.headline],

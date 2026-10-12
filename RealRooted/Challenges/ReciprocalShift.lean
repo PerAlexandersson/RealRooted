@@ -11,6 +11,7 @@ import RealRooted.ReciprocalShift.Roots
 version = 1
 section = "theorems"
 slug = "reciprocal-shift"
+formalized = "2026-09-26"
 
 [[theorems]]
 name = "RealRooted.reciprocalShift_reverses_strictInterl"

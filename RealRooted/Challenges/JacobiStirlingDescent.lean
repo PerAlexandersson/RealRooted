@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 version = 1
 section = "families"
 slug = "jacobi-stirling-descent"
+formalized = "2026-10-07"
 authors = ["Gessel", "Lin", "Zeng", "Ma", "Wang"]
 years = [2012, 2026]
 

@@ -9,6 +9,7 @@ import RealRooted.Wagner.NonpositiveRoots
 version = 1
 section = "theorems"
 slug = "wagner"
+formalized = "2026-07-10"
 authors = ["Wagner"]
 years = [1992]
 

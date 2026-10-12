@@ -12,6 +12,7 @@ import RealRooted.DerivativeRecurrence.EndpointWindow
 version = 1
 section = "theorems"
 slug = "recurrence-root-windows"
+formalized = "2026-10-01"
 authors = ["Liu", "Wang", "Brändén"]
 years = [2006, 2007]
 

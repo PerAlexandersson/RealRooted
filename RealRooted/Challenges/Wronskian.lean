@@ -8,6 +8,7 @@ import RealRooted.Wronskian.PolarLaguerre
 version = 1
 section = "theorems"
 slug = "wronskian-criterion"
+formalized = "2026-10-06"
 
 [[theorems]]
 name = "RealRooted.strictInterl_iff_wronskian_eval_nonneg"

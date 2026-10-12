@@ -7,6 +7,7 @@ import RealRooted.MultiplierSequence.ProperPositionPF
 version = 1
 section = "theorems"
 slug = "pf-multiplier-proper-position"
+formalized = "2026-10-11"
 
 [[theorems]]
 name = "RealRooted.IsFinitePFMultiplierSequence.interl_diagonalOperator"

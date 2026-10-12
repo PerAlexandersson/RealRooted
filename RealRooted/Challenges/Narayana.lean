@@ -12,6 +12,7 @@ import RealRooted.NarayanaTransformation.Rising
 version = 1
 section = "families"
 slug = "narayana"
+formalized = "2026-07-18"
 authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti"]
 years = [1989, 2013, 2026]
 

@@ -8,6 +8,7 @@ import RealRooted.Favard.Orthogonality
 version = 1
 section = "theorems"
 slug = "favard"
+formalized = "2026-09-07"
 authors = ["Favard"]
 years = [1935]
 

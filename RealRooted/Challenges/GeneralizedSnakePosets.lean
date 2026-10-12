@@ -13,6 +13,7 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 version = 1
 section = "families"
 slug = "generalized-snake-posets"
+formalized = "2026-10-05"
 authors = ["Braun", "Jal", "Alexandersson"]
 years = [2024, 2026]
 

@@ -7,6 +7,7 @@ import RealRooted.HosterStump.PosetChow
 version = 1
 section = "theorems"
 slug = "chow-polynomials-simplicial-posets"
+formalized = "2026-10-08"
 authors = ["Hoster", "Stump"]
 years = [2025]
 

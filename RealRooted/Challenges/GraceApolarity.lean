@@ -11,6 +11,7 @@ import RealRooted.Polarization
 version = 1
 section = "theorems"
 slug = "grace-apolarity"
+formalized = "2026-10-06"
 authors = ["Grace", "Szegő", "Lieb", "Sokal", "Borcea", "Brändén"]
 years = [1902, 1922, 1981, 2009]
 

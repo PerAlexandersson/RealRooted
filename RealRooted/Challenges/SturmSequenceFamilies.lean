@@ -14,6 +14,7 @@ import RealRooted.CombinatorialExamples.Touchard
 version = 1
 section = "families"
 slug = "sturm-sequence-families"
+formalized = "2026-05-12"
 authors = ["Gessel", "Stanley", "Bóna", "Mantaci", "Rakotondrajao", "Chow", "Shiu", "Mező",
   "Wang"]
 years = [1978, 2003, 2009, 2011, 2014, 2016]

@@ -8,6 +8,7 @@ import RealRooted.Applications.BinderVecchi.UniformMatroid
 version = 1
 section = "theorems"
 slug = "uniform-matroid-hodge-poincare"
+formalized = "2026-10-09"
 authors = ["Binder", "Vecchi", "Athanasiadis", "Brändén", "Jochemko"]
 years = [2022, 2025, 2026]
 

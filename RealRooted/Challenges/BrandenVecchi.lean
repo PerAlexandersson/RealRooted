@@ -11,6 +11,7 @@ import RealRooted.BrandenVecchi.SmirnovSpecialization
 version = 1
 section = "theorems"
 slug = "branden-vecchi"
+formalized = "2026-09-12"
 authors = ["Brändén", "Vecchi"]
 years = [2025]
 

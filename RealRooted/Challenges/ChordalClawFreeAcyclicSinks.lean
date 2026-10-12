@@ -7,6 +7,7 @@ import RealRooted.Graph.ChordalAcyclicSink
 version = 1
 section = "families"
 slug = "chordal-claw-free-acyclic-sinks"
+formalized = "2026-09-13"
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 

@@ -12,6 +12,7 @@ import RealRooted.ObreschkoffConverse.Derivative
 version = 1
 section = "theorems"
 slug = "derivative-interlacing"
+formalized = "2026-05-12"
 authors = ["Rolle", "Laguerre", "Jensen", "Obreschkoff", "Fisk"]
 years = [1691, 1882, 1913, 1963, 2006]
 

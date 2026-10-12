@@ -9,6 +9,7 @@ import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 version = 1
 section = "families"
 slug = "parking-functions"
+formalized = "2026-09-13"
 
 [[definitions]]
 name = "ParkingFunction.IsParkingFunction"

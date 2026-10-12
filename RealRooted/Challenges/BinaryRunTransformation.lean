@@ -11,6 +11,7 @@ import RealRooted.BinaryRunTransformation.SymbolCounterexample
 version = 1
 section = "theorems"
 slug = "binary-run-transformation"
+formalized = "2026-09-28"
 
 [[definitions]]
 name = "RealRooted.binaryRunPolynomial"

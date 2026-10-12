@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 version = 1
 section = "theorems"
 slug = "enestrom-kakeya"
+formalized = "2026-10-07"
 authors = ["Eneström", "Kakeya"]
 years = [1893, 1912]
 

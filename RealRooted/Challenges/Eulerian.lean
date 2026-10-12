@@ -13,6 +13,7 @@ open Polynomial
 version = 1
 section = "families"
 slug = "eulerian"
+formalized = "2026-07-10"
 authors = ["Frobenius", "Brenti"]
 years = [1910, 1994]
 

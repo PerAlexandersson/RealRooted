@@ -8,6 +8,7 @@ import RealRooted.MatrixInterlacing.Composition
 version = 1
 section = "theorems"
 slug = "matrix-interlacing"
+formalized = "2026-10-06"
 authors = ["Fisk", "Brändén"]
 years = [2006, 2015]
 

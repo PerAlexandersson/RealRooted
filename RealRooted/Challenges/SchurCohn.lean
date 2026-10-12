@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 version = 1
 section = "theorems"
 slug = "schur-cohn"
+formalized = "2026-10-07"
 authors = ["Schur", "Cohn"]
 years = [1917, 1922]
 

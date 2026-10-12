@@ -15,6 +15,7 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "operator-preservers"
+formalized = "2026-10-05"
 authors = ["Brändén"]
 years = [2004]
 

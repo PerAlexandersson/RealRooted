@@ -11,6 +11,7 @@ import RealRooted.MaWang.StrictStep
 version = 1
 section = "theorems"
 slug = "ma-wang-liu-wang"
+formalized = "2026-10-06"
 authors = ["Liu", "Wang", "Ma"]
 years = [2007, 2008]
 

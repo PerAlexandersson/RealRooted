@@ -7,6 +7,7 @@ import RealRooted.EdreiThoma.Easy
 version = 1
 section = "theorems"
 slug = "edrei-thoma"
+formalized = "2026-10-09"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"

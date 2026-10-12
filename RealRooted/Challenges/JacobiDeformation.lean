@@ -9,6 +9,7 @@ import RealRooted.SpectralProduct
 version = 1
 section = "families"
 slug = "jacobi-deformation"
+formalized = "2026-10-06"
 authors = ["Micchelli", "Willoughby", "Alexandersson"]
 years = [1979, 2026]
 

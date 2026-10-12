@@ -8,6 +8,7 @@ import RealRooted.RootContinuity.Path
 version = 1
 section = "theorems"
 slug = "root-continuity"
+formalized = "2026-10-06"
 
 [[theorems]]
 name = "RealRooted.splits_of_isPreconnected"

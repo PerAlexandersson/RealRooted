@@ -7,6 +7,7 @@ import RealRooted.GarloffWagner.HurwitzStable
 version = 1
 section = "theorems"
 slug = "garloff-wagner-hurwitz"
+formalized = "2026-06-10"
 authors = ["Garloff", "Wagner"]
 years = [1996]
 

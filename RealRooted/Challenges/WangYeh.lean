@@ -7,6 +7,7 @@ import RealRooted.WangYeh.TriangularMatrix
 version = 1
 section = "theorems"
 slug = "wang-yeh"
+formalized = "2026-10-06"
 authors = ["Wang", "Yeh"]
 years = [2005]
 
