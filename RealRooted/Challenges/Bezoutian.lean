@@ -8,6 +8,7 @@ import RealRooted.Bezoutian.Successor
 version = 1
 section = "theorems"
 slug = "bezoutian"
+formalized = "2026-10-06"
 authors = ["Hermite", "Krein", "Naimark", "Fisk"]
 years = [1856, 1936, 2006]
 

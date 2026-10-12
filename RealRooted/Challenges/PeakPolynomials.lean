@@ -7,6 +7,7 @@ import RealRooted.Applications.PeakPolynomials.PeakInduction
 version = 1
 section = "theorems"
 slug = "peak-polynomials"
+formalized = "2026-07-01"
 authors = ["Alexandersson", "Jal", "Quemener"]
 
 [[definitions]]

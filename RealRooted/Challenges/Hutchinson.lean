@@ -7,6 +7,7 @@ import RealRooted.Hutchinson
 version = 1
 section = "theorems"
 slug = "hutchinson"
+formalized = "2026-10-07"
 authors = ["Hutchinson"]
 years = [1923]
 

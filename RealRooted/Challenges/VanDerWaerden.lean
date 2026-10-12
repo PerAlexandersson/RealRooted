@@ -7,6 +7,7 @@ import RealRooted.Gurvits
 version = 1
 section = "theorems"
 slug = "van-der-waerden"
+formalized = "2026-10-07"
 authors = ["Egorychev", "Falikman", "Gurvits"]
 years = [1981, 2008]
 

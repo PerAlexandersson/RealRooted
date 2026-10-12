@@ -8,6 +8,7 @@ import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 version = 1
 section = "theorems"
 slug = "toric-g-contributions"
+formalized = "2026-09-02"
 authors = ["Xiao"]
 years = [2026]
 

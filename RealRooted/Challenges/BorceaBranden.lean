@@ -12,6 +12,7 @@ import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 version = 1
 section = "theorems"
 slug = "borcea-branden"
+formalized = "2026-08-09"
 authors = ["Borcea", "Brändén"]
 years = [2009]
 

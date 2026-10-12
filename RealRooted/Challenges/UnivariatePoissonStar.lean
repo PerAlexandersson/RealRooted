@@ -7,6 +7,7 @@ import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
 version = 1
 section = "theorems"
 slug = "univariate-poisson-star-c"
+formalized = "2026-10-11"
 authors = ["Brändén"]
 years = [2006]
 

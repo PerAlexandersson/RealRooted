@@ -8,6 +8,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
 version = 1
 section = "theorems"
 slug = "descartes-rule-of-signs"
+formalized = "2026-09-27"
 authors = ["Descartes", "Budan", "Fourier"]
 years = [1637, 1807, 1820]
 

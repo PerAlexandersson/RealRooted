@@ -12,6 +12,7 @@ import RealRooted.ShiftLemma
 version = 1
 section = "theorems"
 slug = "interlacing-closure"
+formalized = "2026-10-06"
 authors = ["Fisk", "Brändén", "Saud Leite", "Hlavacek", "Solus"]
 years = [2006, 2015, 2021, 2024]
 

@@ -12,6 +12,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 version = 1
 section = "theorems"
 slug = "finite-free-convolutions"
+formalized = "2026-09-11"
 authors = ["Marcus", "Spielman", "Srivastava", "Gribinski"]
 years = [2022]
 

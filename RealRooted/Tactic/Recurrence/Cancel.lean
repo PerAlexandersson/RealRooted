@@ -75,6 +75,15 @@ def cancelPlan (r : RowRec) : MetaM (Except MessageData CancelPlan) := do
     grow := grow.push pos
   return .ok { extra, law, m, grow }
 
+/-- Shift a coefficient function from the original recurrence to the sequence used by the
+cancellation theorem. -/
+private def cancelShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
+  if s == 0 then return ← certTerm c
+  let shifted ← lambdaTelescope c fun xs body => do
+    let ns ← mkAppM ``HAdd.hAdd #[xs[0]!, mkNatLit s]
+    mkLambdaFVars xs (body.replaceFVar xs[0]! ns)
+  certTerm shifted
+
 /-- The (unhygienic) names of the variables `n = p * k + r` of a residue decomposition. -/
 private def cancelN : Ident := mkIdent `rr_n
 private def cancelK : Ident := mkIdent `rr_k
@@ -134,16 +143,20 @@ also proves `HasNonnegCoeffs` once `RealRooted.Tactic.RowInterlacing` is importe
 simplification (numerals have no `leadingCoeff` simp lemma). -/
 private def cancelBase (P : Ident) : TacticM Unit := do
   if ← rowSucceeds (do
+      evalTactic (← `(tactic| (
+        beta_reduce
+        first
+          | simpa [$P:ident] using RealRooted.hasNonnegCoeffs_one
+          | (simp [$P:ident, Polynomial.leadingCoeff]; done)
+          | (simp [$P:ident, ← Polynomial.C_ofNat]; done))))
+      unless (← getGoals).isEmpty do throwError "goals remain") then return
+  if ← rowSucceeds (do
       rowSideGoal (some P)
       unless (← getGoals).isEmpty do throwError "goals remain") then return
   if ← rowSucceeds (do
       evalTactic (← `(tactic| rr_row_side))
       unless (← getGoals).isEmpty do throwError "goals remain") then return
-  evalTactic (← `(tactic| (
-    beta_reduce
-    first
-      | (simp [$P:ident, Polynomial.leadingCoeff]; done)
-      | (simp [$P:ident, ← Polynomial.C_ofNat]; done))))
+  throwError "rr_row_cancel: could not discharge an explicit base-row side goal"
 
 /-- The side goal `hmult`: `j ≤ D n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`, split by
 the residue of `n`, by `i ≤ m` and, for `i ≤ m`, by the endpoints of `0 ≤ j ≤ D n`. -/
@@ -223,14 +236,31 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     `(tactic| rr_row_side))
   let Q ← r.seq plan.extra
   let hrec ← r.hrecTerm plan.extra
+  let A ← cancelShiftCoeff r.coeffs[0]! (r.shift + plan.extra)
+  let B ← cancelShiftCoeff r.coeffs[1]! (r.shift + plan.extra)
+  let terms ← `([(0, 1, $A), (0, 0, $B)])
   let n := mkIdent `n
+  let eqnApp ← if plan.extra == 0 then `($(mkIdent r.eqn) $n)
+    else `($(mkIdent r.eqn) ($n + $(rowNumLit plan.extra)))
+  let hgeneral ← `(fun $n:ident => ($eqnApp).trans (by
+    simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
+      List.sum_nil, Function.iterate_zero, Function.iterate_one, id_eq, add_zero,
+      Nat.add_assoc, Nat.reduceAdd] <;>
+    ring))
   let Dfun ← `(fun $n:ident => $(rowNumLit law.D₀) + $(rowNumLit law.d) *
     (($n + $(rowNumLit law.e)) / $(rowNumLit law.p)))
   let h := mkIdent `h_row
   evalTactic (← `(tactic|
-    have $h:ident := RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel (P := $Q)
-      (D := $Dfun) (m := $(rowNumLit plan.m)) (by norm_num) $hrec
-      ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t))
+    have rr_cancel_old := (fun q =>
+      RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel (P := $Q)
+        (D := $Dfun) (m := $(rowNumLit plan.m)) (by norm_num) $hrec
+        ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ q)))
+  evalTactic (← `(tactic|
+    have rr_cancel_rec : ∀ q, $Q (q + 1) = RealRooted.LinRec.rhs $terms $Q q := $hgeneral))
+  evalTactic (← `(tactic|
+    have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel
+      (k := 1) (D := $Dfun) (P := $Q) (terms := $terms) (rho := fun _ => 0)
+      rr_cancel_rec ?_ ?_ ?_ ?_ ?_ $t))
   let gs ← getGoals
   let some mg := gs.head? | throwError "rr_row_cancel: no goals"
   setGoals [mg]
@@ -247,7 +277,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
           exact ⟨(And.left $h).trans (by lia), And.left (And.right $h)⟩))
     | _ => evalTactic (← `(tactic| exact And.left (And.right $h)))
   catch e => throwError "main goal: {e.toMessageData}"
-  let [hA, hB, hA0, hmult, h0, hpos0, hnn0, hstep] := gs.tail
+  let [hA, hB, hA0, hmult, h0, hpos0, hnn0, hstep] := gs.drop 6
     | throwError "rr_row_cancel: unexpected side goals"
   cancelRun "hA" hA (rowSideGoal none)
   cancelRun "hB" hB (rowSideGoal none)
@@ -257,6 +287,53 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
   cancelRun "hpos0" hpos0 (cancelBase P)
   cancelRun "hnn0" hnn0 (cancelBase P)
   cancelRun "hstep" hstep (cancelStep law.p plan.grow)
+  let [hlag', hD', hA', hbase', hstep'] := gs.tail.take 5
+    | throwError "rr_row_cancel: unexpected general side goals"
+  cancelRun "general hlag" hlag' (evalTactic (← `(tactic| simp)))
+  cancelRun "general hD" hD' do
+    evalTactic (← `(tactic| (
+      first
+        | exact RealRooted.LinRec.degreeLaw_periodic_mono
+        | (intro q j hj; beta_reduce; lia))))
+  cancelRun "general hA" hA' do
+    evalTactic (← `(tactic| (
+      intro u hu
+      intro $cancelN:ident
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hu
+      rcases hu with hu | hu <;> subst u)))
+    let norm ← cancelNatNorm law.p
+    let branchGoals ← getGoals
+    for g in branchGoals do
+      setGoals [g]
+      evalTactic (← cancelResidue law.p)
+      for g' in ← getGoals do
+        setGoals [g']
+        evalTactic norm
+        rowSideGoal none
+    setGoals []
+  cancelRun "general hbase" hbase' do
+    evalTactic (← `(tactic| (
+      intro j hj
+      have hj0 : j = 0 := by lia
+      subst j
+      have ho := rr_cancel_old 0
+      refine ⟨ho.1.le, ?_, ho.2.2, ?_⟩
+      · rw [← ho.1, Polynomial.coeff_natDegree]
+        exact ho.2.1
+      · simpa only [zero_mul] using ho.2.2 _)))
+  cancelRun "general hstep" hstep' do
+    evalTactic (← `(tactic| (
+      intro q _
+      have ho := rr_cancel_old (q + 1)
+      refine ⟨?_, ?_, ?_, ?_⟩
+      · rw [← rr_cancel_rec q]
+        exact Polynomial.coeff_eq_zero_of_natDegree_lt (ho.1 ▸ by lia)
+      · rw [← rr_cancel_rec q, ← ho.1, Polynomial.coeff_natDegree]
+        exact ho.2.1
+      · rw [← rr_cancel_rec q]
+        exact ho.2.2
+      · rw [← rr_cancel_rec q]
+        simpa only [zero_mul] using ho.2.2 _)))
 
 elab_rules : tactic
   | `(tactic| rr_row_cancel) => withMainContext do

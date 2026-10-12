@@ -14,6 +14,7 @@ import RealRooted.RootAmplitude.SumSquares
 version = 1
 section = "theorems"
 slug = "root-amplitude"
+formalized = "2026-09-08"
 
 [[theorems]]
 name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_abs_eval_deriv_of_root_separation"

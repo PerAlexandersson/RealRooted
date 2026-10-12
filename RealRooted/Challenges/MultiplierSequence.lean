@@ -17,6 +17,7 @@ import RealRooted.MultiplierSequence.ProperPosition
 version = 1
 section = "concepts"
 slug = "multiplier-sequences"
+formalized = "2026-09-07"
 authors = ["Pólya", "Schur"]
 years = [1914]
 

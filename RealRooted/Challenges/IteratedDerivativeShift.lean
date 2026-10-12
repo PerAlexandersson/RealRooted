@@ -9,6 +9,7 @@ import RealRooted.Tactic.IteratedDerivativeShiftProduct
 version = 1
 section = "theorems"
 slug = "iterated-derivative-shift"
+formalized = "2026-10-05"
 
 [[theorems]]
 name = "RealRooted.splits_tDeriv"

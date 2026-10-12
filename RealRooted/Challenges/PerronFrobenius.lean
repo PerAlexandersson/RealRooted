@@ -10,6 +10,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 version = 1
 section = "theorems"
 slug = "perron-frobenius"
+formalized = "2026-08-21"
 authors = ["Perron", "Frobenius"]
 years = [1907, 1912]
 

@@ -7,6 +7,7 @@ import RealRooted.MatrixInterlacing
 version = 1
 section = "theorems"
 slug = "small-interlacing-matrices"
+formalized = "2026-10-06"
 authors = ["Fisk", "Brändén"]
 years = [2006, 2015]
 

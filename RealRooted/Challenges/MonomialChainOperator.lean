@@ -10,6 +10,7 @@ import RealRooted.OperatorInterlacingUpgrade.StablePencil
 version = 1
 section = "theorems"
 slug = "monomial-chain-operator"
+formalized = "2026-05-12"
 
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"

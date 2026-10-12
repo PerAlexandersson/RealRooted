@@ -7,6 +7,7 @@ import RealRooted.FiniteMemory.Defect
 version = 1
 section = "theorems"
 slug = "finite-memory-defect-bridges"
+formalized = "2026-10-11"
 
 [[theorems]]
 name = "RealRooted.HasNonnegCoeffs.natDegree_add_eq_max"

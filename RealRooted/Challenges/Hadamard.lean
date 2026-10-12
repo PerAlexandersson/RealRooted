@@ -18,6 +18,7 @@ import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 version = 1
 section = "theorems"
 slug = "hadamard-products"
+formalized = "2026-07-03"
 authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
   "Ferroni", "Jochemko", "Liu", "Mao"]
 years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024, 2026]

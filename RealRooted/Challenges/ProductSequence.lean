@@ -12,6 +12,7 @@ import RealRooted.ProductSequence.EndpointPair
 version = 1
 section = "theorems"
 slug = "product-sequences"
+formalized = "2026-07-08"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_of_product_factor_sequence"

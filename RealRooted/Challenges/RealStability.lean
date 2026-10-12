@@ -20,6 +20,7 @@ import RealRooted.SpanningTreeStability
 version = 1
 section = "theorems"
 slug = "real-stability"
+formalized = "2026-10-06"
 authors = ["Brändén", "Borcea", "Gårding"]
 years = [1959, 2007, 2008]
 

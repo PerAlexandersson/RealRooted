@@ -9,6 +9,7 @@ import RealRooted.RootVieta.Newton
 version = 1
 section = "theorems"
 slug = "sturm-root-counting"
+formalized = "2026-09-27"
 authors = ["Sturm", "Hermite", "Sylvester"]
 years = [1829, 1853]
 

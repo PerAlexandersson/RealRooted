@@ -9,6 +9,7 @@ import RealRooted.Graph.MatchingVertexInterlacing
 version = 1
 section = "theorems"
 slug = "heilmann-lieb"
+formalized = "2026-10-06"
 authors = ["Heilmann", "Lieb", "Godsil", "Engström"]
 years = [1972, 1981, 2007]
 

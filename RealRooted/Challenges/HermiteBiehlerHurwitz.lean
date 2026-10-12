@@ -16,6 +16,7 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "hermite-biehler-hurwitz"
+formalized = "2026-07-10"
 authors = ["Holtz"]
 years = [2003]
 

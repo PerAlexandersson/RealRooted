@@ -8,6 +8,7 @@ import RealRooted.ThresholdMatrix.HaglundZhang
 version = 1
 section = "theorems"
 slug = "threshold-matrices"
+formalized = "2026-10-06"
 authors = ["Haglund", "Zhang", "Gustafsson", "Solus"]
 years = [2019, 2020]
 

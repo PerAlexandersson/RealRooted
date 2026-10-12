@@ -12,6 +12,7 @@ import RealRooted.ThreeTermRecurrence.Moments
 version = 1
 section = "theorems"
 slug = "harper-clt"
+formalized = "2026-10-07"
 authors = ["Harper", "Bender", "Goncharov", "David", "Barton", "Bóna"]
 years = [1944, 1962, 1967, 1973, 2009]
 

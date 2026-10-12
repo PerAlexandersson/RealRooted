@@ -9,6 +9,7 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "chudnovsky-seymour"
+formalized = "2026-07-09"
 authors = ["Chudnovsky", "Seymour"]
 years = [2007]
 

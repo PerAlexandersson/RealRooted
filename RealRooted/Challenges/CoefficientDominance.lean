@@ -13,6 +13,7 @@ import RealRooted.CoefficientDominance.Symmetric.Upper
 version = 1
 section = "theorems"
 slug = "coefficient-dominance"
+formalized = "2026-09-01"
 
 [[theorems]]
 name = "RealRooted.CoefficientDominance.eval_neg_ne_zero_of_dominant"

@@ -9,6 +9,7 @@ import RealRooted.Laguerre.Roots
 version = 1
 section = "families"
 slug = "laguerre-polynomials"
+formalized = "2026-09-07"
 
 [[definitions]]
 name = "Polynomial.generalizedLaguerre"

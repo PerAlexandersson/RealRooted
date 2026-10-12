@@ -8,6 +8,7 @@ import RealRooted.CauchyInterlacing.RankOne
 version = 1
 section = "theorems"
 slug = "cauchy-interlacing"
+formalized = "2026-07-10"
 authors = ["Fisk"]
 years = [2005]
 

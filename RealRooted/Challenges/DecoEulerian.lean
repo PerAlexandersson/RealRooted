@@ -10,6 +10,7 @@ open Polynomial Set
 version = 1
 section = "theorems"
 slug = "deco-eulerian-transform"
+formalized = "2026-10-05"
 authors = ["Alexandersson"]
 years = [2026]
 

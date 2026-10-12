@@ -7,6 +7,7 @@ import RealRooted.LeeYang
 version = 1
 section = "theorems"
 slug = "lee-yang"
+formalized = "2026-10-07"
 authors = ["Lee", "Yang", "Asano", "Ruelle"]
 years = [1952, 1970]
 

@@ -7,6 +7,7 @@ import RealRooted.RookPolynomial
 version = 1
 section = "theorems"
 slug = "nijenhuis-rook-polynomials"
+formalized = "2026-09-26"
 authors = ["Nijenhuis"]
 years = [1976]
 

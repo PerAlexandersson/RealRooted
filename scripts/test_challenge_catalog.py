@@ -9,6 +9,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from datetime import date
 
 sys.dont_write_bytecode = True
 
@@ -16,6 +17,7 @@ from challenge_catalog import (
     CatalogError,
     catalog_digest,
     load_catalog,
+    parse_challenge_source,
     render_site,
     source_declarations,
     validate_audit_report,
@@ -34,6 +36,7 @@ def catalog_block(
     slug: str = "sample",
     authors: str = "",
     years: str = "",
+    formalized: str = 'formalized = "2026-01-02"',
     definitions: str = "",
     theorems: str = '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
     content: str | None = None,
@@ -44,6 +47,7 @@ def catalog_block(
 version = 1
 section = "{section}"
 slug = "{slug}"
+{formalized}
 {authors}
 {years}
 {definitions}
@@ -340,7 +344,10 @@ end RealRooted.Challenges.Sample
         self.assertIn('class="count count--theorem" title="1 theorem"', first["index.html"])
         self.assertIn("Canonical &amp; Author · 1914–1996", first["index.html"])
         self.assertIn('data-catalog-sort', first["index.html"])
-        self.assertEqual(first["index.html"].count('type="radio"'), 2)
+        self.assertEqual(first["index.html"].count('type="radio"'), 3)
+        self.assertIn('value="newest"', first["index.html"])
+        self.assertIn('data-formalized="2026-01-02"', first["index.html"])
+        self.assertIn("formalized 2026-01-02", first["index.html"])
         self.assertNotIn("<select", first["index.html"])
         self.assertIn('href="./#topics">Topics</a>', first["index.html"])
         self.assertIn('href="./#theorems">Theorems</a>', first["index.html"])
@@ -376,6 +383,8 @@ end RealRooted.Challenges.Sample
         manifest = json.loads(first["catalog-manifest.json"])
         self.assertEqual(manifest["pages"][0]["authors"], ["Canonical", "Author"])
         self.assertEqual(manifest["pages"][0]["years"], [1914, 1996])
+        self.assertEqual(manifest["pages"][0]["formalized"], "2026-01-02")
+        self.assertIn("Formalized 2026-01-02", first["theorems/sample/index.html"])
 
     def test_home_lists_definitions_before_theorems(self) -> None:
         self.write("RealRooted/Challenges/Sample.lean", self.sample_source())
@@ -531,6 +540,20 @@ end RealRooted.Challenges.Sample
         self.write("RealRooted/Challenges/Sample.lean", bad_years)
         with self.assertRaisesRegex(CatalogError, "years must be strictly increasing"):
             load_catalog(self.root)
+
+    def test_formalized_metadata_is_required_valid_and_revision_bounded(self) -> None:
+        self.write("RealRooted/Challenges/Sample.lean", catalog_block(formalized=""))
+        with self.assertRaisesRegex(CatalogError, "requires formalized"):
+            load_catalog(self.root)
+
+        invalid = catalog_block(formalized='formalized = "2026-02-30"')
+        self.write("RealRooted/Challenges/Sample.lean", invalid)
+        with self.assertRaisesRegex(CatalogError, "valid ISO date"):
+            load_catalog(self.root)
+
+        future = catalog_block(formalized='formalized = "2026-01-03"')
+        with self.assertRaisesRegex(CatalogError, "after this revision"):
+            parse_challenge_source("Sample.lean", future, date(2026, 1, 2))
 
     def test_raw_html_and_unsafe_urls_are_escaped(self) -> None:
         content = (

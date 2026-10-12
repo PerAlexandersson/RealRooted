@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.BigDescents321
 version = 1
 section = "theorems"
 slug = "big-descents-321"
+formalized = "2026-10-06"
 authors = ["Elizalde", "Rivera", "Zhuang", "Alexandersson"]
 years = [2024, 2026]
 

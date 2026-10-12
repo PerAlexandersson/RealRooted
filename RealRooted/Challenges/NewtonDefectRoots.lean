@@ -7,6 +7,7 @@ import RealRooted.CoefficientDominance.NewtonDefectRoots
 version = 1
 section = "theorems"
 slug = "local-newton-defect-roots"
+formalized = "2026-10-11"
 
 [[theorems]]
 name = "RealRooted.NewtonDefectRoots.esym_sq_sub_sq_esym_le"

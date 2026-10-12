@@ -11,6 +11,7 @@ open Polynomial
 version = 1
 section = "theorems"
 slug = "branden-solus"
+formalized = "2026-10-02"
 authors = ["Brändén", "Solus"]
 years = [2019]
 

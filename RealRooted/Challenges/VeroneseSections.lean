@@ -7,6 +7,7 @@ import RealRooted.VeroneseMatrix
 version = 1
 section = "theorems"
 slug = "veronese-sections"
+formalized = "2026-10-05"
 
 [[definitions]]
 name = "RealRooted.veroneseSectionPolynomial"
