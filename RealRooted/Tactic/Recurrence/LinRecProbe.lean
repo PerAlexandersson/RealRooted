@@ -351,6 +351,8 @@ inductive Regime where
   | closedRes (forms : Array TopForm)
   /-- the invariant `ρ * c n ≤ c (n + 1)` is preserved by the recurrence -/
   | ratio (ρ : Rat)
+  /-- a finite open cone of linear forms on the scalar-recurrence window -/
+  | cone (forms : Array (Array Rat))
   /-- none of the above applies -/
   | none
   deriving BEq, Repr, Inhabited
@@ -374,6 +376,75 @@ def nonnegHolds (mults : Array (Array Rat)) (tops : Array Rat) : Bool :=
 /-- Candidate ratios of the invariant `ρ * c n ≤ c (n + 1)`, in order of preference. -/
 def ratioCandidates : List Rat := [1, 2, 3, 4, 1 / 2]
 
+private def insertRat (x : Rat) : List Rat → List Rat
+  | [] => [x]
+  | y :: ys => if x ≤ y then x :: y :: ys else y :: insertRat x ys
+
+private def sortRats : List Rat → List Rat
+  | [] => []
+  | x :: xs => insertRat x (sortRats xs)
+
+/-- Solve the square rational system whose rows are augmented by their right-hand sides. -/
+private def ratSolveSquare? (rows : Array (Array Rat)) : Option (Array Rat) := Id.run do
+  let n := rows.size
+  if rows.any (fun row => row.size != n + 1) then return none
+  let mut a := rows
+  for c in [0:n] do
+    let some r := (List.range' c (n - c)).find? fun i => !((a[i]!)[c]! == 0) | return none
+    let tmp := a[c]!
+    a := (a.set! c a[r]!).set! r tmp
+    let pivot := (a[c]!)[c]!
+    a := a.set! c (a[c]!.map (fun z => z / pivot))
+    let prow := a[c]!
+    for i in [0:n] do
+      if i == c then continue
+      let f := (a[i]!)[c]!
+      if f == 0 then continue
+      a := a.set! i ((Array.range (n + 1)).map fun j => (a[i]!)[j]! - f * prow[j]!)
+  return some ((Array.range n).map fun i => (a[i]!)[n]!)
+
+/-- Coefficients of `form ∘ companionStep` in the input coordinates. -/
+private def companionForm (mult : Array Rat) (form : Array Rat) : Array Rat :=
+  (Array.range mult.size).map fun j =>
+    form.back! * mult[j]! + if j = 0 then (0 : Rat) else form[j - 1]!
+
+/-- Express `target` as a linear combination of the rows `forms`. -/
+private def inForms? (forms : Array (Array Rat)) (target : Array Rat) : Option (Array Rat) :=
+  ratSolveSquare? <| (Array.range forms.size).map fun j =>
+    ((Array.range forms.size).map fun i => (forms[i]!)[j]!).push target[j]!
+
+/-- Whether every sampled companion step maps the open cone into itself. -/
+def coneStepHolds (mults forms : Array (Array Rat)) : Bool :=
+  !forms.isEmpty && forms.size == forms[0]!.size && mults.all fun mult =>
+    mult.size == forms.size && forms.all fun form =>
+      match inForms? forms (companionForm mult form) with
+      | some cs => cs.all (0 ≤ ·) && cs.any (0 < ·)
+      | none => false
+
+/-- Candidate cone forms from rational factors of the sampled characteristic polynomial.
+Prefix products of the non-dominant rational factors are followed by shifts of the final
+product.  This gives the difference cones used by the scalar-recurrence examples. -/
+def coneForms? (mults : Array (Array Rat)) (tops : Array Rat) :
+    Option (Array (Array Rat)) := Id.run do
+  if mults.isEmpty then return none
+  let k := mults[0]!.size
+  if k < 2 || tops.size < k || mults.any (fun row => row.size != k) then return none
+  let char := QPoly.norm <| (Array.range (k + 1)).map fun j =>
+    if j = k then 1 else -((mults[0]!)[j]!)
+  let roots := sortRats (char.rationalRoots.filter (0 < ·))
+  let factors : List Rat := if roots.length == k then roots.take (k - 1) else roots
+  let polys₀ := factors.take (k - 1) |>.foldl
+    (fun ps r => ps.push (ps.back! * (QPoly.X - QPoly.const r))) #[QPoly.const 1]
+  let polys := (List.range (k - polys₀.size)).foldl
+    (fun ps _ => ps.push (QPoly.X * ps.back!)) polys₀
+  let forms := polys.map fun p => (Array.range k).map p.coeff
+  let base := (Array.range k).map fun i => tops[i]!
+  unless forms.all (fun form =>
+      (List.range k).foldl (fun acc i => acc + form[i]! * base[i]!) 0 > 0) do
+    return none
+  unless coneStepHolds mults forms do return none
+  return some forms
+
 /-- Choose the regime from the numeric multipliers (see `lagMultsNum`) and the top
 coefficients: nonnegative multipliers first, then a closed form, then a ratio invariant that is
 valid for all sampled steps (and for the base coefficients). -/
@@ -391,7 +462,9 @@ def chooseRegime (mults : Array (Array Rat)) (tops : Array Rat) (p : Nat := 1) :
             tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * tops[j]! ≤ tops[j + 1]!) &&
               mults.all (ratioStepHolds ρ) with
         | some ρ => .ratio ρ
-        | none => .none
+        | none => match coneForms? mults tops with
+          | some forms => .cone forms
+          | none => .none
 
 /-! ### The probe -/
 

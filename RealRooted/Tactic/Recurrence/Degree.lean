@@ -62,8 +62,8 @@ open Lean Elab Tactic Meta Polynomial
 namespace RealRooted.Tactic
 
 /-- General linear recurrences (`linRecCore`), as a fallback of the degree tactics. -/
-private def linRecRow (kind : String) : TacticM Cert := do
-  linRecCore kind
+private def linRecRow (kind : String) (via : Option Name := none) : TacticM Cert := do
+  linRecCore kind (via := via)
   return #[← match kind with
     | "natDegree" => `(tactic| rr_row_natDegree)
     | "ne_zero" => `(tactic| rr_row_ne_zero)
@@ -155,11 +155,18 @@ private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
 /-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
+  if hints.via == some `cancel then
+    let cancel ← `(tactic| rr_row_cancel)
+    evalTactic cancel
+    return (#[cancel], { via := some `cancel })
+  if hints.via == some `cone then
+    let cert ← linRecRow kind (some `cone)
+    return (cert, { via := some `cone })
   match ← rowAttempt (rowDegreeShapeCore kind hints) with
   | .ok r => return r
   | .error e =>
       let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
-        hints.drop.isNone && hints.ratio.isNone && hints.half.isNone
+        hints.drop.isNone && hints.ratio.isNone && hints.half.isNone && hints.via.isNone
       unless noHints && kind != "leadingCoeff_ratio" do throwError e
       if kind == "natDegree" then
         if let .ok tac ← rowAttempt twoStepDegree then return (#[tac], {})

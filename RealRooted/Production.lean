@@ -1688,6 +1688,7 @@ import RealRooted.Applications.OEIS.A297191
 import RealRooted.Applications.OEIS.QuarticGamma
 import RealRooted.Applications.OEIS.A286785
 import RealRooted.MultivariateStability.CoeffLimit
+import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 
 /-!
 # RealRooted production umbrella

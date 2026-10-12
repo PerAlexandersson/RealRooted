@@ -1,5 +1,6 @@
 import RealRooted.Tactic.Recurrence.RowSide
 import RealRooted.Tactic.Recurrence.LinRecProbe
+import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 
 /-!
 # General linear recurrences: the `rr_linrec` tactic
@@ -21,6 +22,7 @@ sequence `m ↦ P (m + s)` and discharges its side goals:
   the residue classes mod `p` (`natDegree_eq_and_leadingCoeff_eq_of_degreeLaw`);
 * `ratio ρ`: `natDegree_eq_and_leadingCoeff_pos_of_ratio` with `D n = D₀ + d * n`
   (linear growth only).
+* `cone forms`: positivity of the top-coefficient recurrence from an invariant open cone.
 
 The regimes are tried in this order, each with one theorem elaboration.
 
@@ -70,7 +72,31 @@ def linRecRegimes (pr : LinRecProbe) (kind : String) : List Regime := Id.run do
       pr.tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * pr.tops[j]! ≤ pr.tops[j + 1]!) &&
         pr.mults.all (ratioStepHolds ρ) then
     out := out ++ [.ratio ρ]
+  if let some forms := coneForms? pr.mults pr.tops then
+    out := out ++ [.cone forms]
   return out
+
+/-- A rational linear form in the coordinate functionals. -/
+private def coneFormTerm (k : Nat) (cs : Array Rat) : TacticM Term := do
+  let mut out : Option Term := none
+  for i in [0:k] do
+    if cs[i]! == 0 then continue
+    let c ← ratTerm cs[i]!
+    let summand ← `(($c : ℝ) •
+      RealRooted.ScalarRec.coordinate ($(rowNumLit i) : Fin $(rowNumLit k)))
+    out ← match out with
+      | none => pure (some summand)
+      | some acc => do pure (some (← `($acc + $summand)))
+  match out with
+  | some t => pure t
+  | none => `(0)
+
+/-- The finite family of rational linear forms used by a cone regime. -/
+private def coneFormsTerm (k : Nat) (forms : Array (Array Rat)) : TacticM Term := do
+  let mut ts : Array Term := #[]
+  for form in forms do
+    ts := ts.push (← coneFormTerm k form)
+  `(![$ts,*])
 
 /-- Denominators `x` of `x⁻¹` and `a / x` in `e`. -/
 private partial def linRecDenominators (e : Expr) : Array Expr :=
@@ -348,6 +374,54 @@ private def linRecSidesRatio (P : Ident) (rows : Array QPoly) (k m : Nat) (gs : 
     evalTactic (← `(tactic| ($coeff:tactic <;> (first | norm_num | skip) <;>
       first | linarith | nlinarith [$hints,*] | rr_row_field)))
 
+/-- Side goals for the invariant-cone regime: the four degree-recurrence hypotheses,
+positivity of the initial scalar window, and preservation by the companion step. -/
+private def linRecSidesCone (P : Ident) (rows : Array QPoly) (p k m : Nat)
+    (gs : List MVarId) : TacticM Unit := do
+  let [hconeBase, hconeStep, hlag, hD, hA, hbase] := gs
+    | throwError "rr_linrec: unexpected cone side goals"
+  linRecSideLagDegree p m hlag hA
+  linRecRun "hD" hD do
+    evalTactic (← `(tactic|
+      first
+        | exact RealRooted.LinRec.degreeLaw_periodic_mono
+        | (intro n j hj; beta_reduce; lia)))
+  linRecRun "hbase" hbase do
+    evalTactic (← `(tactic| (intro j hj; interval_cases j)))
+    linRecRows P rows
+  linRecRun "hconeBase" hconeBase do
+    evalTactic (← `(tactic| (intro i; fin_cases i)))
+    for g in ← getGoals do
+      setGoals [g]
+      evalTactic (← `(tactic| (
+        norm_num [rr_cone_c, RealRooted.ScalarRec.FormsPos,
+          RealRooted.ScalarRec.window, RealRooted.ScalarRec.coordinate])))
+      if !(← getGoals).isEmpty then linRecRowGoal P rows
+    setGoals []
+  linRecRun "hconeStep" hconeStep do
+    evalTactic (← `(tactic| intro n x hx i))
+    let mut hs : Array Ident := #[]
+    for i in [0:k] do
+      let hi := mkIdent (.mkSimple s!"rr_hcone{i}")
+      evalTactic (← `(tactic| have $hi:ident := hx ($(rowNumLit i) : Fin $(rowNumLit k))))
+      hs := hs.push hi
+    evalTactic (← `(tactic| fin_cases i))
+    for g in ← getGoals do
+      setGoals [g]
+      let hterms : Array Term ← hs.mapM fun h => `($h)
+      evalTactic (← `(tactic|
+        norm_num [RealRooted.ScalarRec.FormsPos,
+          RealRooted.ScalarRec.coordinate, RealRooted.ScalarRec.companionStep,
+          Finset.sum_fin_eq_sum_range, Finset.sum_range_succ] at $hterms* ⊢))
+      evalTactic (← `(tactic|
+        first
+          | linarith [$hterms,*]
+          | (norm_num [RealRooted.LinRec.lagMultD, RealRooted.LinRec.topCoeffD,
+                RealRooted.LinRec.cast_descFactorial_eq_prod, Finset.sum_range_succ] at ⊢
+             push_cast
+             first | linarith [$hterms,*] | nlinarith [$hterms,*] | rr_row_field)))
+    setGoals []
+
 /-- The side goal `hD : ∀ n j, j < k → D (n + j) ≤ D (n + k)` of a periodic degree law. -/
 private def linRecSideMono (hD : MVarId) : TacticM Unit :=
   linRecRun "hD" hD do
@@ -410,7 +484,6 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   let law := pr.law
   let some rows ← linRecRows? L (L.offset + law.drop + 3)
     | throwError "rr_linrec: the rows of {L.P} cannot be computed"
-
   let (s, k, d, D₀) := (law.drop, L.offset, law.d, law.D₀)
   let main ← getMainGoal
   let rest := (← getGoals).tail
@@ -436,7 +509,9 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   let Dq := rowNumLit D₀
   let h := mkIdent `h_row
   let periodic := law.p > 1
-  let Dper ← `(fun $n:ident => $Dq + $dq * (($n + $(rowNumLit law.e)) / $(rowNumLit law.p)))
+  let Dper ← if periodic then
+      `(fun $n:ident => $Dq + $dq * (($n + $(rowNumLit law.e)) / $(rowNumLit law.p)))
+    else `(fun $n:ident => $Dq + $dq * $n)
   let apply : TSyntax `tactic ← match reg with
     | .nonneg =>
       if periodic then
@@ -465,6 +540,22 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
         `(tactic| have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_ratio
           (k := $kq) (D := fun $n:ident => $Dq + $dq * $n) (P := $Q) (terms := $terms)
           (ρ := $ρt) ?_ ?_ $hrec ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t)
+    | .cone forms => do
+        let formTerm ← coneFormsTerm k forms
+        `(tactic| (
+          have h_degree := (RealRooted.LinRec.natDegree_le_and_coeff_rec
+            (k := $kq) (D := $Dper) (P := $Q) (terms := $terms) $hrec ?_ ?_ ?_ ?_)
+          let rr_cone_c : ℕ → ℝ := fun $n:ident => ($Q $n).coeff ($Dper $n)
+          have h_cone := RealRooted.ScalarRec.FormsPos.window_of_companionStep
+            (k := $kq) (m := RealRooted.LinRec.lagMultD $kq $Dper $terms)
+            (c := rr_cone_c) (forms := $formTerm) h_degree.2 ?_ ?_
+          have h_coeff_pos : ∀ r, 0 < rr_cone_c r := by
+            intro r
+            have hr := h_cone r (0 : Fin $kq)
+            simpa [RealRooted.ScalarRec.FormsPos, RealRooted.ScalarRec.window,
+              RealRooted.ScalarRec.coordinate, rr_cone_c] using hr
+          have $h:ident := RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff
+            h_degree.1 (c := rr_cone_c) (fun _ => rfl) (fun r => (h_coeff_pos r).ne') $t))
     | .none => throwError "rr_linrec: no regime"
   evalTactic apply
   let gs ← getGoals
@@ -486,6 +577,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
         evalTactic (← `(tactic| refine lt_of_lt_of_eq ?_ (And.right $h).symm))
         evalTactic (← `(tactic| beta_reduce))
         evalTactic posTacR
+    | .cone _ => evalTactic (← `(tactic| rw [And.right $h]; exact h_coeff_pos $t))
     | _ => evalTactic (← `(tactic| exact And.right $h))
   let lcNe : TacticM Unit := do
     match reg with
@@ -499,6 +591,9 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
           refine Polynomial.leadingCoeff_ne_zero.mp ((And.right $h).trans_ne ?_)))
         evalTactic (← `(tactic| beta_reduce))
         evalTactic posTacR
+    | .cone _ => evalTactic (← `(tactic|
+        exact Polynomial.leadingCoeff_ne_zero.mp ((And.right $h).trans_ne
+          (h_coeff_pos $t).ne')))
     | _ => evalTactic (← `(tactic|
         exact Polynomial.leadingCoeff_ne_zero.mp (ne_of_gt (And.right $h))))
   try
@@ -521,6 +616,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     else linRecSidesClosed P rows L.terms.size gs.tail
   | .closedRes _ => linRecSidesClosedP P rows law.p L.terms.size gs.tail
   | .ratio _ => linRecSidesRatio P rows k L.terms.size gs.tail
+  | .cone _ => linRecSidesCone P rows law.p k L.terms.size gs.tail
   | .none => pure ()
   setGoals rest
 
@@ -530,7 +626,7 @@ A numeric probe of the first rows chooses the drop, the degree law and the regim
 regime in turn (nonnegative multipliers, a closed form of the top coefficients, a growth-ratio
 invariant) one theorem of `RealRooted.LinRec` is applied to the shifted sequence
 `m ↦ P (m + s)` and its side goals are discharged. -/
-def linRecCore (kind : String) : TacticM Unit := withMainContext do
+def linRecCore (kind : String) (via : Option Name := none) : TacticM Unit := withMainContext do
   betaReduceGoal
   let tgt ← instantiateMVars (← getMainTarget)
   let some P ← findPolySeqConst? tgt
@@ -549,7 +645,11 @@ def linRecCore (kind : String) : TacticM Unit := withMainContext do
       has a larger degree than the theorems of `RealRooted.LinRec` allow, so leading terms \
       cancel: not covered"
   trace[rr.row] "rr_linrec: law {repr pr.law}, tops {pr.tops}, regime {repr pr.regime}"
-  let regimes := linRecRegimes pr kind
+  let regimes := (linRecRegimes pr kind).filter fun reg =>
+    match via, reg with
+    | none, _ => true
+    | some `cone, .cone _ => true
+    | _, _ => false
   if regimes.isEmpty then
     throwError "rr_linrec: no regime applies to {P}: degrees D₀ = {pr.law.D₀}, d = {pr.law.d}, \
       drop {pr.law.drop}, top coefficients {pr.tops.toList.take 8}"
