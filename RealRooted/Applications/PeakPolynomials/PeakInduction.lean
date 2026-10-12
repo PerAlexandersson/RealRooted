@@ -16,6 +16,14 @@ nonnegative coefficients. We put `A k = D k + U k`, `W k = X * D k + U k`, and
 the recursion of the paper produces the next-level family
 `D⁺ k = S k = ∑_{j < k} A j` and `U⁺ k = T k = ∑_{j ≥ k} W j`.
 
+## Scope
+
+The index `k` records only the first entry refinement. This file does not
+formalize the separate two-endpoint refinement `D_{k,l}`, `U_{k,l}` by first
+and last entries. That experimental route has computational counterexamples to
+its forward (UU) condition; this does not contradict forward (UU) for the
+aggregated one-index family `D_k`, `U_k` formalized here.
+
 The six interlacing conditions (DU), (UU), (AW), reversed (DD), reversed (AA)
 and (WW) of Theorem `thm:peak_rr_ferrers` are bundled in
 `PeakFamily.Conditions`. All interlacings are zero-aware (`Interl`), matching
@@ -50,6 +58,10 @@ noncomputable section
 namespace RealRooted.Applications.PeakPolynomials
 
 /-! ## Utility lemmas -/
+
+private lemma eval_zero_nonneg {p : ℝ[X]} (hp : HasNonnegCoeffs p) : 0 ≤ p.eval 0 := by
+  rw [← coeff_zero_eq_eval_zero]
+  exact hp 0
 
 /-- `W = X * D + U` is nonzero when `A = D + U` is nonzero. -/
 private lemma X_mul_add_ne_zero {D U : ℝ[X]}
@@ -696,7 +708,7 @@ theorem interl_next_A_W (hC : F.Conditions) (j l : Fin m') :
     have hH_interl : Interl H ((F.next m' ι).A j) :=
       interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
     have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
+      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
       rw [hW_eq] at this
       simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
       linarith
@@ -759,7 +771,7 @@ theorem interl_next_A_W (hC : F.Conditions) (j l : Fin m') :
     have hH_interl : Interl H ((F.next m' ι).A j) :=
       interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
     have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
+      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
       rw [hW_eq] at this
       simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
       linarith
@@ -837,7 +849,7 @@ theorem interl_next_A_A_of_lt (hC : F.Conditions) (hι : Monotone ι) (j j' : Fi
   have hA_eq : (F.next m' ι).A j' = (F.next m' ι).A j + (X - C 1) * H := by
     linear_combination hident
   have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-    have h1 := ((F.next m' ι).hasNonnegCoeffs_A j').eval_nonneg (le_refl (0 : ℝ))
+    have h1 := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_A j')
     rw [hA_eq, eval_add, eval_mul, eval_sub, eval_X, eval_C] at h1
     linarith
   rw [hA_eq]
@@ -899,7 +911,7 @@ theorem interl_next_W_W_of_le (hC : F.Conditions) (hι : Monotone ι) (j l : Fin
   have hW_eq : (F.next m' ι).W l = (F.next m' ι).W j + (X - C 1) * H := by
     linear_combination hident
   have hbound : H.eval 0 ≤ ((F.next m' ι).W j).eval 0 := by
-    have h1 := ((F.next m' ι).hasNonnegCoeffs_W l).eval_nonneg (le_refl (0 : ℝ))
+    have h1 := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
     rw [hW_eq, eval_add, eval_mul, eval_sub, eval_X, eval_C] at h1
     linarith
   rw [hW_eq]
@@ -986,7 +998,7 @@ lemma interl_nextBoundary_A_last_A_castSucc (hC : F.Conditions) (k : Fin m) :
   have hK_nn : HasNonnegCoeffs (F.S k + Utail) :=
     (F.hasNonnegCoeffs_S k).add (hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i))
   have hbound : H.eval 0 ≤ F.P.eval 0 := by
-    have hK0 := hK_nn.eval_nonneg (le_refl (0 : ℝ))
+    have hK0 := eval_zero_nonneg hK_nn
     rw [hP_eq, eval_add]
     linarith
   rw [nextBoundary_A_last, F.nextBoundary_A_castSucc_eq k]
@@ -1025,7 +1037,7 @@ lemma interl_nextBoundary_A_last_W_castSucc (hC : F.Conditions) (k : Fin m) :
       (interl_add_right hS_tailU htailD_tailU (F.hasNonnegCoeffs_S k) htailD_nn)
       hH_nn htailU_nn hC.splits_P
   have hbound : H.eval 0 ≤ F.P.eval 0 := by
-    have h0 := htailU_nn.eval_nonneg (le_refl (0 : ℝ))
+    have h0 := eval_zero_nonneg htailU_nn
     rw [hP_eq, eval_add (p := H)]
     linarith
   rw [nextBoundary_A_last, nextBoundary_W_castSucc, hW_eq]
