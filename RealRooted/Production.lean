@@ -1669,6 +1669,7 @@ import RealRooted.Challenges.NewtonDefectRoots
 import RealRooted.Challenges.ProperPositionPF
 import RealRooted.Challenges.UnivariatePoissonStar
 import RealRooted.Wronskian.OdeRootExclusion
+import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
 
 /-!
 # RealRooted production umbrella
