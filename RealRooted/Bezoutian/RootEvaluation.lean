@@ -28,7 +28,7 @@ lemma bezoutMatrix.mulVec_vandermonde_eq_zero_of_common_root
     simp only [eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X, hc]
     simp_rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ ?_
-    simp only [bezoutMatrix]
+    simp only [bezoutMatrix, Polynomial.bezoutMatrix]
     ring
   have h_roots_ne (t : ℝ) (htr : t ≠ r) : P.eval t = 0 := by
     have : (t - r) * ∑ i : Fin n, ∑ j : Fin n,
@@ -130,8 +130,8 @@ lemma bezoutMatrix.vandermonde_diagonal (p q : ℝ[X]) (n : ℕ) (t : ℝ)
     p.derivative.eval t * q.eval t -
     p.eval t * q.derivative.eval t := by
   convert bezoutEntry.wronskian p q n t hp hq using 1
-  · simp only [bezoutMatrix, dotProduct, Matrix.mulVec, Finset.mul_sum, mul_assoc,
-      mul_comm, pow_add]
+  · simp only [bezoutMatrix, Polynomial.bezoutMatrix, dotProduct, Matrix.mulVec,
+      Finset.mul_sum, mul_assoc, mul_comm, pow_add]
 
 lemma bezoutMatrix.vandermonde_off_diagonal (p q : ℝ[X]) (n : ℕ)
     (r : Fin n → ℝ) (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n)
@@ -145,7 +145,8 @@ lemma bezoutMatrix.vandermonde_off_diagonal (p q : ℝ[X]) (n : ℕ)
     have h_mul := bezoutEntry.bilinear_mul_sub p q (r k) (r l) hp hq
     grind
   convert h_bezoutian using 1
-  · simp only [bezoutMatrix, Matrix.mulVec, dotProduct, Finset.mul_sum, mul_comm, mul_left_comm]
+  · simp only [bezoutMatrix, Polynomial.bezoutMatrix, Matrix.mulVec, dotProduct,
+      Finset.mul_sum, mul_comm, mul_left_comm]
 
 lemma bezoutMatrix.vandermonde_eq_diagonal (p q : ℝ[X]) (n : ℕ)
     (r : Fin n → ℝ) (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n)
@@ -430,7 +431,8 @@ lemma StrictInterlSameDegree.bezoutMatrix_posDef_three_le
       grind
     have h_neg : bezoutMatrix (n + 3) q p = -bezoutMatrix (n + 3) p q := by
       ext i j
-      simp [bezoutMatrix, bezoutEntry]
+      simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+        Polynomial.bezoutSeqEntry]
     convert congr_arg (fun x ↦ -x)
       (bezoutMatrix.vandermonde_eq_diagonal p q (n + 3) s hp_deg.le hq_deg.le
         (by simp_all) hs_mono.injective) using 1 <;> simp_all

@@ -160,16 +160,7 @@ def cfiProbe (L : LinRecData) : MetaM (Except String CFIPlan) := do
 
 def qpolyAtTerm (p : QPoly) (x : Term) : TacticM Term := do
   let xr ← `(($x : ℝ))
-  let mut out : Option Term := none
-  for i in [0:p.coeffs.size] do
-    let c := p.coeff i
-    if c == 0 then continue
-    let ct ← ratTerm c
-    let mon ← if i == 0 then pure ct else `($ct * $xr ^ $(rowNumLit i))
-    out ← match out with
-      | none => pure (some mon)
-      | some old => pure (some (← `($old + $mon)))
-  return out.getD (← ratTerm 0)
+  ratPolyAtTerm p.coeffs xr
 
 def ratFunAtTerm (r : RatFun) (x : Term) : TacticM Term := do
   `($(← qpolyAtTerm r.num x) / $(← qpolyAtTerm r.den x))
@@ -254,27 +245,8 @@ def proveSign (name : Ident) (r : RatFun) (m0 : Nat) (m k : Term)
       · $shiftedPos:tactic)
   return #[hnumEq, hdenEq, hsign]
 
-def tupleFirst (k : Nat) (t : Term) : TacticM Term :=
-  if k == 1 then pure t else `(($t).1)
-
-def cfiProj (ih : Term) (j k : Nat) : TacticM Term := do
-  let mut t := ih
-  for _ in [0:j] do t ← `($t.2)
-  if j + 1 < k then `($t.1) else pure t
-
 def cfiExpTerm (law : CFLaw) (a : Term) : TacticM Term :=
   if law.D0 == 0 then pure a else `($(rowNumLit law.D0) + $a)
-
-def cfiPolyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
-  let mut out : Option Term := none
-  for i in [0:cs.size] do
-    if cs[i]! == 0 then continue
-    let c ← ratTerm cs[i]!
-    let mon ← if i == 0 then pure c else `($c * $x ^ $(rowNumLit i))
-    out ← match out with
-      | none => pure (some mon)
-      | some old => pure (some (← `($old + $mon)))
-  return out.getD (← ratTerm 0)
 
 def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
   let P := mkIdent plan.P
@@ -294,9 +266,9 @@ def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
     if s == 0 then `($P $a) else `($P ($a + $(rowNumLit s)))
   let stmt (a : Term) : TacticM Term := do
     let x ← `((($a : ℕ) : ℝ))
-    let t0 ← cfiPolyTerm plan.resid[0]!.coeffs x
-    let t1 ← cfiPolyTerm plan.resid[1]!.coeffs x
-    let t2 ← cfiPolyTerm plan.resid[2]!.coeffs x
+    let t0 ← ratPolyAtTerm plan.resid[0]!.coeffs x
+    let t1 ← ratPolyAtTerm plan.resid[1]!.coeffs x
+    let t2 ← ratPolyAtTerm plan.resid[2]!.coeffs x
     let res ← if degree == 1 then
       `($cT ($t0) + $cT ($t1) * $xT)
     else
@@ -319,7 +291,7 @@ def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
   let mut tacs : Array (TSyntax `tactic) := #[]
   for j in plan.lags do
     let hrow := mkIdent (Name.mkSimple s!"rr_cfi_hrow{j}")
-    let h ← cfiProj (← `($ih)) j k
+    let h ← rightNestedAndProj (← `($ih)) j k
     if s > 0 && j > 0 then
       tacs := tacs.push (← `(tactic| have $hrow :=
         (congrArg $P (Nat.add_right_comm $n $(rowNumLit s) $(rowNumLit j))).trans $h))
@@ -338,7 +310,7 @@ def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
   tacs := tacs.push (← `(tactic| have $hnew : $stNew := by $inner*))
   let mut comps : Array Term := #[]
   for j in [1:k] do
-    comps := comps.push (← cfiProj (← `($ih)) j k)
+    comps := comps.push (← rightNestedAndProj (← `($ih)) j k)
   comps := comps.push hnew
   let newTuple ← if comps.size == 1 then pure comps[0]! else `(⟨$comps,*⟩)
   tacs := tacs.push (← `(tactic| exact $newTuple))
@@ -450,8 +422,8 @@ def cfiProof (cp : CFIPlan) : TacticM Unit := do
   let e2 ← cfiExpTerm plan.laws[0]! (← `($m + 1))
   let rowm ← rowAt m
   let rownext ← rowAt (← `($m + 1))
-  let key1 ← tupleFirst plan.k (← `($key $m))
-  let key2 ← tupleFirst plan.k (← `($key ($m + 1)))
+  let key1 ← rightNestedAndProj (← `($key $m)) 0 plan.k
+  let key2 ← rightNestedAndProj (← `($key ($m + 1))) 0 plan.k
   let key1rw ← `(Lean.Parser.Tactic.rwRule| $key1:term)
   let key2rw ← `(Lean.Parser.Tactic.rwRule| $key2:term)
   let qpow1 ← `((($q : ℝ[X]) ^ $e1))

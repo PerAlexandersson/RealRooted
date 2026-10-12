@@ -314,37 +314,6 @@ private lemma isRealRooted_right_of_affine_family_of_natDegree_succ_le
     (hgnn.pos_leadingCoeff hg0)
     (by lia)
 
-private lemma isRealRooted_pair_of_affine_family_succDegree
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
-    (hsucc : f.natDegree + 1 = g.natDegree)
-    {t : ℝ} (ht : 0 < t) :
-    ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) ∧
-      (f ≠ 0 ∧
-      f.Splits) := by
-  obtain ⟨hcombo, _, _, _, _, hsum_pos, hXf_pos⟩ :=
-    affine_family_pair_data hfnn hgnn hf0 hg0 haff ht
-  have hsum_deg : (C t * f + g).natDegree = g.natDegree := by
-    have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht.ne']
-    exact
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by lia)
-        (hgnn.pos_leadingCoeff hg0)
-  have hXf_deg : (X * f).natDegree = g.natDegree := by simp_all
-  have hdeg_same : (X * f).natDegree = (C t * f + g).natDegree := by lia
-  have hsum_rr : ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) :=
-    PosComboRealRooted.isRealRooted_left_of_sameDegree
-      hcombo hsum_pos hXf_pos hdeg_same
-  have hXf_rr : ((X * f) ≠ 0 ∧ (X * f).Splits) :=
-    PosComboRealRooted.isRealRooted_right_of_sameDegree
-      hcombo hsum_pos hXf_pos hdeg_same
-  exact ⟨hsum_rr, isRealRooted_of_X_mul hXf_rr.1 hXf_rr.2⟩
-
 protected lemma AffineFamily.isRealRooted_right_of_affine_family_succDegree
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -519,26 +488,6 @@ theorem exists_rightmost_factor_interlaces_of_strictInterl_sameDegree
         (f := f) (g := g) (q := q) (uR := uR)
         hstrictInterl_keep hdeg huR_max hq⟩
 
-private lemma exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero
-    {p : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
-    (hnot0 : ¬ p.IsRoot 0) :
-    ∃ c, (∀ r ∈ p.roots, r ≤ c) ∧ c < 0 := by
-  by_cases hdeg0 : p.natDegree = 0
-  · refine ⟨-1, ?_, by simp⟩
-    intro r hr
-    have hroots0 : p.roots = 0 := by
-      apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hp_splits, hdeg0]
-    simp_all
-  · have hdeg_pos : 1 ≤ p.natDegree := by lia
-    obtain ⟨c, hc_root, hc_top⟩ :=
-      exists_rightmost_root_of_isRealRooted hp_ne hp_splits hdeg_pos
-    have hc_le0 : c ≤ 0 :=
-      roots_nonpos_of_nonneg_coeffs hp_splits hpnn c ((mem_roots hp_ne).mpr hc_root)
-    have hc_ne0 : c ≠ 0 := by lia
-    exact ⟨c, hc_top, lt_of_le_of_ne hc_le0 hc_ne0⟩
-
 /-- A nonzero root of `X * f` is already a root of `f`. -/
 lemma isRoot_of_X_mul_of_ne_zero
     {f : ℝ[X]} {r : ℝ}
@@ -554,13 +503,6 @@ theorem no_common_right_pair_of_no_common_of_not_isRoot_zero
     (hg0 : ¬ g.IsRoot 0) :
     ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r := by
   intro r hgr hXr
-  simp_all
-
-private lemma eq_zero_of_common_right_pair_of_no_common
-    {f g : ℝ[X]} {r : ℝ}
-    (hno_fg : ∀ x, g.IsRoot x → ¬ f.IsRoot x)
-    (hgr : g.IsRoot r) (hXr : (X * f).IsRoot r) :
-    r = 0 := by
   simp_all
 
 /-- Common roots of the right pair `(g, X * f)` are exactly the zero root of
@@ -582,13 +524,6 @@ theorem common_right_pair_iff_root_zero_or_common_fg
     · rcases hcommon with ⟨r, hgr, hfr⟩
       refine ⟨r, hgr, ?_⟩
       simp_all
-
-private lemma no_common_of_right_pair_root_zero_reduction
-    {f g qg : ℝ[X]}
-    (hg : g = X * qg)
-    (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r) :
-    ∀ r, qg.IsRoot r → ¬ f.IsRoot r := by
-  simp_all
 
 /-- If `g` has nonnegative coefficients and no common root with `X * f`, then
 every real root of `g` is strictly negative. -/
@@ -623,39 +558,6 @@ theorem exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
     (hg0 : ¬ g.IsRoot 0) :
     ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR :=
   exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn
-    (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
-
-/-- In the no-common-roots regime for the affine right-hand pair `(g, X * f)`,
-any future Obreschkoff alternative is automatically oriented the correct way:
-the distinguished root `0` of `X * f` sits strictly to the right of all roots
-of `g`. -/
-private lemma strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common
-    {f g : ℝ[X]}
-    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
-    (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
-    StrictInterl g (X * f) := by
-  obtain ⟨c, hc_le, hc_lt0⟩ :=
-    exists_strict_root_upper_bound_of_nonneg_of_not_isRoot_zero hg_ne hg_splits hgnn (by
-      intro hg0
-      exact hno 0 hg0 (by simp [Polynomial.IsRoot.def]))
-  exact
-    PosComboRealRooted.reverseStrictInterl_of_strictInterl_or_reverse_of_root_asymmetry
-      (f := g) (g := X * f) (c := c) (r := 0)
-      h hc_le (by simp [Polynomial.IsRoot.def]) (by lia)
-
-/-- Orientation wrapper for the affine right pair under no-common `f/g` and
-`g(0) ≠ 0`: once an Obreschkoff alternative for `(g, X*f)` is available, the
-right direction is forced. -/
-private lemma
-    strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common_fg_of_not_isRoot_zero
-    {f g : ℝ[X]}
-    (h : StrictInterl g (X * f) ∨ StrictInterl (X * f) g)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
-    (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
-    (hg0 : ¬ g.IsRoot 0) :
-    StrictInterl g (X * f) :=
-  strictInterl_right_pair_of_strictInterl_or_reverse_of_no_common h hg_ne hg_splits hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 end RealRooted

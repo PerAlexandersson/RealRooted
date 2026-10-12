@@ -14,17 +14,9 @@ open Polynomial
 
 namespace RealRooted
 
-/-- Derivative-lag bridge for later mixed lag recurrences.
-
-If `f` is real-rooted with nonnegative coefficients, then `X * f'` is in
-proper position with `X * f`.  This packages derivative interlacing together
-with the Wagner common-`X` multiplication bridge. -/
-theorem strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree)
-    (hfnn : HasNonnegCoeffs f) :
-    StrictInterl (X * f.derivative) (X * f) :=
-  strictInterl_X_derivative_X_self_of_splits_nonneg hf hdeg hfnn
+@[deprecated strictInterl_X_derivative_X_self_of_splits_nonneg (since := "2026-10-11")]
+alias strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg :=
+  strictInterl_X_derivative_X_self_of_splits_nonneg
 
 /-- Wagner derivative-gap-lag step.
 

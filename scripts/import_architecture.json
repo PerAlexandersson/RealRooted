@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 1801
+      "max_modules": 1805
     },
     "RealRooted.Production": {
-      "max_modules": 1660
+      "max_modules": 1664
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 711
@@ -127,22 +127,22 @@
       "max_modules": 138
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product": {
-      "max_modules": 53
+      "max_modules": 54
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability": {
-      "max_modules": 60
+      "max_modules": 61
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput": {
-      "max_modules": 51
+      "max_modules": 52
     },
     "RealRooted.Basic.Coefficients.Multivariate": {
       "max_modules": 7
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous": {
-      "max_modules": 45
+      "max_modules": 46
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary": {
-      "max_modules": 44
+      "max_modules": 45
     },
     "RealRooted.BorceaBranden.Applications.HarmonicSubstitution": {
       "max_modules": 6
@@ -151,10 +151,10 @@
       "max_modules": 1
     },
     "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction": {
-      "max_modules": 40
+      "max_modules": 41
     },
     "RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative": {
-      "max_modules": 35
+      "max_modules": 36
     },
     "RealRooted.PolynomialValueEulerNumerator.PF": {
       "max_modules": 98
@@ -184,10 +184,10 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.Hadamard": {
-      "max_modules": 269
+      "max_modules": 271
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
-      "max_modules": 18
+      "max_modules": 19
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation": {
       "max_modules": 3
@@ -625,7 +625,7 @@
       "max_modules": 202
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol": {
-      "max_modules": 47
+      "max_modules": 48
    },
     "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing": {
       "max_modules": 194
@@ -634,16 +634,16 @@
       "max_modules": 13
     },
     "RealRooted.BorceaBranden.FiniteSymbolClassification": {
-      "max_modules": 43
+      "max_modules": 44
     },
     "RealRooted.BorceaBranden.Applications.UnivariateSymbol": {
       "max_modules": 22
     },
     "RealRooted.BorceaBranden.Applications.ComplexClassification": {
-      "max_modules": 44
+      "max_modules": 45
     },
     "RealRooted.Challenges.BorceaBranden": {
-      "max_modules": 171
+      "max_modules": 173
     },
     "RealRooted.Derivative": {
       "max_modules": 17
@@ -760,16 +760,16 @@
       "max_modules": 3
     },
     "RealRooted.CombinatorialExamples.JacobiStirling.FirstKind": {
-      "max_modules": 2
+      "max_modules": 3
     },
     "RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF": {
       "max_modules": 92
     },
     "RealRooted.CombinatorialExamples.JacobiStirling.Inverse": {
-      "max_modules": 5
+      "max_modules": 6
     },
     "RealRooted.CombinatorialExamples.JacobiStirling.SecondKind": {
-      "max_modules": 2
+      "max_modules": 3
     },
     "RealRooted.CoefficientDominance.Symmetric.Polynomial": {
       "max_modules": 3
@@ -793,7 +793,7 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Reverse": {
-      "max_modules": 2
+      "max_modules": 3
     },
     "RealRooted.Mathlib.Algebra.Polynomial.Chow": {
       "max_modules": 2
@@ -874,7 +874,7 @@
       "max_modules": 89
     },
     "RealRooted.Kurtz": {
-      "max_modules": 46
+      "max_modules": 48
     },
     "RealRooted.Hermite.Poulain": {
       "max_modules": 92
@@ -889,7 +889,7 @@
       "max_modules": 121
     },
     "RealRooted.Challenges.Kurtz": {
-      "max_modules": 47
+      "max_modules": 49
     },
     "RealRooted.Tactic.Kurtz": {
       "max_modules": 93
@@ -1105,13 +1105,13 @@
       "max_modules": 7
     },
     "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation": {
-      "max_modules": 42
+      "max_modules": 43
     },
     "RealRooted.FiniteFreeAdditive.Identity": {
-      "max_modules": 21
+      "max_modules": 22
     },
     "RealRooted.FiniteFreeAdditive.Preservation": {
-      "max_modules": 36
+      "max_modules": 37
     },
     "RealRooted.FiniteFreeRootCount": {
       "max_modules": 202
@@ -1204,10 +1204,10 @@
       "max_modules": 3
     },
     "RealRooted.LiuWang": {
-      "max_modules": 62
+      "max_modules": 64
     },
     "RealRooted.LiuWang.OneAddXPositive": {
-      "max_modules": 56
+      "max_modules": 58
     },
     "RealRooted.LiuWang.Step": {
       "max_modules": 47
@@ -1282,22 +1282,22 @@
       "max_modules": 96
     },
     "RealRooted.ProductSequence.Factors": {
-      "max_modules": 17
+      "max_modules": 19
     },
     "RealRooted.ProductSequence.Core": {
-      "max_modules": 18
+      "max_modules": 20
     },
     "RealRooted.ProductSequence.Lifts": {
-      "max_modules": 19
+      "max_modules": 21
     },
     "RealRooted.ProductSequence.EndpointPair": {
       "max_modules": 93
     },
     "RealRooted.ProductSequence.FactorFamilies": {
-      "max_modules": 19
+      "max_modules": 21
     },
     "RealRooted.ProductSequence.ScalarFamilies": {
-      "max_modules": 20
+      "max_modules": 22
     },
     "RealRooted.ProductOrientation": {
       "max_modules": 101
@@ -1399,7 +1399,7 @@
       "max_modules": 5
     },
     "RealRooted.RootVieta.Newton": {
-      "max_modules": 6
+      "max_modules": 8
     },
     "RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous": {
       "max_modules": 1
@@ -1426,40 +1426,40 @@
       "max_modules": 5
     },
     "RealRooted.Favard.Affine.Basic": {
-      "max_modules": 50
+      "max_modules": 52
     },
     "RealRooted.Favard.Affine.Denominator": {
-      "max_modules": 52
-    },
-    "RealRooted.Favard.Affine.RowSign": {
-      "max_modules": 52
-    },
-    "RealRooted.Favard.Affine": {
       "max_modules": 54
     },
+    "RealRooted.Favard.Affine.RowSign": {
+      "max_modules": 54
+    },
+    "RealRooted.Favard.Affine": {
+      "max_modules": 56
+    },
     "RealRooted.Tactic.Favard": {
-      "max_modules": 71
+      "max_modules": 73
     },
     "RealRooted.Tactic.Favard.Basic": {
-      "max_modules": 64
-    },
-    "RealRooted.Tactic.Favard.DirectSyntax": {
-      "max_modules": 65
-    },
-    "RealRooted.Tactic.Favard.DenominatorSyntax": {
       "max_modules": 66
     },
-    "RealRooted.Tactic.Favard.RowSignSyntax": {
+    "RealRooted.Tactic.Favard.DirectSyntax": {
       "max_modules": 67
     },
-    "RealRooted.Tactic.Favard.Direct": {
+    "RealRooted.Tactic.Favard.DenominatorSyntax": {
       "max_modules": 68
     },
-    "RealRooted.Tactic.Favard.Denominator": {
+    "RealRooted.Tactic.Favard.RowSignSyntax": {
       "max_modules": 69
     },
-    "RealRooted.Tactic.Favard.RowSign": {
+    "RealRooted.Tactic.Favard.Direct": {
       "max_modules": 70
+    },
+    "RealRooted.Tactic.Favard.Denominator": {
+      "max_modules": 71
+    },
+    "RealRooted.Tactic.Favard.RowSign": {
+      "max_modules": 72
     },
     "RealRooted.Tactic.OEIS.Basic": {
       "max_modules": 28
@@ -1471,7 +1471,7 @@
       "max_modules": 150
     },
     "RealRooted.Tactic.OEIS.NegativeLag": {
-      "max_modules": 76
+      "max_modules": 78
     },
     "RealRooted.Tactic.OEIS.ProductExit": {
       "max_modules": 112
@@ -1489,7 +1489,7 @@
       "max_modules": 457
    },
     "RealRooted.SequenceClosure": {
-      "max_modules": 14
+      "max_modules": 16
     },
     "RealRooted.SignEvaluation": {
       "max_modules": 12
@@ -1654,19 +1654,19 @@
       "max_modules": 135
     },
     "RealRooted.Tactic.LiuWang": {
-      "max_modules": 78
+      "max_modules": 80
     },
     "RealRooted.Tactic.LiuWang.Step": {
-      "max_modules": 72
-    },
-    "RealRooted.Tactic.LiuWang.SequenceIntervals": {
       "max_modules": 74
     },
+    "RealRooted.Tactic.LiuWang.SequenceIntervals": {
+      "max_modules": 76
+    },
     "RealRooted.Tactic.LiuWang.SequenceNonpositive": {
-      "max_modules": 73
+      "max_modules": 75
     },
     "RealRooted.Tactic.LiuWang.SequenceProducts": {
-      "max_modules": 73
+      "max_modules": 75
     },
     "RealRooted.MaWang": {
       "max_modules": 43
@@ -1711,13 +1711,13 @@
       "max_modules": 45
     },
     "RealRooted.MaWang.DerivativeSequence": {
-      "max_modules": 52
-    },
-    "RealRooted.MaWang.DerivativeDenominator": {
       "max_modules": 54
     },
+    "RealRooted.MaWang.DerivativeDenominator": {
+      "max_modules": 56
+    },
     "RealRooted.MaWang.Derivative": {
-      "max_modules": 55
+      "max_modules": 57
     },
     "RealRooted.MaWang.StrictStep": {
       "max_modules": 46
@@ -1732,34 +1732,34 @@
       "max_modules": 25
     },
     "RealRooted.Tactic.MaWang.Basic": {
-      "max_modules": 65
-    },
-    "RealRooted.Tactic.MaWang.StepSyntax": {
-      "max_modules": 66
-    },
-    "RealRooted.Tactic.MaWang.SequenceSyntax": {
       "max_modules": 67
     },
-    "RealRooted.Tactic.MaWang.DenominatorSyntax": {
+    "RealRooted.Tactic.MaWang.StepSyntax": {
       "max_modules": 68
     },
-    "RealRooted.Tactic.MaWang.FactorSyntax": {
+    "RealRooted.Tactic.MaWang.SequenceSyntax": {
       "max_modules": 69
     },
-    "RealRooted.Tactic.MaWang.Steps": {
+    "RealRooted.Tactic.MaWang.DenominatorSyntax": {
       "max_modules": 70
     },
-    "RealRooted.Tactic.MaWang.Sequences": {
+    "RealRooted.Tactic.MaWang.FactorSyntax": {
       "max_modules": 71
     },
-    "RealRooted.Tactic.MaWang.Denominator": {
+    "RealRooted.Tactic.MaWang.Steps": {
       "max_modules": 72
     },
-    "RealRooted.Tactic.MaWang.Factors": {
+    "RealRooted.Tactic.MaWang.Sequences": {
       "max_modules": 73
     },
-    "RealRooted.Tactic.MaWang": {
+    "RealRooted.Tactic.MaWang.Denominator": {
       "max_modules": 74
+    },
+    "RealRooted.Tactic.MaWang.Factors": {
+      "max_modules": 75
+    },
+    "RealRooted.Tactic.MaWang": {
+      "max_modules": 76
     },
     "RealRooted.Tactic.Product": {
       "max_modules": 111
@@ -1768,19 +1768,19 @@
       "max_modules": 110
     },
     "RealRooted.Tactic.Product.Syntax": {
-      "max_modules": 39
+      "max_modules": 41
     },
     "RealRooted.Tactic.Product.Syntax.Basic": {
-      "max_modules": 35
+      "max_modules": 37
     },
     "RealRooted.Tactic.Product.Syntax.EndpointPair": {
-      "max_modules": 35
+      "max_modules": 37
     },
     "RealRooted.Tactic.Product.Syntax.Families": {
-      "max_modules": 35
+      "max_modules": 37
     },
     "RealRooted.Tactic.Product.Syntax.Lifts": {
-      "max_modules": 35
+      "max_modules": 37
     }
   },
   "forbidden_imports": [

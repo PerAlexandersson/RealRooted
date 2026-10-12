@@ -10,6 +10,14 @@ noncomputable section
 
 namespace Polynomial
 
+/-- The length of a list representing all roots of a splitting polynomial is
+its natural degree. -/
+theorem Splits.length_eq_natDegree_of_coe_eq_roots
+    {K : Type*} [Field K] {p : K[X]} (hp : p.Splits)
+    {rs : List K} (hrs : (↑rs : Multiset K) = p.roots) :
+    rs.length = p.natDegree := by
+  rw [← Multiset.coe_card, hrs, ← hp.natDegree_eq_card_roots]
+
 /-- Vieta's root-sum formula in division form. -/
 theorem Splits.sum_roots_eq_neg_nextCoeff_div_leadingCoeff
     {K : Type*} [Field K] {p : K[X]} (hp : p.Splits)

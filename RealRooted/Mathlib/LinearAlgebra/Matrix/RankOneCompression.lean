@@ -105,18 +105,12 @@ theorem twoPointCompression_numerator_pos_of_left_exterior
     (hidentity : τ * (b * r * (1 - r) + a * z * (1 - z)) =
       r * z * detOneSubC - (1 - r) * (1 - z) * detC) :
     0 < b * r * (1 - r) + a * z * (1 - z) := by
-  have hfirst : r * z * detOneSubC ≤ 0 :=
-    mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg hr hz.le) hdetOneSubC.le
-  have hsecond : 0 < (1 - r) * (1 - z) * detC :=
-    mul_pos (mul_pos (sub_pos.mpr (lt_of_le_of_lt hr zero_lt_one)) (sub_pos.mpr hz')) hdetC
-  have hright : r * z * detOneSubC - (1 - r) * (1 - z) * detC < 0 :=
-    sub_neg.mpr (lt_of_le_of_lt hfirst hsecond)
-  have hproduct : τ * (b * r * (1 - r) + a * z * (1 - z)) < 0 := hidentity.symm ▸ hright
-  have hpositive : 0 < (-τ) * (b * r * (1 - r) + a * z * (1 - z)) := by
-    calc
-      0 < -(τ * (b * r * (1 - r) + a * z * (1 - z))) := neg_pos.mpr hproduct
-      _ = (-τ) * (b * r * (1 - r) + a * z * (1 - z)) := by ring
-  exact pos_of_mul_pos_right hpositive (neg_nonneg.mpr hτ.le)
+  have h := twoPointCompression_numerator_pos_of_right_exterior
+    (r := 1 - z) (z := 1 - r) (τ := -τ)
+    (a := b) (b := a) (detC := detOneSubC) (detOneSubC := detC)
+    (sub_pos.mpr hz') (by linarith) (by linarith) (neg_pos.mpr hτ)
+    hdetOneSubC hdetC (by nlinarith [hidentity])
+  nlinarith [h]
 
 private theorem twoPointCompression_scalar_pos_of_numerator
     {r z a b : ℝ} (ha : 0 < a) (hb : 0 < b)

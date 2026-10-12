@@ -327,8 +327,8 @@ theorem optionalRiseMatrix_lower_unitriangular
     (as : List (ℕ → ℝ)) (N : ℕ) :
     (∀ i j : Fin (N + 1), i.val < j.val →
       optionalRiseMatrix as N i j = 0) ∧
-    ∀ i : Fin (N + 1), optionalRiseMatrix as N i i = 1 := by
-  exact ⟨fun i j => optionalRiseMatrix_apply_eq_zero_of_lt as N,
+    ∀ i : Fin (N + 1), optionalRiseMatrix as N i i = 1 :=
+  ⟨fun _ _ => optionalRiseMatrix_apply_eq_zero_of_lt as N,
     optionalRiseMatrix_apply_self as N⟩
 
 end

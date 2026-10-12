@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A144438.Weighted
 import RealRooted.GammaPencil.Intertwining
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Gamma expansion of the weighted deco Eulerian family
@@ -89,22 +90,10 @@ def weightedDecoGammaNat (n : ℕ) : Polynomial ℕ[X] :=
 coefficient polynomials. -/
 theorem weightedDecoGammaNat_coeff (n j : ℕ) :
     (weightedDecoGammaNat n).coeff j = weightedDecoGammaCoeff n j := by
-  classical
-  unfold weightedDecoGammaNat
-  rw [Polynomial.finsetSum_coeff]
-  by_cases hj : j ≤ n / 2
-  · rw [Finset.sum_eq_single j]
-    · simp
-    · intro k hk hkj
-      simp [coeff_monomial, hkj]
-    · simp_all
-  · have hzero := weightedDecoGammaCoeff_eq_zero_of_half_lt n j (by lia)
-    rw [hzero]
-    apply Finset.sum_eq_zero
-    intro k hk
-    have hk' := Finset.mem_range.mp hk
-    have hkj : k ≠ j := by lia
-    simp [coeff_monomial, hkj]
+  rw [weightedDecoGammaNat, Polynomial.coeff_sum_range_monomial]
+  split_ifs with hj
+  · rfl
+  · exact (weightedDecoGammaCoeff_eq_zero_of_half_lt n j (by lia)).symm
 
 /-- The universal gamma polynomial has the expected half-degree support. -/
 theorem weightedDecoGammaNat_natDegree_le (n : ℕ) :

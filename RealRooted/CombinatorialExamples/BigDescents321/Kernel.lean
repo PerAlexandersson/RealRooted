@@ -1,5 +1,6 @@
 import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
 import Mathlib.Algebra.Polynomial.Derivation
 
@@ -88,11 +89,11 @@ theorem derivative_kernelK (t : ℕ) : derivative (kernelK t) = kernelL t := by
     have h2 := two_mul_partialV_disc_mul_sqrt
     have h4 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
       rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
-        ← map_mul, ← C_mul]
+        PowerSeries.C_C_mul]
       norm_num
     have h6 : (PowerSeries.C (C (3 / 2)) : PowerSeries ℚ[X]) = PowerSeries.C (C (1 / 2)) * 3 := by
       rw [show (3 : PowerSeries ℚ[X]) = PowerSeries.C (C 3) by rw [map_ofNat C, map_ofNat],
-        ← map_mul, ← C_mul]
+        PowerSeries.C_C_mul]
       norm_num
     have h5 : partialV (kernelDisc * kernelSqrt) =
         PowerSeries.C (C (3 / 2)) * kernelSqrt * partialV kernelDisc := by
@@ -190,18 +191,6 @@ private theorem coeff_C_mul_X_pow_mul_kernelSqrt (p : ℚ[X]) (s t : ℕ) :
       show ((t : ℤ) - s).toNat = t - s by lia, kernelPoly]
   · simp only [h, ↓reduceIte, show ((t : ℤ) - s < 0) by lia, mul_zero]
 
-private theorem two_mul_C_half_series :
-    (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
-  rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
-    ← map_mul, ← C_mul]
-  norm_num
-
-private theorem four_mul_C_quarter_series :
-    (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
-  rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
-    ← map_mul, ← C_mul]
-  norm_num
-
 /-- The coefficients of `8 a D = 8 - (8v(2 - v) + 4) y + (4v(2 - v) + 2v) y² - v y³`. -/
 def kernelK8Coeff : ℕ → ℚ[X]
   | 0 => 8
@@ -224,11 +213,19 @@ private theorem eight_mul_kernelHalf_mul_kernelDisc :
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, kernelK8Coeff, kernelHalf,
     kernelDisc, map_add, map_sub, map_mul, map_neg, map_ofNat, pow_zero, pow_one, zero_add,
     mul_one]
+  have h2 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
+    rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
+  have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
+    rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
   linear_combination (-4 * PowerSeries.X + 4 * PowerSeries.C X * (2 - PowerSeries.C X) *
       PowerSeries.X ^ 2 - 4 * PowerSeries.C (C (1 / 4)) * PowerSeries.C X * PowerSeries.X ^ 3) *
-      two_mul_C_half_series +
+      h2 +
     (2 * PowerSeries.C X * PowerSeries.X ^ 2 - PowerSeries.C X * PowerSeries.X ^ 3) *
-      four_mul_C_quarter_series
+      h4
 
 private theorem sixteen_mul_kernelL_series :
     16 * (PowerSeries.C (C (3 / 2)) * kernelHalf * kernelSqrt * partialV kernelDisc) =
@@ -236,9 +233,17 @@ private theorem sixteen_mul_kernelL_series :
         kernelSqrt := by
   have h32 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (3 / 2)) = 3 := by
     rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
-      ← map_mul, ← C_mul]
+      PowerSeries.C_C_mul]
     norm_num
     rw [map_ofNat C, map_ofNat]
+  have h2 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
+    rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
+  have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
+    rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
   rw [partialV_kernelDisc]
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, kernelL16Coeff, kernelHalf, map_sub,
     map_mul, map_neg, map_ofNat, map_zero, pow_zero, pow_one, zero_add, mul_one]
@@ -249,8 +254,8 @@ private theorem sixteen_mul_kernelL_series :
   set Y : PowerSeries ℚ[X] := PowerSeries.X
   set T := u * Y + q * Y ^ 2 - h * u * Y ^ 2 - h * q * Y ^ 3
   linear_combination (8 * T * kernelSqrt) * h32 +
-    (6 * Y ^ 2 * kernelSqrt - 3 * Y ^ 3 * kernelSqrt) * four_mul_C_quarter_series +
-    (-12 * u * Y ^ 2 * kernelSqrt - 12 * q * Y ^ 3 * kernelSqrt) * two_mul_C_half_series
+    (6 * Y ^ 2 * kernelSqrt - 3 * Y ^ 3 * kernelSqrt) * h4 +
+    (-12 * u * Y ^ 2 * kernelSqrt - 12 * q * Y ^ 3 * kernelSqrt) * h2
 
 theorem eight_mul_kernelK (t : ℕ) :
     8 * kernelK t = ∑ s ∈ Finset.range 4, kernelK8Coeff s * kernelPolyZ (t - s) := by

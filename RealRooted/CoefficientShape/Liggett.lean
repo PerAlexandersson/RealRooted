@@ -69,7 +69,7 @@ private theorem conv_nonneg {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : �
 
 private theorem conv_support {m n : ℕ} {a b : ℕ → ℝ} (ha : ∀ k, m < k → a k = 0)
     (hb : ∀ k, n < k → b k = 0) (k : ℕ) (hk : m + n < k) : conv a b k = 0 := by
-  unfold conv
+  unfold conv natCauchyConvolution
   refine sum_eq_zero fun i hi => ?_
   by_cases h : m < i
   · rw [ha i h, zero_mul]
@@ -107,7 +107,7 @@ private def ker (a : ℕ → ℝ) (k j : ℕ) : ℝ := if j ≤ k then a (k - j)
 private theorem conv_eq_ker_sum (a u : ℕ → ℝ) (k L : ℕ) (hL : k < L) :
     conv a u k = ∑ j ∈ range L, ker a k j * u j := by
   have h1 : conv a u k = ∑ j ∈ range (k + 1), ker a k j * u j := by
-    unfold conv
+    unfold conv natCauchyConvolution
     rw [← sum_range_reflect]
     refine sum_congr rfl fun j hj => ?_
     rw [mem_range] at hj
@@ -381,9 +381,10 @@ private theorem h2_b {n : ℕ} {b : ℕ → ℝ} (hb : IsULC (n + 1) b) :
 
 private theorem conv_sh (a v : ℕ → ℝ) (k : ℕ) : conv a (sh v) k = sh (conv a v) k := by
   cases k with
-  | zero => simp [conv, sh]
+  | zero => simp [conv, natCauchyConvolution, sh]
   | succ k =>
-    simp only [sh, conv, Nat.succ_ne_zero, ite_false, add_tsub_cancel_right]
+    simp only [sh, conv, natCauchyConvolution, Nat.succ_ne_zero, ite_false,
+      add_tsub_cancel_right]
     rw [sum_range_succ]
     simp only [Nat.sub_self, ite_true, mul_zero, add_zero]
     refine sum_congr rfl fun i hi => ?_
@@ -393,14 +394,14 @@ private theorem conv_sh (a v : ℕ → ℝ) (k : ℕ) : conv a (sh v) k = sh (co
 private theorem conv_decomp {n : ℕ} {b : ℕ → ℝ} (hb : IsULC (n + 1) b) (a : ℕ → ℝ) (k : ℕ) :
     conv a b k * ((n : ℝ) + 1) = conv a (dR b n) k + sh (conv a (dL b)) k := by
   rw [← conv_sh]
-  unfold conv
+  unfold conv natCauchyConvolution
   rw [sum_mul, ← sum_add_distrib]
   refine sum_congr rfl fun i _ => ?_
   rw [mul_assoc, decomp hb, mul_add]
 
 private theorem conv_of_deg0 {a b : ℕ → ℝ} (hb : ∀ k, 0 < k → b k = 0) (k : ℕ) :
     conv a b k = a k * b 0 := by
-  unfold conv
+  unfold conv natCauchyConvolution
   rw [sum_eq_single_of_mem k (mem_range.2 (by lia))]
   · rw [Nat.sub_self]
   · intro i hi hik

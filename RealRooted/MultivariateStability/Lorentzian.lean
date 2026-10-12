@@ -1,5 +1,6 @@
 import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.LinearForm
+import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import Mathlib.Analysis.Matrix.Spectrum
 
@@ -410,22 +411,6 @@ theorem card_positive_eigenvalues_le_one {H : Matrix (Fin n) (Fin n) ℝ} (hH : 
 
 /-! ### Examples -/
 
-private lemma coeff_nonneg_mul {f g : MvPolynomial (Fin n) ℝ} (hf : ∀ m, 0 ≤ f.coeff m)
-    (hg : ∀ m, 0 ≤ g.coeff m) (m : Fin n →₀ ℕ) : 0 ≤ (f * g).coeff m := by
-  rw [coeff_mul]
-  exact Finset.sum_nonneg fun x _ => mul_nonneg (hf _) (hg _)
-
-private lemma coeff_nonneg_X_add_X (i j : Fin n) (m : Fin n →₀ ℕ) :
-    0 ≤ (X i + X j : MvPolynomial (Fin n) ℝ).coeff m := by
-  classical
-  have hadd : (X i + X j : MvPolynomial (Fin n) ℝ).coeff m =
-      (X i : MvPolynomial (Fin n) ℝ).coeff m + (X j : MvPolynomial (Fin n) ℝ).coeff m := rfl
-  rw [hadd]
-  have h := coeff_X (R := ℝ) i m
-  have h' := coeff_X (R := ℝ) j m
-  rw [h, h']
-  split_ifs <;> norm_num
-
 /-- The product `(w₀ + w₁)(w₁ + w₂)` of two stable linear forms is a Lorentzian quadratic
 polynomial in three variables. -/
 example : IsLorentzian 2 ((X 0 + X 1) * (X 1 + X 2) : MvPolynomial (Fin 3) ℝ) := by
@@ -440,7 +425,10 @@ example : IsLorentzian 2 ((X 0 + X 1) * (X 1 + X 2) : MvPolynomial (Fin 3) ℝ) 
       ((isHomogeneous_X ℝ (1 : Fin 3)).add (isHomogeneous_X ℝ 2))
     simpa using this
   exact isLorentzian_of_stable (h1.mul h2) hh
-    (coeff_nonneg_mul (coeff_nonneg_X_add_X 0 1) (coeff_nonneg_X_add_X 1 2))
+    (((MvPolynomial.HasNonnegCoeffs.X (0 : Fin 3)).add
+        (MvPolynomial.HasNonnegCoeffs.X 1)).mul
+      ((MvPolynomial.HasNonnegCoeffs.X 1).add
+        (MvPolynomial.HasNonnegCoeffs.X 2)))
 
 end RealRooted.Lorentzian
 

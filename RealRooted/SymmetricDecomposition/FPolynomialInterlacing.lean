@@ -1,4 +1,5 @@
 import RealRooted.AffineFamily
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 import RealRooted.PosCombo
 import RealRooted.ProductFamily
 import RealRooted.SymmetricDecomposition.FPolynomial
@@ -53,10 +54,10 @@ theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
     | nil =>
         simp at hlen
     | cons r₁ rest =>
-        have hlen_deg_u : ss.length = u.natDegree := by
-          rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hu_rr.2]
-        have hlen_deg_v : (r₁ :: rest).length = v.natDegree := by
-          rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hv_rr.2]
+        have hlen_deg_u : ss.length = u.natDegree :=
+          hu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+        have hlen_deg_v : (r₁ :: rest).length = v.natDegree :=
+          hv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
         have hud_pad : d - u.natDegree = 1 := by grind
         have hvd_pad : d - v.natDegree = 0 := by lia
         have hleft_all : ∀ t ∈ ss.map φ, -1 ≤ t := by
@@ -96,10 +97,10 @@ theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
         simpa [φ] using
           listAlternates_neg_one_cons_map_of_listInterlaces_of_nonpos
             (ss := ss) (r₁ := r₁) (rs := rest) hint hrs_nonpos
-  · have hlen_deg_u : ss.length = u.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hu_rr.2]
-    have hlen_deg_v : rs.length = v.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hv_rr.2]
+  · have hlen_deg_u : ss.length = u.natDegree :=
+      hu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+    have hlen_deg_v : rs.length = v.natDegree :=
+      hv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
     have hud_pad : d - u.natDegree = 0 := by simp_all
     have hvd_pad : d - v.natDegree = 0 := by lia
     have hleft_eq : (↑(ss.map φ) : Multiset ℝ) = (fPolynomial d u).roots := by
@@ -139,10 +140,10 @@ theorem strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_o
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr_ne
   have hfv_deg : (fPolynomial d v).natDegree = d :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr_ne
-  have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
-  have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
+  have hss_len : ss.length = d :=
+    (hfu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq).trans hfu_deg
+  have hrs_len : rs.length = d :=
+    (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hfu_roots :
       (fPolynomial d u).roots = u.roots.map φ := by
     simpa [φ, hud] using
@@ -226,10 +227,10 @@ theorem strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_o
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr_ne
   have hfv_deg : (fPolynomial d v).natDegree = d :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr_ne
-  have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
-  have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
+  have hss_len : ss.length = d :=
+    (hfu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq).trans hfu_deg
+  have hrs_len : rs.length = d :=
+    (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hfu_roots :
       (fPolynomial d u).roots = ({-1} : Multiset ℝ) + u.roots.map φ := by
     simpa [φ, hud_pad] using
@@ -350,10 +351,10 @@ private theorem not_strictInterl_fPolynomial_of_right_degree_lt_of_sameDegree_le
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr_ne
   have hfv_deg : (fPolynomial d v).natDegree = d :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr_ne
-  have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
-  have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
+  have hss_len : ss.length = d :=
+    (hfu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq).trans hfu_deg
+  have hrs_len : rs.length = d :=
+    (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hud_pad : d - u.natDegree = 0 := by lia
   have hfu_roots :
       (fPolynomial d u).roots = u.roots.map φ := by
@@ -426,10 +427,10 @@ private theorem not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hud_le hu_nonneg hu_rr_ne
   have hfv_deg : (fPolynomial d v).natDegree = d :=
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hvd_le hv_nonneg hv_rr_ne
-  have hss_len : ss.length = d := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfu_rr.2, hfu_deg]
-  have hrs_len : rs.length = d := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hfv_rr.2, hfv_deg]
+  have hss_len : ss.length = d :=
+    (hfu_rr.2.length_eq_natDegree_of_coe_eq_roots hss_eq).trans hfu_deg
+  have hrs_len : rs.length = d :=
+    (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hud_pad_two : 2 ≤ d - u.natDegree := by lia
   have hfu_roots :
       (fPolynomial d u).roots =

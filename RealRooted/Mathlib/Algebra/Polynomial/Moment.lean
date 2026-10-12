@@ -154,10 +154,7 @@ end CommRing
     (p : R[X]) (s : Finset ι) (q : ι → R[X]) :
     momentPairing μ p (∑ i ∈ s, q i) =
       ∑ i ∈ s, momentPairing μ p (q i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi hs => simp [hi, hs]
+  simp [momentPairing, Finset.mul_sum]
 
 @[simp] theorem momentPairing_C_mul_left
     (μ : ℕ → R) (c : R) (p q : R[X]) :

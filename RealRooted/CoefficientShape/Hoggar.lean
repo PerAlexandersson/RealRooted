@@ -1,4 +1,5 @@
 import RealRooted.CoefficientShape
+import RealRooted.NatCauchyConvolution
 
 /-!
 # Hoggar's theorem
@@ -21,7 +22,7 @@ namespace RealRooted
 namespace Hoggar
 
 /-- The convolution of two sequences, matching `Polynomial.coeff_mul`. -/
-def conv (a b : ℕ → ℝ) (n : ℕ) : ℝ := ∑ k ∈ range (n + 1), a k * b (n - k)
+abbrev conv (a b : ℕ → ℝ) : ℕ → ℝ := natCauchyConvolution a b
 
 /-- The coefficients of a product are the convolution of the coefficient sequences. -/
 theorem coeff_mul_eq_conv (p q : ℝ[X]) (n : ℕ) :
@@ -106,7 +107,7 @@ private theorem sum_range_ite_mul {x y : ℕ → ℝ} {M r : ℕ} (h : r < M) :
     refine Finset.sum_eq_zero fun k hk => ?_
     have hk' := (Finset.mem_Ico.1 hk).1
     rw [ite_eq_right (by lia), zero_mul]
-  rw [h1, add_zero, conv]
+  rw [h1, add_zero, conv, natCauchyConvolution]
   refine Finset.sum_congr rfl fun k hk => ?_
   rw [ite_eq_left (Nat.lt_succ_iff.1 (Finset.mem_range.1 hk)), mul_comm]
 
@@ -173,7 +174,7 @@ theorem ne_zero_of_between {a : ℕ → ℝ}
 private theorem conv_ne_zero_iff {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k)
     (n : ℕ) :
     conv a b n ≠ 0 ↔ ∃ x y, x + y = n ∧ a x ≠ 0 ∧ b y ≠ 0 := by
-  unfold conv
+  unfold conv natCauchyConvolution
   constructor
   · intro h
     obtain ⟨k, hk, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero h

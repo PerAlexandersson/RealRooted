@@ -150,12 +150,8 @@ base. -/
 theorem isUpperHalfPlaneStablePencil_zero_left
     {g : ℝ[X]} (hg0 : g ≠ 0) (hg : g.Splits) :
     IsUpperHalfPlaneStablePencil 0 g := by
-  intro z w hz hw
-  have hw0 : w ≠ 0 := by
-    intro hzero
-    simp [hzero] at hw
-  simpa using mul_ne_zero hw0
-    (eval_complexify_ne_zero_of_splits_of_im_pos hg hg0 hz)
+  simpa using
+    (isUpperHalfPlaneStablePencil_zero_right hg0 hg).swap_neg.neg_neg
 
 /-- Positive-leading-coefficient interlacing orients the corresponding
 nonconstant polynomial pencil away from the product of upper half-planes. -/

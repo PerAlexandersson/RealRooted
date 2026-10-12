@@ -14,22 +14,6 @@ namespace RealRooted.Applications.OEIS
 
 noncomputable section
 
-/-- Coordinate `0` is absent from the shifted affine base. -/
-theorem zero_notMem_vars_decoBottomTotalAffineBase (n : Nat) :
-    0 ∉ (decoBottomTotalAffineBase n).vars := by
-  intro h
-  have hbounds := vars_decoBottomTotalAffineBase_subset_Icc n h
-  rw [Finset.mem_Icc] at hbounds
-  lia
-
-/-- Coordinate `0` is absent from the shifted affine slope. -/
-theorem zero_notMem_vars_decoBottomTotalAffineSlope (n : Nat) :
-    0 ∉ (decoBottomTotalAffineSlope n).vars := by
-  intro h
-  have hbounds := vars_decoBottomTotalAffineSlope_subset_Icc n h
-  rw [Finset.mem_Icc] at hbounds
-  lia
-
 /-- Every positive-coordinate affine discriminant is the shifted
 discriminant of the lower companion/core pair. -/
 theorem affineRayleighDiscriminant_affineBase_slope_succ

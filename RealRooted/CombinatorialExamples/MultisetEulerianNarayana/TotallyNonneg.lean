@@ -125,8 +125,8 @@ private theorem factorSubdiagonal_nonneg {d : ℕ} {a : ℝ} (ha : 0 < a) (j : �
 
 /-- Every padded coefficient factor is totally nonnegative for a positive parameter. -/
 theorem coefficientFactor_isTotallyNonneg {N d : ℕ} {a : ℝ} (ha : 0 < a) :
-    (coefficientFactor N d a).IsTotallyNonneg := by
-  exact Matrix.isTotallyNonneg_lowerBidiagonalFin N _ _
+    (coefficientFactor N d a).IsTotallyNonneg :=
+  Matrix.isTotallyNonneg_lowerBidiagonalFin N _ _
     (factorDiagonal_nonneg ha) (factorSubdiagonal_nonneg ha)
 
 private def factorParameter (r s : ℕ) : ℝ :=

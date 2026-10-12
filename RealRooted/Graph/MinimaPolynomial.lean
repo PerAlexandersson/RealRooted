@@ -1,3 +1,4 @@
+import RealRooted.Graph.FiniteDegree
 import RealRooted.HeilmannLieb
 
 /-!
@@ -34,12 +35,10 @@ universe u
 
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/- The finite-cardinality degree used by the minima model.  Unlike
-`SimpleGraph.degree`, this definition does not carry an adjacency-decision
-instance, so it remains definitionally stable when the matching API installs
-its own classical finite-set instances. -/
-def minimaDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
-  Nat.card (G.neighborSet v)
+/-- Compatibility name for the decision-free finite-cardinality degree used
+by the minima model. -/
+abbrev minimaDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
+  G.natCardDegree v
 
 /-- The factorial normalization occurring in the local-order minima formula. -/
 def minimaNormalization (G : _root_.SimpleGraph V) : ℝ :=

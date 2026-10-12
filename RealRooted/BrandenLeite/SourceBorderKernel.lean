@@ -102,22 +102,9 @@ theorem coeff_regularizedKernelRow
       if q < N + 1 then
         ((Matrix.strictLowerPart (G * H)) ^ q * G) i 0
       else 0 := by
-  rw [regularizedKernelRow, Polynomial.finsetSum_coeff]
-  by_cases hq : q ∈ Finset.range (N + 1)
-  · rw [Finset.sum_eq_single q]
-    · simp [Finset.mem_range.mp hq]
-    · intro j hj hjq
-      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
-    · exact fun hnot => (hnot hq).elim
-  · have hNq : ¬q < N + 1 := by simpa using hq
-    rw [ite_eq_right hNq]
-    apply Finset.sum_eq_zero
-    intro j hj
-    have hjq : j ≠ q := by
-      intro heq
-      subst j
-      exact hq hj
-    simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
+  simpa only [regularizedKernelRow, C_mul_X_pow_eq_monomial] using
+    Polynomial.coeff_sum_range_monomial
+      (fun q => ((Matrix.strictLowerPart (G * H)) ^ q * G) i 0) (N + 1) q
 
 /-- Regularized kernel rows satisfy the finite resolvent recurrence. -/
 theorem regularizedKernelRow_eq

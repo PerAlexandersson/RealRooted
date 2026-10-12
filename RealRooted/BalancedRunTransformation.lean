@@ -1,5 +1,6 @@
 import RealRooted.BasisTransform
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 import RealRooted.RootBounds
@@ -40,35 +41,17 @@ theorem coeff_balancedRunPolynomial (n m k : ℕ) (hm : m ≤ n) :
     (balancedRunPolynomial n m).coeff k =
       ((Nat.choose m k : ℝ) * (Nat.choose (n - m) k : ℝ)) /
         (Nat.choose n m : ℝ) := by
-  rw [balancedRunPolynomial, Polynomial.finsetSum_coeff]
-  by_cases hk : k ≤ n
-  · rw [Finset.sum_eq_single k]
-    · simp
-    · intro b hb hbk
-      simp [coeff_monomial, hbk]
-    · intro hnot
-      exact (hnot (Finset.mem_range.mpr (Nat.lt_succ_of_le hk))).elim
-  · have hmk : m < k := lt_of_le_of_lt hm (Nat.lt_of_not_ge hk)
-    have hsum :
-        (∑ b ∈ Finset.range (n + 1),
-          (monomial b
-            (((Nat.choose m b : ℝ) *
-                (Nat.choose (n - m) b : ℝ)) /
-              (Nat.choose n m : ℝ))).coeff k) = 0 := by
-      apply Finset.sum_eq_zero
-      intro b hb
-      rw [coeff_monomial]
-      split_ifs with hbk
-      · subst b
-        exact (hk (Nat.le_of_lt_succ (Finset.mem_range.mp hb))).elim
-      · rfl
-    rw [hsum, Nat.choose_eq_zero_of_lt hmk]
+  rw [balancedRunPolynomial, Polynomial.coeff_sum_range_monomial]
+  split_ifs with hk
+  · rfl
+  · have hmk : m < k := by lia
+    rw [Nat.choose_eq_zero_of_lt hmk]
     simp
 
 private theorem coeff_balancedRunPolynomial_eq_balancedRunCoeff
     (n m k : ℕ) (hm : m ≤ n) :
-    (balancedRunPolynomial n m).coeff k = balancedRunCoeff n m k := by
-  exact coeff_balancedRunPolynomial n m k hm
+    (balancedRunPolynomial n m).coeff k = balancedRunCoeff n m k :=
+  coeff_balancedRunPolynomial n m k hm
 
 @[simp] theorem balancedRunPolynomial_zero (n : ℕ) :
     balancedRunPolynomial n 0 = 1 := by

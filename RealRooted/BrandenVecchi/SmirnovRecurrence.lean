@@ -48,7 +48,7 @@ theorem smirnovDescentRefined_eq_sum (m r : ℕ) (i : Fin m) :
         X ^ (List.ofFn (Fin.snoc word i.rev)).descentCount := by
   classical
   simp [smirnovDescentRefined, weightedSmirnovEnding,
-    weightedSmirnovEndingSummand, smirnovWordWeight,
+    weightedSmirnovEndingSummand, wordWeight,
     smirnovPrefixesEnding, Finset.sum_filter]
 
 @[simp]

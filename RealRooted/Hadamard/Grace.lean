@@ -243,19 +243,6 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
 
 
 
-theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
-    reflect n (schurSzegoComp n f p) =
-      schurSzegoComp n (reflect n f) (reflect n p) := by
-  ext k
-  rw [coeff_reflect]
-  by_cases hk : k ≤ n
-  · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
-      coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
-      revAt_le hk, Nat.choose_symm hk]
-  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk),
-      revAt_eq_self_of_lt (Nat.lt_of_not_le hk),
-      coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
-
 theorem schurSzegoComp_X_mul_left (n : Nat) (hn : 1 ≤ n) (f₁ p : ℝ[X]) :
     schurSzegoComp n (X * f₁) p =
       X * schurSzegoComp (n - 1) f₁ (C (n : ℝ)⁻¹ * derivative p) := by

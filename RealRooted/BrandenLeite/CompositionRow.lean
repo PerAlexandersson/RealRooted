@@ -1,4 +1,4 @@
-import Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
@@ -39,22 +39,11 @@ theorem coeff_compositionRow {R : Type*} [CommSemiring R]
     {h : PowerSeries R} (hzero : PowerSeries.constantCoeff h = 0)
     (n k : ℕ) :
     (compositionRow h n).coeff k = PowerSeries.coeff n (h ^ k) := by
-  rw [compositionRow, Polynomial.finsetSum_coeff]
-  by_cases hk : k ∈ Finset.range (n + 1)
-  · rw [Finset.sum_eq_single k]
-    · simp
-    · intro j hj hjk
-      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
-    · exact fun hnot => (hnot hk).elim
-  · have hnk : n < k := by simpa using hk
-    rw [coeff_pow_eq_zero_of_lt hzero hnk]
-    apply Finset.sum_eq_zero
-    intro j hj
-    have hjk : j ≠ k := by
-      intro heq
-      subst j
-      exact hk hj
-    simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
+  simp_rw [compositionRow, Polynomial.C_mul_X_pow_eq_monomial]
+  rw [Polynomial.coeff_sum_range_monomial]
+  split_ifs with hk
+  · rfl
+  · exact (coeff_pow_eq_zero_of_lt hzero (by lia)).symm
 
 /-- The zeroth composition row is the constant polynomial one. -/
 @[simp]

@@ -73,12 +73,9 @@ theorem coeff_finiteFreeMultiplicativeConvolution
 theorem natDegree_signedReciprocal_le {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     (signedReciprocal d p).natDegree ≤ d := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  rw [coeff_signedReciprocal, revAt_eq_self_of_lt hj]
-  have hpj : p.coeff j = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hj)
-  simp [hpj]
+  unfold signedReciprocal
+  simpa only [Polynomial.natDegree_comp_neg_X, max_eq_left hp] using
+    (Polynomial.natDegree_reflect_le (N := d) (p := p.comp (-X)))
 
 /-- Finite-free multiplicative convolution has degree at most its ambient
 degree. -/
@@ -107,9 +104,7 @@ theorem natDegree_finiteFreeMultiplicativeConvolution_le
 /-- Signed reciprocal reversal commutes with scalar multiplication. -/
 theorem signedReciprocal_C_mul (d : ℕ) (a : ℝ) (p : ℝ[X]) :
     signedReciprocal d (C a * p) = C a * signedReciprocal d p := by
-  ext j
-  simp only [coeff_signedReciprocal, coeff_C_mul]
-  ring
+  simp only [signedReciprocal, mul_comp, C_comp, reflect_C_mul]
 
 /-- Finite-free multiplicative convolution is commutative. -/
 theorem finiteFreeMultiplicativeConvolution_comm
@@ -124,12 +119,9 @@ theorem finiteFreeMultiplicativeConvolution_C_mul_left
     (d : ℕ) (a : ℝ) (p q : ℝ[X]) :
     finiteFreeMultiplicativeConvolution d (C a * p) q =
       C a * finiteFreeMultiplicativeConvolution d p q := by
-  ext j
-  by_cases hj : j ≤ d
-  · simp only [coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
-      coeff_C_mul]
-    ring
-  · simp [coeff_finiteFreeMultiplicativeConvolution, hj]
+  simp only [finiteFreeMultiplicativeConvolution,
+    schurSzegoComp_C_mul_left, mul_comp, C_comp]
+  ring
 
 /-- Scalar multiplication in the right convolution input scales the output. -/
 theorem finiteFreeMultiplicativeConvolution_C_mul_right
@@ -148,12 +140,7 @@ theorem finiteFreeMultiplicativeConvolution_C_mul_right
 private theorem natDegree_comp_neg_X_le {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     (p.comp (-X)).natDegree ≤ d := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro j hj
-  rw [coeff_comp_neg_X]
-  have hpj : p.coeff j = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hj)
-  simp [hpj]
+  simpa only [Polynomial.natDegree_comp_neg_X] using hp
 
 /-- A nonzero constant coefficient makes the signed reciprocal have exactly
 the ambient degree. -/
@@ -189,27 +176,14 @@ theorem signedReciprocal_signedReciprocal
     {d : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ d) :
     signedReciprocal d (signedReciprocal d p) =
       C ((-1 : ℝ) ^ d) * p := by
-  ext j
-  by_cases hj : j ≤ d
-  · have hsub : d - j ≤ d := Nat.sub_le d j
-    rw [coeff_signedReciprocal_of_le hj,
-      coeff_signedReciprocal_of_le hsub, Nat.sub_sub_self hj, coeff_C_mul]
-    have hsign :
-        (-1 : ℝ) ^ (d - j) * (-1 : ℝ) ^ j = (-1 : ℝ) ^ d := by
-      rw [← pow_add, Nat.sub_add_cancel hj]
-    calc
-      (-1 : ℝ) ^ (d - j) * ((-1 : ℝ) ^ j * p.coeff j) =
-          ((-1 : ℝ) ^ (d - j) * (-1 : ℝ) ^ j) * p.coeff j := by ring
-      _ = (-1 : ℝ) ^ d * p.coeff j := by rw [hsign]
-  · have hjlt : d < j := Nat.lt_of_not_ge hj
-    have houtdeg :
-        (signedReciprocal d (signedReciprocal d p)).natDegree ≤ d :=
-      natDegree_signedReciprocal_le (natDegree_signedReciprocal_le hp)
-    have hpj : p.coeff j = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hjlt)
-    rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt houtdeg hjlt),
-      coeff_C_mul, hpj]
-    simp
+  unfold signedReciprocal
+  have hcomp : (p.comp (-X)).natDegree ≤ d := by
+    simpa only [Polynomial.natDegree_comp_neg_X] using hp
+  have hreflect : (reflect d (p.comp (-X))).natDegree ≤ d := by
+    simpa only [max_eq_left hcomp] using
+      (Polynomial.natDegree_reflect_le (N := d) (p := p.comp (-X)))
+  rw [Polynomial.reflect_comp_neg_X_of_natDegree_le hreflect,
+    Polynomial.reflect_reflect, Polynomial.comp_neg_X_comp_neg_X]
 
 /-- The normalized elementary coefficient in the standard finite-free
 multiplicative convention. -/
@@ -268,34 +242,10 @@ theorem signedReciprocal_schurSzegoComp
     signedReciprocal d (schurSzegoComp d f g) =
       finiteFreeMultiplicativeConvolution d
         (signedReciprocal d f) (signedReciprocal d g) := by
-  ext j
-  by_cases hj : j ≤ d
-  · have hsub : d - j ≤ d := Nat.sub_le d j
-    rw [coeff_signedReciprocal_of_le hj,
-      coeff_schurSzegoComp_of_le hsub,
-      coeff_finiteFreeMultiplicativeConvolution, ite_eq_left hj,
-      coeff_signedReciprocal_of_le hj,
-      coeff_signedReciprocal_of_le hj, Nat.choose_symm hj]
-    let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq (d - j))
-    have hprod :
-        (s * f.coeff (d - j)) * (s * g.coeff (d - j)) =
-          f.coeff (d - j) * g.coeff (d - j) := by
-      calc
-        (s * f.coeff (d - j)) * (s * g.coeff (d - j)) =
-            (s * s) * (f.coeff (d - j) * g.coeff (d - j)) := by ring
-        _ = f.coeff (d - j) * g.coeff (d - j) := by rw [hs, one_mul]
-    change
-      s * (f.coeff (d - j) * g.coeff (d - j) /
-          (Nat.choose d j : ℝ)) =
-        s * ((s * f.coeff (d - j)) * (s * g.coeff (d - j)) /
-          (Nat.choose d j : ℝ))
-    rw [hprod]
-  · have hjlt : d < j := Nat.lt_of_not_ge hj
-    rw [coeff_finiteFreeMultiplicativeConvolution, ite_eq_right hj]
-    rw [coeff_signedReciprocal, revAt_eq_self_of_lt hjlt,
-      coeff_schurSzegoComp_eq_zero_of_lt hjlt]
-    simp
+  unfold signedReciprocal finiteFreeMultiplicativeConvolution
+  rw [← reflect_schurSzegoComp, schurSzegoComp_comp_neg_X_both]
+  exact Polynomial.reflect_comp_neg_X_of_natDegree_le
+    (natDegree_schurSzegoComp_le d f g)
 
 /-- Convolution with a signed reciprocal on the right cancels the finite-free
 sign and becomes Schur--Szegő composition with ordinary degree-`d`

@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import Mathlib.LinearAlgebra.Matrix.Block
 
 /-!
 # Variable lower-bidiagonal totally nonnegative matrices
@@ -168,6 +169,15 @@ omit [PartialOrder R] [IsStrictOrderedRing R] in
     simp
   · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
     simp [hij, hval]
+
+omit [PartialOrder R] [IsStrictOrderedRing R] in
+theorem upperBidiagonalFin_blockTriangular (n : ℕ) (d s : ℕ → R) :
+    Matrix.BlockTriangular (upperBidiagonalFin n d s) id := by
+  intro i j hji
+  have hne : i ≠ j := ne_of_gt hji
+  have hlt : j.val < i.val := by simpa using hji
+  have hsucc : j.val ≠ i.val + 1 := by lia
+  simp [upperBidiagonalFin_apply, hne, hsucc]
 
 /-- Leading finite truncations of variable upper-bidiagonal totally
 nonnegative matrices are totally nonnegative. -/

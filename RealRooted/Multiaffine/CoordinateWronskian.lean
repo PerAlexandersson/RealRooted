@@ -249,8 +249,14 @@ theorem coordinateWronskian_add_right {R σ : Type*} [CommRing R]
     (P Q S : MvPolynomial σ R) (i : σ) :
     coordinateWronskian P (Q + S) i =
       coordinateWronskian P Q i + coordinateWronskian P S i := by
-  simp only [coordinateWronskian, map_add]
-  ring
+  calc
+    coordinateWronskian P (Q + S) i = -coordinateWronskian (Q + S) P i := by
+      linear_combination coordinateWronskian_swap P (Q + S) i
+    _ = -(coordinateWronskian Q P i + coordinateWronskian S P i) := by
+      rw [coordinateWronskian_add_left]
+    _ = coordinateWronskian P Q i + coordinateWronskian P S i := by
+      rw [coordinateWronskian_swap P Q i, coordinateWronskian_swap P S i]
+      ring
 
 /-- Multiplying the left argument by a coordinate gives a coordinate-scaled
 Wronskian minus the derivative of that coordinate. -/
@@ -279,15 +285,14 @@ theorem coordinateWronskian_X_mul_right
     coordinateWronskian P (X k * Q) i =
       X k * coordinateWronskian P Q i +
         if i = k then P * Q else 0 := by
-  classical
-  by_cases hik : i = k
-  · subst k
-    simp only [coordinateWronskian, pderiv_mul, pderiv_X_self,
-      one_mul, ite_eq_left]
-    ring
-  · simp only [coordinateWronskian, pderiv_mul,
-      pderiv_X_of_ne (Ne.symm hik), zero_mul, zero_add, ite_eq_right hik]
-    ring
+  calc
+    coordinateWronskian P (X k * Q) i = -coordinateWronskian (X k * Q) P i := by
+      linear_combination coordinateWronskian_swap P (X k * Q) i
+    _ = -(X k * coordinateWronskian Q P i - if i = k then Q * P else 0) := by
+      rw [coordinateWronskian_X_mul_left]
+    _ = X k * coordinateWronskian P Q i + if i = k then P * Q else 0 := by
+      rw [coordinateWronskian_swap P Q i]
+      split_ifs <;> ring
 
 /-- Away from the adjoined coordinate, the coordinate Wronskian of two
 affine extensions is a quadratic whose coefficients are the four endpoint

@@ -450,6 +450,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
 import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
+import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
@@ -688,6 +689,7 @@ import RealRooted.Graph.AllOrientationSink
 import RealRooted.Graph.AllOrientationSinkIdentity
 import RealRooted.Graph.ChordalAcyclicSink
 import RealRooted.Graph.ClawFree
+import RealRooted.Graph.FiniteDegree
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
@@ -1135,6 +1137,7 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
@@ -1235,6 +1238,7 @@ import RealRooted.NarayanaTransformation.Recurrences.Interlacing
 import RealRooted.NarayanaTransformation.Rising
 import RealRooted.NarayanaTransformation.RootGeometry
 import RealRooted.NarayanaTransformation.SimpleRoots
+import RealRooted.NatCauchyConvolution
 import RealRooted.NewtonAux
 import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity

@@ -129,8 +129,8 @@ theorem rightFamily_card_roots_gt_eq_of_local_lower_counts
           (f + C μ * g).roots.count a ≤
             ((f + C ν * g).roots.filter (fun r => |r - a| < ρ)).card) :
     ((f + C μ₀ * g).roots.filter (x < ·)).card =
-      ((f + C μ₁ * g).roots.filter (x < ·)).card := by
-  exact polynomialFamily_card_roots_gt_eq_of_local_lower_counts
+      ((f + C μ₁ * g).roots.filter (x < ·)).card :=
+  polynomialFamily_card_roots_gt_eq_of_local_lower_counts
     (p := fun μ ↦ f + C μ * g) hμ₁ hdeg hrr hne hlower
 
 end RealRooted

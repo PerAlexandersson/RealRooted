@@ -38,7 +38,7 @@ private theorem four_mul_kernelDisc :
     4 * kernelDisc = 4 - 4 * sV * (2 - sV) * sY + sV * sY ^ 2 := by
   have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
     rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
-      ← map_mul, ← C_mul]
+      PowerSeries.C_C_mul]
     norm_num
   simp only [kernelDisc, map_mul, map_sub, map_ofNat]
   linear_combination sV * sY ^ 2 * h4
@@ -52,7 +52,7 @@ private theorem four_mul_derivative_kernelDisc :
     4 * PowerSeries.derivative kernelDisc = -4 * sV * (2 - sV) + 2 * sV * sY := by
   have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
     rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
-      ← map_mul, ← C_mul]
+      PowerSeries.C_C_mul]
     norm_num
   simp only [kernelDisc, map_add, map_sub, Derivation.map_one_eq_zero, Derivation.leibniz,
     Derivation.leibniz_pow, PowerSeries.derivative_C, PowerSeries.derivative_X, smul_eq_mul,
@@ -63,7 +63,7 @@ private theorem four_mul_partialV_kernelDisc :
     4 * partialV kernelDisc = 4 * (2 * sV - 2) * sY + sY ^ 2 := by
   have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
     rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
-      ← map_mul, ← C_mul]
+      PowerSeries.C_C_mul]
     norm_num
   rw [partialV_kernelDisc]
   simp only [map_sub, map_mul, map_ofNat]

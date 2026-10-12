@@ -442,8 +442,8 @@ theorem spectatorAction_closed {τ : Type*} [Finite τ]
     (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
     (hP : MvRealStable P) (hPnn : P.HasNonnegCoeffs) :
     MvRealStable (spectatorAction f P) ∧
-      (spectatorAction f P).HasNonnegCoeffs := by
-  exact ⟨spectatorAction_stable_of_nonneg hf hfnn hP hPnn,
+      (spectatorAction f P).HasNonnegCoeffs :=
+  ⟨spectatorAction_stable_of_nonneg hf hfnn hP hPnn,
     actionAlong_nonneg Sum.inl Sum.inl_injective hfnn hPnn⟩
 
 private theorem totalDegree_pderiv_add_one_le {σ : Type*}

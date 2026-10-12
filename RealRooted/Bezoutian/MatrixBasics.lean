@@ -22,17 +22,14 @@ namespace RealRooted
 
 This definition is independent of a matrix size. Coefficients outside the
 degrees of `p` and `q` vanish through `Polynomial.coeff`. -/
-def bezoutEntry (p q : ℝ[X]) (i j : ℕ) : ℝ :=
-  Finset.sum (Finset.range (min i j + 1)) fun k ↦
-    p.coeff (i + j + 1 - k) * q.coeff k -
-      q.coeff (i + j + 1 - k) * p.coeff k
+abbrev bezoutEntry (p q : ℝ[X]) (i j : ℕ) : ℝ := Polynomial.bezoutEntry p q i j
 
 /-- The `n × n` Bezout matrix attached to two polynomials. -/
-def bezoutMatrix (n : ℕ) (p q : ℝ[X]) : Matrix (Fin n) (Fin n) ℝ :=
-  fun i j ↦ bezoutEntry p q i.1 j.1
+abbrev bezoutMatrix (n : ℕ) (p q : ℝ[X]) : Matrix (Fin n) (Fin n) ℝ :=
+  Polynomial.bezoutMatrix n p q
 
-def bezoutRowPoly (n : ℕ) (p q : ℝ[X]) (i : Fin n) : ℝ[X] :=
-  ∑ j : Fin n, C (bezoutEntry p q i j) * X ^ (j : ℕ)
+abbrev bezoutRowPoly (n : ℕ) (p q : ℝ[X]) (i : Fin n) : ℝ[X] :=
+  Polynomial.bezoutRowPoly n p q i
 
 lemma bezoutEntry.comm (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry p q i j = bezoutEntry p q j i :=
@@ -42,11 +39,12 @@ lemma bezoutEntry.cast_complex (p q : ℝ[X]) (i j : ℕ) :
     (bezoutEntry p q i j : ℂ) =
       bezoutSeqEntry (p.map Complex.ofRealHom).coeff
         (q.map Complex.ofRealHom).coeff i j := by
-  simp [bezoutEntry, bezoutSeqEntry, coeff_map]
+  simp [bezoutEntry, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_map]
+
 lemma bezoutMatrix.isHermitian (n : ℕ) (p q : ℝ[X]) :
     (bezoutMatrix n p q).IsHermitian := by
   ext i j
-  simp [bezoutMatrix, bezoutEntry.comm p q i.1 j.1]
+  exact Polynomial.bezoutEntry.comm p q j i
 
 lemma Matrix.PosDef.sum_pos {m : ℕ} {B : Matrix (Fin m) (Fin m) ℝ} (hB : B.PosDef)
     {x : Fin m → ℝ} (hx : x ≠ 0) :
@@ -64,24 +62,28 @@ lemma bezoutMatrix.left_ne_zero_of_posDef_two {p q : ℝ[X]}
     p ≠ 0 := by
   rintro rfl
   have hdiag : 0 < bezoutMatrix 2 0 q 0 0 := h.diag_pos
-  simp [bezoutMatrix, bezoutEntry] at hdiag
+  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+    bezoutSeqEntry] at hdiag
 
 lemma bezoutMatrix.right_ne_zero_of_posDef_two {p q : ℝ[X]}
     (h : (bezoutMatrix 2 p q).PosDef) :
     q ≠ 0 := by
   rintro rfl
   have hdiag : 0 < bezoutMatrix 2 p 0 0 0 := h.diag_pos
-  simp [bezoutMatrix, bezoutEntry] at hdiag
+  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+    bezoutSeqEntry] at hdiag
 
 lemma bezoutEntry.C_mul_C_mul (u v : ℝ) (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry (C u * p) (C v * q) i j = u * v * bezoutEntry p q i j := by
-  simp only [bezoutEntry, coeff_C_mul, Finset.mul_sum]
+  simp only [bezoutEntry, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_C_mul,
+    Finset.mul_sum]
   grind
 
 lemma bezoutMatrix.C_mul_C_mul (n : ℕ) (u v : ℝ) (p q : ℝ[X]) :
     bezoutMatrix n (C u * p) (C v * q) = (u * v) • bezoutMatrix n p q := by
   ext i j
-  simp [bezoutMatrix, bezoutEntry.C_mul_C_mul]
+  simpa [bezoutMatrix, Polynomial.bezoutMatrix] using
+    bezoutEntry.C_mul_C_mul u v p q i j
 
 lemma bezoutMatrix.C_mul_C_mul_posDef_iff {n : ℕ} {u v : ℝ} {p q : ℝ[X]}
     (hu : 0 < u) (hv : 0 < v) :
@@ -97,7 +99,8 @@ lemma bezoutMatrix.linear_eq_diagonal (a b : ℝ) :
   ext i j
   fin_cases i
   fin_cases j
-  simp [bezoutMatrix, bezoutEntry, Matrix.diagonal]
+  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+    bezoutSeqEntry, Matrix.diagonal]
 
 lemma bezoutMatrix.linear_posDef_one {a b : ℝ} (hab : a < b) :
     (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
@@ -206,7 +209,8 @@ lemma bezoutMatrix.quadratic_eq_fin_two (a b c d : ℝ) :
     b * d - a * c, b + d - (a + c)] := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, bezoutEntry, coeff_add, coeff_mul, Finset.HasAntidiagonal.antidiagonal,
+    norm_num [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+      bezoutSeqEntry, coeff_add, coeff_mul, Finset.HasAntidiagonal.antidiagonal,
       Finset.range, coeff_X, coeff_C]
 
 lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}
@@ -220,7 +224,8 @@ lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}
   have hq3 : q.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_of_le hq_deg)
   ext i j
   fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, bezoutEntry, hp3, hq3, Finset.sum_range_succ]
+    norm_num [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
+      bezoutSeqEntry, hp3, hq3, Finset.sum_range_succ]
 
 lemma bezoutMatrix.dotProduct_fin_two_coeff_discrim_right_top {p q : ℝ[X]}
     (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
@@ -381,49 +386,30 @@ lemma _root_.Matrix.posDef_fin_three_of_ldl {d₀ d₁ d₂ l₁₀ l₂₀ l₂
 
 lemma bezoutEntry.eq_zero_of_le_left (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hi : n ≤ i) :
-    bezoutEntry p q i j = 0 := by
-  refine Finset.sum_eq_zero fun k hk ↦ ?_
-  have hk_le : k ≤ min i j := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  have hj_le : k ≤ j := hk_le.trans (min_le_right i j)
-  have hp0 : p.coeff (i + j + 1 - k) = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-  have hq0 : q.coeff (i + j + 1 - k) = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-  simp [hp0, hq0]
+    bezoutEntry p q i j = 0 :=
+  Polynomial.bezoutEntry.eq_zero_of_le_left p q hp hq hi
 
 lemma bezoutEntry.eq_zero_of_le_right (p q : ℝ[X]) {n : ℕ} {i j : ℕ}
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) (hj : n ≤ j) :
     bezoutEntry p q i j = 0 :=
-  bezoutEntry.comm p q j i ▸ bezoutEntry.eq_zero_of_le_left p q hp hq hj
+  Polynomial.bezoutEntry.eq_zero_of_le_right p q hp hq hj
 
 lemma bezoutEntry.telescoping (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry p q i (j + 1) - bezoutEntry p q (i + 1) j =
     p.coeff (i + 1) * q.coeff (j + 1) - p.coeff (j + 1) * q.coeff (i + 1) :=
-  bezoutSeqEntry.telescoping p.coeff q.coeff i j
+  Polynomial.bezoutEntry.telescoping p q i j
 
 lemma bezoutEntry.coeff_mul_sub_coeff_mul (p q : ℝ[X]) (i j : ℕ) :
     p.coeff i * q.coeff j - p.coeff j * q.coeff i =
       (if i ≠ 0 then bezoutEntry p q (i - 1) j else 0) -
         (if j ≠ 0 then bezoutEntry p q i (j - 1) else 0) :=
-  bezoutSeqEntry.coeff_mul_sub_coeff_mul p.coeff q.coeff i j
+  Polynomial.bezoutEntry.coeff_mul_sub_coeff_mul p q i j
 
 lemma bezoutEntry.bilinear_mul_sub (p q : ℝ[X]) {n : ℕ} (t₁ t₂ : ℝ)
     (hp : p.natDegree ≤ n) (hq : q.natDegree ≤ n) :
     (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
     bezoutEntry p q i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
-    p.eval t₁ * q.eval t₂ - p.eval t₂ * q.eval t₁ := by
-  have hp_zero (k : ℕ) (hk : n < k) : p.coeff k = 0 :=
-    coeff_eq_zero_of_natDegree_lt (hp.trans_lt hk)
-  have hq_zero (k : ℕ) (hk : n < k) : q.coeff k = 0 :=
-    coeff_eq_zero_of_natDegree_lt (hq.trans_lt hk)
-  have h_eq :
-      (t₁ - t₂) * ∑ i : Fin n, ∑ j : Fin n,
-        bezoutSeqEntry p.coeff q.coeff i.val j.val * t₁ ^ i.val * t₂ ^ j.val =
-      (∑ i ∈ Finset.range (n + 1), p.coeff i * t₁ ^ i) *
-        (∑ j ∈ Finset.range (n + 1), q.coeff j * t₂ ^ j) -
-      (∑ i ∈ Finset.range (n + 1), p.coeff i * t₂ ^ i) *
-        (∑ j ∈ Finset.range (n + 1), q.coeff j * t₁ ^ j) :=
-    bezoutSeqEntry.bilinear_mul_sub p.coeff q.coeff n t₁ t₂ hp_zero hq_zero
-  simp_rw [Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hp),
-    Polynomial.eval_eq_sum_range' (Nat.lt_succ_of_le hq)]
-  exact h_eq
+    p.eval t₁ * q.eval t₂ - p.eval t₂ * q.eval t₁ :=
+  Polynomial.bezoutEntry.bilinear_mul_sub p q t₁ t₂ hp hq
 
 end RealRooted

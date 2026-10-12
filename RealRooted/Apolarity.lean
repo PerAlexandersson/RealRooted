@@ -66,6 +66,38 @@ def apolarPairing {R : Type*} [CommRing R] (n : Nat) (f g : R[X]) : R :=
   Finset.sum (Finset.range (n + 1)) fun k =>
     (-1 : R) ^ k * (Nat.choose n k : R) * f.coeff k * g.coeff (n - k)
 
+private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
+    {n k : Nat} (hk : k ≤ n) :
+    (-1 : R) ^ (n - k) = (-1 : R) ^ n * (-1 : R) ^ k := by
+  conv_rhs =>
+    rw [← Nat.sub_add_cancel hk, pow_add]
+  rw [mul_assoc]
+  have hsq : (-1 : R) ^ k * (-1 : R) ^ k = 1 := by
+    rw [← pow_add]
+    have heven : Even (k + k) := ⟨k, rfl⟩
+    simp [heven.neg_one_pow (α := R)]
+  rw [hsq, mul_one]
+
+/-- Swapping the two arguments in the apolar pairing introduces the usual
+degree-`n` sign. -/
+theorem apolarPairing_comm_sign {R : Type*} [CommRing R]
+    (n : Nat) (f g : R[X]) :
+    apolarPairing n g f = (-1 : R) ^ n * apolarPairing n f g := by
+  rw [apolarPairing, apolarPairing]
+  conv_lhs =>
+    rw [← Finset.sum_range_reflect
+      (fun k => (-1 : R) ^ k * (Nat.choose n k : R) * g.coeff k * f.coeff (n - k))
+      (n + 1)]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro k hk
+  have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  have hsub : n - (n - k) = k := Nat.sub_sub_self hk_le
+  rw [Nat.add_sub_cancel, hsub]
+  rw [Nat.choose_symm hk_le]
+  rw [neg_one_pow_sub_eq_mul (R := R) hk_le]
+  ring_nf
+
 /-- Two polynomials are apolar in degree `n` if their finite apolar pairing
 vanishes. -/
 def AreApolar {R : Type*} [CommRing R] (n : Nat) (f g : R[X]) : Prop :=
@@ -103,11 +135,8 @@ theorem apolarPairing_add_left {R : Type*} [CommRing R]
 theorem apolarPairing_add_right {R : Type*} [CommRing R]
     (n : Nat) (f g₁ g₂ : R[X]) :
     apolarPairing n f (g₁ + g₂) = apolarPairing n f g₁ + apolarPairing n f g₂ := by
-  rw [apolarPairing, apolarPairing, apolarPairing, ← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [Polynomial.coeff_add]
-  ring_nf
+  rw [apolarPairing_comm_sign n (g₁ + g₂) f, apolarPairing_add_left, mul_add,
+    ← apolarPairing_comm_sign n g₁ f, ← apolarPairing_comm_sign n g₂ f]
 
 theorem apolarPairing_C_mul_left {R : Type*} [CommRing R]
     (n : Nat) (a : R) (f g : R[X]) :
@@ -121,11 +150,12 @@ theorem apolarPairing_C_mul_left {R : Type*} [CommRing R]
 theorem apolarPairing_C_mul_right {R : Type*} [CommRing R]
     (n : Nat) (f g : R[X]) (a : R) :
     apolarPairing n f (C a * g) = a * apolarPairing n f g := by
-  rw [apolarPairing, apolarPairing, Finset.mul_sum]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  rw [Polynomial.coeff_C_mul]
-  ring_nf
+  rw [apolarPairing_comm_sign n (C a * g) f, apolarPairing_C_mul_left]
+  calc
+    (-1 : R) ^ n * (a * apolarPairing n g f) =
+        a * ((-1 : R) ^ n * apolarPairing n g f) := by ring
+    _ = a * apolarPairing n f g := by
+      rw [← apolarPairing_comm_sign n g f]
 
 theorem apolarPairing_neg_left {R : Type*} [CommRing R]
     (n : Nat) (f g : R[X]) :
@@ -163,11 +193,11 @@ theorem apolarPairing_sum_right {R : Type*} [CommRing R]
     {ι : Type*} (n : Nat) (f : R[X]) (s : Finset ι) (g : ι → R[X]) :
     apolarPairing n f (Finset.sum s g) =
       Finset.sum s fun i => apolarPairing n f (g i) := by
-  classical
-  refine Finset.induction_on s ?_ ?_
-  · simp
-  · intro a s ha ih
-    simp [ha, apolarPairing_add_right, ih]
+  rw [apolarPairing_comm_sign n (Finset.sum s g) f,
+    apolarPairing_sum_left, Finset.mul_sum]
+  refine Finset.sum_congr rfl ?_
+  intro i _
+  rw [← apolarPairing_comm_sign n (g i) f]
 
 theorem AreApolar.add_left {R : Type*} [CommRing R]
     {n : Nat} {f₁ f₂ g : R[X]}
@@ -227,38 +257,6 @@ theorem AreApolar.sum_right {R : Type*} [CommRing R]
   rw [AreApolar, apolarPairing_sum_right]
   exact Finset.sum_eq_zero fun i hi => h i hi
 
-private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
-    {n k : Nat} (hk : k ≤ n) :
-    (-1 : R) ^ (n - k) = (-1 : R) ^ n * (-1 : R) ^ k := by
-  conv_rhs =>
-    rw [← Nat.sub_add_cancel hk, pow_add]
-  rw [mul_assoc]
-  have hsq : (-1 : R) ^ k * (-1 : R) ^ k = 1 := by
-    rw [← pow_add]
-    have heven : Even (k + k) := ⟨k, rfl⟩
-    simp [heven.neg_one_pow (α := R)]
-  rw [hsq, mul_one]
-
-/-- Swapping the two arguments in the apolar pairing introduces the usual
-degree-`n` sign. -/
-theorem apolarPairing_comm_sign {R : Type*} [CommRing R]
-    (n : Nat) (f g : R[X]) :
-    apolarPairing n g f = (-1 : R) ^ n * apolarPairing n f g := by
-  rw [apolarPairing, apolarPairing]
-  conv_lhs =>
-    rw [← Finset.sum_range_reflect
-      (fun k => (-1 : R) ^ k * (Nat.choose n k : R) * g.coeff k * f.coeff (n - k))
-      (n + 1)]
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl ?_
-  intro k hk
-  have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-  have hsub : n - (n - k) = k := Nat.sub_sub_self hk_le
-  rw [Nat.add_sub_cancel, hsub]
-  rw [Nat.choose_symm hk_le]
-  rw [neg_one_pow_sub_eq_mul (R := R) hk_le]
-  ring_nf
-
 theorem AreApolar.symm {R : Type*} [CommRing R]
     {n : Nat} {f g : R[X]} (h : AreApolar n f g) :
     AreApolar n g f := by
@@ -298,30 +296,12 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
       if j ≤ n then
         (-1 : R) ^ (n - j) * (Nat.choose n (n - j) : R) * f.coeff (n - j) * b
       else 0 := by
-  classical
+  rw [apolarPairing_comm_sign, apolarPairing_monomial_left]
   by_cases hj : j ≤ n
-  · rw [ite_eq_left hj, apolarPairing]
-    have hmem : n - j ∈ Finset.range (n + 1) :=
-      Finset.mem_range.mpr (Nat.lt_succ_of_le (Nat.sub_le n j))
-    rw [Finset.sum_eq_single_of_mem (n - j) hmem]
-    · have hsub : n - (n - j) = j := Nat.sub_sub_self hj
-      simp [hsub]
-    · intro k hk hk_ne
-      have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-      have hneq : j ≠ n - k := by
-        intro h
-        apply hk_ne
-        lia
-      simp [coeff_monomial, hneq]
-  · rw [ite_eq_right hj, apolarPairing]
-    refine Finset.sum_eq_zero ?_
-    intro k hk
-    have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    have hneq : j ≠ n - k := by
-      intro h
-      have : j ≤ n := by lia
-      exact hj this
-    simp [coeff_monomial, hneq]
+  · rw [ite_eq_left hj, ite_eq_left hj, Nat.choose_symm hj,
+      neg_one_pow_sub_eq_mul hj]
+    ring
+  · simp [hj]
 
 /-- The apolar pairing of two monomials is supported exactly on complementary
 degrees. -/

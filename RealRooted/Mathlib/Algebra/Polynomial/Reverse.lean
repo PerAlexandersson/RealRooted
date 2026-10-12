@@ -1,6 +1,8 @@
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Roots of reversed polynomials
@@ -58,6 +60,27 @@ theorem reflect_X_pow_mul (q : R[X]) {N : ℕ} (k : ℕ) (hq : q.natDegree ≤ N
 section CommRing
 
 variable {A : Type*} [CommRing A]
+
+/-- Reflecting a polynomial after negating its variable introduces the sign of
+the reflection bound. -/
+theorem reflect_comp_neg_X_of_natDegree_le
+    {n : ℕ} {p : A[X]} (hp : p.natDegree ≤ n) :
+    reflect n (p.comp (-X)) =
+      C ((-1 : A) ^ n) * (reflect n p).comp (-X) := by
+  ext k
+  rw [coeff_reflect, coeff_C_mul, coeff_comp_neg_X, coeff_comp_neg_X, coeff_reflect]
+  by_cases hk : k ≤ n
+  · rw [revAt_le hk]
+    calc
+      p.coeff (n - k) * (-1 : A) ^ (n - k) =
+          ((-1 : A) ^ n * (-1 : A) ^ k) * p.coeff (n - k) := by
+        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hk]
+        ring
+      _ = (-1 : A) ^ n * (p.coeff (n - k) * (-1 : A) ^ k) := by ring
+  · have hlt : n < k := Nat.lt_of_not_le hk
+    rw [revAt_eq_self_of_lt hlt,
+      coeff_eq_zero_of_natDegree_lt (hp.trans_lt hlt)]
+    simp
 
 /-- The polynomial `X (N r - X r')`, whose reflection at `N` is the derivative of the
 reflection of `r` (`derivative_reflect`), has degree at most `N`. -/

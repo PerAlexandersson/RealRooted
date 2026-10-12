@@ -205,7 +205,7 @@ theorem narayanaZeroGammaPolynomial_deriv_rec (n : ℕ) :
   ext k
   rw [add_mul, sub_mul, mul_assoc, mul_assoc]
   rcases k with _ | _ | k
-  · simp [coeff_narayanaZeroGammaPolynomial_of_le]
+  · simp []
   · rw [coeff_C_mul,
       coeff_narayanaZeroGammaPolynomial_deriv_rec n 1 one_ne_zero]
     simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul, coeff_derivative,

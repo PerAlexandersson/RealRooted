@@ -55,28 +55,6 @@ theorem ordinaryRunSeries_mul_one_sub {R : Type*} [CommRing R] (a : R) :
     simpa [map_sub, PowerSeries.rescale_X] using h]
   simp
 
-/-- Product of the letter weights along a finite word. -/
-def wordWeight {R : Type*} [CommSemiring R] {m n : ℕ}
-    (weight : Fin m → R) (word : Fin n → Fin m) : R :=
-  ∏ i, weight (word i)
-
-@[simp]
-theorem wordWeight_zero {R : Type*} [CommSemiring R] {m : ℕ}
-    (weight : Fin m → R) (word : Fin 0 → Fin m) :
-    wordWeight weight word = 1 := by
-  simp [wordWeight]
-
-@[simp]
-theorem wordWeight_snoc {R : Type*} [CommSemiring R] {m n : ℕ}
-    (weight : Fin m → R) (word : Fin n → Fin m) (i : Fin m) :
-    wordWeight weight (Fin.snoc word i) =
-      wordWeight weight word * weight i := by
-  unfold wordWeight
-  simpa using
-    (Fin.prod_univ_castSucc
-      (fun j : Fin (n + 1) =>
-        weight (@Fin.snoc n (fun _ => Fin m) word i j)))
-
 /-- The literal weighted descent polynomial over all finite words. -/
 def weightedWordPolynomial {R : Type*} [CommSemiring R] {m : ℕ}
     (weight : Fin m → R) (n : ℕ) : R[X] :=

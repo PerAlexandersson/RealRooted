@@ -15,20 +15,12 @@ namespace RealRooted.PrincipalInterlacingExamples
 
 open Polynomial
 
-private lemma upperBidiagonalFin_blockTriangular (n : ℕ) (d s : ℕ → ℝ) :
-    (Matrix.upperBidiagonalFin n d s).BlockTriangular id := by
-  intro i j hji
-  have hne : i ≠ j := ne_of_gt hji
-  have hlt : j.val < i.val := by simpa using hji
-  have hsucc : j.val ≠ i.val + 1 := by lia
-  simp [Matrix.upperBidiagonalFin_apply, hne, hsucc]
-
 private lemma upperBidiagonalFin_charpoly (n : ℕ) (d s : ℕ → ℝ) :
     (Matrix.upperBidiagonalFin n d s).charpoly =
       ∏ i : Fin n, (X - C (d i)) := by
   simpa [Matrix.upperBidiagonalFin_apply] using
     Matrix.charpoly_of_isUpperTriangular _
-      (upperBidiagonalFin_blockTriangular n d s)
+      (Matrix.upperBidiagonalFin_blockTriangular n d s)
 
 private lemma charpoly_fin_one (A : Matrix (Fin 1) (Fin 1) ℝ) :
     A.charpoly = X - C (A 0 0) := by
@@ -75,7 +67,7 @@ theorem singularUpperShift_ne_zero : singularUpperShift ≠ 0 := by
 
 @[simp] theorem singularUpperShift_det : singularUpperShift.det = 0 := by
   rw [singularUpperShift, Matrix.det_of_isUpperTriangular
-    (upperBidiagonalFin_blockTriangular 2 _ _)]
+    (Matrix.upperBidiagonalFin_blockTriangular 2 _ _)]
   norm_num [Matrix.upperBidiagonalFin_apply]
 
 @[simp] theorem singularUpperShift_charpoly :

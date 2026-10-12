@@ -195,22 +195,15 @@ theorem coeff_twoKernelRow {R : Type*} [CommSemiring R]
     (n k : ℕ) :
     (twoKernelRow g h n).coeff k =
       PowerSeries.coeff n (g ^ (k + 1) * h ^ k) := by
-  rw [twoKernelRow, Polynomial.finsetSum_coeff]
-  by_cases hk : k ∈ Finset.range (n + 1)
-  · rw [Finset.sum_eq_single k]
-    · simp
-    · intro j hj hjk
-      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
-    · exact fun hnot => (hnot hk).elim
-  · have hnk : n < k := by simpa using hk
-    rw [coeff_twoKernelTerm_eq_zero_of_lt hzero hnk]
-    apply Finset.sum_eq_zero
-    intro j hj
-    have hjk : j ≠ k := by
-      intro heq
-      subst j
-      exact hk hj
-    simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
+  rw [twoKernelRow]
+  simp_rw [C_mul_X_pow_eq_monomial]
+  rw [Polynomial.coeff_sum_range_monomial]
+  by_cases hk : k ≤ n
+  · simp [hk]
+  · rw [ite_eq_right (Nat.lt_succ_iff.not.mpr hk)]
+    exact
+      (coeff_twoKernelTerm_eq_zero_of_lt hzero
+        (Nat.lt_of_not_ge hk)).symm
 
 /-- Every literal two-kernel row has degree at most its series index. -/
 theorem natDegree_twoKernelRow_le {R : Type*} [CommSemiring R]

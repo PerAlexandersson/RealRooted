@@ -235,13 +235,18 @@ theorem MvStableInOrZero.finset_prod {sigma ι : Type*}
 /-- The zero polynomial is weakly stable. -/
 theorem MvUpperHalfPlaneStableOrZero.zero {sigma : Type*} :
     MvUpperHalfPlaneStableOrZero (0 : MvPolynomial sigma ℂ) :=
-  Or.inl rfl
+  by
+    simpa only [mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+      (MvStableInOrZero.zero (Omega := fun _ : sigma => {z | 0 < z.im}))
 
 /-- A stable polynomial is weakly stable. -/
 theorem MvUpperHalfPlaneStable.orZero {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P) :
     MvUpperHalfPlaneStableOrZero P :=
-  Or.inr hP
+  by
+    simpa only [mvUpperHalfPlaneStable_iff_stableIn,
+      mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+      (MvStableIn.orZero hP)
 
 /-- Real stability, expressed by complexifying the coefficients before
 evaluation in a product of open upper half-planes. -/
@@ -400,23 +405,21 @@ theorem MvUpperHalfPlaneStable.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
     {c : ℂ} (hc : c ≠ 0) :
     MvUpperHalfPlaneStable (MvPolynomial.C c * P) := by
-  intro z hz
-  simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C]
-  exact mul_ne_zero hc (hP z hz)
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.C_mul hP hc)
 
 theorem MvUpperHalfPlaneStable.mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
     (hQ : MvUpperHalfPlaneStable Q) :
     MvUpperHalfPlaneStable (P * Q) := by
-  intro z hz
-  rw [MvPolynomial.eval_mul]
-  exact mul_ne_zero (hP z hz) (hQ z hz)
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.mul hP hQ)
 
 /-- The constant polynomial one is stable. -/
 theorem MvUpperHalfPlaneStable.one {sigma : Type*} :
     MvUpperHalfPlaneStable (1 : MvPolynomial sigma ℂ) := by
-  intro z hz
-  simp
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.one (Omega := fun _ : sigma => {z | 0 < z.im}))
 
 /-- Each coordinate variable is upper-half-plane stable. -/
 theorem MvUpperHalfPlaneStable.X {sigma : Type*} (i : sigma) :
@@ -431,42 +434,25 @@ theorem MvUpperHalfPlaneStableOrZero.C_mul {sigma : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
     (c : ℂ) :
     MvUpperHalfPlaneStableOrZero (MvPolynomial.C c * P) := by
-  rcases hP with rfl | hP
-  · left
-    simp
-  · by_cases hc : c = 0
-    · left
-      simp [hc]
-    · exact (hP.C_mul hc).orZero
+  simpa only [mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+    (MvStableInOrZero.C_mul hP c)
 
 /-- Multiplication preserves weak stability. -/
 theorem MvUpperHalfPlaneStableOrZero.mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
     (hQ : MvUpperHalfPlaneStableOrZero Q) :
     MvUpperHalfPlaneStableOrZero (P * Q) := by
-  rcases hP with rfl | hP
-  · left
-    simp
-  rcases hQ with rfl | hQ
-  · left
-    simp
-  exact (hP.mul hQ).orZero
+  simpa only [mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+    (MvStableInOrZero.mul hP hQ)
 
 /-- A finite product of weakly stable polynomials is weakly stable. -/
 theorem MvUpperHalfPlaneStableOrZero.finset_prod {sigma ι : Type*}
     (s : Finset ι) (P : ι → MvPolynomial sigma ℂ)
     (hP : ∀ i ∈ s, MvUpperHalfPlaneStableOrZero (P i)) :
     MvUpperHalfPlaneStableOrZero (∏ i ∈ s, P i) := by
-  classical
-  induction s using Finset.induction with
-  | empty =>
-      simpa using (MvUpperHalfPlaneStable.one (sigma := sigma)).orZero
-  | @insert a s ha ih =>
-      rw [Finset.prod_insert ha]
-      apply (hP a (by simp)).mul
-      apply ih
-      intro i hi
-      exact hP i (by simp [hi])
+  simpa only [mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+    (MvStableInOrZero.finset_prod
+      (Omega := fun _ : sigma => {z | 0 < z.im}) s P hP)
 
 /-- The sum of two variables is stable in the open upper half-plane. -/
 theorem MvUpperHalfPlaneStable.X_add_X {sigma : Type*} (i j : sigma) :
@@ -529,23 +515,22 @@ theorem MvUpperHalfPlaneStable.left_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
     MvUpperHalfPlaneStable P := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.left_of_mul hPQ)
 
 theorem MvUpperHalfPlaneStable.right_of_mul {sigma : Type*}
     {P Q : MvPolynomial sigma ℂ}
     (hPQ : MvUpperHalfPlaneStable (P * Q)) :
     MvUpperHalfPlaneStable Q := by
-  intro z hz hzero
-  exact hPQ z hz (by simp [hzero])
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.right_of_mul hPQ)
 
 theorem MvUpperHalfPlaneStable.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStable P)
     {f : sigma → tau} :
     MvUpperHalfPlaneStable (MvPolynomial.rename f P) := by
-  intro z hz
-  rw [MvPolynomial.eval_rename]
-  exact hP (z ∘ f) fun i => hz (f i)
+  simpa only [mvUpperHalfPlaneStable_iff_stableIn] using
+    (MvStableIn.rename hP (f := f) fun _ z hz => hz)
 
 /-- Upper-half-plane stability is reflected by an injective variable
 renaming. -/
@@ -733,10 +718,8 @@ theorem MvUpperHalfPlaneStableOrZero.rename {sigma tau : Type*}
     {P : MvPolynomial sigma ℂ} (hP : MvUpperHalfPlaneStableOrZero P)
     (f : sigma → tau) :
     MvUpperHalfPlaneStableOrZero (MvPolynomial.rename f P) := by
-  rcases hP with rfl | hP
-  · left
-    simp
-  exact hP.rename.orZero
+  simpa only [mvUpperHalfPlaneStableOrZero_iff_stableInOrZero] using
+    (MvStableInOrZero.rename hP (f := f) fun _ z hz => hz)
 
 /-- Weak upper-half-plane stability is reflected by an injective variable
 renaming. -/
@@ -836,12 +819,15 @@ theorem MvUpperHalfPlaneStable.specializeRight
     (hP : MvUpperHalfPlaneStable P) {y : tau → ℂ}
     (hy : ∀ i, 0 < (y i).im) :
     MvUpperHalfPlaneStable (specializeRight y P) := by
-  intro x hx
-  rw [eval_specializeRight]
-  exact hP (Sum.elim x y) fun i => by
-    cases i with
-    | inl i => exact hx i
-    | inr i => exact hy i
+  let Omega : sigma → Set ℂ := fun _ => {z | 0 < z.im}
+  let Psi : tau → Set ℂ := fun _ => {z | 0 < z.im}
+  have hregion : Sum.elim Omega Psi = fun _ => {z | 0 < z.im} := by
+    funext i
+    cases i <;> rfl
+  have hP' : MvStableIn (Sum.elim Omega Psi) P := by
+    rw [hregion]
+    exact hP
+  exact MvStableIn.specializeRight hP' hy
 
 /-- Specializing the right block in the upper half-plane preserves weak
 stability. -/
@@ -850,10 +836,15 @@ theorem MvUpperHalfPlaneStableOrZero.specializeRight
     (hP : MvUpperHalfPlaneStableOrZero P) {y : tau → ℂ}
     (hy : ∀ i, 0 < (y i).im) :
     MvUpperHalfPlaneStableOrZero (specializeRight y P) := by
-  rcases hP with rfl | hP
-  · left
-    rfl
-  exact (hP.specializeRight hy).orZero
+  let Omega : sigma → Set ℂ := fun _ => {z | 0 < z.im}
+  let Psi : tau → Set ℂ := fun _ => {z | 0 < z.im}
+  have hregion : Sum.elim Omega Psi = fun _ => {z | 0 < z.im} := by
+    funext i
+    cases i <;> rfl
+  have hP' : MvStableInOrZero (Sum.elim Omega Psi) P := by
+    rw [hregion]
+    exact hP
+  exact MvStableInOrZero.specializeRight hP' hy
 
 /-- Specialize the left block of variables in a polynomial on a sum type. -/
 def specializeLeft {sigma tau : Type*} (x : sigma → ℂ)
@@ -972,12 +963,15 @@ theorem MvUpperHalfPlaneStable.specializeLeft
     (hP : MvUpperHalfPlaneStable P) {x : sigma → ℂ}
     (hx : ∀ i, 0 < (x i).im) :
     MvUpperHalfPlaneStable (specializeLeft x P) := by
-  intro y hy
-  rw [eval_specializeLeft]
-  exact hP (Sum.elim x y) fun i => by
-    cases i with
-    | inl i => exact hx i
-    | inr i => exact hy i
+  let Omega : sigma → Set ℂ := fun _ => {z | 0 < z.im}
+  let Psi : tau → Set ℂ := fun _ => {z | 0 < z.im}
+  have hregion : Sum.elim Omega Psi = fun _ => {z | 0 < z.im} := by
+    funext i
+    cases i <;> rfl
+  have hP' : MvStableIn (Sum.elim Omega Psi) P := by
+    rw [hregion]
+    exact hP
+  exact MvStableIn.specializeLeft hP' hx
 
 /-- Specializing the left block in the upper half-plane preserves weak
 stability. -/
@@ -986,10 +980,15 @@ theorem MvUpperHalfPlaneStableOrZero.specializeLeft
     (hP : MvUpperHalfPlaneStableOrZero P) {x : sigma → ℂ}
     (hx : ∀ i, 0 < (x i).im) :
     MvUpperHalfPlaneStableOrZero (specializeLeft x P) := by
-  rcases hP with rfl | hP
-  · left
-    rfl
-  exact (hP.specializeLeft hx).orZero
+  let Omega : sigma → Set ℂ := fun _ => {z | 0 < z.im}
+  let Psi : tau → Set ℂ := fun _ => {z | 0 < z.im}
+  have hregion : Sum.elim Omega Psi = fun _ => {z | 0 < z.im} := by
+    funext i
+    cases i <;> rfl
+  have hP' : MvStableInOrZero (Sum.elim Omega Psi) P := by
+    rw [hregion]
+    exact hP
+  exact MvStableInOrZero.specializeLeft hP' hx
 
 /-- The bivariate polynomial `p(x * y)`. -/
 def xyLift {R : Type*} [CommSemiring R] (p : R[X]) :

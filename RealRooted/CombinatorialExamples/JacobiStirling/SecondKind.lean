@@ -1,4 +1,5 @@
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
+import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the second kind
@@ -15,8 +16,8 @@ noncomputable section
 variable {R : Type*} [CommSemiring R]
 
 /-- The second-kind weight `i * (i + z)`, indexed from `i = 1`. -/
-def secondKindWeight (z : R) (i : ℕ) : R :=
-  (i + 1 : R) * ((i + 1 : R) + z)
+abbrev secondKindWeight (z : R) (i : ℕ) : R :=
+  weight z i
 
 /-- The second-kind Jacobi--Stirling triangle, in subtraction-free successor
 form. -/
@@ -25,7 +26,7 @@ def secondKind (z : R) : ℕ → ℕ → R
   | 0, _ + 1 => 0
   | _ + 1, 0 => 0
   | n + 1, k + 1 =>
-      secondKind z n k + secondKindWeight z k * secondKind z n (k + 1)
+      secondKind z n k + weight z k * secondKind z n (k + 1)
 
 @[simp]
 theorem secondKind_zero_zero (z : R) : secondKind z 0 0 = 1 := rfl
@@ -39,7 +40,7 @@ theorem secondKind_succ_zero (z : R) (n : ℕ) : secondKind z (n + 1) 0 = 0 := r
 /-- The defining second-kind Jacobi--Stirling recurrence. -/
 theorem secondKind_succ_succ (z : R) (n k : ℕ) :
     secondKind z (n + 1) (k + 1) =
-      secondKind z n k + secondKindWeight z k * secondKind z n (k + 1) := rfl
+      secondKind z n k + weight z k * secondKind z n (k + 1) := rfl
 
 /-- Entries above the diagonal vanish. -/
 @[simp]

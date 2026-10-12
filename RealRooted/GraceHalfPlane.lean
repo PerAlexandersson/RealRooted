@@ -1,4 +1,5 @@
 import RealRooted.Apolarity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Analysis.Complex.Convex
 
 open Polynomial Complex
@@ -365,19 +366,7 @@ noncomputable def negComp (p : ℂ[X]) : ℂ[X] := p.comp (-X)
 
 @[simp] theorem coeff_negComp (p : ℂ[X]) (k : ℕ) :
     (negComp p).coeff k = (-1) ^ k * p.coeff k := by
-  have hpow : ∀ i : ℕ, (-X : ℂ[X]) ^ i = C ((-1) ^ i) * X ^ i := by
-    intro i
-    rw [show (-X : ℂ[X]) = C (-1) * X by simp, mul_pow, ← C_pow]
-  simp only [negComp, Polynomial.comp, Polynomial.eval₂_eq_sum, Polynomial.sum_def, hpow,
-    ← mul_assoc]
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single k]
-  · simp only [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
-    simp [mul_comm]
-  · intro i _ hik
-    simp only [mul_assoc, Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
-    simp [Ne.symm hik]
-  · simp_all
+  simpa [negComp, mul_comm] using Polynomial.coeff_comp_neg_X p k
 
 theorem negComp_binomialLift (n : Nat) (p : ℂ[X]) :
     binomialLift n (negComp p) = negComp (binomialLift n p) := by
