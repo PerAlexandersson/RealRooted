@@ -130,16 +130,16 @@ lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n
             habove (m + 1) (by lia)
           simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} (hrr : (eulerianTilde n).Splits) :
+lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} :
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (eulerianTilde_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (eulerianTilde_nonnegCoeffs n)
 
 lemma strictInterl_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
     StrictInterl (affineEulerianTilde n) (eulerianTilde n) := by
   rw [affineEulerianTilde]
   exact strictInterl_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
     (eulerianTilde_posLeadingCoeff n)
-    (roots_nonpos_eulerianTilde_of_isRealRooted hrr)
+    roots_nonpos_eulerianTilde_of_isRealRooted
     (by
       have hlt : (((eulerianTilde n).natDegree : ℝ)) < n + 2 := by
         rw [natDegree_eulerianTilde]

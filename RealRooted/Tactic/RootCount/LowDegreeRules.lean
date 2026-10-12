@@ -153,58 +153,46 @@ macro_rules
       rr_posCombo_sameDegree_rootCount_degree_le_two using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term,
         threshold := $x:term) =>
       `(tactic|
         exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
+          $hfpos $hgpos $hfg $hdeg $hfdeg $x)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_degree_le_two_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_two_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_two using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term,
         threshold := $x:term) =>
       `(tactic|
         exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
+          $hfpos $hgpos $hfg $hdeg $hfdeg $x)
   | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_sameDegree_rootCrossing_degree_le_one using
         left_degree_le_one := $hfdeg:term) =>
@@ -221,112 +209,88 @@ macro_rules
       rr_posCombo_sameDegree_rootCrossing_degree_le_two using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term) =>
       `(tactic|
         exact sameDegreeRootCrossing_of_posCombo_natDegree_le_two
-          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+          $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_two := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_two_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_degree_le_three using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term,
         threshold := $x:term) =>
       `(tactic|
         exact RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_three
-          $x $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+          $x $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_degree_le_three_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCount_degree_le_three_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_three using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term,
         threshold := $x:term) =>
       `(tactic|
         exact RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_three
-          $x $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+          $x $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCountAbove_degree_le_three_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCrossing_degree_le_three using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term) =>
       `(tactic|
         exact RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_three
-          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+          $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence using
         left_pos_lc := $hfpos:term,
         right_pos_lc := $hgpos:term,
-        left_nonneg_coeffs := $hfnn:term,
-        right_nonneg_coeffs := $hgnn:term,
         pos_combo := $hfg:term,
         same_degree := $hdeg:term,
-        no_common_roots := $hno:term,
         left_degree_le_three := $hfdeg:term) =>
       `(tactic|
         exact
           RealRooted.Tactic.posCombo_sameDegree_rootCrossing_degree_le_three_sequence
-            $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg)
+            $hfpos $hgpos $hfg $hdeg $hfdeg)
   | `(tactic|
       rr_compatible_succDegree_rootCountAbove_le_two using
         compatible := $hcomp:term,

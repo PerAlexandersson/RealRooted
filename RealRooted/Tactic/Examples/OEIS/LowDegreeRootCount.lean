@@ -139,11 +139,8 @@ facade. -/
 example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hF_pos : ∀ n : Nat, HasPosLeadingCoeff (F n))
     (hG_pos : ∀ n : Nat, HasPosLeadingCoeff (G n))
-    (hFnn : ∀ n : Nat, HasNonnegCoeffs (F n))
-    (hGnn : ∀ n : Nat, HasNonnegCoeffs (G n))
     (hFG : ∀ n : Nat, PosComboRealRooted (F n) (G n))
     (hdeg : ∀ n : Nat, (G n).natDegree = (F n).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (F n).IsRoot r → ¬ (G n).IsRoot r)
     (hFdeg : ∀ n : Nat, (F n).natDegree ≤ 2) :
     ∀ n : Nat,
       (((F n).roots.filter (x n < ·)).card : ℤ) -
@@ -153,11 +150,8 @@ example {F G : Nat → ℝ[X]} {x : Nat → ℝ}
   rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence using
     left_pos_lc := hF_pos,
     right_pos_lc := hG_pos,
-    left_nonneg_coeffs := hFnn,
-    right_nonneg_coeffs := hGnn,
     pos_combo := hFG,
     same_degree := hdeg,
-    no_common_roots := hno,
     left_degree_le_two := hFdeg
 
 

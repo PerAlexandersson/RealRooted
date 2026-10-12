@@ -103,14 +103,14 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       have hq' : γ = (X - C r) * q := by lia
       have hq_dvd : q ∣ γ := ⟨X - C r, by grind⟩
       have hq_ne : q ≠ 0 := by simp_all
-      have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hrr.2 hnn r hr_mem
+      have hr_nonpos : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hnn r hr_mem
       have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hrr.1 hrr.2 hq_ne hq_dvd
       have hγ_pos : HasPosLeadingCoeff γ := hnn.pos_leadingCoeff hrr.1
       have hq_pos : HasPosLeadingCoeff q :=
         hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simp_all)
       have hq_nn : HasNonnegCoeffs q :=
-        hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-          hrr.1 hrr.2 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
+        hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+          hrr.1 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
       have hqdeg_lt : q.natDegree < n := by
         have hmuldeg : γ.natDegree = q.natDegree + 1 := by
           rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
@@ -124,15 +124,11 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       exact isRealRooted_mul hgqf.1 hgqf.2 hih.1 hih.2
   grind
 
-theorem hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-    {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
-    (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits) (hγnn : HasNonnegCoeffs γ) :
+theorem hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs
+    {d : ℕ} {γ : ℝ[X]} (hγnn : HasNonnegCoeffs γ) :
     HasRootsNonpos (gammaTransform d γ) := by
   intro r hr
-  exact roots_nonpos_of_nonneg_coeffs
-    (isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-      hγdeg hγ_ne hγ_splits hγnn).2
-    (hasNonnegCoeffs_gammaTransform hγnn) r hr
+  exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaTransform hγnn) r hr
 
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
@@ -273,10 +269,7 @@ theorem hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
 lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     HasRootsNonpos (X - C r * (X + 1) ^ 2) := by
   intro s hs
-  exact roots_nonpos_of_nonneg_coeffs
-    (isRealRooted_gammaQuadraticFactor hr).2
-    (hasNonnegCoeffs_gammaQuadraticFactor hr)
-    s hs
+  exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaQuadraticFactor hr) s hs
 
 theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
@@ -310,10 +303,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
         (isRealRooted_X_add_one_pow d).1 (isRealRooted_X_add_one_pow d).2 hcoeff_ne, ?_⟩
       intro r hr
       rw [roots_C_mul _ hcoeff_ne] at hr
-      exact roots_nonpos_of_nonneg_coeffs
-        (isRealRooted_X_add_one_pow d).2
-        (hasNonnegCoeffs_X_add_one.pow d)
-        r hr
+      exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_X_add_one.pow d) r hr
     · have hroots_pos : 0 < δ.roots.card := by
         rw [card_roots_of_splits hδ_rr.2, hδdeg]
         lia

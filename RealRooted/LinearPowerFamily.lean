@@ -46,8 +46,8 @@ theorem strictInterl_X_pow_mul_both_of_strictInterl_nonneg {f g : ℝ[X]}
       have hright_nonneg : HasNonnegCoeffs (X ^ n * g) :=
         (hasNonnegCoeffs_X.pow n).mul hgnn
       have hnext := ih.mul_X_both_of_roots_nonpos
-        (roots_nonpos_of_nonneg_coeffs (left_splits_of_strictInterl ih) hleft_nonneg)
-        (roots_nonpos_of_nonneg_coeffs (right_splits_of_strictInterl ih) hright_nonneg)
+        (roots_nonpos_of_hasNonnegCoeffs hleft_nonneg)
+        (roots_nonpos_of_hasNonnegCoeffs hright_nonneg)
       simpa [pow_succ', mul_assoc] using hnext
 
 /-- A reverse strictly interlacing pair with nonnegative coefficients remains in

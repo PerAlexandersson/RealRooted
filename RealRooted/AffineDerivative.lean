@@ -1188,10 +1188,10 @@ theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     simp at hdeg
   have hf_le1 : ∀ s ∈ f.roots, s ≤ 1 := by
     intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hf hnn s hs]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hnn s hs]
   have hf'_le1 : ∀ s ∈ f.derivative.roots, s ≤ 1 := by
     intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hder.1.2 hnn' s hs]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hnn' s hs]
   have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
     rw [f.natDegree_derivative]
     lia

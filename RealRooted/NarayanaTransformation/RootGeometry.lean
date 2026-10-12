@@ -112,7 +112,7 @@ theorem IsPFPolynomial.hasOnlyNonposRoots {p : ℝ[X]}
 theorem HasOnlyNonposRoots.of_nonnegCoeffs_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     HasOnlyNonposRoots p :=
-  Or.inr ⟨hsplits, roots_nonpos_of_nonneg_coeffs hsplits hpnn⟩
+  Or.inr ⟨hsplits, roots_nonpos_of_hasNonnegCoeffs hpnn⟩
 
 theorem HasOnlyNonposRoots.neg {p : ℝ[X]} (hp : HasOnlyNonposRoots p) :
     HasOnlyNonposRoots (-p) := by

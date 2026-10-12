@@ -393,7 +393,7 @@ private theorem divFactorialShift_splits_pos_roots_nonpos {f : ℝ[X]}
       ⟨hfpos, hfroots⟩).1
   have hsplit : (divFactorialShift k f).Splits := divFactorialShift_splits_of_splits hf0 hfs k
   exact ⟨hsplit, hfpos.divFactorialShift k,
-    roots_nonpos_of_nonneg_coeffs hsplit (hfnn.divFactorialShift k)⟩
+    roots_nonpos_of_hasNonnegCoeffs (hfnn.divFactorialShift k)⟩
 
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
 private theorem divFactorialShift_hasSimpleRootsExcept_zero

@@ -148,10 +148,9 @@ lemma stirlingPermutations_nonnegCoeffs :
             habove (j + 1) (by lia)
           simp [hcoeff_j, hcoeff_j1]
 
-lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
-    (hrr : (stirlingPermutations n).Splits) :
+lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat} :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (stirlingPermutations_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (stirlingPermutations_nonnegCoeffs n)
 
 lemma interlaces_stirlingPermutations_zero_one :
     Interlaces (stirlingPermutations 0) (stirlingPermutations 1) := by
@@ -202,7 +201,7 @@ lemma strictInterl_stirlingPermutations_one_two :
     intro r hr
     have hr_nonpos :
         r ≤ 0 :=
-      roots_nonpos_stirlingPermutations_of_isRealRooted hf.2 r ((mem_roots hf.1).mpr hr)
+      roots_nonpos_stirlingPermutations_of_isRealRooted r ((mem_roots hf.1).mpr hr)
     exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
   simpa [hNext_eq] using
     strictInterl_of_interlaces_evalCoeff_nonpos
@@ -253,8 +252,7 @@ theorem strictInterl_stirlingPermutations_succ :
             stirlingPermutationsCoeffB.eval r ≤ 0 := by
         intro r hr
         have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_stirlingPermutations_of_isRealRooted
-            (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 r
+          roots_nonpos_stirlingPermutations_of_isRealRooted r
             ((mem_roots (strictInterl_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
         exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using

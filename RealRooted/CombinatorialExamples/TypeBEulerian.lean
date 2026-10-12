@@ -154,9 +154,9 @@ lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n
             habove (m + 1) (by lia)
           simp [hcoeff_m, hcoeff_succ]
 
-lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :
+lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (typeBEulerian_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (typeBEulerian_nonnegCoeffs n)
 
 lemma interlaces_typeBEulerian_zero_one :
     Interlaces (typeBEulerian 0) (typeBEulerian 1) :=
@@ -216,8 +216,7 @@ theorem strictInterl_typeBEulerian_succ :
           ∀ r, (typeBEulerian (n + 1)).IsRoot r → typeBEulerianCoeffB.eval r ≤ 0 := by
         intro r hr
         have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_typeBEulerian_of_isRealRooted
-            (strictInterl_typeBEulerian_succ n).2.1.2 r
+          roots_nonpos_typeBEulerian_of_isRealRooted r
             ((mem_roots (strictInterl_typeBEulerian_succ n).2.1.1).mpr hr)
         exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
       simpa [hNext_eq] using

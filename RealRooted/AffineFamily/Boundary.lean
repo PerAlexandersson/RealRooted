@@ -529,11 +529,11 @@ theorem common_right_pair_iff_root_zero_or_common_fg
 every real root of `g` is strictly negative. -/
 theorem roots_strictly_neg_of_nonneg_of_no_common_right_pair
     {f g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
+    (hg_ne : g ≠ 0) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
     ∀ r ∈ g.roots, r < 0 := by
   intro r hr
-  have hr_le : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg_splits hgnn r hr
+  have hr_le : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn r hr
   have hr_root : g.IsRoot r := (mem_roots hg_ne).mp hr
   have hr_ne : r ≠ 0 := by simp_all
   grind
@@ -542,22 +542,22 @@ theorem roots_strictly_neg_of_nonneg_of_no_common_right_pair
 root of `g` when `g` is nonnegative and has no common root with `X * f`. -/
 theorem exists_strict_right_root_of_X_mul_of_no_common
     {f g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
+    (hg_ne : g ≠ 0) (hgnn : HasNonnegCoeffs g)
     (hno : ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r) :
     ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR := by
   refine ⟨0, by simp [Polynomial.IsRoot.def], ?_⟩
   intro r hr
-  exact roots_strictly_neg_of_nonneg_of_no_common_right_pair hg_ne hg_splits hgnn hno r hr
+  exact roots_strictly_neg_of_nonneg_of_no_common_right_pair hg_ne hgnn hno r hr
 
 /-- Convenience form of `exists_strict_right_root_of_X_mul_of_no_common` from
 no common roots of `(g, f)` and `¬ g.IsRoot 0`. -/
 theorem exists_strict_right_root_of_X_mul_of_no_common_fg_of_not_isRoot_zero
     {f g : ℝ[X]}
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits) (hgnn : HasNonnegCoeffs g)
+    (hg_ne : g ≠ 0) (hgnn : HasNonnegCoeffs g)
     (hno_fg : ∀ r, g.IsRoot r → ¬ f.IsRoot r)
     (hg0 : ¬ g.IsRoot 0) :
     ∃ uR, (X * f).IsRoot uR ∧ ∀ r ∈ g.roots, r < uR :=
-  exists_strict_right_root_of_X_mul_of_no_common hg_ne hg_splits hgnn
+  exists_strict_right_root_of_X_mul_of_no_common hg_ne hgnn
     (no_common_right_pair_of_no_common_of_not_isRoot_zero hno_fg hg0)
 
 end RealRooted

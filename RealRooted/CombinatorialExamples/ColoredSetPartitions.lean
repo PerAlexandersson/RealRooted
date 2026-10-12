@@ -116,10 +116,9 @@ lemma coloredSetPartitions_nonnegCoeffs :
             (by positivity)
             (coloredSetPartitions_nonnegCoeffs c m n (j + 1)))
 
-lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat}
-    (hrr : (coloredSetPartitions c m n).Splits) :
+lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat} :
     ∀ r ∈ (coloredSetPartitions c m n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (coloredSetPartitions_nonnegCoeffs c m n)
+  roots_nonpos_of_hasNonnegCoeffs (coloredSetPartitions_nonnegCoeffs c m n)
 
 lemma interlaces_coloredSetPartitions_zero_one (c m : Nat) :
     Interlaces (coloredSetPartitions c m 0) (coloredSetPartitions c m 1) := by
@@ -170,7 +169,7 @@ lemma strictInterl_coloredSetPartitions_one_two (c m : Nat) :
     intro r hr
     have hr_nonpos :
         r ≤ 0 :=
-      roots_nonpos_coloredSetPartitions_of_isRealRooted (.of_natDegree_eq_one hdeg) r
+      roots_nonpos_coloredSetPartitions_of_isRealRooted r
         ((mem_roots <| by rintro h; simp [h] at hdeg).mpr hr)
     exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
   simpa [hNext_eq] using
@@ -228,7 +227,7 @@ theorem strictInterl_coloredSetPartitions_succ (c m : Nat) :
             (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
         intro r hr
         have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_coloredSetPartitions_of_isRealRooted hprev.2.1.2 r
+          roots_nonpos_coloredSetPartitions_of_isRealRooted r
             ((mem_roots hprev.2.1.1).mpr hr)
         exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
       simpa [hNext_eq] using

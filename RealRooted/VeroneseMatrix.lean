@@ -847,7 +847,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     intro a ha
     rcases List.mem_map.1 ha with ⟨x, hx, rfl⟩
     have hx_root : x ∈ p.roots := Multiset.mem_toList.mp hx
-    linarith [roots_nonpos_of_nonneg_coeffs hprr_splits hpnn x hx_root]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hpnn x hx_root]
   have hprod := linearFactorProduct_neg_roots_eq_rootsProduct p
   have hfac :
       C p.leadingCoeff * linearFactorProduct as = p := by

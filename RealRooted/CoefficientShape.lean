@@ -388,7 +388,7 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
   · intro i j k hij hjk hkd hai _
     have hp0 : p ≠ 0 := by rintro rfl; simp at hai
     have hlc : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hp0
-    have hroots_nonpos := roots_nonpos_of_nonneg_coeffs hsplits hpnn
+    have hroots_nonpos := roots_nonpos_of_hasNonnegCoeffs hpnn
     have ht : ∀ x ∈ p.roots.map Neg.neg, 0 ≤ x := by simp_all
     have hid : i ≤ p.natDegree := by grind
     have hjd : j ≤ p.natDegree := le_of_lt (lt_of_lt_of_le hjk hkd)
@@ -409,7 +409,7 @@ theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
   · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff (by simpa using isPolyaFreqSeq_zero)
   · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff <|
       aissenSchoenbergWhitney_reverse hpnn hsplits
-      (roots_nonpos_of_nonneg_coeffs hsplits hpnn)
+      (roots_nonpos_of_hasNonnegCoeffs hpnn)
 
 theorem hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :

@@ -149,7 +149,7 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
   have hr_mem : r ∈ g.roots := (mem_roots hg_rr.1).mpr hgr
   have hr_neg : r < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
-      hg_rr.1 hg_rr.2 hgnn hno_right r hr_mem
+      hg_rr.1 hgnn hno_right r hr_mem
   have hf_not_root : ¬ f.IsRoot r := hno r hgr
   have hf_eval_ne : f.eval r ≠ 0 := by simp_all
   let m : ℕ := g.rootMultiplicity r
