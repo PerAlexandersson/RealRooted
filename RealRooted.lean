@@ -1827,3 +1827,6 @@ import RealRooted.Applications.OEIS.A124848
 import RealRooted.Applications.OEIS.A132166
 import RealRooted.Applications.OEIS.A155112
 import RealRooted.ThreeTermRecurrence.CoeffMoments
+import RealRooted.Applications.OEIS.A151775
+import RealRooted.Applications.OEIS.A297191
+import RealRooted.Applications.OEIS.QuarticGamma
