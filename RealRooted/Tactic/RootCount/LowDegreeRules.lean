@@ -162,7 +162,7 @@ macro_rules
         threshold := $x:term) =>
       `(tactic|
         exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-          $hfpos $hgpos $hfg $hdeg $hfdeg $x)
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
   | `(tactic|
       rr_posCombo_sameDegree_rootCount_degree_le_two_sequence using
         left_pos_lc := $hfpos:term,
@@ -190,7 +190,7 @@ macro_rules
         threshold := $x:term) =>
       `(tactic|
         exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-          $hfpos $hgpos $hfg $hdeg $hfdeg $x)
+          $hfpos $hgpos $hfnn $hgnn $hfg $hdeg $hno $hfdeg $x)
   | `(tactic|
       rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence using
         left_pos_lc := $hfpos:term,

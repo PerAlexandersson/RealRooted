@@ -223,12 +223,14 @@ theorem rootCountAbove_diff_le_one_of_natDegree_le_one
     (fun y => rootCount_diff_le_one_of_natDegree_le_one hf hg hdeg hfdeg y) x
 
 /-- Low-degree base case for the same-degree analytic root-count target in
-the positive-combination/equal-degree setting. -/
+the positive-combination/no-common setting. -/
 theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
+    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
@@ -239,12 +241,14 @@ theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
   exact rootCount_diff_le_one_of_natDegree_le_one hf_split hg_split hdeg hfdeg x
 
 /-- Low-degree base case for the upper-threshold same-degree analytic
-root-count target in the positive-combination/equal-degree setting. -/
+root-count target in the positive-combination/no-common setting. -/
 theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
+    (_hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 1) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
@@ -293,35 +297,39 @@ theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
     x
 
 /-- Degree-`≤ 2` base case for the same-degree analytic root-count target in
-the positive-combination/equal-degree setting. -/
+the positive-combination/no-common setting. -/
 theorem rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
   by_cases hle : f.natDegree ≤ 1
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
-      hf_pos hg_pos hfg hdeg hle x
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
   · have htwo : f.natDegree = 2 := by lia
     exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
       hf_pos hg_pos hfg hdeg htwo x
 
 /-- Degree-`≤ 2` base case for the upper-threshold same-degree analytic
-root-count target in the positive-combination/equal-degree setting. -/
+root-count target in the positive-combination/no-common setting. -/
 theorem rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 2) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
   by_cases hle : f.natDegree ≤ 1
   · exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_one
-      hf_pos hg_pos hfg hdeg hle x
+      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
   · have htwo : f.natDegree = 2 := by lia
     exact rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_eq_two
       hf_pos hg_pos hfg hdeg htwo x
@@ -376,7 +384,7 @@ theorem sameDegreeRootCrossing_of_posCombo_natDegree_le_two
     hdeg
     (fun x =>
       rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-        hf_pos hg_pos hfg hdeg hfdeg x)
+        hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg x)
 
 /-- A same-degree pair of split polynomials whose descending roots cross in
 both interior inequalities has a common interleaver: every matching root-slot
