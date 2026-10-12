@@ -84,7 +84,8 @@ theorem bezoutMatrix.posDef_of_interlaces_succ {f g : ℝ[X]} {d : ℕ}
       diagonal fun k ↦ f.derivative.eval (s k) * g.eval (s k) := by
     have h_neg : bezoutMatrix (d + 1) f g = -bezoutMatrix (d + 1) g f := by
       ext i j
-      simp [bezoutMatrix, bezoutEntry]
+      simp only [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry,
+        Matrix.neg_apply, ← Finset.sum_neg_distrib, neg_sub]
     convert congr_arg (fun x ↦ -x)
       (bezoutMatrix.vandermonde_eq_diagonal g f (d + 1) s (by lia) hf_deg.le
         (by simp_all) hs_mono.injective) using 1 <;> simp_all [mul_comm]
