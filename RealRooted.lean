@@ -1853,3 +1853,5 @@ import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
 import RealRooted.Tactic.Examples.RowCancelRho
 import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
 import RealRooted.Mathlib.Analysis.Complex.HadamardExponentialType
+import RealRooted.EdreiThoma.PFSeries
+import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
