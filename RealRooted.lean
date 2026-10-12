@@ -1834,3 +1834,11 @@ import RealRooted.Applications.OEIS.A286785
 import RealRooted.MultivariateStability.CoeffLimit
 import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 import RealRooted.Tactic.Examples.RowDegreeRoutes
+import RealRooted.Hadamard.Kostov.Bernstein
+import RealRooted.Hadamard.Kostov.BernsteinRoots
+import RealRooted.Hadamard.Kostov.Eigen
+import RealRooted.Hadamard.Kostov.Interlacing
+import RealRooted.Hadamard.Kostov.RootReal
+import RealRooted.Hadamard.Kostov.Roots
+import RealRooted.Hadamard.Kostov.Tangent
+import RealRooted.Hadamard.Kostov.TwoStep
