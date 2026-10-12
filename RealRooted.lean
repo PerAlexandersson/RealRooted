@@ -1797,4 +1797,13 @@ import RealRooted.BorceaBranden.Applications.PoissonStability
 import RealRooted.BorceaBranden.Applications.PoissonStar
 
 import RealRooted.Challenges.IteratedDerivativeShift
+import RealRooted.CoefficientDominance.NewtonDefectRoots
+import RealRooted.FiniteMemory.Defect
+import RealRooted.MultiplierSequence.ProperPositionPF
+import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+import RealRooted.Challenges.FiniteMemoryDefect
+import RealRooted.Challenges.NewtonDefectRoots
+import RealRooted.Challenges.ProperPositionPF
+import RealRooted.Challenges.UnivariatePoissonStar
+
 import RealRooted.Tactic.Examples.RowFixtures
