@@ -1843,3 +1843,4 @@ import RealRooted.Hadamard.Kostov.Roots
 import RealRooted.Hadamard.Kostov.Tangent
 import RealRooted.Hadamard.Kostov.TwoStep
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicConeEndpoint
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
