@@ -1,5 +1,5 @@
 import RealRooted.CombinatorialExamples.Common
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.MaWang
 import Mathlib.Tactic
 
 /-!
@@ -36,14 +36,6 @@ lemma typeBEulerian_succ (n : Nat) :
     typeBEulerian (n + 1) =
       typeBEulerianCoeffA n * typeBEulerian n +
         typeBEulerianCoeffB * (typeBEulerian n).derivative := rfl
-
-private lemma typeBEulerian_quadratic_derivative_linear (n : Nat) :
-    typeBEulerian (n + 1) =
-      (C (2 : ℝ) * X + C (-2 : ℝ) * X ^ 2) * (typeBEulerian n).derivative +
-        (C (1 : ℝ) + C (1 + 2 * (n : ℝ)) * X) * typeBEulerian n := by
-  rw [typeBEulerian_succ]
-  simp only [typeBEulerianCoeffA, typeBEulerianCoeffB]
-  ring
 
 lemma typeBEulerian_one : typeBEulerian 1 = 1 + X := by
   simp [typeBEulerian, typeBEulerianCoeffA, typeBEulerianCoeffB]
@@ -117,9 +109,10 @@ lemma coeff_typeBEulerian_top_and_above :
 
 lemma natDegree_typeBEulerian (n : Nat) :
     (typeBEulerian n).natDegree = n := by
-  exact natDegree_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+  rcases coeff_typeBEulerian_top_and_above n with ⟨htop, habove⟩
+  exact natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
+    (by simp [htop])
 
 lemma monic_typeBEulerian (n : Nat) :
     (typeBEulerian n).Monic := by
@@ -128,21 +121,38 @@ lemma monic_typeBEulerian (n : Nat) :
   lia
 
 lemma typeBEulerian_ne_zero (n : Nat) :
-    typeBEulerian n ≠ 0 := by
-  exact ne_zero_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+    typeBEulerian n ≠ 0 :=
+  (monic_typeBEulerian n).ne_zero
 
 lemma typeBEulerian_posLeadingCoeff (n : Nat) :
-    HasPosLeadingCoeff (typeBEulerian n) := by
-  exact hasPosLeadingCoeff_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+    HasPosLeadingCoeff (typeBEulerian n) :=
+  hasPosLeadingCoeff_of_monic (monic_typeBEulerian n)
 
-lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n) := by
-  exact hasNonnegCoeffs_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n)
+  | 0 => by
+      intro m
+      cases m <;> simp [typeBEulerian_zero, coeff_one]
+  | n + 1 => by
+      rintro (_ | m)
+      · rw [coeff_typeBEulerian_zero]
+        positivity
+      · rw [coeff_typeBEulerian_succ]
+        by_cases hm : m ≤ n
+        · have hcoeff_m : 0 ≤ coeff (typeBEulerian n) m :=
+            typeBEulerian_nonnegCoeffs n m
+          have hcoeff_succ : 0 ≤ coeff (typeBEulerian n) (m + 1) :=
+            typeBEulerian_nonnegCoeffs n (m + 1)
+          have hnm : 0 ≤ ((2 * n + 1 : ℝ) - 2 * m) := by
+            have hm' : (m : ℝ) ≤ n := Nat.cast_le.mpr hm
+            nlinarith
+          exact add_nonneg (mul_nonneg hnm hcoeff_m)
+            (mul_nonneg (by positivity) hcoeff_succ)
+        · have hm' : n < m := lt_of_not_ge hm
+          rcases coeff_typeBEulerian_top_and_above n with ⟨_, habove⟩
+          have hcoeff_m : coeff (typeBEulerian n) m = 0 := habove m hm'
+          have hcoeff_succ : coeff (typeBEulerian n) (m + 1) = 0 :=
+            habove (m + 1) (by lia)
+          simp [hcoeff_m, hcoeff_succ]
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} (hrr : (typeBEulerian n).Splits) :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
@@ -172,17 +182,57 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
   nlinarith
 
 theorem strictInterl_typeBEulerian_succ :
-    ∀ n : Nat, StrictInterl (typeBEulerian n) (typeBEulerian (n + 1)) := by
-  exact strictInterl_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+    ∀ n : Nat, StrictInterl (typeBEulerian n) (typeBEulerian (n + 1))
+  | 0 => interlaces_typeBEulerian_zero_one.toStrictInterl
+  | n + 1 => by
+      have hInter :
+          Interlaces (typeBEulerian (n + 1)).derivative (typeBEulerian (n + 1)) :=
+        interlaces_derivative_typeBEulerian
+          (n + 1) (by simp) (strictInterl_typeBEulerian_succ n).2.1.2
+      have hg_pos : HasPosLeadingCoeff (typeBEulerian (n + 1)).derivative :=
+        (typeBEulerian_posLeadingCoeff (n + 1)).derivative (by simp [natDegree_typeBEulerian])
+      have hNext_eq :
+          typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
+            typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative =
+          typeBEulerian (n + 2) :=
+        (typeBEulerian_succ (n + 1)).symm
+      have hF_pos :
+          HasPosLeadingCoeff
+            (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
+              typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative) := by
+        simpa [hNext_eq] using typeBEulerian_posLeadingCoeff (n + 2)
+      have hdeg_lo :
+          (typeBEulerian (n + 1)).natDegree ≤
+            (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
+              typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative).natDegree := by
+        rw [hNext_eq, natDegree_typeBEulerian, natDegree_typeBEulerian]
+        lia
+      have hdeg_hi :
+          (typeBEulerianCoeffA (n + 1) * typeBEulerian (n + 1) +
+              typeBEulerianCoeffB * (typeBEulerian (n + 1)).derivative).natDegree ≤
+            (typeBEulerian (n + 1)).natDegree + 1 := by
+        rw [hNext_eq, natDegree_typeBEulerian, natDegree_typeBEulerian]
+      have hb_nonpos :
+          ∀ r, (typeBEulerian (n + 1)).IsRoot r → typeBEulerianCoeffB.eval r ≤ 0 := by
+        intro r hr
+        have hr_nonpos : r ≤ 0 :=
+          roots_nonpos_typeBEulerian_of_isRealRooted
+            (strictInterl_typeBEulerian_succ n).2.1.2 r
+            ((mem_roots (strictInterl_typeBEulerian_succ n).2.1.1).mpr hr)
+        exact eval_typeBEulerianCoeffB_nonpos_of_nonpos hr_nonpos
+      simpa [hNext_eq] using
+        strictInterl_of_interlaces_evalCoeff_nonpos
+          (f := typeBEulerian (n + 1))
+          (g := (typeBEulerian (n + 1)).derivative)
+          (a := typeBEulerianCoeffA (n + 1))
+          (b := typeBEulerianCoeffB)
+          hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
 theorem interlaces_typeBEulerian_succ (n : Nat) :
     Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
   (strictInterl_typeBEulerian_succ n).toInterlaces (by simp [natDegree_typeBEulerian])
 
-theorem isRealRooted_typeBEulerian :
-    ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)
+theorem isRealRooted_typeBEulerian : ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)
   | 0 => by simp
   | n + 1 => (strictInterl_typeBEulerian_succ n).2.1
 

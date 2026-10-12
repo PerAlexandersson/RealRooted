@@ -49,7 +49,7 @@ private theorem strict_gap_of_smaller_minors
     {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
     {n N q : Nat} (A : Matrix (Fin n) (Fin N) R)
     (rows : Fin (q + 2) → Fin n) (cols : Fin (q + 2) → Fin N)
-    (hrows : StrictMono rows)
+    (hrows : StrictMono rows) (_hcols : StrictMono cols)
     (u : Fin (q + 3) → Fin N) (r : Fin (q + 1))
     (hu : StrictMono u)
     (hdel : u ∘ r.castSucc.succ.succAbove = cols)
@@ -177,6 +177,6 @@ theorem pos_minor_of_pos_consecutive_column_minors
             0 < (A.submatrix rows cols').det := by
           intro cols' hcols' hspan'
           refine ihspan _ (by simpa [hspan] using hspan') cols' hcols' rfl
-        exact strict_gap_of_smaller_minors A rows cols hrows u r hu hdel hsmall hspan'
+        exact strict_gap_of_smaller_minors A rows cols hrows hcols u r hu hdel hsmall hspan'
 
 end Matrix

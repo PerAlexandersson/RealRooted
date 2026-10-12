@@ -33,7 +33,8 @@ theorem pairHasCommonInterleaver_comp_X_add_C_iff
 
 private theorem posComboPairHasCommonInterleaver_via_nonnegShift
     {f g : ℝ[X]}
-    (hf_rr_splits : f.Splits) (hg_rr_splits : g.Splits)
+    (_hf_rr_ne : f ≠ 0) (hf_rr_splits : f.Splits)
+    (_hg_rr_ne : g ≠ 0) (hg_rr_splits : g.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
     (hfg : PosComboRealRooted f g)
@@ -167,7 +168,7 @@ theorem posComboPairHasCommonInterleaver_of_splits
     (hfg : PosComboRealRooted f g) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_via_nonnegShift
-    hf_splits hg_splits hf_pos hg_pos hfg
+    hf_pos.ne_zero hf_splits hg_pos.ne_zero hg_splits hf_pos hg_pos hfg
     (fun {_ _} hF_pos hG_pos hFnn hGnn hFG =>
       posComboPairHasCommonInterleaver_of_nonnegCoeffs hF_pos hG_pos hFnn hGnn hFG)
 

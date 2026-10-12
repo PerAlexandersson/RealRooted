@@ -96,36 +96,37 @@ def binaryRunSourcePolarization {τ : Type*} [Fintype τ] (n : ℕ)
     (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
     (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)
 
-private theorem degreeOf_binaryRunSourcePolarization_block_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
-    (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (i : Fin 2) (j : Fin n) :
-    (binaryRunSourcePolarization n P).degreeOf
-        (Sum.inr (binaryRunSourceEquiv n ⟨i, j⟩)) ≤ 1 := by
-  change (MvPolynomial.rename
-    (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
-      (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)).degreeOf
-        ((Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
-          (Sum.inr ⟨i, j⟩)) ≤ 1
-  rw [MvPolynomial.degreeOf_rename_of_injective
-    (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n)).injective]
-  exact degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
-    (fun _ : Fin 2 => n) P ⟨i, j⟩
-
 theorem degreeOf_binaryRunSourcePolarization_source_le_one
     {τ : Type*} [Fintype τ] (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperSourceEmbedding j) ≤ 1 := by
-  simpa only [binaryRunSourceEquiv] using
-    degreeOf_binaryRunSourcePolarization_block_le_one n P 0 j
+  change (MvPolynomial.rename
+    (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
+      (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)).degreeOf
+        ((Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
+          (Sum.inr ⟨0, j⟩)) ≤ 1
+  rw [
+    MvPolynomial.degreeOf_rename_of_injective
+      (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n)).injective]
+  exact degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
+    (fun _ : Fin 2 => n) P ⟨0, j⟩
 
 theorem degreeOf_binaryRunSourcePolarization_input_le_one
     {τ : Type*} [Fintype τ] (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperInputEmbedding j) ≤ 1 := by
-  simpa only [binaryRunSourceEquiv] using
-    degreeOf_binaryRunSourcePolarization_block_le_one n P 1 j
+  change (MvPolynomial.rename
+    (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
+      (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)).degreeOf
+        ((Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n))
+          (Sum.inr ⟨1, j⟩)) ≤ 1
+  rw [
+    MvPolynomial.degreeOf_rename_of_injective
+      (Equiv.sumCongr (Equiv.refl τ) (binaryRunSourceEquiv n)).injective]
+  exact degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
+    (fun _ : Fin 2 => n) P ⟨1, j⟩
 
 theorem degreeOf_binaryRunSourcePolarization_inr_le_one
     {τ : Type*} [Fintype τ] (n : ℕ)

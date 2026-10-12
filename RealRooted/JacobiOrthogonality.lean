@@ -29,104 +29,102 @@ theorem jacobiBetaOneMoment_eq_shiftedJacobiMoment
 
 /-- The beta-one Jacobi moment functional on real polynomials. -/
 def jacobiBetaOneFunctional (α : ℝ) (p : ℝ[X]) : ℝ :=
-  Polynomial.momentFunctional (jacobiBetaOneMoment α) p
+  p.sum fun k c => c * jacobiBetaOneMoment α k
 
 /-- The symmetric beta-one Jacobi pairing. -/
 def jacobiBetaOneInner (α : ℝ) (p q : ℝ[X]) : ℝ :=
-  Polynomial.momentPairing (jacobiBetaOneMoment α) p q
+  jacobiBetaOneFunctional α (p * q)
 
 @[simp]
 theorem jacobiBetaOneFunctional_zero (α : ℝ) :
     jacobiBetaOneFunctional α 0 = 0 := by
-  simpa only [jacobiBetaOneFunctional] using
-    Polynomial.momentFunctional_zero (jacobiBetaOneMoment α)
+  simp [jacobiBetaOneFunctional]
 
 @[simp]
 theorem jacobiBetaOneFunctional_add (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneFunctional α (p + q) =
       jacobiBetaOneFunctional α p + jacobiBetaOneFunctional α q := by
-  simpa only [jacobiBetaOneFunctional] using
-    Polynomial.momentFunctional_add (jacobiBetaOneMoment α) p q
+  simp only [jacobiBetaOneFunctional]
+  apply Polynomial.sum_add_index <;> simp [add_mul]
 
 @[simp]
 theorem jacobiBetaOneFunctional_C_mul (α c : ℝ) (p : ℝ[X]) :
     jacobiBetaOneFunctional α (C c * p) =
       c * jacobiBetaOneFunctional α p := by
-  simpa only [jacobiBetaOneFunctional] using
-    Polynomial.momentFunctional_C_mul (jacobiBetaOneMoment α) c p
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq => simp [mul_add, hp, hq, mul_add]
+  | monomial n a =>
+      simp [jacobiBetaOneFunctional, C_mul_monomial, mul_assoc]
 
 @[simp]
 theorem jacobiBetaOneFunctional_monomial (α c : ℝ) (k : ℕ) :
     jacobiBetaOneFunctional α (monomial k c) =
       c * jacobiBetaOneMoment α k := by
-  simpa only [jacobiBetaOneFunctional] using
-    Polynomial.momentFunctional_monomial (jacobiBetaOneMoment α) c k
+  simp [jacobiBetaOneFunctional]
 
 @[simp]
 theorem jacobiBetaOneFunctional_X_pow (α : ℝ) (k : ℕ) :
     jacobiBetaOneFunctional α (X ^ k) = jacobiBetaOneMoment α k := by
-  simpa only [jacobiBetaOneFunctional] using
-    Polynomial.momentFunctional_X_pow (jacobiBetaOneMoment α) k
+  rw [X_pow_eq_monomial, jacobiBetaOneFunctional_monomial]
+  simp
 
 theorem jacobiBetaOneInner_comm (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneInner α p q = jacobiBetaOneInner α q p := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_comm (jacobiBetaOneMoment α) p q
+  simp [jacobiBetaOneInner, mul_comm]
 
 @[simp]
 theorem jacobiBetaOneInner_zero_left (α : ℝ) (p : ℝ[X]) :
     jacobiBetaOneInner α 0 p = 0 := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_zero_left (jacobiBetaOneMoment α) p
+  simp [jacobiBetaOneInner]
 
 @[simp]
 theorem jacobiBetaOneInner_zero_right (α : ℝ) (p : ℝ[X]) :
     jacobiBetaOneInner α p 0 = 0 := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_zero_right (jacobiBetaOneMoment α) p
+  simp [jacobiBetaOneInner]
 
 @[simp]
 theorem jacobiBetaOneInner_add_left (α : ℝ) (p q s : ℝ[X]) :
     jacobiBetaOneInner α (p + q) s =
       jacobiBetaOneInner α p s + jacobiBetaOneInner α q s := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_add_left (jacobiBetaOneMoment α) p q s
+  simp [jacobiBetaOneInner, add_mul]
 
 @[simp]
 theorem jacobiBetaOneInner_add_right (α : ℝ) (p q s : ℝ[X]) :
     jacobiBetaOneInner α p (q + s) =
       jacobiBetaOneInner α p q + jacobiBetaOneInner α p s := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_add_right (jacobiBetaOneMoment α) p q s
+  rw [jacobiBetaOneInner_comm]
+  simp only [jacobiBetaOneInner_add_left]
+  rw [jacobiBetaOneInner_comm α q p, jacobiBetaOneInner_comm α s p]
 
 @[simp]
 theorem jacobiBetaOneInner_sum_right {ι : Type*} (α : ℝ) (p : ℝ[X])
     (s : Finset ι) (q : ι → ℝ[X]) :
     jacobiBetaOneInner α p (∑ i ∈ s, q i) =
       ∑ i ∈ s, jacobiBetaOneInner α p (q i) := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_sum_right (jacobiBetaOneMoment α) p s q
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert i s hi hs => simp [hi, hs]
 
 @[simp]
 theorem jacobiBetaOneInner_C_mul_left (α c : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneInner α (C c * p) q =
       c * jacobiBetaOneInner α p q := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_C_mul_left (jacobiBetaOneMoment α) c p q
+  simp [jacobiBetaOneInner, mul_assoc]
 
 @[simp]
 theorem jacobiBetaOneInner_C_mul_right (α c : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneInner α p (C c * q) =
       c * jacobiBetaOneInner α p q := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_C_mul_right (jacobiBetaOneMoment α) c p q
+  rw [jacobiBetaOneInner_comm]
+  simp only [jacobiBetaOneInner_C_mul_left]
+  rw [jacobiBetaOneInner_comm]
 
 @[simp]
 theorem jacobiBetaOneInner_monomial (α a b : ℝ) (i j : ℕ) :
     jacobiBetaOneInner α (monomial i a) (monomial j b) =
       a * b * jacobiBetaOneMoment α (i + j) := by
-  simpa only [jacobiBetaOneInner] using
-    Polynomial.momentPairing_monomial (jacobiBetaOneMoment α) a b i j
+  simp [jacobiBetaOneInner, monomial_mul_monomial, mul_assoc]
 
 /-- The legacy beta-one functional is the specialization of the general
 shifted Jacobi functional in the classical parameter range. -/

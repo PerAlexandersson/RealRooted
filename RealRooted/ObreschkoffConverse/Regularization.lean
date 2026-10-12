@@ -241,7 +241,7 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
           hno
 
 private lemma eval_derivative_ne_zero_of_hasSimpleRoots
-    {p : ℝ[X]} (hsimple : HasSimpleRoots p)
+    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p)
     {r : ℝ} (hr : p.IsRoot r) :
     p.derivative.eval r ≠ 0 :=
   hsimple.eval_derivative_ne_zero hr
@@ -405,10 +405,10 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
   let α : ℝ := (iterateTDeriv eps (max f.natDegree g.natDegree) g).derivative.eval r
   let β : ℝ := -((iterateTDeriv eps (max f.natDegree g.natDegree) f).derivative.eval r)
   have hα_ne : α ≠ 0 :=
-    eval_derivative_ne_zero_of_hasSimpleRoots hg_simple hgr
+    eval_derivative_ne_zero_of_hasSimpleRoots hg'.1 hg_simple hgr
   have hβ_ne : β ≠ 0 :=
     neg_ne_zero.mpr <|
-      eval_derivative_ne_zero_of_hasSimpleRoots hf_simple hfr
+      eval_derivative_ne_zero_of_hasSimpleRoots hf'.1 hf_simple hfr
   have hp_root :
       (C α * iterateTDeriv eps (max f.natDegree g.natDegree) f +
         C β * iterateTDeriv eps (max f.natDegree g.natDegree) g).IsRoot r := by
