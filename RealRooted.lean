@@ -450,6 +450,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
 import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
 import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
+import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 import RealRooted.CombinatorialExamples.Motzkin
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
@@ -688,6 +689,7 @@ import RealRooted.Graph.AllOrientationSink
 import RealRooted.Graph.AllOrientationSinkIdentity
 import RealRooted.Graph.ChordalAcyclicSink
 import RealRooted.Graph.ClawFree
+import RealRooted.Graph.FiniteDegree
 import RealRooted.Graph.IndependencePolynomial.Basic
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.CliqueDeletion

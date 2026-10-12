@@ -23,15 +23,21 @@ open BigOperators
 
 namespace Polynomial
 
+/-- The coefficient of a monomial sum indexed by a finite set. -/
+theorem coeff_sum_finset_monomial {R : Type*} [Semiring R]
+    (s : Finset ℕ) (a : ℕ → R) (k : ℕ) :
+    (∑ i ∈ s, monomial i (a i)).coeff k =
+      if k ∈ s then a k else 0 := by
+  simp only [finsetSum_coeff, coeff_monomial]
+  rw [Finset.sum_ite_eq' s k]
+
 /-- The coefficient of a finite initial-segment monomial sum. -/
 @[simp]
 theorem coeff_sum_range_monomial {R : Type*} [Semiring R] (a : ℕ → R)
     (n k : ℕ) :
     (∑ i ∈ Finset.range n, monomial i (a i)).coeff k =
       if k < n then a k else 0 := by
-  simp only [finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range n) k]
-  simp
+  simpa using coeff_sum_finset_monomial (Finset.range n) a k
 
 /-- The coefficient of a degree-box sum with descending exponents. -/
 theorem coeff_sum_range_C_mul_X_pow_sub {R : Type*} [Semiring R] (a : ℕ → R)

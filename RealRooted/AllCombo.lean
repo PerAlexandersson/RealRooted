@@ -26,10 +26,15 @@ lemma left_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     f.Splits := by
   simpa using hall 1 0
 
+lemma comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
+    AllComboRealRooted g f := by
+  intro α β
+  simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hall β α
+
 /-- The right endpoint of an all-real-combination pair splits. -/
 lemma right_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    g.Splits := by
-  simpa using hall 0 1
+    g.Splits :=
+  hall.comm.left_splits
 
 lemma isRealRooted_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
     f ≠ 0 ∧ f.Splits :=
@@ -37,16 +42,11 @@ lemma isRealRooted_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f 
 
 lemma isRealRooted_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
     g ≠ 0 ∧ g.Splits :=
-  ⟨hg0, hall.right_splits⟩
+  hall.comm.isRealRooted_left hg0
 
 end AllComboRealRooted
 
 namespace AllComboRealRooted
-
-lemma comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted g f := by
-  intro α β
-  simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hall β α
 
 lemma common_root_reduction
     {f g qf qg : ℝ[X]} {r : ℝ}
@@ -65,9 +65,8 @@ lemma C_mul_left
 
 lemma C_mul_right
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted f (C c * g) := by
-  intro α β
-  simpa [C_mul, mul_assoc, mul_left_comm, mul_comm] using hall α (β * c)
+    AllComboRealRooted f (C c * g) :=
+  hall.comm.C_mul_left.comm
 
 /-- `AllComboRealRooted` is preserved by any linear change of coordinates in
 the `(f, g)`-plane.
@@ -325,10 +324,8 @@ lemma neg_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
 
 /-- Negating the right member preserves `AllComboRealRooted`. -/
 lemma neg_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
-    AllComboRealRooted f (-g) := by
-  intro α β
-  have h := hall α (-β)
-  simp_all
+    AllComboRealRooted f (-g) :=
+  hall.comm.neg_left.comm
 
 /-- Two positive-leading polynomials of the same degree whose real linear
 combinations all split give a `PosComboRealRooted` pair: any strictly positive

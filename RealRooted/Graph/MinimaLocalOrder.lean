@@ -220,7 +220,9 @@ theorem card_subset_mutualMinima_eq (S : Finset G.edgeSet)
         ((minimaDegree G v).factorial : ℝ) * (1 / (minimaDegree G v : ℝ)) ^
           (S.filter (fun e => v ∈ e.1)).card else 0 := by
     intro v
-    rw [card_equiv_val_zero_on _ (by rw [minimaDegree, Nat.card_eq_fintype_card]),
+    rw [card_equiv_val_zero_on _ (by
+      change Fintype.card (G.neighborSet v) = Nat.card (G.neighborSet v)
+      rw [Nat.card_eq_fintype_card]),
       card_neighbor_filter_eq]
   rw [Finset.prod_congr rfl (fun v _ => hv v)]
   split_ifs with hM

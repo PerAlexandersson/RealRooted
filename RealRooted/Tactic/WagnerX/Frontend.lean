@@ -83,12 +83,12 @@ macro_rules
         degree_two := $hdeg:term,
         nonneg_coeffs := $hfnn:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
+        exact RealRooted.strictInterl_X_derivative_X_self_of_splits_nonneg
           $hf $hdeg $hfnn)
   | `(tactic| rr_strict_interl_X_derivative_X_self) =>
       `(tactic|
         exact (by
-          apply RealRooted.strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg
+          apply RealRooted.strictInterl_X_derivative_X_self_of_splits_nonneg
           case hf => rr_lookup
           case hdeg => rr_lookup [rr_degree]
           case hfnn => rr_lookup [rr_nonneg]))

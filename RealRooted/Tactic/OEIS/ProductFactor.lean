@@ -690,7 +690,7 @@ macro_rules
         certificate := finiteLinearProduct) =>
       `(tactic|
         rr_exact_realrooted_sequence_or_projection
-          (RealRooted.j1FactorableLag3Sequence_realRooted $hc $hroot))
+          (RealRooted.finiteLinearProductScalarSequence_realRooted $hc $hroot))
   | `(tactic|
       rr_j1_gap3_reciprocal_sequence_realrooted using
         model_realrooted := $hmodel:term,

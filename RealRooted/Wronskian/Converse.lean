@@ -67,7 +67,7 @@ private theorem strictInterl_of_wronskian_eval_nonneg_of_forall_not_isRoot {f g 
         have := hmult r
         lia
       have hWr := hW r
-      rw [wronskian_eval_right_root g hr] at hWr
+      rw [Polynomial.wronskian_eval_right_root g hr] at hWr
       rw [hr.eq_zero, derivative_neg, eval_neg, eval_neg]
       have := mul_ne_zero hg_r hf'_r
       have : 0 < g.eval r * f.derivative.eval r := lt_of_le_of_ne hWr this.symm

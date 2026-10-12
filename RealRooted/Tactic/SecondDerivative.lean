@@ -246,24 +246,24 @@ theorem ls4_factor_expansion (a : ℝ) (U V f : ℝ[X]) :
   simp [Polynomial.derivative_add, Polynomial.derivative_mul]
   ring
 
-theorem ls4_C_two_real : (C (2 : ℝ) : ℝ[X]) = 2 :=
-  Polynomial.C_eq_natCast 2
-
-theorem ls4_C_four_real : (C (4 : ℝ) : ℝ[X]) = 4 :=
-  Polynomial.C_eq_natCast 4
-
-theorem ls4_C_eight_real : (C (8 : ℝ) : ℝ[X]) = 8 :=
-  Polynomial.C_eq_natCast 8
-
-theorem ls4_C_sixteen_real : (C (16 : ℝ) : ℝ[X]) = 16 :=
-  Polynomial.C_eq_natCast 16
-
 theorem ls4_C_neg_one_real : (C (-1 : ℝ) : ℝ[X]) = -1 := by norm_num
 
 theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
     (C (OfNat.ofNat m : ℝ) : ℝ[X]) = (OfNat.ofNat m : ℝ[X]) := by
   change (C (m : ℝ) : ℝ[X]) = (m : ℝ[X])
   exact Polynomial.C_eq_natCast m
+
+private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
+  ls4_C_ofNat_real 2
+
+@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+alias ls4_C_two_real := ls4_C_two_real_compat
+
+private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
+  ls4_C_ofNat_real 4
+
+@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+alias ls4_C_four_real := ls4_C_four_real_compat
 
 theorem ls4_natCast_eq_C_real (m : Nat) :
     (m : ℝ[X]) = C (m : ℝ) :=
@@ -460,8 +460,6 @@ macro_rules
               Polynomial.derivative_X, Polynomial.derivative_one,
               Polynomial.derivative_zero, Polynomial.derivative_natCast,
               Polynomial.derivative_ofNat, Polynomial.derivative_neg,
-              RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-              RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
               RealRooted.ls4_C_neg_one_real,
               Polynomial.C_1, one_mul]
             repeat rw [RealRooted.ls4_C_ofNat_real]
@@ -471,10 +469,8 @@ macro_rules
             try norm_num1
             repeat rw [RealRooted.ls4_C_ofNat_real]
             try
-              simp [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
-                Polynomial.C_neg, one_mul, mul_one]
+              simp [RealRooted.ls4_C_neg_one_real, Polynomial.C_add,
+                Polynomial.C_1, Polynomial.C_neg, one_mul, mul_one]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             ring_nf)
   | `(tactic| rr_ls4_factorize) =>

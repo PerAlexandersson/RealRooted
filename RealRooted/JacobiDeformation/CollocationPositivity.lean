@@ -451,6 +451,49 @@ theorem quasiJacobiTwoPointComplement_eq_one_sub
       shiftedJacobiInner_normalizedJacobiCardinal hq hα hβ x hx hroot,
       hij, Ne.symm hij]
 
+/-- The finite two-point compression certificate shared by the exterior-node
+arguments. -/
+private theorem quasiJacobiTwoPointCompression_certificate
+    {q : ℕ} (hq : 2 ≤ q) {α β τ : ℝ}
+    (hα : -1 < α) (hβ : -1 < β)
+    (x : Fin q → ℝ) (hx : Function.Injective x)
+    (hroot : ∀ k, (quasiJacobiPolynomial q α β τ).IsRoot (x k))
+    {i j : Fin q} (hij : i ≠ j) :
+    (Matrix.twoPointRankOneCompression (x i) (x j) τ
+      (quasiJacobiCompressionCoordinate q α β τ x i)
+      (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef ∧
+      (1 - Matrix.twoPointRankOneCompression (x i) (x j) τ
+        (quasiJacobiCompressionCoordinate q α β τ x i)
+        (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef ∧
+      τ * ((quasiJacobiEta q α β τ x j)⁻¹ * x i * (1 - x i) +
+        (quasiJacobiEta q α β τ x i)⁻¹ * x j * (1 - x j)) =
+        x i * x j *
+          (1 - Matrix.twoPointRankOneCompression (x i) (x j) τ
+            (quasiJacobiCompressionCoordinate q α β τ x i)
+            (quasiJacobiCompressionCoordinate q α β τ x j)).det -
+          (1 - x i) * (1 - x j) *
+            (Matrix.twoPointRankOneCompression (x i) (x j) τ
+              (quasiJacobiCompressionCoordinate q α β τ x i)
+              (quasiJacobiCompressionCoordinate q α β τ x j)).det := by
+  have hcompression := quasiJacobiTwoPointCompression_eq_rankOne
+    hq hα hβ x hx hroot hij
+  have hC : (Matrix.twoPointRankOneCompression (x i) (x j) τ
+      (quasiJacobiCompressionCoordinate q α β τ x i)
+      (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef := by
+    rw [← hcompression]
+    exact quasiJacobiTwoPointCompression_posDef hq hα hβ x hx hroot hij
+  have hcomplement := quasiJacobiTwoPointComplement_posDef
+    hq hα hβ x hx hroot hij
+  rw [quasiJacobiTwoPointComplement_eq_one_sub hq hα hβ x hx hroot hij,
+    hcompression] at hcomplement
+  have hidentity := Matrix.twoPointRankOneCompression_det_identity
+    (x i) (x j) τ
+    (quasiJacobiCompressionCoordinate q α β τ x i)
+    (quasiJacobiCompressionCoordinate q α β τ x j)
+  rw [quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot i,
+    quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot j] at hidentity
+  exact ⟨hC, hcomplement, hidentity⟩
+
 /-- Given positive compression determinants, the two-point determinant identity
 proves the off-diagonal entry positive when the second quasi-node is on or
 beyond the right endpoint. -/
@@ -515,25 +558,8 @@ theorem quasiJacobiCollocationMatrix_offdiag_pos_of_right_exterior
     (hi : x i ∈ Set.Ioo (0 : ℝ) 1) (hj : 1 ≤ x j)
     (hτ : 0 < τ) :
     0 < quasiJacobiCollocationMatrix q α β τ x i j := by
-  let u := quasiJacobiCompressionCoordinate q α β τ x i
-  let v := quasiJacobiCompressionCoordinate q α β τ x j
-  let C := Matrix.twoPointRankOneCompression (x i) (x j) τ u v
-  have hcompression := quasiJacobiTwoPointCompression_eq_rankOne
-    hq hα hβ x hx hroot hij
-  have hC : C.PosDef := by
-    change (Matrix.twoPointRankOneCompression (x i) (x j) τ
-      (quasiJacobiCompressionCoordinate q α β τ x i)
-      (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef
-    rw [← hcompression]
-    exact quasiJacobiTwoPointCompression_posDef hq hα hβ x hx hroot hij
-  have hcomplement := quasiJacobiTwoPointComplement_posDef
-    hq hα hβ x hx hroot hij
-  rw [quasiJacobiTwoPointComplement_eq_one_sub hq hα hβ x hx hroot hij,
-    hcompression] at hcomplement
-  have hidentity := Matrix.twoPointRankOneCompression_det_identity
-    (x i) (x j) τ u v
-  rw [quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot i,
-    quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot j] at hidentity
+  obtain ⟨hC, hcomplement, hidentity⟩ :=
+    quasiJacobiTwoPointCompression_certificate hq hα hβ x hx hroot hij
   exact quasiJacobiCollocationMatrix_offdiag_pos_of_right_exterior_of_det_pos
     hq hα hβ x hx hroot hij hi hj hτ hC.det_pos hcomplement.det_pos hidentity
 
@@ -549,25 +575,8 @@ theorem quasiJacobiCollocationMatrix_offdiag_pos_of_left_exterior
     (hi : x i ≤ 0) (hj : x j ∈ Set.Ioo (0 : ℝ) 1)
     (hτ : τ < 0) :
     0 < quasiJacobiCollocationMatrix q α β τ x i j := by
-  let u := quasiJacobiCompressionCoordinate q α β τ x i
-  let v := quasiJacobiCompressionCoordinate q α β τ x j
-  let C := Matrix.twoPointRankOneCompression (x i) (x j) τ u v
-  have hcompression := quasiJacobiTwoPointCompression_eq_rankOne
-    hq hα hβ x hx hroot hij
-  have hC : C.PosDef := by
-    change (Matrix.twoPointRankOneCompression (x i) (x j) τ
-      (quasiJacobiCompressionCoordinate q α β τ x i)
-      (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef
-    rw [← hcompression]
-    exact quasiJacobiTwoPointCompression_posDef hq hα hβ x hx hroot hij
-  have hcomplement := quasiJacobiTwoPointComplement_posDef
-    hq hα hβ x hx hroot hij
-  rw [quasiJacobiTwoPointComplement_eq_one_sub hq hα hβ x hx hroot hij,
-    hcompression] at hcomplement
-  have hidentity := Matrix.twoPointRankOneCompression_det_identity
-    (x i) (x j) τ u v
-  rw [quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot i,
-    quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot j] at hidentity
+  obtain ⟨hC, hcomplement, hidentity⟩ :=
+    quasiJacobiTwoPointCompression_certificate hq hα hβ x hx hroot hij
   exact quasiJacobiCollocationMatrix_offdiag_pos_of_left_exterior_of_det_pos
     hq hα hβ x hx hroot hij hi hj hτ hC.det_pos hcomplement.det_pos hidentity
 
@@ -584,18 +593,8 @@ theorem quasiJacobiCollocationMatrix_offdiag_pos
   let u := quasiJacobiCompressionCoordinate q α β τ x i
   let v := quasiJacobiCompressionCoordinate q α β τ x j
   let C := Matrix.twoPointRankOneCompression (x i) (x j) τ u v
-  have hcompression := quasiJacobiTwoPointCompression_eq_rankOne
-    hq hα hβ x hx hroot hij
-  have hC : C.PosDef := by
-    change (Matrix.twoPointRankOneCompression (x i) (x j) τ
-      (quasiJacobiCompressionCoordinate q α β τ x i)
-      (quasiJacobiCompressionCoordinate q α β τ x j)).PosDef
-    rw [← hcompression]
-    exact quasiJacobiTwoPointCompression_posDef hq hα hβ x hx hroot hij
-  have hcomplement := quasiJacobiTwoPointComplement_posDef
-    hq hα hβ x hx hroot hij
-  rw [quasiJacobiTwoPointComplement_eq_one_sub hq hα hβ x hx hroot hij,
-    hcompression] at hcomplement
+  obtain ⟨hC, hcomplement, _⟩ :=
+    quasiJacobiTwoPointCompression_certificate hq hα hβ x hx hroot hij
   have hui : 0 < u ^ 2 := by
     rw [quasiJacobiCompressionCoordinate_sq hq hα hβ x hx hroot i]
     exact inv_pos.mpr (quasiJacobiEta_pos_of_roots hq hα hβ x hx hroot i)

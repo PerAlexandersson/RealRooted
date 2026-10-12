@@ -1,6 +1,6 @@
-import Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 
 /-!
@@ -32,22 +32,9 @@ theorem coeff_kernelRow {R : Type*} [CommSemiring R] {N : ℕ}
     (i : Fin (N + 1)) (q : ℕ) :
     (kernelRow G K i).coeff q =
       if q < N + 1 then (G * (K * G) ^ q) i 0 else 0 := by
-  rw [kernelRow, Polynomial.finsetSum_coeff]
-  by_cases hq : q ∈ Finset.range (N + 1)
-  · rw [Finset.sum_eq_single q]
-    · simp [Finset.mem_range.mp hq]
-    · intro j hj hjq
-      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
-    · exact fun hnot => (hnot hq).elim
-  · have hNq : ¬q < N + 1 := by simpa using hq
-    rw [ite_eq_right hNq]
-    apply Finset.sum_eq_zero
-    intro j hj
-    have hjq : j ≠ q := by
-      intro heq
-      subst j
-      exact hq hj
-    simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjq]
+  simpa only [kernelRow, C_mul_X_pow_eq_monomial] using
+    Polynomial.coeff_sum_range_monomial
+      (fun q => (G * (K * G) ^ q) i 0) (N + 1) q
 
 /-- Every kernel row has degree at most the ambient top index. -/
 theorem natDegree_kernelRow_le {R : Type*} [CommSemiring R] {N : ℕ}

@@ -261,7 +261,7 @@ theorem weightedSmirnovPolynomial_one_eq_smirnovDescentSum (n : ℕ) :
         X ^ (List.ofFn w).descentCount := by
   classical
   unfold BrandenVecchi.weightedSmirnovPolynomial
-    BrandenVecchi.smirnovWordWeight
+    BrandenVecchi.wordWeight
   apply Finset.sum_congr rfl
   intro w hw
   simp
