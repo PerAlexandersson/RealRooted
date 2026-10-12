@@ -193,7 +193,7 @@ theorem exists_hasDerivAt_finRootPolynomial_shift
     simpa only [p] using hregular
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular'
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular'
   let branch : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hbase : branch 0 = ρ :=
     hcont.implicitFunction_apply_self (by simp) hAinv

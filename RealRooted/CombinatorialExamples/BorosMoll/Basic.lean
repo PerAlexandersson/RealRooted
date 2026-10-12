@@ -5,6 +5,7 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Polynomial.Basic
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
@@ -158,21 +159,6 @@ private lemma getD_map_range {s : ℕ → ℝ} {n j : ℕ} (hj : j < n) :
     ((List.range n).map s).getD j 0 = s j := by
   simp [List.getD_eq_getElem?_getD, hj]
 
-private lemma prod_sign (x : ℝ) (S : Multiset ℝ) (hS : x ∉ S) :
-    0 < (-1 : ℝ) ^ ((S.filter (x < ·)).card) * (S.map (fun s => x - s)).prod := by
-  induction S using Multiset.induction_on with
-  | empty => simp
-  | cons a S ih =>
-    have hxa : x ≠ a := fun h => hS (h ▸ Multiset.mem_cons_self _ _)
-    have ih' := ih (fun h => hS (Multiset.mem_cons_of_mem h))
-    rcases lt_or_gt_of_ne hxa with h | h
-    · rw [Multiset.filter_cons_of_pos _ h]
-      simp only [Multiset.card_cons, pow_succ, Multiset.map_cons, Multiset.prod_cons]
-      nlinarith
-    · rw [Multiset.filter_cons_of_neg _ (not_lt.2 h.le)]
-      simp only [Multiset.map_cons, Multiset.prod_cons]
-      nlinarith
-
 /-- The sign of a real-rooted polynomial with positive leading coefficient at a non-root `x`
 is `(-1)^(number of roots greater than x)`. -/
 private lemma sign_eval_of_card_roots {p : ℝ[X]} (hp : p ≠ 0) (hc : p.roots.card = p.natDegree)
@@ -184,7 +170,8 @@ private lemma sign_eval_of_card_roots {p : ℝ[X]} (hp : p ≠ 0) (hc : p.roots.
     conv_lhs => rw [← hfac]
     simp [eval_multiset_prod, Multiset.map_map]
   rw [key]
-  have := prod_sign x p.roots hxS
+  have := Multiset.prod_sub_sign (m := p.roots) (x := x)
+    (fun ξ hξ hξeq => hxS (hξeq ▸ hξ))
   nlinarith
 
 /-- The sign of the derivative at a simple root `r` of a real-rooted polynomial with positive

@@ -606,12 +606,9 @@ then the sum keeps that degree. -/
 lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : q.natDegree < p.natDegree) (hp_pos : HasPosLeadingCoeff p) :
     (p + q).natDegree = p.natDegree := by
-  apply le_antisymm
-  · have h := natDegree_add_le p q
-    grind
-  · apply le_natDegree_of_ne_zero
-    rw [coeff_add, coeff_eq_zero_of_natDegree_lt hdeg, add_zero]
-    exact ne_of_gt hp_pos
+  simpa [add_comm] using
+    natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
+      (p := q) (q := p) hdeg hp_pos
 
 /-- If `q` has degree at most that of a nonzero polynomial `p`, then all
 sufficiently small nonnegative right-family perturbations of `p` keep the
@@ -850,11 +847,8 @@ then the sum also has positive leading coefficient. -/
 lemma hasPosLeadingCoeff_add_of_natDegree_lt_left {p q : ℝ[X]}
     (hdeg : q.natDegree < p.natDegree) (hp_pos : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (p + q) := by
-  unfold HasPosLeadingCoeff at hp_pos ⊢
-  unfold Polynomial.leadingCoeff
-  rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg hp_pos, coeff_add,
-    coeff_eq_zero_of_natDegree_lt hdeg, add_zero]
-  exact hp_pos
+  simpa [add_comm] using
+    hasPosLeadingCoeff_add_of_natDegree_lt_right (p := q) (q := p) hdeg hp_pos
 
 /-- In particular, same-degree positive-leading-coefficient sums are nonzero. -/
 lemma add_ne_zero_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
