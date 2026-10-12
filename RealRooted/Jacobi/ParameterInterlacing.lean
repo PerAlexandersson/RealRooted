@@ -664,8 +664,8 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
             359 / 6006, -657 / 2002, 9 / 26] := by
       ext i j
       fin_cases i <;> fin_cases j <;>
-        norm_num [bezoutMatrix, bezoutEntry, coeff_sub, coeff_add,
-          coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
+        norm_num [Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_sub,
+          coeff_add, coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
           Finset.sum_range_succ]
     rw [hmatrix]
     convert Matrix.posDef_fin_three_of_ldl
@@ -696,8 +696,8 @@ theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
             421 / 6006, -23 / 78, 4 / 15] := by
       ext i j
       fin_cases i <;> fin_cases j <;>
-        norm_num [bezoutMatrix, bezoutEntry, coeff_sub, coeff_add,
-          coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
+        norm_num [Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_sub,
+          coeff_add, coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
           Finset.sum_range_succ]
     rw [hmatrix]
     convert Matrix.posDef_fin_three_of_ldl
