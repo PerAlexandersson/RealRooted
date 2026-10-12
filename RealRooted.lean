@@ -1842,3 +1842,4 @@ import RealRooted.Hadamard.Kostov.RootReal
 import RealRooted.Hadamard.Kostov.Roots
 import RealRooted.Hadamard.Kostov.Tangent
 import RealRooted.Hadamard.Kostov.TwoStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicConeEndpoint

@@ -83,6 +83,11 @@ label = "The base family satisfies the six conditions"
 We formalize the algebraic induction behind the real-rootedness of peak
 polynomials on Ferrers boards.
 
+The refinement here is by first entry only. It is not the separate two-endpoint
+experiment with $D_{k,l}$ and $U_{k,l}$, refined by both first and last entries.
+That experiment has computational counterexamples to forward (UU); this does
+not contradict forward (UU) for the aggregated one-index $D_k$, $U_k$ family.
+
 A **peak family** of width $m$ consists of polynomials $D_k$ and $U_k$,
 $0 \le k < m$, with nonnegative coefficients. We put
 $$
