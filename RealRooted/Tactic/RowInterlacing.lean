@@ -256,7 +256,7 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
         ← step #[← `(tactic| have $hd:ident : 0 ≤
           (Polynomial.derivative $(← row s)).eval 0 := by
           exact (RealRooted.HasNonnegCoeffs.derivative (by rr_row_nonneg_coeffs)).eval_nonneg
-            zero_le)] #[h₁, hd]]
+            le_rfl)] #[h₁, hd]]
   let mut failures := #[]
   for tac in strategies do
     match ← rowAttempt (do
