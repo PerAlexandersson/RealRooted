@@ -248,8 +248,8 @@ lemma reflect_sturmDerangementsExc (n : Nat) :
   · rw [Polynomial.revAt_eq_self_of_lt (lt_of_not_ge hm)]
 
 lemma eval_neg_one_mul_neg_one_pow_sturmDerangementsExc (n : Nat) :
-    (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) := by
-  exact Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
+    (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) :=
+  Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
     (natDegree_le_sturmDerangementsExc n) (reflect_sturmDerangementsExc n)
 
 lemma sturmDerangementsExc_isRoot_neg_one_of_odd {n : Nat} (hn : Odd n) :

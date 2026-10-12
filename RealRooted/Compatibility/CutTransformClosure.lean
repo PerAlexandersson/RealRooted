@@ -182,14 +182,14 @@ private theorem cutTransformQWeights_mem {m : ℕ}
 
 private theorem cutTransformPWeights_nonneg {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
-    ∀ ap ∈ cutTransformPWeights P Q j, 0 ≤ ap.1 := by
-  exact fun ap hap => weightedList_fst_nonneg
+    ∀ ap ∈ cutTransformPWeights P Q j, 0 ≤ ap.1 :=
+  fun ap hap => weightedList_fst_nonneg
     (fun i => by split <;> norm_num) (fun i => by split <;> norm_num) hap
 
 private theorem cutTransformQWeights_nonneg {m : ℕ}
     (P Q : Fin m → ℝ[X]) (j : Fin m) :
-    ∀ ap ∈ cutTransformQWeights P Q j, 0 ≤ ap.1 := by
-  exact fun ap hap => weightedList_fst_nonneg
+    ∀ ap ∈ cutTransformQWeights P Q j, 0 ≤ ap.1 :=
+  fun ap hap => weightedList_fst_nonneg
     (fun i => by split <;> norm_num) (fun i => by split <;> norm_num) hap
 
 namespace OrderedCutCompatible

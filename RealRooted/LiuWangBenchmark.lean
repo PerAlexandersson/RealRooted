@@ -172,18 +172,15 @@ lemma natDegree_liuWangPoly (d n : Nat) (hn : 0 < n) :
       rw [coeff_top_liuWangPoly d n hn]
       exact Nat.cast_ne_zero.mpr hn.ne')
 
-lemma liuWangPoly_ne_zero (d n : Nat) (hn : 0 < n) :
-    liuWangPoly d n ≠ 0 := by
-  intro hzero
-  have hcoeff : coeff (liuWangPoly d n) (n - 1) = 0 := by simp [hzero]
-  rw [coeff_top_liuWangPoly d n hn] at hcoeff
-  simp_all
-
 lemma liuWangPoly_posLeadingCoeff (d n : Nat) (hn : 0 < n) :
     HasPosLeadingCoeff (liuWangPoly d n) := by
   unfold HasPosLeadingCoeff
   rw [leadingCoeff, natDegree_liuWangPoly d n hn, coeff_top_liuWangPoly d n hn]
   simp_all
+
+lemma liuWangPoly_ne_zero (d n : Nat) (hn : 0 < n) :
+    liuWangPoly d n ≠ 0 :=
+  (liuWangPoly_posLeadingCoeff d n hn).ne_zero
 
 lemma liuWangPoly_nonnegCoeffs (d n : Nat) :
     HasNonnegCoeffs (liuWangPoly d n) := by
@@ -357,13 +354,6 @@ lemma natDegree_liuWangRec (d n : Nat) (hn : 1 ≤ n) :
     (liuWangRec d n).natDegree = n - 1 :=
   (natDegree_leadingCoeff_liuWangRec d n hn).1
 
-lemma liuWangRec_ne_zero (d n : Nat) (hn : 1 ≤ n) :
-    liuWangRec d n ≠ 0 := by
-  intro hzero
-  have hcoeff : (liuWangRec d n).leadingCoeff = 0 := by simp [hzero]
-  rw [(natDegree_leadingCoeff_liuWangRec d n hn).2] at hcoeff
-  simp_all
-
 lemma liuWangRec_leadingCoeff (d n : Nat) (hn : 1 ≤ n) :
     (liuWangRec d n).leadingCoeff = n :=
   (natDegree_leadingCoeff_liuWangRec d n hn).2
@@ -373,6 +363,10 @@ lemma liuWangRec_posLeadingCoeff (d n : Nat) (hn : 1 ≤ n) :
   unfold HasPosLeadingCoeff
   rw [liuWangRec_leadingCoeff d n hn]
   exact Nat.cast_pos.mpr (by lia : 0 < n)
+
+lemma liuWangRec_ne_zero (d n : Nat) (hn : 1 ≤ n) :
+    liuWangRec d n ≠ 0 :=
+  (liuWangRec_posLeadingCoeff d n hn).ne_zero
 
 lemma eval_zero_liuWangRec_pos (d n : Nat) (hn : 1 ≤ n) (hnd : n ≤ d + 1) :
     0 < (liuWangRec d n).eval 0 := by

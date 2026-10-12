@@ -1754,6 +1754,8 @@ Dedup leaf batch 4 The budgets of `RealRooted`, `Tactic.Examples` rise to the ne
 
 Dedup leaf batch 3: shared helper imports The budgets of `RootCounting`, `RootCounting.Threshold`, `RootCounting.Threshold.Anchor`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs` rise to the new closure sizes.
 
+leaf 8 The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

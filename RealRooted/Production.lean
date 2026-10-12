@@ -1135,6 +1135,7 @@ import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
 import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
 import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt

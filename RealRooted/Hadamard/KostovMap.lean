@@ -77,8 +77,8 @@ def sigma (n : ℕ) (a : List ℝ) (j : Fin (n - 1)) : ℝ :=
   (a : Multiset ℝ).esymm (j.1 + 1)
 
 private theorem kostov_choose_prev_pos {n : ℕ}
-    (i : Fin (n - 1)) : 0 < Nat.choose (n - 1) i.1 := by
-  exact Nat.choose_pos (Nat.le_of_lt i.isLt)
+    (i : Fin (n - 1)) : 0 < Nat.choose (n - 1) i.1 :=
+  Nat.choose_pos (Nat.le_of_lt i.isLt)
 
 private theorem kostov_choose_pos {n : ℕ} (hn : 2 ≤ n)
     (i : Fin (n - 1)) : 0 < Nat.choose n (i.1 + 1) := by

@@ -266,8 +266,8 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
 
 /-- The set of values from the Collatz-Wielandt function is non-empty. -/
 lemma set_nonempty :
-    (collatzWielandtFn A '' nonnegNeZero).Nonempty := by
-  exact Set.Nonempty.image _ ⟨_, nonnegNeZero_mem_const_one⟩
+    (collatzWielandtFn A '' nonnegNeZero).Nonempty :=
+  Set.Nonempty.image _ ⟨_, nonnegNeZero_mem_const_one⟩
 
 omit [Nonempty n] in
 open scoped Classical in

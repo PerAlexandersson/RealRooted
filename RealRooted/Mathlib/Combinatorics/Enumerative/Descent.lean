@@ -27,8 +27,8 @@ namespace List
 
 variable {α β : Type*} [LinearOrder α] [LinearOrder β]
 
-private theorem lt_length_of_succ_lt {i n : ℕ} (h : i + 1 < n) : i < n := by
-  exact Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
+private theorem lt_length_of_succ_lt {i n : ℕ} (h : i + 1 < n) : i < n :=
+  Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
 
 private def isDescent (l : List α) (i : ℕ) : Bool :=
   if h : i + 1 < l.length then

@@ -169,8 +169,8 @@ theorem weightedDecoParameterCompanion_erase_fin
 theorem weightedDecoParameterInputAt_self {I : Type*} [DecidableEq I]
     {s : Finset I} {a : I → ℝ} {j : I} (hj : j ∈ s) :
     weightedDecoParameterInputAt s a j (a j) =
-      weightedDecoParameterInput s a := by
-  exact (weightedDecoParameterInput_eq_mul_erase hj).symm
+      weightedDecoParameterInput s a :=
+  (weightedDecoParameterInput_eq_mul_erase hj).symm
 
 theorem weightedDecoParameterImageAt_insertion {I : Type*} [DecidableEq I]
     (w : ℝ) (s : Finset I) (a : I → ℝ) (j : I) (b : ℝ) :

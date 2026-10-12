@@ -119,16 +119,10 @@ theorem eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion
   · intro h i x
     cases i with
     | zero =>
-        have hbase : 0 ∉ (decoBottomTotalAffineBase n).vars := by
-          intro hzero
-          have hbounds := vars_decoBottomTotalAffineBase_subset_Icc n hzero
-          rw [Finset.mem_Icc] at hbounds
-          lia
-        have hslope : 0 ∉ (decoBottomTotalAffineSlope n).vars := by
-          intro hzero
-          have hbounds := vars_decoBottomTotalAffineSlope_subset_Icc n hzero
-          rw [Finset.mem_Icc] at hbounds
-          lia
+        have hbase : 0 ∉ (decoBottomTotalAffineBase n).vars :=
+          notMem_vars_decoBottomTotalAffineBase_of_lt_two n 0 (by norm_num)
+        have hslope : 0 ∉ (decoBottomTotalAffineSlope n).vars :=
+          notMem_vars_decoBottomTotalAffineSlope_of_lt_two n 0 (by norm_num)
         rw [MvPolynomial.coordinateWronskian,
           MvPolynomial.pderiv_eq_zero_of_notMem_vars hslope,
           MvPolynomial.pderiv_eq_zero_of_notMem_vars hbase]

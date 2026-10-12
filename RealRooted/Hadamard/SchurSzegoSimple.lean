@@ -1055,11 +1055,11 @@ namespace SchurSzegoAristotle
 local notation "ssc" => RealRooted.schurSzegoComp
 
 private theorem coeff_ssc (n : ℕ) (f g : ℝ[X]) (k : ℕ) :
-    (ssc n f g).coeff k = f.coeff k * g.coeff k / (Nat.choose n k : ℝ) := by
-  exact RealRooted.coeff_schurSzegoComp_eq_div n f g k
+    (ssc n f g).coeff k = f.coeff k * g.coeff k / (Nat.choose n k : ℝ) :=
+  RealRooted.coeff_schurSzegoComp_eq_div n f g k
 
-private theorem natDegree_ssc_le (n : ℕ) (f g : ℝ[X]) : (ssc n f g).natDegree ≤ n := by
-  exact RealRooted.natDegree_schurSzegoComp_le n f g
+private theorem natDegree_ssc_le (n : ℕ) (f g : ℝ[X]) : (ssc n f g).natDegree ≤ n :=
+  RealRooted.natDegree_schurSzegoComp_le n f g
 
 private theorem ssc_ne_zero {n : ℕ} {f g : ℝ[X]} (hf : f.natDegree = n) (hg : g.natDegree = n)
     (hf0 : f ≠ 0) (hg0 : g ≠ 0) : ssc n f g ≠ 0 := by

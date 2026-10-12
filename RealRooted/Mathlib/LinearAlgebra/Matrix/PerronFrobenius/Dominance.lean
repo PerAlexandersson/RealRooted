@@ -303,16 +303,6 @@ lemma perron_root_eq_positive_eigenvalue (hA_irred : A.IsIrreducible)
   have h_eq : perronRoot A = r := le_antisymm h_le h_ge
   exact ⟨r, v, hr_pos, hv_pos, h_eig, h_eq⟩
 
-/--
-If a matrix `A` has an eigenvector `v` for an eigenvalue `μ`, then `μ` is in the spectrum of `A`.
-This is a direct consequence of the definition of an eigenvalue and the spectrum.
--/
-lemma mem_spectrum_of_hasEigenvector {K V : Type*} [Field K] [AddCommGroup V] [Module K V]
-    [FiniteDimensional K V] {f : V →ₗ[K] V} {μ : K} {v : V} (h : Module.End.HasEigenvector f μ v) :
-    μ ∈ spectrum K f := by
-  rw [← Module.End.hasEigenvalue_iff_mem_spectrum]
-  exact Module.End.hasEigenvalue_of_hasEigenvector h
-
 lemma mem_spectrum_of_eigenvalue
     {K : Type*} [Field K] {n : Type*} [Fintype n] [DecidableEq n]
     {A : Matrix n n K} {μ : K} {v : n → K}
@@ -326,7 +316,7 @@ lemma mem_spectrum_of_eigenvalue
       rwa [← Module.End.mem_eigenspace_iff] at h_eig_f,
       hv_ne_zero⟩
   have h_mem_f : μ ∈ spectrum K f :=
-    mem_spectrum_of_hasEigenvector h_has_eigvec
+    Module.End.mem_spectrum_of_hasEigenvector h_has_eigvec
   simpa [f, spectrum.Matrix_toLin'_eq_spectrum] using h_mem_f
 
 /-- The Perron root of an irreducible, non-negative matrix is an eigenvalue. -/
