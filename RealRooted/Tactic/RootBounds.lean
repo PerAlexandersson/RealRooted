@@ -19,9 +19,6 @@ namespace Tactic
 syntax (name := rr_root_nonpos_realrooted)
   "rr_root_nonpos" " using " term ", " term ", " term : tactic
 
-syntax (name := rr_root_nonpos_ne_splits)
-  "rr_root_nonpos" " using " term ", " term ", " term ", " term : tactic
-
 syntax (name := rr_root_nonpos_named)
   "rr_root_nonpos" " using "
     "realrooted" ":=" term ","
@@ -178,10 +175,6 @@ macro_rules
       `(tactic|
         exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
           $hrr $hnn $hr)
-  | `(tactic| rr_root_nonpos using $hne:term, $hsplits:term, $hnn:term, $hr:term) =>
-      `(tactic|
-        exact RealRooted.root_nonpos_of_ne_zero_of_splits_of_nonneg_coeffs
-          $hne $hsplits $hnn $hr)
   | `(tactic|
       rr_root_nonpos using
         realrooted := $hrr:term,
@@ -194,8 +187,8 @@ macro_rules
         first
           | exact RealRooted.root_nonpos_of_realrooted_of_nonneg_coeffs
               (by assumption) (by assumption) (by assumption)
-          | exact RealRooted.root_nonpos_of_ne_zero_of_splits_of_nonneg_coeffs
-              (by assumption) (by assumption) (by assumption) (by assumption))
+          | exact RealRooted.root_nonpos_of_ne_zero_of_nonneg_coeffs
+              (by assumption) (by assumption) (by assumption))
   | `(tactic|
       rr_root_nonpos_sequence using
         realrooted := $hrr:term,

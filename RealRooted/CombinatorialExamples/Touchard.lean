@@ -83,9 +83,9 @@ lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
         exact add_nonneg (touchard_nonnegCoeffs n m)
           (mul_nonneg (by positivity) (touchard_nonnegCoeffs n (m + 1)))
 
-lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} (hrr : (touchard n).Splits) :
+lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (touchard_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (touchard_nonnegCoeffs n)
 
 lemma interlaces_touchard_zero_one :
     Interlaces (touchard 0) (touchard 1) :=
@@ -151,7 +151,7 @@ theorem strictInterl_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (tou
       have hb_nonpos : ∀ r, (touchard (n + 2)).IsRoot r → X.eval r ≤ 0 := by
         intro r hr
         have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_touchard_of_isRealRooted hprev.2.1.2 r ((mem_roots hprev.2.1.1).mpr hr)
+          roots_nonpos_touchard_of_isRealRooted r ((mem_roots hprev.2.1.1).mpr hr)
         simpa using hr_nonpos
       simpa [hNext_eq] using
         strictInterl_of_interlaces_evalCoeff_nonpos

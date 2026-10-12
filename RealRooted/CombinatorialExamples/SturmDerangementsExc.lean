@@ -317,10 +317,9 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
           grind
 
-lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
-    (hrr : (sturmDerangementsExc n).Splits) :
+lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma strictInterl_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hstrictInterl : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -335,7 +334,7 @@ lemma strictInterl_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   · rw [natDegree_sturmDerangementsExc hn]
     lia
   · exact sturmDerangementsExc_posLeadingCoeff hn
-  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr
+  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted
   · rw [natDegree_sturmDerangementsExc hn]
     exact Nat.cast_lt.mpr (Nat.sub_lt (by lia) (by lia))
 

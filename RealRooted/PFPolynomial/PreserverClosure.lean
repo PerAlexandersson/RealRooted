@@ -139,7 +139,7 @@ theorem isPFPolynomial_map_of_isNegativeSimple_of_natDegree_le
         (heps_pos n) hp.hasNonnegCoeffs hp₀ le_rfl
     refine ⟨hq_ne, hq_splits, hq_simple, hq_pos, ?_⟩
     intro r hr
-    have hr_nonpos : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hq_splits hq_nonneg r hr
+    have hr_nonpos : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hq_nonneg r hr
     have hr_ne : r ≠ 0 := by
       intro hr_zero
       have hr_root : (q n).IsRoot 0 := by

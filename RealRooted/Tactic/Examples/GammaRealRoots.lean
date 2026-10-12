@@ -73,15 +73,9 @@ example {d : ℕ} {γ : ℝ[X]}
     gamma_nonneg := hnn
 
 example {d : ℕ} {γ : ℝ[X]}
-    (hdeg : γ.natDegree ≤ d / 2)
-    (hne : γ ≠ 0)
-    (hsplits : γ.Splits)
     (hnn : HasNonnegCoeffs γ) :
     HasRootsNonpos (gammaTransform d γ) := by
   rr_gamma_transform_roots_nonpos_nonneg using
-    gamma_degree := hdeg,
-    gamma_nonzero := hne,
-    gamma_splits := hsplits,
     gamma_nonneg := hnn
 
 example {d : ℕ} {γ : ℝ[X]}
@@ -142,15 +136,9 @@ example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
     gamma_nonneg := hnn
 
 example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
-    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
-    (hne : ∀ n : Nat, Γ n ≠ 0)
-    (hsplits : ∀ n : Nat, (Γ n).Splits)
     (hnn : ∀ n : Nat, HasNonnegCoeffs (Γ n)) :
     ∀ n : Nat, HasRootsNonpos (gammaTransform (d n) (Γ n)) := by
   rr_gamma_transform_sequence_roots_nonpos_nonneg using
-    gamma_degree := hdeg,
-    gamma_nonzero := hne,
-    gamma_splits := hsplits,
     gamma_nonneg := hnn
 
 example {d : Nat → Nat} {Γ : Nat → ℝ[X]}

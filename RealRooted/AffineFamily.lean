@@ -63,11 +63,11 @@ private lemma affine_family_common_root_reduction_data
   have hqg_pos : HasPosLeadingCoeff qg :=
     hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
   have hqf_nonneg : HasNonnegCoeffs qf :=
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hf_ne hf_splits hfnn hqf_ne hqf_rr.2 hqf_pos ⟨X - C r, by grind⟩
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+      hf_ne hfnn hqf_ne hqf_rr.2 hqf_pos ⟨X - C r, by grind⟩
   have hqg_nonneg : HasNonnegCoeffs qg :=
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hg_ne hg_splits hgnn hqg_ne hqg_rr.2 hqg_pos ⟨X - C r, by grind⟩
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+      hg_ne hgnn hqg_ne hqg_rr.2 hqg_pos ⟨X - C r, by grind⟩
   refine ⟨qf, qg, hqf, hqg, hqf_nonneg, hqg_nonneg, hqf_ne, hqg_ne, hqf_pos, hqg_pos, ?_⟩
   intro s t hs ht
   have hbase : ((((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg)) ≠ 0 ∧
@@ -164,9 +164,9 @@ private lemma strictInterl_of_strictInterl_shifted_pair_sameDegree
     simp_all
   have hscaled : StrictInterl (C a * f) (C a * (g + X * f)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left h ha_ne) ha_ne
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
+  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
   have hshift_nonpos : ∀ r ∈ (g + X * f).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hshift.2 hshift_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hshift_nonneg
   have hinterl :
       Interl (C a * f) (C a * (g + X * f) - X * (C a * f)) := by
     have hdeg_scaled : (C a * f).natDegree + 1 = (C a * (g + X * f)).natDegree := by

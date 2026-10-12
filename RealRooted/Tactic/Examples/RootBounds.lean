@@ -22,10 +22,10 @@ example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
     r ≤ 0 := by
   rr_root_nonpos
 
-example {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+example {p : ℝ[X]} (hp_ne : p ≠ 0)
     (hpnn : HasNonnegCoeffs p) {r : ℝ} (hr : p.IsRoot r) :
     r ≤ 0 := by
-  rr_root_nonpos using hp_ne, hp_splits, hpnn, hr
+  exact RealRooted.root_nonpos_of_ne_zero_of_nonneg_coeffs hp_ne hpnn hr
 
 example {p : ℝ[X]} {a r : ℝ}
     (hrr : p ≠ 0 ∧ p.Splits)

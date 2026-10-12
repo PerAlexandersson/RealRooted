@@ -24,13 +24,9 @@ theorem isRealRooted_gammaTransform_sequence_of_nonneg
 
 theorem hasRootsNonpos_gammaTransform_sequence_of_nonneg
     {d : Nat → Nat} {Γ : Nat → ℝ[X]}
-    (hdeg : ∀ i : Nat, (Γ i).natDegree ≤ d i / 2)
-    (hne : ∀ i : Nat, Γ i ≠ 0)
-    (hsplits : ∀ i : Nat, (Γ i).Splits)
     (hnn : ∀ i : Nat, HasNonnegCoeffs (Γ i)) :
     ∀ i : Nat, HasRootsNonpos (gammaTransform (d i) (Γ i)) := fun i =>
-  hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-    (hdeg i) (hne i) (hsplits i) (hnn i)
+  hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs (hnn i)
 
 theorem gammaTransform_sequence_realrooted_and_roots_nonpos_of_roots_nonpos
     {d : Nat → Nat} {Γ : Nat → ℝ[X]}
@@ -137,9 +133,6 @@ syntax (name := rr_gamma_transform_realrooted_nonneg_named)
 
 syntax (name := rr_gamma_transform_roots_nonpos_nonneg_named)
   "rr_gamma_transform_roots_nonpos_nonneg" " using "
-    "gamma_degree" ":=" term ","
-    "gamma_nonzero" ":=" term ","
-    "gamma_splits" ":=" term ","
     "gamma_nonneg" ":=" term :
   tactic
 
@@ -182,9 +175,6 @@ syntax (name := rr_gamma_transform_sequence_realrooted_nonneg_named)
 
 syntax (name := rr_gamma_transform_sequence_roots_nonpos_nonneg_named)
   "rr_gamma_transform_sequence_roots_nonpos_nonneg" " using "
-    "gamma_degree" ":=" term ","
-    "gamma_nonzero" ":=" term ","
-    "gamma_splits" ":=" term ","
     "gamma_nonneg" ":=" term :
   tactic
 
@@ -258,14 +248,10 @@ macro_rules
             $hdeg $hne $hsplits $hnn)
   | `(tactic|
       rr_gamma_transform_roots_nonpos_nonneg using
-        gamma_degree := $hdeg:term,
-        gamma_nonzero := $hne:term,
-        gamma_splits := $hsplits:term,
         gamma_nonneg := $hnn:term) =>
       `(tactic|
         exact
-          RealRooted.hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
-            $hdeg $hne $hsplits $hnn)
+          RealRooted.hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs $hnn)
   | `(tactic|
       rr_gamma_transform_realrooted_nonpos using
         gamma_degree := $hdeg:term,
@@ -312,13 +298,10 @@ macro_rules
           $hdeg $hne $hsplits $hnn)
   | `(tactic|
       rr_gamma_transform_sequence_roots_nonpos_nonneg using
-        gamma_degree := $hdeg:term,
-        gamma_nonzero := $hne:term,
-        gamma_splits := $hsplits:term,
         gamma_nonneg := $hnn:term) =>
       `(tactic|
         exact RealRooted.hasRootsNonpos_gammaTransform_sequence_of_nonneg
-          $hdeg $hne $hsplits $hnn)
+          $hnn)
   | `(tactic|
       rr_gamma_transform_sequence_realrooted_nonpos using
         gamma_degree := $hdeg:term,

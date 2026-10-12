@@ -120,11 +120,8 @@ theorem posCombo_sameDegree_rootCount_degree_le_two_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
     ∀ i : Nat,
       (((F i).roots.filter (· ≤ x i)).card : ℤ) -
@@ -132,18 +129,14 @@ theorem posCombo_sameDegree_rootCount_degree_le_two_sequence
         (((G i).roots.filter (· ≤ x i)).card : ℤ) -
           ((F i).roots.filter (· ≤ x i)).card ≤ (1 : ℤ) := fun i =>
   rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i) (x i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i) (x i)
 
 theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
     ∀ i : Nat,
       (((F i).roots.filter (x i < ·)).card : ℤ) -
@@ -151,8 +144,7 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_two_sequence
         (((G i).roots.filter (x i < ·)).card : ℤ) -
           ((F i).roots.filter (x i < ·)).card ≤ (1 : ℤ) := fun i =>
   rootCountAbove_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i) (x i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i) (x i)
 
 /-- The proved analytic cubic second-root bound closes the degree-`≤ 3`
 same-degree root-count route. -/
@@ -160,11 +152,8 @@ theorem posCombo_sameDegree_rootCount_degree_le_three
     {f g : ℝ[X]} (x : ℝ)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
     ((f.roots.filter (· ≤ x)).card : ℤ) -
         (g.roots.filter (· ≤ x)).card ≤ 1 ∧
@@ -172,7 +161,7 @@ theorem posCombo_sameDegree_rootCount_degree_le_three
         (f.roots.filter (· ≤ x)).card ≤ 1 := by
   rcases Nat.le_or_eq_of_le_succ hfdeg with hle | hfdeg3
   · exact rootCount_diff_le_one_of_posCombo_sameDegree_natDegree_le_two
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hle x
+      hf_pos hg_pos hfg hdeg hle x
   · exact sameDegree_cubic_rootCount_le_one hfdeg3 (hdeg.trans hfdeg3)
       (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
       (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
@@ -183,11 +172,8 @@ theorem posCombo_sameDegree_rootCount_degree_le_three_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
     ∀ i : Nat,
       (((F i).roots.filter (· ≤ x i)).card : ℤ) -
@@ -195,19 +181,15 @@ theorem posCombo_sameDegree_rootCount_degree_le_three_sequence
         (((G i).roots.filter (· ≤ x i)).card : ℤ) -
           ((F i).roots.filter (· ≤ x i)).card ≤ 1 := fun i =>
   posCombo_sameDegree_rootCount_degree_le_three (x i)
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i)
 
 /-- Upper-threshold form of the analytic degree-`≤ 3` root-count route. -/
 theorem posCombo_sameDegree_rootCountAbove_degree_le_three
     {f g : ℝ[X]} (x : ℝ)
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
     ((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card ≤ 1 ∧
@@ -218,7 +200,7 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_three
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
     (fun y => posCombo_sameDegree_rootCount_degree_le_three y
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg)
+      hf_pos hg_pos hfg hdeg hfdeg)
     x
 
 /-- Sequence form of `posCombo_sameDegree_rootCountAbove_degree_le_three`. -/
@@ -226,11 +208,8 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_three_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
     ∀ i : Nat,
       (((F i).roots.filter (x i < ·)).card : ℤ) -
@@ -238,19 +217,15 @@ theorem posCombo_sameDegree_rootCountAbove_degree_le_three_sequence
         (((G i).roots.filter (x i < ·)).card : ℤ) -
           ((F i).roots.filter (x i < ·)).card ≤ 1 := fun i =>
   posCombo_sameDegree_rootCountAbove_degree_le_three (x i)
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i)
 
 /-- Root-crossing form of the analytic degree-`≤ 3` route. -/
 theorem posCombo_sameDegree_rootCrossing_degree_le_three
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hfdeg : f.natDegree ≤ 3) :
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
@@ -261,18 +236,15 @@ theorem posCombo_sameDegree_rootCrossing_degree_le_three
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
     hdeg
     (fun x => posCombo_sameDegree_rootCountAbove_degree_le_three x
-      hf_pos hg_pos hfnn hgnn hfg hdeg hno hfdeg)
+      hf_pos hg_pos hfg hdeg hfdeg)
 
 /-- Sequence form of `posCombo_sameDegree_rootCrossing_degree_le_three`. -/
 theorem posCombo_sameDegree_rootCrossing_degree_le_three_sequence
     {F G : Nat → ℝ[X]}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 3) :
     ∀ i : Nat,
       (∀ j, 1 ≤ j → j < (F i).natDegree →
@@ -282,8 +254,7 @@ theorem posCombo_sameDegree_rootCrossing_degree_le_three_sequence
           (rootSeqDesc (F i)).getD j 0 ≤
             (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
   posCombo_sameDegree_rootCrossing_degree_le_three
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i)
 
 theorem sameDegree_rootCrossing_degree_le_one_sequence
     {F G : Nat → ℝ[X]}
@@ -301,11 +272,8 @@ theorem posCombo_sameDegree_rootCrossing_degree_le_two_sequence
     {F G : Nat → ℝ[X]}
     (hFpos : ∀ i : Nat, HasPosLeadingCoeff (F i))
     (hGpos : ∀ i : Nat, HasPosLeadingCoeff (G i))
-    (hFnn : ∀ i : Nat, HasNonnegCoeffs (F i))
-    (hGnn : ∀ i : Nat, HasNonnegCoeffs (G i))
     (hFG : ∀ i : Nat, PosComboRealRooted (F i) (G i))
     (hdeg : ∀ i : Nat, (G i).natDegree = (F i).natDegree)
-    (hno : ∀ i : Nat, ∀ r, (F i).IsRoot r → ¬ (G i).IsRoot r)
     (hFdeg : ∀ i : Nat, (F i).natDegree ≤ 2) :
     ∀ i : Nat,
       (∀ j, 1 ≤ j → j < (F i).natDegree →
@@ -315,8 +283,7 @@ theorem posCombo_sameDegree_rootCrossing_degree_le_two_sequence
           (rootSeqDesc (F i)).getD j 0 ≤
             (rootSeqDesc (G i)).getD (j - 1) 0) := fun i =>
   sameDegreeRootCrossing_of_posCombo_natDegree_le_two
-    (hFpos i) (hGpos i) (hFnn i) (hGnn i) (hFG i) (hdeg i) (hno i)
-    (hFdeg i)
+    (hFpos i) (hGpos i) (hFG i) (hdeg i) (hFdeg i)
 
 theorem compatible_succDegree_rootCountAbove_le_two_sequence
     {F G : Nat → ℝ[X]} {x : Nat → ℝ}
