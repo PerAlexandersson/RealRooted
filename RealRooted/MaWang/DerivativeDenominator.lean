@@ -12,11 +12,6 @@ open Polynomial
 
 namespace RealRooted.MaWang
 
-private theorem eval_C_mul_nonpos_of_nonneg_of_eval_nonpos {c : ℝ} {q : ℝ[X]} {r : ℝ}
-    (hc : 0 ≤ c) (hq : q.eval r ≤ 0) :
-    (C c * q).eval r ≤ 0 := by
-  simpa [Polynomial.eval_mul] using mul_nonpos_of_nonneg_of_nonpos hc hq
-
 private theorem mw_lw_derivative_lag_den_coeff_recurrence
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {b c e a d : Nat → ℝ}
     (hden : ∀ n : Nat, d n ≠ 0)

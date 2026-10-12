@@ -71,18 +71,12 @@ lemma fPolynomial_succ_of_natDegree_le {d : ℕ} {p : ℝ[X]}
 
 lemma hasNonnegCoeffs_fPolynomial {d : ℕ} {h : ℝ[X]} (hh : HasNonnegCoeffs h) :
     HasNonnegCoeffs (fPolynomial d h) := by
-  classical
   unfold fPolynomial
-  refine Finset.induction_on (Finset.range (d + 1)) ?base ?step
-  · exact hasNonnegCoeffs_zero
-  · intro k s hk hs
-    have hterm : HasNonnegCoeffs (C (h.coeff k) * X ^ k * (X + 1) ^ (d - k)) := by
-      have hXk : HasNonnegCoeffs (X ^ k) := hasNonnegCoeffs_X.pow k
-      have hXp : HasNonnegCoeffs ((X + 1) ^ (d - k)) :=
-        hasNonnegCoeffs_X_add_one.pow (d - k)
-      have hprod : HasNonnegCoeffs (X ^ k * (X + 1) ^ (d - k)) := hXk.mul hXp
-      simpa [mul_assoc] using nonnegCoeffs_C_mul (hh k) hprod
-    simpa [Finset.sum_insert, hk] using hterm.add hs
+  apply hasNonnegCoeffs_finsetSum
+  intro k _
+  simpa [mul_assoc] using nonnegCoeffs_C_mul (hh k)
+    ((hasNonnegCoeffs_X.pow k).mul
+      (hasNonnegCoeffs_X_add_one.pow (d - k)))
 
 lemma fPolynomial_monomial (d n : ℕ) (a : ℝ) :
     fPolynomial d (monomial n a) =
@@ -167,21 +161,8 @@ lemma eval_neg_one_fPolynomial (d : ℕ) (h : ℝ[X]) :
 
 lemma eval_one_pos_of_hasNonnegCoeffs {h : ℝ[X]}
     (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) :
-    0 < h.eval 1 := by
-  have heval :
-      h.eval 1 = ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i := by
-    simpa [one_pow, mul_one] using (Polynomial.eval_eq_sum_range (p := h) (x := (1 : ℝ)))
-  rw [heval]
-  have htop_coeff : 0 < h.coeff h.natDegree := by
-    rw [coeff_natDegree]
-    exact hh.pos_leadingCoeff h0
-  have hle :
-      h.coeff h.natDegree ≤
-        ∑ i ∈ Finset.range (h.natDegree + 1), h.coeff i :=
-    Finset.single_le_sum
-      (fun i hi => hh i)
-      (Finset.mem_range.mpr (Nat.lt_succ_self _))
-  grind
+    0 < h.eval 1 :=
+  eval_pos_of_hasNonnegCoeffs hh h0 zero_lt_one
 
 @[deprecated eval_pos_of_hasNonnegCoeffs (since := "2026-10-06")]
 alias eval_pos_of_hasNonnegCoeffs_of_pos := eval_pos_of_hasNonnegCoeffs
@@ -248,36 +229,25 @@ lemma fPolynomial_X_sub_C_mul_succ (d : ℕ) (r : ℝ) {p : ℝ[X]}
     _ = (C (1 - r) * X - C r) * fPolynomial d p := by grind
 
 lemma transformedRoot_nonpos {r : ℝ} (hr : r ≤ 0) :
-    r / (1 - r) ≤ 0 := by
-  have h1r_pos : 0 < 1 - r := by linarith
-  have h1r_inv_nonneg : 0 ≤ (1 - r)⁻¹ := inv_nonneg.mpr h1r_pos.le
-  have hmul_nonpos : r * (1 - r)⁻¹ ≤ 0 :=
-    mul_nonpos_of_nonpos_of_nonneg hr h1r_inv_nonneg
-  lia
+    r / (1 - r) ≤ 0 :=
+  div_nonpos_of_nonpos_of_nonneg hr (by linarith)
 
 /-- Inverse Möbius map to `r ↦ r / (1-r)` on `(-1, ∞)`. -/
 def untransformRoot (x : ℝ) : ℝ := x / (1 + x)
 
 lemma untransformRoot_nonpos {x : ℝ} (hx1 : -1 < x) (hx0 : x ≤ 0) :
-    untransformRoot x ≤ 0 := by
-  have h1x_pos : 0 < 1 + x := by linarith
-  have h1x_inv_nonneg : 0 ≤ (1 + x)⁻¹ := inv_nonneg.mpr h1x_pos.le
-  simpa [untransformRoot, div_eq_mul_inv] using
-    mul_nonpos_of_nonpos_of_nonneg hx0 h1x_inv_nonneg
+    untransformRoot x ≤ 0 :=
+  div_nonpos_of_nonpos_of_nonneg hx0 (by linarith)
 
 lemma transformedRoot_untransformRoot {x : ℝ} (hx1 : -1 < x) :
     untransformRoot x / (1 - untransformRoot x) = x := by
-  have h1x_ne : 1 + x ≠ 0 := by linarith
-  have hden : 1 - x / (1 + x) = (1 : ℝ) / (1 + x) := by grind
-  rw [untransformRoot, hden]
-  simp_all
+  unfold untransformRoot
+  grind
 
 lemma untransformRoot_transformedRoot {r : ℝ} (hr : r ≤ 0) :
     untransformRoot (r / (1 - r)) = r := by
-  have h1r_ne : 1 - r ≠ 0 := by linarith
-  have hden : 1 + r / (1 - r) = (1 : ℝ) / (1 - r) := by grind
-  rw [untransformRoot, hden]
-  simp_all
+  unfold untransformRoot
+  grind
 
 lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
     (hd : p.natDegree ≤ d) {x : ℝ} (hx : x ≠ -1) :

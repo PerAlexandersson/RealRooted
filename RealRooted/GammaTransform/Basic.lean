@@ -200,13 +200,9 @@ lemma hasNonnegCoeffs_gammaBasisTerm (d i : ℕ) :
 lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoeffs γ) :
     HasNonnegCoeffs (gammaTransform d γ) := by
   unfold gammaTransform
-  refine Finset.induction_on (s := Finset.range (d / 2 + 1)) ?base ?step
-  · simpa using hasNonnegCoeffs_zero
-  · intro i s hi ih
-    rw [Finset.sum_insert hi]
-    have hterm : HasNonnegCoeffs (C (γ.coeff i) * gammaBasisTerm d i) := by
-      simpa [mul_assoc] using nonnegCoeffs_C_mul (hγ i) (hasNonnegCoeffs_gammaBasisTerm d i)
-    exact hterm.add ih
+  apply hasNonnegCoeffs_finsetSum
+  intro i _
+  exact nonnegCoeffs_C_mul (hγ i) (hasNonnegCoeffs_gammaBasisTerm d i)
 
 /-- A positive constant gamma coefficient makes every coefficient in the
 ambient degree box strictly positive. -/
@@ -226,13 +222,11 @@ theorem coeff_gammaTransform_pos_of_nonneg_of_coeff_zero_pos
     rw [Polynomial.coeff_one_add_X_pow]
     exact mul_pos hγ0 (by exact_mod_cast Nat.choose_pos hk)
 
-lemma isRealRooted_X_add_one_pow : ∀ n : ℕ, ((((X + 1 : ℝ[X]) ^ n)) ≠ 0 ∧
-  (((X + 1 : ℝ[X]) ^ n)).Splits)
-  | 0 => by simp
-  | n + 1 => by
-      simpa [pow_succ, mul_comm] using
-        isRealRooted_mul (isRealRooted_X_sub_C (-1 : ℝ)).1 (isRealRooted_X_sub_C (-1 : ℝ)).2
-          (isRealRooted_X_add_one_pow n).1 (isRealRooted_X_add_one_pow n).2
+lemma isRealRooted_X_add_one_pow (n : ℕ) :
+    ((X + 1 : ℝ[X]) ^ n ≠ 0 ∧ ((X + 1 : ℝ[X]) ^ n).Splits) :=
+  ⟨pow_ne_zero n (X_add_C_ne_zero 1),
+    by simpa [sub_eq_add_neg] using
+      (Polynomial.Splits.X_sub_C (-1 : ℝ)).pow n⟩
 
 lemma gammaBasisTerm_succ_succ (d i : ℕ) :
     gammaBasisTerm (d + 2) (i + 1) = X * gammaBasisTerm d i := by
