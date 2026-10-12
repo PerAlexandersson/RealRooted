@@ -54,8 +54,8 @@ only the successful attempt, and the certificate.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq` (residue
-classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
+`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq`
+(residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
 `halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
 derivative rows whose degree grows by zero or one,
@@ -223,7 +223,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
   let hd := mkIdent `hd
   let strategies : Array (TSyntax `tactic) ← if r.shape.isLag then
       pure #[← `(tactic| (
-        have key : ∀ $m:ident : ℕ, 0 < ($(← row s)).eval 0 ∧ 0 < ($(← row (s + 1))).eval 0 := by
+        have key : ∀ $m:ident : ℕ, 0 < ($(← row s)).eval 0 ∧
+            0 < ($(← row (s + 1))).eval 0 := by
           intro $m:ident
           induction $m:ident with
           | zero => exact ⟨by rr_row_side, by rr_row_side⟩
@@ -252,9 +253,10 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
               $(← finish hs):tactic
           exact key $t))
       pure #[← step #[] #[h₁],
-        ← step #[← `(tactic| have $hd:ident : 0 ≤ (Polynomial.derivative $(← row s)).eval 0 := by
+        ← step #[← `(tactic| have $hd:ident : 0 ≤
+          (Polynomial.derivative $(← row s)).eval 0 := by
           exact (RealRooted.HasNonnegCoeffs.derivative (by rr_row_nonneg_coeffs)).eval_nonneg
-            (by positivity))] #[h₁, hd]]
+            zero_le)] #[h₁, hd]]
   let mut failures := #[]
   for tac in strategies do
     match ← rowAttempt (do
@@ -485,7 +487,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
   -- (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`)
   let viaDegreePattern := do
-    unless r.shape == .deriv₁ do throwError "rr_row_splits: not a first-order derivative recurrence"
+    unless r.shape == .deriv₁ do
+      throwError "rr_row_splits: not a first-order derivative recurrence"
     let some L ← linRec? r.P | throwError "rr_row_splits: no linear recurrence"
     let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
     let c := (rows[r.shift]!).natDegree
