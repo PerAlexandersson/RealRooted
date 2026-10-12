@@ -64,17 +64,18 @@ series of a finite-memory symbol, prove the inverse identity for the symbol
 series, derive its positive convolution recurrence, and show that all
 fundamental rows have nonnegative coefficients when the symbol coefficients do.
 
-We next formalize consequences of a `SharpDefectBridges` certificate.  Given
-such a certificate, every index $n\geq(r-1)(r-2)$ has an active lag word of
-total lag $n$ with the prescribed residue cost, and no active word of that
+We next construct a `SharpDefectBridges` certificate from any bounded positive
+active lag set of gcd one and a chosen zero-cost lag.  A finite residue
+automaton shortens minimum-cost representatives to simple paths, giving the
+uniform threshold $(r-1)(r-2)$.  Thus every index above that threshold has an
+active lag word of the prescribed residue cost, and no active word of the same
 total lag has smaller cost.  The upper and lower bridge theorems turn the
-corresponding pointwise scaled degree identities into exact word identities.
+pointwise scaled degree identities into exact word identities.
 
-The residue-bridge certificate `SharpDefectBridges` is a hypothesis: its
-general construction from an active finite-memory symbol is not formalized in
-this module.  We do construct the certificate for active lags $2$ and $3$,
-with upper costs $1$ and $0$, respectively; hence every $n\geq2$ has a word
-whose scaled upper degree satisfies $3d+K_{n\bmod3}=2n$.
+For active lags $2$ and $3$, with upper costs $1$ and $0$, respectively, the
+general construction specializes to the explicit certificate below.  Hence
+every $n\geq2$ has a word whose scaled upper degree satisfies
+$3d+K_{n\bmod3}=2n$.
 
 ## References
 

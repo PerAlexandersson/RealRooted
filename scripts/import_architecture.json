@@ -16,13 +16,13 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 1805
+      "max_modules": 1816
     },
     "RealRooted.Production": {
-      "max_modules": 1664
+      "max_modules": 1674
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 711
+      "max_modules": 712
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -184,10 +184,10 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.Hadamard": {
-      "max_modules": 271
+      "max_modules": 272
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
-      "max_modules": 19
+      "max_modules": 20
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation": {
       "max_modules": 3

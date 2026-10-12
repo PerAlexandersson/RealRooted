@@ -546,19 +546,6 @@ private theorem exceptionalRoot_interlacing_jPolynomialRoot
     exact hnodeBase.trans_le
       (hrightBounds (Fin.cast (by lia) i.succ))
 
-private theorem orderedRoot_isRoot_of_splits
-    {p : ℝ[X]} {n : ℕ} (hpSplits : p.Splits)
-    (hpDegree : p.natDegree = n) (i : Fin n) :
-    p.IsRoot (orderedRoot p n i) := by
-  have hlen : (p.roots.sort (· ≤ ·)).length = n := by
-    rw [Multiset.length_sort, card_roots_of_splits hpSplits, hpDegree]
-  have hi : i.val < (p.roots.sort (· ≤ ·)).length := by
-    rw [hlen]
-    exact i.isLt
-  rw [RealRooted.orderedRoot, List.getD_eq_getElem _ _ hi]
-  apply Polynomial.isRoot_of_mem_roots
-  exact (Multiset.mem_sort _).mp (List.getElem_mem ..)
-
 /-- At every indexed Jacobi node, the exceptional toric-contribution
 polynomial has the positive derivative-oriented sign. -/
 theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
@@ -625,7 +612,7 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
           ∏ j : Fin (n + 1), (X - C (s j)) := by
         apply Polynomial.splits_eq_C_mul_prod hRNe hRDegree s
         · intro j
-          exact orderedRoot_isRoot_of_splits hRSplits hRDegree j
+          exact RealRooted.orderedRoot_isRoot_of_splits hRSplits hRDegree j
         · exact hsMono.injective
       have hJeq : J = C J.leadingCoeff *
           ∏ j : Fin n, (X - C (r j)) := by

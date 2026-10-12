@@ -1,5 +1,5 @@
 import re, sys, os, collections
-decl_re = re.compile(r'^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|nonrec\s+|noncomputable\s+)*(theorem|lemma|def|abbrev)\s+([A-Za-z_0-9.\'!?]+)')
+from lean_decl import declaration_starts, find_value_assignment
 files=[]
 for root,dirs,fs in os.walk('.'):
     if '.lake' in root or '.git' in root: continue
@@ -10,20 +10,26 @@ decls=collections.defaultdict(list)
 stmts=collections.defaultdict(list)
 for path in files:
     lines=open(path, encoding='utf-8').read().split('\n')
+    starts = dict(declaration_starts(lines))
     i=0
     while i < len(lines):
-        m=decl_re.match(lines[i])
-        if m:
-            kind,name=m.group(1),m.group(2)
-            # gather statement up to top-level ':=' or 'by'
+        m=starts.get(i)
+        if m and m.group('kind') in ('theorem', 'lemma', 'def', 'abbrev') and m.group('name'):
+            kind,name=m.group('kind'),m.group('name')
+            # Gather a declaration, then split only at its value assignment.
             buf=[]
             j=i
-            while j < len(lines) and j < i+40:
+            while j < len(lines) and j < i+40 and (j == i or j not in starts):
                 buf.append(lines[j])
-                if re.search(r':=', lines[j]): break
+                if find_value_assignment('\n'.join(buf)) is not None: break
                 j+=1
-            text=' '.join(buf)
-            text=text.split(':=')[0]
+            assignment=find_value_assignment('\n'.join(buf))
+            if assignment is None:
+                print(f"warning: no declaration assignment within scan bound: {path}:{i+1} ({name})",
+                    file=sys.stderr)
+                i=j if j < len(lines) and j in starts else j+1
+                continue
+            text='\n'.join(buf)[:assignment]
             # normalize
             norm=re.sub(r'\s+',' ',text).strip()
             norm=re.sub(r'^(?:@\[[^\]]*\]\s*)?','',norm)

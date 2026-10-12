@@ -1668,6 +1668,17 @@ import RealRooted.Challenges.FiniteMemoryDefect
 import RealRooted.Challenges.NewtonDefectRoots
 import RealRooted.Challenges.ProperPositionPF
 import RealRooted.Challenges.UnivariatePoissonStar
+import RealRooted.Wronskian.OdeRootExclusion
+import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+import RealRooted.DerivativeRecurrence.OuterSelectedHeight
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+import RealRooted.MultivariateStability.ExpectedCharpoly
+import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+import RealRooted.CoefficientShape.LocalLimit
+import RealRooted.Mathlib.Probability.LocalLimit
+
+import RealRooted.ToeplitzFin
 
 /-!
 # RealRooted production umbrella

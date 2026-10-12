@@ -677,10 +677,6 @@ theorem card_avoiders_descentCount_eq_narayana (n k : ℕ) :
   rw [succ_mul_card_avoiders_descentCount_eq, Nat.narayana_mul (n + 1) (k + 1) n.succ_ne_zero
     k.succ_ne_zero, Nat.add_sub_cancel]
 
-/-- The descent generating polynomial of the `132`-avoiding permutations of `n` letters. -/
-noncomputable def descentGeneratingPolynomial (n : ℕ) : ℝ[X] :=
-  Finset.genPoly (Equiv.Perm.avoiders n [⟨3, SimionSchmidt.p132⟩]) Equiv.Perm.descentCount
-
 private lemma mul_succ_eq_of_succ_mul_eq {n k c : ℕ}
     (h : (n + 1) * c = Nat.choose (n + 1) (k + 1) * Nat.choose (n + 1) k) :
     c * (k + 1) = Nat.choose n k * Nat.choose (n + 1) k := by
@@ -700,9 +696,9 @@ private lemma card_mul_succ_eq (n k : ℕ) :
 /-- The descent polynomial of the `132`-avoiders of `n + 1` letters is the Narayana polynomial
 `narayanaPolynomial 1 n`, with coefficients `C(n, k) C(n + 1, k) / (k + 1)`. -/
 theorem descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n : ℕ) :
-    descentGeneratingPolynomial (n + 1) = narayanaPolynomial 1 n := by
+    Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 1) [⟨3, SimionSchmidt.p132⟩])
+      Equiv.Perm.descentCount = narayanaPolynomial 1 n := by
   ext k
-  unfold descentGeneratingPolynomial
   rw [Finset.coeff_genPoly]
   by_cases hk : k ≤ n
   · rw [coeff_narayanaPolynomial_of_le hk, narayanaTransformCoeff]
@@ -723,14 +719,21 @@ theorem descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n : ℕ) :
 
 /-- The descent generating polynomial of the `132`-avoiding permutations is real-rooted. -/
 theorem isRealRooted_descentGeneratingPolynomial_succ (n : ℕ) :
-    descentGeneratingPolynomial (n + 1) ≠ 0 ∧ (descentGeneratingPolynomial (n + 1)).Splits := by
+    Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 1) [⟨3, SimionSchmidt.p132⟩])
+        Equiv.Perm.descentCount ≠ 0 ∧
+      (Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 1) [⟨3, SimionSchmidt.p132⟩])
+        Equiv.Perm.descentCount).Splits := by
   rw [descentGeneratingPolynomial_succ_eq_narayanaPolynomial]
   exact ⟨narayanaPolynomial_ne_zero 1 n, splits_narayanaPolynomial 1 n⟩
 
 /-- The descent polynomials of the `132`-avoiders of `n + 2` and `n + 3` letters strictly
 interlace. -/
 theorem strictInterl_descentGeneratingPolynomial_succ (n : ℕ) :
-    StrictInterl (descentGeneratingPolynomial (n + 2)) (descentGeneratingPolynomial (n + 3)) := by
+    StrictInterl
+      (Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 2) [⟨3, SimionSchmidt.p132⟩])
+        Equiv.Perm.descentCount)
+      (Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 3) [⟨3, SimionSchmidt.p132⟩])
+        Equiv.Perm.descentCount) := by
   rw [descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n + 1),
     descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n + 2)]
   exact strictInterl_narayanaPolynomial_succ 1 n
