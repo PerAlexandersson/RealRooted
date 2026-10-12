@@ -33,6 +33,7 @@ import RealRooted.Tactic.Examples.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
+import RealRooted.Tactic.Examples.LinRecCancellation
 import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
