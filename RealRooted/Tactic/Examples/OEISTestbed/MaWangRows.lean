@@ -89,16 +89,18 @@ theorem A154602_interlaces (n : ℕ) : Interlaces (A154602 n) (A154602 (n + 1)) 
 
 theorem A154602_splits (n : ℕ) : (A154602 n).Splits := by rr_row_splits
 
-/-- Unsigned Laguerre rows `n! Lₙ(-t)`: `v_n(t) = t` (A021009). -/
-def A021009 : ℕ → ℝ[X]
+/-- Unsigned Laguerre rows `n! Lₙ(-t)`: `v_n(t) = t`. -/
+def unsignedLaguerreRows : ℕ → ℝ[X]
   | 0 => 1
-  | n + 1 => (C 0 + C 1 * X) * (A021009 n).derivative +
-      (C ((n : ℝ) + 1) + C 1 * X) * A021009 n
+  | n + 1 => (C 0 + C 1 * X) * (unsignedLaguerreRows n).derivative +
+      (C ((n : ℝ) + 1) + C 1 * X) * unsignedLaguerreRows n
 
-theorem A021009_interlaces (n : ℕ) : Interlaces (A021009 n) (A021009 (n + 1)) := by
+theorem unsignedLaguerreRows_interlaces (n : ℕ) :
+    Interlaces (unsignedLaguerreRows n) (unsignedLaguerreRows (n + 1)) := by
   rr_row_interlaces
 
-theorem A021009_splits (n : ℕ) : (A021009 n).Splits := by rr_row_splits
+theorem unsignedLaguerreRows_splits (n : ℕ) : (unsignedLaguerreRows n).Splits := by
+  rr_row_splits
 
 /-- Even binomial rows `∑ₖ C(2n, 2k) tᵏ`: lag `-(1 - t)²` (A086645). -/
 def A086645 : ℕ → ℝ[X]
