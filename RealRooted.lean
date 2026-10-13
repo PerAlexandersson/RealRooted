@@ -1910,3 +1910,4 @@ import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
 import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
 import RealRooted.GammaTransform.TwoStep
 import RealRooted.Challenges.BorceaBrandenClassification
+import RealRooted.Tactic.Examples.RowPathPowerK5
