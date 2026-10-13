@@ -264,7 +264,7 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     le_ratio (A := A) m h_xm_pos
   have h_ratio_le :
       (A *ᵥ x) m / x m ≤ Finset.univ.sup' Finset.univ_nonempty (fun k ↦ ∑ l, A k l) := by
-    rw [Matrix.mulVec_apply_eq_sum, div_le_iff h_xm_pos]
+    rw [Matrix.mulVec_apply_eq_sum, div_le_iff₀ h_xm_pos]
     refine le_trans (sum_mul_le_sum_mul_const_of_forall_le (fun j => A m j) x m
       (fun j => hA_nonneg m j) h_xm_max) ?_
     apply mul_le_mul_of_nonneg_right _ (le_of_lt h_xm_pos)

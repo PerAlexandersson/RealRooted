@@ -23,6 +23,12 @@ unless a documented compatibility module is temporarily bridging a migration.
 1. **Mathlib shims.** `RealRooted/Mathlib/` contains upstream-shaped additions
    to Mathlib namespaces. These files may import Mathlib or other
    `RealRooted.Mathlib` files, but not the RealRooted theorem library.
+   Every shim file has an entry in `scripts/mathlib_shims.json`; run
+   `scripts/check_mathlib_shims.py --mathlib DIR --check-registry --strict`
+   before a Mathlib bump to list shim declarations that now exist upstream.
+   When a shim is proposed upstream, record the PR in its entry's `note`; once
+   it lands, mark the entry exact (not `speculative`) and delete the shim on the
+   next compatible bump.
 2. **Polynomial and root infrastructure.** Elementary polynomial identities,
    root lists, derivatives, reversals, Wronskians, and the basic interlacing
    predicates.

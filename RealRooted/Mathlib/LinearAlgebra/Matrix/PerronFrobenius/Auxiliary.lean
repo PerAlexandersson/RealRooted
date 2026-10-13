@@ -105,17 +105,6 @@ lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → �
     rw [← hi_max]
     exact Finset.le_sup' v (Finset.mem_univ j)
 
-/-- Division inequality: a / b ≤ c ↔ a ≤ c * b when b > 0. -/
-lemma div_le_iff {a b c : ℝ} (hb : 0 < b) : a / b ≤ c ↔ a ≤ c * b := by
-  rw [@le_iff_le_iff_lt_iff_lt]
-  exact lt_div_iff₀ hb
-
-section ConditionallyCompleteLinearOrder
-
-variable {α : Type*} [ConditionallyCompleteLinearOrder α]
-
-end ConditionallyCompleteLinearOrder
-
 lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
   (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ RealRooted.standardSimplex ℝ n := by
   dsimp [RealRooted.standardSimplex]; constructor

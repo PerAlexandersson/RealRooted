@@ -1,0 +1,2504 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Interleave.lean"
+      ],
+      "declarations": [
+        "List.interleaves_iff_length_isChain_interleave",
+        "List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one",
+        "List.interleaves_reverse_reverse_of_length_eq_length_add_one",
+        "List.interleaves_ofFn_even",
+        "List.interleaves_ofFn_odd"
+      ],
+      "note": "mathlib4#39870 (Ya\u00ebl Dillies; merged): List interleaving API. The five explicit probes are the upstream names that differ from the current shim names."
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/PDeriv.lean"
+      ],
+      "note": "Existing upstream `MvPolynomial.pderiv_comm`; retain this exact collision sentinel until the compatible pin migration removes the local shim."
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/BigOperators/Finset/Unique.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.BigOperators.Finset.Unique"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/BigOperators/Group/List.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.BigOperators.Group.List"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Group/ForwardDiff.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Group.ForwardDiff"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Annihilator.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Annihilator"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Asymptotics.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Asymptotics"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Chebyshev.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Chebyshev/Trigonometric.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Factors.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Factors"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Norm.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Norm"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Norm/Real.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Rescale.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Rescale/Real.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic/Scale.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Quadratic.Scale"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Subsequence.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Subsequence"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Degrees.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Degrees"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Diagonal.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Diagonal"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Equiv.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Equiv"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Eval.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Eval"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/EvalOnVars.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.EvalOnVars"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Homogenize.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Homogenize"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Nonnegative.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Nonnegative"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/PDerivProd.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.PDerivProd"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/PDerivSpecialize.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.PDerivSpecialize"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Specialize.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Specialize"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/SpecializeList.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.SpecializeList"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Stability/DegreeBox.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Stability.DegreeBox"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/Stability/Symbol.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.Stability.Symbol"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Order/BigOperators/Alternating.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Order.BigOperators.Alternating"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Order/BigOperators/Ring/Multiset.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Order.BigOperators.Ring.Multiset"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Antiderivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Antiderivative"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/BasisTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.BasisTransform"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Bezoutian.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Bezoutian"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/BigOperators.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.BigOperators"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/BudanFourier.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.BudanFourier"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform/Algebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform.Algebra"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform/Bernstein.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform/BernsteinBasisTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/CayleyTransform/Roots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.CayleyTransform.Roots"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Chow.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Chow"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Coeff.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Coeff"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Degree/Lemmas.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Degree.Lemmas"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Degree/Operations.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Degree.Operations"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Degree/SmallDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Degree.SmallDegree"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Derivative"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/SecondOrder.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DividedDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DividedDifference"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Dominance.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Dominance"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Eval/Defs.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Eval.Defs"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Eval/Degree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Eval.Degree"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Eval/ShiftedChoose.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Eval.ShiftedChoose"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/Splits.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.Splits"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/FieldDivision.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.FieldDivision"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Homogenize.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Homogenize"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MeanMode.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MeanMode"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Moment"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Reverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Reverse"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Roots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Roots"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/RuleOfSigns.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.RuleOfSigns"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Splits.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Splits"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Splits/Complex.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Splits.Complex"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Splits/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Splits.Derivative"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Sturm.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Sturm"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Taylor.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Taylor"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/QuadraticDiscriminant.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.QuadraticDiscriminant"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Ring/Parity.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Ring.Parity"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LocalExtr/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LocalExtr.Polynomial"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ArgumentPrinciple.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ArgumentPrinciple"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/BorelGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.BorelGrowth"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/EdreiUniqueness.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.EdreiUniqueness"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/EntireExponentialType.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.EntireExponentialType"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HadamardExponentialType.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HadamardExponentialType"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Hurwitz.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Hurwitz"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/OpenMapping.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.OpenMapping"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/ClosedRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.ClosedRoots"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/ClosedRoots/Real.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/CoeffEstimates.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.CoeffEstimates"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/CoeffExtraction.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.CoeffExtraction"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/EnestromKakeya.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.EnestromKakeya"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/JensenDisks.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.JensenDisks"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/SchurCohn.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.SchurCohn"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/Szasz.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.Szasz"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/SzaszMultivariate.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/PolynomialLimitCoeff.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.PolynomialLimitCoeff"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/WeierstrassProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.WeierstrassProduct"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroCounting.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroCounting"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Field/Approximation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Field.Approximation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Ring/Power.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Ring.Power"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/Asymptotics.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.Asymptotics"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/MahlerMeasure.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.MahlerMeasure"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Choose.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Choose"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/ExpIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.ExpIntegral"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gamma/Beta.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gamma.Beta"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Integrals/RpowLog.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/BooleanLattice.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.BooleanLattice"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/CentralTrinomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.CentralTrinomial"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Descent.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Descent"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/DyckStatistics.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.DyckStatistics"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/EulerianPeak.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.EulerianPeak"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Excedance.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Excedance"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/GenPoly.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.GenPoly"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/InverseStatistics.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.InverseStatistics"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/InversionBridge.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.InversionBridge"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/OrderedSubsetPairs.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/ParkingFunction.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.ParkingFunction"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/ParkingFunctionCount.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.ParkingFunctionCount"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Pattern.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Pattern"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/PatternCount.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.PatternCount"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Peak.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Peak"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/PermStatistics.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.PermStatistics"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/PermSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.PermSum"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/PermSumDescent.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.PermSumDescent"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/PermSumPattern.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.PermSumPattern"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Separable.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Separable"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/SeparableCubic.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.SeparableCubic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/SimionSchmidt.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.SimionSchmidt"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Quiver/Path/Vertices.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Quiver.Path.Vertices"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/SimpleGraph/MatchingPolyOn.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/SimpleGraph/MatrixTree.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.SimpleGraph.MatrixTree"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Fin/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Fin.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Fintype/Card.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Fintype.Card"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Destutter.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.Destutter"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Interleave/Padding.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.Interleave.Padding"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/OfFn.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.OfFn"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Sort/Endpoint.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.Sort.Endpoint"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/SplitBy.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.SplitBy"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/List/Zip.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.List.Zip"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Multiset/Card.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Multiset.Card"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Multiset/Rel.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Multiset.Rel"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Cast/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Cast.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Choose/Cast.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Choose.Cast"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Choose/Nanjundiah.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Choose.Nanjundiah"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Factorial/Strict.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Factorial.Strict"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/Quadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.Quadrature"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/AdjugateExpansion.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.AdjugateExpansion"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/AdjugatePath.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.AdjugatePath"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/CauchyBinet.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.CauchyBinet"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Charpoly/Rank.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Charpoly.Rank"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Charpoly/Submatrix.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Compound.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Compound"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/CompoundSpectrum.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.CompoundSpectrum"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/DesnanotJacobi.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.DesnanotJacobi"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/BandedHessenberg.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/CauchyBinet.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/ColumnDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Integral.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.Integral"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Plucker.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.Plucker"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/GantmacherKrein.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Gaussian.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Gaussian"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Hurwitz.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Hurwitz"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Hurwitz/Determinant.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/JacobiComplementaryMinor.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/KernelSignVariation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.KernelSignVariation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Oscillatory.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Oscillatory"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Core.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Permanent.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Permanent"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Auxiliary.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/CStarClasses.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/DataList.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Nonneg.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Primitive.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/QuiverPath.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Simplex.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Spectrum.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Polynomial/PosDef.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/RankOneCompression.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.RankOneCompression"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/RankOneExpectation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.RankOneExpectation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/RankOneUpdate.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.RankOneUpdate"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignRegular.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignRegular"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignRegularRankDeficient.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignRegularStrictification.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignRegularStrictification"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignRegularVariation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignRegularVariation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignVariation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignVariation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SignVariationTopology.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SignVariationTopology"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/SpectrumClosed.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.SpectrumClosed"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/StrictLower.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.StrictLower"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Bidiagonal.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Border.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Charpoly.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Closure.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/CornerPerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Cryer.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Cryer/Closure.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Cryer/Strict.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Density.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/DiagonalTail.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/ElementarySymmetric.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/FinTruncation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Mul.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/PrincipalInterlacing.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/SourceBorder.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/TotallyNonneg/Spectrum.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Triangularize.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Triangularize"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/VariationDiminishing.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.VariationDiminishing"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Vandermonde.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Vandermonde"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Order/Fin/Tuple.lean"
+      ],
+      "modules": [
+        "Mathlib.Order.Fin.Tuple"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Probability/CoeffDistribution.lean"
+      ],
+      "modules": [
+        "Mathlib.Probability.CoeffDistribution"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Probability/LocalLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Probability.LocalLimit"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/BooleanSwapOrbit.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/DividedDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.DividedDifference"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/EulerIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.EulerIdentity"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Homogeneous.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Homogeneous"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Hyperbolic.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Hyperbolic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/CompleteHomogeneous.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/NewtonIdentities.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Chebyshev/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Chebyshev.Bounds"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Hermite.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Hermite"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/DifferentialOperator.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.Moment"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Differential.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Differential"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Recurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Recurrence"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Pochhammer.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Pochhammer"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Resultant/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Resultant.Basic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/ShiftedLegendre.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.ShiftedLegendre"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Vieta.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Vieta"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Wronskian.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Wronskian"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/CatalanQuadratic.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.CatalanQuadratic"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/CausalFwdDiff.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.CausalFwdDiff"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LagrangeInversion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LagrangeInversion"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/MapDerivation.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.MapDerivation"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NestedConstants.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NestedConstants"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/PiTopology.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.PiTopology"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/Regular.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.Regular"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/Sqrt.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.Sqrt"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/ZeroPrefix.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.ZeroPrefix"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/Int.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.Int"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Invertible.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.Polynomial"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Instances/Matrix/Determinant.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Instances.Matrix.Determinant"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    }
+  ]
+}
