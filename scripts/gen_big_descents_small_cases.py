@@ -77,7 +77,7 @@ def integer(c):
     return "(" + " + ".join(parts) + ")"
 
 
-def wrap_list(head, items, indent, tail):
+def wrap_list(head, items, indent, tail, width=WIDTH):
     """`head[i0, i1, ...]tail`, wrapped at WIDTH; items may break at ` + `."""
     tokens = []
     for k, item in enumerate(items):
@@ -88,12 +88,12 @@ def wrap_list(head, items, indent, tail):
     lines, cur = [], head + "["
     for tok in tokens:
         piece = tok if cur.endswith("[") else " " + tok
-        if len(cur) + len(piece) > WIDTH:
+        if len(cur) + len(piece) > width:
             lines.append(cur)
             cur = " " * indent + tok
         else:
             cur += piece
-    if len(cur) + len(tail) > WIDTH:
+    if len(cur) + len(tail) > width:
         lines.append(cur)
         cur = " " * indent + tail.strip()
     else:
@@ -121,8 +121,8 @@ def wrap_sum(head, expr, indent, tail):
     return "\n".join(lines)
 
 
-def ofl(head, coeffs, tail, indent=4):
-    return wrap_list(head + "ofList ", [integer(c) for c in coeffs], indent, tail)
+def ofl(head, coeffs, tail, indent=4, width=WIDTH):
+    return wrap_list(head + "ofList ", [integer(c) for c in coeffs], indent, tail, width)
 
 
 def simp_only(items, indent="  "):
@@ -139,6 +139,13 @@ def simp_only(items, indent="  "):
 
 
 def literals(rows):
+    def table(name, table_rows):
+        text = [f"private def {name} : List (List ℤ) :=\n  [\n"]
+        for row in table_rows:
+            text.append(wrap_list("    ", [integer(c) for c in row], 4, ",") + "\n")
+        text.append("  ]\n")
+        return "".join(text)
+
     out = [HEADER, """import RealRooted.CombinatorialExamples.BigDescents321.Basic
 import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
 import Mathlib.Basic.Real.Basic
@@ -147,52 +154,128 @@ import Mathlib.Basic.Real.Basic
 # Literal forms of the small big-descent polynomials
 
 The coefficient lists of `M_k = motzkinRef k` for `k ≤ 22` and of `A_n = bigDescentPoly n`
-for `n ≤ 24` over `ℝ`. Each is derived from its convolution recurrence, with the polynomial
-products checked as integer-list computations by the kernel.
+for `n ≤ 24` over `ℝ`. The kernel checks each finite list recurrence once, and inductions
+identify the recursive polynomials with their table rows.
 -/
 
 open Polynomial
 
 namespace RealRooted.BigDescents321.SmallCases
 """]
-    out.append("""
-theorem motzkinRef_0 : (motzkinRef 0 : ℝ[X]) = ofList [1] := by
-  simp [ofList_singleton]
+    motzkin_rows = [motzkin(k) for k in range(N - 1)]
+    out.append(table("motzkinRows", motzkin_rows))
+    out.append(table("bigDescentRows", rows))
+    out.append(f"""
+private def motzkinList (k : ℕ) : List ℤ := motzkinRows.getD k []
 
-theorem motzkinRef_1 : (motzkinRef 1 : ℝ[X]) = ofList [2] := by
-  simp [two_eq_ofList]
+private def bigDescentList (n : ℕ) : List ℤ := bigDescentRows.getD n []
+
+private def firstReturnList : ℕ → List ℤ
+  | 0 => []
+  | 1 => [1]
+  | 2 => [1]
+  | j + 3 => 0 :: motzkinList (j + 1)
+
+private def sumList (f : ℕ → List ℤ) : ℕ → List ℤ
+  | 0 => []
+  | n + 1 => addList (sumList f n) (f n)
+
+private theorem ofList_sumList (f : ℕ → List ℤ) (n : ℕ) :
+    (ofList (sumList f n) : ℝ[X]) = ∑ i ∈ Finset.range n, ofList (f i) := by
+  induction n with
+  | zero => simp [sumList]
+  | succ n ih => simp only [sumList, Finset.sum_range_succ, ofList_addList, ih]
+
+private theorem motzkinRows_certificate :
+    motzkinList 0 = [1] ∧ motzkinList 1 = [2] ∧
+      ∀ k : Fin {N - 3},
+        motzkinList (k + 2) =
+          addList (mulList [2] (motzkinList (k + 1)))
+            (0 :: sumList (fun i ↦ mulList (motzkinList i) (motzkinList (k - i))) (k + 1)) := by
+  decide +kernel
+
+private theorem motzkinRef_eq_motzkinList (k : ℕ) (hk : k ≤ {N - 2}) :
+    (motzkinRef k : ℝ[X]) = ofList (motzkinList k) := by
+  revert hk
+  induction k using Nat.strong_induction_on with
+  | h k ih =>
+    match k with
+    | 0 => intro _; simp [motzkinList, motzkinRows, ofList_singleton]
+    | 1 =>
+      intro _
+      rw [motzkinRef_one]
+      change (2 : ℝ[X]) = ofList [2]
+      exact two_eq_ofList
+    | k + 2 =>
+      intro hk
+      have hsum :
+          ∑ i ∈ Finset.range (k + 1),
+              (motzkinRef i : ℝ[X]) * motzkinRef (k - i) =
+            ofList (sumList (fun i ↦ mulList (motzkinList i) (motzkinList (k - i))) (k + 1)) := by
+        rw [ofList_sumList]
+        refine Finset.sum_congr rfl fun i hi ↦ ?_
+        have hi' := Finset.mem_range.mp hi
+        rw [ih i (by lia) (by lia),
+          ih (k - i) (by lia) (by lia), ← ofList_mulList]
+      rw [motzkinRef_add_two, ih (k + 1) (by lia) (by lia), hsum, two_eq_ofList,
+        ← ofList_mulList, ← ofList_zero_cons, ← ofList_addList]
+      exact congrArg ofList (motzkinRows_certificate.2.2 ⟨k, by lia⟩).symm
+
+private theorem firstReturn_eq_firstReturnList (j : ℕ) (hj : j ≤ {N}) :
+    (firstReturn j : ℝ[X]) = ofList (firstReturnList j) := by
+  match j with
+  | 0 => simp [firstReturnList]
+  | 1 => simp [firstReturnList, ofList_singleton]
+  | 2 => simp [firstReturnList, ofList_singleton]
+  | j + 3 =>
+    rw [firstReturn_add_three, motzkinRef_eq_motzkinList (j + 1) (by lia),
+      ← ofList_zero_cons]
+    rfl
+
+private theorem bigDescentRows_certificate :
+    bigDescentList 0 = [1] ∧
+      ∀ n : Fin {N},
+        bigDescentList (n + 1) =
+          sumList
+            (fun j ↦ mulList (firstReturnList (j + 1)) (bigDescentList (n - j))) (n + 1) := by
+  decide +kernel
+
+private theorem bigDescentPoly_eq_bigDescentList (n : ℕ) (hn : n ≤ {N}) :
+    (bigDescentPoly n : ℝ[X]) = ofList (bigDescentList n) := by
+  revert hn
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    match n with
+    | 0 => intro _; simp [bigDescentList, bigDescentRows, ofList_singleton]
+    | n + 1 =>
+      intro hn
+      have hsum :
+          ∑ j ∈ Finset.range (n + 1),
+              (firstReturn (j + 1) : ℝ[X]) * bigDescentPoly (n - j) =
+            ofList
+              (sumList
+                (fun j ↦ mulList (firstReturnList (j + 1)) (bigDescentList (n - j)))
+                (n + 1)) := by
+        rw [ofList_sumList]
+        refine Finset.sum_congr rfl fun j hj ↦ ?_
+        have hj' := Finset.mem_range.mp hj
+        rw [firstReturn_eq_firstReturnList (j + 1) (by lia),
+          ih (n - j) (by lia) (by lia), ← ofList_mulList]
+      rw [bigDescentPoly_succ, hsum]
+      exact congrArg ofList (bigDescentRows_certificate.2 ⟨n, by lia⟩).symm
 """)
-    for k in range(2, N - 1):
-        items = ["Finset.sum_range_succ", "Finset.sum_range_zero"]
-        items += (["Nat.reduceAdd"] if k > 2 else []) + ["Nat.reduceSub", "zero_add",
-                                                         "two_eq_ofList"]
-        items += [f"motzkinRef_{i}" for i in range(k)]
-        out.append("\n" + ofl(f"theorem motzkinRef_{k} : (motzkinRef {k} : ℝ[X]) = ",
-                              motzkin(k), " := by") + "\n  rw [motzkinRef_add_two]\n" +
-                   simp_only(items) +
-                   "\n  simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]"
-                   "\n  exact congrArg ofList (by decide +kernel)\n")
-    out.append("""
-theorem bigDescentPoly_0 : (bigDescentPoly 0 : ℝ[X]) = ofList [1] := by
-  simp [ofList_singleton]
-
-theorem bigDescentPoly_1 : (bigDescentPoly 1 : ℝ[X]) = ofList [1] := by
-  simp [ofList_singleton, bigDescentPoly_one]
-
-theorem bigDescentPoly_2 : (bigDescentPoly 2 : ℝ[X]) = ofList [2] := by
-  simp [ofList_singleton, bigDescentPoly_two, map_ofNat]
-""")
-    for n in range(3, N + 1):
-        items = ["Finset.sum_range_succ", "Finset.sum_range_zero", "Nat.reduceAdd",
-                 "Nat.reduceSub", "zero_add", "firstReturn_one", "firstReturn_two",
-                 "firstReturn_add_three", "one_mul"]
-        items += [f"motzkinRef_{k}" for k in range(1, n - 1)]
-        items += [f"bigDescentPoly_{m}" for m in range(n)]
-        out.append("\n" + ofl(f"theorem bigDescentPoly_{n} : (bigDescentPoly {n} : ℝ[X]) = ",
-                              rows[n], " := by") + "\n  rw [bigDescentPoly_succ]\n" +
-                   simp_only(items) +
-                   "\n  simp only [← ofList_zero_cons, ← ofList_mulList, ← ofList_addList]"
-                   "\n  exact congrArg ofList (by decide +kernel)\n")
+    for k in range(N - 1):
+        out.append("\n/-- The literal table row for `motzkinRef " + str(k) + "`. -/\n" +
+                   ofl(f"theorem motzkinRef_{k} : (motzkinRef {k} : ℝ[X]) = ", motzkin(k),
+                       "", width=96) + "\n    := by" +
+                   "\n  simpa [motzkinList, motzkinRows] using\n"
+                   f"    motzkinRef_eq_motzkinList {k} (by lia)\n")
+    for n in range(N + 1):
+        out.append("\n/-- The literal table row for `bigDescentPoly " + str(n) + "`. -/\n" +
+                   ofl(f"theorem bigDescentPoly_{n} : (bigDescentPoly {n} : ℝ[X]) = ", rows[n],
+                       "", width=96) + "\n    := by" +
+                   "\n  simpa [bigDescentList, bigDescentRows] using\n"
+                   f"    bigDescentPoly_eq_bigDescentList {n} (by lia)\n")
     out.append("\nend RealRooted.BigDescents321.SmallCases\n")
     return "".join(out)
 
