@@ -26,7 +26,7 @@ module = "RealRooted.BrandenVecchi.Chow"
 label = "Chow polynomials of a lower-triangular matrix"
 
 [[definitions]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Chow polynomials of a Pólya frequency symbol"
 
@@ -71,12 +71,12 @@ module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "c_n interlaces d_n"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow_isPFPolynomial"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_isPFPolynomial"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Pólya frequency symbols give PF Chow polynomials"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow_interl_succ"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_interl_succ"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Consecutive Chow polynomials of a Pólya frequency symbol interlace"
 

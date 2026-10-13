@@ -139,7 +139,8 @@ theorem A008277_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A008277 n) := by
 theorem A008277_eval_zero_pos (n : ℕ) : 0 < (A008277 n).eval 0 := by rr_row_eval_zero_pos
 theorem A008277_splits (n : ℕ) : (A008277 n).Splits := by rr_row_splits
 
-/-- Nonnegativity from the multiplier bound (`RealRooted.derivRec_hasNonnegCoeffs_of_mult`). -/
+/-- Nonnegativity from the multiplier bound
+(`RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`). -/
 theorem A008292_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A008292 n) := by
   rr_row_nonneg_coeffs
 theorem A008292_eval_zero_pos (n : ℕ) : 0 < (A008292 n).eval 0 := by rr_row_eval_zero_pos
@@ -157,7 +158,7 @@ theorem A111006_splits (n : ℕ) : (A111006 n).Splits := by rr_row_splits
 
 /-- The certificate printed by `rr_row_interlaces?` for `A019538_interlaces`. -/
 example (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
-  apply RealRooted.derivRec_interlaces_of_roots_mem_Icc (P := A019538) (D₀ := 0)
+  apply RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc (P := A019538) (D₀ := 0)
     (L := (-1 : ℝ)) (U := (0 : ℝ)) fun _ => rfl <;> rr_row_side
 
 example (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
@@ -167,7 +168,8 @@ example (n : ℕ) : Interlaces (A137597 n) (A137597 (n + 1)) := by
   rr_row_interlaces (upper := -1)
 
 example (n : ℕ) : Interlaces (A008292 n) (A008292 (n + 1)) := by
-  rr_row_interlaces (thm := RealRooted.derivRec_interlaces_of_nonnegCoeffs) (degree := 0)
+  rr_row_interlaces
+    (thm := RealRooted.derivativeRecurrence_interlaces_of_nonnegCoeffs) (degree := 0)
 
 #guard_msgs (drop info) in
 example (n : ℕ) : Interlaces (A111006 n) (A111006 (n + 1)) := by rr_row_interlaces?
@@ -375,7 +377,7 @@ example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
 
 /-- The roots stay in `[L n, 0]`, where `L n = -(8n + 21) / (9n + 24)` is the other root of
 `A n` and decreases with `n` (A370258,
-`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`). -/
+`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`). -/
 def A370258 : ℕ → ℝ[X]
   | 0 => 1 + 10 * X + 15 * X ^ 2
   | n + 1 =>
@@ -390,7 +392,7 @@ theorem A370258_interlaces (n : ℕ) : Interlaces (A370258 n) (A370258 (n + 1)) 
 
 /-- The roots stay at most `U n = -(n + 3) / (8n + 21)`, the smaller root of `A n`, which
 increases with `n`; the other root `1` of `A n` splits the conditions beyond `U (n + 1)`
-(A110608, `RealRooted.derivRec_interlaces_of_roots_le_mono_div`). -/
+(A110608, `RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`). -/
 def A110608 : ℕ → ℝ[X]
   | 0 => 6 + 8 * X + X ^ 2
   | n + 1 =>
@@ -593,7 +595,8 @@ theorem A124932_interlaces (n : ℕ) : Interlaces (A124932 n) (A124932 (n + 1)) 
 
 /--
 info: Try these:
-  [apply] rr_row_splits (via := nextRow) (thm := RealRooted.derivRec_interlaces_of_roots_mem_Icc)
+  [apply] rr_row_splits (via := nextRow)
+    (thm := RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc)
         (degree := 0) (drop := 0) (window := [-1, 0])
 -/
 #guard_msgs in

@@ -99,7 +99,7 @@ module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
 label = "Consecutive rows of A156289 interlace"
 
 [[theorems]]
-name = "RealRooted.EulerBidiagonal.A166960_spec"
+name = "RealRooted.EulerBidiagonal.A166960_isNegativeSimple_and_strictInterl_succ"
 module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
 label = "Consecutive rows of A166960 interlace (likewise A166961, A166962, A166972)"
 -->

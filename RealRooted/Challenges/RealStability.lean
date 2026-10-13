@@ -155,7 +155,7 @@ module = "RealRooted.MultivariateStability.MixedCharacteristic"
 label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are real-rooted"
 
 [[theorems]]
-name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_optimized"
+name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_one_add_sqrt_sq"
 module = "RealRooted.MultivariateStability.MSSBound"
 label = "Marcus–Spielman–Srivastava: the roots of μ[A] are at most (1 + √ε)²"
 headline = true

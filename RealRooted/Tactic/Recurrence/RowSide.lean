@@ -303,11 +303,11 @@ private def rowThms (shape : RecShape) (kind : String) : List (Name × Option St
         | _ => (``RealRooted.threeTermPos_leadingCoeff_pos,
             ``RealRooted.threeTermRatio_leadingCoeff_pos)
       (pos, none) :: ["1", "2", "4", "1 / 2", "3"].map fun r => (ratio, some r)
-  | _, "natDegree" => [(``RealRooted.derivRec_natDegree, none)]
-  | _, "ne_zero" => [(``RealRooted.derivRec_ne_zero, none)]
+  | _, "natDegree" => [(``RealRooted.derivativeRecurrence_natDegree, none)]
+  | _, "ne_zero" => [(``RealRooted.derivativeRecurrence_ne_zero, none)]
   | _, "natDegree_leadingCoeff_pos" =>
-      [(``RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos, none)]
-  | _, _ => [(``RealRooted.derivRec_leadingCoeff_pos, none)]
+      [(``RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos, none)]
+  | _, _ => [(``RealRooted.derivativeRecurrence_leadingCoeff_pos, none)]
 
 /-- Parse a ratio such as `1 / 2`. -/
 private def parseTerm (r : String) : TacticM Term := do

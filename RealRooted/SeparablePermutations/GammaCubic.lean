@@ -325,11 +325,12 @@ private lemma aux_coeff_rec (p : Polynomial ℝ) (a : ℝ) (k : ℕ) :
     ring
 
 /-- Zhang's auxiliary polynomials in closed form: `k! 2 ^ N [x ^ k] B_N = N! [u ^ N] R_k`. -/
-private theorem factorial_mul_coeff_auxPolynomial (N k : ℕ) :
-    (k.factorial : ℝ) * 2 ^ N * (auxPolynomial N).coeff k = N.factorial * coeff N (Rk k) := by
+private theorem factorial_mul_coeff_compressionSourcePolynomial (N k : ℕ) :
+    (k.factorial : ℝ) * 2 ^ N * (compressionSourcePolynomial N).coeff k =
+      N.factorial * coeff N (Rk k) := by
   induction N generalizing k with
   | zero =>
-    rw [auxPolynomial_zero, coeff_zero_Rk, Polynomial.coeff_one]
+    rw [compressionSourcePolynomial_zero, coeff_zero_Rk, Polynomial.coeff_one]
     rcases k with _ | k <;> simp
   | succ N ih =>
     rw [show ((N + 1).factorial : ℝ) * coeff (N + 1) (Rk k) =
@@ -337,7 +338,7 @@ private theorem factorial_mul_coeff_auxPolynomial (N k : ℕ) :
       rw [← coeff_succ_Rk_mul, Nat.factorial_succ]
       push_cast
       ring]
-    rw [auxPolynomial_succ, aux_coeff_rec, coeff_derivative_split]
+    rw [compressionSourcePolynomial_succ, aux_coeff_rec, coeff_derivative_split]
     rcases k with _ | k
     · rw [derivative_Rk_zero]
       have := ih 0
@@ -459,11 +460,11 @@ private lemma coeff_gammaPolynomial_add_two_eq (N k : ℕ) :
   rw [coeff_gammaPolynomial_add_two]
   by_cases h : 2 * k ≤ N + 1
   · rw [ite_eq_left h, ite_eq_left h]
-    have hz := GammaCubic.factorial_mul_coeff_auxPolynomial N k
+    have hz := GammaCubic.factorial_mul_coeff_compressionSourcePolynomial N k
     rw [GammaCubic.coeff_Rk N k (by lia)] at hz
     have hN : (N.factorial : ℝ) ≠ 0 := by positivity
     have hcF : PowerSeries.coeff (N - k) (GammaCubic.Fk k) =
-        k.factorial * 2 ^ N * (auxPolynomial N).coeff k / N.factorial := by
+        k.factorial * 2 ^ N * (compressionSourcePolynomial N).coeff k / N.factorial := by
       rw [eq_div_iff hN, hz]
       ring
     rw [hcF]

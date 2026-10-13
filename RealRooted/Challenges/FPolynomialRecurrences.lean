@@ -16,7 +16,7 @@ module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "The derivative rule for the f-polynomial transform"
 
 [[theorems]]
-name = "RealRooted.fPolynomial_derivRec_step"
+name = "RealRooted.fPolynomial_derivativeRecurrence_step"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "One transformed derivative-recurrence step"
 
@@ -31,7 +31,7 @@ module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "Quadratic-linear derivative recurrences have at most linear degree growth"
 
 [[theorems]]
-name = "RealRooted.eq_fPolynomial_of_derivRec_of_natDegree_zero"
+name = "RealRooted.eq_fPolynomial_of_derivativeRecurrence_of_natDegree_zero"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
 label = "A constant initial row gives the transformed recurrence identity"
 

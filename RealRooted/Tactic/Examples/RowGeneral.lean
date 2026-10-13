@@ -210,7 +210,8 @@ def A008303 : ℕ → ℝ[X]
 theorem A008303_natDegree (n : ℕ) : (A008303 n).natDegree = n / 2 := by rr_row_natDegree
 
 /-- The rows of degree `n / 2` split: from the first row of positive degree on, consecutive
-rows strictly interlace (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`). -/
+rows strictly interlace
+(`RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`). -/
 theorem A008303_splits (n : ℕ) : (A008303 n).Splits := by rr_row_splits
 
 /-- Half growth of a three-term recurrence whose multipliers are rational in `n` (A008556). -/

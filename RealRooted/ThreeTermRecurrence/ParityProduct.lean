@@ -6,7 +6,7 @@ import RealRooted.Interlacing.Euclid
 Let `s` and `t` solve the same recurrence `x (m + 2) = β x (m + 1) - μ ^ 2 x m`.  The sequence
 alternating between `s m * t m` and `s (m + 1) * t m` satisfies the order-three recurrence with
 characteristic polynomial `(z - μ) (z ^ 2 - β z + μ ^ 2)`, provided one compatibility condition
-holds at the start (`eq_parityProduct_of_rec3`): the Casoratians
+holds at the start (`eq_parityProduct_of_thirdOrderRecurrence`): the Casoratians
 `W m = s (m + 1) t m - s m t (m + 1)` and `V m = s (m + 1) t (m + 1) - s (m + 2) t m` both grow by
 the factor `μ ^ 2`, so `V 0 = μ W 0` gives `V m = μ W m` for all `m`, which is what the
 recurrence needs.
@@ -44,7 +44,7 @@ theorem parityProduct_casoratian
 `(z - μ) (z ^ 2 - β z + μ ^ 2)` are the parity products of two solutions `s`, `t` of
 `x (m + 2) = β x (m + 1) - μ ^ 2 x m`, given the first three rows and the compatibility
 `V 0 = μ W 0` of the Casoratians. -/
-theorem eq_parityProduct_of_rec3
+theorem eq_parityProduct_of_thirdOrderRecurrence
     (hP : ∀ n, P (n + 3) =
       (β + μ) * P (n + 2) - (μ ^ 2 + μ * β) * P (n + 1) + μ ^ 3 * P n)
     (hs : ∀ m, s (m + 2) = β * s (m + 1) - μ ^ 2 * s m)

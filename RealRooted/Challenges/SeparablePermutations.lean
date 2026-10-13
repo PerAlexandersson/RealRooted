@@ -13,7 +13,7 @@ authors = ["Zhanhe Zhang", "Fu", "Lin", "Zeng"]
 years = [2018, 2026]
 
 [[definitions]]
-name = "RealRooted.SeparablePermutations.auxPolynomial"
+name = "RealRooted.SeparablePermutations.compressionSourcePolynomial"
 module = "RealRooted.SeparablePermutations.Basic"
 label = "Auxiliary polynomials B_N with B_{N+1} = (x + (N+2)/2) B_N + x B_N'"
 
@@ -49,7 +49,7 @@ module = "RealRooted.SeparablePermutations.Interlacing"
 label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} strictly interlace without common root"
 
 [[theorems]]
-name = "RealRooted.SeparablePermutations.strictInterl_auxPolynomial"
+name = "RealRooted.SeparablePermutations.strictInterl_compressionSourcePolynomial"
 module = "RealRooted.SeparablePermutations.Basic"
 label = "Consecutive auxiliary polynomials B_N, B_{N+1} strictly interlace"
 

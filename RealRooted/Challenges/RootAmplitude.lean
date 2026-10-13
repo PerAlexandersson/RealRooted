@@ -27,27 +27,27 @@ module = "RealRooted.RootAmplitude.SmallestRoot"
 label = "One-fifth bound at the smallest root"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.exp_gain_le_amp_of_separation"
+name = "RealRooted.RootAmplitude.exp_gain_le_amplitude_of_separation"
 module = "RealRooted.RootAmplitude.Separation.Euler"
 label = "Index-dependent bound for separated sequences"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_amp_of_separation"
+name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_amplitude_of_separation"
 module = "RealRooted.RootAmplitude.Separation.Euler"
 label = "Uniform bound for separated sequences"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.amp_zero_le"
+name = "RealRooted.RootAmplitude.amplitude_zero_le"
 module = "RealRooted.RootAmplitude.Minimum"
 label = "The smallest amplitude is minimal"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.amp_le_amp_of_sum"
+name = "RealRooted.RootAmplitude.amplitude_le_amplitude_of_sum"
 module = "RealRooted.RootAmplitude.Minimum"
 label = "Monotonicity from reciprocal-distance sums"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.amp_le_amp_of_convex"
+name = "RealRooted.RootAmplitude.amplitude_le_amplitude_of_convex"
 module = "RealRooted.RootAmplitude.Convex"
 label = "Monotonicity from convex gaps"
 
@@ -72,12 +72,12 @@ module = "RealRooted.RootAmplitude.SumSquares"
 label = "Amplitude bound from reciprocal squares"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.abs_eval_deriv_root_div_eval_zero_eq_amp"
+name = "RealRooted.RootAmplitude.abs_eval_deriv_root_div_eval_zero_eq_amplitude"
 module = "RealRooted.RootAmplitude.Separation.Polynomial"
 label = "Derivative amplitude identity"
 
 [[theorems]]
-name = "RealRooted.RootAmplitude.amp_eq_lower_mul_upper"
+name = "RealRooted.RootAmplitude.amplitude_eq_lower_mul_upper"
 module = "RealRooted.RootAmplitude.Separation.Finite"
 label = "Lower and upper factors of an amplitude"
 
@@ -98,12 +98,12 @@ label = "Strict increase from separation"
 We study the normalized amplitude of a finite positive sequence at one of its
 indices, obtained by multiplying the absolute factors
 $\lvert 1-g_k/g_j\rvert$ over all other indices. For a positive strictly
-increasing sequence, `amp_le_amp_of_convex` proves
+increasing sequence, `amplitude_le_amplitude_of_convex` proves
 $\operatorname{amp}_k \leq \operatorname{amp}_{k+1}$ when $n \leq 2k+2$ and
 the consecutive gaps are nondecreasing.
-The stronger `amp_zero_le` iterates this comparison when the corresponding
+The stronger `amplitude_zero_le` iterates this comparison when the corresponding
 tail estimates hold, while
-`amp_le_amp_of_sum` uses reciprocal-distance sums instead of convexity.
+`amplitude_le_amplitude_of_sum` uses reciprocal-distance sums instead of convexity.
 
 We give two ways to verify the gap hypothesis. If the sequence is positive and
 the first logarithmic gap is nonnegative, the inequality in
@@ -112,9 +112,9 @@ the first logarithmic gap is nonnegative, the inequality in
 For a multiplicatively separated sequence, we iterate
 $q g_i \le g_{i+1}$ to obtain a power bound on any later-to-earlier ratio
 and strict increase when $q > 1$. The factorization
-`amp_eq_lower_mul_upper` then separates an amplitude into its lower and upper
+`amplitude_eq_lower_mul_upper` then separates an amplitude into its lower and upper
 products, which leads to the Euler bounds in the catalog. For $q = \exp d$
-with $d > 0$, `exp_gain_le_amp_of_separation` keeps the
+with $d > 0$, `exp_gain_le_amplitude_of_separation` keeps the
 triangular index-dependent gain, and its uniform version discards that gain.
 
 We connect these finite products to split real polynomials. If the roots are

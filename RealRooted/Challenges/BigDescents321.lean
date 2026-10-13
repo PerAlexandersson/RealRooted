@@ -22,7 +22,7 @@ module = "RealRooted.CombinatorialExamples.BigDescents321.Basic"
 label = "Reference Motzkin polynomial"
 
 [[theorems]]
-name = "RealRooted.BigDescents321.interlaces_and_nodup"
+name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
 label = "Bulk interlacing with simple roots"
 headline = true

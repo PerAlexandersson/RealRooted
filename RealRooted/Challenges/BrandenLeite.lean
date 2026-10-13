@@ -69,7 +69,7 @@ module = "RealRooted.BrandenLeite.ConstantDiagonal"
 label = "Positive constant diagonal"
 
 [[theorems]]
-name = "RealRooted.BrandenLeite.compositionRows_mk_pf_and_interl_of_zero"
+name = "RealRooted.BrandenLeite.compositionRows_isPFPolynomial_and_interl_of_zero"
 module = "RealRooted.BrandenLeite.ZeroConstant"
 label = "Rows of 1 / (1 - x h(z)) are PF and interlace"
 

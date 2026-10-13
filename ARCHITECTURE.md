@@ -1063,7 +1063,7 @@ Separation.Roots}`, `Separation.Finite -> Separation.Euler`, and
 `{RootAmplitude.Polynomial, Separation.Euler, Separation.Roots} ->
 Separation.Polynomial`. Elementary consumers can stop before the analytic or
 polynomial leaves. All polynomial corollaries use the single canonical
-`RootAmplitude.amp` from `Finite`.
+`RootAmplitude.amplitude` from `Finite`.
 
 Two independent downstream OEIS proof paths justify the public surface. The
 A366159 migration targets `A366159TailCoeff.A366159C_amplitude` and

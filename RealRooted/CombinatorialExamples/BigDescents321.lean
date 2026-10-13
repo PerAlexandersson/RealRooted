@@ -23,7 +23,7 @@ is the combinatorial interpretation of the recurrence; it is not formalized here
 
 ## Main statements
 
-* `interlaces_and_nodup`: the bulk interlacing for `n ≥ 3`.
+* `motzkinRef_interl_bigDescentPoly_and_noCommonRoots`: the bulk interlacing for `n ≥ 3`.
 * `bigDescentPoly_splits`, `neg_of_isRoot_bigDescentPoly`: `A_n` is real-rooted with negative
   roots.
 -/
@@ -76,7 +76,7 @@ theorem interlaces_and_nodup_of_ge {n : ℕ} (hn : 25 ≤ n) :
 
 /-- The bulk interlacing for 321-avoiding permutations by big descents: for `n ≥ 3`,
 `M_(n-2)` interlaces `A_n`, both have simple roots, and they have no common root. -/
-theorem interlaces_and_nodup {n : ℕ} (hn : 3 ≤ n) :
+theorem motzkinRef_interl_bigDescentPoly_and_noCommonRoots {n : ℕ} (hn : 3 ≤ n) :
     Interlaces (motzkinRef (n - 2) : ℝ[X]) (bigDescentPoly n) ∧
       (bigDescentPoly n : ℝ[X]).roots.Nodup ∧
       (motzkinRef (n - 2) : ℝ[X]).roots.Nodup ∧
@@ -90,7 +90,7 @@ theorem interlaces_and_nodup {n : ℕ} (hn : 3 ≤ n) :
 /-- `A_n` splits over `ℝ` for every `n`. -/
 theorem bigDescentPoly_splits (n : ℕ) : (bigDescentPoly n : ℝ[X]).Splits := by
   rcases le_or_gt 3 n with h | h
-  · exact (interlaces_and_nodup h).1.1.2
+  · exact (motzkinRef_interl_bigDescentPoly_and_noCommonRoots h).1.1.2
   · interval_cases n
     · rw [bigDescentPoly_zero]; exact Splits.one
     · rw [bigDescentPoly_one]; exact Splits.one

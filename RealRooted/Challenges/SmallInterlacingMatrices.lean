@@ -27,7 +27,7 @@ module = "RealRooted.MatrixInterlacing"
 label = "No zero row and two distinct rows"
 
 [[definitions]]
-name = "RealRooted.Atomic2x2Matrix.symCatPreserving"
+name = "RealRooted.Atomic2x2Matrix.nondegeneratePreservingMatrices"
 module = "RealRooted.MatrixInterlacing"
 label = "The 18 listed matrices"
 
@@ -140,16 +140,16 @@ theorem ncard_preservesInterlacing :
 
 /-- **The 18 small preservers.** A nondegenerate matrix with entries in
 `{0, 1, x}` preserves interlacing if and only if it is one of the 18 matrices
-of `symCatPreserving`. -/
+of `nondegeneratePreservingMatrices`. -/
 theorem nondegenerate_preservesInterlacing_iff (M : Atomic2x2Matrix) :
-    M.IsNondegenerate ∧ M.PreservesInterlacing ↔ M ∈ symCatPreserving :=
-  (mem_symCatPreserving_iff M).symm
+    M.IsNondegenerate ∧ M.PreservesInterlacing ↔ M ∈ nondegeneratePreservingMatrices :=
+  (mem_nondegeneratePreservingMatrices_iff M).symm
 
 /-- Exactly 18 nondegenerate matrices with entries in `{0, 1, x}` preserve
 interlacing. -/
 theorem ncard_nondegenerate_preservesInterlacing :
     {M : Atomic2x2Matrix | M.IsNondegenerate ∧ M.PreservesInterlacing}.ncard = 18 := by
-  rw [← card_nondegeneratePreserving, nondegeneratePreserving_eq_symCatPreserving,
+  rw [← card_nondegeneratePreserving, nondegeneratePreserving_eq_nondegeneratePreservingMatrices,
     ← Set.ncard_coe_finset]
   congr 1
   ext M

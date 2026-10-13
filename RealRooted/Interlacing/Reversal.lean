@@ -15,7 +15,8 @@ The reversed rows of a recurrence satisfy a recurrence of the same shape:
 
 * `eq_reflect_of_threeTerm`: `P (n + 2) = a n P (n + 1) + b n P n` reverses to the multipliers
   `reflect 1 (a n)` and `reflect 2 (b n)`;
-* `eq_reflect_of_derivRec₂`: `P (n + 1) = A₂ P'' + A₁ P' + A₀ P` reverses through
+* `eq_reflect_of_secondOrderDerivativeRecurrence`:
+  `P (n + 1) = A₂ P'' + A₁ P' + A₀ P` reverses through
   `Polynomial.derivative_reflect`, with `θ_N r = X (N r - X r')`, `θ_N r = X u₁` and
   `θ_N (θ_N r) = X ^ 2 u₂`.
 
@@ -116,7 +117,8 @@ private lemma reflect_mul_X_pow_mul {a u : ℝ[X]} {k M : ℕ}
 /-- Reversed rows of a second-order derivative recurrence.  If `P (n + 1) = A₂ P'' + A₁ P' + A₀ P`
 with `A i` of degree at most `i + 1`, and `R` satisfies the reflected recurrence (with
 `N = D₀ + n`), then `P n = reflect (D₀ + n) (R n)` for all `n`. -/
-theorem eq_reflect_of_derivRec₂ {P R A₂ A₁ A₀ B₂ B₁ B₀ : ℕ → ℝ[X]} {D₀ : ℕ}
+theorem eq_reflect_of_secondOrderDerivativeRecurrence
+    {P R A₂ A₁ A₀ B₂ B₁ B₀ : ℕ → ℝ[X]} {D₀ : ℕ}
     (hP : ∀ n, P (n + 1) =
       A₂ n * derivative (derivative (P n)) + A₁ n * derivative (P n) + A₀ n * P n)
     (hR : ∀ n, R (n + 1) =

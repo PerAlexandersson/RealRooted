@@ -17,32 +17,32 @@ authors = ["Liu", "Wang", "Brändén"]
 years = [2006, 2007]
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_mem_Icc"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing from a fixed root window"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_le"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_le"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing with an upper root bound"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_degree"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_of_degree"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Degree-bounded interlacing in a root window"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing with a moving lower bound"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_le_mono_div"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing with a moving upper bound"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_of_or"
+name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_of_or"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Two-sided moving windows, either condition on each side"
 
@@ -72,7 +72,7 @@ module = "RealRooted.ThreeTermRecurrence.LagFeedback"
 label = "Splitting for lag-feedback recurrences"
 
 [[theorems]]
-name = "RealRooted.eq_parityProduct_of_rec3"
+name = "RealRooted.eq_parityProduct_of_thirdOrderRecurrence"
 module = "RealRooted.ThreeTermRecurrence.ParityProduct"
 label = "Parity products represented by an order-three recurrence"
 
@@ -82,7 +82,7 @@ module = "RealRooted.ThreeTermRecurrence.ParityProduct"
 label = "Interlacing of parity products"
 
 [[theorems]]
-name = "RealRooted.eq_reflect_of_derivRec₂"
+name = "RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence"
 module = "RealRooted.Interlacing.Reversal"
 label = "Reflection of a second-order derivative recurrence"
 
@@ -122,7 +122,7 @@ module = "RealRooted.Interlacing.RemainderCertificate"
 label = "Power-factor rows from a linear remainder certificate"
 
 [[theorems]]
-name = "RealRooted.derivRec_interlaces_of_endpoint_windows"
+name = "RealRooted.derivativeRecurrence_interlaces_of_endpoint_windows"
 module = "RealRooted.DerivativeRecurrence.EndpointWindow"
 label = "Root windows from endpoint signs only"
 -->

@@ -117,12 +117,12 @@ theorem prod_one_add_div_le_of_inj {ι κ : Type*}
 
 /-- Amplitude monotonicity from convexity when there are enough lower indices
 to pair every upper index. -/
-theorem amp_le_amp_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
+theorem amplitude_le_amplitude_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     (hconv : ∀ i, gap g i ≤ gap g (i + 1))
     (n k : ℕ) (hk1 : k + 1 < n) (hcount : n ≤ 2 * k + 2) :
-    amp g n k ≤ amp g n (k + 1) := by
+    amplitude g n k ≤ amplitude g n (k + 1) := by
   classical
-  refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
+  refine amplitude_le_amplitude_of_core g hpos hsm n k hk1 ?_
   have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
   have hb : ∀ y ∈ range k, 0 < g k - g y :=
@@ -168,16 +168,16 @@ theorem amp_le_amp_of_convex (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
 
 /-- Amplitude monotonicity from convexity with an explicit bound for the
 unpaired upper tail. -/
-theorem amp_le_amp_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
+theorem amplitude_le_amplitude_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     (hconv : ∀ i, gap g i ≤ gap g (i + 1))
     (n k : ℕ) (hk1 : k + 1 < n)
     (htail : ∏ j ∈ Ico (2 * k + 2) n, (1 + (g (k + 1) - g k) / (g j - g (k + 1)))
       ≤ 1 + (g (k + 1) - g k) / g k) :
-    amp g n k ≤ amp g n (k + 1) := by
+    amplitude g n k ≤ amplitude g n (k + 1) := by
   classical
   rcases le_or_gt n (2 * k + 2) with hle | hgt
-  · exact amp_le_amp_of_convex g hpos hsm hconv n k hk1 hle
-  refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
+  · exact amplitude_le_amplitude_of_convex g hpos hsm hconv n k hk1 hle
+  refine amplitude_le_amplitude_of_core g hpos hsm n k hk1 ?_
   have hDpos : (0 : K) ≤ g (k + 1) - g k :=
     le_of_lt (sub_pos.mpr (hsm (Nat.lt_succ_self k)))
   have hb : ∀ y ∈ range k, 0 < g k - g y :=

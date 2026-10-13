@@ -24,7 +24,7 @@ route that the probe rules out fails without elaborating anything.
    step (`Row.DerivLag`).
 2. Order three, factoring through a three-term recurrence: the reduction certified by
    `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
-   two three-term sequences: `eq_parityProduct_of_rec3` (`Row.ParityProduct`).
+   two three-term sequences: `eq_parityProduct_of_thirdOrderRecurrence` (`Row.ParityProduct`).
 3. Direct or reflected path-power subsequences, selected by an exact fit of rows zero through
    eight (`Row.PathPower`).
 4. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
@@ -37,15 +37,18 @@ route that the probe rules out fails without elaborating anything.
    * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
      general Euler step (`EulerBidiagonal.interlaces_of_generalStep_rec`);
    * three-term and first-order derivative recurrences: the sign conditions
-     (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`, `derivRec_interlaces_*`),
+     (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`,
+     `derivativeRecurrence_interlaces_*`),
      then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
      `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
      for `b n < 0` beyond the window), then a moving lower window
-     (`derivRec_interlaces_of_roots_mem_Icc_mono_div`) and a moving upper bound split at a
-     common root of the `A n` (`derivRec_interlaces_of_roots_le_mono_div`).
+     (`derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`) and a moving
+     upper bound split at a
+     common root of the `A n` (`derivativeRecurrence_interlaces_of_roots_le_mono_div`).
 6. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
-   sequence, the link `eq_reflect_of_derivRec₂` / `eq_reflect_of_threeTerm`, and the transfer
+   sequence, the link `eq_reflect_of_secondOrderDerivativeRecurrence` /
+   `eq_reflect_of_threeTerm`, and the transfer
    `interlaces_of_eq_reflect` (`Row.Reverse`).
 
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
@@ -63,13 +66,14 @@ only the successful attempt, and the certificate.
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
 `halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
 derivative rows whose degree grows by zero or one,
-`derivRec_splits_of_degree_pattern_of_nonnegCoeffs`); derivative-lag recurrences go to
+`derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`); derivative-lag recurrences go to
 `Row.DerivLag`.  `rr_row_splits?` prints the hinted call.
 
 ## Other front ends
 
 * `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, by `RealRooted.threeTerm_hasNonnegCoeffs`,
-  `RealRooted.derivRec_hasNonnegCoeffs` or `RealRooted.derivRec_hasNonnegCoeffs_of_mult`
+  `RealRooted.derivativeRecurrence_hasNonnegCoeffs` or
+  `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`
   (products as two-step recurrences);
 * `rr_row_eval_zero_pos`: `0 < (P t).eval 0`, by induction on the recurrence evaluated at
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
@@ -273,11 +277,11 @@ elab_rules : tactic
     let D₀? ← findRowDegree P r.shift
     for h in recs do
       mains := mains.push (← `(tactic|
-        refine RealRooted.derivRec_hasNonnegCoeffs (P := $Q) $h ?_ ?_ ?_ $t))
+        refine RealRooted.derivativeRecurrence_hasNonnegCoeffs (P := $Q) $h ?_ ?_ ?_ $t))
       if let some D₀ := D₀? then
         for d in [1, 0, 2] do
           mains := mains.push (← `(tactic|
-            refine RealRooted.derivRec_hasNonnegCoeffs_of_mult (P := $Q)
+            refine RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult (P := $Q)
               (D₀ := $(rowNumLit D₀)) (d := $(rowNumLit d)) $h ?_ ?_ ?_ ?_ $t))
     if mains.isEmpty then
       throwError "rr_row_nonneg_coeffs: the second-order recurrence of {P} needs a \
@@ -609,7 +613,7 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   -- first-order derivative recurrences whose degree grows by zero or one at each step, with
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
-  -- (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`)
+  -- (`RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`)
   let viaDegreePattern := do
     unless r.shape == .deriv₁ do
       throwError "rr_row_splits: not a first-order derivative recurrence"
@@ -646,7 +650,8 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     let hrec ← r.hrecTerm 0
     let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
     evalTactic (← `(tactic|
-      refine RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs (P := $Q) (D := $Dt)
+      refine RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs
+        (P := $Q) (D := $Dt)
         $hrec ?_ ?_ ?_ ?_ ?_ ?_ $t))
     let [hdeg, hstep, hpos, hnn, hA, h0] ← getGoals
       | throwError "rr_row_splits: unexpected side goals"
@@ -655,7 +660,7 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     setGoals [hpos]; evalTactic (← `(tactic| (intro m; exact $hposAll:ident _)))
     setGoals [hnn]
     evalTactic (← `(tactic|
-      refine RealRooted.derivRec_hasNonnegCoeffs_of_mult_le (D := $Dt) $hrec
+      refine RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le (D := $Dt) $hrec
         (fun m => (show _ = _ by beta_reduce; rw [$hdegAll:ident] <;> lia).le) ?_ ?_ ?_))
     let [hA0, hmult, hnn0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
     setGoals [hA0]
