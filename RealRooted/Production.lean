@@ -1731,6 +1731,7 @@ import RealRooted.BorceaBranden.RealFiniteClassification
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+import RealRooted.MultiplierSequence.InvPochhammerSimple
 
 /-!
 # RealRooted production umbrella
