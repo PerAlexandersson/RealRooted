@@ -80,12 +80,13 @@ network is needed.
 
 ## References
 
-Y. Gelineau and J. Zeng, “Combinatorial interpretations of the Jacobi–Stirling
-numbers,” *Electronic Journal of Combinatorics* 17 (2010), #R70; P. Mongelli,
-“Total positivity properties of Jacobi–Stirling numbers,” *Advances in Applied
+Y. Gelineau and J. Zeng, [“Combinatorial interpretations of the Jacobi–Stirling
+numbers,”](https://doi.org/10.37236/342) *Electronic Journal of Combinatorics*
+17 (2010), #R70; P. Mongelli, [“Total positivity properties of Jacobi–Stirling
+numbers,”](https://doi.org/10.1016/j.aam.2011.06.008) *Advances in Applied
 Mathematics* 48 (2012), 354–364; G. E. Andrews, E. S. Egge, W. Gawronski and
-L. L. Littlejohn, “The Jacobi–Stirling numbers,” *Journal of Combinatorial
-Theory, Series A* 120 (2013), 288–303.
+L. L. Littlejohn, [“The Jacobi–Stirling numbers,”](https://doi.org/10.1016/j.jcta.2012.08.006)
+*Journal of Combinatorial Theory, Series A* 120 (2013), 288–303.
 
 The descent polynomials of Jacobi–Stirling permutations are on the
 [Jacobi–Stirling descent page](/RealRooted/families/jacobi-stirling-descent/).

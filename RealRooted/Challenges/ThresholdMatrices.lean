@@ -73,11 +73,16 @@ real-rooted.
 
 ## References
 
-J. Haglund and P. B. Zhang, “Real-rootedness of variations of Eulerian
-polynomials,” arXiv:1902.01278 (2019); N. Gustafsson and L. Solus,
-“Derangements, Ehrhart theory, and local $h$-polynomials,” *Advances in
-Mathematics* 369 (2020), 107169; J. Ma, S.-M. Ma and Y.-N. Yeh, “Recurrence
-relations for binomial-Eulerian polynomials,” arXiv:1711.09016 (2017).
+J. Haglund and P. B. Zhang, [“Real-rootedness of variations of Eulerian
+polynomials,”](https://doi.org/10.1016/j.aam.2019.05.001) *Advances in Applied
+Mathematics* 109 (2019), 38–54,
+[arXiv:1902.01278](https://arxiv.org/abs/1902.01278). N. Gustafsson and
+L. Solus, [“Derangements, Ehrhart theory, and local
+$h$-polynomials,”](https://doi.org/10.1016/j.aim.2020.107169) *Advances in
+Mathematics* 369 (2020), 107169. J. Ma, S.-M. Ma and Y.-N. Yeh, “Recurrence
+relations for binomial-Eulerian polynomials,”
+[arXiv:1711.09016](https://arxiv.org/abs/1711.09016) (2017). See also the
+[binomial Eulerian polynomial on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#binomialEulerianPolynomial).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

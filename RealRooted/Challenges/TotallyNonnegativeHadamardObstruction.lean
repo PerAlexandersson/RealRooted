@@ -3,11 +3,41 @@ import RealRooted.HurwitzMatrix
 /-!
 # Totally nonnegative windows do not give the Hurwitz Schur product
 
-This file records a small structural obstruction for entrywise products of
-totally nonnegative matrices: the Hadamard product of two totally nonnegative
-`3` by `3` matrices can have negative determinant.  For infinite Hurwitz
-matrices the Schur-product statement also fails; see
-`RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "totally-nonnegative-hadamard-obstruction"
+formalized = "2026-09-30"
+
+[[theorems]]
+name = "RealRooted.TotallyNonnegativeHadamardObstruction.exists_totallyNonneg_hadamard_det_neg"
+label = "The Hadamard product of two 3 × 3 TNN matrices can have negative determinant"
+headline = true
+
+[[theorems]]
+name = "RealRooted.TotallyNonnegativeHadamardObstruction.exists_totallyNonneg_hadamardCornerZeroed_neg"
+label = "A corner-zeroed Hadamard determinant can be negative"
+-->
+
+<!-- realrooted-catalog-content -->
+# Hadamard products of totally nonnegative matrices
+
+The Hadamard product multiplies two matrices entry by entry. We give two
+totally nonnegative $3 \times 3$ matrices whose Hadamard product has determinant
+$-2$. Thus entrywise multiplication does not preserve total nonnegativity,
+even in size three. The same witnesses also make the corner-zeroed determinant
+used by the Hurwitz-matrix calculation negative.
+
+For infinite Hurwitz matrices, the corresponding Schur-product assertion also
+fails; see `RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
+
+## References
+
+D. G. Wagner, [“Total positivity of Hadamard
+products,”](https://doi.org/10.1016/0022-247X(92)90261-B) *Journal of
+Mathematical Analysis and Applications* 163 (1992), 459–483. See also the
+[Hadamard product on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductDefinition).
+<!-- /realrooted-catalog-content -->
 -/
 
 namespace RealRooted.TotallyNonnegativeHadamardObstruction

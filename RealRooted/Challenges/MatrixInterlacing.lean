@@ -91,18 +91,9 @@ sequences. Under conditions 1 and 2 as stated, $G$ maps a strict sequence to a
 sequence $(g_1, \dots, g_m)$ of polynomials with nonnegative coefficients and
 $g_i \ll g_j$ whenever $i < j$, where some $g_i$ may vanish.
 
-## Proof idea
-
-Sufficiency is Brändén's argument: for rows $i_1 \le i_2$, condition 2 makes
-the columns of the affine combinations $(s x + t) G_{i_1 j} + G_{i_2 j}$
-interlace, and so the image rows interlace. For necessity, apply $G$ to sparse
-test sequences. The sequence with $1$ in position $j$ and zeros elsewhere
-gives condition 1 and the case $j_1 = j_2$. The sequence with $1$ in position
-$j_1$, $s' x + t'$ in position $j_2$ and zeros elsewhere gives
-$a + (s' x + t') b \ll c + (s' x + t') d$. Hence
-$(s' x + t')\bigl((s x + t) b + d\bigr) + (s x + t) a + c$ is real-rooted for
-all $s', t' > 0$, and the affine-family criterion (Brändén, Lemma 7.8.4)
-turns this into condition 2.
+The criterion is checked on every ordered $2\times2$ submatrix, including
+repeated row or column indices. The page also records its strict-input and
+zero-aware forward forms.
 
 ## References
 

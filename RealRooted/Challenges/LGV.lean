@@ -63,10 +63,10 @@ label = "Paths of length n and powers of the edge matrix"
 <!-- realrooted-catalog-content -->
 # Lindström–Gessel–Viennot and total positivity
 
-The Lindström–Gessel–Viennot lemma expresses a minor of a path-network
-matrix as a signed count of families of vertex-disjoint paths. When every
-crossing family cancels against another, only nonintersecting families
-survive, and the minor is a sum of nonnegative path weights.
+The [Lindström–Gessel–Viennot lemma](https://www.symmetricfunctions.com/lgv-lemma.htm#lindstromGesselViennotLemma)
+expresses a path-matrix minor as a signed sum over vertex-disjoint path
+families. The formalization uses ordered cancellation certificates to show
+that the surviving terms have nonnegative weights.
 
 Building on the path-cancellation proof in the LeanLGV library:
 
@@ -88,7 +88,7 @@ Building on the path-cancellation proof in the LeanLGV library:
 B. Lindström, “On the vector representations of induced matroids,” *Bull.
 London Math. Soc.* 5 (1973), 85–90.
 I. Gessel and G. Viennot, “Binomial determinants, paths, and hook length
-formulae,” *Adv. Math.* 58 (1985), 300–321.
+formulae,” *Advances in Mathematics* 58 (1985), 300–321.
 The kernel rows connect to the
 [Brändén–Saud Leite page](/RealRooted/theorems/branden-leite/).
 <!-- /realrooted-catalog-content -->

@@ -84,19 +84,19 @@ label = "Positive leading coefficient after product differentiation"
 <!-- realrooted-catalog-content -->
 # Endpoint derivative sequences
 
-We fix \(a \leq b\) and write \(q=(X-a)(X-b)\). If a split polynomial \(f\)
-has positive leading coefficient, positive degree, and all roots in \([a,b]\),
-then `strictInterl_endpointDerivative` puts \(f\) strictly to the left of
-\(qf'\). The roots of \(qf'\) remain in the same interval, as recorded by
+We fix $a \leq b$ and write $q=(X-a)(X-b)$. If a split polynomial $f$
+has positive leading coefficient, positive degree, and all roots in $[a,b]$,
+then `strictInterl_endpointDerivative` puts $f$ strictly to the left of
+$qf'$. The roots of $qf'$ remain in the same interval, as recorded by
 `roots_endpointDerivative_mem_Icc`.
 
-We also apply the same argument to \((qf)'\). The product first adds the two
+We also apply the same argument to $(qf)'$. The product first adds the two
 endpoint roots, and differentiation then gives the second pair of one-step
 theorems. Thus `strictInterl_derivative_endpointProduct` gives strict
-interlacing with \(f\), while `roots_derivative_endpointProduct_mem_Icc`
+interlacing with $f$, while `roots_derivative_endpointProduct_mem_Icc`
 preserves the root interval.
 
-We use these one-step results inductively for a sequence \(P\). Under the
+We use these one-step results inductively for a sequence $P$. Under the
 corresponding recurrence, base splitting and root-window hypotheses, positive
 leading coefficients, and positive degrees, the two sequence theorems give a
 strict interlacing chain. With the additional successor-degree identity, the
@@ -110,6 +110,9 @@ coefficient alone; the paired leading-coefficient theorems preserve positivity
 for both operators.
 
 ## References
+
+S. Fisk, [*Polynomials, roots, and interlacing*](https://arxiv.org/abs/math/0612833),
+arXiv:math/0612833 (2006), Chapter 1.
 
 The first applications are the rows of [OEIS A142071](https://oeis.org/A142071),
 [OEIS A172106](https://oeis.org/A172106), [OEIS A172107](https://oeis.org/A172107), and

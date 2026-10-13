@@ -52,8 +52,8 @@ with nonpositive roots; Nijenhuis’s signed normalization has nonnegative roots
 
 ## References
 
-A. Nijenhuis, “On permanents and the zeros of rook polynomials,” *Journal of
-Combinatorial Theory, Series A* 21 (1976), 240–244. See also the
+A. Nijenhuis, [“On permanents and the zeros of rook polynomials,”](https://doi.org/10.1016/0097-3165(76)90068-6)
+*Journal of Combinatorial Theory, Series A* 21 (1976), 240–244. See also the
 [rook-polynomial overview on
 symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#rookPolynomials).
 <!-- /realrooted-catalog-content -->

@@ -55,6 +55,7 @@ $2^{|E(G)| - \sum_{v \in S} \deg v}$.
 The right-hand side of the identity is a weighted independence polynomial with
 positive weights, which is real-rooted for claw-free graphs by the weighted form
 of the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+See also [claw-free graphs on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#clawFreeGraph).
 Line graphs are one claw-free subfamily.
 
 For acyclic orientations, see the pages on

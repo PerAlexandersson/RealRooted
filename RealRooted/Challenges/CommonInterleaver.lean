@@ -154,7 +154,8 @@ has largest root at most that of the polynomial at the root.
 ## References
 
 M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a
-clawfree graph,” *J. Combin. Theory Ser. B* 97 (2007), 350–357.
+clawfree graph,” *J. Combin. Theory Ser. B* 97 (2007), 350–357,
+[doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
 P. Brändén, [“Unimodality, log-concavity, real-rootedness and
 beyond,”](https://arxiv.org/abs/1410.6601) in *Handbook of Enumerative
 Combinatorics*, CRC Press (2015), Section 7.8.

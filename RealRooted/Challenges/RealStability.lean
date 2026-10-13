@@ -22,8 +22,9 @@ version = 1
 section = "theorems"
 slug = "real-stability"
 formalized = "2026-10-12"
-authors = ["Brändén", "Borcea", "Gårding", "Marcus", "Spielman", "Srivastava"]
-years = [1959, 2007, 2008, 2015]
+authors = ["Gårding", "Choe", "Oxley", "Sokal", "Wagner", "Brändén", "Borcea",
+  "Liggett", "Marcus", "Spielman", "Srivastava", "Huh"]
+years = [1959, 2004, 2007, 2008, 2009, 2015, 2020]
 
 [[definitions]]
 name = "RealRooted.MvUpperHalfPlaneStable"
@@ -214,8 +215,7 @@ if and only if it is hyperbolic in every direction $e$ with all $e_i > 0$.
 
 **Theorem** (Gårding). If a homogeneous $P$ is hyperbolic in the direction
 $e$, its hyperbolicity cone, the connected component of $e$ in
-$\{x : P(x) \neq 0\}$, is convex, and $P$ is hyperbolic in every direction of
-the cone.
+$\{x : P(x) \neq 0\}$, is convex.
 
 **Theorem.** Let $P \neq 0$ be real stable with nonnegative coefficients and
 total degree $d$. Then its homogenization
@@ -235,7 +235,7 @@ $z^d p(-1/z)$.
 
 **Theorem** (Marcus–Spielman–Srivastava). Let $A_1, \dotsc, A_m$ be real positive
 semidefinite $n \times n$ matrices with $\sum_i A_i = I$ and $\operatorname{tr} A_i \leq
-\varepsilon$. Then every root of the mixed characteristic polynomial
+\varepsilon$, where $\varepsilon > 0$. Then every root of the mixed characteristic polynomial
 $$
 \mu[A](x) = \prod_{i} (1 - \partial_{z_i}) \det\Bigl(x I + \sum_i z_i A_i\Bigr)\Big|_{z = 0}
 $$
@@ -286,16 +286,29 @@ variable, truncation and lowest weighted-homogeneous parts preserve stability; t
 the claim to a box between $\alpha$ and $\beta$, where a homogeneous part of degree at least
 three would vanish somewhere in the product of upper half-planes.
 
+**Theorem** (Brändén–Huh). A homogeneous real stable polynomial with
+nonnegative coefficients is Lorentzian.
+
 ## References
 
-P. Brändén, “Polynomials with the half-plane property and matroid theory,”
-*Adv. Math.* 216 (2007), 302–320; J. Borcea and P. Brändén, “Applications of
-stable polynomials to mixed determinants: Johnson's conjectures,
-unimodality, and symmetrized Fischer products,” *Duke Math. J.* 143 (2008),
-205–223, Proposition 2.4; L. Gårding, “An inequality for hyperbolic polynomials,”
-*J. Math. Mech.* 8 (1959), 957–965. See the
-[MSS paper](https://arxiv.org/abs/1306.3969) for the expected characteristic
-polynomial identity and the mixed-characteristic root bound. See also the
+L. Gårding, [“An inequality for hyperbolic polynomials,”](https://doi.org/10.1512/iumj.1959.8.58061)
+*J. Math. Mech.* 8 (1959), 957–965. Y.-B. Choe, J. G. Oxley, A. D. Sokal and
+D. G. Wagner, [“Homogeneous multivariate polynomials with the half-plane
+property,”](https://doi.org/10.1016/S0196-8858(03)00078-2) *Adv. Appl. Math.*
+32 (2004), 88–187. P. Brändén, [“Polynomials with the half-plane property and
+matroid theory,”](https://doi.org/10.1016/j.aim.2007.05.011) *Adv. Math.* 216
+(2007), 302–320. J. Borcea and P. Brändén, [“Applications of stable
+polynomials to mixed determinants: Johnson's conjectures, unimodality, and
+symmetrized Fischer products,”](https://doi.org/10.1215/00127094-2008-018)
+*Duke Math. J.* 143 (2008), 205–223. J. Borcea, P. Brändén and T. Liggett,
+[“Negative dependence and the geometry of polynomials,”](https://doi.org/10.1090/S0894-0347-08-00618-8)
+*J. Amer. Math. Soc.* 22 (2009), 521–567. A. Marcus, D. A. Spielman and
+N. Srivastava, [“Interlacing families II: Mixed characteristic polynomials
+and the Kadison–Singer problem,”](https://doi.org/10.4007/annals.2015.182.1.8)
+*Ann. of Math.* 182 (2015), 327–350,
+[arXiv:1306.3969](https://arxiv.org/abs/1306.3969). P. Brändén and J. Huh,
+[“Lorentzian polynomials,”](https://doi.org/10.4007/annals.2020.192.3.4)
+*Ann. of Math.* 192 (2020), 821–891. See also the
 [stable polynomials](
 https://www.symmetricfunctions.com/stablePolynomials.htm#stablePolynomialDefinition)
 and the

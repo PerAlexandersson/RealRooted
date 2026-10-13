@@ -96,7 +96,8 @@ operator is $f(z(1-w), v(1-w))$.
 
 J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. I. Linear
 operators preserving stability,” *Inventiones Mathematicae* 177 (2009),
-541–569.  See the
+541–569, [doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3).
+See the
 [finite-symbol discussion on symmetricfunctions.com](https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol).
 <!-- /realrooted-catalog-content -->
 

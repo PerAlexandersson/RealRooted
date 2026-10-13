@@ -15,8 +15,8 @@ version = 1
 section = "theorems"
 slug = "branden-leite"
 formalized = "2026-09-24"
-authors = ["Brändén", "Saud Leite"]
-years = [2024]
+authors = ["Brändén", "Saud Maia Leite"]
+years = [2026]
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.chainPolynomial"
@@ -116,7 +116,8 @@ only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
 The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
 only if it is totally nonnegative. The same conclusion holds for totally
-nonnegative matrices with a positive constant diagonal.
+nonnegative matrices with a positive constant diagonal. See also the
+[lower-unitriangular characterization on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#tnnLowerUnitriangularMatrix).
 
 Applied to power-series kernels built from Pólya frequency sequences, the
 theorem gives PF polynomials whose consecutive rows interlace, for two row
@@ -145,7 +146,8 @@ under the nonnegative combinations that assemble the chain polynomials.
 
 P. Brändén and L. Saud Maia Leite, [“Totally nonnegative matrices, chain
 enumeration and zeros of polynomials,”](https://arxiv.org/abs/2412.06595)
-arXiv:2412.06595 (2024).
+*Advances in Mathematics* 487 (2026), 110760,
+[doi:10.1016/j.aim.2025.110760](https://doi.org/10.1016/j.aim.2025.110760).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

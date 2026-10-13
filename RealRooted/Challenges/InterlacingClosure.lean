@@ -95,7 +95,8 @@ P. Brändén, “Unimodality, log-concavity, real-rootedness and beyond,”
 *Handbook of Enumerative Combinatorics*, CRC Press, 2015, Lemma 7.8.4;
 P. Brändén and L. Saud Maia Leite, “Totally nonnegative matrices, chain
 enumeration and zeros of polynomials,” *Advances in Mathematics* 487 (2026),
-110760, arXiv:2412.06595, Lemma 3.1.
+110760, [doi:10.1016/j.aim.2025.110760](https://doi.org/10.1016/j.aim.2025.110760),
+arXiv:2412.06595, Lemma 3.1.
 See also the
 [interlacing sequences on symmetricfunctions.com][seq].
 

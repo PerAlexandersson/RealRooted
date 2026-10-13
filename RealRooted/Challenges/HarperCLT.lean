@@ -169,14 +169,17 @@ turns pointwise convergence of characteristic functions into weak convergence.
 ## References
 
 L. H. Harper, “Stirling behavior is asymptotically normal,” *Annals of
-Mathematical Statistics* 38 (1967), 410–414; E. A. Bender, “Central and local
-limit theorems applied to asymptotic enumeration,” *Journal of Combinatorial
-Theory, Series A* 15 (1973), 91–111; V. L. Goncharov, “Some facts from
+Mathematical Statistics* 38 (1967), 410–414,
+[doi:10.1214/aoms/1177698956](https://doi.org/10.1214/aoms/1177698956);
+E. A. Bender, “Central and local limit theorems applied to asymptotic
+enumeration,” *Journal of Combinatorial Theory, Series A* 15 (1973), 91–111,
+[doi:10.1016/0097-3165(73)90038-1](https://doi.org/10.1016/0097-3165(73)90038-1);
+V. L. Goncharov, “Some facts from
 combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48; F. N. David
 and D. E. Barton, *Combinatorial Chance*, Griffin, London, 1962; M. Bóna, “Real
 zeros and normal distribution for statistics on Stirling permutations defined
 by Gessel and Stanley,” *SIAM Journal on Discrete Mathematics* 23 (2008/09),
-401–406.
+401–406, [doi:10.1137/070702254](https://doi.org/10.1137/070702254).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
