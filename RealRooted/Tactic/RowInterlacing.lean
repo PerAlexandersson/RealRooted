@@ -8,6 +8,8 @@ import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.PathPower
 import RealRooted.Tactic.Row.DerivativeXMul
+import RealRooted.Tactic.Row.FactorPower
+import RealRooted.Tactic.Row.DelayedProduct
 import RealRooted.DerivativeRecurrence.Nonnegative
 
 /-!
@@ -64,7 +66,9 @@ only the successful attempt, and the certificate.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`,
+`factorPower` (deflate `q ^ n` from two-lag rows), `delayedProduct` (an arbitrary-offset
+product tail), `closedForm` (rows
+`residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`,
 `subseq`
 (residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
@@ -468,8 +472,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
-  [`derivativeXMul, `closedForm, `pathPower, `lowerOrder, `subseq, `linearFactors,
-    `splitFactors, `twoStep, `shiftedProduct,
+  [`derivativeXMul, `factorPower, `delayedProduct, `closedForm, `pathPower, `lowerOrder,
+    `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
 
@@ -515,6 +519,16 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     return { via := some `derivativeXMul }
   if hints.via.isNone && (← rowSucceeds derivativeXMulSplits) then
     return { via := some `derivativeXMul }
+  -- Deflation must precede `topSplitsProbe`: the original rows grow by two, while the
+  -- certified quotient rows sent to `rowInterlacesCore` grow by one.
+  if use `factorPower then
+    match ← rowAttempt factorPowerSplits with
+    | .ok _ => return { via := some `factorPower }
+    | .error e => if hints.via == some `factorPower then throwError e
+  if use `delayedProduct then
+    match ← rowAttempt delayedProductSplits with
+    | .ok _ => return { via := some `delayedProduct }
+    | .error e => if hints.via == some `delayedProduct then throwError e
   match ← topSplitsProbe hints with
   | .veto why => throwError "rr_row_splits: no strategy (probe: {why})"
   | .closedForm plan =>
@@ -726,32 +740,51 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     let law (c e : Nat) (x : Term) : TacticM Term := do
       let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
       if c == 0 then pure half else `($(rowNumLit c) + $half)
-    let hdegAll := mkIdent `hdeg_all
-    let hposAll := mkIdent `hpos_all
+    let hdegPosAll := mkIdent `hdeg_pos_all
     let nI := mkIdent `n
     evalTactic (← `(tactic|
-      have $hdegAll:ident : ∀ $nI:ident : ℕ, ($P $nI).natDegree = $(← law c' e' nI) := by
-        intro $nI:ident; rr_row_natDegree))
-    evalTactic (← `(tactic|
-      have $hposAll:ident : ∀ $nI:ident : ℕ, 0 < ($P $nI).leadingCoeff := by
-        intro $nI:ident; rr_row_leadingCoeff_pos))
+      have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
+          ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
+        intro $nI:ident
+        rr_row_natDegree_leadingCoeff_pos))
     let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
     let Q ← r.seq 0
-    let hrec ← r.hrecTerm 0
+    let hrecRaw ← r.hrecTerm 0
+    let rawA ← certTerm r.coeffs[0]!
+    let rawB ← certTerm r.coeffs[1]!
+    let normalizedA? ← normalizedCoeffTerm? r.coeffs[0]! 0
+    let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
+    let A := normalizedA?.getD rawA
+    let B := normalizedB?.getD rawB
+    let hrecName := mkIdent `h_degreePatternRec
+    let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
+      evalTactic (← `(tactic|
+        have $hrecName:ident : ∀ n : ℕ,
+            $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
+          intro n
+          have hraw : $Q (n + 1) =
+              $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
+          rw [hraw]
+          rr_cf_identity))
+      pure hrecName
     let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+    let splitsThm :=
+      mkIdent ``RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs
     evalTactic (← `(tactic|
-      refine RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs
-        (P := $Q) (D := $Dt)
+      refine $splitsThm:ident (P := $Q) (D := $Dt)
         $hrec ?_ ?_ ?_ ?_ ?_ ?_ $t))
     let [hdeg, hstep, hpos, hnn, hA, h0] ← getGoals
       | throwError "rr_row_splits: unexpected side goals"
-    setGoals [hdeg]; evalTactic (← `(tactic| (intro m; beta_reduce; rw [$hdegAll:ident] <;> lia)))
+    setGoals [hdeg]
+    evalTactic (← `(tactic| (intro m; beta_reduce; rw [($hdegPosAll:ident _).1] <;> lia)))
     setGoals [hstep]; evalTactic (← `(tactic| (intro m; lia)))
-    setGoals [hpos]; evalTactic (← `(tactic| (intro m; exact $hposAll:ident _)))
+    setGoals [hpos]; evalTactic (← `(tactic| (intro m; exact ($hdegPosAll:ident _).2)))
     setGoals [hnn]
+    let nonnegThm := mkIdent ``RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le
     evalTactic (← `(tactic|
-      refine RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le (D := $Dt) $hrec
-        (fun m => (show _ = _ by beta_reduce; rw [$hdegAll:ident] <;> lia).le) ?_ ?_ ?_))
+      refine $nonnegThm:ident (D := $Dt) $hrec
+        (fun m => by beta_reduce; rw [($hdegPosAll:ident _).1] <;> lia)
+        ?_ ?_ ?_))
     let [hA0, hmult, hnn0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
     setGoals [hA0]
     evalTactic (← `(tactic| (intro n; beta_reduce; simp; first | done | positivity | norm_num)))

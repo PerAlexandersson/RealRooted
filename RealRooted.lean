@@ -1951,3 +1951,7 @@ import RealRooted.Recurrence.Telescoping
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.DerivativeRecurrence.Nonnegative
 import RealRooted.Tactic.Examples.RowNonnegative
+import RealRooted.Recurrence.FactorPower
+import RealRooted.Tactic.Examples.RowFactorPower
+import RealRooted.Tactic.Row.DelayedProduct
+import RealRooted.Tactic.Row.FactorPower

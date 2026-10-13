@@ -67,17 +67,39 @@ macro_rules
   | `(rr_row_natDegree_leadingCoeff_pos_all) =>
       `(by intro n; beta_reduce; rr_row_natDegree_leadingCoeff_pos)
 
+/-- Add the products of a natural parameter with each signed real variable whose
+nonnegativity follows from the local bounds. -/
+private def addNatRealSignProducts : TacticM Unit := withMainContext do
+  let mut nats : Array Expr := #[]
+  let mut reals : Array Expr := #[]
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail then continue
+    let ty ← instantiateMVars decl.type
+    if ty.isConstOf ``Nat then nats := nats.push decl.toExpr
+    if ty.isConstOf ``Real then reals := reals.push decl.toExpr
+  for n in nats do
+    let ns ← Term.exprToSyntax n
+    for x in reals do
+      let xs ← Term.exprToSyntax x
+      let negXs ← `(-$xs)
+      for factor in #[xs, negXs] do
+        discard <| rowSucceeds do
+          evalTactic (← `(tactic|
+            have : 0 ≤ (($ns : ℝ) * $factor) :=
+              mul_nonneg (Nat.cast_nonneg $ns) (by first | positivity | nlinarith)))
+
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
-evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
-`rr_row_field` for rational coefficients. -/
+evaluate, add the available products of parameter and variable signs, then use
+`positivity`, `nlinarith`, or `rr_row_field` for rational coefficients. -/
 elab "rr_row_eval_sign" : tactic => withMainContext do
   evalTactic (← `(tactic| (
     intros
     simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
       Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
       Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat] at *
-    push_cast at *
-    first | positivity | nlinarith | rr_row_field | fail)))
+    push_cast at *)))
+  addNatRealSignProducts
+  evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
 
 /-- The multiplier goal `∀ n i j, j ≤ D → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`
 of `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
@@ -105,7 +127,8 @@ def halfMultiplierGoal (D₀ e : Nat) : TacticM Unit := do
   evalTactic (← `(tactic| (
     intro n i j hj
     have hj2 : 2 * j ≤ 2 * $(rowNumLit D₀) + n + $(rowNumLit e) := by lia
-    have hj' : ((2 * j : ℕ) : ℝ) ≤ ((2 * $(rowNumLit D₀) + n + $(rowNumLit e) : ℕ) : ℝ) :=
+    have hj' :
+        ((2 * j : ℕ) : ℝ) ≤ ((2 * $(rowNumLit D₀) + n + $(rowNumLit e) : ℕ) : ℝ) :=
       Nat.cast_le.mpr hj2
     push_cast at hj'
     rcases i with _ | _ | _ | i <;> (
