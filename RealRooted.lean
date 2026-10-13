@@ -1897,3 +1897,5 @@ import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
 import RealRooted.CombinatorialExamples.PathPowerGap
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
+import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+import RealRooted.BorceaBranden.Transcendental.SymbolBridge
