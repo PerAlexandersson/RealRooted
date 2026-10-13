@@ -33,7 +33,8 @@ def seriesCoeff (P : (σ →₀ ℕ) → MvPolynomial τ ℂ) (e : τ ⊕ σ →
 /-! ## Auxiliary lemmas for `pivot_converse` -/
 
 omit [Fintype τ] [Fintype σ] in
-private theorem coeff_glue (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
+/-- The coefficient formula for a finite glued polynomial. -/
+theorem coeff_glue (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
     (κ : (σ →₀ ℕ) → ℝ) (β : σ →₀ ℕ)
     (e : τ ⊕ σ →₀ ℕ) :
     (glue P κ β).coeff e =
