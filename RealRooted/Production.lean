@@ -1742,6 +1742,10 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
 import RealRooted.MultiplierSequence.InvPochhammerSimple
 import RealRooted.Applications.OEIS.ClosedFormRows
 import RealRooted.MultivariateStability.MorrisOperator
+import RealRooted.BorceaBranden.Transcendental.LambdaBar
+import RealRooted.BorceaBranden.Transcendental.PivotForward
+import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
 
 /-!
 # RealRooted production umbrella
