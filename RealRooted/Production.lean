@@ -1713,6 +1713,7 @@ import RealRooted.EdreiThoma.FinalStep
 import RealRooted.EdreiThoma.Identities
 import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
 import RealRooted.CombinatorialExamples.PathPowerClique
+import RealRooted.Applications.OEIS.PathPowerRows
 
 /-!
 # RealRooted production umbrella
