@@ -124,7 +124,9 @@ private theorem fall_ne_zero_of_le {α β : σ →₀ ℕ} (hαβ : α ≤ β) :
   rw [Nat.cast_ne_zero, ne_eq, Nat.descFactorial_eq_zero_iff_lt]
   exact not_lt.mpr (hαβ i)
 
-private theorem degreeBoxRestriction_eq_zero_of_jensenTruncation_eq_zero
+/-- A vanishing Jensen truncation forces the corresponding degree-box
+restriction of the operator to vanish. -/
+theorem degreeBoxRestriction_eq_zero_of_jensenTruncation_eq_zero
     (β : σ →₀ ℕ) (T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ)
     (hzero : jensenTruncation β T = 0) :
     degreeBoxRestriction (fun i => β i) T = 0 := by

@@ -31,7 +31,18 @@ def complexifyDegreeBox
     apply Subtype.ext
     simp [complexifyMv, Algebra.smul_def]
 
-private theorem complexifyDegreeBox_basis
+/-- The underlying polynomial of `complexifyDegreeBox` is `complexifyMv`. -/
+@[simp]
+theorem coe_complexifyDegreeBox
+    {σ : Type*} (κ : σ → ℕ)
+    (p : MvPolynomial.degreeOfLE σ ℝ κ) :
+    (complexifyDegreeBox κ p).1 = complexifyMv p.1 :=
+  rfl
+
+/-- Complexifying a real bounded monomial-basis vector gives the corresponding
+complex bounded monomial-basis vector. -/
+@[simp]
+theorem complexifyDegreeBox_basis
     {σ : Type*} {κ : σ → ℕ}
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
     complexifyDegreeBox κ (MvPolynomial.basisDegreeOfLE (R := ℝ) κ m) =
