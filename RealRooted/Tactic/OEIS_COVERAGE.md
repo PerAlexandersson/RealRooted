@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **271 IDs**; **18 formalized**, **237 shells**, **3 fragments**, and **13 documented-only**.
+Current totals: **272 IDs**; **19 formalized**, **237 shells**, **3 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -266,7 +266,7 @@ Current totals: **271 IDs**; **18 formalized**, **237 shells**, **3 fragments**,
 | A290596 | `shell` | third-step Lah branch with translated inner factor `(2+X)f+(6+6X)f'+9Xf''=(1/3+D)(3(X-1)f+9Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A290598 | `shell` | third-step Lah branch with positive translated inner factor `(4+X)f+(12+6X)f'+9Xf''=(1/3+D)(3(X+1)f+9Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A292219 | `shell` | fourth-step Lah branch `(6+X)f+(24+8X)f'+16Xf''=(1/4+D)(4(X+2)f+16Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
-| A297191 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
+| A297191 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace<br>+10 additional test intents | none | not recorded | none |
 | A306364 | `shell` | Half growth whose lag coefficients are quadratic in `n` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A307419 | `shell` | A second-order recurrence with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A316649 | `shell` | OEIS in its generated order-three coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -292,6 +292,7 @@ Current totals: **271 IDs**; **18 formalized**, **237 shells**, **3 fragments**,
 | A375853 | `shell` | active shift of `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`. | `rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto` | `base`, `coeff`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `raw_recurrence` | concrete row definition and proofs of the listed certificates |
 | A376467 | `shell` | same denominator-Favard normalization with a larger shift. | `rr_favard_affine_param_den_raw_auto`, `rr_favard_base_one` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_const`, `raw_lag`, `raw_recurrence`, `raw_slope`, `slope` | concrete row definition and proofs of the listed certificates |
 | A376827 | `shell` | `n` and nonnegative, so that the rows never vanish ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A394446 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace<br>+7 additional test intents | none | not recorded | none |
 | A395454 | `shell` | active shift gives lag coefficient `2nt`. | `rr_mw_lw_derivative_lag_sequence_realrooted_sign_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A395972 | `shell` | `v_n(t)=-2t^2`. | `rr_mw_derivative_neg_X_sq_auto` | `degree_lower`, `degree_upper`, `source_pos_lc`, `splits`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 
