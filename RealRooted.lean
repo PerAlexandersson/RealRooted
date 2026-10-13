@@ -1862,3 +1862,4 @@ import RealRooted.CombinatorialExamples.PathPowerClique
 import RealRooted.EdreiThoma.OddPart
 import RealRooted.EdreiThoma.Reduction
 import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+import RealRooted.Applications.OEIS.PathPowerRows
