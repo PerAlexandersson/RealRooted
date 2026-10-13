@@ -10,6 +10,7 @@ import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
+import RealRooted.Tactic.Examples.FTransformInterlaces
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Favard.Denominator
 import RealRooted.Tactic.Examples.Favard.Direct
@@ -74,6 +75,7 @@ import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
 import RealRooted.Tactic.Examples.OEIS.CompatCommon
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
 import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
 import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
 import RealRooted.Tactic.Examples.OEIS.Favard
