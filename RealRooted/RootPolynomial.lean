@@ -1,7 +1,7 @@
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 /-!
 # The monic polynomial with prescribed roots
