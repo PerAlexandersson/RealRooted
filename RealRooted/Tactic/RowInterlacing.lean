@@ -7,6 +7,7 @@ import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.PathPower
+import RealRooted.DerivativeRecurrence.Nonnegative
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -73,10 +74,9 @@ derivative rows whose degree grows by zero or one,
 
 ## Other front ends
 
-* `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, by `RealRooted.threeTerm_hasNonnegCoeffs`,
-  `RealRooted.derivativeRecurrence_hasNonnegCoeffs` or
-  `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`
-  (products as two-step recurrences);
+* `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, first by the general
+  `RealRooted.LinRec.hasNonnegCoeffs`, including derivative summands and shifted tails, then by
+  the specialized three-term and derivative-recurrence theorems;
 * `rr_row_eval_zero_pos`: `0 < (P t).eval 0`, by induction on the recurrence evaluated at
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
   `0` also nonnegative coefficients of the rows).
@@ -248,8 +248,88 @@ elab_rules : tactic
   | `(tactic| rr_row_interlaces?%$tk $hs*) => withMainContext do
     rowElabWithHints tk (rowInterlacesTop (← parseRowHints hs)) "rr_row_interlaces"
 
+/-- Prove row coefficient nonnegativity from a general linear recurrence. -/
+private def linRecNonneg : TacticM Unit := withMainContext do
+  discard introIfForall
+  withMainContext do
+    let target ← instantiateMVars (← getMainTarget)
+    let some PName ← findPolySeqConst? target
+      | throwError "rr_row_nonneg_coeffs: no polynomial sequence occurs in the goal"
+    let some rec ← linRec? PName
+      | throwError "rr_row_nonneg_coeffs: the sequence is not a linear recurrence"
+    let P := mkIdent PName
+    let (_, shift) ← rowIndexParts PName
+    let (_, t) ← alignRow PName shift (smallRow P)
+    let Q ← shiftedSeq P shift
+    let mut terms : Term ← `([])
+    for (lag, order, multiplier) in rec.terms.reverse do
+      let multiplier ← certTerm multiplier
+      let multiplier ← if shift == 0 then pure multiplier else
+        `(fun n : ℕ => ($multiplier : ℕ → ℝ[X]) (n + $(rowNumLit shift)))
+      terms ← `(($(rowNumLit lag), $(rowNumLit order), $multiplier) :: $terms)
+    let main ← `(tactic|
+      refine RealRooted.LinRec.hasNonnegCoeffs (P := $Q)
+        (offset := $(rowNumLit rec.offset)) $terms ?_ ?_ ?_ ?_ $t)
+    evalTactic main
+    let [hrec, hlag, hmult, hbase] := ← getGoals
+      | throwError "rr_row_nonneg_coeffs: unexpected linear-recurrence side goals"
+    setGoals [hrec]
+    let recStep ← if shift == 0 then
+        `(tactic| rw [$(mkIdent rec.eqn) n])
+      else
+        `(tactic| (
+          have h := $(mkIdent rec.eqn) (n + $(rowNumLit shift))
+          simp only [Nat.add_assoc, Nat.reduceAdd] at h ⊢
+          rw [h]))
+    let hrecResult ← rowAttempt do
+      evalTactic (← `(tactic| (
+        intro n
+        $recStep:tactic <;>
+        simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil,
+          List.sum_cons, List.sum_nil, Function.iterate_zero_apply,
+          Function.iterate_succ_apply', add_zero] <;>
+        ring_nf)))
+      unless (← getGoals).isEmpty do throwError "recurrence goal remains"
+    if let .error e := hrecResult then throwError "rr_row_nonneg_coeffs hrec: {e}"
+    setGoals [hlag]
+    let hlagResult ← rowAttempt <| evalTactic (← `(tactic| norm_num [List.mem_cons]))
+    if let .error e := hlagResult then throwError "rr_row_nonneg_coeffs hlag: {e}"
+    setGoals [hmult]
+    let hmultResult ← rowAttempt <| evalTactic (← `(tactic|
+      simp only [List.mem_cons, List.not_mem_nil, forall_eq_or_imp]))
+    if let .error e := hmultResult then throwError "rr_row_nonneg_coeffs hmult split: {e}"
+    let mut pending := ← getGoals
+    setGoals []
+    while !pending.isEmpty do
+      let g := pending.head!
+      pending := pending.tail!
+      if ← g.isAssigned then continue
+      setGoals [g]
+      let ty ← instantiateMVars (← g.getType)
+      if ty.isAppOf ``And then
+        evalTactic (← `(tactic| constructor))
+        pending := (← getGoals) ++ pending
+      else if (ty.find? fun e => e.isConstOf ``False).isSome then
+        evalTactic (← `(tactic| simp))
+      else if (ty.find? fun e => e.isConstOf ``RealRooted.HasNonnegCoeffs).isSome then
+        if ty.isForall then evalTactic (← `(tactic| intro n))
+        betaReduceGoal
+        evalTactic (← `(tactic| rr_row_side))
+      else
+        throwError "rr_row_nonneg_coeffs: unexpected multiplier goal{indentExpr ty}"
+    setGoals [hbase]
+    let hbaseResult ← rowAttempt <| evalTactic (← `(tactic|
+      (intro n hn; interval_cases n)))
+    if let .error e := hbaseResult then throwError "rr_row_nonneg_coeffs hbase split: {e}"
+    for g in ← getGoals do
+      if ← g.isAssigned then continue
+      setGoals [g]
+      discard <| smallRow P
+    setGoals []
+
 elab_rules : tactic
   | `(tactic| rr_row_nonneg_coeffs) => withMainContext do
+  if ← rowSucceeds linRecNonneg then return
   discard introIfForall
   withMainContext do
   let r := (← rowRecSetup "rr_row_nonneg_coeffs").asLagLeft

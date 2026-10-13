@@ -132,6 +132,7 @@ import RealRooted.Tactic.Examples.RowDegreeRoutes
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowPathPower
 import RealRooted.Tactic.Examples.RowPathPowerK5
 import RealRooted.Tactic.Examples.ScalarDen

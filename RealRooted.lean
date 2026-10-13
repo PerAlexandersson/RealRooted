@@ -1941,3 +1941,5 @@ import RealRooted.DerivativeRecurrence.SecondOrder.Top
 import RealRooted.LiuWang.CombinedFlux
 import RealRooted.Recurrence.Telescoping
 import RealRooted.Recurrence.Uniqueness
+import RealRooted.DerivativeRecurrence.Nonnegative
+import RealRooted.Tactic.Examples.RowNonnegative
