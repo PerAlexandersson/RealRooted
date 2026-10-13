@@ -1,0 +1,19 @@
+{
+  "verified": true,
+  "complete": true,
+  "source": "/tmp/rr132-compact-certificate-full.json",
+  "sha256": "5cbbebe20c8b5fb9883c09f6f6577428e93b8d17fe4a401847417552d17d53a0",
+  "arithmetic": "exact fractions; independent of dyadic search code",
+  "threshold": 100,
+  "parameter_intervals": 4471,
+  "kernel_rectangles": 84896,
+  "checked_range": [
+    "1/200",
+    "8"
+  ],
+  "requested_range": [
+    "1/200",
+    "8"
+  ],
+  "seconds": 86.609
+}

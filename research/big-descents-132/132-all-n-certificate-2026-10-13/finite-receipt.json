@@ -1,0 +1,13 @@
+{
+  "verified": true,
+  "rows_sha256": "e33226a4362d6a49df9274fc5e93413df9df8f764e05a05ecf835db9eba10da9",
+  "recurrence_indices": [
+    2,
+    101
+  ],
+  "finite_root_counts": [
+    0,
+    99
+  ],
+  "nonnegative_coefficients_positive_constant": true
+}
