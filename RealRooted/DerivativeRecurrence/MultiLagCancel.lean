@@ -108,4 +108,62 @@ theorem natDegree_eq_and_leadingCoeff_pos_of_topWindow {k e : ℕ} {D : ℕ → 
   rw [leadingCoeff, hdeg]
   exact hpos
 
+
+/-- A parity-split top-window induction.  Each half-step may first bound its new row by
+`D m + e`, then cancel the whole excess window after all recurrence summands have been
+combined.  The even and odd rows carry separate state predicates. -/
+theorem natDegree_eq_and_leadingCoeff_pos_of_parity_topWindows
+    {evenExcess oddExcess : ℕ} {evenDegree oddDegree : ℕ → ℕ}
+    {P : ℕ → ℝ[X]} {EvenState OddState : ℕ → ℝ[X] → Prop}
+    (hbase :
+      ((P 0).natDegree ≤ evenDegree 0 ∧
+        0 < (P 0).coeff (evenDegree 0) ∧ EvenState 0 (P 0)) ∧
+      ((P 1).natDegree ≤ oddDegree 0 ∧
+        0 < (P 1).coeff (oddDegree 0) ∧ OddState 0 (P 1)))
+    (hstep : ∀ m,
+      ((P (2 * m)).natDegree ≤ evenDegree m ∧
+          0 < (P (2 * m)).coeff (evenDegree m) ∧ EvenState m (P (2 * m))) →
+      ((P (2 * m + 1)).natDegree ≤ oddDegree m ∧
+          0 < (P (2 * m + 1)).coeff (oddDegree m) ∧ OddState m (P (2 * m + 1))) →
+      ((P (2 * (m + 1))).natDegree ≤ evenDegree (m + 1) + evenExcess ∧
+          (∀ r, 0 < r → r ≤ evenExcess →
+            (P (2 * (m + 1))).coeff (evenDegree (m + 1) + r) = 0) ∧
+          0 < (P (2 * (m + 1))).coeff (evenDegree (m + 1)) ∧
+          EvenState (m + 1) (P (2 * (m + 1)))) ∧
+        ((P (2 * (m + 1) + 1)).natDegree ≤ oddDegree (m + 1) + oddExcess ∧
+          (∀ r, 0 < r → r ≤ oddExcess →
+            (P (2 * (m + 1) + 1)).coeff (oddDegree (m + 1) + r) = 0) ∧
+          0 < (P (2 * (m + 1) + 1)).coeff (oddDegree (m + 1)) ∧
+          OddState (m + 1) (P (2 * (m + 1) + 1))))
+    (m : ℕ) :
+    ((P (2 * m)).natDegree = evenDegree m ∧
+        0 < (P (2 * m)).leadingCoeff ∧ EvenState m (P (2 * m))) ∧
+      ((P (2 * m + 1)).natDegree = oddDegree m ∧
+        0 < (P (2 * m + 1)).leadingCoeff ∧ OddState m (P (2 * m + 1))) := by
+  have hpair : ∀ j,
+      ((P (2 * j)).natDegree ≤ evenDegree j ∧
+          0 < (P (2 * j)).coeff (evenDegree j) ∧ EvenState j (P (2 * j))) ∧
+        ((P (2 * j + 1)).natDegree ≤ oddDegree j ∧
+          0 < (P (2 * j + 1)).coeff (oddDegree j) ∧ OddState j (P (2 * j + 1))) := by
+    intro j
+    induction j with
+    | zero => simpa using hbase
+    | succ j ih =>
+        obtain ⟨heven, hodd⟩ := hstep j ih.1 ih.2
+        exact ⟨⟨natDegree_le_of_le_add_of_coeff_window_eq_zero heven.1 heven.2.1,
+            heven.2.2.1, heven.2.2.2⟩,
+          ⟨natDegree_le_of_le_add_of_coeff_window_eq_zero hodd.1 hodd.2.1,
+            hodd.2.2.1, hodd.2.2.2⟩⟩
+  obtain ⟨⟨hevenDegree, hevenPos, hevenState⟩,
+    ⟨hoddDegree, hoddPos, hoddState⟩⟩ := hpair m
+  have hevenEq : (P (2 * m)).natDegree = evenDegree m :=
+    natDegree_eq_of_le_of_coeff_ne_zero hevenDegree hevenPos.ne'
+  have hoddEq : (P (2 * m + 1)).natDegree = oddDegree m :=
+    natDegree_eq_of_le_of_coeff_ne_zero hoddDegree hoddPos.ne'
+  refine ⟨⟨hevenEq, ?_, hevenState⟩, ⟨hoddEq, ?_, hoddState⟩⟩
+  · rw [leadingCoeff, hevenEq]
+    exact hevenPos
+  · rw [leadingCoeff, hoddEq]
+    exact hoddPos
+
 end RealRooted.LinRec
