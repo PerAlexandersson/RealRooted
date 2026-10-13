@@ -1867,3 +1867,5 @@ import RealRooted.Tactic.Examples.RowDegreeRest
 import RealRooted.Applications.OEIS.A271697
 import RealRooted.EdreiThoma.Continuation
 import RealRooted.EdreiThoma.Converse
+import RealRooted.Applications.OEIS.A330798
+import RealRooted.DerivativeRecurrence.MultiLagCancel
