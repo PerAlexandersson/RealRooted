@@ -5,14 +5,13 @@ import RealRooted.Recurrence.Uniqueness
 /-!
 # Recurrence identification tactics
 
-The fixed-lag uniqueness lemmas of `RealRooted.Recurrence.Uniqueness` identify
-two sequences from equal initial rows and the same recurrence. The tactic
-frontends either prove the pointwise identification, transfer real-rootedness, or transfer the stronger package of
-PF rows and consecutive zero-aware proper position from the identified model
-sequence. Explicit forms accept every certificate. The inferred forms keep the
-update function explicit and reuse matching certificates from the local
-context. Context inference does not discover a model family or prove its
-recurrence.
+The fixed-lag uniqueness lemmas of `RealRooted.Recurrence.Uniqueness` identify two
+sequences from equal initial rows and the same recurrence. The tactic frontends either
+prove the pointwise identification, transfer real-rootedness, or transfer the stronger
+package of PF rows and consecutive zero-aware proper position from the identified model
+sequence. Explicit forms accept every certificate. The inferred forms keep the update
+function explicit and reuse matching certificates from the local context. Context
+inference does not discover a model family or prove its recurrence.
 -/
 
 open Polynomial
