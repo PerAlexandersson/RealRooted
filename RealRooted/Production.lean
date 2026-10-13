@@ -1720,6 +1720,8 @@ import RealRooted.Applications.OEIS.PathPowerRows
 import RealRooted.Applications.OEIS.A271697
 import RealRooted.EdreiThoma.Continuation
 import RealRooted.EdreiThoma.Converse
+import RealRooted.Applications.OEIS.A330798
+import RealRooted.DerivativeRecurrence.MultiLagCancel
 
 /-!
 # RealRooted production umbrella

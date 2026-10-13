@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **251 IDs**; **12 formalized**, **235 shells**, **3 fragments**, and **1 documented-only**.
+Current totals: **252 IDs**; **13 formalized**, **235 shells**, **3 fragments**, and **1 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -257,6 +257,7 @@ Current totals: **251 IDs**; **12 formalized**, **235 shells**, **3 fragments**,
 | A321966 | `fragment` | OEIS-stated conjecture target, `v_n(t)=2t`.<br>root-sign package once the current row has nonnegative coefficients. | `rr_sign`, `rr_sign_at_roots` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A322944 | `fragment` | OEIS-stated conjecture target, `v_n(t)=3t`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A327997 | `shell` | shifted active range of `P_m=(t+m+1)P_{m-1}-3(m-2)P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
+| A330798 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A331333 | `shell` | An ODE with a rational coefficient, and a recurrence written with `1 / 2` ().<br>def : ℕ → ℝ[X]<br>+8 additional test intents | `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_ode` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A334823 | `shell` | `P_m=(1+2m)P_{m-1}-t^2P_{m-2}`. | `rr_lw_negative_square_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A334824 | `shell` | same negative-square lag with current factor `3+2m`. | `rr_lw_negative_square_sequence_realrooted_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
