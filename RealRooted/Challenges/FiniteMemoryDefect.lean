@@ -80,9 +80,10 @@ $3d+K_{n\bmod3}=2n$.
 
 ## References
 
-R. Bøgvad and C. Hägg, “A refinement of Pólya's method to construct Voronoi
-diagrams for rational functions,” *Journal of Mathematical Analysis and
-Applications*, [arXiv:1610.00921](https://arxiv.org/abs/1610.00921).
+R. Bøgvad and C. Hägg, “A refinement for rational functions of Pólya's method
+to construct Voronoi diagrams,” *Journal of Mathematical Analysis and
+Applications* 452(1) (2017), 312–334,
+[doi:10.1016/j.jmaa.2017.02.071](https://doi.org/10.1016/j.jmaa.2017.02.071);
 B. Nyandwi, C. Hägg, C. Kurujyibwami, and L. F. R. Uwimbabazi, “Voronoi limit
 measures for iterates of constant-coefficient differential operators on
 rational functions with simple poles,”

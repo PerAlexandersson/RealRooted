@@ -53,12 +53,15 @@ $x_1 \cdots x_n$, which is $\operatorname{per} A$, and the factors multiply to $
 
 ## References
 
-G. P. Egorychev, “The solution of van der Waerden's problem for permanents,” *Advances in
-Mathematics* 42 (1981), 299–305; D. I. Falikman, “Proof of the van der Waerden conjecture
-regarding the permanent of a doubly stochastic matrix,” *Mathematical Notes* 29 (1981),
-475–479; L. Gurvits, “Van der Waerden/Schrijver–Valiant like conjectures and stable (aka
-hyperbolic) homogeneous polynomials: one theorem for all,” *Electronic Journal of
-Combinatorics* 15 (2008), #R66.
+G. P. Egorychev, [“The solution of van der Waerden's problem for
+permanents,”](https://doi.org/10.1016/0001-8708(81)90044-X) *Advances in
+Mathematics* 42 (1981), 299–305. D. I. Falikman, [“Proof of the van der
+Waerden conjecture regarding the permanent of a doubly stochastic
+matrix,”](https://doi.org/10.1007/BF01163285) *Mathematical Notes* 29 (1981),
+475–479. L. Gurvits, [“Van der Waerden/Schrijver–Valiant like conjectures and
+stable (aka hyperbolic) homogeneous polynomials: one theorem for
+all,”](https://doi.org/10.37236/790) *Electronic Journal of Combinatorics* 15
+(2008), R66.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.Gurvits`.

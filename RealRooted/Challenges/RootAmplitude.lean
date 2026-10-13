@@ -97,10 +97,12 @@ label = "Strict increase from separation"
 
 We study the normalized amplitude of a finite positive sequence at one of its
 indices, obtained by multiplying the absolute factors
-\(\lvert 1-g_k/g_j\rvert\) over all other indices. For a positive strictly
-increasing sequence, `amp_le_amp_of_convex` proves one-step monotonicity when
-the consecutive gaps are nondecreasing. The stronger `amp_zero_le` iterates
-this comparison when the corresponding tail estimates hold, while
+$\lvert 1-g_k/g_j\rvert$ over all other indices. For a positive strictly
+increasing sequence, `amp_le_amp_of_convex` proves
+$\operatorname{amp}_k \leq \operatorname{amp}_{k+1}$ when $n \leq 2k+2$ and
+the consecutive gaps are nondecreasing.
+The stronger `amp_zero_le` iterates this comparison when the corresponding
+tail estimates hold, while
 `amp_le_amp_of_sum` uses reciprocal-distance sums instead of convexity.
 
 We give two ways to verify the gap hypothesis. If the sequence is positive and
@@ -108,11 +110,11 @@ the first logarithmic gap is nonnegative, the inequality in
 `gap_le_gap_of_criterion` implies convexity at the next index. The simpler
 `gap_le_gap_of_two_le` applies when the upper logarithmic gap is at least two.
 For a multiplicatively separated sequence, we iterate
-\(q g_i \le g_{i+1}\) to obtain a power bound on any later-to-earlier ratio
-and strict increase when \(q > 1\). The factorization
+$q g_i \le g_{i+1}$ to obtain a power bound on any later-to-earlier ratio
+and strict increase when $q > 1$. The factorization
 `amp_eq_lower_mul_upper` then separates an amplitude into its lower and upper
-products, which leads to the Euler bounds in the catalog. For \(q = \exp d\)
-with \(d > 0\), `exp_gain_le_amp_of_separation` keeps the
+products, which leads to the Euler bounds in the catalog. For $q = \exp d$
+with $d > 0$, `exp_gain_le_amp_of_separation` keeps the
 triangular index-dependent gain, and its uniform version discards that gain.
 
 We connect these finite products to split real polynomials. If the roots are
@@ -120,16 +122,18 @@ simple and the constant term is nonzero, the absolute normalized derivative at
 the root indexed by the sorted magnitude sequence equals the corresponding
 amplitude. Consequently, negative roots with multiplicative separation satisfy
 the same uniform lower bound for the normalized derivative. At a root of
-smallest magnitude, a reciprocal-square proportion \(c > 1/2\) gives the factor
-\((2c-1)/c\); the Newton-type inequality on the first three coefficients
+smallest magnitude, a reciprocal-square proportion $c > 1/2$ gives the factor
+$(2c-1)/c$; the Newton-type inequality on the first three coefficients
 specializes this to the one-fifth bound. The abstract square-sum result gives
 the related estimate for any finite family of negative factors.
 ## References
 
 These results were extracted from a formal proof that the rows of
-[OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace.  The
-triangle appears in D. N. Kozlov, [“Stirling
-complexes,”](https://arxiv.org/abs/2309.17142) arXiv:2309.17142 (2023).
+[OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace. The
+motivating combinatorial objects are the Stirling complexes of D. N. Kozlov,
+[“Stirling complexes,”](https://doi.org/10.1007/s41468-022-00096-4)
+*Journal of Applied and Computational Topology* 7 (2023), 57–74,
+[arXiv:2309.17142](https://arxiv.org/abs/2309.17142).
 <!-- /realrooted-catalog-content -->
 -/
 

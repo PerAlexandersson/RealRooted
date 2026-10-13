@@ -111,7 +111,8 @@ polynomials are
 $$c_n = \sum_{k \leq n} A(n,k)\, d_k.$$
 
 For the incidence data of a poset, these generalize the Chow polynomials of
-matroids and posets.
+matroids and posets; see the
+[Chow-polynomial definition on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#chowPolynomialDefinition).
 
 **Theorem (Brändén–Vecchi).** If $A$ is lower unitriangular
 and totally nonnegative, then $c_n$ and $d_n$ have nonnegative coefficients

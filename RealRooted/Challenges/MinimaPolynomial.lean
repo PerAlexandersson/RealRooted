@@ -60,7 +60,9 @@ A **local order** of a finite graph $G$ chooses, at every vertex $v$, a linear
 order of the $\deg v$ edges at $v$. An edge is a **mutual minimum** if it comes
 first at both of its endpoints. The minima polynomial is
 
-$$M_G(t) = \sum_{L} t^{\operatorname{mm}(L)},$$
+$$
+M_G(t) = \sum_{L} t^{\operatorname{mm}(L)}.
+$$
 
 summed over the $\prod_v \deg v!$ local orders $L$, where $\operatorname{mm}(L)$
 counts the mutual minima.
@@ -72,7 +74,10 @@ mutual minima are their sinks.
 **Identity.** The mutual minima of a local order form a matching. For a matching
 $S$, every edge $uv \in S$ comes first at $u$ and at $v$ in exactly a
 $\prod_{uv \in S} 1/(\deg u \deg v)$ fraction of the local orders. Hence
-$$M_G(t + 1) = \prod_v \deg v! \sum_{S} \prod_{uv \in S} \frac{1}{\deg u \deg v}\, t^{|S|},$$
+$$
+M_G(t + 1) = \prod_v \deg v! \sum_{S} \prod_{uv \in S}
+  \frac{1}{\deg u \deg v}\, t^{|S|},
+$$
 summed over the matchings $S$ of $G$.
 
 **Theorem.** For every finite graph $G$, $M_G(t)$ is real-rooted.

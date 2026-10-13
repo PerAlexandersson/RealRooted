@@ -106,7 +106,8 @@ S. Fisk, [*Polynomials, roots, and
 interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833 (2006),
 Chapter 1; N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
 Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963. J. L. W. V. Jensen,
-*Recherches sur la théorie des équations*, Acta Math. 36 (1913), 181–195. The
+*Recherches sur la théorie des équations*, *Acta Mathematica* 36 (1913), 181–195,
+[doi:10.1007/BF02422380](https://doi.org/10.1007/BF02422380). The
 statement $f' \ll f$ is the remark after
 [Wagner's lemma on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
 <!-- /realrooted-catalog-content -->

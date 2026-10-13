@@ -127,18 +127,6 @@ $g$ with $-F$ and $-g$. The site also gives a strict form of the Liu–Wang
 theorem, with strict inequalities between the zeros. That strict form is not
 stated here.
 
-## Proof idea
-
-If $f$ has simple zeros and $g \ll f$, then $g$ and $f'$ are both interlacers
-of $f$, so $g(r) f'(r) \geq 0$ at every zero $r$ of $f$. Hence
-$F(r) f'(r) = b(r) g(r) f'(r) \leq 0$, and the derivative-sign theorem applies.
-That theorem perturbs $F$ to $F - \delta f'$, whose signs at the zeros of $f$
-are strict, proves real-rootedness in the limit $\delta \to 0$, and then reads
-off the interlacing. A common zero $r$ of $f$ and $g$ is a zero of $F$; dividing
-$f$, $g$ and $F$ by $x - r$ reduces the degree, and the general Liu–Wang
-theorem follows by induction. The Ma–Wang theorem is the case $g = f'$, and the
-sequence forms apply the one-step criteria inductively.
-
 ## References
 
 L. L. Liu and Y. Wang, [“A unified approach to polynomial sequences with only

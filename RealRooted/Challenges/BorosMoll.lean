@@ -81,6 +81,8 @@ formalized. The formal proof of Brändén's theorem is not Brändén's: it uses 
 functionals that do not vanish on polynomials whose zeros lie in a half-plane, together
 with Laguerre-type approximations.
 
+See also [infinite log-concavity on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#infinitelyLogConcave).
+
 ## Proof idea
 
 The interlacing reduces to the sign of $M_n$ at the zeros of $N_n$. For $n \geq 36$ the
@@ -92,10 +94,12 @@ certificates evaluated in the kernel. The formal proof follows the paper.
 ## References
 
 P. Brändén, “Iterated sequences and the geometry of zeros,” *Journal für die reine und
-angewandte Mathematik* 658 (2011), 115–131; M. H. Y. Xie and P. B. Zhang, “Infinite
+angewandte Mathematik* 658 (2011), 115–131,
+[doi:10.1515/crelle.2011.063](https://doi.org/10.1515/crelle.2011.063); M. H. Y. Xie and P. B. Zhang, “Infinite
 log-concavity of the Boros–Moll sequences,”
 arXiv:2609.20653 (2026); G. Boros and V. H. Moll, “An integral hidden in Gradshteyn and
-Ryzhik,” *J. Comput. Appl. Math.* 106 (1999), 361–368.
+Ryzhik,” *J. Comput. Appl. Math.* 106 (1999), 361–368,
+[doi:10.1016/S0377-0427(99)00081-3](https://doi.org/10.1016/S0377-0427(99)00081-3).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

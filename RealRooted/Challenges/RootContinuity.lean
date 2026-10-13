@@ -123,9 +123,9 @@ an explicit distance of each prescribed root.
 
 For the normalized left pencil
 
-\[
+$$
 \frac{t f+g}{t+1},
-\]
+$$
 
 the coefficient error from $f$ is bounded by
 $(t+1)^{-1}(\operatorname{coeffSumRange}(f)+\operatorname{coeffSumRange}(g))$.
@@ -144,13 +144,14 @@ replaces squarefreeness by fibrewise separability. The proof combines the
 openness of strict sign alternations between ordered roots with the closedness
 of the coefficientwise splitting condition.
 
-Finally, a polynomial with no root on a closed interval has the same endpoint
-sign there, and its lower and upper root counts are constant across the
-interval. The bundled count theorem records both threshold equalities and the
-absence of roots in the window. For two polynomials, the corresponding integer
-differences are also constant, and the open-interval forms allow any two
-interior sample points; the final theorem records the resulting parity
-invariance.
+Finally, if $t \mapsto P_t(a)$ is continuous and never vanishes on a closed
+parameter interval, then its two endpoint values have the same sign. For a
+fixed polynomial with no root in a closed interval, the lower and upper root
+counts are constant as the threshold moves across that interval. The bundled
+count theorem records both threshold equalities and the absence of roots in
+the window. For two polynomials, the corresponding integer differences are
+also constant, and the open-interval forms allow any two interior sample
+points; the final theorem records the resulting parity invariance.
 
 ## References
 

@@ -140,12 +140,15 @@ whenever $v$ has at most $\Delta - 1$ neighbours, and $\mu_G$ is even or odd.
 ## References
 
 O. J. Heilmann and E. H. Lieb, “Theory of monomer-dimer systems,” *Comm.
-Math. Phys.* 25 (1972), 190–232, Theorem 4.2; C. D. Godsil, “Matchings and
+Math. Phys.* 25 (1972), 190–232,
+[doi:10.1007/bf01877590](https://doi.org/10.1007/bf01877590), Theorem 4.2;
+C. D. Godsil, “Matchings and
 walks in graphs,” *J. Graph Theory* 5 (1981), 285–297; A. Engström, “Inequalities on
 well-distributed point sets on circles,” *J. Inequal. Pure Appl. Math.* 8
 (2007), Theorem 2.5; M. Chudnovsky and P. Seymour, “The roots of the
 independence polynomial of a clawfree graph,” *J. Combin. Theory Ser. B* 97
-(2007), 350–357. See the
+(2007), 350–357, [doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
+See the
 [matching polynomial](https://www.symmetricfunctions.com/realRootedGraphs.htm#matchingPolynomial)
 and the
 [weighted independence polynomial](https://www.symmetricfunctions.com/realRootedGraphs.htm#weightedIndependencePolynomial)

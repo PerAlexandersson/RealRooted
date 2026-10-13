@@ -39,7 +39,8 @@ claw-free graph.
 
 M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a
 clawfree graph,” *Journal of Combinatorial Theory, Series B* 97 (2007),
-350–357.  See also the
+350–357, [doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
+See also the
 [graph-polynomial context on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#clawFreeGraph).
 <!-- /realrooted-catalog-content -->
 

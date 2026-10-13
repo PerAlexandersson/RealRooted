@@ -53,7 +53,10 @@ label = "Generalized Laguerre polynomials are orthogonal on the half-line"
 
 The library uses the monic, sign-reversed normalization
 
-$$P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x) = \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k,$$
+$$
+P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x)
+= \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k.
+$$
 
 so that the zeros are nonpositive. For $\alpha \geq -1$:
 
@@ -64,13 +67,15 @@ so that the zeros are nonpositive. For $\alpha \geq -1$:
 
 For $\alpha > -1$ the family is also orthogonal on the positive half-line:
 
-$$\int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0
-  \qquad (m \neq n).$$
+$$
+\int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0
+  \qquad (m \neq n).
+$$
 
 ## References
 
-G. Szegő, *Orthogonal Polynomials*, American Mathematical Society Colloquium
-Publications 23 (1939), Chapter V.
+G. Szegő, [*Orthogonal Polynomials*](https://doi.org/10.1090/coll/023),
+American Mathematical Society Colloquium Publications 23 (1939), Chapter V.
 The general three-term theory is on the
 [Favard page](/RealRooted/theorems/favard/).
 <!-- /realrooted-catalog-content -->

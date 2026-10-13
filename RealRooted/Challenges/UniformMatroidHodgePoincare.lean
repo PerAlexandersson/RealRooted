@@ -9,8 +9,8 @@ version = 1
 section = "theorems"
 slug = "uniform-matroid-hodge-poincare"
 formalized = "2026-10-09"
-authors = ["Binder", "Vecchi", "Athanasiadis", "Brändén", "Jochemko"]
-years = [2022, 2025, 2026]
+authors = ["Binder", "Vecchi", "Athanasiadis", "Brändén", "Jochemko", "Solus"]
+years = [2021, 2022, 2025, 2026]
 
 [[definitions]]
 name = "RealRooted.BinderVecchi.refinedHodgePoincare"
@@ -96,11 +96,16 @@ about the explicit formulas.
 
 ## References
 
-K. Binder and L. Vecchi, “Augmented singular cohomology, uniform matroids, and
-real-rootedness,” arXiv:2609.15946 (2026); C. A. Athanasiadis, “On the real-rootedness of the
-Eulerian transformation,” *J. London Math. Soc.* 111 (2025), e70083; P. Brändén and
-K. Jochemko, “The Eulerian transformation,” *Trans. Amer. Math. Soc.* 375 (2022), 1917–1931;
-P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,” *IMRN* 2021.
+K. Binder and L. Vecchi, “Augmented singular cohomology, uniform matroids,
+and real-rootedness,”
+[arXiv:2609.15946](https://arxiv.org/abs/2609.15946) (2026). C. A. Athanasiadis,
+[“On the real-rootedness of the Eulerian
+transformation,”](https://doi.org/10.1112/jlms.70083) *J. London Math. Soc.*
+111 (2025), e70083. P. Brändén and K. Jochemko, [“The Eulerian
+transformation,”](https://doi.org/10.1090/tran/8539) *Trans. Amer. Math. Soc.*
+375 (2022), 1917–1931. P. Brändén and L. Solus, [“Symmetric decompositions and
+real-rootedness,”](https://doi.org/10.1093/imrn/rnz059) *International
+Mathematics Research Notices* 2021, 7764–7798.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.

@@ -126,7 +126,9 @@ the minors along the Routh reduction.
 ## References
 
 O. Holtz, “Hermite–Biehler, Routh–Hurwitz, and total positivity,” *Linear
-Algebra and its Applications* 372 (2003), 105–110.  See also the
+Algebra and its Applications* 372 (2003), 105–110,
+[doi:10.1016/s0024-3795(03)00501-9](https://doi.org/10.1016/s0024-3795(03)00501-9).
+See also the
 [Hermite–Biehler theorem](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermiteBiehlerTheorem)
 and the [coefficient signs of Hurwitz-stable polynomials](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hurwitzImpliesCoefficientPositivity)
 on symmetricfunctions.com. The related
