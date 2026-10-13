@@ -78,10 +78,14 @@ $P_M(t)$ of these trees. It interpolates between the Eulerian polynomials
 real-rooted.
 
 Zhang and Zhao factor it into first-order steps. Write
-$$E_{d,a} f = \frac1a\Bigl(t(1-t) f' + \bigl(a + (d+a)t\bigr) f\Bigr)$$
+$$
+E_{d,a} f = \frac1a\Bigl(t(1-t) f' + \bigl(a + (d+a)t\bigr) f\Bigr).
+$$
 and, for the composition $\alpha = (p_1, \dotsc, p_m)$ with partial sums $N_j$,
 let $a_d(\alpha) = N_j - d$ for the least $j$ with $N_j > d$. Then
-$$P_\alpha = E_{N-2, a_{N-2}(\alpha)} \circ \dotsb \circ E_{0, a_0(\alpha)}(1).$$
+$$
+P_\alpha = E_{N-2, a_{N-2}(\alpha)} \circ \dotsb \circ E_{0, a_0(\alpha)}(1).
+$$
 Here this factorization defines $P_\alpha$. The tree model and the
 Lagrange–Bürmann argument behind the factorization are not formalized.
 
@@ -109,9 +113,9 @@ $a_d(\alpha)$ are positive.
 
 ## References
 
-Z. Lin, J. Ma, S.-M. Ma and Y. Zhou, “Weakly increasing trees on a multiset,”
+Z. Lin, J. Ma, S.-M. Ma and Y. Zhou, [“Weakly increasing trees on a multiset,”](https://doi.org/10.1016/j.aam.2021.102206)
 *Advances in Applied Mathematics* 129 (2021), 102206; P. B. Zhang and T. Zhao,
-“Zeros and interlacing for multiset Eulerian–Narayana polynomials,”
+[“Zeros and interlacing for multiset Eulerian–Narayana polynomials,”](https://arxiv.org/abs/2610.00966)
 arXiv:2610.00966 (2026).
 
 The real-rootedness theorem was formalized in RealRooted issue #1076.

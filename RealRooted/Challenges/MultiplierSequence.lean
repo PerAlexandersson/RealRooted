@@ -162,8 +162,10 @@ label = "Positive multiplier sequences preserve directed proper position"
 A real sequence $\gamma = (\gamma_0, \gamma_1, \dotsc)$ is a **multiplier sequence** if the
 diagonal operator
 
-$$a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
-  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n$$
+$$
+a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
+  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n.
+$$
 
 sends every real-rooted polynomial to a real-rooted polynomial (or zero). It is
 a **PF multiplier sequence** if it preserves real-rootedness with nonnegative

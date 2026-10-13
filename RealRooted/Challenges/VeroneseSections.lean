@@ -31,7 +31,10 @@ nonnegativity.
 
 ## References
 
-See the
+[C. A. Athanasiadis and D. G. Wagner, “Veronese sections and interlacing
+matrices of polynomials and formal power
+series,”](https://arxiv.org/abs/2404.12989) arXiv:2404.12989 (2024), proves a
+stronger fully interlacing statement. See also the
 [Veronese sections on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted).
 <!-- /realrooted-catalog-content -->
 

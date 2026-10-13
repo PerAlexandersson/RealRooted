@@ -164,11 +164,13 @@ Wurzeln algebraischer Gleichungen,” *Math. Z.* 13 (1922), 28–55; Q. I. Rahma
 and G. Schmeisser, *Analytic Theory of Polynomials*, Oxford University Press,
 2002; E. H. Lieb and A. D. Sokal, “A general Lee–Yang theorem for
 one-component and multicomponent ferromagnets,” *Comm. Math. Phys.* 80 (1981),
-153–179; J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. II.
-Theory of stable polynomials and applications,” *Comm. Pure Appl. Math.* 62
-(2009), 1595–1631; A. Gribinski and A. W. Marcus, “A rectangular additive
+153–179, [doi:10.1007/bf01213009](https://doi.org/10.1007/bf01213009);
+J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. II. Theory
+of stable polynomials and applications,” *Comm. Pure Appl. Math.* 62 (2009),
+1595–1631, [doi:10.1002/cpa.20295](https://doi.org/10.1002/cpa.20295);
+A. Gribinski and A. W. Marcus, “A rectangular additive
 convolution for polynomials,” *Combinatorial Theory* 2(1) (2022), #16,
-Theorem 2.4. See
+Theorem 2.4, [doi:10.5070/c62156888](https://doi.org/10.5070/c62156888). See
 [apolar polynomials](https://www.symmetricfunctions.com/stablePolynomials.htm#apolarPolynomial)
 and [polarization](https://www.symmetricfunctions.com/stablePolynomials.htm#polarizationDefinition)
 on symmetricfunctions.com.

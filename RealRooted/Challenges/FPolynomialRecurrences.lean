@@ -87,9 +87,9 @@ label = "Half-growth sequences transfer consecutive strict interlacing"
 For a polynomial $h$ of degree at most $d$, we use the
 **f-polynomial transform**
 
-\[
+$$
 fPolynomial\ d\ h = \sum_{k=0}^{d} h_k X^k (X+1)^{d-k},
-\]
+$$
 
 where $h_k$ is the coefficient of $X^k$ in $h$. We write $f_j(c)$ for
 `fPolynomial j c` when the degree bound is small. The derivative identity gives
@@ -98,18 +98,18 @@ recurrence into another derivative recurrence.
 
 We suppose that
 
-\[
+$$
 Q(n+1)=a(n)Q'(n)+b(n)Q(n),
-\]
+$$
 
 with $\deg a(n)\leq 2$ and $\deg b(n)\leq 1$. If the degrees of the rows of
 $Q$ are bounded by their indices, then the transformed rows
 $P(n)=fPolynomial\ n\ (Q(n))$ satisfy
 
-\[
+$$
 P(n+1)=(X+1)f_2(a(n))P'(n)
        +\bigl(f_1(b(n))-n f_2(a(n))\bigr)P(n).
-\]
+$$
 
 The one-step identity and induction theorem record this calculation in Lean.
 The degree lemma supplies the required bound from a constant initial row, so
@@ -125,13 +125,13 @@ root at $1$, the roots of $fPolynomial\ (\deg h)\ h$ are exactly the images
 $r/(1-r)$. This map is increasing on $(-\infty, 1)$ and on $(1, \infty)$, so
 strict interlacing transfers whenever all roots of both polynomials lie on one
 side of $1$. For a
-sequence with half-growth degrees \(\deg Q(j)=(j+1)/2\), nonnegative
+sequence with half-growth degrees $\deg Q(j)=(j+1)/2$, nonnegative
 coefficients, split nonzero rows, and
 consecutive strict interlacing, the padding and peeling lemmas give
 
-\[
+$$
 P(n) \mathrel{\ll} P(n+1) \qquad (n\geq 1).
-\]
+$$
 
 Here the peeling lemmas remove or add a factor $X-C(r)$ under the indicated
 root inequalities, while the padding lemma restores the common powers of
@@ -148,7 +148,8 @@ theorem.
 ## References
 
 P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,”
-*International Mathematics Research Notices* 2021 (2021), 7764–7798. See the
+*International Mathematics Research Notices* 2021 (2021), 7764–7798,
+[doi:10.1093/imrn/rnz059](https://doi.org/10.1093/imrn/rnz059). See the
 [symmetric-decomposition overview on symmetricfunctions.com][bs-overview].
 
 For the alternating-runs families and their references, see OEIS

@@ -142,15 +142,15 @@ label = "OEIS A277627 rows strictly interlace"
 <!-- realrooted-catalog-content -->
 # Path-power clique polynomials and OEIS rows
 
-For \(k \ge 2\) let
-\[
+For $k \ge 2$ let
+$$
 Q(k,N) = \sum_i \binom{N-(k-1)i}{i} X^i .
-\]
-This is the independence polynomial of the \((k-1)\)-th power of a path, so it is
+$$
+This is the independence polynomial of the $(k-1)$-th power of a path, so it is
 real-rooted because powers of paths are claw-free. We show that these polynomials form
-interlacing cliques of width \(k\): for \(1 \le j \le k\), \(Q(k,N)\) strictly interlaces
-\(Q(k,N+j)\). Degree-padded reciprocal shifts transfer this to every subsequence of step at
-most \(k\), and the Graeffe transforms of \(1 - s - Y s^k\) give the row recurrences.
+interlacing cliques of width $k$: for $1 \le j \le k$, $Q(k,N)$ strictly interlaces
+$Q(k,N+j)$. Degree-padded reciprocal shifts transfer this to every subsequence of step at
+most $k$, and the Graeffe transforms of $1 - s - Y s^k$ give the row recurrences.
 
 As applications we prove that the OEIS row families A193636, A109955, A127893, A206294,
 A109960, A116088, A116089 and A277627 are real-rooted and that consecutive rows strictly

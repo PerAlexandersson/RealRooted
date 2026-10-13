@@ -128,8 +128,8 @@ real-rootedness for a sequence whose even and odd rows are endpoint powers of
 [OEIS A060523](https://oeis.org/A060523), the motivating example named in
 `RealRooted.ProductSequence.ScalarFamilies`.
 
-[OEIS A137477](https://oeis.org/A137477), the product exit named in
-`RealRooted.ProductSequence.EndpointPair`.
+[OEIS A137477](https://oeis.org/A137477), the motivating endpoint-pair example
+named in `RealRooted.ProductSequence.EndpointPair`.
 <!-- /realrooted-catalog-content -->
 -/
 

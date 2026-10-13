@@ -126,7 +126,7 @@ The theorem and its proof are original to this library (P. Alexandersson,
 
 C. A. Micchelli and R. A. Willoughby, “On functions which preserve the class
 of Stieltjes matrices,” *Linear Algebra and its Applications* 23 (1979),
-141–156.
+141–156, [doi:10.1016/0024-3795(79)90098-3](https://doi.org/10.1016/0024-3795(79)90098-3).
 The triangle is [OEIS A132885](https://oeis.org/A132885); the central trinomial
 coefficients are [OEIS A002426](https://oeis.org/A002426). The Jacobi
 polynomials used in the proof are on the

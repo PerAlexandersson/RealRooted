@@ -10,7 +10,7 @@ section = "theorems"
 slug = "separable-permutations"
 formalized = "2026-10-09"
 authors = ["Zhanhe Zhang", "Fu", "Lin", "Zeng"]
-years = [2016, 2026]
+years = [2018, 2026]
 
 [[definitions]]
 name = "RealRooted.SeparablePermutations.auxPolynomial"
@@ -89,14 +89,14 @@ $B_N$, where $B_0 = 1$ and $B_{N+1} = (x + \tfrac{N+2}{2})B_N + x B_N'$.
 and have no common root, and so do $S_n$ and $S_{n+1}$.  All roots of $S_n$ are simple and
 negative, and $S_n$ has degree $n-1$.
 
-**What is formalized.**  Everything, for the permutation statistic itself.  The identification
-of $S_n$ with the descent enumerator of the separable permutations
-(`descentEnumerator_eq_descentPolynomial`) is proved: the separable permutations decompose
-uniquely into direct and skew sums, which gives the cubic recurrence
+We also prove the identification of $S_n$ with the descent enumerator of the
+separable permutations (`descentEnumerator_eq_descentPolynomial`). The
+separable permutations decompose uniquely into direct and skew sums, which
+gives the cubic recurrence
 $S = z + (1+t)zS + tzS^2 + tS^3$ for the enumerator, while Zhang's closed form satisfies Fu, Lin
 and Zeng's cubic $G = w + wG + xwG^2 + xG^3$ for the gamma-polynomials (proved with a general
 Lagrange–Bürmann inversion theorem), which the gamma substitution carries to the same recurrence.
-Hence Theorem 1.1 of Zhang's preprint holds for separable permutations
+This proves Zhang's strict-interlacing theorem for the permutation statistic
 (`strictInterl_descentEnumerator`).
 
 ## Proof idea
@@ -111,10 +111,14 @@ the central root $-1$ is excluded by the evaluation formula for the gamma transf
 
 ## References
 
-Z. Zhang, *A Factorial Compression Theorem for Strict Interlacing* (2026),
-[SSRN preprint](https://ssrn.com/abstract=7510941); S. Fu, Z. Lin and J. Zeng, “On two
-unimodal descent polynomials,” [arXiv:1507.05184](https://arxiv.org/abs/1507.05184).  The Lean
-development follows the draft formalization of PR #1132 by yyou59548-design.
+Z. Zhang, [“Strict interlacing of the descent polynomials of separable
+permutations,”](https://doi.org/10.2139/ssrn.7510941) SSRN preprint (2026).
+S. Fu, Z. Lin and J. Zeng, [“On two unimodal descent
+polynomials,”](https://doi.org/10.1016/j.disc.2018.06.010) *Discrete
+Mathematics* 341 (2018), 2616–2626,
+[arXiv:1507.05184](https://arxiv.org/abs/1507.05184). The Lean development follows the draft
+formalization of PR #1132 by yyou59548-design. See also the
+[separable-permutation descent theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#separableDescentRealRooted).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and

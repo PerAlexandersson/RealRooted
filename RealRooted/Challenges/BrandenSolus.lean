@@ -73,7 +73,8 @@ The proof establishes the excedance recurrence by removing the letter $0$ from a
 ## References
 
 P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,”
-*International Mathematics Research Notices* 2021 (2021), 7764–7798.  See the
+*International Mathematics Research Notices* 2021 (2021), no. 10, 7764–7798,
+[doi:10.1093/imrn/rnz059](https://doi.org/10.1093/imrn/rnz059). See the
 [symmetric-decomposition overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricIDecomposition).
 <!-- /realrooted-catalog-content -->
 

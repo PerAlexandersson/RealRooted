@@ -4,6 +4,8 @@ import RealRooted.SimpleRoots
 import RealRooted.Basic.Coefficients
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+import RealRooted.GammaTransform.TwoStep
+import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # OEIS A297191
@@ -772,5 +774,273 @@ theorem hasSimpleRoots_polynomial (n : ℕ) : HasSimpleRoots (polynomial n) := b
 /-- Row `n` has exactly `2n` roots, counted with multiplicity. -/
 theorem roots_card_polynomial (n : ℕ) : (polynomial n).roots.card = 2 * n := by
   rw [card_roots_of_splits (splits_polynomial n), natDegree_polynomial]
+
+
+/-- The A054142 gamma polynomial whose transform is the A297191 row. -/
+def gammaPolynomial : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 =>
+      (1 + 2 * X) * gammaPolynomial (n + 1) +
+        (-1 * X ^ 2) * gammaPolynomial n
+
+private lemma gammaPolynomial_add_two (n : ℕ) :
+    gammaPolynomial (n + 2) =
+      (1 + 2 * X) * gammaPolynomial (n + 1) +
+        (-1 * X ^ 2) * gammaPolynomial n :=
+  rfl
+
+private lemma coeff_gammaPolynomial_add_two (n m : ℕ) :
+    (gammaPolynomial (n + 2)).coeff (m + 2) =
+      (gammaPolynomial (n + 1)).coeff (m + 2) +
+        2 * (gammaPolynomial (n + 1)).coeff (m + 1) -
+          (gammaPolynomial n).coeff m := by
+  rw [gammaPolynomial_add_two]
+  simp only [coeff_add, add_mul, one_mul]
+  have htwoX : (2 * X : ℝ[X]) = C 2 * X := by
+    rw [map_ofNat]
+  have hnegXsq : (-1 * X ^ 2 : ℝ[X]) = C (-1) * X ^ 2 := by
+    simp
+  rw [htwoX, hnegXsq]
+  rw [mul_assoc, coeff_C_mul, coeff_X_mul, mul_assoc, coeff_C_mul,
+    coeff_X_pow_mul]
+  ring
+
+private lemma choose_gammaPolynomial (N k : ℕ) :
+    Nat.choose (N + 2) (k + 2) + Nat.choose N k =
+      Nat.choose N (k + 2) + 2 * Nat.choose (N + 1) (k + 1) := by
+  grind
+
+private lemma choose_gammaPolynomial_sub (n k : ℕ) :
+    Nat.choose (2 * n + 2 - k) (k + 2) + Nat.choose (2 * n - k) k =
+      Nat.choose (2 * n - k) (k + 2) +
+        2 * Nat.choose (2 * n + 1 - k) (k + 1) := by
+  by_cases hk : k ≤ 2 * n
+  · have h1 : 2 * n + 1 - k = (2 * n - k) + 1 := by lia
+    have h2 : 2 * n + 2 - k = (2 * n - k) + 2 := by lia
+    grind
+  · grind
+
+private lemma choose_gammaPolynomial_sub_real (n k : ℕ) :
+    (Nat.choose (2 * n + 2 - k) (k + 2) : ℝ) =
+      (Nat.choose (2 * n - k) (k + 2) : ℝ) +
+        2 * (Nat.choose (2 * n + 1 - k) (k + 1) : ℝ) -
+          (Nat.choose (2 * n - k) k : ℝ) := by
+  have hnat := choose_gammaPolynomial_sub n k
+  have hreal : (Nat.choose (2 * n + 2 - k) (k + 2) : ℝ) +
+      (Nat.choose (2 * n - k) k : ℝ) =
+      (Nat.choose (2 * n - k) (k + 2) : ℝ) +
+        2 * (Nat.choose (2 * n + 1 - k) (k + 1) : ℝ) := by
+    exact_mod_cast hnat
+  linarith
+
+private lemma coeff_zero_gammaPolynomial (n : ℕ) :
+    (gammaPolynomial n).coeff 0 = 1 := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      match n with
+      | 0 => simp [gammaPolynomial]
+      | 1 => simp [gammaPolynomial]
+      | n + 2 =>
+          simpa [gammaPolynomial_add_two, coeff_mul] using ih (n + 1) (by lia)
+
+private lemma coeff_X_sq_mul_one (p : ℝ[X]) : (X ^ 2 * p).coeff 1 = 0 := by
+  have hXsq : X ^ 2 * p = X * (X * p) := by
+    ring
+  rw [hXsq]
+  simp
+
+private lemma coeff_one_gammaPolynomial_step (n : ℕ) :
+    (gammaPolynomial (n + 2)).coeff 1 =
+      (gammaPolynomial (n + 1)).coeff 1 +
+        2 * (gammaPolynomial (n + 1)).coeff 0 := by
+  rw [gammaPolynomial_add_two]
+  have hexpand : (1 + 2 * X : ℝ[X]) * gammaPolynomial (n + 1) +
+      (-1 * X ^ 2) * gammaPolynomial n =
+      gammaPolynomial (n + 1) + 2 * (X * gammaPolynomial (n + 1)) -
+        X ^ 2 * gammaPolynomial n := by
+    ring
+  rw [hexpand]
+  simp only [coeff_sub, coeff_add, coeff_X_sq_mul_one, sub_zero]
+  rw [Polynomial.coeff_ofNat_mul, coeff_X_mul]
+
+private lemma coeff_one_gammaPolynomial (n : ℕ) :
+    (gammaPolynomial n).coeff 1 = (2 * n - 1 : ℕ) := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      match n with
+      | 0 =>
+          rw [gammaPolynomial]
+          rw [coeff_one]
+          norm_num
+      | 1 => norm_num [gammaPolynomial, coeff_add, coeff_one, coeff_X]
+      | n + 2 =>
+          rw [coeff_one_gammaPolynomial_step, ih (n + 1) (by lia),
+            coeff_zero_gammaPolynomial]
+          norm_num
+          ring
+
+private lemma coeff_gammaPolynomial_eq_choose (n k : ℕ) :
+    (gammaPolynomial n).coeff k = (Nat.choose (2 * n - k) k : ℝ) := by
+  revert k
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      intro k
+      match n with
+      | 0 =>
+          by_cases hk : k = 0
+          · subst k
+            simp [gammaPolynomial]
+          · simp only [gammaPolynomial, coeff_one, hk, ite_false]
+            have hkpos : 0 < k := Nat.pos_of_ne_zero hk
+            have hsub : 2 * 0 - k = 0 := by lia
+            rw [hsub, Nat.choose_eq_zero_of_lt hkpos]
+            norm_num
+      | 1 =>
+          rw [gammaPolynomial]
+          cases k with
+          | zero => simp
+          | succ k =>
+              cases k with
+              | zero => norm_num [coeff_add, coeff_one, coeff_X]
+              | succ k => simp [coeff_add, coeff_one, coeff_X]
+      | n + 2 =>
+          cases k with
+          | zero => simp [coeff_zero_gammaPolynomial]
+          | succ k =>
+              cases k with
+              | zero =>
+                  rw [coeff_one_gammaPolynomial]
+                  norm_num
+              | succ k =>
+                  rw [coeff_gammaPolynomial_add_two,
+                    ih (n + 1) (by lia) (k + 2),
+                    ih (n + 1) (by lia) (k + 1), ih n (by lia) k]
+                  have hfirst : 2 * (n + 1) - (k + 2) = 2 * n - k := by lia
+                  have hsecond : 2 * (n + 1) - (k + 1) = 2 * n + 1 - k := by lia
+                  have hthird :
+                      2 * (n + 2) - (k + 1 + 1) = 2 * n + 2 - k := by
+                    lia
+                  rw [hfirst, hsecond, hthird]
+                  exact (choose_gammaPolynomial_sub_real n k).symm
+
+/-- The A297191 gamma polynomial has degree `n`. -/
+theorem natDegree_gammaPolynomial (n : ℕ) : (gammaPolynomial n).natDegree = n := by
+  apply natDegree_eq_of_le_of_coeff_ne_zero
+  · rw [natDegree_le_iff_coeff_eq_zero]
+    intro k hk
+    rw [coeff_gammaPolynomial_eq_choose]
+    exact_mod_cast Nat.choose_eq_zero_of_lt (by lia : 2 * n - k < k)
+  · rw [coeff_gammaPolynomial_eq_choose]
+    have hsub : 2 * n - n = n := by lia
+    rw [hsub, Nat.choose_self]
+    norm_num
+
+private lemma hasPosLeadingCoeff_gammaPolynomial (n : ℕ) :
+    HasPosLeadingCoeff (gammaPolynomial n) := by
+  rw [HasPosLeadingCoeff, leadingCoeff, natDegree_gammaPolynomial,
+    coeff_gammaPolynomial_eq_choose]
+  have hsub : 2 * n - n = n := by lia
+  rw [hsub, Nat.choose_self]
+  norm_num
+
+/-- The A297191 gamma polynomial has nonnegative coefficients. -/
+theorem hasNonnegCoeffs_gammaPolynomial (n : ℕ) :
+    HasNonnegCoeffs (gammaPolynomial n) := by
+  intro k
+  rw [coeff_gammaPolynomial_eq_choose]
+  positivity
+
+/-- The constant coefficient of every A297191 gamma polynomial is one. -/
+theorem gammaPolynomial_coeff_zero (n : ℕ) :
+    (gammaPolynomial n).coeff 0 = 1 :=
+  coeff_zero_gammaPolynomial n
+
+private lemma eval_lag_nonpos (r : ℝ) : (-1 * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
+  norm_num only [eval_mul, eval_neg, eval_one, eval_pow, eval_X, one_mul]
+  nlinarith [sq_nonneg r]
+
+private theorem interlaces_gammaPolynomial_succ (n : ℕ) :
+    Interlaces (gammaPolynomial n) (gammaPolynomial (n + 1)) := by
+  apply threeTerm_interlaces_of_eval_nonpos
+      (P := gammaPolynomial) (a := fun _ ↦ 1 + 2 * X)
+      (b := fun _ ↦ -1 * X ^ 2) (D₀ := 0)
+  · exact gammaPolynomial_add_two
+  · intro k
+    rw [natDegree_gammaPolynomial]
+    lia
+  · exact fun k ↦ hasPosLeadingCoeff_gammaPolynomial k
+  · exact fun _ r ↦ eval_lag_nonpos r
+  · exact interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
+      (by simp [gammaPolynomial]) (by simp [gammaPolynomial])
+      (by rw [natDegree_gammaPolynomial])
+
+/-- Consecutive A297191 gamma polynomials are in proper position. -/
+theorem strictInterl_gammaPolynomial_succ (n : ℕ) :
+    StrictInterl (gammaPolynomial n) (gammaPolynomial (n + 1)) :=
+  (interlaces_gammaPolynomial_succ n).toStrictInterl
+
+/-- Each A297191 row is the even gamma transform of its A054142 gamma row. -/
+theorem polynomial_eq_gammaTransform (n : ℕ) :
+    polynomial n = gammaTransform (2 * n) (gammaPolynomial n) := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      match n with
+      | 0 => simp [polynomial, gammaPolynomial, gammaTransform]
+      | 1 =>
+          have hgamma : gammaTransform 2 (1 + X : ℝ[X]) = (X + 1) ^ 2 + X := by
+            simp [gammaTransform, gammaBasisTerm, Finset.sum_range_succ,
+              coeff_add, coeff_one, coeff_X]
+          change 1 + 3 * X + X ^ 2 = gammaTransform 2 (1 + X)
+          rw [hgamma]
+          ring
+      | n + 2 =>
+          rw [polynomial, ih (n + 1) (by lia), ih n (by lia),
+            gammaPolynomial_add_two]
+          have hdeg :
+              (gammaPolynomial (n + 1)).natDegree ≤ (2 * (n + 1)) / 2 := by
+            rw [natDegree_gammaPolynomial]
+            lia
+          calc
+            (1 + 4 * X + X ^ 2) *
+                  gammaTransform (2 * (n + 1)) (gammaPolynomial (n + 1)) -
+                X ^ 2 * gammaTransform (2 * n) (gammaPolynomial n) =
+                gammaTransform (2 * (n + 2))
+                  (gammaPolynomial (n + 1) +
+                    C 2 * (X * gammaPolynomial (n + 1)) +
+                      C (-1) * (X * (X * gammaPolynomial n))) := by
+                have hambientSucc : 2 * (n + 2) = 2 * (n + 1) + 2 := by lia
+                have hambientPrev : 2 * (n + 1) = 2 * n + 2 := by lia
+                rw [gammaTransform_add, gammaTransform_add,
+                  gammaTransform_C_mul, gammaTransform_C_mul]
+                rw [hambientSucc, gammaTransform_pad_two hdeg,
+                  gammaTransform_X_mul_two (2 * (n + 1))]
+                rw [hambientPrev, gammaTransform_X_mul_two (2 * n + 2),
+                  gammaTransform_X_mul_two (2 * n)]
+                norm_num [map_ofNat, map_neg, map_one]
+                ring
+            _ = gammaTransform (2 * (n + 2))
+                  ((1 + 2 * X) * gammaPolynomial (n + 1) +
+                    (-1 * X ^ 2) * gammaPolynomial n) := by
+                congr 1
+                norm_num [map_ofNat, map_neg, map_one]
+                ring
+
+/-- Consecutive A297191 rows are joined by their missing-degree half step. -/
+theorem strictInterl_polynomial_two_step (n : ℕ) :
+    StrictInterl (polynomial n) ((1 + X) * polynomial n) ∧
+      StrictInterl ((1 + X) * polynomial n) (polynomial (n + 1)) := by
+  have h := strictInterl_gammaTransform_two_step
+    (n := n) (natDegree_gammaPolynomial n).le
+    (by rw [natDegree_gammaPolynomial])
+    (hasNonnegCoeffs_gammaPolynomial n)
+    (hasNonnegCoeffs_gammaPolynomial (n + 1))
+    (by rw [gammaPolynomial_coeff_zero]; norm_num)
+    (by rw [gammaPolynomial_coeff_zero]; norm_num)
+    (strictInterl_gammaPolynomial_succ n)
+  rw [← polynomial_eq_gammaTransform n] at h
+  have hambient : 2 * n + 2 = 2 * (n + 1) := by lia
+  rw [hambient, ← polynomial_eq_gammaTransform (n + 1)] at h
+  simpa only [add_comm] using h
 
 end RealRooted.Applications.OEIS.A297191

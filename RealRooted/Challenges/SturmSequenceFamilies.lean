@@ -193,8 +193,10 @@ Combinatorics* 51 (2016), 500–510.
 See also the
 [Touchard polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#touchardPolynomial),
 [Stirling permutations](https://www.symmetricfunctions.com/realRootedWords.htm#stirlingPermutationDescentPolynomial),
-and
-[derangement polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#derangementPolynomial)
+the
+[derangement polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#derangementPolynomial),
+and the
+[Motzkin-polynomial theorem](https://www.symmetricfunctions.com/realRootedCatalan.htm#motzkinPolynomialsRealRooted)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 

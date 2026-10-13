@@ -70,8 +70,9 @@ label = "A real polynomial of degree at most three splits iff its discriminant i
 
 Evaluate the signed Euclidean remainder sequence of a polynomial and its
 derivative at the two endpoints of an interval, omit zero values, and count
-sign changes. The drop in sign changes is exactly the number of distinct real
-roots in the open interval.
+sign changes. When the left endpoint is smaller than the right and the right
+endpoint is not a root, the drop in sign changes is exactly the number of
+distinct real roots in the open interval.
 
 Repeated factors are removed by a canonical squarefree normalization. If the
 interval contains every root, the same count tests whether all roots are real.
@@ -92,9 +93,10 @@ J. C. F. Sturm, “Mémoire sur la résolution des équations numériques,”
 *Bulletin des Sciences de Férussac* 11 (1829), 419–422;
 C. Hermite, “Remarques sur le théorème de M. Sturm,” *Comptes rendus de
 l’Académie des sciences* 36 (1853), 52–54;
-J. J. Sylvester, “On a theory of the syzygetic relations of two rational
-integral functions,” *Philosophical Transactions of the Royal Society of
-London* 143 (1853), 407–548. See also the root-counting
+J. J. Sylvester, [“On a theory of the syzygetic relations of two rational
+integral functions,”](https://doi.org/10.1098/rstl.1853.0018) *Philosophical
+Transactions of the Royal Society of London* 143 (1853), 407–548. See also
+the root-counting
 overview on [symmetricfunctions.com][sturm-overview] and the
 [Hermite–Sylvester theorem][hermite-sylvester] there.
 

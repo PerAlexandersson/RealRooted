@@ -132,24 +132,21 @@ preserves finite PF polynomials exactly when that factor is PF.
 
 For every real parameter, `preservesPF_iff` gives the complete fixed-factor
 classification: PF factors when $c \geq 0$, and exactly the nonnegative
-constants when $c < 0$. For a nonzero fixed factor, the Final layer identifies
-five equivalent conditions: preservation of all split inputs, preservation of
+constants when $c < 0$. For a nonzero fixed factor, we identify five equivalent
+conditions: preservation of all split inputs, preservation of
 affine inputs, root-sign admissibility, stability of the Euler pencil, and
-stability of the signed Poisson symbol. The transport layer also packages five
-conclusions for every positive affine-recurrence row: Pólya frequency, simple
+stability of the signed Poisson symbol. We also prove five conclusions for
+every positive affine-recurrence row: Pólya frequency, simple roots, strictly
 negative roots, strict interlacing with the next row, and no common roots. The
 step-$c$ falling-factorial transform conjugates the Poisson product to ordinary
 multiplication, proving both multiplicativity and associativity of $\star_c$.
 
-We do not formalize the proposed general-factor equivalences for
-real-rootedness preservation, positive-parameter PF sufficiency, directed
-proper-position transport, or the falling-factorial-transform consumer.
-
 ## References
 
-P. Brändén, “On linear transformations preserving the Pólya Frequency
-property,” *Transactions of the American Mathematical Society* 358 (2006),
-no. 8, 3697–3716, [arXiv:math/0403364](https://arxiv.org/abs/math/0403364).
+P. Brändén, [“On linear transformations preserving the Pólya frequency
+property,”](https://doi.org/10.1090/S0002-9947-06-03856-6) *Transactions of
+the American Mathematical Society* 358 (2006), no. 8, 3697–3716,
+[arXiv:math/0403364](https://arxiv.org/abs/math/0403364).
 <!-- /realrooted-catalog-content -->
 -/
 

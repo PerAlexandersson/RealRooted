@@ -67,9 +67,10 @@ mixed volumes (Gurvits), the Johnson scheme (Kahn–Neiman) or Lorentzian polyno
 ## References
 
 T. M. Liggett, “Ultra logconcave sequences and negative dependence,” *Journal of
-Combinatorial Theory, Series A* 79 (1997), 315–325; L. Gurvits, “A short proof,
+Combinatorial Theory, Series A* 79 (1997), 315–325; L. Gurvits, [“A short proof,
 based on mixed volumes, of Liggett's theorem on the convolution of
-ultra-logconcave sequences,” *Electronic Journal of Combinatorics* 16 (2009), N5.
+ultra-logconcave sequences,”](https://doi.org/10.37236/243) *Electronic Journal
+of Combinatorics* 16 (2009), #N5.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
