@@ -1924,3 +1924,4 @@ import RealRooted.Permanent.Stability.Cone
 import RealRooted.Permanent.Stability.Ferrers
 import RealRooted.Permanent.Stability.Fractional
 import RealRooted.Permanent.Stability.Operator
+import RealRooted.Challenges.MonotoneColumnPermanent
