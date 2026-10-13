@@ -1731,14 +1731,15 @@ import RealRooted.BorceaBranden.RealFiniteClassification
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
-import RealRooted.MultiplierSequence.InvPochhammerSimple
+import RealRooted.Tactic.Row.PathPower
+import RealRooted.Applications.OEIS.PeriodicTopRows
 import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
 import RealRooted.BorceaBranden.Transcendental.PivotConverse
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
-import RealRooted.Applications.OEIS.PeriodicTopRows
-import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
 import RealRooted.CoefficientShape.RowCLT
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
+import RealRooted.MultiplierSequence.InvPochhammerSimple
 
 /-!
 # RealRooted production umbrella
