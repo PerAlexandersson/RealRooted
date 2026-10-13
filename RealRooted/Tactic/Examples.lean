@@ -131,6 +131,7 @@ import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
 import RealRooted.Tactic.Examples.RowPathPower
+import RealRooted.Tactic.Examples.RowPathPowerK5
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
