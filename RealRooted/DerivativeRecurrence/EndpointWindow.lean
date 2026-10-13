@@ -233,7 +233,7 @@ variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 
 /-- Interlacing for a derivative recurrence with a window callback that may use the
 newly proved interlacing relation before placing the next row in its window. -/
-theorem derivRec_interlaces_of_endpoint_windows (W : ℕ → ℝ → Prop)
+theorem derivativeRecurrence_interlaces_of_endpoint_windows (W : ℕ → ℝ → Prop)
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n x, W n x → (A n).eval x ≤ 0)
@@ -253,11 +253,11 @@ theorem derivRec_interlaces_of_endpoint_windows (W : ℕ → ℝ → Prop)
         refine ⟨h0, hW0, ?_⟩
         rcases Nat.eq_zero_or_pos D₀ with hD | hD
         · exact h01 hD
-        · exact derivRec_interlaces_step hrec hdeg hpos 0 (hroot 0 hW0) h0 (by lia)
+        · exact derivativeRecurrence_interlaces_step hrec hdeg hpos 0 (hroot 0 hW0) h0 (by lia)
     | succ n ih =>
         obtain ⟨hs, hw, hi⟩ := ih
         have hw' := hW n hs hw hi
-        exact ⟨hi.1.2, hw', derivRec_interlaces_step hrec hdeg hpos (n + 1)
+        exact ⟨hi.1.2, hw', derivativeRecurrence_interlaces_step hrec hdeg hpos (n + 1)
           (hroot (n + 1) hw') hi.1.2 (by lia)⟩
   exact fun n => (key n).2.2
 

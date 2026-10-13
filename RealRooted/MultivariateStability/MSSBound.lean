@@ -16,7 +16,7 @@ noncomputable section
 Let `A_1, …, A_m` be real positive semidefinite `n × n` matrices with `Σ A_i = 1` and
 `tr A_i ≤ ε`.  Then every root of the mixed characteristic polynomial
 `μ[A](x) = Π_i (1 − ∂_{z_i}) det(x·1 + Σ z_i A_i) |_{z = 0}` is at most `(1 + √ε)²`
-(`mixedCharacteristic_roots_le_optimized`; A. W. Marcus, D. A. Spielman and N. Srivastava,
+(`mixedCharacteristic_roots_le_one_add_sqrt_sq`; A. W. Marcus, D. A. Spielman and N. Srivastava,
 *Interlacing families II*, Ann. of Math. 182 (2015), Theorem 5.1).
 
 The proof follows MSS §5.  With `Σ A_i = 1`, `μ(x)` is the diagonal value of
@@ -467,7 +467,7 @@ theorem mixedCharacteristic_roots_le {n m : ℕ}
   exact determinant_diagonal_roots_le As hAs hsum ht hδ hthreshold htrace
 
 /-- The optimized `(1 + √ε)²` MSS root bound. -/
-theorem mixedCharacteristic_roots_le_optimized {n m : ℕ}
+theorem mixedCharacteristic_roots_le_one_add_sqrt_sq {n m : ℕ}
     (As : Fin m → Matrix (Fin n) (Fin n) ℝ)
     (hAs : ∀ i, (As i).PosSemidef) (hsum : ∑ i, As i = 1)
     {ε : ℝ} (hε : 0 < ε) (htrace : ∀ i, (As i).trace ≤ ε)

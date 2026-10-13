@@ -79,7 +79,7 @@ theorem rootSeq_lt (p : ℝ[X]) (hnd : p.roots.Nodup) {i j : ℕ}
 /-! ### The amplitude as a product over roots
 
 `j ↦ -(rootSeq p j)` is a bijection from the indices onto the roots, so the
-index product `AmplitudeMonotone.amp` is the product over the roots that
+index product `RootAmplitude.amplitude` is the product over the roots that
 `RootAmplitude` speaks about. -/
 
 theorem rootSeq_mem (p : ℝ[X]) {j : ℕ} (hj : j < (rootMags p).length) :

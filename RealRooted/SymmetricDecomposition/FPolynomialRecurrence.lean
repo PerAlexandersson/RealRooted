@@ -86,7 +86,7 @@ private lemma fPolynomial_mul_deg1 {d : ℕ} {b r : ℝ[X]} (hb : b.natDegree �
   ring
 
 /-- The transform of a first-order derivative step for a quadratic coefficient. -/
-theorem fPolynomial_derivRec_step {d : ℕ} {a b q : ℝ[X]} (ha : a.natDegree ≤ 2)
+theorem fPolynomial_derivativeRecurrence_step {d : ℕ} {a b q : ℝ[X]} (ha : a.natDegree ≤ 2)
     (hb : b.natDegree ≤ 1) (hq : q.natDegree ≤ d)
     (hstep : (a * q.derivative + b * q).natDegree ≤ d + 1) :
     fPolynomial (d + 1) (a * q.derivative + b * q) =
@@ -120,7 +120,7 @@ theorem eq_fPolynomial_of_derivRec {P Q a b : ℕ → ℝ[X]}
   | zero => exact h0
   | succ n ih =>
     rw [hP, ih, hQ]
-    exact (fPolynomial_derivRec_step (ha n) (hb n) (hQdeg n)
+    exact (fPolynomial_derivativeRecurrence_step (ha n) (hb n) (hQdeg n)
       (by rw [← hQ]; exact hQdeg (n + 1))).symm
 
 /-- A derivative recurrence with quadratic and linear coefficients increases degree
@@ -152,7 +152,7 @@ theorem natDegree_le_of_derivRec {Q a b : ℕ → ℝ[X]} (ha : ∀ n, (a n).nat
           lia
 
 /-- The recurrence-transform identity assuming only a constant initial row. -/
-theorem eq_fPolynomial_of_derivRec_of_natDegree_zero {P Q a b : ℕ → ℝ[X]}
+theorem eq_fPolynomial_of_derivativeRecurrence_of_natDegree_zero {P Q a b : ℕ → ℝ[X]}
     (ha : ∀ n, (a n).natDegree ≤ 2) (hb : ∀ n, (b n).natDegree ≤ 1)
     (hQ : ∀ n, Q (n + 1) = a n * (Q n).derivative + b n * Q n)
     (h0deg : (Q 0).natDegree = 0)

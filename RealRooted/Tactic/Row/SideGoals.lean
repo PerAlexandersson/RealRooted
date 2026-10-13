@@ -80,7 +80,7 @@ elab "rr_row_eval_sign" : tactic => withMainContext do
     first | positivity | nlinarith | rr_row_field | fail)))
 
 /-- The multiplier goal `∀ n i j, j ≤ D → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`
-of `RealRooted.derivRec_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
+of `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
 two: split off `i = 0, 1, 2`, where the coefficients beyond the degree vanish. -/
 private def multiplierGoal : TacticM Unit := do
   evalTactic (← `(tactic| (
@@ -97,7 +97,8 @@ private def multiplierGoal : TacticM Unit := do
       try norm_num
       first | done | positivity | nlinarith | rr_row_field))))
 
-/-- The multiplier goal of `RealRooted.derivRec_hasNonnegCoeffs_of_mult_le` for the half-growth
+/-- The multiplier goal of
+`RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the half-growth
 bound `D₀ + (n + e) / 2`: the bound becomes `2 j ≤ 2 D₀ + n + e` over `ℝ`, then as
 `multiplierGoal`. -/
 def halfMultiplierGoal (D₀ e : Nat) : TacticM Unit := do

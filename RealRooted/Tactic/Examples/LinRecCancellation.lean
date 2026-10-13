@@ -57,7 +57,7 @@ example (P : ℕ → ℝ[X]) (hzero : P 0 = 1)
       have hlc : 0 < (P q).leadingCoeff := by
         rw [leadingCoeff, hdeg]
         exact hpos
-      have hlocal := derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+      have hlocal := derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
         (f := P q) (A := X - X ^ 3)
         (B := 1 + C 2 * X + C (q : ℝ) * X ^ 2) (d := q) (d' := q + 1) (m := 2)
         (by norm_num) hAdeg
@@ -135,7 +135,7 @@ example (P : ℕ → ℝ[X]) (hzero : P 0 = 1)
       have hlc : 0 < (P q).leadingCoeff := by
         rw [leadingCoeff, hdeg]
         exact hpos
-      have hlocal := derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+      have hlocal := derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
         (f := P q) (A := X - C 2 * X ^ 2) (B := 1 + C (q : ℝ) * X)
         (d := q / 2) (d' := (q + 1) / 2) (m := 1) (by norm_num) hAdeg (hBdeg q)
         (hnn q) hdeg hlc (by

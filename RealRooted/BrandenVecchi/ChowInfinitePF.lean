@@ -54,13 +54,13 @@ def aswEdreiToeplitz
   toeplitz (aswEdreiCoeff gamma alpha beta)
 
 /-- The fixed-rank Chow polynomial of an infinite ASW--Edrei symbol. -/
-def aswEdreiChow
+def aissenSchoenbergWhitneyEdreiChow
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (n : ℕ) : ℝ[X] :=
   chowPolynomial (aswEdreiToeplitz gamma alpha beta) n
 
 /-- The fixed-rank Chow-derangement polynomial of an infinite ASW--Edrei
 symbol. -/
-def aswEdreiChowDerangement
+def aissenSchoenbergWhitneyEdreiChowDerangement
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (n : ℕ) : ℝ[X] :=
   chowDerangement (aswEdreiToeplitz gamma alpha beta) n
 
@@ -98,9 +98,9 @@ theorem tendsto_coeff_aswEdreiTruncationChow
     (hsum : Summable fun i => alpha i + beta i) (n d : ℕ) :
     Tendsto
       (fun N => (aswEdreiTruncationChow gamma alpha beta N n).coeff d)
-      atTop (𝓝 ((aswEdreiChow gamma alpha beta n).coeff d)) := by
+      atTop (𝓝 ((aissenSchoenbergWhitneyEdreiChow gamma alpha beta n).coeff d)) := by
   simpa [aswEdreiTruncationChow, finiteSupersymmetricChow,
-    finiteSupersymmetricToeplitz, aswEdreiChow, aswEdreiToeplitz,
+    finiteSupersymmetricToeplitz, aissenSchoenbergWhitneyEdreiChow, aswEdreiToeplitz,
     truncationCoeff_eq_finiteSupersymmetricCoeff] using
     tendsto_coeff_chowPolynomial_toeplitz
       (fun N => aswEdreiTruncationCoeff gamma alpha beta N)
@@ -116,10 +116,10 @@ theorem tendsto_coeff_aswEdreiTruncationChowDerangement
     Tendsto
       (fun N =>
         (aswEdreiTruncationChowDerangement gamma alpha beta N n).coeff d)
-      atTop (𝓝 ((aswEdreiChowDerangement gamma alpha beta n).coeff d)) := by
+      atTop (𝓝 ((aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).coeff d)) := by
   simpa [aswEdreiTruncationChowDerangement,
     finiteSupersymmetricChowDerangement, finiteSupersymmetricToeplitz,
-    aswEdreiChowDerangement, aswEdreiToeplitz,
+    aissenSchoenbergWhitneyEdreiChowDerangement, aswEdreiToeplitz,
     truncationCoeff_eq_finiteSupersymmetricCoeff] using
     tendsto_coeff_chowDerangement_toeplitz
       (fun N => aswEdreiTruncationCoeff gamma alpha beta N)
@@ -136,14 +136,14 @@ theorem natDegree_aswEdreiTruncationChowDerangement_le
     (aswEdreiTruncationChowDerangement gamma alpha beta N n).natDegree ≤ n :=
   natDegree_chowDerangement_le _ n
 
-theorem natDegree_aswEdreiChow_le
+theorem natDegree_aissenSchoenbergWhitneyEdreiChow_le
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (n : ℕ) :
-    (aswEdreiChow gamma alpha beta n).natDegree ≤ n :=
+    (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n).natDegree ≤ n :=
   natDegree_chowPolynomial_le _ n
 
-theorem natDegree_aswEdreiChowDerangement_le
+theorem natDegree_aissenSchoenbergWhitneyEdreiChowDerangement_le
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (n : ℕ) :
-    (aswEdreiChowDerangement gamma alpha beta n).natDegree ≤ n :=
+    (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).natDegree ≤ n :=
   natDegree_chowDerangement_le _ n
 
 private theorem eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
@@ -197,11 +197,11 @@ private theorem truncationChowDerangement_isPFPolynomial
 
 /-- The fixed-rank infinite-symbol Chow polynomial is Pólya-frequency.  This
 is the coefficientwise limit of the checked finite certificates. -/
-theorem aswEdreiChow_isPFPolynomial
+theorem aissenSchoenbergWhitneyEdreiChow_isPFPolynomial
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    IsPFPolynomial (aswEdreiChow gamma alpha beta n) := by
+    IsPFPolynomial (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n) := by
   apply IsPFPolynomial.of_coeff_tendsto
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
   · exact fun N =>
@@ -210,11 +210,11 @@ theorem aswEdreiChow_isPFPolynomial
 
 /-- The fixed-rank infinite-symbol Chow-derangement polynomial is
 Pólya-frequency, with the zero case retained. -/
-theorem aswEdreiChowDerangement_isPFPolynomial
+theorem aissenSchoenbergWhitneyEdreiChowDerangement_isPFPolynomial
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    IsPFPolynomial (aswEdreiChowDerangement gamma alpha beta n) := by
+    IsPFPolynomial (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n) := by
   apply IsPFPolynomial.of_coeff_tendsto
       (p := fun N => aswEdreiTruncationChowDerangement gamma alpha beta N n)
   · exact fun N =>
@@ -223,26 +223,26 @@ theorem aswEdreiChowDerangement_isPFPolynomial
       halpha hbeta hsum n
 
 /-- Infinite-symbol Chow polynomials have nonnegative coefficients. -/
-theorem aswEdreiChow_nonnegCoeffs
+theorem aissenSchoenbergWhitneyEdreiChow_nonnegCoeffs
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    HasNonnegCoeffs (aswEdreiChow gamma alpha beta n) :=
-  (aswEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n).hasNonnegCoeffs
+    HasNonnegCoeffs (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n) :=
+  (aissenSchoenbergWhitneyEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n).hasNonnegCoeffs
 
 /-- Infinite-symbol Chow polynomials are zero or split over the reals. -/
-theorem aswEdreiChow_eq_zero_or_splits
+theorem aissenSchoenbergWhitneyEdreiChow_eq_zero_or_splits
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    aswEdreiChow gamma alpha beta n = 0 ∨
-      (aswEdreiChow gamma alpha beta n).Splits := by
+    aissenSchoenbergWhitneyEdreiChow gamma alpha beta n = 0 ∨
+      (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n).Splits := by
   apply eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
       (N := n)
   · exact fun N => natDegree_aswEdreiTruncationChow_le
       gamma alpha beta N n
-  · exact natDegree_aswEdreiChow_le gamma alpha beta n
+  · exact natDegree_aissenSchoenbergWhitneyEdreiChow_le gamma alpha beta n
   · intro N
     exact finiteSupersymmetricChow_eq_zero_or_splits
       (truncationNumerator_nonneg hgamma halpha N)
@@ -251,28 +251,29 @@ theorem aswEdreiChow_eq_zero_or_splits
 
 /-- Infinite-symbol Chow-derangement polynomials have nonnegative
 coefficients. -/
-theorem aswEdreiChowDerangement_nonnegCoeffs
+theorem aissenSchoenbergWhitneyEdreiChowDerangement_nonnegCoeffs
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    HasNonnegCoeffs (aswEdreiChowDerangement gamma alpha beta n) :=
-  (aswEdreiChowDerangement_isPFPolynomial hgamma halpha hbeta hsum n).hasNonnegCoeffs
+    HasNonnegCoeffs (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n) :=
+  (aissenSchoenbergWhitneyEdreiChowDerangement_isPFPolynomial
+    hgamma halpha hbeta hsum n).hasNonnegCoeffs
 
 /-- Infinite-symbol Chow-derangement polynomials are zero or split over the
 reals. -/
-theorem aswEdreiChowDerangement_eq_zero_or_splits
+theorem aissenSchoenbergWhitneyEdreiChowDerangement_eq_zero_or_splits
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    aswEdreiChowDerangement gamma alpha beta n = 0 ∨
-      (aswEdreiChowDerangement gamma alpha beta n).Splits := by
+    aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n = 0 ∨
+      (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).Splits := by
   apply eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
       (p := fun N =>
         aswEdreiTruncationChowDerangement gamma alpha beta N n)
       (N := n)
   · exact fun N => natDegree_aswEdreiTruncationChowDerangement_le
       gamma alpha beta N n
-  · exact natDegree_aswEdreiChowDerangement_le gamma alpha beta n
+  · exact natDegree_aissenSchoenbergWhitneyEdreiChowDerangement_le gamma alpha beta n
   · intro N
     exact finiteSupersymmetricChowDerangement_eq_zero_or_splits
       (truncationNumerator_nonneg hgamma halpha N)
@@ -282,12 +283,12 @@ theorem aswEdreiChowDerangement_eq_zero_or_splits
 
 /-- In a fixed infinite-symbol row, the Chow polynomial precedes the
 Chow-derangement endpoint, including all zero cases. -/
-theorem aswEdreiChow_interl_derangement
+theorem aissenSchoenbergWhitneyEdreiChow_interl_derangement
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Interl (aswEdreiChow gamma alpha beta n)
-      (aswEdreiChowDerangement gamma alpha beta n) := by
+    Interl (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n)
+      (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n) := by
   apply interl_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
       (q := fun N =>
@@ -311,12 +312,12 @@ theorem aswEdreiChow_interl_derangement
 
 /-- Consecutive infinite-symbol Chow polynomials remain in zero-aware proper
 position. -/
-theorem aswEdreiChow_interl_succ
+theorem aissenSchoenbergWhitneyEdreiChow_interl_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Interl (aswEdreiChow gamma alpha beta n)
-      (aswEdreiChow gamma alpha beta (n + 1)) := by
+    Interl (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n)
+      (aissenSchoenbergWhitneyEdreiChow gamma alpha beta (n + 1)) := by
   apply interl_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
       (q := fun N => aswEdreiTruncationChow gamma alpha beta N (n + 1))
@@ -339,12 +340,12 @@ theorem aswEdreiChow_interl_succ
 
 /-- Consecutive infinite-symbol Chow-derangement polynomials remain in
 zero-aware interlacing. -/
-theorem aswEdreiChowDerangement_interl_succ
+theorem aissenSchoenbergWhitneyEdreiChowDerangement_interl_succ
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    Interl (aswEdreiChowDerangement gamma alpha beta n)
-      (aswEdreiChowDerangement gamma alpha beta (n + 1)) := by
+    Interl (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n)
+      (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta (n + 1)) := by
   apply interl_of_pf_coeff_tendsto_of_natDegree_le
       (p := fun N =>
         aswEdreiTruncationChowDerangement gamma alpha beta N n)
@@ -377,11 +378,11 @@ theorem aswEdrei_chow_theorem
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
-    IsPFPolynomial (aswEdreiChow gamma alpha beta n) ∧
-      Interl (aswEdreiChow gamma alpha beta n)
-        (aswEdreiChow gamma alpha beta (n + 1)) :=
-  ⟨aswEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
-    aswEdreiChow_interl_succ hgamma halpha hbeta hsum n⟩
+    IsPFPolynomial (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n) ∧
+      Interl (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n)
+        (aissenSchoenbergWhitneyEdreiChow gamma alpha beta (n + 1)) :=
+  ⟨aissenSchoenbergWhitneyEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
+    aissenSchoenbergWhitneyEdreiChow_interl_succ hgamma halpha hbeta hsum n⟩
 
 end
 

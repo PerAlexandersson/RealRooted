@@ -8,7 +8,8 @@ Rows `P n = fPolynomial n (Q n)` of the Brändén–Solus transform
 `fPolynomial d h = ∑ hₖ Xᵏ (X + 1)^(d - k)`: a first-order derivative recurrence
 `Q (n + 1) = a n * Q n' + b n * Q n` with `deg a ≤ 2`, `deg b ≤ 1` transforms into
 `P (n + 1) = (X + 1) f₂(a n) P n' + (f₁(b n) - n f₂(a n)) P n`
-(`RealRooted.eq_fPolynomial_of_derivRec_of_natDegree_zero`).  Conversely, when the recurrence of
+(`RealRooted.eq_fPolynomial_of_derivativeRecurrence_of_natDegree_zero`).
+Conversely, when the recurrence of
 `P` has that shape, `fTransform?` reads `a` and `b` off it exactly (`A n = (X + 1) Ã n`,
 `a n = (1 - t)² Ã n (t / (1 - t))`, `b n = (1 - t) (B n + n Ã n) (t / (1 - t))`), and
 `fTransformSplitsGoal` defines `Q` as an auxiliary recursive sequence, proves the link and
@@ -95,7 +96,7 @@ def fTransformSplitsGoal : TacticM Unit := do
     | rr_cf_identity)
   withMainContext do
   evalTactic (← `(tactic|
-    have $link:ident := RealRooted.eq_fPolynomial_of_derivRec_of_natDegree_zero
+    have $link:ident := RealRooted.eq_fPolynomial_of_derivativeRecurrence_of_natDegree_zero
       (P := $Pi) (Q := $Q) (a := fun $n:ident : ℕ => $aT) (b := fun $n:ident : ℕ => $bT)
       (ha := fun $n:ident => by compute_degree) (hb := fun $n:ident => by compute_degree)
       (hQ := fun $n:ident => by rw [$Q:ident])

@@ -37,13 +37,13 @@ theorem roots_nodup_of_rootSeq_lt {p : ℝ[X]}
 
 /-- The canonical finite amplitude is the corresponding product over all
 other polynomial roots. -/
-theorem amp_rootSeq_eq_prod_roots {p : ℝ[X]} (hnd : p.roots.Nodup)
+theorem amplitude_rootSeq_eq_prod_roots {p : ℝ[X]} (hnd : p.roots.Nodup)
     {k : ℕ} (hk : k < (SortedRoots.rootMags p).length) :
-    amp (SortedRoots.rootSeq p) (SortedRoots.rootMags p).length k
+    amplitude (SortedRoots.rootSeq p) (SortedRoots.rootMags p).length k
       = ∏ r ∈ p.roots.toFinset.erase (-SortedRoots.rootSeq p k),
           |1 - (-SortedRoots.rootSeq p k) / r| := by
   classical
-  unfold amp
+  unfold amplitude
   refine Finset.prod_bij (fun j _ => -SortedRoots.rootSeq p j) ?_ ?_ ?_ ?_
   · intro j hj
     rw [Finset.mem_erase, Finset.mem_range] at hj

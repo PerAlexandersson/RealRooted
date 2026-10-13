@@ -253,7 +253,8 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
   let d1 := natLit 1
   -- the degrees and the positivity of the leading coefficients
   let degThms : List (Name × Option String) :=
-    if R.shape == .deriv then [(``RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos, none)]
+    if R.shape == .deriv then
+      [(``RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos, none)]
     else (``RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos, none) ::
       ["1", "2", "4", "1 / 2", "3"].map fun r =>
         (``RealRooted.threeTermRatio_natDegree_eq_and_leadingCoeff_pos, some r)
@@ -285,15 +286,15 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
       $extra:namedArgument* (hrec := $hrecI) (hdeg := $hdegI) (hpos := $hposI))
   let plain : List Name :=
     if R.shape == .deriv then
-      if D₀ == 0 then [``RealRooted.derivRec_interlaces_of_eval_nonpos]
-      else [``RealRooted.derivRec_interlaces_of_splits_of_eval_nonpos]
+      if D₀ == 0 then [``RealRooted.derivativeRecurrence_interlaces_of_eval_nonpos]
+      else [``RealRooted.derivativeRecurrence_interlaces_of_splits_of_eval_nonpos]
     else [``RealRooted.threeTerm_interlaces_of_eval_nonpos]
   let mut alts : List (MessageData × TacticM Unit) := []
   for thm in plain do
     alts := alts ++ [(m!"{thm}", do subAttempt P (← named thm #[]))]
   let (icc, iic) := if R.shape == .deriv then
-      (``RealRooted.derivRec_interlaces_of_roots_mem_Icc,
-        ``RealRooted.derivRec_interlaces_of_roots_le)
+      (``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc,
+        ``RealRooted.derivativeRecurrence_interlaces_of_roots_le)
     else
       (``RealRooted.threeTerm_interlaces_of_roots_mem_Icc,
         ``RealRooted.threeTerm_interlaces_of_roots_le)
@@ -312,8 +313,8 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
   if R.shape == .deriv then
     for u in ["-1", "0", "-1 / 2", "-2"] do
       let U ← subParse u
-      alts := alts ++ [(m!"derivRec_interlaces_of_roots_le_of_degree on (-∞, {u}]", do
-        subAttempt P (← named ``RealRooted.derivRec_interlaces_of_roots_le_of_degree
+      alts := alts ++ [(m!"derivativeRecurrence_interlaces_of_roots_le_of_degree on (-∞, {u}]", do
+        subAttempt P (← named ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree
           #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]))]
   else
     for u in ["0", "-1"] do

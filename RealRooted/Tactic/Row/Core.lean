@@ -386,7 +386,8 @@ private structure MovingUpper where
   ρ : Rat
 
 /-- Search a moving upper root bound on the computed rows `m ≤ 9`
-(`RealRooted.derivRec_interlaces_of_roots_le_mono_div`): a common root `ρ` of the `A m`; the
+(`RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`): a common
+root `ρ` of the `A m`; the
 largest root `U m < ρ` of `A m`, fitted as `(a + b m) / (1 + d m)` with `d ≥ 0` on `m = 0, 1, 2`
 and checked on the rest; `U` nondecreasing; the rows at most `U m`; and at sample points
 `A m ≤ 0` below `U m`, `A m ≥ 0` and `B m > 0` between `U (m + 1)` and `ρ`, and beyond `ρ`
@@ -610,11 +611,11 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       $(named.map (⟨·.raw⟩))* $hrec)
   let plain := if shape == .deriv₁ then
       if D₀ == 0 then
-        [``RealRooted.derivRec_interlaces_of_eval_nonpos,
-          ``RealRooted.derivRec_interlaces_of_nonnegCoeffs]
+        [``RealRooted.derivativeRecurrence_interlaces_of_eval_nonpos,
+          ``RealRooted.derivativeRecurrence_interlaces_of_nonnegCoeffs]
       else
-        [``RealRooted.derivRec_interlaces_of_splits_of_eval_nonpos,
-          ``RealRooted.derivRec_interlaces_of_splits_of_nonnegCoeffs]
+        [``RealRooted.derivativeRecurrence_interlaces_of_splits_of_eval_nonpos,
+          ``RealRooted.derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs]
     else
       [``RealRooted.threeTerm_interlaces_of_eval_nonpos,
         ``RealRooted.threeTerm_interlaces_of_nonnegCoeffs]
@@ -624,8 +625,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     | none => plain
   for thm in plain do
     if given.isNone && shape == r.shape && hints.thm.isNone then
-      let nonpos := thm == ``RealRooted.derivRec_interlaces_of_nonnegCoeffs ||
-        thm == ``RealRooted.derivRec_interlaces_of_splits_of_nonnegCoeffs ||
+      let nonpos := thm == ``RealRooted.derivativeRecurrence_interlaces_of_nonnegCoeffs ||
+        thm == ``RealRooted.derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs ||
         thm == ``RealRooted.threeTerm_interlaces_of_nonnegCoeffs
       unless ← plainPlausible r k nonpos do
         failures := failures.push (m!"{thm}", m!"vetoed: the sign conditions fail numerically")
@@ -638,12 +639,12 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- root windows `[L, U]` and `(-∞, U]`
   if shape == .deriv₁ || shape == .lag then
     let (icc, iic) := if shape == .deriv₁ then
-        (``RealRooted.derivRec_interlaces_of_roots_mem_Icc,
-          ``RealRooted.derivRec_interlaces_of_roots_le)
+        (``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc,
+          ``RealRooted.derivativeRecurrence_interlaces_of_roots_le)
       else
         (``RealRooted.threeTerm_interlaces_of_roots_mem_Icc,
           ``RealRooted.threeTerm_interlaces_of_roots_le)
-    let iccPos := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_pos
+    let iccPos := ``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos
     let parse (r : String) : TacticM Term := do
       let some t := (Parser.runParserCategory (← getEnv) `term r).toOption
         | throwError "rr_row_interlaces: bad window {r}"
@@ -672,7 +673,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     for ((lo, U), v) in windows.zip (vals ++ List.replicate windows.length (none, 0)) do
       if triedWindow then continue
       -- `B n` may vanish beyond a window `[L, U]` when `A n > 0` there and the rows have
-      -- positive degree (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_of_pos`)
+      -- positive degree (`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`)
       let mut icc := if hints.thm == some iccPos then iccPos else icc
       unless hinted do
         let kind := if shape == r.shape then WindowKind.plain else .roots
@@ -704,8 +705,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             | none => m!"(-∞, {U}]"
           failures := failures.push (m!"{if lo.isSome then icc else iic} on {w}", e)
   -- roots in `(-∞, U]` with `A n < 0` allowed beyond `U`, controlled by the degree
-  -- (`RealRooted.derivRec_interlaces_of_roots_le_of_degree`)
-  let degWin := ``RealRooted.derivRec_interlaces_of_roots_le_of_degree
+  -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree`)
+  let degWin := ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree
   if shape == .deriv₁ && hints.window.isNone &&
       (hints.thm.isNone || hints.thm == some degWin) then
     let us := match hints.upper with
@@ -801,8 +802,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             { thm := some barWin, degree := some D₀, window := some (lo, U), drop := dropHint k })
       | .error e => failures := failures.push (m!"{barWin} on [{lo}, {U}], ρ = {ρ}", e)
   -- root windows whose lower bound is a root of `A n` moving with `n`
-  -- (`RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div`)
-  let movIcc := ``RealRooted.derivRec_interlaces_of_roots_mem_Icc_mono_div
+  -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`)
+  let movIcc := ``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div
   if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movIcc) then
@@ -826,8 +827,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             return (pre.push tac, h)
         | .error e => failures := failures.push (m!"{movIcc}", e)
   -- root bounds `U n = p n / q n` moving up with `n`, split at a common root `ρ` of the `A n`
-  -- (`RealRooted.derivRec_interlaces_of_roots_le_mono_div`)
-  let movUp := ``RealRooted.derivRec_interlaces_of_roots_le_mono_div
+  -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`)
+  let movUp := ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div
   if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movUp) then

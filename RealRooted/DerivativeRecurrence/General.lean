@@ -22,7 +22,7 @@ arbitrary degree law `D : ℕ → ℕ` (`*_of_degreeLaw`, covering periodic grow
 `D n = D₀ + d * ((n + e) / p)`), and top coefficients controlled by a ratio invariant
 (`natDegree_eq_and_leadingCoeff_pos_of_ratio`).
 
-This generalizes `RealRooted.derivRec_leadingCoeff_pos` (first order),
+This generalizes `RealRooted.derivativeRecurrence_leadingCoeff_pos` (first order),
 `RealRooted.derivRec₂_leadingCoeff_pos` (second order) and
 `RealRooted.threeTermPos_leadingCoeff_pos` (three-term) to any order and any mixture of
 derivatives.

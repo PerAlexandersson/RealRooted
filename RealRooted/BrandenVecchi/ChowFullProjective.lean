@@ -57,9 +57,9 @@ theorem aswEdreiFullProjectiveChow_zero_prefix_one_of_ne
     {outer : ℝ} (houter : outer ≠ 0)
     (gamma : ℝ) (alpha beta : ℕ → ℝ) (n : ℕ) :
     aswEdreiFullProjectiveChow outer 0 gamma alpha beta 1 n =
-      aswEdreiChow gamma alpha beta n := by
+      aissenSchoenbergWhitneyEdreiChow gamma alpha beta n := by
   simp [aswEdreiFullProjectiveChow, houter, projectiveRegularizedChow,
-    aswEdreiChow, aswEdreiToeplitz]
+    aissenSchoenbergWhitneyEdreiChow, aswEdreiToeplitz]
 
 /-- Every nonzero epsilon fiber is `epsilon ^ n` times the rank-`n` Chow row
 of the unit-normalized raw approximant. -/

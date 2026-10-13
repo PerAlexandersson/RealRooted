@@ -47,13 +47,14 @@ theorem roots_gammaPolynomial_neg {n : ℕ} (hn : 1 ≤ n) :
 private theorem strictInterl_gammaPolynomial_add_two {N : ℕ} (hN : N ≠ 0) :
     RealRooted.StrictInterl (gammaPolynomial (N + 2)) (gammaPolynomial (N + 3)) ∧
       ∀ r : ℝ, ¬ ((gammaPolynomial (N + 2)).IsRoot r ∧ (gammaPolynomial (N + 3)).IsRoot r) := by
-  have hB := strictInterl_auxPolynomial N
+  have hB := strictInterl_compressionSourcePolynomial N
   obtain ⟨-, -, -, -, -, -, -, -, hint, hno⟩ :=
-    compression_one_nextPolynomial_strictInterl hN (natDegree_auxPolynomial N) hB.1.1.2
-      (hasPosLeadingCoeff_auxPolynomial N) (roots_auxPolynomial_neg N)
+    compression_one_nextPolynomial_strictInterl hN
+      (natDegree_compressionSourcePolynomial N) hB.1.1.2
+      (hasPosLeadingCoeff_compressionSourcePolynomial N) (roots_compressionSourcePolynomial_neg N)
   have hc : ∀ M : ℕ, (2 : ℝ) ^ M / (M.factorial : ℝ) ≠ 0 := fun M => by positivity
-  have hnext : auxPolynomial (N + 1) =
-      nextPolynomial (((N : ℝ) + 2) / 2) (auxPolynomial N) := rfl
+  have hnext : compressionSourcePolynomial (N + 1) =
+      nextPolynomial (((N : ℝ) + 2) / 2) (compressionSourcePolynomial N) := rfl
   rw [← hnext] at hint hno
   rw [show N + 3 = (N + 1) + 2 by lia, gammaPolynomial_add_two, gammaPolynomial_add_two]
   refine ⟨(hint.C_mul_left (hc N)).C_mul_right (hc (N + 1)), ?_⟩

@@ -48,7 +48,7 @@ For three-term recurrences the top coefficients satisfy a scalar recurrence
 constant, they try half growth, `natDegree (P n) = D₀ + d ⌊(n + e) / 2⌋`
 (`RealRooted.threeTermHalf_*`), which covers Fibonacci-type rows of degree `n / 2`.
 
-The tactics are backed by `RealRooted.derivRec_natDegree`,
+The tactics are backed by `RealRooted.derivativeRecurrence_natDegree`,
 `RealRooted.derivRec₂_natDegree`, the three-term theorems, and their `ne_zero` /
 `leadingCoeff_pos` companions, and by `RealRooted.productSequence_natDegree` for
 products.

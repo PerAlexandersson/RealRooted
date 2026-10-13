@@ -206,7 +206,7 @@ theorem card_nondegeneratePreserving : nondegeneratePreserving.card = 18 := by
 
 /-- The 18 nondegenerate preservers displayed at
 <https://www.symmetricfunctions.com/realRootedInterlacing.htm#smallInterlacingMatrices>. -/
-def symCatPreservingList : List Atomic2x2Matrix :=
+def nondegeneratePreservingMatricesList : List Atomic2x2Matrix :=
   [⟨.zero, .one, .zero, .x⟩,
     ⟨.zero, .one, .x, .zero⟩,
     ⟨.one, .zero, .zero, .one⟩,
@@ -226,11 +226,11 @@ def symCatPreservingList : List Atomic2x2Matrix :=
     ⟨.one, .one, .x, .x⟩,
     ⟨.x, .one, .x, .x⟩]
 
-def symCatPreserving : Finset Atomic2x2Matrix :=
-  symCatPreservingList.toFinset
+def nondegeneratePreservingMatrices : Finset Atomic2x2Matrix :=
+  nondegeneratePreservingMatricesList.toFinset
 
-theorem nondegeneratePreserving_eq_symCatPreserving :
-    nondegeneratePreserving = symCatPreserving := by decide
+theorem nondegeneratePreserving_eq_nondegeneratePreservingMatrices :
+    nondegeneratePreserving = nondegeneratePreservingMatrices := by decide
 
 /-! ### Affine certificates for the accepted codes -/
 
@@ -876,9 +876,9 @@ theorem preservesInterlacing_antiTranspose_iff (M : Atomic2x2Matrix) :
 
 /-- Membership in the displayed 18-matrix table is exactly nondegeneracy plus
 semantic preservation of the zero-aware interlacing package. -/
-theorem mem_symCatPreserving_iff (M : Atomic2x2Matrix) :
-    M ∈ symCatPreserving ↔ M.IsNondegenerate ∧ M.PreservesInterlacing := by
-  rw [← nondegeneratePreserving_eq_symCatPreserving]
+theorem mem_nondegeneratePreservingMatrices_iff (M : Atomic2x2Matrix) :
+    M ∈ nondegeneratePreservingMatrices ↔ M.IsNondegenerate ∧ M.PreservesInterlacing := by
+  rw [← nondegeneratePreserving_eq_nondegeneratePreservingMatrices]
   simp [nondegeneratePreserving, IsNondegenerate,
     preservesInterlacing_iff_mem_preserving, and_comm]
 

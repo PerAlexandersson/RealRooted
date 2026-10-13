@@ -77,7 +77,7 @@ theorem shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) n)
         (compositionRow
           (PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys)) (n + 1)) :=
-  compositionRows_mk_pf_and_interl_of_zero
+  compositionRows_isPFPolynomial_and_interl_of_zero
     (shiftedFiniteSupersymmetricCoeff_isPolyaFreqSeq hxs hys)
     (shiftedFiniteSupersymmetricCoeff_zero xs ys)
 

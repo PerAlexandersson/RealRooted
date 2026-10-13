@@ -177,7 +177,7 @@ theorem A166972_eq_generalRowsDep (n : ℕ) :
       simp only [one_mul]
 
 /-- A166960: rows strictly interlace, no common roots; rows are negative-simple of degree `n`. -/
-theorem A166960_spec (n : ℕ) :
+theorem A166960_isNegativeSimple_and_strictInterl_succ (n : ℕ) :
     IsNegativeSimple (A166960 n) ∧ (A166960 n).natDegree = n ∧
       StrictInterl (A166960 n) (A166960 (n + 1)) ∧
       ∀ r, ¬ ((A166960 n).IsRoot r ∧ (A166960 (n + 1)).IsRoot r) := by

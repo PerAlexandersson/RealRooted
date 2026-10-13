@@ -13,14 +13,15 @@ the roots of `P n`.  Each step is the weak-sign Liu–Wang step
 derivative `g = (P n)'`, which interlaces `f` because `f` is real-rooted.
 
 The root-sign condition holds in particular when `A n ≤ 0` everywhere
-(`derivRec_interlaces_of_eval_nonpos`), or when `A n ≤ 0` on `(-∞, 0]` and the
-rows have nonnegative coefficients (`derivRec_interlaces_of_nonnegCoeffs`);
-`derivRec_hasNonnegCoeffs` gives the latter when `A n` and `B n` have
+(`derivativeRecurrence_interlaces_of_eval_nonpos`), or when `A n ≤ 0` on `(-∞, 0]` and the
+rows have nonnegative coefficients (`derivativeRecurrence_interlaces_of_nonnegCoeffs`);
+`derivativeRecurrence_hasNonnegCoeffs` gives the latter when `A n` and `B n` have
 nonnegative coefficients.
 
-The single step `derivRec_strictInterl_step` only needs the degree to grow by at most one,
-so `derivRec_strictInterl_of_degree_pattern` also covers rows whose degree stays constant on
-some steps.
+The single step `derivativeRecurrence_strictInterl_step` only needs the degree
+to grow by at most one, so
+`derivativeRecurrence_strictInterl_of_degree_pattern` also covers rows whose
+degree stays constant on some steps.
 -/
 
 open Polynomial
@@ -41,7 +42,8 @@ theorem derivative_interlaces_of_pos {f : ℝ[X]} (hf : f.Splits) (hpos : 0 < f.
 /-- One step of a first-order derivative recurrence whose degree grows by at most one: a
 real-rooted polynomial of positive degree strictly interlaces its image when `A ≤ 0` at its
 roots.  The same-degree case covers families whose degree stays constant on some steps. -/
-theorem derivRec_strictInterl_step {f Q A B : ℝ[X]} (hrec : Q = A * f.derivative + B * f)
+theorem derivativeRecurrence_strictInterl_step {f Q A B : ℝ[X]}
+    (hrec : Q = A * f.derivative + B * f)
     (hf : f.Splits) (hfdeg : f.natDegree ≠ 0) (hfpos : 0 < f.leadingCoeff)
     (hQpos : 0 < Q.leadingCoeff) (hdeg_lo : f.natDegree ≤ Q.natDegree)
     (hdeg_hi : Q.natDegree ≤ f.natDegree + 1) (hA : ∀ r, f.IsRoot r → A.eval r ≤ 0) :
@@ -56,24 +58,25 @@ theorem derivRec_strictInterl_step {f Q A B : ℝ[X]} (hrec : Q = A * f.derivati
 variable {P A B : ℕ → ℝ[X]} {D₀ : ℕ}
 
 /-- One step: a real-rooted row of positive degree interlaces the next row. -/
-theorem derivRec_interlaces_step (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+theorem derivativeRecurrence_interlaces_step
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (n : ℕ) (hA : ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0) (hs : (P n).Splits)
     (hn : 1 ≤ D₀ + n) : Interlaces (P n) (P (n + 1)) :=
-  (derivRec_strictInterl_step (hrec n) hs (by rw [hdeg]; lia) (hpos n) (hpos (n + 1))
+  (derivativeRecurrence_strictInterl_step (hrec n) hs (by rw [hdeg]; lia) (hpos n) (hpos (n + 1))
     (by rw [hdeg, hdeg]; lia) (by rw [hdeg, hdeg]; lia) hA).toInterlaces
     (by rw [hdeg, hdeg]; lia)
 
 /-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
 step strictly interlace, starting from one real-rooted row of positive degree. -/
-theorem derivRec_strictInterl_of_degree_pattern {D : ℕ → ℕ}
+theorem derivativeRecurrence_strictInterl_of_degree_pattern {D : ℕ → ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D n) (hD : ∀ n, D n ≠ 0)
     (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
     (hpos : ∀ n, 0 < (P n).leadingCoeff) (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0)
     (h0 : (P 0).Splits) (n : ℕ) : StrictInterl (P n) (P (n + 1)) := by
   have key (m : ℕ) (hs : (P m).Splits) : StrictInterl (P m) (P (m + 1)) := by
-    apply derivRec_strictInterl_step (hrec m) hs (by rw [hdeg]; exact hD m) (hpos m)
+    apply derivativeRecurrence_strictInterl_step (hrec m) hs (by rw [hdeg]; exact hD m) (hpos m)
       (hpos (m + 1)) <;> first
       | exact hA m
       | (rw [hdeg, hdeg]; rcases hstep m with h | h <;> lia)
@@ -81,7 +84,8 @@ theorem derivRec_strictInterl_of_degree_pattern {D : ℕ → ℕ}
   | zero => exact key 0 h0
   | succ n ih => exact key (n + 1) ih.2.1.2
 
-theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+theorem derivativeRecurrence_interlaces
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0)
     (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
@@ -89,61 +93,62 @@ theorem derivRec_interlaces (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + 
   induction n with
   | zero => exact h01
   | succ n ih =>
-      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
+      exact derivativeRecurrence_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
 
 /-- Starting from a real-rooted row of positive degree, no base interlacing is
 needed. -/
-theorem derivRec_interlaces_of_splits
+theorem derivativeRecurrence_interlaces_of_splits
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
   induction n with
-  | zero => exact derivRec_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by lia)
+  | zero => exact derivativeRecurrence_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by lia)
   | succ n ih =>
-      exact derivRec_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
+      exact derivativeRecurrence_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
 
-theorem derivRec_interlaces_of_splits_of_eval_nonpos
+theorem derivativeRecurrence_interlaces_of_splits_of_eval_nonpos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) :=
-  derivRec_interlaces_of_splits hrec hdeg hD hpos (fun n r _ => hA n r) h0 n
+  derivativeRecurrence_interlaces_of_splits hrec hdeg hD hpos (fun n r _ => hA n r) h0 n
 
-theorem derivRec_interlaces_of_splits_of_nonnegCoeffs
+theorem derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hnn : ∀ n, HasNonnegCoeffs (P n)) (hA : ∀ n r, r ≤ 0 → (A n).eval r ≤ 0)
     (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
-  refine derivRec_interlaces_of_splits hrec hdeg hD hpos (fun n r hr => hA n r ?_) h0 n
+  refine derivativeRecurrence_interlaces_of_splits hrec hdeg hD hpos (fun n r hr => hA n r ?_) h0 n
   have hne : P n ≠ 0 := leadingCoeff_ne_zero.mp (hpos n).ne'
   exact roots_nonpos_of_hasNonnegCoeffs (hnn n) r ((mem_roots hne).mpr hr)
 
-theorem derivRec_interlaces_of_eval_nonpos
+theorem derivativeRecurrence_interlaces_of_eval_nonpos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (A n).eval r ≤ 0) (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) :=
-  derivRec_interlaces hrec hdeg hpos (fun n r _ => hA n r) h01 n
+  derivativeRecurrence_interlaces hrec hdeg hpos (fun n r _ => hA n r) h01 n
 
-theorem derivRec_interlaces_of_nonnegCoeffs
+theorem derivativeRecurrence_interlaces_of_nonnegCoeffs
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hnn : ∀ n, HasNonnegCoeffs (P n)) (hA : ∀ n r, r ≤ 0 → (A n).eval r ≤ 0)
     (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
-  refine derivRec_interlaces hrec hdeg hpos (fun n r hr => hA n r ?_) h01 n
+  refine derivativeRecurrence_interlaces hrec hdeg hpos (fun n r hr => hA n r ?_) h01 n
   have hne : P n ≠ 0 := leadingCoeff_ne_zero.mp (hpos n).ne'
   exact roots_nonpos_of_hasNonnegCoeffs (hnn n) r ((mem_roots hne).mpr hr)
 
 /-- Rows of a derivative recurrence with nonnegative coefficients. -/
-theorem derivRec_hasNonnegCoeffs (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+theorem derivativeRecurrence_hasNonnegCoeffs
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, HasNonnegCoeffs (A n)) (hB : ∀ n, HasNonnegCoeffs (B n))
     (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n)
   | 0 => h0
   | n + 1 => by
-      have ih := derivRec_hasNonnegCoeffs hrec hA hB h0 n
+      have ih := derivativeRecurrence_hasNonnegCoeffs hrec hA hB h0 n
       rw [hrec n]
       exact ((hA n).mul ih.derivative).add ((hB n).mul ih)
 
@@ -165,14 +170,14 @@ theorem derivRec₂_hasNonnegCoeffs {E : ℕ → ℝ[X]}
 nonnegative multipliers: since
 `coeff_k (A P' + B P) = ∑_{i + j = k + 1} (A_i j + B_{i-1}) p_j`, it suffices that
 `A₀ ≥ 0` and `A_{i+1} j + B_i ≥ 0` for every `j` up to the degree bound `D n`. -/
-theorem derivRec_hasNonnegCoeffs_of_mult_le {D : ℕ → ℕ}
+theorem derivativeRecurrence_hasNonnegCoeffs_of_mult_le {D : ℕ → ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree ≤ D n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
     (hmult : ∀ n i (j : ℕ), j ≤ D n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
     (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n)
   | 0 => h0
   | n + 1 => by
-      have ih := derivRec_hasNonnegCoeffs_of_mult_le hrec hdeg hA0 hmult h0 n
+      have ih := derivativeRecurrence_hasNonnegCoeffs_of_mult_le hrec hdeg hA0 hmult h0 n
       intro k
       have hX : X * P (n + 1) = A n * (X * (P n).derivative) + (X * B n) * P n := by
         rw [hrec n]; ring
@@ -192,34 +197,35 @@ theorem derivRec_hasNonnegCoeffs_of_mult_le {D : ℕ → ℕ}
           ring_nf
           rfl
 
-/-- `derivRec_hasNonnegCoeffs_of_mult_le` for the degree bound `D₀ + d * n`. -/
-theorem derivRec_hasNonnegCoeffs_of_mult {d : ℕ}
+/-- `derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the degree bound `D₀ + d * n`. -/
+theorem derivativeRecurrence_hasNonnegCoeffs_of_mult {d : ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree ≤ D₀ + d * n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
     (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
     (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n) :=
-  derivRec_hasNonnegCoeffs_of_mult_le (D := fun n => D₀ + d * n) hrec hdeg hA0 hmult h0
+  derivativeRecurrence_hasNonnegCoeffs_of_mult_le
+    (D := fun n => D₀ + d * n) hrec hdeg hA0 hmult h0
 
 /-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
 step strictly interlace when they have nonnegative coefficients and `A n ≤ 0` on `(-∞, 0]`:
 the roots of the rows are nonpositive.  This covers the half-growth rows `deg P n = D₀ +
 (n + e) / 2` whose top terms cancel at every other step. -/
-theorem derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
+theorem derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D n) (hD : ∀ n, D n ≠ 0)
     (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
     (hpos : ∀ n, 0 < (P n).leadingCoeff) (hnn : ∀ n, HasNonnegCoeffs (P n))
     (hA : ∀ n x, x ≤ 0 → (A n).eval x ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     StrictInterl (P n) (P (n + 1)) :=
-  derivRec_strictInterl_of_degree_pattern hrec hdeg hD hstep hpos
+  derivativeRecurrence_strictInterl_of_degree_pattern hrec hdeg hD hstep hpos
     (fun n r hr => hA n r (roots_nonpos_of_hasNonnegCoeffs (hnn n) r
       ((mem_roots (leadingCoeff_ne_zero.mp (hpos n).ne')).mpr hr))) h0 n
 
 /-- Rows of a first-order derivative recurrence whose degree grows by zero or one at each
 step split, when they have nonnegative coefficients and `A n ≤ 0` on `(-∞, 0]`.  Rows of
 degree zero are constants; the first row of positive degree is linear unless it is `P 0`,
-and from there on `derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs` applies. -/
-theorem derivRec_splits_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
+and from there on `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs` applies. -/
+theorem derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree = D n)
     (hstep : ∀ n, D (n + 1) = D n ∨ D (n + 1) = D n + 1)
@@ -247,7 +253,7 @@ theorem derivRec_splits_of_degree_pattern_of_nonnegCoeffs {D : ℕ → ℕ}
         rw [Nat.sub_add_cancel h] at this
         lia
       exact Splits.of_natDegree_le_one (by rw [hdeg, hk1])
-  have key := derivRec_strictInterl_of_degree_pattern_of_nonnegCoeffs
+  have key := derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs
     (P := fun j => P (j + k)) (A := fun j => A (j + k)) (B := fun j => B (j + k))
     (D := fun j => D (j + k)) (fun j => by simpa [Nat.add_right_comm] using hrec (j + k))
     (fun j => hdeg _) hD (fun j => by simpa [Nat.add_right_comm] using hstep (j + k))
@@ -262,7 +268,7 @@ end RealRooted
 
 Rows of `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` have nonnegative
 coefficients when the first two rows and the multipliers `W n` do, and the multipliers
-`U n`, `V n` satisfy the coefficientwise condition of `derivRec_hasNonnegCoeffs_of_mult`
+`U n`, `V n` satisfy the coefficientwise condition of `derivativeRecurrence_hasNonnegCoeffs_of_mult`
 for the row `P (n + 1)`.  Nonnegative coefficients give roots in `(-∞, 0]`, which is the
 root-sign input of the derivative-lag Liu–Wang step.
 -/
@@ -357,7 +363,8 @@ private theorem natDegree_eq_and_leadingCoeff_pos_of_coeff_pos {Q : ℝ[X]} {N :
 /-- One step of a first-order derivative recurrence whose top terms either grow
 (`A_{m+1} d + B_m > 0`, degree `d + m`) or cancel exactly (degree `d + m - 1`), for `f` with
 nonnegative coefficients. -/
-theorem derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel {f A B : ℝ[X]} {d d' m : ℕ}
+theorem derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+    {f A B : ℝ[X]} {d d' m : ℕ}
     (hm : 1 ≤ m) (hA : A.natDegree ≤ m + 1) (hB : B.natDegree ≤ m)
     (hnn : HasNonnegCoeffs f) (hd : f.natDegree = d) (hl : 0 < f.leadingCoeff)
     (hstep : (0 < A.coeff (m + 1) * d + B.coeff m ∧ d' = d + m) ∨
@@ -437,9 +444,10 @@ theorem derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel {f A B : ℝ[X
 
 /-- Degrees, positive leading coefficients and nonnegative coefficients of a first-order
 derivative recurrence whose top terms grow or cancel exactly at each step; the coefficients
-stay nonnegative by the condition of `derivRec_hasNonnegCoeffs_of_mult` up to the degree
+stay nonnegative by the condition of `derivativeRecurrence_hasNonnegCoeffs_of_mult` up to the degree
 `D n` of the current row. -/
-theorem derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel {P A B : ℕ → ℝ[X]} {D : ℕ → ℕ}
+theorem derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel
+    {P A B : ℕ → ℝ[X]} {D : ℕ → ℕ}
     {m : ℕ} (hm : 1 ≤ m)
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ m + 1) (hB : ∀ n, (B n).natDegree ≤ m)
@@ -461,8 +469,11 @@ theorem derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel {P A B : ℕ → �
       rw [hrec n, add_comm]
       exact hasNonnegCoeffs_mul_add_mul_derivative hd.le (hA0 n) (hmult n) hnn
     rw [hrec n] at hnn' ⊢
-    exact ⟨(derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel hm (hA n) (hB n) hnn hd hl
-      (hstep n)).1, (derivRec_natDegree_eq_and_leadingCoeff_pos_step_of_cancel hm (hA n) (hB n)
-      hnn hd hl (hstep n)).2, hnn'⟩
+    exact
+      ⟨(derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+          hm (hA n) (hB n) hnn hd hl (hstep n)).1,
+        (derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+          hm (hA n) (hB n) hnn hd hl (hstep n)).2,
+        hnn'⟩
 
 end RealRooted

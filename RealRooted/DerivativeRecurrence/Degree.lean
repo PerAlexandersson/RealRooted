@@ -24,11 +24,12 @@ every row has a positive leading coefficient.
   `leadingCoeff_pos_of_top_coeff_step`:
   the induction for any sequence whose top coefficient is multiplied by a
   nonvanishing (or positive) factor in each step.
-* `derivRec_natDegree`, `derivRec_ne_zero`, `derivRec_leadingCoeff_pos`:
+* `derivativeRecurrence_natDegree`, `derivativeRecurrence_ne_zero`,
+  `derivativeRecurrence_leadingCoeff_pos`:
   first-order derivative recurrences `P (n + 1) = A n * (P n)' + B n * P n`.
 * `derivRec₂_natDegree`, `derivRec₂_ne_zero`, `derivRec₂_leadingCoeff_pos`:
   `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n`.
-* `derivRec_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
+* `derivativeRecurrence_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
 -/
 
 open Polynomial
@@ -131,7 +132,7 @@ section FirstOrder
 
 variable {P A B : ℕ → ℝ[X]} {d D₀ : ℕ}
 
-private theorem derivRec_step
+private theorem derivativeRecurrence_step
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d) (n : ℕ)
     (hn : (P n).natDegree ≤ D₀ + d * n) :
@@ -152,42 +153,44 @@ private theorem derivRec_step
 
 /-- Rows of `P (n + 1) = A n * (P n)' + B n * P n` have degree `D₀ + d * n` when
 the top-coefficient multiplier never vanishes. -/
-theorem derivRec_natDegree
+theorem derivativeRecurrence_natDegree
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d)
     (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀)
     (hlam : ∀ n : ℕ, (A n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (B n).coeff d ≠ 0)
     (n : ℕ) : (P n).natDegree = D₀ + d * n :=
-  natDegree_eq_of_top_coeff_step hP0 h0 (fun n hn => (derivRec_step hrec hA hB n hn).1)
-    (fun n hn => (derivRec_step hrec hA hB n hn).2) hlam n
+  natDegree_eq_of_top_coeff_step hP0 h0 (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).1)
+    (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).2) hlam n
 
-theorem derivRec_ne_zero
+theorem derivativeRecurrence_ne_zero
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d)
     (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀)
     (hlam : ∀ n : ℕ, (A n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (B n).coeff d ≠ 0)
     (n : ℕ) : P n ≠ 0 :=
-  ne_zero_of_top_coeff_step hP0 h0 (fun n hn => (derivRec_step hrec hA hB n hn).1)
-    (fun n hn => (derivRec_step hrec hA hB n hn).2) hlam n
+  ne_zero_of_top_coeff_step hP0 h0 (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).1)
+    (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).2) hlam n
 
-theorem derivRec_leadingCoeff_pos
+theorem derivativeRecurrence_leadingCoeff_pos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d)
     (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀) (hl0 : 0 < (P 0).coeff D₀)
     (hlam : ∀ n : ℕ, 0 < (A n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (B n).coeff d)
     (n : ℕ) : 0 < (P n).leadingCoeff :=
-  leadingCoeff_pos_of_top_coeff_step hP0 h0 hl0 (fun n hn => (derivRec_step hrec hA hB n hn).1)
-    (fun n hn => (derivRec_step hrec hA hB n hn).2) hlam n
+  leadingCoeff_pos_of_top_coeff_step hP0 h0 hl0
+    (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).1)
+    (fun n hn => (derivativeRecurrence_step hrec hA hB n hn).2) hlam n
 
-/-- `derivRec_natDegree` and `derivRec_leadingCoeff_pos` from one set of hypotheses. -/
-theorem derivRec_natDegree_eq_and_leadingCoeff_pos
+/-- `derivativeRecurrence_natDegree` and `derivativeRecurrence_leadingCoeff_pos`
+from one set of hypotheses. -/
+theorem derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d)
     (hP0 : P 0 ≠ 0) (h0 : (P 0).natDegree = D₀) (hl0 : 0 < (P 0).coeff D₀)
     (hlam : ∀ n : ℕ, 0 < (A n).coeff (d + 1) * ((D₀ + d * n : ℕ) : ℝ) + (B n).coeff d)
     (n : ℕ) : (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff :=
-  ⟨derivRec_natDegree hrec hA hB hP0 h0 (fun n => (hlam n).ne') n,
-    derivRec_leadingCoeff_pos hrec hA hB hP0 h0 hl0 hlam n⟩
+  ⟨derivativeRecurrence_natDegree hrec hA hB hP0 h0 (fun n => (hlam n).ne') n,
+    derivativeRecurrence_leadingCoeff_pos hrec hA hB hP0 h0 hl0 hlam n⟩
 
 end FirstOrder
 
@@ -298,7 +301,7 @@ variable {P A B C : ℕ → ℝ[X]}
 the derivative term is nonnegative at `0` and `B n` is positive at `0`.  The
 derivative condition holds when `A n` vanishes at `0` (then `hA` closes by `simp`),
 or when `A n` is nonnegative at `0` and the rows have nonnegative coefficients. -/
-theorem derivRec_eval_zero_pos
+theorem derivativeRecurrence_eval_zero_pos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, 0 ≤ (A n).eval 0 * (P n).derivative.eval 0)
     (hB : ∀ n, 0 < (B n).eval 0) (h0 : 0 < (P 0).eval 0) (n : ℕ) :
@@ -309,7 +312,7 @@ theorem derivRec_eval_zero_pos
       rw [hrec n, eval_add, eval_mul, eval_mul]
       exact add_pos_of_nonneg_of_pos (hA n) (mul_pos (hB n) ih)
 
-/-- The second-order version of `derivRec_eval_zero_pos`:
+/-- The second-order version of `derivativeRecurrence_eval_zero_pos`:
 rows of `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n` are positive at `0`
 when `P 0` is, both derivative terms are nonnegative at `0` and `C n` is positive
 at `0`. -/
@@ -332,7 +335,7 @@ example (P : ℕ → ℝ[X]) (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (X + X ^ 2) * (P n).derivative + (1 + Polynomial.C ((n : ℝ) + 3) * X) * P n) (n : ℕ) :
     0 < (P n).eval 0 :=
-  derivRec_eval_zero_pos (A := fun _ => X + X ^ 2)
+  derivativeRecurrence_eval_zero_pos (A := fun _ => X + X ^ 2)
     (B := fun n => 1 + Polynomial.C ((n : ℝ) + 3) * X) hrec (fun _ => by simp)
     (fun _ => by simp) (by simp [h0]) n
 

@@ -500,7 +500,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
   else
     evalTactic (← `(tactic|
       have rr_cancel_old := (fun q =>
-        RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel
+        RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel
           (P := $Q) (A := $A) (B := $B)
           (D := $Dfun) (m := $(rowNumLit plan.m)) (by norm_num) rr_cancel_deriv
           ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ q)))

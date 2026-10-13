@@ -7,7 +7,8 @@ import RealRooted.Tactic.Row.Support
 Many OEIS triangles come in pairs read in both directions.  When the rows `P n` have degree
 `D₀ + n`, nonzero constant terms and nonnegative coefficients, the reversed rows
 `R n = X ^ (D₀ + n) P n (1 / X)` satisfy a recurrence of the same shape
-(`RealRooted.eq_reflect_of_derivRec₂`, `RealRooted.eq_reflect_of_threeTerm`), and interlacing
+(`RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence`,
+`RealRooted.eq_reflect_of_threeTerm`), and interlacing
 and splitting transfer back (`RealRooted.interlaces_of_eq_reflect`,
 `RealRooted.splits_of_eq_reflect`).
 
@@ -171,7 +172,8 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
       | ($simpReflect:tactic <;> norm_num <;> done)
       | ($simpReflect:tactic <;> rr_poly_identity))
   let proof ← if k == 1 then
-      `(RealRooted.eq_reflect_of_derivRec₂ (P := $Pi) (R := $R) (D₀ := $D₀)
+      `(RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence
+          (P := $Pi) (R := $R) (D₀ := $D₀)
           (A₂ := $(← lrCoeffFun rv.L 0 2)) (A₁ := $(← lrCoeffFun rv.L 0 1))
           (A₀ := $(← lrCoeffFun rv.L 0 0))
           (B₂ := $(← coeffFun 0 2)) (B₁ := $(← coeffFun 0 1)) (B₀ := $(← coeffFun 0 0))

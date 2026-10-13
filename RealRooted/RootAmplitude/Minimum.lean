@@ -20,19 +20,19 @@ variable (g : ℕ → K)
 
 /-- For a positive strictly increasing convex sequence, every amplitude is at
 least the amplitude at its smallest index, under the supplied tail estimates. -/
-theorem amp_zero_le (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
+theorem amplitude_zero_le (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     (hconv : ∀ i, gap g i ≤ gap g (i + 1)) (n : ℕ)
     (htail : ∀ k, k + 1 < n →
       ∏ j ∈ Ico (2 * k + 2) n, (1 + (g (k + 1) - g k) / (g j - g (k + 1)))
         ≤ 1 + (g (k + 1) - g k) / g k) :
-    ∀ k, k < n → amp g n 0 ≤ amp g n k := by
+    ∀ k, k < n → amplitude g n 0 ≤ amplitude g n k := by
   intro k
   induction k with
   | zero => intro _; exact le_refl _
   | succ m ih =>
       intro hm
       exact le_trans (ih (by lia))
-        (amp_le_amp_of_convex_tail g hpos hsm hconv n m (by lia) (htail m (by lia)))
+        (amplitude_le_amplitude_of_convex_tail g hpos hsm hconv n m (by lia) (htail m (by lia)))
 
 end
 
@@ -51,13 +51,13 @@ theorem exp_div_le_one_add {z : ℝ} (hz : 0 ≤ z) :
 
 /-- A reciprocal-distance-sum criterion implies one step of amplitude
 monotonicity, without a convexity hypothesis. -/
-theorem amp_le_amp_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
+theorem amplitude_le_amplitude_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
     (n k : ℕ) (hk1 : k + 1 < n)
     (hsum : ∑ j ∈ Ico (k + 2) n, 1 / (g j - g (k + 1))
       ≤ 1 / g (k + 1) + ∑ j ∈ range k, 1 / (g (k + 1) - g j)) :
-    amp g n k ≤ amp g n (k + 1) := by
+    amplitude g n k ≤ amplitude g n (k + 1) := by
   classical
-  refine amp_le_amp_of_core g hpos hsm n k hk1 ?_
+  refine amplitude_le_amplitude_of_core g hpos hsm n k hk1 ?_
   have hgk : 0 < g k := hpos k
   have hgk1 : 0 < g (k + 1) := hpos (k + 1)
   set D : ℝ := g (k + 1) - g k with hD
@@ -135,18 +135,18 @@ theorem amp_le_amp_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
 
 /-- A reciprocal-distance-sum criterion at every index makes the smallest
 amplitude a lower bound for all finite-sequence amplitudes. -/
-theorem amp_zero_le_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g) (n : ℕ)
+theorem amplitude_zero_le_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g) (n : ℕ)
     (hsum : ∀ k, k + 1 < n →
       ∑ j ∈ Ico (k + 2) n, 1 / (g j - g (k + 1))
         ≤ 1 / g (k + 1) + ∑ j ∈ range k, 1 / (g (k + 1) - g j)) :
-    ∀ k, k < n → amp g n 0 ≤ amp g n k := by
+    ∀ k, k < n → amplitude g n 0 ≤ amplitude g n k := by
   intro k
   induction k with
   | zero => intro _; exact le_refl _
   | succ m ih =>
       intro hm
       exact le_trans (ih (by lia))
-        (amp_le_amp_of_sum g hpos hsm n m (by lia) (hsum m (by lia)))
+        (amplitude_le_amplitude_of_sum g hpos hsm n m (by lia) (hsum m (by lia)))
 
 end
 

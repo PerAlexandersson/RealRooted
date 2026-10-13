@@ -183,15 +183,15 @@ theorem exp_neg_pi_sq_div_six_le_staircaseProd {d : ℝ} (hd : 0 < d) (N : ℕ) 
 
 /-- A finite exponentially separated positive sequence has the full
 index-dependent Euler lower bound on every amplitude. -/
-theorem exp_gain_le_amp_of_separation {g : ℕ → ℝ} {n : ℕ} {d : ℝ}
+theorem exp_gain_le_amplitude_of_separation {g : ℕ → ℝ} {n : ℕ} {d : ℝ}
     (hd : 0 < d) (hpos : ∀ i, i < n → 0 < g i)
     (hsep : IsMultiplicativelySeparatedOn (Real.exp d) g n)
     {k : ℕ} (hk : k < n) :
     Real.exp (d * (k * (k + 1) / 2) - Real.pi ^ 2 / (3 * d))
-      ≤ amp g n k := by
+      ≤ amplitude g n k := by
   have hq : (1 : ℝ) ≤ Real.exp d := (Real.one_lt_exp_iff.mpr hd).le
   have hstrict := hsep.strictMonoOnRange (Real.one_lt_exp_iff.mpr hd) hpos
-  rw [amp_eq_lower_mul_upper g n k hk hpos hstrict]
+  rw [amplitude_eq_lower_mul_upper g n k hk hpos hstrict]
   set L : ℝ := Real.exp (-(Real.pi ^ 2 / 6 / d)) with hL
   have hLpos : 0 < L := Real.exp_pos _
   have hLk : L ≤ staircaseProd (Real.exp d) k :=
@@ -227,13 +227,13 @@ theorem exp_gain_le_amp_of_separation {g : ℕ → ℝ} {n : ℕ} {d : ℝ}
 
 /-- The index-free amplitude bound obtained by discarding the nonnegative
 triangular gain. -/
-theorem exp_neg_pi_sq_div_three_le_amp_of_separation
+theorem exp_neg_pi_sq_div_three_le_amplitude_of_separation
     {g : ℕ → ℝ} {n : ℕ} {d : ℝ}
     (hd : 0 < d) (hpos : ∀ i, i < n → 0 < g i)
     (hsep : IsMultiplicativelySeparatedOn (Real.exp d) g n)
     {k : ℕ} (hk : k < n) :
-    Real.exp (-(Real.pi ^ 2 / (3 * d))) ≤ amp g n k := by
-  refine le_trans ?_ (exp_gain_le_amp_of_separation hd hpos hsep hk)
+    Real.exp (-(Real.pi ^ 2 / (3 * d))) ≤ amplitude g n k := by
+  refine le_trans ?_ (exp_gain_le_amplitude_of_separation hd hpos hsep hk)
   apply Real.exp_le_exp.mpr
   have hnonnegative :
       (0 : ℝ) ≤ d * (k * (k + 1) / 2) := by positivity
