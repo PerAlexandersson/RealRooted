@@ -1858,3 +1858,4 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
 import RealRooted.EdreiThoma.FinalStep
 import RealRooted.EdreiThoma.Identities
 import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+import RealRooted.CombinatorialExamples.PathPowerClique
