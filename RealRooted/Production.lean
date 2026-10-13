@@ -1775,6 +1775,9 @@ import RealRooted.Permanent.Stability.Ferrers
 import RealRooted.Permanent.Stability.Fractional
 import RealRooted.Permanent.Stability.Operator
 import RealRooted.Challenges.MonotoneColumnPermanent
+import RealRooted.LiuWang.CombinedFlux
+import RealRooted.Recurrence.Telescoping
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # RealRooted production umbrella

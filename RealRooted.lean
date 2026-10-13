@@ -1784,6 +1784,7 @@ import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 
 import RealRooted.EulerBidiagonal.Preservation
 
+import RealRooted.LiuWang.CombinedFlux
 import RealRooted.LiuWang.FiniteFamily
 
 import RealRooted.DerivativeRecurrence.EndpointWindow
@@ -1925,3 +1926,5 @@ import RealRooted.Permanent.Stability.Ferrers
 import RealRooted.Permanent.Stability.Fractional
 import RealRooted.Permanent.Stability.Operator
 import RealRooted.Challenges.MonotoneColumnPermanent
+import RealRooted.Recurrence.Telescoping
+import RealRooted.Recurrence.Uniqueness
