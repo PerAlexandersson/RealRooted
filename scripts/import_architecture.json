@@ -16,13 +16,13 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 1933
+      "max_modules": 1936
     },
     "RealRooted.Production": {
-      "max_modules": 1782
+      "max_modules": 1785
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 748
+      "max_modules": 749
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -1204,7 +1204,7 @@
       "max_modules": 3
     },
     "RealRooted.LiuWang": {
-      "max_modules": 64
+      "max_modules": 65
     },
     "RealRooted.LiuWang.OneAddXPositive": {
       "max_modules": 58
@@ -1471,7 +1471,7 @@
       "max_modules": 150
     },
     "RealRooted.Tactic.OEIS.NegativeLag": {
-      "max_modules": 78
+      "max_modules": 79
     },
     "RealRooted.Tactic.OEIS.ProductExit": {
       "max_modules": 112
@@ -1579,7 +1579,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 570
+      "max_modules": 571
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182
@@ -1654,19 +1654,19 @@
       "max_modules": 135
     },
     "RealRooted.Tactic.LiuWang": {
-      "max_modules": 80
+      "max_modules": 81
     },
     "RealRooted.Tactic.LiuWang.Step": {
-      "max_modules": 74
+      "max_modules": 75
     },
     "RealRooted.Tactic.LiuWang.SequenceIntervals": {
-      "max_modules": 76
+      "max_modules": 77
     },
     "RealRooted.Tactic.LiuWang.SequenceNonpositive": {
-      "max_modules": 75
+      "max_modules": 76
     },
     "RealRooted.Tactic.LiuWang.SequenceProducts": {
-      "max_modules": 75
+      "max_modules": 76
     },
     "RealRooted.MaWang": {
       "max_modules": 43
