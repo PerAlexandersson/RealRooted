@@ -1761,6 +1761,19 @@ import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
 import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
 import RealRooted.GammaTransform.TwoStep
 import RealRooted.Challenges.BorceaBrandenClassification
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
+import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
+import RealRooted.Permanent
+import RealRooted.Permanent.Basic
+import RealRooted.Permanent.Ferrers
+import RealRooted.Permanent.MonotoneColumn
+import RealRooted.Permanent.MonotoneColumn.Reduction
+import RealRooted.Permanent.Stability
+import RealRooted.Permanent.Stability.Cone
+import RealRooted.Permanent.Stability.Ferrers
+import RealRooted.Permanent.Stability.Fractional
+import RealRooted.Permanent.Stability.Operator
 
 /-!
 # RealRooted production umbrella
