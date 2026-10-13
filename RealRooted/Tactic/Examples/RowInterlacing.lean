@@ -596,8 +596,8 @@ theorem A124932_interlaces (n : ℕ) : Interlaces (A124932 n) (A124932 (n + 1)) 
 /--
 info: Try these:
   [apply] rr_row_splits (via := nextRow)
-    (thm := RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc)
-        (degree := 0) (drop := 0) (window := [-1, 0])
+        (thm := RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc) (degree := 0) (drop := 0)
+        (window := [-1, 0])
 -/
 #guard_msgs in
 example (n : ℕ) : (A019538 n).Splits := by
