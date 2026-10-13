@@ -106,7 +106,7 @@ theorem charpoly_strictInterl_add_vecMulVec {N : ℕ} {A : Matrix (Fin N) (Fin N
     pairwise_ofFn_sortedEigenvalues_rev A hA, pairwise_ofFn_sortedEigenvalues_rev B hB,
     coe_ofFn_sortedEigenvalues_rev A hA, coe_ofFn_sortedEigenvalues_rev B hB,
     Or.inr ⟨by simp, listAlternates_of_interleaves_of_length (by simp)
-      (List.interleaves_ofFn.2 ⟨fun k => sortedEigenvalues_le_add_vecMulVec hA v hB _,
+      (List.interleaves_ofFn_even.2 ⟨fun k => sortedEigenvalues_le_add_vecMulVec hA v hB _,
         fun i hi => ?_⟩)⟩⟩
   obtain _ | n := N
   · lia

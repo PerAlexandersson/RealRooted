@@ -42,7 +42,7 @@ protected lemma interleaves_reverse_of_interlaced_left :
     have h_eq_len₁ : ss.reverse.length + 1 = (rs.reverse ++ [r₂]).length := by simp_all
     have h_eq_len₂ : ss.reverse.length = rs.reverse.length := by simpa using h_len
     rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
-      List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length h_eq_len₁,
+      List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one h_eq_len₁,
       List.interleaves_append_singleton_append_singleton_of_length_eq_length h_eq_len₂,
       ← List.reverse_cons]
     refine ⟨h_lt₂ ⟨0, Nat.zero_lt_succ _⟩ ⟨0, Nat.zero_lt_succ _⟩ Nat.zero_lt_one,
@@ -140,7 +140,7 @@ protected lemma interlaced_of_interleaves_reverse_left {ss rs : List ℝ}
     have h_eq_len₁ : ss.reverse.length + 1 = (rs.reverse ++ [r₂]).length := by simp_all
     have h_eq_len₂ : ss.reverse.length = rs.reverse.length := by simp_all
     rw [List.reverse_cons, List.reverse_cons, List.reverse_cons,
-      List.interleaves_append_singleton_append_singleton_of_length_add_one_eq_length h_eq_len₁,
+      List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one h_eq_len₁,
       List.interleaves_append_singleton_append_singleton_of_length_eq_length h_eq_len₂,
       ← List.reverse_cons] at h_inter
     obtain ⟨hr₁s, hsr₂, h_inter_tail⟩ := h_inter
@@ -217,12 +217,12 @@ private lemma interleaves_lt_of_le_of_forall_ne :
       (∀ a ∈ l₁, ∀ b ∈ l₂, a ≠ b) → List.Interleaves (· < ·) l₁ l₂
   | _, _, .nil_nil, _ => .nil_nil
   | _, _, .nil_singleton a, _ => .nil_singleton a
-  | _, _, .cons_symm h hab, hne => by
+  | _, _, .cons_symm hab h, hne => by
       apply List.Interleaves.cons_symm
+      · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
       · apply interleaves_lt_of_le_of_forall_ne h
         intro a ha b hb
         exact (hne b hb a (by simp [ha])).symm
-      · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
 
 /-- Strict same-degree interlacing, stated on canonical sorted root lists.
 
