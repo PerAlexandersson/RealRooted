@@ -98,9 +98,112 @@ private def powerFormRoute : TacticM Unit := do
   let some pf ← powerForm? L | throwError "rr_row_interlaces: no power form"
   powerFormInterlaces L pf
 
+/-- The first reason why rows `P (drop + m)`, computed through row eight, cannot follow a
+growth-one weak-interlacing route.  A common factor of degree at least two is accepted only
+when one of the neighboring pairs also has such a factor, so alternating factors carried by
+parity-product sequences are not mistaken for accidental common factors. -/
+private def growthOneProbeFailure (rows : Array QPoly) (drop : Nat) : Option MessageData :=
+  Id.run do
+  let some p₀ := rows[drop]? | return some m!"row {drop} is unavailable"
+  if p₀.isZero then return some m!"row {drop} is zero"
+  let D₀ := p₀.natDegree
+  for m in [drop:8] do
+    let (some p, some q) := (rows[m]?, rows[m + 1]?)
+      | return some m!"rows {m} and {m + 1} are unavailable"
+    if p.isZero || q.isZero || p.natDegree != D₀ + (m - drop) ||
+        q.natDegree != D₀ + (m - drop) + 1 then
+      return some m!"degree growth is not one after dropping {drop} rows (at rows {m} and \
+        {m + 1})"
+    let d := p.gcd q
+    if d.natDegree ≥ 2 then
+      let recursBefore := m > drop && (rows[m - 1]!.gcd p).natDegree ≥ 2
+      let recursAfter := m + 2 < rows.size && (q.gcd rows[m + 2]!).natDegree ≥ 2
+      unless recursBefore || recursAfter do
+        return some m!"rows {m} and {m + 1} have a non-recurring common factor of degree \
+          {d.natDegree}"
+    unless p.interlaces q do
+      return some m!"rows {m} and {m + 1} fail the exact weak-interlacing test"
+  return none
+
+/-- Run the growth, common-factor and weak-interlacing checks for every permitted drop. -/
+private def droppedRowsProbeFailure (rows : Array QPoly) (hints : RowHints) :
+    Option MessageData := Id.run do
+  let drops := match hints.drop with
+    | some k => [k]
+    | none => [0, 1]
+  let mut first? : Option MessageData := none
+  for k in drops do
+    match growthOneProbeFailure rows k with
+    | none => return none
+    | some why => if first?.isNone then first? := some why
+  return first?
+
+/-- Run the cheap exact front-end probe on rows zero through eight.  `none` means that some
+permitted drop has growth one and adjacent weak interlacing, or that exact rows are
+unavailable; otherwise the returned message explains the first veto. -/
+private def topInterlacesProbe (hints : RowHints) : TacticM (Option MessageData) := do
+  let tgt ← instantiateMVars (← getMainTarget)
+  let some P ← findPolySeqConst? tgt | return none
+  let some L ← linRec? P | return none
+  let some rows ← linRecRows? L 8 | return none
+  return droppedRowsProbeFailure rows hints
+
+/-- Whether rows zero through eight can be partitioned into residue classes of step `p` in
+which every nonzero class has growth one and exact weak interlacing.  This is the cheap shape
+test used to keep residue-subsequence routes available to the top-level splitting probe. -/
+private def subsequenceRowsPlausible (rows : Array QPoly) (p : Nat) : Bool := Id.run do
+  let mut nonzero := false
+  for c in [0:p] do
+    let indices := (List.range rows.size).filter (fun n => n % p == c)
+    let ps := (indices.map fun n => rows[n]!).toArray
+    if ps.all (·.isZero) then continue
+    nonzero := true
+    if ps.any (·.isZero) then return false
+    let some q₀ := ps[0]? | return false
+    for j in [0:ps.size - 1] do
+      unless ps[j + 1]!.natDegree == q₀.natDegree + j + 1 &&
+          ps[j]!.interlaces ps[j + 1]! do
+        return false
+  return nonzero
+
+/-- The result of the automatic front-end splitting probe. -/
+private inductive TopSplitsProbeResult where
+  | pass
+  | closedForm (plan : CFPlan)
+  | veto (why : MessageData)
+
+/-- The sound automatic front-end veto for `rr_row_splits`.  A computed nonzero row that is
+not real-rooted disproves the requested splitting goal.  For recurrence shapes not read by
+the ordinary row core, an exact growth/interlacing check on residue classes prevents entering
+routes that cannot apply.  Recognized row, derivative-lag, and closed-form shapes are left to
+their more specific probes. -/
+private def topSplitsProbe (hints : RowHints) : TacticM TopSplitsProbeResult := do
+  if hints.via.isSome || hints.thm.isSome || hints.window.isSome || hints.upper.isSome then
+    return .pass
+  let tgt ← instantiateMVars (← getMainTarget)
+  let some P ← findPolySeqConst? tgt | return .pass
+  let some L ← linRec? P | return .pass
+  let some rows ← linRecRows? L 8 | return .pass
+  let growthFailure := droppedRowsProbeFailure rows hints
+  for n in [0:9] do
+    let q := rows[n]!
+    if !q.isZero && !q.realRooted then
+      return .veto m!"computed row {P} {n} fails the exact real-rootedness test"
+  if (← rowRec? P) matches .ok _ then return .pass
+  if (← derivLagRec? P) matches .ok _ then return .pass
+  for p in [1:7] do
+    if subsequenceRowsPlausible rows p then return .pass
+  if let some plan ← cfPlan? L then return .closedForm plan
+  let why := growthFailure.getD
+    m!"the computed rows fit no growth-one residue class after the permitted drops"
+  return .veto why
+
 /-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
 routes, which have no printable steps) and the hints of the hinted call. -/
 private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
+  if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    if let some why ← topInterlacesProbe hints then
+      throwError "rr_row_interlaces: no strategy (probe: {why})"
   if ← isDerivLagGoal then
     return (#[], ← derivLagCore false hints)
   -- order-three recurrences through a three-term recurrence
@@ -318,6 +421,15 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       throwError "rr_row_splits: unknown route {v}; the routes are \
         {", ".intercalate (splitsRoutes.map toString)}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
+  match ← topSplitsProbe hints with
+  | .veto why => throwError "rr_row_splits: no strategy (probe: {why})"
+  | .closedForm plan =>
+      if hints.via.isNone then
+        let provePlan : TacticM Unit := do
+          cfProve plan
+          unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+        if ← rowSucceeds provePlan then return { via := some `closedForm }
+  | .pass => pure ()
   if ← isDerivLagGoal then
     return ← derivLagCore true hints
   discard introIfForall
