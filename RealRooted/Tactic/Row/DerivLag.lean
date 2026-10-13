@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Row.LowerOrder
+import RealRooted.DerivativeRecurrence.LagWeak
 
 /-!
 # Row tactics: derivative-lag recurrences
@@ -95,6 +96,22 @@ private def negSignGoal : TacticM Unit := do
     first
       | nlinarith [hx, hn, sq_nonneg x, mul_nonneg hn (neg_nonneg.mpr hx.le),
           mul_nonneg hn (sq_nonneg x), mul_pos_of_neg_of_neg hx hx]
+      | (rr_row_field; done))))
+
+/-- Close an explicit sign goal on the nonpositive half-line. -/
+private def nonposSignGoal : TacticM Unit := do
+  evalTactic (← `(tactic| (
+    intro n x hx
+    have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+    beta_reduce
+    simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+      Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
+      Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat,
+      Polynomial.eval_natCast]
+    push_cast
+    first
+      | nlinarith [hx, hn, sq_nonneg x, mul_nonneg hn (neg_nonneg.mpr hx),
+          mul_nonneg hn (sq_nonneg x)]
       | (rr_row_field; done))))
 
 /-- Close `∀ n, 0 ≤ (A n).coeff 0`-type goals for explicit multipliers. -/
@@ -237,6 +254,39 @@ private def baseGoals (d : DerivLagRec) (S : Nat) (hbase hbaseNo : MVarId) : Tac
       linear_combination ($(← qpolyReal a rT)) * h0 + ($(← qpolyReal b rT)) * h1
     norm_num at hc)))
 
+/-- Close only the explicit base interlacing goal; common roots are allowed. -/
+private def baseInterlGoal (d : DerivLagRec) (S : Nat) (hbase : MVarId) : TacticM Unit := do
+  let P := mkIdent d.P
+  let some rows ← derivLagRows d (S + 1) | throwError "rr_row_deriv_lag: the first rows of \
+    {d.P} are not explicit rational polynomials"
+  let f := rows[S]!
+  let g := rows[S + 1]!
+  let eF := mkIdent `eFWeak
+  let eG := mkIdent `eGWeak
+  let fT ← qpolyTerm f
+  let gT ← qpolyTerm g
+  let rowIds : TacticM (TSyntax `tactic) := do
+    `(tactic| (
+      have $eF:ident : $P $(rowNumLit S) = $fT := by
+        first
+          | (simp only [$P:ident]; done)
+          | (simp only [$P:ident]; rr_poly_identity)
+          | (simp only [$P:ident]; ring)
+      have $eG:ident : $P $(rowNumLit (S + 1)) = $gT := by
+        first
+          | (simp only [$P:ident]; done)
+          | (simp only [$P:ident]; rr_poly_identity)
+          | (simp only [$P:ident]; ring)))
+  setGoals [hbase]
+  withMainContext do
+    evalTactic (← `(tactic| refine RealRooted.Interlaces.toStrictInterl ?_))
+    betaReduceGoal
+    evalTactic (← `(tactic| (
+      simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero]
+      $(← rowIds):tactic
+      exact (congrArg₂ RealRooted.Interlaces $eF $eG).mpr
+        (by rr_interlaces_explicit : RealRooted.Interlaces $fT $gT))))
+
 /-- Run `x`, prefixing its error with the name of the stage. -/
 private def stage (name : String) (x : TacticM α) : TacticM α :=
   tryCatch x fun e => throwError "{name}: {e.toMessageData}"
@@ -366,6 +416,35 @@ private def derivLagAttempt (d : DerivLagRec) (splits : Bool) (hints : RowHints)
       rowSideFull (some P)
     closeEach (← getGoals) [coeffZeroGoal, rowSideFull (some P), rowSideFull (some P),
       side, side]
+  -- The repeated-root-safe Liu--Wang route does not require positivity at zero or
+  -- a no-common-root invariant.
+  let weak ← rowAttempt do
+    let hmain := mkIdent `hmainWeak
+    let m := mkIdent `m
+    haveBy hmain (← `(∀ $m:ident : ℕ, StrictInterl ($Q $m) ($Q ($m + 1)))) do
+      evalTactic (← `(tactic|
+        refine RealRooted.derivativeLag_strictInterl_of_nonnegCoeffs_of_step
+          (P := $Q) (U := $uQ) (V := $vQ) (W := $wQ) $hrecQ ?_ ?_ $hnn ?_ ?_ ?_))
+      let gs ← getGoals
+      let [gstep, gpos, gV, gW, gbase] := gs
+        | throwError "rr_row_deriv_lag: unexpected weak-route side goals"
+      let step : TacticM Unit := do
+        evalTactic (← `(tactic| intro n; rw [$hdeg:ident, $hdeg:ident]; lia))
+      let pos : TacticM Unit := do
+        evalTactic (← `(tactic| exact fun n => $hpos n))
+      stage "weak signs" <| closeEach [gstep, gpos, gV, gW]
+        [step, pos, nonposSignGoal, nonposSignGoal]
+      stage "weak base" <| baseInterlGoal d S gbase
+      setGoals []
+    if splits then
+      evalTactic (← `(tactic| exact ($hmain $(idx)).1.2))
+    else
+      evalTactic (← `(tactic| exact ($hmain $(idx)).toInterlaces (by
+        have h1 := $hdeg $(idx)
+        have h2 := $hdeg ($(idx) + 1)
+        beta_reduce at h1 h2 ⊢
+        lia)))
+  if weak matches .ok _ then return
   -- positivity at `0`
   let he0 := mkIdent `he0
   haveBy he0 (← `(∀ $n:ident : ℕ, 0 < ($Q $n).eval 0)) <| stage "eval0" do
