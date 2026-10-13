@@ -124,6 +124,7 @@ import RealRooted.Tactic.Examples.RootCount.Filters
 import RealRooted.Tactic.Examples.RootCount.LowDegree
 import RealRooted.Tactic.Examples.RowCancelRho
 import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowDegreeRest
 import RealRooted.Tactic.Examples.RowDegreeRoutes
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
