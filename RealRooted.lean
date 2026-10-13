@@ -1855,3 +1855,4 @@ import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
 import RealRooted.Mathlib.Analysis.Complex.HadamardExponentialType
 import RealRooted.EdreiThoma.PFSeries
 import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+import RealRooted.CombinatorialExamples.PathPowerClique
