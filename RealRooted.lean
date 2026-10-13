@@ -1879,3 +1879,7 @@ import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
 import RealRooted.MultiplierSequence.InvPochhammerSimple
+import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+import RealRooted.BorceaBranden.Transcendental.PivotConverse
+import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
