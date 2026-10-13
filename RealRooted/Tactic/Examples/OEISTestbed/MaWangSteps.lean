@@ -45,7 +45,7 @@ example {p : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p) :
     ∀ r, p.IsRoot r → (C (2 : ℝ) * X : ℝ[X]).eval r ≤ 0 := by
   rr_sign_at_roots using hrr, hpnn
 
--- `A021009`/Family B: generic `t R(t)` once `R` is nonnegative at roots.
+-- Unsigned Laguerre/Family B: generic `t R(t)` once `R` is nonnegative at roots.
 example {p q : ℝ[X]} (hrr : p ≠ 0 ∧ p.Splits) (hpnn : HasNonnegCoeffs p)
     (hq : ∀ r, p.IsRoot r → 0 ≤ q.eval r) :
     ∀ r, p.IsRoot r → (X * q : ℝ[X]).eval r ≤ 0 := by

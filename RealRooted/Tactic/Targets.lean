@@ -28,8 +28,8 @@ These should be the first OEIS-facing targets for `rr_ma_wang`.
 - Family A, Eulerian one-step differential examples:
   `A008517`, `A120434`, `A144696`, `A144697`, `A144698`, `A144699`,
   `A156919`, `A257606`, `A257607`, `A296229`.
-- Family B, half-line one-step differential examples:
-  `A021009`, `A046089`, `A049352`, `A049353`, `A079621`, `A111578`,
+- Family B, half-line one-step differential examples: the unsigned Laguerre
+  regression fixture, `A046089`, `A049352`, `A049353`, `A079621`, `A111578`,
   `A143496`, `A154537`, `A225466`, `A364071`.
 
 ## Executable OEIS recurrence test bed

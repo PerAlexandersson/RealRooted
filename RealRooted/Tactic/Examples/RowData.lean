@@ -71,13 +71,13 @@ theorem A011973_ne_zero (n : ℕ) : A011973 n ≠ 0 := by rr_row_ne_zero
 theorem A011973_leadingCoeff_pos (n : ℕ) : 0 < (A011973 n).leadingCoeff := by
   rr_row_leadingCoeff_pos
 
-/-- Half growth with `n`-dependent coefficients and degree `(n + 1) / 2` (A119808). -/
-def A119808 : ℕ → ℝ[X]
+/-- Half growth with `n`-dependent coefficients and degree `(n + 1) / 2`. -/
+def halfGrowthRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
-  | n + 2 => C ((n : ℝ) + 2) * A119808 (n + 1) + (C 1 * X) * A119808 n
+  | n + 2 => C ((n : ℝ) + 2) * halfGrowthRows (n + 1) + (C 1 * X) * halfGrowthRows n
 
-theorem A119808_natDegree (n : ℕ) : (A119808 n).natDegree = (n + 1) / 2 := by
+theorem halfGrowthRows_natDegree (n : ℕ) : (halfGrowthRows n).natDegree = (n + 1) / 2 := by
   rr_row_natDegree
 
 /-- A zero first row is split off; `h` excludes it (A128966). -/
