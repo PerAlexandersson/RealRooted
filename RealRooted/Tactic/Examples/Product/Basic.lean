@@ -501,7 +501,7 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     recurrence := hrec
 
-/-- `A122431`-style product exit, accepting the root-zero factor on the right. -/
+/-- Cubic-shift-style product exit, accepting the root-zero factor on the right. -/
 example {P : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hrec : ∀ n : Nat, P (n + 1) = P n * X) :
@@ -530,7 +530,7 @@ example {P : Nat → ℝ[X]}
     cutoff := N,
     recurrence := hrec
 
-/-- `A266178`-style product exit: two real-rooted base parities repeat. -/
+/-- Alternating-parity product exit: two real-rooted base parities repeat. -/
 example {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)

@@ -279,13 +279,14 @@ def A272866 : ℕ → ℝ[X]
 
 theorem A272866_splits (n : ℕ) : (A272866 n).Splits := by rr_row_splits
 
-/-- A product with a cubic first row (A122431). -/
-def A122431 : ℕ → ℝ[X]
+/-- A product with a cubic first row. -/
+def cubicShiftRows : ℕ → ℝ[X]
   | 0 => 1 + 3 * X + 3 * X ^ 2 + X ^ 3
-  | n + 1 => X * A122431 n
+  | n + 1 => X * cubicShiftRows n
 
-theorem A122431_splits (n : ℕ) : (A122431 n).Splits := by rr_row_splits
-theorem A122431_interlaces (n : ℕ) : Interlaces (A122431 n) (A122431 (n + 1)) := by
+theorem cubicShiftRows_splits (n : ℕ) : (cubicShiftRows n).Splits := by rr_row_splits
+theorem cubicShiftRows_interlaces (n : ℕ) :
+    Interlaces (cubicShiftRows n) (cubicShiftRows (n + 1)) := by
   rr_row_interlaces
 
 /-- Half growth whose lag coefficients are quadratic in `n` (A306364). -/
