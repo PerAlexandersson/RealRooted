@@ -1718,6 +1718,8 @@ import RealRooted.EdreiThoma.Reduction
 import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
 import RealRooted.Applications.OEIS.PathPowerRows
 import RealRooted.Applications.OEIS.A271697
+import RealRooted.EdreiThoma.Continuation
+import RealRooted.EdreiThoma.Converse
 
 /-!
 # RealRooted production umbrella

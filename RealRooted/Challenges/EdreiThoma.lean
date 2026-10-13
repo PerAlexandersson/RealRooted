@@ -1,18 +1,26 @@
+import RealRooted.EdreiThoma.Converse
 import RealRooted.EdreiThoma.Easy
 
 /-!
-# Edrei--Thoma, the easy direction
+# The Edrei--Thoma theorem
 
 <!-- realrooted-catalog
 version = 1
 section = "theorems"
 slug = "edrei-thoma"
-formalized = "2026-10-09"
+formalized = "2026-10-13"
+
+[[theorems]]
+name = "RealRooted.EdreiThoma.exists_canonicalProduct_representation"
+module = "RealRooted.EdreiThoma.Converse"
+label = "Edrei: normalized Pólya-frequency sequences are canonical products"
+headline = true
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"
 module = "RealRooted.EdreiThoma.Easy"
-label = "Canonical product is Pólya-frequency"
+label = "Aissen–Schoenberg–Whitney: canonical products are Pólya-frequency"
+headline = true
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeq_coeff_canonicalProduct"
@@ -81,7 +89,7 @@ label = "Closure under a zero prefix"
 -->
 
 <!-- realrooted-catalog-content -->
-# Edrei--Thoma, the easy direction
+# The Edrei--Thoma theorem
 
 We work with formal power series over \(\mathbb{R}\), equipped with the
 coefficientwise topology. We use `IsPolyaFreqSeries` to say that the
@@ -112,15 +120,25 @@ canonical-product result.
 
 Finally, we identify this power-series expression with the infinite
 ASW--Edrei symbol from `RealRooted.BrandenVecchi` using
-`canonicalProduct_eq_C_mul_X_pow_mul_aswEdreiSymbol`. We record the easy
-direction only; we do not assert the converse classification of all
-Pólya-frequency sequences.
+`canonicalProduct_eq_C_mul_X_pow_mul_aswEdreiSymbol`.
+
+Conversely, `exists_canonicalProduct_representation` shows that every
+Pólya-frequency sequence with \(a_0 = 1\) arises this way: there are
+\(\gamma \ge 0\) and nonnegative \(\alpha_i, \beta_i\) with
+\(\sum_i(\alpha_i+\beta_i) < \infty\) such that the generating function equals
+\(e^{\gamma z}\prod_i(1+\alpha_i z)/\prod_i(1-\beta_i z)\) near \(0\). The proof
+follows Edrei's determinant identities and monotone limits, but replaces his
+use of Nevanlinna's second main theorem by an elementary growth argument
+(Jensen's formula and a Borel-type lemma). Together the two directions give the
+classification of all one-sided Pólya-frequency sequences.
 
 ## References
 
 M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
 of totally positive sequences. I,” *Journal d’Analyse Mathématique* 2 (1952),
-93–103, prove this direction.  The converse is due to A. Edrei (1952).  See the
+93–103, prove the easy direction.  The converse is due to A. Edrei (1952); we
+follow his proof in *Canadian Journal of Mathematics* 5 (1953), 86–94,
+doi:10.4153/CJM-1953-010-3.  See the
 [Edrei–Thoma theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#edreiThomaTheorem).
 <!-- /realrooted-catalog-content -->
 -/
