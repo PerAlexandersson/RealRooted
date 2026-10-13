@@ -15,7 +15,8 @@ label = "The Hadamard product of two 3 × 3 TNN matrices can have negative deter
 headline = true
 
 [[theorems]]
-name = "RealRooted.TotallyNonnegativeHadamardObstruction.exists_totallyNonneg_hadamardCornerZeroed_neg"
+name = """RealRooted.TotallyNonnegativeHadamardObstruction.\
+exists_totallyNonneg_hadamardCornerZeroed_neg"""
 label = "A corner-zeroed Hadamard determinant can be negative"
 -->
 
