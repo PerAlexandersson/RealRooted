@@ -1889,3 +1889,5 @@ import RealRooted.CoefficientShape.RowCLT
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
 import RealRooted.MultiplierSequence.InvPochhammerSimple
+import RealRooted.Applications.OEIS.ClosedFormRows
+import RealRooted.MultivariateStability.MorrisOperator
