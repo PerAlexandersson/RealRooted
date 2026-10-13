@@ -1871,6 +1871,8 @@ import RealRooted.Applications.OEIS.A330798
 import RealRooted.DerivativeRecurrence.MultiLagCancel
 import RealRooted.Applications.OEIS.CubicParentRows
 import RealRooted.Graph.IndependencePolynomial.CubicParent
+import RealRooted.Challenges.KostovEigenpolynomials
+import RealRooted.Challenges.PathPowerCliques
 import RealRooted.BorceaBranden.MultivariateHKO
 import RealRooted.BorceaBranden.RealFiniteClassification
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
