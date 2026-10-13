@@ -138,12 +138,13 @@ def cancelPlan (r : RowRec) : MetaM (Except MessageData CancelPlan) := do
       | some old => min old ratio
   let some fitted := minRatio | return .error m!"no sampled coefficient ratios"
   let rho := if ratioNeeded then fitted else -1
-  if rho == 0 then return .error m!"the fitted coefficient-ratio lower bound is zero"
   return .ok { extra, law, m, grow, rho, ratioNeeded }
 
 /-- Shift a coefficient function from the original recurrence to the sequence used by the
 cancellation theorem. -/
-private def cancelShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
+private def cancelShiftCoeff (c : Expr) (s : Nat) (normalize : Bool := false) : TacticM Term := do
+  if normalize then
+    if let some normalized ← normalizedCoeffTerm? c s then return normalized
   if s == 0 then return ← certTerm c
   let shifted ← lambdaTelescope c fun xs body => do
     let ns ← mkAppM ``HAdd.hAdd #[xs[0]!, mkNatLit s]
@@ -192,10 +193,10 @@ private def cancelFinish : TacticM (TSyntax `tactic) :=
     | done
     | positivity
     | (refine ne_of_gt ?_; positivity)
+    | (ring_nf; positivity)
     | nlinarith [(Nat.cast_nonneg $cancelN : (0 : ℝ) ≤ $cancelN)]
     | nlinarith [(Nat.cast_nonneg $cancelK : (0 : ℝ) ≤ $cancelK)]
     | rr_row_field
-    | (ring_nf; positivity)
     | fail)
 
 /-- Run `tac` on the goal `g`, which it must close. -/
@@ -282,7 +283,8 @@ private def cancelStep (p : Nat) (grow : Array Bool) : TacticM Unit := do
       evalTactic (← `(tactic| refine Or.inr ⟨?_, ?_, ?_, ?_⟩))
       let [g₁, g₂, g₃, g₄] ← getGoals | throwError "rr_row_cancel: unexpected goals"
       cancelRun "hstep (cancellation)" g₁ do
-        evalTactic (← `(tactic| ($coeff:tactic <;> first | done | ring1 | rr_linrec_field)))
+        evalTactic (← `(tactic| ($coeff:tactic <;>
+          first | done | ring1 | (ring_nf; done) | rr_linrec_field)))
       cancelRun "hstep (degree)" g₂ (evalTactic (← `(tactic| lia)))
       cancelRun "hstep (sign)" g₃ (evalTactic (← `(tactic| ($coeff:tactic <;> $fin:tactic))))
       cancelRun "hstep (next)" g₄ (evalTactic (← `(tactic| ($coeff:tactic <;> $fin:tactic))))
@@ -432,18 +434,30 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     rowSideGoal (some P)
     `(tactic| rr_row_side))
   let Q ← r.seq plan.extra
-  let hrec ← r.hrecTerm plan.extra
-  let A ← cancelShiftCoeff r.coeffs[0]! (r.shift + plan.extra)
-  let B ← cancelShiftCoeff r.coeffs[1]! (r.shift + plan.extra)
+  let A ← cancelShiftCoeff r.coeffs[0]! plan.extra (!plan.ratioNeeded)
+  let B ← cancelShiftCoeff r.coeffs[1]! plan.extra (!plan.ratioNeeded)
   let terms ← `([(0, 1, $A), (0, 0, $B)])
   let n := mkIdent `n
   let eqnApp ← if plan.extra == 0 then `($(mkIdent r.eqn) $n)
     else `($(mkIdent r.eqn) ($n + $(rowNumLit plan.extra)))
-  let hgeneral ← `(fun $n:ident => ($eqnApp).trans (by
+  let hderiv ← `(fun $n:ident => ($eqnApp).trans (by
+    first
+      | rfl
+      | (apply Polynomial.funext
+         intro x
+         simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
+           Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_neg,
+           Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+           Polynomial.eval_ofNat, Polynomial.eval_one, Polynomial.eval_zero,
+           Polynomial.eval_natCast]
+         push_cast
+         rr_linrec_field)))
+  evalTactic (← `(tactic|
+    have rr_cancel_deriv : ∀ q, $Q (q + 1) =
+        $A q * ($Q q).derivative + $B q * $Q q := $hderiv))
+  let hgeneral ← `(fun $n:ident => (rr_cancel_deriv $n).trans (by
     simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
-      List.sum_nil, Function.iterate_zero, Function.iterate_one, id_eq, add_zero,
-      Nat.add_assoc, Nat.reduceAdd] <;>
-    ring))
+      List.sum_nil, Function.iterate_zero, Function.iterate_one, id_eq, add_zero]))
   let Dfun ← `(fun $n:ident => $(rowNumLit law.D₀) + $(rowNumLit law.d) *
     (($n + $(rowNumLit law.e)) / $(rowNumLit law.p)))
   let rho ← ratTerm plan.rho
@@ -486,8 +500,9 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
   else
     evalTactic (← `(tactic|
       have rr_cancel_old := (fun q =>
-        RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel (P := $Q)
-          (D := $Dfun) (m := $(rowNumLit plan.m)) (by norm_num) $hrec
+        RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos_of_cancel
+          (P := $Q) (A := $A) (B := $B)
+          (D := $Dfun) (m := $(rowNumLit plan.m)) (by norm_num) rr_cancel_deriv
           ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ q)))
   evalTactic (← `(tactic|
     have rr_cancel_rec : ∀ q, $Q (q + 1) = RealRooted.LinRec.rhs $terms $Q q := $hgeneral))

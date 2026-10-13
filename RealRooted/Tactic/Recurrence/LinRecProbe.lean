@@ -25,6 +25,153 @@ open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
 
+/-! ### Symbolic normalization of recurrence coefficients -/
+
+/-- A rational function in the row index, represented by coprime rational polynomials. -/
+structure CoeffRatFun where
+  num : QPoly
+  den : QPoly
+  deriving Inhabited
+
+private def CoeffRatFun.norm (r : CoeffRatFun) : CoeffRatFun :=
+  let g := QPoly.gcd r.num r.den
+  let n := r.num.divExact? g |>.getD r.num
+  let d := r.den.divExact? g |>.getD r.den
+  if d.lead < 0 then ⟨-n, -d⟩ else ⟨n, d⟩
+
+private def CoeffRatFun.const (r : Rat) : CoeffRatFun :=
+  ⟨QPoly.const r, QPoly.const 1⟩
+
+private def CoeffRatFun.add (x y : CoeffRatFun) : CoeffRatFun :=
+  CoeffRatFun.norm ⟨x.num * y.den + y.num * x.den, x.den * y.den⟩
+
+private def CoeffRatFun.neg (x : CoeffRatFun) : CoeffRatFun :=
+  CoeffRatFun.norm ⟨-x.num, x.den⟩
+
+private def CoeffRatFun.mul (x y : CoeffRatFun) : CoeffRatFun :=
+  CoeffRatFun.norm ⟨x.num * y.num, x.den * y.den⟩
+
+private def CoeffRatFun.div (x y : CoeffRatFun) : Option CoeffRatFun :=
+  if y.num.isZero then none else some <| CoeffRatFun.norm ⟨x.num * y.den, x.den * y.num⟩
+
+private def CoeffRatFun.pow (x : CoeffRatFun) (k : Nat) : CoeffRatFun :=
+  CoeffRatFun.norm ⟨x.num.pow k, x.den.pow k⟩
+
+/-- Parse a real expression as a rational function in the cast of `n`. -/
+private partial def coeffRatFun? (n : Expr) (e : Expr) : MetaM (Option CoeffRatFun) := do
+  if let some r ← evalRat? e then return some (CoeffRatFun.const r)
+  let e := e.consumeMData
+  let bin (a b : Expr) (op : CoeffRatFun → CoeffRatFun → Option CoeffRatFun) := do
+    let some x ← coeffRatFun? n a | return none
+    let some y ← coeffRatFun? n b | return none
+    return op x y
+  match e.getAppFnArgs with
+  | (``HAdd.hAdd, #[_, _, _, _, a, b]) => bin a b fun x y => some (x.add y)
+  | (``HSub.hSub, #[_, _, _, _, a, b]) => bin a b fun x y => some (x.add y.neg)
+  | (``HMul.hMul, #[_, _, _, _, a, b]) => bin a b fun x y => some (x.mul y)
+  | (``HDiv.hDiv, #[_, _, _, _, a, b]) => bin a b CoeffRatFun.div
+  | (``Neg.neg, #[_, _, a]) => return (← coeffRatFun? n a).map CoeffRatFun.neg
+  | (``Inv.inv, #[_, _, a]) =>
+      return (← coeffRatFun? n a).bind fun x => (CoeffRatFun.const 1).div x
+  | (``HPow.hPow, #[_, _, _, _, a, k]) =>
+      let some k ← evalNat k | return none
+      return (← coeffRatFun? n a).map fun x => x.pow k
+  | (``Nat.cast, #[_, _, m]) =>
+      return if m == n then some ⟨QPoly.X, QPoly.const 1⟩ else none
+  | _ => return none
+
+private def coeffRatArrayAdd (a b : Array CoeffRatFun) : Array CoeffRatFun :=
+  let z := CoeffRatFun.const 0
+  (Array.range (max a.size b.size)).map fun i => (a.getD i z).add (b.getD i z)
+
+private def coeffRatArrayMul (a b : Array CoeffRatFun) : Array CoeffRatFun := Id.run do
+  if a.isEmpty || b.isEmpty then return #[]
+  let mut out := Array.replicate (a.size + b.size - 1) (CoeffRatFun.const 0)
+  for i in [0:a.size] do
+    for j in [0:b.size] do
+      out := out.modify (i + j) (·.add (a[i]!.mul b[j]!))
+  return out
+
+/-- Parse a polynomial expression whose coefficients are rational functions of `n`. -/
+private partial def coeffRatPolynomial? (n : Expr) (e : Expr) :
+    MetaM (Option (Array CoeffRatFun)) := do
+  if let some r ← coeffRatFun? n e then return some #[r]
+  let e := e.consumeMData
+  let bin (a b : Expr)
+      (op : Array CoeffRatFun → Array CoeffRatFun → Option (Array CoeffRatFun)) := do
+    let some x ← coeffRatPolynomial? n a | return none
+    let some y ← coeffRatPolynomial? n b | return none
+    return op x y
+  match e.getAppFnArgs with
+  | (``HAdd.hAdd, #[_, _, _, _, a, b]) => bin a b fun x y => some (coeffRatArrayAdd x y)
+  | (``HSub.hSub, #[_, _, _, _, a, b]) =>
+      bin a b fun x y => some (coeffRatArrayAdd x (y.map CoeffRatFun.neg))
+  | (``HMul.hMul, #[_, _, _, _, a, b]) => bin a b fun x y => some (coeffRatArrayMul x y)
+  | (``HDiv.hDiv, #[_, _, _, _, a, b]) =>
+      let some x ← coeffRatPolynomial? n a | return none
+      let some y ← coeffRatFun? n b | return none
+      return x.mapM (·.div y)
+  | (``Neg.neg, #[_, _, a]) =>
+      return (← coeffRatPolynomial? n a).map fun x => x.map CoeffRatFun.neg
+  | (``HPow.hPow, #[_, _, _, _, a, k]) =>
+      let some k ← evalNat k | return none
+      let some x ← coeffRatPolynomial? n a | return none
+      let mut out := #[CoeffRatFun.const 1]
+      for _ in [0:k] do out := coeffRatArrayMul out x
+      return some out
+  | (``Polynomial.X, _) =>
+      return some #[CoeffRatFun.const 0, CoeffRatFun.const 1]
+  | (``DFunLike.coe, #[_, _, _, _, f, r]) =>
+      if f.isAppOf ``Polynomial.C then
+        return (← coeffRatFun? n r).map fun x => #[x]
+      return none
+  | _ => return none
+
+private def qpolyAtIndexTerm (p : QPoly) (x : Term) : TacticM Term := do
+  let mut out : Option Term := none
+  for i in [0:p.coeffs.size] do
+    if p.coeff i == 0 then continue
+    let c ← ratTerm (p.coeff i)
+    let mon ← if i == 0 then pure c else do
+      let power ← if i == 1 then `(($x : ℝ)) else `(($x : ℝ) ^ $(rowNumLit i))
+      if p.coeff i == 1 then pure power
+      else if p.coeff i == -1 then `(-$power)
+      else `($c * $power)
+    out ← match out with
+      | none => pure (some mon)
+      | some old => do pure (some (← `($old + $mon)))
+  return out.getD (← ratTerm 0)
+
+private def coeffRatFunAtTerm (r : CoeffRatFun) (x : Term) : TacticM Term := do
+  if r.den == QPoly.const 1 then return ← qpolyAtIndexTerm r.num x
+  let scale := (r.num.coeffs ++ r.den.coeffs).foldl
+    (fun acc c => Nat.lcm acc c.den) 1
+  let s := QPoly.const (scale : Rat)
+  let num ← qpolyAtIndexTerm (s * r.num) x
+  `($num / $(← qpolyAtIndexTerm (s * r.den) x))
+
+/-- Replace a recurrence coefficient by an exactly normalized rational-function polynomial.
+Returns `none` when the coefficient lies outside the supported expression grammar. -/
+def normalizedCoeffTerm? (c : Expr) (shift : Nat) : TacticM (Option Term) := do
+  lambdaTelescope c fun xs body => do
+    let #[n] := xs | return none
+    let some cs ← coeffRatPolynomial? n body | return none
+    let q := mkIdent `rr_q
+    let x : Term ← if shift == 0 then pure q else `($q + $(rowNumLit shift))
+    let mut out : Option Term := none
+    for i in [0:cs.size] do
+      if cs[i]!.num.isZero then continue
+      let a ← coeffRatFunAtTerm cs[i]! x
+      let mon ← if i == 0 then `((Polynomial.C $a))
+        else if i == 1 then `((Polynomial.C $a) * Polynomial.X)
+        else `((Polynomial.C $a) * Polynomial.X ^ $(rowNumLit i))
+      out ← match out with
+        | none => pure (some mon)
+        | some old => do pure (some (← `($old + $mon)))
+    let z : Term := ⟨Syntax.mkNumLit "0"⟩
+    let p := out.getD z
+    return some (← `(fun ($q : ℕ) => $p))
+
 /-! ### Rational helpers -/
 
 /-- A basis of the nullspace of the matrix with the given rows (Gauss–Jordan over `ℚ`). -/
@@ -228,7 +375,7 @@ private def geomCandidates (tops : Array Rat) : List Rat :=
 consecutive terms.  The fit must be unique, with integer coefficients (scaled), and `den` must
 not vanish at the sampled `i`. -/
 private def fitHyper? (tops : Array Rat) : Option TopForm := Id.run do
-  for (u, v) in [(1, 0), (0, 1), (1, 1), (2, 1), (1, 2), (2, 2)] do
+  for (u, v) in [(1, 0), (0, 1), (2, 0), (1, 1), (2, 1), (1, 2), (2, 2)] do
     let eqs := (Array.range (tops.size - 1)).map fun n =>
       let rn := tops[n + 1]! / tops[n]!
       (Array.range (u + 1)).map (fun i => ((n : Rat)) ^ i) ++
@@ -429,6 +576,35 @@ def coneForms? (mults : Array (Array Rat)) (tops : Array Rat) :
   if mults.isEmpty then return none
   let k := mults[0]!.size
   if k < 2 || tops.size < k || mults.any (fun row => row.size != k) then return none
+  let base := (Array.range k).map fun i => tops[i]!
+  let candidates := ratioCandidates.toArray
+  if k ≤ 4 then
+    for code in [0:candidates.size ^ (k - 1)] do
+      let mut q := code
+      let mut forms : Array (Array Rat) :=
+        #[(Array.range k).map fun i => if i = 0 then 1 else 0]
+      for j in [1:k] do
+        let r := candidates[q % candidates.size]!
+        q := q / candidates.size
+        forms := forms.push <| (Array.range k).map fun i =>
+          if i + 1 = j then -r else if i = j then 1 else 0
+      if forms.all (fun form =>
+          (List.range k).foldl (fun acc i => acc + form[i]! * base[i]!) 0 > 0) &&
+          coneStepHolds mults forms then
+        return some forms
+  for r in ratioCandidates do
+    let first := QPoly.X - QPoly.const r
+    let polys := (List.range (k - 2)).foldl
+      (fun ps _ => ps.push (QPoly.X * ps.back!)) #[QPoly.const 1, first]
+    let forms := polys.map fun p => (Array.range k).map p.coeff
+    if forms.all (fun form =>
+        (List.range k).foldl (fun acc i => acc + form[i]! * base[i]!) 0 > 0) &&
+        coneStepHolds mults forms then
+      return some forms
+  let coordinates : Array (Array Rat) := (Array.range k).map fun i =>
+    (Array.range k).map fun j => if i = j then 1 else 0
+  if base.all (0 < ·) && coneStepHolds mults coordinates then
+    return some coordinates
   let char := QPoly.norm <| (Array.range (k + 1)).map fun j =>
     if j = k then 1 else -((mults[0]!)[j]!)
   let roots := sortRats (char.rationalRoots.filter (0 < ·))
@@ -438,7 +614,6 @@ def coneForms? (mults : Array (Array Rat)) (tops : Array Rat) :
   let polys := (List.range (k - polys₀.size)).foldl
     (fun ps _ => ps.push (QPoly.X * ps.back!)) polys₀
   let forms := polys.map fun p => (Array.range k).map p.coeff
-  let base := (Array.range k).map fun i => tops[i]!
   unless forms.all (fun form =>
       (List.range k).foldl (fun acc i => acc + form[i]! * base[i]!) 0 > 0) do
     return none

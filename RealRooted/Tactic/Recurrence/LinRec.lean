@@ -66,12 +66,13 @@ def linRecRegimes (pr : LinRecProbe) (kind : String) : List Regime := Id.run do
   if pr.law.p > 1 then
     if let some fs := pr.residues then
       if !pos || pr.tops.all (· > 0) then out := out ++ [.closedRes fs]
-    return out
-  let k := pr.mults[0]!.size
-  if let some ρ := ratioCandidates.find? fun ρ =>
-      pr.tops[0]! > 0 && (List.range (k - 1)).all (fun j => ρ * pr.tops[j]! ≤ pr.tops[j + 1]!) &&
-        pr.mults.all (ratioStepHolds ρ) then
-    out := out ++ [.ratio ρ]
+  else
+    let k := pr.mults[0]!.size
+    if let some ρ := ratioCandidates.find? fun ρ =>
+        pr.tops[0]! > 0 &&
+          (List.range (k - 1)).all (fun j => ρ * pr.tops[j]! ≤ pr.tops[j + 1]!) &&
+          pr.mults.all (ratioStepHolds ρ) then
+      out := out ++ [.ratio ρ]
   if let some forms := coneForms? pr.mults pr.tops then
     out := out ++ [.cone forms]
   return out
@@ -143,6 +144,29 @@ elab "rr_linrec_field" : tactic => withMainContext do
     if (← instantiateMVars (← getMainTarget)) == before then break
   evalTactic (← `(tactic| first | ring1 | (ring_nf; done)))
 
+/-- `rr_linrec_cone_field` clears positive rational-function denominators in a cone
+inequality and leaves the polynomial inequality to `nlinarith`. -/
+elab "rr_linrec_cone_field" : tactic => withMainContext do
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail then continue
+    if (← instantiateMVars decl.type).isConstOf ``Nat then
+      let m ← Term.exprToSyntax decl.toExpr
+      evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
+  for _ in [0:3] do
+    let dens ← withMainContext do
+      return linRecDenominators (← instantiateMVars (← getMainTarget))
+    if dens.isEmpty then break
+    withMainContext do
+      let mut seen : Array Expr := #[]
+      for x in dens do
+        if seen.contains x then continue
+        seen := seen.push x
+        let xs ← Term.exprToSyntax x
+        evalTactic (← `(tactic| have : 0 < $xs := by first | positivity | nlinarith | fail))
+    evalTactic (← `(tactic| field_simp))
+    if (← getGoals).isEmpty then return
+  evalTactic (← `(tactic| nlinarith))
+
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have been
 computed. -/
 private def linRecFinishers (kv : Term) : TacticM (List (TSyntax `tactic)) := do
@@ -153,6 +177,8 @@ private def linRecFinishers (kv : Term) : TacticM (List (TSyntax `tactic)) := do
     ← `(tactic| (refine ne_of_lt ?_; nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
     ← `(tactic| nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)]),
     ← `(tactic| (intro h; nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
+    ← `(tactic| (rw [div_nonneg_iff]; right; constructor <;>
+      nlinarith [(Nat.cast_nonneg $kv : (0 : ℝ) ≤ $kv)])),
     ← `(tactic| (ring_nf; positivity)),
     ← `(tactic| rr_row_field)]
 
@@ -165,7 +191,8 @@ private def linRecNatNorm (p : Nat) : TacticM (TSyntax `tactic) :=
         Nat.mul_div_cancel_left _ (show 0 < $(rowNumLit p) by norm_num), Nat.mul_add_mod,
         Nat.mul_mod_right, Nat.reduceAdd, Nat.reduceMul, Nat.reduceDiv, Nat.reduceMod,
         Nat.reduceSub, Nat.add_zero, Nat.zero_add, Nat.sub_self, Nat.add_sub_add_left,
-        Nat.add_sub_cancel_left, ← Nat.mul_sub, Nat.reduceEqDiff, ↓reduceIte, ite_true, ite_false]
+        Nat.add_sub_cancel_left, ← Nat.mul_sub, Nat.reduceEqDiff, ↓reduceIte, ite_true,
+        ite_false]
     | skip))
 
 /-- Unfold `lagMult` and `topCoeff` (or `lagMultD` and `topCoeffD`, for a periodic degree law
@@ -181,9 +208,10 @@ private def linRecCoeffSimp (p : Nat := 1) : TacticM (TSyntax `tactic) := do
       List.filter_nil, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
       Finset.prod_range_succ, Finset.prod_range_zero, Finset.sum_range_succ,
       Finset.sum_range_zero, decide_eq_true_eq, Nat.reduceEqDiff, Nat.reduceMul, Nat.reduceSub,
-      Nat.reduceAdd, ite_true, ite_false, Nat.cast_ofNat, Nat.cast_zero, sub_zero, one_mul,
-      mul_one, zero_add, add_zero] <;>
+      Nat.reduceAdd, Nat.add_sub_cancel_left, ite_true, ite_false, Nat.cast_ofNat,
+      Nat.cast_zero, sub_zero, one_mul, mul_one, zero_add, add_zero] <;>
     $norm <;>
+    (first | simp only [Nat.add_sub_cancel_left] | skip) <;>
     -- the products of closed forms can be unfolded once the arguments are `q + numeral`
     (first | simp only [Finset.prod_range_succ, Finset.prod_range_zero, one_mul] | skip) <;>
     (first
@@ -198,6 +226,7 @@ private def linRecCoeffSimp (p : Nat := 1) : TacticM (TSyntax `tactic) := do
 /-- The (unhygienic) names of the variables `n = p * k + r` of a residue decomposition. -/
 private def linRecN : Ident := mkIdent `rr_n
 private def linRecK : Ident := mkIdent `rr_k
+private def linRecX : Ident := mkIdent `rr_x
 
 /-- The residue decomposition `n = p * k + r` of the variable `n` of the goal, followed by
 `interval_cases r`: one goal for each residue `r < p`. -/
@@ -217,6 +246,7 @@ private def linRecNumerals : TacticM Unit := do
 
 /-- The summand coefficient `fun n => A n` shifted by `s`: `fun n => A (n + s)`. -/
 private def linRecShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
+  if let some normalized ← normalizedCoeffTerm? c s then return normalized
   if s == 0 then return ← certTerm c
   let shifted ← lambdaTelescope c fun xs body => do
     let ns ← mkAppM ``HAdd.hAdd #[xs[0]!, mkNatLit s]
@@ -289,7 +319,8 @@ private def linRecSideLagDegree (p m : Nat) (hlag hA : MVarId) : TacticM Unit :=
       if p > 1 then
         -- the bound `D (n + k) - D (n + j) + i` depends on `n` modulo `p`
         evalTactic (← `(tactic| intro $linRecN:ident))
-        evalTactic (← `(tactic| ($(← linRecResidue p):tactic <;> $(← linRecNatNorm p):tactic)))
+        evalTactic (← `(tactic|
+          ($(← linRecResidue p):tactic <;> $(← linRecNatNorm p):tactic)))
         for g' in ← getGoals do
           setGoals [g']
           rowSideGoal none
@@ -374,10 +405,43 @@ private def linRecSidesRatio (P : Ident) (rows : Array QPoly) (k m : Nat) (gs : 
     evalTactic (← `(tactic| ($coeff:tactic <;> (first | norm_num | skip) <;>
       first | linarith | nlinarith [$hints,*] | rr_row_field)))
 
+/-- Expand one cone form after the scalar companion step, without unfolding the whole
+recurrence inside `simp`. -/
+private def coneStepTerm (k : Nat) (form : Array Rat) (Dfun terms : Term) : TacticM Term := do
+  let n : Term := ⟨linRecN.raw⟩
+  let xId := linRecX
+  let x : Term := ⟨xId.raw⟩
+  let mut out : Option Term := none
+  for i in [0:k] do
+    if form[i]! == 0 then continue
+    let c ← ratTerm form[i]!
+    let yi ← if i + 1 < k then
+        `(($x) ($(rowNumLit (i + 1)) : Fin $(rowNumLit k)))
+      else do
+        `(∑ j : Fin $(rowNumLit k),
+          RealRooted.LinRec.lagMultD $(rowNumLit k) $Dfun $terms $n j * ($x) j)
+    let summand ← `(($c : ℝ) • $yi)
+    out ← match out with
+      | none => pure (some summand)
+      | some old => do pure (some (← `($old + $summand)))
+  let zero : Term := ⟨Syntax.mkNumLit "0"⟩
+  return out.getD zero
+
+private lemma hyperParityProd_relation (q : ℕ) :
+    (∏ i ∈ Finset.range q, (2 + 3 * (i : ℝ) + (i : ℝ) ^ 2)) =
+      ((q : ℝ) + 1) * ∏ i ∈ Finset.range q, (1 + 2 * (i : ℝ) + (i : ℝ) ^ 2) := by
+  induction q with
+  | zero => norm_num
+  | succ q ih =>
+      simp only [Finset.prod_range_succ]
+      rw [ih]
+      push_cast
+      ring
+
 /-- Side goals for the invariant-cone regime: the four degree-recurrence hypotheses,
 positivity of the initial scalar window, and preservation by the companion step. -/
 private def linRecSidesCone (P : Ident) (rows : Array QPoly) (p k m : Nat)
-    (gs : List MVarId) : TacticM Unit := do
+    (forms : Array (Array Rat)) (Dfun terms : Term) (gs : List MVarId) : TacticM Unit := do
   let [hconeBase, hconeStep, hlag, hD, hA, hbase] := gs
     | throwError "rr_linrec: unexpected cone side goals"
   linRecSideLagDegree p m hlag hA
@@ -398,28 +462,48 @@ private def linRecSidesCone (P : Ident) (rows : Array QPoly) (p k m : Nat)
           RealRooted.ScalarRec.window, RealRooted.ScalarRec.coordinate])))
       if !(← getGoals).isEmpty then linRecRowGoal P rows
     setGoals []
+  let coeff ← linRecCoeffSimp p
   linRecRun "hconeStep" hconeStep do
-    evalTactic (← `(tactic| intro n x hx i))
+    evalTactic (← `(tactic| intro $linRecN:ident $linRecX:ident hx i))
     let mut hs : Array Ident := #[]
     for i in [0:k] do
       let hi := mkIdent (.mkSimple s!"rr_hcone{i}")
       evalTactic (← `(tactic| have $hi:ident := hx ($(rowNumLit i) : Fin $(rowNumLit k))))
       hs := hs.push hi
     evalTactic (← `(tactic| fin_cases i))
-    for g in ← getGoals do
+    let branchGoals ← getGoals
+    for hidx in [0:branchGoals.length] do
+      let g := branchGoals[hidx]!
       setGoals [g]
       let hterms : Array Term ← hs.mapM fun h => `($h)
+      let mut hproducts : Array Ident := #[]
+      for h in hs do
+        let hn := mkIdent (.mkSimple s!"rr_hcone_n_{h.getId}")
+        let hn2 := mkIdent (.mkSimple s!"rr_hcone_n2_{h.getId}")
+        evalTactic (← `(tactic|
+          have $hn:ident := mul_nonneg (Nat.cast_nonneg $linRecN) (le_of_lt $h)))
+        evalTactic (← `(tactic|
+          have $hn2:ident := mul_nonneg (sq_nonneg ($linRecN : ℝ)) (le_of_lt $h)))
+        hproducts := hproducts.push hn |>.push hn2
+      let hproductTerms : Array Term ← hproducts.mapM fun h => `($h)
       evalTactic (← `(tactic|
         norm_num [RealRooted.ScalarRec.FormsPos,
           RealRooted.ScalarRec.coordinate, RealRooted.ScalarRec.companionStep,
-          Finset.sum_fin_eq_sum_range, Finset.sum_range_succ] at $hterms* ⊢))
+          Finset.sum_fin_eq_sum_range, Finset.sum_range_succ]
+          at $hterms* $hproductTerms*))
+      let step ← coneStepTerm k forms[hidx]! Dfun terms
+      evalTactic (← `(tactic| change 0 < $step))
+      evalTactic (← `(tactic|
+        simp only [smul_eq_mul, one_mul, Finset.sum_fin_eq_sum_range,
+          Finset.sum_range_succ, Finset.sum_range_zero] at ⊢))
       evalTactic (← `(tactic|
         first
           | linarith [$hterms,*]
-          | (norm_num [RealRooted.LinRec.lagMultD, RealRooted.LinRec.topCoeffD,
-                RealRooted.LinRec.cast_descFactorial_eq_prod, Finset.sum_range_succ] at ⊢
-             push_cast
-             first | linarith [$hterms,*] | nlinarith [$hterms,*] | rr_row_field)))
+          | ((first | $coeff:tactic | skip) <;>
+              (first | simp only [Nat.add_sub_cancel_left] at ⊢ | skip) <;>
+              (first | $coeff:tactic | skip) <;>
+              first | linarith [$hterms,*] | nlinarith [$hterms,*] |
+                rr_linrec_cone_field)))
     setGoals []
 
 /-- The side goal `hD : ∀ n j, j < k → D (n + j) ≤ D (n + k)` of a periodic degree law. -/
@@ -470,9 +554,19 @@ private def linRecSidesClosedP (P : Ident) (rows : Array QPoly) (p m : Nat) (gs 
     linRecRows P rows
   let coeff ← linRecCoeffSimp p
   let res ← linRecResidue p
-  linRecRun "hc" hc
-    (evalTactic (← `(tactic| (intro $linRecN:ident; $res:tactic <;> $coeff:tactic <;>
-      first | ring1 | rr_linrec_field))))
+  linRecRun "hc" hc do
+    evalTactic (← `(tactic| intro $linRecN:ident))
+    evalTactic res
+    for g in ← getGoals do
+      setGoals [g]
+      evalTactic coeff
+      evalTactic (← `(tactic|
+        (norm_num only [div_one, mul_zero, zero_add, add_zero, zero_mul, one_mul, mul_one];
+          (first | rw [hyperParityProd_relation] | skip);
+          ring_nf)))
+      if let some remaining := (← getGoals).head? then
+        throwError "closed-form scalar recurrence remains: {← remaining.getType}"
+    setGoals []
   let posR ← `(tactic|
     first | (split_ifs <;> first | positivity | rr_row_field) | positivity | rr_row_field)
   linRecRun "hc0" hc0 (evalTactic (← `(tactic| (intro k; beta_reduce; $posR:tactic))))
@@ -493,17 +587,35 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     `(tactic| rr_row_side))
   let Q ← shiftedSeq P s
   let n := mkIdent `n
+  let nv : Term := ⟨n.raw⟩
   let mut ts : Array Term := #[]
+  let mut summands : Array Term := #[]
   for (j, i, c) in L.terms do
-    ts := ts.push (← `(($(rowNumLit j), $(rowNumLit i), $(← linRecShiftCoeff c s))))
+    let coeff ← linRecShiftCoeff c s
+    ts := ts.push (← `(($(rowNumLit j), $(rowNumLit i), $coeff)))
+    let row ← if j == 0 then `(($Q) ($nv)) else `(($Q) ($nv + $(rowNumLit j)))
+    let deriv ← match i with
+      | 0 => pure row
+      | 1 => `(($row).derivative)
+      | _ => `((Polynomial.derivative ^[$(rowNumLit i)]) $row)
+    summands := summands.push (← `(($coeff) ($nv) * $deriv))
   let terms ← `([$ts,*])
+  let mut rhs : Term := ⟨Syntax.mkNumLit "0"⟩
+  for summand in summands.reverse do
+    rhs ← `($summand + $rhs)
   let eqnApp ← if s == 0 then `($(mkIdent L.eqn) $n)
     else `($(mkIdent L.eqn) ($n + $(rowNumLit s)))
   let hrec ← `(fun $n:ident => ($eqnApp).trans (by
-    simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
-      Function.iterate_zero, Function.iterate_one, Function.iterate_succ_apply', id_eq,
-      add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
-    ring))
+    change _ = $rhs
+    apply Polynomial.funext
+    intro x
+    simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
+      Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_neg,
+      Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+      Polynomial.eval_ofNat, Polynomial.eval_one, Polynomial.eval_zero,
+      Polynomial.eval_natCast]
+    push_cast
+    rr_linrec_field))
   let kq := rowNumLit k
   let dq := rowNumLit d
   let Dq := rowNumLit D₀
@@ -616,7 +728,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     else linRecSidesClosed P rows L.terms.size gs.tail
   | .closedRes _ => linRecSidesClosedP P rows law.p L.terms.size gs.tail
   | .ratio _ => linRecSidesRatio P rows k L.terms.size gs.tail
-  | .cone _ => linRecSidesCone P rows law.p k L.terms.size gs.tail
+  | .cone forms => linRecSidesCone P rows law.p k L.terms.size forms Dper terms gs.tail
   | .none => pure ()
   setGoals rest
 

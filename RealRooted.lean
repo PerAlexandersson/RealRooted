@@ -1863,3 +1863,5 @@ import RealRooted.EdreiThoma.OddPart
 import RealRooted.EdreiThoma.Reduction
 import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
 import RealRooted.Applications.OEIS.PathPowerRows
+import RealRooted.Tactic.Examples.RowDegreeRest
+import RealRooted.Applications.OEIS.A271697
