@@ -621,8 +621,8 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := linear
 example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitFactors)
 
 /--
-error: rr_row_splits: unknown route foo; the routes are closedForm, pathPower, lowerOrder,
-subseq, linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow,
+error: rr_row_splits: unknown route foo; the routes are derivativeXMul, closedForm, pathPower,
+lowerOrder, subseq, linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow,
 halfGrowth, degreePattern, reversed, parityProduct, lagFeedback, fTransform
 -/
 #guard_msgs (whitespace := normalized) in
