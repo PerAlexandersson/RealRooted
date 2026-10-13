@@ -7,6 +7,7 @@ import RealRooted.MultivariateStability.Inversion
 import RealRooted.MultivariateStability.JumpSystem
 import RealRooted.MultivariateStability.Lorentzian
 import RealRooted.MultivariateStability.MixedCharacteristic
+import RealRooted.MultivariateStability.ExpectedCharpoly
 import RealRooted.MultivariateStability.MSSBound
 import RealRooted.MultivariateStability.NegativeCorrelation
 import RealRooted.MultivariateStability.RayleighConverse
@@ -20,9 +21,9 @@ import RealRooted.SpanningTreeStability
 version = 1
 section = "theorems"
 slug = "real-stability"
-formalized = "2026-10-06"
-authors = ["Brändén", "Borcea", "Gårding"]
-years = [1959, 2007, 2008]
+formalized = "2026-10-12"
+authors = ["Brändén", "Borcea", "Gårding", "Marcus", "Spielman", "Srivastava"]
+years = [1959, 2007, 2008, 2015]
 
 [[definitions]]
 name = "RealRooted.MvUpperHalfPlaneStable"
@@ -157,6 +158,12 @@ name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_optimized"
 module = "RealRooted.MultivariateStability.MSSBound"
 label = "Marcus–Spielman–Srivastava: the roots of μ[A] are at most (1 + √ε)²"
 headline = true
+
+[[theorems]]
+name = "RealRooted.MixedCharacteristic.expectedCharpoly_eq_mixedCharacteristic"
+module = "RealRooted.MultivariateStability.ExpectedCharpoly"
+label = "MSS: expected characteristic polynomials are mixed characteristic"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -236,6 +243,12 @@ is at most $(1 + \sqrt{\varepsilon})^2$. This is the root bound behind the solut
 Kadison–Singer problem. The formal proof follows the barrier argument, with the
 Helton–Vinnikov step replaced by an elementary Pick-function lemma.
 
+Theorem 4.1 of Marcus–Spielman–Srivastava identifies the expected characteristic
+polynomial of a sum of independent random rank-one matrices with the mixed
+characteristic polynomial of their second-moment matrices. This is the bridge
+from random vector sums to the deterministic polynomial controlled by the MSS
+barrier argument.
+
 Real stability can be tested on lines: $P$ is real stable if and only if, for
 all $a \in \mathbb{R}^n$ and $b \in \mathbb{R}_{>0}^n$, the univariate restriction
 $t \mapsto P(a + tb)$ is nonzero and real-rooted.
@@ -281,9 +294,13 @@ stable polynomials to mixed determinants: Johnson's conjectures,
 unimodality, and symmetrized Fischer products,” *Duke Math. J.* 143 (2008),
 205–223, Proposition 2.4; L. Gårding, “An inequality for hyperbolic polynomials,”
 *J. Math. Mech.* 8 (1959), 957–965. See the
-[stable polynomials](https://www.symmetricfunctions.com/stablePolynomials.htm#stablePolynomialDefinition)
+[MSS paper](https://arxiv.org/abs/1306.3969) for the expected characteristic
+polynomial identity and the mixed-characteristic root bound. See also the
+[stable polynomials](
+https://www.symmetricfunctions.com/stablePolynomials.htm#stablePolynomialDefinition)
 and the
-[Rayleigh property](https://www.symmetricfunctions.com/stablePolynomials.htm#stronglyRayleighProperty)
+[Rayleigh property](
+https://www.symmetricfunctions.com/stablePolynomials.htm#stronglyRayleighProperty)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
