@@ -108,6 +108,10 @@ jobs:
         with:
           path: .lake
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+      - name: Check Mathlib shim registry
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_check_mathlib_shims.py
+          python3 scripts/check_mathlib_shims.py --check-registry --strict
       - name: Audit curated declarations
         run: |
           python3 scripts/audit_challenge_catalog.py \
