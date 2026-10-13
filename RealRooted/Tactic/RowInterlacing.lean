@@ -7,6 +7,7 @@ import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.PathPower
+import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.DerivativeRecurrence.Nonnegative
 
 /-!
@@ -467,8 +468,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
-  [`closedForm, `pathPower, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep,
-    `shiftedProduct,
+  [`derivativeXMul, `closedForm, `pathPower, `lowerOrder, `subseq, `linearFactors,
+    `splitFactors, `twoStep, `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
 
@@ -509,6 +510,11 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
       throwError "rr_row_splits: unknown route {v}; the routes are \
         {", ".intercalate (splitsRoutes.map toString)}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
+  if hints.via == some `derivativeXMul then
+    derivativeXMulSplits
+    return { via := some `derivativeXMul }
+  if hints.via.isNone && (← rowSucceeds derivativeXMulSplits) then
+    return { via := some `derivativeXMul }
   match ← topSplitsProbe hints with
   | .veto why => throwError "rr_row_splits: no strategy (probe: {why})"
   | .closedForm plan =>

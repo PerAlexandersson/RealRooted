@@ -542,6 +542,7 @@ import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.Derivative
 import RealRooted.Derivative.Algebra
 import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.XMulSequence
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.LinearCombination
 import RealRooted.Derivative.RootCounting
@@ -652,6 +653,7 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.PoweredEulerian
 import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.ChainPolynomial
@@ -1553,6 +1555,7 @@ import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
+import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.LowerOrder

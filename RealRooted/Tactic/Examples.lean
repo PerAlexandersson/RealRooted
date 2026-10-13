@@ -74,6 +74,7 @@ import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
 import RealRooted.Tactic.Examples.OEIS.CompatCommon
+import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag
 import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
 import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
