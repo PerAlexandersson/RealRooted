@@ -44,7 +44,7 @@ private lemma interlaces_reverse_map_inv {ss rs : List ℝ}
     hi.map_of_mem Inv.inv fun a b ha hb hab =>
       (inv_le_inv_of_neg (hneg b hb) (hneg a ha)).2 hab
   have hlen' : (ss.map Inv.inv).length + 1 = (rs.map Inv.inv).length := by simpa using hlen
-  have hir := (List.interleaves_reverse_reverse_of_length_add_one_eq_length
+  have hir := (List.interleaves_reverse_reverse_of_length_eq_length_add_one
     (r := fun x y : ℝ => x ≤ y) hlen').2 him
   exact listInterlaces_of_interleaves_of_length (by simpa using hlen) hir
 

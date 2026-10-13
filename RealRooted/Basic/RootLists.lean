@@ -66,20 +66,19 @@ lemma listInterlaces_iff_interleaves_of_length :
       have htail : ss.length + 1 = (r₂ :: rs).length := by simpa using h
       constructor
       · rintro ⟨hr₁s, hsr₂, htail_old⟩
-        exact List.Interleaves.cons_symm
-          (List.Interleaves.cons_symm
-            ((listInterlaces_iff_interleaves_of_length htail).1 htail_old) hsr₂)
-          hr₁s
+        exact List.Interleaves.cons_symm hr₁s
+          (List.Interleaves.cons_symm hsr₂
+            ((listInterlaces_iff_interleaves_of_length htail).1 htail_old))
       · intro hnew
         rw [List.interleaves_iff] at hnew
-        rcases hnew with hbad | hbad | ⟨l₁, l₂, b, hmid, a, hab, hleft, hright⟩
+        rcases hnew with hbad | hbad | ⟨a, b, hab, l₁, l₂, hmid, hleft, hright⟩
         · lia
         · lia
         · simp only [List.cons.injEq] at hleft hright
           rcases hleft with ⟨rfl, rfl⟩
           rcases hright with ⟨rfl, rfl⟩
           rw [List.interleaves_iff] at hmid
-          rcases hmid with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr₂, hleft, hright⟩
+          rcases hmid with hbad | hbad | ⟨a, b, hsr₂, l₁, l₂, htail_new, hleft, hright⟩
           · lia
           · lia
           · simp only [List.cons.injEq] at hleft hright
@@ -97,11 +96,11 @@ lemma listAlternates_iff_interleaves_of_length :
       have htail : ss.length + 1 = (r :: rs).length := by simpa using h
       constructor
       · rintro ⟨hsr, htail_old⟩
-        exact List.Interleaves.cons_symm
-          ((listInterlaces_iff_interleaves_of_length htail).1 htail_old) hsr
+        exact List.Interleaves.cons_symm hsr
+          ((listInterlaces_iff_interleaves_of_length htail).1 htail_old)
       · intro hnew
         rw [List.interleaves_iff] at hnew
-        rcases hnew with hbad | hbad | ⟨l₁, l₂, b, htail_new, a, hsr, hleft, hright⟩
+        rcases hnew with hbad | hbad | ⟨a, b, hsr, l₁, l₂, htail_new, hleft, hright⟩
         · lia
         · lia
         · simp only [List.cons.injEq] at hleft hright

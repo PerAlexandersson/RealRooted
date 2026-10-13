@@ -657,7 +657,7 @@ lemma strictInterl_of_wronskian_pos_succ {n : ℕ}
       Polynomial.roots_sort_eq_ofFn hp_ne hp_splits hp_deg hp_nodup t ht_mono ht_surj]
     apply listInterlaces_of_interleaves_of_length h_len_st
     apply List.Interleaves.mono (r := fun a b : ℝ => a < b) (fun a b h => h.le)
-    rw [← List.interleaves_reverse_reverse_of_length_add_one_eq_length
+    rw [← List.interleaves_reverse_reverse_of_length_eq_length_add_one
       (r := fun a b : ℝ => a > b) h_len_st]
     apply List.Interleaves.ofFn_succ s t
     · intro i j hij

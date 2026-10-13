@@ -36,7 +36,7 @@ private lemma interlaces_reverse_map_neg {ss rs : List ℝ}
     simpa using hlen
   change List.Interleaves (Function.swap (fun x y : ℝ => x ≤ y))
       (ss.map Neg.neg) (rs.map Neg.neg) at him
-  have hir := (List.interleaves_reverse_reverse_of_length_add_one_eq_length
+  have hir := (List.interleaves_reverse_reverse_of_length_eq_length_add_one
     (r := fun x y : ℝ => x ≤ y) hlen').2 him
   have hlen'' : ((ss.map Neg.neg).reverse).length + 1 =
       ((rs.map Neg.neg).reverse).length := by
