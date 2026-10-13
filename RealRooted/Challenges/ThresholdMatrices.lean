@@ -60,9 +60,11 @@ Eulerian polynomials are real-rooted, confirming a conjecture of Ma, Ma and
 Yeh.
 
 Here the binomial Eulerian polynomials are defined by the Haglund–Zhang
-recursion on refined vectors. Their identification with the row polynomials
+recursion on refined vectors, with marker $1 + x$ at threshold zero and $1$ at
+every later threshold. Prepending the row $1$ gives the row polynomials
 $\sum_k T(n,k)\,x^k$ of [OEIS A046802](https://oeis.org/A046802), the
-$h$-polynomials of the stellohedra, is not formalized.
+$h$-polynomials of the stellohedra; the first four rows are checked in Lean,
+but the identification with the closed formula for all $n$ is not formalized.
 
 **Theorem** (Gustafsson–Solus, Lemma 3.4). Row-threshold matrices, in which
 some rows drop their pivot entry, preserve interlacing sequences when the
