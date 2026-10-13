@@ -1750,6 +1750,9 @@ import RealRooted.CombinatorialExamples.PathPowerGap
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
 import RealRooted.BorceaBranden.Transcendental.ComplexClassification
 import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+import RealRooted.BorceaBranden.RealFiniteNecessity
+import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
+import RealRooted.BorceaBranden.RealHKOConverse
 import RealRooted.GammaTransform.TwoStep
 
 /-!
