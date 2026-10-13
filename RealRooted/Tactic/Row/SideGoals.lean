@@ -32,7 +32,7 @@ syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : ta
 
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
-number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
+number of rows split off; the routes are `closedForm`, `pathPower`, `lowerOrder`, `subseq`,
 `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
 interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
 derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,

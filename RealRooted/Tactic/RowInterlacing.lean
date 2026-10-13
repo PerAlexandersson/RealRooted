@@ -6,6 +6,7 @@ import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.FTransform
+import RealRooted.Tactic.Row.PathPower
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -24,11 +25,13 @@ route that the probe rules out fails without elaborating anything.
 2. Order three, factoring through a three-term recurrence: the reduction certified by
    `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
    two three-term sequences: `eq_parityProduct_of_rec3` (`Row.ParityProduct`).
-3. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
+3. Direct or reflected path-power subsequences, selected by an exact fit of rows zero through
+   eight (`Row.PathPower`).
+4. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
    `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
    or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
    remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
-4. The interlacing core (`Row.Core`):
+5. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
    * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
@@ -40,7 +43,7 @@ route that the probe rules out fails without elaborating anything.
      for `b n < 0` beyond the window), then a moving lower window
      (`derivRec_interlaces_of_roots_mem_Icc_mono_div`) and a moving upper bound split at a
      common root of the `A n` (`derivRec_interlaces_of_roots_le_mono_div`).
-5. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+6. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
    sequence, the link `eq_reflect_of_derivRec₂` / `eq_reflect_of_threeTerm`, and the transfer
    `interlaces_of_eq_reflect` (`Row.Reverse`).
@@ -54,7 +57,8 @@ only the successful attempt, and the certificate.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `lowerOrder`, `subseq`
+`closedForm` (rows `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`,
+`subseq`
 (residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
 `halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
@@ -101,6 +105,8 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
     return (#[], ← derivLagCore false hints)
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
+    if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+      if ← rowSucceeds (pathPowerGoal false) then return (#[], hints)
     if ← rowSucceeds (lowerOrderInterlaces hints) then return (#[], hints)
     -- parity products of two three-term sequences (`Row.ParityProduct`)
     if ← rowSucceeds (parityProductGoal false) then return (#[], hints)
@@ -270,7 +276,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
-  [`closedForm, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
+  [`closedForm, `pathPower, `lowerOrder, `subseq, `linearFactors, `splitFactors, `twoStep,
+    `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
 
@@ -321,8 +328,13 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
     return { via := some `closedForm }
   if hints.via.isNone then
     if ← rowSucceeds rowClosedFormSplits then return { via := some `closedForm }
+  if hints.via == some `pathPower then
+    pathPowerGoal true
+    return { via := some `pathPower }
   -- shapes outside `RecShape` whose lags share a period: residue subsequences
   if (← rowAttempt (rowRecSetup "rr_row_splits")) matches .error _ then
+    if hints.via.isNone then
+      if ← rowSucceeds (pathPowerGoal true) then return { via := some `pathPower }
     -- order-three recurrences through a three-term recurrence
     let viaLower : TacticM Unit := do
       let tgt ← instantiateMVars (← getMainTarget)
