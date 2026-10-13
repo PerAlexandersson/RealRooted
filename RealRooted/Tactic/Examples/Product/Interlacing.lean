@@ -46,12 +46,17 @@ theorem A178820_natDegree (n : ℕ) : (A178820 n).natDegree = n := by rr_product
 theorem A178820_interlaces (n : ℕ) : Interlaces (A178820 n) (A178820 (n + 1)) := by
   rr_product_interlaces
 
-def A269947 : ℕ → ℝ[X]
+/-- A product fixture with a shifted cubic scalar factor. -/
+def shiftedCubicProductRows : ℕ → ℝ[X]
   | 0 => 1
-  | n + 1 => (C ((n + 2 : ℝ) ^ 3 + 16) + X) * A269947 n
+  | n + 1 => (C ((n + 2 : ℝ) ^ 3 + 16) + X) * shiftedCubicProductRows n
 
-theorem A269947_natDegree (n : ℕ) : (A269947 n).natDegree = n := by rr_product_natDegree
-theorem A269947_interlaces (n : ℕ) : Interlaces (A269947 n) (A269947 (n + 1)) := by
+theorem shiftedCubicProductRows_natDegree (n : ℕ) :
+    (shiftedCubicProductRows n).natDegree = n := by
+  rr_product_natDegree
+
+theorem shiftedCubicProductRows_interlaces (n : ℕ) :
+    Interlaces (shiftedCubicProductRows n) (shiftedCubicProductRows (n + 1)) := by
   rr_product_interlaces
 
 def A013612 : ℕ → ℝ[X]

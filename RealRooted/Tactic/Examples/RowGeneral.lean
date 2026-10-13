@@ -237,14 +237,14 @@ theorem A003982_natDegree (n : ℕ) :
     (A003982 n).natDegree = if n % 2 = 1 then 0 else n / 2 := by
   rr_row_natDegree
 
-/-- A constant factor: the rows alternate between `1` and `1 + X` (A266178). -/
-def A266178 : ℕ → ℝ[X]
+/-- A constant factor: the rows alternate between `1` and `1 + X`. -/
+def alternatingParityRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
-  | n + 2 => 1 * A266178 n
+  | n + 2 => 1 * alternatingParityRows n
 
-theorem A266178_natDegree (n : ℕ) :
-    (A266178 n).natDegree = if n % 2 = 1 then 1 else 0 := by
+theorem alternatingParityRows_natDegree (n : ℕ) :
+    (alternatingParityRows n).natDegree = if n % 2 = 1 then 1 else 0 := by
   rr_row_natDegree
 
 /-! ### Hinted calls of `rr_row_splits` -/
