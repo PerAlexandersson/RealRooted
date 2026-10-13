@@ -1722,6 +1722,8 @@ import RealRooted.EdreiThoma.Continuation
 import RealRooted.EdreiThoma.Converse
 import RealRooted.Applications.OEIS.A330798
 import RealRooted.DerivativeRecurrence.MultiLagCancel
+import RealRooted.Applications.OEIS.CubicParentRows
+import RealRooted.Graph.IndependencePolynomial.CubicParent
 
 /-!
 # RealRooted production umbrella
