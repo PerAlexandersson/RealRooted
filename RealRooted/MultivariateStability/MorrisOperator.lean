@@ -110,6 +110,133 @@ theorem IsSymmetric.morrisA {q : ℕ} {P : MvPolynomial (Fin q) R}
   rw [hP e]
   exact Equiv.sum_comp e fun i => squaredPDeriv i (pderiv i P)
 
+/-- A coordinate second-derivative summand acts diagonally on a monomial. -/
+theorem squaredPDeriv_pderiv_monomial {σ : Type*}
+    (i : σ) (d : σ →₀ ℕ) (r : R) :
+    X i ^ 2 * pderiv i (pderiv i (monomial d r)) =
+      (d i * (d i - 1)) • monomial d r := by
+  have heuler : X i * pderiv i (monomial d r) = d i • monomial d r :=
+    X_mul_pderiv_monomial
+  have heuler' : X i * pderiv i (monomial d r) =
+      (d i : MvPolynomial σ R) * monomial d r := by
+    simpa only [nsmul_eq_mul] using heuler
+  have heuler2 := congrArg (fun P => X i * pderiv i P) heuler
+  have hrhs : X i * pderiv i (d i • monomial d r) =
+      d i • (d i • monomial d r) := by
+    rw [map_nsmul]
+    simp only [nsmul_eq_mul]
+    rw [← mul_assoc, mul_comm (X i) (d i : MvPolynomial σ R),
+      mul_assoc, heuler']
+  have hid :
+      X i * pderiv i (X i * pderiv i (monomial d r)) =
+        X i * pderiv i (monomial d r) +
+          X i ^ 2 * pderiv i (pderiv i (monomial d r)) := by
+    rw [pderiv_mul, pderiv_X_self]
+    ring
+  rw [hid, heuler, hrhs] at heuler2
+  have hresult : X i ^ 2 * pderiv i (pderiv i (monomial d r)) =
+      d i • (d i • monomial d r) - d i • monomial d r := by
+    calc
+      X i ^ 2 * pderiv i (pderiv i (monomial d r)) =
+          (d i • monomial d r +
+            X i ^ 2 * pderiv i (pderiv i (monomial d r))) -
+            d i • monomial d r := by
+        ring
+      _ = d i • (d i • monomial d r) - d i • monomial d r := by
+        rw [heuler2]
+  rw [hresult]
+  cases hdi : d i with
+  | zero => simp
+  | succ n =>
+      simp only [Nat.succ_sub_one, nsmul_eq_mul]
+      push_cast
+      ring
+
+/-- The operator `A_q` acts diagonally on a monomial, with eigenvalue the sum
+of `d_i * (d_i - 1)` over its exponents. -/
+theorem morrisA_monomial {q : ℕ} (d : Fin q →₀ ℕ) (r : R) :
+    morrisA q (monomial d r) =
+      (∑ i, d i * (d i - 1)) • monomial d r := by
+  rw [morrisA_apply]
+  simp_rw [squaredPDeriv_pderiv_monomial]
+  change Finset.univ.sum (fun i =>
+      (d i * (d i - 1)) • monomial d r) =
+    Finset.univ.sum (fun i => d i * (d i - 1)) • monomial d r
+  simpa using Finset.sum_nsmul_assoc Finset.univ
+    (fun i => d i * (d i - 1)) (monomial d r)
+
+/-- A product of variables indexed by a multiset is the monomial whose
+exponent vector records the multiplicities in that multiset. -/
+theorem prod_map_X_eq_monomial_toFinsupp {σ : Type*} [DecidableEq σ]
+    (s : Multiset σ) :
+    (s.map (X : σ → MvPolynomial σ R)).prod =
+      monomial s.toFinsupp 1 := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih =>
+      rw [Multiset.map_cons, Multiset.prod_cons, ih]
+      rw [show Multiset.toFinsupp (a ::ₘ s) =
+          Finsupp.single a 1 + Multiset.toFinsupp s by
+        rw [← Multiset.toFinsupp_singleton, ← Multiset.toFinsupp_add]
+        rfl]
+      rw [X, monomial_mul_monomial]
+      simp only [one_mul]
+
+/-- The diagonal eigenvalue `∑ i, mu_i * (mu_i - 1)` of `A_q` on the
+monomial-symmetric polynomial indexed by `mu`. -/
+def morrisAWeight {n : ℕ} (mu : n.Partition) : ℕ :=
+  (mu.parts.map fun k => k * (k - 1)).sum
+
+/-- The `i`-th row length of a partition, after arranging its parts in
+weakly decreasing order and padding with zeros. The index is zero-based. -/
+def partitionRow {n : ℕ} (mu : n.Partition) (i : ℕ) : ℕ :=
+  (mu.parts.sort (· ≥ ·)).getD i 0
+
+/-- The eigenvalue from Lemma 4.10 of Liu--Zhang,
+arXiv:2609.15201v2:
+`epsilon_mu = 2 * ∑ (i,j) in [mu], (q + 1 - i - j)`.
+
+The two finite-range indices in this definition are zero-based, so its
+summand is `q + 1 - (i + 1) - (j + 1)`. When `mu` has at most `q` parts,
+this is exactly the displayed sum over its Ferrers diagram. -/
+def morrisEigenvalue (q : ℕ) {n : ℕ} (mu : n.Partition) : ℤ :=
+  2 * (Finset.range q).sum fun i =>
+    (Finset.range (partitionRow mu i)).sum fun j =>
+      (q : ℤ) + 1 - ((i : ℕ) : ℤ) - 1 - ((j : ℕ) : ℤ) - 1
+
+/-- The coordinate-multiplicity expression for a symmetric monomial equals
+the partition statistic `morrisAWeight` of its shape. -/
+theorem sum_toFinsupp_mul_pred_eq_morrisAWeight_ofSym
+    {n q : ℕ} (s : Sym (Fin q) n) :
+    (∑ i, s.1.toFinsupp i * (s.1.toFinsupp i - 1)) =
+      morrisAWeight (Nat.Partition.ofSym s) := by
+  classical
+  simp only [morrisAWeight, Nat.Partition.ofSym,
+    Multiset.toFinsupp_apply, Multiset.map_map]
+  change Finset.univ.sum (fun i => s.1.count i * (s.1.count i - 1)) =
+    s.1.toFinset.sum (fun i => s.1.count i * (s.1.count i - 1))
+  symm
+  apply Finset.sum_subset (Finset.subset_univ _)
+  intro i _ hi
+  have hnotmem : i ∉ s.1 := by simpa using hi
+  have hcount : s.1.count i = 0 := Multiset.count_eq_zero.mpr hnotmem
+  rw [hcount, zero_mul]
+
+/-- The action of `A_q` on the monomial-symmetric basis is diagonal, with
+coefficient `∑ i, mu_i * (mu_i - 1)` as in Lemma 4.10 of Liu--Zhang,
+arXiv:2609.15201v2. -/
+theorem morrisA_msymm {n q : ℕ} (mu : n.Partition) :
+    morrisA q (msymm (Fin q) R mu) =
+      morrisAWeight mu • msymm (Fin q) R mu := by
+  rw [msymm, map_sum]
+  simp_rw [prod_map_X_eq_monomial_toFinsupp, morrisA_monomial,
+    sum_toFinsupp_mul_pred_eq_morrisAWeight_ofSym]
+  have hshape (s : {a : Sym (Fin q) n // Nat.Partition.ofSym a = mu}) :
+      morrisAWeight (Nat.Partition.ofSym s.1) = morrisAWeight mu := by
+    rw [s.2]
+  simp_rw [hshape]
+  exact Finset.smul_sum.symm
+
 /-- Bijective renaming transports a pair summand of the Morris operator to
 the pair indexed by the renamed coordinates. -/
 theorem rename_squaredPDerivDividedDifference {q : ℕ}
@@ -297,6 +424,14 @@ def morrisD (q : ℕ) :
 theorem morrisD_apply (q : ℕ) (P : MvPolynomial (Fin q) R) :
     morrisD q P = morrisB q P - morrisA q P :=
   rfl
+
+/-- On a monomial-symmetric polynomial, the `A_q` contribution to `D_q` is
+the diagonal term with coefficient `morrisAWeight`. -/
+theorem morrisD_msymm {n q : ℕ} (mu : n.Partition) :
+    morrisD q (msymm (Fin q) R mu) =
+      morrisB q (msymm (Fin q) R mu) -
+        morrisAWeight mu • msymm (Fin q) R mu := by
+  rw [morrisD_apply, morrisA_msymm]
 
 /-- The Morris operator `D_q` maps symmetric polynomials to symmetric
 polynomials. -/
