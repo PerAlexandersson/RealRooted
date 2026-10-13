@@ -1797,6 +1797,9 @@ import RealRooted.LiuWang.CombinedFlux
 import RealRooted.Recurrence.Telescoping
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.DerivativeRecurrence.Nonnegative
+import RealRooted.Recurrence.FactorPower
+import RealRooted.Tactic.Row.DelayedProduct
+import RealRooted.Tactic.Row.FactorPower
 
 /-!
 # RealRooted production umbrella
