@@ -1,3 +1,4 @@
+import RealRooted.SymmetricDecomposition.FPolynomialSequence
 import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 import RealRooted.Tactic.Row.Support
 
@@ -110,5 +111,161 @@ def fTransformSplitsGoal : TacticM Unit := do
         (b := fun $n:ident : ℕ => $bT) (fun $n:ident => by compute_degree)
         (fun $n:ident => by compute_degree) (fun $n:ident => by rw [$Q:ident]) (by simp [$Q:ident]))
       (fun $n:ident => by rr_row_splits) $t))
+
+local syntax (name := rrFTransformHalfMultiplier)
+  "rr_f_transform_half_multiplier" : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_f_transform_half_multiplier) => halfMultiplierGoal 0 1
+
+/-- Consecutive strict interlacing for a nonnegative derivative-recurrence sequence whose
+degree is `(n + 1) / 2`, including the degree-zero initial row. -/
+private theorem derivativeRecurrence_strictInterl_of_half_degree
+    {Q A B : ℕ → ℝ[X]}
+    (hrec : ∀ n, Q (n + 1) = A n * (Q n).derivative + B n * Q n)
+    (hdeg : ∀ n, (Q n).natDegree = (n + 1) / 2)
+    (hpos : ∀ n, 0 < (Q n).leadingCoeff)
+    (hnn : ∀ n, HasNonnegCoeffs (Q n))
+    (hA : ∀ n r, r ≤ 0 → (A n).eval r ≤ 0) :
+    ∀ n, StrictInterl (Q n) (Q (n + 1))
+  | 0 =>
+      (interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
+        (Polynomial.leadingCoeff_ne_zero.mp (hpos 0).ne') (hdeg 0) (hdeg 1)).toStrictInterl
+  | n + 1 => by
+      refine derivativeRecurrence_strictInterl_step (hrec (n + 1))
+        (derivativeRecurrence_strictInterl_of_half_degree hrec hdeg hpos hnn hA n).2.1.2
+        (by rw [hdeg]; grind) (hpos (n + 1)) (hpos (n + 2))
+        (by rw [hdeg, hdeg]; grind) (by rw [hdeg, hdeg]; grind) ?_
+      intro r hr
+      apply hA (n + 1) r
+      exact roots_nonpos_of_hasNonnegCoeffs (hnn (n + 1)) r
+        ((Polynomial.mem_roots
+          (Polynomial.leadingCoeff_ne_zero.mp (hpos (n + 1)).ne')).mpr hr)
+
+/-- The weak consecutive relation obtained from the strict half-growth
+`f`-polynomial transfer, including its constant-to-linear initial step. -/
+private theorem interlaces_fPolynomial_sequence
+    (q : ℕ → ℝ[X])
+    (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
+    (hq_ne : ∀ j, q j ≠ 0)
+    (hq_splits : ∀ j, (q j).Splits)
+    (hq_deg : ∀ j, (q j).natDegree = (j + 1) / 2)
+    (hq_interl : ∀ j, StrictInterl (q j) (q (j + 1)))
+    (n : ℕ) : Interlaces (fPolynomial n (q n)) (fPolynomial (n + 1) (q (n + 1))) := by
+  rcases n with _ | n
+  · have hq0 : (q 0).natDegree ≤ 0 := by rw [hq_deg]
+    have hq1 : (q 1).natDegree ≤ 1 := by rw [hq_deg]
+    have h0 := isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
+      hq0 (hq_ne 0) (hq_splits 0) (hq_nonneg 0)
+    have hdeg0 := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero
+      hq0 (hq_nonneg 0) (hq_ne 0)
+    have hdeg1 := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero
+      hq1 (hq_nonneg 1) (hq_ne 1)
+    exact interlaces_of_natDegree_eq_zero_of_natDegree_eq_one h0.1 hdeg0 hdeg1
+  · have hstrict := StrictInterl.fPolynomial_sequence q hq_nonneg hq_ne hq_splits
+      hq_deg hq_interl (n := n + 1) (by lia)
+    apply hstrict.toInterlaces
+    have hqn : (q (n + 1)).natDegree ≤ n + 1 := by rw [hq_deg]; grind
+    have hqnext : (q (n + 1 + 1)).natDegree ≤ n + 1 + 1 := by rw [hq_deg]; grind
+    rw [fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero
+        hqn (hq_nonneg (n + 1)) (hq_ne (n + 1)),
+      fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero
+        hqnext (hq_nonneg (n + 1 + 1)) (hq_ne (n + 1 + 1))]
+
+/-- Prove consecutive interlacing by transferring a half-growth auxiliary
+sequence through the `f`-polynomial transform. -/
+def fTransformInterlacesGoal : TacticM Unit := do
+  discard introIfForall
+  withMainContext do
+  let some P ← findPolySeqConst? (← instantiateMVars (← getMainTarget))
+    | throwError "rr_row: no sequence"
+  let some d ← fTransform? P | throwError "rr_row: the recurrence is not an f-transform"
+  let t ← Term.exprToSyntax (← mainRowIndex (mkIdent P))
+  let nm ← freshAuxName "fAuxInterlaces"
+  let Q := mkIdent nm
+  let n := mkIdent `n
+  let N ← `(($n : ℝ))
+  let aT ← xPolyTerm d.a N
+  let bT ← xPolyTerm d.b N
+  elabAuxCommand (← `(command| noncomputable def $(mkIdent (`_root_ ++ nm)) : ℕ → ℝ[X]
+    | 0 => $(← qpolyTerm d.base)
+    | $n:ident + 1 => $aT * ($Q $n).derivative + $bT * $Q $n))
+  let Pi := mkIdent P
+  let eqn := mkIdent d.L.eqn
+  let link := mkIdent `hlink_f_interlaces
+  let qdeg := mkIdent `hqdeg_f_interlaces
+  let qpos := mkIdent `hqpos_f_interlaces
+  let qnn := mkIdent `hqnn_f_interlaces
+  let qsplits := mkIdent `hqsplits_f_interlaces
+  let qinterl := mkIdent `hqinterl_f_interlaces
+  let identity ← `(tactic| first
+    | (simp only [RealRooted.fPolynomial_two, RealRooted.fPolynomial_one,
+        Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_C_mul_X_pow,
+        Polynomial.coeff_C_mul_X, Polynomial.coeff_C, Polynomial.coeff_X_pow,
+        Polynomial.coeff_X]
+       norm_num [map_ofNat]
+       ring)
+    | rr_cf_identity)
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $link:ident :=
+      RealRooted.eq_fPolynomial_of_derivativeRecurrence_of_natDegree_zero
+      (P := $Pi) (Q := $Q) (a := fun $n:ident : ℕ => $aT)
+      (b := fun $n:ident : ℕ => $bT)
+      (ha := fun $n:ident => by compute_degree) (hb := fun $n:ident => by compute_degree)
+      (hQ := fun $n:ident => by rw [$Q:ident])
+      (h0deg := by simp [$Q:ident])
+      (hP := fun $n:ident => by rw [$eqn:ident $n:ident]; $identity:tactic)
+      (h0 := by simp [$Pi:ident, $Q:ident, RealRooted.fPolynomial, map_ofNat])))
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $qdeg:ident : ∀ j, ($Q j).natDegree = (j + 1) / 2 := fun j => by
+      rr_row_natDegree))
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $qpos:ident : ∀ j, 0 < ($Q j).leadingCoeff := fun j => by
+      rr_row_leadingCoeff_pos))
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $qnn:ident : ∀ j, HasNonnegCoeffs ($Q j) := by
+      refine RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le
+        (P := $Q) (A := fun $n:ident : ℕ => $aT) (B := fun $n:ident : ℕ => $bT)
+        (D := fun j => (j + 1) / 2) ?_ ?_ ?_ ?_ ?_
+      · intro j
+        rw [$Q:ident]
+      · intro j
+        rw [$qdeg:ident]
+      · intro j
+        norm_num [Polynomial.coeff_add, Polynomial.coeff_C_mul,
+          Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C]
+      · rr_f_transform_half_multiplier
+      · rw [$Q:ident]
+        exact RealRooted.hasNonnegCoeffs_C (by positivity)))
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $qinterl:ident : ∀ j, StrictInterl ($Q j) ($Q (j + 1)) :=
+      derivativeRecurrence_strictInterl_of_half_degree
+        (Q := $Q) (A := fun $n:ident : ℕ => $aT) (B := fun $n:ident : ℕ => $bT)
+        (fun j => by rw [$Q:ident]) $qdeg $qpos $qnn (by
+          intro j r hr
+          simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+            Polynomial.eval_X, Polynomial.eval_pow]
+          nlinarith [sq_nonneg r])))
+  withMainContext do
+  evalTactic (← `(tactic|
+    have $qsplits:ident : ∀ j, ($Q j).Splits := by
+      intro j
+      rcases j with _ | j
+      · rw [$Q:ident]
+        exact Polynomial.Splits.C (R := ℝ) _
+      · exact ($qinterl j).2.1.2))
+  withMainContext do
+  evalTactic (← `(tactic|
+    rw [$link $t, $link ($t + 1)]))
+  withMainContext do
+  evalTactic (← `(tactic|
+    exact interlaces_fPolynomial_sequence $Q $qnn
+      (fun j => Polynomial.leadingCoeff_ne_zero.mp ($qpos j).ne') $qsplits $qdeg
+      $qinterl $t))
 
 end RealRooted.Tactic

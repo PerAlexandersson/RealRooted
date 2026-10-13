@@ -31,7 +31,9 @@ route that the probe rules out fails without elaborating anything.
    `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
    or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
    remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
-5. The interlacing core (`Row.Core`):
+5. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence
+   (`Row.FTransform`).
+6. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
    * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
@@ -45,7 +47,7 @@ route that the probe rules out fails without elaborating anything.
      (`derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`) and a moving
      upper bound split at a
      common root of the `A n` (`derivativeRecurrence_interlaces_of_roots_le_mono_div`).
-6. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+7. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
    sequence, the link `eq_reflect_of_secondOrderDerivativeRecurrence` /
    `eq_reflect_of_threeTerm`, and the transfer
@@ -220,6 +222,8 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    -- transfer consecutive interlacing from half-growth auxiliary rows
+    if ← rowSucceeds fTransformInterlacesGoal then return (#[], hints)
     if ← rowSucceeds powerFormRoute then return (#[], hints)
     -- closed-form rows `q ^ (D₀ + m) · R m` with a division-remainder certificate
     if ← rowSucceeds CFI.closedFormInterlacesGoal then return (#[], hints)
