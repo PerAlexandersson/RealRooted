@@ -246,7 +246,11 @@ private def linRecNumerals : TacticM Unit := do
 
 /-- The summand coefficient `fun n => A n` shifted by `s`: `fun n => A (n + s)`. -/
 private def linRecShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
-  if let some normalized ← normalizedCoeffTerm? c s then return normalized
+  -- Normalize only rational-function coefficients: polynomial coefficients keep their syntactic
+  -- form, which the symbolic `rhs` proof of `linRecAttempt` closes with `ring`.
+  let hasDiv := (c.find? fun e => e.isAppOf ``HDiv.hDiv || e.isAppOf ``Inv.inv).isSome
+  if hasDiv then
+    if let some normalized ← normalizedCoeffTerm? c s then return normalized
   if s == 0 then return ← certTerm c
   let shifted ← lambdaTelescope c fun xs body => do
     let ns ← mkAppM ``HAdd.hAdd #[xs[0]!, mkNatLit s]
@@ -560,10 +564,14 @@ private def linRecSidesClosedP (P : Ident) (rows : Array QPoly) (p m : Nat) (gs 
     for g in ← getGoals do
       setGoals [g]
       evalTactic coeff
+      if (← getGoals).isEmpty then continue
       evalTactic (← `(tactic|
-        (norm_num only [div_one, mul_zero, zero_add, add_zero, zero_mul, one_mul, mul_one];
-          (first | rw [hyperParityProd_relation] | skip);
-          ring_nf)))
+        first
+          | ring1
+          | rr_linrec_field
+          | ((norm_num only [div_one, mul_zero, zero_add, add_zero, zero_mul, one_mul, mul_one];
+              (first | rw [hyperParityProd_relation] | skip);
+              ring_nf) <;> done)))
       if let some remaining := (← getGoals).head? then
         throwError "closed-form scalar recurrence remains: {← remaining.getType}"
     setGoals []
@@ -605,17 +613,24 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     rhs ← `($summand + $rhs)
   let eqnApp ← if s == 0 then `($(mkIdent L.eqn) $n)
     else `($(mkIdent L.eqn) ($n + $(rowNumLit s)))
+  -- The symbolic `rhs` unfolding handles derivative summands; the pointwise route handles
+  -- rational coefficients that `ring` cannot normalize.  Try them in this order.
   let hrec ← `(fun $n:ident => ($eqnApp).trans (by
-    change _ = $rhs
-    apply Polynomial.funext
-    intro x
-    simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
-      Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_neg,
-      Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
-      Polynomial.eval_ofNat, Polynomial.eval_one, Polynomial.eval_zero,
-      Polynomial.eval_natCast]
-    push_cast
-    rr_linrec_field))
+    first
+      | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
+            List.sum_nil, Function.iterate_zero, Function.iterate_one,
+            Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
+          ring) <;> done)
+      | (change _ = $rhs
+         apply Polynomial.funext
+         intro x
+         simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
+           Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_neg,
+           Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
+           Polynomial.eval_ofNat, Polynomial.eval_one, Polynomial.eval_zero,
+           Polynomial.eval_natCast]
+         push_cast
+         rr_linrec_field)))
   let kq := rowNumLit k
   let dq := rowNumLit d
   let Dq := rowNumLit D₀
