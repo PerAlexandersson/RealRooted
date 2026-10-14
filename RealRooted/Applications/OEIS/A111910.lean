@@ -1,4 +1,5 @@
 import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
 import RealRooted.CombinatorialExamples.Narayana
 import RealRooted.Hadamard
@@ -517,6 +518,7 @@ theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
   exact schurModel_splits n
 
 /-- A sequence with the A111910 initial rows and update has split rows. -/
+@[rr_row_model]
 theorem splits_of_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)

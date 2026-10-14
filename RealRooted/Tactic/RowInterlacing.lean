@@ -11,6 +11,7 @@ import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.Tactic.Row.FactorPower
 import RealRooted.Tactic.Row.DelayedProduct
 import RealRooted.DerivativeRecurrence.Nonnegative
+import RealRooted.Recurrence.RowModel
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -21,6 +22,11 @@ in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is
 shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
 every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), and a
 route that the probe rules out fails without elaborating anything.
+
+Transfer theorems tagged `@[rr_row_model]` provide another automatic route. Before refining
+with one, the tactic checks the theorem's conclusion head and recurrence offset, then compares
+its advertised first two rows with the recurrence's exact `QPoly` rows. Unrelated models are
+never elaborated.
 
 ## Routes of `rr_row_interlaces`, in order
 
@@ -209,12 +215,130 @@ private def topSplitsProbe (hints : RowHints) : TacticM TopSplitsProbeResult := 
     m!"the computed rows fit no growth-one residue class after the permitted drops"
   return .veto why
 
+/-- The conclusion recognized on a registered row-model transfer theorem. -/
+private inductive RowModelConclusion where
+  | splits
+  | interlaces
+  deriving BEq
+
+/-- Recognize the conclusion head without elaborating the transfer theorem. -/
+private def rowModelConclusion? (target : Expr) : Option RowModelConclusion :=
+  if target.isAppOf ``Polynomial.Splits then some .splits
+  else if target.isAppOf ``RealRooted.Interlaces then some .interlaces
+  else none
+
+/-- Whether `e` is the row `P n`. -/
+private def isRowAt (P e : Expr) (n : Nat) : MetaM Bool := do
+  let e := e.consumeMData
+  unless e.isApp && e.getAppFn == P do return false
+  return (← evalNat e.appArg!) == some n
+
+/-- Read the recurrence offset and two exact base rows advertised by a transfer theorem. -/
+private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
+    (Option (QPoly × QPoly × Option Nat)) := do
+  let type ← inferType (← mkConstWithFreshMVarLevels decl)
+  forallTelescope type fun xs conclusion => do
+    unless rowModelConclusion? conclusion == some want do return none
+    let some P := xs.find? fun x =>
+        (conclusion.find? fun e => e.isApp && e.getAppFn == x).isSome
+      | return none
+    let mut zero? : Option QPoly := none
+    let mut one? : Option QPoly := none
+    let mut offset? : Option Nat := none
+    for x in xs do
+      let binderType ← inferType x
+      if let some (_, lhs, rhs) := binderType.eq? then
+        if ← isRowAt P lhs 0 then zero? := ← evalQPoly? rhs
+        else if ← isRowAt P rhs 0 then zero? := ← evalQPoly? lhs
+        else if ← isRowAt P lhs 1 then one? := ← evalQPoly? rhs
+        else if ← isRowAt P rhs 1 then one? := ← evalQPoly? lhs
+      else if offset?.isNone && binderType.isForall then
+        offset? := ← forallTelescope binderType fun ys body => do
+          let some (_, lhs, _) := body.eq? | return none
+          unless ys.size == 1 && lhs.isApp && lhs.getAppFn == P do return none
+          natOffsetOf? ys[0]! lhs.appArg!
+    let (some zero, some one) := (zero?, one?) | return none
+    return some (zero, one, offset?)
+
+/-- Registered models whose conclusion, recurrence offset, and exact first rows match. -/
+private def matchingRowModels (decls : Array Name) (P : Name)
+    (want : RowModelConclusion) : MetaM (Array Name) := do
+  let mut models : Array (Name × QPoly × QPoly × Option Nat) := #[]
+  for decl in decls.qsort Name.quickLt do
+    let some (modelZero, modelOne, offset?) ← rowModelBaseRows? want decl | continue
+    models := models.push (decl, modelZero, modelOne, offset?)
+  if models.isEmpty then return #[]
+  let recurrence? ← linRec? P
+  let rows? ← match recurrence? with
+    | some recurrence => linRecRows? recurrence 1
+    | none => pure none
+  let rows? ← match rows? with
+    | some rows => pure (some rows)
+    | none => linRecBaseRows? P
+  let some rows := rows? | return #[]
+  let (some rowZero, some rowOne) := (rows[0]?, rows[1]?) | return #[]
+  let mut candidates := #[]
+  for (decl, modelZero, modelOne, offset?) in models do
+    let offsetMatches := match recurrence?, offset? with
+      | some recurrence, some offset => recurrence.offset == offset
+      | _, _ => true
+    if offsetMatches && rowZero.eqv modelZero && rowOne.eqv modelOne then
+      candidates := candidates.push decl
+  return candidates
+
+/-- Close one polynomial identity obtained from a model recurrence. -/
+private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
+  if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
+  let target ← instantiateMVars (← getMainTarget)
+  match ← rowAttempt <| evalTactic (← `(tactic| rw [$P:ident])) with
+  | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
+  | .ok _ => pure ()
+  if !(← getGoals).isEmpty then
+    evalTactic (← `(tactic| rr_cf_identity))
+  unless (← getGoals).isEmpty do
+    throwError "row-model recurrence identity left goals"
+
+/-- Apply a structurally matched transfer theorem. -/
+private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
+  evalTactic (← `(tactic| refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ _))
+  let [hzero, hone, hrec] ← getGoals
+    | throwError "registered row-model theorem has an unsupported shape"
+  for goal in [hzero, hone] do
+    setGoals [goal]
+    discard <| smallRow P
+  setGoals [hrec]
+  evalTactic (← `(tactic| intro n))
+  closeRowModelIdentity P
+
+/-- The sequence and registered models whose conclusion and exact first rows match the goal. -/
+private def rowModelCandidates? : TacticM (Option (Ident × Array Name)) := withMainContext do
+  let decls := rrRowModelAttr.getDecls (← getEnv)
+  if decls.isEmpty then return none
+  let target ← instantiateMVars (← getMainTarget)
+  let some want := rowModelConclusion? target | return none
+  let some PName ← findPolySeqConst? target | return none
+  let candidates ← matchingRowModels decls PName want
+  if candidates.isEmpty then return none
+  return some (mkIdent PName, candidates)
+
+/-- Try only the registered models selected by the structural and exact-row filter. -/
+private def rowModelGoal (P : Ident) (candidates : Array Name) : TacticM Unit := do
+  let mut failures : Array (MessageData × MessageData) := #[]
+  for decl in candidates do
+    match ← rowAttempt (applyRowModel P decl) with
+    | .ok _ => return
+    | .error err => failures := failures.push (m!"{decl}", err)
+  throwRowFailures m!"no matching registered row model proves the goal for {P}" failures
+
 /-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
 routes, which have no printable steps) and the hints of the hinted call. -/
 private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if let some why ← topInterlacesProbe hints then
       throwError "rr_row_interlaces: no strategy (probe: {why})"
+  if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    if let some (P, candidates) ← rowModelCandidates? then
+      if ← rowSucceeds (rowModelGoal P candidates) then return (#[], hints)
   if ← isDerivLagGoal then
     return (#[], ← derivLagCore false hints)
   -- order-three recurrences through a three-term recurrence
@@ -538,6 +662,10 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
           unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
         if ← rowSucceeds provePlan then return { via := some `closedForm }
   | .pass => pure ()
+  if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
+      hints.upper.isNone then
+    if let some (P, candidates) ← rowModelCandidates? then
+      if ← rowSucceeds (rowModelGoal P candidates) then return {}
   if ← isDerivLagGoal then
     return ← derivLagCore true hints
   discard introIfForall

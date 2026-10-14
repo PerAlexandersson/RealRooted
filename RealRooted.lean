@@ -1958,3 +1958,5 @@ import RealRooted.Tactic.Row.FactorPower
 import RealRooted.Applications.OEIS.A394446
 import RealRooted.GammaTransform.Derivative
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
+import RealRooted.Recurrence.RowModel
+import RealRooted.Tactic.Examples.RowModelFamilies

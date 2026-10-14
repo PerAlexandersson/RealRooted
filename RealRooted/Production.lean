@@ -1802,6 +1802,7 @@ import RealRooted.Tactic.Row.DelayedProduct
 import RealRooted.Tactic.Row.FactorPower
 import RealRooted.Applications.OEIS.A394446
 import RealRooted.GammaTransform.Derivative
+import RealRooted.Recurrence.RowModel
 
 /-!
 # RealRooted production umbrella
