@@ -10,6 +10,7 @@ import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerOperator
+import RealRooted.Tactic.Examples.EulerTypeBridges
 import RealRooted.Tactic.Examples.FTransformInterlaces
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Favard.Denominator

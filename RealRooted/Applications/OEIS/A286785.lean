@@ -1,5 +1,6 @@
 import RealRooted.Wronskian.OdeRootExclusion
 import RealRooted.MaWang.DerivativeStep
+import RealRooted.Recurrence.RowModel
 
 /-!
 # The row polynomials of OEIS A286785
@@ -494,5 +495,88 @@ theorem isRoot_lt_neg_one_eighth (d : ℕ) {r : ℝ}
 theorem rowPoly_strictInterl_succ (d : ℕ) :
     StrictInterl (rowPoly d) (rowPoly (d + 1)) :=
   rowPoly_strictInterl_succ_of_splits d (rowPoly_splits d)
+
+private lemma rowPoly_two :
+    rowPoly 2 = 14 + 14 * X + 2 * X ^ 2 := by
+  apply Polynomial.funext
+  intro x
+  norm_num [rowPoly, rowCoeff, Nat.choose,
+    Finset.sum_range_succ, Polynomial.eval_finsetSum,
+    Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+    Polynomial.eval_X, Polynomial.eval_pow]
+
+private lemma rowPoly_three :
+    rowPoly 3 = 42 + 72 * X + 27 * X ^ 2 + 2 * X ^ 3 := by
+  apply Polynomial.funext
+  intro x
+  norm_num [rowPoly, rowCoeff, Nat.choose,
+    Finset.sum_range_succ, Polynomial.eval_finsetSum,
+    Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+    Polynomial.eval_X, Polynomial.eval_pow]
+
+/-- The first-order update for the model beginning at degree two. -/
+def nextRow (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
+  C ((transitionScale (n + 2))⁻¹) * derivativeCoeff (n + 2) * p.derivative +
+    C ((transitionScale (n + 2))⁻¹) * rowCoeffPoly (n + 2) * p
+
+/-- The degree-two tail of `rowPoly` satisfies `nextRow`. -/
+theorem rowPoly_nextRow (n : ℕ) :
+    rowPoly (n + 3) = nextRow n (rowPoly (n + 2)) := by
+  simpa only [nextRow, Nat.add_assoc] using rowPoly_succ (n + 2)
+
+private lemma tailUpdate_eq_nextRow (n : ℕ) (p : ℝ[X]) :
+    (C (((n : ℝ) + 4) / (2 * (n + 6) * (2 * n + 11))) +
+          C ((7 * (n : ℝ) + 40) / (2 * (n + 6) * (2 * n + 11))) * X -
+          C ((8 * (n : ℝ) + 44) / (2 * (n + 6) * (2 * n + 11))) * X ^ 2) *
+        p.derivative +
+      (C (3 * (5 * (n : ℝ) ^ 2 + 52 * n + 136) /
+            (2 * (n + 6) * (2 * n + 11))) +
+          C (6 * ((n : ℝ) + 4) * (2 * n + 11) /
+            (2 * (n + 6) * (2 * n + 11))) * X) * p =
+      nextRow (n + 1) p := by
+  unfold nextRow derivativeCoeff rowCoeffPoly transitionScale
+  apply Polynomial.funext
+  intro x
+  simp only [eval_add, eval_sub, eval_mul, eval_C, eval_X, eval_pow,
+    eval_one]
+  push_cast
+  field_simp (discharger := positivity)
+  ring
+
+/-- Sequences with the degree-two A286785 base rows and tail update have
+interlacing consecutive rows. -/
+@[rr_row_model]
+theorem interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 14 + 14 * X + 2 * X ^ 2)
+    (hone : P 1 = 42 + 72 * X + 27 * X ^ 2 + 2 * X ^ 3)
+    (hrec : ∀ n : ℕ,
+      P (n + 2) =
+        (C (((n : ℝ) + 4) / (2 * (n + 6) * (2 * n + 11))) +
+            C ((7 * (n : ℝ) + 40) / (2 * (n + 6) * (2 * n + 11))) * X -
+            C ((8 * (n : ℝ) + 44) / (2 * (n + 6) * (2 * n + 11))) * X ^ 2) *
+          (P (n + 1)).derivative +
+        (C (3 * (5 * (n : ℝ) ^ 2 + 52 * n + 136) /
+              (2 * (n + 6) * (2 * n + 11))) +
+            C (6 * ((n : ℝ) + 4) * (2 * n + 11) /
+              (2 * (n + 6) * (2 * n + 11))) * X) * P (n + 1))
+    (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have heq : ∀ m : ℕ, P (m + 1) = rowPoly (m + 3) := by
+    intro m
+    induction m with
+    | zero => rw [hone, rowPoly_three]
+    | succ m ih =>
+        rw [hrec m, ih]
+        rw [tailUpdate_eq_nextRow, ← rowPoly_nextRow (m + 1)]
+  cases n with
+  | zero =>
+      rw [hzero, hone, ← rowPoly_two, ← rowPoly_three]
+      exact (rowPoly_strictInterl_succ 2).toInterlaces (by
+        rw [rowPoly_natDegree, rowPoly_natDegree])
+  | succ n =>
+      rw [heq n, heq (n + 1)]
+      exact (rowPoly_strictInterl_succ (n + 3)).toInterlaces (by
+        rw [rowPoly_natDegree, rowPoly_natDegree])
 
 end RealRooted.A286785

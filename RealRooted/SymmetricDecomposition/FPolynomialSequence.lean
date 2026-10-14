@@ -240,3 +240,86 @@ theorem StrictInterl.fPolynomial_sequence
     (by dsimp [m]; grind) (by simpa [sub_eq_add_neg] using huv)
 
 end RealRooted
+
+namespace RealRooted
+/-- Transfers consecutive strict interlacing through the `f`-polynomial
+transform when the auxiliary degree is `j / 2`.  The hypothesis `1 ≤ n`
+is not needed: the floor box fits inside row `n` even at `n = 0`. -/
+theorem StrictInterl.fPolynomial_sequence_floor
+    (q : ℕ → ℝ[X])
+    (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
+    (hq_ne : ∀ j, q j ≠ 0)
+    (hq_splits : ∀ j, (q j).Splits)
+    (hq_deg : ∀ j, (q j).natDegree = j / 2)
+    (hq_interl : ∀ j, StrictInterl (q j) (q (j + 1)))
+    {n : ℕ} :
+    StrictInterl (fPolynomial n (q n))
+      (fPolynomial (n + 1) (q (n + 1))) := by
+  let m := (n + 1) / 2
+  have hqn_deg : (q n).natDegree ≤ m := by
+    rw [hq_deg]
+    dsimp [m]
+    grind
+  have hqnext_deg : (q (n + 1)).natDegree ≤ m := by
+    rw [hq_deg]
+  have hmax : m = max (q n).natDegree (q (n + 1)).natDegree := by
+    rw [hq_deg, hq_deg]
+    dsimp [m]
+    grind
+  have hmin := strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+    (d := m) (u := q n) (v := q (n + 1)) hmax (hq_interl n)
+      (hq_nonneg n) (hq_nonneg (n + 1))
+  have hu := isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hqn_deg
+    (hq_ne n) (hq_splits n) (hq_nonneg n)
+  have hv := isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hqnext_deg
+    (hq_ne (n + 1)) (hq_splits (n + 1)) (hq_nonneg (n + 1))
+  have hu_deg := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hqn_deg
+    (hq_nonneg n) (hq_ne n)
+  have hv_deg := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hqnext_deg
+    (hq_nonneg (n + 1)) (hq_ne (n + 1))
+  have huv := StrictInterl.of_mul_X_sub_C_right_of_roots_ge
+    (hf := hu) (hg := hv) (by rw [hu_deg, hv_deg])
+    (fPolynomial_roots_ge_neg_one hqn_deg (hq_ne n) (hq_splits n)
+      (hq_nonneg n))
+    (fPolynomial_roots_ge_neg_one hqnext_deg (hq_ne (n + 1))
+      (hq_splits (n + 1)) (hq_nonneg (n + 1))) hmin
+  exact StrictInterl.fPolynomial_pad_of_mul_X_add_one hqn_deg hqnext_deg
+    (by dsimp [m]; grind) (by simpa [sub_eq_add_neg] using huv)
+/-- Transfers consecutive strict interlacing through the `f`-polynomial
+transform when the auxiliary degrees are `j - 1`. -/
+theorem StrictInterl.fPolynomial_sequence_pred
+    (q : ℕ → ℝ[X])
+    (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
+    (hq_ne : ∀ j, q j ≠ 0)
+    (hq_splits : ∀ j, (q j).Splits)
+    (hq_deg : ∀ j, (q j).natDegree = j - 1)
+    (hq_interl : ∀ j, StrictInterl (q j) (q (j + 1)))
+    {n : ℕ} :
+    StrictInterl (fPolynomial n (q n))
+      (fPolynomial (n + 1) (q (n + 1))) := by
+  have hqn_deg : (q n).natDegree ≤ n := by rw [hq_deg]; grind
+  have hqnext_deg : (q (n + 1)).natDegree ≤ n := by rw [hq_deg]; grind
+  have hmax : n = max (q n).natDegree (q (n + 1)).natDegree := by
+    rw [hq_deg, hq_deg]
+    grind
+  have hmin := strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+    (d := n) (u := q n) (v := q (n + 1)) hmax (hq_interl n)
+      (hq_nonneg n) (hq_nonneg (n + 1))
+  have hu := isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hqn_deg
+    (hq_ne n) (hq_splits n) (hq_nonneg n)
+  have hv := isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hqnext_deg
+    (hq_ne (n + 1)) (hq_splits (n + 1)) (hq_nonneg (n + 1))
+  have hu_deg := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hqn_deg
+    (hq_nonneg n) (hq_ne n)
+  have hv_deg := fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero hqnext_deg
+    (hq_nonneg (n + 1)) (hq_ne (n + 1))
+  have huv := StrictInterl.of_mul_X_sub_C_right_of_roots_ge
+    (hf := hu) (hg := hv) (by rw [hu_deg, hv_deg])
+    (fPolynomial_roots_ge_neg_one hqn_deg (hq_ne n) (hq_splits n)
+      (hq_nonneg n))
+    (fPolynomial_roots_ge_neg_one hqnext_deg (hq_ne (n + 1))
+      (hq_splits (n + 1)) (hq_nonneg (n + 1))) hmin
+  exact StrictInterl.fPolynomial_pad_of_mul_X_add_one hqn_deg hqnext_deg
+    le_rfl (by simpa [sub_eq_add_neg] using huv)
+
+end RealRooted

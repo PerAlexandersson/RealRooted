@@ -6,6 +6,8 @@ import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
 import RealRooted.Tactic.Row.Reverse
 import RealRooted.Tactic.Row.FTransform
+import RealRooted.Tactic.Row.EndpointWindow
+import RealRooted.Tactic.Row.RationalReverse
 import RealRooted.Tactic.Row.PathPower
 import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.Tactic.Row.FactorPower
@@ -25,8 +27,9 @@ route that the probe rules out fails without elaborating anything.
 
 Transfer theorems tagged `@[rr_row_model]` provide another automatic route. Before refining
 with one, the tactic checks the theorem's conclusion head and recurrence offset, then compares
-its advertised first two rows with the recurrence's exact `QPoly` rows. Unrelated models are
-never elaborated.
+its advertised first two rows with the recurrence's exact `QPoly` rows. A registered tail
+recurrence may start at or after the defining recurrence's offset. Unrelated models are never
+elaborated.
 
 ## Routes of `rr_row_interlaces`, in order
 
@@ -41,9 +44,13 @@ never elaborated.
    `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
    or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
    remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
-5. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence
-   (`Row.FTransform`).
-6. The interlacing core (`Row.Core`):
+5. Inverse rational reflection, rejected by coefficient shape before exact row computation
+   (`Row.RationalReverse`).
+6. Moving rational endpoint windows, guessed from exact rows and certified by endpoint
+   evaluations (`Row.EndpointWindow`).
+7. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence,
+   including common rational denominators (`Row.FTransform`).
+8. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
    * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
@@ -57,7 +64,7 @@ never elaborated.
      (`derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`) and a moving
      upper bound split at a
      common root of the `A n` (`derivativeRecurrence_interlaces_of_roots_le_mono_div`).
-7. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+9. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
    sequence, the link `eq_reflect_of_secondOrderDerivativeRecurrence` /
    `eq_reflect_of_threeTerm`, and the transfer
@@ -280,7 +287,7 @@ private def matchingRowModels (decls : Array Name) (P : Name)
   let mut candidates := #[]
   for (decl, modelZero, modelOne, offset?) in models do
     let offsetMatches := match recurrence?, offset? with
-      | some recurrence, some offset => recurrence.offset == offset
+      | some recurrence, some offset => decide (recurrence.offset ≤ offset)
       | _, _ => true
     if offsetMatches && rowZero.eqv modelZero && rowOne.eqv modelOne then
       candidates := candidates.push decl
@@ -290,13 +297,21 @@ private def matchingRowModels (decls : Array Name) (P : Name)
 private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
   if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
   let target ← instantiateMVars (← getMainTarget)
-  match ← rowAttempt <| evalTactic (← `(tactic| rw [$P:ident])) with
+  match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
   if !(← getGoals).isEmpty then
     evalTactic (← `(tactic| rr_cf_identity))
   unless (← getGoals).isEmpty do
     throwError "row-model recurrence identity left goals"
+
+/-- Close an exact base-row identity, recursively unfolding only the sequence definition. -/
+private def closeRowModelBaseIdentity (P : Ident) : TacticM Unit := do
+  evalTactic (← `(tactic| simp only [$P:ident]))
+  unless (← getGoals).isEmpty do
+    evalTactic (← `(tactic| rr_poly_identity))
+  unless (← getGoals).isEmpty do
+    throwError "row-model base identity left goals"
 
 /-- Apply a structurally matched transfer theorem. -/
 private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
@@ -305,7 +320,8 @@ private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
     | throwError "registered row-model theorem has an unsupported shape"
   for goal in [hzero, hone] do
     setGoals [goal]
-    discard <| smallRow P
+    unless ← rowSucceeds (discard <| smallRow P) do
+      closeRowModelBaseIdentity P
   setGoals [hrec]
   evalTactic (← `(tactic| intro n))
   closeRowModelIdentity P
@@ -351,6 +367,10 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
   -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
   -- by an exact probe, before the more expensive core
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    -- inverse rational reflection, rejected by coefficient shape before row computation
+    if ← rowSucceeds rationalReverseInterlacesGoal then return (#[], hints)
+    -- moving rational endpoint windows fitted from exact rows and certified symbolically
+    if ← rowSucceeds rationalEndpointWindowGoal then return (#[], hints)
     -- transfer consecutive interlacing from half-growth auxiliary rows
     if ← rowSucceeds fTransformInterlacesGoal then return (#[], hints)
     if ← rowSucceeds powerFormRoute then return (#[], hints)
