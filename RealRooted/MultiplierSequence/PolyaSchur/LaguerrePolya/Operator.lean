@@ -62,4 +62,14 @@ theorem IsLaguerrePolya.taylorDifferentialOperator_eq_zero_or_splits {φ : ℂ �
   exact taylorDifferentialOperator_eq_zero_or_splits_of_tendsto_coeff hp
     (fun k => Polynomial.tendsto_coeff_of_tendstoLocallyUniformly hconv k) hg
 
+/-- **The Laguerre–Pólya operator theorem.**  The finite Taylor differential operator of a
+Laguerre–Pólya function preserves splitting over the reals. -/
+theorem IsLaguerrePolya.taylorDifferentialOperator_splits {φ : ℂ → ℂ}
+    (hφ : IsLaguerrePolya φ) {g : ℝ[X]} (hg : g.Splits) :
+    (taylorDifferentialOperator φ g).Splits := by
+  rcases hφ.taylorDifferentialOperator_eq_zero_or_splits hg with hzero | hsplit
+  · rw [hzero]
+    exact Splits.zero
+  · exact hsplit
+
 end RealRooted
