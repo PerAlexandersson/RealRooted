@@ -431,7 +431,8 @@ private theorem polynomial_succ (n : ℕ) :
       norm_num [map_one, map_ofNat, map_add, map_mul, map_neg]
       ring
 
-private theorem polynomial_eq_typeB_average (n : ℕ) :
+/-- The A262226 model is the even-sign average of the type-B Eulerian row. -/
+theorem polynomial_eq_typeB_average (n : ℕ) :
     polynomial n = C (1 / 2 : ℝ) *
       (RealRooted.generalizedEulerian 2 n + (1 - X) ^ n) := by
   induction n with

@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **303 IDs**; **30 formalized**, **255 shells**, **3 fragments**, and **15 documented-only**.
+Current totals: **303 IDs**; **31 formalized**, **254 shells**, **3 fragments**, and **15 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -58,7 +58,7 @@ Current totals: **303 IDs**; **30 formalized**, **255 shells**, **3 fragments**,
 | A038226 | `shell` | -style report order `3 + 8t`.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_product_factor_const_first_auto`, `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A046739 | `shell` | active shift gives lag coefficient `(n+4)t`. | `rr_mw_lw_derivative_lag_sequence_sign_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A046741 | `shell` | A negative multiplier with Fibonacci top coefficients, by a ratio invariant ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_leadingCoeff_pos`, `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A046802 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
+| A046802 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+7 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A048854 | `shell` | generalized Lah `L[4,1]` `(2+X)f+(8+8X)f'+16Xf''=(1/4+D)(4(X-2)f+16Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A049020 | `shell` | Distinguished-block set partitions: `v_n(t) = 1 + t` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign_at_roots_upper` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A049218 | `shell` | active scalar-lag Favard shell `P_m=tP_{m-1}-m(m+1)P_{m-2}`. | `rr_favard_param_auto` | `alpha`, `base_one`, `base_zero`, `beta`, `step` | concrete row definition and proofs of the listed certificates |
@@ -176,7 +176,7 @@ Current totals: **303 IDs**; **30 formalized**, **255 shells**, **3 fragments**,
 | A128540 | `shell` | ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A128966 | `shell` | A zero first row is split off; `h` excludes it ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A131689 | `shell` | Fubini polynomials: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A132166 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
+| A132166 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A132812 | `shell` | found numerically and certified through its remainder ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | `drop`, `via` | concrete row definition and proofs of the listed certificates |
 | A132885 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A133080 | `shell` | A two-step product with a double root `q = X ^ 2` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
@@ -262,7 +262,7 @@ Current totals: **303 IDs**; **30 formalized**, **255 shells**, **3 fragments**,
 | A257621 | `shell` | half-line factor `4t-4t^2=4t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A257626 | `shell` | half-line factor `3t-3t^2=3t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A259454 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+7 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
-| A262226 | `shell` | The downstream recurrence, used to regress the degree-model fallback.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A262226 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+12 additional test intents | `rr_row_natDegree`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A263789 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+9 additional test intents | `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A266326 | `documented` | The two-step monomial model for the recurrence from .<br>The recurrence from .<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A268647 | `shell` | The recurrence from .<br>The recurrence equals the consecutive-linear-factor product.<br>+1 additional test intents | `rr_row_derivative_X_mul_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
