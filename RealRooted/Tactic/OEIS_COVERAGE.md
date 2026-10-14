@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **294 IDs**; **26 formalized**, **247 shells**, **3 fragments**, and **18 documented-only**.
+Current totals: **296 IDs**; **28 formalized**, **247 shells**, **3 fragments**, and **18 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -89,6 +89,7 @@ Current totals: **294 IDs**; **26 formalized**, **247 shells**, **3 fragments**,
 | A075499 | `shell` | A real-rooted quadratic base row: no base interlacing is needed ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A078020 | `shell` | -style sequence shell: repeated lag `-(2t^2+t+1)`. | `rr_lw_negative_quadratic_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A078812 | `shell` | OEIS shapes `//`:<br>`P_{n+2}=(t+2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
+| A079508 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A079510 | `shell` | OEIS shape : `P_n = c_n t P_{n-1} + c_n t P_{n-2}`.<br>after reindexing,<br>+3 additional test intents | `rr_lw_current_CX_sequence`, `rr_lw_current_CX_sequence_auto`, `rr_lw_current_CX_sequence_realrooted`, `rr_lw_current_CX_sequence_realrooted_auto`, `rr_lw_positive_t` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A079640 | `shell` | Stirling-first/Lah product, LS4 shell plus an indexed current row `(n+3+X)f+(2+2X)f'+Xf''=(n+1)f+(1+D)((X+1)f+Xf')`. | `rr_ls4_plus_current_sequence_expanded_auto` | `base_one`, `base_zero`, `outer`, `outer_pos_lc`, `outer_strictInterl`, `pos_lc`, `recurrence`, `tail` | concrete row definition and proofs of the listed certificates |
 | A082649 | `documented` | The reversed downstream recurrence for OEIS . | none | `a`, `b`, `c`, `h`, `h0`, `h1`, `hP0`, `hP1`, `hs`, `hstep`, `k`, `s` | executable tactic route and its certificates |
@@ -154,6 +155,7 @@ Current totals: **294 IDs**; **26 formalized**, **247 shells**, **3 fragments**,
 | A116089 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A118884 | `shell` | Periodic growth with period four and a lag of changing sign ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A118931 | `shell` | A feedback coefficient depending on `n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A119308 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A120434 | `shell` | Permutations by big descents: `v_n(t) = t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A122076 | `shell` | `/`: unit shifted-square lag, with centers `1` and `-1`.<br>`/`: expanded `B_n(t)=-1-2t-t^2`. | `rr_lw_negative_square_sequence_realrooted_unit`, `rr_sign` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A122542 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
