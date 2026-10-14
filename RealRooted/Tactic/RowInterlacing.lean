@@ -30,7 +30,8 @@ with one, the tactic checks the theorem's conclusion head and recurrence offset,
 all its advertised base rows with the recurrence's exact `QPoly` rows. A registered tail
 recurrence may start at or after the defining recurrence's offset. Among the matches, models
 advertising the most exact rows take precedence, so an underdetermined prefix cannot shadow a
-more specific model. Unrelated models are never elaborated.
+more specific model. For a splitting goal, a matching interlacing transfer is projected to the
+left row's splitting statement. Unrelated models are never elaborated.
 
 ## Routes of `rr_row_interlaces`, in order
 
@@ -229,11 +230,30 @@ private inductive RowModelConclusion where
   | interlaces
   deriving BEq
 
+/-- Whether registry lookup requires the requested conclusion or its interlacing projection. -/
+private inductive RowModelSearch where
+  | direct
+  | splitsProjection
+
+/-- A registered transfer together with its conclusion and exact filtering data. -/
+private structure RowModelCandidate where
+  decl : Name
+  conclusion : RowModelConclusion
+  bases : Array (Nat × QPoly)
+  offset : Option Nat
+
 /-- Recognize the conclusion head without elaborating the transfer theorem. -/
 private def rowModelConclusion? (target : Expr) : Option RowModelConclusion :=
   if target.isAppOf ``Polynomial.Splits then some .splits
   else if target.isAppOf ``RealRooted.Interlaces then some .interlaces
   else none
+
+/-- Whether a model conclusion can prove the requested conclusion. -/
+private def rowModelConclusionSupports
+    (search : RowModelSearch) (model requested : RowModelConclusion) : Bool :=
+  match search with
+  | .direct => model == requested
+  | .splitsProjection => model == .interlaces && requested == .splits
 
 /-- The constant row index when `e` is an application of the sequence `P`. -/
 private def rowIndex? (P e : Expr) : MetaM (Option Nat) := do
@@ -242,11 +262,13 @@ private def rowIndex? (P e : Expr) : MetaM (Option Nat) := do
   evalNat e.appArg!
 
 /-- Read the recurrence offset and exact base rows advertised by a transfer theorem. -/
-private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
-    (Option (Array (Nat × QPoly) × Option Nat)) := do
+private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusion)
+    (decl : Name) : MetaM
+    (Option (RowModelConclusion × Array (Nat × QPoly) × Option Nat)) := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescope type fun xs conclusion => do
-    unless rowModelConclusion? conclusion == some want do return none
+    let some modelConclusion := rowModelConclusion? conclusion | return none
+    unless rowModelConclusionSupports search modelConclusion want do return none
     let some P := xs.find? fun x =>
         (conclusion.find? fun e => e.isApp && e.getAppFn == x).isSome
       | return none
@@ -266,15 +288,15 @@ private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
           natOffsetOf? ys[0]! lhs.appArg!
     unless bases.any (fun b => b.1 == 0) && bases.any (fun b => b.1 == 1) do
       return none
-    return some (bases, offset?)
+    return some (modelConclusion, bases, offset?)
 
 /-- The most specific registered models whose conclusion, offset, and exact base rows match. -/
 private def matchingRowModels (decls : Array Name) (P : Name)
-    (want : RowModelConclusion) : MetaM (Array Name) := do
-  let mut models : Array (Name × Array (Nat × QPoly) × Option Nat) := #[]
+    (search : RowModelSearch) (want : RowModelConclusion) : MetaM (Array RowModelCandidate) := do
+  let mut models : Array RowModelCandidate := #[]
   for decl in decls.qsort Name.quickLt do
-    let some (bases, offset?) ← rowModelBaseRows? want decl | continue
-    models := models.push (decl, bases, offset?)
+    let some (conclusion, bases, offset) ← rowModelBaseRows? search want decl | continue
+    models := models.push { decl, conclusion, bases, offset }
   if models.isEmpty then return #[]
   let recurrence? ← linRec? P
   let rows? ← match recurrence? with
@@ -285,19 +307,19 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     | none => linRecBaseRows? P
   let some rows := rows? | return #[]
   let mut preliminary := #[]
-  for (decl, bases, offset?) in models do
-    let offsetMatches := match recurrence?, offset? with
+  for model in models do
+    let offsetMatches := match recurrence?, model.offset with
       | some recurrence, some offset => decide (recurrence.offset ≤ offset)
       | _, _ => true
-    let firstRowsMatch := bases.all fun (i, q) =>
+    let firstRowsMatch := model.bases.all fun (i, q) =>
       i > 1 || match rows[i]? with
         | some row => row.eqv q
         | none => false
-    if offsetMatches && firstRowsMatch then preliminary := preliminary.push (decl, bases)
+    if offsetMatches && firstRowsMatch then preliminary := preliminary.push model
   if preliminary.isEmpty then return #[]
   let maxBase := preliminary.foldl (init := 1) fun m model =>
-    model.2.foldl (init := m) fun m base => max m base.1
-  if maxBase ≤ 1 then return preliminary.map (·.1)
+    model.bases.foldl (init := m) fun m base => max m base.1
+  if maxBase ≤ 1 then return preliminary
   let rows? ← match recurrence? with
     | some recurrence => linRecRows? recurrence maxBase
     | none => pure none
@@ -305,17 +327,17 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     | some rows => pure (some rows)
     | none => linRecBaseRows? P
   let some rows := rows? | return #[]
-  let mut candidates : Array (Name × Nat) := #[]
-  for (decl, bases) in preliminary do
-    let basesMatch := bases.all fun (i, q) =>
+  let mut candidates : Array RowModelCandidate := #[]
+  for model in preliminary do
+    let basesMatch := model.bases.all fun (i, q) =>
       match rows[i]? with
       | some row => row.eqv q
       | none => false
-    if basesMatch then candidates := candidates.push (decl, bases.size)
+    if basesMatch then candidates := candidates.push model
   if candidates.isEmpty then return #[]
   let maxEvidence := candidates.foldl (init := 0) fun evidence candidate =>
-    max evidence candidate.2
-  return (candidates.filter fun candidate => candidate.2 == maxEvidence).map (·.1)
+    max evidence candidate.bases.size
+  return candidates.filter fun candidate => candidate.bases.size == maxEvidence
 
 /-- The named definition at the head of a model recurrence's right-hand side, if any. -/
 private def rowModelRhsDefinition? : TacticM (Option Name) := withMainContext do
@@ -359,9 +381,20 @@ private def closeRowModelBaseIdentity (P : Ident) : TacticM Unit := do
   unless (← getGoals).isEmpty do
     throwError "row-model base identity left goals"
 
+/-- Project a splitting goal to consecutive interlacing of the same row. -/
+private def projectRowModelInterlaces (P : Ident) : TacticM Unit := do
+  let (t, c) ← rowIndexParts P.getId
+  let e ← indexTerm t c
+  evalTactic (← `(tactic|
+    refine (?_ : RealRooted.Interlaces ($P:ident $e) ($P:ident ($e + 1))).2.1.2))
+
 /-- Apply a structurally matched transfer theorem. -/
-private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
-  evalTactic (← `(tactic| apply $(mkIdent decl):ident (P := $P:ident)))
+private def applyRowModel (P : Ident) (candidate : RowModelCandidate) : TacticM Unit := do
+  let target ← instantiateMVars (← getMainTarget)
+  if rowModelConclusion? target == some .splits &&
+      candidate.conclusion == .interlaces then
+    projectRowModelInterlaces P
+  evalTactic (← `(tactic| apply $(mkIdent candidate.decl):ident (P := $P:ident)))
   let goals ← getGoals
   for goal in goals do
     setGoals [goal]
@@ -381,24 +414,25 @@ private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
   setGoals []
 
 /-- The sequence and registered models whose conclusion and exact base rows match the goal. -/
-private def rowModelCandidates? : TacticM (Option (Ident × Array Name)) :=
+private def rowModelCandidates?
+    (search : RowModelSearch) : TacticM (Option (Ident × Array RowModelCandidate)) :=
     withMainContext do
   let decls := rrRowModelAttr.getDecls (← getEnv)
   if decls.isEmpty then return none
   let target ← instantiateMVars (← getMainTarget)
   let some want := rowModelConclusion? target | return none
   let some PName ← findPolySeqConst? target | return none
-  let candidates ← matchingRowModels decls PName want
+  let candidates ← matchingRowModels decls PName search want
   if candidates.isEmpty then return none
   return some (mkIdent PName, candidates)
 
 /-- Try only the registered models selected by the structural and exact-row filter. -/
-private def rowModelGoal (P : Ident) (candidates : Array Name) : TacticM Unit := do
+private def rowModelGoal (P : Ident) (candidates : Array RowModelCandidate) : TacticM Unit := do
   let mut failures : Array (MessageData × MessageData) := #[]
-  for decl in candidates do
-    match ← rowAttempt (applyRowModel P decl) with
+  for candidate in candidates do
+    match ← rowAttempt (applyRowModel P candidate) with
     | .ok _ => return
-    | .error err => failures := failures.push (m!"{decl}", err)
+    | .error err => failures := failures.push (m!"{candidate.decl}", err)
   throwRowFailures m!"no matching registered row model proves the goal for {P}" failures
 
 /-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
@@ -408,7 +442,7 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
     if let some why ← topInterlacesProbe hints then
       throwError "rr_row_interlaces: no strategy (probe: {why})"
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
-    if let some (P, candidates) ← rowModelCandidates? then
+    if let some (P, candidates) ← rowModelCandidates? .direct then
       if ← rowSucceeds (rowModelGoal P candidates) then return (#[], hints)
   if ← isDerivLagGoal then
     return (#[], ← derivLagCore false hints)
@@ -707,7 +741,7 @@ def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
   return true
 
 /-- `rr_row_splits`, returning the hints of the successful route. -/
-private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainContext do
+private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMainContext do
   if let some v := hints.via then
     unless splitsRoutes.contains v do
       throwError "rr_row_splits: unknown route {v}; the routes are \
@@ -739,7 +773,7 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
   | .pass => pure ()
   if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
       hints.upper.isNone then
-    if let some (P, candidates) ← rowModelCandidates? then
+    if let some (P, candidates) ← rowModelCandidates? .direct then
       if ← rowSucceeds (rowModelGoal P candidates) then return {}
   if ← isDerivLagGoal then
     return ← derivLagCore true hints
@@ -1064,6 +1098,17 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
   if hints.via.isNone && !probeConfirmed then
     throwError "rr_row_splits: no strategy (probe) for {P}"
   throwRowFailures m!"rr_row_splits: no strategy proves the goal for {P}" failures
+
+/-- Run the ordinary splitting routes, then project a registered interlacing transfer. -/
+private def rowSplitsCore (hints : RowHints) : TacticM RowHints := do
+  match ← rowAttempt (rowSplitsCoreDirect hints) with
+  | .ok result => return result
+  | .error directError =>
+      if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
+          hints.upper.isNone then
+        if let some (P, candidates) ← rowModelCandidates? .splitsProjection then
+          if ← rowSucceeds (rowModelGoal P candidates) then return {}
+      throwError directError
 
 elab_rules : tactic
   | `(tactic| rr_row_splits $hs*) => withMainContext do
