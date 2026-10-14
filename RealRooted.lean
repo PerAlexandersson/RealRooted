@@ -1971,3 +1971,6 @@ import RealRooted.Interlacing.ReversalLeftDegree
 import RealRooted.Tactic.Examples.EulerTypeBridges
 import RealRooted.Tactic.Row.EndpointWindow
 import RealRooted.Tactic.Row.RationalReverse
+import RealRooted.Applications.OEIS.A394813
+import RealRooted.Applications.OEIS.A395326
+import RealRooted.Tactic.Examples.OEIS.TransformModels
