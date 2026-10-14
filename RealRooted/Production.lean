@@ -1815,6 +1815,10 @@ import RealRooted.Applications.OEIS.ReflectedEulerRows
 import RealRooted.Interlacing.ReversalCommonFactor
 import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
+import RealRooted.Applications.OEIS.A155495
+import RealRooted.Applications.OEIS.A318397
+import RealRooted.Applications.OEIS.A367177
+import RealRooted.MultiplierSequence.JensenHypergeometric
 
 /-!
 # RealRooted production umbrella

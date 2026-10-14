@@ -1978,3 +1978,8 @@ import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
 import RealRooted.Tactic.Examples.OEIS.TransformModels
 import RealRooted.Tactic.Examples.EulerBidiagonalOeis
+import RealRooted.Applications.OEIS.A155495
+import RealRooted.Applications.OEIS.A318397
+import RealRooted.Applications.OEIS.A367177
+import RealRooted.MultiplierSequence.JensenHypergeometric
+import RealRooted.Tactic.Examples.RowModelJensenFamilies
