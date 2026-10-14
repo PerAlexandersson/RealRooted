@@ -85,6 +85,7 @@ import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
 import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.Foundation
 import RealRooted.Tactic.Examples.OEIS.GammaVeronese
+import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
 import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
 import RealRooted.Tactic.Examples.OEIS.NegativeLag

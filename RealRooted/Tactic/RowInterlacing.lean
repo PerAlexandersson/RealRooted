@@ -27,9 +27,10 @@ route that the probe rules out fails without elaborating anything.
 
 Transfer theorems tagged `@[rr_row_model]` provide another automatic route. Before refining
 with one, the tactic checks the theorem's conclusion head and recurrence offset, then compares
-its advertised initial rows with the recurrence's exact `QPoly` rows. A registered tail
-recurrence may start at or after the defining recurrence's offset. Unrelated models are never
-elaborated.
+all its advertised base rows with the recurrence's exact `QPoly` rows. A registered tail
+recurrence may start at or after the defining recurrence's offset. Among the matches, models
+advertising the most exact rows take precedence, so an underdetermined prefix cannot shadow a
+more specific model. Unrelated models are never elaborated.
 
 ## Routes of `rr_row_interlaces`, in order
 
@@ -234,50 +235,46 @@ private def rowModelConclusion? (target : Expr) : Option RowModelConclusion :=
   else if target.isAppOf ``RealRooted.Interlaces then some .interlaces
   else none
 
-/-- Whether `e` is the row `P n`. -/
-private def isRowAt (P e : Expr) (n : Nat) : MetaM Bool := do
+/-- The constant row index when `e` is an application of the sequence `P`. -/
+private def rowIndex? (P e : Expr) : MetaM (Option Nat) := do
   let e := e.consumeMData
-  unless e.isApp && e.getAppFn == P do return false
-  return (← evalNat e.appArg!) == some n
+  unless e.isApp && e.getAppFn == P do return none
+  evalNat e.appArg!
 
-/-- Read the recurrence offset and up to three exact base rows advertised by a transfer theorem. -/
+/-- Read the recurrence offset and exact base rows advertised by a transfer theorem. -/
 private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
-    (Option (QPoly × QPoly × Option QPoly × Option Nat)) := do
+    (Option (Array (Nat × QPoly) × Option Nat)) := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescope type fun xs conclusion => do
     unless rowModelConclusion? conclusion == some want do return none
     let some P := xs.find? fun x =>
         (conclusion.find? fun e => e.isApp && e.getAppFn == x).isSome
       | return none
-    let mut zero? : Option QPoly := none
-    let mut one? : Option QPoly := none
-    let mut two? : Option QPoly := none
+    let mut bases : Array (Nat × QPoly) := #[]
     let mut offset? : Option Nat := none
     for x in xs do
       let binderType ← inferType x
       if let some (_, lhs, rhs) := binderType.eq? then
-        if ← isRowAt P lhs 0 then zero? := ← evalQPoly? rhs
-        else if ← isRowAt P rhs 0 then zero? := ← evalQPoly? lhs
-        else if ← isRowAt P lhs 1 then one? := ← evalQPoly? rhs
-        else if ← isRowAt P rhs 1 then one? := ← evalQPoly? lhs
-        else if ← isRowAt P lhs 2 then two? := ← evalQPoly? rhs
-        else if ← isRowAt P rhs 2 then two? := ← evalQPoly? lhs
+        if let some i ← rowIndex? P lhs then
+          if let some q ← evalQPoly? rhs then bases := bases.push (i, q)
+        else if let some i ← rowIndex? P rhs then
+          if let some q ← evalQPoly? lhs then bases := bases.push (i, q)
       else if offset?.isNone && binderType.isForall then
         offset? := ← forallTelescope binderType fun ys body => do
           let some (_, lhs, _) := body.eq? | return none
           unless ys.size == 1 && lhs.isApp && lhs.getAppFn == P do return none
           natOffsetOf? ys[0]! lhs.appArg!
-    let (some zero, some one) := (zero?, one?) | return none
-    return some (zero, one, two?, offset?)
+    unless bases.any (fun b => b.1 == 0) && bases.any (fun b => b.1 == 1) do
+      return none
+    return some (bases, offset?)
 
-/-- Registered models whose conclusion, recurrence offset, and exact first rows match. -/
+/-- The most specific registered models whose conclusion, offset, and exact base rows match. -/
 private def matchingRowModels (decls : Array Name) (P : Name)
-    (want : RowModelConclusion) : MetaM (Array (Name × Bool)) := do
-  let mut models : Array (Name × QPoly × QPoly × Option QPoly × Option Nat) := #[]
+    (want : RowModelConclusion) : MetaM (Array Name) := do
+  let mut models : Array (Name × Array (Nat × QPoly) × Option Nat) := #[]
   for decl in decls.qsort Name.quickLt do
-    let some (modelZero, modelOne, modelTwo?, offset?) ←
-        rowModelBaseRows? want decl | continue
-    models := models.push (decl, modelZero, modelOne, modelTwo?, offset?)
+    let some (bases, offset?) ← rowModelBaseRows? want decl | continue
+    models := models.push (decl, bases, offset?)
   if models.isEmpty then return #[]
   let recurrence? ← linRec? P
   let rows? ← match recurrence? with
@@ -287,37 +284,48 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     | some rows => pure (some rows)
     | none => linRecBaseRows? P
   let some rows := rows? | return #[]
-  let (some rowZero, some rowOne) := (rows[0]?, rows[1]?) | return #[]
   let mut preliminary := #[]
-  for (decl, modelZero, modelOne, modelTwo?, offset?) in models do
+  for (decl, bases, offset?) in models do
     let offsetMatches := match recurrence?, offset? with
       | some recurrence, some offset => decide (recurrence.offset ≤ offset)
       | _, _ => true
-    if offsetMatches && rowZero.eqv modelZero && rowOne.eqv modelOne then
-      preliminary := preliminary.push (decl, modelTwo?)
-  unless preliminary.any fun candidate => candidate.2.isSome do
-    return preliminary.map fun candidate => (candidate.1, false)
+    let firstRowsMatch := bases.all fun (i, q) =>
+      i > 1 || match rows[i]? with
+        | some row => row.eqv q
+        | none => false
+    if offsetMatches && firstRowsMatch then preliminary := preliminary.push (decl, bases)
+  if preliminary.isEmpty then return #[]
+  let maxBase := preliminary.foldl (init := 1) fun m model =>
+    model.2.foldl (init := m) fun m base => max m base.1
+  if maxBase ≤ 1 then return preliminary.map (·.1)
   let rows? ← match recurrence? with
-    | some recurrence => linRecRows? recurrence 2
+    | some recurrence => linRecRows? recurrence maxBase
     | none => pure none
   let rows? ← match rows? with
     | some rows => pure (some rows)
     | none => linRecBaseRows? P
   let some rows := rows? | return #[]
-  let some rowTwo := rows[2]? | return #[]
-  let mut candidates := #[]
-  for (decl, modelTwo?) in preliminary do
-    if modelTwo?.all fun modelTwo => rowTwo.eqv modelTwo then
-      candidates := candidates.push (decl, modelTwo?.isSome)
-  return candidates
+  let mut candidates : Array (Name × Nat) := #[]
+  for (decl, bases) in preliminary do
+    let basesMatch := bases.all fun (i, q) =>
+      match rows[i]? with
+      | some row => row.eqv q
+      | none => false
+    if basesMatch then candidates := candidates.push (decl, bases.size)
+  if candidates.isEmpty then return #[]
+  let maxEvidence := candidates.foldl (init := 0) fun evidence candidate =>
+    max evidence candidate.2
+  return (candidates.filter fun candidate => candidate.2 == maxEvidence).map (·.1)
 
 /-- Close one polynomial identity obtained from a model recurrence. -/
 private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
+  if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
   if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
   let target ← instantiateMVars (← getMainTarget)
   match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
+  if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
   if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
   if !(← getGoals).isEmpty then
     evalTactic (← `(tactic| rr_cf_identity))
@@ -333,31 +341,28 @@ private def closeRowModelBaseIdentity (P : Ident) : TacticM Unit := do
     throwError "row-model base identity left goals"
 
 /-- Apply a structurally matched transfer theorem. -/
-private def applyRowModel (P : Ident) (decl : Name) (hasThird : Bool) : TacticM Unit := do
-  if hasThird then
-    evalTactic (← `(tactic|
-      refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ ?_ _))
-  else
-    evalTactic (← `(tactic| refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ _))
+private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
+  evalTactic (← `(tactic| apply $(mkIdent decl):ident (P := $P:ident)))
   let goals ← getGoals
-  let (baseGoals, hrec) ← if hasThird then
-    let [hzero, hone, htwo, hrec] := goals
-      | throwError "registered row-model theorem has an unsupported shape"
-    pure ([hzero, hone, htwo], hrec)
-  else
-    let [hzero, hone, hrec] := goals
-      | throwError "registered row-model theorem has an unsupported shape"
-    pure ([hzero, hone], hrec)
-  for goal in baseGoals do
+  for goal in goals do
     setGoals [goal]
-    unless ← rowSucceeds (discard <| smallRow P) do
-      closeRowModelBaseIdentity P
-  setGoals [hrec]
-  evalTactic (← `(tactic| intro n))
-  closeRowModelIdentity P
+    if ← rowSucceeds do
+        unless ← rowSucceeds (discard <| smallRow P) do
+          closeRowModelBaseIdentity P
+      then continue
+    if ← rowSucceeds do
+        evalTactic (← `(tactic| intro n))
+        closeRowModelIdentity P
+      then continue
+    if ← rowSucceeds do
+        evalTactic (← `(tactic| intro n))
+        rowSideGoal (some P)
+      then continue
+    throwError "registered row-model theorem has an unsupported hypothesis"
+  setGoals []
 
-/-- The sequence and registered models whose conclusion and exact first rows match the goal. -/
-private def rowModelCandidates? : TacticM (Option (Ident × Array (Name × Bool))) :=
+/-- The sequence and registered models whose conclusion and exact base rows match the goal. -/
+private def rowModelCandidates? : TacticM (Option (Ident × Array Name)) :=
     withMainContext do
   let decls := rrRowModelAttr.getDecls (← getEnv)
   if decls.isEmpty then return none
@@ -369,10 +374,10 @@ private def rowModelCandidates? : TacticM (Option (Ident × Array (Name × Bool)
   return some (mkIdent PName, candidates)
 
 /-- Try only the registered models selected by the structural and exact-row filter. -/
-private def rowModelGoal (P : Ident) (candidates : Array (Name × Bool)) : TacticM Unit := do
+private def rowModelGoal (P : Ident) (candidates : Array Name) : TacticM Unit := do
   let mut failures : Array (MessageData × MessageData) := #[]
-  for (decl, hasThird) in candidates do
-    match ← rowAttempt (applyRowModel P decl hasThird) with
+  for decl in candidates do
+    match ← rowAttempt (applyRowModel P decl) with
     | .ok _ => return
     | .error err => failures := failures.push (m!"{decl}", err)
   throwRowFailures m!"no matching registered row model proves the goal for {P}" failures
