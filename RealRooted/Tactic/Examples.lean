@@ -75,6 +75,7 @@ import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEIS.A304334
+import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
 import RealRooted.Tactic.Examples.OEIS.CompatCommon
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma

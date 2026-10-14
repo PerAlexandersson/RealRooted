@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **303 IDs**; **31 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **304 IDs**; **32 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -293,6 +293,7 @@ Current totals: **303 IDs**; **31 formalized**, **259 shells**, **3 fragments**,
 | A307419 | `shell` | A second-order recurrence with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A316649 | `shell` | OEIS in its generated order-three coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A317496 | `shell` | `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A318107 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace H<br>+9 additional test intents | `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A318397 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A321331 | `shell` | The derivative Touchard presentation of the rows. | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A321434 | `shell` | A derivative recurrence of lag two, split along the residues of `n` mod two ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
