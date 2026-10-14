@@ -1,5 +1,6 @@
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.Applications.OEIS.PeriodicTopRows
+import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 
 /-!
 # Remaining row-degree regressions for issue 1628
@@ -175,6 +176,44 @@ def A177040 : ℕ → ℝ[X]
 
 /-- The exact A177040 degree law, certified by the default row-degree tactic. -/
 theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 := by
+  rr_row_natDegree
+
+/-- The downstream A110205 recurrence, used to regress the degree-model fallback. -/
+def A110205 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 9 + 27 * X
+  | 2 => 73 + 368 * X + 343 * X ^ 2
+  | n + 3 =>
+      RealRooted.Applications.OEIS.HigherOrderDegreeModels.A110205.nextRow n
+        (A110205 (n + 2)) (A110205 (n + 1)) (A110205 n)
+
+/-- The exact A110205 degree law, certified by the default row-degree tactic. -/
+theorem A110205_natDegree (n : ℕ) : (A110205 n).natDegree = n := by
+  rr_row_natDegree
+
+/-- The downstream A262226 recurrence, used to regress the degree-model fallback. -/
+def A262226 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 =>
+      RealRooted.Applications.OEIS.HigherOrderDegreeModels.A262226.nextRow n
+        (A262226 (n + 1)) (A262226 n)
+
+/-- The exact A262226 degree law, certified by the default row-degree tactic. -/
+theorem A262226_natDegree (n : ℕ) : (A262226 n).natDegree = 2 * (n / 2) := by
+  rr_row_natDegree
+
+/-- The downstream A367873 recurrence, used to regress the degree-model fallback. -/
+def A367873 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 4 * X
+  | n + 3 =>
+      RealRooted.Applications.OEIS.HigherOrderDegreeModels.A367873.nextRow n
+        (A367873 (n + 2)) (A367873 (n + 1)) (A367873 n)
+
+/-- The exact A367873 degree law, certified by the default row-degree tactic. -/
+theorem A367873_natDegree (n : ℕ) : (A367873 n).natDegree = (n + 1) / 2 := by
   rr_row_natDegree
 
 end

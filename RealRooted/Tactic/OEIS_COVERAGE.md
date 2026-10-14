@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **288 IDs**; **25 formalized**, **244 shells**, **3 fragments**, and **16 documented-only**.
+Current totals: **291 IDs**; **25 formalized**, **247 shells**, **3 fragments**, and **16 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -138,6 +138,7 @@ Current totals: **288 IDs**; **25 formalized**, **244 shells**, **3 fragments**,
 | A109983 | `shell` | OEIS in its generated two-lag coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A110162 | `shell` | OEIS shape `/`: `P_{n+2}=(t-2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A110200 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
+| A110205 | `shell` | The downstream recurrence, used to regress the degree-model fallback.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A110608 | `formalized` | (, `RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`).<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A111006 | `shell` | A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A111125 | `shell` | OEIS shapes `//`: | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
@@ -254,6 +255,7 @@ Current totals: **288 IDs**; **25 formalized**, **244 shells**, **3 fragments**,
 | A257621 | `shell` | half-line factor `4t-4t^2=4t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A257626 | `shell` | half-line factor `3t-3t^2=3t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A259454 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+7 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
+| A262226 | `shell` | The downstream recurrence, used to regress the degree-model fallback.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A263789 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+8 additional test intents | `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A266326 | `documented` | The two-step monomial model for the recurrence from .<br>The recurrence from .<br>+2 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A268647 | `shell` | The recurrence from .<br>The recurrence equals the consecutive-linear-factor product.<br>+1 additional test intents | `rr_row_derivative_X_mul_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -301,6 +303,7 @@ Current totals: **288 IDs**; **25 formalized**, **244 shells**, **3 fragments**,
 | A361893 | `shell` | split scalar denominator normalizing into `-c_n t^2 P'`. | `rr_mw_active_den_at`, `rr_mw_coeff_at`, `rr_mw_den_norm_coeff`, `rr_mw_derivative_neg_X_sq_sequence_auto` | `base`, `coeff_eq`, `degree_succ`, `den_nonzero`, `derivative`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A366159 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
 | A367177 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
+| A367873 | `shell` | The downstream recurrence, used to regress the degree-model fallback.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A370173 | `shell` | `/`: `P_n=tP_{n-1}+tP_{n-2}`. | `rr_lw_current_X_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A370258 | `shell` | `A n` and decreases with `n` (,<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A375853 | `shell` | active shift of `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`. | `rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto` | `base`, `coeff`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `raw_recurrence` | concrete row definition and proofs of the listed certificates |

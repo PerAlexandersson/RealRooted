@@ -1983,3 +1983,4 @@ import RealRooted.Applications.OEIS.A318397
 import RealRooted.Applications.OEIS.A367177
 import RealRooted.MultiplierSequence.JensenHypergeometric
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
+import RealRooted.Applications.OEIS.HigherOrderDegreeModels
