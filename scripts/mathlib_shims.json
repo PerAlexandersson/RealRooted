@@ -2499,6 +2499,16 @@
       ],
       "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LocallyUniformLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LocallyUniformLimit"
+      ],
+      "note": "Laguerre-form closure under locally uniform limits; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
     }
   ]
 }
