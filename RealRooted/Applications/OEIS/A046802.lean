@@ -138,12 +138,14 @@ private theorem binomial_step (n : ℕ) :
   ring
 
 /-- Every sequence with the A046802 initial rows and classical terminal
-recurrence has strict adjacent interlacing. -/
+recurrence has strict adjacent interlacing.  The third advertised row keeps the registry
+filter from trying this model on other sequences starting with `1, 1 + X` (A108426). -/
 @[rr_row_model]
 theorem interlaces_of_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)
     (hone : P 1 = 1 + X)
+    (_htwo : P 2 = 1 + 3 * X + X ^ 2)
     (hrec : ∀ n, P (n + 2) = nextRow n (P (n + 1)) (P n))
     (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
