@@ -10,23 +10,7 @@ library proves these statements using only `{propext, Quot.sound, Classical.choi
 
 open Polynomial
 
-section
-
-namespace List
-
-variable {α : Type*} (r : α → α → Prop)
-
-/-- `l₁` `r`-interleaves `l₂` if the elements of `l₁` are sandwiched between
-consecutive elements of `l₂` under `r`. -/
-inductive Interleaves : List α → List α → Prop
-  | nil_nil : Interleaves [] []
-  | nil_singleton (a : α) : Interleaves [] [a]
-  | cons_symm ⦃l₁ l₂ : List α⦄ ⦃b : α⦄ (hl : Interleaves l₁ (b :: l₂)) ⦃a : α⦄ (hab : r a b) :
-      Interleaves (b :: l₂) (a :: l₁)
-
-end List
-
-end
+-- `List.Interleaves` is Mathlib's (`Mathlib.Data.List.Interleave`, mathlib4#39870).
 
 noncomputable section
 
