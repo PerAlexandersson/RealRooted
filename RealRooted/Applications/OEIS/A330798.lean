@@ -1,4 +1,5 @@
 import RealRooted.DerivativeRecurrence.MultiLagCancel
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Periodic top-coefficient rows
@@ -126,6 +127,26 @@ private lemma A177040_coeff_succ (n k : ℕ) :
     show (2 ≤ k + 2) = True by simp, ite_true, show k + 2 - 2 = k by lia]
   grind
 
+/-- The normalized A330798 lag-two update. -/
+def A330798Next (n : ℕ) (u v : ℝ[X]) : ℝ[X] :=
+  let r : ℝ := n
+  let q : ℝ := 1 / (-8 - 3 * r + 2 * (3 + r) ^ 2)
+  (C (q * (25 / 8 + 7 / 8 * r)) * X + C (9 / 8 * q * (3 + r)) * X ^ 2)
+      * u.derivative.derivative
+    + (C (1 / 4 * r * q) + C (-1 / 2 * q) * X) * v.derivative.derivative
+    + (C (q * (21 / 2 - 1 / 8 * (3 + r) ^ 2 + 11 / 2 * r))
+        + C (q * (99 / 4 - 9 / 8 * (3 + r) ^ 2 + 39 / 4 * r)) * X
+        + C (q * (-75 / 4 - 99 / 4 * r)) * X ^ 2
+        + C (q * (-36 - 36 * r)) * X ^ 3) * u.derivative
+    + (C (q * (-1 - 2 * r)) + C (18 * q) * X + C (33 * q) * X ^ 2
+        + C (q * (-9 - 27 / 2 * r)) * X ^ 3) * v.derivative
+    + (C (q * (57 / 2 + 15 * r - 15 / 8 * (3 + r) ^ 2))
+        + C (q * (-150 - 75 * r + 81 / 4 * (3 + r) ^ 2)) * X
+        + C (q * (-288 - 144 * r + 36 * (3 + r) ^ 2)) * X ^ 2) * u
+    + (C (q * (-63 + 9 * (3 + r) ^ 2 - 27 / 2 * r))
+        + C (q * (-48 + 9 * (3 + r) ^ 2 + 33 / 2 * r)) * X
+        + C (q * (234 - 27 * (3 + r) ^ 2 + 261 / 2 * r)) * X ^ 2) * v
+
 /-- The downstream A330798 recurrence. -/
 def A330798 : ℕ → ℝ[X]
   | 0 => 1
@@ -149,6 +170,25 @@ def A330798 : ℕ → ℝ[X]
         + (C (q * (-63 + 9 * (3 + r) ^ 2 - 27 / 2 * r))
             + C (q * (-48 + 9 * (3 + r) ^ 2 + 33 / 2 * r)) * X
             + C (q * (234 - 27 * (3 + r) ^ 2 + 261 / 2 * r)) * X ^ 2) * A330798 n
+
+/-- The normalized update is the defining recurrence for `A330798`. -/
+theorem A330798_succ_succ (n : ℕ) :
+    A330798 (n + 2) = A330798Next n (A330798 (n + 1)) (A330798 n) := by
+  rw [A330798]
+  rfl
+
+/-- A sequence with the generated A330798 initial rows and normalized update is the library
+model sequence. -/
+theorem sequence_eq_A330798_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 2 + 2 * X)
+    (hrec : ∀ n, P (n + 2) = A330798Next n (P (n + 1)) (P n)) :
+    ∀ n, P n = A330798 n :=
+  sequence_eq_of_same_lag_two_recurrence A330798Next
+    (hzero.trans (show (1 : ℝ[X]) = A330798 0 by rfl))
+    (hone.trans (show (2 + 2 * X : ℝ[X]) = A330798 1 by rfl))
+    hrec A330798_succ_succ
 
 private def A330798d (n : ℕ) : ℝ :=
   2 * ((n : ℝ) + 1) ^ 2 * (2 * (n : ℝ) + 3)

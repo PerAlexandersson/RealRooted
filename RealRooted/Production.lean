@@ -1811,6 +1811,8 @@ import RealRooted.MultiplierSequence.TwoSidedJensen
 import RealRooted.Interlacing.ReversalLeftDegree
 import RealRooted.Tactic.Row.EndpointWindow
 import RealRooted.Tactic.Row.RationalReverse
+import RealRooted.Applications.OEIS.ReflectedEulerRows
+import RealRooted.Interlacing.ReversalCommonFactor
 
 /-!
 # RealRooted production umbrella
