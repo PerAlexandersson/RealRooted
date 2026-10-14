@@ -1974,3 +1974,4 @@ import RealRooted.Tactic.Row.RationalReverse
 import RealRooted.Applications.OEIS.ReflectedEulerRows
 import RealRooted.Interlacing.ReversalCommonFactor
 import RealRooted.Tactic.Examples.ShortlistRoutes
+import RealRooted.Tactic.Examples.EulerBidiagonalOeis
