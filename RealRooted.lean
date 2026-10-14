@@ -1977,3 +1977,4 @@ import RealRooted.Tactic.Examples.ShortlistRoutes
 import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
 import RealRooted.Tactic.Examples.OEIS.TransformModels
+import RealRooted.Tactic.Examples.EulerBidiagonalOeis
