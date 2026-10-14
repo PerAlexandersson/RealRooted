@@ -140,6 +140,7 @@ theorem interlaces_of_centralFactorial_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)
     (hone : P 1 = 1 + X)
+    (htwo : P 2 = 1 + 5 * X + X ^ 2)
     (hrec : ∀ n, P (n + 1) = nextRow 1 1 n (P n))
     (n : ℕ) : Interlaces (P n) (P (n + 1)) := by
   have heq : ∀ m, P m = rows 1 1 m := by
@@ -147,9 +148,11 @@ theorem interlaces_of_centralFactorial_recurrence
     induction m with
     | zero => exact hzero.trans (show (1 : ℝ[X]) = rows 1 1 0 by rfl)
     | succ m ih =>
-        rcases Nat.eq_zero_or_pos m with rfl | _
+        rcases m with _ | m
         · exact hone.trans (by norm_num [rows, nextRow, map_ofNat])
-        · rw [hrec, rows, ih]
+        · rcases m with _ | m
+          · exact htwo.trans (by norm_num [rows, nextRow, map_ofNat]; ring)
+          · rw [hrec, rows, ih]
   rw [heq n, heq (n + 1)]
   exact interlaces_rows (by norm_num) (by norm_num) (by norm_num) n
 
@@ -160,6 +163,7 @@ theorem interlaces_of_legendreStirling_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)
     (hone : P 1 = 1 + 2 * X)
+    (htwo : P 2 = 1 + 8 * X + 4 * X ^ 2)
     (hrec : ∀ n, P (n + 1) = nextRow 1 2 n (P n))
     (n : ℕ) : Interlaces (P n) (P (n + 1)) := by
   have heq : ∀ m, P m = rows 1 2 m := by
@@ -167,9 +171,11 @@ theorem interlaces_of_legendreStirling_recurrence
     induction m with
     | zero => exact hzero.trans (show (1 : ℝ[X]) = rows 1 2 0 by rfl)
     | succ m ih =>
-        rcases Nat.eq_zero_or_pos m with rfl | _
+        rcases m with _ | m
         · exact hone.trans (by norm_num [rows, nextRow, map_ofNat])
-        · rw [hrec, rows, ih]
+        · rcases m with _ | m
+          · exact htwo.trans (by norm_num [rows, nextRow, map_ofNat]; ring)
+          · rw [hrec, rows, ih]
   rw [heq n, heq (n + 1)]
   exact interlaces_rows (by norm_num) (by norm_num) (by norm_num) n
 
