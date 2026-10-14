@@ -1819,6 +1819,7 @@ import RealRooted.Applications.OEIS.A155495
 import RealRooted.Applications.OEIS.A318397
 import RealRooted.Applications.OEIS.A367177
 import RealRooted.MultiplierSequence.JensenHypergeometric
+import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 import RealRooted.Applications.OEIS.IndispensableDigits
 import RealRooted.MatrixInterlacing.DigitStep
 
