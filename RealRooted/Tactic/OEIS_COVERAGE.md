@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **287 IDs**; **25 formalized**, **243 shells**, **3 fragments**, and **16 documented-only**.
+Current totals: **288 IDs**; **25 formalized**, **244 shells**, **3 fragments**, and **16 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -223,6 +223,7 @@ Current totals: **287 IDs**; **25 formalized**, **243 shells**, **3 fragments**,
 | A171608 | `shell` | A three-term recurrence of lag two whose residue classes interlace ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A172108 | `shell` | interlace ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A176231 | `shell` | even Hermite coefficient triangle `(X-1)f+(2-4X)f'+4Xf''=(-1/2+D)(-2(X+1)f+4Xf')`. | `rr_neg_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_neg_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonneg` | concrete row definition and proofs of the listed certificates |
+| A177040 | `shell` | The downstream recurrence, used to regress the degree-model fallback.<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A178343 | `shell` | beta-binomial rows, `B_n(t)=-(n/(n-1))(1-t)^2`, active for `n>=2`.<br>denominator-fused beta-binomial lag after the active row shift. | `rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split`, `rr_sign` | `base`, `coeff`, `degree_succ`, `den`, `no_common_roots`, `pos_lc`, `raw_coeff`, `raw_recurrence`, `square_factor` | concrete row definition and proofs of the listed certificates |
 | A178820 | `shell` | def : ℕ → ℝ[X]<br>\| n + 1 => (C ((n + 4 : ℝ) / (n + 1)) + C ((n + 4 : ℝ) / (n + 1)) * X) * n<br>+2 additional test intents | `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A179900 | `shell` | `P_n=(5-t)P_{n-1}-P_{n-2}`, a negative-slope Favard row-sign case. | `rr_favard_const_row_sign_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
