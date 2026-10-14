@@ -147,6 +147,8 @@ import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Tactic.Examples.RowPathPower
 import RealRooted.Tactic.Examples.RowPathPowerK5
+import RealRooted.Tactic.Examples.RowRegression1689Degree
+import RealRooted.Tactic.Examples.RowRegression1689Interlacing
 import RealRooted.Tactic.Examples.RowSubseqDegree
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative

@@ -89,8 +89,8 @@ private def addNatRealSignProducts : TacticM Unit := withMainContext do
               mul_nonneg (Nat.cast_nonneg $ns) (by first | positivity | nlinarith)))
 
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
-evaluate, add the available products of parameter and variable signs, then use
-`positivity`, `nlinarith`, or `rr_row_field` for rational coefficients. -/
+evaluate and first try the direct sign machinery.  Only if that fails, add the available
+products of parameter and variable signs needed by rational-coefficient goals. -/
 elab "rr_row_eval_sign" : tactic => withMainContext do
   evalTactic (← `(tactic| (
     intros
@@ -98,6 +98,10 @@ elab "rr_row_eval_sign" : tactic => withMainContext do
       Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
       Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat] at *
     push_cast at *)))
+  if ← rowSucceeds (do
+      evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
+      unless (← getGoals).isEmpty do throwError "rr_row_eval_sign: goals remain") then
+    return
   addNatRealSignProducts
   evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
 
