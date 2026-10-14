@@ -1992,3 +1992,5 @@ import RealRooted.Applications.OEIS.A119308
 import RealRooted.MultiplierSequence.JensenAffineTheta
 import RealRooted.Applications.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.A304334
+import RealRooted.Applications.OEIS.A304330
+import RealRooted.Tactic.Examples.RowModelNextFamilies
