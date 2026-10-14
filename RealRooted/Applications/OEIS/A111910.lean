@@ -1,3 +1,5 @@
+import RealRooted.MultiplierSequence.TwoSidedJensen
+import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.Recurrence.RowModel
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
@@ -512,6 +514,108 @@ private lemma polynomial_eq_schur : ∀ n : ℕ, polynomial n = schurModel n
       rw [polynomial_succ_normalized n, polynomial_eq_schur (n + 1),
         polynomial_eq_schur n, ← schurModel_succ n]
 
+private def jensenWeight (k : ℕ) : ℝ :=
+  (4 : ℝ) ^ k * (Nat.factorial k : ℝ) /
+    ((Nat.factorial (k + 1) : ℝ) * (Nat.factorial (2 * k + 1) : ℝ))
+
+private lemma ascPochhammer_eval_two (k : ℕ) :
+    (ascPochhammer ℝ k).eval 2 = ((k + 1).factorial : ℝ) := by
+  induction k with
+  | zero => norm_num
+  | succ k ih =>
+      rw [ascPochhammer_succ_eval, ih, Nat.factorial_succ (k + 1)]
+      push_cast
+      ring
+
+private lemma ascPochhammer_eval_three_halves (k : ℕ) :
+    (4 : ℝ) ^ k * (Nat.factorial k : ℝ) *
+        (ascPochhammer ℝ k).eval (3 / 2) =
+      ((2 * k + 1).factorial : ℝ) := by
+  induction k with
+  | zero => norm_num
+  | succ k ih =>
+      rw [ascPochhammer_succ_eval, Nat.factorial_succ k,
+        show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by lia,
+        Nat.factorial_succ ((2 * k + 1) + 1),
+        Nat.factorial_succ (2 * k + 1), pow_succ]
+      push_cast
+      ring_nf at ih ⊢
+      linear_combination (4 * (k : ℝ) ^ 2 + 10 * (k : ℝ) + 6) * ih
+
+private lemma jensenWeight_eq (k : ℕ) :
+    jensenWeight k =
+      ((ascPochhammer ℝ k).eval 2)⁻¹ *
+        ((ascPochhammer ℝ k).eval (3 / 2))⁻¹ := by
+  rw [jensenWeight, ascPochhammer_eval_two]
+  have hhalf := ascPochhammer_eval_three_halves k
+  have hfac : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 :=
+    fun m => Nat.cast_ne_zero.mpr (Nat.factorial_pos m).ne'
+  have hhalfPos : 0 < (ascPochhammer ℝ k).eval (3 / 2) :=
+    ascPochhammer_pos k (3 / 2) (by norm_num)
+  field_simp [hfac]
+  nlinarith
+
+private lemma jensenWeight_pos (k : ℕ) : 0 < jensenWeight k := by
+  rw [jensenWeight]
+  positivity
+
+private lemma jensenWeight_multiplier : IsMultiplierSequence jensenWeight := by
+  have hpf := (isPFMultiplierSequence_inv_ascPochhammer (by norm_num : (0 : ℝ) < 2)).mul
+    (isPFMultiplierSequence_inv_ascPochhammer (by norm_num : (0 : ℝ) < 3 / 2))
+  have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
+  rw [show jensenWeight = fun k =>
+      ((ascPochhammer ℝ k).eval 2)⁻¹ *
+        ((ascPochhammer ℝ k).eval (3 / 2))⁻¹ by
+    funext k
+    exact jensenWeight_eq k]
+  exact hmult
+
+private def jensenScale (n : ℕ) : ℝ :=
+  ((Nat.factorial (n + 1) : ℝ) * (Nat.factorial (2 * n + 1) : ℝ)) /
+    ((4 : ℝ) ^ n * (Nat.factorial n : ℝ))
+
+private lemma schurModel_eq_jensenModel (n : ℕ) :
+    schurModel n = C (jensenScale n) *
+      twoSidedJensenPolynomial n jensenWeight jensenWeight := by
+  apply Polynomial.ext
+  intro k
+  rw [coeff_C_mul,
+    coeff_twoSidedJensenPolynomial jensenWeight_pos n jensenWeight k]
+  by_cases hk : k ≤ n
+  · rw [coeff_schurModel_eq_coeff hk, ite_eq_left hk, modelCoeff,
+      jensenScale, jensenWeight, jensenWeight, Nat.cast_choose ℝ hk]
+    simp only [show n - k + 1 = n + 1 - k by lia,
+      show 2 * (n - k) + 1 = 2 * n + 1 - 2 * k by lia]
+    have hfac : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 :=
+      fun m => Nat.cast_ne_zero.mpr (Nat.factorial_pos m).ne'
+    have hpow : (4 : ℝ) ^ k * 4 ^ (n - k) = 4 ^ n := by
+      rw [← pow_add, show k + (n - k) = n by lia]
+    field_simp [hfac]
+    rw [hpow]
+  · rw [coeff_schurModel_eq_zero_of_lt (Nat.lt_of_not_ge hk), ite_eq_right hk,
+      mul_zero]
+
+/-- Consecutive A111910 model rows are in directed proper position. -/
+theorem polynomial_strictInterl_succ (n : ℕ) :
+    StrictInterl (polynomial n) (polynomial (n + 1)) := by
+  rw [polynomial_eq_schur, polynomial_eq_schur, schurModel_eq_jensenModel,
+    schurModel_eq_jensenModel]
+  have hinter := strictInterl_twoSidedJensenPolynomial_succ
+    jensenWeight_multiplier jensenWeight_multiplier jensenWeight_pos jensenWeight_pos n
+  exact (hinter.C_mul_left (by rw [jensenScale]; positivity)).C_mul_right
+    (by rw [jensenScale]; positivity)
+
+/-- Consecutive A111910 model rows interlace. -/
+theorem polynomial_interlaces (n : ℕ) :
+    Interlaces (polynomial n) (polynomial (n + 1)) :=
+  (polynomial_strictInterl_succ n).toInterlaces (by
+    rw [polynomial_eq_schur, polynomial_eq_schur]
+    rw [schurModel_eq_jensenModel, schurModel_eq_jensenModel,
+      natDegree_C_mul (by rw [jensenScale]; positivity),
+      natDegree_C_mul (by rw [jensenScale]; positivity),
+      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos,
+      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos])
+
 /-- Every A111910 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
   rw [polynomial_eq_schur]
@@ -532,5 +636,22 @@ theorem splits_of_recurrence
     hrec (fun _ => rfl)
   rw [heq n]
   exact polynomial_splits n
+
+/-- A sequence with the A111910 initial rows and update has interlacing
+consecutive rows. -/
+@[rr_row_model]
+theorem interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 1 + X)
+    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)) (P n))
+    (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have heq := sequence_eq_of_same_lag_two_recurrence nextRow
+    (hzero.trans (show (1 : ℝ[X]) = polynomial 0 by rfl))
+    (hone.trans (show (1 + X : ℝ[X]) = polynomial 1 by rfl))
+    hrec (fun _ => rfl)
+  rw [heq n, heq (n + 1)]
+  exact polynomial_interlaces n
 
 end RealRooted.Applications.OEIS.A111910
