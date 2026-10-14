@@ -1965,4 +1965,5 @@ import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.ParityFactorization
 import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Applications.OEIS.A110608
+import RealRooted.MultiplierSequence.TwoSidedJensen
 import RealRooted.Tactic.Examples.RowSubseqDegree

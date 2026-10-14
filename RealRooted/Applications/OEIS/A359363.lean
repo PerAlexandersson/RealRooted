@@ -1,4 +1,5 @@
 import RealRooted.Applications.OEIS.A056939
+import RealRooted.Interlacing.Euclid
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.Recurrence.RowModel
 
@@ -75,6 +76,30 @@ theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
       rw [polynomial_succ_eq_X_mul]
       exact Polynomial.Splits.X.mul (A056939.polynomial_splits n)
 
+/-- Consecutive A359363 model rows are in directed proper position. -/
+theorem polynomial_strictInterl_succ (n : ℕ) :
+    StrictInterl (polynomial n) (polynomial (n + 1)) := by
+  cases n with
+  | zero => simpa [polynomial] using strictInterl_X_pow_succ 0
+  | succ n =>
+      rw [polynomial_succ_eq_X_mul n, polynomial_succ_eq_X_mul (n + 1)]
+      exact (A056939.polynomial_strictInterl_succ n).mul_common_factor
+        Polynomial.X_ne_zero Polynomial.Splits.X
+
+/-- Consecutive A359363 model rows interlace. -/
+theorem polynomial_interlaces (n : ℕ) :
+    Interlaces (polynomial n) (polynomial (n + 1)) := by
+  cases n with
+  | zero =>
+      apply interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
+      · norm_num [polynomial]
+      · simp only [polynomial, natDegree_one]
+      · simp only [polynomial, natDegree_X]
+  | succ n =>
+      rw [polynomial_succ_eq_X_mul n, polynomial_succ_eq_X_mul (n + 1)]
+      exact (A056939.polynomial_interlaces n).mul_both_of_splits
+        Polynomial.Splits.X Polynomial.X_ne_zero
+
 /-- A sequence with the A359363 initial rows and update has split rows. -/
 @[rr_row_model]
 theorem splits_of_recurrence
@@ -90,5 +115,22 @@ theorem splits_of_recurrence
     hrec (fun _ => rfl)
   rw [heq n]
   exact polynomial_splits n
+
+/-- A sequence with the A359363 initial rows and update has interlacing
+consecutive rows. -/
+@[rr_row_model]
+theorem interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = X)
+    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)) (P n))
+    (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have heq := sequence_eq_of_same_lag_two_recurrence nextRow
+    (hzero.trans (show (1 : ℝ[X]) = polynomial 0 by rfl))
+    (hone.trans (show X = polynomial 1 by rfl))
+    hrec (fun _ => rfl)
+  rw [heq n, heq (n + 1)]
+  exact polynomial_interlaces n
 
 end RealRooted.Applications.OEIS.A359363
