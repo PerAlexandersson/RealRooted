@@ -241,6 +241,7 @@ private structure RowModelCandidate where
   conclusion : RowModelConclusion
   bases : Array (Nat × QPoly)
   offset : Option Nat
+  lag : Option Nat
 
 /-- Recognize the conclusion head without elaborating the transfer theorem. -/
 private def rowModelConclusion? (target : Expr) : Option RowModelConclusion :=
@@ -261,10 +262,26 @@ private def rowIndex? (P e : Expr) : MetaM (Option Nat) := do
   unless e.isApp && e.getAppFn == P do return none
   evalNat e.appArg!
 
+/-- `(j, d)` when `e` is the `d`-th derivative of the model row `P (n + j)`. -/
+private partial def rowModelRowOf? (P n e : Expr) : MetaM (Option (Nat × Nat)) := do
+  let e := e.consumeMData
+  if isDerivApp e then
+    return (← rowModelRowOf? P n e.appArg!).map fun (j, d) => (j, d + 1)
+  unless e.isApp && e.getAppNumArgs == 1 && e.getAppFn == P do return none
+  return (← natOffsetOf? n e.appArg!).map fun j => (j, 0)
+
+/-- Row occurrences in a model recurrence, without revisiting rows below derivatives. -/
+private partial def rowModelRows (P n e : Expr) : MetaM (Array (Nat × Nat)) := do
+  if let some row ← rowModelRowOf? P n e then return #[row]
+  match e.consumeMData with
+  | .app f a => return (← rowModelRows P n f) ++ (← rowModelRows P n a)
+  | .mdata _ body => rowModelRows P n body
+  | _ => return #[]
+
 /-- Read the recurrence offset and exact base rows advertised by a transfer theorem. -/
 private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusion)
     (decl : Name) : MetaM
-    (Option (RowModelConclusion × Array (Nat × QPoly) × Option Nat)) := do
+    (Option (RowModelConclusion × Array (Nat × QPoly) × Option Nat × Option Nat)) := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescope type fun xs conclusion => do
     let some modelConclusion := rowModelConclusion? conclusion | return none
@@ -274,6 +291,7 @@ private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusi
       | return none
     let mut bases : Array (Nat × QPoly) := #[]
     let mut offset? : Option Nat := none
+    let mut lag? : Option Nat := none
     for x in xs do
       let binderType ← inferType x
       if let some (_, lhs, rhs) := binderType.eq? then
@@ -282,21 +300,28 @@ private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusi
         else if let some i ← rowIndex? P rhs then
           if let some q ← evalQPoly? lhs then bases := bases.push (i, q)
       else if offset?.isNone && binderType.isForall then
-        offset? := ← forallTelescope binderType fun ys body => do
-          let some (_, lhs, _) := body.eq? | return none
+        let recurrence? ← forallTelescope binderType fun ys body => do
+          let some (_, lhs, rhs) := body.eq? | return none
           unless ys.size == 1 && lhs.isApp && lhs.getAppFn == P do return none
-          natOffsetOf? ys[0]! lhs.appArg!
+          let some offset ← natOffsetOf? ys[0]! lhs.appArg! | return none
+          let rows ← rowModelRows P ys[0]! rhs
+          unless !rows.isEmpty && rows.all fun row => row.1 < offset do return none
+          let lag := rows.foldl (init := 0) fun lag row => max lag (offset - row.1)
+          return some (offset, lag)
+        if let some (offset, lag) := recurrence? then
+          offset? := some offset
+          lag? := some lag
     unless bases.any (fun b => b.1 == 0) && bases.any (fun b => b.1 == 1) do
       return none
-    return some (modelConclusion, bases, offset?)
+    return some (modelConclusion, bases, offset?, lag?)
 
 /-- The most specific registered models whose conclusion, offset, and exact base rows match. -/
 private def matchingRowModels (decls : Array Name) (P : Name)
     (search : RowModelSearch) (want : RowModelConclusion) : MetaM (Array RowModelCandidate) := do
   let mut models : Array RowModelCandidate := #[]
   for decl in decls.qsort Name.quickLt do
-    let some (conclusion, bases, offset) ← rowModelBaseRows? search want decl | continue
-    models := models.push { decl, conclusion, bases, offset }
+    let some (conclusion, bases, offset, lag) ← rowModelBaseRows? search want decl | continue
+    models := models.push { decl, conclusion, bases, offset, lag }
   if models.isEmpty then return #[]
   let recurrence? ← linRec? P
   let rows? ← match recurrence? with
@@ -308,9 +333,15 @@ private def matchingRowModels (decls : Array Name) (P : Name)
   let some rows := rows? | return #[]
   let mut preliminary := #[]
   for model in models do
-    let offsetMatches := match recurrence?, model.offset with
-      | some recurrence, some offset => decide (recurrence.offset ≤ offset)
-      | _, _ => true
+    let offsetMatches := match recurrence?, model.offset, model.lag with
+      | some recurrence, some offset, some lag =>
+          -- Registry `hrec` hypotheses are direct recurrence presentations.  Shifting their
+          -- start changes the offset but not the largest relative lag, so a different lag is
+          -- outside that contract and must be rejected before `apply`.
+          let recurrenceLag := recurrence.terms.foldl (init := 0) fun maxLag term =>
+            max maxLag (recurrence.offset - term.1)
+          recurrence.offset ≤ offset && recurrenceLag == lag
+      | _, _, _ => true
     let firstRowsMatch := model.bases.all fun (i, q) =>
       i > 1 || match rows[i]? with
         | some row => row.eqv q
@@ -371,21 +402,63 @@ private def rowModelRhsDefinitions : TacticM (Array Name) := withMainContext do
   let (_, state) := (collectRowModelDefinitions env moduleIdx name).run {}
   return state.definitions
 
+/-- A nested row-model attempt which preserves the enclosing candidate's heartbeat clock. -/
+private def nestedRowModelAttempt (tac : TacticM α) (propagateHeartbeat := true) :
+    TacticM (Except MessageData α) := do
+  let state ← saveState
+  let log ← Core.getMessageLog
+  Core.resetMessageLog
+  tryCatchRuntimeEx
+    (do
+      let result ← withoutRecover (Term.withoutErrToSorry tac)
+      Core.checkSystem "row-model registry"
+      let newLog ← Core.getMessageLog
+      if let some message := newLog.toList.find? (·.severity == .error) then
+        state.restore
+        Core.setMessageLog log
+        return .error message.data
+      Core.setMessageLog (log ++ newLog)
+      return .ok result)
+    (fun error => do
+      let error ← tryCatchRuntimeEx
+        (Core.checkSystem "row-model registry" *> pure error)
+        pure
+      if propagateHeartbeat && Exception.isMaxHeartbeat error then throw error
+      state.restore
+      Core.setMessageLog log
+      return .error error.toMessageData)
+
+/-- Whether a nested row-model attempt succeeds, without resetting its heartbeat clock. -/
+private def nestedRowModelSucceeds (tac : TacticM Unit) : TacticM Bool := do
+  return (← nestedRowModelAttempt tac) matches .ok _
+
+/-- Registered models are untrusted search candidates.  Give each one a fresh but bounded
+budget, without raising a smaller budget chosen by the caller.  Nested attempts deliberately
+share this clock, so a failed candidate cannot aggregate several fresh allowances.  The cap is
+about twice the slowest successful application measured (A286785, 186000 heartbeats). -/
+private def rowModelAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
+  let cap := 400000 * 1000
+  withTheReader Core.Context
+      (fun context =>
+        { context with maxHeartbeats :=
+            if context.maxHeartbeats == 0 then cap else min context.maxHeartbeats cap }) do
+    withCurrHeartbeats <| nestedRowModelAttempt tac false
+
 /-- Close one polynomial identity obtained from a model recurrence. -/
 private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
   let rhsDefinitions ← rowModelRhsDefinitions
-  if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
+  if ← nestedRowModelSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
   let target ← instantiateMVars (← getMainTarget)
-  match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
+  match ← nestedRowModelAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
-  if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
+  if ← nestedRowModelSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
   for rhsDefinition in rhsDefinitions do
-    discard <| rowSucceeds <| evalTactic
+    discard <| nestedRowModelSucceeds <| evalTactic
       (← `(tactic| unfold $(mkIdent rhsDefinition):ident))
   if !(← getGoals).isEmpty && !rhsDefinitions.isEmpty then
-    if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
-    if ← rowSucceeds do
+    if ← nestedRowModelSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
+    if ← nestedRowModelSucceeds do
         evalTactic (← `(tactic| simp only [Polynomial.C_ofNat]))
         Term.synthesizeSyntheticMVarsNoPostponing
         unless (← getGoals).isEmpty do
@@ -421,15 +494,15 @@ private def applyRowModel (P : Ident) (candidate : RowModelCandidate) : TacticM 
   let goals ← getGoals
   for goal in goals do
     setGoals [goal]
-    if ← rowSucceeds do
-        unless ← rowSucceeds (discard <| smallRow P) do
+    if ← nestedRowModelSucceeds do
+        unless ← nestedRowModelSucceeds (discard <| smallRow P) do
           closeRowModelBaseIdentity P
       then continue
-    if ← rowSucceeds do
+    if ← nestedRowModelSucceeds do
         evalTactic (← `(tactic| intro n))
         closeRowModelIdentity P
       then continue
-    if ← rowSucceeds do
+    if ← nestedRowModelSucceeds do
         evalTactic (← `(tactic| intro n))
         rowSideGoal (some P)
       then continue
@@ -453,7 +526,7 @@ private def rowModelCandidates?
 private def rowModelGoal (P : Ident) (candidates : Array RowModelCandidate) : TacticM Unit := do
   let mut failures : Array (MessageData × MessageData) := #[]
   for candidate in candidates do
-    match ← rowAttempt (applyRowModel P candidate) with
+    match ← rowModelAttempt (applyRowModel P candidate) with
     | .ok _ => return
     | .error err => failures := failures.push (m!"{candidate.decl}", err)
   throwRowFailures m!"no matching registered row model proves the goal for {P}" failures

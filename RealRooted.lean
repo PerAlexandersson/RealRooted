@@ -2007,3 +2007,4 @@ import RealRooted.Tactic.Examples.RowModelRecentRegistrations
 import RealRooted.Applications.OEIS.A046802
 import RealRooted.Applications.OEIS.A262226
 import RealRooted.Tactic.Examples.OEIS.NextRows
+import RealRooted.Tactic.Examples.RowModelRegistryBudget
