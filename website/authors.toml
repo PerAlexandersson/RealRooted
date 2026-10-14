@@ -1,0 +1,117 @@
+# Curated author names derived only from symmetricfunctions_bibliography.bib.
+# The accompanying bibliography-match report records every page-level match.
+# Profiles are omitted when the bibliography did not identify one person uniquely.
+
+[authors]
+"Athanasiadis" = { name = "Christos A. Athanasiadis" }
+"Bender" = { name = "Edward A. Bender" }
+"Binder" = { name = "Kyle Binder" }
+"Borcea" = { name = "Julius Borcea" }
+"Braun" = { name = "Benjamin Braun" }
+"Bóna" = { name = "Miklós Bóna" }
+"Choe" = { name = "Young-Bin Choe" }
+"Chow" = { name = "Chak-On Chow" }
+"Chudnovsky" = { name = "Maria Chudnovsky" }
+"Elizalde" = { name = "Sergi Elizalde" }
+"Engström" = { name = "Alexander Engström" }
+"Ferroni" = { name = "Luis Ferroni" }
+"Fu" = { name = "Shishuo Fu" }
+"Garloff" = { name = "Jürgen Garloff" }
+"Grace" = { name = "J. H. Grace" }
+"Gurvits" = { name = "Leonid Gurvits" }
+"Gustafsson" = { name = "Nils Gustafsson" }
+"Haglund" = { name = "James Haglund" }
+"Heilmann" = { name = "Ole J. Heilmann" }
+"Holtz" = { name = "Olga Holtz" }
+"Hoster" = { name = "Elena Hoster" }
+"Huh" = { name = "June Huh" }
+"Hutchinson" = { name = "J. I. Hutchinson" }
+"Jochemko" = { name = "Katharina Jochemko" }
+"Kurtz" = { name = "David C. Kurtz" }
+"Leake" = { name = "Jonathan D. Leake" }
+"Lee" = { name = "T. D. Lee" }
+"Lindström" = { name = "Bernt Lindström" }
+"Mantaci" = { name = "Roberto Mantaci" }
+"Mao" = { name = "Jianxi Mao" }
+"Nijenhuis" = { name = "Albert Nijenhuis" }
+"Obreschkoff" = { name = "Nikola Obreschkoff" }
+"Ono" = { name = "Ken Ono" }
+"Oxley" = { name = "James G. Oxley" }
+"Rakotondrajao" = { name = "Fanja Rakotondrajao" }
+"Rivera" = { name = "Johnny Rivera" }
+"Ryder" = { name = "Nick R. Ryder" }
+"Saud Leite" = { name = "Leonardo Saud Maia Leite" }
+"Saud Maia Leite" = { name = "Leonardo Saud Maia Leite" }
+"Seymour" = { name = "Paul Seymour" }
+"Shiu" = { name = "Wai Chee Shiu" }
+"Stanley" = { name = "Richard P. Stanley" }
+"Stump" = { name = "Christian Stump" }
+"Vecchi" = { name = "Lorenzo Vecchi" }
+"Viennot" = { name = "Gérard Viennot" }
+"Visontai" = { name = "Mirkó Visontai" }
+"Wagner" = { name = "David G. Wagner" }
+"Xiao" = { name = "Qiqi Xiao" }
+"Xie" = { name = "Matthew H. Y. Xie" }
+"Yang" = { name = "C. N. Yang" }
+"Yeh" = { name = "Yeong-Nan Yeh" }
+"Zhang" = { name = "Philip B. Zhang" }
+"Zhanhe Zhang" = { name = "Zhanhe Zhang" }
+"Zhao" = { name = "Tongyuan Zhao" }
+"Zhuang" = { name = "Yan Zhuang" }
+
+[overrides]
+"bezoutian:Fisk" = { name = "Steve Fisk" }
+"borcea-branden:Brändén" = { name = "Petter Brändén" }
+"borcea-branden-classification:Brändén" = { name = "Petter Brändén" }
+"branden-e-transform:Brändén" = { name = "Petter Brändén" }
+"branden-leite:Brändén" = { name = "Petter Brändén" }
+"branden-solus:Brändén" = { name = "Petter Brändén" }
+"branden-solus:Solus" = { name = "Liam Solus" }
+"branden-vecchi:Brändén" = { name = "Petter Brändén" }
+"derivative-interlacing:Fisk" = { name = "Steve Fisk" }
+"eulerian-variations:Alexandersson" = { name = "Per Alexandersson" }
+"generalized-snake-posets:Alexandersson" = { name = "Per Alexandersson" }
+"generalized-snake-posets:Jal" = { name = "Aryaman Jal" }
+"grace-apolarity:Brändén" = { name = "Petter Brändén" }
+"hadamard-products:Brändén" = { name = "Petter Brändén" }
+"hadamard-products:Liu" = { name = "Yanxin Liu" }
+"heilmann-lieb:Lieb" = { name = "Elliott H. Lieb" }
+"interlacing:Fisk" = { name = "Steve Fisk" }
+"interlacing-closure:Brändén" = { name = "Petter Brändén" }
+"interlacing-closure:Fisk" = { name = "Steve Fisk" }
+"jacobi-stirling-descent:Gessel" = { name = "Ira M. Gessel" }
+"jacobi-stirling-descent:Lin" = { name = "Zhicong Lin" }
+"jacobi-stirling-descent:Ma" = { name = "Shi-Mei Ma" }
+"jacobi-stirling-descent:Wang" = { name = "Ming-Xin Wang" }
+"jacobi-stirling-descent:Zeng" = { name = "Jiang Zeng" }
+"lindstrom-gessel-viennot:Gessel" = { name = "Ira Gessel" }
+"liu-opposite-signs:Liu" = { name = "Lily L. Liu" }
+"ma-wang-liu-wang:Liu" = { name = "Lily L. Liu" }
+"ma-wang-liu-wang:Ma" = { name = "Shi-Mei Ma" }
+"ma-wang-liu-wang:Wang" = { name = "Yi Wang" }
+"matrix-interlacing:Brändén" = { name = "Petter Brändén" }
+"matrix-interlacing:Fisk" = { name = "Steve Fisk" }
+"monotone-column-permanent:Brändén" = { name = "Petter Brändén" }
+"narayana:Brenti" = { name = "Francesco Brenti" }
+"narayana:Wang" = { name = "Lijie Wang" }
+"real-stability:Brändén" = { name = "Petter Brändén" }
+"real-stability:Liggett" = { name = "Thomas Liggett" }
+"real-stability:Marcus" = { name = "Adam Marcus" }
+"real-stability:Sokal" = { name = "Alan D. Sokal" }
+"real-stability:Spielman" = { name = "Daniel A. Spielman" }
+"real-stability:Srivastava" = { name = "Nikhil Srivastava" }
+"recurrence-root-windows:Brändén" = { name = "Petter Brändén" }
+"recurrence-root-windows:Liu" = { name = "Lily L. Liu" }
+"recurrence-root-windows:Wang" = { name = "Yi Wang" }
+"separable-permutations:Lin" = { name = "Zhicong Lin" }
+"separable-permutations:Zeng" = { name = "Jiang Zeng" }
+"small-interlacing-matrices:Brändén" = { name = "Petter Brändén" }
+"small-interlacing-matrices:Fisk" = { name = "Steve Fisk" }
+"sturm-sequence-families:Gessel" = { name = "Ira Gessel" }
+"sturm-sequence-families:Wang" = { name = "David Wang" }
+"threshold-matrices:Solus" = { name = "Liam Solus" }
+"totally-nonnegative-matrices:Fisk" = { name = "Steve Fisk" }
+"uniform-matroid-hodge-poincare:Brändén" = { name = "Petter Brändén" }
+"uniform-matroid-hodge-poincare:Solus" = { name = "Liam Solus" }
+"univariate-poisson-star-c:Brändén" = { name = "Petter Brändén" }
+"wang-yeh:Wang" = { name = "Yi Wang" }
