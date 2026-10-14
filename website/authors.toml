@@ -1,0 +1,110 @@
+# Curated author names derived only from symmetricfunctions_bibliography.bib.
+# The accompanying bibliography-match report records every page-level match.
+# Profiles are omitted when the bibliography did not identify one person uniquely.
+
+[authors]
+"Aissen" = { name = "Michael Aissen" }
+"Alexandersson" = { name = "Per Alexandersson" }
+"Athanasiadis" = { name = "Christos A. Athanasiadis" }
+"Bender" = { name = "Edward A. Bender" }
+"Binder" = { name = "Kyle Binder" }
+"Borcea" = { name = "Julius Borcea" }
+"Braun" = { name = "Benjamin Braun" }
+"Brenti" = { name = "Francesco Brenti" }
+"Brändén" = { name = "Petter Brändén" }
+"Bóna" = { name = "Miklós Bóna" }
+"Choe" = { name = "Young-Bin Choe" }
+"Chow" = { name = "Chak-On Chow" }
+"Chudnovsky" = { name = "Maria Chudnovsky" }
+"Dedieu" = { name = "Jean-Pierre Dedieu" }
+"Elizalde" = { name = "Sergi Elizalde" }
+"Engström" = { name = "Alexander Engström" }
+"Favard" = { name = "Jean Favard" }
+"Ferroni" = { name = "Luis Ferroni" }
+"Fisk" = { name = "Steve Fisk" }
+"Fu" = { name = "Shishuo Fu" }
+"Garloff" = { name = "Jürgen Garloff" }
+"Godsil" = { name = "C. D. Godsil" }
+"Grace" = { name = "J. H. Grace" }
+"Gurvits" = { name = "Leonid Gurvits" }
+"Gustafsson" = { name = "Nils Gustafsson" }
+"Haglund" = { name = "James Haglund" }
+"Heilmann" = { name = "Ole J. Heilmann" }
+"Hlavacek" = { name = "Max Hlavacek" }
+"Holtz" = { name = "Olga Holtz" }
+"Hoster" = { name = "Elena Hoster" }
+"Huh" = { name = "June Huh" }
+"Hutchinson" = { name = "J. I. Hutchinson" }
+"Jal" = { name = "Aryaman Jal" }
+"Jochemko" = { name = "Katharina Jochemko" }
+"Karlin" = { name = "Samuel Karlin" }
+"Kostov" = { name = "Vladimir P. Kostov" }
+"Kurtz" = { name = "David C. Kurtz" }
+"Leake" = { name = "Jonathan D. Leake" }
+"Leander" = { name = "Madeleine Leander" }
+"Lee" = { name = "T. D. Lee" }
+"Leite" = { name = "Leonardo Saud Maia Leite" }
+"Lieb" = { name = "Elliott H. Lieb" }
+"Liggett" = { name = "Thomas Liggett" }
+"Lindström" = { name = "Bernt Lindström" }
+"Mantaci" = { name = "Roberto Mantaci" }
+"Mao" = { name = "Jianxi Mao" }
+"Marcus" = { name = "Adam Marcus" }
+"Micchelli" = { name = "Charles A. Micchelli" }
+"Nijenhuis" = { name = "Albert Nijenhuis" }
+"Obreschkoff" = { name = "Nikola Obreschkoff" }
+"Ono" = { name = "Ken Ono" }
+"Oxley" = { name = "James G. Oxley" }
+"Quemener" = { name = "Maena Quemener" }
+"Rakotondrajao" = { name = "Fanja Rakotondrajao" }
+"Rivera" = { name = "Johnny Rivera" }
+"Ryder" = { name = "Nick R. Ryder" }
+"Saud Leite" = { name = "Leonardo Saud Maia Leite" }
+"Saud Maia Leite" = { name = "Leonardo Saud Maia Leite" }
+"Schoenberg" = { name = "I. J. Schoenberg" }
+"Schur" = { name = "Issai Schur" }
+"Seymour" = { name = "Paul Seymour" }
+"Shiu" = { name = "Wai Chee Shiu" }
+"Sokal" = { name = "Alan D. Sokal" }
+"Solus" = { name = "Liam Solus" }
+"Spielman" = { name = "Daniel A. Spielman" }
+"Stanley" = { name = "Richard P. Stanley" }
+"Stump" = { name = "Christian Stump" }
+"Sylvester" = { name = "J. J. Sylvester" }
+"Vecchi" = { name = "Lorenzo Vecchi" }
+"Viennot" = { name = "Gérard Viennot" }
+"Visontai" = { name = "Mirkó Visontai" }
+"Wagner" = { name = "David G. Wagner" }
+"Xiao" = { name = "Qiqi Xiao" }
+"Xie" = { name = "Matthew H. Y. Xie" }
+"Yang" = { name = "C. N. Yang" }
+"Yeh" = { name = "Yeong-Nan Yeh" }
+"Zhang" = { name = "Philip B. Zhang" }
+"Zhanhe Zhang" = { name = "Zhanhe Zhang" }
+"Zhao" = { name = "Tongyuan Zhao" }
+"Zhuang" = { name = "Yan Zhuang" }
+
+[overrides]
+"aissen-schoenberg-whitney:Whitney" = { name = "Anne Whitney" }
+"finite-free-convolutions:Srivastava" = { name = "Nikhil Srivastava" }
+"gamma-transform:Petersen" = { name = "T. Kyle Petersen" }
+"hadamard-products:Liu" = { name = "Yanxin Liu" }
+"jacobi-stirling-descent:Gessel" = { name = "Ira M. Gessel" }
+"jacobi-stirling-descent:Lin" = { name = "Zhicong Lin" }
+"jacobi-stirling-descent:Ma" = { name = "Shi-Mei Ma" }
+"jacobi-stirling-descent:Wang" = { name = "Ming-Xin Wang" }
+"jacobi-stirling-descent:Zeng" = { name = "Jiang Zeng" }
+"lindstrom-gessel-viennot:Gessel" = { name = "Ira M. Gessel" }
+"liu-opposite-signs:Liu" = { name = "Lily L. Liu" }
+"ma-wang-liu-wang:Liu" = { name = "Lily L. Liu" }
+"ma-wang-liu-wang:Ma" = { name = "Shi-Mei Ma" }
+"ma-wang-liu-wang:Wang" = { name = "Yi Wang" }
+"narayana:Wang" = { name = "Lijie Wang" }
+"real-stability:Srivastava" = { name = "Nikhil Srivastava" }
+"recurrence-root-windows:Liu" = { name = "Lily L. Liu" }
+"recurrence-root-windows:Wang" = { name = "Yi Wang" }
+"separable-permutations:Lin" = { name = "Zhicong Lin" }
+"separable-permutations:Zeng" = { name = "Jiang Zeng" }
+"sturm-sequence-families:Gessel" = { name = "Ira M. Gessel" }
+"sturm-sequence-families:Wang" = { name = "David Wang" }
+"wang-yeh:Wang" = { name = "Yi Wang" }
