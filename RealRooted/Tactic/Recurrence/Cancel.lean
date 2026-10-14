@@ -442,7 +442,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     else `($(mkIdent r.eqn) ($n + $(rowNumLit plan.extra)))
   let hderiv ← `(fun $n:ident => ($eqnApp).trans (by
     first
-      | rfl
+      | with_reducible rfl
       | (apply Polynomial.funext
          intro x
          simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
