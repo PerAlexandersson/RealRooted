@@ -1994,3 +1994,5 @@ import RealRooted.Applications.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.A304334
 import RealRooted.Applications.OEIS.A304330
 import RealRooted.Tactic.Examples.RowModelNextFamilies
+import RealRooted.Tactic.Examples.RowRegression1689Degree
+import RealRooted.Tactic.Examples.RowRegression1689Interlacing

@@ -948,8 +948,7 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := withMainConte
           intro n
           have hraw : $Q (n + 1) =
               $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
-          rw [hraw]
-          rr_cf_identity))
+          rw [hraw] <;> rr_cf_identity))
       pure hrecName
     let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
     let splitsThm :=
