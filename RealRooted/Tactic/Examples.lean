@@ -95,6 +95,7 @@ import RealRooted.Tactic.Examples.OEIS.ProductLift
 import RealRooted.Tactic.Examples.OEIS.ProductRouters
 import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 import RealRooted.Tactic.Examples.OEIS.SecondDerivative
+import RealRooted.Tactic.Examples.OEIS.TransformModels
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.OEISTestbed.Favard
