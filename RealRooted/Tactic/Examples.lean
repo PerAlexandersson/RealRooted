@@ -146,6 +146,7 @@ import RealRooted.Tactic.Examples.RowSubseqDegree
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
+import RealRooted.Tactic.Examples.ShortlistRoutes
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.SignAssembly
