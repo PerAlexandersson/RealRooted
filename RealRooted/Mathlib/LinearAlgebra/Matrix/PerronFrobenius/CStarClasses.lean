@@ -109,7 +109,7 @@ lemma each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq {u : ℂ}
   calc
     v i = (v i * star u) * u / (u * star u) := by
       rw [mul_assoc, mul_comm (star u),
-        mul_div_cancel_right₀ _ ((CStarRing.mul_star_self_ne_zero_iff u).mpr h_ne)]
+        mul_div_cancel_right₀ _ (mul_star_self_ne_zero.mpr h_ne)]
     _ = (‖v i‖ * ‖u‖ : ℂ) * u / (↑‖u‖ : ℂ) ^ 2 := by
       rw [h, RCLike.star_def, RCLike.mul_conj]
       rfl
