@@ -1,3 +1,4 @@
+import RealRooted.Tactic.Examples.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
 import RealRooted.Tactic.Examples.OEIS.CompatCommon
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag

@@ -1990,3 +1990,5 @@ import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Applications.OEIS.A079508
 import RealRooted.Applications.OEIS.A119308
 import RealRooted.MultiplierSequence.JensenAffineTheta
+import RealRooted.Applications.OEIS.A304334
+import RealRooted.Tactic.Examples.OEIS.A304334
