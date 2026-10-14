@@ -1987,3 +1987,5 @@ import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 import RealRooted.Applications.OEIS.IndispensableDigits
 import RealRooted.MatrixInterlacing.DigitStep
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
+import RealRooted.Applications.OEIS.A304334
+import RealRooted.Tactic.Examples.OEIS.A304334

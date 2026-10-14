@@ -16,13 +16,13 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 1980
+      "max_modules": 1982
     },
     "RealRooted.Production": {
-      "max_modules": 1817
+      "max_modules": 1818
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 859
+      "max_modules": 861
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
