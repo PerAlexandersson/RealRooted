@@ -22,9 +22,7 @@ private theorem nnnorm_aeval_of_splits (p : ℝ[X]) (z : ℂ) (hp : p.Splits) :
     simp [Multiset.map_map]
   have h2 : ‖(Multiset.map (fun r : ℝ => z - (r : ℂ)) p.roots).prod‖₊
       = (Multiset.map (fun r : ℝ => ‖z - (r : ℂ)‖₊) p.roots).prod := by
-    simpa [Multiset.map_map, Function.comp_def] using
-      map_multiset_prod (nnnormHom (α := ℂ))
-        (Multiset.map (fun r : ℝ => z - (r : ℂ)) p.roots)
+    simp [Multiset.map_map, Function.comp_def]
   conv_lhs => rw [hp.eq_prod_roots]
   rw [map_mul, h1, nnnorm_mul, h2]
   simp

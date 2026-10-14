@@ -18,7 +18,7 @@ lemma root_nonpos_of_ne_zero_of_nonneg_coeffs {p : ℝ[X]}
     r ≤ 0 :=
   roots_nonpos_of_hasNonnegCoeffs hpnn r ((mem_roots hp_ne).mpr hr)
 
-@[deprecated root_nonpos_of_ne_zero_of_nonneg_coeffs (since := "2026-10-12")]
+@[deprecated "Use `root_nonpos_of_ne_zero_of_nonneg_coeffs`." (since := "2026-10-12")]
 theorem root_nonpos_of_ne_zero_of_splits_of_nonneg_coeffs {p : ℝ[X]}
     (hp_ne : p ≠ 0) (_ : p.Splits) (hpnn : HasNonnegCoeffs p)
     {r : ℝ} (hr : p.IsRoot r) :

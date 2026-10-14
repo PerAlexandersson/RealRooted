@@ -706,7 +706,7 @@ macro_rules
 end Tactic
 
 /-- Deprecated degree-restricted form of `MaWang.splits_derivative_of_nonpos`. -/
-@[deprecated MaWang.splits_derivative_of_nonpos (since := "2026-10-05")]
+@[deprecated "Use `MaWang.splits_derivative_of_nonpos`." (since := "2026-10-05")]
 theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf : f.Splits)
     (_ : 2 ≤ f.natDegree)

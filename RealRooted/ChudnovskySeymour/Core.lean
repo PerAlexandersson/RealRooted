@@ -10,7 +10,7 @@ open Polynomial
 
 /-- Implicit-binder form of `chudnovskySeymour_compatiblePairHasCommonInterleaver`,
 kept for downstream callers. -/
-@[deprecated chudnovskySeymour_compatiblePairHasCommonInterleaver (since := "2026-10-05")]
+@[deprecated "Use `chudnovskySeymour_compatiblePairHasCommonInterleaver`." (since := "2026-10-05")]
 theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :

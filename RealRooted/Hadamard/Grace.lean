@@ -558,7 +558,7 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial {n : ℕ} {gamma : ℕ
 
 /-- Compatibility form of `isFinitePFMultiplierSequence_iff_jensenPolynomial` for downstream
 callers that pass the finite Pólya--Schur theorem `finitePolyaSchur_nonneg` explicitly. -/
-@[deprecated isFinitePFMultiplierSequence_iff_jensenPolynomial (since := "2026-10-07")]
+@[deprecated "Use `isFinitePFMultiplierSequence_iff_jensenPolynomial`." (since := "2026-10-07")]
 theorem isFinitePFMultiplierSequence_of_jensenPolynomial
     (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ}, (∀ k, 0 ≤ gamma k) →
       (IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma)))

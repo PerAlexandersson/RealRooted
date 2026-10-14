@@ -246,7 +246,7 @@ namespace RealRooted
 
 /-- Deprecated degree-restricted form of
 `LiuWang.strictInterl_derivative_lag_of_nonpos`. -/
-@[deprecated LiuWang.strictInterl_derivative_lag_of_nonpos (since := "2026-10-05")]
+@[deprecated "Use `LiuWang.strictInterl_derivative_lag_of_nonpos`." (since := "2026-10-05")]
 theorem strictInterl_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
     (hf : f.Splits)
     (_ : 2 ≤ f.natDegree)
