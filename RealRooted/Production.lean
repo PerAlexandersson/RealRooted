@@ -1813,6 +1813,8 @@ import RealRooted.Tactic.Row.EndpointWindow
 import RealRooted.Tactic.Row.RationalReverse
 import RealRooted.Applications.OEIS.ReflectedEulerRows
 import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.Applications.OEIS.A394813
+import RealRooted.Applications.OEIS.A395326
 
 /-!
 # RealRooted production umbrella
