@@ -1987,3 +1987,6 @@ import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 import RealRooted.Applications.OEIS.IndispensableDigits
 import RealRooted.MatrixInterlacing.DigitStep
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
+import RealRooted.Applications.OEIS.A079508
+import RealRooted.Applications.OEIS.A119308
+import RealRooted.MultiplierSequence.JensenAffineTheta

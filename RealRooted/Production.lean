@@ -1822,6 +1822,9 @@ import RealRooted.MultiplierSequence.JensenHypergeometric
 import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 import RealRooted.Applications.OEIS.IndispensableDigits
 import RealRooted.MatrixInterlacing.DigitStep
+import RealRooted.Applications.OEIS.A079508
+import RealRooted.Applications.OEIS.A119308
+import RealRooted.MultiplierSequence.JensenAffineTheta
 
 /-!
 # RealRooted production umbrella
