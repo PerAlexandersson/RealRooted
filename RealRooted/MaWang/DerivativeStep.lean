@@ -232,7 +232,8 @@ theorem strictInterl_derivative_of_nonpos {f u v : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_of_nonpos_of_recurrence_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_of_nonpos_of_recurrence_of_splits`." (since := "2026-10-06")]
+@[deprecated "Use `strictInterl_derivative_of_nonpos_of_recurrence_of_splits`."
+  (since := "2026-10-06")]
 theorem strictInterl_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
     (hf : f.Splits)
     (_ : 2 ≤ f.natDegree)
@@ -248,7 +249,8 @@ theorem strictInterl_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits`." (since := "2026-10-06")]
+@[deprecated "Use `strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits`."
+  (since := "2026-10-06")]
 theorem strictInterl_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
     (hf : f.Splits)
     (_ : 2 ≤ f.natDegree)
@@ -264,7 +266,7 @@ theorem strictInterl_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits`. -/
-@[deprecated strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits
+@[deprecated "Use `strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits`."
   (since := "2026-10-06")]
 theorem strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
@@ -283,7 +285,7 @@ theorem strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots {f u q : ℝ[X]} 
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits`. -/
-@[deprecated strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits
+@[deprecated "Use `strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits`."
   (since := "2026-10-06")]
 theorem strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
     (hf : f.Splits)
@@ -301,7 +303,7 @@ theorem strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits`. -/
-@[deprecated strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits
+@[deprecated "Use the `_of_splits` version named in the docstring."
   (since := "2026-10-06")]
 theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     {f u : ℝ[X]} {c : ℝ}
@@ -323,7 +325,7 @@ theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
 
 /-- Deprecated degree-restricted form of
 `strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc`. -/
-@[deprecated strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc
+@[deprecated "Use `strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc`."
   (since := "2026-10-06")]
 theorem strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
     {f u : ℝ[X]}

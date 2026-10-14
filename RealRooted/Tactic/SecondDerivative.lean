@@ -720,7 +720,7 @@ theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`. -/
-@[deprecated MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
+@[deprecated "Use `MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`."
   (since := "2026-10-05")]
 theorem isRealRooted_of_mw_then_const_add_derivative_sequence
     {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} (a : Nat → ℝ)
