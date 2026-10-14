@@ -1,4 +1,5 @@
 import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
 import RealRooted.LinearPowerFamily
 import RealRooted.Hadamard.GarloffWagner
 import RealRooted.Hadamard
@@ -352,6 +353,7 @@ theorem polynomial_recurrence (n : ℕ) :
   rfl
 
 /-- A sequence with the binomial-cube initial rows and update has split rows. -/
+@[rr_row_model]
 theorem splits_of_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)
@@ -367,6 +369,7 @@ theorem splits_of_recurrence
   exact polynomial_splits n
 
 /-- Consecutive rows of a sequence with the binomial-cube update interlace. -/
+@[rr_row_model]
 theorem interlaces_of_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)

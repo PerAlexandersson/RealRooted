@@ -135,6 +135,7 @@ import RealRooted.Tactic.Examples.RowFactorPower
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowPathPower
 import RealRooted.Tactic.Examples.RowPathPowerK5

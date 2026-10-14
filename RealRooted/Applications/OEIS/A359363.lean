@@ -1,5 +1,6 @@
 import RealRooted.Applications.OEIS.A056939
 import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
 
 open RealRooted Polynomial
 
@@ -75,6 +76,7 @@ theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
       exact Polynomial.Splits.X.mul (A056939.polynomial_splits n)
 
 /-- A sequence with the A359363 initial rows and update has split rows. -/
+@[rr_row_model]
 theorem splits_of_recurrence
     {P : ℕ → ℝ[X]}
     (hzero : P 0 = 1)
