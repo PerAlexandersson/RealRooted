@@ -1827,6 +1827,7 @@ import RealRooted.Applications.OEIS.A119308
 import RealRooted.MultiplierSequence.JensenAffineTheta
 import RealRooted.Applications.OEIS.A304334
 import RealRooted.Applications.OEIS.A304330
+import RealRooted.Applications.OEIS.TouchardImages
 
 /-!
 # RealRooted production umbrella
