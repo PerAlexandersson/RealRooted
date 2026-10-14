@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **302 IDs**; **29 formalized**, **255 shells**, **3 fragments**, and **15 documented-only**.
+Current totals: **303 IDs**; **30 formalized**, **255 shells**, **3 fragments**, and **15 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -94,6 +94,7 @@ Current totals: **302 IDs**; **29 formalized**, **255 shells**, **3 fragments**,
 | A079510 | `shell` | OEIS shape : `P_n = c_n t P_{n-1} + c_n t P_{n-2}`.<br>after reindexing,<br>+3 additional test intents | `rr_lw_current_CX_sequence`, `rr_lw_current_CX_sequence_auto`, `rr_lw_current_CX_sequence_realrooted`, `rr_lw_current_CX_sequence_realrooted_auto`, `rr_lw_positive_t` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A079640 | `shell` | Stirling-first/Lah product, LS4 shell plus an indexed current row `(n+3+X)f+(2+2X)f'+Xf''=(n+1)f+(1+D)((X+1)f+Xf')`. | `rr_ls4_plus_current_sequence_expanded_auto` | `base_one`, `base_zero`, `outer`, `outer_pos_lc`, `outer_strictInterl`, `pos_lc`, `recurrence`, `tail` | concrete row definition and proofs of the listed certificates |
 | A080248 | `shell` | def : ℕ → ℝ[X]<br>(1 / 2 * X ^ 2) * ( n).derivative.derivative +<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A080721 | `formalized` | import RealRooted.Applications.OEIS.<br># Regression examples for OEIS<br>+11 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
 | A082649 | `documented` | The reversed downstream recurrence for OEIS . | none | `a`, `b`, `c`, `h`, `h0`, `h1`, `hP0`, `hP1`, `hs`, `hstep`, `k`, `s` | executable tactic route and its certificates |
 | A084534 | `shell` | theorem _natDegree (n : ℕ) : ( n).natDegree = n := by rr_row_natDegree<br>theorem _ne_zero (n : ℕ) : n ≠ 0 := by rr_row_ne_zero<br>+14 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_leadingCoeff_pos`, `rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_side`, `rr_row_splits` | `d`, `degree`, `drop`, `growth`, `leadingCoeff`, `n`, `ratio` | concrete row definition and proofs of the listed certificates |
 | A084930 | `shell` | OEIS shapes `/`: `P_{n+2}=(4t-2)P_{n+1}-P_n`.<br>`/`: `P_{n+2}=(4t-2)P_{n+1}-P_n`. | `rr_favard_affine_const_unit` | `alpha`, `base_one`, `base_zero`, `slope`, `step` | concrete row definition and proofs of the listed certificates |
