@@ -312,7 +312,7 @@ theorem isRealRooted_of_current_one_add_X_positive_t_lag_sequence
 
 /-- Compatibility form of `isRealRooted_of_positive_X_mul_lag_sequence` with the former
 binder name `R` for the lag factor, used by downstream callers. -/
-@[deprecated isRealRooted_of_positive_X_mul_lag_sequence (since := "2026-10-07")]
+@[deprecated "Use `isRealRooted_of_positive_X_mul_lag_sequence`." (since := "2026-10-07")]
 theorem isRealRooted_of_tR_lag_sequence {P : Nat → ℝ[X]}
     {A R : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))

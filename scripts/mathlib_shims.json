@@ -5,20 +5,13 @@
       "sources": [
         "RealRooted/Mathlib/Data/List/Interleave.lean"
       ],
-      "declarations": [
-        "List.interleaves_iff_length_isChain_interleave",
-        "List.interleaves_append_singleton_append_singleton_of_length_eq_length_add_one",
-        "List.interleaves_reverse_reverse_of_length_eq_length_add_one",
-        "List.interleaves_ofFn_even",
-        "List.interleaves_ofFn_odd"
-      ],
-      "note": "mathlib4#39870 (Ya\u00ebl Dillies; merged): List interleaving API. The five explicit probes are the upstream names that differ from the current shim names."
+      "note": "mathlib4#39870 (Ya\u00ebl Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."
     },
     {
       "sources": [
         "RealRooted/Mathlib/Algebra/MvPolynomial/PDeriv.lean"
       ],
-      "note": "Existing upstream `MvPolynomial.pderiv_comm`; retain this exact collision sentinel until the compatible pin migration removes the local shim."
+      "note": "The local `MvPolynomial.pderiv_comm` copy was removed in the v4.35 bump (upstream has it); the remaining lemmas are not upstream yet."
     },
     {
       "sources": [

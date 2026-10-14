@@ -393,7 +393,7 @@ namespace RealRooted
 
 /-- Deprecated degree-restricted form of
 `MaWang.strictInterl_derivative_nonpos_sequence`. -/
-@[deprecated MaWang.strictInterl_derivative_nonpos_sequence (since := "2026-10-05")]
+@[deprecated "Use `MaWang.strictInterl_derivative_nonpos_sequence`." (since := "2026-10-05")]
 theorem strictInterl_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
     {U V : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))

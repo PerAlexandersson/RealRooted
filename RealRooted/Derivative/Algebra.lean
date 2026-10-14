@@ -18,19 +18,19 @@ using API that is stable across the Mathlib versions this file is built against.
 -/
 
 /-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
-@[deprecated Polynomial.natDegree_derivative (since := "2026-10-05")]
+@[deprecated "Use `Polynomial.natDegree_derivative`." (since := "2026-10-05")]
 lemma natDegree_derivative_eq (p : ℝ[X]) :
     p.derivative.natDegree = p.natDegree - 1 :=
   p.natDegree_derivative
 
 /-- A polynomial of `natDegree` zero has vanishing derivative. -/
-@[deprecated Polynomial.derivative_eq_zero (since := "2026-10-05")]
+@[deprecated "Use `Polynomial.derivative_eq_zero`." (since := "2026-10-05")]
 lemma derivative_eq_zero_of_natDegree_eq_zero {p : ℝ[X]} (h : p.natDegree = 0) :
     p.derivative = 0 :=
   Polynomial.derivative_eq_zero.mpr h
 
 /-- A polynomial of positive `natDegree` has a nonzero derivative. -/
-@[deprecated Polynomial.derivative_ne_zero (since := "2026-10-05")]
+@[deprecated "Use `Polynomial.derivative_ne_zero`." (since := "2026-10-05")]
 lemma derivative_ne_zero_of_natDegree_ne_zero {p : ℝ[X]} (h : p.natDegree ≠ 0) :
     p.derivative ≠ 0 :=
   Polynomial.derivative_ne_zero.mpr h

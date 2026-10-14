@@ -256,13 +256,13 @@ theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
 private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
   ls4_C_ofNat_real 2
 
-@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
 alias ls4_C_two_real := ls4_C_two_real_compat
 
 private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
   ls4_C_ofNat_real 4
 
-@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
 alias ls4_C_four_real := ls4_C_four_real_compat
 
 theorem ls4_natCast_eq_C_real (m : Nat) :
@@ -706,7 +706,7 @@ macro_rules
 end Tactic
 
 /-- Deprecated degree-restricted form of `MaWang.splits_derivative_of_nonpos`. -/
-@[deprecated MaWang.splits_derivative_of_nonpos (since := "2026-10-05")]
+@[deprecated "Use `MaWang.splits_derivative_of_nonpos`." (since := "2026-10-05")]
 theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
     (hf : f.Splits)
     (_ : 2 ≤ f.natDegree)
@@ -720,7 +720,7 @@ theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
 
 /-- Deprecated degree-restricted form of
 `MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`. -/
-@[deprecated MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
+@[deprecated "Use `MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`."
   (since := "2026-10-05")]
 theorem isRealRooted_of_mw_then_const_add_derivative_sequence
     {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} (a : Nat → ℝ)
