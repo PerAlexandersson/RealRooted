@@ -11,6 +11,7 @@ theory of *product sequences* `P (n + 1) = L n * P n` with every `L n` linear:
 
 * `interlaces_self_mul_of_natDegree_eq_one`: `Interlaces f (L * f)`;
 * `productSequence_natDegree`: `(P n).natDegree = (P 0).natDegree + n`;
+* `productSequence_natDegree_of_constant_degree`: the analogous fixed-degree formula;
 * `productSequence_interlaces`: `Interlaces (P n) (P (n + 1))`.
 
 No sign or leading-coefficient condition is needed: the roots of `L n` may lie
@@ -101,6 +102,23 @@ theorem productSequence_natDegree (hL : ∀ n, (L n).natDegree = 1)
         simp at this
       rw [hstep n, natDegree_mul hL0 hne, hL n,
         productSequence_natDegree hL h0 hs0 hstep n]
+      ring
+
+/-- **Degrees in a product sequence with factors of fixed degree.** -/
+theorem productSequence_natDegree_of_constant_degree (d : ℕ) (hL0 : ∀ n, L n ≠ 0)
+    (hL : ∀ n, (L n).natDegree = d) (h0 : P 0 ≠ 0)
+    (hstep : ∀ n, P (n + 1) = L n * P n) :
+    ∀ n, (P n).natDegree = (P 0).natDegree + d * n := by
+  have hP0 : ∀ n, P n ≠ 0 := by
+    intro n
+    induction n with
+    | zero => exact h0
+    | succ n ih => rw [hstep n]; exact mul_ne_zero (hL0 n) ih
+  intro n
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [hstep n, natDegree_mul (hL0 n) (hP0 n), hL n, ih]
       ring
 
 /-- **Consecutive members of a product sequence interlace.** -/
