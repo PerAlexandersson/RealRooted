@@ -232,7 +232,7 @@ theorem natDegree_and_leadingCoeff_quadratic_derivative_recurrence_of_ne_zero
 
 section AddTorsionFree
 
-variable [IsAddTorsionFree R]
+variable [HasUniqueDiv R]
 
 /-- The next coefficient of the derivative is `(n - 1)` times the next
 coefficient of the original polynomial, for degree `n ≥ 2`. -/

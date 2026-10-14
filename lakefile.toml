@@ -15,12 +15,12 @@ warningAsError = true
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
-rev = "v4.34.0"
+rev = "v4.35.0"
 
 [[require]]
 name = "LeanLGV"
 git = "https://github.com/PerAlexandersson/LeanLGV.git"
-rev = "acf9f6694c1169e9773aaf9d1d594709c0926eb8"
+rev = "18854ce943d2e094c7af2655f4dc8b07beba9ff6"
 
 [[lean_lib]]
 name = "RealRooted"

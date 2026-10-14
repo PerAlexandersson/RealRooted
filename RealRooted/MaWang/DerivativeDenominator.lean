@@ -649,7 +649,7 @@ namespace RealRooted
 
 /-- Deprecated degree-restricted form of
 `MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs`. -/
-@[deprecated MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
+@[deprecated "Use `MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs`."
   (since := "2026-10-05")]
 theorem isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
@@ -669,7 +669,7 @@ theorem isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
 
 /-- Deprecated degree-restricted form of
 `MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs`. -/
-@[deprecated MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+@[deprecated "Use `MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs`."
   (since := "2026-10-05")]
 theorem strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}

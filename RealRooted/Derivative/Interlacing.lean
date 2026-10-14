@@ -397,7 +397,7 @@ theorem derivative_interlaces_of_natDegree_ne_zero {f : ℝ[X]} (hf : f.Splits)
       rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 /-- Deprecated degree-two form of `derivative_interlaces_of_natDegree_ne_zero`. -/
-@[deprecated derivative_interlaces_of_natDegree_ne_zero (since := "2026-10-06")]
+@[deprecated "Use `derivative_interlaces_of_natDegree_ne_zero`." (since := "2026-10-06")]
 theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : 2 ≤ f.natDegree) :
     Interlaces f.derivative f :=
   derivative_interlaces_of_natDegree_ne_zero hf (by lia)

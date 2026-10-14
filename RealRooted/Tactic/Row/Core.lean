@@ -471,13 +471,13 @@ def rowInterlacesPlausibleAt (r : RowRec) (k : Nat) : MetaM Bool := do
   return false
 
 /-- `rr_row_interlaces` for the sequence `m ↦ P (m + k)` (after `k` further rows), returning
-a certificate and the hinted call.  `given` supplies the recurrence and a proof of it when it
+a certificate and the hinted call.  `known` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
 def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
-    (given : Option (RowRec × Ident) := none) : TacticM (Cert × RowHints) := do
+    (known : Option (RowRec × Ident) := none) : TacticM (Cert × RowHints) := do
   let intro ← introIfForall
   withMainContext do
-  let r ← match given with
+  let r ← match known with
     | some (r, _) => pure r
     | none => rowRecSetup "rr_row_interlaces"
   let P := mkIdent r.P
@@ -496,7 +496,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     return (intro ++ split.push (← applyThenSideFull P main), {})
   -- a second-order step with an eigen-ODE collapses to a first-order one
   let mut shape := r.shape
-  let mut hrec ← match given with
+  let mut hrec ← match known with
     | some (_, h) =>
         if k == 0 then pure (h : Term)
         else `(fun n => $h:ident (n + $(rowNumLit k)))
@@ -624,7 +624,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     | some t => plain.filter (· == t)
     | none => plain
   for thm in plain do
-    if given.isNone && shape == r.shape && hints.thm.isNone then
+    if known.isNone && shape == r.shape && hints.thm.isNone then
       let nonpos := thm == ``RealRooted.derivativeRecurrence_interlaces_of_nonnegCoeffs ||
         thm == ``RealRooted.derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs ||
         thm == ``RealRooted.threeTerm_interlaces_of_nonnegCoeffs
@@ -804,7 +804,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- root windows whose lower bound is a root of `A n` moving with `n`
   -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`)
   let movIcc := ``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div
-  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
+  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && known.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movIcc) then
     match ← movingWindow? r k with
@@ -829,7 +829,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- root bounds `U n = p n / q n` moving up with `n`, split at a common root `ρ` of the `A n`
   -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`)
   let movUp := ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div
-  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && given.isNone &&
+  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && known.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movUp) then
     match ← movingUpper? r k D₀ with

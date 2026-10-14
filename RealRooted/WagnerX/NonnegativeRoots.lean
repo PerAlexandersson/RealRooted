@@ -41,7 +41,7 @@ lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
       exact (hasNonnegCoeffs_X_sub_C (hs a (by simp))).mul
         (ih (fun r hr => hs r (by simp [hr])))
 
-@[deprecated roots_nonpos_of_hasNonnegCoeffs (since := "2026-10-12")]
+@[deprecated "Use `roots_nonpos_of_hasNonnegCoeffs`." (since := "2026-10-12")]
 theorem roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (_ : p.Splits)
     (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 :=
   roots_nonpos_of_hasNonnegCoeffs hnn
@@ -86,7 +86,7 @@ lemma hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
   exact roots_nonpos_of_hasNonnegCoeffs hpnn r ((mem_roots hp_ne).mpr hrp)
 
-@[deprecated hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff (since := "2026-10-12")]
+@[deprecated "Use `hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff`." (since := "2026-10-12")]
 theorem hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
     (hp_ne : p ≠ 0) (_ : p.Splits) (hpnn : HasNonnegCoeffs p)

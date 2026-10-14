@@ -10,7 +10,7 @@ open Polynomial
 
 /-- Implicit-binder form of `chudnovskySeymour_compatiblePairHasCommonInterleaver`,
 kept for downstream callers. -/
-@[deprecated chudnovskySeymour_compatiblePairHasCommonInterleaver (since := "2026-10-05")]
+@[deprecated "Use `chudnovskySeymour_compatiblePairHasCommonInterleaver`." (since := "2026-10-05")]
 theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
     {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (h : Compatible f g) :
@@ -112,7 +112,7 @@ theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
 
 /-- `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible` with an unused
 nonnegativity hypothesis, kept for downstream callers. -/
-@[deprecated chudnovskySeymour_pairwiseCompatible_iff_familyCompatible
+@[deprecated "Use `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible`."
   (since := "2026-10-05")]
 theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
     {fs : List ℝ[X]}
