@@ -463,6 +463,9 @@ routes, which have no printable steps) and the hints of the hinted call. -/
 private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if let some why ← topInterlacesProbe hints then
+      -- An exactly matching registered model may prove rows that the generic probe rejects.
+      if let some (P, candidates) ← rowModelCandidates? .direct then
+        if ← rowSucceeds (rowModelGoal P candidates) then return (#[], hints)
       throwError "rr_row_interlaces: no strategy (probe: {why})"
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if let some (P, candidates) ← rowModelCandidates? .direct then
@@ -786,7 +789,14 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
     | .ok _ => return { via := some `delayedProduct }
     | .error e => if hints.via == some `delayedProduct then throwError e
   match ← topSplitsProbe hints with
-  | .veto why => throwError "rr_row_splits: no strategy (probe: {why})"
+  | .veto why =>
+      -- An exactly matching registered model may prove rows that the generic probe rejects,
+      -- for example reversed rows that do not interlace.
+      if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
+          hints.upper.isNone then
+        if let some (P, candidates) ← rowModelCandidates? .direct then
+          if ← rowSucceeds (rowModelGoal P candidates) then return {}
+      throwError "rr_row_splits: no strategy (probe: {why})"
   | .closedForm plan =>
       if hints.via.isNone then
         let provePlan : TacticM Unit := do

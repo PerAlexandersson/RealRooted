@@ -1826,7 +1826,6 @@ import RealRooted.CoefficientShape.LocalLimit
 import RealRooted.Mathlib.Probability.LocalLimit
 
 import RealRooted.ToeplitzFin
-import RealRooted.Applications.OEIS.A046802
 import RealRooted.Applications.OEIS.A124848
 import RealRooted.Applications.OEIS.A132166
 import RealRooted.Applications.OEIS.A155112
@@ -1985,7 +1984,6 @@ import RealRooted.Applications.OEIS.A367177
 import RealRooted.MultiplierSequence.JensenHypergeometric
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
 import RealRooted.Applications.OEIS.HigherOrderDegreeModels
-import RealRooted.Applications.OEIS.A262226
 import RealRooted.Applications.OEIS.IndispensableDigits
 import RealRooted.MatrixInterlacing.DigitStep
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
@@ -2005,4 +2003,7 @@ import RealRooted.Applications.OEIS.A080721
 import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Applications.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
+import RealRooted.Tactic.Examples.RowModelRecentRegistrations
+import RealRooted.Applications.OEIS.A046802
+import RealRooted.Applications.OEIS.A262226
 import RealRooted.Tactic.Examples.OEIS.NextRows

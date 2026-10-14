@@ -148,6 +148,7 @@ import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
 import RealRooted.Tactic.Examples.RowModelNextFamilies
+import RealRooted.Tactic.Examples.RowModelRecentRegistrations
 import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Tactic.Examples.RowPathPower
