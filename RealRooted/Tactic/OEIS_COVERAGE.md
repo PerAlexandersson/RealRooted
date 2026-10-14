@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **284 IDs**; **22 formalized**, **243 shells**, **3 fragments**, and **16 documented-only**.
+Current totals: **287 IDs**; **25 formalized**, **243 shells**, **3 fragments**, and **16 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -201,6 +201,7 @@ Current totals: **284 IDs**; **22 formalized**, **243 shells**, **3 fragments**,
 | A154602 | `shell` | Scaled Bell rows `2ⁿ Bell(n, (t + 1) / 2)`: `v_n(t) = 2 + 2t` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign_at_roots_upper` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A154986 | `shell` | active coefficient `(m-1)(m-2)t`, after the row shift. | `rr_lw_current_one_add_X_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A155112 | `formalized` | -style persistent root at zero: `P_n = X Q_n`. | `rr_product_lift_X_sequence` | `factorization`, `quotient_realrooted` | none |
+| A155495 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A156289 | `shell` | The downstream rows.<br>def : ℕ → ℝ[X]<br>+7 additional test intents | `rr_row_interlaces` | `thm` | concrete row definition and proofs of the listed certificates |
 | A156308 | `shell` | The downstream recurrence for OEIS . | `rr_row_natDegree` | `n` | concrete row definition and proofs of the listed certificates |
 | A156366 | `shell` | half-line factor `t-3t^2=t(1-3t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_realrooted_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
@@ -280,6 +281,7 @@ Current totals: **284 IDs**; **22 formalized**, **243 shells**, **3 fragments**,
 | A307419 | `shell` | A second-order recurrence with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A316649 | `shell` | OEIS in its generated order-three coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A317496 | `shell` | `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A318397 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A321434 | `shell` | A derivative recurrence of lag two, split along the residues of `n` mod two ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A321966 | `fragment` | OEIS-stated conjecture target, `v_n(t)=2t`.<br>root-sign package once the current row has nonnegative coefficients. | `rr_sign`, `rr_sign_at_roots` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A322944 | `fragment` | OEIS-stated conjecture target, `v_n(t)=3t`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
@@ -297,6 +299,7 @@ Current totals: **284 IDs**; **22 formalized**, **243 shells**, **3 fragments**,
 | A359363 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A361893 | `shell` | split scalar denominator normalizing into `-c_n t^2 P'`. | `rr_mw_active_den_at`, `rr_mw_coeff_at`, `rr_mw_den_norm_coeff`, `rr_mw_derivative_neg_X_sq_sequence_auto` | `base`, `coeff_eq`, `degree_succ`, `den_nonzero`, `derivative`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A366159 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
+| A367177 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A370173 | `shell` | `/`: `P_n=tP_{n-1}+tP_{n-2}`. | `rr_lw_current_X_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A370258 | `shell` | `A n` and decreases with `n` (,<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A375853 | `shell` | active shift of `(n-1)P_n=(n+2+(3n-2)t)P_{n-1}+2t(1-t)P'_{n-1}`. | `rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto` | `base`, `coeff`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `raw_recurrence` | concrete row definition and proofs of the listed certificates |

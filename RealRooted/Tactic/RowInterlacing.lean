@@ -27,7 +27,7 @@ route that the probe rules out fails without elaborating anything.
 
 Transfer theorems tagged `@[rr_row_model]` provide another automatic route. Before refining
 with one, the tactic checks the theorem's conclusion head and recurrence offset, then compares
-its advertised first two rows with the recurrence's exact `QPoly` rows. A registered tail
+its advertised initial rows with the recurrence's exact `QPoly` rows. A registered tail
 recurrence may start at or after the defining recurrence's offset. Unrelated models are never
 elaborated.
 
@@ -240,9 +240,9 @@ private def isRowAt (P e : Expr) (n : Nat) : MetaM Bool := do
   unless e.isApp && e.getAppFn == P do return false
   return (← evalNat e.appArg!) == some n
 
-/-- Read the recurrence offset and two exact base rows advertised by a transfer theorem. -/
+/-- Read the recurrence offset and up to three exact base rows advertised by a transfer theorem. -/
 private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
-    (Option (QPoly × QPoly × Option Nat)) := do
+    (Option (QPoly × QPoly × Option QPoly × Option Nat)) := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescope type fun xs conclusion => do
     unless rowModelConclusion? conclusion == some want do return none
@@ -251,6 +251,7 @@ private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
       | return none
     let mut zero? : Option QPoly := none
     let mut one? : Option QPoly := none
+    let mut two? : Option QPoly := none
     let mut offset? : Option Nat := none
     for x in xs do
       let binderType ← inferType x
@@ -259,21 +260,24 @@ private def rowModelBaseRows? (want : RowModelConclusion) (decl : Name) : MetaM
         else if ← isRowAt P rhs 0 then zero? := ← evalQPoly? lhs
         else if ← isRowAt P lhs 1 then one? := ← evalQPoly? rhs
         else if ← isRowAt P rhs 1 then one? := ← evalQPoly? lhs
+        else if ← isRowAt P lhs 2 then two? := ← evalQPoly? rhs
+        else if ← isRowAt P rhs 2 then two? := ← evalQPoly? lhs
       else if offset?.isNone && binderType.isForall then
         offset? := ← forallTelescope binderType fun ys body => do
           let some (_, lhs, _) := body.eq? | return none
           unless ys.size == 1 && lhs.isApp && lhs.getAppFn == P do return none
           natOffsetOf? ys[0]! lhs.appArg!
     let (some zero, some one) := (zero?, one?) | return none
-    return some (zero, one, offset?)
+    return some (zero, one, two?, offset?)
 
 /-- Registered models whose conclusion, recurrence offset, and exact first rows match. -/
 private def matchingRowModels (decls : Array Name) (P : Name)
-    (want : RowModelConclusion) : MetaM (Array Name) := do
-  let mut models : Array (Name × QPoly × QPoly × Option Nat) := #[]
+    (want : RowModelConclusion) : MetaM (Array (Name × Bool)) := do
+  let mut models : Array (Name × QPoly × QPoly × Option QPoly × Option Nat) := #[]
   for decl in decls.qsort Name.quickLt do
-    let some (modelZero, modelOne, offset?) ← rowModelBaseRows? want decl | continue
-    models := models.push (decl, modelZero, modelOne, offset?)
+    let some (modelZero, modelOne, modelTwo?, offset?) ←
+        rowModelBaseRows? want decl | continue
+    models := models.push (decl, modelZero, modelOne, modelTwo?, offset?)
   if models.isEmpty then return #[]
   let recurrence? ← linRec? P
   let rows? ← match recurrence? with
@@ -284,13 +288,27 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     | none => linRecBaseRows? P
   let some rows := rows? | return #[]
   let (some rowZero, some rowOne) := (rows[0]?, rows[1]?) | return #[]
-  let mut candidates := #[]
-  for (decl, modelZero, modelOne, offset?) in models do
+  let mut preliminary := #[]
+  for (decl, modelZero, modelOne, modelTwo?, offset?) in models do
     let offsetMatches := match recurrence?, offset? with
       | some recurrence, some offset => decide (recurrence.offset ≤ offset)
       | _, _ => true
     if offsetMatches && rowZero.eqv modelZero && rowOne.eqv modelOne then
-      candidates := candidates.push decl
+      preliminary := preliminary.push (decl, modelTwo?)
+  unless preliminary.any fun candidate => candidate.2.isSome do
+    return preliminary.map fun candidate => (candidate.1, false)
+  let rows? ← match recurrence? with
+    | some recurrence => linRecRows? recurrence 2
+    | none => pure none
+  let rows? ← match rows? with
+    | some rows => pure (some rows)
+    | none => linRecBaseRows? P
+  let some rows := rows? | return #[]
+  let some rowTwo := rows[2]? | return #[]
+  let mut candidates := #[]
+  for (decl, modelTwo?) in preliminary do
+    if modelTwo?.all fun modelTwo => rowTwo.eqv modelTwo then
+      candidates := candidates.push (decl, modelTwo?.isSome)
   return candidates
 
 /-- Close one polynomial identity obtained from a model recurrence. -/
@@ -300,6 +318,7 @@ private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
   match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
+  if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
   if !(← getGoals).isEmpty then
     evalTactic (← `(tactic| rr_cf_identity))
   unless (← getGoals).isEmpty do
@@ -314,11 +333,22 @@ private def closeRowModelBaseIdentity (P : Ident) : TacticM Unit := do
     throwError "row-model base identity left goals"
 
 /-- Apply a structurally matched transfer theorem. -/
-private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
-  evalTactic (← `(tactic| refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ _))
-  let [hzero, hone, hrec] ← getGoals
-    | throwError "registered row-model theorem has an unsupported shape"
-  for goal in [hzero, hone] do
+private def applyRowModel (P : Ident) (decl : Name) (hasThird : Bool) : TacticM Unit := do
+  if hasThird then
+    evalTactic (← `(tactic|
+      refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ ?_ _))
+  else
+    evalTactic (← `(tactic| refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ ?_ _))
+  let goals ← getGoals
+  let (baseGoals, hrec) ← if hasThird then
+    let [hzero, hone, htwo, hrec] := goals
+      | throwError "registered row-model theorem has an unsupported shape"
+    pure ([hzero, hone, htwo], hrec)
+  else
+    let [hzero, hone, hrec] := goals
+      | throwError "registered row-model theorem has an unsupported shape"
+    pure ([hzero, hone], hrec)
+  for goal in baseGoals do
     setGoals [goal]
     unless ← rowSucceeds (discard <| smallRow P) do
       closeRowModelBaseIdentity P
@@ -327,7 +357,8 @@ private def applyRowModel (P : Ident) (decl : Name) : TacticM Unit := do
   closeRowModelIdentity P
 
 /-- The sequence and registered models whose conclusion and exact first rows match the goal. -/
-private def rowModelCandidates? : TacticM (Option (Ident × Array Name)) := withMainContext do
+private def rowModelCandidates? : TacticM (Option (Ident × Array (Name × Bool))) :=
+    withMainContext do
   let decls := rrRowModelAttr.getDecls (← getEnv)
   if decls.isEmpty then return none
   let target ← instantiateMVars (← getMainTarget)
@@ -338,10 +369,10 @@ private def rowModelCandidates? : TacticM (Option (Ident × Array Name)) := with
   return some (mkIdent PName, candidates)
 
 /-- Try only the registered models selected by the structural and exact-row filter. -/
-private def rowModelGoal (P : Ident) (candidates : Array Name) : TacticM Unit := do
+private def rowModelGoal (P : Ident) (candidates : Array (Name × Bool)) : TacticM Unit := do
   let mut failures : Array (MessageData × MessageData) := #[]
-  for decl in candidates do
-    match ← rowAttempt (applyRowModel P decl) with
+  for (decl, hasThird) in candidates do
+    match ← rowAttempt (applyRowModel P decl hasThird) with
     | .ok _ => return
     | .error err => failures := failures.push (m!"{decl}", err)
   throwRowFailures m!"no matching registered row model proves the goal for {P}" failures
