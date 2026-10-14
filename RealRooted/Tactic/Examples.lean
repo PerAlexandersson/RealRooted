@@ -141,6 +141,7 @@ import RealRooted.Tactic.Examples.RowFactorPower
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
 import RealRooted.Tactic.Examples.RowModelNextFamilies

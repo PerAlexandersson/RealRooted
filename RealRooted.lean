@@ -1998,3 +1998,5 @@ import RealRooted.Tactic.Examples.RowRegression1689Degree
 import RealRooted.Tactic.Examples.RowRegression1689Interlacing
 import RealRooted.Applications.OEIS.TouchardImages
 import RealRooted.Tactic.Examples.OEIS.TouchardImages
+import RealRooted.Applications.OEIS.A080721
+import RealRooted.Tactic.Examples.RowModelA080721
