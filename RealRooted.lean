@@ -1966,6 +1966,7 @@ import RealRooted.ParityFactorization
 import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Applications.OEIS.A110608
 import RealRooted.MultiplierSequence.TwoSidedJensen
+import RealRooted.Tactic.Examples.RowSubseqDegree
 import RealRooted.Interlacing.ReversalLeftDegree
 import RealRooted.Tactic.Examples.EulerTypeBridges
 import RealRooted.Tactic.Row.EndpointWindow

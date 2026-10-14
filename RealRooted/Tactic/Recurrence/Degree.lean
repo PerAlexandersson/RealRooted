@@ -48,13 +48,18 @@ For three-term recurrences the top coefficients satisfy a scalar recurrence
 constant, they try half growth, `natDegree (P n) = D₀ + d ⌊(n + e) / 2⌋`
 (`RealRooted.threeTermHalf_*`), which covers Fibonacci-type rows of degree `n / 2`.
 
+As a last degree-only fallback, product and three-term recurrences whose lags have a common
+period are reduced to residue subsequences.  Exact probes reject mixed or nonlinear residue
+classes; the accepted zero and affine-degree classes are then proved from their reduced
+recurrences by `rr_row_subseq_natDegree`.
+
 The tactics are backed by `RealRooted.derivativeRecurrence_natDegree`,
 `RealRooted.derivRec₂_natDegree`, the three-term theorems, and their `ne_zero` /
 `leadingCoeff_pos` companions, and by `RealRooted.productSequence_natDegree` for
 products.
-Not covered: recurrences whose leading terms cancel identically (the degree
-then depends on lower coefficients) and rows whose degree is neither affine in `n`
-nor of the half-growth form.
+Not covered: recurrences whose leading terms cancel identically (the degree then depends on
+lower coefficients) unless an existing general-linear-recurrence route supplies a suitable
+coefficient invariant.
 -/
 
 open Lean Elab Tactic Meta Polynomial
@@ -95,6 +100,11 @@ private def rowDegreeShapeCore (kind : String) (hints : RowHints) :
 (`ρ ∈ {1, 2, 1/2, 3, 4}`) for a three-term recurrence whose top coefficients satisfy the ratio
 invariant of `RealRooted.threeTermRatio_mul_leadingCoeff_le`. -/
 syntax (name := rrRowLeadingCoeffRatio) "rr_row_leadingCoeff_ratio" : tactic
+
+/-- Backend for degree laws split into residue classes, registered by
+`RealRooted.Tactic.Row.Subseq`.  It is deliberately tried only after the ordinary recurrence
+and cancellation routes have failed. -/
+syntax (name := rrRowSubseqNatDegree) "rr_row_subseq_natDegree" : tactic
 
 /-- Degrees of a two-step product `P (n + 2) = q * P n` with `q` independent of `n`, by parity
 (`RealRooted.twoStepProduct_natDegree`); the base rows may vanish. -/
@@ -177,8 +187,17 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
         let cancel ← `(tactic| rr_row_cancel)
         match ← rowAttempt (evalTactic cancel) with
         | .ok _ => return (#[cancel], {})
-        | .error e'' => throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
-            With cancelling top terms: {e''}"
+        | .error e'' =>
+            if kind == "natDegree" then
+              let subseq ← `(tactic| rr_row_subseq_natDegree)
+              match ← rowAttempt (evalTactic subseq) with
+              | .ok _ => return (#[subseq], {})
+              | .error e''' =>
+                  throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
+                    With cancelling top terms: {e''}\n\nAs residue subsequences: {e'''}"
+            else
+              throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
+                With cancelling top terms: {e''}"
 
 /-- Run a degree tactic; with `?`, print the hinted call and the certificate. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
