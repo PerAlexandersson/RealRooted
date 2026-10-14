@@ -91,6 +91,7 @@ import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
 import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
 import RealRooted.Tactic.Examples.OEIS.NegativeLag
+import RealRooted.Tactic.Examples.OEIS.NextRows
 import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
 import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
 import RealRooted.Tactic.Examples.OEIS.PositiveCombinations

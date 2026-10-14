@@ -2004,3 +2004,6 @@ import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Applications.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.RowModelRecentRegistrations
+import RealRooted.Applications.OEIS.A046802
+import RealRooted.Applications.OEIS.A262226
+import RealRooted.Tactic.Examples.OEIS.NextRows

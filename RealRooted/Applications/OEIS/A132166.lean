@@ -1,4 +1,11 @@
-import Mathlib
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.QuadraticRoot
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.ScalarNormalization
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # OEIS A132166
@@ -295,5 +302,330 @@ theorem quotient_succ_of_multiplicity_succ (n : ℕ)
     rw [hn6]; simp only [map_add, map_mul, map_ofNat]; ring
   apply mul_left_cancel₀ (pow_ne_zero (multiplicity n + 1) (X_add_C_ne_zero (36 : ℝ)))
   linear_combination k + ((X + C 36) ^ multiplicity n * quotient n) * e
+
+private theorem polynomial_degree_and_monic (n : ℕ) :
+    (polynomial n).natDegree = n + 2 ∧ (polynomial n).Monic := by
+  let den : ℕ → ℝ := fun k => (k : ℝ) + 4
+  have hrec : ∀ k, polynomial (k + 1) =
+      (C (36 / den k) * X + C (1 / den k) * X ^ 2) *
+          (polynomial k).derivative +
+        (C ((6 * (k : ℝ) + 54) / den k) + C (2 / den k) * X) *
+          polynomial k + 0 := by
+    intro k
+    rw [polynomial]
+    simp only [den]
+    have ha : C (36 / ((k : ℝ) + 4)) =
+        C (1 / ((k : ℝ) + 4)) * C 36 := by
+      rw [← C_mul]
+      congr 1
+      ring
+    have hc : C ((6 * (k : ℝ) + 54) / ((k : ℝ) + 4)) =
+        C (2 / ((k : ℝ) + 4)) * C (3 * (k : ℝ) + 27) := by
+      rw [← C_mul]
+      congr 1
+      ring
+    rw [ha, hc]
+    ring
+  have hseed : polynomial 0 ≠ 0 := by
+    intro hz
+    have hc := congrArg (Polynomial.coeff · 2) hz
+    norm_num [polynomial, coeff_add, coeff_X_pow, coeff_X] at hc
+  have hrem : ∀ k, (0 : ℝ[X]).natDegree ≤ (polynomial 0).natDegree + k := by
+    intro k
+    simp
+  have hfactor : ∀ k,
+      (1 / den k) * (((polynomial 0).natDegree + k : ℕ) : ℝ) +
+        2 / den k ≠ 0 := by
+    intro k
+    have hdegree : (polynomial 0).natDegree = 2 := by
+      rw [polynomial]
+      compute_degree!
+    rw [hdegree]
+    simp only [den]
+    positivity
+  have hresult :=
+    Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_recurrence_of_ne_zero
+      polynomial (fun _ => 0) (fun k => 36 / den k) (fun k => 1 / den k)
+      (fun k => (6 * (k : ℝ) + 54) / den k) (fun k => 2 / den k)
+      hrec hseed hrem hfactor n
+  have hzeroDegree : (polynomial 0).natDegree = 2 := by
+    rw [polynomial]
+    compute_degree!
+  have hfactorOne : ∀ k,
+      (1 / den k) * (((polynomial 0).natDegree + k : ℕ) : ℝ) +
+        2 / den k = 1 := by
+    intro k
+    rw [hzeroDegree]
+    simp only [den]
+    have hden : (k : ℝ) + 4 ≠ 0 := by positivity
+    field_simp
+    push_cast
+    ring
+  have hzeroLeading : (polynomial 0).leadingCoeff = 1 := by
+    have hmonic : (polynomial 0).Monic := by
+      rw [polynomial]
+      monicity!
+    exact hmonic.leadingCoeff
+  constructor
+  · simpa [hzeroDegree, Nat.add_comm] using hresult.1
+  · rw [Monic.def, hresult.2]
+    simp only [hfactorOne, Finset.prod_const_one, one_mul]
+    exact hzeroLeading
+
+/-- The A132166 model row indexed by `n` is monic of degree `n + 2`. -/
+theorem polynomial_natDegree (n : ℕ) :
+    (polynomial n).natDegree = n + 2 :=
+  (polynomial_degree_and_monic n).1
+
+private theorem polynomial_monic (n : ℕ) : (polynomial n).Monic :=
+  (polynomial_degree_and_monic n).2
+
+private theorem polynomial_nonneg (n : ℕ) :
+    HasNonnegCoeffs (polynomial n) := by
+  induction n with
+  | zero =>
+      rw [polynomial]
+      exact ((hasNonnegCoeffs_X.pow 2).add
+        ((hasNonnegCoeffs_C (by norm_num)).mul hasNonnegCoeffs_X)).add
+          (hasNonnegCoeffs_C (by norm_num))
+  | succ n ih =>
+      rw [polynomial]
+      apply HasNonnegCoeffs.add
+      · exact ((hasNonnegCoeffs_C (by positivity)).mul
+          (hasNonnegCoeffs_X_add_C (by positivity))).mul ih
+      · exact ((hasNonnegCoeffs_C (by positivity)).mul
+          (hasNonnegCoeffs_X.mul (hasNonnegCoeffs_X_add_C (by norm_num)))).mul
+            ih.derivative
+
+private def reflectedPolynomial (n : ℕ) : ℝ[X] :=
+  C ((-1 : ℝ) ^ n) * (translatedPolynomial n).comp (-X)
+
+private theorem coeff_reflectedPolynomial (n j : ℕ) :
+    (reflectedPolynomial n).coeff j = signedCoefficient n j := by
+  rw [reflectedPolynomial, coeff_C_mul, coeff_comp_neg_X]
+  simp only [signedCoefficient, pow_add]
+  ring
+
+private theorem reflectedPolynomial_nonneg (n : ℕ) :
+    HasNonnegCoeffs (reflectedPolynomial n) := by
+  intro j
+  rw [coeff_reflectedPolynomial]
+  exact (inv_all n).1 j
+
+private theorem reflectedPolynomial_ne_zero (n : ℕ) :
+    reflectedPolynomial n ≠ 0 := by
+  intro hz
+  have hc := congrArg (Polynomial.coeff · (multiplicity n)) hz
+  rw [coeff_reflectedPolynomial] at hc
+  exact (ne_of_gt (inv_all n).2.2) (by simpa using hc)
+
+private theorem isRoot_le_zero {n : ℕ} {r : ℝ}
+    (hr : (polynomial n).IsRoot r) : r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs (polynomial_nonneg n) r
+    ((mem_roots (polynomial_monic n).ne_zero).mpr hr)
+
+private theorem isRoot_ge_neg_thirty_six {n : ℕ} {r : ℝ}
+    (hr : (polynomial n).IsRoot r) : -36 ≤ r := by
+  have hreflect : (reflectedPolynomial n).IsRoot (-36 - r) := by
+    rw [Polynomial.IsRoot.def] at hr ⊢
+    simp only [reflectedPolynomial, eval_mul, eval_C, eval_comp, eval_neg,
+      eval_X, translatedPolynomial, eval_add]
+    convert mul_eq_zero_of_right ((-1 : ℝ) ^ n) hr using 1
+    ring
+  have hnonpos : -36 - r ≤ 0 :=
+    roots_nonpos_of_hasNonnegCoeffs (reflectedPolynomial_nonneg n) (-36 - r)
+      ((mem_roots (reflectedPolynomial_ne_zero n)).mpr hreflect)
+  linarith
+
+private theorem quotient_ne_zero (n : ℕ) : quotient n ≠ 0 := by
+  intro hz
+  exact eval_neg_thirty_six_quotient_ne_zero n (by simp [hz])
+
+private theorem quotient_natDegree (n : ℕ) :
+    (quotient n).natDegree = n + 2 - multiplicity n := by
+  rw [quotient, natDegree_divByMonic _ ((monic_X_add_C 36).pow _),
+    polynomial_natDegree, natDegree_pow, natDegree_X_add_C]
+  simp only [Nat.mul_one]
+
+private theorem quotient_posLeading (n : ℕ) :
+    HasPosLeadingCoeff (quotient n) := by
+  unfold HasPosLeadingCoeff
+  rw [quotient]
+  have hmonic : ((X + C (36 : ℝ)) ^ multiplicity n).Monic :=
+    (monic_X_add_C 36).pow _
+  have hdegree : ((X + C (36 : ℝ)) ^ multiplicity n).degree ≤
+      (polynomial n).degree := by
+    rw [degree_eq_natDegree hmonic.ne_zero,
+      degree_eq_natDegree (polynomial_monic n).ne_zero,
+      natDegree_pow, natDegree_X_add_C, polynomial_natDegree]
+    simp only [Nat.mul_one]
+    exact_mod_cast (by unfold multiplicity; lia : multiplicity n ≤ n + 2)
+  rw [leadingCoeff_divByMonic_of_monic hmonic hdegree,
+    (polynomial_monic n).leadingCoeff]
+  norm_num
+
+private theorem quotient_isRoot_polynomial {n : ℕ} {r : ℝ}
+    (hr : (quotient n).IsRoot r) : (polynomial n).IsRoot r := by
+  rw [polynomial_eq_pow_mul_quotient, Polynomial.IsRoot.def, eval_mul]
+  rw [Polynomial.IsRoot.def] at hr
+  exact mul_eq_zero_of_right _ hr
+
+private theorem quotient_splits_zero : (quotient 0).Splits := by
+  have heq : quotient 0 = polynomial 0 := by
+    simp only [quotient, multiplicity, Nat.zero_add, Nat.reduceDiv, pow_zero,
+      divByMonic_one]
+  rw [heq, polynomial]
+  apply splits_of_natDegree_eq_two_of_discrim_nonneg
+  · compute_degree!
+  · norm_num [discrim, coeff_add, coeff_X, coeff_X_pow]
+
+private theorem quotient_splits (n : ℕ) : (quotient n).Splits := by
+  induction n with
+  | zero => exact quotient_splits_zero
+  | succ n ih =>
+      rcases (by
+        unfold multiplicity
+        lia : multiplicity (n + 1) = multiplicity n ∨
+          multiplicity (n + 1) = multiplicity n + 1) with hm | hm
+      · let u : ℝ[X] := C (1 / ((n : ℝ) + 4)) *
+            (C ((multiplicity n : ℝ) + 2) * X + C (6 * (n : ℝ) + 54))
+        let v : ℝ[X] := C (1 / ((n : ℝ) + 4)) * X * (X + C 36)
+        have hrec : quotient (n + 1) =
+            u * quotient n + v * (quotient n).derivative := by
+          have h := quotient_succ_of_multiplicity_eq n hm
+          have hn : (n : ℝ) + 4 ≠ 0 := by positivity
+          have hnorm := eq_C_inv_mul_of_C_mul_eq hn h
+          simp only [u, v]
+          rw [hnorm]
+          simp only [one_div]
+          ring
+        have hv : ∀ r, (quotient n).IsRoot r → v.eval r ≤ 0 := by
+          intro r hr
+          have hp := quotient_isRoot_polynomial hr
+          have hlo := isRoot_ge_neg_thirty_six hp
+          have hhi := isRoot_le_zero hp
+          simp only [v, eval_mul, eval_C, eval_X, eval_add]
+          have hscale : 0 ≤ 1 / ((n : ℝ) + 4) := by positivity
+          have hprod : r * (r + 36) ≤ 0 := by nlinarith
+          nlinarith
+        have hstrict :=
+          MaWang.strictInterl_derivative_of_nonpos_of_recurrence_of_splits
+            ih hrec (quotient_posLeading (n + 1))
+            (by
+              rw [quotient_natDegree, quotient_natDegree, hm]
+              exact Nat.sub_le_sub_right (by lia) _)
+            (by
+              rw [quotient_natDegree, quotient_natDegree, hm]
+              have hmu : multiplicity n ≤ n + 2 := by
+                unfold multiplicity
+                lia
+              have hadd : n + 1 + 2 = (n + 2) + 1 := by lia
+              rw [hadd]
+              exact (Nat.succ_sub hmu).le)
+            (quotient_posLeading n) hv
+        rw [← hrec] at hstrict
+        exact hstrict.2.1.2
+      · let u : ℝ[X] := C (1 / ((n : ℝ) + 4)) *
+            C ((multiplicity n : ℝ) + 2)
+        let v : ℝ[X] := C (1 / ((n : ℝ) + 4)) * X
+        have hrec : quotient (n + 1) =
+            u * quotient n + v * (quotient n).derivative := by
+          have h := quotient_succ_of_multiplicity_succ n hm
+          have hn : (n : ℝ) + 4 ≠ 0 := by positivity
+          have hnorm := eq_C_inv_mul_of_C_mul_eq hn h
+          simp only [u, v]
+          rw [hnorm]
+          simp only [one_div]
+          ring
+        have hv : ∀ r, (quotient n).IsRoot r → v.eval r ≤ 0 := by
+          intro r hr
+          have hhi := isRoot_le_zero (quotient_isRoot_polynomial hr)
+          simp only [v, eval_mul, eval_C, eval_X]
+          exact mul_nonpos_of_nonneg_of_nonpos (by positivity) hhi
+        have hstrict :=
+          MaWang.strictInterl_derivative_of_nonpos_of_recurrence_of_splits
+            ih hrec (quotient_posLeading (n + 1))
+            (by
+              rw [quotient_natDegree, quotient_natDegree, hm]
+              have hadd : n + 1 + 2 = (n + 2) + 1 := by lia
+              rw [hadd, Nat.add_sub_add_right])
+            (by
+              rw [quotient_natDegree, quotient_natDegree, hm]
+              have hadd : n + 1 + 2 = (n + 2) + 1 := by lia
+              rw [hadd, Nat.add_sub_add_right]
+              lia)
+            (quotient_posLeading n) hv
+        rw [← hrec] at hstrict
+        exact hstrict.2.1.2
+
+/-- Every A132166 model row splits over the reals. -/
+theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
+  rw [polynomial_eq_pow_mul_quotient]
+  exact ((Splits.X_add_C 36).pow (multiplicity n)).mul (quotient_splits n)
+
+/-- Consecutive A132166 model rows strictly interlace. -/
+theorem polynomial_strictInterl_succ (n : ℕ) :
+    StrictInterl (polynomial n) (polynomial (n + 1)) := by
+  let u : ℝ[X] := C (2 / ((n : ℝ) + 4)) *
+    (X + C (3 * (n : ℝ) + 27))
+  let v : ℝ[X] := C (1 / ((n : ℝ) + 4)) * (X * (X + C 36))
+  have hrec : polynomial (n + 1) =
+      u * polynomial n + v * (polynomial n).derivative := by
+    rw [polynomial]
+  have hv : ∀ r, (polynomial n).IsRoot r → v.eval r ≤ 0 := by
+    intro r hr
+    have hlo := isRoot_ge_neg_thirty_six hr
+    have hhi := isRoot_le_zero hr
+    simp only [v, eval_mul, eval_C, eval_X, eval_add]
+    have hscale : 0 ≤ 1 / ((n : ℝ) + 4) := by positivity
+    have hprod : r * (r + 36) ≤ 0 := by nlinarith
+    nlinarith
+  have hstrict :=
+    MaWang.strictInterl_derivative_of_nonpos_of_recurrence_of_splits
+      (polynomial_splits n) hrec
+      (hasPosLeadingCoeff_of_monic (polynomial_monic (n + 1)))
+      (by rw [polynomial_natDegree, polynomial_natDegree]; lia)
+      (by rw [polynomial_natDegree, polynomial_natDegree])
+      (hasPosLeadingCoeff_of_monic (polynomial_monic n)) hv
+  rw [← hrec] at hstrict
+  exact hstrict
+
+/-- Consecutive A132166 model rows interlace. -/
+theorem polynomial_interlaces (n : ℕ) :
+    Interlaces (polynomial n) (polynomial (n + 1)) :=
+  (polynomial_strictInterl_succ n).toInterlaces (by
+    rw [polynomial_natDegree, polynomial_natDegree])
+
+/-- The first-order update used by the A132166 recurrence model. -/
+def nextRow (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
+  C (2 / ((n : ℝ) + 4)) * (X + C (3 * (n : ℝ) + 27)) * p +
+    C (1 / ((n : ℝ) + 4)) * (X * (X + C 36)) * p.derivative
+
+private theorem polynomial_step (n : ℕ) :
+    polynomial (n + 1) = nextRow n (polynomial n) := rfl
+
+private theorem polynomial_one :
+    polynomial 1 = C 4536 + C 1113 * X + C 63 * X ^ 2 + X ^ 3 := by
+  apply Polynomial.funext
+  intro r
+  norm_num [polynomial, eval_add, eval_mul, eval_C, eval_X, eval_pow]
+  ring
+
+/-- Every sequence with the A132166 base rows and first-order update interlaces. -/
+@[rr_row_model]
+theorem interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = C 336 + C 42 * X + X ^ 2)
+    (_hone : P 1 = C 4536 + C 1113 * X + C 63 * X ^ 2 + X ^ 3)
+    (hrec : ∀ n, P (n + 1) = nextRow n (P n))
+    (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have hbase : P 0 = polynomial 0 := by
+    rw [polynomial]
+    linear_combination hzero
+  have heq := sequence_eq_of_same_lag_one_recurrence nextRow
+    hbase hrec polynomial_step
+  rw [heq n, heq (n + 1)]
+  exact polynomial_interlaces n
 
 end RealRooted.Applications.OEIS.A132166
