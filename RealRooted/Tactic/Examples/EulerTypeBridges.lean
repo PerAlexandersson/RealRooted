@@ -67,6 +67,9 @@ def a286785 : ℕ → ℝ[X]
 example (n : ℕ) : Interlaces (a286785 n) (a286785 (n + 1)) := by
   rr_row_interlaces
 
+example (n : ℕ) : (a286785 n).Splits := by
+  rr_row_splits
+
 end ModelBridgeInterlacingExamples
 
 namespace RationalTransformInterlacingExamples

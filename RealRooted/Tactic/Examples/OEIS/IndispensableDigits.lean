@@ -26,6 +26,10 @@ theorem finalRows_interlaces (n : ℕ) :
     Interlaces (finalRows n) (finalRows (n + 1)) := by
   rr_row_interlaces
 
+/-- The final-state model also closes the splitting projection. -/
+example (n : ℕ) : (finalRows n).Splits := by
+  rr_row_splits
+
 /-- Strict-position form of the final-state regression. -/
 theorem finalRows_prec (n : ℕ) :
     StrictInterl (finalRows n) (finalRows (n + 1)) := by
@@ -44,6 +48,10 @@ def totalRows : ℕ → ℝ[X]
 theorem totalRows_interlaces (n : ℕ) :
     Interlaces (totalRows n) (totalRows (n + 1)) := by
   rr_row_interlaces
+
+/-- The total-state model also closes the splitting projection. -/
+example (n : ℕ) : (totalRows n).Splits := by
+  rr_row_splits
 
 /-- Strict-position form of the total-state regression. -/
 theorem totalRows_prec (n : ℕ) :

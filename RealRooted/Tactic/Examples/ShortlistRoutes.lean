@@ -27,6 +27,9 @@ private def row151775 : ℕ → ℝ[X]
 example (n : ℕ) : Interlaces (row151775 n) (row151775 (n + 1)) := by
   rr_row_interlaces
 
+example (n : ℕ) : (row151775 n).Splits := by
+  rr_row_splits
+
 private def row008957 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
