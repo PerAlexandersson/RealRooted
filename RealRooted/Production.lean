@@ -1805,6 +1805,7 @@ import RealRooted.GammaTransform.Derivative
 import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
 import RealRooted.Recurrence.RowModel
+import RealRooted.ParityFactorization
 
 /-!
 # RealRooted production umbrella
