@@ -264,3 +264,96 @@ theorem derivativeRecurrence_interlaces_of_endpoint_windows (W : ℕ → ℝ →
 end Sequence
 
 end RealRooted
+
+namespace RealRooted
+private theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
+    (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
+    (h : ∀ t ∈ p.roots, t < U) : 0 < p.eval U := by
+  rw [eval_eq_leadingCoeff_mul_prod_sub hs U]
+  refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
+  obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
+  linarith [h t ht]
+
+private theorem neg_one_pow_mul_eval_pos_at_lower_of_roots_gt
+    {p : ℝ[X]} {L : ℝ} (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
+    (h : ∀ t ∈ p.roots, L < t) :
+    0 < (-1 : ℝ) ^ p.natDegree * p.eval L := by
+  have hcard : p.roots.card = (p.roots.map (L - ·)).card := by simp
+  rw [eval_eq_leadingCoeff_mul_prod_sub hs L, ← card_roots_of_splits hs,
+    mul_left_comm, hcard, ← Multiset.prod_map_neg]
+  refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
+  obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hy
+  obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hs
+  linarith [h t ht]
+
+/-- A degree-zero polynomial has no roots, so every strict root window holds. -/
+theorem roots_window_of_natDegree_zero {p : ℝ[X]} {L U : ℝ}
+    (hdeg : p.natDegree = 0) : ∀ t ∈ p.roots, L < t ∧ t < U := by
+  intro t ht
+  rw [Polynomial.eq_C_of_natDegree_eq_zero hdeg, Polynomial.roots_C] at ht
+  simp at ht
+
+/-- A moving open interval is invariant under a derivative recurrence when
+the derivative coefficient is nonpositive inside it, vanishes at both
+endpoints, and the row coefficient has the two outward endpoint signs. -/
+theorem derivativeRecurrence_interlaces_of_endpoint_evaluations
+    {P A B : ℕ → ℝ[X]} {D₀ : ℕ} (L U : ℕ → ℝ)
+    (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hLmono : ∀ n, L (n + 1) ≤ L n)
+    (hUmono : ∀ n, U n ≤ U (n + 1))
+    (hA : ∀ n x, L n < x → x < U n → (A n).eval x ≤ 0)
+    (hAL : ∀ n, (A n).eval (L n) = 0)
+    (hAU : ∀ n, (A n).eval (U n) = 0)
+    (hBL : ∀ n, (B n).eval (L n) < 0)
+    (hBU : ∀ n, 0 < (B n).eval (U n))
+    (h0 : (P 0).Splits)
+    (hW0 : ∀ t ∈ (P 0).roots, L 0 < t ∧ t < U 0)
+    (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) :
+    ∀ n, Interlaces (P n) (P (n + 1)) := by
+  let W := fun n x => L n < x ∧ x < U n
+  apply derivativeRecurrence_interlaces_of_endpoint_windows W hrec hdeg hpos
+  · intro n x hx
+    exact hA n x hx.1 hx.2
+  · intro n hs hw hi t ht
+    have holdL : ∀ s ∈ (P n).roots, L n < s := fun s hsroot => (hw s hsroot).1
+    have holdU : ∀ s ∈ (P n).roots, s < U n := fun s hsroot => (hw s hsroot).2
+    have hsignL : 0 < (-1 : ℝ) ^ (P n).natDegree * (P n).eval (L n) :=
+      neg_one_pow_mul_eval_pos_at_lower_of_roots_gt hs (hpos n) holdL
+    have hsignU : 0 < (P n).eval (U n) :=
+      eval_pos_at_upper_of_roots_lt hs (hpos n) holdU
+    have hsignL' : 0 < (-1 : ℝ) ^ (D₀ + n) * (P n).eval (L n) := by
+      simpa only [hdeg n] using hsignL
+    have hnextL : 0 < (-1 : ℝ) ^ (P (n + 1)).natDegree *
+        (P (n + 1)).eval (L n) := by
+      have heval : (P (n + 1)).eval (L n) =
+          (B n).eval (L n) * (P n).eval (L n) := by
+        rw [hrec n, eval_add, eval_mul, eval_mul, hAL n, zero_mul, zero_add]
+      have hindex : D₀ + (n + 1) = (D₀ + n) + 1 := by grind
+      rw [hdeg (n + 1), hindex, heval]
+      have hid :
+          (-1 : ℝ) ^ ((D₀ + n) + 1) *
+              ((B n).eval (L n) * (P n).eval (L n)) =
+            (-(B n).eval (L n)) *
+              ((-1 : ℝ) ^ (D₀ + n) * (P n).eval (L n)) := by
+        rw [pow_succ]
+        ring
+      rw [hid]
+      exact mul_pos (neg_pos.mpr (hBL n)) hsignL'
+    have hnextU : 0 < (P (n + 1)).eval (U n) := by
+      rw [hrec n, eval_add, eval_mul, eval_mul, hAU n, zero_mul, zero_add]
+      exact mul_pos (hBU n) hsignU
+    have hrootL : L n < t :=
+      (roots_gt_iff_neg_one_pow_mul_eval_pos_of_interlaces
+        hi (hpos (n + 1)) holdL).mpr hnextL t ht
+    have hrootU : t < U n :=
+      (roots_lt_iff_eval_pos_of_interlaces hi (hpos (n + 1)) holdU).mpr
+        hnextU t ht
+    exact ⟨lt_of_le_of_lt (hLmono n) hrootL,
+      lt_of_lt_of_le hrootU (hUmono n)⟩
+  · exact h0
+  · exact hW0
+  · exact h01
+
+end RealRooted
