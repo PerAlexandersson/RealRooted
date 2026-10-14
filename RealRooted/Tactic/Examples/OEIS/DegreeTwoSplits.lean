@@ -1,5 +1,7 @@
 import RealRooted.Tactic.RowInterlacing
 import RealRooted.PoweredEulerian
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Degree-jump-two regression examples
@@ -50,6 +52,25 @@ theorem firstPoweredEulerianRow_splits (n : ℕ) : (firstPoweredEulerianRow n).S
   rw [firstPoweredEulerianRow_eq]
   exact RealRooted.poweredEulerian_splits 1 n
 
+/-- Split-row transfer for the A101842 derivative presentation. -/
+@[rr_row_model]
+theorem firstPoweredEulerianRow_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1 + X)
+    (_hone : P 1 = 1 + 3 * X + 3 * X ^ 2 + X ^ 3)
+    (hrec : ∀ n : ℕ,
+      P (n + 1) = (C 1 * X + C (-1) * X ^ 3) * (P n).derivative +
+        (C 1 + C 1 * X + C (2 + 2 * (n : ℝ)) * X ^ 2) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_one_recurrence
+    (fun n p => (C 1 * X + C (-1) * X ^ 3) * p.derivative +
+      (C 1 + C 1 * X + C (2 + 2 * (n : ℝ)) * X ^ 2) * p)
+    (hzero.trans (show (1 + X : ℝ[X]) = firstPoweredEulerianRow 0 by rfl))
+    hrec (fun _ => rfl)
+  rw [heq n]
+  exact firstPoweredEulerianRow_splits n
+
 /-- The recurrence from A165891. -/
 def secondPoweredEulerianRow : ℕ → ℝ[X]
   | 0 => 1
@@ -75,6 +96,25 @@ theorem secondPoweredEulerianRow_eq (n : ℕ) :
 theorem secondPoweredEulerianRow_splits (n : ℕ) : (secondPoweredEulerianRow n).Splits := by
   rw [secondPoweredEulerianRow_eq]
   exact RealRooted.poweredEulerian_splits 0 n
+
+/-- Split-row transfer for the A165891 derivative presentation. -/
+@[rr_row_model]
+theorem secondPoweredEulerianRow_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (_hone : P 1 = 1 + 2 * X + X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 1) = (C 1 * X + C (-1) * X ^ 3) * (P n).derivative +
+        (C 1 + C 2 * X + C (1 + 2 * (n : ℝ)) * X ^ 2) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_one_recurrence
+    (fun n p => (C 1 * X + C (-1) * X ^ 3) * p.derivative +
+      (C 1 + C 2 * X + C (1 + 2 * (n : ℝ)) * X ^ 2) * p)
+    (hzero.trans (show (1 : ℝ[X]) = secondPoweredEulerianRow 0 by rfl))
+    hrec (fun _ => rfl)
+  rw [heq n]
+  exact secondPoweredEulerianRow_splits n
 
 /-- The differential step used by the alternating monomial family. -/
 def alternatingMonomialStep (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
@@ -146,6 +186,23 @@ theorem alternatingMonomialRow_eq (n : ℕ) :
 theorem alternatingMonomialRow_splits (n : ℕ) : (alternatingMonomialRow n).Splits := by
   rw [alternatingMonomialRow_eq]
   exact alternatingMonomial_splits n
+
+/-- Split-row transfer for the A266326 derivative presentation. -/
+@[rr_row_model]
+theorem alternatingMonomialRow_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (_hone : P 1 = X + X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 1) = (C 1 * X ^ 2 + C 2 * X ^ 3) * (P n).derivative +
+        (C (1 - 2 * (n : ℝ)) * X + C (1 - 4 * (n : ℝ)) * X ^ 2) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_one_recurrence alternatingMonomialStep
+    (hzero.trans (show (1 : ℝ[X]) = alternatingMonomialRow 0 by rfl))
+    hrec (fun _ => rfl)
+  rw [heq n]
+  exact alternatingMonomialRow_splits n
 
 /-- Product of the consecutive linear factors `X + 1, ..., X + m`. -/
 def consecutiveLinearProduct (m : ℕ) : ℝ[X] :=
@@ -221,6 +278,44 @@ theorem centeredConsecutiveProductRow_splits (n : ℕ) :
     (centeredConsecutiveProductRow n).Splits := by
   rw [centeredConsecutiveProductRow_eq]
   exact centeredConsecutiveProduct_splits n
+
+/-- Split-row transfer for the lag-two A268647 presentation. -/
+@[rr_row_model]
+theorem centeredConsecutiveProductRow_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = X)
+    (hone : P 1 = 2 + 5 * X + 4 * X ^ 2 + X ^ 3)
+    (hrec : ∀ n : ℕ,
+      P (n + 2) =
+        (C (-12 + -6 * (n : ℝ) + 4 * (3 + (n : ℝ)) ^ 2) +
+          C (4 + 3 * (n : ℝ)) * X + C 1 * X ^ 2) * P (n + 1) +
+        (C (68 + -8 * (3 + (n : ℝ)) ^ 2 + 36 * (n : ℝ)) +
+          C (20 + -14 * (3 + (n : ℝ)) ^ 2 + -6 * (n : ℝ) +
+            4 * (3 + (n : ℝ)) ^ 3) * X +
+          C (-26 + -5 * (n : ℝ) + 4 * (3 + (n : ℝ)) ^ 2) * X ^ 2 +
+          C (4 + (n : ℝ)) * X ^ 3) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  let update : ℕ → ℝ[X] → ℝ[X] → ℝ[X] := fun n p q =>
+    (C (-12 + -6 * (n : ℝ) + 4 * (3 + (n : ℝ)) ^ 2) +
+        C (4 + 3 * (n : ℝ)) * X + C 1 * X ^ 2) * p +
+      (C (68 + -8 * (3 + (n : ℝ)) ^ 2 + 36 * (n : ℝ)) +
+        C (20 + -14 * (3 + (n : ℝ)) ^ 2 + -6 * (n : ℝ) +
+          4 * (3 + (n : ℝ)) ^ 3) * X +
+        C (-26 + -5 * (n : ℝ) + 4 * (3 + (n : ℝ)) ^ 2) * X ^ 2 +
+        C (4 + (n : ℝ)) * X ^ 3) * q
+  have heq := sequence_eq_of_same_lag_two_recurrence update
+    (hzero.trans (show X = centeredConsecutiveProductRow 0 by rfl))
+    (hone.trans
+      (show (2 + 5 * X + 4 * X ^ 2 + X ^ 3 : ℝ[X]) =
+        centeredConsecutiveProductRow 1 by rfl))
+    hrec (fun m => by
+      simp only [update, map_one]
+      rw [centeredConsecutiveProductRow]
+      unfold centeredConsecutiveFirst centeredConsecutiveSecond
+      ring)
+  rw [heq n]
+  exact centeredConsecutiveProductRow_splits n
 
 /-- A recurrence deliberately rejected by the differentiated-`X` probe. -/
 def nonmatchingRow : ℕ → ℝ[X]

@@ -140,11 +140,11 @@ def cancelPlan (r : RowRec) : MetaM (Except MessageData CancelPlan) := do
   let rho := if ratioNeeded then fitted else -1
   return .ok { extra, law, m, grow, rho, ratioNeeded }
 
-/-- Shift a coefficient function from the original recurrence to the sequence used by the
-cancellation theorem. -/
-private def cancelShiftCoeff (c : Expr) (s : Nat) (normalize : Bool := false) : TacticM Term := do
-  if normalize then
-    if let some normalized ← normalizedCoeffTerm? c s then return normalized
+/-- Normalize a rational coefficient function, then shift it to the sequence used by the
+cancellation theorem. Expressions outside the rational-function grammar retain their original
+form. -/
+private def cancelShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
+  if let some normalized ← normalizedCoeffTerm? c s then return normalized
   if s == 0 then return ← certTerm c
   let shifted ← lambdaTelescope c fun xs body => do
     let ns ← mkAppM ``HAdd.hAdd #[xs[0]!, mkNatLit s]
@@ -434,8 +434,8 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     rowSideGoal (some P)
     `(tactic| rr_row_side))
   let Q ← r.seq plan.extra
-  let A ← cancelShiftCoeff r.coeffs[0]! plan.extra (!plan.ratioNeeded)
-  let B ← cancelShiftCoeff r.coeffs[1]! plan.extra (!plan.ratioNeeded)
+  let A ← cancelShiftCoeff r.coeffs[0]! plan.extra
+  let B ← cancelShiftCoeff r.coeffs[1]! plan.extra
   let terms ← `([(0, 1, $A), (0, 0, $B)])
   let n := mkIdent `n
   let eqnApp ← if plan.extra == 0 then `($(mkIdent r.eqn) $n)

@@ -86,6 +86,7 @@ import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
 import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.Foundation
 import RealRooted.Tactic.Examples.OEIS.GammaVeronese
+import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
 import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
@@ -142,9 +143,11 @@ import RealRooted.Tactic.Examples.RowFactorPower
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
 import RealRooted.Tactic.Examples.RowModelNextFamilies
+import RealRooted.Tactic.Examples.RowModelRecentRegistrations
 import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Tactic.Examples.RowPathPower

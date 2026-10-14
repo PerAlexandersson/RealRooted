@@ -123,6 +123,14 @@ def rationalEndpointWindowGoal : TacticM Unit := do
     | throwError "rr_row: no rational endpoint window"
   let some Af := r.coeffs[0]?
     | throwError "rr_row: no derivative coefficient"
+  let some Bf := r.coeffs[1]?
+    | throwError "rr_row: no row coefficient"
+  let rawA ← certTerm Af
+  let rawB ← certTerm Bf
+  let some A ← normalizedCoeffTerm? Af 0
+    | throwError "rr_row: the derivative coefficient is not rational in the row index"
+  let some B ← normalizedCoeffTerm? Bf 0
+    | throwError "rr_row: the row coefficient is not rational in the row index"
   let some D₀ ← findRowDegree (mkIdent P) r.shift
     | throwError "rr_row: could not compute the endpoint-window base degree"
   let Dq := rowNumLit D₀
@@ -174,7 +182,7 @@ def rationalEndpointWindowGoal : TacticM Unit := do
     | throwError "rr_row: the endpoint coefficient has no rational roots"
   let some productProof := productProof?
     | throwError "rr_row: no endpoint product proof"
-  let aTerm ← Term.exprToSyntax Af
+  let aTerm := A
   let lead ← endpointRatFunTerm fit.lead n
   let effectiveLead ← if (fit.degree - fit.lowerIndex - 1) % 2 == 0 then
       pure lead
@@ -194,10 +202,21 @@ def rationalEndpointWindowGoal : TacticM Unit := do
       field_simp <;> ring
     rw [hfactorization]
     exact mul_nonpos_of_nonpos_of_nonneg heffective hproduct))
-  let hrec ← r.hrecTerm 0
+  let hrecRaw ← r.hrecTerm 0
+  let hrecName := mkIdent `h_endpointWindowRec
+  evalTactic (← `(tactic|
+    have $hrecName:ident : ∀ q : ℕ,
+        $Pi (q + 1) = ($A : ℕ → ℝ[X]) q * ($Pi q).derivative +
+          ($B : ℕ → ℝ[X]) q * $Pi q := by
+      intro q
+      have hraw : $Pi (q + 1) =
+          ($rawA : ℕ → ℝ[X]) q * ($Pi q).derivative +
+            ($rawB : ℕ → ℝ[X]) q * $Pi q := $hrecRaw q
+      rw [hraw]
+      rr_cf_identity))
   evalTactic (← `(tactic| (
     refine RealRooted.derivativeRecurrence_interlaces_of_endpoint_evaluations
-      (P := $Pi) (D₀ := $Dq) $L $U $hrec
+      (P := $Pi) (D₀ := $Dq) $L $U $hrecName
       (fun m => $degreeLemma m) (fun m => $posLemma m)
       ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t)))
   let [hLmono, hUmono, hA, hAL, hAU, hBL, hBU, h0, hW0, h01] ← getGoals
