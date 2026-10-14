@@ -19,6 +19,7 @@ import posixpath
 import re
 import subprocess
 import tomllib
+import unicodedata
 from datetime import date
 from dataclasses import dataclass
 from html.parser import HTMLParser
@@ -137,7 +138,9 @@ class AuthorIndexEntry:
 
     @property
     def anchor(self) -> str:
-        return "author-" + _anchor(self.identity)
+        # Fold accents so that, for example, "Brändén" gives "branden".
+        folded = unicodedata.normalize("NFKD", self.identity)
+        return "author-" + _anchor("".join(ch for ch in folded if not unicodedata.combining(ch)))
 
 
 @functools.lru_cache(maxsize=None)
@@ -524,14 +527,24 @@ def build_author_index(
     pages: Iterable[CatalogPage],
     profiles: tuple[dict[str, AuthorProfile], dict[tuple[str, str], AuthorProfile]],
 ) -> tuple[AuthorIndexEntry, ...]:
-    """Group catalog attributions, keeping scoped overrides as distinct people."""
+    """Group catalog attributions by the person they resolve to.
+
+    A resolved name (global or page-scoped) identifies one person, so several
+    surname keys and overrides that resolve to the same name and URL share one
+    entry.  An unresolved key stays its own entry.
+    """
     global_profiles, overrides = profiles
     grouped: dict[str, tuple[AuthorProfile, list[CatalogPage]]] = {}
     for page in pages:
         for key in page.authors:
-            scoped_profile = overrides.get((page.slug, key))
-            profile = scoped_profile or global_profiles.get(key) or AuthorProfile(key)
-            identity = f"{page.slug}:{key}" if scoped_profile is not None else key
+            resolved = overrides.get((page.slug, key)) or global_profiles.get(key)
+            profile = resolved or AuthorProfile(key)
+            identity = profile.display_name if resolved is not None else key
+            if identity in grouped and grouped[identity][0] != profile:
+                raise CatalogError(
+                    f"author {identity!r} resolves to conflicting profiles; "
+                    "give each person one name and URL in website/authors.toml"
+                )
             if identity not in grouped:
                 grouped[identity] = (profile, [])
             grouped[identity][1].append(page)
