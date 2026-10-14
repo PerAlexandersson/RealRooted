@@ -1,4 +1,5 @@
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Applications.OEIS.PeriodicTopRows
 
 /-!
 # Remaining row-degree regressions for issue 1628
@@ -160,6 +161,21 @@ theorem A339000_natDegree (n : ℕ) : (A339000 n).natDegree = n := by
 /-- The exact degree law for A366159, certified by the row-degree tactic. -/
 theorem A366159_natDegree (n : ℕ) : (A366159 n).natDegree = n := by
   rr_row_natDegree (via := cone)
+
+/-- The downstream A177040 recurrence, used to regress the degree-model fallback. -/
+def A177040 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 2 + X
+  | 3 => 3 + X
+  | n + 4 =>
+      let next := RealRooted.Tactic.RowParityDegree.A177040Next
+      next n (A177040 (n + 3)) (A177040 (n + 2))
+        (A177040 (n + 1)) (A177040 n)
+
+/-- The exact A177040 degree law, certified by the default row-degree tactic. -/
+theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 := by
+  rr_row_natDegree
 
 end
 

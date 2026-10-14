@@ -108,6 +108,42 @@ theorem natDegree_eq_and_leadingCoeff_pos_of_topWindow {k e : ℕ} {D : ℕ → 
   rw [leadingCoeff, hdeg]
   exact hpos
 
+/-- Multi-lag cancellation with a finite excess window and a top-two coefficient invariant.
+The ratio may depend on the row index, so the theorem also covers periodic degree laws. -/
+theorem natDegree_eq_and_leadingCoeff_pos_of_topTwo
+    {k e : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]}
+    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))} {rho : ℕ → ℝ}
+    (hrec : ∀ n, P (n + k) = rhs terms P n)
+    (hlag : ∀ t ∈ terms, t.1 < k)
+    (hD : ∀ n j, j < k → D (n + j) ≤ D (n + k))
+    (hA : ∀ t ∈ terms, ∀ n,
+      (t.2.2 n).natDegree ≤ D (n + k) + e - D (n + t.1) + t.2.1)
+    (hbase : ∀ j < k,
+      (P j).natDegree ≤ D j ∧ 0 < (P j).coeff (D j) ∧
+        HasNonnegCoeffs (P j) ∧
+        rho j * (P j).coeff (D j) ≤ (P j).coeff (D j - 1))
+    (hstep : ∀ n,
+      (∀ j < k,
+        (P (n + j)).natDegree ≤ D (n + j) ∧
+          0 < (P (n + j)).coeff (D (n + j)) ∧
+          HasNonnegCoeffs (P (n + j)) ∧
+          rho (n + j) * (P (n + j)).coeff (D (n + j)) ≤
+            (P (n + j)).coeff (D (n + j) - 1)) →
+      (∀ r, 0 < r → r ≤ e →
+          (rhs terms P n).coeff (D (n + k) + r) = 0) ∧
+        0 < (rhs terms P n).coeff (D (n + k)) ∧
+        HasNonnegCoeffs (rhs terms P n) ∧
+        rho (n + k) * (rhs terms P n).coeff (D (n + k)) ≤
+          (rhs terms P n).coeff (D (n + k) - 1))
+    (n : ℕ) :
+    (P n).natDegree = D n ∧ 0 < (P n).leadingCoeff ∧
+      HasNonnegCoeffs (P n) ∧
+      rho n * (P n).coeff (D n) ≤ (P n).coeff (D n - 1) := by
+  exact natDegree_eq_and_leadingCoeff_pos_of_topWindow
+    (S := fun m p => HasNonnegCoeffs p ∧
+      rho m * p.coeff (D m) ≤ p.coeff (D m - 1))
+    hrec hlag hD hA hbase hstep n
+
 
 /-- A parity-split top-window induction.  Each half-step may first bound its new row by
 `D m + e`, then cancel the whole excess window after all recurrence summands have been

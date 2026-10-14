@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Recurrence.LinRec
+import RealRooted.Recurrence.RowModel
 
 /-!
 # Degree tactics for recurrences
@@ -162,6 +163,76 @@ private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
   evalTactic tac
   return tac
 
+/-- Whether a registered row-model declaration concludes with a natural-degree identity. -/
+private def isNatDegreeModel (decl : Name) : MetaM Bool := do
+  let type ← inferType (← mkConstWithFreshMVarLevels decl)
+  forallTelescopeReducing type fun _ conclusion => do
+    let conclusion := conclusion.consumeMData
+    let some (_, lhs, _) := conclusion.eq? | return false
+    return lhs.isAppOf ``Polynomial.natDegree
+
+/-- Close the finite initial-window goal of a degree-model transfer.  Exact reduction is
+tried before polynomial normalization, so a wrong model is rejected without unfolding its
+recurrence. -/
+private def closeDegreeModelInit (P : Ident) : TacticM Unit := do
+  evalTactic (← `(tactic| intro j hj; interval_cases j))
+  for g in ← getGoals do
+    setGoals [g]
+    evalTactic (← `(tactic| first
+      | rfl
+      | (simp only [$P:ident]; rfl)
+      | (simp only [$P:ident]; rr_poly_identity)))
+  setGoals []
+
+/-- Close the recurrence identity of a degree-model transfer. -/
+private def closeDegreeModelRecurrence (P : Ident) : TacticM Unit := do
+  evalTactic (← `(tactic| intro n))
+  if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
+  evalTactic (← `(tactic| conv_lhs => rw [$P:ident]))
+  unless ← rowSucceeds (evalTactic (← `(tactic| rfl))) do
+    evalTactic (← `(tactic|
+      apply Polynomial.funext
+      intro x
+      simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
+        Polynomial.derivative_mul, Polynomial.derivative_C, Polynomial.derivative_X,
+        Polynomial.derivative_one, Polynomial.derivative_pow,
+        Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
+        Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X,
+        Polynomial.eval_pow, Polynomial.eval_ofNat, Polynomial.eval_one,
+        Polynomial.eval_zero, Polynomial.eval_natCast]
+      push_cast
+      rr_linrec_field))
+  unless (← getGoals).isEmpty do
+    throwError "degree-model recurrence identity left goals"
+
+/-- Apply one degree-model transfer.  Its uniform shape has one initial-window hypothesis
+and one recurrence hypothesis; this supports every finite recurrence order. -/
+private def applyDegreeModel (P : Ident) (t : Term) (decl : Name) : TacticM Unit := do
+  evalTactic (← `(tactic| refine $(mkIdent decl):ident (P := $P:ident) ?_ ?_ $t))
+  let [hinit, hrec] ← getGoals
+    | throwError "registered degree-model theorem has an unsupported shape"
+  setGoals [hinit]
+  closeDegreeModelInit P
+  setGoals [hrec]
+  closeDegreeModelRecurrence P
+
+/-- Try registered natural-degree models.  The initial-window check is the fail-fast probe:
+models with different exact base rows are rejected before their recurrence is normalized. -/
+private def degreeModelGoal : TacticM Unit := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let some PName ← findPolySeqConst? target
+    | throwError "degree-model route found no polynomial sequence"
+  let P := mkIdent PName
+  let t ← Term.exprToSyntax (← mainRowIndex P)
+  let decls := rrRowModelAttr.getDecls (← getEnv)
+  let mut failures : Array (MessageData × MessageData) := #[]
+  for decl in decls.qsort Name.quickLt do
+    unless ← isNatDegreeModel decl do continue
+    match ← rowAttempt (applyDegreeModel P t decl) with
+    | .ok _ => return
+    | .error err => failures := failures.push (m!"{decl}", err)
+  throwRowFailures m!"no structurally matching degree model proves the goal" failures
+
 /-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
@@ -193,8 +264,12 @@ private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × 
               match ← rowAttempt (evalTactic subseq) with
               | .ok _ => return (#[subseq], {})
               | .error e''' =>
+                match ← rowAttempt degreeModelGoal with
+                | .ok _ => return (#[], {})
+                | .error e'''' =>
                   throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
-                    With cancelling top terms: {e''}\n\nAs residue subsequences: {e'''}"
+                    With cancelling top terms: {e''}\n\nAs residue subsequences: {e'''}\n\n\
+                    As a registered degree model: {e''''}"
             else
               throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
                 With cancelling top terms: {e''}"

@@ -1,4 +1,5 @@
 import RealRooted.Applications.OEIS.A330798
+import RealRooted.Recurrence.RowModel
 
 /-!
 # Remaining periodic-top-coefficient rows
@@ -905,6 +906,48 @@ theorem A177040_leadingCoeff (n : ℕ) : (A177040 n).leadingCoeff = 1 := by
 theorem A177040_leadingCoeff_pos (n : ℕ) : 0 < (A177040 n).leadingCoeff := by
   rw [A177040_leadingCoeff]
   norm_num
+
+/-- The order-four update of the A177040 rows. -/
+def A177040Next (n : ℕ) (p₃ p₂ p₁ p₀ : ℝ[X]) : ℝ[X] :=
+  (C (2 / 5) * X + C (-2 / 5) * X ^ 2) * p₃.derivative
+    + (C (-4 / 5) * X + C (4 / 5) * X ^ 2) * p₂.derivative
+    + (C (2 / 5) * X + C (-2 / 5) * X ^ 2) * p₁.derivative
+    + (C (-4 / 5) * X + C (4 / 5) * X ^ 2) * p₀.derivative
+    + (C (2 / 5 + (-1 / 5) * (n : ℝ)) +
+        C (3 / 5 + (1 / 5) * (n : ℝ)) * X) * p₃
+    + (C (2 + (2 / 5) * (n : ℝ)) + C ((-2 / 5) * (n : ℝ)) * X) * p₂
+    + (C (2 / 5 + (1 / 5) * (n : ℝ)) +
+        C (-7 / 5 + (-1 / 5) * (n : ℝ)) * X) * p₁
+    + (C (-13 / 5 + (-2 / 5) * (n : ℝ)) +
+        C (8 / 5 + (2 / 5) * (n : ℝ)) * X) * p₀
+
+private theorem A177040_step (n : ℕ) :
+    A177040 (n + 4) = A177040Next n (A177040 (n + 3))
+      (A177040 (n + 2)) (A177040 (n + 1)) (A177040 n) := by
+  rw [A177040]
+  dsimp only [A177040Next]
+  ring
+
+/-- Any sequence satisfying the A177040 initial window and update has degree `n / 2`. -/
+@[rr_row_model]
+theorem A177040_natDegree_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 4, P i = A177040 i)
+    (hrec : ∀ n, P (n + 4) =
+      A177040Next n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) :
+    (P n).natDegree = n / 2 := by
+  have heq : ∀ m, P m = A177040 m := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | h m ih =>
+        by_cases hm : m < 4
+        · exact hinit m hm
+        · obtain ⟨q, rfl⟩ : ∃ q, m = q + 4 := ⟨m - 4, by lia⟩
+          rw [hrec, A177040_step, ih (q + 3) (by lia),
+            ih (q + 2) (by lia), ih (q + 1) (by lia), ih q (by lia)]
+  rw [heq n]
+  exact A177040_natDegree n
 
 end
 
