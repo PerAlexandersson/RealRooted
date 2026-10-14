@@ -26,6 +26,10 @@ private def row : ℕ → ℝ[X]
 example (n : ℕ) : Interlaces (row n) (row (n + 1)) := by
   rr_row_interlaces
 
+/-- The same model exposes the splitting component of interlacing. -/
+example (n : ℕ) : (row n).Splits := by
+  rr_row_splits
+
 /-- The downstream strict-interlacing statement follows from the registered route. -/
 example (n : ℕ) : StrictInterl (row n) (row (n + 1)) := by
   exact (show Interlaces (row n) (row (n + 1)) by rr_row_interlaces).toStrictInterl
