@@ -1,5 +1,7 @@
 import RealRooted.ParityFactorization
 import RealRooted.Favard.Affine.Basic
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 import RealRooted.SequenceClosure
 import RealRooted.Tactic.RowInterlacing
 
@@ -135,6 +137,27 @@ private theorem a156308_splits (n : ℕ) : (a156308 n).Splits := by
   · exact fun k => (upper_splits k).pow 2
   · exact fun k => (lower_splits k).pow 2
 
+/-- Split-row transfer for the three-lag A156308 presentation. -/
+@[rr_row_model]
+theorem a156308_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 4 + X)
+    (htwo : P 2 = 9 + 6 * X + X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 3) = ((3 + X)) * P (n + 2) +
+        ((-3 + (-1 * X))) * P (n + 1) + (1) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_three_recurrence
+    (fun _ p q r => ((3 + X)) * p + ((-3 + (-1 * X))) * q + (1) * r)
+    (hzero.trans (show (1 : ℝ[X]) = a156308 0 by rfl))
+    (hone.trans (show (4 + X : ℝ[X]) = a156308 1 by rfl))
+    (htwo.trans (show (9 + 6 * X + X ^ 2 : ℝ[X]) = a156308 2 by rfl))
+    hrec (fun m => by rw [a156308]; ring)
+  rw [heq n]
+  exact a156308_splits n
+
 example (n : ℕ) : (a156308 n).Splits := by
   exact a156308_splits n
 
@@ -167,6 +190,28 @@ private theorem a334009_eq_comp (n : ℕ) :
 private theorem a334009_splits (n : ℕ) : (a334009 n).Splits := by
   rw [a334009_eq_comp]
   exact (a156308_splits n).comp_of_natDegree_le_one (by simp)
+
+/-- Split-row transfer for the scaled three-lag A334009 presentation. -/
+@[rr_row_model]
+theorem a334009_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 4 + 4 * X)
+    (htwo : P 2 = 9 + 24 * X + 16 * X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 3) = ((3 + (4 * X))) * P (n + 2) +
+        ((-3 + (-4 * X))) * P (n + 1) + (1) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_three_recurrence
+    (fun _ p q r => ((3 + (4 * X))) * p + ((-3 + (-4 * X))) * q + (1) * r)
+    (hzero.trans (show (1 : ℝ[X]) = a334009 0 by rfl))
+    (hone.trans (show (4 + 4 * X : ℝ[X]) = a334009 1 by rfl))
+    (htwo.trans
+      (show (9 + 24 * X + 16 * X ^ 2 : ℝ[X]) = a334009 2 by rfl))
+    hrec (fun m => by rw [a334009]; ring)
+  rw [heq n]
+  exact a334009_splits n
 
 private theorem a334009_natDegree (n : ℕ) : (a334009 n).natDegree = n := by
   rr_row_natDegree
@@ -273,6 +318,30 @@ private theorem a082649_eq_reverse (n : ℕ) :
 private theorem a082649_splits (n : ℕ) : (a082649 n).Splits := by
   rw [a082649_eq_reverse]
   exact RealRooted.DegreeDropReversal.splits_reverse (a334009_splits n)
+
+/-- Split-row transfer for the reversed three-lag A082649 presentation. -/
+@[rr_row_model]
+theorem a082649_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 4 + 4 * X)
+    (htwo : P 2 = 16 + 24 * X + 9 * X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 3) = ((4 + (3 * X))) * P (n + 2) +
+        (((-4 * X) + (-3 * (X) ^ (2)))) * P (n + 1) +
+        ((X) ^ (3)) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq := sequence_eq_of_same_lag_three_recurrence
+    (fun _ p q r => ((4 + (3 * X))) * p +
+      (((-4 * X) + (-3 * (X) ^ (2)))) * q + ((X) ^ (3)) * r)
+    (hzero.trans (show (1 : ℝ[X]) = a082649 0 by rfl))
+    (hone.trans (show (4 + 4 * X : ℝ[X]) = a082649 1 by rfl))
+    (htwo.trans
+      (show (16 + 24 * X + 9 * X ^ 2 : ℝ[X]) = a082649 2 by rfl))
+    hrec (fun m => by rw [a082649]; ring)
+  rw [heq n]
+  exact a082649_splits n
 
 example (n : ℕ) : (a082649 n).Splits := by
   exact a082649_splits n
@@ -396,6 +465,33 @@ private theorem a099605_splits (n : ℕ) : (a099605 n).Splits := by
   · exact Polynomial.Splits.C 2
   · exact evenQ_splits
   · exact oddQ_splits
+
+/-- Split-row transfer for the parity-factored order-four A099605 presentation. -/
+@[rr_row_model]
+theorem a099605_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 2 + 2 * X)
+    (htwo : P 2 = 1 + 5 * X + 4 * X ^ 2)
+    (hthree : P 3 = 4 + 16 * X + 20 * X ^ 2 + 8 * X ^ 3)
+    (hrec : ∀ n : ℕ,
+      P (n + 4) = ((2 + (4 * (X) ^ (2)) + (6 * X))) * P (n + 2) +
+        ((-1 + (-1 * (X) ^ (2)) + (-2 * X))) * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq : ∀ m : ℕ, P m = a099605 m := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | h m ih =>
+        rcases m with _ | _ | _ | _ | m
+        · exact hzero
+        · exact hone
+        · exact htwo
+        · exact hthree
+        · rw [hrec, a099605, ih (m + 2) (by lia), ih m (by lia)]
+          ring
+  rw [heq n]
+  exact a099605_splits n
 
 example (n : ℕ) : (a099605 n).Splits := by
   exact a099605_splits n
@@ -578,6 +674,63 @@ private theorem a049325_splits : ∀ n : ℕ, (a049325 n).Splits
       apply splits_of_natDegree_eq_two_of_discrim_nonneg (by compute_degree!)
       norm_num [discrim, coeff_add, coeff_X, coeff_X_pow]
   | n + 1 => (a049325_strictInterl_step n (a049325_splits n)).2.1.2
+
+/-- Split-row transfer for the order-four A049325 presentation. -/
+@[rr_row_model]
+theorem a049325_splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 16 + 12 * X + X ^ 2)
+    (hone : P 1 = 16 + 68 * X + 18 * X ^ 2 + X ^ 3)
+    (htwo : P 2 = 224 * X + 156 * X ^ 2 + 24 * X ^ 3 + X ^ 4)
+    (hthree : P 3 =
+      448 * X + 840 * X ^ 2 + 280 * X ^ 3 + 30 * X ^ 4 + X ^ 5)
+    (hrec : ∀ n : ℕ,
+      P (n + 4) = X * P (n + 3) + 6 * X * P (n + 2) +
+        16 * X * P (n + 1) + 16 * X * P n)
+    (n : ℕ) :
+    (P n).Splits := by
+  have heq : ∀ m : ℕ, P m = a049325 m := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | h m ih =>
+        rcases m with _ | _ | _ | _ | m
+        · exact hzero
+        · exact hone
+        · exact htwo
+        · exact hthree
+        · rw [hrec, a049325, ih (m + 3) (by lia), ih (m + 2) (by lia),
+            ih (m + 1) (by lia), ih m (by lia)]
+  rw [heq n]
+  exact a049325_splits n
+
+/-- Consecutive-row transfer for the order-four A049325 presentation. -/
+@[rr_row_model]
+theorem a049325_interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 16 + 12 * X + X ^ 2)
+    (hone : P 1 = 16 + 68 * X + 18 * X ^ 2 + X ^ 3)
+    (htwo : P 2 = 224 * X + 156 * X ^ 2 + 24 * X ^ 3 + X ^ 4)
+    (hthree : P 3 =
+      448 * X + 840 * X ^ 2 + 280 * X ^ 3 + 30 * X ^ 4 + X ^ 5)
+    (hrec : ∀ n : ℕ,
+      P (n + 4) = X * P (n + 3) + 6 * X * P (n + 2) +
+        16 * X * P (n + 1) + 16 * X * P n)
+    (n : ℕ) :
+    Interlaces (P n) (P (n + 1)) := by
+  have heq : ∀ m : ℕ, P m = a049325 m := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | h m ih =>
+        rcases m with _ | _ | _ | _ | m
+        · exact hzero
+        · exact hone
+        · exact htwo
+        · exact hthree
+        · rw [hrec, a049325, ih (m + 3) (by lia), ih (m + 2) (by lia),
+            ih (m + 1) (by lia), ih m (by lia)]
+  rw [heq n, heq (n + 1)]
+  exact (a049325_strictInterl_step n (a049325_splits n)).toInterlaces (by
+    rw [a049325_natDegree, a049325_natDegree])
 
 example (n : ℕ) : (a049325 n).Splits := by
   exact a049325_splits n
