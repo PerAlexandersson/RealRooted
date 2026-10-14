@@ -256,13 +256,13 @@ theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
 private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
   ls4_C_ofNat_real 2
 
-@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
 alias ls4_C_two_real := ls4_C_two_real_compat
 
 private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
   ls4_C_ofNat_real 4
 
-@[deprecated ls4_C_ofNat_real (since := "2026-10-11")]
+@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
 alias ls4_C_four_real := ls4_C_four_real_compat
 
 theorem ls4_natCast_eq_C_real (m : Nat) :

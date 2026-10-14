@@ -370,7 +370,7 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
   have hi_nat : i₁.1 ≤ i₂.1 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> (first | lia | (simp; linarith [ha, sq_nonneg a]))
+  split_ifs <;> (first | lia | simp)
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -437,7 +437,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₂ := by
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
-  split_ifs <;> (first | lia | (simp; linarith [ha, sq_nonneg a]))
+  split_ifs <;> (first | lia | simp)
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
