@@ -118,6 +118,28 @@ class SourceDeclaration:
     source_code: str = ""
 
 
+@dataclass(frozen=True)
+class AuthorProfile:
+    """A curated display name and optional external link for an attribution key."""
+
+    display_name: str
+    url: str | None = None
+
+
+@dataclass(frozen=True)
+class AuthorIndexEntry:
+    """One credited person and the catalog pages that credit that person."""
+
+    identity: str
+    display_name: str
+    url: str | None
+    pages: tuple[CatalogPage, ...]
+
+    @property
+    def anchor(self) -> str:
+        return "author-" + _anchor(self.identity)
+
+
 @functools.lru_cache(maxsize=None)
 def strip_comments_and_strings(text: str) -> str:
     """Replace comments and strings by whitespace without moving source lines.
@@ -429,6 +451,102 @@ def load_catalog(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
             raise CatalogError(f"duplicate catalog URL {page.url}")
         paths.add(page.url)
     return tuple(sorted(pages, key=lambda page: (SECTIONS.index(page.section), page.title, page.slug)))
+
+
+def _read_author_profile(path: str, key: str, raw: Any) -> AuthorProfile:
+    """Validate one record from the small hand-curated author directory."""
+    if not isinstance(raw, dict) or set(raw) - {"name", "url"}:
+        raise _source_error(path, f"author record {key!r} must contain only name and url")
+    name = raw.get("name")
+    if not isinstance(name, str) or not name or name.strip() != name or "\n" in name:
+        raise _source_error(path, f"author record {key!r} needs a nonempty display name")
+    url = raw.get("url")
+    if url is not None:
+        parsed = urlsplit(url) if isinstance(url, str) else None
+        if (
+            not isinstance(url, str)
+            or url.strip() != url
+            or parsed is None
+            or parsed.scheme.lower() not in {"http", "https"}
+            or not parsed.netloc
+        ):
+            raise _source_error(path, f"author record {key!r} has an invalid URL")
+    return AuthorProfile(name, url)
+
+
+def load_author_profiles(
+    repo_root: pathlib.Path,
+) -> tuple[dict[str, AuthorProfile], dict[tuple[str, str], AuthorProfile]]:
+    """Load optional global and per-page author names from ``website/authors.toml``.
+
+    Global entries live in ``[authors]``.  Per-page entries live in
+    ``[overrides]`` and use ``"page-slug:author key"`` as their key, so a
+    compact surname can name different people on different catalog pages.
+    """
+    path = repo_root / "website" / "authors.toml"
+    if not path.is_file():
+        return {}, {}
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise CatalogError(f"invalid author directory {path}: {error}") from error
+    if not isinstance(data, dict) or set(data) - {"authors", "overrides"}:
+        raise CatalogError(f"{path}: author directory only permits [authors] and [overrides]")
+    global_raw = data.get("authors", {})
+    override_raw = data.get("overrides", {})
+    if not isinstance(global_raw, dict) or not isinstance(override_raw, dict):
+        raise CatalogError(f"{path}: [authors] and [overrides] must be tables")
+    global_profiles: dict[str, AuthorProfile] = {}
+    for key, raw in global_raw.items():
+        if not isinstance(key, str) or not key or key.strip() != key:
+            raise CatalogError(f"{path}: author keys must be nonempty strings")
+        global_profiles[key] = _read_author_profile(path.as_posix(), key, raw)
+    overrides: dict[tuple[str, str], AuthorProfile] = {}
+    for qualified_key, raw in override_raw.items():
+        if not isinstance(qualified_key, str):
+            raise CatalogError(f"{path}: override keys must be strings")
+        slug, separator, key = qualified_key.partition(":")
+        if not separator or not SLUG_RE.fullmatch(slug) or not key or key.strip() != key:
+            raise CatalogError(
+                f"{path}: override key {qualified_key!r} must be 'page-slug:author key'"
+            )
+        overrides[(slug, key)] = _read_author_profile(path.as_posix(), qualified_key, raw)
+    return global_profiles, overrides
+
+
+def _surname_sort_key(display_name: str) -> str:
+    """Use the final word of a display name, or its compact key, as a surname."""
+    words = re.findall(r"[^\W_]+", display_name, flags=re.UNICODE)
+    return (words[-1] if words else display_name).casefold()
+
+
+def build_author_index(
+    pages: Iterable[CatalogPage],
+    profiles: tuple[dict[str, AuthorProfile], dict[tuple[str, str], AuthorProfile]],
+) -> tuple[AuthorIndexEntry, ...]:
+    """Group catalog attributions, keeping scoped overrides as distinct people."""
+    global_profiles, overrides = profiles
+    grouped: dict[str, tuple[AuthorProfile, list[CatalogPage]]] = {}
+    for page in pages:
+        for key in page.authors:
+            scoped_profile = overrides.get((page.slug, key))
+            profile = scoped_profile or global_profiles.get(key) or AuthorProfile(key)
+            identity = f"{page.slug}:{key}" if scoped_profile is not None else key
+            if identity not in grouped:
+                grouped[identity] = (profile, [])
+            grouped[identity][1].append(page)
+    entries = [
+        AuthorIndexEntry(
+            identity,
+            profile.display_name,
+            profile.url,
+            tuple(sorted(credited_pages, key=lambda page: (page.title.casefold(), page.slug))),
+        )
+        for identity, (profile, credited_pages) in grouped.items()
+    ]
+    return tuple(
+        sorted(entries, key=lambda entry: (_surname_sort_key(entry.display_name), entry.display_name.casefold(), entry.identity))
+    )
 
 
 def canonical_catalog_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
@@ -960,6 +1078,7 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
     stylesheet = _relative_url(f"{BASE_PATH}assets/site.css", current_url)
     script = _relative_url(f"{BASE_PATH}assets/site.js", current_url)
     results = _relative_url(f"{BASE_PATH}results/", current_url)
+    authors = _relative_url(f"{BASE_PATH}authors/", current_url)
     return (
         template.replace("{{ title }}", html.escape(title))
         .replace("{{ body }}", body)
@@ -967,6 +1086,7 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
         .replace("{{ stylesheet }}", stylesheet)
         .replace("{{ script }}", script)
         .replace("{{ results }}", results)
+        .replace("{{ authors }}", authors)
     )
 
 
@@ -1118,6 +1238,47 @@ def _item_list(
     return "<ul class=\"declarations\">" + "".join(rows) + "</ul>"
 
 
+def _authors_page(entries: Iterable[AuthorIndexEntry]) -> str:
+    """Render the page-level credits index without adding editorial data to Lean files."""
+    entries = tuple(entries)
+    current_url = f"{BASE_PATH}authors/"
+    rows: list[str] = []
+    for entry in entries:
+        heading = html.escape(entry.display_name)
+        if entry.url:
+            heading = (
+                f'<a href="{html.escape(entry.url, quote=True)}">{heading}</a>'
+                '<span class="visually-hidden"> (external link)</span>'
+            )
+        credits: list[str] = []
+        for page in entry.pages:
+            years = _years_label(page.years) or "year not recorded"
+            href = _relative_url(page.url, current_url)
+            credits.append(
+                '<li><a class="author-credit-title" href="'
+                + html.escape(href, quote=True)
+                + '">'
+                + html.escape(page.title)
+                + '</a><span class="author-credit-meta">'
+                + html.escape(years)
+                + " · "
+                + html.escape(SECTION_LABELS[page.section])
+                + "</span></li>"
+            )
+        rows.append(
+            f'<li class="author-entry" id="{html.escape(entry.anchor, quote=True)}">'
+            f"<h2>{heading}</h2><ul class=\"author-credits\">{''.join(credits)}</ul></li>"
+        )
+    return (
+        '<main class="authors-page"><p class="eyebrow">Catalog credits</p>'
+        "<h1>Authors</h1>"
+        '<p class="lede">Mathematicians credited in the catalog metadata for the results '
+        "formalized here.</p>"
+        f'<p class="author-summary">{_plural(len(entries), "credited author")}.</p>'
+        f'<ul class="authors-index">{"".join(rows)}</ul></main>'
+    )
+
+
 def _results_page(
     pages: Iterable[CatalogPage], resolved: dict[str, SourceDeclaration], revision: str
 ) -> str:
@@ -1221,6 +1382,7 @@ def render_site(
 ) -> dict[str, str]:
     """Render deterministic generated files keyed by their output-relative path."""
     files: dict[str, str] = {}
+    author_entries = build_author_index(pages, load_author_profiles(repo_root))
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
     index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
     topic_pages = [page for page in index_pages if page.section != "theorems"]
@@ -1316,6 +1478,9 @@ def render_site(
         )
     files["results/index.html"] = _template(
         repo_root, _results_page(pages, resolved, revision), "All results", f"{BASE_PATH}results/"
+    )
+    files["authors/index.html"] = _template(
+        repo_root, _authors_page(author_entries), "Authors", f"{BASE_PATH}authors/"
     )
     manifest = {
         "schema_version": 1,

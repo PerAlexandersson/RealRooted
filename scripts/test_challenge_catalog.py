@@ -15,7 +15,9 @@ sys.dont_write_bytecode = True
 
 from challenge_catalog import (
     CatalogError,
+    build_author_index,
     catalog_digest,
+    load_author_profiles,
     load_catalog,
     parse_challenge_source,
     render_site,
@@ -410,6 +412,62 @@ end RealRooted.Challenges.Sample
         self.assertLess(home.index('id="topics"'), home.index('id="theorems"'))
         self.assertIn('href="families/sample/"', home)
         self.assertIn('href="theorems/other/"', home)
+
+    def test_authors_index_sorts_and_disambiguates_page_scoped_names(self) -> None:
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                authors='authors = ["Zhang", "Fisk"]',
+                years="years = [2006]",
+                definitions='[[definitions]]\nname = "RealRooted.Challenges.Sample.family"',
+            )
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "def family : Nat := 1\n"
+            + "theorem proven : True := by trivial\n"
+            + "end RealRooted.Challenges.Sample\n",
+        )
+        self.write(
+            "RealRooted/Challenges/Other.lean",
+            catalog_block(
+                section="theorems",
+                slug="other",
+                authors='authors = ["Zhang"]',
+                years="years = [2021]",
+                definitions="",
+                theorems='[[theorems]]\nname = "RealRooted.Challenges.Other.proven"',
+                content="# Other\n\nAnother result.\n\n## References\n\n- [Paper](https://example.org/)",
+            )
+            + "namespace RealRooted.Challenges.Other\n"
+            + "theorem proven : True := by trivial\n"
+            + "end RealRooted.Challenges.Other\n",
+        )
+        self.write(
+            "website/authors.toml",
+            """[authors]
+"Fisk" = { name = "Steve Fisk", url = "https://example.org/fisk" }
+
+[overrides]
+"sample:Zhang" = { name = "Ada Zhang" }
+"other:Zhang" = { name = "Bea Zhang" }
+""",
+        )
+        pages = load_catalog(self.root)
+        profiles = load_author_profiles(self.root)
+        index = build_author_index(pages, profiles)
+        self.assertEqual([entry.display_name for entry in index], ["Steve Fisk", "Ada Zhang", "Bea Zhang"])
+        self.assertEqual([entry.identity for entry in index], ["Fisk", "sample:Zhang", "other:Zhang"])
+        self.assertEqual(index[0].url, "https://example.org/fisk")
+        self.assertEqual([page.slug for page in index[1].pages], ["sample"])
+
+        rendered = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        authors = rendered["authors/index.html"]
+        self.assertIn('<h1>Authors</h1>', authors)
+        self.assertIn('id="author-sample-zhang"', authors)
+        self.assertIn('id="author-other-zhang"', authors)
+        self.assertIn('href="../families/sample/"', authors)
+        self.assertIn('href="../theorems/other/"', authors)
+        self.assertIn('href="https://example.org/fisk">Steve Fisk</a>', authors)
+        self.assertIn('href="authors/">Authors</a>', rendered["index.html"])
 
     def test_family_page_shows_counts_and_headline_theorems(self) -> None:
         self.write(
