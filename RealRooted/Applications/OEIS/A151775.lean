@@ -2,6 +2,7 @@ import Mathlib
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.Derivative.FamilyClosure
 import RealRooted.Basic.Coefficients
+import RealRooted.Recurrence.RowModel
 
 /-!
 # OEIS A151775
@@ -44,6 +45,16 @@ private theorem step_eq (f : ℝ[X]) :
   simp only [step, upperStep, lowerStep, derivative_add, derivative_mul,
     derivative_X, derivative_one, derivative_ofNat]
   ring
+
+/-- The public A151775 update in expanded second-derivative form. -/
+def nextRow (f : ℝ[X]) : ℝ[X] :=
+  4 * X * (1 + X) ^ 2 * derivative (derivative f) +
+    2 * (1 + X) * (1 + 5 * X) * derivative f + (1 + 2 * X) * f
+
+/-- The model rows satisfy the public A151775 update. -/
+theorem polynomial_succ (n : ℕ) : polynomial (n + 1) = nextRow (polynomial n) := by
+  rw [polynomial, step_eq]
+  rfl
 
 /-- `step` is linear (`ℝ`-linear on the pencil): `step (α f + β g) = α step f + β step g`. -/
 private theorem step_pencil (α β : ℝ) (f g : ℝ[X]) :
@@ -252,5 +263,28 @@ theorem strictInterl_polynomial_succ (n : ℕ) :
     (polynomial_props (n + 1)).2.1.ne_zero (splits_polynomial (n + 1))
     (allComboRealRooted_polynomial_succ n) (Or.inl hdegree.symm)
   exact StrictInterl.forward_of_orientation_of_succDegree hdegree horientation
+
+/-- Any sequence with the A151775 initial row and update has interlacing consecutive rows. -/
+@[rr_row_model]
+theorem interlaces_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 1 + 2 * X)
+    (hrec : ∀ n, P (n + 1) =
+      (4 * X + 4 * X ^ 3 + 8 * X ^ 2) * (P n).derivative.derivative +
+        (2 + 10 * X ^ 2 + 12 * X) * (P n).derivative + (1 + 2 * X) * P n)
+    (n : ℕ) : Interlaces (P n) (P (n + 1)) := by
+  have heq : ∀ m, P m = polynomial m := by
+    intro m
+    induction m with
+    | zero => exact hzero.trans (show (1 : ℝ[X]) = polynomial 0 by rfl)
+    | succ m ih =>
+        rcases Nat.eq_zero_or_pos m with rfl | _
+        · exact hone.trans (by norm_num [polynomial, step, upperStep, lowerStep])
+        · rw [hrec, polynomial_succ, ih, nextRow]
+          ring
+  rw [heq n, heq (n + 1)]
+  exact (strictInterl_polynomial_succ n).toInterlaces (by
+    rw [natDegree_polynomial, natDegree_polynomial])
 
 end RealRooted.Applications.OEIS.A151775
