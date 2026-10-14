@@ -1962,4 +1962,6 @@ import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
 import RealRooted.Recurrence.RowModel
 import RealRooted.Tactic.Examples.RowModelFamilies
+import RealRooted.ParityFactorization
+import RealRooted.Tactic.Examples.RowParityFactorization
 import RealRooted.Applications.OEIS.A110608
