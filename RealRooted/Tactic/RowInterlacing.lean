@@ -339,28 +339,51 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     max evidence candidate.bases.size
   return candidates.filter fun candidate => candidate.bases.size == maxEvidence
 
-/-- The named definition at the head of a model recurrence's right-hand side, if any. -/
-private def rowModelRhsDefinition? : TacticM (Option Name) := withMainContext do
+/-- State for the bounded traversal of definitions used by a model recurrence operator. -/
+private structure RowModelUnfoldState where
+  seen : NameSet := {}
+  definitions : Array Name := #[]
+  fuel : Nat := 16
+
+/-- Collect definitions reachable from `name` in the same compiled module. Library operations
+and definitions from imported modules stay opaque, and the fuel bounds even a malformed model. -/
+private partial def collectRowModelDefinitions (env : Environment) (moduleIdx : ModuleIdx)
+    (name : Name) : StateM RowModelUnfoldState Unit := do
+  let state ← get
+  if state.fuel == 0 || state.seen.contains name then return
+  modify fun s => { s with seen := s.seen.insert name }
+  unless env.getModuleIdxFor? name == some moduleIdx do return
+  let some (.defnInfo info) := env.find? name | return
+  modify fun s =>
+    { s with definitions := s.definitions.push name, fuel := s.fuel - 1 }
+  for dependency in info.value.getUsedConstants do
+    collectRowModelDefinitions env moduleIdx dependency
+
+/-- The bounded list of same-module definitions reachable from the head of a model recurrence's
+right-hand side. -/
+private def rowModelRhsDefinitions : TacticM (Array Name) := withMainContext do
   let target ← instantiateMVars (← getMainTarget)
-  let some (_, _, rhs) := target.eq? | return none
-  let .const name _ := rhs.consumeMData.getAppFn | return none
-  if ← isProjectionFn name then return none
-  match ← getConstInfo name with
-  | .defnInfo _ => return some name
-  | _ => return none
+  let some (_, _, rhs) := target.eq? | return #[]
+  let .const name _ := rhs.consumeMData.getAppFn | return #[]
+  if ← isProjectionFn name then return #[]
+  let env ← getEnv
+  let some moduleIdx := env.getModuleIdxFor? name | return #[]
+  let (_, state) := (collectRowModelDefinitions env moduleIdx name).run {}
+  return state.definitions
 
 /-- Close one polynomial identity obtained from a model recurrence. -/
 private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
-  let rhsDefinition? ← rowModelRhsDefinition?
+  let rhsDefinitions ← rowModelRhsDefinitions
   if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
   let target ← instantiateMVars (← getMainTarget)
   match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
   if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
-  if let some rhsDefinition := rhsDefinition? then
-    evalTactic (← `(tactic| unfold $(mkIdent rhsDefinition):ident))
-    if (← getGoals).isEmpty then return
+  for rhsDefinition in rhsDefinitions do
+    discard <| rowSucceeds <| evalTactic
+      (← `(tactic| unfold $(mkIdent rhsDefinition):ident))
+  if !(← getGoals).isEmpty && !rhsDefinitions.isEmpty then
     if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
     if ← rowSucceeds do
         evalTactic (← `(tactic| simp only [Polynomial.C_ofNat]))

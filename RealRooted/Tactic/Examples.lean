@@ -127,6 +127,7 @@ import RealRooted.Tactic.Examples.Product.UnsupportedShape
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RecurrenceODE
+import RealRooted.Tactic.Examples.RegistryDownstream
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.RootCount.Core
