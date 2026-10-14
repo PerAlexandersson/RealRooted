@@ -2,107 +2,167 @@ import RealRooted.Applications.OEIS.A286785
 import RealRooted.Tactic.RowInterlacing
 
 /-!
-# Regression examples for Euler-type interlacing bridges
+# Exact downstream presentations of Euler-type bridges
 
-These examples cover the floor-half and rational `f`-transforms, a moving
-endpoint window, canonical-model normalization, and rational reflection.
+These definitions and theorem statements reproduce the downstream OEIS files. In particular,
+their recurrence coefficients have not been hand-normalized before calling the row tactic.
 -/
 
 open RealRooted Polynomial
 
 noncomputable section
 
-namespace FTransformInterlacingExamples
+namespace A186370Downstream
 
-/-- The A186370 row recurrence, whose auxiliary transform has degree `n / 2`. -/
-def a186370 : ℕ → ℝ[X]
+/-- The exact downstream recurrence presentation of A186370. -/
+def A186370 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
-      (C 1 * X + C (-1) * X ^ 3) * (a186370 n).derivative +
-        (C 1 + C 1 * X + C (n : ℝ) * X ^ 2) * a186370 n
+      (C (1) * X + C (-1) * X ^ 3) * (A186370 n).derivative +
+        (C (1) + C (1) * X + C (n : ℝ) * X ^ 2) * A186370 n
 
-/-- The floor-half transform route supplies the explicit `X + 1` padding. -/
-example (n : ℕ) : Interlaces (a186370 n) (a186370 (n + 1)) := by
+/-- The exact downstream adjacent-interlacing statement for A186370. -/
+theorem A186370_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A186370 n) (A186370 (n + 1)) := by
   rr_row_interlaces
 
-end FTransformInterlacingExamples
+/-- The exact downstream strict-interlacing statement for A186370. -/
+theorem A186370_prec (n : ℕ) :
+    RealRooted.StrictInterl (A186370 n) (A186370 (n + 1)) := by
+  exact (A186370_interlaces n).toStrictInterl
 
-namespace EndpointWindowInterlacingExamples
+end A186370Downstream
 
-/-- A factored presentation of the A357613 recurrence. -/
-def a357613 : ℕ → ℝ[X]
+namespace A357613Downstream
+
+/-- The exact downstream recurrence presentation of A357613. -/
+def A357613 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
-      let D : ℝ := 2 * ((n : ℝ) + 1) * (2 * n + 1)
-      let A := C (D⁻¹) *
-        (-X * (X + 1) *
-          (C ((n : ℝ) + 1) * X + C (9 * (n : ℝ) + 6)))
-      let B := C (D⁻¹) *
-        (C ((n : ℝ) * (n + 1)) * X ^ 2 +
-          C (24 * (n : ℝ) ^ 2 + 22 * (n : ℝ) + 4) * X +
-          C (27 * (n : ℝ) ^ 2 + 27 * (n : ℝ) + 6))
-      A * (a357613 n).derivative + B * a357613 n
+      (C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) * (-1 + (-3 / 2) * (n : ℝ))) * X +
+        C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) *
+            ((-7 / 6) + (-5 / 3) * (n : ℝ))) * X ^ 2 +
+        C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) *
+            ((-1 / 6) + (-1 / 6) * (n : ℝ))) * X ^ 3) *
+        (A357613 n).derivative +
+      (C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) *
+            (-17 + (-27 / 2) * (n : ℝ) + (9 / 2) * (2 + (n : ℝ)) ^ 2)) +
+        C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) *
+            ((-46 / 3) + 4 * (2 + (n : ℝ)) ^ 2 + (-37 / 3) * (n : ℝ))) * X +
+        C ((1 / ((-7 / 3) + (-5 / 3) * (n : ℝ) +
+          (2 / 3) * (2 + (n : ℝ)) ^ 2)) *
+            ((-2 / 3) + (-1 / 2) * (n : ℝ) + (1 / 6) * (2 + (n : ℝ)) ^ 2)) *
+          X ^ 2) * A357613 n
 
-/-- The exact probe fits `(-9 + 3 / (n + 1), -1)` and the symbolic
-certificate proves both endpoint evaluations. -/
-example (n : ℕ) : Interlaces (a357613 n) (a357613 (n + 1)) := by
+/-- The exact downstream adjacent-interlacing statement for A357613. -/
+theorem A357613_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A357613 n) (A357613 (n + 1)) := by
   rr_row_interlaces
 
-end EndpointWindowInterlacingExamples
+/-- The exact downstream strict-interlacing statement for A357613. -/
+theorem A357613_prec (n : ℕ) :
+    RealRooted.StrictInterl (A357613 n) (A357613 (n + 1)) := by
+  exact (A357613_interlaces n).toStrictInterl
 
-namespace ModelBridgeInterlacingExamples
+end A357613Downstream
 
-/-- The normalized form of the A286785 harness recurrence. -/
-def a286785 : ℕ → ℝ[X]
+namespace A286785Downstream
+
+/-- The exact downstream recurrence presentation of A286785. -/
+def A286785 : ℕ → ℝ[X]
   | 0 => 14 + 14 * X + 2 * X ^ 2
   | n + 1 =>
-      let S : ℝ := 2 * (n + 5) * (2 * n + 9)
-      let A := C ((n + 3) / S) + C ((7 * n + 33) / S) * X -
-        C ((8 * n + 36) / S) * X ^ 2
-      let B := C (3 * (5 * (n : ℝ) ^ 2 + 42 * n + 89) / S) +
-        C (6 * (n + 3) * (2 * n + 9) / S) * X
-      A * (a286785 n).derivative + B * a286785 n
+      (C ((1 / ((37 / 15) + (2 / 15) * (2 + (n : ℝ)) ^ 2 +
+          (11 / 15) * (n : ℝ))) * ((1 / 10) + (1 / 30) * (n : ℝ))) +
+        C ((1 / ((37 / 15) + (2 / 15) * (2 + (n : ℝ)) ^ 2 +
+          (11 / 15) * (n : ℝ))) * ((11 / 10) + (7 / 30) * (n : ℝ))) * X +
+        C ((1 / ((37 / 15) + (2 / 15) * (2 + (n : ℝ)) ^ 2 +
+          (11 / 15) * (n : ℝ))) * ((-6 / 5) + (-4 / 15) * (n : ℝ))) * X ^ 2) *
+        (A286785 n).derivative +
+      (C ((1 / ((37 / 15) + (2 / 15) * (2 + (n : ℝ)) ^ 2 +
+          (11 / 15) * (n : ℝ))) *
+            ((69 / 10) + (1 / 2) * (2 + (n : ℝ)) ^ 2 + (11 / 5) * (n : ℝ))) +
+        C ((1 / ((37 / 15) + (2 / 15) * (2 + (n : ℝ)) ^ 2 +
+          (11 / 15) * (n : ℝ))) *
+            ((19 / 5) + (2 / 5) * (2 + (n : ℝ)) ^ 2 + (7 / 5) * (n : ℝ))) * X) *
+        A286785 n
 
-/-- Exact rows identify the recurrence with `A286785.rowPoly (n + 2)`. -/
-example (n : ℕ) : Interlaces (a286785 n) (a286785 (n + 1)) := by
+/-- The exact downstream adjacent-interlacing statement for A286785. -/
+theorem A286785_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A286785 n) (A286785 (n + 1)) := by
   rr_row_interlaces
 
-example (n : ℕ) : (a286785 n).Splits := by
-  rr_row_splits
+/-- The exact downstream strict-interlacing statement for A286785. -/
+theorem A286785_prec (n : ℕ) :
+    RealRooted.StrictInterl (A286785 n) (A286785 (n + 1)) := by
+  exact (A286785_interlaces n).toStrictInterl
 
-end ModelBridgeInterlacingExamples
+end A286785Downstream
 
-namespace RationalTransformInterlacingExamples
+namespace A104978Downstream
 
-/-- A denominator-cleared presentation of the A104978 harness recurrence. -/
-def a104978 : ℕ → ℝ[X]
+/-- The exact downstream recurrence presentation of A104978. -/
+def A104978 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
-      let D : ℝ := (n + 1) * (2 * n + 3)
-      let A := C ((n : ℝ) / (2 * D)) + C ((5 * n + 3) / D) * X +
-        C ((9 * (n : ℝ) + 6) / (2 * D)) * X ^ 2
-      let B := C ((14 * (n : ℝ) ^ 2 + 19 * n + 6) / (2 * D)) +
-        C ((18 * (n : ℝ) ^ 2 + 21 * n + 6) / (2 * D)) * X
-      A * (a104978 n).derivative + B * a104978 n
+      (C ((1 / 2) * (n : ℝ) *
+          (1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2))) +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (3 + 5 * (n : ℝ))) * X +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (3 + (9 / 2) * (n : ℝ))) * X ^ 2) * (A104978 n).derivative +
+      (C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+          (-25 + 7 * (2 + (n : ℝ)) ^ 2 + (-37 / 2) * (n : ℝ))) +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (-33 + 9 * (2 + (n : ℝ)) ^ 2 + (-51 / 2) * (n : ℝ))) * X) *
+        A104978 n
 
-/-- The common positive denominator is fitted and then cleared in the proof. -/
-example (n : ℕ) : Interlaces (a104978 n) (a104978 (n + 1)) := by
+/-- The exact downstream adjacent-interlacing statement for A104978. -/
+theorem A104978_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A104978 n) (A104978 (n + 1)) := by
   rr_row_interlaces
 
-/-- The reflected A108426 harness recurrence. -/
-def a108426 : ℕ → ℝ[X]
+/-- The exact downstream strict-interlacing statement for A104978. -/
+theorem A104978_prec (n : ℕ) :
+    RealRooted.StrictInterl (A104978 n) (A104978 (n + 1)) := by
+  exact (A104978_interlaces n).toStrictInterl
+
+end A104978Downstream
+
+namespace A108426Downstream
+
+/-- The exact downstream recurrence presentation of A108426. -/
+def A108426 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
-      let D : ℝ := (n + 1) * (2 * n + 3)
-      let A := -C ((9 * n + 6) / (2 * D)) * X -
-        C ((5 * n + 3) / D) * X ^ 2 - C ((n : ℝ) / (2 * D)) * X ^ 3
-      let B := C ((27 * (n : ℝ) ^ 2 + 27 * n + 6) / (2 * D)) +
-        C ((24 * (n : ℝ) ^ 2 + 25 * n + 6) / (2 * D)) * X +
-        C ((n : ℝ) ^ 2 / (2 * D)) * X ^ 2
-      A * (a108426 n).derivative + B * a108426 n
+      (C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+          (-3 + (-9 / 2) * (n : ℝ))) * X +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (-3 + -5 * (n : ℝ))) * X ^ 2 +
+        C ((-1 / 2) * (n : ℝ) *
+            (1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2))) * X ^ 3) *
+        (A108426 n).derivative +
+      (C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+          (-51 + (-81 / 2) * (n : ℝ) + (27 / 2) * (2 + (n : ℝ)) ^ 2)) +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (-45 + 12 * (2 + (n : ℝ)) ^ 2 + (-71 / 2) * (n : ℝ))) * X +
+        C ((1 / (-5 + -3 * (n : ℝ) + 2 * (2 + (n : ℝ)) ^ 2)) *
+            (-2 + (1 / 2) * (2 + (n : ℝ)) ^ 2 + -2 * (n : ℝ))) * X ^ 2) *
+        A108426 n
 
-/-- Reflection transfers the rational f-transform interlacing certificate. -/
-example (n : ℕ) : Interlaces (a108426 n) (a108426 (n + 1)) := by
+/-- The exact downstream adjacent-interlacing statement for A108426. -/
+theorem A108426_interlaces (n : ℕ) :
+    RealRooted.Interlaces (A108426 n) (A108426 (n + 1)) := by
   rr_row_interlaces
 
-end RationalTransformInterlacingExamples
+/-- The exact downstream strict-interlacing statement for A108426. -/
+theorem A108426_prec (n : ℕ) :
+    RealRooted.StrictInterl (A108426 n) (A108426 (n + 1)) := by
+  exact (A108426_interlaces n).toStrictInterl
+
+end A108426Downstream
