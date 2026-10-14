@@ -1955,5 +1955,8 @@ import RealRooted.Recurrence.FactorPower
 import RealRooted.Tactic.Examples.RowFactorPower
 import RealRooted.Tactic.Row.DelayedProduct
 import RealRooted.Tactic.Row.FactorPower
+import RealRooted.Applications.OEIS.A394446
+import RealRooted.GammaTransform.Derivative
+import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
 import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
