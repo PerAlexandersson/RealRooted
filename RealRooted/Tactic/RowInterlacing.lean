@@ -340,6 +340,12 @@ private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
     evalTactic (← `(tactic| unfold $(mkIdent rhsDefinition):ident))
     if (← getGoals).isEmpty then return
     if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
+    if ← rowSucceeds do
+        evalTactic (← `(tactic| simp only [Polynomial.C_ofNat]))
+        Term.synthesizeSyntheticMVarsNoPostponing
+        unless (← getGoals).isEmpty do
+          throwError "constant-coefficient normalization did not close the identity"
+      then return
   if !(← getGoals).isEmpty then
     evalTactic (← `(tactic| rr_cf_identity))
   unless (← getGoals).isEmpty do
