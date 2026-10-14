@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **299 IDs**; **29 formalized**, **252 shells**, **3 fragments**, and **15 documented-only**.
+Current totals: **301 IDs**; **29 formalized**, **254 shells**, **3 fragments**, and **15 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -86,6 +86,7 @@ Current totals: **299 IDs**; **29 formalized**, **252 shells**, **3 fragments**,
 | A063007 | `shell` | raw scalar-denominator Favard numerator with nonzero shift. | `rr_favard_affine_param_den_raw_auto`, `rr_favard_base_one` | `alpha`, `base_one`, `base_zero`, `beta`, `den`, `raw_const`, `raw_lag`, `raw_recurrence`, `raw_slope`, `slope` | concrete row definition and proofs of the listed certificates |
 | A064861 | `shell` | A two-step product with higher-degree base rows ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A065826 | `shell` | Top coefficients `n + 1`, with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A069138 | `shell` | The Euler-quotient Touchard presentation of the rows. | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A075499 | `shell` | A real-rooted quadratic base row: no base interlacing is needed ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A078020 | `shell` | -style sequence shell: repeated lag `-(2t^2+t+1)`. | `rr_lw_negative_quadratic_sequence_auto` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A078812 | `shell` | OEIS shapes `//`:<br>`P_{n+2}=(t+2)P_{n+1}-P_n`. | `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
@@ -291,6 +292,7 @@ Current totals: **299 IDs**; **29 formalized**, **252 shells**, **3 fragments**,
 | A316649 | `shell` | OEIS in its generated order-three coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A317496 | `shell` | `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A318397 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
+| A321331 | `shell` | The derivative Touchard presentation of the rows. | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A321434 | `shell` | A derivative recurrence of lag two, split along the residues of `n` mod two ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A321966 | `fragment` | OEIS-stated conjecture target, `v_n(t)=2t`.<br>root-sign package once the current row has nonnegative coefficients. | `rr_sign`, `rr_sign_at_roots` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A322944 | `fragment` | OEIS-stated conjecture target, `v_n(t)=3t`. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
