@@ -317,16 +317,35 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     max evidence candidate.2
   return (candidates.filter fun candidate => candidate.2 == maxEvidence).map (·.1)
 
+/-- The named definition at the head of a model recurrence's right-hand side, if any. -/
+private def rowModelRhsDefinition? : TacticM (Option Name) := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let some (_, _, rhs) := target.eq? | return none
+  let .const name _ := rhs.consumeMData.getAppFn | return none
+  if ← isProjectionFn name then return none
+  match ← getConstInfo name with
+  | .defnInfo _ => return some name
+  | _ => return none
+
 /-- Close one polynomial identity obtained from a model recurrence. -/
 private def closeRowModelIdentity (P : Ident) : TacticM Unit := do
+  let rhsDefinition? ← rowModelRhsDefinition?
   if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
-  if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
   let target ← instantiateMVars (← getMainTarget)
   match ← rowAttempt <| evalTactic (← `(tactic| conv_lhs => rw [$P:ident])) with
   | .error err => throwError "row-model unfolding failed at{indentExpr target}\n{err}"
   | .ok _ => pure ()
   if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
-  if ← rowSucceeds (evalTactic (← `(tactic| rfl))) then return
+  if let some rhsDefinition := rhsDefinition? then
+    evalTactic (← `(tactic| unfold $(mkIdent rhsDefinition):ident))
+    if (← getGoals).isEmpty then return
+    if ← rowSucceeds (evalTactic (← `(tactic| with_reducible rfl))) then return
+    if ← rowSucceeds do
+        evalTactic (← `(tactic| simp only [Polynomial.C_ofNat]))
+        Term.synthesizeSyntheticMVarsNoPostponing
+        unless (← getGoals).isEmpty do
+          throwError "constant-coefficient normalization did not close the identity"
+      then return
   if !(← getGoals).isEmpty then
     evalTactic (← `(tactic| rr_cf_identity))
   unless (← getGoals).isEmpty do
