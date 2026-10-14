@@ -73,8 +73,11 @@ not require editing every catalog page:
 "some-page:Zhang" = { name = "Full Name Zhang", url = "https://example.org/" }
 ```
 
-An override applies only to the specified page slug and therefore creates a
-separate Authors entry when the same surname denotes different people.
+An override applies only to the specified page slug, so the same surname can
+name different people on different pages.  Entries are grouped by the resolved
+name: every key or override that resolves to the same name shares one Authors
+entry, and the build fails if one name is given two different links.  An
+unresolved key keeps its compact metadata string as its own entry.
 
 The selected-declaration digest is the SHA-256 of UTF-8 canonical JSON with
 sorted keys and compact separators, for this object:
