@@ -74,6 +74,7 @@ import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
+import RealRooted.Tactic.Examples.OEIS.A219836
 import RealRooted.Tactic.Examples.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
