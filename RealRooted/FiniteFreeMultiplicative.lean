@@ -65,7 +65,7 @@ theorem coeff_finiteFreeMultiplicativeConvolution
             (p.coeff j * q.coeff j / (Nat.choose d j : ℝ)) := by ring
       _ = (-1 : ℝ) ^ (d - j) *
             (p.coeff j * q.coeff j / (Nat.choose d j : ℝ)) := by
-        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hj]
+        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hj]
   · simp only [ite_eq_right hj]
     simp
 
@@ -201,7 +201,7 @@ theorem finiteElementaryCoeff_finiteFreeMultiplicativeConvolution
   rw [coeff_finiteFreeMultiplicativeConvolution,
     ite_eq_left (Nat.sub_le d k), Nat.sub_sub_self hk, Nat.choose_symm hk]
   let s : ℝ := (-1 : ℝ) ^ k
-  have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq k)
+  have hs : s * s = 1 := by simpa [pow_two] using (Parity.neg_one_pow_sq k)
   have hchoose : (Nat.choose d k : ℝ) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) hk
   change
@@ -261,7 +261,7 @@ theorem finiteFreeMultiplicativeConvolution_signedReciprocal_right
       coeff_signedReciprocal_of_le hj,
       coeff_schurSzegoComp_of_le hj, coeff_reflect, revAt_le hj]
     let s : ℝ := (-1 : ℝ) ^ (d - j)
-    have hs : s * s = 1 := by simpa [pow_two] using (_root_.neg_one_pow_sq (d - j))
+    have hs : s * s = 1 := by simpa [pow_two] using (Parity.neg_one_pow_sq (d - j))
     change
       s * (P.coeff j * (s * p.coeff (d - j)) /
         (Nat.choose d j : ℝ)) =
