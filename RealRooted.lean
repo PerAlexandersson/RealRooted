@@ -2011,3 +2011,5 @@ import RealRooted.Applications.OEIS.A046802
 import RealRooted.Applications.OEIS.A262226
 import RealRooted.Tactic.Examples.OEIS.NextRows
 import RealRooted.Tactic.Examples.RowModelRegistryBudget
+import RealRooted.Applications.OEIS.A219836
+import RealRooted.Tactic.Examples.OEIS.A219836

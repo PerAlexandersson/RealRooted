@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **304 IDs**; **32 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **305 IDs**; **33 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -253,6 +253,7 @@ Current totals: **304 IDs**; **32 formalized**, **259 shells**, **3 fragments**,
 | A204579 | `shell` | -style unit-slope factor `t - 1 - 2n - n^2`. | `rr_product_factor_X` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A206294 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A216182 | `shell` | copied from the downstream row recurrence. | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A219836 | `formalized` | import RealRooted.Applications.OEIS.<br># degree-model regression<br>+9 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | none |
 | A236471 | `shell` | The ratio barrier `ρ = 2` beyond the window `[-4, 0]`, after the first row ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A244419 | `shell` | OEIS shapes `///`: | `rr_favard_affine_const`, `rr_favard_affine_const_unit` | `alpha`, `base_one`, `base_zero`, `slope`, `step` | concrete row definition and proofs of the listed certificates |
 | A249248 | `shell` | OEIS shapes `//`, using nonnegative coefficients<br>after reindexing, `P_{n+2}=(1+t)P_{n+1}+(n+4)tP_n`.<br>+3 additional test intents | `rr_lw_current_one_add_X_sequence_auto`, `rr_lw_current_one_add_X_sequence_realrooted`, `rr_lw_current_one_add_X_sequence_realrooted_auto`, `rr_lw_positive_t_nonneg_auto`, `rr_sign` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
