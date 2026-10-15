@@ -1768,6 +1768,9 @@ leaf 8 The budgets of `RealRooted`, `Production` rise to the new closure sizes.
 
 leaf 7 The budgets of `RealRooted`, `Production`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `CombinatorialExamples.JacobiStirling.FirstKind`, `CombinatorialExamples.JacobiStirling.Inverse`, `CombinatorialExamples.JacobiStirling.SecondKind`, `FiniteFreeAdditive.HalfIntegerPreservation`, `FiniteFreeAdditive.Identity`, `FiniteFreeAdditive.Preservation` rise to the new closure sizes.
 
+The partition-dominance and symmetric-basis shims add three modules.
+The budgets of `RealRooted` and `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

@@ -2515,12 +2515,42 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Partition/Dominance.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Partition.Dominance"
+      ],
+      "note": "Partition dominance and conjugation reversal; no upstream attribution recorded.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/Homogeneous.lean"
       ],
       "modules": [
         "Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous"
       ],
       "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/Monomial.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial"
+      ],
+      "note": "Monomial symmetric coefficient and basis API; no upstream attribution recorded.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/ElementaryMonomial.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial"
+      ],
+      "note": "Unitriangular elementary-to-monomial basis change; no upstream attribution.",
       "speculative": true
     }
   ]

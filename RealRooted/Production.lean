@@ -1837,6 +1837,9 @@ import RealRooted.Applications.OEIS.TouchardImages
 import RealRooted.Applications.OEIS.A080721
 import RealRooted.Applications.OEIS.HarmonicDerivativeRows
 import RealRooted.Applications.OEIS.A219836
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 
 /-!
 # RealRooted production umbrella
