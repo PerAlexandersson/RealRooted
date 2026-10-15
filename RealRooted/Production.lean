@@ -1835,6 +1835,7 @@ import RealRooted.Applications.OEIS.TouchardImages
 import RealRooted.Applications.OEIS.A080721
 import RealRooted.Applications.OEIS.HarmonicDerivativeRows
 import RealRooted.Applications.OEIS.A219836
+import RealRooted.Applications.OEIS.A259454
 
 /-!
 # RealRooted production umbrella

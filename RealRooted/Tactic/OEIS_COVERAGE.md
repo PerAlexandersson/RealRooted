@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **305 IDs**; **33 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **305 IDs**; **34 formalized**, **258 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -262,7 +262,7 @@ Current totals: **305 IDs**; **33 formalized**, **259 shells**, **3 fragments**,
 | A257620 | `shell` | Scaled Eulerian rows `3ⁿ A(n + 1, k + 1)`: `v_n(t) = 3t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A257621 | `shell` | half-line factor `4t-4t^2=4t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A257626 | `shell` | half-line factor `3t-3t^2=3t(1-t)`. | `rr_mw_derivative_nonpos_nonneg_sequence_sign_auto` | `base`, `degree_succ`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
-| A259454 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+7 additional test intents | `rr_row_natDegree` | `via` | concrete row definition and proofs of the listed certificates |
+| A259454 | `formalized` | import RealRooted.Applications.OEIS.<br># Literal downstream regression for OEIS<br>+21 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | `via` | none |
 | A262226 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+12 additional test intents | `rr_row_natDegree`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A263789 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+9 additional test intents | `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A266326 | `shell` | The two-step monomial model for the recurrence from .<br>The recurrence from .<br>+9 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
