@@ -1771,6 +1771,9 @@ leaf 7 The budgets of `RealRooted`, `Production`, `BorceaBranden.Applications.Ha
 The partition-dominance and symmetric-basis shims add three modules.
 The budgets of `RealRooted` and `Production` rise to the new closure sizes.
 
+The triangular-generator transport shim adds one module. The budgets of
+`RealRooted` and `Production` rise to the new closure sizes.
+
 Run the architecture check with:
 
 ```bash

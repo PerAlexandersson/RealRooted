@@ -2552,6 +2552,16 @@
       ],
       "note": "Unitriangular elementary-to-monomial basis change; no upstream attribution.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/TriangularBasis.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.TriangularBasis"
+      ],
+      "note": "Triangular linear maps under unitriangular generator changes.",
+      "speculative": true
     }
   ]
 }

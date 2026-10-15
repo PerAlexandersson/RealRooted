@@ -1,7 +1,10 @@
 import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
 import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.Data.List.GetD
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
 import RealRooted.Multiaffine
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.LinearCombination
@@ -21,6 +24,7 @@ and `D_q = B_q - A_q`.  This file realizes those formulas as linear maps.
 namespace RealRooted.LiuZhang
 
 open MvPolynomial
+open Finset
 
 noncomputable section
 
@@ -769,6 +773,257 @@ theorem morrisB_morrisElementary [Nontrivial R] {N : ℕ}
   intro k hk
   exact (mu.le_card_parts_of_mem_conjugate_parts hk).trans hmu
 
+private theorem morrisElementary_sub_msymm_mem_lowerSpan
+    [Nontrivial R] {N q : ℕ}
+    (lambda : {mu : N.Partition // mu.parts.card ≤ q}) :
+    morrisElementary (R := R) q lambda.1 - msymm (Fin q) R lambda.1 ∈
+      LinearMap.lowerSpan (R := R)
+        (fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+          msymm (Fin q) R mu.1) lambda := by
+  rw [morrisElementary,
+    esymmPart_conjugate_eq_msymm_add_lower lambda.1 lambda.2]
+  simp only [add_sub_cancel_left]
+  apply Submodule.sum_mem
+  intro mu hmu
+  by_cases hlen : mu.parts.card ≤ q
+  · apply Submodule.smul_mem
+    apply Submodule.subset_span
+    refine ⟨⟨mu, hlen⟩, ?_, rfl⟩
+    exact Nat.Partition.mem_erase_dominanceDownset.mp hmu
+  · have hcard : Fintype.card (Fin q) < mu.parts.card := by
+      simpa using Nat.lt_of_not_ge hlen
+    rw [msymm_eq_zero_of_card_lt mu hcard, smul_zero]
+    exact Submodule.zero_mem _
+
+private theorem msymm_sub_morrisElementary_mem_lowerSpan
+    [Nontrivial R] {N q : ℕ}
+    (lambda : {mu : N.Partition // mu.parts.card ≤ q}) :
+    msymm (Fin q) R lambda.1 - morrisElementary (R := R) q lambda.1 ∈
+      LinearMap.lowerSpan (R := R)
+        (fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+          morrisElementary (R := R) q mu.1) lambda := by
+  apply Submodule.span_mono _
+    (msymm_sub_esymmPart_conjugate_mem_span_lower
+      (K := R) lambda.1 lambda.2)
+  rintro _ ⟨mu, hmu, rfl⟩
+  change mu ∈ strictDominanceDownset q lambda.1 at hmu
+  rw [mem_strictDominanceDownset] at hmu
+  exact ⟨⟨mu, hmu.2⟩, hmu.1, rfl⟩
+
+/-- The action of `B_q` on monomial symmetric polynomials is triangular in
+dominance order, with the elementary-product eigenvalue on the diagonal. This
+is the `B_q` part of Lemma 4.10 of Liu--Zhang,
+arXiv:2609.15201v2. -/
+theorem morrisB_isTriangularOn_msymm [Nontrivial R] {N q : ℕ} :
+    (morrisB q).IsTriangularOn
+      (fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+        msymm (Fin q) R mu.1)
+      (fun mu => (morrisBWeight q mu.1.conjugate : R)) := by
+  let b := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+    morrisElementary (R := R) q mu.1
+  let d := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+    msymm (Fin q) R mu.1
+  let c := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+    (morrisBWeight q mu.1.conjugate : R)
+  have hb : (morrisB q).IsTriangularOn b c := by
+    intro mu
+    rw [show b mu = morrisElementary (R := R) q mu.1 by rfl,
+      morrisB_morrisElementary q mu.1 mu.2]
+    change morrisBWeight q mu.1.conjugate • b mu - c mu • b mu ∈ _
+    rw [← Nat.cast_smul_eq_nsmul R]
+    exact sub_self (c mu • b mu) ▸ Submodule.zero_mem _
+  change (morrisB q).IsTriangularOn d c
+  apply hb.change_generators_of_unitriangular
+  · exact morrisElementary_sub_msymm_mem_lowerSpan
+  · exact msymm_sub_morrisElementary_mem_lowerSpan
+
+private theorem partitionRow_eq_rowLen {N : ℕ}
+    (mu : N.Partition) (i : ℕ) :
+    partitionRow mu i = (YoungDiagram.ofPartition mu).rowLen i := by
+  rw [partitionRow, ← YoungDiagram.rowLens_ofPartition_eq_sort_parts]
+  by_cases hi : i < (YoungDiagram.ofPartition mu).rowLens.length
+  · rw [List.getD_eq_getElem _ _ hi, YoungDiagram.get_rowLens]
+  · rw [List.getD_eq_default _ _ (Nat.le_of_not_gt hi)]
+    symm
+    apply Nat.eq_zero_of_not_pos
+    intro hpos
+    have hcell : (i, 0) ∈ YoungDiagram.ofPartition mu :=
+      YoungDiagram.mem_iff_lt_rowLen.mpr hpos
+    exact hi (by
+      rw [YoungDiagram.length_rowLens]
+      exact YoungDiagram.mem_iff_lt_colLen.mp hcell)
+
+private theorem cast_column_weight_eq_sum (q c : ℕ) (hc : c ≤ q) :
+    ((c * (2 * q - c - 1) : ℕ) : ℤ) =
+      ∑ i ∈ range c, 2 * ((q : ℤ) - (i : ℤ) - 1) := by
+  induction c with
+  | zero => simp
+  | succ c ih =>
+      have hc' : c ≤ q := (Nat.le_succ c).trans hc
+      rw [sum_range_succ, ← ih hc']
+      have hfirst : c + 1 ≤ 2 * q := by lia
+      have hsecond : 1 ≤ 2 * q - (c + 1) := by lia
+      have hfirst' : c ≤ 2 * q := by lia
+      have hsecond' : 1 ≤ 2 * q - c := by lia
+      push_cast [Nat.cast_sub hsecond, Nat.cast_sub hfirst,
+        Nat.cast_sub hsecond', Nat.cast_sub hfirst']
+      ring
+
+private theorem cast_row_weight_eq_sum (c : ℕ) :
+    ((c * (c - 1) : ℕ) : ℤ) =
+      ∑ j ∈ range c, (2 : ℤ) * j := by
+  induction c with
+  | zero => simp
+  | succ c ih =>
+      rw [sum_range_succ, ← ih]
+      cases c with
+      | zero => simp
+      | succ c =>
+          push_cast [Nat.cast_sub (Nat.succ_le_succ (Nat.zero_le c))]
+          ring
+
+private theorem cast_morrisBWeight_conjugate_eq_sum_cells
+    {N q : ℕ} (mu : N.Partition) (hmu : mu.parts.card ≤ q) :
+    (morrisBWeight q mu.conjugate : ℤ) =
+      ∑ c ∈ (YoungDiagram.ofPartition mu).cells,
+        2 * ((q : ℤ) - (c.1 : ℤ) - 1) := by
+  let Y := YoungDiagram.ofPartition mu
+  have hheight : Y.colLen 0 ≤ q := by
+    rw [← YoungDiagram.length_rowLens,
+      YoungDiagram.rowLens_ofPartition_eq_sort_parts]
+    simpa [Y] using hmu
+  have hcols (j : ℕ) : Y.colLen j ≤ q :=
+    (Y.colLen_anti 0 j (Nat.zero_le j)).trans hheight
+  calc
+    (morrisBWeight q mu.conjugate : ℤ) =
+        ∑ j ∈ range (Y.rowLen 0),
+          ((Y.colLen j * (2 * q - Y.colLen j - 1) : ℕ) : ℤ) := by
+      norm_cast
+      unfold morrisBWeight Nat.Partition.conjugate
+        YoungDiagram.toPartition YoungDiagram.rowLens
+      rw [Finset.sum_eq_multiset_sum, Finset.range_val,
+        Multiset.range, Multiset.map_coe, Multiset.sum_coe]
+      rw [Multiset.map_coe, Multiset.sum_coe]
+      rw [YoungDiagram.colLen_transpose]
+      have hf :
+          (fun k => k * (2 * q - k - 1)) ∘
+              (YoungDiagram.ofPartition mu).transpose.rowLen =
+            fun j => Y.colLen j * (2 * q - Y.colLen j - 1) := by
+        funext j
+        rw [Function.comp_apply, YoungDiagram.rowLen_transpose]
+      rw [List.map_map, hf]
+    _ = ∑ j ∈ range (Y.rowLen 0),
+          ∑ i ∈ range (Y.colLen j),
+            2 * ((q : ℤ) - (i : ℤ) - 1) := by
+      apply sum_congr rfl
+      intro j _
+      exact cast_column_weight_eq_sum q (Y.colLen j) (hcols j)
+    _ = ∑ c ∈ Y.cells, 2 * ((q : ℤ) - (c.1 : ℤ) - 1) := by
+      rw [← Finset.sum_fiberwise_of_maps_to
+        (g := fun c : ℕ × ℕ => c.2) (t := range (Y.rowLen 0))
+        (fun c hc => by
+          rw [mem_range, ← YoungDiagram.mem_iff_lt_rowLen]
+          exact Y.up_left_mem (Nat.zero_le c.1) le_rfl hc)]
+      apply sum_congr rfl
+      intro j _
+      change (∑ i ∈ range (Y.colLen j),
+          2 * ((q : ℤ) - (i : ℤ) - 1)) =
+        ∑ c ∈ Y.col j, 2 * ((q : ℤ) - (c.1 : ℤ) - 1)
+      rw [YoungDiagram.col_eq_prod]
+      simp
+
+private theorem cast_morrisAWeight_eq_sum_cells
+    {N : ℕ} (mu : N.Partition) :
+    (morrisAWeight mu : ℤ) =
+      ∑ c ∈ (YoungDiagram.ofPartition mu).cells, (2 : ℤ) * c.2 := by
+  let Y := YoungDiagram.ofPartition mu
+  have hparts : mu.parts = (Y.rowLens : Multiset ℕ) := by
+    dsimp [Y]
+    rw [YoungDiagram.rowLens_ofPartition_eq_sort_parts]
+    exact (Multiset.sort_eq _ _).symm
+  calc
+    (morrisAWeight mu : ℤ) =
+        ∑ i ∈ range (Y.colLen 0),
+          ((Y.rowLen i * (Y.rowLen i - 1) : ℕ) : ℤ) := by
+      norm_cast
+      rw [morrisAWeight, hparts]
+      unfold YoungDiagram.rowLens
+      rw [Finset.sum_eq_multiset_sum, Finset.range_val,
+        Multiset.range, Multiset.map_coe, Multiset.sum_coe]
+      rw [Multiset.map_coe, Multiset.sum_coe, List.map_map]
+      rfl
+    _ = ∑ i ∈ range (Y.colLen 0),
+          ∑ j ∈ range (Y.rowLen i), (2 : ℤ) * j := by
+      apply sum_congr rfl
+      intro i _
+      exact cast_row_weight_eq_sum (Y.rowLen i)
+    _ = ∑ c ∈ Y.cells, (2 : ℤ) * c.2 := by
+      rw [← Finset.sum_fiberwise_of_maps_to
+        (g := fun c : ℕ × ℕ => c.1) (t := range (Y.colLen 0))
+        (fun c hc => by
+          rw [mem_range, ← YoungDiagram.mem_iff_lt_colLen]
+          exact Y.up_left_mem le_rfl (Nat.zero_le c.2) hc)]
+      apply sum_congr rfl
+      intro i _
+      change (∑ j ∈ range (Y.rowLen i), (2 : ℤ) * j) =
+        ∑ c ∈ Y.row i, (2 : ℤ) * c.2
+      rw [YoungDiagram.row_eq_prod]
+      simp
+
+private theorem morrisEigenvalue_eq_sum_cells
+    {N q : ℕ} (mu : N.Partition) (hmu : mu.parts.card ≤ q) :
+    morrisEigenvalue q mu =
+      ∑ c ∈ (YoungDiagram.ofPartition mu).cells,
+        2 * ((q : ℤ) - (c.1 : ℤ) - (c.2 : ℤ) - 1) := by
+  let Y := YoungDiagram.ofPartition mu
+  have hheight : Y.colLen 0 ≤ q := by
+    rw [← YoungDiagram.length_rowLens,
+      YoungDiagram.rowLens_ofPartition_eq_sort_parts]
+    simpa [Y] using hmu
+  calc
+    morrisEigenvalue q mu =
+        ∑ i ∈ range q, ∑ j ∈ range (Y.rowLen i),
+          2 * ((q : ℤ) - (i : ℤ) - (j : ℤ) - 1) := by
+      rw [morrisEigenvalue, Finset.mul_sum]
+      apply sum_congr rfl
+      intro i _
+      rw [partitionRow_eq_rowLen, Finset.mul_sum]
+      apply sum_congr rfl
+      intro j _
+      ring
+    _ = ∑ c ∈ Y.cells,
+          2 * ((q : ℤ) - (c.1 : ℤ) - (c.2 : ℤ) - 1) := by
+      rw [← Finset.sum_fiberwise_of_maps_to
+        (g := fun c : ℕ × ℕ => c.1) (t := range q)
+        (fun c hc => by
+          rw [mem_range]
+          have hcell : (c.1, 0) ∈ Y :=
+            Y.up_left_mem le_rfl (Nat.zero_le c.2) hc
+          exact (YoungDiagram.mem_iff_lt_colLen.mp hcell).trans_le hheight)]
+      apply sum_congr rfl
+      intro i _
+      change (∑ j ∈ range (Y.rowLen i),
+          2 * ((q : ℤ) - (i : ℤ) - (j : ℤ) - 1)) =
+        ∑ c ∈ Y.row i,
+          2 * ((q : ℤ) - (c.1 : ℤ) - (c.2 : ℤ) - 1)
+      rw [YoungDiagram.row_eq_prod]
+      simp
+
+/-- The column eigenvalue of `B_q` minus the monomial eigenvalue of `A_q`
+is the signed Ferrers-diagram weight from Lemma 4.10 of Liu--Zhang,
+arXiv:2609.15201v2. -/
+theorem morrisBWeight_conjugate_sub_morrisAWeight {N q : ℕ}
+    (mu : N.Partition) (hmu : mu.parts.card ≤ q) :
+    (morrisBWeight q mu.conjugate : ℤ) - (morrisAWeight mu : ℤ) =
+      morrisEigenvalue q mu := by
+  rw [cast_morrisBWeight_conjugate_eq_sum_cells mu hmu,
+    cast_morrisAWeight_eq_sum_cells mu,
+    morrisEigenvalue_eq_sum_cells mu hmu,
+    ← Finset.sum_sub_distrib]
+  apply sum_congr rfl
+  intro c _
+  ring
+
 /-- The operator `D_q = B_q - A_q` from
 Liu--Zhang, arXiv:2609.15201v2, equation (4.9). -/
 def morrisD (q : ℕ) :
@@ -787,6 +1042,30 @@ theorem morrisD_msymm {n q : ℕ} (mu : n.Partition) :
       morrisB q (msymm (Fin q) R mu) -
         morrisAWeight mu • msymm (Fin q) R mu := by
   rw [morrisD_apply, morrisA_msymm]
+
+/-- Lemma 4.10 of Liu--Zhang, arXiv:2609.15201v2: the Morris operator
+`D_q` is triangular on monomial symmetric polynomials in dominance order,
+with diagonal given by the signed Ferrers-diagram weight. -/
+theorem morrisD_isTriangularOn_msymm [Nontrivial R] {N q : ℕ} :
+    (morrisD q).IsTriangularOn
+      (fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
+        msymm (Fin q) R mu.1)
+      (fun mu => (morrisEigenvalue q mu.1 : R)) := by
+  intro mu
+  change morrisD q (msymm (Fin q) R mu.1) -
+      (morrisEigenvalue q mu.1 : R) • msymm (Fin q) R mu.1 ∈ _
+  have hb := morrisB_isTriangularOn_msymm
+    (R := R) (N := N) (q := q) mu
+  have hz := morrisBWeight_conjugate_sub_morrisAWeight mu.1 mu.2
+  have hweight : (morrisEigenvalue q mu.1 : R) =
+      (morrisBWeight q mu.1.conjugate : R) -
+        (morrisAWeight mu.1 : R) := by
+    have hr := congrArg (fun z : ℤ => (z : R)) hz
+    simpa only [Int.cast_sub, Int.cast_natCast] using hr.symm
+  rw [morrisD_apply, morrisA_msymm,
+    ← Nat.cast_smul_eq_nsmul R, hweight, sub_smul]
+  convert hb using 1
+  abel
 
 /-- The Morris operator `D_q` maps symmetric polynomials to symmetric
 polynomials. -/
