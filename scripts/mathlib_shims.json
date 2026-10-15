@@ -1205,6 +1205,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Relation.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Relation"
+      ],
+      "note": "Speculative target module; no upstream PR or attribution is recorded.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Combinatorics/Enumerative/Separable.lean"
       ],
       "modules": [

@@ -181,7 +181,7 @@ theorem tendsto_coeff_exponentialTruncation (gamma : ℝ) (k : ℕ) :
       gamma ^ k / k.factorial by simp [div_eq_mul_inv]]
   simp_rw [coeff_exponentialTruncation, mul_pow]
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using
-    (tendsto_choose_mul_inv_pow_atTop k).mul_const (gamma ^ k)
+    (Nat.tendsto_choose_mul_inv_pow_atTop k).mul_const (gamma ^ k)
 
 /-- The binomial approximations converge in the coefficientwise topology. -/
 theorem tendsto_exponentialTruncation (gamma : ℝ) :
