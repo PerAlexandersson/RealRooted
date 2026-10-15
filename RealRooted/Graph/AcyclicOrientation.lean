@@ -1,7 +1,6 @@
+import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
 import Mathlib.Combinatorics.Digraph.Orientation
-import Mathlib.Data.Fintype.Order
 import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Basic.Real.Basic
 
 /-!
@@ -147,13 +146,6 @@ omit [DecidableEq V] in
 def sinkCount (O : Orientation G) : ℕ :=
   O.sinks.card
 
-variable [LinearOrder V]
-
-/-- Number of naturally labelled ascents in a finite orientation. -/
-def ascentCount (O : Orientation G) : ℕ :=
-  ∑ v : V, (Finset.univ.filter fun u : V =>
-    u < v ∧ O.Directed u v).card
-
 end Orientation
 
 section Polynomial
@@ -163,7 +155,7 @@ variable {V : Type u} {G : _root_.SimpleGraph V}
 
 /-- The ascent- and sink-weighted monomial of one orientation. -/
 def orientationMonomial (q : ℝ) (O : Orientation G) : ℝ[X] :=
-  C (q ^ O.ascentCount) * X ^ O.sinkCount
+  C (q ^ Rel.ascentCount O.Directed) * X ^ O.sinkCount
 
 /-- The natural-order ascent-refined acyclic-orientation sink polynomial. -/
 def acyclicSinkPolynomial (G : _root_.SimpleGraph V) (q : ℝ) : ℝ[X] := by
@@ -191,7 +183,7 @@ theorem acyclicSinkPolynomial_fin_zero
         funext i
         exact Fin.elim0 i }
   rw [acyclicSinkPolynomial, Fintype.sum_unique]
-  simp [orientationMonomial, Orientation.ascentCount,
+  simp [orientationMonomial, Rel.ascentCount,
     Orientation.sinkCount, Orientation.sinks]
 
 end Polynomial

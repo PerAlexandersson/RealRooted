@@ -366,9 +366,9 @@ theorem sum_properInsertionCuts {m : ℕ} (a : Data (m + 1))
 earlier neighbor below the insertion cut. -/
 theorem extendOrientation_ascentCount {m : ℕ} (a : Data (m + 1))
     (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) :
-    (a.extendOrientation O cut).ascentCount =
-      O.ascentCount + cut.lower.card := by
-  simp only [Graph.Orientation.ascentCount, Fin.sum_univ_castSucc]
+    Rel.ascentCount (a.extendOrientation O cut).Directed =
+      Rel.ascentCount O.Directed + cut.lower.card := by
+  simp only [Rel.ascentCount, Fin.sum_univ_castSucc]
   congr 1
   · apply Finset.sum_congr rfl
     intro v hv
@@ -652,7 +652,8 @@ theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
   by_cases hnoSink : ∀ x ∈ a.lastEarlierNeighbors, ¬O.1.IsSink x
   · have hfullTerm :
         Graph.orientationMonomial q (a.extendOrientation O.1 fullCut) =
-          C (q ^ (O.1.ascentCount + a.lastEarlierNeighbors.card)) *
+          C (q ^ (Rel.ascentCount O.1.Directed +
+            a.lastEarlierNeighbors.card)) *
             X ^ (O.1.sinkCount + 1) := by
         rw [Graph.orientationMonomial,
           a.extendOrientation_ascentCount,
@@ -670,7 +671,8 @@ theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
       exact hnone ⟨x, hxK, hxSink⟩
     have hfullTerm :
         Graph.orientationMonomial q (a.extendOrientation O.1 fullCut) =
-          C (q ^ (O.1.ascentCount + a.lastEarlierNeighbors.card)) *
+          C (q ^ (Rel.ascentCount O.1.Directed +
+            a.lastEarlierNeighbors.card)) *
             X ^ O.1.sinkCount := by
         rw [Graph.orientationMonomial,
           a.extendOrientation_ascentCount,

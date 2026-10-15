@@ -74,7 +74,7 @@ theorem reflect_comp_neg_X_of_natDegree_le
     calc
       p.coeff (n - k) * (-1 : A) ^ (n - k) =
           ((-1 : A) ^ n * (-1 : A) ^ k) * p.coeff (n - k) := by
-        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hk]
+        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hk]
         ring
       _ = (-1 : A) ^ n * (p.coeff (n - k) * (-1 : A) ^ k) := by ring
   · have hlt : n < k := Nat.lt_of_not_le hk

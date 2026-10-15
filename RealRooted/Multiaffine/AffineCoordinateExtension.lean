@@ -263,7 +263,7 @@ theorem IsRayleigh.add_X_mul_of_fresh
               (eval x (rayleighDifference P i j)) ≤ 0 := by
         simpa [affineRayleighDiscriminant, discrim] using
           hdisc i j x hik hjk
-      have hquad := quadratic_nonneg_of_nonneg_of_discrim_nonpos
+      have hquad := Quadratic.nonneg_of_nonneg_of_discrim_nonpos
         (hQ i j x) (hP i j x) hdisceval (x k)
       simpa [pow_two, add_comm, add_left_comm, add_assoc, mul_comm] using hquad
 
