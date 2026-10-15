@@ -20,7 +20,7 @@ reusable pieces to Mathlib over time.
 
 ## Build
 
-The project uses Lean 4.34.0 and Mathlib v4.34.0.
+The project uses Lean 4.35.0 and Mathlib v4.35.0.
 
 ```bash
 lake exe cache get
