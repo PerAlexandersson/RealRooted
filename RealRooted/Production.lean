@@ -1027,6 +1027,7 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
 import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
 import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
 import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
