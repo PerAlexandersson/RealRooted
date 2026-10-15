@@ -1839,6 +1839,10 @@ import RealRooted.Applications.OEIS.A080721
 import RealRooted.Applications.OEIS.HarmonicDerivativeRows
 import RealRooted.Applications.OEIS.A219836
 import RealRooted.Applications.OEIS.A259454
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
+import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 
 /-!
 # RealRooted production umbrella
