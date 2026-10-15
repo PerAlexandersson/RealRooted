@@ -45,7 +45,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_leadingCoeff_pos
       ((ε : ℝ) + 1 / 2 + m) m :=
     realRisingFactorial_pos m hcm
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
-    _root_.neg_one_pow_sq m
+    Parity.neg_one_pow_sq m
   have hγm : 0 < γ + (m : ℝ) := by positivity
   simp only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
   rw [show (-1 : ℝ) ^ m *

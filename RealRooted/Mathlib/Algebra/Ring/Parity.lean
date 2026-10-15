@@ -7,6 +7,8 @@ import Mathlib.Tactic
 Elementary parity identities used by polynomial transformations.
 -/
 
+namespace Parity
+
 /-- Multiplying two powers of minus one cancels the bounded exponent. -/
 theorem neg_one_pow_mul_eq_neg_one_pow_sub {R : Type*} [Ring R]
     {n j : ℕ} (hj : j ≤ n) :
@@ -20,3 +22,5 @@ theorem neg_one_pow_sq {R : Type*} [Ring R] (k : ℕ) :
     ((-1 : R) ^ k) ^ 2 = 1 := by
   rw [← pow_mul, mul_comm, pow_mul]
   norm_num
+
+end Parity

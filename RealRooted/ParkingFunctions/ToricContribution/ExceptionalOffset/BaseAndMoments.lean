@@ -726,9 +726,9 @@ private theorem exceptionalEndpointNumerator_eval_neg_nat
   field_simp [hcr.ne', hcm.ne', hfactorialR.ne', hfactorialSub.ne']
   ring_nf at hshift hratio ⊢
   have hsignR : (-1 : ℝ) ^ (r * 2) = 1 := by
-    rw [pow_mul, _root_.neg_one_pow_sq]
+    rw [pow_mul, Parity.neg_one_pow_sq]
   have hsignM : (-1 : ℝ) ^ (m * 2) = 1 := by
-    rw [pow_mul, _root_.neg_one_pow_sq]
+    rw [pow_mul, Parity.neg_one_pow_sq]
   rw [hsignR, hsignM, mul_one] at ⊢
   nlinarith [hratio]
 
@@ -876,7 +876,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
       linarith
     linarith
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
-    _root_.neg_one_pow_sq m
+    Parity.neg_one_pow_sq m
   have hrearrange :
       (-1 : ℝ) ^ m *
           (((-1 : ℝ) ^ m * (m.factorial : ℝ) /
