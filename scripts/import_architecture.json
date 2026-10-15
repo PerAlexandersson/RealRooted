@@ -172,7 +172,7 @@
       "max_modules": 19
     },
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure": {
-      "max_modules": 34
+      "max_modules": 35
     },
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix": {
       "max_modules": 73
@@ -184,7 +184,7 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.Hadamard": {
-      "max_modules": 272
+      "max_modules": 273
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 20
@@ -199,7 +199,7 @@
       "max_modules": 5
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure": {
-      "max_modules": 16
+      "max_modules": 17
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker": {
       "max_modules": 2
