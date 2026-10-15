@@ -1895,7 +1895,9 @@ import RealRooted.BorceaBranden.Transcendental.PivotConverse
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
 import RealRooted.CoefficientShape.RowCLT
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
 import RealRooted.MultiplierSequence.InvPochhammerSimple
 import RealRooted.Applications.OEIS.ClosedFormRows
 import RealRooted.MultivariateStability.MorrisOperator
