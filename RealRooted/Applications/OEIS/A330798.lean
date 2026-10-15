@@ -1,4 +1,5 @@
 import RealRooted.DerivativeRecurrence.MultiLagCancel
+import RealRooted.Recurrence.RowModel
 import RealRooted.Recurrence.Uniqueness
 
 /-!
@@ -648,6 +649,74 @@ theorem A330798_natDegree_eq_and_leadingCoeff_pos (n : ℕ) :
 /-- The natural degree of the A330798 row indexed by `n` is `n`. -/
 theorem A330798_natDegree (n : ℕ) : (A330798 n).natDegree = n :=
   (A330798_natDegree_eq_and_leadingCoeff_pos n).1
+
+namespace A330798Model
+
+/-- Degree transfer for the literal downstream A330798 recurrence. The third advertised
+row distinguishes this model from other sequences beginning with `1, 2 + 2 * X`. -/
+@[rr_row_model]
+theorem natDegree_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 3, P i = A330798 i)
+    (hrec : ∀ n, P (n + 2) =
+      ((C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          ((25 / 8) + ((7 / 8) * (n : ℝ))))) * X +
+        C (((9 / 8) *
+          (1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (3 + (n : ℝ)))) * X ^ 2)) * ((P (n + 1)).derivative).derivative +
+      ((C (((1 / 4) * (n : ℝ) *
+          (1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))))) +
+        C (((-1 / 2) *
+          (1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))))) * X)) *
+        ((P n).derivative).derivative +
+      ((C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          ((21 / 2) + ((-1 / 8) * ((3 + (n : ℝ))) ^ (2)) +
+            ((11 / 2) * (n : ℝ))))) +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          ((99 / 4) + ((-9 / 8) * ((3 + (n : ℝ))) ^ (2)) +
+            ((39 / 4) * (n : ℝ))))) * X +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          ((-75 / 4) + ((-99 / 4) * (n : ℝ))))) * X ^ 2 +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-36 + (-36 * (n : ℝ))))) * X ^ 3)) * (P (n + 1)).derivative +
+      ((C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-1 + (-2 * (n : ℝ))))) +
+        C ((18 *
+          (1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))))) * X +
+        C ((33 *
+          (1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))))) * X ^ 2 +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-9 + ((-27 / 2) * (n : ℝ))))) * X ^ 3)) * (P n).derivative +
+      ((C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          ((57 / 2) + (15 * (n : ℝ)) +
+            ((-15 / 8) * ((3 + (n : ℝ))) ^ (2))))) +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-150 + (-75 * (n : ℝ)) +
+            ((81 / 4) * ((3 + (n : ℝ))) ^ (2))))) * X +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-288 + (-144 * (n : ℝ)) +
+            (36 * ((3 + (n : ℝ))) ^ (2))))) * X ^ 2)) * P (n + 1) +
+      ((C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-63 + (9 * ((3 + (n : ℝ))) ^ (2)) + ((-27 / 2) * (n : ℝ))))) +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (-48 + (9 * ((3 + (n : ℝ))) ^ (2)) + ((33 / 2) * (n : ℝ))))) * X +
+        C (((1 / ((-8 + (-3 * (n : ℝ)) + (2 * ((3 + (n : ℝ))) ^ (2))))) *
+          (234 + (-27 * ((3 + (n : ℝ))) ^ (2)) +
+            ((261 / 2) * (n : ℝ))))) * X ^ 2)) * P n)
+    (n : ℕ) :
+    (P n).natDegree = n := by
+  have hnormalized :
+      ∀ m, P (m + 2) = A330798Next m (P (m + 1)) (P m) := by
+    intro m
+    rw [hrec m]
+    unfold A330798Next
+    ring_nf
+  have heq := sequence_eq_A330798_of_recurrence
+    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) hnormalized
+  rw [heq n]
+  exact A330798_natDegree n
+
+end A330798Model
 
 /-- The A330798 row indexed by `n` has positive leading coefficient. -/
 theorem A330798_leadingCoeff_pos (n : ℕ) : 0 < (A330798 n).leadingCoeff :=
