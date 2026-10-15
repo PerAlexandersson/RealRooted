@@ -6,6 +6,7 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
 import RealRooted.Multiaffine
+import Mathlib.Algebra.BigOperators.Module
 import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.LinearCombination
 
@@ -1008,6 +1009,240 @@ private theorem morrisEigenvalue_eq_sum_cells
           2 * ((q : ℤ) - (c.1 : ℤ) - (c.2 : ℤ) - 1)
       rw [YoungDiagram.row_eq_prod]
       simp
+
+private def morrisTwiceIndexSum (q : ℕ) {N : ℕ}
+    (mu : N.Partition) : ℤ :=
+  ∑ i ∈ range q, (∑ j ∈ range (partitionRow mu i),
+    (2 * (i : ℤ) + 2 * (j : ℤ)))
+
+private theorem sum_partitionRow_eq_size {N q : ℕ}
+    (mu : N.Partition) (hmu : mu.parts.card ≤ q) :
+    ∑ i ∈ range q, partitionRow mu i = N := by
+  have hp : mu.prefixSum q = N := by
+    rw [Nat.Partition.prefixSum_eq_sum_take_sort_parts]
+    rw [List.take_of_length_le (by simpa using hmu)]
+    rw [← Multiset.sum_coe, Multiset.sort_eq, mu.parts_sum]
+  simpa only [Nat.Partition.prefixSum, partitionRow_eq_rowLen,
+    Nat.Partition.part] using hp
+
+private theorem sum_twice_indices (i n : ℕ) :
+    (∑ j ∈ range n, (2 * (i : ℤ) + 2 * (j : ℤ))) =
+      (n : ℤ) * (2 * (i : ℤ) + (n : ℤ) - 1) := by
+  induction n with
+  | zero => simp only [range_zero, sum_empty, Nat.cast_zero, zero_mul]
+  | succ n ih =>
+      rw [sum_range_succ, ih]
+      push_cast
+      ring
+
+private theorem morrisEigenvalue_eq_constant_sub_twiceIndexSum
+    {N q : ℕ} (mu : N.Partition) (hmu : mu.parts.card ≤ q) :
+    morrisEigenvalue q mu =
+      (N : ℤ) * (2 * ((q : ℤ) - 1)) -
+        morrisTwiceIndexSum q mu := by
+  have hrow (i n : ℕ) :
+      2 * ∑ j ∈ range n,
+          ((q : ℤ) + 1 - (i : ℤ) - 1 - (j : ℤ) - 1) =
+        (n : ℤ) * (2 * ((q : ℤ) - 1)) -
+          ∑ j ∈ range n, (2 * (i : ℤ) + 2 * (j : ℤ)) := by
+    induction n with
+    | zero => simp
+    | succ n ih =>
+        rw [sum_range_succ, sum_range_succ, mul_add, ih]
+        push_cast
+        ring
+  rw [morrisEigenvalue, Finset.mul_sum, morrisTwiceIndexSum]
+  conv_lhs =>
+    enter [2, i]
+    rw [hrow i]
+  rw [sum_sub_distrib, ← sum_mul]
+  norm_cast
+  rw [sum_partitionRow_eq_size mu hmu]
+
+private theorem row_twiceIndexSum_gap_lower (i l m : ℕ) :
+    (m : ℤ) * (2 * (i : ℤ) + (m : ℤ) - 1) -
+        (l : ℤ) * (2 * (i : ℤ) + (l : ℤ) - 1) ≥
+      2 * (((m : ℤ) - (l : ℤ)) * ((i : ℤ) + (l : ℤ)) +
+        ((l - m : ℕ) : ℤ)) := by
+  rcases lt_trichotomy l m with hlt | rfl | hgt
+  · rw [Nat.sub_eq_zero_of_le (Nat.le_of_lt hlt)]
+    have hd : (1 : ℤ) ≤ (m : ℤ) - (l : ℤ) := by
+      have hc : (l : ℤ) < (m : ℤ) := by exact_mod_cast hlt
+      lia
+    have hp : 0 ≤ ((m : ℤ) - (l : ℤ)) *
+        ((m : ℤ) - (l : ℤ) - 1) :=
+      mul_nonneg (by lia) (by lia)
+    ring_nf at hp ⊢
+    nlinarith
+  · simp
+  · rw [Nat.cast_sub (Nat.le_of_lt hgt)]
+    have hd : (1 : ℤ) ≤ (l : ℤ) - (m : ℤ) := by
+      have hc : (m : ℤ) < (l : ℤ) := by exact_mod_cast hgt
+      lia
+    have hp : 0 ≤ ((l : ℤ) - (m : ℤ)) *
+        ((l : ℤ) - (m : ℤ) - 1) :=
+      mul_nonneg (by lia) (by lia)
+    ring_nf at hp ⊢
+    nlinarith
+
+private theorem sum_mul_nonpos_of_prefix_nonneg_of_monotone
+    (q : ℕ) (d b : ℕ → ℤ)
+    (hprefix : ∀ k, k ≤ q → 0 ≤ ∑ i ∈ range k, d i)
+    (htotal : ∑ i ∈ range q, d i = 0)
+    (hmono : ∀ i, i + 1 < q → b i ≤ b (i + 1)) :
+    ∑ i ∈ range q, d i * b i ≤ 0 := by
+  have hparts := Finset.sum_range_by_parts' d b q
+  simp only [smul_eq_mul] at hparts
+  rw [hparts, htotal, zero_mul, zero_sub]
+  apply neg_nonpos.mpr
+  apply sum_nonneg
+  intro i hi
+  have hi' : i + 1 < q := by
+    rw [mem_range] at hi
+    lia
+  exact mul_nonneg (hprefix (i + 1) (by lia))
+    (sub_nonneg.mpr (hmono i hi'))
+
+private theorem partitionPart_eq_zero_of_card_le {N q : ℕ}
+    (mu : N.Partition) (hmu : mu.parts.card ≤ q)
+    {i : ℕ} (hi : q ≤ i) : mu.part i = 0 := by
+  change (YoungDiagram.ofPartition mu).rowLen i = 0
+  apply Nat.eq_zero_of_not_pos
+  intro hpos
+  have hcell : (i, 0) ∈ YoungDiagram.ofPartition mu :=
+    YoungDiagram.mem_iff_lt_rowLen.mpr hpos
+  have hiheight : i < (YoungDiagram.ofPartition mu).colLen 0 :=
+    YoungDiagram.mem_iff_lt_colLen.mp hcell
+  have hheight : (YoungDiagram.ofPartition mu).colLen 0 ≤ q := by
+    simpa [← YoungDiagram.length_rowLens,
+      YoungDiagram.rowLens_ofPartition_eq_sort_parts] using hmu
+  lia
+
+private theorem removedRows_pos_of_lt {N q : ℕ}
+    {mu lambda : N.Partition} (hlambda : lambda.parts.card ≤ q)
+    (hdom : mu < lambda) :
+    0 < ∑ i ∈ range q, (lambda.part i - mu.part i) := by
+  have hstrict : ∃ k, mu.prefixSum k < lambda.prefixSum k := by
+    by_contra h
+    have hreverse : lambda ≤ mu := by
+      intro k
+      exact Nat.le_of_not_gt fun hk => h ⟨k, hk⟩
+    exact hdom.ne (le_antisymm hdom.le hreverse)
+  obtain ⟨k, hk⟩ := hstrict
+  have hrow : ∃ i ∈ range k, mu.part i < lambda.part i := by
+    by_contra h
+    have hle : ∑ i ∈ range k, lambda.part i ≤
+        ∑ i ∈ range k, mu.part i := by
+      apply sum_le_sum
+      intro i hi
+      exact Nat.le_of_not_gt fun hil => h ⟨i, hi, hil⟩
+    exact (Nat.not_le_of_lt hk) hle
+  obtain ⟨i, _, hi⟩ := hrow
+  have hiq : i < q := by
+    by_contra hiq
+    rw [partitionPart_eq_zero_of_card_le lambda hlambda
+      (Nat.le_of_not_gt hiq)] at hi
+    exact Nat.not_lt_zero _ hi
+  exact Finset.sum_pos' (fun _ _ => Nat.zero_le _)
+    ⟨i, mem_range.mpr hiq, Nat.sub_pos_of_lt hi⟩
+
+/-- Lemma 4.11 of Liu--Zhang, arXiv:2609.15201v2. If the adjacent
+parts of `lambda` drop by at most one, then its Morris eigenvalue is
+strictly larger than that of every strictly dominated partition. -/
+theorem morrisEigenvalue_lt_of_lt_of_adjacent_drop {N q : ℕ}
+    {mu lambda : N.Partition} (hmu : mu.parts.card ≤ q)
+    (hlambda : lambda.parts.card ≤ q)
+    (hadj : ∀ i, i + 1 < q →
+      lambda.part i - lambda.part (i + 1) ≤ 1)
+    (hdom : mu < lambda) :
+    morrisEigenvalue q mu < morrisEigenvalue q lambda := by
+  let d : ℕ → ℤ := fun i => (lambda.part i : ℤ) - (mu.part i : ℤ)
+  let b : ℕ → ℤ := fun i => (i : ℤ) + (lambda.part i : ℤ)
+  let removed : ℤ :=
+    ∑ i ∈ range q, (((lambda.part i - mu.part i : ℕ) : ℤ))
+  have hprefix : ∀ k, k ≤ q → 0 ≤ ∑ i ∈ range k, d i := by
+    intro k _
+    have hk := hdom.le k
+    simp only [d, sum_sub_distrib]
+    rw [sub_nonneg]
+    exact_mod_cast hk
+  have htotal : ∑ i ∈ range q, d i = 0 := by
+    simp only [d, sum_sub_distrib]
+    have hls := sum_partitionRow_eq_size lambda hlambda
+    have hms := sum_partitionRow_eq_size mu hmu
+    simp only [partitionRow_eq_rowLen] at hls hms
+    have hls' : (∑ i ∈ range q, (lambda.part i : ℤ)) = N := by
+      exact_mod_cast hls
+    have hms' : (∑ i ∈ range q, (mu.part i : ℤ)) = N := by
+      exact_mod_cast hms
+    rw [hls', hms', sub_self]
+  have hmono : ∀ i, i + 1 < q → b i ≤ b (i + 1) := by
+    intro i hi
+    simp only [b]
+    have han : lambda.part i ≤ 1 + lambda.part (i + 1) :=
+      Nat.sub_le_iff_le_add.mp (hadj i hi)
+    have ha : (lambda.part i : ℤ) ≤
+        (lambda.part (i + 1) : ℤ) + 1 := by
+      exact_mod_cast (by simpa [add_comm] using han)
+    push_cast
+    lia
+  have hweighted : ∑ i ∈ range q, d i * b i ≤ 0 :=
+    sum_mul_nonpos_of_prefix_nonneg_of_monotone q d b hprefix htotal hmono
+  have hrow (i : ℕ) :
+      -2 * d i * b i + 2 * ((lambda.part i - mu.part i : ℕ) : ℤ) ≤
+        (mu.part i : ℤ) *
+            (2 * (i : ℤ) + (mu.part i : ℤ) - 1) -
+          (lambda.part i : ℤ) *
+            (2 * (i : ℤ) + (lambda.part i : ℤ) - 1) := by
+    have h := row_twiceIndexSum_gap_lower
+      i (lambda.part i) (mu.part i)
+    dsimp only [d, b]
+    nlinarith
+  have hrows := sum_le_sum fun i (_ : i ∈ range q) => hrow i
+  have hindex :
+      morrisTwiceIndexSum q mu - morrisTwiceIndexSum q lambda =
+        ∑ i ∈ range q,
+          ((mu.part i : ℤ) *
+              (2 * (i : ℤ) + (mu.part i : ℤ) - 1) -
+            (lambda.part i : ℤ) *
+              (2 * (i : ℤ) + (lambda.part i : ℤ) - 1)) := by
+    rw [morrisTwiceIndexSum, morrisTwiceIndexSum, ← sum_sub_distrib]
+    apply sum_congr rfl
+    intro i _
+    rw [sum_twice_indices, sum_twice_indices]
+    rw [partitionRow_eq_rowLen, partitionRow_eq_rowLen]
+    change (mu.part i : ℤ) *
+        (2 * (i : ℤ) + (mu.part i : ℤ) - 1) -
+      (lambda.part i : ℤ) *
+        (2 * (i : ℤ) + (lambda.part i : ℤ) - 1) = _
+    rfl
+  have hweighted' :
+      0 ≤ ∑ i ∈ range q, (-2 * d i * b i) := by
+    calc
+      (0 : ℤ) ≤ -2 * ∑ i ∈ range q, (d i * b i) :=
+        mul_nonneg_of_nonpos_of_nonpos (by norm_num) hweighted
+      _ = _ := by
+        rw [Finset.mul_sum]
+        apply sum_congr rfl
+        intro i _
+        ring
+  have hlower : (2 : ℤ) * removed ≤
+      morrisTwiceIndexSum q mu - morrisTwiceIndexSum q lambda := by
+    rw [hindex]
+    calc
+      (2 : ℤ) * removed ≤
+          ∑ i ∈ range q,
+            (-2 * d i * b i +
+              2 * ((lambda.part i - mu.part i : ℕ) : ℤ)) := by
+        simp only [removed, sum_add_distrib, ← Finset.mul_sum]
+        nlinarith [hweighted']
+      _ ≤ _ := hrows
+  have hremoved : 0 < removed := by
+    dsimp only [removed]
+    exact_mod_cast removedRows_pos_of_lt hlambda hdom
+  rw [morrisEigenvalue_eq_constant_sub_twiceIndexSum lambda hlambda,
+    morrisEigenvalue_eq_constant_sub_twiceIndexSum mu hmu]
+  nlinarith
 
 /-- The column eigenvalue of `B_q` minus the monomial eigenvalue of `A_q`
 is the signed Ferrers-diagram weight from Lemma 4.10 of Liu--Zhang,
