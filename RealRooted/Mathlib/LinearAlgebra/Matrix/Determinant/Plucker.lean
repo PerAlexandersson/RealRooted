@@ -91,9 +91,7 @@ The nonzero middle minor is retained in the statement for compatibility with
 the original bordered-determinant proof. -/
 theorem det_ordered_delete_column_plucker
     {R : Type*} [Field R] {q : ℕ}
-    (M : Matrix (Fin (q + 2)) (Fin (q + 3)) R) (b : Fin (q + 1))
-    (hpivot : (M.submatrix Fin.castSucc
-      (fun j : Fin (q + 1) ↦ j.castSucc.succ)).det ≠ 0) :
+    (M : Matrix (Fin (q + 2)) (Fin (q + 3)) R) (b : Fin (q + 1)) :
     let d : Fin (q + 3) → R := fun j ↦ (M.submatrix id j.succAbove).det
     let deltaAC := (M.submatrix Fin.castSucc
       (fun j : Fin (q + 1) ↦ j.castSucc.succ)).det
@@ -104,7 +102,6 @@ theorem det_ordered_delete_column_plucker
     d b.castSucc.succ * deltaAC =
       d (Fin.last (q + 2)) * deltaAB + d 0 * deltaBC := by
   classical
-  have _hpivot := hpivot
   dsimp
   let k : Fin (q + 3) := b.castSucc.succ
   let A := prependRow (fun j ↦ if j = k then 1 else 0) M
