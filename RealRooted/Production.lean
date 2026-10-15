@@ -734,6 +734,7 @@ import RealRooted.Hermite.Favard
 import RealRooted.Hermite.Orthogonality
 import RealRooted.Hermite.Orthogonality.Integral
 import RealRooted.Hermite.Poulain
+import RealRooted.Hermite.Bessel
 import RealRooted.Hermite.PoulainInterlacing
 import RealRooted.Hermite.Roots
 import RealRooted.HermiteBiehler
@@ -1817,6 +1818,7 @@ import RealRooted.Interlacing.ReversalCommonFactor
 import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
 import RealRooted.Applications.OEIS.A155495
+import RealRooted.Applications.OEIS.A318107
 import RealRooted.Applications.OEIS.A318397
 import RealRooted.Applications.OEIS.A367177
 import RealRooted.MultiplierSequence.JensenHypergeometric

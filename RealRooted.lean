@@ -733,6 +733,7 @@ import RealRooted.Hermite.Favard
 import RealRooted.Hermite.Orthogonality
 import RealRooted.Hermite.Orthogonality.Integral
 import RealRooted.Hermite.Poulain
+import RealRooted.Hermite.Bessel
 import RealRooted.Hermite.PoulainInterlacing
 import RealRooted.Hermite.Roots
 import RealRooted.HermiteBiehler
@@ -1979,6 +1980,7 @@ import RealRooted.Applications.OEIS.A395326
 import RealRooted.Tactic.Examples.OEIS.TransformModels
 import RealRooted.Tactic.Examples.EulerBidiagonalOeis
 import RealRooted.Applications.OEIS.A155495
+import RealRooted.Applications.OEIS.A318107
 import RealRooted.Applications.OEIS.A318397
 import RealRooted.Applications.OEIS.A367177
 import RealRooted.MultiplierSequence.JensenHypergeometric
@@ -1992,6 +1994,7 @@ import RealRooted.Applications.OEIS.A119308
 import RealRooted.MultiplierSequence.JensenAffineTheta
 import RealRooted.Applications.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.A304334
+import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Applications.OEIS.A304330
 import RealRooted.Tactic.Examples.RowModelNextFamilies
 import RealRooted.Tactic.Examples.RowRegression1689Degree
