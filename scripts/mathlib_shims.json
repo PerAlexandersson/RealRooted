@@ -2512,6 +2512,26 @@
       ],
       "note": "Laguerre-form closure under locally uniform limits; no upstream PR or attribution has been recorded yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/Enumerative/Partition/YoungDiagram.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/MvPolynomial/Symmetric/Homogeneous.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
     }
   ]
 }
