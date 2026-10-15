@@ -188,7 +188,7 @@ theorem degreeSignFlip_eq_C_mul_comp_neg_X
     calc
       (-1 : ℝ) ^ (n - j) * p.coeff j =
           ((-1 : ℝ) ^ n * (-1 : ℝ) ^ j) * p.coeff j := by
-        rw [_root_.neg_one_pow_mul_eq_neg_one_pow_sub hj]
+        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hj]
       _ = (-1 : ℝ) ^ n * (p.coeff j * (-1 : ℝ) ^ j) := by ring
   · have hjlt : n < j := Nat.lt_of_not_ge hj
     rw [coeff_degreeSignFlip_of_lt p hjlt, coeff_C_mul, coeff_comp_neg_X]

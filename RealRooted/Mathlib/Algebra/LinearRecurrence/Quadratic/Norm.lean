@@ -37,7 +37,7 @@ theorem quadratic_norm_step_bound {p q β₁ β₂ : R} {lam : ℝ} {S : ℕ →
     _ ≤ lam * ‖S k‖ + lam ^ k * ‖S 1 - β₁ * S 0‖ := by
       gcongr
       · exact norm_mul_le_of_le h1 le_rfl
-      · exact norm_pow_mul_le β₂ _ h2 hlam k
+      · exact SeminormedRing.norm_pow_mul_le β₂ _ h2 hlam k
     _ ≤ lam * ‖S k‖ + lam ^ k * (‖S 1‖ + lam * ‖S 0‖) := by gcongr
 
 /-- A quadratic recurrence with bounded characteristic roots has at most a

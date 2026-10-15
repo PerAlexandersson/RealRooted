@@ -835,7 +835,7 @@ theorem
   rw [decoBottomTotalCompanionSuccessorCoreRowDiscriminant_eq_cross_factors,
     MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
     MvPolynomial.eval_mul, map_ofNat] at hdisc
-  exact quadratic_linear_eq_zero_of_leading_eq_zero_of_discrim_nonpos
+  exact Quadratic.linear_eq_zero_of_leading_eq_zero_of_discrim_nonpos
     hcore (by simpa [discrim] using hdisc)
 
 /-- If the current core cross is nonnegative, the row discriminant bound
@@ -858,7 +858,7 @@ theorem
     MvPolynomial.eval_sub, MvPolynomial.eval_pow, MvPolynomial.eval_mul,
     MvPolynomial.eval_mul, map_ofNat] at hdisc
   exact
-    quadratic_leading_eq_zero_or_constant_nonneg_of_leading_nonneg_of_discrim_nonpos
+    Quadratic.leading_eq_zero_or_constant_nonneg_of_leading_nonneg_of_discrim_nonpos
       hcore (by simpa [discrim] using hdisc)
 
 /-- At every coordinate, the unshifted next-row discriminant has the generic
@@ -2232,7 +2232,7 @@ theorem eval_decoBottomTotalCompanionSuccessorCoreRow_nonneg_iff
       simp only [Function.update, dite_true] at ht
       simpa only [pow_two, mul_comm,
         add_comm, add_left_comm, add_assoc] using ht
-    refine ⟨fun x => quadratic_leadingCoeff_nonneg (hscalar x), ?_, ?_⟩
+    refine ⟨fun x => Quadratic.leadingCoeff_nonneg (hscalar x), ?_, ?_⟩
     · intro x
       simpa using hscalar x 0
     · intro x
@@ -2250,7 +2250,7 @@ theorem eval_decoBottomTotalCompanionSuccessorCoreRow_nonneg_iff
             (decoBottomTotalCompanionSuccessorCoreRowConstant n i)) ≤ 0 := by
       simpa [decoBottomTotalCompanionSuccessorCoreRowDiscriminant,
         discrim] using hdisc x
-    have hnonneg := quadratic_nonneg_of_nonneg_of_discrim_nonpos
+    have hnonneg := Quadratic.nonneg_of_nonneg_of_discrim_nonpos
       (hquadraticNonneg x) (hconstantNonneg x) hdiscEval (x 0)
     rw [eval_decoBottomTotalCompanionSuccessorCoreRow_eq_quadratic]
     simpa only [pow_two, mul_comm, add_comm, add_left_comm, add_assoc]
