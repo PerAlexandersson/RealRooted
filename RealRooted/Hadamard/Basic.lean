@@ -120,7 +120,7 @@ theorem schurSzegoComp_comp_neg_X_both (n : ℕ) (P Q : ℝ[X]) :
   · simp only [ite_eq_left hk]
     let s : ℝ := (-1 : ℝ) ^ k
     have hs : s * s = 1 := by
-      simpa [pow_two] using (_root_.neg_one_pow_sq k)
+      simpa [pow_two] using (Parity.neg_one_pow_sq k)
     change (P.coeff k * s) * (Q.coeff k * s) / (Nat.choose n k : ℝ) =
       P.coeff k * Q.coeff k / (Nat.choose n k : ℝ)
     calc

@@ -123,32 +123,32 @@ private theorem quartic_three_pos (x : ℝ) :
   ring
 
 private theorem quadratic_one_pos (x : ℝ) : 0 < 8 * x ^ 2 + 58 * x + 150 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (8 : ℝ)) (b := 58) (c := 150) (by norm_num)
       (by norm_num [discrim]) x
 
 private theorem quadratic_two_pos (x : ℝ) : 0 < 15 * x ^ 2 + 68 * x + 225 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (15 : ℝ)) (b := 68) (c := 225) (by norm_num)
       (by norm_num [discrim]) x
 
 private theorem quadratic_three_pos (x : ℝ) : 0 < 42 * x ^ 2 + 198 * x + 486 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (42 : ℝ)) (b := 198) (c := 486) (by norm_num)
       (by norm_num [discrim]) x
 
 private theorem quadratic_four_pos (x : ℝ) : 0 < 20 * x ^ 2 + 58 * x + 153 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (20 : ℝ)) (b := 58) (c := 153) (by norm_num)
       (by norm_num [discrim]) x
 
 private theorem quadratic_five_pos (x : ℝ) : 0 < 54 * x ^ 2 + 126 * x + 270 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (54 : ℝ)) (b := 126) (c := 270) (by norm_num)
       (by norm_num [discrim]) x
 
 private theorem quadratic_six_pos (x : ℝ) : 0 < 129 * x ^ 2 + 228 * x + 183 := by
-  simpa [pow_two] using quadratic_pos_of_pos_of_discrim_neg
+  simpa [pow_two] using Quadratic.pos_of_pos_of_discrim_neg
     (a := (129 : ℝ)) (b := 228) (c := 183) (by norm_num)
       (by norm_num [discrim]) x
 
@@ -163,7 +163,7 @@ private theorem rayleighDifference_one_two_nonneg (x : Nat → ℝ) :
       (69 * x 4 ^ 2 + 160 * x 4 + 126) ≤ 0 := by
     rw [discrim]
     linarith [quartic_one_pos (x 4)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_one_pos (x 4)) hdisc (x 3)
   linarith
 
@@ -178,7 +178,7 @@ private theorem rayleighDifference_one_three_nonneg (x : Nat → ℝ) :
       (16 * x 4 ^ 2 + 41 * x 4 + 51) ≤ 0 := by
     rw [discrim]
     linarith [quartic_one_pos (x 4)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_two_pos (x 4)) hdisc (x 2)
   linarith
 
@@ -193,7 +193,7 @@ private theorem rayleighDifference_one_four_nonneg (x : Nat → ℝ) :
       (22 * x 3 ^ 2 + 21 * x 3 + 23) ≤ 0 := by
     rw [discrim]
     linarith [quartic_two_pos (x 3)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_four_pos (x 3)) hdisc (x 2)
   linarith
 
@@ -208,7 +208,7 @@ private theorem rayleighDifference_two_three_nonneg (x : Nat → ℝ) :
       (10 * x 4 ^ 2 + 24 * x 4 + 26) ≤ 0 := by
     rw [discrim]
     linarith [quartic_one_pos (x 4)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_three_pos (x 4)) hdisc (x 1)
   linarith
 
@@ -223,7 +223,7 @@ private theorem rayleighDifference_two_four_nonneg (x : Nat → ℝ) :
       (12 * x 3 ^ 2 + 8 * x 3 + 11) ≤ 0 := by
     rw [discrim]
     linarith [quartic_two_pos (x 3)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_five_pos (x 3)) hdisc (x 1)
   linarith
 
@@ -238,7 +238,7 @@ private theorem rayleighDifference_three_four_nonneg (x : Nat → ℝ) :
       (52 * x 2 ^ 2 + 28 * x 2 + 6) ≤ 0 := by
     rw [discrim]
     linarith [quartic_three_pos (x 2)]
-  have hnonneg := quadratic_nonneg_of_pos_of_discrim_nonpos
+  have hnonneg := Quadratic.nonneg_of_pos_of_discrim_nonpos
     (quadratic_six_pos (x 2)) hdisc (x 1)
   linarith
 
