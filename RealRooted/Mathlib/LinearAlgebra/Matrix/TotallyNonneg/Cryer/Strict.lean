@@ -25,7 +25,7 @@ private theorem det_delete_interior_pos_of_ordered_plucker
     (hBC : 0 < (M.submatrix Fin.castSucc
       (fun j : Fin (q + 1) => (b.succ.succAbove j).castSucc)).det) :
     0 < (M.submatrix id b.castSucc.succ.succAbove).det := by
-  have h := det_ordered_delete_column_plucker M b (ne_of_gt hpivot)
+  have h := det_ordered_delete_column_plucker M b
   dsimp at h
   simp only [Fin.succAbove_last] at h
   have hsum : 0 <
