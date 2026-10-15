@@ -186,9 +186,15 @@ private def closeDegreeModelBaseGoal (P : Ident) : TacticM Unit := withMainConte
   let some j ← (evalNat rhs.appArg!).run
     | throwError "degree-model model-row index is not explicit"
   unless i == j do throwError "degree-model base-row indices differ"
-  let some targetRows ← linRecBaseRows? P.getId
+  let targetRows? ← match ← linRec? P.getId with
+    | some recurrence => linRecRows? recurrence i
+    | none => linRecBaseRows? P.getId
+  let some targetRows := targetRows?
     | throwError "degree-model target base rows are not explicit rational polynomials"
-  let some modelRows ← linRecBaseRows? modelName
+  let modelRows? ← match ← linRec? modelName with
+    | some recurrence => linRecRows? recurrence i
+    | none => linRecBaseRows? modelName
+  let some modelRows := modelRows?
     | throwError "degree-model candidate base rows are not explicit rational polynomials"
   let some targetRow := targetRows[i]?
     | throwError "degree-model target base row {i} is missing"
@@ -202,9 +208,9 @@ private def closeDegreeModelBaseGoal (P : Ident) : TacticM Unit := withMainConte
   evalTactic (← `(tactic|
     calc
       $P:ident $index = $row := by
-        first | simp only [$P:ident] | (simp only [$P:ident]; rr_poly_identity)
+        simp only [$P:ident] <;> rr_poly_identity
       _ = $model:ident $index := by
-        first | simp only [$model:ident] | (simp only [$model:ident]; rr_poly_identity)))
+        simp only [$model:ident] <;> rr_poly_identity))
 
 /-- Close the finite initial-window goal of a degree-model transfer.  Exact polynomial
 comparison rejects a wrong model before elaborating any base-row equality proof. -/
