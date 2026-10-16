@@ -61,12 +61,4 @@ lemma Interleaves.map_of_mem
 
 end UpstreamCandidates
 
-section Deprecated
-
-@[deprecated (since := "2026-10-13")]
-alias interleaves_reverse_reverse_of_length_add_one_eq_length :=
-  interleaves_reverse_reverse_of_length_eq_length_add_one
-
-end Deprecated
-
 end List

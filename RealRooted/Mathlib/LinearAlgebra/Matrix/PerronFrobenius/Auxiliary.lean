@@ -12,7 +12,7 @@ Original path: MCMC/PF/aux.lean
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Convex.StdSimplex
-import Mathlib.Data.Int.Star
+import Mathlib.Algebra.Order.Star.Int
 
 open Filter Set Finset Matrix Topology Convex
 

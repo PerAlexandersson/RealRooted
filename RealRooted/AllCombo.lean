@@ -147,9 +147,6 @@ lemma iterateTDeriv {f g : ℝ[X]} (hall : AllComboRealRooted f g)
 
 end AllComboRealRooted
 
-@[deprecated AllComboRealRooted.comm (since := "2026-10-11")]
-alias allComboRealRooted_comm := AllComboRealRooted.comm
-
 lemma tDeriv_eq_zero_iff (eps : ℝ) {p : ℝ[X]} :
     tDeriv eps p = 0 ↔ p = 0 := by
   constructor

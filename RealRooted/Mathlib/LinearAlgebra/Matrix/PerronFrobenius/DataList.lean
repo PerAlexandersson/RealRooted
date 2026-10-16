@@ -15,7 +15,7 @@ import Mathlib.Data.List.Nodup
 import Mathlib.Data.Nat.Cast.Order.Ring
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Normed.Ring.Lemmas
-import Mathlib.Data.Int.Star
+import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.List.Basic
 
 namespace List

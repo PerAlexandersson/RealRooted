@@ -246,10 +246,6 @@ lemma hasPosLeadingCoeff_of_quadratic_derivative_linear
   simpa using hasPosLeadingCoeff_of_quadratic_derivative_bilinear P a b c 0 s t h0
     (by simpa using hrec) hs hbt n
 
-@[deprecated (since := "2026-10-05")]
-alias quadratic_derivative_linear_v_nonpos_of_nonpos :=
-  eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos
-
 lemma strictInterl_step_of_quadratic_derivative_linear
     (P : ℕ → ℝ[X]) (a b c s t : ℝ)
     (h0 : P 0 = 1)

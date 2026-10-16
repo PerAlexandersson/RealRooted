@@ -587,9 +587,6 @@ theorem IsPFPolynomial.divFactorial {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (divFactorial p) := by
   simpa [divFactorialShift_zero_apply] using hp.divFactorialShift 0
 
-@[deprecated (since := "2026-10-06")]
-alias gwL_pf := IsPFPolynomial.divFactorial
-
 /-- PF polynomials are closed under coefficientwise Hadamard products
 (Schur--Pólya--Wagner; Garloff--Wagner, Theorem 4(a)), obtained by applying the
 factorial Hadamard product theorem to the `L`-normalized left input. -/

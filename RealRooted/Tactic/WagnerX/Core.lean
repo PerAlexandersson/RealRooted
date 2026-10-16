@@ -14,10 +14,6 @@ open Polynomial
 
 namespace RealRooted
 
-@[deprecated strictInterl_X_derivative_X_self_of_splits_nonneg (since := "2026-10-11")]
-alias strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg :=
-  strictInterl_X_derivative_X_self_of_splits_nonneg
-
 /-- Wagner derivative-gap-lag step.
 
 If `f ≪ g`, then the derivative of `g` also precedes `g`, and Wagner's

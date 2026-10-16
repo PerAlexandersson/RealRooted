@@ -256,14 +256,8 @@ theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
 private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
   ls4_C_ofNat_real 2
 
-@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
-alias ls4_C_two_real := ls4_C_two_real_compat
-
 private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
   ls4_C_ofNat_real 4
-
-@[deprecated "Use `ls4_C_ofNat_real`." (since := "2026-10-11")]
-alias ls4_C_four_real := ls4_C_four_real_compat
 
 theorem ls4_natCast_eq_C_real (m : Nat) :
     (m : ℝ[X]) = C (m : ℝ) :=
@@ -704,46 +698,5 @@ macro_rules
             $hinner_deg_lo $hinner_deg_hi))
 
 end Tactic
-
-/-- Deprecated degree-restricted form of `MaWang.splits_derivative_of_nonpos`. -/
-@[deprecated "Use `MaWang.splits_derivative_of_nonpos`." (since := "2026-10-05")]
-theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
-    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    (u * f + v * f.derivative).Splits :=
-  MaWang.splits_derivative_of_nonpos hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
-
-/-- Deprecated degree-restricted form of
-`MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`. -/
-@[deprecated "Use `MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`."
-  (since := "2026-10-05")]
-theorem isRealRooted_of_mw_then_const_add_derivative_sequence
-    {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} (a : Nat → ℝ)
-    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (ha : ∀ n : Nat, a n ≠ 0)
-    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hinner_pos : ∀ n : Nat,
-      HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
-    (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
-          (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative)
-    (hinner_deg_lo : ∀ n : Nat,
-      (P (n + 1)).natDegree ≤
-        (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree)
-    (hinner_deg_hi : ∀ n : Nat,
-      (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree ≤
-        (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence a hbase_zero hbase_one
-    hpos ha hinner_pos hV_nonpos hrec hinner_deg_lo hinner_deg_hi
 
 end RealRooted
