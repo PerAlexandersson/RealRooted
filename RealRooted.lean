@@ -586,6 +586,7 @@ import RealRooted.EulerBidiagonal.PairStep
 import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.EulerBidiagonal.ZeroParameter
 import RealRooted.EulerOperator
+import RealRooted.EulerOperator.Correction
 import RealRooted.EulerOperator.Darboux
 import RealRooted.EulerOperator.Darboux.Basic
 import RealRooted.EulerOperator.Darboux.Interlacing
@@ -594,6 +595,7 @@ import RealRooted.EulerOperator.OrderNumerator.Basic
 import RealRooted.EulerOperator.OrderNumerator.Preservation
 import RealRooted.EulerOperator.Pencil
 import RealRooted.EulerOperator.Polar
+import RealRooted.EulerOperator.Polar.Adjacent
 import RealRooted.EulerOperator.Polar.MultiplierSequence
 import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.EulerOperator.Polar.ProperPosition
@@ -1746,6 +1748,7 @@ import RealRooted.Touchard
 import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.Basic
 import RealRooted.Transforms.BrandenE.BasisImage
+import RealRooted.Transforms.BrandenE.Delannoy
 import RealRooted.Transforms.BrandenE.EvenBinomial
 import RealRooted.Transforms.BrandenE.IntervalPreserver
 import RealRooted.Transforms.BrandenE.Inverse
