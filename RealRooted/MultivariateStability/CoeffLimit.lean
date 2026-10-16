@@ -162,6 +162,44 @@ theorem MvRealStableOrZero.of_coeff_tendsto_of_totalDegree_le
       (hcoeff m) using 1
     rfl
 
+/-- A nonzero, uniformly bounded-degree coefficientwise limit of real-stable
+multivariate polynomials is real stable. -/
+theorem MvRealStable.of_coeff_tendsto_of_totalDegree_le
+    {sigma : Type*} [Finite sigma] {P : ℕ → MvPolynomial sigma ℝ}
+    {P₀ : MvPolynomial sigma ℝ} {N : ℕ}
+    (hstable : ∀ k, MvRealStable (P k))
+    (hdeg : ∀ k, (P k).totalDegree ≤ N) (hdeg₀ : P₀.totalDegree ≤ N)
+    (hcoeff : ∀ m : sigma →₀ ℕ,
+      Tendsto (fun k => (P k).coeff m) atTop (nhds (P₀.coeff m)))
+    (hne : P₀ ≠ 0) :
+    MvRealStable P₀ := by
+  rcases MvRealStableOrZero.of_coeff_tendsto_of_totalDegree_le
+      hstable hdeg hdeg₀ hcoeff with hzero | hstable₀
+  · exact (hne hzero).elim
+  · exact hstable₀
+
+/-- A coefficientwise limit of stability-preserving linear operators is
+stability preserving at a stable input, provided the limit operator is
+injective and all outputs have a common total-degree bound. This is the
+closure step used after a finite-dimensional Trotter product formula. -/
+theorem MvRealStable.of_linearMap_coeff_tendsto_of_totalDegree_le
+    {sigma : Type*} [Finite sigma] {P : MvPolynomial sigma ℝ} {N : ℕ}
+    (T : MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ)
+    (Tn : ℕ → MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ)
+    (hP : MvRealStable P) (hstable : ∀ k, MvRealStable (Tn k P))
+    (hdeg : ∀ k, (Tn k P).totalDegree ≤ N)
+    (hdegT : (T P).totalDegree ≤ N)
+    (hcoeff : ∀ m : sigma →₀ ℕ,
+      Tendsto (fun k => (Tn k P).coeff m) atTop (nhds ((T P).coeff m)))
+    (hinj : Function.Injective T) :
+    MvRealStable (T P) := by
+  apply MvRealStable.of_coeff_tendsto_of_totalDegree_le
+    hstable hdeg hdegT hcoeff
+  intro hzero
+  apply hP.ne_zero
+  apply hinj
+  simpa using hzero
+
 end
 
 end RealRooted

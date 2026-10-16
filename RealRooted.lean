@@ -996,6 +996,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
 import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
@@ -2022,3 +2023,4 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
 import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
+import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
