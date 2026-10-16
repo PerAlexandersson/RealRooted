@@ -65,6 +65,8 @@ jobs:
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_lean_imports.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_root_imports.py
+          python3 scripts/check_example_namespaces.py --self-test
+          python3 scripts/check_example_namespaces.py
       - name: Check import architecture
         run: |
           python3 scripts/check_import_architecture.py --self-test
