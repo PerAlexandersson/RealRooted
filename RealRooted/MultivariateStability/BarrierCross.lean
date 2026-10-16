@@ -1,6 +1,8 @@
-import Mathlib.Analysis.Convex.Deriv
-import RealRooted.MultivariateStability.BarrierPick
-import RealRooted.MultivariateStability.PickRatio
+module
+
+public import Mathlib.Analysis.Convex.Deriv
+public import RealRooted.MultivariateStability.BarrierPick
+public import RealRooted.MultivariateStability.PickRatio
 
 /-!
 # The MSS barrier along a coordinate line
@@ -13,6 +15,8 @@ half-plane into the closed lower half-plane (`MvRealStable.cross_coordinate_rati
 the Pick-type lemma `PickRatio.deriv_nonpos_and_second_deriv_nonneg` gives the derivative signs.
 This replaces the Helton–Vinnikov route of the original proof.
 -/
+
+@[expose] public section
 
 open Polynomial
 

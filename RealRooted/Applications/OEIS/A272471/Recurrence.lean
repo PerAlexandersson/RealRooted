@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # The A272471 evaluation recurrence
@@ -10,6 +12,8 @@ Source: <https://github.com/sqrt-of-2/real-rooted-oeis-proofs>, commit
 It records only the algebraic recurrence after scalar evaluation; resultant
 factorization and real root estimates remain separate work.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

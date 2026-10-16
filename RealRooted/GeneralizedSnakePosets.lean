@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.SnakeStaircase
-import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeStaircase
+public import RealRooted.GeneralizedSnakePosets.MatrixInduction
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 
 /-!
 # Generalized snake poset finite-board interfaces
@@ -13,6 +15,8 @@ The parametric predicates used by the snake-interlacing induction live in
 `RealRooted.GeneralizedSnakePosets.Statements`; the induction itself is in
 `RealRooted.GeneralizedSnakePosets.MatrixInduction`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

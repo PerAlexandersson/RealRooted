@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
-import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
-import Mathlib.Tactic.ComputeDegree
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+public import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
+public import Mathlib.Tactic.ComputeDegree
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Root geometry of the finite-degree Cayley transform
@@ -10,6 +12,8 @@ import Mathlib.Tactic.Ring
 Transport from the vertical line of real part minus one half to the unit circle,
 with the resulting degree, leading-coefficient, and coefficient estimates.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # A standard-basis source border for totally nonnegative matrices
@@ -9,6 +11,8 @@ We prepend the first standard-basis column to a finite square matrix and prove
 rectangular total nonnegativity.  A second construction adjoins a scalar first
 row, producing the source-step matrix used in bordered chain recurrences.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

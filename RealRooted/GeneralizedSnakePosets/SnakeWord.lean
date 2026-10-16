@@ -1,4 +1,6 @@
-import RealRooted.FolkloreLemma
+module
+
+public import RealRooted.FolkloreLemma
 
 /-!
 # Generalized snake words
@@ -7,6 +9,8 @@ This module contains the word-level API for Braun--Jal generalized snake
 posets: the two letters, final-letter deletion, prefixes, constant words, and
 the computable/predicate forms of the last final-letter change.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

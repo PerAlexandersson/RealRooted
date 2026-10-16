@@ -1,6 +1,10 @@
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+public import RealRooted.MultivariateStability
+
+@[expose] public section
 
 open Matrix MvPolynomial
 open scoped ComplexOrder MatrixOrder

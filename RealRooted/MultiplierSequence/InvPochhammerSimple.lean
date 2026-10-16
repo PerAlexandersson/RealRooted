@@ -1,5 +1,7 @@
-import RealRooted.Hadamard.SchurSzegoSimple
-import RealRooted.MultiplierSequence.InvPochhammer
+module
+
+public import RealRooted.Hadamard.SchurSzegoSimple
+public import RealRooted.MultiplierSequence.InvPochhammer
 
 /-!
 # Simple roots under reciprocal-Pochhammer transforms
@@ -9,6 +11,8 @@ of a nonzero split polynomial.  If the input has nonzero constant coefficient,
 then every output root is simple.  The multiplicity argument uses
 Kostov--Shapiro, *On Schur--Szegő composition of polynomials*, Theorem 6(ii).
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Composition rows of positive-order power series
@@ -10,6 +12,8 @@ interlacing arguments.  The final section gives a generic finite
 denominator/numerator recurrence interface which retains the low-index
 inhomogeneous numerator terms.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

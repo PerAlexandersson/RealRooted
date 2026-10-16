@@ -1,9 +1,13 @@
-import RealRooted.ParityFactorization
-import RealRooted.Favard.Affine.Basic
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.SequenceClosure
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.ParityFactorization
+public import RealRooted.Favard.Affine.Basic
+public import RealRooted.SequenceClosure
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+
+@[expose] public section
 
 open Polynomial
 open RealRooted

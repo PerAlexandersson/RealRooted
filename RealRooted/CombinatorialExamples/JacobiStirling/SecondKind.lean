@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
-import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
+public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the second kind
@@ -8,6 +10,8 @@ This file defines the second-kind Jacobi--Stirling triangle over a commutative
 semiring and identifies it with complete homogeneous symmetric polynomials
 evaluated at `i * (i + z)` for `1 ≤ i ≤ k`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.JacobiStirling
 

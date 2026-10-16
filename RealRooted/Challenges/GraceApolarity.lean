@@ -1,8 +1,10 @@
-import RealRooted.Apolarity
-import RealRooted.BorceaBranden.Applications.PolarizationIff
-import RealRooted.GraceHalfPlane
-import RealRooted.LiebSokal
-import RealRooted.Polarization
+module
+
+public import RealRooted.Apolarity
+public import RealRooted.BorceaBranden.Applications.PolarizationIff
+public import RealRooted.GraceHalfPlane
+public import RealRooted.LiebSokal
+public import RealRooted.Polarization
 
 /-!
 # Grace apolarity challenge entry point
@@ -184,6 +186,8 @@ multiaffine Lieb–Sokal theorem. The proofs live in `RealRooted.Apolarity`,
 `RealRooted.BorceaBranden.Applications.PolarizationIff` and
 `RealRooted.LiebSokal`.
 -/
+
+public section
 
 open Polynomial
 

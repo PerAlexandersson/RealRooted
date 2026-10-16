@@ -1,6 +1,8 @@
-import RealRooted.Favard
-import RealRooted.Jacobi.Favard
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.Favard
+public import RealRooted.Jacobi.Favard
+public import RealRooted.SimpleRoots
 
 /-!
 # Real-rootedness of shifted Jacobi polynomials
@@ -9,6 +11,8 @@ This file applies the general Favard recurrence theorem to the monic shifted
 Jacobi family. The coefficient algebra and positivity of the recurrence
 coefficients live in `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi`.
 -/
+
+public section
 
 open Polynomial
 

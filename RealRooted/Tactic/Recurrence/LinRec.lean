@@ -1,6 +1,11 @@
-import RealRooted.Tactic.Recurrence.RowSide
-import RealRooted.Tactic.Recurrence.LinRecProbe
-import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+module
+
+public import RealRooted.Tactic.Recurrence.RowSide
+public import RealRooted.Tactic.Recurrence.LinRecProbe
+public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+public meta import RealRooted.Tactic.Recurrence.RowSide
+public meta import RealRooted.Tactic.Recurrence.LinRecProbe
+public meta import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 
 /-!
 # General linear recurrences: the `rr_linrec` tactic
@@ -33,6 +38,8 @@ division is `q + numeral` and the coefficient engine applies as for linear growt
 top coefficient `c` is the function with the closed forms of the residue classes
 (`Regime.closedRes`, `residueTerm`).
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 
@@ -431,7 +438,7 @@ private def coneStepTerm (k : Nat) (form : Array Rat) (Dfun terms : Term) : Tact
   let zero : Term := ⟨Syntax.mkNumLit "0"⟩
   return out.getD zero
 
-private lemma hyperParityProd_relation (q : ℕ) :
+lemma hyperParityProd_relation (q : ℕ) :
     (∏ i ∈ Finset.range q, (2 + 3 * (i : ℝ) + (i : ℝ) ^ 2)) =
       ((q : ℝ) + 1) * ∏ i ∈ Finset.range q, (1 + 2 * (i : ℝ) + (i : ℝ) ^ 2) := by
   induction q with
@@ -620,7 +627,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
       | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
             List.sum_nil, Function.iterate_zero, Function.iterate_one,
             Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
-          ring) <;> done)
+          ring_nf) <;> done)
       | (change _ = $rhs
          apply Polynomial.funext
          intro x

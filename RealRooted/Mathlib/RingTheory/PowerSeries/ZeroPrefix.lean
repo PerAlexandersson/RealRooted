@@ -1,4 +1,6 @@
-import Mathlib.RingTheory.PowerSeries.Trunc
+module
+
+public import Mathlib.RingTheory.PowerSeries.Trunc
 
 /-!
 # Removing a finite zero prefix from a power series
@@ -7,6 +9,8 @@ This file provides the coefficient shift inverse to multiplication by a fixed
 power of `X`.  The construction is algebraic and does not require an order,
 topology, or a nonzero scalar.
 -/
+
+@[expose] public section
 
 namespace PowerSeries
 

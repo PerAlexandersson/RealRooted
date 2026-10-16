@@ -1,7 +1,9 @@
-import RealRooted.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.ThreeTermRecurrence.Interlacing
+module
+
+public import RealRooted.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Interlacing for first-order derivative recurrences
@@ -23,6 +25,8 @@ to grow by at most one, so
 `derivativeRecurrence_strictInterl_of_degree_pattern` also covers rows whose
 degree stays constant on some steps.
 -/
+
+public section
 
 open Polynomial
 
@@ -355,7 +359,7 @@ Example: `A n = X - X ^ 3`, `B n = 1 + 2 X + n X ^ 2` (OEIS A008970) cancels at 
 The proof was found by Aristotle (Harmonic) and ported here.
 -/
 
-private theorem natDegree_eq_and_leadingCoeff_pos_of_coeff_pos {Q : ℝ[X]} {N : ℕ}
+theorem natDegree_eq_and_leadingCoeff_pos_of_coeff_pos {Q : ℝ[X]} {N : ℕ}
     (h : Q.natDegree ≤ N) (hc : 0 < Q.coeff N) : Q.natDegree = N ∧ 0 < Q.leadingCoeff := by
   have hN : Q.natDegree = N := natDegree_eq_of_le_of_coeff_ne_zero h hc.ne'
   exact ⟨hN, by rw [leadingCoeff, hN]; exact hc⟩

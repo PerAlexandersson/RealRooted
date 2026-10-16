@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
 
 /-!
 # Converse strict Hurwitz criterion
@@ -7,6 +9,8 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
 Positivity of the leading classical Hurwitz determinants is propagated down
 the canonical Routh reduction and then converted back to root location.
 -/
+
+public section
 
 open Polynomial
 

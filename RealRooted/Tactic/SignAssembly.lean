@@ -1,4 +1,6 @@
-import RealRooted.MaWang
+module
+
+public import RealRooted.MaWang
 
 /-!
 # Sign-based root assembly tactics
@@ -10,18 +12,20 @@ the interior roots, while a left witness and the two end signs give three
 additional roots.
 -/
 
+public section
+
 open Polynomial Filter
 
 noncomputable section
 
 namespace RealRooted
 
-private lemma lt_of_le_of_eval_ne {p : ℝ[X]} {x y : ℝ}
+lemma lt_of_le_of_eval_ne {p : ℝ[X]} {x y : ℝ}
     (hxy : x ≤ y) (hne : p.eval x ≠ p.eval y) :
     x < y :=
   lt_of_le_of_ne hxy fun h => hne (congrArg p.eval h)
 
-private theorem isRealRooted_of_two_left_roots_of_strict_signs
+theorem isRealRooted_of_two_left_roots_of_strict_signs
     {F : ℝ[X]} {rs : List ℝ} {uLL uL : ℝ}
     (hF_pos : HasPosLeadingCoeff F)
     (hrs_sorted : rs.Pairwise (· ≤ ·))

@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.Recurrence
-import RealRooted.WeightedSum
+module
+
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
+public import RealRooted.WeightedSum
 
 /-!
 # Clique-deletion families for independence polynomials
@@ -8,6 +10,8 @@ This file packages clique-deletion expansions as finite polynomial families
 and weighted sums. Pairwise-compatibility arguments and claw-free induction
 belong in higher modules.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

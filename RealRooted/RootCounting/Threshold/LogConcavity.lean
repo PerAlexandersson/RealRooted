@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.LogConcavity
-import RealRooted.RootCounting.Threshold.Basic
+module
+
+public import RealRooted.CoefficientDominance.LogConcavity
+public import RealRooted.RootCounting.Threshold.Basic
 
 /-!
 # Signed evaluation from log-concave coefficient dominance
@@ -8,6 +10,8 @@ Positive log-concavity and two small adjacent term ratios make the central
 coefficient term dominant. This converts that coefficient certificate into the
 signed evaluation needed by thresholded root counting.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

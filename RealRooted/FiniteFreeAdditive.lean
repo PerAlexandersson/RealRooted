@@ -1,7 +1,9 @@
-import Mathlib.Tactic
+module
 
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Tactic
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Finite-free additive convolution
@@ -14,6 +16,8 @@ to the ambient degree box.  This file contains only algebraic identities;
 real-rootedness preservation and the half-integer rectangular descent belong
 to later layers.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

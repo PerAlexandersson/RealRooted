@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Polar
-import RealRooted.ReciprocalShift.ProperPosition
+module
+
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
 # Interlacing for the polar-theta operator
@@ -8,6 +10,8 @@ The polar-theta operator is reciprocal-shift conjugate to differentiation.
 This module combines that identity with the reciprocal-shift interlacing
 swap and derivative preservation.
 -/
+
+public section
 
 open Polynomial
 

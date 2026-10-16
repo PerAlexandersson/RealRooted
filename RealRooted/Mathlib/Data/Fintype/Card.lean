@@ -1,6 +1,8 @@
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Fintype.Prod
-import Mathlib.Data.Fintype.Sigma
+module
+
+public import Mathlib.Data.Fintype.Card
+public import Mathlib.Data.Fintype.Prod
+public import Mathlib.Data.Fintype.Sigma
 
 /-!
 # Finite cardinality from unique hits under equivalences
@@ -10,6 +12,8 @@ equivalences: if every point has a unique parameter whose image satisfies a
 predicate, then the ambient cardinality is the parameter cardinality times the
 cardinality of the predicate subtype.
 -/
+
+public section
 
 namespace Fintype
 

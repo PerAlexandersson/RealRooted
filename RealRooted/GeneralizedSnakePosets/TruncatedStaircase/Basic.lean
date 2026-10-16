@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.FiniteBoard
+module
+
+public import RealRooted.GeneralizedSnakePosets.FiniteBoard
 
 /-!
 # Truncated staircase board basics
@@ -6,6 +8,8 @@ import RealRooted.GeneralizedSnakePosets.FiniteBoard
 This module defines truncated-staircase finite boards and records the elementary
 reflection lemmas used by the full-staircase and snake-suffix developments.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Convex.StdSimplex
+module
+
+public import Mathlib.Analysis.Convex.StdSimplex
 
 /-!
 # The standard simplex as a set of vectors
@@ -7,6 +9,8 @@ The Perron-Frobenius API uses membership in a set of vectors, rather than the
 new bundled `Convexity.StdSimplex`. This definition preserves that interface
 without depending on Mathlib's deprecated set-valued `stdSimplex` API.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

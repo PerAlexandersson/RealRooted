@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
-import RealRooted.MultivariateStability.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
+public import RealRooted.MultivariateStability.PolyaFrequency
 
 /-!
 # Pólya-frequency restrictions of exact A144438 layers
@@ -8,6 +10,8 @@ This file combines the independently proved stability and coefficient
 nonnegativity of each recurrence-defined exact layer.  It makes no claim
 about the sum over different exceptional histories.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

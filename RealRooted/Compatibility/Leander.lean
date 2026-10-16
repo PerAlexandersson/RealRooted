@@ -1,4 +1,8 @@
-import RealRooted.Compatibility.LeanderXOutput
+module
+
+public import RealRooted.Compatibility.LeanderXOutput
+
+public section
 
 open Polynomial
 

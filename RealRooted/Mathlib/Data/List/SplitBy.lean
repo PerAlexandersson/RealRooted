@@ -1,5 +1,7 @@
-import Mathlib.Data.List.SplitBy
-import Mathlib.Data.List.Infix
+module
+
+public import Mathlib.Data.List.SplitBy
+public import Mathlib.Data.List.Infix
 
 /-!
 # Adjacent elements of a `splitBy` block
@@ -7,6 +9,8 @@ import Mathlib.Data.List.Infix
 This Mathlib-shaped shim records that a true adjacent relation remains inside
 one block of `List.splitBy`.
 -/
+
+public section
 
 namespace List
 

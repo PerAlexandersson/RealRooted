@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily.Basic
-import RealRooted.Wagner.LeftSum
+module
+
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.Wagner.LeftSum
 
 /-!
 # Lag recurrences with a feedback term
@@ -14,6 +16,8 @@ transition matrix of Brändén's criterion (shift rows and one feedback row
 
 The rows have no three-term recurrence: their degrees grow by one every `p` steps.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,8 +1,10 @@
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.Multiaffine.AffineCoordinateExtension
-import RealRooted.Multiaffine.AffineLineRestriction
-import RealRooted.MultivariateStability.AllComboAffineLine
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.MultivariateStability.AllComboAffineLine
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rayleigh coordinate pencils
@@ -12,6 +14,8 @@ one partial derivative.  A weakly stable span of those two pieces, together
 with the Rayleigh Wronskian sign, gives stability of the original polynomial
 up to the zero polynomial.
 -/
+
+public section
 
 namespace RealRooted
 

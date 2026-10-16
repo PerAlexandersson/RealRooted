@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.AlgebraMap
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-import Mathlib.Tactic.NoncommRing
+module
+
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.Tactic.NoncommRing
 
 /-!
 # A finite spectral expansion of the characteristic adjugate
@@ -13,6 +15,8 @@ to matrices and using Cayley--Hamilton identifies this quotient with the
 adjugate of the characteristic matrix whenever the proposed roots factor the
 characteristic polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial
 

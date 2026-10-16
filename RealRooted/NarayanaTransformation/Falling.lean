@@ -1,8 +1,12 @@
-import RealRooted.NarayanaTransformation.Basis
+module
+
+public import RealRooted.NarayanaTransformation.Basis
 
 /-!
 # Falling-factorial inverse transform.
 -/
+
+public section
 
 open Polynomial Finset
 

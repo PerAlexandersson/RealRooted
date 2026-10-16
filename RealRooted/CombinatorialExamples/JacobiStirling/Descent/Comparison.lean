@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
-import RealRooted.MaWang.Strong
-import RealRooted.Wronskian.Forward
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
+public import RealRooted.MaWang.Strong
+public import RealRooted.Wronskian.Forward
 
 /-!
 # Comparison lemma for Jacobi–Stirling insertions
@@ -17,6 +19,8 @@ Wronskian of the pair.  The polynomial identity
 `g · D_L f - f · D_{L+1} g = -x · W(g, (x - 1) f)` and the positivity of `W(g, (x - 1) f)`,
 checked at the roots of `g`, give the sign of `D_{L+1} g` at every root of `D_L f`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

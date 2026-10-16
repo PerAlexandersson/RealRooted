@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Fixed-factor and small row-adapter regressions
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RowInterlacing
 These examples cover the fixed-factor deflation route, an arbitrary-offset product tail,
 and a degree-pattern derivative recurrence with normalized rational coefficients.
 -/
+
+@[expose] public section
 
 open Polynomial
 

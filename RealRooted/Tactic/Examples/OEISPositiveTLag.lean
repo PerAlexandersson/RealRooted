@@ -1,5 +1,7 @@
-import RealRooted.Tactic.LiuWang
-import RealRooted.Tactic.WagnerX
+module
+
+public import RealRooted.Tactic.LiuWang
+public import RealRooted.Tactic.WagnerX
 
 /-!
 # OEIS positive `t`-lag tactic batch
@@ -12,6 +14,8 @@ OEIS file still has to supply its row definition, base case, recurrence
 identity, and coefficient facts.  The strict Liu--Wang shells also need
 degree/no-common-root certificates; the plateau-safe Wagner-X shells do not.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,13 +1,15 @@
-import RealRooted.CriticalValueContinuation
-import RealRooted.EulerOperator
-import RealRooted.Hadamard.SchurSzegoSigns
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.IteratedDerivativeShift
-import RealRooted.MaWang.Strong
-import RealRooted.ObreschkoffConverse
-import RealRooted.SimpleRoots
-import RealRooted.Wronskian.Forward
-import RealRooted.Wronskian.WeakForward
+module
+
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.EulerOperator
+public import RealRooted.Hadamard.SchurSzegoSigns
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.MaWang.Strong
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.SimpleRoots
+public import RealRooted.Wronskian.Forward
+public import RealRooted.Wronskian.WeakForward
 
 /-!
 # Strict interlacing under Schur--Szegő composition with a negative-root multiplier
@@ -33,6 +35,8 @@ Wronskian orientation.  The statement of Zhang's Theorem 2.2 for roots of multip
 one is a special case; see also Kostov (2010) for the multiplicity of the roots of Schur--Szegő
 compositions.
 -/
+
+public section
 
 open Polynomial
 

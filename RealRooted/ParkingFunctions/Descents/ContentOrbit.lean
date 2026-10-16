@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Data.Fintype.Card
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
-import RealRooted.ParkingFunctions.Descents.Tieless
+module
+
+public import RealRooted.Mathlib.Data.Fintype.Card
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
+public import RealRooted.ParkingFunctions.Descents.Tieless
 
 /-!
 # Content orbits for parking and Smirnov words
@@ -12,6 +14,8 @@ that cyclic value shift preserves content type and the Smirnov condition, then
 combines those invariants with Pollak's unique parking shift to obtain the
 integral fixed-content-type cardinality factor.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

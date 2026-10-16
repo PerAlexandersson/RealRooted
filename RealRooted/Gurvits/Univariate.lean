@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Gurvits' univariate inequality
@@ -10,6 +12,8 @@ These are the univariate ingredients of Gurvits' proof of the van der Waerden bo
 (L. Gurvits, *Van der Waerden/Schrijver-Valiant like conjectures and stable (aka hyperbolic)
 homogeneous polynomials*, Electron. J. Combin. 15 (2008)).
 -/
+
+@[expose] public section
 
 noncomputable section
 

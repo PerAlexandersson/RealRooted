@@ -1,5 +1,9 @@
-import RealRooted.ThreeTermRecurrence.ParityProduct
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.ThreeTermRecurrence.ParityProduct
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.ThreeTermRecurrence.ParityProduct
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: parity products
@@ -15,6 +19,8 @@ defines `s` and `t` as auxiliary three-term sequences under the current declarat
 the link, and runs the row tactics on them (`RealRooted.interlaces_of_parityProduct`,
 `RealRooted.splits_of_parityProduct`).
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

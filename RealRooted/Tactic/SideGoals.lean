@@ -1,7 +1,9 @@
-import RealRooted.Derivative
-import RealRooted.WagnerX
-import RealRooted.Tactic.Attr
-import Mathlib.Tactic
+module
+
+public import RealRooted.Derivative
+public import RealRooted.WagnerX
+public import RealRooted.Tactic.Attr
+public import Mathlib.Tactic
 
 /-!
 # Side-goal tactic
@@ -25,6 +27,8 @@ Initial scope:
 
 This tactic should fail clearly when a mathematical certificate is missing.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-import RealRooted.GarloffWagner.Hadamard
-import RealRooted.Hadamard.GarloffWagner
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+public import RealRooted.GarloffWagner.Hadamard
+public import RealRooted.Hadamard.GarloffWagner
 
 /-!
 # Hadamard products of Hurwitz-stable polynomials
@@ -17,6 +19,8 @@ other is a PF polynomial.  The Hadamard product acts on the two parts separately
 Garloff--Wagner, Theorem 4(b) (`StrictInterl.interl_hadamardProduct`), and PF polynomials by
 the Schur--Malo theorem (`IsPFPolynomial.hadamardProduct`).
 -/
+
+public section
 
 open Polynomial
 

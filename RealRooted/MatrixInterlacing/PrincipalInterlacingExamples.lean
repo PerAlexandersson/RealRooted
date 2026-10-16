@@ -1,6 +1,8 @@
-import RealRooted.TotallyNonnegInterlacing
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+module
+
+public import RealRooted.TotallyNonnegInterlacing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 
 /-!
 # Singular and reducible principal-interlacing examples
@@ -10,6 +12,8 @@ reducible, and repeated-root boundaries of principal characteristic-polynomial
 interlacing. In particular, matrix nullity can be strictly smaller than the
 algebraic multiplicity of the zero eigenvalue.
 -/
+
+@[expose] public section
 
 namespace RealRooted.PrincipalInterlacingExamples
 

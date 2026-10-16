@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.PosetChow
+module
+
+public import RealRooted.HosterStump.PosetChow
 
 /-!
 # Hoster–Stump challenge entry point
@@ -104,3 +106,5 @@ functions for partially ordered sets,” 2024.
 
 This module is a catalog facade.  The proofs live in `RealRooted.HosterStump`.
 -/
+
+public section

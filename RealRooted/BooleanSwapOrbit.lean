@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.MultivariateStability.LinearForm
-import Mathlib.Data.Finset.BooleanAlgebra
-import Mathlib.Data.Finset.Powerset
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.MultivariateStability.LinearForm
+public import Mathlib.Data.Finset.BooleanAlgebra
+public import Mathlib.Data.Finset.Powerset
 
 /-!
 # Stable Boolean variable-choice orbits
@@ -12,6 +14,8 @@ endpoint from every pair.  Its subset sum factors as a fixed squarefree
 monomial times a product of linear forms `X x + X y`.  The weighted API also
 retains the scalar weight sums contributed by inactive pairs.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

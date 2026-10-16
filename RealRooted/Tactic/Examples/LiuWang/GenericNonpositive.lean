@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
 
 /-!
 # Liu--Wang generic nonpositive-lag regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceNonpositive
 Sequence tests for the generic nonpositive-lag dispatcher and its
 real-rootedness projection.
 -/
+
+public section
 
 open Polynomial
 

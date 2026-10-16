@@ -1,7 +1,9 @@
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Finset.Sort
-import Mathlib.Data.List.Count
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Finset.Powerset
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Data.List.Count
+public import Mathlib.Tactic
 
 /-!
 # Ordered subset pairs
@@ -11,6 +13,8 @@ This module defines the finite set of ordered pairs of `k`-subsets of
 is intended as the reusable, Mathlib-shaped counting surface for ballot and
 Narayana enumeration arguments.
 -/
+
+@[expose] public section
 
 namespace List
 

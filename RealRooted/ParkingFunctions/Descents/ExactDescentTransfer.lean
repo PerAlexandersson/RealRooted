@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.ExactDescent
-import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ExactDescent
+public import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
 
 /-!
 # Exact descent-set Pollak transfer
@@ -7,6 +9,8 @@ import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
 This module transfers arbitrary descent-set weights, and hence exact
 descent-set cardinalities, from words to ordinary parking functions.
 -/
+
+public section
 
 namespace RealRooted.ParkingFunctions
 

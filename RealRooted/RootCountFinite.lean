@@ -1,6 +1,8 @@
-import Mathlib.Data.Multiset.Filter
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Data.Multiset.Filter
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Finite Root-Count Reductions
@@ -11,6 +13,8 @@ finite roots of the lower-degree endpoint on both sides of a non-root threshold,
 and the root-sum argument supplies one extra root on the lower side, the upper
 root counts are forced to agree by cardinality.
 -/
+
+public section
 
 namespace Multiset
 

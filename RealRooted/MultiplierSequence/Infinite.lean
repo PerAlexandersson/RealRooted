@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Shift
-import RealRooted.Hadamard.Product
+module
+
+public import RealRooted.EulerOperator.Shift
+public import RealRooted.Hadamard.Product
 
 /-!
 # Infinite multiplier sequences
@@ -12,6 +14,8 @@ shifts, and bridges to shifted Euler operators and Hadamard products.
 The analytic entire-function classification is deliberately not part of this
 algebraic layer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

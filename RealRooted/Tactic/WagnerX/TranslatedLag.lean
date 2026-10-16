@@ -1,8 +1,12 @@
-import RealRooted.Tactic.WagnerX.PositiveLag
+module
+
+public import RealRooted.Tactic.WagnerX.PositiveLag
 
 /-!
 # Translated Wagner `X`-lag recurrences
 -/
+
+public section
 
 open Polynomial
 
@@ -11,7 +15,7 @@ namespace RealRooted
 /-! ### Plateau-safe translated affine lags -/
 
 /-- Translating a fixed `X - r` lag by `X ↦ X + r` produces a pure `X` lag. -/
-private lemma comp_pos_X_sub_C_lag_recurrence
+lemma comp_pos_X_sub_C_lag_recurrence
     {P : Nat → ℝ[X]} {a c : Nat → ℝ} {r : ℝ}
     (hrec : ∀ n : Nat,
       P (n + 2) = C (a n) * P (n + 1) + (C (c n) * (X - C r)) * P n) :
@@ -25,7 +29,7 @@ private lemma comp_pos_X_sub_C_lag_recurrence
     add_assoc] using h
 
 /-- Positive leading coefficient can be transported back across a translation. -/
-private lemma hasPosLeadingCoeff_of_comp_X_add_C {p : ℝ[X]} {r : ℝ}
+lemma hasPosLeadingCoeff_of_comp_X_add_C {p : ℝ[X]} {r : ℝ}
     (h : HasPosLeadingCoeff (p.comp (X + C r))) :
     HasPosLeadingCoeff p := by
   have hback := h.comp_X_add_C (-r)

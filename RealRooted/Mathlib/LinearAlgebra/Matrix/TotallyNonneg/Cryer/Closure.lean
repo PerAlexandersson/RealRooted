@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 
 /-!
 # The nonsingular finite Cryer closure
@@ -11,6 +13,8 @@ lower-triangular matrix into total nonnegativity. The proof strictifies the
 consecutive minors by Gaussian multiplication, applies the strict
 consecutive-column criterion, and passes to the Gaussian limit.
 -/
+
+public section
 
 open Filter Topology
 

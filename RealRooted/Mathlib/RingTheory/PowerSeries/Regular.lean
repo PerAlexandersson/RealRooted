@@ -1,4 +1,6 @@
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Regular formal power series
@@ -6,6 +8,8 @@ import Mathlib.RingTheory.PowerSeries.WellKnown
 This Mathlib-shaped shim records a coefficientwise regularity criterion for
 formal power series over a commutative ring.
 -/
+
+public section
 
 open BigOperators
 

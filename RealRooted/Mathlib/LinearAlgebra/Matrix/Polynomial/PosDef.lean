@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Positive unimodular polynomial Gram matrices
@@ -7,6 +9,8 @@ This file proves that an everywhere positive-definite symmetric matrix over `ℝ
 determinant is a unit is polynomially congruent to the identity.  The proof is by descent on the
 sum of the degrees of the diagonal entries.
 -/
+
+@[expose] public section
 
 noncomputable section
 

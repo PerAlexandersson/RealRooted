@@ -1,6 +1,10 @@
-import RealRooted.EdreiThoma.Identities
-import RealRooted.EdreiThoma.Easy
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+module
+
+public import RealRooted.EdreiThoma.Identities
+public import RealRooted.EdreiThoma.Easy
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+
+@[expose] public section
 
 open Polynomial Filter Topology
 

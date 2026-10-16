@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.PFPolynomial
 
 /-!
 # Roots of degree-padded reciprocal shifts
@@ -7,6 +9,8 @@ import RealRooted.PFPolynomial
 The root multiset of `reciprocalShift D p` consists of padding zeros and the
 inverses of the nonzero roots of `p`.
 -/
+
+public section
 
 open Polynomial
 

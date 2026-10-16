@@ -1,4 +1,6 @@
-import RealRooted.Interlacing.ResidueCriterion
+module
+
+public import RealRooted.Interlacing.ResidueCriterion
 
 /-!
 # Residue energy for the A144438 diagonal family
@@ -7,6 +9,8 @@ The energy is indexed by the distinct roots of the denominator polynomial.
 This matches the original-variable weight `1 / ((-r) * (1-r))` in the
 diagonal induction.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

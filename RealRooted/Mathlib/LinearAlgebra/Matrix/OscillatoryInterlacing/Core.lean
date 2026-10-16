@@ -1,11 +1,13 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
-import Mathlib.Data.Fin.Rev
-import Mathlib.LinearAlgebra.Matrix.Hermitian
-import Mathlib.LinearAlgebra.Matrix.Transvection
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+public import Mathlib.Data.Fin.Rev
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+public import Mathlib.LinearAlgebra.Matrix.Transvection
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 
 /-!
 # Whitney reduction and oscillatory matrix core
@@ -16,6 +18,8 @@ positive and zero-tolerant geometric-mean tridiagonal symmetrizations,
 continuant identities, and finite-index reversal, without importing the
 RealRooted polynomial theorem library.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

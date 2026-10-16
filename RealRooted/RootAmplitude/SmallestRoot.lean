@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootVieta
+module
+
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootVieta
 
 /-!
 # Amplitude at a smallest negative root
@@ -12,6 +14,8 @@ then controls the normalized derivative at a root of smallest magnitude.
 The low-coefficient corollary uses the canonical `RootVieta` identities rather
 than introducing another reciprocal-root polynomial.
 -/
+
+public section
 
 open Polynomial
 

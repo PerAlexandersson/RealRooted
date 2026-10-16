@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Stability of the BFJ output
@@ -8,6 +10,8 @@ import RealRooted.HermiteBiehler.Basic
 This file derives weak univariate upper-half-plane stability of the
 dehomogenized BFJ coefficient by specializing its second variable to one.
 -/
+
+public section
 
 open Polynomial
 

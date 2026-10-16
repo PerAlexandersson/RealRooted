@@ -1,5 +1,9 @@
-import RealRooted.Basic
-import Lean.Elab.Tactic
+module
+
+public import RealRooted.Basic
+public import Lean.Elab.Tactic
+public meta import RealRooted.Basic
+public meta import Lean.Elab.Tactic
 
 /-!
 # Named polynomial helpers
@@ -7,6 +11,8 @@ import Lean.Elab.Tactic
 Shared syntactic search for named polynomial-valued constants inside tactic
 goals, plus small name utilities for generated wrapper lookup.
 -/
+
+public meta section
 
 open Polynomial
 

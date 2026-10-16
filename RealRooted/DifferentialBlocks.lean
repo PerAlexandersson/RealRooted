@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalOperator
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.LiebSokalOperator
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Differential operators on disjoint variable blocks
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 Constant-coefficient differential actions compose under multiplication and
 factor across disjoint finite variable blocks.
 -/
+
+public section
 
 open BigOperators
 

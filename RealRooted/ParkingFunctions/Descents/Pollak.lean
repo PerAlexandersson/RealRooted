@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Logic.Equiv.Fin.Rotate
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Logic.Equiv.Fin.Rotate
 
 /-!
 # Pollak's cyclic action for parking words
@@ -9,6 +11,8 @@ the extra-alphabet parking condition, Pollak's unique successful shift, and
 the literal embedding of ordinary parking functions.  Results involving
 chain sorting belong to the downstream `DiaconisHicks` module.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

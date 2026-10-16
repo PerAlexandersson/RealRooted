@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 
 /-!
 # Trigonometric form of normalized quadratic recurrences
@@ -7,6 +9,8 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 The formula is multiplied by `sin θ`, so it remains valid at the endpoint
 angles without a nonvanishing assumption.
 -/
+
+public section
 
 namespace LinearRecurrence
 

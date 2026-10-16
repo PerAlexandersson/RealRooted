@@ -21,13 +21,18 @@ Let `g = C c * f + (1 - X) * f'` and `d = natDegree f`.
 
 4. The roots interlace in the same-degree (`ListAlternates`) sense: `StrictInterl g f`.
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
-import Mathlib.Tactic
+
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+public import Mathlib.Tactic
+
+@[expose] public section
 
 open Polynomial Filter
 
@@ -284,7 +289,7 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
         exact ⟨s, hs.1, hs.2, hval⟩
 
 /-- In the distinct-root case, the affine derivative has a root strictly between the endpoints. -/
-private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
+lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     {c : ℝ} (hc : (f.natDegree : ℝ) < c)
     {r₁ r₂ : ℝ} (hr₁ : f.IsRoot r₁) (hr₂ : f.IsRoot r₂)
     (hlt : r₁ < r₂)

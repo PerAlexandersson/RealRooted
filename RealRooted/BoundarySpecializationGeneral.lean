@@ -1,9 +1,11 @@
-import RealRooted.BorceaBranden.BoundarySpecialization
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-import Mathlib.Topology.Algebra.MvPolynomial
+module
+
+public import RealRooted.BorceaBranden.BoundarySpecialization
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+public import Mathlib.Topology.Algebra.MvPolynomial
 
 /-!
 # General boundary specialization
@@ -12,6 +14,8 @@ This module proves that specializing finitely many coordinates of a stable
 polynomial to real boundary values preserves upper-half-plane stability up to
 the zero polynomial, without coordinate-degree restrictions.
 -/
+
+public section
 
 open Complex
 

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Lookup
+module
+
+public import RealRooted.Tactic.Lookup
 
 /-!
 # Certificate lookup examples
 
 Smoke tests for exact local and tagged certificate lookup.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

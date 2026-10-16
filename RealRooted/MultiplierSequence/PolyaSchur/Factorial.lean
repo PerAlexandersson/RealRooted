@@ -1,5 +1,7 @@
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.MultiplierSequence.PolyaSchur
+module
+
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # Factorial coefficient sequences
@@ -8,6 +10,8 @@ This file connects finite Pólya-frequency polynomials to multiplier
 sequences.  The Jensen polynomial of the factorial-weighted coefficient
 sequence is a Garloff--Wagner Schur product with `(X + 1) ^ n`.
 -/
+
+public section
 
 open Polynomial
 

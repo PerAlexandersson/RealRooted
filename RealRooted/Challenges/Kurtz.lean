@@ -1,4 +1,6 @@
-import RealRooted.Kurtz
+module
+
+public import RealRooted.Kurtz
 
 /-!
 # Kurtz challenge entry point
@@ -53,6 +55,8 @@ Amer. Math. Monthly 99 (1992), 259--263.
 
 This module exposes the reusable theorem implementation in `RealRooted.Kurtz`.
 -/
+
+public section
 
 namespace RealRooted
 namespace Challenges

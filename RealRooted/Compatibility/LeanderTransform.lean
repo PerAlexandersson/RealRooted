@@ -1,4 +1,6 @@
-import RealRooted.Compatibility.Basic
+module
+
+public import RealRooted.Compatibility.Basic
 
 /-!
 # The diagonal-omitting Leander transform
@@ -7,6 +9,8 @@ This module defines the finite `0/1/X` transform from Leander's compatibility
 theorem and records its coefficientwise algebra. Compatibility preservation is
 proved in downstream modules.
 -/
+
+@[expose] public section
 
 open Polynomial
 

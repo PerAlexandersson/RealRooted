@@ -1,5 +1,9 @@
-import RealRooted.GarloffWagner
-import RealRooted.PosCombo
+module
+
+public import RealRooted.GarloffWagner
+public import RealRooted.PosCombo
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 
 /-!
 # Coprime quadratic recurrence factors
@@ -8,6 +10,8 @@ This opt-in layer combines the generic annihilator decomposition with the
 explicit Vieta factorization of a quadratic recurrence. It deliberately keeps
 coprimality of the polynomial factors as a caller-supplied hypothesis.
 -/
+
+public section
 
 namespace LinearRecurrence
 

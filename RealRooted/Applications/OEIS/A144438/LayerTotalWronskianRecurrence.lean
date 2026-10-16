@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 
 /-!
 # Two-rank Wronskian recurrence for the Deco layer total
@@ -10,6 +12,8 @@ shifted Wronskian of the normal core against that companion.  This packages
 the normal/exceptional compensation as one invariant rather than imposing
 separate signs on its summands.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

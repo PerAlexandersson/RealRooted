@@ -1,4 +1,8 @@
-import RealRooted.MaWang
+module
+
+public import RealRooted.MaWang
+
+public section
 
 open Polynomial
 

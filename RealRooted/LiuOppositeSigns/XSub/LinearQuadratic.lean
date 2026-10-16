@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.XSub.SameDegree
+module
+
+public import RealRooted.LiuOppositeSigns.XSub.SameDegree
 
 /-!
 # Liu linear/quadratic x-subtraction leaf
@@ -6,6 +8,8 @@ import RealRooted.LiuOppositeSigns.XSub.SameDegree
 This module contains the normalized linear/quadratic positive-split
 x-subtraction leaf used by the right-successor right-degree-two endpoint.
 -/
+
+public section
 
 open Polynomial Filter
 

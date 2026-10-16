@@ -1,4 +1,6 @@
-import RealRooted.Jacobi.Orthogonality
+module
+
+public import RealRooted.Jacobi.Orthogonality
 
 /-!
 # Algebraic orthogonality for shifted Jacobi polynomials
@@ -8,6 +10,8 @@ the polynomial orthogonality argument finite; the power-log integral enters
 only later, when strict Markoff monotonicity is extracted from the derivative
 of this moment functional.
 -/
+
+@[expose] public section
 
 open Polynomial
 

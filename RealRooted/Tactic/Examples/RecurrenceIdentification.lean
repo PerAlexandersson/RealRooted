@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RecurrenceIdentification
+module
+
+public import RealRooted.Tactic.RecurrenceIdentification
 
 /-!
 # Recurrence identification tactic examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RecurrenceIdentification
 The examples exercise pointwise identification and direct model transfer for
 the three fixed-lag recurrence shapes used by recurrence-defined row families.
 -/
+
+public section
 
 open Polynomial
 

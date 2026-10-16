@@ -1,5 +1,7 @@
-import Mathlib.Algebra.MvPolynomial.Monad
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import RealRooted.MultivariateStability
 
 /-!
 # Same-phase stability
@@ -9,6 +11,8 @@ restriction obtained by putting the variables on one ray with nonnegative
 coordinate weights.  Zero weights are included; they are needed for induced
 subgraph specializations.
 -/
+
+@[expose] public section
 
 open Polynomial
 

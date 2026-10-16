@@ -1,9 +1,11 @@
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Geometric decay of log-concave sequences
@@ -11,6 +13,8 @@ import Mathlib.Tactic.Ring
 Finite and infinite positive log-concave sequences are controlled by the
 adjacent ratios at a chosen index.
 -/
+
+public section
 
 open Finset
 

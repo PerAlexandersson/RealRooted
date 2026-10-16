@@ -1,11 +1,15 @@
-import Mathlib.Algebra.Ring.Parity
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.Ring.Parity
+public import Mathlib.Tactic
 
 /-!
 # Powers of the sign minus one
 
 Elementary parity identities used by polynomial transformations.
 -/
+
+public section
 
 namespace Parity
 

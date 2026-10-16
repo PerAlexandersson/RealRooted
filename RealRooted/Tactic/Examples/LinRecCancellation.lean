@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.General
-import RealRooted.DerivativeRecurrence.Interlacing
+module
+
+public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.DerivativeRecurrence.Interlacing
 
 /-!
 # Regression examples for the cancellation degree law
@@ -8,6 +10,8 @@ The rows of OEIS A008970 and A094503 have a summand of degree one more than the 
 degree; `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` still gives their exact degree
 and positive leading coefficient (issue #1321).
 -/
+
+public section
 
 open Polynomial
 

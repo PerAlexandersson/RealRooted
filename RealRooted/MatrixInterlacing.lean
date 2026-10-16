@@ -1,10 +1,12 @@
-import RealRooted.MatrixInterlacing.Action
-import RealRooted.MatrixInterlacing.SparseTests
-import RealRooted.MatrixInterlacing.Converse
-import RealRooted.MatrixInterlacing.AffinePair
-import RealRooted.MatrixInterlacing.Preservation
-import RealRooted.MatrixInterlacing.TotallyNonnegative
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.Converse
+public import RealRooted.MatrixInterlacing.AffinePair
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
+public import RealRooted.QuadraticRoot
 
 /-!
 # Matrix preservation of interlacing sequences
@@ -14,6 +16,8 @@ matrix-preservation theorems (Brändén, Theorem 7.8.5).
 The totally-nonnegative leaf specializes the generic polynomial-matrix theorem
 to constant rectangular matrices and proves Fisk's positive-leading wrapper.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -58,7 +62,7 @@ structure Atomic2x2Matrix where
   d : AtomicMatrixEntry
   deriving DecidableEq, Repr
 
-private def atomic2x2MatrixEquiv :
+def atomic2x2MatrixEquiv :
     Atomic2x2Matrix ≃
       AtomicMatrixEntry × AtomicMatrixEntry × AtomicMatrixEntry × AtomicMatrixEntry where
   toFun M := (M.a, M.b, M.c, M.d)
@@ -175,9 +179,9 @@ affine criterion. -/
 def preserving : Finset Atomic2x2Matrix :=
   all.filter fun M => M.isPreserving
 
-theorem card_all : all.card = 81 := by decide
+theorem card_all : all.card = 81 := by decide +kernel
 
-theorem card_preserving : preserving.card = 40 := by decide
+theorem card_preserving : preserving.card = 40 := by decide +kernel
 
 /-- Boolean form of the 18-matrix table's nondegeneracy convention: neither
 row is zero and the two rows are distinct. -/
@@ -199,7 +203,7 @@ def nondegenerate : Finset Atomic2x2Matrix :=
 def nondegeneratePreserving : Finset Atomic2x2Matrix :=
   preserving.filter fun M => M.isNondegenerate = true
 
-theorem card_nondegenerate : nondegenerate.card = 56 := by decide
+theorem card_nondegenerate : nondegenerate.card = 56 := by decide +kernel
 
 theorem card_nondegeneratePreserving : nondegeneratePreserving.card = 18 := by
   decide

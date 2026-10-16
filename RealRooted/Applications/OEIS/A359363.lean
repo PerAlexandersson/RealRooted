@@ -1,7 +1,11 @@
-import RealRooted.Applications.OEIS.A056939
-import RealRooted.Interlacing.Euclid
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Applications.OEIS.A056939
+public import RealRooted.Interlacing.Euclid
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+
+@[expose] public section
 
 open RealRooted Polynomial
 

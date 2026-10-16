@@ -1,4 +1,6 @@
-import RealRooted.Bezoutian.WronskianConverse
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
 
 /-!
 # Successor-degree Wronskian root gaps
@@ -6,6 +8,8 @@ import RealRooted.Bezoutian.WronskianConverse
 The sign of the reversed Wronskian at the roots of a degree-`n + 1` polynomial
 forces a root of its lower-degree companion in every consecutive root gap.
 -/
+
+public section
 
 open Polynomial
 

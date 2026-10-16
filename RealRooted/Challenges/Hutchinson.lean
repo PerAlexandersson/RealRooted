@@ -1,4 +1,6 @@
-import RealRooted.Hutchinson
+module
+
+public import RealRooted.Hutchinson
 
 /-!
 # Hutchinson's theorem challenge entry point
@@ -55,3 +57,5 @@ real,” *American Mathematical Monthly* 99 (1992), 259–263,
 This module is a catalog facade.  The proofs live in `RealRooted.Hutchinson`
 and `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure`.
 -/
+
+@[expose] public section

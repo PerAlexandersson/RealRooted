@@ -1,6 +1,8 @@
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Elementary-symmetric lower-triangular matrices
@@ -9,6 +11,8 @@ This file factors finite elementary-symmetric triangles into nonnegative lower
 bidiagonal matrices. The construction is independent of path-network and LGV
 infrastructure.
 -/
+
+@[expose] public section
 
 namespace Multiset
 

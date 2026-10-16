@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.Affine
-import RealRooted.Compatibility.NDCutInvariant
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
+module
+
+public import RealRooted.Compatibility.Affine
+public import RealRooted.Compatibility.NDCutInvariant
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 
 /-!
 # The ordered weak-left-peak P/Q base family
@@ -9,6 +11,8 @@ This module gives closed formulas for the rank-zero terminal-state pair mixes
 and proves that they satisfy the ordered cut-compatibility invariant.  It
 contains no preservation claim for later ranks.
 -/
+
+public section
 
 open Polynomial
 

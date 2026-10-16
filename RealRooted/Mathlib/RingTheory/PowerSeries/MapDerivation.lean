@@ -1,6 +1,8 @@
-import Mathlib.RingTheory.PowerSeries.Basic
-import Mathlib.RingTheory.Derivation.Basic
-import Mathlib.Algebra.BigOperators.NatAntidiagonal
+module
+
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.RingTheory.Derivation.Basic
+public import Mathlib.Algebra.BigOperators.NatAntidiagonal
 
 /-!
 # Applying a derivation of the coefficients to a power series
@@ -10,6 +12,8 @@ applies `D` to every coefficient of a power series over `A`. It satisfies the Le
 so it is again a derivation; for example, with `A = K[v]` and `D = d/dv` it is the partial
 derivative in `v` of a power series in a second variable.
 -/
+
+@[expose] public section
 
 namespace PowerSeries
 

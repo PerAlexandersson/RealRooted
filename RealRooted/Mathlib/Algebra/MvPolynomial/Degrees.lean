@@ -1,4 +1,6 @@
-import Mathlib.Algebra.MvPolynomial.Degrees
+module
+
+public import Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # Additional total-degree bounds
@@ -6,6 +8,8 @@ import Mathlib.Algebra.MvPolynomial.Degrees
 This file contains Mathlib-shaped compatibility lemmas for multivariate
 polynomial degrees.
 -/
+
+public section
 
 open scoped BigOperators
 

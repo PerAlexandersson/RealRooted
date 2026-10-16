@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.Weighted
-import RealRooted.GammaPencil.Intertwining
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.Applications.OEIS.A144438.Weighted
+public import RealRooted.GammaPencil.Intertwining
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Gamma expansion of the weighted deco Eulerian family
@@ -10,6 +12,8 @@ variable with natural coefficients. Their real specialization satisfies the
 lagged gamma-operator recurrence and gives the gamma expansion of
 `weightedDecoEulerian`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

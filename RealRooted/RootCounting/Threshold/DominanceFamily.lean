@@ -1,5 +1,7 @@
-import RealRooted.RootCounting.Threshold.LogConcavity
-import RealRooted.RootCounting.Threshold.Signs
+module
+
+public import RealRooted.RootCounting.Threshold.LogConcavity
+public import RealRooted.RootCounting.Threshold.Signs
 
 /-!
 # Geometrically separated roots from coefficient dominance
@@ -9,6 +11,8 @@ signs at those radii yield families of negative roots whose magnitudes are
 geometrically separated. The endpoint estimates and intermediate-value
 chaining live in the lower `LogConcavity` and `Signs` modules.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootCounting
 

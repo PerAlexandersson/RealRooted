@@ -1,4 +1,6 @@
-import RealRooted.EndpointDerivative
+module
+
+public import RealRooted.EndpointDerivative
 
 /-!
 # Endpoint-derivative tactic frontends
@@ -13,6 +15,8 @@ The first operator adjoins the endpoints to the derivative roots. The second
 first adjoins the endpoints and then differentiates. Both steps are handled by
 the weak Ma--Wang criterion and preserve the interval invariant.
 -/
+
+public section
 
 open Polynomial Set
 

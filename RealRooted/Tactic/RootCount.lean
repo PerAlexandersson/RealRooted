@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RootCount.LowDegreeRules
+module
+
+public import RealRooted.Tactic.RootCount.LowDegreeRules
 
 /-!
 # Root-count tactic compatibility facade
@@ -13,3 +15,5 @@ interlacing or proper-position conclusion. The target orientation is the
 upper-endpoint count equal to the normalized zero-endpoint count:
 `card (roots (f + C μ * g) above x) = card (roots f above x)`.
 -/
+
+public section

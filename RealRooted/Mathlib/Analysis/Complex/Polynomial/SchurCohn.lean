@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # The Schur–Cohn stability criterion
@@ -26,6 +28,8 @@ gives `‖q* z‖ ≤ ‖q z‖` on `1 ≤ ‖z‖`.  Both directions then follo
 * `Polynomial.schurTransform`: the Schur transform `T p`.
 * `Polynomial.isSchurStable_iff`: the Schur–Cohn criterion.
 -/
+
+@[expose] public section
 
 namespace Polynomial
 

@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
-import RealRooted.GammaPencil.Basic
+
+module
+
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+public import RealRooted.GammaPencil.Basic
 
 /-!
 # Finite algebraic symbol of the gamma operator
@@ -13,6 +16,8 @@ This module computes the degree-box Borcea--Branden symbol of the gamma-pencil
 operator.  The two explicit univariate factors are retained for the subsequent
 interlacing and stability argument.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

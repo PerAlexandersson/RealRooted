@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Tactic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Tactic
 
 /-!
 # Root-Sum Bounds
@@ -11,6 +13,8 @@ Small support lemmas relating the sum of a finite multiset of reals to its
 cardinality.  These are intended for the issue #42 left-escape argument: if a
 root multiset has sum below `(card : ℝ) * A`, then some root lies below `A`.
 -/
+
+public section
 
 open Polynomial
 

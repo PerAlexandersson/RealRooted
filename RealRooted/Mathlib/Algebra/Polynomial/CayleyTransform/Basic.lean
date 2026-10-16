@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
-import Mathlib.Tactic.FinCases
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.Tactic.FinCases
 
 /-!
 # Finite-degree Cayley transform of a polynomial
@@ -11,6 +13,8 @@ The transform
 is defined through homogeneous evaluation, so no rational-function side
 conditions are needed. The definition is functorial in the coefficient ring.
 -/
+
+@[expose] public section
 
 open Polynomial
 

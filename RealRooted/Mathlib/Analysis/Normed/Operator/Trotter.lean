@@ -1,6 +1,8 @@
-import Mathlib.Analysis.Normed.Algebra.Exponential
-import Mathlib.Analysis.Normed.Operator.Basic
-import Mathlib.Analysis.SpecialFunctions.Exponential
+module
+
+public import Mathlib.Analysis.Normed.Algebra.Exponential
+public import Mathlib.Analysis.Normed.Operator.Basic
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # The Lie–Trotter product formula
@@ -12,6 +14,8 @@ exponential power series and telescopes the difference of `n`-th powers.
 
 The proof was found by Aristotle (Harmonic).
 -/
+
+public section
 
 open Filter Topology
 

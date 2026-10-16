@@ -1,5 +1,7 @@
-import RealRooted.BernsteinCone.Preserver
-import RealRooted.Transforms.BrandenE.ProperPosition
+module
+
+public import RealRooted.BernsteinCone.Preserver
+public import RealRooted.Transforms.BrandenE.ProperPosition
 
 /-!
 # Interval-root preservation for Brändén's E transform
@@ -8,6 +10,8 @@ The ambient-degree Brändén basis images are exactly the Bernstein-basis
 images of the ordered-Bell coefficient transform. Their checked interlacing
 row therefore instantiates the generic Bernstein-image preserver criterion.
 -/
+
+public section
 
 open Polynomial
 

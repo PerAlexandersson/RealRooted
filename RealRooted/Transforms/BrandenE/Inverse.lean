@@ -1,5 +1,7 @@
-import Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.Transforms.BrandenE.Basic
+module
+
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.Transforms.BrandenE.Basic
 
 /-!
 # Falling-factorial inverse of Brändén's E transform
@@ -9,6 +11,8 @@ ordered Bell basis.  The unnormalized image identity is ring-generic; the
 normalized inverse requires a characteristic-zero field so that nonzero
 factorials are units.
 -/
+
+@[expose] public section
 
 open Polynomial
 

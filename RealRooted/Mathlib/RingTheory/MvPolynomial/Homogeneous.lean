@@ -1,4 +1,6 @@
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Extensions to homogeneous multivariate polynomials
@@ -6,6 +8,8 @@ import Mathlib.RingTheory.MvPolynomial.Homogeneous
 This file contains results intended for upstreaming to
 `Mathlib.RingTheory.MvPolynomial.Homogeneous`.
 -/
+
+public section
 
 namespace MvPolynomial
 

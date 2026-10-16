@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # Liu--Wang current-factor regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceProducts
 Sequence tests for current-row factors `1 + X`, `X`, and scalar multiples
 of `X`, including interlacing, real-rootedness, and projection endpoints.
 -/
+
+public section
 
 open Polynomial
 

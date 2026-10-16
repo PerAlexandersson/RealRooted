@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Row.LowerOrder
-import RealRooted.DerivativeRecurrence.LagWeak
+module
+
+public import RealRooted.Tactic.Row.LowerOrder
+public import RealRooted.DerivativeRecurrence.LagWeak
+public meta import RealRooted.Tactic.Row.LowerOrder
+public meta import RealRooted.DerivativeRecurrence.LagWeak
 
 /-!
 # Row tactics: derivative-lag recurrences
@@ -7,6 +11,8 @@ import RealRooted.DerivativeRecurrence.LagWeak
 `rr_row_deriv_lag_splits` and `rr_row_deriv_lag_interlaces`, by the Liu–Wang step for
 recurrences `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

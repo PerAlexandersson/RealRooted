@@ -1,10 +1,14 @@
-import RealRooted.Tactic.LinearPowerFamily
+module
+
+public import RealRooted.Tactic.LinearPowerFamily
 
 /-!
 # Linear-power family tactic examples
 
 Small OEIS-agnostic regression examples for the fixed linear-factor backend.
 -/
+
+public section
 
 open Polynomial
 

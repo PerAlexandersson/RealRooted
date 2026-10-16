@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.BrandenVecchi.ChowProjectiveRegularization
+module
+
+public import RealRooted.BrandenVecchi.ChowInfinitePF
+public import RealRooted.BrandenVecchi.ChowProjectiveRegularization
 
 /-!
 # Full ASW--Edrei projective Chow boundary
@@ -9,6 +11,8 @@ projective regularization. A zero outer scalar has zero output. Every nonzero
 outer scalar represents the same projective class, so the positive-scalar
 branch is independent of its magnitude.
 -/
+
+@[expose] public section
 
 open Polynomial
 

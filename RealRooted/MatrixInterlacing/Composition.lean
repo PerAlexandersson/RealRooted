@@ -1,4 +1,6 @@
-import RealRooted.MatrixInterlacing.Converse
+module
+
+public import RealRooted.MatrixInterlacing.Converse
 
 /-!
 # Composition of interlacing-preserving polynomial matrices
@@ -7,6 +9,8 @@ This module packages composition for the zero-aware matrix criterion of
 Brändén, *Unimodality, log-concavity, real-rootedness and beyond*,
 Handbook of Enumerative Combinatorics (2015), Theorem 7.8.5.
 -/
+
+@[expose] public section
 
 open Polynomial
 

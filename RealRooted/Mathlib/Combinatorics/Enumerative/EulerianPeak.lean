@@ -1,13 +1,17 @@
-import Mathlib.Data.Fintype.Perm
-import Mathlib.Data.List.Permutation
-import Mathlib.Data.List.GetD
-import Mathlib.Algebra.BigOperators.Group.List.Basic
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.IntervalCases
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+module
+
+public import Mathlib.Data.Fintype.Perm
+public import Mathlib.Data.List.Permutation
+public import Mathlib.Data.List.GetD
+public import Mathlib.Algebra.BigOperators.Group.List.Basic
+public import Mathlib.Tactic.Ring
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.IntervalCases
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+
+@[expose] public section
 
 namespace Equiv.Perm
 

@@ -1,8 +1,10 @@
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
-import RealRooted.BernsteinCone.Preserver
-import RealRooted.SequenceClosure
-import RealRooted.Hadamard.Grace
+module
+
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
+public import RealRooted.BernsteinCone.Preserver
+public import RealRooted.SequenceClosure
+public import RealRooted.Hadamard.Grace
 
 /-!
 # The zero-weight deco transform on the magic cone
@@ -19,6 +21,8 @@ re-derives the real-rootedness part of the deco interval theorem at `w = 0`.
 Whether the cone theorem holds for `𝔓_w` with `w > 0` is open (Alexandersson, *An Eulerian
 deformation from deco polyominoes*, Problem "transformRange"); nothing here addresses it.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
-import RealRooted.PolynomialValueEulerNumerator.Product
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
+public import RealRooted.PolynomialValueEulerNumerator.Product
 
 /-!
 # PF closure for products of polynomial-value Euler numerators
@@ -13,6 +15,8 @@ polynomial-value PF hypotheses, using the eventual-tail route for nonzero
 inputs and handling zero separately. This does not assert a converse for
 arbitrary PF sequences outside the polynomial-value setting.
 -/
+
+public section
 
 open Polynomial
 

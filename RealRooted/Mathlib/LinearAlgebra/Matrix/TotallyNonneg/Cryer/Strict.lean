@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
-import RealRooted.Mathlib.Order.Fin.Tuple
-import RealRooted.Mathlib.Data.Fin.Basic
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
+public import RealRooted.Mathlib.Order.Fin.Tuple
+public import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
 # Strict consecutive-column minors
@@ -10,6 +12,8 @@ matrix from strict positivity on consecutive column intervals. It is the
 strict algebraic component of the finite Cryer route; the non-strict limiting
 argument remains separate.
 -/
+
+public section
 
 namespace Matrix
 

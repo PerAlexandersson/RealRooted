@@ -1,5 +1,7 @@
-import RealRooted.HermiteBiehler.Converse.RootGeometry
-import RealRooted.ObreschkoffConverse.Forward
+module
+
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
+public import RealRooted.ObreschkoffConverse.Forward
 
 /-!
 # The Wang--Yeh affine real-rootedness criterion
@@ -12,6 +14,8 @@ and `b * c ≤ a * d`, then
 
 is real-rooted, with the zero polynomial allowed at degenerate parameters.
 -/
+
+public section
 
 open Polynomial
 

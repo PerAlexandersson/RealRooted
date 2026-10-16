@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.Basic.Coefficients
+module
+
+public import Mathlib
+public import RealRooted.Basic.Coefficients
 
 /-!
 # A quartic-cofactor family containing three OEIS rows
@@ -11,6 +13,8 @@ This module studies the common two-parameter family containing
 because the repository has no recurrence-based definition of these three row
 families to identify with it.
 -/
+
+@[expose] public section
 
 open Polynomial
 

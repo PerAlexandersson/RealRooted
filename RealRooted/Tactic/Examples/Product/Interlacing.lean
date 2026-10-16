@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Interlacing
+module
+
+public import RealRooted.Tactic.Product.Interlacing
 
 /-!
 # `rr_product_natDegree` / `rr_product_interlaces` examples
@@ -7,6 +9,8 @@ Regression tests for OEIS product sequences `P (n + 1) = L n * P n`, drawn from
 `real-rooted-oeis-proofs`: integer, `n`-dependent, and rational linear factors,
 and constant, square, and quadratic base rows.
 -/
+
+@[expose] public section
 
 open Polynomial
 

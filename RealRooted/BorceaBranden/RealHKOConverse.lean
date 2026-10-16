@@ -1,5 +1,9 @@
-import RealRooted.BorceaBranden.MultivariateHKO
-import Mathlib.Topology.Order.IntermediateValue
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import Mathlib.Topology.Order.IntermediateValue
+
+@[expose] public section
 
 open Set
 

@@ -1,10 +1,12 @@
-import Mathlib.Data.Fintype.Perm
-import Mathlib.Basic.Real.Basic
-import Mathlib.Algebra.MvPolynomial.Degrees
-import Mathlib.RingTheory.MvPolynomial.Basic
-import Mathlib.Tactic
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+module
+
+public import Mathlib.Data.Fintype.Perm
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.MvPolynomial.Degrees
+public import Mathlib.RingTheory.MvPolynomial.Basic
+public import Mathlib.Tactic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 /-!
 # Peak-value polynomials of permutations
@@ -14,6 +16,8 @@ values, rather than the positions, of the interior peaks of a permutation.
 Values are zero-based: the value called `j` in the combinatorics literature is
 represented by the element of `Fin n` with value `j - 1`.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

@@ -1,6 +1,8 @@
-import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.PartialSymmetrization
+module
+
+public import RealRooted.Multiaffine.TwoCoordinateSlice
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.PartialSymmetrization
 
 /-!
 # Rayleigh consequences of multivariate stability
@@ -11,6 +13,8 @@ difference.  Finite boundary slices then show that every real-stable
 multiaffine polynomial is Rayleigh, without requiring a finite ambient
 variable type.
 -/
+
+public section
 
 namespace RealRooted
 

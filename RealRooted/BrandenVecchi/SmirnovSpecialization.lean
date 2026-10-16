@@ -1,4 +1,6 @@
-import RealRooted.BrandenVecchi.ChowSignedWords
+module
+
+public import RealRooted.BrandenVecchi.ChowSignedWords
 
 /-!
 # Positive specialization of finite signed words
@@ -8,6 +10,8 @@ Brändén--Vecchi signed-word enumerator with the literal Smirnov-word descent
 polynomial. It records the survivor condition before passing to the alphabet
 with no negative letters.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+module
+
+public import RealRooted.Applications.OEIS.A144438
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 
 /-!
 # Decorated cycle-q Eulerian recurrence
@@ -12,6 +14,8 @@ and its second-order differential recurrence.  The proof uses a normalized
 monic family and the generic quadratic-lag strict-interlacing theorem.  No
 permutation, cycle, excedance, or decoration interpretation is asserted.
 -/
+
+@[expose] public section
 
 open Polynomial
 

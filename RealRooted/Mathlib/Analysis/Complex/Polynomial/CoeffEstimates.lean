@@ -1,4 +1,8 @@
-import Mathlib
+module
+
+public import Mathlib
+
+public section
 
 open Complex Filter Topology
 

@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Scalar
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Scalar
 
 /-!
 # The structural theorem applied to the family `p`
@@ -15,6 +17,8 @@ Consequences, all unconditional:
 * `Bridge.bridge_sign_at_root` — at a zero of `p (n+7)` the bridge `b (n+4)` and `p (n+6)`
   take strictly opposite signs (in particular the bridge does not vanish there).
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

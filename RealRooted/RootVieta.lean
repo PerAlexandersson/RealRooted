@@ -1,8 +1,10 @@
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Vieta identities from the lowest coefficients
@@ -10,6 +12,8 @@ import Mathlib.Tactic.Linarith
 Reciprocal-root power sums and a product factorization in terms of the lowest
 coefficients of a real polynomial.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootVieta
 

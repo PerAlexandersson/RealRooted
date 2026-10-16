@@ -1,10 +1,12 @@
-import RealRooted.BinaryRunTransformation.Deformation
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
-import RealRooted.BoundarySpecializationRight
-import RealRooted.ElementaryDifferential
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.BinaryRunTransformation.Deformation
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+public import RealRooted.BoundarySpecializationRight
+public import RealRooted.ElementaryDifferential
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # Normalized diagonal contraction
@@ -15,6 +17,8 @@ The construction first polarizes the two source variables into `n` clones,
 contracts corresponding clone pairs, and finally specializes every remaining
 clone to zero.  Output variables are passive spectators throughout.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

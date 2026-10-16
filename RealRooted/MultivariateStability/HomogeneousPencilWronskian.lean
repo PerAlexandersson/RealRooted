@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.Multiaffine.AffineLineRestriction
-import RealRooted.SamePhaseInterlacing
-import RealRooted.Wronskian.WeakForward
+module
+
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.SamePhaseInterlacing
+public import RealRooted.Wronskian.WeakForward
 
 /-!
 # Wronskian orientation for homogeneous stable pencils
@@ -10,6 +12,8 @@ This file extracts coordinatewise Wronskian signs from a stable affine
 extension.  Homogeneity and coefficientwise nonnegativity provide the
 positive leading coefficients needed to orient its univariate restrictions.
 -/
+
+public section
 
 namespace RealRooted
 

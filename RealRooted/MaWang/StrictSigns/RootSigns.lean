@@ -1,4 +1,8 @@
-import RealRooted.MaWang.CountBounds
+module
+
+public import RealRooted.MaWang.CountBounds
+
+public section
 
 open Polynomial Filter
 

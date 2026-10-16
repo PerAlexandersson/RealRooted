@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily.Basic
-import RealRooted.ObreschkoffContinuity
+module
+
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Affine family: positive-family packaging
@@ -7,6 +9,8 @@ import RealRooted.ObreschkoffContinuity
 The affine two-parameter family induces a one-parameter
 `PosComboRealRooted` certificate.
 -/
+
+public section
 
 open Polynomial
 

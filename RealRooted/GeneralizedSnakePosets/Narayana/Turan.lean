@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 
 /-!
 # Certificate-free Turan API for modified Narayana polynomials
@@ -6,6 +8,8 @@ import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
 This module proves the modified Narayana Turan inequality on nonpositive
 inputs and uses it for the affine Narayana interlacing lemma.
 -/
+
+@[expose] public section
 
 open Polynomial
 

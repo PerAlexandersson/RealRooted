@@ -1,13 +1,15 @@
-import RealRooted.NarayanaTransformation.Basis
-import RealRooted.NarayanaTransformation.Basis.Stirling
-import RealRooted.NarayanaTransformation.Coefficients
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.Falling
-import RealRooted.NarayanaTransformation.Gamma
-import RealRooted.NarayanaTransformation.Rectangular
-import RealRooted.NarayanaTransformation.Recurrences
-import RealRooted.NarayanaTransformation.Rising
-import RealRooted.NarayanaTransformation.RootGeometry
+module
+
+public import RealRooted.NarayanaTransformation.Basis
+public import RealRooted.NarayanaTransformation.Basis.Stirling
+public import RealRooted.NarayanaTransformation.Coefficients
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Gamma
+public import RealRooted.NarayanaTransformation.Rectangular
+public import RealRooted.NarayanaTransformation.Recurrences
+public import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
 # The Narayana Transformation
@@ -23,3 +25,5 @@ the paper and the checked coefficient infrastructure for the generalized
 Narayana polynomials.  This module is the compatibility facade for the focused
 proof layers in `NarayanaTransformation/`.
 -/
+
+public section

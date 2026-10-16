@@ -1,7 +1,9 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import RealRooted.Hermite.Poulain
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.Hermite.Poulain
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 
 /-!
 # Laguerre–Pólya functions of the derivative
@@ -14,6 +16,8 @@ of zeros of entire functions*, Ch. VIII).  Hermite–Poulain gives it for each a
 polynomial; the Taylor coefficients converge, and real-rootedness passes to limits of bounded
 degree.
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology RealRooted.HermitePoulain
 

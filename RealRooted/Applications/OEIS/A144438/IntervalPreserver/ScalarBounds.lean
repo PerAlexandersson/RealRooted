@@ -1,6 +1,8 @@
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Positivity
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Positivity
 
 /-!
 # Scalar bounds for the A144438 residue-energy induction
@@ -9,6 +11,8 @@ This file proves the elementary inequality that closes the matrix estimate in
 the diagonal argument.  It is kept separate from the spectral construction so
 that the analytic layer can use one checked scalar endpoint.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

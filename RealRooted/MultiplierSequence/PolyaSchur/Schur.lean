@@ -1,5 +1,7 @@
-import RealRooted.Hadamard.FiniteReflection
-import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+module
+
+public import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 
 /-!
 # Schur's factorial product theorem
@@ -17,6 +19,8 @@ For a PF polynomial `g`, the factorial-weighted sequence `k! bₖ` is a
 multiplier sequence by the finite Pólya--Schur theorem.  The remaining sign
 patterns follow by negating `g` or reflecting it in `x ↦ -x`.
 -/
+
+public section
 
 open Polynomial
 

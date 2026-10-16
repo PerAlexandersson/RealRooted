@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
 
 /-!
 # Mean and variance asymptotics for three-term polynomial recurrences
@@ -10,6 +12,8 @@ coefficient distribution of `P n` grow linearly: `μ_n / n → λ'/λ` and `σ_n
 (λ'/λ)²`, where `λ(x)` is the dominant root of `t² = a(x) t + b(x)` (Bender's formulas, here in an
 algebraic form at `x = 1`).
 -/
+
+@[expose] public section
 
 open Filter Topology
 open scoped Polynomial

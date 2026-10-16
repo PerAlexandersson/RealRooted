@@ -1,5 +1,9 @@
-import Lean
-import Batteries.Lean.TagAttribute
+module
+
+public import Lean
+public import Batteries.Lean.TagAttribute
+public meta import Lean
+public meta import Batteries.Lean.TagAttribute
 
 /-!
 # Certificate attributes for RealRooted tactics
@@ -27,6 +31,8 @@ Planned matrix attributes:
 - `[rr_matrix_2x2]`;
 - `[rr_matrix_threshold]`.
 -/
+
+public meta section
 
 initialize rrRecurrenceAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_recurrence

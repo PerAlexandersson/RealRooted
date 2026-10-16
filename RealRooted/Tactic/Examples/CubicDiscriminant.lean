@@ -1,10 +1,14 @@
-import RealRooted.Tactic.CubicDiscriminant
+module
+
+public import RealRooted.Tactic.CubicDiscriminant
 
 /-!
 # Cubic-discriminant tactic examples
 
 Small regression examples for discriminant split criteria.
 -/
+
+public section
 
 open Polynomial
 

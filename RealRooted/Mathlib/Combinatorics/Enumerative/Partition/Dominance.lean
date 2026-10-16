@@ -1,4 +1,6 @@
-import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+module
+
+public import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 
 /-!
 # Dominance order on partitions
@@ -7,6 +9,8 @@ This file defines the dominance order on partitions of a fixed natural
 number.  The relation is expressed using the row lengths of the associated
 Young diagrams, padded by zeros.
 -/
+
+@[expose] public section
 
 open Finset
 

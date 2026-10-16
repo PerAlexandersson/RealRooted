@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # OEIS A318107
@@ -18,6 +20,8 @@ Proof outline for `primitivePolynomial_splits`:
 * If `R` did not split it would have at most `natDegree R - 2` real roots, and `R(X(1+X))` at most
   twice as many, contradicting the count above.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
-import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 
 /-!
 # Rank-four stability of the Deco layer total
@@ -11,6 +13,8 @@ Three exact positive-quartic certificates control all their discriminants.
 The same rank-four data also makes the three affine discriminants in the
 rank-two companion/successor-slope interface explicitly nonpositive.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

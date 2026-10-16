@@ -1,4 +1,6 @@
-import RealRooted.FiniteMemory.Defect
+module
+
+public import RealRooted.FiniteMemory.Defect
 
 /-!
 # Finite-memory degree-defect bridges
@@ -90,6 +92,8 @@ rational functions with simple poles,”
 [arXiv:2604.05189](https://arxiv.org/abs/2604.05189).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.FiniteMemoryDefect
 

@@ -1,9 +1,11 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.ThreeTermRecurrence.LagFeedback
-import RealRooted.ThreeTermRecurrence.ParityProduct
-import RealRooted.Interlacing.Reversal
-import RealRooted.Interlacing.RemainderCertificate
-import RealRooted.DerivativeRecurrence.EndpointWindow
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.ThreeTermRecurrence.LagFeedback
+public import RealRooted.ThreeTermRecurrence.ParityProduct
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Interlacing.RemainderCertificate
+public import RealRooted.DerivativeRecurrence.EndpointWindow
 
 /-!
 # Recurrence root windows and interlacing
@@ -190,6 +192,8 @@ property,”](https://doi.org/10.1090/S0002-9947-06-03856-6) *Transactions of
 the American Mathematical Society* 358 (2006), 3697–3716.
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.RecurrenceRootWindows
 

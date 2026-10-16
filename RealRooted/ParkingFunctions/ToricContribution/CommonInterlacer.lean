@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+module
+
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
 
 /-!
 # Common interlacer for the A390883 toric-contribution family
@@ -13,6 +15,8 @@ in Qiqi Xiao, *The real-rootedness of the toric g-contribution polynomials*,
 arXiv:2609.01086v1. The common-interlacer theorem is distinct and is what
 controls arbitrary nonnegative row sums.
 -/
+
+@[expose] public section
 
 open Polynomial
 

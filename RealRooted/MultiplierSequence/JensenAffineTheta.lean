@@ -1,10 +1,14 @@
-import RealRooted.FiniteFreeRootCount
-import RealRooted.EulerOperator
-import RealRooted.Interlacing.ReversalCommonFactor
-import RealRooted.LinearPowerFamily
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.ProperPosition
+module
+
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.EulerOperator
+public import RealRooted.Interlacing.ReversalCommonFactor
+public import RealRooted.LinearPowerFamily
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.ProperPosition
+
+@[expose] public section
 
 open Polynomial
 
@@ -20,12 +24,12 @@ def affineThetaLeftWeight (k : ℕ) : ℝ :=
 def affineThetaRightWeight (k : ℕ) : ℝ :=
   ((ascPochhammer ℝ k).eval 2)⁻¹
 
-private def source : ℕ → ℝ[X]
+def source : ℕ → ℝ[X]
   | 0 => 2
   | n + 1 =>
       (1 + X) ^ n * (C (n + 3 : ℝ) + C (2 * n + 4 : ℝ) * X)
 
-private def middle (n : ℕ) : ℝ[X] :=
+def middle (n : ℕ) : ℝ[X] :=
   diagonalOperator affineThetaRightWeight (source n)
 
 /-- The reversed double reciprocal-Pochhammer image of an affine theta row. -/

@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.RootMap
+module
+
+public import RealRooted.GammaTransform.RootMap
 
 /-!
 # Gamma-transform ordered roots
@@ -6,6 +8,8 @@ import RealRooted.GammaTransform.RootMap
 The ordered-root and reciprocal-center completion of the Hoster--Stump root
 map.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

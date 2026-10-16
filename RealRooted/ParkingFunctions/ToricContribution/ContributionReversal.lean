@@ -1,6 +1,8 @@
-import Mathlib.Combinatorics.Enumerative.Catalan.Basic
-import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
-import RealRooted.ReciprocalShift.ProperPosition
+module
+
+public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
+public import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+public import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
 # Coefficient reversal for the A390883 toric contributions
@@ -9,6 +11,8 @@ This file identifies the coefficient-reversed EHR contribution packets with
 the normalized hypergeometric polynomials used by the common-interlacer
 theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

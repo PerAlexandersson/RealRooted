@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Normed.Ring.Basic
+module
+
+public import Mathlib.Analysis.Normed.Ring.Basic
 
 /-!
 # Norm bounds for powers multiplied by a fixed element
@@ -6,6 +8,8 @@ import Mathlib.Analysis.Normed.Ring.Basic
 This Mathlib-shaped lemma avoids a `NormOneClass` assumption by retaining a
 fixed right factor instead of bounding a bare power.
 -/
+
+public section
 
 variable {R : Type*} [SeminormedRing R]
 

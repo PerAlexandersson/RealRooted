@@ -1,4 +1,6 @@
-import RealRooted.Analysis.PowerTail.Bernoulli
+module
+
+public import RealRooted.Analysis.PowerTail.Bernoulli
 
 /-!
 # Finite telescoping bounds for reciprocal-power tails
@@ -6,6 +8,8 @@ import RealRooted.Analysis.PowerTail.Bernoulli
 This layer turns the positive-spacing one-step inequality into a bound for a
 finite reciprocal-power tail.
 -/
+
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

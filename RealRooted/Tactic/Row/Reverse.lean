@@ -1,5 +1,9 @@
-import RealRooted.Interlacing.Reversal
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.Interlacing.Reversal
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: reversed rows
@@ -17,6 +21,8 @@ and splitting transfer back (`RealRooted.interlaces_of_eq_reflect`,
 current declaration, proves the link `P n = reflect (D₀ + n) (R n)`, and runs the row tactics
 on the reversed sequence.  The route never reverses an auxiliary sequence again.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Partial derivatives and scalar specialization
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 This file keeps the interaction between partial differentiation and scalar
 specialization separate from the basic specialization API.
 -/
+
+public section
 
 namespace MvPolynomial
 

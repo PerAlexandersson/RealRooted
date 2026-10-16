@@ -1,8 +1,10 @@
-import RealRooted.FiniteFreeMultiplicative
-import RealRooted.Hadamard.Grace
-import RealRooted.LiuOppositeSigns.JensenRootCount
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.RootPolynomial
+module
+
+public import RealRooted.FiniteFreeMultiplicative
+public import RealRooted.Hadamard.Grace
+public import RealRooted.LiuOppositeSigns.JensenRootCount
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.RootPolynomial
 
 /-!
 # Root-count contraction for finite free multiplication
@@ -12,6 +14,8 @@ root-count contraction.  The operator layer first orients Schur--Szegő
 composition with a reflected PF factor.  The combinatorial layer then raises
 finitely many roots and compares the resulting ordered root lists.
 -/
+
+@[expose] public section
 
 open Polynomial
 

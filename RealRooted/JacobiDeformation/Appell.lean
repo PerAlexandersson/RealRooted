@@ -1,6 +1,8 @@
-import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
+module
+
+public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 
 /-!
 # The finite Appell kernel and its Jacobi transport
@@ -23,6 +25,8 @@ The last two sections identify the kernel with the Jacobi deformation: its
 evaluation at the scalar coordinates attached to an image value `ξ` is the
 deformation polynomial evaluated at `ξ`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

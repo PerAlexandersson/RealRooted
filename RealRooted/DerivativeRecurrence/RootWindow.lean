@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.Interlacing
-import RealRooted.SameDegreeDerivative
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.DerivativeRecurrence.Interlacing
+public import RealRooted.SameDegreeDerivative
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Root windows for derivative recurrences
@@ -28,6 +30,8 @@ interval.  For `P (n + 1) = A n * (P n)' + B n * P n` this propagates:
   `(-∞, U]`; `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono`: the windows
   `[L n, U]` with `L` nonincreasing.
 -/
+
+public section
 
 open Polynomial
 
@@ -411,7 +415,7 @@ theorem threeTerm_interlaces_of_roots_le {U : ℝ}
 
 /-- Interlaced root lists `r₁ ≤ s₁ ≤ r₂ ≤ ⋯ ≤ sₘ ≤ r_{m+1} ≤ U`: beyond `U`,
 `(x - U) ∏ (x - sᵢ) ≤ ∏ (x - rᵢ)`. -/
-private theorem prod_sub_le_of_listInterlaces {U x : ℝ} (hx : U < x) :
+theorem prod_sub_le_of_listInterlaces {U x : ℝ} (hx : U < x) :
     ∀ (ss rs : List ℝ), rs.length = ss.length + 1 → ListInterlaces ss rs → (∀ r ∈ rs, r ≤ U) →
       (x - U) * (ss.map (x - ·)).prod ≤ (rs.map (x - ·)).prod
   | [], [], hl, _, _ => by simp at hl

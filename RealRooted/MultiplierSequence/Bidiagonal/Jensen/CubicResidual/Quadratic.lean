@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 
 /-!
 # Quadratic cubic-residual specializations
@@ -6,6 +8,8 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 This module specializes cubic residual certificates to quadratic Jensen
 weights and canonical second-derivative bidiagonal forms.
 -/
+
+@[expose] public section
 
 open Polynomial
 

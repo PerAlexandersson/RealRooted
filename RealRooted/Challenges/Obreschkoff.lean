@@ -1,6 +1,8 @@
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Obreschkoff challenge entry point
@@ -82,6 +84,8 @@ This module exposes the checked forward and converse Obreschkoff directions
 and their combination as an equivalence. The continuity and common-root
 analysis remains in `RealRooted.ObreschkoffConverse`.
 -/
+
+public section
 
 open Polynomial
 

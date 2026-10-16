@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Converse.Wronskian
+module
+
+public import RealRooted.HermiteBiehler.Converse.Wronskian
 
 /-!
 # Converse Hermite--Biehler theorem
@@ -8,6 +10,8 @@ positive leading coefficients, forces the appropriate interlacing relation.
 It contains the common-root inductions and ratio endpoints built on the
 Wronskian and degree-at-most-two converse layers.
 -/
+
+public section
 
 open Polynomial
 

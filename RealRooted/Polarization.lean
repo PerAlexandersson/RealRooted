@@ -1,11 +1,13 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import Mathlib.RingTheory.Polynomial.Vieta
-import RealRooted.GraceHalfPlane
-import RealRooted.PartialSymmetrization
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import Mathlib.RingTheory.Polynomial.Vieta
+public import RealRooted.GraceHalfPlane
+public import RealRooted.PartialSymmetrization
+public import RealRooted.MultivariateStability
 
 /-!
 # Polarization and upper-half-plane stability
@@ -16,6 +18,8 @@ Gribinski--Marcus, Theorem 2.6. The proof derives the Grace--Walsh--Szego
 coincidence step from the project's checked upper/lower-half-plane form of
 Grace's apolarity theorem.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

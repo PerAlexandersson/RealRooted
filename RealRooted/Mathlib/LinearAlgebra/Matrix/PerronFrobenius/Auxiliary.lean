@@ -9,10 +9,15 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/aux.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Analysis.Convex.StdSimplex
-import Mathlib.Data.Int.Star
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Analysis.Convex.StdSimplex
+public import Mathlib.Data.Int.Star
+
+public section
 
 open Filter Set Finset Matrix Topology Convex
 

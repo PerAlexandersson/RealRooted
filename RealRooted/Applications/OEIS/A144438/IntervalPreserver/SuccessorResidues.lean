@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
 
 /-!
 # Residues at an A144438 insertion successor
@@ -7,6 +9,8 @@ We differentiate the finite partial-fraction expansion directly.  At a new
 root `ρ`, this identifies `q'(ρ)/p(ρ)` with the positive secular norm
 `1 + ∑ (-r)w_r/(ρ-r)²`.
 -/
+
+public section
 
 open Polynomial BigOperators
 

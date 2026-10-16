@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import RealRooted.MultivariateStability
 
 /-!
 # Stable homogenization of real-rooted polynomials
@@ -8,6 +10,8 @@ This module proves the nonzero form of the homogenization step used in finite-sy
 The zero polynomial must be excluded because strict upper-half-plane stability requires every
 evaluation in the region to be nonzero.
 -/
+
+public section
 
 open Polynomial
 

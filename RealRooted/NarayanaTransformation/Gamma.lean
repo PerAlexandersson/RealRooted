@@ -1,8 +1,12 @@
-import RealRooted.NarayanaTransformation.Recurrences
+module
+
+public import RealRooted.NarayanaTransformation.Recurrences
 
 /-!
 # Binomial-square Narayana gamma recurrences.
 -/
+
+public section
 
 open Polynomial Finset
 

@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.ToeplitzComposition
-import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
+module
+
+public import RealRooted.BrandenLeite.ToeplitzComposition
+public import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Degree bounds and limits of composition rows
@@ -9,6 +11,8 @@ coefficients depend continuously on the coefficients of the defining power
 series. The final theorem specializes this fact to the positive-order series
 associated with a convergent family of sequences.
 -/
+
+public section
 
 open Filter Polynomial Topology
 open scoped PowerSeries.WithPiTopology

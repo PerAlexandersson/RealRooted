@@ -1,6 +1,8 @@
-import RealRooted.CommonInterleaver.FamilyUpgrade
-import RealRooted.LiuOppositeSigns.RootCount
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.LiuOppositeSigns.RootCount
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Largest-root selection from a common left interlacer
@@ -10,6 +12,8 @@ Marcus--Spielman--Srivastava.  The orientation and degree gap are explicit: a
 polynomial of degree `d - 1` lies in an interlacing relation on the left of every
 degree-`d` family member.
 -/
+
+@[expose] public section
 
 open Polynomial
 

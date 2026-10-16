@@ -1,11 +1,15 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.Tactic.Finish
 
 /-!
 # Cubic-discriminant tactic frontends
 
 Thin wrappers for the checked quadratic and cubic discriminant split criteria.
 -/
+
+public section
 
 open Lean.Elab.Tactic
 

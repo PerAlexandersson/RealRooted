@@ -1,5 +1,7 @@
-import RealRooted.RootCounting.Descartes
-import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
+module
+
+public import RealRooted.RootCounting.Descartes
+public import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
 
 /-!
 # Descartes' rule of signs challenge entry point
@@ -66,3 +68,5 @@ résolution des équations numériques*, 1807; J. Fourier, *Analyse des
 This module is a catalog facade.  The proofs live in
 `RealRooted.RootCounting.Descartes` and `RealRooted.Mathlib.Algebra.Polynomial.BudanFourier`.
 -/
+
+public section

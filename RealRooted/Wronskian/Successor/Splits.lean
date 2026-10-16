@@ -1,4 +1,6 @@
-import RealRooted.Wronskian.Successor.Signs
+module
+
+public import RealRooted.Wronskian.Successor.Signs
 
 /-!
 # Successor-degree Wronskian splitness transfer
@@ -6,6 +8,8 @@ import RealRooted.Wronskian.Successor.Signs
 A strict Wronskian sign transfers splitness from a positive-leading polynomial
 to its one-degree-higher companion.
 -/
+
+public section
 
 open Polynomial
 

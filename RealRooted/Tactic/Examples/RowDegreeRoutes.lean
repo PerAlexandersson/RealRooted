@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Cancellation and invariant-cone degree routes
@@ -11,6 +13,8 @@ did not use the general `LinRec` cancellation theorem.  The two cone examples en
 `c n`, `c (n + 1) - c n`, and `c (n + 2) - 3 c (n + 1) + 2 c n`; the second finds
 `c n`, its first difference, and two consecutive second differences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

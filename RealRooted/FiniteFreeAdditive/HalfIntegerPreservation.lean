@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
-import RealRooted.FiniteFreeAdditive.Preservation
-import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+module
+
+public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.FiniteFreeAdditive.Preservation
+public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 
 /-!
 # Half-integer additive convolution root preservation
@@ -10,6 +12,8 @@ the two generalized rectangular additive convolutions at parameters `-1 / 2`
 and `1 / 2`.  The inputs are degree-bounded split real polynomials with
 nonnegative roots; the output is allowed to be zero.
 -/
+
+public section
 
 open Polynomial
 

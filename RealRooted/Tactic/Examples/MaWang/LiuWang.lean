@@ -1,4 +1,6 @@
-import RealRooted.Tactic.MaWang.Denominator
+module
+
+public import RealRooted.Tactic.MaWang.Denominator
 
 /-!
 # Combined Ma--Wang/Liu--Wang regression examples
@@ -7,6 +9,8 @@ Sequence-level tests for combined derivative and lag recurrences, including
 nonnegative-coefficient/nonpositive-root, root-window, and
 denominator-normalized variants.
 -/
+
+public section
 
 open Polynomial
 

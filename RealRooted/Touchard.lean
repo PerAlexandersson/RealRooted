@@ -1,4 +1,6 @@
-import Mathlib.Tactic
+module
+
+public import Mathlib.Tactic
 
 /-!
 # Touchard Polynomials
@@ -7,6 +9,8 @@ This module defines the Touchard polynomial sequence and records its basic
 recurrence. Real-rootedness and Sturm-sequence applications live in
 `RealRooted.CombinatorialExamples.Touchard`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

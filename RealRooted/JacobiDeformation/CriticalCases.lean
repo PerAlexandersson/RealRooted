@@ -1,7 +1,9 @@
-import RealRooted.JacobiDeformation.CriticalKernelSign
-import RealRooted.JacobiDeformation.ImageProduct
-import RealRooted.JacobiDeformation.JacobiLowering
-import RealRooted.JacobiDeformation.KernelExpansion
+module
+
+public import RealRooted.JacobiDeformation.CriticalKernelSign
+public import RealRooted.JacobiDeformation.ImageProduct
+public import RealRooted.JacobiDeformation.JacobiLowering
+public import RealRooted.JacobiDeformation.KernelExpansion
 
 /-!
 # Strict signs at the critical points of the delta-zero deformation
@@ -19,6 +21,8 @@ and real-rootedness of `F_0` gives `F_0''(ξ) / F_0(ξ) < 0`.  If `ξ` is a
 double root of `F_0`, its coordinates are roots of `p_m`, and the root kernel
 sign is compared with the second-derivative sign at a double image root.
 -/
+
+public section
 
 open Finset Polynomial
 

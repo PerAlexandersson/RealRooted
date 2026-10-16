@@ -1,6 +1,10 @@
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Algebra.BigOperators.Group.List.Basic
-import Mathlib.Basic.Real.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.BigOperators.Group.List.Basic
+public import Mathlib.Basic.Real.Basic
+
+@[expose] public section
 
 open Polynomial
 

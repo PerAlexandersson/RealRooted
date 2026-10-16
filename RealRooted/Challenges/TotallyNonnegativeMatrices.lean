@@ -1,10 +1,12 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
-import RealRooted.MatrixInterlacing.TotallyNonnegative
-import RealRooted.OscillatoryInterlacing
-import RealRooted.TotallyNonnegInterlacing
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
+public import RealRooted.OscillatoryInterlacing
+public import RealRooted.TotallyNonnegInterlacing
 
 /-!
 # Totally nonnegative matrices challenge entry point
@@ -181,6 +183,8 @@ Cryer theorems for totally nonnegative matrices.  The matrix theory lives in
 `RealRooted.TotallyNonnegInterlacing` and `RealRooted.OscillatoryInterlacing`,
 and mixing in `RealRooted.MatrixInterlacing.TotallyNonnegative`.
 -/
+
+public section
 
 open Matrix Polynomial
 

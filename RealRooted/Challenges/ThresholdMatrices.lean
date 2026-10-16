@@ -1,5 +1,7 @@
-import RealRooted.GustafssonSolus
-import RealRooted.ThresholdMatrix.HaglundZhang
+module
+
+public import RealRooted.GustafssonSolus
+public import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # Threshold matrices challenge entry point
@@ -90,3 +92,5 @@ relations for binomial-Eulerian polynomials,”
 This module is a catalog facade.  The proofs live in
 `RealRooted.ThresholdMatrix` and `RealRooted.GustafssonSolus`.
 -/
+
+public section

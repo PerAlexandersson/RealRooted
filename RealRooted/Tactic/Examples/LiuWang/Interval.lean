@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceIntervals
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceIntervals
 
 /-!
 # Liu--Wang interval regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceIntervals
 Sequence tests for lag factors controlled on bounded root intervals, including
 explicit and inferred endpoint certificates.
 -/
+
+public section
 
 open Polynomial
 

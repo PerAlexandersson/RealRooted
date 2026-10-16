@@ -1,7 +1,9 @@
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.SameDegreeCountFromAnalytic
-import RealRooted.SameDegreeCubicSecondRootFromAnalytic
-import RealRooted.Tactic.RootCount.SequenceCore
+module
+
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.SameDegreeCountFromAnalytic
+public import RealRooted.SameDegreeCubicSecondRootFromAnalytic
+public import RealRooted.Tactic.RootCount.SequenceCore
 
 /-!
 # Low-degree root-count endpoints
@@ -9,6 +11,8 @@ import RealRooted.Tactic.RootCount.SequenceCore
 Sequence lifts and analytic degree-at-most-three endpoints for root counts,
 upper-threshold counts, and root crossing.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import Mathlib.Data.Finset.Card
+module
+
+public import Mathlib.Data.Finset.Card
 
 /-!
 # Multiset cardinality and deduplication
@@ -6,6 +8,8 @@ import Mathlib.Data.Finset.Card
 Small cardinality criteria for a multiset to have no duplicate elements.
 These statements are intended for upstreaming to Mathlib.
 -/
+
+public section
 
 namespace Multiset
 

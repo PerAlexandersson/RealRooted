@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Simple real roots
@@ -6,6 +8,8 @@ import RealRooted.Basic
 The elementary root-multiplicity interface for a real polynomial with no
 repeated real roots.
 -/
+
+@[expose] public section
 
 open Polynomial
 

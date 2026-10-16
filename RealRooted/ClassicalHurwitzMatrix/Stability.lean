@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix
+module
+
+public import RealRooted.ClassicalHurwitzMatrix
 
 /-!
 # Strict Hurwitz stability
@@ -7,6 +9,8 @@ This file separates the strict root-location hypothesis in the classical
 Routh--Hurwitz theorem from `IsHurwitzStable`, the project's combinatorial
 closed-half-plane predicate with nonnegative coefficients.
 -/
+
+@[expose] public section
 
 open Polynomial
 

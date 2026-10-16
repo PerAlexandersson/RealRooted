@@ -1,7 +1,9 @@
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.SimpleRoots
 
 /-!
 # Linear maps preserving interlacing of negative-rooted pairs
@@ -20,6 +22,8 @@ The no-common-root hypothesis is needed: the repository's `StrictInterl` allows 
 then pencil members can have double roots.  `strictInterl_iterate_of_negative_simple` iterates
 the statement along `P (n+1) = T (P n)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

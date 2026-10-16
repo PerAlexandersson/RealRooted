@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Tactic
 
 /-!
 # Polynomial basis transforms
@@ -10,6 +12,8 @@ The coefficientwise linear map sending `X ^ n` to a prescribed polynomial
 `B n`, together with its elementary algebra, degree bounds and monicity for
 triangular bases, and the injectivity criterion for degree-triangular bases.
 -/
+
+@[expose] public section
 
 open Finset
 

@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # General row-nonnegativity regression
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RowInterlacing
 These examples exercise arbitrary lags, derivative summands, and multipliers
 whose coefficients are nonnegative polynomial expressions in the row index.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted
 

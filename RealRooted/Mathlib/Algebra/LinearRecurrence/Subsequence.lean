@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import Mathlib.LinearAlgebra.Matrix.Notation
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.LinearAlgebra.Matrix.Notation
 
 /-!
 # Linear recurrences for arithmetic subsequences
@@ -9,6 +11,8 @@ This file proves the Cayley--Hamilton construction of a recurrence for every
 arithmetic subsequence of a finite-dimensional matrix orbit: if `v (n + 1) = A *ᵥ v n`, then
 every coordinate of `m ↦ v (p * m + c)` satisfies the recurrence given by `charpoly (A ^ p)`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 open scoped Matrix

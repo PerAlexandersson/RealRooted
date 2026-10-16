@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Data.Nat.Factorial.Basic
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
 # Factorial compression: definitions and coefficient formulas
@@ -14,6 +16,8 @@ The construction is due to Zhanhe Zhang (*Factorial compression and strict inter
 SSRN 7510941); the proofs below are ported from the draft of Zhang's formalization.  The root
 geometry lives in `RealRooted/FactorialCompression/CommonKernel.lean` and `Kernel.lean`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

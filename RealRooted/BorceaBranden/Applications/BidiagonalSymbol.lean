@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.MultiplierSequence.Bidiagonal
+module
+
+public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Algebraic symbols of bidiagonal polynomial operators
@@ -9,6 +11,8 @@ This module computes the genuine affine Borcea--Branden algebraic symbol of a
 bidiagonal polynomial operator. This symbol is distinct from the homogeneous
 binary form used by the finite-symbol tactic.
 -/
+
+@[expose] public section
 
 noncomputable section
 

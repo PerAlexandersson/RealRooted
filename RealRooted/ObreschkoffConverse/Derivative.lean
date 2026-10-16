@@ -1,5 +1,7 @@
-import RealRooted.ObreschkoffConverse.Converse
-import RealRooted.ObreschkoffConverse.Forward
+module
+
+public import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.ObreschkoffConverse.Forward
 
 /-!
 # Derivative preservation of interlacing
@@ -7,6 +9,8 @@ import RealRooted.ObreschkoffConverse.Forward
 The derivative-preservation consequences of the two directions of
 Obreschkoff's theorem.
 -/
+
+public section
 
 open Polynomial
 

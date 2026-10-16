@@ -1,6 +1,8 @@
-import RealRooted.Hadamard.Grace
-import RealRooted.Hadamard.SchurSzegoMultiplicity
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+module
+
+public import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Sign counts for the finite Schur–Szegő composition
@@ -23,6 +25,8 @@ We do not follow their continuity argument.  Instead:
 The real-rootedness of `P *ₙ Q` (finite Schur–Szegő theorem) is taken as an explicit hypothesis
 in `schurSzegoComp_roots_sign_counts`; the zero-root statement needs no such hypothesis.
 -/
+
+public section
 
 open Polynomial
 

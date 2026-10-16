@@ -1,9 +1,11 @@
-import RealRooted.Transforms.BrandenE.Basic
-import RealRooted.Transforms.BrandenE.BasisImage
-import RealRooted.Transforms.BrandenE.Inverse
-import RealRooted.Transforms.BrandenE.OrderedBell
-import RealRooted.Transforms.BrandenE.ProperPosition
-import RealRooted.Transforms.BrandenE.WeightedSum
+module
+
+public import RealRooted.Transforms.BrandenE.Basic
+public import RealRooted.Transforms.BrandenE.BasisImage
+public import RealRooted.Transforms.BrandenE.Inverse
+public import RealRooted.Transforms.BrandenE.OrderedBell
+public import RealRooted.Transforms.BrandenE.ProperPosition
+public import RealRooted.Transforms.BrandenE.WeightedSum
 
 /-!
 # Brändén's E transform
@@ -11,3 +13,5 @@ import RealRooted.Transforms.BrandenE.WeightedSum
 Facade for the ordered-Bell transform, its falling-factorial inverse, and its
 Pólya-frequency/interlacing theory.
 -/
+
+public section

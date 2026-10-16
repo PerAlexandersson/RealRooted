@@ -1,4 +1,8 @@
-import RealRooted.Tactic.WeightedSum
+module
+
+public import RealRooted.Tactic.WeightedSum
+
+public section
 
 open Polynomial
 

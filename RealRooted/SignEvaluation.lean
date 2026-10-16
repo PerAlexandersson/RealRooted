@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic
+public import Mathlib.Tactic
 
 /-!
 # Polynomial evaluation sign lemmas
@@ -7,6 +9,8 @@ import Mathlib.Tactic
 Reusable arithmetic certificates for the polynomial coefficient shapes used by
 Ma--Wang and Liu--Wang recurrences.
 -/
+
+public section
 
 open Polynomial
 

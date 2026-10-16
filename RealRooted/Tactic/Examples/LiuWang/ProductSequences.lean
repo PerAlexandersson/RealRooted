@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # Liu--Wang product-sequence regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceProducts
 Sequence tests for product lag factors, including scalar, window-certified,
 and real-rootedness projection variants.
 -/
+
+public section
 
 open Polynomial
 

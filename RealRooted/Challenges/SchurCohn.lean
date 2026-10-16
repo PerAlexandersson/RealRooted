@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 
 /-!
 # Schur–Cohn challenge entry point
@@ -65,3 +67,5 @@ Gleichung in einem Kreise,”](https://doi.org/10.1007/BF01215894) *Math. Z.* 14
 This module is a catalog facade.  The proofs live in
 `RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn`.
 -/
+
+public section

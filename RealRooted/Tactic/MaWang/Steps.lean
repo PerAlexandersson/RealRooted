@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.FactorSyntax
+module
+
+public import RealRooted.Tactic.MaWang.FactorSyntax
 
 /-!
 # Ma--Wang tactic step rules
 
 Elaboration rules for the one-step and short-window certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

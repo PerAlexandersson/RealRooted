@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Reversal toolkit for degree-drop root-continuity
@@ -11,6 +13,8 @@ degree-drop endpoint behind issue #42.  The analytic endpoint concerns a family
 `f + C μ * g` whose degree drops as `μ → 0`; after reversal, roots escaping to
 infinity become ordinary roots near zero.
 -/
+
+public section
 
 open Polynomial
 

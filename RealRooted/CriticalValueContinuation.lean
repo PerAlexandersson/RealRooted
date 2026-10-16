@@ -1,13 +1,15 @@
-import RealRooted.PFPolynomial.Closure
-import RealRooted.RootCountFinite
-import RealRooted.RootCounting.Finite
-import RealRooted.RootMultiplicityMatching
-import RealRooted.SimpleRoots
-import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Calculus.ImplicitContDiff
-import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+module
+
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.RootCountFinite
+public import RealRooted.RootCounting.Finite
+public import RealRooted.RootMultiplicityMatching
+public import RealRooted.SimpleRoots
+public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Calculus.ImplicitContDiff
+public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Continuation of simple polynomial roots
@@ -16,6 +18,8 @@ This file packages the local implicit-function input used by critical-value
 continuation arguments.  It deliberately records only a smooth local root
 branch; formulas for the branch derivative belong in downstream applications.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 open scoped ContDiff

@@ -1,4 +1,6 @@
-import RealRooted.BrandenLC
+module
+
+public import RealRooted.BrandenLC
 
 /-!
 # Infinite log-concavity of Pólya-frequency polynomials
@@ -9,6 +11,8 @@ the geometry of zeros”, J. reine angew. Math. 658 (2011), 115–131. The proof
 here is a different stability-functional / Laguerre argument found by
 Aristotle.
 -/
+
+@[expose] public section
 
 open Polynomial
 

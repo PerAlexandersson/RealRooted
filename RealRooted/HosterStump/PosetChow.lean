@@ -1,7 +1,9 @@
-import RealRooted.HosterStump.FlagF
-import RealRooted.HosterStump.HVector
-import RealRooted.HosterStump.DesMobius
-import RealRooted.HosterStump.DescentLe
+module
+
+public import RealRooted.HosterStump.FlagF
+public import RealRooted.HosterStump.HVector
+public import RealRooted.HosterStump.DesMobius
+public import RealRooted.HosterStump.DescentLe
 
 /-!
 # Chow polynomials of graded simplicial posets
@@ -20,6 +22,8 @@ Boolean lower interval (`flagF_eq_fVec_mul`); the `f`-vector is `f_i = ∑ k, h_
 by the same product (`desLeCount_reflectSet`); inclusion–exclusion on both sides
 (`desCount_reflectSet_eq_sum`) gives (1.3).
 -/
+
+public section
 
 open Polynomial Finset
 

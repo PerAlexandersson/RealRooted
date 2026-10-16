@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.Basic
+module
+
+public import RealRooted.JacobiDeformation.Basic
 
 /-!
 # Finite Jacobi kernel weights and their Newton expansion
@@ -27,6 +29,8 @@ algebra that diagonalizes a kernel with respect to an eigenbasis.  The Newton
 expansion `w_j / w_0 = ∑_{k ≤ j} a_k Λ_k(λ_j)` itself is proved in
 `RealRooted.JacobiDeformation.NewtonIdentity`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

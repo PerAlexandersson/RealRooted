@@ -1,9 +1,13 @@
-import RealRooted.NarayanaTransformation.Rising
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Generalized Narayana coefficient and transform data.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

@@ -1,5 +1,7 @@
-import RealRooted.RootAmplitude.Finite
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import RealRooted.SortedRoots
 
 /-!
 # Amplitude bridges for sorted root magnitudes
@@ -7,6 +9,8 @@ import RealRooted.SortedRoots
 This file adds only the polynomial-amplitude consequences missing from the
 canonical `SortedRoots.rootMags` and `SortedRoots.rootSeq` API.
 -/
+
+public section
 
 open Polynomial
 

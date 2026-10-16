@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PeakValues.Stability
-import RealRooted.SamePhaseInterlacing
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.Stability
+public import RealRooted.SamePhaseInterlacing
 
 /-!
 # Weighted interleaving of peak-value polynomials
@@ -7,6 +9,8 @@ import RealRooted.SamePhaseInterlacing
 Positive weighted diagonal restrictions of consecutive peak-value enumerators
 strictly interlace.
 -/
+
+@[expose] public section
 
 open Polynomial
 

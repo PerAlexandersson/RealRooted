@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Canonical odd/even extraction
@@ -7,6 +9,8 @@ Mathlib's polynomial contraction recovers the even and odd coefficient
 subsequences. These identities connect an arbitrary real polynomial to the
 explicit odd/even inputs used by the classical Hurwitz matrix.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,8 @@
-import RealRooted.Interlacing.Reversal
+module
+
+public import RealRooted.Interlacing.Reversal
+
+public section
 
 open Polynomial
 

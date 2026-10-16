@@ -1,6 +1,8 @@
-import RealRooted.AffineDerivative
-import RealRooted.Basic
-import RealRooted.MaWang
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.Basic
+public import RealRooted.MaWang
 
 /-!
 # Hutchinson--Kurtz coefficient criterion
@@ -15,6 +17,8 @@ Amer. Math. Monthly 99 (1992), 259--263.
 
 This module proves the formal coefficient-inequality criterion.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,9 +1,11 @@
-import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
-import Mathlib.Topology.Instances.Matrix
-import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+module
+
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
+public import Mathlib.Topology.Instances.Matrix
+public import RealRooted.Mathlib.LinearAlgebra.Vandermonde
 
 /-!
 # Karlin's finite Gaussian matrices
@@ -18,6 +20,8 @@ positive infinity, and `F(a)` is strictly totally positive when `a > 0`.
 This file proves Gaussian convergence and strict positivity of all strictly
 ordered finite minors using Karlin.s exponential-kernel argument.
 -/
+
+@[expose] public section
 
 public section
 

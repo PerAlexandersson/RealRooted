@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+module
+
+public import Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Asymptotics of polynomial evaluations
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 This file records asymptotic consequences for polynomial evaluations along
 natural arguments.
 -/
+
+@[expose] public section
 
 open Filter
 

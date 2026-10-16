@@ -1,4 +1,8 @@
-import RealRooted.GarloffWagner.KreinExpansion
+module
+
+public import RealRooted.GarloffWagner.KreinExpansion
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.GeneralizedLiuWang
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum
 
 /-!
 # Strict interlacing for quadratic derivative recurrences with a lag
@@ -11,6 +13,8 @@ derivative multiplier is `a X - b X^2` and whose lag multiplier is `c X`.
 The middle multiplier is arbitrary because it vanishes at every root used by
 the generalized Liu--Wang step.
 -/
+
+public section
 
 open Polynomial
 

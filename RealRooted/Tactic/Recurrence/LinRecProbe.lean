@@ -1,4 +1,7 @@
-import RealRooted.Tactic.Recurrence.ODE
+module
+
+public import RealRooted.Tactic.Recurrence.ODE
+public meta import RealRooted.Tactic.Recurrence.ODE
 
 /-!
 # General linear recurrences: numeric probe
@@ -20,6 +23,8 @@ theorems of `RealRooted.LinRec` need:
 `linRecProbe?` runs all of this for a sequence.  The probe only samples finitely many rows, so
 everything it reports is a *guess* that the proof phase must still justify.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

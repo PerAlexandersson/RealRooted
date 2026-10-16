@@ -1,10 +1,12 @@
-import Mathlib.Analysis.Calculus.Deriv.Inv
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Topology.Algebra.Module.ModuleTopology
-import Mathlib.Topology.GDelta.MetrizableSpace
-import RealRooted.CombinatorialExamples.BorosMoll.Estimates
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
+public import Mathlib.Topology.GDelta.MetrizableSpace
+public import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 
 /-!
 # The Boros–Moll log-concavity transform interlaces the Narayana polynomial
@@ -19,6 +21,8 @@ The proof reduces the sign of `M_n` at the zeros of `N_n` to the positivity of a
 `RealRooted.CombinatorialExamples.BorosMoll.Estimates` for `n ≥ 36`; the cases `1 ≤ n ≤ 35`
 are kernel-checked certificates in `RealRooted.CombinatorialExamples.BorosMoll.Basic`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorosMoll
 

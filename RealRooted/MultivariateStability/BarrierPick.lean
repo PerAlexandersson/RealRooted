@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.Barrier
+module
+
+public import RealRooted.MultivariateStability.Barrier
 
 /-!
 # The cross-coordinate barrier ratio is a Pick-type function
@@ -6,6 +8,8 @@ import RealRooted.MultivariateStability.Barrier
 `MvRealStable.cross_coordinate_ratio_nonpos`: along a coordinate line above the roots of a real
 stable polynomial, the ratio `(∂_i p) / p` has nonpositive imaginary part on the upper half-plane.
 -/
+
+public section
 
 namespace RealRooted
 

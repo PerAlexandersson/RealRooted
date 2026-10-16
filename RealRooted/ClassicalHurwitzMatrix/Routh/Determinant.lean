@@ -1,11 +1,15 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
 
 /-!
 # The leading Hurwitz-determinant recurrence
 
 This file extracts the determinant recurrence from one algebraic Routh step.
 -/
+
+@[expose] public section
 
 open Polynomial
 

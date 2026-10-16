@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+module
+
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
 
 /-!
 # The deco Eulerian recurrence and OEIS A144438
@@ -14,6 +16,8 @@ The definition gives an algebraic facade for OEIS A144438. With local index
 in the literature is `m + 2`. No combinatorial identification is asserted
 here: the checked connection is the initial values and recurrence alone.
 -/
+
+@[expose] public section
 
 open Polynomial
 

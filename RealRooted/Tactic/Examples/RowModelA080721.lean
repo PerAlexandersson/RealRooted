@@ -1,11 +1,15 @@
-import RealRooted.Applications.OEIS.A080721
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A080721
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Regression examples for OEIS A080721
 
 The definition and goals below retain the exact generated downstream syntax.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

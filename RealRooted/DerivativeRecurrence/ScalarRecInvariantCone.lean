@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.General
+module
+
+public import RealRooted.DerivativeRecurrence.General
 
 /-!
 # Invariant cones for scalar recurrences
@@ -9,6 +11,8 @@ that a cone cut out by finitely many linear forms is invariant when the companio
 step preserves it.  Both closed and open cones are covered.  This gives positivity of top
 coefficients of rows whose leading coefficients satisfy a scalar recurrence (issue #1322).
 -/
+
+@[expose] public section
 
 namespace RealRooted.ScalarRec
 
@@ -87,7 +91,7 @@ theorem FormsPos.window_of_companionStep {k q : ℕ} {m : ℕ → ℕ → ℝ}
 
 /-- The recurrence with characteristic polynomial `(E - 1) (E - 2) (E - 4)` and
 initial values of `(2^(n+1) - 1)^2` is positive. -/
-private theorem pos_of_one_two_four_rec (c : ℕ → ℝ)
+theorem pos_of_one_two_four_rec (c : ℕ → ℝ)
     (hrec : ∀ n, c (n + 3) = 7 * c (n + 2) - 14 * c (n + 1) + 8 * c n)
     (hc0 : c 0 = 1) (hc1 : c 1 = 9) (hc2 : c 2 = 49) (n : ℕ) : 0 < c n := by
   let m : ℕ → ℕ → ℝ := fun _ j => if j = 0 then 8 else if j = 1 then -14 else 7
@@ -128,7 +132,7 @@ example (n : ℕ) : 0 < (((2 : ℝ) ^ (n + 1) - 1) ^ 2) := by
 /-- The order-four recurrence and initial values of `F(n+5) - n - 4` give a positive
 sequence.  The invariant forms are the value, its first difference, and two consecutive
 second differences. -/
-private theorem pos_of_fib_sub_linear_rec (c : ℕ → ℝ)
+theorem pos_of_fib_sub_linear_rec (c : ℕ → ℝ)
     (hrec : ∀ n,
       c (n + 4) = 3 * c (n + 3) - 2 * c (n + 2) - c (n + 1) + c n)
     (hc0 : c 0 = 1) (hc1 : c 1 = 3) (hc2 : c 2 = 7) (hc3 : c 3 = 14)

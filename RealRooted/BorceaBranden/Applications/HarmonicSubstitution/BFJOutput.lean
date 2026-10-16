@@ -1,7 +1,9 @@
-import RealRooted.Basic.Coefficients.Multivariate
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
-import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+module
+
+public import RealRooted.Basic.Coefficients.Multivariate
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
+public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
 /-!
 # Dehomogenized BFJ output
@@ -11,6 +13,8 @@ variable of the distinguished BFJ coefficient to one. It records the generic
 scalar, degree, and coefficient-sign interfaces used by the numerator-product
 argument.
 -/
+
+@[expose] public section
 
 open Polynomial
 

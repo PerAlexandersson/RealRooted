@@ -1,9 +1,11 @@
-import Mathlib.RingTheory.PowerSeries.Inverse
-import Mathlib.Algebra.Polynomial.Degree.TrailingDegree
-import Mathlib.Computability.DFA
-import Mathlib.Data.Nat.ModEq
-import Mathlib.NumberTheory.FrobeniusNumber
-import RealRooted.Basic.Coefficients
+module
+
+public import Mathlib.RingTheory.PowerSeries.Inverse
+public import Mathlib.Algebra.Polynomial.Degree.TrailingDegree
+public import Mathlib.Computability.DFA
+public import Mathlib.Data.Nat.ModEq
+public import Mathlib.NumberTheory.FrobeniusNumber
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Degree defects for positive finite-memory symbols
@@ -13,6 +15,8 @@ construction.  It records the two no-cancellation lemmas needed for highest and 
 polynomial degree, defines the symbol generating series, and extracts its fundamental
 recurrence.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -412,7 +416,7 @@ private theorem length_eraseLag_le (p : ℕ) (w : List ℕ) :
       · simpa only [List.length_cons] using ih.trans (Nat.le_succ _)
       · simpa only [List.length_cons, Nat.succ_le_succ_iff] using ih
 
-private theorem wordLag_le_length_mul {r : ℕ} {active : Set ℕ} {w : List ℕ}
+theorem wordLag_le_length_mul {r : ℕ} {active : Set ℕ} {w : List ℕ}
     (hw : IsLagWord r active w) : wordLag w ≤ w.length * r := by
   induction w with
   | nil => simp [wordLag]
@@ -481,7 +485,7 @@ private theorem exists_zeroCost_adjustment {r p q x y : ℕ} {active : Set ℕ}
   rw [wordLag, hsum, Nat.add_sub_of_le hxle]
   simp [m, Nat.add_mod]
 
-private theorem exists_bounded_residue_minimizer {r p q : ℕ} {active : Set ℕ}
+theorem exists_bounded_residue_minimizer {r p q : ℕ} {active : Set ℕ}
     {δ : ℕ → ℕ} (hp : 0 < p) (hq_pos : 0 < q) (hp_active : p ∈ active)
     (hp_cost : δ p = 0) (hq : Nat.setGcd (criticalLags active δ) = q)
     (hsetGcd : Nat.setGcd active = 1) (hpos : ∀ l ∈ active, 1 ≤ l)

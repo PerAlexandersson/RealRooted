@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
 
 /-!
 # Liu--Wang global nonpositive-lag regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceNonpositive
 Sequence tests for global, negative-constant, negative-square, and
 normalization-aware nonpositive lag factors.
 -/
+
+public section
 
 open Polynomial
 

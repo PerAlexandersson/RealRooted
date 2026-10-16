@@ -1,6 +1,11 @@
-import RealRooted.QuadraticRoot
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.InterlacesExplicit
+module
+
+public import RealRooted.QuadraticRoot
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.InterlacesExplicit
+public meta import RealRooted.QuadraticRoot
+public meta import RealRooted.Tactic.Recurrence
+public meta import RealRooted.Tactic.InterlacesExplicit
 
 /-!
 # `rr_row_closed_form_splits`
@@ -33,6 +38,8 @@ Entry points: `RealRooted.Tactic.cfPlan?` (the probe), `RealRooted.Tactic.cfProv
 `RealRooted.Tactic.rowClosedFormSplits : TacticM Unit` (the strategy, to be run under
 `rowSucceeds`), and the tactic `rr_row_closed_form_splits`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

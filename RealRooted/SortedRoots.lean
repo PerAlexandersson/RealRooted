@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Data.List.Basic
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Data.List.GetD
-import Mathlib.Data.Multiset.Sort
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Data.List.Basic
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Data.List.GetD
+public import Mathlib.Data.Multiset.Sort
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Sorted negative-root magnitudes
@@ -10,6 +12,8 @@ import Mathlib.Basic.Real.Basic
 A finite increasing sequence obtained by sorting the negations of a real
 polynomial's roots.
 -/
+
+@[expose] public section
 
 namespace RealRooted.SortedRoots
 

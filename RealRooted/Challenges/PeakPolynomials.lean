@@ -1,4 +1,6 @@
-import RealRooted.Applications.PeakPolynomials.PeakInduction
+module
+
+public import RealRooted.Applications.PeakPolynomials.PeakInduction
 
 /-!
 # Peak polynomials on Ferrers boards challenge entry point
@@ -151,3 +153,5 @@ Lemma `lem:t_minus_1`. For peaks of permutations, see the
 This module is a catalog facade. The proofs live in
 `RealRooted.Applications.PeakPolynomials.PeakInduction`.
 -/
+
+public section

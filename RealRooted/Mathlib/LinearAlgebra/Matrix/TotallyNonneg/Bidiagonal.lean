@@ -4,8 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-import Mathlib.LinearAlgebra.Matrix.Block
+module
+
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 /-!
 # Variable lower-bidiagonal totally nonnegative matrices
@@ -14,6 +17,8 @@ This file provides the reusable lower-bidiagonal constructor whose diagonal and
 subdiagonal entries may vary independently. The proof is by induction on the
 minor size and does not require strict positivity of either sequence.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

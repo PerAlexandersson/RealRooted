@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.FPolynomial
+module
+
+public import RealRooted.SymmetricDecomposition.FPolynomial
 
 /-!
 # Derivative recurrences for the `f`-polynomial transform
@@ -6,6 +8,8 @@ import RealRooted.SymmetricDecomposition.FPolynomial
 A first-order derivative recurrence for `Q` transforms into a first-order
 derivative recurrence for `fPolynomial n (Q n)`.
 -/
+
+public section
 
 open Polynomial
 

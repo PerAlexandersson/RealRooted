@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 
 /-!
 # Pattern occurrences as a statistic
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 Pattern occurrences are counted by their position sets.  Thus equal-valued
 subwords at different positions contribute with their multiplicity.
 -/
+
+@[expose] public section
 
 namespace List
 

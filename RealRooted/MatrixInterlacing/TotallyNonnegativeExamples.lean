@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.MatrixInterlacing.TotallyNonnegative
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
 
 /-!
 # Examples for totally nonnegative interlacing-sequence mixing
@@ -7,6 +9,8 @@ import RealRooted.MatrixInterlacing.TotallyNonnegative
 These examples exercise square, genuinely rectangular, zero-output-row, and
 elementary Jacobi (bidiagonal) instances of the constant-matrix theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

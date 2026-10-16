@@ -26,7 +26,7 @@ of multivariate stability preservers.
 
 namespace MvPolynomial
 
-public section DegreeOfLE
+@[expose] public section DegreeOfLE
 
 variable {σ R : Type*} [CommSemiring R]
 

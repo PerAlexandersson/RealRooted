@@ -1,5 +1,7 @@
-import RealRooted.RootContinuity
-import Mathlib.Topology.Connected.Clopen
+module
+
+public import RealRooted.RootContinuity
+public import Mathlib.Topology.Connected.Clopen
 
 /-!
 # Real-rootedness along squarefree paths
@@ -21,6 +23,8 @@ The set of parameters where the polynomial splits is clopen:
 The main statements are `RealRooted.splits_of_isPreconnected` and its unit-interval form
 `RealRooted.splits_of_path`.
 -/
+
+public section
 
 open Polynomial Set
 

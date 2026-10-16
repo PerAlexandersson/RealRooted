@@ -1,6 +1,8 @@
-import RealRooted.AllCombo
-import RealRooted.AffineDerivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineDerivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Obreschkoff converse degree gaps
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 Analytic constant-shift obstructions and the degree-closeness reduction for
 all-real-rooted polynomial pairs.
 -/
+
+public section
 
 open Polynomial
 

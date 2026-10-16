@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.PFPolynomial
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.PFPolynomial
+public import RealRooted.QuadraticRoot
 
 /-!
 # The univariate Poisson star product
@@ -16,6 +18,8 @@ linearity, the affine-input formula, the sharp quadratic obstruction, stability 
 Weyl symbol under the root-sign condition, exact affine-factor tests, and the boundary cases
 of the PF classification established here.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.RowSign
+module
+
+public import RealRooted.Tactic.Favard.RowSign
 
 /-!
 # OEIS Favard router regression examples
 
 Favard recurrence and row-sign certificate routing tests.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

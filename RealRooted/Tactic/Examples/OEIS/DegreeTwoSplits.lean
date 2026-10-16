@@ -1,13 +1,17 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.PoweredEulerian
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.PoweredEulerian
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Degree-jump-two regression examples
 
 These examples exercise the differentiated-`X` route and the powered Eulerian model.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

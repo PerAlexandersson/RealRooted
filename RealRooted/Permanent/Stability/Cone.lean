@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.MultivariateHKO
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
 
 /-!
 # The fixed-direction stable-pencil cone for permanent polynomials
@@ -6,6 +8,8 @@ import RealRooted.BorceaBranden.MultivariateHKO
 This file proves the analytic convex-cone part of Proposition 2.4 in
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
+
+public section
 
 namespace RealRooted
 

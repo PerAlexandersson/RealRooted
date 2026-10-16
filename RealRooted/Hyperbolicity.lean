@@ -1,9 +1,11 @@
-import Mathlib.Analysis.Convex.PathConnected
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
-import RealRooted.HomogeneousComponentStability
-import RealRooted.HomogeneousStability
-import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+module
+
+public import Mathlib.Analysis.Convex.PathConnected
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.HomogeneousComponentStability
+public import RealRooted.HomogeneousStability
+public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
 /-!
 # Hyperbolicity and multivariate real stability
@@ -11,6 +13,8 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 This file relates Gårding hyperbolicity to multivariate real stability and
 proves boundary hyperbolicity of ordinary homogenization.
 -/
+
+public section
 
 open Polynomial
 

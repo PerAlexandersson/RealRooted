@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.SnakeWord
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeWord
 
 /-!
 # Cover graph for generalized snake posets
@@ -6,6 +8,8 @@ import RealRooted.GeneralizedSnakePosets.SnakeWord
 This module contains the coded two-chain elements and one-step cover graph
 used by the Braun--Jal generalized snake poset development.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

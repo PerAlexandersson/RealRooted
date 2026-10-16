@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Sign
+module
+
+public import RealRooted.Tactic.Sign
 
 /-!
 # `rr_sign` examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Sign
 Regression tests for the coefficient-sign obligations that occur in OEIS
 recurrence templates.
 -/
+
+public section
 
 open Polynomial
 

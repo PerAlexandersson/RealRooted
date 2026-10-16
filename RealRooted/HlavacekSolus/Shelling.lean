@@ -1,4 +1,6 @@
-import RealRooted.ChudnovskySeymour.Core
+module
+
+public import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Shellings and interlacing for simplicial subdivisions
@@ -22,6 +24,8 @@ carrier inclusion, and coverage of each subdivided face by a base facet.
 The partition and h-polynomial identity use only those finite consequences,
 so the omitted topological clauses are not needed for the criterion.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -234,10 +238,10 @@ def restrictionFaces (sub : Subdivision Base Subdivided)
 def boundaryFacets (F : Finset V) : Finset (Finset V) :=
   F.powerset.filter (fun G => G.card + 1 = F.card)
 
-private def boundaryFaces (F : Finset V) : Finset (Finset V) :=
+def boundaryFaces (F : Finset V) : Finset (Finset V) :=
   F.powerset.erase F
 
-private def unionList : List (Finset α) → Finset α
+def unionList : List (Finset α) → Finset α
   | [] => ∅
   | S :: Ss => S ∪ unionList Ss
 
@@ -258,7 +262,7 @@ private lemma mem_unionList_iff {Ss : List (Finset α)} {a : α} :
         · exact Or.inl (hTS ▸ haT)
         · exact Or.inr ⟨T, hT, haT⟩
 
-private def greedyPieces (prior : Finset α) : List (Finset α) → List (Finset α)
+def greedyPieces (prior : Finset α) : List (Finset α) → List (Finset α)
   | [] => []
   | S :: Ss => (S \ prior) :: greedyPieces (prior ∪ S) Ss
 
@@ -316,12 +320,12 @@ private lemma hPolynomial_unionList_of_pairwise_disjoint
       rw [unionList, hPolynomial_union_disjoint hdisj, ih (List.pairwise_cons.mp hSs).2]
       simp
 
-private def priorIntersectionFaces (faces : Finset (Finset V))
+def priorIntersectionFaces (faces : Finset (Finset V))
     (order : List (Finset V)) (i : Fin order.length) : Finset (Finset V) :=
   faces.filter (fun G => G ⊆ order.get i ∧
     ∃ k : Fin order.length, k < i ∧ G ⊆ order.get k)
 
-private def boundaryPrefixFaces (order : List (Finset V)) (r : ℕ) : Finset (Finset V) :=
+def boundaryPrefixFaces (order : List (Finset V)) (r : ℕ) : Finset (Finset V) :=
   (order.take r).foldl (fun acc F => acc ∪ F.powerset) ∅
 
 /-- Recursive paper-style shelling data for a finite facet set.

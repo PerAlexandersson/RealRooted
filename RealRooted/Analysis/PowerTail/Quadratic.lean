@@ -1,4 +1,6 @@
-import RealRooted.Analysis.PowerTail.Telescoping
+module
+
+public import RealRooted.Analysis.PowerTail.Telescoping
 
 /-!
 # Quadratic-denominator reciprocal-power tails
@@ -6,6 +8,8 @@ import RealRooted.Analysis.PowerTail.Telescoping
 Applications of the positive-spacing telescoping bound to the denominators
 `(k + 1) (k + 2)` that occur after pairing symmetric terms.
 -/
+
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

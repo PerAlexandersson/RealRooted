@@ -1,4 +1,6 @@
-import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+module
+
+public import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 
 /-!
 # Further facts about conjugate partitions
@@ -6,6 +8,8 @@ import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 This file supplies small connections between Mathlib's partition and Young
 diagram APIs.
 -/
+
+public section
 
 namespace Nat.Partition
 

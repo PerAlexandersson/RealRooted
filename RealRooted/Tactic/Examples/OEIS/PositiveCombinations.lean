@@ -1,12 +1,16 @@
-import RealRooted.Tactic.PosCombo
-import RealRooted.Tactic.StaircaseSum
-import RealRooted.Tactic.WeightedSum
+module
+
+public import RealRooted.Tactic.PosCombo
+public import RealRooted.Tactic.StaircaseSum
+public import RealRooted.Tactic.WeightedSum
 
 /-!
 # OEIS positive-combination regression examples
 
 Regression examples for positive-combination and weighted-sum frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

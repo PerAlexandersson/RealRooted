@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.ProperPositionPF
+module
+
+public import RealRooted.MultiplierSequence.ProperPositionPF
 
 /-!
 # PF multipliers and proper position
@@ -86,6 +88,8 @@ the London Mathematical Society* 101 (2010), 73–104,
 [arXiv:1410.6601](https://arxiv.org/abs/1410.6601).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.ProperPositionPF
 

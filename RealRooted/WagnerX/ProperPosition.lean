@@ -1,5 +1,7 @@
-import RealRooted.Derivative
-import RealRooted.WagnerX
+module
+
+public import RealRooted.Derivative
+public import RealRooted.WagnerX
 
 /-!
 # Wagner `X`-multiplication interlacing bridges
@@ -7,6 +9,8 @@ import RealRooted.WagnerX
 The forward and reverse interlacing transports associated with multiplying
 a nonnegative-coefficient polynomial by `X`.
 -/
+
+public section
 
 open Polynomial
 

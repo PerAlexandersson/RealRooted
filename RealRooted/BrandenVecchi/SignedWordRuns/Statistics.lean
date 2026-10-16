@@ -1,6 +1,8 @@
-import RealRooted.BrandenVecchi.SignedWordEnumerator
-import RealRooted.BrandenVecchi.SignedWordRuns.Basic
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+module
+
+public import RealRooted.BrandenVecchi.SignedWordEnumerator
+public import RealRooted.BrandenVecchi.SignedWordRuns.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Statistics of signed-word run decompositions
@@ -10,6 +12,8 @@ weight identities for canonical run-length data.  The results are stated first
 for lists and arbitrary decidable adjacency relations, then specialized to the
 signed-word summand from Brändén--Vecchi Theorem 8.11.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

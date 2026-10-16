@@ -1,4 +1,6 @@
-import RealRooted.OscillatoryInterlacing
+module
+
+public import RealRooted.OscillatoryInterlacing
 
 /-!
 # Oscillatory interlacing compatibility import
@@ -8,3 +10,5 @@ The Mathlib-shaped Whitney and matrix-theoretic core now lives in
 RealRooted polynomial endpoint lives in `RealRooted.OscillatoryInterlacing`.
 This file preserves the original public import path.
 -/
+
+public section

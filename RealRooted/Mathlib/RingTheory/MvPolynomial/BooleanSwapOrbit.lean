@@ -1,6 +1,8 @@
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.MvPolynomial.Rename
-import Mathlib.Data.Finset.BooleanAlgebra
+module
+
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Algebra.MvPolynomial.Rename
+public import Mathlib.Data.Finset.BooleanAlgebra
 
 /-!
 # Boolean orbits of squarefree monomials
@@ -8,6 +10,8 @@ import Mathlib.Data.Finset.BooleanAlgebra
 This file supplies the algebraic finite-set monomial API used to factor
 Boolean orbits under disjoint variable transpositions.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

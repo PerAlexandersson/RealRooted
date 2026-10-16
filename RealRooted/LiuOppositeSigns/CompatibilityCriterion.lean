@@ -1,10 +1,12 @@
-import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
-import RealRooted.CommonInterleaverTwo
-import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
-import RealRooted.LiuOppositeSigns.RootCountClosure
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
+public import RealRooted.CommonInterleaverTwo
+public import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
+public import RealRooted.LiuOppositeSigns.RootCountClosure
+public import RealRooted.LiuOppositeSigns.FactorReturnAssembly
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+public import RealRooted.ObreschkoffConverse
 
 /-!
 # Liu opposite-sign compatibility theorem
@@ -14,6 +16,8 @@ opposite-sign compatibility theorem by derivative-shift regularization,
 combines it with the factor-return reverse direction and common-root deletion
 into the corrected Theorem 2.1, and proves Corollary 2.2.
 -/
+
+public section
 
 open Polynomial Filter
 

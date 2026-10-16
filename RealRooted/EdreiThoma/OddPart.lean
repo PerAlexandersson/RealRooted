@@ -1,4 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+
+@[expose] public section
 
 section Quotient_part
 

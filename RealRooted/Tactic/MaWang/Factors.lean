@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Denominator
+module
+
+public import RealRooted.Tactic.MaWang.Denominator
 
 /-!
 # Ma--Wang tactic factor rules
 
 Elaboration rules for specialized derivative-factor sequence certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

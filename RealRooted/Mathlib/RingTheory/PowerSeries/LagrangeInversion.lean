@@ -1,8 +1,10 @@
-import Mathlib.RingTheory.PowerSeries.Derivative
-import Mathlib.RingTheory.PowerSeries.Order
-import Mathlib.RingTheory.PowerSeries.Substitution
-import Mathlib.RingTheory.PowerSeries.Trunc
-import Mathlib.Tactic.LinearCombination
+module
+
+public import Mathlib.RingTheory.PowerSeries.Derivative
+public import Mathlib.RingTheory.PowerSeries.Order
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Trunc
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # Lagrange–Bürmann inversion for formal power series
@@ -26,6 +28,8 @@ and every `m` we have
 
 The proofs were found by Aristotle (Harmonic) and then ported and cleaned up by hand.
 -/
+
+public section
 
 namespace PowerSeries
 

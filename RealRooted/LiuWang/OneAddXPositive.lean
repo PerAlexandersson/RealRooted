@@ -1,5 +1,7 @@
-import Mathlib.Tactic.ComputeDegree
-import RealRooted.LiuWang.SequenceProducts
+module
+
+public import Mathlib.Tactic.ComputeDegree
+public import RealRooted.LiuWang.SequenceProducts
 
 /-!
 # Positive one-plus-X recurrence sequences
@@ -10,6 +12,8 @@ a positive three-term recurrence with current coefficient one plus X.
 This sequence-independent theorem family was first used in the OEIS proof
 project in ProofsOeis.OneAddXPositive.
 -/
+
+public section
 
 open Polynomial
 

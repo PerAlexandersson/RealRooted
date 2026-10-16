@@ -1,4 +1,8 @@
-import RealRooted.GarloffWagner.Theorem12
+module
+
+public import RealRooted.GarloffWagner.Theorem12
+
+public section
 
 open Polynomial
 

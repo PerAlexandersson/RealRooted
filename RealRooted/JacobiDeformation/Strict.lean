@@ -1,9 +1,11 @@
-import RealRooted.MaWang.CriticalSign
-import RealRooted.PFPolynomial
-import RealRooted.JacobiDeformation.BaseProduct
-import RealRooted.JacobiDeformation.Boundary
-import RealRooted.JacobiDeformation.CriticalCases
-import RealRooted.JacobiDeformation.Shift
+module
+
+public import RealRooted.MaWang.CriticalSign
+public import RealRooted.PFPolynomial
+public import RealRooted.JacobiDeformation.BaseProduct
+public import RealRooted.JacobiDeformation.Boundary
+public import RealRooted.JacobiDeformation.CriticalCases
+public import RealRooted.JacobiDeformation.Shift
 
 /-!
 # The strict Jacobi deformation theorem
@@ -28,6 +30,8 @@ applies to the constant derivative and the linear deformation.
   `polynomial_all_rank_nonneg_parameter`: splitness with strictly negative
   roots for every `δ ≥ 0`, via the unit parameter shift.
 -/
+
+public section
 
 open Polynomial
 

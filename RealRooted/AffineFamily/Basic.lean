@@ -1,5 +1,7 @@
-import RealRooted.WagnerRightSum
-import RealRooted.WagnerX
+module
+
+public import RealRooted.WagnerRightSum
+public import RealRooted.WagnerX
 
 /-!
 # Affine family: basic conditions and combinations
@@ -7,6 +9,8 @@ import RealRooted.WagnerX
 Definitions and elementary nonnegative affine-combination consequences. The
 degree and root-geometry endgame remains in `RealRooted.AffineFamily`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

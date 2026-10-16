@@ -1,11 +1,13 @@
-import RealRooted.AffineDerivative
-import RealRooted.Basic
-import RealRooted.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import RealRooted.Tactic.WagnerX
-import RealRooted.Wagner
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Tactic
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.Basic
+public import RealRooted.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.Tactic.WagnerX
+public import RealRooted.Wagner
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Tactic
 
 /-!
 # Eulerian Tilde Polynomials
@@ -13,6 +15,8 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for the shifted Eulerian recurrence,
 using the affine derivative block before the outer `X` factor.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Eulerian
-import RealRooted.GeneralizedEulerian
-import RealRooted.Mathlib.Probability.CoeffDistribution
+module
+
+public import RealRooted.CombinatorialExamples.Eulerian
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Eulerian numbers are asymptotically normal
@@ -14,6 +16,8 @@ then gives asymptotic normality of the Eulerian numbers (Bender 1973; David–Ba
 The same computation for the type `B` Eulerian polynomials `generalizedEulerian 2 n` gives mean
 `n / 2` and, for `n ≥ 2`, variance `(n + 1) / 12`.
 -/
+
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

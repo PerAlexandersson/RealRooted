@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Tactic.Finish
 
 /-!
 # Product-family tactic syntax
 
 Syntax for affine, powered, scalar, and product-family recurrences.
 -/
+
+public section
 
 namespace RealRooted
 

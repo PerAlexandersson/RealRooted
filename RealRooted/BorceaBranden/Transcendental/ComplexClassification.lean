@@ -1,4 +1,8 @@
-import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+module
+
+public import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+
+@[expose] public section
 
 open Filter Topology
 

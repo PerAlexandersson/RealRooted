@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-import Mathlib.Algebra.Group.ForwardDiff
+module
+
+public import RealRooted.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Pólya-frequency sequences
@@ -10,6 +12,8 @@ Pólya-frequency property used by the Aissen--Schoenberg--Whitney theorem.
 Keeping these definitions separate lets minor constructions depend on the
 basic interface without importing the full ASW development.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

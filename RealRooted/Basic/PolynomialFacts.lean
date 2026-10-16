@@ -1,14 +1,18 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.Data.List.Sort
-import Mathlib.Basic.Real.Basic
-import RealRooted.Mathlib.Data.Nat.Cast.Basic
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.Mathlib.Data.List.Interleave
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.Data.List.Sort
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.Data.Nat.Cast.Basic
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.Mathlib.Data.List.Interleave
+
+public section
 
 open Polynomial
 

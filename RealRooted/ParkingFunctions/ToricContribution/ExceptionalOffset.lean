@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+module
+
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
 
 /-!
 # The exceptional A390883 toric-contribution offset
@@ -6,3 +8,5 @@ import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInter
 Compatibility import for the base-and-moment, pencil-splitting,
 distinguished-parameter, and Jacobi-node interlacing layers.
 -/
+
+public section

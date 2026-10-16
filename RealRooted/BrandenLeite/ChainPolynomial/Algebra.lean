@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Algebra of chain polynomials
@@ -8,6 +10,8 @@ This low-level module contains the semiring and commutative-ring algebra behind
 Brändén--Saud Leite chain polynomials.  Resolution and real-rootedness
 consequences deliberately live in the parent module.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

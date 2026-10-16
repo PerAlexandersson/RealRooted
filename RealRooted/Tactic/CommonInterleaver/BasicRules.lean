@@ -1,4 +1,6 @@
-import RealRooted.Tactic.CommonInterleaver.BasicSyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.BasicSyntax
 
 /-!
 # Basic common-interleaver tactic rules
@@ -6,6 +8,8 @@ import RealRooted.Tactic.CommonInterleaver.BasicSyntax
 Macro expansions for compatibility transports, finite-family upgrades, and
 their pointwise sequence forms.
 -/
+
+public section
 
 open Polynomial
 

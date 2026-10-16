@@ -1,4 +1,6 @@
-import RealRooted.StaircaseSum
+module
+
+public import RealRooted.StaircaseSum
 
 /-!
 # Staircase-sum tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.StaircaseSum
 Thin wrappers for staircase-weighted sums of interlacing nonnegative
 sequences.
 -/
+
+public section
 
 open Polynomial
 

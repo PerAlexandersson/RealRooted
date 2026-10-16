@@ -1,11 +1,13 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Sturm
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
-import RealRooted.RootCountJump
-import RealRooted.SimpleRoots
-import Mathlib.FieldTheory.Perfect
-import Mathlib.RingTheory.Polynomial.Radical
-import Mathlib.Topology.LocallyConstant.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Sturm
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+public import RealRooted.RootCountJump
+public import RealRooted.SimpleRoots
+public import Mathlib.FieldTheory.Perfect
+public import Mathlib.RingTheory.Polynomial.Radical
+public import Mathlib.Topology.LocallyConstant.Basic
 
 /-!
 # Sturm root counting
@@ -16,6 +18,8 @@ gives the exact open-interval root count.  The public arbitrary-polynomial API
 applies the theorem to the radical, which removes repeated factors without
 changing the set of roots.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Set UniqueFactorizationMonoid
 open scoped Topology

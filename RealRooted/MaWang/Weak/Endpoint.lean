@@ -1,4 +1,8 @@
-import RealRooted.LiuWang.General
+module
+
+public import RealRooted.LiuWang.General
+
+public section
 
 open Polynomial
 

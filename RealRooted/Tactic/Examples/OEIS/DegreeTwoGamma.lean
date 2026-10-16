@@ -1,7 +1,11 @@
-import RealRooted.Applications.OEIS.A297191
-import RealRooted.Applications.OEIS.A394446
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Applications.OEIS.A297191
+public import RealRooted.Applications.OEIS.A394446
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+
+@[expose] public section
 
 open Polynomial
 

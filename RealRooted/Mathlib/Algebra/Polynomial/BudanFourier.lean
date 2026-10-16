@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Polynomial.RuleOfSigns
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Topology.Algebra.Polynomial
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
+module
+
+public import Mathlib.Algebra.Polynomial.RuleOfSigns
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # The Budan–Fourier theorem
@@ -38,6 +40,8 @@ subdivision of `(a, b]`, so we subdivide at the roots of `p * q` and analyse an 
 on whose interior neither `p` nor `q` vanishes, using the intermediate value theorem, the
 mean value theorem and the factorisation `q = (X - c) ^ μ * g` at the endpoints.
 -/
+
+@[expose] public section
 
 open Polynomial Set
 

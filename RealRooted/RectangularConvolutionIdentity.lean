@@ -1,8 +1,10 @@
-import RealRooted.DifferentialBlocks
-import RealRooted.ElementaryDifferential
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import RealRooted.RectangularConvolution
-import RealRooted.RectangularPolarizationComplement
+module
+
+public import RealRooted.DifferentialBlocks
+public import RealRooted.ElementaryDifferential
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import RealRooted.RectangularConvolution
+public import RealRooted.RectangularPolarizationComplement
 
 /-!
 # Rectangular convolution differential identity
@@ -11,6 +13,8 @@ This file proves that the complementary rectangular polarization acting by
 negative partial differentiation on the direct rectangular polarization
 specializes to the rectangular additive convolution.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

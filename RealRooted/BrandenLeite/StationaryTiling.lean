@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.TilingFactors
-import RealRooted.BrandenLeite.TwoKernel
-import RealRooted.FiniteFreeRootCount
+module
+
+public import RealRooted.BrandenLeite.TilingFactors
+public import RealRooted.BrandenLeite.TwoKernel
+public import RealRooted.FiniteFreeRootCount
 
 /-!
 # Stationary rational rod-tiling rows
@@ -10,6 +12,8 @@ geometric background factors and optional-rise marked factors.  It records the
 exact formal denominator identity and its finite coefficient recurrence before
 specializing to a single monomer background.
 -/
+
+@[expose] public section
 
 open Polynomial
 

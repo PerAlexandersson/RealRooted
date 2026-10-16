@@ -1,5 +1,9 @@
-import RealRooted.DerivativeRecurrence.SecondOrderODE
-import RealRooted.Tactic.Recurrence.Eval
+module
+
+public import RealRooted.DerivativeRecurrence.SecondOrderODE
+public import RealRooted.Tactic.Recurrence.Eval
+public meta import RealRooted.DerivativeRecurrence.SecondOrderODE
+public meta import RealRooted.Tactic.Recurrence.Eval
 
 /-!
 # Eigen-ODEs of second-order recurrences
@@ -20,6 +24,8 @@ numerically before anything is elaborated.
 * `eigenODE?` and `eigenODEFirstOrder` are the entry points for other tactics:
   `rr_row_interlaces` collapses the second-order step to a first-order one with them.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

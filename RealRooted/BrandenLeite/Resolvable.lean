@@ -1,4 +1,6 @@
-import RealRooted.LowerTriangularMatrix
+module
+
+public import RealRooted.LowerTriangularMatrix
 
 /-!
 # Resolvable lower unitriangular matrices
@@ -11,6 +13,8 @@ nonnegativity is in `RealRooted.BrandenLeite.WhitneyReduction`
 lower-unitriangular matrix is resolvable exactly when it is totally
 nonnegative (`isResolvable_iff_isTotallyNonneg`).
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

@@ -1,4 +1,6 @@
-import RealRooted.CoefficientShape.Liggett
+module
+
+public import RealRooted.CoefficientShape.Liggett
 
 /-!
 # Liggett's theorem challenge entry point
@@ -76,3 +78,5 @@ of Combinatorics* 16 (2009), #N5.
 This module is a catalog facade.  The proofs live in
 `RealRooted.CoefficientShape.Liggett`.
 -/
+
+public section

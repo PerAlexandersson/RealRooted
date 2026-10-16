@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
-import Mathlib.Analysis.Polynomial.CauchyBound
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
+public import Mathlib.Analysis.Polynomial.CauchyBound
 
 /-!
 # Compact root incidence for the weighted parameter family
@@ -8,6 +10,8 @@ We package the uniform root bound needed by the global first-contact argument.
 The proof uses the Cauchy bound for monic polynomials whose coefficients vary
 continuously over a compact parameter set.
 -/
+
+public section
 
 open Polynomial Set Topology
 

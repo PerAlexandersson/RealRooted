@@ -4,14 +4,19 @@
 Succ-degree right-pencil, endpoint-sign, and closed-segment equivalences
 extracted from `RealRooted.CommonInterleaverTwo`.
 -/
-import RealRooted.Compatibility.Basic
-import RealRooted.CommonInterleaver.RootCountCombinatorics
-import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.Derivative
-import RealRooted.RootContinuity
-import RealRooted.RootCountJump
-import RealRooted.RootOrderBridge
-import RealRooted.WagnerX
+
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaver.RootCountCombinatorics
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.Derivative
+public import RealRooted.RootContinuity
+public import RealRooted.RootCountJump
+public import RealRooted.RootOrderBridge
+public import RealRooted.WagnerX
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
-import RealRooted.HomogeneousStability
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+public import RealRooted.HomogeneousStability
 
 /-!
 # Stability of the peak-value polynomial
@@ -8,6 +10,8 @@ This file proves multivariate real stability of the peak-value enumerator.
 The proof lifts the translated insertion recurrence to homogeneous stable
 polynomials and alternates two derivative constructions according to parity.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

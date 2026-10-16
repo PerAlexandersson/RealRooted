@@ -1,6 +1,8 @@
-import RealRooted.GammaPencil.Basic
-import RealRooted.GammaPencil.Invariants
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.GammaPencil.Basic
+public import RealRooted.GammaPencil.Invariants
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Intertwining the Eulerian step and the gamma operator
@@ -9,6 +11,8 @@ The gamma transform carries the rank-`m` gamma operator to the differential
 step on palindromic polynomials of ambient degree `m`. This is the reusable
 algebraic bridge behind lagged gamma recurrences.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

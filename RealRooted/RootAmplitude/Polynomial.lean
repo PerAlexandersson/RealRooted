@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Polynomial root-amplitude identities
@@ -10,6 +12,8 @@ import Mathlib.Tactic.Ring
 The normalized derivative at a simple nonzero root equals a product over the
 other roots.  This is the polynomial bridge for finite root-amplitude bounds.
 -/
+
+public section
 
 open Polynomial
 

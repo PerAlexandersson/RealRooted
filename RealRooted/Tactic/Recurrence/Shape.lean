@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Product.Interlacing
-import RealRooted.ThreeTermRecurrence.Degree
+module
+
+public import RealRooted.Tactic.Product.Interlacing
+public import RealRooted.ThreeTermRecurrence.Degree
+public meta import RealRooted.Tactic.Product.Interlacing
+public meta import RealRooted.ThreeTermRecurrence.Degree
 
 /-!
 # Reading a recurrence off a definition
@@ -34,6 +38,8 @@ row tactics trace their failed strategies under `trace.rr.row`.
 `rr_row_side` closes the side goals of the row theorems; the `?` variants of the row
 tactics print an `apply … <;> rr_row_side` certificate.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

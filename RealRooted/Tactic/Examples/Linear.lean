@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Linear
+module
+
+public import RealRooted.Tactic.Linear
 
 /-!
 # Linear-polynomial tactic examples
 
 Small regression examples for degree-one real-rootedness and interlacing.
 -/
+
+public section
 
 open Polynomial
 

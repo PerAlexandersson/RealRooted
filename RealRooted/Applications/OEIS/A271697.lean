@@ -1,5 +1,7 @@
-import RealRooted.LiuWang.FiniteFamily
-import RealRooted.WagnerX.AffineFactors
+module
+
+public import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.WagnerX.AffineFactors
 
 /-!
 # A derivative--lag OEIS row
@@ -7,6 +9,8 @@ import RealRooted.WagnerX.AffineFactors
 This file proves real-rootedness and the nonexceptional consecutive interlacing for A271697.
 The row at index one is zero, so the interlacing chain starts at index two.
 -/
+
+@[expose] public section
 
 open Polynomial
 

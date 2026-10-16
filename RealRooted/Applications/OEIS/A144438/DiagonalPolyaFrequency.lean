@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.DiagonalBridge
-import RealRooted.Applications.OEIS.A144438.ExactLayerStability
-import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.DiagonalBridge
+public import RealRooted.Applications.OEIS.A144438.ExactLayerStability
+public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
 
 /-!
 # Pólya-frequency consequences of the A144438 diagonal bridge
@@ -12,6 +14,8 @@ remain independent of the heavier Pólya-frequency API.
 The total conclusions are univariate: they do not assert stability of either
 outer multivariate sum.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,9 +1,11 @@
-import Mathlib.Data.Fin.Tuple.Sort
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
-import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
-import RealRooted.Permanent.Basic
-import RealRooted.Multiaffine
+module
+
+public import Mathlib.Data.Fin.Tuple.Sort
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
+public import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
+public import RealRooted.Permanent.Basic
+public import RealRooted.Multiaffine
 
 /-!
 # Ferrers matrices and their permanent polynomial
@@ -12,6 +14,8 @@ The definitions follow Section 3 of P. Brändén, J. Haglund, M. Visontai,
 and D. G. Wagner, *Proof of the monotone column permanent conjecture*,
 arXiv:1010.2565v2.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

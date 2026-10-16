@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Remaining finite consequences of the univariate Poisson product
@@ -9,6 +11,8 @@ Pólya-frequency polynomials and interlaces its input, and we introduce the step
 falling-factorial transform, which conjugates the affine Poisson recurrence to ordinary
 multiplication (issue #1494).
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

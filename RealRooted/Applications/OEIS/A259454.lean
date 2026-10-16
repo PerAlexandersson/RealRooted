@@ -1,7 +1,9 @@
-import Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Basic
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Basic
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Adjacent strict interlacing for OEIS A259454
@@ -20,6 +22,8 @@ polynomials of the corresponding banded bipartite graphs.  General matching
 polynomial real-rootedness proves splitting, but the missing content here is
 the sharper adjacent interlacing as the board grows by one row and one column.
 -/
+
+@[expose] public section
 
 open Polynomial
 

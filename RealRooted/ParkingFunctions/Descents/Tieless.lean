@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.ParkingFunctions.Descents.Pollak
+module
+
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.ParkingFunctions.Descents.Pollak
 
 /-!
 # Tieless parking-function descents
@@ -9,6 +11,8 @@ adjacent entries.  Alphabet embedding identifies its tie condition with the
 existing finite Smirnov-word predicate.  Content fibers and cyclic-orbit
 counts belong to later layers.
 -/
+
+@[expose] public section
 
 open Polynomial
 

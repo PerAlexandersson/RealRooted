@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RootBounds
+module
+
+public import RealRooted.Tactic.RootBounds
 
 /-!
 # `rr_root_nonpos` and `rr_sign_at_roots` examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RootBounds
 Regression tests for root-interval propagation from real-rootedness plus
 nonnegative coefficients.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.ThresholdMatrix.Basic
+module
+
+public import RealRooted.ThresholdMatrix.Basic
 
 /-!
 # Haglund--Zhang threshold matrices
@@ -6,6 +8,8 @@ import RealRooted.ThresholdMatrix.Basic
 The `1`/`1 + X` threshold-entry classification, its matrix-preservation
 theorem, and the binomial Eulerian recursion.
 -/
+
+@[expose] public section
 
 open Polynomial
 

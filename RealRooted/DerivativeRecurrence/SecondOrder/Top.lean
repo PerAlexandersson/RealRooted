@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
-import RealRooted.EulerOperator.Polar.Pencil
+module
+
+public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
+public import RealRooted.EulerOperator.Polar.Pencil
 
 /-!
 # Euler factorization for second-derivative recurrences
@@ -13,6 +15,8 @@ already in `DerivativeRecurrence.SecondDerivativeDegree`, and the former
 and `Wronskian` directories. The original downstream development is by Per
 Alexandersson and the ProofsOeis/Claude Code contributors for issue #1061.
 -/
+
+@[expose] public section
 
 open Polynomial
 

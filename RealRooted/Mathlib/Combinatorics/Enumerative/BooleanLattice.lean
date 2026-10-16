@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Module.BigOperators
-import Mathlib.Data.Nat.Choose.Sum
+module
+
+public import Mathlib.Algebra.Module.BigOperators
+public import Mathlib.Data.Nat.Choose.Sum
 
 /-!
 # Möbius inversion on a finite Boolean lattice
@@ -7,6 +9,8 @@ import Mathlib.Data.Nat.Choose.Sum
 This module packages upper-set summation and its inversion over the subsets
 of a finite ambient set.
 -/
+
+@[expose] public section
 
 namespace Finset
 

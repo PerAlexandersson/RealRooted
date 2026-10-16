@@ -1,7 +1,11 @@
-import RealRooted.AllCombo
-import RealRooted.GraceHalfPlane
-import RealRooted.Hadamard.Cubic
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.GraceHalfPlane
+public import RealRooted.Hadamard.Cubic
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+
+public section
 
 open Polynomial
 

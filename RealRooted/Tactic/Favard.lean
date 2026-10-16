@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Favard.RowSign
+module
+
+public import RealRooted.Tactic.Favard.RowSign
 
 /-!
 # Favard tactic
@@ -6,3 +8,5 @@ import RealRooted.Tactic.Favard.RowSign
 Compatibility umbrella for the shared syntax and direct, scalar-denominator,
 and row-sign Favard macro-rule frontends.
 -/
+
+public section

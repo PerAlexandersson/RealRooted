@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.MultivariateStability
 
 /-!
 # All-real-combination multivariate stability
@@ -6,6 +8,8 @@ import RealRooted.MultivariateStability
 This module packages the zero-aware linear-span condition used by induction
 arguments for multivariate real stability.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

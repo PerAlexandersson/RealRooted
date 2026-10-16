@@ -1,8 +1,10 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.ObreschkoffConverse
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 /-!
@@ -16,6 +18,8 @@ At a root `r` of `f`, `(f - X * g)(r) = -r * g(r)`.  Since the roots are
 nonpositive, this has the same sign as `g(r)`.  The expected interlacing
 conclusion then follows from sign alternation.
 -/
+
+public section
 
 open Polynomial
 

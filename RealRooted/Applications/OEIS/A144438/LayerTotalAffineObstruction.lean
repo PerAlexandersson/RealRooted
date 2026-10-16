@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
 
 /-!
 # Obstruction to separate exceptional-Wronskian positivity
@@ -9,6 +11,8 @@ itself, even in the step producing the stable rank-four total. Consequently a
 valid all-rank invariant must retain quantitative compensation from the normal
 Wronskian rather than prove the two summands independently nonnegative.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

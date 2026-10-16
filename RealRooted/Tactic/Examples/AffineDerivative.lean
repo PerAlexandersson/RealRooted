@@ -1,5 +1,9 @@
-import RealRooted.Tactic.AffineDerivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.Tactic.AffineDerivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+
+public section
 
 open Polynomial
 

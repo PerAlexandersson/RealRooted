@@ -1,14 +1,16 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.MultiplierSequence.Laguerre
-import RealRooted.MultiplierSequence.PolyaSchur
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
-import RealRooted.MultiplierSequence.Sign
-import RealRooted.MultiplierSequence.ProperPosition
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.MultiplierSequence.Laguerre
+public import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
+public import RealRooted.MultiplierSequence.Sign
+public import RealRooted.MultiplierSequence.ProperPosition
 
 /-!
 # Multiplier sequence challenge entry point
@@ -230,3 +232,5 @@ The finite Pólya–Schur theorem through the Schur–Szegő composition is on t
 This module is a catalog facade.  The proofs live in
 `RealRooted.MultiplierSequence`.
 -/
+
+public section

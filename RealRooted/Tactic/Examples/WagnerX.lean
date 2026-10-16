@@ -1,4 +1,6 @@
-import RealRooted.Tactic.WagnerX
+module
+
+public import RealRooted.Tactic.WagnerX
 
 /-!
 # Wagner `X`-shift tactic examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.WagnerX
 Smoke tests for the same-degree plateau bridge used by positive `t`-lag
 recurrences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

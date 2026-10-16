@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Narayana
+module
+
+public import RealRooted.Tactic.Narayana
+
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -1,5 +1,7 @@
-import RealRooted.Interlacing.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+module
+
+public import RealRooted.Interlacing.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 
 /-!
 # Matrix characteristic-polynomial interlacing closure
@@ -9,6 +11,8 @@ fixed-size real matrices. Characteristic-polynomial coefficient continuity is
 the only matrix-specific input; polynomial interlacing closure remains in
 `RealRooted.Interlacing.Closure`.
 -/
+
+public section
 
 open Filter Topology
 

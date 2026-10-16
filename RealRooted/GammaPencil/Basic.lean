@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.HomogeneousOre
+
+module
+
+public import RealRooted.HomogeneousOre
 
 /-!
 # The gamma pencil: elementary operator algebra
@@ -18,6 +21,8 @@ For a rank `n`, the operator is
 `1 + a X`, whose constant and parameter components are `gammaU 2 = 1` and
 `gammaV 2 = X`.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -136,7 +141,7 @@ theorem gammaPencil_two (a : ℝ) : gammaPencil a 2 = 1 + a • X := by
 @[simp]
 theorem gammaPencil_constantCoeff_add_two (a : ℝ) (n : ℕ) :
     (gammaPencil a (n + 2)).constantCoeff = 1 := by
-  change (gammaU (n + 2)).coeff 0 + a * (gammaV (n + 2)).coeff 0 = 1
+  rw [constantCoeff_apply, gammaPencil, coeff_add, coeff_smul, smul_eq_mul]
   rw [show (gammaU (n + 2)).coeff 0 = 1 from
       gammaU_constantCoeff_add_two n,
     show (gammaV (n + 2)).coeff 0 = 0 from

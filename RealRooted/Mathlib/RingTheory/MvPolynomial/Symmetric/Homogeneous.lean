@@ -1,9 +1,13 @@
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Homogeneity of elementary symmetric polynomials
 -/
+
+public section
 
 namespace MvPolynomial
 

@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Analysis.MeanInequalities
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Analysis.MeanInequalities
 
 /-!
 # Bernoulli steps for reciprocal-power tails
@@ -7,6 +9,8 @@ import Mathlib.Analysis.MeanInequalities
 The one-step estimate underlying finite telescoping bounds for reciprocal-power
 tails with an arbitrary positive spacing.
 -/
+
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

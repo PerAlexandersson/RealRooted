@@ -1,5 +1,7 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
-import Mathlib.Analysis.SpecialFunctions.Exponential
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # Laguerre--Pólya examples
@@ -9,6 +11,8 @@ exponential-generating function of the constant-one multiplier sequence and
 therefore supplies checked Laguerre--Pólya and Type-I witnesses.  It also
 instantiates the reverse Pólya--Schur classification at this classical example.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

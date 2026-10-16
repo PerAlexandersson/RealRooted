@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 
 /-!
 # Finite kernel-row polynomials
@@ -10,6 +12,8 @@ This file packages the finite polynomial whose coefficients are entries of
 `G * (K * G) ^ q`.  It contains only finite matrix and polynomial algebra; no
 total-nonnegativity, root, or limiting hypotheses occur here.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

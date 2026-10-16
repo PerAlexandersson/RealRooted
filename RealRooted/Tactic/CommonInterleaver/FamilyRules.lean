@@ -1,5 +1,7 @@
-import RealRooted.Tactic.CommonInterleaver.AnalyticRules
-import RealRooted.Tactic.CommonInterleaver.FamilySyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.AnalyticRules
+public import RealRooted.Tactic.CommonInterleaver.FamilySyntax
 
 /-!
 # Family common-interleaver tactic rules
@@ -7,6 +9,8 @@ import RealRooted.Tactic.CommonInterleaver.FamilySyntax
 Routing helpers and macro expansions for Chudnovsky--Seymour four-way
 certificates and pairwise-to-family compatibility upgrades.
 -/
+
+public section
 
 open Polynomial
 

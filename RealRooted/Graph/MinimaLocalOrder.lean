@@ -1,4 +1,6 @@
-import RealRooted.Graph.MinimaPolynomial
+module
+
+public import RealRooted.Graph.MinimaPolynomial
 
 /-!
 # Local orders and their mutual minima
@@ -19,6 +21,8 @@ Shifting by one gives the weighted matching model of `Graph.MinimaPolynomial`:
 summed over matchings `S`, since a set of edges consists of mutual minima only if it
 is a matching, and then for a `∏ 1 / (deg u * deg v)` fraction of the local orders.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

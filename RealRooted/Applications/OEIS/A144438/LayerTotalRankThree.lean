@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rank-three stability of the Deco layer total
@@ -10,6 +12,8 @@ reduces stability to positivity of a solved quotient.  The two real quadratic
 forms in the quotient numerator have discriminant `-359`, so they are strictly
 positive.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

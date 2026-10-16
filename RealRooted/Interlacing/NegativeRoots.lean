@@ -1,4 +1,6 @@
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.WagnerRightSum
 
 /-!
 # Negative-root consequences of interlacing
@@ -6,6 +8,8 @@ import RealRooted.WagnerRightSum
 This module centralizes list and polynomial lemmas for transporting strict
 negative-root bounds through `Interlaces` and same-degree `StrictInterl` relations.
 -/
+
+public section
 
 open Polynomial
 

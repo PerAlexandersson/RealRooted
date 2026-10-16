@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.Tactic.Product
 
 /-!
 # OEIS product-exit certificate frontend
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product
 Parser declarations and dispatch rules for product recurrences that terminate
 at an identity, a zero root, or a period-two endpoint.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -4,7 +4,12 @@
 This module relates global common interleavers, pairwise common interleavers,
 and compatibility of all nonnegative weighted sums.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade
+
+module
+
+public import RealRooted.CommonInterleaver.PairwiseUpgrade
+
+public section
 
 open Polynomial
 

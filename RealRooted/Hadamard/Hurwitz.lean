@@ -1,5 +1,9 @@
-import RealRooted.Hadamard.GarloffWagner
-import RealRooted.HurwitzMatrix
+module
+
+public import RealRooted.Hadamard.GarloffWagner
+public import RealRooted.HurwitzMatrix
+
+public section
 
 open Polynomial
 

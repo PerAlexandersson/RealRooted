@@ -1,5 +1,7 @@
-import RealRooted.ObreschkoffConverse
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.WagnerRightSum
 
 /-!
 # Selecting a same-degree interlacing orientation by an endpoint product
@@ -19,6 +21,8 @@ position with the other.
 This sequence-independent orientation criterion was first used in
 `ProofsOeis.ProductOrientation`.
 -/
+
+public section
 
 open Polynomial
 

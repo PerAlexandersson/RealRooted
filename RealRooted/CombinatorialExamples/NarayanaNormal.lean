@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.Mathlib.Probability.CoeffDistribution
+module
+
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Narayana numbers are asymptotically normal
@@ -11,6 +13,8 @@ scalar recurrences.  The coefficient distribution of `Q_n` has mean `(n - 1) / 2
 `(n² - 1) / (4 (2n - 1))`.  Since the Narayana polynomials are real-rooted, Harper's theorem gives
 asymptotic normality of the Narayana numbers.
 -/
+
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

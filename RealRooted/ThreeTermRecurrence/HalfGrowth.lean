@@ -1,5 +1,7 @@
-import RealRooted.ThreeTermRecurrence.Interlacing
-import RealRooted.ThreeTermRecurrence.Degree
+module
+
+public import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.ThreeTermRecurrence.Degree
 
 /-!
 # Rows two apart of a half-growth three-term recurrence
@@ -12,6 +14,8 @@ with `b`-coefficient `-(α (n + 2) / α n) * b (n + 1) * b n`.  This is nonposit
 `b (n + 1)` and `b n` never take opposite signs, and the subsequences have full degree growth
 when `P` has half growth.
 -/
+
+public section
 
 open Polynomial
 

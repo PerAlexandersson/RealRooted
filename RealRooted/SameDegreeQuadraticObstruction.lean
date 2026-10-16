@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.PosCombo
+module
+
+public import Mathlib
+public import RealRooted.PosCombo
 
 /-!
 # Degree-two same-degree obstruction
@@ -16,6 +18,8 @@ positive-combination real-rooted pair of quadratics cannot have this separated
 root configuration, which is the only way the degree-two same-degree threshold
 root counts can differ by two.
 -/
+
+public section
 
 open Polynomial
 

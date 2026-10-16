@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BorosMoll
-import RealRooted.CombinatorialExamples.BorosMoll.Infinite
+module
+
+public import RealRooted.CombinatorialExamples.BorosMoll
+public import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 
 /-!
 # Boros–Moll challenge entry point
@@ -105,3 +107,5 @@ Ryzhik,” *J. Comput. Appl. Math.* 106 (1999), 361–368,
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.BorosMoll`.
 -/
+
+public section

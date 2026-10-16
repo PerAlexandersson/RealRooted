@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+module
+
+public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
 
 /-!
 # Liu deletion-branch transport
@@ -8,6 +10,8 @@ This module restores compatibility of a pair from the translated deletion pair
 selected by Liu's left or right root-count branch.  The factor-return proof of
 the reverse direction is in `RealRooted.LiuOppositeSigns.FactorReturnAssembly`.
 -/
+
+public section
 
 open Polynomial Filter
 

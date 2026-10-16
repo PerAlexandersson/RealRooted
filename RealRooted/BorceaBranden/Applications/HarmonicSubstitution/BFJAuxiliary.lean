@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 
 /-!
 # Brändén--Ferroni--Jochemko auxiliary product
@@ -9,6 +11,8 @@ and distinguished coefficient used in the stability proof for
 polynomial-value products of P. Brändén, L. Ferroni and K. Jochemko,
 *Preservation of inequalities under Hadamard products*, arXiv:2408.12386.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

@@ -1,9 +1,11 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
-import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-import RealRooted.MultivariateStability.AffineEulerCore
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.RayleighPencil
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+public import RealRooted.MultivariateStability.AffineEulerCore
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.RayleighPencil
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -13,6 +15,8 @@ extension.  Given Rayleighness of the current companion, it identifies exactly
 the five remaining conditions needed for the next companion-data bundle.  It
 does not assume or assert that these conditions are preserved.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

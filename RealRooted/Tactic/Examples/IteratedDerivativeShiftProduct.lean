@@ -1,4 +1,6 @@
-import RealRooted.Tactic.IteratedDerivativeShiftProduct
+module
+
+public import RealRooted.Tactic.IteratedDerivativeShiftProduct
 
 /-!
 # Iterated derivative-shift product examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.IteratedDerivativeShiftProduct
 Regression examples for product recurrences involving arbitrary `tDeriv`
 iteration depths.
 -/
+
+public section
 
 open Polynomial
 

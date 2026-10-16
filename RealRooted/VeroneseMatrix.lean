@@ -1,6 +1,8 @@
-import RealRooted.MatrixInterlacing
-import RealRooted.AffineProperPosition
-import RealRooted.VeroneseSection
+module
+
+public import RealRooted.MatrixInterlacing
+public import RealRooted.AffineProperPosition
+public import RealRooted.VeroneseSection
 
 /-!
 # Matrix form of the Veronese linear-factor recursion
@@ -25,6 +27,8 @@ fully interlacing submatrix route and conditional interfaces live in
 `RealRooted.VeroneseSection`; this file gives a self-contained matrix proof of
 the real-rootedness consequence needed here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

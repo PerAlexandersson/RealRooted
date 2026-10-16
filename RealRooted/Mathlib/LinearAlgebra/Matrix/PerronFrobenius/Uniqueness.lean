@@ -8,7 +8,10 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 
 /-!
 # Perron-Frobenius Theorem: Uniqueness of the Eigenvector
@@ -31,6 +34,8 @@ The proof strategy is as follows:
    This is a contradiction.
 7. Thus, `z` must be the zero vector, which implies `v = c • w`.
 -/
+
+public section
 
 namespace Matrix
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]

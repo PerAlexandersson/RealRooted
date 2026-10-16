@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowSupersymmetric
-import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+module
+
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
 
 /-!
 # Finite supersymmetric Chow polynomials as signed-word enumerators
@@ -9,6 +11,8 @@ It first records the reusable one-letter formal-series identity behind the
 positive/negative run substitution, then identifies the literal signed-word
 enumerator with the finite supersymmetric Chow polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

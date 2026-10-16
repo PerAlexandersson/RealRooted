@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+module
+
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # The Poisson star algebra
@@ -11,6 +13,8 @@ spectator block `τ`.  We prove the monomial law, coefficientwise nonnegativity,
 `v ⋆ z = z v` and `z ⋆ v = z v + z`, the units, `T_f ∘ T_g = T_(f ⋆ g)`, and associativity
 (`star_assoc`).
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

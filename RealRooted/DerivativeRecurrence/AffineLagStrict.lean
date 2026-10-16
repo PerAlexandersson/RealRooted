@@ -1,7 +1,9 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.GeneralizedLiuWang
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum
 
 /-!
 # Strict interlacing for affine-lag recurrences
@@ -9,6 +11,8 @@ import RealRooted.WagnerRightSum
 This module isolates the root-sign argument for second-order recurrences whose
 lag multiplier is `aₙ X - bₙ`.  Adjacent degrees may stay fixed or rise by one.
 -/
+
+public section
 
 open Polynomial
 

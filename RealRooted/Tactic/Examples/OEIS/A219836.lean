@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A219836
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A219836
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # A219836 degree-model regression
@@ -7,6 +9,8 @@ import RealRooted.Tactic.RowInterlacing
 The definition and theorem below are the literal downstream recurrence and natural-degree
 statement.  The proof exercises the default registered-model route.
 -/
+
+@[expose] public section
 
 open RealRooted
 open Polynomial

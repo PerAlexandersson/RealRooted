@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Data.Finsupp.Multiset
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Data.Finsupp.Multiset
 
 /-!
 # Content of finite words
@@ -8,6 +10,8 @@ This neutral module records alphabet relabeling, literal word content, and the
 finite fibers of words with prescribed content.  It is independent of parking
 conditions and Smirnov restrictions.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

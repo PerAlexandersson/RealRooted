@@ -1,10 +1,14 @@
-import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+module
+
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 
 /-!
 # The multivariate Euler operator
 
 This file packages the sum in Euler's homogeneous identity as an operator.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

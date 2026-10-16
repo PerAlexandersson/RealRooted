@@ -1,4 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+
+@[expose] public section
 
 open Complex
 

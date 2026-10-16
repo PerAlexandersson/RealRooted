@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.Tactic.Product
 
 /-!
 # Product dispatch-isolation regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product
 Generic factor recurrences must retain their own left/right selection even when
 an unrelated local factor certificate happens to contain `_lift_` in its name.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.GammaRealRoots
+module
+
+public import RealRooted.GammaRealRoots
 
 /-!
 # Gamma-real-rootedness tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.GammaRealRoots
 Thin wrappers for gamma transforms and the gamma-polynomial
 real-rootedness/nonpositive-root bridge.
 -/
+
+public section
 
 open Polynomial
 

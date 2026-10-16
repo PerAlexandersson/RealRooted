@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Tactic.Finish
 
 /-!
 # Preserving-operator sequence tactic
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Finish
 Induct real-rootedness along a sequence whose row operators preserve nonzero
 splitting polynomials.
 -/
+
+public section
 
 open Polynomial
 

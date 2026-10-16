@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.General
-import RealRooted.Interlacing.RootCountSigns
+module
+
+public import RealRooted.EulerBidiagonal.General
+public import RealRooted.Interlacing.RootCountSigns
 
 /-!
 # Comparison roots of the general Euler step
@@ -9,6 +11,8 @@ of `q` (with one extra zero to the left when `v > 0` and one positive zero when 
 `generalStep q` has the sign opposite to `q` at each nonpositive comparison zero.  These are the
 inputs for locating the roots of `generalStep q` (`EulerBidiagonal.Location`).
 -/
+
+public section
 
 open Polynomial
 

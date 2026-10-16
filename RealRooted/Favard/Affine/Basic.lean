@@ -1,6 +1,8 @@
-import RealRooted.Favard
-import RealRooted.SequenceClosure
-import Mathlib.Tactic
+module
+
+public import RealRooted.Favard
+public import RealRooted.SequenceClosure
+public import Mathlib.Tactic
 
 /-!
 # Direct affine Favard recurrences
@@ -9,6 +11,8 @@ This module owns theorem APIs for monic and positive-slope affine three-term
 recurrences presented directly, without scalar denominators or row-sign
 normalization.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Combinatorics.MinimumInsertionWord
-import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
+module
+
+public import RealRooted.Combinatorics.MinimumInsertionWord
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
 
 /-!
 # Comparison-bottom supports of finite words
@@ -9,6 +11,8 @@ exactly a descent bottom. This file defines its finite support and squarefree
 monomial, proves minimum-insertion decoders remain nodup, and proves
 equivariance under injective relabelings that preserve every comparison.
 -/
+
+@[expose] public section
 
 namespace RealRooted.MinimumInsertionWord
 

@@ -1,6 +1,8 @@
-import Mathlib.Basic.Real.Basic
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
+module
+
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
 
 /-!
 # Total nonnegativity of the first-kind Jacobi--Stirling triangle
@@ -9,6 +11,8 @@ The whole triangle is an elementary-symmetric triangle whose initial weight is
 zero. Thus its leading entry and zero first column are part of the same generic
 bidiagonal certificate; no separate block argument or LGV machinery is needed.
 -/
+
+@[expose] public section
 
 namespace RealRooted.JacobiStirling
 

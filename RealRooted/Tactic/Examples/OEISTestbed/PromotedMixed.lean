@@ -1,11 +1,15 @@
-import RealRooted.Tactic.Favard.RowSign
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.Favard.RowSign
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # OEIS test-bed promoted mixed examples
 
 Regression examples for promoted mixed recurrence frontends.
 -/
+
+public section
 
 open Polynomial
 

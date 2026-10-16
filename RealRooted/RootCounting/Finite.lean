@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
-import RealRooted.Mathlib.Data.Multiset.Card
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import RealRooted.Mathlib.Data.Multiset.Card
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Finite root counting
@@ -8,6 +10,8 @@ import Mathlib.Basic.Real.Basic
 Finite-set counting criteria for simple roots, together with elementary index
 arguments used after disjoint root-localization estimates.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

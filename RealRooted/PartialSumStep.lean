@@ -1,7 +1,11 @@
-import RealRooted.AffineFamily
-import RealRooted.ProductFamily
-import RealRooted.GarloffWagner
-import RealRooted.PosCombo
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.ProductFamily
+public import RealRooted.GarloffWagner
+public import RealRooted.PosCombo
+
+public section
 
 open Polynomial
 

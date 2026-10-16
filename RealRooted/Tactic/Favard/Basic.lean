@@ -1,13 +1,21 @@
-import RealRooted.Favard.Affine
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.ScalarDen
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.Favard.Affine
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.ScalarDen
+public import RealRooted.Tactic.SideGoals
+public meta import RealRooted.Favard.Affine
+public meta import RealRooted.Tactic.Finish
+public meta import RealRooted.Tactic.ScalarDen
+public meta import RealRooted.Tactic.SideGoals
 
 /-!
 # Favard tactic shared syntax
 
 Shared parser declarations and macro helpers for the focused Favard tactic frontends.
 -/
+
+public meta section
 
 namespace RealRooted
 namespace Tactic

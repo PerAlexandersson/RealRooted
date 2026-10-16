@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Data.Matrix.Mul
+module
+
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Data.Matrix.Mul
 
 /-!
 # Strictly lower triangular matrix powers
@@ -9,6 +11,8 @@ strictly lower triangular matrices.  The support statements use explicit entry
 hypotheses so that they do not depend on a particular triangular-matrix
 predicate.
 -/
+
+@[expose] public section
 
 open BigOperators
 

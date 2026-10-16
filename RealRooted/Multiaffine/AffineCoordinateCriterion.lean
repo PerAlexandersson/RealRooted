@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
-import RealRooted.Multiaffine.AffineCoordinateExtension
-import RealRooted.Multiaffine.AffineLineRestriction
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Multiaffine.AffineLineRestriction
 
 /-!
 # Exact Rayleigh criterion for affine coordinate extensions
@@ -9,6 +11,8 @@ For multiaffine polynomials independent of a fresh coordinate, this file
 packages the endpoint, cross-Wronskian, and quadratic-discriminant conditions
 as a necessary and sufficient criterion for `P + X k * Q` to be Rayleigh.
 -/
+
+public section
 
 namespace MvPolynomial
 

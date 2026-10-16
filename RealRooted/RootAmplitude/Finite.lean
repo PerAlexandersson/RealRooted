@@ -1,10 +1,12 @@
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite root-amplitude algebra
@@ -12,6 +14,8 @@ import Mathlib.Tactic.Ring
 Algebraic formulas which reduce monotonicity of a finite root-amplitude product
 to a comparison of distance products.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

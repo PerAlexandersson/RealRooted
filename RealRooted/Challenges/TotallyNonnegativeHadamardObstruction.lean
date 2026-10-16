@@ -1,4 +1,6 @@
-import RealRooted.HurwitzMatrix
+module
+
+public import RealRooted.HurwitzMatrix
 
 /-!
 # Totally nonnegative windows do not give the Hurwitz Schur product
@@ -40,6 +42,8 @@ Mathematical Analysis and Applications* 163 (1992), 459–483. See also the
 [Hadamard product on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductDefinition).
 <!-- /realrooted-catalog-content -->
 -/
+
+@[expose] public section
 
 namespace RealRooted.TotallyNonnegativeHadamardObstruction
 

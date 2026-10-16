@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.EulerOperator.Darboux.Basic
-import RealRooted.MaWang.DerivativeStep
-import Mathlib.Tactic
+
+module
+
+public import RealRooted.EulerOperator.Darboux.Basic
+public import RealRooted.MaWang.DerivativeStep
+public import Mathlib.Tactic
 
 /-!
 # Interlacing consequences of unit-interval Darboux operators
@@ -13,6 +16,8 @@ import Mathlib.Tactic
 This file separates the ordered real-root theory from the coefficient-ring
 algebra in `RealRooted.EulerOperator.Darboux.Basic`.
 -/
+
+public section
 
 open Polynomial
 

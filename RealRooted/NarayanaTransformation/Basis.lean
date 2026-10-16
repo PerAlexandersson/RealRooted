@@ -1,9 +1,13 @@
-import RealRooted.BasisTransform
-import RealRooted.NarayanaTransformation.RootGeometry
+module
+
+public import RealRooted.BasisTransform
+public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
 # Narayana transformation basis algebra.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

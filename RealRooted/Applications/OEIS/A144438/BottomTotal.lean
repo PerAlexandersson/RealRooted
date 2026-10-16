@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotal
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotal
 
 /-!
 # Ordinary-coordinate recurrence for the Deco layer total
@@ -10,6 +12,8 @@ coordinate embedding.
 
 No stability claim is made for the total.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

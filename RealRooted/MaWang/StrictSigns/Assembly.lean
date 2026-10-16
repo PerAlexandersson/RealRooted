@@ -1,4 +1,8 @@
-import RealRooted.MaWang.StrictSigns.RootSigns
+module
+
+public import RealRooted.MaWang.StrictSigns.RootSigns
+
+public section
 
 open Polynomial Filter
 

@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
-import Mathlib.RingTheory.Polynomial.Vieta
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import Mathlib.RingTheory.Polynomial.Vieta
+public import Mathlib.Tactic
 
 /-!
 # Newton's inequalities for elementary symmetric functions
@@ -10,6 +12,8 @@ import Mathlib.Tactic
 This auxiliary file isolates the core analytic content of Newton's inequalities
 for elementary symmetric functions of a finite multiset of real numbers.
 -/
+
+public section
 
 open Polynomial
 

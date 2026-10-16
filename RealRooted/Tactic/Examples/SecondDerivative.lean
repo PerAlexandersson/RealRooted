@@ -1,4 +1,6 @@
-import RealRooted.Tactic.SecondDerivative
+module
+
+public import RealRooted.Tactic.SecondDerivative
 
 /-!
 # Second-derivative tactic examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.SecondDerivative
 Small regression tests for the sequence shell that factors a recurrence as a
 Ma--Wang step followed by `a + D`.
 -/
+
+public section
 
 open Polynomial
 

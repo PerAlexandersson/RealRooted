@@ -1,5 +1,9 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
+
+public section
 
 open Polynomial Set
 

@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Interlacing and root multiplicities
@@ -6,6 +8,8 @@ import RealRooted.Basic
 Duplicate roots in the upper row of an interlacing pair force a common root,
 and the two multiplicities of each real root differ by at most one.
 -/
+
+public section
 
 open Polynomial
 

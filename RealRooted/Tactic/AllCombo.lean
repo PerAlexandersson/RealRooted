@@ -1,10 +1,14 @@
-import RealRooted.AllCombo
+module
+
+public import RealRooted.AllCombo
 
 /-!
 # All-combination tactic frontends
 
 Thin wrappers for closure and conversion lemmas around `AllComboRealRooted`.
 -/
+
+public section
 
 open Polynomial
 

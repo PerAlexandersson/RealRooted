@@ -1,5 +1,7 @@
-import RealRooted.FactorialCompression.Compression
-import RealRooted.FactorialCompression.Kernel
+module
+
+public import RealRooted.FactorialCompression.Compression
+public import RealRooted.FactorialCompression.Kernel
 
 /-!
 # The degree-changing factorial compression theorem
@@ -20,6 +22,8 @@ is the image of `h_m ≺ K_{N,ℓ,a}` under the strict Schur--Szegő endpoint, a
 The theorem is due to Zhanhe Zhang (*Factorial compression and strict interlacing*,
 SSRN 7510941); the proofs are ported from the draft of Zhang's formalization.
 -/
+
+public section
 
 open Polynomial
 

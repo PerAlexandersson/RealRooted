@@ -1,8 +1,11 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Tactic.Ring
+public import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Ordered multiset product inequalities
@@ -10,6 +13,8 @@ import Mathlib.Tactic.Linarith
 Additional upstream-shaped inequalities for products of terms in the unit
 interval.
 -/
+
+public section
 
 namespace Multiset
 

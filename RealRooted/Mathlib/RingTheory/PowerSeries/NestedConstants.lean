@@ -1,4 +1,6 @@
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Nested power-series constants
@@ -6,6 +8,8 @@ import Mathlib.RingTheory.PowerSeries.Basic
 This Mathlib-shaped shim records the multiplication rule for the composite
 constant map from a coefficient ring to polynomials and then to power series.
 -/
+
+public section
 
 namespace PowerSeries
 

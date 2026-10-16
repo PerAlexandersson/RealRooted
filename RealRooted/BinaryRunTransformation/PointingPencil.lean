@@ -1,7 +1,9 @@
-import RealRooted.BinaryRunTransformation.Contraction
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BinaryRunTransformation.Contraction
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.PFPolynomial
 
 /-!
 # The binary-run pointing pencil
@@ -10,6 +12,8 @@ This file constructs the homogenized source used in the binary-run pointing
 argument.  Its variables are the retained pair `(Z, W)` followed by the two
 contracted source variables `(S, T)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

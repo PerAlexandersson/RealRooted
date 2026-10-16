@@ -10,9 +10,14 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean
 -/
-import Mathlib.Analysis.Normed.Algebra.Spectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+
+module
+
+public import Mathlib.Analysis.Normed.Algebra.Spectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+
+public section
 
 open Quiver.Path
 namespace Matrix

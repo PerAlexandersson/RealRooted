@@ -1,8 +1,12 @@
-import RealRooted.Tactic.ReciprocalShift
+module
+
+public import RealRooted.Tactic.ReciprocalShift
 
 /-!
 # Reciprocal-shift tactic examples
 -/
+
+public section
 
 open Polynomial
 

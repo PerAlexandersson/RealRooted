@@ -1,10 +1,12 @@
-import RealRooted.MaWang
-import RealRooted.Linear
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.MaWang
+public import RealRooted.Linear
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Tactic
 
 /-!
 # A Liu--Wang benchmark family
@@ -20,6 +22,8 @@ Equivalently,
 This file develops the basic coefficient/degree/positivity facts needed to use
 the family as a benchmark for the Liu--Wang / Ma--Wang machinery.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

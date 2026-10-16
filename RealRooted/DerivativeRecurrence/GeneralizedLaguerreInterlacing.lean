@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+module
+
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 
 /-!
 # Interlacing for generalized-Laguerre differential recurrences
@@ -7,6 +9,8 @@ import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 This module applies the algebraic generalized-Laguerre reduction to the
 bilinear derivative-recurrence interlacing API.
 -/
+
+public section
 
 open Polynomial
 

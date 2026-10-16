@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
-import RealRooted.CriticalValueContinuation
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
+public import RealRooted.CriticalValueContinuation
 
 /-!
 # Calculus for a weighted A144438 contact
@@ -8,6 +10,8 @@ We construct a differentiable branch through a simple output root while one
 input-root parameter varies.  At a zero companion residue, we compute the
 derivative of that residue along the branch.
 -/
+
+public section
 
 open Filter Polynomial Topology
 open scoped ContDiff

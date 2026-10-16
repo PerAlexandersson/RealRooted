@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.LinearAlgebra.Matrix.Permutation
-import Mathlib.Data.Int.Order.Basic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Matrix.Permutation
+public import Mathlib.Data.Int.Order.Basic
 
 /-!
 # The Cauchy–Binet formula
@@ -11,6 +13,8 @@ import Mathlib.Data.Int.Order.Basic
 * `Matrix.abs_det_le_one_of_col`: a square integer matrix whose columns have at most one entry
   `1`, at most one entry `-1` and zeros elsewhere has determinant of absolute value at most one.
 -/
+
+public section
 
 open Finset Matrix
 

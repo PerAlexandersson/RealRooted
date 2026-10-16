@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.Barrier
-import RealRooted.MultivariateStability.MixedCharacteristic
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+module
+
+public import RealRooted.MultivariateStability.Barrier
+public import RealRooted.MultivariateStability.MixedCharacteristic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 /-!
 # Starting barrier values for the Marcus–Spielman–Srivastava argument
@@ -11,6 +13,8 @@ For positive semidefinite `A_1, …, A_m` with `Σ A_i = 1`, let `P(y) = det(Σ 
 (`realDetPencil_barrier_eq_trace_div`); hence `barrier i P (t·1) ≤ ε/t` when `tr(A_i) ≤ ε`
 (issue #950, step M5).
 -/
+
+@[expose] public section
 
 open Matrix MvPolynomial
 open scoped BigOperators MatrixOrder

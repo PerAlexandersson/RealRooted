@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Pair compatibility
@@ -8,6 +10,8 @@ its symmetry, and the degree-bounded transport through a real-linear map. It is
 independent of the finite-family, root-reflection, and affine-family machinery
 in `Compatibility.Basic`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.CoefficientShape
+public import RealRooted.Tactic.Finish
 
 /-!
 # Coefficient-shape finish tactics
@@ -8,6 +10,8 @@ Small wrappers for coefficient consequences of nonnegative real-rooted
 polynomials.  This file is separate from `RealRooted.Tactic.Finish` so the
 heavier coefficient-shape imports do not affect hot recurrence tactics.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import Mathlib.LinearAlgebra.Basis.VectorSpace
-import Mathlib.LinearAlgebra.Matrix.ToLin
-import Mathlib.Order.Hom.PowersetCard
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.LinearAlgebra.Basis.VectorSpace
+public import Mathlib.LinearAlgebra.Matrix.ToLin
+public import Mathlib.Order.Hom.PowersetCard
 
 /-!
 # Cauchy-Binet determinant expansions
@@ -11,6 +13,8 @@ minor into a sum over intermediate maps, proves that noninjective maps vanish,
 and factors each injective map through the increasing enumeration of its image.
 The remaining step transports permutation signs and groups by image subset.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

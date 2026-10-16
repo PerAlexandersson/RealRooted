@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.Basic
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
 
 /-!
 # Finite signed words
@@ -13,6 +15,8 @@ Equal adjacent letters are allowed exactly for negative letters.  We define
 the literal finite set of admissible words and its descent and collision
 statistics, but no weighted enumerator or Chow polynomial.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BrandenVecchi
 

@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.FiberPartition
+module
+
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
 
 /-!
 # Exceptional-history partition for admissible Deco codes
@@ -8,6 +10,8 @@ exact exceptional history.  The result is a finite reindexing theorem for the
 comparison-bottom enumerator.  Identifying an individual history fiber with
 the operator-defined exact layer is a separate theorem.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

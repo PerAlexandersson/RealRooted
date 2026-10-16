@@ -1,6 +1,8 @@
-import RealRooted.FolkloreLemma
-import RealRooted.SymmetricDecomposition.Definitions
-import RealRooted.Basic.ProperPosition
+module
+
+public import RealRooted.FolkloreLemma
+public import RealRooted.SymmetricDecomposition.Definitions
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The `f`-polynomial transform
@@ -8,6 +10,8 @@ import RealRooted.Basic.ProperPosition
 The Brändén--Solus coefficient transform, its root-coordinate transport, and
 its real-rootedness equivalences for nonnegative-coefficient polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

@@ -1,8 +1,10 @@
-import RealRooted.HermiteBiehler.Basic
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import RealRooted.NewtonAux
-import RealRooted.Hadamard.SchurSzegoMultiplicity
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.HermiteBiehler.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Degree
+public import RealRooted.NewtonAux
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Multiple roots of a Schur–Szegő composition are forced
@@ -21,6 +23,8 @@ root-deleted factor `R_a` (`P + i R_a` is upper-half-plane stable), shows that t
 `R_a` with `Q` vanishes at the root, and concludes with Lagrange interpolation and the
 multiplicity bound.
 -/
+
+@[expose] public section
 
 @[expose] public section
 

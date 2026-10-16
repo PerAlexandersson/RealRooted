@@ -1,4 +1,6 @@
-import RealRooted.CauchyInterlacing
+module
+
+public import RealRooted.CauchyInterlacing
 
 /-!
 # Eigenvalue bounds for arbitrary principal submatrices
@@ -7,6 +9,8 @@ This file extends the one-coordinate Cauchy interlacing API to the one-sided
 bound needed for principal submatrices selected by an arbitrary injective map.
 The proof uses the already formalized Courant--Fischer theorem directly.
 -/
+
+@[expose] public section
 
 open Matrix
 

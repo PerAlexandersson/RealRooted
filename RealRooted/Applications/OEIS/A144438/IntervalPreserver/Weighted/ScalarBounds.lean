@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ScalarBounds
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ScalarBounds
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-!
 # Scalar bounds for the weighted residue-energy induction
@@ -7,6 +9,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 The weighted proof carries the scaled energy `H = w * E`.  This avoids any
 division by `w` and includes the Eulerian endpoint `w = 0`.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

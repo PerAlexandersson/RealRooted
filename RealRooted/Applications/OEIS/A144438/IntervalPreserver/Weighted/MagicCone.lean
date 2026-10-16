@@ -1,9 +1,11 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
-import RealRooted.BernsteinCone.Preserver
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+public import RealRooted.BernsteinCone.Preserver
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.WagnerRightSum
 
 /-!
 # The weighted magic cone from its endpoint relation
@@ -18,6 +20,8 @@ so the weighted declarations below retain that bound.  The endpoint relation is 
 mathematical input of issue #1263 (exact checks show the endpoint resultant has positive
 coefficients through rank twenty); the PF conclusion is derived, not assumed.
 -/
+
+@[expose] public section
 
 open Polynomial
 

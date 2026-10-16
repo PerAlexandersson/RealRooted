@@ -1,6 +1,10 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import Mathlib.Data.Fintype.Perm
-import Mathlib.Tactic.Linarith
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import Mathlib.Data.Fintype.Perm
+public import Mathlib.Tactic.Linarith
+
+@[expose] public section
 
 namespace List
 
@@ -18,7 +22,7 @@ end List
 
 namespace Equiv.Perm
 
-private def sumFinEquiv (m n : ℕ) : Fin m ⊕ Fin n ≃ Fin (m + n) :=
+def sumFinEquiv (m n : ℕ) : Fin m ⊕ Fin n ≃ Fin (m + n) :=
   { toFun := Sum.elim (Fin.castAdd n) (Fin.natAdd m)
     invFun := Fin.addCases Sum.inl Sum.inr
     left_inv := by

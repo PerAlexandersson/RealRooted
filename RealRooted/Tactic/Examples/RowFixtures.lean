@@ -1,11 +1,15 @@
-import Mathlib.Basic.Real.Basic
-import Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Shared row fixtures
 
 Recursive polynomial rows shared by the tactic regression modules.
 -/
+
+@[expose] public section
 
 open Polynomial
 

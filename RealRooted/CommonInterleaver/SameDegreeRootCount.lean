@@ -4,15 +4,20 @@
 Same-degree root-slot intersections, root crossings, root counts, and their
 low-degree cases.
 -/
-import RealRooted.AffineFamily
-import RealRooted.CommonInterleaver.IntervalLemmas
-import RealRooted.AllCombo
-import RealRooted.CommonInterleaverSeq
-import RealRooted.PosCombo
-import RealRooted.RootCountJump
-import RealRooted.RootOrderBridge
-import RealRooted.SameDegreeCubicRootCount
-import RealRooted.SameDegreeQuadraticRootCount
+
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.CommonInterleaver.IntervalLemmas
+public import RealRooted.AllCombo
+public import RealRooted.CommonInterleaverSeq
+public import RealRooted.PosCombo
+public import RealRooted.RootCountJump
+public import RealRooted.RootOrderBridge
+public import RealRooted.SameDegreeCubicRootCount
+public import RealRooted.SameDegreeQuadraticRootCount
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Polarization
+module
+
+public import RealRooted.Polarization
 
 /-!
 # Rectangular polarization
@@ -8,6 +10,8 @@ Gribinski--Marcus and proves that it is upper-half-plane stable when `p(x * y)`
 is stable. The proof polarizes the right-variable slice and then the
 left-variable slice.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

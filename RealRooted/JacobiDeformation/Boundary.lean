@@ -1,6 +1,8 @@
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.Linear
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.Linear
+public import RealRooted.SimpleRoots
 
 /-!
 # Low-degree boundaries for the Jacobi deformation
@@ -9,6 +11,8 @@ The general deformation theorem treats ranks zero and one separately.  This
 module closes those cases with the same splitness, simplicity, and strict
 negative-root conclusions used in the positive-rank assembly.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,8 @@
-import RealRooted.Tactic.LiuWangRecursion
+module
+
+public import RealRooted.Tactic.LiuWangRecursion
+
+public section
 
 open Polynomial
 

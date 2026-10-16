@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Product.Rules
+module
+
+public import RealRooted.Tactic.Product.Rules
 
 /-!
 # Product lift-auto shape dispatch examples
 
 Regression examples for bounded product-lift auto dispatch.
 -/
+
+public section
 
 open Polynomial
 

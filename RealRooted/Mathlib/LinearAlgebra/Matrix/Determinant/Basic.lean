@@ -2,7 +2,7 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
-public section
+@[expose] public section
 
 namespace Matrix
 variable {n R : Type*} [DecidableEq n] [Fintype n] [CommRing R]

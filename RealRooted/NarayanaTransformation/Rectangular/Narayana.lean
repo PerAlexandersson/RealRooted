@@ -1,8 +1,12 @@
-import RealRooted.NarayanaTransformation.Coefficients
+module
+
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Narayana rectangular convolution coefficient transport.
 -/
+
+public section
 
 open Polynomial Finset
 

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # `rr_side` examples
 
 Small goals that exercise the first side-goal tactic.
 -/
+
+@[expose] public section
 
 open Polynomial
 

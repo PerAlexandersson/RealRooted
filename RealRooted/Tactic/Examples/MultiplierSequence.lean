@@ -1,4 +1,8 @@
-import RealRooted.Tactic.MultiplierSequence
+module
+
+public import RealRooted.Tactic.MultiplierSequence
+
+public section
 
 open Polynomial
 

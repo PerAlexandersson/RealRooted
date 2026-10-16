@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard
+module
+
+public import RealRooted.Tactic.Favard
 
 /-!
 # `rr_favard` examples: row signs
 
 Abstract smoke tests for the row-sign Favard frontends.
 -/
+
+public section
 
 open Polynomial
 

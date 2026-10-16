@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Derivatives at simple roots of split polynomials
@@ -7,6 +9,8 @@ import Mathlib.Tactic.Linarith
 An upstream-shaped formula for the derivative at a root of multiplicity one,
 without requiring the polynomial to be monic.
 -/
+
+public section
 
 namespace Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Interlacing.Euclid
+module
+
+public import RealRooted.Interlacing.Euclid
 
 /-!
 # Parity products of two three-term sequences
@@ -16,6 +18,8 @@ those of `s` and `t` (`interlaces_of_parityProduct`, `splits_of_parityProduct`).
 are the OEIS rows A158909, A143858 and A092879, whose order-three recurrences have no
 three-term reduction.
 -/
+
+public section
 
 open Polynomial
 

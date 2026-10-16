@@ -1,5 +1,9 @@
-import RealRooted.Compatibility.LeanderTransform
-import RealRooted.Compatibility.Three
+module
+
+public import RealRooted.Compatibility.LeanderTransform
+public import RealRooted.Compatibility.Three
+
+@[expose] public section
 
 open Polynomial
 

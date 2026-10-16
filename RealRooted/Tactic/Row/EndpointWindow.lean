@@ -1,7 +1,15 @@
-import RealRooted.DerivativeRecurrence.EndpointWindow
-import RealRooted.Tactic.Row.PowerForm
-import RealRooted.Tactic.Row.SideGoals
-import RealRooted.Tactic.Row.FTransform
+module
+
+public import RealRooted.DerivativeRecurrence.EndpointWindow
+public import RealRooted.Tactic.Row.PowerForm
+public import RealRooted.Tactic.Row.SideGoals
+public import RealRooted.Tactic.Row.FTransform
+public meta import RealRooted.DerivativeRecurrence.EndpointWindow
+public meta import RealRooted.Tactic.Row.PowerForm
+public meta import RealRooted.Tactic.Row.SideGoals
+public meta import RealRooted.Tactic.Row.FTransform
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

@@ -1,8 +1,10 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.DerivativeRecurrence.SecondOrderDegree
-import RealRooted.GeneralizedLiuWang
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.DerivativeRecurrence.SecondOrderDegree
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum
 
 /-!
 # Interlacing for affine-lagged second-order derivative recurrences
@@ -10,6 +12,8 @@ import RealRooted.WagnerRightSum
 Coefficient positivity, strict root negativity, and interlacing for the
 second-order recurrence shared by several OEIS polynomial families.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -44,7 +48,7 @@ theorem coeff_zero_affine_lag_second_order_derivative
       norm_num
       exact ih
 
-private theorem nonneg_coeffs_affine_lag_second_order_derivative_aux
+theorem nonneg_coeffs_affine_lag_second_order_derivative_aux
     (ha : 0 ≤ a) (hc : 0 ≤ c) (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
@@ -89,7 +93,7 @@ private theorem nonneg_coeffs_affine_lag_second_order_derivative_aux
             exact mul_nonneg (by nlinarith) (hnn1 j)
         linarith
 
-private theorem top_affine_lag_second_order_derivative
+theorem top_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
@@ -125,7 +129,7 @@ theorem hasNonnegCoeffs_of_affine_lag_second_order_derivative
   hasNonnegCoeffs_of_affine_lag_second_order_derivative_of_nonneg_lag
     P a a ha.le ha.le h0 h1 hrec
 
-private theorem natDegree_affine_lag_second_order_derivative
+theorem natDegree_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
@@ -135,7 +139,7 @@ private theorem natDegree_affine_lag_second_order_derivative
   natDegree_of_second_order_derivative P a c
     (fun m => (a + 1) + a * (m : ℝ)) h0 h1 hrec (by intro m; ring) n
 
-private theorem pos_leading_affine_lag_second_order_derivative
+theorem pos_leading_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
@@ -172,7 +176,7 @@ theorem root_neg_affine_lag_second_order_derivative_of_nonneg_lag
     rw [Polynomial.IsRoot.def, heval] at hr
     norm_num at hr
 
-private theorem derivative_interlaces_affine_lag_second_order_derivative
+theorem derivative_interlaces_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
@@ -184,7 +188,7 @@ private theorem derivative_interlaces_affine_lag_second_order_derivative
     rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec]
     lia)
 
-private theorem derivative_pos_affine_lag_second_order_derivative
+theorem derivative_pos_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +

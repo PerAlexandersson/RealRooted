@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives of finite products
@@ -6,6 +8,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 This file gives the finite-product Leibniz rule for multivariate
 polynomials.
 -/
+
+public section
 
 open scoped BigOperators
 

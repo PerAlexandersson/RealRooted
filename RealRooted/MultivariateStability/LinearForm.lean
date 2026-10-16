@@ -1,5 +1,7 @@
-import RealRooted.MultivariateStability
-import Mathlib.Basic.Complex.BigOperators
+module
+
+public import RealRooted.MultivariateStability
+public import Mathlib.Basic.Complex.BigOperators
 
 /-!
 # Stable homogeneous linear forms
@@ -8,6 +10,8 @@ This file proves that a nonzero homogeneous linear form with nonnegative real
 coefficients is multivariate stable.  The variables may be indexed with
 repetition, which makes the result convenient for finite combinatorial sums.
 -/
+
+public section
 
 namespace RealRooted
 

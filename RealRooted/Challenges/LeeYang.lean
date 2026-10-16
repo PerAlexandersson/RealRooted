@@ -1,4 +1,6 @@
-import RealRooted.LeeYang
+module
+
+public import RealRooted.LeeYang
 
 /-!
 # Lee–Yang circle theorem challenge entry point
@@ -69,3 +71,5 @@ polynomials,”](https://doi.org/10.4007/annals.2010.171.589) *Annals of Mathema
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.
 -/
+
+public section
