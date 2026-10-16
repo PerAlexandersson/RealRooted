@@ -86,6 +86,7 @@ import RealRooted.Tactic.Examples.OEIS.DerivativeLag
 import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
 import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
 import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
+import RealRooted.Tactic.Examples.OEIS.Dispatcher
 import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.Foundation
 import RealRooted.Tactic.Examples.OEIS.GammaVeronese
