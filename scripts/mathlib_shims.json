@@ -845,6 +845,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/RootsOpen.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.RootsOpen"
+      ],
+      "note": "The proof was found by Aristotle (Harmonic); proposed upstream target module.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Analysis/Complex/Polynomial/SchurCohn.lean"
       ],
       "modules": [

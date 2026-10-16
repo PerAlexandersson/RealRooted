@@ -995,6 +995,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
@@ -1759,6 +1760,8 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
 import RealRooted.MultiplierSequence.InvPochhammerSimple
 import RealRooted.Applications.OEIS.ClosedFormRows
 import RealRooted.MultivariateStability.MorrisOperator
+import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
+import RealRooted.MultivariateStability.MorrisBFlow
 import RealRooted.BorceaBranden.Transcendental.LambdaBar
 import RealRooted.BorceaBranden.Transcendental.PivotForward
 import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
