@@ -1362,6 +1362,7 @@ import RealRooted.ReflectedRootCountLocalConstancy
 import RealRooted.RookPolynomial
 import RealRooted.RootAmplitude
 import RealRooted.RootAmplitude.Convex
+import RealRooted.RootAmplitude.Cotangent
 import RealRooted.RootAmplitude.Density
 import RealRooted.RootAmplitude.Extension
 import RealRooted.RootAmplitude.Extreme
@@ -1745,6 +1746,7 @@ import RealRooted.Touchard
 import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.Basic
 import RealRooted.Transforms.BrandenE.BasisImage
+import RealRooted.Transforms.BrandenE.EvenBinomial
 import RealRooted.Transforms.BrandenE.IntervalPreserver
 import RealRooted.Transforms.BrandenE.Inverse
 import RealRooted.Transforms.BrandenE.OrderedBell
@@ -2033,3 +2035,4 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
 import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
+import RealRooted.RootVieta.SortedRoots

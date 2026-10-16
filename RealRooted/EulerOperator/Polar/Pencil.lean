@@ -293,6 +293,38 @@ theorem strictInterl_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
     (polarTheta_preserves_pf hp (le_of_eq hpdeg)).hasNonnegCoeffs
     (thetaPlusOne_preserves_pf hp).hasNonnegCoeffs
 
+/-- A polar image of a sum precedes `thetaPlusOne q` when both summands do. -/
+theorem strictInterl_polarTheta_add_thetaPlusOne
+    {n : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree = n + 1)
+    (hn : 1 ≤ n) (hq0 : q.coeff 0 ≠ 0)
+    (hmixed :
+      StrictInterl (polarTheta (n + 1) (thetaPlusOne p)) (thetaPlusOne q)) :
+    StrictInterl (polarTheta (n + 1) (q + thetaPlusOne p)) (thetaPlusOne q) := by
+  have hboundary :
+      StrictInterl (polarTheta (n + 1) q) (thetaPlusOne q) :=
+    strictInterl_polarTheta_thetaPlusOne_boundary hq hqdeg (by lia) hq0
+  have hqpolar : IsPFPolynomial (polarTheta (n + 1) q) :=
+    polarTheta_preserves_pf hq (le_of_eq hqdeg)
+  have hthetaDeg : (thetaPlusOne p).natDegree ≤ p.natDegree := by
+    rw [natDegree_le_iff_coeff_eq_zero]
+    intro k hk
+    rw [coeff_thetaPlusOne, coeff_eq_zero_of_natDegree_lt hk, mul_zero]
+  have hppolar : IsPFPolynomial (polarTheta (n + 1) (thetaPlusOne p)) :=
+    polarTheta_preserves_pf (thetaPlusOne_preserves_pf hp)
+      (hthetaDeg.trans (by lia))
+  have hsum := StrictInterl.add_of_right_of_posLeadingCoeff
+    hboundary hmixed
+    (hqpolar.hasNonnegCoeffs.pos_leadingCoeff hboundary.1.1)
+    (hppolar.hasNonnegCoeffs.pos_leadingCoeff hmixed.1.1)
+  have hadd :
+      polarTheta (n + 1) q + polarTheta (n + 1) (thetaPlusOne p) =
+        polarTheta (n + 1) (q + thetaPlusOne p) := by
+    unfold polarTheta theta
+    simp only [derivative_add]
+    ring
+  rwa [hadd] at hsum
+
 /-- At the boundary index, every positive Euler pencil precedes the
 `X`-shifted polar Euler derivative. -/
 theorem strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
