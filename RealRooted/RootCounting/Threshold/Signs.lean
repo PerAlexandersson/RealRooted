@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
-import RealRooted.RootCounting.SignChanges
-import RealRooted.RootCounting.Threshold.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
+public import RealRooted.RootCounting.SignChanges
+public import RealRooted.RootCounting.Threshold.Basic
 
 /-!
 # Signed evaluations from coefficient dominance
@@ -8,6 +10,8 @@ import RealRooted.RootCounting.Threshold.Basic
 Applications of dominant coefficients to a far-left evaluation, and a
 splitness criterion expressed through signed evaluations at ordered points.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

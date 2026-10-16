@@ -20,13 +20,11 @@ under this expansion, and splitness of the expansion forces its source roots
 to be nonnegative.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
 
 namespace Polynomial
-
-noncomputable section
 
 /-- Expanding a split real polynomial along the squaring map preserves
 splitness when every root is nonnegative. -/
@@ -99,7 +97,5 @@ theorem splits_and_forall_roots_nonneg_of_splits_X_mul_expand_two (p : ℝ[X])
     (h : (X * expand ℝ 2 p).Splits) :
     p.Splits ∧ ∀ r ∈ p.roots, 0 ≤ r :=
   splits_and_forall_roots_nonneg_of_splits_expand_two p h.of_X_mul
-
-end
 
 end Polynomial

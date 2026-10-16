@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootVieta
+module
+
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootVieta
 
 /-!
 # Amplitude at a smallest negative root
@@ -13,11 +15,11 @@ The low-coefficient corollary uses the canonical `RootVieta` identities rather
 than introducing another reciprocal-root polynomial.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.RootAmplitude
-
-noncomputable section
 
 /-- If the square sum is at least `c` times the square of the sum, a maximal
 positive entry is at least `c` times the sum. -/
@@ -206,7 +208,5 @@ theorem amplitude_at_smallest_root {p : ℝ[X]}
     (c := 5 / 9) (by norm_num) (by simpa [hV] using hratio) hs hcount hmin
   norm_num at hmain
   simpa [div_eq_mul_inv] using hmain
-
-end
 
 end RealRooted.RootAmplitude

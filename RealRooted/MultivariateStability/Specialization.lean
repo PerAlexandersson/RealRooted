@@ -1,4 +1,6 @@
-import RealRooted.BoundarySpecializationGeneral
+module
+
+public import RealRooted.BoundarySpecializationGeneral
 
 /-!
 # Real boundary specialization
@@ -8,9 +10,9 @@ multivariate polynomials with real coefficients.  Specializing real values may
 annihilate the polynomial, so the natural conclusion is stability or zero.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Complexification commutes with specialization of one coordinate at a real
 value. -/
@@ -41,7 +43,7 @@ theorem MvRealStable.specializeAtList_zero_or_general
   rcases hcomplex with hzero | hstable
   · left
     exact MvPolynomial.map_injective Complex.ofRealHom
-      Complex.ofRealHom.injective hzero
+      Complex.ofRealHom.injective (by simpa [complexifyMv] using hzero)
   · exact Or.inr hstable
 
 /-- Real stability is preserved, up to the zero polynomial, by specializing
@@ -112,7 +114,5 @@ theorem MvRealStable.affineExtension_specialize_zero_or
         MvPolynomial.rename some Q))
     (c : ℝ) : MvRealStableOrZero (P + MvPolynomial.C c * Q) :=
   hPQ.orZero.affineExtension_specialize c
-
-end
 
 end RealRooted

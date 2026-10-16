@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic
+
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Tactic
 
 /-!
 # Polynomial basis transforms
@@ -16,9 +19,9 @@ The coefficientwise linear map sending `X ^ n` to a prescribed polynomial
 triangular bases, and the injectivity criterion for degree-triangular bases.
 -/
 
-open Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset
 
 namespace Polynomial
 

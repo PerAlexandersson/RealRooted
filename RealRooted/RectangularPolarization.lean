@@ -1,4 +1,6 @@
-import RealRooted.Polarization
+module
+
+public import RealRooted.Polarization
 
 /-!
 # Rectangular polarization
@@ -9,11 +11,11 @@ is stable. The proof polarizes the right-variable slice and then the
 left-variable slice.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The polarization of `y ^ m * p(x * y)` in `n` left variables and `m + n`
 right variables. -/
@@ -269,7 +271,5 @@ theorem mvUpperHalfPlaneStable_rectangularPolarization
   · exact upperHalfPlaneStable_rectangularLeftSlice hpdeg hplead hstable
       (fun i => hz (Sum.inr i))
   · exact fun i => hz (Sum.inl i)
-
-end
 
 end RealRooted

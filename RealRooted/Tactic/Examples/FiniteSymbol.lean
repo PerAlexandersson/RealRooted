@@ -1,4 +1,8 @@
-import RealRooted.Tactic.FiniteSymbol
+module
+
+public import RealRooted.Tactic.FiniteSymbol
+
+public section
 
 namespace RealRooted
 namespace Tactic

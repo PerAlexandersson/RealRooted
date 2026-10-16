@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.MaWang.CriticalSign
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.MaWang.CriticalSign
 
 /-!
 # Directed proper-position transport for the univariate Poisson product
@@ -11,12 +13,12 @@ Poisson factor (issue #1494): directed `StrictInterl` transport, the strict Ma�
 and the positive affine recurrence (PF rows, simple negative roots, consecutive interlacing).
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 private def starCTerm (c : ℝ) (f g : ℝ[X]) (j : ℕ) : ℝ[X] :=
   C (c ^ j / (j.factorial : ℝ)) * X ^ j *
@@ -366,7 +368,5 @@ theorem poisson_affine_recurrence_strict
     hn.1 hn.2.2.1 hn.2.1
   rw [← hstar] at hstep
   exact ⟨hn.1, hn.2.2.1, hn.2.2.2, hstep.2.2.1, hstep.2.2.2.2.1⟩
-
-end
 
 end RealRooted.Poisson

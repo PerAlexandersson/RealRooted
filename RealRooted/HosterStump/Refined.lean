@@ -1,4 +1,6 @@
-import RealRooted.Basic.Coefficients
+module
+
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Hoster--Stump refined polynomials
@@ -17,9 +19,9 @@ and `D_2(range 2)`
 (regression `example`s below) are verified in Lean.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.HosterStump
 

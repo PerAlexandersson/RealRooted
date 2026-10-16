@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Coefficients
+module
+
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Narayana rectangular convolution coefficient transport.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -314,6 +316,5 @@ theorem rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_eq
     rw [coeff_rectangularAdditiveConvolution_of_gt m n (degreeSignFlip n p)
         (degreeSignFlip n (narayanaPolynomial m n)) hjlt,
       coeff_degreeSignFlip_of_lt (narayanaTransform m p) hjlt]
-
 
 end RealRooted

@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.FieldTheory.IsAlgClosed.Basic
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.LinearAlgebra.Matrix.Block
+
+module
+
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.LinearAlgebra.Matrix.Block
 
 /-!
 # Triangularization of matrices over an algebraically closed field
@@ -31,6 +34,8 @@ block bookkeeping goes through `Equiv.sumCompl` and `Matrix.fromBlocks`.
   closed field is conjugate to a matrix that is block triangular for an
   injective height function into `ℕ`.
 -/
+
+public section
 
 open Finset
 

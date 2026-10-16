@@ -1,5 +1,7 @@
-import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
-import RealRooted.Tactic.CommonInterleaver.BasicRules
+module
+
+public import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
+public import RealRooted.Tactic.CommonInterleaver.BasicRules
 
 /-!
 # Analytic common-interleaver tactic rules
@@ -7,6 +9,8 @@ import RealRooted.Tactic.CommonInterleaver.BasicRules
 Macro expansions for root-count certificates and two-polynomial
 common-interleaver endpoints.
 -/
+
+public section
 
 open Polynomial
 

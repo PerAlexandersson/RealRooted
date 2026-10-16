@@ -1,8 +1,10 @@
-import RealRooted.Interlacing.ResidueCriterion
+module
+
+public import RealRooted.Interlacing.ResidueCriterion
+
+public noncomputable section
 
 open Polynomial BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

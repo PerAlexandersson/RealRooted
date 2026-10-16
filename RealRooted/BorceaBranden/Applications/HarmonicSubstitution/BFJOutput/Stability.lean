@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Stability of the BFJ output
@@ -9,11 +11,11 @@ This file derives weak univariate upper-half-plane stability of the
 dehomogenized BFJ coefficient by specializing its second variable to one.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The dehomogenized BFJ coefficient is zero or upper-half-plane stable. -/
 theorem MvUpperHalfPlaneStable.bfjOutput_zero_or
@@ -49,7 +51,5 @@ theorem MvUpperHalfPlaneStable.bfjOutput_zero_or
     simp only [MvPolynomial.eval_specializeAt] at heval
     rw [hupdate] at heval
     exact heval
-
-end
 
 end RealRooted

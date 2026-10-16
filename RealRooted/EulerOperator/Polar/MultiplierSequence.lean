@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator
-import RealRooted.Hadamard.Grace
-import RealRooted.MultiplierSequence.Infinite
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Finite multiplier sequences for polar Euler operators
@@ -11,9 +13,9 @@ so the finite Pólya--Schur theorem gives reusable finite multiplier-sequence
 certificates.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

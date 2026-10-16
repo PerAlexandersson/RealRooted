@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 
 /-!
 # Auxiliary polynomials from truncated staircases
@@ -9,9 +11,9 @@ auxiliary family `G`, including the low-rank certificates and coefficient
 nonnegativity interface used by the Braun--Jal development.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

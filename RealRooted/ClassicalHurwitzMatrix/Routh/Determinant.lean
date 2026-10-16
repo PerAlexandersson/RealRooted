@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
 
 /-!
 # The leading Hurwitz-determinant recurrence
@@ -7,13 +9,13 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
 This file extracts the determinant recurrence from one algebraic Routh step.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace Matrix
 
 open RealRooted
-
-noncomputable section
 
 /-- A predecessor-closed row minor of a Hurwitz matrix is unchanged by one
 reverse Routh row operation. -/
@@ -162,7 +164,5 @@ theorem hurwitzLeadingPrincipal_oddEvenPolynomial_det_succ_pos_iff
         (routhReducedPolynomial c odd even).coeff n).det := by
   rw [hurwitzLeadingPrincipal_oddEvenPolynomial_det_succ c odd even h0 n,
     mul_pos_iff_of_pos_left heven]
-
-end
 
 end Matrix

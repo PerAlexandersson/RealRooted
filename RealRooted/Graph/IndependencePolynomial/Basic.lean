@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Pair
-import Mathlib.Combinatorics.SimpleGraph.Clique
+module
+
+public import RealRooted.Compatibility.Pair
+public import Mathlib.Combinatorics.SimpleGraph.Clique
 
 /-!
 # Independence polynomials of finite graphs
@@ -11,9 +13,9 @@ coefficient, nonvanishing, positivity, empty-support, and compatibility API.
 Graph-specific recurrences and claw-free arguments belong in higher modules.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

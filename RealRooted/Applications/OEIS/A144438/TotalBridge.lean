@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
-import RealRooted.Applications.OEIS.A144438.BottomTotal
+module
+
+public import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Bridge from Deco decompositions to the recurrence-defined total
@@ -13,11 +15,11 @@ These are polynomial identities only.  They do not assert stability of the
 outer sum.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The admissible-code comparison-bottom enumerator is the dehomogenized
 recurrence-defined layer total, with finite coordinates embedded as positive
@@ -55,8 +57,5 @@ theorem normalizedFiberPolynomial_eq_decoBottomTotal (n : Nat) :
     normalizedFiberPolynomial (R := Real) (n + 2) = decoBottomTotal n := by
   rw [normalizedFiberPolynomial_eq_dehomogenize_decoLayerTotal,
     rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal]
-
-end
-
 
 end RealRooted.Applications.OEIS

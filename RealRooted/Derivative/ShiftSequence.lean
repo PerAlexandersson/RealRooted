@@ -1,4 +1,6 @@
-import RealRooted.IteratedDerivativeShift
+module
+
+public import RealRooted.IteratedDerivativeShift
 
 /-!
 # Finite sequences of derivative shifts
@@ -13,11 +15,11 @@ simple roots.  Its proof follows the multiplicity descent used for fixed
 iterations, tracing a hypothetical multiple root backward through the list.
 -/
 
+@[expose] public noncomputable section
+
 open RealRooted
 
 namespace Polynomial
-
-noncomputable section
 
 /-- Apply the derivative shifts in `epss` from left to right. -/
 def applyTDerivList : List ℝ → ℝ[X] → ℝ[X]
@@ -110,7 +112,5 @@ theorem hasSimpleRoots_applyTDerivList_of_natDegree_le_length
   have hmult_le : p.rootMultiplicity a ≤ p.natDegree :=
     Polynomial.rootMultiplicity_le_natDegree p a
   lia
-
-end
 
 end Polynomial

@@ -1,10 +1,12 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
 
 /-! # Endpoint residue sums for the weighted diagonal family -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Criterion
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Calculus.Deriv.Inv
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Criterion
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!
 # From the Gegenbauer side back to `A_n` and `M_(n-2)`
@@ -17,6 +19,8 @@ with `F_n(a) > 0` and `G_(k-1)(a) G_k'(a) > 0` yields `A_n(ρ) M_k'(ρ) < 0`.
 * `eval_motzkinRef_pos_of_nonneg`: `M_k` has no zero on `[0, ∞)`.
 * `eval_mul_derivative_neg`: `A_n(ρ) M_(n-2)'(ρ) < 0` at every zero `ρ` of `M_(n-2)`, `n ≥ 25`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

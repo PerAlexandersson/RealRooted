@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
 
 /-!
 # Algebra at an unequal-parameter first contact
@@ -9,7 +11,7 @@ that the one-sided minimum conditions on a box force every input-root
 parameter to coincide.
 -/
 
-noncomputable section
+public noncomputable section
 
 namespace RealRooted.Applications.OEIS
 

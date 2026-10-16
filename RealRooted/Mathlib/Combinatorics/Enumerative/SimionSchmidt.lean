@@ -3,13 +3,20 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
-import Mathlib.Combinatorics.Enumerative.Catalan.Basic
-import Mathlib.Data.Finset.Max
-import Mathlib.Data.Finset.Sort
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Ring
+
+module
+
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Algebra.Group.Action.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
+public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
+public import Mathlib.Data.Finset.Max
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.Ring
 
 /-!
 # Simion--Schmidt symmetries
@@ -18,6 +25,8 @@ Reversal, complementation, and inversion give bijections between permutation
 classes defined by a single avoided pattern.  We use these bijections to
 reduce the six patterns of length three to two cardinality classes.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace SimionSchmidt

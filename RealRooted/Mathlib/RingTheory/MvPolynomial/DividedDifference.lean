@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Equiv
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Algebra.Polynomial.RingDivision
-import Mathlib.Logic.Equiv.Option
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+
+module
+
+public import Mathlib.Algebra.MvPolynomial.Equiv
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.Polynomial.RingDivision
+public import Mathlib.Logic.Equiv.Option
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Divided differences of multivariate polynomials
@@ -16,9 +19,9 @@ This file defines the quotient of the antisymmetrization of a multivariate
 polynomial under a transposition by the difference of the transposed variables.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 variable {σ R : Type*} [CommRing R] [DecidableEq σ]
 
@@ -148,7 +151,5 @@ theorem X_sub_X_mul_squaredPDerivDividedDifference_of_isSymmetric
     X_sub_X_mul_swapDividedDifference,
     rename_swap_squaredPDeriv_of_isSymmetric hP, squaredPDeriv_apply i,
     squaredPDeriv_apply j]
-
-end
 
 end MvPolynomial

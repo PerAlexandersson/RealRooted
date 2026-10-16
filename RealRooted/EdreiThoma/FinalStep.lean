@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 
 /-!
 # Edrei's final affine-exponent lemma
@@ -13,9 +15,9 @@ Taylor coefficients then makes its slope real and nonnegative.
 This is the final lemma in Edrei's proof of the converse Aissen--Schoenberg--Whitney theorem.
 -/
 
-open Complex Filter Topology
+public noncomputable section
 
-noncomputable section
+open Complex Filter Topology
 
 namespace RealRooted.EdreiThoma
 
@@ -70,6 +72,7 @@ private lemma one_le_norm_tprod {α : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i) {z 
     calc (1 : ℝ) = ∏ i ∈ s, (1 : ℝ) := by simp
       _ ≤ ∏ i ∈ s, ‖1 + (α i : ℂ) * z‖ :=
         Finset.prod_le_prod₀ (fun _ _ => zero_le_one) (fun i _ => ?_)
+      _ = ‖∏ i ∈ s, (1 + (α i : ℂ) * z)‖ := (norm_prod _ _).symm
     refine le_trans ?_ (Complex.re_le_norm _)
     simp only [add_re, one_re, re_ofReal_mul]
     nlinarith [hα i]
@@ -146,7 +149,7 @@ private lemma norm_tprod_le {α : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i) (sα : 
   by_cases hm : Multipliable (fun i => (1 + (α i : ℂ) * (r : ℂ)))
   · refine le_of_tendsto' hm.hasProd.norm (fun s => ?_)
     refine le_trans (le_of_eq ?_) (hfin s)
-    change (∏ i ∈ s, ‖1 + (α i : ℂ) * (r : ℂ)‖) = ∏ i ∈ s, (1 + α i * r)
+    rw [norm_prod]
     refine Finset.prod_congr rfl (fun i _ => ?_)
     rw [show (1:ℂ) + ↑(α i) * ↑r = ↑(1 + α i * r) by push_cast; ring, Complex.norm_real,
       Real.norm_of_nonneg (by nlinarith [hα i])]
@@ -304,7 +307,6 @@ private lemma re_le_of_series {h : ℂ → ℂ} {c : ℂ}
     rw [h2, add_re]
     rw [norm_neg] at h1
     nlinarith [norm_nonneg z, norm_nonneg c]
-
 
 /-- Step 2: the linear coefficient is real. -/
 private lemma im_eq_zero_of_affine {h : ℂ → ℂ} {a : ℂ}

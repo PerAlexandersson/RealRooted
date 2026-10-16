@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianCompendium.DeletionRoots
-import RealRooted.Applications.EulerianCompendium.Derangements
-import RealRooted.Applications.EulerianCompendium.DerangementRecurrence
-import RealRooted.DegreeDropReversal
+module
+
+public import RealRooted.Applications.EulerianCompendium.DeletionRoots
+public import RealRooted.Applications.EulerianCompendium.Derangements
+public import RealRooted.Applications.EulerianCompendium.DerangementRecurrence
+public import RealRooted.DegreeDropReversal
 
 /-!
 # Reciprocal derangement polynomials
@@ -11,9 +13,9 @@ The reflection calculation below is the operator identity in paper
 so it also covers polynomials whose degree is smaller than the ambient bound.
 -/
 
-open Polynomial RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial RealRooted
 
 namespace RealRooted.EulerianCompendium
 

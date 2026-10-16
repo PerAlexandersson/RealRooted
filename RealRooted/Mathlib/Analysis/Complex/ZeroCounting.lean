@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # Zeros of entire functions of exponential type
@@ -22,11 +25,11 @@ the convergence exponent of the zero sequence is at most one.
   `∑ k, ‖z k‖ ^ (-(1 + ε))` converges for every `ε > 0`.
 -/
 
+public noncomputable section
+
 open Complex Filter Metric Topology
 /- `divisor` in the statements below refers to `MeromorphicOn.divisor`. -/
 open MeromorphicOn
-
-noncomputable section
 
 namespace Differentiable
 
@@ -130,7 +133,6 @@ theorem zero_count_le {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 �
   have h3 : |Real.log ‖f 0‖| ≤ |Real.log ‖f 0‖| * r := by
     nlinarith [abs_nonneg (Real.log ‖f 0‖)]
   nlinarith
-
 
 private lemma summable_rpow_of_count {ι : Type*} (x : ι → ℝ) {δ A p : ℝ}
     (hδ : 0 < δ) (hδ1 : δ ≤ 1)
@@ -294,7 +296,6 @@ private lemma norm_lower_bound {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
   have : k ∈ {j | z j = z k} := rfl
   rw [h1] at this
   exact this
-
 
 /-- **Convergence exponent ≤ 1.** For an enumeration `z : ι → ℂ` of the zeros of `f` above,
 with multiplicity (that is, `analyticOrderAt f w = #{k | z k = w}` for all `w`), and any

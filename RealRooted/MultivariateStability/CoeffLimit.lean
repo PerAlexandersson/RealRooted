@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.MultivariateStability
-import Mathlib.Algebra.Order.Antidiag.Finsupp
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.MultivariateStability
+public import Mathlib.Algebra.Order.Antidiag.Finsupp
 
 /-!
 # Closed limits of multivariate stable polynomials
@@ -11,11 +13,11 @@ stability-preserving operators converges coefficientwise.  The proof restricts
 to a complex affine line and applies the existing closed-root limit theorem.
 -/
 
+public noncomputable section
+
 open Filter Polynomial Topology
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Uniform total-degree bounds turn coefficientwise convergence into
 pointwise convergence of multivariate polynomial evaluations. -/
@@ -199,7 +201,5 @@ theorem MvRealStable.of_linearMap_coeff_tendsto_of_totalDegree_le
   apply hP.ne_zero
   apply hinj
   simpa using hzero
-
-end
 
 end RealRooted

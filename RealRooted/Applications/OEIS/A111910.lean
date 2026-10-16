@@ -1,12 +1,16 @@
-import RealRooted.MultiplierSequence.TwoSidedJensen
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
-import RealRooted.CombinatorialExamples.BigDescentsOddBinom
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.Hadamard
-import RealRooted.Hadamard.GarloffWagner
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.MultiplierSequence.TwoSidedJensen
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.Hadamard
+public import RealRooted.Hadamard.GarloffWagner
+public import RealRooted.NarayanaTransformation
+
+@[expose] public noncomputable section
 
 open RealRooted Polynomial
 
@@ -16,8 +20,6 @@ open RealRooted Polynomial
 The Schur--Szegő model proves that every row splits.  The public transfer theorem
 identifies any recurrence presentation with the model by lag-two uniqueness.
 -/
-
-noncomputable section
 
 namespace RealRooted.Applications.OEIS.A111910
 

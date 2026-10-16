@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Vieta consequences of strict Hurwitz stability
@@ -7,9 +9,9 @@ Strict left-half-plane root location forces the next-to-leading coefficient
 to have the same positive sign as a positive leading coefficient.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,9 +1,11 @@
-import RealRooted.HosterStump.Step
-import RealRooted.HosterStump.Permutation
-import RealRooted.GammaTransform.ProperPosition
-import RealRooted.PosCombo
-import RealRooted.PFPolynomial
-import RealRooted.ThresholdMatrix.Basic
+module
+
+public import RealRooted.HosterStump.Step
+public import RealRooted.HosterStump.Permutation
+public import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.PosCombo
+public import RealRooted.PFPolynomial
+public import RealRooted.ThresholdMatrix.Basic
 
 /-!
 # Hoster--Stump: Chow, dual Chow and augmented Chow polynomials (Theorems 1.1 and 1.2)
@@ -37,9 +39,9 @@ statistics (`refinedPerm_eq_refined`) and Petersen's `γ`-transform lemmas
 the end of the file.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.HosterStump
 
@@ -127,7 +129,6 @@ private lemma sum_isolatedSubsets_reflect {n : ℕ} {U V : Finset ℕ} (hU : U �
     exact reflectSet_reflectSet ((mem_isolatedSubsets.1 hS).1.trans hU)
   · intro D hD
     exact reflectSet_reflectSet ((mem_isolatedSubsets.1 hD).1.trans hV)
-
 
 /-- Hoster--Stump (1.3) (Stanley): `β` is the flag `h`-vector of `P̂`, for a graded simplicial
 poset `P` of rank `n` with `h`-vector `h`.  Position `i` of the paper is `i - 1` here, and
@@ -246,7 +247,6 @@ private lemma sum_C_mul_refined_eq (n : ℕ) (h : ℕ → ℝ) (T : Finset ℕ) 
         refine Finset.sum_congr rfl fun D _ => ?_
         rw [map_sum, Finset.sum_mul]
 
-
 /-! ### Lemma 3.1: the gamma-polynomials of the Chow polynomials -/
 
 private lemma sum_isolatedSubsets_eq_gammaTransform {d : ℕ} {T : Finset ℕ}
@@ -346,7 +346,6 @@ theorem augChowOfFlagH_dualFlagH (n : ℕ) (β : Finset ℕ → ℝ) :
   rw [Finset.sum_congr rfl hF]
   exact sum_isolatedSubsets_reflect (n := n) le_rfl le_rfl
     (fun i hi => by simp only [Finset.mem_range]; lia) F
-
 
 /-! ### Real-rootedness of the `γ`-polynomials -/
 
@@ -465,7 +464,6 @@ theorem isRealRooted_sum_refined_Icc {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 0 
     exact isRealRooted_sum_C_mul_refined hh h0 (fun k hk => (hD.splits k hk).1)
       (fun i j hij hj => hD.top_row i j hij hj)
 
-
 /-! ### Theorem 1.1 and Theorem 1.2: real-rootedness -/
 
 /-- Hoster--Stump, Theorem 1.1 (Chow polynomial): for a flag `h`-vector `β` satisfying (1.3)
@@ -544,7 +542,6 @@ private theorem strictInterl_sum_refined_Icc_sum_refined_range {n : ℕ} (hn : 2
         hasNonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k {0} _))
   exact hint.toStrictInterl_of_ne hne3 hne2
 
-
 private theorem strictInterl_sum_refined_Icc_sum_refined_range_one {h : ℕ → ℝ}
     (hh : ∀ k, 0 ≤ h k) (h0 : 0 < h 0) :
     StrictInterl (∑ k ∈ Finset.range (1 + 1), C (h k) * refined 1 k ∅ (Finset.Icc 1 (1 - 1)))
@@ -585,7 +582,6 @@ theorem strictInterl_chowOfFlagH_dualFlagH_augChowOfFlagH {n : ℕ} (hn : 1 ≤ 
   · obtain rfl : n = 1 := by lia
     exact strictInterl_sum_refined_Icc_sum_refined_range_one hh h0
   · exact strictInterl_sum_refined_Icc_sum_refined_range h2 hh h0
-
 
 /-! ### Assumption-free corollaries for `β = flagHOfH n h` -/
 

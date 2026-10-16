@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 
 /-!
 # The two-row Lace matrix of a Hurwitz-stable polynomial
@@ -12,9 +14,9 @@ submatrix, shifted by `N ≥ deg F`, of the classical Hurwitz matrix of the reve
 nonnegative (issue #1113).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.ThresholdMatrix.HaglundZhang
+module
+
+public import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # OEIS A046802
@@ -8,9 +10,9 @@ are the terminal polynomials of the Haglund--Zhang binomial Eulerian
 refinement.  The refined vector supplies the interlacing certificate.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

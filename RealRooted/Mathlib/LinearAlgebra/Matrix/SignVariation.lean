@@ -21,9 +21,7 @@ This file extends the sign-variation convention used by
 discarded before adjacent equal signs are collapsed.
 -/
 
-public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 namespace SignType
 
@@ -657,7 +655,6 @@ theorem interiorNodal_succAbove
       have hne := Fin.succAbove_center_ne_zero_of_mul_neg x i
         (by simpa using hn)
       exact (hne (by simpa using hi)).elim
-
 
 /-- Remove one interior zero, apply the shorter nodal-insertion chain, and reinsert it.
 
@@ -1577,7 +1574,6 @@ theorem Fin.prefixSignVariations_le_signVariations
   exact List.signVariations_take_le _ _
 
 /-- The sign-block index of an entry, counted by prefix sign variation. -/
-@[expose]
 def Fin.signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
     Fin (Fin.signVariations c + 1) :=

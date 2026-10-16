@@ -1,9 +1,11 @@
-import RealRooted.Mathlib.Data.List.Zip
-import RealRooted.LiuOppositeSigns.NonnegCoeffs
-import RealRooted.LiuOppositeSigns.NoCommonRoots
-import RealRooted.LiuOppositeSigns.XSub.LeftSucc
-import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
+module
+
+public import RealRooted.Mathlib.Data.List.Zip
+public import RealRooted.LiuOppositeSigns.NonnegCoeffs
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.LiuOppositeSigns.XSub.LeftSucc
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
 
 /-!
 # Liu x-subtraction interval root counts
@@ -12,6 +14,8 @@ This module converts the odd/even interval witnesses for Liu's x-subtraction
 pencil into local lower bounds for the number of roots in a single gap between
 consecutive left-endpoint roots.
 -/
+
+public section
 
 open Polynomial Filter
 

@@ -1,4 +1,6 @@
-import RealRooted.EulerianCompletion
+module
+
+public import RealRooted.EulerianCompletion
 
 /-!
 # The deletion-stable family
@@ -8,9 +10,9 @@ It avoids subtraction in coefficient and degree inductions. The signed
 one-step identity `eq:largerRecurrence` is proved from it.
 -/
 
-open Polynomial RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial RealRooted
 
 namespace RealRooted.EulerianCompendium
 

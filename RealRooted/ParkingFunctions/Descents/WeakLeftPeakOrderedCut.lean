@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.Affine
-import RealRooted.Compatibility.NDCutInvariant
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
+module
+
+public import RealRooted.Compatibility.Affine
+public import RealRooted.Compatibility.NDCutInvariant
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
 
 /-!
 # The ordered weak-left-peak P/Q base family
@@ -10,11 +12,11 @@ and proves that they satisfy the ordered cut-compatibility invariant.  It
 contains no preservation claim for later ranks.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 private theorem card_fin_le (m : ℕ) (j : Fin m) :
     (Finset.univ.filter fun i : Fin m => i ≤ j).card = j.val + 1 := by
@@ -196,7 +198,5 @@ theorem terminalND_orderedNDCutCompatible_zero (m : ℕ) :
       rcases hp with ⟨j, rfl⟩
       refine ⟨((m - (j.val + 1) : ℕ) : ℝ), by positivity, ?_⟩
       exact terminalDescentReal_zero_closed m j
-
-end
 
 end RealRooted.ParkingFunctions

@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Rules
+module
+
+public import RealRooted.Tactic.Product.Rules
 
 /-!
 # Product-family tactic regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product.Rules
 Smoke tests for repeated-root, scalar, affine, powered, finite-product,
 periodic, and automatic product-family dispatchers.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

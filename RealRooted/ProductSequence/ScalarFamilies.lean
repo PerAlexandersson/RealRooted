@@ -1,4 +1,6 @@
-import RealRooted.ProductSequence.Lifts
+module
+
+public import RealRooted.ProductSequence.Lifts
 
 /-!
 # Alternating scalar/product recurrence families
@@ -6,6 +8,8 @@ import RealRooted.ProductSequence.Lifts
 Degree-plateau and alternating scalar/product recurrence shells, including
 left/right factor and tail-start variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Rayleigh differences of multiaffine polynomials
@@ -12,9 +14,9 @@ The stability implications belong in the multivariate-stability layer; the
 definitions and identities here require no root theory.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- The Rayleigh difference in coordinates `i` and `j`. -/
 def rayleighDifference {R σ : Type*} [CommRing R]
@@ -313,7 +315,5 @@ theorem IsMultiaffine.isRayleigh_of_vars_subset
   · rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
       pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
     simp
-
-end
 
 end MvPolynomial

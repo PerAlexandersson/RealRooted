@@ -1,6 +1,8 @@
-import RealRooted.OperatorMatrix.MixedLemma
-import RealRooted.OperatorMatrix.LocalToGlobal
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.OperatorMatrix.MixedLemma
+public import RealRooted.OperatorMatrix.LocalToGlobal
+public import RealRooted.QuadraticRoot
 
 /-!
 # Two-by-two operator matrices over `{1, θ, X}`
@@ -13,9 +15,9 @@ counterexamples; the block `(θ, 1) / (θ, θ)` uses the mixed differential lemm
 `p' + q' ≤ q + X p'`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.OperatorMatrix
 
@@ -141,7 +143,7 @@ private theorem not_isPFPolynomial_one_add_X_sq :
     (by norm_num [discrim]) :
       ¬ ((C 1 * X ^ 2 + C 0 * X + C 1) : ℝ[X]).Splits) using 1
   norm_num [map_ofNat]
-  ring
+  ring_nf
 
 private theorem not_isPFPolynomial_one_add_two_X_add_two_X_sq :
     ¬ IsPFPolynomial (1 + 2 * X + 2 * X ^ 2 : ℝ[X]) := by
@@ -150,7 +152,7 @@ private theorem not_isPFPolynomial_one_add_two_X_add_two_X_sq :
     (by norm_num [discrim]) :
       ¬ ((C 2 * X ^ 2 + C 2 * X + C 1) : ℝ[X]).Splits) using 1
   norm_num [map_ofNat]
-  ring
+  ring_nf
 
 private theorem not_isPFPolynomial_X_add_X_sq_add_X_cu :
     ¬ IsPFPolynomial (X + X ^ 2 + X ^ 3 : ℝ[X]) := by
@@ -918,4 +920,3 @@ theorem preservesOrderedPF_letters_iff {m n : ℕ} (L : Fin m → Fin n → Lett
   simp only [PreservesBlock, preservesOrderedPFPair_iff_isAllowedBlock]
 
 end RealRooted.OperatorMatrix
-

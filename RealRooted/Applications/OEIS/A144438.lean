@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+module
+
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
 
 /-!
 # The deco Eulerian recurrence and OEIS A144438
@@ -15,9 +17,9 @@ in the literature is `m + 2`. No combinatorial identification is asserted
 here: the checked connection is the initial values and recurrence alone.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

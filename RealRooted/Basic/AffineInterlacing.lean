@@ -1,4 +1,6 @@
-import RealRooted.Linear
+module
+
+public import RealRooted.Linear
 
 /-!
 # Affine transformations of legacy interlacing
@@ -9,9 +11,9 @@ lemmas let existing root-list applications transform an interlacing witness
 without reconstructing its sorted lists.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

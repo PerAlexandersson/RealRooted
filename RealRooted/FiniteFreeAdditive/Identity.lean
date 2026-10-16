@@ -1,8 +1,10 @@
-import RealRooted.FiniteFreeAdditive
-import RealRooted.ElementaryDifferential
-import RealRooted.LiebSokalOperator.Linearity
-import RealRooted.Multiaffine.Reciprocal
-import RealRooted.Polarization
+module
+
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.ElementaryDifferential
+public import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.Multiaffine.Reciprocal
+public import RealRooted.Polarization
 
 /-!
 # Finite-free additive convolution differential identity
@@ -12,11 +14,11 @@ polynomials to finite-free additive convolution.  Stability and
 real-rootedness preservation are deliberately left to a later layer.
 -/
 
+public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem signedMultiaffineReciprocal_polarization_eq_sum
     (d : ℕ) (p : ℂ[X]) :
@@ -276,7 +278,5 @@ theorem diagonal_applyNegDifferential_signedPolarization
       rw [Finset.sum_mul]
     _ = _ := by
       rw [← C_map_finiteFreeAdditiveConvolutionCoeff]
-
-end
 
 end RealRooted

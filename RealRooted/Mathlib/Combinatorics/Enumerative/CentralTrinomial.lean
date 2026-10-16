@@ -3,15 +3,18 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.BigOperators.NatAntidiagonal
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
+
+module
+
+public import Mathlib.Algebra.BigOperators.NatAntidiagonal
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
 
 /-!
 # Central trinomial coefficients
@@ -34,6 +37,8 @@ finite binomial sum `∑ i, (n choose 2i) (2i choose i)`, which chooses the
 * `Nat.eq_centralTrinomial_of_recurrence`: in characteristic zero, the initial
   values `1, 1` and this recurrence determine the sequence.
 -/
+
+@[expose] public section
 
 open Finset
 

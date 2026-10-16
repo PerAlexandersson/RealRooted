@@ -1,4 +1,6 @@
-import RealRooted.EulerOperator.Polar.MultiplierSequence
+module
+
+public import RealRooted.EulerOperator.Polar.MultiplierSequence
 
 /-!
 # Real-parameter polar Euler operators
@@ -12,9 +14,9 @@ derivative preserves PF polynomials.  This extends the natural-parameter
 `polarThetaMultiplier` package.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

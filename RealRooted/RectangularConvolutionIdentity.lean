@@ -1,8 +1,10 @@
-import RealRooted.DifferentialBlocks
-import RealRooted.ElementaryDifferential
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import RealRooted.RectangularConvolution
-import RealRooted.RectangularPolarizationComplement
+module
+
+public import RealRooted.DifferentialBlocks
+public import RealRooted.ElementaryDifferential
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import RealRooted.RectangularConvolution
+public import RealRooted.RectangularPolarizationComplement
 
 /-!
 # Rectangular convolution differential identity
@@ -12,11 +14,11 @@ negative partial differentiation on the direct rectangular polarization
 specializes to the rectangular additive convolution.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem triangle_reindex
     {A : Type*} [AddCommMonoid A] (n : ℕ) (F : ℕ → ℕ → A) :
@@ -490,7 +492,5 @@ theorem rectangularDifferential_diagonal_identity
   intro a ha
   exact rectangularDifferentialDiagonalCore_reindex m n K a hKn
     (Nat.lt_succ_iff.mp (Finset.mem_range.mp ha)) f g
-
-end
 
 end RealRooted

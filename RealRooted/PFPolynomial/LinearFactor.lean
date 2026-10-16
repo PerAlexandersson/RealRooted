@@ -1,4 +1,6 @@
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.PFPolynomial
 
 /-!
 # Linear-factor steps in the polynomial PF cone
@@ -8,9 +10,9 @@ This module packages the reusable order-theoretic step
 combinatorial products that use it.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

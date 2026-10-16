@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Darboux.NegativeRoots
-import RealRooted.CombinatorialExamples.StirlingPermutations
+module
+
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
+public import RealRooted.CombinatorialExamples.StirlingPermutations
 
 /-!
 # Jacobi–Stirling descent polynomials
@@ -31,9 +33,9 @@ The main results of this file are:
 * `X_mul_descentPoly_Icc`: `x A_{k,[k]}` is the second-order Eulerian polynomial.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace JacobiStirlingDescent

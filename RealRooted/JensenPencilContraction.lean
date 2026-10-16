@@ -1,6 +1,8 @@
-import RealRooted.JensenPencilPositiveContraction
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.JensenPencilPositiveContraction
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.RootContinuity
 
 /-!
 # Jensen-pencil contraction
@@ -10,9 +12,9 @@ the translated Schur--Szegő endpoints follows from the positive contraction,
 and coefficientwise closure of the PF cone returns the unshifted pencil.
 -/
 
-open Polynomial Filter
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

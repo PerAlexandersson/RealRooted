@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotal
-import RealRooted.MultivariateStability.LinearForm
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotal
+public import RealRooted.MultivariateStability.LinearForm
 
 /-!
 # Initial stability certificates for the Deco layer total
@@ -10,9 +12,9 @@ directional-derivative pencil.  No claim is made here for higher-rank totals:
 stability is not closed under the outer addition in the defining recurrence.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The rank-zero recurrence-defined layer total is multivariate real
 stable. -/
@@ -182,7 +184,5 @@ theorem decoLayerTotalBranchPencil_zero_not_mvRealStable :
       MvPolynomial.eval_rename, MvPolynomial.eval_map, Pi.single_apply,
       hdefault, hsome, hnone]
     apply Complex.ext <;> norm_num
-
-end
 
 end RealRooted.Applications.OEIS

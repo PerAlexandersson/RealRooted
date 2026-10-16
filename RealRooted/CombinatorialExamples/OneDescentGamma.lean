@@ -1,11 +1,13 @@
-import RealRooted.Basic
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Linear
-import RealRooted.MaWang
-import RealRooted.Wagner
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Linear
+public import RealRooted.MaWang
+public import RealRooted.Wagner
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Tactic
 
 /-!
 # One-Descent Gamma Family
@@ -14,10 +16,10 @@ Base-case interlacing and real-rootedness facts for the normalized one-descent
 gamma polynomials.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

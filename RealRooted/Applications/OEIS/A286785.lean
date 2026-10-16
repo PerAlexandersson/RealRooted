@@ -1,6 +1,8 @@
-import RealRooted.Wronskian.OdeRootExclusion
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Wronskian.OdeRootExclusion
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # The row polynomials of OEIS A286785
@@ -14,10 +16,10 @@ Real-rootedness remains an explicit hypothesis here; the downstream OEIS
 development supplies it through a Pólya-frequency certificate.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.A286785
 

@@ -18,11 +18,10 @@ not enumerate permutations. Standardization identifies it with the swap enumerat
 and transfers the simple negative root theorem to the recurrence-defined family.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial Finset
 
-noncomputable section
 namespace RealRooted.ZigzagEulerian
 
 /-- The binomial transform from numerator coefficients to word counts. -/

@@ -1,5 +1,7 @@
-import RealRooted.EndpointDerivative.Basic
-import RealRooted.EndpointDerivative.Sequence
+module
+
+public import RealRooted.EndpointDerivative.Basic
+public import RealRooted.EndpointDerivative.Sequence
 
 /-!
 # Endpoint derivative sequences
@@ -121,6 +123,8 @@ are the rows of [OEIS A142071](https://oeis.org/A142071),
 and [OEIS A172108](https://oeis.org/A172108).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.EndpointDerivative
 

@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Converse.Wronskian
+module
+
+public import RealRooted.HermiteBiehler.Converse.Wronskian
 
 /-!
 # Converse Hermite--Biehler theorem
@@ -9,9 +11,9 @@ It contains the common-root inductions and ratio endpoints built on the
 Wronskian and degree-at-most-two converse layers.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

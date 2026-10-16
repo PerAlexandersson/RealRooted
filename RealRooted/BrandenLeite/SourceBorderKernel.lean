@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.ChainPolynomial.Algebra
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.BrandenLeite.SourceBorder
+module
+
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.BrandenLeite.SourceBorder
 
 /-!
 # Kernel rows of finite source borders
@@ -10,11 +12,11 @@ regularized kernel construction.  The regularization removes the diagonal of
 the lower-right block entrywise, avoiding subtraction and division.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace Matrix
-
-noncomputable section
 
 /-- Extend a finite square matrix by zero to a matrix indexed by natural
 numbers. -/
@@ -76,14 +78,9 @@ theorem sum_strictLowerPart_mul_eq_sum_below
         have hji : castBelow i j < i := Fin.mk_lt_mk.mpr j.isLt
         simp [strictLowerPart, hji]
 
-end
-
-
 end Matrix
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The regularized finite kernel row.  Removing the diagonal makes the
 transition nilpotent even when `G * H` has nonzero constant diagonal. -/
@@ -386,7 +383,5 @@ theorem chainPolynomial_sourceBorder_last
   simpa using
     chainPolynomial_sourceBorder_eq_X_mul_regularizedKernelRow δ G H
       (Fin.last N)
-
-end
 
 end RealRooted.BrandenLeite

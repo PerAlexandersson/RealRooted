@@ -1,7 +1,9 @@
-import Mathlib.Data.Fin.Rev
-import Mathlib.LinearAlgebra.Matrix.Permanent
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability.Diagonal
+module
+
+public import Mathlib.Data.Fin.Rev
+public import Mathlib.LinearAlgebra.Matrix.Permanent
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability.Diagonal
 
 /-!
 # Permanent polynomials and monotone matrix conventions
@@ -12,6 +14,8 @@ that of P. Brändén, J. Haglund, M. Visontai, and D. G. Wagner,
 *Proof of the monotone column permanent conjecture*,
 doi:10.1007/978-3-0348-0142-3_5, arXiv:1010.2565.
 -/
+
+@[expose] public noncomputable section
 
 open scoped BigOperators
 
@@ -77,8 +81,6 @@ end Matrix
 
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- The multivariate permanent `per(z_j + a_ij)`, with one variable for each
 column. -/
@@ -266,8 +268,6 @@ theorem rename_columnPermanent_submatrix {n : ℕ}
     simp
   rw [hmatrix]
   exact Matrix.permanent_permute_rows τ _
-
-end
 
 end Permanent
 end RealRooted

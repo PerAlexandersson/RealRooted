@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.NormalizedCode
-import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
-import Mathlib.Data.Fintype.Pi
+module
+
+public import RealRooted.Applications.OEIS.A144438.NormalizedCode
+public import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
+public import Mathlib.Data.Fintype.Pi
 
 /-!
 # Admissible chronological Deco codes
@@ -10,6 +12,8 @@ chronological Deco codes.  An admissible code records every exceptional step
 as a nonoverlapping pair `(1, 0)` beginning no earlier than the third row.
 Such a code has a unique decoration over its normalized code.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

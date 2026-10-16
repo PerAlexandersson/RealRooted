@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Shift
-import RealRooted.Hadamard.Product
+module
+
+public import RealRooted.EulerOperator.Shift
+public import RealRooted.Hadamard.Product
 
 /-!
 # Infinite multiplier sequences
@@ -13,9 +15,9 @@ The analytic entire-function classification is deliberately not part of this
 algebraic layer.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

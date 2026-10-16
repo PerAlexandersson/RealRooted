@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalPointwise
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.MultivariateStability
 
 /-!
 # Boundary specialization for finite variable blocks
@@ -10,11 +12,11 @@ stable or becomes zero after a finite block of variables is specialized to
 zero.
 -/
 
+@[expose] public noncomputable section
+
 open Complex
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Successively specialize the variables in `l` to zero. -/
 def specializeZeroList {sigma : Type*} (l : List sigma)
@@ -116,7 +118,5 @@ theorem MvUpperHalfPlaneStableOrZero.specializeRight_zero_of_specializeZeroList
     cases j with
     | inl i => exact hx i
     | inr _ => simp
-
-end
 
 end RealRooted

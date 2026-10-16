@@ -1,13 +1,15 @@
-import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import Mathlib.Algebra.Polynomial.Monic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

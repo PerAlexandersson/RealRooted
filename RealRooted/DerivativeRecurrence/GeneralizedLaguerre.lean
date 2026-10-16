@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Generalized-Laguerre differential recurrences
@@ -8,9 +10,9 @@ form. This module records the algebraic reduction independently of any chosen
 initial polynomial or real-rootedness argument.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

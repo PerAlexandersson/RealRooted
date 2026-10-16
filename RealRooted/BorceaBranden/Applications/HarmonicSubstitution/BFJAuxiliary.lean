@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
 
 /-!
 # Brändén--Ferroni--Jochemko auxiliary product
@@ -10,9 +12,9 @@ polynomial-value products of P. Brändén, L. Ferroni and K. Jochemko,
 *Preservation of inequalities under Hadamard products*, arXiv:2408.12386.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- Add one auxiliary variable to every variable of a polynomial. -/
 def addAuxiliary {R σ : Type*} [CommSemiring R] (P : MvPolynomial σ R) :
@@ -66,13 +68,9 @@ theorem bfjCoefficient {P Q : MvPolynomial (Fin 2) ℝ}
 
 end HasNonnegCoeffs
 
-end
-
 end MvPolynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Adding a common auxiliary variable preserves upper-half-plane
 stability. -/
@@ -109,7 +107,5 @@ theorem MvUpperHalfPlaneStable.bfjCoefficient_zero_or
     MvUpperHalfPlaneStableOrZero (MvPolynomial.bfjCoefficient P Q b) :=
   (hP.bfjAuxiliary hQ hhom).optionEquivLeft_coeff_zero_or_of_finite
     (2 * b)
-
-end
 
 end RealRooted

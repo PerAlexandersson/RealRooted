@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedLiuWang
+module
+
+public import RealRooted.GeneralizedLiuWang
 
 /-!
 # Liu--Wang derivative-lag recursions
@@ -14,9 +16,9 @@ Liu--Wang interlacer, while the derivative term is handled as an additional
 interlacer of the current row.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.LiuWang
 

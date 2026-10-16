@@ -1,5 +1,7 @@
-import RealRooted.Combinatorics.ComparisonBottom
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.Combinatorics.ComparisonBottom
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Comparison-bottom monomials under minimum insertion
@@ -8,6 +10,8 @@ This file records insertion identities for squarefree comparison-bottom
 monomials.  They are stated for generic positive words with an initial ascent,
 independently of any particular combinatorial construction.
 -/
+
+@[expose] public section
 
 namespace RealRooted.MinimumInsertionWord
 

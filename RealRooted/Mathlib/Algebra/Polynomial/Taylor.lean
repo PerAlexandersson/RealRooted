@@ -3,14 +3,19 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Taylor
+
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Taylor
 
 /-!
 # Taylor shifts and derivatives
 
 The Taylor shift `taylor r p = p.comp (X + C r)` commutes with the formal derivative.
 -/
+
+public section
 
 namespace Polynomial
 

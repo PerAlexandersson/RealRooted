@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import LGV.Quiver.Path
-import Mathlib.Combinatorics.Quiver.Path.Weight
-import Mathlib.Data.Matrix.Basic
+module
+
+public import LGV.Quiver.Path
+public import Mathlib.Combinatorics.Quiver.Path.Weight
+public import Mathlib.Data.Matrix.Basic
 
 /-!
 # Weighted exact-length paths and matrix powers
@@ -17,14 +19,14 @@ finite quiver calculation, independent of networks, rank functions, and any
 positivity assumptions.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 open Quiver
 
 universe u v w
 
 namespace Quiver.Path
-
-noncomputable section
 
 variable {V : Type u} [Quiver.{v} V] {R : Type w}
 
@@ -81,7 +83,5 @@ theorem sum_weight_exactLength_eq_edgeSumMatrix_pow
           rw [Matrix.mul_apply]
         _ = (edgeSumMatrix w ^ (n + 1)) a b := by
           rw [pow_succ]
-
-end
 
 end Quiver.Path

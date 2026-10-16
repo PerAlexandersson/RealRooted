@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.GammaPencil.Invariants
-import RealRooted.GammaPencil.Preserver
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.ProductOrientation
+
+module
+
+public import RealRooted.GammaPencil.Invariants
+public import RealRooted.GammaPencil.Preserver
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.ProductOrientation
 
 /-!
 # The all-rank gamma-pencil theorem
@@ -16,9 +19,9 @@ gamma components.  Their constant coefficients and nonnegative coefficients
 then select the orientation `StrictInterl (gammaU n) (gammaV n)`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

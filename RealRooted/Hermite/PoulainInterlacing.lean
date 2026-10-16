@@ -1,5 +1,7 @@
-import RealRooted.Hermite.Poulain
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.Hermite.Poulain
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Hermite--Poulain operators preserve interlacing
@@ -13,9 +15,9 @@ operator-preserver theorem then shows that it maps interlacing pairs to
 interlacing pairs, in one of the two orientations.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace HermitePoulain

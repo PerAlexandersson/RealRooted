@@ -1,9 +1,13 @@
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
-import RealRooted.LinearPowerFamily
-import RealRooted.Hadamard.GarloffWagner
-import RealRooted.Hadamard
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.LinearPowerFamily
+public import RealRooted.Hadamard.GarloffWagner
+public import RealRooted.Hadamard
+public import RealRooted.NarayanaTransformation
+
+@[expose] public noncomputable section
 
 open RealRooted
 open Polynomial
@@ -16,8 +20,6 @@ proves splitting, and its Hadamard--Narayana model proves consecutive
 interlacing.  The final two theorems transfer these facts to any sequence
 with the same lag-two recurrence and initial rows.
 -/
-
-noncomputable section
 
 namespace RealRooted.Applications.OEIS.A181543
 
@@ -383,6 +385,5 @@ theorem interlaces_of_recurrence
     hrec polynomial_recurrence
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
-
 
 end RealRooted.Applications.OEIS.A181543

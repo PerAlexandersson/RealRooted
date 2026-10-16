@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarClose
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.HermiteBiehler.StablePencil
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarClose
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.HermiteBiehler.StablePencil
 
 /-!
 # Final stability and algebraic characterizations for the univariate Poisson product
@@ -11,11 +13,11 @@ This file closes the stability equivalences and proves that the step-`c`
 falling-factorial transform conjugates `starC` to ordinary multiplication.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 private theorem strictInterl_one_X : StrictInterl (1 : ℝ[X]) X := by
   exact StrictInterl.of_degree_zero_right_of_degree_one one_ne_zero
@@ -214,7 +216,5 @@ theorem isUpperHalfPlaneStablePencil_euler_iff_poissonSignedSymbol_stable
       MvUpperHalfPlaneStable (poissonSignedSymbol c f) := by
   rw [isUpperHalfPlaneStablePencil_euler_iff_isAdmissible hf0,
     mvUpperHalfPlaneStable_poissonSignedSymbol_iff_isAdmissible hf0]
-
-end
 
 end RealRooted.Poisson

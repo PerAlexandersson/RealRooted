@@ -1,5 +1,7 @@
-import RealRooted.RootCountLocalConstancy
-import RealRooted.SameDegreeMultiplicityLowerCount
+module
+
+public import RealRooted.RootCountLocalConstancy
+public import RealRooted.SameDegreeMultiplicityLowerCount
 
 /-!
 # Positive-parameter per-root local lower counts
@@ -22,9 +24,9 @@ provides a direct positive-parameter count-equality wrapper for intervals
 starting at `0`.
 -/
 
-open Polynomial Set
+public noncomputable section
 
-noncomputable section
+open Polynomial Set
 
 namespace RealRooted
 
@@ -73,4 +75,3 @@ theorem rightFamily_card_roots_gt_eq_zero_param_of_constant_degree
 
 end RealRooted
 
-end

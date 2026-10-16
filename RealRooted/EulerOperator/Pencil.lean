@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator
-import RealRooted.WagnerX.ProperPosition
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.WagnerX.ProperPosition
 
 /-!
 # Positive Euler pencils
@@ -8,9 +10,9 @@ Interlacing comparisons for positive shifts of the Euler operator
 `theta p = X * p'` on polynomial PF families.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

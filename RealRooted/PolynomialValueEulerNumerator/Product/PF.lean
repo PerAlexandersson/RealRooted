@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
-import RealRooted.PolynomialValueEulerNumerator.Product
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
+public import RealRooted.PolynomialValueEulerNumerator.Product
 
 /-!
 # PF closure for products of polynomial-value Euler numerators
@@ -14,11 +16,11 @@ inputs and handling zero separately. This does not assert a converse for
 arbitrary PF sequences outside the polynomial-value setting.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Canonical Euler numerators with PF certificates remain PF under
 polynomial multiplication. -/
@@ -41,7 +43,5 @@ theorem isPolyaFreqSeq_polynomialValueSeq_mul_of_eulerNumerators
     IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
   isPolyaFreqSeq_polynomialValueSeq_of_eulerNumerator
     (hf.polynomialValueEulerNumerator_mul hg)
-
-end
 
 end RealRooted

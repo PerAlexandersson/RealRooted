@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A144696.FactorialWeight
-import RealRooted.Interlacing.ResidueCriterion
-import RealRooted.MaWang.StrictStep
-import RealRooted.Wagner.NonpositiveRoots
+module
+
+public import RealRooted.Applications.OEIS.A144696.FactorialWeight
+public import RealRooted.Interlacing.ResidueCriterion
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.Wagner.NonpositiveRoots
 
 /-!
 # Strict interlacing for the A144696 Bernstein-image triangle
@@ -13,9 +15,9 @@ the Pascal relation. The mutual induction records interlacing, simple
 roots, and absence of common roots on every adjacent edge.
 -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 

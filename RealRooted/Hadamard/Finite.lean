@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Basic
+module
+
+public import RealRooted.Hadamard.Basic
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

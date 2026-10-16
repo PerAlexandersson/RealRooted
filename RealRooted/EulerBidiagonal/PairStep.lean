@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.Location
+module
+
+public import RealRooted.EulerBidiagonal.Location
 
 /-!
 # Lemma B′: `T q ≪ T ((X - ρ) q)`
@@ -10,9 +12,9 @@ strictly interlaces `T q` on the right and shares no root with it, where
 the comparison polynomial is given by `generalComparison_sign_at_generalStep_root`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 

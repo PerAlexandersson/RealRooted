@@ -1,7 +1,10 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.Rayleigh
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.Tactic.LinearCombination
+public import RealRooted.Multiaffine.Rayleigh
 
 /-!
 # Coordinate Wronskians of multivariate polynomials
@@ -11,9 +14,9 @@ Its directional-derivative specialization is a weighted row sum of Rayleigh
 differences, making the orientation and positivity hypotheses explicit.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- The Wronskian of two multivariate polynomials in one coordinate, with the
 same orientation as `Polynomial.wronskian`. -/
@@ -544,7 +547,5 @@ theorem IsRayleigh.eval_coordinateWronskian_sum_pderiv_nonneg
   intro j hj
   rw [eval_mul, eval_C]
   exact mul_nonneg (hb j) (hP i (f j) x)
-
-end
 
 end MvPolynomial

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
-import RealRooted.MultivariateStability.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
+public import RealRooted.MultivariateStability.PolyaFrequency
 
 /-!
 # Pólya-frequency restrictions of exact A144438 layers
@@ -9,9 +11,9 @@ nonnegativity of each recurrence-defined exact layer.  It makes no claim
 about the sum over different exceptional histories.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Every nonnegative common-phase restriction of an exact homogeneous layer
 is a Pólya-frequency polynomial. -/
@@ -32,7 +34,5 @@ theorem commonPhaseRestriction_decoExactLayerDehomogenized_isPFPolynomial
   RealRooted.MvRealStable.commonPhaseRestriction_isPFPolynomial
     (decoExactLayerDehomogenized_mvRealStable H)
     (decoExactLayerDehomogenized_hasNonnegCoeffs H) wt hwt
-
-end
 
 end RealRooted.Applications.OEIS

@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # Univariate compatibility for finite algebraic symbols
@@ -10,11 +12,11 @@ existing univariate finite-symbol challenge normalization. It remains outside
 the Mathlib-shaped core to avoid an application-layer import cycle.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 open _root_.MvPolynomial
 
@@ -99,7 +101,5 @@ theorem rename_algebraicSymbol_univariateDegreeBoxOperator
         simp [g, boxChoose, degreeOfLEFinOneEquiv_val]
     _ = finiteAlgebraicSymbol d T := by
       simpa [g, finiteAlgebraicSymbol] using Fin.sum_univ_eq_sum_range g (d + 1)
-
-end
 
 end RealRooted.BorceaBranden

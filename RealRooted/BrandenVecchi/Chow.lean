@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.Mathlib.Algebra.Polynomial.Chow
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
 
 /-!
 # Chow polynomials of lower-triangular matrices
@@ -11,11 +13,11 @@ unit-diagonal hypothesis.  Its total-nonnegative real-rootedness consequences
 are intentionally separate later layers.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {R : Type*} [CommRing R]
 
@@ -228,7 +230,5 @@ theorem chowPolynomial_zero (A : LowerTriangularMatrix R) (hdiag : A 0 0 = 1) :
     chowPolynomial A 0 = 1 := by
   rw [chowPolynomial_eq]
   simp [hdiag]
-
-end
 
 end RealRooted.BrandenVecchi

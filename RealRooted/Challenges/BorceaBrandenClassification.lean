@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.RealFiniteClassificationIff
-import RealRooted.BorceaBranden.Transcendental.ComplexClassification
-import RealRooted.BorceaBranden.Transcendental.PivotForward
-import RealRooted.BorceaBranden.Transcendental.RealClassification
-import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
+module
+
+public import RealRooted.BorceaBranden.RealFiniteClassificationIff
+public import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+public import RealRooted.BorceaBranden.Transcendental.PivotForward
+public import RealRooted.BorceaBranden.Transcendental.RealClassification
+public import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
 
 /-!
 # Borcea--Brändén classification of stability preservers
@@ -186,6 +188,8 @@ using specialization and partial differentiation.
 See [@BorceaBranden2009I].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.BorceaBrandenClassification
 

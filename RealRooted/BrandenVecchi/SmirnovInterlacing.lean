@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SmirnovRecurrence
-import RealRooted.BrandenVecchi.SmirnovSpecialization
+module
+
+public import RealRooted.BrandenVecchi.SmirnovRecurrence
+public import RealRooted.BrandenVecchi.SmirnovSpecialization
 
 /-!
 # Interlacing of literal Smirnov descent polynomials
@@ -9,11 +11,11 @@ reversed-last-letter recurrence.  It keeps the zero-aware boundary cases, in
 particular the one-letter alphabet in word lengths at least two.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The identity thresholds in the reversed-last-letter recurrence are
 weakly increasing. -/
@@ -248,7 +250,5 @@ theorem finiteSupersymmetricChow_replicate_one_nil_ne_zero
       (List.replicate m (1 : ℝ)) [] n ≠ 0 := by
   rw [finiteSupersymmetricChow_replicate_one_nil_eq_smirnov]
   exact smirnovDescentPolynomial_ne_zero m hm n
-
-end
 
 end RealRooted.BrandenVecchi

@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 
 /-!
 # Chow series of lower Toeplitz matrices
@@ -11,11 +13,11 @@ coefficientwise algebraic core of Brändén--Vecchi, Theorem 8.1; no positivity
 or convergence hypothesis is involved.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {R : Type*} [CommRing R]
 
@@ -236,7 +238,5 @@ theorem eq_toeplitzChowSeries_of_rescale_mul
     (hconstant ▸ hregularConstant)).left
   change denominator * F = denominator * toeplitzChowSeries a
   exact hFdenominator.trans hchowDenominator.symm
-
-end
 
 end RealRooted.BrandenVecchi

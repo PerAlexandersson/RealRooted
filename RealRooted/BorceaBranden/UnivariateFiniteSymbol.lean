@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Basic
+public import RealRooted.MultivariateStability
 
 /-!
 # Real-univariate finite algebraic symbols
@@ -9,12 +11,12 @@ Borcea--Branden finite-symbol theorem. The complex classification backend is
 independent in `RealRooted.BorceaBranden.FiniteSymbolClassification`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
 namespace BorceaBranden
-
-noncomputable section
 
 /-- Regard a univariate polynomial as a bivariate polynomial in the first
 variable. -/
@@ -35,8 +37,6 @@ def finiteAlgebraicSymbol (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
 def PreservesRealRootedUpTo
     (d : ℕ) (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ {p : ℝ[X]}, p.natDegree ≤ d → p.Splits → T p = 0 ∨ (T p).Splits
-
-end
 
 end BorceaBranden
 end RealRooted

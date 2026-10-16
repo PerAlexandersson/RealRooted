@@ -1,10 +1,12 @@
-import RealRooted.Interlacing.WindowInduction
-import RealRooted.Applications.OEIS.A275442.Bridge.Sign
-import RealRooted.AffineProperPosition
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
-import RealRooted.LinearPowerFamily
-import RealRooted.MaWang.Strong
+module
+
+public import RealRooted.Interlacing.WindowInduction
+public import RealRooted.Applications.OEIS.A275442.Bridge.Sign
+public import RealRooted.AffineProperPosition
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
+public import RealRooted.LinearPowerFamily
+public import RealRooted.MaWang.Strong
 
 /-!
 # The real-rootedness recurrence for OEIS A275442
@@ -17,9 +19,9 @@ is closed under this recurrence; the edge between the final two rows is
 deliberately absent because the induction does not need it.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A275442
 

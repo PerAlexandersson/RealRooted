@@ -1,4 +1,6 @@
-import RealRooted.Multiaffine.Reciprocal
+module
+
+public import RealRooted.Multiaffine.Reciprocal
 
 /-!
 # Signed multiaffine reciprocal in a right variable block
@@ -9,11 +11,11 @@ by `tau` are left unchanged and need not have bounded degree.  This is the
 reciprocal operation used in the proof of Borcea--Branden Lemma 2.2.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The total exponent in the right-hand variable block. -/
 def rightExponentSum {tau sigma : Type*} (d : Sum tau sigma →₀ ℕ) : ℕ :=
@@ -256,7 +258,5 @@ theorem MvUpperHalfPlaneStable.signedMultiaffineReciprocalRight
       rw [Complex.inv_im]
       simpa only [neg_div, neg_neg] using
         div_pos (hz (Sum.inr i)) (Complex.normSq_pos.mpr (hz0 i))
-
-end
 
 end RealRooted

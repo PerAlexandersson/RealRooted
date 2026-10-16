@@ -1,4 +1,6 @@
-import RealRooted.OperatorMatrix.LocalToGlobal
+module
+
+public import RealRooted.OperatorMatrix.LocalToGlobal
 
 /-!
 # Composition of ordered-PF operator matrices
@@ -8,9 +10,9 @@ same order as their actions on polynomial vectors.  Consequently, ordered-PF
 preservers are closed under multiplication and powers.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.OperatorMatrix
 

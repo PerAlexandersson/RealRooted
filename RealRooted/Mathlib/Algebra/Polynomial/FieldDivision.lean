@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.FieldDivision
+
+module
+
+public import Mathlib.Algebra.Polynomial.FieldDivision
 
 /-!
 # Dividing out a linear factor at a root
@@ -12,6 +15,8 @@ At a root `r` of `p`, write `p = (X - C r) * q` with `q = p /ₘ (X - C r)`. Thi
 that the roots of `q` are those of `p` with one copy of `r` removed, and that
 `p''(r) = 2 q'(r)`.
 -/
+
+public section
 
 namespace Polynomial
 

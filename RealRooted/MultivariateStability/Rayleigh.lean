@@ -1,6 +1,8 @@
-import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.PartialSymmetrization
+module
+
+public import RealRooted.Multiaffine.TwoCoordinateSlice
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.PartialSymmetrization
 
 /-!
 # Rayleigh consequences of multivariate stability
@@ -12,9 +14,9 @@ multiaffine polynomial is Rayleigh, without requiring a finite ambient
 variable type.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Restricting a real-stable polynomial to affine motion in two coordinates
 preserves real stability up to the zero polynomial.  Only variables actually
@@ -325,7 +327,5 @@ theorem MvRealStableOrZero.isRayleigh_of_isMultiaffine
   · intro i j x
     simp [MvPolynomial.rayleighDifference]
   · exact hP.isRayleigh_of_isMultiaffine hPma
-
-end
 
 end RealRooted

@@ -1,4 +1,6 @@
-import RealRooted.Multiaffine.CoordinateWronskian
+module
+
+public import RealRooted.Multiaffine.CoordinateWronskian
 
 /-!
 # Finite-index affine Euler cores
@@ -9,11 +11,11 @@ combinatorial indexing convention and commutes with injective variable
 renaming.
 -/
 
+@[expose] public noncomputable section
+
 namespace MvPolynomial
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The affine Euler core over the coordinates selected by `e`. -/
 def affineEulerCore {R σ ι : Type*} [CommRing R] [Fintype ι]
@@ -497,7 +499,5 @@ theorem IsMultiaffine.notMem_vars_affineEulerRayleighRemainder
     (q := (specializeZero (e i) P + MvPolynomial.pderiv (e i) P) *
       MvPolynomial.pderiv (e i) P) h)).elim
     (hP.notMem_vars_affineEulerRayleighRow e he i) hproduct
-
-end
 
 end MvPolynomial

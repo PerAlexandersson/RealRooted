@@ -1,4 +1,6 @@
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Wagner (1): Common-right addition theorems
@@ -7,9 +9,9 @@ If f ≪ h and g ≪ h with positive leading coefficients, then (f + g) ≪ h.
 Generalizes to n summands by induction.
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

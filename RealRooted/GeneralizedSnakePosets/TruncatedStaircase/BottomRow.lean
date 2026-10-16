@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
 
 /-!
 # Bottom-row decomposition for truncated staircases
@@ -7,9 +9,9 @@ This module constructs the remove-and-reinsert bijection for a bottom-row rook
 and derives the corresponding polynomial decomposition.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

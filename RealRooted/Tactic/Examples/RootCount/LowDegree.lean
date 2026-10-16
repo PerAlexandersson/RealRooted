@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RootCount.LowDegreeRules
+module
+
+public import RealRooted.Tactic.RootCount.LowDegreeRules
 
 /-!
 # Root-count tactic regressions: low-degree frontends
@@ -7,6 +9,8 @@ Regression examples for the low-degree root-count frontends of
 `RealRooted.Tactic.RootCount.LowDegreeRules`: same-degree positive combinations and
 compatible pairs of degree at most three.
 -/
+
+public section
 
 open Polynomial
 

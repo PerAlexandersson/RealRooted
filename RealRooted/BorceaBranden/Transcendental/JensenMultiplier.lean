@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 
 /-!
 # Multivariate Jensen multipliers
@@ -10,11 +12,11 @@ multiplier in each coordinate and composes it with a positive geometric
 rescaling.
 -/
 
+public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 open Polynomial
 
@@ -111,7 +113,5 @@ theorem jensenOp_stableOrZero {σ : Type*} [Fintype σ]
     simp only [MvPolynomial.jensen]
   rw [← heq]
   exact hg
-
-end
 
 end RealRooted.BorceaBranden

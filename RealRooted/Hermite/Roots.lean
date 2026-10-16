@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Favard
-import RealRooted.Hermite.Favard
-import RealRooted.SimpleRoots
 
-import Mathlib.Tactic.Positivity
+module
+
+public import RealRooted.Favard
+public import RealRooted.Hermite.Favard
+public import RealRooted.SimpleRoots
+
+public import Mathlib.Tactic.Positivity
 
 /-!
 # Roots of probabilists' Hermite polynomials
@@ -20,9 +23,9 @@ Thus the lower-degree polynomial is on the left, and its roots lie
 between consecutive roots of the polynomial on the right.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

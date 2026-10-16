@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Interlacing
+module
+
+public import RealRooted.Tactic.Product.Interlacing
 
 /-!
 # `rr_product_natDegree` / `rr_product_interlaces` examples
@@ -8,11 +10,11 @@ Regression tests for OEIS product sequences `P (n + 1) = L n * P n`, drawn from
 and constant, square, and quadratic base rows.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.ProductInterlacingExamples
-
-noncomputable section
 
 /-- The OEIS A007318 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A007318 : ℕ → ℝ[X]
@@ -98,7 +100,5 @@ def A028326 : ℕ → ℝ[X]
 theorem A028326_natDegree (n : ℕ) : (A028326 n).natDegree = n := by rr_product_natDegree
 theorem A028326_interlaces (n : ℕ) : Interlaces (A028326 n) (A028326 (n + 1)) := by
   rr_product_interlaces
-
-end
 
 end RealRooted.Tactic.ProductInterlacingExamples

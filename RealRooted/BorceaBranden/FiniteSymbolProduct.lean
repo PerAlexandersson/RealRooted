@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolReciprocal
 
 /-!
 # The three-block product in the finite-symbol argument
@@ -10,11 +12,11 @@ the source/input degree bounds needed for the repeated Lieb--Sokal step.
 Target variables remain unrestricted.
 -/
 
+public noncomputable section
+
 open BigOperators
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 /-- The signed squarefree basis monomial becomes the product `(-X_i) ^ m_i`
 after renaming. -/
@@ -143,7 +145,5 @@ theorem paperThreeBlock_paired_degree_le_one
       (paperThreeBlock T f).degreeOf (paperInputEmbedding i) ≤ 1 :=
   ⟨paperThreeBlock_degreeOf_nonTarget_le_one T f (Sum.inl i),
     paperThreeBlock_degreeOf_nonTarget_le_one T f (Sum.inr i)⟩
-
-end
 
 end RealRooted.BorceaBranden

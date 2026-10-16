@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
 
 /-!
 # Weak left peaks
@@ -7,14 +9,14 @@ Weak left peaks are encoded directly from descent sets, so the generic exact
 descent-set Pollak transfer applies without another orbit argument.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- The preceding position in the same nonempty finite index type. Its value
 at zero is irrelevant for weak-left-peak membership. -/
@@ -206,7 +208,5 @@ theorem succ_nsmul_parkingWeakLeftPeakPolynomialInt_eq_literalWord
     literalWordWeakLeftPeakPolynomialInt wordWeakLeftPeakNumber
   exact (sum_wordDescentSetWeight_words_eq_succ_nsmul_parkingFunctions n
     (fun D => X ^ weakLeftPeakNumberFromDescentSet D)).symm
-
-end
 
 end RealRooted.ParkingFunctions

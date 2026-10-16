@@ -1,4 +1,6 @@
-import RealRooted.LiuWang.FiniteFamily
+module
+
+public import RealRooted.LiuWang.FiniteFamily
 
 /-!
 # Combined root flux with repeated-root fallback
@@ -10,9 +12,9 @@ common linear factor.  Coefficientwise signs at every root imply these
 hypotheses, so the result contains the termwise finite-family criterion.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.LiuWang
 

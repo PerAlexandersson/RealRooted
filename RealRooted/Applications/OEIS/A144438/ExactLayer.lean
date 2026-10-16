@@ -1,6 +1,8 @@
-import RealRooted.HomogeneousStability
-import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
-import RealRooted.Multiaffine.AffineEulerCore
+module
+
+public import RealRooted.HomogeneousStability
+public import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
+public import RealRooted.Multiaffine.AffineEulerCore
 
 /-!
 # Exact stable layers for the deco construction
@@ -15,11 +17,11 @@ is its specialization at `s = 1`.  No conclusion is drawn about the sum of
 different exceptional layers.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- Coordinates for a height-`n+2` exact layer: `none` represents `s`, and
 `some i` represents `u_(i+1)`. -/
@@ -557,8 +559,5 @@ theorem decoExactLayerDehomogenized_hasNonnegCoeffs {n : ℕ}
     (H : DecoExceptionalHistory (n + 2)) :
     MvPolynomial.HasNonnegCoeffs (decoExactLayerDehomogenized H) :=
   (decoExactLayer_hasNonnegCoeffs H).dehomogenize
-
-end
-
 
 end RealRooted.Applications.OEIS

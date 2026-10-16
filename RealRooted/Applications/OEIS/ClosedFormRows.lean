@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.QuadraticRoot
-import RealRooted.HeilmannLieb
+module
+
+public import RealRooted.Basic
+public import RealRooted.QuadraticRoot
+public import RealRooted.HeilmannLieb
 
 /-!
 # Closed forms for repeated-root OEIS rows
@@ -10,9 +12,9 @@ multiple-root row A286100.  Its even terms are scalar multiples of powers of
 `X`, and its odd terms vanish.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.ClosedFormRows
 

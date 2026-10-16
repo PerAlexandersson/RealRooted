@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
 
 /-!
 # Two-rank Wronskian recurrence for the Deco layer total
@@ -11,9 +13,9 @@ the normal/exceptional compensation as one invariant rather than imposing
 separate signs on its summands.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The two-rank companion whose shift is the affine base in the next Deco
 recurrence. -/
@@ -130,7 +132,5 @@ theorem eval_coordinateWronskian_affineSlope_base_nonneg_iff_companion
     | succ i =>
         rw [eval_coordinateWronskian_affineSlope_base_succ]
         exact h i _
-
-end
 
 end RealRooted.Applications.OEIS

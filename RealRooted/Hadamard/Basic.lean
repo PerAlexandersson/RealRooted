@@ -1,13 +1,15 @@
-import RealRooted.Apolarity
-import RealRooted.DegreeDropReversal
-import RealRooted.Hadamard.Product
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Ring.Parity
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.Apolarity
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Hadamard.Product
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Ring.Parity
+public import RealRooted.PFPolynomial
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

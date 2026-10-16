@@ -1,14 +1,18 @@
-import RealRooted.PosCombo
-import RealRooted.AffineFamily
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.Lookup
-import RealRooted.WagnerX.ProperPosition
+module
+
+public import RealRooted.PosCombo
+public import RealRooted.AffineFamily
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.Lookup
+public import RealRooted.WagnerX.ProperPosition
 
 /-!
 # Wagner `X`-shift core
 
 The basic Wagner bridge and derivative-gap recurrence backends.
 -/
+
+public section
 
 open Polynomial
 

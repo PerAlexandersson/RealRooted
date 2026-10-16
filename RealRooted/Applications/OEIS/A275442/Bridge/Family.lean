@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Scalar
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Scalar
 
 /-!
 # The structural theorem applied to the family `p`
@@ -16,11 +18,11 @@ Consequences, all unconditional:
   take strictly opposite signs (in particular the bridge does not vanish there).
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 
 open Polynomial
-
-noncomputable section
 
 /-- The trajectory of the family at a real point. -/
 def traj (r : ℝ) (k : ℕ) : ℝ := (p k).eval r
@@ -198,7 +200,5 @@ theorem bridge_sign_at_root (n : ℕ) (r : ℝ) (hroot : (p (n + 7)).IsRoot r) :
     rw [show n + 3 + 3 = n + 6 from by lia, show n + 3 + 1 = n + 4 from by lia] at hc
     rw [hpn6, hb]
     nlinarith
-
-end
 
 end RealRooted.Applications.OEIS.A275442.Bridge

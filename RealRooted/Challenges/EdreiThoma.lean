@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.Converse
-import RealRooted.EdreiThoma.Easy
+module
+
+public import RealRooted.EdreiThoma.Converse
+public import RealRooted.EdreiThoma.Easy
 
 /-!
 # The Edrei--Thoma theorem
@@ -143,6 +145,8 @@ we follow [@Edrei1953]. See the
 [Edrei–Thoma theorem on symmetricfunctions.com](sf:edreiThomaTheorem).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.EdreiThoma
 

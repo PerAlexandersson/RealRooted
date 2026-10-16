@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # OEIS A318107
@@ -19,9 +21,9 @@ Proof outline for `primitivePolynomial_splits`:
   twice as many, contradicting the count above.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace RealRooted.Applications.OEIS.A318107
 
@@ -63,7 +65,6 @@ private lemma L0_add (N : ℝ) (f g : ℝ[X]) : L0 N (f + g) = L0 N f + L0 N g :
 private lemma L0_C_mul (N r : ℝ) (f : ℝ[X]) : L0 N (C r * f) = C r * L0 N f := by
   simp only [L0, derivative_C_mul]; ring
 
-
 private lemma card_roots_one_add_X_pow (k : ℕ) :
     Multiset.card ((1 + X : ℝ[X]) ^ k).roots = k := by
   have : (1 + X : ℝ[X]) = X - C (-1) := by simp [add_comm]
@@ -103,7 +104,6 @@ private lemma Op_roots_step (k : ℕ) (p : ℝ[X]) (hp : p ≠ 0) (hdvd : (1 + X
   rw [hOp, roots_mul hne, roots_mul hp, Multiset.card_add, Multiset.card_add,
     card_roots_one_add_X_pow, card_roots_one_add_X_pow]
   lia
-
 
 private lemma coeff_L0_zero (N : ℝ) (h : ℝ[X]) : (L0 N h).coeff 0 = 0 := by
   simp [L0, mul_assoc]
@@ -168,7 +168,6 @@ private lemma qseq_roots (N : ℕ) (hN : 1 ≤ N) :
     obtain ⟨h2, c2⟩ := Op_roots_step m _ h1 hdvd2
     rw [qseq_succ, e1, e2]
     exact ⟨h2, by lia⟩
-
 
 /-- Closed form of the coefficients of `gseq (M+1) m`. -/
 private def Gc (M m j : ℕ) : ℝ :=
@@ -236,7 +235,6 @@ private lemma coeff_gseq (M : ℕ) :
       ring
     · rw [gseq, coeff_add, coeff_L0_succ, coeff_C_mul, ih (by lia), ih (by lia),
         Gc_step_succ]
-
 
 private lemma splits_reflect_prod (s : Multiset ℝ) :
     ∀ N, Multiset.card s ≤ N → (reflect N (s.map fun a => X - C a).prod).Splits := by

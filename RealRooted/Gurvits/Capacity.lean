@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Capacity and the permanent
@@ -9,7 +11,7 @@ permanent as the coefficient of `∏ i, x i` in `prodLin A = ∏ i, ∑ j, A i j
 one variable at a time (`step`: differentiate in `x₀`, then set `x₀ = 0`).
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.Gurvits
 
@@ -146,11 +148,6 @@ open MvPolynomial
 
 variable {σ : Type*} [Fintype σ]
 
-
-
-
-
-
 theorem eval_prodLin (A : Matrix σ σ ℝ) (x : σ → ℝ) :
     eval x (prodLin A) = ∏ i, ∑ j, A i j * x j := by
   simp [prodLin]
@@ -190,8 +187,6 @@ section Extraction
 open MvPolynomial
 
 variable {R : Type*} [CommSemiring R] {n : ℕ}
-
-
 
 /-- `∂p/∂x₀` evaluated at `x₀ = 0`, as a polynomial in the remaining `n` variables. -/
 noncomputable def step (p : MvPolynomial (Fin (n + 1)) R) : MvPolynomial (Fin n) R :=
@@ -270,10 +265,6 @@ section General
 
 variable {R : Type*} [CommSemiring R] {n : ℕ}
 
-
-
-
-
 /-- B1 (coefficient form): coefficients of `step p` are coefficients of `p`. -/
 theorem coeff_step (p : MvPolynomial (Fin (n + 1)) R) (m : Fin n →₀ ℕ) :
     (step p).coeff m = p.coeff (Finsupp.cons 1 m) := by
@@ -319,7 +310,6 @@ theorem coeff_step_nonneg {p : MvPolynomial (Fin (n + 1)) ℝ} (hp : ∀ m, 0 �
     (m : Fin n →₀ ℕ) : 0 ≤ (step p).coeff m := by
   rw [coeff_step]
   exact hp _
-
 
 /-- B3 (a): evaluating the restriction at `t` is evaluating `p` at `Fin.cons t y`. -/
 theorem eval_map_finSuccEquiv (p : MvPolynomial (Fin (n + 1)) ℝ) (y : Fin n → ℝ) (t : ℝ) :

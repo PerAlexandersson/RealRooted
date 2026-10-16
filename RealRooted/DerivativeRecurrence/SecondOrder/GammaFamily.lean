@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
-import RealRooted.GammaTransform.TwoStep
+module
+
+public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
+public import RealRooted.GammaTransform.TwoStep
 
 /-!
 # Gamma-conjugated second-derivative families
@@ -17,9 +19,9 @@ ambient degree and the nonzero constant terms of the gamma polynomials. The
 family-specific work remains the hypothesis `hpair`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

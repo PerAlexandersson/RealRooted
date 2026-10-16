@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.Coefficients
-import RealRooted.HermiteBiehler.StablePencil
+module
+
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.HermiteBiehler.StablePencil
 
 /-!
 # Critical values in the binary-run deformation
@@ -9,11 +11,11 @@ polynomial pencil to control the sign of a critical value during a pointing
 deformation.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Polynomial realization of `z^n p(-z⁻²)`. The degree hypotheses below
 ensure that the finite sum contains every coefficient of `p`. -/
@@ -248,7 +250,5 @@ theorem criticalValue_sign_of_stablePencil {n : ℕ} (hn : 4 ≤ n)
   rw [hfactor] at hrsign
   have hpos : 0 < 2 * r ^ (2 * n - 3) := by positivity
   exact nonpos_of_mul_nonpos_right hrsign hpos
-
-end
 
 end RealRooted

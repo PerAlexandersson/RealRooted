@@ -1,7 +1,9 @@
-import RealRooted.Basic
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Basic
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.MultivariateStability
 
 /-!
 # Borcea--Branden finite-symbol classification
@@ -20,12 +22,12 @@ equivalent to stability of the algebraic symbol. The real-univariate interface
 lives in `RealRooted.BorceaBranden.UnivariateFiniteSymbol`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
 namespace BorceaBranden
-
-noncomputable section
 
 /-- A complex linear operator on a coordinate-wise degree box preserves
 upper-half-plane stability, allowing the zero output. -/
@@ -595,8 +597,6 @@ theorem finiteComplexSymbolIff :
   intro σ _ κ T hrank
   rw [finiteComplexSymbolClassification σ κ T]
   simp only [hrank, false_or]
-
-end
 
 end BorceaBranden
 end RealRooted

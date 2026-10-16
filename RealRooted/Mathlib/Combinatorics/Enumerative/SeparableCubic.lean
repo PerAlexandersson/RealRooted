@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
-import Mathlib.RingTheory.PowerSeries.Basic
-import Mathlib.Tactic.LinearCombination
+
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # The cubic recurrence for separable permutations
@@ -18,10 +21,10 @@ convention that all three vanish at `n = 0`, the generating-series identities
 `S_n = (1 + X) S_{n-1} + X ∑_{i+j=n-1} S_i S_j + X ∑_{i+j+l=n} S_i S_j S_l` for `n ≥ 2`.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators Polynomial
 open Polynomial
-
-noncomputable section
 
 namespace Equiv.Perm
 
@@ -162,7 +165,6 @@ private theorem sepSeries_cubic :
 
 end Series
 
-
 /-- **Cubic recurrence for the descent enumerator of separable permutations.**
 
 With `S_n` the descent enumerator of the separable permutations of `Fin n` for `n ≥ 1` and
@@ -215,6 +217,5 @@ theorem shiftedSeparableEnumerator_cubic_recurrence (R : Type*) [CommRing R] {n 
     rw [sepSeries, PowerSeries.coeff_mk]
   rw [h0, h]
   simp only [Nat.add_sub_cancel]
-
 
 end Equiv.Perm

@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Polar
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.RootContinuity
 
 /-!
 # Scale-two polar operator
@@ -9,9 +11,9 @@ Pólya-frequency data in the degree range where its coefficients stay
 nonnegative.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

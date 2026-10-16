@@ -1,5 +1,7 @@
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
+module
+
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
 
 /-!
 # The Narayana transform preserves oriented interlacing
@@ -12,9 +14,9 @@ preserves oriented interlacing of nonnegative-coefficient inputs
 (`strictInterl_narayanaTransform`).  Compositions of Narayana transforms inherit the property.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

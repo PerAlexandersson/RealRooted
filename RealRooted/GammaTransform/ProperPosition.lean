@@ -1,5 +1,7 @@
-import RealRooted.GammaTransform.RootLists
-import RealRooted.GammaTransform.Preservation
+module
+
+public import RealRooted.GammaTransform.RootLists
+public import RealRooted.GammaTransform.Preservation
 
 /-!
 # Gamma-transform interlacing
@@ -7,10 +9,10 @@ import RealRooted.GammaTransform.Preservation
 The adjacent-ambient-degree interlacing equivalence for gamma transforms.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial Finset
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

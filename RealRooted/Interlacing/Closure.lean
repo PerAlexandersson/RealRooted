@@ -1,5 +1,7 @@
-import RealRooted.ObreschkoffConverse
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.RootContinuity
 
 /-!
 # Interlacing closure under coefficientwise limits
@@ -11,9 +13,9 @@ real linear combination split, and polynomial root continuity passes that
 property to the limit one combination at a time.
 -/
 
-open Polynomial Filter Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted
 

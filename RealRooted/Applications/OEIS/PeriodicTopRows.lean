@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A330798
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Applications.OEIS.A330798
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Remaining periodic-top-coefficient rows
@@ -9,11 +11,11 @@ degree problem.  The A177040 proof uses its exact parity-split coefficient vecto
 two states of the multi-lag top-window law.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowParityDegree
-
-noncomputable section
 
 /-- The normalized downstream A114580 recurrence. -/
 def A114580 : ℕ → ℝ[X]
@@ -860,7 +862,7 @@ private theorem A177040_step (n : ℕ) :
       (A177040 (n + 2)) (A177040 (n + 1)) (A177040 n) := by
   rw [A177040]
   dsimp only [A177040Next]
-  ring
+  ring_nf
 
 /-- Any sequence satisfying the A177040 initial window and update has degree `n / 2`. -/
 @[rr_row_model]
@@ -882,7 +884,5 @@ theorem A177040_natDegree_of_recurrence
             ih (q + 2) (by lia), ih (q + 1) (by lia), ih q (by lia)]
   rw [heq n]
   exact A177040_natDegree n
-
-end
 
 end RealRooted.Tactic.RowParityDegree

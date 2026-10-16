@@ -1,6 +1,8 @@
-import RealRooted.BrandenVecchi.ChowInterlacing
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+module
+
+public import RealRooted.BrandenVecchi.ChowInterlacing
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 
 /-!
 # The generic Chow staircase row transform
@@ -10,9 +12,9 @@ small zero-aware list operations needed to group a reflection-interlacing row
 into contiguous block sums.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

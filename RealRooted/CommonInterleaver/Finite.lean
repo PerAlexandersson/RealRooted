@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootSlots
+module
+
+public import RealRooted.CommonInterleaver.RootSlots
 
 /-!
 # Common interleavers: finite families
@@ -7,9 +9,9 @@ Finite intersections of root-slot intervals, degree extrema for finite families,
 and the pairwise root-slot intersection furnished by a common interleaver.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -327,7 +329,6 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
           CommonInterleaver.RootSlots.rootSlotInterval_last_eq_reverse_get_zero
             (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
       simp_all
-
 
 end
 end RealRooted

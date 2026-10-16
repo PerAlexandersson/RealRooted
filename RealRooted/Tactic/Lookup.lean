@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Attr
-import Mathlib.Tactic
+module
+
+public import RealRooted.Tactic.Attr
+public import Mathlib.Tactic
+public meta import RealRooted.Tactic.Attr
+public meta import Mathlib.Tactic
 
 /-!
 # Certificate lookup
@@ -21,6 +25,8 @@ If no certificate is found, or if several tagged declarations match, the tactic
 fails with a short diagnostic. Ambiguity diagnostics list each unique candidate
 with the `rr_*` tags through which it is available.
 -/
+
+public meta section
 
 open Lean
 open Lean.Meta

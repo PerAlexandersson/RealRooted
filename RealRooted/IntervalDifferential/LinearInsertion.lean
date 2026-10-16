@@ -22,11 +22,9 @@ are scalar multiples of those of `F`. These are the signs used in the
 simple-root interval insertion argument.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.IntervalDifferential
 

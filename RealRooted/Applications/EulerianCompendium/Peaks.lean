@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.CombinatorialExamples.PeakValues.Canonical
-import RealRooted.CombinatorialExamples.PeakValues.Sharpness
-import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.CombinatorialExamples.PeakValues.Canonical
+public import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 
 /-!
 # Peak counts in the Eulerian compendium
@@ -11,10 +13,10 @@ the actual interior-peak statistic on permutations. This also supplies the
 exact degree and strict negativity assertions in `thm:permutationPeaks`.
 -/
 
+public noncomputable section
+
 open Polynomial RealRooted
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.EulerianCompendium
 

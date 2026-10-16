@@ -1,7 +1,9 @@
-import RealRooted.AffineFamily
-import RealRooted.Compatibility.Pair
-import RealRooted.DegreeDropReversal
-import RealRooted.WeightedSum
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.Compatibility.Pair
+public import RealRooted.DegreeDropReversal
+public import RealRooted.WeightedSum
 
 /-!
 # Compatibility predicates for real-rooted polynomials
@@ -10,9 +12,9 @@ This module contains the Chudnovsky--Seymour pair and family compatibility
 predicates, together with basic preservation and endpoint lemmas.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

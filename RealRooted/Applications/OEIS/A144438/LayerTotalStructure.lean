@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.TotalBridge
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability.AffineEulerCore
+module
+
+public import RealRooted.Applications.OEIS.A144438.TotalBridge
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Multiaffine structure of the Deco layer total
@@ -14,11 +16,11 @@ This structural result is a prerequisite for multiaffine stability criteria.
 It does not assert stability of the outer sum.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The admissible-code enumerator is multiaffine in its ordinary bottom
 coordinates. -/
@@ -156,7 +158,5 @@ theorem decoLayerTotal_mvRealStable_iff_commonRotation_bottomTotal (n : Nat) :
       (decoLayerBottomEmbedding n).injective]
   exact mvRealStable_iff_commonRotation_dehomogenize
     (decoLayerTotal_isHomogeneous n)
-
-end
 
 end RealRooted.Applications.OEIS

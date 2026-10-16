@@ -1,6 +1,8 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.SimpleRoots
 
 /-!
 # Simple roots of generalized Narayana polynomials
@@ -10,9 +12,9 @@ roots for every generalized Narayana polynomial. Derivative interlacing then
 gives the corresponding positive-degree derivative result.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

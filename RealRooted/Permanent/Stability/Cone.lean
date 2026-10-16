@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.MultivariateHKO
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
 
 /-!
 # The fixed-direction stable-pencil cone for permanent polynomials
@@ -7,9 +9,9 @@ This file proves the analytic convex-cone part of Proposition 2.4 in
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 private theorem eval_div_im_nonneg_of_mvStablePencil
     {sigma : Type*} {F G : MvPolynomial sigma Real}
@@ -105,7 +107,5 @@ theorem MvStablePencil.nonneg_C_mul_right_of_left_stable
     simp
   rw [hwEq, Complex.neg_im, him] at hw
   exact (not_lt_of_ge (mul_nonneg ha hg)) (neg_pos.mp hw)
-
-end
 
 end RealRooted

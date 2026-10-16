@@ -1,6 +1,8 @@
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.GustafssonSolus
-import Mathlib.Data.Fin.Rev
+module
+
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.GustafssonSolus
+public import Mathlib.Data.Fin.Rev
 
 /-!
 # Reversed-last-letter recurrence for finite Smirnov words
@@ -10,11 +12,11 @@ descent polynomials in reverse alphabet order.  Its successor step is exactly
 the Gustafsson--Solus threshold matrix with every equal-letter pivot deleted.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- Literal unweighted Smirnov descent polynomials. -/
 def smirnovDescentPolynomial (m n : ℕ) : ℝ[X] :=
@@ -156,7 +158,5 @@ theorem smirnovDescentPolynomial_succ (m r : ℕ) :
     (fun i : Fin m =>
       weightedSmirnovEnding (fun _ : Fin m => (1 : ℝ)) r i)
     (fun i => by simp [smirnovDescentRefined])
-
-end
 
 end RealRooted.BrandenVecchi

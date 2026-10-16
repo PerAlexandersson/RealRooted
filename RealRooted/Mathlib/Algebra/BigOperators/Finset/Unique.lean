@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
+
+module
+
+public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 
 /-!
 # Weighted finite sums with a unique successful index
@@ -11,6 +14,8 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 This file records a coefficient-type-generic double-counting lemma for a
 finite family in which every object has a unique successful index.
 -/
+
+public section
 
 namespace Finset
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
-import RealRooted.ParkingFunctions.Descents.DescentContainment
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
+public import RealRooted.ParkingFunctions.Descents.DescentContainment
 
 /-!
 # Exact descent-set content enumerators
@@ -8,9 +10,9 @@ This module recovers exact descent-set enumerators from descent-containment
 enumerators by Boolean-lattice Mobius inversion.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- The universal multivariate content enumerator for words whose descent set
 is exactly `S`. -/
@@ -196,7 +198,5 @@ theorem card_contentFiber_descentSet_map_equiv {n m : ℕ}
     (rename_exactDescentContentEnumerator S m e)
   rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at h
   exact h.symm
-
-end
 
 end RealRooted.ParkingFunctions

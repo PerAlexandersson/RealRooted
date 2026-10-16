@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.GeneralRows
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
 
 /-!
 # Rows with an index-dependent multiplier
@@ -10,9 +12,9 @@ interlace.  The proof applies the shifted-cone form of Theorem C′ to
 covers the regimes `u n + v (n + 1) ≤ 0` (A166960, A166961, A166962, A166972).
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 

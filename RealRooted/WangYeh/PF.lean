@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator.Pencil
-import RealRooted.MultiplierSequence.Bidiagonal
-import RealRooted.WangYeh.Affine
+module
+
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.WangYeh.Affine
 
 /-!
 # The Wang--Yeh coefficient-bidiagonal PF criterion
@@ -11,9 +13,9 @@ paired with nonnegativity of the output coefficients; no global sign condition
 is imposed on the two coefficient-weight sequences.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

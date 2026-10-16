@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
-import RealRooted.Transforms.BrandenE.OrderedBell
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Transforms.BrandenE.OrderedBell
 
 /-!
 # Brändén's E transform
@@ -9,9 +11,9 @@ the `n`th ordered Bell polynomial.  This file contains its coefficient-generic
 linear and first-order differential algebra.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Data.Matrix.Basic
-import Mathlib.Tactic
+
+module
+
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Data.Matrix.Basic
+public import Mathlib.Tactic
 
 /-!
 # Polynomial Bezoutians
@@ -15,9 +18,9 @@ two univariate polynomials. These statements use only commutative-ring
 structure and are intended to be suitable for Mathlib.
 -/
 
-open scoped BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open scoped BigOperators
 
 namespace Polynomial
 

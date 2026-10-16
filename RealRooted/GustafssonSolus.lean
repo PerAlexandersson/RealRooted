@@ -1,4 +1,6 @@
-import RealRooted.ThresholdMatrix.GustafssonSolus
+module
+
+public import RealRooted.ThresholdMatrix.GustafssonSolus
 
 /-!
 # Gustafsson--Solus interlacing recursion
@@ -16,9 +18,9 @@ Thus multiplying the row against a sequence `(f_j)` gives
 or the same expression with `f_{phi i}` removed.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

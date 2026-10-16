@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
-import RealRooted.HermiteBiehler.Forward
-import RealRooted.HermiteBiehler.Hurwitz
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+public import RealRooted.HermiteBiehler.Forward
+public import RealRooted.HermiteBiehler.Hurwitz
 
 /-!
 # Interlacing data for stable Routh reduction
@@ -10,9 +12,9 @@ the odd-degree parity shape, complementing the even-shape theorem in the
 algebraic Routh module.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalOperator
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.LiebSokalOperator
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Differential operators on disjoint variable blocks
@@ -8,11 +10,11 @@ Constant-coefficient differential actions compose under multiplication and
 factor across disjoint finite variable blocks.
 -/
 
+public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem pderiv_iteratedPDerivAt_comm
     {R sigma : Type*} [CommSemiring R] (i j : sigma) (n : ℕ)
@@ -309,7 +311,5 @@ theorem applyNegDifferential_sumBlockFactorization
   rw [applyNegDifferential_mul,
     applyNegDifferential_rename_inr_mul_rename,
     applyNegDifferential_rename_inl_rename_mul]
-
-end
 
 end RealRooted

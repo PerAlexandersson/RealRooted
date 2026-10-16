@@ -3,10 +3,13 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Analysis.Convex.StdSimplex
-import Mathlib.Algebra.Order.Star.Int
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Analysis.Convex.StdSimplex
+public import Mathlib.Algebra.Order.Star.Int
 
 /-!
 # Auxiliary lemmas for Perron-Frobenius theory
@@ -35,6 +38,8 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/aux.lean
 -/
+
+public section
 
 open Filter Set Finset Matrix Topology Convex
 

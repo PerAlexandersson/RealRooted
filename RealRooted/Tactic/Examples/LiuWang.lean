@@ -1,18 +1,20 @@
-import RealRooted.Tactic.Examples.LiuWang.Step
-import RealRooted.Tactic.Examples.LiuWang.CurrentFactors
-import RealRooted.Tactic.Examples.LiuWang.StrictPositiveLag
-import RealRooted.Tactic.Examples.LiuWang.AffineHalfLine
-import RealRooted.Tactic.Examples.LiuWang.PositiveAffine
-import RealRooted.Tactic.Examples.LiuWang.InnerWindow
-import RealRooted.Tactic.Examples.LiuWang.Interval
-import RealRooted.Tactic.Examples.LiuWang.NegativeInnerWindow
-import RealRooted.Tactic.Examples.LiuWang.StrictProducts
-import RealRooted.Tactic.Examples.LiuWang.GenericNonpositive
-import RealRooted.Tactic.Examples.LiuWang.NonpositiveGlobal
-import RealRooted.Tactic.Examples.LiuWang.QuadraticSequences
-import RealRooted.Tactic.Examples.LiuWang.ActiveSteps
-import RealRooted.Tactic.Examples.LiuWang.ProductSequences
-import RealRooted.Tactic.Examples.LiuWang.InferredCertificates
+module
+
+public import RealRooted.Tactic.Examples.LiuWang.Step
+public import RealRooted.Tactic.Examples.LiuWang.CurrentFactors
+public import RealRooted.Tactic.Examples.LiuWang.StrictPositiveLag
+public import RealRooted.Tactic.Examples.LiuWang.AffineHalfLine
+public import RealRooted.Tactic.Examples.LiuWang.PositiveAffine
+public import RealRooted.Tactic.Examples.LiuWang.InnerWindow
+public import RealRooted.Tactic.Examples.LiuWang.Interval
+public import RealRooted.Tactic.Examples.LiuWang.NegativeInnerWindow
+public import RealRooted.Tactic.Examples.LiuWang.StrictProducts
+public import RealRooted.Tactic.Examples.LiuWang.GenericNonpositive
+public import RealRooted.Tactic.Examples.LiuWang.NonpositiveGlobal
+public import RealRooted.Tactic.Examples.LiuWang.QuadraticSequences
+public import RealRooted.Tactic.Examples.LiuWang.ActiveSteps
+public import RealRooted.Tactic.Examples.LiuWang.ProductSequences
+public import RealRooted.Tactic.Examples.LiuWang.InferredCertificates
 
 /-!
 # `rr_liu_wang` examples
@@ -20,3 +22,5 @@ import RealRooted.Tactic.Examples.LiuWang.InferredCertificates
 Compatibility facade for the family-specific generalized Liu--Wang regression
 modules.
 -/
+
+public section

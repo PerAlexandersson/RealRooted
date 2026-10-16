@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-import RealRooted.Multiaffine.AffineCoordinateCriterion
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+public import RealRooted.Multiaffine.AffineCoordinateCriterion
 
 /-!
 # Affine-coordinate recurrence for the Deco layer total
@@ -12,9 +14,9 @@ No all-rank stability claim is made here: the remaining hypotheses are exact
 Rayleigh, Wronskian, and discriminant invariants for the two recurrence parts.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The constant-in-`1` part contributed by the normal recurrence branch. -/
 def decoBottomTotalAffineNormalBase (n : Nat) : MvPolynomial Nat Real :=
@@ -405,7 +407,5 @@ theorem decoBottomTotal_add_two_isRayleigh_of_affine
     MvPolynomial.IsRayleigh (decoBottomTotal (n + 2)) :=
   (decoBottomTotal_add_two_isRayleigh_iff_affine n).2
     ⟨hbase, hslope, hcross, hdisc⟩
-
-end
 
 end RealRooted.Applications.OEIS

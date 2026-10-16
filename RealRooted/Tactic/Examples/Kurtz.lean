@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Kurtz
+module
+
+public import RealRooted.Tactic.Kurtz
+
+public section
 
 open Polynomial
 

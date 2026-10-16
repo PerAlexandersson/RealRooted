@@ -1,4 +1,6 @@
-import RealRooted.Compatibility.Basic
+module
+
+public import RealRooted.Compatibility.Basic
 
 /-!
 # The finite P/Q cut transform
@@ -8,10 +10,10 @@ recurrences.  It records only the exact algebra and boundary behavior; no
 compatibility-preservation claim is made here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

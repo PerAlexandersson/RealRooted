@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.Wronskian.Algebra
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+public import RealRooted.Wronskian.Algebra
 
 /-!
 # Laguerre's inequality for Laguerre--Pólya functions
@@ -9,9 +11,9 @@ This leaf transports the polynomial Laguerre inequality through the locally
 uniform limits in `IsLaguerrePolya`.
 -/
 
-open Filter Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

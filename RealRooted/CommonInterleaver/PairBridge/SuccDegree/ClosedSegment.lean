@@ -1,8 +1,10 @@
-import RealRooted.Compatibility.InterleaverBridge
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.GammaRealRoots
-import RealRooted.DegreeIncreasingLocalLowerCount
-import RealRooted.SmallPositiveParameterCount
+module
+
+public import RealRooted.Compatibility.InterleaverBridge
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.GammaRealRoots
+public import RealRooted.DegreeIncreasingLocalLowerCount
+public import RealRooted.SmallPositiveParameterCount
 
 /-!
 # Succ-degree root counts along the closed segment
@@ -13,9 +15,9 @@ out exact upper-count gaps of two, and derivative induction then bounds the
 upper-count difference by one at every common non-root threshold.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

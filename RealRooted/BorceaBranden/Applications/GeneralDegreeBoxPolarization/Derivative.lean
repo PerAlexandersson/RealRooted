@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.LiebSokalPointwise
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives through general degree-box polarization
@@ -9,11 +11,11 @@ This file uses block symmetry and the derivative chain rule for noninjective
 renamings to transport partial derivatives through blockwise polarization.
 -/
 
+public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 private theorem pderiv_rename_fst_eq_smul_clone
     {σ : Type*} [Finite σ] (κ : σ → ℕ)
@@ -87,7 +89,5 @@ theorem _root_.RealRooted.MvUpperHalfPlaneStable.pderiv_zero_or_of_finite
     rw [pderiv_eq_smul_rename_pderiv_blockwisePolarizationDegreeBoxGeneral
       κ p i hkiPos]
     simpa only [MvPolynomial.smul_eq_C_mul, MvUpperHalfPlaneStableOrZero] using hscaled
-
-end
 
 end RealRooted.BorceaBranden

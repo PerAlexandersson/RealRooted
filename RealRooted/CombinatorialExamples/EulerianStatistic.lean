@@ -1,11 +1,13 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.GeneralizedEulerian
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.GeneralizedEulerian
+
+public noncomputable section
 
 open scoped BigOperators Polynomial
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

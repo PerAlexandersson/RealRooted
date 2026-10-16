@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # Liu--Wang strict-product regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceProducts
 Sequence tests for strict-degree product lag factors, including unit, affine,
 and scalar variants.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Mathlib.Data.List.Interleave
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Strict same-degree interlacing
@@ -10,9 +12,9 @@ including its transport across nonzero scalar multiples.
 
 -/
 
-open Polynomial Matrix
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Matrix
 
 namespace RealRooted
 

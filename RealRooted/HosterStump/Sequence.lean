@@ -1,8 +1,10 @@
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.HosterStumpInterlacing
-import RealRooted.PFPolynomial
-import RealRooted.ThresholdMatrix.Basic
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.HosterStumpInterlacing
+public import RealRooted.PFPolynomial
+public import RealRooted.ThresholdMatrix.Basic
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Hoster--Stump, Section 2: sequence-level glue
@@ -12,9 +14,9 @@ partial sums (Lemma 2.3(2),(3)), and the four-polynomial window lemma behind Lem
 all for the zero-aware relation `Interl`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace HosterStump

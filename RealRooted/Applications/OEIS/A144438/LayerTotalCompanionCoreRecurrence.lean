@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 
 /-!
 # Successor recurrence for the Deco companion core
@@ -8,9 +10,9 @@ coordinate system as the companion extensions.  It thereby reduces their
 coordinate Wronskians together under one injective rename.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The unshifted affine Euler core whose positive-coordinate rename is the
 normal core attached to the next bottom total. -/
@@ -586,7 +588,5 @@ theorem eval_coordinateWronskian_companionCore_companion_succ_add_two
   rw [coordinateWronskian_companionCore_companion_succ_add_two,
     MvPolynomial.eval_rename]
   rfl
-
-end
 
 end RealRooted.Applications.OEIS

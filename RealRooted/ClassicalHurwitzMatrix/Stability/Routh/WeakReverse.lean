@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
-import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
 
 /-!
 # Weak reverse stability across a nonterminal Routh step
@@ -11,9 +13,9 @@ reduced polynomial to obtain strict approximants, applies the strict reverse
 Routh theorem, and passes to the limit through the closed-root API.
 -/
 
-open Polynomial Filter Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted
 

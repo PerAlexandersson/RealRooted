@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.AffineLineRestriction
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine.AffineLineRestriction
 
 /-!
 # Fresh-coordinate quadratic for the Deco companion core rows
@@ -10,9 +12,9 @@ fresh coordinate.  The three resulting endpoint Wronskian coefficients and
 their discriminant are exact algebraic data; no sign claim is made here.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The zero-section of the companion extension core in its fresh coordinate. -/
 def decoBottomTotalCompanionExtensionCoreZero (n : Nat) :
@@ -2749,7 +2751,5 @@ theorem eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff_reduced
       DecoBottomTotalCompanionSuccessorCoreReducedQuadraticData n :=
   (eval_decoBottomTotalCompanionSuccessorCoreRows_nonneg_iff n).trans
     (decoBottomTotalCompanionSuccessorCoreQuadraticData_iff_reduced n)
-
-end
 
 end RealRooted.Applications.OEIS

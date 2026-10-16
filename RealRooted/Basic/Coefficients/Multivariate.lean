@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.Homogenize
-import Mathlib.Tactic.FinCases
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+module
+
+public import Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.Tactic.FinCases
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Univariate bridges for nonnegative multivariate coefficients
@@ -9,6 +11,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 This file connects coefficientwise nonnegativity for multivariate and
 univariate polynomials and records its compatibility with homogenization.
 -/
+
+public section
 
 open Polynomial
 

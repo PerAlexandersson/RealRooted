@@ -1,17 +1,19 @@
-import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
+module
+
+public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
 
 /-!
 # Complex diagonal multipliers and upper-half-plane roots
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 /-- Apply a real diagonal sequence to a complex polynomial. -/
 def realDiagonalOperator (gamma : ℕ → ℝ) (p : ℂ[X]) : ℂ[X] :=
@@ -301,8 +303,5 @@ theorem IsPFMultiplierSequence.roots_im_pos_complexDiagonal
   have hwim_eq : w.im = -r := by
     simp [w, hzim]
   exact (not_lt_of_ge hwim) (hwim_eq.symm ▸ neg_neg_of_pos hr)
-
-
-end
 
 end RealRooted.BorceaBranden

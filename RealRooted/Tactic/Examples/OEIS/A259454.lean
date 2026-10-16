@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A259454
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A259454
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Literal downstream regression for OEIS A259454
@@ -7,9 +9,9 @@ import RealRooted.Tactic.RowInterlacing
 The definition and theorem statements below are the generated downstream presentation.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace A259454Downstream
 

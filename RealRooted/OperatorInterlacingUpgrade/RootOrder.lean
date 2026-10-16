@@ -1,11 +1,13 @@
-import RealRooted.MaWang.Strong
-import RealRooted.OrderedRoots
-import RealRooted.ObreschkoffConverse.Converse
-import RealRooted.ObreschkoffConverse.Forward
-import RealRooted.AllCombo
-import RealRooted.OperatorInterlacingUpgrade
-import RealRooted.FiniteFreeRootCount
-import RealRooted.Mathlib.Data.List.Sort.Endpoint
+module
+
+public import RealRooted.MaWang.Strong
+public import RealRooted.OrderedRoots
+public import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.AllCombo
+public import RealRooted.OperatorInterlacingUpgrade
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.Mathlib.Data.List.Sort.Endpoint
 
 /-!
 # Root-order preservation for monomial-chain operators
@@ -25,9 +27,9 @@ Coordinatewise root order does not imply interlacing for arbitrary pairs: see
 roots is not formalized here.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

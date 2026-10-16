@@ -1,8 +1,10 @@
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.MultivariateStability
 
 /-!
 # Homogeneous harmonic substitution
@@ -13,9 +15,9 @@ Brändén--Ferroni--Jochemko's stability proof for polynomial-value products
 products*, arXiv:2408.12386).
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- The denominator-cleared harmonic substitution in two variables. The
 adjoined `none` variable is the common auxiliary variable. -/
@@ -53,13 +55,9 @@ theorem eval_harmonicClear {Q : MvPolynomial (Fin 2) ℂ} {b : ℕ}
     _ = ((x + z) * (y + z)) ^ b *
         eval ![x * z / (x + z), y * z / (y + z)] Q := rfl
 
-end
-
 end MvPolynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Homogeneous denominator-cleared harmonic substitution preserves
 upper-half-plane stability. -/
@@ -96,7 +94,5 @@ theorem MvUpperHalfPlaneStable.harmonicClear
   fin_cases i
   · exact Complex.mul_div_add_im_pos hx hz
   · exact Complex.mul_div_add_im_pos hy hz
-
-end
 
 end RealRooted

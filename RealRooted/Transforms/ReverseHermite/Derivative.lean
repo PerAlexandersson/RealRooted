@@ -1,4 +1,6 @@
-import RealRooted.Transforms.ReverseHermite.Basic
+module
+
+public import RealRooted.Transforms.ReverseHermite.Basic
 
 /-!
 # Derivatives of the reverse-Hermite transform
@@ -7,9 +9,9 @@ The basis derivative formula yields the heat-intertwining identity
 `(H p)' = H (p') + (1 / 2) H (p'')`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

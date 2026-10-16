@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.Wronskian.Algebra
+module
+
+public import RealRooted.Wronskian.Algebra
 
 /-!
 # Degree-weighted and polar Laguerre inequalities
@@ -14,9 +16,9 @@ Cauchy--Schwarz form and by a root-location-sensitive Euler form.  The latter
 simultaneously controls the Wronskians against `thetaPlusOne` and `polarTheta`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

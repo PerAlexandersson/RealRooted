@@ -1,4 +1,6 @@
-import RealRooted.VeroneseMatrix
+module
+
+public import RealRooted.VeroneseMatrix
 
 /-!
 # Veronese sections challenge entry point
@@ -49,6 +51,8 @@ This module exposes the checked matrix-recursion proof that Veronese sections
 of real-rooted polynomials with nonnegative coefficients are real-rooted or
 zero.  The cyclic matrix construction remains in `RealRooted.VeroneseMatrix`.
 -/
+
+public section
 
 open Polynomial
 

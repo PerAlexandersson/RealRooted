@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Monic
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
 
 /-!
 # Polynomial actions on recurrence sequences
@@ -17,13 +20,13 @@ monic annihilator is determined by its initial values and compute its commutator
 multiplication by the sequence index.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 
 namespace LinearRecurrence
 
 variable {R : Type*}
-
-noncomputable section
 
 section CommRing
 
@@ -136,7 +139,5 @@ theorem shiftAction_indexMul (p : R[X]) (u : ℕ → R) :
   simpa only [add_comm] using h
 
 end CommRing
-
-end
 
 end LinearRecurrence

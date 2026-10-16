@@ -1,5 +1,7 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # General recurrences and half growth
@@ -13,12 +15,12 @@ derivative products, order-three recurrences through three-term ones and degrees
 cancelling top terms, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open RealRooted.Tactic.RowFixtures
 
 namespace RealRooted.Tactic.RowGeneralExamples
-
-noncomputable section
 
 /-- An order-three recurrence whose top coefficients satisfy `c = c - 3 c + 3 c`
 (A030524). -/
@@ -253,7 +255,5 @@ example (n : ℕ) : (A026386 n).Splits := by rr_row_splits (via := closedForm)
 example (n : ℕ) : (A321434 n).Splits := by rr_row_splits (via := subseq)
 example (n : ℕ) : (A132812 n).Splits := by rr_row_splits (via := lowerOrder)
 example (n : ℕ) : (A034839 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 0)
-
-end
 
 end RealRooted.Tactic.RowGeneralExamples

@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.Multiaffine.ReciprocalRight
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.Multiaffine.ReciprocalRight
 
 /-!
 # The source-reciprocal finite-symbol identity
@@ -10,9 +12,9 @@ Borcea--Branden, arXiv:0809.0401, Lemma 2.2.  Only the finite source block is
 reciprocated; the target variables are unrestricted spectators.
 -/
 
-namespace RealRooted.BorceaBranden
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 open BigOperators
 open MvPolynomial
@@ -266,7 +268,5 @@ theorem paperNormalized_signedMultiaffineReciprocalRight_algebraicSymbol_one
             ∏ i : sigma, (-X (Sum.inr i)) ^ m.1 i := by
         rw [normalized_reciprocal_rightComplementMonomial_one m]
   · exact degreeOf_rightComplementMonomial_one_le m
-
-end
 
 end RealRooted.BorceaBranden

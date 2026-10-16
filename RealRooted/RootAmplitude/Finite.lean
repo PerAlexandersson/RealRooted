@@ -1,10 +1,12 @@
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite root-amplitude algebra
@@ -13,11 +15,11 @@ Algebraic formulas which reduce monotonicity of a finite root-amplitude product
 to a comparison of distance products.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 
@@ -179,7 +181,5 @@ theorem amplitude_le_amplitude_of_core (hpositive : ∀ i, 0 < g i) (hstrict : S
       ring
     _ ≤ g k * Pbelow * D * Pabove * ((1 + D / g k) * Rbelow) := hmul
     _ = g k * (1 + D / g k) * (D * (Pbelow * Rbelow) * Pabove) := by ring
-
-end
 
 end RealRooted.RootAmplitude

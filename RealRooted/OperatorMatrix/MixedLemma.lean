@@ -1,5 +1,7 @@
-import RealRooted.OperatorMatrix.Directed
-import RealRooted.RootPolynomial
+module
+
+public import RealRooted.OperatorMatrix.Directed
+public import RealRooted.RootPolynomial
 
 /-!
 # The mixed differential lemma
@@ -12,9 +14,9 @@ follows by separating the merged ordered root lists, applying the strict case, a
 coefficientwise limit with `interl_of_pf_coeff_tendsto_of_natDegree_le`.
 -/
 
-open Filter Polynomial Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

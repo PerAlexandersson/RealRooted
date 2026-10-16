@@ -1,10 +1,12 @@
-import RealRooted.Hyperbolicity
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.AffineEulerCore
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.DirectionalDerivative
-import RealRooted.MultivariateStability.HomogeneousPencilWronskian
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Hyperbolicity
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine.AffineEulerCore
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.DirectionalDerivative
+public import RealRooted.MultivariateStability.HomogeneousPencilWronskian
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stability of affine Euler cores
@@ -15,11 +17,11 @@ pencil then place a stable polynomial and its affine Euler core in one
 weakly stable real span.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- Dehomogenizing the all-ones derivative of a homogeneous polynomial gives
 the affine Euler core of its dehomogenization. -/
@@ -568,7 +570,5 @@ theorem MvRealStable.allCombo_affineEulerCore
       MvPolynomial.dehomogenize_ordinaryHomogenization_of_totalDegree_le
         P hdeg, hDcore] at hdehom
     exact hdehom
-
-end
 
 end RealRooted

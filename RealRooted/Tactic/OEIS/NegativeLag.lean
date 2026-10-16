@@ -1,6 +1,8 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequenceQuadratic
-import RealRooted.Tactic.OEIS.Basic
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
+public import RealRooted.Tactic.LiuWang.SequenceQuadratic
+public import RealRooted.Tactic.OEIS.Basic
 
 /-!
 # OEIS negative-lag certificate frontend
@@ -8,6 +10,8 @@ import RealRooted.Tactic.OEIS.Basic
 Parser declarations and dispatch rules for global-nonpositive, square, and
 quadratic negative-lag certificates, including denominator normalization.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

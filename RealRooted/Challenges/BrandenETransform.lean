@@ -1,5 +1,7 @@
-import RealRooted.Transforms.BrandenE
-import RealRooted.Transforms.BrandenE.IntervalPreserver
+module
+
+public import RealRooted.Transforms.BrandenE
+public import RealRooted.Transforms.BrandenE.IntervalPreserver
 
 /-!
 # Brändén E transform challenge entry point
@@ -102,3 +104,5 @@ See [@Branden2006]. The ordered Bell numbers are
 This module is a catalog facade. The proofs live in
 `RealRooted.Transforms.BrandenE`.
 -/
+
+public section

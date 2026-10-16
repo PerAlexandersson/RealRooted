@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
 
 /-!
 # Real factorization of the weak-left-peak recurrence
@@ -8,11 +10,11 @@ packages its pair-mix followed by prefix/strict-suffix factorization. It makes
 no interlacing-preservation claim.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- Real cast of the terminal non-descent refinement. -/
 def terminalNonDescentReal (m r : ℕ) (j : Fin m) : ℝ[X] :=
@@ -125,7 +127,5 @@ theorem terminalNDOrderReal_succ (m r : ℕ) :
     congrArg List.ofFn <| funext fun j =>
       terminalDescentReal_succ m r j
   simp [terminalNDOrderReal, hN, hD]
-
-end
 
 end RealRooted.ParkingFunctions

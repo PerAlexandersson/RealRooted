@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
 
 /-!
 # Iterated algebraic Routh reduction
@@ -7,11 +9,11 @@ This file packages repeated Routh steps and derives the product formula for
 the leading classical Hurwitz determinants.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- One step on the pair `(odd, even)` representing
 `even(X²) + X * odd(X²)`. -/
@@ -73,8 +75,6 @@ theorem routhPivotProduct_pos {odd even : ℝ[X]} {k n : ℕ}
       intro i hi
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
         hpivot (i + 1) (by lia)
-
-end
 
 end RealRooted
 

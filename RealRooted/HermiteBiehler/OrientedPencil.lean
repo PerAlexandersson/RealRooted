@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
-import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.Wronskian.Algebra
+module
+
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+public import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.Wronskian.Algebra
 
 /-!
 # Oriented stable pencils
@@ -11,11 +13,11 @@ Wronskian sign.  The sign selects the interlacing orientation compatible
 with the two-variable pencil `f(z) + w g(z)`.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- If every real combination of two positive-leading-coefficient polynomials
 splits or vanishes, nonnegativity of `W(g,f)` selects `StrictInterl g f`. -/
@@ -180,7 +182,5 @@ theorem eq_zero_pair_or_isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wr
     · exact Or.inr <|
         isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wronskian_nonneg_of_ne
           hf0 hg0 hall hW
-
-end
 
 end RealRooted

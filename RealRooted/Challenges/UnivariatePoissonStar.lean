@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-import RealRooted.BorceaBranden.Applications.PoissonStarFinal
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+public import RealRooted.BorceaBranden.Applications.PoissonStarFinal
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 
 /-!
 # The univariate Poisson star product
@@ -149,6 +151,8 @@ multiplication, proving both multiplicativity and associativity of $\star_c$.
 See [@Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.UnivariatePoissonStar
 

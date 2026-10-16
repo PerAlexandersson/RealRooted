@@ -1,11 +1,15 @@
-import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.Tactic.LinearPowerFamily
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # OEIS linear-power regression examples
 
 Regression examples for the OEIS linear-power and side-goal frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

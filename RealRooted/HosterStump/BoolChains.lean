@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.PosetBasic
+module
+
+public import RealRooted.HosterStump.PosetBasic
 
 /-!
 # Counting chains of subsets of a finite set
@@ -8,9 +10,9 @@ import RealRooted.HosterStump.PosetBasic
 poset with a rank function (`chainCount_succ`); it is reused for graded simplicial posets.
 -/
 
-open Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset
 
 namespace RealRooted.HosterStump
 
@@ -261,4 +263,3 @@ theorem card_boolChains (r : ℕ) (U : Finset ℕ) :
 
 end RealRooted.HosterStump
 
-end

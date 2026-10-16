@@ -1,6 +1,8 @@
-import RealRooted.Basic.ProperPosition
-import RealRooted.Basic.RootLists
-import RealRooted.WagnerX.ListInterlacing
+module
+
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.RootLists
+public import RealRooted.WagnerX.ListInterlacing
 
 /-!
 # Interlacing in product sequences
@@ -19,9 +21,9 @@ anywhere on the real line.  These are the facts behind the product-recurrence
 OEIS triangles (`P (n + 1) = (a + b X) P n`, possibly with `n`-dependent `a, b`).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive
-import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.RectangularConvolution
+module
+
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.RectangularConvolution
 
 /-!
 # Half-integer kernels for finite-free additive convolution
@@ -11,11 +13,11 @@ identities.  Polynomial convolution identities and root-preservation results
 are deliberately left to later layers.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The generalized rectangular coefficient kernel with real shift `α`. -/
 def generalizedRectangularConvolutionGamma (α : ℝ) (n i j : ℕ) : ℝ :=
@@ -68,7 +70,5 @@ theorem finiteFreeAdditiveConvolutionGamma_odd_eq_generalized (n i j : ℕ)
   unfold generalizedRectangularConvolutionGamma
   convert Polynomial.descPochhammerRatio_two_mul ((n : ℝ) + 1 / 2) i j using 1 <;>
     push_cast <;> ring_nf
-
-end
 
 end RealRooted

@@ -1,6 +1,8 @@
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.SimpleRoots
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.SimpleRoots
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Cyclic descents of northeast lattice paths
@@ -21,9 +23,9 @@ coefficient formula supplies the combinatorial identification, which is cited
 rather than formalized here. Every paper-facing theorem below assumes `n > 0`.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted.Applications.EulerianVariations
 
@@ -163,6 +165,5 @@ theorem cyclicPathDescentPolynomial_roots
       Polynomial.splits_iff_card_roots.mp hsplits,
       natDegree_cyclicPathDescentPolynomial n hn]
     rfl
-
 
 end RealRooted.Applications.EulerianVariations

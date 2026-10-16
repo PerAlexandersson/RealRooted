@@ -1,10 +1,12 @@
-import RealRooted.EdreiThoma.Identities
-import RealRooted.EdreiThoma.Easy
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+module
+
+public import RealRooted.EdreiThoma.Identities
+public import RealRooted.EdreiThoma.Easy
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+
+@[expose] public noncomputable section
 
 open Polynomial Filter Topology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 
@@ -199,6 +201,5 @@ theorem reduction_to_P {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (h0 : a 0 = 1)
   ⟨ha.natCauchyConvolution (isPolyaFreqSeq_expSeq hε.le),
     by simp [natCauchyConvolution, expSeq, h0],
     A_natCauchyConvolution_expSeq_pos ha h0 hε⟩
-
 
 end RealRooted.EdreiThoma

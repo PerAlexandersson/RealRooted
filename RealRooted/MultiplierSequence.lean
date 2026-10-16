@@ -1,11 +1,13 @@
-import RealRooted.CoefficientShape
-import RealRooted.CubicDiscriminant
-import RealRooted.CubicNewton
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.CoefficientShape
+public import RealRooted.CubicDiscriminant
+public import RealRooted.CubicNewton
+public import RealRooted.PFPolynomial
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

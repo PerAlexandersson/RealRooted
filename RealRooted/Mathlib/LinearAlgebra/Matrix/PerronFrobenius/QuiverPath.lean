@@ -3,9 +3,12 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
-import Mathlib.Combinatorics.Quiver.Path.Vertices
-import Mathlib.Combinatorics.Quiver.Path.Weight
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
+public import Mathlib.Combinatorics.Quiver.Path.Vertices
+public import Mathlib.Combinatorics.Quiver.Path.Weight
 
 /-!
 # Paths in quivers
@@ -43,6 +46,8 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Combinatorics/Quiver/Path.lean
 -/
+
+@[expose] public section
 
 open List
 

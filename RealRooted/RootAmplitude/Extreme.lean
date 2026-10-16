@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Extreme root-gap bounds
@@ -10,9 +12,9 @@ of its two largest entries, and hence a logarithmic lower bound on the
 corresponding extreme root gap.
 -/
 
-namespace RealRooted.RootAmplitude
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.RootAmplitude
 
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 
@@ -142,7 +144,5 @@ theorem exp_four_lt : Real.exp 4 < 55 := by
   have h44 : (Real.exp 1) ^ 4 = ((Real.exp 1) ^ 2) ^ 2 := by ring
   rw [hpow, h44]
   nlinarith [h2, hsq]
-
-end
 
 end RealRooted.RootAmplitude

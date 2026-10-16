@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 
 /-!
 # Perron–Frobenius theorem
@@ -87,3 +89,5 @@ See [@Perron1907]. G. Frobenius, “Über Matrizen aus nicht negativen Elementen
 This module is a catalog facade.  The proofs live in
 `RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius`.
 -/
+
+public section

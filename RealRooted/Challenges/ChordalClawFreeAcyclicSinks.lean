@@ -1,4 +1,6 @@
-import RealRooted.Graph.ChordalAcyclicSink
+module
+
+public import RealRooted.Graph.ChordalAcyclicSink
 
 /-!
 # Acyclic sink polynomials of chordal claw-free graphs
@@ -81,3 +83,5 @@ For the claw-free background, see the
 This module is a catalog facade.  The proofs live in
 `RealRooted.Graph.ChordalAcyclicSink`.
 -/
+
+public section

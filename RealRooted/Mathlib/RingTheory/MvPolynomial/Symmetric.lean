@@ -3,8 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Logic.Equiv.Fintype
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+
+module
+
+public import Mathlib.Tactic.Ring
+public import Mathlib.Tactic.Set
+public import Mathlib.Tactic.SimpRw
+public import Mathlib.Logic.Equiv.Fintype
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Finite-variable symmetrization
@@ -13,6 +19,8 @@ This file defines permutation summation and normalized symmetrization for
 multivariate polynomials. These are the algebraic operators used in the
 Grace--Walsh--Szegő symmetrization argument.
 -/
+
+@[expose] public section
 
 open BigOperators
 

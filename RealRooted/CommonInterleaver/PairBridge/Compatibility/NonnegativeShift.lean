@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.PairBridge.Compatibility
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.Compatibility
 
 /-!
 # Chudnovsky--Seymour for two polynomials
@@ -7,9 +9,9 @@ Translating a split pair far enough makes its coefficients nonnegative, which
 reduces the two-polynomial common-interleaver theorem to the nonnegative case.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

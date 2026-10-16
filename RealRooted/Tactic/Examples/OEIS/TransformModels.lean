@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A394813
-import RealRooted.Applications.OEIS.A395326
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A394813
+public import RealRooted.Applications.OEIS.A395326
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Regression examples for transform-backed OEIS row models
@@ -9,12 +11,14 @@ These examples retain the generated downstream recurrences and verify that the
 row-model registry transfers their adjacent-interlacing theorems.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open RealRooted
 
-noncomputable section
+namespace RealRooted.Tactic.Examples.OEIS.TransformModels
 
-private def a394813Rows : ℕ → ℝ[X]
+def a394813Rows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 2 + X
   | n + 2 =>
@@ -35,7 +39,7 @@ example (n : ℕ) : StrictInterl (a394813Rows n) (a394813Rows (n + 1)) := by
     rr_row_interlaces
   exact h.toStrictInterl
 
-private def a395326Rows : ℕ → ℝ[X]
+def a395326Rows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 2 * X
   | n + 2 =>
@@ -52,3 +56,5 @@ example (n : ℕ) : StrictInterl (a395326Rows n) (a395326Rows (n + 1)) := by
   have h : Interlaces (a395326Rows n) (a395326Rows (n + 1)) := by
     rr_row_interlaces
   exact h.toStrictInterl
+
+end RealRooted.Tactic.Examples.OEIS.TransformModels

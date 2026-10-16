@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 
 /-!
 # Cubic residual certificates for bidiagonal Jensen pencils
@@ -8,9 +10,9 @@ factorization builders, rowwise constructors, and one-polynomial
 PF-preserver applications.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -305,6 +307,5 @@ theorem isPFPolynomial_bidiagonalOperator_of_cubicResidualCertificate
     IsPFPolynomial (bidiagonalOperator alpha beta p) :=
   isPFPolynomial_bidiagonalOperator_of_preserver
     hcert.toPFPreserver hp hdeg
-
 
 end RealRooted

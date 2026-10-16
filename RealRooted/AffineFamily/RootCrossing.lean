@@ -4,23 +4,26 @@
 Double-root exclusion, simple-root consequences, and positive pencil-parameter
 crossing data for the affine-family criterion.
 -/
-import RealRooted.ProductFamily
-import RealRooted.AffineDerivative
-import RealRooted.AffineFamily.Basic
-import RealRooted.AffineFamily.PositiveFamily
-import RealRooted.AffineFamily.Boundary
-import RealRooted.PosCombo
-import RealRooted.SuccDegreeLeftEndpoint
-import RealRooted.ObreschkoffConverse
-import RealRooted.FolkloreLemma
-import Mathlib.Analysis.Calculus.Deriv.Inv
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+
+module
+
+public import RealRooted.ProductFamily
+public import RealRooted.AffineDerivative
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.AffineFamily.PositiveFamily
+public import RealRooted.AffineFamily.Boundary
+public import RealRooted.PosCombo
+public import RealRooted.SuccDegreeLeftEndpoint
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.FolkloreLemma
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

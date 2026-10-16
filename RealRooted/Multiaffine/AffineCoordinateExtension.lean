@@ -1,4 +1,6 @@
-import RealRooted.Multiaffine.CoordinateWronskian
+module
+
+public import RealRooted.Multiaffine.CoordinateWronskian
 
 /-!
 # Rayleigh criteria for affine coordinate extensions
@@ -9,9 +11,9 @@ is a quadratic in the fresh variable. For a pair involving the fresh
 coordinate, the difference is the oriented Wronskian `Q * ∂ P - P * ∂ Q`.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- The mixed term in the polarization of the Rayleigh difference. -/
 def mixedRayleighDifference {R σ : Type*} [CommRing R]
@@ -266,7 +268,5 @@ theorem IsRayleigh.add_X_mul_of_fresh
       have hquad := Quadratic.nonneg_of_nonneg_of_discrim_nonpos
         (hQ i j x) (hP i j x) hdisceval (x k)
       simpa [pow_two, add_comm, add_left_comm, add_assoc, mul_comm] using hquad
-
-end
 
 end MvPolynomial

@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
-import RealRooted.Multiaffine.AffineCoordinateExtension
-import RealRooted.Multiaffine.AffineLineRestriction
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Multiaffine.AffineLineRestriction
 
 /-!
 # Exact Rayleigh criterion for affine coordinate extensions
@@ -10,9 +12,9 @@ packages the endpoint, cross-Wronskian, and quadratic-discriminant conditions
 as a necessary and sufficient criterion for `P + X k * Q` to be Rayleigh.
 -/
 
-namespace MvPolynomial
+public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 private theorem notMem_vars_pderiv_of_notMem_vars
     {R σ : Type*} [CommSemiring R] {P : MvPolynomial σ R}
@@ -175,7 +177,5 @@ theorem isRayleigh_add_X_mul_iff_of_fresh_all_discriminants
       · exact hdisc i j x hik hjk
   · rintro ⟨hP, hQ, hcross, hdisc⟩
     exact ⟨hP, hQ, hcross, fun i j x _ _ => hdisc i j x⟩
-
-end
 
 end MvPolynomial

@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.WangYeh.TriangularArray
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.WangYeh.TriangularArray
 
 /-!
 # Wang--Yeh lower-triangular matrix rows
@@ -9,9 +11,9 @@ infinite lower-triangular coefficient arrays. The conclusion is stated for the
 full coefficient sequence of each finite row.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

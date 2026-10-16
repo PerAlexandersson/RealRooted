@@ -1,8 +1,10 @@
-import RealRooted.RankTwoMatching.Enumeration
+module
+
+public import RealRooted.RankTwoMatching.Enumeration
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.Graph
 

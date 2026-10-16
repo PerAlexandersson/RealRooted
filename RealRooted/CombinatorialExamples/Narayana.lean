@@ -1,9 +1,11 @@
-import RealRooted.MaWang
-import RealRooted.Linear
-import RealRooted.NarayanaTransformation.Recurrences.Identities
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Tactic.WagnerX
-import Mathlib.Tactic
+module
+
+public import RealRooted.MaWang
+public import RealRooted.Linear
+public import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Tactic.WagnerX
+public import Mathlib.Tactic
 
 /-!
 # Narayana Polynomials
@@ -14,9 +16,9 @@ the quotient coefficients comes from the coefficient model
 `narayanaQuot (n + 1) = narayanaPolynomial 1 n`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

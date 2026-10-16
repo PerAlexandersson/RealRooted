@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Normed.Algebra.Exponential
-import Mathlib.Analysis.Normed.Operator.Basic
-import Mathlib.Analysis.SpecialFunctions.Exponential
+
+module
+
+public import Mathlib.Analysis.Normed.Algebra.Exponential
+public import Mathlib.Analysis.Normed.Operator.Basic
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # The Lie–Trotter product formula
@@ -18,9 +21,9 @@ exponential power series and telescopes the difference of `n`-th powers.
 The proof was found by Aristotle (Harmonic).
 -/
 
-open Filter Topology
+public noncomputable section
 
-noncomputable section
+open Filter Topology
 
 variable {𝔸 : Type*} [NormedRing 𝔸] [NormedAlgebra ℝ 𝔸] [CompleteSpace 𝔸]
 
@@ -167,7 +170,6 @@ private lemma telescope (P Q : 𝔸) (M K : ℝ) (hP : ‖P‖ ≤ M) (hM : 1 �
             have : 1 ≤ M ^ n * M := one_le_mul_of_one_le_of_one_le hMn hM
             nlinarith [mul_nonneg hδ hK]
           nlinarith
-
 
 /-- The Lie--Trotter product formula for two bounded real linear operators on a Banach
 space. No commutativity hypothesis is imposed. -/

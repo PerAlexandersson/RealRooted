@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.Weighted
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.Weighted
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 
 /-!
 # Pólya-frequency packaging for the A144438 recurrence
@@ -9,9 +11,9 @@ real-rootedness of the recurrence-defined Deco Eulerian polynomials.  The base
 recurrence module remains independent of the Pólya-frequency API.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Every nonnegative-weight recurrence-defined Deco Eulerian polynomial is
 Pólya-frequency. -/
@@ -28,7 +30,5 @@ theorem decoEulerian_isPFPolynomial (n : Nat) :
 theorem A144438_isPFPolynomial (n : Nat) :
     IsPFPolynomial (A144438 n) :=
   (A144438_certificate n).isPFPolynomial
-
-end
 
 end RealRooted.Applications.OEIS

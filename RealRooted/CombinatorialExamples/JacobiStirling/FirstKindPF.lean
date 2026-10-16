@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.PFPolynomial
-import Mathlib.RingTheory.Polynomial.Vieta
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.PFPolynomial
+public import Mathlib.RingTheory.Polynomial.Vieta
 
 /-!
 # First-kind Jacobi--Stirling row polynomials
@@ -10,11 +12,11 @@ factorization supplies their polynomial and Toeplitz Pólya-frequency
 certificates when `z ≥ -1`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.JacobiStirling
-
-noncomputable section
 
 variable {R : Type*} [CommSemiring R]
 
@@ -131,7 +133,5 @@ theorem legendreStirlingFirst_isPolyaFreqSeq (n : ℕ) :
   firstKind_isPolyaFreqSeq (by norm_num) n
 
 end Real
-
-end
 
 end RealRooted.JacobiStirling

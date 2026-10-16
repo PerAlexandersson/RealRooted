@@ -1,11 +1,15 @@
-import RealRooted.Tactic.Favard.DenominatorSyntax
-import RealRooted.Tactic.Favard.Direct
+module
+
+public import RealRooted.Tactic.Favard.DenominatorSyntax
+public import RealRooted.Tactic.Favard.Direct
 
 /-!
 # Favard tactic denominator rules
 
 Macro rules for scalar-normalized and raw-affine Favard certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

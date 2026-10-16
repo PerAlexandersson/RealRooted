@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # Coefficient estimates for multivariate complex polynomials
@@ -26,9 +29,9 @@ corresponding power series.
   `fun z => ∑' m, c m * ∏ i, z i ^ m i`, and this series converges absolutely.
 -/
 
-open Complex Filter Topology
+public noncomputable section
 
-noncomputable section
+open Complex Filter Topology
 
 namespace MvPolynomial
 

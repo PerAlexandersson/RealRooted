@@ -1,9 +1,11 @@
-import Mathlib.Data.Fin.Tuple.Sort
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
-import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
-import RealRooted.Permanent.Basic
-import RealRooted.Multiaffine
+module
+
+public import Mathlib.Data.Fin.Tuple.Sort
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
+public import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
+public import RealRooted.Permanent.Basic
+public import RealRooted.Multiaffine
 
 /-!
 # Ferrers matrices and their permanent polynomial
@@ -12,6 +14,8 @@ The definitions follow Section 3 of P. Brändén, J. Haglund, M. Visontai,
 and D. G. Wagner, *Proof of the monotone column permanent conjecture*,
 arXiv:1010.2565v2.
 -/
+
+@[expose] public noncomputable section
 
 open scoped BigOperators
 
@@ -50,8 +54,6 @@ end Matrix
 
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- The two-alphabet polynomial `per B(A)`, where
 `B(A)_ij = a_ij y_j + (1-a_ij) x_i`. -/
@@ -245,15 +247,11 @@ theorem ferrersPermanent_eq_lastZeroContribution_add_lastOneContribution
     rcases hzeroOne (π (Fin.last n)) (Fin.last n) with h | h <;> simp [h]
   rw [hfilter]
 
-end
-
 end Permanent
 end RealRooted
 
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 private def ferrersEntry {n : ℕ}
     (A : Matrix (Fin n) (Fin n) ℝ) (i j : Fin n) :
@@ -601,15 +599,11 @@ theorem ferrersPermanent_eq_recurrenceRhs {n : ℕ}
     ferrersLastOneContribution_eq_directionalPDeriv hA hcorner]
   unfold ferrersRecurrenceRhs; ring
 
-end
-
 end Permanent
 end RealRooted
 
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- A vector indexed from top to bottom is weakly decreasing. -/
 def IsWeaklyDecreasingVector {n : ℕ} (v : Fin n → ℝ) : Prop :=
@@ -768,8 +762,6 @@ theorem exists_columnPermutation_isFerrers {n : ℕ}
       · simp [h0, h0']
       · simp [h0, h1']
     · simp [h1, entry_eq_one_of_columnHeight_le hzeroOne hcols hmono h1]
-
-end
 
 end Permanent
 end RealRooted

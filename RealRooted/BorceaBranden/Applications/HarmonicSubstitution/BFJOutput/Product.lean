@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Bilinear BFJ output assembly
@@ -8,11 +10,11 @@ This file assembles the monomial BFJ formula over two bounded-degree
 polynomials and records its shifted-binomial coefficient identity.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace MvPolynomial
-
-noncomputable section
 
 /-- Applying the shifted-binomial coefficient functional to the BFJ output of
 two bounded homogenizations multiplies the corresponding input functionals. -/
@@ -81,7 +83,5 @@ theorem sum_coeff_mul_shifted_choose_bfjOutput_homogenize
       congrArg (Nat.castRingHom R) hn
   rw [hmono]
   ac_rfl
-
-end
 
 end MvPolynomial

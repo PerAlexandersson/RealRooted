@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.BrandenVecchi.ChowContinuity
-import RealRooted.BrandenVecchi.ChowGeometricScaling
-import RealRooted.BrandenVecchi.ChowTotallyNonneg
+module
+
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.BrandenVecchi.ChowContinuity
+public import RealRooted.BrandenVecchi.ChowGeometricScaling
+public import RealRooted.BrandenVecchi.ChowTotallyNonneg
 
 /-!
 # Projective regularization of zero-prefix Chow symbols
@@ -14,11 +16,11 @@ nonzero parameter is the geometric scaling of the unit-normalized
 `(epsilon + z)^N a(z)` approximation.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Matrix Polynomial Topology
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- Coefficients of the projectively regularized symbol
 `(1 + z)^N a(epsilon * z)`. -/
@@ -290,7 +292,5 @@ theorem binomialSymbolChow_interl_succ (N n : ℕ) :
     hone (a := fun _ : ℕ => (1 : ℝ)) (by simp)
     (epsilon := 0) (by norm_num) N n
   simpa using h
-
-end
 
 end RealRooted.BrandenVecchi

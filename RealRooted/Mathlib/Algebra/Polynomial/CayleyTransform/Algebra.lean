@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
-import Mathlib.FieldTheory.IsAlgClosed.Basic
-import Mathlib.Tactic.ComputeDegree
-import Mathlib.Tactic.Ring
+
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Tactic.ComputeDegree
+public import Mathlib.Tactic.Ring
 
 /-!
 # Algebraic formulas for the finite-degree Cayley transform
@@ -14,9 +17,9 @@ import Mathlib.Tactic.Ring
 Root-factor, injectivity, and binomial-basis formulas over the complex numbers.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace Polynomial
 

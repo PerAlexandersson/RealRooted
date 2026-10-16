@@ -1,11 +1,13 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalRootStep
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalRootStep
 
 /-! # Finite block identities at a weighted diagonal successor root -/
 
-open BigOperators
+public noncomputable section
 
-noncomputable section
+open BigOperators
 
 namespace RealRooted.Applications.OEIS
 

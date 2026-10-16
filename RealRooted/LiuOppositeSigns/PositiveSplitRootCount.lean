@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.RootDeletion
+module
+
+public import RealRooted.LiuOppositeSigns.RootDeletion
 
 /-!
 # Positive-split root-count pairs
@@ -8,9 +10,9 @@ root counts. It also contains their degree estimates and the transport of this
 package across common-root deletion.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

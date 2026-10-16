@@ -1,6 +1,8 @@
-import RealRooted.SameDegreeDerivative
-import RealRooted.SameDegreeQuadraticRootCount
-import RealRooted.CubicDiscriminant
+module
+
+public import RealRooted.SameDegreeDerivative
+public import RealRooted.SameDegreeQuadraticRootCount
+public import RealRooted.CubicDiscriminant
 
 /-!
 # Degree-three same-degree root-count helpers
@@ -8,6 +10,8 @@ import RealRooted.CubicDiscriminant
 This module records elementary cubic and quartic root-list helpers for
 low-degree root-count routes.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Algebra.MvPolynomial.CommRing
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Multiaffine multivariate polynomials
@@ -10,6 +12,8 @@ This file defines multiaffineness by a degree bound in each variable and
 provides the elementary closure properties needed for polarization and the
 multiaffine Lieb--Sokal theorem.
 -/
+
+@[expose] public section
 
 open BigOperators
 

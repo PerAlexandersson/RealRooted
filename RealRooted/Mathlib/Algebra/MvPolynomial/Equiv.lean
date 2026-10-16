@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Equiv
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
+
+module
+
+public import Mathlib.Algebra.MvPolynomial.Equiv
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Degree bounds for univariate multivariate-polynomial equivalences
@@ -13,6 +16,8 @@ import Mathlib.Algebra.Polynomial.Degree.Lemmas
 This file contains Mathlib-shaped compatibility lemmas for
 `MvPolynomial.uniqueAlgEquiv`.
 -/
+
+public section
 
 namespace MvPolynomial
 

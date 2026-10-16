@@ -1,1 +1,6 @@
-import RealRooted.RankTwoMatching.Endpoint
+module
+
+public import RealRooted.RankTwoMatching.Endpoint
+
+public section
+

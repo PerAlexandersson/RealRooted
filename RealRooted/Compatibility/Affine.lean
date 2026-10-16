@@ -1,5 +1,7 @@
-import RealRooted.AffineProperPosition
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+module
+
+public import RealRooted.AffineProperPosition
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 
 /-!
 # Compatibility of affine polynomials
@@ -9,9 +11,9 @@ position results into pair-compatibility lemmas.  The second theorem records
 the directed `X`-marked relation used by ordered affine families.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Polynomial.CauchyBound
-import Mathlib.Topology.Connected.Clopen
-import Mathlib.Topology.MetricSpace.Thickening
+
+module
+
+public import Mathlib.Analysis.Normed.Field.Approximation
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.Topology.Connected.Clopen
+public import Mathlib.Topology.MetricSpace.Thickening
 
 /-!
 # One-sided continuity of polynomial roots
@@ -16,12 +19,12 @@ This file adds a coefficient-neighborhood form of root continuity intended
 for upstreaming to `Mathlib.Analysis.Normed.Field.Approximation`.
 -/
 
+public noncomputable section
+
 open Polynomial
 open Filter Topology
 
 namespace Polynomial
-
-noncomputable section
 
 /-- A root of a positive-degree monic polynomial persists near itself in every
 sufficiently close monic same-degree split polynomial. -/
@@ -323,7 +326,5 @@ theorem forall_isRoot_im_neg_of_isPreconnected
       exact (not_lt_of_ge hzpos.le) hzneg))
     (fun t z hz => lt_or_gt_of_ne (havoid t z hz))
     hs ha hb hstart
-
-end
 
 end Polynomial

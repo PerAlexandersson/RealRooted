@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Separation.Finite
-import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-import Mathlib.NumberTheory.ZetaValues
+module
+
+public import RealRooted.RootAmplitude.Separation.Finite
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+public import Mathlib.NumberTheory.ZetaValues
 
 /-!
 # Euler-product bounds for separated amplitudes
@@ -11,11 +13,11 @@ lower bound for that product using the Basel sum.  Keeping this dependency in
 one leaf prevents elementary separation clients from importing zeta theory.
 -/
 
+public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 private theorem hasSum_range_sum (N : ℕ) {f : ℕ → ℕ → ℝ} {a : ℕ → ℝ}
     (h : ∀ j, HasSum (f j) (a j)) :
@@ -238,8 +240,5 @@ theorem exp_neg_pi_sq_div_three_le_amplitude_of_separation
   have hnonnegative :
       (0 : ℝ) ≤ d * (k * (k + 1) / 2) := by positivity
   linarith
-
-end
-
 
 end RealRooted.RootAmplitude

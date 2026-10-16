@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Algebra.Group.Fin.Basic
-import Mathlib.Data.Finset.Max
-import Mathlib.Data.Fintype.BigOperators
-import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+
+module
+
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.Group.Fin.Basic
+public import Mathlib.Data.Finset.Max
+public import Mathlib.Data.Fintype.BigOperators
+public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 
 /-!
 # The number of parking functions
@@ -22,6 +25,8 @@ words correspond to parking functions with values in `Fin n`.
 
 * `ParkingFunction.card_parkingFunctions`: `(parkingFunctions n).card = (n + 1) ^ (n - 1)`.
 -/
+
+@[expose] public section
 
 namespace ParkingFunction
 

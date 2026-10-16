@@ -1,5 +1,7 @@
-import RealRooted.MultivariateStability.Rayleigh
-import RealRooted.MultivariateStability.RayleighPencil
+module
+
+public import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.MultivariateStability.RayleighPencil
 
 /-!
 # The multiaffine Rayleigh converse
@@ -11,9 +13,9 @@ that actually occur.  The one-coordinate analytic step lives in
 rename reflection, and algebraic closure facts.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Every real linear combination of one zero-specialization and its matching
 partial derivative remains Rayleigh. -/
@@ -128,7 +130,5 @@ theorem MvPolynomial.IsMultiaffine.mvRealStable_iff_isRayleigh_and_ne_zero
         hP hma with hzero | hstable
     · exact (hP0 hzero).elim
     · exact hstable
-
-end
 
 end RealRooted

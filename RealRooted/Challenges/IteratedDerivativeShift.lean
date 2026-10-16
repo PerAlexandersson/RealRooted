@@ -1,6 +1,8 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShiftProduct
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShiftProduct
 
 /-!
 # Iterated derivative shifts
@@ -136,6 +138,8 @@ split; the factor may occur on either side of the iterate.
 See [@SchurPolya1914; @Obreschkoff1963].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.IteratedDerivativeShift
 

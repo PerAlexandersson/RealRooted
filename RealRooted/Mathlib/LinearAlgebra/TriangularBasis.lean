@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Span.Basic
-import Mathlib.Tactic.Abel
+
+module
+
+public import Mathlib.LinearAlgebra.Span.Basic
+public import Mathlib.Tactic.Abel
 
 /-!
 # Triangular linear maps under a unitriangular change of generators
@@ -14,9 +17,9 @@ strictly lower generators.  It is convenient when the two generating families
 are related by unitriangular expansions but are not bundled as `Basis` values.
 -/
 
-namespace LinearMap
+@[expose] public noncomputable section
 
-noncomputable section
+namespace LinearMap
 
 variable {R M ι : Type*} [Ring R] [AddCommGroup M] [Module R M]
   [Preorder ι]
@@ -108,7 +111,5 @@ theorem IsTriangularOn.change_generators_of_unitriangular
     (hdb : ∀ i, d i - b i ∈ lowerSpan (R := R) b i) :
     f.IsTriangularOn d c :=
   hf.change_generators (lowerSpan_eq_of_unitriangular hbd hdb) hdb
-
-end
 
 end LinearMap

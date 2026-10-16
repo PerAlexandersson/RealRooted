@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.NarayanaTransformation
 
 /-!
 # Mao--Wang matrix-product interfaces
@@ -11,11 +13,11 @@ with entry `[X^j] P i`, and right multiplication by that matrix sends each row
 generating polynomial to `basisTransform P` of the original row.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 namespace LowerTriangularMatrix
 
@@ -513,7 +515,5 @@ theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix
   exact brentiFallingFactorial hrow
 
 end LowerTriangularMatrix
-
-end
 
 end RealRooted

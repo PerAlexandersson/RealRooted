@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
 
 /-!
 # Unequal input-root parameters for the weighted A144438 transform
@@ -7,9 +9,9 @@ We package products of affine input factors, their weighted transform and
 companion, coordinate replacement, and the generic strict insertion step.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

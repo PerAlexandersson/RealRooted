@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily.PF
-import RealRooted.ChudnovskySeymour.PF
+module
+
+public import RealRooted.AffineFamily.PF
+public import RealRooted.ChudnovskySeymour.PF
 
 /-!
 # Local-to-global preservation for operator matrices
@@ -9,9 +11,9 @@ two-by-two blocks preserve ordered pairs.  Empty and singleton dimensions are tr
 interfaces below.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.OperatorMatrix
 
@@ -450,4 +452,3 @@ theorem preservesOrderedPF_zero {m n : ℕ} :
     simpa [apply] using interl_zero_zero
 
 end RealRooted.OperatorMatrix
-

@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowContinuity
-import RealRooted.BrandenVecchi.ChowSupersymmetric
-import RealRooted.BrandenVecchi.SupersymmetricLimits
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+module
+
+public import RealRooted.BrandenVecchi.ChowContinuity
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+public import RealRooted.BrandenVecchi.SupersymmetricLimits
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
 # Chow polynomials of infinite Pólya-frequency symbols
@@ -15,11 +17,11 @@ closedness and zero-aware interlacing closedness then transfer the finite
 certificates from `ChowSupersymmetric` to the limit.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Matrix Polynomial Topology
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The finite numerator alphabet used to approximate an ASW--Edrei symbol. -/
 def aswEdreiTruncationNumerator
@@ -383,7 +385,5 @@ theorem aswEdrei_chow_theorem
         (aissenSchoenbergWhitneyEdreiChow gamma alpha beta (n + 1)) :=
   ⟨aissenSchoenbergWhitneyEdreiChow_isPFPolynomial hgamma halpha hbeta hsum n,
     aissenSchoenbergWhitneyEdreiChow_interl_succ hgamma halpha hbeta hsum n⟩
-
-end
 
 end RealRooted.BrandenVecchi

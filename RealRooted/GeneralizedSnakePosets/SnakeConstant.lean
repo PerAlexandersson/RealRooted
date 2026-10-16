@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
 # Constant snake words
@@ -12,9 +14,9 @@ modified Narayana polynomial `P_{n+1}`, which is the constant-word input of
 snake interlacing theorem.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

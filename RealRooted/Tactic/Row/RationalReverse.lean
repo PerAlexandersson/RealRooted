@@ -1,6 +1,11 @@
-import RealRooted.Tactic.Row.Reverse
-import RealRooted.Tactic.Row.FTransform
-import RealRooted.Interlacing.ReversalLeftDegree
+module
+
+public import RealRooted.Tactic.Row.Reverse
+public import RealRooted.Tactic.Row.FTransform
+public import RealRooted.Interlacing.ReversalLeftDegree
+public meta import RealRooted.Tactic.Row.Reverse
+public meta import RealRooted.Tactic.Row.FTransform
+public meta import RealRooted.Interlacing.ReversalLeftDegree
 
 /-!
 # Rational-coefficient reversal route
@@ -9,6 +14,8 @@ This inverts the reflected-row construction for first-order derivative
 recurrences whose low-degree preimage multipliers have a common positive
 denominator.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Wronskian.OdeRootExclusion
+module
+
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Wronskian.OdeRootExclusion
 
 /-!
 # The row polynomials of OEIS A110608
@@ -12,10 +14,10 @@ bound, and apply the strict Ma--Wang derivative step to the corrected
 first-order recurrence.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.Applications.OEIS.A110608
 

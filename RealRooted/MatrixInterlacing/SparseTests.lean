@@ -1,9 +1,11 @@
-import RealRooted.AffineFamily
-import RealRooted.MatrixInterlacing.Action
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.MatrixInterlacing.Action
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.BoundarySpecialization
+module
+
+public import RealRooted.BorceaBranden.BoundarySpecialization
 
 /-!
 # Boundary specialization with unrestricted spectator variables
@@ -8,11 +10,11 @@ Only the finite right block is specialized.  The left block consists of
 spectator variables and may have arbitrary cardinality and arbitrary degrees.
 -/
 
+public noncomputable section
+
 open Complex
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem specializeZeroList_zero_or_of_degreeOf_le_one_unrestricted
     {alpha : Type*} {P : MvPolynomial alpha ℂ}
@@ -51,7 +53,5 @@ theorem MvUpperHalfPlaneStable.specializeRight_zero_or_of_degreeOf_le_one
   intro j hj
   obtain ⟨i, _, rfl⟩ := List.mem_map.mp hj
   exact hdegree i
-
-end
 
 end RealRooted

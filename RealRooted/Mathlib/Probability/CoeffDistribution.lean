@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.MeasureTheory.Measure.LevyConvergence
-import Mathlib.Probability.Distributions.Gaussian.Real
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-import Mathlib.Analysis.PSeries
+
+module
+
+public import Mathlib.MeasureTheory.Measure.LevyConvergence
+public import Mathlib.Probability.Distributions.Gaussian.Real
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+public import Mathlib.Analysis.PSeries
 
 /-!
 # Harper's central limit theorem for real-rooted polynomials
@@ -36,9 +39,9 @@ standardized coefficient distributions converge weakly to the standard Gaussian.
 * `Polynomial.tendsto_standardizedCoeffDistribution`: Harper's central limit theorem.
 -/
 
-open MeasureTheory ProbabilityTheory Filter Topology Complex
+@[expose] public noncomputable section
 
-noncomputable section
+open MeasureTheory ProbabilityTheory Filter Topology Complex
 
 namespace Polynomial
 

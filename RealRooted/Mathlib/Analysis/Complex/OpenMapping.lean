@@ -3,7 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Complex.OpenMapping
+
+module
+
+public import Mathlib.Analysis.Analytic.Polynomial
+public import Mathlib.Analysis.Complex.OpenMapping
 
 /-!
 # Complex consequences of the open mapping theorem
@@ -12,10 +16,10 @@ This file contains general-purpose compatibility lemmas intended for eventual
 upstreaming to Mathlib.
 -/
 
+public noncomputable section
+
 open Filter Metric Set
 open scoped Topology
-
-noncomputable section
 
 namespace AnalyticAt
 

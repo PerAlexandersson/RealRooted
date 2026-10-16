@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
 
 /-!
 # Obstruction to separate exceptional-Wronskian positivity
@@ -10,9 +12,9 @@ valid all-rank invariant must retain quantitative compensation from the normal
 Wronskian rather than prove the two summands independently nonnegative.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- At the first rank-four step, the exceptional cross Wronskian is negative
 at coordinate `2` when `x₄ = -1` and all other coordinates vanish. -/
@@ -41,7 +43,5 @@ theorem not_exceptionalCrossWronskian_nonnegative_rank_two :
   have hbad := h 2 (fun i : Nat => if i = 4 then -1 else 0)
   rw [eval_coordinateWronskian_affineSlope_exceptionalBase_two_rank_two] at hbad
   norm_num at hbad
-
-end
 
 end RealRooted.Applications.OEIS

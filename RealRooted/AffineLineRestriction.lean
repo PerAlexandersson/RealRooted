@@ -1,7 +1,9 @@
-import RealRooted.MultivariateStability
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.MultivariateStability
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.RootContinuity
 
 /-!
 # Affine-line restrictions of multivariate stable polynomials
@@ -11,11 +13,11 @@ non-vanishing of real affine-line restrictions in strictly positive
 directions.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Restriction of a real multivariate polynomial to a real affine line. -/
 def realAffineLineRestriction {σ : Type*} (a b : σ → ℝ)
@@ -163,7 +165,5 @@ theorem mvRealStable_iff_forall_realAffineLineRestriction
   constructor
   · exact fun hP => hP.realAffineLineRestriction_splits_ne_zero
   · exact mvRealStable_of_forall_realAffineLineRestriction
-
-end
 
 end RealRooted

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.HarmonicDerivativeRows
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.HarmonicDerivativeRows
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Harmonic derivative-row model regression
@@ -7,11 +9,11 @@ import RealRooted.Tactic.RowInterlacing
 The definition and goals below are the literal downstream A199221 recurrence.
 -/
 
+@[expose] public noncomputable section
+
 open RealRooted Polynomial
 
 namespace A199221Downstream
-
-noncomputable section
 
 /-- The OEIS A199221 polynomial sequence, given by a literal recurrence. -/
 def A199221 : ℕ → ℝ[X]
@@ -35,7 +37,5 @@ example (n : ℕ) :
     RealRooted.StrictInterl (A199221 n) (A199221 (n + 1)) := by
   exact (show RealRooted.Interlaces (A199221 n) (A199221 (n + 1)) by
     rr_row_interlaces).toStrictInterl
-
-end
 
 end A199221Downstream

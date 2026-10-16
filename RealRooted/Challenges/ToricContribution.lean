@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
-import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
+module
+
+public import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+public import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 
 /-!
 # Toric g-contribution challenge entry point
@@ -102,3 +104,5 @@ on symmetricfunctions.com.
 This module is a catalog facade.  The proofs live in
 `RealRooted.ParkingFunctions.ToricContribution`.
 -/
+
+public section

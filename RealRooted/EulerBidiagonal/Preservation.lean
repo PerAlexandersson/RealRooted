@@ -1,7 +1,9 @@
-import RealRooted.PFPolynomial.PreserverClosure
-import RealRooted.EulerBidiagonal
-import RealRooted.EulerBidiagonal.PairStep
-import RealRooted.MultiplierSequence.Bidiagonal
+module
+
+public import RealRooted.PFPolynomial.PreserverClosure
+public import RealRooted.EulerBidiagonal
+public import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Degree-local Pólya-frequency preservers for Euler bidiagonal operators
@@ -12,9 +14,9 @@ Corollary 3.5, arXiv:math/0403364, in its degree-local form from
 `RealRooted.PFPolynomial.PreserverClosure`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

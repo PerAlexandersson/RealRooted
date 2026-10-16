@@ -1,12 +1,14 @@
-import RealRooted.Applications.OEIS.A056939
-import RealRooted.Applications.OEIS.A111910
-import RealRooted.Applications.OEIS.A181543
-import RealRooted.Applications.OEIS.A359363
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A056939
+public import RealRooted.Applications.OEIS.A111910
+public import RealRooted.Applications.OEIS.A181543
+public import RealRooted.Applications.OEIS.A359363
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public noncomputable section
 
 open RealRooted Polynomial
-
-noncomputable section
 
 namespace RealRooted.Tactic.RowModelFamilyExamples
 

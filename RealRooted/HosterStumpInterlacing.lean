@@ -1,9 +1,11 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.QuadraticRoot
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace HosterStump

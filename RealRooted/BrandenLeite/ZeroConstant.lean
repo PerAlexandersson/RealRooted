@@ -1,7 +1,9 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.BrandenLeite.CompositionRowClosure
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.PFPolynomial.Closure
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.BrandenLeite.CompositionRowClosure
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.PFPolynomial.Closure
 
 /-!
 # Zero-constant PF composition rows
@@ -13,9 +15,9 @@ zero. The bounded composition-row limits preserve both the PF property and
 zero-aware interlacing.
 -/
 
-open Filter Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted.BrandenLeite
 

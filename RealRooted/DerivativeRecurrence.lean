@@ -1,15 +1,17 @@
-import RealRooted.DerivativeRecurrence.Linear
-import RealRooted.DerivativeRecurrence.QuadraticDegree
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.DerivativeRecurrence.AffineLagStrict
-import RealRooted.DerivativeRecurrence.QuadraticSeed
-import RealRooted.DerivativeRecurrence.QuadraticShift
-import RealRooted.DerivativeRecurrence.SecondOrderDegree
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
-import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
+module
+
+public import RealRooted.DerivativeRecurrence.Linear
+public import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.DerivativeRecurrence.AffineLagStrict
+public import RealRooted.DerivativeRecurrence.QuadraticSeed
+public import RealRooted.DerivativeRecurrence.QuadraticShift
+public import RealRooted.DerivativeRecurrence.SecondOrderDegree
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 
 /-!
 # Derivative recurrences
@@ -17,3 +19,5 @@ import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 Sequence-independent coefficient, degree, nonvanishing, and interlacing
 theorems for polynomial recurrences involving derivatives.
 -/
+
+public section

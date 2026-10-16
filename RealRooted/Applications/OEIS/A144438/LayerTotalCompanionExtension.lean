@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
 
 /-!
 # Affine extensions underlying the Deco two-rank companion
@@ -10,9 +12,9 @@ core and that core plus the preceding total.  These are algebraic recurrence
 interfaces; no all-rank stability claim is made here.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The normal core paired with the two-rank Wronskian companion. -/
 def decoBottomTotalCompanionCore (n : Nat) : MvPolynomial Nat Real :=
@@ -531,7 +533,5 @@ theorem decoBottomTotalWronskianCompanion_succ_isRayleigh_iff_affine
     (decoBottomTotalCompanionSlope_isMultiaffine n)
     (zero_notMem_vars_decoBottomTotalWronskianCompanion n)
     (zero_notMem_vars_decoBottomTotalCompanionSlope n)
-
-end
 
 end RealRooted.Applications.OEIS

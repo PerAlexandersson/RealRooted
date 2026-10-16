@@ -1,4 +1,6 @@
-import RealRooted.LiebSokalOperator
+module
+
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Linearity of negative differential evaluation
@@ -8,9 +10,9 @@ and exposes the resulting finite-sum identities. The API is independent of the
 applications that consume it.
 -/
 
-namespace RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 open BigOperators
 
@@ -63,7 +65,5 @@ theorem applyNegDifferential_doubleSum
       ∑ i ∈ s, ∑ j ∈ t, applyNegDifferential (F i) (G j) := by
   rw [applyNegDifferential_finsetSum_left]
   simp_rw [applyNegDifferential_finsetSum_right]
-
-end
 
 end RealRooted

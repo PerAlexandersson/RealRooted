@@ -1,11 +1,15 @@
-import RealRooted.Derivative
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Derivative
+public import RealRooted.Tactic.Finish
 
 /-!
 # Derivative tactic frontends
 
 Thin wrappers for derivative interlacing and routine derivative side goals.
 -/
+
+public section
 
 open Lean.Elab.Tactic
 open Polynomial

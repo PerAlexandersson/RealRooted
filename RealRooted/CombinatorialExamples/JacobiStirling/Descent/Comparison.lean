@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
-import RealRooted.MaWang.Strong
-import RealRooted.Wronskian.Forward
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
+public import RealRooted.MaWang.Strong
+public import RealRooted.Wronskian.Forward
 
 /-!
 # Comparison lemma for Jacobi–Stirling insertions
@@ -18,9 +20,9 @@ Wronskian of the pair.  The polynomial identity
 checked at the roots of `g`, give the sign of `D_{L+1} g` at every root of `D_L f`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace JacobiStirlingDescent

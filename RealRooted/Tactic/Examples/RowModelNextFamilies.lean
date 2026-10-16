@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A304330
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A304330
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Regression examples for the next row-model families
@@ -7,9 +9,9 @@ import RealRooted.Tactic.RowInterlacing
 These statements retain the generated downstream recurrence normalization.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace RealRooted.Tactic.RowModelNextFamilyExamples
 

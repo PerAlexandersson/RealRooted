@@ -1,6 +1,8 @@
-import RealRooted.HosterStump.Refined
-import RealRooted.Basic.ProperPosition
-import RealRooted.Linear
+module
+
+public import RealRooted.HosterStump.Refined
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Linear
 
 /-!
 # Interlacing diagrams of Hoster--Stump
@@ -14,9 +16,9 @@ Interlacing is the zero-aware relation `RealRooted.Interl`.  We do not use the p
 clause that any two polynomials of degree at most one interlace.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.HosterStump
 
@@ -93,7 +95,6 @@ structure IsInterlacingDiagram (n : ℕ) (T : Finset ℕ) : Prop where
   /-- Nonzero entries split (are real-rooted). -/
   splits : ∀ k, k ≤ n → (top n T k ≠ 0 → (top n T k).Splits) ∧ (mid n T k).Splits ∧
     (bot n T k ≠ 0 → (bot n T k).Splits)
-
 
 /-! ### Base cases `n = 2` -/
 

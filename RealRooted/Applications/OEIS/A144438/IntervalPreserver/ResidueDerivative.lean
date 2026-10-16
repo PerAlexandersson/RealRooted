@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
 
 /-!
 # Differentiating the finite residue expansion
@@ -8,9 +10,9 @@ arrowhead secular equation.  It will identify the positive successor residue
 `p(ρ)/q'(ρ)` with the reciprocal squared norm of the root vector.
 -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.Applications.OEIS
 

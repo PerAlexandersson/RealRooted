@@ -1,7 +1,9 @@
-import RealRooted.BinaryRunTransformation.Contraction
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BinaryRunTransformation.Contraction
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.PFPolynomial
 
 /-!
 # The binary-run pointing pencil
@@ -11,11 +13,11 @@ argument.  Its variables are the retained pair `(Z, W)` followed by the two
 contracted source variables `(S, T)`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 open BorceaBranden
 
@@ -778,7 +780,5 @@ theorem binaryRunDeformation_critical_sign_of_neg
     ring
   rw [← hcoord] at hcritical ⊢
   exact binaryRunDeformation_critical_sign hn hp hp0 hdegree ht hr hcritical
-
-end
 
 end RealRooted

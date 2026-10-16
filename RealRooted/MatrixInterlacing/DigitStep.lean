@@ -1,8 +1,10 @@
-import RealRooted.ThresholdMatrix
+module
+
+public import RealRooted.ThresholdMatrix
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

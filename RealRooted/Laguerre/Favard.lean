@@ -17,11 +17,9 @@ import Mathlib.Tactic.Ring
 # Favard recurrence for generalized Laguerre polynomials
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

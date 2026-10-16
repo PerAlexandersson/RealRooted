@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Steps
+module
+
+public import RealRooted.Tactic.MaWang.Steps
 
 /-!
 # Ma--Wang tactic sequence rules
 
 Elaboration rules for ordinary derivative and derivative-plus-lag sequences.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.ComparisonData
+module
+
+public import RealRooted.EulerBidiagonal.ComparisonData
 
 /-!
 # Root location for the general Euler step
@@ -9,9 +11,9 @@ comparison polynomial alternates in sign at them:
 to the right)`).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 

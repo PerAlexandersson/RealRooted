@@ -1,4 +1,6 @@
-import RealRooted.FactorialCompression.DegreeChanging
+module
+
+public import RealRooted.FactorialCompression.DegreeChanging
 
 /-!
 # Regression examples for the factorial compression
@@ -7,6 +9,8 @@ Exact small values of the level-one compression `T_N` and of `T_{N+1}` applied t
 differential step `q = (x + (N + 2) / 2) p + x p'`, and the main theorem for `p = (x + 1)^N`,
 including the constant/linear boundary `N = 1`, `ℓ = 0`.
 -/
+
+public section
 
 open Polynomial
 
@@ -41,7 +45,7 @@ example :
     Nat.factorial]
 
 
-private theorem roots_X_add_one_pow_neg (N : ℕ) (hN : N ≠ 0) :
+theorem roots_X_add_one_pow_neg (N : ℕ) (hN : N ≠ 0) :
     ∀ r ∈ ((X + 1 : ℝ[X]) ^ N).roots, r < 0 := by
   intro r hr
   have hroot := (mem_roots (pow_ne_zero N (X_add_C_ne_zero (1 : ℝ)))).mp hr

@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.Multivariate
-import RealRooted.Graph.MatchingPolynomial
+module
+
+public import RealRooted.Graph.IndependencePolynomial.Multivariate
+public import RealRooted.Graph.MatchingPolynomial
 
 /-!
 # Multivariate matching-generating polynomials
@@ -9,9 +11,9 @@ independence polynomial of the line graph.  Consequently it is same-phase
 stable, as is every nonnegative edge-weighted coordinate scaling.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

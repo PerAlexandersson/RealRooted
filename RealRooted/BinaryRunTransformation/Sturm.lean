@@ -1,10 +1,12 @@
-import RealRooted.BinaryRunTransformation.Coefficients
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.ObreschkoffConverse.Forward
-import RealRooted.RootBounds
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.RootBounds
+public import RealRooted.ScalarNormalization
 
 /-!
 # Sturm chain of binary-run basis images
@@ -14,9 +16,9 @@ polynomials.  It is the local input for their strict interlacing up to the
 midpoint; reflection then reverses the chain.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

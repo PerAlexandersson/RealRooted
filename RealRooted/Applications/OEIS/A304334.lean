@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.GeneralRows
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # The A304334 Euler-bidiagonal model
@@ -10,9 +12,9 @@ Its comparison defect is strictly negative on the nonpositive half-line, so
 the general row theorem gives adjacent strict interlacing.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A304334
 

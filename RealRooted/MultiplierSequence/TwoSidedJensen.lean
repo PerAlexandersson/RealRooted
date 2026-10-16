@@ -1,6 +1,8 @@
-import RealRooted.Interlacing.Reversal
-import RealRooted.LinearPowerFamily
-import RealRooted.MultiplierSequence.ProperPosition
+module
+
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.LinearPowerFamily
+public import RealRooted.MultiplierSequence.ProperPosition
 
 /-!
 # Two-sided Jensen polynomials
@@ -9,9 +11,9 @@ This file proves adjacent proper position for binomial rows whose two sides
 are weighted by strictly positive multiplier sequences.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

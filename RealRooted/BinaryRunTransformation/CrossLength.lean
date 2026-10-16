@@ -1,11 +1,13 @@
-import RealRooted.BalancedRunTransformation.Interlacing
-import RealRooted.BinaryRunTransformation.Interlacing
-import RealRooted.BinaryRunTransformation.KernelIdentities
-import RealRooted.DegreeDropReversal
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.BalancedRunTransformation.Interlacing
+public import RealRooted.BinaryRunTransformation.Interlacing
+public import RealRooted.BinaryRunTransformation.KernelIdentities
+public import RealRooted.DegreeDropReversal
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Cross-length transport for the binary-run transformation
@@ -22,9 +24,9 @@ Interlacing preservation for `J_n` and `K_n` yields `F ≪ A` and `E ≪ F + E`;
 the common-left cone then closes `F ≪ P + X E`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -37,7 +39,7 @@ private theorem natDegree_C_mul_sub_C_mul_theta_le (a b : ℝ) (p : ℝ[X]) :
     (C a * p - C b * theta p).natDegree ≤ p.natDegree := by
   convert Polynomial.natDegree_C_mul_add_affine_mul_derivative_le p a 0 (-b) using 1
   simp only [theta, map_zero, zero_add, map_neg, neg_mul, sub_eq_add_neg]
-  ring
+  ring_nf
 
 /-- A real polar comparison: for a PF polynomial `g` with nonzero constant term
 and `2 ≤ deg g`, `(N - 2Θ) g` precedes `g` whenever `2 deg g ≤ N`. -/

@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.QuadraticRoot
 
 /-!
 # Liu same-degree and right-successor x-subtraction base cases
@@ -8,6 +10,8 @@ This module contains the constant and linear endpoint cases of the
 positive-split translated x-subtraction pencils for the same-degree and
 right-successor branches.
 -/
+
+public section
 
 open Polynomial Filter
 

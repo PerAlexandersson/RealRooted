@@ -1,13 +1,15 @@
-import RealRooted.CombinatorialExamples.Touchard
-import RealRooted.DegreeDropReversal
-import RealRooted.Interlacing.WindowInduction
-import RealRooted.ObreschkoffConverse.Derivative
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.CombinatorialExamples.Touchard
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Interlacing.WindowInduction
+public import RealRooted.ObreschkoffConverse.Derivative
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

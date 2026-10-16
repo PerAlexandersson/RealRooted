@@ -1,5 +1,7 @@
-import RealRooted.AffineDerivative
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.Tactic.Finish
 
 /-!
 # Affine-derivative tactic frontends
@@ -7,6 +9,8 @@ import RealRooted.Tactic.Finish
 Thin wrappers for the affine-derivative interlacing theorem
 `C c * f + (1 - X) * f.derivative`.
 -/
+
+public section
 
 open Polynomial
 

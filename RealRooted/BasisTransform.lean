@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Coefficientwise positivity for polynomial basis transforms
@@ -9,9 +11,9 @@ real-polynomial coefficient-positivity predicate used by the real-rootedness
 library.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

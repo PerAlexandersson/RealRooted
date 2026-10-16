@@ -1,4 +1,6 @@
-import RealRooted.ObreschkoffConverse.Regularization
+module
+
+public import RealRooted.ObreschkoffConverse.Regularization
 
 /-!
 # Obreschkoff converse endgame
@@ -7,9 +9,9 @@ Root-sign assembly and common-root descent from all-real-rooted pencils to
 interlacing.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

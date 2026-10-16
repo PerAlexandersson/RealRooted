@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.GeneralizedSnakePosets.Statements
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.GeneralizedSnakePosets.Statements
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+public import RealRooted.NarayanaTransformation
 
 /-!
 # Modified Narayana inputs for generalized snake posets
@@ -11,9 +13,9 @@ combinatorial interfaces and the coefficient-side model used to transport
 between the quotient-style Narayana formalization and explicit coefficients.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

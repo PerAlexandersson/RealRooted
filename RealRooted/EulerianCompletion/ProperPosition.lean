@@ -1,5 +1,7 @@
-import RealRooted.EulerianCompletion
-import RealRooted.EulerOperator.Polar.Pencil
+module
+
+public import RealRooted.EulerianCompletion
+public import RealRooted.EulerOperator.Polar.Pencil
 
 /-!
 # Interlacing for the lowering Euler step
@@ -8,9 +10,9 @@ This module keeps the heavier interlacing dependencies separate from the
 algebraic and coefficientwise lowering-Euler API in `EulerianCompletion`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

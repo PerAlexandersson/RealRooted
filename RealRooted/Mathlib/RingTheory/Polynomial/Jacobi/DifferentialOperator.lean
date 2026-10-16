@@ -17,9 +17,7 @@ polynomials over a commutative ring. It is independent of the explicit Jacobi
 family, its root theory, and its orthogonality theory.
 -/
 
-@[expose] public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 namespace Polynomial
 

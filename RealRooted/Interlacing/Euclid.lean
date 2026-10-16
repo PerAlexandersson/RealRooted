@@ -1,7 +1,9 @@
-import RealRooted.MaWang.Weak.Endpoint
-import RealRooted.ThreeTermRecurrence.Interlacing
-import RealRooted.ThreeTermRecurrence.Degree
-import RealRooted.WagnerX.AffineFactors
+module
+
+public import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.ThreeTermRecurrence.Degree
+public import RealRooted.WagnerX.AffineFactors
 
 /-!
 # Interlacing certificates for explicit polynomials
@@ -17,6 +19,8 @@ real-rooted polynomial preserves interlacing.  Hence, for `P (n + 2) = q * P n`,
 consecutive rows interlace once `P 0 ≪ P 1` and `P 1 ≪ q * P 0`
 (`twoStepProduct_interlaces`).
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedLiuWang
-import RealRooted.MaWang
+module
+
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.MaWang
 
 /-!
 # Magnitude-dominated lag certificates
@@ -9,9 +11,9 @@ roots of the current row gives the sign condition needed by the Ma-Wang /
 generalized Liu-Wang interlacing criteria.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

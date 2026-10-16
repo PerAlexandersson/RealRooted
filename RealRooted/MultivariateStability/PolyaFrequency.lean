@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.SamePhase
-import RealRooted.PFPolynomial
-import RealRooted.SamePhaseStability.Nonnegative
+module
+
+public import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.PFPolynomial
+public import RealRooted.SamePhaseStability.Nonnegative
 
 /-!
 # Pólya-frequency restrictions of multivariate stable polynomials
@@ -10,9 +12,9 @@ nonnegativity.  Every nonnegative common-phase restriction is then a
 Pólya-frequency polynomial and in particular has only nonpositive real roots.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- A nonnegative common-phase restriction of a same-phase stable polynomial
 with nonnegative coefficients is Pólya-frequency. -/
@@ -45,7 +47,5 @@ theorem commonPhaseRestriction_isPFPolynomial_of_eq_zero_or_mvRealStable
     IsPFPolynomial (commonPhaseRestriction wt P) :=
   SamePhaseStable.commonPhaseRestriction_isPFPolynomial
     (samePhaseStable_of_eq_zero_or_mvRealStable hstable) hnonneg wt hwt
-
-end
 
 end RealRooted

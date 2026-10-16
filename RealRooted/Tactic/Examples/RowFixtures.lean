@@ -1,5 +1,7 @@
-import Mathlib.Basic.Real.Basic
-import Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Shared row fixtures
@@ -7,11 +9,11 @@ import Mathlib.Algebra.Polynomial.Derivative
 Recursive polynomial rows shared by the tactic regression modules.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowFixtures
-
-noncomputable section
 
 /-- Stirling numbers of the second kind (A008277). -/
 def A008277 : ℕ → ℝ[X]
@@ -88,7 +90,5 @@ def A142071 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => X
   | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
-
-end
 
 end RealRooted.Tactic.RowFixtures

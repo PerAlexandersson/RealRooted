@@ -1,10 +1,14 @@
-import RealRooted.Tactic.RootCount.LowDegreeRules
+module
+
+public import RealRooted.Tactic.RootCount.LowDegreeRules
 
 /-!
 # OEIS low-degree root-count regression examples
 
 Regression examples for low-degree root-count frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

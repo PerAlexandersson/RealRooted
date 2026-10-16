@@ -1,4 +1,6 @@
-import RealRooted.LiuWang.FiniteFamily
+module
+
+public import RealRooted.LiuWang.FiniteFamily
 
 /-!
 # Derivative--lag recurrences with common roots
@@ -8,9 +10,9 @@ sequence induction.  Unlike the strict negative-root route, it allows a root
 at zero to persist through every row.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

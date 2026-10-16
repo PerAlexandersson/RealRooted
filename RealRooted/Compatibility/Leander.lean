@@ -1,8 +1,10 @@
-import RealRooted.Compatibility.LeanderXOutput
+module
+
+public import RealRooted.Compatibility.LeanderXOutput
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

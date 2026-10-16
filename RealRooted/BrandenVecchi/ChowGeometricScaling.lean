@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+module
+
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
 
 /-!
 # Geometric scaling of Chow rows
@@ -10,11 +12,11 @@ weight `n`.  The Toeplitz specialization is the existing geometric scaling of
 its coefficient sequence.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 namespace LowerTriangularMatrix
 
@@ -170,7 +172,5 @@ theorem BrandenVecchi.chowPolynomial_toeplitz_geometricScale
       C (c ^ n) * chowPolynomial (toeplitz a) n := by
   rw [toeplitz_geometricScale]
   exact BrandenVecchi.chowPolynomial_geometricScale c (toeplitz a) n
-
-end
 
 end RealRooted

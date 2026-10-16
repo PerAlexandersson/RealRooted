@@ -1,5 +1,7 @@
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # `rr_row_*` examples
@@ -10,12 +12,12 @@ Regression tests for OEIS rows defined by derivative recurrences, drawn from
 the `?` variants of the degree tactics.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open RealRooted.Tactic.RowFixtures
 
 namespace RealRooted.Tactic.RowDataExamples
-
-noncomputable section
 
 theorem A008277_natDegree (n : ℕ) : (A008277 n).natDegree = n := by rr_row_natDegree
 theorem A008277_ne_zero (n : ℕ) : A008277 n ≠ 0 := by rr_row_ne_zero
@@ -146,7 +148,5 @@ example (n : ℕ) : (A055356 n).natDegree = n - 1 := by rr_row_natDegree (drop :
 /-- Goals about shifted rows. -/
 example (n : ℕ) : (A084534 (n + 2)).natDegree = n + 2 := by rr_row_natDegree
 example (n : ℕ) : A102413 (n + 1) ≠ 0 := by rr_row_ne_zero
-
-end
 
 end RealRooted.Tactic.RowDataExamples

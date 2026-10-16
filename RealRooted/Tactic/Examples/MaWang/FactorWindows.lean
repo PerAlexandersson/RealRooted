@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Factors
+module
+
+public import RealRooted.Tactic.MaWang.Factors
 
 /-!
 # Ma--Wang factor-window regression examples
 
 Regression examples for Ma--Wang factor-window frontends.
 -/
+
+public section
 
 open Polynomial
 

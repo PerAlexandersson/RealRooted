@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Gurvits' univariate inequality
@@ -11,14 +13,13 @@ These are the univariate ingredients of Gurvits' proof of the van der Waerden bo
 homogeneous polynomials*, Electron. J. Combin. 15 (2008)).
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.Gurvits
 
 section Inequality
 
 open Polynomial Filter Topology
-
 
 /-- Two-point AM–GM with weights `1 / (n + 1)` and `n / (n + 1)`, in power form. -/
 theorem mul_pow_le_add_div_pow {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) (n : ℕ) :

@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.TilingFactors
-import RealRooted.BrandenLeite.TwoKernel
-import RealRooted.FiniteFreeRootCount
+module
+
+public import RealRooted.BrandenLeite.TilingFactors
+public import RealRooted.BrandenLeite.TwoKernel
+public import RealRooted.FiniteFreeRootCount
 
 /-!
 # Stationary rational rod-tiling rows
@@ -11,11 +13,11 @@ exact formal denominator identity and its finite coefficient recurrence before
 specializing to a single monomer background.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The finite scalar denominator `∏ y ∈ ys, (1 - y * X)`. -/
 def rationalBackgroundDenominator (ys : List ℝ) : PowerSeries ℝ :=
@@ -346,7 +348,5 @@ theorem monomerRodRow_roots_neg
   have hpf := (monomerRodRows_pf_and_interl hb.le hc hr hxs).1 n
   apply hpf.roots_neg_of_coeff_zero_ne
   simp [hr, pow_ne_zero _ hb.ne']
-
-end
 
 end RealRooted.BrandenLeite

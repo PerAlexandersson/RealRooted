@@ -1,4 +1,6 @@
-import RealRooted.LeeYang
+module
+
+public import RealRooted.LeeYang
 
 /-!
 # Lee–Yang circle theorem challenge entry point
@@ -69,3 +71,5 @@ See [@LeeYang1952; @Asano1970; @Ruelle2010].
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.
 -/
+
+public section

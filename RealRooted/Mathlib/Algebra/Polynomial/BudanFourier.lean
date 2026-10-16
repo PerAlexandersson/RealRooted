@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.RuleOfSigns
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Topology.Algebra.Polynomial
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
+
+module
+
+public import Mathlib.Algebra.Polynomial.RuleOfSigns
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # The Budan–Fourier theorem
@@ -44,9 +47,9 @@ on whose interior neither `p` nor `q` vanishes, using the intermediate value the
 mean value theorem and the factorisation `q = (X - c) ^ μ * g` at the endpoints.
 -/
 
-open Polynomial Set
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Set
 
 namespace List
 
@@ -476,4 +479,3 @@ theorem budan_fourier {p : ℝ[X]} (hp : p ≠ 0) {a b : ℝ} (hab : a < b) :
 
 end Polynomial
 
-end

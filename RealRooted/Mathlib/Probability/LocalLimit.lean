@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Probability.CDF
-import RealRooted.Mathlib.Probability.CoeffDistribution
+
+module
+
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Probability.CDF
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Bender's local limit theorem for polynomial coefficients
@@ -33,9 +36,9 @@ standardized distribution functions at every point.
   1973, Theorem 2). All other declarations in the file are private.
 -/
 
-open MeasureTheory ProbabilityTheory Filter Topology Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open MeasureTheory ProbabilityTheory Filter Topology Polynomial
 
 namespace Polynomial
 
@@ -57,7 +60,6 @@ section Aux
 
 /-- Standard Gaussian density (local notation). -/
 local notation "φ" => gaussianPDFReal 0 1
-
 
 private lemma gpdf_eq (t : ℝ) : φ t = (√(2 * Real.pi))⁻¹ * Real.exp (-t ^ 2 / 2) := by
   simp [gaussianPDFReal_def]

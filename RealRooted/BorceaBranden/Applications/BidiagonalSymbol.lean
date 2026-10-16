@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.MultiplierSequence.Bidiagonal
+module
+
+public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Algebraic symbols of bidiagonal polynomial operators
@@ -10,7 +12,7 @@ bidiagonal polynomial operator. This symbol is distinct from the homogeneous
 binary form used by the finite-symbol tactic.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.BorceaBranden
 

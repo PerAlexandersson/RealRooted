@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Data.Finsupp.Multiset
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Data.Finsupp.Multiset
 
 /-!
 # Content of finite words
@@ -9,9 +11,9 @@ finite fibers of words with prescribed content.  It is independent of parking
 conditions and Smirnov restrictions.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- Relabel every value of a finite word by an alphabet equivalence. -/
 def relabelWord {n m : ℕ} (e : Equiv.Perm (Fin m))
@@ -134,7 +136,5 @@ theorem relabelWord_eq_iff {n m : ℕ} (e : Equiv.Perm (Fin m))
     (w : Fin n → Fin m) (i j : Fin n) :
     relabelWord e w i = relabelWord e w j ↔ w i = w j :=
   e.injective.eq_iff
-
-end
 
 end RealRooted.ParkingFunctions

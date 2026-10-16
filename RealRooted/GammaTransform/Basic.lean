@@ -1,5 +1,7 @@
-import RealRooted.SymmetricDecomposition
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+module
+
+public import RealRooted.SymmetricDecomposition
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 /-!
 # Gamma transforms and real-rootedness
@@ -9,10 +11,10 @@ decompositions and proves real-rootedness criteria for the transformed
 polynomials.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial Finset
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 
@@ -555,8 +557,6 @@ lemma natDegree_gammaTransform_le (d : ℕ) (γ : ℝ[X]) :
   have hfix := gammaTransform_fixed d γ
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff d) hfix
   simpa [idTransform, Polynomial.coeff_reflect, Polynomial.revAt_zero] using hcoeff.symm
-
-
 
 end
 

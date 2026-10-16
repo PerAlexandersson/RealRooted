@@ -1,10 +1,12 @@
-import RealRooted.BorceaBranden.Transcendental.LambdaBar
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
-import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+module
+
+public import RealRooted.BorceaBranden.Transcendental.LambdaBar
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
+public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+
+public noncomputable section
 
 open Filter Topology
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

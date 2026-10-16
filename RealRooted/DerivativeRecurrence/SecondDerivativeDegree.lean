@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Second-derivative recurrence degree theory
@@ -8,9 +10,9 @@ parameterized second-order derivative recurrence used by several generated
 polynomial families.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,8 +1,10 @@
-import RealRooted.MaWang
+module
+
+public import RealRooted.MaWang
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

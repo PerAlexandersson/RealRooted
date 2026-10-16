@@ -1,5 +1,7 @@
-import RealRooted.Derivative.ShiftRootMatching
-import RealRooted.LiuOppositeSigns.NoCommonRoots
+module
+
+public import RealRooted.Derivative.ShiftRootMatching
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
 
 /-!
 # Derivative-shift regularization for Liu pairs
@@ -8,9 +10,9 @@ This module proves that sufficiently small common positive derivative shifts
 preserve the no-common-root condition used in Liu's finite root-count descent.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

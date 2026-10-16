@@ -1,4 +1,6 @@
-import RealRooted.LowerTriangularMatrix
+module
+
+public import RealRooted.LowerTriangularMatrix
 
 /-!
 # Resolvable lower unitriangular matrices
@@ -12,9 +14,9 @@ lower-unitriangular matrix is resolvable exactly when it is totally
 nonnegative (`isResolvable_iff_isTotallyNonneg`).
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 

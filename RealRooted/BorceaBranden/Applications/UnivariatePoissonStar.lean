@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.PFPolynomial
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.PFPolynomial
+public import RealRooted.QuadraticRoot
 
 /-!
 # The univariate Poisson star product
@@ -17,12 +19,12 @@ Weyl symbol under the root-sign condition, exact affine-factor tests, and the bo
 of the PF classification established here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 /-- The univariate Poisson product with real parameter `c`.
 
@@ -564,7 +566,5 @@ theorem preservesPF_zero_iff (f : ℝ[X]) :
   · intro hf g hg
     rw [starC_zero]
     exact hf.mul hg
-
-end
 
 end RealRooted.Poisson

@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Logarithmic derivatives of split real polynomials
@@ -9,9 +11,9 @@ root factor. It is independent of the Hermite--Biehler interlacing
 arguments.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

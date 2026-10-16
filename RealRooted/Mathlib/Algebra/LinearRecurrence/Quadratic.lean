@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.LinearRecurrence
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
+
+module
+
+public import Mathlib.Algebra.LinearRecurrence
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
 
 /-!
 # Quadratic linear recurrences
@@ -14,6 +17,8 @@ This Mathlib-shaped shim packages a second-order constant-coefficient
 recurrence and its elementary factor telescoping identity. It is purely
 algebraic; real root bounds and explicit quadratic formulae belong to clients.
 -/
+
+@[expose] public section
 
 namespace LinearRecurrence
 

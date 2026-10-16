@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
-import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+module
 
-noncomputable section
+public import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
+public import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+
+@[expose] public noncomputable section
 
 namespace RealRooted.BorceaBranden
 

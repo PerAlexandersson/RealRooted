@@ -1,6 +1,8 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.RootCounting.Sturm
-import RealRooted.RootVieta.Newton
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.RootCounting.Sturm
+public import RealRooted.RootVieta.Newton
 
 /-!
 # Sturm root-counting challenge entry point
@@ -106,3 +108,5 @@ théorème de M. Sturm,” *Comptes rendus de l’Académie des sciences* 36 (18
 This module is a catalog facade.  The proofs live in
 `RealRooted.RootCounting.Sturm` and `RealRooted.RootVieta.Newton`.
 -/
+
+public section

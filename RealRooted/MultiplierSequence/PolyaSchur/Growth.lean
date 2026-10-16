@@ -1,5 +1,7 @@
-import RealRooted.MultiplierSequence.PolyaSchur
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Exponential growth of Pólya--Schur multiplier sequences
@@ -9,9 +11,9 @@ from the PF multiplier convention and transports the resulting
 Laguerre--Pólya witness through the classical alternating-sign convention.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

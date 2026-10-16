@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
 
 /-!
 # Stability induction for the Deco layer recurrence
@@ -8,9 +10,9 @@ companion certificate.  It uses only the recurrence-defined layer totals and
 their exact one-step Rayleigh criterion; no combinatorial model is involved.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Stability at every rank is equivalent to the companion Rayleigh
 certificate at every recurrence step. -/
@@ -94,7 +96,5 @@ theorem decoLayerTotal_mvRealStable_iff_companionData_preserved :
       (decoLayerTotal_mvRealStable_iff_forall_companionRayleighData.mp
         hstable) (n + 1)
   · exact decoLayerTotal_mvRealStable_of_companionData_preserved
-
-end
 
 end RealRooted.Applications.OEIS

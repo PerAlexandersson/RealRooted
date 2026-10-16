@@ -1,6 +1,11 @@
-import RealRooted.ProductSequence.Interlacing
-import RealRooted.QuadraticRoot
-import Mathlib.Tactic.ComputeDegree
+module
+
+public import RealRooted.ProductSequence.Interlacing
+public import RealRooted.QuadraticRoot
+public import Mathlib.Tactic.ComputeDegree
+public meta import RealRooted.ProductSequence.Interlacing
+public meta import RealRooted.QuadraticRoot
+public meta import Mathlib.Tactic.ComputeDegree
 
 /-!
 # Tactics for product sequences
@@ -24,6 +29,8 @@ base row is nonzero and splits by `simp [P]`, falling back to `Splits.one` and
 `RealRooted.productSequence_interlaces` and `RealRooted.productSequence_natDegree`,
 which need no sign conditions on the factors.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

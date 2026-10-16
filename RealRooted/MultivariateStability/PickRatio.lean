@@ -1,21 +1,23 @@
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Algebra.Polynomial.Eval.Defs
-import Mathlib.Algebra.Polynomial.FieldDivision
-import Mathlib.Analysis.Calculus.Deriv.Basic
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.Analysis.Calculus.Deriv.Inv
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Analysis.Calculus.Deriv.Pow
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Data.Finset.Fold
-import Mathlib.RingTheory.Polynomial.Basic
-import Mathlib.Topology.Algebra.Polynomial
+module
+
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Analysis.Calculus.Deriv.Pow
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Data.Finset.Fold
+public import Mathlib.RingTheory.Polynomial.Basic
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # A Pick-type lemma for real rational functions
@@ -29,11 +31,11 @@ Nevanlinna–Pick representation used for the Marcus–Spielman–Srivastava bar
 Proof found by Aristotle (Harmonic) and adapted to the repository.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 namespace PickRatio
 
@@ -446,5 +448,4 @@ theorem deriv_nonpos_and_second_deriv_nonneg (F G : ℝ[X]) (hF : F ≠ 0) (hs :
       simpa only [hcongr.1, hcongr.2] using ⟨hd1, hd2⟩
 
 end PickRatio
-end
 end RealRooted

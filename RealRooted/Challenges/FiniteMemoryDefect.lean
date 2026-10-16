@@ -1,4 +1,6 @@
-import RealRooted.FiniteMemory.Defect
+module
+
+public import RealRooted.FiniteMemory.Defect
 
 /-!
 # Finite-memory degree-defect bridges
@@ -88,6 +90,8 @@ $3d+K_{n\bmod3}=2n$.
 See [@BogvadHagg2017; @NyandwiHaggKurujyibwamiUwimbabazi2026x].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.FiniteMemoryDefect
 

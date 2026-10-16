@@ -1,4 +1,6 @@
-import RealRooted.GarloffWagner.Iterated
+module
+
+public import RealRooted.GarloffWagner.Iterated
 
 /-!
 # Garloff--Wagner Krein data
@@ -7,9 +9,9 @@ Root-multiplicity divisibility, root-deleted summands, and degree control for
 the Krein expansion.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

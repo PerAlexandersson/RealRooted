@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
+public import RealRooted.PFPolynomial
 
 /-!
 # PF certificates for the BFJ output
@@ -8,11 +10,11 @@ This file combines the coefficient-sign and stability interfaces for the
 dehomogenized BFJ coefficient into a polynomial PF certificate.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Stable homogeneous inputs with nonnegative coefficients have PF BFJ
 output. -/
@@ -33,7 +35,5 @@ theorem MvRealStable.bfjOutput_isPF
   rcases hout with hzero | hstable
   · exact Or.inl ((Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hzero)
   · exact Or.inr hstable.splits_complexify
-
-end
 
 end RealRooted

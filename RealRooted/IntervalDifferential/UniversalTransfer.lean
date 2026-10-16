@@ -18,9 +18,7 @@ seed, followed by real linear and conjugate-pair insertions, transfers a
 complex root disk for a parity polynomial to simple roots in `(-1,1)`.
 -/
 
-@[expose] public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 open Polynomial
 

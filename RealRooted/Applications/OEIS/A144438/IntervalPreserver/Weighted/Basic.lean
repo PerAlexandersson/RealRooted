@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.Weighted
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.Applications.OEIS.A144438.Weighted
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The weighted deco Eulerian basis transform
@@ -9,9 +11,9 @@ together with the lag and companion transforms used in the interval-preserver
 argument.  Only polynomial identities are proved here.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

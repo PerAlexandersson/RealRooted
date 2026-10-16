@@ -1,6 +1,8 @@
-import RealRooted.Hadamard.Kostov.Eigen
-import RealRooted.Hadamard.Kostov.Roots
-import RealRooted.Hadamard.Kostov.TwoStep
+module
+
+public import RealRooted.Hadamard.Kostov.Eigen
+public import RealRooted.Hadamard.Kostov.Roots
+public import RealRooted.Hadamard.Kostov.TwoStep
 
 /-!
 # Kostov's Bernstein eigenpolynomials
@@ -78,6 +80,8 @@ a compactness argument, Descartes' rule of signs, and a Wronskian argument.
 See [@Kostov2010].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.KostovEigenpolynomials
 

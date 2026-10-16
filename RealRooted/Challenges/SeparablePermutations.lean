@@ -1,5 +1,7 @@
-import RealRooted.SeparablePermutations.Identification
-import RealRooted.SeparablePermutations.Interlacing
+module
+
+public import RealRooted.SeparablePermutations.Identification
+public import RealRooted.SeparablePermutations.Interlacing
 
 /-!
 # Descent polynomials of separable permutations: strict interlacing
@@ -125,3 +127,5 @@ follows the draft formalization of PR #1132 by yyou59548-design. See also the
 This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and
 `RealRooted.FactorialCompression`.
 -/
+
+public section

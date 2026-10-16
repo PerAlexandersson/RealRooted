@@ -1,4 +1,6 @@
-import RealRooted.UnitIntervalGraph.AcyclicSink
+module
+
+public import RealRooted.UnitIntervalGraph.AcyclicSink
 
 /-!
 # Acyclic sink polynomials of natural unit interval graphs
@@ -89,3 +91,5 @@ For the claw-free background, see the
 This module is a catalog facade.  The proofs live in
 `RealRooted.UnitIntervalGraph.AcyclicSink`.
 -/
+
+public section

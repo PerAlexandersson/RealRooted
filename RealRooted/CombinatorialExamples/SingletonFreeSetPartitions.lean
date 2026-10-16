@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Tactic.WagnerX
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Tactic.WagnerX
+public import Mathlib.Tactic
 
 /-!
 # Singleton-Free Set-Partition Polynomials
@@ -9,9 +11,9 @@ Real-rootedness and interlacing facts for the recurrence counting set
 partitions without singleton blocks.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -208,7 +210,7 @@ lemma strictInterl_singletonFreeSetPartitions_three_four :
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
       hasNonnegCoeffs_C_mul (by simp) hX_nonneg
-    exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
+    exact fun m => by rw [coeff_add]; exact add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hmul :
       StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
     rr_strict_interl_mul_X_both using

@@ -1,6 +1,8 @@
-import RealRooted.EulerBidiagonal
-import RealRooted.Interlacing.RootCountSigns
-import RealRooted.RootCounting.SignChanges
+module
+
+public import RealRooted.EulerBidiagonal
+public import RealRooted.Interlacing.RootCountSigns
+public import RealRooted.RootCounting.SignChanges
 
 /-!
 # The general Euler step `κ(θ + a)(θ + b) + X(u + vθ)`
@@ -21,10 +23,9 @@ polynomial `generalComparison q = 2κXq' + (κ(a+b+1) + vX) q` and counts sign c
 covers the OEIS rows A156289, A166960, A166961, A166962 and A166972 (#1074).
 -/
 
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
@@ -177,12 +178,7 @@ theorem comparisonDefect_neg_of_two_mul_u_ge
 
 end RealRooted.EulerBidiagonal
 
-
-
-
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
@@ -367,12 +363,7 @@ theorem generalStep_eval_mul_neg_of_generalComparison_root
 
 end RealRooted.EulerBidiagonal
 
-
-
-
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
@@ -728,12 +719,7 @@ private theorem isNegativeSimple_generalStep_of_certificate
 
 end RealRooted.EulerBidiagonal
 
-
-
-
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
@@ -994,6 +980,5 @@ theorem isNegativeSimple_generalStep_of_pos
         nlinarith [h1] : 0 < -(e * (generalStep κ a b u v q).eval (P[k]'(by lia))))]
   exact isNegativeSimple_generalStep_of_certificate κ a b u v q m hqdeg hqlc hκ ha hb hell hqcoeff
       hq0 hcert
-
 
 end RealRooted.EulerBidiagonal

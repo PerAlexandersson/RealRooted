@@ -1,8 +1,10 @@
-import RealRooted.AffineFamily
+module
+
+public import RealRooted.AffineFamily
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
-import RealRooted.MultivariateStability.SamePhase
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+public import RealRooted.MultivariateStability.SamePhase
 
 /-!
 # Real stability and diagonal restriction
@@ -7,6 +9,8 @@ import RealRooted.MultivariateStability.SamePhase
 This file transfers multivariate real stability to real-rootedness after all
 variables are identified with one univariate coordinate.
 -/
+
+public section
 
 namespace RealRooted
 

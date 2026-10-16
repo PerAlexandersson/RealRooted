@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Kostov.BernsteinRoots
+module
+
+public import RealRooted.Hadamard.Kostov.BernsteinRoots
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov
@@ -464,7 +466,6 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     have e := eigenvalue_spec n (j + 1) (by lia)
     apply linearPart_eigen_of_bern n hn v _ e.1
     rw [e.2, hGv, map_smul, heig, smul_comm]
-
 
 end Kostov
 end RealRooted

@@ -20,13 +20,11 @@ later half-integer convolution calculation.  It does not assert that
 calculation, or any root-preservation consequence.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
 
 namespace Polynomial
-
-noncomputable section
 
 /-- The ratio of descending Pochhammer evaluations that occurs in generalized
 rectangular convolution kernels. -/
@@ -84,7 +82,5 @@ theorem descPochhammerRatio_two_mul {R : Type*} [Field R] [CharZero R]
       rw [← mul_div_mul_comm]
       congr 1
       ring
-
-end
 
 end Polynomial

@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 
 /-!
 # Succ-degree case of the two-polynomial common-interleaver theorem
@@ -9,9 +11,9 @@ differ by at most one at every threshold, and the descending roots therefore
 weave into a common interleaver.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

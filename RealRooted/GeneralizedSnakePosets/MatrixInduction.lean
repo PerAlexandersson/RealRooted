@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.Statements
-import RealRooted.MatrixInterlacing
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.GeneralizedSnakePosets.Statements
+public import RealRooted.MatrixInterlacing
+public import RealRooted.PFPolynomial
 
 /-!
 # Braun-Jal matrix-induction step
@@ -11,9 +13,9 @@ of the snake interlacing theorem (arXiv:2607.00922v1, p. 10).  The source matrix
 `H_m = G_m - G_{m-1}`, and acts on the induction pair `[f, X * g]`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

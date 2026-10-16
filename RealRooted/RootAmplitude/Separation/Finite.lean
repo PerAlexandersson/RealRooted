@@ -1,11 +1,13 @@
-import RealRooted.RootAmplitude.Finite
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite multiplicative separation
@@ -19,11 +21,11 @@ The analytic lower bound for the staircase is deliberately kept in
 `RootAmplitude.Separation.Euler`.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 /-- Multiplicative separation by `q` on the first `n` entries of a sequence. -/
 def IsMultiplicativelySeparatedOn {K : Type*} [Mul K] [LE K]
@@ -214,7 +216,5 @@ theorem amplitude_eq_lower_mul_upper (g : ℕ → K) (n k : ℕ) (hk : k < n)
     rw [abs_of_pos]
     rw [sub_pos]
     exact (div_lt_one hgj).mpr hlt
-
-end
 
 end RealRooted.RootAmplitude

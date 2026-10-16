@@ -1,5 +1,7 @@
-import Mathlib.Data.List.InsertIdx
-import Mathlib.Logic.Equiv.Basic
+module
+
+public import Mathlib.Data.List.InsertIdx
+public import Mathlib.Logic.Equiv.Basic
 
 /-!
 # Words built by repeated minimum insertion
@@ -8,6 +10,8 @@ A chronological insertion code builds a word by raising every old positive
 label and inserting the new minimum `1`.  This file records the exact local
 forms and the transport of label swaps through later insertion steps.
 -/
+
+@[expose] public section
 
 namespace RealRooted.MinimumInsertionWord
 

@@ -29,12 +29,10 @@ algebraic core of Favard's theorem; analytic representing measures and their
 supports belong in family-specific child modules.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Module Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

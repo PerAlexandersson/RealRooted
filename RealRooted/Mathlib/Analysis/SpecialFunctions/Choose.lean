@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.SpecialFunctions.Choose
-import Mathlib.Data.Nat.Choose.Bounds
+
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Choose
+public import Mathlib.Data.Nat.Choose.Bounds
 
 /-!
 # Rescaled binomial-coefficient limit
@@ -13,9 +16,9 @@ This Mathlib-shaped lemma is the fixed-degree asymptotic used by rescaled
 Jensen polynomials.
 -/
 
-open Asymptotics Filter Nat Topology
+public noncomputable section
 
-noncomputable section
+open Asymptotics Filter Nat Topology
 
 namespace Nat
 

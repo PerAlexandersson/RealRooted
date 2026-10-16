@@ -1,6 +1,8 @@
-import RealRooted.AffineDerivative
-import RealRooted.EulerOperator.OrderNumerator.Basic
-import RealRooted.EulerOperator.Polar.Pencil
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.EulerOperator.OrderNumerator.Basic
+public import RealRooted.EulerOperator.Polar.Pencil
 
 /-!
 # Pólya-frequency preservation for the order-numerator step
@@ -9,9 +11,9 @@ The strict and tight parameter regimes have different degree behaviour.  This
 leaf keeps both hypotheses explicit.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

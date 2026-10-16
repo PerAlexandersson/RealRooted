@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Pair
-import RealRooted.MaWang.Weak.Endpoint
+module
+
+public import RealRooted.Compatibility.Pair
+public import RealRooted.MaWang.Weak.Endpoint
 
 /-!
 # Euler insertion operator
@@ -13,9 +15,9 @@ The adjacent mixed-step argument lives in `EulerianMixedCompatibility`; users
 that need only the insertion operator should import this module directly.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

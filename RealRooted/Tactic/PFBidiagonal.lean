@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.PFPolynomial
-import RealRooted.Tactic.Lookup
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.PFPolynomial
+public import RealRooted.Tactic.Lookup
 
 /-!
 # PF bidiagonal operator shells
@@ -13,9 +15,9 @@ stability gives a checked PF-preserver route. The weaker one-sided Jensen
 pencil is proved by finite-free root-count contraction and PF closure.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -864,6 +866,5 @@ theorem
     (bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from
       N halpha hbeta hA hB hS)
     hnorm hrec
-
 
 end RealRooted

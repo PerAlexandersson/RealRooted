@@ -1,8 +1,10 @@
-import RealRooted.RankTwoMatching.Orientation
+module
+
+public import RealRooted.RankTwoMatching.Orientation
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.Graph.RankTwoInternal
 

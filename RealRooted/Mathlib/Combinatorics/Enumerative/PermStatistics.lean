@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import Mathlib.Order.Fin.Basic
-import Mathlib.Data.Fintype.Perm
+
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import Mathlib.Order.Fin.Basic
+public import Mathlib.Data.Fintype.Perm
 
 /-!
 # Statistics of finite permutations
@@ -15,6 +18,8 @@ For `σ : Equiv.Perm (Fin n)` we use the word `List.ofFn σ`, whose entries are
 the `Fin n` values themselves.  The order on `Fin n` is the order used by all
 statistics below, and positions remain zero-based.
 -/
+
+@[expose] public section
 
 namespace Equiv.Perm
 

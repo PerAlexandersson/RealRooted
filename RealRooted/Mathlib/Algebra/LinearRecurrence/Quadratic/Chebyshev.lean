@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import Mathlib.RingTheory.Polynomial.Chebyshev
+
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.RingTheory.Polynomial.Chebyshev
 
 /-!
 # Chebyshev closed forms for normalized quadratic recurrences
@@ -13,6 +16,8 @@ This algebraic child expresses solutions of `quadratic (2 * t) (-1)` through
 Mathlib's Chebyshev polynomials. Trigonometric specializations and analytic
 estimates belong to separate clients.
 -/
+
+@[expose] public section
 
 namespace LinearRecurrence
 

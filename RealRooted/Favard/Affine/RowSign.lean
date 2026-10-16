@@ -1,5 +1,7 @@
-import RealRooted.Favard.Affine.Basic
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.Favard.Affine.Basic
+public import RealRooted.ScalarNormalization
 
 /-!
 # Row-sign normalized affine Favard recurrences
@@ -7,6 +9,8 @@ import RealRooted.ScalarNormalization
 This module owns the affine Favard APIs transported through
 `Q n = (-1)^n P n`, including their scalar-denominator variants.
 -/
+
+public section
 
 open Polynomial
 

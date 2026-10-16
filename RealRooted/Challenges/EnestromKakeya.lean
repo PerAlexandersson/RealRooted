@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 
 /-!
 # Eneström–Kakeya challenge entry point
@@ -53,3 +55,5 @@ coefficients*, Tôhoku Math. J. 2 (1912), 140–142.
 This module is a catalog facade.  The proofs live in
 `RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya`.
 -/
+
+public section

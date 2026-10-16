@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.DepRows
-import RealRooted.Interlacing.Euclid
+module
+
+public import RealRooted.EulerBidiagonal.DepRows
+public import RealRooted.Interlacing.Euclid
 
 /-!
 # The general Euler step with a zero parameter
@@ -11,9 +13,9 @@ of the Euler step with parameters `1`, `b + 1`, `u (n + 1) + v`, `v`.  Consecuti
 interlace by `generalRowsDep_spec` (A269945 is `θ ^ 2 + X`).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 

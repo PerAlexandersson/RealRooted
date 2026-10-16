@@ -3,16 +3,19 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
-import RealRooted.Favard
-import RealRooted.Laguerre.Favard
-import RealRooted.SimpleRoots
 
-import Mathlib.Tactic.Algebra.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+public import RealRooted.Favard
+public import RealRooted.Laguerre.Favard
+public import RealRooted.SimpleRoots
+
+public import Mathlib.Tactic.Algebra.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
 
 /-!
 # Roots of generalized Laguerre polynomials
@@ -23,9 +26,9 @@ recurrence gives the strict and simple-root theory when `-1 < α`; the boundary
 case follows from its explicit factorization by `X`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,9 +1,11 @@
-import RealRooted.MatrixInterlacing.Action
-import RealRooted.MatrixInterlacing.AffinePair
+module
+
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.MatrixInterlacing.AffinePair
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 
@@ -316,6 +318,5 @@ theorem matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
   have h := matrix_preserves_interlacing_seq0_of_2x2_realRooted
     G hG_rect hG_nonneg hG_affine fs hfs_len hfs
   exact h.1.filter_ne_zero_of_realRooted h.2
-
 
 end RealRooted

@@ -1,9 +1,11 @@
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability
-import RealRooted.LiebSokalOperator
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-import RealRooted.Mathlib.Analysis.Complex.OpenMapping
-import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+module
+
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
+public import RealRooted.LiebSokalOperator
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+public import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!
 # Pointwise input for the Lieb--Sokal theorem
@@ -11,6 +13,8 @@ import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 This file isolates the complex inequality used in the nonconstant affine case
 of the one-variable Lieb--Sokal argument.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

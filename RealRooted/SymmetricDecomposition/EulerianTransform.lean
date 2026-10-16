@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
-import RealRooted.Derivative.Interlacing
-import RealRooted.GeneralizedEulerian
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The Eulerian transformation on the magic basis
@@ -18,9 +20,9 @@ We prove this with the Chow row transform of Brändén--Vecchi (Theorem 4.13): t
 row is the staircase transform of the previous one with reflection bound `n + 1`.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 namespace EulerianTransform
@@ -305,7 +307,6 @@ theorem chowS_sum_basisImage (n : ℕ) :
     reflect_image_succ]
   rw [image]
   ring
-
 
 /-- The next row is the Chow staircase transform of the previous one, with bound `n + 1`. -/
 theorem row_succ (n : ℕ) :

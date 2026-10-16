@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Interlacing-search regression examples for PR #1689
@@ -7,11 +9,11 @@ These exact downstream recurrence shapes exercise the direct, Euler-step, and re
 routes that must finish before the nonlinear fallback of `rr_row_eval_sign` is considered.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowRegression1689InterlacingExamples
-
-noncomputable section
 
 /-- The OEIS A008957 polynomial sequence, given by a literal second-order derivative recurrence. -/
 def A008957 : ℕ → ℝ[X]
@@ -128,5 +130,4 @@ example (n : ℕ) : (A271703 n).Splits := by
 example (n : ℕ) : RealRooted.Interlaces (A271703 n) (A271703 (n + 1)) := by
   rr_row_interlaces
 
-end
 end RealRooted.Tactic.RowRegression1689InterlacingExamples

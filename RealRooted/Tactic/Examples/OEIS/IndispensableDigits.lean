@@ -1,14 +1,16 @@
-import RealRooted.Applications.OEIS.IndispensableDigits
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.IndispensableDigits
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Row-tactic regressions for indispensable-digit models
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open RealRooted
-
-noncomputable section
 
 namespace RealRooted.Tactic.IndispensableDigitsExamples
 

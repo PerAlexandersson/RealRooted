@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Core
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Core
 
 /-!
 # The trajectory at a zero: a compatibility-free scalar reduction of the bridge
@@ -54,6 +56,8 @@ and the bridge orientation at the zero is the inequality `a₁ < t·a₃`.
 Only one case of the induction over crossings is left open, namely a crossing preceded by a
 run of length `≥ 7`; see `PROOF_NOTES.md`, §13.
 -/
+
+public noncomputable section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 
@@ -165,8 +169,6 @@ end Scalar
 
 /-! ### The polynomial-level statements at a zero -/
 
-noncomputable section
-
 /-- The trajectory of the family at a point, with a sign `σ`, satisfies the scalar
 recurrence. -/
 theorem traj_rec (r σ : ℝ) (A : ℕ → ℝ) (hA : ∀ k, A k = σ * (p k).eval r) (k : ℕ) :
@@ -240,7 +242,5 @@ theorem bridge_at_root_of_prev (n : ℕ) (r σ : ℝ) (hroot : (p (n + 7)).IsRoo
   have hcrux := crux_of_prev hrec ht hle h2 hprev'
   have hb := traj_bridge r σ A hA n
   rw [hb]; linarith
-
-end
 
 end RealRooted.Applications.OEIS.A275442.Bridge

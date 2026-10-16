@@ -1,8 +1,10 @@
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.Interlacing.ResidueCriterion
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.MaWang.StrictStep
+module
+
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.Interlacing.ResidueCriterion
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.MaWang.StrictStep
 
 /-!
 # Residue-controlled Euler steps
@@ -12,9 +14,9 @@ obtained from the positive-point residue criterion. An additional interlacing
 tail with nonnegative weight preserves the strict sign at every old root.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

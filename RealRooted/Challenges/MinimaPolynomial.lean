@@ -1,4 +1,6 @@
-import RealRooted.Graph.MinimaForest
+module
+
+public import RealRooted.Graph.MinimaForest
 
 /-!
 # The minima polynomial of local edge orders
@@ -108,3 +110,5 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.Graph.MinimaPolynomial`, `RealRooted.Graph.MinimaLocalOrder` and
 `RealRooted.Graph.MinimaForest`.
 -/
+
+public section

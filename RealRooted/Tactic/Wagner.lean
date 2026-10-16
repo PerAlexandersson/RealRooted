@@ -1,5 +1,7 @@
-import RealRooted.Tactic.Lookup
-import RealRooted.Wagner.NonpositiveRoots
+module
+
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Wagner.NonpositiveRoots
 
 /-!
 # Wagner tactic frontends
@@ -10,6 +12,8 @@ Production-facing adapters also expose hypothesis-light common-right addition,
 common-factor transport, and linear-factor cancellation without
 sequence-specific names.
 -/
+
+public section
 
 open Polynomial
 

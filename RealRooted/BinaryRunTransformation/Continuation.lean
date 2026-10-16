@@ -1,12 +1,14 @@
-import RealRooted.BinaryRunTransformation.Anchor
-import RealRooted.BinaryRunTransformation.PointingPencil
-import RealRooted.CriticalValueContinuation
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Hadamard.Newton
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.QuadraticRoot
-import Mathlib.Topology.Order.ProjIcc
+module
+
+public import RealRooted.BinaryRunTransformation.Anchor
+public import RealRooted.BinaryRunTransformation.PointingPencil
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Hadamard.Newton
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.QuadraticRoot
+public import Mathlib.Topology.Order.ProjIcc
 
 /-!
 # Continuation for the binary-run deformation
@@ -16,12 +18,12 @@ continuation API.  It is the analytic layer used to prevent collisions while
 the scaling parameter increases.
 -/
 
+public noncomputable section
+
 open Filter Polynomial Topology
 open scoped ContDiff
 
 namespace RealRooted
-
-noncomputable section
 
 /-- A nondegenerate critical point of the shifted binary-run deformation has
 a local `C¹` branch of critical points. -/
@@ -647,7 +649,5 @@ theorem IsPFPolynomial.binaryRunTransform
   by_cases hn : 4 ≤ n
   · exact isPFPolynomial_binaryRunTransform_of_four_le hn hp hpdeg
   · exact isPFPolynomial_binaryRunTransform_of_le_three (by lia) hp hpdeg
-
-end
 
 end RealRooted

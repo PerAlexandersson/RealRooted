@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.CompositionBlocks
-import RealRooted.ParkingFunctions.Descents.DescentChains
-import Mathlib.Data.List.ChainOfFn
+module
+
+public import RealRooted.ParkingFunctions.Descents.CompositionBlocks
+public import RealRooted.ParkingFunctions.Descents.DescentChains
+public import Mathlib.Data.List.ChainOfFn
 
 /-!
 # Descent-containment content enumerators
@@ -9,9 +11,9 @@ This module packages the contiguous runs determined by prescribed descent
 positions as a Mathlib `Composition`.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- With no prescribed descents, every position forms a singleton run. -/
 @[simp]
@@ -202,7 +204,5 @@ theorem hasDescentsAtContentEnumerator_univ (n m : ℕ) :
       MvPolynomial.esymm (Fin m) ℤ (n + 1) := by
   rw [hasDescentsAtContentEnumerator_eq_strictCompositionBlockEnumerator,
     descentRunComposition_univ, strictCompositionBlockEnumerator_single]
-
-end
 
 end RealRooted.ParkingFunctions

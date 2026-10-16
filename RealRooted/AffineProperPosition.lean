@@ -1,4 +1,6 @@
-import RealRooted.AffineFamily
+module
+
+public import RealRooted.AffineFamily
 
 /-!
 # Interlacing for affine polynomials
@@ -8,9 +10,9 @@ polynomials.  These facts are shared by the Veronese and threshold-matrix
 developments, so they live below both application layers.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

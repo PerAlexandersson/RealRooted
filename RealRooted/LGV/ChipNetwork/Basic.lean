@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import LGV.Quiver.LGV
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+module
+
+public import LGV.Quiver.LGV
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 
 /-!
 # Finite lower-bidiagonal chip networks
@@ -14,11 +16,11 @@ This file supplies the finite ranked quiver used for a word of lower-bidiagonal
 chips. Matrix-entry and path-sum identification are deliberately deferred.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted
 namespace LGV
 namespace ChipNetwork
-
-noncomputable section
 
 /-- A vertex records a chip stage and a matrix level. -/
 abbrev Vertex (S N : ℕ) := Fin (S + 1) × Fin (N + 1)
@@ -203,8 +205,6 @@ theorem rankedNetwork_pathWeight_nonneg
   (rankedNetwork diagonal subdiagonal source sink).pathWeight_nonneg
     (rankedNetwork_edgeWeight_nonneg diagonal subdiagonal source sink
       hdiagonal hsubdiagonal) p
-
-end
 
 end ChipNetwork
 end LGV

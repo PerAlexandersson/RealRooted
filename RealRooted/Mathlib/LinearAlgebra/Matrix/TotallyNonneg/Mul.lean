@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity is closed under products
@@ -19,6 +22,8 @@ This lives in its own file rather than in
 is a `module` while `...Determinant.CauchyBinet` is not, and a `module` cannot
 import a non-`module`.  When upstreaming, both belong together.
 -/
+
+public section
 
 namespace Matrix
 

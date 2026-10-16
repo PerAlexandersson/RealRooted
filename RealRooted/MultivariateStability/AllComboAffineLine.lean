@@ -1,6 +1,8 @@
-import RealRooted.AllCombo
-import RealRooted.AffineLineRestriction
-import RealRooted.MultivariateStability.AllCombo
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineLineRestriction
+public import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Affine-line restrictions of weakly stable spans
@@ -9,9 +11,9 @@ This module transports zero-aware multivariate real stability and its
 all-real-combinations condition to split univariate affine-line restrictions.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- A positive-direction affine-line restriction of a weakly real-stable
 polynomial splits, including when the polynomial is zero. -/
@@ -35,7 +37,5 @@ theorem AllComboMvRealStableOrZero.allComboRealRooted_realAffineLineRestriction
   intro α β
   have hsplits := (hall α β).realAffineLineRestriction_splits a b hb
   simpa [realAffineLineRestriction] using hsplits
-
-end
 
 end RealRooted

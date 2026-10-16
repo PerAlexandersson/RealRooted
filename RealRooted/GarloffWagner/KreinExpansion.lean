@@ -1,4 +1,6 @@
-import RealRooted.GarloffWagner.KreinData
+module
+
+public import RealRooted.GarloffWagner.KreinData
 
 /-!
 # Garloff--Wagner Krein expansions
@@ -7,9 +9,9 @@ Positive root-deleted expansions and their Theorem 11 interlacing
 consequences.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

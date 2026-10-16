@@ -1,5 +1,7 @@
-import RealRooted.MultivariateStability.MixedCharacteristic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+module
+
+public import RealRooted.MultivariateStability.MixedCharacteristic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
 
 /-!
 # Expected characteristic polynomials of rank-one sums
@@ -11,10 +13,10 @@ characteristic polynomial `μ[A₁, …, Aₘ]` of the second moments `Aᵢ = E[
 and adapted to the repository definitions.
 -/
 
+@[expose] public noncomputable section
+
 open Matrix MvPolynomial Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.MixedCharacteristic
 

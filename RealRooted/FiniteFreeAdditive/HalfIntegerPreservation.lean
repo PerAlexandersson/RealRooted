@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
-import RealRooted.FiniteFreeAdditive.Preservation
-import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+module
+
+public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.FiniteFreeAdditive.Preservation
+public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 
 /-!
 # Half-integer additive convolution root preservation
@@ -11,11 +13,11 @@ and `1 / 2`.  The inputs are degree-bounded split real polynomials with
 nonnegative roots; the output is allowed to be zero.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem natDegree_evenLift_le (n : ℕ) (p : ℝ[X])
     (hp : p.natDegree ≤ n) :
@@ -79,7 +81,5 @@ theorem splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution
     (natDegree_oddLift_le n p hpdeg) (natDegree_oddLift_le n q hqdeg)
   rw [finiteFreeAdditiveConvolution_oddLift_eq_generalized] at hconv
   exact Polynomial.splits_and_forall_roots_nonneg_of_splits_X_mul_expand_two _ hconv
-
-end
 
 end RealRooted

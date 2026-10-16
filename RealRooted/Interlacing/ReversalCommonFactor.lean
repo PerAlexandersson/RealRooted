@@ -1,5 +1,7 @@
-import RealRooted.Interlacing.Euclid
-import RealRooted.Interlacing.Reversal
+module
+
+public import RealRooted.Interlacing.Euclid
+public import RealRooted.Interlacing.Reversal
 
 /-!
 # Reversal transport with rescaling and common factors
@@ -8,9 +10,9 @@ This module packages the standard transports needed when a normalized model is p
 rescaled, reversed, and given a fixed real-rooted factor.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

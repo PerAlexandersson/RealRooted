@@ -1,6 +1,8 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.WeightedSum
-import RealRooted.PosCombo
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.WeightedSum
+public import RealRooted.PosCombo
 
 /-!
 # Common interleavers: descending roots
@@ -9,9 +11,9 @@ The common-interleaver predicates, canonical descending root sequences, their
 indexwise characterisation of `StrictInterl`, and the consecutive-chain lemma.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

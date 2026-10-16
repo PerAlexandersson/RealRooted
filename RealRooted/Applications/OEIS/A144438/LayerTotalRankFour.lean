@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
-import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 
 /-!
 # Rank-four stability of the Deco layer total
@@ -12,11 +14,11 @@ The same rank-four data also makes the three affine discriminants in the
 rank-two companion/successor-slope interface explicitly nonpositive.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open _root_.MvPolynomial
-
-noncomputable section
 
 local notation "X" => _root_.MvPolynomial.X
 
@@ -454,7 +456,5 @@ theorem decoBottomTotalCompanionRayleighData_three_iff_finite_core :
   simp only [
     eval_affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_two_nonpos,
     implies_true, true_and]
-
-end
 
 end RealRooted.Applications.OEIS

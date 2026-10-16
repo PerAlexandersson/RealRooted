@@ -1,8 +1,10 @@
-import RealRooted.AllCombo
-import RealRooted.Derivative
-import RealRooted.MagnitudeDominated
-import RealRooted.ObreschkoffConverse
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.Derivative
+public import RealRooted.MagnitudeDominated
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.WagnerRightSum
 
 /-!
 # Upper-derivative and magnitude reducers
@@ -13,9 +15,9 @@ not assert a generic upper-derivative interlacer; the needed `StrictInterl d f`
 hypothesis is supplied by the concrete family.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

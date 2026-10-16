@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.MultiLagCancel
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Periodic top-coefficient rows
@@ -9,11 +11,11 @@ This file applies the multi-lag top-window degree law to the remaining OEIS recu
 from issue 1343.  The definitions are normalized copies of the downstream recurrences.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowParityDegree
-
-noncomputable section
 
 /-- The downstream A177040 recurrence. -/
 def A177040 : ℕ → ℝ[X]
@@ -451,7 +453,6 @@ private lemma A330798_ode_natDegree_le
     nlinarith
   simp_all
 
-
 private lemma A330798_const_coeff_pos : ∀ n : ℕ, 0 < (A330798 n).coeff 0
   | 0 => by norm_num [A330798]
   | n + 1 => by
@@ -721,7 +722,5 @@ end A330798Model
 /-- The A330798 row indexed by `n` has positive leading coefficient. -/
 theorem A330798_leadingCoeff_pos (n : ℕ) : 0 < (A330798 n).leadingCoeff :=
   (A330798_natDegree_eq_and_leadingCoeff_pos n).2
-
-end
 
 end RealRooted.Tactic.RowParityDegree

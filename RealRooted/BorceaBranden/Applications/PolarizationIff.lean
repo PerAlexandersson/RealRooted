@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Polarization reflects stability
@@ -11,6 +13,8 @@ records the real form of the Grace–Walsh–Szegő characterization of stable
 symmetric multiaffine polynomials: a real symmetric multiaffine polynomial is
 real stable exactly when its diagonal is a nonzero real-rooted polynomial.
 -/
+
+public section
 
 open Polynomial
 

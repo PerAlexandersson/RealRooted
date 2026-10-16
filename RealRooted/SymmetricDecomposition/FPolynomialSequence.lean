@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.Theorem26
+module
+
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Interlacing of `f`-transforms of half-growth sequences
@@ -13,9 +15,9 @@ This covers the alternating-runs polynomials A008970, A059427 and A186370, whose
 are peak polynomials.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma-transform root maps
@@ -7,10 +9,10 @@ The Hoster--Stump root map and the multiplicity transport from a gamma
 polynomial to its transform.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial Finset
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 
@@ -369,7 +371,5 @@ theorem rootMultiplicity_gammaTransform_of_mem_Ioo
     (gammaTransform d γ).rootMultiplicity x =
       γ.rootMultiplicity (gammaRootMap x) :=
   rootMultiplicity_gammaTransform_of_neg hγdeg hγ hx.2 (ne_of_gt hx.1)
-
-
 
 end RealRooted

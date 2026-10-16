@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rank-three stability of the Deco layer total
@@ -11,11 +13,11 @@ forms in the quotient numerator have discriminant `-359`, so they are strictly
 positive.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open _root_.MvPolynomial
-
-noncomputable section
 
 /-- The explicit ordinary-coordinate layer total at rank three. -/
 theorem decoBottomTotal_three :
@@ -126,7 +128,5 @@ theorem decoLayerTotal_three_mvRealStable :
     MvRealStable (decoLayerTotal 3) :=
   (decoLayerTotal_mvRealStable_iff_bottomTotal 3).mpr
     decoBottomTotal_three_mvRealStable
-
-end
 
 end RealRooted.Applications.OEIS

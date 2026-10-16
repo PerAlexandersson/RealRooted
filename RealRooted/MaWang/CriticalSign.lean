@@ -1,5 +1,7 @@
-import RealRooted.MaWang.Strong
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.MaWang.Strong
+public import RealRooted.SimpleRoots
 
 /-!
 # Strict interlacing from critical signs
@@ -16,9 +18,9 @@ real zeros*, Theorem 2.1; Ma–Wang, *q-Eulerian polynomials and polynomials wit
 zeros*, Theorem 2).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

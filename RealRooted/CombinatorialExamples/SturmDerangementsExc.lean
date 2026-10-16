@@ -1,11 +1,13 @@
-import RealRooted.Basic
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.AffineDerivative
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Tactic
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
+module
+
+public import RealRooted.Basic
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.AffineDerivative
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Tactic
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
 
 /-!
 # Derangement Excedance Polynomials
@@ -14,9 +16,9 @@ Sturm-sequence and real-rootedness facts for derangement excedance polynomials,
 using `X` for the polynomial variable.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -428,6 +430,7 @@ lemma recurrenceCoreSturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
   have hscalar :
       0 ≤ (C (n : ℝ) * sturmDerangementsExc (n - 1)).coeff m := by
     simpa [coeff_C_mul] using mul_nonneg (by simp) (sturmDerangementsExc_nonnegCoeffs (n - 1) m)
+  rw [coeff_add]
   exact add_nonneg hscalar (affine_sturmDerangementsExc_nonnegCoeffs hn m)
 
 lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :

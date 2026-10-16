@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.PathPowerIndependence
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.AffineFamily.Basic
+module
+
+public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.AffineFamily.Basic
 
 /-!
 # Interlacing cliques for powers of paths
@@ -15,9 +17,9 @@ the order-three row recurrence obtained from the third Graeffe transform; it
 is the recurrence used by OEIS A193636.
 -/
 
-open Finset Polynomial RealRooted.Graph
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial RealRooted.Graph
 
 namespace RealRooted
 

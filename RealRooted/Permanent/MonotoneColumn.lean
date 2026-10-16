@@ -1,6 +1,8 @@
-import RealRooted.Permanent.MonotoneColumn.Reduction
-import RealRooted.Permanent.Stability.Ferrers
-import RealRooted.Permanent.Stability.Fractional
+module
+
+public import RealRooted.Permanent.MonotoneColumn.Reduction
+public import RealRooted.Permanent.Stability.Ferrers
+public import RealRooted.Permanent.Stability.Fractional
 
 /-!
 # The monotone column permanent theorem
@@ -17,10 +19,10 @@ identities used by the Ferrers induction; they were independently checked
 with AXLE before integration.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- Every Ferrers permanent is real stable. The induction is Theorem 3.4 of
 Brändén--Haglund--Visontai--Wagner (2011); its two permutation-contribution
@@ -161,8 +163,6 @@ theorem diagonalPermanent_ne_zero_and_splits_of_increasingColumns {n : ℕ}
   refine ⟨diagonalPermanent_ne_zero A, ?_⟩
   exact diagonalPermanent_splits_of_columnPermanent_stable A
     (columnPermanent_mvRealStable_of_increasingColumns A hcols)
-
-end
 
 end Permanent
 end RealRooted

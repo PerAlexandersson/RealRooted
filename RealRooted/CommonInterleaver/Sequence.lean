@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.Finite
+module
+
+public import RealRooted.CommonInterleaver.Finite
 
 /-!
 # Common interleavers: sequence construction
@@ -7,9 +9,9 @@ Root-sequence common interleaver predicates, their finite-Helly construction,
 and pairwise right and left upgrade lemmas.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Tactic.Ring
 
 /-!
 # Fixed-factor deflation for three-term recurrences
@@ -7,6 +9,8 @@ A recurrence whose two multipliers contain successive powers of one fixed factor
 deflated to an ordinary three-term recurrence.  This module contains only the algebraic
 identity; tactic recognition and certificate construction live under `RealRooted.Tactic`.
 -/
+
+public section
 
 namespace RealRooted
 

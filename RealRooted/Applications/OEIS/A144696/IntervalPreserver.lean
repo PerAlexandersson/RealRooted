@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144696.Endpoints
-import RealRooted.BernsteinCone.Preserver
+module
+
+public import RealRooted.Applications.OEIS.A144696.Endpoints
+public import RealRooted.BernsteinCone.Preserver
 
 /-!
 # The A144696 interval-root preserver
@@ -9,9 +11,9 @@ Consequently, the A144696 basis transform sends every positive-leading
 polynomial whose roots lie in `[-1, 0]` to a PF polynomial.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

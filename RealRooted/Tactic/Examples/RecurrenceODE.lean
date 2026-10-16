@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Eigen-ODE examples
@@ -8,11 +10,11 @@ recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` of Laguerre type,
 from `real-rooted-oeis-proofs`.  `rr_find_ode` suggests the ODE statements used here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RecurrenceODEExamples
-
-noncomputable section
 
 /-- Generalized Laguerre rows (A105278). -/
 def A105278 : ℕ → ℝ[X]
@@ -57,7 +59,5 @@ theorem A331333_ode :
 theorem A331333_interlaces (n : ℕ) :
     RealRooted.Interlaces (A331333 n) (A331333 (n + 1)) := by
   rr_row_interlaces
-
-end
 
 end RealRooted.Tactic.RecurrenceODEExamples

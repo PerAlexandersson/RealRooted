@@ -1,8 +1,10 @@
-import RealRooted.Tactic.Row.DerivLag
+module
+
+public import RealRooted.Tactic.Row.DerivLag
+
+@[expose] public noncomputable section
 
 open Polynomial RealRooted
-
-noncomputable section
 
 namespace RealRooted.Tactic.DerivativeLagCommonRootExamples
 

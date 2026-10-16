@@ -1,8 +1,10 @@
-import RealRooted.RankTwoMatching.DisjointEquiv
+module
+
+public import RealRooted.RankTwoMatching.DisjointEquiv
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.Graph.RankTwoInternal
 

@@ -25,11 +25,9 @@ This family is unrelated to the positive-recurrence reverse-Hermite basis in
 `RealRooted.Transforms.ReverseHermite`.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

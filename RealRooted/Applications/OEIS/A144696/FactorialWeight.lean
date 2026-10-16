@@ -1,5 +1,7 @@
-import RealRooted.Analysis.FactorialTail
-import RealRooted.Applications.OEIS.A144696.Basic
+module
+
+public import RealRooted.Analysis.FactorialTail
+public import RealRooted.Applications.OEIS.A144696.Basic
 
 /-!
 # A factorial-weight estimate for A144696 Bernstein images
@@ -10,9 +12,9 @@ binomial-factorial ratio and the reciprocal-factorial tail estimate then make
 that comparison positive.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 

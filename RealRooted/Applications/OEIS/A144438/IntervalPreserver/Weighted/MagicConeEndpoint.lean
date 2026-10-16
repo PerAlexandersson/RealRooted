@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
 
 /-!
 # The endpoint relation of the weighted magic cone
@@ -12,9 +14,9 @@ open part of issue #1263 (verified for `n ≤ 7`).  The all-`n` results were fou
 (project eadb38f3).
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

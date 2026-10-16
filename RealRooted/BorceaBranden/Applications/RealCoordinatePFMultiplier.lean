@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+module
+
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 
 /-!
 # Real coordinate PF multipliers
@@ -7,9 +9,9 @@ This file supplies the real-coefficient companion to the complex coordinate
 multiplier used by the finite-symbol stability theorem.
 -/
 
-namespace RealRooted.BorceaBranden
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- Apply a real diagonal sequence to one exponent coordinate of a real
 multivariate polynomial. -/
@@ -98,7 +100,5 @@ theorem IsPFMultiplierSequence.mvRealStable_realCoordinateDiagonalOperator
       hzero | hstable
   · exact (realCoordinateDiagonalOperator_ne_zero hgamma0 q hp.ne_zero hzero).elim
   · exact hstable
-
-end
 
 end RealRooted.BorceaBranden

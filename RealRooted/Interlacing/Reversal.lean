@@ -1,7 +1,9 @@
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.Basic.Coefficients
-import RealRooted.DegreeDropReversal
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Interlacing of reversed rows
@@ -24,9 +26,9 @@ Both are stated as the link `P n = reflect (D₀ + n) (R n)` for a sequence `R` 
 recurrence, so that `R` can be an ordinary recursive definition.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

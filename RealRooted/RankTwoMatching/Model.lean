@@ -1,5 +1,9 @@
-import Mathlib.Data.Multiset.Fintype
-import RealRooted.PFPolynomial
+module
+
+public import Mathlib.Data.Multiset.Fintype
+public import RealRooted.PFPolynomial
+
+@[expose] public noncomputable section
 
 open Polynomial
 open scoped BigOperators
@@ -7,8 +11,6 @@ open scoped BigOperators
 namespace RealRooted
 
 namespace RankTwoMatchingModel
-
-noncomputable section
 
 /-- Bivariate polynomials represented as polynomials in the right variable
 whose coefficients are polynomials in the left variable. -/
@@ -443,8 +445,6 @@ theorem exists_nonneg_disjointSubsetWeight_eq_coeff_sum
   rw [hleft] at hdiag
   rw [hdiag]
   simpa [Multiset.card_coe, hscard] using hcoeff
-
-end
 
 end RankTwoMatchingModel
 

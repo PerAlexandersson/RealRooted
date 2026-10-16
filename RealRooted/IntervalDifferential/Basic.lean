@@ -18,11 +18,9 @@ The operator here is the finite algebraic part of Appendix A.3 of
 uses `Polynomial.aeval` in the real linear endomorphism algebra.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Finset Polynomial
-
-noncomputable section
 
 namespace RealRooted.IntervalDifferential
 

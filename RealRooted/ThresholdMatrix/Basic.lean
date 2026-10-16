@@ -1,7 +1,9 @@
-import RealRooted.RowThreshold
-import RealRooted.AffineProperPosition
-import RealRooted.PFPolynomial
-import RealRooted.StaircaseSum
+module
+
+public import RealRooted.RowThreshold
+public import RealRooted.AffineProperPosition
+public import RealRooted.PFPolynomial
+public import RealRooted.StaircaseSum
 
 /-!
 # Generic threshold matrices
@@ -11,9 +13,9 @@ small polynomial lemmas shared by the Haglund--Zhang and Gustafsson--Solus
 applications.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-import RealRooted.Applications.OEIS.A144438.LayerTotalStability
-import RealRooted.Hyperbolicity
-import RealRooted.MultivariateStability.RayleighConverse
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStability
+public import RealRooted.Hyperbolicity
+public import RealRooted.MultivariateStability.RayleighConverse
 
 /-!
 # Stability reduction for the Deco layer total
@@ -14,9 +16,9 @@ polynomials have stable ordinary homogenizations.
 This is an exact reduction, not a proof that every total is stable.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The homogeneous finite-coordinate layer total is real stable exactly when
 its multiaffine ordinary-coordinate dehomogenization is real stable. -/
@@ -66,7 +68,5 @@ theorem decoBottomTotal_two_mvRealStable :
     MvRealStable (decoBottomTotal 2) :=
   (decoLayerTotal_mvRealStable_iff_bottomTotal 2).mp
     decoLayerTotal_two_mvRealStable
-
-end
 
 end RealRooted.Applications.OEIS

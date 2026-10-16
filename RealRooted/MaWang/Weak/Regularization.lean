@@ -1,8 +1,10 @@
-import RealRooted.MaWang.Strong
+module
+
+public import RealRooted.MaWang.Strong
+
+public noncomputable section
 
 open Polynomial Filter
-
-noncomputable section
 
 namespace RealRooted.MaWangInternal
 

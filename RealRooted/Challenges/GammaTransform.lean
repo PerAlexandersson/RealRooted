@@ -1,6 +1,8 @@
-import RealRooted.GammaPencil.Theorem
-import RealRooted.GammaTransform.Preservation
-import RealRooted.GammaTransform.ProperPosition
+module
+
+public import RealRooted.GammaPencil.Theorem
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.ProperPosition
 
 /-!
 # Gamma transform challenge entry point
@@ -140,6 +142,8 @@ Hoster–Stump interlacing equivalence, and the all-rank gamma-pencil theorem.
 The gamma transform lives in `RealRooted.GammaTransform`; the pencil lives in
 `RealRooted.GammaPencil`.
 -/
+
+public section
 
 open Polynomial
 

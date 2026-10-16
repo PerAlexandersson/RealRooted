@@ -1,6 +1,8 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Applications.OEIS.PeriodicTopRows
-import RealRooted.Applications.OEIS.HigherOrderDegreeModels
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Applications.OEIS.PeriodicTopRows
+public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 
 /-!
 # Remaining row-degree regressions for issue 1628
@@ -9,11 +11,11 @@ These definitions are local copies of the downstream OEIS recurrences.  They exe
 cancellation and scalar invariant-cone routes on every row left open by the issue.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowDegreeRest
-
-noncomputable section
 
 /-- The downstream A263789 recurrence used to regress the remaining degree route. -/
 def A263789 : ℕ → ℝ[X]
@@ -23,7 +25,6 @@ def A263789 : ℕ → ℝ[X]
       (((1 / (((-1 / 2) + ((-1 / 2) * (n : ℝ))))) * (2 + (n : ℝ)))) * X ^ 2)) * (A263789 (n +
       1)).derivative + (C (((1 / (((-1 / 2) + ((-1 / 2) * (n : ℝ))))) * ((7 / 2) + ((-1 / 2) *
       ((3 + (n : ℝ))) ^ (2)) + ((3 / 2) * (n : ℝ))))) * X) * A263789 (n + 1)
-
 
 /-- The downstream A357613 recurrence used to regress the remaining degree route. -/
 def A357613 : ℕ → ℝ[X]
@@ -41,7 +42,6 @@ def A357613 : ℕ → ℝ[X]
       ^ (2))))) * ((-2 / 3) + ((-1 / 2) * (n : ℝ)) + ((1 / 6) * ((2 + (n : ℝ))) ^ (2))))) * X ^
       2)) * A357613 n
 
-
 /-- The downstream A110200 recurrence used to regress the remaining degree route. -/
 def A110200 : ℕ → ℝ[X]
   | 0 => 1
@@ -49,7 +49,6 @@ def A110200 : ℕ → ℝ[X]
   | 2 => 21 + 70 * X + 49 * X ^ 2
   | n + 3 => ((7 + (7 * X))) * A110200 (n + 2) + ((-14 + (-28 * X) + (-14 * (X) ^ (2)))) *
       A110200 (n + 1) + ((8 + (8 * (X) ^ (3)) + (24 * X) + (24 * (X) ^ (2)))) * A110200 n
-
 
 /-- The downstream A259454 recurrence used to regress the remaining degree route. -/
 def A259454 : ℕ → ℝ[X]
@@ -70,7 +69,6 @@ def A259454 : ℕ → ℝ[X]
       (-1 * (n : ℝ))))) * (4 + (n
       : ℝ)))) * X ^ 3)) * A259454 n
 
-
 /-- The downstream A133109 recurrence used to regress the remaining degree route. -/
 def A133109 : ℕ → ℝ[X]
   | 0 => 1
@@ -79,7 +77,6 @@ def A133109 : ℕ → ℝ[X]
   | n + 3 => (C (((-1 / 2) * (1 / ((-1 + ((-1 / 2) * (n : ℝ))))))) * X) * A133109 (n + 2) + (C
       (((-1 / 2) * (1 / ((-1 + ((-1 / 2) * (n : ℝ))))))) * X ^ 2) * A133109 (n + 1) + (C (((1 /
       ((-1 + ((-1 / 2) * (n : ℝ))))) * ((-3 / 2) + ((-1 / 2) * (n : ℝ))))) * X ^ 3) * A133109 n
-
 
 /-- The downstream A134434 recurrence used to regress the remaining degree route. -/
 def A134434 : ℕ → ℝ[X]
@@ -97,7 +94,6 @@ def A134434 : ℕ → ℝ[X]
       (n : ℝ))) ^ (2) + ((-25 / 4) * (n : ℝ)))) * X)) * A134434 (n + 1) + ((C (((-21 / 4) + ((-3
       / 2) * (n : ℝ)) + ((1 / 4) * ((5 + (n : ℝ))) ^ (2)))) + C (((-13 / 2) + ((-9 / 4) * (n :
       ℝ)) + ((1 / 4) * ((5 + (n : ℝ))) ^ (2)))) * X)) * A134434 n
-
 
 /-- The downstream A339000 recurrence used to regress the remaining degree route. -/
 def A339000 : ℕ → ℝ[X]
@@ -117,7 +113,6 @@ def A339000 : ℕ → ℝ[X]
       ((-3 + (-1 * (n : ℝ))))) * (3 + (3 * (n : ℝ))))) * X ^ 2 + C (((1 / ((-3 + (-1 * (n :
       ℝ))))) * (-1 + (-1 * (n : ℝ))))) * X ^ 3)) * A339000 n
 
-
 /-- The downstream A366159 recurrence used to regress the remaining degree route. -/
 def A366159 : ℕ → ℝ[X]
   | 0 => 1
@@ -129,7 +124,6 @@ def A366159 : ℕ → ℝ[X]
       (-9 + (-4 * (n : ℝ))))) * X)) * A366159 (n + 1) + ((C (((1 / ((-2 + (-1 * (n : ℝ))))) * (3
       + (n : ℝ)))) * X + C ((3 * (1 / ((-2 + (-1 * (n : ℝ))))) * (3 + (n : ℝ)))) * X ^ 2)) *
       A366159 n
-
 
 /-- The exact degree law for A263789, certified by the row-degree tactic. -/
 theorem A263789_natDegree (n : ℕ) : (A263789 n).natDegree = n / 2 := by
@@ -215,7 +209,5 @@ def A367873 : ℕ → ℝ[X]
 /-- The exact A367873 degree law, certified by the default row-degree tactic. -/
 theorem A367873_natDegree (n : ℕ) : (A367873 n).natDegree = (n + 1) / 2 := by
   rr_row_natDegree
-
-end
 
 end RealRooted.Tactic.RowDegreeRest

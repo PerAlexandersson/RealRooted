@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.Resolvable
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BrandenLeite.Resolvable
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Chow transforms of resolving rows
@@ -11,11 +13,11 @@ identifies the resulting staircase recurrence. Interlacing and total
 nonnegativity enter only in later modules.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {R : Type*} [CommRing R]
 
@@ -129,7 +131,5 @@ theorem resolvedChowDerangement_succ
   rw [chowDerangement_succ_eq_resolvedChowWeightSum resolution n]
 
 end Resolution
-
-end
 
 end RealRooted.BrandenVecchi

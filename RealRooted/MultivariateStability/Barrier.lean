@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.LiebSokalPointwise
-import RealRooted.AffineLineRestriction
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.Multiaffine.TwoCoordinateSlice
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.AffineLineRestriction
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Barrier functions of real stable polynomials
@@ -16,11 +18,11 @@ and `Φ < 1` gives positivity of `q - q'` in one variable.  Two-coordinate restr
 stable or zero.  The cross-coordinate monotonicity/convexity (MSS's bivariate lemma) is not here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The MSS above-roots condition, using componentwise nonnegative shifts. -/
 def AboveRoots {m : ℕ} (p : MvPolynomial (Fin m) ℝ) (z : Fin m → ℝ) : Prop :=
@@ -33,7 +35,6 @@ def barrier {m : ℕ} (i : Fin m) (p : MvPolynomial (Fin m) ℝ) (z : Fin m → 
 /-- The univariate logarithmic derivative used by the barrier function. -/
 def univariateBarrier (q : Polynomial ℝ) (t : ℝ) : ℝ :=
   q.derivative.eval t / q.eval t
-
 
 private theorem multiset_map_sum_le {s : Multiset ℝ} {f g : ℝ → ℝ}
     (h : ∀ x ∈ s, f x ≤ g x) : (s.map f).sum ≤ (s.map g).sum := by
@@ -199,7 +200,6 @@ theorem MvRealStableOrZero.coordinateRestriction_zero_or_splits
     rw [hassign]
     rw [← hsource]
     exact hstable u hu
-
 
 private theorem realAffineLineRestriction_derivative_coordinate
     {m : ℕ} (z : Fin m → ℝ) (i : Fin m) (p : MvPolynomial (Fin m) ℝ) :
@@ -462,7 +462,5 @@ theorem MvRealStableOrZero.twoCoordinateRestriction
         · simp [hki, hkj]
     rw [hsource, ← hslice]
     exact hzero
-
-end
 
 end RealRooted

@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.BorceaBranden.FiniteSymbolClassification
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 /-!
 # Checked pieces of the complex finite-symbol classification
@@ -9,9 +11,9 @@ to the classification interface without creating a cycle between the challenge
 entry point and its univariate compatibility modules.
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- Stable-symbol sufficiency for a multiaffine source box. This is the checked
 local form of Borcea--Brändén Lemma 2.2. -/
@@ -40,9 +42,6 @@ theorem preservesComplexStabilityOnDegreeBox_one_of_rankOne_or_symbol
   · exact hrank.preservesComplexStabilityOnDegreeBox
   · exact
       preservesComplexStabilityOnDegreeBox_one_of_algebraicSymbol_stable hSymbol
-
-end
-
 
 end RealRooted.BorceaBranden
 

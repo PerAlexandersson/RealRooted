@@ -1,7 +1,9 @@
-import RealRooted.GammaTransform.Basic
-import RealRooted.Hadamard.Grace
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.NarayanaTransformation.Coefficients
+module
+
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Continuous Narayana interpolation
@@ -22,9 +24,9 @@ The real-rootedness proof writes `P_n` as a positive multiple of the Schur–Sze
 the Jensen polynomial of `1 / (θ + 1)_k` with its reversal.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.TernaryRuns
-import RealRooted.CombinatorialExamples.SuperEulerian
-import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+module
+
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
+public import RealRooted.CombinatorialExamples.SuperEulerian
+public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 
 /-!
 # Fixed definitions for the Eulerian compendium
@@ -13,10 +15,10 @@ The derangement and even-top enumerators below are actual permutation sums;
 their root theorems are proved in `DerangementReciprocal` and `EvenTopRoots`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.EulerianCompendium
 

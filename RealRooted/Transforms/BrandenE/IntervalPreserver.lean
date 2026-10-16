@@ -1,5 +1,7 @@
-import RealRooted.BernsteinCone.Preserver
-import RealRooted.Transforms.BrandenE.ProperPosition
+module
+
+public import RealRooted.BernsteinCone.Preserver
+public import RealRooted.Transforms.BrandenE.ProperPosition
 
 /-!
 # Interval-root preservation for Brändén's E transform
@@ -9,9 +11,9 @@ images of the ordered-Bell coefficient transform. Their checked interlacing
 row therefore instantiates the generic Bernstein-image preserver criterion.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

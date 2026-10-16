@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Canonical odd/even extraction
@@ -8,9 +10,9 @@ subsequences. These identities connect an arbitrary real polynomial to the
 explicit odd/even inputs used by the classical Hurwitz matrix.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

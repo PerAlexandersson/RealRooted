@@ -1,10 +1,14 @@
-import RealRooted.Tactic.OEIS.ProductParity
+module
+
+public import RealRooted.Tactic.OEIS.ProductParity
 
 /-!
 # OEIS parity-endpoint router regression examples
 
 Parity-sensitive product certificate tests and their endpoint projections.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

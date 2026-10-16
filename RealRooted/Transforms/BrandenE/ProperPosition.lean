@@ -1,8 +1,10 @@
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.DegreeDropDivXPrec
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.PFPolynomial
-import RealRooted.Transforms.BrandenE.BasisImage
+module
+
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.DegreeDropDivXPrec
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.PFPolynomial
+public import RealRooted.Transforms.BrandenE.BasisImage
 
 /-!
 # Interlacing for Brändén binomial-basis images
@@ -12,9 +14,9 @@ an adjacent interlacing chain.  The proof combines the Euler differential
 step with explicit low-degree seeds and the general consecutive-chain API.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

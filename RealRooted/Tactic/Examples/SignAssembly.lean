@@ -1,4 +1,6 @@
-import RealRooted.Tactic.SignAssembly
+module
+
+public import RealRooted.Tactic.SignAssembly
 
 /-!
 # Sign assembly tactic examples
@@ -7,22 +9,22 @@ The examples keep the sign and endpoint certificates explicit and exercise
 all supported conclusions of the degree-gap-two frontend.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace Tactic
 
-private def linearSource : ℝ[X] := X - C (-1)
+def linearSource : ℝ[X] := X - C (-1)
 
-private def cubicTarget : ℝ[X] :=
+def cubicTarget : ℝ[X] :=
   (X - C (-3)) * (X - C (-2)) * (X - C 0)
 
-private lemma linearSource_natDegree : linearSource.natDegree = 1 := by
+lemma linearSource_natDegree : linearSource.natDegree = 1 := by
   rw [linearSource, natDegree_X_sub_C]
 
-private lemma cubicTarget_natDegree : cubicTarget.natDegree = 3 := by
+lemma cubicTarget_natDegree : cubicTarget.natDegree = 3 := by
   rw [cubicTarget,
     natDegree_mul
       (mul_ne_zero (X_sub_C_ne_zero (-3 : ℝ))
@@ -32,18 +34,18 @@ private lemma cubicTarget_natDegree : cubicTarget.natDegree = 3 := by
       (X_sub_C_ne_zero (-2 : ℝ)),
     natDegree_X_sub_C, natDegree_X_sub_C, natDegree_X_sub_C]
 
-private def quadraticSource : ℝ[X] :=
+def quadraticSource : ℝ[X] :=
   (X - C (-1)) * (X - C 1)
 
-private def quarticTarget : ℝ[X] :=
+def quarticTarget : ℝ[X] :=
   ((X - C (-3)) * (X - C (-2))) * ((X - C 0) * (X - C 2))
 
-private lemma quadraticSource_natDegree : quadraticSource.natDegree = 2 := by
+lemma quadraticSource_natDegree : quadraticSource.natDegree = 2 := by
   rw [quadraticSource,
     natDegree_mul (X_sub_C_ne_zero (-1 : ℝ)) (X_sub_C_ne_zero (1 : ℝ)),
     natDegree_X_sub_C, natDegree_X_sub_C]
 
-private lemma quarticTarget_natDegree : quarticTarget.natDegree = 4 := by
+lemma quarticTarget_natDegree : quarticTarget.natDegree = 4 := by
   rw [quarticTarget,
     natDegree_mul
       (mul_ne_zero (X_sub_C_ne_zero (-3 : ℝ)) (X_sub_C_ne_zero (-2 : ℝ)))
@@ -53,7 +55,7 @@ private lemma quarticTarget_natDegree : quarticTarget.natDegree = 4 := by
     natDegree_X_sub_C, natDegree_X_sub_C, natDegree_X_sub_C,
     natDegree_X_sub_C]
 
-private lemma quadraticSource_roots :
+lemma quadraticSource_roots :
     quadraticSource.roots = {(-1 : ℝ), 1} := by
   rw [quadraticSource,
     roots_mul

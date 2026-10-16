@@ -1,4 +1,6 @@
-import RealRooted.WangYeh.PF
+module
+
+public import RealRooted.WangYeh.PF
 
 /-!
 # Wang--Yeh bilinear triangular recurrences
@@ -9,9 +11,9 @@ polynomials, with separate equations at coefficient zero and at successors so
 that no truncated-subtraction boundary convention is hidden.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

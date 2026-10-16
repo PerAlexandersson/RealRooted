@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import Mathlib.Data.List.Infix
-import RealRooted.LGV.ChipNetwork.Matrix
+module
+
+public import Mathlib.Data.List.Infix
+public import RealRooted.LGV.ChipNetwork.Matrix
 
 /-!
 # Finite words of lower-bidiagonal chips
@@ -14,11 +16,11 @@ This file packages stage weights as a literal finite word and identifies every
 interval transfer product with the matrix product of the corresponding slice.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted
 namespace LGV
 namespace ChipNetwork
-
-noncomputable section
 
 /-- A lower-bidiagonal chip on levels `0, ..., N`. -/
 structure Chip (R : Type*) (N : ℕ) where
@@ -303,8 +305,6 @@ theorem wordMatrix_repeatedStrip_slice {R : Type*} [Semiring R]
       wordMatrix G * (wordMatrix K * wordMatrix G) ^ (r - c) := by
   rw [repeatedStrip_slice G K hr, wordMatrix_append,
     wordMatrix_repeatWord, wordMatrix_append, mul_pow_mul]
-
-end
 
 end ChipNetwork
 end LGV

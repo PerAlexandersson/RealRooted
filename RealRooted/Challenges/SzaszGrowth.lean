@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Transcendental.UniformSzasz
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+module
+
+public import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 
 /-!
 # Multivariate Szász growth bound challenge entry point

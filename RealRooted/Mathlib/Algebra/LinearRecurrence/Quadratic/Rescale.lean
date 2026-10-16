@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import Mathlib.Tactic.FieldSimp
+
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.Tactic.FieldSimp
 
 /-!
 # Rescaling quadratic recurrences
@@ -13,6 +16,8 @@ This algebraic normalization rescales a quadratic recurrence by a nonzero
 field element. Choosing square roots or proving real analytic bounds belongs
 to separate clients.
 -/
+
+@[expose] public section
 
 namespace LinearRecurrence
 

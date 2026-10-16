@@ -1,25 +1,27 @@
-import RealRooted.Tactic.Examples.OEIS.A304334
-import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
-import RealRooted.Tactic.Examples.OEIS.CompatCommon
-import RealRooted.Tactic.Examples.OEIS.DerivativeLag
-import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
-import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
-import RealRooted.Tactic.Examples.OEIS.Dispatcher
-import RealRooted.Tactic.Examples.OEIS.Favard
-import RealRooted.Tactic.Examples.OEIS.Foundation
-import RealRooted.Tactic.Examples.OEIS.GammaVeronese
-import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
-import RealRooted.Tactic.Examples.OEIS.LinearPower
-import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
-import RealRooted.Tactic.Examples.OEIS.NegativeLag
-import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
-import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
-import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
-import RealRooted.Tactic.Examples.OEIS.PositiveLag
-import RealRooted.Tactic.Examples.OEIS.ProductLift
-import RealRooted.Tactic.Examples.OEIS.ProductRouters
-import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
-import RealRooted.Tactic.Examples.OEIS.SecondDerivative
+module
+
+public import RealRooted.Tactic.Examples.OEIS.A304334
+public import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
+public import RealRooted.Tactic.Examples.OEIS.CompatCommon
+public import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+public import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
+public import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
+public import RealRooted.Tactic.Examples.OEIS.Dispatcher
+public import RealRooted.Tactic.Examples.OEIS.Favard
+public import RealRooted.Tactic.Examples.OEIS.Foundation
+public import RealRooted.Tactic.Examples.OEIS.GammaVeronese
+public import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
+public import RealRooted.Tactic.Examples.OEIS.LinearPower
+public import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
+public import RealRooted.Tactic.Examples.OEIS.NegativeLag
+public import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
+public import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
+public import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
+public import RealRooted.Tactic.Examples.OEIS.PositiveLag
+public import RealRooted.Tactic.Examples.OEIS.ProductLift
+public import RealRooted.Tactic.Examples.OEIS.ProductRouters
+public import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
+public import RealRooted.Tactic.Examples.OEIS.SecondDerivative
 
 /-!
 # OEIS router regression facade

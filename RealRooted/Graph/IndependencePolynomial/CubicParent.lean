@@ -1,5 +1,7 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Graph.IndependencePolynomial.ClawFree
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
 # A cubic parent with real-rooted coefficients
@@ -27,13 +29,13 @@ doi:10.2140/involve.2018.11.501, arXiv:1701.07814v1.  It applies to
 `-1 ≤ b / c² ≤ 1/3`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.CubicParent
 
-private def intervalGraph : SimpleGraph ℕ :=
+def intervalGraph : SimpleGraph ℕ :=
   SimpleGraph.fromRel fun i j =>
     i < j ∧ (j ≤ i + 3 ∨ (j = i + 4 ∧ i % 2 = 1))
 
@@ -41,7 +43,7 @@ private instance intervalGraphDecidableAdj :
     DecidableRel intervalGraph.Adj :=
   Classical.decRel _
 
-private def prefixPolynomial (N : ℕ) : ℝ[X] := by
+def prefixPolynomial (N : ℕ) : ℝ[X] := by
   classical
   exact Graph.indepPolyOn intervalGraph (Finset.range N)
 
@@ -201,7 +203,7 @@ private lemma prefixPolynomial_one : prefixPolynomial 1 = 1 + X := by
   rw [h, prefixPolynomial_zero]
   ring
 
-private def unsignedPolynomial (m : ℕ) : ℝ[X] :=
+def unsignedPolynomial (m : ℕ) : ℝ[X] :=
   prefixPolynomial (2 * m - 3)
 
 private lemma unsignedPolynomial_add_three (m : ℕ) :

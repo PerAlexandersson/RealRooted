@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.LinearRecurrence
-import Mathlib.Algebra.Polynomial.Module.AEval
-import Mathlib.RingTheory.Polynomial.Basic
+
+module
+
+public import Mathlib.Algebra.LinearRecurrence
+public import Mathlib.Algebra.Polynomial.Module.AEval
+public import Mathlib.RingTheory.Polynomial.Basic
 
 /-!
 # Annihilators for linear recurrences
@@ -16,6 +19,8 @@ Construction and uniqueness of recurrence solutions remain in Mathlib's
 `LinearRecurrence` API; factor decomposition is a separate client of the
 existing polynomial-action kernel theorems.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

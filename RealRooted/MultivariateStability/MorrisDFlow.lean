@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.MorrisBFlow
-import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
-import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
-import RealRooted.MultivariateStability.CoeffLimit
-import Mathlib.Analysis.Normed.Module.TransferInstance
+module
+
+public import RealRooted.MultivariateStability.MorrisBFlow
+public import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
+public import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
+public import RealRooted.MultivariateStability.CoeffLimit
+public import Mathlib.Analysis.Normed.Module.TransferInstance
 
 /-!
 # The Liu--Zhang Morris flow
@@ -14,11 +16,11 @@ finite-dimensional space of symmetric polynomials of total degree at most
 elementary bases and applies the Lie--Trotter product formula.
 -/
 
+@[expose] public noncomputable section
+
 open MvPolynomial
 
 namespace RealRooted.LiuZhang
-
-noncomputable section
 
 private theorem exp_apply_of_eigenvector
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -274,7 +276,7 @@ def morrisDOnDegree (q N : ℕ) :
   rw [morrisDOnDegree, LinearMap.sub_apply, morrisD_apply]
   rfl
 
-private def realCoordinateDiagonalLinearMap {sigma : Type*}
+def realCoordinateDiagonalLinearMap {sigma : Type*}
     (gamma : ℕ → ℝ) (i : sigma) :
     MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ where
   toFun := BorceaBranden.realCoordinateDiagonalOperator gamma i
@@ -286,7 +288,7 @@ private def realCoordinateDiagonalLinearMap {sigma : Type*}
     simp [BorceaBranden.coeff_realCoordinateDiagonalOperator]
     ring
 
-private def coordinateDiagonalList {sigma : Type*}
+def coordinateDiagonalList {sigma : Type*}
     (gamma : ℕ → ℝ) (l : List sigma) :
     MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ :=
   l.foldr (fun i T => realCoordinateDiagonalLinearMap gamma i * T) 1
@@ -475,7 +477,7 @@ private theorem continuous_conj_apply_of_apply_eq_smul (q N : ℕ)
     (T ((morrisDegreeEquiv q N).symm (morrisDegreeEquiv q N x))) = _
   rw [(morrisDegreeEquiv q N).symm_apply_apply, hx, map_smul]
 
-private def morrisMsymmDegree (q N : ℕ)
+def morrisMsymmDegree (q N : ℕ)
     (i : MorrisDegreeIndex q N) : MorrisDegreeSpace q N :=
   ⟨morrisMsymm q N i, morrisMsymm_mem q N i⟩
 
@@ -738,7 +740,7 @@ def morrisBFlowContinuous (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisBFlowCoords q N t)
 
-private def morrisElementaryDegree (q N : ℕ)
+def morrisElementaryDegree (q N : ℕ)
     (i : MorrisDegreeIndex q N) : MorrisDegreeSpace q N :=
   ⟨morrisElementaryPoly q N i,
     morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
@@ -900,7 +902,7 @@ theorem tendsto_morrisTrotterApprox (q N : ℕ) (t : ℝ)
   simpa [RealRooted.LiuZhang.morrisTrotterApprox,
     RealRooted.LiuZhang.morrisTrotterStep, sub_eq_add_neg] using h
 
-private def morrisCoeff (q N : ℕ) (m : Fin q →₀ ℕ) :
+def morrisCoeff (q N : ℕ) (m : Fin q →₀ ℕ) :
     MorrisDegreeCoords q N →ₗ[ℝ] ℝ where
   toFun x := (morrisDegreePolynomial q N x).coeff m
   map_add' x y := by
@@ -908,7 +910,7 @@ private def morrisCoeff (q N : ℕ) (m : Fin q →₀ ℕ) :
   map_smul' r x := by
     simp [morrisDegreePolynomial]
 
-private def morrisCoeffContinuous (q N : ℕ) (m : Fin q →₀ ℕ) :
+def morrisCoeffContinuous (q N : ℕ) (m : Fin q →₀ ℕ) :
     MorrisDegreeCoords q N →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap (morrisCoeff q N m)
 
@@ -964,7 +966,5 @@ theorem MvRealStable.morrisDExp_of_symmetric {q N : ℕ} {t : ℝ}
         ⟨P, IsSymmetric.mem_morrisDegreeSubmodule hsym hdeg⟩)) := by
   apply MvRealStable.morrisDExp ht
   simpa using hP
-
-end
 
 end RealRooted.LiuZhang

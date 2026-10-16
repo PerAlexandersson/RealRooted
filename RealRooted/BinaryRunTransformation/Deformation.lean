@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.CriticalValue
-import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+module
+
+public import RealRooted.BinaryRunTransformation.CriticalValue
+public import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 
 /-!
 # The binary-run pointing deformation
@@ -9,12 +11,12 @@ appearing in the stable pencil.  It also derives the critical-value sign from
 the abstract signed-parity theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped ContDiff
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Scale every degree-`m` input coefficient by `λ^m`. -/
 def scalePolynomial (t : ℝ) (p : ℝ[X]) : ℝ[X] :=
@@ -340,7 +342,5 @@ theorem binaryRunDeformation_critical_sign_of_stablePencil
   rw [shiftedBinaryRunPointing_eq_remainder_add,
     eval_add, eval_mul, eval_X, hcritical, mul_zero, add_zero]
   exact hsign
-
-end
 
 end RealRooted

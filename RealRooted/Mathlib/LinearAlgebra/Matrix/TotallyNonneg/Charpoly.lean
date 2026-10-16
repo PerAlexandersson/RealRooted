@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Basic.Real.Basic
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Real eigenvalues of totally nonnegative matrices are nonnegative
@@ -22,6 +25,8 @@ This is the elementary half of Gantmacher-Krein: realness of the whole
 spectrum needs the compound-matrix and Perron-Frobenius machinery, but the
 sign of the real eigenvalues only needs the minor expansion.
 -/
+
+public section
 
 open Polynomial Finset
 

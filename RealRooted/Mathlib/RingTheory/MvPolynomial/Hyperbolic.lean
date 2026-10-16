@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
+
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Hyperbolic multivariate polynomials
@@ -13,11 +16,11 @@ This file contains definitions intended for upstreaming to
 `Mathlib.RingTheory.MvPolynomial.Hyperbolic`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace MvPolynomial
-
-noncomputable section
 
 /-- Restrict a multivariate polynomial to the affine line `x + t e`. -/
 def affineLineRestriction {σ R : Type*} [CommSemiring R]
@@ -194,7 +197,5 @@ def HyperbolicAt {σ R : Type*} [CommSemiring R]
     (P : MvPolynomial σ R) (e : σ → R) : Prop :=
   MvPolynomial.eval e P ≠ 0 ∧
     ∀ x : σ → R, (affineLineRestriction x e P).Splits
-
-end
 
 end MvPolynomial

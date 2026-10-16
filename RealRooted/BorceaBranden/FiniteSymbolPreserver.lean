@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolProduct
-import RealRooted.BorceaBranden.FiniteSymbolReconstruction
-import RealRooted.BoundarySpecializationRight
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.BorceaBranden.FiniteSymbolProduct
+public import RealRooted.BorceaBranden.FiniteSymbolReconstruction
+public import RealRooted.BoundarySpecializationRight
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # Finite algebraic symbols preserve stability
@@ -14,9 +16,9 @@ specialize the remaining non-target variables at zero, and reconstruct the
 operator value.
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- A linear operator on multiaffine polynomials preserves upper-half-plane
 stability up to zero when its finite algebraic symbol is stable. Target
@@ -83,7 +85,5 @@ theorem finiteSymbol_preserves_stability
       specializeRight_zero_paperDifferentialSum]
   rw [hReconstruct] at hQSpecialized
   exact hQSpecialized
-
-end
 
 end RealRooted.BorceaBranden

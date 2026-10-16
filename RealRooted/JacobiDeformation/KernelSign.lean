@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Kernel
-import RealRooted.SpectralProduct
+module
+
+public import RealRooted.JacobiDeformation.Kernel
+public import RealRooted.SpectralProduct
 
 /-!
 # Newton-factor signs for Hermitian matrices
@@ -15,9 +17,9 @@ at `A` to a matrix that is strictly positive at every entry where `A` is.
 The Newton degree may exceed the matrix dimension.
 -/
 
-open Finset Matrix Polynomial
+public noncomputable section
 
-noncomputable section
+open Finset Matrix Polynomial
 
 namespace RealRooted.JacobiDeformation
 

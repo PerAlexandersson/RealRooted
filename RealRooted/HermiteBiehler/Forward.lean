@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.HermiteBiehler.LogDerivative
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
+module
+
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.HermiteBiehler.LogDerivative
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
 
 /-!
 # Forward Hermite--Biehler theorem
@@ -11,9 +13,9 @@ from interlacing and sign-normalized leading coefficients. It also exposes
 the multiset sign and partial-fraction helpers used by the converse theory.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

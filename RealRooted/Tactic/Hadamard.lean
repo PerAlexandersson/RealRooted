@@ -1,11 +1,15 @@
-import RealRooted.Hadamard
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Hadamard
+public import RealRooted.Tactic.Finish
 
 /-!
 # Hadamard and Schur--Szego tactic frontends
 
 Thin wrappers around the checked finite Schur--Szego and Hadamard PF backends.
 -/
+
+public section
 
 open Polynomial
 

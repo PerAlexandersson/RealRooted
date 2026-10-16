@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # Block quadratic-form estimates for the A144438 residue energy
@@ -10,9 +12,9 @@ weighted finite Cauchy--Schwarz inequality.  This is the algebraic content of
 the formula for `bᵀ C⁻¹ b`.
 -/
 
-open BigOperators
+public noncomputable section
 
-noncomputable section
+open BigOperators
 
 namespace RealRooted.Applications.OEIS
 

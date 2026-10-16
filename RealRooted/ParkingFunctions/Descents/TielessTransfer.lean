@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.SmirnovInterlacing
-import RealRooted.ParkingFunctions.Descents.ContentOrbit
-import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
+module
+
+public import RealRooted.BrandenVecchi.SmirnovInterlacing
+public import RealRooted.ParkingFunctions.Descents.ContentOrbit
+public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral tieless parking-to-Smirnov transfer
@@ -12,11 +14,11 @@ descents pointwise; fixed-content symmetry supplies exactly the aggregate
 invariance needed for the integral factor.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- The Smirnov words that satisfy the extra-alphabet parking condition. -/
 def parkingSmirnovWords (n : ℕ) : Finset (Fin n → Fin (n + 1)) := by
@@ -321,7 +323,5 @@ theorem map_tielessParkingDescentPolynomial_splits (n : ℕ) :
     exact BrandenVecchi.smirnovDescentPolynomial_splits (n + 1) n
   exact (Polynomial.splits_mul_iff_right (C_ne_zero.mpr (by positivity))
     (Polynomial.Splits.C (n + 1 : ℝ))).mp hscaled
-
-end
 
 end RealRooted.ParkingFunctions

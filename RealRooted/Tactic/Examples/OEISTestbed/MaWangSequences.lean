@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Factors
+module
+
+public import RealRooted.Tactic.MaWang.Factors
 
 /-!
 # OEIS test-bed Ma--Wang sequence examples
 
 Regression examples for Ma--Wang sequence frontends in the OEIS test bed.
 -/
+
+public section
 
 open Polynomial
 

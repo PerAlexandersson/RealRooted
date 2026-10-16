@@ -1,5 +1,7 @@
-import RealRooted.SameDegreeMultiplicityLowerCount
-import RealRooted.RootSumBounds
+module
+
+public import RealRooted.SameDegreeMultiplicityLowerCount
+public import RealRooted.RootSumBounds
 
 /-!
 # Issue #42: degree-increasing per-root multiplicity lower counts
@@ -48,12 +50,12 @@ The route here instead **factors out the escaping root(s)** rigorously:
   core.
 -/
 
+public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-
 **Far-cluster coefficient bound.**  For a product of linear factors
@@ -382,7 +384,5 @@ theorem degreeIncreasing_local_lower_count {f g : ℝ[X]}
       exact hTlt)
   have htrans := card_filter_roots_near_eq_taylor a ρ ptil
   simp_all
-
-end
 
 end RealRooted

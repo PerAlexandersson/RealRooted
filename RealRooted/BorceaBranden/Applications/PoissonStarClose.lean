@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-import RealRooted.Interlacing.OuterDifference
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+public import RealRooted.Interlacing.OuterDifference
 
 /-!
 # Closing consequences for the univariate Poisson product
@@ -10,11 +12,11 @@ Euler pencil and uses the forced orientation of the resulting degree-growth-one
 pair.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 /-- A nonzero fixed factor which preserves splitting on every affine input
 satisfies the root-sign admissibility condition. -/
@@ -228,7 +230,5 @@ theorem preservesRealRootedOrZero_iff_isAdmissible
     PreservesRealRootedOrZero (starCLinearMap c f) ↔ IsAdmissible c f := by
   rw [preservesRealRootedOrZero_iff_preservesAffineRealRooted hf0,
     preservesAffineRealRooted_iff_isAdmissible hf0]
-
-end
 
 end RealRooted.Poisson

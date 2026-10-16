@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.LGV.Toeplitz
-import RealRooted.LGV.TotallyNonnegative
+module
+
+public import RealRooted.LGV.Toeplitz
+public import RealRooted.LGV.TotallyNonnegative
 
 /-!
 # Ordered LGV certificates and Pólya-frequency sequences
@@ -16,9 +18,9 @@ remain in LeanLGV; here we only apply their determinant nonnegativity theorem
 to every strict Toeplitz minor.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Ordered LGV cancellation certificates for every strict Toeplitz minor,
 together with nonnegative path weights, make the Toeplitz matrix totally
@@ -84,7 +86,5 @@ theorem isPolyaFreqSeq_of_minorOrderedCertificates
     IsPolyaFreqSeq a :=
   toeplitz_isTotallyNonneg_of_minorOrderedCertificates
     network hmatrix certificate hweight
-
-end
 
 end RealRooted

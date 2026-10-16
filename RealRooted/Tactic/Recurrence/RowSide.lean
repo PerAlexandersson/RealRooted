@@ -1,10 +1,19 @@
-import RealRooted.DerivativeRecurrence.Degree
-import RealRooted.ThreeTermRecurrence.Degree
-import RealRooted.DerivativeRecurrence.SecondOrderODE
-import RealRooted.DerivativeRecurrence.General
-import RealRooted.Tactic.Recurrence.ODE
-import RealRooted.Tactic.Recurrence.Shape
-import RealRooted.Tactic.Recurrence.LinRecProbe
+module
+
+public import RealRooted.DerivativeRecurrence.Degree
+public import RealRooted.ThreeTermRecurrence.Degree
+public import RealRooted.DerivativeRecurrence.SecondOrderODE
+public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.Tactic.Recurrence.ODE
+public import RealRooted.Tactic.Recurrence.Shape
+public import RealRooted.Tactic.Recurrence.LinRecProbe
+public meta import RealRooted.DerivativeRecurrence.Degree
+public meta import RealRooted.ThreeTermRecurrence.Degree
+public meta import RealRooted.DerivativeRecurrence.SecondOrderODE
+public meta import RealRooted.DerivativeRecurrence.General
+public meta import RealRooted.Tactic.Recurrence.ODE
+public meta import RealRooted.Tactic.Recurrence.Shape
+public meta import RealRooted.Tactic.Recurrence.LinRecProbe
 
 /-!
 # Row tactics: side goals, degree theorems and certificates
@@ -14,6 +23,8 @@ driver that applies the degree theorems of the recurrence shapes (`rowDriver`), 
 printing of certificates and hinted calls for the `?` variants (`suggestCert`).  The degree
 tactics themselves are in `RealRooted.Tactic.Recurrence.Degree`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

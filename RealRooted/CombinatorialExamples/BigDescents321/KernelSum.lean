@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Kernel
-import Mathlib.Tactic.FieldSimp
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Kernel
+public import Mathlib.Tactic.FieldSimp
 
 /-!
 # The kernel moments as weighted finite sums
@@ -17,9 +19,9 @@ which for the moments comes from the differential equation of `√D` in `y`, and
 from an explicit telescoping certificate in `k`.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted.BigDescents321
 

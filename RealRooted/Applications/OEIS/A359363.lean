@@ -1,7 +1,11 @@
-import RealRooted.Applications.OEIS.A056939
-import RealRooted.Interlacing.Euclid
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Applications.OEIS.A056939
+public import RealRooted.Interlacing.Euclid
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+
+@[expose] public noncomputable section
 
 open RealRooted Polynomial
 
@@ -10,8 +14,6 @@ open RealRooted Polynomial
 
 Apart from its initial row, this family is `X` times the preceding A056939 row.
 -/
-
-noncomputable section
 
 namespace RealRooted.Applications.OEIS.A359363
 

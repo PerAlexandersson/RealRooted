@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+module
+
+public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
 
 /-!
 # The published forward direction of Liu Theorem 2.1 is false
@@ -8,6 +10,8 @@ The published statement of Liu Theorem 2.1 omits the common-root branch.  Its
 forward direction fails already for `X` and `-(X ^ 2)`.  The corrected
 theorem is `compatible_iff_rootCountBranchesWithCommon`.
 -/
+
+public section
 
 open Polynomial Filter
 

@@ -1,8 +1,12 @@
-import RealRooted.Tactic.J1Gap3Reciprocal
+module
+
+public import RealRooted.Tactic.J1Gap3Reciprocal
 
 /-!
 # Smoke examples for the J1 gap-3 reciprocal frontend
 -/
+
+public section
 
 open Polynomial
 

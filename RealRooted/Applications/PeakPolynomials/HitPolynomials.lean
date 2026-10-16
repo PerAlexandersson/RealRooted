@@ -1,5 +1,7 @@
-import RealRooted.Applications.PeakPolynomials.PeakInduction
-import RealRooted.SymmetricDecomposition.FPolynomial
+module
+
+public import RealRooted.Applications.PeakPolynomials.PeakInduction
+public import RealRooted.SymmetricDecomposition.FPolynomial
 
 /-!
 # A conditional induction step for restricted hit polynomials
@@ -30,9 +32,9 @@ real-rootedness.
   same hypotheses.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.PeakPolynomials
 

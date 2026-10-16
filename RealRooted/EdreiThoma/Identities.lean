@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.PFSeries
-import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+module
+
+public import RealRooted.EdreiThoma.PFSeries
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
 
 /-!
 # Edrei's determinant identities and monotone Padé limits
@@ -12,9 +14,9 @@ linear factors.
 The strict positivity hypothesis on every contiguous Toeplitz minor is Edrei's property (P).
 -/
 
-open Polynomial Filter Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted.EdreiThoma
 
@@ -141,7 +143,6 @@ private lemma det_rot {R : Type*} [CommRing R] {k : ℕ}
     (M.submatrix (finRotate (k + 1)) id).det = (-1) ^ k * M.det := by
   rw [det_permute, sign_finRotate]; simp
 
-
 private lemma val_finRotate_ne {k : ℕ} {i : Fin (k + 1)} (h : i ≠ Fin.last k) :
     (finRotate (k + 1) i : ℕ) = i + 1 := coe_finRotate_of_ne_last h
 
@@ -211,7 +212,6 @@ private lemma bord_dodgson_5 (a : ℕ → ℝ) (m n : ℕ) :
   linear_combination (-(-1 : ℝ[X]) ^ n) * h - ((bord a m (n + 1)).det * C (A a n (m + 1)) -
       (C (A a (n + 1) m) * (bord a (m + 1) n).det -
       X * C (A a (n + 1) (m + 1)) * (bord a m n).det)) * hs
-
 
 end Helpers
 
@@ -655,6 +655,4 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
       exact ((hT n (k + 1)).comp (tendsto_add_atTop_nat 1)).add ((hβ n).mul (hT n k))
 
 end RealRooted.EdreiThoma
-
-
 

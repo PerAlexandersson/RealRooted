@@ -7,4 +7,10 @@ with the finite-family and Chudnovsky--Seymour packaging in
 `RealRooted.CommonInterleaver.PairwiseUpgrade` and its low-degree
 specializations in `RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree`.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
+
+module
+
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
+
+public section
+

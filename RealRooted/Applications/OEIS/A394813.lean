@@ -1,8 +1,10 @@
-import RealRooted.EulerBidiagonal.GeneralRows
-import RealRooted.GarloffWagner
-import RealRooted.Interlacing.Reversal
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
+public import RealRooted.GarloffWagner
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The row polynomials of OEIS A394813
@@ -12,9 +14,9 @@ factorial scaling and reversal.  The general Euler theorem gives strict
 interlacing, factorial division preserves it, and reversal transports it back.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A394813
 

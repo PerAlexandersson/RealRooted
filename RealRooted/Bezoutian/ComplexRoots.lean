@@ -1,6 +1,8 @@
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import RealRooted.Bezoutian.RootEvaluation
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+module
+
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 
 /-!
 # Complex-root exclusion from a positive Bezout matrix
@@ -9,9 +11,9 @@ Complexified Bezout evaluation excludes nonreal roots and recovers splitness
 of both real polynomials from positive definiteness.
 -/
 
-open Polynomial Matrix
+public noncomputable section
 
-noncomputable section
+open Polynomial Matrix
 
 namespace RealRooted
 

@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.ExactDescent
-import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ExactDescent
+public import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
 
 /-!
 # Exact descent-set Pollak transfer
@@ -8,12 +10,12 @@ This module transfers arbitrary descent-set weights, and hence exact
 descent-set cardinalities, from words to ordinary parking functions.
 -/
 
+public noncomputable section
+
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- A sum of a descent-set weight over a fixed content fiber is invariant
 under relabeling the content. -/
@@ -273,7 +275,5 @@ theorem card_parkingFunctions_zero_eq_card_words :
       (Finset.univ : Finset (Fin 0 → Fin 1)).card := by
   rw [parkingFunctions_zero_eq_singleton]
   simp
-
-end
 
 end RealRooted.ParkingFunctions

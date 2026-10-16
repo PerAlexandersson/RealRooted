@@ -26,11 +26,9 @@ The beta moments in this file represent integration against
 kept separate from the analytic identification with that integral.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

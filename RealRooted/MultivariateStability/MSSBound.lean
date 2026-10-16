@@ -1,14 +1,16 @@
-import RealRooted.MultivariateStability.BarrierStart
-import RealRooted.MultivariateStability.BarrierUpdate
-import RealRooted.MultivariateStability.Diagonal
-import RealRooted.MultivariateStability.MixedCharacteristic
+module
+
+public import RealRooted.MultivariateStability.BarrierStart
+public import RealRooted.MultivariateStability.BarrierUpdate
+public import RealRooted.MultivariateStability.Diagonal
+public import RealRooted.MultivariateStability.MixedCharacteristic
+
+@[expose] public noncomputable section
 
 open Matrix MvPolynomial
 open scoped BigOperators MatrixOrder
 
 namespace RealRooted.MixedCharacteristic
-
-noncomputable section
 
 /-!
 # The Marcus–Spielman–Srivastava root bound
@@ -29,7 +31,7 @@ instead of the Helton–Vinnikov theorem).  So all roots of `μ` are at most `t 
 `t = ε + √ε` gives `(1 + √ε)²`.
 -/
 
-private def stageIndices {m : ℕ} (k : ℕ) (hk : k ≤ m) : List (Fin m) :=
+def stageIndices {m : ℕ} (k : ℕ) (hk : k ≤ m) : List (Fin m) :=
   List.ofFn (fun i : Fin k => ⟨i.1, Nat.lt_of_lt_of_le i.isLt hk⟩)
 
 private theorem stageIndices_succ {m k : ℕ} (hk : k + 1 ≤ m) :
@@ -39,7 +41,7 @@ private theorem stageIndices_succ {m k : ℕ} (hk : k + 1 ≤ m) :
   rw [stageIndices, List.ofFn_succ_last]
   congr 1
 
-private def stage {m : ℕ} (P : MvPolynomial (Fin m) ℝ) :
+def stage {m : ℕ} (P : MvPolynomial (Fin m) ℝ) :
     (k : ℕ) → k ≤ m → MvPolynomial (Fin m) ℝ
   | k, hk => oneSubPderivList (stageIndices k hk) P
 
@@ -65,7 +67,7 @@ private theorem stage_zero {m : ℕ} (P : MvPolynomial (Fin m) ℝ) (hk : 0 ≤ 
   change oneSubPderivList [] P = P
   simp only [oneSubPderivList_nil]
 
-private def point {m : ℕ} (t δ : ℝ) (k : ℕ) (_hk : k ≤ m) : Fin m → ℝ :=
+def point {m : ℕ} (t δ : ℝ) (k : ℕ) (_hk : k ≤ m) : Fin m → ℝ :=
   fun i => t + if i.1 < k then δ else 0
 
 private theorem point_zero {m : ℕ} (t δ : ℝ) (hm : 0 ≤ m) :
@@ -217,7 +219,7 @@ theorem determinant_diagonal_roots_le {n m : ℕ}
     intro hzero
     apply hPne
     exact MvPolynomial.map_injective Complex.ofRealHom
-      Complex.ofRealHom.injective hzero
+      Complex.ofRealHom.injective (by simpa [complexifyMv] using hzero)
   have hstable : MvRealStable (realDetPencil 0 As) := by
     apply mvRealStable_realDetPencil 0 As
     · simp [Matrix.IsHermitian]
@@ -494,7 +496,5 @@ theorem mixedCharacteristic_roots_le_one_add_sqrt_sq {n m : ℕ}
     _ = (1 + Real.sqrt ε) ^ 2 := by
       dsimp [t, δ]
       exact optimized_endpoint hε
-
-end
 
 end RealRooted.MixedCharacteristic

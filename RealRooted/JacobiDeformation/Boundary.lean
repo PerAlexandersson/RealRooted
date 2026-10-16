@@ -1,6 +1,8 @@
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.Linear
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.Linear
+public import RealRooted.SimpleRoots
 
 /-!
 # Low-degree boundaries for the Jacobi deformation
@@ -10,9 +12,9 @@ module closes those cases with the same splitness, simplicity, and strict
 negative-root conclusions used in the positive-rank assembly.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.JacobiDeformation
 

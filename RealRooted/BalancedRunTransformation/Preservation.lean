@@ -1,6 +1,8 @@
-import RealRooted.BalancedRunTransformation
-import RealRooted.BinaryRunTransformation.PointingPencil
-import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+module
+
+public import RealRooted.BalancedRunTransformation
+public import RealRooted.BinaryRunTransformation.PointingPencil
+public import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
 
 /-!
 # Stability preservation for the balanced run transformation
@@ -9,9 +11,9 @@ This file connects the balanced kernel to the normalized diagonal contraction.
 The contraction backend is shared with the binary-run pointing construction.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

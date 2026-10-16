@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.LGV.ChipNetwork.Paths
-import RealRooted.LGV.PathMatrix
+module
+
+public import RealRooted.LGV.ChipNetwork.Paths
+public import RealRooted.LGV.PathMatrix
 
 /-!
 # Matrix entries of finite lower-bidiagonal chip networks
@@ -14,13 +16,13 @@ This file identifies a single chip stage with its lower-bidiagonal transfer
 matrix.  Longer word and interval identities are built from this local bridge.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted
 namespace LGV
 namespace ChipNetwork
 
 open Quiver
-
-noncomputable section
 
 /-- The transfer matrix of one stage in a finite chip strip. -/
 def chipMatrix {R : Type*} [Zero R]
@@ -282,8 +284,6 @@ theorem pathWeightSum_eq_zero_of_stage_lt {R : Type*} [Semiring R]
     ⟨fun p ↦ not_nonempty_path_of_stage_lt
       (v := (a, i)) (w := (b, j)) (by simpa [stage] using hstage) ⟨p⟩⟩
   simp
-
-end
 
 end ChipNetwork
 end LGV

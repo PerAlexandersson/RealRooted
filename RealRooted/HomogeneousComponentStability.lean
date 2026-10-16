@@ -1,6 +1,8 @@
-import RealRooted.AffineLineRestriction
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+module
+
+public import RealRooted.AffineLineRestriction
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Stability of the top homogeneous component
@@ -9,12 +11,12 @@ This file constructs a stable damping homotopy from a multivariate polynomial
 toward its top homogeneous component. Root continuity will supply the endpoint.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Dampen the degree-`k` homogeneous component by `δ ^ (totalDegree - k)`.
 At positive `δ`, this is a nonzero scalar multiple of a positive coordinate
@@ -269,7 +271,5 @@ theorem MvRealStable.homogeneousComponent_totalDegree
       Polynomial.C_1, one_mul]] at hscaled
   exact ⟨hscaled, Polynomial.leadingCoeff_ne_zero.mp
     (hqlLead.trans_ne hLne)⟩
-
-end
 
 end RealRooted

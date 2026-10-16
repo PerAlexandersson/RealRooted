@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.Colex
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+module
+
+public import Mathlib.Combinatorics.Colex
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Compound matrices
@@ -30,6 +33,8 @@ remains for the full spectral statement is triangularization itself
 (every matrix over an algebraically closed field is conjugate to an upper
 triangular one), which Mathlib currently lacks at the matrix level.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

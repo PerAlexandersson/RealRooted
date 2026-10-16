@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.PolyaSchur
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.MultiplierSequence.PolyaSchur.Limit
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
 /-!
 # Laguerre's theorem on multiplier sequences
@@ -22,9 +24,9 @@ case follows by factoring `φ = c ∏ (X - ρ_i)`, with every `ρ_i ≤ 0`, and 
 closure of multiplier sequences under products.
 -/
 
-open Polynomial Filter Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted
 

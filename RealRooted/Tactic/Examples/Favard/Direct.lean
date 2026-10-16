@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Favard
+module
+
+public import RealRooted.Tactic.Favard
 
 /-!
 # `rr_favard` examples: direct
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Favard
 Abstract smoke tests for the direct Favard frontends, and the denominator and coefficient helpers of
 `RealRooted.Tactic.Favard.Basic`.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.HermiteBiehler.ConverseLowDegree
-import RealRooted.HermiteBiehler.Forward
-import Mathlib.Basic.Complex.Basic
+module
+
+public import RealRooted.HermiteBiehler.ConverseLowDegree
+public import RealRooted.HermiteBiehler.Forward
+public import Mathlib.Basic.Complex.Basic
 
 /-!
 # Root geometry for the converse Hermite--Biehler theorem
@@ -10,9 +12,9 @@ real component polynomials to split. The proof compares conjugated root-product
 norms and excludes nonreal roots of either component.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

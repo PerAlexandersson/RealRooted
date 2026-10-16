@@ -1,10 +1,12 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import Mathlib.Analysis.Polynomial.Basic
-import Mathlib.Algebra.Polynomial.Degree.Operations
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import Mathlib.Analysis.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Algebra.Polynomial.Eval.Degree
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Wagner-X list interlacing
@@ -12,9 +14,9 @@ import Mathlib.Topology.Algebra.Polynomial
 Legacy root-list interlacing algebra used by Wagner's polynomial transports.
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

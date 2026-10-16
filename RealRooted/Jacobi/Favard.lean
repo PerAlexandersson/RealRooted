@@ -15,11 +15,9 @@ import Mathlib.Tactic.Linarith
 # Favard recurrence for shifted Jacobi polynomials
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

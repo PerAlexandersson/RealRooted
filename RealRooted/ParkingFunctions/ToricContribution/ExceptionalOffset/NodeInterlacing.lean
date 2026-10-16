@@ -1,7 +1,9 @@
-import RealRooted.CommonInterleaverSeq
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
-import RealRooted.SuccDegreeLeftEndpoint
+module
+
+public import RealRooted.CommonInterleaverSeq
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
+public import RealRooted.SuccDegreeLeftEndpoint
 
 /-!
 # Exceptional-offset Jacobi-node interlacing
@@ -10,10 +12,10 @@ This layer combines the exceptional endpoint with the finite offsets, proves
 the Jacobi-node sign evaluations, and packages the all-offset consequences.
 -/
 
+public noncomputable section
+
 open Polynomial
 open MeasureTheory Set
-
-noncomputable section
 
 namespace RealRooted
 namespace ParkingFunctions

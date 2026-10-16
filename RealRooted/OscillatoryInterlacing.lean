@@ -1,5 +1,7 @@
-import RealRooted.CauchyInterlacing.Polynomial
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+module
+
+public import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Strict principal-section interlacing for oscillatory matrices
@@ -9,6 +11,8 @@ oscillatory-matrix core. It combines that matrix theory with polynomial Cauchy
 interlacing to obtain strict interlacing, simple roots, root-disjointness, and
 positive spectrum for consecutive principal sections.
 -/
+
+public section
 
 namespace Matrix
 

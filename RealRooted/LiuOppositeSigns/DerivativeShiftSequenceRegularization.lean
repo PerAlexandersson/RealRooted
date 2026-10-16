@@ -1,7 +1,9 @@
-import RealRooted.Compatibility.Basic
-import RealRooted.Derivative.ShiftSequence
-import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
-import RealRooted.Mathlib.Data.Multiset.Rel
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.Derivative.ShiftSequence
+public import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
+public import RealRooted.Mathlib.Data.Multiset.Rel
 
 /-!
 # Finite derivative-shift regularization for Liu's opposite-sign theorem
@@ -17,12 +19,12 @@ quantitative bound is retained for the later limiting argument rather than
 merely producing one unrelated pair with simple roots.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 namespace LiuOppositeSigns
 
 open Polynomial
-
-noncomputable section
 
 /-- Choose bounded common shifts whose final roots stay uniformly close to the originals. -/
 theorem NoCommonRoots.exists_applyTDerivList_roots_rel
@@ -115,8 +117,6 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
       · simpa using hno_final
       · simpa using hf_final
       · simpa using hg_final
-
-end
 
 end LiuOppositeSigns
 end RealRooted

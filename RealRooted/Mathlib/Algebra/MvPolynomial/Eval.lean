@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Variables
+
+module
+
+public import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # Evaluation away from the variables of a multivariate polynomial
@@ -11,6 +14,8 @@ import Mathlib.Algebra.MvPolynomial.Variables
 This file supplies a small compatibility lemma saying that evaluation is
 unchanged when an assignment is modified outside the polynomial's variables.
 -/
+
+public section
 
 namespace MvPolynomial
 

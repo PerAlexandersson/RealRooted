@@ -15,9 +15,7 @@ This file formalizes the algebraic certificate and seed calculations from
 Appendices C.2--C.3 of `alternating_eulerian_shorter_proof.md`.
 -/
 
-@[expose] public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.IntervalDifferential
 

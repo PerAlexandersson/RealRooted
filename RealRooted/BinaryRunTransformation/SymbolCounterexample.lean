@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.Interlacing
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+module
+
+public import RealRooted.BinaryRunTransformation.Interlacing
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # The rank-three binary-run transform does not preserve stability
@@ -14,10 +16,10 @@ So preservation of stable pencils lies strictly between real-rootedness preserva
 stability preservation.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

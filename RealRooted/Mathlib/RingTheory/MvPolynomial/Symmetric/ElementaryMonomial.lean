@@ -3,12 +3,15 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Degrees
-import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
-import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
+
+module
+
+public import Mathlib.Algebra.MvPolynomial.Degrees
+public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 
 /-!
 # Elementary products in the monomial symmetric basis
@@ -18,14 +21,14 @@ product of elementary symmetric polynomials in the monomial symmetric
 basis.
 -/
 
+@[expose] public noncomputable section
+
 namespace MvPolynomial
 
 open Finset Multiset Sym
 open AddMonoidAlgebra
 
 variable {R σ : Type*} [CommSemiring R] [Fintype σ]
-
-noncomputable section
 
 /-- The multiplicity of each elementary factor degree, indexed from zero. -/
 def esymmColumnMultiplicity (q : ℕ) (s : Multiset ℕ) :
@@ -467,7 +470,5 @@ theorem msymm_eq_esymmPart_conjugate_add_lower
   rw [Submodule.mem_span_image_finset_iff_exists_fun'] at hmem
   obtain ⟨b, hb⟩ := hmem
   exact ⟨b, by rw [hb]; abel⟩
-
-end
 
 end MvPolynomial

@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix
+module
+
+public import RealRooted.ClassicalHurwitzMatrix
 
 /-!
 # The algebraic Routh reduction
@@ -7,11 +9,11 @@ This file formalizes the polynomial and row-operation algebra in one step of
 Holtz's Routh reduction. It deliberately makes no root-location claim.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The scalar eliminated in one Routh step. In the project's odd/even
 argument order, this is `even(0) / odd(0)`. -/
@@ -84,8 +86,6 @@ theorem oddEvenPolynomial_eq_X_mul_routhReducedPolynomial_add
     _ = X * routhReducedPolynomial c odd even +
         C c * odd.comp (X ^ 2) := by
       rfl
-
-end
 
 end RealRooted
 

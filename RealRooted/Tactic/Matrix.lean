@@ -1,8 +1,10 @@
-import RealRooted.MatrixInterlacing
-import RealRooted.RowThreshold
-import RealRooted.StaircaseSum
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.MatrixInterlacing
+public import RealRooted.RowThreshold
+public import RealRooted.StaircaseSum
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Matrix-transfer tactic
@@ -47,6 +49,8 @@ Family J warning:
 do not attack raw scalar long-lag recurrences.  First derive a refined vector
 or production-matrix recurrence.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

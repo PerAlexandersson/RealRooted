@@ -1,4 +1,6 @@
-import Mathlib.Tactic
+module
+
+public import Mathlib.Tactic
 
 /-!
 # Touchard Polynomials
@@ -8,9 +10,9 @@ recurrence. Real-rootedness and Sturm-sequence applications live in
 `RealRooted.CombinatorialExamples.Touchard`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

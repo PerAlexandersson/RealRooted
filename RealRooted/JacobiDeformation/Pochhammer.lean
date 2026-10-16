@@ -1,5 +1,7 @@
-import Mathlib.RingTheory.Polynomial.Pochhammer
-import Mathlib.Tactic
+module
+
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import Mathlib.Tactic
 
 /-!
 # Real rising and falling factorials
@@ -22,9 +24,9 @@ terminating hypergeometric summations:
   16.4.3.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

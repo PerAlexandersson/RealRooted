@@ -3,21 +3,24 @@
 
 Root-slot intersections for succ-degree crossings.
 -/
-import RealRooted.AffineFamily
-import RealRooted.CommonInterleaver.AffineBoundary
-import RealRooted.CommonInterleaver.IntervalLemmas
-import RealRooted.AllCombo
-import RealRooted.CommonInterleaverSeq
-import RealRooted.DegreeDropDivXPrec
-import RealRooted.DegreeDropReversal
-import RealRooted.PFPolynomial
-import RealRooted.PosCombo
-import RealRooted.RootContinuity
-import RealRooted.SuccDegreeLeftEndpoint
+
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.CommonInterleaver.AffineBoundary
+public import RealRooted.CommonInterleaver.IntervalLemmas
+public import RealRooted.AllCombo
+public import RealRooted.CommonInterleaverSeq
+public import RealRooted.DegreeDropDivXPrec
+public import RealRooted.DegreeDropReversal
+public import RealRooted.PFPolynomial
+public import RealRooted.PosCombo
+public import RealRooted.RootContinuity
+public import RealRooted.SuccDegreeLeftEndpoint
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

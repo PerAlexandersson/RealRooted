@@ -1,4 +1,6 @@
-import RealRooted.EulerOperator.Darboux.NegativeRoots
+module
+
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -28,9 +30,9 @@ real-rootedness below is derived from the factorization, not assumed.
   here), this is their Theorem 1.1, which settles the Lin–Ma–Ma–Zhou conjecture.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace MultisetEulerianNarayana

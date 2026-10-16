@@ -19,11 +19,9 @@ positive-half-line integral after substituting `-x` into the sign-reversed
 polynomials.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial Set MeasureTheory
-
-noncomputable section
 
 namespace RealRooted
 

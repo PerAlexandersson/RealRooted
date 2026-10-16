@@ -3,17 +3,20 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.DegreeDropReversal
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
+
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+public import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
 
 /-!
 # Newton identities and the Hermite--Sylvester criterion
@@ -25,9 +28,9 @@ defines the Hermite matrix of a real polynomial and proves the
 Hermite--Sylvester real-rootedness criterion.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.RootVieta
 

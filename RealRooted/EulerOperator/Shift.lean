@@ -18,11 +18,9 @@ commutation, iteration, and injectivity API independently of the real-rooted
 polynomial theory.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

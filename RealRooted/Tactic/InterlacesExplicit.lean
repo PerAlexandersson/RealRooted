@@ -1,6 +1,10 @@
-import RealRooted.Interlacing.Euclid
-import RealRooted.Tactic.Recurrence.ODE
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.Interlacing.Euclid
+public meta import RealRooted.Interlacing.Euclid
+public import RealRooted.Tactic.Recurrence.ODE
+public meta import RealRooted.Tactic.Recurrence.ODE
+public import RealRooted.QuadraticRoot
 
 /-!
 # `rr_interlaces_explicit`
@@ -16,6 +20,8 @@ the alternating signs of a Jacobi continued fraction.
 Both sides are first rewritten into monomial normal form, so the degree and
 coefficient side goals reduce to numerals.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

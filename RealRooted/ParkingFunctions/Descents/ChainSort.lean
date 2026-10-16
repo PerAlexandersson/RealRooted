@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Data.List.OfFn
-import Mathlib.Data.List.GetD
-import Mathlib.Data.List.Sort
+module
+
+public import RealRooted.Mathlib.Data.List.OfFn
+public import Mathlib.Data.List.GetD
+public import Mathlib.Data.List.Sort
 
 /-!
 # Sorting values along disjoint chains
@@ -10,9 +12,9 @@ positions while preserving the word's full value multiset.  It is the
 reordering ingredient in the Diaconis--Hicks parking-word argument.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- Sort the values of a word read along a list of positions, leaving every
 other position unchanged. -/
@@ -331,7 +333,5 @@ theorem map_sortChains_univ {n : ℕ} : ∀ (L : List (List (Fin n)))
     change Multiset.map (sortChains L (sortAlong l f)) Finset.univ.val = _
     rw [ih (fun l' hl' => hL l' (List.mem_cons_of_mem _ hl')) (sortAlong l f),
       map_sortAlong_univ l (hL l List.mem_cons_self) f]
-
-end
 
 end RealRooted.ParkingFunctions

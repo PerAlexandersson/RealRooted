@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+module
+
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # The Poisson star algebra
@@ -12,11 +14,11 @@ spectator block `τ`.  We prove the monomial law, coefficientwise nonnegativity,
 (`star_assoc`).
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 open RealRooted
 
@@ -677,7 +679,5 @@ theorem star_assoc {R : Type*} [CommRing R]
     (f g h : MvPolynomial Bool R) :
     star (star f g) h = star f (star g h) :=
   (action_comp f g h).symm
-
-end
 
 end RealRooted.Poisson

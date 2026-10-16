@@ -1,5 +1,7 @@
-import RealRooted.Wronskian
-import RealRooted.Wronskian.PolarLaguerre
+module
+
+public import RealRooted.Wronskian
+public import RealRooted.Wronskian.PolarLaguerre
 
 /-!
 # Wronskian criterion for interlacing
@@ -156,3 +158,5 @@ live in `RealRooted.Wronskian.Converse`, the forward theorem in
 `RealRooted.Bezoutian.WronskianConverse`, and Laguerre's inequality in
 `RealRooted.Wronskian.Algebra`.
 -/
+
+public section

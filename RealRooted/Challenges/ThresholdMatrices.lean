@@ -1,5 +1,7 @@
-import RealRooted.GustafssonSolus
-import RealRooted.ThresholdMatrix.HaglundZhang
+module
+
+public import RealRooted.GustafssonSolus
+public import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # Threshold matrices challenge entry point
@@ -87,3 +89,5 @@ See [@HaglundZhang2019; @GustafssonSolus2020; @MaMaYeh2017x]. See also the
 This module is a catalog facade.  The proofs live in
 `RealRooted.ThresholdMatrix` and `RealRooted.GustafssonSolus`.
 -/
+
+public section

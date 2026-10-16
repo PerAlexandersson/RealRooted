@@ -1,7 +1,9 @@
-import Mathlib.Tactic
+module
 
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Tactic
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Finite-free additive convolution
@@ -15,11 +17,11 @@ real-rootedness preservation and the half-integer rectangular descent belong
 to later layers.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The factorial weight in the degree-`d` symmetric finite-free additive
 convolution. -/
@@ -348,7 +350,5 @@ theorem coeff_finiteFreeAdditiveConvolution_oddLift_odd (m n : ℕ) (p q : ℝ[X
     · apply (Nat.odd_sub hle).mpr
       exact iff_of_true (odd_two_mul_add_one m) (even_two_mul n)
   · exact coeff_finiteFreeAdditiveConvolution_of_gt _ _ _ (Nat.lt_of_not_ge hle)
-
-end
 
 end RealRooted

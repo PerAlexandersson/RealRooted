@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PeakValues.Stability
-import RealRooted.SamePhaseInterlacing
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.Stability
+public import RealRooted.SamePhaseInterlacing
 
 /-!
 # Weighted interleaving of peak-value polynomials
@@ -8,11 +10,11 @@ Positive weighted diagonal restrictions of consecutive peak-value enumerators
 strictly interlace.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Weighted diagonal specialization of the rank-`n` peak-value enumerator. -/
 def peakValueWeightedDiagonal {n : ℕ} (wt : Fin n → ℝ) : ℝ[X] :=
@@ -314,7 +316,5 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl
       (peakValueWeightedDiagonal wt) :=
   peakValueWeightedDiagonal_consecutive_strictInterl_of_stable_all_ranks n hn wt hwt
     (peakValuePolynomial_mvRealStable (n + 1))
-
-end
 
 end RealRooted

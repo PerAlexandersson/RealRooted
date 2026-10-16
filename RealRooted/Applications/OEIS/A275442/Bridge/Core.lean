@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The A275442 lag-four bridge family
@@ -12,11 +14,11 @@ Lean 4.31 toolchain. The port keeps only the dependency chain needed by
 A275442.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 
 open Polynomial
-
-noncomputable section
 
 /-- The polynomial family `p` of the problem. -/
 def p : ℕ → ℝ[X]
@@ -103,7 +105,5 @@ theorem root_lt_neg_one {n : ℕ} {r : ℝ} (hr : (p n).IsRoot r) : r < -1 := by
   rw [IsRoot.def] at hr
   rw [hr] at h1
   linarith
-
-end
 
 end RealRooted.Applications.OEIS.A275442.Bridge

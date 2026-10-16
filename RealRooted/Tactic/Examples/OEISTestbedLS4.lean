@@ -1,4 +1,6 @@
-import RealRooted.Tactic.SecondDerivative
+module
+
+public import RealRooted.Tactic.SecondDerivative
 
 /-!
 # OEIS LS4 second-derivative regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.SecondDerivative
 Executable second-derivative factorization tests extracted from the OEIS
 recurrence test bed.
 -/
+
+public section
 
 open Polynomial
 

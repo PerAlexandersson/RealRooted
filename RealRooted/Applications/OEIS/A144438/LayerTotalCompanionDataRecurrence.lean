@@ -1,9 +1,11 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
-import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-import RealRooted.MultivariateStability.AffineEulerCore
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.RayleighPencil
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+public import RealRooted.MultivariateStability.AffineEulerCore
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.RayleighPencil
 
 /-!
 # Exact successor reduction for the Deco companion data
@@ -14,9 +16,9 @@ the five remaining conditions needed for the next companion-data bundle.  It
 does not assume or assert that these conditions are preserved.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Stability of the next homogeneous layer makes the unshifted companion
 extension core Rayleigh. -/
@@ -1590,7 +1592,5 @@ theorem decoBottomTotalCompanionRayleighData_succ_iff_compensation
   rw [decoBottomTotalCompanionRayleighData_succ_iff_of_stable_companion
     n hstable hcompanion,
     eval_coordinateWronskian_companionSlope_companion_nonneg_iff_compensation]
-
-end
 
 end RealRooted.Applications.OEIS

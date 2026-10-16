@@ -1,7 +1,9 @@
-import RealRooted.LGV.PathMatrix
-import RealRooted.LGV.PolyaFrequency
-import RealRooted.LGV.RepeatedChip
-import RealRooted.LGV.TotallyNonnegative
+module
+
+public import RealRooted.LGV.PathMatrix
+public import RealRooted.LGV.PolyaFrequency
+public import RealRooted.LGV.RepeatedChip
+public import RealRooted.LGV.TotallyNonnegative
 
 /-!
 # Lindström–Gessel–Viennot challenge entry point

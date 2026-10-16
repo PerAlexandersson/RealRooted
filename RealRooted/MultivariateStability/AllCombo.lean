@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.MultivariateStability
 
 /-!
 # All-real-combination multivariate stability
@@ -7,9 +9,9 @@ This module packages the zero-aware linear-span condition used by induction
 arguments for multivariate real stability.
 -/
 
-namespace RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Every real linear combination of `F` and `G` is real stable or zero. -/
 def AllComboMvRealStableOrZero {σ : Type*}
@@ -94,7 +96,5 @@ theorem allComboMvRealStableOrZero_of_affine
     have hcoeff : α * (β / α) = β := by field_simp
     rw [mul_add, ← mul_assoc, ← MvPolynomial.C_mul, hcoeff] at hscaled
     exact hscaled
-
-end
 
 end RealRooted

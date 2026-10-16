@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Remaining finite consequences of the univariate Poisson product
@@ -10,12 +12,12 @@ falling-factorial transform, which conjugates the affine Poisson recurrence to o
 multiplication (issue #1494).
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 private theorem derivative_interl_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl p.derivative p := by
@@ -287,7 +289,6 @@ theorem fallingFactorialTransform_poisson_affine_recurrence
         fallingFactorialTransform_starC_affine, ih, Finset.prod_range_succ]
       ring
 
-
 /-! ## Full multiplicativity and associativity -/
 
 /-- The falling-factorial transform fixes the constant polynomial one. -/
@@ -406,6 +407,5 @@ theorem starC_assoc (c : ℝ) (f g h : ℝ[X]) :
     starC c (starC c f g) h = starC c f (starC c g h) := by
   apply fallingFactorialTransform_injective c
   simp only [fallingFactorialTransform_starC, mul_assoc]
-end
 
 end RealRooted.Poisson

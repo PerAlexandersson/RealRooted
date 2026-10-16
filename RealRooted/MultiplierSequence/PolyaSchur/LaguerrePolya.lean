@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.PolyaSchur.Analytic
-import Mathlib.Analysis.RCLike.Lemmas
+module
+
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.PolyaSchur.Analytic
+public import Mathlib.Analysis.RCLike.Lemmas
 
 /-!
 # Laguerre--Pólya limits of Jensen polynomials
@@ -14,9 +16,9 @@ prove an analytic root-closure theorem or either Pólya--Schur classification
 direction.
 -/
 
-open Filter Polynomial Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

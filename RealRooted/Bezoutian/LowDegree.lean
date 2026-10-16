@@ -1,4 +1,6 @@
-import RealRooted.Bezoutian.WronskianConverse
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
 
 /-!
 # Low-degree Bezoutian characterization
@@ -7,9 +9,9 @@ Degree-zero, linear, and quadratic positive-definiteness equivalences and the
 final all-degree strict Bezoutian characterization.
 -/
 
-open Polynomial Matrix
+public noncomputable section
 
-noncomputable section
+open Polynomial Matrix
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.Resolvable
+module
+
+public import RealRooted.BrandenLeite.Resolvable
 
 /-!
 # Brändén--Saud Leite triangular networks
@@ -14,11 +16,11 @@ with an arbitrary totally nonnegative matrix, and normalized weight uniqueness
 are intentionally later steps.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The finite collection of paths from `(n, 0)` to `(k, k)`, encoded by
 their horizontal step times. -/
@@ -653,7 +655,7 @@ theorem X_pow_dvd_networkResolvingPolynomial {R : Type*} [CommSemiring R]
   · rw [networkPathSumFrom_eq_zero_of_lt_left weights (Nat.lt_of_not_ge hkj)]
     simp
 
-private theorem natDegree_networkResolvingPolynomial_le {R : Type*} [CommSemiring R]
+theorem natDegree_networkResolvingPolynomial_le {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R)
     (n k : ℕ) : (networkResolvingPolynomial weights n k).natDegree ≤ n := by
   unfold networkResolvingPolynomial
@@ -662,7 +664,7 @@ private theorem natDegree_networkResolvingPolynomial_le {R : Type*} [CommSemirin
   exact (Polynomial.natDegree_C_mul_X_pow_le _ j).trans
     (Nat.le_of_lt_succ (Finset.mem_range.mp hj))
 
-private theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R]
+theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R)
     {n k : ℕ} (hkn : k ≤ n) :
     (networkResolvingPolynomial weights n k).coeff n = 1 := by
@@ -763,7 +765,5 @@ theorem networkPathSum_nonneg {R : Type*} [CommSemiring R] [PartialOrder R]
   split_ifs
   · exact zero_le_one
   · exact hweights _ _
-
-end
 
 end RealRooted.BrandenLeite

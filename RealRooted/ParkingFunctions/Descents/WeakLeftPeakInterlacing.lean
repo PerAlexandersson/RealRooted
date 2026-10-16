@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
 
 /-!
 # Weak-left-peak interlacing and parking-function real-rootedness
@@ -9,11 +11,11 @@ the same finite family proves splitness of the aggregate word enumerator.  The
 checked integral Pollak transfer then gives the parking-function result.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- Every rank of the fixed-alphabet terminal recurrence satisfies the full
 structural cut invariant. -/
@@ -129,7 +131,5 @@ theorem map_parkingWeakLeftPeakPolynomialInt_splits (n : ℕ) :
   exact (Polynomial.splits_mul_iff_right
     (C_ne_zero.mpr (by positivity))
     (Polynomial.Splits.C (n + 1 : ℝ))).mp hscaled
-
-end
 
 end RealRooted.ParkingFunctions

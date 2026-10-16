@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Fintype.Perm
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+
+module
+
+public import Mathlib.Data.Fintype.Perm
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
 
 /-!
 # Pattern containment in direct and skew sums
@@ -15,6 +18,8 @@ direct (or skew) sum only through one of the two blocks.  In particular `2413` a
 are avoided by `σ ⊕ τ` and `σ ⊖ τ` exactly when both `σ` and `τ` avoid them, so the class of
 separable permutations is closed under direct and skew sums.
 -/
+
+@[expose] public section
 
 namespace List
 

@@ -1,9 +1,11 @@
-import RealRooted.Hadamard.KostovMap
-import RealRooted.Hadamard.Kostov.Tangent
+module
+
+public import RealRooted.Hadamard.KostovMap
+public import RealRooted.Hadamard.Kostov.Tangent
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov

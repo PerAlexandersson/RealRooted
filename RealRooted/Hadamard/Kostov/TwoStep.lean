@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Kostov.Roots
+module
+
+public import RealRooted.Hadamard.Kostov.Roots
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov

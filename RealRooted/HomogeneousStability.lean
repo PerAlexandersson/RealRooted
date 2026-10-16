@@ -1,7 +1,9 @@
-import RealRooted.LiebSokalPointwise
-import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+module
+
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 
 /-!
 # Stability of homogeneous multivariate polynomials
@@ -10,6 +12,8 @@ This file provides general-degree stability closure for a distinguished
 variable whose leading coefficient is a nonzero constant, together with the
 homogeneous scaling algebra used for dehomogenization.
 -/
+
+@[expose] public noncomputable section
 
 namespace MvPolynomial
 
@@ -50,8 +54,6 @@ namespace RealRooted
 
 open Complex Metric
 open Polynomial
-
-noncomputable section
 
 /-- Non-vanishing on tuples that one upper-half-plane multiplier carries
 coordinatewise into the upper half-plane. -/
@@ -627,8 +629,5 @@ theorem MvUpperHalfPlaneStable.homogeneousOddStep
   exact (hstable.homogeneousAdjoinFactor).homogeneousFactorDerivative
     (homogeneousAdjoinFactor_isHomogeneous hhom)
     (homogeneousAdjoinFactor_top_coeff hhom htop) hc
-
-end
-
 
 end RealRooted

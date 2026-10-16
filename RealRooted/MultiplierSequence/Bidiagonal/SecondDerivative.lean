@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Second-derivative bidiagonal normalization
@@ -8,9 +10,9 @@ with a coefficient-bidiagonal operator. It is independent of PF-preserver
 certificates and tactic frontends.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

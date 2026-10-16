@@ -1,5 +1,7 @@
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.Compatibility.CutTransform
+module
+
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Compatibility.CutTransform
 
 /-!
 # Sound generic closure for the finite P/Q cut transform
@@ -9,9 +11,9 @@ shown in `CutTransformObstruction`.  This module records the coefficient and
 same-colour conclusions that do hold for every ordered input family.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

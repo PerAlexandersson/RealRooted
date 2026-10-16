@@ -1,7 +1,9 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+public import RealRooted.GeneralizedSnakePosets.MatrixInduction
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
 # The shifted difference interlacing claim for modified Narayana polynomials
@@ -14,9 +16,9 @@ the combinatorial inputs with the column recurrence
 `G_n - G_{n-1}` (`FiniteSkewBoard.auxiliaryG_sub_hasNonnegCoeffs`).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

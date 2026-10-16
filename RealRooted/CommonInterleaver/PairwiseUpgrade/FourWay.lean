@@ -6,11 +6,14 @@ interleavers, and full family compatibility into reusable finite-family
 four-way package witnesses. Equivalence projections and endpoint-specific
 corollaries live in `PairwiseUpgrade.FourWay.Equivalences`.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+
+module
+
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

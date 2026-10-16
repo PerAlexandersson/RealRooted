@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
 
 /-!
 # Compact parameter boxes for the weighted first-contact argument
@@ -8,9 +10,9 @@ cube.  A bad contact records a root at which the companion residue is
 nonpositive; we use the equivalent denominator-free sign condition.
 -/
 
-open Polynomial Set Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Set Topology
 
 namespace RealRooted.Applications.OEIS
 

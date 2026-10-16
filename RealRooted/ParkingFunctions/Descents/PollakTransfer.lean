@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
-import RealRooted.ParkingFunctions.Descents.Pollak
-import RealRooted.ParkingFunctions.Descents.WordContent
+module
+
+public import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
+public import RealRooted.ParkingFunctions.Descents.Pollak
+public import RealRooted.ParkingFunctions.Descents.WordContent
 
 /-!
 # Weighted Pollak orbit transfer
@@ -9,9 +11,9 @@ This module specializes weighted unique-index double counting to Pollak's
 cyclic action on words over an alphabet with one extra letter.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- The parking part of a finite family of words on the extra alphabet. -/
 def parkingPart {n : ℕ}
@@ -69,7 +71,5 @@ theorem sum_eq_succ_nsmul_of_cyclicValueShift_filter_sum
       (by
         intro c _
         exact hfiber c)
-
-end
 
 end RealRooted.ParkingFunctions

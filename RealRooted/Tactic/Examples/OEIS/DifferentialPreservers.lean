@@ -1,13 +1,17 @@
-import RealRooted.Tactic.AllCombo
-import RealRooted.Tactic.Derivative
-import RealRooted.Tactic.MagnitudeDominated
-import RealRooted.Tactic.OperatorPreservesInterlacing
+module
+
+public import RealRooted.Tactic.AllCombo
+public import RealRooted.Tactic.Derivative
+public import RealRooted.Tactic.MagnitudeDominated
+public import RealRooted.Tactic.OperatorPreservesInterlacing
 
 /-!
 # OEIS differential-preserver regression examples
 
 Regression examples for differential and interlacing-preserver frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.QuadraticDegree
-import RealRooted.MaWang
-import RealRooted.SignEvaluation
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.MaWang
+public import RealRooted.SignEvaluation
 
 /-!
 # Interlacing for quadratic-coefficient derivative recurrences
@@ -9,12 +11,11 @@ Nonnegative-coefficient and interlacing results for the general
 linear-multiplier recurrence, including degree offsets.
 -/
 
+public noncomputable section
+
 open Polynomial
 
-noncomputable section
-
 namespace RealRooted
-
 
 lemma quadratic_derivative_bilinear_coeff_zero_succ
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)

@@ -1,4 +1,6 @@
-import RealRooted.CoefficientDominance.NewtonDefectRoots
+module
+
+public import RealRooted.CoefficientDominance.NewtonDefectRoots
 
 /-!
 # Local Newton defects and positive root parameters
@@ -88,6 +90,8 @@ ratio; no bound on the ambient degrees is assumed.
 See [@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.NewtonDefectRoots
 

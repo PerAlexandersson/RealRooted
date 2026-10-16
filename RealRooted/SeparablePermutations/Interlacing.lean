@@ -1,6 +1,8 @@
-import RealRooted.SeparablePermutations.Gamma
-import RealRooted.FactorialCompression.DegreeChanging
-import RealRooted.GammaTransform.StrictLifting
+module
+
+public import RealRooted.SeparablePermutations.Gamma
+public import RealRooted.FactorialCompression.DegreeChanging
+public import RealRooted.GammaTransform.StrictLifting
 
 /-!
 # Strict interlacing for the descent polynomials of separable permutations
@@ -23,9 +25,9 @@ The transfer to the descent enumerators of the separable permutations,
 `strictInterl_descentEnumerator`, is in `RealRooted/SeparablePermutations/Identification.lean`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.SeparablePermutations
 

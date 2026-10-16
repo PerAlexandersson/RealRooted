@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceQuadratic
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceQuadratic
 
 /-!
 # Liu--Wang quadratic-sequence regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceQuadratic
 Sequence tests for monic and non-monic negative quadratic lag factors,
 including repeated-root and denominator-normalized variants.
 -/
+
+public section
 
 open Polynomial
 

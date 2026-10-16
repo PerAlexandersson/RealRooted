@@ -1,5 +1,7 @@
-import RealRooted.Permanent.Ferrers
-import RealRooted.Permanent.Stability.Operator
+module
+
+public import RealRooted.Permanent.Ferrers
+public import RealRooted.Permanent.Stability.Operator
 
 /-!
 # Stability of the Ferrers recurrence
@@ -8,10 +10,10 @@ This file combines the checked analytic operator with the right-hand side of
 Lemma 3.2 in Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- Stability of the deleted Ferrers permanent implies stability of the
 right-hand side of its recurrence. -/
@@ -48,8 +50,6 @@ theorem ferrersRecurrenceRhs_mvRealStable {n : ℕ}
   rw [hinner] at hrenamed
   unfold ferrersRecurrenceRhs
   exact (MvRealStable.X (Sum.inl (Fin.last n))).mul hrenamed
-
-end
 
 end Permanent
 end RealRooted

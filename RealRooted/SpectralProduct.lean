@@ -1,8 +1,10 @@
-import RealRooted.CauchyInterlacing.Submatrix
-import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
-import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
-import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+module
+
+public import RealRooted.CauchyInterlacing.Submatrix
+public import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
 
 /-!
 # Finite spectral-product positivity
@@ -25,6 +27,8 @@ submatrices makes every leaf a nonnegative scalar divided difference.
 * C. A. Micchelli and R. A. Willoughby, *On functions which preserve the class
   of Stieltjes matrices*, Linear Algebra Appl. 23 (1979), 141--156.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

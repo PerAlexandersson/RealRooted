@@ -16,11 +16,10 @@ model proves the first-maximum recurrence. A direct finite bijection identifies
 its count with the actual `Fin n → Fin k` weak up-down words used in the paper.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Finset
 
-noncomputable section
 namespace RealRooted.ZigzagEulerian.ListWordAux
 
 /-- Orientation of the step leaving position `L` (`true` = weakly up). -/

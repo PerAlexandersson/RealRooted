@@ -1,5 +1,7 @@
-import RealRooted.Graph.FiniteDegree
-import RealRooted.HeilmannLieb
+module
+
+public import RealRooted.Graph.FiniteDegree
+public import RealRooted.HeilmannLieb
 
 /-!
 # The weighted-matching model for minima polynomials
@@ -24,9 +26,9 @@ polynomial.  Its weights remain those of the same ambient root graph; this is
 important because deleting root edges would otherwise change the degrees.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

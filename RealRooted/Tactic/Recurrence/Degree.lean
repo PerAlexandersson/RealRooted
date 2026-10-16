@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Recurrence.LinRec
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Tactic.Recurrence.LinRec
+public import RealRooted.Recurrence.RowModel
+public meta import RealRooted.Tactic.Recurrence.LinRec
+public meta import RealRooted.Recurrence.RowModel
 
 /-!
 # Degree tactics for recurrences
@@ -62,6 +66,8 @@ Not covered: recurrences whose leading terms cancel identically (the degree then
 lower coefficients) unless an existing general-linear-recurrence route supplies a suitable
 coefficient invariant.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

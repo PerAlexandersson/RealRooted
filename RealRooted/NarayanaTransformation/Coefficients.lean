@@ -1,13 +1,15 @@
-import RealRooted.NarayanaTransformation.Rising
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Generalized Narayana coefficient and transform data.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -400,6 +402,5 @@ theorem narayanaTransform_coeff_sum_reflect
   have hm : ((Nat.factorial m : ℝ) : ℝ) ≠ 0 := by positivity
   have hm1 : ((Nat.factorial (1 + m) : ℝ) : ℝ) ≠ 0 := by positivity
   field_simp [hm, hm1]
-
 
 end RealRooted

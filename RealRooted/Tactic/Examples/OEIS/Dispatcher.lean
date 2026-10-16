@@ -1,4 +1,6 @@
-import RealRooted.Tactic.OEIS
+module
+
+public import RealRooted.Tactic.OEIS
 
 /-!
 # OEIS dispatcher regressions
@@ -7,11 +9,11 @@ Literal downstream row statements exercise the target dispatcher. Small certific
 exercise each named frontend.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.Examples.OEIS.Dispatcher
-
-noncomputable section
 
 /-- The downstream A111006 recurrence, with its original generated presentation. -/
 def A111006 : ℕ → ℝ[X]
@@ -61,7 +63,5 @@ example {n : ℕ} (hn : 0 < n) (G : List (List ℝ[X])) (fs : List ℝ[X])
     (hfs : RealRooted.IsInterlacingSeqNonneg fs) :
     RealRooted.IsInterlacingSeqNonneg (RealRooted.matPolyAction G fs) := by
   rr_oeis matrix
-
-end
 
 end RealRooted.Tactic.Examples.OEIS.Dispatcher

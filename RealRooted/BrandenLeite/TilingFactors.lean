@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.PFPolynomial
 
 /-!
 # Finite factor certificates for rational tiling kernels
@@ -10,11 +12,11 @@ the marked series is a positive scalar, a positive-order shift, and a finite
 product of optional-rise factors.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The polynomial `c * ∏ x ∈ xs, (1 + x * X)`. -/
 def optionalRisePolynomial (c : ℝ) (xs : List ℝ) : ℝ[X] :=
@@ -165,7 +167,5 @@ theorem coeff_rationalBackgroundSeries_singleton (b : ℝ) (n : ℕ) :
   simp [rationalBackgroundSeries,
     BrandenVecchi.finiteSupersymmetricSeries,
     BrandenVecchi.coeff_supersymmetricDenominatorFactor]
-
-end
 
 end RealRooted.BrandenLeite

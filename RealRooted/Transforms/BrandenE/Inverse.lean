@@ -1,5 +1,7 @@
-import Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.Transforms.BrandenE.Basic
+module
+
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.Transforms.BrandenE.Basic
 
 /-!
 # Falling-factorial inverse of Brändén's E transform
@@ -10,9 +12,9 @@ normalized inverse requires a characteristic-zero field so that nonzero
 factorials are units.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

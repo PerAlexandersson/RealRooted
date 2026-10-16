@@ -1,9 +1,11 @@
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.OEIS.A046802
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.Wronskian.Converse
+module
+
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.OEIS.A046802
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.Wronskian.Converse
 
 /-!
 # A recurrence bridge for OEIS A046802
@@ -14,9 +16,9 @@ transform.  The adjacent interlacing needed by the row-model registry follows
 from the first two entries of the transform's reflection-interlacing row.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A046802
 
@@ -117,7 +119,7 @@ theorem binomial_strictInterl_succ (n : ℕ) :
     convert h using 1
     unfold wronskian
     simp only [derivative_sub]
-    ring
+    ring_nf
   have hstrict :=
     strictInterl_of_allComboRealRooted_of_wronskian_nonneg
       hp_pos hg_pos hall_pg hW

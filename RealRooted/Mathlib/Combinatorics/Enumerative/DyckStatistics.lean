@@ -3,9 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Tactic.Linarith
+
+module
+
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import Mathlib.Combinatorics.Enumerative.DyckWord
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # The Narayana distribution of Dyck-word peaks
@@ -18,6 +23,8 @@ the natural-number formula gives `1`.  The proof counts suffix-ballot words by f
 it was found by Aristotle (Harmonic) and adapted.
 -/
 
+@[expose] public section
+
 open List
 open DyckStep
 
@@ -28,7 +35,7 @@ def Nat.narayana (n k : ℕ) : ℕ :=
 
 namespace DyckWord
 
-private def peakCountList : List DyckStep → ℕ
+def peakCountList : List DyckStep → ℕ
   | [] => 0
   | U :: D :: l => peakCountList l + 1
   | _ :: l => peakCountList l

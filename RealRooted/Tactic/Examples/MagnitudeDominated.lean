@@ -1,4 +1,8 @@
-import RealRooted.Tactic.MagnitudeDominated
+module
+
+public import RealRooted.Tactic.MagnitudeDominated
+
+public section
 
 open Polynomial
 

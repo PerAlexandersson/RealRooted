@@ -1,5 +1,7 @@
-import RealRooted.Hermite.Poulain
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+module
+
+public import RealRooted.Hermite.Poulain
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
 # The Bessel differential transform
@@ -10,9 +12,9 @@ uses Hermite--Poulain for every approximant, and passes to the limit through
 the closedness of real-rooted polynomials of bounded degree.
 -/
 
-open Finset Polynomial Filter Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial Filter Topology
 
 namespace RealRooted.HermitePoulain
 

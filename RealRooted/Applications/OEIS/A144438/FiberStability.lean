@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A144438.EligibleSupport
-import RealRooted.BooleanSwapOrbit
-import RealRooted.MultivariateStability.PolyaFrequency
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Applications.OEIS.A144438.EligibleSupport
+public import RealRooted.BooleanSwapOrbit
+public import RealRooted.MultivariateStability.PolyaFrequency
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stable normalized decoration fibers
@@ -16,11 +18,11 @@ eligible start.  Its exact combinatorial interpretation is intentionally kept
 separate from the stability API.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS.DecoNormalizedCode
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- Adding an eligible start renames its comparison-bottom monomial by the
 corresponding final-label swap. -/
@@ -484,7 +486,5 @@ theorem commonPhaseRestriction_weightedFiberNormalForm_isPFPolynomial
   · exact weightedFiberNormalForm_hasNonnegCoeffs c leftWeight rightWeight
       hleft hright
   · exact hwt
-
-end
 
 end RealRooted.Applications.OEIS.DecoNormalizedCode

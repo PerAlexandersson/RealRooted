@@ -1,8 +1,10 @@
-import RealRooted.Applications.OEIS.A330798
-import RealRooted.Tactic.Examples.EulerTypeBridges
-import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
-import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
-import RealRooted.Tactic.Examples.RowParityFactorization
+module
+
+public import RealRooted.Applications.OEIS.A330798
+public import RealRooted.Tactic.Examples.EulerTypeBridges
+public import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
+public import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
+public import RealRooted.Tactic.Examples.RowParityFactorization
 
 /-!
 # Regression examples for recently registered row models
@@ -11,9 +13,9 @@ These are the literal downstream recurrence presentations.  Each proof uses
 the default row tactic, so the examples test registry dispatch and its exact-row filter.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace RowModelRecentRegistrations
 

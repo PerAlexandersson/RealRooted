@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
-import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
-import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
-import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
-import Mathlib.Algebra.Polynomial.Derivation
+module
+
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
+public import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
+public import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
+public import Mathlib.Algebra.Polynomial.Derivation
 
 /-!
 # The kernel `√D(v, y)` and its moments
@@ -17,9 +19,9 @@ The key identity is the chain rule `2 ∂_v(D √D) = 3 √D ∂_v D`. With `a =
 `D(1, y) = a²` gives `K_t(1) = [y^t] a⁴`, which vanishes for `t ≥ 5`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.BigDescents321
 

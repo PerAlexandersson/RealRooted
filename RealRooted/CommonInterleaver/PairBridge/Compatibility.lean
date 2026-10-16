@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
 
 /-!
 # Common interleavers for nonnegative positive-combination pairs
@@ -8,9 +10,9 @@ every pair of nonnegative polynomials whose positive combinations are
 real-rooted.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

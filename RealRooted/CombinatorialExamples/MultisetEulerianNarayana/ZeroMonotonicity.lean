@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 
 /-!
 # Monotonicity of the zeros of the gamma operator
@@ -20,11 +22,11 @@ Both signs are derived from it: for the input roots through the deletion identit
 `T((X - r_i) q) = (X - r_i) T q + z(1 - 4z) q`, and for `a` directly.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped ContDiff
 open scoped Topology
-
-noncomputable section
 
 namespace RealRooted
 namespace MultisetEulerianNarayana

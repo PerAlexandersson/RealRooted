@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
-import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
+public import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
 
 /-!
 # The residual polynomial `R_n`
@@ -19,6 +21,8 @@ stops at degree `k - 1`.
 * `residCoord_eq_altSum`: below the top, `b_(j+1) = -(2j + 5)/((j + 3) w_j) S_j`, where
   `S_j = w_j q_(n,j) - w_(j-2) q_(n,j-2) + ⋯` is an alternating sum of rescaled coordinates.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.PoissonStar
-import RealRooted.Hyperbolicity
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStar
+public import RealRooted.Hyperbolicity
 
 /-!
 # Stability of Poisson left multiplication
@@ -14,11 +16,11 @@ Theorems 1.3--1.4).  The left symbol must not contain unscaled stable parameters
 `not_stable_leftParameterBadSymbol` checks that `a + z(1 - w)` is not stable.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 open RealRooted RealRooted.BorceaBranden
 
@@ -647,7 +649,5 @@ theorem not_stable_leftParameterBadSymbol :
   ring_nf
   rw [pow_two, Complex.I_mul_I]
   norm_num
-
-end
 
 end RealRooted.Poisson

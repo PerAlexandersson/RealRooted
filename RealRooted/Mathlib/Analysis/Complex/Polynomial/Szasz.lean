@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # The univariate Szász estimate
@@ -25,9 +28,9 @@ for `∑ ‖ξ j‖`.
   the same right-hand side.
 -/
 
-open Complex
+public noncomputable section
 
-noncomputable section
+open Complex
 
 namespace Complex
 

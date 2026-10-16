@@ -1,9 +1,11 @@
-import RealRooted.Applications.OEIS.TouchardImages
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.TouchardImages
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public noncomputable section
 
 open RealRooted Polynomial
-
-noncomputable section
 
 namespace RealRooted.Tactic.Examples.OEIS.TouchardImages
 

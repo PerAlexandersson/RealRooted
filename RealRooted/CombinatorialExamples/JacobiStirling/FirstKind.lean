@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the first kind
@@ -9,11 +11,11 @@ semiring and identifies it with the elementary symmetric functions evaluated
 at `i * (i + z)` for `1 ≤ i < n`.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.JacobiStirling
 
 open RealRooted.CoefficientDominance.Symmetric
-
-noncomputable section
 
 variable {R : Type*} [CommSemiring R]
 
@@ -143,7 +145,5 @@ theorem firstKind_eq_aeval_esymm_of_le (z : R) {n k : ℕ} (hk : k ≤ n) :
         Finset.univ.val := by
       rw [Multiset.map_map]
       rfl
-
-end
 
 end RealRooted.JacobiStirling

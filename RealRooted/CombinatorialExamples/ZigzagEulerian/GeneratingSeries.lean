@@ -16,11 +16,9 @@ word count independent of the permutation sum and proves the finite factor
 evaluation used in that identification.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial Finset RealRooted.IntervalDifferential
-
-noncomputable section
 
 namespace RealRooted.ZigzagEulerian
 

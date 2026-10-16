@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import Mathlib.Algebra.Polynomial.HasseDeriv
-import Mathlib.Algebra.Polynomial.Taylor
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import Mathlib.Algebra.Polynomial.HasseDeriv
+public import Mathlib.Algebra.Polynomial.Taylor
 
 /-!
 # General-factor consequences for the univariate Poisson product
@@ -12,12 +14,12 @@ root-sign condition and derives the PF-preserver classification for every real p
 (`preservesPF_iff`): PF left factors for `c ≥ 0`, nonnegative constants for `c < 0` (issue #1494).
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted.Poisson
-
-noncomputable section
 
 private def polynomialToMv (p : ℂ[X]) : MvPolynomial Unit ℂ :=
   p.eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial Unit ℂ) (MvPolynomial.X ())
@@ -327,7 +329,5 @@ theorem preservesPF_iff (c : ℝ) (f : ℝ[X]) :
     exact preservesPF_iff_of_nonneg hc f
   next hc =>
     exact preservesPF_of_neg_iff (lt_of_not_ge hc) f
-
-end
 
 end RealRooted.Poisson

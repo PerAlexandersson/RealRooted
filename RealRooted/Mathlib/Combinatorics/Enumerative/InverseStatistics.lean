@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import Mathlib.Data.List.NodupEquivFin
+
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import Mathlib.Data.List.NodupEquivFin
 
 /-!
 # Inverse permutation statistics
@@ -12,6 +15,8 @@ import Mathlib.Data.List.NodupEquivFin
 This file records the inverse-descent API and the symmetry of permutation
 pattern containment under inversion.
 -/
+
+@[expose] public section
 
 namespace Equiv.Perm
 

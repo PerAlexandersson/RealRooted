@@ -1,8 +1,10 @@
-import RealRooted.PFPolynomial
-import RealRooted.ReciprocalShift.Interlacing
-import RealRooted.ReciprocalShift.Interlacing.Inversion
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.ReciprocalShift.Roots
+module
+
+public import RealRooted.PFPolynomial
+public import RealRooted.ReciprocalShift.Interlacing
+public import RealRooted.ReciprocalShift.Interlacing.Inversion
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.ReciprocalShift.Roots
 
 /-!
 # Reciprocal shifts and interlacing
@@ -95,6 +97,8 @@ These results were promoted from proofs in the companion OEIS formalization
 project. For background on interlacing and polynomial reversal, see [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.ReciprocalShift
 

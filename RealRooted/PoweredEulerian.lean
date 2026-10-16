@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedEulerian
+module
+
+public import RealRooted.GeneralizedEulerian
 
 /-!
 # Linear-factor lifts of Eulerian polynomials
@@ -7,9 +9,9 @@ Multiplying the `n`th Eulerian polynomial by a power of `1 + X` gives a reusable
 whose degree can grow by two at each step while splitting is immediate from its factors.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

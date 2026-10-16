@@ -1,8 +1,10 @@
-import RealRooted.BrandenLeite.ZeroConstant
-import RealRooted.BrandenLeite.TwoKernelAlgebra
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import Mathlib.Algebra.Order.Floor.Div
-import Mathlib.Algebra.Polynomial.Div
+module
+
+public import RealRooted.BrandenLeite.ZeroConstant
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import Mathlib.Algebra.Order.Floor.Div
+public import Mathlib.Algebra.Polynomial.Div
 
 /-!
 # Finite supersymmetric composition-row families
@@ -16,11 +18,11 @@ keeps the Pólya-frequency argument independent of the later OEIS
 specializations.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 open BrandenVecchi
 
@@ -712,7 +714,5 @@ theorem a206294Row_nonzero_roots_neg
     (n : ℕ) {r : ℝ} (hr : r ∈ (a206294Row n).roots)
     (hr0 : r ≠ 0) : r < 0 :=
   inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
-
-end
 
 end RealRooted.BrandenLeite

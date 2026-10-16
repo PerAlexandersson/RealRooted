@@ -1,9 +1,11 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
-import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
-import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
-import RealRooted.PFPolynomial.Closure
-import RealRooted.VeroneseSection
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.VeroneseSection
 
 /-!
 # Converse odd/even Hermite--Biehler theorem
@@ -24,9 +26,9 @@ As a consequence, the conformal substitution
 `IsHurwitzStable.isUpperHalfPlaneStable_hermiteBiehlerPolynomial`.
 -/
 
-open Filter Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

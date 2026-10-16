@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Vandermonde
+
+module
+
+public import Mathlib.LinearAlgebra.Vandermonde
 
 /-!
 # Ordered Vandermonde determinants
@@ -11,6 +14,8 @@ import Mathlib.LinearAlgebra.Vandermonde
 This file adds the strict positivity consequence of the Vandermonde
 determinant formula for a strictly increasing family.
 -/
+
+public section
 
 public section
 

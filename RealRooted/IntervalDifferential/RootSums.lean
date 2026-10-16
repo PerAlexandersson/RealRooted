@@ -18,9 +18,7 @@ Appendix C.2 inequality for `zigzagK`. A separate linear-factor identity
 gives strict positivity of `zigzagJ` inside the root interval.
 -/
 
-@[expose] public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.IntervalDifferential
 

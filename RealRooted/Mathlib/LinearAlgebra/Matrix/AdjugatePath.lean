@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.Logic.Equiv.Fin.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.Logic.Equiv.Fin.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 
 /-!
 # Recursive cofactor expansion for matrix paths
@@ -15,6 +18,8 @@ off-diagonal adjugate entry as a first edge followed by an adjugate entry of the
 principal submatrix with the initial vertex deleted.  Iterating this identity
 is the simple-path/cofactor expansion.
 -/
+
+public section
 
 open Polynomial
 

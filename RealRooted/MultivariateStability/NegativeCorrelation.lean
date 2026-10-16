@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Strongly Rayleigh measures are negatively correlated
@@ -15,9 +17,9 @@ pairwise negative correlation: `μ(i, j ∈ S) μ(Ω) ≤ μ(i ∈ S) μ(j ∈ S
   J. Amer. Math. Soc. 22 (2009), 521–567.
 -/
 
-open MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open MvPolynomial
 
 namespace RealRooted
 

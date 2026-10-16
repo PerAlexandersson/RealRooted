@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.ToeplitzFin
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.RingTheory.PowerSeries.Inverse
+module
+
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.ToeplitzFin
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.RingTheory.PowerSeries.Inverse
 
 /-!
 # Finite Toeplitz algebra for two-kernel rows
@@ -11,11 +13,11 @@ power-series products.  It then packages the literal coefficient rows of
 `g(z) / (1 - X g(z) h(z))` and relates them to finite kernel rows.
 -/
 
+@[expose] public noncomputable section
+
 open Matrix Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The leading finite square block of the Toeplitz matrix of a sequence. -/
 abbrev finiteToeplitz {R : Type*} [Zero R]
@@ -324,7 +326,5 @@ theorem twoKernelGeneratingSeries_eq_div
       rw [mul_assoc]
     _ = D.invOfUnit 1 * polynomialLift g := by rw [hmul]
     _ = polynomialLift g * D.invOfUnit 1 := mul_comm _ _
-
-end
 
 end RealRooted.BrandenLeite

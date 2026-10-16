@@ -1,13 +1,15 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.NarayanaTransformation.Endpoints
+
+@[expose] public noncomputable section
 
 open scoped Polynomial
 open Polynomial
 
 namespace DyckWord
-
-noncomputable section
 
 /-- The peak generating polynomial for Dyck words of semilength `n`. -/
 def peakGeneratingPolynomial (n : ℕ) : ℝ[X] :=
@@ -93,7 +95,5 @@ theorem isRealRooted_peakGeneratingPolynomial (n : ℕ) :
   exact RealRooted.isRealRooted_X_mul_of_isRealRooted
     ⟨RealRooted.narayanaPolynomial_ne_zero 1 n,
       RealRooted.splits_narayanaPolynomial 1 n⟩
-
-end
 
 end DyckWord

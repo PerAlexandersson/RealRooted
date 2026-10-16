@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Matrix
+module
+
+public import RealRooted.Tactic.Matrix
 
 /-!
 # `rr_matrix` examples
 
 Abstract smoke tests for the matrix-transfer dispatcher tactics.
 -/
+
+@[expose] public section
 
 open Polynomial
 

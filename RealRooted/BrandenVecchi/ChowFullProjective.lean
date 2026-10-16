@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.BrandenVecchi.ChowProjectiveRegularization
+module
+
+public import RealRooted.BrandenVecchi.ChowInfinitePF
+public import RealRooted.BrandenVecchi.ChowProjectiveRegularization
 
 /-!
 # Full ASW--Edrei projective Chow boundary
@@ -10,11 +12,11 @@ outer scalar represents the same projective class, so the positive-scalar
 branch is independent of its magnitude.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- Projective Chow row for the full ASW--Edrei symbol. A zero outer scalar
 has zero projective output; every nonzero scalar represents the same class. -/
@@ -106,7 +108,5 @@ theorem aswEdreiFullProjectiveChow_theorem
         hpf hzero hepsilon N n,
       projectiveRegularizedChow_interl_succ
         hpf hzero hepsilon N n⟩
-
-end
 
 end RealRooted.BrandenVecchi

@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import RealRooted.ThresholdMatrix
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.ThresholdMatrix
 
 /-!
 # All-word descent polynomials
@@ -15,11 +17,11 @@ This module is extracted from the checked all-word A333829 development in
 `sqrt-of-2/real-rooted-oeis-proofs` PR #123.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- Threshold rows for the reversed-last-letter word recursion. -/
 def wordDescentRows (m : ℕ) : List (ℕ × ℝ[X]) :=
@@ -216,7 +218,5 @@ theorem wordDescentPolynomial_splits (m : ℕ) (hm : 0 < m) (n : ℕ) :
           (wordDescentRefined_interlacing m r).1
           (wordDescentRefined_interlacing m r).2
           (wordDescentRefined_sum_ne_zero m hm r)).2
-
-end
 
 end RealRooted.ParkingFunctions

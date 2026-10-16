@@ -1,4 +1,8 @@
-import RealRooted.Tactic.VeroneseSection
+module
+
+public import RealRooted.Tactic.VeroneseSection
+
+public section
 
 open Polynomial
 

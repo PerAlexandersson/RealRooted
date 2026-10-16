@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.ParkingFunctions.Descents.Pollak
+module
+
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.ParkingFunctions.Descents.Pollak
 
 /-!
 # Tieless parking-function descents
@@ -10,14 +12,14 @@ existing finite Smirnov-word predicate.  Content fibers and cyclic-orbit
 counts belong to later layers.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- A parking-function word has no tie when consecutive entries are distinct.
 The empty word satisfies the condition. -/
@@ -117,7 +119,5 @@ theorem tielessParkingDescentPolynomial_one :
         exact Fin.elim0 i⟩
   rw [tielessParkingDescentPolynomial, hfamily]
   simp [Finset.genPoly, List.descentCount]
-
-end
 
 end RealRooted.ParkingFunctions

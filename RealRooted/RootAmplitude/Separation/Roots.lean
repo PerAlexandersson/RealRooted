@@ -1,5 +1,7 @@
-import RealRooted.RootAmplitude.Finite
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import RealRooted.SortedRoots
 
 /-!
 # Amplitude bridges for sorted root magnitudes
@@ -8,11 +10,11 @@ This file adds only the polynomial-amplitude consequences missing from the
 canonical `SortedRoots.rootMags` and `SortedRoots.rootSeq` API.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.RootAmplitude
-
-noncomputable section
 
 /-- Strict increase of the canonical sorted magnitude sequence implies that
 all polynomial roots are simple. -/
@@ -70,7 +72,5 @@ theorem amplitude_rootSeq_eq_prod_roots {p : ℝ[X]} (hnd : p.roots.Nodup)
     rw [Finset.mem_erase, Finset.mem_range] at hj
     congr 1
     rw [neg_div_neg_eq]
-
-end
 
 end RealRooted.RootAmplitude

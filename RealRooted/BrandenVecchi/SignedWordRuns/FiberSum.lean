@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Finite fibers of signed-word run compression
@@ -10,11 +12,11 @@ variable, while the descent/collision statistic remains the polynomial
 variable.  Thus every coefficient identity below is finite.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-! ## One-run formal power series -/
 
@@ -895,7 +897,5 @@ theorem signedSmirnovSubstitutionCoeff_add_zero_letters
   signedSmirnovSubstitutionCoeff_extend
     (signedLetterExtend q p r s)
     (signedLetterExtend_isNegative_iff q p r s) weight n
-
-end
 
 end RealRooted.BrandenVecchi

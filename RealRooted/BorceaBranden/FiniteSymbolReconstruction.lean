@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 
 /-!
 # Reconstruction for the finite-symbol argument
@@ -8,9 +10,9 @@ This module completes the algebraic reconstruction step in Borcea--Branden,
 arXiv:0809.0401, Lemma 2.2. Target variables remain unrestricted throughout.
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- Specializing the source and input coordinates of the three-block embedding
 at zero is the same as specializing the actual input block at zero. -/
@@ -79,7 +81,5 @@ theorem specializeRight_zero_paperDifferentialSum
       intro m _hm
       rw [map_smul]
     _ = T f := by rw [Module.Basis.sum_repr]
-
-end
 
 end RealRooted.BorceaBranden

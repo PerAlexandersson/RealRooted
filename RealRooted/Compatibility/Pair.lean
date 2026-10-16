@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Pair compatibility
@@ -9,9 +11,9 @@ independent of the finite-family, root-reflection, and affine-family machinery
 in `Compatibility.Basic`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

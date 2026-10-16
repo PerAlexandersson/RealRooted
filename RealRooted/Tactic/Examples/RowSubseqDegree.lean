@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Degree laws with zero residue classes
@@ -7,11 +9,11 @@ Regression examples for two-step products and a reduced three-term recurrence wh
 vanish.  The latter exercises the residue-class fallback of `rr_row_natDegree`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.Examples.RowSubseqDegree
-
-noncomputable section
 
 /-- A two-step product whose odd rows vanish and whose live rows grow by degree one. -/
 def zeroOddDegreeOne : ℕ → ℝ[X]
@@ -66,7 +68,5 @@ example (n : ℕ) : (alternatingDegree n).Splits := by
 
 example (n : ℕ) : (zeroOddThreeTerm n).Splits := by
   rr_row_splits
-
-end
 
 end RealRooted.Tactic.Examples.RowSubseqDegree

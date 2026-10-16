@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.BoolChains
+module
+
+public import RealRooted.HosterStump.BoolChains
 
 /-!
 # The flag `f`-vector of a graded simplicial poset
@@ -8,9 +10,9 @@ For a graded simplicial poset, `flagF rk T = fVec rk (max T + 1) * gapMultinomia
 together with a chain in the Boolean interval below `x`.
 -/
 
-open Finset
+public noncomputable section
 
-noncomputable section
+open Finset
 
 namespace RealRooted.HosterStump
 
@@ -92,4 +94,3 @@ theorem flagF_eq_fVec_mul {n : ℕ} {rk : P → ℕ} (hP : IsSimplicialPoset P n
 
 end RealRooted.HosterStump
 
-end

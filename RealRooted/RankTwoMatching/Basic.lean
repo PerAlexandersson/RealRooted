@@ -1,9 +1,11 @@
-import RealRooted.HeilmannLieb
-import RealRooted.RankTwoMatching.Model
+module
+
+public import RealRooted.HeilmannLieb
+public import RealRooted.RankTwoMatching.Model
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.Graph
 

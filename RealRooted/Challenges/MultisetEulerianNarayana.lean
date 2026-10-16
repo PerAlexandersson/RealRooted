@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -126,3 +128,5 @@ For the tree model, see [@LinMaMaZhou2021]. For the interlacing result, see
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.MultisetEulerianNarayana`.
 -/
+
+public section

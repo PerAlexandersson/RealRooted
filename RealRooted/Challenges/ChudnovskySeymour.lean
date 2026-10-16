@@ -1,4 +1,8 @@
-import RealRooted.HeilmannLieb
+module
+
+public import RealRooted.HeilmannLieb
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowToeplitz
-import RealRooted.ParkingFunctions.Descents.Basic
+module
+
+public import RealRooted.BrandenVecchi.ChowToeplitz
+public import RealRooted.ParkingFunctions.Descents.Basic
 
 /-!
 # Weighted Smirnov words and Toeplitz Chow polynomials
@@ -9,11 +11,11 @@ The alphabet is `Fin m`, adjacent equal letters are forbidden, and a descent
 contributes the polynomial variable `X`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {R : Type*} [CommRing R]
 
@@ -746,7 +748,5 @@ theorem map_finiteElementaryCoefficient
     ← PowerSeries.coeff_map]
   congr 1
   simp [finiteElementarySeries]
-
-end
 
 end RealRooted.BrandenVecchi

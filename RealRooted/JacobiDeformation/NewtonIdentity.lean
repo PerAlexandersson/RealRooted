@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.Kernel
+module
+
+public import RealRooted.JacobiDeformation.Kernel
 
 /-!
 # The Newton expansion of the Jacobi kernel weights
@@ -16,9 +18,9 @@ identity `risingFactorial_pfaffSaalschutz`, after reflecting the negative
 rising factorials.
 -/
 
-open Finset Polynomial
+public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

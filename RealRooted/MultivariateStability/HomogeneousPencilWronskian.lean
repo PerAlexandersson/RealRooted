@@ -1,7 +1,9 @@
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.Multiaffine.AffineLineRestriction
-import RealRooted.SamePhaseInterlacing
-import RealRooted.Wronskian.WeakForward
+module
+
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.SamePhaseInterlacing
+public import RealRooted.Wronskian.WeakForward
 
 /-!
 # Wronskian orientation for homogeneous stable pencils
@@ -11,11 +13,11 @@ extension.  Homogeneity and coefficientwise nonnegativity provide the
 positive leading coefficients needed to orient its univariate restrictions.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- Restricting the old variables of a stable affine extension along a
 strictly positive direction gives a stable univariate pencil. -/
@@ -184,7 +186,5 @@ theorem MvRealStable.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtens
     apply (div_lt_iff₀ hden).2
     linarith [abs_nonneg S]
   linarith
-
-end
 
 end RealRooted

@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.WhitneyReduction
+module
+
+public import RealRooted.BrandenLeite.WhitneyReduction
 
 /-!
 # Resolvability and total nonnegativity
@@ -9,9 +11,9 @@ restorations, so every leading section of the original matrix is totally
 nonnegative.
 -/
 
-open Matrix Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Matrix Polynomial
 
 namespace RealRooted.BrandenLeite
 

@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Data.Fintype.Pi
-import Mathlib.Data.List.FinRange
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+
+module
+
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Data.Fintype.Basic
+public import Mathlib.Data.Fintype.Pi
+public import Mathlib.Data.List.FinRange
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Parking functions
@@ -16,6 +19,8 @@ We use zero-based words `w : Fin n → Fin n`.  The parking condition is written
 in its prefix-count form, which is definitionally the condition used by the
 existing parking-function descent modules.
 -/
+
+@[expose] public section
 
 namespace ParkingFunction
 

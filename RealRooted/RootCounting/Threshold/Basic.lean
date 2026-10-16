@@ -1,10 +1,12 @@
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+module
+
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Thresholded polynomial-root counts
@@ -12,6 +14,8 @@ import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 The root multiset filtered above a moving negative threshold, together with the
 parity information supplied by polynomial evaluations at that threshold.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootCounting
 

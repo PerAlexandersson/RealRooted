@@ -1,10 +1,12 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+
+@[expose] public noncomputable section
 
 open Polynomial
 open scoped BigOperators
 open RealRooted
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

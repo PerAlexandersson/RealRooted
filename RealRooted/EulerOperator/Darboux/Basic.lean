@@ -20,11 +20,9 @@ and develops its coefficientwise and algebraic API over a commutative ring.
 The ordered-root consequences live in `RealRooted.EulerOperator.Darboux.Interlacing`.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

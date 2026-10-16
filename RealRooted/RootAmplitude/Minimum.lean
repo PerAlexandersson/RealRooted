@@ -1,5 +1,7 @@
-import RealRooted.RootAmplitude.Convex
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import RealRooted.RootAmplitude.Convex
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Minimum root-amplitude bounds
@@ -8,11 +10,11 @@ Two routes propagate a lower bound at the smallest finite-sequence amplitude:
 one through convexity and one through reciprocal-distance sums.
 -/
 
+public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 
@@ -34,11 +36,7 @@ theorem amplitude_zero_le (hpos : ∀ i, 0 < g i) (hsm : StrictMono g)
       exact le_trans (ih (by lia))
         (amplitude_le_amplitude_of_convex_tail g hpos hsm hconv n m (by lia) (htail m (by lia)))
 
-end
-
 variable (g : ℕ → ℝ)
-
-noncomputable section
 
 /-- `exp (z / (1 + z)) ≤ 1 + z` for nonnegative `z`. -/
 theorem exp_div_le_one_add {z : ℝ} (hz : 0 ≤ z) :
@@ -147,7 +145,5 @@ theorem amplitude_zero_le_of_sum (hpos : ∀ i, 0 < g i) (hsm : StrictMono g) (n
       intro hm
       exact le_trans (ih (by lia))
         (amplitude_le_amplitude_of_sum g hpos hsm n m (by lia) (hsum m (by lia)))
-
-end
 
 end RealRooted.RootAmplitude

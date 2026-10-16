@@ -1,5 +1,7 @@
-import RealRooted.MaWang
-import Mathlib.Analysis.Polynomial.Basic
+module
+
+public import RealRooted.MaWang
+public import Mathlib.Analysis.Polynomial.Basic
 
 /-!
 # Splitness from sign changes
@@ -8,10 +10,10 @@ Criteria proving that a real polynomial splits from alternating signs at an
 ordered family of test points.
 -/
 
+public noncomputable section
+
 open Polynomial
 open Filter Asymptotics
-
-noncomputable section
 
 namespace RealRooted
 

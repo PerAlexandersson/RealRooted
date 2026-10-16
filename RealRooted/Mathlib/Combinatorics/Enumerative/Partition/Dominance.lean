@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+
+module
+
+public import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 
 /-!
 # Dominance order on partitions
@@ -12,6 +15,8 @@ This file defines the dominance order on partitions of a fixed natural
 number.  The relation is expressed using the row lengths of the associated
 Young diagrams, padded by zeros.
 -/
+
+@[expose] public section
 
 open Finset
 
@@ -273,7 +278,7 @@ theorem sum_min_part_fin_eq_sum_min_parts {n q : ℕ}
       rw [← Multiset.sum_coe, ← Multiset.map_coe,
         Multiset.sort_eq]
 
-private theorem eq_of_forall_prefixSum_eq {n : ℕ}
+theorem eq_of_forall_prefixSum_eq {n : ℕ}
     {mu lambda : n.Partition}
     (h : ∀ k, mu.prefixSum k = lambda.prefixSum k) : mu = lambda := by
   have hpart : ∀ i, mu.part i = lambda.part i := by

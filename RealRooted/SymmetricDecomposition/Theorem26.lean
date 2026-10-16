@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.Decomposition
+module
+
+public import RealRooted.SymmetricDecomposition.Decomposition
 
 /-!
 # Brändén--Solus Theorem 2.6
@@ -7,9 +9,9 @@ The interlacing equivalences, boundary analysis, and ordered-degree bridge
 for the symmetric-decomposition real-rootedness theorem.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

@@ -1,9 +1,11 @@
-import RealRooted.SeparablePermutations.Gamma
+module
+
+public import RealRooted.SeparablePermutations.Gamma
+
+@[expose] public noncomputable section
 
 open Polynomial Finset
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.SeparablePermutations
 

@@ -1,8 +1,10 @@
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Vieta identities from the lowest coefficients
@@ -11,11 +13,11 @@ Reciprocal-root power sums and a product factorization in terms of the lowest
 coefficients of a real polynomial.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootVieta
 
 open Polynomial
-
-noncomputable section
 
 /-- The monic polynomial `∏ ξ ∈ s, (X - ξ)` with root multiset `s`. -/
 def rootProd (s : Multiset ℝ) : ℝ[X] := (s.map (fun ξ => X - C ξ)).prod
@@ -170,8 +172,5 @@ theorem eq_prod_one_add {p : Polynomial ℝ}
         rw [C_mul]; ring
     _ = (p.roots.map (fun ξ => 1 + C (-(1 / ξ)) * X)).prod := by
         rw [hconst, map_one, one_mul]
-
-end
-
 
 end RealRooted.RootVieta

@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal
+module
+
+public import RealRooted.EulerBidiagonal
 
 /-!
 # Central factorial and Legendre–Stirling rows interlace
@@ -9,13 +11,13 @@ the rows of the bidiagonal Euler step `X + (θ + a)(θ + b)` with `(a, b) = (1, 
 Hence consecutive rows strictly interlace (`EulerBidiagonal.strictInterl_rows`).
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
 
 open EulerBidiagonal
-
-noncomputable section
 
 /-- The central-factorial recurrence from OEIS A036969. -/
 def centralFactorialRows : ℕ → ℝ[X]
@@ -88,7 +90,5 @@ example : legendreStirlingRows 1 = 2 + X := by
 example : legendreStirlingRows 2 = 4 + 8 * X + X ^ 2 := by
   norm_num [legendreStirlingRows]
   ring
-
-end
 
 end RealRooted

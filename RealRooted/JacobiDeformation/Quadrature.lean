@@ -1,5 +1,7 @@
-import RealRooted.Jacobi.Orthogonality
-import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
+module
+
+public import RealRooted.Jacobi.Orthogonality
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
 
 /-!
 # Quasi-Jacobi quadrature
@@ -15,9 +17,9 @@ node, and that the ratio `η_i = v'(t_i) / p_{q-1}(t_i)` (`quasiJacobiEta`) is
 strictly positive.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

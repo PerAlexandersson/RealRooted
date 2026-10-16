@@ -1,5 +1,7 @@
-import RealRooted.RootCounting.Finite
-import RealRooted.RootCounting.Threshold.Basic
+module
+
+public import RealRooted.RootCounting.Finite
+public import RealRooted.RootCounting.Threshold.Basic
 
 /-!
 # Anchoring thresholded root counts
@@ -7,6 +9,8 @@ import RealRooted.RootCounting.Threshold.Basic
 Independent roots below a threshold bound its count; combined with the parity
 chain this turns a lower bound into an exact index count.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

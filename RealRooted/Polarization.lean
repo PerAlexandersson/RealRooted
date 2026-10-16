@@ -1,11 +1,13 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import Mathlib.RingTheory.Polynomial.Vieta
-import RealRooted.GraceHalfPlane
-import RealRooted.PartialSymmetrization
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import Mathlib.RingTheory.Polynomial.Vieta
+public import RealRooted.GraceHalfPlane
+public import RealRooted.PartialSymmetrization
+public import RealRooted.MultivariateStability
 
 /-!
 # Polarization and upper-half-plane stability
@@ -17,11 +19,11 @@ coincidence step from the project's checked upper/lower-half-plane form of
 Grace's apolarity theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Polarization of a reduced coefficient sequence. Its diagonal
 specialization is `binomialLift n f`. -/
@@ -469,8 +471,6 @@ theorem mvUpperHalfPlaneStable_polarization {n : ℕ} {p : ℂ[X]}
   apply mvUpperHalfPlaneStable_reducedPolarization
   · simpa only [binomialLift_binomialUnlift hdeg] using hdeg
   · simpa only [binomialLift_binomialUnlift hdeg] using hstable
-
-end
 
 /-- Diagonal projection sends a bounded multiaffine basis monomial to the
 univariate monomial whose exponent is its total degree. -/

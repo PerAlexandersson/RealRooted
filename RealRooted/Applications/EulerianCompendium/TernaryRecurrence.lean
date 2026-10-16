@@ -1,4 +1,6 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
 
 /-!
 # The constant-coefficient recurrence for ternary runs
@@ -8,15 +10,15 @@ three-step recurrence. We identify this recurrence with the imported
 normalized differential recurrence, independently of word enumeration.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerianCompendium
 
-private abbrev runA : ℝ[X] := 3 * X
-private abbrev runB : ℝ[X] := 3 * X * (1 - X)
-private abbrev runC : ℝ[X] := X * (1 - X) ^ 2
+abbrev runA : ℝ[X] := 3 * X
+abbrev runB : ℝ[X] := 3 * X * (1 - X)
+abbrev runC : ℝ[X] := X * (1 - X) ^ 2
 
 /-- The three-step recurrence from the denominator of the ternary-run generating function. -/
 def ternaryRunThreeStep : ℕ → ℝ[X]
@@ -44,10 +46,10 @@ theorem ternaryRunThreeStep_differential (n : ℕ) :
     rcases n with _ | _ | _ | n
     · norm_num [ternaryRunThreeStep]
     · norm_num [ternaryRunThreeStep, runB, map_ofNat]
-      ring
+      ring_nf
     · norm_num [ternaryRunThreeStep, runA, runB, runC, derivative_mul,
         derivative_add, derivative_pow, map_ofNat]
-      ring
+      ring_nf
     · have h0 := ih n (by lia)
       have h1 := ih (n + 1) (by lia)
       have h2 := ih (n + 2) (by lia)
@@ -83,7 +85,7 @@ theorem ternaryRunThreeStep_eq (n : ℕ) :
     simp only [runB, eval_add, eval_mul, eval_sub, eval_C, eval_X, eval_pow,
       eval_ofNat, eval_one]
     field_simp
-    ring
+    ring_nf
 
 /-- The three-step recurrence for the imported ternary-run polynomial. -/
 theorem ternaryRunPolynomial_three_step (n : ℕ) :

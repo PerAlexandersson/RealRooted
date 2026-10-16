@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Basic.Real.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # The monic polynomial with prescribed roots
@@ -10,9 +12,9 @@ import Mathlib.Basic.Real.Basic
 `rootPolynomial ↑xs`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

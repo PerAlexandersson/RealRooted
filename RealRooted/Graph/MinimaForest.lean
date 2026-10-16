@@ -1,5 +1,7 @@
-import RealRooted.Graph.MinimaLocalOrder
-import RealRooted.Graph.ChordalAcyclicSink
+module
+
+public import RealRooted.Graph.MinimaLocalOrder
+public import RealRooted.Graph.ChordalAcyclicSink
 
 /-!
 # Minima polynomials of forests and acyclic sinks of line graphs
@@ -11,9 +13,9 @@ one local order, and the sinks are the mutual minima.  Hence
 `M_F(t) = S_{L(F)}(t)`, the acyclic sink polynomial of the line graph.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

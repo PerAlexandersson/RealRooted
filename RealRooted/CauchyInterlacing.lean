@@ -1,8 +1,10 @@
-import Mathlib.Analysis.Matrix.Spectrum
-import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.LinearAlgebra.Dimension.Finrank
-import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
-import Mathlib.Tactic
+module
+
+public import Mathlib.Analysis.Matrix.Spectrum
+public import Mathlib.Analysis.InnerProductSpace.PiL2
+public import Mathlib.LinearAlgebra.Dimension.Finrank
+public import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
+public import Mathlib.Tactic
 
 /-!
 # Cauchy interlacing theorem: statement and supporting API
@@ -40,6 +42,8 @@ interlacing means `λ_{k+1} ≤ μ_k ≤ λ_k` for every `k`.
 * S. Fisk, *A very short proof of Cauchy's interlace theorem for eigenvalues of
   Hermitian matrices*.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

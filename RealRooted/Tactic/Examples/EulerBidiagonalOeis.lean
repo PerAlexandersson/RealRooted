@@ -1,4 +1,6 @@
-import RealRooted.Tactic
+module
+
+public import RealRooted.Tactic
 
 /-!
 # Euler-bidiagonal OEIS regressions
@@ -8,9 +10,9 @@ the general Euler-bidiagonal step. The first six use positive parameters; A26994
 zero-parameter boundary case.
 -/
 
-open Polynomial RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial RealRooted
 
 namespace RealRooted.Tactic.EulerBidiagonalOeisExamples
 

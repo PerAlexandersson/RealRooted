@@ -1,5 +1,7 @@
-import Mathlib.Tactic
-import RealRooted.LiebSokalOperator.Linearity
+module
+
+public import Mathlib.Tactic
+public import RealRooted.LiebSokalOperator.Linearity
 
 /-!
 # Elementary symmetric differential operators
@@ -8,11 +10,11 @@ This file computes the action of an elementary symmetric polynomial in the
 partial derivatives on another elementary symmetric polynomial.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem pderiv_prod_X {R sigma : Type*} [CommSemiring R] [DecidableEq sigma]
     (x : sigma) (t : Finset sigma) :
@@ -326,7 +328,5 @@ theorem applyNegDifferential_esymm
   by_cases hij : i ≤ j
   · rw [ite_eq_left hij, ite_eq_left hij]
   · rw [ite_eq_right hij, ite_eq_right hij, mul_zero]
-
-end
 
 end RealRooted

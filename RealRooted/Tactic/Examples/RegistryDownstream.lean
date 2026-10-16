@@ -1,8 +1,10 @@
-import RealRooted.Applications.OEIS.A111910
-import RealRooted.Applications.OEIS.A155495
-import RealRooted.Applications.OEIS.A359363
-import RealRooted.Applications.OEIS.ReflectedEulerRows
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A111910
+public import RealRooted.Applications.OEIS.A155495
+public import RealRooted.Applications.OEIS.A359363
+public import RealRooted.Applications.OEIS.ReflectedEulerRows
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Downstream registry presentations
@@ -12,9 +14,9 @@ literally. The final two families guard against expensive attempts by structural
 incorrect registered models.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace RealRooted.Tactic.RegistryDownstreamExamples
 

@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequencePositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequencePositive
 
 /-!
 # Liu--Wang positive-affine regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequencePositive
 Sequence tests for positive-affine lag factors, including shifted
 nonnegative-coefficient certificates and projection endpoints.
 -/
+
+public section
 
 open Polynomial
 

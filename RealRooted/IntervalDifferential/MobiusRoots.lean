@@ -18,11 +18,9 @@ Transfer simple roots from `(-1, 1)` to negative roots through the map
 is kept separate, so this module only uses its consequence at roots.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 namespace RealRooted.IntervalDifferential
-
-noncomputable section
 
 /-- The Möbius map from `(-1, 1)` to the negative real axis. -/
 def mobiusIntervalRoot (z : ℝ) : ℝ := (z - 1) / (z + 1)
@@ -96,7 +94,5 @@ theorem splits_roots_nodup_neg_of_mobius_eval
     have hxI := hGbounds x (Multiset.mem_toFinset.mp hx)
     dsimp [mobiusIntervalRoot]
     exact div_neg_of_neg_of_pos (by linarith) (hden x hxI.1)
-
-end
 
 end RealRooted.IntervalDifferential

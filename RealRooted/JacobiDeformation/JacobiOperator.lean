@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Kernel
-import RealRooted.JacobiDeformation.Quadrature
+module
+
+public import RealRooted.JacobiDeformation.Kernel
+public import RealRooted.JacobiDeformation.Quadrature
 
 /-!
 # The positive shifted-Jacobi operator
@@ -15,9 +17,9 @@ quasi-Jacobi polynomial, the evaluation vectors of `p_0, …, p_{q-1}` are
 explicit eigenvectors of its collocation matrix.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

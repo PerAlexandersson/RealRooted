@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Falling
+module
+
+public import RealRooted.NarayanaTransformation.Falling
 
 /-!
 # Rising-factorial transform preservation.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -55,6 +57,5 @@ theorem generalizedRisingFactorialPreservesPF :
   · simpa using IsPFPolynomial.zero
   · exact (generalizedRisingFactorialPreservesPF_shiftStrictInterl hμ p.natDegree p rfl
       hp0 hp).1
-
 
 end RealRooted

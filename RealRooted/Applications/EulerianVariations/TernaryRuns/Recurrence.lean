@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic
 
 /-!
 # Ternary increasing-run recurrence
@@ -11,9 +13,9 @@ Its algebraic degree, leading-coefficient, coefficient-positivity, and support
 properties do not depend on the combinatorial interpretation.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.EulerianVariations
 

@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator.Darboux.Basic
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.EulerOperator.Darboux.Basic
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.SimpleRoots
 
 /-!
 # Darboux operators on polynomials with simple negative roots
@@ -13,9 +15,9 @@ Eulerian–Narayana factorization (Zhang–Zhao, Lemma 2.8).  The unit-interval 
 `RealRooted.EulerOperator.Darboux.Interlacing`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

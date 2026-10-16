@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.ChainPolynomial.Algebra
-import RealRooted.BrandenLeite.Resolvable
+module
+
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+public import RealRooted.BrandenLeite.Resolvable
 
 /-!
 # Resolution algebra for chain polynomials
@@ -8,9 +10,9 @@ This module bridges generic resolvability data to the chain-polynomial
 subdivision operator.  The interlacing induction is deliberately separate.
 -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
 

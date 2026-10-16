@@ -14,7 +14,7 @@ Ported from Aristotle task `61da6424-89ea-4fbf-852c-6e47d3e3aef9`,
 following the compendium zig-zag proof, Appendix B.
 -/
 
-@[expose] public section
+public section
 
 open PowerSeries Real Filter Topology
 

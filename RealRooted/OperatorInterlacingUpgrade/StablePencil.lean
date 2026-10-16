@@ -1,5 +1,7 @@
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
+module
+
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
 
 /-!
 # Monomial-chain operators preserve nonnegative stable pencils
@@ -13,6 +15,8 @@ preservation of all bivariate stability: the rank-three binary-run transform is 
 operator that does not preserve bivariate real stability
 (`binaryRunTransformThree_counterexample`).
 -/
+
+public section
 
 open Polynomial
 

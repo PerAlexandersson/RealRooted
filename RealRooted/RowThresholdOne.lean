@@ -1,9 +1,11 @@
-import RealRooted.ThresholdMatrix.Basic
-import RealRooted.VeroneseMatrix
+module
+
+public import RealRooted.ThresholdMatrix.Basic
+public import RealRooted.VeroneseMatrix
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

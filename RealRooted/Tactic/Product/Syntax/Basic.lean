@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Tactic.Finish
 
 /-!
 # Basic product-tactic syntax
 
 Syntax shared by factor certificates, generic product recurrences, and model lifts.
 -/
+
+public section
 
 namespace RealRooted
 

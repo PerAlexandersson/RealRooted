@@ -1,6 +1,8 @@
-import Mathlib.Data.Finsupp.Weight
-import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+module
+
+public import Mathlib.Data.Finsupp.Weight
+public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 /-!
 # Degree-one exponent coordinates for finite symbols
@@ -10,9 +12,9 @@ supports. It supplies the basis normalization used in the coefficient
 calculation of Borcea--Branden, arXiv:0809.0401, Lemma 2.2.
 -/
 
-namespace RealRooted.BorceaBranden
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- A natural-valued finitely supported function bounded coordinate-wise by
 one is the indicator of its support. -/
@@ -82,8 +84,6 @@ theorem degree_degreeOneExponentEquivFinset_symm
       (card_support_eq_degree_of_le_one d.1 d.2).symm
     _ = s.card := congrArg Finset.card hsupp
 
-end
-
 end RealRooted.BorceaBranden
 
 namespace Finsupp
@@ -136,8 +136,6 @@ lemma degreeOfLEFinOneEquiv_val (d : ℕ)
 end RealRooted.BorceaBranden
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 open MvPolynomial
 
@@ -200,7 +198,5 @@ theorem algebraicSymbol_finOne_eq_sum_range
       X (Sum.inr default) ^ (n - k)
   rw [algebraicSymbol_finOne_eq_sum_fin (n := n) (T := T)]
   simpa [g] using Fin.sum_univ_eq_sum_range g (n + 1)
-
-end
 
 end RealRooted.BorceaBranden

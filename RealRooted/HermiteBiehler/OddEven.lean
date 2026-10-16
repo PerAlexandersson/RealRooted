@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Odd/even polynomial algebra
@@ -7,9 +9,9 @@ The polynomial `q(X²) + X * p(X²)`, its coefficient recovery maps,
 nonnegativity transport, and degree/parity formulas.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

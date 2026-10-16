@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.SamePhaseStability
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.SamePhaseStability
 
 /-!
 # Nonnegative common-phase restrictions
@@ -9,11 +11,11 @@ This file proves the coefficientwise nonnegativity of common-phase
 restrictions without importing stability or root-location machinery.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Nonnegative weights and multivariate coefficients give a univariate
 polynomial with nonnegative coefficients. -/
@@ -33,7 +35,5 @@ theorem commonPhaseRestriction_hasNonnegCoeffs {σ : Type*}
   apply hasNonnegCoeffs_finsetProd
   intro i hi
   exact (hasNonnegCoeffs_C_mul (hwt i) hasNonnegCoeffs_X).pow (d i)
-
-end
 
 end RealRooted

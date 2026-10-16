@@ -1,9 +1,13 @@
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
+module
+
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
 
 /-!
 # Liu x-subtraction adjacent-gap root counts.
 -/
+
+public section
 
 open Polynomial Filter
 

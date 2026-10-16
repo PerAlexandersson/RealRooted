@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.Identity
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.LiebSokal
+module
+
+public import RealRooted.FiniteFreeAdditive.Identity
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.LiebSokal
 
 /-!
 # Finite-free additive convolution preservation
@@ -10,11 +12,11 @@ additive convolution into a bounded-degree splitness theorem.  It is
 zero-aware: inputs of degree smaller than the ambient degree may yield zero.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The degree-boxed finite-free additive convolution of split real
 polynomials is split.  The output may be zero when an input degree is smaller
@@ -85,7 +87,5 @@ theorem splits_finiteFreeAdditiveConvolution
       apply hdiagstable z hz
       simp [hzero]
     exact IsUpperHalfPlaneStable.splits_complexify hconvstable
-
-end
 
 end RealRooted

@@ -1,8 +1,10 @@
-import Mathlib.Basic.Real.Basic
-import Mathlib.LinearAlgebra.Matrix.Transvection
-import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Matrix.Transvection
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Finite weighted lower shifts
@@ -12,9 +14,9 @@ tiling kernels.  Its strict-lower support makes the finite geometric sum an
 exact two-sided resolvent, without an infinite matrix inverse.
 -/
 
-namespace RealRooted.BrandenLeite
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BrandenLeite
 
 open scoped BigOperators
 
@@ -416,7 +418,5 @@ theorem weightedGreenKernel_zero (b : ℕ → ℝ) :
     weightedGreenKernel b 0 = 1 := by
   rw [weightedGreenKernel_eq_weightedLowerChipProduct]
   rfl
-
-end
 
 end RealRooted.BrandenLeite

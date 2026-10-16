@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Parity
-import RealRooted.JacobiDeformation.Strict
+module
+
+public import RealRooted.JacobiDeformation.Parity
+public import RealRooted.JacobiDeformation.Strict
 
 /-!
 # The Jacobi deformation
@@ -64,3 +66,5 @@ positive Jacobi operator.
    `b = m + s - 1 + δ` transports negative real-rootedness to every `δ ≥ 0`.
 9. `Parity`: the central-trinomial specializations.
 -/
+
+public section

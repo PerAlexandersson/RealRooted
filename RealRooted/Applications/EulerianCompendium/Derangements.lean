@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import Mathlib.Logic.Equiv.Fin.Rotate
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import Mathlib.Logic.Equiv.Fin.Rotate
 
 /-!
 # Descent polynomials of derangements
@@ -10,9 +12,9 @@ They separate nonvanishing and the sign of real roots from the remaining
 splitting assertion.
 -/
 
-open Polynomial RealRooted
+public noncomputable section
 
-noncomputable section
+open Polynomial RealRooted
 
 namespace RealRooted.EulerianCompendium
 

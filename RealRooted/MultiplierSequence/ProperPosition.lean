@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.Laguerre
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.MultiplierSequence.Laguerre
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Directed proper position for diagonal multiplier operators
@@ -10,9 +12,9 @@ interlacing up to orientation (finite Pólya--Schur).  Comparing the sums of the
 fixes the orientation: positive multiplier sequences preserve directed proper position.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

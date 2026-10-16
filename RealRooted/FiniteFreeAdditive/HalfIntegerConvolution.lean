@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.HalfInteger
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+module
+
+public import RealRooted.FiniteFreeAdditive.HalfInteger
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Generalized half-integer additive convolution
@@ -11,11 +13,11 @@ with the existing rectangular additive convolution at natural parameters.  It
 does not assert a root-preservation result.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 private theorem sum_range_two_mul_add_one_eq_sum_range_two_mul {R : Type*}
     [AddCommMonoid R] (F : ℕ → R) (k : ℕ)
@@ -204,7 +206,5 @@ theorem finiteFreeAdditiveConvolution_oddLift_eq_generalized (n : ℕ) (p q : �
       rw [coeff_generalizedRectangularAdditiveConvolution_of_le _ _ _ _ hr]
     · rw [coeff_finiteFreeAdditiveConvolution_of_gt _ _ _ (by lia)]
       rw [coeff_generalizedRectangularAdditiveConvolution_of_gt _ _ _ _ (by lia)]
-
-end
 
 end RealRooted

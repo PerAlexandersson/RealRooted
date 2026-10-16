@@ -1,10 +1,12 @@
-import RealRooted.BasisTransform
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.RootBounds
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.BasisTransform
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.RootBounds
+public import RealRooted.ScalarNormalization
 
 /-!
 # Balanced run transformation
@@ -19,9 +21,9 @@ polynomials.  Its reflection symmetry gives the equal central pair when the
 rank is odd.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+module
+
+public import RealRooted.Applications.OEIS.A144438
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 
 /-!
 # Decorated cycle-q Eulerian recurrence
@@ -13,9 +15,9 @@ monic family and the generic quadratic-lag strict-interlacing theorem.  No
 permutation, cycle, excedance, or decoration interpretation is asserted.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

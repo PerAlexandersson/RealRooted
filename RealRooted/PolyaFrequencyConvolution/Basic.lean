@@ -1,10 +1,12 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.ToeplitzFin
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
-import RealRooted.NatCauchyConvolution
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.ToeplitzFin
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.NatCauchyConvolution
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Cauchy convolution of Pólya-frequency sequences
@@ -13,6 +15,8 @@ This file identifies finite lower-Toeplitz truncation multiplication with
 Cauchy convolution and proves that Pólya-frequency sequences are closed under
 that operation.
 -/
+
+public section
 
 open Matrix
 

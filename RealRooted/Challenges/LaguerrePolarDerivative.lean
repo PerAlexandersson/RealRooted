@@ -1,6 +1,8 @@
-import RealRooted.Apolarity
-import RealRooted.GraceHalfPlane
-import RealRooted.PolarDerivative
+module
+
+public import RealRooted.Apolarity
+public import RealRooted.GraceHalfPlane
+public import RealRooted.PolarDerivative
 
 /-!
 # Laguerre's theorem on polar derivatives

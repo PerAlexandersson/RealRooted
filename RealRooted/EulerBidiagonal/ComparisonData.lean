@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.General
-import RealRooted.Interlacing.RootCountSigns
+module
+
+public import RealRooted.EulerBidiagonal.General
+public import RealRooted.Interlacing.RootCountSigns
 
 /-!
 # Comparison roots of the general Euler step
@@ -10,9 +12,9 @@ of `q` (with one extra zero to the left when `v > 0` and one positive zero when 
 inputs for locating the roots of `generalStep q` (`EulerBidiagonal.Location`).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 
@@ -96,7 +98,6 @@ theorem generalComparison_natDegree_of_v_ne_zero (κ a b v : ℝ) (q : ℝ[X]) (
       exact mul_ne_zero hv hqpos.ne')
   refine ⟨hdeg, ?_⟩
   rw [leadingCoeff, hdeg, htop]
-
 
 /-! ## The extra root of the comparison polynomial -/
 

@@ -1,5 +1,11 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import RealRooted.RootMultiplicityMatching
+module
+
+public import Mathlib.Topology.Order.IntermediateValue
+public import Mathlib.Topology.Instances.Real.Lemmas
+public import Mathlib.Topology.Defs.Filter
+public import Mathlib.Topology.Connected.TotallyDisconnected
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.RootMultiplicityMatching
 
 /-!
 # Local Constancy of Root Counts
@@ -10,9 +16,9 @@ upper root counts on a compact positive parameter interval to a local
 root-continuity statement stated as per-root local lower counts.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

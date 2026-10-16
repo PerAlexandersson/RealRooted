@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.DiagonalBridge
-import RealRooted.Applications.OEIS.A144438.ExactLayerStability
-import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.DiagonalBridge
+public import RealRooted.Applications.OEIS.A144438.ExactLayerStability
+public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
 
 /-!
 # Pólya-frequency consequences of the A144438 diagonal bridge
@@ -13,9 +15,9 @@ The total conclusions are univariate: they do not assert stability of either
 outer multivariate sum.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Every individual normalization fiber is Pólya-frequency after diagonal
 restriction. -/
@@ -53,7 +55,5 @@ theorem diagonal_normalizedFiberPolynomial_isPFPolynomial (n : Nat) :
         (normalizedFiberPolynomial (R := Real) (n + 2))) := by
   rw [diagonal_normalizedFiberPolynomial_eq_A144438]
   exact A144438_isPFPolynomial n
-
-end
 
 end RealRooted.Applications.OEIS

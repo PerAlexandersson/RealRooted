@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 
 /-!
 # Coefficient extraction under locally uniform convergence of polynomials
@@ -34,10 +37,10 @@ coefficient-extraction step in Borcea-Brändén, arXiv:0809.0401, Theorem 5.1.
   to `P α`.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Topology
 open scoped BigOperators
-
-noncomputable section
 
 namespace MvPolynomial
 

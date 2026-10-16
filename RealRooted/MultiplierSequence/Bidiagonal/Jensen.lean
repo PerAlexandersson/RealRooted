@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.Pair
-import RealRooted.Hadamard.Basic
-import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
+module
+
+public import RealRooted.Compatibility.Pair
+public import RealRooted.Hadamard.Basic
+public import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 
 /-!
 # Bidiagonal Jensen pencils
@@ -10,9 +12,9 @@ coefficient-bidiagonal operators: its quadratic residual factorization,
 small PF discriminant certificate, and certificate consequences.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -248,6 +250,5 @@ theorem BidiagonalJensenPencilCertificate.beta_nonneg_of_le
   simp [coeff_jensenPolynomial, hk] at hcoeff
   have hchoose : (0 : ℝ) < Nat.choose d k := by exact_mod_cast Nat.choose_pos hk
   nlinarith
-
 
 end RealRooted

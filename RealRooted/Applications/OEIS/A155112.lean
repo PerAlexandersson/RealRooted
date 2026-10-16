@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
+module
+
+public import Mathlib
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # OEIS A155112
@@ -12,9 +14,9 @@ The intended repository destination is
 `RealRooted/Applications/OEIS/A155112.lean`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A155112
 

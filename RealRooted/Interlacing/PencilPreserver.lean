@@ -1,7 +1,9 @@
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.SimpleRoots
 
 /-!
 # Linear maps preserving interlacing of negative-rooted pairs
@@ -21,9 +23,9 @@ then pencil members can have double roots.  `strictInterl_iterate_of_negative_si
 the statement along `P (n+1) = T (P n)`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -306,7 +308,6 @@ theorem hasNegativeSimplePencilShapes_of_strictInterl
           _ = C β * (C c * ((X - C ρ) * q)) := by rw [hform]
           _ = C (β * c) * ((X - C ρ) * q) := by rw [← mul_assoc, C_mul]
       simpa [P] using hshapeP
-
 
 /-- A linear map satisfying H1--H2 preserves the oriented successor-degree
 interlacing relation and root-disjointness of a negative-simple pencil. -/

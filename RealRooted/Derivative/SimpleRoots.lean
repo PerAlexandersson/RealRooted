@@ -1,5 +1,7 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.SameDegreeDerivative
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.SameDegreeDerivative
 
 /-!
 # Simple roots and strict bounds for derivatives
@@ -14,9 +16,9 @@ This file records two root facts for derivatives of split real polynomials.
   root is strictly below `B`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

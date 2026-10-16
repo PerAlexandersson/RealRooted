@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import Mathlib.LinearAlgebra.Matrix.Block
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 /-!
 # The Toeplitz matrix in Karlin's finite-order sector theorem
@@ -14,6 +16,8 @@ nonnegativity directly from the Pólya-frequency hypothesis.
 
 Reference: S. Karlin, *Total Positivity*, Vol. I, Chapter 8, Theorem 3.1.
 -/
+
+@[expose] public section
 
 open Matrix
 

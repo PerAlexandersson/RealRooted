@@ -19,11 +19,9 @@ operators and generic second-order ODE infrastructure. No root-order or
 orthogonality imports are used here.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

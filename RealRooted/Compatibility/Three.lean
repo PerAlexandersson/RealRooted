@@ -1,4 +1,6 @@
-import RealRooted.ChudnovskySeymour.Core
+module
+
+public import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Three-polynomial compatibility assembly
@@ -8,9 +10,9 @@ one member of a pair is replaced by a nonnegative sum of two pairwise
 compatible polynomials.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

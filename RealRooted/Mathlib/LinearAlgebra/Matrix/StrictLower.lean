@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Data.Matrix.Mul
+
+module
+
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Data.Matrix.Mul
 
 /-!
 # Strictly lower triangular matrix powers
@@ -15,11 +18,11 @@ hypotheses so that they do not depend on a particular triangular-matrix
 predicate.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace Matrix
-
-noncomputable section
 
 /-- Retain precisely the entries strictly below the diagonal. -/
 def strictLowerPart {R ι : Type*} [Zero R] [LinearOrder ι]
@@ -301,7 +304,5 @@ theorem finiteGeomSum_mul
     finiteGeomSum (G * K) n * G = G * finiteGeomSum (K * G) n := by
   simp_rw [finiteGeomSum, Finset.sum_mul, Finset.mul_sum,
     mul_pow_mul_eq_mul_mul_pow G K]
-
-end
 
 end Matrix

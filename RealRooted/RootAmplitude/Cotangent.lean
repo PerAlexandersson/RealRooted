@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Density
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+module
+
+public import RealRooted.RootAmplitude.Density
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Cotangent model for logarithmic root gaps
@@ -10,9 +12,9 @@ has a closed form.  Its uniform upper bound verifies the log-gap density
 criterion for the exponential of any equally spaced sample of the spectrum.
 -/
 
-namespace RealRooted.RootAmplitude
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.RootAmplitude
 
 /-- The cotangent model spectrum in logarithmic coordinates. -/
 def cotangentModel (t : ℝ) : ℝ :=
@@ -110,7 +112,5 @@ theorem gap_exp_cotangentModel_le (θ : ℕ → ℝ) (h : ℝ)
     have hbound := inv_cotangentModel_gap_diff_le (θ k) h hk
       (by simpa only [hθ1] using hk1) (by simpa only [hθ2] using hk2) hh
     linarith
-
-end
 
 end RealRooted.RootAmplitude

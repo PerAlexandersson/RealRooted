@@ -16,9 +16,7 @@ These elementary factor lemmas prepare the induction in Appendix C.4 of
 product of two real linear factors or a conjugate-pair factor.
 -/
 
-@[expose] public section
-
-noncomputable section
+public noncomputable section
 
 open Polynomial
 
@@ -27,7 +25,6 @@ namespace RealRooted.IntervalDifferential
 private theorem coeff_comp_neg_X (q : ℝ[X]) (n : ℕ) :
     (q.comp (-X)).coeff n = q.coeff n * (-1) ^ n := by
   simpa using comp_C_mul_X_coeff (p := q) (r := (-1 : ℝ)) (n := n)
-
 
 /-- A monic parity polynomial of degree three has the cubic seed form. -/
 theorem monic_parity_cubic_shape {q : ℝ[X]} (hq : q.Monic)

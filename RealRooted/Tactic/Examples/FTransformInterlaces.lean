@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Regression examples for the `f`-polynomial interlacing route
@@ -8,9 +10,9 @@ The two alternating-run rows below have transformed auxiliary rows of degree
 through `fPolynomial`.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace FTransformInterlacingExamples
 

@@ -1,5 +1,7 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Simultaneous nonnegative translation of finite interlacing sequences
@@ -10,9 +12,9 @@ coefficients. Translation preserves both strict and zero-aware interlacing,
 so the same normalization applies to finite interlacing sequences.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.Graph.MinimaPolynomial
+module
+
+public import RealRooted.Graph.MinimaPolynomial
 
 /-!
 # Local orders and their mutual minima
@@ -20,9 +22,9 @@ summed over matchings `S`, since a set of edges consists of mutual minima only i
 is a matching, and then for a `∏ 1 / (deg u * deg v)` fraction of the local orders.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph
@@ -56,7 +58,6 @@ noncomputable instance (G : _root_.SimpleGraph V) : Fintype (LocalOrder G) := by
 /-- The minima polynomial: local orders counted by mutual minima. -/
 def minimaPolynomial (G : _root_.SimpleGraph V) : ℝ[X] :=
   ∑ L : LocalOrder G, X ^ L.mutualMinima.card
-
 
 /-! ### Counting local orders with prescribed mutual minima -/
 

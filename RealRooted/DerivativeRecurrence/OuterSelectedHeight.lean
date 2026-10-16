@@ -1,5 +1,7 @@
-import Mathlib.Analysis.MeanInequalities
-import RealRooted.DerivativeRecurrence.RootWindow
+module
+
+public import Mathlib.Analysis.MeanInequalities
+public import RealRooted.DerivativeRecurrence.RootWindow
 
 /-!
 # The outer selected-height bound
@@ -12,12 +14,14 @@ selected slots of the A101280 orbit (issue #1342); the interior slots need an
 orbit-specific invariant, since the generic closures `f + 1 ≼ X Δ` and `Tail ≼ Δ` are false.
 -/
 
+public section
+
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted
 
-private theorem fin_prod_le_avg_pow {d : ℕ} (hd : d ≠ 0) (e : Fin d → ℝ)
+theorem fin_prod_le_avg_pow {d : ℕ} (hd : d ≠ 0) (e : Fin d → ℝ)
     (he : ∀ i, 0 ≤ e i) :
     ∏ i, e i ≤ ((∑ i, e i) / (d : ℝ)) ^ d := by
   have h := Real.geom_mean_le_arith_mean (Finset.univ : Finset (Fin d))
@@ -30,7 +34,7 @@ private theorem fin_prod_le_avg_pow {d : ℕ} (hd : d ≠ 0) (e : Fin d → ℝ)
     (Real.rpow_nonneg (Finset.prod_nonneg fun i _ => he i) _) h' d
   rwa [Real.rpow_inv_natCast_pow (Finset.prod_nonneg fun i _ => he i) hd] at hpow
 
-private theorem eval_derivative_finset_prod_div_eval
+theorem eval_derivative_finset_prod_div_eval
     {ι : Type*} (u : Finset ι) (g : ι → ℝ[X]) (x : ℝ)
     (h : ∀ i ∈ u, (g i).eval x ≠ 0) :
     (derivative (∏ i ∈ u, g i)).eval x / (∏ i ∈ u, g i).eval x =

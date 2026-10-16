@@ -1,5 +1,7 @@
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Multiaffine reciprocal transforms
@@ -9,11 +11,11 @@ polynomial. On evaluation, it is the polynomial realization of
 `P(z) ↦ ∏ i, z i * P(-1 / z)`, which preserves upper-half-plane stability.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Complement every exponent inside the multiaffine cube. -/
 def complementExponent {sigma : Type*} [Fintype sigma] (d : sigma →₀ ℕ) :
@@ -304,7 +306,5 @@ theorem MvUpperHalfPlaneStable.signedMultiaffineReciprocal
     rw [Complex.inv_im]
     simpa only [neg_div, neg_neg] using
       div_pos (hz i) (Complex.normSq_pos.mpr (hz0 i))
-
-end
 
 end RealRooted

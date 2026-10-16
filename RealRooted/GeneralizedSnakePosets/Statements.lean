@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.GeneralizedSnakePosets.SquarecaseModel
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
+module
+
+public import RealRooted.Basic
+public import RealRooted.GeneralizedSnakePosets.SquarecaseModel
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Braun--Jal generalized snake poset predicates
@@ -14,9 +16,9 @@ for `modifiedNarayanaPolynomial`, `FiniteSkewBoard.auxiliaryG`, and
 `generalizedSnakeRookModel`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

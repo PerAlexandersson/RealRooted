@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
-import RealRooted.ClassicalHurwitzMatrix.Routh
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Coefficient consequences for Hurwitz parity parts
@@ -10,9 +12,9 @@ split with nonpositive roots. This module converts that root information back
 to coefficient nonnegativity when their leading coefficients are positive.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

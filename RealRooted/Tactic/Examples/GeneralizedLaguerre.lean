@@ -1,10 +1,14 @@
-import RealRooted.Tactic.GeneralizedLaguerre
+module
+
+public import RealRooted.Tactic.GeneralizedLaguerre
 
 /-!
 # Generalized-Laguerre second-derivative tactic examples
 
 Regression tests for three parameter pairs used by OEIS proof clients.
 -/
+
+public section
 
 open Polynomial
 

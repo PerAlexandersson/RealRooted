@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.Permutation
+module
+
+public import RealRooted.HosterStump.Permutation
 
 /-!
 # Graded simplicial posets and their flag vectors
@@ -19,9 +21,9 @@ Stanley, *Combinatorics and commutative algebra*, III.6.
 * `desLeCount n k E`: permutations of `n + 1` letters with `w 0 = k` and descent set in `E`.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted.HosterStump
 
@@ -61,8 +63,6 @@ def flagH [PartialOrder P] (rk : P → ℕ) (S : Finset ℕ) : ℝ :=
   ∑ T ∈ S.powerset, (-1 : ℝ) ^ (S \ T).card * (flagF rk T : ℝ)
 
 end RealRooted.HosterStump
-
-end
 
 namespace RealRooted.HosterStump
 

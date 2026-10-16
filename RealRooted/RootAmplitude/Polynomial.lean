@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Polynomial root-amplitude identities
@@ -11,11 +13,11 @@ The normalized derivative at a simple nonzero root equals a product over the
 other roots.  This is the polynomial bridge for finite root-amplitude bounds.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.RootAmplitude
-
-noncomputable section
 
 /-- A root of a polynomial with nonzero constant term is nonzero. -/
 theorem root_ne_zero {p : ℝ[X]} (hzero : p.eval 0 ≠ 0) {r : ℝ} (hroot : r ∈ p.roots) :
@@ -69,7 +71,5 @@ theorem eval_deriv_root_div_eval_zero {p : ℝ[X]} (hsplits : p.Splits) {s : ℝ
     ring
   rw [hderivative, hconstant, hfactorization]
   field_simp
-
-end
 
 end RealRooted.RootAmplitude

@@ -1,4 +1,6 @@
-import RealRooted.ChudnovskySeymour.Core
+module
+
+public import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Shellings and interlacing for simplicial subdivisions
@@ -23,9 +25,9 @@ The partition and h-polynomial identity use only those finite consequences,
 so the omitted topological clauses are not needed for the criterion.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace HlavacekSolus
@@ -120,7 +122,6 @@ theorem isRealRooted_of_perm_sum_of_isInterlacingSeq
   have hordered_rr := isRealRooted_sum_of_isInterlacingSeq hseq hreal hpos hordered_ne
   rw [hperm.sum_eq] at hordered_rr
   exact hordered_rr
-
 
 variable {U α : Type*} [DecidableEq U] [DecidableEq α]
 variable {V W : Type*} [Fintype V] [DecidableEq V] [Fintype W] [DecidableEq W]
@@ -238,10 +239,10 @@ def restrictionFaces (sub : Subdivision Base Subdivided)
 def boundaryFacets (F : Finset V) : Finset (Finset V) :=
   F.powerset.filter (fun G => G.card + 1 = F.card)
 
-private def boundaryFaces (F : Finset V) : Finset (Finset V) :=
+def boundaryFaces (F : Finset V) : Finset (Finset V) :=
   F.powerset.erase F
 
-private def unionList : List (Finset α) → Finset α
+def unionList : List (Finset α) → Finset α
   | [] => ∅
   | S :: Ss => S ∪ unionList Ss
 
@@ -262,7 +263,7 @@ private lemma mem_unionList_iff {Ss : List (Finset α)} {a : α} :
         · exact Or.inl (hTS ▸ haT)
         · exact Or.inr ⟨T, hT, haT⟩
 
-private def greedyPieces (prior : Finset α) : List (Finset α) → List (Finset α)
+def greedyPieces (prior : Finset α) : List (Finset α) → List (Finset α)
   | [] => []
   | S :: Ss => (S \ prior) :: greedyPieces (prior ∪ S) Ss
 
@@ -320,12 +321,12 @@ private lemma hPolynomial_unionList_of_pairwise_disjoint
       rw [unionList, hPolynomial_union_disjoint hdisj, ih (List.pairwise_cons.mp hSs).2]
       simp
 
-private def priorIntersectionFaces (faces : Finset (Finset V))
+def priorIntersectionFaces (faces : Finset (Finset V))
     (order : List (Finset V)) (i : Fin order.length) : Finset (Finset V) :=
   faces.filter (fun G => G ⊆ order.get i ∧
     ∃ k : Fin order.length, k < i ∧ G ⊆ order.get k)
 
-private def boundaryPrefixFaces (order : List (Finset V)) (r : ℕ) : Finset (Finset V) :=
+def boundaryPrefixFaces (order : List (Finset V)) (r : ℕ) : Finset (Finset V) :=
   (order.take r).foldl (fun acc F => acc ∪ F.powerset) ∅
 
 /-- Recursive paper-style shelling data for a finite facet set.

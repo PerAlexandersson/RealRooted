@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.PFPolynomial
 
 /-!
 # Affine pencils of PF pairs
@@ -9,9 +11,9 @@ For PF polynomials `f` and `g` (nonnegative coefficients, only real roots), dire
 are allowed on both sides.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

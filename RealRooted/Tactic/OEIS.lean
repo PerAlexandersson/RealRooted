@@ -1,52 +1,103 @@
-import RealRooted.Tactic.AllCombo
-import RealRooted.Tactic.AffineDerivative
-import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.CubicDiscriminant
-import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.CommonInterleaver.BasicRules
-import RealRooted.Tactic.Derivative
-import RealRooted.Tactic.EulerOperator
-import RealRooted.Tactic.Favard
-import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.Hadamard
-import RealRooted.Tactic.HermiteBiehler
-import RealRooted.Tactic.HermitePoulain
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.J1Chebyshev
-import RealRooted.Tactic.J1Gap3Reciprocal
-import RealRooted.Tactic.Kurtz
-import RealRooted.Tactic.Linear
-import RealRooted.Tactic.InterlacingSequence
-import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.LiuWang
-import RealRooted.Tactic.LiuWangRecursion
-import RealRooted.Tactic.Matrix
-import RealRooted.Tactic.MagnitudeDominated
-import RealRooted.Tactic.MultiplierSequence
-import RealRooted.Tactic.OperatorPreservesInterlacing
-import RealRooted.Tactic.PFPolynomial
-import RealRooted.Tactic.PFBidiagonal
-import RealRooted.Tactic.Product
-import RealRooted.Tactic.PosCombo
-import RealRooted.Tactic.Narayana
-import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.SecondDerivative
-import RealRooted.Tactic.StaircaseSum
-import RealRooted.Tactic.SymmetricDecomposition
-import RealRooted.Tactic.VeroneseSection
-import RealRooted.Tactic.WeightedSum
-import RealRooted.Tactic.Wagner
-import RealRooted.Tactic.WagnerX
-import RealRooted.Tactic.OEIS.Basic
-import RealRooted.Tactic.OEIS.DerivativeLag
-import RealRooted.Tactic.OEIS.PositiveLag
-import RealRooted.Tactic.OEIS.NegativeLag
-import RealRooted.Tactic.OEIS.ProductExit
-import RealRooted.Tactic.OEIS.ProductFactor
-import RealRooted.Tactic.OEIS.ProductLift
-import RealRooted.Tactic.OEIS.ProductParity
+module
+
+public import RealRooted.Tactic.AllCombo
+public meta import RealRooted.Tactic.AllCombo
+public import RealRooted.Tactic.AffineDerivative
+public meta import RealRooted.Tactic.AffineDerivative
+public import RealRooted.Tactic.MaWang
+public meta import RealRooted.Tactic.MaWang
+public import RealRooted.Tactic.CubicDiscriminant
+public meta import RealRooted.Tactic.CubicDiscriminant
+public import RealRooted.Tactic.CoefficientShape
+public meta import RealRooted.Tactic.CoefficientShape
+public import RealRooted.Tactic.CommonInterleaver.BasicRules
+public meta import RealRooted.Tactic.CommonInterleaver.BasicRules
+public import RealRooted.Tactic.Derivative
+public meta import RealRooted.Tactic.Derivative
+public import RealRooted.Tactic.EulerOperator
+public meta import RealRooted.Tactic.EulerOperator
+public import RealRooted.Tactic.Favard
+public meta import RealRooted.Tactic.Favard
+public import RealRooted.Tactic.GammaRealRoots
+public meta import RealRooted.Tactic.GammaRealRoots
+public import RealRooted.Tactic.Hadamard
+public meta import RealRooted.Tactic.Hadamard
+public import RealRooted.Tactic.HermiteBiehler
+public meta import RealRooted.Tactic.HermiteBiehler
+public import RealRooted.Tactic.HermitePoulain
+public meta import RealRooted.Tactic.HermitePoulain
+public import RealRooted.Tactic.IteratedDerivativeShift
+public meta import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.J1Chebyshev
+public meta import RealRooted.Tactic.J1Chebyshev
+public import RealRooted.Tactic.J1Gap3Reciprocal
+public meta import RealRooted.Tactic.J1Gap3Reciprocal
+public import RealRooted.Tactic.Kurtz
+public meta import RealRooted.Tactic.Kurtz
+public import RealRooted.Tactic.Linear
+public meta import RealRooted.Tactic.Linear
+public import RealRooted.Tactic.InterlacingSequence
+public meta import RealRooted.Tactic.InterlacingSequence
+public import RealRooted.Tactic.LinearPowerFamily
+public meta import RealRooted.Tactic.LinearPowerFamily
+public import RealRooted.Tactic.LiuWang
+public meta import RealRooted.Tactic.LiuWang
+public import RealRooted.Tactic.LiuWangRecursion
+public meta import RealRooted.Tactic.LiuWangRecursion
+public import RealRooted.Tactic.Matrix
+public meta import RealRooted.Tactic.Matrix
+public import RealRooted.Tactic.MagnitudeDominated
+public meta import RealRooted.Tactic.MagnitudeDominated
+public import RealRooted.Tactic.MultiplierSequence
+public meta import RealRooted.Tactic.MultiplierSequence
+public import RealRooted.Tactic.OperatorPreservesInterlacing
+public meta import RealRooted.Tactic.OperatorPreservesInterlacing
+public import RealRooted.Tactic.PFPolynomial
+public meta import RealRooted.Tactic.PFPolynomial
+public import RealRooted.Tactic.PFBidiagonal
+public meta import RealRooted.Tactic.PFBidiagonal
+public import RealRooted.Tactic.Product
+public meta import RealRooted.Tactic.Product
+public import RealRooted.Tactic.PosCombo
+public meta import RealRooted.Tactic.PosCombo
+public import RealRooted.Tactic.Narayana
+public meta import RealRooted.Tactic.Narayana
+public import RealRooted.Tactic.RootBounds
+public meta import RealRooted.Tactic.RootBounds
+public import RealRooted.Tactic.RootCount
+public meta import RealRooted.Tactic.RootCount
+public import RealRooted.Tactic.RowInterlacing
+public meta import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.SecondDerivative
+public meta import RealRooted.Tactic.SecondDerivative
+public import RealRooted.Tactic.StaircaseSum
+public meta import RealRooted.Tactic.StaircaseSum
+public import RealRooted.Tactic.SymmetricDecomposition
+public meta import RealRooted.Tactic.SymmetricDecomposition
+public import RealRooted.Tactic.VeroneseSection
+public meta import RealRooted.Tactic.VeroneseSection
+public import RealRooted.Tactic.WeightedSum
+public meta import RealRooted.Tactic.WeightedSum
+public import RealRooted.Tactic.Wagner
+public meta import RealRooted.Tactic.Wagner
+public import RealRooted.Tactic.WagnerX
+public meta import RealRooted.Tactic.WagnerX
+public import RealRooted.Tactic.OEIS.Basic
+public meta import RealRooted.Tactic.OEIS.Basic
+public import RealRooted.Tactic.OEIS.DerivativeLag
+public meta import RealRooted.Tactic.OEIS.DerivativeLag
+public import RealRooted.Tactic.OEIS.PositiveLag
+public meta import RealRooted.Tactic.OEIS.PositiveLag
+public import RealRooted.Tactic.OEIS.NegativeLag
+public meta import RealRooted.Tactic.OEIS.NegativeLag
+public import RealRooted.Tactic.OEIS.ProductExit
+public meta import RealRooted.Tactic.OEIS.ProductExit
+public import RealRooted.Tactic.OEIS.ProductFactor
+public meta import RealRooted.Tactic.OEIS.ProductFactor
+public import RealRooted.Tactic.OEIS.ProductLift
+public meta import RealRooted.Tactic.OEIS.ProductLift
+public import RealRooted.Tactic.OEIS.ProductParity
+public meta import RealRooted.Tactic.OEIS.ProductParity
 
 /-!
 # OEIS tactic dispatcher
@@ -333,6 +384,8 @@ This remains a thin wrapper over explicit family tactics. Generated
 OEIS files should expose the recurrence and certificate lemmas, then call the
 appropriate engine-specific tactic.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

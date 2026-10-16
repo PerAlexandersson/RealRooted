@@ -1,8 +1,10 @@
-import RealRooted.ASWKarlinMatrix
-import RealRooted.ASWKarlinSineBounds
-import RealRooted.ASWKarlinThreshold
-import RealRooted.ASWKarlinVectors
-import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
+module
+
+public import RealRooted.ASWKarlinMatrix
+public import RealRooted.ASWKarlinSineBounds
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinVectors
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
 
 /-!
 # Variation-diminishing input for Karlin's sector proof
@@ -12,7 +14,7 @@ classical sign-regular variation-diminishing ingredient in the forward
 Aissen--Schoenberg--Whitney theorem.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted
 

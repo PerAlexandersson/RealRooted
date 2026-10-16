@@ -1,6 +1,8 @@
-import RealRooted.BernsteinCone
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
+module
+
+public import RealRooted.BernsteinCone
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
 
 /-!
 # Bernstein-image criteria for basis-transform preservers
@@ -11,9 +13,9 @@ form a nonnegative interlacing sequence, Chudnovsky--Seymour compatibility
 makes every such nonnegative weighted sum a PF polynomial.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

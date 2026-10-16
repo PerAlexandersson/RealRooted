@@ -1,8 +1,10 @@
-import RealRooted.Multiaffine.Rayleigh
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-import Mathlib.Algebra.MvPolynomial.Funext
-import Mathlib.Algebra.MvPolynomial.Monad
+module
+
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.MvPolynomial.Monad
 
 /-!
 # Two-coordinate affine slices of multiaffine polynomials
@@ -12,9 +14,9 @@ to affine motion in two coordinates.  Stability consequences belong in the
 multivariate-stability layer.
 -/
 
-namespace MvPolynomial
+@[expose] public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- Restrict a multivariate polynomial to affine motion from `x` in
 coordinates `i` and `j`.  The two displacement variables are indexed by
@@ -150,7 +152,5 @@ theorem IsMultiaffine.rayleighDifference_twoCoordinateAffineSlice
   rw [rayleighDifference_bivariate (0 : Fin 2) 1 (by decide)]
   congr 1
   rw [eval_rayleighDifference]
-
-end
 
 end MvPolynomial

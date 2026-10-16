@@ -1,5 +1,7 @@
-import RealRooted.FactorialCompression.DegreeChanging
-import RealRooted.Hadamard.SchurSzegoStrict
+module
+
+public import RealRooted.FactorialCompression.DegreeChanging
+public import RealRooted.Hadamard.SchurSzegoStrict
 
 /-!
 # Factorial compression and strict interlacing
@@ -90,3 +92,5 @@ formalization of PR #1132 by yyou59548-design.
 This module is a catalog facade.  The proofs live in `RealRooted.FactorialCompression` and
 `RealRooted.Hadamard.SchurSzegoStrict`.
 -/
+
+public section

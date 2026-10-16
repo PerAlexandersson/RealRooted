@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
-import RealRooted.MultivariateStability.AffineEulerCore
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+public import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Stability consequences for the affine Deco recurrence
@@ -12,9 +14,9 @@ Wronskians are nonnegative. Thus the first-order obstruction for the full
 recurrence is isolated in the exceptional branch's cross term.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- A normal bottom step on a layer total is stable whenever the corresponding
 homogeneous layer total is stable. -/
@@ -293,7 +295,5 @@ theorem decoBottomTotal_add_two_isRayleigh_of_stable_affine
     (decoBottomTotalAffineSlope_isRayleigh n hstable)
     ((eval_coordinateWronskian_affineSlope_base_nonneg_iff_compensation n).mpr
       hcomp) hdisc
-
-end
 
 end RealRooted.Applications.OEIS

@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Finite
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Group.Finset.Interval
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Group.Finset.Interval
 
 /-!
 # Convex finite sequences and root amplitudes
@@ -9,11 +11,11 @@ Convexity supplies the distance pairing that proves monotonicity of finite
 root-amplitude products.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 
@@ -240,7 +242,5 @@ theorem amplitude_le_amplitude_of_convex_tail (hpos : ∀ i, 0 < g i) (hsm : Str
             linarith))
     _ = (1 + (g (k + 1) - g k) / g k)
         * ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j)) := by ring
-
-end
 
 end RealRooted.RootAmplitude

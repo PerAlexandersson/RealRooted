@@ -1,7 +1,9 @@
-import RealRooted.NarayanaTransformation.Interlacing
-import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
-import RealRooted.OperatorInterlacingUpgrade.StablePencil
+module
+
+public import RealRooted.NarayanaTransformation.Interlacing
+public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+public import RealRooted.OperatorInterlacingUpgrade.StablePencil
 
 /-!
 # Monomial-chain operator challenge entry point
@@ -75,6 +77,8 @@ the operator perspective is related to [@Branden2011b].
 
 This module exposes the fully checked monomial-chain upgrade.
 -/
+
+public section
 
 open Polynomial
 

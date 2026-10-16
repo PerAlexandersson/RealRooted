@@ -1,4 +1,6 @@
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.PFPolynomial
 
 /-!
 # Lower-triangular row-generating functions
@@ -9,11 +11,11 @@ row products, row-generating polynomials, and the predicate that every row
 generating function is a PF polynomial.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Infinite matrix indexed by `ℕ`, used as a lower-triangular matrix once
 paired with `LowerTriangularMatrix.IsLowerTriangular`. -/
@@ -376,7 +378,5 @@ theorem RightPreservesRowGeneratingFunctionsPF.rightPowers
       simpa [pow_succ, mul_assoc] using hstep
 
 end LowerTriangularMatrix
-
-end
 
 end RealRooted

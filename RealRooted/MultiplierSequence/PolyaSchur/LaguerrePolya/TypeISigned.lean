@@ -1,5 +1,7 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
-import RealRooted.MultiplierSequence.Sign
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
+public import RealRooted.MultiplierSequence.Sign
 
 /-!
 # Signed Type-I Pólya--Schur classification
@@ -8,7 +10,7 @@ This file packages the classical global-sign and alternating-sign conventions
 around the sign-sensitive Type-I Laguerre--Pólya class.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted
 

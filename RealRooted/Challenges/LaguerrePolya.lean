@@ -1,12 +1,14 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 
 /-!
 # Laguerre–Pólya class challenge entry point

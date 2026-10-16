@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 
 /-!
 # Finite kernel-row polynomials
@@ -11,11 +13,11 @@ This file packages the finite polynomial whose coefficients are entries of
 total-nonnegativity, root, or limiting hypotheses occur here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The kernel row attached to row `i` of two square matrices of size
 `N + 1`. -/
@@ -98,7 +100,5 @@ theorem kernelRow_zero_size {R : Type*} [CommSemiring R]
     (G K : Matrix (Fin 1) (Fin 1) R) (i : Fin 1) :
     kernelRow G K i = C (G i 0) := by
   simp [kernelRow]
-
-end
 
 end RealRooted.BrandenLeite

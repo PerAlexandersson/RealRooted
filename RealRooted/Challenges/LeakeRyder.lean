@@ -1,5 +1,7 @@
-import RealRooted.Graph.LeakeRyder
-import RealRooted.Graph.MatchingPolynomial.Multivariate
+module
+
+public import RealRooted.Graph.LeakeRyder
+public import RealRooted.Graph.MatchingPolynomial.Multivariate
 
 /-!
 # Leake--Ryder same-phase stability
@@ -75,3 +77,5 @@ See [@LeakeRyder2019] and the discussion of
 [same-phase stability](sf:samePhaseStabilityDefinition) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/
+
+public section

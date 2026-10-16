@@ -1,15 +1,17 @@
-import RealRooted.Applications.OEIS.A046802
-import RealRooted.Applications.OEIS.A132166
-import RealRooted.Applications.OEIS.A262226
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A046802
+public import RealRooted.Applications.OEIS.A132166
+public import RealRooted.Applications.OEIS.A262226
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Exact downstream presentations for three recurrence-model bridges
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace A046802Downstream
 
@@ -22,6 +24,7 @@ def A046802 : ℕ → ℝ[X]
         (C 1 + C (2 + (n : ℝ)) * X) * A046802 (n + 1) +
           (C (-1 + -1 * (n : ℝ)) * X) * A046802 n
 
+set_option maxHeartbeats 400000 in -- the row tactic is slower under the module system
 example (n : ℕ) : (A046802 n).Splits := by
   rr_row_splits
 

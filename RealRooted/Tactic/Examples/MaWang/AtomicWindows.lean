@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Steps
+module
+
+public import RealRooted.Tactic.MaWang.Steps
 
 /-!
 # Ma--Wang atomic-window regression examples
 
 Regression examples for atomic Ma--Wang window frontends.
 -/
+
+public section
 
 open Polynomial
 

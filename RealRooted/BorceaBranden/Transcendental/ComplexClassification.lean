@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+module
+
+public import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+
+@[expose] public noncomputable section
 
 open Filter Topology
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

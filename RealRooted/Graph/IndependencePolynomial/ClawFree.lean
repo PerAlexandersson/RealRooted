@@ -1,4 +1,6 @@
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+module
+
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
 
 /-!
 # Claw-free independence polynomials
@@ -8,9 +10,9 @@ and unweighted independence polynomials of finite claw-free graphs.
 Line-graph and matching-polynomial applications belong in `RealRooted.HeilmannLieb`.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

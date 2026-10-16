@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Hurwitz stability forces coefficient signs
@@ -15,9 +17,9 @@ Over the reals such a polynomial is a positive constant times linear factors
 nonreal zeros `z`, and every such factor has nonnegative coefficients.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

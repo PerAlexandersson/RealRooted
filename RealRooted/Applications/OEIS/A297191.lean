@@ -1,11 +1,13 @@
-import Mathlib
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.SimpleRoots
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
-import RealRooted.GammaTransform.TwoStep
-import RealRooted.ThreeTermRecurrence.Interlacing
+module
+
+public import Mathlib
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+public import RealRooted.GammaTransform.TwoStep
+public import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # OEIS A297191
@@ -16,9 +18,9 @@ and is palindromic.  Inserting the half-step `(1 + X) Pₙ` gives the strict
 interlacing chain `P₀ ≪ (1 + X)P₀ ≪ P₁ ≪ (1 + X)P₁ ≪ ⋯`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A297191
 
@@ -252,7 +254,6 @@ theorem isCoprime_halfStep_polynomial_succ (n : ℕ) :
   have := isCoprime_X_add_C_of_eval (p := polynomial (n + 1)) 1
     (by rw [eval_neg_one_polynomial]; simp)
   simpa [add_comm] using this
-
 
 section
 open Real
@@ -746,7 +747,6 @@ theorem hasSimpleRoots_polynomial (n : ℕ) : HasSimpleRoots (polynomial n) := b
 /-- Row `n` has exactly `2n` roots, counted with multiplicity. -/
 theorem roots_card_polynomial (n : ℕ) : (polynomial n).roots.card = 2 * n := by
   rw [Polynomial.splits_iff_card_roots.mp (splits_polynomial n), natDegree_polynomial]
-
 
 /-- The A054142 gamma polynomial whose transform is the A297191 row. -/
 def gammaPolynomial : ℕ → ℝ[X]

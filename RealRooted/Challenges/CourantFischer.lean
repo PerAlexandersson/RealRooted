@@ -1,4 +1,6 @@
-import RealRooted.CauchyInterlacing
+module
+
+public import RealRooted.CauchyInterlacing
 
 /-!
 # Courant–Fischer min-max theorem

@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.InversePeaks
-import RealRooted.DerivativeRecurrence.QuadraticSeed
-import RealRooted.GammaPencil.Intertwining
-import RealRooted.GammaTransform.RootMap
+module
+
+public import RealRooted.Applications.OEIS.InversePeaks
+public import RealRooted.DerivativeRecurrence.QuadraticSeed
+public import RealRooted.GammaPencil.Intertwining
+public import RealRooted.GammaTransform.RootMap
 
 /-!
 # Denominator-free type-B lift of the inverse-peak recurrence
@@ -12,9 +14,9 @@ the usual rational-substitution display.  No type-B or left-peak
 combinatorial interpretation is asserted here.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Hurwitz
+module
+
+public import RealRooted.Hadamard.Hurwitz
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -1,4 +1,8 @@
-import RealRooted.Tactic.PFPolynomial
+module
+
+public import RealRooted.Tactic.PFPolynomial
+
+public section
 
 open Polynomial
 

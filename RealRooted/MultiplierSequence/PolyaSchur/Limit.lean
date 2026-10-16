@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.MultiplierSequence.PolyaSchur
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # Pointwise limits of PF multiplier sequences
@@ -10,9 +12,9 @@ degree and converge coefficientwise, so closedness of real splitting passes
 to the limit.
 -/
 
-open Filter Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

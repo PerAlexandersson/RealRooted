@@ -1,6 +1,8 @@
-import Mathlib.Basic.Real.Basic
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
+module
+
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
 
 /-!
 # Total nonnegativity of the first-kind Jacobi--Stirling triangle
@@ -10,9 +12,9 @@ zero. Thus its leading entry and zero first column are part of the same generic
 bidiagonal certificate; no separate block argument or LGV machinery is needed.
 -/
 
-namespace RealRooted.JacobiStirling
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.JacobiStirling
 
 /-- The weights of the whole first-kind triangle, including its initial zero. -/
 def firstKindTriangleWeight (z : ℝ) (i : ℕ) : ℝ :=
@@ -98,7 +100,5 @@ nonnegative. -/
 theorem legendreStirlingFirstMatrix_isTotallyNonneg :
     (firstKindMatrix 1).IsTotallyNonneg :=
   firstKindMatrix_isTotallyNonneg (by norm_num)
-
-end
 
 end RealRooted.JacobiStirling

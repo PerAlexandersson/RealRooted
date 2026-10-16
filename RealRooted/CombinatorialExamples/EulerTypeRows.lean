@@ -1,8 +1,10 @@
-import RealRooted.EulerBidiagonal
+module
+
+public import RealRooted.EulerBidiagonal
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.EulerTypeRows
 

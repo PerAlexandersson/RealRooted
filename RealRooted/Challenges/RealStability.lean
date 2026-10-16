@@ -1,18 +1,20 @@
-import RealRooted.AffineLineRestriction
-import RealRooted.DeterminantalStability
-import RealRooted.HomogeneousComponentStability
-import RealRooted.Hyperbolicity
-import RealRooted.HyperbolicityCone
-import RealRooted.MultivariateStability.Inversion
-import RealRooted.MultivariateStability.JumpSystem
-import RealRooted.MultivariateStability.Lorentzian
-import RealRooted.MultivariateStability.MixedCharacteristic
-import RealRooted.MultivariateStability.ExpectedCharpoly
-import RealRooted.MultivariateStability.MSSBound
-import RealRooted.MultivariateStability.NegativeCorrelation
-import RealRooted.MultivariateStability.RayleighConverse
-import RealRooted.MultivariateStability.SamePhase
-import RealRooted.SpanningTreeStability
+module
+
+public import RealRooted.AffineLineRestriction
+public import RealRooted.DeterminantalStability
+public import RealRooted.HomogeneousComponentStability
+public import RealRooted.Hyperbolicity
+public import RealRooted.HyperbolicityCone
+public import RealRooted.MultivariateStability.Inversion
+public import RealRooted.MultivariateStability.JumpSystem
+public import RealRooted.MultivariateStability.Lorentzian
+public import RealRooted.MultivariateStability.MixedCharacteristic
+public import RealRooted.MultivariateStability.ExpectedCharpoly
+public import RealRooted.MultivariateStability.MSSBound
+public import RealRooted.MultivariateStability.NegativeCorrelation
+public import RealRooted.MultivariateStability.RayleighConverse
+public import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.SpanningTreeStability
 
 /-!
 # Real stability challenge entry point
@@ -319,6 +321,8 @@ stability, hyperbolicity of homogeneous real stable polynomials, the
 homogenization, top-component and same-phase consequences, and inversion in
 one variable.
 -/
+
+public section
 
 open Polynomial
 open scoped ComplexOrder

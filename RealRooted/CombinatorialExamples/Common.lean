@@ -1,7 +1,9 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
 
 /-!
 # Common Combinatorial Example Lemmas
@@ -10,9 +12,9 @@ Shared coefficient, leading-coefficient, and elementary interlacing helpers for
 the combinatorial example files.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

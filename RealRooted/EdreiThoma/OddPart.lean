@@ -1,4 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+
+@[expose] public noncomputable section
 
 section Quotient_part
 
@@ -9,8 +13,6 @@ This is where the first main theorem of value distribution theory (as in Mathlib
 -/
 
 open Complex Real Filter ValueDistribution
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 
@@ -54,7 +56,6 @@ private theorem posMean_le_of_exp_mul_eq {G K M : ℂ → ℂ}
   linarith
 
 end RealRooted.EdreiThoma
-end
 end Quotient_part
 
 section KeyGrowth_part
@@ -73,8 +74,6 @@ on a larger circle) and the growth of `P, Q`.  Borel's lemma absorbs the logarit
 -/
 
 open Complex Real Filter Topology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 
@@ -533,7 +532,6 @@ private theorem key_growth {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
   exact growth_of_GI (posMean_nonneg g) (posMean_bdd hg) hC' hGI
 
 end RealRooted.EdreiThoma
-end
 end KeyGrowth_part
 
 section Products_part
@@ -543,8 +541,6 @@ section Products_part
 -/
 
 open Complex Real Filter Topology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 
@@ -604,7 +600,6 @@ private theorem norm_gprod_le (ha : ∀ i, 0 ≤ a i) (s : Summable a) (z : ℂ)
   exact le_of_tendsto' ht.norm hb
 
 end RealRooted.EdreiThoma
-end
 end Products_part
 
 section Assembly_part
@@ -614,8 +609,6 @@ section Assembly_part
 -/
 
 open Complex Real Filter Topology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 
@@ -793,12 +786,9 @@ private theorem odd_part_growth {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
   exact key_growth hg hF hP hQ hP0 hQ0 hC hPb hQb heq
 
 end RealRooted.EdreiThoma
-end
 end Assembly_part
 
 open Complex Filter Topology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 /-- **The odd-part step of Edrei's Proposition B** (Edrei, Canad. J. Math. 5 (1953), p. 92-93,

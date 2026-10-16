@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.PowerSeries.Trunc
+
+module
+
+public import Mathlib.RingTheory.PowerSeries.Trunc
 
 /-!
 # Removing a finite zero prefix from a power series
@@ -13,9 +16,9 @@ power of `X`.  The construction is algebraic and does not require an order,
 topology, or a nonzero scalar.
 -/
 
-namespace PowerSeries
+@[expose] public noncomputable section
 
-noncomputable section
+namespace PowerSeries
 
 variable {R : Type*}
 
@@ -62,7 +65,5 @@ theorem C_inv_mul_dropPrefix_C_mul_X_pow_mul
   rw [dropPrefix_C_mul_X_pow_mul]
   rw [← mul_assoc, ← map_mul]
   simp [hc]
-
-end
 
 end PowerSeries

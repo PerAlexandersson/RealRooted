@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.DiagonalTail
-import RealRooted.Hadamard.Grace
-import RealRooted.PFPolynomial.Closure
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.BrandenLeite.DiagonalTail
+public import RealRooted.Hadamard.Grace
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Coefficient limits of finite kernel rows
@@ -11,11 +13,11 @@ topology.  We combine that fact with the finite source-border chain theorem to
 pass PF and interlacing certificates to strictly lower kernel rows.
 -/
 
+public noncomputable section
+
 open Filter Matrix Polynomial Topology
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- Entrywise convergence of finite matrices gives coefficientwise convergence
 of every regularized kernel row. -/
@@ -152,7 +154,5 @@ theorem kernelRows_pf_and_interl_of_tendsto
       (fun m => natDegree_regularizedKernelRow_le_row G (H m) hGlower i.succ)
       (tendsto_coeff_regularizedKernelRow G hlim i.castSucc)
       (tendsto_coeff_regularizedKernelRow G hlim i.succ)
-
-end
 
 end RealRooted.BrandenLeite

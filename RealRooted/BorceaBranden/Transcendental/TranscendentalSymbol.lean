@@ -1,9 +1,11 @@
-import RealRooted.BorceaBranden.Transcendental.PivotConverse
+module
+
+public import RealRooted.BorceaBranden.Transcendental.PivotConverse
+
+@[expose] public noncomputable section
 
 open Filter Topology
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

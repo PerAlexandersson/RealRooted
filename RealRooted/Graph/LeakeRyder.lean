@@ -1,6 +1,8 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.Graph.IndependencePolynomial.Multivariate
-import RealRooted.Graph.IndependencePolynomial.Recurrence
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.Graph.IndependencePolynomial.Multivariate
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
 
 /-!
 # The Leake--Ryder claw-free characterization
@@ -11,9 +13,9 @@ weights isolate an induced claw.  Its univariate independence polynomial is
 `1 + 4 * X + 3 * X ^ 2 + X ^ 3`, whose cubic discriminant is negative.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

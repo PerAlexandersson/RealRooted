@@ -1,5 +1,7 @@
-import RealRooted.Graph.ClawFree
-import RealRooted.Graph.IndependencePolynomial.Basic
+module
+
+public import RealRooted.Graph.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.Basic
 
 /-!
 # Independence-polynomial recurrences
@@ -12,9 +14,9 @@ Chudnovsky--Seymour argument.
 Finite-family compatibility assembly belongs in higher modules.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

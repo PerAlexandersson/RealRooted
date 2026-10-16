@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.Derangements.Finite
-import Mathlib.Data.Fintype.Prod
-import Mathlib.Data.List.FinRange
+
+module
+
+public import Mathlib.Combinatorics.Derangements.Finite
+public import Mathlib.Data.Fintype.Prod
+public import Mathlib.Data.List.FinRange
 
 /-!
 # Excedances and inversions of finite permutations
@@ -13,6 +16,8 @@ import Mathlib.Data.List.FinRange
 Positions and values are indexed from `0`.  Thus an excedance at `i` means
 `i < σ i`, while an anti-excedance means `σ i < i`.
 -/
+
+@[expose] public section
 
 open Finset
 

@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.Barrier
+module
+
+public import RealRooted.MultivariateStability.Barrier
 
 /-!
 # The cross-coordinate barrier ratio is a Pick-type function
@@ -7,9 +9,9 @@ import RealRooted.MultivariateStability.Barrier
 stable polynomial, the ratio `(∂_i p) / p` has nonpositive imaginary part on the upper half-plane.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- For `p` real stable and `z` above its roots, restrict `p` and `∂_i p` to the line `z + t e_j`
 (`F` and `G`).  Then `F` has no zeros in the open upper half-plane and `Im (G / F) ≤ 0` there.
@@ -139,7 +141,5 @@ theorem coordinateRestriction_roots_lt_of_aboveRoots
     ∀ r ∈ (coordinateRestriction z j p).roots, r < t := by
   intro r hr
   exact lt_of_lt_of_le (coordinateRestriction_roots_lt_zero_of_aboveRoots j habove r hr) ht
-
-end
 
 end RealRooted

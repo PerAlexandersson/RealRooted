@@ -1,4 +1,6 @@
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.WagnerRightSum
 
 /-!
 # Wagner (2): Common-left addition theorems
@@ -7,9 +9,9 @@ If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
 
 /-!
 # Family common-interleaver tactic syntax
@@ -6,6 +8,8 @@ import RealRooted.Tactic.CommonInterleaver.AnalyticSyntax
 Parser declarations for Chudnovsky--Seymour four-way certificates and
 pairwise-to-family compatibility upgrades.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

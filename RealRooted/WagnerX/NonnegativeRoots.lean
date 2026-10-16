@@ -1,12 +1,14 @@
-import RealRooted.WagnerX.ListInterlacing
+module
+
+public import RealRooted.WagnerX.ListInterlacing
 
 /-!
 # Wagner-X nonnegative coefficients and roots
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

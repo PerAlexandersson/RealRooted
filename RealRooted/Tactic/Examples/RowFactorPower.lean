@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Fixed-factor and small row-adapter regressions
@@ -7,11 +9,11 @@ These examples cover the fixed-factor deflation route, an arbitrary-offset produ
 and a degree-pattern derivative recurrence with normalized rational coefficients.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowFactorPowerExamples
-
-noncomputable section
 
 /-- OEIS A090452 in its generated two-lag coefficient form. -/
 def A090452 : ℕ → ℝ[X]
@@ -95,7 +97,6 @@ info: Try these:
 example (n : ℕ) : (ordinaryProduct n).Splits := by
   rr_row_splits?
 
-end
 end RowFactorPowerExamples
 end Tactic
 end RealRooted

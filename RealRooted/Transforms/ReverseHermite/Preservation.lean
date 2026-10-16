@@ -1,6 +1,8 @@
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.PFPolynomial.LinearFactor
-import RealRooted.Transforms.ReverseHermite.Basic
+module
+
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.PFPolynomial.LinearFactor
+public import RealRooted.Transforms.ReverseHermite.Basic
 
 /-!
 # PF and interlacing preservation for the reverse-Hermite transform
@@ -10,9 +12,9 @@ simultaneous degree induction proves preservation of the polynomial PF cone
 and of zero-aware interlacing.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

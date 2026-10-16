@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.MorrisDFlow
-import RealRooted.MultivariateStability.MorrisEigenfunction
-import RealRooted.MultivariateStability.MorrisOperator
+module
+
+public import RealRooted.MultivariateStability.MorrisDFlow
+public import RealRooted.MultivariateStability.MorrisEigenfunction
+public import RealRooted.MultivariateStability.MorrisOperator
 
 /-!
 # Morris flow challenge entry point

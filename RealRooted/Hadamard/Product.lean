@@ -1,8 +1,10 @@
-import RealRooted.MultiplierSequence
+module
+
+public import RealRooted.MultiplierSequence
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

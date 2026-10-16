@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Kostov.Bernstein
+module
+
+public import RealRooted.Hadamard.Kostov.Bernstein
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov
@@ -608,7 +610,6 @@ lemma eq_of_eval_eq_off (p q : ℝ[X]) (S : Finset ℝ) (h : ∀ x ∉ S, p.eval
     p = q :=
   eq_of_infinite_eval_eq p q (Set.Infinite.mono (fun x hx => h x hx)
     (S.finite_toSet.infinite_compl))
-
 
 end Kostov
 end RealRooted

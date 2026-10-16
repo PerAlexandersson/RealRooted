@@ -1,8 +1,10 @@
-import RealRooted.HomogeneousOre
+module
+
+public import RealRooted.HomogeneousOre
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

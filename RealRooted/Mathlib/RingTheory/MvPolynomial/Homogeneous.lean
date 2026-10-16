@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
+
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Extensions to homogeneous multivariate polynomials
@@ -11,6 +14,8 @@ import Mathlib.RingTheory.MvPolynomial.Homogeneous
 This file contains results intended for upstreaming to
 `Mathlib.RingTheory.MvPolynomial.Homogeneous`.
 -/
+
+public section
 
 namespace MvPolynomial
 

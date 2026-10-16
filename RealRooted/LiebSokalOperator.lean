@@ -1,5 +1,7 @@
-import RealRooted.Multiaffine
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+module
+
+public import RealRooted.Multiaffine
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # The multivariate differential action
@@ -9,11 +11,11 @@ the Lieb--Sokal theorem. It also proves the algebraic part of that theorem's
 conclusion: this action preserves multiaffineness of `G`.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Apply the partial derivative in variable `i` exactly `n` times. -/
 def iteratedPDerivAt {R sigma : Type*} [CommSemiring R] (i : sigma) :
@@ -621,7 +623,5 @@ theorem isMultiaffine_contractVariablePairs
     MvPolynomial.IsMultiaffine (contractVariablePairs l P) := by
   unfold contractVariablePairs
   induction l generalizing P <;> simp_all [isMultiaffine_contractVariables]
-
-end
 
 end RealRooted

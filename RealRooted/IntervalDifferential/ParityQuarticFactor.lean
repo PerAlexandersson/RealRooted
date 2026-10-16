@@ -16,9 +16,7 @@ Appendix C.4 of `alternating_eulerian_shorter_proof.md`: substitute `X²`
 in a monic quadratic divisor of the nonzero parity part.
 -/
 
-@[expose] public section
-
-noncomputable section
+public noncomputable section
 
 open Polynomial
 

@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Newton
+module
+
+public import RealRooted.Hadamard.Newton
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

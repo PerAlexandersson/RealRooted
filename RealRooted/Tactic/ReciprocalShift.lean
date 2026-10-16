@@ -1,6 +1,8 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.PFPolynomial
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.PFPolynomial
 
 /-!
 # Reciprocal-shift tactic
@@ -8,6 +10,8 @@ import RealRooted.Tactic.PFPolynomial
 Transfer real-rootedness from a row family to its degree-padded reciprocal
 reflection.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,10 +1,12 @@
-import RealRooted.MaWang.Derivative
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.ScalarDen
-import RealRooted.Tactic.Sign
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.MaWang.Derivative
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.RootBounds
+public import RealRooted.Tactic.ScalarDen
+public import RealRooted.Tactic.Sign
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Ma--Wang tactic shared syntax
@@ -12,6 +14,8 @@ import RealRooted.Tactic.SideGoals
 Small recurring syntax and macro helpers used by the focused Ma--Wang tactic
 frontends.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

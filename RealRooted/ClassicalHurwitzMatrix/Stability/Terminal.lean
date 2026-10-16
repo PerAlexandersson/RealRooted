@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
-import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 
 /-!
 # Terminal degenerations of the classical Hurwitz criterion
@@ -10,9 +12,9 @@ the linear coefficient vanishes. Total nonnegativity then kills every odd
 coefficient, while forward ASW controls the remaining even contraction.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

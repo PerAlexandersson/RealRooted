@@ -1,11 +1,13 @@
-import RealRooted.BrandenLeite.CompositionFamilies
-import RealRooted.BrandenLeite.ConstantDiagonal
-import RealRooted.BrandenLeite.NetworkWhitney
-import RealRooted.BrandenLeite.ResolvableTotallyNonneg
-import RealRooted.BrandenLeite.Theorem37
-import RealRooted.BrandenLeite.TwoKernel
-import RealRooted.BrandenLeite.WeightedShiftTiling
-import RealRooted.BrandenLeite.ZeroConstant
+module
+
+public import RealRooted.BrandenLeite.CompositionFamilies
+public import RealRooted.BrandenLeite.ConstantDiagonal
+public import RealRooted.BrandenLeite.NetworkWhitney
+public import RealRooted.BrandenLeite.ResolvableTotallyNonneg
+public import RealRooted.BrandenLeite.Theorem37
+public import RealRooted.BrandenLeite.TwoKernel
+public import RealRooted.BrandenLeite.WeightedShiftTiling
+public import RealRooted.BrandenLeite.ZeroConstant
 
 /-!
 # Brändén–Saud Leite challenge entry point
@@ -156,3 +158,5 @@ See [@BrandenLeite2024x].
 This module is a catalog facade.  The proofs live in
 `RealRooted.BrandenLeite`.
 -/
+
+public section

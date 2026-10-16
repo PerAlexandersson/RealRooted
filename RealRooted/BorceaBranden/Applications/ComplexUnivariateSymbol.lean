@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.UnivariateSymbol
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariateSymbol
 
 /-!
 # Complex univariate finite algebraic symbols
@@ -7,7 +9,7 @@ This module contains the complex-univariate degree-box infrastructure shared by
 general real-operator complexification and specialized operator applications.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.BorceaBranden
 

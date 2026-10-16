@@ -19,11 +19,9 @@ Favard family.  Root-theoretic and orthogonality consequences live in separate
 modules.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Module Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -3,10 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
-import RealRooted.GammaPencil.Symbol
-import RealRooted.HermiteBiehler.Converse
-import RealRooted.LinearPowerFamily
+
+module
+
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.GammaPencil.Symbol
+public import RealRooted.HermiteBiehler.Converse
+public import RealRooted.LinearPowerFamily
 
 /-!
 # Stability of the gamma-pencil finite symbol
@@ -17,9 +20,9 @@ of the residual and, with the factorization from `Symbol`, of the finite
 algebraic symbol.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -24,11 +24,9 @@ against `x ^ α * exp (-x)` on the positive half-line.  This sign convention
 matches the sign-reversed normalization whose roots are nonpositive.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

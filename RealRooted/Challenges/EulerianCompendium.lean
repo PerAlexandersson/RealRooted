@@ -1,4 +1,6 @@
-import RealRooted.Applications.EulerianCompendium.Results
+module
+
+public import RealRooted.Applications.EulerianCompendium.Results
 
 /-!
 # Eulerian compendium: paper theorems and the zig-zag theorem
@@ -116,6 +118,8 @@ The zig-zag theorem asserts simple negative roots, without consecutive interlaci
 - [@Alexandersson2026Eulerian]
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 open Polynomial RealRooted
 

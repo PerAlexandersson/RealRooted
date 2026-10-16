@@ -1,10 +1,12 @@
-import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BoundarySpecializationGeneral
+module
+
+public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BoundarySpecializationGeneral
+
+@[expose] public noncomputable section
 
 open Filter Topology
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 
@@ -344,7 +346,6 @@ private lemma uniformBound_of_nvars :
     exact inner _ a ha.le ⟨α, hα, le_rfl⟩
   · push Not at h
     exact uniformBound_zero a h
-
 
 /-! ## Target -/
 

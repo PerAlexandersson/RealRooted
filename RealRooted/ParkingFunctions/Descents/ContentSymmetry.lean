@@ -1,8 +1,10 @@
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.BrandenVecchi.OrdinaryWordSeries
-import RealRooted.ParkingFunctions.Descents.ExactDescent
-import RealRooted.ParkingFunctions.Descents.WordContent
-import Mathlib.Algebra.MvPolynomial.Rename
+module
+
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.BrandenVecchi.OrdinaryWordSeries
+public import RealRooted.ParkingFunctions.Descents.ExactDescent
+public import RealRooted.ParkingFunctions.Descents.WordContent
+public import Mathlib.Algebra.MvPolynomial.Rename
 
 /-!
 # Fixed-content symmetry for word descents
@@ -13,11 +15,11 @@ finite elementary-Toeplitz Chow identity, not from a pointwise relabeling of
 words, since relabeling an ordered alphabet need not preserve descents.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- The literal Smirnov words having one prescribed labeled content. -/
 def fixedContentSmirnovWords {n m : ℕ} (μ : Multiset (Fin m)) :
@@ -301,7 +303,5 @@ theorem fixedContentWordDescentPolynomial_zero (m : ℕ) :
       (n := 0) (0 : Multiset (Fin m)) = 1 := by
   simp [fixedContentWordDescentPolynomial, fixedContentWords,
     contentFiber, wordContent]
-
-end
 
 end RealRooted.ParkingFunctions

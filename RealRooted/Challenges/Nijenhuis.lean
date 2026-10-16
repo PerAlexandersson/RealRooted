@@ -1,4 +1,6 @@
-import RealRooted.RookPolynomial
+module
+
+public import RealRooted.RookPolynomial
 
 /-!
 # Nijenhuis's weighted rook-polynomial theorem
@@ -68,9 +70,9 @@ This challenge entry uses ordinary nonattacking rook placements. It is
 separate from the project's non-nesting rook-polynomial model.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace Challenges

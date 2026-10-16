@@ -15,17 +15,14 @@ This file gives the determinant recurrence for a lower-Hessenberg matrix with
 a variable diagonal, a fixed first superdiagonal, and two varying lower bands.
 -/
 
-public section
+@[expose] public noncomputable section
 
 open Finset
 
 namespace Matrix
 
-noncomputable section
-
 /-- A lower-Hessenberg matrix with a variable diagonal, a fixed first
 superdiagonal, and two varying lower bands. -/
-@[expose]
 def bandedLowerHessenberg {R : Type*} [CommRing R]
     (d a b : ℕ → R) (x : R) (n : ℕ) : Matrix (Fin n) (Fin n) R :=
   Matrix.of fun i j =>
@@ -258,7 +255,5 @@ theorem det_bandedLowerHessenberg_add_three {R : Type*} [CommRing R]
     hcofactorAnte, hsignPen, hentryPen, hcofactorPen] at hdet
   ring_nf at hdet ⊢
   exact hdet
-
-end
 
 end Matrix

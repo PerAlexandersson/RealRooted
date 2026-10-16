@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Cancellation with a nonzero coefficient-ratio bound
@@ -7,11 +9,11 @@ These regressions copy seven recurrences from the downstream OEIS project.  The
 `A101343` example requires the exact rows-zero-through-eight fit `rho = 1`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowCancelRho
-
-noncomputable section
 
 /-- The recurrence defining the A008303 row polynomials. -/
 def A008303 : ℕ → ℝ[X]
@@ -92,7 +94,5 @@ example (n : ℕ) : (A108426 n).natDegree = n := by
 
 example (n : ℕ) : (A186370 n).natDegree = n := by
   rr_row_natDegree (via := cancel)
-
-end
 
 end RealRooted.Tactic.RowCancelRho

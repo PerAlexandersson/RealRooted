@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # OEIS test-bed Ma--Wang rows
@@ -9,11 +11,11 @@ exercised there in isolation.  Each row is defined by its recurrence
 `rr_row_*` proves interlacing and real-rootedness.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.MaWangRowExamples
-
-noncomputable section
 
 /-- Dirichlet-eta table: `v_n(t) = 2t(1 - t)` (A156919). -/
 def A156919 : ℕ → ℝ[X]
@@ -123,7 +125,5 @@ theorem A091044_interlaces (n : ℕ) : Interlaces (A091044 n) (A091044 (n + 1)) 
   rr_row_interlaces
 
 theorem A091044_splits (n : ℕ) : (A091044 n).Splits := by rr_row_splits
-
-end
 
 end RealRooted.Tactic.MaWangRowExamples

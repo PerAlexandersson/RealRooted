@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Tactic
 
 /-!
 # Shifted Motzkin Polynomials
@@ -10,9 +12,9 @@ Interlacing and root-bound facts for the Motzkin polynomials
 their recurrence `(k + 2) M_k = (2k + 1) M_(k-1) + (k - 1) (4X - 1) M_(k-2)`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

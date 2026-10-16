@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.BlockEnergy
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.BlockEnergy
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
 
 /-!
 # Finite residue algebra for the A144438 Schur complement
@@ -9,9 +11,9 @@ to the endpoint parameters `η`, `κ`, and the original-variable residue
 energy.  It is independent of the later spectral/rootwise realization.
 -/
 
-open BigOperators
+public noncomputable section
 
-noncomputable section
+open BigOperators
 
 namespace RealRooted.Applications.OEIS
 

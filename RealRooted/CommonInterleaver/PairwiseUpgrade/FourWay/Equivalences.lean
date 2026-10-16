@@ -4,11 +4,14 @@
 This module extracts equivalences from four-way common-interleaver packages
 and provides their endpoint-specific compatibility corollaries.
 -/
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
+
+module
+
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

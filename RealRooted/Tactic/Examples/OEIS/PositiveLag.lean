@@ -1,4 +1,6 @@
-import RealRooted.Tactic.OEIS.PositiveLag
+module
+
+public import RealRooted.Tactic.OEIS.PositiveLag
 
 /-!
 # OEIS positive-lag router regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.OEIS.PositiveLag
 Positive-lag certificate router tests, including affine, scalar, and
 sequence-level normalization variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

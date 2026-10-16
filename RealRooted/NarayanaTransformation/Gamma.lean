@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Recurrences
+module
+
+public import RealRooted.NarayanaTransformation.Recurrences
 
 /-!
 # Binomial-square Narayana gamma recurrences.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -217,6 +219,5 @@ theorem narayanaZeroGammaPolynomial_deriv_rec (n : ℕ) :
       sq, mul_assoc]
     push_cast
     ring
-
 
 end RealRooted

@@ -1,4 +1,6 @@
-import RealRooted.LiuWangRecursion
+module
+
+public import RealRooted.LiuWangRecursion
 
 /-!
 # No common roots of consecutive recurrence rows
@@ -24,6 +26,8 @@ This file proves it for the two common recurrence shapes.
   `V n ≤ 0` and `W n < 0` at `r` make the left side nonzero.  The interlacing is
   proved in the same induction (`derivLag_not_isRoot_of_isRoot_succ`).
 -/
+
+public section
 
 open Polynomial
 

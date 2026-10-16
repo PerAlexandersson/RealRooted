@@ -1,6 +1,8 @@
-import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.Linear
-import RealRooted.Tactic.SymmetricDecomposition
+module
+
+public import RealRooted.Tactic.CoefficientShape
+public import RealRooted.Tactic.Linear
+public import RealRooted.Tactic.SymmetricDecomposition
 
 /-!
 # OEIS scalar and coefficient router regression examples
@@ -8,6 +10,8 @@ import RealRooted.Tactic.SymmetricDecomposition
 Linear, coefficient-shape, and symmetric-decomposition certificate routing
 tests.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

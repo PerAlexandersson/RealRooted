@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
 
 /-!
 # The recurrence-defined total of the exact Deco layers
@@ -10,11 +12,11 @@ is made for the total: multivariate real stability is not closed under
 arbitrary addition.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The homogenized Deco total, defined directly by the normal and exceptional
 layer operators. -/
@@ -140,7 +142,5 @@ theorem decoExactLayerSum_eq_decoLayerTotal :
   | one => simp
   | more n ih0 ih1 =>
       rw [decoExactLayerSum_recurrence, decoLayerTotal_recurrence, ih0, ih1]
-
-end
 
 end RealRooted.Applications.OEIS

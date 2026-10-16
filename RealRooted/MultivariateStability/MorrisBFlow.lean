@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.MorrisOperator
-import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
+module
+
+public import RealRooted.MultivariateStability.MorrisOperator
+public import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
 
 /-!
 # The flow of the Liu--Zhang Morris `B` operator
@@ -9,13 +11,13 @@ This file constructs the algebraic flow dictated by Liu--Zhang,
 `arXiv:2609.15201v2`, equations (4.20)--(4.22).
 -/
 
+@[expose] public noncomputable section
+
 open MvPolynomial Polynomial
 
 namespace RealRooted.LiuZhang
 
 open Finset
-
-noncomputable section
 
 /-- The factor by which `exp(t B_q)` scales the `k`-th elementary symmetric
 polynomial. The index is zero-based, so it represents `e_(k+1)`. -/
@@ -218,7 +220,7 @@ theorem exists_morrisBRootLift {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
       _ = (-1 : ℂ) ^ ((k : ℕ) + 1) *
           (morrisBScale q t k *
             (Finset.univ.val.map x).esymm ((k : ℕ) + 1)) := rfl
-private def morrisElementaryEquiv (q : ℕ) :
+def morrisElementaryEquiv (q : ℕ) :
     MvPolynomial (Fin q) ℝ ≃ₐ[ℝ]
       symmetricSubalgebra (Fin q) ℝ :=
   esymmAlgEquiv (Fin q) ℝ (by simp)
@@ -331,7 +333,5 @@ theorem MvRealStable.morrisBFlow {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
     symmetricSubalgebra (Fin q) ℝ) : MvPolynomial (Fin q) ℝ) ≠ 0
   rw [hflow, aeval_complex_eq_eval_complexifyMv]
   exact hG y hy
-
-end
 
 end RealRooted.LiuZhang

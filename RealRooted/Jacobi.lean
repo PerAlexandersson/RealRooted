@@ -1,6 +1,8 @@
-import RealRooted.Favard
-import RealRooted.Jacobi.Favard
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.Favard
+public import RealRooted.Jacobi.Favard
+public import RealRooted.SimpleRoots
 
 /-!
 # Real-rootedness of shifted Jacobi polynomials
@@ -10,9 +12,9 @@ Jacobi family. The coefficient algebra and positivity of the recurrence
 coefficients live in `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

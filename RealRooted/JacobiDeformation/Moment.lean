@@ -1,5 +1,7 @@
-import RealRooted.Jacobi.Orthogonality
-import RealRooted.JacobiDeformation.Basic
+module
+
+public import RealRooted.Jacobi.Orthogonality
+public import RealRooted.JacobiDeformation.Basic
 
 /-!
 # Normalized shifted-Jacobi moments
@@ -19,9 +21,9 @@ Chu--Vandermonde identity.  The last section relates `φ_j` to the monic
 normalization used by the Favard recurrence.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.ProperPosition
+module
+
+public import RealRooted.GammaTransform.ProperPosition
 
 /-!
 # Two-step gamma-transform interlacing
@@ -7,9 +9,9 @@ An adjacent proper-position pair of gamma polynomials lifts through the two
 successive ambient degrees `2n`, `2n + 1`, and `2n + 2`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

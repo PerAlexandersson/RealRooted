@@ -1,10 +1,12 @@
-import RealRooted.ArrayPolynomialDeterminant
-import RealRooted.ArrayPolynomialWeights
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
+module
+
+public import RealRooted.ArrayPolynomialDeterminant
+public import RealRooted.ArrayPolynomialWeights
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
+
+@[expose] public noncomputable section
 
 open Matrix
-
-noncomputable section
 
 namespace RealRooted
 

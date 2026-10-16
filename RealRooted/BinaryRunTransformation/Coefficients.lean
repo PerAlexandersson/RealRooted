@@ -1,5 +1,7 @@
-import RealRooted.BasisTransform
-import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+module
+
+public import RealRooted.BasisTransform
+public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
 
 /-!
 # Binary-run transformation: coefficient algebra
@@ -13,9 +15,9 @@ The shifted coefficient formula is the finite identity used by the stable
 pointing construction.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

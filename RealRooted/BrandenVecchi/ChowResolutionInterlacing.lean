@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowResolution
-import RealRooted.BrandenVecchi.ChowRowTransform
-import RealRooted.Interlacing.ConeBounds
-import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+module
+
+public import RealRooted.BrandenVecchi.ChowResolution
+public import RealRooted.BrandenVecchi.ChowRowTransform
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # Reflection interlacing for resolved Chow rows
@@ -12,11 +14,11 @@ rows are reflection-interlacing by induction from the generic Chow row
 transform and the exact transformed resolution recurrence.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The Chow-deranged image of the complete `n`th resolving row. -/
 def resolvedChowRow {A : LowerTriangularMatrix ℝ}
@@ -364,7 +366,5 @@ theorem chowPolynomial_resolvingRowCombination_endpoint_strictInterl_of_ne
     chowPolynomial_resolvingRowCombination_endpoint_interl resolution ha
   exact ⟨hinterl.1.toStrictInterl_of_ne hchow hcombination,
     hinterl.2.toStrictInterl_of_ne hcombination hderangement⟩
-
-end
 
 end RealRooted.BrandenVecchi

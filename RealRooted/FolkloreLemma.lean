@@ -1,8 +1,10 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.ObreschkoffConverse
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 /-!
@@ -17,9 +19,9 @@ nonpositive, this has the same sign as `g(r)`.  The expected interlacing
 conclusion then follows from sign alternation.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

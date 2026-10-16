@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactCompact
-import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactCompact
+public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 
 /-!
 # Local topology for the weighted first-contact argument
@@ -9,9 +11,9 @@ perturbations inside the parameter cube.  The nearby root is supplied by
 coefficientwise root continuity for monic split polynomials.
 -/
 
-open Filter Polynomial Set Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Set Topology
 
 namespace RealRooted.Applications.OEIS
 

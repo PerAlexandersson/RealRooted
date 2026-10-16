@@ -1,5 +1,7 @@
-import RealRooted.MaWang
-import RealRooted.ParkingFunctions.ToricContribution.Definitions
+module
+
+public import RealRooted.MaWang
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
 
 /-!
 # Root insertion on the unit interval
@@ -11,9 +13,9 @@ has positive leading coefficient, one higher degree, and is in proper
 position with `f`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace ParkingFunctions

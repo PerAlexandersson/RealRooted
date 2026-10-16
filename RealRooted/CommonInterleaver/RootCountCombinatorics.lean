@@ -4,17 +4,20 @@
 Generic threshold/list/derivative
 combinatorics extracted from `RealRooted.CommonInterleaverTwo`.
 -/
-import RealRooted.Compatibility.Basic
-import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.CommonInterleaver.SuccDegreeEndpoint
-import RealRooted.Derivative
-import RealRooted.RootCountJump
-import RealRooted.RootOrderBridge
-import RealRooted.SuccDegreeRootCrossing
+
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.CommonInterleaver.SuccDegreeEndpoint
+public import RealRooted.Derivative
+public import RealRooted.RootCountJump
+public import RealRooted.RootOrderBridge
+public import RealRooted.SuccDegreeRootCrossing
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

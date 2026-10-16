@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 
 /-!
 # Fixed-alphabet weak-left-peak refinements
@@ -8,11 +10,11 @@ weak-left-peak recurrence.  The two states distinguish whether the last edge
 of a word is a descent.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 private theorem sum_snoc (m n : ℕ)
     (f : (Fin (n + 1) → Fin m) → ℤ[X]) :
@@ -178,7 +180,5 @@ theorem literalWordWeakLeftPeakPolynomialIntOfAlphabet_succ_succ
   apply Fintype.sum_congr
   intro u
   exact (terminalRefinedWeight_add_terminalDescentWeight u j).symm
-
-end
 
 end RealRooted.ParkingFunctions

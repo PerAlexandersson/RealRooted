@@ -1,4 +1,6 @@
-import RealRooted.ProductFamily
+module
+
+public import RealRooted.ProductFamily
 
 /-!
 # Staircase-weighted sums
@@ -7,9 +9,9 @@ This file packages interlacing for the staircase-weighted sum
 `X * (f_0 + ... + f_{m-1}) + (f_m + ... + f_{n-1})`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

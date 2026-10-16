@@ -1,5 +1,7 @@
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.SetTheory.Cardinal.Finite
+module
+
+public import Mathlib.Combinatorics.SimpleGraph.Basic
+public import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
 # Decision-free finite graph degrees
@@ -8,7 +10,7 @@ This module supplies the cardinality form of vertex degree without exposing a
 choice of adjacency decision procedure in its public expression.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace SimpleGraph
 

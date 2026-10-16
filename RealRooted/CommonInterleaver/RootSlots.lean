@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootSlots.Basic
+module
+
+public import RealRooted.CommonInterleaver.RootSlots.Basic
 
 /-!
 # Common interleavers: root-slot transport
@@ -7,9 +9,9 @@ Interlacing transport through the root-slot intervals attached to descending
 root sequences.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

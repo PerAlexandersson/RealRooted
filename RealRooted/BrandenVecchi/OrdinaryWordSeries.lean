@@ -1,4 +1,6 @@
-import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+module
+
+public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
 
 /-!
 # Ordinary words from Smirnov skeletons
@@ -10,11 +12,11 @@ series and its finite-product symmetry before identifying its coefficients
 with literal words.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The positive-length geometric series for one constant-letter run. -/
 def ordinaryRunSeries {R : Type*} [CommSemiring R] (a : R) :
@@ -457,7 +459,5 @@ theorem map_weightedWordPolynomial
   intro word _
   congr 2
   exact map_prod φ (fun i => weight (word i)) Finset.univ
-
-end
 
 end RealRooted.BrandenVecchi

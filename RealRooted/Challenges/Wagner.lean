@@ -1,6 +1,8 @@
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.PosCombo
-import RealRooted.Wagner.NonpositiveRoots
+module
+
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.PosCombo
+public import RealRooted.Wagner.NonpositiveRoots
 
 /-!
 # Wagner challenge entry point
@@ -77,6 +79,8 @@ J. Math. Anal. Appl. 163 (1992), 459--483.
 This module records the three forms of Wagner's lemma used in the catalog,
 the two nonnegative-combination consequences and the chain proposition.
 -/
+
+public section
 
 open Polynomial
 

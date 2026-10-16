@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.KernelClosure
-import RealRooted.BrandenLeite.TwoKernelAlgebra
-import RealRooted.BrandenLeite.ZeroConstant
+module
+
+public import RealRooted.BrandenLeite.KernelClosure
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
+public import RealRooted.BrandenLeite.ZeroConstant
 
 /-!
 # The two-kernel PF and interlacing theorem
@@ -10,11 +12,11 @@ sequences extracted in `ZeroConstant`, apply the finite kernel-limit theorem,
 and identify its rows with the literal two-kernel coefficient polynomials.
 -/
 
+public noncomputable section
+
 open Filter Matrix Polynomial Topology
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- Finite Toeplitz truncations of PF sequences are totally nonnegative. -/
 theorem finiteToeplitz_isTotallyNonneg
@@ -139,7 +141,5 @@ theorem interl_twoKernelRow_succ
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) n)
       (twoKernelRow (PowerSeries.mk g) (PowerSeries.mk h) (n + 1)) :=
   (twoKernelRows_pf_and_interl hg hh hg0 hh0).2 n
-
-end
 
 end RealRooted.BrandenLeite

@@ -19,9 +19,7 @@ The coefficient bound here is the bound induced by the input root disk;
 its derivation from the complex roots is a separate step.
 -/
 
-@[expose] public section
-
-noncomputable section
+public noncomputable section
 
 open Polynomial
 

@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import LGV.Finite
-import RealRooted.AissenSchoenbergWhitneyBase
+module
+
+public import LGV.Finite
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # LGV path matrices as Toeplitz minors
@@ -15,9 +17,9 @@ and the Toeplitz matrices used by `RealRooted`. It deliberately contains no
 path-disjointness argument and no Pólya-frequency conclusion.
 -/
 
-namespace RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 universe u
 
@@ -75,7 +77,5 @@ theorem det_pathNetwork_eq_toeplitzSubmatrix
   rw [I.pathNetwork_matrix_eq_toeplitzSubmatrix N a hN]
 
 end StrictToeplitzMinorIndex
-
-end
 
 end RealRooted

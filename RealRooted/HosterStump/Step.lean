@@ -1,5 +1,7 @@
-import RealRooted.HosterStump.Diagram
-import RealRooted.HosterStump.Sequence
+module
+
+public import RealRooted.HosterStump.Diagram
+public import RealRooted.HosterStump.Sequence
 
 /-!
 # Hoster--Stump, Section 3.1: the induction for Theorem 3.3
@@ -15,9 +17,9 @@ statements of Lemma 3.8 (rows, columns, diagonal) are proved from the induction 
 and `IsInterlacingDiagram.of_five` assembles the invariant from them by Wagner's chain lemma.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.HosterStump
 

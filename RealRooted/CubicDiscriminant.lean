@@ -1,11 +1,13 @@
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Algebra.Polynomial.SpecificDegree
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Real.Sqrt
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.QuadraticRoot
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.SpecificDegree
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Real.Sqrt
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.QuadraticRoot
 
 /-!
 # The discriminant criterion for a real cubic to split
@@ -36,9 +38,9 @@ constants and the linear polynomials), which for a nonzero real polynomial is
 equivalent to having as many roots (with multiplicity) as its degree.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,9 +1,11 @@
-import RealRooted.RankTwoMatching
+module
+
+public import RealRooted.RankTwoMatching
+
+@[expose] public noncomputable section
 
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.Graph
 

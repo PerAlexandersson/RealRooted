@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
 
 /-!
 # The multivariate Szász growth bound
@@ -33,9 +36,9 @@ the arithmetic-geometric mean inequality.
   `‖f.eval z‖` is at most a constant times `exp (szaszC f * r ^ 2)`.
 -/
 
-open Complex
+@[expose] public noncomputable section
 
-noncomputable section
+open Complex
 
 namespace MvPolynomial
 

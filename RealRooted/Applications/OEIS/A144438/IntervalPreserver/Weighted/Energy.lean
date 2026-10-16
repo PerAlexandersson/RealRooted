@@ -1,12 +1,14 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ScalarBounds
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ScalarBounds
 
 /-! # Scaled residue energy for the weighted diagonal family -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

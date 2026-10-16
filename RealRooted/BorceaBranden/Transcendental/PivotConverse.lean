@@ -1,9 +1,11 @@
-import RealRooted.BorceaBranden.Transcendental.UniformSzasz
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+module
+
+public import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+
+@[expose] public noncomputable section
 
 open Filter Topology
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

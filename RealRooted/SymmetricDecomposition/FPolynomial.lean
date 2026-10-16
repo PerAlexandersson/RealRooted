@@ -1,6 +1,8 @@
-import RealRooted.FolkloreLemma
-import RealRooted.SymmetricDecomposition.Definitions
-import RealRooted.Basic.ProperPosition
+module
+
+public import RealRooted.FolkloreLemma
+public import RealRooted.SymmetricDecomposition.Definitions
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The `f`-polynomial transform
@@ -9,9 +11,9 @@ The Brändén--Solus coefficient transform, its root-coordinate transport, and
 its real-rootedness equivalences for nonnegative-coefficient polynomials.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -266,7 +268,6 @@ lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
           lia
     _ = (1 + x) ^ d * (p.coeff k * (untransformRoot x) ^ k) := by ring
 
-
 lemma transformedLinearFactor_eq {r : ℝ} (h1r_ne : 1 - r ≠ 0) :
     C (1 - r) * X - C r = C (1 - r) * (X - C (r / (1 - r))) := by
   grind
@@ -287,7 +288,6 @@ lemma fPolynomial_X_sub_C_mul_succ' (d : ℕ) {r : ℝ} (hr : r ≤ 0) {p : ℝ[
     fPolynomial (d + 1) ((X - C r) * p) =
       C (1 - r) * (X - C (r / (1 - r))) * fPolynomial d p :=
   fPolynomial_X_sub_C_mul_succ_of_ne_one d (by linarith) hp
-
 
 private lemma fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one {p : ℝ[X]}
     (h1 : ¬ p.IsRoot 1) : fPolynomial p.natDegree p ≠ 0 := by
@@ -394,9 +394,6 @@ theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.S
           _ = (({r} : Multiset ℝ) + q.roots).map (fun s : ℝ => s / (1 - s)) := by simp
           _ = p.roots.map (fun s : ℝ => s / (1 - s)) := by rw [hp_roots])
   exact hP p.natDegree p rfl ⟨hp, hs⟩ h1
-
-
-
 
 private lemma transformedRoot_mono_of_lt_one {r s : ℝ} (hrs : r ≤ s) (hs : s < 1) :
     r / (1 - r) ≤ s / (1 - s) := by
@@ -928,7 +925,5 @@ theorem isRealRooted_of_isRealRooted_fPolynomial_of_hasNonnegCoeffs
   exact isRealRooted_of_isRealRooted_fPolynomial_natDegree_of_hasNonnegCoeffs
     hmin_rr.1 hmin_rr.2 hpnn
 
-
 end RealRooted
-
 

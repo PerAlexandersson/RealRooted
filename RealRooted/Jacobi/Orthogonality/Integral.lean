@@ -19,11 +19,9 @@ This file identifies the shifted Jacobi moment pairing with integration
 against the classical beta weight on the unit interval.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

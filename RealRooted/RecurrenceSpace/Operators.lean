@@ -1,9 +1,11 @@
-import Mathlib.Algebra.Module.LinearMap.End
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
+module
+
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic.Abel
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 
 /-!
 # Differential operators on recurrence spaces
@@ -12,11 +14,11 @@ This module proves the coefficient-derivative product rule and the elementary cl
 theorems underlying the finite recurrence certificates of RealRooted issue #1978.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 variable {K : Type*} [Field K]
 
@@ -192,7 +194,5 @@ theorem shiftAction_pow_succ_sequenceDerivative_eq_zero (p : Polynomial K[X]) (q
   dsimp only [T] at h
   rw [polynomialShiftEnd_pow_apply] at h
   exact h
-
-end
 
 end RealRooted

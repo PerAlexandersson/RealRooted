@@ -1,5 +1,7 @@
-import RealRooted.MatrixInterlacing
-import RealRooted.MatrixInterlacing.Composition
+module
+
+public import RealRooted.MatrixInterlacing
+public import RealRooted.MatrixInterlacing.Composition
 
 /-!
 # Matrix interlacing challenge entry point
@@ -118,6 +120,8 @@ family, together with the strict forward theorem and its zero-aware-output
 variant.  The sparse test families and the 2-by-2 reduction machinery live in
 `RealRooted.MatrixInterlacing`.
 -/
+
+public section
 
 open Polynomial
 

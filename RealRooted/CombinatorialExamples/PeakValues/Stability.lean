@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
-import RealRooted.HomogeneousStability
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+public import RealRooted.HomogeneousStability
 
 /-!
 # Stability of the peak-value polynomial
@@ -9,11 +11,11 @@ The proof lifts the translated insertion recurrence to homogeneous stable
 polynomials and alternates two derivative constructions according to parity.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 open MvPolynomial
 
@@ -266,7 +268,5 @@ theorem peakValuePolynomial_mvRealStable (n : ℕ) :
   rw [complexify_translateVariablesByOne] at htranslated
   exact MvUpperHalfPlaneStable.of_translate_add_real (fun _ => 1)
     htranslated
-
-end
 
 end RealRooted

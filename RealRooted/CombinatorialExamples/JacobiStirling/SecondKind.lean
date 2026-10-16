@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
-import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
+public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the second kind
@@ -9,9 +11,9 @@ semiring and identifies it with complete homogeneous symmetric polynomials
 evaluated at `i * (i + z)` for `1 ≤ i ≤ k`.
 -/
 
-namespace RealRooted.JacobiStirling
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.JacobiStirling
 
 variable {R : Type*} [CommSemiring R]
 
@@ -109,7 +111,5 @@ theorem secondKind_eq_ite_aeval_hsymm (z : R) (n k : ℕ) :
   split_ifs with hk
   · exact secondKind_eq_aeval_hsymm_of_le z hk
   · exact secondKind_eq_zero_of_lt z (Nat.lt_of_not_ge hk)
-
-end
 
 end RealRooted.JacobiStirling

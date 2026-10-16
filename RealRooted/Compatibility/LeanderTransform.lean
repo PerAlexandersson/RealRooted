@@ -1,4 +1,6 @@
-import RealRooted.Compatibility.Basic
+module
+
+public import RealRooted.Compatibility.Basic
 
 /-!
 # The diagonal-omitting Leander transform
@@ -8,9 +10,9 @@ theorem and records its coefficientwise algebra. Compatibility preservation is
 proved in downstream modules.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

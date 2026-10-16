@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotal
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotal
 
 /-!
 # Ordinary-coordinate recurrence for the Deco layer total
@@ -11,9 +13,9 @@ coordinate embedding.
 No stability claim is made for the total.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- The ordinary-coordinate Deco total, defined directly by the
 normal-plus-exceptional bottom-variable recurrence. -/
@@ -90,8 +92,5 @@ theorem rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal :
           (decoLayerTotal_isHomogeneous (n + 1)),
         rename_dehomogenize_decoExceptionalLayerStep_eq_decoExceptionalBottomStep,
         ih0, ih1, decoBottomTotal_recurrence]
-
-end
-
 
 end RealRooted.Applications.OEIS

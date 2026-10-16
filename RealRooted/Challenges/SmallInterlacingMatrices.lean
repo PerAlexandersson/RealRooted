@@ -1,4 +1,6 @@
-import RealRooted.MatrixInterlacing
+module
+
+public import RealRooted.MatrixInterlacing
 
 /-!
 # Small matrices preserving interlacing sequences
@@ -110,6 +112,8 @@ This module exposes the checked classification of the atomic `2 × 2`
 matrices. The affine certificates, the sparse obstruction families and the
 decided tables live in `RealRooted.MatrixInterlacing`.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
-import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
-import RealRooted.Wronskian.Forward
+module
+
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
+public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+public import RealRooted.Wronskian.Forward
 
 /-!
 # Weak forward Wronskian orientation
@@ -10,11 +12,11 @@ This file extends the strict forward Wronskian theorems to interlacing
 pairs with common roots.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Interlacing with positive leading coefficients gives global
 nonnegativity of the oriented Wronskian.  Common roots are removed
@@ -83,7 +85,5 @@ theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
             hstrictInterl hp_nodup hq_nodup hcommon t
           rw [Polynomial.wronskian, eval_sub, eval_mul, eval_mul]
           linarith
-
-end
 
 end RealRooted

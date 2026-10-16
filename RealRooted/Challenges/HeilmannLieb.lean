@@ -1,6 +1,8 @@
-import RealRooted.HeilmannLieb
-import RealRooted.RankTwoMatching.Transform
-import RealRooted.Graph.MatchingVertexInterlacing
+module
+
+public import RealRooted.HeilmannLieb
+public import RealRooted.RankTwoMatching.Transform
+public import RealRooted.Graph.MatchingVertexInterlacing
 
 /-!
 # Heilmann–Lieb challenge entry point
@@ -158,6 +160,8 @@ weighted claw-free theorem, and the rank-two binomial transform.  The proofs
 live in `RealRooted.HeilmannLieb`, `RealRooted.Graph.IndependencePolynomial.ClawFree`
 and `RealRooted.RankTwoMatching`.
 -/
+
+public section
 
 open Polynomial
 

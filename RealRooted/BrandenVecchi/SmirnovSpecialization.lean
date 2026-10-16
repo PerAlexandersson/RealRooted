@@ -1,4 +1,6 @@
-import RealRooted.BrandenVecchi.ChowSignedWords
+module
+
+public import RealRooted.BrandenVecchi.ChowSignedWords
 
 /-!
 # Positive specialization of finite signed words
@@ -9,11 +11,11 @@ polynomial. It records the survivor condition before passing to the alphabet
 with no negative letters.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The zero/one specialization of a finite signed alphabet: negative letters
 have weight zero and positive letters have weight one. -/
@@ -248,7 +250,5 @@ theorem finiteSupersymmetricChow_replicate_one_nil_eq_smirnov
       weightedSmirnovPolynomial (fun _ : Fin m => (1 : ℝ)) n := by
   rw [finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]
   exact finiteSignedWordEnumerator_replicate_one_nil_eq_smirnov m n
-
-end
 
 end RealRooted.BrandenVecchi

@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.CompositionRow
-import RealRooted.BrandenLeite.ConstantDiagonal
+module
+
+public import RealRooted.BrandenLeite.CompositionRow
+public import RealRooted.BrandenLeite.ConstantDiagonal
 
 /-!
 # Toeplitz chain polynomials and composition rows
@@ -12,9 +14,9 @@ constant-diagonal normalization theorem then supplies PF and interlacing
 conclusions for these rows.
 -/
 
-open Matrix Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Matrix Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
 

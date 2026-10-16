@@ -1,8 +1,10 @@
-import RealRooted.MultiplierSequence.ProperPosition
-import RealRooted.PFPolynomial.Closure
-import RealRooted.PFPolynomial.CoefficientShape
-import RealRooted.JensenPencilContraction
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.MultiplierSequence.ProperPosition
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.PFPolynomial.CoefficientShape
+public import RealRooted.JensenPencilContraction
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Degree-drop transport for finite PF multiplier sequences
@@ -13,9 +15,9 @@ retains the directed, zero-aware interlacing relation when top multipliers
 vanish.
 -/
 
-open Filter Polynomial Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

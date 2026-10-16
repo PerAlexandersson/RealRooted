@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Bezoutian.ComplexRoots
+module
+
+public import Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Bezoutian.ComplexRoots
 
 /-!
 # Wronskian positivity and strict interlacing
@@ -9,9 +11,9 @@ same-degree interlacing, together with the higher-degree converse from a
 positive Bezout matrix.
 -/
 
-open Polynomial Matrix
+public noncomputable section
 
-noncomputable section
+open Polynomial Matrix
 
 namespace RealRooted
 

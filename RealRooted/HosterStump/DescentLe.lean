@@ -1,5 +1,7 @@
-import RealRooted.HosterStump.Chow
-import RealRooted.HosterStump.PosetBasic
+module
+
+public import RealRooted.HosterStump.Chow
+public import RealRooted.HosterStump.PosetBasic
 
 /-!
 # Hoster--Stump: permutations with descent set in a reflected set
@@ -11,6 +13,8 @@ recursion for `desLeCount`; induction on `n` then yields the closed form
 set in `reflectSet n T` number `C(n - k, n - m - 1) * gapMultinomial (m + 1) (T \ {m})`,
 `m = max T`; and only the identity has no descents (`desLeCount_empty`).
 -/
+
+public section
 
 open Finset
 

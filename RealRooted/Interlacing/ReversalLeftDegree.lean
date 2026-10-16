@@ -1,8 +1,10 @@
-import RealRooted.Interlacing.Reversal
+module
+
+public import RealRooted.Interlacing.Reversal
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

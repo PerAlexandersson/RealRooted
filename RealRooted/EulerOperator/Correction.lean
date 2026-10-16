@@ -4,9 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.EulerOperator
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Corrections to Euler successors
@@ -15,9 +17,9 @@ This file packages common-interleaver arguments for adding a nonnegative
 correction below the Euler successor `thetaPlusOne p`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
 
 /-!
 # Residues at an A144438 insertion successor
@@ -8,9 +10,9 @@ root `ρ`, this identifies `q'(ρ)/p(ρ)` with the positive secular norm
 `1 + ∑ (-r)w_r/(ρ-r)²`.
 -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.Applications.OEIS
 

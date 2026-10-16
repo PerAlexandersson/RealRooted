@@ -17,12 +17,11 @@ word generating series; the reusable Riccati uniqueness theorem identifies it
 with the centered Eulerian series.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open PowerSeries
 open RealRooted.CenteredEulerian
 
-noncomputable section
 namespace RealRooted.ZigzagEulerian
 
 /-- `F_k(2s) = ∑ 2ⁿ Ω_n(k) sⁿ`. -/

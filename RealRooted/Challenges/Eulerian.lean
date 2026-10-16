@@ -1,8 +1,12 @@
-import RealRooted.CombinatorialExamples.Eulerian
-import RealRooted.CombinatorialExamples.EulerianStatistic
-import RealRooted.CombinatorialExamples.TypeBEulerian
-import RealRooted.GeneralizedEulerian.GeneratingFunction
-import RealRooted.MaWang.DerivativeStep
+module
+
+public import RealRooted.CombinatorialExamples.Eulerian
+public import RealRooted.CombinatorialExamples.EulerianStatistic
+public import RealRooted.CombinatorialExamples.TypeBEulerian
+public import RealRooted.GeneralizedEulerian.GeneratingFunction
+public import RealRooted.MaWang.DerivativeStep
+
+public section
 
 open Polynomial
 

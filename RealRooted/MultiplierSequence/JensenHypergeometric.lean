@@ -1,8 +1,10 @@
-import RealRooted.MultiplierSequence.TwoSidedJensen
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.NarayanaTransformation.Interlacing
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.MultiplierSequence.TwoSidedJensen
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.NarayanaTransformation.Interlacing
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Strict interlacing for hypergeometric Jensen models
@@ -13,9 +15,9 @@ two order-zero Narayana transforms. It also supplies the degree-changing
 reciprocal-shift transport needed when a row is written in reverse order.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.LiuOppositeSigns.FactorReturnLeft
-import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+module
+
+public import RealRooted.LiuOppositeSigns.FactorReturnLeft
+public import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 
 /-!
 # Liu reverse direction by factor return
@@ -11,6 +13,8 @@ one of three degree cases.  In each case the translated positive right pencil
 splits, which restores compatibility of the original pair.  The right branch
 follows from the left branch by symmetry.
 -/
+
+public section
 
 open Polynomial Filter
 

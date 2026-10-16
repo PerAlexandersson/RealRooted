@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.MultivariateStability.LinearForm
-import Mathlib.Data.Finset.BooleanAlgebra
-import Mathlib.Data.Finset.Powerset
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.MultivariateStability.LinearForm
+public import Mathlib.Data.Finset.BooleanAlgebra
+public import Mathlib.Data.Finset.Powerset
 
 /-!
 # Stable Boolean variable-choice orbits
@@ -13,11 +15,11 @@ monomial times a product of linear forms `X x + X y`.  The weighted API also
 retains the scalar weight sums contributed by inactive pairs.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The subset expansion choosing a left or right variable from every pair. -/
 def booleanVariableChoiceSum {σ ι R : Type*} [CommSemiring R]
@@ -353,7 +355,5 @@ theorem weightedBooleanSwapOrbitNormalForm_eq_zero_or_mvRealStable
               (0 : MvPolynomial σ ℝ) :=
         Finset.prod_eq_zero hactive hlinear
       simp [hproduct]
-
-end
 
 end RealRooted

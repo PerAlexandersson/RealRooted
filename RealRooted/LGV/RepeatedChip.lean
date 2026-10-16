@@ -4,10 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.LGV.ChipNetwork.Word
-import RealRooted.LGV.PolyaFrequency
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.LGV.ChipNetwork.Word
+public import RealRooted.LGV.PolyaFrequency
+public import RealRooted.PFPolynomial
 
 /-!
 # Pólya-frequency rows from repeated chip words
@@ -17,6 +19,8 @@ This is the concrete LeanLGV consumer for the repeated word
 cancellation remains in the standalone LeanLGV package.
 -/
 
+@[expose] public noncomputable section
+
 open Matrix Polynomial
 
 namespace RealRooted
@@ -24,8 +28,6 @@ namespace LGV
 namespace RepeatedChip
 
 open ChipNetwork
-
-noncomputable section
 
 /-- Coefficient sequence of the repeated-chip kernel row. -/
 def kernelSequence (G K : List (Chip ℝ N)) (q : ℕ) : ℝ :=
@@ -400,8 +402,6 @@ theorem monomerRodKernelRow_one_isPFPolynomial
       simp [Chip.matrix, hEq, hsub]
 
 end RodTilingRegression
-
-end
 
 end RepeatedChip
 end LGV

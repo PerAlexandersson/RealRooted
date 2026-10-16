@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.JacobiOperator
+module
+
+public import RealRooted.JacobiDeformation.JacobiOperator
 
 /-!
 # Same-parameter lowering for monic shifted Jacobi polynomials
@@ -8,9 +10,9 @@ differential operator and the monic Favard recurrence.  Keeping the lower
 coefficient in terms of `shiftedJacobiSubdiag` preserves its degree-one branch.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.JacobiDeformation
 

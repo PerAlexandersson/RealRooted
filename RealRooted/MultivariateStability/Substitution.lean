@@ -1,5 +1,7 @@
-import Mathlib.Algebra.MvPolynomial.Monad
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import RealRooted.MultivariateStability
 
 /-!
 # Positive upper-half-plane substitutions
@@ -9,9 +11,9 @@ preserver.  It is the `bind₁` form of composition with polynomials whose
 values have positive imaginary part on the upper half-plane.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- Substituting upper-half-plane-valued polynomials into a stable polynomial
 preserves upper-half-plane stability. -/
@@ -29,7 +31,5 @@ theorem MvUpperHalfPlaneStable.bind₁_of_im_eval_pos
   · intro i
     exact hf i z hz
   · exact hzero
-
-end
 
 end RealRooted

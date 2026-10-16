@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.NDCutStateClosure
-import RealRooted.Compatibility.NDCutThresholdClosure
+module
+
+public import RealRooted.Compatibility.NDCutStateClosure
+public import RealRooted.Compatibility.NDCutThresholdClosure
 
 /-!
 # Preservation of the structural N/D cut invariant
@@ -9,9 +11,9 @@ compatibility controls the next N/D state order, while the old N/D state order
 controls the next P/Q cut package through the marker-one threshold matrix.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.BarrierCross
+module
+
+public import RealRooted.MultivariateStability.BarrierCross
 
 /-!
 # The MSS barrier update lemma
@@ -10,9 +12,9 @@ above its roots, `δ > 0` and `Φ_j p z ≤ 1 − 1/δ`, then `z + δ e_j` is ab
 the monotonicity and convexity of the barriers along coordinate lines (`BarrierCross`).
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 open scoped BigOperators
 
@@ -318,7 +320,5 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
       simpa only [sub_eq_add_neg, neg_div, add_comm] using
         add_le_add_left hquot (barrier i p y)
     _ ≤ barrier i p z := by linarith
-
-end
 
 end RealRooted

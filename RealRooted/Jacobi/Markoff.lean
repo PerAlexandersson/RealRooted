@@ -1,12 +1,14 @@
-import RealRooted.JacobiOrthogonality
-import RealRooted.Jacobi
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
-import Mathlib.Analysis.Calculus.ContDiff.Polynomial
-import Mathlib.Analysis.Calculus.Deriv.MeanValue
-import Mathlib.Analysis.Calculus.ImplicitContDiff
-import Mathlib.Data.List.GetD
-import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+module
+
+public import RealRooted.JacobiOrthogonality
+public import RealRooted.Jacobi
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
+public import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Analysis.Calculus.ImplicitContDiff
+public import Mathlib.Data.List.GetD
+public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Markoff monotonicity for shifted Jacobi roots
@@ -15,10 +17,10 @@ This file develops the parameter derivative and strict sign argument for the
 first parameter of beta-one shifted Jacobi polynomials.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Polynomial Topology
 open scoped ContDiff
-
-noncomputable section
 
 namespace RealRooted
 

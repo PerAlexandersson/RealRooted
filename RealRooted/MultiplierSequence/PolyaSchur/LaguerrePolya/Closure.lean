@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Closure of the Laguerre–Pólya class under locally uniform limits
@@ -8,6 +10,8 @@ Equivalently (`IsLaguerrePolya.of_forall_approx`, `IsLaguerrePolya.exists_approx
 disc `f` is uniformly approximable by such polynomials.  A diagonal argument then shows that
 the class is closed under locally uniform limits (`IsLaguerrePolya.of_tendstoLocallyUniformly`).
 -/
+
+public section
 
 open Polynomial Filter
 

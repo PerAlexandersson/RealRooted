@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Cancellation and invariant-cone degree routes
@@ -12,11 +14,11 @@ did not use the general `LinRec` cancellation theorem.  The two cone examples en
 `c n`, its first difference, and two consecutive second differences.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowDegreeRoutes
-
-noncomputable section
 
 /-- A first-order derivative recurrence with cancellation at every step. -/
 def cancelLinear : ℕ → ℝ[X]
@@ -59,7 +61,5 @@ example (n : ℕ) : (coneOneTwoFour n).natDegree = n := by
 
 example (n : ℕ) : (coneFibSubLinear n).natDegree = n := by
   rr_row_natDegree (via := cone)
-
-end
 
 end RealRooted.Tactic.RowDegreeRoutes

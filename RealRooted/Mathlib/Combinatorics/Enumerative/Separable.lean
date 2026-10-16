@@ -3,13 +3,16 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
-import Mathlib.Algebra.Polynomial.Reverse
+
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Separable permutations: sum decompositions and the descent recurrence
@@ -33,10 +36,10 @@ with the bridge between canonical pattern avoidance and the positional definitio
 The recurrence `separableDescentEnumerator_recurrence` is therefore unconditional.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators Polynomial
 open Polynomial
-
-noncomputable section
 
 namespace Equiv.Perm
 
@@ -288,7 +291,6 @@ private theorem avoids_pattern2413_iff {n : ℕ} (σ : Perm (Fin n)) :
       (e.lt_iff_lt.mpr (by decide)) ⟨(he 2 0).mpr (by decide), (he 0 3).mpr (by decide),
         (he 3 1).mpr (by decide)⟩
 
-
 private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
     σ.Avoids pattern3142 ↔ Avoids3142Pos σ := by
   unfold Avoids Avoids3142Pos
@@ -313,7 +315,6 @@ private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
     exact hav (e 0) (e 1) (e 2) (e 3) (e.lt_iff_lt.mpr (by decide)) (e.lt_iff_lt.mpr (by decide))
       (e.lt_iff_lt.mpr (by decide)) ⟨(he 1 3).mpr (by decide), (he 3 0).mpr (by decide),
         (he 0 2).mpr (by decide)⟩
-
 
 /-- A split of the prefix `[0, N)` of a sequence `f`. -/
 private def SplitP {α : Type*} [LinearOrder α] (f : ℕ → α) (N m : ℕ) : Prop :=
@@ -415,7 +416,6 @@ private theorem exists_splitsAt (n : ℕ) (hn : 2 ≤ n) (σ : Perm (Fin n))
   · exact Or.inr fun i j hi hj => by
       have := hs i j hi hj j.isLt; rw [hf, hf] at this; exact this
 
-
 /-- A separable permutation of length at least two has a proper direct-sum or skew-sum cut.
 
 This is the classical fact that a permutation of length at least two avoiding `2413` and `3142`
@@ -427,7 +427,6 @@ theorem exists_hasSumCut_of_isSeparable {n : ℕ} (hn : 2 ≤ n) {σ : Perm (Fin
   obtain ⟨m, hm, hmn, hs⟩ := exists_splitsAt n hn σ ((avoids_pattern2413_iff σ).mp h.1)
     ((avoids_pattern3142_iff σ).mp h.2)
   exact ⟨m, hm, hmn, hs.imp (fun h => ⟨hm, hmn, h⟩) (fun h => ⟨hm, hmn, h⟩)⟩
-
 
 /-! ### Finite sets and enumerators -/
 

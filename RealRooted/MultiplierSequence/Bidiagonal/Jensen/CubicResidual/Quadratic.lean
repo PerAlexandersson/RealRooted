@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
 
 /-!
 # Quadratic cubic-residual specializations
@@ -7,9 +9,9 @@ This module specializes cubic residual certificates to quadratic Jensen
 weights and canonical second-derivative bidiagonal forms.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -110,7 +112,6 @@ def secondDerivativeBidiagonalCubicResidualCertificate_sequence_from
       (b2 := b2 n) (c2 := c2 n) (c3 := c3 n)
       (hd n hn) (hA n hn) (hB n hn) (hS n hn)
 
-
 /-- Quadratic Jensen residual certificate route for a coefficient-bidiagonal preserver. -/
 theorem quadraticBidiagonalPFPreserver_of_cubicResidualCertificate
     (aa ab ac ba bb bc : ℝ) {d : ℕ} (hd : 2 ≤ d)
@@ -142,6 +143,5 @@ theorem secondDerivativeBidiagonalPFPreserver_of_cubicResidualCertificate
       (fun k => secondDerivativeQuadraticCoeff a1 b2 c3 k) d :=
   BidiagonalCubicResidualCertificate.toPFPreserver
     (secondDerivativeBidiagonalCubicResidualCertificate hd hA hB hS)
-
 
 end RealRooted

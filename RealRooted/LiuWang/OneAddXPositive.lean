@@ -1,5 +1,7 @@
-import Mathlib.Tactic.ComputeDegree
-import RealRooted.LiuWang.SequenceProducts
+module
+
+public import Mathlib.Tactic.ComputeDegree
+public import RealRooted.LiuWang.SequenceProducts
 
 /-!
 # Positive one-plus-X recurrence sequences
@@ -11,9 +13,9 @@ This sequence-independent theorem family was first used in the OEIS proof
 project in ProofsOeis.OneAddXPositive.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -150,7 +152,5 @@ theorem interlaces_of_one_add_X_positive_coeff
   exact interlaces_of_one_add_X_positive_coeff_with_base P c h0 hrec hdeg hc_pos hbase
     (by simp_all) (by rw [h1]; exact hasNonnegCoeffs_one.add hasNonnegCoeffs_X) n
 
-
 end RealRooted
 
-end

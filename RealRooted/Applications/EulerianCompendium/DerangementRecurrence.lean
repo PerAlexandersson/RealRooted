@@ -1,6 +1,8 @@
-import Mathlib
-import RealRooted.Combinatorics.ForcedSteps
-import RealRooted.Combinatorics.SortingFixedPoints
+module
+
+public import Mathlib
+public import RealRooted.Combinatorics.ForcedSteps
+public import RealRooted.Combinatorics.SortingFixedPoints
 
 /-!
 Aristotle project `c46dc43c-0f1b-436e-852d-810faecd9567`, adapted locally.
@@ -27,6 +29,8 @@ Proof outline (all steps are proved below or in `RealRooted/Combinatorics/Sortin
   that deletes the first fixed position carrying a given letter, gives
   `Z n N = ∑_j (-1)^j C(N, j) N^(n-j)`, hence `Z (n+1) N = N Z n N + (-1)^(n+1) C(N, n+1)`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

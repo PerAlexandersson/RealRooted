@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Elementary-symmetric lower-triangular matrices
@@ -14,6 +17,8 @@ This file factors finite elementary-symmetric triangles into nonnegative lower
 bidiagonal matrices. The construction is independent of path-network and LGV
 infrastructure.
 -/
+
+@[expose] public noncomputable section
 
 namespace Multiset
 
@@ -28,8 +33,6 @@ theorem esymm_cons (a : R) (s : Multiset R) (n : ℕ) :
 end Multiset
 
 namespace Matrix
-
-noncomputable section
 
 section Semiring
 
@@ -309,7 +312,5 @@ theorem elementarySymmetricTriangle_isTotallyNonneg
 end Ordered
 
 end Ring
-
-end
 
 end Matrix

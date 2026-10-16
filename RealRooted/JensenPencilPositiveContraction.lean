@@ -1,5 +1,7 @@
-import RealRooted.FiniteFreeRootCount
-import RealRooted.CoefficientShape
+module
+
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.CoefficientShape
 
 /-!
 # Positive Jensen-pencil contraction
@@ -9,8 +11,9 @@ PF inputs have positive constant coefficient.  Signed reciprocal reversal
 reduces the statement to two finite-free upper-root-count contractions.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
-noncomputable section
 namespace RealRooted
 
 /-! ## Reciprocal normalization -/

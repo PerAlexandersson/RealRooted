@@ -1,17 +1,19 @@
-import RealRooted.CombinatorialExamples.Eulerian
-import RealRooted.Derivative.Interlacing
-import RealRooted.EulerOperator
-import RealRooted.EulerOperator.Darboux.NegativeRoots
-import RealRooted.EulerOperator.Pencil
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.GammaTransform.Preservation
-import RealRooted.Hadamard.Consequences
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.OrderedRoots
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.SimpleRoots
-import RealRooted.SymmetricDecomposition.Decomposition
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.CombinatorialExamples.Eulerian
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.EulerOperator
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.Hadamard.Consequences
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.OrderedRoots
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.SimpleRoots
+public import RealRooted.SymmetricDecomposition.Decomposition
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Super-Eulerian (powered Eulerian) polynomials
@@ -64,12 +66,11 @@ kernels `(n-θ)(1+t)^{n-1}` and `(θ+1)(1+t)^{n-1}`, gives the weak interlacing
 does `E_{n+1}`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
-noncomputable section
-
 namespace RealRooted
-
 
 /-- A real-rooted polynomial whose zeros are all nonpositive and whose constant coefficient is
 positive has nonnegative coefficients. -/
@@ -355,7 +356,7 @@ theorem superEulerianNumber_succ_succ_succ (l n k : ℕ) :
         (n + 1 - k) ^ l * superEulerianNumber l (n + 1) k := rfl
 
 /-- The polynomial `∑_{k < n} f k X^k`. -/
-private def finPoly (n : ℕ) (f : ℕ → ℝ) : ℝ[X] :=
+def finPoly (n : ℕ) (f : ℕ → ℝ) : ℝ[X] :=
   ∑ k ∈ Finset.range n, C (f k) * X ^ k
 
 private lemma coeff_finPoly (n : ℕ) (f : ℕ → ℝ) (k : ℕ) :

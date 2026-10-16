@@ -1,6 +1,8 @@
-import RealRooted.AllCombo
-import RealRooted.AffineDerivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineDerivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Obreschkoff converse degree gaps
@@ -9,9 +11,9 @@ Analytic constant-shift obstructions and the degree-closeness reduction for
 all-real-rooted polynomial pairs.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -238,7 +240,6 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_thr
     dsimp [t]
     linarith [le_abs_self (p.eval c)]
   exact (not_lt_of_ge hc_nonneg) hc_neg
-
 
 lemma exists_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     {p : ℝ[X]} (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)

@@ -1,8 +1,10 @@
-import RealRooted.Favard
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
-import RealRooted.Transforms.BrandenE.Inverse
-import RealRooted.Transforms.BrandenE.WeightedSum
+module
+
+public import RealRooted.Favard
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
+public import RealRooted.Transforms.BrandenE.Inverse
+public import RealRooted.Transforms.BrandenE.WeightedSum
 
 /-!
 # The Delannoy family and Brändén's E transform
@@ -13,9 +15,9 @@ real part `-1 / 2`.  The Cayley transform then gives a coefficient certificate
 in the ambient Bernstein basis.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

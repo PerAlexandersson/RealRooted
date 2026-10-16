@@ -1,8 +1,10 @@
-import RealRooted.CommonInterleaverTwo
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.SameDegreeCountFromAnalytic
+module
 
-noncomputable section
+public import RealRooted.CommonInterleaverTwo
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.SameDegreeCountFromAnalytic
+
+public noncomputable section
 
 namespace RealRooted
 

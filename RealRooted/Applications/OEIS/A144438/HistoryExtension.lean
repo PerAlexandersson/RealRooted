@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.CodeExtension
-import RealRooted.Applications.OEIS.A144438.HistoryPartition
+module
+
+public import RealRooted.Applications.OEIS.A144438.CodeExtension
+public import RealRooted.Applications.OEIS.A144438.HistoryPartition
 
 /-!
 # Last-step decomposition of Deco history fibers
@@ -10,9 +12,9 @@ from the appropriate shorter admissible prefix.  Polynomial recurrences are
 kept in a higher module.
 -/
 
-namespace RealRooted.Applications.OEIS
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 namespace DecoCode
 
@@ -277,7 +279,5 @@ def exceptionalHistoryExtensionEquiv {n : Nat}
         H c.1.2 c.2)
       (DecoCode.last_eq_zero_of_exceptionalHistory_exceptional
         H c.1.2 c.2)
-
-end
 
 end RealRooted.Applications.OEIS

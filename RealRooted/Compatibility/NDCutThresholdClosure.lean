@@ -1,4 +1,6 @@
-import RealRooted.Compatibility.NDCutStaircase
+module
+
+public import RealRooted.Compatibility.NDCutStaircase
 
 /-!
 # Marker-one closure for structural N/D cut outputs
@@ -9,9 +11,9 @@ the marker-one threshold theorem applies directly and gives the zero-aware
 interlacing package on the ordered successor cut outputs.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,7 +1,9 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.PoweredEulerian
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.PoweredEulerian
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Degree-jump-two regression examples
@@ -9,10 +11,10 @@ import RealRooted.Recurrence.Uniqueness
 These examples exercise the differentiated-`X` route and the powered Eulerian model.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.Tactic.DegreeTwoExamples
 
@@ -313,7 +315,7 @@ theorem centeredConsecutiveProductRow_splits_of_recurrence
       simp only [update, map_one]
       rw [centeredConsecutiveProductRow]
       unfold centeredConsecutiveFirst centeredConsecutiveSecond
-      ring)
+      ring_nf)
   rw [heq n]
   exact centeredConsecutiveProductRow_splits n
 

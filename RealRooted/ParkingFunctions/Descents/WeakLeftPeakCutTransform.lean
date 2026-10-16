@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.CutTransform
-import RealRooted.Compatibility.LeanderTransform
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+module
+
+public import RealRooted.Compatibility.CutTransform
+public import RealRooted.Compatibility.LeanderTransform
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
 
 /-!
 # The P/Q cut transform for weak left peaks
@@ -11,11 +13,11 @@ example distinguishes this transform from Leander's diagonal-omitting
 transform already for a two-letter alphabet.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- The next unmarked pair mix is exactly the unmarked `P/Q` cut output. -/
 theorem terminalPairMixReal_succ_eq_cutTransformP
@@ -151,7 +153,5 @@ theorem cutTransform_two_base_ne_leanderTransform :
   intro h
   have := congrArg (fun p : ℝ[X] => p.coeff 0) h
   norm_num at this
-
-end
 
 end RealRooted.ParkingFunctions

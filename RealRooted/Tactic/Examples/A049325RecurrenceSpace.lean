@@ -1,6 +1,8 @@
-import Mathlib.Tactic.NormNum
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.Tactic.Recurrence
+module
+
+public import Mathlib.Tactic.NormNum
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.Tactic.Recurrence
 
 /-!
 # A049325 recurrence-space certificate
@@ -9,11 +11,11 @@ This regression module instantiates the universal defect certificate from RealRo
 issue #1978 for the pure-lag recurrence and first-order lift associated with A049325.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The four pure-lag coefficients for the A049325 certificate. -/
 @[simp] def a049325Coeffs : Fin 4 → ℚ[X] :=
@@ -145,7 +147,5 @@ example (P : ℕ → ℚ[X])
       rr_replay_lift (hsource) (X) (hseed)
     rr_replay_lift (hsource) (X) (hgood)
   · exact hseed 0 (by norm_num)
-
-end
 
 end RealRooted

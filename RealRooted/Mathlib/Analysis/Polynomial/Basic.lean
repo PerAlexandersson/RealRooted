@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Polynomial.Basic
-import Mathlib.Topology.Algebra.Polynomial
+
+module
+
+public import Mathlib.Analysis.Polynomial.Basic
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Nonnegativity of real polynomials by continuity
@@ -14,6 +17,8 @@ everywhere, since polynomial evaluation is continuous and the punctured
 neighbourhoods of a real number are nontrivial. This is a candidate for
 upstreaming to `Mathlib.Analysis.Polynomial.Basic`.
 -/
+
+public section
 
 open Filter Topology
 

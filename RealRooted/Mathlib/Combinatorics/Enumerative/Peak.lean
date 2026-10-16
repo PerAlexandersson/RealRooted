@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Peaks and valleys of words
@@ -11,17 +14,19 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 This module uses the zero-based position convention documented in `Descent`.
 -/
 
+@[expose] public section
+
 namespace List
 
 variable {α β : Type*} [LinearOrder α] [LinearOrder β]
 
-private theorem pred_lt_length {i n : ℕ} (hi : 0 < i) (h : i + 1 < n) : i - 1 < n := by
+theorem pred_lt_length {i n : ℕ} (hi : 0 < i) (h : i + 1 < n) : i - 1 < n := by
   lia
 
-private theorem index_lt_length {i n : ℕ} (h : i + 1 < n) : i < n :=
+theorem index_lt_length {i n : ℕ} (h : i + 1 < n) : i < n :=
   Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
 
-private def isPeak (l : List α) (i : ℕ) : Bool :=
+def isPeak (l : List α) (i : ℕ) : Bool :=
   if hi : 0 < i then
     if h : i + 1 < l.length then
       decide (l[i - 1]'(pred_lt_length hi h) < l[i]'(index_lt_length h) ∧
@@ -29,7 +34,7 @@ private def isPeak (l : List α) (i : ℕ) : Bool :=
     else false
   else false
 
-private def isValley (l : List α) (i : ℕ) : Bool :=
+def isValley (l : List α) (i : ℕ) : Bool :=
   if hi : 0 < i then
     if h : i + 1 < l.length then
       decide (l[i]'(index_lt_length h) < l[i - 1]'(pred_lt_length hi h) ∧
@@ -37,7 +42,7 @@ private def isValley (l : List α) (i : ℕ) : Bool :=
     else false
   else false
 
-private def isLeftPeak (l : List α) : Bool :=
+def isLeftPeak (l : List α) : Bool :=
   if h : 1 < l.length then decide (l[1]'h < l[0]'(by lia)) else false
 
 /-- The interior peak positions of a word. -/

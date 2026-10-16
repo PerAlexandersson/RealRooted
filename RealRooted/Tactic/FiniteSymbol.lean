@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
 
 /-!
 # Finite-symbol stable-or-zero tactic frontend
@@ -6,6 +8,8 @@ import RealRooted.BorceaBranden.FiniteSymbolPreserver
 Thin explicit and automatic wrappers around the proved multiaffine
 finite-symbol stability theorem.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

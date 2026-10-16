@@ -1,5 +1,7 @@
-import RealRooted.MaWang
-import RealRooted.Linear
+module
+
+public import RealRooted.MaWang
+public import RealRooted.Linear
 
 /-!
 # Interlacing for three-term recurrences
@@ -15,6 +17,8 @@ rows have nonnegative coefficients (`threeTerm_interlaces_of_nonnegCoeffs`).
 `threeTerm_hasNonnegCoeffs` gives the latter when `a n` and `b n` have
 nonnegative coefficients.
 -/
+
+public section
 
 open Polynomial
 

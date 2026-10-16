@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.RealHKOConverse
-import RealRooted.BorceaBranden.RealFiniteClassification
+module
 
-noncomputable section
+public import RealRooted.BorceaBranden.RealHKOConverse
+public import RealRooted.BorceaBranden.RealFiniteClassification
+
+@[expose] public noncomputable section
 
 namespace RealRooted
 namespace BorceaBranden

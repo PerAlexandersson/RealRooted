@@ -1,7 +1,9 @@
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
-import RealRooted.RecurrenceSpace.Filtered
+module
+
+public import Mathlib.Tactic.Abel
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
+public import RealRooted.RecurrenceSpace.Filtered
 
 /-!
 # Universal source-and-lift defect identity
@@ -11,11 +13,11 @@ from RealRooted issue #1978.  The identity is valid for arbitrary polynomial-val
 sequences; recurrence and lift assumptions enter only in the corollaries.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 variable {K : Type*} [Field K]
 
@@ -325,7 +327,5 @@ theorem derivativeRecurrence_of_liftDefect_eq_zero
   rw [mul_add]
   simp only [← mul_assoc, ← C_mul, mul_inv_cancel₀ (hdelta_ne n), C_1, one_mul]
   linear_combination h
-
-end
 
 end RealRooted

@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Basic
-import RealRooted.CommonInterleaverSeq
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaverSeq
 
 /-!
 # Compatibility from common interleavers
@@ -9,9 +11,9 @@ interleavers, is pairwise compatible: the easy direction of
 Chudnovsky--Seymour.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

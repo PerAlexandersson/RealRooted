@@ -1,4 +1,6 @@
-import RealRooted.MaWang.StrictSigns.Assembly
+module
+
+public import RealRooted.MaWang.StrictSigns.Assembly
 
 /-!
 # Strict interlacing from root-count signs
@@ -8,9 +10,9 @@ every root of `p`, and `F` has positive leading coefficient and one more degree 
 `p ≪ F` strictly.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -146,7 +148,6 @@ theorem strictInterl_of_eval_mul_neg_one_pow_countP_neg {p F : ℝ[X]}
     have h := hsign x ((mem_roots hp).mpr hx)
     rw [hFx.eq_zero, zero_mul] at h
     exact lt_irrefl _ h
-
 
 /-- Every element of the shorter list is at least the head of the longer one. -/
 theorem listInterlaces_ge_head {ss rs' : List ℝ} {r : ℝ}

@@ -1,7 +1,9 @@
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
-import RealRooted.MultivariateStability.Specialization
+module
+
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
+public import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Real boundary consequences of the Lieb--Sokal operator
@@ -12,11 +14,11 @@ and records a degree-two mixed-characteristic-shaped example. It does not use
 or assert an MSS root bound.
 -/
 
+@[expose] public noncomputable section
+
 open Complex
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Complexification commutes with one application of `1 - ∂ᵢ`. -/
 @[simp] theorem complexifyMv_oneSubPderiv {sigma : Type*}
@@ -181,7 +183,5 @@ theorem mvRealStable_specialized_mixedCharacteristicQuadratic :
     norm_num at heval)
 
 end MixedCharacteristicExample
-
-end
 
 end RealRooted

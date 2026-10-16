@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Derivative
-import RealRooted.Derivative.LinearCombination
+module
+
+public import RealRooted.Basic
+public import RealRooted.Derivative
+public import RealRooted.Derivative.LinearCombination
 
 /-!
 # Hermite--Poulain differential operators
@@ -16,9 +18,9 @@ if `f` and `g` are real-rooted, then applying `f(D)` to `g` preserves
 real-rootedness, allowing the result to vanish.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace HermitePoulain

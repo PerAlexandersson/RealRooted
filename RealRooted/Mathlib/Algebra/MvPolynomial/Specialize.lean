@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Variables
+
+module
+
+public import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # Specializing one variable of a multivariate polynomial
@@ -11,6 +14,8 @@ import Mathlib.Algebra.MvPolynomial.Variables
 This file defines scalar specialization while retaining the ambient variable
 type, together with its evaluation and coefficient-map interfaces.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

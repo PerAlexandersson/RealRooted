@@ -1,7 +1,9 @@
-import RealRooted.Wronskian.Algebra
-import RealRooted.Wronskian.Converse
-import RealRooted.Wronskian.Forward
-import RealRooted.Wronskian.Successor
+module
+
+public import RealRooted.Wronskian.Algebra
+public import RealRooted.Wronskian.Converse
+public import RealRooted.Wronskian.Forward
+public import RealRooted.Wronskian.Successor
 
 /-!
 # Wronskian entry point
@@ -14,3 +16,5 @@ The algebraic identities that are independent of real-rootedness are stated
 over arbitrary commutative rings in
 `RealRooted.Mathlib.RingTheory.Polynomial.Wronskian`.
 -/
+
+public section

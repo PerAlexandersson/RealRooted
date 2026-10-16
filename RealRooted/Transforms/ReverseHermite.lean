@@ -1,6 +1,8 @@
-import RealRooted.Transforms.ReverseHermite.Basic
-import RealRooted.Transforms.ReverseHermite.Derivative
-import RealRooted.Transforms.ReverseHermite.Preservation
+module
+
+public import RealRooted.Transforms.ReverseHermite.Basic
+public import RealRooted.Transforms.ReverseHermite.Derivative
+public import RealRooted.Transforms.ReverseHermite.Preservation
 
 /-!
 # Reverse-Hermite transform
@@ -8,3 +10,5 @@ import RealRooted.Transforms.ReverseHermite.Preservation
 Compatibility facade for the algebraic, derivative, and PF-preservation
 layers of the reverse-Hermite transform.
 -/
+
+public section

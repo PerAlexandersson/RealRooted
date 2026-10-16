@@ -1,4 +1,6 @@
-import RealRooted.Jacobi.Orthogonality
+module
+
+public import RealRooted.Jacobi.Orthogonality
 
 /-!
 # Algebraic orthogonality for shifted Jacobi polynomials
@@ -9,9 +11,9 @@ only later, when strict Markoff monotonicity is extracted from the derivative
 of this moment functional.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

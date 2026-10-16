@@ -1,6 +1,8 @@
-import RealRooted.PolyaFrequencyConvolution
-import RealRooted.PolyaFrequencyConvolution.Basic
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.PolyaFrequencyConvolution
+public import RealRooted.PolyaFrequencyConvolution.Basic
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Pólya-frequency coefficients of inverse powers of `1 - X`
@@ -9,6 +11,8 @@ This file combines closure under Cauchy convolution with the constant-one
 certificate to prove that the binomial coefficient sequence of every positive
 inverse power of `1 - X` is Pólya-frequency.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

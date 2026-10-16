@@ -1,9 +1,11 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+
+@[expose] public noncomputable section
 
 open Complex Filter Topology
-
-noncomputable section
 
 namespace RealRooted
 

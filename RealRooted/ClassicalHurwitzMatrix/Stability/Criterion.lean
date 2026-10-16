@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
-import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
 
 /-!
 # The strict classical Hurwitz criterion
@@ -9,9 +11,9 @@ This file applies the explicit odd/even Routh theorem to the canonical parity
 contractions of an arbitrary polynomial.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

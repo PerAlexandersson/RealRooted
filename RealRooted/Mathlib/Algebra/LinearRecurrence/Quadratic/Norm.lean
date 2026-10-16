@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import RealRooted.Mathlib.Analysis.Normed.Ring.Power
-import Mathlib.Tactic.Linarith
+
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import RealRooted.Mathlib.Analysis.Normed.Ring.Power
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Norm bounds for quadratic recurrence solutions
@@ -13,6 +16,8 @@ import Mathlib.Tactic.Linarith
 The bounds use two supplied characteristic roots. Root existence and
 specialized real or complex estimates remain separate clients.
 -/
+
+public section
 
 namespace LinearRecurrence
 

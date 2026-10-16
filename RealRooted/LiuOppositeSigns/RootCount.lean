@@ -1,7 +1,9 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
-import RealRooted.RootCountJump
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+public import RealRooted.RootCountJump
 
 /-!
 # Liu root-count compatibility foundation
@@ -12,9 +14,9 @@ Positive-leading normalization and the left/right deletion branches remain in
 `RealRooted.LiuOppositeSigns`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

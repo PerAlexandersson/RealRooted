@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.SnakeStaircase
-import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeStaircase
+public import RealRooted.GeneralizedSnakePosets.MatrixInduction
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
 
 /-!
 # Generalized snake poset finite-board interfaces
@@ -14,9 +16,9 @@ The parametric predicates used by the snake-interlacing induction live in
 `RealRooted.GeneralizedSnakePosets.MatrixInduction`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets
@@ -814,7 +816,6 @@ theorem ferrersRookPolynomial_firstColumnDeletion (lam : List ℕ)
     sum_nonNestingPlacementsWithoutFirstColumn_eq_partitionSubOne,
     sum_firstColumnCells_nonNestingPlacementsWithCell_eq_mul_sum lam hpart]
 
-
 end FiniteSkewBoard
 
 /-- The auxiliary polynomial `G_n` is the sum of the non-nesting rook
@@ -823,7 +824,6 @@ theorem FiniteSkewBoard.auxiliaryG_matchesTruncatedStaircases (n : ℕ) :
     FiniteSkewBoard.auxiliaryG n =
       ((List.range n).map fun i => FiniteSkewBoard.truncatedStaircaseRookPolynomial n i).sum :=
   rfl
-
 
 end GeneralizedSnakePosets
 end RealRooted

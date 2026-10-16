@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.HigherOrderDegreeModels
-import RealRooted.SymmetricDecomposition.FPolynomial
-import RealRooted.Transforms.BrandenE.EvenBinomial
+module
+
+public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.Transforms.BrandenE.EvenBinomial
 
 /-!
 # OEIS A262226
@@ -10,9 +12,9 @@ binomial sum of Brändén basis images.  This places it in a common-interleaver
 cone and proves real-rootedness after inverting the f-transform.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.HigherOrderDegreeModels.A262226
 

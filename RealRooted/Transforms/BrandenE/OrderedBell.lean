@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Ordered Bell polynomial basis
@@ -9,9 +11,9 @@ prove triangularity directly, without referring to an OEIS sequence or a
 reflection identity.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

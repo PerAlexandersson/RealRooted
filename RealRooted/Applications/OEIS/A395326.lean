@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.Touchard
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Transforms.ReverseHermite
+module
+
+public import RealRooted.CombinatorialExamples.Touchard
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Transforms.ReverseHermite
 
 /-!
 # The row polynomials of OEIS A395326
@@ -12,9 +14,9 @@ interlacing, and an order-two recurrence identifies generated row sequences
 with the model.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A395326
 

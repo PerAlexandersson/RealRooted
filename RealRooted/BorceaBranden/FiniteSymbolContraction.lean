@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.LiebSokalOperator
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.LiebSokalOperator
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # The contraction calculation for finite algebraic symbols
@@ -11,11 +13,11 @@ spectators: only the source/input pairs are contracted, and no finiteness or
 degree condition is imposed on the target variable type.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Iterated mapped contraction is additive in the polynomial argument. -/
 theorem contractMappedVariablePairs_add
@@ -250,7 +252,5 @@ theorem contractMappedVariablePairs_paperThreeBlock
       (R := ℂ) (fun _ : sigma => 1) m)) f.1
 
 end BorceaBranden
-
-end
 
 end RealRooted

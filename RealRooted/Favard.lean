@@ -1,10 +1,12 @@
-import RealRooted.Favard.Recurrence
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import RealRooted.MaWang
+module
+
+public import RealRooted.Favard.Recurrence
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.MaWang
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

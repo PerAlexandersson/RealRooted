@@ -1,7 +1,9 @@
-import RealRooted.Hadamard.Product
-import RealRooted.IteratedDerivativeShift
-import RealRooted.ObreschkoffConverse
-import RealRooted.WeightedSum
+module
+
+public import RealRooted.Hadamard.Product
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.WeightedSum
 
 /-!
 # Garloff--Wagner factorial and differential algebra
@@ -11,9 +13,9 @@ The factorial Hadamard product (Schur's factorial product) and the operators
 direct Garloff--Wagner proof.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

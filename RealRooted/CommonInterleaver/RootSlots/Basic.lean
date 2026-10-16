@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootDesc
+module
+
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common interleavers: root-slot basics
@@ -7,9 +9,9 @@ The root-slot intervals attached to descending root sequences, their endpoints,
 and the order facts for points chosen from those intervals.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -316,7 +318,6 @@ protected lemma CommonInterleaver.RootSlots.le_of_mem_rootSlots_of_lt
     have hmid : rs.get ⟨j - 1, by lia⟩ ≤ rs.get ⟨i, hi_lt⟩ :=
       get_le_get_of_pairwise_ge hrs <| Fin.le_def.2 <| Nat.le_pred_of_lt hij
     exact le_trans hy_upper (le_trans hmid hx_lower)
-
 
 end
 end RealRooted

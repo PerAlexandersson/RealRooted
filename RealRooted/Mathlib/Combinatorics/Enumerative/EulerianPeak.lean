@@ -3,16 +3,19 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Fintype.Perm
-import Mathlib.Data.List.Permutation
-import Mathlib.Data.List.GetD
-import Mathlib.Algebra.BigOperators.Group.List.Basic
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.IntervalCases
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+
+module
+
+public import Mathlib.Data.Fintype.Perm
+public import Mathlib.Data.List.Permutation
+public import Mathlib.Data.List.GetD
+public import Mathlib.Algebra.BigOperators.Group.List.Basic
+public import Mathlib.Tactic.Ring
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.IntervalCases
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 /-!
 # Eulerian and peak numbers of permutations
@@ -39,6 +42,8 @@ private natural-number word versions of the descent and peak statistics.
   (2 * k + 4) * peakNumber n (k + 1) + (n - 1 - 2 * k) * peakNumber n k`.
 * `Equiv.Perm.peakNumber_succ_zero`: `peakNumber (n + 1) 0 = 2 ^ n`.
 -/
+
+@[expose] public section
 
 namespace Equiv.Perm
 

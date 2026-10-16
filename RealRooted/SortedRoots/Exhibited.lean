@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.RootCounting.Finite
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.Basic
+public import RealRooted.RootCounting.Finite
+public import RealRooted.SortedRoots
 
 /-!
 # Exhibited sorted roots
@@ -9,11 +11,11 @@ Generic bridges from an explicitly indexed increasing root family to the
 sorted negative-root-magnitude sequence.
 -/
 
+public noncomputable section
+
 namespace RealRooted.SortedRoots
 
 open Polynomial
-
-noncomputable section
 
 /-- An increasing exhibited family of `n` roots saturates the root-cardinality
 bound. -/
@@ -99,5 +101,4 @@ theorem splits_and_rootSeq_eq_of_exhibited {p : ℝ[X]} {n : ℕ}
   have h := congrFun (h2.trans h1.symm) ⟨i, hi⟩
   simpa using h
 
-end
 end RealRooted.SortedRoots

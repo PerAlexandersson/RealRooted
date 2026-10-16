@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic
 
 /-!
 # Order-numerator step
@@ -9,9 +11,9 @@ strict and tight degree behaviour is intentionally separated in the
 preservation layer.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

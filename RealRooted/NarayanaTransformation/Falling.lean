@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Basis
+module
+
+public import RealRooted.NarayanaTransformation.Basis
 
 /-!
 # Falling-factorial inverse transform.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -51,6 +53,5 @@ theorem brentiFallingFactorial :
       IsPFPolynomial.of_realRooted_nonneg hq_nn hqsplits
     have hresult := (touchardTransformPreservesPF hq_pf).hasOnlyNonposRoots
     rwa [hinv] at hresult
-
 
 end RealRooted

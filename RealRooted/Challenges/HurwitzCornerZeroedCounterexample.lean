@@ -1,4 +1,6 @@
-import RealRooted.HurwitzMatrix
+module
+
+public import RealRooted.HurwitzMatrix
 
 /-!
 # A corner-zeroed Hurwitz-minor counterexample
@@ -22,9 +24,9 @@ Schur-product statement for infinite Hurwitz matrices is refuted separately by
 `RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 -/
 
-namespace RealRooted.HurwitzCornerZeroedCounterexample
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.HurwitzCornerZeroedCounterexample
 
 /-- Candidate coefficient sequence of the counterexample. -/
 def cseq : ℕ → ℝ :=
@@ -81,7 +83,5 @@ theorem cornerZeroed_negative : cornerZeroed < 0 := by norm_num [cornerZeroed_eq
 
 /-- The full determinant remains nonnegative in the same window. -/
 theorem fullMinor_nonneg : 0 ≤ fullMinor := by norm_num [fullMinor_eq]
-
-end
 
 end RealRooted.HurwitzCornerZeroedCounterexample

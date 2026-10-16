@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
 
 /-!
 # Real consequences of stable affine bidiagonal symbols
@@ -8,9 +10,9 @@ The affine-symbol calculation lives in `BidiagonalSymbol`; this module applies
 the general real finite-symbol preservation theorems to that operator.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.BorceaBranden
 

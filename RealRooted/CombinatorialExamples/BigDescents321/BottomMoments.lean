@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
-import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
-import Mathlib.Data.Nat.Fib.Basic
-import Mathlib.Tactic.NormNum.NatFib
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
+public import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
+public import Mathlib.Data.Nat.Fib.Basic
+public import Mathlib.Tactic.NormNum.NatFib
 
 /-!
 # Recurrences for the bottom kernel moments
@@ -22,9 +24,9 @@ after multiplying by `2D`, integrated over `v ∈ [0, 1]`.
 * `transformedCoord_bottom_pos`: `q_(n, n mod 2) > 0` for `n ≥ 25`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.BigDescents321
 

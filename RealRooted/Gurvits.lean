@@ -1,9 +1,11 @@
-import RealRooted.Gurvits.Univariate
-import RealRooted.Gurvits.Capacity
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.MultivariateStability.LinearForm
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.Gurvits.Univariate
+public import RealRooted.Gurvits.Capacity
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.MultivariateStability.LinearForm
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Gurvits' capacity inequality and the van der Waerden bound
@@ -20,9 +22,9 @@ restriction `t ↦ p(t, y)` is real-rooted, so the univariate inequality
 `per A ≥ n! / nⁿ` for doubly stochastic `A` (Egorychev–Falikman).
 -/
 
-open MvPolynomial
+public noncomputable section
 
-noncomputable section
+open MvPolynomial
 
 namespace RealRooted
 

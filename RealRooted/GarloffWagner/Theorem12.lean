@@ -1,8 +1,10 @@
-import RealRooted.GarloffWagner.KreinExpansion
+module
+
+public import RealRooted.GarloffWagner.KreinExpansion
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

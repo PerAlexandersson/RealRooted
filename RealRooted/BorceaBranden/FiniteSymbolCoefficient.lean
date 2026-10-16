@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalOperator
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability
 
 /-!
 # Coefficients in the multiaffine finite-symbol argument
@@ -10,9 +12,9 @@ another removes the differentiated variables when their supports are nested.
 After evaluation at zero, this is the Kronecker delta used in the proof.
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 open BigOperators
 open Complex
@@ -278,7 +280,5 @@ theorem specializeRight_zero_applyMonomialDifferential_indicator_monomial
       rw [ite_eq_right hindicator_ne]
     · rw [ite_eq_right (fun h => hsub (hsubset.mp h))]
       simp [specializeRight]
-
-end
 
 end RealRooted.BorceaBranden

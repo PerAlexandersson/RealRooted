@@ -1,6 +1,8 @@
-import RealRooted.Maclaurin
-import RealRooted.LaguerreSamuelson
-import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
+module
+
+public import RealRooted.Maclaurin
+public import RealRooted.LaguerreSamuelson
+public import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 
 /-!
 # Newton, Maclaurin and Laguerre–Samuelson inequalities challenge entry point
@@ -85,3 +87,5 @@ This module is a catalog facade. The proofs live in `RealRooted.NewtonAux`,
 `RealRooted.Maclaurin`, `RealRooted.LaguerreSamuelson` and
 `RealRooted.Mathlib.Algebra.Polynomial.MeanMode`.
 -/
+
+public section

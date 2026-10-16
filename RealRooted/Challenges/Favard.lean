@@ -1,5 +1,7 @@
-import RealRooted.Favard
-import RealRooted.Favard.Orthogonality
+module
+
+public import RealRooted.Favard
+public import RealRooted.Favard.Orthogonality
 
 /-!
 # Favard challenge entry point
@@ -92,6 +94,8 @@ ring-generic normalized functional and orthogonality theory live in
 `RealRooted.Favard.Orthogonality`; concrete integral realizations remain in
 analytic classical-family child modules.
 -/
+
+public section
 
 open Polynomial
 

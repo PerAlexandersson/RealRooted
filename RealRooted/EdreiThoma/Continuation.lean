@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.Identities
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+module
+
+public import RealRooted.EdreiThoma.Identities
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 
 /-!
 # Edrei--Thoma continuation
@@ -9,9 +11,9 @@ generating function by the limiting denominator product.  A separate quotient ar
 then factors the resulting zero-free quotient as an exponential.
 -/
 
-open Polynomial Filter Topology Complex
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology Complex
 
 namespace RealRooted.EdreiThoma
 
@@ -695,7 +697,6 @@ theorem exists_exp_factorization_of_mul_neg_eq {F G Q N : ℂ → ℂ}
       have hg := hNz z hn
       simp only [K, hn, ne_eq, not_true_eq_false, ite_false]
       field_simp [hQnz z hn]
-
 
 end RealRooted.EdreiThoma
 

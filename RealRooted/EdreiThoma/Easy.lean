@@ -1,4 +1,6 @@
-import RealRooted.BrandenVecchi.SupersymmetricLimits
+module
+
+public import RealRooted.BrandenVecchi.SupersymmetricLimits
 
 /-!
 # Edrei--Thoma, the easy direction
@@ -28,10 +30,10 @@ Only the easy direction is proved here; the converse (every Pólya-frequency seq
 form) is not part of this file.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Topology
 open scoped PowerSeries.WithPiTopology
-
-noncomputable section
 
 namespace RealRooted.EdreiThoma
 

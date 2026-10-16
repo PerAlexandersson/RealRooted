@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
+module
+
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
 
 /-!
 # Stable homogenization tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.BorceaBranden.Applications.HomogenizeStable
 Thin certificate-driven wrappers around the proved stable homogenization
 theorems.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

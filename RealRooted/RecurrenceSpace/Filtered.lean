@@ -1,5 +1,7 @@
-import Mathlib.Tactic.Linarith
-import RealRooted.RecurrenceSpace.Operators
+module
+
+public import Mathlib.Tactic.Linarith
+public import RealRooted.RecurrenceSpace.Operators
 
 /-!
 # Finite certificates for filtered recurrence operators
@@ -9,11 +11,11 @@ Operators are finite `K[X]`-linear combinations of words in the forward shift, s
 index multiplication, and coefficientwise differentiation.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 variable {K : Type*} [Field K]
 
@@ -134,7 +136,5 @@ theorem FilteredOperator.apply_eq_zero_iff (L : FilteredOperator (K := K))
       (L.shiftAction_pow_apply_eq_zero p h f hf hweight)
     rw [hp.natDegree_pow, hdegree]
     exact hinit
-
-end
 
 end RealRooted

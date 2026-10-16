@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Degree-pattern regression examples for PR #1689
@@ -7,11 +9,11 @@ These exact downstream recurrence shapes have degree `n / 2`.  Their splitting p
 the degree-pattern route while keeping the coefficient normalization needed by A263789.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Tactic.RowRegression1689DegreeExamples
-
-noncomputable section
 
 /-- The OEIS A008303 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A008303 : ℕ → ℝ[X]
@@ -53,5 +55,4 @@ def A101280 : ℕ → ℝ[X]
 example (n : ℕ) : (A101280 n).Splits := by
   rr_row_splits
 
-end
 end RealRooted.Tactic.RowRegression1689DegreeExamples

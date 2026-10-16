@@ -1,10 +1,12 @@
-import RealRooted.Derivative
-import RealRooted.PosCombo
-import RealRooted.WagnerX
+module
+
+public import RealRooted.Derivative
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

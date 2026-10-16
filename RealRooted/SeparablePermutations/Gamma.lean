@@ -1,6 +1,8 @@
-import RealRooted.SeparablePermutations.Basic
-import RealRooted.FactorialCompression.Basic
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.SeparablePermutations.Basic
+public import RealRooted.FactorialCompression.Basic
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma-polynomials and descent polynomials of separable permutations
@@ -20,9 +22,9 @@ the finite checks).  We prove degrees, nonnegativity, positivity of the relevant
 and the first values.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.SeparablePermutations
 

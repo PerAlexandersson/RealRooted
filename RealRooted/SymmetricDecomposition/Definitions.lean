@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import RealRooted.Basic
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Symmetric-decomposition definitions
@@ -8,9 +10,9 @@ Foundational `I_d` and `R_d` transforms, their formula components, and the
 predicates that specify the two Brändén--Solus symmetric decompositions.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -30,7 +32,6 @@ def idTransform (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
 /-- Brändén--Solus `R_d(p)(x) = (-1)^d p(-1 - x)`. -/
 def rdTransform (d : ℕ) (p : ℝ[X]) : ℝ[X] :=
   C (((-1 : ℝ) ^ d)) * p.comp (-X - 1)
-
 
 /-- Formula from Lemma 2.1 for the symmetric `I_d`-decomposition component
 `a = (p - x I_d(p)) / (1 - x)`, rewritten with monic denominator `X - 1`. -/

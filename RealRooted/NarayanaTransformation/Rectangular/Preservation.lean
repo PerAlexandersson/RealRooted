@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Rectangular.Narayana
+module
+
+public import RealRooted.NarayanaTransformation.Rectangular.Narayana
 
 /-!
 # Rectangular additive convolution preservation.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 
@@ -135,6 +137,5 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
   have : ((m + n).choose n : ℝ) ≠ 0 :=
     Nat.cast_ne_zero.mpr (Nat.choose_pos (Nat.le_add_left n m)).ne'
   simp [this, add_comm n m]
-
 
 end RealRooted

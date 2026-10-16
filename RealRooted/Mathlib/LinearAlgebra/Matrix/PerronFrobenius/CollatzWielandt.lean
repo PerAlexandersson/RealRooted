@@ -3,12 +3,15 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
-import Mathlib.Data.Matrix.Basic
-import Mathlib.Algebra.Order.AbsoluteValue.Basic
-import Mathlib.Data.Rat.Floor
-import Mathlib.Topology.Semicontinuity.Basic
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import Mathlib.Data.Matrix.Basic
+public import Mathlib.Algebra.Order.AbsoluteValue.Basic
+public import Mathlib.Data.Rat.Floor
+public import Mathlib.Topology.Semicontinuity.Basic
 
 /-!
 # Collatz–Wielandt function and the Perron root
@@ -49,6 +52,8 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
 -/
+
+@[expose] public section
 
 namespace Matrix
 section PerronFrobenius

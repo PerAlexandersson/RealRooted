@@ -20,11 +20,9 @@ This is the finite stars-and-bars lemma used by fence standardization in
 Appendix A.2 of the zig-zag Eulerian proof.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Finset
-
-noncomputable section
 
 namespace RealRooted.ForcedGapWords
 

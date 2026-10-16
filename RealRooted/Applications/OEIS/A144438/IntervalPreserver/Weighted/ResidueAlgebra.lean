@@ -1,11 +1,13 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueSums
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueSums
 
 /-! # Finite residue algebra for the weighted Schur complement -/
 
-open BigOperators
+public noncomputable section
 
-noncomputable section
+open BigOperators
 
 namespace RealRooted.Applications.OEIS
 

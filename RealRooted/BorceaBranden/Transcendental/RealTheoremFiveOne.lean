@@ -1,10 +1,12 @@
-import RealRooted.BorceaBranden.RealFiniteClassificationIff
-import RealRooted.BorceaBranden.Transcendental.PivotForward
+module
+
+public import RealRooted.BorceaBranden.RealFiniteClassificationIff
+public import RealRooted.BorceaBranden.Transcendental.PivotForward
+
+@[expose] public noncomputable section
 
 open Filter Topology
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

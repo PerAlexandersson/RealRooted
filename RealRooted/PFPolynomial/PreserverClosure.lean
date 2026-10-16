@@ -1,6 +1,8 @@
-import RealRooted.Interlacing.PencilPreserver
-import RealRooted.IteratedDerivativeShift
-import RealRooted.PFPolynomial.Closure
+module
+
+public import RealRooted.Interlacing.PencilPreserver
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.PFPolynomial.Closure
 
 /-!
 # Strict-to-weak closure for Pólya-frequency preservers
@@ -12,9 +14,9 @@ approximate every Pólya-frequency polynomial by negative-simple polynomials,
 so a linear map preserving the latter class preserves the former as well.
 -/
 
-open Polynomial Filter Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted
 

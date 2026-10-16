@@ -1,6 +1,8 @@
-import RealRooted.SymmetricDecomposition.DerangementTransform
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.PFPolynomial
 
 /-!
 # Binder--Vecchi: refined Hodge--Poincar\'e polynomials of uniform matroids
@@ -25,13 +27,12 @@ The weight `W_{1,i}(r,n)` is the displayed coefficient formula, not the cardinal
 `W_1(U_{r,n})`, which equals that of `W_0`; since `d_1 = 0` this does not affect `\underline H`.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted
 namespace BinderVecchi
-
 
 /-- The negative-binomial convolution sum. -/
 def convSum (a b m : ℕ) : ℕ :=
@@ -150,7 +151,6 @@ theorem sum_choose_X_pow_eq {N L d : ℕ} (hL : 1 ≤ L) (hdN : d ≤ N) :
     simp only [hps, ↓reduceIte]
     rw [Nat.choose_eq_zero_of_lt (n := d - p) (k := s - p) (by lia)]
     simp
-
 
 /-! ## The weights and the two families -/
 

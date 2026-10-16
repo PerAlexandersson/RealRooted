@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence
+module
+
+public import RealRooted.MultiplierSequence
 
 /-!
 # Coefficient-bidiagonal polynomial operators
@@ -8,9 +10,9 @@ finite-symbol and Pólya-frequency arguments.  It is independent of tactic
 elaboration and of any particular real-rootedness preserver criterion.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

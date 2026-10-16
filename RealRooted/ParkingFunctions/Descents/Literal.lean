@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Data.Fin.Rev
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Data.Fin.Rev
 
 /-!
 # Literal all-word descent polynomials
@@ -10,11 +12,11 @@ proved split, but identifying it with this literal finite sum is a subsequent
 combinatorial theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 /-- The literal descent polynomial of all words of length `n` on an alphabet
 of size `m`.  The empty word has weight one. -/
@@ -97,7 +99,5 @@ theorem literalWordDescentPolynomial_succ (m r : ℕ) :
     (fun x => ∑ w : Fin r → Fin m,
       (X : ℝ[X]) ^ (List.ofFn (Fin.snoc w x)).descentCount)
     (fun _ => rfl)
-
-end
 
 end RealRooted.ParkingFunctions

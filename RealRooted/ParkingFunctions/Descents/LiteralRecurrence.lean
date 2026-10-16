@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Literal
-import RealRooted.ParkingFunctions.Descents.Words
+module
+
+public import RealRooted.ParkingFunctions.Descents.Literal
+public import RealRooted.ParkingFunctions.Descents.Words
 
 /-!
 # Literal all-word recurrence
@@ -9,11 +11,11 @@ checked threshold-matrix word recurrence.  The Diaconis--Hicks transfer from
 all words to parking functions remains a separate combinatorial theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
-
-noncomputable section
 
 private theorem staircaseSum_ofFn (m : ℕ) (f : Fin m → ℝ[X]) (i : Fin m) :
     staircaseSum (List.ofFn f) i =
@@ -34,7 +36,7 @@ private theorem staircaseSum_ofFn (m : ℕ) (f : Fin m → ℝ[X]) (i : Fin m) :
         unfold staircaseSum
         ring
 
-private def literalWordDescentRefinedList (m r : ℕ) : List ℝ[X] :=
+def literalWordDescentRefinedList (m r : ℕ) : List ℝ[X] :=
   List.ofFn (literalWordDescentRefined m r)
 
 /-- The literal final-letter refinement is exactly the recursive
@@ -89,7 +91,5 @@ theorem literalWordDescentPolynomial_splits (m : ℕ) (hm : 0 < m) (n : ℕ) :
     (literalWordDescentPolynomial m n).Splits := by
   rw [literalWordDescentPolynomial_eq_wordDescentPolynomial]
   exact wordDescentPolynomial_splits m hm n
-
-end
 
 end RealRooted.ParkingFunctions

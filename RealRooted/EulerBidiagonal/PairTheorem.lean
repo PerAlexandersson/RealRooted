@@ -1,7 +1,9 @@
-import RealRooted.EulerBidiagonal.PairStep
-import RealRooted.Interlacing.RootDeletionExpansion
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+module
+
+public import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.Interlacing.RootDeletionExpansion
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Theorem C′ (positive regime): `T` preserves strict interlacing
@@ -12,9 +14,9 @@ Let `T = generalStep κ a b u v`.  If `f` and `g` are negative-simple, `deg g = 
 of `g` and evaluates at the roots of `T f`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 
@@ -195,7 +197,6 @@ theorem strictInterl_generalStep_add_C_mul_X_mul_of_strictInterl
         ((generalStep κ a b u v (f /ₘ (X - C s))).eval x * σ) := fun s _ => by ring
   rw [Finset.sum_congr rfl this]
   linarith
-
 
 /-- **Theorem C′ (positive regime).**  The general Euler step preserves strict interlacing of
 negative-simple polynomials of consecutive degrees, without common roots, provided the multiplier

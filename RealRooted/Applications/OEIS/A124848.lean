@@ -1,4 +1,15 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
+module
+
+public import Mathlib.Topology.Algebra.Polynomial
+public import Mathlib.Tactic.ComputeDegree
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
+public import Mathlib.Tactic.Set
+public import Mathlib.Topology.Order.IntermediateValue
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # OEIS A124848
@@ -12,9 +23,9 @@ The intended repository destination is
 `RealRooted/Applications/OEIS/A124848.lean`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A124848
 

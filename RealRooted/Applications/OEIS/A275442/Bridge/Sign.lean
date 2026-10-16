@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Family
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Family
 
 /-!
 # Unconditional signs for the A275442 bridge
@@ -7,11 +9,11 @@ The scalar no-bounce theorem rules out common consecutive roots and proves
 that the preceding row and the bridge have opposite signs at every bridge root.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 
 open Polynomial
-
-noncomputable section
 
 /-- **No common real zero of consecutive members of the family.** -/
 theorem no_common_root_succ (n : ℕ) (r : ℝ) (hr : (p (n + 3)).IsRoot r) :
@@ -28,7 +30,5 @@ theorem bridge_pair_sign (n : ℕ) (hn : 4 ≤ n) (r : ℝ) (hr : (p (n + 3)).Is
   have := bridge_sign_at_root k r hr'
   rw [show k + 6 = k + 4 + 2 from by lia] at this
   exact this
-
-end
 
 end RealRooted.Applications.OEIS.A275442.Bridge

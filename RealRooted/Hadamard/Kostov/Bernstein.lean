@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.KostovMap
+module
+
+public import RealRooted.Hadamard.KostovMap
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov
@@ -430,7 +432,6 @@ lemma eigen_one_form (n : ℕ) (hn : n ≠ 0) (G : ℝ[X]) (hd : G.natDegree ≤
     linarith
   calc G = C (G.coeff 1) * X + C (G.coeff 0) := hform
     _ = C (G.coeff 0) * (1 - X) := by rw [this, map_neg]; ring
-
 
 end Kostov
 end RealRooted

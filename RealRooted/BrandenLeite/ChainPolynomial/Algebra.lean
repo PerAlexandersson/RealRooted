@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Algebra of chain polynomials
@@ -9,9 +11,9 @@ Brändén--Saud Leite chain polynomials.  Resolution and real-rootedness
 consequences deliberately live in the parent module.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
 

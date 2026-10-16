@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.LinearAlgebra.Matrix.SchurComplement
-import Mathlib.Tactic
+
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
+public import Mathlib.Tactic
 
 /-!
 # The Desnanot--Jacobi determinant identity
@@ -16,9 +19,9 @@ statement of this identity.  Tau Ceti's `LinearAlgebra.Matrix.Condensation` cont
 different, one-corner condensation identity, so it does not directly supply this result.
 -/
 
-namespace Matrix
+@[expose] public noncomputable section
 
-noncomputable section
+namespace Matrix
 
 private def extendInterior {n : ℕ} (p : Fin 2) : Fin n ⊕ Unit → Fin n ⊕ Fin 2 :=
   Sum.elim Sum.inl fun _ => Sum.inr p
@@ -231,7 +234,5 @@ theorem det_mul_det_interior {R : Type*} [CommRing R] {n : ℕ}
   rw [hmap]
   congr 1
   exact (mvPolynomialX_mapMatrix_aeval ℤ M).symm
-
-end
 
 end Matrix

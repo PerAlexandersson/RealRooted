@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
-import RealRooted.HermiteBiehler.Converse
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
+public import RealRooted.HermiteBiehler.Converse
 
 /-!
 # Hermite--Biehler consequences of strict Hurwitz stability
@@ -10,9 +12,9 @@ two useful normalizations are the original rotated pair and the pair obtained
 by multiplying its Hermite--Biehler polynomial by `i`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+public import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral ordinary parking-function transfer
@@ -12,14 +14,14 @@ real-rootedness from the literal word recurrence. No chain-sorting theorem is
 used.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- Integral descent enumerator of ordinary parking functions. -/
 noncomputable def parkingDescentPolynomialInt : ℕ → ℤ[X]
@@ -285,7 +287,5 @@ theorem parkingDescentPolynomial_splits (n : ℕ) :
     (parkingDescentPolynomial n).Splits := by
   rw [← map_parkingDescentPolynomialInt]
   exact map_parkingDescentPolynomialInt_splits n
-
-end
 
 end RealRooted.ParkingFunctions

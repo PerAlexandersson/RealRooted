@@ -1,9 +1,11 @@
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import RealRooted.BorceaBranden.Applications.PoissonStability
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
-import RealRooted.BorceaBranden.FiniteSymbolClassification
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+module
+
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import RealRooted.BorceaBranden.Applications.PoissonStability
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # Borcea--Branden finite-symbol classification challenge entry point
@@ -113,6 +115,8 @@ programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),
 
 The proofs use the reusable complex and real-univariate theorem modules.
 -/
+
+public section
 
 namespace RealRooted
 namespace Challenges

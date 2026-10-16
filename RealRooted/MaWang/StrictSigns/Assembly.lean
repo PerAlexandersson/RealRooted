@@ -1,8 +1,10 @@
-import RealRooted.MaWang.StrictSigns.RootSigns
+module
+
+public import RealRooted.MaWang.StrictSigns.RootSigns
+
+public noncomputable section
 
 open Polynomial Filter
-
-noncomputable section
 
 namespace RealRooted.MaWangInternal
 

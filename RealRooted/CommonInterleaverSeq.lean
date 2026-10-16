@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.FamilyUpgrade
+module
+
+public import RealRooted.CommonInterleaver.FamilyUpgrade
 
 /-!
 # Common interleavers and Chudnovsky--Seymour theorem
@@ -8,9 +10,9 @@ descending-root construction and finite-family upgrades live in dedicated
 children.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

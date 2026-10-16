@@ -1,4 +1,6 @@
-import Mathlib.Combinatorics.SimpleGraph.Clique
+module
+
+public import Mathlib.Combinatorics.SimpleGraph.Clique
 
 /-!
 # Claw-free graph geometry
@@ -8,6 +10,8 @@ simplicial-clique constructions used by the Chudnovsky--Seymour argument.
 It contains only graph geometry; independence polynomials and compatibility
 belong in higher modules.
 -/
+
+@[expose] public section
 
 open Finset
 

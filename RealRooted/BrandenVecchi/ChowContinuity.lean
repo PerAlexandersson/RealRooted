@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowToeplitz
-import RealRooted.PFPolynomial.Closure
+module
+
+public import RealRooted.BrandenVecchi.ChowToeplitz
+public import RealRooted.PFPolynomial.Closure
 
 /-!
 # Fixed-rank locality and continuity of Chow polynomials
@@ -9,11 +11,11 @@ most `n`.  This file records that finite dependence and its coefficientwise
 continuity consequence, independently of positivity and infinite products.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Polynomial Topology
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- Two lower-triangular matrices agree on the finite block through row `n`. -/
 def ChowBlockEq {R : Type*} (n : ℕ)
@@ -246,7 +248,5 @@ theorem tendsto_coeff_chowPolynomial_toeplitz
   intro i hi j hj
   simpa [RealRooted.toeplitz_apply, hj] using
     ha (i - j) ((Nat.sub_le i j).trans hi)
-
-end
 
 end RealRooted.BrandenVecchi

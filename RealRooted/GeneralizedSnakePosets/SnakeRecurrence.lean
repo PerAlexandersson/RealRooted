@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.SnakeBand
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
-import RealRooted.GeneralizedSnakePosets.SnakeConstant
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeBand
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
+public import RealRooted.GeneralizedSnakePosets.SnakeConstant
 
 /-!
 # The snake recurrence for the concrete snake board
@@ -20,9 +22,9 @@ Chains that avoid the column contribute `M_{w[:k+1]} P_s`.  A chain through
 gives `X M_{w[:k]} G_s`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

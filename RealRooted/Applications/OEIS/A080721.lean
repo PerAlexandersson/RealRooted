@@ -1,7 +1,9 @@
-import RealRooted.Legendre.Roots
-import RealRooted.MaWang.Weak.Endpoint
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Legendre.Roots
+public import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The row polynomials of OEIS A080721
@@ -11,9 +13,9 @@ successive quasi-Legendre rows in the Legendre basis gives a Liu--Wang step
 whose coefficient of the interlacer is negative on the whole real line.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A080721
 

@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # Positive unimodular polynomial Gram matrices
@@ -13,7 +16,7 @@ determinant is a unit is polynomially congruent to the identity.  The proof is b
 sum of the degrees of the diagonal entries.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 open Filter Matrix Polynomial Topology
 open scoped BigOperators Matrix MatrixOrder

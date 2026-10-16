@@ -1,5 +1,7 @@
-import RealRooted.AffineProperPosition
-import RealRooted.Compatibility.CutTransformClosure
+module
+
+public import RealRooted.AffineProperPosition
+public import RealRooted.Compatibility.CutTransformClosure
 
 /-!
 # Structural N/D invariant for finite cut transforms
@@ -10,9 +12,9 @@ and the zero-aware interlacing order `reverse N ++ D` needed by the
 structured recurrence.  The last `D` coordinate is allowed to be zero.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

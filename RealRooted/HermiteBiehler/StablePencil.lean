@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Converse
+module
+
+public import RealRooted.HermiteBiehler.Converse
 
 /-!
 # Stable univariate pencils
@@ -7,11 +9,11 @@ This module expresses the two-variable upper-half-plane nonvanishing condition
 for a real polynomial pencil and derives it from oriented interlacing.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The real pencil `f(z) + w g(z)` has no zero with both parameters in the
 open upper half-plane. -/
@@ -244,7 +246,5 @@ theorem mvUpperHalfPlaneStable_bivariatePencil_iff_strictInterl {f g : ℝ[X]}
   mvUpperHalfPlaneStable_bivariatePencil_iff.trans <|
     isUpperHalfPlaneStablePencil_iff_strictInterl (hf.pos_leadingCoeff hf0)
       (hg.pos_leadingCoeff hg0) hdeg
-
-end
 
 end RealRooted

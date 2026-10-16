@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Real.Sqrt
-import Mathlib.Tactic
+module
+
+public import Mathlib.Analysis.Real.Sqrt
+public import Mathlib.Tactic
 
 /-!
 # Scalar geometry of the Jacobi image values
@@ -13,7 +15,7 @@ differentiated coordinate equations force the two coordinate derivatives to
 have opposite signs.
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.JacobiDeformation
 

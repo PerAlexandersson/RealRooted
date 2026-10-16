@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A304334
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A304334
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # A304334 row-model regression
@@ -8,13 +10,13 @@ The generated second-derivative recurrence is recognized through the
 registered Euler-bidiagonal model after its forced factor `X` is removed.
 -/
 
-open Polynomial RealRooted
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial RealRooted
 
 namespace RealRooted.Tactic.Examples.OEIS.A304334
 
-private def row : ℕ → ℝ[X]
+def row : ℕ → ℝ[X]
   | 0 => 1
   | 1 => X
   | n + 2 =>

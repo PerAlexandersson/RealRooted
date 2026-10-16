@@ -1,7 +1,9 @@
-import RealRooted.AffineProperPosition
-import RealRooted.InterlacingSequence.NonnegativeShift
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-import RealRooted.MatrixInterlacing.Preservation
+module
+
+public import RealRooted.AffineProperPosition
+public import RealRooted.InterlacingSequence.NonnegativeShift
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import RealRooted.MatrixInterlacing.Preservation
 
 /-!
 # Totally nonnegative constant matrices preserve interlacing sequences
@@ -12,9 +14,9 @@ nonnegative-coefficient inputs, then obtains Fisk's positive-leading-
 coefficient formulation by translating a finite input family simultaneously.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

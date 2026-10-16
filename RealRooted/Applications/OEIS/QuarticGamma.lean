@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.Basic.Coefficients
+module
+
+public import Mathlib
+public import RealRooted.Basic.Coefficients
 
 /-!
 # A quartic-cofactor family containing three OEIS rows
@@ -12,9 +14,9 @@ because the repository has no recurrence-based definition of these three row
 families to identify with it.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.QuarticGamma
 

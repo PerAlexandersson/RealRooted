@@ -1,7 +1,9 @@
-import Mathlib.Tactic
+module
 
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Tactic
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Rectangular additive convolution
@@ -10,11 +12,11 @@ This file defines the rectangular additive convolution of Gribinski--Marcus
 and records its basic coefficient and degree formulas.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Gribinski--Marcus rectangular additive convolution coefficient. -/
 def rectangularConvolutionGamma (m n i j : ℕ) : ℝ :=
@@ -64,7 +66,5 @@ theorem natDegree_rectangularAdditiveConvolution_le (m n : ℕ) (f g : ℝ[X]) :
     (rectangularAdditiveConvolution m n f g).natDegree ≤ n := by
   unfold rectangularAdditiveConvolution
   exact Polynomial.natDegree_sum_range_C_mul_X_pow_sub_le _ _
-
-end
 
 end RealRooted

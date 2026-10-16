@@ -1,4 +1,8 @@
-import RealRooted.Tactic.HermitePoulain
+module
+
+public import RealRooted.Tactic.HermitePoulain
+
+public section
 
 open Polynomial
 

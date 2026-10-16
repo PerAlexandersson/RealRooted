@@ -1,4 +1,6 @@
-import Mathlib.Algebra.Ring.Defs
+module
+
+public import Mathlib.Algebra.Ring.Defs
 
 /-!
 # Jacobi--Stirling weights
@@ -6,6 +8,8 @@ import Mathlib.Algebra.Ring.Defs
 The first- and second-kind Jacobi--Stirling triangles use the same weight
 sequence.
 -/
+
+@[expose] public section
 
 namespace RealRooted.JacobiStirling
 

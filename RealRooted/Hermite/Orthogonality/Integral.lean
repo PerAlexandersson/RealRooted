@@ -24,11 +24,9 @@ integration against the unnormalized standard Gaussian weight
 `∫ x, Hₘ(x) Hₙ(x) exp (-(x² / 2)) = δₘₙ √(2π) n!`.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open MeasureTheory Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

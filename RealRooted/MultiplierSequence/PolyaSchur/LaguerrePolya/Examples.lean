@@ -1,5 +1,7 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
-import Mathlib.Analysis.SpecialFunctions.Exponential
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
+public import Mathlib.Analysis.SpecialFunctions.Exponential
 
 /-!
 # Laguerre--Pólya examples
@@ -10,9 +12,9 @@ therefore supplies checked Laguerre--Pólya and Type-I witnesses.  It also
 instantiates the reverse Pólya--Schur classification at this classical example.
 -/
 
-open Filter Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

@@ -1,4 +1,6 @@
-import RealRooted.Permanent.Ferrers
+module
+
+public import RealRooted.Permanent.Ferrers
 
 /-!
 # Fractional substitution for the column permanent
@@ -7,11 +9,11 @@ This file isolates the simultaneous substitution from Section 3 of
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
+public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- Evaluation of a complexified real multivariate polynomial commutes with
 complex conjugation. -/
@@ -135,7 +137,5 @@ theorem columnPermanent_mvRealStable_of_ferrersColumnPolynomial_stable
       (Complex.normSq_pos.mpr (hz0 j))
 
 end Permanent
-
-end
 
 end RealRooted

@@ -1,6 +1,8 @@
-import Mathlib.Analysis.Convex.Deriv
-import RealRooted.MultivariateStability.BarrierPick
-import RealRooted.MultivariateStability.PickRatio
+module
+
+public import Mathlib.Analysis.Convex.Deriv
+public import RealRooted.MultivariateStability.BarrierPick
+public import RealRooted.MultivariateStability.PickRatio
 
 /-!
 # The MSS barrier along a coordinate line
@@ -14,11 +16,11 @@ the Pick-type lemma `PickRatio.deriv_nonpos_and_second_deriv_nonneg` gives the d
 This replaces the Helton–Vinnikov route of the original proof.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The coordinate barrier restricted to the affine line in coordinate `j`. -/
 def barrierLine {m : ℕ} (i j : Fin m) (p : MvPolynomial (Fin m) ℝ)
@@ -194,7 +196,5 @@ theorem barrierLine_le_of_nonneg {m : ℕ} {p : MvPolynomial (Fin m) ℝ}
   have h := hmono (show (0 : ℝ) ∈ Set.Ici 0 by exact Set.mem_Ici.mpr le_rfl)
     (show δ ∈ Set.Ici 0 by exact Set.mem_Ici.mpr hδ) hδ
   simpa [barrierLine] using h
-
-end
 
 end RealRooted

@@ -1,4 +1,6 @@
-import RealRooted.MagnitudeDominated
+module
+
+public import RealRooted.MagnitudeDominated
 
 /-!
 # Magnitude-dominated lag tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.MagnitudeDominated
 Thin wrappers for magnitude-dominated Ma-Wang / generalized Liu-Wang
 interlacing certificates.
 -/
+
+public section
 
 open Polynomial
 

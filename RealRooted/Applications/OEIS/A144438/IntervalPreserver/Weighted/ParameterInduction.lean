@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTheorem
-import RealRooted.Interlacing.OuterDifference
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTheorem
+public import RealRooted.Interlacing.OuterDifference
 
 /-!
 # Induction over unequal input-root parameters
@@ -9,9 +11,9 @@ Deleting any coordinate is reindexed by `Fin.succAbove`, so the induction
 hypothesis applies to every deletion.
 -/
 
-open Polynomial Set
+public noncomputable section
 
-noncomputable section
+open Polynomial Set
 
 namespace RealRooted.Applications.OEIS
 

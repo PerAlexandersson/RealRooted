@@ -1,11 +1,15 @@
-import RealRooted.Tactic.RootCount.CoreRules
-import RealRooted.Tactic.RootCount.LowDegreeSyntax
+module
+
+public import RealRooted.Tactic.RootCount.CoreRules
+public import RealRooted.Tactic.RootCount.LowDegreeSyntax
 
 /-!
 # Low-degree root-count tactic rules
 
 Macro expansions for same-degree and low-degree root-count certificates.
 -/
+
+public section
 
 open Polynomial
 

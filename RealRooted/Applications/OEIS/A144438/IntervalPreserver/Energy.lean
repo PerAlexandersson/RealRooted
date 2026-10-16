@@ -1,4 +1,6 @@
-import RealRooted.Interlacing.ResidueCriterion
+module
+
+public import RealRooted.Interlacing.ResidueCriterion
 
 /-!
 # Residue energy for the A144438 diagonal family
@@ -8,9 +10,9 @@ This matches the original-variable weight `1 / ((-r) * (1-r))` in the
 diagonal induction.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.Applications.OEIS
 

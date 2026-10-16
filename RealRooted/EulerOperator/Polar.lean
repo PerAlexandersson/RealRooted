@@ -1,5 +1,7 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.EulerOperator
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.EulerOperator
 
 /-!
 # Polar theta and split polynomials
@@ -9,9 +11,9 @@ degree box.  This is weaker in hypotheses than PF preservation and is useful
 for transformed polynomial families.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

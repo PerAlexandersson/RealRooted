@@ -1,13 +1,15 @@
-import RealRooted.MultiplierSequence.QuadraticExponential
-import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
+module
+
+public import RealRooted.MultiplierSequence.QuadraticExponential
+public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 /-!
 # Coordinatewise quadratic exponential multipliers
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- The quadratic exponential diagonal action preserves real stability in
 each coordinate. -/
@@ -20,7 +22,5 @@ theorem mvRealStable_quadraticExponentialMultiplier
   IsPFMultiplierSequence.mvRealStable_realCoordinateDiagonalOperator
     (isPFMultiplierSequence_quadraticExponentialMultiplier ht)
     (fun _ => Real.exp_ne_zero _) q hp
-
-end
 
 end RealRooted.BorceaBranden

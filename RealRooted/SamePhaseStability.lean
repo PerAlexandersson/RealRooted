@@ -1,5 +1,7 @@
-import Mathlib.Algebra.MvPolynomial.Monad
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import RealRooted.MultivariateStability
 
 /-!
 # Same-phase stability
@@ -10,9 +12,9 @@ coordinate weights.  Zero weights are included; they are needed for induced
 subgraph specializations.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

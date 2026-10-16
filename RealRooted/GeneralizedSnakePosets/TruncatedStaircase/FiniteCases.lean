@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 
 /-!
 # Explicit finite truncated-staircase cases
@@ -8,9 +10,9 @@ the finite Braun--Jal recurrence checks, as instances of the row formulas in
 `RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

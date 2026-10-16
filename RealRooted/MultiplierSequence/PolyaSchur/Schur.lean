@@ -1,5 +1,7 @@
-import RealRooted.Hadamard.FiniteReflection
-import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+module
+
+public import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 
 /-!
 # Schur's factorial product theorem
@@ -18,9 +20,9 @@ multiplier sequence by the finite Pólya--Schur theorem.  The remaining sign
 patterns follow by negating `g` or reflecting it in `x ↦ -x`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

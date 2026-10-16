@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowInterlacingQuotient
-import RealRooted.CommonInterleaver.RootDesc
+module
+
+public import RealRooted.BrandenVecchi.ChowInterlacingQuotient
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # The four-term Chow reflection-interlacing extension
@@ -11,9 +13,9 @@ this harmless duplicate is retained so the result uses the canonical list
 predicate.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

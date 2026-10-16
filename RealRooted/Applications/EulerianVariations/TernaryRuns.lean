@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
-import RealRooted.Linear
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+public import RealRooted.Linear
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.PFPolynomial
 
 /-!
 # Ternary increasing runs
@@ -17,9 +19,9 @@ here; the interlacing and real-rootedness consequences are proved from the
 explicit recurrence.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.EulerianVariations
 

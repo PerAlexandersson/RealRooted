@@ -1,4 +1,6 @@
-import RealRooted.WagnerX
+module
+
+public import RealRooted.WagnerX
 
 /-!
 # Wagner sign analysis
@@ -7,9 +9,9 @@ Product signs, evaluation signs at interlacing roots, intermediate-value
 bridges, and parity-controlled signs outside the root interval.
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 

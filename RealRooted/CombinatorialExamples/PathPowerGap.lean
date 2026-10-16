@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
-import RealRooted.CombinatorialExamples.PathPowerClique
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
+public import RealRooted.CombinatorialExamples.PathPowerClique
 
 /-!
 # Gap recurrences for path-power clique polynomials
@@ -11,10 +13,10 @@ characteristic polynomials for the cases used by the path-power row tactic,
 `(k, p) = (3, 2), (3, 3), (4, 3), (4, 4)`, and recovers the corresponding gap recurrences.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 open scoped Matrix
-
-noncomputable section
 
 namespace RealRooted.PathPowerGap
 
@@ -350,7 +352,7 @@ theorem coefficientList_four_four :
     charpoly_companionFour_pow_four_eq_sum_monomial]
   norm_num [-map_pow, List.range, List.range.loop, List.map, coeff_monomial]
 
-private abbrev Q := RealRooted.pathPowerCliquePolynomial
+abbrev Q := RealRooted.pathPowerCliquePolynomial
 
 private theorem Q_three_add_three (n : ℕ) :
     Q 3 (n + 3) = Q 3 (n + 2) + X * Q 3 n := by

@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.RingDivision
-import Mathlib.Algebra.Polynomial.Reverse
+
+module
+
+public import Mathlib.Algebra.Polynomial.RingDivision
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Chow polynomial operator
@@ -14,11 +17,11 @@ for Chow and Chow-derangement polynomials.  It is stated over a commutative
 ring, independently of any matrix or positivity assumptions.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace Polynomial
-
-noncomputable section
 
 /-- Reflection distributes through a finite sum with constant scalar
 coefficients. -/
@@ -136,7 +139,5 @@ theorem reflect_chowS {R : Type*} [CommRing R]
       _ = -(-X * ((X - 1) * chowS n p)) := by rw [← hs]
       _ = (X - 1) * (X * chowS n p) := by ring
   exact (monic_X_sub_C (1 : R)).isRegular.left hmul
-
-end
 
 end Polynomial

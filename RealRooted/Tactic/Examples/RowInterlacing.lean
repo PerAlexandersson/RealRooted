@@ -1,5 +1,7 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # Three-term recurrence examples
@@ -12,12 +14,12 @@ drawn from `real-rooted-oeis-proofs`: the pilot rows, three-term recurrences wit
 three, summands in other orders, and the certificates and hints of `rr_row_interlaces?`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open RealRooted.Tactic.RowFixtures
 
 namespace RealRooted.Tactic.RowInterlacingExamples
-
-noncomputable section
 
 /-- `b ≤ 0` everywhere, leading coefficients constant (`ρ = 1`) (A056241). -/
 def A056241 : ℕ → ℝ[X]
@@ -667,7 +669,5 @@ parityProduct, lagFeedback, fTransform
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
-
-end
 
 end RealRooted.Tactic.RowInterlacingExamples

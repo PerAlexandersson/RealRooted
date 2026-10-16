@@ -1,8 +1,10 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.MaWang.StrictStep
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Harmonic-factor derivative rows
@@ -11,9 +13,9 @@ Interlacing for a derivative image of the partial products
 `∏ j, (1 + j X)`, together with its lag-three recurrence transfer.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -36,7 +38,7 @@ theorem harmonicDerivativeRow_eq (n : ℕ) :
         X * (1 + C ((n : ℝ) + 2) * X) *
           (harmonicFactorProduct (n + 2)).derivative := by
   simp only [harmonicDerivativeRow]
-  ring
+  ring_nf
 
 /-- The defining recursion for the harmonic-factor partial products. -/
 @[simp] theorem harmonicFactorProduct_succ (n : ℕ) :

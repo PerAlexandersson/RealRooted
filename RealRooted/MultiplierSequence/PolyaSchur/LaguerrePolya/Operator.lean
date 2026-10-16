@@ -1,7 +1,9 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import RealRooted.Hermite.Poulain
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.Hermite.Poulain
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 
 /-!
 # Laguerre–Pólya functions of the derivative
@@ -15,9 +17,9 @@ polynomial; the Taylor coefficients converge, and real-rootedness passes to limi
 degree.
 -/
 
-open Polynomial Filter Topology RealRooted.HermitePoulain
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology RealRooted.HermitePoulain
 
 namespace RealRooted
 

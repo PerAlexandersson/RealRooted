@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
-import RealRooted.HermiteBiehler
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.HermiteBiehler
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Interlacing consequences of real finite symbols
@@ -11,9 +13,9 @@ The statements concern arbitrary real linear maps; concrete operators belong in
 separate application modules.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.BorceaBranden
 

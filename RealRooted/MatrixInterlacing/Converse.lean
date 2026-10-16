@@ -1,9 +1,11 @@
-import RealRooted.MatrixInterlacing.Preservation
-import RealRooted.MatrixInterlacing.SparseTests
+module
+
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.SparseTests
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

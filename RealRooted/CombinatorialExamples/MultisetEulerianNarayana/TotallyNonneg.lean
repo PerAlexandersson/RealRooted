@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import Mathlib.Basic.Real.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Finite bidiagonal factors for multiset Eulerian--Narayana transitions
@@ -13,17 +15,17 @@ nonnegativity.  The identification with Zhang--Zhao's closed binomial formula
 is proved below from their Lemma 4.3 and Proposition 4.1.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
 namespace MultisetEulerianNarayana
 
-noncomputable section
-
-private def factorDiagonal (d : ℕ) (a : ℝ) (i : ℕ) : ℝ :=
+def factorDiagonal (d : ℕ) (a : ℝ) (i : ℕ) : ℝ :=
   if i ≤ d then ((i : ℝ) + a) / a else 1
 
-private def factorSubdiagonal (d : ℕ) (a : ℝ) (j : ℕ) : ℝ :=
+def factorSubdiagonal (d : ℕ) (a : ℝ) (j : ℕ) : ℝ :=
   if j ≤ d then ((d : ℝ) + a - j) / a else 0
 
 /-- The square padded coefficient matrix of `E_{d,a}`.
@@ -129,10 +131,10 @@ theorem coefficientFactor_isTotallyNonneg {N d : ℕ} {a : ℝ} (ha : 0 < a) :
   Matrix.isTotallyNonneg_lowerBidiagonalFin N _ _
     (factorDiagonal_nonneg ha) (factorSubdiagonal_nonneg ha)
 
-private def factorParameter (r s : ℕ) : ℝ :=
+def factorParameter (r s : ℕ) : ℝ :=
   if s = 0 then 1 else (r - s + 1 : ℕ)
 
-private def paddedStepWord (p r : ℕ) (f : ℝ[X]) : ℕ → ℝ[X]
+def paddedStepWord (p r : ℕ) (f : ℝ[X]) : ℕ → ℝ[X]
   | 0 => f
   | s + 1 =>
       step (p + s - 1) (factorParameter r s) (paddedStepWord p r f s)
@@ -143,7 +145,7 @@ private theorem factorParameter_pos (r s : ℕ) : 0 < factorParameter r s := by
   · norm_num
   · exact_mod_cast Nat.succ_pos (r - s)
 
-private def paddedFactorWord (p r : ℕ) : ℕ → Matrix (Fin (p + r)) (Fin (p + r)) ℝ
+def paddedFactorWord (p r : ℕ) : ℕ → Matrix (Fin (p + r)) (Fin (p + r)) ℝ
   | 0 => 1
   | s + 1 =>
       coefficientFactor (p + r) (p + s - 1) (factorParameter r s) *
@@ -160,7 +162,7 @@ private theorem paddedFactorWord_isTotallyNonneg {p r s : ℕ} (hs : s ≤ r) :
         exact factorParameter_pos r s
       · exact ih (Nat.le_of_succ_le hs)
 
-private def firstP (p r : ℕ) (j : Fin p) : Fin (p + r) :=
+def firstP (p r : ℕ) (j : Fin p) : Fin (p + r) :=
   ⟨j, by lia⟩
 
 private theorem firstP_injective {p r : ℕ} : Function.Injective (firstP p r) := by
@@ -316,8 +318,6 @@ theorem coefficientTransitionMatrix_mulVec_coefficientVector {p r : ℕ} (hp : 0
   rw [coefficientTransitionMatrix, ← mulVec_extend_firstP]
   rw [← coefficientVector_extend_firstP hp hdeg]
   exact paddedFactorWord_mulVec_coefficientVector hp (le_refl r) hsteps
-
-
 
 /-- Auxiliary binomial/falling-factorial term. -/
 private def gTerm (A B s m : ℕ) : ℝ :=
@@ -658,14 +658,11 @@ theorem coefficientTransitionMatrix_eq_closedTransitionMatrix {p r : ℕ} (hr : 
   simp only [coefficientTransitionMatrix, closedTransitionMatrix, Matrix.submatrix_apply, id]
   rw [show firstP p (t + 1) ell = ⟨ell.val, by lia⟩ from rfl, h1, h2]
 
-
 /-- Zhang--Zhao's closed binomial transition matrix is totally nonnegative. -/
 theorem closedTransitionMatrix_isTotallyNonneg {p r : ℕ} (hr : 0 < r) :
     (closedTransitionMatrix p r).IsTotallyNonnegRect := by
   rw [← coefficientTransitionMatrix_eq_closedTransitionMatrix hr]
   exact coefficientTransitionMatrix_isTotallyNonneg
-
-end
 
 end MultisetEulerianNarayana
 end RealRooted

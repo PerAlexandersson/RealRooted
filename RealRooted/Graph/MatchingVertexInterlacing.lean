@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
-import RealRooted.GarloffWagner.KreinExpansion
-import RealRooted.LiuWang.General
-import RealRooted.WeightedSum
+module
+
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
+public import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.LiuWang.General
+public import RealRooted.WeightedSum
 
 /-!
 # Vertex-deletion interlacing for matching polynomials
@@ -21,6 +23,8 @@ The proof is by strong induction on `S` using the vertex recurrence
 * O. J. Heilmann, E. H. Lieb, *Theory of monomer-dimer systems*, Comm. Math. Phys. 25 (1972).
 * C. D. Godsil, *Algebraic Combinatorics*, Chapman & Hall (1993), Chapter 6.
 -/
+
+public section
 
 open Polynomial
 

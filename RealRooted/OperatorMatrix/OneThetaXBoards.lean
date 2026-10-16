@@ -1,4 +1,6 @@
-import RealRooted.OperatorMatrix.OneThetaX
+module
+
+public import RealRooted.OperatorMatrix.OneThetaX
 
 /-!
 # Two-letter boards over `{1, θ}` and `{θ, X}`
@@ -12,7 +14,7 @@ For matrices with at least two rows and columns:
   (`preservesOrderedPF_theta_x_iff_rowCut_or_columnCut`).
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.OperatorMatrix
 

@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.WhitneyReduction
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+module
+
+public import RealRooted.BrandenLeite.WhitneyReduction
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 
 /-!
 # Chow polynomials of totally nonnegative matrices
@@ -9,11 +11,11 @@ the canonical resolution of a lower-unitriangular totally nonnegative matrix.
 All statements retain the zero-polynomial cases explicitly.
 -/
 
+public noncomputable section
+
 open Matrix Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {A : LowerTriangularMatrix ℝ}
 
@@ -411,7 +413,5 @@ theorem chowDerangement_strictInterl_succ_of_isTotallyNonneg_of_ne
     StrictInterl (chowDerangement A n) (chowDerangement A (n + 1)) :=
   (chowDerangement_interl_succ_of_isTotallyNonneg hunit hA n).toStrictInterl_of_ne
     hn hsucc
-
-end
 
 end RealRooted.BrandenVecchi

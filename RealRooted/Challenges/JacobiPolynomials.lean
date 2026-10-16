@@ -1,10 +1,12 @@
-import RealRooted.Jacobi
-import RealRooted.Jacobi.Favard
-import RealRooted.Jacobi.Markoff
-import RealRooted.Jacobi.Orthogonality.Integral
-import RealRooted.Jacobi.ParameterInterlacing
-import RealRooted.Legendre.Basic
-import RealRooted.Legendre.Roots
+module
+
+public import RealRooted.Jacobi
+public import RealRooted.Jacobi.Favard
+public import RealRooted.Jacobi.Markoff
+public import RealRooted.Jacobi.Orthogonality.Integral
+public import RealRooted.Jacobi.ParameterInterlacing
+public import RealRooted.Legendre.Basic
+public import RealRooted.Legendre.Roots
 
 /-!
 # Shifted Jacobi polynomial challenge entry point
@@ -158,3 +160,5 @@ Chs. IV and VI]. The general three-term theory is on the
 This module is a catalog facade. The proofs live in `RealRooted.Jacobi` and
 `RealRooted.Legendre`.
 -/
+
+public section

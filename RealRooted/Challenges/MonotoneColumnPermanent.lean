@@ -1,4 +1,6 @@
-import RealRooted.Permanent.MonotoneColumn
+module
+
+public import RealRooted.Permanent.MonotoneColumn
 
 /-!
 # Monotone column permanent theorem
@@ -125,6 +127,8 @@ fractional substitution yield the multivariate theorem.
 See [@HaglundOnoWagner1999; @BrandenHaglundVisontaiWagner2011].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.MonotoneColumnPermanent
 

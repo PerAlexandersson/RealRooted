@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.KernelClosure
-import RealRooted.BrandenLeite.OptionalRiseMatrix
+module
+
+public import RealRooted.BrandenLeite.KernelClosure
+public import RealRooted.BrandenLeite.OptionalRiseMatrix
 
 /-!
 # Positive-diagonal regularization of marked lower shifts
@@ -10,11 +12,11 @@ matrix with diagonal `ε` gives the positive-diagonal TN approximation required
 by the finite kernel-limit theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Filter Matrix Topology
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The lower shift with a constant regularizing diagonal `ε`. -/
 def regularizedLowerShift (ε : ℝ) (N : ℕ) :
@@ -273,7 +275,5 @@ theorem weightedGreenKernel_markedShiftKernel_pf_and_interl
   · intro m
     exact markedShiftApproximation_apply_self as N r (markedShiftEpsilon m)
   · exact tendsto_markedShiftApproximation as N r
-
-end
 
 end RealRooted.BrandenLeite

@@ -1,4 +1,6 @@
-import RealRooted.FolkloreLemma
+module
+
+public import RealRooted.FolkloreLemma
 
 /-!
 # Finite non-nesting rook boards
@@ -7,9 +9,9 @@ This module contains the finite-board and basic non-nesting rook-polynomial API
 used by the Braun--Jal generalized snake poset development.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets
@@ -513,7 +515,7 @@ theorem isNonNestingPlacement_pair {B : FiniteSkewBoard} (a b : ℕ × ℕ)
       · exact hcol_ba hlt
       · exact (Nat.lt_irrefl _ hlt).elim
 
-private def finsetAllBool {α : Type*} (s : Finset α) (p : α → Bool) : Bool :=
+def finsetAllBool {α : Type*} (s : Finset α) (p : α → Bool) : Bool :=
   s.fold (fun a b => a && b) true p
 
 private lemma finsetAllBool_iff {α : Type*} (s : Finset α) (p : α → Bool) :

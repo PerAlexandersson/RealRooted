@@ -1,5 +1,7 @@
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.HermiteBiehler.Converse.RootGeometry
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
 
 /-!
 # Wronskian layer for the converse Hermite--Biehler theorem
@@ -9,9 +11,9 @@ then into same-degree or successor-degree interlacing. The later common-root
 induction and ratio endpoints build on this layer.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

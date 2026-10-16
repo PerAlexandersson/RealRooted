@@ -1,11 +1,13 @@
-import RealRooted.GarloffWagner
-import RealRooted.Hadamard.Product
-import RealRooted.HermiteBiehler.OddEven
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.GarloffWagner
+public import RealRooted.Hadamard.Product
+public import RealRooted.HermiteBiehler.OddEven
+public import RealRooted.PFPolynomial
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.OperatorMatrix.Composition
-import RealRooted.OperatorMatrix.OneThetaX
-import RealRooted.ObreschkoffConverse.Derivative
+module
+
+public import RealRooted.OperatorMatrix.Composition
+public import RealRooted.OperatorMatrix.OneThetaX
+public import RealRooted.ObreschkoffConverse.Derivative
 
 /-!
 # The Euler-derivative lag operator matrices
@@ -11,9 +13,9 @@ ordered-PF preservation for the factors `[[0, I], [X, theta]]` and
 `[[0, theta], [X theta, theta]]`, then obtains their dense product by composition.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.OperatorMatrix.EulerDerivativeLag
 

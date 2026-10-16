@@ -1,6 +1,10 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.SymmetricDecomposition.DerangementTransform
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+
+@[expose] public section
 
 open Finset Polynomial
 open scoped BigOperators Polynomial
@@ -353,7 +357,7 @@ private lemma derangementExcGenPoly_recurrence (n : ℕ) :
   have h := polynomial_recurrence_of_coefficients (n := n + 1) hzero hrec
   convert h using 1
   simp only [Nat.add_assoc, Nat.cast_add, Nat.cast_one]
-  ring
+  ring_nf
 
 private lemma derangementExcGenPoly_zero : derangementExcGenPoly 0 = 1 := by
   apply Polynomial.ext

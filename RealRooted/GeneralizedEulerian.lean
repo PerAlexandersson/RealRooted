@@ -1,9 +1,11 @@
-import RealRooted.ObreschkoffConverse
-import RealRooted.SequenceClosure
-import RealRooted.WagnerX.NonnegativeRoots
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Tactic
+module
+
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.SequenceClosure
+public import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Tactic
 
 /-!
 # Generalized Eulerian polynomials
@@ -12,9 +14,9 @@ The parameterized Eulerian differential recurrence and its real-rootedness,
 degree, and coefficient-positivity invariants.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

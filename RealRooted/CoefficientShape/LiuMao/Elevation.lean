@@ -1,4 +1,6 @@
-import RealRooted.CoefficientShape.Hoggar
+module
+
+public import RealRooted.CoefficientShape.Hoggar
 
 /-!
 # Log-concave sequences without internal zeros
@@ -16,6 +18,8 @@ Preliminaries for the Liu–Mao theorem on Euler numerators of products of polyn
   step in `RealRooted.CoefficientShape.Hoggar` is private.
 * Truncation, reversal and Toeplitz windows of `LCNIZ` sequences.
 -/
+
+@[expose] public section
 
 open Finset
 

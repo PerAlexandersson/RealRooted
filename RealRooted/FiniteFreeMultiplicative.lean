@@ -1,7 +1,9 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Hadamard.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Ring.Parity
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Hadamard.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Finite-free multiplicative convolution
@@ -12,9 +14,9 @@ conventions, signed reciprocal reversal carries Schur--Szegő composition to
 finite-free multiplicative convolution exactly, including in odd degree.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

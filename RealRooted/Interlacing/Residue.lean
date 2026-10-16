@@ -1,8 +1,10 @@
-import RealRooted.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import RealRooted.WagnerX.AffineFactors
-import Mathlib.LinearAlgebra.Lagrange
+module
+
+public import RealRooted.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import RealRooted.WagnerX.AffineFactors
+public import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # Lagrange residues for interlacing polynomials
@@ -11,9 +13,9 @@ Real-root signs, residue positivity, Lagrange interpolation at simple roots,
 and common-root cofactor transport.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

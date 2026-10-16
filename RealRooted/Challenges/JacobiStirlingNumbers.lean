@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
-import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
-import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
+public import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
+public import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 
 /-!
 # Jacobi–Stirling numbers challenge entry point
@@ -93,3 +95,5 @@ The descent polynomials of Jacobi–Stirling permutations are on the
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.JacobiStirling`.
 -/
+
+public section

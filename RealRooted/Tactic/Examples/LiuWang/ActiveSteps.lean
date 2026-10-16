@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.Step
+module
+
+public import RealRooted.Tactic.LiuWang.Step
 
 /-!
 # Liu--Wang active-step regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.Step
 Active-range, plateau-branch, direct-step, Favard, and normalization smoke tests
 for the generalized Liu--Wang dispatcher.
 -/
+
+public section
 
 open Polynomial
 

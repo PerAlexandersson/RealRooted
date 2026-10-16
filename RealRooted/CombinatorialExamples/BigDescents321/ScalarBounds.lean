@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
 
 /-!
 # The moving interval for `z_n`
@@ -9,6 +11,8 @@ reverses the interval of `z_(n-2)` since `D(n) > 0`, the error satisfies `|e_n| 
 the two threshold inequalities, valid for `n ≥ 40`, have excess numerators with positive
 coefficients after `n = 40 + s`.
 -/
+
+public section
 
 namespace RealRooted.BigDescents321
 

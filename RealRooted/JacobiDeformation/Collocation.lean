@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.JacobiOperator
+module
+
+public import RealRooted.JacobiDeformation.JacobiOperator
 
 /-!
 # The symmetric quasi-Jacobi collocation matrix
@@ -19,9 +21,9 @@ nodes lie in `(0, 1)`; exterior nodes are handled in
 `RealRooted.JacobiDeformation.CollocationPositivity`.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

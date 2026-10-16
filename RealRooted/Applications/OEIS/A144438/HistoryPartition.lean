@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.FiberPartition
+module
+
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
 
 /-!
 # Exceptional-history partition for admissible Deco codes
@@ -9,11 +11,11 @@ comparison-bottom enumerator.  Identifying an individual history fiber with
 the operator-defined exact layer is a separate theorem.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- The exceptional history extracted from an admissible height-`n+2` code. -/
 def admissibleCodeExceptionalHistory (n : Nat)
@@ -78,7 +80,5 @@ theorem admissibleCodePolynomial_eq_sum_historyFiberPolynomial
           ∑ c : DecoHistoryFiber H,
             MinimumInsertionWord.comparisonBottomMonomial c.1.1.inverseWord := by
       rw [Fintype.sum_sigma]
-
-end
 
 end RealRooted.Applications.OEIS

@@ -1,6 +1,8 @@
-import Mathlib.Combinatorics.Enumerative.Catalan.Basic
-import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
-import RealRooted.ReciprocalShift.ProperPosition
+module
+
+public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
+public import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+public import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
 # Coefficient reversal for the A390883 toric contributions
@@ -10,9 +12,9 @@ the normalized hypergeometric polynomials used by the common-interlacer
 theorem.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace ParkingFunctions

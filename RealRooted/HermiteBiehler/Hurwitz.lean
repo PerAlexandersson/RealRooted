@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.HermiteBiehler.Converse
-import RealRooted.HermiteBiehler.OddEven
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.HermiteBiehler.Converse
+public import RealRooted.HermiteBiehler.OddEven
 
 /-!
 # Hermite--Biehler to Hurwitz stability
@@ -11,9 +13,9 @@ first-quadrant substitution lemmas and the right-half-plane stability theorem
 from the converse root-geometry proof.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

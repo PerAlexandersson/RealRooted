@@ -1,8 +1,10 @@
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.OperatorPreservesInterlacing
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

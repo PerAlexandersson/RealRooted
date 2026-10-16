@@ -1,6 +1,8 @@
-import RealRooted.RootVieta
-import RealRooted.CoefficientDominance.Symmetric.Polynomial
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.RootVieta
+public import RealRooted.CoefficientDominance.Symmetric.Polynomial
+public import RealRooted.SortedRoots
 
 /-!
 # Vieta formulas in terms of sorted root sequences
@@ -9,11 +11,11 @@ Coefficients and values of a polynomial with nonzero roots and constant coeffici
 expressed through the reciprocal sorted-root sequence `SortedRoots.rootSeq`.
 -/
 
+public noncomputable section
+
 namespace RealRooted.RootVieta
 
 open Polynomial
-
-noncomputable section
 
 /-- The coefficient of a polynomial with constant coefficient one is the
 elementary symmetric function of its reciprocal sorted-root sequence. -/
@@ -57,7 +59,5 @@ theorem eval_neg_eq_prod_recip_rootSeq {p : ℝ[X]}
   refine Finset.prod_congr rfl fun i _ => ?_
   simp
   ring
-
-end
 
 end RealRooted.RootVieta

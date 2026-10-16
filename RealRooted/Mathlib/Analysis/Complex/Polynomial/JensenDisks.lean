@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+
+module
+
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!
 # Jensen disks
@@ -26,6 +29,8 @@ multiplicity. Since this root multiset is invariant under conjugation, also
 `∑ (1 / (w - z) + 1 / (w - conj z)) = 0`. If `w` lies strictly outside every Jensen disk, then
 every summand has imaginary part of sign opposite to `w.im`, which is a contradiction.
 -/
+
+public section
 
 open scoped Polynomial ComplexConjugate
 

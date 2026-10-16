@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The reverse-Hermite basis transform
@@ -9,9 +11,9 @@ polynomial. These are distinct from Mathlib's probabilists' Hermite
 polynomials, whose recurrence has a negative derivative term.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

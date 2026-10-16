@@ -1,9 +1,11 @@
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-import RealRooted.PFPolynomial.Closure
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
-import Mathlib.RingTheory.PowerSeries.Exp
-import Mathlib.RingTheory.PowerSeries.PiTopology
+module
+
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+public import RealRooted.PFPolynomial.Closure
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+public import Mathlib.RingTheory.PowerSeries.Exp
+public import Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Coefficient limits of supersymmetric PF symbols
@@ -14,12 +16,12 @@ series. Finite prefixes and the binomial approximation to the exponential are
 kept explicit.
 -/
 
+@[expose] public noncomputable section
+
 open BigOperators Filter Topology
 open scoped PowerSeries.WithPiTopology
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 private theorem prod_linearDeviation (c : ℕ → ℝ) (s : Finset ℕ) :
     (∏ i ∈ s, PowerSeries.C (c i) * PowerSeries.X) =
@@ -462,7 +464,5 @@ theorem aswEdreiCoeff_nonneg
     (hsum : Summable fun i => alpha i + beta i) (d : ℕ) :
     0 ≤ aswEdreiCoeff gamma alpha beta d :=
   (aswEdreiCoeff_isPolyaFreqSeq hgamma halpha hbeta hsum).nonneg d
-
-end
 
 end RealRooted.BrandenVecchi

@@ -1,5 +1,7 @@
-import RealRooted.MatrixInterlacing.DigitStep
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.MatrixInterlacing.DigitStep
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Indispensable-digit polynomial models
@@ -9,9 +11,9 @@ the total-state rows.  Two registered recurrence transfers expose their
 adjacent interlacing to the row tactics.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.IndispensableDigits
 

@@ -1,9 +1,11 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Basic
-import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
-import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
-import Mathlib.Algebra.BigOperators.NatAntidiagonal
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.FieldSimp
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Basic
+public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
+public import Mathlib.Algebra.BigOperators.NatAntidiagonal
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.FieldSimp
 
 /-!
 # The transformed big-descent polynomials and their generating function
@@ -27,14 +29,14 @@ homogenized recurrences, so no division by `c` occurs:
   `Q_n(c) = (c/2)ⁿ A_n(1 - c⁻²)` for real `c ≠ 0`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.BigDescents321
 
 /-- `μ_0 = 1`, `μ_1 = c`, `μ_(k+2) = c μ_(k+1) + (c² - 1)/4 ∑_(i ≤ k) μ_i μ_(k-i)`. -/
-private def refHomAux : ℕ → ℚ[X]
+def refHomAux : ℕ → ℚ[X]
   | 0 => 1
   | 1 => X
   | k + 2 => X * refHomAux (k + 1) +
@@ -133,7 +135,7 @@ def firstReturnHom : ℕ → ℚ[X]
   | j + 3 => C (1 / 4) * (X ^ 2 - 1) * refHom (j + 1)
 
 /-- `Q_0 = 1`, `Q_(n+1) = ∑_(j ≤ n) ι_(j+1) Q_(n-j)`. -/
-private def transformedAux : ℕ → ℚ[X]
+def transformedAux : ℕ → ℚ[X]
   | 0 => 1
   | n + 1 => ∑ j : Fin (n + 1), firstReturnHom (j.1 + 1) * transformedAux (n - j.1)
 

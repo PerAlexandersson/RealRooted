@@ -1,18 +1,20 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Polynomial.Div
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.Data.List.Sort
-import Mathlib.Basic.Real.Basic
-import RealRooted.Mathlib.Data.Nat.Cast.Basic
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.Mathlib.Data.List.Interleave
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.Data.List.Sort
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.Data.Nat.Cast.Basic
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.Mathlib.Data.List.Interleave
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 variable {R : Type*} [CommSemiring R] [Nontrivial R]
 
@@ -52,7 +54,6 @@ lemma support_X_add_one_pow_eq_range (n : ℕ) :
     have hchoose : (Nat.choose n k : ℝ) = 0 := by simp [hchoose_nat]
     exact iff_of_false (fun hne => hne hchoose) hk
 
-
 /-- The product of two real-rooted polynomials is real-rooted. -/
 lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) :=
@@ -83,8 +84,6 @@ lemma exists_rightmost_root_of_isRealRooted
       apply Multiset.mem_coe.mp
       lia
     exact hrs_sorted.rel_getLast hs_mem
-
-
 
 /-- Every polynomial has an upper bound for its roots. -/
 lemma exists_root_upper_bound (p : ℝ[X]) :

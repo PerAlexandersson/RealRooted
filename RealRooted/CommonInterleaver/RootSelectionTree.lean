@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootSelection
+module
+
+public import RealRooted.CommonInterleaver.RootSelection
 
 /-!
 # Finite interlacing-family trees
@@ -8,9 +10,9 @@ are polynomial labels; every internal node is the sum of a nonempty list of
 children whose node polynomials have a common degree-gap left interlacer.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

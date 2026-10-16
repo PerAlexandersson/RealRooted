@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.BigDescents321
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321
 
 /-!
 # 321-avoiding permutations by big descents challenge entry point
@@ -93,3 +95,5 @@ See [@ElizaldeRiveraZhuang2026].
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.BigDescents321`.
 -/
+
+public section

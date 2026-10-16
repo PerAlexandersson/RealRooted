@@ -1,5 +1,7 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.PosCombo
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.PosCombo
 
 /-!
 # Linear combinations with a derivative
@@ -8,6 +10,8 @@ Splitting preservation for constant linear combinations of a polynomial and
 its derivative. These theorem-facing forms are shared by Hermite--Poulain and
 the second-derivative tactic frontend.
 -/
+
+public section
 
 open Polynomial
 

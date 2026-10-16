@@ -1,7 +1,9 @@
-import RealRooted.Derivative
-import RealRooted.BasisTransform
-import RealRooted.Transforms.BrandenE.Basic
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.Derivative
+public import RealRooted.BasisTransform
+public import RealRooted.Transforms.BrandenE.Basic
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Binomial-basis images under Brändén's E transform
@@ -11,9 +13,9 @@ This module packages the ambient-degree binomial basis, its images under the
 coefficient and root-window geometry used by the interlacing theory.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

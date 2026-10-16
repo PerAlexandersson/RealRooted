@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Coefficient extraction from finite-variable stable polynomials
@@ -9,9 +11,9 @@ This file combines finite-variable derivative stability with boundary
 specialization to extract coefficients in one distinguished variable.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 private theorem specializeZero_none_eq_rename_optionEquivLeft_coeff_zero
     {σ : Type*} (P : MvPolynomial (Option σ) ℂ) :
@@ -113,7 +115,5 @@ theorem MvUpperHalfPlaneStable.optionEquivLeft_coeff_zero_or_of_finite
     intro hzero
     rw [hzero, mul_zero] at hne
     exact hne rfl
-
-end
 
 end RealRooted

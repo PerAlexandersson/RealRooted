@@ -1,5 +1,7 @@
-import RealRooted.HosterStump.Chow
-import RealRooted.HosterStump.PosetBasic
+module
+
+public import RealRooted.HosterStump.Chow
+public import RealRooted.HosterStump.PosetBasic
 
 /-!
 # Descent-set counts and Möbius inversion
@@ -9,9 +11,9 @@ Boolean lattice of subsets of `range n`,
 `desCount n k (reflectSet n S) = ∑ T ⊆ S, (-1)^|S \ T| desLeCount n k (reflectSet n T)`.
 -/
 
-open Finset
+public noncomputable section
 
-noncomputable section
+open Finset
 
 namespace RealRooted.HosterStump
 
@@ -116,4 +118,3 @@ theorem desCount_reflectSet_eq_sum (n k : ℕ) {S : Finset ℕ} (hS : S ⊆ rang
 
 end RealRooted.HosterStump
 
-end

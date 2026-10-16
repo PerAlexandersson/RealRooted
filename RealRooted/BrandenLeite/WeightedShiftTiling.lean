@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.MarkedShift
-import RealRooted.FiniteFreeRootCount
+module
+
+public import RealRooted.BrandenLeite.MarkedShift
+public import RealRooted.FiniteFreeRootCount
 
 /-!
 # Nonstationary weighted-shift tiling rows
@@ -9,11 +11,11 @@ shared finite transition kernel remains explicit throughout; the PF and proper-
 position conclusions are inherited from the checked kernel-limit theorem.
 -/
 
+@[expose] public noncomputable section
+
 open Matrix Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The Green kernel acts on every matrix by the same weighted row recurrence. -/
 theorem weightedGreenKernel_mul_apply_succ
@@ -585,7 +587,5 @@ theorem weightedShiftTilingRow_roots_neg
   (weightedShiftTilingRow_isPFPolynomial (fun n => (hb n).le)
     has N hr i).roots_neg_of_coeff_zero_ne
       (ne_of_gt (coeff_zero_weightedShiftTilingRow_pos hb as N r i)) x hx
-
-end
 
 end RealRooted.BrandenLeite

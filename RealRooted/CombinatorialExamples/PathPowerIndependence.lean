@@ -1,4 +1,6 @@
-import RealRooted.Graph.IndependencePolynomial.ClawFree
+module
+
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
 # Independence polynomials of powers of a path
@@ -17,6 +19,8 @@ particular, with `m = N + r`, every polynomial `Σ_k C(m - r k, k) x^k` is real-
 case `r = 1` gives the Fibonacci polynomials `Σ_k C(m - k, k) x^k`, and the case `r = 2` gives
 `Σ_k C(m - 2k, k) x^k`, which satisfies `g (m + 3) = g (m + 2) + x g m`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset RealRooted.Graph
 

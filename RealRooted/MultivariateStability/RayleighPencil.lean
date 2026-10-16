@@ -1,8 +1,10 @@
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.Multiaffine.AffineCoordinateExtension
-import RealRooted.Multiaffine.AffineLineRestriction
-import RealRooted.MultivariateStability.AllComboAffineLine
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.MultivariateStability.AllComboAffineLine
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Rayleigh coordinate pencils
@@ -13,9 +15,9 @@ with the Rayleigh Wronskian sign, gives stability of the original polynomial
 up to the zero polynomial.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 /-- An all-combinations stable span of multiaffine polynomials has
 nonpositive affine Rayleigh discriminants.  Thus a fresh-coordinate
@@ -226,7 +228,5 @@ theorem AllComboMvRealStableOrZero.affineExtension_zero_or_of_wronskian
   simpa [P, Q,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneP,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars hnoneQ] using hallRename
-
-end
 
 end RealRooted

@@ -1,9 +1,11 @@
-import RealRooted.GammaTransform.Basic
-import RealRooted.GammaTransform.Derivative
-import RealRooted.GammaTransform.RootMap
-import RealRooted.GammaTransform.RootLists
-import RealRooted.GammaTransform.Preservation
-import RealRooted.GammaTransform.ProperPosition
+module
+
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.GammaTransform.Derivative
+public import RealRooted.GammaTransform.RootMap
+public import RealRooted.GammaTransform.RootLists
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.ProperPosition
 
 /-!
 # Gamma transforms
@@ -11,3 +13,5 @@ import RealRooted.GammaTransform.ProperPosition
 Focused entry point for gamma-transform algebra, Euler derivatives, root maps,
 ordered-root completion, preservation results, and the interlacing bridge.
 -/
+
+public section

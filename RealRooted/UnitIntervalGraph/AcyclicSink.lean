@@ -1,8 +1,10 @@
-import RealRooted.Graph.AcyclicOrientation
-import RealRooted.Graph.ChordalAcyclicSink
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.Linear
-import Mathlib.Data.Finset.Sort
+module
+
+public import RealRooted.Graph.AcyclicOrientation
+public import RealRooted.Graph.ChordalAcyclicSink
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Linear
+public import Mathlib.Data.Finset.Sort
 
 /-!
 # Acyclic sink polynomials of unit interval graphs
@@ -13,9 +15,9 @@ independence-polynomial expression for the ascent-refined acyclic sink
 polynomial.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted
 namespace UnitIntervalGraph

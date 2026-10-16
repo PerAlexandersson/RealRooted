@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.PowerSeries.Catalan
-import Mathlib.RingTheory.PowerSeries.Substitution
+
+module
+
+public import Mathlib.RingTheory.PowerSeries.Catalan
+public import Mathlib.RingTheory.PowerSeries.Substitution
 
 /-!
 # Catalan quadratic substitution
@@ -12,6 +15,8 @@ import Mathlib.RingTheory.PowerSeries.Substitution
 This transports Mathlib's Catalan power series to an arbitrary commutative
 ring and records its quadratic equation after a valid substitution.
 -/
+
+@[expose] public section
 
 namespace PowerSeries
 

@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.ChainPolynomial
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
+module
+
+public import RealRooted.GeneralizedSnakePosets.ChainPolynomial
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
 
 /-!
 # Snake boards as monochromatic bands
@@ -16,9 +18,9 @@ placements become chains that increase in both coordinates, so snake
 polynomial is the `incRel` chain polynomial of the band.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Logic.Equiv.Fin.Rotate
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Logic.Equiv.Fin.Rotate
 
 /-!
 # Pollak's cyclic action for parking words
@@ -10,12 +12,12 @@ the literal embedding of ordinary parking functions.  Results involving
 chain sorting belong to the downstream `DiaconisHicks` module.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- Cyclically shift every value of a word on `Fin (n + 1)`. -/
 def cyclicValueShiftEquiv (n : ℕ) (c : Fin (n + 1)) :
@@ -364,7 +366,5 @@ theorem parkingDescentPolynomial_succ_eq_genPoly_embedded (n : ℕ) :
     rw [descentCount_parkingWordEmbed]
   · intro w hw v hv hwv
     exact parkingWordEmbed_injective hwv
-
-end
 
 end RealRooted.ParkingFunctions

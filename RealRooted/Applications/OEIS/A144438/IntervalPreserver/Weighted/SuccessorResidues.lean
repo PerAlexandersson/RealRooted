@@ -1,11 +1,13 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorBlock
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorBlock
 
 /-! # Polynomial residue identities at a weighted insertion successor -/
 
-open Polynomial BigOperators
+public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted.Applications.OEIS
 

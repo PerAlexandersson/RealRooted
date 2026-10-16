@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Functionals
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Functionals
 
 /-!
 # The top coordinates of `R_n`
@@ -13,6 +15,8 @@ the kernel moments `m(r, J)`.
 
 * `kernelMoment_eq_mm`: `m(r, J)` for `r ≤ 4` as an explicit rational function of `J`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BigDescents321
 

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.EndpointDerivative
+module
+
+public import RealRooted.Tactic.EndpointDerivative
 
 /-!
 # Endpoint-derivative tactic examples
 
 Abstract smoke tests for the two interval-preserving sequence frontends.
 -/
+
+public section
 
 open Polynomial Set
 

@@ -3,7 +3,10 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 
 /-!
 # Perron-Frobenius Theorem: Uniqueness of the Eigenvector
@@ -31,6 +34,8 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
+
+public section
 
 namespace Matrix
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]

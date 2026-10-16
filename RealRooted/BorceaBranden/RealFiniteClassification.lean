@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.MultivariateHKO
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # Real finite stability preservers: the low-rank branch
@@ -13,10 +15,10 @@ The missing HKO part is the converse orientation dichotomy for an arbitrary
 stable two-dimensional real span.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted
 namespace BorceaBranden
-
-noncomputable section
 
 /-- A real linear operator on a coordinate-wise degree box preserves real
 stability, allowing the zero output. -/
@@ -85,8 +87,6 @@ theorem hasStableRankTwoRepresentation_zero
     exact MvRealStableOrZero.zero
   · intro f
     simp
-
-end
 
 end BorceaBranden
 end RealRooted

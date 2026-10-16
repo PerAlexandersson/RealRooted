@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ContactCalculus
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ContactCalculus
 
 /-!
 # Continuity of the weighted unequal-parameter family
@@ -8,9 +10,9 @@ vary continuously with all labeled input-root parameters.  We also package
 joint continuity in the parameters and the evaluation variable.
 -/
 
-open Polynomial Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Topology
 
 namespace RealRooted.Applications.OEIS
 

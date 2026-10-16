@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Data.List.Interleave.Padding
-import RealRooted.Mathlib.Data.List.Sort.Endpoint
-import RealRooted.ReciprocalShift.Interlacing.Inversion
+module
+
+public import RealRooted.Mathlib.Data.List.Interleave.Padding
+public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+public import RealRooted.ReciprocalShift.Interlacing.Inversion
 
 /-!
 # Interlacing under reciprocal shifts
@@ -10,9 +12,9 @@ position pair of PF polynomials. The generic list endpoint and inverse-root
 transport facts live in lower layers.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

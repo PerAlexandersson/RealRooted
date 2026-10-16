@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Matrix.Basic
+
+module
+
+public import Mathlib.Data.Matrix.Basic
 
 /-!
 # The classical Hurwitz matrix
@@ -22,6 +25,8 @@ This is the convention used in the classical Routh--Hurwitz criterion. It is
 not the lower-triangular Lace-oriented matrix historically called `hurwitz` in
 the `RealRooted` namespace.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

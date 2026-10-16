@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 
 /-!
 # Two-rank discriminant reduction for the Deco layer total
@@ -10,9 +12,9 @@ packages the resulting exact companion data.  It does not assert that the
 data is preserved at every rank.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Every positive-coordinate affine discriminant is the shifted
 discriminant of the lower companion/core pair. -/
@@ -116,7 +118,5 @@ structure DecoBottomTotalCompanionRayleighData (n : Nat) : Prop where
     (MvPolynomial.affineRayleighDiscriminant
       (decoBottomTotalWronskianCompanion n)
       (decoBottomTotalCompanionCore n) i j) ≤ 0
-
-end
 
 end RealRooted.Applications.OEIS

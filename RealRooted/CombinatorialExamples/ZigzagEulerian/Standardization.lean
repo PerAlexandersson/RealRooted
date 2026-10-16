@@ -18,11 +18,9 @@ first inside each block. Sorting by letter and this label turns a weak
 up-down word into its up-down permutation of ranks.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Finset
-
-noncomputable section
 
 namespace RealRooted.ZigzagEulerian
 

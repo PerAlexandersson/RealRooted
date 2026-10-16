@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.RootCount
+module
+
+public import RealRooted.LiuOppositeSigns.RootCount
 
 /-!
 # Root deletion for Liu root-count arguments
@@ -8,9 +10,9 @@ deletion lemmas used by Liu-style root-count arguments. It is independent of
 positive-leading normalization and of the later left/right branch machinery.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

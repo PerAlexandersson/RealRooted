@@ -1,9 +1,11 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.AffineLineRestriction
-import RealRooted.HermiteBiehler.Converse.RootGeometry
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.Specialization
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.AffineLineRestriction
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.Specialization
 
 /-!
 # A multivariate stable-pencil implication
@@ -16,11 +18,11 @@ Hermite--Kakeya--Obreschkoff.  The converse orientation dichotomy for an
 arbitrary stable two-dimensional real span is not asserted here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- A stable complex polynomial is no smaller in norm above the real axis
 than at the conjugate point below it. -/
@@ -233,7 +235,5 @@ theorem MvProperPosition.allComboMvRealStableOrZero
     {σ : Type*} [Finite σ] {F G : MvPolynomial σ ℝ}
     (h : MvProperPosition F G) : AllComboMvRealStableOrZero F G :=
   h.mvStablePencil.allComboMvRealStableOrZero
-
-end
 
 end RealRooted

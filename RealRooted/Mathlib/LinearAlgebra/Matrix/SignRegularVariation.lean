@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
-import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
 
 /-!
 # Variation bounds for sign-consistent matrices
@@ -15,6 +18,8 @@ This file proves the full-column-rank case of the variation bound in Karlin,
 strictification reduces the result to the strict maximal-minor theorem, and
 lower semicontinuity of sign variations passes the bound to the limit.
 -/
+
+public section
 
 open Filter
 

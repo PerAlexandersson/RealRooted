@@ -1,6 +1,8 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.PFPolynomial
 
 /-!
 # Reflection-interlacing sequences
@@ -10,11 +12,11 @@ in a zero-aware form. It also supplies the elementary scaling, deletion, and
 adjacent-sum closure operations from Lemma 4.10.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted
-
-noncomputable section
 
 /-- `g` is a nonnegative scalar multiple of `f`. -/
 def IsNonnegScalarMultiple (f g : ℝ[X]) : Prop :=
@@ -276,7 +278,5 @@ theorem insertAdjacentAdd {n : ℕ} {left right : List ℝ[X]} {f g : ℝ[X]}
 end IsReflectionInterlacingSeq
 
 end BrandenVecchi
-
-end
 
 end RealRooted

@@ -1,6 +1,8 @@
-import RealRooted.Tactic.J1Chebyshev
-import RealRooted.Tactic.J1Gap3Reciprocal
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.Tactic.J1Chebyshev
+public import RealRooted.Tactic.J1Gap3Reciprocal
+public import RealRooted.Tactic.Product
 
 /-!
 # OEIS product-factor certificate frontend
@@ -8,6 +10,8 @@ import RealRooted.Tactic.Product
 Parser declarations and dispatch rules for finite-product factor certificates,
 including formula and J1 model endpoints.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

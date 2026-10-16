@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.CutTransformClosure
-import RealRooted.Compatibility.Three
+module
+
+public import RealRooted.Compatibility.CutTransformClosure
+public import RealRooted.Compatibility.Three
 
 /-!
 # Successor state order for ordered P/Q cut families
@@ -9,10 +11,10 @@ interlacing relations on individual atoms.  Finite cone closure then
 orders the reversed inclusive prefixes and forward strict suffixes.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 

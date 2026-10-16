@@ -1,4 +1,6 @@
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # The stability-preserving operator in the monotone-column proof
@@ -9,11 +11,11 @@ permanent conjecture*, arXiv:1010.2565v2. The repository's pointwise
 Lieb--Sokal theorem proves a weighted form of the operator directly.
 -/
 
+public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- If `P` is real stable, then adjoining a fresh variable by
 `k P + z D_c P` preserves real stability for positive `k` and a nonnegative
@@ -69,7 +71,5 @@ theorem MvRealStable.positive_C_mul_add_fresh_mul_directionalPDeriv
         rw [hscale]
   rw [hrewrite] at hstable
   exact hstable
-
-end
 
 end RealRooted

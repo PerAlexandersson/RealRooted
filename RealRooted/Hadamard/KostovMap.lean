@@ -1,13 +1,15 @@
-import RealRooted.Hadamard.Basic
-import Mathlib.LinearAlgebra.Vandermonde
-import Mathlib.RingTheory.Polynomial.Vieta
+module
+
+public import RealRooted.Hadamard.Basic
+public import Mathlib.LinearAlgebra.Vandermonde
+public import Mathlib.RingTheory.Polynomial.Vieta
+
+@[expose] public noncomputable section
 
 open Polynomial
 
 namespace RealRooted
 namespace Kostov
-
-noncomputable section
 
 /-!
 # Kostov's coefficient map for the Schur–Szegő composition
@@ -349,6 +351,5 @@ theorem coeffMap_eq_sigma (n : ℕ) (c : Fin (n - 1) → ℝ) (a : List ℝ)
   apply Matrix.mulVec_injective_of_det_ne_zero (det_coeffMatrix_ne_zero n)
   rw [coeffMatrix_mulVec_coeffMap, hpolynomial]
 
-end
 end Kostov
 end RealRooted

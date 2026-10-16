@@ -3,14 +3,19 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Topology.Instances.Matrix
-import Mathlib.Topology.Algebra.Ring.Real
+
+module
+
+public import Mathlib.Topology.Instances.Matrix
+public import Mathlib.Topology.Algebra.Ring.Real
 
 /-!
 # Determinants of convergent finite matrices
 
 This file exposes the entrywise-continuity interface for finite determinants.
 -/
+
+public section
 
 open Filter Topology
 

@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
-import RealRooted.WagnerRightSum
-import RealRooted.Wagner.LeftSum
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
+public import RealRooted.WagnerRightSum
+public import RealRooted.Wagner.LeftSum
 
 /-!
 # Real-rootedness of Jacobi–Stirling descent polynomials
@@ -18,9 +20,9 @@ recurrence-defined polynomials (the combinatorial model is not formalized; see
 `RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic`).
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace JacobiStirlingDescent

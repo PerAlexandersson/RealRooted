@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootAmplitude.Separation.Euler
-import RealRooted.RootAmplitude.Separation.Roots
+module
+
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootAmplitude.Separation.Euler
+public import RealRooted.RootAmplitude.Separation.Roots
 
 /-!
 # Polynomial root amplitudes from multiplicative separation
@@ -10,11 +12,11 @@ normalized derivative at a simple negative root, then applies the Euler
 separation bound.
 -/
 
+public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.RootAmplitude
-
-noncomputable section
 
 private theorem multiset_prod_eq_finset {p : ℝ[X]} (hnd : p.roots.Nodup)
     {s : ℝ} (f : ℝ → ℝ) :
@@ -62,7 +64,5 @@ theorem exp_neg_pi_sq_div_three_le_abs_eval_deriv_of_root_separation
   have hnd : p.roots.Nodup := roots_nodup_of_rootSeq_lt hstrict
   rw [abs_eval_deriv_root_div_eval_zero_eq_amplitude hp hnd hzero hk]
   exact exp_neg_pi_sq_div_three_le_amplitude_of_separation hd hpos hsep hk
-
-end
 
 end RealRooted.RootAmplitude

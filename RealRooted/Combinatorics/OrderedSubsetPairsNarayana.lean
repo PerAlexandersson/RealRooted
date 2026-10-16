@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
+public import RealRooted.NarayanaTransformation
 
 /-!
 # Ordered subset-pair Narayana counts
@@ -7,6 +9,8 @@ import RealRooted.NarayanaTransformation
 This module connects the ordered subset-pair ballot count to the `m = 1`
 Narayana coefficient already developed in `RealRooted.NarayanaTransformation`.
 -/
+
+public section
 
 namespace Finset
 

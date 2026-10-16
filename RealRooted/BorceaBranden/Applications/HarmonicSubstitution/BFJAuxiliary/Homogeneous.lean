@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
 
 /-!
 # Scalar and homogeneous structure of the BFJ auxiliary product
@@ -8,9 +10,9 @@ the translated factor, denominator-cleared harmonic factor, auxiliary
 product, and distinguished coefficient.
 -/
 
-namespace MvPolynomial
+public noncomputable section
 
-noncomputable section
+namespace MvPolynomial
 
 /-- Mapping coefficients commutes with adding the common auxiliary
 variable. -/
@@ -98,7 +100,5 @@ theorem bfjCoefficient {R : Type*} [CommSemiring R]
     (2 * b) (a + b) (by lia)
 
 end IsHomogeneous
-
-end
 
 end MvPolynomial

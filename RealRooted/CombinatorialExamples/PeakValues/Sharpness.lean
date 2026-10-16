@@ -1,10 +1,12 @@
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+
+public noncomputable section
 
 open scoped BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 lemma castSucc_mem_peakValues_appendMaximum_iff {n : ℕ}
     (π : Equiv.Perm (Fin n)) (v : Fin n) :
@@ -242,7 +244,5 @@ theorem totalDegree_peakValueTranslated (n : ℕ) :
   obtain ⟨π, hπ⟩ := exists_card_peakValues_eq n
   rw [← hπ]
   exact card_peakValues_le_totalDegree π
-
-end
 
 end RealRooted

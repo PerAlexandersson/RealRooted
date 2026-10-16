@@ -1,4 +1,6 @@
-import RealRooted.VeroneseMatrix
+module
+
+public import RealRooted.VeroneseMatrix
 
 /-!
 # Strict interlacing between normalized Veronese sections
@@ -13,9 +15,9 @@ This sequence-independent corollary was first used in
 `ProofsOeis.VeronesePairs`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

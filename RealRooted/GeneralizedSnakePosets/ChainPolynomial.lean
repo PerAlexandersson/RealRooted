@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.FiniteBoard
+module
+
+public import RealRooted.GeneralizedSnakePosets.FiniteBoard
 
 /-!
 # Chain polynomials of finite relations
@@ -17,9 +19,9 @@ decomposition:
 * expansion along one element, and along an antichain.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

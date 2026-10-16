@@ -1,5 +1,7 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
 
 /-!
 # The heat flow preserves real-rootedness
@@ -11,9 +13,9 @@ that `exp (-a z²)` is in the Laguerre–Pólya class, so the heat operator `e^{
 real-rooted polynomials to real-rooted polynomials (Pólya; see also Craven–Csordas).
 -/
 
-open Polynomial Filter Topology
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter Topology
 
 namespace RealRooted
 

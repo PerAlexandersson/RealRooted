@@ -1,6 +1,8 @@
-import RealRooted.ShiftLemma
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.ShiftLemma
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Peak polynomial induction framework
@@ -51,9 +53,9 @@ The combinatorial identification of Ferrers-board peak polynomials with this
 abstract recursion (Lemma `lem:peakDURecursion`) is not formalized.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.PeakPolynomials
 

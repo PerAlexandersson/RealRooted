@@ -1,5 +1,7 @@
-import RealRooted.ThresholdMatrix.HaglundZhang
-import RealRooted.ThresholdMatrix.GustafssonSolus
+module
+
+public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.ThresholdMatrix.GustafssonSolus
 
 /-!
 # Orbits of threshold matrices
@@ -10,6 +12,8 @@ For a Haglund–Zhang threshold matrix `G = HaglundZhang.matrix q rows` with `Ro
 polynomials, so every orbit sum is real-rooted.  Sequences defined by a scalar recurrence
 whose rows are such orbit sums (for instance OEIS A120987, A330509 and A304429) are real-rooted.
 -/
+
+@[expose] public section
 
 open Polynomial
 

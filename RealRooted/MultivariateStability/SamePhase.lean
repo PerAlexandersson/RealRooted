@@ -1,7 +1,9 @@
-import Mathlib.Topology.Algebra.MvPolynomial
-import RealRooted.AffineLineRestriction
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.SamePhaseStability
+module
+
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import RealRooted.AffineLineRestriction
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.SamePhaseStability
 
 /-!
 # Real stability implies same-phase stability
@@ -11,11 +13,11 @@ common-phase restriction.  Strictly positive weights follow from affine-line
 restriction; zero weights are obtained by a bounded-degree closed-root limit.
 -/
 
+public noncomputable section
+
 open Filter Polynomial Topology
 
 namespace RealRooted
-
-noncomputable section
 
 /-- A strictly positive common-phase restriction of a real-stable polynomial
 is both nonzero and split over the reals. -/
@@ -82,7 +84,5 @@ theorem samePhaseStable_of_eq_zero_or_mvRealStable {σ : Type*}
   rcases hP with rfl | hstable
   · exact samePhaseStable_zero
   · exact hstable.samePhaseStable
-
-end
 
 end RealRooted

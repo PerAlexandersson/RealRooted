@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
 
 /-!
 # Translated peak-value recurrence
@@ -7,9 +9,9 @@ This file transports the insertion recurrence through the coordinate
 translation `x ↦ 1 + x` used in the stability proof.
 -/
 
-namespace RealRooted
+public noncomputable section
 
-noncomputable section
+namespace RealRooted
 
 open MvPolynomial
 
@@ -105,7 +107,5 @@ theorem identifyLast_peakValueTranslated_succ (n : ℕ) (hn : 2 ≤ n) :
   simp_rw [hterm]
   rw [Finset.sum_neg_distrib]
   ring
-
-end
 
 end RealRooted

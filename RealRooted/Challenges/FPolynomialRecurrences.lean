@@ -1,5 +1,7 @@
-import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
-import RealRooted.SymmetricDecomposition.FPolynomialSequence
+module
+
+public import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+public import RealRooted.SymmetricDecomposition.FPolynomialSequence
 
 /-!
 # The `f`-polynomial transform of derivative recurrences
@@ -158,6 +160,8 @@ For the alternating-runs families and their references, see OEIS
 [A186370](https://oeis.org/A186370).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.FPolynomialRecurrences
 

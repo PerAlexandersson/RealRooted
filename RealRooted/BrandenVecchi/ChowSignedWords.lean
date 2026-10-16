@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowSupersymmetric
-import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+module
+
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
 
 /-!
 # Finite supersymmetric Chow polynomials as signed-word enumerators
@@ -10,11 +12,11 @@ positive/negative run substitution, then identifies the literal signed-word
 enumerator with the finite supersymmetric Chow polynomial.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The unmarked length series associated with one signed letter. Positive
 letters contribute `1 + w z`, while negative letters contribute
@@ -513,7 +515,5 @@ theorem finiteSignedWordEnumerator_interl_succ
   rw [← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator,
     ← finiteSupersymmetricChow_eq_finiteSignedWordEnumerator]
   exact finiteSupersymmetricChow_interl_succ hxs hys n
-
-end
 
 end RealRooted.BrandenVecchi

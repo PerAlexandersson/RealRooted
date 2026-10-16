@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.GammaPencil.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+
+module
+
+public import RealRooted.GammaPencil.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Coefficient and degree invariants of the gamma pencil
@@ -15,9 +18,9 @@ outside that box both input coefficients vanish (with the even-rank boundary
 canceling exactly).
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

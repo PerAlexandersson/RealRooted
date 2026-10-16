@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Three
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
+module
+
+public import RealRooted.Compatibility.Three
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
 
 /-!
 # Clique-deletion compatibility for independence polynomials
@@ -10,9 +12,9 @@ Support-level claw-free induction and matching-polynomial applications
 belong in higher modules.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph
@@ -403,7 +405,6 @@ theorem compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompat
       weightedCliqueDeletionExpansion_weightedSum G wt (S \ K) (L \ K) hL' hLS',
       weightedCliqueDeletionExpansion_weightedSum G wt (S \ L) (K \ L) hK' hKS']
   simpa [hsum] using hfam ws (fun ap h => (hws ap h).1) (fun ap h => (hws ap h).2)
-
 
 /-- Pairwise compatibility of the extended unweighted clique-deletion family
 is the constant-weight specialization of the weighted result. -/

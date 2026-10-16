@@ -1,10 +1,12 @@
-import RealRooted.Mathlib.Probability.CoeffDistribution
-import RealRooted.CombinatorialExamples.DerangementsExcNormal
-import RealRooted.CombinatorialExamples.EulerianNormal
-import RealRooted.CombinatorialExamples.NarayanaNormal
-import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
-import RealRooted.CoefficientShape.LocalLimit
-import RealRooted.ThreeTermRecurrence.Moments
+module
+
+public import RealRooted.Mathlib.Probability.CoeffDistribution
+public import RealRooted.CombinatorialExamples.DerangementsExcNormal
+public import RealRooted.CombinatorialExamples.EulerianNormal
+public import RealRooted.CombinatorialExamples.NarayanaNormal
+public import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
+public import RealRooted.CoefficientShape.LocalLimit
+public import RealRooted.ThreeTermRecurrence.Moments
 
 /-!
 # Harper's central limit theorem challenge entry point
@@ -182,3 +184,5 @@ see [@Bona2009].
 This module is a catalog facade.  The proofs live in
 `RealRooted.Mathlib.Probability.CoeffDistribution`.
 -/
+
+public section

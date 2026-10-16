@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Data.List.Basic
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Data.List.GetD
-import Mathlib.Data.Multiset.Sort
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Data.List.Basic
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Data.List.GetD
+public import Mathlib.Data.Multiset.Sort
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Sorted negative-root magnitudes
@@ -11,11 +13,11 @@ A finite increasing sequence obtained by sorting the negations of a real
 polynomial's roots.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.SortedRoots
 
 open Polynomial
-
-noncomputable section
 
 /-- The negatives of the roots of `p`, sorted in increasing order. -/
 def rootMags (p : ℝ[X]) : List ℝ := (p.roots.map (fun r => -r)).sort (· ≤ ·)
@@ -76,7 +78,6 @@ theorem rootSeq_lt (p : ℝ[X]) (hnd : p.roots.Nodup) {i j : ℕ}
   have hmono := List.sortedLT_iff_strictMono_get.mp (rootMags_sortedLT p hnd)
   exact hmono (show (⟨i, hi⟩ : Fin _) < ⟨j, hj⟩ from hij)
 
-
 /-! ### The amplitude as a product over roots
 
 `j ↦ -(rootSeq p j)` is a bijection from the indices onto the roots, so the
@@ -115,7 +116,5 @@ theorem prod_roots_eq_range {M : Type*} [CommMonoid M] (p : Polynomial ℝ) (g :
       = ((rootMags p).map g).prod := rfl
   rw [h3, List.prod_map_eq_prod_range_getD (a₀ := 0)]
   rfl
-
-end
 
 end RealRooted.SortedRoots

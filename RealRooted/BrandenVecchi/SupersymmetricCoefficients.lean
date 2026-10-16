@@ -1,6 +1,8 @@
-import RealRooted.PolyaFrequencyConvolution.Basic
-import RealRooted.PolyaFrequencyConvolution.GeometricScaling
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Finite supersymmetric product coefficients
@@ -13,11 +15,11 @@ as a formal power series and proves that it is Pólya-frequency when all
 parameters are nonnegative. No infinite-product claim is made here.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 /-- The numerator factor `1 + x z`, embedded into formal power series. -/
 def supersymmetricNumeratorFactor (x : ℝ) : PowerSeries ℝ :=
@@ -174,7 +176,5 @@ theorem finiteSupersymmetricCoeff_zero (xs ys : List ℝ) :
     | nil => simp
     | cons y ys ih => simp [ih]
   rw [List.map_map, List.map_map, hx, hy, mul_one]
-
-end
 
 end RealRooted.BrandenVecchi

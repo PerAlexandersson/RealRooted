@@ -1,8 +1,10 @@
-import Mathlib
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.Derivative.FamilyClosure
-import RealRooted.Basic.Coefficients
-import RealRooted.Recurrence.RowModel
+module
+
+public import Mathlib
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # OEIS A151775
@@ -13,9 +15,9 @@ proves that every real combination of two consecutive rows splits, and hence
 that consecutive rows strictly interlace by Obreschkoff's theorem.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A151775
 
@@ -23,14 +25,14 @@ private def splitFactorDerivative (a : ℝ[X]) (m : ℕ) (f : ℝ[X]) : ℝ[X] :
   derivative a * f + C (m : ℝ) * a * derivative f
 
 /-- `lowerStep = D_{1+X, 2}`: `lowerStep f = f + 2 (1+X) f'`. -/
-private def lowerStep (f : ℝ[X]) : ℝ[X] := f + 2 * (1 + X) * derivative f
+def lowerStep (f : ℝ[X]) : ℝ[X] := f + 2 * (1 + X) * derivative f
 
 /-- `upperStep = D_{X(1+X), 2}`: `upperStep f = (1+2X) f + 2 X (1+X) f'`. -/
-private def upperStep (f : ℝ[X]) : ℝ[X] :=
+def upperStep (f : ℝ[X]) : ℝ[X] :=
   (1 + 2 * X) * f + 2 * X * (1 + X) * derivative f
 
 /-- The A151775 step `step = upperStep ∘ lowerStep`. -/
-private def step (f : ℝ[X]) : ℝ[X] := upperStep (lowerStep f)
+def step (f : ℝ[X]) : ℝ[X] := upperStep (lowerStep f)
 
 /-- The row polynomial of [OEIS A151775](https://oeis.org/A151775), defined by
 `P₀ = 1` and the factored differential recurrence `Pₙ₊₁ = upperStep (lowerStep Pₙ)`. -/

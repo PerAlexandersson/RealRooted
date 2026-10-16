@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # Weierstrass products of genus zero and one
@@ -27,9 +30,9 @@ factor away from the zeros.
 * `Complex.exists_entire_prod_genus_one`: the same for the factors `E₁ (w / z k)`.
 -/
 
-open Complex Filter Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Complex Filter Topology
 
 namespace Complex
 
@@ -83,7 +86,6 @@ theorem norm_weierstrassFactorOne_sub_one_le {w : ℂ} (hw : ‖w‖ ≤ 1) :
   · simp
   · apply mul_le_mul_of_nonneg_right _ hcoef
     exact pow_le_pow_of_le_one (norm_nonneg _) hw (by lia)
-
 
 private lemma hasProd_aux (f : ℕ → ℂ → ℂ) (hf : ∀ k, Differentiable ℂ (f k))
     (hbd : ∀ R : ℝ, ∃ u : ℕ → ℝ, Summable u ∧
@@ -188,7 +190,6 @@ private theorem main_aux (g : ℂ → ℂ) (hg : Differentiable ℂ g) (hg0 : g 
   rw [hsplit, analyticOrderAt_mul (hga.pow _) (hGd.analyticAt w), analyticOrderAt_pow hga,
     hgord w hw, (hGd.analyticAt w).analyticOrderAt_eq_zero.mpr hGw]
   simp
-
 
 private lemma finite_aux {z : ℕ → ℂ} (hz : ∀ k, z k ≠ 0) {p : ℕ}
     (ht : Tendsto (fun k => ‖z k‖⁻¹ ^ p) atTop (𝓝 0)) (w : ℂ) :

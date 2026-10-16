@@ -1,7 +1,9 @@
-import RealRooted.GammaTransform.Derivative
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.GammaTransform.Preservation
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+public import RealRooted.GammaTransform.Derivative
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.NarayanaTransformation.Endpoints
 
 /-!
 # OEIS A394446
@@ -12,9 +14,9 @@ lowering identity for `narayanaPolynomial 1` and the Euler-derivative formula fo
 transforms, and deduce that every row splits.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A394446
 

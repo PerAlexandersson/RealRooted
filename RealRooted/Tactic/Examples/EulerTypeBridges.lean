@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A286785
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A286785
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Exact downstream presentations of Euler-type bridges
@@ -8,9 +10,9 @@ These definitions and theorem statements reproduce the downstream OEIS files. In
 their recurrence coefficients have not been hand-normalized before calling the row tactic.
 -/
 
-open RealRooted Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open RealRooted Polynomial
 
 namespace A186370Downstream
 

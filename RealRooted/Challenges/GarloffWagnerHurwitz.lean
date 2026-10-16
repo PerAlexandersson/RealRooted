@@ -1,4 +1,6 @@
-import RealRooted.GarloffWagner.HurwitzStable
+module
+
+public import RealRooted.GarloffWagner.HurwitzStable
 
 /-!
 # Garloff–Wagner Hurwitz-stability challenge entry point
@@ -62,3 +64,5 @@ This module is a catalog facade. The proof lives in
 `hadamard-products` page, and the Hermite–Biehler correspondence on the
 `hermite-biehler-hurwitz` page.
 -/
+
+public section

@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Analysis.Matrix.PosDef
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
-import RealRooted.Bezoutian.StrictInterleaving
-import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
+module
+
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Analysis.Matrix.PosDef
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 
 /-!
 # Elementary real Bezout matrices
@@ -11,9 +13,9 @@ Coefficient and matrix definitions, scalar transport, explicit linear and
 quadratic formulas, and small positive-definiteness certificates.
 -/
 
-open Polynomial Matrix
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Matrix
 
 namespace RealRooted
 

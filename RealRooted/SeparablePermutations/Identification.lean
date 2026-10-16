@@ -1,13 +1,15 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
-import RealRooted.SeparablePermutations.Cubic
-import RealRooted.SeparablePermutations.GammaCubic
-import RealRooted.SeparablePermutations.Enumerator
-import RealRooted.SeparablePermutations.Interlacing
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
+public import RealRooted.SeparablePermutations.Cubic
+public import RealRooted.SeparablePermutations.GammaCubic
+public import RealRooted.SeparablePermutations.Enumerator
+public import RealRooted.SeparablePermutations.Interlacing
+
+public noncomputable section
 
 open scoped BigOperators Polynomial
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted.SeparablePermutations
 

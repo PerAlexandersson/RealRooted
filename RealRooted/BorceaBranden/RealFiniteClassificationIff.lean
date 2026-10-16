@@ -1,13 +1,15 @@
-import RealRooted.BorceaBranden.RealFiniteHomotopy
+module
+
+public import RealRooted.BorceaBranden.RealFiniteHomotopy
+
+@[expose] public noncomputable section
 
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 namespace BorceaBranden
 
-private def negVariablesHom {σ R : Type*} [CommRing R] :
+def negVariablesHom {σ R : Type*} [CommRing R] :
     MvPolynomial σ R →+* MvPolynomial σ R :=
   MvPolynomial.eval₂Hom MvPolynomial.C fun i => -MvPolynomial.X i
 
@@ -163,10 +165,10 @@ theorem sourceNegation_involutive {σ : Type*} (p : MvPolynomial σ ℝ) :
       change negVariablesHom (negVariablesHom p) = p at hp
       rw [hp]
 
-private def globalBoxSign {σ : Type*} [Fintype σ] (κ : σ → ℕ) : ℝ :=
+def globalBoxSign {σ : Type*} [Fintype σ] (κ : σ → ℕ) : ℝ :=
   ∏ i, (-1 : ℝ) ^ κ i
 
-private def monomialSign {σ : Type*} [Fintype σ] (m : σ →₀ ℕ) : ℝ :=
+def monomialSign {σ : Type*} [Fintype σ] (m : σ →₀ ℕ) : ℝ :=
   ∏ i, (-1 : ℝ) ^ m i
 
 private theorem complement_sign_eq {σ : Type*} [Fintype σ]

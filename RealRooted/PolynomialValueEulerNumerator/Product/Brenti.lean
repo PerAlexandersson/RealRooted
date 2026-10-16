@@ -1,4 +1,6 @@
-import RealRooted.PolynomialValueEulerNumerator.Product.PF
+module
+
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF
 
 /-!
 # Brenti's theorem on Euler numerators
@@ -14,9 +16,9 @@ For a linear factor `X + a` the numerator is `a + (1 - a) X`, which is PF exactl
 then handles the product over the roots.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,7 +1,9 @@
-import RealRooted.SimpleRoots
-import RealRooted.Derivative
-import RealRooted.MaWang
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.SimpleRoots
+public import RealRooted.Derivative
+public import RealRooted.MaWang
+public import RealRooted.RootContinuity
 
 /-!
 # Iterated derivative shifts
@@ -11,9 +13,9 @@ real-rootedness preservation, interlacing, and continuity facts used in the
 Obreschkoff converse route.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 variable {p : ℝ[X]}

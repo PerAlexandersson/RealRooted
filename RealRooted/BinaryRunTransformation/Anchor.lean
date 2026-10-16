@@ -1,11 +1,13 @@
-import RealRooted.BinaryRunTransformation.Deformation
-import RealRooted.CriticalValueContinuation
-import RealRooted.DegreeDropReversal
-import RealRooted.Favard
-import RealRooted.Hadamard.Grace
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.BinaryRunTransformation.Deformation
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Favard
+public import RealRooted.Hadamard.Grace
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.SimpleRoots
 
 /-!
 # The small-scale anchor of the binary-run deformation
@@ -19,10 +21,10 @@ rescaling `X` by the deformation parameter.  At parameter zero, the rescaled
 family is exactly a fixed-degree Schur--Szegő composition with `F_(n+1)`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial Finset
 open scoped ContDiff
-
-noncomputable section
 
 namespace RealRooted
 
@@ -223,10 +225,10 @@ theorem oddPathReverse_add_two (d : ℕ) :
       (by rw [natDegree_pathMatchingPolynomial]; norm_num [Nat.add_div])
       (by rw [natDegree_pathMatchingPolynomial]; norm_num [Nat.add_div])
 
-private def evenPathAlpha (d : ℕ) : ℝ :=
+def evenPathAlpha (d : ℕ) : ℝ :=
   if d = 0 then -1 else -2
 
-private def pathBeta (_d : ℕ) : ℝ :=
+def pathBeta (_d : ℕ) : ℝ :=
   1
 
 theorem evenPathReverse_satisfiesFavardRecurrence :

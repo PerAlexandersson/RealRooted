@@ -1,8 +1,10 @@
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.ObreschkoffConverse
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

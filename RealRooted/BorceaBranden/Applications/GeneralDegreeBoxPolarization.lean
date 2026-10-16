@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.Polarization
+module
+
+public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.Polarization
 
 /-!
 # Source diagonalization for a general degree box
@@ -11,11 +13,11 @@ multiaffine block `Fin (κ i)`, and diagonal projection renames every variable
 in that block back to coordinate `i`.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 
 namespace RealRooted.BorceaBranden
-
-noncomputable section
 
 /-- The multiaffine source obtained by replacing coordinate `i` with
 `κ i` copies. -/
@@ -627,7 +629,7 @@ private theorem coeff_specializeLeft_eq_eval_sourceCoefficientGeneral
   rw [hspecial, MvPolynomial.coeff_map]
   rfl
 
-private theorem specializeLeft_mem_sourceDegreeBox
+theorem specializeLeft_mem_sourceDegreeBox
     {σ τ : Type*} (κ : σ → ℕ)
     (P : MvPolynomial (τ ⊕ σ) ℂ)
     (hdeg : ∀ i, P.degreeOf (Sum.inr i) ≤ κ i)
@@ -677,7 +679,7 @@ noncomputable def sourceBlockwisePolarizationGeneralLinearMap
     sourceBlockwisePolarizationGeneralLinearMap κ P =
       sourceBlockwisePolarizationGeneral κ P := rfl
 
-private theorem mapDomain_sigma_fst_le {σ : Type*} [Finite σ]
+theorem mapDomain_sigma_fst_le {σ : Type*} [Finite σ]
     (κ : σ → ℕ) (m : PolarizedSource κ →₀ ℕ)
     (hm : ∀ a, m a ≤ 1) (i : σ) :
     (m.mapDomain Sigma.fst) i ≤ κ i := by
@@ -983,7 +985,7 @@ theorem diagonalProjectionDegreeBoxGeneral_basis_eq_basis
     MvPolynomial.coe_basisDegreeOfLE]
   congr 1
 
-private def blockEmbedding {σ : Type*} (κ : σ → ℕ) (i : σ) :
+def blockEmbedding {σ : Type*} (κ : σ → ℕ) (i : σ) :
     Fin (κ i) → PolarizedSource κ := fun j => ⟨i, j⟩
 
 private theorem blockEmbedding_injective {σ : Type*} (κ : σ → ℕ) (i : σ) :
@@ -998,13 +1000,13 @@ noncomputable def blockwisePolarizationBasis
   ∏ i, MvPolynomial.rename (blockEmbedding κ i)
     (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
 
-private def stageBlockEmbedding
+def stageBlockEmbedding
     {σ : Type*} (κ : σ → ℕ) (S : Finset σ)
     (i : {i // i ∈ S}) :
     Fin (κ i) → SourcePolarizationStageVars κ S :=
   fun j => Sum.inl ⟨i, j⟩
 
-private def stageRawEmbedding
+def stageRawEmbedding
     {σ : Type*} (κ : σ → ℕ) (S : Finset σ) :
     {i : σ // i ∉ S} → SourcePolarizationStageVars κ S := Sum.inr
 
@@ -1276,7 +1278,7 @@ private theorem fst_eq_of_mem_vars_blockwisePolarizationFactor
   rw [← hja]
   rfl
 
-private theorem isMultiaffine_blockwisePolarizationBasis
+theorem isMultiaffine_blockwisePolarizationBasis
     {σ : Type*} [Fintype σ] (κ : σ → ℕ)
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
     MvPolynomial.IsMultiaffine (blockwisePolarizationBasis κ m) := by
@@ -1839,8 +1841,5 @@ theorem finiteSymbol_preserves_stability_general
     (blockwisePolarizationDegreeBoxGeneral κ p) hPolarInput
   rw [sourcePolarizedOperatorGeneral_blockwisePolarization] at hresult
   exact hresult
-
-end
-
 
 end RealRooted.BorceaBranden

@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Reverse total nonnegativity for the Routh reduction
@@ -13,6 +15,8 @@ then embeds each finite minor into a sufficiently large eliminated section.
 The Whitney dependency is intentionally isolated here so that the lighter
 forward Routh API does not import the oscillatory-matrix development.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

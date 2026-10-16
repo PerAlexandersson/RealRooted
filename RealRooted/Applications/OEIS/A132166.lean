@@ -1,11 +1,14 @@
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.QuadraticRoot
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.ScalarNormalization
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import Mathlib
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.QuadraticRoot
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.ScalarNormalization
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # OEIS A132166
@@ -18,9 +21,9 @@ The intended repository destination is
 `RealRooted/Applications/OEIS/A132166.lean`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS.A132166
 
@@ -203,7 +206,6 @@ private theorem polynomial_ne_zero (n : ℕ) : polynomial n ≠ 0 := by
   intro h0
   apply coeff_translatedPolynomial_mu_ne_zero n
   simp [translatedPolynomial, h0]
-
 
 private theorem X_sub_C_neg36 : X - C (-36 : ℝ) = X + C 36 := by
   simp [sub_eq_add_neg]
@@ -431,7 +433,7 @@ private theorem isRoot_ge_neg_thirty_six {n : ℕ} {r : ℝ}
     simp only [reflectedPolynomial, eval_mul, eval_C, eval_comp, eval_neg,
       eval_X, translatedPolynomial, eval_add]
     convert mul_eq_zero_of_right ((-1 : ℝ) ^ n) hr using 1
-    ring
+    ring_nf
   have hnonpos : -36 - r ≤ 0 :=
     roots_nonpos_of_hasNonnegCoeffs (reflectedPolynomial_nonneg n) (-36 - r)
       ((mem_roots (reflectedPolynomial_ne_zero n)).mpr hreflect)

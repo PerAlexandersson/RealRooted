@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Rectangular
+module
+
+public import RealRooted.NarayanaTransformation.Rectangular
 
 /-!
 # Generalized Narayana recurrence identities
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

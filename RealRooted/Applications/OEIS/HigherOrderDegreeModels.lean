@@ -1,7 +1,9 @@
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
-import RealRooted.CombinatorialExamples.BigDescentsOddBinom
-import RealRooted.GeneralizedEulerian
+module
+
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+public import RealRooted.GeneralizedEulerian
 
 /-!
 # Degree models for higher-order derivative recurrences
@@ -11,11 +13,11 @@ registered transfers let the row-degree tactic identify a downstream recurrence 
 explicit base window and update, without family-specific tactic code.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Applications.OEIS.HigherOrderDegreeModels
-
-noncomputable section
 
 namespace A367873
 
@@ -562,7 +564,5 @@ theorem natDegree_of_recurrence
   exact polynomial_natDegree n
 
 end A262226
-
-end
 
 end RealRooted.Applications.OEIS.HigherOrderDegreeModels

@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Real roots of quadratics with nonnegative discriminant
@@ -6,6 +8,8 @@ import Mathlib
 This file records the elementary fact that a real quadratic with nonnegative
 discriminant has a real root.
 -/
+
+public section
 
 open Polynomial
 

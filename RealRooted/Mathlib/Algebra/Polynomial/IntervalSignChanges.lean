@@ -21,11 +21,9 @@ This is the module-compatible version of the interval argument used in
 value theorem and root-count bound directly.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Set Finset
-
-noncomputable section
 
 namespace Polynomial
 

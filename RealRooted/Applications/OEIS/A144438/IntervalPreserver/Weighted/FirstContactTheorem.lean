@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
 
 /-!
 # Weighted first-contact theorem
@@ -8,9 +10,9 @@ and the deletion-to-full residues are positive, every companion residue is
 positive throughout the parameter cube.
 -/
 
-open Polynomial Set
+public noncomputable section
 
-noncomputable section
+open Polynomial Set
 
 namespace RealRooted.Applications.OEIS
 

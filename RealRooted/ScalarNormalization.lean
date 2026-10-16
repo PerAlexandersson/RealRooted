@@ -1,4 +1,6 @@
-import Mathlib.Tactic
+module
+
+public import Mathlib.Tactic
 
 /-!
 # Scalar denominator normalization
@@ -8,6 +10,8 @@ denominator.  These deliberately only divide by constant polynomials `C d`;
 polynomial-in-`X` left factors change roots and belong to separate transform
 or endpoint-factor arguments.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-import RealRooted.Interlacing.WindowInduction
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+public import RealRooted.Interlacing.WindowInduction
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The A304330 model
@@ -11,10 +13,10 @@ coefficient-bidiagonal stable operator and `thetaPlusOne`.  This gives the
 orientation missing from the direct Ma--Wang argument.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.Applications.OEIS.A304330
 

@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.SamePhaseStability
+module
+
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.SamePhaseStability
 
 /-!
 # Multivariate independence polynomials
@@ -9,9 +11,9 @@ coordinate scaling.  Common-phase restriction recovers the existing weighted
 univariate independence polynomial.
 -/
 
-open Polynomial Finset
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

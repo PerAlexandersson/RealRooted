@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Shift
-import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+module
+
+public import RealRooted.EulerOperator.Shift
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 
 /-!
 # Diagonal collapse for the toric-contribution triangle
@@ -9,9 +11,9 @@ The resulting Euler operators act diagonally on coefficients, reducing the
 remaining identification with `R_d` to a finite coefficient identity.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace ParkingFunctions

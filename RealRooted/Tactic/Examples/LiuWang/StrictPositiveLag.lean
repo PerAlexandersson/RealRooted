@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequencePositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequencePositive
 
 /-!
 # Liu--Wang strict positive-lag regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequencePositive
 Sequence tests for strict positive `X` and scalar-`X` lag recurrences,
 including interlacing, real-rootedness, and projection endpoints.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.PairTheorem
+module
+
+public import RealRooted.EulerBidiagonal.PairTheorem
 
 /-!
 # Rows of the general Euler recurrence
@@ -10,9 +12,9 @@ consecutive rows strictly interlace without common roots.  This covers A156289
 (`κ = a = b = 1`, `u = 3`, `v = 2`).
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerBidiagonal
 

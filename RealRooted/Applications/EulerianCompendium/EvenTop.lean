@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
 
 /-!
 # Descents with even top
@@ -12,9 +14,9 @@ the new maximum contributes a descent precisely when it is even and is not
 inserted at the final slot.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.EulerianCompendium
 

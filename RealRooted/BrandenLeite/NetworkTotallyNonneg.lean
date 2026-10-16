@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.Network
-import RealRooted.BrandenLeite.ResolvableTotallyNonneg
+module
+
+public import RealRooted.BrandenLeite.Network
+public import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 
 /-!
 # Total nonnegativity of triangular-network path matrices
@@ -8,6 +10,8 @@ This opt-in endpoint combines the literal triangular-network resolution with
 the existing resolution-to-total-nonnegativity theorem.  The direct
 Lindström--Gessel--Viennot determinant proof remains separate work.
 -/
+
+public section
 
 namespace RealRooted.BrandenLeite
 

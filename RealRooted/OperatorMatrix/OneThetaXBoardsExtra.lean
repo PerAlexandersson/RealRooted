@@ -1,4 +1,6 @@
-import RealRooted.OperatorMatrix.OneThetaXBoards
+module
+
+public import RealRooted.OperatorMatrix.OneThetaXBoards
 
 /-!
 # Singleton boards and counts for the letter alphabet
@@ -7,9 +9,9 @@ This file completes the one-row and one-column cases of the `{1, θ, X}` classif
 records finite parametrizations used to count the two-letter boards.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.OperatorMatrix
 

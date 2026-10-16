@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.PFPolynomial
-import RealRooted.PolyaFrequencyConvolution.Basic
+module
+
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.PFPolynomial
+public import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
 # Finite binomial regularization of PF sequences
@@ -12,9 +14,9 @@ entry for a positive shift, and converges coefficientwise to insertion of a
 finite zero prefix as the shift tends to zero.
 -/
 
-open Filter Polynomial Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted.BrandenLeite
 

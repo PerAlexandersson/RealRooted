@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
-import RealRooted.CombinatorialExamples.SturmDerangementsExc
-import RealRooted.GeneralizedEulerian
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The deranged transform on the magic basis
@@ -13,9 +15,9 @@ Brändén--Vecchi Chow resolution theorems give Brändén--Solus, Corollary 3.7,
 nonnegative magic-basis coordinates.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 namespace DerangementTransform

@@ -1,8 +1,10 @@
-import RealRooted.Hadamard.Kostov.RootReal
+module
+
+public import RealRooted.Hadamard.Kostov.RootReal
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov
@@ -654,7 +656,6 @@ lemma interlace_of_between {k : ℕ} (z : Fin k → ℝ) (u : Fin (k + 1) → �
 
 lemma moebius_lt {a b : ℝ} (hab : a < b) (hb : b < 1) : a / (1 - a) < b / (1 - b) := by
   exact moebius_lt' hab hb
-
 
 end Kostov
 end RealRooted

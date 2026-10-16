@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 
 /-!
 # Jacobi–Stirling descent polynomials
@@ -106,3 +108,5 @@ See [@GesselLinZeng2012] and [@MaWang2026x, Sec. 4].
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.JacobiStirling.Descent`.
 -/
+
+public section

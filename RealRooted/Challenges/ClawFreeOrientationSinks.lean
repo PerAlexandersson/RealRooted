@@ -1,4 +1,6 @@
-import RealRooted.Graph.AllOrientationSinkIdentity
+module
+
+public import RealRooted.Graph.AllOrientationSinkIdentity
 
 /-!
 # Sink polynomials of all orientations of claw-free graphs
@@ -75,3 +77,5 @@ For the claw-free background, see the
 This module is a catalog facade.  The proofs live in
 `RealRooted.Graph.AllOrientationSink` and `RealRooted.Graph.AllOrientationSinkIdentity`.
 -/
+
+public section

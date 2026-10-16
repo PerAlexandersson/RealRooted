@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.Graph.MatchingPolynomial
+module
+
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.MatchingPolynomial
 
 /-!
 # Heilmann--Lieb theorem
@@ -9,9 +11,9 @@ and derives real-rootedness and Pólya-frequency results for matching
 polynomials.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 namespace Graph

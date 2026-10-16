@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Nat.Choose.Bounds
-import Mathlib.Tactic.Ring
+
+module
+
+public import Mathlib.Data.Nat.Choose.Bounds
+public import Mathlib.Tactic.Ring
 
 /-!
 # Strict inequalities for descending factorials
@@ -12,6 +15,8 @@ import Mathlib.Tactic.Ring
 This file adds strict forms of monotonicity for descending factorials and the
 factorial product inequality used to compare binomial-factorial weights.
 -/
+
+public section
 
 namespace Nat
 

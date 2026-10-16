@@ -1,5 +1,7 @@
-import RealRooted.Permanent.Ferrers
-import RealRooted.Permanent.Stability.Cone
+module
+
+public import RealRooted.Permanent.Ferrers
+public import RealRooted.Permanent.Stability.Cone
 
 /-!
 # Reduction from zero-one columns to arbitrary decreasing columns
@@ -8,6 +10,8 @@ This file proves the fixed-direction convex-cone reduction in Proposition 2.4
 of Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2, using the prefix
 decomposition `monotonePrefixCombination_eq` of weakly decreasing vectors.
 -/
+
+@[expose] public noncomputable section
 
 open scoped BigOperators
 
@@ -39,8 +43,6 @@ end Matrix
 
 namespace RealRooted
 namespace Permanent
-
-noncomputable section
 
 /-- The coefficient of the selected column variable after the entries in
 that column have been removed. -/
@@ -400,8 +402,6 @@ theorem columnPermanent_mvRealStable_of_decreasingColumns_from_zeroOne
                 B j (fun i => B i j) hv hreplacement
             simpa only [Matrix.updateCol_eq_self] using hstable
   exact hGood Finset.univ A hcols (by simp)
-
-end
 
 end Permanent
 end RealRooted

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.RowSignSyntax
+module
+
+public import RealRooted.Tactic.Favard.RowSignSyntax
 
 /-!
 # Favard tactic direct rules
 
 Macro rules for direct monic and positive-slope affine Favard certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

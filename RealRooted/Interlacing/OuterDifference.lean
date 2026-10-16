@@ -1,10 +1,12 @@
-import RealRooted.MaWang
-import RealRooted.MaWang.StrictSigns.Assembly
-import RealRooted.ObreschkoffConverse
-import RealRooted.PosCombo
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.MaWang
+public import RealRooted.MaWang.StrictSigns.Assembly
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.PosCombo
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Outer differences in an ordered interlacing triple
@@ -16,9 +18,9 @@ paper's two signed relations `g ≺ -f` and `g ≺ h` become the ordered triple
 right of the middle polynomial.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.MultiLagCancel
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The degree pattern of A219836
@@ -11,11 +13,11 @@ row has a positive top coefficient.  One additional nonnegative coefficient
 of the odd row is enough to propagate the pair.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.Applications.OEIS.A219836
-
-noncomputable section
 
 /-- The downstream A219836 recurrence. -/
 def row : ℕ → ℝ[X]
@@ -211,7 +213,5 @@ theorem natDegree_of_recurrence
   exact row_natDegree n
 
 end Model
-
-end
 
 end RealRooted.Applications.OEIS.A219836

@@ -1,9 +1,11 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.ThreeTermRecurrence.LagFeedback
-import RealRooted.ThreeTermRecurrence.ParityProduct
-import RealRooted.Interlacing.Reversal
-import RealRooted.Interlacing.RemainderCertificate
-import RealRooted.DerivativeRecurrence.EndpointWindow
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.ThreeTermRecurrence.LagFeedback
+public import RealRooted.ThreeTermRecurrence.ParityProduct
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Interlacing.RemainderCertificate
+public import RealRooted.DerivativeRecurrence.EndpointWindow
 
 /-!
 # Recurrence root windows and interlacing
@@ -190,6 +192,8 @@ tactics `rr_row_interlaces` and `rr_row_splits` use these routes.
 See [@LiuWang2007; @Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.RecurrenceRootWindows
 

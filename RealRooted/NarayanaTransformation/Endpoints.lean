@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Gamma
+module
+
+public import RealRooted.NarayanaTransformation.Gamma
 
 /-!
 # Narayana transformation final endpoints.
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

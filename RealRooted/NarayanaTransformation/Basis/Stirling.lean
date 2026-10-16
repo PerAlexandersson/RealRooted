@@ -1,9 +1,11 @@
-import RealRooted.NarayanaTransformation.Basis
-import Mathlib.Combinatorics.Enumerative.Stirling
+module
+
+public import RealRooted.NarayanaTransformation.Basis
+public import Mathlib.Combinatorics.Enumerative.Stirling
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

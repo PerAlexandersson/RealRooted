@@ -18,11 +18,9 @@ statement. This module proves the exact operator identity of Appendix A.3
 and its rational-evaluation form for the actual permutation sum.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial Finset RealRooted.IntervalDifferential
-
-noncomputable section
 
 namespace RealRooted.ZigzagEulerian
 

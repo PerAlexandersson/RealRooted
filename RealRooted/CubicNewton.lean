@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.CoefficientShape
+public import RealRooted.QuadraticRoot
 
 /-!
 # Newton inequalities for splitting real cubics
@@ -14,9 +16,9 @@ These are the exact-degree-three analogues of the degree-two discriminant lemma
 `RealRooted.MultiplierSequence`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

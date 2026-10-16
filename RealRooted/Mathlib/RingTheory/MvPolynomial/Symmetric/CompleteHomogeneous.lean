@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Sym
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+
+module
+
+public import Mathlib.Data.Finset.Sym
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Complete homogeneous symmetric polynomial evaluations
@@ -14,11 +17,11 @@ This file adds evaluation and finite variable-adjunction lemmas for Mathlib's
 do not introduce a second complete homogeneous polynomial definition.
 -/
 
+@[expose] public noncomputable section
+
 open scoped BigOperators
 
 namespace MvPolynomial
-
-noncomputable section
 
 variable {σ R S : Type*} [Fintype σ] [DecidableEq σ]
   [CommSemiring R] [CommSemiring S]
@@ -112,7 +115,5 @@ theorem aeval_hsymm_fin_zero_succ [Algebra R S] (n : ℕ)
 theorem aeval_hsymm_zero [Algebra R S] (f : σ → S) :
     aeval f (hsymm σ R 0) = 1 := by
   simp
-
-end
 
 end MvPolynomial

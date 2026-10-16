@@ -1,4 +1,6 @@
-import RealRooted.RootAmplitude.Minimum
+module
+
+public import RealRooted.RootAmplitude.Minimum
 
 /-!
 # Finite extension of root-amplitude sequences
@@ -8,11 +10,11 @@ its last index by repeating its final gap. This lets global root-amplitude
 criteria apply directly to finite root lists.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootAmplitude
 
 open Finset
-
-noncomputable section
 
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 variable (g : ℕ → K) (n : ℕ)
@@ -125,10 +127,6 @@ theorem amplitude_extend {k : ℕ} (hk : k < n) :
   have hjn : j < n := Finset.mem_range.mp (Finset.mem_of_mem_erase hj)
   rw [extend_of_lt g n hk, extend_of_lt g n hjn]
 
-end
-
-noncomputable section
-
 variable (g : ℕ → ℝ) (n : ℕ)
 
 /-- A reciprocal-distance-sum criterion on a finite increasing sequence makes
@@ -164,7 +162,5 @@ theorem amplitude_zero_le_of_finite_sum (hn : 2 ≤ n)
   have h := amplitude_zero_le_of_sum (extend g n)
     (extend_pos g n hn hpos hsm) (strictMono_extend g n hn hsm) n hsum' k hk
   rwa [amplitude_extend g n (by lia : 0 < n), amplitude_extend g n hk] at h
-
-end
 
 end RealRooted.RootAmplitude

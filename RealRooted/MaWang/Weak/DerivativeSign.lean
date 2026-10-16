@@ -1,5 +1,7 @@
-import RealRooted.MaWang.Weak.Successor
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.MaWang.Weak.Successor
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Interlacing from derivative signs at simple roots
@@ -14,9 +16,9 @@ at the roots of `f`.  This lets the weak-sign Ma--Wang and Liu--Wang criteria av
 distinguished interlacer and a no-common-root hypothesis.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

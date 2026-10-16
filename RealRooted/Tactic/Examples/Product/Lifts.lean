@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Rules
+module
+
+public import RealRooted.Tactic.Product.Rules
 
 /-!
 # Product-lift tactic regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product.Rules
 Smoke tests for supplied and automatic product-lift certificates, including
 scalar, powered, affine, and cutoff factorization variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.DerivativeRecurrence.QuadraticDegree
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # A144696 row polynomials and Bernstein images
@@ -14,9 +16,9 @@ Only finite polynomial algebra is developed here. The strict interlacing and
 residue estimates belong to later modules.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace RealRooted
 

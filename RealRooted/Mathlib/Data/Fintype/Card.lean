@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Fintype.Card
-import Mathlib.Data.Fintype.Prod
-import Mathlib.Data.Fintype.Sigma
+
+module
+
+public import Mathlib.Data.Fintype.Card
+public import Mathlib.Data.Fintype.Prod
+public import Mathlib.Data.Fintype.Sigma
 
 /-!
 # Finite cardinality from unique hits under equivalences
@@ -15,6 +18,8 @@ equivalences: if every point has a unique parameter whose image satisfies a
 predicate, then the ambient cardinality is the parameter cardinality times the
 cardinality of the predicate subtype.
 -/
+
+public section
 
 namespace Fintype
 

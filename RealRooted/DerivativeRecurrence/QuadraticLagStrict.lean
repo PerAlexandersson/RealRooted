@@ -1,7 +1,9 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.GeneralizedLiuWang
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum
 
 /-!
 # Strict interlacing for quadratic derivative recurrences with a lag
@@ -12,9 +14,9 @@ The middle multiplier is arbitrary because it vanishes at every root used by
 the generalized Liu--Wang step.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 
@@ -229,8 +231,6 @@ the sense of `Interlaces`.
 -/
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

@@ -1,8 +1,12 @@
-import RealRooted.Tactic.ScalarDen
+module
+
+public import RealRooted.Tactic.ScalarDen
 
 /-!
 # Smoke examples for scalar denominator normalization
 -/
+
+public section
 
 open Polynomial
 

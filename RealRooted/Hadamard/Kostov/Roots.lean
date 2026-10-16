@@ -1,11 +1,13 @@
-import RealRooted.Hadamard.Kostov.Eigen
-import RealRooted.Hadamard.Kostov.Interlacing
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.Wronskian.Successor.Interlacing
+module
+
+public import RealRooted.Hadamard.Kostov.Eigen
+public import RealRooted.Hadamard.Kostov.Interlacing
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.Wronskian.Successor.Interlacing
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 namespace Kostov
@@ -26,7 +28,6 @@ private theorem eigenpoly_splits {n j : ℕ} (hj : j + 3 ≤ n) {Q : ℝ[X]}
   rw [splits_iff_card_roots, (eigenpoly_roots_simple_pos hj hQ).2.1, hQ.2.1]
 
 /-! ### Interlacing of consecutive eigenpolynomials -/
-
 
 /-- **Kostov, Theorem 3 (#1319): consecutive strict interlacing.**  For `1 ≤ j ≤ n - 4` the
 roots `x_1 < ... < x_j` of `Q_{n,j}` and `y_1 < ... < y_{j+1}` of `Q_{n,j+1}` satisfy

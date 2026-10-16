@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.MultivariateHKO
-import RealRooted.BorceaBranden.RealHKOConverse
-import RealRooted.MultivariateStability.AllCombo
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import RealRooted.BorceaBranden.RealHKOConverse
+public import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Multivariate Hermite–Kakeya–Obreschkoff theorem

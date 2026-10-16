@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Composition rows of positive-order power series
@@ -11,11 +13,11 @@ denominator/numerator recurrence interface which retains the low-index
 inhomogeneous numerator terms.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- The `n`th composition row of a formal power series. -/
 def compositionRow {R : Type*} [CommSemiring R]
@@ -197,7 +199,5 @@ theorem eq_of_mk_mul_mk_eq_mk
   eq_of_finite_denominator_numerator hDzero
     ((mk_mul_mk_eq_mk_iff D P E).mp hP)
     ((mk_mul_mk_eq_mk_iff D Q E).mp hQ)
-
-end
 
 end RealRooted.BrandenLeite

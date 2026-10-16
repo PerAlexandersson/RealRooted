@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.Polarization
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.Polarization
 
 /-!
 # Source polarization for degree-box operators
@@ -11,9 +13,9 @@ equation (2.2), for a one-variable degree-`n` source box. The lift first
 diagonalizes a multiaffine input and then applies the original operator.
 -/
 
-namespace RealRooted.BorceaBranden
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- Lift an operator with a one-variable degree-`n` source to a multiaffine
 `Fin n` source by precomposing with diagonal projection. -/
@@ -93,8 +95,6 @@ theorem sum_degreeOneExponent_degreeFunction
       ∑ k ∈ Finset.range (n + 1), n.choose k • g k := by
   rw [sum_degreeOneExponent_eq_sum_finset]
   simpa using sum_finset_cardFunction n g
-
-end
 
 end RealRooted.BorceaBranden
 
@@ -517,8 +517,6 @@ end MvPolynomial
 
 namespace RealRooted.BorceaBranden
 
-noncomputable section
-
 open _root_.MvPolynomial
 
 /-- The source-degree coefficient of a one-variable finite algebraic symbol.
@@ -812,7 +810,5 @@ theorem rename_algebraicSymbol_sourcePolarizedOperator
       apply Finset.sum_congr rfl
       intro k _
       simp [g, mul_assoc]
-
-end
 
 end RealRooted.BorceaBranden

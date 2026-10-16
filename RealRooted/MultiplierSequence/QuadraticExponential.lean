@@ -1,10 +1,12 @@
-import RealRooted.MultiplierSequence.PolyaSchur.Limit
-import RealRooted.PFPolynomial.Closure
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.Limit
+public import RealRooted.PFPolynomial.Closure
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+
+@[expose] public noncomputable section
 
 open Filter Polynomial Topology
-
-noncomputable section
 
 namespace RealRooted
 

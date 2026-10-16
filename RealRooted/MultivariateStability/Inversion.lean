@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Stability-preserving inversion
@@ -11,9 +13,9 @@ one distinguished variable `none` of a multivariate polynomial in the
 variables `Option τ`; another variable reduces to this case by `rename`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

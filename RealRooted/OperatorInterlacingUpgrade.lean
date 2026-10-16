@@ -1,5 +1,7 @@
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.QuadraticInterlacingClosure
+module
+
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Oriented interlacing upgrades for linear maps
@@ -16,9 +18,9 @@ that the transform sends `q` before the transform of `(X + C a) * q` whenever
 `q` is PF and `a ≥ 0`.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

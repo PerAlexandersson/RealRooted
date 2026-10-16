@@ -18,11 +18,9 @@ orthogonality pairing with squared norm `n!`.  The Gaussian integral
 realization belongs in `RealRooted.Hermite.Orthogonality.Integral`.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

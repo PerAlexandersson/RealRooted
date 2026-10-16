@@ -15,11 +15,9 @@ Each summand in Appendix A.6 is monic of degree `n - 2`. The alternating
 class is nonempty, so its finite sum has exactly that degree.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open Polynomial Finset RealRooted.IntervalDifferential
-
-noncomputable section
 
 namespace RealRooted.ZigzagEulerian
 

@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Euler derivatives of gamma transforms
@@ -7,9 +9,9 @@ Linearity of `gammaTransform` under negation and subtraction, and the action of 
 operator `X * d/dX` on a gamma transform.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Collocation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+module
+
+public import RealRooted.JacobiDeformation.Collocation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!
 # Entrywise positivity of the quasi-Jacobi collocation matrix
@@ -18,9 +20,9 @@ every entry of `A` is strictly positive
 (`quasiJacobiCollocationMatrix_entry_pos`).
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

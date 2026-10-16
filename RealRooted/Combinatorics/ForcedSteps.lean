@@ -1,7 +1,9 @@
-import Mathlib.Data.Fin.Tuple.Sort
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Finset.Sort
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.Data.Finset.Powerset
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Tactic
 
 /-!
 Aristotle project `c46dc43c-0f1b-436e-852d-810faecd9567`, adapted locally.
@@ -11,6 +13,8 @@ Aristotle project `c46dc43c-0f1b-436e-852d-810faecd9567`, adapted locally.
 The number of weakly increasing maps `f : Fin n → Fin N` that increase strictly at every
 position of a prescribed set `S` of adjacent steps is `C(N + n - 1 - |S|, n)`.
 -/
+
+@[expose] public section
 
 open Finset
 

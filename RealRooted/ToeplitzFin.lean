@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Finite Toeplitz truncations
@@ -9,11 +11,11 @@ This file gives the shared finite lower-Toeplitz truncation and its
 power-series multiplication formula.
 -/
 
+@[expose] public noncomputable section
+
 open Matrix BigOperators
 
 namespace RealRooted
-
-noncomputable section
 
 /-- The finite principal truncation of a lower-Toeplitz matrix. -/
 def toeplitzFin {R : Type*} [Zero R]
@@ -105,7 +107,5 @@ theorem toeplitzFin_mul_coeff {R : Type*} [CommSemiring R]
     · have hjk : ¬ j ≤ k := fun hjk => hji (hjk.trans hki)
       simp [toeplitzFin_apply, hki, hjk]
     · simp [toeplitzFin_apply, hki]
-
-end
 
 end RealRooted

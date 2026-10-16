@@ -19,11 +19,9 @@ Legendre family; the actual A080721 polynomial is a distinct quasi-Legendre
 combination.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

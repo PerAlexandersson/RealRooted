@@ -1,10 +1,12 @@
-import RealRooted.BorceaBranden.Transcendental.PivotForward
-import RealRooted.BorceaBranden.FiniteSymbolClassification
-import RealRooted.MultivariateStability.Inversion
+module
+
+public import RealRooted.BorceaBranden.Transcendental.PivotForward
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
+public import RealRooted.MultivariateStability.Inversion
+
+@[expose] public noncomputable section
 
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 
@@ -261,7 +263,7 @@ private theorem coeff_invertVariables_of_nodup
       rw [pow_add]
       ring
 
-private def rightVariableList (τ σ : Type*) [Fintype σ] : List (τ ⊕ σ) :=
+def rightVariableList (τ σ : Type*) [Fintype σ] : List (τ ⊕ σ) :=
   List.ofFn fun k : Fin (Fintype.card σ) =>
     Sum.inr ((Fintype.equivFin σ).symm k)
 
@@ -284,7 +286,7 @@ private theorem mem_rightVariableList_eq_inr
   obtain ⟨k, rfl⟩ := hx
   exact ⟨(Fintype.equivFin σ).symm k, rfl⟩
 
-private def rightInversionBounds (β : σ →₀ ℕ)
+def rightInversionBounds (β : σ →₀ ℕ)
     (p : MvPolynomial (τ ⊕ σ) ℂ) : τ ⊕ σ → ℕ :=
   Sum.elim (fun i => p.degreeOf (Sum.inl i)) (fun i => β i)
 

@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
-import RealRooted.SeparablePermutations.Gamma
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
+public import RealRooted.SeparablePermutations.Gamma
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # The cubic functional equation for the gamma-polynomials of separable permutations
@@ -32,7 +34,7 @@ power-series API and to the real coefficient field used by `gammaPolynomial`.
   (with `Γ_0 = 0`, so the index ranges take care of themselves).
 -/
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.SeparablePermutations.GammaCubic
 

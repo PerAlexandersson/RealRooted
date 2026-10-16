@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.PathPowerClique
+module
+
+public import RealRooted.CombinatorialExamples.PathPowerClique
 
 /-!
 # OEIS rows from reflected path-power subsequences
@@ -9,9 +11,9 @@ Graeffe identities.  The identifications then give real-rootedness and strict
 consecutive interlacing from the path-power clique theorem.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.PathPowerRows
 

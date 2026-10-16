@@ -1,9 +1,11 @@
-import RealRooted.PolyaFrequencyConvolution
-import RealRooted.VeroneseSection
+module
+
+public import RealRooted.PolyaFrequencyConvolution
+public import RealRooted.VeroneseSection
+
+@[expose] public noncomputable section
 
 open Polynomial Matrix
-
-noncomputable section
 
 namespace RealRooted
 

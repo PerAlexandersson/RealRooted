@@ -1,8 +1,10 @@
-import RealRooted.MaWang.Weak.Regularization
+module
+
+public import RealRooted.MaWang.Weak.Regularization
+
+public noncomputable section
 
 open Polynomial Filter
-
-noncomputable section
 
 namespace RealRooted.MaWangInternal
 

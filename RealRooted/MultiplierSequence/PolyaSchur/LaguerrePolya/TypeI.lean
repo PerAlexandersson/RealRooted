@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.PolyaSchur.Growth
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.Growth
 
 /-!
 # Type-I Laguerre--Pólya limits
@@ -9,9 +11,9 @@ polynomials.  It proves the forward Pólya--Schur direction for PF multiplier
 sequences.  The converse classification remains separate.
 -/
 
-open Filter Polynomial Topology
+@[expose] public noncomputable section
 
-noncomputable section
+open Filter Polynomial Topology
 
 namespace RealRooted
 

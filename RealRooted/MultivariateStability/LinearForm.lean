@@ -1,5 +1,7 @@
-import RealRooted.MultivariateStability
-import Mathlib.Basic.Complex.BigOperators
+module
+
+public import RealRooted.MultivariateStability
+public import Mathlib.Basic.Complex.BigOperators
 
 /-!
 # Stable homogeneous linear forms
@@ -9,11 +11,11 @@ coefficients is multivariate stable.  The variables may be indexed with
 repetition, which makes the result convenient for finite combinatorial sums.
 -/
 
+public noncomputable section
+
 namespace RealRooted
 
 open scoped BigOperators
-
-noncomputable section
 
 /-- A finite homogeneous linear form with nonnegative real coefficients, at
 least one of them positive, is upper-half-plane stable. -/
@@ -68,7 +70,5 @@ theorem MvRealStable.C_mul_X_add_C_mul_X {σ : Type*} (i j : σ)
         · exact ⟨0, Finset.mem_univ _, by simpa [weight]⟩
         · exact ⟨1, Finset.mem_univ _, by simpa [weight]⟩)
   simpa [weight, label, Fin.sum_univ_two] using hstable
-
-end
 
 end RealRooted

@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # Reconstruction coefficients for the finite-symbol argument
@@ -11,9 +13,9 @@ coefficients, and specializing an independent right block to zero evaluates
 that block at zero.  Target variables remain unrestricted.
 -/
 
-namespace RealRooted.BorceaBranden
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.BorceaBranden
 
 /-- For a multiaffine polynomial, the squarefree derivative indexed by `m`,
 evaluated at zero, is the coefficient of the monomial indexed by `m`.  This is
@@ -142,7 +144,5 @@ theorem specializeRight_zero_targetMul_input
             MvPolynomial.eval_X]
           simp
     simpa using h D
-
-end
 
 end RealRooted.BorceaBranden

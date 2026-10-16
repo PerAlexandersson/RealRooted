@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Matrix.Order
+
+module
+
+public import Mathlib.Analysis.Matrix.Order
 
 /-!
 # Two-point rank-one compressions
@@ -19,6 +22,8 @@ When both `C` and `1 - C` are positive definite, this identity forces the
 left-hand side to have a definite sign whenever `r` or `z` lies outside
 `(0, 1)`.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

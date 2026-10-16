@@ -1,20 +1,38 @@
-import RealRooted.Tactic.Row.DerivLag
-import RealRooted.Tactic.Row.Subseq
-import RealRooted.Tactic.Row.PowerForm
-import RealRooted.Tactic.Row.ClosedFormInterlaces
-import RealRooted.Tactic.Row.ParityProduct
-import RealRooted.Tactic.Row.LagFeedback
-import RealRooted.Tactic.Row.Reverse
-import RealRooted.Tactic.Row.FTransform
-import RealRooted.Tactic.Row.EndpointWindow
-import RealRooted.Tactic.Row.RationalReverse
-import RealRooted.Tactic.Row.PathPower
-import RealRooted.Tactic.Row.DerivativeXMul
-import RealRooted.Tactic.Row.FactorPower
-import RealRooted.Tactic.Row.DelayedProduct
-import RealRooted.Tactic.Row.ThresholdOrbit
-import RealRooted.DerivativeRecurrence.Nonnegative
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Tactic.Row.DerivLag
+public meta import RealRooted.Tactic.Row.DerivLag
+public import RealRooted.Tactic.Row.Subseq
+public meta import RealRooted.Tactic.Row.Subseq
+public import RealRooted.Tactic.Row.PowerForm
+public meta import RealRooted.Tactic.Row.PowerForm
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public meta import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.Tactic.Row.ParityProduct
+public meta import RealRooted.Tactic.Row.ParityProduct
+public import RealRooted.Tactic.Row.LagFeedback
+public meta import RealRooted.Tactic.Row.LagFeedback
+public import RealRooted.Tactic.Row.Reverse
+public meta import RealRooted.Tactic.Row.Reverse
+public import RealRooted.Tactic.Row.FTransform
+public meta import RealRooted.Tactic.Row.FTransform
+public import RealRooted.Tactic.Row.EndpointWindow
+public meta import RealRooted.Tactic.Row.EndpointWindow
+public import RealRooted.Tactic.Row.RationalReverse
+public meta import RealRooted.Tactic.Row.RationalReverse
+public import RealRooted.Tactic.Row.PathPower
+public meta import RealRooted.Tactic.Row.PathPower
+public import RealRooted.Tactic.Row.DerivativeXMul
+public meta import RealRooted.Tactic.Row.DerivativeXMul
+public import RealRooted.Tactic.Row.FactorPower
+public meta import RealRooted.Tactic.Row.FactorPower
+public import RealRooted.Tactic.Row.DelayedProduct
+public meta import RealRooted.Tactic.Row.DelayedProduct
+public import RealRooted.Tactic.Row.ThresholdOrbit
+public import RealRooted.DerivativeRecurrence.Nonnegative
+public meta import RealRooted.DerivativeRecurrence.Nonnegative
+public import RealRooted.Recurrence.RowModel
+public meta import RealRooted.Recurrence.RowModel
 
 /-!
 # Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
@@ -111,6 +129,8 @@ goals), `Row.Support` (shared helpers), `Row.Core`, `Row.LowerOrder`, `Row.Deriv
 `Row.Subseq`, `Row.PowerForm`, `Row.Reverse`, `Row.ParityProduct` and `Row.LagFeedback`; this
 module holds the front ends.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

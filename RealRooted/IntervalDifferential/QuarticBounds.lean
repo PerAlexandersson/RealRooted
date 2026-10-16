@@ -15,9 +15,7 @@ The quartic seed `X⁴ + kX² + p` is controlled by the quadratic in the
 squared variable, `u² + ku + p`. Its roots lift to actual quartic roots.
 -/
 
-@[expose] public section
-
-noncomputable section
+public noncomputable section
 
 open Polynomial
 

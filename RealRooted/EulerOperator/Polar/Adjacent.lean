@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.EulerOperator.Polar.ProperPosition
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.EulerOperator.Polar.ProperPosition
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Adjacent polar Euler operators
@@ -15,9 +17,9 @@ This file gives algebraic identities for changing the ambient degree of
 interlacing pair in the PF cone.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+module
+
+public import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+
+public noncomputable section
 
 open Filter Topology
-
-noncomputable section
 
 namespace RealRooted.BorceaBranden
 

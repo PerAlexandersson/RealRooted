@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.RootMap
+module
+
+public import RealRooted.GammaTransform.RootMap
 
 /-!
 # Gamma-transform ordered roots
@@ -7,10 +9,10 @@ The ordered-root and reciprocal-center completion of the Hoster--Stump root
 map.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial Finset
 open scoped BigOperators
-
-noncomputable section
 
 namespace RealRooted
 
@@ -448,7 +450,5 @@ theorem roots_eq_map_filter_roots_gammaTransform
       _ = (((gammaTransform d γ).roots.filter
           (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).map gammaRootMap).count y := by
         rfl
-
-
 
 end RealRooted

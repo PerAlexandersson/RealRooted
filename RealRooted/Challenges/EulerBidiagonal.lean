@@ -1,11 +1,13 @@
-import RealRooted.CombinatorialExamples.CentralFactorial
-import RealRooted.CombinatorialExamples.EulerTypeOeis
-import RealRooted.CombinatorialExamples.EulerTypeRows
-import RealRooted.EulerBidiagonal
-import RealRooted.EulerBidiagonal.General
-import RealRooted.EulerBidiagonal.PairTheorem
-import RealRooted.Interlacing.PencilPreserver
-import RealRooted.Interlacing.RootDeletionExpansion
+module
+
+public import RealRooted.CombinatorialExamples.CentralFactorial
+public import RealRooted.CombinatorialExamples.EulerTypeOeis
+public import RealRooted.CombinatorialExamples.EulerTypeRows
+public import RealRooted.EulerBidiagonal
+public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.PairTheorem
+public import RealRooted.Interlacing.PencilPreserver
+public import RealRooted.Interlacing.RootDeletionExpansion
 
 /-!
 # Euler bidiagonal step challenge entry point
@@ -180,3 +182,5 @@ See [@AndrewsGawronskiLittlejohn2011; @AndrewsEggeGawronskiLittlejohn2013;
 This module is a catalog facade. The proofs live in `RealRooted.EulerBidiagonal`,
 `RealRooted.Interlacing.PencilPreserver` and `RealRooted.CombinatorialExamples.CentralFactorial`.
 -/
+
+public section

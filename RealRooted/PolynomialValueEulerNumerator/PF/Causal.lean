@@ -1,5 +1,7 @@
-import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
-import RealRooted.PolynomialValueEulerNumerator.PF
+module
+
+public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
+public import RealRooted.PolynomialValueEulerNumerator.PF
 
 /-!
 # PF canonical Euler numerators from polynomial-value sequences
@@ -8,6 +10,8 @@ This leaf iterates the checked causal Pólya-frequency closure through a
 polynomial's actual degree and then uses the exact numerator-coefficient
 identity.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

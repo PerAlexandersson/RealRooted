@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.PolyaSchur
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # Finite multiplier sequences with alternating signs
@@ -13,9 +15,9 @@ preserves real-rootedness, so it transports the theorem to sequences with
 `0 ≤ (-1)^k γ_k`, whose Jensen polynomials have their zeros in `[0, ∞)`.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -3,14 +3,19 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Ring.Parity
-import Mathlib.Tactic
+
+module
+
+public import Mathlib.Algebra.Ring.Parity
+public import Mathlib.Tactic
 
 /-!
 # Powers of the sign minus one
 
 Elementary parity identities used by polynomial transformations.
 -/
+
+public section
 
 namespace Parity
 

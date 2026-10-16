@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Eval.Coeff
-import Mathlib.Data.Nat.Fib.Basic
-import Mathlib.Tactic.IrreducibleDef
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Eval.Coeff
+public import Mathlib.Data.Nat.Fib.Basic
+public import Mathlib.Tactic.IrreducibleDef
 
 /-!
 # Big descents of 321-avoiding permutations: the polynomial families
@@ -37,16 +39,16 @@ time and memory. Use the equation lemmas `motzkinRef_add_two`, `bigDescentPoly_s
 * `map_motzkinRef`, `map_bigDescentPoly`: compatibility with ring homomorphisms.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.BigDescents321
 
 variable {R : Type*} [CommSemiring R]
 
 /-- The recursion `M_0 = 1`, `M_1 = 2`, `M_(k+2) = 2 M_(k+1) + t ∑_(i ≤ k) M_i M_(k-i)`. -/
-private def motzkinRefAux : ℕ → R[X]
+def motzkinRefAux : ℕ → R[X]
   | 0 => 1
   | 1 => 2
   | k + 2 => 2 * motzkinRefAux (k + 1) +
@@ -80,7 +82,7 @@ def firstReturn : ℕ → R[X]
   | j + 3 => X * motzkinRef (j + 1)
 
 /-- The convolution `A_0 = 1`, `A_n = ∑_(j=1)^n I_j A_(n-j)`, by well-founded recursion. -/
-private def bigDescentPolyAux : ℕ → R[X]
+def bigDescentPolyAux : ℕ → R[X]
   | 0 => 1
   | n + 1 => ∑ j : Fin (n + 1), firstReturn (j.1 + 1) * bigDescentPolyAux (n - j.1)
 

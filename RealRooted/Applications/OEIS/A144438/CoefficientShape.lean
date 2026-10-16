@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.PolyaFrequency
-import RealRooted.PFPolynomial.CoefficientShape
+module
+
+public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+public import RealRooted.PFPolynomial.CoefficientShape
 
 /-!
 # Coefficient shape of the A144438 recurrence family
@@ -9,9 +11,9 @@ Pólya-frequency certificates.  It uses only the algebraic recurrence family;
 no combinatorial interpretation of A144438 or of the weight is assumed.
 -/
 
-namespace RealRooted.Applications.OEIS
+public noncomputable section
 
-noncomputable section
+namespace RealRooted.Applications.OEIS
 
 /-- Nonnegative-weight Deco Eulerian polynomials are ultra-log-concave. -/
 theorem weightedDecoEulerian_hasUltraLogConcaveCoeffs {w : Real}
@@ -57,7 +59,5 @@ theorem A144438_hasLogConcaveCoeffs (n : Nat) :
 theorem A144438_hasUnimodalCoeffs (n : Nat) :
     HasUnimodalCoeffs (A144438 n) :=
   (A144438_isPFPolynomial n).hasUnimodalCoeffs
-
-end
 
 end RealRooted.Applications.OEIS

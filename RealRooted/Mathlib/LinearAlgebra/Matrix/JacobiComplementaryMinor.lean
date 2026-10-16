@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+module
+
+public import Mathlib
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Jacobi's complementary minor identity and the inverse of a totally nonnegative matrix
@@ -24,11 +27,11 @@ and compares determinants of block matrices. As a consequence, if a totally nonn
   `((-1) ^ (i + j) * B i j)` is totally nonnegative.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Equiv
 
 namespace Matrix
-
-noncomputable section
 
 /-! ## Jacobi's complementary minor identity and total nonnegativity of the inverse -/
 
@@ -187,7 +190,7 @@ private lemma sign_sortEquiv {s t : Finset (Fin N)} {k : ℕ} (hs : s.card = k) 
     rw [← pow_mul, mul_comm, pow_mul]; simp
   linear_combination ((-1 : ℤ) ^ ∑ z ∈ t, (z:ℕ)) * ((-1 : ℤ) ^ ∑ z ∈ s, (z:ℕ)) * this
 
-private lemma card_compl_eq {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) : sᶜ.card = N - k := by
+lemma card_compl_eq {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) : sᶜ.card = N - k := by
   rw [Finset.card_compl, Fintype.card_fin, h]
 
 /-- Jacobi's complementary minor identity (with `A * B = 1`). -/
@@ -284,7 +287,5 @@ theorem tn_inverse (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1) (hdet : 
   exact tn_inverse_aux A B hAB hdet hA r c hr hc
 
 end Jacobi
-
-end
 
 end Matrix

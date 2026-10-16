@@ -1,8 +1,10 @@
-import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.BrandenVecchi.ChowSignedWords
-import RealRooted.BrandenVecchi.ChowTotallyNonneg
-import RealRooted.BrandenVecchi.ChowZeroPrefix
-import RealRooted.BrandenVecchi.SmirnovSpecialization
+module
+
+public import RealRooted.BrandenVecchi.ChowInfinitePF
+public import RealRooted.BrandenVecchi.ChowSignedWords
+public import RealRooted.BrandenVecchi.ChowTotallyNonneg
+public import RealRooted.BrandenVecchi.ChowZeroPrefix
+public import RealRooted.BrandenVecchi.SmirnovSpecialization
 
 /-!
 # Brändén–Vecchi challenge entry point
@@ -147,3 +149,5 @@ See [@BrandenVecchi2025x]. The resolution machinery comes from the
 This module is a catalog facade.  The proofs live in
 `RealRooted.BrandenVecchi`.
 -/
+
+public section

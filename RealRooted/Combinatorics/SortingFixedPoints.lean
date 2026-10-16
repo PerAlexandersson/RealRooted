@@ -1,7 +1,9 @@
-import Mathlib.Data.Fin.Tuple.Sort
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Finset.Sort
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.Data.Finset.Powerset
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Tactic
 
 /-!
 Aristotle project `c46dc43c-0f1b-436e-852d-810faecd9567`, adapted locally.
@@ -15,6 +17,8 @@ sorting permutation).  We show that, for every set `J` of letters, the number of
 length `n` in which every letter of `J` is carried by some fixed position is
 `N ^ (n - |J|)` (or `0` when `|J| > n`), by removing/inserting one fixed position at a time.
 -/
+
+@[expose] public section
 
 open Finset
 

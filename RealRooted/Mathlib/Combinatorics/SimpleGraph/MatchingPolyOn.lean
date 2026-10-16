@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.SimpleGraph.Finite
-import Mathlib.Data.Finset.Sym
-import Mathlib.Algebra.Polynomial.Monic
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Basic.Real.Basic
+
+module
+
+public import Mathlib.Combinatorics.SimpleGraph.Finite
+public import Mathlib.Data.Finset.Sym
+public import Mathlib.Algebra.Polynomial.Monic
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Vertex recurrence for the matching polynomial
@@ -17,6 +20,8 @@ subgraph `G[S]` and its matching polynomial in the defect convention
 `μ_S(x) = ∑_M (-1)^|M| x^(|S| - 2|M|)`. We prove the vertex recurrence
 `μ_S = x μ_{S - v} - ∑_{u ∼ v} μ_{S - v - u}` and that `μ_S` is monic of degree `|S|`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

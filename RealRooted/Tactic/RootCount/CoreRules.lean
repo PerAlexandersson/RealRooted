@@ -1,12 +1,16 @@
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.RootCount.CoreSyntax
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.RootCount.CoreSyntax
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Core root-count tactic rules
 
 Macro expansions for general root-count and local-continuity certificates.
 -/
+
+public section
 
 open Polynomial
 

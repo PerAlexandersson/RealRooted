@@ -1,7 +1,9 @@
-import RealRooted.JacobiDeformation.KernelExpansion
-import RealRooted.JacobiDeformation.Appell
-import RealRooted.JacobiDeformation.ImageProduct
-import RealRooted.JacobiDeformation.QuasiNodes
+module
+
+public import RealRooted.JacobiDeformation.KernelExpansion
+public import RealRooted.JacobiDeformation.Appell
+public import RealRooted.JacobiDeformation.ImageProduct
+public import RealRooted.JacobiDeformation.QuasiNodes
 
 /-!
 # The delta-zero Jacobi deformation product
@@ -16,9 +18,9 @@ over the roots `r_i` of the monic shifted-Jacobi polynomial `p_m`
 product identity, obtained here from the diagonal kernel expansion.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

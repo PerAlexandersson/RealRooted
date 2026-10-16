@@ -1,11 +1,13 @@
-import RealRooted.RootAmplitude.Convex
-import RealRooted.RootAmplitude.Density
-import RealRooted.RootAmplitude.Minimum
-import RealRooted.RootAmplitude.Separation.Euler
-import RealRooted.RootAmplitude.Separation.Finite
-import RealRooted.RootAmplitude.Separation.Polynomial
-import RealRooted.RootAmplitude.SmallestRoot
-import RealRooted.RootAmplitude.SumSquares
+module
+
+public import RealRooted.RootAmplitude.Convex
+public import RealRooted.RootAmplitude.Density
+public import RealRooted.RootAmplitude.Minimum
+public import RealRooted.RootAmplitude.Separation.Euler
+public import RealRooted.RootAmplitude.Separation.Finite
+public import RealRooted.RootAmplitude.Separation.Polynomial
+public import RealRooted.RootAmplitude.SmallestRoot
+public import RealRooted.RootAmplitude.SumSquares
 
 /-!
 # Root amplitudes and separated roots
@@ -139,6 +141,8 @@ These results were extracted from a formal proof that the rows of
 motivating combinatorial objects are the Stirling complexes [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.RootAmplitude
 

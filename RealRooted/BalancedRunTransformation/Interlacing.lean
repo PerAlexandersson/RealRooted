@@ -1,5 +1,7 @@
-import RealRooted.BalancedRunTransformation.Preservation
-import RealRooted.OperatorInterlacingUpgrade
+module
+
+public import RealRooted.BalancedRunTransformation.Preservation
+public import RealRooted.OperatorInterlacingUpgrade
 
 /-!
 # Interlacing preservation for the balanced run transformation
@@ -8,9 +10,9 @@ This file specializes the monomial-chain operator upgrade to the balanced run
 kernel.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

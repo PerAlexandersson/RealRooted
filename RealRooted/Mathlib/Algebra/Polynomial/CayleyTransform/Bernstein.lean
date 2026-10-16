@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 
 /-!
 # Bernstein expansion through the finite-degree Cayley transform
@@ -13,9 +16,9 @@ The degree-`n` Cayley transform sends the Bernstein basis element
 expansion.
 -/
 
-open Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial BigOperators
 
 namespace Polynomial
 

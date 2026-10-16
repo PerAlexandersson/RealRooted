@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
-import Mathlib.Analysis.Real.Sqrt
+
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+public import Mathlib.Analysis.Real.Sqrt
 
 /-!
 # Real square-root normalization of quadratic recurrences
@@ -13,6 +16,8 @@ This opt-in specialization of `quadraticRescale_isSolution` records the
 algebraic normalization used for the A272471 recurrence.  It does not provide
 Chebyshev closed forms, trigonometric identities, or analytic estimates.
 -/
+
+public section
 
 namespace LinearRecurrence
 

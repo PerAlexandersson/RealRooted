@@ -1,4 +1,6 @@
-import RealRooted.ThresholdMatrix.Basic
+module
+
+public import RealRooted.ThresholdMatrix.Basic
 
 /-!
 # Gustafsson--Solus threshold recursion
@@ -7,9 +9,9 @@ The `0`/`1` threshold-entry classification and the finite-indexed and
 paper-shaped forms of Gustafsson--Solus Lemma 3.4.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import RealRooted.CombinatorialExamples.PeakValues
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import RealRooted.CombinatorialExamples.PeakValues
 
 /-!
 # Peak positions and the canonical peak set
@@ -9,6 +11,8 @@ The interior peak positions of `RealRooted.CombinatorialExamples.PeakValues` are
 `Equiv.Perm.peakSet` read in `Fin n`; here the two are compared as finsets, and the number of
 peak positions is the canonical peak count.
 -/
+
+public section
 
 namespace RealRooted
 

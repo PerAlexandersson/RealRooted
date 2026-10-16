@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 /-!
 # Jacobi--Stirling inverse relations
@@ -10,9 +12,9 @@ inverse. Both finite convolution orders are proved with their exact lower-
 triangular support and zero-row endpoints.
 -/
 
-namespace RealRooted.JacobiStirling
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.JacobiStirling
 
 variable {R : Type*} [CommRing R]
 
@@ -210,7 +212,5 @@ theorem signedFirstKind_mul_secondKind_sum (z : R) (n j : ℕ) :
     have hkn : k ≤ n := by simp only [Finset.mem_range] at hk; lia
     have hkj : k < j := lt_of_le_of_lt hkn (by lia)
     simp [secondKind_eq_zero_of_lt z hkj]
-
-end
 
 end RealRooted.JacobiStirling

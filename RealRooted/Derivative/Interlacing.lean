@@ -1,14 +1,16 @@
-import RealRooted.Basic
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Calculus.LocalExtr.Rolle
-import Mathlib.Topology.Algebra.Polynomial
-import Mathlib.Algebra.Polynomial.FieldDivision
-import Mathlib.Data.Multiset.Sort
-import RealRooted.Derivative.RootCounting
+module
+
+public import RealRooted.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Calculus.LocalExtr.Rolle
+public import Mathlib.Topology.Algebra.Polynomial
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import Mathlib.Data.Multiset.Sort
+public import RealRooted.Derivative.RootCounting
+
+@[expose] public noncomputable section
 
 open Polynomial Set
-
-noncomputable section
 
 namespace RealRooted
 

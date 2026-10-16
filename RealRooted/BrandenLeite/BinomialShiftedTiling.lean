@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.ShiftedTiling
+module
+
+public import RealRooted.BrandenLeite.ShiftedTiling
 
 /-!
 # Binomial shifted tiling rows
@@ -8,11 +10,11 @@ This file specializes the shifted two-seed recurrence to
 `γ = Nat.choose m 2`.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial
 
 namespace RealRooted.BrandenLeite
-
-noncomputable section
 
 /-- A repeated unit optional-rise product is the corresponding binomial
 polynomial. -/
@@ -298,7 +300,5 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
       show 2 < n + 4 by lia, show 3 < n + 4 by lia]
   rw [hsum] at h
   simpa [show n + 4 ≠ 0 by lia] using h
-
-end
 
 end RealRooted.BrandenLeite

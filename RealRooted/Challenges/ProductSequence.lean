@@ -1,9 +1,11 @@
-import RealRooted.ProductSequence.Core
-import RealRooted.ProductSequence.Interlacing
-import RealRooted.ProductSequence.FactorFamilies
-import RealRooted.ProductSequence.Lifts
-import RealRooted.ProductSequence.ScalarFamilies
-import RealRooted.ProductSequence.EndpointPair
+module
+
+public import RealRooted.ProductSequence.Core
+public import RealRooted.ProductSequence.Interlacing
+public import RealRooted.ProductSequence.FactorFamilies
+public import RealRooted.ProductSequence.Lifts
+public import RealRooted.ProductSequence.ScalarFamilies
+public import RealRooted.ProductSequence.EndpointPair
 
 /-!
 # Product sequences
@@ -133,6 +135,8 @@ real-rootedness for a sequence whose even and odd rows are endpoint powers of
 named in `RealRooted.ProductSequence.EndpointPair`.
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.ProductSequence
 

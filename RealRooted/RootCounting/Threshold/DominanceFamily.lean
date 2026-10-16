@@ -1,5 +1,7 @@
-import RealRooted.RootCounting.Threshold.LogConcavity
-import RealRooted.RootCounting.Threshold.Signs
+module
+
+public import RealRooted.RootCounting.Threshold.LogConcavity
+public import RealRooted.RootCounting.Threshold.Signs
 
 /-!
 # Geometrically separated roots from coefficient dominance
@@ -10,11 +12,11 @@ geometrically separated. The endpoint estimates and intermediate-value
 chaining live in the lower `LogConcavity` and `Signs` modules.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.RootCounting
 
 open Polynomial
-
-noncomputable section
 
 /-- The lower magnitude at which coefficient `j` is made dominant. -/
 private def lowerDominanceRadius (p : ℝ[X]) (c : ℝ) (j : ℕ) : ℝ :=
@@ -360,7 +362,5 @@ theorem exists_top_geometric_root_family_of_logConcave
     have hidx : N - J + 0 = N - J := by lia
     rw [hidx, upperDominanceRadius] at hxi
     exact hxi
-
-end
 
 end RealRooted.RootCounting

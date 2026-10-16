@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.Resolvable
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+module
+
+public import RealRooted.BrandenLeite.Resolvable
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Whitney reduction for Brändén--Saud Leite resolutions
@@ -9,9 +11,9 @@ unitriangular matrices and constructs the resolution attached to a totally
 nonnegative matrix.
 -/
 
-open Matrix Polynomial BigOperators
+@[expose] public noncomputable section
 
-noncomputable section
+open Matrix Polynomial BigOperators
 
 namespace Matrix
 

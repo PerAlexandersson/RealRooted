@@ -1,8 +1,10 @@
-import RealRooted.MaWang.CountBounds
+module
+
+public import RealRooted.MaWang.CountBounds
+
+public noncomputable section
 
 open Polynomial Filter
-
-noncomputable section
 
 namespace RealRooted.MaWangInternal
 

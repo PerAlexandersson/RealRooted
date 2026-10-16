@@ -1,8 +1,10 @@
-import RealRooted.BinaryRunTransformation.CrossLength
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.Transforms.ReverseHermite.Preservation
+module
+
+public import RealRooted.BinaryRunTransformation.CrossLength
+public import Mathlib.Algebra.Polynomial.Eval.Degree
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.Transforms.ReverseHermite.Preservation
 
 /-!
 # Multiplier-weighted Motzkin polynomials
@@ -29,9 +31,9 @@ classically the Motzkin-ascent polynomials (OEIS A114580); that identification
 is cited, not formalized.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

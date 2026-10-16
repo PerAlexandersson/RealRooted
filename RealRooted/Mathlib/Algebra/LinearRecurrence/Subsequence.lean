@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import Mathlib.LinearAlgebra.Matrix.Notation
+
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.LinearAlgebra.Matrix.Notation
 
 /-!
 # Linear recurrences for arithmetic subsequences
@@ -15,10 +18,10 @@ arithmetic subsequence of a finite-dimensional matrix orbit: if `v (n + 1) = A *
 every coordinate of `m ↦ v (p * m + c)` satisfies the recurrence given by `charpoly (A ^ p)`.
 -/
 
+@[expose] public noncomputable section
+
 open Finset Polynomial
 open scoped Matrix
-
-noncomputable section
 
 namespace LinearRecurrence
 

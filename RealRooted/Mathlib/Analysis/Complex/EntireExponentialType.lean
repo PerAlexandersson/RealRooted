@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Complex.BorelCaratheodory
-import Mathlib.Analysis.Complex.HasPrimitives
-import Mathlib.Analysis.Complex.Liouville
+
+module
+
+public import Mathlib.Analysis.Complex.BorelCaratheodory
+public import Mathlib.Analysis.Complex.HasPrimitives
+public import Mathlib.Analysis.Complex.Liouville
 
 /-!
 # Entire functions of exponential type
@@ -30,7 +33,7 @@ exponential type is the exponential of an affine function.
   axis and `0 < (f 0).re`, then `a` and `b` can be taken real.
 -/
 
-noncomputable section
+public noncomputable section
 
 namespace Complex
 

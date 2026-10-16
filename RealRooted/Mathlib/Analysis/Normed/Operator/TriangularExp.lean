@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
 
+module
+
+public import Mathlib
 
 /-!
 # A normalized triangular exponential converges to the top eigenvector
@@ -23,6 +25,8 @@ radius / Gelfand formula).  The uniqueness part follows from uniqueness of limit
 
 The proof was found by Aristotle (Harmonic).
 -/
+
+public section
 
 open Filter Topology
 

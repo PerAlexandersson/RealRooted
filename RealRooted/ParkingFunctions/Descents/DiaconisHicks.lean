@@ -1,8 +1,10 @@
-import RealRooted.ParkingFunctions.Descents.Pollak
-import RealRooted.ParkingFunctions.Descents.ChainSort
-import RealRooted.Mathlib.Data.List.OfFn
-import RealRooted.Mathlib.Data.Fintype.Card
-import Mathlib.Data.List.Sort
+module
+
+public import RealRooted.ParkingFunctions.Descents.Pollak
+public import RealRooted.ParkingFunctions.Descents.ChainSort
+public import RealRooted.Mathlib.Data.List.OfFn
+public import RealRooted.Mathlib.Data.Fintype.Card
+public import Mathlib.Data.List.Sort
 
 /-!
 # Diaconis--Hicks chain sorting for parking-function descents
@@ -13,12 +15,12 @@ representative, and ordinary parking-function embedding live in the neutral
 `Pollak` module.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.ParkingFunctions
 
 open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
   isParkingFunction_iff_prefix)
-
-noncomputable section
 
 /-- Sort the values of a word along its `Fin n` chain of positions. -/
 def chainSortedWord {n m : ℕ} (w : Fin n → Fin m) : Fin n → Fin m :=
@@ -280,7 +282,5 @@ theorem existsUnique_cyclicSortChains_mem_embeddedParkingFunctions {n : ℕ}
     ∃! c : Fin (n + 2), cyclicSortChains L c w ∈ embeddedParkingFunctions n := by
   simpa only [mem_embeddedParkingFunctions_iff_isParkingWord] using
     (existsUnique_isParkingWord_cyclicSortChains L hL w)
-
-end
 
 end RealRooted.ParkingFunctions

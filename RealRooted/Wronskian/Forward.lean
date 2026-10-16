@@ -1,4 +1,6 @@
-import RealRooted.Bezoutian.LowDegree
+module
+
+public import RealRooted.Bezoutian.LowDegree
 
 /-!
 # Global forward Wronskian bridge
@@ -24,6 +26,8 @@ same-degree case by padding `q` with a linear factor whose root lies above
 (respectively below) every root of `p`, and adding the two resulting global
 inequalities.
 -/
+
+public section
 
 open Polynomial
 

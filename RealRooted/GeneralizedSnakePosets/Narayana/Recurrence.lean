@@ -1,6 +1,8 @@
-import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
-import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
+module
+
+public import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
+public import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
 
 /-!
 # Modified-Narayana recurrence and coefficient algebra
@@ -10,9 +12,9 @@ Narayana polynomials and derives the auxiliary-polynomial coefficient and
 degree consequences of the all-rank recurrence hypothesis.
 -/
 
-open Polynomial Filter
+public noncomputable section
 
-noncomputable section
+open Polynomial Filter
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

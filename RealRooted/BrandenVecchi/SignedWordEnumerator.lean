@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SignedWords
-import Mathlib.Algebra.BigOperators.Fin
+module
+
+public import RealRooted.BrandenVecchi.SignedWords
+public import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # Weighted finite signed-word enumerators
@@ -9,11 +11,11 @@ The Chow-polynomial identification and the negative-run compression argument
 are separate later layers.
 -/
 
+@[expose] public noncomputable section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BrandenVecchi
-
-noncomputable section
 
 variable {R : Type*} [CommSemiring R]
 
@@ -353,7 +355,5 @@ theorem signedWordEnumerator_add_zero_letters {q p : ℕ}
         (extendSignedLetterWeight (signedLetterExtend q p r s).toEmbedding weight) n :=
   signedWordEnumerator_extend (signedLetterExtend q p r s)
     (signedLetterExtend_isNegative_iff q p r s) weight n
-
-end
 
 end RealRooted.BrandenVecchi

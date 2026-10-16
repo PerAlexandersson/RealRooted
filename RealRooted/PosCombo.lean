@@ -1,9 +1,11 @@
-import RealRooted.WeightedSum
-import RealRooted.MaWang
-import RealRooted.ObreschkoffContinuity
-import RealRooted.PosCombo.Degree
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.DegreeDropReversal
+module
+
+public import RealRooted.WeightedSum
+public import RealRooted.MaWang
+public import RealRooted.ObreschkoffContinuity
+public import RealRooted.PosCombo.Degree
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.DegreeDropReversal
 
 /-!
 # Positive-combination real-rootedness
@@ -13,9 +15,9 @@ common-left interleaver forward direction, and convex-combination wrapper
 theorems.
 -/
 
-open Polynomial
+public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

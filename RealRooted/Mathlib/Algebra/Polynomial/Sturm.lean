@@ -3,8 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.FieldDivision
-import Mathlib.Data.List.GetD
+
+module
+
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import Mathlib.Data.List.GetD
 
 /-!
 # Signed polynomial remainder sequences
@@ -14,11 +17,11 @@ Sturm's theorem.  Starting from `p, q`, each later entry is the negative
 remainder of the preceding pair.  The zero remainder is not included.
 -/
 
+@[expose] public noncomputable section
+
 open scoped Polynomial
 
 namespace Polynomial
-
-noncomputable section
 
 variable {K : Type*} [Field K]
 
@@ -270,7 +273,5 @@ theorem eval_getLast_signedRemainderSequence_ne_zero {p q : K[X]}
 termination_by q.degree
 decreasing_by
   simpa only [degree_neg] using degree_mod_lt p hq
-
-end
 
 end Polynomial

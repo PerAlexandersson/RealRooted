@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
-import RealRooted.Applications.OEIS.A144438.HistoryExtension
-import RealRooted.Combinatorics.ComparisonBottomInsertion
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
+public import RealRooted.Applications.OEIS.A144438.HistoryExtension
+public import RealRooted.Combinatorics.ComparisonBottomInsertion
 
 /-!
 # Polynomial recurrences for Deco history fibers
@@ -11,12 +13,12 @@ records compatibility with the operator-defined exact layers.  The generic
 minimum-insertion identities remain in the combinatorics namespace.
 -/
 
+public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
 open MinimumInsertionWord
-
-noncomputable section
 
 /-- A height-two inverse word has no comparison bottoms. -/
 theorem comparisonBottomSupport_inverseWord_eq_empty_height_two
@@ -454,7 +456,5 @@ theorem admissibleCodePolynomial_eq_sum_exactLayers (n : Nat) :
   apply Finset.sum_congr rfl
   intro H hH
   exact historyFiberPolynomial_eq_exactLayer H
-
-end
 
 end RealRooted.Applications.OEIS

@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.WeightedShift
+module
+
+public import RealRooted.BrandenLeite.WeightedShift
 
 /-!
 # Position-dependent optional-rise matrices
@@ -8,9 +10,9 @@ diagonal weight family may depend on the current level.  The ordering matters:
 choosing a lower-shift entry changes the level read by every later factor.
 -/
 
-namespace RealRooted.BrandenLeite
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.BrandenLeite
 
 /-- One position-dependent optional-rise factor `I + D*S`. -/
 def optionalRiseMatrixFactor (a : ℕ → ℝ) (N : ℕ) :
@@ -330,7 +332,5 @@ theorem optionalRiseMatrix_lower_unitriangular
     ∀ i : Fin (N + 1), optionalRiseMatrix as N i i = 1 :=
   ⟨fun _ _ => optionalRiseMatrix_apply_eq_zero_of_lt as N,
     optionalRiseMatrix_apply_self as N⟩
-
-end
 
 end RealRooted.BrandenLeite

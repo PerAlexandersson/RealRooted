@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
 
 /-!
 # Expectations of rank-one determinant updates
@@ -12,6 +15,8 @@ The determinant `det (M - u uᵀ)` is affine in the rank-one matrix `u uᵀ`, so
 over a finite distribution of vectors `u` equals `(1 - ∂ₜ) det (M + t A) |_{t=0}` with
 `A = E[u uᵀ]`.  This is the one-variable step of Marcus–Spielman–Srivastava, Theorem 4.1.
 -/
+
+public section
 
 open Polynomial
 

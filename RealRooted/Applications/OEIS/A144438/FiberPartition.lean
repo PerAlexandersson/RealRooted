@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.AdmissibleCode
-import RealRooted.Applications.OEIS.A144438.FiberStability
+module
+
+public import RealRooted.Applications.OEIS.A144438.AdmissibleCode
+public import RealRooted.Applications.OEIS.A144438.FiberStability
 
 /-!
 # Normalization-fiber partition for admissible Deco codes
@@ -11,11 +13,11 @@ fiber polynomial.  It does not infer stability of the total: arbitrary sums
 of stable polynomials need not be stable.
 -/
 
+@[expose] public noncomputable section
+
 namespace RealRooted.Applications.OEIS
 
 open scoped BigOperators
-
-noncomputable section
 
 namespace DecoNormalizedCode
 
@@ -84,7 +86,5 @@ theorem admissibleCodePolynomial_eq_normalizedFiberPolynomial
       apply Finset.sum_congr rfl
       intro c hc
       exact (DecoNormalizedCode.fiberPolynomial_eq_sum_decorations c).symm
-
-end
 
 end RealRooted.Applications.OEIS

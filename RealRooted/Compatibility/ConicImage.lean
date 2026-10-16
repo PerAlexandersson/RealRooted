@@ -1,8 +1,10 @@
-import RealRooted.Compatibility.Basic
+module
+
+public import RealRooted.Compatibility.Basic
+
+public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

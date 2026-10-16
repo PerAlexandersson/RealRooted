@@ -18,11 +18,9 @@ This file extracts the real interval-integral form of the beta integral from
 Mathlib's complex-valued API.
 -/
 
-@[expose] public section
+public noncomputable section
 
 open MeasureTheory Set
-
-noncomputable section
 
 namespace intervalIntegral
 

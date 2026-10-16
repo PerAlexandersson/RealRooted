@@ -1,9 +1,11 @@
-import RealRooted.CommonInterleaverTwo
-import RealRooted.Mathlib.Data.List.Sort.Endpoint
+module
+
+public import RealRooted.CommonInterleaverTwo
+public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+
+@[expose] public noncomputable section
 
 open Polynomial
-
-noncomputable section
 
 namespace RealRooted
 

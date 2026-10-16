@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.StrictBlock
-import Mathlib.Algebra.BigOperators.Pi
-import Mathlib.Combinatorics.Enumerative.Composition
+module
+
+public import RealRooted.ParkingFunctions.Descents.StrictBlock
+public import Mathlib.Algebra.BigOperators.Pi
+public import Mathlib.Combinatorics.Enumerative.Composition
 
 /-!
 # Strict blocks indexed by a composition
@@ -10,9 +12,9 @@ This module assembles finite words from the canonical blocks of a Mathlib
 blocks.
 -/
 
-namespace RealRooted.ParkingFunctions
+@[expose] public noncomputable section
 
-noncomputable section
+namespace RealRooted.ParkingFunctions
 
 /-- Words which decrease strictly within every consecutive block of a
 composition. -/
@@ -171,7 +173,5 @@ theorem rename_strictCompositionBlockEnumerator {N : ℕ}
       strictCompositionBlockEnumerator c m := by
   simp_rw [strictCompositionBlockEnumerator_eq_prod_esymm,
     map_prod, MvPolynomial.rename_esymm]
-
-end
 
 end RealRooted.ParkingFunctions

@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.CentralFactorial
-import RealRooted.Interlacing.Reversal
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.CombinatorialExamples.CentralFactorial
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Reflected Euler-bidiagonal rows
@@ -10,9 +12,9 @@ second-order derivative recurrence depending on `n`. This module packages that i
 registers the two classical integer specializations used by A008957 and A191935.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.ReflectedEulerRows
 

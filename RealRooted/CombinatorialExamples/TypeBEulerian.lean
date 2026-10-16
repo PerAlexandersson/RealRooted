@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import Mathlib.Tactic
 
 /-!
 # Type B Eulerian Polynomials
@@ -8,9 +10,9 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for the type `B` Eulerian recurrence.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

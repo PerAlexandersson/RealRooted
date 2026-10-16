@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.Barrier
-import RealRooted.MultivariateStability.MixedCharacteristic
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+module
+
+public import RealRooted.MultivariateStability.Barrier
+public import RealRooted.MultivariateStability.MixedCharacteristic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 
 /-!
 # Starting barrier values for the Marcus–Spielman–Srivastava argument
@@ -12,10 +14,10 @@ For positive semidefinite `A_1, …, A_m` with `Σ A_i = 1`, let `P(y) = det(Σ 
 (issue #950, step M5).
 -/
 
+@[expose] public noncomputable section
+
 open Matrix MvPolynomial
 open scoped BigOperators MatrixOrder
-
-noncomputable section
 
 namespace RealRooted
 

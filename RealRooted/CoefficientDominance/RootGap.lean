@@ -1,7 +1,9 @@
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Root-free intervals and reciprocal gaps
@@ -9,6 +11,8 @@ import Mathlib.Tactic.Ring
 Elementary conversion from a root-free interval in reciprocal scale to a gap
 between consecutive positive magnitudes.
 -/
+
+public section
 
 namespace RealRooted.CoefficientDominance
 

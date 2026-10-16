@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+module
+
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 
 /-!
 # Liu opposite-sign compatibility branches
@@ -8,9 +10,9 @@ foundations with cross-owned gap data and the left/right branches used in
 Lily L. Liu's opposite-leading-sign compatibility criterion.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 namespace LiuOppositeSigns

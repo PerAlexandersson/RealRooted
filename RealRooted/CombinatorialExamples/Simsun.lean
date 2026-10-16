@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.MaWang
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.MaWang
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Tactic
 
 /-!
 # Simsun Descent Polynomials
@@ -9,9 +11,9 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for the simsun descent recurrence.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted
 

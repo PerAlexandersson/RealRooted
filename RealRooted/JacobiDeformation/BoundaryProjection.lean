@@ -1,6 +1,8 @@
-import RealRooted.JacobiDeformation.Kernel
-import RealRooted.JacobiDeformation.Moment
-import RealRooted.JacobiDeformation.Appell
+module
+
+public import RealRooted.JacobiDeformation.Kernel
+public import RealRooted.JacobiDeformation.Moment
+public import RealRooted.JacobiDeformation.Appell
 
 /-!
 # The diagonal coefficients of the Jacobi kernel
@@ -16,9 +18,9 @@ expansion is diagonal, this identifies all of its coefficients.  The first
 section proves the underlying alternating finite-sum identity for the weights.
 -/
 
-open Finset Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Finset Polynomial
 
 namespace RealRooted.JacobiDeformation
 

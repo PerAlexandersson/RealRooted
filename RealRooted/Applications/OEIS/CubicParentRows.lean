@@ -1,4 +1,6 @@
-import RealRooted.Graph.IndependencePolynomial.CubicParent
+module
+
+public import RealRooted.Graph.IndependencePolynomial.CubicParent
 
 /-!
 # Three rows from the cubic parent
@@ -14,9 +16,9 @@ The real-rootedness statements follow from `CubicParent.polynomial_splits`
 and preservation of splitting under coefficient reversal.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.CubicParentRows
 

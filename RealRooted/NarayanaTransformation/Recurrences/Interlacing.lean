@@ -1,12 +1,14 @@
-import RealRooted.NarayanaTransformation.Recurrences.Identities
+module
+
+public import RealRooted.NarayanaTransformation.Recurrences.Identities
 
 /-!
 # Generalized Narayana recurrence interlacing
 -/
 
-open Polynomial Finset
+public noncomputable section
 
-noncomputable section
+open Polynomial Finset
 
 namespace RealRooted
 

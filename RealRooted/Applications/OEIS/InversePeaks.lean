@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # The recurrence-defined inverse-peak polynomial family
@@ -10,9 +12,9 @@ rows and successor theorem recover the virtual-seed presentation exactly.
 No inverse-permutation or peak-statistic interpretation is asserted here.
 -/
 
-open Polynomial
+@[expose] public noncomputable section
 
-noncomputable section
+open Polynomial
 
 namespace RealRooted.Applications.OEIS
 

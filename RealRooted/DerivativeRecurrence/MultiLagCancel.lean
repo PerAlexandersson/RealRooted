@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.General
+module
+
+public import RealRooted.DerivativeRecurrence.General
 
 /-!
 # Multi-lag cancellation degree laws
@@ -9,6 +11,8 @@ and an arbitrary state predicate.  In applications the state records the coeffic
 finite window below the proposed degree.  The local step may combine all lags before proving
 that every coefficient above the target cancels.
 -/
+
+public section
 
 open Polynomial
 

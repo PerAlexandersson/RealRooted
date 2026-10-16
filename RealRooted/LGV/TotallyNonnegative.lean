@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import LGV.Ordered
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import LGV.Ordered
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity from ordered LGV certificates
@@ -16,9 +18,9 @@ about the shape of the path matrix: Toeplitz and Pólya-frequency consequences
 belong in downstream adapters.
 -/
 
-namespace LGV.FinitePathNetwork
+public noncomputable section
 
-noncomputable section
+namespace LGV.FinitePathNetwork
 
 universe u v
 
@@ -37,7 +39,5 @@ theorem matrix_isTotallyNonneg_of_orderedCertificates
   intro n rows cols hrows hcols
   rw [← N.reindex_matrix rows cols]
   exact (certificate hrows hcols).det_nonneg fun p ↦ hweight p
-
-end
 
 end LGV.FinitePathNetwork

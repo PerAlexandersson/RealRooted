@@ -1,7 +1,9 @@
-import RealRooted.PFPolynomial
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.PFPolynomial
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Brändén's theorem: the log-concavity transform preserves Pólya frequency
@@ -18,6 +20,8 @@ half-plane: this property holds for evaluation at `0`, survives composition with
 and pointwise limits, and holds for the Catalan-type moment sequence obtained from Laguerre-type
 approximations; a factorization of the transform then gives real-rootedness.
 -/
+
+@[expose] public section
 
 
 

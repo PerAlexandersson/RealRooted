@@ -17,11 +17,9 @@ value `i` means that the position of `i + 1` exceeds the position of `i` by
 at least two. The polynomial is the sum over these actual permutations.
 -/
 
-@[expose] public section
+@[expose] public noncomputable section
 
 open Polynomial Finset
-
-noncomputable section
 
 namespace RealRooted.ZigzagEulerian
 

@@ -1,8 +1,12 @@
-import RealRooted.Tactic.WagnerX.Core
+module
+
+public import RealRooted.Tactic.WagnerX.Core
 
 /-!
 # Wagner `X`-shift obstructions
 -/
+
+public section
 
 open Polynomial
 

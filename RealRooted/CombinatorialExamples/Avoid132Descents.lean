@@ -1,9 +1,11 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
-import RealRooted.NarayanaTransformation.Recurrences.Interlacing
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
+public import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+public import RealRooted.NarayanaTransformation.Endpoints
 
 /-!
 # Descents of `132`-avoiding permutations
@@ -20,6 +22,8 @@ The proof encodes permutations as lists, decomposes a `132`-avoider at its large
 All of this is private; the public interface is stated for the staging API
 `Equiv.Perm.avoiders` and `Equiv.Perm.descentCount`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 open RealRooted.SimionSchmidt (Avoids132)

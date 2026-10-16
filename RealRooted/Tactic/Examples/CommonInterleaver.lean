@@ -1,4 +1,8 @@
-import RealRooted.Tactic.CommonInterleaver
+module
+
+public import RealRooted.Tactic.CommonInterleaver
+
+public section
 
 open Polynomial
 

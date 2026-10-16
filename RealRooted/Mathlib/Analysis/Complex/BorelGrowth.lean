@@ -3,7 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+
+module
+
+public import Mathlib
 
 /-!
 # Entire functions with polynomially bounded real part are polynomials
@@ -31,8 +34,9 @@ bound.
   all `r > 0` agrees with a polynomial of natural degree at most `k`.
 -/
 
-section Coeff_part
+@[expose] public noncomputable section
 
+section Coeff_part
 
 /-!
 # Taylor coefficients of an entire function controlled by the real part on circles
@@ -44,10 +48,7 @@ For an entire function `h`, the `n`-th Taylor coefficient `a_n` (`n ≥ 1`) sati
 Consequences: a Cauchy-type estimate for `h'` in terms of `posMean h`, and the polynomial lemma.
 -/
 
-
 open Complex Real
-
-noncomputable section
 
 namespace Complex
 
@@ -266,19 +267,15 @@ private theorem coeff_eq_zero_of_growth {g : ℂ → ℂ} (hg : Differentiable �
   nlinarith
 
 end Complex
-end
 end Coeff_part
 
 section Borel_part
-
 
 /-!
 # An elementary Borel growth lemma and absorption of logarithmic error terms
 -/
 
-
 open Real
-
 
 namespace Complex
 
@@ -495,11 +492,7 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
 end Complex
 end Borel_part
 
-
-
 open Complex Filter Topology
-
-noncomputable section
 
 namespace Complex
 
