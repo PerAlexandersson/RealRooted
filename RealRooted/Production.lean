@@ -1197,6 +1197,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 import RealRooted.MultiplierSequence.PolyaSchur.Limit
+import RealRooted.MultiplierSequence.QuadraticExponential
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.MultiplierSequence.Sign
 import RealRooted.MultivariateHeilmannLieb
@@ -1648,6 +1649,8 @@ import RealRooted.Wronskian.Successor.Splits
 import RealRooted.Wronskian.WeakForward
 import RealRooted.PFPolynomial.PreserverClosure
 import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
+import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 import RealRooted.EulerBidiagonal.Preservation
 
