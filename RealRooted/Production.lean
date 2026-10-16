@@ -1762,6 +1762,7 @@ import RealRooted.Applications.OEIS.ClosedFormRows
 import RealRooted.MultivariateStability.MorrisOperator
 import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
 import RealRooted.MultivariateStability.MorrisBFlow
+import RealRooted.MultivariateStability.MorrisDFlow
 import RealRooted.BorceaBranden.Transcendental.LambdaBar
 import RealRooted.BorceaBranden.Transcendental.PivotForward
 import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
