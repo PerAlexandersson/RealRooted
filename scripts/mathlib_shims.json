@@ -2515,6 +2515,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Algebra/Exponential.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Algebra.Exponential"
+      ],
+      "note": "Injectivity of exponentials of continuous linear endomorphisms.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Combinatorics/Enumerative/Partition/YoungDiagram.lean"
       ],
       "modules": [
@@ -2571,6 +2581,16 @@
         "Mathlib.LinearAlgebra.TriangularBasis"
       ],
       "note": "Triangular linear maps under unitriangular generator changes.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Operator/Trotter.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Operator.Trotter"
+      ],
+      "note": "Lie-Trotter product formula for bounded operators on a real Banach space; proof found by Aristotle (Harmonic). Not yet proposed upstream.",
       "speculative": true
     }
   ]
