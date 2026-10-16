@@ -9,6 +9,8 @@ The definition and goals below are the literal downstream A199221 recurrence.
 
 open RealRooted Polynomial
 
+namespace A199221Downstream
+
 noncomputable section
 
 def A199221 : ℕ → ℝ[X]
@@ -32,3 +34,7 @@ example (n : ℕ) :
     RealRooted.StrictInterl (A199221 n) (A199221 (n + 1)) := by
   exact (show RealRooted.Interlaces (A199221 n) (A199221 (n + 1)) by
     rr_row_interlaces).toStrictInterl
+
+end
+
+end A199221Downstream
