@@ -1,5 +1,5 @@
 import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Data.Int.Star
+import Mathlib.Algebra.Order.Star.Int
 import Mathlib.LinearAlgebra.Lagrange
 import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 import RealRooted.CombinatorialExamples.BorosMoll.Basic

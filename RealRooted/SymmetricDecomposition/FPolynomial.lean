@@ -164,9 +164,6 @@ lemma eval_one_pos_of_hasNonnegCoeffs {h : ℝ[X]}
     0 < h.eval 1 :=
   eval_pos_of_hasNonnegCoeffs hh h0 zero_lt_one
 
-@[deprecated eval_pos_of_hasNonnegCoeffs (since := "2026-10-06")]
-alias eval_pos_of_hasNonnegCoeffs_of_pos := eval_pos_of_hasNonnegCoeffs
-
 lemma fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero {d : ℕ} {h : ℝ[X]}
     (hd : h.natDegree ≤ d) (hh : HasNonnegCoeffs h) (h0 : h ≠ 0) :
     (fPolynomial d h).natDegree = d := by

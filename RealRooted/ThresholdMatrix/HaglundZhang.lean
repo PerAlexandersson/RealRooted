@@ -1048,23 +1048,6 @@ end HaglundZhang
 
 namespace OEIS
 
-namespace Backend
-
-@[deprecated (since := "2026-10-06")] alias HZData := HaglundZhang.RowData
-@[deprecated (since := "2026-10-06")] alias hzRow := HaglundZhang.row
-@[deprecated (since := "2026-10-06")] alias hzMatrix := HaglundZhang.matrix
-@[deprecated (since := "2026-10-06")] alias hzBinomialMatrix := HaglundZhang.binomialMatrix
-@[deprecated (since := "2026-10-06")] alias hzTerminalPolynomial :=
-  HaglundZhang.terminalPolynomial
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_s_inversion_interlacing_weak :=
-  HaglundZhang.isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_binomial_eulerian_weak :=
-  HaglundZhang.isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_terminal_polynomial_realRooted :=
-  HaglundZhang.isRealRooted_terminalPolynomial
-
-end Backend
-
 end OEIS
 
 end RealRooted

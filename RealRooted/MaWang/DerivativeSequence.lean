@@ -391,20 +391,4 @@ end RealRooted.MaWang
 
 namespace RealRooted
 
-/-- Deprecated degree-restricted form of
-`MaWang.strictInterl_derivative_nonpos_sequence`. -/
-@[deprecated "Use `MaWang.strictInterl_derivative_nonpos_sequence`." (since := "2026-10-05")]
-theorem strictInterl_mw_derivative_nonpos_sequence {P : Nat → ℝ[X]}
-    {U V : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  MaWang.strictInterl_derivative_nonpos_sequence hbase hpos hV_nonpos hrec hdeg_lo hdeg_hi
-
 end RealRooted

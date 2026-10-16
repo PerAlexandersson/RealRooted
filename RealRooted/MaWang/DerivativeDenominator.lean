@@ -647,44 +647,4 @@ end RealRooted.MaWang
 
 namespace RealRooted
 
-/-- Deprecated degree-restricted form of
-`MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs`. -/
-@[deprecated "Use `MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs`."
-  (since := "2026-10-05")]
-theorem isRealRooted_of_mw_derivative_X_mul_sequence_of_nonneg_coeffs
-    {P : Nat → ℝ[X]} {U Q : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hQ_nonneg : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + (X * Q n) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  MaWang.isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs hbase hpos hnonneg
-    hQ_nonneg hrec hdeg_lo hdeg_hi
-
-/-- Deprecated degree-restricted form of
-`MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs`. -/
-@[deprecated "Use `MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs`."
-  (since := "2026-10-05")]
-theorem strictInterl_mw_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
-    {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + (C (c n) * X * (1 - X)) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  MaWang.strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs hbase hpos
-    hnonneg hc hrec hdeg_lo hdeg_hi
-
 end RealRooted

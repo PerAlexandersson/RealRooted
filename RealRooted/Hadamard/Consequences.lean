@@ -13,10 +13,6 @@ PF and interlacing closure under Hadamard products, reciprocal shift
 transport, and coefficientwise Pólya-frequency consequences.
 -/
 
-@[deprecated StrictInterl.interl_hadamardProduct_of_isPFPolynomial (since := "2026-10-07")]
-alias garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl :=
-  StrictInterl.interl_hadamardProduct_of_isPFPolynomial
-
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware
 interlacing inputs. -/
 theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}

@@ -403,9 +403,6 @@ theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_s
     (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
       hbottom53 hbottom54)
 
-@[deprecated (since := "2026-10-05")]
-alias narayanaPolynomial_one_succ_succ := RealRooted.narayanaPolynomial_one_succ_succ
-
 /-- The quotient-style and coefficient-side modified Narayana models agree. -/
 theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
     modifiedNarayanaPolynomial n = modifiedNarayanaCoeffPolynomial n :=
