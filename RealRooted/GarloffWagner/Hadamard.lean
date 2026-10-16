@@ -241,10 +241,6 @@ theorem StrictInterl.interl_hadamardProduct_of_isPFPolynomial {f g p q : ℝ[X]}
     hfeq hpeq hfnonneg hpnonneg hfsummand hpsummand
     hf hg hq hfg.2.1.1 hpq.2.1.1
 
-@[deprecated (since := "2026-10-06")]
-alias gwHadamardProductInterl_of_strictInterl :=
-  StrictInterl.interl_hadamardProduct_of_isPFPolynomial
-
 /-- Garloff--Wagner, Theorem 4(b), in the nonnegative-coefficient form used by
 the `Hadamard` module. -/
 theorem StrictInterl.interl_hadamardProduct {f g p q : ℝ[X]}

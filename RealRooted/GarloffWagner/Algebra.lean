@@ -93,15 +93,9 @@ theorem natDegree_factorialHadamardProduct_le_right (p q : ℝ[X]) :
 def divFactorial (p : ℝ[X]) : ℝ[X] :=
   diagonalOperator (fun k => ((Nat.factorial k : ℝ)⁻¹)) p
 
-@[deprecated (since := "2026-10-06")]
-alias gwL := divFactorial
-
 @[simp] theorem coeff_divFactorial (p : ℝ[X]) (k : ℕ) :
     (divFactorial p).coeff k = (Nat.factorial k : ℝ)⁻¹ * p.coeff k := by
   rw [divFactorial, coeff_diagonalOperator]
-
-@[deprecated (since := "2026-10-06")]
-alias coeff_gwL := coeff_divFactorial
 
 theorem divFactorial_zero :
     divFactorial (0 : ℝ[X]) = 0 := by
@@ -141,9 +135,6 @@ theorem divFactorial_eq_zero_iff (p : ℝ[X]) :
 theorem divFactorial_ne_zero_iff (p : ℝ[X]) :
     divFactorial p ≠ 0 ↔ p ≠ 0 := by
   rw [ne_eq, ne_eq, divFactorial_eq_zero_iff]
-
-@[deprecated (since := "2026-10-06")]
-alias gwL_ne_zero_iff := divFactorial_ne_zero_iff
 
 theorem natDegree_divFactorial_le (p : ℝ[X]) :
     (divFactorial p).natDegree ≤ p.natDegree := by
@@ -187,9 +178,6 @@ def antiderivative (p : ℝ[X]) : ℝ[X] :=
 @[simp] theorem coeff_antiderivative_succ (p : ℝ[X]) (n : ℕ) :
     (antiderivative p).coeff (n + 1) = (n + 1 : ℝ)⁻¹ * p.coeff n := by
   simp [antiderivative]
-
-@[deprecated (since := "2026-10-06")]
-alias coeff_gwJ_succ := coeff_antiderivative_succ
 
 @[simp] theorem antiderivative_zero :
     antiderivative (0 : ℝ[X]) = 0 := by

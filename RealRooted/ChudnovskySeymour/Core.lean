@@ -8,15 +8,6 @@ namespace RealRooted
 
 open Polynomial
 
-/-- Implicit-binder form of `chudnovskySeymour_compatiblePairHasCommonInterleaver`,
-kept for downstream callers. -/
-@[deprecated "Use `chudnovskySeymour_compatiblePairHasCommonInterleaver`." (since := "2026-10-05")]
-theorem compatiblePairHasCommonInterleaver_chudnovskySeymour
-    {f g : ℝ[X]} (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (h : Compatible f g) :
-    ∃ k : ℝ[X], StrictInterl f k ∧ StrictInterl g k :=
-  chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg h
-
 /-- **Chudnovsky--Seymour for two polynomials**, common-left form: compatible
 polynomials with positive leading coefficients have a common left interleaver.
 A common right interleaver is converted using degree closeness. -/
@@ -109,17 +100,5 @@ theorem IsInterlacingSeqNonneg.weightedSum_isPFPolynomial
       (hfs.1 ap.2 (hmem ap hap)).2
   exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg <|
     (hfs.familyCompatible ws hmem hweights).imp_right And.right
-
-/-- `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible` with an unused
-nonnegativity hypothesis, kept for downstream callers. -/
-@[deprecated "Use `chudnovskySeymour_pairwiseCompatible_iff_familyCompatible`."
-  (since := "2026-10-05")]
-theorem chudnovskySeymour_pairwiseCompatible_iff_familyCompatible_nonnegCoeffs
-    {fs : List ℝ[X]}
-    (hrr : ∀ f ∈ fs, f ≠ 0 ∧ f.Splits)
-    (hpos : ∀ f ∈ fs, HasPosLeadingCoeff f)
-    (_hnn : ∀ f ∈ fs, HasNonnegCoeffs f) :
-    PairwiseCompatible fs ↔ FamilyCompatible fs :=
-  chudnovskySeymour_pairwiseCompatible_iff_familyCompatible hrr hpos
 
 end RealRooted

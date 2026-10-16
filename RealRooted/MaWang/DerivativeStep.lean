@@ -248,23 +248,6 @@ theorem strictInterl_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
     hv_nonpos
 
 /-- Deprecated degree-restricted form of
-`strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits`."
-  (since := "2026-10-06")]
-theorem strictInterl_derivative_X_mul_of_nonneg_on_roots {f u q : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + (X * q) * f.derivative).natDegree)
-    (hdeg_hi : (u * f + (X * q) * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (X * q) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hf_roots : ∀ r, f.IsRoot r → r ≤ 0)
-    (hq_nonneg : ∀ r, f.IsRoot r → 0 ≤ q.eval r) :
-    StrictInterl f (u * f + (X * q) * f.derivative) :=
-  strictInterl_derivative_X_mul_of_nonneg_on_roots_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos
-    hf_roots hq_nonneg
-
-/-- Deprecated degree-restricted form of
 `strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits`. -/
 @[deprecated "Use `strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits`."
   (since := "2026-10-06")]
@@ -322,58 +305,6 @@ theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
     StrictInterl f (u * f + (-(C c) * X * (1 + X)) * f.derivative) :=
   strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits hf hdeg_lo hdeg_hi
     hF_pos hf_pos hc hroot_hi
-
-/-- Deprecated degree-restricted form of
-`strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc`. -/
-@[deprecated "Use `strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc`."
-  (since := "2026-10-06")]
-theorem strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_interval
-    {f u : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo :
-      f.natDegree ≤
-        (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative).natDegree ≤
-        f.natDegree + 1)
-    (hF_pos :
-      HasPosLeadingCoeff
-        (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
-    (hroot_hi : ∀ r, f.IsRoot r → r ≤ -(1 / 2 : ℝ)) :
-    StrictInterl f (u * f + ((1 + X) * (1 + C (2 : ℝ) * X)) * f.derivative) :=
-  strictInterl_derivative_one_add_X_mul_one_add_two_mul_X_of_roots_in_Icc hf hdeg_lo
-    hdeg_hi hF_pos hf_pos hroot_lo hroot_hi
-
-/-- Deprecated degree-restricted form of `strictInterl_derivative_neg_const_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_neg_const_of_splits`." (since := "2026-10-06")]
-theorem strictInterl_derivative_neg_const {f u : ℝ[X]} {c : ℝ}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + C (-c) * f.derivative).natDegree)
-    (hdeg_hi : (u * f + C (-c) * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + C (-c) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hc : 0 ≤ c) :
-    StrictInterl f (u * f + C (-c) * f.derivative) :=
-  strictInterl_derivative_neg_const_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos hc
-
-/-- Deprecated degree-restricted form of `strictInterl_derivative_neg_C_mul_X_sq_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_neg_C_mul_X_sq_of_splits`." (since := "2026-10-06")]
-theorem strictInterl_derivative_neg_C_mul_X_sq {f u : ℝ[X]} {c : ℝ}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo :
-      f.natDegree ≤ (u * f + (-(C c) * X ^ 2) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (-(C c) * X ^ 2) * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (-(C c) * X ^ 2) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hc : 0 ≤ c) :
-    StrictInterl f (u * f + (-(C c) * X ^ 2) * f.derivative) :=
-  strictInterl_derivative_neg_C_mul_X_sq_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos hc
 
 end RealRooted.MaWang
 
