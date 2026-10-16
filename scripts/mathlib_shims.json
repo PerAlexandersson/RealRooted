@@ -2602,6 +2602,16 @@
       ],
       "note": "Lie-Trotter product formula for bounded operators on a real Banach space; proof found by Aristotle (Harmonic). Not yet proposed upstream.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Operator/TriangularExp.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Operator.TriangularExp"
+      ],
+      "note": "Convergence of normalized upper-triangular operator exponentials; proof found by Aristotle (Harmonic). Not yet proposed upstream.",
+      "speculative": true
     }
   ]
 }

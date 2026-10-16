@@ -1910,6 +1910,7 @@ import RealRooted.MultivariateStability.MorrisOperator
 import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
 import RealRooted.MultivariateStability.MorrisBFlow
 import RealRooted.MultivariateStability.MorrisDFlow
+import RealRooted.MultivariateStability.MorrisEigenfunction
 import RealRooted.BorceaBranden.Transcendental.LambdaBar
 import RealRooted.BorceaBranden.Transcendental.PivotForward
 import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
@@ -2031,3 +2032,4 @@ import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
+import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
