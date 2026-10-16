@@ -1,11 +1,15 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # OEIS test-bed mixed Liu--Wang examples
 
 Regression examples for mixed Liu--Wang sequence frontends.
 -/
+
+public section
 
 open Polynomial
 

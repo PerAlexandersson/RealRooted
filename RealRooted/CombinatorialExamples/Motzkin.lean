@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Tactic
 
 /-!
 # Shifted Motzkin Polynomials
@@ -9,6 +11,8 @@ Interlacing and root-bound facts for the Motzkin polynomials
 `M_k = ∑_a C(k, 2a) Cat_a X^a`, which count Motzkin paths of length `k` by up steps, through
 their recurrence `(k + 2) M_k = (2k + 1) M_(k-1) + (k - 1) (4X - 1) M_(k-2)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

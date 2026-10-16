@@ -1,6 +1,8 @@
-import RealRooted.Basic.ProperPosition
-import RealRooted.Interlacing.Euclid
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
+module
+
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Interlacing.Euclid
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Interlacing from a division remainder
@@ -17,6 +19,8 @@ order-three recurrences with characteristic polynomial `(λ - q)³` have this sh
 
 The explicit root bracketing was found by Aristotle and ported here.
 -/
+
+public section
 
 open Polynomial Filter
 

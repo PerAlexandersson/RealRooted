@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.BrandenVecchi.ChowContinuity
-import RealRooted.BrandenVecchi.ChowGeometricScaling
-import RealRooted.BrandenVecchi.ChowTotallyNonneg
+module
+
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.BrandenVecchi.ChowContinuity
+public import RealRooted.BrandenVecchi.ChowGeometricScaling
+public import RealRooted.BrandenVecchi.ChowTotallyNonneg
 
 /-!
 # Projective regularization of zero-prefix Chow symbols
@@ -13,6 +15,8 @@ every parameter, specializes at zero to the finite binomial symbol, and for a
 nonzero parameter is the geometric scaling of the unit-normalized
 `(epsilon + z)^N a(z)` approximation.
 -/
+
+@[expose] public section
 
 open Filter Matrix Polynomial Topology
 

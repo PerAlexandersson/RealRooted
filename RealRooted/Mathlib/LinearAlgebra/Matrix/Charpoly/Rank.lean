@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.Eigenspace.Zero
-import Mathlib.LinearAlgebra.Charpoly.ToMatrix
-import Mathlib.LinearAlgebra.Matrix.Rank
+module
+
+public import Mathlib.LinearAlgebra.Eigenspace.Zero
+public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+public import Mathlib.LinearAlgebra.Matrix.Rank
 
 /-!
 # Matrix rank and zero roots of the characteristic polynomial
@@ -8,6 +10,8 @@ import Mathlib.LinearAlgebra.Matrix.Rank
 This file records the general relationship between matrix nullity and the
 geometric and algebraic multiplicities of the zero eigenvalue.
 -/
+
+public section
 
 namespace Matrix
 

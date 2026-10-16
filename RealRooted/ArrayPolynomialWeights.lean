@@ -1,10 +1,14 @@
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Basic.Real.Basic
-import Mathlib.Data.Nat.Factorial.Basic
-import Mathlib.Data.Nat.Choose.Sum
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Nat.Factorial.Basic
+public import Mathlib.Data.Nat.Choose.Sum
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.AffineLagStrict
+module
+
+public import RealRooted.DerivativeRecurrence.AffineLagStrict
 
 /-!
 # Lower-reentrant-corner recurrence
@@ -7,6 +9,8 @@ We formalize the recurrence by the offset `n = h - 2`.  Thus row `n` below
 is the height-`n+2` row from the source recurrence.  No polyomino or corner-
 statistic interpretation is asserted here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

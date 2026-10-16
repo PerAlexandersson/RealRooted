@@ -1,6 +1,8 @@
-import RealRooted.JensenPencilPositiveContraction
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.JensenPencilPositiveContraction
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.RootContinuity
 
 /-!
 # Jensen-pencil contraction
@@ -9,6 +11,8 @@ Positive translation regularizes vanishing constant terms.  Compatibility of
 the translated Schur--Szegő endpoints follows from the positive contraction,
 and coefficientwise closure of the PF cone returns the unshifted pencil.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

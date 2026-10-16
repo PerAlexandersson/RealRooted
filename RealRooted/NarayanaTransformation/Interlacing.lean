@@ -1,5 +1,7 @@
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
+module
+
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
 
 /-!
 # The Narayana transform preserves oriented interlacing
@@ -11,6 +13,8 @@ so the monomial-chain interlacing upgrade `strictInterl_map_of_monomialChain` sh
 preserves oriented interlacing of nonnegative-coefficient inputs
 (`strictInterl_narayanaTransform`).  Compositions of Narayana transforms inherit the property.
 -/
+
+@[expose] public section
 
 open Polynomial
 

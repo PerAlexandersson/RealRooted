@@ -1,6 +1,8 @@
-import Mathlib.Algebra.LinearRecurrence
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.LinearRecurrence
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
 
 /-!
 # Quadratic linear recurrences
@@ -9,6 +11,8 @@ This Mathlib-shaped shim packages a second-order constant-coefficient
 recurrence and its elementary factor telescoping identity. It is purely
 algebraic; real root bounds and explicit quadratic formulae belong to clients.
 -/
+
+@[expose] public section
 
 namespace LinearRecurrence
 

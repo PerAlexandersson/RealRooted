@@ -1,5 +1,9 @@
-import Mathlib
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import Mathlib
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+@[expose] public section
 
 open Finset Equiv
 
@@ -164,7 +168,7 @@ private lemma sign_sortEquiv {s t : Finset (Fin N)} {k : ℕ} (hs : s.card = k) 
     rw [← pow_mul, mul_comm, pow_mul]; simp
   linear_combination ((-1 : ℤ) ^ ∑ z ∈ t, (z:ℕ)) * ((-1 : ℤ) ^ ∑ z ∈ s, (z:ℕ)) * this
 
-private lemma card_compl_eq {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) : sᶜ.card = N - k := by
+lemma card_compl_eq {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) : sᶜ.card = N - k := by
   rw [Finset.card_compl, Fintype.card_fin, h]
 
 /-- Jacobi's complementary minor identity (with `A * B = 1`). -/

@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 
 /-!
 # Nonsingular approximation of totally nonnegative matrices
@@ -9,6 +11,8 @@ first applies a small Gaussian smoothing and then a small northwest-corner
 update, strictly raising rank. Once full rank is reached, the step is the
 identity.
 -/
+
+@[expose] public section
 
 open Filter Topology
 open scoped Topology

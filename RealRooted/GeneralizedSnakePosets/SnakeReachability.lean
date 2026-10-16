@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.SnakeCover
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeCover
 
 /-!
 # Reachability for generalized snake posets
@@ -7,6 +9,8 @@ This module contains bounded reachability in the directed cover graph of a
 Braun--Jal generalized snake poset, together with the all-`R` and all-`L`
 constant-word reachability criteria used by the concrete board model.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace GeneralizedSnakePosets

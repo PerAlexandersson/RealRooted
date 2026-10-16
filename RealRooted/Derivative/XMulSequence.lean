@@ -1,4 +1,6 @@
-import RealRooted.Derivative.FamilyClosure
+module
+
+public import RealRooted.Derivative.FamilyClosure
 
 /-!
 # Split sequences obtained from a differentiated `X`-multiple
@@ -6,6 +8,8 @@ import RealRooted.Derivative.FamilyClosure
 Multiplication by a split polynomial after differentiating `X * p` preserves splitting.
 The sequence form packages the induction used by degree-jump-two rows.
 -/
+
+public section
 
 open Polynomial
 

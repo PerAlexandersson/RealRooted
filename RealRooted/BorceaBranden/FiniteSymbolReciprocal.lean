@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.Multiaffine.ReciprocalRight
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.Multiaffine.ReciprocalRight
 
 /-!
 # The source-reciprocal finite-symbol identity
@@ -9,6 +11,8 @@ This module proves the algebraic identity used in the reciprocal step of
 Borcea--Branden, arXiv:0809.0401, Lemma 2.2.  Only the finite source block is
 reciprocated; the target variables are unrestricted spectators.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

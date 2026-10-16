@@ -1,8 +1,12 @@
-import RealRooted.Tactic.FiniteSymbolPF
+module
+
+public import RealRooted.Tactic.FiniteSymbolPF
 
 /-!
 # Smoke examples for direct finite-symbol PF endpoints
 -/
+
+public section
 
 open Polynomial
 

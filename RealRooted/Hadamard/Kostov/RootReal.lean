@@ -1,6 +1,10 @@
-import RealRooted.Hadamard.Kostov.Eigen
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.Wronskian.Successor.Interlacing
+module
+
+public import RealRooted.Hadamard.Kostov.Eigen
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.Wronskian.Successor.Interlacing
+
+@[expose] public section
 
 open Polynomial
 

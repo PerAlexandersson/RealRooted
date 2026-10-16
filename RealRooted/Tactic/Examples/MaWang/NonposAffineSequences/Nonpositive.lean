@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Sequences
+module
+
+public import RealRooted.Tactic.MaWang.Sequences
 
 /-!
 # Ma--Wang nonpositive-affine sequence regression examples
 
 Regression examples for nonpositive-affine Ma--Wang sequence frontends.
 -/
+
+public section
 
 open Polynomial
 

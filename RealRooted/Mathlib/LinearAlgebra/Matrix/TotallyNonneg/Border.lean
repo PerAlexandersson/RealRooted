@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
 
 /-!
 # Zero borders of totally nonnegative matrices
@@ -8,6 +10,8 @@ coordinate preserves total nonnegativity.  The theorem is phrased in terms of
 the first row, first column, and trailing block so clients need not commit to a
 particular block-matrix encoding.
 -/
+
+public section
 
 namespace Matrix
 

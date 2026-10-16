@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Hadamard
+module
+
+public import RealRooted.Tactic.Hadamard
+
+public section
 
 open Polynomial
 

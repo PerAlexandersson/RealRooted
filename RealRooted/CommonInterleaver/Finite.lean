@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootSlots
+module
+
+public import RealRooted.CommonInterleaver.RootSlots
 
 /-!
 # Common interleavers: finite families
@@ -6,6 +8,8 @@ import RealRooted.CommonInterleaver.RootSlots
 Finite intersections of root-slot intervals, degree extrema for finite families,
 and the pairwise root-slot intersection furnished by a common interleaver.
 -/
+
+@[expose] public section
 
 open Polynomial
 

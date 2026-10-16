@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.ToeplitzFin
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.RingTheory.PowerSeries.Inverse
+module
+
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.ToeplitzFin
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.RingTheory.PowerSeries.Inverse
 
 /-!
 # Finite Toeplitz algebra for two-kernel rows
@@ -10,6 +12,8 @@ This file identifies finite Toeplitz matrix products with truncated formal
 power-series products.  It then packages the literal coefficient rows of
 `g(z) / (1 - X g(z) h(z))` and relates them to finite kernel rows.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial BigOperators
 

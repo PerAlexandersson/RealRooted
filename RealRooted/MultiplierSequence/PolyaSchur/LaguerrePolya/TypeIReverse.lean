@@ -1,7 +1,9 @@
-import RealRooted.MultiplierSequence.PolyaSchur.Factorial
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.MultiplierSequence.PolyaSchur.Limit
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
 /-!
 # Reverse Type-I Pólya--Schur bridge
@@ -15,6 +17,8 @@ The positive-radius hypothesis is essential for the raw `tsum`-based
 definition of `complexExpGeneratingFunction`: outside its convergence disc,
 a nonsummable series is assigned the value zero.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

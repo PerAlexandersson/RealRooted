@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Ordered specialization as one substitution
@@ -6,6 +8,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 This file identifies iterated scalar specialization with a single
 multivariate-polynomial substitution.
 -/
+
+public section
 
 namespace MvPolynomial
 

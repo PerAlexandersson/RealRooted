@@ -1,5 +1,7 @@
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.Tactic.Ring
 
 /-!
 # Ordered quadratic inequalities
@@ -8,6 +10,8 @@ This file supplements `Mathlib.Algebra.QuadraticDiscriminant` with elementary
 ordered-ring consequences of global nonnegativity and nonpositive
 discriminant.
 -/
+
+public section
 
 open Filter
 

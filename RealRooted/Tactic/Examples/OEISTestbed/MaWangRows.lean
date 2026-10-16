@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # OEIS test-bed Ma--Wang rows
@@ -8,6 +10,8 @@ exercised there in isolation.  Each row is defined by its recurrence
 `P (n + 1) = A n * (P n)' + B n * P n` or `P (n + 2) = a n * P (n + 1) + b n * P n`, and
 `rr_row_*` proves interlacing and real-rootedness.
 -/
+
+@[expose] public section
 
 open Polynomial
 

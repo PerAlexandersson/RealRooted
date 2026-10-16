@@ -1,5 +1,7 @@
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.Compatibility.CutTransform
+module
+
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Compatibility.CutTransform
 
 /-!
 # Sound generic closure for the finite P/Q cut transform
@@ -8,6 +10,8 @@ The initial ordered P/Q invariant does not preserve its cross clauses, as
 shown in `CutTransformObstruction`.  This module records the coefficient and
 same-colour conclusions that do hold for every ordered input family.
 -/
+
+@[expose] public section
 
 open Polynomial
 

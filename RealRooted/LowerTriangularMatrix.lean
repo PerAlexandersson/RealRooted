@@ -1,4 +1,6 @@
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.PFPolynomial
 
 /-!
 # Lower-triangular row-generating functions
@@ -8,6 +10,8 @@ statements: infinite lower-triangular matrices indexed by `ℕ`, their finite
 row products, row-generating polynomials, and the predicate that every row
 generating function is a PF polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

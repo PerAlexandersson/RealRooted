@@ -1,14 +1,16 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Ring.Parity
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Convex.Combination
-import Mathlib.Analysis.Normed.Module.Convex
-import Mathlib.RingTheory.Polynomial.Vieta
-import Mathlib.Tactic
-import Mathlib.Topology.MetricSpace.Basic
-import RealRooted.Mathlib.Data.Nat.Cast.Basic
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Ring.Parity
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Convex.Combination
+public import Mathlib.Analysis.Normed.Module.Convex
+public import Mathlib.RingTheory.Polynomial.Vieta
+public import Mathlib.Tactic
+public import Mathlib.Topology.MetricSpace.Basic
+public import RealRooted.Mathlib.Data.Nat.Cast.Basic
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Finite apolarity
@@ -18,6 +20,8 @@ polynomials.  The classical Grace apolarity theorem uses the specialization to
 complex coefficients, but the algebraic pairing and its elementary API are
 valid over any commutative ring.
 -/
+
+@[expose] public section
 
 open Polynomial
 

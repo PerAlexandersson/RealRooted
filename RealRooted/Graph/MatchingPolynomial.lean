@@ -1,6 +1,8 @@
-import RealRooted.Graph.IndependencePolynomial.Recurrence
-import Mathlib.Combinatorics.SimpleGraph.LineGraph
-import Mathlib.Combinatorics.SimpleGraph.Matching
+module
+
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
+public import Mathlib.Combinatorics.SimpleGraph.LineGraph
+public import Mathlib.Combinatorics.SimpleGraph.Matching
 
 /-!
 # Matching-polynomial graph interface
@@ -9,6 +11,8 @@ This file defines matching-generating and intrinsic edge-matching polynomials,
 relates their coefficients, and proves that line graphs are claw-free.
 It deliberately does not import the high-level claw-free real-rootedness theorem.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

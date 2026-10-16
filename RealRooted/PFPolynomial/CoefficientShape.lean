@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.CoefficientShape
+public import RealRooted.PFPolynomial
 
 /-!
 # Coefficient-shape consequences of Pólya-frequency polynomials
@@ -9,6 +11,8 @@ Pólya-frequency certificate.  It remains separate from the core PF API so
 clients that only need root geometry do not inherit the coefficient-shape
 dependency closure.
 -/
+
+public section
 
 open Polynomial
 

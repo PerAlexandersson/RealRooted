@@ -1,6 +1,8 @@
-import RealRooted.EulerBidiagonal
-import RealRooted.Interlacing.RootCountSigns
-import RealRooted.RootCounting.SignChanges
+module
+
+public import RealRooted.EulerBidiagonal
+public import RealRooted.Interlacing.RootCountSigns
+public import RealRooted.RootCounting.SignChanges
 
 /-!
 # The general Euler step `κ(θ + a)(θ + b) + X(u + vθ)`
@@ -19,6 +21,8 @@ one higher degree.  The proof evaluates the identity
 polynomial `generalComparison q = 2κXq' + (κ(a+b+1) + vX) q` and counts sign changes.  This step
 covers the OEIS rows A156289, A166960, A166961, A166962 and A166972 (#1074).
 -/
+
+@[expose] public section
 
 
 open Polynomial

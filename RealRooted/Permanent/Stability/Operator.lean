@@ -1,4 +1,6 @@
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # The stability-preserving operator in the monotone-column proof
@@ -8,6 +10,8 @@ J. Haglund, M. Visontai, and D. G. Wagner, *Proof of the monotone column
 permanent conjecture*, arXiv:1010.2565v2. The repository's pointwise
 Lieb--Sokal theorem proves a weighted form of the operator directly.
 -/
+
+public section
 
 open scoped BigOperators
 

@@ -1,9 +1,11 @@
-import RealRooted.MultivariateStability
-import Mathlib.Analysis.Complex.Polynomial.GaussLucas
-import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-import Mathlib.Analysis.Complex.AbsMax
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
-import Mathlib.Combinatorics.Matroid.IndepAxioms
+module
+
+public import RealRooted.MultivariateStability
+public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
+public import Mathlib.Analysis.Complex.AbsMax
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.Combinatorics.Matroid.IndepAxioms
 
 /-!
 # Supports of real stable polynomials are jump systems
@@ -25,6 +27,8 @@ upper half-planes.
 
 The proof was found with the Aristotle prover and adapted to the current Mathlib API.
 -/
+
+@[expose] public section
 
 /-!
 ## Basic facts about real stable polynomials

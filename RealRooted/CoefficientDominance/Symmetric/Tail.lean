@@ -1,10 +1,14 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Order.Interval.Finset.Nat
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Order.Interval.Finset.Nat
 
 /-!
 # Tail contributions to elementary symmetric functions
 -/
+
+public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

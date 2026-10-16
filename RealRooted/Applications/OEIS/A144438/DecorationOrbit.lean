@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.InverseWord
-import Mathlib.Data.Finset.Insert
-import Mathlib.Data.Fintype.Powerset
+module
+
+public import RealRooted.Applications.OEIS.A144438.InverseWord
+public import Mathlib.Data.Finset.Insert
+public import Mathlib.Data.Fintype.Powerset
 
 /-!
 # Finite decoration swap orbits
@@ -10,6 +12,8 @@ supports. Consequently their swaps commute, and exceptionalizing an arbitrary
 finite decoration applies exactly the corresponding swap orbit while
 preserving the inverse word's ascent/descent comparisons.
 -/
+
+@[expose] public section
 
 namespace RealRooted.MinimumInsertionWord
 

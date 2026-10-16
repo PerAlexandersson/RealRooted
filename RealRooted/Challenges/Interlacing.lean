@@ -1,4 +1,6 @@
-import RealRooted.Basic.ProperPosition
+module
+
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing challenge entry point
@@ -75,6 +77,8 @@ See also the
 [interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacesPolynomial).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 open Polynomial
 

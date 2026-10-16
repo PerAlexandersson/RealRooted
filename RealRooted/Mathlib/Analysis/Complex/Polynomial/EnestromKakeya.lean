@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # The Eneström–Kakeya theorem
@@ -8,6 +10,8 @@ complex root `z` of `p` satisfies `‖z‖ ≤ 1`.  By scaling and reversal, if 
 positive then every root lies in the annulus `m ≤ ‖z‖ ≤ M`, where `m` and `M` bound the ratios
 `aᵢ / aᵢ₊₁` from below and above.
 -/
+
+public section
 
 namespace Polynomial
 

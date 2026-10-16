@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite alternating-sum bounds
@@ -8,6 +10,8 @@ import Mathlib.Tactic.Ring
 This Mathlib-shaped shim gives elementary finite truncation bounds for an
 alternating sum of nonnegative decreasing terms.
 -/
+
+public section
 
 namespace Finset
 

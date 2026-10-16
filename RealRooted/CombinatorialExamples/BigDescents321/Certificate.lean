@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
-import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
+public import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
 
 /-!
 # The universal kernel certificate
@@ -26,6 +28,8 @@ The certificate data and the kernel checks are in `Certificate/Data.lean`, gener
 * `bernH_nonneg`, `bernH_pos_zero`: the signs of `H̃`.
 * `bernP_eq`: the telescoping identity.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BigDescents321
 

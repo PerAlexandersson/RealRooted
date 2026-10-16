@@ -1,10 +1,12 @@
-import RealRooted.EulerianMixedCompatibility.Insertion
-import RealRooted.GarloffWagner
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
-import RealRooted.IteratedDerivativeShift
-import RealRooted.MaWang.Strong
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.EulerianMixedCompatibility.Insertion
+public import RealRooted.GarloffWagner
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.MaWang.Strong
+public import RealRooted.RootContinuity
 
 /-!
 # Mixed adjacent Euler compatibility
@@ -16,6 +18,8 @@ partial-fraction, regularization, and common-root-safe arguments.
 
 `E(c, d) p = (c + (d + 1) X) p + (X - X^2) p'`
 -/
+
+public section
 
 open Polynomial
 

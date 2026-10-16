@@ -12,7 +12,7 @@ This file records how determinant multilinearity interacts with interval
 integrals in one matrix row.
 -/
 
-public section
+@[expose] public section
 
 open scoped Interval
 

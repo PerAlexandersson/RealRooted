@@ -1,10 +1,14 @@
-import RealRooted.Tactic.CommonInterleaver.BasicRules
+module
+
+public import RealRooted.Tactic.CommonInterleaver.BasicRules
 
 /-!
 # OEIS compatibility and common-interleaver regression examples
 
 Compatibility aliases and basic common-interleaver certificate routing tests.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

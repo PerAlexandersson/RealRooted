@@ -1,4 +1,8 @@
-import RealRooted.Tactic.AissenSchoenbergWhitney
+module
+
+public import RealRooted.Tactic.AissenSchoenbergWhitney
+
+public section
 
 open Polynomial
 

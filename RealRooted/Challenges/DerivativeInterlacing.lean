@@ -1,9 +1,11 @@
-import RealRooted.Derivative.FamilyClosure
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
-import RealRooted.PolarDerivative
-import RealRooted.Derivative.Interlacing
-import RealRooted.Derivative.RootCounting
-import RealRooted.ObreschkoffConverse.Derivative
+module
+
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+public import RealRooted.PolarDerivative
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.Derivative.RootCounting
+public import RealRooted.ObreschkoffConverse.Derivative
 
 /-!
 # Derivative interlacing challenge entry point
@@ -117,6 +119,8 @@ degrees, and the preservation of interlacing under differentiation.  The
 root-list construction lives in `RealRooted.Derivative.Interlacing`; the
 preservation theorem is proved in `RealRooted.ObreschkoffConverse.Derivative`.
 -/
+
+public section
 
 open Polynomial
 

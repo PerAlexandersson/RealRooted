@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SmirnovRecurrence
-import RealRooted.BrandenVecchi.SmirnovSpecialization
+module
+
+public import RealRooted.BrandenVecchi.SmirnovRecurrence
+public import RealRooted.BrandenVecchi.SmirnovSpecialization
 
 /-!
 # Interlacing of literal Smirnov descent polynomials
@@ -8,6 +10,8 @@ This file applies the Gustafsson--Solus threshold-matrix theorem to the
 reversed-last-letter recurrence.  It keeps the zero-aware boundary cases, in
 particular the one-letter alphabet in word lengths at least two.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.AdmissibleCode
-import RealRooted.Applications.OEIS.A144438.FiberStability
+module
+
+public import RealRooted.Applications.OEIS.A144438.AdmissibleCode
+public import RealRooted.Applications.OEIS.A144438.FiberStability
 
 /-!
 # Normalization-fiber partition for admissible Deco codes
@@ -10,6 +12,8 @@ comparison-bottom monomial sum and identifies every inner sum with the stable
 fiber polynomial.  It does not infer stability of the total: arbitrary sums
 of stable polynomials need not be stable.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.GeneralRows
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
 
 /-!
 # Rows with an index-dependent multiplier
@@ -9,6 +11,8 @@ interlace.  The proof applies the shifted-cone form of Theorem C′ to
 `P (n + 2) = T (P (n + 1)) + s X P (n + 1)` with `T = generalStep κ a b (u n) v`, which also
 covers the regimes `u n + v (n + 1) ≤ 0` (A166960, A166961, A166962, A166972).
 -/
+
+@[expose] public section
 
 open Polynomial
 

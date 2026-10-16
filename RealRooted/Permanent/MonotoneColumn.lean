@@ -1,6 +1,8 @@
-import RealRooted.Permanent.MonotoneColumn.Reduction
-import RealRooted.Permanent.Stability.Ferrers
-import RealRooted.Permanent.Stability.Fractional
+module
+
+public import RealRooted.Permanent.MonotoneColumn.Reduction
+public import RealRooted.Permanent.Stability.Ferrers
+public import RealRooted.Permanent.Stability.Fractional
 
 /-!
 # The monotone column permanent theorem
@@ -16,6 +18,8 @@ Aristotle supplied the formal proofs of the five finite combinatorial
 identities used by the Ferrers induction; they were independently checked
 with AXLE before integration.
 -/
+
+public section
 
 namespace RealRooted
 namespace Permanent

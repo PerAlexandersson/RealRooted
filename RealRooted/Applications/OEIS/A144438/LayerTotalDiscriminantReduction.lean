@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 
 /-!
 # Two-rank discriminant reduction for the Deco layer total
@@ -9,6 +11,8 @@ the old-coordinate affine discriminants to that lower coordinate system and
 packages the resulting exact companion data.  It does not assert that the
 data is preserved at every rank.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

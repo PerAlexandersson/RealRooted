@@ -1,6 +1,10 @@
-import RealRooted.ArrayPolynomialDeterminantRecurrence
-import RealRooted.ArrayPolynomialSchur
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.ArrayPolynomialDeterminantRecurrence
+public import RealRooted.ArrayPolynomialSchur
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+
+@[expose] public section
 
 open Matrix
 open Polynomial

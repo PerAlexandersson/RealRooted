@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.PathPowerClique
+module
+
+public import RealRooted.CombinatorialExamples.PathPowerClique
 
 /-!
 # OEIS rows from reflected path-power subsequences
@@ -8,6 +10,8 @@ shifts of the path-power polynomials.  Four gap recurrences supply the needed
 Graeffe identities.  The identifications then give real-rootedness and strict
 consecutive interlacing from the path-power clique theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

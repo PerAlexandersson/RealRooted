@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
+module
+
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
 
 /-!
 # Parity specializations of the Jacobi deformation
@@ -17,6 +19,8 @@ through the central trinomial coefficients:
 where `T = Nat.centralTrinomial`.  These are the even and odd rows of OEIS
 A132885.
 -/
+
+public section
 
 open Finset
 

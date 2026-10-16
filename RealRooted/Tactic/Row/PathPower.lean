@@ -1,8 +1,15 @@
-import RealRooted.Applications.OEIS.PathPowerRows
-import RealRooted.Applications.OEIS.CubicParentRows
-import RealRooted.EulerOperator.Polar
-import RealRooted.Tactic.Row.Support
-import RealRooted.CombinatorialExamples.PathPowerGap
+module
+
+public import RealRooted.Applications.OEIS.PathPowerRows
+public import RealRooted.Applications.OEIS.CubicParentRows
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.Tactic.Row.Support
+public import RealRooted.CombinatorialExamples.PathPowerGap
+public meta import RealRooted.Applications.OEIS.PathPowerRows
+public meta import RealRooted.Applications.OEIS.CubicParentRows
+public meta import RealRooted.EulerOperator.Polar
+public meta import RealRooted.Tactic.Row.Support
+public meta import RealRooted.CombinatorialExamples.PathPowerGap
 
 /-!
 # Bounded path-power route for row tactics
@@ -13,16 +20,18 @@ subsequences by an exact search over `2 ≤ k ≤ 5`, `1 ≤ p ≤ k`, and
 characteristic polynomial of the powered companion matrix.
 -/
 
+@[expose] public section
+
 open Lean Elab Tactic Meta Polynomial Finset
 
 noncomputable section
 
 namespace RealRooted.Tactic
 
-private def intPolynomialToReal : ℤ[X] →+* ℝ[X] :=
+def intPolynomialToReal : ℤ[X] →+* ℝ[X] :=
   Polynomial.mapRingHom (Int.castRingHom ℝ)
 
-private theorem companion_map_intPolynomialToReal (k : ℕ) :
+theorem companion_map_intPolynomialToReal (k : ℕ) :
     (RealRooted.PathPowerGap.companion k (X : ℤ[X])).map intPolynomialToReal =
       RealRooted.PathPowerGap.companion k (X : ℝ[X]) := by
   apply Matrix.ext
@@ -30,11 +39,11 @@ private theorem companion_map_intPolynomialToReal (k : ℕ) :
   simp only [Matrix.map_apply, RealRooted.PathPowerGap.companion]
   split_ifs <;> simp [intPolynomialToReal]
 
-private def evaluatedRecurrence (k p : ℕ) : LinearRecurrence ℝ[X] :=
+def evaluatedRecurrence (k p : ℕ) : LinearRecurrence ℝ[X] :=
   ⟨k, fun i ↦ intPolynomialToReal
     ((RealRooted.PathPowerGap.coefficientList k p).getD i 0)⟩
 
-private theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
+theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
     LinearRecurrence.ofMatrix
       (RealRooted.PathPowerGap.companion k (X : ℝ[X]) ^ p) =
         evaluatedRecurrence k p := by
@@ -54,10 +63,10 @@ private theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
   rw [List.getD_eq_getElem _ _ hi]
   simp
 
-private abbrev reflectedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
+abbrev reflectedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
   ⟨E.order, fun i ↦ reflect (E.order - i) (E.coeffs i)⟩
 
-private theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
+theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
     {u : ℕ → ℝ[X]} (hu : E.IsSolution u) (D : ℕ)
     (hcoeff : ∀ i, (E.coeffs i).natDegree ≤ E.order - i)
     (hdegree : ∀ n, (u n).natDegree ≤ D + n) :
@@ -76,14 +85,14 @@ private theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
         lia
       rw [hindex, reflect_mul _ _ (hcoeff i) (hdegree (n + i))]
 
-private def prepend (a : ℝ[X]) (u : ℕ → ℝ[X]) : ℕ → ℝ[X]
+def prepend (a : ℝ[X]) (u : ℕ → ℝ[X]) : ℕ → ℝ[X]
   | 0 => a
   | n + 1 => u n
 
-private abbrev prependedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
+abbrev prependedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
   ⟨E.order + 1, fun i ↦ Fin.cases 0 E.coeffs i⟩
 
-private theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
+theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
     {u : ℕ → ℝ[X]} (hu : E.IsSolution u) (a : ℝ[X]) :
     (prependedRecurrence E).IsSolution (prepend a u) := by
   intro n
@@ -94,27 +103,27 @@ private theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
   change u (n + E.order) = ∑ i, E.coeffs i * u (n + i)
   exact hu n
 
-private theorem reflect_X_pow_mul_natCast (D n m : ℕ) :
+theorem reflect_X_pow_mul_natCast (D n m : ℕ) :
     reflect D (X ^ n * (m : ℝ[X])) = C (m : ℝ) * X ^ Polynomial.revAt D n := by
   rw [mul_comm]
   rw [show (m : ℝ[X]) = C (m : ℝ) by norm_num, reflect_C_mul_X_pow]
 
-private theorem reflect_X_mul_natCast (D m : ℕ) :
+theorem reflect_X_mul_natCast (D m : ℕ) :
     reflect D (X * (m : ℝ[X])) = C (m : ℝ) * X ^ Polynomial.revAt D 1 := by
   simpa only [pow_one] using reflect_X_pow_mul_natCast D 1 m
 
-private theorem reflect_X_pow_mul_C (D n : ℕ) (a : ℝ) :
+theorem reflect_X_pow_mul_C (D n : ℕ) (a : ℝ) :
     reflect D (X ^ n * C a) = C a * X ^ Polynomial.revAt D n := by
   rw [mul_comm, Polynomial.reflect_C_mul_X_pow]
 
-private theorem reflect_X_mul_C (D : ℕ) (a : ℝ) :
+theorem reflect_X_mul_C (D : ℕ) (a : ℝ) :
     reflect D (X * C a) = C a * X ^ Polynomial.revAt D 1 := by
   simpa only [pow_one] using reflect_X_pow_mul_C D 1 a
 
-private theorem C_natCast_eq (m : ℕ) : C (m : ℝ) = (m : ℝ[X]) := by
+theorem C_natCast_eq (m : ℕ) : C (m : ℝ) = (m : ℝ[X]) := by
   norm_num
 
-private theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
+theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
     (hcoeff : ∀ n ≤ D, f.coeff (D - n) = g.coeff n)
     (hf : f.natDegree ≤ D) (hg : g.natDegree ≤ D) : reflect D f = g := by
   ext n
@@ -125,7 +134,7 @@ private theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hf hn')]
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hg hn')]
 
-private inductive PathPowerKind where
+inductive PathPowerKind where
   | direct
   | reflected
   | shifted
@@ -135,7 +144,7 @@ private inductive PathPowerKind where
   | cubicOddReflect
   deriving BEq
 
-private structure PathPowerFit where
+structure PathPowerFit where
   k : Nat
   p : Nat
   c : Nat
@@ -144,14 +153,22 @@ private structure PathPowerFit where
   kind : PathPowerKind
   coeffs : Array QPoly := #[]
 
-private def qPathPower (k N : Nat) : QPoly :=
+end RealRooted.Tactic
+
+end
+
+public meta section
+
+namespace RealRooted.Tactic
+
+def qPathPower (k N : Nat) : QPoly :=
   QPoly.norm <| (Array.range (N + 1)).map fun i =>
     (((N - (k - 1) * i).choose i : Nat) : Rat)
 
-private def qReflect (D : Nat) (q : QPoly) : QPoly :=
+def qReflect (D : Nat) (q : QPoly) : QPoly :=
   QPoly.norm <| (Array.range (D + 1)).map fun i => q.coeff (D - i)
 
-private def qCubicEven : Nat → QPoly
+def qCubicEven : Nat → QPoly
   | 0 => QPoly.const 1
   | 1 => QPoly.norm #[1, 1]
   | 2 => QPoly.norm #[1, 5, 1]
@@ -160,7 +177,7 @@ private def qCubicEven : Nat → QPoly
         QPoly.norm #[0, 2, -1] * qCubicEven (n + 1) +
           QPoly.norm #[0, 0, 1] * qCubicEven n
 
-private def qCubicEvenReflect : Nat → QPoly
+def qCubicEvenReflect : Nat → QPoly
   | 0 => QPoly.const 1
   | 1 => QPoly.norm #[1, 1]
   | 2 => QPoly.norm #[1, 5, 1]
@@ -169,7 +186,7 @@ private def qCubicEvenReflect : Nat → QPoly
         QPoly.norm #[-1, 2] * qCubicEvenReflect (n + 1) +
           QPoly.X * qCubicEvenReflect n
 
-private def qCubicOddReflect : Nat → QPoly
+def qCubicOddReflect : Nat → QPoly
   | 0 => QPoly.const 1
   | 1 => QPoly.norm #[3, 1]
   | 2 => QPoly.norm #[5, 7, 1]
@@ -178,7 +195,7 @@ private def qCubicOddReflect : Nat → QPoly
         QPoly.norm #[-1, 2] * qCubicOddReflect (n + 1) +
           QPoly.X * qCubicOddReflect n
 
-private def PathPowerFit.row (fit : PathPowerFit) (n : Nat) : QPoly :=
+def PathPowerFit.row (fit : PathPowerFit) (n : Nat) : QPoly :=
   match fit.kind with
   | .direct => qPathPower fit.k (fit.p * n + fit.c)
   | .reflected =>
@@ -192,7 +209,7 @@ private def PathPowerFit.row (fit : PathPowerFit) (n : Nat) : QPoly :=
   | .cubicEvenReflect => qCubicEvenReflect n
   | .cubicOddReflect => qCubicOddReflect n
 
-private def legacyPathPowerCandidates : Array PathPowerFit := #[
+def legacyPathPowerCandidates : Array PathPowerFit := #[
   ⟨3, 3, 0, .anonymous, 3, .direct, #[]⟩,
   ⟨3, 3, 0, ``RealRooted.PathPowerRows.a109955, 3, .reflected, #[]⟩,
   ⟨3, 3, 2, ``RealRooted.PathPowerRows.a127893, 3, .reflected, #[]⟩,
@@ -205,7 +222,7 @@ private def legacyPathPowerCandidates : Array PathPowerFit := #[
   ⟨0, 0, 0, ``RealRooted.CubicParentRows.a114123, 3, .cubicEvenReflect, #[]⟩,
   ⟨0, 0, 0, ``RealRooted.CubicParentRows.a216182, 3, .cubicOddReflect, #[]⟩]
 
-private def legacyPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
+def legacyPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
   let some L ← linRec? P | return none
   unless (L.offset == 3 || L.offset == 4) && L.terms.all fun (_, i, _) => i == 0 do
     return none
@@ -215,9 +232,9 @@ private def legacyPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
       return some fit
   return none
 
-private abbrev QMatrix := Array (Array QPoly)
+abbrev QMatrix := Array (Array QPoly)
 
-private def qMatrixMul (A B : QMatrix) : QMatrix := Id.run do
+def qMatrixMul (A B : QMatrix) : QMatrix := Id.run do
   let k := A.size
   let mut C := Array.replicate k (Array.replicate k (QPoly.const 0))
   for i in [0:k] do
@@ -228,7 +245,7 @@ private def qMatrixMul (A B : QMatrix) : QMatrix := Id.run do
       C := C.set! i (C[i]!.set! j x)
   return C
 
-private def qMatrixPow (A : QMatrix) (p : Nat) : QMatrix := Id.run do
+def qMatrixPow (A : QMatrix) (p : Nat) : QMatrix := Id.run do
   let k := A.size
   let mut result := (Array.range k).map fun i =>
     (Array.range k).map fun j => QPoly.const (if i = j then 1 else 0)
@@ -236,7 +253,7 @@ private def qMatrixPow (A : QMatrix) (p : Nat) : QMatrix := Id.run do
     result := qMatrixMul result A
   return result
 
-private def qCompanion (k : Nat) : QMatrix :=
+def qCompanion (k : Nat) : QMatrix :=
   (Array.range k).map fun i => (Array.range k).map fun j =>
     if i + 1 < k then
       if j = i + 1 then QPoly.const 1 else QPoly.const 0
@@ -244,14 +261,14 @@ private def qCompanion (k : Nat) : QMatrix :=
       (if j = 0 then QPoly.X else QPoly.const 0) +
         if j + 1 = k then QPoly.const 1 else QPoly.const 0
 
-private def qTrace (A : QMatrix) : QPoly := Id.run do
+def qTrace (A : QMatrix) : QPoly := Id.run do
   let mut x := QPoly.const 0
   for i in [0:A.size] do
     x := x + (A[i]!)[i]!
   return x
 
 /-- Exact powered-companion recurrence coefficients, in increasing shift order. -/
-private def poweredCompanionCoeffs (k p : Nat) : Array QPoly := Id.run do
+def poweredCompanionCoeffs (k p : Nat) : Array QPoly := Id.run do
   let M := qMatrixPow (qCompanion k) p
   let mut power := M
   let mut traces := #[]
@@ -266,10 +283,10 @@ private def poweredCompanionCoeffs (k p : Nat) : Array QPoly := Id.run do
     charCoeffs := charCoeffs.push (QPoly.smul (-(1 / (m : Rat))) x)
   return (Array.range k).map fun i => -charCoeffs[k - i]!
 
-private initialize poweredCompanionCache :
+initialize poweredCompanionCache :
     IO.Ref (Array (Nat × Nat × Array QPoly)) ← IO.mkRef #[]
 
-private def cachedPoweredCompanionCoeffs (k p : Nat) : MetaM (Array QPoly) := do
+def cachedPoweredCompanionCoeffs (k p : Nat) : MetaM (Array QPoly) := do
   let cache ← poweredCompanionCache.get
   for (k', p', coeffs) in cache do
     if k == k' && p == p' then return coeffs
@@ -277,7 +294,7 @@ private def cachedPoweredCompanionCoeffs (k p : Nat) : MetaM (Array QPoly) := do
   poweredCompanionCache.set (cache.push (k, p, coeffs))
   return coeffs
 
-private def modelCoeffs (kind : PathPowerKind) (raw : Array QPoly) : Array QPoly :=
+def modelCoeffs (kind : PathPowerKind) (raw : Array QPoly) : Array QPoly :=
   match kind with
   | .direct => raw
   | .reflected | .padded =>
@@ -287,7 +304,7 @@ private def modelCoeffs (kind : PathPowerKind) (raw : Array QPoly) : Array QPoly
         (Array.range raw.size).map fun i => qReflect (raw.size - i) raw[i]!
   | _ => #[]
 
-private def recurrenceMatches (L : LinRecData) (coeffs : Array QPoly) : MetaM Bool := do
+def recurrenceMatches (L : LinRecData) (coeffs : Array QPoly) : MetaM Bool := do
   if L.offset != coeffs.size || L.terms.any fun (_, i, _) => i != 0 then return false
   for j in [0:coeffs.size] do
     let some a₀ ← L.coeffAt? j 0 0 | return false
@@ -295,7 +312,7 @@ private def recurrenceMatches (L : LinRecData) (coeffs : Array QPoly) : MetaM Bo
     unless a₀.eqv coeffs[j]! && a₁.eqv coeffs[j]! do return false
   return true
 
-private def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
+def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
   let some L ← linRec? P | return none
   let some rows ← linRecRows? L 8 | return none
   let kinds := #[PathPowerKind.direct, .reflected, .shifted, .padded]
@@ -313,7 +330,7 @@ private def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
             return some fit
   return none
 
-private def qpolyIntTerm (p : QPoly) : TacticM Term := do
+def qpolyIntTerm (p : QPoly) : TacticM Term := do
   let mut acc : Option Term := none
   for i in [0:p.coeffs.size] do
     let c := p.coeff i
@@ -337,7 +354,7 @@ private def qpolyIntTerm (p : QPoly) : TacticM Term := do
   | some t => `(($t : ℤ[X]))
   | none => `((0 : ℤ[X]))
 
-private def qpolyRealTerm (p : QPoly) : TacticM Term := do
+def qpolyRealTerm (p : QPoly) : TacticM Term := do
   let mut acc : Option Term := none
   for i in [0:p.coeffs.size] do
     let c := p.coeff i
@@ -361,7 +378,7 @@ private def qpolyRealTerm (p : QPoly) : TacticM Term := do
   | some t => `(($t : ℝ[X]))
   | none => `((0 : ℝ[X]))
 
-private def pathModelTerm (fit : PathPowerFit) : TacticM Term := do
+def pathModelTerm (fit : PathPowerFit) : TacticM Term := do
   let k := rowNumLit fit.k
   let p := rowNumLit fit.p
   let c := rowNumLit fit.c
@@ -379,11 +396,11 @@ private def pathModelTerm (fit : PathPowerFit) : TacticM Term := do
         (RealRooted.pathPowerCliquePolynomial $k ($p * n + $c))))
   | _ => throwError "rr_row: cubic models do not have a path-power term"
 
-private def recurrenceTerm (fit : PathPowerFit) : TacticM Term := do
+def recurrenceTerm (fit : PathPowerFit) : TacticM Term := do
   let coeffs ← fit.coeffs.mapM qpolyRealTerm
   `(LinearRecurrence.mk $(rowNumLit fit.order) ![$coeffs,*])
 
-private def assertLegacyPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM Ident := do
+def assertLegacyPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM Ident := do
   let Pi := mkIdent P
   let link := mkIdent `hlink_pathPower
   if fit.kind matches .direct then
@@ -455,7 +472,7 @@ private def assertLegacyPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM 
     throwError "rr_row: unsupported path-power recurrence order {fit.order}"
   return link
 
-private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM Ident := do
+def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM Ident := do
   let Pi := mkIdent P
   let link := mkIdent `hlink_pathPower
   let hcoeff := mkIdent `hcoeff_pathPower
@@ -663,7 +680,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
     clear $hcoeff:ident $hraw:ident $hmodel:ident $hP:ident))
   return link
 
-private def splitsTheorem (model : Name) : Option Name :=
+def splitsTheorem (model : Name) : Option Name :=
   if model == ``RealRooted.PathPowerRows.a109955 then
     some ``RealRooted.PathPowerRows.splits_a109955
   else if model == ``RealRooted.PathPowerRows.a127893 then
@@ -686,7 +703,7 @@ private def splitsTheorem (model : Name) : Option Name :=
     some ``RealRooted.CubicParentRows.a216182_splits
   else none
 
-private def interlacesTheorem (model : Name) : Option Name :=
+def interlacesTheorem (model : Name) : Option Name :=
   if model == ``RealRooted.PathPowerRows.a109955 then
     some ``RealRooted.PathPowerRows.strictInterl_a109955
   else if model == ``RealRooted.PathPowerRows.a127893 then
@@ -703,7 +720,7 @@ private def interlacesTheorem (model : Name) : Option Name :=
     some ``RealRooted.PathPowerRows.strictInterl_a277627
   else none
 
-private def applyLegacyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idxE : Expr)
+def applyLegacyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idxE : Expr)
     (hdegree link : Ident) : TacticM Unit := do
   let idx ← Term.exprToSyntax idxE
   let hleft : Term ← `($link:ident $idx)
@@ -746,7 +763,7 @@ private def applyLegacyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idxE 
     (← getMainGoal).assign (mkApp (mkConst thm) idxE)
     setGoals []
 
-private def applyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idx : Expr)
+def applyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idx : Expr)
     (hdegree link : Ident) : TacticM Unit := do
   let k := rowNumLit fit.k
   let p := rowNumLit fit.p

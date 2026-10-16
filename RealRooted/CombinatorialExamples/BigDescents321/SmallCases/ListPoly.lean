@@ -1,4 +1,7 @@
-import Mathlib.Algebra.Polynomial.Basic
+module
+
+public import Mathlib.Tactic.Ring
+public import Mathlib.Algebra.Polynomial.Basic
 
 /-!
 # Integer coefficient lists as polynomials
@@ -11,6 +14,8 @@ literal polynomial identities by kernel computation instead of `ring`.
 and multiplication. An identity between polynomial expressions built from `ofList` thus
 reduces to an equality of integer lists, which `decide` checks.
 -/
+
+@[expose] public section
 
 open Polynomial
 

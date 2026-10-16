@@ -1,4 +1,8 @@
-import RealRooted.Tactic.EulerOperator
+module
+
+public import RealRooted.Tactic.EulerOperator
+
+public section
 
 open Polynomial
 

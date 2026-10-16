@@ -1,4 +1,6 @@
-import Mathlib.LinearAlgebra.Vandermonde
+module
+
+public import Mathlib.LinearAlgebra.Vandermonde
 
 /-!
 # Ordered Vandermonde determinants
@@ -6,6 +8,8 @@ import Mathlib.LinearAlgebra.Vandermonde
 This file adds the strict positivity consequence of the Vandermonde
 determinant formula for a strictly increasing family.
 -/
+
+public section
 
 public section
 

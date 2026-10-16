@@ -1,10 +1,12 @@
-import Mathlib.Algebra.Polynomial.Taylor
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Analysis.Polynomial.CauchyBound
-import Mathlib.Topology.Algebra.Polynomial
-import Mathlib.Algebra.Ring.GeomSum
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.Polynomial.Taylor
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.Topology.Algebra.Polynomial
+public import Mathlib.Algebra.Ring.GeomSum
+public import Mathlib.Tactic
 
 /-!
 # Same-degree per-root multiplicity lower counts
@@ -38,6 +40,8 @@ factors the nearby polynomial into its near/far clusters and bounds the
 coefficients of the near cluster from those of a shifted polynomial whose low
 coefficients are small, via a "polynomial division" coefficient recursion.
 -/
+
+public section
 
 open Filter Polynomial Topology
 open scoped BigOperators

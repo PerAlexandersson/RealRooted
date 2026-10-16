@@ -1,6 +1,8 @@
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
-import Mathlib.Topology.Order.ExtendFrom
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+public import Mathlib.Topology.Order.ExtendFrom
 
 /-!
 # Integrals of a real power times a logarithm
@@ -8,6 +10,8 @@ import Mathlib.Topology.Order.ExtendFrom
 This file supplies the improper integral at zero obtained by differentiating
 the elementary real-power integral with respect to its exponent.
 -/
+
+public section
 
 open Filter MeasureTheory Set Topology
 

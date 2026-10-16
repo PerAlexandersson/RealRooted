@@ -1,10 +1,14 @@
-import RealRooted.WeightedSum
+module
+
+public import RealRooted.WeightedSum
 
 /-!
 # Weighted-sum tactic frontends
 
 Thin wrappers for the finite Wagner weighted-sum APIs.
 -/
+
+public section
 
 open Polynomial
 

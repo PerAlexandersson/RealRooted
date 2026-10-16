@@ -1,4 +1,6 @@
-import Mathlib.Algebra.Polynomial.Homogenize
+module
+
+public import Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Polynomial homogenization compatibility lemmas
@@ -6,6 +8,8 @@ import Mathlib.Algebra.Polynomial.Homogenize
 This file supplies root-factor and finite coefficient-sum formulas for
 `Polynomial.homogenize`.
 -/
+
+public section
 
 open Polynomial
 

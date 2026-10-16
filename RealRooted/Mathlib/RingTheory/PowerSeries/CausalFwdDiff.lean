@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Group.ForwardDiff
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Causal forward differences of power series
@@ -7,6 +9,8 @@ import Mathlib.RingTheory.PowerSeries.WellKnown
 The causal forward difference of a coefficient sequence corresponds to
 multiplication by `1 - X`.
 -/
+
+public section
 
 namespace PowerSeries
 

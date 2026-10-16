@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
 
 /-!
 # Positive diagonal tails of finite totally nonnegative matrices
@@ -7,6 +9,8 @@ This file extends a finite square matrix to natural-number indices by placing
 a fixed scalar on the remaining diagonal and zero elsewhere.  Total
 nonnegativity follows from finite isolated-last-coordinate extensions.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

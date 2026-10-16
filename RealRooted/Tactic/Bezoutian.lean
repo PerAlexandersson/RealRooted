@@ -1,4 +1,6 @@
-import RealRooted.Bezoutian.LowDegree
+module
+
+public import RealRooted.Bezoutian.LowDegree
 
 /-!
 # Bezoutian tactic frontends
@@ -12,6 +14,8 @@ not attempt to prove matrix positive definiteness automatically.  Degree zero
 is supported by the characterization, while the no-common-root route requires
 a nonzero matrix size.
 -/
+
+public section
 
 open Polynomial
 

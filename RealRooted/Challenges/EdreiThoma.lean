@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.Converse
-import RealRooted.EdreiThoma.Easy
+module
+
+public import RealRooted.EdreiThoma.Converse
+public import RealRooted.EdreiThoma.Easy
 
 /-!
 # The Edrei--Thoma theorem
@@ -143,6 +145,8 @@ follow his proof in *Canadian Journal of Mathematics* 5 (1953), 86–94,
 [Edrei–Thoma theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#edreiThomaTheorem).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.EdreiThoma
 

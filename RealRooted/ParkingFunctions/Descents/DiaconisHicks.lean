@@ -1,8 +1,10 @@
-import RealRooted.ParkingFunctions.Descents.Pollak
-import RealRooted.ParkingFunctions.Descents.ChainSort
-import RealRooted.Mathlib.Data.List.OfFn
-import RealRooted.Mathlib.Data.Fintype.Card
-import Mathlib.Data.List.Sort
+module
+
+public import RealRooted.ParkingFunctions.Descents.Pollak
+public import RealRooted.ParkingFunctions.Descents.ChainSort
+public import RealRooted.Mathlib.Data.List.OfFn
+public import RealRooted.Mathlib.Data.Fintype.Card
+public import Mathlib.Data.List.Sort
 
 /-!
 # Diaconis--Hicks chain sorting for parking-function descents
@@ -12,6 +14,8 @@ families of chains.  The reusable parking-word predicate, unique cyclic
 representative, and ordinary parking-function embedding live in the neutral
 `Pollak` module.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

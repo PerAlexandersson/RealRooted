@@ -1,11 +1,14 @@
-import Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Basic.Real.Basic
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Positivity
-import Mathlib.Data.Multiset.Fintype
+module
+
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
+public import Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Data.Multiset.Fintype
 
 /-!
 # Darroch's mean–mode theorem
@@ -27,6 +30,8 @@ where `A⁽ⁱ⁾` omits the `i`-th factor, together with strong induction on th
 * J. N. Darroch, *On the distribution of the number of successes in independent trials*,
   Ann. Math. Statist. 35 (1964), 1317–1321.
 -/
+
+@[expose] public section
 
 open Finset
 

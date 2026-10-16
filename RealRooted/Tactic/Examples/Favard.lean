@@ -1,6 +1,8 @@
-import RealRooted.Tactic.Examples.Favard.Direct
-import RealRooted.Tactic.Examples.Favard.Denominator
-import RealRooted.Tactic.Examples.Favard.RowSign
+module
+
+public import RealRooted.Tactic.Examples.Favard.Direct
+public import RealRooted.Tactic.Examples.Favard.Denominator
+public import RealRooted.Tactic.Examples.Favard.RowSign
 
 /-!
 # `rr_favard` examples
@@ -8,3 +10,5 @@ import RealRooted.Tactic.Examples.Favard.RowSign
 The historical import path for the Favard regressions, split by frontend family into
 `Favard.Direct`, `Favard.Denominator` and `Favard.RowSign`.
 -/
+
+public section

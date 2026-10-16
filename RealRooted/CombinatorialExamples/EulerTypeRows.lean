@@ -1,4 +1,8 @@
-import RealRooted.EulerBidiagonal
+module
+
+public import RealRooted.EulerBidiagonal
+
+@[expose] public section
 
 open Polynomial
 

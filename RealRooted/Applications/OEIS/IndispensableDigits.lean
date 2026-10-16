@@ -1,5 +1,7 @@
-import RealRooted.MatrixInterlacing.DigitStep
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.MatrixInterlacing.DigitStep
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Indispensable-digit polynomial models
@@ -8,6 +10,8 @@ The three-state digit evolution simultaneously models the final-state rows and
 the total-state rows.  Two registered recurrence transfers expose their
 adjacent interlacing to the row tactics.
 -/
+
+@[expose] public section
 
 open Polynomial
 

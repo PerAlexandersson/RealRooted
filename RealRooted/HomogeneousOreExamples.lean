@@ -1,4 +1,8 @@
-import RealRooted.HomogeneousOre
+module
+
+public import RealRooted.HomogeneousOre
+
+@[expose] public section
 
 open Polynomial
 

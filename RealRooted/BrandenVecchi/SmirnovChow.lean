@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowToeplitz
-import RealRooted.ParkingFunctions.Descents.Basic
+module
+
+public import RealRooted.BrandenVecchi.ChowToeplitz
+public import RealRooted.ParkingFunctions.Descents.Basic
 
 /-!
 # Weighted Smirnov words and Toeplitz Chow polynomials
@@ -8,6 +10,8 @@ This module gives the finite weighted form of Stanley's Smirnov-word identity.
 The alphabet is `Fin m`, adjacent equal letters are forbidden, and a descent
 contributes the polynomial variable `X`.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

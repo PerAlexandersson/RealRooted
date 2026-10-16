@@ -1,5 +1,7 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequenceProducts
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
+public import RealRooted.Tactic.LiuWang.SequenceProducts
 
 /-!
 # Liu--Wang inferred-certificate regression examples
@@ -7,6 +9,8 @@ import RealRooted.Tactic.LiuWang.SequenceProducts
 Atomic lookup and normalization tests with shared hypotheses, deliberate decoy
 certificates, and both nonpositive and product lag families.
 -/
+
+public section
 
 open Polynomial
 

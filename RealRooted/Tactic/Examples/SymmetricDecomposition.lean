@@ -1,10 +1,14 @@
-import RealRooted.Tactic.SymmetricDecomposition
+module
+
+public import RealRooted.Tactic.SymmetricDecomposition
 
 /-!
 # `fPolynomial` transport tactic examples
 
 Abstract smoke tests for the Branden--Solus symmetric-decomposition frontends.
 -/
+
+public section
 
 open Polynomial
 

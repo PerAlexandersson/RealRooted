@@ -1,8 +1,10 @@
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.FinCases
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.FinCases
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.MultivariateStability
 
 /-!
 # Homogeneous harmonic substitution
@@ -12,6 +14,8 @@ Brändén--Ferroni--Jochemko's stability proof for polynomial-value products
 (P. Brändén, L. Ferroni and K. Jochemko, *Preservation of inequalities under Hadamard
 products*, arXiv:2408.12386).
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

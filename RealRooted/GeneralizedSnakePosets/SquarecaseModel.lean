@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.FiniteBoard
-import RealRooted.GeneralizedSnakePosets.SnakeWord
+module
+
+public import RealRooted.GeneralizedSnakePosets.FiniteBoard
+public import RealRooted.GeneralizedSnakePosets.SnakeWord
 
 /-!
 # Squarecase rook models for generalized snake posets
@@ -7,6 +9,8 @@ import RealRooted.GeneralizedSnakePosets.SnakeWord
 This module contains the abstract squarecase/non-nesting rook model interface
 and the adapter from concrete finite skew boards.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,11 +1,21 @@
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.ThreeTermRecurrence.Interlacing
-import RealRooted.ThreeTermRecurrence.HalfGrowth
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.Recurrence.Cancel
-import RealRooted.Tactic.InterlacesExplicit
-import RealRooted.Tactic.RowClosedForm
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.ThreeTermRecurrence.HalfGrowth
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.Recurrence.Cancel
+public import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.RowClosedForm
+public meta import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public meta import RealRooted.DerivativeRecurrence.RootWindow
+public meta import RealRooted.ThreeTermRecurrence.Interlacing
+public meta import RealRooted.ThreeTermRecurrence.HalfGrowth
+public meta import RealRooted.Tactic.Recurrence
+public meta import RealRooted.Tactic.Recurrence.Cancel
+public meta import RealRooted.Tactic.InterlacesExplicit
+public meta import RealRooted.Tactic.RowClosedForm
 
 /-!
 # Row tactics: syntax and side goals
@@ -16,6 +26,8 @@ sign conditions on the multipliers, nonnegative coefficients of explicit rows, a
 `rr_row_side` closer for the side goals of the interlacing theorems.  The front ends are in
 `RealRooted.Tactic.RowInterlacing`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

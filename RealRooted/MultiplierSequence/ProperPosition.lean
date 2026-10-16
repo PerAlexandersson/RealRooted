@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.Laguerre
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.MultiplierSequence.Laguerre
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Directed proper position for diagonal multiplier operators
@@ -9,6 +11,8 @@ A multiplier sequence preserves real-rootedness of every real pencil `a f + b g`
 interlacing up to orientation (finite Pólya--Schur).  Comparing the sums of the roots (Vieta)
 fixes the orientation: positive multiplier sequences preserve directed proper position.
 -/
+
+public section
 
 open Polynomial
 

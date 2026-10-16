@@ -1,5 +1,7 @@
-import RealRooted.Graph.MatchingPolynomial.Multivariate
-import RealRooted.HeilmannLieb
+module
+
+public import RealRooted.Graph.MatchingPolynomial.Multivariate
+public import RealRooted.HeilmannLieb
 
 /-!
 # Multivariate-to-univariate Heilmann--Lieb specializations
@@ -7,6 +9,8 @@ import RealRooted.HeilmannLieb
 This file connects the multivariate edge-matching polynomial to the existing
 weighted univariate splitness and Pólya-frequency endpoints.
 -/
+
+public section
 
 noncomputable section
 

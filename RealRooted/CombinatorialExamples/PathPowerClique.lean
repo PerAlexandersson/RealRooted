@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.PathPowerIndependence
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.AffineFamily.Basic
+module
+
+public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.AffineFamily.Basic
 
 /-!
 # Interlacing cliques for powers of paths
@@ -14,6 +16,8 @@ step at most `k` through degree-padded reciprocal shifts.  The last theorem is
 the order-three row recurrence obtained from the third Graeffe transform; it
 is the recurrence used by OEIS A193636.
 -/
+
+@[expose] public section
 
 open Finset Polynomial RealRooted.Graph
 

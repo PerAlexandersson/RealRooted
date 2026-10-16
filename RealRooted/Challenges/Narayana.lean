@@ -1,9 +1,11 @@
-import RealRooted.CombinatorialExamples.Avoid132Descents
-import RealRooted.CombinatorialExamples.DyckNarayana
-import RealRooted.MaoWangMatrixProduct
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.Falling
-import RealRooted.NarayanaTransformation.Rising
+module
+
+public import RealRooted.CombinatorialExamples.Avoid132Descents
+public import RealRooted.CombinatorialExamples.DyckNarayana
+public import RealRooted.MaoWangMatrixProduct
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Rising
 
 /-!
 # Narayana polynomial challenge entry point
@@ -192,6 +194,8 @@ and the
 [Mao–Wang row-generating functions](https://www.symmetricfunctions.com/realRooted.htm#rowGeneratingFunction).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 open Polynomial
 

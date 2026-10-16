@@ -1,4 +1,6 @@
-import RealRooted.RookPolynomial
+module
+
+public import RealRooted.RookPolynomial
 
 /-!
 # Nijenhuis's weighted rook-polynomial theorem
@@ -61,6 +63,8 @@ symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#
 This challenge entry uses ordinary nonattacking rook placements. It is
 separate from the project's non-nesting rook-polynomial model.
 -/
+
+public section
 
 open Polynomial
 

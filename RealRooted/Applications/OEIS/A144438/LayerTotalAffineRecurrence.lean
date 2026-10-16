@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-import RealRooted.Multiaffine.AffineCoordinateCriterion
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+public import RealRooted.Multiaffine.AffineCoordinateCriterion
 
 /-!
 # Affine-coordinate recurrence for the Deco layer total
@@ -11,6 +13,8 @@ generic affine-coordinate Rayleigh criterion to one Deco recurrence step.
 No all-rank stability claim is made here: the remaining hypotheses are exact
 Rayleigh, Wronskian, and discriminant invariants for the two recurrence parts.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

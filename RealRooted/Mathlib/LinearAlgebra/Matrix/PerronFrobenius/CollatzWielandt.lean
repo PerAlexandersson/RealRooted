@@ -10,12 +10,15 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
-import Mathlib.Data.Matrix.Basic
-import Mathlib.Algebra.Order.AbsoluteValue.Basic
-import Mathlib.Data.Rat.Floor
-import Mathlib.Topology.Semicontinuity.Basic
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import Mathlib.Data.Matrix.Basic
+public import Mathlib.Algebra.Order.AbsoluteValue.Basic
+public import Mathlib.Data.Rat.Floor
+public import Mathlib.Topology.Semicontinuity.Basic
 
 /-!
 # Collatz–Wielandt function and the Perron root
@@ -49,6 +52,8 @@ We use column vectors `A *ᵥ x` (Seneta’s row-vector formulation is equivalen
 Collatz–Wielandt, Perron–Frobenius, nonnegative matrix, spectral radius
 
 -/
+
+@[expose] public section
 
 namespace Matrix
 section PerronFrobenius

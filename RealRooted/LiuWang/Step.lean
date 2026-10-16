@@ -1,12 +1,16 @@
-import RealRooted.GeneralizedLiuWang
-import RealRooted.RootBounds
-import RealRooted.SignEvaluation
+module
+
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.RootBounds
+public import RealRooted.SignEvaluation
 
 /-!
 # Liu--Wang single-step theorem backend
 
 Reusable two-polynomial Liu--Wang criteria and polynomial sign certificates.
 -/
+
+public section
 
 open Polynomial
 

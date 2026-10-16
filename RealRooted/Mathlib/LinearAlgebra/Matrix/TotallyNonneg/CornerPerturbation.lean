@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Corner perturbations of totally nonnegative matrices
@@ -8,6 +10,8 @@ This file proves that adding a nonnegative scalar to the northwest corner of a
 finite matrix preserves total nonnegativity. The determinant update is isolated
 as a general commutative-ring identity.
 -/
+
+public section
 
 namespace Matrix
 

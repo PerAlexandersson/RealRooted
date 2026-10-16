@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Cancellation with a nonzero coefficient-ratio bound
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RowInterlacing
 These regressions copy seven recurrences from the downstream OEIS project.  The
 `A101343` example requires the exact rows-zero-through-eight fit `rho = 1`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

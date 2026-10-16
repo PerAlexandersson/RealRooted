@@ -1,10 +1,14 @@
-import RealRooted.Tactic.LiuWang.Step
+module
+
+public import RealRooted.Tactic.LiuWang.Step
 
 /-!
 # Product-lag Liu--Wang sequence tactics
 
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

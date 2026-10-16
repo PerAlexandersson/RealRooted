@@ -1,11 +1,13 @@
-import RealRooted.RootAmplitude.Finite
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Order.Interval.Finset.Nat
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite multiplicative separation
@@ -18,6 +20,8 @@ the two halves of the amplitude product with a universal geometric staircase.
 The analytic lower bound for the staircase is deliberately kept in
 `RootAmplitude.Separation.Euler`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

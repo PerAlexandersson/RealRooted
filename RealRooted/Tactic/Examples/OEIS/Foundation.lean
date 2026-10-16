@@ -1,6 +1,8 @@
-import RealRooted.Tactic.AffineDerivative
-import RealRooted.Tactic.OEIS.Basic
-import RealRooted.Tactic.RootBounds
+module
+
+public import RealRooted.Tactic.AffineDerivative
+public import RealRooted.Tactic.OEIS.Basic
+public import RealRooted.Tactic.RootBounds
 
 /-!
 # OEIS foundational router regression examples
@@ -8,6 +10,8 @@ import RealRooted.Tactic.RootBounds
 Foundational aliases, root-bound endpoints, and affine-derivative certificate
 routing tests.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

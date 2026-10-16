@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.CutTransform
-import RealRooted.Compatibility.LeanderTransform
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+module
+
+public import RealRooted.Compatibility.CutTransform
+public import RealRooted.Compatibility.LeanderTransform
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
 
 /-!
 # The P/Q cut transform for weak left peaks
@@ -10,6 +12,8 @@ The two terminal states of the weak-left-peak recurrence become the generic
 example distinguishes this transform from Leander's diagonal-omitting
 transform already for a two-letter alphabet.
 -/
+
+public section
 
 open Polynomial
 

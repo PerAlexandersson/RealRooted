@@ -1,6 +1,8 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Linear
-import RealRooted.PositiveParameterLocalLowerCount
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Linear
+public import RealRooted.PositiveParameterLocalLowerCount
 
 /-!
 # Root-count local constancy through degree drops
@@ -10,6 +12,8 @@ zero-root padding.  When the original affine family is nonzero at the left
 endpoint of a positive interval, the reflected family therefore has constant
 degree, so the existing analytic local-constancy theorem applies.
 -/
+
+public section
 
 open Polynomial
 

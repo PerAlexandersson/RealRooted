@@ -1,6 +1,8 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShiftProduct
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShiftProduct
 
 /-!
 # Iterated derivative shifts
@@ -135,6 +137,8 @@ iterated regularization is used in the converse of Obreschkoff's theorem: N. Obr
 Wissenschaften, 1963.
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.IteratedDerivativeShift
 

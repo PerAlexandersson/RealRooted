@@ -1,6 +1,8 @@
-import RealRooted.Hadamard.Kostov.Eigen
-import RealRooted.Hadamard.Kostov.Roots
-import RealRooted.Hadamard.Kostov.TwoStep
+module
+
+public import RealRooted.Hadamard.Kostov.Eigen
+public import RealRooted.Hadamard.Kostov.Roots
+public import RealRooted.Hadamard.Kostov.TwoStep
 
 /-!
 # Kostov's Bernstein eigenpolynomials
@@ -76,6 +78,8 @@ Analysis and Other Mathematics* 3 (2010), 65–74; manuscript
 [arXiv:1504.02321](https://arxiv.org/abs/1504.02321).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.KostovEigenpolynomials
 

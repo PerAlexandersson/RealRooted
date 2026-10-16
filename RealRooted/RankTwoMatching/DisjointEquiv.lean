@@ -1,4 +1,8 @@
-import RealRooted.RankTwoMatching.Orientation
+module
+
+public import RealRooted.RankTwoMatching.Orientation
+
+@[expose] public section
 
 open Polynomial
 

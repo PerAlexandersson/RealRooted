@@ -1,4 +1,8 @@
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+
+public section
 
 open scoped BigOperators
 

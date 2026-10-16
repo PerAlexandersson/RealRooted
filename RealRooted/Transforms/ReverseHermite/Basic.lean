@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The reverse-Hermite basis transform
@@ -8,6 +10,8 @@ and the coefficientwise transform that sends `X ^ n` to the `n`th basis
 polynomial. These are distinct from Mathlib's probabilists' Hermite
 polynomials, whose recurrence has a negative derivative term.
 -/
+
+@[expose] public section
 
 open Polynomial
 

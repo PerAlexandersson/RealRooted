@@ -1,11 +1,15 @@
-import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.VeroneseSection
+module
+
+public import RealRooted.Tactic.GammaRealRoots
+public import RealRooted.Tactic.VeroneseSection
 
 /-!
 # OEIS gamma and Veronese router regression examples
 
 Gamma-real-rootedness and Veronese-section certificate routing tests.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

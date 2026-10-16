@@ -4,8 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.ArrayPolynomialSchur
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+
+public import RealRooted.ArrayPolynomialSchur
+public import RealRooted.NarayanaTransformation.Endpoints
+
+public section
 
 open Polynomial
 

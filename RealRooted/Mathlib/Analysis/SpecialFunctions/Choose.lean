@@ -1,5 +1,7 @@
-import Mathlib.Analysis.SpecialFunctions.Choose
-import Mathlib.Data.Nat.Choose.Bounds
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Choose
+public import Mathlib.Data.Nat.Choose.Bounds
 
 /-!
 # Rescaled binomial-coefficient limit
@@ -7,6 +9,8 @@ import Mathlib.Data.Nat.Choose.Bounds
 This Mathlib-shaped lemma is the fixed-degree asymptotic used by rescaled
 Jensen polynomials.
 -/
+
+public section
 
 open Asymptotics Filter Nat Topology
 

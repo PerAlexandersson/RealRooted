@@ -1,5 +1,7 @@
-import RealRooted.Linear
-import RealRooted.SequenceClosure
+module
+
+public import RealRooted.Linear
+public import RealRooted.SequenceClosure
 
 /-!
 # Product factor certificates
@@ -8,6 +10,8 @@ Real-rootedness certificates for scalar, monomial, affine, and powered affine
 factors, together with the sequence-valued certificates shared by the product
 recurrence layers.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

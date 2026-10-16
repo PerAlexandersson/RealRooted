@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
-import Mathlib.Analysis.Complex.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
+public import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Real quadratic recurrence norm bounds from complex roots
@@ -7,6 +9,8 @@ import Mathlib.Analysis.Complex.Basic
 This transports a real quadratic solution to `ℂ` and applies the generic
 complex-root norm bound.  Root existence remains a separate client concern.
 -/
+
+public section
 
 namespace LinearRecurrence
 

@@ -1,7 +1,9 @@
-import RealRooted.CoefficientDominance.Symmetric
-import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Finset.Sort
+module
+
+public import RealRooted.CoefficientDominance.Symmetric
+public import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.Data.Finset.Sort
 
 /-!
 # Local Newton defects and individual positive root parameters
@@ -17,6 +19,8 @@ The ratio `τ k = L k / e k` therefore controls each individual parameter via
 `η i / (e (i - 1) / e i) = τ (i - 1) / τ i`.  A quadratic refinement follows
 from the collision probability of the normalized subset products.
 -/
+
+@[expose] public section
 
 namespace RealRooted.NewtonDefectRoots
 

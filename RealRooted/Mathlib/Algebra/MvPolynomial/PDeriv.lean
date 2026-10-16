@@ -1,8 +1,12 @@
-import Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives of squarefree monomials
 -/
+
+public section
 
 open scoped BigOperators
 

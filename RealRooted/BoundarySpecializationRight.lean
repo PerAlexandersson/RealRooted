@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.BoundarySpecialization
+module
+
+public import RealRooted.BorceaBranden.BoundarySpecialization
 
 /-!
 # Boundary specialization with unrestricted spectator variables
@@ -7,6 +9,8 @@ This module supplies the boundary step used in Borcea--Branden, Lemma 2.2.
 Only the finite right block is specialized.  The left block consists of
 spectator variables and may have arbitrary cardinality and arbitrary degrees.
 -/
+
+public section
 
 open Complex
 

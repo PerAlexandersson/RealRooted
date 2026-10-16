@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 /-!
 # Jacobi--Stirling inverse relations
@@ -9,6 +11,8 @@ The signed first-kind and second-kind Jacobi--Stirling triangles are mutually
 inverse. Both finite convolution orders are proved with their exact lower-
 triangular support and zero-row endpoints.
 -/
+
+@[expose] public section
 
 namespace RealRooted.JacobiStirling
 

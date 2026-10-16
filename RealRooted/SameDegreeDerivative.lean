@@ -1,6 +1,8 @@
-import RealRooted.Derivative
-import RealRooted.PosCombo
-import RealRooted.WagnerX
+module
+
+public import RealRooted.Derivative
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX
 
 /-!
 # Same-degree positive-combination derivative lemmas
@@ -8,6 +10,8 @@ import RealRooted.WagnerX
 This module records two reusable derivative facts for the same-degree
 positive-combination route in the Chudnovsky--Seymour project.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
-import RealRooted.Favard
-import RealRooted.Interlacing.OuterDifference
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
+public import RealRooted.Favard
+public import RealRooted.Interlacing.OuterDifference
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # The reference Gegenbauer family as a Favard instance
@@ -20,6 +22,8 @@ recurrence `p_(j+2) = c p_(j+1) - γ_(j+1) p_j` with
 * `eval_mul_derivative_pos_of_isRoot_refMonic`: `p_k(a) p_(k+1)'(a) > 0` at roots of `p_(k+1)`.
 * `gegen_eq`, `gegenReal_eq`: `G_j = ℓ_j p_j`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

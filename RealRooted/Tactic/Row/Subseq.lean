@@ -1,4 +1,7 @@
-import RealRooted.Tactic.Row.SideGoals
+module
+
+public import RealRooted.Tactic.Row.SideGoals
+public meta import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: residue subsequences
@@ -7,6 +10,8 @@ import RealRooted.Tactic.Row.SideGoals
 `p ∈ [2, 6]`, one residue class at a time; also the closers for explicit rows and factors
 used by `rr_row_splits`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

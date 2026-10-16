@@ -9,11 +9,16 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Analysis/CstarAlgebra/Classes.lean
 -/
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.EuclideanDomain.Basic
-import Mathlib.Algebra.EuclideanDomain.Field
-import Mathlib.Analysis.CStarAlgebra.Classes
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.EuclideanDomain.Basic
+public import Mathlib.Algebra.EuclideanDomain.Field
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+
+public section
 
 open Finset Real Complex Matrix
 

@@ -1,6 +1,8 @@
-import RealRooted.Laguerre.Favard
-import RealRooted.Laguerre.Orthogonality.Integral
-import RealRooted.Laguerre.Roots
+module
+
+public import RealRooted.Laguerre.Favard
+public import RealRooted.Laguerre.Orthogonality.Integral
+public import RealRooted.Laguerre.Roots
 
 /-!
 # Generalized Laguerre polynomial challenge entry point
@@ -82,3 +84,5 @@ The general three-term theory is on the
 
 This module is a catalog facade.  The proofs live in `RealRooted.Laguerre`.
 -/
+
+public section

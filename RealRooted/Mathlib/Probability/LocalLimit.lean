@@ -1,6 +1,10 @@
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Probability.CDF
-import RealRooted.Mathlib.Probability.CoeffDistribution
+module
+
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Probability.CDF
+public import RealRooted.Mathlib.Probability.CoeffDistribution
+
+@[expose] public section
 
 open MeasureTheory ProbabilityTheory Filter Topology Polynomial
 

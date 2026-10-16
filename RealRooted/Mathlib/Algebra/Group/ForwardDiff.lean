@@ -1,4 +1,6 @@
-import Mathlib.Algebra.Group.ForwardDiff
+module
+
+public import Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Causal forward differences
@@ -6,6 +8,8 @@ import Mathlib.Algebra.Group.ForwardDiff
 This file records the forward-difference convention for sequences indexed by
 natural numbers which retains the initial value.
 -/
+
+@[expose] public section
 
 namespace Function
 

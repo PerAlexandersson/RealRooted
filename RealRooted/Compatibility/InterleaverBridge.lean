@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Basic
-import RealRooted.CommonInterleaverSeq
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaverSeq
 
 /-!
 # Compatibility from common interleavers
@@ -8,6 +10,8 @@ A family with a common (left or right) interleaver, or with pairwise common
 interleavers, is pairwise compatible: the easy direction of
 Chudnovsky--Seymour.
 -/
+
+public section
 
 open Polynomial
 

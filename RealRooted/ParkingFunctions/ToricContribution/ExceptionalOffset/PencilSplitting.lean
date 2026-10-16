@@ -1,6 +1,8 @@
-import RealRooted.AffineDerivative
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
-import RealRooted.SuccDegreeLeftEndpoint
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
+public import RealRooted.SuccDegreeLeftEndpoint
 
 /-!
 # Exceptional-offset pencil splitting
@@ -8,6 +10,8 @@ import RealRooted.SuccDegreeLeftEndpoint
 This layer proves real-rootedness for every signed member of the exceptional
 Euler-inverse pencil.
 -/
+
+@[expose] public section
 
 open Polynomial
 open MeasureTheory Set

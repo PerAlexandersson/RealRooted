@@ -1,5 +1,7 @@
-import RealRooted.NewtonAux
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+module
+
+public import RealRooted.NewtonAux
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Newton's and Maclaurin's inequalities
@@ -17,6 +19,8 @@ For a multiset `t` of `n` real numbers write `e_k = t.esymm k` and `E k = e_k / 
 * C. Maclaurin, *A second letter to Martin Folkes, Esq.*, Phil. Trans. 36 (1729).
 * G. H. Hardy, J. E. Littlewood, G. Pólya, *Inequalities*, §2.22 (Theorems 51 and 52).
 -/
+
+public section
 
 open Polynomial
 

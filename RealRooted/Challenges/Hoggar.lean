@@ -1,4 +1,6 @@
-import RealRooted.CoefficientShape.Hoggar
+module
+
+public import RealRooted.CoefficientShape.Hoggar
 
 /-!
 # Hoggar's theorem challenge entry point
@@ -58,3 +60,5 @@ Theory Ser. B 16 (1974), 248–254.
 This module is a catalog facade.  The proofs live in
 `RealRooted.CoefficientShape.Hoggar`.
 -/
+
+public section

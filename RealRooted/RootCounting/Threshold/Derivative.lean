@@ -1,5 +1,7 @@
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootCounting.Threshold.Sorted
+module
+
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootCounting.Threshold.Sorted
 
 /-!
 # Derivative signs at ordered negative roots
@@ -7,6 +9,8 @@ import RealRooted.RootCounting.Threshold.Sorted
 The thresholded count controls the sign of the normalized derivative at each
 simple negative root.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

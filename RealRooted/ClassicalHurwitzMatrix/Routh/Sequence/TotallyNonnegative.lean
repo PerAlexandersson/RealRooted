@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
-import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
+public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 
 /-!
 # Total nonnegativity from a finite Routh sequence
@@ -8,6 +10,8 @@ import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 This file iterates the one-step total-nonnegativity implication backward along
 an algebraic Routh sequence.
 -/
+
+public section
 
 open Polynomial
 

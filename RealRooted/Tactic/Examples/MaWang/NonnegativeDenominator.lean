@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Factors
+module
+
+public import RealRooted.Tactic.MaWang.Factors
 
 /-!
 # Ma--Wang nonnegative-denominator regression examples
 
 Regression examples for nonnegative-denominator Ma--Wang frontends.
 -/
+
+public section
 
 open Polynomial
 

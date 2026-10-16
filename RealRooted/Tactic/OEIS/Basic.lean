@@ -1,4 +1,6 @@
-import RealRooted.Tactic.ScalarDen
+module
+
+public import RealRooted.Tactic.ScalarDen
 
 /-!
 # Shared OEIS tactic syntax
@@ -7,6 +9,8 @@ Small OEIS-facing aliases for the scalar-denominator certificate tactics.
 Certificate-family frontends import this module rather than each duplicating
 these term elaborators.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

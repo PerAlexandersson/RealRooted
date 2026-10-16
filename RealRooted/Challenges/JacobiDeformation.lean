@@ -1,6 +1,8 @@
-import RealRooted.JacobiDeformation
-import RealRooted.Applications.OEIS.A132885
-import RealRooted.SpectralProduct
+module
+
+public import RealRooted.JacobiDeformation
+public import RealRooted.Applications.OEIS.A132885
+public import RealRooted.SpectralProduct
 
 /-!
 # Jacobi deformation challenge entry point
@@ -137,6 +139,8 @@ This module is a catalog facade. The proofs live in
 `RealRooted.JacobiDeformation`, `RealRooted.Applications.OEIS.A132885`, and
 `RealRooted.SpectralProduct`.
 -/
+
+public section
 
 open Polynomial
 

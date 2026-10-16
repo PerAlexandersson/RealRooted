@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.ShiftedTiling
+module
+
+public import RealRooted.BrandenLeite.ShiftedTiling
 
 /-!
 # Binomial shifted tiling rows
@@ -7,6 +9,8 @@ This file specializes the shifted two-seed recurrence to
 `A(z) = (1 + z)^(m - 2)`, `B(z) = (1 + z)^m`, and
 `γ = Nat.choose m 2`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

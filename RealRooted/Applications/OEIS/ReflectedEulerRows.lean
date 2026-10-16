@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.CentralFactorial
-import RealRooted.Interlacing.Reversal
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.CombinatorialExamples.CentralFactorial
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Reflected Euler-bidiagonal rows
@@ -9,6 +11,8 @@ Reversing the degree-`n` Euler-bidiagonal row changes its coefficient update int
 second-order derivative recurrence depending on `n`. This module packages that identity and
 registers the two classical integer specializations used by A008957 and A191935.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,10 +1,12 @@
-import RealRooted.Hyperbolicity
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.AffineEulerCore
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.DirectionalDerivative
-import RealRooted.MultivariateStability.HomogeneousPencilWronskian
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Hyperbolicity
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine.AffineEulerCore
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.DirectionalDerivative
+public import RealRooted.MultivariateStability.HomogeneousPencilWronskian
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stability of affine Euler cores
@@ -14,6 +16,8 @@ directional derivative.  Homogenization and the directional-derivative
 pencil then place a stable polynomial and its affine Euler core in one
 weakly stable real span.
 -/
+
+public section
 
 namespace RealRooted
 

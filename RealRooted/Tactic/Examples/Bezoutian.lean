@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Bezoutian
+module
+
+public import RealRooted.Tactic.Bezoutian
+
+public section
 
 open Polynomial
 

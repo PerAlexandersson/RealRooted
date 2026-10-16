@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.HalfInteger
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+module
+
+public import RealRooted.FiniteFreeAdditive.HalfInteger
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Generalized half-integer additive convolution
@@ -10,6 +12,8 @@ generalized rectangular Pochhammer kernel.  It proves its algebraic agreement
 with the existing rectangular additive convolution at natural parameters.  It
 does not assert a root-preservation result.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

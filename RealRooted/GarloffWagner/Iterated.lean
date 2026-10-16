@@ -1,4 +1,6 @@
-import RealRooted.GarloffWagner.Algebra
+module
+
+public import RealRooted.GarloffWagner.Algebra
 
 /-!
 # Garloff--Wagner iterated transforms
@@ -6,6 +8,8 @@ import RealRooted.GarloffWagner.Algebra
 The `J^k ∘ L` transform, its factor identities, and the Theorem 11
 real-rootedness and interlacing transport.
 -/
+
+@[expose] public section
 
 open Polynomial
 

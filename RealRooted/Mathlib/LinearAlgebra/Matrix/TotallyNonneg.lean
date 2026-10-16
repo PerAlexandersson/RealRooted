@@ -5,7 +5,7 @@ public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
-public section
+@[expose] public section
 
 namespace Matrix
 variable {ι κ R : Type*} [PartialOrder ι] [PartialOrder κ] [CommRing R] [PartialOrder R]
@@ -13,7 +13,6 @@ variable {ι κ R : Type*} [PartialOrder ι] [PartialOrder κ] [CommRing R] [Par
 
 /-- A rectangular matrix is totally nonnegative if all its square minors have
 nonnegative determinant. -/
-@[expose]
 def IsTotallyNonnegRect (M : Matrix ι κ R) : Prop :=
   ∀ ⦃n : ℕ⦄ ⦃rows : Fin n → ι⦄ ⦃cols : Fin n → κ⦄,
     StrictMono rows → StrictMono cols → 0 ≤ (M.submatrix rows cols).det

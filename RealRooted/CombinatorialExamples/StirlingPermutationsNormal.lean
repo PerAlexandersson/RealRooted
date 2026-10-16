@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.StirlingPermutations
-import RealRooted.Mathlib.Probability.CoeffDistribution
+module
+
+public import RealRooted.CombinatorialExamples.StirlingPermutations
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Second-order Eulerian numbers are asymptotically normal
@@ -11,6 +13,8 @@ numbers.  At `x = 1` the factor `1 - X` vanishes, so the values of `P_n`, `P_n'`
 mean `(2n + 1) / 3` and variance `2 (n² - 1) / (9 (2n - 1))`.  Since the polynomials are
 real-rooted (Bóna; Haglund–Visontai), Harper's theorem gives asymptotic normality.
 -/
+
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

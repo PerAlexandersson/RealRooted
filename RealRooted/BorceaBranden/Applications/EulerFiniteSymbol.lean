@@ -1,4 +1,8 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

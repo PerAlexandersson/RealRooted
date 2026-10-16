@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Complex.OpenMapping
+module
+
+public import Mathlib.Analysis.Complex.OpenMapping
 
 /-!
 # Complex consequences of the open mapping theorem
@@ -6,6 +8,8 @@ import Mathlib.Analysis.Complex.OpenMapping
 This file contains general-purpose compatibility lemmas intended for eventual
 upstreaming to Mathlib.
 -/
+
+public section
 
 open Filter Metric Set
 open scoped Topology

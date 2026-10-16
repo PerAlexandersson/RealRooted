@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Bilinear BFJ output assembly
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 This file assembles the monomial BFJ formula over two bounded-degree
 polynomials and records its shifted-binomial coefficient identity.
 -/
+
+public section
 
 open Polynomial
 

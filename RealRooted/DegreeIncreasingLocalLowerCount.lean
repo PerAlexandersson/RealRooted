@@ -1,5 +1,7 @@
-import RealRooted.SameDegreeMultiplicityLowerCount
-import RealRooted.RootSumBounds
+module
+
+public import RealRooted.SameDegreeMultiplicityLowerCount
+public import RealRooted.RootSumBounds
 
 /-!
 # Issue #42: degree-increasing per-root multiplicity lower counts
@@ -47,6 +49,8 @@ The route here instead **factors out the escaping root(s)** rigorously:
   vanishes below the multiplicity of `a`), and feed the escaping root into the
   core.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

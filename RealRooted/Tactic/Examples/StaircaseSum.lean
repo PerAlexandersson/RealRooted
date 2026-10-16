@@ -1,4 +1,8 @@
-import RealRooted.Tactic.StaircaseSum
+module
+
+public import RealRooted.Tactic.StaircaseSum
+
+public section
 
 open Polynomial
 

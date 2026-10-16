@@ -1,11 +1,13 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
-import RealRooted.RootCountFinite
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Topology.Order.IntermediateValue
-import Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+public import RealRooted.RootCountFinite
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Normed.Field.Approximation
+public import Mathlib.Topology.Order.IntermediateValue
+public import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Root-continuity tools
@@ -13,6 +15,8 @@ import Mathlib.Topology.Algebra.Polynomial
 This file collects coefficient and evaluation estimates used to control roots
 under small perturbations of a real polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial
 

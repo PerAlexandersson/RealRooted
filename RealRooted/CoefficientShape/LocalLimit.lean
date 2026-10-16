@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Probability.LocalLimit
-import RealRooted.PFPolynomial.CoefficientShape
+module
+
+public import RealRooted.Mathlib.Probability.LocalLimit
+public import RealRooted.PFPolynomial.CoefficientShape
 
 /-!
 # Bender's local limit theorem for real-rooted polynomial rows
@@ -7,6 +9,8 @@ import RealRooted.PFPolynomial.CoefficientShape
 This file combines the analytic local limit theorem with Harper's central limit theorem and the
 coefficient-shape consequences of the Pólya-frequency API.
 -/
+
+public section
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

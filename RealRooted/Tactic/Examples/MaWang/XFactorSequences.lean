@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Factors
+module
+
+public import RealRooted.Tactic.MaWang.Factors
 
 /-!
 # Ma--Wang X-factor sequence regression examples
 
 Regression examples for X-factor Ma--Wang sequence frontends.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,10 +1,14 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
 
 /-!
 # OEIS test-bed negative-square examples
 
 Regression examples for negative-square Liu--Wang frontends.
 -/
+
+public section
 
 open Polynomial
 

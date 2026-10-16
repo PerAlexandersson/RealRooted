@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # Second-derivative bidiagonal normalization
@@ -7,6 +9,8 @@ This module identifies a six-parameter second-derivative polynomial operator
 with a coefficient-bidiagonal operator. It is independent of PF-preserver
 certificates and tactic frontends.
 -/
+
+@[expose] public section
 
 open Polynomial
 

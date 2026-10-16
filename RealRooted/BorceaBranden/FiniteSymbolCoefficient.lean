@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalOperator
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability
 
 /-!
 # Coefficients in the multiaffine finite-symbol argument
@@ -9,6 +11,8 @@ arXiv:0809.0401, Lemma 2.2. Differentiating one squarefree basis monomial by
 another removes the differentiated variables when their supports are nested.
 After evaluation at zero, this is the Kronecker delta used in the proof.
 -/
+
+public section
 
 namespace RealRooted.BorceaBranden
 

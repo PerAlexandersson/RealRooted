@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -124,3 +126,5 @@ The real-rootedness theorem was formalized in RealRooted issue #1076.
 This module is a catalog facade.  The proofs live in
 `RealRooted.CombinatorialExamples.MultisetEulerianNarayana`.
 -/
+
+public section

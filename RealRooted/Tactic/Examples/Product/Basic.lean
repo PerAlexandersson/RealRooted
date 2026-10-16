@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Rules
+module
+
+public import RealRooted.Tactic.Product.Rules
 
 /-!
 # Basic product tactic regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product.Rules
 Smoke tests for product nonzeroness, splitting, factorization, finite-product,
 and period-two dispatcher forms.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

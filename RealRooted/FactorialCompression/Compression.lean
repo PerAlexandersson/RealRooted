@@ -1,5 +1,7 @@
-import RealRooted.FactorialCompression.CommonKernel
-import RealRooted.Hadamard.SchurSzegoStrict
+module
+
+public import RealRooted.FactorialCompression.CommonKernel
+public import RealRooted.Hadamard.SchurSzegoStrict
 
 /-!
 # Factorial compression as a Schur--Szegő composition
@@ -16,6 +18,8 @@ operator.
 The construction is due to Zhanhe Zhang (*Factorial compression and strict interlacing*,
 SSRN 7510941); the proofs are ported from the draft of Zhang's formalization.
 -/
+
+public section
 
 open Polynomial
 

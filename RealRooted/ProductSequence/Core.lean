@@ -1,5 +1,7 @@
-import RealRooted.ProductSequence.Factors
-import RealRooted.SequenceClosure
+module
+
+public import RealRooted.ProductSequence.Factors
+public import RealRooted.SequenceClosure
 
 /-!
 # Generic product-sequence recurrence shells
@@ -7,6 +9,8 @@ import RealRooted.SequenceClosure
 Reusable induction, finite-product, period-two, and quotient-model shells with
 caller-supplied real-rooted factor certificates.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

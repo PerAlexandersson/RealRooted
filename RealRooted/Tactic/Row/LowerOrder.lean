@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Row.Core
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.Tactic.Row.Core
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.Tactic.Row.Core
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: order-three recurrences
@@ -7,6 +11,8 @@ import RealRooted.Tactic.Row.Support
 `lowerOrderInterlaces` reduces a pure-lag recurrence of order three to a three-term
 recurrence found by an exact probe, and hands it to the interlacing core.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

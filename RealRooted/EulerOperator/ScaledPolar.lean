@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Polar
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.RootContinuity
 
 /-!
 # Scale-two polar operator
@@ -8,6 +10,8 @@ The transformed polar operator `N - 2 theta` preserves polynomial
 Pólya-frequency data in the degree range where its coefficients stay
 nonnegative.
 -/
+
+public section
 
 open Polynomial
 

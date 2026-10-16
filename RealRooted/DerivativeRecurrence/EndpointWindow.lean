@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.Interlacing.NegativeRoots
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.Interlacing.NegativeRoots
 
 /-!
 # Endpoint root windows
@@ -9,6 +11,8 @@ The endpoint signs used here are the factorization argument in Ma and Wang,
 *q-Eulerian polynomials and polynomials with only real zeros*, Theorem 2
 ([arXiv:math/0611826](https://arxiv.org/abs/math/0611826)).
 -/
+
+public section
 
 open Polynomial
 
@@ -266,7 +270,7 @@ end Sequence
 end RealRooted
 
 namespace RealRooted
-private theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
+theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
     (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, t < U) : 0 < p.eval U := by
   rw [eval_eq_leadingCoeff_mul_prod_sub hs U]
@@ -274,7 +278,7 @@ private theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
   obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
   linarith [h t ht]
 
-private theorem neg_one_pow_mul_eval_pos_at_lower_of_roots_gt
+theorem neg_one_pow_mul_eval_pos_at_lower_of_roots_gt
     {p : ℝ[X]} {L : ℝ} (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, L < t) :
     0 < (-1 : ℝ) ^ p.natDegree * p.eval L := by

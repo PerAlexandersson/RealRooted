@@ -1,10 +1,12 @@
-import RealRooted.CoefficientDominance.LogConcavity
-import RealRooted.CoefficientDominance.RootGap
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import RealRooted.CoefficientDominance.Symmetric.Polynomial
-import RealRooted.CoefficientDominance.Symmetric.Sharp
-import RealRooted.CoefficientDominance.Symmetric.Tail
-import RealRooted.CoefficientDominance.Symmetric.Upper
+module
+
+public import RealRooted.CoefficientDominance.LogConcavity
+public import RealRooted.CoefficientDominance.RootGap
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import RealRooted.CoefficientDominance.Symmetric.Polynomial
+public import RealRooted.CoefficientDominance.Symmetric.Sharp
+public import RealRooted.CoefficientDominance.Symmetric.Tail
+public import RealRooted.CoefficientDominance.Symmetric.Upper
 
 /-!
 # Coefficient dominance and reciprocal gaps
@@ -139,6 +141,8 @@ triangle appears in D. N. Kozlov, [“Stirling
 complexes,”](https://arxiv.org/abs/2309.17142) arXiv:2309.17142 (2023).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.CoefficientDominance
 

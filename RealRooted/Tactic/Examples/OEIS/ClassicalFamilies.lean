@@ -1,13 +1,17 @@
-import RealRooted.Tactic.HermiteBiehler
-import RealRooted.Tactic.HermitePoulain
-import RealRooted.Tactic.Kurtz
-import RealRooted.Tactic.Narayana
+module
+
+public import RealRooted.Tactic.HermiteBiehler
+public import RealRooted.Tactic.HermitePoulain
+public import RealRooted.Tactic.Kurtz
+public import RealRooted.Tactic.Narayana
 
 /-!
 # OEIS classical-family regression examples
 
 Regression examples for classical real-rootedness family frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

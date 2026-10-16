@@ -1,8 +1,10 @@
-import RealRooted.RootContinuity
-import Mathlib.Analysis.Complex.Norm
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.FieldTheory.IsAlgClosed.Basic
+module
+
+public import RealRooted.RootContinuity
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 /-!
 # Continuity bridge for positive combinations
@@ -11,6 +13,8 @@ This file records the local positive-combination hypotheses used by the
 Obreschkoff continuity argument, without importing the heavier converse
 development.
 -/
+
+@[expose] public section
 
 open Polynomial
 

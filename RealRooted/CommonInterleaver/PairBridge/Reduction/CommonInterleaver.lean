@@ -1,12 +1,16 @@
-import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
-import RealRooted.SameDegreeCountFromAnalytic
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
+public import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Pair bridge reduction: common interleavers
 
 Common-root recursion and degree-bounded common-interleaver reductions.
 -/
+
+public section
 
 open Polynomial
 

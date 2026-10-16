@@ -8,9 +8,12 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Primitive.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import Mathlib.Tactic
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import Mathlib.Tactic
 
 /-!
 # Perron-Frobenius for primitive matrices
@@ -19,6 +22,8 @@ Theorem 1.1 in Seneta, *Non-negative Matrices and Markov Chains*: Collatz–Wiel
 existence of a simplex maximizer, then primitivity forces a strictly positive eigenvector.
 
 -/
+
+public section
 
 namespace Matrix
 

@@ -1,17 +1,19 @@
-import Mathlib.Tactic
-import RealRooted.GammaRealRoots
-import RealRooted.LiebSokal
-import RealRooted.LiuWangRecursion
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.PFPolynomial
-import RealRooted.QuadraticRoot
-import RealRooted.RectangularConvolution
-import RealRooted.RectangularConvolutionIdentity
-import RealRooted.Touchard
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Ring.Parity
+module
+
+public import Mathlib.Tactic
+public import RealRooted.GammaRealRoots
+public import RealRooted.LiebSokal
+public import RealRooted.LiuWangRecursion
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.PFPolynomial
+public import RealRooted.QuadraticRoot
+public import RealRooted.RectangularConvolution
+public import RealRooted.RectangularConvolutionIdentity
+public import RealRooted.Touchard
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # The Narayana Transformation
@@ -26,6 +28,8 @@ convolution.  We first expose the reusable basis-transformation interfaces from
 the paper and the checked coefficient infrastructure for the generalized
 Narayana polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

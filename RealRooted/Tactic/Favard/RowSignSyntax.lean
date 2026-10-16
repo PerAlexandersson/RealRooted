@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.DenominatorSyntax
+module
+
+public import RealRooted.Tactic.Favard.DenominatorSyntax
 
 /-!
 # Favard tactic row-sign syntax
 
 Parser declarations for row-sign-normalized affine Favard certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

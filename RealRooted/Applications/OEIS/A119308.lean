@@ -1,21 +1,25 @@
-import RealRooted.EulerOperator
-import RealRooted.FiniteFreeRootCount
-import RealRooted.Hadamard
-import RealRooted.Interlacing.ReversalCommonFactor
-import RealRooted.LinearPowerFamily
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.JensenAffineTheta
-import RealRooted.MultiplierSequence.ProperPosition
-import RealRooted.NarayanaTransformation
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.Hadamard
+public import RealRooted.Interlacing.ReversalCommonFactor
+public import RealRooted.LinearPowerFamily
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.JensenAffineTheta
+public import RealRooted.MultiplierSequence.ProperPosition
+public import RealRooted.NarayanaTransformation
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The A119308 hypergeometric model
 
 The row has coefficient `C(n+1,k) (2 C(n+1,k+2) + C(n+1,k+1)) / (n+1)`.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 
@@ -36,7 +40,7 @@ def nextRow (n : ℕ) (p q r : ℝ[X]) : ℝ[X] :=
       C ((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ))) *
         X ^ 2) * r
 
-private def recurrencePolynomial : ℕ → ℝ[X]
+def recurrencePolynomial : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 2 + X
   | 2 => 3 + 5 * X + X ^ 2

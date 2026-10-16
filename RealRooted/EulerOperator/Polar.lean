@@ -1,5 +1,7 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.EulerOperator
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.EulerOperator
 
 /-!
 # Polar theta and split polynomials
@@ -8,6 +10,8 @@ The polar theta operator preserves ordinary real splitness within a finite
 degree box.  This is weaker in hypotheses than PF preservation and is useful
 for transformed polynomial families.
 -/
+
+public section
 
 open Polynomial
 

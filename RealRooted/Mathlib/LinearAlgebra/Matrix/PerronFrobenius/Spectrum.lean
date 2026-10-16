@@ -9,18 +9,21 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
-import Mathlib.Algebra.Lie.OfAssociative
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
-import Mathlib.Analysis.InnerProductSpace.Basic
-import Mathlib.Analysis.Normed.Algebra.Spectrum
-import Mathlib.Analysis.RCLike.Lemmas
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.LinearAlgebra.Eigenspace.Basic
-import Mathlib.LinearAlgebra.Eigenspace.Matrix
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-import Mathlib.RingTheory.DedekindDomain.Dvr
-import Mathlib.RingTheory.FiniteLength
-import Mathlib.RingTheory.SimpleRing.Principal
+
+module
+
+public import Mathlib.Algebra.Lie.OfAssociative
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Analysis.Normed.Algebra.Spectrum
+public import Mathlib.Analysis.RCLike.Lemmas
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Matrix
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import Mathlib.RingTheory.DedekindDomain.Dvr
+public import Mathlib.RingTheory.FiniteLength
+public import Mathlib.RingTheory.SimpleRing.Principal
 
 /-! # Perron-Frobenius Theory for Matrices
 
@@ -150,6 +153,8 @@ Module.End.eigenvectors_linearIndependent [NoZeroSMulDivisors R M] (f : End R M)
   (xs : μs → M) (h_eigenvec).
 
 -/
+
+public section
 
 namespace Matrix
 open LinearMap Polynomial Module

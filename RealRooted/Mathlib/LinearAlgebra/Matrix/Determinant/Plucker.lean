@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
 
 /-!
 # Ordered deleted-column Plücker identity
@@ -7,6 +9,8 @@ The relation is obtained from the Desnanot--Jacobi identity after adjoining a
 standard-basis row.  Laplace expansion of the four resulting minors gives the
 three maximal minors in the Plücker relation.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

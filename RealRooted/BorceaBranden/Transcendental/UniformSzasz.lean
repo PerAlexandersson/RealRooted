@@ -1,6 +1,10 @@
-import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BoundarySpecializationGeneral
+module
+
+public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BoundarySpecializationGeneral
+
+@[expose] public section
 
 open Filter Topology
 

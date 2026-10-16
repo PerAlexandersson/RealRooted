@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
-import RealRooted.Applications.OEIS.A144438.HistoryExtension
-import RealRooted.Combinatorics.ComparisonBottomInsertion
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
+public import RealRooted.Applications.OEIS.A144438.HistoryExtension
+public import RealRooted.Combinatorics.ComparisonBottomInsertion
 
 /-!
 # Polynomial recurrences for Deco history fibers
@@ -10,6 +12,8 @@ fibers into identities for their comparison-bottom enumerators.  It also
 records compatibility with the operator-defined exact layers.  The generic
 minimum-insertion identities remain in the combinatorics namespace.
 -/
+
+public section
 
 namespace RealRooted.Applications.OEIS
 

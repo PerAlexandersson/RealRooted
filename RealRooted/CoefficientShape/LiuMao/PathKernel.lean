@@ -1,4 +1,6 @@
-import RealRooted.CoefficientShape.LiuMao.Elevation
+module
+
+public import RealRooted.CoefficientShape.LiuMao.Elevation
 
 /-!
 # The lattice-path kernel preserves LC-NIZ
@@ -14,6 +16,8 @@ integrals we use the exact identity "reduction maps the level-`n` moment vector 
 level-`(n-1)` moment vector" together with an explicit `O(1/n)` estimate between the moment
 vector and the Bernstein coefficients at level `n`.
 -/
+
+@[expose] public section
 
 open Finset Filter Topology
 

@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 
 /-!
 # Occurrences of the pattern 21 are inversions
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 `[1, 0]` in a word with its inversion count; for permutations, occurrences of `21` are inversions,
 and occurrences of `12` and `21` together count all `n.choose 2` pairs.
 -/
+
+public section
 
 open Finset
 

@@ -1,7 +1,9 @@
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.Residue
-import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
-import RealRooted.Wronskian.Forward
+module
+
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.Residue
+public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+public import RealRooted.Wronskian.Forward
 
 /-!
 # Weak forward Wronskian orientation
@@ -9,6 +11,8 @@ import RealRooted.Wronskian.Forward
 This file extends the strict forward Wronskian theorems to interlacing
 pairs with common roots.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.ASWKarlinKernel
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.PFPolynomial
-import RealRooted.PolyaFrequencyConvolution.Basic
+module
+
+public import RealRooted.ASWKarlinKernel
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.PFPolynomial
+public import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
 # Aissen--Schoenberg--Whitney challenge entry point
@@ -100,6 +102,8 @@ forward and reverse directions, and closure of Pólya frequency sequences under
 convolution.  The Toeplitz/PF infrastructure remains in
 `RealRooted.AissenSchoenbergWhitney`.
 -/
+
+public section
 
 open Polynomial
 

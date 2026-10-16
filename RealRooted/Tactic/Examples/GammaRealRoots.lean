@@ -1,4 +1,8 @@
-import RealRooted.Tactic.GammaRealRoots
+module
+
+public import RealRooted.Tactic.GammaRealRoots
+
+public section
 
 open Polynomial
 

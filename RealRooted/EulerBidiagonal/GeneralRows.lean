@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.PairTheorem
+module
+
+public import RealRooted.EulerBidiagonal.PairTheorem
 
 /-!
 # Rows of the general Euler recurrence
@@ -9,6 +11,8 @@ If `κ, a, b > 0`, `u + v k > 0` for all `k`, and the comparison defect is negat
 consecutive rows strictly interlace without common roots.  This covers A156289
 (`κ = a = b = 1`, `u = 3`, `v = 2`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

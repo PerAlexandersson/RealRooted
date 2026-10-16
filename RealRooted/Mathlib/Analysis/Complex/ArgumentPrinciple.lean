@@ -1,7 +1,9 @@
-import Mathlib.Analysis.Complex.CauchyIntegral
-import Mathlib.Analysis.Calculus.LogDeriv
-import Mathlib.Analysis.Calculus.FDeriv.Analytic
-import Mathlib.Analysis.Analytic.Constructions
+module
+
+public import Mathlib.Analysis.Complex.CauchyIntegral
+public import Mathlib.Analysis.Calculus.LogDeriv
+public import Mathlib.Analysis.Calculus.FDeriv.Analytic
+public import Mathlib.Analysis.Analytic.Constructions
 
 /-!
 # The argument principle on circles
@@ -31,6 +33,8 @@ the algebra of `logDeriv`, but no argument principle or winding numbers.
 
 Ported from `real-rooted-oeis-proofs` (`Asymptotics/ArgumentPrinciple`).
 -/
+
+public section
 
 
 open scoped Real Topology

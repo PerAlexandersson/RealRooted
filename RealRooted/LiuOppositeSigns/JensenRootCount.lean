@@ -1,5 +1,7 @@
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.LiuOppositeSigns.PositiveSplitPair
+module
+
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.LiuOppositeSigns.PositiveSplitPair
 
 /-!
 # Root-count bridges for Jensen pencils
@@ -9,6 +11,8 @@ to Liu's closed upper-tail root-count predicate.  It also records the exact
 effect of adjoining a factor `X`, which is the bookkeeping step behind the
 two-slot Jensen-pencil root-count band.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,8 +1,12 @@
-import RealRooted.Tactic.PreservingOperatorSequence
+module
+
+public import RealRooted.Tactic.PreservingOperatorSequence
 
 /-!
 # Preserving-operator sequence tactic examples
 -/
+
+public section
 
 open Polynomial
 

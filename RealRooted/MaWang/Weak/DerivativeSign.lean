@@ -1,5 +1,7 @@
-import RealRooted.MaWang.Weak.Successor
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.MaWang.Weak.Successor
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Interlacing from derivative signs at simple roots
@@ -13,6 +15,8 @@ The derivative `f'` serves as a canonical interlacer of `f` (Rolle), and it does
 at the roots of `f`.  This lets the weak-sign Ma--Wang and Liu--Wang criteria avoid both a
 distinguished interlacer and a no-common-root hypothesis.
 -/
+
+public section
 
 open Polynomial
 

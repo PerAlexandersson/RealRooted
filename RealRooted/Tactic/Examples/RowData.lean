@@ -1,5 +1,7 @@
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # `rr_row_*` examples
@@ -9,6 +11,8 @@ Regression tests for OEIS rows defined by derivative recurrences, drawn from
 `P (n + 3) = …`, for summands in other orders, and for the hints, the certificates and
 the `?` variants of the degree tactics.
 -/
+
+@[expose] public section
 
 open Polynomial
 open RealRooted.Tactic.RowFixtures

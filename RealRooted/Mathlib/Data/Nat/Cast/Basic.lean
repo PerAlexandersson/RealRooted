@@ -1,10 +1,14 @@
-import Mathlib.Data.Nat.Cast.Basic
+module
+
+public import Mathlib.Data.Nat.Cast.Basic
 
 /-!
 # Extra lemmas about casts of natural numbers
 
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Cast.Basic`.
 -/
+
+public section
 
 namespace Nat
 

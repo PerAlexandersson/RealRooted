@@ -1,4 +1,6 @@
-import RealRooted.EulerOperator.Polar.MultiplierSequence
+module
+
+public import RealRooted.EulerOperator.Polar.MultiplierSequence
 
 /-!
 # Real-parameter polar Euler operators
@@ -11,6 +13,8 @@ associated diagonal operator is `C a * p - theta p`, so this real polar
 derivative preserves PF polynomials.  This extends the natural-parameter
 `polarThetaMultiplier` package.
 -/
+
+@[expose] public section
 
 open Polynomial
 

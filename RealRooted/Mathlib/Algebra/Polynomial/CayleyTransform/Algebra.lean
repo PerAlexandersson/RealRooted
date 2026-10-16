@@ -1,13 +1,17 @@
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
-import Mathlib.FieldTheory.IsAlgClosed.Basic
-import Mathlib.Tactic.ComputeDegree
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import Mathlib.Tactic.ComputeDegree
+public import Mathlib.Tactic.Ring
 
 /-!
 # Algebraic formulas for the finite-degree Cayley transform
 
 Root-factor, injectivity, and binomial-basis formulas over the complex numbers.
 -/
+
+public section
 
 open Polynomial
 

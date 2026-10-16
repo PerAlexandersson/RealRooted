@@ -1,5 +1,7 @@
-import RealRooted.Multiaffine
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+module
+
+public import RealRooted.Multiaffine
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # The multivariate differential action
@@ -8,6 +10,8 @@ This file defines the finite-variable differential action `F(-∂){G}` used in
 the Lieb--Sokal theorem. It also proves the algebraic part of that theorem's
 conclusion: this action preserves multiaffineness of `G`.
 -/
+
+@[expose] public section
 
 open BigOperators
 

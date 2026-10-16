@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.NormNum
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Degree of quadratic-coefficient derivative recurrences
@@ -12,6 +14,8 @@ derivative recurrences whose derivative coefficient is quadratic.  The
 real-root and interlacing consequences live in the separate real-valued
 `QuadraticInterlacing` module.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceIntervals
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceIntervals
 
 /-!
 # Liu--Wang inner-window regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceIntervals
 Sequence tests for lag factors controlled on an inner root window, including
 unit, scalar, cubic, and shifted certificate variants.
 -/
+
+public section
 
 open Polynomial
 

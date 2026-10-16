@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438
-import RealRooted.GeneralizedEulerian
+module
+
+public import RealRooted.Applications.OEIS.A144438
+public import RealRooted.GeneralizedEulerian
 
 /-!
 # Weighted deco Eulerian polynomials
@@ -14,6 +16,8 @@ is the ordinary Eulerian recurrence `generalizedEulerian 1`. These are checked
 recurrence identities only; no combinatorial interpretation of the parameter
 `w` is asserted here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

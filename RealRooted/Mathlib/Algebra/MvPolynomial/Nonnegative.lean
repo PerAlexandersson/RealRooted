@@ -1,6 +1,9 @@
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Basic.Real.Basic
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
+module
+
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Multivariate polynomials with nonnegative coefficients
@@ -8,6 +11,8 @@ import Mathlib.RingTheory.MvPolynomial.Homogeneous
 This file provides the coefficientwise nonnegativity predicate and its basic
 closure properties for real multivariate polynomials.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

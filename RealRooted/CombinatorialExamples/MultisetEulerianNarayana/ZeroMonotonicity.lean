@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 
 /-!
 # Monotonicity of the zeros of the gamma operator
@@ -19,6 +21,8 @@ The sign comes from the strict interlacing of `p` with the numerator `Φ_{d,a} p
 Both signs are derived from it: for the input roots through the deletion identity
 `T((X - r_i) q) = (X - r_i) T q + z(1 - 4z) q`, and for `a` directly.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped ContDiff

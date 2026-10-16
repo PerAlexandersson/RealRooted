@@ -1,5 +1,7 @@
-import RealRooted.RootCounting.Threshold.Basic
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.RootCounting.Threshold.Basic
+public import RealRooted.SortedRoots
 
 /-!
 # Thresholded counts through sorted root magnitudes
@@ -7,6 +9,8 @@ import RealRooted.SortedRoots
 This layer translates thresholded root counts into the ascending sequence of
 negative root magnitudes.
 -/
+
+public section
 
 namespace RealRooted.RootCounting
 

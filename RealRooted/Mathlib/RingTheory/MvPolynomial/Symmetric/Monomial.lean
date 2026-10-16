@@ -1,12 +1,16 @@
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
+module
+
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
 
 /-!
 # Coefficients of monomial symmetric polynomials
 
 This file gives a coefficient formula for `MvPolynomial.msymm`.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

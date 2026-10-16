@@ -1,5 +1,9 @@
-import RealRooted.SameDegreeDerivative
-import RealRooted.MaWang.DerivativeStep
+module
+
+public import RealRooted.SameDegreeDerivative
+public import RealRooted.MaWang.DerivativeStep
+
+public section
 
 open Polynomial Set
 

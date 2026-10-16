@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic.IntervalCases
-import RealRooted.Basic.Coefficients
-import RealRooted.DerivativeRecurrence.Degree
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Tactic.IntervalCases
+public import RealRooted.Basic.Coefficients
+public import RealRooted.DerivativeRecurrence.Degree
 
 /-!
 # Degrees of general linear recurrences
@@ -27,6 +29,8 @@ This generalizes `RealRooted.derivativeRecurrence_leadingCoeff_pos` (first order
 `RealRooted.threeTermPos_leadingCoeff_pos` (three-term) to any order and any mixture of
 derivatives.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -90,7 +94,7 @@ theorem rhs_step {k d D₀ : ℕ} {P : ℕ → ℝ[X]} (n : ℕ) :
       rw [coeff_add, h2, ih.2, topCoeff, cast_descFactorial_eq_prod]
 
 /-- Regroup a sum over the summands by their lags `j < k`. -/
-private theorem sum_map_eq_sum_lag {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ) (g : ℕ → ℝ) :
+theorem sum_map_eq_sum_lag {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ) (g : ℕ → ℝ) :
     ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
       (terms.map fun t => f t * g t.1).sum =
         ∑ j ∈ Finset.range k, ((terms.filter fun t => t.1 = j).map f).sum * g j
@@ -395,7 +399,7 @@ noncomputable def lagMultD (k : ℕ) (D : ℕ → ℕ) (terms : List (ℕ × ℕ
 /-- One step for a degree law: if the rows `P (n + j)`, `j < k`, have degree at most
 `D (n + j)`, then the right side has degree at most `D (n + k)`, with top coefficient
 `∑ₜ topCoeffD t * (P (n + jₜ)).coeff (D (n + jₜ))`. -/
-private theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} (n : ℕ)
+theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} (n : ℕ)
     (hD : ∀ j, j < k → D (n + j) ≤ D (n + k)) :
     ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
       (∀ t ∈ terms, (t.2.2 n).natDegree ≤ D (n + k) - D (n + t.1) + t.2.1) →

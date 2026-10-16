@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotal
-import RealRooted.MultivariateStability.LinearForm
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotal
+public import RealRooted.MultivariateStability.LinearForm
 
 /-!
 # Initial stability certificates for the Deco layer total
@@ -9,6 +11,8 @@ rank-two proof rewrites the two recurrence branches as one nonnegative
 directional-derivative pencil.  No claim is made here for higher-rank totals:
 stability is not closed under the outer addition in the defining recurrence.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

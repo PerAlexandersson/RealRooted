@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.Degree
+module
+
+public import RealRooted.DerivativeRecurrence.Degree
 
 /-!
 # Degrees of three-term recurrences
@@ -29,6 +31,8 @@ as soon as `t` stays positive.  Two regimes cover the OEIS triangles:
 * `threeTerm_eval_zero_pos`, `threeTermRatio_eval_zero_pos`: positivity of the rows
   at `0`, from the same two scalar regimes applied to `x n = (P n).eval 0`.
 -/
+
+public section
 
 open Polynomial
 

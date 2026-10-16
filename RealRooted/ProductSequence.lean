@@ -1,9 +1,11 @@
-import RealRooted.ProductSequence.Core
-import RealRooted.ProductSequence.EndpointPair
-import RealRooted.ProductSequence.FactorFamilies
-import RealRooted.ProductSequence.Factors
-import RealRooted.ProductSequence.Lifts
-import RealRooted.ProductSequence.ScalarFamilies
+module
+
+public import RealRooted.ProductSequence.Core
+public import RealRooted.ProductSequence.EndpointPair
+public import RealRooted.ProductSequence.FactorFamilies
+public import RealRooted.ProductSequence.Factors
+public import RealRooted.ProductSequence.Lifts
+public import RealRooted.ProductSequence.ScalarFamilies
 
 /-!
 # Product-sequence closure theorems
@@ -11,3 +13,5 @@ import RealRooted.ProductSequence.ScalarFamilies
 Compatibility facade for real-rootedness closure theorems whose rows are
 obtained by multiplying earlier rows by real linear or scalar factors.
 -/
+
+public section

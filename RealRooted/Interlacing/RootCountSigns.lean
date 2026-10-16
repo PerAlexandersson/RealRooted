@@ -1,4 +1,6 @@
-import RealRooted.MaWang.StrictSigns.Assembly
+module
+
+public import RealRooted.MaWang.StrictSigns.Assembly
 
 /-!
 # Strict interlacing from root-count signs
@@ -7,6 +9,8 @@ If `p` has simple real roots and `F` has the sign `-(-1)^(number of roots of p t
 every root of `p`, and `F` has positive leading coefficient and one more degree than `p`, then
 `p ≪ F` strictly.
 -/
+
+public section
 
 open Polynomial
 

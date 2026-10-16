@@ -1,5 +1,7 @@
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequencePositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
+public import RealRooted.Tactic.LiuWang.SequencePositive
 
 /-!
 # Liu--Wang direct-step regression examples
@@ -7,6 +9,8 @@ import RealRooted.Tactic.LiuWang.SequencePositive
 Executable examples for the direct Liu--Wang dispatchers, helper syntax, and
 one-step OEIS recurrence forms.
 -/
+
+public section
 
 open Polynomial
 

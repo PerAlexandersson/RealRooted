@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.Rayleigh
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine.Rayleigh
 
 /-!
 # Coordinate Wronskians of multivariate polynomials
@@ -10,6 +12,8 @@ This file packages the first-order determinant associated with one coordinate.
 Its directional-derivative specialization is a weighted row sum of Rayleigh
 differences, making the orientation and positivity hypotheses explicit.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

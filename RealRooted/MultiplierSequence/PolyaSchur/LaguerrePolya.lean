@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.PolyaSchur.Analytic
-import Mathlib.Analysis.RCLike.Lemmas
+module
+
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.PolyaSchur.Analytic
+public import Mathlib.Analysis.RCLike.Lemmas
 
 /-!
 # Laguerre--Pólya limits of Jensen polynomials
@@ -13,6 +15,8 @@ majorant, together with closure of this class under products. It does not
 prove an analytic root-closure theorem or either Pólya--Schur classification
 direction.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

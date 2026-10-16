@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Polynomial.MahlerMeasure
+module
+
+public import Mathlib.Analysis.Polynomial.MahlerMeasure
 
 /-!
 # Coefficient bounds from the Mahler measure
@@ -6,6 +8,8 @@ import Mathlib.Analysis.Polynomial.MahlerMeasure
 Upstream-shaped consequences of the standard coefficient/Mahler-measure
 estimate for complex polynomials whose roots lie in the closed unit disk.
 -/
+
+public section
 
 open Polynomial
 

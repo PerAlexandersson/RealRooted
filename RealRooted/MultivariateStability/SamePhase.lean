@@ -1,7 +1,9 @@
-import Mathlib.Topology.Algebra.MvPolynomial
-import RealRooted.AffineLineRestriction
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.SamePhaseStability
+module
+
+public import Mathlib.Topology.Algebra.MvPolynomial
+public import RealRooted.AffineLineRestriction
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.SamePhaseStability
 
 /-!
 # Real stability implies same-phase stability
@@ -10,6 +12,8 @@ This file transfers multivariate real stability to every nonnegative
 common-phase restriction.  Strictly positive weights follow from affine-line
 restriction; zero weights are obtained by a bounded-degree closed-root limit.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

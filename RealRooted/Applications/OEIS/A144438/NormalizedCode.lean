@@ -1,6 +1,8 @@
-import Mathlib.Data.Finset.BooleanAlgebra
-import Mathlib.Data.Finset.Fin
-import Mathlib.Data.Fintype.Basic
+module
+
+public import Mathlib.Data.Finset.BooleanAlgebra
+public import Mathlib.Data.Finset.Fin
+public import Mathlib.Data.Fintype.Basic
 
 /-!
 # Normalized chronological codes for the deco construction
@@ -11,6 +13,8 @@ exceptional starts are the adjacent pairs `(0, 2)` beginning in rows at least
 three.  This is distinct from the `(0, 1)` pairs obtained only after transport
 to minimum-insertion codes.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

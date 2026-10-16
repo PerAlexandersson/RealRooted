@@ -1,5 +1,9 @@
+module
 
-import RealRooted.Hadamard.Kostov.Roots
+
+public import RealRooted.Hadamard.Kostov.Roots
+
+public section
 
 open Polynomial
 

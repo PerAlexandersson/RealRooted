@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.NDCutPreservation
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
+module
+
+public import RealRooted.Compatibility.NDCutPreservation
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
 
 /-!
 # Structural N/D preservation for the weak-left-peak recurrence
@@ -7,6 +9,8 @@ import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
 The checked terminal-state recurrence is exactly one generic structural cut
 step, so the generic preservation theorem supplies an induction-ready witness.
 -/
+
+public section
 
 namespace RealRooted.ParkingFunctions
 

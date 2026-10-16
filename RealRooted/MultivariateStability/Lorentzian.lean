@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.JumpSystem
-import RealRooted.MultivariateStability.LinearForm
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import Mathlib.RingTheory.MvPolynomial.EulerIdentity
-import Mathlib.Analysis.Matrix.Spectrum
+module
+
+public import RealRooted.MultivariateStability.JumpSystem
+public import RealRooted.MultivariateStability.LinearForm
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import Mathlib.Analysis.Matrix.Spectrum
 
 /-!
 # Homogeneous real stable polynomials are Lorentzian
@@ -32,6 +34,8 @@ positive definite plane for the form `v ↦ vᵀ H v`;
   nonnegative entries whose quadratic form is real stable has at most one positive eigenvalue.
 * `isLorentzian_of_stable`: Proposition 2.2.
 -/
+
+@[expose] public section
 
 open MvPolynomial Matrix
 

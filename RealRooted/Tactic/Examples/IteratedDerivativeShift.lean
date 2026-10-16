@@ -1,4 +1,8 @@
-import RealRooted.Tactic.IteratedDerivativeShift
+module
+
+public import RealRooted.Tactic.IteratedDerivativeShift
+
+public section
 
 open Polynomial
 

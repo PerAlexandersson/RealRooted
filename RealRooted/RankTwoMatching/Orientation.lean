@@ -1,4 +1,8 @@
-import RealRooted.RankTwoMatching.Basic
+module
+
+public import RealRooted.RankTwoMatching.Basic
+
+@[expose] public section
 
 open Polynomial
 

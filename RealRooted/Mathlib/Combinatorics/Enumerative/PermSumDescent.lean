@@ -1,4 +1,8 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+
+public section
 
 noncomputable section
 

@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalPointwise
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.MultivariateStability
 
 /-!
 # Boundary specialization for finite variable blocks
@@ -9,6 +11,8 @@ proof of Borcea--Branden, Lemma 2.2.  A multiaffine stable polynomial remains
 stable or becomes zero after a finite block of variables is specialized to
 zero.
 -/
+
+@[expose] public section
 
 open Complex
 

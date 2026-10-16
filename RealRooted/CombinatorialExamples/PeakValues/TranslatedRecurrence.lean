@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
 
 /-!
 # Translated peak-value recurrence
@@ -6,6 +8,8 @@ import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
 This file transports the insertion recurrence through the coordinate
 translation `x ↦ 1 + x` used in the stability proof.
 -/
+
+public section
 
 namespace RealRooted
 

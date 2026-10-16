@@ -1,6 +1,8 @@
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Tactic
-import Mathlib.Topology.Algebra.Order.Field
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Tactic
+public import Mathlib.Topology.Algebra.Order.Field
 
 /-!
 # Karlin sector threshold
@@ -8,6 +10,8 @@ import Mathlib.Topology.Algebra.Order.Field
 This file contains the elementary threshold notation used in Karlin's
 finite-order sector theorem for Pólya-frequency sequences.
 -/
+
+@[expose] public section
 
 noncomputable section
 

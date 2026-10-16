@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RootCount.CoreRules
+module
+
+public import RealRooted.Tactic.RootCount.CoreRules
 
 /-!
 # Root-count tactic regressions: core frontends
@@ -7,6 +9,8 @@ Regression examples for the scalar and `_sequence` root-count frontends of
 `RealRooted.Tactic.RootCount.CoreRules`: degree and leading-coefficient transport,
 root-count jumps at non-roots, threshold counts and the zero-parameter endpoint.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
-import RealRooted.CommonInterleaver.RightPencil
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
+public import RealRooted.CommonInterleaver.RightPencil
 
 /-!
 # Weighted interval-preservation theorem
@@ -7,6 +9,8 @@ import RealRooted.CommonInterleaver.RightPencil
 The weighted A144438 transform sends every nonconstant real polynomial whose
 roots all lie in `[-1, 0]` to a polynomial with simple negative roots.
 -/
+
+public section
 
 open Polynomial Set
 

@@ -9,9 +9,14 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Combinatorics/Quiver/Path.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
-import Mathlib.Combinatorics.Quiver.Path.Vertices
-import Mathlib.Combinatorics.Quiver.Path.Weight
+
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
+public import Mathlib.Combinatorics.Quiver.Path.Vertices
+public import Mathlib.Combinatorics.Quiver.Path.Weight
+
+@[expose] public section
 
 open List
 

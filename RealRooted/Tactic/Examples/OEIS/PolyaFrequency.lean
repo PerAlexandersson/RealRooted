@@ -1,12 +1,16 @@
-import RealRooted.Tactic.Hadamard
-import RealRooted.Tactic.MultiplierSequence
-import RealRooted.Tactic.PFPolynomial
+module
+
+public import RealRooted.Tactic.Hadamard
+public import RealRooted.Tactic.MultiplierSequence
+public import RealRooted.Tactic.PFPolynomial
 
 /-!
 # OEIS Polya-frequency regression examples
 
 Regression examples for PF-polynomial, Hadamard, and multiplier frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

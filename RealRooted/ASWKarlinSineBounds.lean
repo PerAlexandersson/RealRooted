@@ -1,6 +1,8 @@
-import RealRooted.ASWKarlinThreshold
-import RealRooted.ASWKarlinVectors
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+module
+
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinVectors
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-!
 # Sign-variation bounds for Karlin sine vectors
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 This file contains elementary sign-variation estimates for the sampled sine
 vectors used in Karlin's finite-order sector proof.
 -/
+
+public section
 
 noncomputable section
 

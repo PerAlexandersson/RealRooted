@@ -1,6 +1,8 @@
-import RealRooted.HosterStump.Refined
-import RealRooted.Basic.ProperPosition
-import RealRooted.Linear
+module
+
+public import RealRooted.HosterStump.Refined
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Linear
 
 /-!
 # Interlacing diagrams of Hoster--Stump
@@ -13,6 +15,8 @@ invariant `IsInterlacingDiagram`.
 Interlacing is the zero-aware relation `RealRooted.Interl`.  We do not use the paper's
 clause that any two polynomials of degree at most one interlace.
 -/
+
+@[expose] public section
 
 open Polynomial
 

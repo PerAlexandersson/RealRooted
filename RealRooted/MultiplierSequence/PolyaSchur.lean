@@ -1,5 +1,7 @@
-import RealRooted.Hadamard.Grace
-import RealRooted.MultiplierSequence.Infinite
+module
+
+public import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Infinite Pólya--Schur consequences
@@ -16,6 +18,8 @@ multiplier sequence to a Laguerre--Pólya limit function. Neither direction of
 the classical entire-function classification is proved, and no analytic
 statement scaffold is introduced.
 -/
+
+public section
 
 open Polynomial
 

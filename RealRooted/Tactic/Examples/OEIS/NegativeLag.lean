@@ -1,4 +1,6 @@
-import RealRooted.Tactic.OEIS.NegativeLag
+module
+
+public import RealRooted.Tactic.OEIS.NegativeLag
 
 /-!
 # OEIS negative-lag router regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.OEIS.NegativeLag
 Negative-lag certificate router tests, including supplied, automatic, and
 real-rootedness projection variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

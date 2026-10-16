@@ -1,5 +1,7 @@
-import RealRooted.Transforms.BrandenE
-import RealRooted.Transforms.BrandenE.IntervalPreserver
+module
+
+public import RealRooted.Transforms.BrandenE
+public import RealRooted.Transforms.BrandenE.IntervalPreserver
 
 /-!
 # Brändén E transform challenge entry point
@@ -101,3 +103,5 @@ The ordered Bell numbers are [OEIS A000670](https://oeis.org/A000670).
 This module is a catalog facade. The proofs live in
 `RealRooted.Transforms.BrandenE`.
 -/
+
+public section

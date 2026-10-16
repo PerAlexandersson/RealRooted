@@ -1,11 +1,13 @@
-import Mathlib.Data.Fintype.Perm
-import Mathlib.Data.List.Permutation
-import Mathlib.Data.List.Sublists
-import Mathlib.Data.List.NodupEquivFin
-import Mathlib.Data.Fin.VecNotation
-import Mathlib.Order.Fin.Basic
-import Mathlib.Order.Monotone.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Data.Fintype.Perm
+public import Mathlib.Data.List.Permutation
+public import Mathlib.Data.List.Sublists
+public import Mathlib.Data.List.NodupEquivFin
+public import Mathlib.Data.Fin.VecNotation
+public import Mathlib.Order.Fin.Basic
+public import Mathlib.Order.Monotone.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Pattern containment and avoidance
@@ -14,6 +16,8 @@ This is a Mathlib-shaped staging module.  Positions in words and permutations ar
 zero-based.  A word contains a pattern when one of its (not necessarily
 contiguous) sublists has the same strict order relations as the pattern.
 -/
+
+@[expose] public section
 
 namespace List
 

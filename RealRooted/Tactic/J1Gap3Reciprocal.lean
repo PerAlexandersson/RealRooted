@@ -1,4 +1,6 @@
-import RealRooted.Tactic.ReciprocalShift
+module
+
+public import RealRooted.Tactic.ReciprocalShift
 
 /-!
 # J1 gap-3 reciprocal frontend
@@ -7,6 +9,8 @@ Compatibility tactic syntax for the original J1-specific reciprocal-shift route;
 the underlying theorems are `isRealRooted_of_reciprocalShift_sequence` and
 `isRealRooted_of_reciprocalShift_pf_sequence`.
 -/
+
+public section
 
 open Polynomial
 

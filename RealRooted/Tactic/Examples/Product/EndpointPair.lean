@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product.Rules
+module
+
+public import RealRooted.Tactic.Product.Rules
 
 /-!
 # Product endpoint-pair regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product.Rules
 Smoke tests for endpoint-pair product certificates, including direct,
 swapped, and lifted sequence forms.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

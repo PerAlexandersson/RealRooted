@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Polynomial.Degree.SmallDegree
-import Mathlib.Tactic
-import RealRooted.CubicDiscriminant
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.SmallDegree
+public import Mathlib.Tactic
+public import RealRooted.CubicDiscriminant
 
 /-!
 # The monic quadratic-plus-cubic pencil
@@ -31,6 +33,8 @@ bridge to the cubic-discriminant machinery.  Future #42 work should only use
 this file if the direct compatible-family route exposes a named low-degree
 base-case gap.
 -/
+
+@[expose] public section
 
 open Polynomial
 

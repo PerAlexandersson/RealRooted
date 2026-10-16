@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.Network
-import RealRooted.BrandenLeite.WhitneyReduction
+module
+
+public import RealRooted.BrandenLeite.Network
+public import RealRooted.BrandenLeite.WhitneyReduction
 
 /-!
 # First Whitney coefficient of a normalized triangular network
@@ -9,6 +11,8 @@ literal normalized triangular network with its first vertical edge weight.
 It is the first step toward the normalized-network uniqueness part of
 Brändén--Saud Leite Theorem 2.1.
 -/
+
+public section
 
 namespace RealRooted.BrandenLeite
 

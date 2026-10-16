@@ -1,4 +1,6 @@
-import RealRooted.Permanent.MonotoneColumn
+module
+
+public import RealRooted.Permanent.MonotoneColumn
 
 /-!
 # Monotone column permanent theorem
@@ -132,6 +134,8 @@ the Geometry of Polynomials*, Trends in Mathematics (2011), 63–78,
 [arXiv:1010.2565](https://arxiv.org/abs/1010.2565).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.MonotoneColumnPermanent
 

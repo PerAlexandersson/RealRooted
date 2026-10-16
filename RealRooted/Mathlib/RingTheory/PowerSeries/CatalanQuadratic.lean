@@ -1,5 +1,7 @@
-import Mathlib.RingTheory.PowerSeries.Catalan
-import Mathlib.RingTheory.PowerSeries.Substitution
+module
+
+public import Mathlib.RingTheory.PowerSeries.Catalan
+public import Mathlib.RingTheory.PowerSeries.Substitution
 
 /-!
 # Catalan quadratic substitution
@@ -7,6 +9,8 @@ import Mathlib.RingTheory.PowerSeries.Substitution
 This transports Mathlib's Catalan power series to an arbitrary commutative
 ring and records its quadratic equation after a valid substitution.
 -/
+
+@[expose] public section
 
 namespace PowerSeries
 

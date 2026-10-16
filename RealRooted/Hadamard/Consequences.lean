@@ -1,4 +1,8 @@
-import RealRooted.Hadamard.Hurwitz
+module
+
+public import RealRooted.Hadamard.Hurwitz
+
+public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Wronskian.WeakForward
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Wronskian.WeakForward
 
 /-!
 # The weak Wronskian converse
@@ -27,6 +29,8 @@ simple, so the Wronskian is positive at every root of `f`. The Bezout-matrix
 certificate `RealRooted.wronskian_pos_of_pos_at_roots` then makes it positive
 on all of `ℝ`, and the strict converses apply.
 -/
+
+public section
 
 open Polynomial
 

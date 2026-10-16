@@ -1,8 +1,10 @@
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.EulerOperator
-import RealRooted.EulerOperator.Polar.RealParameter
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.EulerOperator
+public import RealRooted.EulerOperator.Polar.RealParameter
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.SimpleRoots
 
 /-!
 # The unit parameter shift of the Jacobi deformation
@@ -19,6 +21,8 @@ polynomials, so every integral increment of `δ` preserves the PF property,
 splitness, and strictly negative roots.  For ranks at least two, a simple PF
 base also gives strict interlacing and simple roots after each shift.
 -/
+
+public section
 
 open Finset Polynomial
 

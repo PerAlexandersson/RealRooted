@@ -1,5 +1,7 @@
-import RealRooted.Hermite.Orthogonality.Integral
-import RealRooted.Hermite.Roots
+module
+
+public import RealRooted.Hermite.Orthogonality.Integral
+public import RealRooted.Hermite.Roots
 
 /-!
 # Hermite polynomial challenge entry point
@@ -82,3 +84,5 @@ Publications 23 (1939).
 
 This module is a catalog facade.  The proofs live in `RealRooted.Hermite`.
 -/
+
+public section

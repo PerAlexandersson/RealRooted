@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+module
+
+public import RealRooted.GeneralizedSnakePosets.MatrixInduction
+public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
 
 /-!
 # Modified-Narayana root-sum orientation
@@ -8,6 +10,8 @@ This module derives the Vieta/root-sum comparison used in the shifted difference
 and records the obstruction to a uniformly strict negative root bound at the
 endpoint `ν = -1`.
 -/
+
+public section
 
 open Polynomial Filter
 

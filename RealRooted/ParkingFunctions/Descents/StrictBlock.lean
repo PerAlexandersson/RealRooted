@@ -1,7 +1,9 @@
-import RealRooted.ParkingFunctions.Descents.WordContent
-import Mathlib.Data.Finset.Sort
-import Mathlib.Order.Fin.Basic
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+module
+
+public import RealRooted.ParkingFunctions.Descents.WordContent
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Order.Fin.Basic
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Strict word blocks
@@ -9,6 +11,8 @@ import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 This module identifies the multivariate content enumerator of strictly
 decreasing finite words with an elementary symmetric polynomial.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

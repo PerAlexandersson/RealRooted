@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.QuasiNodes
-import RealRooted.JacobiDeformation.SpectralKernel
+module
+
+public import RealRooted.JacobiDeformation.QuasiNodes
+public import RealRooted.JacobiDeformation.SpectralKernel
 
 /-!
 # Kernel signs at the critical coordinates
@@ -19,6 +21,8 @@ preceding Jacobi evaluations.  The first section extends the weighted
 spectral sign of `RealRooted.JacobiDeformation.SpectralKernel` from indexed
 node families to arbitrary pairs of quasi-Jacobi roots.
 -/
+
+public section
 
 open Finset Polynomial
 

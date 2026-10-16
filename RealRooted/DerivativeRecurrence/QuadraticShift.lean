@@ -1,10 +1,14 @@
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 
 /-!
 # Shifted quadratic-coefficient derivative recurrences
 
 Nonnegative-coefficient and interlacing results for the normalized shifted recurrence.
 -/
+
+public section
 
 open Polynomial
 

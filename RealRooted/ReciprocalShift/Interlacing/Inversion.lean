@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Data.List.Interleave
-import RealRooted.ReciprocalShift.Interlacing
+module
+
+public import RealRooted.Mathlib.Data.List.Interleave
+public import RealRooted.ReciprocalShift.Interlacing
 
 /-!
 # Inversion and interleaving of reciprocal roots
@@ -8,6 +10,8 @@ This module transports interleaving lists of strictly negative real numbers
 through reciprocal inversion and reversal. Zero-tail padding is deliberately a
 separate layer.
 -/
+
+public section
 
 namespace RealRooted
 

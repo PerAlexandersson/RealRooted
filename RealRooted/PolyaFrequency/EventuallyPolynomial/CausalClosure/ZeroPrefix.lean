@@ -1,5 +1,7 @@
-import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
-import RealRooted.AissenSchoenbergWhitney
+module
+
+public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
+public import RealRooted.AissenSchoenbergWhitney
 
 /-!
 # Causal forward differences after a finite zero prefix
@@ -7,6 +9,8 @@ import RealRooted.AissenSchoenbergWhitney
 This leaf combines the positive-initial-value causal closure with the existing
 Pólya-frequency prefix and tail operations.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

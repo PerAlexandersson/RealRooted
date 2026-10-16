@@ -1,11 +1,15 @@
-import Mathlib.Data.Nat.Choose.Cast
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Nat.Choose.Cast
+public import Mathlib.Tactic
 
 /-!
 # Extra lemmas about casts of binomial coefficients
 
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Choose.Cast`.
 -/
+
+public section
 
 namespace Nat
 

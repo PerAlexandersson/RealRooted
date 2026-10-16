@@ -1,4 +1,6 @@
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+module
+
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
 
 /-!
 # Claw-free independence polynomials
@@ -7,6 +9,8 @@ This file proves the support-level Chudnovsky--Seymour induction for weighted
 and unweighted independence polynomials of finite claw-free graphs.
 Line-graph and matching-polynomial applications belong in `RealRooted.HeilmannLieb`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

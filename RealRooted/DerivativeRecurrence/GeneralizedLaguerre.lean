@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Generalized-Laguerre differential recurrences
@@ -7,6 +9,8 @@ The differential recurrence of a generalized-Laguerre family has a first-order
 form. This module records the algebraic reduction independently of any chosen
 initial polynomial or real-rootedness argument.
 -/
+
+public section
 
 open Polynomial
 

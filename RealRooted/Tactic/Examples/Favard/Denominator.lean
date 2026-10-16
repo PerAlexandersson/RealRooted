@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard
+module
+
+public import RealRooted.Tactic.Favard
 
 /-!
 # `rr_favard` examples: denominator
 
 Abstract smoke tests for the denominator-normalized Favard frontends.
 -/
+
+public section
 
 open Polynomial
 

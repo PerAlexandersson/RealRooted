@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.TernaryRuns
-import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
-import RealRooted.CombinatorialExamples.SuperEulerian
+module
+
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
+public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+public import RealRooted.CombinatorialExamples.SuperEulerian
 
 /-!
 # Eulerian variations challenge entry point
@@ -110,3 +112,5 @@ words, and paths,”](https://arxiv.org/abs/2609.07325) arXiv:2609.07325 (2026).
 This module is a catalog facade.  The proofs live in
 `RealRooted.Applications.EulerianVariations`.
 -/
+
+public section

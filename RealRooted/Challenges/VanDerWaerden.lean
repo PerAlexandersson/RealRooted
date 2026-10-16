@@ -1,4 +1,6 @@
-import RealRooted.Gurvits
+module
+
+public import RealRooted.Gurvits
 
 /-!
 # Van der Waerden permanent bound challenge entry point
@@ -66,3 +68,5 @@ all,”](https://doi.org/10.37236/790) *Electronic Journal of Combinatorics* 15
 
 This module is a catalog facade. The proof lives in `RealRooted.Gurvits`.
 -/
+
+public section

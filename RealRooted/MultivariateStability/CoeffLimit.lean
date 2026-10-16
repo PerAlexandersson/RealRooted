@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.MultivariateStability
-import Mathlib.Algebra.Order.Antidiag.Finsupp
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.MultivariateStability
+public import Mathlib.Algebra.Order.Antidiag.Finsupp
 
 /-!
 # Closed limits of multivariate stable polynomials
@@ -10,6 +12,8 @@ This file isolates the bounded-degree closure step needed when a sequence of
 stability-preserving operators converges coefficientwise.  The proof restricts
 to a complex affine line and applies the existing closed-root limit theorem.
 -/
+
+public section
 
 open Filter Polynomial Topology
 

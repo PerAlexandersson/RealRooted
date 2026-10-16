@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import Mathlib.Algebra.Order.Field.Basic
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import Mathlib.Algebra.Order.Field.Basic
 
 /-!
 # Sharpened elementary-symmetric bounds
@@ -7,6 +9,8 @@ import Mathlib.Algebra.Order.Field.Basic
 The generating-function upper bound can retain the leading-product lower bounds
 for all terms other than the distinguished elementary symmetric value.
 -/
+
+public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

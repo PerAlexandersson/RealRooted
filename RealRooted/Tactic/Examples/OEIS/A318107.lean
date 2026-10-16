@@ -1,5 +1,9 @@
-import RealRooted.Applications.OEIS.A318107
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A318107
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public section
 
 open Polynomial
 

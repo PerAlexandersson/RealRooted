@@ -1,8 +1,10 @@
-import RealRooted.FiniteFreeAdditive
-import RealRooted.ElementaryDifferential
-import RealRooted.LiebSokalOperator.Linearity
-import RealRooted.Multiaffine.Reciprocal
-import RealRooted.Polarization
+module
+
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.ElementaryDifferential
+public import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.Multiaffine.Reciprocal
+public import RealRooted.Polarization
 
 /-!
 # Finite-free additive convolution differential identity
@@ -11,6 +13,8 @@ This module contains the algebraic bridge from polarized multiaffine
 polynomials to finite-free additive convolution.  Stability and
 real-rootedness preservation are deliberately left to a later layer.
 -/
+
+public section
 
 open Polynomial BigOperators
 

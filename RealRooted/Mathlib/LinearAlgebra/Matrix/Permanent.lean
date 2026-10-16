@@ -1,5 +1,7 @@
-import Mathlib.GroupTheory.Perm.Fin
-import Mathlib.LinearAlgebra.Matrix.Permanent
+module
+
+public import Mathlib.GroupTheory.Perm.Fin
+public import Mathlib.LinearAlgebra.Matrix.Permanent
 
 /-!
 # Laplace expansion of the permanent
@@ -7,6 +9,8 @@ import Mathlib.LinearAlgebra.Matrix.Permanent
 This file supplies the permanent analogue of the first-column Laplace
 expansion for determinants.
 -/
+
+public section
 
 open scoped BigOperators
 

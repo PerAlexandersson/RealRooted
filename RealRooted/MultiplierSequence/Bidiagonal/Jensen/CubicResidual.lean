@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+module
+
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 
 /-!
 # Cubic residual certificates for bidiagonal Jensen pencils
@@ -7,6 +9,8 @@ This module owns the model-independent residual-certificate data,
 factorization builders, rowwise constructors, and one-polynomial
 PF-preserver applications.
 -/
+
+@[expose] public section
 
 open Polynomial
 

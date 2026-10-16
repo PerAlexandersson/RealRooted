@@ -1,5 +1,7 @@
-import RealRooted.FiniteFreeRootCount
-import RealRooted.CoefficientShape
+module
+
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.CoefficientShape
 
 /-!
 # Positive Jensen-pencil contraction
@@ -8,6 +10,8 @@ This file proves the Schur--Szegő compatibility contraction when the three
 PF inputs have positive constant coefficient.  Signed reciprocal reversal
 reduces the statement to two finite-free upper-root-count contractions.
 -/
+
+@[expose] public section
 
 open Polynomial
 noncomputable section

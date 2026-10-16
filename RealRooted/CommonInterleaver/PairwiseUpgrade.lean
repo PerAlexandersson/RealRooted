@@ -5,7 +5,12 @@ This module lifts a two-polynomial common-interleaver theorem to pairwise
 common-interleaver witnesses for a family. Generic global and full-family compatibility
 packaging lives in `PairwiseUpgrade.FamilyCompatibility`.
 -/
-import RealRooted.CommonInterleaver.PairBridge
+
+module
+
+public import RealRooted.CommonInterleaver.PairBridge
+
+public section
 
 open Polynomial
 

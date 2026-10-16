@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequencePositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequencePositive
 
 /-!
 # Liu--Wang affine half-line regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequencePositive
 Sequence tests for affine lag factors whose signs are controlled on the
 nonpositive-root half-line.
 -/
+
+public section
 
 open Polynomial
 

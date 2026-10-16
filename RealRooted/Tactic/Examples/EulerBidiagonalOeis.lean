@@ -1,4 +1,6 @@
-import RealRooted.Tactic
+module
+
+public import RealRooted.Tactic
 
 /-!
 # Euler-bidiagonal OEIS regressions
@@ -7,6 +9,8 @@ Exact copies of seven downstream recurrences whose consecutive-row interlacing f
 the general Euler-bidiagonal step. The first six use positive parameters; A269945 is the
 zero-parameter boundary case.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted
 

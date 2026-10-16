@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.JacobiOperator
+module
+
+public import RealRooted.JacobiDeformation.JacobiOperator
 
 /-!
 # Same-parameter lowering for monic shifted Jacobi polynomials
@@ -7,6 +9,8 @@ This file derives the first-order lowering identity from the shifted-Jacobi
 differential operator and the monic Favard recurrence.  Keeping the lower
 coefficient in terms of `shiftedJacobiSubdiag` preserves its degree-one branch.
 -/
+
+public section
 
 open Polynomial
 

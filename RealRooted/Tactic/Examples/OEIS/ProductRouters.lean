@@ -1,5 +1,7 @@
-import RealRooted.Tactic.OEIS.ProductExit
-import RealRooted.Tactic.OEIS.ProductFactor
+module
+
+public import RealRooted.Tactic.OEIS.ProductExit
+public import RealRooted.Tactic.OEIS.ProductFactor
 
 /-!
 # OEIS product-router regression examples
@@ -7,6 +9,8 @@ import RealRooted.Tactic.OEIS.ProductFactor
 Product exit and factor certificate router tests, including sequence,
 normalization, and real-rootedness projection variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,9 +1,11 @@
-import RealRooted.EdreiThoma.Continuation
-import RealRooted.EdreiThoma.Easy
-import RealRooted.EdreiThoma.FinalStep
-import RealRooted.EdreiThoma.OddPart
-import RealRooted.EdreiThoma.Reduction
-import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
+module
+
+public import RealRooted.EdreiThoma.Continuation
+public import RealRooted.EdreiThoma.Easy
+public import RealRooted.EdreiThoma.FinalStep
+public import RealRooted.EdreiThoma.OddPart
+public import RealRooted.EdreiThoma.Reduction
+public import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
 
 /-!
 # The Edrei--Thoma converse
@@ -12,6 +14,8 @@ This module assembles the continuation, zero-free quotient, odd-part, and final 
 steps.  It identifies a normalized Pólya-frequency sequence with an Edrei--Thoma canonical
 product.
 -/
+
+public section
 
 open Polynomial Filter Topology Complex
 

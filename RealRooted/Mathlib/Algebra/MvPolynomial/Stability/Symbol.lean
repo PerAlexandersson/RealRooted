@@ -32,7 +32,7 @@ open scoped BigOperators
 
 namespace MvPolynomial
 
-public section AlgebraicSymbol
+@[expose] public section AlgebraicSymbol
 
 variable {σ τ R : Type*} [CommSemiring R] [Fintype σ]
 
@@ -134,7 +134,7 @@ theorem algebraicSymbol_smul (κ : σ → ℕ) (r : R)
 
 end AlgebraicSymbol
 
-public section NegRight
+@[expose] public section NegRight
 
 variable {σ τ R : Type*} [CommRing R]
 

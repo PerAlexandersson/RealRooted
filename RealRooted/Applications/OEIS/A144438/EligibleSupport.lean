@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.DecorationOrbit
-import RealRooted.Combinatorics.ComparisonBottom
+module
+
+public import RealRooted.Applications.OEIS.A144438.DecorationOrbit
+public import RealRooted.Combinatorics.ComparisonBottom
 
 /-!
 # Comparison-bottom support of eligible decorations
@@ -9,6 +11,8 @@ a comparison bottom of the normalized inverse word. The smaller label may or
 may not be a comparison bottom; this dichotomy partitions eligible starts into
 active and inactive ones and isolates the support fixed by every decoration.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.DecoNormalizedCode
 

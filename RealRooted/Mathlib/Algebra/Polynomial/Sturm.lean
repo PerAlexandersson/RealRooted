@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Polynomial.FieldDivision
-import Mathlib.Data.List.GetD
+module
+
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import Mathlib.Data.List.GetD
 
 /-!
 # Signed polynomial remainder sequences
@@ -8,6 +10,8 @@ This file defines the finite signed Euclidean remainder sequence used by
 Sturm's theorem.  Starting from `p, q`, each later entry is the negative
 remainder of the preceding pair.  The zero remainder is not included.
 -/
+
+@[expose] public section
 
 open scoped Polynomial
 

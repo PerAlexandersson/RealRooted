@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Low-order Hurwitz determinants
@@ -8,6 +10,8 @@ This file gives the first leading-principal determinant formulas for the
 classical Hurwitz matrix. They are kept separate from the entry-definition
 module so consumers of the matrix itself do not inherit determinant imports.
 -/
+
+public section
 
 namespace Matrix
 

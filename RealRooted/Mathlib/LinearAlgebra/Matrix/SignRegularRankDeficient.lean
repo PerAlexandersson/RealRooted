@@ -1,6 +1,8 @@
-import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
-import Mathlib.LinearAlgebra.Matrix.Rank
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
+module
+
+public import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
 
 /-!
 # Rank-deficient sign-consistent matrices
@@ -9,6 +11,8 @@ This file develops the rank-deficient induction in Karlin, *Total Positivity*,
 Volume I, Chapter V, Section 1, Theorem 1.3. The first lemmas formalize the
 selected-row kernel perturbation in equations (1.1) on printed pages 221--222.
 -/
+
+@[expose] public section
 
 /-- A finite matrix of rank `r` has a nonzero `r`-minor with increasingly
 ordered row and column selectors. -/

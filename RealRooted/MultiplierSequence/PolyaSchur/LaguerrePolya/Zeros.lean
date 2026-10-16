@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 
 /-!
 # Real zeros of Laguerre--Pólya limits
@@ -6,6 +8,8 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 This leaf proves the real-zero closure special to locally uniform limits of
 real splitting polynomials. It is not a general Hurwitz or Rouché theorem.
 -/
+
+public section
 
 open Complex Filter Polynomial Topology
 

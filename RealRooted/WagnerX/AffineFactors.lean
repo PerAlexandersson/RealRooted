@@ -1,8 +1,12 @@
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Wagner-X affine and common-factor transport
 -/
+
+public section
 
 open Polynomial Filter
 

@@ -1,11 +1,13 @@
-import Mathlib
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.SimpleRoots
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
-import RealRooted.GammaTransform.TwoStep
-import RealRooted.ThreeTermRecurrence.Interlacing
+module
+
+public import Mathlib
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+public import RealRooted.GammaTransform.TwoStep
+public import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # OEIS A297191
@@ -15,6 +17,8 @@ quadratic recurrence.  We prove that row `n` has `2n` distinct negative roots
 and is palindromic.  Inserting the half-step `(1 + X) Pₙ` gives the strict
 interlacing chain `P₀ ≪ (1 + X)P₀ ≪ P₁ ≪ (1 + X)P₁ ≪ ⋯`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import Mathlib.LinearAlgebra.Span.Basic
-import Mathlib.Tactic.Abel
+module
+
+public import Mathlib.LinearAlgebra.Span.Basic
+public import Mathlib.Tactic.Abel
 
 /-!
 # Triangular linear maps under a unitriangular change of generators
@@ -8,6 +10,8 @@ This file gives a basis-free formulation of triangularity using the span of
 strictly lower generators.  It is convenient when the two generating families
 are related by unitriangular expansions but are not bundled as `Basis` values.
 -/
+
+@[expose] public section
 
 namespace LinearMap
 

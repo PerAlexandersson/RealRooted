@@ -1,6 +1,8 @@
-import RealRooted.AffineLineRestriction
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+module
+
+public import RealRooted.AffineLineRestriction
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Stability of the top homogeneous component
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 This file constructs a stable damping homotopy from a multivariate polynomial
 toward its top homogeneous component. Root continuity will supply the endpoint.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

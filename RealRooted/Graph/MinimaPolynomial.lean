@@ -1,5 +1,7 @@
-import RealRooted.Graph.FiniteDegree
-import RealRooted.HeilmannLieb
+module
+
+public import RealRooted.Graph.FiniteDegree
+public import RealRooted.HeilmannLieb
 
 /-!
 # The weighted-matching model for minima polynomials
@@ -23,6 +25,8 @@ support-level deletion recurrence inherited from the line-graph independence
 polynomial.  Its weights remain those of the same ambient root graph; this is
 important because deleting root edges would otherwise change the degrees.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

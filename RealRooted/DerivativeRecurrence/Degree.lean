@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Basic.Real.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Degrees of derivative recurrences
@@ -31,6 +33,8 @@ every row has a positive leading coefficient.
   `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n`.
 * `derivativeRecurrence_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
 -/
+
+public section
 
 open Polynomial
 
@@ -132,7 +136,7 @@ section FirstOrder
 
 variable {P A B : ℕ → ℝ[X]} {d D₀ : ℕ}
 
-private theorem derivativeRecurrence_step
+theorem derivativeRecurrence_step
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 1) (hB : ∀ n, (B n).natDegree ≤ d) (n : ℕ)
     (hn : (P n).natDegree ≤ D₀ + d * n) :
@@ -198,7 +202,7 @@ section SecondOrder
 
 variable {P A B C : ℕ → ℝ[X]} {d D₀ : ℕ}
 
-private theorem descFactorial_two_cast (N : ℕ) :
+theorem descFactorial_two_cast (N : ℕ) :
     (N.descFactorial 2 : ℝ) = (N : ℝ) * ((N : ℝ) - 1) := by
   rcases N with _ | N
   · simp
@@ -206,7 +210,7 @@ private theorem descFactorial_two_cast (N : ℕ) :
     push_cast
     ring
 
-private theorem derivRec₂_step
+theorem derivRec₂_step
     (hrec : ∀ n, P (n + 1) =
       A n * (P n).derivative.derivative + B n * (P n).derivative + C n * P n)
     (hA : ∀ n, (A n).natDegree ≤ d + 2) (hB : ∀ n, (B n).natDegree ≤ d + 1)

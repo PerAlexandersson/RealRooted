@@ -1,4 +1,6 @@
-import RealRooted.Tactic.MaWang.Sequences
+module
+
+public import RealRooted.Tactic.MaWang.Sequences
 
 /-!
 # Ma--Wang weak-sequence regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.MaWang.Sequences
 Generic weak derivative-sequence tests, including the complete inferred
 certificate and ascribed-normalizer regression scope.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Sign-consistent and sign-regular rectangular matrices
@@ -7,6 +9,8 @@ This file introduces orientation-free predicates for Karlin's sign-consistent
 and sign-regular matrices. Two minors have a common weak (respectively strict)
 sign exactly when their product is nonnegative (respectively positive).
 -/
+
+@[expose] public section
 
 public section
 

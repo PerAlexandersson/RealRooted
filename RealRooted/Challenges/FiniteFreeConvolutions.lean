@@ -1,9 +1,11 @@
-import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
-import RealRooted.FiniteFreeAdditive.Preservation
-import RealRooted.FiniteFreeMultiplicative
-import RealRooted.Hadamard.Grace
-import RealRooted.NarayanaTransformation.Rectangular.Preservation
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
+public import RealRooted.FiniteFreeAdditive.Preservation
+public import RealRooted.FiniteFreeMultiplicative
+public import RealRooted.Hadamard.Grace
+public import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Finite free convolutions challenge entry point
@@ -151,6 +153,8 @@ This module is a catalog facade. The proofs live in
 `RealRooted.NarayanaTransformation.Rectangular` and
 `RealRooted.FiniteFreeMultiplicative`.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.SturmDerangementsExc
-import RealRooted.Mathlib.Probability.CoeffDistribution
+module
+
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Excedances of derangements are asymptotically normal
@@ -11,6 +13,8 @@ the factor `1 - X` vanishes, and the values `D_n = d_n(1)` are the derangement n
 `n / 2` and variance `(n - 1) / 12 · (1 - (-1)ⁿ / D_n)`.  Since the polynomials are real-rooted,
 Harper's theorem gives asymptotic normality of the excedance statistic on derangements.
 -/
+
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

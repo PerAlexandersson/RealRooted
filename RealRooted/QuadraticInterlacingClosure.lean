@@ -1,17 +1,19 @@
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.CriticalValueContinuation
-import RealRooted.DegreeDropReversal
-import RealRooted.Interlacing.Residue
-import RealRooted.IteratedDerivativeShift
-import RealRooted.LiuOppositeSigns.JensenRootCount
-import RealRooted.Mathlib.Data.List.Zip
-import RealRooted.PFPolynomial.Closure
-import RealRooted.RootCountLocalConstancy
-import RealRooted.RootCounting.CrossingExhaustion
-import RealRooted.RootCounting.Descartes
-import RealRooted.SameDegreeMultiplicityLowerCount
-import RealRooted.Wronskian.WeakForward
-import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+module
+
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Interlacing.Residue
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.LiuOppositeSigns.JensenRootCount
+public import RealRooted.Mathlib.Data.List.Zip
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.RootCountLocalConstancy
+public import RealRooted.RootCounting.CrossingExhaustion
+public import RealRooted.RootCounting.Descartes
+public import RealRooted.SameDegreeMultiplicityLowerCount
+public import RealRooted.Wronskian.WeakForward
+public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 
 /-!
 # Quadratic interlacing closure
@@ -29,6 +31,8 @@ Consequently, once the analytic root-motion argument proves
 root analysis: the two pairs span the same real pencil and have the same
 oriented Wronskian.
 -/
+
+@[expose] public section
 
 open Polynomial
 open SignType

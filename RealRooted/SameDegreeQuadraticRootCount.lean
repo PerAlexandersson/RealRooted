@@ -1,4 +1,6 @@
-import RealRooted.SameDegreeQuadraticObstruction
+module
+
+public import RealRooted.SameDegreeQuadraticObstruction
 
 /-!
 # Degree-two same-degree root-count bridge
@@ -25,6 +27,8 @@ Here we prove this in the base case `natDegree = 2`. The core steps are:
   of one quadratic from lying entirely on one side of the roots of the other;
 * a finite case analysis on the thresholds yields the root-count bound.
 -/
+
+public section
 
 open Polynomial
 

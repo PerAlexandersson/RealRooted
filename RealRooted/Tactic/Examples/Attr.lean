@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Attr
+module
+
+public import RealRooted.Tactic.Attr
 
 /-!
 # Certificate attribute examples
 
 Smoke tests for certificate attributes and their inspection command.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

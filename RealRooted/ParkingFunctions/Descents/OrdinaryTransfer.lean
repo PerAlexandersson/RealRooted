@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+public import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral ordinary parking-function transfer
@@ -11,6 +13,8 @@ identity between parking-function descents and all-word descents, then derives
 real-rootedness from the literal word recurrence. No chain-sorting theorem is
 used.
 -/
+
+@[expose] public section
 
 open Polynomial
 

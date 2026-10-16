@@ -1,6 +1,8 @@
-import Mathlib.Data.Fin.Rev
-import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+module
+
+public import Mathlib.Data.Fin.Rev
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Determinant-preserving adjacent column differences
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 This file packages the simultaneous finite column operation used to compare
 Toeplitz minors before and after a causal forward difference.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

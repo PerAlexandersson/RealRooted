@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 
 /-!
 # Basis transforms of Bernstein expansions
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 This file records the linearity bridge between a coefficient-basis transform
 and a finite Bernstein expansion.
 -/
+
+public section
 
 open Finset
 

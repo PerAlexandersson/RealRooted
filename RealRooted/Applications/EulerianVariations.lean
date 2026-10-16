@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.TernaryRuns
+module
+
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
 
 /-!
 # Applications from the Eulerian variations paper
@@ -12,3 +14,5 @@ Generic recurrence, stability, and interlacing theory remains in its core
 owners. This facade contains only application-specific definitions and theorem
 statements whose mathematical content is checked in those owners.
 -/
+
+public section

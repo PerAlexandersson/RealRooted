@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.DescPolynomial
+module
+
+public import RealRooted.CommonInterleaver.DescPolynomial
 
 /-!
 # Common interleavers: finite-family upgrades
@@ -6,6 +8,8 @@ import RealRooted.CommonInterleaver.DescPolynomial
 The Chudnovsky--Seymour pairwise-to-global common-interleaver upgrades, with
 their right- and left-oriented finite-sum corollaries.
 -/
+
+public section
 
 open Polynomial
 

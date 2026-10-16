@@ -1,4 +1,6 @@
-import RealRooted.Tactic.MaWang.Steps
+module
+
+public import RealRooted.Tactic.MaWang.Steps
 
 /-!
 # Ma--Wang direct-step regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.MaWang.Steps
 Atomic, strict, same-degree, successor-degree, and two-term direct dispatcher
 tests, including active coefficient and factor normalizations.
 -/
+
+public section
 
 open Polynomial
 

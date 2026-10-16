@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive.Identity
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.LiebSokal
+module
+
+public import RealRooted.FiniteFreeAdditive.Identity
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.LiebSokal
 
 /-!
 # Finite-free additive convolution preservation
@@ -9,6 +11,8 @@ This module turns the algebraic differential identity for finite-free
 additive convolution into a bounded-degree splitness theorem.  It is
 zero-aware: inputs of degree smaller than the ambient degree may yield zero.
 -/
+
+public section
 
 open Polynomial
 

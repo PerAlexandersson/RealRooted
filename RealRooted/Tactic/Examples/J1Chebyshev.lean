@@ -1,8 +1,12 @@
-import RealRooted.Tactic.J1Chebyshev
+module
+
+public import RealRooted.Tactic.J1Chebyshev
 
 /-!
 # Smoke examples for the J1 Chebyshev/factorable frontend
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

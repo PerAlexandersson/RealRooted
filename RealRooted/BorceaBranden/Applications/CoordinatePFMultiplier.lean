@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
-import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 
 /-!
 # Coordinate PF multipliers
@@ -9,6 +11,8 @@ The finite-symbol coordinate tensorization used here is the coordinate form of
 the stability-preserver theorem of Borcea--Brändén, Invent. Math. 177 (2009),
 541--569, Theorem 1.1.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

@@ -1,4 +1,8 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public section
 
 open Polynomial
 

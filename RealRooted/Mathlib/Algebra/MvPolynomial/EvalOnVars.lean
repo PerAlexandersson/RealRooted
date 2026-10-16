@@ -1,4 +1,6 @@
-import Mathlib.Algebra.MvPolynomial.Variables
+module
+
+public import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # Evaluation on the variable support
@@ -6,6 +8,8 @@ import Mathlib.Algebra.MvPolynomial.Variables
 This file contains a Mathlib-shaped evaluation lemma for multivariate
 polynomials.
 -/
+
+public section
 
 namespace MvPolynomial
 

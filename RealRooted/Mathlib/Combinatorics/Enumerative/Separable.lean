@@ -1,10 +1,12 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
-import Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Separable permutations: sum decompositions and the descent recurrence
@@ -27,6 +29,8 @@ cut) was proved by Aristotle (Harmonic); `exists_hasSumCut_of_isSeparable` is it
 with the bridge between canonical pattern avoidance and the positional definition of avoidance.
 The recurrence `separableDescentEnumerator_recurrence` is therefore unconditional.
 -/
+
+@[expose] public section
 
 open scoped BigOperators Polynomial
 open Polynomial

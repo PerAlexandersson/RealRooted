@@ -1,5 +1,7 @@
-import RealRooted.CommonInterleaver.Sequence
-import RealRooted.RootPolynomial
+module
+
+public import RealRooted.CommonInterleaver.Sequence
+public import RealRooted.RootPolynomial
 
 /-!
 # Common interleavers: descending-root polynomials
@@ -7,6 +9,8 @@ import RealRooted.RootPolynomial
 Construction of a polynomial from descending prescribed roots, and the
 root-slot arguments which produce right and left `StrictInterl` witnesses.
 -/
+
+public section
 
 open Polynomial
 

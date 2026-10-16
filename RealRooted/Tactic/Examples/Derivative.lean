@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Derivative
+module
+
+public import RealRooted.Tactic.Derivative
 
 /-!
 # Derivative tactic examples
 
 Small regression examples for derivative interlacing and side goals.
 -/
+
+public section
 
 open Polynomial
 

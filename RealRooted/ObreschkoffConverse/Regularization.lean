@@ -1,8 +1,10 @@
-import RealRooted.AllCombo
-import RealRooted.AffineDerivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.PosCombo
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineDerivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.PosCombo
 
 /-!
 # Obreschkoff regularization
@@ -10,6 +12,8 @@ import RealRooted.PosCombo
 Wronskian regularization, simple-pencil root control, and the common-root
 descent infrastructure for the converse to Obreschkoff's theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

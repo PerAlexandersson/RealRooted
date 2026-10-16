@@ -1,10 +1,12 @@
-import Mathlib.Analysis.Asymptotics.Lemmas
-import Mathlib.Analysis.SpecificLimits.Normed
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Analysis.Asymptotics.Lemmas
+public import Mathlib.Analysis.SpecificLimits.Normed
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
 
 /-!
 # Asymptotics of linear recurrences with polynomial modes
@@ -13,6 +15,8 @@ Ratio limits for sequences of the form `(α n + β) λ^n + (γ n + δ) ν^n` and
 analogues, with `|ν| < λ`, and the scalar recurrences satisfied by `P n (1)`, `P n '(1)` and
 `P n ''(1)` when `P (n + 2) = a * P (n + 1) + b * P n`.
 -/
+
+public section
 
 open Filter Topology
 open scoped Polynomial

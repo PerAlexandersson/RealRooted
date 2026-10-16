@@ -1,4 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+
+@[expose] public section
 
 open Filter Topology
 open scoped BigOperators

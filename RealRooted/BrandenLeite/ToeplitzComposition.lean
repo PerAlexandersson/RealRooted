@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.CompositionRow
-import RealRooted.BrandenLeite.ConstantDiagonal
+module
+
+public import RealRooted.BrandenLeite.CompositionRow
+public import RealRooted.BrandenLeite.ConstantDiagonal
 
 /-!
 # Toeplitz chain polynomials and composition rows
@@ -11,6 +13,8 @@ coefficients.  For a PF sequence with positive zeroth entry, the
 constant-diagonal normalization theorem then supplies PF and interlacing
 conclusions for these rows.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial BigOperators
 

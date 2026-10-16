@@ -1,4 +1,8 @@
-import RealRooted.Hadamard.Basic
+module
+
+public import RealRooted.Hadamard.Basic
+
+public section
 
 open Polynomial
 

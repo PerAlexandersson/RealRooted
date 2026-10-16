@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RootCount.CoreRules
+module
+
+public import RealRooted.Tactic.RootCount.CoreRules
 
 /-!
 # Root-count tactic regressions: filtered root counts
@@ -7,6 +9,8 @@ Regression examples for the `rr_card_roots_filter_*` frontends of
 `RealRooted.Tactic.RootCount.CoreRules`: counts of roots above, below and between bounds
 transported along a pencil without roots on an interval.
 -/
+
+public section
 
 open Polynomial
 

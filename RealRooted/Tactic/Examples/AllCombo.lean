@@ -1,4 +1,8 @@
-import RealRooted.Tactic.AllCombo
+module
+
+public import RealRooted.Tactic.AllCombo
+
+public section
 
 open Polynomial
 

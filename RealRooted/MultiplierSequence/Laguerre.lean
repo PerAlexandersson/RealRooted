@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.PolyaSchur
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.MultiplierSequence.PolyaSchur.Limit
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
 /-!
 # Laguerre's theorem on multiplier sequences
@@ -21,6 +23,8 @@ so they are PF, and the Jensen criterion applies.  The general polynomial
 case follows by factoring `φ = c ∏ (X - ρ_i)`, with every `ρ_i ≤ 0`, and using
 closure of multiplier sequences under products.
 -/
+
+public section
 
 open Polynomial Filter Topology
 

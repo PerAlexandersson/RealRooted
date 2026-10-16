@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 
 /-!
 # Topological properties of sign variations
@@ -7,6 +9,8 @@ This file proves the finite-dimensional lower semicontinuity of sign variations.
 The result supplies the limit step in Karlin's Gaussian approximation argument
 for variation-diminishing matrices.
 -/
+
+public section
 
 open Filter Topology
 

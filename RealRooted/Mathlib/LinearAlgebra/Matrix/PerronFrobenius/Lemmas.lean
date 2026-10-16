@@ -10,9 +10,12 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
-import Mathlib.Data.Matrix.Mul
-import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
+
+module
+
+public import Mathlib.Data.Matrix.Mul
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
 
 /-!
 # Perron-Frobenius support lemmas
@@ -50,6 +53,8 @@ These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the qui
   strictly positive (no zero row).
 
 -/
+
+public section
 
 namespace Pi
 

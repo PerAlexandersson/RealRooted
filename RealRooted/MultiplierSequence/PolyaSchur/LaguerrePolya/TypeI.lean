@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence.PolyaSchur.Growth
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.Growth
 
 /-!
 # Type-I Laguerre--Pólya limits
@@ -8,6 +10,8 @@ Laguerre--Pólya class: its polynomial approximants are Pólya-frequency
 polynomials.  It proves the forward Pólya--Schur direction for PF multiplier
 sequences.  The converse classification remains separate.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

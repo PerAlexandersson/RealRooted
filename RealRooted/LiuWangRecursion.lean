@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedLiuWang
+module
+
+public import RealRooted.GeneralizedLiuWang
 
 /-!
 # Liu--Wang derivative-lag recursions
@@ -13,6 +15,8 @@ as a direct backend theorem.  The lag term `P_n` is the distinguished
 Liu--Wang interlacer, while the derivative term is handled as an additional
 interlacer of the current row.
 -/
+
+public section
 
 open Polynomial
 

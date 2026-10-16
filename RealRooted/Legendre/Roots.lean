@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.Jacobi
-import RealRooted.Legendre.Basic
+
+module
+
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.Jacobi
+public import RealRooted.Legendre.Basic
 
 /-!
 # Roots of shifted Legendre polynomials
@@ -15,6 +18,8 @@ Mathlib's shifted Legendre normalization `Pₙ(1 - 2X)` has simple roots in
 simple roots in `(-1, 0)`. Consecutive polynomials interlace in both
 orientations.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,6 +1,10 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.NarayanaTransformation.Endpoints
+
+@[expose] public section
 
 open scoped Polynomial
 open Polynomial

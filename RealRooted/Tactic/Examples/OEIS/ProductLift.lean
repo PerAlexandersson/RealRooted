@@ -1,4 +1,6 @@
-import RealRooted.Tactic.OEIS.ProductLift
+module
+
+public import RealRooted.Tactic.OEIS.ProductLift
 
 /-!
 # OEIS product-lift regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.OEIS.ProductLift
 Smoke tests for supplied and automatic OEIS product-lift certificates,
 including scalar, affine, powered, root-zero, and cutoff variants.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,9 +1,11 @@
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-import RealRooted.PFPolynomial.Closure
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
-import Mathlib.RingTheory.PowerSeries.Exp
-import Mathlib.RingTheory.PowerSeries.PiTopology
+module
+
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+public import RealRooted.PFPolynomial.Closure
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+public import Mathlib.RingTheory.PowerSeries.Exp
+public import Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Coefficient limits of supersymmetric PF symbols
@@ -13,6 +15,8 @@ convergent products in the coefficientwise topology on real formal power
 series. Finite prefixes and the binomial approximation to the exponential are
 kept explicit.
 -/
+
+@[expose] public section
 
 open BigOperators Filter Topology
 open scoped PowerSeries.WithPiTopology

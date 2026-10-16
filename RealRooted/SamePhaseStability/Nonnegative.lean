@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.SamePhaseStability
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.SamePhaseStability
 
 /-!
 # Nonnegative common-phase restrictions
@@ -8,6 +10,8 @@ import RealRooted.SamePhaseStability
 This file proves the coefficientwise nonnegativity of common-phase
 restrictions without importing stability or root-location machinery.
 -/
+
+public section
 
 open Polynomial
 

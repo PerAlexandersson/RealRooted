@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
-import RealRooted.ParkingFunctions.Descents.TielessTransfer
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
+module
+
+public import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
+public import RealRooted.ParkingFunctions.Descents.TielessTransfer
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 
 /-!
 # Parking function challenge entry point
@@ -89,3 +91,5 @@ The Chow polynomials appear on the
 This module is a catalog facade.  The proofs live in
 `RealRooted.ParkingFunctions.Descents`.
 -/
+
+public section

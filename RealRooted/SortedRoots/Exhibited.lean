@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.RootCounting.Finite
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.Basic
+public import RealRooted.RootCounting.Finite
+public import RealRooted.SortedRoots
 
 /-!
 # Exhibited sorted roots
@@ -8,6 +10,8 @@ import RealRooted.SortedRoots
 Generic bridges from an explicitly indexed increasing root family to the
 sorted negative-root-magnitude sequence.
 -/
+
+public section
 
 namespace RealRooted.SortedRoots
 

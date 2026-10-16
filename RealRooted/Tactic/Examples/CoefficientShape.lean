@@ -1,10 +1,14 @@
-import RealRooted.Tactic.CoefficientShape
+module
+
+public import RealRooted.Tactic.CoefficientShape
 
 /-!
 # Coefficient-shape tactic examples
 
 Smoke tests for `rr_coeff_shape`.
 -/
+
+public section
 
 open Polynomial
 

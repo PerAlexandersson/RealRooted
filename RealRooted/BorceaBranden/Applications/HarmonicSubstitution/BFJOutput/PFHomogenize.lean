@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients.Multivariate
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
+module
+
+public import RealRooted.Basic.Coefficients.Multivariate
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
 
 /-!
 # PF certificates for BFJ outputs of homogenized polynomials
@@ -8,6 +10,8 @@ import RealRooted.BorceaBranden.Applications.HomogenizeStable
 This file combines padded-homogenization stability with the coefficient-sign
 and stability criterion for the BFJ output.
 -/
+
+public section
 
 open Polynomial
 

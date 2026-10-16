@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 
 /-!
 # Reconstruction for the finite-symbol argument
@@ -7,6 +9,8 @@ import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
 This module completes the algebraic reconstruction step in Borcea--Branden,
 arXiv:0809.0401, Lemma 2.2. Target variables remain unrestricted throughout.
 -/
+
+public section
 
 namespace RealRooted.BorceaBranden
 

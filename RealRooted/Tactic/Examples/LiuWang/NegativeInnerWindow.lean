@@ -1,4 +1,6 @@
-import RealRooted.Tactic.LiuWang.SequenceIntervals
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceIntervals
 
 /-!
 # Liu--Wang negative inner-window regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.LiuWang.SequenceIntervals
 Sequence tests for negative inner-window lag factors, including shifted,
 scaled, and denominator-normalized certificate variants.
 -/
+
+public section
 
 open Polynomial
 

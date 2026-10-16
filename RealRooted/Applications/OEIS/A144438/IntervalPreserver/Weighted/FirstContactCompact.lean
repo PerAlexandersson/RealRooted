@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
 
 /-!
 # Compact parameter boxes for the weighted first-contact argument
@@ -7,6 +9,8 @@ We use boxes expanding from the diagonal point `1 / 2` to the full parameter
 cube.  A bad contact records a root at which the companion residue is
 nonpositive; we use the equivalent denominator-free sign condition.
 -/
+
+@[expose] public section
 
 open Polynomial Set Topology
 

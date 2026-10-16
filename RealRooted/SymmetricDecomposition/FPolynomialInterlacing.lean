@@ -1,9 +1,11 @@
-import RealRooted.AffineFamily
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import RealRooted.PosCombo
-import RealRooted.ProductFamily
-import RealRooted.SymmetricDecomposition.FPolynomial
-import RealRooted.WagnerX
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.PosCombo
+public import RealRooted.ProductFamily
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.WagnerX
 
 /-!
 # Interlacing transport for the `f`-polynomial transform
@@ -11,6 +13,8 @@ import RealRooted.WagnerX
 Interlacing equivalences and positive-combination consequences of the
 Brändén--Solus `f`-polynomial transform.
 -/
+
+public section
 
 open Polynomial Finset
 

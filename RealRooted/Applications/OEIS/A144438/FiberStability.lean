@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A144438.EligibleSupport
-import RealRooted.BooleanSwapOrbit
-import RealRooted.MultivariateStability.PolyaFrequency
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.Applications.OEIS.A144438.EligibleSupport
+public import RealRooted.BooleanSwapOrbit
+public import RealRooted.MultivariateStability.PolyaFrequency
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Stable normalized decoration fibers
@@ -15,6 +17,8 @@ An algebraically weighted form retains independent choice weights at every
 eligible start.  Its exact combinatorial interpretation is intentionally kept
 separate from the stability API.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.DecoNormalizedCode
 

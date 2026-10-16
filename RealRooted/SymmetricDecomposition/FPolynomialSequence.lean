@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.Theorem26
+module
+
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Interlacing of `f`-transforms of half-growth sequences
@@ -12,6 +14,8 @@ A059427 proof) applies the minimal-box transfer
 This covers the alternating-runs polynomials A008970, A059427 and A186370, whose transformed rows
 are peak polynomials.
 -/
+
+public section
 
 open Polynomial
 

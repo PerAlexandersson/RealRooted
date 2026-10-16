@@ -1,5 +1,7 @@
-import RealRooted.PosCombo
-import RealRooted.ProductSequence.Lifts
+module
+
+public import RealRooted.PosCombo
+public import RealRooted.ProductSequence.Lifts
 
 /-!
 # Endpoint-pair product sequences
@@ -7,6 +9,8 @@ import RealRooted.ProductSequence.Lifts
 Interlacing recurrences for paired endpoint quotients and the corresponding
 parity and endpoint-power lifts.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

@@ -1,4 +1,8 @@
-import RealRooted.Tactic.HermiteBiehler
+module
+
+public import RealRooted.Tactic.HermiteBiehler
+
+public section
 
 open Polynomial
 

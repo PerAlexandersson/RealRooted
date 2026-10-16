@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A144438.NormalizedCode
-import RealRooted.Combinatorics.MinimumInsertionWord
-import Mathlib.Data.List.OfFn
-import Mathlib.Data.List.TakeDrop
+module
+
+public import RealRooted.Applications.OEIS.A144438.NormalizedCode
+public import RealRooted.Combinatorics.MinimumInsertionWord
+public import Mathlib.Data.List.OfFn
+public import Mathlib.Data.List.TakeDrop
 
 /-!
 # Inverse words of chronological deco codes
@@ -10,6 +12,8 @@ The chronological code is exactly the sequence of new-minimum insertion
 positions for the inverse permutation.  This file specializes the generic
 decoder and records its decomposition around any two successive rows.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.DecoCode
 

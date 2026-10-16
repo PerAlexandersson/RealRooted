@@ -1,10 +1,14 @@
-import Mathlib.Algebra.Polynomial.Roots
+module
+
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Additions to Mathlib.Algebra.Polynomial.Roots
 
 This file contains polynomial-root lemmas intended for upstreaming to Mathlib.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Certificate
-import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Certificate
+public import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
 
 /-!
 # The neighbouring-coefficient inequality
@@ -18,6 +20,8 @@ the weights `W_(R,k)(X)` by the ratios `L₁, L₂, L₃`. The difference become
 * `kernelCoord_eq_kernelSum`: `q_(J+2r, J) = (2J + 3)(c_r(J) - c_(r-1)(J)/2)` for `r ≥ 3`.
 * `kernelCoord_neighbor_pos`: the inequality above.
 -/
+
+public section
 
 open Finset
 

@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape
-import RealRooted.NatCauchyConvolution
+module
+
+public import RealRooted.CoefficientShape
+public import RealRooted.NatCauchyConvolution
 
 /-!
 # Hoggar's theorem
@@ -14,6 +16,8 @@ the convolution then follows from the `2 × 2` Cauchy–Binet identity for the
 product of two Toeplitz matrices, and the absence of internal zeros follows
 because the supports of both factors are intervals.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

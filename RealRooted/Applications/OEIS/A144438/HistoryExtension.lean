@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.CodeExtension
-import RealRooted.Applications.OEIS.A144438.HistoryPartition
+module
+
+public import RealRooted.Applications.OEIS.A144438.CodeExtension
+public import RealRooted.Applications.OEIS.A144438.HistoryPartition
 
 /-!
 # Last-step decomposition of Deco history fibers
@@ -9,6 +11,8 @@ an admissible code in a normal or exceptional history fiber can be recovered
 from the appropriate shorter admissible prefix.  Polynomial recurrences are
 kept in a higher module.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

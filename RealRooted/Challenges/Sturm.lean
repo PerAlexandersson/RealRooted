@@ -1,6 +1,8 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.RootCounting.Sturm
-import RealRooted.RootVieta.Newton
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.RootCounting.Sturm
+public import RealRooted.RootVieta.Newton
 
 /-!
 # Sturm root-counting challenge entry point
@@ -107,3 +109,5 @@ overview on [symmetricfunctions.com][sturm-overview] and the
 This module is a catalog facade.  The proofs live in
 `RealRooted.RootCounting.Sturm` and `RealRooted.RootVieta.Newton`.
 -/
+
+public section

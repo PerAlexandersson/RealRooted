@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Split polynomial sequences from parity factorizations
@@ -6,6 +8,8 @@ import RealRooted.Basic
 We package a common final step for polynomial sequences whose even and odd
 subsequences factor through two already split families.
 -/
+
+public section
 
 open Polynomial
 

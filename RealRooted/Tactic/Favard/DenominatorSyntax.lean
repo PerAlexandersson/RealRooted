@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.DirectSyntax
+module
+
+public import RealRooted.Tactic.Favard.DirectSyntax
 
 /-!
 # Favard tactic denominator syntax
 
 Parser declarations for scalar-normalized and raw-affine Favard certificates.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

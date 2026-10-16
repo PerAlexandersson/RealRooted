@@ -1,5 +1,7 @@
-import RealRooted.MaWang
-import RealRooted.ParkingFunctions.ToricContribution.Definitions
+module
+
+public import RealRooted.MaWang
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
 
 /-!
 # Root insertion on the unit interval
@@ -10,6 +12,8 @@ zero and one and `0 < a < b`, then the sign-normalized output `-M_{a,b}f`
 has positive leading coefficient, one higher degree, and is in proper
 position with `f`.
 -/
+
+public section
 
 open Polynomial
 

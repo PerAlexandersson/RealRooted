@@ -1,8 +1,12 @@
-import RealRooted.Derivative
-import RealRooted.PFPolynomial
-import RealRooted.ObreschkoffConverse
-import RealRooted.OrderedRoots
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.Derivative
+public import RealRooted.PFPolynomial
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.OrderedRoots
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.CombinatorialExamples
+public import RealRooted.Tactic.Finish
 
 /-!
 # Sequence survey for tactic development
@@ -9,6 +11,8 @@ families.  These examples document what the tactic layer can already consume:
 once a family-specific `StrictInterl` or `Interlaces` certificate is available, the
 short proof tail should be automatic.
 -/
+
+public section
 
 open Polynomial
 

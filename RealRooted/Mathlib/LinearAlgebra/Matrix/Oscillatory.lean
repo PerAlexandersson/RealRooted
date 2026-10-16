@@ -5,7 +5,7 @@ public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 public import Mathlib.Tactic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
-public section
+@[expose] public section
 
 /-
 Copyright (c) 2026 Per Alexandersson. All rights reserved.

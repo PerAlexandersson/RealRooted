@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Denominator
+module
+
+public import RealRooted.Tactic.MaWang.Denominator
 
 /-!
 # OEIS test-bed mixed denominator examples
 
 Regression examples for mixed Ma--Wang denominator frontends.
 -/
+
+public section
 
 open Polynomial
 

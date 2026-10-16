@@ -1,8 +1,12 @@
-import RealRooted.DeterminantalStability
-import RealRooted.LiebSokalBoundary
-import RealRooted.HomogeneousStability
-import RealRooted.AffineLineRestriction
-import RealRooted.MultivariateStability.SamePhase
+module
+
+public import RealRooted.DeterminantalStability
+public import RealRooted.LiebSokalBoundary
+public import RealRooted.HomogeneousStability
+public import RealRooted.AffineLineRestriction
+public import RealRooted.MultivariateStability.SamePhase
+
+@[expose] public section
 
 open Matrix MvPolynomial
 open scoped BigOperators MatrixOrder
@@ -245,10 +249,8 @@ private theorem pencil_real_stable
     cases i with
     | inl i => exact Matrix.PosSemidef.one
     | inr i => exact hAs i
-  exact fun hzero => pencil_ne_zero As (by
-    simpa only [complexifyMv] using
-      (MvPolynomial.map_injective Complex.ofRealHom
-        Complex.ofRealHom.injective hzero))
+  exact fun hzero => pencil_ne_zero As (MvPolynomial.map_injective Complex.ofRealHom
+    Complex.ofRealHom.injective (by simpa [complexifyMv, pencil] using hzero))
 
 /-- The determinantal input is real stable for positive semidefinite data. -/
 theorem mvRealStable_mixedCharacteristicMv

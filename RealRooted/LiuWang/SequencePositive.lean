@@ -1,10 +1,14 @@
-import RealRooted.LiuWang.SequenceCore
+module
+
+public import RealRooted.LiuWang.SequenceCore
 
 /-!
 # Positive-lag Liu--Wang sequence theorems
 
 Sequence criteria for positive linear and affine lag coefficients.
 -/
+
+public section
 
 open Polynomial
 

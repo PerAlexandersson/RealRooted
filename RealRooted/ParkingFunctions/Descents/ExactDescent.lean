@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
-import RealRooted.ParkingFunctions.Descents.DescentContainment
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
+public import RealRooted.ParkingFunctions.Descents.DescentContainment
 
 /-!
 # Exact descent-set content enumerators
@@ -7,6 +9,8 @@ import RealRooted.ParkingFunctions.Descents.DescentContainment
 This module recovers exact descent-set enumerators from descent-containment
 enumerators by Boolean-lattice Mobius inversion.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

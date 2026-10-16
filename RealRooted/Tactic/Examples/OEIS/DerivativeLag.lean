@@ -1,4 +1,6 @@
-import RealRooted.Tactic.OEIS.DerivativeLag
+module
+
+public import RealRooted.Tactic.OEIS.DerivativeLag
 
 /-!
 # OEIS derivative-lag router regression examples
@@ -6,6 +8,8 @@ import RealRooted.Tactic.OEIS.DerivativeLag
 Derivative-lag certificate router tests, including supplied and automatic
 variants and the guarded expected-error contract.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

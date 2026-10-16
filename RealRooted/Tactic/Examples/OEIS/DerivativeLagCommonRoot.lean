@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Row.DerivLag
+module
+
+public import RealRooted.Tactic.Row.DerivLag
+
+@[expose] public section
 
 open Polynomial RealRooted
 

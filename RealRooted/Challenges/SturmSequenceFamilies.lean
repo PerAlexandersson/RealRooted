@@ -1,11 +1,13 @@
-import RealRooted.CombinatorialExamples.ColoredSetPartitions
-import RealRooted.CombinatorialExamples.Motzkin
-import RealRooted.CombinatorialExamples.PathPowerIndependence
-import RealRooted.CombinatorialExamples.Simsun
-import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
-import RealRooted.CombinatorialExamples.StirlingPermutations
-import RealRooted.CombinatorialExamples.SturmDerangementsExc
-import RealRooted.CombinatorialExamples.Touchard
+module
+
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
+public import RealRooted.CombinatorialExamples.Motzkin
+public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.CombinatorialExamples.Simsun
+public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+public import RealRooted.CombinatorialExamples.StirlingPermutations
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.CombinatorialExamples.Touchard
 
 /-!
 # Sturm sequences from derivative recurrences
@@ -203,6 +205,8 @@ on symmetricfunctions.com.
 The families and their interlacing proofs live in
 `RealRooted.CombinatorialExamples`.
 -/
+
+public section
 
 open Polynomial
 

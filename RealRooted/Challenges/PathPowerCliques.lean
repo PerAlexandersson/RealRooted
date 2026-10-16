@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PathPowerClique
-import RealRooted.Applications.OEIS.PathPowerRows
+module
+
+public import RealRooted.CombinatorialExamples.PathPowerClique
+public import RealRooted.Applications.OEIS.PathPowerRows
 
 /-!
 # Path-power clique polynomials and OEIS rows
@@ -167,6 +169,8 @@ graphs).  The row families are OEIS
 [A116089](https://oeis.org/A116089) and [A277627](https://oeis.org/A277627).
 <!-- /realrooted-catalog-content -->
 -/
+
+public section
 
 namespace RealRooted.Challenges.PathPowerCliques
 

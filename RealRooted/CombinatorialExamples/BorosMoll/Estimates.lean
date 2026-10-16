@@ -1,8 +1,10 @@
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Data.Int.Star
-import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import RealRooted.CombinatorialExamples.BorosMoll.Basic
+module
+
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Data.Int.Star
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
+public import RealRooted.CombinatorialExamples.BorosMoll.Basic
 
 /-!
 # Boros–Moll log-concavity transform: estimates for large `n`
@@ -14,6 +16,8 @@ the quantities `η_{n,r}` (`Eta`), the coefficient identity (`Coeff`), the shape
 (`PartialSums`), Jacobi-type polynomials with a Gauss–Lagrange identity (`Gauss`), the Gaussian
 bound (`GaussBound`), and the positivity of the weighted sum at all zeros (`AllZeros`).
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorosMoll
 
@@ -31,7 +35,7 @@ purely algebraic identity `Lm (Dop i p) = 0`.
 open MvPolynomial
 
 /-- One-dimensional moments `μ_a = ∏_{b<a} (2b+1)/(4n-2b)`. -/
-private noncomputable def mu (n a : ℕ) : ℝ :=
+noncomputable def mu (n a : ℕ) : ℝ :=
   ∏ b ∈ Finset.range a, ((2 * (b:ℝ) + 1) / (4 * (n:ℝ) - 2 * b))
 
 private lemma mu_zero (n : ℕ) : mu n 0 = 1 := by simp [mu]
@@ -57,13 +61,13 @@ private lemma mu_pos (n a : ℕ) (ha : a ≤ 2 * n) : 0 < mu n a := by
   · positivity
   · linarith
 
-private abbrev P2 := MvPolynomial (Fin 2) ℝ
+abbrev P2 := MvPolynomial (Fin 2) ℝ
 
 /-- The weight of a monomial. -/
-private noncomputable def wt (n : ℕ) (m : Fin 2 →₀ ℕ) : ℝ := mu n (m 0) * mu n (m 1)
+noncomputable def wt (n : ℕ) (m : Fin 2 →₀ ℕ) : ℝ := mu n (m 0) * mu n (m 1)
 
 /-- The two-dimensional moment functional. -/
-private noncomputable def Lm (n : ℕ) : P2 →ₗ[ℝ] ℝ :=
+noncomputable def Lm (n : ℕ) : P2 →ₗ[ℝ] ℝ :=
   Finsupp.linearCombination ℝ (wt n) ∘ₗ
     (AddMonoidAlgebra.coeffLinearEquiv (R := ℝ) (S := ℝ) (M := Fin 2 →₀ ℕ)).toLinearMap
 
@@ -182,10 +186,10 @@ private lemma Lm_nonneg (n : ℕ) (p : P2) (hp : NN p) (hd : p.totalDegree ≤ 2
 
 /-! ### The coordinates `x`, `y`, `t = xy - 1`, `e = (x-y)^2` -/
 
-private noncomputable def xx : P2 := 1 + 2 * X 0
-private noncomputable def yy : P2 := 1 + 2 * X 1
-private noncomputable def tt : P2 := xx * yy - 1
-private noncomputable def ee : P2 := (xx - yy) ^ 2
+noncomputable def xx : P2 := 1 + 2 * X 0
+noncomputable def yy : P2 := 1 + 2 * X 1
+noncomputable def tt : P2 := xx * yy - 1
+noncomputable def ee : P2 := (xx - yy) ^ 2
 
 /-- The one-variable moments `m_j = E[x^j] = ∑_r C(j,r) 2^r μ_r`. -/
 private noncomputable def mom (n j : ℕ) : ℝ :=
@@ -624,9 +628,9 @@ section Eta
 open MvPolynomial
 
 /-- `I_j = E[t^j]`. -/
-private noncomputable def Imom (n j : ℕ) : ℝ := Lm n (tt ^ j)
+noncomputable def Imom (n j : ℕ) : ℝ := Lm n (tt ^ j)
 /-- `E_j = E[e t^j]`. -/
-private noncomputable def Emom (n j : ℕ) : ℝ := Lm n (ee * tt ^ j)
+noncomputable def Emom (n j : ℕ) : ℝ := Lm n (ee * tt ^ j)
 /-- `S_k = E[(x+y) t^k]`. -/
 private noncomputable def Smom (n k : ℕ) : ℝ := Lm n ((xx + yy) * tt ^ k)
 
@@ -1355,7 +1359,7 @@ noncomputable def Apoly (n : ℕ) : ℕ → ℝ[X]
       - X * Apoly n k
 
 /-- `A_{n,k-1}` with `A_{n,-1} = 0`. -/
-private noncomputable def Aprev (n k : ℕ) : ℝ[X] := if k = 0 then 0 else Apoly n (k - 1)
+noncomputable def Aprev (n k : ℕ) : ℝ[X] := if k = 0 then 0 else Apoly n (k - 1)
 
 /-- The normalized remainders `R_{n,k}(w)` (boundary form). -/
 noncomputable def Rpoly (n k : ℕ) : ℝ[X] :=

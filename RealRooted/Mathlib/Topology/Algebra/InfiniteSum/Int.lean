@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Topology.Algebra.InfiniteSum.NatInt
-import Mathlib.Topology.Algebra.InfiniteSum.Real
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Topology.Algebra.InfiniteSum.NatInt
+public import Mathlib.Topology.Algebra.InfiniteSum.Real
 
 /-!
 # Nonnegative integer tails
@@ -8,6 +10,8 @@ import Mathlib.Topology.Algebra.InfiniteSum.Real
 Upstream-shaped bounds that compare a nonnegative sum over `ℤ`, vanishing at
 the central pair, with a natural-indexed majorant on its two tails.
 -/
+
+public section
 
 open Finset
 open scoped BigOperators Topology

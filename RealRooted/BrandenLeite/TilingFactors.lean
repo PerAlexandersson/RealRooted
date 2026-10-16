@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.PFPolynomial
 
 /-!
 # Finite factor certificates for rational tiling kernels
@@ -9,6 +11,8 @@ theorem.  The background series is a product of nonnegative geometric factors;
 the marked series is a positive scalar, a positive-order shift, and a finite
 product of optional-rise factors.
 -/
+
+@[expose] public section
 
 open Polynomial
 

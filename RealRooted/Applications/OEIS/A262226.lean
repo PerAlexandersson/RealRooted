@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.HigherOrderDegreeModels
-import RealRooted.SymmetricDecomposition.FPolynomial
-import RealRooted.Transforms.BrandenE.WeightedSum
+module
+
+public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.Transforms.BrandenE.WeightedSum
 
 /-!
 # OEIS A262226
@@ -9,6 +11,8 @@ The degree-`n` f-transform of the primary type-D Eulerian row is the even
 binomial sum of Brändén basis images.  This places it in a common-interleaver
 cone and proves real-rootedness after inverting the f-transform.
 -/
+
+@[expose] public section
 
 open Polynomial
 

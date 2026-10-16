@@ -1,8 +1,10 @@
-import RealRooted.Bezoutian.LowDegree
-import RealRooted.Derivative
-import RealRooted.Jacobi
-import RealRooted.Jacobi.Markoff
-import RealRooted.Linear
+module
+
+public import RealRooted.Bezoutian.LowDegree
+public import RealRooted.Derivative
+public import RealRooted.Jacobi
+public import RealRooted.Jacobi.Markoff
+public import RealRooted.Linear
 
 /-!
 # Parameter interlacing for shifted Jacobi polynomials
@@ -11,6 +13,8 @@ This file develops the ordered cross-parameter root comparisons needed for
 the A390883 formalization. The first comparison is the derivative case, where
 both parameters increase by one and the degree drops by one.
 -/
+
+public section
 
 open Polynomial
 

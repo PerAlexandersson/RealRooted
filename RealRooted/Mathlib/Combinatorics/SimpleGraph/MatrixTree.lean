@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
-import Mathlib.Combinatorics.SimpleGraph.LapMatrix
-import Mathlib.Combinatorics.SimpleGraph.Acyclic
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+public import Mathlib.Combinatorics.SimpleGraph.LapMatrix
+public import Mathlib.Combinatorics.SimpleGraph.Acyclic
 
 /-!
 # The weighted matrix-tree theorem
@@ -32,6 +34,8 @@ expands its determinant as a sum over `(|V| - 1)`-sets `S` of pairs.  Over `ℤ`
 spans a connected graph (kernel argument), so its square is the indicator of connectivity.
 Finally, a connected edge set with `|V| - 1` edges is a spanning tree.
 -/
+
+@[expose] public section
 
 open Finset Matrix
 

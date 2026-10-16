@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
 
 /-!
 # Edrei's final affine-exponent lemma
@@ -12,6 +14,8 @@ Taylor coefficients then makes its slope real and nonnegative.
 
 This is the final lemma in Edrei's proof of the converse Aissen--Schoenberg--Whitney theorem.
 -/
+
+public section
 
 open Complex Filter Topology
 

@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Root exclusion from coefficient dominance
@@ -9,6 +11,8 @@ import Mathlib.Tactic.Linarith
 Upstream-shaped coefficient estimates which rule out a negative real root when
 one coefficient term dominates all the others at a positive evaluation point.
 -/
+
+public section
 
 open Finset
 

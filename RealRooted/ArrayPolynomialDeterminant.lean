@@ -1,12 +1,16 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
-import RealRooted.PFPolynomial
-import RealRooted.PolyaFrequencyConvolution
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.PFPolynomial
+public import RealRooted.PolyaFrequencyConvolution
+
+@[expose] public section
 
 open Matrix
 open Filter Topology

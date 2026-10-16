@@ -1,5 +1,7 @@
-import RealRooted.Tactic.LiuWang.SequenceProducts
-import RealRooted.Tactic.WagnerX
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceProducts
+public import RealRooted.Tactic.WagnerX
 
 /-!
 # OEIS positive-lag certificate frontend
@@ -8,6 +10,8 @@ Parser declarations and dispatch rules for positive t-lag recurrence
 certificates. This frontend is independent of denominator normalization and
 the degree-two derivative-lag certificate language.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

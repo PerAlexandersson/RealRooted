@@ -1,4 +1,6 @@
-import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+module
+
+public import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Splitting of derivatives of real polynomials
@@ -6,6 +8,8 @@ import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 This file provides the `Splits` consequences of Rolle's theorem needed by
 the real-rooted polynomial development.
 -/
+
+public section
 
 open Polynomial
 

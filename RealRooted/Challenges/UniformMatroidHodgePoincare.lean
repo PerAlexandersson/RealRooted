@@ -1,5 +1,7 @@
-import RealRooted.Applications.BinderVecchi.UniformChow
-import RealRooted.Applications.BinderVecchi.UniformMatroid
+module
+
+public import RealRooted.Applications.BinderVecchi.UniformChow
+public import RealRooted.Applications.BinderVecchi.UniformMatroid
 
 /-!
 # Uniform-matroid refined Hodge–Poincaré challenge entry point
@@ -110,3 +112,5 @@ Mathematics Research Notices* 2021, 7764–7798.
 
 This module is a catalog facade.
 -/
+
+public section

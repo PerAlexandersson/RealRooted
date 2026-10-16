@@ -1,10 +1,14 @@
-import RealRooted.InterlacingSequenceBasic
+module
+
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Interlacing-sequence tactic frontends
 
 Thin wrappers for list-level interlacing sequence plumbing.
 -/
+
+public section
 
 open Polynomial
 

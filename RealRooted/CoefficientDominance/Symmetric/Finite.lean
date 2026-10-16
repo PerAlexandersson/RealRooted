@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Finite elementary-symmetric algebra
@@ -10,6 +12,8 @@ import Mathlib.Tactic.Ring
 The elementary symmetric functions of a finite initial segment and its leading
 partial products. This discrete layer is independent of roots and logarithms.
 -/
+
+@[expose] public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

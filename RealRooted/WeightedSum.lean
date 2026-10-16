@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Wagner.LeftSum
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Wagner.LeftSum
 
 /-!
 # Weighted sums and interlacing
@@ -15,6 +17,8 @@ On the common-left side, `WeightedCompatibleLeft` packages finite weighted sums
 as an inductive predicate.  Since Wagner (2), `StrictInterl.add_of_left`, needs
 no real-rootedness or coprimeness of the summands, neither does the predicate.
 -/
+
+@[expose] public section
 
 open Polynomial
 

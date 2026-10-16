@@ -1,10 +1,14 @@
-import RealRooted.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.Complex.Trigonometric
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
-import Mathlib.Order.Interval.Finset.Nat
+module
+
+public import RealRooted.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.Complex.Trigonometric
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
+public import Mathlib.Order.Interval.Finset.Nat
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

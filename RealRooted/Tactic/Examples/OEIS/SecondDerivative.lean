@@ -1,10 +1,14 @@
-import RealRooted.Tactic.SecondDerivative
+module
+
+public import RealRooted.Tactic.SecondDerivative
 
 /-!
 # OEIS second-derivative regression example
 
 Regression coverage for the OEIS second-derivative frontend.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

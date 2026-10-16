@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence
+module
+
+public import RealRooted.MultiplierSequence
 
 /-!
 # Multiplier-sequence tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.MultiplierSequence
 Thin wrappers for diagonal operators, Jensen polynomials, and finite
 multiplier-sequence preservation facts.
 -/
+
+public section
 
 open Polynomial
 

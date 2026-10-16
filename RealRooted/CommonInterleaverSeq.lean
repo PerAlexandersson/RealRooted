@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.FamilyUpgrade
+module
+
+public import RealRooted.CommonInterleaver.FamilyUpgrade
 
 /-!
 # Common interleavers and Chudnovsky--Seymour theorem
@@ -7,6 +9,8 @@ The pairwise common-interleaver APIs and slot-data closure theorems. The
 descending-root construction and finite-family upgrades live in dedicated
 children.
 -/
+
+public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Basic.ProperPosition
+module
+
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Canonically ordered polynomial roots
@@ -6,6 +8,8 @@ import RealRooted.Basic.ProperPosition
 This file packages the increasing root list of a real polynomial and relates
 coordinate bounds on equal-length root lists to same-degree interlacing.
 -/
+
+@[expose] public section
 
 open Polynomial
 

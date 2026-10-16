@@ -1,4 +1,8 @@
-import RealRooted.Tactic.HomogenizeStable
+module
+
+public import RealRooted.Tactic.HomogenizeStable
+
+public section
 
 open Polynomial
 

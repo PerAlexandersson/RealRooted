@@ -1,5 +1,7 @@
-import RealRooted.BrandenLC.Infinite
-import RealRooted.CombinatorialExamples.BorosMoll
+module
+
+public import RealRooted.BrandenLC.Infinite
+public import RealRooted.CombinatorialExamples.BorosMoll
 
 /-!
 # Infinite log-concavity of the Boros–Moll rows
@@ -10,6 +12,8 @@ Brändén, “Iterated sequences and the geometry of zeros”, J. reine angew. M
 658 (2011), 115–131. The proof here is a different stability-functional /
 Laguerre argument found by Aristotle.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorosMoll
 

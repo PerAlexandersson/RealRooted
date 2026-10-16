@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Ring.Parity
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Roots of reversed polynomials
@@ -12,6 +14,8 @@ by the usual nonzero-constant-coefficient formulation, and the calculus of `refl
 `reflect N` is an involution on polynomials of degree at most `N`, and the derivative of
 `reflect N r` is `reflect N (X (N r - X r'))`.
 -/
+
+public section
 
 open Finset
 

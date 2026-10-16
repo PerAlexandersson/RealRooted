@@ -1,4 +1,6 @@
-import RealRooted.Tactic.CommonInterleaver.BasicSyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.BasicSyntax
 
 /-!
 # Analytic common-interleaver tactic syntax
@@ -6,6 +8,8 @@ import RealRooted.Tactic.CommonInterleaver.BasicSyntax
 Parser declarations for root-count certificates and two-polynomial
 common-interleaver endpoints.
 -/
+
+public section
 
 namespace RealRooted
 namespace Tactic

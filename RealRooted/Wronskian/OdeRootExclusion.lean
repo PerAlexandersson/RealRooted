@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import RealRooted.Wronskian.Algebra
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import RealRooted.Wronskian.Algebra
 
 /-!
 # Root exclusion from a second-order polynomial ODE
@@ -12,6 +14,8 @@ rightmost root from an interval: if `a p'' + b p' = λ p` and
 keep `2ap' + bp` away from zero there, so no root of `p` lies in `[L, U]`
 once the sign at `U` is fixed (issue #1327).
 -/
+
+public section
 
 open Polynomial
 

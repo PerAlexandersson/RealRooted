@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.MaWang
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.MaWang
+public import Mathlib.Tactic
 
 /-!
 # Colored Set-Partition Polynomials
@@ -8,6 +10,8 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for the colored set-partition
 recurrence, including the type `B` specialization.
 -/
+
+@[expose] public section
 
 open Polynomial
 

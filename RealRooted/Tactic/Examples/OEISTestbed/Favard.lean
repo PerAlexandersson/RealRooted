@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.RowSign
+module
+
+public import RealRooted.Tactic.Favard.RowSign
 
 /-!
 # OEIS test-bed Favard examples
 
 Regression examples for Favard row-sign frontends.
 -/
+
+public section
 
 open Polynomial
 

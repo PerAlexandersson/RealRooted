@@ -1,8 +1,10 @@
-import RealRooted.HermiteBiehler
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
-import RealRooted.PFPolynomial
-import RealRooted.SamePhaseInterlacing
+module
+
+public import RealRooted.HermiteBiehler
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+public import RealRooted.PFPolynomial
+public import RealRooted.SamePhaseInterlacing
 
 /-!
 # Closure of Pólya-frequency polynomials and interlacing
@@ -12,6 +14,8 @@ sequences and polynomials.  Its final theorem combines bounded-degree root
 closedness with the sign-normalized Hermite--Biehler correspondence to retain
 the orientation of the zero-aware interlacing relation `Interl`.
 -/
+
+public section
 
 open Filter Matrix Polynomial Topology
 

@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.WhitneyReduction
+module
+
+public import RealRooted.BrandenLeite.WhitneyReduction
 
 /-!
 # Resolvability and total nonnegativity
@@ -8,6 +10,8 @@ coefficient stages of a resolution are related by nonnegative adjacent-row
 restorations, so every leading section of the original matrix is totally
 nonnegative.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

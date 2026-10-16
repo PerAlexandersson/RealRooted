@@ -1,4 +1,8 @@
-import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
+module
+
+public import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
+
+@[expose] public section
 
 open Filter Topology
 open scoped BigOperators

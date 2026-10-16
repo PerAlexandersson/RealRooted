@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.BorceaBranden.FiniteSymbolClassification
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 /-!
 # Checked pieces of the complex finite-symbol classification
@@ -8,6 +10,8 @@ This application-layer module connects the multiaffine finite-symbol theorem
 to the classification interface without creating a cycle between the challenge
 entry point and its univariate compatibility modules.
 -/
+
+public section
 
 namespace RealRooted.BorceaBranden
 

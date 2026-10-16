@@ -1,4 +1,6 @@
-import RealRooted.WangYeh.TriangularMatrix
+module
+
+public import RealRooted.WangYeh.TriangularMatrix
 
 /-!
 # The Wang–Yeh affine criterion
@@ -110,6 +112,8 @@ The affine criterion lives in `RealRooted.WangYeh.Affine`, the PF preserver in
 `RealRooted.WangYeh.PF`, and the triangular-array corollaries in
 `RealRooted.WangYeh.TriangularArray` and `RealRooted.WangYeh.TriangularMatrix`.
 -/
+
+public section
 
 open Polynomial
 

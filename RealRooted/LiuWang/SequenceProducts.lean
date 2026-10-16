@@ -1,10 +1,14 @@
-import RealRooted.LiuWang.SequenceIntervals
+module
+
+public import RealRooted.LiuWang.SequenceIntervals
 
 /-!
 # Product-lag Liu--Wang sequence theorems
 
 Sequence criteria for factored lags and fixed current-row coefficients.
 -/
+
+public section
 
 open Polynomial
 

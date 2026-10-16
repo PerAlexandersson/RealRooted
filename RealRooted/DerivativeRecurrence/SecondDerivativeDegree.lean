@@ -1,4 +1,6 @@
-import RealRooted.Basic
+module
+
+public import RealRooted.Basic
 
 /-!
 # Second-derivative recurrence degree theory
@@ -7,6 +9,8 @@ Coefficient, degree, nonvanishing, and positivity results for the
 parameterized second-order derivative recurrence used by several generated
 polynomial families.
 -/
+
+@[expose] public section
 
 open Polynomial
 

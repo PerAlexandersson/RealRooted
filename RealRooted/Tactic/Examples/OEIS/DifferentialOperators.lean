@@ -1,12 +1,16 @@
-import RealRooted.Tactic.EulerOperator
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.Wagner
+module
+
+public import RealRooted.Tactic.EulerOperator
+public import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.Wagner
 
 /-!
 # OEIS differential-operator regression examples
 
 Regression examples for Euler, derivative-shift, and Wagner frontends.
 -/
+
+public section
 
 open Polynomial
 open scoped BigOperators

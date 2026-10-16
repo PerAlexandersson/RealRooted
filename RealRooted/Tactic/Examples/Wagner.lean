@@ -1,4 +1,8 @@
-import RealRooted.Tactic.Wagner
+module
+
+public import RealRooted.Tactic.Wagner
+
+public section
 
 open Polynomial
 

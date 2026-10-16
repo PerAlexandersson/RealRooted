@@ -1,11 +1,13 @@
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.CommonInterleaver.FamilySum
-import RealRooted.CommonInterleaver.FamilyUpgrade
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
-import RealRooted.CommonInterleaver.RootSelection
-import RealRooted.CommonInterleaver.RootSelectionTree
-import RealRooted.Compatibility.InterleaverBridge
-import RealRooted.Compatibility.Leander
+module
+
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.CommonInterleaver.FamilySum
+public import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+public import RealRooted.CommonInterleaver.RootSelection
+public import RealRooted.CommonInterleaver.RootSelectionTree
+public import RealRooted.Compatibility.InterleaverBridge
+public import RealRooted.Compatibility.Leander
 
 /-!
 # Common interleaver challenge entry point
@@ -167,6 +169,8 @@ Theorem 2.3.
 This module is a catalog facade.  The proofs live in
 `RealRooted.CommonInterleaver` and `RealRooted.Compatibility`.
 -/
+
+public section
 
 open Polynomial
 

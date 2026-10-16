@@ -8,16 +8,21 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
 -/
-import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
-import Mathlib.Combinatorics.Quiver.Path
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
+
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+public import Mathlib.Combinatorics.Quiver.Path
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 
 /-!
 # Irreducible nonnegative matrices
 
 Quivers, path lifting, `1 + A` irreducibility, and consequences for nonnegative eigenvectors.
 -/
+
+@[expose] public section
 
 open Quiver.Path
 namespace Matrix

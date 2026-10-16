@@ -1,4 +1,6 @@
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Coefficients and degree of `p.comp (-X)`
@@ -6,6 +8,8 @@ import Mathlib.Algebra.Polynomial.Degree.Lemmas
 Companions of `Polynomial.degree_comp_neg_X`: the coefficients of `p.comp (-X)` are those of
 `p` with alternating signs, and the natural degree is unchanged.
 -/
+
+public section
 
 namespace Polynomial
 

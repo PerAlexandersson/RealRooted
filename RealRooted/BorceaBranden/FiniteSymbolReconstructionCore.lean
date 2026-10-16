@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # Reconstruction coefficients for the finite-symbol argument
@@ -10,6 +12,8 @@ arXiv:0809.0401, Lemma 2.2: squarefree derivatives evaluated at zero recover
 coefficients, and specializing an independent right block to zero evaluates
 that block at zero.  Target variables remain unrestricted.
 -/
+
+public section
 
 namespace RealRooted.BorceaBranden
 

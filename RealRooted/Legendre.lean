@@ -4,8 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
 
-import RealRooted.Legendre.Basic
-import RealRooted.Legendre.Roots
+module
+
+
+public import RealRooted.Legendre.Basic
+public import RealRooted.Legendre.Roots
 
 /-!
 # Shifted Legendre polynomials
@@ -15,3 +18,5 @@ reals, its identification with zero-parameter shifted Jacobi polynomials, and
 its degree, root-location, simple-root, and consecutive-interlacing theory in
 both the canonical and reflected positive-leading normalizations.
 -/
+
+public section

@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity from finite truncations
@@ -6,6 +8,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 This file transfers total nonnegativity from a compatible family of finite
 principal truncations to a matrix indexed by the natural numbers.
 -/
+
+public section
 
 namespace Matrix
 

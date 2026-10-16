@@ -1,8 +1,10 @@
-import RealRooted.JacobiDeformation.RootGeometry
-import RealRooted.Derivative.SimpleRoots
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Positivity
+module
+
+public import RealRooted.JacobiDeformation.RootGeometry
+public import RealRooted.Derivative.SimpleRoots
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Positivity
 
 /-!
 # The Jacobi image product
@@ -20,6 +22,8 @@ nonzero, split, simple-rooted, and all its roots lie strictly below
 root, the fixed-coordinate logarithmic-derivative identity, the two nodes
 behind a double root, and the sign of the second derivative at a double root.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

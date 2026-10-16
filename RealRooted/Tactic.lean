@@ -1,67 +1,69 @@
-import RealRooted.Tactic.Attr
-import RealRooted.Tactic.AllCombo
-import RealRooted.Tactic.AffineDerivative
-import RealRooted.Tactic.AissenSchoenbergWhitney
-import RealRooted.Tactic.Bezoutian
-import RealRooted.Tactic.SideGoals
-import RealRooted.Tactic.ScalarDen
-import RealRooted.Tactic.Sign
-import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
-import RealRooted.Tactic.SignAssembly
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.StaircaseSum
-import RealRooted.Tactic.CommonInterleaver
-import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.CubicDiscriminant
-import RealRooted.Tactic.Derivative
-import RealRooted.Tactic.EulerOperator
-import RealRooted.Tactic.InterlacingSequence
-import RealRooted.Tactic.Wagner
-import RealRooted.Tactic.WagnerX
-import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.EndpointDerivative
-import RealRooted.Tactic.LiuWangRecursion
-import RealRooted.Tactic.SecondDerivative
-import RealRooted.Tactic.Favard
-import RealRooted.Tactic.LiuWang
-import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.GeneralizedLaguerre
-import RealRooted.Tactic.MagnitudeDominated
-import RealRooted.Tactic.PreservingOperatorSequence
-import RealRooted.Tactic.Product
-import RealRooted.Tactic.Product.Interlacing
-import RealRooted.Tactic.RecurrenceIdentification
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.RowClosedForm
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.ReciprocalShift
-import RealRooted.Tactic.OperatorPreservesInterlacing
-import RealRooted.Tactic.PFPolynomial
-import RealRooted.Tactic.PFBidiagonal
-import RealRooted.Tactic.PosCombo
-import RealRooted.Tactic.FiniteSymbol
-import RealRooted.Tactic.FiniteSymbolPF
-import RealRooted.Tactic.Hadamard
-import RealRooted.Tactic.HermiteBiehler
-import RealRooted.Tactic.HermitePoulain
-import RealRooted.Tactic.HomogenizeStable
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShiftProduct
-import RealRooted.Tactic.J1Chebyshev
-import RealRooted.Tactic.J1Gap3Reciprocal
-import RealRooted.Tactic.Kurtz
-import RealRooted.Tactic.Linear
-import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.Matrix
-import RealRooted.Tactic.MultiplierSequence
-import RealRooted.Tactic.Narayana
-import RealRooted.Tactic.SymmetricDecomposition
-import RealRooted.Tactic.VeroneseSection
-import RealRooted.Tactic.WeightedSum
-import RealRooted.Tactic.OEIS
-import RealRooted.Tactic.Targets
+module
+
+public import RealRooted.Tactic.Attr
+public import RealRooted.Tactic.AllCombo
+public import RealRooted.Tactic.AffineDerivative
+public import RealRooted.Tactic.AissenSchoenbergWhitney
+public import RealRooted.Tactic.Bezoutian
+public import RealRooted.Tactic.SideGoals
+public import RealRooted.Tactic.ScalarDen
+public import RealRooted.Tactic.Sign
+public import RealRooted.Tactic.RootBounds
+public import RealRooted.Tactic.RootCount
+public import RealRooted.Tactic.SignAssembly
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.StaircaseSum
+public import RealRooted.Tactic.CommonInterleaver
+public import RealRooted.Tactic.CoefficientShape
+public import RealRooted.Tactic.CubicDiscriminant
+public import RealRooted.Tactic.Derivative
+public import RealRooted.Tactic.EulerOperator
+public import RealRooted.Tactic.InterlacingSequence
+public import RealRooted.Tactic.Wagner
+public import RealRooted.Tactic.WagnerX
+public import RealRooted.Tactic.MaWang
+public import RealRooted.Tactic.EndpointDerivative
+public import RealRooted.Tactic.LiuWangRecursion
+public import RealRooted.Tactic.SecondDerivative
+public import RealRooted.Tactic.Favard
+public import RealRooted.Tactic.LiuWang
+public import RealRooted.Tactic.GammaRealRoots
+public import RealRooted.Tactic.GeneralizedLaguerre
+public import RealRooted.Tactic.MagnitudeDominated
+public import RealRooted.Tactic.PreservingOperatorSequence
+public import RealRooted.Tactic.Product
+public import RealRooted.Tactic.Product.Interlacing
+public import RealRooted.Tactic.RecurrenceIdentification
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.RowClosedForm
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.ReciprocalShift
+public import RealRooted.Tactic.OperatorPreservesInterlacing
+public import RealRooted.Tactic.PFPolynomial
+public import RealRooted.Tactic.PFBidiagonal
+public import RealRooted.Tactic.PosCombo
+public import RealRooted.Tactic.FiniteSymbol
+public import RealRooted.Tactic.FiniteSymbolPF
+public import RealRooted.Tactic.Hadamard
+public import RealRooted.Tactic.HermiteBiehler
+public import RealRooted.Tactic.HermitePoulain
+public import RealRooted.Tactic.HomogenizeStable
+public import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShiftProduct
+public import RealRooted.Tactic.J1Chebyshev
+public import RealRooted.Tactic.J1Gap3Reciprocal
+public import RealRooted.Tactic.Kurtz
+public import RealRooted.Tactic.Linear
+public import RealRooted.Tactic.LinearPowerFamily
+public import RealRooted.Tactic.Matrix
+public import RealRooted.Tactic.MultiplierSequence
+public import RealRooted.Tactic.Narayana
+public import RealRooted.Tactic.SymmetricDecomposition
+public import RealRooted.Tactic.VeroneseSection
+public import RealRooted.Tactic.WeightedSum
+public import RealRooted.Tactic.OEIS
+public import RealRooted.Tactic.Targets
 
 /-!
 # RealRooted tactic entry point
@@ -75,3 +77,5 @@ degree, root-bound, and sign certificates explicit.
 
 The tactic roadmap is tracked in GitHub issue #1061.
 -/
+
+public section

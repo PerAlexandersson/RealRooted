@@ -1,8 +1,10 @@
-import RealRooted.LiuWang.SequenceCore
-import RealRooted.LiuWang.FiniteFamily
-import RealRooted.MaWang.CriticalSign
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.MaWang.StrictStep
+module
+
+public import RealRooted.LiuWang.SequenceCore
+public import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.MaWang.CriticalSign
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MaWang.StrictStep
 
 /-!
 # The Liu–Wang and Ma–Wang interlacing criteria
@@ -144,6 +146,8 @@ derivative-sign criterion in `RealRooted.MaWang.Weak.DerivativeSign`, and the
 derivative steps in `RealRooted.MaWang.DerivativeStep` and
 `RealRooted.MaWang.StrictStep`.
 -/
+
+public section
 
 open Polynomial
 

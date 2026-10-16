@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
-import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+module
+
+public import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
+public import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 
 /-!
 # Liu quadratic/cubic x-subtraction leaf
@@ -7,6 +9,8 @@ import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 This module contains the normalized quadratic/cubic positive-split
 x-subtraction leaf used by the right-successor right-degree-three endpoint.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 
