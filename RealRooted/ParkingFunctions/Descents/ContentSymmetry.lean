@@ -36,17 +36,17 @@ theorem mem_fixedContentSmirnovWords_iff {n m : ℕ}
 def fixedContentSmirnovPolynomial {n m : ℕ}
     (μ : Multiset (Fin m)) : ℤ[X] :=
   ∑ w ∈ fixedContentSmirnovWords (n := n) μ,
-    X ^ BrandenVecchi.smirnovDescentNumber w
+    X ^ (List.ofFn w).descentCount
 
 /-- The universal monomial weight of a word is the monomial of its content
 exponent. -/
 theorem smirnovWordWeight_X_eq_monomial {n m : ℕ}
     (w : Fin n → Fin m) :
-    BrandenVecchi.smirnovWordWeight
+    BrandenVecchi.wordWeight
         (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X w =
       MvPolynomial.monomial (wordExponent w) 1 := by
   classical
-  unfold BrandenVecchi.smirnovWordWeight wordExponent
+  unfold BrandenVecchi.wordWeight wordExponent
   simpa [MvPolynomial.X] using
     (MvPolynomial.monomial_sum_prod (R := ℤ) Finset.univ
       (fun i => Finsupp.single (w i) 1) (fun _ => 1)).symm
@@ -70,13 +70,13 @@ theorem coeff_fixedContentSmirnovPolynomial {n m k : ℕ}
   by_cases hc : wordContent w = μ
   · have he : wordExponent w = μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent, hc]
-    by_cases hk : k = BrandenVecchi.smirnovDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
   · have he : wordExponent w ≠ μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent]
       exact fun h => hc (Multiset.toFinsupp.injective h)
-    by_cases hk : k = BrandenVecchi.smirnovDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
 
@@ -94,6 +94,19 @@ theorem map_universalWeightedSmirnovPolynomial {n m : ℕ}
     (BrandenVecchi.weightedSmirnovPolynomial_comp_equiv
       (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X e n)
 
+private theorem coeff_mapDomain_eq_of_map_rename_eq {m : ℕ}
+    (p : Polynomial (MvPolynomial (Fin m) ℤ)) (e : Equiv.Perm (Fin m))
+    (k : ℕ) (d : Fin m →₀ ℕ)
+    (hmap : p.map (MvPolynomial.rename e).toRingHom = p) :
+    (p.coeff k).coeff (Finsupp.mapDomain e d) = (p.coeff k).coeff d := by
+  have hmap' := congrArg (fun q : Polynomial (MvPolynomial (Fin m) ℤ) =>
+      q.coeff k) hmap
+  rw [Polynomial.coeff_map] at hmap'
+  change (MvPolynomial.rename e) (p.coeff k) = p.coeff k at hmap'
+  have hcoeff := congrArg (fun q => q.coeff (Finsupp.mapDomain e d)) hmap'
+  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
+  exact hcoeff.symm
+
 /-- Coefficients of the universal weighted Smirnov polynomial are invariant
 under simultaneous permutation of their exponent vector. -/
 theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
@@ -101,18 +114,9 @@ theorem coeff_universalWeightedSmirnovPolynomial_mapDomain
     ((BrandenVecchi.weightedSmirnovPolynomial
           (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
       ((BrandenVecchi.weightedSmirnovPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
-  have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
-      p.coeff k) (map_universalWeightedSmirnovPolynomial (n := n) e)
-  rw [Polynomial.coeff_map] at hmap
-  change (MvPolynomial.rename e)
-      ((BrandenVecchi.weightedSmirnovPolynomial
-        (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
-    at hmap
-  have hcoeff := congrArg
-    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
-  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
-  exact hcoeff.symm
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d :=
+  coeff_mapDomain_eq_of_map_rename_eq _ e k d
+    (map_universalWeightedSmirnovPolynomial (n := n) e)
 
 /-- Fixed-content Smirnov descent polynomials depend only on the multiplicity
 type, not on the chosen alphabet labels. -/
@@ -176,7 +180,7 @@ theorem mem_fixedContentWords_iff {n m : ℕ}
 def fixedContentWordDescentPolynomial {n m : ℕ}
     (μ : Multiset (Fin m)) : ℤ[X] :=
   ∑ w ∈ fixedContentWords (n := n) μ,
-    X ^ wordDescentNumber w
+    X ^ (List.ofFn w).descentCount
 
 /-- The universal monomial word weight is the monomial of its content
 exponent. -/
@@ -209,13 +213,13 @@ theorem coeff_fixedContentWordDescentPolynomial {n m k : ℕ}
   by_cases hc : wordContent w = μ
   · have he : wordExponent w = μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent, hc]
-    by_cases hk : k = wordDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
   · have he : wordExponent w ≠ μ.toFinsupp := by
       rw [wordExponent_eq_toFinsupp_wordContent]
       exact fun h => hc (Multiset.toFinsupp.injective h)
-    by_cases hk : k = wordDescentNumber w
+    by_cases hk : k = (List.ofFn w).descentCount
     · simp [hc, hk, he, MvPolynomial.coeff_monomial]
     · simp [hc, hk]
 
@@ -240,18 +244,9 @@ theorem coeff_universalWeightedWordPolynomial_mapDomain
     ((BrandenVecchi.weightedWordPolynomial
           (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff (Finsupp.mapDomain e d) =
       ((BrandenVecchi.weightedWordPolynomial
-          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d := by
-  have hmap := congrArg (fun p : Polynomial (MvPolynomial (Fin m) ℤ) =>
-      p.coeff k) (map_universalWeightedWordPolynomial (n := n) e)
-  rw [Polynomial.coeff_map] at hmap
-  change (MvPolynomial.rename e)
-      ((BrandenVecchi.weightedWordPolynomial
-        (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k) = _
-    at hmap
-  have hcoeff := congrArg
-    (fun p => p.coeff (Finsupp.mapDomain e d)) hmap
-  rw [MvPolynomial.coeff_rename_mapDomain e e.injective] at hcoeff
-  exact hcoeff.symm
+          (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X n).coeff k).coeff d :=
+  coeff_mapDomain_eq_of_map_rename_eq _ e k d
+    (map_universalWeightedWordPolynomial (n := n) e)
 
 /-- Fixed-content ordinary-word descent polynomials depend only on the
 multiplicity type, not on the chosen alphabet labels. -/

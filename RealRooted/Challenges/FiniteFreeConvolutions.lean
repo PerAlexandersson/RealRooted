@@ -12,6 +12,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 version = 1
 section = "theorems"
 slug = "finite-free-convolutions"
+formalized = "2026-09-11"
 authors = ["Marcus", "Spielman", "Srivastava", "Gribinski"]
 years = [2022]
 
@@ -134,9 +135,10 @@ composition theorem on the Hadamard page applies.
 ## References
 
 A. W. Marcus, D. A. Spielman, and N. Srivastava, “Finite free convolutions of
-polynomials,” *Probability Theory and Related Fields* 182 (2022), 807–848;
+polynomials,” *Probability Theory and Related Fields* 182 (2022), 807–848,
+[doi:10.1007/s00440-021-01105-w](https://doi.org/10.1007/s00440-021-01105-w);
 A. Gribinski and A. W. Marcus, [“A rectangular additive convolution for
-polynomials,”](https://doi.org/10.5070/C62156888) *Combinatorial Theory* 2(1)
+polynomials,”](https://doi.org/10.5070/c62156888) *Combinatorial Theory* 2(1)
 (2022), #16.
 For the application to the Narayana transformation, see
 [symmetricfunctions.com][mao-wang].

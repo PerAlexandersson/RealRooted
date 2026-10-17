@@ -1,4 +1,4 @@
-import RealRooted.SeparablePermutations.Enumerator
+import RealRooted.SeparablePermutations.Gamma
 import RealRooted.FactorialCompression.DegreeChanging
 import RealRooted.GammaTransform.StrictLifting
 
@@ -18,11 +18,9 @@ algebraically defined families `gammaPolynomial` and `descentPolynomial` of
 * `strictInterl_descentPolynomial`: for `n ≥ 2`, `S_n` and `S_{n+1}` have simple negative roots,
   strictly interlace and have no common root; this is the strict lifting
   `strictInterl_gammaTransform_succ_of_strictInterl_of_no_common` applied to `Γ_n`, `Γ_{n+1}`.
-* `strictInterl_descentEnumerator_of_eq_descentPolynomial`: the conditional transfer to the
-  descent enumerators of the separable permutations.  The identification
-  `descentEnumerator n = descentPolynomial (n + 1)` is a documented hypothesis (checked for
-  `n ≤ 3`, that is, permutations of at most four letters, in `Enumerator.lean`); it combines the
-  results of Fu--Lin--Zeng with Zhang's Proposition 3.3 and is not formalized here.
+
+The transfer to the descent enumerators of the separable permutations,
+`strictInterl_descentEnumerator`, is in `RealRooted/SeparablePermutations/Identification.lean`.
 -/
 
 open Polynomial
@@ -34,12 +32,6 @@ namespace RealRooted.SeparablePermutations
 open FactorialCompression
 
 /-! ### The gamma-polynomials -/
-
-private theorem gammaPolynomial_ne_zero {n : ℕ} (hn : 1 ≤ n) : gammaPolynomial n ≠ 0 := by
-  intro h
-  have := coeff_zero_gammaPolynomial_pos hn
-  rw [h] at this
-  simp at this
 
 /-- All roots of `Γ_n` are negative for `n ≥ 1`. -/
 theorem roots_gammaPolynomial_neg {n : ℕ} (hn : 1 ≤ n) :
@@ -55,13 +47,14 @@ theorem roots_gammaPolynomial_neg {n : ℕ} (hn : 1 ≤ n) :
 private theorem strictInterl_gammaPolynomial_add_two {N : ℕ} (hN : N ≠ 0) :
     RealRooted.StrictInterl (gammaPolynomial (N + 2)) (gammaPolynomial (N + 3)) ∧
       ∀ r : ℝ, ¬ ((gammaPolynomial (N + 2)).IsRoot r ∧ (gammaPolynomial (N + 3)).IsRoot r) := by
-  have hB := strictInterl_auxPolynomial N
+  have hB := strictInterl_compressionSourcePolynomial N
   obtain ⟨-, -, -, -, -, -, -, -, hint, hno⟩ :=
-    compression_one_nextPolynomial_strictInterl hN (natDegree_auxPolynomial N) hB.1.1.2
-      (hasPosLeadingCoeff_auxPolynomial N) (roots_auxPolynomial_neg N)
+    compression_one_nextPolynomial_strictInterl hN
+      (natDegree_compressionSourcePolynomial N) hB.1.1.2
+      (hasPosLeadingCoeff_compressionSourcePolynomial N) (roots_compressionSourcePolynomial_neg N)
   have hc : ∀ M : ℕ, (2 : ℝ) ^ M / (M.factorial : ℝ) ≠ 0 := fun M => by positivity
-  have hnext : auxPolynomial (N + 1) =
-      nextPolynomial (((N : ℝ) + 2) / 2) (auxPolynomial N) := rfl
+  have hnext : compressionSourcePolynomial (N + 1) =
+      nextPolynomial (((N : ℝ) + 2) / 2) (compressionSourcePolynomial N) := rfl
   rw [← hnext] at hint hno
   rw [show N + 3 = (N + 1) + 2 by lia, gammaPolynomial_add_two, gammaPolynomial_add_two]
   refine ⟨(hint.C_mul_left (hc N)).C_mul_right (hc (N + 1)), ?_⟩
@@ -129,18 +122,5 @@ theorem strictInterl_descentPolynomial {n : ℕ} (hn : 2 ≤ n) :
     RealRooted.StrictInterl (descentPolynomial n) (descentPolynomial (n + 1)) ∧
       ∀ r : ℝ, ¬ ((descentPolynomial n).IsRoot r ∧ (descentPolynomial (n + 1)).IsRoot r) :=
   ⟨(lifting_descentPolynomial hn).2.2.2.2.2.2.1, (lifting_descentPolynomial hn).2.2.2.2.2.2.2⟩
-
-/-! ### Conditional transfer to the separable permutations -/
-
-/-- If the descent enumerator of the separable permutations is `descentPolynomial`
-(Fu--Lin--Zeng together with Zhang, Proposition 3.3; a documented hypothesis, verified for
-permutations of at most four letters in `Enumerator.lean`), then consecutive enumerators strictly
-interlace and have no common root. -/
-theorem strictInterl_descentEnumerator_of_eq_descentPolynomial
-    (h : ∀ n, descentEnumerator n = descentPolynomial (n + 1)) {n : ℕ} (hn : 1 ≤ n) :
-    RealRooted.StrictInterl (descentEnumerator n) (descentEnumerator (n + 1)) ∧
-      ∀ r : ℝ, ¬ ((descentEnumerator n).IsRoot r ∧ (descentEnumerator (n + 1)).IsRoot r) := by
-  rw [h, h]
-  exact strictInterl_descentPolynomial (n := n + 1) (by lia)
 
 end RealRooted.SeparablePermutations

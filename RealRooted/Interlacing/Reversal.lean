@@ -15,7 +15,8 @@ The reversed rows of a recurrence satisfy a recurrence of the same shape:
 
 * `eq_reflect_of_threeTerm`: `P (n + 2) = a n P (n + 1) + b n P n` reverses to the multipliers
   `reflect 1 (a n)` and `reflect 2 (b n)`;
-* `eq_reflect_of_derivRec₂`: `P (n + 1) = A₂ P'' + A₁ P' + A₀ P` reverses through
+* `eq_reflect_of_secondOrderDerivativeRecurrence`:
+  `P (n + 1) = A₂ P'' + A₁ P' + A₀ P` reverses through
   `Polynomial.derivative_reflect`, with `θ_N r = X (N r - X r')`, `θ_N r = X u₁` and
   `θ_N (θ_N r) = X ^ 2 u₂`.
 
@@ -44,7 +45,7 @@ private lemma interlaces_reverse_map_inv {ss rs : List ℝ}
     hi.map_of_mem Inv.inv fun a b ha hb hab =>
       (inv_le_inv_of_neg (hneg b hb) (hneg a ha)).2 hab
   have hlen' : (ss.map Inv.inv).length + 1 = (rs.map Inv.inv).length := by simpa using hlen
-  have hir := (List.interleaves_reverse_reverse_of_length_add_one_eq_length
+  have hir := (List.interleaves_reverse_reverse_of_length_eq_length_add_one
     (r := fun x y : ℝ => x ≤ y) hlen').2 him
   exact listInterlaces_of_interleaves_of_length (by simpa using hlen) hir
 
@@ -65,14 +66,14 @@ lemma interlaces_reverse_of_roots_neg {g f : ℝ[X]} (h : Interlaces g f)
     ⟨⟨hfne, hfs⟩, ⟨hgne, hgs⟩, hdeg, ⟨rs, ss, hrs, hss, hfr, hgsr, hlist⟩⟩
   have hf0 := coeff_zero_ne_of_roots_neg hfne hf
   have hg0 := coeff_zero_ne_of_roots_neg hgne hg
-  have hfr' := DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hfs hf0
-  have hgr' := DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hgs hg0
+  have hfr' := Polynomial.roots_reverse_eq_map_inv hfs hf0
+  have hgr' := Polynomial.roots_reverse_eq_map_inv hgs hg0
   have hfrs := DegreeDropReversal.splits_reverse hfs
   have hgrs := DegreeDropReversal.splits_reverse hgs
   have hnat : ∀ {p : ℝ[X]}, p.Splits → p.coeff 0 ≠ 0 → p.reverse.natDegree = p.natDegree := by
     intro p hp hp0
     rw [← card_roots_of_splits (DegreeDropReversal.splits_reverse hp),
-      DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne hp hp0,
+      Polynomial.roots_reverse_eq_map_inv hp hp0,
       Multiset.card_map, card_roots_of_splits hp]
   have hrslen : rs.length = f.natDegree := by
     rw [← card_roots_of_splits hfs, ← hfr, Multiset.coe_card]
@@ -116,7 +117,8 @@ private lemma reflect_mul_X_pow_mul {a u : ℝ[X]} {k M : ℕ}
 /-- Reversed rows of a second-order derivative recurrence.  If `P (n + 1) = A₂ P'' + A₁ P' + A₀ P`
 with `A i` of degree at most `i + 1`, and `R` satisfies the reflected recurrence (with
 `N = D₀ + n`), then `P n = reflect (D₀ + n) (R n)` for all `n`. -/
-theorem eq_reflect_of_derivRec₂ {P R A₂ A₁ A₀ B₂ B₁ B₀ : ℕ → ℝ[X]} {D₀ : ℕ}
+theorem eq_reflect_of_secondOrderDerivativeRecurrence
+    {P R A₂ A₁ A₀ B₂ B₁ B₀ : ℕ → ℝ[X]} {D₀ : ℕ}
     (hP : ∀ n, P (n + 1) =
       A₂ n * derivative (derivative (P n)) + A₁ n * derivative (P n) + A₀ n * P n)
     (hR : ∀ n, R (n + 1) =

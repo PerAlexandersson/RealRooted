@@ -15,6 +15,9 @@ representative, and ordinary parking-function embedding live in the neutral
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- Sort the values of a word along its `Fin n` chain of positions. -/
@@ -53,6 +56,7 @@ theorem card_lt_eq_of_ofFn_perm {n m : ℕ} {w v : Fin n → Fin m}
 theorem isParkingFunction_iff_of_ofFn_perm {n : ℕ} {w v : Fin n → Fin n}
     (h : List.Perm (List.ofFn w) (List.ofFn v)) :
     IsParkingFunction w ↔ IsParkingFunction v := by
+  rw [isParkingFunction_iff_prefix, isParkingFunction_iff_prefix]
   constructor <;> intro hw k hk
   · rw [← card_lt_eq_of_ofFn_perm h k]
     exact hw k hk

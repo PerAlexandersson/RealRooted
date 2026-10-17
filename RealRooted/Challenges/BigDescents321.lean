@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.BigDescents321
 version = 1
 section = "theorems"
 slug = "big-descents-321"
+formalized = "2026-10-06"
 authors = ["Elizalde", "Rivera", "Zhuang", "Alexandersson"]
 years = [2024, 2026]
 
@@ -21,7 +22,7 @@ module = "RealRooted.CombinatorialExamples.BigDescents321.Basic"
 label = "Reference Motzkin polynomial"
 
 [[theorems]]
-name = "RealRooted.BigDescents321.interlaces_and_nodup"
+name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
 label = "Bulk interlacing with simple roots"
 headline = true
@@ -56,7 +57,8 @@ root.
 
 This settles the case $\Pi = \{321\}$ of Conjecture 4.4 of Elizalde, Rivera and Zhuang. The Lean
 statements are about the recurrence-defined polynomials; the enumeration of permutations is the
-combinatorial interpretation and is not formalized.
+combinatorial interpretation and is not formalized. See also
+[big descents on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#bigDescent).
 
 ## Proof idea
 
@@ -80,7 +82,8 @@ The cases $n \le 24$ are exact interlacing and Bezout certificates.
 ## References
 
 S. Elizalde, J. Rivera, Jr., and Y. Zhuang, [“Counting pattern-avoiding permutations by big
-descents,”](https://arxiv.org/abs/2408.15111) arXiv:2408.15111 (2024).
+descents,”](https://arxiv.org/abs/2408.15111) *Annals of Combinatorics* (2026),
+[doi:10.1007/s00026-026-00805-1](https://doi.org/10.1007/s00026-026-00805-1).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

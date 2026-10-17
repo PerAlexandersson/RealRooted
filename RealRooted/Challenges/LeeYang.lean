@@ -7,6 +7,7 @@ import RealRooted.LeeYang
 version = 1
 section = "theorems"
 slug = "lee-yang"
+formalized = "2026-10-07"
 authors = ["Lee", "Yang", "Asano", "Ruelle"]
 years = [1952, 1970]
 
@@ -57,11 +58,13 @@ exterior statement follows from the identity $P(z) = (\prod_i z_i)\, P(1/z)$.
 
 ## References
 
-T. D. Lee and C. N. Yang, “Statistical theory of equations of state and phase transitions.
-II. Lattice gas and Ising model,” *Physical Review* 87 (1952), 410–419; T. Asano, “Lee–Yang
-theorem and the Griffiths inequality for the anisotropic Heisenberg ferromagnet,” *Physical
-Review Letters* 24 (1970), 1409–1411; D. Ruelle, “Characterization of Lee–Yang polynomials,”
-*Annals of Mathematics* 171 (2010), 589–603.
+T. D. Lee and C. N. Yang, [“Statistical theory of equations of state and phase transitions.
+II. Lattice gas and Ising model,”](https://doi.org/10.1103/PhysRev.87.410) *Physical Review*
+87 (1952), 410–419; T. Asano, [“Lee–Yang theorem and the Griffiths inequality for the
+anisotropic Heisenberg ferromagnet,”](https://doi.org/10.1103/PhysRevLett.24.1409) *Physical
+Review Letters* 24 (1970), 1409–1411; D. Ruelle, [“Characterization of Lee–Yang
+polynomials,”](https://doi.org/10.4007/annals.2010.171.589) *Annals of Mathematics* 171
+(2010), 589–603.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.

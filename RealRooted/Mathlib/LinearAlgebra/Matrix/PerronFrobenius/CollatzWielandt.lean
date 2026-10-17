@@ -74,11 +74,16 @@ namespace CollatzWielandt
 
 /-! ### Positive supports -/
 
+omit [Nonempty n] in
 /-- A vector in the standard simplex has nonempty positive support. -/
 private lemma pos_support_toFinset_nonempty_of_mem_stdSimplex {x : n → ℝ}
     (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     ({i | 0 < x i}.toFinset).Nonempty := by
-  obtain ⟨i, hi_pos⟩ := exists_pos_of_sum_one_of_nonneg hx.2 hx.1
+  have hpos : 0 < ∑ i, x i := by
+    rw [hx.2]
+    norm_num
+  obtain ⟨i, _, hi_pos⟩ :=
+    (Finset.sum_pos_iff_of_nonneg (fun i _ => hx.1 i)).mp hpos
   exact ⟨i, by simpa using hi_pos⟩
 
 omit [Nonempty n] in
@@ -117,7 +122,7 @@ private lemma continuousOn_fixedSupportRatios (A : Matrix n n ℝ) {x : n → �
     (hx : ({i | 0 < x i}.toFinset).Nonempty) :
     ContinuousOn (fun y => {i | 0 < x i}.toFinset.inf' hx fun i => (A *ᵥ y) i / y i)
       (posSupportNeighborhood x) := by
-  apply continuousOn_finset_inf' hx
+  apply ContinuousOn.finset_inf'_apply hx
   intro i hi
   apply ContinuousOn.div
   · exact continuous_apply i |>.comp_continuousOn
@@ -126,6 +131,7 @@ private lemma continuousOn_fixedSupportRatios (A : Matrix n n ℝ) {x : n → �
   · intro y hy
     exact (hy i hi).ne'
 
+omit [Nonempty n] in
 private lemma collatzWielandtFn_le_fixedSupportRatios (A : Matrix n n ℝ)
     {x y : n → ℝ} (hx : ({i | 0 < x i}.toFinset).Nonempty)
     (hy : y ∈ posSupportNeighborhood x ∩ RealRooted.standardSimplex ℝ n) :
@@ -134,11 +140,12 @@ private lemma collatzWielandtFn_le_fixedSupportRatios (A : Matrix n n ℝ)
   have hy_supp : {i | 0 < y i}.toFinset.Nonempty :=
     pos_support_toFinset_nonempty_of_mem_stdSimplex hy.2
   rw [collatzWielandtFn_eq_inf' A hy_supp]
-  apply finset_inf'_mono_subset
+  apply Finset.inf'_mono
   intro i hi
   have : 0 < y i := hy.1 i hi
   simpa [Set.mem_toFinset] using this
 
+omit [Nonempty n] in
 /-- *The Collatz-Wielandt function is upper-semicontinuous*.
 Seneta relies on this fact (p.15, Appendix C) to use the Extreme Value Theorem.
 `r(x)` is a minimum of functions `fᵢ(x) = (Ax)ᵢ / xᵢ`. Each `fᵢ` is continuous where `xᵢ > 0`.
@@ -257,7 +264,7 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     le_ratio (A := A) m h_xm_pos
   have h_ratio_le :
       (A *ᵥ x) m / x m ≤ Finset.univ.sup' Finset.univ_nonempty (fun k ↦ ∑ l, A k l) := by
-    rw [mulVec_apply, div_le_iff h_xm_pos]
+    rw [Matrix.mulVec_apply_eq_sum, div_le_iff₀ h_xm_pos]
     refine le_trans (sum_mul_le_sum_mul_const_of_forall_le (fun j => A m j) x m
       (fun j => hA_nonneg m j) h_xm_max) ?_
     apply mul_le_mul_of_nonneg_right _ (le_of_lt h_xm_pos)
@@ -266,8 +273,8 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
 
 /-- The set of values from the Collatz-Wielandt function is non-empty. -/
 lemma set_nonempty :
-    (collatzWielandtFn A '' nonnegNeZero).Nonempty := by
-  exact Set.Nonempty.image _ ⟨_, nonnegNeZero_mem_const_one⟩
+    (collatzWielandtFn A '' nonnegNeZero).Nonempty :=
+  Set.Nonempty.image _ ⟨_, nonnegNeZero_mem_const_one⟩
 
 omit [Nonempty n] in
 open scoped Classical in
@@ -407,7 +414,7 @@ lemma le_of_max_le_row_sum
   have h_le_k := h_le_Bx k
   simp only [Pi.smul_apply, smul_eq_mul] at h_le_k
   have h_Bx_le : (B *ᵥ x) k ≤ r * x k := by
-    rw [mulVec_apply]
+    rw [Matrix.mulVec_apply_eq_sum]
     calc
       ∑ j, B k j * x j
           ≤ (∑ j, B k j) * x k :=
@@ -580,7 +587,7 @@ lemma collatzWielandtFn_of_ones_is_pos
     0 < collatzWielandtFn A (fun _ ↦ 1) := by
   let x_ones : n → ℝ := fun _ ↦ 1
   have h_supp_nonempty : ({i | 0 < x_ones i}.toFinset).Nonempty := by
-    rw [Set.toFinset_nonempty_iff]
+    rw [Set.toFinset_nonempty]
     obtain ⟨i⟩ := ‹Nonempty n›
     exact ⟨i, by simp [x_ones]⟩
   dsimp [collatzWielandtFn]
@@ -592,7 +599,7 @@ lemma collatzWielandtFn_of_ones_is_pos
       (Finset.univ.inf' (by rwa [← h_supp_ones]) fun i ↦ (A *ᵥ x_ones) i / x_ones i) := by
     congr
   rw [h_inf_eq]
-  apply Finset.inf'_pos Finset.univ_nonempty
+  apply (Finset.lt_inf'_iff Finset.univ_nonempty).mpr
   intro i _
   simpa [Matrix.mulVec, dotProduct, x_ones] using
     row_sum_pos_of_irreducible_nonneg hA_irred hA_nonneg i

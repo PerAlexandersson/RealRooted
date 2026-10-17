@@ -9,10 +9,11 @@ import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 version = 1
 section = "families"
 slug = "parking-functions"
+formalized = "2026-09-13"
 
 [[definitions]]
-name = "RealRooted.ParkingFunctions.IsParkingFunction"
-module = "RealRooted.ParkingFunctions.Descents.Basic"
+name = "ParkingFunction.IsParkingFunction"
+module = "RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction"
 label = "Parking functions"
 
 [[definitions]]
@@ -63,7 +64,8 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Parking functions
 
-A parking function of length $n$ is a word $w$ with letters in
+A [parking function](https://www.symmetricfunctions.com/parking-functions.htm#parkingFunctionDefinition)
+of length $n$ is a word $w$ with letters in
 $\{0, \dotsc, n-1\}$ such that, for every $k \leq n$, at least $k$ of its letters are
 smaller than $k$. The following generating polynomials over parking functions
 of length $n$ are real-rooted:

@@ -72,25 +72,71 @@ def inverseDescentSet {n : ℕ} (σ : Equiv.Perm (Fin n)) : Finset ℕ :=
 @[simp] theorem ascentCount_eq_list (σ : Equiv.Perm (Fin n)) :
     σ.ascentCount = (List.ofFn σ).ascentCount := rfl
 
-private theorem ofFn_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (reverse σ) = (List.ofFn σ).reverse := by
-  apply List.ext_getElem
-  · simp [reverse]
-  · intro i hi₁ hi₂
-    simp only [reverse, coe_trans, List.getElem_ofFn, Function.comp_apply, Fin.revPerm_apply,
-      List.getElem_reverse, List.length_ofFn, EmbeddingLike.apply_eq_iff_eq]
-    apply Fin.ext
-    simp [Fin.rev, Nat.sub_sub, Nat.add_comm]
+/-- Membership in the descent set of a permutation of `n + 1` letters: a position `i < n` with
+`σ (i + 1) < σ i`. -/
+theorem mem_descentSet {n : ℕ} {σ : Equiv.Perm (Fin (n + 1))} {m : ℕ} :
+    m ∈ σ.descentSet ↔ ∃ i : Fin n, (i : ℕ) = m ∧ σ i.succ < σ i.castSucc := by
+  rw [descentSet_eq_list, List.mem_descentSet]
+  constructor
+  · rintro ⟨h, hlt⟩
+    have hm : m < n := by
+      simp only [List.length_ofFn] at h
+      lia
+    let i : Fin n := ⟨m, hm⟩
+    refine ⟨i, rfl, ?_⟩
+    rw [List.getElem_ofFn, List.getElem_ofFn] at hlt
+    exact hlt
+  · rintro ⟨i, rfl, hlt⟩
+    have hi : (i : ℕ) + 1 < (List.ofFn σ).length := by
+      simp only [List.length_ofFn]
+      lia
+    refine ⟨hi, ?_⟩
+    rw [List.getElem_ofFn, List.getElem_ofFn]
+    exact hlt
 
-private theorem ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (complement σ) = (List.ofFn σ).map Fin.rev := by
-  have hrev : (Fin.revPerm : Fin n → Fin n) = Fin.rev := by
-    funext i
-    exact Fin.revPerm_apply i
-  rw [complement]
-  change List.ofFn (Fin.revPerm ∘ σ) = _
-  rw [hrev]
-  exact List.ofFn_comp' σ (Fin.rev : Fin n → Fin n)
+/-- Every descent position of a permutation of `n + 1` letters is below `n`. -/
+theorem descentSet_subset_range {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) :
+    σ.descentSet ⊆ Finset.range n := by
+  intro m hm
+  obtain ⟨i, rfl, -⟩ := mem_descentSet.mp hm
+  simp
+
+/-- Membership in the peak set of a permutation: the position has a smaller neighbour on each
+side. -/
+theorem mem_peakSet {n : ℕ} {σ : Equiv.Perm (Fin n)} {j : Fin n} :
+    (j : ℕ) ∈ σ.peakSet ↔
+      ∃ i k : Fin n, i.val + 1 = j.val ∧ j.val + 1 = k.val ∧ σ i < σ j ∧ σ k < σ j := by
+  change (j : ℕ) ∈ (List.ofFn σ).peakSet ↔ _
+  rw [List.mem_peakSet]
+  constructor
+  · rintro ⟨hi, h, hleft, hright⟩
+    have hjlt : j.val < n := j.isLt
+    have hbound : j.val + 1 < n := by
+      simpa only [List.length_ofFn] using h
+    let i : Fin n := ⟨j.val - 1, by lia⟩
+    let k : Fin n := ⟨j.val + 1, by lia⟩
+    refine ⟨i, k, ?_, ?_, ?_, ?_⟩
+    · dsimp [i]
+      lia
+    · dsimp [k]
+    · rw [List.getElem_ofFn, List.getElem_ofFn] at hleft
+      simpa using hleft
+    · rw [List.getElem_ofFn, List.getElem_ofFn] at hright
+      simpa using hright
+  · rintro ⟨i, k, hij, hjk, hleft, hright⟩
+    refine ⟨?_, ?_, ?_⟩
+    · lia
+    · have hklt : k.val < n := k.isLt
+      simpa only [List.length_ofFn] using (show j.val + 1 < n by lia)
+    · constructor
+      · rw [List.getElem_ofFn, List.getElem_ofFn]
+        have hi_eq : i = ⟨j.val - 1, by lia⟩ := Fin.ext (by lia)
+        rw [hi_eq] at hleft
+        simpa using hleft
+      · rw [List.getElem_ofFn, List.getElem_ofFn]
+        have hk_eq : k = ⟨j.val + 1, by lia⟩ := Fin.ext (by lia)
+        rw [hk_eq] at hright
+        simpa using hright
 
 /-- Reversal transforms permutation descents using the word reversal formula. -/
 theorem descentSet_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :

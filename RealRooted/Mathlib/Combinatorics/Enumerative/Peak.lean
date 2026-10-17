@@ -13,8 +13,8 @@ variable {α β : Type*} [LinearOrder α] [LinearOrder β]
 private theorem pred_lt_length {i n : ℕ} (hi : 0 < i) (h : i + 1 < n) : i - 1 < n := by
   lia
 
-private theorem index_lt_length {i n : ℕ} (h : i + 1 < n) : i < n := by
-  exact Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
+private theorem index_lt_length {i n : ℕ} (h : i + 1 < n) : i < n :=
+  Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
 
 private def isPeak (l : List α) (i : ℕ) : Bool :=
   if hi : 0 < i then

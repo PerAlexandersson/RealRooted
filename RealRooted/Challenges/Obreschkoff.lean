@@ -9,6 +9,7 @@ import RealRooted.OperatorPreservesInterlacing
 version = 1
 section = "theorems"
 slug = "obreschkoff"
+formalized = "2026-07-10"
 authors = ["Obreschkoff", "Dedieu"]
 years = [1963, 1992]
 
@@ -120,7 +121,7 @@ theorem allCombinationsRealRooted_iff_interlaces_or_reverse {f g : ℝ[X]}
   refine ⟨interlaces_or_reverse_of_allCombinationsRealRooted, ?_⟩
   rintro (hfg | hgf)
   · exact allComboRealRooted_of_interl hf hg hfg
-  · exact allComboRealRooted_comm (allComboRealRooted_of_interl hg hf hgf)
+  · exact (allComboRealRooted_of_interl hg hf hgf).comm
 
 end Obreschkoff
 end Challenges

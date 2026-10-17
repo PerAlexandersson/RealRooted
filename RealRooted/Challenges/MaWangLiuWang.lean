@@ -1,4 +1,6 @@
 import RealRooted.LiuWang.SequenceCore
+import RealRooted.LiuWang.FiniteFamily
+import RealRooted.MaWang.CriticalSign
 import RealRooted.MaWang.DerivativeStep
 import RealRooted.MaWang.StrictStep
 
@@ -9,6 +11,7 @@ import RealRooted.MaWang.StrictStep
 version = 1
 section = "theorems"
 slug = "ma-wang-liu-wang"
+formalized = "2026-10-06"
 authors = ["Liu", "Wang", "Ma"]
 years = [2007, 2008]
 
@@ -39,8 +42,14 @@ name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_and_hasSimpleRoots_of_e
 label = "Strict Ma–Wang step: simple zeros propagate when v < 0"
 
 [[theorems]]
-name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_mul_add_sum_mul_of_eval_nonpos"
-label = "Liu–Wang criterion for finite sums of interlacers"
+name = "RealRooted.LiuWang.strictInterl_mul_add_sum_mul_of_eval_nonpos"
+module = "RealRooted.LiuWang.FiniteFamily"
+label = "Liu–Wang criterion for finite sums of interlacers, repeated roots allowed"
+
+[[theorems]]
+name = "RealRooted.strictInterl_of_eval_mul_derivative_neg"
+module = "RealRooted.MaWang.CriticalSign"
+label = "Strict interlacing from strict critical signs"
 
 [[theorems]]
 name = "RealRooted.LiuWang.strictInterl_succ_of_recurrence_of_eval_nonpos"
@@ -88,12 +97,17 @@ that $\deg f \neq 0$, that $f$ has simple zeros, that $\deg F = \deg f + 1$, and
 that $v(r) < 0$ at every zero $r$ of $f$. Then $f \ll F$ and $F$ has simple
 zeros.
 
-**Theorem (finite sums).** Let $f$ be real-rooted with simple zeros and a
-positive leading coefficient, and let $F = a f + \sum_{i \in s} b_i g_i$ for a
+**Theorem (finite sums).** Let $f$ be real-rooted with a positive leading
+coefficient (repeated zeros are allowed), and let $F = a f + \sum_{i \in s} b_i g_i$ for a
 finite index set $s$. Suppose that $g_i \ll f$ and $g_i$ has a positive leading
 coefficient for each $i \in s$, that $F$ has a positive leading coefficient, and
 that $\deg f \leq \deg F \leq \deg f + 1$. If $b_i(r) \leq 0$ at every zero $r$
-of $f$ for each $i \in s$, then $f \ll F$.
+of $f$ for each $i \in s$, then $f \ll F$. At repeated zeros the termwise conditions
+cannot be replaced by the combined condition $F(r) f'(r) \leq 0$, which is vacuous there.
+
+**Theorem (strict critical signs).** If $f$ is nonconstant and split, $f$ and $F$ have
+positive leading coefficients, $\deg f \leq \deg F \leq \deg f + 1$, and
+$F(r) f'(r) < 0$ at every zero $r$ of $f$, then $f \ll F$.
 
 **Sequence forms.** Let $(P_n)_{n \geq 0}$ have positive leading coefficients,
 with $P_0 \ll P_1$ and $\deg P_{n+1} \leq \deg P_{n+2} \leq \deg P_{n+1} + 1$
@@ -112,18 +126,6 @@ coefficients of the same sign; the negative case follows by replacing $F$ and
 $g$ with $-F$ and $-g$. The site also gives a strict form of the Liu–Wang
 theorem, with strict inequalities between the zeros. That strict form is not
 stated here.
-
-## Proof idea
-
-If $f$ has simple zeros and $g \ll f$, then $g$ and $f'$ are both interlacers
-of $f$, so $g(r) f'(r) \geq 0$ at every zero $r$ of $f$. Hence
-$F(r) f'(r) = b(r) g(r) f'(r) \leq 0$, and the derivative-sign theorem applies.
-That theorem perturbs $F$ to $F - \delta f'$, whose signs at the zeros of $f$
-are strict, proves real-rootedness in the limit $\delta \to 0$, and then reads
-off the interlacing. A common zero $r$ of $f$ and $g$ is a zero of $F$; dividing
-$f$, $g$ and $F$ by $x - r$ reduces the degree, and the general Liu–Wang
-theorem follows by induction. The Ma–Wang theorem is the case $g = f'$, and the
-sequence forms apply the one-step criteria inductively.
 
 ## References
 
@@ -169,28 +171,6 @@ theorem strictInterl_and_hasSimpleRoots_of_eval_neg {f F u v : ℝ[X]} (hf : f.S
     StrictInterl f F ∧ HasSimpleRoots F :=
   strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ hf hf_pos hF_pos
     (Nat.one_le_iff_ne_zero.mpr hdegf) hdeg hsimple hrec hv
-
-/-- **Liu–Wang criterion for finite sums.**  Let `f` be real-rooted with simple roots and
-positive leading coefficient, and let `F = a f + ∑ i ∈ s, b i * g i` have positive leading
-coefficient and degree `deg f` or `deg f + 1`.  If every `g i` is an interlacer `g i ≪ f` with
-positive leading coefficient and every `b i` is nonpositive at the roots of `f`, then
-`f ≪ F`. -/
-theorem strictInterl_mul_add_sum_mul_of_eval_nonpos {ι : Type*} {f a : ℝ[X]} {s : Finset ι}
-    {b g : ι → ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hf : f.Splits)
-    (hf_nodup : f.roots.Nodup) (hg : ∀ i ∈ s, StrictInterl (g i) f)
-    (hg_pos : ∀ i ∈ s, HasPosLeadingCoeff (g i))
-    (hb : ∀ i ∈ s, ∀ r, f.IsRoot r → (b i).eval r ≤ 0)
-    (hF_pos : HasPosLeadingCoeff (a * f + ∑ i ∈ s, b i * g i))
-    (hdeg_lo : f.natDegree ≤ (a * f + ∑ i ∈ s, b i * g i).natDegree)
-    (hdeg_hi : (a * f + ∑ i ∈ s, b i * g i).natDegree ≤ f.natDegree + 1) :
-    StrictInterl f (a * f + ∑ i ∈ s, b i * g i) := by
-  refine strictInterl_of_eval_mul_derivative_nonpos hf_pos hf hf_nodup hF_pos hdeg_lo hdeg_hi
-    fun r hr ↦ ?_
-  rw [eval_add, eval_mul, hr.eq_zero, mul_zero, zero_add, eval_finsetSum, Finset.sum_mul]
-  refine Finset.sum_nonpos fun i hi ↦ ?_
-  rw [eval_mul, mul_assoc]
-  exact mul_nonpos_of_nonpos_of_nonneg (hb i hi r hr)
-    ((hg i hi).eval_mul_eval_derivative_nonneg (hg_pos i hi) hf_pos hr)
 
 /-- **Ma–Wang criterion for derivative recurrences.**  Let
 `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))'`, where every `P n` has positive leading

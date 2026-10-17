@@ -302,45 +302,49 @@ private theorem patternCount_12_add_inversion {α : Type*} [LinearOrder α]
 
 end List
 
-/-- The decreasing pattern of length two. -/
-def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
-
-/-- The increasing pattern of length two. -/
-def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
-
-private theorem pattern21_fin_nat (i j : Fin 2) :
-    (([1, 0] : List (Fin 2)).get i < ([1, 0] : List (Fin 2)).get j) ↔
-      (([1, 0] : List Nat).get i < ([1, 0] : List Nat).get j) := by
+private theorem fin_two_list_val_get (a b : Fin 2) (i : Fin 2) :
+    (([a, b] : List (Fin 2)).get i).val =
+      ([a.val, b.val] : List Nat).get i := by
   refine Fin.cases ?_ (fun i => ?_) i
-  · refine Fin.cases ?_ (fun j => ?_) j
-    · decide
-    · have hj : j = 0 := Subsingleton.elim _ _
-      subst hj
-      decide
+  · rfl
   · have hi : i = 0 := Subsingleton.elim _ _
     subst hi
-    refine Fin.cases ?_ (fun j => ?_) j
-    · decide
-    · have hj : j = 0 := Subsingleton.elim _ _
-      subst hj
-      decide
+    rfl
 
-private theorem pattern12_fin_nat (i j : Fin 2) :
-    (([0, 1] : List (Fin 2)).get i < ([0, 1] : List (Fin 2)).get j) ↔
-      (([0, 1] : List Nat).get i < ([0, 1] : List Nat).get j) := by
-  refine Fin.cases ?_ (fun i => ?_) i
-  · refine Fin.cases ?_ (fun j => ?_) j
-    · decide
-    · have hj : j = 0 := Subsingleton.elim _ _
-      subst hj
-      decide
-  · have hi : i = 0 := Subsingleton.elim _ _
-    subst hi
-    refine Fin.cases ?_ (fun j => ?_) j
-    · decide
-    · have hj : j = 0 := Subsingleton.elim _ _
-      subst hj
-      decide
+private theorem fin_two_list_lt_iff_nat_list_lt (a b : Fin 2) (i j : Fin 2) :
+    (([a, b] : List (Fin 2)).get i < ([a, b] : List (Fin 2)).get j) ↔
+      (([a.val, b.val] : List Nat).get i < ([a.val, b.val] : List Nat).get j) := by
+  rw [Fin.lt_def, fin_two_list_val_get, fin_two_list_val_get]
+
+private theorem patternCount_fin_two_nat {n : ℕ} (σ : Equiv.Perm (Fin n))
+    (a b : Fin 2) :
+    (List.ofFn σ).patternCount ([a, b] : List (Fin 2)) =
+      (List.ofFn σ).patternCount ([a.val, b.val] : List Nat) := by
+  unfold List.patternCount
+  simp only [List.length_cons, List.length_nil]
+  apply congrArg List.length
+  apply List.filter_congr
+  intro s hs
+  apply Bool.eq_iff_iff.mpr
+  rw [decide_eq_true_eq, decide_eq_true_eq]
+  simp only [List.SameOrderType, List.sameOrderTypeBool, List.length_cons,
+    List.length_nil, zero_add, Nat.reduceAdd, List.get_eq_getElem, Fin.val_cast,
+    Bool.dite_false_right_eq_true, decide_eq_true_eq]
+  constructor
+  · rintro ⟨h, hs⟩
+    refine ⟨h, ?_⟩
+    intro i j
+    have hs' := hs i j
+    refine hs'.trans ?_
+    convert fin_two_list_lt_iff_nat_list_lt a b (Fin.cast h i) (Fin.cast h j)
+      using 1 <;> norm_num
+  · rintro ⟨h, hs⟩
+    refine ⟨h, ?_⟩
+    intro i j
+    have hs' := hs i j
+    refine hs'.trans ?_
+    convert (fin_two_list_lt_iff_nat_list_lt a b (Fin.cast h i) (Fin.cast h j)).symm
+      using 1 <;> norm_num
 
 /-- The `21` pattern count of a permutation equals its inversion number. -/
 theorem Equiv.Perm.patternCount_21_eq_inversionCount {n : ℕ}
@@ -352,27 +356,7 @@ theorem Equiv.Perm.patternCount_21_eq_inversionCount {n : ℕ}
   have hpat :
       (List.ofFn σ).patternCount ([1, 0] : List (Fin 2)) =
         (List.ofFn σ).patternCount ([1, 0] : List Nat) := by
-    unfold List.patternCount
-    simp only [List.length_cons, List.length_nil]
-    apply congrArg List.length
-    apply List.filter_congr
-    intro s hs
-    apply Bool.eq_iff_iff.mpr
-    rw [decide_eq_true_eq, decide_eq_true_eq]
-    simp only [List.SameOrderType, List.sameOrderTypeBool, Fin.isValue, List.length_cons,
-      List.length_nil, zero_add, Nat.reduceAdd, List.get_eq_getElem, Fin.val_cast,
-      Bool.dite_false_right_eq_true, decide_eq_true_eq]
-    constructor
-    · rintro ⟨h, hs⟩
-      refine ⟨h, ?_⟩
-      intro i j
-      have hs' := hs i j
-      exact hs'.trans (pattern21_fin_nat (Fin.cast h i) (Fin.cast h j))
-    · rintro ⟨h, hs⟩
-      refine ⟨h, ?_⟩
-      intro i j
-      have hs' := hs i j
-      exact hs'.trans (pattern21_fin_nat (Fin.cast h i) (Fin.cast h j)).symm
+    convert patternCount_fin_two_nat σ (1 : Fin 2) 0 using 1; norm_num
   rw [hpat, List.patternCount_21_eq_inversionCount]
   exact σ.inversionCount_toWord
 
@@ -386,27 +370,7 @@ theorem Equiv.Perm.patternCount_12_add_inversionCount {n : ℕ}
   have hpat :
       (List.ofFn σ).patternCount ([0, 1] : List (Fin 2)) =
         (List.ofFn σ).patternCount ([0, 1] : List Nat) := by
-    unfold List.patternCount
-    simp only [List.length_cons, List.length_nil]
-    apply congrArg List.length
-    apply List.filter_congr
-    intro s hs
-    apply Bool.eq_iff_iff.mpr
-    rw [decide_eq_true_eq, decide_eq_true_eq]
-    simp only [List.SameOrderType, List.sameOrderTypeBool, Fin.isValue, List.length_cons,
-      List.length_nil, zero_add, Nat.reduceAdd, List.get_eq_getElem, Fin.val_cast,
-      Bool.dite_false_right_eq_true, decide_eq_true_eq]
-    constructor
-    · rintro ⟨h, hs⟩
-      refine ⟨h, ?_⟩
-      intro i j
-      have hs' := hs i j
-      exact hs'.trans (pattern12_fin_nat (Fin.cast h i) (Fin.cast h j))
-    · rintro ⟨h, hs⟩
-      refine ⟨h, ?_⟩
-      intro i j
-      have hs' := hs i j
-      exact hs'.trans (pattern12_fin_nat (Fin.cast h i) (Fin.cast h j)).symm
+    convert patternCount_fin_two_nat σ (0 : Fin 2) 1 using 1; norm_num
   rw [hpat]
   have hnodup : (List.ofFn σ).Nodup := List.nodup_ofFn.mpr σ.injective
   have hlist := List.patternCount_12_add_inversion (List.ofFn σ) hnodup

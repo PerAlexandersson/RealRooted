@@ -1014,7 +1014,7 @@ noncomputable def logConcavityTransform (p : ℝ[X]) : ℝ[X] :=
   ∑ k ∈ range (p.natDegree + 1),
     C (p.coeff k ^ 2 - (if k = 0 then 0 else p.coeff (k - 1)) * p.coeff (k + 1)) * X ^ k
 
-private lemma logConcavityTransform_coeff (p : ℝ[X]) (k : ℕ) :
+theorem coeff_logConcavityTransform (p : ℝ[X]) (k : ℕ) :
     (logConcavityTransform p).coeff k = if k ≤ p.natDegree then
       p.coeff k ^ 2 - (if k = 0 then 0 else p.coeff (k - 1)) * p.coeff (k + 1) else 0 := by
   unfold logConcavityTransform
@@ -1036,7 +1036,7 @@ private lemma logConcavityTransform_eval_map (p : ℝ[X]) (z : ℂ) :
 
 private lemma logConcavityTransform_coeff_natDegree (p : ℝ[X]) :
     (logConcavityTransform p).coeff p.natDegree = p.leadingCoeff ^ 2 := by
-  rw [logConcavityTransform_coeff, ite_eq_left le_rfl,
+  rw [coeff_logConcavityTransform, ite_eq_left le_rfl,
     coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_self _), mul_zero, sub_zero]
   rfl
 
@@ -1045,7 +1045,7 @@ private lemma logConcavityTransform_natDegree (p : ℝ[X]) (hp0 : p ≠ 0) :
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · rw [natDegree_le_iff_coeff_eq_zero]
     intro k hk
-    rw [logConcavityTransform_coeff, ite_eq_right (by exact_mod_cast not_le.mpr hk)]
+    rw [coeff_logConcavityTransform, ite_eq_right (by exact_mod_cast not_le.mpr hk)]
   · rw [logConcavityTransform_coeff_natDegree]
     exact pow_ne_zero _ (leadingCoeff_ne_zero.mpr hp0)
 
@@ -1081,7 +1081,7 @@ private lemma roots_map_logConcavityTransform (p : ℝ[X]) (hp0 : p ≠ 0)
   rw [← logConcavityTransform_eval_map]
   exact hz
 
-private lemma product_coeff_nonneg (s : Multiset ℝ) (h : ∀ r ∈ s, r ≤ 0) (k : ℕ) :
+theorem coeff_prod_X_sub_C_nonneg (s : Multiset ℝ) (h : ∀ r ∈ s, r ≤ 0) (k : ℕ) :
     0 ≤ ((s.map fun a => X - C a).prod).coeff k := by
   induction s using Multiset.induction_on generalizing k with
   | empty =>
@@ -1103,7 +1103,7 @@ private lemma product_coeff_nonneg (s : Multiset ℝ) (h : ∀ r ∈ s, r ≤ 0)
 proving a conjecture of Fisk, McNamara–Sagan and Stanley): if `p` has nonnegative coefficients and
 only real nonpositive zeros, then so does `logConcavityTransform p`. -/
 private theorem logConcavityTransform_splits_and_nonpos (p : ℝ[X]) (hp0 : p ≠ 0)
-    (_hnn : ∀ k, 0 ≤ p.coeff k) (hs : p.Splits) (hr : ∀ r ∈ p.roots, r ≤ 0) :
+    (hs : p.Splits) (hr : ∀ r ∈ p.roots, r ≤ 0) :
     (logConcavityTransform p).Splits ∧ ∀ r ∈ (logConcavityTransform p).roots, r ≤ 0 := by
   -- The nonnegativity of the coefficients is not needed: real nonpositive roots suffice.
   have hL0 := logConcavityTransform_ne_zero p hp0
@@ -1117,32 +1117,21 @@ private theorem logConcavityTransform_splits_and_nonpos (p : ℝ[X]) (hp0 : p �
     simpa using (roots_map_logConcavityTransform p hp0 hs hr _ hz).2
 
 /-- `logConcavityTransform p` keeps nonnegative coefficients under the same hypotheses. -/
-private theorem logConcavityTransform_coeff_nonneg (p : ℝ[X]) (_hnn : ∀ k, 0 ≤ p.coeff k)
+private theorem logConcavityTransform_coeff_nonneg (p : ℝ[X])
     (hs : p.Splits) (hr : ∀ r ∈ p.roots, r ≤ 0) (k : ℕ) :
     0 ≤ (logConcavityTransform p).coeff k := by
   by_cases hp0 : p = 0
   · subst hp0
     simp [logConcavityTransform]
-  obtain ⟨hLs, hLr⟩ := logConcavityTransform_splits_and_nonpos p hp0 _hnn hs hr
+  obtain ⟨hLs, hLr⟩ := logConcavityTransform_splits_and_nonpos p hp0 hs hr
   rw [hLs.eq_prod_roots, coeff_C_mul]
-  refine mul_nonneg ?_ (product_coeff_nonneg _ hLr k)
+  refine mul_nonneg ?_ (coeff_prod_X_sub_C_nonneg _ hLr k)
   rw [leadingCoeff, logConcavityTransform_natDegree p hp0, logConcavityTransform_coeff_natDegree]
   exact sq_nonneg _
 
 end RealRooted.Branden
 
 namespace RealRooted.Branden
-
-/-- The coefficient formula for the log-concavity transform. -/
-theorem coeff_logConcavityTransform (p : ℝ[X]) (k : ℕ) :
-    (logConcavityTransform p).coeff k = if k ≤ p.natDegree then
-      p.coeff k ^ 2 - (if k = 0 then 0 else p.coeff (k - 1)) * p.coeff (k + 1) else 0 := by
-  exact logConcavityTransform_coeff p k
-
-/-- Nonnegative coefficients of a product of nonpositive real linear factors. -/
-theorem coeff_prod_X_sub_C_nonneg (s : Multiset ℝ) (h : ∀ r ∈ s, r ≤ 0) (k : ℕ) :
-    0 ≤ ((s.map fun a => X - C a).prod).coeff k := by
-  exact product_coeff_nonneg s h k
 
 /-- Brändén's transform preserves the Pólya-frequency polynomial cone. -/
 theorem IsPFPolynomial.logConcavityTransform {p : ℝ[X]}
@@ -1153,11 +1142,10 @@ theorem IsPFPolynomial.logConcavityTransform {p : ℝ[X]}
     simpa [RealRooted.Branden.logConcavityTransform] using
       (IsPFPolynomial.zero : IsPFPolynomial (0 : ℝ[X]))
   have hsplits : p.Splits := hp.eq_zero_or_splits.resolve_left hp0
-  have hroot := logConcavityTransform_splits_and_nonpos p hp0 hp.hasNonnegCoeffs hsplits
-    hp.roots_nonpos
+  have hroot := logConcavityTransform_splits_and_nonpos p hp0 hsplits hp.roots_nonpos
   apply IsPFPolynomial.of_realRooted_nonneg
   · intro k
-    exact logConcavityTransform_coeff_nonneg p hp.hasNonnegCoeffs hsplits hp.roots_nonpos k
+    exact logConcavityTransform_coeff_nonneg p hsplits hp.roots_nonpos k
   · exact hroot.1
 
 end RealRooted.Branden

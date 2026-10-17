@@ -1,5 +1,5 @@
-import re, os, collections, hashlib
-decl_re = re.compile(r'^(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|nonrec\s+|noncomputable\s+)*(theorem|lemma)\s+([A-Za-z_0-9.\'!?]+)')
+import re, os, collections, hashlib, sys
+from lean_decl import declaration_starts, find_value_assignment, value_assignment_end
 files=[]
 for root,dirs,fs in os.walk('.'):
     if '.lake' in root or '.git' in root or '/comparator' in root: continue
@@ -9,19 +9,25 @@ bodies=collections.defaultdict(list)   # normalized full decl -> locations
 proofs=collections.defaultdict(list)   # normalized proof only -> locations
 for path in files:
     lines=open(path, encoding='utf-8').read().split('\n')
-    starts=[i for i,l in enumerate(lines) if decl_re.match(l)]
-    for k,i in enumerate(starts):
-        end = starts[k+1] if k+1 < len(starts) else len(lines)
+    starts=list(declaration_starts(lines))
+    for k,(i,match) in enumerate(starts):
+        if match.group('kind') not in ('theorem', 'lemma') or not match.group('name'):
+            continue
+        end = starts[k+1][0] if k+1 < len(starts) else len(lines)
         # trim trailing blank/comment lines
         blk=lines[i:end]
         while blk and (blk[-1].strip()=='' or blk[-1].lstrip().startswith('--') or blk[-1].lstrip().startswith('/-')):
             blk.pop()
         if len(blk) < 3: continue
-        name=decl_re.match(lines[i]).group(2)
+        name=match.group('name')
         text='\n'.join(blk)
         # split statement / proof at first top-level ':='
-        parts=text.split(':=',1)
-        proof = parts[1] if len(parts)>1 else ''
+        assignment=find_value_assignment(text)
+        if assignment is None:
+            print(f"warning: no declaration assignment in block: {path}:{i+1} ({name})",
+                file=sys.stderr)
+            continue
+        proof = text[value_assignment_end(text, assignment):]
         norm_all=re.sub(r'\s+',' ',text.replace(name,'NAME')).strip()
         norm_pf=re.sub(r'\s+',' ',proof).strip()
         bodies[norm_all].append((name,path,i+1,len(blk)))

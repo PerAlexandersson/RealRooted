@@ -267,25 +267,6 @@ theorem weightPolynomial_eq {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 ≤ i) (hn : r 
 
 /-! ## The deranged map and Theorem 1.4 -/
 
-private theorem natDegree_derangement_le (j : ℕ) :
-    (DerangementTransform.polynomial j).natDegree ≤ j := by
-  cases j with
-  | zero => simp
-  | succ j => exact natDegree_le_sturmDerangementsExc (j + 1)
-
-private theorem reflect_derangement (j : ℕ) :
-    (DerangementTransform.polynomial j).reflect j = DerangementTransform.polynomial j := by
-  cases j with
-  | zero => simp
-  | succ j => exact reflect_sturmDerangementsExc (j + 1)
-
-private theorem reflect_derangement_of_le {j r : ℕ} (hj : j ≤ r) :
-    (DerangementTransform.polynomial j).reflect r =
-      DerangementTransform.polynomial j * X ^ (r - j) := by
-  have h := reflect_add_right_of_reflect (r - j) (natDegree_derangement_le j)
-    (reflect_derangement j)
-  rwa [show j + (r - j) = r by lia] at h
-
 /-- The deranged map applied to `weightPolynomial`. -/
 theorem transform_weightPolynomial (r n i : ℕ) :
     DerangementTransform.transform (weightPolynomial r n i) =
@@ -300,7 +281,8 @@ private theorem natDegree_transform_weightPolynomial_le (r n i : ℕ) :
   rw [transform_weightPolynomial]
   refine natDegree_sum_le_of_forall_le _ _ fun j hj => ?_
   have hj' : j < r := mem_range.mp hj
-  exact (natDegree_C_mul_le _ _).trans ((natDegree_derangement_le j).trans (by lia))
+  exact (natDegree_C_mul_le _ _).trans
+    ((DerangementTransform.natDegree_polynomial_le j).trans (by lia))
 
 /-- The transform identity `\underline H = I_{r-1}(D g)`. -/
 theorem refinedHodgePoincare_eq_reflect (r n i : ℕ) :
@@ -308,7 +290,9 @@ theorem refinedHodgePoincare_eq_reflect (r n i : ℕ) :
       (DerangementTransform.transform (weightPolynomial r n i)).reflect (r - 1) := by
   rw [transform_weightPolynomial, reflect_finset_sum_C_mul]
   refine sum_congr rfl fun j hj => ?_
-  rw [reflect_derangement_of_le (by have := mem_range.mp hj; lia)]
+  rw [DerangementTransform.reflect_polynomial_of_le (by
+    have := mem_range.mp hj
+    lia)]
 
 /-- The constant coefficient of the deranged image is the first weight. -/
 theorem coeff_zero_transform_weightPolynomial (r n i : ℕ) (hr : 1 ≤ r) :
@@ -332,7 +316,7 @@ theorem isPFPolynomial_refinedHodgePoincare {r n i : ℕ} (hr : 1 ≤ r) (hi : 1
   have hmagic : weightPolynomial r n i =
       DerangementTransform.magicExpansion (r - 1) (magicCoeff r n i) := by
     rw [weightPolynomial_eq hr hi hn, DerangementTransform.magicExpansion,
-      Nat.sub_add_cancel hr]
+      Polynomial.magicExpansion, Nat.sub_add_cancel hr]
   have hpf := DerangementTransform.transform_magicExpansion_isPF (d := r - 1)
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf
@@ -362,12 +346,14 @@ theorem isRealRooted_refinedHodgePoincare {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 �
 
 /-! ## The Eulerian transformation and Theorem 1.6 -/
 
-private theorem natDegree_eulerian_le (s : ℕ) : (eulerian s).natDegree ≤ s := by
+/-- The Eulerian polynomial has degree at most its index. -/
+theorem natDegree_eulerian_le (s : ℕ) : (eulerian s).natDegree ≤ s := by
   cases s with
   | zero => simp [eulerian]
   | succ s => exact (generalizedEulerian_natDegree 1 s).le.trans (Nat.le_succ s)
 
-private theorem reflect_eulerian (s : ℕ) :
+/-- Reflecting the Eulerian polynomial gives its Eulerian-transform image. -/
+theorem reflect_eulerian (s : ℕ) :
     (eulerian s).reflect s = EulerianTransform.image s := by
   cases s with
   | zero => simp [eulerian, EulerianTransform.image]
@@ -375,15 +361,6 @@ private theorem reflect_eulerian (s : ℕ) :
     simp only [eulerian, EulerianTransform.image]
     rw [reflect_add_right_of_reflect 1 (generalizedEulerian_natDegree 1 s).le
       (generalizedEulerian_one_reflect s), pow_one, mul_comm]
-
-private theorem natDegree_image_le (s : ℕ) : (EulerianTransform.image s).natDegree ≤ s := by
-  cases s with
-  | zero => simp [EulerianTransform.image]
-  | succ s =>
-    have h1 : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-    have h2 := (generalizedEulerian_natDegree 1 s).le
-    rw [EulerianTransform.image]
-    exact natDegree_mul_le.trans (by lia)
 
 private theorem reflect_X_pow_mul_eulerian {s r : ℕ} (hs : s ≤ r) :
     (X ^ (r - s) * eulerian s).reflect r = EulerianTransform.image s := by
@@ -422,7 +399,7 @@ private theorem natDegree_eulerianTransform_weightPolynomial_le (r n i : ℕ) :
   rw [transform_weightPolynomial_eulerian]
   refine natDegree_sum_le_of_forall_le _ _ fun s hs => ?_
   have hs' : s < r := mem_range.mp hs
-  exact (natDegree_C_mul_le _ _).trans ((natDegree_image_le s).trans hs'.le)
+  exact (natDegree_C_mul_le _ _).trans ((EulerianTransform.natDegree_image_le s).trans hs'.le)
 
 /-- The constant coefficient of the Eulerian image is the first weight. -/
 theorem coeff_zero_eulerianTransform_weightPolynomial (r n i : ℕ) (hr : 1 ≤ r) :
@@ -442,7 +419,8 @@ theorem isPFPolynomial_modifiedAugmentedHodgePoincare {r n i : ℕ} (hr : 1 ≤ 
     (hn : r + i ≤ n) : IsPFPolynomial (modifiedAugmentedHodgePoincare r n i) := by
   have hmagic : weightPolynomial r n i =
       EulerianTransform.magicExpansion (r - 1) (magicCoeff r n i) := by
-    rw [weightPolynomial_eq hr hi hn, EulerianTransform.magicExpansion, Nat.sub_add_cancel hr]
+    rw [weightPolynomial_eq hr hi hn, EulerianTransform.magicExpansion,
+      Polynomial.magicExpansion, Nat.sub_add_cancel hr]
   have hpf := EulerianTransform.transform_magicExpansion_isPF (d := r - 1)
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf

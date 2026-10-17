@@ -9,6 +9,7 @@ import RealRooted.Wagner.NonpositiveRoots
 version = 1
 section = "theorems"
 slug = "wagner"
+formalized = "2026-07-10"
 authors = ["Wagner"]
 years = [1992]
 
@@ -59,8 +60,9 @@ $F_i \ll F_j$ for all $a \le i \le j \le b$.
 
 ## References
 
-D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
-Mathematical Analysis and Applications* 163 (1992), 459–483.  See the
+D. G. Wagner, [“Total positivity of Hadamard
+products,”](https://doi.org/10.1016/0022-247X(92)90261-B) *Journal of
+Mathematical Analysis and Applications* 163 (1992), 459–483. See the
 [contextual statement on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
 <!-- /realrooted-catalog-content -->
 

@@ -169,10 +169,10 @@ theorem prod_sub_one_eq_staircaseProd {L : Type*} [Field L]
 
 /-- The amplitude product splits into its lower and upper factors along a
 positive strictly increasing finite sequence. -/
-theorem amp_eq_lower_mul_upper (g : ℕ → K) (n k : ℕ) (hk : k < n)
+theorem amplitude_eq_lower_mul_upper (g : ℕ → K) (n k : ℕ) (hk : k < n)
     (hpos : ∀ i, i < n → 0 < g i)
     (hstrict : ∀ i j, i < j → j < n → g i < g j) :
-    amp g n k
+    amplitude g n k
       = (∏ i ∈ range k, (g k / g i - 1))
         * ∏ j ∈ range (n - k - 1), (1 - g k / g (k + 1 + j)) := by
   classical
@@ -182,7 +182,7 @@ theorem amp_eq_lower_mul_upper (g : ℕ → K) (n k : ℕ) (hk : k < n)
     rw [mem_range] at hy
     rw [Finset.mem_Ico] at h'y
     lia
-  rw [amp, erase_range_eq n k hk, Finset.prod_union hdisjoint]
+  rw [amplitude, erase_range_eq n k hk, Finset.prod_union hdisjoint]
   congr 1
   · refine Finset.prod_congr rfl ?_
     intro i hi

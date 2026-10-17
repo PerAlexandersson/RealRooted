@@ -7,6 +7,7 @@ import RealRooted.Hermite.PoulainInterlacing
 version = 1
 section = "theorems"
 slug = "hermite-poulain"
+formalized = "2026-07-18"
 authors = ["Hermite", "Poulain"]
 
 [[definitions]]

@@ -96,14 +96,6 @@ theorem generalStep_eq_second_derivative (κ a b u v : ℝ) (p : ℝ[X]) :
     map_add, map_one, C_mul]
   ring
 
-/-- First algebraic identity for the general Euler step. -/
-theorem generalStep_eval_form (κ a b u v : ℝ) (p : ℝ[X]) :
-    generalStep κ a b u v p =
-      C κ * X ^ 2 * p.derivative.derivative +
-        X * (C (κ * (a + b + 1)) + C v * X) * p.derivative +
-        (C (κ * (a * b)) + C u * X) * p := by
-  exact generalStep_eq_second_derivative κ a b u v p
-
 /-- Intertwining identity with multiplication by `X`. -/
 theorem generalStep_X_mul (κ a b u v : ℝ) (p : ℝ[X]) :
     generalStep κ a b u v (X * p) =
@@ -180,15 +172,6 @@ theorem comparisonDefect_neg_of_two_mul_u_ge (κ a b u v : ℝ) (hκ : 0 < κ) (
     mul_neg_of_pos_of_neg hκ hconst
   dsimp [comparisonDefect]
   nlinarith [mul_nonpos_of_nonneg_of_nonpos hlin hσ]
-
-/-- The negative-simple general-step conclusion under a reusable map certificate. -/
-private theorem isNegativeSimple_generalStep_of_map_certificate
-    (κ a b u v : ℝ) (q : ℝ[X])
-    (hmap : MapsNegativeSimpleBySucc (generalStepLinearMap κ a b u v))
-    (hq : IsNegativeSimple q) :
-    IsNegativeSimple (generalStep κ a b u v q) ∧
-      (generalStep κ a b u v q).natDegree = q.natDegree + 1 := by
-  simpa only [generalStepLinearMap_apply] using hmap hq
 
 end RealRooted.EulerBidiagonal
 
@@ -982,35 +965,22 @@ theorem isNegativeSimple_generalStep_zero
     exact hsimple
   exact ⟨hsimpleT, hdeg⟩
 
-/-- Unconditional general step: a negative-simple input of degree `m ≥ 1` is mapped to a
-negative-simple polynomial of degree `m + 1`; the sign-change certificate is built from the
-comparison roots of `generalComparison`. -/
-theorem isNegativeSimple_generalStep_of_pos
+/-- The sorted roots of a negative-simple polynomial, together with the roots of its comparison
+polynomial interlacing them and zero, and the alternating signs of `T q` at those roots. -/
+theorem exists_comparison_data
     (κ a b u v : ℝ) (q : ℝ[X]) (m : ℕ) (hm : 1 ≤ m)
     (hq : IsNegativeSimple q) (hqdeg : q.natDegree = m)
     (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
-    (hell : ∀ k ≤ m, 0 < u + v * k)
-    (hQ : ∀ t ≤ 0, comparisonDefect κ a b u v t < 0)
-    (hqcoeff : HasNonnegCoeffs q) :
-    IsNegativeSimple (generalStep κ a b u v q) ∧
-      (generalStep κ a b u v q).natDegree = m + 1 := by
-  have hqne : q ≠ 0 := hq.1
+    (hQ : ∀ t ≤ 0, comparisonDefect κ a b u v t < 0) :
+    ∃ rs A : List ℝ, rs.Pairwise (· < ·) ∧ (↑rs : Multiset ℝ) = q.roots ∧
+      rs.length = m ∧
+      A.length = m ∧ A.Pairwise (· < ·) ∧ (∀ x ∈ A, x < 0) ∧
+      (∀ x ∈ A, (generalComparison κ a b v q).IsRoot x) ∧
+      ListInterlaces A (rs ++ [0]) ∧ (∀ x ∈ A, ∃ r ∈ rs, r ≤ x) ∧
+      ∀ (i : ℕ) (hi : i < A.length),
+        0 < (-1 : ℝ) ^ (m - i) * (generalStep κ a b u v q).eval A[i] := by
   have hqsplits : q.Splits := hq.2.1
   have hqlc : 0 < q.leadingCoeff := hq.2.2.2.1
-  have hq0mem : (0 : ℝ) ∉ q.roots := fun hmem => lt_irrefl _ (hq.2.2.2.2 0 hmem)
-  have hq0 : 0 < q.eval 0 := by
-    have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
-      apply Multiset.countP_eq_zero.mpr
-      intro x hx hpos
-      exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
-    simpa [hcount] using eval_sign hqsplits hqlc 0 hq0mem
-  have hT0 : 0 < (generalStep κ a b u v q).eval 0 := by
-    have hq0c : 0 < q.coeff 0 := by simpa [coeff_zero_eq_eval_zero] using hq0
-    calc
-      0 < κ * a * b * q.coeff 0 := mul_pos (mul_pos (mul_pos hκ ha) hb) hq0c
-      _ = (generalStep κ a b u v q).coeff 0 := by rw [coeff_zero_generalStep]
-      _ = (generalStep κ a b u v q).eval 0 := by simp [coeff_zero_eq_eval_zero]
-  -- sorted roots
   set rs : List ℝ := q.roots.sort (· ≤ ·) with hrs_def
   have hrs_le : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
@@ -1033,7 +1003,6 @@ theorem isNegativeSimple_generalStep_of_pos
       hrs_lt hrs_eq (List.getLast_mem hrs_ne)
       (fun x hx => List.Pairwise.rel_getLast hrs_le hx)
       (hrs_neg _ (List.getLast_mem hrs_ne))
-  have hzero := generalComparison_eval_zero_pos κ a b v q hκ ha hb hq
   set A : List ℝ := ss ++ [σ] with hA
   have hA_len : A.length = m := by
     simp only [hA, List.length_append, List.length_singleton]
@@ -1051,17 +1020,17 @@ theorem isNegativeSimple_generalStep_of_pos
     intro x hx
     refine lt_of_le_of_ne (hA_le x hx) ?_
     intro h
-    have := (hA_root x hx).eq_zero
-    rw [h] at this
+    have hz := (hA_root x hx).eq_zero
+    have hzero := generalComparison_eval_zero_pos κ a b v q hκ ha hb hq
+    rw [h] at hz
     linarith
   have hA_prod : ∀ x ∈ A, q.eval x * (generalStep κ a b u v q).eval x < 0 :=
     fun x hx => generalStep_eval_mul_neg_of_generalComparison_root κ a b u v q x hκ hq hQ
-        (hA_root x hx)
-      (hA_neg x hx)
+        (hA_root x hx) (hA_neg x hx)
   have hA_not : ∀ x ∈ A, x ∉ rs ++ [0] := by
     intro x hx hmem
     rcases List.mem_append.mp hmem with h | h
-    · have hroot : q.eval x = 0 := (isRoot_of_mem_roots ((hrs_mem x).mp h)).eq_zero
+    · have hroot : q.eval x = 0 := isRoot_of_mem_roots ((hrs_mem x).mp h)
       have := hA_prod x hx
       rw [hroot] at this
       simp at this
@@ -1096,12 +1065,59 @@ theorem isNegativeSimple_generalStep_of_pos
     have := eval_sign hqsplits hqlc _ hnot
     rw [hcount i hi] at this
     linarith
+  have hlow : ∀ x ∈ A, ∃ r ∈ rs, r ≤ x := by
+    obtain ⟨r0, tl, hrsc⟩ : ∃ r0 tl, rs = r0 :: tl := by
+      cases hh : rs with
+      | nil => exact absurd hh hrs_ne
+      | cons r0 tl => exact ⟨r0, tl, rfl⟩
+    intro x hx
+    refine ⟨r0, by rw [hrsc]; simp, ?_⟩
+    rw [hrsc] at hint hrs0_lt
+    exact listInterlaces_ge_head hint (hrs0_lt.imp le_of_lt) x hx
+  refine ⟨rs, A, hrs_lt, hrs_eq, hrs_len, hA_len, hpair, hA_neg, hA_root, hint, hlow, ?_⟩
+  intro i hi'
+  have hi : i < m := by lia
+  have := generalStep_sign_of_input_sign κ a b u v q (A[i]'(by lia)) (m - i - 1)
+    (hA_prod _ (List.getElem_mem _)) (hqsign i hi)
+  have hmi : m - i - 1 + 1 = m - i := by lia
+  rw [hmi] at this
+  exact this
+
+/-- Unconditional general step: a negative-simple input of degree `m ≥ 1` is mapped to a
+negative-simple polynomial of degree `m + 1`; the sign-change certificate is built from the
+comparison roots of `generalComparison`. -/
+theorem isNegativeSimple_generalStep_of_pos
+    (κ a b u v : ℝ) (q : ℝ[X]) (m : ℕ) (hm : 1 ≤ m)
+    (hq : IsNegativeSimple q) (hqdeg : q.natDegree = m)
+    (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
+    (hell : ∀ k ≤ m, 0 < u + v * k)
+    (hQ : ∀ t ≤ 0, comparisonDefect κ a b u v t < 0)
+    (hqcoeff : HasNonnegCoeffs q) :
+    IsNegativeSimple (generalStep κ a b u v q) ∧
+      (generalStep κ a b u v q).natDegree = m + 1 := by
+  have hqsplits : q.Splits := hq.2.1
+  have hqlc : 0 < q.leadingCoeff := hq.2.2.2.1
+  have hq0mem : (0 : ℝ) ∉ q.roots := fun hmem => lt_irrefl _ (hq.2.2.2.2 0 hmem)
+  have hq0 : 0 < q.eval 0 := by
+    have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
+      apply Multiset.countP_eq_zero.mpr
+      intro x hx hpos
+      exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
+    simpa [hcount] using eval_sign hqsplits hqlc 0 hq0mem
+  have hT0 : 0 < (generalStep κ a b u v q).eval 0 := by
+    have hq0c : 0 < q.coeff 0 := by simpa [coeff_zero_eq_eval_zero] using hq0
+    calc
+      0 < κ * a * b * q.coeff 0 := mul_pos (mul_pos (mul_pos hκ ha) hb) hq0c
+      _ = (generalStep κ a b u v q).coeff 0 := by rw [coeff_zero_generalStep]
+      _ = (generalStep κ a b u v q).eval 0 := by simp [coeff_zero_eq_eval_zero]
+  obtain ⟨_, A, _, _, _, hA_len, hA_lt, hA_neg, _, _, _, hAsign⟩ :=
+    exists_comparison_data κ a b u v q m hm hq hqdeg hκ ha hb hQ
   set P : List ℝ := A ++ [0] with hP
   have hP_len : P.length = m + 1 := by
     simp only [hP, List.length_append, List.length_singleton, hA_len]
   have hP_lt : P.Pairwise (· < ·) := by
     apply List.pairwise_append.mpr
-    refine ⟨hpair, by simp, ?_⟩
+    refine ⟨hA_lt, by simp, ?_⟩
     intro x hx y hy
     simp only [List.mem_singleton] at hy
     rw [hy]
@@ -1119,11 +1135,7 @@ theorem isNegativeSimple_generalStep_of_pos
     intro i hi
     rcases Nat.lt_or_ge i m with him | him
     · rw [hP_A i him]
-      have := generalStep_sign_of_input_sign κ a b u v q (A[i]'(by lia)) (m - i - 1)
-        (hA_prod _ (List.getElem_mem _)) (hqsign i him)
-      have hmi : m - i - 1 + 1 = m - i := by lia
-      rw [hmi] at this
-      exact this
+      exact hAsign i (by rw [hA_len]; exact him)
     · have him' : i = m := by lia
       subst him'
       rw [hP_m]
@@ -1168,4 +1180,3 @@ theorem isNegativeSimple_generalStep_of_pos
 
 
 end RealRooted.EulerBidiagonal
-

@@ -8,12 +8,13 @@ import RealRooted.Bezoutian.Successor
 version = 1
 section = "theorems"
 slug = "bezoutian"
+formalized = "2026-10-06"
 authors = ["Hermite", "Krein", "Naimark", "Fisk"]
 years = [1856, 1936, 2006]
 
 [[definitions]]
-name = "RealRooted.bezoutMatrix"
-module = "RealRooted.Bezoutian.MatrixBasics"
+name = "Polynomial.bezoutMatrix"
+module = "RealRooted.Mathlib.Algebra.Polynomial.Bezoutian"
 label = "Bézout matrix"
 
 [[definitions]]

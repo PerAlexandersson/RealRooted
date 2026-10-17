@@ -3,6 +3,7 @@ import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.EulerianNormal
 import RealRooted.CombinatorialExamples.NarayanaNormal
 import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
+import RealRooted.CoefficientShape.LocalLimit
 import RealRooted.ThreeTermRecurrence.Moments
 
 /-!
@@ -12,6 +13,7 @@ import RealRooted.ThreeTermRecurrence.Moments
 version = 1
 section = "theorems"
 slug = "harper-clt"
+formalized = "2026-10-12"
 authors = ["Harper", "Bender", "Goncharov", "David", "Barton", "Bóna"]
 years = [1944, 1962, 1967, 1973, 2009]
 
@@ -29,6 +31,12 @@ label = "Real-rooted coefficient distributions are Bernoulli sums"
 name = "Polynomial.tendsto_standardizedCoeffDistribution"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "Harper: real-rooted coefficient distributions are asymptotically normal"
+headline = true
+
+[[theorems]]
+name = "Polynomial.tendsto_localLimit_of_splits"
+module = "RealRooted.CoefficientShape.LocalLimit"
+label = "Bender: real-rooted coefficient rows satisfy a local limit theorem"
 headline = true
 
 [[theorems]]
@@ -112,12 +120,19 @@ nonnegative coefficients and $\sigma^2(P_n) \to \infty$. Then the standardized
 coefficient distributions, the laws of $(K_n - \mu_n)/\sigma_n$, converge weakly
 to the standard normal distribution.
 
+Bender's local refinement is uniform at lattice points: after multiplying the
+coefficient mass by its standard deviation, the result converges to the Gaussian
+density at the corresponding standardized location. The formalized theorem
+`tendsto_localLimit_of_splits` obtains this from log-concavity, the absence of
+internal coefficient zeros, and Harper's central limit theorem.
+
 For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
 
 The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
 $(n+2)/2$ and variance $(n+2)/12$, so the Eulerian numbers are asymptotically
-normal (David–Barton; Bender). Both moments follow from scalar recurrences at $x = 1$. The type $B$
+normal (David–Barton; Bender). Both moments follow from scalar recurrences at
+$x = 1$. The type $B$
 Eulerian numbers have mean $n/2$ and variance $(n+1)/12$, so they are
 asymptotically normal as well.
 
@@ -154,14 +169,17 @@ turns pointwise convergence of characteristic functions into weak convergence.
 ## References
 
 L. H. Harper, “Stirling behavior is asymptotically normal,” *Annals of
-Mathematical Statistics* 38 (1967), 410–414; E. A. Bender, “Central and local
-limit theorems applied to asymptotic enumeration,” *Journal of Combinatorial
-Theory, Series A* 15 (1973), 91–111; V. L. Goncharov, “Some facts from
+Mathematical Statistics* 38 (1967), 410–414,
+[doi:10.1214/aoms/1177698956](https://doi.org/10.1214/aoms/1177698956);
+E. A. Bender, “Central and local limit theorems applied to asymptotic
+enumeration,” *Journal of Combinatorial Theory, Series A* 15 (1973), 91–111,
+[doi:10.1016/0097-3165(73)90038-1](https://doi.org/10.1016/0097-3165(73)90038-1);
+V. L. Goncharov, “Some facts from
 combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48; F. N. David
 and D. E. Barton, *Combinatorial Chance*, Griffin, London, 1962; M. Bóna, “Real
 zeros and normal distribution for statistics on Stirling permutations defined
 by Gessel and Stanley,” *SIAM Journal on Discrete Mathematics* 23 (2008/09),
-401–406.
+401–406, [doi:10.1137/070702254](https://doi.org/10.1137/070702254).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

@@ -12,6 +12,7 @@ import RealRooted.ObreschkoffConverse.Derivative
 version = 1
 section = "theorems"
 slug = "derivative-interlacing"
+formalized = "2026-05-12"
 authors = ["Rolle", "Laguerre", "Jensen", "Obreschkoff", "Fisk"]
 years = [1691, 1882, 1913, 1963, 2006]
 
@@ -105,7 +106,8 @@ S. Fisk, [*Polynomials, roots, and
 interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833 (2006),
 Chapter 1; N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
 Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963. J. L. W. V. Jensen,
-*Recherches sur la théorie des équations*, Acta Math. 36 (1913), 181–195. The
+*Recherches sur la théorie des équations*, *Acta Mathematica* 36 (1913), 181–195,
+[doi:10.1007/BF02422380](https://doi.org/10.1007/BF02422380). The
 statement $f' \ll f$ is the remark after
 [Wagner's lemma on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
 <!-- /realrooted-catalog-content -->
@@ -137,11 +139,8 @@ theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree �
   derivative_interlaces_of_natDegree_ne_zero hf hdeg
 
 /-- The derivative of a real-rooted polynomial is real-rooted. -/
-theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with h | h
-  · rw [h]
-    exact Splits.zero
-  · exact h
+theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits :=
+  hp.derivative
 
 /-- Differentiation preserves zero-aware interlacing (Rolle–Obreschkoff). -/
 theorem interl_derivative {f g : ℝ[X]} (h : Interl f g) :

@@ -26,7 +26,7 @@ formal series for every letter weight and `t` for the descent variable. -/
 def smirnovSubstitutionFixed {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A) (k : ℕ) : PowerSeries A :=
   ∑ word ∈ smirnovWords m k,
-    PowerSeries.C (t ^ smirnovDescentNumber word) *
+    PowerSeries.C (t ^ (List.ofFn word).descentCount) *
       ∏ i, weight (word i)
 
 @[simp]
@@ -47,17 +47,17 @@ theorem smirnovSubstitutionFixed_eq_eval {m : ℕ} (t : A)
   change _ =
     (Polynomial.evalRingHom (PowerSeries.C t))
       (∑ word ∈ smirnovWords m k,
-        C (smirnovWordWeight weight word) *
-          X ^ smirnovDescentNumber word)
+        C (wordWeight weight word) *
+          X ^ (List.ofFn word).descentCount)
   simp_rw [map_sum]
   apply Finset.sum_congr rfl
   intro word _
-  change PowerSeries.C (t ^ smirnovDescentNumber word) *
+  change PowerSeries.C (t ^ (List.ofFn word).descentCount) *
       (∏ i, weight (word i)) =
     Polynomial.eval (PowerSeries.C t)
-      (C (smirnovWordWeight weight word) *
-        X ^ smirnovDescentNumber word)
-  rw [eval_C_mul, eval_X_pow, smirnovWordWeight]
+      (C (wordWeight weight word) *
+        X ^ (List.ofFn word).descentCount)
+  rw [eval_C_mul, eval_X_pow, wordWeight]
   simp only [map_pow]
   ring
 
@@ -126,8 +126,8 @@ theorem coeff_smirnovWordWeight_eq_zero_of_lt {m k : ℕ}
     (weight : Fin m → PowerSeries A)
     (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0)
     (word : Fin k → Fin m) {n : ℕ} (hnk : n < k) :
-    PowerSeries.coeff n (smirnovWordWeight weight word) = 0 := by
-  rw [smirnovWordWeight]
+    PowerSeries.coeff n (wordWeight weight word) = 0 := by
+  rw [wordWeight]
   apply PowerSeries.coeff_of_lt_order
   have hprod : (k : ℕ∞) ≤ (∏ i, weight (word i)).order := by
     calc
@@ -154,7 +154,7 @@ theorem coeff_smirnovSubstitutionFixed_eq_zero_of_lt {m : ℕ}
   intro word hword
   rw [PowerSeries.coeff_C_mul]
   change _ * PowerSeries.coeff n
-      (smirnovWordWeight weight word) = 0
+      (wordWeight weight word) = 0
   rw [coeff_smirnovWordWeight_eq_zero_of_lt weight hweight word hnk]
   simp
 
@@ -180,8 +180,8 @@ theorem coeff_smirnovSubstitutionEndingFixed_eq_zero_of_lt {m : ℕ}
   · rw [ite_eq_left hword]
     change PowerSeries.coeff n
       (Polynomial.eval (PowerSeries.C t)
-        (C (smirnovWordWeight weight (Fin.snoc word i)) *
-          X ^ smirnovDescentNumber (Fin.snoc word i))) = 0
+        (C (wordWeight weight (Fin.snoc word i)) *
+          X ^ (List.ofFn (Fin.snoc word i)).descentCount)) = 0
     rw [eval_C_mul, eval_X_pow]
     rw [← map_pow, PowerSeries.coeff_mul_C]
     rw [coeff_smirnovWordWeight_eq_zero_of_lt weight hweight
@@ -617,18 +617,6 @@ theorem smirnovWords_eq_signedSmirnovWords (q p k : ℕ) :
   ext word
   simp [isSmirnovWord_iff_listIsChain]
 
-/-- The tuple and list descent statistics agree on a Smirnov skeleton. -/
-theorem smirnovDescentNumber_eq_listDescentNumber {q p k : ℕ}
-    (word : Fin k → SignedLetter q p) :
-    smirnovDescentNumber word =
-      listDescentNumber (List.ofFn word) := by
-  cases k with
-  | zero => simp [listDescentNumber]
-  | succ k =>
-      change RealRooted.ParkingFunctions.descentNumber word = _
-      simpa [signedDescentNumber] using
-        (listDescentNumber_ofFn word).symm
-
 /-- One fixed skeleton length specializes exactly to the signed-run summand. -/
 theorem coeff_smirnovSubstitutionFixed_signedRunSeries
     {R : Type*} [CommRing R] {q p : ℕ}
@@ -637,7 +625,7 @@ theorem coeff_smirnovSubstitutionFixed_signedRunSeries
         (smirnovSubstitutionFixed (A := R[X]) X
           (signedRunSeries weight) k) =
       ∑ skeleton ∈ signedSmirnovWords q p k,
-        X ^ listDescentNumber (List.ofFn skeleton) *
+        X ^ (List.ofFn skeleton).descentCount *
           PowerSeries.coeff n
             (signedTupleSkeletonRunSeries weight skeleton) := by
   classical
@@ -646,8 +634,7 @@ theorem coeff_smirnovSubstitutionFixed_signedRunSeries
   apply Finset.sum_congr rfl
   intro skeleton hskeleton
   rw [PowerSeries.coeff_C_mul]
-  simp [smirnovDescentNumber_eq_listDescentNumber,
-    signedTupleSkeletonRunSeries]
+  simp [signedTupleSkeletonRunSeries]
 
 /-- The locally finite substitution coefficient is exactly the coefficient
 defined by the signed-word run decomposition. -/

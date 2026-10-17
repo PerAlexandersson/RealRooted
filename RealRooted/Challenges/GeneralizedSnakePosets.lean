@@ -13,6 +13,7 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 version = 1
 section = "families"
 slug = "generalized-snake-posets"
+formalized = "2026-10-05"
 authors = ["Braun", "Jal", "Alexandersson"]
 years = [2024, 2026]
 
@@ -113,9 +114,8 @@ cells are the incomparable cross-chain pairs of $P(w)$. The board comes from
 the Alexandersson–Jal correspondence between naturally labeled width-two posets
 and skew shapes, under which the $P$-Eulerian polynomial is the non-nesting rook
 polynomial. The identification with the $h^*$-polynomial is
-cited from Braun–Jal and checked numerically for all words of length at most
-11; it is not formalized. Lean formalizes the rook model: the board, its
-non-nesting rook polynomial $M_w$, and the recurrence below.
+cited from Braun–Jal and is not formalized. Lean formalizes the rook model:
+the board, its non-nesting rook polynomial $M_w$, and the recurrence below.
 
 **Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is real-rooted, and
 deleting the last letter of $w$ gives a polynomial interlacing $M_w$.

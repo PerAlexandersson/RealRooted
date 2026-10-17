@@ -442,28 +442,26 @@ private def cfExpTerm (l : CFLaw) (a : Term) : TacticM Term := do
   let q : Term ← if l.p == 1 then pure inner else `(($inner) / $(cfNum l.p))
   if l.D0 == 0 then `($(cfNum l.d) * ($q)) else `($(cfNum l.D0) + $(cfNum l.d) * ($q))
 
-/-- `∑ i, cs[i] * x ^ i` as a real term. -/
-private def cfPolyTerm (cs : Array Rat) (x : Term) : TacticM Term := do
-  let mut acc : Option Term := none
+/-- Emit the real polynomial with rational coefficient array `cs` at `x`. -/
+def ratPolyAtTerm (cs : Array Rat) (x : Term) : TacticM Term := do
+  let mut out : Option Term := none
   for i in [0:cs.size] do
     if cs[i]! == 0 then continue
     let c ← ratTerm cs[i]!
-    let t : Term ←
+    let mon ←
       if i == 0 then pure c
       else if i == 1 then `($c * $x)
       else `($c * $x ^ $(cfNum i))
-    acc ← match acc with
-      | none => pure (some t)
-      | some a => do pure (some (← `($a + $t)))
-  match acc with
-  | some t => pure t
-  | none => ratTerm 0
+    out ← match out with
+      | none => pure (some mon)
+      | some old => pure (some (← `($old + $mon)))
+  return out.getD (← ratTerm 0)
 
-/-- The `j`-th component of a right-nested conjunction of `k` components. -/
-private def cfProj (ih : Term) (j k : Nat) : TacticM Term := do
-  let mut t := ih
-  for _ in [0:j] do t ← `($t.2)
-  if j + 1 < k then `($t.1) else pure t
+/-- Project component `j` from a right-nested conjunction of `k` components. -/
+def rightNestedAndProj (t : Term) (j k : Nat) : TacticM Term := do
+  let mut out := t
+  for _ in [0:j] do out ← `($out.2)
+  if j + 1 < k then `($out.1) else pure out
 
 /-- The conjunction of the statements at `n, n + 1, …, n + (k - 1)`. -/
 private def cfTuple (k : Nat) (st : Term → TacticM Term) (n : Term) : TacticM Term := do
@@ -507,9 +505,9 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
   let stmt (a : Term) : TacticM Term := do
     if plan.isExplicit then
       let x ← `((($a : ℕ) : ℝ))
-      let t0 ← cfPolyTerm (plan.resid[0]!).coeffs x
-      let t1 ← cfPolyTerm (plan.resid[1]!).coeffs x
-      let t2 ← cfPolyTerm (plan.resid[2]!).coeffs x
+      let t0 ← ratPolyAtTerm (plan.resid[0]!).coeffs x
+      let t1 ← ratPolyAtTerm (plan.resid[1]!).coeffs x
+      let t2 ← ratPolyAtTerm (plan.resid[2]!).coeffs x
       let res ← `($cT ($t0) + $cT ($t1) * $xT + $cT ($t2) * $xT ^ 2)
       `($(← rowAt a) = $(← withQ res a))
     else
@@ -536,7 +534,7 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
   let mut witness : Array (Term × Term) := #[]
   for j in plan.lags do
     let hrow := mkIdent (Name.mkSimple s!"rr_hrow{j}")
-    let pr ← cfProj ih j k
+    let pr ← rightNestedAndProj ih j k
     let h : Term ←
       if plan.isExplicit then pure pr
       else do
@@ -609,7 +607,7 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
   tacs := tacs.push (← `(tactic| have $hnew : $stNew := by $inner*))
   -- the new tuple
   let mut comps : Array Term := #[]
-  for j in [1:k] do comps := comps.push (← cfProj ih j k)
+  for j in [1:k] do comps := comps.push (← rightNestedAndProj ih j k)
   comps := comps.push hnew
   let newTuple : Term ← if comps.size == 1 then pure comps[0]! else `(⟨$comps,*⟩)
   tacs := tacs.push (← `(tactic| exact $newTuple))
@@ -634,7 +632,7 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
       | none => pure (some t)
       | some x => do pure (some (← `(($x).mul $t)))
   let m := mkIdent `rr_m
-  let proj ← cfProj (← `($key $m)) 0 k
+  let proj ← rightNestedAndProj (← `($key $m)) 0 k
   let resSplits : Term ←
     if plan.isExplicit then
       `(RealRooted.splits_C_add_C_mul_X_add_C_mul_X_sq (by

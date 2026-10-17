@@ -10,6 +10,16 @@ same-degree Chudnovsky--Seymour root-crossing target.
 
 namespace RealRooted
 
+/-- Read an in-range reverse index as a forward `getElem!` index. -/
+private lemma reverse_getD_eq_getElem {α : Type*} [Inhabited α]
+    (l : List α) (fallback : α) (i : ℕ) (hi : i < l.length) :
+    l.reverse.getD i fallback = l[l.length - 1 - i]! := by
+  rw [List.getD_eq_getElem?_getD,
+    List.getElem?_eq_getElem (by simpa using hi)]
+  simp only [List.getElem_reverse, Option.getD_some]
+  symm
+  exact getElem!_pos l _ (by lia)
+
 /-- In a sorted list, the `k`-th entry is at most `x` exactly when more than
 `k` entries are at most `x`, transported through the corresponding multiset. -/
 private theorem sorted_getElem_le_iff_lt_card_filter

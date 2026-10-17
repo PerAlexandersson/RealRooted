@@ -1,5 +1,5 @@
-import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.BrandenLeite.KernelRow
+import RealRooted.ToeplitzFin
 import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.RingTheory.PowerSeries.Inverse
 
@@ -18,15 +18,15 @@ namespace RealRooted.BrandenLeite
 noncomputable section
 
 /-- The leading finite square block of the Toeplitz matrix of a sequence. -/
-def finiteToeplitz {R : Type*} [Zero R]
+abbrev finiteToeplitz {R : Type*} [Zero R]
     (a : ℕ → R) (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) R :=
-  (toeplitz a).submatrix Fin.val Fin.val
+  toeplitzFin a N
 
 @[simp]
 theorem finiteToeplitz_apply {R : Type*} [Zero R]
     (a : ℕ → R) (N : ℕ) (i j : Fin (N + 1)) :
     finiteToeplitz a N i j = if j ≤ i then a (i.val - j.val) else 0 := by
-  simp [finiteToeplitz, toeplitz_apply]
+  exact toeplitzFin_apply a N i j
 
 /-- Finite Toeplitz truncation commutes exactly with Cauchy multiplication. -/
 theorem finiteToeplitz_mul {R : Type*} [CommSemiring R]
@@ -34,79 +34,7 @@ theorem finiteToeplitz_mul {R : Type*} [CommSemiring R]
     finiteToeplitz a N * finiteToeplitz b N =
       finiteToeplitz
         (fun n => PowerSeries.coeff n (PowerSeries.mk a * PowerSeries.mk b)) N := by
-  ext i j
-  by_cases hji : j ≤ i
-  · rw [Matrix.mul_apply, finiteToeplitz_apply, ite_eq_left hji]
-    simp only [finiteToeplitz_apply]
-    simp only [Fin.le_iff_val_le_val]
-    change (∑ k : Fin (N + 1),
-      (fun m : ℕ =>
-        (if m ≤ i.val then a (i.val - m) else 0) *
-          if j.val ≤ m then b (m - j.val) else 0) k.val) = _
-    calc
-      (∑ k : Fin (N + 1),
-          (fun m : ℕ =>
-            (if m ≤ i.val then a (i.val - m) else 0) *
-              if j.val ≤ m then b (m - j.val) else 0) k.val) =
-          ∑ k ∈ Finset.range (N + 1),
-            (if k ≤ i.val then a (i.val - k) else 0) *
-              if j.val ≤ k then b (k - j.val) else 0 :=
-        Fin.sum_univ_eq_sum_range
-          (fun m : ℕ =>
-            (if m ≤ i.val then a (i.val - m) else 0) *
-              if j.val ≤ m then b (m - j.val) else 0)
-          (N + 1)
-      (∑ k ∈ Finset.range (N + 1),
-          (if k ≤ i.val then a (i.val - k) else 0) *
-            if j.val ≤ k then b (k - j.val) else 0) =
-          ∑ k ∈ Finset.Ico j.val (i.val + 1),
-            (if k ≤ i.val then a (i.val - k) else 0) *
-              if j.val ≤ k then b (k - j.val) else 0 := by
-        symm
-        apply Finset.sum_subset
-        · intro k hk
-          simp only [Finset.mem_Ico, Finset.mem_range] at hk ⊢
-          exact hk.2.trans_le i.isLt
-        · intro k hkRange hkIco
-          simp only [Finset.mem_Ico, not_and_or, not_lt, not_le] at hkIco
-          rcases hkIco with hkj | hik
-          · simp [hkj]
-          · simp [show ¬k ≤ i.val by lia]
-      _ =
-          ∑ k ∈ Finset.Ico j.val (i.val + 1),
-            a (i.val - k) * b (k - j.val) := by
-        apply Finset.sum_congr rfl
-        intro k hk
-        simp only [Finset.mem_Ico] at hk
-        simp [hk.1, show k ≤ i.val by lia]
-      _ = ∑ k ∈ Finset.range (i.val + 1 - j.val),
-            a (i.val - (j.val + k)) * b k := by
-        rw [Finset.sum_Ico_eq_sum_range]
-        apply Finset.sum_congr rfl
-        intro k hk
-        have hklt : k < i.val + 1 - j.val := Finset.mem_range.mp hk
-        congr 2
-        lia
-      _ = ∑ k ∈ Finset.range (i.val - j.val + 1),
-            a (i.val - j.val - k) * b k := by
-        have hsize : i.val + 1 - j.val = i.val - j.val + 1 := by lia
-        rw [hsize]
-        apply Finset.sum_congr rfl
-        intro k _
-        rw [Nat.sub_sub]
-      _ = PowerSeries.coeff (i.val - j.val)
-          (PowerSeries.mk a * PowerSeries.mk b) := by
-        rw [mul_comm (PowerSeries.mk a) (PowerSeries.mk b)]
-        rw [PowerSeries.coeff_mul,
-          Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
-        simp [mul_comm]
-  · rw [finiteToeplitz_apply, ite_eq_right hji, Matrix.mul_apply]
-    apply Finset.sum_eq_zero
-    intro k _
-    by_cases hki : k ≤ i
-    · have hjk : ¬j ≤ k := fun hjk => hji (hjk.trans hki)
-      simp [finiteToeplitz_apply, hki, hjk]
-    · simp [finiteToeplitz_apply, hki]
+  exact toeplitzFin_mul_coeff a b N
 
 @[simp]
 theorem mk_coeff_eq {R : Type*} [Semiring R] (f : PowerSeries R) :
@@ -126,12 +54,12 @@ theorem finiteToeplitz_pow {R : Type*} [CommSemiring R]
       ext i j
       by_cases hij : i = j
       · subst j
-        simp [finiteToeplitz_apply]
+        simp
       · have hval : i.val ≠ j.val := fun h => hij (Fin.ext h)
         by_cases hji : j ≤ i
         · have hsub : i.val - j.val ≠ 0 := by lia
-          simp [finiteToeplitz_apply, hji, hij, hsub]
-        · simp [finiteToeplitz_apply, hji, hij]
+          simp [hji, hij, hsub]
+        · simp [hji, hij]
   | succ q ih =>
       rw [pow_succ, ih, finiteToeplitz_mul]
       congr 1
@@ -195,22 +123,15 @@ theorem coeff_twoKernelRow {R : Type*} [CommSemiring R]
     (n k : ℕ) :
     (twoKernelRow g h n).coeff k =
       PowerSeries.coeff n (g ^ (k + 1) * h ^ k) := by
-  rw [twoKernelRow, Polynomial.finsetSum_coeff]
-  by_cases hk : k ∈ Finset.range (n + 1)
-  · rw [Finset.sum_eq_single k]
-    · simp
-    · intro j hj hjk
-      simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
-    · exact fun hnot => (hnot hk).elim
-  · have hnk : n < k := by simpa using hk
-    rw [coeff_twoKernelTerm_eq_zero_of_lt hzero hnk]
-    apply Finset.sum_eq_zero
-    intro j hj
-    have hjk : j ≠ k := by
-      intro heq
-      subst j
-      exact hk hj
-    simp [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, Ne.symm hjk]
+  rw [twoKernelRow]
+  simp_rw [C_mul_X_pow_eq_monomial]
+  rw [Polynomial.coeff_sum_range_monomial]
+  by_cases hk : k ≤ n
+  · simp [hk]
+  · rw [ite_eq_right (Nat.lt_succ_iff.not.mpr hk)]
+    exact
+      (coeff_twoKernelTerm_eq_zero_of_lt hzero
+        (Nat.lt_of_not_ge hk)).symm
 
 /-- Every literal two-kernel row has degree at most its series index. -/
 theorem natDegree_twoKernelRow_le {R : Type*} [CommSemiring R]

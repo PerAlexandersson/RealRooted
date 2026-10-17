@@ -1,4 +1,5 @@
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # General recurrences and half growth
@@ -13,6 +14,7 @@ cancelling top terms, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
 
 open Polynomial
+open RealRooted.Tactic.RowFixtures
 
 namespace RealRooted.Tactic.RowGeneralExamples
 
@@ -55,12 +57,6 @@ def A008306 : ℕ → ℝ[X]
   | n + 2 => C (3 + (n : ℝ)) * A008306 (n + 1) + (C (3 + (n : ℝ)) * X) * A008306 n
 
 theorem A008306_splits (n : ℕ) : (A008306 n).Splits := by rr_row_splits
-
-/-- The multiplier vanishes at `n = 0`: the first two rows are constant, and the rows
-interlace from row `1` on (A055356). -/
-def A055356 : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => (C 1 * X) * (A055356 n).derivative + (C 1 + C (n : ℝ) * X) * A055356 n
 
 theorem A055356_interlaces (n : ℕ) : Interlaces (A055356 (n + 1)) (A055356 (n + 2)) := by
   rr_row_interlaces
@@ -124,14 +120,6 @@ def A102547 : ℕ → ℝ[X]
 
 theorem A102547_natDegree (n : ℕ) : (A102547 n).natDegree = n / 3 := by rr_row_natDegree
 
-/-- Periodic growth with period four and a lag of changing sign (A118884). -/
-def A118884 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 2
-  | 2 => 4
-  | 3 => 8
-  | n + 4 => 2 * A118884 (n + 3) + (-1 + X) * A118884 n
-
 theorem A118884_natDegree (n : ℕ) : (A118884 n).natDegree = n / 4 := by rr_row_natDegree
 
 /-- Only every other row is new: the even and odd rows are product sequences with the
@@ -184,12 +172,6 @@ def A172108 : ℕ → ℝ[X]
 
 theorem A172108_splits (n : ℕ) : (A172108 n).Splits := by rr_row_splits
 
-/-- A product with the derivative, `P (n + 1) = A * (P n)'` (A142071). -/
-def A142071 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => X
-  | n + 2 => (X + X ^ 2) * (A142071 (n + 1)).derivative
-
 theorem A142071_splits (n : ℕ) : (A142071 n).Splits := by rr_row_splits
 
 /-- An order-three recurrence that factors through the three-term recurrence
@@ -228,7 +210,8 @@ def A008303 : ℕ → ℝ[X]
 theorem A008303_natDegree (n : ℕ) : (A008303 n).natDegree = n / 2 := by rr_row_natDegree
 
 /-- The rows of degree `n / 2` split: from the first row of positive degree on, consecutive
-rows strictly interlace (`RealRooted.derivRec_splits_of_degree_pattern_of_nonnegCoeffs`). -/
+rows strictly interlace
+(`RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`). -/
 theorem A008303_splits (n : ℕ) : (A008303 n).Splits := by rr_row_splits
 
 /-- Half growth of a three-term recurrence whose multipliers are rational in `n` (A008556). -/
@@ -254,14 +237,14 @@ theorem A003982_natDegree (n : ℕ) :
     (A003982 n).natDegree = if n % 2 = 1 then 0 else n / 2 := by
   rr_row_natDegree
 
-/-- A constant factor: the rows alternate between `1` and `1 + X` (A266178). -/
-def A266178 : ℕ → ℝ[X]
+/-- A constant factor: the rows alternate between `1` and `1 + X`. -/
+def alternatingParityRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
-  | n + 2 => 1 * A266178 n
+  | n + 2 => 1 * alternatingParityRows n
 
-theorem A266178_natDegree (n : ℕ) :
-    (A266178 n).natDegree = if n % 2 = 1 then 1 else 0 := by
+theorem alternatingParityRows_natDegree (n : ℕ) :
+    (alternatingParityRows n).natDegree = if n % 2 = 1 then 1 else 0 := by
   rr_row_natDegree
 
 /-! ### Hinted calls of `rr_row_splits` -/

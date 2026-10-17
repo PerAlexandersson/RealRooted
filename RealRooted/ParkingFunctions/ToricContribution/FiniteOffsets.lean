@@ -42,14 +42,8 @@ theorem IntervalRootData.roots_sort_length
 
 theorem IntervalRootData.orderedRoot_isRoot
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (i : Fin n) :
-    p.IsRoot (orderedRoot p n i) := by
-  have hi : i.val < (p.roots.sort (· ≤ ·)).length := by
-    rw [hp.roots_sort_length]
-    exact i.isLt
-  change p.IsRoot ((p.roots.sort (· ≤ ·)).getD i 0)
-  rw [List.getD_eq_getElem _ _ hi]
-  apply Polynomial.isRoot_of_mem_roots
-  exact (Multiset.mem_sort _).mp (List.getElem_mem ..)
+    p.IsRoot (orderedRoot p n i) :=
+  RealRooted.orderedRoot_isRoot_of_splits hp.splits hp.natDegree_eq i
 
 theorem IntervalRootData.strictMono_orderedRoot
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) :

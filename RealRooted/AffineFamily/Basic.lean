@@ -65,10 +65,8 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
   have hdiv : p ∣ (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) := by simp
   exact isRealRooted_of_dvd hcombo_rr.1 hcombo_rr.2 hp0 hdiv
 
-lemma strictInterl_to_strictInterl_mul_X_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) :=
-  strictInterl_to_X_mul_of_nonneg h hfnn hgnn
+@[deprecated strictInterl_mul_X_of_strictInterl_of_nonneg (since := "2026-10-11")]
+alias strictInterl_to_strictInterl_mul_X_of_nonneg := strictInterl_mul_X_of_strictInterl_of_nonneg
 
 theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
@@ -77,7 +75,7 @@ theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
   have hf : (f ≠ 0 ∧ f.Splits) := h.1
   have hg : (g ≠ 0 ∧ g.Splits) := h.2.1
   have hXf : ((X * f) ≠ 0 ∧ (X * f).Splits) := isRealRooted_X_mul hf.1 hf.2
-  have hg_Xf : StrictInterl g (X * f) := strictInterl_to_strictInterl_mul_X_of_nonneg h hfnn hgnn
+  have hg_Xf : StrictInterl g (X * f) := strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn
   have hf_Xf : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hf.1 hf.2 hfnn
   have hsXf : StrictInterl (C s * (X * f)) (X * f) :=
     StrictInterl.C_mul_self hXf.1 hXf.2 hs.ne'

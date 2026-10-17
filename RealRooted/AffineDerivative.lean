@@ -25,6 +25,7 @@ import RealRooted.Basic
 import RealRooted.Linear
 import RealRooted.Derivative
 import RealRooted.Wagner
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
@@ -727,15 +728,6 @@ lemma mkAffineInterleaving_sub_roots (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natD
   fun rs hrs hsorted hsub hgap =>
     (mkAffineInterleaving_sub_multiset f c hdeg hc hroots_nonpos rs hrs hsorted hsub hgap).1
 
-/-- The product `∏ (X - C r)` for `r ∈ s` is nonzero. -/
-private lemma multiset_prod_X_sub_C_ne_zero (s : Multiset ℝ) :
-    (s.map (X - C ·)).prod ≠ 0 := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | cons a s ih =>
-      rw [Multiset.map_cons, Multiset.prod_cons]
-      exact mul_ne_zero (X_sub_C_ne_zero a) ih
-
 /-- A polynomial of degree `d` with at least `d - 1` real roots
     actually has `d` real roots: the quotient by the known root product
     has degree 1, which must have a root over ℝ. -/
@@ -753,7 +745,7 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
   -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
   set rprod := (p.roots.map (X - C ·)).prod with hrprod_def
   obtain ⟨q, hpq⟩ := prod_multiset_X_sub_C_dvd p
-  have hrprod_ne : rprod ≠ 0 := multiset_prod_X_sub_C_ne_zero p.roots
+  have hrprod_ne : rprod ≠ 0 := Polynomial.multiset_prod_X_sub_C_ne_zero p.roots
   have hq_ne : q ≠ 0 := right_ne_zero_of_mul (hpq ▸ hp)
   -- rprod.roots = p.roots (product of linear factors)
   have hrprod_roots : rprod.roots = p.roots := roots_multiset_prod_X_sub_C p.roots
@@ -1196,10 +1188,10 @@ theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
     simp at hdeg
   have hf_le1 : ∀ s ∈ f.roots, s ≤ 1 := by
     intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hf hnn s hs]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hnn s hs]
   have hf'_le1 : ∀ s ∈ f.derivative.roots, s ≤ 1 := by
     intro s hs
-    linarith [roots_nonpos_of_nonneg_coeffs hder.1.2 hnn' s hs]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hnn' s hs]
   have hdeg' : f.derivative.natDegree + 1 = f.natDegree := by
     rw [f.natDegree_derivative]
     lia

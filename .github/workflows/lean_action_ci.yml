@@ -7,6 +7,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
@@ -42,6 +43,10 @@ jobs:
 
   build:
     name: build
+    # Draft pull requests run only the cheap catalog job; the full build runs when the PR is
+    # marked ready for review, on pushes to main, and on manual dispatch
+    # (`gh workflow run lean_action_ci.yml --ref <branch>`).
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     concurrency:
@@ -60,6 +65,8 @@ jobs:
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_lean_imports.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_root_imports.py
+          python3 scripts/check_example_namespaces.py --self-test
+          python3 scripts/check_example_namespaces.py
       - name: Check import architecture
         run: |
           python3 scripts/check_import_architecture.py --self-test
@@ -103,6 +110,10 @@ jobs:
         with:
           path: .lake
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+      - name: Check Mathlib shim registry
+        run: |
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_check_mathlib_shims.py
+          python3 scripts/check_mathlib_shims.py --check-registry --strict
       - name: Audit curated declarations
         run: |
           python3 scripts/audit_challenge_catalog.py \

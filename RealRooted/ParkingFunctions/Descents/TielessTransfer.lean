@@ -47,7 +47,7 @@ the correspondingly relabeled content fiber. -/
 theorem sum_fixedContentSmirnovWords_relabelWord {n m : ℕ}
     (μ : Multiset (Fin m)) (e : Equiv.Perm (Fin m)) :
     (∑ w ∈ fixedContentSmirnovWords (n := n) μ,
-        X ^ BrandenVecchi.smirnovDescentNumber (relabelWord e w)) =
+        X ^ (List.ofFn (relabelWord e w)).descentCount) =
       fixedContentSmirnovPolynomial (n := n) (μ.map e) := by
   classical
   unfold fixedContentSmirnovPolynomial
@@ -96,7 +96,7 @@ theorem sum_fixedContentSmirnovPolynomial_parkingSmirnovContents (n : ℕ) :
     (∑ μ ∈ parkingSmirnovContents n,
         fixedContentSmirnovPolynomial (n := n) μ) =
       ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
+        X ^ (List.ofFn w).descentCount := by
   classical
   unfold parkingSmirnovContents
   rw [← Finset.sum_fiberwise_of_maps_to
@@ -112,9 +112,9 @@ theorem sum_parkingSmirnovWords_relabelWord {n : ℕ}
     (e : Equiv.Perm (Fin (n + 1))) :
     (∑ w ∈ parkingSmirnovWords n,
         (X : ℤ[X]) ^
-          BrandenVecchi.smirnovDescentNumber (relabelWord e w)) =
+          (List.ofFn (relabelWord e w)).descentCount) =
       ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
+        X ^ (List.ofFn w).descentCount := by
   classical
   rw [← sum_fixedContentSmirnovPolynomial_parkingSmirnovContents n]
   unfold parkingSmirnovContents
@@ -126,7 +126,7 @@ theorem sum_parkingSmirnovWords_relabelWord {n : ℕ}
   calc
     (∑ w ∈ fixedContentSmirnovWords (n := n) μ,
         (X : ℤ[X]) ^
-          BrandenVecchi.smirnovDescentNumber (relabelWord e w)) =
+          (List.ofFn (relabelWord e w)).descentCount) =
       fixedContentSmirnovPolynomial (n := n) (μ.map e) :=
         sum_fixedContentSmirnovWords_relabelWord μ e
     _ = fixedContentSmirnovPolynomial (n := n) μ :=
@@ -145,17 +145,17 @@ symmetry removes the inverse relabeling from the descent weight. -/
 theorem sum_smirnovWords_filter_isParkingWord_relabelWord {n : ℕ}
     (e : Equiv.Perm (Fin (n + 1))) :
     (∑ w ∈ parkingSmirnovRelabelPreimage e,
-        (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) =
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
+        X ^ (List.ofFn w).descentCount := by
   classical
   unfold parkingSmirnovRelabelPreimage
   calc
     (∑ w ∈ (BrandenVecchi.smirnovWords (n + 1) n).filter
           (fun w => IsParkingWord (relabelWord e w)),
-        (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) =
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber (relabelWord e.symm w) := by
+        X ^ (List.ofFn (relabelWord e.symm w)).descentCount := by
       apply Finset.sum_bij (fun w _ => relabelWord e w)
       · intro w hw
         rw [Finset.mem_filter] at hw
@@ -179,10 +179,9 @@ theorem sum_smirnovWords_filter_isParkingWord_relabelWord {n : ℕ}
         · funext i
           exact e.apply_symm_apply (w i)
       · intro w hw
-        congr 2
-        exact (relabelWord_symm_relabelWord e w).symm
+        rw [relabelWord_symm_relabelWord]
     _ = ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w :=
+        X ^ (List.ofFn w).descentCount :=
       sum_parkingSmirnovWords_relabelWord e.symm
 
 /-- Pollak's unique successful cyclic shift, combined with fixed-content
@@ -191,21 +190,21 @@ polynomial. -/
 theorem smirnovDescentSum_eq_succ_nsmul_parkingSmirnovDescentSum
     (n : ℕ) :
     (∑ w ∈ BrandenVecchi.smirnovWords (n + 1) n,
-        (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) =
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       (n + 1) • ∑ w ∈ parkingSmirnovWords n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
+        X ^ (List.ofFn w).descentCount := by
   classical
   apply sum_eq_succ_nsmul_of_cyclicValueShift_filter_sum
     (BrandenVecchi.smirnovWords (n + 1) n)
-    (fun w => (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w)
+    (fun w => (X : ℤ[X]) ^ (List.ofFn w).descentCount)
     (∑ w ∈ parkingSmirnovWords n,
-      X ^ BrandenVecchi.smirnovDescentNumber w)
+      X ^ (List.ofFn w).descentCount)
   intro c
   unfold cyclicParkingPreimage
   change
     (∑ w ∈ (BrandenVecchi.smirnovWords (n + 1) n).filter
         (fun w => IsParkingWord (relabelWord (finCycle c) w)),
-      (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) = _
+      (X : ℤ[X]) ^ (List.ofFn w).descentCount) = _
   exact sum_smirnovWords_filter_isParkingWord_relabelWord (finCycle c)
 
 /-- The embedded parking Smirnov sum is exactly the literal tieless parking
@@ -213,7 +212,7 @@ descent polynomial, including the empty-word boundary. -/
 theorem parkingSmirnovDescentSum_eq_tielessParkingDescentPolynomial
     (n : ℕ) :
     (∑ w ∈ parkingSmirnovWords n,
-        (X : ℤ[X]) ^ BrandenVecchi.smirnovDescentNumber w) =
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       tielessParkingDescentPolynomial n := by
   cases n with
   | zero =>
@@ -228,10 +227,10 @@ theorem parkingSmirnovDescentSum_eq_tielessParkingDescentPolynomial
         · intro w _
           exact Subsingleton.elim _ _
       rw [hzero]
-      simp [BrandenVecchi.smirnovDescentNumber]
+      simp [List.descentCount]
   | succ n =>
       rw [tielessParkingDescentPolynomial]
-      unfold descentGeneratingPolynomial
+      unfold Finset.genPoly
       symm
       apply Finset.sum_bij (fun w _ => parkingWordEmbed w)
       · intro w hw
@@ -259,10 +258,10 @@ theorem weightedSmirnovPolynomial_one_eq_smirnovDescentSum (n : ℕ) :
     BrandenVecchi.weightedSmirnovPolynomial
         (R := ℤ) (fun _ : Fin (n + 1) => 1) n =
       ∑ w ∈ BrandenVecchi.smirnovWords (n + 1) n,
-        X ^ BrandenVecchi.smirnovDescentNumber w := by
+        X ^ (List.ofFn w).descentCount := by
   classical
   unfold BrandenVecchi.weightedSmirnovPolynomial
-    BrandenVecchi.smirnovWordWeight
+    BrandenVecchi.wordWeight
   apply Finset.sum_congr rfl
   intro w hw
   simp

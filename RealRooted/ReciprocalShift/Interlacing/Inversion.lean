@@ -53,7 +53,7 @@ theorem interleaves_reverse_map_one_div_of_length_add_one_eq
   have hlen' : (A.map fun x ↦ 1 / x).length + 1 =
       (B.map fun x ↦ 1 / x).length := by
     simpa using hlen
-  have hreverse := (List.interleaves_reverse_reverse_of_length_add_one_eq_length
+  have hreverse := (List.interleaves_reverse_reverse_of_length_eq_length_add_one
     (r := (· ≤ ·)) (l₁ := A.map fun x ↦ 1 / x) (l₂ := B.map fun x ↦ 1 / x)
     hlen').mpr hmap
   simpa only [Function.swap, List.map_reverse] using hreverse

@@ -7,6 +7,7 @@ import RealRooted.UnitIntervalGraph.AcyclicSink
 version = 1
 section = "families"
 slug = "unit-interval-acyclic-sinks"
+formalized = "2026-09-12"
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 

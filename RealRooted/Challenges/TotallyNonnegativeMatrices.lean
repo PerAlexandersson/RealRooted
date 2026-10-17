@@ -13,6 +13,7 @@ import RealRooted.TotallyNonnegInterlacing
 version = 1
 section = "theorems"
 slug = "totally-nonnegative-matrices"
+formalized = "2026-09-05"
 authors = ["Gantmacher", "Krein", "Karlin", "Cryer", "Fisk"]
 years = [1937, 1968, 1976, 2006]
 
@@ -162,7 +163,9 @@ F. R. Gantmacher and M. G. Krein, *Oscillation Matrices and Kernels and Small
 Vibrations of Mechanical Systems*, 1937; revised English edition, AMS Chelsea,
 2002. S. Karlin, *Total Positivity*, Vol. I, Stanford University Press, 1968.
 C. W. Cryer, “Some properties of totally positive matrices,” *Linear Algebra
-Appl.* 15 (1976), 1–25. S. M. Fallat and C. R. Johnson, *Totally Nonnegative
+Appl.* 15 (1976), 1–25,
+[DOI 10.1016/0024-3795(76)90076-8](https://doi.org/10.1016/0024-3795(76)90076-8).
+S. M. Fallat and C. R. Johnson, *Totally Nonnegative
 Matrices*, Princeton University Press, 2011. S. Fisk, [*Polynomials, roots,
 and interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833
 (2006), Theorem 3.7. See the

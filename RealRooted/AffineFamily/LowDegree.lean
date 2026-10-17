@@ -221,7 +221,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
   have hr_nonpos : r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hf_rr.2 hfnn r ((mem_roots hf_rr.1).mpr hfr)
+    roots_nonpos_of_hasNonnegCoeffs hfnn r ((mem_roots hf_rr.1).mpr hfr)
   by_contra hgr_pos
   have hdeg_cases : g.natDegree = 1 ∨ g.natDegree = 2 := by
     rcases AffineFamily.natDegree_cases_of_affine_family hf0 hg0 hfnn hgnn haff with
@@ -423,7 +423,7 @@ protected lemma AffineFamily.strictInterl_right_pair_of_affine_family_degree_one
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
     (hdegf1 : f.natDegree = 1) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (AffineFamily.strictInterl_of_affine_family_nonneg_degree_one
       hf0 hg0 hfnn hgnn haff hdegf1)
     hfnn hgnn

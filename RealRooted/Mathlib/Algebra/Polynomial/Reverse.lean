@@ -1,6 +1,8 @@
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Roots of reversed polynomials
@@ -58,6 +60,27 @@ theorem reflect_X_pow_mul (q : R[X]) {N : ℕ} (k : ℕ) (hq : q.natDegree ≤ N
 section CommRing
 
 variable {A : Type*} [CommRing A]
+
+/-- Reflecting a polynomial after negating its variable introduces the sign of
+the reflection bound. -/
+theorem reflect_comp_neg_X_of_natDegree_le
+    {n : ℕ} {p : A[X]} (hp : p.natDegree ≤ n) :
+    reflect n (p.comp (-X)) =
+      C ((-1 : A) ^ n) * (reflect n p).comp (-X) := by
+  ext k
+  rw [coeff_reflect, coeff_C_mul, coeff_comp_neg_X, coeff_comp_neg_X, coeff_reflect]
+  by_cases hk : k ≤ n
+  · rw [revAt_le hk]
+    calc
+      p.coeff (n - k) * (-1 : A) ^ (n - k) =
+          ((-1 : A) ^ n * (-1 : A) ^ k) * p.coeff (n - k) := by
+        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hk]
+        ring
+      _ = (-1 : A) ^ n * (p.coeff (n - k) * (-1 : A) ^ k) := by ring
+  · have hlt : n < k := Nat.lt_of_not_le hk
+    rw [revAt_eq_self_of_lt hlt,
+      coeff_eq_zero_of_natDegree_lt (hp.trans_lt hlt)]
+    simp
 
 /-- The polynomial `X (N r - X r')`, whose reflection at `N` is the derivative of the
 reflection of `r` (`derivative_reflect`), has degree at most `N`. -/
@@ -192,5 +215,19 @@ theorem roots_reverse_eq_filter_map_inv {p : K[X]}
   conv_lhs => rw [Polynomial.Splits.eq_prod_roots hp_splits]
   rw [Polynomial.reverse_mul_of_domain, Polynomial.reverse_C,
     Polynomial.roots_C_mul _ hlead, roots_reverse_prod_X_sub_C]
+
+/-- If `p` splits over a field and `p 0 ≠ 0`, the roots of `p.reverse` are the inverses of the
+roots of `p`, retaining multiplicity. -/
+theorem roots_reverse_eq_map_inv {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
+    p.reverse.roots = p.roots.map (·⁻¹) := by
+  have hp0 : p ≠ 0 := fun h => h0 (by simp [h])
+  rw [roots_reverse_eq_filter_map_inv hp0 hp, Multiset.filter_eq_self.mpr]
+  rintro r hr rfl
+  exact h0 (by simpa [coeff_zero_eq_eval_zero] using isRoot_of_mem_roots hr)
+
+/-- A product of monic linear factors over a field is nonzero. -/
+theorem multiset_prod_X_sub_C_ne_zero (s : Multiset K) :
+    (s.map fun r => (X - C r : K[X])).prod ≠ 0 :=
+  (monic_multiset_prod_of_monic _ _ fun r _ => monic_X_sub_C r).ne_zero
 
 end Polynomial

@@ -19,6 +19,8 @@ import posixpath
 import re
 import subprocess
 import tomllib
+import unicodedata
+from datetime import date
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from typing import Any, Iterable
@@ -92,6 +94,7 @@ class CatalogPage:
     slug: str
     authors: tuple[str, ...]
     years: tuple[int, ...]
+    formalized: str
     definitions: tuple[CatalogItem, ...]
     theorems: tuple[CatalogItem, ...]
     content: str
@@ -114,6 +117,30 @@ class SourceDeclaration:
     source_line: int
     deprecated: bool = False
     source_code: str = ""
+
+
+@dataclass(frozen=True)
+class AuthorProfile:
+    """A curated display name and optional external link for an attribution key."""
+
+    display_name: str
+    url: str | None = None
+
+
+@dataclass(frozen=True)
+class AuthorIndexEntry:
+    """One credited person and the catalog pages that credit that person."""
+
+    identity: str
+    display_name: str
+    url: str | None
+    pages: tuple[CatalogPage, ...]
+
+    @property
+    def anchor(self) -> str:
+        # Fold accents so that, for example, "Brändén" gives "branden".
+        folded = unicodedata.normalize("NFKD", self.identity)
+        return "author-" + _anchor("".join(ch for ch in folded if not unicodedata.combining(ch)))
 
 
 @functools.lru_cache(maxsize=None)
@@ -287,7 +314,30 @@ def _read_attribution(
     return tuple(raw_authors), tuple(raw_years)
 
 
-def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
+def _read_formalized(
+    path: str, metadata: dict[str, Any], commit_date: date | None
+) -> str:
+    """Read the required, revision-bounded catalog formalization date."""
+    value = metadata.get("formalized")
+    if value is None:
+        raise _source_error(
+            path,
+            'metadata requires formalized = "YYYY-MM-DD"; use the date the selected result was added',
+        )
+    if not isinstance(value, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise _source_error(path, 'formalized must be an ISO date written as "YYYY-MM-DD"')
+    try:
+        parsed = date.fromisoformat(value)
+    except ValueError as error:
+        raise _source_error(path, 'formalized must be a valid ISO date written as "YYYY-MM-DD"') from error
+    if commit_date is not None and parsed > commit_date:
+        raise _source_error(path, f"formalized {value} is after this revision's commit date {commit_date}")
+    return value
+
+
+def parse_challenge_source(
+    source_path: str, text: str, commit_date: date | None = None
+) -> CatalogPage | None:
     """Parse one opted-in module, or return ``None`` if it is not curated."""
     comments = _doc_comments(text)
     metadata_matches: list[tuple[int, re.Match[str]]] = []
@@ -312,7 +362,16 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         raise _source_error(source_path, f"invalid TOML metadata: {error}") from error
     if not isinstance(metadata, dict):
         raise _source_error(source_path, "metadata must be a TOML table")
-    allowed = {"version", "section", "slug", "authors", "years", "definitions", "theorems"}
+    allowed = {
+        "version",
+        "section",
+        "slug",
+        "authors",
+        "years",
+        "formalized",
+        "definitions",
+        "theorems",
+    }
     unknown = set(metadata) - allowed
     if unknown:
         raise _source_error(source_path, f"unknown metadata keys: {', '.join(sorted(unknown))}")
@@ -325,6 +384,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
     if not isinstance(slug, str) or not SLUG_RE.fullmatch(slug):
         raise _source_error(source_path, "slug must be lowercase hyphenated text")
     authors, years = _read_attribution(source_path, metadata)
+    formalized = _read_formalized(source_path, metadata, commit_date)
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
     if not definitions and not theorems:
@@ -336,6 +396,7 @@ def parse_challenge_source(source_path: str, text: str) -> CatalogPage | None:
         slug=slug,
         authors=authors,
         years=years,
+        formalized=formalized,
         definitions=definitions,
         theorems=theorems,
         content=content,
@@ -362,12 +423,28 @@ def _tracked_challenge_paths(repo_root: pathlib.Path) -> list[pathlib.Path]:
     return sorted(paths)
 
 
+def _commit_date_at(repo_root: pathlib.Path) -> date | None:
+    """Return the current revision's calendar date when Git is available."""
+    try:
+        result = subprocess.run(
+            ["git", "show", "-s", "--format=%cs", "HEAD"],
+            cwd=repo_root,
+            capture_output=True,
+            check=True,
+            text=True,
+        )
+        return date.fromisoformat(result.stdout.strip())
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return None
+
+
 def load_catalog(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
     """Load and validate every opted-in tracked challenge module."""
     pages: list[CatalogPage] = []
+    commit_date = _commit_date_at(repo_root)
     for path in _tracked_challenge_paths(repo_root):
         page = parse_challenge_source(
-            path.relative_to(repo_root).as_posix(), path.read_text(encoding="utf-8")
+            path.relative_to(repo_root).as_posix(), path.read_text(encoding="utf-8"), commit_date
         )
         if page is not None:
             pages.append(page)
@@ -379,6 +456,112 @@ def load_catalog(repo_root: pathlib.Path) -> tuple[CatalogPage, ...]:
     return tuple(sorted(pages, key=lambda page: (SECTIONS.index(page.section), page.title, page.slug)))
 
 
+def _read_author_profile(path: str, key: str, raw: Any) -> AuthorProfile:
+    """Validate one record from the small hand-curated author directory."""
+    if not isinstance(raw, dict) or set(raw) - {"name", "url"}:
+        raise _source_error(path, f"author record {key!r} must contain only name and url")
+    name = raw.get("name")
+    if not isinstance(name, str) or not name or name.strip() != name or "\n" in name:
+        raise _source_error(path, f"author record {key!r} needs a nonempty display name")
+    url = raw.get("url")
+    if url is not None:
+        parsed = urlsplit(url) if isinstance(url, str) else None
+        if (
+            not isinstance(url, str)
+            or url.strip() != url
+            or parsed is None
+            or parsed.scheme.lower() not in {"http", "https"}
+            or not parsed.netloc
+        ):
+            raise _source_error(path, f"author record {key!r} has an invalid URL")
+    return AuthorProfile(name, url)
+
+
+def load_author_profiles(
+    repo_root: pathlib.Path,
+) -> tuple[dict[str, AuthorProfile], dict[tuple[str, str], AuthorProfile]]:
+    """Load optional global and per-page author names from ``website/authors.toml``.
+
+    Global entries live in ``[authors]``.  Per-page entries live in
+    ``[overrides]`` and use ``"page-slug:author key"`` as their key, so a
+    compact surname can name different people on different catalog pages.
+    """
+    path = repo_root / "website" / "authors.toml"
+    if not path.is_file():
+        return {}, {}
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise CatalogError(f"invalid author directory {path}: {error}") from error
+    if not isinstance(data, dict) or set(data) - {"authors", "overrides"}:
+        raise CatalogError(f"{path}: author directory only permits [authors] and [overrides]")
+    global_raw = data.get("authors", {})
+    override_raw = data.get("overrides", {})
+    if not isinstance(global_raw, dict) or not isinstance(override_raw, dict):
+        raise CatalogError(f"{path}: [authors] and [overrides] must be tables")
+    global_profiles: dict[str, AuthorProfile] = {}
+    for key, raw in global_raw.items():
+        if not isinstance(key, str) or not key or key.strip() != key:
+            raise CatalogError(f"{path}: author keys must be nonempty strings")
+        global_profiles[key] = _read_author_profile(path.as_posix(), key, raw)
+    overrides: dict[tuple[str, str], AuthorProfile] = {}
+    for qualified_key, raw in override_raw.items():
+        if not isinstance(qualified_key, str):
+            raise CatalogError(f"{path}: override keys must be strings")
+        slug, separator, key = qualified_key.partition(":")
+        if not separator or not SLUG_RE.fullmatch(slug) or not key or key.strip() != key:
+            raise CatalogError(
+                f"{path}: override key {qualified_key!r} must be 'page-slug:author key'"
+            )
+        overrides[(slug, key)] = _read_author_profile(path.as_posix(), qualified_key, raw)
+    return global_profiles, overrides
+
+
+def _surname_sort_key(display_name: str) -> str:
+    """Use the final word of a display name, or its compact key, as a surname."""
+    words = re.findall(r"[^\W_]+", display_name, flags=re.UNICODE)
+    return (words[-1] if words else display_name).casefold()
+
+
+def build_author_index(
+    pages: Iterable[CatalogPage],
+    profiles: tuple[dict[str, AuthorProfile], dict[tuple[str, str], AuthorProfile]],
+) -> tuple[AuthorIndexEntry, ...]:
+    """Group catalog attributions by the person they resolve to.
+
+    A resolved name (global or page-scoped) identifies one person, so several
+    surname keys and overrides that resolve to the same name and URL share one
+    entry.  An unresolved key stays its own entry.
+    """
+    global_profiles, overrides = profiles
+    grouped: dict[str, tuple[AuthorProfile, list[CatalogPage]]] = {}
+    for page in pages:
+        for key in page.authors:
+            resolved = overrides.get((page.slug, key)) or global_profiles.get(key)
+            profile = resolved or AuthorProfile(key)
+            identity = profile.display_name if resolved is not None else key
+            if identity in grouped and grouped[identity][0] != profile:
+                raise CatalogError(
+                    f"author {identity!r} resolves to conflicting profiles; "
+                    "give each person one name and URL in website/authors.toml"
+                )
+            if identity not in grouped:
+                grouped[identity] = (profile, [])
+            grouped[identity][1].append(page)
+    entries = [
+        AuthorIndexEntry(
+            identity,
+            profile.display_name,
+            profile.url,
+            tuple(sorted(credited_pages, key=lambda page: (page.title.casefold(), page.slug))),
+        )
+        for identity, (profile, credited_pages) in grouped.items()
+    ]
+    return tuple(
+        sorted(entries, key=lambda entry: (_surname_sort_key(entry.display_name), entry.display_name.casefold(), entry.identity))
+    )
+
+
 def canonical_catalog_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
     """The frozen, prose-independent selected-declaration digest input."""
     return {
@@ -388,6 +571,7 @@ def canonical_catalog_data(pages: Iterable[CatalogPage]) -> dict[str, Any]:
                 "source_path": page.source_path,
                 "section": page.section,
                 "slug": page.slug,
+                "formalized": page.formalized,
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
             }
@@ -907,6 +1091,7 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
     stylesheet = _relative_url(f"{BASE_PATH}assets/site.css", current_url)
     script = _relative_url(f"{BASE_PATH}assets/site.js", current_url)
     results = _relative_url(f"{BASE_PATH}results/", current_url)
+    authors = _relative_url(f"{BASE_PATH}authors/", current_url)
     return (
         template.replace("{{ title }}", html.escape(title))
         .replace("{{ body }}", body)
@@ -914,6 +1099,7 @@ def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) 
         .replace("{{ stylesheet }}", stylesheet)
         .replace("{{ script }}", script)
         .replace("{{ results }}", results)
+        .replace("{{ authors }}", authors)
     )
 
 
@@ -943,6 +1129,10 @@ def _plural(count: int, word: str) -> str:
 def _attribution(page: CatalogPage) -> str:
     parts = [part for part in (_authors_label(page.authors), _years_label(page.years)) if part]
     return " · ".join(parts)
+
+
+def _formalized_label(page: CatalogPage) -> str:
+    return f"formalized {page.formalized}"
 
 
 def _count(count: int, word: str, symbol: str, kind: str) -> str:
@@ -979,13 +1169,15 @@ def _page_card(page: CatalogPage, href: str) -> str:
         )
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
-        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}">'
+        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}" '
+        f'data-formalized="{page.formalized}">'
         f'<a href="{html.escape(href, quote=True)}">'
         f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
         + _counts(page)
         + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
         + headline_html
         + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        + f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -996,13 +1188,15 @@ def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
     title = item.label or item.name
     return (
         '<li class="catalog-card catalog-card--theorem catalog-card--headline" '
-        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}">'
+        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}" '
+        f'data-formalized="{page.formalized}">'
         f'<a href="{html.escape(href, quote=True)}">'
         '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
         '<span aria-hidden="true">⊢</span> Theorem</span></span>'
         f'<strong class="card-title">{html.escape(title)}</strong>'
         f'<span class="card-context">from <em>{html.escape(page.title)}</em></span>'
         f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -1015,7 +1209,9 @@ def _sort_controls() -> str:
         'value="name" checked><span class="catalog-sort-indicator" aria-hidden="true"></span>'
         '<span>Name</span></label><label class="catalog-sort-option"><input type="radio" '
         'name="catalog-sort" value="year"><span class="catalog-sort-indicator" '
-        'aria-hidden="true"></span><span>Year</span></label></div>'
+        'aria-hidden="true"></span><span>Year</span></label><label class="catalog-sort-option">'
+        '<input type="radio" name="catalog-sort" value="newest"><span class="catalog-sort-indicator" '
+        'aria-hidden="true"></span><span>Newest</span></label></div>'
     )
 
 
@@ -1053,6 +1249,47 @@ def _item_list(
             + "</code></pre></li>"
         )
     return "<ul class=\"declarations\">" + "".join(rows) + "</ul>"
+
+
+def _authors_page(entries: Iterable[AuthorIndexEntry]) -> str:
+    """Render the page-level credits index without adding editorial data to Lean files."""
+    entries = tuple(entries)
+    current_url = f"{BASE_PATH}authors/"
+    rows: list[str] = []
+    for entry in entries:
+        heading = html.escape(entry.display_name)
+        if entry.url:
+            heading = (
+                f'<a href="{html.escape(entry.url, quote=True)}">{heading}</a>'
+                '<span class="visually-hidden"> (external link)</span>'
+            )
+        credits: list[str] = []
+        for page in entry.pages:
+            years = _years_label(page.years) or "year not recorded"
+            href = _relative_url(page.url, current_url)
+            credits.append(
+                '<li><a class="author-credit-title" href="'
+                + html.escape(href, quote=True)
+                + '">'
+                + html.escape(page.title)
+                + '</a><span class="author-credit-meta">'
+                + html.escape(years)
+                + " · "
+                + html.escape(SECTION_LABELS[page.section])
+                + "</span></li>"
+            )
+        rows.append(
+            f'<li class="author-entry" id="{html.escape(entry.anchor, quote=True)}">'
+            f"<h2>{heading}</h2><ul class=\"author-credits\">{''.join(credits)}</ul></li>"
+        )
+    return (
+        '<main class="authors-page"><p class="eyebrow">Catalog credits</p>'
+        "<h1>Authors</h1>"
+        '<p class="lede">Mathematicians credited in the catalog metadata for the results '
+        "formalized here.</p>"
+        f'<p class="author-summary">{_plural(len(entries), "credited author")}.</p>'
+        f'<ul class="authors-index">{"".join(rows)}</ul></main>'
+    )
 
 
 def _results_page(
@@ -1158,6 +1395,7 @@ def render_site(
 ) -> dict[str, str]:
     """Render deterministic generated files keyed by their output-relative path."""
     files: dict[str, str] = {}
+    author_entries = build_author_index(pages, load_author_profiles(repo_root))
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
     index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
     topic_pages = [page for page in index_pages if page.section != "theorems"]
@@ -1245,13 +1483,17 @@ def render_site(
             + "</div>"
             + f"<p class=\"verification\"><span>Lean source</span> "
             + f"<a href=\"{source}\">{html.escape(page.source_path)}</a> at revision "
-            + f"<code>{html.escape(revision[:8])}</code>.</p></main>"
+            + f"<code>{html.escape(revision[:8])}</code>. <span class=\"formalized\">"
+            + f"Formalized {page.formalized}</span>.</p></main>"
         )
         files[f"{page.section}/{page.slug}/index.html"] = _template(
             repo_root, body, page.title, page.url
         )
     files["results/index.html"] = _template(
         repo_root, _results_page(pages, resolved, revision), "All results", f"{BASE_PATH}results/"
+    )
+    files["authors/index.html"] = _template(
+        repo_root, _authors_page(author_entries), "Authors", f"{BASE_PATH}authors/"
     )
     manifest = {
         "schema_version": 1,
@@ -1264,6 +1506,7 @@ def render_site(
                 "source_path": page.source_path,
                 "authors": list(page.authors),
                 "years": list(page.years),
+                "formalized": page.formalized,
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
                 "headlines": [item.name for item in page.theorems if item.headline],

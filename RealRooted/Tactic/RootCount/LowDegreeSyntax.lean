@@ -136,11 +136,8 @@ syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_two_named)
   "rr_posCombo_sameDegree_rootCount_degree_le_two" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term ","
     "threshold" ":=" term :
   tactic
@@ -149,11 +146,8 @@ syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_two_sequence_named)
   "rr_posCombo_sameDegree_rootCount_degree_le_two_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term :
   tactic
 
@@ -161,11 +155,8 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_named)
   "rr_posCombo_sameDegree_rootCountAbove_degree_le_two" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term ","
     "threshold" ":=" term :
   tactic
@@ -174,11 +165,8 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence_nam
   "rr_posCombo_sameDegree_rootCountAbove_degree_le_two_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term :
   tactic
 
@@ -196,11 +184,8 @@ syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_named)
   "rr_posCombo_sameDegree_rootCrossing_degree_le_two" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term :
   tactic
 
@@ -208,11 +193,8 @@ syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence_named
   "rr_posCombo_sameDegree_rootCrossing_degree_le_two_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_two" ":=" term :
   tactic
 
@@ -220,11 +202,8 @@ syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_three_named)
   "rr_posCombo_sameDegree_rootCount_degree_le_three" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term ","
     "threshold" ":=" term :
   tactic
@@ -233,11 +212,8 @@ syntax (name := rr_posCombo_sameDegree_rootCount_degree_le_three_sequence_named)
   "rr_posCombo_sameDegree_rootCount_degree_le_three_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term :
   tactic
 
@@ -245,11 +221,8 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_three_named)
   "rr_posCombo_sameDegree_rootCountAbove_degree_le_three" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term ","
     "threshold" ":=" term :
   tactic
@@ -258,11 +231,8 @@ syntax (name := rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence_n
   "rr_posCombo_sameDegree_rootCountAbove_degree_le_three_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term :
   tactic
 
@@ -270,11 +240,8 @@ syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_three_named)
   "rr_posCombo_sameDegree_rootCrossing_degree_le_three" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term :
   tactic
 
@@ -282,11 +249,8 @@ syntax (name := rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence_nam
   "rr_posCombo_sameDegree_rootCrossing_degree_le_three_sequence" " using "
     "left_pos_lc" ":=" term ","
     "right_pos_lc" ":=" term ","
-    "left_nonneg_coeffs" ":=" term ","
-    "right_nonneg_coeffs" ":=" term ","
     "pos_combo" ":=" term ","
     "same_degree" ":=" term ","
-    "no_common_roots" ":=" term ","
     "left_degree_le_three" ":=" term :
   tactic
 

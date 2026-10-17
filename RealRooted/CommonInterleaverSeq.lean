@@ -16,21 +16,6 @@ namespace RealRooted
 
 section
 
-/-- Public wrapper around the descending-root polynomial constructor used in
-slot-based closure arguments. -/
-def polyOfDescRootsDesc (xs : List ℝ) : ℝ[X] :=
-  CommonInterleaver.polyOfDescRoots xs
-
-@[simp] theorem roots_polyOfDescRootsDesc (xs : List ℝ) :
-    (polyOfDescRootsDesc xs).roots = (↑xs : Multiset ℝ) := by
-  simpa [polyOfDescRootsDesc] using CommonInterleaver.roots_polyOfDescRoots xs
-
-@[simp] theorem rootSeqDesc_polyOfDescRootsDesc_eq
-    {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :
-    rootSeqDesc (polyOfDescRootsDesc xs) = xs := by
-  simpa [polyOfDescRootsDesc] using
-    CommonInterleaver.rootSeqDesc_polyOfDescRoots_eq hxs
-
 private lemma get_ofFn_eq_apply
     {α : Type*} {n : ℕ} {x : Fin n → α} {xs : List α}
     (hxs : xs = List.ofFn x) {j : ℕ} (hj : j < xs.length) :
@@ -167,41 +152,7 @@ theorem shiftedSlotIntersections_of_commonInterleaver
     rw [hslot_f, hslot_g]
     exact ⟨min af ag, min_le_left af ag, min_le_right af ag⟩
 
-/-- Slot data against `rootSeqDesc f` reconstructs a `StrictInterl` witness with the
-descending-root polynomial built from those slot choices. -/
-theorem strictInterl_of_slots_polyOfDescRootsDesc
-    {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
-    (hxs : xs.Pairwise (· ≥ ·))
-    (hdeg_lo : f.natDegree ≤ xs.length)
-    (hdeg_hi : xs.length ≤ f.natDegree + 1)
-    (hslot : ∀ j (hj : j < xs.length),
-      xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-        ⟨j, by
-          have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-          simpa [hf] using this⟩) :
-    StrictInterl f (polyOfDescRootsDesc xs) := by
-  simpa [polyOfDescRootsDesc] using
-    CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
-      hf₀ hf hxs hdeg_lo hdeg_hi hslot
-
-/-- Shifted slot data against `rootSeqDesc f` reconstructs a left `StrictInterl` witness
-with the descending-root polynomial built from those slot choices. -/
-theorem strictInterl_left_of_shifted_slots_polyOfDescRootsDesc
-    {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
-    (hxs : xs.Pairwise (· ≥ ·))
-    (hdeg_lo : xs.length ≤ f.natDegree)
-    (hdeg_hi : f.natDegree ≤ xs.length + 1)
-    (hslot : ∀ j (hj : j < xs.length),
-      xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-        ⟨j + 1, by
-          have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
-          simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    StrictInterl (polyOfDescRootsDesc xs) f := by
-  simpa [polyOfDescRootsDesc] using
-    CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
-      hf₀ hf hxs hdeg_lo hdeg_hi hslot
-
-private lemma strictInterl_polyOfDescRootsDesc_of_ofFn_slots
+private lemma strictInterl_rootPolynomial_of_ofFn_slots
     {f : ℝ[X]} {n : ℕ} {x : Fin n → ℝ}
     (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : (List.ofFn x).Pairwise (· ≥ ·))
@@ -212,9 +163,9 @@ private lemma strictInterl_polyOfDescRootsDesc_of_ofFn_slots
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [rootSeqDesc_length hf] using this⟩) :
-    StrictInterl f (polyOfDescRootsDesc (List.ofFn x)) := by
+    StrictInterl f (rootPolynomial (List.ofFn x : Multiset ℝ)) := by
   refine
-    strictInterl_of_slots_polyOfDescRootsDesc hf₀ hf hxs
+    strictInterl_of_slots_rootPolynomial hf₀ hf hxs
       (by simpa using hdeg_lo)
       (by simpa using hdeg_hi)
       ?_
@@ -246,16 +197,16 @@ theorem pairHasCommonInterleaver_of_slotIntersections
     intro j hj
     have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
     simpa [x] using hraw
-  let h : ℝ[X] := polyOfDescRootsDesc xs
+  let h : ℝ[X] := rootPolynomial (xs : Multiset ℝ)
   refine ⟨h, ?_, ?_⟩
   · simpa [h, xs] using
-      strictInterl_polyOfDescRootsDesc_of_ofFn_slots hf₀ hf hxs_pair
+      strictInterl_rootPolynomial_of_ofFn_slots hf₀ hf hxs_pair
         (by simp [n]) (by simp [n])
         (fun j hj => by
           have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
           simpa [x] using hraw)
   · simpa [h, xs] using
-      strictInterl_polyOfDescRootsDesc_of_ofFn_slots hg₀ hg hxs_pair
+      strictInterl_rootPolynomial_of_ofFn_slots hg₀ hg hxs_pair
         (by simp only [n]; lia) (by simp only [n]; lia)
         (fun j hj => by
           have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).2
@@ -287,17 +238,17 @@ theorem pairHasCommonLeftInterleaver_of_shiftedSlotIntersections
     intro j hj
     have hraw := (Classical.choose_spec (hslot j (by simpa [n] using hj))).1
     simpa [x] using hraw
-  let h : ℝ[X] := polyOfDescRootsDesc xs
+  let h : ℝ[X] := rootPolynomial (xs : Multiset ℝ)
   refine ⟨h, ?_, ?_⟩
   · simpa [h, xs] using
-      strictInterl_left_of_shifted_slots_polyOfDescRootsDesc hf₀ hf hxs_pair
+      strictInterl_left_of_shifted_slots_rootPolynomial hf₀ hf hxs_pair
         (by simp [xs, n]) (by simp [xs, n])
         (fun j hj => by
           have hjf : j < f.natDegree := by simpa [xs, n] using hj
           have hraw := (Classical.choose_spec (hslot j hjf)).1
           simpa [x, xs] using hraw)
   · simpa [h, xs] using
-      strictInterl_left_of_shifted_slots_polyOfDescRootsDesc hg₀ hg hxs_pair
+      strictInterl_left_of_shifted_slots_rootPolynomial hg₀ hg hxs_pair
         (by simpa [xs, n] using hdeg_lo) (by simpa [xs, n] using hdeg_hi)
         (fun j hj => by
           have hjf : j < f.natDegree := by simpa [xs, n] using hj
@@ -380,71 +331,27 @@ theorem pairHasCommonInterleaver_of_degreeGap_le_slotIntersections_and
 interleaver for the pair `f`, `g`. -/
 theorem hasCommonInterleaver_pair {f g : ℝ[X]} :
     HasCommonInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  constructor
-  · rintro ⟨h, hh⟩
-    exact ⟨h, hh f (by simp), hh g (by simp)⟩
-  · rintro ⟨h, hfh, hgh⟩
-    refine ⟨h, ?_⟩
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl
-    · exact hfh
-    · exact hgh
+  simp [HasCommonInterleaver]
 
 /-- `HasCommonLeftInterleaver [f, g]` is exactly the existence of a common
 left interleaver for the pair `f`, `g`. -/
 theorem hasCommonLeftInterleaver_pair {f g : ℝ[X]} :
     HasCommonLeftInterleaver [f, g] ↔ ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
-  constructor
-  · rintro ⟨h, hh⟩
-    exact ⟨h, hh f (by simp), hh g (by simp)⟩
-  · rintro ⟨h, hfh, hgh⟩
-    refine ⟨h, ?_⟩
-    intro p hp
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl
-    · exact hfh
-    · exact hgh
+  simp [HasCommonLeftInterleaver]
 
 /-- For a two-element list, the pairwise common-interleaver condition reduces
 to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonInterleaver [f, g] ↔
       ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  constructor
-  · intro H
-    obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
-    exact ⟨h, hfh, hgh⟩
-  · rintro ⟨h, hfh, hgh⟩
-    intro i j hij
-    obtain ⟨i, hi⟩ := i
-    obtain ⟨j, hj⟩ := j
-    simp only [List.length_cons, List.length_nil] at hi hj
-    match i, hi, j, hj, hij with
-    | 0, _, 1, _, _ => exact ⟨h, hfh, hgh⟩
-    | 0, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 1, _, hij => exact absurd hij (by simp)
+  simp [PairwiseHasCommonInterleaver]
 
 /-- For a two-element list, the pairwise common-left-interleaver condition
 reduces to the single existential over the one nontrivial pair. -/
 theorem pairwiseHasCommonLeftInterleaver_pair {f g : ℝ[X]} :
     PairwiseHasCommonLeftInterleaver [f, g] ↔
       ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g := by
-  constructor
-  · intro H
-    obtain ⟨h, hfh, hgh⟩ := H ⟨0, by simp⟩ ⟨1, by simp⟩ (by simp)
-    exact ⟨h, hfh, hgh⟩
-  · rintro ⟨h, hfh, hgh⟩
-    intro i j hij
-    obtain ⟨i, hi⟩ := i
-    obtain ⟨j, hj⟩ := j
-    simp only [List.length_cons, List.length_nil] at hi hj
-    match i, hi, j, hj, hij with
-    | 0, _, 1, _, _ => exact ⟨h, hfh, hgh⟩
-    | 0, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 0, _, hij => exact absurd hij (by simp)
-    | 1, _, 1, _, hij => exact absurd hij (by simp)
+  simp [PairwiseHasCommonLeftInterleaver]
 
 /-! #### Existential-shape bridges for downstream pair endpoints -/
 

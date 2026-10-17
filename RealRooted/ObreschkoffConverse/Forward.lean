@@ -178,7 +178,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree
 /-- To prove the same-degree forward direction of Obreschkoff, it is enough to
 handle the no-common-roots case. Shared roots can be factored out recursively,
 and `AllComboRealRooted` is rebuilt using
-`allComboRealRooted_mul_common_factor`. This mirrors the converse reduction but
+`AllComboRealRooted.mul_common_factor`. This mirrors the converse reduction but
 keeps the orientation fixed. -/
 private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
     (hstep :
@@ -225,14 +225,8 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
       ih qf.natDegree hqf_deg_lt rfl hstrictInterl_q hqdeg
     have hmul :
         AllComboRealRooted ((X - C r) * qf) ((X - C r) * qg) :=
-      allComboRealRooted_mul_common_factor (isRealRooted_X_sub_C r).2 hqhall
+      hqhall.mul_common_factor (isRealRooted_X_sub_C r).2
     lia
-
-private lemma no_common_with_right_factor_quotient
-    {f q : ℝ[X]} {uR : ℝ}
-    (hno : ∀ r, f.IsRoot r → ¬ ((X - C uR) * q).IsRoot r) :
-    ∀ r, f.IsRoot r → ¬ q.IsRoot r := by
-  simp_all
 
 private lemma root_lt_rightmost_of_strictInterl_sameDegree_no_common
     {f g : ℝ[X]} {uR : ℝ}
@@ -245,51 +239,6 @@ private lemma root_lt_rightmost_of_strictInterl_sameDegree_no_common
   have hr_le : r ≤ uR :=
     hfg.roots_le_of_right huR_max r ((mem_roots hfg.1.1).mpr hr)
   grind
-
-private lemma strictInterl_of_right_factor_combo_of_natDegree_ge
-    {f q : ℝ[X]} {uR α β : ℝ}
-    (hqf : Interlaces q f)
-    (hq_pos : HasPosLeadingCoeff q)
-    (hF_pos : HasPosLeadingCoeff (C α * f + C β * ((X - C uR) * q)))
-    (hdeg_lo : f.natDegree ≤ (C α * f + C β * ((X - C uR) * q)).natDegree)
-    (hq_no : ∀ r, f.IsRoot r → ¬ q.IsRoot r)
-    (hroot_lt : ∀ r, f.IsRoot r → r < uR)
-    (hβ : 0 < β) :
-    StrictInterl f (C α * f + C β * ((X - C uR) * q)) := by
-  have hq_ne : q ≠ 0 := hqf.2.1.1
-  have hbeta_term_eq :
-      C β * ((X - C uR) * q) = (C β * (X - C uR)) * q := by
-    grind
-  have hdeg_hi :
-      (C α * f + C β * ((X - C uR) * q)).natDegree ≤ f.natDegree + 1 := by
-    have hsum_le :
-        (C α * f + (C β * (X - C uR)) * q).natDegree ≤
-          max (C α * f).natDegree (((C β * (X - C uR)) * q).natDegree) :=
-      natDegree_add_le _ _
-    have hscaled_le : (C α * f).natDegree ≤ f.natDegree := natDegree_C_mul_le α f
-    have hbeta_term_deg : ((C β * (X - C uR)) * q).natDegree = f.natDegree := by
-      rw [natDegree_mul
-          (show C β * (X - C uR) ≠ 0 by
-            exact mul_ne_zero (C_ne_zero.mpr hβ.ne') (X_sub_C_ne_zero uR))
-          hq_ne]
-      rw [natDegree_mul (C_ne_zero.mpr hβ.ne') (X_sub_C_ne_zero uR),
-        natDegree_C, natDegree_X_sub_C]
-      simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using hqf.2.2.1
-    grind
-  have hb_neg : ∀ r, f.IsRoot r → (C β * (X - C uR)).eval r < 0 := by
-    intro r hr
-    rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_sub,
-      Polynomial.eval_X, Polynomial.eval_C]
-    have hru : r - uR < 0 := sub_neg.mpr (hroot_lt r hr)
-    nlinarith
-  have hF_pos' : HasPosLeadingCoeff (C α * f + (C β * (X - C uR)) * q) := by lia
-  have hdeg_lo' : f.natDegree ≤ (C α * f + (C β * (X - C uR)) * q).natDegree := by lia
-  have hstrictInterl :
-      StrictInterl f (C α * f + (C β * (X - C uR)) * q) :=
-    strictInterl_of_interlaces_evalCoeff_neg
-      (f := f) (g := q) (a := C α) (b := C β * (X - C uR))
-      hqf hq_pos hF_pos' hdeg_lo' (by lia) hq_no hb_neg
-  lia
 
 /-- A nonzero combination `α f + β (X - uR) q` with `β > 0` is real-rooted in
 the same-degree/no-common-roots regime. This is the core right-factor reduction

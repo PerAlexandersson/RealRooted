@@ -48,8 +48,8 @@ theorem quasiJacobiPolynomial_ne_zero_splits_hasSimpleRoots
     exact hall (-τ) 1
   have hall_prev_quasi : AllComboRealRooted (shiftedJacobiMonic (q - 1) α β)
       (quasiJacobiPolynomial q α β τ) :=
-    allComboRealRooted_linear_recombination
-      (a := 1) (b := 0) (c := -τ) (d := 1) (by simp) hquasi_eq hall
+    hall.linear_recombination
+      (a := 1) (b := 0) (c := -τ) (d := 1) (by simp) hquasi_eq
   have hdegree : (shiftedJacobiMonic (q - 1) α β).natDegree + 1 =
       (quasiJacobiPolynomial q α β τ).natDegree := by
     rw [natDegree_shiftedJacobiMonic (q - 1) hα hβ, hmonic.natDegree_eq]

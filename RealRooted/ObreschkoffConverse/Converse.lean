@@ -341,7 +341,7 @@ private theorem strictInterl_of_allComboRealRooted_of_no_common
     have hqg_rr : (qg ≠ 0 ∧ qg.Splits) :=
       isRealRooted_of_dvd hg.1 hg.2 hqg_ne ⟨X - C r, by grind⟩
     have hqhall : AllComboRealRooted qf qg :=
-      allComboRealRooted_common_root_reduction hqf hqg hall
+      hall.common_root_reduction hqf hqg
     have hqdeg : qf.natDegree + 1 = qg.natDegree ∨ qf.natDegree = qg.natDegree := by
       rcases hdeg with hsucc | hsame
       · rw [hqf, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
@@ -507,7 +507,7 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
             _ = 2 := by lia
         have hpq_all_k :
             AllComboRealRooted (iterateTDeriv η k p) (iterateTDeriv η k q) :=
-          allComboRealRooted_iterateTDeriv hpq_all hη_pos k
+          hpq_all.iterateTDeriv hη_pos k
         exact
           ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and_eval_ne
             hpq_all_k hpk_mult hqk_eval_ne

@@ -121,7 +121,7 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
   have hx_pair : xlist.Pairwise (· ≥ ·) := by
     simpa [d, xs, xlist] using
       (pairwise_ge_of_commonInterleaverSeq (fs := ps) hseq hrr_ps hps_ne)
-  let h : ℝ[X] := CommonInterleaver.polyOfDescRoots xlist
+  let h : ℝ[X] := rootPolynomial (xlist : Multiset ℝ)
   refine ⟨h, ?_⟩
   intro p hp
   have hp_mem : p ∈ ps := by lia
@@ -141,8 +141,8 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
             have : j < p.natDegree + 1 := lt_of_lt_of_le hj hp_deg_hi
             simpa [rootSeqDesc_length hp_rr] using this⟩ := by
     grind
-  have hp_strictInterl : StrictInterl p (CommonInterleaver.polyOfDescRoots xlist) :=
-    CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
+  have hp_strictInterl : StrictInterl p (rootPolynomial (xlist : Multiset ℝ)) :=
+    strictInterl_of_slots_rootPolynomial
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
 
@@ -190,7 +190,7 @@ private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_
   have hx_pair : xlist.Pairwise (· ≥ ·) := by
     simpa [d, xs, xlist] using
       (pairwise_ge_of_commonLeftInterleaverSeq (fs := ps) hseq hrr_ps hps_ne)
-  let h : ℝ[X] := CommonInterleaver.polyOfDescRoots xlist
+  let h : ℝ[X] := rootPolynomial (xlist : Multiset ℝ)
   refine ⟨h, ?_⟩
   intro p hp
   have hp_mem : p ∈ ps := by lia
@@ -211,8 +211,8 @@ private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_
             have : j < p.natDegree := lt_of_lt_of_le hj hp_deg_lo
             simpa [rootSeqDesc_length hp_rr] using Nat.succ_lt_succ this⟩ := by
     grind
-  have hp_strictInterl : StrictInterl (CommonInterleaver.polyOfDescRoots xlist) p :=
-    CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
+  have hp_strictInterl : StrictInterl (rootPolynomial (xlist : Multiset ℝ)) p :=
+    strictInterl_left_of_shifted_slots_rootPolynomial
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
 

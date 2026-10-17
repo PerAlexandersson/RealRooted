@@ -502,7 +502,7 @@ theorem exists_hasDerivAt_quadraticInterlacingPencil_root
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ a = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv
@@ -2247,7 +2247,7 @@ theorem wronskian_quadraticInterlacingTangent_pencil
       wronskian (quadraticInterlacingTangent F G a)
         (quadraticInterlacingRight G H a) := by
   rw [quadraticInterlacingPencil_eq_right_add_tangent,
-    wronskian_add_right, wronskian_C_mul_right,
+    wronskian_add_right, Polynomial.wronskian_C_mul_right,
     wronskian_self_eq_zero, mul_zero, add_zero]
 
 /-- The tangent/right pair and the tangent/pencil pair span the same real
@@ -2309,7 +2309,7 @@ theorem strictInterl_quadraticInterlacingRight_of_tangent
     rw [← wronskian_quadraticInterlacingTangent_pencil]
     exact hWQ x
   exact strictInterl_of_allComboRealRooted_of_wronskian_nonneg
-    hBpos hApos (allComboRealRooted_comm hallAB) hWB
+    hBpos hApos (hallAB.comm) hWB
 
 /-- A nonpositive upper-half-plane logarithmic ratio gives the full
 quadratic-closure conclusion.  This packages the Hermite--Biehler endpoint

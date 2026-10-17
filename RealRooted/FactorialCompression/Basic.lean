@@ -1,4 +1,5 @@
 import RealRooted.Basic.Coefficients
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
@@ -58,9 +59,13 @@ noncomputable def kernel (N ℓ : ℕ) (a : ℝ) : ℝ[X] :=
 theorem coeff_commonKernel (r k : ℕ) :
     (commonKernel r).coeff k = if 2 * k ≤ r then
       (r.factorial : ℝ) / ((k.factorial : ℝ) * ((r - 2 * k).factorial : ℝ)) else 0 := by
-  classical
   have hi : k ≤ r / 2 ↔ 2 * k ≤ r := by lia
-  simp [commonKernel, finsetSum_coeff, coeff_C_mul, coeff_X_pow, hi]
+  simpa only [commonKernel, C_mul_X_pow_eq_monomial,
+      Nat.lt_succ_iff, hi] using
+    Polynomial.coeff_sum_range_monomial
+      (fun j => (r.factorial : ℝ) /
+        ((j.factorial : ℝ) * ((r - 2 * j).factorial : ℝ)))
+      (r / 2 + 1) k
 
 /-- A coefficient lowering identity for the common kernel, with the zero boundary included. -/
 theorem mul_coeff_commonKernel_succ (r k : ℕ) :
@@ -152,13 +157,10 @@ theorem natDegree_commonKernel (r : ℕ) : (commonKernel r).natDegree = r / 2 :=
 /-- The coefficients of the level-`ℓ` factorial compression. -/
 theorem coeff_compression (N ℓ k : ℕ) (p : ℝ[X]) :
     (compression N ℓ p).coeff k = if k ≤ N then multiplier N ℓ k * p.coeff k else 0 := by
-  classical
-  unfold compression
-  simp_rw [C_mul_X_pow_eq_monomial]
-  rw [finsetSum_coeff]
-  by_cases hk : k ≤ N
-  · simp [coeff_monomial, hk]
-  · simp [coeff_monomial, Nat.not_lt.mpr (Nat.succ_le_of_lt (Nat.lt_of_not_le hk)), hk]
+  simpa only [compression, C_mul_X_pow_eq_monomial,
+      Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => multiplier N ℓ i * p.coeff i) (N + 1) k
 
 /-- Scalar identity needed for the exact kernel coefficient calculation. -/
 private theorem kernel_coefficient_bracket (N ℓ : ℕ) (a t : ℝ) (hN : N ≠ 0) :

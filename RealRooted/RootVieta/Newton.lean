@@ -73,7 +73,7 @@ theorem reverse_roots_powerSum_eq_sum_inv_pow
     {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) (k : ℕ) :
     p.reverse.roots.powerSum k =
       (p.roots.map fun r => r⁻¹ ^ k).sum := by
-  rw [DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne
+  rw [Polynomial.roots_reverse_eq_map_inv
     hp h0]
   simp [Multiset.powerSum]
 

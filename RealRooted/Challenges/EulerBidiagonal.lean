@@ -14,6 +14,7 @@ import RealRooted.Interlacing.RootDeletionExpansion
 version = 1
 section = "theorems"
 slug = "euler-bidiagonal-interlacing"
+formalized = "2026-10-09"
 years = [2026]
 
 [[definitions]]
@@ -98,7 +99,7 @@ module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
 label = "Consecutive rows of A156289 interlace"
 
 [[theorems]]
-name = "RealRooted.EulerBidiagonal.A166960_spec"
+name = "RealRooted.EulerBidiagonal.A166960_isNegativeSimple_and_strictInterl_succ"
 module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
 label = "Consecutive rows of A166960 interlace (likewise A166961, A166962, A166972)"
 -->
@@ -165,10 +166,13 @@ real-rooted, and the Obreschkoff converse gives $Tf \ll Tg$.
 ## References
 
 G. E. Andrews, W. Gawronski and L. L. Littlejohn, “The Legendre–Stirling numbers,”
-*Discrete Mathematics* 311 (2011), 1255–1272; G. E. Andrews, E. S. Egge, W. Gawronski and
+*Discrete Mathematics* 311 (2011), 1255–1272,
+[doi:10.1016/j.disc.2011.02.028](https://doi.org/10.1016/j.disc.2011.02.028); G. E. Andrews, E. S. Egge, W. Gawronski and
 L. L. Littlejohn, “The Jacobi–Stirling numbers,” *Journal of Combinatorial Theory, Series A*
-120 (2013), 288–303; P. Mongelli, “Total positivity properties of Jacobi–Stirling numbers,”
-*Advances in Applied Mathematics* 48 (2012), 354–364.
+120 (2013), 288–303, [doi:10.1016/j.jcta.2012.08.006](https://doi.org/10.1016/j.jcta.2012.08.006);
+P. Mongelli, “Total positivity properties of Jacobi–Stirling numbers,”
+*Advances in Applied Mathematics* 48 (2012), 354–364,
+[doi:10.1016/j.aam.2011.06.008](https://doi.org/10.1016/j.aam.2011.06.008).
 
 The Jacobi–Stirling triangles are on the
 [Jacobi–Stirling page](/RealRooted/families/jacobi-stirling-numbers/).

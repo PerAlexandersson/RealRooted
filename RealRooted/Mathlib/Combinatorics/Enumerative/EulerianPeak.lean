@@ -47,7 +47,7 @@ private instance (l : List ℕ) (i : ℕ) : Decidable (IsPk l i) := by
   unfold IsPk
   infer_instance
 
-private lemma mem_descentSet (l : List ℕ) (i : ℕ) :
+private lemma mem_descentSet_iff_isDes (l : List ℕ) (i : ℕ) :
     i ∈ l.descentSet ↔ IsDes l i := by
   simp only [List.mem_descentSet]
   constructor
@@ -60,7 +60,7 @@ private lemma mem_descentSet (l : List ℕ) (i : ℕ) :
     rw [List.getD_eq_getElem _ _ h, List.getD_eq_getElem _ _ (by lia)] at hlt
     exact hlt
 
-private lemma mem_peakSet (l : List ℕ) (i : ℕ) :
+private lemma mem_peakSet_iff_isPk (l : List ℕ) (i : ℕ) :
     i ∈ l.peakSet ↔ IsPk l i := by
   simp only [List.mem_peakSet]
   constructor
@@ -114,11 +114,11 @@ private lemma pk_cons (a : ℕ) (m : List ℕ) :
       m.peakSet.image Nat.succ := by
     ext i
     rcases i with _ | _ | i
-    · rw [mem_peakSet]
+    · rw [mem_peakSet_iff_isPk]
       have hi : ¬IsPk (a :: m) 0 := by simp [IsPk]
       simp only [Finset.mem_union, Finset.mem_image]
       split_ifs with h <;> simp [hi]
-    · rw [mem_peakSet]
+    · rw [mem_peakSet_iff_isPk]
       simp only [Finset.mem_union, Finset.mem_image]
       split_ifs with h <;> simp [h]
     · split_ifs with h <;> simp
@@ -243,7 +243,7 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
       (fun j => (l.insertIdx j N).descentSet.card = d) =
       insert L (l.descentSet.image Nat.succ) := by
     ext j
-    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_image, mem_descentSet]
+    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_image, mem_descentSet_iff_isDes]
     constructor
     · rintro ⟨hj, hv⟩
       have hkey := key j hj
@@ -274,7 +274,7 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
       (fun j => (l.insertIdx j N).descentSet.card = d)).card = d + 1 := by
     rw [hK, Finset.card_insert_of_notMem, Finset.card_image_of_injective _
       Nat.succ_injective]
-    simp only [Finset.mem_image, mem_descentSet, not_exists, not_and]
+    simp only [Finset.mem_image, mem_descentSet_iff_isDes, not_exists, not_and]
     intro i hi h
     unfold IsDes at hi
     lia
@@ -334,7 +334,7 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
       insert 0 (insert L (l.peakSet ∪ l.peakSet.image Nat.succ)) := by
     ext j
     simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_union,
-      Finset.mem_image, mem_peakSet]
+      Finset.mem_image, mem_peakSet_iff_isPk]
     constructor
     · rintro ⟨hj, hv⟩
       have hkey := key j hj
@@ -406,18 +406,18 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
       intro a ha hb
       simp only [Finset.mem_image] at hb
       obtain ⟨i, hi, rfl⟩ := hb
-      rw [mem_peakSet] at ha hi
+      rw [mem_peakSet_iff_isPk] at ha hi
       exact IsPk_not_succ hi ha
     rw [hK, Finset.card_insert_of_notMem, Finset.card_insert_of_notMem,
       Finset.card_union_of_disjoint hd, Finset.card_image_of_injective _
         Nat.succ_injective]
     · lia
-    · simp only [Finset.mem_union, Finset.mem_image, mem_peakSet, not_or,
+    · simp only [Finset.mem_union, Finset.mem_image, mem_peakSet_iff_isPk, not_or,
         not_exists, not_and]
       refine ⟨fun h => by unfold IsPk at h; lia,
         fun i hi h => by unfold IsPk at hi; lia⟩
     · simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_image,
-        mem_peakSet, not_or, not_exists, not_and]
+        mem_peakSet_iff_isPk, not_or, not_exists, not_and]
       refine ⟨by lia, fun h => by unfold IsPk at h; lia,
         fun i _ h => by lia⟩
   have hval : ∀ j ∈ range (L + 1),

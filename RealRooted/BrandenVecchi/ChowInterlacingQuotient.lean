@@ -187,7 +187,7 @@ theorem chowS_nonnegCoeffs_and_strictInterl_of_triple
   have hS_rr : S ≠ 0 ∧ S.Splits :=
     isRealRooted_of_dvd houter.2.1.1 houter.2.1.2 hS_ne hS_dvd
   have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn
+    roots_nonpos_of_hasNonnegCoeffs hgnn
   have hdiff_root_one : (fr - f).IsRoot 1 := by
     rw [← hfactor]
     simp [Polynomial.IsRoot.def]

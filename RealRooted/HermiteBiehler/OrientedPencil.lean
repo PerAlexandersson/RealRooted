@@ -30,7 +30,7 @@ theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
       hall hf.ne_zero hg.ne_zero with hsame | hfsucc | hgsucc
   · have horient : StrictInterl g f ∨ StrictInterl f g :=
       strictInterl_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
-        (allComboRealRooted_comm hall) (Or.inr hsame.symm)
+        (hall.comm) (Or.inr hsame.symm)
     rcases horient with hgf | hfg
     · exact hgf
     · apply hfg.of_reverse_of_roots_sum_le hsame.symm
@@ -80,7 +80,7 @@ theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
     linarith [mul_pos hg hf]
   · apply StrictInterl.forward_of_orientation_of_succDegree hgsucc.symm
     exact strictInterl_of_allComboRealRooted hgrr.1 hgrr.2 hfrr.1 hfrr.2
-      (allComboRealRooted_comm hall) (Or.inl hgsucc)
+      (hall.comm) (Or.inl hgsucc)
 
 /-- All-real-combination splitness and the oriented Wronskian sign imply
 upper-half-plane stability of the two-parameter pencil. -/
@@ -113,9 +113,9 @@ theorem isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wronskian_nonneg_o
         simp only [leadingCoeff_neg]
         linarith
       have hall_left : AllComboRealRooted (-f) g := by
-        simpa using allComboRealRooted_C_mul_left (c := -1) hall
+        simpa using hall.C_mul_left (c := -1)
       have hall' : AllComboRealRooted (-f) (-g) := by
-        simpa using allComboRealRooted_C_mul_right (c := -1) hall_left
+        simpa using hall_left.C_mul_right (c := -1)
       have hW' : ∀ x : ℝ, 0 ≤ (wronskian (-g) (-f)).eval x := by
         intro x
         rw [wronskian_neg_left, wronskian_neg_right, neg_neg]
@@ -129,9 +129,9 @@ theorem isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wronskian_nonneg_o
         simp only [leadingCoeff_neg]
         linarith
       have hall_left : AllComboRealRooted (-f) g := by
-        simpa using allComboRealRooted_C_mul_left (c := -1) hall
+        simpa using hall.C_mul_left (c := -1)
       have hall' : AllComboRealRooted g (-f) :=
-        allComboRealRooted_comm hall_left
+        hall_left.comm
       have hW' : ∀ x : ℝ, 0 ≤ (wronskian (-f) g).eval x := by
         intro x
         rw [wronskian_neg_left, wronskian_neg_eq]
@@ -146,9 +146,9 @@ theorem isUpperHalfPlaneStablePencil_of_allComboRealRooted_of_wronskian_nonneg_o
         simp only [leadingCoeff_neg]
         linarith
       have hall_right : AllComboRealRooted f (-g) := by
-        simpa using allComboRealRooted_C_mul_right (c := -1) hall
+        simpa using hall.C_mul_right (c := -1)
       have hall' : AllComboRealRooted (-g) f :=
-        allComboRealRooted_comm hall_right
+        hall_right.comm
       have hW' : ∀ x : ℝ, 0 ≤ (wronskian f (-g)).eval x := by
         intro x
         rw [wronskian_neg_right, wronskian_neg_eq]

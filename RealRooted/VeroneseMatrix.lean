@@ -370,7 +370,7 @@ lemma veroneseLinearFactorConstEntry_det_nonneg
   have hi_nat : i₁.1 ≤ i₂.1 := by lia
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry
-  split_ifs <;> (first | lia | simp <;> linarith [ha, sq_nonneg a])
+  split_ifs <;> (first | lia | nlinarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a)
@@ -437,7 +437,7 @@ lemma veroneseLinearFactorConstLastEntry_det_nonneg
         veroneseLinearFactorLastConstEntry a j₂ := by
   have hj_nat : j₁.1 ≤ j₂.1 := by lia
   unfold veroneseLinearFactorConstEntry veroneseLinearFactorLastConstEntry
-  split_ifs <;> (first | lia | simp <;> linarith [ha, sq_nonneg a])
+  split_ifs <;> (first | lia | nlinarith [ha, sq_nonneg a])
 
 theorem veroneseLinearFactorMatrixDesc_has2x2_mixed
     {r : ℕ} {a : ℝ} (ha : 0 ≤ a) (hr2 : 2 ≤ r)
@@ -847,7 +847,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     intro a ha
     rcases List.mem_map.1 ha with ⟨x, hx, rfl⟩
     have hx_root : x ∈ p.roots := Multiset.mem_toList.mp hx
-    linarith [roots_nonpos_of_nonneg_coeffs hprr_splits hpnn x hx_root]
+    linarith [roots_nonpos_of_hasNonnegCoeffs hpnn x hx_root]
   have hprod := linearFactorProduct_neg_roots_eq_rootsProduct p
   have hfac :
       C p.leadingCoeff * linearFactorProduct as = p := by

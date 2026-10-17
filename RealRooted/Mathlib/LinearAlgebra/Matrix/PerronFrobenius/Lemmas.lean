@@ -185,16 +185,6 @@ lemma positive_mul_vec_of_nonneg_vec [Fintype n] (hA_pos : ∀ i j, 0 < A i j)
   simpa only [Matrix.mulVec] using
     positive_mul_vec_pos (A := A) hA_pos hv_nonneg hv_ne_zero
 
-/-! ### Support and boundary edges -/
-
-/-- For a nonnegative vector, any index outside the zero set has positive value. -/
-lemma pos_of_nonneg_of_not_mem_zero_set {v : n → ℝ}
-    (hv_nonneg : ∀ i, 0 ≤ v i) {i : n} (hi : i ∉ {j | v j = 0}) :
-    0 < v i := by
-  have hvi_ne_zero : v i ≠ 0 := by
-    simpa using hi
-  exact lt_of_le_of_ne (hv_nonneg i) (Ne.symm hvi_ne_zero)
-
 /-- Every nontrivial proper subset of vertices in the quiver of an irreducible matrix has an
 outgoing positive edge. -/
 lemma Irreducible.exists_edge_out {A : Matrix n n ℝ}
@@ -265,7 +255,7 @@ theorem IsPrimitive.of_irreducible_pos_diagonal [Fintype n] [Nonempty n] [Decida
   have hk_pos : 0 < k := by
     have h_card_pos : 0 < N := Fintype.card_pos
     rcases Nat.eq_or_lt_of_le (Nat.one_le_of_lt h_card_pos) with hN | hN_lt
-    · simp_all only [le_refl, tsub_self, List.Nat.eq_of_le_zero, zero_mul, zero_add, N, k]
+    · simp_all only [le_refl, tsub_self, Nat.eq_zero_of_le_zero, zero_mul, zero_add, N, k]
     · lia
   constructor
   · exact hA_nonneg

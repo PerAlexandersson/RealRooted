@@ -56,6 +56,29 @@ and theorems), and `results/` lists every selected declaration with a text and
 kind filter.  The displayed Markdown must have one H1 and a nonempty
 `## References` section.
 
+## Author credits
+
+The generated `authors/` page indexes the people named in the optional
+`authors` arrays, with each catalog page that credits them.  By default an
+entry displays the compact string from the metadata.  `website/authors.toml`
+is an optional curated directory for expanding a name and adding a public
+link; it is deliberately separate from the Lean source so disambiguation does
+not require editing every catalog page:
+
+```toml
+[authors]
+"Fisk" = { name = "Steve Fisk", url = "https://example.org/" }
+
+[overrides]
+"some-page:Zhang" = { name = "Full Name Zhang", url = "https://example.org/" }
+```
+
+An override applies only to the specified page slug, so the same surname can
+name different people on different pages.  Entries are grouped by the resolved
+name: every key or override that resolves to the same name shares one Authors
+entry, and the build fails if one name is given two different links.  An
+unresolved key keeps its compact metadata string as its own entry.
+
 The selected-declaration digest is the SHA-256 of UTF-8 canonical JSON with
 sorted keys and compact separators, for this object:
 

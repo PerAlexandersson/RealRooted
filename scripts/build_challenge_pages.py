@@ -55,6 +55,9 @@ def main() -> int:
         if args.audit_report is not None:
             validate_audit_report(args.audit_report, pages, resolved, revision)
         if args.check:
+            # Render in memory so this check covers templates, internal links,
+            # and optional catalog side data such as the Authors directory.
+            render_site(root, pages, resolved, revision)
             print(f"ok: validated {len(pages)} curated catalog pages")
             return 0
         output = (

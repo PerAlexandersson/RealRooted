@@ -61,12 +61,6 @@ private def sh (v : ℕ → ℝ) (k : ℕ) : ℝ := if k = 0 then 0 else v (k - 
 private def NoIntZeros (a : ℕ → ℝ) : Prop :=
   ∀ i j k, i < j → j < k → a i ≠ 0 → a k ≠ 0 → a j ≠ 0
 
-/-- The ULC inequality clause of `IsULC`. -/
-private def ULCIneq (d : ℕ) (a : ℕ → ℝ) : Prop :=
-  ∀ k, 0 < k → k < d →
-    a (k - 1) * a (k + 1) * ((k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ)) ≤
-      a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ))
-
 /-! ### (1) nonnegativity and (2) support -/
 
 private theorem conv_nonneg {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : ∀ k, 0 ≤ b k) (k : ℕ) :
@@ -75,7 +69,7 @@ private theorem conv_nonneg {a b : ℕ → ℝ} (ha : ∀ k, 0 ≤ a k) (hb : �
 
 private theorem conv_support {m n : ℕ} {a b : ℕ → ℝ} (ha : ∀ k, m < k → a k = 0)
     (hb : ∀ k, n < k → b k = 0) (k : ℕ) (hk : m + n < k) : conv a b k = 0 := by
-  unfold conv
+  unfold conv natCauchyConvolution
   refine sum_eq_zero fun i hi => ?_
   by_cases h : m < i
   · rw [ha i h, zero_mul]
@@ -113,7 +107,7 @@ private def ker (a : ℕ → ℝ) (k j : ℕ) : ℝ := if j ≤ k then a (k - j)
 private theorem conv_eq_ker_sum (a u : ℕ → ℝ) (k L : ℕ) (hL : k < L) :
     conv a u k = ∑ j ∈ range L, ker a k j * u j := by
   have h1 : conv a u k = ∑ j ∈ range (k + 1), ker a k j * u j := by
-    unfold conv
+    unfold conv natCauchyConvolution
     rw [← sum_range_reflect]
     refine sum_congr rfl fun j hj => ?_
     rw [mem_range] at hj
@@ -199,10 +193,11 @@ private theorem sh_nonneg {q : ℕ → ℝ} (hq : ∀ k, 0 ≤ q k) (k : ℕ) : 
 /-- Merging step: if `p, q` satisfy the ULC inequalities of order `M` and are suitably
 interlaced, then `p + X q` satisfies the ULC inequalities of order `M + 1`. -/
 private theorem merge {M : ℕ} {p q : ℕ → ℝ} (hp0 : ∀ k, 0 ≤ p k) (hq0 : ∀ k, 0 ≤ q k)
-    (hpM : p (M + 1) = 0) (hpu : ULCIneq M p) (hqu : ULCIneq M q)
+    (hpM : p (M + 1) = 0) (hpu : CoeffUltraLogConcaveUpTo M p)
+    (hqu : CoeffUltraLogConcaveUpTo M q)
     (h1 : ∀ i j, i < j → q j * p i ≤ q i * p j)
     (h2 : ∀ i j, i < j → sh q i * p j ≤ sh q j * p i) :
-    ULCIneq (M + 1) (fun k => p k + sh q k) := by
+    CoeffUltraLogConcaveUpTo (M + 1) (fun k => p k + sh q k) := by
   intro k hk0 hkM
   obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by lia⟩
   obtain ⟨r, hr⟩ : ∃ r, M = j + 1 + r := ⟨M - (j + 1), by lia⟩
@@ -386,9 +381,10 @@ private theorem h2_b {n : ℕ} {b : ℕ → ℝ} (hb : IsULC (n + 1) b) :
 
 private theorem conv_sh (a v : ℕ → ℝ) (k : ℕ) : conv a (sh v) k = sh (conv a v) k := by
   cases k with
-  | zero => simp [conv, sh]
+  | zero => simp [conv, natCauchyConvolution, sh]
   | succ k =>
-    simp only [sh, conv, Nat.succ_ne_zero, ite_false, add_tsub_cancel_right]
+    simp only [sh, conv, natCauchyConvolution, Nat.succ_ne_zero, ite_false,
+      add_tsub_cancel_right]
     rw [sum_range_succ]
     simp only [Nat.sub_self, ite_true, mul_zero, add_zero]
     refine sum_congr rfl fun i hi => ?_
@@ -398,14 +394,14 @@ private theorem conv_sh (a v : ℕ → ℝ) (k : ℕ) : conv a (sh v) k = sh (co
 private theorem conv_decomp {n : ℕ} {b : ℕ → ℝ} (hb : IsULC (n + 1) b) (a : ℕ → ℝ) (k : ℕ) :
     conv a b k * ((n : ℝ) + 1) = conv a (dR b n) k + sh (conv a (dL b)) k := by
   rw [← conv_sh]
-  unfold conv
+  unfold conv natCauchyConvolution
   rw [sum_mul, ← sum_add_distrib]
   refine sum_congr rfl fun i _ => ?_
   rw [mul_assoc, decomp hb, mul_add]
 
 private theorem conv_of_deg0 {a b : ℕ → ℝ} (hb : ∀ k, 0 < k → b k = 0) (k : ℕ) :
     conv a b k = a k * b 0 := by
-  unfold conv
+  unfold conv natCauchyConvolution
   rw [sum_eq_single_of_mem k (mem_range.2 (by lia))]
   · rw [Nat.sub_self]
   · intro i hi hik
@@ -413,7 +409,7 @@ private theorem conv_of_deg0 {a b : ℕ → ℝ} (hb : ∀ k, 0 < k → b k = 0)
     rw [hb (k - i) (by lia), mul_zero]
 
 private theorem ulcIneq_of_mul {d : ℕ} {f : ℕ → ℝ} {c : ℝ} (hc : 0 < c)
-    (h : ULCIneq d (fun k => f k * c)) : ULCIneq d f := by
+    (h : CoeffUltraLogConcaveUpTo d (fun k => f k * c)) : CoeffUltraLogConcaveUpTo d f := by
   intro k hk0 hkd
   have h' := h k hk0 hkd
   simp only at h'
@@ -424,7 +420,7 @@ private theorem ulcIneq_of_mul {d : ℕ} {f : ℕ → ℝ} {c : ℝ} (hc : 0 < c
 /-! ### (4) The ULC inequality, by induction on `n` -/
 
 private theorem conv_ulcIneq {m : ℕ} {a : ℕ → ℝ} (ha : IsULC m a) :
-    ∀ n (b : ℕ → ℝ), IsULC n b → ULCIneq (m + n) (conv a b) := by
+    ∀ n (b : ℕ → ℝ), IsULC n b → CoeffUltraLogConcaveUpTo (m + n) (conv a b) := by
   have hsp : ∀ p q r s, p ≤ q → p ≤ r → q ≤ s → r ≤ s → p + s = q + r →
       a p * a s ≤ a q * a r :=
     fun p q r s h1 h2 h3 h4 h5 => spread ha.1 (lc_of_ulc ha) ha.2.2.1 h1 h2 h3 h4 h5
@@ -442,7 +438,8 @@ private theorem conv_ulcIneq {m : ℕ} {a : ℕ → ℝ} (ha : IsULC m a) :
     intro b hb
     have hR := isULC_dR hb
     have hL := isULC_dL hb
-    have hmerge : ULCIneq (m + n + 1) (fun k => conv a (dR b n) k + sh (conv a (dL b)) k) :=
+    have hmerge : CoeffUltraLogConcaveUpTo (m + n + 1)
+        (fun k => conv a (dR b n) k + sh (conv a (dL b)) k) :=
       merge (conv_nonneg ha.1 hR.1) (conv_nonneg ha.1 hL.1)
         (conv_support ha.2.1 hR.2.1 _ (by lia)) (ih _ hR) (ih _ hL)
         (fun i j hij => conv_tp2 ha.1 hsp (h1_b hb) hij)

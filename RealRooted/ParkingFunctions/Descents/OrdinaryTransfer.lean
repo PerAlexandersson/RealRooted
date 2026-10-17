@@ -16,20 +16,23 @@ open Polynomial
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- Integral descent enumerator of ordinary parking functions. -/
 noncomputable def parkingDescentPolynomialInt : ℕ → ℤ[X]
   | 0 => 1
   | n + 1 =>
-      descentGeneratingPolynomial (R := ℤ) (parkingFunctions (n + 1))
+      (parkingFunctions (n + 1)).genPoly fun w => (List.ofFn w).descentCount
 
 /-- Integral literal descent enumerator of all finite words. -/
 noncomputable def literalWordDescentPolynomialInt (m : ℕ) : ℕ → ℤ[X]
   | 0 => 1
   | n + 1 =>
-      descentGeneratingPolynomial (R := ℤ)
-        (Finset.univ : Finset (Fin (n + 1) → Fin m))
+      (Finset.univ : Finset (Fin (n + 1) → Fin m)).genPoly
+        fun w => (List.ofFn w).descentCount
 
 @[simp]
 theorem parkingDescentPolynomialInt_zero :
@@ -72,7 +75,7 @@ theorem parkingWords_filter_wordContent_eq {n : ℕ}
 theorem sum_fixedContentWords_relabelWord {n m : ℕ}
     (μ : Multiset (Fin m)) (e : Equiv.Perm (Fin m)) :
     (∑ w ∈ fixedContentWords (n := n + 1) μ,
-        (X : ℤ[X]) ^ descentNumber (relabelWord e w)) =
+        (X : ℤ[X]) ^ (List.ofFn (relabelWord e w)).descentCount) =
       fixedContentWordDescentPolynomial (n := n + 1) (μ.map e) := by
   classical
   unfold fixedContentWordDescentPolynomial
@@ -97,7 +100,7 @@ theorem sum_fixedContentWords_relabelWord {n m : ℕ}
 theorem sum_fixedContentWordDescentPolynomial_parkingWordContents (n : ℕ) :
     (∑ μ ∈ parkingWordContents (n + 1),
         fixedContentWordDescentPolynomial (n := n + 1) μ) =
-      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
+      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount := by
   classical
   unfold parkingWordContents
   rw [← Finset.sum_fiberwise_of_maps_to
@@ -111,8 +114,8 @@ theorem sum_fixedContentWordDescentPolynomial_parkingWordContents (n : ℕ) :
 theorem sum_parkingWords_relabelWord (n : ℕ)
     (e : Equiv.Perm (Fin (n + 2))) :
     (∑ w ∈ parkingWords (n + 1),
-        (X : ℤ[X]) ^ descentNumber (relabelWord e w)) =
-      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
+        (X : ℤ[X]) ^ (List.ofFn (relabelWord e w)).descentCount) =
+      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount := by
   classical
   rw [← sum_fixedContentWordDescentPolynomial_parkingWordContents n]
   unfold parkingWordContents
@@ -123,7 +126,7 @@ theorem sum_parkingWords_relabelWord (n : ℕ)
   rw [parkingWords_filter_wordContent_eq μ hμ]
   calc
     (∑ w ∈ fixedContentWords (n := n + 1) μ,
-        (X : ℤ[X]) ^ descentNumber (relabelWord e w)) =
+        (X : ℤ[X]) ^ (List.ofFn (relabelWord e w)).descentCount) =
         fixedContentWordDescentPolynomial (n := n + 1) (μ.map e) :=
       sum_fixedContentWords_relabelWord μ e
     _ = fixedContentWordDescentPolynomial (n := n + 1) μ :=
@@ -139,16 +142,16 @@ def parkingWordRelabelPreimage (n : ℕ)
 theorem sum_words_filter_isParkingWord_relabelWord (n : ℕ)
     (e : Equiv.Perm (Fin (n + 2))) :
     (∑ w ∈ parkingWordRelabelPreimage n e,
-        (X : ℤ[X]) ^ descentNumber w) =
-      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
+      ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount := by
   classical
   unfold parkingWordRelabelPreimage
   calc
     (∑ w ∈ (Finset.univ : Finset (Fin (n + 1) → Fin (n + 2))).filter
         (fun w => IsParkingWord (relabelWord e w)),
-        (X : ℤ[X]) ^ descentNumber w) =
+        (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       ∑ w ∈ parkingWords (n + 1),
-        (X : ℤ[X]) ^ descentNumber (relabelWord e.symm w) := by
+        (X : ℤ[X]) ^ (List.ofFn (relabelWord e.symm w)).descentCount := by
       apply Finset.sum_bij (fun w _ => relabelWord e w)
       · intro w hw
         rw [Finset.mem_filter] at hw
@@ -169,37 +172,36 @@ theorem sum_words_filter_isParkingWord_relabelWord (n : ℕ)
         · funext i
           exact e.apply_symm_apply (w i)
       · intro w _
-        congr 2
-        exact (relabelWord_symm_relabelWord e w).symm
-    _ = ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w :=
+        rw [relabelWord_symm_relabelWord]
+    _ = ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount :=
       sum_parkingWords_relabelWord n e.symm
 
 /-- Pollak's unique shift upgrades the cardinality factor to the full
 integral descent polynomial in positive length. -/
 theorem wordDescentSum_succ_eq_succ_nsmul_parkingWordDescentSum (n : ℕ) :
-    (∑ w : Fin (n + 1) → Fin (n + 2), (X : ℤ[X]) ^ descentNumber w) =
+    (∑ w : Fin (n + 1) → Fin (n + 2), (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       (n + 2) •
-        ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w := by
+        ∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount := by
   classical
   apply sum_eq_succ_nsmul_of_cyclicValueShift_filter_sum
     (Finset.univ : Finset (Fin (n + 1) → Fin (n + 2)))
-    (fun w => (X : ℤ[X]) ^ descentNumber w)
-    (∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w)
+    (fun w => (X : ℤ[X]) ^ (List.ofFn w).descentCount)
+    (∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount)
   intro c
   unfold cyclicParkingPreimage
   change
     (∑ w ∈ (Finset.univ : Finset (Fin (n + 1) → Fin (n + 2))).filter
         (fun w => IsParkingWord (relabelWord (finCycle c) w)),
-      (X : ℤ[X]) ^ descentNumber w) = _
+      (X : ℤ[X]) ^ (List.ofFn w).descentCount) = _
   exact sum_words_filter_isParkingWord_relabelWord n (finCycle c)
 
 /-- The extra-alphabet parking-word descent sum is the ordinary integral
 parking-function enumerator in positive length. -/
 theorem parkingWordDescentSum_succ_eq_parkingDescentPolynomialInt (n : ℕ) :
-    (∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ descentNumber w) =
+    (∑ w ∈ parkingWords (n + 1), (X : ℤ[X]) ^ (List.ofFn w).descentCount) =
       parkingDescentPolynomialInt (n + 1) := by
   unfold parkingDescentPolynomialInt
-  unfold descentGeneratingPolynomial
+  unfold Finset.genPoly
   symm
   apply Finset.sum_bij (fun w _ => parkingWordEmbed w)
   · intro w hw
@@ -216,7 +218,8 @@ theorem parkingWordDescentSum_succ_eq_parkingDescentPolynomialInt (n : ℕ) :
     obtain ⟨v, hv, hvw⟩ := hw'
     exact ⟨v, hv, hvw⟩
   · intro w _
-    congr 2
+    beta_reduce
+    rw [descentCount_parkingWordEmbed]
 
 /-- Exact integral ordinary parking-to-all-words transfer. -/
 theorem succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt
@@ -230,21 +233,6 @@ theorem succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialIn
         ← parkingWordDescentSum_succ_eq_parkingDescentPolynomialInt]
       exact (wordDescentSum_succ_eq_succ_nsmul_parkingWordDescentSum n).symm
 
-/-- Casting an integral descent-generating polynomial to the reals commutes
-with the finite sum. -/
-theorem map_descentGeneratingPolynomial_int {n : ℕ} {α : Type*}
-    [LT α] [DecidableRel (fun a b : α => a < b)]
-    (words : Finset (Fin (n + 1) → α)) :
-    (descentGeneratingPolynomial (R := ℤ) words).map
-        (Int.castRingHom ℝ) =
-      descentGeneratingPolynomial (R := ℝ) words := by
-  classical
-  unfold descentGeneratingPolynomial
-  rw [Polynomial.map_sum]
-  apply Finset.sum_congr rfl
-  intro w _
-  simp
-
 /-- Casting the integral literal enumerator recovers the existing real one. -/
 theorem map_literalWordDescentPolynomialInt (m n : ℕ) :
     (literalWordDescentPolynomialInt m n).map (Int.castRingHom ℝ) =
@@ -252,7 +240,7 @@ theorem map_literalWordDescentPolynomialInt (m n : ℕ) :
   cases n with
   | zero => simp [literalWordDescentPolynomialInt, literalWordDescentPolynomial]
   | succ n =>
-      exact map_descentGeneratingPolynomial_int Finset.univ
+      exact Finset.map_genPoly _ _ _
 
 /-- Casting the integral parking enumerator recovers the existing real one. -/
 theorem map_parkingDescentPolynomialInt (n : ℕ) :
@@ -261,7 +249,7 @@ theorem map_parkingDescentPolynomialInt (n : ℕ) :
   cases n with
   | zero => simp [parkingDescentPolynomialInt, parkingDescentPolynomial]
   | succ n =>
-      exact map_descentGeneratingPolynomial_int (parkingFunctions (n + 1))
+      exact Finset.map_genPoly _ _ _
 
 /-- Real-coefficient form of the integral transfer. -/
 theorem succ_nsmul_map_parkingDescentPolynomialInt_eq_literalWord (n : ℕ) :

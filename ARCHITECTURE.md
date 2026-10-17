@@ -23,6 +23,12 @@ unless a documented compatibility module is temporarily bridging a migration.
 1. **Mathlib shims.** `RealRooted/Mathlib/` contains upstream-shaped additions
    to Mathlib namespaces. These files may import Mathlib or other
    `RealRooted.Mathlib` files, but not the RealRooted theorem library.
+   Every shim file has an entry in `scripts/mathlib_shims.json`; run
+   `scripts/check_mathlib_shims.py --mathlib DIR --check-registry --strict`
+   before a Mathlib bump to list shim declarations that now exist upstream.
+   When a shim is proposed upstream, record the PR in its entry's `note`; once
+   it lands, mark the entry exact (not `speculative`) and delete the shim on the
+   next compatible bump.
 2. **Polynomial and root infrastructure.** Elementary polynomial identities,
    root lists, derivatives, reversals, Wronskians, and the basic interlacing
    predicates.
@@ -1063,7 +1069,7 @@ Separation.Roots}`, `Separation.Finite -> Separation.Euler`, and
 `{RootAmplitude.Polynomial, Separation.Euler, Separation.Roots} ->
 Separation.Polynomial`. Elementary consumers can stop before the analytic or
 polynomial leaves. All polynomial corollaries use the single canonical
-`RootAmplitude.amp` from `Finite`.
+`RootAmplitude.amplitude` from `Finite`.
 
 Two independent downstream OEIS proof paths justify the public surface. The
 A366159 migration targets `A366159TailCoeff.A366159C_amplitude` and
@@ -1662,6 +1668,111 @@ The lag-feedback route of `rr_row_splits` adds `ThreeTermRecurrence.LagFeedback`
 The helpers shared by the row routes (exact coefficient reads and fits, term builders,
 auxiliary definitions in proofs) move to `Tactic.Row.Support`; the four budgets rise by one,
 to 1764, 1624, 530 and 694.
+
+#1256 (duplicate statistics): `CombinatorialExamples.PeakValues` now uses the canonical
+`Equiv.Perm.peakSet`, so the tactic regression closure gains the staging modules
+`PermStatistics`, `Pattern`, `Peak` and `Descent`; its budget rises to 698.
+
+#1256 (parking functions): `ParkingFunctions.Descents.Basic` now uses the canonical
+`ParkingFunction.IsParkingFunction`, `List.descentCount` and `Finset.genPoly`, so it imports
+the staging modules `ParkingFunction`, `Descent` and `GenPoly`.  The budgets of
+`Descents.Literal`, `Descents.DiaconisHicks` and `Descents.DescentChains` rise by three, to 5,
+10 and 9.
+
+Streamlining: `DegreeDropReversal` uses the reversal-root lemmas of the shim
+`Mathlib.Algebra.Polynomial.Reverse` instead of its own copies, so it imports that shim. The
+budgets of `Challenges.Narayana`, `ProductSequence.Factors`, `ProductSequence.Core`,
+`ProductSequence.Lifts`, `ProductSequence.FactorFamilies`, `ProductSequence.ScalarFamilies`,
+`RootVieta.Newton`, `SequenceClosure`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`,
+`Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`,
+`Tactic.Product.Syntax.Lifts` rise by one.
+
+Streamlining: `rootPolynomial` moves to the light module `RootPolynomial`, which the
+common-interleaver construction now uses instead of its own descending-root polynomial. The budgets
+of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
+
+After merging the reversal-shim streamlining, `Challenges.Narayana` imports both new light modules. The budgets of `Challenges.Narayana` rise by one.
+
+Streamlining: the shim `Mathlib.Algebra.Polynomial.Degree.Lemmas` holds `coeff_comp_neg_X` and
+`natDegree_comp_neg_X`, replacing three local copies. The budgets of `Tactic.Examples`,
+`Challenges.Narayana`, `Tactic` rise by one.
+
+After merging the root-polynomial streamlining, these modules import both new light modules. The budgets of `Tactic.Examples`, `Challenges.Narayana`, `Tactic` rise by one.
+
+The recurrence-root-windows challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+f-transform theory: new modules `SymmetricDecomposition.FPolynomialRecurrence` (the transform of a
+first-order derivative recurrence), `SymmetricDecomposition.FPolynomialSequence` (interlacing of
+transforms of half-growth sequences) and the route `Tactic.Row.FTransform`. The budgets of
+`RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise by two or three.
+
+The catalog page `Challenges.FPolynomialRecurrences` adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The root-amplitude and coefficient-dominance challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The reciprocal-shift and product-sequence challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Edrei-Thoma challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The new module Interlacing/RemainderCertificate adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+dedup4 batch B: the shims Mathlib/Algebra/Ring/Parity and Mathlib/Analysis/Calculus/LocalExtr/Polynomial now sit low in the graph (FamilyClosure, FieldDivision), giving one or two extra modules in the closures above them. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Challenges.Hadamard`, `HermiteBiehler.Forward`, `Derivative`, `Derivative.FamilyClosure`, `WagnerX.ProperPosition`, `Kurtz`, `Challenges.Kurtz`, `Challenges.Narayana`, `LiuWang`, `LiuWang.OneAddXPositive`, `Wronskian.Converse`, `RootBounds`, `Favard.Affine.Basic`, `Favard.Affine.Denominator`, `Favard.Affine.RowSign`, `Favard.Affine`, `Tactic.Favard`, `Tactic.Favard.Basic`, `Tactic.Favard.DirectSyntax`, `Tactic.Favard.DenominatorSyntax`, `Tactic.Favard.RowSignSyntax`, `Tactic.Favard.Direct`, `Tactic.Favard.Denominator`, `Tactic.Favard.RowSign`, `Tactic.OEIS.Basic`, `Tactic.OEIS.NegativeLag`, `Transforms.BrandenE.BasisImage`, `Tactic`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts`, `MaWang.CountBounds`, `MaWang.StrictSigns.RootSigns`, `MaWang.StrictSigns.Assembly`, `MaWang.StrictSigns`, `MaWang.Strong`, `MaWang.Weak.Regularization`, `MaWang.DerivativeSequence`, `MaWang.DerivativeDenominator`, `MaWang.Derivative`, `Interlacing.Residue`, `Tactic.MaWang.Basic`, `Tactic.MaWang.StepSyntax`, `Tactic.MaWang.SequenceSyntax`, `Tactic.MaWang.DenominatorSyntax`, `Tactic.MaWang.FactorSyntax`, `Tactic.MaWang.Steps`, `Tactic.MaWang.Sequences`, `Tactic.MaWang.Denominator`, `Tactic.MaWang.Factors`, `Tactic.MaWang`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`, `Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`, `Tactic.Product.Syntax.Lifts` rise to the new closure sizes.
+
+The PF preserver-closure module (#1420) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The coordinate PF multiplier module (#1427 step 1) adds one module. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
+
+The Euler-bidiagonal preservation module (#1428) adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Euler-bidiagonal preservation module (#1428) adds one module. The budgets of  rise to the new closure sizes.
+
+The finite-family Liu-Wang module (#1425) adds one module; the MaWangLiuWang page now imports it and MaWang.CriticalSign. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `LiuWang`, `Tactic.OEIS.NegativeLag`, `Tactic`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts` rise to the new closure sizes.
+
+Three new modules (#1426 MatrixInterlacing/Composition, #1429 DerivativeRecurrence/EndpointWindow, #1432 MultiplierSequence/ProperPosition) and their catalog imports. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The closed-form interlacing route (Tactic/Row/ClosedFormInterlaces) adds one module under RowInterlacing. The budgets of `RealRooted`, `Production`, `Tactic.Examples`, `Tactic` rise to the new closure sizes.
+
+Finite-order Weyl preserver (#1427 Theorem B) and the stability substitution shim add two modules. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
+
+The endpoint-derivative and root-continuity challenge pages add two modules. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Merged with main: the two new challenge pages and the finite-order Weyl modules together. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+The Poisson star modules (#1423) add two modules. The budgets of `RealRooted`, `Production`, `Challenges.BorceaBranden` rise to the new closure sizes.
+
+The Poisson star modules (#1423) add two modules. The budgets of `Challenges.BorceaBranden` rise to the new closure sizes.
+
+The iterated-derivative-shift challenge page adds one module. The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Dedup foundation batch 2 The budgets of `Tactic.Examples`, `Applications.OEIS.A144438`, `Applications.OEIS.A144438.DecoratedCycle`, `Applications.OEIS.InversePeaks`, `Applications.OEIS.LowerReentrantCorner`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `PolyaFrequency.EventuallyPolynomial`, `PolyaFrequency.EventuallyPolynomial.CausalClosure`, `Challenges.Hadamard`, `PolyaFrequencyConvolution.Basic`, `PolynomialValueEulerNumerator`, `InterlacingSequence.NonnegativeShift`, `EulerOperator.Darboux`, `EulerOperator.Darboux.Interlacing`, `Laguerre`, `Laguerre.Roots`, `Hermite`, `Hermite.Roots`, `Legendre`, `Legendre.Roots`, `Basic`, `Basic.PolynomialFacts`, `Basic.ProperPosition`, `Bezoutian`, `Bezoutian.ComplexRoots`, `Bezoutian.LowDegree`, `Bezoutian.MatrixBasics`, `Bezoutian.RootEvaluation`, `Bezoutian.StrictInterleaving`, `Bezoutian.WronskianConverse`, `HermiteBiehler.Basic`, `HermiteBiehler.Forward`, `HermiteBiehler.LogDerivative`, `HermiteBiehler.OddEven`, `ClassicalHurwitzMatrix`, `ClassicalHurwitzMatrix.Routh`, `ClassicalHurwitzMatrix.Routh.Determinant`, `ClassicalHurwitzMatrix.Routh.Sequence`, `ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative`, `ClassicalHurwitzMatrix.Routh.TotallyNonnegative`, `ClassicalHurwitzMatrix.Stability`, `ClassicalHurwitzMatrix.Stability.Extraction`, `ClassicalHurwitzMatrix.Stability.Rotation`, `ClassicalHurwitzMatrix.Stability.Vieta`, `Interlacing.NegativeRoots`, `ClassicalHurwitzMatrix.TotallyNonnegative`, `ObreschkoffContinuity`, `AllCombo`, `Compatibility.Pair`, `Graph.IndependencePolynomial.Basic`, `Graph.IndependencePolynomial.CliqueDeletion`, `Graph.IndependencePolynomial.Recurrence`, `Graph.MatchingPolynomial`, `EulerianMixedCompatibility.Insertion`, `Basic.AffineInterlacing`, `AffineFamily.Basic`, `AffineFamily.PositiveFamily`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.UnivariateFiniteSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.UnivariateSymbol`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `Derivative`, `Derivative.Algebra`, `Derivative.FamilyClosure`, `Derivative.Interlacing`, `Derivative.RootCounting`, `BasisTransform`, `WagnerX.ProperPosition`, `WagnerX.AffineFactors`, `WagnerX`, `Kurtz`, `Challenges.Kurtz`, `Challenges.Interlacing`, `Challenges.Narayana`, `FiniteFreeAdditive.HalfIntegerPreservation`, `FiniteFreeAdditive.Preservation`, `DerivativeRecurrence`, `DerivativeRecurrence.GeneralizedLaguerre`, `DerivativeRecurrence.QuadraticInterlacing`, `DerivativeRecurrence.QuadraticLagStrict`, `DerivativeRecurrence.AffineLagStrict`, `LiuWang`, `LiuWang.OneAddXPositive`, `LiuWang.Step`, `LiuOppositeSigns.RootCount`, `LiuOppositeSigns.RootDeletion`, `LiuOppositeSigns.PositiveSplitRootCount`, `LiuOppositeSigns`, `LiuOppositeSigns.RootCountRelStability`, `Wronskian.Forward`, `Wronskian.Converse`, `Wronskian.Successor`, `Wronskian.Successor.Gap`, `Wronskian.Successor.Interlacing`, `Wronskian.Successor.Signs`, `Wronskian.Successor.Splits`, `ProductSequence.Factors`, `ProductSequence.Core`, `ProductSequence.Lifts`, `ProductSequence.FactorFamilies`, `ProductSequence.ScalarFamilies`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs`, `RootBounds`, `Favard.Affine.Basic`, `Favard.Affine.Denominator`, `Favard.Affine.RowSign`, `Favard.Affine`, `Tactic.Favard`, `Tactic.Favard.Basic`, `Tactic.Favard.DirectSyntax`, `Tactic.Favard.DenominatorSyntax`, `Tactic.Favard.RowSignSyntax`, `Tactic.Favard.Direct`, `Tactic.Favard.Denominator`, `Tactic.Favard.RowSign`, `Tactic.OEIS.Basic`, `Tactic.OEIS.NegativeLag`, `SequenceClosure`, `SignEvaluation`, `Transforms.BrandenE.OrderedBell`, `Transforms.BrandenE.Basic`, `Transforms.BrandenE.Inverse`, `Transforms.BrandenE.BasisImage`, `Tactic`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts`, `MaWang`, `MaWang.CountBounds`, `MaWang.StrictSigns.RootSigns`, `MaWang.StrictSigns.Assembly`, `MaWang.StrictSigns`, `MaWang.Strong`, `MaWang.Weak.Regularization`, `MaWang.Weak.Successor`, `MaWang.Weak.DerivativeSign`, `LiuWang.General`, `MaWang.Weak.Endpoint`, `MaWang.Weak`, `MaWang.DerivativeCore`, `MaWang.DerivativeStep`, `MaWang.DerivativeSequence`, `MaWang.DerivativeDenominator`, `MaWang.Derivative`, `MaWang.StrictStep`, `SimpleRoots`, `Interlacing.Multiplicity`, `Interlacing.Residue`, `Tactic.MaWang.Basic`, `Tactic.MaWang.StepSyntax`, `Tactic.MaWang.SequenceSyntax`, `Tactic.MaWang.DenominatorSyntax`, `Tactic.MaWang.FactorSyntax`, `Tactic.MaWang.Steps`, `Tactic.MaWang.Sequences`, `Tactic.MaWang.Denominator`, `Tactic.MaWang.Factors`, `Tactic.MaWang`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`, `Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`, `Tactic.Product.Syntax.Lifts` rise to the new closure sizes.
+
+Dedup leaf batch 2: shared helper imports The budgets of `Tactic.Examples`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative`, `Challenges.Hadamard`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `Challenges.Narayana`, `Tactic` rise to the new closure sizes.
+
+leaf 6 The budgets of `Challenges.Hadamard`, `Challenges.BorceaBranden`, `Mathlib.Algebra.Polynomial.Reverse`, `Kurtz`, `Challenges.Kurtz`, `LiuWang`, `LiuWang.OneAddXPositive`, `ProductSequence.Factors`, `ProductSequence.Core`, `ProductSequence.Lifts`, `ProductSequence.FactorFamilies`, `ProductSequence.ScalarFamilies`, `RootVieta.Newton`, `Favard.Affine.Basic`, `Favard.Affine.Denominator`, `Favard.Affine.RowSign`, `Favard.Affine`, `Tactic.Favard`, `Tactic.Favard.Basic`, `Tactic.Favard.DirectSyntax`, `Tactic.Favard.DenominatorSyntax`, `Tactic.Favard.RowSignSyntax`, `Tactic.Favard.Direct`, `Tactic.Favard.Denominator`, `Tactic.Favard.RowSign`, `Tactic.OEIS.NegativeLag`, `SequenceClosure`, `Tactic.LiuWang`, `Tactic.LiuWang.Step`, `Tactic.LiuWang.SequenceIntervals`, `Tactic.LiuWang.SequenceNonpositive`, `Tactic.LiuWang.SequenceProducts`, `MaWang.DerivativeSequence`, `MaWang.DerivativeDenominator`, `MaWang.Derivative`, `Tactic.MaWang.Basic`, `Tactic.MaWang.StepSyntax`, `Tactic.MaWang.SequenceSyntax`, `Tactic.MaWang.DenominatorSyntax`, `Tactic.MaWang.FactorSyntax`, `Tactic.MaWang.Steps`, `Tactic.MaWang.Sequences`, `Tactic.MaWang.Denominator`, `Tactic.MaWang.Factors`, `Tactic.MaWang`, `Tactic.Product.Syntax`, `Tactic.Product.Syntax.Basic`, `Tactic.Product.Syntax.EndpointPair`, `Tactic.Product.Syntax.Families`, `Tactic.Product.Syntax.Lifts` rise to the new closure sizes.
+
+Dedup leaf batch 5 The budgets of `RealRooted`, `Production`, `Challenges.Hadamard`, `PolyaFrequencyConvolution.Basic` rise to the new closure sizes.
+
+Theory: Newton defects, PF degree drop, finite-memory defects The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Theory: univariate Poisson star The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Theory challenge pages The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Poisson star page The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+Dedup leaf batch 4 The budgets of `RealRooted`, `Tactic.Examples` rise to the new closure sizes.
+
+Dedup leaf batch 3: shared helper imports The budgets of `RootCounting`, `RootCounting.Threshold`, `RootCounting.Threshold.Anchor`, `RootCounting.Threshold.DominanceFamily`, `RootCounting.Threshold.Signs` rise to the new closure sizes.
+
+leaf 8 The budgets of `RealRooted`, `Production` rise to the new closure sizes.
+
+leaf 7 The budgets of `RealRooted`, `Production`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability`, `BorceaBranden.Applications.HarmonicSubstitution.BFJOutput`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous`, `BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction`, `BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative`, `BorceaBranden.Applications.RealUnivariateSymbol`, `BorceaBranden.FiniteSymbolClassification`, `BorceaBranden.Applications.ComplexClassification`, `Challenges.BorceaBranden`, `CombinatorialExamples.JacobiStirling.FirstKind`, `CombinatorialExamples.JacobiStirling.Inverse`, `CombinatorialExamples.JacobiStirling.SecondKind`, `FiniteFreeAdditive.HalfIntegerPreservation`, `FiniteFreeAdditive.Identity`, `FiniteFreeAdditive.Preservation` rise to the new closure sizes.
+
+The partition-dominance and symmetric-basis shims add three modules.
+The budgets of `RealRooted` and `Production` rise to the new closure sizes.
+
+The triangular-generator transport shim adds one module. The budgets of
+`RealRooted` and `Production` rise to the new closure sizes.
 
 Run the architecture check with:
 

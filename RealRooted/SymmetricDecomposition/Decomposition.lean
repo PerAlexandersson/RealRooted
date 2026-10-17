@@ -177,14 +177,14 @@ theorem strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
   constructor
   · intro h
-    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.1.2 hfnn
-    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn
+    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
+    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn
     exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).1 h
   · intro h
     have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul h.1.1 h.1.2
     have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_X_mul h.2.1.1 h.2.1.2
-    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf_rr.2 hfnn
-    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hg_rr.2 hgnn
+    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
+    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn
     exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).2 h
 
 lemma hasNonnegCoeffs_of_eq_X_mul {p q : ℝ[X]}
@@ -710,17 +710,5 @@ theorem fPolynomialDecompositionCompatibility {d : ℕ} {h a b aTilde bTilde : �
     (p := fPolynomial d h) (a := fPolynomial d a) (b := fPolynomial (d - 1) b)
     (fPolynomial_natDegree_le d h) (isRdDecomposition_fPolynomial_of_isIdDecomposition hd hid)
   lia
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_natDegree_le := idTransform_natDegree_le
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_X_mul_succ := idTransform_X_mul_succ
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_of_natDegree_le_pred := idTransform_of_natDegree_le_pred
-
-@[deprecated (since := "2026-10-05")]
-alias IdTransform_X_mul_of_natDegree_le_pred := idTransform_X_mul_of_natDegree_le_pred
 
 end RealRooted

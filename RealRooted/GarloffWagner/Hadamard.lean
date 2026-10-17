@@ -162,12 +162,9 @@ theorem hadamardProduct_weightedSum_right :
     ∀ (p : ℝ[X]) (l : List (ℝ × ℝ[X])),
       hadamardProduct p (weightedSum l) =
         weightedSum (l.map fun ap => (ap.1, hadamardProduct p ap.2))
-  | _, [] => by
-      simp
-  | p, (a, q) :: l => by
-      rw [weightedSum_cons, hadamardProduct_add_right, hadamardProduct_C_mul_right,
-        hadamardProduct_weightedSum_right p l]
-      rfl
+  | p, l => by
+      simpa only [hadamardProduct_comm] using
+        hadamardProduct_weightedSum_left l p
 
 /-- If the left input is expanded into Krein summands and the right input is a
 single Krein summand, every Hadamard summand has the same right bound. -/
@@ -243,10 +240,6 @@ theorem StrictInterl.interl_hadamardProduct_of_isPFPolynomial {f g p q : ℝ[X]}
   exact hadamardProduct_interl_of_kreinSummandExpansions
     hfeq hpeq hfnonneg hpnonneg hfsummand hpsummand
     hf hg hq hfg.2.1.1 hpq.2.1.1
-
-@[deprecated (since := "2026-10-06")]
-alias gwHadamardProductInterl_of_strictInterl :=
-  StrictInterl.interl_hadamardProduct_of_isPFPolynomial
 
 /-- Garloff--Wagner, Theorem 4(b), in the nonnegative-coefficient form used by
 the `Hadamard` module. -/

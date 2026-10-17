@@ -107,9 +107,9 @@ private theorem strictInterl_b_component_of_strictInterl_sum_of_leadingCoeff_eq
   have hscaled : StrictInterl (C c * b) (C c * p) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left hbp hc_ne) hc_ne
   have hp_nonpos : ∀ r ∈ p.roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hbp.2.1.2 hp_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hp_nonneg
   have hb_nonpos : ∀ r ∈ b.roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hbp.1.2 hb_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hb_nonneg
   have hdeg_scaled : (C c * b).natDegree + 1 = (C c * p).natDegree := by
     rw [Polynomial.natDegree_C_mul hc_ne, Polynomial.natDegree_C_mul hc_ne, hdeg]
   have hinterl : Interl (C c * b) (C c * p - X * (C c * b)) := by
@@ -329,8 +329,7 @@ private lemma not_isRoot_zero_of_idTransform_fixed_top_of_hasNonnegCoeffs
 
 private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
     {p : ℝ[X]}
-    (hp_rr_ne : p ≠ 0) (hp_rr_splits : p.Splits)
-    (hp_nonneg : HasNonnegCoeffs p)
+    (hp_rr_ne : p ≠ 0) (hp_nonneg : HasNonnegCoeffs p)
     (hp0_root : ¬ p.IsRoot 0) :
     ∃ c : ℝ, (∀ s ∈ p.roots, s ≤ c) ∧ c < 0 := by
   let rs := p.roots.sort (· ≤ ·)
@@ -354,7 +353,7 @@ private lemma exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_z
         have : rs.getLast hrs_nil ∈ (↑rs : Multiset ℝ) := Multiset.mem_coe.mpr hc_mem
         simp_all
       have hc_nonpos : rs.getLast hrs_nil ≤ 0 :=
-        roots_nonpos_of_nonneg_coeffs hp_rr_splits hp_nonneg (rs.getLast hrs_nil) <|
+        roots_nonpos_of_hasNonnegCoeffs hp_nonneg (rs.getLast hrs_nil) <|
           (mem_roots hp_rr_ne).mpr hc_root
       grind
 
@@ -383,7 +382,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_top_of_sameDegree
       hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
-      hap.1.1 hap.1.2 ha_nonneg ha_not_root0
+      hap.1.1 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
   have hstrictInterl_aXb : StrictInterl a (X * b) :=
     PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
@@ -430,7 +429,7 @@ private theorem strictInterl_b_component_of_strictInterl_left_top
         hid.2.2.2.1 ha_top ha_nonneg ha0
     obtain ⟨c, hac_le, hc_lt0⟩ :=
       exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
-        hap.1.1 hap.1.2 ha_nonneg ha_not_root0
+        hap.1.1 ha_nonneg ha_not_root0
     have hXb_root0 : (X * b).IsRoot 0 := by simp
     have hbad : StrictInterl a (X * b) :=
       PosComboRealRooted.strictInterl_of_strictInterl_or_reverse_of_root_asymmetry
@@ -477,7 +476,7 @@ private theorem strictInterl_b_component_of_strictInterl_right_top
       hid.2.2.2.1 ha_top ha_nonneg ha0
   obtain ⟨c, hac_le, hc_lt0⟩ :=
     exists_root_upper_bound_lt_zero_of_hasNonnegCoeffs_of_not_isRoot_zero
-      ha_rr.1 ha_rr.2 ha_nonneg ha_not_root0
+      ha_rr.1 ha_nonneg ha_not_root0
   have hXb_root0 : (X * b).IsRoot 0 := by simp
   have hstrictInterl_or : StrictInterl a (X * b) ∨ StrictInterl (X * b) a :=
     strictInterl_of_allComboRealRooted ha_rr.1 ha_rr.2 hpxb.2.1.1 hpxb.2.1.2 hall_aXb
@@ -618,7 +617,7 @@ private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     refine ⟨X - C (1 : ℝ), ?_⟩
     grind
   have hh_nonpos : ∀ r ∈ h.roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hIdp.1.2 hh_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hh_nonneg
   have hsame : h.natDegree = t.natDegree := by
     dsimp [t]
     rw [hh_deg, natDegree_mul (X_sub_C_ne_zero (1 : ℝ)) hb0, natDegree_X_sub_C]
@@ -640,7 +639,7 @@ private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
     rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero (1 : ℝ)) hb0), roots_X_sub_C] at hr
     rcases Multiset.mem_add.mp hr with hr | hr
     · simp_all
-    · have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
+    · have hr0 : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hb_nonneg r hr
       linarith
   have hbh : StrictInterl b h :=
     (interlaces_of_strictInterl_sameDegree_rightmost_factor
@@ -648,7 +647,7 @@ private theorem strictInterl_b_component_of_strictInterl_Id_top_of_right_top
       hht hsame ht_le_one (by lia)).toStrictInterl
   have hb_le_one : ∀ r ∈ b.roots, r ≤ (1 : ℝ) := by
     intro r hr
-    have hr0 : r ≤ 0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg r hr
+    have hr0 : r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hb_nonneg r hr
     linarith
   have hbt : StrictInterl b t := by
     dsimp [t]
@@ -723,7 +722,7 @@ theorem BrandenSolus.third_converse_of_top_degree
         natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_lt ha_pos
       _ = d := ha_top
   have hh_nonpos : ∀ r ∈ h.roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hIdp.1.2 hh_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hh_nonneg
   have hp_split : p = h + t := by grind
   have hall_hp : AllComboRealRooted h p := allComboRealRooted_of_strictInterl hIdp
   have hall_ht : AllComboRealRooted h t := by
@@ -1141,11 +1140,11 @@ theorem BrandenSolus.ordered_bridge_converse_of_natDegree_le
     grind
   have hb_le : ∀ s ∈ b.roots, s ≤ (1 : ℝ) := by
     intro s hs
-    have hs0 := roots_nonpos_of_nonneg_coeffs hb_rr.2 hb_nonneg s hs
+    have hs0 := roots_nonpos_of_hasNonnegCoeffs hb_nonneg s hs
     linarith
   have hh_le : ∀ s ∈ h.roots, s ≤ (1 : ℝ) := by
     intro s hs
-    have hs0 := roots_nonpos_of_nonneg_coeffs hh_rr.2 hh_nonneg s hs
+    have hs0 := roots_nonpos_of_hasNonnegCoeffs hh_nonneg s hs
     linarith
   have ht_deg : h.natDegree + 1 = t.natDegree := by
     dsimp [t]
@@ -1267,8 +1266,5 @@ theorem BrandenSolus.strictInterl_iff_of_isIdDecomposition :
         exact BrandenSolus.descend_of_lt_top
           hd hd2 hid ha_nonneg hb_nonneg ha0 hb0 ha_lt hb_lt hprev
   simpa [P] using hmain
-
-@[deprecated (since := "2026-10-05")]
-alias brandenSolusTheorem26 := BrandenSolus.strictInterl_iff_of_isIdDecomposition
 
 end RealRooted

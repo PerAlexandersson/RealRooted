@@ -13,10 +13,6 @@ PF and interlacing closure under Hadamard products, reciprocal shift
 transport, and coefficientwise Pólya-frequency consequences.
 -/
 
-@[deprecated StrictInterl.interl_hadamardProduct_of_isPFPolynomial (since := "2026-10-07")]
-alias garloffWagnerHadamardPFStrictInterl_of_nonnegStrictInterl :=
-  StrictInterl.interl_hadamardProduct_of_isPFPolynomial
-
 /-- Garloff--Wagner, Theorem 4(b), for PF polynomials and zero-aware
 interlacing inputs. -/
 theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
@@ -31,9 +27,6 @@ theorem garloffWagnerHadamardPFInterl_of_nonnegStrictInterl {f g p q : ℝ[X]}
   · simpa using interl_zero_left (hadamardProduct g q)
   · simpa using interl_zero_right (hadamardProduct f p)
   exact hfg'.interl_hadamardProduct_of_isPFPolynomial hf hg hp hq hpq'
-
-@[deprecated (since := "2026-10-05")]
-alias hadamardProduct_preserves_pf_of_nonnegStrictInterl := IsPFPolynomial.hadamardProduct
 
 /-- Nonnegative-coefficient Schur--Pólya/Garloff--Wagner real-rootedness for
 coefficientwise Hadamard products (Garloff--Wagner, Theorem 4(a)).
@@ -52,22 +45,14 @@ theorem garloffWagnerHadamardNonnegRealRooted_of_nonnegStrictInterl {p q : ℝ[X
   have hpf : IsPFPolynomial (hadamardProduct p q) := hp.hadamardProduct hq
   exact ⟨hpf.eq_zero_or_splits, hpf.hasNonnegCoeffs, hpf.roots_nonpos⟩
 
-/-- Fixed-right Hadamard multiplication preserves zero-aware interlacing
-inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_right {f g p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hp : IsPFPolynomial p)
-    (hfg : Interl f g) :
-    Interl (hadamardProduct f p) (hadamardProduct g p) :=
-  garloffWagnerHadamardPFInterl_of_nonnegStrictInterl hf hg hp hp hfg hp.interl_self
-
 /-- Fixed-left Hadamard multiplication preserves zero-aware interlacing
 inside the PF cone. -/
-theorem hadamardProduct_preserves_interl_left {f p q : ℝ[X]}
+theorem Interl.hadamardProduct_left {f p q : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (hadamardProduct f p) (hadamardProduct f q) := by
   simpa [hadamardProduct_comm] using
-    hadamardProduct_preserves_interl_right hp hq hf hpq
+    Interl.hadamardProduct_right hp hq hf hpq
 
 theorem reciprocalShift_hadamardProduct (D : ℕ) (p q : ℝ[X]) :
     reciprocalShift D (hadamardProduct p q) =

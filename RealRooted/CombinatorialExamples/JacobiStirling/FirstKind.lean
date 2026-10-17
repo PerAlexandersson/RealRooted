@@ -1,4 +1,5 @@
 import RealRooted.CoefficientDominance.Symmetric.Finite
+import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the first kind
@@ -17,8 +18,8 @@ noncomputable section
 variable {R : Type*} [CommSemiring R]
 
 /-- The weight `i * (i + z)`, indexed from `i = 1`. -/
-def firstKindWeight (z : R) (i : ℕ) : R :=
-  (i + 1 : R) * ((i + 1 : R) + z)
+abbrev firstKindWeight (z : R) (i : ℕ) : R :=
+  weight z i
 
 /-- The first-kind Jacobi--Stirling triangle, in subtraction-free successor
 form. -/
@@ -99,7 +100,7 @@ theorem firstKind_eq_esym_of_le (z : R) {n k : ℕ} (hk : k ≤ n) :
                   rw [Nat.cast_add, Nat.cast_one]
                 _ = n := by rw [Nat.sub_add_cancel hnpos]
             have hnsub : n - 1 + 1 = n := Nat.sub_add_cancel hnpos
-            simpa [firstKindWeight, hcast, hnsub, hdegree] using
+            simpa [firstKindWeight, weight, hcast, hnsub, hdegree] using
               (esym_succ (firstKindWeight z) (n - 1) (n - (k + 1))).symm
 
 /-- The elementary-symmetric formula with its above-diagonal zero convention

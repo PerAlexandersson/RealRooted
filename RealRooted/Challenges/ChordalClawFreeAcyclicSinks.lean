@@ -7,6 +7,7 @@ import RealRooted.Graph.ChordalAcyclicSink
 version = 1
 section = "families"
 slug = "chordal-claw-free-acyclic-sinks"
+formalized = "2026-09-13"
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 
@@ -46,8 +47,8 @@ the vertices.
 
 A **reverse perfect elimination order** is a linear order of the vertices in
 which the earlier neighbors of every vertex form a clique. A finite graph has
-such an order exactly when it is chordal; here the order is part of the
-hypothesis.
+such an order exactly when it is [chordal](https://www.symmetricfunctions.com/realRootedGraphs.htm#chordalGraph);
+here the order is part of the hypothesis.
 
 **Theorem.** If a finite claw-free graph $G$ has a reverse perfect elimination
 order, then $S_G(t)$ is real-rooted.

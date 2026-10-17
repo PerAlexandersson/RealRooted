@@ -613,8 +613,8 @@ theorem splits_step_X_sub_C_mul {a b : ℝ} {d : ℕ} (q : ℝ[X])
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b)
     (hq : IsNegativeSimple q) (hd : 1 ≤ d) (hqd : q.natDegree = d) :
     ∀ ρ : ℝ, (step a b ((X - C ρ) * q)).Splits ∧
-      HasSimpleRoots (step a b ((X - C ρ) * q)) := by
-  exact splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd
+      HasSimpleRoots (step a b ((X - C ρ) * q)) :=
+  splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd
 
 private theorem isNegativeSimple_step_of_natDegree_zero {a b : ℝ}
     (hab : 0 < a * b) {q : ℝ[X]}
@@ -755,20 +755,6 @@ private theorem isNegativeSimple_one : IsNegativeSimple (1 : ℝ[X]) := by
   · exact fun r hr => absurd hr (by simp)
   · intro r hr
     exact absurd hr (by simp)
-
-private theorem isNegativeSimple_X_add_C {c : ℝ} (hc : 0 < c) :
-    IsNegativeSimple (X + C c) := by
-  refine ⟨X_add_C_ne_zero c, ?_, ?_, hasPosLeadingCoeff_X_add_C c, ?_⟩
-  · have h := (isRealRooted_X_sub_C (-c : ℝ)).2
-    have heq : X + C c = X - C (-c) := by simp
-    rw [heq]
-    exact h
-  · exact hasSimpleRoots_of_natDegree_le_one (X_add_C_ne_zero c) (by simp)
-  · intro r hr
-    rw [roots_X_add_C] at hr
-    have hroot : r = -c := by simpa using hr
-    rw [hroot]
-    exact neg_lt_zero.mpr hc
 
 /-- Consecutive Euler rows strictly interlace and have no common roots. -/
 theorem strictInterl_rows {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)

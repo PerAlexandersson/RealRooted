@@ -171,6 +171,24 @@ theorem vars_decoBottomTotalAffineSlope_subset_Icc (n : Nat) :
   rw [← hyx]
   constructor <;> lia
 
+/-- Coordinates below `2` are absent from the affine base. -/
+theorem notMem_vars_decoBottomTotalAffineBase_of_lt_two
+    (n i : Nat) (hi : i < 2) :
+    i ∉ (decoBottomTotalAffineBase n).vars := by
+  intro h
+  have hbounds := vars_decoBottomTotalAffineBase_subset_Icc n h
+  rw [Finset.mem_Icc] at hbounds
+  lia
+
+/-- Coordinates below `2` are absent from the affine slope. -/
+theorem notMem_vars_decoBottomTotalAffineSlope_of_lt_two
+    (n i : Nat) (hi : i < 2) :
+    i ∉ (decoBottomTotalAffineSlope n).vars := by
+  intro h
+  have hbounds := vars_decoBottomTotalAffineSlope_subset_Icc n h
+  rw [Finset.mem_Icc] at hbounds
+  lia
+
 /-- The new coordinate does not occur in the normal affine base. -/
 theorem one_notMem_vars_decoBottomTotalAffineNormalBase (n : Nat) :
     1 ∉ (decoBottomTotalAffineNormalBase n).vars := by
@@ -235,19 +253,23 @@ theorem coordinateWronskian_affineSlope_exceptionalBase_of_ne
 
 /-- The new coordinate does not occur in the affine base. -/
 theorem one_notMem_vars_decoBottomTotalAffineBase (n : Nat) :
-    1 ∉ (decoBottomTotalAffineBase n).vars := by
-  intro h
-  have hbounds := vars_decoBottomTotalAffineBase_subset_Icc n h
-  rw [Finset.mem_Icc] at hbounds
-  lia
+    1 ∉ (decoBottomTotalAffineBase n).vars :=
+  notMem_vars_decoBottomTotalAffineBase_of_lt_two n 1 (by norm_num)
 
 /-- The new coordinate does not occur in the affine slope. -/
 theorem one_notMem_vars_decoBottomTotalAffineSlope (n : Nat) :
-    1 ∉ (decoBottomTotalAffineSlope n).vars := by
-  intro h
-  have hbounds := vars_decoBottomTotalAffineSlope_subset_Icc n h
-  rw [Finset.mem_Icc] at hbounds
-  lia
+    1 ∉ (decoBottomTotalAffineSlope n).vars :=
+  notMem_vars_decoBottomTotalAffineSlope_of_lt_two n 1 (by norm_num)
+
+/-- Coordinate `0` is absent from the shifted affine base. -/
+theorem zero_notMem_vars_decoBottomTotalAffineBase (n : Nat) :
+    0 ∉ (decoBottomTotalAffineBase n).vars :=
+  notMem_vars_decoBottomTotalAffineBase_of_lt_two n 0 (by norm_num)
+
+/-- Coordinate `0` is absent from the shifted affine slope. -/
+theorem zero_notMem_vars_decoBottomTotalAffineSlope (n : Nat) :
+    0 ∉ (decoBottomTotalAffineSlope n).vars :=
+  notMem_vars_decoBottomTotalAffineSlope_of_lt_two n 0 (by norm_num)
 
 /-- Zero-specializing the new coordinate in the normal affine branch leaves
 its normal base. -/

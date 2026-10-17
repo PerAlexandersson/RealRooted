@@ -540,17 +540,6 @@ theorem isFiniteMultiplierSequence_natDegree_one (gamma : ℕ → ℝ) :
     IsFiniteMultiplierSequence 1 gamma :=
   isFiniteMultiplierSequence_of_natDegree_le_one le_rfl gamma
 
-/-- The degree-two Jensen PF hypothesis gives the expected log-concavity
-inequality on the first three diagonal entries. -/
-theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
-    (hj : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
-  have hdisc := disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two
-    (p := jensenPolynomial 2 gamma) hj.to_sequence
-    (natDegree_jensenPolynomial_le 2 gamma)
-  simp [coeff_jensenPolynomial] at hdisc
-  linarith
-
 private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → ℝ}
     {k : ℕ} (hk : k ≤ n) (hdeg : (jensenPolynomial n gamma).natDegree < k) :
     gamma k = 0 := by
@@ -561,58 +550,103 @@ private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → �
     Nat.cast_choose_ne_zero (R := ℝ) hk
   simp_all
 
+/-- A PF Jensen polynomial makes its underlying diagonal sequence log-concave
+through the Jensen order. -/
+theorem IsPFPolynomial.coeffLogConcaveUpTo_of_isPF_jensenPolynomial
+    {n : ℕ} {gamma : ℕ → ℝ} (hj : IsPFPolynomial (jensenPolynomial n gamma)) :
+    CoeffLogConcaveUpTo n gamma := by
+  intro k hk0 hkn
+  let p := jensenPolynomial n gamma
+  let d := p.natDegree
+  have hdle : d ≤ n := by
+    exact natDegree_jensenPolynomial_le n gamma
+  by_cases hdeg : d < k + 1
+  · have hgamma : gamma (k + 1) = 0 := by
+      apply gamma_eq_zero_of_natDegree_jensen_lt (n := n) (gamma := gamma)
+      · lia
+      · simpa [p, d] using hdeg
+    rw [hgamma]
+    linarith [sq_nonneg (gamma k)]
+  have hkd : k < d := by lia
+  have hk_le_n : k ≤ n := by lia
+  have hksucc_le_n : k + 1 ≤ n := by lia
+  have hkp_le_n : k - 1 ≤ n := by lia
+  have hulc_all : HasUltraLogConcaveCoeffs p :=
+    hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
+      hj.hasNonnegCoeffs hj.eq_zero_or_splits
+  change CoeffUltraLogConcaveUpTo d (fun i => p.coeff i) at hulc_all
+  have hulc := hulc_all k hk0 hkd
+  simp only [p, coeff_jensenPolynomial, ite_eq_left hkp_le_n,
+    ite_eq_left hksucc_le_n, ite_eq_left hk_le_n] at hulc
+  have hprev := Nat.cast_choose_succ_right_eq (R := ℝ) n (k - 1)
+  have hnext := Nat.cast_choose_succ_right_eq (R := ℝ) n k
+  have hkpred : k - 1 + 1 = k := by lia
+  have hsub : n - (k - 1) = n - k + 1 := by lia
+  have hkpred_cast : ((k - 1 : ℕ) : ℝ) + 1 = k := by exact_mod_cast hkpred
+  rw [hkpred_cast, hkpred, hsub] at hprev
+  have hfactor :
+      ((n - k + 1 : ℕ) : ℝ) * ((d - k : ℕ) : ℝ) ≤
+        ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
+    push_cast [Nat.cast_sub hk_le_n, Nat.cast_sub (by lia : k ≤ d)]
+    have hdle' : (d : ℝ) ≤ n := by exact_mod_cast hdle
+    linarith
+  have hscale_nonneg : 0 ≤ ((n - k + 1 : ℕ) : ℝ) := by positivity
+  have hscaled := mul_le_mul_of_nonneg_right hulc hscale_nonneg
+  have hleft :
+      (Nat.choose n (k - 1) : ℝ) * gamma (k - 1) *
+          ((Nat.choose n (k + 1) : ℝ) * gamma (k + 1)) *
+          ((k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ)) * ((n - k + 1 : ℕ) : ℝ) =
+        gamma (k - 1) * gamma (k + 1) * (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) *
+          ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
+    calc
+      _ = gamma (k - 1) * gamma (k + 1) *
+          ((Nat.choose n (k - 1) : ℝ) * ((n - k + 1 : ℕ) : ℝ)) *
+          ((Nat.choose n (k + 1) : ℝ) * (k + 1 : ℝ)) *
+          ((d - k + 1 : ℕ) : ℝ) := by ring
+      _ = gamma (k - 1) * gamma (k + 1) *
+          ((Nat.choose n k : ℝ) * (k : ℝ)) *
+          ((Nat.choose n k : ℝ) * ((n - k : ℕ) : ℝ)) *
+          ((d - k + 1 : ℕ) : ℝ) := by rw [← hprev, hnext]
+      _ = _ := by ring
+  have hsquare :
+      ((Nat.choose n k : ℝ) * gamma k) ^ 2 =
+        (Nat.choose n k : ℝ) ^ 2 * gamma k ^ 2 := by ring
+  rw [hleft, hsquare] at hscaled
+  have hcommon_pos : 0 < (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) *
+      ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
+    have hchoose : 0 < (Nat.choose n k : ℝ) := by
+      exact_mod_cast Nat.choose_pos hk_le_n
+    have hk : 0 < (k : ℝ) := by exact_mod_cast hk0
+    have hnk : 0 < ((n - k : ℕ) : ℝ) := by exact_mod_cast Nat.sub_pos_of_lt hkn
+    have hdk : 0 < ((d - k + 1 : ℕ) : ℝ) := by positivity
+    positivity
+  have hfactor_scale_nonneg :
+      0 ≤ gamma k ^ 2 * (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) := by
+    positivity
+  have hfactor_scaled := mul_le_mul_of_nonneg_left hfactor hfactor_scale_nonneg
+  apply le_of_mul_le_mul_right _ hcommon_pos
+  nlinarith [hscaled, hfactor_scaled]
+
+/-- The degree-two Jensen PF hypothesis gives the expected log-concavity
+inequality on the first three diagonal entries. -/
+theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
+    (hj : IsPFPolynomial (jensenPolynomial 2 gamma)) :
+    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
+  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num)
+
 /-- Left adjacent log-concavity inequality extracted from a degree-three PF
 Jensen polynomial. -/
 theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → ℝ}
     (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
     gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
-  by_cases hdeg : (jensenPolynomial 3 gamma).natDegree < 2
-  · have hgamma2 : gamma 2 = 0 :=
-      gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
-        (k := 2) (by norm_num) hdeg
-    rw [hgamma2]
-    linarith [sq_nonneg (gamma 1)]
-  · have hdeg' : 1 < (jensenPolynomial 3 gamma).natDegree := by lia
-    have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
-      natDegree_jensenPolynomial_le 3 gamma
-    have hdeg_ge : 2 ≤ (jensenPolynomial 3 gamma).natDegree := by lia
-    have hulc :=
-      hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-        hj.hasNonnegCoeffs hj.eq_zero_or_splits
-    rcases Nat.eq_or_lt_of_le hdeg_ge with hdeg_two' | hdeg_gt
-    · have hdeg_two : (jensenPolynomial 3 gamma).natDegree = 2 := hdeg_two'.symm
-      have h := hulc 1 (by norm_num) (by grind)
-      rw [hdeg_two] at h
-      norm_num [coeff_jensenPolynomial] at h
-      nlinarith
-    · have hdeg_three : (jensenPolynomial 3 gamma).natDegree = 3 := by lia
-      have h := hulc 1 (by norm_num) hdeg'
-      rw [hdeg_three] at h
-      norm_num [coeff_jensenPolynomial] at h
-      linarith
+  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num)
 
 /-- Right adjacent log-concavity inequality extracted from a degree-three PF
 Jensen polynomial. -/
 theorem IsPFPolynomial.jensenPolynomial_three_logConcave_right {gamma : ℕ → ℝ}
     (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
     gamma 1 * gamma 3 ≤ gamma 2 ^ 2 := by
-  by_cases hdeg : (jensenPolynomial 3 gamma).natDegree < 3
-  · have hgamma3 : gamma 3 = 0 :=
-      gamma_eq_zero_of_natDegree_jensen_lt (n := 3) (gamma := gamma)
-        (k := 3) (by norm_num) hdeg
-    rw [hgamma3]
-    linarith [sq_nonneg (gamma 2)]
-  · have hdeg' : 2 < (jensenPolynomial 3 gamma).natDegree := by lia
-    have hdeg_le : (jensenPolynomial 3 gamma).natDegree ≤ 3 :=
-      natDegree_jensenPolynomial_le 3 gamma
-    have hdeg_three : (jensenPolynomial 3 gamma).natDegree = 3 := by lia
-    have hulc :=
-      hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-        hj.hasNonnegCoeffs hj.eq_zero_or_splits
-    have h := hulc 2 (by norm_num) hdeg'
-    rw [hdeg_three] at h
-    norm_num [coeff_jensenPolynomial] at h
-    linarith
+  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 2 (by norm_num) (by norm_num)
 
 /-- Adjacent log-concavity inequalities extracted from a degree-three PF
 Jensen polynomial. -/
@@ -687,22 +721,7 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
       hpdeg hsplit
   have hqdisc := diagonalOperator_discrim_nonneg_of_natDegree_two
     (hgamma 0) (hgamma 2) hlog hpdisc
-  have hqcoeff2 : (diagonalOperator gamma p).coeff 2 ≠ 0 := by
-    have hlc : (diagonalOperator gamma p).leadingCoeff ≠ 0 :=
-      leadingCoeff_ne_zero.mpr hzero
-    rwa [Polynomial.leadingCoeff, hqdeg] at hlc
-  have hqdisc' : 0 ≤ (diagonalOperator gamma p).coeff 1 ^ 2 -
-      4 * (diagonalOperator gamma p).coeff 2 * (diagonalOperator gamma p).coeff 0 := by
-    simpa [discrim] using hqdisc
-  obtain ⟨x, hx⟩ := exists_root_of_disc_nonneg
-    (a := (diagonalOperator gamma p).coeff 2)
-    (b := (diagonalOperator gamma p).coeff 1)
-    (c := (diagonalOperator gamma p).coeff 0) hqcoeff2 hqdisc'
-  have hroot : (diagonalOperator gamma p).IsRoot x := by
-    rw [Polynomial.IsRoot.def, Polynomial.eval_eq_sum_range, hqdeg]
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero]
-    grind
-  exact Or.inr (Polynomial.Splits.of_natDegree_eq_two hqdeg hroot)
+  exact Or.inr (splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg hqdisc)
 
 /-- Degree-two finite multiplier sequences are classified by the PF Jensen
 polynomial condition. -/

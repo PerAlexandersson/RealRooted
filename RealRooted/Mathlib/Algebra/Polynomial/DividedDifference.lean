@@ -94,17 +94,6 @@ theorem dividedDifference_eq_zero_of_eval_eq_zero (n : ℕ)
       rw [ih _ (fun i => hp i.succ), ih _ (fun i => hp i.castSucc)]
       simp
 
-omit [Field K] in
-private theorem injective_succ {n : ℕ} {v : Fin (n + 2) → K}
-    (hv : Function.Injective v) : Function.Injective (fun i : Fin (n + 1) => v i.succ) :=
-  hv.comp (Fin.succ_injective (n + 1))
-
-omit [Field K] in
-private theorem injective_castSucc {n : ℕ} {v : Fin (n + 2) → K}
-    (hv : Function.Injective v) :
-    Function.Injective (fun i : Fin (n + 1) => v i.castSucc) :=
-  hv.comp (Fin.castSucc_injective (n + 1))
-
 @[simp]
 theorem dividedDifference_zero_mul_X_sub_C (v : Fin 1 → K) (p : K[X]) (r : K) :
     dividedDifference 0 v (p * (X - C r)) =
@@ -135,7 +124,10 @@ theorem dividedDifference_mul_X_sub_C :
   | succ n ih =>
       intro v hv p r
       rw [dividedDifference_succ (n + 1) v]
-      rw [ih _ (injective_succ hv), ih _ (injective_castSucc hv)]
+      rw [ih (fun i : Fin (n + 2) => v i.succ)
+        (hv.comp (Fin.succ_injective (n + 2))),
+        ih (fun i : Fin (n + 2) => v i.castSucc)
+          (hv.comp (Fin.castSucc_injective (n + 2)))]
       rw [dividedDifference_succ (n + 1) v p]
       rw [dividedDifference_succ n (fun i : Fin (n + 2) => v i.castSucc) p]
       have hlast : (Fin.last (n + 1)).succ = Fin.last (n + 2) := by
@@ -193,7 +185,9 @@ theorem dividedDifference_prod_X_sub_C_eq_zero_of_lt :
           have hk_same : k < n + 1 := hk_lower.trans (Nat.lt_succ_self n)
           rw [Fin.prod_univ_castSucc]
           rw [dividedDifference_mul_X_sub_C n v hv]
-          rw [ih _ _ hv hk_same, ih _ _ (injective_castSucc hv) hk_lower]
+          rw [ih _ _ hv hk_same,
+            ih _ (fun i : Fin (n + 1) => v i.castSucc)
+              (hv.comp (Fin.castSucc_injective (n + 1))) hk_lower]
           simp
 
 /-- The top divided difference of a monic product of `n` linear factors is
@@ -210,12 +204,9 @@ theorem dividedDifference_prod_X_sub_C_eq_one :
       rw [Fin.prod_univ_castSucc]
       rw [dividedDifference_mul_X_sub_C n v hv]
       rw [dividedDifference_prod_X_sub_C_eq_zero_of_lt _ _ hv (Nat.lt_succ_self n)]
-      rw [ih _ _ (injective_castSucc hv)]
+      rw [ih _ (fun i : Fin (n + 1) => v i.castSucc)
+        (hv.comp (Fin.castSucc_injective (n + 1)))]
       simp
-
-private theorem strictMono_castSucc {m : ℕ} {f : Fin (m + 1) → ℝ}
-    (hf : StrictMono f) : StrictMono (fun i : Fin m => f i.castSucc) :=
-  fun _ _ hij => hf (Fin.castSucc_lt_castSucc_iff.mpr hij)
 
 /-- Positivity of the divided differences used in the finite
 Micchelli--Willoughby argument.  The roots are ordered, the nodes are strictly
@@ -255,7 +246,7 @@ theorem dividedDifference_prod_X_sub_C_nonneg :
               0 ≤ dividedDifference n (fun i : Fin (n + 1) => v i.castSucc)
                 (∏ i ∈ Finset.range (n + 1), (X - C (ν i))) := by
             have H := ihn 0 ν (fun i : Fin (n + 1) => v i.castSucc)
-              hν (strictMono_castSucc hv) (by
+              hν (hv.comp Fin.strictMono_castSucc) (by
                 intro i
                 simpa using hdom i.castSucc)
             simpa only [Nat.zero_add] using H
@@ -288,7 +279,7 @@ theorem dividedDifference_prod_X_sub_C_nonneg :
               0 ≤ dividedDifference n (fun i : Fin (n + 1) => v i.castSucc)
                 (∏ i ∈ Finset.range ((b + 1) + (n + 1)), (X - C (ν i))) := by
             have H := ihn (b + 1) ν (fun i : Fin (n + 1) => v i.castSucc)
-              hν (strictMono_castSucc hv) (by
+              hν (hv.comp Fin.strictMono_castSucc) (by
                 intro i
                 have hidx : (b + (i : ℕ)).succ = (b + 1) + (i : ℕ) := by lia
                 simpa only [Fin.val_castSucc, hidx] using hdom i.castSucc)

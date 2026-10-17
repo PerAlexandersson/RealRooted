@@ -291,7 +291,7 @@ theorem exists_contDiffAt_polynomial_root
     · exact (p t).hasFDerivAt r
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular
   let ρ : ℝ → ℝ := hF.implicitFunction (by simp) hAinv
   have hρbase : ρ t = r :=
     hF.implicitFunction_apply_self (by simp) hAinv

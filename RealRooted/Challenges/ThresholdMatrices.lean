@@ -8,6 +8,7 @@ import RealRooted.ThresholdMatrix.HaglundZhang
 version = 1
 section = "theorems"
 slug = "threshold-matrices"
+formalized = "2026-10-06"
 authors = ["Haglund", "Zhang", "Gustafsson", "Solus"]
 years = [2019, 2020]
 
@@ -59,9 +60,11 @@ Eulerian polynomials are real-rooted, confirming a conjecture of Ma, Ma and
 Yeh.
 
 Here the binomial Eulerian polynomials are defined by the Haglund–Zhang
-recursion on refined vectors. Their identification with the row polynomials
+recursion on refined vectors, with marker $1 + x$ at threshold zero and $1$ at
+every later threshold. Prepending the row $1$ gives the row polynomials
 $\sum_k T(n,k)\,x^k$ of [OEIS A046802](https://oeis.org/A046802), the
-$h$-polynomials of the stellohedra, is not formalized.
+$h$-polynomials of the stellohedra; the first four rows are checked in Lean,
+but the identification with the closed formula for all $n$ is not formalized.
 
 **Theorem** (Gustafsson–Solus, Lemma 3.4). Row-threshold matrices, in which
 some rows drop their pivot entry, preserve interlacing sequences when the
@@ -72,11 +75,16 @@ real-rooted.
 
 ## References
 
-J. Haglund and P. B. Zhang, “Real-rootedness of variations of Eulerian
-polynomials,” arXiv:1902.01278 (2019); N. Gustafsson and L. Solus,
-“Derangements, Ehrhart theory, and local $h$-polynomials,” *Advances in
-Mathematics* 369 (2020), 107169; J. Ma, S.-M. Ma and Y.-N. Yeh, “Recurrence
-relations for binomial-Eulerian polynomials,” arXiv:1711.09016 (2017).
+J. Haglund and P. B. Zhang, [“Real-rootedness of variations of Eulerian
+polynomials,”](https://doi.org/10.1016/j.aam.2019.05.001) *Advances in Applied
+Mathematics* 109 (2019), 38–54,
+[arXiv:1902.01278](https://arxiv.org/abs/1902.01278). N. Gustafsson and
+L. Solus, [“Derangements, Ehrhart theory, and local
+$h$-polynomials,”](https://doi.org/10.1016/j.aim.2020.107169) *Advances in
+Mathematics* 369 (2020), 107169. J. Ma, S.-M. Ma and Y.-N. Yeh, “Recurrence
+relations for binomial-Eulerian polynomials,”
+[arXiv:1711.09016](https://arxiv.org/abs/1711.09016) (2017). See also the
+[binomial Eulerian polynomial on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#binomialEulerianPolynomial).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

@@ -1,4 +1,5 @@
 import RealRooted.NarayanaTransformation.Rising
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Generalized Narayana coefficient and transform data.
@@ -155,29 +156,25 @@ def narayanaZeroGammaPolynomial (n : ℕ) : ℝ[X] :=
   ∑ r ∈ Finset.range (n / 2 + 1),
     Polynomial.monomial r ((Nat.choose n r * Nat.choose (n - r) r : ℕ) : ℝ)
 
-@[simp] theorem coeff_narayanaZeroGammaPolynomial_of_le {n r : ℕ}
+@[simp] theorem coeff_narayanaZeroGammaPolynomial (n r : ℕ) :
+    (narayanaZeroGammaPolynomial n).coeff r =
+      if r ≤ n / 2 then
+        ((Nat.choose n r * Nat.choose (n - r) r : ℕ) : ℝ)
+      else 0 := by
+  simpa only [narayanaZeroGammaPolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => ((Nat.choose n i * Nat.choose (n - i) i : ℕ) : ℝ))
+      (n / 2 + 1) r
+
+theorem coeff_narayanaZeroGammaPolynomial_of_le {n r : ℕ}
     (hr : r ≤ n / 2) :
     (narayanaZeroGammaPolynomial n).coeff r =
       ((Nat.choose n r * Nat.choose (n - r) r : ℕ) : ℝ) := by
-  rw [narayanaZeroGammaPolynomial, Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single r]
-  · simp
-  · intro b _ hbr
-    rw [Polynomial.coeff_monomial]
-    simp [hbr]
-  · intro hnot
-    exact (hnot (by simpa using hr)).elim
+  simp [hr]
 
-@[simp] theorem coeff_narayanaZeroGammaPolynomial_of_lt {n r : ℕ}
+theorem coeff_narayanaZeroGammaPolynomial_of_lt {n r : ℕ}
     (hr : n / 2 < r) : (narayanaZeroGammaPolynomial n).coeff r = 0 := by
-  rw [narayanaZeroGammaPolynomial, Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro b hb
-  have hbr : b ≠ r := by
-    have hb_le : b ≤ n / 2 := by simpa using hb
-    lia
-  rw [Polynomial.coeff_monomial]
-  simp [hbr]
+  simp [not_le_of_gt hr]
 
 theorem natDegree_narayanaZeroGammaPolynomial_le (n : ℕ) :
     (narayanaZeroGammaPolynomial n).natDegree ≤ n / 2 := by

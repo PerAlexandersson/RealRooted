@@ -2,6 +2,7 @@ import RealRooted.Derivative
 import RealRooted.PFPolynomial
 import RealRooted.ObreschkoffConverse
 import RealRooted.OrderedRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 open Polynomial
 
@@ -28,6 +29,12 @@ bounded-degree polar-theta interlacing theorem is
 /-- Euler operator `theta = X d/dX`. -/
 def theta (p : ℝ[X]) : ℝ[X] :=
   X * p.derivative
+
+/-- The Euler operator cannot raise degree. -/
+theorem natDegree_theta_le (p : ℝ[X]) :
+    (theta p).natDegree ≤ p.natDegree := by
+  simpa [theta] using
+    Polynomial.natDegree_C_mul_add_affine_mul_derivative_le p 0 0 1
 
 /-- The operator `theta + 1`; equivalently, `p ↦ (X * p)'`. -/
 def thetaPlusOne (p : ℝ[X]) : ℝ[X] :=
@@ -64,6 +71,52 @@ theorem theta_C_mul (a : ℝ) (p : ℝ[X]) : theta (C a * p) = C a * theta p := 
   simp [thetaPlusOne]
   ring
 
+/-- A linear combination of the identity and Euler operators is diagonal in
+the monomial basis. -/
+@[simp] theorem coeff_C_mul_sub_C_mul_theta (a b : ℝ) (p : ℝ[X]) (n : ℕ) :
+    (C a * p - C b * theta p).coeff n =
+      (a - b * (n : ℝ)) * p.coeff n := by
+  simp [coeff_theta]
+  ring
+
+/-- The operator `theta + 1` cannot raise degree. -/
+theorem natDegree_thetaPlusOne_le (p : ℝ[X]) :
+    (thetaPlusOne p).natDegree ≤ p.natDegree := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro n hn
+  rw [coeff_thetaPlusOne, coeff_eq_zero_of_natDegree_lt hn, mul_zero]
+
+private lemma derivative_X_add_one_pow (m : ℕ) :
+    ((X + 1 : ℝ[X]) ^ m).derivative =
+      C (m : ℝ) * (X + 1) ^ (m - 1) := by
+  cases m with
+  | zero => simp
+  | succ m =>
+      rw [derivative_pow]
+      simp
+
+/-- The Euler operator on a product of a monomial and a shifted power. -/
+theorem theta_X_pow_mul_X_add_one_pow (i m : ℕ) :
+    theta (X ^ i * (X + 1) ^ m) =
+      C (i : ℝ) * (X ^ i * (X + 1) ^ m) +
+        C (m : ℝ) * (X ^ (i + 1) * (X + 1) ^ (m - 1)) := by
+  unfold theta
+  rw [derivative_mul, derivative_pow, derivative_X,
+    derivative_X_add_one_pow]
+  simp only [mul_one]
+  cases i with
+  | zero => grind
+  | succ i => grind
+
+/-- The operator `theta + 1` on a product of a monomial and a shifted power. -/
+theorem thetaPlusOne_X_pow_mul_X_add_one_pow (i m : ℕ) :
+    thetaPlusOne (X ^ i * (X + 1) ^ m) =
+      C ((i : ℝ) + 1) * (X ^ i * (X + 1) ^ m) +
+        C (m : ℝ) * (X ^ (i + 1) * (X + 1) ^ (m - 1)) := by
+  unfold thetaPlusOne
+  rw [theta_X_pow_mul_X_add_one_pow]
+  grind
+
 theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
     thetaPlusOne p = (X * p).derivative := by
   ext n
@@ -86,6 +139,13 @@ theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
 @[simp] theorem coeff_polarTheta (N : ℕ) (p : ℝ[X]) (n : ℕ) :
     (polarTheta N p).coeff n = ((N : ℝ) - n) * p.coeff n := by
   simp [polarTheta]
+  ring
+
+/-- The composite `(N - theta) (theta + 1)` is diagonal in the monomial basis. -/
+@[simp] theorem coeff_polarTheta_thetaPlusOne (N : ℕ) (p : ℝ[X]) (n : ℕ) :
+    (polarTheta N (thetaPlusOne p)).coeff n =
+      ((N : ℝ) - (n : ℝ)) * ((n : ℝ) + 1) * p.coeff n := by
+  rw [coeff_polarTheta, coeff_thetaPlusOne]
   ring
 
 /-- The polar theta operator commutes with `theta + 1`. -/
@@ -257,6 +317,14 @@ theorem polarTheta_preserves_pf {N : ℕ} {p : ℝ[X]}
     rw [(reciprocalShift N p).natDegree_derivative]
     exact Nat.sub_le_sub_right hdeg_shift 1
   exact reciprocalShift_preserves_pf hshift.derivative hder_deg
+
+/-- The composite `(N - theta) (theta + 1)` preserves the polynomial PF cone
+under the original polynomial's degree bound. -/
+theorem polarTheta_thetaPlusOne_preserves_pf {N : ℕ} {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hdeg : p.natDegree ≤ N) :
+    IsPFPolynomial (polarTheta N (thetaPlusOne p)) :=
+  polarTheta_preserves_pf (thetaPlusOne_preserves_pf hp)
+    ((natDegree_thetaPlusOne_le p).trans hdeg)
 
 /-- Polar-theta interlacing preservation on the bounded-degree PF cone.  This
 proposition is proved by `RealRooted.polarTheta_preserves_interl` in

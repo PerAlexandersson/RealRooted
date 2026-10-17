@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 version = 1
 section = "families"
 slug = "jacobi-stirling-descent"
+formalized = "2026-10-07"
 authors = ["Gessel", "Lin", "Zeng", "Ma", "Wang"]
 years = [2012, 2026]
 
@@ -95,12 +96,11 @@ all strictly interlace a common polynomial keep that property.
 ## References
 
 I. M. Gessel, Z. Lin and J. Zeng, “Jacobi–Stirling polynomials and
-$P$-partitions,” *European Journal of Combinatorics* 33 (2012), 1987–2000;
+$P$-partitions,” *European Journal of Combinatorics* 33 (2012), 1987–2000,
+[doi:10.1016/j.ejc.2012.06.008](https://doi.org/10.1016/j.ejc.2012.06.008);
 S.-M. Ma and M.-X. Wang, “Binomial expansions of Jacobi–Stirling numbers and
 real-rootedness of Jacobi–Stirling descent polynomials,” arXiv:2610.03111
 (2026), Section 4.
-
-The theorem was formalized in RealRooted issue #1105.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

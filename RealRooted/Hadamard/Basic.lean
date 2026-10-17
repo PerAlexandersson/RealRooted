@@ -1,6 +1,8 @@
 import RealRooted.Apolarity
 import RealRooted.DegreeDropReversal
 import RealRooted.Hadamard.Product
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 import RealRooted.PFPolynomial
 
 open Polynomial
@@ -71,12 +73,9 @@ def schurSzegoComp (n : Nat) (f g : ℝ[X]) : ℝ[X] :=
 theorem coeff_schurSzegoComp (n k : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
       if k ≤ n then f.coeff k * g.coeff k / (Nat.choose n k : ℝ) else 0 := by
-  rw [schurSzegoComp, finsetSum_coeff]
-  by_cases hk : k ≤ n
-  · rw [ite_eq_left hk]
-    simp [coeff_monomial, hk]
-  · rw [ite_eq_right hk]
-    simp [coeff_monomial, Nat.not_lt.mpr (Nat.succ_le_of_lt (Nat.lt_of_not_le hk))]
+  simpa only [schurSzegoComp, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => f.coeff i * g.coeff i / (Nat.choose n i : ℝ)) (n + 1) k
 
 theorem coeff_schurSzegoComp_of_le {n k : Nat} (hk : k ≤ n) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff k =
@@ -96,6 +95,39 @@ theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n :=
   natDegree_le_iff_coeff_eq_zero.mpr fun _ hk =>
     coeff_schurSzegoComp_eq_zero_of_lt hk f g
+
+theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
+    reflect n (schurSzegoComp n f p) =
+      schurSzegoComp n (reflect n f) (reflect n p) := by
+  ext k
+  rw [coeff_reflect]
+  by_cases hk : k ≤ n
+  · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
+      coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
+      revAt_le hk, Nat.choose_symm hk]
+  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk),
+      revAt_eq_self_of_lt (Nat.lt_of_not_le hk),
+      coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
+
+/-- Negating the variable in both inputs leaves fixed-degree Schur--Szegő
+composition unchanged. -/
+theorem schurSzegoComp_comp_neg_X_both (n : ℕ) (P Q : ℝ[X]) :
+    schurSzegoComp n (P.comp (-X)) (Q.comp (-X)) = schurSzegoComp n P Q := by
+  ext k
+  rw [coeff_schurSzegoComp, coeff_schurSzegoComp, coeff_comp_neg_X,
+    coeff_comp_neg_X]
+  by_cases hk : k ≤ n
+  · simp only [ite_eq_left hk]
+    let s : ℝ := (-1 : ℝ) ^ k
+    have hs : s * s = 1 := by
+      simpa [pow_two] using (Parity.neg_one_pow_sq k)
+    change (P.coeff k * s) * (Q.coeff k * s) / (Nat.choose n k : ℝ) =
+      P.coeff k * Q.coeff k / (Nat.choose n k : ℝ)
+    calc
+      (P.coeff k * s) * (Q.coeff k * s) / (Nat.choose n k : ℝ) =
+          (s * s) * (P.coeff k * Q.coeff k / (Nat.choose n k : ℝ)) := by ring
+      _ = P.coeff k * Q.coeff k / (Nat.choose n k : ℝ) := by rw [hs, one_mul]
+  · simp only [ite_eq_right hk]
 
 /-- The fixed-degree Schur--Szegő composition of two binomial lifts is the
 binomial lift of the coefficientwise Hadamard product of the underlying
@@ -443,15 +475,6 @@ theorem cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
     0 ≤ cubicDiscr (schurSzegoComp n f p) := by
   rw [cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three hn hfdeg hpdeg]
   positivity
-
-/-- Iterated derivatives of a splitting polynomial are zero or split. -/
-theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
-    (n : ℕ) :
-    (derivative^[n]) p = 0 ∨ ((derivative^[n]) p).Splits := by
-  induction n with
-  | zero => exact Or.inr hsplit
-  | succ n ih =>
-      simpa [Function.iterate_succ_apply'] using eq_zero_or_splits_derivative ih
 
 /-- The iterated derivative of the degree-`n` reflection has degree at most
 three after `n - 3` derivatives. -/

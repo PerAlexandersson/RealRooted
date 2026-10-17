@@ -16,7 +16,7 @@ example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
       P n = C (c n) *
         ∏ j ∈ Finset.range (rootCount n), (X - C (roots n j))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  j1FactorableLag3Sequence_realRooted hc hroot
+  finiteLinearProductScalarSequence_realRooted hc hroot
 
 example {P : Nat → ℝ[X]} {c : Nat → ℝ} {rootCount : Nat → Nat}
     {roots : Nat → Nat → ℝ}

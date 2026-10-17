@@ -8,6 +8,7 @@ import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Algebra.BigOperators.Field
@@ -35,6 +36,20 @@ namespace RealRooted
 noncomputable section
 
 namespace PickRatio
+
+/-- The derivative of the ratio of two real polynomials evaluated at `t`. -/
+def polynomialRatioDerivative (F G : ℝ[X]) (t : ℝ) : ℝ :=
+  (G.derivative.eval t * F.eval t - G.eval t * F.derivative.eval t) / (F.eval t) ^ 2
+
+/-- The quotient rule for the ratio of two real polynomials. -/
+theorem polynomialRatio_hasDerivAt (F G : ℝ[X]) {t : ℝ} (hF : F.eval t ≠ 0) :
+    HasDerivAt (fun s => G.eval s / F.eval s) (polynomialRatioDerivative F G t) t := by
+  have h := (G.hasDerivAt t).mul ((F.hasDerivAt t).inv hF)
+  convert h using 1
+  · rfl
+  · dsimp [polynomialRatioDerivative]
+    field_simp
+    ring_nf
 
 /-- A continuous function whose imaginary part is nonpositive for `s > 0` has nonpositive
 imaginary part at `0`. -/

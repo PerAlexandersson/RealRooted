@@ -1,4 +1,5 @@
 import RealRooted.DegreeDropReversal
+import RealRooted.Mathlib.Algebra.Ring.Parity
 import RealRooted.ObreschkoffConverse
 import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
 import RealRooted.RootContinuity
@@ -44,7 +45,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_leadingCoeff_pos
       ((ε : ℝ) + 1 / 2 + m) m :=
     realRisingFactorial_pos m hcm
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
-    exceptional_neg_one_pow_sq_real m
+    Parity.neg_one_pow_sq m
   have hγm : 0 < γ + (m : ℝ) := by positivity
   simp only [Nat.sub_self, Nat.factorial_zero, Nat.cast_one, div_one]
   rw [show (-1 : ℝ) ^ m *
@@ -173,7 +174,7 @@ private theorem neg_coeff_one_eq_sum_roots_inv
       lia
     rw [hindex]
   have hroots :=
-    DegreeDropReversal.roots_reverse_eq_map_inv_of_splits_coeff_zero_ne
+    Polynomial.roots_reverse_eq_map_inv
       hp hzeroNe
   have hnext :=
     (DegreeDropReversal.splits_reverse hp).nextCoeff_eq_neg_sum_roots_mul_leadingCoeff

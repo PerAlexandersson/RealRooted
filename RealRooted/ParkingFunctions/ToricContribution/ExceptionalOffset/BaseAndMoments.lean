@@ -1,6 +1,8 @@
 import RealRooted.Jacobi.Orthogonality.Integral
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Ring.Parity
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
@@ -44,9 +46,8 @@ def exceptionalEulerInverse (m ε : ℕ) (γ : ℝ) : ℝ[X] :=
 theorem coeff_exceptionalBasePolynomial (m ε k : ℕ) :
     (exceptionalBasePolynomial m ε).coeff k =
       if k ≤ m then exceptionalBaseCoeff m ε k else 0 := by
-  simp only [exceptionalBasePolynomial, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [exceptionalBasePolynomial, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial (exceptionalBaseCoeff m ε) (m + 1) k
 
 @[simp]
 theorem coeff_exceptionalEulerInverse (m ε k : ℕ) (γ : ℝ) :
@@ -54,9 +55,9 @@ theorem coeff_exceptionalEulerInverse (m ε k : ℕ) (γ : ℝ) :
       if k ≤ m then
         exceptionalBaseCoeff m ε k * γ / (γ + k)
       else 0 := by
-  simp only [exceptionalEulerInverse, finsetSum_coeff, coeff_monomial]
-  rw [Finset.sum_ite_eq' (Finset.range (m + 1)) k]
-  simp
+  simpa only [exceptionalEulerInverse, Nat.lt_succ_iff] using
+    Polynomial.coeff_sum_range_monomial
+      (fun i => exceptionalBaseCoeff m ε i * γ / (γ + i)) (m + 1) k
 
 @[simp]
 theorem exceptionalBaseCoeff_zero (m ε : ℕ) :
@@ -572,12 +573,6 @@ private theorem prod_range_neg_add_eq_realRisingFactorial
   rw [Finset.prod_neg, Finset.card_range,
     prod_range_add_eq_realRisingFactorial]
 
-/-- The square of a real parity sign is one. -/
-theorem exceptional_neg_one_pow_sq_real (k : ℕ) :
-    ((-1 : ℝ) ^ k) ^ 2 = 1 := by
-  rw [← pow_mul]
-  norm_num
-
 /-- Closed product form of the numerator predicted by the terminating
 Saalschütz evaluation. -/
 def exceptionalEndpointClosedNumerator (m ε : ℕ) : ℝ[X] :=
@@ -731,9 +726,9 @@ private theorem exceptionalEndpointNumerator_eval_neg_nat
   field_simp [hcr.ne', hcm.ne', hfactorialR.ne', hfactorialSub.ne']
   ring_nf at hshift hratio ⊢
   have hsignR : (-1 : ℝ) ^ (r * 2) = 1 := by
-    rw [pow_mul, exceptional_neg_one_pow_sq_real]
+    rw [pow_mul, Parity.neg_one_pow_sq]
   have hsignM : (-1 : ℝ) ^ (m * 2) = 1 := by
-    rw [pow_mul, exceptional_neg_one_pow_sq_real]
+    rw [pow_mul, Parity.neg_one_pow_sq]
   rw [hsignR, hsignM, mul_one] at ⊢
   nlinarith [hratio]
 
@@ -881,7 +876,7 @@ theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
       linarith
     linarith
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
-    exceptional_neg_one_pow_sq_real m
+    Parity.neg_one_pow_sq m
   have hrearrange :
       (-1 : ℝ) ^ m *
           (((-1 : ℝ) ^ m * (m.factorial : ℝ) /

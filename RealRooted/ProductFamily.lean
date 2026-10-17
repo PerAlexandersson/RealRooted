@@ -333,15 +333,10 @@ private lemma map_fst_zip_sublist_left
 private lemma map_snd_zip_sublist_right
     {α β : Type*} (as : List α) (bs : List β) :
     ((as.zip bs).map Prod.snd).Sublist bs := by
-  induction as generalizing bs with
-  | nil =>
-      simp
-  | cons a as ih =>
-      cases bs with
-      | nil =>
-          simp
-      | cons b bs =>
-          grind
+  rw [show (as.zip bs).map Prod.snd = (bs.zip as).map Prod.fst by
+    rw [← List.zip_swap as bs, List.map_map]
+    rfl]
+  exact map_fst_zip_sublist_left bs as
 
 private lemma map_fst_filter_zip_sublist_left
     {α β : Type*} (p : α × β → Prop) [DecidablePred p]

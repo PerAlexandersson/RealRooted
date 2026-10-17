@@ -38,6 +38,12 @@ theorem polynomial_one : polynomial 1 = 0 := rfl
 theorem polynomial_two : polynomial 2 = X := by
   simp [polynomial]
 
+/-- `d_j` has degree at most `j`. -/
+theorem natDegree_polynomial_le (j : ℕ) : (polynomial j).natDegree ≤ j := by
+  cases j with
+  | zero => simp
+  | succ j => exact natDegree_le_sturmDerangementsExc (j + 1)
+
 /-- The recurrence for the derangement excedance polynomials. -/
 theorem polynomial_recurrence (n : ℕ) :
     polynomial (n + 3) =
@@ -61,12 +67,8 @@ theorem polynomial_succ (j : ℕ) :
     ring
 
 /-- The linear deranged map, characterized by `X ^ n ↦ d n`. -/
-def transform : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := Polynomial.basisTransform polynomial
-  map_add' := Polynomial.basisTransform_add polynomial
-  map_smul' a p := by
-    simpa [Polynomial.smul_eq_C_mul] using
-      Polynomial.basisTransform_smul polynomial a p
+def transform : ℝ[X] →ₗ[ℝ] ℝ[X] :=
+  Polynomial.basisTransformₗ polynomial
 
 /-- The deranged map sends `X ^ n` to `d_n`. -/
 @[simp]
@@ -76,9 +78,8 @@ theorem transform_X_pow (n : ℕ) : transform (X ^ n) = polynomial n := by
 /-- The deranged map commutes with constant multiples. -/
 @[simp]
 theorem transform_C_mul (a : ℝ) (p : ℝ[X]) :
-    transform (C a * p) = C a * transform p := by
-  rw [← Polynomial.smul_eq_C_mul, LinearMap.map_smul,
-    Polynomial.smul_eq_C_mul]
+    transform (C a * p) = C a * transform p :=
+  Polynomial.linearMap_C_mul _ a p
 
 /-- The operator identity `D (X p) = X (D ((1 + X) p') + (1 - X) (D p)')`. -/
 theorem transform_X_mul (p : ℝ[X]) :
@@ -172,6 +173,18 @@ theorem chowDerangement_pascal :
     | zero => simp [polynomial]
     | succ n => simpa [polynomial] using natDegree_le_sturmDerangementsExc (n + 1)
 
+/-- The derangement polynomial is fixed by reflection at its natural bound. -/
+theorem reflect_polynomial (j : ℕ) : (polynomial j).reflect j = polynomial j := by
+  rw [← chowDerangement_pascal]
+  exact BrandenVecchi.reflect_chowDerangement pascal j
+
+/-- Reflecting a derangement polynomial at a larger bound appends a power of `X`. -/
+theorem reflect_polynomial_of_le {j N : ℕ} (hj : j ≤ N) :
+    (polynomial j).reflect N = polynomial j * X ^ (N - j) := by
+  have h := reflect_add_right_of_reflect (N - j) (natDegree_polynomial_le j)
+    (reflect_polynomial j)
+  rwa [show j + (N - j) = N by lia] at h
+
 /-- The Chow-deranged transform of the Pascal matrix is the deranged map. -/
 theorem chowDerangedTransform_pascal :
     BrandenVecchi.chowDerangedTransform pascal = transform := by
@@ -203,7 +216,7 @@ def pascalResolution : BrandenLeite.Resolution pascal where
 
 /-- The degree-`d` magic-basis expansion with coefficients `c`. -/
 def magicExpansion (d : ℕ) (c : ℕ → ℝ) : ℝ[X] :=
-  ∑ k ∈ Finset.range (d + 1), C (c k) * (X ^ k * (1 + X) ^ (d - k))
+  Polynomial.magicExpansion d c
 
 /-- **Brändén--Solus, Corollary 3.7** (Pólya frequency part): the deranged image of a
 nonnegative combination `∑ c_k X^k (1 + X)^(d-k)` is zero or real-rooted with nonnegative
@@ -245,19 +258,13 @@ theorem transform_X : transform X = 0 := by
 theorem transform_magicExpansion_of_le_one {d : ℕ} (hd : d ≤ 1) (c : ℕ → ℝ) :
     transform (magicExpansion d c) = C (c 0) := by
   interval_cases d
-  · simp [magicExpansion]
-  · simp [magicExpansion, Finset.sum_range_succ]
+  · simp [magicExpansion, Polynomial.magicExpansion]
+  · simp [magicExpansion, Polynomial.magicExpansion, Finset.sum_range_succ]
 
 private theorem hasNonnegCoeffs_polynomial (n : ℕ) : HasNonnegCoeffs (polynomial n) := by
   cases n with
   | zero => simpa [polynomial] using hasNonnegCoeffs_one
   | succ n => simpa [polynomial] using sturmDerangementsExc_nonnegCoeffs (n + 1)
-
-private theorem eval_one_nonneg_of_nonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    0 ≤ p.eval 1 := by
-  by_cases hp0 : p = 0
-  · simp [hp0]
-  · exact (eval_pos_of_hasNonnegCoeffs hp hp0 one_pos).le
 
 private theorem transform_X_pow_mul_one_add_X_pow (k m : ℕ) :
     transform (X ^ k * (1 + X) ^ m) =
@@ -276,7 +283,7 @@ private theorem polynomial_eval_one_le_transform {d : ℕ} {k : ℕ} (hk : k ≤
       polynomial (k + i)).eval 1) (fun i _ => by
         rw [eval_mul, eval_C]
         exact mul_nonneg (Nat.cast_nonneg _)
-          (eval_one_nonneg_of_nonnegCoeffs (hasNonnegCoeffs_polynomial _))) hmem
+          ((hasNonnegCoeffs_polynomial _).eval_nonneg zero_le_one)) hmem
   simpa [show k + (d - k) = d by lia] using hterm
 
 /-- For `2 ≤ d`, a nonnegative magic-basis combination with some positive coordinate has a
@@ -294,7 +301,7 @@ theorem transform_magicExpansion_ne_zero {d : ℕ} (hd : 2 ≤ d) {c : ℕ → �
   have h1 : (transform (magicExpansion d c)).eval 1 = 0 := by simp [h0]
   have h2 : (transform (magicExpansion d c)).eval 1 =
       ∑ k ∈ Finset.range (d + 1), c k * (transform (X ^ k * (1 + X) ^ (d - k))).eval 1 := by
-    simp [magicExpansion, map_sum, eval_finsetSum]
+    simp [magicExpansion, Polynomial.magicExpansion, map_sum, eval_finsetSum]
   have hnn : ∀ k ∈ Finset.range (d + 1),
       0 ≤ c k * (transform (X ^ k * (1 + X) ^ (d - k))).eval 1 := by
     intro k hk

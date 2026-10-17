@@ -7,6 +7,7 @@ import RealRooted.Kurtz
 version = 1
 section = "theorems"
 slug = "kurtz"
+formalized = "2026-07-18"
 authors = ["Kurtz"]
 years = [1992]
 
@@ -36,8 +37,9 @@ records real-rootedness only.
 
 ## References
 
-D. C. Kurtz, “A sufficient condition for all the roots of a polynomial to be
-real,” *American Mathematical Monthly* 99 (1992), 259–263.  See also the
+D. C. Kurtz, [“A sufficient condition for all the roots of a polynomial to be
+real,”](https://doi.org/10.1080/00029890.1992.11995845) *American Mathematical
+Monthly* 99 (1992), 259–263. See also the
 [contextual account on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#kurtzTheorem).
 <!-- /realrooted-catalog-content -->
 

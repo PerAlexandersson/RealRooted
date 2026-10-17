@@ -8,6 +8,7 @@ import RealRooted.Hadamard.SchurSzegoStrict
 version = 1
 section = "theorems"
 slug = "factorial-compression"
+formalized = "2026-10-09"
 authors = ["Zhanhe Zhang"]
 years = [2026]
 
@@ -79,8 +80,8 @@ separable permutations.
 
 ## References
 
-Z. Zhang, *A Factorial Compression Theorem for Strict Interlacing* (2026),
-[SSRN preprint](https://ssrn.com/abstract=7510941).  The Lean development follows the draft
+Z. Zhang, [“Strict interlacing of the descent polynomials of separable
+permutations,”](https://doi.org/10.2139/ssrn.7510941) SSRN preprint (2026). The Lean development follows the draft
 formalization of PR #1132 by yyou59548-design.
 <!-- /realrooted-catalog-content -->
 

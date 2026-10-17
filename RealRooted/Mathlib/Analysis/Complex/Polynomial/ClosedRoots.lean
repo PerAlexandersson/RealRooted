@@ -85,9 +85,7 @@ theorem norm_eval_le_pow_mul_norm_eval_of_forall_le_norm_sub
     calc
       ‖(p.roots.map (t - ·)).prod‖ =
         (p.roots.map fun r => ‖t - r‖).prod := by
-          simpa [Multiset.map_map] using
-            (map_multiset_prod (normHom.toMonoidHom : ℂ →* ℝ)
-              (p.roots.map (t - ·)))
+          simp
       _ ≤ (p.roots.map fun r => C * ‖μ - r‖).prod :=
         Multiset.prod_map_le_prod_map₀ _ _ (fun _ _ => norm_nonneg _)
           (fun r hr => hfactor r hr)
@@ -99,9 +97,7 @@ theorem norm_eval_le_pow_mul_norm_eval_of_forall_le_norm_sub
       _ = C ^ N * ‖(p.roots.map (μ - ·)).prod‖ := by
         congr 1
         symm
-        simpa [Multiset.map_map] using
-          (map_multiset_prod (normHom.toMonoidHom : ℂ →* ℝ)
-            (p.roots.map (μ - ·)))
+        simp
   calc
     ‖p.leadingCoeff‖ * ‖(p.roots.map (t - ·)).prod‖ ≤
         ‖p.leadingCoeff‖ *

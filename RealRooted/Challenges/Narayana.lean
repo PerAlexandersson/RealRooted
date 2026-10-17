@@ -12,6 +12,7 @@ import RealRooted.NarayanaTransformation.Rising
 version = 1
 section = "families"
 slug = "narayana"
+formalized = "2026-07-18"
 authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti"]
 years = [1989, 2013, 2026]
 
@@ -120,7 +121,10 @@ label = "Descent polynomials of 132-avoiders are real-rooted and interlace"
 
 For $m, n \geq 0$, the generalized Narayana polynomial is
 
-$$N_{n,m}(x) = \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k.$$
+$$
+N_{n,m}(x) =
+\sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k.
+$$
 
 For $m = 1$ the coefficients are Narayana numbers; for example
 $N_{2,1}(x) = 1 + 3x + x^2$. Combinatorially, the Dyck paths of semilength

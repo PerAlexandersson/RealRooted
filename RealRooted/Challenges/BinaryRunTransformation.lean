@@ -11,6 +11,7 @@ import RealRooted.BinaryRunTransformation.SymbolCounterexample
 version = 1
 section = "theorems"
 slug = "binary-run-transformation"
+formalized = "2026-09-28"
 
 [[definitions]]
 name = "RealRooted.binaryRunPolynomial"
@@ -157,7 +158,9 @@ prevents collisions throughout the deformation.
 The stability-preserving contraction uses the algebraic-symbol machinery of
 J. Borcea and P. Brändén, [“The Lee–Yang and Pólya–Schur programs. I. Linear
 operators preserving stability,”](https://arxiv.org/abs/0809.0401)
-*Inventiones Mathematicae* 177 (2009), 541–569. For the related transform, see
+*Inventiones Mathematicae* 177 (2009), 541–569,
+[doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3).
+For the related transform, see
 J. Mao and L. Wang, [“The Narayana transformation,”](https://arxiv.org/abs/2607.01572)
 arXiv:2607.01572 (2026).
 <!-- /realrooted-catalog-content -->

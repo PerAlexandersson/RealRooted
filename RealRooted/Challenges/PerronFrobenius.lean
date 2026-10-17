@@ -10,6 +10,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 version = 1
 section = "theorems"
 slug = "perron-frobenius"
+formalized = "2026-08-21"
 authors = ["Perron", "Frobenius"]
 years = [1907, 1912]
 
@@ -50,7 +51,9 @@ label = "A positive eigenvector belongs to the Perron root"
 For a square matrix $A$ with nonnegative real entries, the **Perron root** is
 the Collatz–Wielandt value
 
-$$r(A) = \sup_{v \geq 0,\ v \neq 0}\ \min_{i\,:\,v_i > 0} \frac{(Av)_i}{v_i}.$$
+$$
+r(A) = \sup_{v \geq 0,\ v \neq 0}\ \min_{i\,:\,v_i > 0} \frac{(Av)_i}{v_i}.
+$$
 
 **Theorem (Perron–Frobenius).**
 
@@ -70,8 +73,8 @@ one through $1 + A$.
 
 ## References
 
-O. Perron, “Zur Theorie der Matrices,” Mathematische Annalen 64 (1907),
-248–263.
+O. Perron, [“Zur Theorie der Matrices,”](https://doi.org/10.1007/BF01449896)
+*Mathematische Annalen* 64 (1907), 248–263.
 
 G. Frobenius, “Über Matrizen aus nicht negativen Elementen,” Sitzungsberichte
 der Königlich Preussischen Akademie der Wissenschaften (1912), 456–477.

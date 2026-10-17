@@ -61,7 +61,7 @@ theorem allComboRealRooted_of_strictInterl_or_reverse
     AllComboRealRooted f g
   | Or.inl hstrictInterl => allComboRealRooted_of_strictInterl hstrictInterl
   | Or.inr hstrictInterl =>
-      allComboRealRooted_comm (allComboRealRooted_of_strictInterl hstrictInterl)
+      (allComboRealRooted_of_strictInterl hstrictInterl).comm
 
 namespace Compatible
 
@@ -194,20 +194,6 @@ theorem pairHasCommonLeftInterleaver_of_sameDegree_natDegree_le_one
     ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
   pairHasCommonLeftInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
-
-/-- Compatibility-level version of the low-degree common-interleaver endpoint.
-In degree at most one the common interleaver exists without using the
-compatibility hypothesis, but keeping it in the statement makes this theorem a
-drop-in two-polynomial bridge. -/
-theorem compatiblePairHasCommonInterleaver_of_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg_le_one : f.natDegree ≤ 1)
-    (hg_deg_le_one : g.natDegree ≤ 1) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  pairHasCommonInterleaver_of_natDegree_le_one
-    hf_pos hg_pos hf_deg_le_one hg_deg_le_one
 
 /-- Degree-zero base case for the succ-degree root-count formulation.
 

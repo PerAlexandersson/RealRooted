@@ -115,7 +115,7 @@ lemma bezoutMatrix.no_complex_root_of_posDef {n : ℕ}
   have hsum : ∑ i : Fin (n + 1), ∑ j : Fin (n + 1),
       (bezoutMatrix (n + 1) q p i j : ℂ) * z ^ i.val * starRingEnd ℂ (z ^ j.val) = 0 := by
     have hsum_aux := (mul_eq_zero.mp h_bezoutian).resolve_left h_z_ne
-    simpa only [bezoutMatrix, map_pow] using hsum_aux
+    simpa only [bezoutMatrix, Polynomial.bezoutMatrix, bezoutEntry, map_pow] using hsum_aux
   have h_y_ne : (fun (i : Fin (n + 1)) ↦ z ^ i.val) ≠ 0 := fun h ↦
     one_ne_zero (congr_fun h ⟨0, Nat.zero_lt_succ n⟩)
   have h_y_zero :=
@@ -134,7 +134,8 @@ lemma bezoutMatrix.no_complex_root_q_of_posDef {n : ℕ}
   · simp_all
   · convert hB using 1
     ext i j
-    simp [bezoutMatrix, bezoutEntry, neg_add_eq_sub, Finset.sum_sub_distrib]
+    simp [Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry, neg_add_eq_sub,
+      Finset.sum_sub_distrib]
 
 lemma bezoutMatrix.splits_of_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)

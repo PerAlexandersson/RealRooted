@@ -56,10 +56,6 @@ theorem gammaOperatorNumerator_X_sub_C_mul (d : ℕ) (a c : ℝ) (q : ℝ[X]) :
     derivative_C, sub_zero, one_mul]
   ring
 
-private theorem finRootPolynomial_eq_prod {n : ℕ} (r : Fin n → ℝ) :
-    finRootPolynomial r = ∏ j : Fin n, (X - C (r j)) := by
-  simp [finRootPolynomial, rootPolynomial, List.prod_ofFn]
-
 private theorem isRoot_finRootPolynomial {n : ℕ} (r : Fin n → ℝ) (i : Fin n) :
     (finRootPolynomial r).IsRoot (r i) := by
   rw [IsRoot.def, finRootPolynomial_eq_prod, eval_prod]
@@ -245,7 +241,7 @@ private theorem exists_hasDerivAt_isRoot_add_C_mul {P Q : ℝ[X]} {ρ : ℝ}
     · exact hparam.hasFDerivAt
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular
   let branch : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hbase : branch 0 = ρ :=
     hcont.implicitFunction_apply_self (by simp) hAinv

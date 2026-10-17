@@ -1,4 +1,5 @@
 import RealRooted.HermiteBiehler.Basic
+import Mathlib.Algebra.Polynomial.Eval.Degree
 import RealRooted.NewtonAux
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
@@ -342,21 +343,13 @@ open Polynomial
 
 namespace SchurSzegoAristotle
 
-/-- The derivative of a split real polynomial splits (Rolle). -/
-private theorem splits_derivative_real {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := by
-  rw [splits_iff_card_roots] at hp ⊢
-  have h1 := card_roots_le_derivative p
-  have h2 : (derivative p).roots.card ≤ (derivative p).natDegree := card_roots' _
-  have h3 : (derivative p).natDegree ≤ p.natDegree - 1 := natDegree_derivative_le p
-  lia
-
 private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     (derivative^[k] p).Splits := by
   induction k with
   | zero => simpa using hp
   | succ k ih =>
     rw [Function.iterate_succ_apply']
-    exact splits_derivative_real ih
+    exact Polynomial.Splits.derivative ih
 
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
@@ -387,20 +380,6 @@ private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
       intro h; apply hx; simp [h]
     have : 0 < (G.eval x) ^ 2 := by positivity
     nlinarith [sq_nonneg (x - a)]
-
-/-- Laguerre's inequality for split real polynomials. -/
-private theorem laguerre_ineq {p : ℝ[X]} (hp : p.Splits) (x : ℝ) :
-    0 ≤ (p.derivative.eval x) ^ 2 - p.eval x * p.derivative.derivative.eval x := by
-  rw [hp.eq_prod_roots]
-  have := (laguerre_prod p.roots x).1
-  set F := (p.roots.map fun a => X - C a).prod
-  have e : ((C p.leadingCoeff * F).derivative.eval x) ^ 2 -
-      (C p.leadingCoeff * F).eval x * (C p.leadingCoeff * F).derivative.derivative.eval x =
-      p.leadingCoeff ^ 2 * ((F.derivative.eval x) ^ 2 - F.eval x *
-        F.derivative.derivative.eval x) := by
-    simp only [derivative_mul, derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-    ring
-  rw [e]; positivity
 
 /-- If a split real polynomial of positive degree has `p'(x) = p''(x) = 0`, then `p(x) = 0`. -/
 private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits) (hdeg : 0 < p.natDegree) {x : ℝ}
@@ -554,8 +533,6 @@ private theorem apo_sum_left {ι : Type*} (n : ℕ) (s : Finset ι) (R : ι → 
   induction s using Finset.induction_on with
   | empty => simp [apo]
   | insert a s ha ih => rw [sum_insert ha, sum_insert ha, apo_add_left, ih]
-
-private theorem apo_zero_left (n : ℕ) (W : ℝ[X]) : apo n 0 W = 0 := by simp [apo]
 
 /-- Reflection invariance (no degree hypotheses are needed). -/
 private theorem apo_reflect (n : ℕ) (R W : ℝ[X]) :
@@ -1078,11 +1055,11 @@ namespace SchurSzegoAristotle
 local notation "ssc" => RealRooted.schurSzegoComp
 
 private theorem coeff_ssc (n : ℕ) (f g : ℝ[X]) (k : ℕ) :
-    (ssc n f g).coeff k = f.coeff k * g.coeff k / (Nat.choose n k : ℝ) := by
-  exact RealRooted.coeff_schurSzegoComp_eq_div n f g k
+    (ssc n f g).coeff k = f.coeff k * g.coeff k / (Nat.choose n k : ℝ) :=
+  RealRooted.coeff_schurSzegoComp_eq_div n f g k
 
-private theorem natDegree_ssc_le (n : ℕ) (f g : ℝ[X]) : (ssc n f g).natDegree ≤ n := by
-  exact RealRooted.natDegree_schurSzegoComp_le n f g
+private theorem natDegree_ssc_le (n : ℕ) (f g : ℝ[X]) : (ssc n f g).natDegree ≤ n :=
+  RealRooted.natDegree_schurSzegoComp_le n f g
 
 private theorem ssc_ne_zero {n : ℕ} {f g : ℝ[X]} (hf : f.natDegree = n) (hg : g.natDegree = n)
     (hf0 : f ≠ 0) (hg0 : g ≠ 0) : ssc n f g ≠ 0 := by
@@ -1108,14 +1085,6 @@ private theorem derivative_ssc (N : ℕ) (f g : ℝ[X]) :
     field_simp
     linear_combination (f.coeff (j + 1) * g.coeff (j + 1)) * key'
 
-private theorem coeff_comp_C_mul_X' (Q : ℝ[X]) (a : ℝ) (k : ℕ) :
-    (Q.comp (C a * X)).coeff k = a ^ k * Q.coeff k := by
-  induction Q using Polynomial.induction_on' with
-  | add p q hp hq => simp [add_comp, hp, hq]; ring
-  | monomial i c =>
-    rw [monomial_comp, mul_pow, ← C_pow, ← mul_assoc, ← C_mul, coeff_C_mul_X_pow, coeff_monomial]
-    split_ifs with h1 h2 h2 <;> subst_vars <;> simp_all; ring
-
 private theorem natDegree_comp_C_mul_X_le (Q : ℝ[X]) (a : ℝ) : (Q.comp
     (C a * X)).natDegree ≤ Q.natDegree :=
   natDegree_comp_le.trans (by
@@ -1134,7 +1103,8 @@ private theorem coeff_Tr {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ 
   unfold Tr
   rw [coeff_reflect]
   split_ifs with h
-  · rw [revAt_le h, coeff_comp_C_mul_X']
+  · rw [revAt_le h, Polynomial.comp_C_mul_X_coeff]
+    ring
   · change (Q.comp (C (-r) * X)).coeff (revAtFun n j) = 0
     rw [show revAtFun n j = j by
       unfold revAtFun
@@ -1619,8 +1589,9 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
     have hrm1 := rootMultiplicity_ssc_derivative N P Q hroot
     by_cases hK3 : 2 < (ssc (N + 1) P Q).rootMultiplicity r
     · obtain ⟨a, b, ha, hb, -, -, hlt, hrab, hmult⟩ :=
-        ih P.derivative Q.derivative (natDegree_derivative_eq' hP) (splits_derivative_real hPs)
-          (natDegree_derivative_eq' hQ) (splits_derivative_real hQs)
+        ih P.derivative Q.derivative (natDegree_derivative_eq' hP)
+          (Polynomial.Splits.derivative hPs) (natDegree_derivative_eq' hQ)
+          (Polynomial.Splits.derivative hQs)
           (derivative_roots_neg hQ hQs hneg) r hr (by lia)
       have hm := rootMultiplicity_le_natDegree' P.derivative a
       have hl := rootMultiplicity_le_natDegree' Q.derivative b

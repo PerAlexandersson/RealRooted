@@ -246,24 +246,18 @@ theorem ls4_factor_expansion (a : ℝ) (U V f : ℝ[X]) :
   simp [Polynomial.derivative_add, Polynomial.derivative_mul]
   ring
 
-theorem ls4_C_two_real : (C (2 : ℝ) : ℝ[X]) = 2 :=
-  Polynomial.C_eq_natCast 2
-
-theorem ls4_C_four_real : (C (4 : ℝ) : ℝ[X]) = 4 :=
-  Polynomial.C_eq_natCast 4
-
-theorem ls4_C_eight_real : (C (8 : ℝ) : ℝ[X]) = 8 :=
-  Polynomial.C_eq_natCast 8
-
-theorem ls4_C_sixteen_real : (C (16 : ℝ) : ℝ[X]) = 16 :=
-  Polynomial.C_eq_natCast 16
-
 theorem ls4_C_neg_one_real : (C (-1 : ℝ) : ℝ[X]) = -1 := by norm_num
 
 theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
     (C (OfNat.ofNat m : ℝ) : ℝ[X]) = (OfNat.ofNat m : ℝ[X]) := by
   change (C (m : ℝ) : ℝ[X]) = (m : ℝ[X])
   exact Polynomial.C_eq_natCast m
+
+private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
+  ls4_C_ofNat_real 2
+
+private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
+  ls4_C_ofNat_real 4
 
 theorem ls4_natCast_eq_C_real (m : Nat) :
     (m : ℝ[X]) = C (m : ℝ) :=
@@ -460,8 +454,6 @@ macro_rules
               Polynomial.derivative_X, Polynomial.derivative_one,
               Polynomial.derivative_zero, Polynomial.derivative_natCast,
               Polynomial.derivative_ofNat, Polynomial.derivative_neg,
-              RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-              RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
               RealRooted.ls4_C_neg_one_real,
               Polynomial.C_1, one_mul]
             repeat rw [RealRooted.ls4_C_ofNat_real]
@@ -471,10 +463,8 @@ macro_rules
             try norm_num1
             repeat rw [RealRooted.ls4_C_ofNat_real]
             try
-              simp [RealRooted.ls4_C_two_real, RealRooted.ls4_C_four_real,
-                RealRooted.ls4_C_eight_real, RealRooted.ls4_C_sixteen_real,
-                RealRooted.ls4_C_neg_one_real, Polynomial.C_add, Polynomial.C_1,
-                Polynomial.C_neg, one_mul, mul_one]
+              simp [RealRooted.ls4_C_neg_one_real, Polynomial.C_add,
+                Polynomial.C_1, Polynomial.C_neg, one_mul, mul_one]
             repeat rw [RealRooted.ls4_C_ofNat_real]
             ring_nf)
   | `(tactic| rr_ls4_factorize) =>
@@ -708,50 +698,5 @@ macro_rules
             $hinner_deg_lo $hinner_deg_hi))
 
 end Tactic
-
-/-- Deprecated degree-restricted form of `MaWang.splits_derivative_of_nonpos`. -/
-@[deprecated MaWang.splits_derivative_of_nonpos (since := "2026-10-05")]
-theorem splits_mw_derivative_of_nonpos {f u v : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
-    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    (u * f + v * f.derivative).Splits :=
-  MaWang.splits_derivative_of_nonpos hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
-
-/-- Deprecated degree-restricted form of
-`MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence`. -/
-@[deprecated MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
-  (since := "2026-10-05")]
-theorem isRealRooted_of_mw_then_const_add_derivative_sequence
-    {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} (a : Nat → ℝ)
-    (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (ha : ∀ n : Nat, a n ≠ 0)
-    (_ : ∀ n : Nat, 2 ≤ (P (n + 1)).natDegree)
-    (hinner_pos : ∀ n : Nat,
-      HasPosLeadingCoeff (U n * P (n + 1) + V n * (P (n + 1)).derivative))
-    (hV_nonpos : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        C (a n) * (U n * P (n + 1) + V n * (P (n + 1)).derivative) +
-          (U n * P (n + 1) + V n * (P (n + 1)).derivative).derivative)
-    (hinner_deg_lo : ∀ n : Nat,
-      (P (n + 1)).natDegree ≤
-        (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree)
-    (hinner_deg_hi : ∀ n : Nat,
-      (U n * P (n + 1) + V n * (P (n + 1)).derivative).natDegree ≤
-        (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence a hbase_zero hbase_one
-    hpos ha hinner_pos hV_nonpos hrec hinner_deg_lo hinner_deg_hi
-
-@[deprecated (since := "2026-10-05")]
-alias isRealRooted_of_mw_then_const_add_derivative_plus_current_sequence :=
-  MaWang.isRealRooted_of_derivative_then_const_add_derivative_plus_current_sequence
 
 end RealRooted

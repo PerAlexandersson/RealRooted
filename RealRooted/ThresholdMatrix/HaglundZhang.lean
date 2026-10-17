@@ -1,11 +1,10 @@
 import RealRooted.ThresholdMatrix.Basic
 
 /-!
-# Haglund--Zhang threshold matrices and OEIS A046802
+# Haglund--Zhang threshold matrices
 
 The `1`/`1 + X` threshold-entry classification, its matrix-preservation
-theorem, the binomial Eulerian recursion, and the sequence-facing A046802
-surface.
+theorem, and the binomial Eulerian recursion.
 -/
 
 open Polynomial
@@ -41,9 +40,14 @@ lemma binomialThresholds_mono (n : ℕ) :
   simp only [binomialThresholds, List.get_eq_getElem, List.getElem_range]
   exact hij
 
-/-- Row data for the binomial Eulerian specialization: all markers are `1 + X`. -/
+/-- Diagonal marker for the binomial Eulerian specialization. -/
+abbrev binomialMarker (t : ℕ) : ℝ[X] :=
+  if t = 0 then 1 + X else 1
+
+/-- Row data for the binomial Eulerian specialization: the zeroth marker is
+`1 + X`, and every other marker is `1`. -/
 abbrev binomialRows (ts : List ℕ) : List (ℕ × ℝ[X]) :=
-  ts.map (fun t => (t, (1 + X : ℝ[X])))
+  ts.map (fun t => (t, binomialMarker t))
 
 /-- Matrix for the binomial Eulerian specialization. -/
 abbrev binomialMatrix (q : ℕ) (ts : List ℕ) : List (List ℝ[X]) :=
@@ -63,6 +67,47 @@ The length parameter is kept explicit so this is literally the action of the
 terminal threshold row of width `q`. -/
 def terminalPolynomial (q : ℕ) (fs : List ℝ[X]) : ℝ[X] :=
   ((row q 0 (1 + X)).zipWith (· * ·) fs).sum
+
+private lemma thresholdRow_zero_one_add_X (q : ℕ) :
+    thresholdRow q 0 (1 + X : ℝ[X]) =
+      if q = 0 then [] else (1 + X) :: List.replicate (q - 1) 1 := by
+  cases q with
+  | zero => simp [thresholdRow]
+  | succ q =>
+      simp only [Nat.succ_ne_zero, ite_false, Nat.succ_sub_one]
+      apply List.ext_get
+      · simp
+      · intro i hi₁ hi₂
+        rw [show (thresholdRow (q + 1) 0 (1 + X)).get ⟨i, hi₁⟩ =
+            thresholdEntry 0 (1 + X) i by
+              exact get_thresholdRow ⟨i, hi₁⟩]
+        cases i with
+        | zero => simp
+        | succ i => simp [thresholdEntry]
+
+private lemma replicate_one_zipWith_sum (fs : List ℝ[X]) :
+    ((List.replicate fs.length 1).zipWith (fun x₁ x₂ ↦ x₁ * x₂) fs).sum =
+      fs.sum := by
+  induction fs with
+  | nil => simp
+  | cons f fs ih =>
+      simp only [List.length_cons, List.replicate_succ,
+        List.zipWith_cons_cons, one_mul, List.sum_cons]
+      rw [ih]
+
+/-- The terminal row adds `X` times the first entry to the ordinary row sum. -/
+theorem terminalPolynomial_cons (f : ℝ[X]) (fs : List ℝ[X]) :
+    terminalPolynomial (f :: fs).length (f :: fs) =
+      (f :: fs).sum + X * f := by
+  rw [terminalPolynomial]
+  change
+    ((thresholdRow (f :: fs).length 0 (1 + X)).zipWith
+      (fun x₁ x₂ ↦ x₁ * x₂) (f :: fs)).sum = _
+  rw [thresholdRow_zero_one_add_X]
+  simp only [List.length_cons, Nat.succ_ne_zero, ite_false, Nat.succ_sub_one,
+    List.zipWith_cons_cons, List.sum_cons]
+  rw [replicate_one_zipWith_sum]
+  ring
 
 @[simp] lemma length_binomialRows (ts : List ℕ) :
     (binomialRows ts).length = ts.length := by
@@ -104,15 +149,18 @@ lemma binomialRows_rowData {ts : List ℕ}
   · intro p hp
     simp only [binomialRows, List.mem_map] at hp
     obtain ⟨t, _, rfl⟩ := hp
-    exact Or.inr rfl
+    by_cases ht : t = 0
+    · exact Or.inr (by simp [binomialMarker, ht])
+    · exact Or.inl (by simp [binomialMarker, ht])
   · intro i j hij
     let i' : Fin ts.length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin ts.length := ⟨j.1, by simpa using j.2⟩
     have hij' : i' ≤ j' := hij
     have hkey := hmono i' j' hij'
     simpa [binomialRows, List.get_eq_getElem, i', j'] using hkey
-  · intro i j _ _ _
-    simp [binomialRows, List.get_eq_getElem, List.getElem_map]
+  · intro i j _ heq hi
+    simp only [binomialRows, List.get_eq_getElem, List.getElem_map] at heq hi ⊢
+    simpa [binomialMarker, heq] using hi
 
 lemma terminalRows_rowData :
     RowData terminalRows := by
@@ -550,7 +598,8 @@ private lemma hzEntry_shape
 /-- The finite entrywise Haglund--Zhang `2 x 2` threshold check. -/
 theorem has2x2InterlacingProperty0_entry {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
     (hα₁ : α₁ = 1 ∨ α₁ = 1 + X) (hα₂ : α₂ = 1 ∨ α₂ = 1 + X)
-    (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂) (hcompat : t₁ = t₂ → α₁ = 1 + X → α₂ = 1 + X) :
+    (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂)
+    (hcompat : t₁ = t₂ → α₁ = 1 + X → α₂ = 1 + X) :
     Has2x2InterlacingProperty0
       (entry t₁ α₁ j₁) (entry t₁ α₁ j₂)
       (entry t₂ α₂ j₁) (entry t₂ α₂ j₂) :=
@@ -793,18 +842,22 @@ private lemma coeff_zero_matPolyAction
 
 private lemma coeff_zero_thresholdEntry_one_add_X (t j : ℕ) :
     (thresholdEntry t (1 + X : ℝ[X]) j).coeff 0 = hzConstEntry t j := by
-  by_cases hlt : j < t
-  · simp [thresholdEntry, hzConstEntry, hlt]
-  · by_cases heq : j = t
-    · simp [thresholdEntry, hzConstEntry, heq]
-    · simp [thresholdEntry, hzConstEntry, hlt, heq]
+  simp only [thresholdEntry, hzConstEntry]
+  split_ifs <;> simp
+
+private lemma coeff_zero_thresholdEntry_binomialMarker (t j : ℕ) :
+    (thresholdEntry t (binomialMarker t) j).coeff 0 = hzConstEntry t j := by
+  by_cases ht : t = 0
+  · simp [binomialMarker, ht, coeff_zero_thresholdEntry_one_add_X]
+  · simp only [binomialMarker, ht, ite_false, thresholdEntry, hzConstEntry]
+    split_ifs <;> simp
 
 private lemma coeff_zero_hzBinomialMatrix (q n : ℕ) :
     (binomialMatrix q (binomialThresholds n)).map
       (fun row => row.map (fun p => p.coeff 0)) =
       hzConstMatrix q n := by
   simp [binomialMatrix, binomialThresholds, binomialRows, matrix,
-    thresholdMatrix, thresholdRow, coeff_zero_thresholdEntry_one_add_X,
+    thresholdMatrix, thresholdRow, coeff_zero_thresholdEntry_binomialMarker,
     hzConstMatrix, hzConstRow]
 
 private lemma coeff_zero_hzTerminalRow (q : ℕ) :
@@ -933,76 +986,67 @@ theorem binomialEulerianPolynomial_splits (n : ℕ) :
     (binomialEulerianPolynomial n).Splits :=
   (binomialEulerianPolynomial_realRooted n).2
 
+/-- The terminal polynomial is the first entry of the next refined vector. -/
+theorem getElem_zero_binomialRefined_succ (n : ℕ) :
+    (binomialRefined (n + 1))[0] = binomialEulerianPolynomial n := by
+  simp only [binomialRefined, matPolyAction, List.getElem_map, binomialMatrix,
+    thresholdMatrix, binomialRows, binomialThresholds, List.getElem_range,
+    binomialMarker]
+  rfl
+
+/-- Consecutive Haglund--Zhang terminal polynomials are in strict interlacing
+position. -/
+theorem binomialEulerianPolynomial_strictInterl_succ (n : ℕ) :
+    StrictInterl (binomialEulerianPolynomial n)
+      (binomialEulerianPolynomial (n + 1)) := by
+  let fs := binomialRefined (n + 1)
+  let f : ℝ[X] := fs.get ⟨0, by simp [fs]⟩
+  have hf_eq : f = binomialEulerianPolynomial n := by
+    exact getElem_zero_binomialRefined_succ n
+  have hdata := binomialRefined_interlacing_and_realRooted (n + 1)
+  have hf_mem : f ∈ fs := List.get_mem fs _
+  have hf_ne : f ≠ 0 := by
+    rw [hf_eq]
+    exact binomialEulerianPolynomial_ne_zero n
+  have hf_splits : f.Splits := (hdata.2 f hf_mem hf_ne).2
+  have hpair : fs.Pairwise Interl :=
+    isInterlacingSeq0_iff_pairwise.mp hdata.1.1
+  have hfs_eq : fs = f :: fs.drop 1 := by
+    simpa [f] using
+      (List.drop_eq_getElem_cons (l := fs) (i := 0) (h := by simp [fs]))
+  have hcommon : ∀ p ∈ fs, Interl f p := by
+    intro p hp
+    rw [hfs_eq] at hp hpair
+    rcases List.mem_cons.mp hp with rfl | hp
+    · exact (StrictInterl.refl hf_ne hf_splits).toInterl
+    · exact (List.pairwise_cons.mp hpair).1 p hp
+  have hf_total : Interl f fs.sum :=
+    Interl.sum_left_of_common_left_of_nonneg fs f hcommon hdata.1.2
+  have hf_nonneg : HasNonnegCoeffs f := hdata.1.2 f hf_mem
+  have htotal_nonneg : HasNonnegCoeffs fs.sum :=
+    hasNonnegCoeffs_sum fs hdata.1.2
+  have hf_X : StrictInterl f (X * f) :=
+    strictInterl_self_X_mul_of_nonneg hf_ne hf_splits hf_nonneg
+  have hnext : Interl f (fs.sum + X * f) :=
+    interl_add_right_of_common_left_of_nonneg hf_total hf_X.toInterl
+      htotal_nonneg hf_nonneg.X_mul
+  have hterminal :
+      binomialEulerianPolynomial (n + 1) = fs.sum + X * f := by
+    rw [binomialEulerianPolynomial]
+    change terminalPolynomial (n + 2) fs = fs.sum + X * f
+    have hlen : fs.length = n + 2 := by simp [fs]
+    rw [← hlen]
+    change terminalPolynomial fs.length fs = fs.sum + X * f
+    rw [hfs_eq, terminalPolynomial_cons]
+  have hnext_ne : fs.sum + X * f ≠ 0 := by
+    rw [← hterminal]
+    exact binomialEulerianPolynomial_ne_zero (n + 1)
+  rw [← hf_eq, hterminal]
+  exact hnext.toStrictInterl_of_ne hf_ne hnext_ne
+
 end HaglundZhang
 
 namespace OEIS
-
-namespace Backend
-
-@[deprecated (since := "2026-10-06")] alias HZData := HaglundZhang.RowData
-@[deprecated (since := "2026-10-06")] alias hzRow := HaglundZhang.row
-@[deprecated (since := "2026-10-06")] alias hzMatrix := HaglundZhang.matrix
-@[deprecated (since := "2026-10-06")] alias hzBinomialMatrix := HaglundZhang.binomialMatrix
-@[deprecated (since := "2026-10-06")] alias hzTerminalPolynomial :=
-  HaglundZhang.terminalPolynomial
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_s_inversion_interlacing_weak :=
-  HaglundZhang.isInterlacingSeq0Nonneg_matPolyAction_and_realRooted
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_binomial_eulerian_weak :=
-  HaglundZhang.isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
-@[deprecated (since := "2026-10-06")] alias haglund_zhang_terminal_polynomial_realRooted :=
-  HaglundZhang.isRealRooted_terminalPolynomial
-
-end Backend
-
-/-! ### OEIS A046802 surface -/
-
-/-- The recurrence-defined A046802 row family, represented by the
-Haglund--Zhang binomial Eulerian polynomial.  Agreement with the external OEIS
-table is intentionally a separate theorem for the generated sequence file. -/
-abbrev A046802 (n : ℕ) : ℝ[X] :=
-  HaglundZhang.binomialEulerianPolynomial n
-
-/-- The refined Haglund--Zhang vector used as the interlacing certificate for
-`A046802`. -/
-abbrev A046802Refined (n : ℕ) : List ℝ[X] :=
-  HaglundZhang.binomialRefined n
-
-@[simp] theorem A046802_eq_binomialEulerianPolynomial (n : ℕ) :
-    A046802 n = HaglundZhang.binomialEulerianPolynomial n := rfl
-
-@[simp] theorem A046802Refined_eq_binomialRefined (n : ℕ) :
-    A046802Refined n = HaglundZhang.binomialRefined n := rfl
-
-@[simp] theorem coeff_zero_A046802 (n : ℕ) :
-    (A046802 n).coeff 0 = 1 :=
-  HaglundZhang.coeff_zero_binomialEulerianPolynomial n
-
-/-- Interlacing certificate for the Haglund--Zhang refinement behind A046802. -/
-theorem A046802_interlaces (n : ℕ) :
-    IsInterlacingSeq0Nonneg (A046802Refined n) :=
-  HaglundZhang.binomialRefined_interlaces n
-
-/-- Real-rootedness certificate for each nonzero refined polynomial behind A046802. -/
-theorem A046802_refined_realRooted (n : ℕ) :
-    ∀ f ∈ A046802Refined n, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  HaglundZhang.binomialRefined_realRooted n
-
-theorem A046802_ne_zero (n : ℕ) :
-    A046802 n ≠ 0 := by
-  intro h
-  have hcoeff := coeff_zero_A046802 n
-  rw [h] at hcoeff
-  norm_num at hcoeff
-
-theorem A046802_realRooted (n : ℕ) :
-    A046802 n ≠ 0 ∧ (A046802 n).Splits :=
-  HaglundZhang.binomialEulerianPolynomial_realRooted n
-
-/-- Tactic-facing theorem for the `rr_s_inversion_binomial_eulerian_sequence`
-route. -/
-theorem rr_s_inversion_binomial_eulerian_sequence (n : ℕ) :
-    A046802 n ≠ 0 ∧ (A046802 n).Splits :=
-  A046802_realRooted n
 
 end OEIS
 

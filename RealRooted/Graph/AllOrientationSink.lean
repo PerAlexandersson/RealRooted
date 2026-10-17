@@ -1,4 +1,5 @@
 import RealRooted.Graph.AcyclicOrientation
+import RealRooted.Graph.FiniteDegree
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
@@ -34,11 +35,10 @@ universe u
 
 variable {V : Type u} [Fintype V] [DecidableEq V]
 
-/- The finite-cardinality degree used by the all-orientation model.  Using
-`Nat.card` rather than `SimpleGraph.degree` keeps the public definitions free
-of an adjacency-decision instance. -/
-def allOrientationDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
-  Nat.card (G.neighborSet v)
+/-- Compatibility name for the decision-free finite-cardinality degree used
+by the all-orientation model. -/
+abbrev allOrientationDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
+  G.natCardDegree v
 
 /- The corresponding decision-free cardinality of the edge set. -/
 def allOrientationEdgeCount (G : _root_.SimpleGraph V) : ℕ :=

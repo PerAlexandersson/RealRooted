@@ -146,19 +146,17 @@ theorem signedCollisionNumber_eq_zero_of_isSignedWord_zero_negative
           ((SignedLetter.isNegative_iff_val_lt _).mp hnegative)).elim
       · simp
 
-/-- The signed and Smirnov descent statistics agree under the canonical
-positive-alphabet word equivalence, including the empty word. -/
-theorem signedDescentNumber_eq_smirnovDescentNumber_positiveWordEquiv
+/-- The list descent counts agree under the canonical positive-alphabet word
+equivalence, including the empty word. -/
+theorem descentCount_positiveWordEquiv
     {m n : ℕ} (w : Fin n → SignedLetter 0 m) :
-    signedDescentNumber w =
-      smirnovDescentNumber (positiveWordEquiv m n w) := by
+    (List.ofFn w).descentCount =
+      (List.ofFn (positiveWordEquiv m n w)).descentCount := by
   cases n with
   | zero => rfl
   | succ n =>
-      change RealRooted.ParkingFunctions.descentNumber w =
-        RealRooted.ParkingFunctions.descentNumber
-          (positiveWordEquiv m (n + 1) w)
-      unfold RealRooted.ParkingFunctions.descentNumber
+      rw [← RealRooted.ParkingFunctions.card_descentSet,
+        ← RealRooted.ParkingFunctions.card_descentSet]
       apply congrArg Finset.card
       ext i
       simp [RealRooted.ParkingFunctions.mem_descentSet_iff,
@@ -187,8 +185,8 @@ theorem signedWordEnumerator_one_zero_negative_eq_smirnov
     rw [ite_eq_left ((isSignedWord_zero_negative_iff_isSmirnovWord w).mp hw)]
     rw [signedWordWeight_one]
     rw [signedCollisionNumber_eq_zero_of_isSignedWord_zero_negative hw]
-    rw [signedDescentNumber_eq_smirnovDescentNumber_positiveWordEquiv]
-    simp [smirnovWordWeight]
+    rw [descentCount_positiveWordEquiv]
+    simp [wordWeight]
   · rw [ite_eq_right hw]
     rw [ite_eq_right (by
       simpa [isSignedWord_zero_negative_iff_isSmirnovWord] using hw)]

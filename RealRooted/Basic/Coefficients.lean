@@ -88,6 +88,14 @@ protected lemma HasNonnegCoeffs.pow {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
   | n + 1 => by
       simpa [pow_succ] using (hp.pow n).mul hp
 
+/-- A polynomial with nonnegative coefficients is nonnegative at every
+nonnegative real argument. -/
+lemma HasNonnegCoeffs.eval_nonneg {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) {x : ℝ} (hx : 0 ≤ x) :
+    0 ≤ p.eval x := by
+  rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
+  exact Finset.sum_nonneg fun n _ => mul_nonneg (hp n) (pow_nonneg hx _)
+
 /-- Reflection at an arbitrary degree preserves nonnegative coefficients. -/
 lemma HasNonnegCoeffs.reflect {p : ℝ[X]} (hp : HasNonnegCoeffs p) (n : ℕ) :
     HasNonnegCoeffs (reflect n p) := by

@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaverTwo
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
 
 open Polynomial
 
@@ -16,9 +17,6 @@ def scaledLinearFamily : List ℝ[X] :=
 
 private lemma xAddOne_isRealRooted : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-1 : ℝ)
-
-private lemma xAddOne_hasNonnegCoeffs : HasNonnegCoeffs (X + 1 : ℝ[X]) :=
-  hasNonnegCoeffs_X_add_one
 
 private lemma xAddOne_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 1 : ℝ[X]) := by
   simpa using hasPosLeadingCoeff_X_add_C (1 : ℝ)
@@ -41,11 +39,11 @@ private lemma threeMul_xAddOne_hasPosLeadingCoeff :
 
 private lemma twoMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 private lemma threeMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) xAddOne_hasNonnegCoeffs
+  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by
@@ -70,7 +68,7 @@ lemma scaledLinearFamily_hasNonnegCoeffs :
   intro f hf
   simp only [scaledLinearFamily, List.mem_cons, List.not_mem_nil, or_false] at hf
   rcases hf with rfl | rfl | rfl
-  · exact xAddOne_hasNonnegCoeffs
+  · exact hasNonnegCoeffs_X_add_one
   · exact twoMul_xAddOne_hasNonnegCoeffs
   · exact threeMul_xAddOne_hasNonnegCoeffs
 
@@ -146,10 +144,6 @@ private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
   change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X_add_C (by norm_num)
 
-private lemma xAddThree_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 3 : ℝ[X]) := by
-  change HasPosLeadingCoeff (X + C (3 : ℝ) : ℝ[X])
-  exact hasPosLeadingCoeff_X_add_C (3 : ℝ)
-
 private lemma xAddThree_roots :
     (X + 3 : ℝ[X]).roots = {(-3 : ℝ)} := by
   change ((X + C (3 : ℝ) : ℝ[X]).roots = {(-3 : ℝ)})
@@ -158,10 +152,6 @@ private lemma xAddThree_roots :
 private lemma xAddFiveHalves_isRealRooted :
     ((X + C (5 / 2 : ℝ) : ℝ[X]) ≠ 0 ∧ (X + C (5 / 2 : ℝ) : ℝ[X]).Splits) := by
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-(5 / 2 : ℝ))
-
-private lemma xAddFiveHalves_roots :
-    (X + C (5 / 2 : ℝ) : ℝ[X]).roots = {(-(5 / 2 : ℝ))} := by
-  simp
 
 private lemma xSq_add_fiveX_add_six_isRealRooted :
     ((((X + 2) * (X + 3)) : ℝ[X]) ≠ 0 ∧ (((X + 2) * (X + 3)) : ℝ[X]).Splits) :=
@@ -227,98 +217,17 @@ private lemma xAddOne_xSq_add_fiveX_add_six_noCommon :
 
 private lemma xAddOne_xSq_add_fiveX_add_six_not_strictInterl :
     ¬ StrictInterl (X + 1 : ℝ[X]) (((X + 2) * (X + 3)) : ℝ[X]) := by
-  intro hstrictInterl
-  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
-  have hrs_card : (((X + 2) * (X + 3)) : ℝ[X]).roots.card = 2 := by
-    simpa [xSq_add_fiveX_add_six_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 2 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
-  cases ss with
-  | nil =>
-      simp at hss_len
-  | cons s ss' =>
-      cases ss' with
-      | nil =>
-          cases rs with
-          | nil =>
-              simp at hrs_len
-          | cons r₁ rs' =>
-              cases rs' with
-              | nil =>
-                  simp at hrs_len
-              | cons r₂ rs'' =>
-                  cases rs'' with
-                  | nil =>
-                      have hs_eq : s = -1 := by
-                        have hs_mem : (-1 : ℝ) ∈ (X + 1 : ℝ[X]).roots := by simp_all
-                        have hs_mem' :
-                            (-1 : ℝ) ∈ (([s] : List ℝ) : Multiset ℝ) := by
-                          lia
-                        have hs_mem'' : (-1 : ℝ) ∈ ([s] : List ℝ) :=
-                          Multiset.mem_coe.mp hs_mem'
-                        simp_all
-                      have hr_negThree_mem :
-                          (-3 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        simp_all
-                      have hr_negTwo_mem :
-                          (-2 : ℝ) ∈ (((X + 2) * (X + 3)) : ℝ[X]).roots := by
-                        simp_all
-                      have hr_negThree_mem' :
-                          (-3 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        lia
-                      have hr_negTwo_mem' :
-                          (-2 : ℝ) ∈ (([r₁, r₂] : List ℝ) : Multiset ℝ) := by
-                        lia
-                      have hr1_or_hr2_negThree : r₁ = -3 ∨ r₂ = -3 := by
-                        have hr_negThree_mem'' : (-3 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
-                          Multiset.mem_coe.mp hr_negThree_mem'
-                        grind
-                      have hr1_or_hr2_negTwo : r₁ = -2 ∨ r₂ = -2 := by
-                        have hr_negTwo_mem'' : (-2 : ℝ) ∈ ([r₁, r₂] : List ℝ) :=
-                          Multiset.mem_coe.mp hr_negTwo_mem'
-                        grind
-                      have hr1_le_r2 : r₁ ≤ r₂ := by simp_all
-                      have hr1_eq : r₁ = -3 := by grind
-                      have hr2_eq : r₂ = -2 := by simp_all
-                      have hinter : ListInterlaces [s] [r₁, r₂] := by lia
-                      have : False := by simp [hs_eq, hr1_eq, hr2_eq, ListInterlaces] at hinter
-                      lia
-                  | cons r₃ rs''' =>
-                      simp at hrs_len
-      | cons s₂ ss'' =>
-          simp at hss_len
+  intro hstrict
+  have hcount :=
+    (succDegreeRootCountLowerOriented_of_strictInterl hstrict
+      (by simp [xSq_add_fiveX_add_six_natDegree]) (-2)).2
+  rw [xAddOne_roots, xSq_add_fiveX_add_six_roots] at hcount
+  norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
 
 private lemma xAddOne_xAddTwo_linear_combo_eq {lam : ℝ} :
     (C lam * (X + 1) + (X + 2) : ℝ[X]) = X * C (lam + 1) + C (lam + 2) := by
-  ext n
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          norm_num [mul_add, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-
-private lemma xAddOne_xAddTwo_posComboRealRooted :
-    PosComboRealRooted (X + 1 : ℝ[X]) (X + 2) := by
-  refine PosComboRealRooted.of_add_left ?_
-  intro lam hlam
-  rw [xAddOne_xAddTwo_linear_combo_eq]
-  have hdeg : (X * C (lam + 1) + C (lam + 2) : ℝ[X]).natDegree = 1 := by
-    simpa [mul_comm] using
-      (Polynomial.natDegree_linear (a := lam + 1) (b := lam + 2)
-        (by grind : (lam + 1) ≠ 0))
-  exact isRealRooted_of_degree_one hdeg
-
-private lemma xAddOne_xAddTwo_noCommon :
-    ∀ r, (X + 1 : ℝ[X]).IsRoot r → ¬ (X + 2 : ℝ[X]).IsRoot r := by
-  intro r hroot1 hroot2
-  simp_all
-  linarith
+  simp only [map_add, map_one, map_ofNat]
+  ring
 
 /-- The linear pair used in the counterexamples still satisfies the true
 all-combinations conclusion for a simpler reason: every combination remains
@@ -330,99 +239,6 @@ lemma xAddOne_xAddTwo_allComboRealRooted :
     xAddTwo_hasPosLeadingCoeff
     (by simp)
     (by simp [xAddTwo_natDegree])
-
-private lemma xAddOne_xAddTwo_badAffineSlice_eq :
-    ((((C (1 : ℝ) * X + C (1 : ℝ)) * (X + 1)) + (X + 2)) : ℝ[X]) =
-      X ^ 2 + C (3 : ℝ) * X + C (3 : ℝ) := by
-  ext n
-  cases n with
-  | zero =>
-      norm_num
-        [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num
-            [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          cases n with
-          | zero =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-          | succ n =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-
-private lemma xAddOne_xAddTwo_badShiftedPair_eq :
-    (((X + 2) + X * (X + 1)) : ℝ[X]) =
-      X ^ 2 + C (2 : ℝ) * X + C (2 : ℝ) := by
-  ext n
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      cases n with
-      | zero =>
-          norm_num
-            [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm, coeff_X, coeff_one]
-      | succ n =>
-          cases n with
-          | zero =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-          | succ n =>
-              norm_num
-                [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-
-private lemma xAddOne_xAddTwo_not_strictInterl :
-    ¬ StrictInterl (X + 1 : ℝ[X]) (X + 2) := by
-  intro hstrictInterl
-  rcases hstrictInterl with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_card : (X + 1 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddOne_natDegree] using card_roots_of_splits hf.2
-  have hrs_card : (X + 2 : ℝ[X]).roots.card = 1 := by
-    simpa [xAddTwo_natDegree] using card_roots_of_splits hg.2
-  have hss_len : ss.length = 1 := by rw [← Multiset.coe_card, hss_eq, hss_card]
-  have hrs_len : rs.length = 1 := by rw [← Multiset.coe_card, hrs_eq, hrs_card]
-  cases ss with
-  | nil =>
-      simp at hss_len
-  | cons s ss' =>
-      cases ss' with
-      | nil =>
-          cases rs with
-          | nil =>
-              simp at hrs_len
-          | cons r rs' =>
-              cases rs' with
-              | nil =>
-                  have hs_mem : s ∈ (X + 1 : ℝ[X]).roots := by
-                    rw [← hss_eq]
-                    simp
-                  have hr_mem : r ∈ (X + 2 : ℝ[X]).roots := by
-                    rw [← hrs_eq]
-                    simp
-                  have hs_root : (X + 1 : ℝ[X]).IsRoot s :=
-                    (Polynomial.mem_roots hf.1).mp hs_mem
-                  have hr_root : (X + 2 : ℝ[X]).IsRoot r :=
-                    (Polynomial.mem_roots hg.1).mp hr_mem
-                  have hs_eq : s = -1 := by
-                    have hs_eval : s + 1 = 0 := by simp_all
-                    linarith
-                  have hr_eq : r = -2 := by
-                    have hr_eval : r + 2 = 0 := by simp_all
-                    linarith
-                  have hsame_alt : ListAlternates [s] [r] := by lia
-                  have hs_le_r : s ≤ r := by simpa [ListAlternates, ListInterlaces] using hsame_alt
-                  linarith
-              | cons r₂ rs'' =>
-                  simp at hrs_len
-      | cons s₂ ss'' =>
-          simp at hss_len
 
 /-- Fixed orientation fails for successor-degree pairs: the pair
 `X + 1, (X + 2)(X + 3)` satisfies the positive-combination/no-common hypotheses
@@ -444,7 +260,7 @@ lemma not_forall_posCombo_succDegree_noCommon_strictInterl :
       (hsucc
         xAddOne_hasPosLeadingCoeff
         xSq_add_fiveX_add_six_hasPosLeadingCoeff
-        xAddOne_hasNonnegCoeffs
+        hasNonnegCoeffs_X_add_one
         xSq_add_fiveX_add_six_hasNonnegCoeffs
         xAddOne_xSq_add_fiveX_add_six_posComboRealRooted
         (by simp [xSq_add_fiveX_add_six_natDegree])
@@ -475,7 +291,7 @@ lemma not_forall_compatible_succDegree_negativeRightFamily_splits :
     hneg hcomp
       xAddOne_hasPosLeadingCoeff
       xSq_add_fiveX_add_six_hasPosLeadingCoeff
-      xAddOne_hasNonnegCoeffs
+      hasNonnegCoeffs_X_add_one
       xSq_add_fiveX_add_six_hasNonnegCoeffs
       (by simp [xSq_add_fiveX_add_six_natDegree])
       xAddOne_isRealRooted.2
@@ -483,23 +299,8 @@ lemma not_forall_compatible_succDegree_negativeRightFamily_splits :
   have hp_eq :
       ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])) =
         C (-1 : ℝ) * X ^ 2 + C (-4 : ℝ) * X + C (-5 : ℝ) := by
-    ext n
-    cases n with
-    | zero =>
-        norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm]
-    | succ n =>
-        cases n with
-        | zero =>
-            norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-              coeff_X, coeff_one]
-        | succ n =>
-            cases n with
-            | zero =>
-                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
-            | succ n =>
-                norm_num [pow_two, mul_add, add_mul, add_assoc, add_left_comm, add_comm,
-                  coeff_X, coeff_one]
+    norm_num only [map_add, map_one, map_ofNat, map_neg]
+    ring
   have hdeg :
       ((X + 1 : ℝ[X]) + C (-1 : ℝ) * (((X + 2) * (X + 3)) : ℝ[X])).natDegree = 2 := by
     rw [hp_eq]
@@ -598,64 +399,25 @@ private lemma orientCex_posComboRealRooted :
     exact ((Polynomial.Splits.C _).mul (Polynomial.Splits.X_sub_C _)).mul
       (Polynomial.Splits.X_sub_C _)
 
-private lemma sorted_pair_eq {a b : ℝ} (hab : a < b) {l : List ℝ}
-    (hsorted : l.Pairwise (· ≤ ·)) (hcoe : (↑l : Multiset ℝ) = {a, b}) :
-    l = [a, b] := by
-  have hlen : l.length = 2 := by
-    have h := congrArg Multiset.card hcoe
-    simpa using h
-  obtain ⟨x, y, rfl⟩ := List.length_eq_two.mp hlen
-  have hxy : x ≤ y := (List.pairwise_cons.mp hsorted).1 y (by simp)
-  have hne : a ≠ b := ne_of_lt hab
-  have hxab : x = a ∨ x = b := by
-    have hx : x ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  have hyab : y = a ∨ y = b := by
-    have hy : y ∈ ({a, b} : Multiset ℝ) := by
-      rw [← hcoe]
-      simp
-    simp_all
-  rcases hxab with rfl | rfl <;> rcases hyab with rfl | rfl
-  · exfalso
-    have hcount := congrArg (Multiset.count b) hcoe
-    simp [Ne.symm hne] at hcount
-  · simp
-  · grind
-  · exfalso
-    have hcount := congrArg (Multiset.count a) hcoe
-    simp [hne] at hcount
-
 private lemma orientCex_not_strictInterl :
     ¬ (StrictInterl orientCexF orientCexG ∨ StrictInterl orientCexG orientCexF) := by
-  rintro (h | h)
-  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
-    rw [orientCexF_roots] at hss_eq
-    rw [orientCexG_roots] at hrs_eq
-    have hsseq : ss = [-1, 1] :=
-      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 1 (-1))
-    have hrseq : rs = [-2, 2] :=
-      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 2 (-2))
-    subst hsseq
-    subst hrseq
-    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp_all
-    · simp only [ListAlternates, ListInterlaces] at halt
-      simp_all
-  · obtain ⟨-, -, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
-    rw [orientCexG_roots] at hss_eq
-    rw [orientCexF_roots] at hrs_eq
-    have hsseq : ss = [-2, 2] :=
-      sorted_pair_eq (by norm_num) hss (by rw [hss_eq]; exact Multiset.pair_comm 2 (-2))
-    have hrseq : rs = [-1, 1] :=
-      sorted_pair_eq (by norm_num) hrs (by rw [hrs_eq]; exact Multiset.pair_comm 1 (-1))
-    subst hsseq
-    subst hrseq
-    rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
-    · simp_all
-    · simp only [ListAlternates, ListInterlaces] at halt
-      simp_all
+  rintro (hfg | hgf)
+  · have hcount :=
+      (sameDegreeRootCountOriented_of_strictInterl hfg
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        (-(3 / 2 : ℝ))).1
+    rw [orientCexF_roots, orientCexG_roots] at hcount
+    rw [show ({(2 : ℝ), -2} : Multiset ℝ) = {2} + {-2} by rfl,
+      show ({(1 : ℝ), -1} : Multiset ℝ) = {1} + {-1} by rfl] at hcount
+    norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
+  · have hcount :=
+      (sameDegreeRootCountOriented_of_strictInterl hgf
+        (by simp [orientCexF_natDegree, orientCexG_natDegree])
+        (3 / 2 : ℝ)).1
+    rw [orientCexG_roots, orientCexF_roots] at hcount
+    rw [show ({(1 : ℝ), -1} : Multiset ℝ) = {1} + {-1} by rfl,
+      show ({(2 : ℝ), -2} : Multiset ℝ) = {2} + {-2} by rfl] at hcount
+    norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
 
 /-- Positive-combination real-rootedness without common roots does not force
 either interlacing orientation, even in equal degree. -/
@@ -684,16 +446,8 @@ successor-degree orientation problem does not help: take `f = X` and
 positive-combination condition, but `0`, the only root of `X`, lies strictly to
 the right of both roots of `g`, so `StrictInterl X g` fails. -/
 
-private lemma X_isRealRooted : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) :=
-  isRealRooted_X
-
-private lemma X_hasNonnegCoeffs : HasNonnegCoeffs (X : ℝ[X]) :=
-  hasNonnegCoeffs_X
-
 private lemma X_hasPosLeadingCoeff : HasPosLeadingCoeff (X : ℝ[X]) :=
-  X_hasNonnegCoeffs.pos_leadingCoeff X_ne_zero
-
-private lemma X_roots : (X : ℝ[X]).roots = {(0 : ℝ)} := by simp
+  hasNonnegCoeffs_X.pos_leadingCoeff X_ne_zero
 
 private lemma X_coeff_zero : (X : ℝ[X]).coeff 0 = 0 := by simp
 
@@ -704,7 +458,7 @@ private lemma xAddOne_xAddTwo_isRealRooted :
 
 private lemma xAddOne_xAddTwo_hasNonnegCoeffs :
     HasNonnegCoeffs (((X + 1) * (X + 2)) : ℝ[X]) :=
-  xAddOne_hasNonnegCoeffs.mul xAddTwo_hasNonnegCoeffs
+  hasNonnegCoeffs_X_add_one.mul xAddTwo_hasNonnegCoeffs
 
 private lemma xAddOne_xAddTwo_hasPosLeadingCoeff :
     HasPosLeadingCoeff (((X + 1) * (X + 2)) : ℝ[X]) :=
@@ -730,7 +484,7 @@ private lemma xAddThreeHalves_isRealRooted :
 private lemma xAddThreeHalves_strictInterl_X :
     StrictInterl (X + C (3 / 2 : ℝ) : ℝ[X]) (X : ℝ[X]) := by
   refine
-    ⟨xAddThreeHalves_isRealRooted, X_isRealRooted, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
+    ⟨xAddThreeHalves_isRealRooted, isRealRooted_X, [(-(3 / 2 : ℝ))], [(0 : ℝ)],
       List.pairwise_singleton _ _, List.pairwise_singleton _ _, ?_, ?_, ?_⟩
   · simp
   · simp
@@ -789,10 +543,10 @@ lemma not_forall_posCombo_succDegree_noCommon_coeff_zero_strictInterl :
   fun hresid =>
     X_not_strictInterl_xAddOne_xAddTwo
       (hresid X_hasPosLeadingCoeff xAddOne_xAddTwo_hasPosLeadingCoeff
-        X_hasNonnegCoeffs xAddOne_xAddTwo_hasNonnegCoeffs
+        hasNonnegCoeffs_X xAddOne_xAddTwo_hasNonnegCoeffs
         X_xAddOne_xAddTwo_posComboRealRooted
         (by simp [xAddOne_xAddTwo_natDegree])
-        X_xAddOne_xAddTwo_noCommon X_isRealRooted.2 X_coeff_zero
+        X_xAddOne_xAddTwo_noCommon isRealRooted_X.2 X_coeff_zero
         xAddOne_xAddTwo_coeff_zero_ne)
 
 end CommonInterleaverExamples

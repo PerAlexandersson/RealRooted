@@ -41,16 +41,16 @@ lemma hasNonnegCoeffs_multiset_prod_X_sub_C :
       exact (hasNonnegCoeffs_X_sub_C (hs a (by simp))).mul
         (ih (fun r hr => hs r (by simp [hr])))
 
-lemma roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (hp : p.Splits)
-    (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 := by
-  have _ := hp
-  exact roots_nonpos_of_hasNonnegCoeffs hnn
+@[deprecated "Use `roots_nonpos_of_hasNonnegCoeffs`." (since := "2026-10-12")]
+theorem roots_nonpos_of_nonneg_coeffs {p : ℝ[X]} (_ : p.Splits)
+    (hnn : HasNonnegCoeffs p) : ∀ r ∈ p.roots, r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs hnn
 
 lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p.Splits) :
     HasNonnegCoeffs p ∧ p ≠ 0 ↔ HasPosLeadingCoeff p ∧ ∀ r ∈ p.roots, r ≤ 0 := by
   constructor
   · intro ⟨hnn, hp₀⟩
-    exact ⟨hnn.pos_leadingCoeff hp₀, roots_nonpos_of_nonneg_coeffs hp hnn⟩
+    exact ⟨hnn.pos_leadingCoeff hp₀, roots_nonpos_of_hasNonnegCoeffs hnn⟩
   · rintro ⟨hp₀, hroots_nonpos⟩
     refine ⟨?_, hp₀.ne_zero⟩
     rw [← C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hp)]
@@ -73,9 +73,9 @@ lemma hasNonnegCoeffs_comp_X_add_C_of_roots_le
   rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
   simp_all
 
-lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
+lemma hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
     {p q : ℝ[X]}
-    (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p)
+    (hp_ne : p ≠ 0) (hpnn : HasNonnegCoeffs p)
     (hq_ne : q ≠ 0) (hq_splits : q.Splits) (hq_pos : HasPosLeadingCoeff q)
     (hqp : q ∣ p) :
     HasNonnegCoeffs q := by
@@ -84,7 +84,7 @@ lemma hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
   intro r hr
   have hrq : q.IsRoot r := (mem_roots hq_ne).mp hr
   have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
-  exact roots_nonpos_of_nonneg_coeffs hp_splits hpnn r ((mem_roots hp_ne).mpr hrp)
+  exact roots_nonpos_of_hasNonnegCoeffs hpnn r ((mem_roots hp_ne).mpr hrp)
 
 theorem strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl g (X * f))
@@ -213,13 +213,6 @@ theorem strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos {f g : ℝ
     · intro r hr
       exact hg_nonpos r (by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hr)
 
-theorem strictInterl_of_strictInterl_mul_X_sameDegree_of_roots_nonpos {f g : ℝ[X]}
-    (h : StrictInterl g (X * f))
-    (hdeg : f.natDegree = g.natDegree)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) :
-    StrictInterl f g :=
-  strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos h hdeg hf_nonpos
-
 /-- Wagner (3): if all roots of `f` and `g` are nonpositive, then `f`
 interlaces `g` if and only if `g` interlaces `X * f`.
 
@@ -257,8 +250,8 @@ theorem strictInterl_iff_strictInterl_mul_X {f g : ℝ[X]}
     (hf₀ : f ≠ 0) (hf : f.Splits) (hg₀ : g ≠ 0) (hg : g.Splits)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     StrictInterl f g ↔ StrictInterl g (X * f) :=
-  strictInterl_iff_mul_X_of_roots_nonpos_of_succ (roots_nonpos_of_nonneg_coeffs hf hfnn)
-    (roots_nonpos_of_nonneg_coeffs hg hgnn) hf₀ hf hg₀ hg hdeg
+  strictInterl_iff_mul_X_of_roots_nonpos_of_succ (roots_nonpos_of_hasNonnegCoeffs hfnn)
+    (roots_nonpos_of_hasNonnegCoeffs hgnn) hf₀ hf hg₀ hg hdeg
 
 /-- Wagner (3) in the degree-increasing case, for real-rooted polynomials with
 nonpositive roots and positive leading coefficients.  See
@@ -279,8 +272,8 @@ the differ-by-1 and same-degree cases under one theorem. -/
 theorem strictInterl_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl g (X * f) :=
-  (strictInterl_iff_mul_X_of_roots_nonpos (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
-    (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)).mp h
+  (strictInterl_iff_mul_X_of_roots_nonpos (roots_nonpos_of_hasNonnegCoeffs hfnn)
+    (roots_nonpos_of_hasNonnegCoeffs hgnn)).mp h
 
 /-- Nonzero scalar form of the Wagner `X`-shift bridge. -/
 theorem strictInterl_C_mul_X_of_strictInterl_of_nonneg {f g : ℝ[X]} {c : ℝ}
@@ -392,13 +385,6 @@ lemma strictInterl_self_X_mul_of_nonneg {f : ℝ[X]}
     StrictInterl f (X * f) :=
   strictInterl_mul_X_of_strictInterl_of_nonneg (StrictInterl.refl hf_ne hf_splits) hfnn hfnn
 
-/-- If `f` precedes `g`, then nonnegative coefficients transport the relation
-to `g` and `X * f`. -/
-lemma strictInterl_to_X_mul_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) :=
-  strictInterl_mul_X_of_strictInterl_of_nonneg h hfnn hgnn
-
 /-- The reverse Wagner transport recovers `StrictInterl f g` from `StrictInterl g (X * f)`
 when both polynomials have nonnegative coefficients. -/
 lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
@@ -408,16 +394,16 @@ lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
     isRealRooted_of_X_mul h.2.1.1 h.2.1.2
   exact
     (strictInterl_mul_X_of_strictInterl_of_nonneg h hgnn hfnn.X_mul).of_mul_X_both_of_roots_nonpos
-      (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
-      (roots_nonpos_of_nonneg_coeffs h.1.2 hgnn)
+      (roots_nonpos_of_hasNonnegCoeffs hfnn)
+      (roots_nonpos_of_hasNonnegCoeffs hgnn)
 
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
 theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
     StrictInterl (X * f) (X * g) :=
   h.mul_X_both_of_roots_nonpos
-    (roots_nonpos_of_nonneg_coeffs h.1.2 hfnn)
-    (roots_nonpos_of_nonneg_coeffs h.2.1.2 hgnn)
+    (roots_nonpos_of_hasNonnegCoeffs hfnn)
+    (roots_nonpos_of_hasNonnegCoeffs hgnn)
 
 /-- Multiplication by `X` on both sides is an equivalence on strict
 interlacing when all roots are nonpositive. -/
@@ -438,8 +424,8 @@ theorem Interl.mul_X_both_of_nonneg {f g : ℝ[X]}
   · simpa using interl_zero_right (X * f)
   · exact
       (hfg.mul_X_both_of_roots_nonpos
-        (roots_nonpos_of_nonneg_coeffs hfg.1.2 hfnn)
-        (roots_nonpos_of_nonneg_coeffs hfg.2.1.2 hgnn)).toInterl
+        (roots_nonpos_of_hasNonnegCoeffs hfnn)
+        (roots_nonpos_of_hasNonnegCoeffs hgnn)).toInterl
 
 /-- Cancelling a common factor `X` preserves zero-aware interlacing for
 polynomials with nonnegative coefficients. -/
@@ -458,8 +444,8 @@ theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
   have hg : g ≠ 0 ∧ g.Splits := isRealRooted_of_X_mul hstrict.2.1.1 hstrict.2.1.2
   exact
     (hstrict.of_mul_X_both_of_roots_nonpos
-      (roots_nonpos_of_nonneg_coeffs hf.2 hfnn)
-      (roots_nonpos_of_nonneg_coeffs hg.2 hgnn)).toInterl
+      (roots_nonpos_of_hasNonnegCoeffs hfnn)
+      (roots_nonpos_of_hasNonnegCoeffs hgnn)).toInterl
 
 /-- Multiplication by `X` on both sides is an equivalence on zero-aware
 interlacing for polynomials with nonnegative coefficients. -/

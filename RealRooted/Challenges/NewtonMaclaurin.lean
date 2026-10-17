@@ -9,6 +9,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 version = 1
 section = "theorems"
 slug = "newton-maclaurin"
+formalized = "2026-10-07"
 authors = ["Newton", "Maclaurin", "Laguerre", "Darroch", "Samuelson"]
 years = [1707, 1729, 1880, 1964, 1968]
 

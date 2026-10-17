@@ -26,8 +26,8 @@ def peakDestroySlot {n : ℕ} (π : Equiv.Perm (Fin n)) :
 lemma peakDestroySlot_injective {n : ℕ} (π : Equiv.Perm (Fin n)) :
     Function.Injective (peakDestroySlot π) := by
   rintro ⟨⟨v, hv⟩, bv⟩ ⟨⟨w, hw⟩, bw⟩ h
-  have hvp : IsPeakPosition π (π.symm v) := mem_peakValues_iff.mp hv
-  have hwp : IsPeakPosition π (π.symm w) := mem_peakValues_iff.mp hw
+  have hvp : ((π.symm v : Fin _) : ℕ) ∈ π.peakSet := mem_peakValues_iff.mp hv
+  have hwp : ((π.symm w : Fin _) : ℕ) ∈ π.peakSet := mem_peakValues_iff.mp hw
   cases bv <;> cases bw
   · have hp : π.symm v = π.symm w := by
       apply Fin.ext
@@ -113,8 +113,8 @@ lemma peakDestroySlot_ne_zero {n : ℕ} (π : Equiv.Perm (Fin n))
     peakDestroySlot π p ≠ 0 := by
   rintro h
   rcases p with ⟨⟨v, hv⟩, b⟩
-  have hvp : IsPeakPosition π (π.symm v) := mem_peakValues_iff.mp hv
-  rcases hvp with ⟨i, k, hij, hjk, hi, hk⟩
+  have hvp : ((π.symm v : Fin _) : ℕ) ∈ π.peakSet := mem_peakValues_iff.mp hv
+  rcases Equiv.Perm.mem_peakSet.mp hvp with ⟨i, k, hij, hjk, hi, hk⟩
   cases b
   · have hval := congrArg Fin.val h
     simp only [peakDestroySlot, Fin.val_castSucc, Fin.val_zero] at hval
@@ -128,8 +128,8 @@ lemma peakDestroySlot_ne_last {n : ℕ} (π : Equiv.Perm (Fin n))
     peakDestroySlot π p ≠ Fin.last n := by
   rintro h
   rcases p with ⟨⟨v, hv⟩, b⟩
-  have hvp : IsPeakPosition π (π.symm v) := mem_peakValues_iff.mp hv
-  rcases hvp with ⟨i, k, hij, hjk, hi, hk⟩
+  have hvp : ((π.symm v : Fin _) : ℕ) ∈ π.peakSet := mem_peakValues_iff.mp hv
+  rcases Equiv.Perm.mem_peakSet.mp hvp with ⟨i, k, hij, hjk, hi, hk⟩
   cases b
   · have hval := congrArg Fin.val h
     simp only [peakDestroySlot, Fin.val_castSucc, Fin.val_last] at hval
@@ -154,7 +154,7 @@ lemma peakDestroySlots_disjoint_endpointSlots {n : ℕ}
 lemma card_peakDestroySlots {n : ℕ} (π : Equiv.Perm (Fin n)) :
     (peakDestroySlots π).card = 2 * (peakValues π).card := by
   rw [peakDestroySlots, Finset.card_image_of_injective]
-  · simp [Fintype.card_prod, Fintype.card_coe, Nat.mul_comm]
+  · rw [Finset.card_univ, Fintype.card_prod, Fintype.card_coe, Fintype.card_bool, Nat.mul_comm]
   · exact peakDestroySlot_injective π
 
 lemma peakDestroySlot_filter {n : ℕ} (π : Equiv.Perm (Fin n))

@@ -244,23 +244,4 @@ end RealRooted.LiuWang
 
 namespace RealRooted
 
-/-- Deprecated degree-restricted form of
-`LiuWang.strictInterl_derivative_lag_of_nonpos`. -/
-@[deprecated LiuWang.strictInterl_derivative_lag_of_nonpos (since := "2026-10-05")]
-theorem strictInterl_lw_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative + w * g))
-    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative + w * g).natDegree)
-    (hdeg_hi : (u * f + v * f.derivative + w * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0)
-    (hw_nonpos : ∀ r, f.IsRoot r → w.eval r ≤ 0) :
-    StrictInterl f (u * f + v * f.derivative + w * g) :=
-  LiuWang.strictInterl_derivative_lag_of_nonpos hf hgf hg_pos hf_pos hF_pos hdeg_lo hdeg_hi
-    hno hv_nonpos hw_nonpos
-
 end RealRooted

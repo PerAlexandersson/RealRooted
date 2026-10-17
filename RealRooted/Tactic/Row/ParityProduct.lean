@@ -7,7 +7,7 @@ import RealRooted.Tactic.Row.Support
 An order-three recurrence `P (n + 3) = a P (n + 2) + b P (n + 1) + c P n` with coefficients
 independent of `n` and characteristic polynomial `(z - μ) (z ^ 2 - β z + μ ^ 2)` may have rows
 `P (2 m) = s m * t m` and `P (2 m + 1) = s (m + 1) * t m` for two solutions `s`, `t` of
-`x (m + 2) = β x (m + 1) - μ ^ 2 x m` (`RealRooted.eq_parityProduct_of_rec3`).
+`x (m + 2) = β x (m + 1) - μ ^ 2 x m` (`RealRooted.eq_parityProduct_of_thirdOrderRecurrence`).
 
 `parityProduct?` peels `t 0 = gcd (P 0, P 1)` and then `s` and `t` off the computed rows by
 exact division, fits `β` and `μ`, and checks every relation exactly.  `parityProductGoal`
@@ -99,7 +99,8 @@ def parityProductGoal (splits : Bool) : TacticM Unit := do
   let link := mkIdent `hlink_parity
   withMainContext do
   evalTactic (← `(tactic|
-    have $link:ident := RealRooted.eq_parityProduct_of_rec3 (P := $Pi) (s := $S) (t := $T)
+    have $link:ident := RealRooted.eq_parityProduct_of_thirdOrderRecurrence
+      (P := $Pi) (s := $S) (t := $T)
       (β := $βT) (μ := $μT)
       (fun n => by rw [$eqn:ident n] <;> ring)
       (fun $m:ident => by rw [$S:ident] <;> ring)

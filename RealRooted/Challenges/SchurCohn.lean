@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 version = 1
 section = "theorems"
 slug = "schur-cohn"
+formalized = "2026-10-07"
 authors = ["Schur", "Cohn"]
 years = [1917, 1922]
 
@@ -54,10 +55,11 @@ has no zero with $|z| \geq 1$ when $T p$ is stable.
 
 ## References
 
-I. Schur, “Über Potenzreihen, die im Innern des Einheitskreises beschränkt
-sind,” *J. Reine Angew. Math.* 147 (1917), 205–232; A. Cohn, “Über die
-Anzahl der Wurzeln einer algebraischen Gleichung in einem Kreise,” *Math. Z.*
-14 (1922), 110–148.
+I. Schur, [“Über Potenzreihen, die im Innern des Einheitskreises beschränkt
+sind,”](https://doi.org/10.1515/crll.1917.147.205) *J. Reine Angew. Math.* 147
+(1917), 205–232; A. Cohn, [“Über die Anzahl der Wurzeln einer algebraischen
+Gleichung in einem Kreise,”](https://doi.org/10.1007/BF01215894) *Math. Z.* 14
+(1922), 110–148.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

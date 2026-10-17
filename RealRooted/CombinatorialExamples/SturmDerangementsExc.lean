@@ -248,8 +248,8 @@ lemma reflect_sturmDerangementsExc (n : Nat) :
   · rw [Polynomial.revAt_eq_self_of_lt (lt_of_not_ge hm)]
 
 lemma eval_neg_one_mul_neg_one_pow_sturmDerangementsExc (n : Nat) :
-    (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) := by
-  exact Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
+    (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) :=
+  Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
     (natDegree_le_sturmDerangementsExc n) (reflect_sturmDerangementsExc n)
 
 lemma sturmDerangementsExc_isRoot_neg_one_of_odd {n : Nat} (hn : Odd n) :
@@ -317,10 +317,9 @@ lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDer
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
           grind
 
-lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat}
-    (hrr : (sturmDerangementsExc n).Splits) :
+lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (sturmDerangementsExc_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (sturmDerangementsExc_nonnegCoeffs n)
 
 lemma strictInterl_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hstrictInterl : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -335,7 +334,7 @@ lemma strictInterl_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
   · rw [natDegree_sturmDerangementsExc hn]
     lia
   · exact sturmDerangementsExc_posLeadingCoeff hn
-  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted hrr
+  · exact roots_nonpos_sturmDerangementsExc_of_isRealRooted
   · rw [natDegree_sturmDerangementsExc hn]
     exact Nat.cast_lt.mpr (Nat.sub_lt (by lia) (by lia))
 

@@ -376,8 +376,7 @@ theorem derivLag_eval_zero_pos {P U V W : ℕ → ℝ[X]}
       obtain ⟨ha, hb⟩ := ih
       refine ⟨hb, ?_⟩
       have hd : 0 ≤ (P (n + 1)).derivative.eval 0 := by
-        rw [← Polynomial.coeff_zero_eq_eval_zero]
-        exact HasNonnegCoeffs.derivative (hnn (n + 1)) 0
+        exact (HasNonnegCoeffs.derivative (hnn (n + 1))).eval_nonneg (by positivity)
       have hev : (P (n + 2)).eval 0 = (U n).eval 0 * (P (n + 1)).eval 0 +
           (V n).eval 0 * (P (n + 1)).derivative.eval 0 + (W n).eval 0 * (P n).eval 0 := by
         rw [hrec n]

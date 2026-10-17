@@ -45,10 +45,10 @@ reversed final letter makes a Smirnov word. -/
 theorem smirnovDescentRefined_eq_sum (m r : ℕ) (i : Fin m) :
     smirnovDescentRefined m r i =
       ∑ word ∈ smirnovPrefixesEnding m r i,
-        X ^ smirnovDescentNumber (Fin.snoc word i.rev) := by
+        X ^ (List.ofFn (Fin.snoc word i.rev)).descentCount := by
   classical
   simp [smirnovDescentRefined, weightedSmirnovEnding,
-    weightedSmirnovEndingSummand, smirnovWordWeight,
+    weightedSmirnovEndingSummand, wordWeight,
     smirnovPrefixesEnding, Finset.sum_filter]
 
 @[simp]

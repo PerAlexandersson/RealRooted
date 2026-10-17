@@ -9,6 +9,8 @@ fixed right factor instead of bounding a bare power.
 
 variable {R : Type*} [SeminormedRing R]
 
+namespace SeminormedRing
+
 /-- If `lam` bounds `‖β‖`, it controls `‖β^n * d‖` without requiring
 `‖1‖ = 1`. -/
 theorem norm_pow_mul_le (β d : R) {lam : ℝ} (hβ : ‖β‖ ≤ lam) (hlam : 0 ≤ lam)
@@ -22,3 +24,5 @@ theorem norm_pow_mul_le (β d : R) {lam : ℝ} (hβ : ‖β‖ ≤ lam) (hlam : 
         _ ≤ ‖β‖ * ‖β ^ n * d‖ := norm_mul_le _ _
         _ ≤ lam * (lam ^ n * ‖d‖) := by gcongr
         _ = lam ^ (n + 1) * ‖d‖ := by ring
+
+end SeminormedRing

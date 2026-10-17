@@ -11,6 +11,7 @@ import RealRooted.BrandenVecchi.SmirnovSpecialization
 version = 1
 section = "theorems"
 slug = "branden-vecchi"
+formalized = "2026-09-12"
 authors = ["Brändén", "Vecchi"]
 years = [2025]
 
@@ -25,7 +26,7 @@ module = "RealRooted.BrandenVecchi.Chow"
 label = "Chow polynomials of a lower-triangular matrix"
 
 [[definitions]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Chow polynomials of a Pólya frequency symbol"
 
@@ -70,12 +71,12 @@ module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "c_n interlaces d_n"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow_isPFPolynomial"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_isPFPolynomial"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Pólya frequency symbols give PF Chow polynomials"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aswEdreiChow_interl_succ"
+name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_interl_succ"
 module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Consecutive Chow polynomials of a Pólya frequency symbol interlace"
 
@@ -110,7 +111,8 @@ polynomials are
 $$c_n = \sum_{k \leq n} A(n,k)\, d_k.$$
 
 For the incidence data of a poset, these generalize the Chow polynomials of
-matroids and posets.
+matroids and posets; see the
+[Chow-polynomial definition on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#chowPolynomialDefinition).
 
 **Theorem (Brändén–Vecchi).** If $A$ is lower unitriangular
 and totally nonnegative, then $c_n$ and $d_n$ have nonnegative coefficients

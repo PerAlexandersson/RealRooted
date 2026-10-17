@@ -1498,11 +1498,7 @@ theorem hasSimpleRoots_iterateTDeriv_of_natDegree
   simp at h0
   -- But rootMultiplicity ≤ natDegree = n
   have : f.rootMultiplicity a ≤ n := by
-    calc f.rootMultiplicity a
-      _ = f.roots.count a := (count_roots f).symm
-      _ ≤ f.roots.card := f.roots.count_le_card a
-      _ ≤ f.natDegree := card_roots' f
-      _ = n := hdeg
+    simpa only [hdeg] using Polynomial.rootMultiplicity_le_natDegree f a
   lia
 
 /-- Iterating the nonnegative derivative regularization `p ↦ p + eps * p'`
@@ -1542,29 +1538,5 @@ theorem hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
       _ ≤ p.roots.card := p.roots.count_le_card a
       _ ≤ p.natDegree := card_roots' p
   lia
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv := tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias natDegree_TDeriv := natDegree_tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias HasPosLeadingCoeff.TDeriv := HasPosLeadingCoeff.tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_ne_zero := tDeriv_ne_zero
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_add := tDeriv_add
-
-@[deprecated (since := "2026-10-05")]
-alias TDeriv_C_mul := tDeriv_C_mul
-
-@[deprecated (since := "2026-10-05")]
-alias splits_tderiv := splits_tDeriv
-
-@[deprecated (since := "2026-10-05")]
-alias splits_tderiv_all := splits_tDeriv_all
 
 end RealRooted

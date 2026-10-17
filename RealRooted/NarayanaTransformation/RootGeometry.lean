@@ -9,6 +9,9 @@ import RealRooted.QuadraticRoot
 import RealRooted.RectangularConvolution
 import RealRooted.RectangularConvolutionIdentity
 import RealRooted.Touchard
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # The Narayana Transformation
@@ -109,7 +112,7 @@ theorem IsPFPolynomial.hasOnlyNonposRoots {p : ℝ[X]}
 theorem HasOnlyNonposRoots.of_nonnegCoeffs_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hsplits : p.Splits) :
     HasOnlyNonposRoots p :=
-  Or.inr ⟨hsplits, roots_nonpos_of_nonneg_coeffs hsplits hpnn⟩
+  Or.inr ⟨hsplits, roots_nonpos_of_hasNonnegCoeffs hpnn⟩
 
 theorem HasOnlyNonposRoots.neg {p : ℝ[X]} (hp : HasOnlyNonposRoots p) :
     HasOnlyNonposRoots (-p) := by
@@ -158,47 +161,23 @@ def degreeSignFlip (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
 
 theorem coeff_degreeSignFlip_of_le {n j : ℕ} (p : ℝ[X]) (hj : j ≤ n) :
     (degreeSignFlip n p).coeff j = (-1 : ℝ) ^ (n - j) * p.coeff j := by
-  unfold degreeSignFlip
-  rw [Polynomial.finsetSum_coeff]
-  rw [Finset.sum_eq_single_of_mem j (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hj))]
-  · rw [coeff_C_mul, coeff_X_pow, ite_eq_left rfl, mul_one]
-  · intro k hk hkj
-    rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun h => hkj h.symm), mul_zero]
+  simp_rw [degreeSignFlip, Polynomial.C_mul_X_pow_eq_monomial]
+  simpa only [Nat.lt_succ_iff, hj, ↓reduceIte] using
+    Polynomial.coeff_sum_range_monomial
+      (fun j => (-1 : ℝ) ^ (n - j) * p.coeff j) (n + 1) j
 
 theorem coeff_degreeSignFlip_of_lt {n j : ℕ} (p : ℝ[X]) (hj : n < j) :
     (degreeSignFlip n p).coeff j = 0 := by
-  unfold degreeSignFlip
-  rw [Polynomial.finsetSum_coeff]
-  apply Finset.sum_eq_zero
-  intro k hk
-  rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun h => by
-    have hk_le : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    lia), mul_zero]
+  simp_rw [degreeSignFlip, Polynomial.C_mul_X_pow_eq_monomial]
+  simpa only [Nat.lt_succ_iff, not_le_of_gt hj, ↓reduceIte] using
+    Polynomial.coeff_sum_range_monomial
+      (fun j => (-1 : ℝ) ^ (n - j) * p.coeff j) (n + 1) j
 
 theorem natDegree_degreeSignFlip_le (n : ℕ) (p : ℝ[X]) :
     (degreeSignFlip n p).natDegree ≤ n := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro j hj
   exact coeff_degreeSignFlip_of_lt p hj
-
-private theorem neg_one_pow_mul_pow_eq_sub {n j : ℕ} (hj : j ≤ n) :
-    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j = (-1 : ℝ) ^ (n - j) := by
-  have hpow : (-1 : ℝ) ^ n = (-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j := by
-    nth_rw 1 [show n = n - j + j by lia]
-    rw [pow_add]
-  have hsq : (-1 : ℝ) ^ j * (-1 : ℝ) ^ j = 1 := by
-    rw [← pow_add]
-    have hEven : Even (j + j) := ⟨j, rfl⟩
-    rw [Even.neg_one_pow hEven]
-  calc
-    (-1 : ℝ) ^ n * (-1 : ℝ) ^ j =
-        ((-1 : ℝ) ^ (n - j) * (-1 : ℝ) ^ j) * (-1 : ℝ) ^ j := by rw [hpow]
-    _ = (-1 : ℝ) ^ (n - j) * ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) := by ring
-    _ = (-1 : ℝ) ^ (n - j) := by rw [hsq, mul_one]
-
-theorem coeff_comp_neg_X (p : ℝ[X]) (j : ℕ) :
-    (p.comp (-X)).coeff j = p.coeff j * (-1 : ℝ) ^ j := by
-  simpa using Polynomial.comp_C_mul_X_coeff (p := p) (r := (-1 : ℝ)) (n := j)
 
 theorem degreeSignFlip_eq_C_mul_comp_neg_X
     (n : ℕ) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
@@ -209,7 +188,7 @@ theorem degreeSignFlip_eq_C_mul_comp_neg_X
     calc
       (-1 : ℝ) ^ (n - j) * p.coeff j =
           ((-1 : ℝ) ^ n * (-1 : ℝ) ^ j) * p.coeff j := by
-        rw [neg_one_pow_mul_pow_eq_sub hj]
+        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hj]
       _ = (-1 : ℝ) ^ n * (p.coeff j * (-1 : ℝ) ^ j) := by ring
   · have hjlt : n < j := Nat.lt_of_not_ge hj
     rw [coeff_degreeSignFlip_of_lt p hjlt, coeff_C_mul, coeff_comp_neg_X]

@@ -4,7 +4,7 @@ import RealRooted.HosterStump.PosetBasic
 /-!
 # Hoster--Stump: permutations with descent set in a reflected set
 
-Peeling the first letter with `Equiv.Perm.decomposeFin'` (`desSet_decomposeFin'Symm`) gives a
+Peeling the first letter with `Equiv.Perm.decomposeFin'` (`descentSet_decomposeFin'Symm`) gives a
 recursion for `desLeCount`; induction on `n` then yields the closed form
 `desLeCount_reflectSet`, whose hockey-stick step is the binomial recursion of
 `gapMultinomial`.  This is identity (F5) of Phase F: the permutations with `w 0 = k` and descent
@@ -29,24 +29,24 @@ private lemma desLeCount_succ_aux {n k : ℕ} (hk : k ≤ n + 1) (E : Finset ℕ
   have hk' : k < n + 2 := by lia
   have h1 : ∀ j ∈ range (n + 1), desLeCount n j (shiftDown E) =
       ∑ σ : Equiv.Perm (Fin (n + 1)),
-        if (σ 0 : ℕ) = j ∧ desSet σ ⊆ shiftDown E then 1 else 0 := by
+        if (σ 0 : ℕ) = j ∧ σ.descentSet ⊆ shiftDown E then 1 else 0 := by
     intro j _
     unfold desLeCount
     rw [Finset.card_filter]
   rw [Finset.sum_congr rfl fun j hj => by rw [h1 j hj]]
   have h2 : ∀ j ∈ range (n + 1), (if (j < k → 0 ∈ E) then
       ∑ σ : Equiv.Perm (Fin (n + 1)),
-        if (σ 0 : ℕ) = j ∧ desSet σ ⊆ shiftDown E then 1 else 0
+        if (σ 0 : ℕ) = j ∧ σ.descentSet ⊆ shiftDown E then 1 else 0
       else 0) = ∑ σ : Equiv.Perm (Fin (n + 1)),
-      if (σ 0 : ℕ) = j ∧ (j < k → 0 ∈ E) ∧ desSet σ ⊆ shiftDown E then 1 else 0 := by
+      if (σ 0 : ℕ) = j ∧ (j < k → 0 ∈ E) ∧ σ.descentSet ⊆ shiftDown E then 1 else 0 := by
     intro j _
     by_cases h : j < k → 0 ∈ E
     · simp only [eq_true h, ↓reduceIte, true_and]
     · simp only [eq_false h, ↓reduceIte, false_and, and_false, Finset.sum_const_zero]
   rw [Finset.sum_congr rfl h2, Finset.sum_comm]
   have h3 : ∀ σ : Equiv.Perm (Fin (n + 1)), (∑ j ∈ range (n + 1),
-      if (σ 0 : ℕ) = j ∧ (j < k → 0 ∈ E) ∧ desSet σ ⊆ shiftDown E then 1 else 0) =
-      if ((σ 0 : ℕ) < k → 0 ∈ E) ∧ desSet σ ⊆ shiftDown E then 1 else 0 := by
+      if (σ 0 : ℕ) = j ∧ (j < k → 0 ∈ E) ∧ σ.descentSet ⊆ shiftDown E then 1 else 0) =
+      if ((σ 0 : ℕ) < k → 0 ∈ E) ∧ σ.descentSet ⊆ shiftDown E then 1 else 0 := by
     intro σ
     have : (σ 0 : ℕ) < n + 1 := (σ 0).2
     rw [Finset.sum_eq_single (σ 0 : ℕ)]
@@ -61,7 +61,7 @@ private lemma desLeCount_succ_aux {n k : ℕ} (hk : k ≤ n + 1) (E : Finset ℕ
   simp only [Equiv.Perm.decomposeFin'_symm]
   rw [Finset.sum_eq_single (⟨k, hk'⟩ : Fin (n + 2))]
   · refine Finset.sum_congr rfl fun σ _ => ?_
-    simp only [desSet_decomposeFin'Symm, Equiv.Perm.decomposeFin'Symm_zero,
+    simp only [descentSet_decomposeFin'Symm, Equiv.Perm.decomposeFin'Symm_zero,
       subset_union_image_succ_iff, true_and]
   · intro i _ hne
     refine Finset.sum_eq_zero fun σ _ => ?_

@@ -32,12 +32,13 @@ syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : ta
 
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
-number of rows split off; the routes are `closedForm`, `lowerOrder`, `subseq`,
+number of rows split off; the routes are `closedForm`, `pathPower`, `lowerOrder`, `subseq`,
 `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
 interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
 derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,
-`Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`) and `lagFeedback`
-(`P (n + p) = α P (n + p - 1) + c n X P n`, `Row.LagFeedback`).  The hints of
+`Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`), `lagFeedback`
+(`P (n + p) = α P (n + p - 1) + c n X P n`, `Row.LagFeedback`) and `fTransform` (rows
+`fPolynomial n (Q n)` of a simpler derivative recurrence, `Row.FTransform`).  The hints of
 `rr_row_interlaces` are passed on to the interlacing routes. -/
 syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
 
@@ -66,20 +67,46 @@ macro_rules
   | `(rr_row_natDegree_leadingCoeff_pos_all) =>
       `(by intro n; beta_reduce; rr_row_natDegree_leadingCoeff_pos)
 
+/-- Add the products of a natural parameter with each signed real variable whose
+nonnegativity follows from the local bounds. -/
+private def addNatRealSignProducts : TacticM Unit := withMainContext do
+  let mut nats : Array Expr := #[]
+  let mut reals : Array Expr := #[]
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail then continue
+    let ty ← instantiateMVars decl.type
+    if ty.isConstOf ``Nat then nats := nats.push decl.toExpr
+    if ty.isConstOf ``Real then reals := reals.push decl.toExpr
+  for n in nats do
+    let ns ← Term.exprToSyntax n
+    for x in reals do
+      let xs ← Term.exprToSyntax x
+      let negXs ← `(-$xs)
+      for factor in #[xs, negXs] do
+        discard <| rowSucceeds do
+          evalTactic (← `(tactic|
+            have : 0 ≤ (($ns : ℝ) * $factor) :=
+              mul_nonneg (Nat.cast_nonneg $ns) (by first | positivity | nlinarith)))
+
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
-evaluate, then `positivity`, `nlinarith` (with the hypotheses as products) or
-`rr_row_field` for rational coefficients. -/
+evaluate and first try the direct sign machinery.  Only if that fails, add the available
+products of parameter and variable signs needed by rational-coefficient goals. -/
 elab "rr_row_eval_sign" : tactic => withMainContext do
   evalTactic (← `(tactic| (
     intros
     simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
       Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
       Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat] at *
-    push_cast at *
-    first | positivity | nlinarith | rr_row_field | fail)))
+    push_cast at *)))
+  if ← rowSucceeds (do
+      evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
+      unless (← getGoals).isEmpty do throwError "rr_row_eval_sign: goals remain") then
+    return
+  addNatRealSignProducts
+  evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
 
 /-- The multiplier goal `∀ n i j, j ≤ D → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`
-of `RealRooted.derivRec_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
+of `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
 two: split off `i = 0, 1, 2`, where the coefficients beyond the degree vanish. -/
 private def multiplierGoal : TacticM Unit := do
   evalTactic (← `(tactic| (
@@ -96,14 +123,16 @@ private def multiplierGoal : TacticM Unit := do
       try norm_num
       first | done | positivity | nlinarith | rr_row_field))))
 
-/-- The multiplier goal of `RealRooted.derivRec_hasNonnegCoeffs_of_mult_le` for the half-growth
+/-- The multiplier goal of
+`RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the half-growth
 bound `D₀ + (n + e) / 2`: the bound becomes `2 j ≤ 2 D₀ + n + e` over `ℝ`, then as
 `multiplierGoal`. -/
 def halfMultiplierGoal (D₀ e : Nat) : TacticM Unit := do
   evalTactic (← `(tactic| (
     intro n i j hj
     have hj2 : 2 * j ≤ 2 * $(rowNumLit D₀) + n + $(rowNumLit e) := by lia
-    have hj' : ((2 * j : ℕ) : ℝ) ≤ ((2 * $(rowNumLit D₀) + n + $(rowNumLit e) : ℕ) : ℝ) :=
+    have hj' :
+        ((2 * j : ℕ) : ℝ) ≤ ((2 * $(rowNumLit D₀) + n + $(rowNumLit e) : ℕ) : ℝ) :=
       Nat.cast_le.mpr hj2
     push_cast at hj'
     rcases i with _ | _ | _ | i <;> (

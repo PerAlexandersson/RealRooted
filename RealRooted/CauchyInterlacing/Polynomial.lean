@@ -51,7 +51,7 @@ theorem principalSubmatrix_charpoly_interlaces {n : ℕ}
       pairwise_ofFn_sortedEigenvalues_rev A hA, pairwise_ofFn_sortedEigenvalues_rev B hB,
       coe_ofFn_sortedEigenvalues_rev A hA, coe_ofFn_sortedEigenvalues_rev B hB,
       listInterlaces_of_interleaves_of_length (by simp)
-        (List.interleaves_ofFn'.2
+        (List.interleaves_ofFn_odd.2
           ⟨fun k => by simpa [Fin.rev_succ] using (hint k.rev).2,
             fun k => by simpa [Fin.rev_castSucc] using (hint k.rev).1⟩)⟩
 

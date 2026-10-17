@@ -23,6 +23,22 @@ open BigOperators
 
 namespace Polynomial
 
+/-- The coefficient of a monomial sum indexed by a finite set. -/
+theorem coeff_sum_finset_monomial {R : Type*} [Semiring R]
+    (s : Finset ℕ) (a : ℕ → R) (k : ℕ) :
+    (∑ i ∈ s, monomial i (a i)).coeff k =
+      if k ∈ s then a k else 0 := by
+  simp only [finsetSum_coeff, coeff_monomial]
+  rw [Finset.sum_ite_eq' s k]
+
+/-- The coefficient of a finite initial-segment monomial sum. -/
+@[simp]
+theorem coeff_sum_range_monomial {R : Type*} [Semiring R] (a : ℕ → R)
+    (n k : ℕ) :
+    (∑ i ∈ Finset.range n, monomial i (a i)).coeff k =
+      if k < n then a k else 0 := by
+  simpa using coeff_sum_finset_monomial (Finset.range n) a k
+
 /-- The coefficient of a degree-box sum with descending exponents. -/
 theorem coeff_sum_range_C_mul_X_pow_sub {R : Type*} [Semiring R] (a : ℕ → R)
     (n j : ℕ) :
@@ -50,5 +66,24 @@ theorem coeff_one_sub_X_mul_zero {R : Type*} [Ring R] (p : R[X]) :
 theorem coeff_one_sub_X_mul_succ {R : Type*} [Ring R] (p : R[X]) (k : ℕ) :
     ((1 - X) * p).coeff (k + 1) = p.coeff (k + 1) - p.coeff k := by
   rw [sub_mul, one_mul, coeff_sub, coeff_X_mul]
+
+/-- The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. -/
+theorem coeff_one_sub_X_pow {R : Type*} [CommRing R] (n k : ℕ) :
+    ((1 - X : R[X]) ^ n).coeff k = (-1 : R) ^ k * (n.choose k : R) := by
+  rw [show (1 - X : R[X]) = -(X + C (-1 : R)) by
+    ext m
+    simp [sub_eq_add_neg]]
+  rw [neg_pow]
+  rw [show ((-1 : R[X]) ^ n) = C ((-1 : R) ^ n) by simp]
+  rw [coeff_C_mul]
+  rw [Polynomial.coeff_X_add_C_pow]
+  by_cases hk : k ≤ n
+  · have hsign : (-1 : R) ^ n * (-1 : R) ^ (n - k) = (-1 : R) ^ k := by
+      nth_rw 1 [← Nat.add_sub_of_le hk]
+      rw [pow_add, mul_assoc, ← pow_add]
+      simp
+    grind
+  · have hchoose : n.choose k = 0 := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hk)
+    simp [hchoose]
 
 end Polynomial

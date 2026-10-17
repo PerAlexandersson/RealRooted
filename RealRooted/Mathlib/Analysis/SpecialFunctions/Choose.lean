@@ -12,6 +12,8 @@ open Asymptotics Filter Nat Topology
 
 noncomputable section
 
+namespace Nat
+
 /-- For fixed `k`, `choose n k / n^k` tends to `1 / k!`. -/
 theorem tendsto_choose_mul_inv_pow_atTop (k : ℕ) :
     Tendsto (fun n : ℕ => (n.choose k : ℝ) * ((n : ℝ)⁻¹) ^ k) atTop
@@ -47,3 +49,5 @@ theorem norm_choose_mul_inv_pow_le (n k : ℕ) :
       _ ≤ ((n : ℝ) ^ k / k.factorial) / (n : ℝ) ^ k :=
         (div_le_div_iff_of_pos_right (pow_pos (by positivity) _)).mpr hchoose
       _ = 1 / k.factorial := by field_simp
+
+end Nat

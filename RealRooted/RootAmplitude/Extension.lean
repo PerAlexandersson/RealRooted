@@ -117,9 +117,9 @@ theorem extend_pos (hn : 2 ≤ n) (hpos : ∀ i, i < n → 0 < g i)
 
 omit [IsStrictOrderedRing K] in
 /-- The amplitude is unchanged because it only reads indices below `n`. -/
-theorem amp_extend {k : ℕ} (hk : k < n) :
-    amp (extend g n) n k = amp g n k := by
-  unfold amp
+theorem amplitude_extend {k : ℕ} (hk : k < n) :
+    amplitude (extend g n) n k = amplitude g n k := by
+  unfold amplitude
   refine Finset.prod_congr rfl ?_
   intro j hj
   have hjn : j < n := Finset.mem_range.mp (Finset.mem_of_mem_erase hj)
@@ -133,13 +133,13 @@ variable (g : ℕ → ℝ) (n : ℕ)
 
 /-- A reciprocal-distance-sum criterion on a finite increasing sequence makes
 its smallest amplitude a lower bound for all of its amplitudes. -/
-theorem amp_zero_le_of_finite_sum (hn : 2 ≤ n)
+theorem amplitude_zero_le_of_finite_sum (hn : 2 ≤ n)
     (hpos : ∀ i, i < n → 0 < g i)
     (hsm : ∀ i j, i < j → j < n → g i < g j)
     (hsum : ∀ k, k + 1 < n →
       ∑ j ∈ Finset.Ico (k + 2) n, 1 / (g j - g (k + 1))
         ≤ 1 / g (k + 1) + ∑ j ∈ Finset.range k, 1 / (g (k + 1) - g j)) :
-    ∀ k, k < n → amp g n 0 ≤ amp g n k := by
+    ∀ k, k < n → amplitude g n 0 ≤ amplitude g n k := by
   intro k hk
   have hsum' : ∀ k' : ℕ, k' + 1 < n →
       ∑ j ∈ Finset.Ico (k' + 2) n, 1 / (extend g n j - extend g n (k' + 1))
@@ -161,9 +161,9 @@ theorem amp_zero_le_of_finite_sum (hn : 2 ≤ n)
       rw [extend_of_lt g n hk1, extend_of_lt g n (by lia : j < n)]
     rw [e1, e2, extend_of_lt g n hk1]
     exact hsum k' hk'
-  have h := amp_zero_le_of_sum (extend g n)
+  have h := amplitude_zero_le_of_sum (extend g n)
     (extend_pos g n hn hpos hsm) (strictMono_extend g n hn hsm) n hsum' k hk
-  rwa [amp_extend g n (by lia : 0 < n), amp_extend g n hk] at h
+  rwa [amplitude_extend g n (by lia : 0 < n), amplitude_extend g n hk] at h
 
 end
 

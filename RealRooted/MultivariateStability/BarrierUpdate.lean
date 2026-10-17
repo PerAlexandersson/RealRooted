@@ -135,20 +135,6 @@ private theorem barrierLine_ratio {m : ℕ} (i j : Fin m)
       simp
     · simp [hkj]
 
-private def ratioDerivativeLocal (F G : Polynomial ℝ) (t : ℝ) : ℝ :=
-  (G.derivative.eval t * F.eval t - G.eval t * F.derivative.eval t) /
-    (F.eval t) ^ 2
-
-private theorem ratio_has_deriv_local (F G : Polynomial ℝ) {t : ℝ}
-    (hF : F.eval t ≠ 0) :
-    HasDerivAt (fun s => G.eval s / F.eval s) (ratioDerivativeLocal F G t) t := by
-  have h := (G.hasDerivAt t).mul ((F.hasDerivAt t).inv hF)
-  convert h using 1
-  · rfl
-  · dsimp [ratioDerivativeLocal]
-    field_simp
-    ring_nf
-
 /-- The MSS update point lies above the roots after one derivative subtraction. -/
 theorem aboveRoots_sub_pderiv_of_barrier_le {m : ℕ}
     {p : MvPolynomial (Fin m) ℝ} {z : Fin m → ℝ} {δ : ℝ} {j : Fin m}
@@ -234,9 +220,9 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
   have hline : barrierLine i j p z = fun t => G.eval t / F.eval t := by
     exact barrierLine_ratio i j p z
   have hratio : HasDerivAt (barrierLine i j p z)
-      (ratioDerivativeLocal F G δ) δ := by
+      (PickRatio.polynomialRatioDerivative F G δ) δ := by
     rw [hline]
-    exact ratio_has_deriv_local F G hFne
+    exact PickRatio.polynomialRatio_hasDerivAt F G hFne
   have hFeval : F.eval δ = MvPolynomial.eval y p := by
     change (coordinateRestriction z j p).eval δ = MvPolynomial.eval y p
     rw [eval_coordinateRestriction, hpoint]
@@ -272,7 +258,7 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
     rw [barrier, barrier, barrier, map_sub, MvPolynomial.eval_sub, MvPolynomial.eval_sub,
       hcomm]
     rw [hratio.deriv]
-    unfold ratioDerivativeLocal
+    unfold PickRatio.polynomialRatioDerivative
     rw [hFeval, hGeval, hFderiv, hGderiv]
     have hqne :
         MvPolynomial.eval y p - MvPolynomial.eval y (MvPolynomial.pderiv j p) ≠ 0 := by

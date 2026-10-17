@@ -850,22 +850,9 @@ theorem isTotallyNonneg_transvection_succ_castSucc {m : ℕ}
   rw [whitneyRestoreFirst_eq_transvection_mul, Matrix.mul_one] at hrestore
   exact hrestore.toSquare
 
-private theorem trailing_submatrix_mul_of_left_firstColumn_zero {m : ℕ}
+private theorem trailing_submatrix_mul_of_first_product_zero {m : ℕ}
     (A B : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
-    (hzero : ∀ i : Fin m, A i.succ 0 = 0) :
-    (A * B).submatrix Fin.succ Fin.succ =
-      A.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
-  ext i j
-  change (A * B) i.succ j.succ =
-    (A.submatrix Fin.succ Fin.succ *
-      B.submatrix Fin.succ Fin.succ) i j
-  simp only [Matrix.mul_apply, Matrix.submatrix_apply]
-  rw [Fin.sum_univ_succ]
-  simp [hzero]
-
-private theorem trailing_submatrix_mul_of_right_firstRow_zero {m : ℕ}
-    (A B : Matrix (Fin (m + 1)) (Fin (m + 1)) ℝ)
-    (hzero : ∀ j : Fin m, B 0 j.succ = 0) :
+    (hzero : ∀ i j : Fin m, A i.succ 0 * B 0 j.succ = 0) :
     (A * B).submatrix Fin.succ Fin.succ =
       A.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
   ext i j
@@ -1433,11 +1420,13 @@ private theorem whitneyClearColumn_spec {N : ℕ}
   have hAtrailing : A.submatrix Fin.succ Fin.succ =
       L.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
     rw [hfactor,
-      trailing_submatrix_mul_of_left_firstColumn_zero L B hLcolZero]
+      trailing_submatrix_mul_of_first_product_zero L B
+        (fun i _ ↦ by rw [hLcolZero i, zero_mul])]
   have hCtrailing : C.submatrix Fin.succ Fin.succ =
       B.submatrix Fin.succ Fin.succ * L.submatrix Fin.succ Fin.succ := by
     change (B * L).submatrix Fin.succ Fin.succ = _
-    exact trailing_submatrix_mul_of_right_firstRow_zero B L hLrow
+    exact trailing_submatrix_mul_of_first_product_zero B L
+      (fun _ j ↦ by rw [hLrow j, mul_zero])
   have htrailingChar : (C.submatrix Fin.succ Fin.succ).charpoly =
       (A.submatrix Fin.succ Fin.succ).charpoly := by
     rw [hAtrailing, hCtrailing, Matrix.charpoly_mul_comm]
@@ -1837,14 +1826,20 @@ theorem exists_whitneyClearBelowSubdiagonal {n : ℕ}
       C.charpoly = (B * L).charpoly := rfl
       _ = (L * B).charpoly := Matrix.charpoly_mul_comm B L
       _ = A.charpoly := congrArg Matrix.charpoly hfactor.symm
+  have hLcolZero : ∀ i : Fin (n + 1), L i.succ 0 = 0 := fun i ↦ by
+    simpa [L] using hLcol i
+  have hLrowZero : ∀ j : Fin (n + 1), L 0 j.succ = 0 := fun j ↦ by
+    simpa [L] using hLrow j
   have hAtrailing : A.submatrix Fin.succ Fin.succ =
       L.submatrix Fin.succ Fin.succ * B.submatrix Fin.succ Fin.succ := by
     rw [hfactor,
-      trailing_submatrix_mul_of_left_firstColumn_zero L B hLcol]
+      trailing_submatrix_mul_of_first_product_zero L B
+        (fun i _ ↦ by rw [hLcolZero i, zero_mul])]
   have hCtrailing : C.submatrix Fin.succ Fin.succ =
       B.submatrix Fin.succ Fin.succ * L.submatrix Fin.succ Fin.succ := by
     change (B * L).submatrix Fin.succ Fin.succ = _
-    exact trailing_submatrix_mul_of_right_firstRow_zero B L hLrow
+    exact trailing_submatrix_mul_of_first_product_zero B L
+      (fun _ j ↦ by rw [hLrowZero j, mul_zero])
   have htrailingChar : (C.submatrix Fin.succ Fin.succ).charpoly =
       (A.submatrix Fin.succ Fin.succ).charpoly := by
     rw [hAtrailing, hCtrailing, Matrix.charpoly_mul_comm]
@@ -2673,7 +2668,7 @@ private theorem det_tridiagonal_first_rec {R : Type*} [CommRing R] {N : ℕ}
     Fin.sum_univ_succ]
   simp_rw [hcol]
   simp only [Nat.succ_eq_add_one, Fin.coe_ofNat_eq_mod, Nat.zero_mod,
-    Std.le_refl, List.Nat.eq_of_le_zero, pow_zero, one_mul,
+    Std.le_refl, Nat.eq_zero_of_le_zero, pow_zero, one_mul,
     Fin.succAbove_zero, Fin.succ_zero_eq_one, Nat.one_mod, pow_one,
     neg_mul, Fin.val_succ, mul_zero, zero_mul, Finset.sum_const_zero,
     add_zero, Matrix.submatrix_submatrix]

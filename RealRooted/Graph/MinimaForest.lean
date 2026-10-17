@@ -344,7 +344,8 @@ omit [DecidableEq V] in
 lemma rankAt_lt_card (v : V) (a : F.neighborSet v) :
     rankAt O v a < minimaDegree F v := by
   classical
-  unfold rankAt minimaDegree
+  change rankAt O v a < Nat.card (F.neighborSet v)
+  unfold rankAt
   rw [Nat.card_eq_fintype_card, ← Finset.card_univ]
   apply Finset.card_lt_card
   exact Finset.filter_ssubset.2 ⟨a, mem_univ _, lt_irrefl _⟩
@@ -377,7 +378,7 @@ def ofAcyclicOrientation : LocalOrder F := by
   exact fun v ↦ Equiv.ofBijective (fun a ↦ ⟨rankAt O v a, rankAt_lt_card O v a⟩)
     ((Fintype.bijective_iff_injective_and_card _).2
       ⟨fun a b h ↦ rankAt_injective O v (by simpa using h),
-        by simp [minimaDegree, Nat.card_eq_fintype_card]⟩)
+        by simp [SimpleGraph.natCardDegree, Nat.card_eq_fintype_card]⟩)
 
 omit [DecidableEq V] in
 lemma ofAcyclicOrientation_lt_iff {v : V} {a b : F.neighborSet v} :

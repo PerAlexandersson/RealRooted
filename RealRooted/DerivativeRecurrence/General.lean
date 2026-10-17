@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic.IntervalCases
+import RealRooted.Basic.Coefficients
 import RealRooted.DerivativeRecurrence.Degree
 
 /-!
@@ -21,7 +22,7 @@ arbitrary degree law `D : ℕ → ℕ` (`*_of_degreeLaw`, covering periodic grow
 `D n = D₀ + d * ((n + e) / p)`), and top coefficients controlled by a ratio invariant
 (`natDegree_eq_and_leadingCoeff_pos_of_ratio`).
 
-This generalizes `RealRooted.derivRec_leadingCoeff_pos` (first order),
+This generalizes `RealRooted.derivativeRecurrence_leadingCoeff_pos` (first order),
 `RealRooted.derivRec₂_leadingCoeff_pos` (second order) and
 `RealRooted.threeTermPos_leadingCoeff_pos` (three-term) to any order and any mixture of
 derivatives.
@@ -418,23 +419,6 @@ private theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} (n : 
       refine ⟨natDegree_add_le_of_degree_le h1 ih.1, ?_⟩
       rw [coeff_add, h2, ih.2, topCoeffD]
 
-/-- Regroup a sum over the summands by their lags `j < k`. -/
-private theorem sum_map_eq_sum_lagD {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ) (g : ℕ → ℝ) :
-    ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
-      (terms.map fun t => f t * g t.1).sum =
-        ∑ j ∈ Finset.range k, ((terms.filter fun t => t.1 = j).map f).sum * g j
-  | [], _ => by simp
-  | t :: ts, hlag => by
-      rw [List.map_cons, List.sum_cons,
-        sum_map_eq_sum_lagD f g ts (fun s hs => hlag s (by simp [hs]))]
-      have hj : t.1 ∈ Finset.range k := Finset.mem_range.mpr (hlag t (by simp))
-      simp only [List.filter_cons, decide_eq_true_eq]
-      rw [← Finset.add_sum_erase _ _ hj, ← Finset.add_sum_erase _ _ hj, ← add_assoc]
-      congr 1
-      · simp [add_mul]
-      · refine Finset.sum_congr rfl fun j hj' => ?_
-        simp [Ne.symm (Finset.ne_of_mem_erase hj')]
-
 /-- Degree bounds for every row and the scalar recurrence of the top coefficients, for an
 arbitrary degree law `D`. -/
 theorem natDegree_le_and_coeff_rec {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]}
@@ -460,7 +444,7 @@ theorem natDegree_le_and_coeff_rec {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[
   have hstep := rhs_stepD n (hD n) terms hlag (fun t ht => hA t ht n)
     fun j hj => hle (n + j)
   rw [hrec n, hstep.2]
-  exact sum_map_eq_sum_lagD (topCoeffD k D n) (fun j => (P (n + j)).coeff (D (n + j))) terms
+  exact sum_map_eq_sum_lag (topCoeffD k D n) (fun j => (P (n + j)).coeff (D (n + j))) terms
     hlag
 
 /-- A degree bound together with a nonvanishing coefficient at the bound gives the degree
@@ -593,6 +577,106 @@ example (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1) (h2 : P 2 = 1)
     interval_cases r <;>
       simp [lagMultD, topCoeffD, coeff_one, Finset.sum_range_succ, Nat.add_assoc,
         Nat.mul_add_div]
+
+/-- If every input row has degree at most its value under `D`, then a `LinRec` right side
+whose multipliers allow one extra degree has degree at most `D (n + k) + 1`. -/
+theorem rhs_natDegree_le_succ_of_degreeLaw {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]}
+    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))} (n : ℕ)
+    (hlag : ∀ t ∈ terms, t.1 < k)
+    (hD : ∀ j, j < k → D (n + j) ≤ D (n + k))
+    (hA : ∀ t ∈ terms,
+      (t.2.2 n).natDegree ≤ D (n + k) + 1 - D (n + t.1) + t.2.1)
+    (hP : ∀ j < k, (P (n + j)).natDegree ≤ D (n + j)) :
+    (rhs terms P n).natDegree ≤ D (n + k) + 1 := by
+  induction terms with
+  | nil => simp [rhs]
+  | cons t ts ih =>
+      have ht : t.1 < k := hlag t (by simp)
+      have hDt : D (n + t.1) ≤ D (n + k) := hD t.1 ht
+      have hterm := natDegree_mul_iterate_derivative_le
+        (d := D (n + k) + 1 - D (n + t.1)) (j := t.2.1)
+        (hA t (by simp)) (hP t.1 ht)
+      have hsum := ih (fun s hs => hlag s (by simp [hs]))
+        (fun s hs => hA s (by simp [hs]))
+      simp only [rhs, List.map_cons, List.sum_cons]
+      refine (natDegree_add_le _ _).trans (max_le ?_ hsum)
+      exact hterm.trans (by lia)
+
+/-- A polynomial of degree at most `N + 1` whose coefficient at `N + 1` vanishes has
+degree at most `N`. -/
+theorem natDegree_le_of_le_succ_of_coeff_succ_eq_zero {p : ℝ[X]} {N : ℕ}
+    (hle : p.natDegree ≤ N + 1) (hzero : p.coeff (N + 1) = 0) : p.natDegree ≤ N := by
+  rw [natDegree_le_iff_coeff_eq_zero]
+  intro j hj
+  rcases eq_or_lt_of_le (show N + 1 ≤ j by lia) with hj' | hj'
+  · rw [← hj']
+    exact hzero
+  · exact coeff_eq_zero_of_natDegree_lt (hle.trans_lt hj')
+
+/-- Cancellation analogue of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`.
+
+The multipliers may make individual summands reach degree `D (n + k) + 1`.  The local
+step certificate says that this coefficient cancels, the coefficient in degree
+`D (n + k)` is positive, nonnegative coefficients are preserved, and the division-free
+ratio invariant
+
+`rho n * leadingCoeff (P n) ≤ (P n).coeff (D n - 1)`
+
+is preserved.  Consequently every row has degree exactly `D n` and positive leading
+coefficient. -/
+theorem natDegree_eq_and_leadingCoeff_pos_of_cancel {k : ℕ} {D : ℕ → ℕ}
+    {P : ℕ → ℝ[X]} {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))} {rho : ℕ → ℝ}
+    (hrec : ∀ n, P (n + k) = rhs terms P n)
+    (hlag : ∀ t ∈ terms, t.1 < k)
+    (hD : ∀ n j, j < k → D (n + j) ≤ D (n + k))
+    (hA : ∀ t ∈ terms, ∀ n,
+      (t.2.2 n).natDegree ≤ D (n + k) + 1 - D (n + t.1) + t.2.1)
+    (hbase : ∀ j < k,
+      (P j).natDegree ≤ D j ∧ 0 < (P j).coeff (D j) ∧ HasNonnegCoeffs (P j) ∧
+        rho j * (P j).coeff (D j) ≤ (P j).coeff (D j - 1))
+    (hstep : ∀ n,
+      (∀ j < k,
+        (P (n + j)).natDegree ≤ D (n + j) ∧
+          0 < (P (n + j)).coeff (D (n + j)) ∧ HasNonnegCoeffs (P (n + j)) ∧
+            rho (n + j) * (P (n + j)).coeff (D (n + j)) ≤
+              (P (n + j)).coeff (D (n + j) - 1)) →
+      (rhs terms P n).coeff (D (n + k) + 1) = 0 ∧
+        0 < (rhs terms P n).coeff (D (n + k)) ∧ HasNonnegCoeffs (rhs terms P n) ∧
+          rho (n + k) * (rhs terms P n).coeff (D (n + k)) ≤
+            (rhs terms P n).coeff (D (n + k) - 1))
+    (n : ℕ) :
+    (P n).natDegree = D n ∧ 0 < (P n).leadingCoeff ∧ HasNonnegCoeffs (P n) ∧
+      rho n * (P n).leadingCoeff ≤ (P n).coeff (D n - 1) := by
+  have key : ∀ m,
+      (P m).natDegree ≤ D m ∧ 0 < (P m).coeff (D m) ∧ HasNonnegCoeffs (P m) ∧
+        rho m * (P m).coeff (D m) ≤ (P m).coeff (D m - 1) := by
+    intro m
+    induction m using Nat.strong_induction_on with
+    | h m ih =>
+        by_cases hm : m < k
+        · exact hbase m hm
+        · obtain ⟨q, rfl⟩ : ∃ q, m = q + k := ⟨m - k, by lia⟩
+          have hprev : ∀ j < k,
+              (P (q + j)).natDegree ≤ D (q + j) ∧
+                0 < (P (q + j)).coeff (D (q + j)) ∧ HasNonnegCoeffs (P (q + j)) ∧
+                  rho (q + j) * (P (q + j)).coeff (D (q + j)) ≤
+                    (P (q + j)).coeff (D (q + j) - 1) := by
+            intro j hj
+            exact ih (q + j) (by lia)
+          obtain ⟨hcancel, hpos, hnn, hratio⟩ := hstep q hprev
+          rw [hrec q]
+          exact ⟨natDegree_le_of_le_succ_of_coeff_succ_eq_zero
+            (rhs_natDegree_le_succ_of_degreeLaw q hlag (hD q)
+              (fun t ht => hA t ht q) (fun j hj => (hprev j hj).1)) hcancel,
+            hpos, hnn, hratio⟩
+  obtain ⟨hle, hpos, hnn, hratio⟩ := key n
+  have hdeg : (P n).natDegree = D n :=
+    natDegree_eq_of_le_of_coeff_ne_zero hle hpos.ne'
+  refine ⟨hdeg, ?_, hnn, ?_⟩
+  · rw [leadingCoeff, hdeg]
+    exact hpos
+  · rw [leadingCoeff, hdeg]
+    exact hratio
 
 end RealRooted.LinRec
 

@@ -34,7 +34,9 @@ separable permutations of `[n]` (SSRN 7510941, Proposition 3.3): `Γ_0 = 0`, `Γ
 def gammaPolynomial : ℕ → ℝ[X]
   | 0 => 0
   | 1 => 1
-  | N + 2 => C ((2 : ℝ) ^ N / (N.factorial : ℝ)) * compression N 1 (auxPolynomial N)
+  | N + 2 =>
+      C ((2 : ℝ) ^ N / (N.factorial : ℝ)) *
+        compression N 1 (compressionSourcePolynomial N)
 
 @[simp] theorem gammaPolynomial_zero : gammaPolynomial 0 = 0 := rfl
 
@@ -42,7 +44,8 @@ def gammaPolynomial : ℕ → ℝ[X]
 
 theorem gammaPolynomial_add_two (N : ℕ) :
     gammaPolynomial (N + 2) =
-      C ((2 : ℝ) ^ N / (N.factorial : ℝ)) * compression N 1 (auxPolynomial N) := rfl
+      C ((2 : ℝ) ^ N / (N.factorial : ℝ)) *
+        compression N 1 (compressionSourcePolynomial N) := rfl
 
 /-- The descent polynomial `S_n = (1 + t) ^ (n - 1) Γ_n (t / (1 + t) ^ 2)` attached to the
 gamma-polynomial `Γ_n` (Zhang, SSRN 7510941).  The identification with the descent enumerator
@@ -58,7 +61,7 @@ theorem coeff_gammaPolynomial_add_two (N k : ℕ) :
       if 2 * k ≤ N + 1 then
         (2 : ℝ) ^ N / (N.factorial : ℝ) *
           (((N - k).factorial : ℝ) / ((N + 1 - 2 * k).factorial : ℝ) *
-            (auxPolynomial N).coeff k)
+            (compressionSourcePolynomial N).coeff k)
       else 0 := by
   rw [gammaPolynomial_add_two, coeff_C_mul, coeff_compression]
   by_cases h : 2 * k ≤ N + 1
@@ -74,7 +77,7 @@ theorem coeff_gammaPolynomial_add_two (N k : ℕ) :
 theorem coeff_gammaPolynomial_add_two_pos {N k : ℕ} (hk : 2 * k ≤ N + 1) :
     0 < (gammaPolynomial (N + 2)).coeff k := by
   rw [coeff_gammaPolynomial_add_two, ite_eq_left hk]
-  have := coeff_auxPolynomial_pos (N := N) (k := k) (by lia)
+  have := coeff_compressionSourcePolynomial_pos (N := N) (k := k) (by lia)
   positivity
 
 /-- The coefficients of `Γ_{N+2}` of index `k` with `N + 1 < 2 k` vanish. -/
@@ -155,8 +158,10 @@ theorem gammaPolynomial_three : gammaPolynomial 3 = 1 + 2 * X := by
 theorem gammaPolynomial_four : gammaPolynomial 4 = 1 + 7 * X := by
   ext k
   rcases k with _ | _ | k
-  · norm_num [coeff_gammaPolynomial_add_two, Nat.factorial, auxPolynomial_succ, add_mul, coeff_one]
-  · norm_num [coeff_gammaPolynomial_add_two, Nat.factorial, auxPolynomial_succ, add_mul, coeff_one]
+  · norm_num [coeff_gammaPolynomial_add_two, Nat.factorial,
+      compressionSourcePolynomial_succ, add_mul, coeff_one]
+  · norm_num [coeff_gammaPolynomial_add_two, Nat.factorial,
+      compressionSourcePolynomial_succ, add_mul, coeff_one]
   · rw [coeff_gammaPolynomial_add_two_eq_zero (N := 2) (by lia)]
     simp [coeff_X, coeff_one]
 

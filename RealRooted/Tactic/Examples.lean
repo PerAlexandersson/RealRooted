@@ -9,7 +9,10 @@ import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EndpointDerivative
+import RealRooted.Tactic.Examples.EulerBidiagonalOeis
 import RealRooted.Tactic.Examples.EulerOperator
+import RealRooted.Tactic.Examples.EulerTypeBridges
+import RealRooted.Tactic.Examples.FTransformInterlaces
 import RealRooted.Tactic.Examples.Favard
 import RealRooted.Tactic.Examples.Favard.Denominator
 import RealRooted.Tactic.Examples.Favard.Direct
@@ -33,6 +36,7 @@ import RealRooted.Tactic.Examples.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
 import RealRooted.Tactic.Examples.Kurtz
+import RealRooted.Tactic.Examples.LinRecCancellation
 import RealRooted.Tactic.Examples.Linear
 import RealRooted.Tactic.Examples.LinearPowerFamily
 import RealRooted.Tactic.Examples.LiuWang
@@ -70,17 +74,28 @@ import RealRooted.Tactic.Examples.Matrix
 import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
+import RealRooted.Tactic.Examples.OEIS.A219836
+import RealRooted.Tactic.Examples.OEIS.A259454
+import RealRooted.Tactic.Examples.OEIS.A304334
+import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
 import RealRooted.Tactic.Examples.OEIS.CompatCommon
+import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
+import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
 import RealRooted.Tactic.Examples.OEIS.DerivativeLag
+import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
 import RealRooted.Tactic.Examples.OEIS.DifferentialOperators
 import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
+import RealRooted.Tactic.Examples.OEIS.Dispatcher
 import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.Foundation
 import RealRooted.Tactic.Examples.OEIS.GammaVeronese
+import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
+import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
 import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
 import RealRooted.Tactic.Examples.OEIS.NegativeLag
+import RealRooted.Tactic.Examples.OEIS.NextRows
 import RealRooted.Tactic.Examples.OEIS.ParityEndpoint
 import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
 import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
@@ -89,6 +104,8 @@ import RealRooted.Tactic.Examples.OEIS.ProductLift
 import RealRooted.Tactic.Examples.OEIS.ProductRouters
 import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 import RealRooted.Tactic.Examples.OEIS.SecondDerivative
+import RealRooted.Tactic.Examples.OEIS.TouchardImages
+import RealRooted.Tactic.Examples.OEIS.TransformModels
 import RealRooted.Tactic.Examples.OEISPositiveTLag
 import RealRooted.Tactic.Examples.OEISTestbed
 import RealRooted.Tactic.Examples.OEISTestbed.Favard
@@ -116,17 +133,38 @@ import RealRooted.Tactic.Examples.Product.UnsupportedShape
 import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RecurrenceODE
+import RealRooted.Tactic.Examples.RegistryDownstream
 import RealRooted.Tactic.Examples.RootBounds
 import RealRooted.Tactic.Examples.RootCount
 import RealRooted.Tactic.Examples.RootCount.Core
 import RealRooted.Tactic.Examples.RootCount.Filters
 import RealRooted.Tactic.Examples.RootCount.LowDegree
+import RealRooted.Tactic.Examples.RowCancelRho
+import RealRooted.Tactic.Examples.RowCubicParent
 import RealRooted.Tactic.Examples.RowData
+import RealRooted.Tactic.Examples.RowDegreeRest
+import RealRooted.Tactic.Examples.RowDegreeRoutes
+import RealRooted.Tactic.Examples.RowFactorPower
+import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
+import RealRooted.Tactic.Examples.RowModelA080721
+import RealRooted.Tactic.Examples.RowModelFamilies
+import RealRooted.Tactic.Examples.RowModelJensenFamilies
+import RealRooted.Tactic.Examples.RowModelNextFamilies
+import RealRooted.Tactic.Examples.RowModelRecentRegistrations
+import RealRooted.Tactic.Examples.RowModelRegistryBudget
+import RealRooted.Tactic.Examples.RowNonnegative
+import RealRooted.Tactic.Examples.RowParityFactorization
+import RealRooted.Tactic.Examples.RowPathPower
+import RealRooted.Tactic.Examples.RowPathPowerK5
+import RealRooted.Tactic.Examples.RowRegression1689Degree
+import RealRooted.Tactic.Examples.RowRegression1689Interlacing
+import RealRooted.Tactic.Examples.RowSubseqDegree
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
+import RealRooted.Tactic.Examples.ShortlistRoutes
 import RealRooted.Tactic.Examples.SideGoals
 import RealRooted.Tactic.Examples.Sign
 import RealRooted.Tactic.Examples.SignAssembly
@@ -136,7 +174,6 @@ import RealRooted.Tactic.Examples.VeroneseSection
 import RealRooted.Tactic.Examples.Wagner
 import RealRooted.Tactic.Examples.WagnerX
 import RealRooted.Tactic.Examples.WeightedSum
-
 /-!
 # RealRooted tactic examples
 

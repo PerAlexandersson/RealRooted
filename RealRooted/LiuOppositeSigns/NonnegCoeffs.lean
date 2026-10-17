@@ -34,8 +34,8 @@ theorem HasNonnegCoeffs.deleteRootFactor_of_isRoot
   have hdiv : deleteRootFactor p r ∣ p := by
     refine ⟨X - C r, ?_⟩
     rw [mul_comm, factor_deleteRootFactor_of_isRoot hr]
-  exact hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-    hp_ne hp_splits hp_nonneg hdelete_ne hdelete_splits hdelete_pos hdiv
+  exact hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+    hp_ne hp_nonneg hdelete_ne hdelete_splits hdelete_pos hdiv
 
 /-- The left cofactor of a positive-split pair inherits nonnegative
 coefficients from the left endpoint. -/

@@ -1,4 +1,5 @@
 import RealRooted.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.WagnerX.AffineFactors
 import Mathlib.LinearAlgebra.Lagrange
@@ -206,11 +207,6 @@ theorem residue_nonneg {f g : ℝ[X]} (hpq : StrictInterl g f)
 
 /-! ## Lagrange interpolation -/
 
-theorem eval_divByMonic_at_root {f : ℝ[X]} {r : ℝ} (hr : f.IsRoot r) :
-    (f /ₘ (X - C r)).eval r = f.derivative.eval r := by
-  nth_rw 2 [← mul_divByMonic_eq_iff_isRoot.mpr hr]
-  simp
-
 theorem eval_divByMonic_at_other_root {f : ℝ[X]} {t s : ℝ}
     (ht : f.IsRoot t) (hs : f.IsRoot s) (hst : s ≠ t) : (f /ₘ (X - C t)).eval s = 0 := by
   have h_eval := congrArg (eval s) (mul_divByMonic_eq_iff_isRoot.mpr ht)
@@ -218,9 +214,6 @@ theorem eval_divByMonic_at_other_root {f : ℝ[X]} {t s : ℝ}
   exact (mul_eq_zero.mp h_eval).resolve_left <| by
     simp only [eval_sub, eval_X, eval_C]
     exact sub_ne_zero.mpr hst
-
-@[deprecated (since := "2026-10-05")]
-alias derivative_eval_ne_zero_of_simple_root := eval_derivative_ne_zero_of_rootMultiplicity_eq_one
 
 noncomputable def lagInterp (f g : ℝ[X]) : ℝ[X] :=
   ∑ s ∈ f.roots.toFinset, C (g.eval s / f.derivative.eval s) * (f /ₘ (X - C s))
@@ -235,7 +228,7 @@ theorem eval_lagInterp_at_root {f g : ℝ[X]} (hnd : f.roots.Nodup)
     eval_derivative_ne_zero_of_rootMultiplicity_eq_one hsk_root h_mult
   have : sk ∈ f.roots.toFinset := Multiset.mem_toFinset.mpr hsk
   rw [lagInterp, eval_finsetSum, Finset.sum_eq_single sk]
-  · rw [eval_mul, eval_C, eval_divByMonic_at_root hsk_root]
+  · rw [eval_mul, eval_C, Polynomial.eval_divByMonic_at_root hsk_root]
     simp [*]
   · intro s hs hssk
     have hsroot : f.IsRoot s := isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)

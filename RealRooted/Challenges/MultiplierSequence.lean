@@ -8,6 +8,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
 import RealRooted.MultiplierSequence.Sign
+import RealRooted.MultiplierSequence.ProperPosition
 
 /-!
 # Multiplier sequence challenge entry point
@@ -16,6 +17,7 @@ import RealRooted.MultiplierSequence.Sign
 version = 1
 section = "concepts"
 slug = "multiplier-sequences"
+formalized = "2026-09-07"
 authors = ["Pólya", "Schur"]
 years = [1914]
 
@@ -147,6 +149,11 @@ label = "Bidiagonal PF preservers from a stable symbol"
 name = "RealRooted.BidiagonalJensenPencilCertificate.toPFPreserver"
 module = "RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction"
 label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
+
+[[theorems]]
+name = "RealRooted.IsMultiplierSequence.strictInterl_diagonalOperator_of_pos"
+module = "RealRooted.MultiplierSequence.ProperPosition"
+label = "Positive multiplier sequences preserve directed proper position"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -155,8 +162,10 @@ label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
 A real sequence $\gamma = (\gamma_0, \gamma_1, \dotsc)$ is a **multiplier sequence** if the
 diagonal operator
 
-$$a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
-  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n$$
+$$
+a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
+  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n.
+$$
 
 sends every real-rooted polynomial to a real-rooted polynomial (or zero). It is
 a **PF multiplier sequence** if it preserves real-rootedness with nonnegative

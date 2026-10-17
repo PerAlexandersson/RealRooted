@@ -195,12 +195,13 @@ h3 { font-size: 1.25rem; }
   font-size: 1.08rem;
   line-height: 1.22;
 }
-.card-attribution {
+.card-attribution, .card-formalized {
   margin-top: auto;
   color: var(--muted);
   font-size: 0.68rem;
   line-height: 1.25;
 }
+.card-formalized { margin-top: -0.12rem; font-variant-numeric: tabular-nums; }
 .card-arrow {
   position: absolute;
   right: 0.9rem;
@@ -271,6 +272,7 @@ h3 { font-size: 1.25rem; }
   white-space: nowrap;
 }
 .hero-stats { margin: -0.4rem 0 0; color: var(--muted); font-size: 0.92rem; }
+.formalized { color: var(--muted); font-variant-numeric: tabular-nums; }
 .hero-stats a { font-weight: 700; }
 .group-intro { max-width: 46rem; margin: -0.4rem 0 1.1rem; color: var(--muted); font-size: 0.86rem; }
 .card-top {
@@ -365,6 +367,24 @@ h3 { font-size: 1.25rem; }
 .result-page { width: 14rem; }
 .result-source { width: 4.5rem; text-align: right; }
 .results-empty { color: var(--muted); }
+
+.authors-page { width: min(100% - 2rem, 72rem); }
+.author-summary { margin: -0.45rem 0 1.5rem; color: var(--muted); font-size: 0.9rem; }
+.authors-index, .author-credits { margin: 0; padding: 0; list-style: none; }
+.authors-index { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; }
+.author-entry {
+  scroll-margin-top: 6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: 0.9rem;
+  background: var(--surface);
+}
+.author-entry h2 { margin: 0 0 0.65rem; font-size: 1.28rem; }
+.author-credits { display: grid; gap: 0.55rem; }
+.author-credits li { display: grid; gap: 0.08rem; }
+.author-credit-title { font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif; font-weight: 700; }
+.author-credit-meta { color: var(--muted); font-size: 0.76rem; }
 
 .math-display { margin: 1.1rem 0; overflow-x: auto; overflow-y: hidden; }
 .prose .katex { font-size: 1.05em; }
@@ -474,6 +494,7 @@ pre {
   .nav-links a:last-child { display: none; }
   .catalog-index { grid-template-columns: 1fr; }
   .section-index { grid-template-columns: 1fr; }
+  .authors-index { grid-template-columns: 1fr; }
   .catalog-index a { min-height: 5.8rem; }
   .declaration-meta { align-items: flex-start; flex-direction: column; }
   .result-page, .result-source { display: none; }

@@ -1,5 +1,18 @@
 """List small tactic proofs that are candidates for a batch `grind` trial."""
-import re, os, collections, json
+import argparse
+import collections
+import json
+import os
+from pathlib import Path
+import re
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument(
+    "--json-output",
+    type=Path,
+    help="optionally write the candidates as JSON to this path",
+)
+args = parser.parse_args()
 decl_re = re.compile(r'^(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|nonrec\s+|noncomputable\s+)*(theorem|lemma)\s+([A-Za-z_0-9.\'!?]+)')
 SAFE = {'rw','simp','simp_all','simp_arith','unfold','constructor','exact','refine','intro','intros',
         'ring','ring_nf','positivity','lia','norm_num','by_cases','field_simp','subst','push_cast',
@@ -43,4 +56,5 @@ tot=sum(len(v) for v in cands.values())
 print(f"candidate small tactic proofs: {tot}")
 for p,v in sorted(cands.items(), key=lambda kv:-len(kv[1]))[:25]:
     print(f"{len(v):4d}  {p}")
-json.dump(cands, open('/tmp/claude-1000/-workspace-lean-RealRooted/01b471d8-3520-4596-971c-040f66048312/scratchpad/cands.json','w'))
+if args.json_output is not None:
+    args.json_output.write_text(json.dumps(cands), encoding="utf-8")

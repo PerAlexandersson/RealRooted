@@ -48,6 +48,35 @@ private theorem weightedSum_bernsteinBasisImageWeights
     _ = Polynomial.basisTransform B (Polynomial.bernsteinExpansion d q) :=
       (Polynomial.basisTransform_bernsteinExpansion B d q).symm
 
+/-- A compatible Bernstein-image row with nonnegative members sends every
+nonnegative Bernstein expansion to a Pólya-frequency polynomial. -/
+theorem FamilyCompatible.basisTransform_bernsteinExpansion_isPF
+    {B : ℕ → ℝ[X]} {d : ℕ} {q : ℝ[X]}
+    (hrow : FamilyCompatible (bernsteinBasisImageRow B d))
+    (hnonneg : ∀ p ∈ bernsteinBasisImageRow B d, HasNonnegCoeffs p)
+    (hq : HasNonnegCoeffs q) :
+    IsPFPolynomial
+      (Polynomial.basisTransform B (Polynomial.bernsteinExpansion d q)) := by
+  let ws := bernsteinBasisImageWeights B d q
+  have hmem : ∀ ap ∈ ws, ap.2 ∈ bernsteinBasisImageRow B d := by
+    intro ap hap
+    dsimp [ws, bernsteinBasisImageWeights] at hap
+    rw [List.mem_ofFn] at hap
+    rcases hap with ⟨k, rfl⟩
+    rw [bernsteinBasisImageRow, List.mem_ofFn]
+    exact ⟨k, rfl⟩
+  have hweights : ∀ ap ∈ ws, 0 ≤ ap.1 := by
+    intro ap hap
+    dsimp [ws, bernsteinBasisImageWeights] at hap
+    rw [List.mem_ofFn] at hap
+    rcases hap with ⟨k, rfl⟩
+    exact hq k
+  rw [← weightedSum_bernsteinBasisImageWeights]
+  apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+  · exact hasNonnegCoeffs_weightedSum ws hweights fun ap hap ↦
+      hnonneg ap.2 (hmem ap hap)
+  · exact (hrow ws hmem hweights).imp_right And.right
+
 /-- If the images of a Bernstein basis form a nonnegative interlacing
 sequence, then every nonnegative combination of those images is PF. -/
 theorem IsInterlacingSeqNonneg.basisTransform_bernsteinExpansion_isPF

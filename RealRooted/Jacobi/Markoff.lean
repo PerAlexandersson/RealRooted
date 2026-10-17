@@ -29,35 +29,35 @@ def jacobiBetaOneLogMoment (α : ℝ) (k : ℕ) : ℝ :=
 
 /-- The logarithmic beta-one moment functional on real polynomials. -/
 def jacobiBetaOneLogFunctional (α : ℝ) (p : ℝ[X]) : ℝ :=
-  p.sum fun k c => c * jacobiBetaOneLogMoment α k
+  Polynomial.momentFunctional (jacobiBetaOneLogMoment α) p
 
 @[simp]
 theorem jacobiBetaOneLogFunctional_zero (α : ℝ) :
     jacobiBetaOneLogFunctional α 0 = 0 := by
-  simp [jacobiBetaOneLogFunctional]
+  simpa only [jacobiBetaOneLogFunctional] using
+    Polynomial.momentFunctional_zero (jacobiBetaOneLogMoment α)
 
 @[simp]
 theorem jacobiBetaOneLogFunctional_add (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneLogFunctional α (p + q) =
       jacobiBetaOneLogFunctional α p +
         jacobiBetaOneLogFunctional α q := by
-  simp only [jacobiBetaOneLogFunctional]
-  apply Polynomial.sum_add_index <;> simp [add_mul]
+  simpa only [jacobiBetaOneLogFunctional] using
+    Polynomial.momentFunctional_add (jacobiBetaOneLogMoment α) p q
 
 @[simp]
 theorem jacobiBetaOneLogFunctional_C_mul (α c : ℝ) (p : ℝ[X]) :
     jacobiBetaOneLogFunctional α (C c * p) =
       c * jacobiBetaOneLogFunctional α p := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq => simp [mul_add, hp, hq, mul_add]
-  | monomial n a =>
-      simp [jacobiBetaOneLogFunctional, C_mul_monomial, mul_assoc]
+  simpa only [jacobiBetaOneLogFunctional] using
+    Polynomial.momentFunctional_C_mul (jacobiBetaOneLogMoment α) c p
 
 @[simp]
 theorem jacobiBetaOneLogFunctional_monomial (α c : ℝ) (k : ℕ) :
     jacobiBetaOneLogFunctional α (monomial k c) =
       c * jacobiBetaOneLogMoment α k := by
-  simp [jacobiBetaOneLogFunctional]
+  simpa only [jacobiBetaOneLogFunctional] using
+    Polynomial.momentFunctional_monomial (jacobiBetaOneLogMoment α) c k
 
 /-- The logarithmic moment is the derivative of the ordinary beta-one moment. -/
 theorem hasDerivAt_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
@@ -120,10 +120,8 @@ theorem jacobiBetaOneLogFunctional_sum {ι : Type*} (α : ℝ)
     (s : Finset ι) (p : ι → ℝ[X]) :
     jacobiBetaOneLogFunctional α (∑ i ∈ s, p i) =
       ∑ i ∈ s, jacobiBetaOneLogFunctional α (p i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert i s hi hs => simp [hi, hs]
+  simpa only [jacobiBetaOneLogFunctional] using
+    Polynomial.momentFunctional_sum (jacobiBetaOneLogMoment α) s p
 
 @[simp]
 theorem jacobiBetaOneInner_sum_left {ι : Type*} (α : ℝ)
@@ -624,7 +622,7 @@ theorem hasDerivAt_jacobiBetaOneInner_shiftedJacobiMonic_alpha (n : ℕ)
         (α := α) (β := 1) hα (by norm_num)).hasDerivAt
     have hf : HasDerivAt (fun a => jacobiBetaOneInner a (X ^ k) q)
         (jacobiBetaOneLogFunctional α (X ^ k * q)) α := by
-      simpa only [jacobiBetaOneInner] using
+      simpa only [jacobiBetaOneInner, Polynomial.momentPairing, jacobiBetaOneFunctional] using
         hasDerivAt_jacobiBetaOneFunctional hα (X ^ k * q)
     exact hc.mul hf
   have hsum : HasDerivAt
@@ -895,7 +893,8 @@ theorem shiftedJacobiMonicAlphaDeriv_eval_mul_derivative_eval_neg
       q.eval r * jacobiBetaOneInner α 1 q :=
     jacobiBetaOneInner_rootQuotient_eq_eval_mul hα hr q hqdeg
   have hqq_pos : 0 < jacobiBetaOneInner α q q := by
-    simpa only [jacobiBetaOneInner, pow_two] using
+    simpa only [jacobiBetaOneInner, Polynomial.momentPairing,
+      jacobiBetaOneFunctional, pow_two] using
       jacobiBetaOneFunctional_sq_pos hα hq_ne
   have hidentity :
       jacobiBetaOneInner α d q * (q.eval r) ^ 2 =
@@ -1015,7 +1014,7 @@ theorem exists_hasDerivAt_shiftedJacobiMonic_root_alpha
     shiftedJacobiMonic_derivative_eval_ne_zero n hα (by norm_num) hr
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hspatial
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hspatial
   let ρ : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hρbase : ρ α = r :=
     hcont.implicitFunction_apply_self (by simp) hAinv

@@ -18,6 +18,7 @@ import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 version = 1
 section = "theorems"
 slug = "hadamard-products"
+formalized = "2026-07-03"
 authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
   "Ferroni", "Jochemko", "Liu", "Mao"]
 years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024, 2026]
@@ -204,7 +205,7 @@ D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
 of Mathematical Analysis and Applications* 202 (1996), 797–809; P. Brändén,
 L. Ferroni and K. Jochemko, “Preservation of inequalities under Hadamard
 products,” arXiv:2408.12386 (2024); Y. Liu and J. Mao, “Preservation of
-log-concavity under Hadamard products,” arXiv:2609.11589 (2026). V. Kostov and B.
+log-concavity under Hadamard products,” arXiv:2609.11589 (2026); V. Kostov and B.
 Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
 Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
 composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74; V. P. Kostov,

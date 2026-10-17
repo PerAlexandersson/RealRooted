@@ -10,6 +10,9 @@ descent-set cardinalities, from words to ordinary parking functions.
 
 namespace RealRooted.ParkingFunctions
 
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
+
 noncomputable section
 
 /-- A sum of a descent-set weight over a fixed content fiber is invariant

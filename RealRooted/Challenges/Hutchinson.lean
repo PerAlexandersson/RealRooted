@@ -7,6 +7,7 @@ import RealRooted.Hutchinson
 version = 1
 section = "theorems"
 slug = "hutchinson"
+formalized = "2026-10-07"
 authors = ["Hutchinson"]
 years = [1923]
 
@@ -44,9 +45,11 @@ Laguerre–Pólya class is closed under locally uniform limits.
 ## References
 
 J. I. Hutchinson, “On a remarkable class of entire functions,” *Transactions
-of the American Mathematical Society* 25 (1923), 325–332; D. C. Kurtz, “A
-sufficient condition for all the roots of a polynomial to be real,” *American
-Mathematical Monthly* 99 (1992), 259–263.
+of the American Mathematical Society* 25 (1923), 325–332,
+[doi:10.1090/s0002-9947-1923-1501248-1](https://doi.org/10.1090/s0002-9947-1923-1501248-1);
+D. C. Kurtz, “A sufficient condition for all the roots of a polynomial to be
+real,” *American Mathematical Monthly* 99 (1992), 259–263,
+[doi:10.1080/00029890.1992.11995845](https://doi.org/10.1080/00029890.1992.11995845).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Hutchinson`

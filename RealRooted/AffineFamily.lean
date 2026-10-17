@@ -63,11 +63,11 @@ private lemma affine_family_common_root_reduction_data
   have hqg_pos : HasPosLeadingCoeff qg :=
     hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
   have hqf_nonneg : HasNonnegCoeffs qf :=
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hf_ne hf_splits hfnn hqf_ne hqf_rr.2 hqf_pos ⟨X - C r, by grind⟩
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+      hf_ne hfnn hqf_ne hqf_rr.2 hqf_pos ⟨X - C r, by grind⟩
   have hqg_nonneg : HasNonnegCoeffs qg :=
-    hasNonnegCoeffs_of_dvd_of_isRealRooted_of_hasPosLeadingCoeff
-      hg_ne hg_splits hgnn hqg_ne hqg_rr.2 hqg_pos ⟨X - C r, by grind⟩
+    hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
+      hg_ne hgnn hqg_ne hqg_rr.2 hqg_pos ⟨X - C r, by grind⟩
   refine ⟨qf, qg, hqf, hqg, hqf_nonneg, hqg_nonneg, hqf_ne, hqg_ne, hqf_pos, hqg_pos, ?_⟩
   intro s t hs ht
   have hbase : ((((C s * X + C t) * ((X - C r) * qf)) + ((X - C r) * qg)) ≠ 0 ∧
@@ -94,29 +94,6 @@ private lemma strictInterl_right_pair_of_common_root_factor
       (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
   grind
 
-/-- Repackage the affine family as a one-parameter positive-combination family
-for the shifted pair `(g + X * f, f)`. This is the natural shifted target for
-the affine converse: proving `StrictInterl f (g + X * f)` would reduce the original
-statement to the folklore subtraction step. -/
-private lemma posComboRealRooted_shifted_pair_of_affine_family
-    {f g : ℝ[X]}
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    PosComboRealRooted (g + X * f) f := by
-  intro lam μ hlam hμ
-  have hbase :
-      ((((C (1 : ℝ) * X + C (μ / lam)) * f) + g) ≠ 0 ∧
-        (((C (1 : ℝ) * X + C (μ / lam)) * f) + g).Splits) :=
-    haff zero_lt_one (by positivity)
-  have hscaled :
-      ((C lam * ((((C (1 : ℝ) * X + C (μ / lam)) * f) + g))) ≠ 0 ∧
-        (C lam * ((((C (1 : ℝ) * X + C (μ / lam)) * f) + g))).Splits) :=
-    isRealRooted_C_mul hbase.1 hbase.2 hlam.ne'
-  grind
-
-/-- Degree bookkeeping for the shifted affine pair `(g + X * f, f)`: the left
-member always has exact succ-degree over `f`. -/
 private lemma natDegree_shifted_pair_eq_succ_of_affine_family
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -142,81 +119,6 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
       natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         hg_eq hg_pos hXf_pos |>.trans hg_eq
     lia
-
-/-- Data package for the shifted affine pair `(g + X * f, f)`. This isolates
-the clean succ-degree positive-family reformulation of the affine converse. -/
-private lemma affine_family_shifted_pair_data
-    {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (haff :
-      ∀ {s t : ℝ}, 0 < s → 0 < t →
-        ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    PosComboRealRooted (g + X * f) f ∧
-    HasNonnegCoeffs (g + X * f) ∧
-    HasNonnegCoeffs f ∧
-    (g + X * f) ≠ 0 ∧
-    f ≠ 0 ∧
-    HasPosLeadingCoeff (g + X * f) ∧
-    HasPosLeadingCoeff f ∧
-    (g + X * f).natDegree = f.natDegree + 1 := by
-  have hshift_nonneg : HasNonnegCoeffs (g + X * f) :=
-    hgnn.add hfnn.X_mul
-  have hshift_ne : g + X * f ≠ 0 :=
-    add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-      hgnn hfnn.X_mul (mul_ne_zero X_ne_zero hf0)
-  refine
-    ⟨posComboRealRooted_shifted_pair_of_affine_family haff,
-      hshift_nonneg, hfnn, hshift_ne, hf0,
-      hshift_nonneg.pos_leadingCoeff hshift_ne,
-      hfnn.pos_leadingCoeff hf0,
-      natDegree_shifted_pair_eq_succ_of_affine_family hf0 hg0 hfnn hgnn haff⟩
-
-private lemma common_shifted_pair_iff_common_fg
-    {f g : ℝ[X]} :
-    (∃ r, (g + X * f).IsRoot r ∧ f.IsRoot r) ↔
-      ∃ r, g.IsRoot r ∧ f.IsRoot r := by
-  constructor
-  · intro h
-    rcases h with ⟨r, hshift, hfr⟩
-    have hf_eval : f.eval r = 0 := by simp_all
-    have hshift_eval : (g + X * f).eval r = 0 := by simp_all
-    have hg_eval : g.eval r = 0 := by simp_all
-    exact ⟨r, by simp_all, hfr⟩
-  · intro h
-    rcases h with ⟨r, hgr, hfr⟩
-    have hf_eval : f.eval r = 0 := by simp_all
-    have hg_eval : g.eval r = 0 := by simp_all
-    refine ⟨r, ?_, hfr⟩
-    simp [Polynomial.IsRoot.def, eval_add, eval_mul, eval_X, hf_eval, hg_eval]
-
-private lemma no_common_shifted_pair_of_no_common
-    {f g : ℝ[X]}
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
-    ∀ r, f.IsRoot r → ¬ (g + X * f).IsRoot r := by
-  simp_all
-
-private lemma not_reverseStrictInterl_of_shifted_pair_succDegree
-    {f s : ℝ[X]}
-    (hdeg : s.natDegree = f.natDegree + 1) :
-    ¬ StrictInterl s f := by
-  intro h
-  rcases h with ⟨hs, hf, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = s.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hs.2]
-  have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
-  lia
-
-private lemma strictInterl_shifted_pair_of_strictInterl_or_reverse
-    {f g : ℝ[X]}
-    (h : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f)
-    (hdeg : (g + X * f).natDegree = f.natDegree + 1) :
-    StrictInterl f (g + X * f) := by
-  rcases h with hfg | hgf
-  · lia
-  · exact False.elim (not_reverseStrictInterl_of_shifted_pair_succDegree hdeg hgf)
 
 private lemma strictInterl_of_strictInterl_shifted_pair_sameDegree
     {f g : ℝ[X]}
@@ -262,9 +164,9 @@ private lemma strictInterl_of_strictInterl_shifted_pair_sameDegree
     simp_all
   have hscaled : StrictInterl (C a * f) (C a * (g + X * f)) :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left h ha_ne) ha_ne
-  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_nonneg_coeffs hf.2 hfnn
+  have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
   have hshift_nonpos : ∀ r ∈ (g + X * f).roots, r ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hshift.2 hshift_nonneg
+    roots_nonpos_of_hasNonnegCoeffs hshift_nonneg
   have hinterl :
       Interl (C a * f) (C a * (g + X * f) - X * (C a * f)) := by
     have hdeg_scaled : (C a * f).natDegree + 1 = (C a * (g + X * f)).natDegree := by
@@ -307,7 +209,7 @@ private lemma strictInterl_right_pair_of_strictInterl_shifted_pair_sameDegree
     (hgnn : HasNonnegCoeffs g)
     (hdeg : g.natDegree = f.natDegree) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (strictInterl_of_strictInterl_shifted_pair_sameDegree h hf0 hg0 hfnn hgnn hdeg)
     hfnn hgnn
 
@@ -377,7 +279,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
         hXf_rr hshift_deg hno_shift
     have hstrictInterl_or : StrictInterl f (g + X * f) ∨ StrictInterl (g + X * f) f :=
       strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hshift_rr.1 hshift_rr.2
-        (allComboRealRooted_comm hall_shift) (Or.inl hshift_deg.symm)
+        (hall_shift.comm) (Or.inl hshift_deg.symm)
     have hstrictInterl_f_shift : StrictInterl f (g + X * f) :=
       StrictInterl.forward_of_orientation_of_succDegree hshift_deg hstrictInterl_or
     exact
@@ -393,10 +295,10 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree_core
         hf0 hg0 hfnn hgnn haff hXf_rr hsucc hno_fg_fun
     have hstrictInterl_or : StrictInterl f g ∨ StrictInterl g f :=
       strictInterl_of_allComboRealRooted hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
-        (allComboRealRooted_comm hall) (Or.inl hsucc.symm)
+        (hall.comm) (Or.inl hsucc.symm)
     have hstrictInterl_fg : StrictInterl f g :=
       StrictInterl.forward_of_orientation_of_succDegree hsucc hstrictInterl_or
-    exact strictInterl_to_strictInterl_mul_X_of_nonneg hstrictInterl_fg hfnn hgnn
+    exact strictInterl_mul_X_of_strictInterl_of_nonneg hstrictInterl_fg hfnn hgnn
 
 private lemma strictInterl_right_pair_of_affine_family_high_degree
     {f g : ℝ[X]}
@@ -564,7 +466,7 @@ theorem strictInterl_right_pair_of_affine_family_nonneg
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
     StrictInterl g (X * f) :=
-  strictInterl_to_strictInterl_mul_X_of_nonneg
+  strictInterl_mul_X_of_strictInterl_of_nonneg
     (strictInterl_of_affine_family_nonneg hf0 hg0 hfnn hgnn haff)
     hfnn hgnn
 

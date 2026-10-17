@@ -16,6 +16,14 @@ nonnegative coefficients. We put `A k = D k + U k`, `W k = X * D k + U k`, and
 the recursion of the paper produces the next-level family
 `D⁺ k = S k = ∑_{j < k} A j` and `U⁺ k = T k = ∑_{j ≥ k} W j`.
 
+## Scope
+
+The index `k` records only the first entry refinement. This file does not
+formalize the separate two-endpoint refinement `D_{k,l}`, `U_{k,l}` by first
+and last entries. That experimental route has computational counterexamples to
+its forward (UU) condition; this does not contradict forward (UU) for the
+aggregated one-index family `D_k`, `U_k` formalized here.
+
 The six interlacing conditions (DU), (UU), (AW), reversed (DD), reversed (AA)
 and (WW) of Theorem `thm:peak_rr_ferrers` are bundled in
 `PeakFamily.Conditions`. All interlacings are zero-aware (`Interl`), matching

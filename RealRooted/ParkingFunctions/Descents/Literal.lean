@@ -20,33 +20,27 @@ noncomputable section
 of size `m`.  The empty word has weight one. -/
 def literalWordDescentPolynomial (m : ℕ) : ℕ → ℝ[X]
   | 0 => 1
-  | n + 1 => descentGeneratingPolynomial (R := ℝ)
-      (Finset.univ : Finset (Fin (n + 1) → Fin m))
+  | n + 1 => (Finset.univ : Finset (Fin (n + 1) → Fin m)).genPoly
+      fun w => (List.ofFn w).descentCount
 
 @[simp]
 theorem literalWordDescentPolynomial_zero (m : ℕ) :
     literalWordDescentPolynomial m 0 = 1 := rfl
 
 @[simp]
-theorem descentNumber_fin_one (m : ℕ) (w : Fin 1 → Fin m) :
-    descentNumber w = 0 := by
-  unfold descentNumber descentSet
-  simp
-
-@[simp]
 theorem literalWordDescentPolynomial_one (m : ℕ) :
     literalWordDescentPolynomial m 1 = C (m : ℝ) := by
-  simp [literalWordDescentPolynomial, descentGeneratingPolynomial]
+  simp [literalWordDescentPolynomial, Finset.genPoly]
 
 /-- The literal all-word descent enumerator with fixed final letter, encoded
 in reverse order to match the threshold-matrix recurrence. -/
 def literalWordDescentRefined (m r : ℕ) (i : Fin m) : ℝ[X] :=
-  ∑ w : Fin r → Fin m, X ^ descentNumber (Fin.snoc w i.rev)
+  ∑ w : Fin r → Fin m, X ^ (List.ofFn (Fin.snoc w i.rev)).descentCount
 
 @[simp]
 theorem literalWordDescentRefined_zero (m : ℕ) (i : Fin m) :
     literalWordDescentRefined m 0 i = 1 := by
-  simp [literalWordDescentRefined, descentNumber_fin_one]
+  simp [literalWordDescentRefined]
 
 /-- Splitting the penultimate letter gives the reversed-last-letter threshold
 recurrence for the literal refined enumerators. -/
@@ -55,24 +49,24 @@ theorem literalWordDescentRefined_succ (m r : ℕ) (i : Fin m) :
       ∑ j : Fin m, (if j < i then X else 1) * literalWordDescentRefined m r j := by
   unfold literalWordDescentRefined
   rw [show (∑ w : Fin (r + 1) → Fin m,
-      (X : ℝ[X]) ^ descentNumber (Fin.snoc w i.rev)) =
+      (X : ℝ[X]) ^ (List.ofFn (Fin.snoc w i.rev)).descentCount) =
       ∑ x : Fin m, ∑ w : Fin r → Fin m,
-        X ^ descentNumber (Fin.snoc (Fin.snoc w x) i.rev) by
+        X ^ (List.ofFn (Fin.snoc (Fin.snoc w x) i.rev)).descentCount by
     symm
     simpa only [Fintype.sum_prod_type] using
       Fintype.sum_equiv (Fin.snocEquiv fun _ => Fin m)
-        (fun x => X ^ descentNumber (Fin.snoc (Fin.snoc x.2 x.1) i.rev)) _
+        (fun x => X ^ (List.ofFn (Fin.snoc (Fin.snoc x.2 x.1) i.rev)).descentCount) _
         (fun _ => rfl)]
   have hrev : (∑ x : Fin m, ∑ w : Fin r → Fin m,
-      (X : ℝ[X]) ^ descentNumber (Fin.snoc (Fin.snoc w x) i.rev)) =
+      (X : ℝ[X]) ^ (List.ofFn (Fin.snoc (Fin.snoc w x) i.rev)).descentCount) =
       ∑ j : Fin m, ∑ w : Fin r → Fin m,
-        (X : ℝ[X]) ^ descentNumber (Fin.snoc (Fin.snoc w j.rev) i.rev) := by
+        (X : ℝ[X]) ^ (List.ofFn (Fin.snoc (Fin.snoc w j.rev) i.rev)).descentCount := by
     symm
     exact Fintype.sum_equiv Fin.revPerm
       (fun j => ∑ w : Fin r → Fin m,
-        (X : ℝ[X]) ^ descentNumber (Fin.snoc (Fin.snoc w j.rev) i.rev))
+        (X : ℝ[X]) ^ (List.ofFn (Fin.snoc (Fin.snoc w j.rev) i.rev)).descentCount)
       (fun x => ∑ w : Fin r → Fin m,
-        (X : ℝ[X]) ^ descentNumber (Fin.snoc (Fin.snoc w x) i.rev))
+        (X : ℝ[X]) ^ (List.ofFn (Fin.snoc (Fin.snoc w x) i.rev)).descentCount)
       (fun _ => rfl)
   rw [hrev]
   simp_rw [descentWeight_snoc]
@@ -86,22 +80,22 @@ refinement. -/
 theorem literalWordDescentPolynomial_succ (m r : ℕ) :
     literalWordDescentPolynomial m (r + 1) =
       ∑ i : Fin m, literalWordDescentRefined m r i := by
-  unfold literalWordDescentPolynomial descentGeneratingPolynomial literalWordDescentRefined
-  change (∑ w : Fin (r + 1) → Fin m, (X : ℝ[X]) ^ descentNumber w) = _
-  rw [show (∑ w : Fin (r + 1) → Fin m, (X : ℝ[X]) ^ descentNumber w) =
+  unfold literalWordDescentPolynomial Finset.genPoly literalWordDescentRefined
+  change (∑ w : Fin (r + 1) → Fin m, (X : ℝ[X]) ^ (List.ofFn w).descentCount) = _
+  rw [show (∑ w : Fin (r + 1) → Fin m, (X : ℝ[X]) ^ (List.ofFn w).descentCount) =
       ∑ x : Fin m, ∑ w : Fin r → Fin m,
-        X ^ descentNumber (Fin.snoc w x) by
+        X ^ (List.ofFn (Fin.snoc w x)).descentCount by
     symm
     simpa only [Fintype.sum_prod_type] using
       Fintype.sum_equiv (Fin.snocEquiv fun _ => Fin m)
-        (fun x => (X : ℝ[X]) ^ descentNumber (Fin.snoc x.2 x.1)) _
+        (fun x => (X : ℝ[X]) ^ (List.ofFn (Fin.snoc x.2 x.1)).descentCount) _
         (fun _ => rfl)]
   symm
   exact Fintype.sum_equiv Fin.revPerm
     (fun i => ∑ w : Fin r → Fin m,
-      (X : ℝ[X]) ^ descentNumber (Fin.snoc w i.rev))
+      (X : ℝ[X]) ^ (List.ofFn (Fin.snoc w i.rev)).descentCount)
     (fun x => ∑ w : Fin r → Fin m,
-      (X : ℝ[X]) ^ descentNumber (Fin.snoc w x))
+      (X : ℝ[X]) ^ (List.ofFn (Fin.snoc w x)).descentCount)
     (fun _ => rfl)
 
 end

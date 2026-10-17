@@ -55,34 +55,12 @@ theorem ordinaryRunSeries_mul_one_sub {R : Type*} [CommRing R] (a : R) :
     simpa [map_sub, PowerSeries.rescale_X] using h]
   simp
 
-/-- Product of the letter weights along a finite word. -/
-def wordWeight {R : Type*} [CommSemiring R] {m n : ℕ}
-    (weight : Fin m → R) (word : Fin n → Fin m) : R :=
-  ∏ i, weight (word i)
-
-@[simp]
-theorem wordWeight_zero {R : Type*} [CommSemiring R] {m : ℕ}
-    (weight : Fin m → R) (word : Fin 0 → Fin m) :
-    wordWeight weight word = 1 := by
-  simp [wordWeight]
-
-@[simp]
-theorem wordWeight_snoc {R : Type*} [CommSemiring R] {m n : ℕ}
-    (weight : Fin m → R) (word : Fin n → Fin m) (i : Fin m) :
-    wordWeight weight (Fin.snoc word i) =
-      wordWeight weight word * weight i := by
-  unfold wordWeight
-  simpa using
-    (Fin.prod_univ_castSucc
-      (fun j : Fin (n + 1) =>
-        weight (@Fin.snoc n (fun _ => Fin m) word i j)))
-
 /-- The literal weighted descent polynomial over all finite words. -/
 def weightedWordPolynomial {R : Type*} [CommSemiring R] {m : ℕ}
     (weight : Fin m → R) (n : ℕ) : R[X] :=
   ∑ word : Fin n → Fin m,
     C (wordWeight weight word) *
-      X ^ RealRooted.ParkingFunctions.wordDescentNumber word
+      X ^ (List.ofFn word).descentCount
 
 @[simp]
 theorem weightedWordPolynomial_zero {R : Type*} [CommSemiring R]
@@ -95,7 +73,7 @@ letter. -/
 def weightedWordEndingSummand {R : Type*} [CommSemiring R] {m n : ℕ}
     (weight : Fin m → R) (word : Fin n → Fin m) (i : Fin m) : R[X] :=
   C (wordWeight weight (Fin.snoc word i)) *
-    X ^ RealRooted.ParkingFunctions.wordDescentNumber (Fin.snoc word i)
+    X ^ (List.ofFn (Fin.snoc word i)).descentCount
 
 /-- Weighted ordinary words with a prescribed final letter. The index counts
 the letters preceding that final letter. -/
@@ -118,8 +96,7 @@ theorem weightedWordEndingSummand_snoc {R : Type*} [CommSemiring R]
         weightedWordEndingSummand weight word j := by
   classical
   unfold weightedWordEndingSummand
-  rw [wordWeight_snoc,
-    RealRooted.ParkingFunctions.wordDescentNumber_snoc]
+  rw [wordWeight_snoc, List.descentCount_ofFn_snoc]
   simp only [Fin.snoc_last]
   by_cases hij : i < j
   · rw [ite_eq_left hij, ite_eq_left hij, pow_succ]
@@ -209,7 +186,7 @@ theorem weightedWordPolynomial_succ {R : Type*} [CommSemiring R] {m : ℕ}
   unfold weightedWordPolynomial
   rw [show (∑ word : Fin (n + 1) → Fin m,
       C (wordWeight weight word) *
-        X ^ RealRooted.ParkingFunctions.wordDescentNumber word) =
+        X ^ (List.ofFn word).descentCount) =
       ∑ i : Fin m, ∑ word : Fin n → Fin m,
         weightedWordEndingSummand weight word i by
     symm
@@ -218,11 +195,10 @@ theorem weightedWordPolynomial_succ {R : Type*} [CommSemiring R] {m : ℕ}
       Fintype.sum_equiv (Fin.snocEquiv fun _ => Fin m)
         (fun pair : Fin m × (Fin n → Fin m) =>
           C (wordWeight weight (Fin.snoc pair.2 pair.1)) *
-            X ^ RealRooted.ParkingFunctions.wordDescentNumber
-              (Fin.snoc pair.2 pair.1))
+            X ^ (List.ofFn (Fin.snoc pair.2 pair.1)).descentCount)
         (fun word : Fin (n + 1) → Fin m =>
           C (wordWeight weight word) *
-            X ^ RealRooted.ParkingFunctions.wordDescentNumber word)
+            X ^ (List.ofFn word).descentCount)
         (fun _ => rfl)]
   apply Fintype.sum_congr
   intro i

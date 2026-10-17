@@ -54,6 +54,16 @@ theorem binaryRunTransform_smul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
     binaryRunTransform n (a • p) = C a * binaryRunTransform n p := by
   simp [binaryRunTransform, Polynomial.basisTransform_smul]
 
+/-- The binary-run transform as a real-linear map. -/
+def binaryRunTransformLinearMap (n : ℕ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
+  toFun := binaryRunTransform n
+  map_add' := binaryRunTransform_add n
+  map_smul' a p := by
+    simpa [Polynomial.smul_eq_C_mul] using binaryRunTransform_smul n a p
+
+@[simp] theorem binaryRunTransformLinearMap_apply (n : ℕ) (p : ℝ[X]) :
+    binaryRunTransformLinearMap n p = binaryRunTransform n p := rfl
+
 @[simp] theorem binaryRunTransform_one (n : ℕ) :
     binaryRunTransform n 1 = 1 := by
   simpa [binaryRunTransform] using

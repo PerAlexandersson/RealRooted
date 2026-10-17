@@ -1,6 +1,8 @@
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Basic.Real.Basic
+import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 
 open Polynomial
 
@@ -15,11 +17,8 @@ its real-rootedness consequences are deliberately separate work.
 
 namespace RealRooted.ParkingFunctions
 
-/-- A zero-based word is a parking function when, for every prefix of the
-alphabet, at least that many entries lie in the prefix. -/
-def IsParkingFunction {n : ℕ} (w : Fin n → Fin n) : Prop :=
-  ∀ k : ℕ, k ≤ n →
-    k ≤ (Finset.univ.filter fun i => (w i).val < k).card
+open ParkingFunction (IsParkingFunction parkingFunctions mem_parkingFunctions_iff
+  isParkingFunction_iff_prefix)
 
 /-- The all-zero word, defined uniformly even at length zero. -/
 def zeroParkingWord (n : ℕ) : Fin n → Fin n := fun i =>
@@ -28,6 +27,7 @@ def zeroParkingWord (n : ℕ) : Fin n → Fin n := fun i =>
 /-- The all-zero word is a parking function. -/
 theorem zeroParkingWord_isParkingFunction (n : ℕ) :
     IsParkingFunction (zeroParkingWord n) := by
+  rw [isParkingFunction_iff_prefix]
   intro k hk
   by_cases hk0 : k = 0
   · simp [hk0]
@@ -40,16 +40,6 @@ theorem zeroParkingWord_isParkingFunction (n : ℕ) :
       simpa [zeroParkingWord] using hkpos
     rw [hfilter, Finset.card_univ]
     simpa using hk
-
-/-- The finite set of zero-based parking-function words of length `n`. -/
-noncomputable def parkingFunctions (n : ℕ) : Finset (Fin n → Fin n) := by
-  classical
-  exact Finset.univ.filter IsParkingFunction
-
-@[simp]
-theorem mem_parkingFunctions_iff {n : ℕ} {w : Fin n → Fin n} :
-    w ∈ parkingFunctions n ↔ IsParkingFunction w := by
-  simp [parkingFunctions]
 
 theorem zeroParkingWord_mem_parkingFunctions (n : ℕ) :
     zeroParkingWord n ∈ parkingFunctions n :=
@@ -126,11 +116,6 @@ theorem descentSet_snoc {n : ℕ} {α : Type*} [LT α]
     · simp [h]
     · simp [h]
 
-/-- Number of descents of a finite word. -/
-def descentNumber {n : ℕ} {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) : ℕ :=
-  (descentSet w).card
-
 /-- The descent set of a finite word, including the empty word. -/
 def wordDescentSet {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] :
@@ -148,80 +133,28 @@ theorem wordDescentSet_succ {n : ℕ} {α : Type*} [LT α]
     [DecidableRel (fun a b : α => a < b)] (word : Fin (n + 1) → α) :
     wordDescentSet word = descentSet word := rfl
 
-/-- Number of descents of a finite word, including the empty word. -/
-def wordDescentNumber {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] :
-    {n : ℕ} → (Fin n → α) → ℕ
-  | 0, _ => 0
-  | _ + 1, word => descentNumber word
-
-@[simp]
-theorem wordDescentNumber_zero {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (word : Fin 0 → α) :
-    wordDescentNumber word = 0 := by
-  simp [wordDescentNumber]
-
-@[simp]
-theorem wordDescentNumber_one {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (word : Fin 1 → α) :
-    wordDescentNumber word = 0 := by
-  simp [wordDescentNumber, descentNumber, descentSet]
-
-/-- Appending a final letter increments the descent number precisely when it
-is smaller than the old final letter. -/
-theorem descentNumber_snoc {n : ℕ} {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) (x : α) :
-    descentNumber (Fin.snoc w x) =
-      descentNumber w + if x < w (Fin.last n) then 1 else 0 := by
-  unfold descentNumber
-  rw [descentSet_snoc]
-  by_cases h : x < w (Fin.last n)
-  · rw [ite_eq_left h]
-    have hdisjoint : Disjoint ((descentSet w).map Fin.castSuccEmb) {Fin.last n} := by
-      rw [Finset.disjoint_singleton_right]
-      simp
-    rw [Finset.card_union_of_disjoint hdisjoint, Finset.card_map,
-      Finset.card_singleton]
-    simp [h]
-  · rw [ite_eq_right h]
-    simp [h]
-
-@[simp]
-theorem wordDescentNumber_snoc {n : ℕ} {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)]
-    (word : Fin (n + 1) → α) (x : α) :
-    wordDescentNumber (Fin.snoc word x) =
-      wordDescentNumber word +
-        if x < word (Fin.last n) then 1 else 0 := by
-  simpa only [wordDescentNumber] using descentNumber_snoc word x
+/-- The Fin-indexed descent set has as many elements as the canonical descent set of the word
+(`List.descentSet_ofFn`). -/
+theorem card_descentSet {n : ℕ} {α : Type*} [LinearOrder α] (w : Fin (n + 1) → α) :
+    (descentSet w).card = (List.ofFn w).descentCount := by
+  rw [List.descentCount, List.descentSet_ofFn, Finset.card_map]
+  rfl
 
 /-- Appending a letter multiplies the descent monomial by `X` precisely when
 it creates the new final descent. -/
 theorem descentWeight_snoc {R : Type*} [Semiring R] {n : ℕ}
     (w : Fin (n + 1) → Fin m) (x : Fin m) :
-    (X : R[X]) ^ descentNumber (Fin.snoc w x) =
-      (if x < w (Fin.last n) then X else 1) * X ^ descentNumber w := by
-  rw [descentNumber_snoc]
+    (X : R[X]) ^ (List.ofFn (Fin.snoc w x : Fin (n + 2) → Fin m)).descentCount =
+      (if x < w (Fin.last n) then X else 1) * X ^ (List.ofFn w).descentCount := by
+  rw [List.descentCount_ofFn_snoc]
   by_cases h : x < w (Fin.last n)
   · simp only [ite_eq_left h, pow_succ]
     rw [Polynomial.X_mul]
   · simp [h]
 
-theorem descentNumber_le {n : ℕ} {α : Type*} [LT α]
-    [DecidableRel (fun a b : α => a < b)] (w : Fin (n + 1) → α) :
-    descentNumber w ≤ n := by
-  change (descentSet w).card ≤ n
-  simpa using Finset.card_le_card (Finset.subset_univ (descentSet w))
-
-/-- The descent generating polynomial of a finite family of words. -/
-noncomputable def descentGeneratingPolynomial {R : Type*} [Semiring R] {n : ℕ} {α : Type*}
-    [LT α] [DecidableRel (fun a b : α => a < b)]
-    (words : Finset (Fin (n + 1) → α)) : R[X] :=
-  ∑ w ∈ words, X ^ descentNumber w
-
 /-- The descent generating polynomial of zero-based parking functions. -/
 noncomputable def parkingDescentPolynomial : ℕ → ℝ[X]
   | 0 => 1
-  | n + 1 => descentGeneratingPolynomial (R := ℝ) (parkingFunctions (n + 1))
+  | n + 1 => (parkingFunctions (n + 1)).genPoly fun w => (List.ofFn w).descentCount
 
 end RealRooted.ParkingFunctions

@@ -10,6 +10,7 @@ import RealRooted.PolyaFrequencyConvolution.Basic
 version = 1
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
+formalized = "2026-10-05"
 authors = ["Aissen", "Schoenberg", "Whitney"]
 years = [1952]
 
@@ -25,7 +26,7 @@ label = "Pólya frequency sequence"
 
 [[definitions]]
 name = "RealRooted.natCauchyConvolution"
-module = "RealRooted.PolyaFrequencyConvolution.Basic"
+module = "RealRooted.NatCauchyConvolution"
 label = "Cauchy convolution of sequences"
 
 [[theorems]]
@@ -72,11 +73,6 @@ their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. The sequences may be
 infinite. Equivalently, if the formal power series $F$ and $G$ have Pólya
 frequency coefficient sequences, then so does $FG$.
 
-The proof uses Karlin's sector estimate (*Total Positivity*, Chapter 8,
-Theorem 3.1). If $p$ has degree $d \geq 1$, $p(0) > 0$ and a Pólya-frequency
-coefficient sequence, then every complex zero $z$ of $p$ satisfies
-$|\arg z| \geq k\pi / (k + d - 1)$ for every $k \geq 1$.
-
 ## Proof idea
 
 The Toeplitz matrix of the convolution is the product of the two Toeplitz
@@ -88,7 +84,7 @@ totally nonnegative matrices is totally nonnegative.
 
 M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
 of totally positive sequences. I,” *Journal d’Analyse Mathématique* 2 (1952),
-93–103.  See the
+93–103, [doi:10.1007/BF02786970](https://doi.org/10.1007/BF02786970). See the
 [Pólya-frequency overview on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney).
 <!-- /realrooted-catalog-content -->
 

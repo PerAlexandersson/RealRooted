@@ -31,7 +31,7 @@ theorem exists_neg_root_upper_bound_of_nonneg_of_coeff_zero_ne {g : ℝ[X]}
   obtain ⟨r0, hr0_root, hr0_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg0 hg hdeg
   have hr0_mem : r0 ∈ g.roots := (mem_roots hg0).mpr hr0_root
-  have hr0_le : r0 ≤ 0 := roots_nonpos_of_nonneg_coeffs hg hgnn r0 hr0_mem
+  have hr0_le : r0 ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn r0 hr0_mem
   have hr0_ne : r0 ≠ 0 := by
     intro h0
     apply hgc0
@@ -96,7 +96,7 @@ theorem not_strictInterl_X_sq_mul_derivative_right {f g : ℝ[X]}
   have huR_mem : uR ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr huR_root
   have huR_le : uR ≤ 0 :=
-    roots_nonpos_of_nonneg_coeffs hXf_splits hXf_nn uR huR_mem
+    roots_nonpos_of_hasNonnegCoeffs hXf_nn uR huR_mem
   have hzero_root : (X ^ 2 * f.derivative).IsRoot 0 := by simp [IsRoot]
   have hzero_mem : (0 : ℝ) ∈ (X ^ 2 * f.derivative).roots :=
     (mem_roots hXf_ne).mpr hzero_root

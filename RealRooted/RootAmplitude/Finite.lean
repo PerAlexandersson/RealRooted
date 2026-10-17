@@ -24,7 +24,7 @@ variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
 variable (g : ℕ → K)
 
 /-- The normalized amplitude at the `k`-th member of a finite positive sequence. -/
-def amp (n k : ℕ) : K :=
+def amplitude (n k : ℕ) : K :=
   ∏ j ∈ (range n).erase k, |1 - g k / g j|
 
 /-- The product of distances from the `k`-th member to the others. -/
@@ -32,9 +32,9 @@ def gapProd (n k : ℕ) : K :=
   ∏ j ∈ (range n).erase k, |g k - g j|
 
 /-- Clearing denominators turns the amplitude product into the distance product. -/
-theorem amp_mul_prod (n k : ℕ) (hpositive : ∀ i, 0 < g i) :
-    amp g n k * ∏ j ∈ (range n).erase k, g j = gapProd g n k := by
-  rw [amp, gapProd, ← Finset.prod_mul_distrib]
+theorem amplitude_mul_prod (n k : ℕ) (hpositive : ∀ i, 0 < g i) :
+    amplitude g n k * ∏ j ∈ (range n).erase k, g j = gapProd g n k := by
+  rw [amplitude, gapProd, ← Finset.prod_mul_distrib]
   refine Finset.prod_congr rfl ?_
   intro j _
   have hj : 0 < g j := hpositive j
@@ -52,23 +52,23 @@ theorem prod_erase (n k : ℕ) (hindex : k < n) :
   exact Finset.mul_prod_erase _ _ (Finset.mem_range.mpr hindex)
 
 /-- The amplitude in closed form, up to multiplication by the root product. -/
-theorem amp_eq (n k : ℕ) (hindex : k < n) (hpositive : ∀ i, 0 < g i) :
-    amp g n k * ∏ j ∈ range n, g j = g k * gapProd g n k := by
-  rw [← prod_erase g n k hindex, ← mul_assoc, amp_mul_prod g n k hpositive, mul_comm]
+theorem amplitude_eq (n k : ℕ) (hindex : k < n) (hpositive : ∀ i, 0 < g i) :
+    amplitude g n k * ∏ j ∈ range n, g j = g k * gapProd g n k := by
+  rw [← prod_erase g n k hindex, ← mul_assoc, amplitude_mul_prod g n k hpositive, mul_comm]
 
 /-- Amplitude monotonicity is equivalent to a comparison of distance products. -/
-theorem amp_le_amp_iff (n k : ℕ) (hindex : k < n) (hnext : k + 1 < n)
+theorem amplitude_le_amplitude_iff (n k : ℕ) (hindex : k < n) (hnext : k + 1 < n)
     (hpositive : ∀ i, 0 < g i) :
-    amp g n k ≤ amp g n (k + 1)
+    amplitude g n k ≤ amplitude g n (k + 1)
       ↔ g k * gapProd g n k ≤ g (k + 1) * gapProd g n (k + 1) := by
   have hproduct : 0 < ∏ j ∈ range n, g j :=
     Finset.prod_pos (fun j _ => hpositive j)
   constructor
   · intro h
-    rw [← amp_eq g n k hindex hpositive, ← amp_eq g n (k + 1) hnext hpositive]
+    rw [← amplitude_eq g n k hindex hpositive, ← amplitude_eq g n (k + 1) hnext hpositive]
     exact mul_le_mul_of_nonneg_right h (le_of_lt hproduct)
   · intro h
-    rw [← amp_eq g n k hindex hpositive, ← amp_eq g n (k + 1) hnext hpositive] at h
+    rw [← amplitude_eq g n k hindex hpositive, ← amplitude_eq g n (k + 1) hnext hpositive] at h
     exact le_of_mul_le_mul_right h hproduct
 
 /-- Removing an in-range index splits a finite range into its lower and upper
@@ -122,12 +122,12 @@ theorem prod_Ico_split (n k : ℕ) (hnext : k + 1 < n) :
   lia
 
 /-- A core comparison of normalized distances implies amplitude monotonicity. -/
-theorem amp_le_amp_of_core (hpositive : ∀ i, 0 < g i) (hstrict : StrictMono g)
+theorem amplitude_le_amplitude_of_core (hpositive : ∀ i, 0 < g i) (hstrict : StrictMono g)
     (n k : ℕ) (hnext : k + 1 < n)
     (hcore : ∏ j ∈ Ico (k + 2) n, (1 + (g (k + 1) - g k) / (g j - g (k + 1)))
       ≤ (1 + (g (k + 1) - g k) / g k)
           * ∏ j ∈ range k, (1 + (g (k + 1) - g k) / (g k - g j))) :
-    amp g n k ≤ amp g n (k + 1) := by
+    amplitude g n k ≤ amplitude g n (k + 1) := by
   have hindex : k < n := by lia
   set D : K := g (k + 1) - g k with hDdef
   have hD_positive : 0 < D := sub_pos.mpr (hstrict (Nat.lt_succ_self k))
@@ -164,7 +164,7 @@ theorem amp_le_amp_of_core (hpositive : ∀ i, 0 < g i) (hstrict : StrictMono g)
     field_simp
     rw [hDdef]
     ring
-  rw [amp_le_amp_iff g n k hindex hnext hpositive,
+  rw [amplitude_le_amplitude_iff g n k hindex hnext hpositive,
     gapProd_split g hstrict n k hindex, gapProd_split g hstrict n (k + 1) hnext,
     prod_Ico_split g n k hnext,
     show Ico (k + 1 + 1) n = Ico (k + 2) n from rfl,

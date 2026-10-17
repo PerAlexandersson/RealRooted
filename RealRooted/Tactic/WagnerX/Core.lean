@@ -2,6 +2,7 @@ import RealRooted.PosCombo
 import RealRooted.AffineFamily
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.Lookup
+import RealRooted.WagnerX.ProperPosition
 
 /-!
 # Wagner `X`-shift core
@@ -12,19 +13,6 @@ The basic Wagner bridge and derivative-gap recurrence backends.
 open Polynomial
 
 namespace RealRooted
-
-/-- Derivative-lag bridge for later mixed lag recurrences.
-
-If `f` is real-rooted with nonnegative coefficients, then `X * f'` is in
-proper position with `X * f`.  This packages derivative interlacing together
-with the Wagner common-`X` multiplication bridge. -/
-theorem strictInterl_X_mul_derivative_X_mul_self_of_splits_nonneg {f : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree)
-    (hfnn : HasNonnegCoeffs f) :
-    StrictInterl (X * f.derivative) (X * f) :=
-  StrictInterl.mul_X_both_of_nonneg
-    (derivative_interlaces_of_natDegree_ne_zero hf (by lia)).toStrictInterl hfnn.derivative hfnn
 
 /-- Wagner derivative-gap-lag step.
 

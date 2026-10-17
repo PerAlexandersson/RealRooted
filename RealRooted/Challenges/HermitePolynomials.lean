@@ -8,6 +8,7 @@ import RealRooted.Hermite.Roots
 version = 1
 section = "families"
 slug = "hermite-polynomials"
+formalized = "2026-09-07"
 
 [[definitions]]
 name = "RealRooted.hermiteReal"

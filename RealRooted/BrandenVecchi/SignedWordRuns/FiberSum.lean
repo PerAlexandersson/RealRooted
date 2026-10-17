@@ -357,7 +357,7 @@ theorem runSummand_runLengthDataOfAssignment
     (hlengths : IsSignedRunLengthAssignment skeleton lengths) :
     RunLengthData.runSummand weight
         (runLengthDataOfAssignment skeleton hskeleton lengths hlengths) =
-      X ^ listDescentNumber skeleton *
+      X ^ skeleton.descentCount *
         signedRunLengthSummand weight skeleton lengths := by
   rw [RunLengthData.runSummand,
     representatives_runLengthDataOfAssignment,
@@ -691,7 +691,7 @@ def signedExpansionIndexSummand
     (index : Σ k : ℕ,
       Σ _skeleton : Fin k → SignedLetter q p, Fin k →₀ ℕ) :
     R[X] :=
-  X ^ listDescentNumber (List.ofFn index.2.1) *
+  X ^ (List.ofFn index.2.1).descentCount *
     ∏ i,
       C (weight (index.2.1 i) ^ index.2.2 i) *
         (1 + X) ^ (index.2.2 i - 1)
@@ -740,7 +740,7 @@ theorem signedExpansionIndexSummand_compressedRunIndex
     (word : Fin n → SignedLetter q p) :
     signedExpansionIndexSummand weight (compressedRunIndex word) =
       C (signedWordWeight weight word) *
-        X ^ signedDescentNumber word *
+        X ^ (List.ofFn word).descentCount *
           (1 + X) ^ signedCollisionNumber word := by
   rw [signedWordSummand_eq_runSummand]
   exact (RunLengthData.runSummand_eq_expansionIndexSummand weight
@@ -853,7 +853,7 @@ def signedSmirnovSubstitutionCoeff
     (weight : SignedLetter q p → R) (n : ℕ) : R[X] :=
   ∑ k ∈ Finset.range (n + 1),
     ∑ skeleton ∈ signedSmirnovWords q p k,
-      X ^ listDescentNumber (List.ofFn skeleton) *
+      X ^ (List.ofFn skeleton).descentCount *
         PowerSeries.coeff n
           (signedTupleSkeletonRunSeries weight skeleton)
 

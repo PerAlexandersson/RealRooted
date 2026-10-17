@@ -8,6 +8,7 @@ import RealRooted.Transforms.BrandenE.IntervalPreserver
 version = 1
 section = "theorems"
 slug = "branden-e-transform"
+formalized = "2026-09-14"
 authors = ["Brändén"]
 years = [2006]
 
@@ -93,7 +94,7 @@ combination of an interlacing sequence is real-rooted.
 
 P. Brändén, “On linear transformations preserving the Pólya frequency
 property,” *Transactions of the American Mathematical Society* 358 (2006),
-3697–3716.
+3697–3716, [doi:10.1090/S0002-9947-06-03856-6](https://doi.org/10.1090/S0002-9947-06-03856-6).
 The ordered Bell numbers are [OEIS A000670](https://oeis.org/A000670).
 <!-- /realrooted-catalog-content -->
 

@@ -40,23 +40,48 @@ hence `A *ᵥ v = 0`, so *every* specialization is singular.
 
 variable {m sigma : Type*} [Fintype m] [DecidableEq m] [Fintype sigma]
 
-/-- The determinant of the affine matrix pencil `A + ∑ i, X i • B i`, as a
-multivariate polynomial. -/
-def detPencil (A : Matrix m m ℂ) (B : sigma → Matrix m m ℂ) : MvPolynomial sigma ℂ :=
+/-- The coefficient-ring-polymorphic determinant of an affine matrix pencil. -/
+def mvDetPencil {R : Type*} [CommRing R]
+    (A : Matrix m m R) (B : sigma → Matrix m m R) : MvPolynomial sigma R :=
   Matrix.det fun i j => C (A i j) + ∑ k : sigma, X k * C (B k i j)
 
-/-- Evaluating the pencil determinant is the determinant of the evaluated
-pencil. -/
-theorem eval_detPencil (A : Matrix m m ℂ) (B : sigma → Matrix m m ℂ) (z : sigma → ℂ) :
-    MvPolynomial.eval z (detPencil A B) = (A + ∑ k : sigma, z k • B k).det := by
+/-- The determinant of the affine matrix pencil `A + ∑ i, X i • B i`, as a
+multivariate polynomial. -/
+abbrev detPencil (A : Matrix m m ℂ) (B : sigma → Matrix m m ℂ) : MvPolynomial sigma ℂ :=
+  mvDetPencil A B
+
+/-- Evaluating a pencil determinant is the determinant of the evaluated pencil. -/
+theorem eval_mvDetPencil {R : Type*} [CommRing R]
+    (A : Matrix m m R) (B : sigma → Matrix m m R) (z : sigma → R) :
+    MvPolynomial.eval z (mvDetPencil A B) = (A + ∑ k : sigma, z k • B k).det := by
   classical
-  unfold detPencil
+  unfold mvDetPencil
   erw [RingHom.map_det]
   congr 1
   apply Matrix.ext
   intro i j
   change MvPolynomial.eval z (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
   simp [Matrix.add_apply, Matrix.sum_apply, Matrix.smul_apply, mul_comm]
+
+/-- Mapping a pencil determinant maps both its constant and linear matrices. -/
+theorem map_mvDetPencil {R S : Type*} [CommRing R] [CommRing S]
+    (f : R →+* S) (A : Matrix m m R) (B : sigma → Matrix m m R) :
+    MvPolynomial.map f (mvDetPencil A B) =
+      mvDetPencil (A.map f) (fun k => (B k).map f) := by
+  classical
+  unfold mvDetPencil
+  erw [RingHom.map_det]
+  congr 1
+  apply Matrix.ext
+  intro i j
+  change MvPolynomial.map f (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
+  simp [map_sum]
+
+/-- Evaluating the pencil determinant is the determinant of the evaluated
+pencil. -/
+theorem eval_detPencil (A : Matrix m m ℂ) (B : sigma → Matrix m m ℂ) (z : sigma → ℂ) :
+    MvPolynomial.eval z (detPencil A B) = (A + ∑ k : sigma, z k • B k).det :=
+  eval_mvDetPencil A B z
 
 omit [DecidableEq m] in
 /-- The evaluated pencil applied to a vector, expanded. -/
@@ -187,23 +212,21 @@ theorem isHermitian_map_ofReal {A : Matrix m m ℝ} (hA : A.IsHermitian) :
   hA.map _ fun r => by simp
 
 /-- The real affine pencil determinant. -/
-def realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) : MvPolynomial sigma ℝ :=
-  Matrix.det fun i j => C (A i j) + ∑ k : sigma, X k * C (B k i j)
+abbrev realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) : MvPolynomial sigma ℝ :=
+  mvDetPencil A B
+
+/-- Evaluating the real pencil determinant is the determinant of the evaluated pencil. -/
+theorem eval_realDetPencil
+    (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) (z : sigma → ℝ) :
+    MvPolynomial.eval z (realDetPencil A B) = (A + ∑ k : sigma, z k • B k).det :=
+  eval_mvDetPencil A B z
 
 /-- Complexifying the real pencil determinant gives the complex pencil
 determinant of the complexified data. -/
 theorem complexifyMv_realDetPencil (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ) :
     complexifyMv (realDetPencil A B)
-      = detPencil (A.map (Complex.ofReal)) (fun k => (B k).map (Complex.ofReal)) := by
-  classical
-  unfold complexifyMv realDetPencil detPencil
-  erw [RingHom.map_det]
-  congr 1
-  apply Matrix.ext
-  intro i j
-  change MvPolynomial.map Complex.ofRealHom
-    (C (A i j) + ∑ k : sigma, X k * C (B k i j)) = _
-  simp [map_sum]
+      = detPencil (A.map (Complex.ofReal)) (fun k => (B k).map (Complex.ofReal)) :=
+  map_mvDetPencil Complex.ofRealHom A B
 
 /-- **Determinantal stability, real symmetric case.**  For a real symmetric `A`
 and real positive semidefinite `B k`, the real pencil determinant is real stable

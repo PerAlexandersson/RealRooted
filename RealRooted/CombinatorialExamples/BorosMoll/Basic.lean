@@ -5,6 +5,8 @@ import Mathlib.Algebra.Ring.IsFormallyReal
 import Mathlib.Analysis.Polynomial.Basic
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Boros–Moll log-concavity transform: definitions and small cases
@@ -157,21 +159,6 @@ private lemma getD_map_range {s : ℕ → ℝ} {n j : ℕ} (hj : j < n) :
     ((List.range n).map s).getD j 0 = s j := by
   simp [List.getD_eq_getElem?_getD, hj]
 
-private lemma prod_sign (x : ℝ) (S : Multiset ℝ) (hS : x ∉ S) :
-    0 < (-1 : ℝ) ^ ((S.filter (x < ·)).card) * (S.map (fun s => x - s)).prod := by
-  induction S using Multiset.induction_on with
-  | empty => simp
-  | cons a S ih =>
-    have hxa : x ≠ a := fun h => hS (h ▸ Multiset.mem_cons_self _ _)
-    have ih' := ih (fun h => hS (Multiset.mem_cons_of_mem h))
-    rcases lt_or_gt_of_ne hxa with h | h
-    · rw [Multiset.filter_cons_of_pos _ h]
-      simp only [Multiset.card_cons, pow_succ, Multiset.map_cons, Multiset.prod_cons]
-      nlinarith
-    · rw [Multiset.filter_cons_of_neg _ (not_lt.2 h.le)]
-      simp only [Multiset.map_cons, Multiset.prod_cons]
-      nlinarith
-
 /-- The sign of a real-rooted polynomial with positive leading coefficient at a non-root `x`
 is `(-1)^(number of roots greater than x)`. -/
 private lemma sign_eval_of_card_roots {p : ℝ[X]} (hp : p ≠ 0) (hc : p.roots.card = p.natDegree)
@@ -183,7 +170,8 @@ private lemma sign_eval_of_card_roots {p : ℝ[X]} (hp : p ≠ 0) (hc : p.roots.
     conv_lhs => rw [← hfac]
     simp [eval_multiset_prod, Multiset.map_map]
   rw [key]
-  have := prod_sign x p.roots hxS
+  have := Multiset.prod_sub_sign (m := p.roots) (x := x)
+    (fun ξ hξ hξeq => hxS (hξeq ▸ hξ))
   nlinarith
 
 /-- The sign of the derivative at a simple root `r` of a real-rooted polynomial with positive
@@ -488,16 +476,14 @@ lemma bmCoeff_self_pos (n : ℕ) : 0 < bmCoeff n n := by
       Nat.choose_self, Nat.cast_one, mul_one, inv_pos, Nat.ofNat_pos, pow_pos,
       mul_pos_iff_of_pos_left, Nat.cast_pos]; exact Nat.choose_pos (by lia)
 
-private lemma coeff_bmM (n i : ℕ) : (bmM n).coeff i = if i < n + 1 then bmL n i else 0 := by
-  unfold bmM
-  simp only [finsetSum_coeff, coeff_C_mul_X_pow]
-  rw [Finset.sum_ite_eq]
-  simp
+lemma coeff_bmM (n i : ℕ) : (bmM n).coeff i = if i < n + 1 then bmL n i else 0 := by
+  simpa only [bmM, C_mul_X_pow_eq_monomial] using
+    Polynomial.coeff_sum_range_monomial (bmL n) (n + 1) i
 
 private lemma bmL_self (n : ℕ) : bmL n n = bmCoeff n n ^ 2 := by
   simp [bmL, bmCoeff_succ_self]
 
-private lemma bmM_natDegree (n : ℕ) : (bmM n).natDegree = n := by
+lemma bmM_natDegree (n : ℕ) : (bmM n).natDegree = n := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · rw [natDegree_le_iff_coeff_eq_zero]
     intro i hi
@@ -507,7 +493,7 @@ private lemma bmM_natDegree (n : ℕ) : (bmM n).natDegree = n := by
   · rw [coeff_bmM, ite_eq_left (by lia), bmL_self]
     exact (pow_pos (bmCoeff_self_pos n) 2).ne'
 
-private lemma bmM_leadingCoeff_pos (n : ℕ) : 0 < (bmM n).leadingCoeff := by
+lemma bmM_leadingCoeff_pos (n : ℕ) : 0 < (bmM n).leadingCoeff := by
   rw [leadingCoeff, bmM_natDegree, coeff_bmM, ite_eq_left (by lia), bmL_self]
   exact pow_pos (bmCoeff_self_pos n) 2
 

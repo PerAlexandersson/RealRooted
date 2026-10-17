@@ -19,22 +19,13 @@ factorials and then integrate `k` times, so that the coefficient of
 def divFactorialShift (k : ℕ) (p : ℝ[X]) : ℝ[X] :=
   (antiderivative^[k]) (divFactorial p)
 
-@[deprecated (since := "2026-10-06")]
-alias gwJL := divFactorialShift
-
 @[simp] theorem divFactorialShift_zero_apply (p : ℝ[X]) :
     divFactorialShift 0 p = divFactorial p :=
   rfl
 
-@[deprecated (since := "2026-10-06")]
-alias gwJL_zero_apply := divFactorialShift_zero_apply
-
 theorem divFactorialShift_succ (k : ℕ) (p : ℝ[X]) :
     divFactorialShift (k + 1) p = antiderivative (divFactorialShift k p) := by
   rw [divFactorialShift, divFactorialShift, Function.iterate_succ_apply']
-
-@[deprecated (since := "2026-10-06")]
-alias gwJL_succ := divFactorialShift_succ
 
 @[simp] theorem divFactorialShift_zero (k : ℕ) :
     divFactorialShift k (0 : ℝ[X]) = 0 := by
@@ -379,9 +370,6 @@ theorem IsPFPolynomial.divFactorialShift {f : ℝ[X]} (hf : IsPFPolynomial f) (k
       (hf.hasNonnegCoeffs.divFactorialShift k)
       (divFactorialShift_splits_of_splits hf0 (hf.ne_zero_and_splits hf0).2 k)
 
-@[deprecated (since := "2026-10-06")]
-alias gwTheorem11PF := IsPFPolynomial.divFactorialShift
-
 private theorem divFactorialShift_splits_pos_roots_nonpos {f : ℝ[X]}
     (hf0 : f ≠ 0) (hfs : f.Splits) (hfpos : HasPosLeadingCoeff f)
     (hfroots : ∀ r ∈ f.roots, r ≤ 0) (k : ℕ) :
@@ -393,7 +381,7 @@ private theorem divFactorialShift_splits_pos_roots_nonpos {f : ℝ[X]}
       ⟨hfpos, hfroots⟩).1
   have hsplit : (divFactorialShift k f).Splits := divFactorialShift_splits_of_splits hf0 hfs k
   exact ⟨hsplit, hfpos.divFactorialShift k,
-    roots_nonpos_of_nonneg_coeffs hsplit (hfnn.divFactorialShift k)⟩
+    roots_nonpos_of_hasNonnegCoeffs (hfnn.divFactorialShift k)⟩
 
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
 private theorem divFactorialShift_hasSimpleRootsExcept_zero

@@ -278,7 +278,7 @@ theorem IsRayleigh.pderiv_of_isMultiaffine {σ : Type*}
   intro i j x
   obtain ⟨b, c, hquad⟩ :=
     hPma.exists_eval_update_rayleighDifference_quadratic i j k x
-  apply quadratic_leadingCoeff_nonneg (b := b) (c := c)
+  apply Quadratic.leadingCoeff_nonneg (b := b) (c := c)
   intro t
   rw [← pow_two, ← hquad]
   exact hP i j (Function.update x k t)

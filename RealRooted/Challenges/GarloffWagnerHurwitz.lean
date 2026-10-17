@@ -7,6 +7,7 @@ import RealRooted.GarloffWagner.HurwitzStable
 version = 1
 section = "theorems"
 slug = "garloff-wagner-hurwitz"
+formalized = "2026-06-10"
 authors = ["Garloff", "Wagner"]
 years = [1996]
 
@@ -48,7 +49,8 @@ products of polynomials with disjoint supports, which vanish.
 ## References
 
 J. Garloff and D. G. Wagner, “Hadamard products of stable polynomials are stable,”
-*Journal of Mathematical Analysis and Applications* 202 (1996), 797–809, Theorem 1. See
+*Journal of Mathematical Analysis and Applications* 202 (1996), 797–809,
+[doi:10.1006/jmaa.1996.0348](https://doi.org/10.1006/jmaa.1996.0348), Theorem 1. See
 the [Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->

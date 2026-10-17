@@ -59,13 +59,8 @@ theorem chainPolynomial_congr_le
 
 /-- The subdivision operator sending `X ^ n` to the `n`th chain polynomial. -/
 def subdivisionOperator {R : Type*} [Semiring R]
-    (A : LowerTriangularMatrix R) : R[X] →ₗ[R] R[X] where
-  toFun := basisTransform (chainPolynomial A)
-  map_add' := basisTransform_add (chainPolynomial A)
-  map_smul' := by
-    intro a p
-    simpa [Polynomial.smul_eq_C_mul] using
-      basisTransform_smul (chainPolynomial A) a p
+    (A : LowerTriangularMatrix R) : R[X] →ₗ[R] R[X] :=
+  basisTransformₗ (chainPolynomial A)
 
 @[simp] theorem subdivisionOperator_apply {R : Type*} [Semiring R]
     (A : LowerTriangularMatrix R) (p : R[X]) :

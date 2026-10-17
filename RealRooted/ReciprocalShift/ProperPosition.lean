@@ -117,7 +117,8 @@ theorem reciprocalShift_reverses_strictInterl
     rw [hss_decomp, hrs_decomp] at hinterleaves
     have hcore : List.Interleaves (· ≤ ·) ssneg rsneg :=
       hinterleaves.drop_replicate_of_lt hssneg_neg hrsneg_neg
-    have hcore_length := (List.interleaves_iff_length_isChain_interleaveRight.mp hcore).1
+    have hcore_length := (List.interleaves_iff_length_isChain_interleave.mp hcore).1
+    simp only [wcovBy_iff_eq_or_covBy, Nat.covBy_iff_add_one_eq] at hcore_length
     rcases hcore_length with hsame | hsucc
     · have hzq_eq : zq = zp + 1 := by
         grind
@@ -161,7 +162,8 @@ theorem reciprocalShift_reverses_strictInterl
     rw [hss_decomp, hrs_decomp] at hinterleaves
     have hcore : List.Interleaves (· ≤ ·) rsneg ssneg :=
       hinterleaves.drop_replicate_of_lt hrsneg_neg hssneg_neg
-    have hcore_length := (List.interleaves_iff_length_isChain_interleaveRight.mp hcore).1
+    have hcore_length := (List.interleaves_iff_length_isChain_interleave.mp hcore).1
+    simp only [wcovBy_iff_eq_or_covBy, Nat.covBy_iff_add_one_eq] at hcore_length
     have hdegree_eq : na + zp = nb + zq := by
       grind
     rcases hcore_length with hsame | hsucc

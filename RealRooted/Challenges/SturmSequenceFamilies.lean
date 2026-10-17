@@ -14,6 +14,7 @@ import RealRooted.CombinatorialExamples.Touchard
 version = 1
 section = "families"
 slug = "sturm-sequence-families"
+formalized = "2026-05-12"
 authors = ["Gessel", "Stanley", "Bóna", "Mantaci", "Rakotondrajao", "Chow", "Shiu", "Mező",
   "Wang"]
 years = [1978, 2003, 2009, 2011, 2014, 2016]
@@ -192,8 +193,10 @@ Combinatorics* 51 (2016), 500–510.
 See also the
 [Touchard polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#touchardPolynomial),
 [Stirling permutations](https://www.symmetricfunctions.com/realRootedWords.htm#stirlingPermutationDescentPolynomial),
-and
-[derangement polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#derangementPolynomial)
+the
+[derangement polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#derangementPolynomial),
+and the
+[Motzkin-polynomial theorem](https://www.symmetricfunctions.com/realRootedCatalan.htm#motzkinPolynomialsRealRooted)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 

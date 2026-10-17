@@ -241,32 +241,6 @@ def Equiv.Perm.patternCount {n k : ℕ} (σ : Equiv.Perm (Fin n))
     σ.patternCount τ = 0 ↔ σ.Avoids τ := by
   exact List.patternCount_eq_zero_iff _ _
 
-private theorem Equiv.Perm.ofFn_complement {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (Equiv.Perm.complement σ) = (List.ofFn σ).map Fin.rev := by
-  apply List.ext_get
-  · simp
-  · intro i hi hj
-    simp [Equiv.Perm.complement, Fin.revPerm_apply]
-
-/-- The one-line word of a reversed permutation is the reversed word. -/
-private theorem Equiv.Perm.ofFn_reverse {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    List.ofFn (Equiv.Perm.reverse σ) = (List.ofFn σ).reverse := by
-  change List.ofFn (fun i : Fin n => σ i.rev) = (List.ofFn σ).reverse
-  apply List.ext_get
-  · simp
-  · intro i hi hj
-    have hlen : (List.ofFn σ).length = n := List.length_ofFn
-    have hi_n : i < n := by
-      simpa only [List.length_ofFn] using hi
-    have hbound : (List.ofFn σ).length - 1 - i < (List.ofFn σ).length := by
-      simpa only [hlen] using (show n - 1 - i < n by lia)
-    rw [List.get_ofFn, List.get_reverse' _ _ hbound, List.get_ofFn]
-    apply congrArg σ
-    apply Fin.ext
-    rw [Fin.val_rev, Fin.val_cast, Fin.val_cast]
-    simp only [hlen]
-    lia
-
 /-- Complementing both permutations preserves their pattern count. -/
 theorem Equiv.Perm.patternCount_complement {n k : ℕ}
     (σ : Equiv.Perm (Fin n)) (τ : Equiv.Perm (Fin k)) :
@@ -284,9 +258,11 @@ theorem Equiv.Perm.patternCount_reverse {n k : ℕ}
   rw [Equiv.Perm.ofFn_reverse, Equiv.Perm.ofFn_reverse]
   exact List.patternCount_reverse _ _
 
-private def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
+/-- The decreasing pattern of length two. -/
+def pattern21 : Equiv.Perm (Fin 2) := Equiv.swap 0 1
 
-private def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
+/-- The increasing pattern of length two. -/
+def pattern12 : Equiv.Perm (Fin 2) := Equiv.refl (Fin 2)
 
 /-- The 21-occurrence check agrees with inversion count on permutations of
 length four. -/

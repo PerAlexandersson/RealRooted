@@ -231,16 +231,13 @@ lemma leadingCoeff_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
     (narayanaQuot n).leadingCoeff = 1 :=
   (natDegree_leadingCoeff_narayanaQuot n hn).2
 
-lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
-    narayanaQuot n ≠ 0 := by
-  intro hzero
-  have hcoeff : (narayanaQuot n).leadingCoeff = 0 := by simp [hzero]
-  rw [leadingCoeff_narayanaQuot n hn] at hcoeff
-  simp_all
-
 lemma narayanaQuot_posLeadingCoeff (n : Nat) (hn : 1 ≤ n) :
     HasPosLeadingCoeff (narayanaQuot n) := by
   simp [HasPosLeadingCoeff, leadingCoeff_narayanaQuot n hn]
+
+lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
+    narayanaQuot n ≠ 0 :=
+  (narayanaQuot_posLeadingCoeff n hn).ne_zero
 
 lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
     (narayana n).natDegree = n := by

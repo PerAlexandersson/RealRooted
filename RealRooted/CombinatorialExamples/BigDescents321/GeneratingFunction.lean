@@ -1,5 +1,6 @@
 import RealRooted.CombinatorialExamples.BigDescents321.Basic
 import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 import Mathlib.Algebra.BigOperators.NatAntidiagonal
 import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FieldSimp
@@ -78,9 +79,15 @@ theorem sqrt_disc_eq :
       2 * PowerSeries.C (C (1 / 4) * (X ^ 2 - 1)) * PowerSeries.X ^ 2 * refHomSeries := by
   set q : PowerSeries ℚ[X] := PowerSeries.C (C (1 / 4) * (X ^ 2 - 1)) with hq_def
   have hq : 4 * q = PowerSeries.C X ^ 2 - 1 := by
-    rw [hq_def, show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by
-      rw [map_ofNat C, map_ofNat], ← map_mul, ← mul_assoc, ← C_mul]
-    norm_num
+    have h4 : (4 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = 1 := by
+      rw [show (4 : PowerSeries ℚ[X]) = PowerSeries.C (C 4) by rw [map_ofNat C, map_ofNat],
+        PowerSeries.C_C_mul]
+      norm_num
+    calc
+      4 * q = (4 * PowerSeries.C (C (1 / 4))) * PowerSeries.C (X ^ 2 - 1) := by
+        rw [hq_def, map_mul, ← mul_assoc]
+      _ = PowerSeries.C (X ^ 2 - 1) := by rw [h4, one_mul]
+      _ = PowerSeries.C X ^ 2 - 1 := by rw [map_sub, map_one, map_pow]
   have hM := refHomSeries_eq
   rw [← hq_def] at hM
   symm
@@ -184,27 +191,24 @@ theorem mk_firstReturnHom :
     rw [show j + 3 = (j + 1) + 2 by ring, sqrtDiscCoeff_add_two_eq_refHom]
     linear_combination (-(X ^ 2 - 1) * refHom (j + 1)) * C_half_mul_C_half
 
-private theorem two_mul_C_half :
-    (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
-  rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
-    ← map_mul, ← C_mul]
-  norm_num
-
-private theorem two_mul_C_quarter :
-    (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) = PowerSeries.C (C (1 / 2)) := by
-  rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
-    ← map_mul, ← C_mul]
-  norm_num
-
 /-- The generating function: `𝒬 (1 - z²/2 + √(1 - 2cz + z²)) = 2`. -/
 theorem transformedSeries_mul_add_sqrt :
     transformedSeries * (halfSeries + PowerSeries.sqrt disc) = 2 := by
   have hQ := transformedSeries_eq
   have hι := mk_firstReturnHom
+  have h2 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
+    rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
+  have hquarter : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 4)) =
+      PowerSeries.C (C (1 / 2)) := by
+    rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
+      PowerSeries.C_C_mul]
+    norm_num
   simp only [halfSeries]
   linear_combination 2 * hQ + (2 * transformedSeries) * hι +
-    (transformedSeries * (1 - PowerSeries.sqrt disc)) * two_mul_C_half +
-    (transformedSeries * PowerSeries.X ^ 2) * two_mul_C_quarter
+    (transformedSeries * (1 - PowerSeries.sqrt disc)) * h2 +
+    (transformedSeries * PowerSeries.X ^ 2) * hquarter
 
 /-- The rationalized form `𝒬 (a² - b) = 2 (a - √b)`. -/
 theorem transformedSeries_mul_sq_sub_disc :
@@ -223,9 +227,13 @@ private theorem coeff_transformedSeries_mul_sq_sub_disc (n : ℕ) :
     have hq : PowerSeries.C (C (1 / 2)) * PowerSeries.C (C (1 / 2)) =
         (PowerSeries.C (C (1 / 4)) : PowerSeries ℚ[X]) := by
       rw [← map_mul, C_half_mul_C_half]
+    have h2 : (2 : PowerSeries ℚ[X]) * PowerSeries.C (C (1 / 2)) = 1 := by
+      rw [show (2 : PowerSeries ℚ[X]) = PowerSeries.C (C 2) by rw [map_ofNat C, map_ofNat],
+        PowerSeries.C_C_mul]
+      norm_num
     simp only [halfSeries, disc, map_mul, map_ofNat]
     linear_combination (transformedSeries * PowerSeries.X ^ 4) * hq -
-      (transformedSeries * PowerSeries.X ^ 2) * two_mul_C_half
+      (transformedSeries * PowerSeries.X ^ 2) * h2
   rw [h, map_add, map_sub, PowerSeries.coeff_C_mul, PowerSeries.coeff_C_mul,
     PowerSeries.coeff_C_mul, PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_X_pow_mul',
     PowerSeries.coeff_X_pow_mul']

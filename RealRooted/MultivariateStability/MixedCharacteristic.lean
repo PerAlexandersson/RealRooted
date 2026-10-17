@@ -32,15 +32,15 @@ the right block.  This makes the `z = 0` specialization a common-phase
 restriction with weights `1` on the output variable and `0` on the parameters.
 -/
 
-private def operatorList (m : ℕ) : List (Sum (Fin 1) (Fin m)) :=
+def operatorList (m : ℕ) : List (Sum (Fin 1) (Fin m)) :=
   List.ofFn (fun i : Fin m => Sum.inr i)
 
-private def pencilMatrices (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
+def pencilMatrices (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     Sum (Fin 1) (Fin m) → Matrix (Fin n) (Fin n) ℝ
   | Sum.inl _ => 1
   | Sum.inr j => As j
 
-private def pencil (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
+def pencil (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     MvPolynomial (Sum (Fin 1) (Fin m)) ℝ :=
   realDetPencil 0 (pencilMatrices As)
 
@@ -191,7 +191,7 @@ private theorem oneSubPderiv_isHomogeneous_zero
   rw [pderiv_eq_zero_of_isHomogeneous_zero hH i]
   simp
 
-private def outputWeights (m : ℕ) : Sum (Fin 1) (Fin m) → ℝ
+def outputWeights (m : ℕ) : Sum (Fin 1) (Fin m) → ℝ
   | Sum.inl _ => 1
   | Sum.inr _ => 0
 
@@ -217,21 +217,6 @@ private theorem commonPhaseRestriction_eq_realAffineLineRestriction
   · funext i
     simp
   · rfl
-
-private theorem eval_realDetPencil
-    (A : Matrix (Fin n) (Fin n) ℝ)
-    (B : Sum (Fin 1) (Fin m) → Matrix (Fin n) (Fin n) ℝ)
-    (z : Sum (Fin 1) (Fin m) → ℝ) :
-    MvPolynomial.eval z (realDetPencil A B) =
-      (A + ∑ k, z k • B k).det := by
-  unfold realDetPencil
-  erw [RingHom.map_det]
-  congr 1
-  apply Matrix.ext
-  intro i j
-  change MvPolynomial.eval z
-      (MvPolynomial.C (A i j) + ∑ k, MvPolynomial.X k * MvPolynomial.C (B k i j)) = _
-  simp [Matrix.add_apply, Matrix.sum_apply, Matrix.smul_apply]
 
 private theorem pencil_ne_zero
     (As : Fin m → Matrix (Fin n) (Fin n) ℝ) : pencil As ≠ 0 := by
@@ -276,8 +261,8 @@ theorem mvRealStable_mixedCharacteristicMv
 theorem mixedCharacteristic_splits
     (As : Fin m → Matrix (Fin n) (Fin n) ℝ)
     (hAs : ∀ i, (As i).PosSemidef) :
-    (mixedCharacteristic As).Splits := by
-  exact (mvRealStable_mixedCharacteristicMv As hAs).samePhaseStable
+    (mixedCharacteristic As).Splits :=
+  (mvRealStable_mixedCharacteristicMv As hAs).samePhaseStable
     (outputWeights m) (by
       intro i
       cases i <;> simp [outputWeights])
@@ -304,7 +289,7 @@ private theorem mixedCharacteristic_natDegree_eq
       | Sum.inl _ => (1 : ℝ)
       | Sum.inr _ => 0) (pencil As) = 1
     rw [show pencil As = realDetPencil 0 (pencilMatrices As) by rfl]
-    rw [eval_realDetPencil]
+    rw [RealRooted.eval_realDetPencil]
     simp [pencilMatrices]
   by_cases hn : n = 0
   · have hQeq : Q = H := by

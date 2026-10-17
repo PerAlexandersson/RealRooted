@@ -9,6 +9,7 @@ import RealRooted.GammaTransform.ProperPosition
 version = 1
 section = "theorems"
 slug = "gamma-transform"
+formalized = "2026-10-06"
 authors = ["Petersen", "Hoster", "Stump"]
 years = [2015, 2025]
 

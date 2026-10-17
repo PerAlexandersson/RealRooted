@@ -1,4 +1,5 @@
 import RealRooted.CommonInterleaver.Sequence
+import RealRooted.RootPolynomial
 
 /-!
 # Common interleavers: descending-root polynomials
@@ -13,57 +14,27 @@ noncomputable section
 
 namespace RealRooted
 
-private def polyOfDescRoots (xs : List ℝ) : ℝ[X] :=
-  (xs.map fun r => X - C r).prod
-
-private lemma polyOfDescRoots_ne_zero (xs : List ℝ) :
-    polyOfDescRoots xs ≠ 0 := by
-  unfold polyOfDescRoots
-  refine List.prod_ne_zero ?_
-  intro h0
-  rcases List.mem_map.mp h0 with ⟨r, hr, hr0⟩
-  exact (X_sub_C_ne_zero r) hr0
-
-private lemma roots_polyOfDescRoots (xs : List ℝ) :
-    (polyOfDescRoots xs).roots = (↑xs : Multiset ℝ) := by
-  unfold polyOfDescRoots
-  induction xs with
-  | nil =>
-      simp
-  | cons x xs ih =>
-      rw [List.map_cons, List.prod_cons,
-        roots_mul (mul_ne_zero (X_sub_C_ne_zero x)
-          (by simpa [polyOfDescRoots] using polyOfDescRoots_ne_zero xs)),
-        roots_X_sub_C, ih]
-      simp
-
-private lemma isRealRooted_polyOfDescRoots (xs : List ℝ) :
-    ((polyOfDescRoots xs) ≠ 0 ∧ (polyOfDescRoots xs).Splits) := by
-  unfold polyOfDescRoots
-  induction xs with
-  | nil =>
-      simp
-  | cons x xs ih =>
-      simpa [List.map_cons, List.prod_cons] using
-        isRealRooted_mul (isRealRooted_X_sub_C x).1 (isRealRooted_X_sub_C x).2 ih.1 ih.2
-
-private lemma rootSeqDesc_polyOfDescRoots_eq
+/-- The descending root sequence of the root polynomial of a descending list is the list. -/
+@[simp] theorem rootSeqDesc_rootPolynomial
     {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :
-    rootSeqDesc (polyOfDescRoots xs) = xs := by
-  have hrr : ((polyOfDescRoots xs) ≠ 0 ∧
-    (polyOfDescRoots xs).Splits) := isRealRooted_polyOfDescRoots xs
-  have hroots : (↑xs.reverse : Multiset ℝ) = (polyOfDescRoots xs).roots := by
-    rw [roots_polyOfDescRoots]
+    rootSeqDesc (rootPolynomial (xs : Multiset ℝ)) = xs := by
+  have hrr : ((rootPolynomial (xs : Multiset ℝ)) ≠ 0 ∧
+    (rootPolynomial (xs : Multiset ℝ)).Splits) :=
+    ⟨rootPolynomial_ne_zero _, rootPolynomial_splits _⟩
+  have hroots : (↑xs.reverse : Multiset ℝ) = (rootPolynomial (xs : Multiset ℝ)).roots := by
+    rw [roots_rootPolynomial]
     simp
   have hdesc :=
     rootSeqDesc_eq_reverse_of_pairwise
-      (f := polyOfDescRoots xs)
+      (f := rootPolynomial (xs : Multiset ℝ))
       (rs := xs.reverse)
       (by grind)
       hroots
   simp_all
 
-private lemma strictInterl_of_slots_polyOfDescRoots
+/-- Slot data against `rootSeqDesc f` give a `StrictInterl` witness with the root polynomial
+of the slot choices. -/
+theorem strictInterl_of_slots_rootPolynomial
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : f.natDegree ≤ xs.length)
@@ -73,17 +44,18 @@ private lemma strictInterl_of_slots_polyOfDescRoots
         ⟨j, by
           have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
           simpa [hf] using this⟩) :
-    StrictInterl f (polyOfDescRoots xs) := by
+    StrictInterl f (rootPolynomial (xs : Multiset ℝ)) := by
   let ss : List ℝ := (rootSeqDesc f).reverse
   let rs : List ℝ := xs.reverse
   have hss_pair : ss.Pairwise (· ≤ ·) := by
     simpa [ss] using (rootSeqDesc_pairwise (f := f)).reverse
   have hrs_pair : rs.Pairwise (· ≤ ·) := by grind
   have hss_eq : (↑ss : Multiset ℝ) = f.roots := by simp [ss, rootSeqDesc, Multiset.sort_eq]
-  have hrs_eq : (↑rs : Multiset ℝ) = (polyOfDescRoots xs).roots := by
-    simp [rs, roots_polyOfDescRoots]
-  have hpoly_rr : ((polyOfDescRoots xs) ≠ 0 ∧
-    (polyOfDescRoots xs).Splits) := isRealRooted_polyOfDescRoots xs
+  have hrs_eq : (↑rs : Multiset ℝ) = (rootPolynomial (xs : Multiset ℝ)).roots := by
+    simp [rs, roots_rootPolynomial]
+  have hpoly_rr : ((rootPolynomial (xs : Multiset ℝ)) ≠ 0 ∧
+    (rootPolynomial (xs : Multiset ℝ)).Splits) :=
+    ⟨rootPolynomial_ne_zero _, rootPolynomial_splits _⟩
   have hlen_cases : xs.length = f.natDegree ∨ xs.length = f.natDegree + 1 := by lia
   refine ⟨⟨hf₀, hf⟩, hpoly_rr, ss, rs, hss_pair, hrs_pair, hss_eq, hrs_eq, ?_⟩
   rcases hlen_cases with hlen | hlen
@@ -268,7 +240,9 @@ private lemma strictInterl_of_slots_polyOfDescRoots
         rw [hss_get]
         simpa only [rs, hget, hidx] using hlow
 
-private lemma strictInterl_left_of_shifted_slots_polyOfDescRoots
+/-- Shifted slot data against `rootSeqDesc f` give a left `StrictInterl` witness with the root
+polynomial of the slot choices. -/
+theorem strictInterl_left_of_shifted_slots_rootPolynomial
     {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
     (hxs : xs.Pairwise (· ≥ ·))
     (hdeg_lo : xs.length ≤ f.natDegree)
@@ -278,17 +252,18 @@ private lemma strictInterl_left_of_shifted_slots_polyOfDescRoots
         ⟨j + 1, by
           have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
           simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    StrictInterl (polyOfDescRoots xs) f := by
+    StrictInterl (rootPolynomial (xs : Multiset ℝ)) f := by
   let ss : List ℝ := xs.reverse
   let rs : List ℝ := (rootSeqDesc f).reverse
   have hss_pair : ss.Pairwise (· ≤ ·) := by grind
   have hrs_pair : rs.Pairwise (· ≤ ·) := by
     simpa [rs] using (rootSeqDesc_pairwise (f := f)).reverse
-  have hss_eq : (↑ss : Multiset ℝ) = (polyOfDescRoots xs).roots := by
-    simp [ss, roots_polyOfDescRoots]
+  have hss_eq : (↑ss : Multiset ℝ) = (rootPolynomial (xs : Multiset ℝ)).roots := by
+    simp [ss, roots_rootPolynomial]
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := by simp [rs, rootSeqDesc, Multiset.sort_eq]
-  have hpoly_rr : ((polyOfDescRoots xs) ≠ 0 ∧
-    (polyOfDescRoots xs).Splits) := isRealRooted_polyOfDescRoots xs
+  have hpoly_rr : ((rootPolynomial (xs : Multiset ℝ)) ≠ 0 ∧
+    (rootPolynomial (xs : Multiset ℝ)).Splits) :=
+    ⟨rootPolynomial_ne_zero _, rootPolynomial_splits _⟩
   have hlen_cases : f.natDegree = xs.length ∨ f.natDegree = xs.length + 1 := by lia
   have sub_one_sub_lt_self : ∀ {n k : ℕ}, k < n → n - 1 - k < n := by
     intro n k hk
@@ -614,51 +589,5 @@ private lemma strictInterl_left_of_shifted_slots_polyOfDescRoots
                   exact hidx
         rw [hss_get, hrs_get]
         exact hup
-
-/-- Internal construction bridge for the compatibility parent and the
-finite-family upgrade layer. -/
-protected def CommonInterleaver.polyOfDescRoots (xs : List ℝ) : ℝ[X] :=
-  polyOfDescRoots xs
-
-/-- Internal root-multiset bridge for the compatibility parent. -/
-protected lemma CommonInterleaver.roots_polyOfDescRoots (xs : List ℝ) :
-    (CommonInterleaver.polyOfDescRoots xs).roots = (↑xs : Multiset ℝ) := by
-  simpa [CommonInterleaver.polyOfDescRoots] using roots_polyOfDescRoots xs
-
-/-- Internal descending-root-sequence bridge for the compatibility parent. -/
-protected lemma CommonInterleaver.rootSeqDesc_polyOfDescRoots_eq
-    {xs : List ℝ} (hxs : xs.Pairwise (· ≥ ·)) :
-    rootSeqDesc (CommonInterleaver.polyOfDescRoots xs) = xs := by
-  simpa [CommonInterleaver.polyOfDescRoots] using rootSeqDesc_polyOfDescRoots_eq hxs
-
-/-- Internal right-oriented slot-construction bridge. -/
-protected lemma CommonInterleaver.strictInterl_of_slots_polyOfDescRoots
-    {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
-    (hxs : xs.Pairwise (· ≥ ·))
-    (hdeg_lo : f.natDegree ≤ xs.length)
-    (hdeg_hi : xs.length ≤ f.natDegree + 1)
-    (hslot : ∀ j (hj : j < xs.length),
-      xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-        ⟨j, by
-          have : j < f.natDegree + 1 := lt_of_lt_of_le hj hdeg_hi
-          simpa [hf] using this⟩) :
-    StrictInterl f (CommonInterleaver.polyOfDescRoots xs) := by
-  simpa [CommonInterleaver.polyOfDescRoots] using
-    strictInterl_of_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
-
-/-- Internal left-oriented shifted-slot-construction bridge. -/
-protected lemma CommonInterleaver.strictInterl_left_of_shifted_slots_polyOfDescRoots
-    {f : ℝ[X]} {xs : List ℝ} (hf₀ : f ≠ 0) (hf : f.Splits)
-    (hxs : xs.Pairwise (· ≥ ·))
-    (hdeg_lo : xs.length ≤ f.natDegree)
-    (hdeg_hi : f.natDegree ≤ xs.length + 1)
-    (hslot : ∀ j (hj : j < xs.length),
-      xs.get ⟨j, hj⟩ ∈ rootSlotInterval (rootSeqDesc f)
-        ⟨j + 1, by
-          have : j < f.natDegree := lt_of_lt_of_le hj hdeg_lo
-          simpa [rootSeqDesc_length hf] using Nat.succ_lt_succ this⟩) :
-    StrictInterl (CommonInterleaver.polyOfDescRoots xs) f := by
-  simpa [CommonInterleaver.polyOfDescRoots] using
-    strictInterl_left_of_shifted_slots_polyOfDescRoots hf₀ hf hxs hdeg_lo hdeg_hi hslot
 
 end RealRooted

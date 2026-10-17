@@ -117,7 +117,6 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
     split_ifs with ha0 hbn1 hb0 hbn1' ha1 hbn2 ha2 <;> first
       | exact hxb_xa
       | exact hxb_xi _
-      | rfl
       | lia
       | exact hxi_xa _
       | apply hxi_mono

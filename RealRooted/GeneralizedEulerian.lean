@@ -177,7 +177,7 @@ lemma generalizedEulerian_invariants (hc : 0 < c) :
                 (by lia) hnn ha
             have hgroots : ∀ r ∈ g.roots, r ≤ 0 :=
               hgf.roots_le_of_right
-                (roots_nonpos_of_nonneg_coeffs hsplits hnn)
+                (roots_nonpos_of_hasNonnegCoeffs hnn)
             have hgpos : HasPosLeadingCoeff g := by
               unfold HasPosLeadingCoeff
               dsimp only [g]
@@ -278,5 +278,123 @@ theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
     (i := RingHom.id ℝ) (x := x) n (generalizedEulerian 1 n) hdeg
   rw [generalizedEulerian_one_reflect] at heval
   simpa [Polynomial.eval₂_id, invOf_eq_inv, one_div, mul_comm] using heval.symm
+
+/-- The linear coefficient of an ordinary Eulerian polynomial satisfies its
+standard recurrence. -/
+theorem coeff_generalizedEulerian_one_succ (n : ℕ) :
+    (generalizedEulerian 1 (n + 1)).coeff 1 =
+      2 * (generalizedEulerian 1 n).coeff 1 + (n : ℝ) + 1 := by
+  have h := coeff_generalizedEulerian_succ 1 n 0
+  simp only [Nat.cast_zero, one_mul] at h
+  rw [h]
+  simp [coeff_zero_generalizedEulerian]
+  ring
+
+/-- Closed form for the linear coefficient of an ordinary Eulerian polynomial. -/
+theorem coeff_generalizedEulerian_one (n : ℕ) :
+    (generalizedEulerian 1 n).coeff 1 = 2 ^ (n + 1) - (n : ℝ) - 2 := by
+  induction n with
+  | zero =>
+      norm_num [generalizedEulerian, Polynomial.coeff_one]
+  | succ n ih =>
+      rw [coeff_generalizedEulerian_one_succ, ih]
+      push_cast
+      ring
+
+/-- The quadratic coefficient of an ordinary Eulerian polynomial satisfies its
+standard recurrence. -/
+theorem coeff_generalizedEulerian_two_succ (n : ℕ) :
+    (generalizedEulerian 1 (n + 1)).coeff 2 =
+      3 * (generalizedEulerian 1 n).coeff 2 +
+        (n : ℝ) * (generalizedEulerian 1 n).coeff 1 := by
+  have h := coeff_generalizedEulerian_succ 1 n 1
+  simp only [Nat.cast_one, one_mul] at h
+  rw [h]
+  ring
+
+private theorem add_two_le_two_pow (n : ℕ) (hn : 2 ≤ n) :
+    (n : ℝ) + 2 ≤ 2 ^ n := by
+  induction n with
+  | zero => lia
+  | succ n ih =>
+      rcases Nat.lt_or_ge n 2 with hn' | hn'
+      · interval_cases n
+        · lia
+        · norm_num
+      · have hprev := ih hn'
+        have hpow : (2 : ℝ) ^ (n + 1) = 2 ^ n * 2 := by ring
+        have hnreal : (2 : ℝ) ≤ n := by exact_mod_cast hn'
+        rw [hpow]
+        push_cast
+        linarith
+
+/-- The linear coefficient of an ordinary Eulerian polynomial dominates
+`2^n` from `n = 2` on. -/
+theorem two_pow_le_coeff_generalizedEulerian_one (n : ℕ) (hn : 2 ≤ n) :
+    (2 : ℝ) ^ n ≤ (generalizedEulerian 1 n).coeff 1 := by
+  rw [coeff_generalizedEulerian_one]
+  have hpow := add_two_le_two_pow n hn
+  have hsplit : (2 : ℝ) ^ (n + 1) = 2 ^ n * 2 := by ring
+  rw [hsplit]
+  linarith
+
+private theorem two_pow_le_three_pow (n : ℕ) (hn : 1 ≤ n) :
+    (2 : ℝ) ^ (n + 2) ≤ 3 ^ (n + 1) := by
+  induction n with
+  | zero => lia
+  | succ n ih =>
+      rcases Nat.eq_zero_or_pos n with rfl | hn'
+      · norm_num
+      · have hbound := ih hn'
+        have htwo : (2 : ℝ) ^ (n + 1 + 2) = 2 * 2 ^ (n + 2) := by ring
+        have hthree : (3 : ℝ) ^ (n + 1 + 1) = 3 * 3 ^ (n + 1) := by ring
+        rw [htwo, hthree]
+        have hpos : (0 : ℝ) < 3 ^ (n + 1) := by positivity
+        linarith
+
+private theorem mul_two_pow_le_three_pow (n : ℕ) :
+    (n : ℝ) * 2 ^ (n + 1) ≤ 3 ^ (n + 1) := by
+  induction n with
+  | zero => norm_num
+  | succ n ih =>
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · norm_num
+      · have hbound := two_pow_le_three_pow n hn
+        have htwo : (2 : ℝ) ^ (n + 1 + 1) = 2 * 2 ^ (n + 1) := by ring
+        have hthree : (3 : ℝ) ^ (n + 1 + 1) = 3 * 3 ^ (n + 1) := by ring
+        have htwo' : (2 : ℝ) ^ (n + 2) = 2 * 2 ^ (n + 1) := by ring
+        rw [htwo'] at hbound
+        push_cast
+        rw [htwo, hthree]
+        nlinarith [ih, hbound]
+
+/-- The quadratic coefficient of an ordinary Eulerian polynomial is at most
+`n * 3^n`. -/
+theorem coeff_generalizedEulerian_two_le (n : ℕ) :
+    (generalizedEulerian 1 n).coeff 2 ≤ (n : ℝ) * 3 ^ n := by
+  induction n with
+  | zero =>
+      norm_num [generalizedEulerian, Polynomial.coeff_one]
+  | succ n ih =>
+      rw [coeff_generalizedEulerian_two_succ, coeff_generalizedEulerian_one]
+      have hmul := mul_two_pow_le_three_pow n
+      have hthree : (3 : ℝ) ^ (n + 1) = 3 * 3 ^ n := by ring
+      have hnonneg : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+      push_cast
+      rw [hthree]
+      nlinarith [ih, hmul, sq_nonneg (n : ℝ)]
+
+/-- The quadratic coefficient of an ordinary Eulerian polynomial is positive
+from `n = 3` on. -/
+theorem coeff_generalizedEulerian_two_pos (n : ℕ) (hn : 3 ≤ n) :
+    0 < (generalizedEulerian 1 n).coeff 2 := by
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by lia⟩
+  have hm : 2 ≤ m := by lia
+  have hrec := coeff_generalizedEulerian_two_succ m
+  have hnonneg := (generalizedEulerian_invariants (c := 1) one_pos m).2.1 2
+  have hcoeff := two_pow_le_coeff_generalizedEulerian_one m hm
+  have hpow : (0 : ℝ) < 2 ^ m := by positivity
+  have hmreal : (2 : ℝ) ≤ m := by exact_mod_cast hm
+  nlinarith
 
 end RealRooted

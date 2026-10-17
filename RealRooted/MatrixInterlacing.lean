@@ -206,7 +206,7 @@ theorem card_nondegeneratePreserving : nondegeneratePreserving.card = 18 := by
 
 /-- The 18 nondegenerate preservers displayed at
 <https://www.symmetricfunctions.com/realRootedInterlacing.htm#smallInterlacingMatrices>. -/
-def symCatPreservingList : List Atomic2x2Matrix :=
+def nondegeneratePreservingMatricesList : List Atomic2x2Matrix :=
   [⟨.zero, .one, .zero, .x⟩,
     ⟨.zero, .one, .x, .zero⟩,
     ⟨.one, .zero, .zero, .one⟩,
@@ -226,11 +226,11 @@ def symCatPreservingList : List Atomic2x2Matrix :=
     ⟨.one, .one, .x, .x⟩,
     ⟨.x, .one, .x, .x⟩]
 
-def symCatPreserving : Finset Atomic2x2Matrix :=
-  symCatPreservingList.toFinset
+def nondegeneratePreservingMatrices : Finset Atomic2x2Matrix :=
+  nondegeneratePreservingMatricesList.toFinset
 
-theorem nondegeneratePreserving_eq_symCatPreserving :
-    nondegeneratePreserving = symCatPreserving := by decide
+theorem nondegeneratePreserving_eq_nondegeneratePreservingMatrices :
+    nondegeneratePreserving = nondegeneratePreservingMatrices := by decide
 
 /-! ### Affine certificates for the accepted codes -/
 
@@ -248,7 +248,7 @@ theorem hasAffineProperty_of_isAffineAdmissible
       | with_reducible exact interl_zero_right _
       | with_reducible exact interl_one_one
       | with_reducible exact interl_one_X
-      | with_reducible exact interl_one_affine hs
+      | with_reducible exact interl_one_affine_linear hs
       | with_reducible exact interl_one_affine_add_one hs
       | with_reducible exact interl_one_affine_add_X hs
       | with_reducible exact interl_X_X
@@ -470,18 +470,12 @@ theorem isAffineAdmissible_of_hasAffineProperty
           | exact one_ne_zero
           | exact X_ne_zero
           | exact ne_zero_of_natDegree_eq_succ (by compute_degree!))
-      | with_reducible_and_instances exact absurd h not_interl_X_two_mul_X_add_one
       | with_reducible_and_instances exact absurd h not_interl_X_X_add_one
-      | with_reducible_and_instances exact absurd h not_interl_X_X_add_two
-      | with_reducible_and_instances exact absurd h not_interl_two_mul_X_add_one_X_add_one
-      | with_reducible_and_instances exact absurd h not_interl_two_mul_X_add_one_X_add_two
-      | with_reducible_and_instances exact absurd h not_interl_X_add_one_X_add_two
       | with_reducible_and_instances exact absurd h not_interl_X_X_add_one_add_X
       | with_reducible_and_instances exact absurd h not_interl_X_X_add_one_add_one
       | with_reducible_and_instances exact absurd h not_interl_X_add_one_add_X_X_add_one
       | with_reducible_and_instances exact absurd h not_interl_X_add_one_add_X_X_add_one_add_one
       | with_reducible_and_instances exact absurd h not_interl_X_add_one_X_add_one_add_one
-      | with_reducible_and_instances exact absurd h not_interl_bad_linear_quadratic
       | with_reducible_and_instances exact absurd h not_interl_bad_linear_quadratic_raw
       | with_reducible_and_instances exact absurd h not_interl_bad_quadratic_pair
       | (have hs := h.toStrictInterl_of_ne
@@ -838,17 +832,11 @@ theorem mem_preserving_of_preservesInterlacing
        simp [AtomicMatrixEntry.eval] at hzeroX hXzero hXX hxX hone
        ring_nf at hzeroX hXzero hXX hxX hone hbadAffine₁ hbadAffine₂
        first
-       | with_reducible_and_instances exact absurd hzeroX not_interl_X_sq_X
-       | with_reducible_and_instances exact absurd hXzero not_interl_X_sq_X
-       | with_reducible_and_instances exact absurd hXX not_interl_X_sq_X
        | with_reducible_and_instances exact absurd hxX not_interl_X_sq_X
        | with_reducible_and_instances exact absurd hzeroX not_interl_X_cube_X_sq
        | with_reducible_and_instances exact absurd hXzero not_interl_X_cube_X_sq
        | with_reducible_and_instances exact absurd hXX not_interl_X_cube_X_sq
        | with_reducible_and_instances exact absurd hxX not_interl_X_cube_X_sq
-       | with_reducible_and_instances exact absurd hzeroX not_interl_X_X_cube
-       | with_reducible_and_instances exact absurd hXzero not_interl_X_X_cube
-       | with_reducible_and_instances exact absurd hXX not_interl_X_X_cube
        | with_reducible_and_instances exact absurd hxX not_interl_X_X_cube
        | with_reducible_and_instances exact absurd hxX not_interl_X_X_sq_add_X_cube
        | with_reducible_and_instances exact absurd hxX not_interl_X_add_X_sq_X
@@ -857,8 +845,6 @@ theorem mem_preserving_of_preservesInterlacing
        | with_reducible_and_instances exact absurd hxX not_interl_X_cube_X_sq_add_X_cube
        | with_reducible_and_instances exact absurd hxX not_interl_X_add_X_sq_X_cube
        | with_reducible_and_instances exact absurd hone hbadAffine₁
-       | with_reducible_and_instances exact absurd hone not_interl_X_X_add_one
-       | with_reducible_and_instances exact absurd hone not_interl_X_X_add_two
        | with_reducible_and_instances exact absurd hone hbadAffine₂)
 
 /-- Exact semantic classification of all 81 atomic matrices. -/
@@ -876,9 +862,9 @@ theorem preservesInterlacing_antiTranspose_iff (M : Atomic2x2Matrix) :
 
 /-- Membership in the displayed 18-matrix table is exactly nondegeneracy plus
 semantic preservation of the zero-aware interlacing package. -/
-theorem mem_symCatPreserving_iff (M : Atomic2x2Matrix) :
-    M ∈ symCatPreserving ↔ M.IsNondegenerate ∧ M.PreservesInterlacing := by
-  rw [← nondegeneratePreserving_eq_symCatPreserving]
+theorem mem_nondegeneratePreservingMatrices_iff (M : Atomic2x2Matrix) :
+    M ∈ nondegeneratePreservingMatrices ↔ M.IsNondegenerate ∧ M.PreservesInterlacing := by
+  rw [← nondegeneratePreserving_eq_nondegeneratePreservingMatrices]
   simp [nondegeneratePreserving, IsNondegenerate,
     preservesInterlacing_iff_mem_preserving, and_comm]
 

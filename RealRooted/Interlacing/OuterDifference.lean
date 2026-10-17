@@ -22,20 +22,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma list_eq_of_forall₂_le_of_sum_eq :
-    ∀ {xs ys : List ℝ},
-      List.Forall₂ (fun x y : ℝ => x ≤ y) xs ys →
-      xs.sum = ys.sum → xs = ys
-  | [], [], _, _ => rfl
-  | x :: xs, y :: ys, hxy, hsum => by
-      simp only [List.forall₂_cons] at hxy
-      simp only [List.sum_cons] at hsum
-      have htail : xs.sum ≤ ys.sum := List.Forall₂.sum_le_sum hxy.2
-      have hhead : x = y := by linarith
-      subst y
-      have hsum_tail : xs.sum = ys.sum := by linarith
-      rw [list_eq_of_forall₂_le_of_sum_eq hxy.2 hsum_tail]
-
 /-- Equality in the root-sum order of a same-degree strictly interlacing pair,
 together with equality of leading coefficients, forces equality of the
 polynomials. -/
@@ -53,16 +39,13 @@ theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
     rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
   have halt : ListAlternates ss rs := by simp_all
   have hlist : ss = rs := by
-    apply list_eq_of_forall₂_le_of_sum_eq (listAlternates_forall₂_le halt)
-    rw [← Multiset.sum_coe, hss_eq, ← Multiset.sum_coe, hrs_eq]
-    exact hsum
+    apply list_eq_of_forall₂_le_of_sum_ge (listAlternates_forall₂_le halt)
+    have hcoe : (rs : Multiset ℝ).sum = (ss : Multiset ℝ).sum := by
+      rw [hrs_eq, hss_eq, hsum]
+    simpa using hcoe.le
   have hroots : f.roots = g.roots := by
     rw [← hss_eq, ← hrs_eq, hlist]
   rw [hf.2.eq_prod_roots, hg.2.eq_prod_roots, hlc, hroots]
-
-@[deprecated StrictInterl.eval_mul_eval_derivative_nonneg (since := "2026-10-06")]
-alias StrictInterl.eval_mul_derivative_nonneg_of_right_root :=
-  StrictInterl.eval_mul_eval_derivative_nonneg
 
 /-- At a root of the right polynomial in a positive-leading coprime
 strictly interlacing pair, the left value and right derivative have strictly the

@@ -3,6 +3,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.PFPolynomial
 import RealRooted.PolyaFrequencyConvolution
@@ -92,39 +93,29 @@ theorem arrayKernelFin_isTotallyNonneg (N : ℕ) :
 
 /-- A finite upper-bidiagonal matrix, with diagonal `a` and superdiagonal
 one. At `a = 0` this is the upper shift matrix. -/
-def upperBidiagonalFin (N : ℕ) (a : ℝ) :
+abbrev upperBidiagonalFin (N : ℕ) (a : ℝ) :
     Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
-  ((bidiagonal a).submatrix Fin.val Fin.val)ᵀ
+  Matrix.upperBidiagonalFin (N + 1) (fun _ ↦ a) (fun _ ↦ 1)
 
 @[simp] lemma upperBidiagonalFin_apply (N : ℕ) (a : ℝ)
     (i j : Fin (N + 1)) :
     upperBidiagonalFin N a i j =
       if j = i then a else if j.val = i.val + 1 then 1 else 0 := by
-  simp only [upperBidiagonalFin, transpose_apply, submatrix_apply, bidiagonal_apply]
-  by_cases hij : j = i
-  · subst j
-    simp
-  · have hval : j.val ≠ i.val := fun h => hij (Fin.ext h)
-    simp [hij, hval]
+  simp [upperBidiagonalFin, eq_comm]
 
 theorem upperBidiagonalFin_isTotallyNonneg (N : ℕ) (a : ℝ) (ha : 0 ≤ a) :
     (upperBidiagonalFin N a).IsTotallyNonneg :=
-  (((bidiagonal_isTotallyNonneg a ha).submatrix
-    Fin.val_strictMono Fin.val_strictMono).toRect.transpose).toSquare
+  Matrix.isTotallyNonneg_upperBidiagonalFin (N + 1) (fun _ ↦ a) (fun _ ↦ 1)
+    (fun _ ↦ ha) (fun _ ↦ zero_le_one)
 
 lemma upperBidiagonalFin_blockTriangular (N : ℕ) (a : ℝ) :
-    (upperBidiagonalFin N a).BlockTriangular id := by
-  intro i j hji
-  have hne : j ≠ i := ne_of_lt hji
-  have hsucc : j.val ≠ i.val + 1 := by
-    have hval : j.val < i.val := Fin.lt_def.mp hji
-    lia
-  simp [upperBidiagonalFin_apply, hne, hsucc]
+    (upperBidiagonalFin N a).BlockTriangular id :=
+  Matrix.upperBidiagonalFin_blockTriangular (N + 1) (fun _ ↦ a) (fun _ ↦ 1)
 
 @[simp] theorem upperBidiagonalFin_det (N : ℕ) (a : ℝ) :
     (upperBidiagonalFin N a).det = a ^ (N + 1) := by
   rw [Matrix.det_of_isUpperTriangular (upperBidiagonalFin_blockTriangular N a)]
-  simp [upperBidiagonalFin_apply]
+  simp
 
 /-- The invertible perturbation of `B⁻¹ S` used before Gaussian
 strictification. -/

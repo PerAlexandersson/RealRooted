@@ -7,6 +7,7 @@ import RealRooted.LiuOppositeSigns.CompatibilityCriterion
 version = 1
 section = "theorems"
 slug = "liu-opposite-signs"
+formalized = "2026-10-02"
 authors = ["Liu"]
 years = [2012]
 
@@ -52,7 +53,7 @@ module = "RealRooted.Challenges.LiuOppositeSigns"
 label = "Compatibility for pairs without common roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.LiuOppositeSigns.published_forward_direction_fails"
+name = "RealRooted.Challenges.LiuOppositeSigns.rootCountBranches_forward_fails_with_commonRoots"
 module = "RealRooted.Challenges.LiuOppositeSigns"
 label = "Without the common-root branch the statement fails"
 
@@ -142,7 +143,7 @@ theorem compatible_iff_rootCount_of_noCommonRoots {f g : ℝ[X]} (hf : f.Splits)
 
 /-- Without the common-root branch, the forward direction fails (for `X` and
 `-X ^ 2`). -/
-theorem published_forward_direction_fails :
+theorem rootCountBranches_forward_fails_with_commonRoots :
     ¬ ∀ {f g : ℝ[X]}, f.Splits → g.Splits → OppositeLeadingSigns f g →
       f.natDegree ≠ 0 → g.natDegree ≠ 0 → Compatible f g →
         ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=

@@ -8,6 +8,7 @@ import RealRooted.Wronskian.PolarLaguerre
 version = 1
 section = "theorems"
 slug = "wronskian-criterion"
+formalized = "2026-10-06"
 
 [[theorems]]
 name = "RealRooted.strictInterl_iff_wronskian_eval_nonneg"
@@ -145,7 +146,7 @@ $q^2 + (x - a)^2 (q'^2 - q q'')$.
 S. Fisk, [*Polynomials, roots, and
 interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833 (2006).
 See also the Wronskian criterion in the
-[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm).
+[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wronskianCriterion).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The weak converse and the counterexample

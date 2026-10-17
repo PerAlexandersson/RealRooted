@@ -236,9 +236,9 @@ lemma simsun_posLeadingCoeff (n : Nat) :
   simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_simsun] using
     (coeff_simsun_top_pos_and_above n).1
 
-lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} (hrr : (simsun n).Splits) :
+lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} :
     ∀ r ∈ (simsun n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (simsun_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (simsun_nonnegCoeffs n)
 
 lemma interlaces_simsun_zero_one :
     StrictInterl (simsun 0) (simsun 1) :=
@@ -306,7 +306,7 @@ theorem strictInterl_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun 
         ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
       intro r hr
       have hr_nonpos :
-          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted (strictInterl_simsun_succ (n + 1)).2.1.2 r
+          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted r
             ((mem_roots (strictInterl_simsun_succ (n + 1)).2.1.1).mpr hr)
       exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
     simpa [hNext_eq] using

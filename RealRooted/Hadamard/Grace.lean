@@ -243,19 +243,6 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
 
 
 
-theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
-    reflect n (schurSzegoComp n f p) =
-      schurSzegoComp n (reflect n f) (reflect n p) := by
-  ext k
-  rw [coeff_reflect]
-  by_cases hk : k ≤ n
-  · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
-      coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
-      revAt_le hk, Nat.choose_symm hk]
-  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk),
-      revAt_eq_self_of_lt (Nat.lt_of_not_le hk),
-      coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_le hk)]
-
 theorem schurSzegoComp_X_mul_left (n : Nat) (hn : 1 ≤ n) (f₁ p : ℝ[X]) :
     schurSzegoComp n (X * f₁) p =
       X * schurSzegoComp (n - 1) f₁ (C (n : ℝ)⁻¹ * derivative p) := by
@@ -358,7 +345,7 @@ theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
   refine (Polynomial.Splits.C (R := ℝ) _).mul ?_
   · have hrq : (reflect n q).Splits :=
       (DegreeDropReversal.splits_reflect_iff hq).mpr hsplit
-    have hder : (derivative (reflect n q)).Splits := splits_derivative hrq
+    have hder : (derivative (reflect n q)).Splits := Polynomial.Splits.derivative hrq
     refine DegreeDropReversal.splits_reflect_of_splits hder ?_
     rw [(reflect n q).natDegree_derivative]
     have := Polynomial.natDegree_reflect_le (N := n) (p := q)
@@ -407,7 +394,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
     · have hfX : f = X * f.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hf00
       have hf1pf : IsPFPolynomial f.divX := isPFPolynomial_of_X_mul (hfX ▸ hf)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative p).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hsplit)
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hsplit)
       have hinner : (schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p)).Splits := by
         by_cases hz : schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p) = 0
         · rw [hz]; simp
@@ -429,7 +416,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hderiv_pf : IsPFPolynomial (C (n : ℝ)⁻¹ * derivative f) :=
         (hf.derivative).const_mul (by positivity)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative f).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative
           (hf.eq_zero_or_splits.resolve_left hf0))
       have hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX).Splits := by
         by_cases hz : schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX = 0
@@ -476,7 +463,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hRf1_pf : IsPFPolynomial (reflect n f).divX :=
         isPFPolynomial_of_X_mul (hRfX ▸ hRf_pf)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative (reflect n p)).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (splits_derivative hRp_split)
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hRp_split)
       have hinner :
           (schurSzegoComp (n - 1) (reflect n f).divX
             (C (n : ℝ)⁻¹ * derivative (reflect n p))).Splits := by
@@ -520,9 +507,6 @@ theorem finiteSchurSzegoComposition {n : ℕ} {f p : ℝ[X]}
   by_cases hp0 : p = 0
   · simp [hp0, schurSzegoComp_zero_right]
   exact finiteSchurSzegoCompositionNonzero hf hf0 hfdeg hp0 hpdeg hsplit
-
-@[deprecated (since := "2026-10-05")]
-alias schurSzegoComp_eq_zero_or_splits_of_isPFPolynomial := finiteSchurSzegoComposition
 
 /-- Fixed-degree Schur--Szegő composition of two PF polynomials is again PF.
 
@@ -571,16 +555,5 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial {n : ℕ} {gamma : ℕ
   ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence, fun hjensen =>
     isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma
       (isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial hjensen)⟩
-
-/-- Compatibility form of `isFinitePFMultiplierSequence_iff_jensenPolynomial` for downstream
-callers that pass the finite Pólya--Schur theorem `finitePolyaSchur_nonneg` explicitly. -/
-@[deprecated isFinitePFMultiplierSequence_iff_jensenPolynomial (since := "2026-10-07")]
-theorem isFinitePFMultiplierSequence_of_jensenPolynomial
-    (hFPS : ∀ {n : ℕ} {gamma : ℕ → ℝ}, (∀ k, 0 ≤ gamma k) →
-      (IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma)))
-    {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
-    IsFinitePFMultiplierSequence n gamma :=
-  isFinitePFMultiplierSequence_of_finiteMultiplierSequence hgamma ((hFPS hgamma).mpr hjensen)
 
 end RealRooted

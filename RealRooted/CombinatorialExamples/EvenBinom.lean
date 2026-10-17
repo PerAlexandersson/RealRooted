@@ -1,4 +1,5 @@
 import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+import RealRooted.ThreeTermRecurrence.HalfGrowth
 
 /-!
 # Even binomial polynomials
@@ -53,7 +54,7 @@ theorem evenBinomAuxReal_identity (n : ℕ) :
   ext m
   change (C (2 : ℝ) * evenBinomAuxReal n).coeff m = _
   rw [coeff_add, coeff_C_mul, Polynomial.coeff_one_add_X_pow,
-    coeff_one_sub_X_pow]
+    Polynomial.coeff_one_sub_X_pow]
   rcases Nat.even_or_odd m with hm | hm
   · rcases hm with ⟨k, rfl⟩
     rw [show k + k = 2 * k by lia]
@@ -125,11 +126,9 @@ lemma one_sub_I_mul_tan_eq (theta : ℝ) (hcos : Real.cos theta ≠ 0) :
     (1 : ℂ) - Complex.I * (Real.tan theta : ℂ) =
       ((Real.cos theta : ℂ) - (Real.sin theta : ℂ) * Complex.I) /
         (Real.cos theta : ℂ) := by
-  rw [Real.tan_eq_sin_div_cos]
-  rw [Complex.ofReal_div]
-  have hcosC : (Real.cos theta : ℂ) ≠ 0 :=
-    Complex.ofReal_ne_zero.mpr hcos
-  grind
+  simpa only [Real.cos_neg, Real.sin_neg, Real.tan_neg, Complex.ofReal_neg, neg_mul, mul_neg,
+    sub_eq_add_neg] using one_add_I_mul_tan_eq (-theta) (by
+      simpa only [Real.cos_neg] using hcos)
 
 lemma evenBinomPolyReal_eval_neg_tan_sq_mul_cos_pow
     (n : ℕ) (theta : ℝ) (hcos : Real.cos theta ≠ 0) :
@@ -175,5 +174,70 @@ lemma evenBinomPolyReal_eval_neg_tan_sq_mul_cos_pow
           ((Real.cos theta : ℂ) ^ n)) =
         (Real.cos ((n : ℝ) * theta) : ℂ) := by grind
   exact_mod_cast hcomplex
+
+lemma evenBinomPolyReal_recurrence (n : ℕ) :
+    evenBinomPolyReal (n + 2) =
+      C 2 * evenBinomPolyReal (n + 1) +
+        (X - 1) * evenBinomPolyReal n := by
+  ext k
+  rw [coeff_evenBinomPolyReal, coeff_add, coeff_C_mul]
+  rw [show (X - 1) * evenBinomPolyReal n =
+      X * evenBinomPolyReal n - evenBinomPolyReal n by ring]
+  rw [coeff_sub, coeff_evenBinomPolyReal]
+  cases k with
+  | zero => norm_num [coeff_evenBinomPolyReal]
+  | succ k =>
+      rw [coeff_X_mul, coeff_evenBinomPolyReal, coeff_evenBinomPolyReal]
+      rw [show 2 * (k + 1) = (2 * k + 1) + 1 by lia,
+        Nat.choose_succ_succ, Nat.choose_succ_succ, Nat.choose_succ_succ]
+      grind
+
+lemma evenBinomPolyReal_natDegree (n : ℕ) :
+    (evenBinomPolyReal n).natDegree = n / 2 := by
+  apply natDegree_eq_of_le_of_coeff_ne_zero
+  · rw [natDegree_le_iff_coeff_eq_zero]
+    intro k hk
+    rw [coeff_evenBinomPolyReal, Nat.choose_eq_zero_of_lt]
+    · norm_num
+    · lia
+  · rw [coeff_evenBinomPolyReal]
+    exact Nat.cast_choose_ne_zero (R := ℝ) (by lia)
+
+lemma evenBinomPolyReal_leadingCoeff_pos (n : ℕ) :
+    0 < (evenBinomPolyReal n).leadingCoeff := by
+  rw [leadingCoeff, evenBinomPolyReal_natDegree, coeff_evenBinomPolyReal]
+  exact_mod_cast Nat.choose_pos (by lia : 2 * (n / 2) ≤ n)
+
+/-- The polynomial with coefficients `choose n (2 * k)` is nonzero and has
+only real roots. -/
+theorem evenBinomPolyReal_ne_zero_and_splits (n : ℕ) :
+    evenBinomPolyReal n ≠ 0 ∧ (evenBinomPolyReal n).Splits := by
+  have hzero : evenBinomPolyReal 0 = 1 := by
+    simp [evenBinomPolyReal]
+  have hone : evenBinomPolyReal 1 = 1 := by
+    simp [evenBinomPolyReal]
+  have htwo : evenBinomPolyReal 2 = 1 + X := by
+    norm_num [evenBinomPolyReal, Finset.sum_range_succ, Nat.choose]
+  have hthree : evenBinomPolyReal 3 = 1 + 3 * X := by
+    norm_num [evenBinomPolyReal, Finset.sum_range_succ, Nat.choose]
+  exact (RealRooted.threeTermHalf_ne_zero_and_splits
+    (P := evenBinomPolyReal) (a := fun _ => C 2)
+    (b := fun _ => X - 1) (D₀ := 0) (e := 0)
+    evenBinomPolyReal_recurrence
+    (fun _ => by simp) (fun _ => by simp) (fun _ r => by
+      simp only [eval_sub, eval_X, eval_one]
+      nlinarith [sq_nonneg (r - 1)])
+    (fun m => by simp [evenBinomPolyReal_natDegree])
+    evenBinomPolyReal_leadingCoeff_pos
+    (by rw [hzero, htwo]; exact RealRooted.interlaces_one_linear (by
+      compute_degree
+      norm_num))
+    (by rw [hone, hthree]; exact RealRooted.interlaces_one_linear (by
+      compute_degree
+      norm_num)) n)
+
+theorem evenBinomPolyReal_splits (n : ℕ) :
+    (evenBinomPolyReal n).Splits :=
+  (evenBinomPolyReal_ne_zero_and_splits n).2
 
 end BigDescents

@@ -31,7 +31,8 @@ abbrev finRootPolynomial {n : ℕ} (r : Fin n → ℝ) : ℝ[X] :=
 theorem finRootPolynomial_eq_rootPolynomial {n : ℕ} (r : Fin n → ℝ) :
     finRootPolynomial r = rootPolynomial ((Finset.univ : Finset (Fin n)).val.map r) := rfl
 
-private theorem finRootPolynomial_eq_finset_prod {n : ℕ} (r : Fin n → ℝ) :
+/-- The root polynomial of a finite root vector is the product of its linear factors. -/
+theorem finRootPolynomial_eq_prod {n : ℕ} (r : Fin n → ℝ) :
     finRootPolynomial r = ∏ j : Fin n, (X - C (r j)) := by
   simp [finRootPolynomial, rootPolynomial, List.prod_ofFn]
 
@@ -42,7 +43,7 @@ theorem finRootPolynomial_shift_eq_sub_mul_div
       finRootPolynomial r - C s * (finRootPolynomial r / (X - C (r i))) := by
   let q : ℝ[X] := finRootPolynomial r / (X - C (r i))
   have hroot : (finRootPolynomial r).IsRoot (r i) := by
-    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_finset_prod, eval_prod]
+    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_prod, eval_prod]
     apply Finset.prod_eq_zero (Finset.mem_univ i)
     simp
   have hfactor : (X - C (r i)) * q = finRootPolynomial r := by
@@ -50,7 +51,7 @@ theorem finRootPolynomial_shift_eq_sub_mul_div
   have hprod : (X - C (r i)) *
       ∏ j ∈ (Finset.univ : Finset (Fin n)).erase i, (X - C (r j)) =
       finRootPolynomial r := by
-    rw [finRootPolynomial_eq_finset_prod]
+    rw [finRootPolynomial_eq_prod]
     exact
       (Finset.mul_prod_erase Finset.univ (fun j => X - C (r j)) (Finset.mem_univ i))
   have hq : q = ∏ j ∈ (Finset.univ : Finset (Fin n)).erase i, (X - C (r j)) := by
@@ -63,7 +64,7 @@ theorem finRootPolynomial_shift_eq_sub_mul_div
     apply Finset.prod_congr rfl
     intro j hj
     simp [Function.update, Finset.ne_of_mem_erase hj]
-  rw [finRootPolynomial_eq_finset_prod]
+  rw [finRootPolynomial_eq_prod]
   rw [← Finset.mul_prod_erase (Finset.univ : Finset (Fin n))
     (fun j => X - C ((Function.update r i (r i + s)) j)) (Finset.mem_univ i)]
   rw [Function.update_self, hrest, ← hq]
@@ -77,7 +78,7 @@ private theorem finRootPolynomial_div_factor_eq_delete
     finRootPolynomial r / (X - C (r i)) =
       ∏ j ∈ (Finset.univ : Finset (Fin n)).erase i, (X - C (r j)) := by
   have hroot : (finRootPolynomial r).IsRoot (r i) := by
-    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_finset_prod, eval_prod]
+    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_prod, eval_prod]
     apply Finset.prod_eq_zero (Finset.mem_univ i)
     simp
   have hfactor : (X - C (r i)) *
@@ -86,7 +87,7 @@ private theorem finRootPolynomial_div_factor_eq_delete
   have hprod : (X - C (r i)) *
       ∏ j ∈ (Finset.univ : Finset (Fin n)).erase i, (X - C (r j)) =
       finRootPolynomial r := by
-    rw [finRootPolynomial_eq_finset_prod]
+    rw [finRootPolynomial_eq_prod]
     exact
       (Finset.mul_prod_erase Finset.univ (fun j => X - C (r j)) (Finset.mem_univ i))
   apply mul_left_cancel₀ (X_sub_C_ne_zero (r i))
@@ -95,7 +96,7 @@ private theorem finRootPolynomial_div_factor_eq_delete
 private theorem hasNonnegCoeffs_finRootPolynomial_of_nonpos
     {n : ℕ} {r : Fin n → ℝ} (hr : ∀ j, r j ≤ 0) :
     HasNonnegCoeffs (finRootPolynomial r) := by
-  rw [finRootPolynomial_eq_finset_prod]
+  rw [finRootPolynomial_eq_prod]
   exact hasNonnegCoeffs_finsetProd Finset.univ (fun j => X - C (r j))
     (fun j _ => hasNonnegCoeffs_X_sub_C (hr j))
 
@@ -114,7 +115,7 @@ private theorem strictInterl_finRootPolynomial_div_factor
   have hpsplits : (finRootPolynomial r).Splits := by
     exact rootPolynomial_splits ((Finset.univ : Finset (Fin n)).val.map r)
   have hroot : (finRootPolynomial r).IsRoot (r i) := by
-    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_finset_prod, eval_prod]
+    rw [Polynomial.IsRoot.def, finRootPolynomial_eq_prod, eval_prod]
     apply Finset.prod_eq_zero (Finset.mem_univ i)
     simp
   have hfactor : (X - C (r i)) *
@@ -192,7 +193,7 @@ theorem exists_hasDerivAt_finRootPolynomial_shift
     simpa only [p] using hregular
   have hAinv : A.IsInvertible := by
     rw [hA]
-    exact ContinuousLinearMap.isInvertible_toSpanSingleton hregular'
+    exact ContinuousLinearMap.toSpanSingleton_isInvertible hregular'
   let branch : ℝ → ℝ := hcont.implicitFunction (by simp) hAinv
   have hbase : branch 0 = ρ :=
     hcont.implicitFunction_apply_self (by simp) hAinv

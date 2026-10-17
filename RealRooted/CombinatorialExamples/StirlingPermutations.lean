@@ -1,5 +1,5 @@
 import RealRooted.CombinatorialExamples.Common
-import RealRooted.MaWang
+import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 import Mathlib.Tactic
 
 /-!
@@ -38,6 +38,15 @@ lemma stirlingPermutations_succ (n : Nat) :
     stirlingPermutations (n + 1) =
       stirlingPermutationsCoeffA n * stirlingPermutations n +
         stirlingPermutationsCoeffB * (stirlingPermutations n).derivative := rfl
+
+private lemma stirlingPermutations_quadratic_derivative_linear (n : Nat) :
+    stirlingPermutations (n + 1) =
+      (C (1 : ℝ) * X + C (-1 : ℝ) * X ^ 2) *
+          (stirlingPermutations n).derivative +
+        (C (0 : ℝ) + C (1 + 2 * (n : ℝ)) * X) * stirlingPermutations n := by
+  rw [stirlingPermutations_succ]
+  simp [stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]
+  ring
 
 lemma stirlingPermutations_one :
     stirlingPermutations 1 = X := by
@@ -108,52 +117,31 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
 
 lemma natDegree_stirlingPermutations (n : Nat) :
     (stirlingPermutations n).natDegree = n := by
-  rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk))
-    (ne_of_gt htop)
-
-lemma stirlingPermutations_ne_zero (n : Nat) :
-    stirlingPermutations n ≠ 0 := by
-  rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨htop, _⟩
-  exact fun h0 => by
-    simp [h0] at htop
+  exact natDegree_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
+    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
+    (by norm_num) (by norm_num) n
 
 lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (stirlingPermutations n) := by
-  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_stirlingPermutations] using
-    (coeff_stirlingPermutations_top_pos_and_above n).1
+  exact hasPosLeadingCoeff_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
+    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
+    (by norm_num) (by norm_num) n
+
+lemma stirlingPermutations_ne_zero (n : Nat) :
+    stirlingPermutations n ≠ 0 := by
+  exact ne_zero_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
+    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
+    (by norm_num) (by norm_num) n
 
 lemma stirlingPermutations_nonnegCoeffs :
-    ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n)
-  | 0 => by
-      intro k
-      cases k <;> simp [stirlingPermutations_zero, coeff_one]
-  | n + 1 => by
-      rintro (_ | j)
-      · simp [stirlingPermutations_succ, stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]
-      · rw [coeff_stirlingPermutations_succ]
-        by_cases hj : j ≤ n
-        · have hcoeff_j : 0 ≤ coeff (stirlingPermutations n) j :=
-            stirlingPermutations_nonnegCoeffs n j
-          have hcoeff_j1 : 0 ≤ coeff (stirlingPermutations n) (j + 1) :=
-            stirlingPermutations_nonnegCoeffs n (j + 1)
-          have hscale : 0 ≤ ((2 * n + 1 : ℝ) - j) := by
-            have hj' : (j : ℝ) ≤ n := Nat.cast_le.mpr hj
-            nlinarith
-          exact add_nonneg (mul_nonneg hscale hcoeff_j)
-            (mul_nonneg (by positivity) hcoeff_j1)
-        · have hj' : n < j := lt_of_not_ge hj
-          rcases coeff_stirlingPermutations_top_pos_and_above n with ⟨_, habove⟩
-          have hcoeff_j : coeff (stirlingPermutations n) j = 0 := habove j hj'
-          have hcoeff_j1 : coeff (stirlingPermutations n) (j + 1) = 0 :=
-            habove (j + 1) (by lia)
-          simp [hcoeff_j, hcoeff_j1]
+    ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n) := by
+  exact hasNonnegCoeffs_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
+    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
 
-lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat}
-    (hrr : (stirlingPermutations n).Splits) :
+lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat} :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
-  roots_nonpos_of_nonneg_coeffs hrr (stirlingPermutations_nonnegCoeffs n)
+  roots_nonpos_of_hasNonnegCoeffs (stirlingPermutations_nonnegCoeffs n)
 
 lemma interlaces_stirlingPermutations_zero_one :
     Interlaces (stirlingPermutations 0) (stirlingPermutations 1) := by
@@ -165,107 +153,19 @@ lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) 
   simp [stirlingPermutationsCoeffB]
   nlinarith
 
+private theorem strictInterl_stirlingPermutations_quadratic :
+    ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
+  exact strictInterl_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
+    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+
 lemma strictInterl_stirlingPermutations_one_two :
     StrictInterl (stirlingPermutations 1) (stirlingPermutations 2) := by
-  have hdeg : (stirlingPermutations 1).natDegree = 1 :=
-    natDegree_stirlingPermutations 1
-  have hf : ((stirlingPermutations 1) ≠ 0 ∧ (stirlingPermutations 1).Splits) :=
-    isRealRooted_of_degree_one hdeg
-  have hInter :
-      Interlaces (stirlingPermutations 1).derivative (stirlingPermutations 1) := by
-    simpa [stirlingPermutations_one] using
-      interlaces_one_linear (p := stirlingPermutations 1) hdeg
-  have hg_pos : HasPosLeadingCoeff (stirlingPermutations 1).derivative :=
-    (stirlingPermutations_posLeadingCoeff 1).derivative (by simp [natDegree_stirlingPermutations])
-  have hNext_eq :
-      stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
-          stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative =
-        stirlingPermutations 2 :=
-    (stirlingPermutations_succ 1).symm
-  have hF_pos :
-      HasPosLeadingCoeff
-        (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
-          stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative) := by
-    simpa [hNext_eq] using stirlingPermutations_posLeadingCoeff 2
-  have hdeg_lo :
-      (stirlingPermutations 1).natDegree ≤
-        (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
-          stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative).natDegree := by
-    rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-    lia
-  have hdeg_hi :
-      (stirlingPermutationsCoeffA 1 * stirlingPermutations 1 +
-          stirlingPermutationsCoeffB * (stirlingPermutations 1).derivative).natDegree ≤
-        (stirlingPermutations 1).natDegree + 1 := by
-    rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-  have hb_nonpos :
-      ∀ r, (stirlingPermutations 1).IsRoot r →
-        stirlingPermutationsCoeffB.eval r ≤ 0 := by
-    intro r hr
-    have hr_nonpos :
-        r ≤ 0 :=
-      roots_nonpos_stirlingPermutations_of_isRealRooted hf.2 r ((mem_roots hf.1).mpr hr)
-    exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
-  simpa [hNext_eq] using
-    strictInterl_of_interlaces_evalCoeff_nonpos
-      (f := stirlingPermutations 1)
-      (g := (stirlingPermutations 1).derivative)
-      (a := stirlingPermutationsCoeffA 1)
-      (b := stirlingPermutationsCoeffB)
-      hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+  simpa using strictInterl_stirlingPermutations_quadratic 1
 
 theorem strictInterl_stirlingPermutations_succ :
-    ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1))
-  | 0 => interlaces_stirlingPermutations_zero_one.toStrictInterl
-  | 1 => strictInterl_stirlingPermutations_one_two
-  | n + 2 => by
-      have hInter :
-          Interlaces (stirlingPermutations (n + 2)).derivative
-            (stirlingPermutations (n + 2)) :=
-        derivative_interlaces_of_natDegree_ne_zero
-          (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 (by
-          simp [natDegree_stirlingPermutations])
-      have hg_pos : HasPosLeadingCoeff (stirlingPermutations (n + 2)).derivative :=
-        (stirlingPermutations_posLeadingCoeff (n + 2)).derivative (by
-          simp [natDegree_stirlingPermutations])
-      have hNext_eq :
-          stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
-              stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative =
-            stirlingPermutations (n + 3) :=
-        (stirlingPermutations_succ (n + 2)).symm
-      have hF_pos :
-          HasPosLeadingCoeff
-            (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
-              stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative) := by
-        simpa [hNext_eq] using stirlingPermutations_posLeadingCoeff (n + 3)
-      have hdeg_lo :
-          (stirlingPermutations (n + 2)).natDegree ≤
-            (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
-              stirlingPermutationsCoeffB *
-                (stirlingPermutations (n + 2)).derivative).natDegree := by
-        rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-        lia
-      have hdeg_hi :
-          (stirlingPermutationsCoeffA (n + 2) * stirlingPermutations (n + 2) +
-              stirlingPermutationsCoeffB * (stirlingPermutations (n + 2)).derivative).natDegree ≤
-            (stirlingPermutations (n + 2)).natDegree + 1 := by
-        rw [hNext_eq, natDegree_stirlingPermutations, natDegree_stirlingPermutations]
-      have hb_nonpos :
-          ∀ r, (stirlingPermutations (n + 2)).IsRoot r →
-            stirlingPermutationsCoeffB.eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_stirlingPermutations_of_isRealRooted
-            (strictInterl_stirlingPermutations_succ (n + 1)).2.1.2 r
-            ((mem_roots (strictInterl_stirlingPermutations_succ (n + 1)).2.1.1).mpr hr)
-        exact eval_stirlingPermutationsCoeffB_nonpos_of_nonpos hr_nonpos
-      simpa [hNext_eq] using
-        strictInterl_of_interlaces_evalCoeff_nonpos
-          (f := stirlingPermutations (n + 2))
-          (g := (stirlingPermutations (n + 2)).derivative)
-          (a := stirlingPermutationsCoeffA (n + 2))
-          (b := stirlingPermutationsCoeffB)
-          hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+    ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
+  exact strictInterl_stirlingPermutations_quadratic
 
 theorem interlaces_stirlingPermutations_succ (n : Nat) :
     Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) :=

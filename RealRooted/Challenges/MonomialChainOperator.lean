@@ -10,6 +10,7 @@ import RealRooted.OperatorInterlacingUpgrade.StablePencil
 version = 1
 section = "theorems"
 slug = "monomial-chain-operator"
+formalized = "2026-05-12"
 
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
@@ -49,7 +50,9 @@ Suppose that $T$ preserves nonnegative coefficients, sends every nonzero PF
 polynomial in the degree box to a nonzero real-rooted polynomial, and its
 monomial images form the oriented chain
 
-$$T(1) \ll T(X) \ll \dotsb \ll T(X^D).$$
+$$
+T(1) \ll T(X) \ll \dotsb \ll T(X^D).
+$$
 
 Then $T$ preserves oriented interlacing of nonnegative-coefficient
 real-rooted inputs in the same degree box.  The quadratic tangent theorem
@@ -62,9 +65,9 @@ oriented interlacing pair.
 ## References
 
 The decomposition step uses the Krein expansion for interlacing polynomials;
-the operator perspective is related to P. Brändén, “Iterated sequences and
-the geometry of zeros,” *Journal für die reine und angewandte Mathematik* 658
-(2011), 115–131.
+the operator perspective is related to P. Brändén, [“Iterated sequences and
+the geometry of zeros,”](https://doi.org/10.1515/crelle.2011.063) *Journal für
+die reine und angewandte Mathematik* 658 (2011), 115–131.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the fully checked monomial-chain upgrade.

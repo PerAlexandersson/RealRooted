@@ -31,6 +31,7 @@ import RealRooted.Tactic.PosCombo
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.RootCount
+import RealRooted.Tactic.RowInterlacing
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.SymmetricDecomposition
@@ -48,9 +49,11 @@ import RealRooted.Tactic.OEIS.ProductLift
 import RealRooted.Tactic.OEIS.ProductParity
 
 /-!
-# OEIS tactic wrapper stub
+# OEIS tactic dispatcher
 
-Planned user-facing dispatch:
+`rr_oeis` dispatches row goals by their target. The named forms below select the
+inferred Ma--Wang, Favard, Liu--Wang row, or matrix frontend. The remaining
+forms list the explicit certificate frontends available from this facade.
 
 ```lean
 rr_oeis ma_wang
@@ -326,7 +329,51 @@ rr_product_lift_sequence using ... certificate := constFirstAffinePow
 rr_product_lift_sequence using ... certificate := constFirstAffinePowAuto
 ```
 
-This should remain a thin wrapper over explicit family tactics.  Generated
+This remains a thin wrapper over explicit family tactics. Generated
 OEIS files should expose the recurrence and certificate lemmas, then call the
 appropriate engine-specific tactic.
 -/
+
+open Lean Elab Tactic Meta Polynomial
+
+namespace RealRooted.Tactic
+
+private partial def rrOeisTargetBody : Expr → Expr
+  | .forallE _ _ body _ => rrOeisTargetBody body
+  | target => target
+
+private def rrOeisTargetHasConst (target : Expr) (name : Name) : Bool :=
+  (target.find? (·.isConstOf name)).isSome
+
+/-- Dispatch an OEIS row goal to the matching target-specific row tactic. -/
+elab "rr_oeis" : tactic => withMainContext do
+  let target := rrOeisTargetBody (← instantiateMVars (← getMainTarget))
+  if target.isAppOf ``RealRooted.Interlaces then
+    evalTactic (← `(tactic| rr_row_interlaces))
+  else if target.isAppOf ``Polynomial.Splits then
+    evalTactic (← `(tactic| rr_row_splits))
+  else if target.isAppOf ``RealRooted.HasNonnegCoeffs then
+    evalTactic (← `(tactic| rr_row_nonneg_coeffs))
+  else if target.isAppOf ``RealRooted.HasPosLeadingCoeff then
+    evalTactic (← `(tactic| rr_row_leadingCoeff_pos))
+  else if rrOeisTargetHasConst target ``Polynomial.natDegree then
+    evalTactic (← `(tactic| rr_row_natDegree))
+  else if target.isAppOf ``Ne then
+    evalTactic (← `(tactic| rr_row_ne_zero))
+  else
+    throwError "rr_oeis: expected an interlacing, splitting, degree, nonzero, \
+      positive-leading-coefficient, or nonnegative-coefficient row goal"
+
+/-- Select the inferred Ma--Wang frontend. -/
+macro "rr_oeis" "ma_wang" : tactic => `(tactic| rr_ma_wang)
+
+/-- Select the inferred Favard frontend. -/
+macro "rr_oeis" "favard" : tactic => `(tactic| rr_favard)
+
+/-- Select the row frontend, whose lag routes use the Liu--Wang theorems. -/
+macro "rr_oeis" "liu_wang" : tactic => `(tactic| rr_row_interlaces)
+
+/-- Select the inferred matrix frontend. -/
+macro "rr_oeis" "matrix" : tactic => `(tactic| rr_matrix)
+
+end RealRooted.Tactic

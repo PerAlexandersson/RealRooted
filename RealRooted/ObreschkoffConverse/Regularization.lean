@@ -215,11 +215,10 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
   · have hfx_ne : f.eval x ≠ 0 := fun hfx0 => by simp_all
     refine ⟨p, f, rfl, Or.inl ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hfx_ne⟩
     · exact
-        allComboRealRooted_linear_recombination
+        hall.linear_recombination
           (p := p) (q := f)
           (a := g.eval x) (b := -f.eval x) (c := 1) (d := 0)
           (by lia) (by simp)
-          hall
     · exact
         no_common_root_linear_change
           (p := p) (q := f)
@@ -229,11 +228,10 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
           hno
   · refine ⟨p, g, rfl, Or.inr ⟨hgx0, rfl⟩, ?_, ?_, hp_root, hp_der_root, hgx0⟩
     · exact
-        allComboRealRooted_linear_recombination
+        hall.linear_recombination
           (p := p) (q := g)
           (a := g.eval x) (b := -f.eval x) (c := 0) (d := 1)
           (by lia) (by simp)
-          hall
     · exact
         no_common_root_linear_change
           (p := p) (q := g)
@@ -243,7 +241,7 @@ lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
           hno
 
 private lemma eval_derivative_ne_zero_of_hasSimpleRoots
-    {p : ℝ[X]} (_hp0 : p ≠ 0) (hsimple : HasSimpleRoots p)
+    {p : ℝ[X]} (hsimple : HasSimpleRoots p)
     {r : ℝ} (hr : p.IsRoot r) :
     p.derivative.eval r ≠ 0 :=
   hsimple.eval_derivative_ne_zero hr
@@ -364,7 +362,7 @@ lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and
     have hprod_neg : p.derivative.derivative.eval x * q.eval x < 0 := by grind
     have hneg_pos : 0 < p.derivative.derivative.eval x * (-q).eval x := by simp_all
     have hall_neg : AllComboRealRooted p (-q) := by
-      simpa using (allComboRealRooted_C_mul_right (f := p) (g := q) (c := (-1 : ℝ)) hall)
+      simpa using (hall.C_mul_right (c := (-1 : ℝ)))
     have hq_neg_eval_ne : (-q).eval x ≠ 0 := by simp_all
     exact
       false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
@@ -407,10 +405,10 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
   let α : ℝ := (iterateTDeriv eps (max f.natDegree g.natDegree) g).derivative.eval r
   let β : ℝ := -((iterateTDeriv eps (max f.natDegree g.natDegree) f).derivative.eval r)
   have hα_ne : α ≠ 0 :=
-    eval_derivative_ne_zero_of_hasSimpleRoots hg'.1 hg_simple hgr
+    eval_derivative_ne_zero_of_hasSimpleRoots hg_simple hgr
   have hβ_ne : β ≠ 0 :=
     neg_ne_zero.mpr <|
-      eval_derivative_ne_zero_of_hasSimpleRoots hf'.1 hf_simple hfr
+      eval_derivative_ne_zero_of_hasSimpleRoots hf_simple hfr
   have hp_root :
       (C α * iterateTDeriv eps (max f.natDegree g.natDegree) f +
         C β * iterateTDeriv eps (max f.natDegree g.natDegree) g).IsRoot r := by

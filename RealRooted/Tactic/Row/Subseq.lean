@@ -253,7 +253,8 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
   let d1 := natLit 1
   -- the degrees and the positivity of the leading coefficients
   let degThms : List (Name × Option String) :=
-    if R.shape == .deriv then [(``RealRooted.derivRec_natDegree_eq_and_leadingCoeff_pos, none)]
+    if R.shape == .deriv then
+      [(``RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos, none)]
     else (``RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos, none) ::
       ["1", "2", "4", "1 / 2", "3"].map fun r =>
         (``RealRooted.threeTermRatio_natDegree_eq_and_leadingCoeff_pos, some r)
@@ -285,15 +286,15 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
       $extra:namedArgument* (hrec := $hrecI) (hdeg := $hdegI) (hpos := $hposI))
   let plain : List Name :=
     if R.shape == .deriv then
-      if D₀ == 0 then [``RealRooted.derivRec_interlaces_of_eval_nonpos]
-      else [``RealRooted.derivRec_interlaces_of_splits_of_eval_nonpos]
+      if D₀ == 0 then [``RealRooted.derivativeRecurrence_interlaces_of_eval_nonpos]
+      else [``RealRooted.derivativeRecurrence_interlaces_of_splits_of_eval_nonpos]
     else [``RealRooted.threeTerm_interlaces_of_eval_nonpos]
   let mut alts : List (MessageData × TacticM Unit) := []
   for thm in plain do
     alts := alts ++ [(m!"{thm}", do subAttempt P (← named thm #[]))]
   let (icc, iic) := if R.shape == .deriv then
-      (``RealRooted.derivRec_interlaces_of_roots_mem_Icc,
-        ``RealRooted.derivRec_interlaces_of_roots_le)
+      (``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc,
+        ``RealRooted.derivativeRecurrence_interlaces_of_roots_le)
     else
       (``RealRooted.threeTerm_interlaces_of_roots_mem_Icc,
         ``RealRooted.threeTerm_interlaces_of_roots_le)
@@ -312,8 +313,8 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
   if R.shape == .deriv then
     for u in ["-1", "0", "-1 / 2", "-2"] do
       let U ← subParse u
-      alts := alts ++ [(m!"derivRec_interlaces_of_roots_le_of_degree on (-∞, {u}]", do
-        subAttempt P (← named ``RealRooted.derivRec_interlaces_of_roots_le_of_degree
+      alts := alts ++ [(m!"derivativeRecurrence_interlaces_of_roots_le_of_degree on (-∞, {u}]", do
+        subAttempt P (← named ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree
           #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]))]
   else
     for u in ["0", "-1"] do
@@ -363,14 +364,17 @@ private def proveProductClass (R : Reduced) (c : Nat) : TacticM Unit := do
   evalTactic (← factorSplitsTac)
   unless (← getGoals).isEmpty do throwError "rr_row_subseq_splits: goals remain"
 
-/-- Prove `∀ m, (P (p * m + c)).Splits` for a class of zero rows. -/
-private def proveZeroClass (R : Reduced) (c : Nat) : TacticM Unit := do
+/-- Add the proved identity `∀ m, P (p * m + c) = 0` to the local context. -/
+private def haveZeroClass (R : Reduced) (c : Nat) (hzero : Ident) : TacticM Unit := do
   let P := R.P
   let p := natLit R.p
   let m := mkIdent `m
   let cL := natLit c
   let Q ← `(fun $m:ident => $P ($p * $m + $cL))
   let hrecI := mkIdent `hrecI
+  let (hzGoal, hzMain) ← subHave hzero
+    (← `(∀ $m:ident, $P ($p * $m + $cL) = 0))
+  setGoals [hzGoal]
   let (hg, main) ← subHave hrecI (← R.stmt c)
   setGoals [hg]
   R.proveRec c
@@ -396,7 +400,114 @@ private def proveZeroClass (R : Reduced) (c : Nat) : TacticM Unit := do
   | _ =>
       evalTactic (← `(tactic| have $hz:ident := $(mkIdent eqThm):ident (Q := $Q)
         $args:namedArgument* $hrecI (by assumption) $m))
-  evalTactic (← `(tactic| (beta_reduce at $hz:ident; rw [$hz:ident]; exact Polynomial.Splits.zero)))
+  evalTactic (← `(tactic| simpa only using $hz:ident))
+  setGoals [hzMain]
+
+/-- Prove `∀ m, (P (p * m + c)).Splits` for a class of zero rows. -/
+private def proveZeroClass (R : Reduced) (c : Nat) : TacticM Unit := do
+  let hzero := mkIdent `hzero
+  haveZeroClass R c hzero
+  evalTactic (← `(tactic| intro m; rw [$hzero:ident m]; exact Polynomial.Splits.zero))
+
+/-- Prove that every row in a zero residue class vanishes. -/
+private def proveZeroClassEq (R : Reduced) (c : Nat) : TacticM Unit := do
+  let hzero := mkIdent `hzero
+  haveZeroClass R c hzero
+  evalTactic (← `(tactic| exact $hzero:ident))
+
+/-- Numeric classification of a residue class for the degree backend. -/
+private inductive DegreeClassKind where
+  | zero
+  | live (D₀ d : Nat)
+  deriving Inhabited
+
+/-- Classify a residue class as identically zero or as having a positive-leading linear
+degree law `D₀ + d * m`. -/
+private def degreeClassKind (rows : Array QPoly) (p c : Nat) :
+    Except String DegreeClassKind := Id.run do
+  let mut seq : Array QPoly := #[]
+  let mut i := c
+  while i < rows.size do
+    seq := seq.push rows[i]!
+    i := i + p
+  if seq.size < 4 then return .error "too few computed rows"
+  if seq.all (·.isZero) then return .ok DegreeClassKind.zero
+  if seq.any (·.isZero) then return .error "some, but not all, rows vanish"
+  let D₀ := seq[0]!.natDegree
+  let d := seq[1]!.natDegree - D₀
+  for m in [0:seq.size] do
+    unless seq[m]!.natDegree == D₀ + d * m do
+      return .error s!"the degree of row {c + p * m} is {seq[m]!.natDegree}, not {D₀ + d * m}"
+    unless seq[m]!.lead > 0 do
+      return .error s!"the leading coefficient of row {c + p * m} is not positive"
+  return .ok (DegreeClassKind.live D₀ d)
+
+/-- Prove the linear degree law of a nonzero reduced three-term residue class. -/
+private def proveLagDegreeClass (R : Reduced) (c D₀ d : Nat) : TacticM Unit := do
+  let P := R.P
+  let p := natLit R.p
+  let m := mkIdent `m
+  let cL := natLit c
+  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
+  let hrecI := mkIdent `hrecI
+  let (hg, main) ← subHave hrecI (← R.stmt c)
+  setGoals [hg]
+  R.proveRec c
+  setGoals [main]
+  withMainContext do
+  let args ← R.coeffArgs c
+  let dT := natLit d
+  let Dq := natLit D₀
+  let mut alts : List (MessageData × TacticM Unit) := []
+  let nonneg ← `(tactic|
+    apply RealRooted.threeTermPos_natDegree (P := $Q) (d := $dT) (D₀ := $Dq)
+      $args:namedArgument* (hrec := $hrecI))
+  alts := alts ++ [(m!"nonnegative top recurrence", subAttempt P nonneg)]
+  for r in ["1", "2", "4", "1 / 2", "3"] do
+    let rho ← subParse r
+    let ratio ← `(tactic|
+      apply RealRooted.threeTermRatio_natDegree (P := $Q) (d := $dT) (D₀ := $Dq)
+        $args:namedArgument* (ρ := ($rho : ℝ)) (hrec := $hrecI))
+    alts := alts ++ [(m!"top-coefficient ratio {r}", subAttempt P ratio)]
+  subFirst "the degree of the nonzero residue class" alts
+
+/-- Prove the linear degree law of a nonzero reduced product residue class. -/
+private def proveProductDegreeClass (R : Reduced) (c D₀ d : Nat) : TacticM Unit := do
+  let P := R.P
+  let p := natLit R.p
+  let m := mkIdent `m
+  let cL := natLit c
+  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
+  let hrecI := mkIdent `hrecI
+  let (hg, main) ← subHave hrecI (← R.stmt c)
+  setGoals [hg]
+  R.proveRec c
+  setGoals [main]
+  withMainContext do
+  let q ← R.coeffAt 0 0 (c - R.jmin)
+  let dT := natLit d
+  let Dq := natLit D₀
+  let hq0 := mkIdent `hq0
+  let hqd := mkIdent `hqd
+  let hbase := mkIdent `hbase
+  let hbaseD := mkIdent `hbaseD
+  for (h, T) in [
+      (hq0, ← `(∀ $m:ident, $q $m ≠ 0)),
+      (hqd, ← `(∀ $m:ident, ($q $m).natDegree = $dT)),
+      (hbase, ← `($Q 0 ≠ 0)),
+      (hbaseD, ← `(($Q 0).natDegree = $Dq))] do
+    let (hg, main) ← subHave h T
+    setGoals [hg]
+    discard introIfForall
+    withMainContext do subSide P
+    setGoals [main]
+  evalTactic (← `(tactic| intro $m:ident))
+  withMainContext do
+  let proof ← `(tactic|
+    exact (RealRooted.productSequence_natDegree_of_constant_degree (P := $Q)
+      (L := $q) (d := $dT) $hq0 $hqd $hbase $hrecI $m).trans
+        (congrArg (· + $dT * $m) $hbaseD))
+  evalTactic proof
 
 /-- The class sequences' numeric kinds. -/
 private inductive ClassKind where
@@ -421,6 +532,94 @@ private def classKind (rows : Array QPoly) (p c : Nat) : Except String ClassKind
     unless seq[m]!.lead > 0 do
       return .error s!"the leading coefficient of row {c + p * m} is not positive"
   return .ok (ClassKind.live D₀)
+
+/-- Degree laws for product and lag recurrences split into residue classes, including classes
+whose rows all vanish.  The numeric classification is only a guard; every class recurrence is
+proved symbolically before the original goal is reconstructed. -/
+elab_rules : tactic
+  | `(tactic| rr_row_subseq_natDegree) => withMainContext do
+    discard introIfForall
+    withMainContext do
+    let tgt ← instantiateMVars (← getMainTarget)
+    let some Pn ← findSeqConstDeep? tgt
+      | throwError "rr_row_subseq_natDegree: no sequence `P : ℕ → ℝ[X]` found in the goal"
+    let some L ← linRec? Pn
+      | throwError "rr_row_subseq_natDegree: {Pn} has no linear recurrence"
+    let R ← readReduced L
+    unless R.shape == .lag || R.shape == .product do
+      throwError "rr_row_subseq_natDegree: the reduced recurrence is neither product nor three-term"
+    let P := R.P
+    let some rows ← linRecRows? L 26
+      | throwError "rr_row_subseq_natDegree: could not compute the rows of {Pn}"
+    let mut kinds : Array DegreeClassKind := #[]
+    for r in [0:R.p] do
+      let c := R.jmin + r
+      match degreeClassKind rows R.p c with
+      | .ok kd =>
+          kinds := kinds.push kd
+      | .error e =>
+          throwError "rr_row_subseq_natDegree: residue class {c} mod {R.p}: {e}"
+    let t ← mainRowIndex P
+    let hres : Array Ident := (Array.range R.p).map fun r =>
+      mkIdent (.mkSimple s!"hdeg_res{r}")
+    let m := mkIdent `m
+    for r in [0:R.p] do
+      let c := R.jmin + r
+      let T ← match kinds[r]! with
+        | .zero => `(∀ $m:ident, $P ($(natLit R.p) * $m + $(natLit c)) = 0)
+        | .live D₀ d => `(∀ $m:ident,
+            ($P ($(natLit R.p) * $m + $(natLit c))).natDegree =
+              $(natLit D₀) + $(natLit d) * $m)
+      let (hg, main) ← subHave hres[r]! T
+      setGoals [hg]
+      withMainContext do
+        match kinds[r]! with
+        | .zero => proveZeroClassEq R c
+        | .live D₀ d =>
+            if R.shape == .product then proveProductDegreeClass R c D₀ d
+            else proveLagDegreeClass R c D₀ d
+      unless (← getGoals).isEmpty do
+        throwError "rr_row_subseq_natDegree: goals remain in residue class {c}"
+      setGoals [main]
+    withMainContext do
+    let some tFv := (if t.isFVar then some t else none)
+      | throwError "rr_row_subseq_natDegree: the row index is not a variable"
+    let tId := mkIdent (← tFv.fvarId!.getUserName)
+    if R.jmin > 0 then
+      evalTactic (← `(tactic| rcases Nat.lt_or_ge $tId $(natLit R.jmin) with hlt | hge))
+      let [hlt, hge] ← getGoals
+        | throwError "rr_row_subseq_natDegree: unexpected goals"
+      setGoals [hlt]
+      evalTactic (← `(tactic| interval_cases $tId))
+      for g in ← getGoals do
+        setGoals [g]
+        rowSideFull (some P)
+      setGoals [hge]
+    withMainContext do
+    let r := mkIdent `r
+    let hr := mkIdent `hr
+    let ht := mkIdent `ht
+    evalTactic (← `(tactic| obtain ⟨$m:ident, $r:ident, $hr:ident, $ht:ident⟩ :=
+      RealRooted.exists_mul_add_lt $(natLit R.p) ($tId - $(natLit R.jmin)) (by norm_num)))
+    withMainContext do
+    evalTactic (← `(tactic| (
+      have hteq : $tId =
+        $(natLit R.p) * $m + ($(natLit R.jmin) + $r) := by lia
+      rw [hteq])))
+    evalTactic (← `(tactic| interval_cases $r:ident))
+    let gs ← getGoals
+    unless gs.length == R.p do
+      throwError "rr_row_subseq_natDegree: unexpected residue goals"
+    for i in [0:R.p] do
+      setGoals [gs[i]!]
+      withMainContext do
+        evalTactic (← `(tactic| (
+          rw [$(hres[i]!):ident $m]
+          simp only [Polynomial.natDegree_zero, Nat.add_assoc, Nat.mul_add_mod,
+            Nat.mul_mod_right, Nat.reduceAdd, Nat.reduceMul, Nat.reduceDiv, Nat.reduceMod,
+            Nat.add_zero, Nat.zero_add, Nat.mul_zero, Nat.mul_one, ite_true, ite_false]
+          first | done | lia)))
+    setGoals []
 
 /-- `rr_row_subseq_splits` closes `(P t).Splits` for a sequence whose recurrence has all lags
 divisible by `p ∈ [2, 6]`; see the module documentation. -/
