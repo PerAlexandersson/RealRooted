@@ -12,6 +12,7 @@ import RealRooted.AffineFamily.LowDegree
 import RealRooted.AffineFamily.PositiveFamily
 import RealRooted.AffineFamily.RootCrossing
 import RealRooted.AffineFamily.Wronskian
+import RealRooted.AffineFamily.PF
 import RealRooted.AffineLineRestriction
 import RealRooted.AffineProperPosition
 import RealRooted.AissenSchoenbergWhitney
@@ -353,6 +354,7 @@ import RealRooted.Challenges.Wagner
 import RealRooted.Challenges.WangYeh
 import RealRooted.Challenges.Wronskian
 import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.PF
 import RealRooted.ClassicalHurwitzMatrix
 import RealRooted.ClassicalHurwitzMatrix.Routh
 import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant

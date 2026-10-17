@@ -1860,6 +1860,8 @@ import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
 import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
 import RealRooted.RootVieta.SortedRoots
+import RealRooted.AffineFamily.PF
+import RealRooted.ChudnovskySeymour.PF
 
 /-!
 # RealRooted production umbrella
