@@ -9,6 +9,7 @@
 !LEAN_GOLF.md
 !PROOF_STATUS.md
 !RealRooted/Tactic/OEIS_COVERAGE.md
+!docs/WORKHORSES.md
 !website/README.md
 
 # Public companion Lean development.
@@ -39,3 +40,5 @@ realrooted-interlacing-seminar-handout.html
 *.out
 *.synctex.gz
 __pycache__/
+# generated on demand by scripts/lemma_index.py
+docs/LEMMA_INDEX.tsv
