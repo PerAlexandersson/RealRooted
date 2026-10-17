@@ -1,14 +1,16 @@
-import RealRooted.OperatorMatrix.Directed
+import RealRooted.OperatorMatrix.MixedLemma
 import RealRooted.OperatorMatrix.LocalToGlobal
 import RealRooted.QuadraticRoot
 
 /-!
 # Two-by-two operator matrices over `{1, θ, X}`
 
-This module proves that every block outside the thirteen classified blocks fails to preserve
-ordered PF pairs, and proves unconditional preservation for twelve of the thirteen allowed
-blocks. The remaining block `(θ, 1) / (θ, θ)` requires the open weak mixed comparison
-`p' + q' ≤ q + X p'`; no conditional preservation theorem is included here.
+A two-by-two block of operators from the alphabet `{1, θ, X}` (with `θ = X d/dX`) preserves
+ordered PF pairs if and only if it is one of thirteen blocks
+(`preservesOrderedPFPair_iff_isAllowedBlock`).  With the local-to-global theorem this
+classifies rectangular matrices (`preservesOrderedPF_letters_iff`).  Necessity uses explicit
+counterexamples; the block `(θ, 1) / (θ, θ)` uses the mixed differential lemma
+`p' + q' ≤ q + X p'`.
 -/
 
 open Polynomial
@@ -948,6 +950,56 @@ theorem preservesOrderedPFPair_theta_one_x_theta :
       hbottom
   · simpa only [Letter.linearMap_theta, Letter.linearMap_x, Letter.linearMap_one,
       RealRooted.theta] using interl_theta_add_X_mul_add_theta hp hq hpq
+
+/-- The block `(θ,1)/(θ,θ)` preserves ordered PF pairs; this is the mixed differential lemma
+followed by `X`-duality. -/
+theorem preservesOrderedPFPair_theta_one_theta_theta :
+    PreservesOrderedPFPair
+      Letter.theta.linearMap Letter.one.linearMap Letter.theta.linearMap
+      Letter.theta.linearMap := by
+  intro p q hp hq hpq
+  have htop := isPFPolynomial_add_X_mul_derivative_of_interl hp hq hpq
+  have hsum := isPFPolynomial_derivative_add_derivative_of_interl hp hq hpq
+  have hdual := (interl_iff_interl_X_mul hsum htop).mp
+    (interl_derivative_add_derivative_add_X_mul_derivative hp hq hpq)
+  refine ⟨?_, ?_, ?_⟩
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_one, RealRooted.theta,
+      add_comm (X * p.derivative)] using htop
+  · simpa only [Letter.linearMap_theta, RealRooted.theta, mul_add] using hsum.X_mul
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_one, RealRooted.theta, mul_add,
+      add_comm (X * p.derivative) q] using hdual
+
+/-- **Classification.** A two-by-two block over `{1, θ, X}` preserves ordered PF pairs if and only
+if it is one of the thirteen blocks of `Letter.IsAllowedBlock`. -/
+theorem preservesOrderedPFPair_iff_isAllowedBlock (a b c d : Letter) :
+    PreservesOrderedPFPair a.linearMap b.linearMap c.linearMap d.linearMap ↔
+      a.IsAllowedBlock b c d := by
+  refine ⟨fun h => by_contra fun hn => not_preservesOrderedPFPair_of_not_isAllowedBlock
+    a b c d hn h, fun h => ?_⟩
+  match a, b, c, d, h with
+  | .one, .one, .one, .one, _ => exact preservesOrderedPFPair_one_one_one_one
+  | .one, .one, .theta, .theta, _ => exact preservesOrderedPFPair_one_one_theta_theta
+  | .one, .one, .x, .one, _ => exact preservesOrderedPFPair_one_one_x_one
+  | .one, .one, .x, .x, _ => exact preservesOrderedPFPair_one_one_x_x
+  | .theta, .one, .theta, .one, _ => exact preservesOrderedPFPair_theta_one_theta_one
+  | .theta, .one, .theta, .theta, _ => exact preservesOrderedPFPair_theta_one_theta_theta
+  | .theta, .one, .x, .theta, _ => exact preservesOrderedPFPair_theta_one_x_theta
+  | .theta, .theta, .theta, .theta, _ => exact preservesOrderedPFPair_theta_theta_theta_theta
+  | .theta, .theta, .x, .x, _ => exact preservesOrderedPFPair_theta_theta_x_x
+  | .x, .one, .x, .one, _ => exact preservesOrderedPFPair_x_one_x_one
+  | .x, .one, .x, .x, _ => exact preservesOrderedPFPair_x_one_x_x
+  | .x, .theta, .x, .theta, _ => exact preservesOrderedPFPair_x_theta_x_theta
+  | .x, .x, .x, .x, _ => exact preservesOrderedPFPair_x_x_x_x
+
+/-- **Rectangular classification.** A matrix with at least two rows and columns over
+`{1, θ, X}` preserves ordered PF vectors if and only if every ordered two-by-two submatrix, on
+rows `i < k` and columns `j < l`, is one of the thirteen allowed blocks. -/
+theorem preservesOrderedPF_letters_iff {m n : ℕ} (L : Fin m → Fin n → Letter)
+    (hm : 2 ≤ m) (hn : 2 ≤ n) :
+    PreservesOrderedPF (fun i j => (L i j).linearMap) ↔
+      ∀ i k j l, i < k → j < l → (L i j).IsAllowedBlock (L i l) (L k j) (L k l) := by
+  rw [preservesOrderedPF_iff_preservesBlock_of_two_le _ hm hn]
+  simp only [PreservesBlock, preservesOrderedPFPair_iff_isAllowedBlock]
 
 end RealRooted.OperatorMatrix
 
