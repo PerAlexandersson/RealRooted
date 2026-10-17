@@ -1867,6 +1867,7 @@ import RealRooted.OperatorMatrix.Directed
 import RealRooted.OperatorMatrix.OneThetaX
 import RealRooted.OperatorMatrix.MixedLemma
 import RealRooted.OperatorMatrix.OneThetaXBoards
+import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
 
 /-!
 # RealRooted production umbrella
