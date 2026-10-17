@@ -1263,6 +1263,7 @@ import RealRooted.OperatorInterlacingUpgrade
 import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
 import RealRooted.OperatorInterlacingUpgrade.StablePencil
+import RealRooted.OperatorMatrix.Directed
 import RealRooted.OperatorMatrix.LocalToGlobal
 import RealRooted.OperatorPreservesInterlacing
 import RealRooted.OrderedRoots

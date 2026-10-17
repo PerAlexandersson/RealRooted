@@ -1863,6 +1863,7 @@ import RealRooted.RootVieta.SortedRoots
 import RealRooted.AffineFamily.PF
 import RealRooted.ChudnovskySeymour.PF
 import RealRooted.OperatorMatrix.LocalToGlobal
+import RealRooted.OperatorMatrix.Directed
 
 /-!
 # RealRooted production umbrella
