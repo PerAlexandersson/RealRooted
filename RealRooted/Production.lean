@@ -1864,6 +1864,7 @@ import RealRooted.AffineFamily.PF
 import RealRooted.ChudnovskySeymour.PF
 import RealRooted.OperatorMatrix.LocalToGlobal
 import RealRooted.OperatorMatrix.Directed
+import RealRooted.OperatorMatrix.OneThetaX
 
 /-!
 # RealRooted production umbrella
