@@ -1862,6 +1862,7 @@ import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
 import RealRooted.RootVieta.SortedRoots
 import RealRooted.AffineFamily.PF
 import RealRooted.ChudnovskySeymour.PF
+import RealRooted.OperatorMatrix.LocalToGlobal
 
 /-!
 # RealRooted production umbrella
