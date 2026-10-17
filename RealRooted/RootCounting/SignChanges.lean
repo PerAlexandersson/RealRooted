@@ -178,5 +178,105 @@ theorem splits_of_sign_changes_with_left_endpoint {p : ℝ[X]} {d : ℕ}
         Nat.sub_add_cancel (Nat.pos_of_ne_zero hi)] using
         hsign (i.1 - 1) (by lia)
 
+private theorem positive_signed_eval_of_approx {p : ℝ[X]} {d : ℕ}
+    {x A : Fin d → ℝ} (hA : ∀ i, 0 < A i)
+    (happrox : ∀ i : Fin d,
+      |(-1 : ℝ) ^ (d + 1 + (i : ℕ)) * p.eval (x i) / A i - 1| < 1)
+    (i : Fin d) :
+    0 < (-1 : ℝ) ^ (d + 1 + (i : ℕ)) * p.eval (x i) := by
+  have hquot : 0 < (-1 : ℝ) ^ (d + 1 + (i : ℕ)) * p.eval (x i) / A i := by
+    have := (abs_lt.mp (happrox i)).1
+    linarith
+  rcases (div_pos_iff.mp hquot) with h | h
+  · exact h.1
+  · exact (lt_asymm h.2 (hA i)).elim
+
+private theorem mul_neg_of_consecutive_signed_pos {a b : ℝ} {n : ℕ}
+    (ha : 0 < (-1 : ℝ) ^ n * a)
+    (hb : 0 < (-1 : ℝ) ^ (n + 1) * b) :
+    a * b < 0 := by
+  rcases neg_one_pow_eq_or ℝ n with hn | hn <;>
+    simp only [hn, pow_succ, one_mul, neg_mul] at ha hb <;>
+    nlinarith
+
+/-- A positive-leading degree-`d` polynomial splits if it approximates, to relative error
+less than one, a normalized alternating sign pattern at `d` strictly decreasing points. -/
+theorem splits_of_normalized_alternating_approx
+    (p : ℝ[X]) (d : ℕ) (x A : Fin d → ℝ)
+    (hd : 0 < d) (hdeg : p.natDegree = d) (hlc : 0 < p.leadingCoeff)
+    (hx : StrictAnti x) (hA : ∀ i, 0 < A i)
+    (happrox : ∀ i : Fin d,
+      |(-1 : ℝ) ^ (d + 1 + (i : ℕ)) * p.eval (x i) / A i - 1| < 1) :
+    p.Splits := by
+  have hp : p ≠ 0 := by
+    intro hp
+    simp [hp] at hlc
+  have hpos := positive_signed_eval_of_approx hA happrox
+  rcases Nat.even_or_odd d with heven | hodd
+  · let q := p.comp (-X)
+    let r : Fin d → ℝ := fun i => -x i
+    have hq0 : q ≠ 0 := by
+      intro hq
+      exact hp (Polynomial.comp_neg_X_eq_zero_iff.mp hq)
+    have hqdeg : q.natDegree = d := by
+      simp only [q, Polynomial.natDegree_comp, hdeg, natDegree_neg, natDegree_X,
+        mul_one]
+    have hqlc : 0 < q.leadingCoeff := by
+      simpa only [q, Polynomial.comp_neg_X_leadingCoeff_eq, hdeg,
+        heven.neg_one_pow, one_mul] using hlc
+    have hr : StrictMono r := by
+      intro i j hij
+      exact neg_lt_neg (hx hij)
+    have hqsplit : q.Splits := by
+      apply splits_of_sign_changes_with_left_endpoint hd hq0 hqdeg hqlc r hr
+      · have hzero := hpos (⟨0, hd⟩ : Fin d)
+        simp only [add_zero, pow_succ, heven.neg_one_pow, one_mul, neg_one_mul] at hzero
+        simp only [q, r, Polynomial.eval_comp, eval_neg, eval_X, neg_neg,
+          heven.neg_one_pow, one_mul]
+        linarith
+      · intro k hk
+        have hk0 := hpos (⟨k, by lia⟩ : Fin d)
+        have hk1 := hpos (⟨k + 1, hk⟩ : Fin d)
+        have hsign := mul_neg_of_consecutive_signed_pos hk0 (by
+          simpa only [Fin.val_mk, Nat.add_assoc] using hk1)
+        simpa only [q, r, Polynomial.eval_comp, eval_neg, eval_X, neg_neg] using hsign
+    simpa only [q, Polynomial.comp_neg_X_comp_neg_X] using hqsplit.comp_neg_X
+  · let r : Fin d → ℝ := fun i => x i.rev
+    have hr : StrictMono r := by
+      change StrictMono (x ∘ Fin.rev)
+      exact hx.comp Fin.rev_strictAnti
+    apply splits_of_sign_changes_with_left_endpoint hd hp hdeg hlc r hr
+    · have hlast := hpos (Fin.rev (⟨0, hd⟩ : Fin d))
+      have he : Even (d + 1 + (Fin.rev (⟨0, hd⟩ : Fin d) : ℕ)) := ⟨d, by
+        simp only [Fin.val_rev]
+        lia⟩
+      rw [he.neg_one_pow, one_mul] at hlast
+      simp only [r, hodd.neg_one_pow, neg_one_mul]
+      linarith
+    · intro k hk
+      let i : Fin d := ⟨k, by lia⟩
+      let j : Fin d := ⟨k + 1, hk⟩
+      have hj := hpos j.rev
+      have hi := hpos i.rev
+      have hexp : d + 1 + (i.rev : ℕ) = d + 1 + (j.rev : ℕ) + 1 := by
+        simp only [i, j, Fin.val_rev]
+        lia
+      rw [hexp] at hi
+      simpa only [r, i, j, mul_comm] using mul_neg_of_consecutive_signed_pos hj hi
+
+example : (X : ℝ[X]).Splits := by
+  apply splits_of_normalized_alternating_approx (d := 1)
+    (x := fun _ => 1) (A := fun _ => 1)
+  · norm_num
+  · simp
+  · simp
+  · intro i j hij
+    fin_cases i
+    fin_cases j
+    simp at hij
+  · norm_num
+  · intro i
+    fin_cases i
+    norm_num
 
 end RealRooted
