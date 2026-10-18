@@ -46,7 +46,7 @@ theorem generalComparison_natDegree_of_v_eq_zero (κ a b : ℝ) (q : ℝ[X]) (m 
   have htop : (generalComparison κ a b 0 q).coeff m =
       κ * (2 * (m : ℝ) + (a + b + 1)) * q.leadingCoeff := by
     cases m with
-    | zero => 
+    | zero =>
       rw [coeff_zero_generalComparison]
       simp [leadingCoeff, hqdeg]
     | succ k =>

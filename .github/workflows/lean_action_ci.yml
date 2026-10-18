@@ -110,6 +110,12 @@ jobs:
         with:
           path: .lake
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+      # Mathlib's lint checks.  Existing environment-linter findings are listed in
+      # scripts/nolints.json; new code must pass.
+      - name: Text-based style linters (lake exe lint-style)
+        run: lake exe lint-style --github
+      - name: Environment linters (lake exe runLinter)
+        run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter RealRooted
       - name: Check Mathlib shim registry
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_check_mathlib_shims.py

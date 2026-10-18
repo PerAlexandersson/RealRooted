@@ -306,7 +306,7 @@ theorem hasNegativeSimplePencilShapes_of_strictInterl
           _ = C β * (C c * ((X - C ρ) * q)) := by rw [hform]
           _ = C (β * c) * ((X - C ρ) * q) := by rw [← mul_assoc, C_mul]
       simpa [P] using hshapeP
-  
+
 
 /-- A linear map satisfying H1--H2 preserves the oriented successor-degree
 interlacing relation and root-disjointness of a negative-simple pencil. -/

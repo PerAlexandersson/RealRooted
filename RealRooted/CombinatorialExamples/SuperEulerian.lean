@@ -35,7 +35,7 @@ stable-pencil input replaced by the Garloff--Wagner theorem.
   (`eulerianTilde n = X * E_{n+1}^{(1)}`).
 * `isPFPolynomial_superEulerian`, `isRealRooted_superEulerian`: for `l ≥ 1` every row has
   nonnegative coefficients and only nonpositive real zeros.
-* `interl_superEulerian_succ`: `E_n ⪯ E_{n+1}` (in the repository convention `Interl`, the
+* `interl_superEulerian_succ`: `E_n ≼ E_{n+1}` (in the repository convention `Interl`, the
   right polynomial has the rightmost zero).
 * `exists_gamma_superEulerian`, `isRealRooted_gamma_superEulerian`: the gamma-polynomial is
   real-rooted with nonpositive zeros and has nonnegative coefficients; this uses the general
@@ -47,11 +47,12 @@ stable-pencil input replaced by the Garloff--Wagner theorem.
   common zero.
 
 The weak route is that of the paper.  The normalized rows
-`Ẽ_n = ∑_k E_{n,k} / C(n-1,k)^l t^k` satisfy `Ẽ_{n+1} = (1+t) ((θ+1)(n-θ)/n)^l Ẽ_n`; both
-operators preserve the Pólya frequency cone, and `E_n = B_n ⊙ Ẽ_n` with the `l`-fold Hadamard
-power `B_n` of `(1+t)^{n-1}`.  The identity
+`Etilde_n = ∑_k E_{n,k} / C(n-1,k)^l t^k` satisfy
+`Etilde_{n+1} = (1+t) ((θ+1)(n-θ)/n)^l Etilde_n`; both operators preserve the Pólya
+frequency cone, and `E_n = B_n ⊙ Etilde_n` with the `l`-fold Hadamard power `B_n` of
+`(1+t)^{n-1}`.  The identity
 `E_{n+1} = (θ+1)^l E_n + t^n ((θ+1)^l E_n)(1/t)`, the Garloff--Wagner two-pair theorem, the
-reversal of interlacing and the cone property give `E_n ⪯ E_{n+1}`.
+reversal of interlacing and the cone property give `E_n ≼ E_{n+1}`.
 
 For strictness, write `U = (θ+1)^l E_n` and `V = (n-θ)^l E_n`, so that
 `E_{n+1} = U + t V`.  If `E_n` has simple negative zeros `ε_1 < ⋯ < ε_{n-1}`, then `θ + 1` and
@@ -59,7 +60,7 @@ For strictness, write `U = (θ+1)^l E_n` and `V = (n-θ)^l E_n`, so that
 ordered zeros satisfy `v_i < ε_i < u_i`.  The Garloff--Wagner theorem, applied to the
 kernels `(n-θ)(1+t)^{n-1}` and `(θ+1)(1+t)^{n-1}`, gives the weak interlacing
 `u_i ≤ v_{i+1}`.  Hence `u_{i-1} ≤ v_i < ε_i < u_i`, so `U` does not vanish at any `ε_i`; at
-`ε_i` the values of `U` and `t V` have the same sign (`E_n ⪯ U` and `E_n ⪯ t V`), so neither
+`ε_i` the values of `U` and `t V` have the same sign (`E_n ≼ U` and `E_n ≼ t V`), so neither
 does `E_{n+1}`.
 -/
 
@@ -723,7 +724,7 @@ private lemma isPFPolynomial_normRow (l m : ℕ) : IsPFPolynomial (normRow l m) 
         (isPFPolynomial_mul_X_add_one (isPFPolynomial_eulerStep_iterate ih
           ((natDegree_normRow_le l m).trans (Nat.le_succ m)) l))
 
-/-- The Hadamard factorization `E_n = B_n ⊙ Ẽ_n` through the binomial kernel. -/
+/-- The Hadamard factorization `E_n = B_n ⊙ Etilde_n` through the binomial kernel. -/
 private lemma superEulerian_succ_eq_hadamard (l m : ℕ) :
     superEulerian (l + 1) (m + 1) =
       hadamardProduct (hadPow ((X + 1) ^ m) l) (normRow (l + 1) m) := by
@@ -748,7 +749,7 @@ private lemma natDegree_iterateThetaPlusOne_le (l : ℕ) (p : ℝ[X]) :
   intro k hk
   simp [coeff_iterateThetaPlusOne, coeff_eq_zero_of_natDegree_lt hk]
 
-/-- `(θ+1)^l E_n = Λ_n ⊙ Ẽ_n`. -/
+/-- `(θ+1)^l E_n = Λ_n ⊙ Etilde_n`. -/
 private lemma iterateThetaPlusOne_superEulerian (l m : ℕ) :
     iterateThetaPlusOne (l + 1) (superEulerian (l + 1) (m + 1)) =
       hadamardProduct (hadPow (thetaPlusOne ((X + 1) ^ m)) l) (normRow (l + 1) m) := by
@@ -849,7 +850,7 @@ private lemma natDegree_iterateThetaPlusOne_superEulerian (l m : ℕ) :
   simpa [natDegree_superEulerian] using natDegree_iterateThetaPlusOne_le (l + 1)
     (superEulerian (l + 1) (m + 1))
 
-/-- `E_{m+1} ⪯ (θ+1)^l E_{m+1}`, from the Garloff--Wagner theorem. -/
+/-- `E_{m+1} ≼ (θ+1)^l E_{m+1}`, from the Garloff--Wagner theorem. -/
 private lemma interl_superEulerian_iterateThetaPlusOne (l m : ℕ) :
     Interl (superEulerian (l + 1) (m + 1))
       (iterateThetaPlusOne (l + 1) (superEulerian (l + 1) (m + 1))) := by
@@ -866,7 +867,7 @@ private lemma isPFPolynomial_reciprocalShift_iterateThetaPlusOne (l m : ℕ) :
   reciprocalShift_preserves_pf (isPFPolynomial_iterateThetaPlusOne_superEulerian l m)
     ((natDegree_iterateThetaPlusOne_superEulerian l m).trans (Nat.le_succ m))
 
-/-- `E_{m+1} ⪯ t^{m+1} ((θ+1)^l E_{m+1})(1/t)`, by reversing the previous interlacing. -/
+/-- `E_{m+1} ≼ t^{m+1} ((θ+1)^l E_{m+1})(1/t)`, by reversing the previous interlacing. -/
 private lemma interl_superEulerian_reciprocalShift (l m : ℕ) :
     Interl (superEulerian (l + 1) (m + 1))
       (reciprocalShift (m + 1) (iterateThetaPlusOne (l + 1) (superEulerian (l + 1) (m + 1)))) := by
@@ -881,7 +882,7 @@ private lemma interl_superEulerian_reciprocalShift (l m : ℕ) :
   exact ((strictInterl_iff_mul_X_of_roots_nonpos hEpf.roots_nonpos
     (isPFPolynomial_reciprocalShift_iterateThetaPlusOne l m).roots_nonpos).mpr hrev).toInterl
 
-/-- Consecutive super-Eulerian polynomials interlace: `E_n ⪯ E_{n+1}`, in the repository
+/-- Consecutive super-Eulerian polynomials interlace: `E_n ≼ E_{n+1}`, in the repository
 convention `Interl f g` (`g` has the rightmost zero). -/
 theorem interl_superEulerian_succ {l : ℕ} (hl : l ≠ 0) (n : ℕ) :
     Interl (superEulerian l n) (superEulerian l (n + 1)) := by
@@ -932,7 +933,7 @@ private lemma coeff_iterate_polarTheta (N l : ℕ) (p : ℝ[X]) (k : ℕ) :
   | zero => simp
   | succ l ih => rw [Function.iterate_succ_apply', coeff_polarTheta, ih]; ring
 
-/-- `(m+1-θ)^l E_{m+1} = Ω ⊙ Ẽ_{m+1}` for the polar binomial kernel `Ω`. -/
+/-- `(m+1-θ)^l E_{m+1} = Ω ⊙ Etilde_{m+1}` for the polar binomial kernel `Ω`. -/
 private lemma polarTheta_iterate_superEulerian (l m : ℕ) :
     (polarTheta (m + 1))^[l + 1] (superEulerian (l + 1) (m + 1)) =
       hadamardProduct (hadPow (polarTheta (m + 1) ((X + 1) ^ m)) l) (normRow (l + 1) m) := by
@@ -946,7 +947,7 @@ private lemma polarTheta_iterate_superEulerian (l m : ℕ) :
   · rw [Nat.choose_eq_zero_of_lt (by lia)]
     simp [superEulerianNumber_eq_zero_of_le (l + 1) (m + 1) k (by lia)]
 
-/-- `(m+1-θ)^l E_{m+1} ⪯ (θ+1)^l E_{m+1}`. -/
+/-- `(m+1-θ)^l E_{m+1} ≼ (θ+1)^l E_{m+1}`. -/
 private lemma interl_polarThetaIterate_thetaPlusOneIterate (l m : ℕ) :
     Interl ((polarTheta (m + 1))^[l + 1] (superEulerian (l + 1) (m + 1)))
       (iterateThetaPlusOne (l + 1) (superEulerian (l + 1) (m + 1))) := by

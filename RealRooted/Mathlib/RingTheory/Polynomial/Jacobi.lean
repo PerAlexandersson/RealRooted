@@ -1087,7 +1087,7 @@ private lemma coeff_shiftedJacobi_succ_degree
   have hsecond' :
       (n + α + β + 1) * Ring.choose (n + α + β + k + 1) k =
         (n + α + β + k + 1) * Ring.choose (n + α + β + k) k := by
-    convert hsecond using 1 ; ring
+    convert hsecond using 1; ring
   calc
     _ = (-1 : ℝ) ^ k *
         ((((n - k : ℕ) : ℝ) + 1) *
@@ -1150,7 +1150,7 @@ private lemma leading_choose_succ_degree (n : ℕ) (α β : ℝ) :
   have hsecond' :
       (n + α + β + 1) * Ring.choose (2 * n + α + β + 1) n =
         (2 * n + α + β + 1) * Ring.choose (2 * n + α + β) n := by
-    convert hsecond using 1 ; ring
+    convert hsecond using 1; ring
   calc
     _ = ((n + 1) * Ring.choose (2 * n + α + β + 2) (n + 1)) *
         (n + α + β + 1) := by ring_nf
@@ -1602,7 +1602,7 @@ theorem shiftedJacobiMonic_recurrence_one (α β : ℝ)
       field_simp [h2, h4]
       ring
     rw [shiftedJacobiDiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0)]
-    convert hdiag' using 1 ; ring
+    convert hdiag' using 1; ring
   have hconst :
       shiftedJacobiDiag 1 α β * ((α + 1) / (α + β + 2)) -
           shiftedJacobiSubdiag 1 α β =

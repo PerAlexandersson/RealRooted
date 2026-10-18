@@ -257,13 +257,13 @@ theorem polarDeriv_natDegree_lowerHalf {n : Nat} {b : ℝ} {ζ : ℂ}
         rw [hA] at h_eq
         exact h_eq
       rcases n with (_ | _ | n) <;> simp_all [Multiset.esymm]
-      · simp_all [Multiset.powersetCard_one, mul_sub] ; ring_nf
+      · simp_all [Multiset.powersetCard_one, mul_sub]; ring_nf
         rw [Polynomial.leadingCoeff, hA]
         grind
-      · simp_all [Multiset.powersetCard_one, Polynomial.leadingCoeff] ; grind
+      · simp_all [Multiset.powersetCard_one, Polynomial.leadingCoeff]; grind
     simp_all only [ne_eq]
     refine mul_ne_zero ?_ ?_
-    · rw [← hA, Polynomial.coeff_natDegree] ; aesop
+    · rw [← hA, Polynomial.coeff_natDegree]; aesop
     · intro h
       rw [sub_eq_zero] at h
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ lowerHalf b := by

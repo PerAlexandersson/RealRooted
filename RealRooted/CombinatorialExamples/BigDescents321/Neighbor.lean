@@ -155,7 +155,7 @@ private theorem kernelSum_neighbor_eq {t : ℕ} (ht : 5 ≤ t) (X : ℕ) :
   ring
 
 /-- `∑_(k ≤ R) W_(R,k)(X) P(R, X, k) > 0` for `R = t + 2 ≥ 7`: the sum telescopes to
-`∑_(k ≤ R) W_(R,k)(X) H̃(R, X, k) / (2 L d(R, X, k))`, whose terms are nonnegative and whose
+`∑_(k ≤ R) W_(R,k)(X) Htilde(R, X, k) / (2 L d(R, X, k))`, whose terms are nonnegative and whose
 `k = 0` term is positive. -/
 theorem sum_kernelWeight_mul_bernP_pos {t : ℕ} (ht : 5 ≤ t) (X : ℕ) :
     0 < ∑ k ∈ range (t + 2 + 1), kernelWeight (t + 2) k X * bernP ((t : ℚ) + 2) X k := by

@@ -882,7 +882,7 @@ end Eta
 
 section Coeff
 
-/-! ## The coefficient identity (Lemma `lem:moments` and the binomial expansion of `M̃_n`)
+/-! ## The coefficient identity (Lemma `lem:moments` and the binomial expansion of `Mtilde_n`)
 
 `L(d(n))_{n-j} = d_n(n)^2 N_{n,j} ∑_{r ≤ j} C(j,r) η_{n,r}`.
 -/

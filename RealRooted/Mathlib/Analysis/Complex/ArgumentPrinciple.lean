@@ -347,7 +347,7 @@ theorem circleIntegral_logDeriv_div_eq_sum_zeros
   rw [circleIntegral_logDeriv_eq_sum_zeros hR hU hsub s w n hw hg hg0 hf_eq]
   field_simp
 
-/-- **Zero-exclusion ⟺ vanishing contour integral** (clean two-sided form).
+/-- **Zero-exclusion ↔ vanishing contour integral** (clean two-sided form).
 
 Specializing the finite-sum argument principle to the empty index set recovers the
 zero-exclusion corollary in a self-contained shape: if `f` has *no* interior zeros

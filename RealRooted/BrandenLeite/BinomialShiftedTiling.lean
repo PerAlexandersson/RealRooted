@@ -164,7 +164,7 @@ theorem binomialShiftedRecurrenceCoefficient_three
   · interval_cases j <;>
       norm_num [binomialShiftedRecurrenceCoefficient,
         twoSeedRecurrenceCoefficient, Nat.choose,
-        Polynomial.C_ofNat] ; ring
+        Polynomial.C_ofNat]; ring
   · have hj4 : 4 ≤ j := by lia
     have hB : Nat.choose 3 j = 0 := Nat.choose_eq_zero_of_lt (by lia)
     have hA : Nat.choose (3 - 2) (j - 2) = 0 :=
