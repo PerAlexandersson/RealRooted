@@ -93,196 +93,265 @@ theorem finitePFMultiplierSequence_sequence_le_two_of_jensen_pf
   isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
     (hN i) (hGamma i) (hjensen i)
 
+/-- Closes `HasNonnegCoeffs (diagonalOperator gamma p)` from `nonneg : HasNonnegCoeffs p` and
+`sequence_nonneg : ∀ k, 0 ≤ gamma k`. -/
 syntax (name := rr_diagonal_nonneg_named)
   "rr_diagonal_nonneg" " using "
     "nonneg" ":=" term ","
     "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `(diagonalOperator gamma p).natDegree ≤ p.natDegree`. -/
 syntax (name := rr_diagonal_natDegree_le_named)
   "rr_diagonal_natDegree_le" :
   tactic
 
+/-- Closes
+`diagonalOperator gamma (p + q) = diagonalOperator gamma p + diagonalOperator gamma q`. -/
 syntax (name := rr_diagonal_add_named)
   "rr_diagonal_add" :
   tactic
 
+/-- Closes
+`diagonalOperator gamma (p - q) = diagonalOperator gamma p - diagonalOperator gamma q`. -/
 syntax (name := rr_diagonal_sub_named)
   "rr_diagonal_sub" :
   tactic
 
+/-- Closes `diagonalOperator gamma (-p) = -diagonalOperator gamma p`. -/
 syntax (name := rr_diagonal_neg_named)
   "rr_diagonal_neg" :
   tactic
 
+/-- Closes `diagonalOperator gamma (C a * p) = C a * diagonalOperator gamma p`. -/
 syntax (name := rr_diagonal_C_mul_named)
   "rr_diagonal_C_mul" :
   tactic
 
+/-- Closes `diagonalOperator gamma (diagonalOperator delta p) = diagonalOperator (gamma * delta) p`,
+where `gamma * delta` stands for `fun n => gamma n * delta n`. -/
 syntax (name := rr_diagonal_comp_named)
   "rr_diagonal_comp" :
   tactic
 
+/-- Closes `diagonalOperator gamma (diagonalOperator delta p) = diagonalOperator delta
+(diagonalOperator gamma p)`. -/
 syntax (name := rr_diagonal_comm_named)
   "rr_diagonal_comm" :
   tactic
 
+/-- Closes `(diagonalOperator gamma p).Splits` from
+`degree : (diagonalOperator gamma p).natDegree = 3` and
+`discriminant : 0 ≤ cubicDiscr (diagonalOperator gamma p)`. -/
 syntax (name := rr_diagonal_splits_cubic_named)
   "rr_diagonal_splits_cubic" " using "
     "degree" ":=" term ","
     "discriminant" ":=" term :
   tactic
 
+/-- Closes `(diagonalOperator gamma p).Splits` from
+`degree_le : (diagonalOperator gamma p).natDegree ≤ 3` and
+`discriminant : 0 ≤ cubicDiscr (diagonalOperator gamma p)`. -/
 syntax (name := rr_diagonal_splits_le_three_named)
   "rr_diagonal_splits_le_three" " using "
     "degree_le" ":=" term ","
     "discriminant" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs (jensenPolynomial n gamma)` from
+`sequence_nonneg : ∀ k, 0 ≤ gamma k`. -/
 syntax (name := rr_jensen_nonneg_named)
   "rr_jensen_nonneg" " using " "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `∀ i, HasNonnegCoeffs (jensenPolynomial (N i) (Gamma i))` from the `level` sequence `N`
+and `sequence_nonneg : ∀ i k, 0 ≤ Gamma i k`. -/
 syntax (name := rr_jensen_sequence_nonneg_named)
   "rr_jensen_sequence_nonneg" " using "
     "level" ":=" term ","
     "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `(jensenPolynomial n gamma).natDegree ≤ n`. -/
 syntax (name := rr_jensen_natDegree_le_named)
   "rr_jensen_natDegree_le" :
   tactic
 
+/-- Closes `∀ i, (jensenPolynomial (N i) (Gamma i)).natDegree ≤ N i` for the `level` sequence `N`
+and the `sequence` `Gamma`. -/
 syntax (name := rr_jensen_sequence_natDegree_le_named)
   "rr_jensen_sequence_natDegree_le" " using "
     "level" ":=" term ","
     "sequence" ":=" term :
   tactic
 
+/-- Closes `jensenPolynomial n gamma = 0 ↔ ∀ k ≤ n, gamma k = 0`. -/
 syntax (name := rr_jensen_zero_iff_named)
   "rr_jensen_zero_iff" :
   tactic
 
+/-- Closes `jensenPolynomial n gamma = diagonalOperator gamma ((X + 1) ^ n)`. -/
 syntax (name := rr_jensen_as_diagonal_X_add_one_pow_named)
   "rr_jensen_as_diagonal_X_add_one_pow" :
   tactic
 
+/-- Closes `jensenPolynomial n (fun k => gamma k * delta k) = diagonalOperator gamma
+(jensenPolynomial n delta)`. -/
 syntax (name := rr_jensen_mul_sequence_as_diagonal_named)
   "rr_jensen_mul_sequence_as_diagonal" :
   tactic
 
+/-- Closes the factorization of the Jensen polynomial of `fun k => a * k ^ 2 + b * k + c` as
+`(X + 1) ^ (d - 2)` times a quadratic, from `degree_ge_two : 2 ≤ d`. -/
 syntax (name := rr_jensen_quadratic_sequence_factor_named)
   "rr_jensen_quadratic_sequence_factor" " using " "degree_ge_two" ":=" term :
   tactic
 
+/-- Closes the closed formula for `cubicDiscr (jensenPolynomial 3 gamma)` in terms of `gamma 0`,
+`gamma 1`, `gamma 2` and `gamma 3`. -/
 syntax (name := rr_jensen_cubic_discr_named)
   "rr_jensen_cubic_discr" :
   tactic
 
+/-- Closes `0 ≤ cubicDiscr (jensenPolynomial 3 gamma)` from `zero_or_splits`, which says that the
+Jensen polynomial is zero or splits. -/
 syntax (name := rr_jensen_three_discr_nonneg_named)
   "rr_jensen_three_discr_nonneg" " using " "zero_or_splits" ":=" term :
   tactic
 
+/-- Closes `0 ≤ cubicDiscr (jensenPolynomial 3 gamma)` from
+`pf : IsPFPolynomial (jensenPolynomial 3 gamma)`. -/
 syntax (name := rr_jensen_pf_three_discr_nonneg_named)
   "rr_jensen_pf_three_discr_nonneg" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `0 ≤ cubicDiscr (jensenPolynomial 3 gamma) ↔ jensenPolynomial 3 gamma = 0 ∨
+(jensenPolynomial 3 gamma).Splits`. -/
 syntax (name := rr_jensen_three_discr_iff_zero_or_splits_named)
   "rr_jensen_three_discr_iff_zero_or_splits" :
   tactic
 
+/-- Closes `gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧ gamma 1 * gamma 3 ≤ gamma 2 ^ 2` from `zero_or_splits`
+for `jensenPolynomial 3 gamma`. -/
 syntax (name := rr_jensen_three_log_concave_named)
   "rr_jensen_three_log_concave" " using " "zero_or_splits" ":=" term :
   tactic
 
+/-- Closes `gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧ gamma 1 * gamma 3 ≤ gamma 2 ^ 2` from
+`pf : IsPFPolynomial (jensenPolynomial 3 gamma)`. -/
 syntax (name := rr_jensen_pf_three_log_concave_named)
   "rr_jensen_pf_three_log_concave" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence m gamma` from `degree_le : m ≤ n` and
+`multiplier : IsFiniteMultiplierSequence n gamma`. -/
 syntax (name := rr_finite_multiplier_mono_named)
   "rr_finite_multiplier_mono" " using "
     "degree_le" ":=" term ","
     "multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence m gamma` from `degree_le : m ≤ n` and
+`pf_multiplier : IsFinitePFMultiplierSequence n gamma`. -/
 syntax (name := rr_finite_pf_multiplier_mono_named)
   "rr_finite_pf_multiplier_mono" " using "
     "degree_le" ":=" term ","
     "pf_multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_multiplier_mono`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_finite_multiplier_sequence_mono_named)
   "rr_finite_multiplier_sequence_mono" " using "
     "degree_le" ":=" term ","
     "multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_pf_multiplier_mono`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_finite_pf_multiplier_sequence_mono_named)
   "rr_finite_pf_multiplier_sequence_mono" " using "
     "degree_le" ":=" term ","
     "pf_multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n (fun k => gamma k * delta k)` from `left_multiplier` for
+`gamma` and `right_multiplier` for `delta`. -/
 syntax (name := rr_finite_multiplier_mul_named)
   "rr_finite_multiplier_mul" " using "
     "left_multiplier" ":=" term ","
     "right_multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n (fun k => gamma k * delta k)` from `left_pf_multiplier`
+for `gamma` and `right_pf_multiplier` for `delta`. -/
 syntax (name := rr_finite_pf_multiplier_mul_named)
   "rr_finite_pf_multiplier_mul" " using "
     "left_pf_multiplier" ":=" term ","
     "right_pf_multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_multiplier_mul`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_finite_multiplier_sequence_mul_named)
   "rr_finite_multiplier_sequence_mul" " using "
     "left_multiplier" ":=" term ","
     "right_multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_pf_multiplier_mul`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_finite_pf_multiplier_sequence_mul_named)
   "rr_finite_pf_multiplier_sequence_mul" " using "
     "left_pf_multiplier" ":=" term ","
     "right_pf_multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n (fun _ => a)` for a constant sequence. -/
 syntax (name := rr_finite_multiplier_const_named)
   "rr_finite_multiplier_const" :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n (fun _ => a)` from `scalar_nonneg : 0 ≤ a`. -/
 syntax (name := rr_finite_pf_multiplier_const_named)
   "rr_finite_pf_multiplier_const" " using " "scalar_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n (fun _ => 1)`. -/
 syntax (name := rr_finite_multiplier_one_named)
   "rr_finite_multiplier_one" :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n (fun _ => 1)`. -/
 syntax (name := rr_finite_pf_multiplier_one_named)
   "rr_finite_pf_multiplier_one" :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n (fun _ => 0)`. -/
 syntax (name := rr_finite_multiplier_zero_named)
   "rr_finite_multiplier_zero" :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n (fun _ => 0)`. -/
 syntax (name := rr_finite_pf_multiplier_zero_named)
   "rr_finite_pf_multiplier_zero" :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n gamma` for every `gamma`, from `degree_le_one : n ≤ 1`. -/
 syntax (name := rr_finite_multiplier_le_one_named)
   "rr_finite_multiplier_le_one" " using " "degree_le_one" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence 0 gamma`. -/
 syntax (name := rr_finite_multiplier_degree_zero_named)
   "rr_finite_multiplier_degree_zero" :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence 1 gamma`. -/
 syntax (name := rr_finite_multiplier_degree_one_named)
   "rr_finite_multiplier_degree_one" :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence n gamma` from `degree_le_two : n ≤ 2`,
+`sequence_nonneg : ∀ k, 0 ≤ gamma k` and `jensen_pf : IsPFPolynomial (jensenPolynomial n gamma)`. -/
 syntax (name := rr_finite_multiplier_le_two_of_jensen_pf_named)
   "rr_finite_multiplier_le_two_of_jensen_pf" " using "
     "degree_le_two" ":=" term ","
@@ -290,18 +359,24 @@ syntax (name := rr_finite_multiplier_le_two_of_jensen_pf_named)
     "jensen_pf" ":=" term :
   tactic
 
+/-- Closes `IsFiniteMultiplierSequence 2 gamma` from `sequence_nonneg : ∀ k, 0 ≤ gamma k` and
+`jensen_pf : IsPFPolynomial (jensenPolynomial 2 gamma)`. -/
 syntax (name := rr_finite_multiplier_degree_two_of_jensen_pf_named)
   "rr_finite_multiplier_degree_two_of_jensen_pf" " using "
     "sequence_nonneg" ":=" term ","
     "jensen_pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (jensenPolynomial n gamma)` from `sequence_nonneg : ∀ k, 0 ≤ gamma k` and
+`multiplier : IsFiniteMultiplierSequence n gamma`. -/
 syntax (name := rr_jensen_pf_of_finite_multiplier_named)
   "rr_jensen_pf_of_finite_multiplier" " using "
     "sequence_nonneg" ":=" term ","
     "multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_jensen_pf_of_finite_multiplier`: for the `level` sequence `N`, closes
+`∀ i, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))`. -/
 syntax (name := rr_jensen_sequence_pf_of_finite_multiplier_named)
   "rr_jensen_sequence_pf_of_finite_multiplier" " using "
     "level" ":=" term ","
@@ -309,33 +384,45 @@ syntax (name := rr_jensen_sequence_pf_of_finite_multiplier_named)
     "multiplier" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (jensenPolynomial n gamma)` from
+`pf_multiplier : IsFinitePFMultiplierSequence n gamma`. -/
 syntax (name := rr_jensen_pf_of_finite_pf_multiplier_named)
   "rr_jensen_pf_of_finite_pf_multiplier" " using " "pf_multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_jensen_pf_of_finite_pf_multiplier`: for the `level` sequence `N`, closes
+`∀ i, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))`. -/
 syntax (name := rr_jensen_sequence_pf_of_finite_pf_multiplier_named)
   "rr_jensen_sequence_pf_of_finite_pf_multiplier" " using "
     "level" ":=" term ","
     "pf_multiplier" ":=" term :
   tactic
 
+/-- Closes `gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧ gamma 1 * gamma 3 ≤ gamma 2 ^ 2` from
+`sequence_nonneg : ∀ k, 0 ≤ gamma k` and `multiplier : IsFiniteMultiplierSequence 3 gamma`. -/
 syntax (name := rr_finite_multiplier_three_log_concave_named)
   "rr_finite_multiplier_three_log_concave" " using "
     "sequence_nonneg" ":=" term ","
     "multiplier" ":=" term :
   tactic
 
+/-- Closes `gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧ gamma 1 * gamma 3 ≤ gamma 2 ^ 2` from
+`pf_multiplier : IsFinitePFMultiplierSequence 3 gamma`. -/
 syntax (name := rr_finite_pf_multiplier_three_log_concave_named)
   "rr_finite_pf_multiplier_three_log_concave" " using "
     "pf_multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n gamma` from `sequence_nonneg : ∀ k, 0 ≤ gamma k` and
+`multiplier : IsFiniteMultiplierSequence n gamma`. -/
 syntax (name := rr_finite_pf_multiplier_of_finite_multiplier_named)
   "rr_finite_pf_multiplier_of_finite_multiplier" " using "
     "sequence_nonneg" ":=" term ","
     "multiplier" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_pf_multiplier_of_finite_multiplier`: for the `level` sequence `N`,
+closes `∀ i, IsFinitePFMultiplierSequence (N i) (Gamma i)`. -/
 syntax (name := rr_finite_pf_multiplier_sequence_of_finite_multiplier_named)
   "rr_finite_pf_multiplier_sequence_of_finite_multiplier" " using "
     "level" ":=" term ","
@@ -343,20 +430,26 @@ syntax (name := rr_finite_pf_multiplier_sequence_of_finite_multiplier_named)
     "multiplier" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n gamma` from `degree_le_one : n ≤ 1` and
+`sequence_nonneg : ∀ k, 0 ≤ gamma k`. -/
 syntax (name := rr_finite_pf_multiplier_le_one_named)
   "rr_finite_pf_multiplier_le_one" " using "
     "degree_le_one" ":=" term ","
     "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence 0 gamma` from `sequence_nonneg : ∀ k, 0 ≤ gamma k`. -/
 syntax (name := rr_finite_pf_multiplier_degree_zero_named)
   "rr_finite_pf_multiplier_degree_zero" " using " "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence 1 gamma` from `sequence_nonneg : ∀ k, 0 ≤ gamma k`. -/
 syntax (name := rr_finite_pf_multiplier_degree_one_named)
   "rr_finite_pf_multiplier_degree_one" " using " "sequence_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence n gamma` from `degree_le_two : n ≤ 2`,
+`sequence_nonneg : ∀ k, 0 ≤ gamma k` and `jensen_pf : IsPFPolynomial (jensenPolynomial n gamma)`. -/
 syntax (name := rr_finite_pf_multiplier_le_two_of_jensen_pf_named)
   "rr_finite_pf_multiplier_le_two_of_jensen_pf" " using "
     "degree_le_two" ":=" term ","
@@ -364,12 +457,16 @@ syntax (name := rr_finite_pf_multiplier_le_two_of_jensen_pf_named)
     "jensen_pf" ":=" term :
   tactic
 
+/-- Closes `IsFinitePFMultiplierSequence 2 gamma` from `sequence_nonneg : ∀ k, 0 ≤ gamma k` and
+`jensen_pf : IsPFPolynomial (jensenPolynomial 2 gamma)`. -/
 syntax (name := rr_finite_pf_multiplier_degree_two_of_jensen_pf_named)
   "rr_finite_pf_multiplier_degree_two_of_jensen_pf" " using "
     "sequence_nonneg" ":=" term ","
     "jensen_pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_multiplier_le_two_of_jensen_pf`: the same certificate for every
+index `i : Nat`. -/
 syntax (name := rr_finite_multiplier_sequence_le_two_of_jensen_pf_named)
   "rr_finite_multiplier_sequence_le_two_of_jensen_pf" " using "
     "degree_le_two" ":=" term ","
@@ -377,6 +474,8 @@ syntax (name := rr_finite_multiplier_sequence_le_two_of_jensen_pf_named)
     "jensen_pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_finite_pf_multiplier_le_two_of_jensen_pf`: the same certificate for every
+index `i : Nat`. -/
 syntax (name := rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf_named)
   "rr_finite_pf_multiplier_sequence_le_two_of_jensen_pf" " using "
     "degree_le_two" ":=" term ","

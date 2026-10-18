@@ -22,252 +22,372 @@ open Lean
 open Lean.Meta
 open Lean.Elab.Tactic
 
+/-- Term form of `rr_lookup`: elaborates to `by rr_lookup`. -/
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
+/-- Term form of `rr_realrooted`: elaborates to `by rr_realrooted`. -/
 syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
+/-- Term proving an `Interlaces` fact from a strict interlacing found by `rr_lookup` together with a
+degree equation found by `rr_lookup`, in either orientation. -/
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
+/-- Closes `p.natDegree = 1`, or its symmetric form, by `rr_lookup [rr_degree]`. -/
 syntax (name := rr_degree_eq_one) "rr_degree_eq_one" : tactic
+/-- Closes `p.natDegree ≤ 1` from an assumption or a degree equation found by
+`rr_lookup [rr_degree]`. -/
 syntax (name := rr_degree_le_one) "rr_degree_le_one" : tactic
+/-- Closes `p.natDegree = n` from `top_ne : p.coeff n ≠ 0` and
+`above : ∀ m, n < m → p.coeff m = 0`. -/
 syntax (name := rr_natDegree_from_top_above)
   "rr_natDegree_from_top_above" " using "
     "top_ne" ":=" term ","
     "above" ":=" term :
   tactic
 
+/-- Closes `p.natDegree = n` from `above : ∀ m, n < m → p.coeff m = 0` and `top_eq`, an equation for
+`p.coeff n` whose value `simp` shows to be nonzero. -/
 syntax (name := rr_natDegree_from_top_eq_above)
   "rr_natDegree_from_top_above" " using "
     "top_eq" ":=" term ","
     "above" ":=" term :
   tactic
 
+/-- Closes `p.natDegree = n` from `top_pos : 0 < p.coeff n` and
+`above : ∀ m, n < m → p.coeff m = 0`. -/
 syntax (name := rr_natDegree_from_top_pos_above)
   "rr_natDegree_from_top_above" " using "
     "top_pos" ":=" term ","
     "above" ":=" term :
   tactic
 
+/-- Closes the goal by `exact` of the certificate `h`, or of one of its projections: the
+nonvanishing, splitting or zero-or-splitting fact for a real-rooted polynomial, for the left or
+right member of a real-rooted pair, a `StrictInterl` or an `Interlaces` fact, or for the product of
+the two members of a pair. -/
 syntax (name := rr_exact_realrooted_or_projection)
   "rr_exact_realrooted_or_projection" term :
   tactic
 
+/-- Sequence form of `rr_exact_realrooted_or_projection`: closes the goal by `exact` of a
+real-rooted sequence certificate `h`, or of its value, nonvanishing, splitting or zero-or-splitting
+projection, at a row. -/
 syntax (name := rr_exact_realrooted_sequence_or_projection)
   "rr_exact_realrooted_sequence_or_projection" term :
   tactic
 
+/-- Applies `rr_exact_realrooted_sequence_or_projection` to the term `h`, whose side goals are
+created by `refine` and closed by the tactic after `with`. -/
 syntax (name := rr_exact_realrooted_refine_then)
   "rr_exact_realrooted_refine_then " term " with " tactic :
   tactic
 
+/-- Closes the goal by `exact` of a real-rooted pair sequence certificate `h`, or of one of its
+projections: the pair at a row, the left or right sequence, their nonvanishing, splitting or
+zero-or-splitting facts, or the real-rootedness of the product of the two members. -/
 syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
   "rr_exact_realrooted_pair_sequence_or_projection" term :
   tactic
 
+/-- Closes the goal with the first of the comma-separated terms that `apply` accepts, working with
+reducible instances. It fails if no term applies. -/
 syntax (name := rr_first_exact)
   "rr_first_exact" term,* :
   tactic
 
+/-- Closes the goal by `exact` of the first term or, failing that, by `simpa using` the second
+term. -/
 syntax (name := rr_first_exact_or_simpa)
   "rr_first_exact_or_simpa" term ", " term :
   tactic
 
+/-- Closes the goal by `exact` of the first term or, failing that, by `simpa [mul_assoc] using` the
+second term. -/
 syntax (name := rr_first_exact_or_simpa_mul_assoc)
   "rr_first_exact_or_simpa_mul_assoc" term ", " term :
   tactic
 
+/-- Closes the goal by `exact` of the first term or, failing that, by
+`simpa [mul_assoc, add_assoc] using` the second term. -/
 syntax (name := rr_first_exact_or_simpa_mul_add_assoc)
   "rr_first_exact_or_simpa_mul_add_assoc" term ", " term :
   tactic
 
+/-- Tries `rr_exact_realrooted_or_projection` on each of the comma-separated certificates in
+turn. -/
 syntax (name := rr_first_realrooted_or_projection)
   "rr_first_realrooted_or_projection" term,* :
   tactic
 
+/-- Tries `rr_exact_realrooted_sequence_or_projection` on each of the comma-separated certificates
+in turn, also after binding the certificate with `have`. -/
 syntax (name := rr_first_realrooted_sequence_or_projection)
   "rr_first_realrooted_sequence_or_projection" term,* :
   tactic
 
+/-- Closes the goal with the first comma-separated term that either applies directly or yields the
+goal through `rr_exact_realrooted_sequence_or_projection`. -/
 syntax (name := rr_first_exact_then_realrooted_sequence_or_projection)
   "rr_first_exact_then_realrooted_sequence_or_projection" term,* :
   tactic
 
+/-- Closes `p ≠ 0` from the certificate `h`: a real-rooted, pair, `Interlaces` or `StrictInterl`
+fact, or a sequence of such facts. -/
 syntax (name := rr_nonzero) "rr_nonzero" " using " term : tactic
+/-- Closes `p.Splits` from the certificate `h`: a real-rooted, pair, `Interlaces` or `StrictInterl`
+fact, a sequence of such facts, or a power or reversal of a splitting polynomial. -/
 syntax (name := rr_splits) "rr_splits" " using " term : tactic
+/-- Closes `(p * q).Splits` from `left : p.Splits` and `right : q.Splits`, in either order. -/
 syntax (name := rr_splits_mul)
   "rr_splits_mul" " using "
     "left" ":=" term ","
     "right" ":=" term :
   tactic
+/-- Closes `(p ^ n).Splits` from `splits : p.Splits` and the `exponent` `n`. -/
 syntax (name := rr_splits_pow)
   "rr_splits_pow" " using "
     "splits" ":=" term ","
     "exponent" ":=" term :
   tactic
+/-- Closes `p.reverse.Splits` from `splits : p.Splits`. -/
 syntax (name := rr_splits_reverse)
   "rr_splits_reverse" " using "
     "splits" ":=" term :
   tactic
+/-- Closes `p.Splits` from `reverse_splits : p.reverse.Splits`. -/
 syntax (name := rr_splits_of_reverse)
   "rr_splits_of_reverse" " using "
     "reverse_splits" ":=" term :
   tactic
+/-- Closes `(reflect N p).Splits` from `splits : p.Splits` and `degree_bound : p.natDegree ≤ N`. -/
 syntax (name := rr_splits_reflect)
   "rr_splits_reflect" " using "
     "splits" ":=" term ","
     "degree_bound" ":=" term :
   tactic
+/-- Closes `(X ^ k * p.reverse).Splits` from `splits : p.Splits`. -/
 syntax (name := rr_splits_X_pow_mul_reverse)
   "rr_splits_X_pow_mul_reverse" " using "
     "splits" ":=" term :
   tactic
+/-- Closes `p.divX.Splits` from `coeff_zero : p.coeff 0 = 0` and `splits : p.Splits`. -/
 syntax (name := rr_splits_divX)
   "rr_splits_divX" " using "
     "coeff_zero" ":=" term ","
     "splits" ":=" term :
   tactic
+/-- Closes `p.Splits` from `coeff_zero : p.coeff 0 = 0` and `divX_splits : p.divX.Splits`. -/
 syntax (name := rr_splits_of_divX)
   "rr_splits_of_divX" " using "
     "coeff_zero" ":=" term ","
     "divX_splits" ":=" term :
   tactic
+/-- Closes `p = 0 ∨ p.Splits` from the certificate `h`: a real-rooted, pair, `Interlaces` or
+`StrictInterl` fact, or a sequence of such facts. -/
 syntax (name := rr_zero_or_splits)
   "rr_zero_or_splits" " using " term :
   tactic
+/-- Closes `p * q = 0 ∨ (p * q).Splits` from `left` and `right`, the zero-or-splits facts for `p`
+and `q`. -/
 syntax (name := rr_zero_or_splits_mul)
   "rr_zero_or_splits_mul" " using "
     "left" ":=" term ","
     "right" ":=" term :
   tactic
+/-- Closes `p ^ n = 0 ∨ (p ^ n).Splits` from `zero_or_splits` for `p` and the `exponent` `n`. -/
 syntax (name := rr_zero_or_splits_pow)
   "rr_zero_or_splits_pow" " using "
     "zero_or_splits" ":=" term ","
     "exponent" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `p.reverse` from `zero_or_splits` for `p`. -/
 syntax (name := rr_zero_or_splits_reverse)
   "rr_zero_or_splits_reverse" " using "
     "zero_or_splits" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `p` from `reverse_zero_or_splits` for `p.reverse`. -/
 syntax (name := rr_zero_or_splits_of_reverse)
   "rr_zero_or_splits_of_reverse" " using "
     "reverse_zero_or_splits" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `reflect N p` from `zero_or_splits` for `p` and
+`degree_bound : p.natDegree ≤ N`. -/
 syntax (name := rr_zero_or_splits_reflect)
   "rr_zero_or_splits_reflect" " using "
     "zero_or_splits" ":=" term ","
     "degree_bound" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `X ^ k * p.reverse` from `zero_or_splits` for `p`. -/
 syntax (name := rr_zero_or_splits_X_pow_mul_reverse)
   "rr_zero_or_splits_X_pow_mul_reverse" " using "
     "zero_or_splits" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `p.divX` from `coeff_zero : p.coeff 0 = 0` and
+`zero_or_splits` for `p`. -/
 syntax (name := rr_zero_or_splits_divX)
   "rr_zero_or_splits_divX" " using "
     "coeff_zero" ":=" term ","
     "zero_or_splits" ":=" term :
   tactic
+/-- Closes the zero-or-splits statement for `p` from `coeff_zero : p.coeff 0 = 0` and
+`divX_zero_or_splits` for `p.divX`. -/
 syntax (name := rr_zero_or_splits_of_divX)
   "rr_zero_or_splits_of_divX" " using "
     "coeff_zero" ":=" term ","
     "divX_zero_or_splits" ":=" term :
   tactic
+/-- Closes `p ≠ 0 ∧ p.Splits` from the certificate `h`: a real-rooted, pair, `Interlaces` or
+`StrictInterl` fact, a sequence of such facts, or a product, power or reversal of real-rooted
+polynomials. -/
 syntax (name := rr_realrooted) "rr_realrooted" " using " term : tactic
+/-- Closes the real-rootedness of a product `p * q` from the real-rootedness certificates for `p`
+and `q`, given in this order or swapped. -/
 syntax (name := rr_mul_realrooted)
   "rr_mul_realrooted" " using " term ", " term :
   tactic
+/-- Named form of `rr_mul_realrooted`: `left` and `right` are the real-rootedness certificates of
+the two factors. -/
 syntax (name := rr_mul_realrooted_named)
   "rr_mul_realrooted" " using "
     "left" ":=" term ","
     "right" ":=" term :
   tactic
+/-- Closes the real-rootedness of `p ^ n` from `realrooted` for `p` and the `exponent` `n`. -/
 syntax (name := rr_pow_realrooted)
   "rr_pow_realrooted" " using "
     "realrooted" ":=" term ","
     "exponent" ":=" term :
   tactic
+/-- Closes the real-rootedness of `p.reverse` from `realrooted` for `p`. -/
 syntax (name := rr_realrooted_reverse)
   "rr_realrooted_reverse" " using "
     "realrooted" ":=" term :
   tactic
+/-- Closes the real-rootedness of `p` from `reverse_realrooted` for `p.reverse`. -/
 syntax (name := rr_realrooted_of_reverse)
   "rr_realrooted_of_reverse" " using "
     "reverse_realrooted" ":=" term :
   tactic
+/-- Closes the real-rootedness of `reflect N p` from `realrooted` for `p` and
+`degree_bound : p.natDegree ≤ N`. -/
 syntax (name := rr_realrooted_reflect)
   "rr_realrooted_reflect" " using "
     "realrooted" ":=" term ","
     "degree_bound" ":=" term :
   tactic
+/-- Closes the real-rootedness of `X ^ k * p.reverse` from `realrooted` for `p`. -/
 syntax (name := rr_realrooted_X_pow_mul_reverse)
   "rr_realrooted_X_pow_mul_reverse" " using "
     "realrooted" ":=" term :
   tactic
+/-- Closes the real-rootedness of `p.divX` from `coeff_zero : p.coeff 0 = 0` and `realrooted` for
+`p`. -/
 syntax (name := rr_realrooted_divX)
   "rr_realrooted_divX" " using "
     "coeff_zero" ":=" term ","
     "realrooted" ":=" term :
   tactic
+/-- Closes the real-rootedness of `p` from `coeff_zero : p.coeff 0 = 0` and `divX_realrooted` for
+`p.divX`. -/
 syntax (name := rr_realrooted_of_divX)
   "rr_realrooted_of_divX" " using "
     "coeff_zero" ":=" term ","
     "divX_realrooted" ":=" term :
   tactic
+/-- Closes `p ≠ 0` without a named certificate, trying `rr_lookup`, assumptions, linear factors,
+products, powers, reversals and derivatives. -/
 syntax (name := rr_nonzero_auto) "rr_nonzero" : tactic
+/-- Closes `p.Splits` without a named certificate, trying `rr_lookup`, assumptions, linear factors,
+monomials, products, powers and derivatives of interlacing polynomials. -/
 syntax (name := rr_splits_auto) "rr_splits" : tactic
+/-- Closes `p = 0 ∨ p.Splits` without a named certificate, trying `rr_lookup`, assumptions,
+products, powers and `rr_splits`. -/
 syntax (name := rr_zero_or_splits_auto) "rr_zero_or_splits" : tactic
+/-- Closes `p ≠ 0 ∧ p.Splits` without a named certificate, trying `rr_lookup`, assumptions, named
+wrapper lemmas, and `rr_nonzero` together with `rr_splits`. -/
 syntax (name := rr_realrooted_auto) "rr_realrooted" : tactic
 
+/-- Closes `Interlaces p q` from a strict interlacing (first term) and a degree equation (second
+term), accepting the degree equation in either orientation. -/
 syntax (name := rr_interlaces_with_degree)
   "rr_interlaces" " using " term ", " term : tactic
 
+/-- Closes `Interlaces p q` from a strict interlacing; the degree side goal is closed by
+`rr_close_side`. -/
 syntax (name := rr_interlaces_auto_degree)
   "rr_interlaces" " using " term : tactic
 
+/-- Closes `Interlaces p q` for named expressions, using the matching named `_interlaces` wrapper
+lemma or `rr_lookup_interlaces_term`. -/
 syntax (name := rr_interlaces_auto_named) "rr_interlaces" : tactic
 
+/-- Closes `Interl p q` from the certificate `h`: an `Interl`, `StrictInterl` or `Interlaces`
+fact. -/
 syntax (name := rr_interl) "rr_interl" " using " term : tactic
 
+/-- Closes `StrictInterl p q` from an `Interlaces p q` fact, or from a sequence of such facts. -/
 syntax (name := rr_strict_interl_of_interlaces)
   "rr_strict_interl" " using " term :
   tactic
 
+/-- Closes `StrictInterl f g` from `Interl f g` (first term) and the nonvanishing of `f` and `g`
+(second and third terms). -/
 syntax (name := rr_strict_interl_of_interl)
   "rr_strict_interl" " using " term ", " term ", " term : tactic
 
+/-- Closes `IsGeneralizedSturmSeq (p :: q :: l)` from a `StrictInterl` fact for the first pair
+(first term) and the certificate for the tail (second term). -/
 syntax (name := rr_gsturm_cons)
   "rr_gsturm_cons" " using " term ", " term : tactic
 
+/-- Closes `IsSturmSeq (p :: q :: l)` from an `Interlaces` fact for the first pair (first term) and
+the certificate for the tail (second term). -/
 syntax (name := rr_sturm_cons)
   "rr_sturm_cons" " using " term ", " term : tactic
 
+/-- Closes the empty and singleton cases of `IsSturmSeq` and `IsGeneralizedSturmSeq` by `simp`. -/
 syntax (name := rr_sturm_base) "rr_sturm_base" : tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` by induction from `base : StrictInterl (P 0) (P 1)`
+and `step`, which passes the previous strict interlacing on to the next one. -/
 syntax (name := rr_strict_interl_sequence)
   "rr_strict_interl_sequence" " using "
     "base" ":=" term ","
     "step" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by the `StrictInterl` induction of
+`rr_strict_interl_sequence`, from `base` and `step`. -/
 syntax (name := rr_strict_interl_sequence_realrooted)
   "rr_strict_interl_sequence_realrooted" " using "
     "base" ":=" term ","
     "step" ":=" term :
   tactic
 
+/-- Sequence finisher: the same as `rr_strict_interl_sequence_realrooted`, from `base` and
+`step`. -/
 syntax (name := rr_finish_sequence_base_step)
   "rr_finish_sequence" " using "
     "base" ":=" term ","
     "step" ":=" term :
   tactic
 
+/-- Closes the real-rootedness of a sequence from `strictInterl`, a chain of strict interlacings
+`StrictInterl (P n) (P (n + 1))` for all `n`. -/
 syntax (name := rr_finish_sequence_strict_interl)
   "rr_finish_sequence" " using "
     "strictInterl" ":=" term :
   tactic
 
+/-- Closes `∀ n, Interlaces (P n) (P (n + 1))` from the chain `strictInterl` and the `degree`
+increments `(P n).natDegree + 1 = (P (n + 1)).natDegree`. It falls back to real-rootedness of the
+sequence. -/
 syntax (name := rr_finish_sequence_strict_interl_degree)
   "rr_finish_sequence" " using "
     "strictInterl" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` by induction for sequences whose degree either
+stays the same or increases by one. The arguments are `base`, `degree`, the same-degree step `same`
+and the successor-degree step `successor`. -/
 syntax (name := rr_strict_interl_sequence_branches)
   "rr_strict_interl_sequence_branches" " using "
     "base" ":=" term ","
@@ -276,6 +396,8 @@ syntax (name := rr_strict_interl_sequence_branches)
     "successor" ":=" term :
   tactic
 
+/-- Variant of `rr_strict_interl_sequence_branches` whose degree dichotomy is named
+`degree_branch`. -/
 syntax (name := rr_strict_interl_sequence_branches_degree_branch)
   "rr_strict_interl_sequence_branches" " using "
     "base" ":=" term ","
@@ -284,6 +406,8 @@ syntax (name := rr_strict_interl_sequence_branches_degree_branch)
     "successor" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by the branched induction of
+`rr_strict_interl_sequence_branches`. The arguments are `base`, `degree`, `same` and `successor`. -/
 syntax (name := rr_strict_interl_sequence_branches_realrooted)
   "rr_strict_interl_sequence_branches_realrooted" " using "
     "base" ":=" term ","
@@ -292,6 +416,8 @@ syntax (name := rr_strict_interl_sequence_branches_realrooted)
     "successor" ":=" term :
   tactic
 
+/-- Variant of `rr_strict_interl_sequence_branches_realrooted` whose degree dichotomy is named
+`degree_branch`. -/
 syntax (name := rr_strict_interl_sequence_branches_realrooted_degree_branch)
   "rr_strict_interl_sequence_branches_realrooted" " using "
     "base" ":=" term ","
@@ -300,6 +426,9 @@ syntax (name := rr_strict_interl_sequence_branches_realrooted_degree_branch)
     "successor" ":=" term :
   tactic
 
+/-- Sequence finisher for degree-plateau recurrences: the same as
+`rr_strict_interl_sequence_branches_realrooted`, with arguments `base`, `degree`, `same` and
+`successor`. -/
 syntax (name := rr_finish_sequence_branches)
   "rr_finish_sequence_branches" " using "
     "base" ":=" term ","
@@ -308,6 +437,7 @@ syntax (name := rr_finish_sequence_branches)
     "successor" ":=" term :
   tactic
 
+/-- Variant of `rr_finish_sequence_branches` whose degree dichotomy is named `degree_branch`. -/
 syntax (name := rr_finish_sequence_branches_degree_branch)
   "rr_finish_sequence_branches" " using "
     "base" ":=" term ","
@@ -316,17 +446,30 @@ syntax (name := rr_finish_sequence_branches_degree_branch)
     "successor" ":=" term :
   tactic
 
+/-- Closes the goal from the certificate `h`, trying exact use, derivative interlacing, projections
+of real-rooted, pair and strict-interlacing certificates, and conversions between `Interlaces`,
+`StrictInterl` and `Interl`. -/
 syntax (name := rr_finish_using) "rr_finish" " using " term : tactic
 
+/-- Closes a sequence goal from two certificates: a chain of strict interlacings and its degree
+increments (giving `Interlaces`), a base and a step (giving strict interlacing or real-rootedness),
+or the head and tail of a Sturm sequence. -/
 syntax (name := rr_finish_using_interlaces_degree)
   "rr_finish" " using " term ", " term : tactic
 
+/-- Closes `StrictInterl f g` from `Interl f g` (first term) and the nonvanishing of `f` and `g`
+(second and third terms). -/
 syntax (name := rr_finish_using_interl)
   "rr_finish" " using " term ", " term ", " term : tactic
 
+/-- Closes a strict interlacing or real-rootedness goal for a degree-plateau sequence from `base`,
+`degree`, `same` and `successor` given in this order. -/
 syntax (name := rr_finish_using_sequence_branches)
   "rr_finish" " using " term ", " term ", " term ", " term : tactic
 
+/-- Closes a real-rootedness, interlacing, nonvanishing or splitting goal without a named
+certificate, trying `rr_lookup`, assumptions, sequence projections, derivative interlacing, the
+named wrappers and `rr_close_side`. -/
 syntax (name := rr_finish) "rr_finish" : tactic
 
 private def closeWithProof? (tacticName : Name) (proof : Expr) : TacticM Bool := do
@@ -371,18 +514,25 @@ private def closeNamedDirectOrStrictInterl (tacticName : Name) (target : Expr)
       return
   throwError "{tacticName} failed: no matching named final wrapper closes target: {target}"
 
+/-- Closes `p ≠ 0` for a polynomial given by a named constant applied to an argument, using the
+named theorem with suffix `_ne_zero`, or the `_strictInterl` wrapper via `rr_nonzero`. -/
 elab "rr_named_nonzero" : tactic => do
   withMainContext do
     let target ← getMainTarget
     closeNamedDirectOrStrictInterl `rr_named_nonzero target "_ne_zero" fun hstrictInterl => do
       evalTactic (← `(tactic| rr_nonzero using $hstrictInterl:ident))
 
+/-- Closes `p.Splits` for a polynomial given by a named constant applied to an argument, using the
+named theorem with suffix `_splits`, or the `_strictInterl` wrapper via `rr_splits`. -/
 elab "rr_named_splits" : tactic => do
   withMainContext do
     let target ← getMainTarget
     closeNamedDirectOrStrictInterl `rr_named_splits target "_splits" fun hstrictInterl => do
       evalTactic (← `(tactic| rr_splits using $hstrictInterl:ident))
 
+/-- Closes `p ≠ 0 ∧ p.Splits` for a polynomial given by a named constant applied to an argument,
+using the named theorem with suffix `_realRooted`, or `rr_named_nonzero` together with
+`rr_named_splits`. -/
 elab "rr_named_realrooted" : tactic => do
   withMainContext do
     let target ← instantiateMVars (← getMainTarget)
@@ -392,6 +542,8 @@ elab "rr_named_realrooted" : tactic => do
       return
     evalTactic (← `(tactic| exact ⟨by rr_named_nonzero, by rr_named_splits⟩))
 
+/-- Closes `Interlaces p q` for a named expression, using the named theorem with suffix
+`_interlaces`. -/
 elab "rr_named_interlaces" : tactic => do
   withMainContext do
     let target ← getMainTarget
