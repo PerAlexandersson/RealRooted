@@ -1,6 +1,18 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Eval.Degree
+
+/-!
+# Evaluation of polynomials and degree
+
+`Polynomial.eval_one_eq_sum_range'` states that evaluating a polynomial at `1` gives the sum of
+its coefficients over `Finset.range n` for any `n` larger than its natural degree.
+-/
 
 public section
 

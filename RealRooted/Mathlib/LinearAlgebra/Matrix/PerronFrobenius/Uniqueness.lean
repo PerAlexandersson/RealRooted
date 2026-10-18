@@ -2,11 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path:
-MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 
@@ -30,6 +25,11 @@ The proof strategy is as follows:
 6. However, `A^k * z = r^k • z`, which must have a zero component since `z` does.
    This is a contradiction.
 7. Thus, `z` must be the zero vector, which implies `v = c • w`.
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
 
 namespace Matrix

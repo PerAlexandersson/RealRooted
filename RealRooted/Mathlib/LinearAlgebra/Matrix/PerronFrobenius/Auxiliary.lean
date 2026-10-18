@@ -2,6 +2,32 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
+-/
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Analysis.Convex.StdSimplex
+import Mathlib.Algebra.Order.Star.Int
+
+/-!
+# Auxiliary lemmas for Perron-Frobenius theory
+
+Small lemmas on vectors, diagonal matrices and the standard simplex that are used by the
+Perron-Frobenius files. They cover nonnegative matrices acting on nonnegative vectors, the
+existence of a positive (and maximal) coordinate of a nonzero nonnegative vector, membership of
+the uniform vector in `RealRooted.standardSimplex`, and some computations with `Matrix.diagonal`
+and `mulVec`.
+
+## Main statements
+
+* `mulVec_nonneg`: a matrix with nonnegative entries maps nonnegative vectors to nonnegative
+  vectors.
+* `exists_pos_maximal_of_nonneg_ne_zero`: a nonzero nonnegative vector has a positive coordinate
+  that dominates all others.
+* `ne_zero_of_mem_stdSimplex`: a vector in the standard simplex is nonzero.
+* `Matrix.dotProduct_pos_of_pos_of_nonneg_ne_zero`: the dot product of a positive vector with a
+  nonzero nonnegative vector is positive.
+* `Finset.inf'_eq_ciInf`: the infimum over a nonempty finset equals the infimum over the
+  corresponding subtype.
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
@@ -9,10 +35,6 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/aux.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Analysis.Convex.StdSimplex
-import Mathlib.Algebra.Order.Star.Int
 
 open Filter Set Finset Matrix Topology Convex
 

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Expand
@@ -5,8 +10,6 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Tactic
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-
-@[expose] public section
 
 /-!
 # Splitness under squaring expansion
@@ -16,6 +19,8 @@ the squaring map.  A split polynomial whose roots are nonnegative stays split
 under this expansion, and splitness of the expansion forces its source roots
 to be nonnegative.
 -/
+
+@[expose] public section
 
 open Polynomial
 

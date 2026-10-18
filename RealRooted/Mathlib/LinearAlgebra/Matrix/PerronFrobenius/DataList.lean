@@ -2,12 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.
-Declarations that RealRooted does not use were removed (2026-10-07).
-Original path: MCMC/PF/Data/List.lean
 -/
 import Mathlib.Tactic
 import Mathlib.Data.List.Infix
@@ -17,6 +11,31 @@ import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Analysis.Normed.Ring.Lemmas
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.Data.List.Basic
+
+/-!
+# Auxiliary list lemmas
+
+Lemmas about `List.concat`, `List.dropLast`, `List.tail` and `List.idxOf` for lists without
+duplicates, used for paths in quivers. They describe membership in `l.concat x` and in its tail,
+and show that the last entry of a duplicate-free list does not occur in `l.dropLast` and has index
+`l.length - 1`.
+
+## Main statements
+
+* `List.mem_concat`: `a ∈ l.concat x ↔ a ∈ l ∨ a = x`.
+* `List.head_not_mem_tail_of_nodup`: the head of a duplicate-free list is not in its tail.
+* `List.not_mem_dropLast_getLast`: the last entry of a duplicate-free list is not in
+  `l.dropLast`.
+* `List.idxOf_eq_length_sub_one_of_getLast`: if `x` is the last entry of `l` and `x ∉ l.dropLast`,
+  then `l.idxOf x = l.length - 1`.
+* `List.mem_tail_concat_of_ne_nil`: membership in the tail of `l.concat y` for nonempty `l`.
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.
+Declarations that RealRooted does not use were removed (2026-10-07).
+Original path: MCMC/PF/Data/List.lean
+-/
 
 namespace List
 open List

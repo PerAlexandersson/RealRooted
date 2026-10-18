@@ -1,8 +1,38 @@
+/-
+Copyright (c) 2026 Per Alexandersson, Yaël Dillies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson, Yaël Dillies
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic
+
+/-!
+# Roots of splitting polynomials
+
+Lemmas about the roots of a polynomial that splits, in particular the relation between the sign of
+a splitting real polynomial at a non-root `x` and the parity of the number of its roots on either
+side of `x`. Such parity statements are used to compare the values of two polynomials at a common
+point from their root counts, for instance when proving interlacing.
+
+## Main statements
+
+* `Polynomial.Splits.sum_roots_eq_neg_nextCoeff_div_leadingCoeff`: Vieta's formula for the sum of
+  the roots.
+* `Polynomial.splits_of_finset_roots_of_natDegree_le_card`: a polynomial with at least
+  `p.natDegree` distinct roots splits.
+* `Polynomial.Splits.eval_pos_iff_even_card_roots_gt`: for a splitting real polynomial with
+  positive leading coefficient and a non-root `x`, `0 < p.eval x` holds iff the number of roots
+  strictly above `x` is even.
+* `Polynomial.Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add`: an odd total count of roots above
+  two non-root points forces `p.eval x * q.eval y < 0`.
+* `Polynomial.Splits.even_card_roots_le_add_iff_eval_pos_iff`: the analogue for roots weakly below
+  `x` and polynomials of equal degree.
+* `Polynomial.Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff`: the same, stated for the integer
+  difference of the root counts above `x`.
+-/
 
 public section
 

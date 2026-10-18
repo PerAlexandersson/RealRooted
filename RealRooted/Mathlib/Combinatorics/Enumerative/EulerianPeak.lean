@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Data.Fintype.Perm
 import Mathlib.Data.List.Permutation
 import Mathlib.Data.List.GetD
@@ -8,6 +13,32 @@ import Mathlib.Tactic.IntervalCases
 import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+
+/-!
+# Eulerian and peak numbers of permutations
+
+We define the Eulerian numbers and the peak numbers by counting permutations of `Fin n` by their
+descent count and interior peak count (the statistics of
+`RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics`), and prove the standard insertion
+recurrences. The proof inserts the largest letter into a word in every possible position, using
+private natural-number word versions of the descent and peak statistics.
+
+## Main definitions
+
+* `Equiv.Perm.eulerianNumber`: the number of permutations of `Fin n` with `k` descents.
+* `Equiv.Perm.peakNumber`: the number of permutations of `Fin n` with `k` interior peaks.
+
+## Main statements
+
+* `Equiv.Perm.eulerianNumber_succ_succ`:
+  `eulerianNumber (n + 1) (k + 1) =
+  (k + 2) * eulerianNumber n (k + 1) + (n - k) * eulerianNumber n k`.
+* `Equiv.Perm.eulerianNumber_succ_zero`: `eulerianNumber (n + 1) 0 = 1`.
+* `Equiv.Perm.peakNumber_succ_succ`:
+  `peakNumber (n + 1) (k + 1) =
+  (2 * k + 4) * peakNumber n (k + 1) + (n - 1 - 2 * k) * peakNumber n k`.
+* `Equiv.Perm.peakNumber_succ_zero`: `peakNumber (n + 1) 0 = 2 ^ n`.
+-/
 
 namespace Equiv.Perm
 

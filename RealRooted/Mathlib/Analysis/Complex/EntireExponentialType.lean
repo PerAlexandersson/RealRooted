@@ -1,6 +1,34 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Analysis.Complex.BorelCaratheodory
 import Mathlib.Analysis.Complex.HasPrimitives
 import Mathlib.Analysis.Complex.Liouville
+
+/-!
+# Entire functions of exponential type
+
+Classification of entire functions of at most exponential type without zeros, via the
+Borel-Carathéodory inequality and Cauchy estimates for the second derivative. If the real part of
+an entire function `g` grows at most linearly (or like `(1 + ‖z‖) ^ (3 / 2)`), then `g` is affine.
+A zero-free entire function has an entire logarithm, so a zero-free entire function of at most
+exponential type is the exponential of an affine function.
+
+## Main statements
+
+* `Differentiable.exists_affine_of_re_le`: if `(g z).re ≤ C * (1 + ‖z‖)` for all `z`, then
+  `g z = a * z + b` for some `a b : ℂ`.
+* `Differentiable.exists_affine_of_re_le_rpow`: the same under the bound
+  `C * (1 + ‖z‖) ^ (3 / 2)`.
+* `Differentiable.exists_log_of_ne_zero`: a zero-free entire `f` is `Complex.exp ∘ g` for an
+  entire `g`.
+* `Differentiable.exists_eq_exp_affine_of_norm_le_exp`: a zero-free entire `f` with
+  `‖f z‖ ≤ Real.exp (C * (1 + ‖z‖))` satisfies `f z = Complex.exp (a * z + b)`.
+* `Differentiable.exists_eq_exp_real_affine_of_norm_le_exp`: if moreover `f` is real on the real
+  axis and `0 < (f 0).re`, then `a` and `b` can be taken real.
+-/
 
 noncomputable section
 

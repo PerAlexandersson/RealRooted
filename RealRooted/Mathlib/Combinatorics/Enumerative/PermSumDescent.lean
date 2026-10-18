@@ -1,4 +1,27 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+
+/-!
+# Descent counts of direct and skew sums
+
+We compute the number of descents of a direct sum and of a skew sum of permutations. For lists we
+prove the descent count after prepending two entries, the descent count of an append with the
+junction descent made explicit, and invariance under strictly monotone relabelling.
+
+## Main statements
+
+* `List.descentCount_append_cons`: `(l₁ ++ b :: l₂).descentCount` is the sum of the two descent
+  counts, plus one if the last entry of `l₁` exceeds `b`.
+* `List.descentCount_map_strictMono`: a strictly monotone relabelling preserves the descent count.
+* `Equiv.Perm.descentCount_directSum`: for `0 < n`, the descent count of `directSum σ τ` is
+  `σ.descentCount + τ.descentCount`.
+* `Equiv.Perm.descentCount_skewSum`: for `0 < m` and `0 < n`, the descent count of `skewSum σ τ`
+  is `σ.descentCount + τ.descentCount + 1`.
+-/
 
 noncomputable section
 

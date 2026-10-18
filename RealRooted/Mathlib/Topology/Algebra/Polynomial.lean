@@ -1,6 +1,18 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Topology.Algebra.Polynomial
+
+/-!
+# Continuity of translated real polynomials
+
+`Polynomial.continuous_coeff_comp_X_add_C` states that, for a real polynomial `p` and an index `i`,
+the map `r ↦ (p.comp (X + C r)).coeff i` is continuous on `ℝ`.
+-/
 
 public section
 

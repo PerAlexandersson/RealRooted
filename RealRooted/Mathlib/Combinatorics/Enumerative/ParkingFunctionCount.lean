@@ -1,8 +1,27 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Group.Fin.Basic
 import Mathlib.Data.Finset.Max
 import Mathlib.Data.Fintype.BigOperators
 import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+
+/-!
+# The number of parking functions
+
+We prove that there are `(n + 1) ^ (n - 1)` parking functions of length `n`, by Pollak's cyclic
+shift argument. Words `Fin n → Fin (n + 1)` are shifted cyclically by an element `r` of
+`Fin (n + 1)`. For every word there is exactly one `r` such that the shifted word is valid (a
+parking function with values in `Fin (n + 1)`), so `(n + 1) * #validWords = (n + 1) ^ n`. Valid
+words correspond to parking functions with values in `Fin n`.
+
+## Main statements
+
+* `ParkingFunction.card_parkingFunctions`: `(parkingFunctions n).card = (n + 1) ^ (n - 1)`.
+-/
 
 namespace ParkingFunction
 

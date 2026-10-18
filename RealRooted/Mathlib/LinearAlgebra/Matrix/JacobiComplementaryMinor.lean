@@ -1,5 +1,28 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+/-!
+# Jacobi's complementary minor identity and the inverse of a totally nonnegative matrix
+
+For real square matrices `A` and `B` with `A * B = 1`, Jacobi's identity expresses a minor of `B`
+through the complementary minor of `A` and `A.det`, with the sign `(-1) ^ (∑ s + ∑ t)`. The proof
+reorders rows and columns by `finSumEquivOfFinset`, tracks the sign of the resulting permutation,
+and compares determinants of block matrices. As a consequence, if a totally nonnegative matrix
+`A` has determinant one, then its inverse conjugated by alternating signs is totally nonnegative.
+
+## Main statements
+
+* `Matrix.jacobi_minor`: for `A * B = 1`, with `s.card = t.card = k`,
+  `(-1) ^ (∑ z ∈ s, z + ∑ z ∈ t, z) * A.det * (B.submatrix s t).det` equals the complementary
+  minor `(A.submatrix tᶜ sᶜ).det` (rows and columns taken in increasing order).
+* `Matrix.tn_inverse`: if `A * B = 1`, `A.det = 1` and `A.IsTotallyNonneg`, then the matrix
+  `((-1) ^ (i + j) * B i j)` is totally nonnegative.
+-/
 
 open Finset Equiv
 

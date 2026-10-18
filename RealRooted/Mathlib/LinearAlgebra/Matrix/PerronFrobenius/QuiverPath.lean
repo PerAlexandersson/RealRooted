@@ -2,6 +2,40 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
+-/
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
+import Mathlib.Combinatorics.Quiver.Path.Vertices
+import Mathlib.Combinatorics.Quiver.Path.Weight
+
+/-!
+# Paths in quivers
+
+Lemmas about paths in a `Quiver`, extending the API in `Mathlib.Combinatorics.Quiver.Path`:
+decomposition of a nonempty path at its first or last edge, existence of a boundary edge for a path
+leaving or entering a set of vertices, the vertex set of a path, repeated paths (loops), induced
+subquivers, and strictly simple paths. In a finite quiver, any two vertices joined by a path are
+joined by a strictly simple path of length at most `Fintype.card V - 1`; this is used for
+reachability arguments for irreducible matrices.
+
+## Main definitions
+
+* `Quiver.Path.activeVertices`, `Quiver.Path.activeFinset`, `Quiver.Path.vertexFinset`: the
+  vertices of a path as a `Set`, as a `Finset` without the final vertex, and as a `Finset`.
+* `Quiver.Path.replicate`: the loop `p` repeated `n` times.
+* `Quiver.Path.IsStrictlySimple`: a path whose list of vertices has no duplicates.
+* `Quiver.inducedQuiver`, `Quiver.Subquiver.embedding`: the quiver induced on a set of vertices and
+  its embedding into the ambient quiver.
+
+## Main statements
+
+* `Quiver.Path.path_decomposition_last_edge`, `Quiver.Path.path_decomposition_first_edge`:
+  decompose a nonempty path at its last, respectively first, edge.
+* `Quiver.Path.exists_boundary_edge`, `Quiver.Path.exists_boundary_edge_from_set`: a path between
+  a vertex inside a set and one outside it contains an edge crossing the boundary.
+* `Quiver.Path.isStrictlySimple_of_shortest`: a shortest path between two vertices is strictly
+  simple.
+* `Quiver.Path.exists_path_length_le_card_sub_one`: if `a` reaches `b` in a finite quiver, there is
+  a path from `a` to `b` of length at most `Fintype.card V - 1`.
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
@@ -9,9 +43,6 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Combinatorics/Quiver/Path.lean
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
-import Mathlib.Combinatorics.Quiver.Path.Vertices
-import Mathlib.Combinatorics.Quiver.Path.Weight
 
 open List
 

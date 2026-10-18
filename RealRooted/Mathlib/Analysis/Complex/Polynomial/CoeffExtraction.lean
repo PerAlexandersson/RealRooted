@@ -1,4 +1,38 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+
+/-!
+# Coefficient extraction under locally uniform convergence of polynomials
+
+If multivariate complex polynomials `p k` converge locally uniformly to an everywhere absolutely
+convergent power series, then each coefficient `(p k).coeff m` converges to the corresponding
+series coefficient. We apply this to polynomials in split variables `(z, w)`: extracting the
+coefficient of `w ^ α` commutes with the limit, so the resulting polynomials in `z` converge
+locally uniformly to the corresponding coefficient polynomial of the limit. This is the
+coefficient-extraction step in Borcea-Brändén, arXiv:0809.0401, Theorem 5.1.
+
+## Main definitions
+
+* `MvPolynomial.coeffPoly`: the polynomial in the left variables `z` obtained by extracting the
+  coefficient of `w ^ α` from a polynomial in `MvPolynomial (τ ⊕ σ) ℂ`.
+* `MvPolynomial.rightSlice`: a split polynomial viewed as a polynomial in the right variables
+  after fixing the left variables.
+
+## Main statements
+
+* `MvPolynomial.tendsto_coeff_of_tendstoLocallyUniformly_tsum`: locally uniform convergence to a
+  power series with coefficients `c` gives `(p k).coeff m → c m` for every `m`.
+* `MvPolynomial.coeff_coeffPoly`: `(coeffPoly α p).coeff γ = p.coeff (γ.sumElim α)`.
+* `MvPolynomial.eval_rightSlice`: evaluating `rightSlice z p` at `w` is evaluating `p` at
+  `Sum.elim z w`.
+* `MvPolynomial.tendstoLocallyUniformly_eval_coeffPoly`: if split polynomials `p k` converge
+  locally uniformly to `∑ P_α(z) w ^ α`, then `coeffPoly α (p k)` converges locally uniformly
+  to `P α`.
+-/
 
 open Filter Topology
 open scoped BigOperators

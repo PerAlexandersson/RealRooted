@@ -1,4 +1,33 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# Entire functions with polynomially bounded real part are polynomials
+
+We show that an entire function `g : ℂ → ℂ` whose circle mean of the positive part of `Re g` grows
+at most like `A * (1 + r) ^ k` is a polynomial of degree at most `k`. The proof bounds the Taylor
+coefficients of `g` by circle means of `|Re g|`, and then gives a Cauchy-type estimate for the
+derivative. The file also contains an elementary version of Borel's growth lemma, used to turn a
+logarithmic growth inequality into a quadratic bound.
+
+## Main definitions
+
+* `Complex.posMean`: the circle mean of `max (g z).re 0` on the circle of radius `r`.
+
+## Main statements
+
+* `Complex.circleAverage_abs_re`: the circle mean of `|Re h|` equals `2 * posMean h r - (h 0).re`.
+* `Complex.norm_deriv_le_posMean`: a Cauchy-type bound on `‖deriv h z‖` in terms of `posMean h ρ`.
+* `Complex.borel_growth`: for monotone `V ≥ 1`, every interval `[r, r + 2]` contains `s` with
+  `V (s + 1 / V s) ≤ 2 * V s`.
+* `Complex.growth_of_GI`: a logarithmic growth inequality for `T` implies `T r ≤ A * (1 + r) ^ 2`.
+* `Complex.poly_of_mean_pos_re_le`: an entire function with `posMean g r ≤ A * (1 + r) ^ k` for
+  all `r > 0` agrees with a polynomial of natural degree at most `k`.
+-/
 
 section Coeff_part
 

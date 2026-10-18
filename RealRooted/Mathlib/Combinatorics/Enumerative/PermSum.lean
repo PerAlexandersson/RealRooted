@@ -1,6 +1,38 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 import Mathlib.Data.Fintype.Perm
 import Mathlib.Tactic.Linarith
+
+/-!
+# Direct and skew sums of permutations
+
+We define the direct sum `σ ⊕ τ` and the skew sum `σ ⊖ τ` of permutations `σ : Perm (Fin m)` and
+`τ : Perm (Fin n)` in zero-based one-line notation, and describe their values and one-line words.
+In the direct sum the second block is shifted above the first; the skew sum is the complement of
+the direct sum of the complements.
+
+## Main definitions
+
+* `Equiv.Perm.directSum`: the direct sum of two permutations.
+* `Equiv.Perm.skewSum`: the skew sum of two permutations.
+* `List.junctionDescent`: the descent predicate at the junction of two words.
+* `Equiv.Perm.pattern2413`, `Equiv.Perm.pattern3142`: the two patterns of length four, in
+  zero-based one-line notation.
+
+## Main statements
+
+* `Equiv.Perm.directSum_apply_left`, `Equiv.Perm.directSum_apply_right`: values of the direct sum
+  on the two blocks (and `Equiv.Perm.skewSum_apply_left`, `Equiv.Perm.skewSum_apply_right` for the
+  skew sum).
+* `Equiv.Perm.directSum_toList`: the one-line word of a direct sum is the concatenation of the
+  two shifted blocks.
+* `Equiv.Perm.skewSum_toNatList`: the natural-valued word of a skew sum has the first block
+  shifted by `n`.
+-/
 
 namespace List
 

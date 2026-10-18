@@ -2,13 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.
-Declarations that RealRooted does not use were removed (2026-10-07).
-Original path:
-MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
 -/
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
@@ -48,6 +41,13 @@ We use column vectors `A *ᵥ x` (Seneta’s row-vector formulation is equivalen
 
 Collatz–Wielandt, Perron–Frobenius, nonnegative matrix, spectral radius
 
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.
+Declarations that RealRooted does not use were removed (2026-10-07).
+Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/CollatzWielandt.lean
 -/
 
 namespace Matrix

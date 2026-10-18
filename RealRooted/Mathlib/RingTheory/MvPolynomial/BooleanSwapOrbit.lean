@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.MvPolynomial.Rename
 import Mathlib.Data.Finset.BooleanAlgebra

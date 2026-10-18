@@ -1,4 +1,37 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+
+/-!
+# The multivariate Szász growth bound
+
+Let `f` be a multivariate complex polynomial with constant coefficient `1` such that every
+Jensen-multiplier image `jensenOp β f` has no zeros in the product of upper half-planes. Following
+Borcea-Brändén (Invent. Math. 177 (2009); arXiv:0809.0401, Lemma 5.4 and Theorem 5.5), we bound
+the coefficients of `f` and its growth on polydiscs. The proof specializes `jensenOp β f` to the
+diagonal, which gives a univariate polynomial with no zeros in the upper half-plane, and applies the
+univariate Szász estimate of `RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz` together with
+the arithmetic-geometric mean inequality.
+
+## Main definitions
+
+* `MvPolynomial.jensen`: the generalized Jensen multiplier
+  `jensen α β = ∏ i, (β i).descFactorial (α i) / (β i) ^ (α i)`.
+* `MvPolynomial.jensenOp`: the operator sending `z ^ α` to `jensen α β * z ^ α`.
+* `MvPolynomial.szaszA`, `MvPolynomial.szaszC`: the constants `A` and `C` of the paper, defined from
+  the coefficients of `f` of total degree one and two.
+
+## Main statements
+
+* `MvPolynomial.coeff_jensenOp`: `(jensenOp β f).coeff α = jensen α β * f.coeff α`.
+* `MvPolynomial.norm_coeff_le_of_forall_jensenOp_stable`: the coefficient bound
+  `‖f.coeff β‖ ≤ (√|β|)⁻¹ ^ |β| * ∏ i, (β i) ^ (β i) / (β i)! * szaszA f ^ |β|`.
+* `MvPolynomial.norm_eval_le_of_forall_jensenOp_stable`: if `‖z i‖ ≤ r` for all `i`, then
+  `‖f.eval z‖` is at most a constant times `exp (szaszC f * r ^ 2)`.
+-/
 
 open Complex
 

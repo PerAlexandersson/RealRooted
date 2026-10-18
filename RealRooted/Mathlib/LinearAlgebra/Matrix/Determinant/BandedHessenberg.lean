@@ -1,7 +1,19 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic
+
+/-!
+# Determinants of banded lower-Hessenberg matrices
+
+This file gives the determinant recurrence for a lower-Hessenberg matrix with
+a variable diagonal, a fixed first superdiagonal, and two varying lower bands.
+-/
 
 public section
 
@@ -10,13 +22,6 @@ open Finset
 namespace Matrix
 
 noncomputable section
-
-/-!
-# Determinants of banded lower-Hessenberg matrices
-
-This file gives the determinant recurrence for a lower-Hessenberg matrix with
-a variable diagonal, a fixed first superdiagonal, and two varying lower bands.
--/
 
 /-- A lower-Hessenberg matrix with a variable diagonal, a fixed first
 superdiagonal, and two varying lower bands. -/

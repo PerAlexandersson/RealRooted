@@ -1,4 +1,29 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# The univariate Szász estimate
+
+If all numbers `ξ j` lie in the closed lower half-plane, then `∑ ‖ξ j‖ ^ 2` is bounded by the first
+and second elementary symmetric sums of the `ξ j`. This is the univariate Szász inequality; it
+applies to a polynomial `∏ j, (1 + ξ j * z)` with no zeros in the open upper half-plane. The file
+also gives the elementary exponential bound for such a product and the Cauchy-Schwarz consequence
+for `∑ ‖ξ j‖`.
+
+## Main statements
+
+* `Complex.sum_norm_sq_le_of_im_nonpos`: `∑ j, ‖ξ j‖ ^ 2 ≤ 3 * ‖∑ j, ξ j‖ ^ 2 +
+  2 * ‖∑ i, ∑ j ∈ Ioi i, ξ i * ξ j‖` when every `(ξ j).im ≤ 0`.
+* `Complex.im_nonpos_of_prod_one_add_ne_zero`: if `∏ j, (1 + ξ j * z)` has no zero in the open
+  upper half-plane, then every `(ξ j).im ≤ 0`.
+* `Complex.norm_prod_one_add_le_exp`: `‖∏ j, (1 + ξ j * z)‖ ≤ exp (‖z‖ * ∑ j, ‖ξ j‖)`.
+* `Complex.sum_norm_le_sqrt_of_im_nonpos`: a bound on `∑ j, ‖ξ j‖` by `√k` times the square root of
+  the same right-hand side.
+-/
 
 open Complex
 

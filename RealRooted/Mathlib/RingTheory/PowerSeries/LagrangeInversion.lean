@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.RingTheory.PowerSeries.Derivative
 import Mathlib.RingTheory.PowerSeries.Order
 import Mathlib.RingTheory.PowerSeries.Substitution
