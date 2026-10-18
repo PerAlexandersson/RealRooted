@@ -145,7 +145,7 @@ lemma homogenize_one_add_two_X_pow
       ring
 
 theorem cayleyTransform_twoPascal
-    {K : Type*} [Field K] [CharZero K] (n : ℕ) :
+    {K : Type*} [Field K] (n : ℕ) :
     cayleyTransform n ((1 + C 2 * X : K[X]) ^ n) = (1 + X) ^ n := by
   rw [cayleyTransform, homogenize_one_add_two_X_pow]
   simp

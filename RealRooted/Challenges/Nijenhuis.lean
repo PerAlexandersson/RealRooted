@@ -93,7 +93,7 @@ theorem weightedRealRooted {Row : Type u} {Column : Type v}
 
 /-- The roots in Nijenhuis's signed (-X)^k normalization are nonnegative. -/
 theorem signedRoots_nonnegative {Row : Type u} {Column : Type v}
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     ∀ z ∈ (Rook.nijenhuisRookPolynomial A).roots, 0 ≤ z :=
   Rook.nijenhuisRookPolynomial_roots_nonneg A hA

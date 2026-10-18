@@ -162,7 +162,7 @@ def sourcePolarizationStageInstallEquiv
 
 /-- At the empty stage, the variables are the original source variables. -/
 def sourcePolarizationStageEmptyEquiv
-    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) :
+    {σ : Type*} (κ : σ → ℕ) :
     SourcePolarizationStageVars κ ∅ ≃ σ where
   toFun x := by
     rcases x with x | i
@@ -179,7 +179,7 @@ def sourcePolarizationStageEmptyEquiv
 
 /-- At the final stage, all variables belong to their polarized blocks. -/
 def sourcePolarizationStageUnivEquiv
-    {σ : Type*} [Fintype σ] [DecidableEq σ] (κ : σ → ℕ) :
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
     SourcePolarizationStageVars κ Finset.univ ≃ PolarizedSource κ where
   toFun x := by
     rcases x with x | i
@@ -752,7 +752,7 @@ abbrev BlockSupports {σ : Type*} (κ : σ → ℕ) :=
   ∀ i, Finset (Fin (κ i))
 
 /-- Read a zero-one exponent as its support in each source block. -/
-def exponentBlockSupports {σ : Type*} [Fintype σ]
+def exponentBlockSupports {σ : Type*}
     (κ : σ → ℕ) (b : ZeroOneExponent κ) : BlockSupports κ :=
   fun i => Finset.univ.filter fun j => b.1 ⟨i, j⟩ = 1
 
@@ -910,7 +910,7 @@ noncomputable def complementSupportMonomial
   ∏ i, ∏ j ∈ (exponentBlockSupports κ b i)ᶜ, MvPolynomial.X ⟨i, j⟩
 
 private theorem prod_blockSupport_compl_eq
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (b : ZeroOneExponent κ) (i : σ) :
     (∏ j ∈ (exponentBlockSupports κ b i)ᶜ,
         MvPolynomial.X (R := ℂ) (⟨i, j⟩ : PolarizedSource κ)) =
@@ -1041,13 +1041,13 @@ noncomputable def blockwisePolarizationBasis
     (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))
 
 private def stageBlockEmbedding
-    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    {σ : Type*} (κ : σ → ℕ) (S : Finset σ)
     (i : {i // i ∈ S}) :
     Fin (κ i) → SourcePolarizationStageVars κ S :=
   fun j => Sum.inl ⟨i, j⟩
 
 private def stageRawEmbedding
-    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ) :
+    {σ : Type*} (κ : σ → ℕ) (S : Finset σ) :
     {i : σ // i ∉ S} → SourcePolarizationStageVars κ S := Sum.inr
 
 /-- Direct partial polarization of a degree-box basis monomial after exactly
@@ -1063,13 +1063,13 @@ noncomputable def partialBlockwisePolarizationBasis
     else MvPolynomial.X (stageRawEmbedding κ S ⟨i, hi⟩) ^ m.1 i
 
 private def stageRestBlockEmbedding
-    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    {σ : Type*} (κ : σ → ℕ) (S : Finset σ)
     (i : σ) (j : {j // j ∈ S}) :
     Fin (κ j) → SourcePolarizationStageRest κ S i :=
   fun k => Sum.inl ⟨j, k⟩
 
 private def stageRestRawEmbedding
-    {σ : Type*} [DecidableEq σ] (κ : σ → ℕ) (S : Finset σ)
+    {σ : Type*} (κ : σ → ℕ) (S : Finset σ)
     (i : σ) : {j : σ // j ∉ S ∧ j ≠ i} →
       SourcePolarizationStageRest κ S i := Sum.inr
 

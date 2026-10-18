@@ -100,7 +100,7 @@ theorem signVariations_le_of_tendsto
 /-- A convergent perturbation of a vector with nodal interior zeros eventually
 has at most two additional sign variations. -/
 theorem eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
-    {α : Type*} {l : Filter α} [l.NeBot]
+    {α : Type*} {l : Filter α}
     {n : ℕ} {f : α → Fin (n + 2) → ℝ}
     {x : Fin (n + 2) → ℝ}
     (hf : Tendsto f l (𝓝 x))

@@ -151,14 +151,12 @@ theorem weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges
 /-- Nijenhuis's signed normalization, in which a placement of size `k`
 contributes a factor `(-X)^k`. -/
 def nijenhuisRookPolynomial [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) : ℝ[X] :=
   (weightedRookPolynomial A).comp (-X)
 
 /-- The signed normalization multiplies the coefficient in degree `k` by
 `(-1)^k`. -/
 theorem coeff_nijenhuisRookPolynomial [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) (k : ℕ) :
     (nijenhuisRookPolynomial A).coeff k =
       (-1 : ℝ) ^ k * (weightedRookPolynomial A).coeff k := by
@@ -189,14 +187,13 @@ theorem weightedRookPolynomial_splits [Fintype Row] [Fintype Column]
 
 /-- Nijenhuis's signed normalization has only real roots. -/
 theorem nijenhuisRookPolynomial_splits [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     (nijenhuisRookPolynomial A).Splits :=
   (weightedRookPolynomial_splits A hA).comp_neg_X
 
 /-- The roots in Nijenhuis's signed normalization are nonnegative. -/
 theorem nijenhuisRookPolynomial_roots_nonneg
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     ∀ z ∈ (nijenhuisRookPolynomial A).roots, 0 ≤ z := by
   intro z hz

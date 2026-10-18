@@ -273,7 +273,7 @@ theorem msymm_eq_zero_of_card_lt [Fintype σ] [DecidableEq σ]
 
 /-- Every symmetric homogeneous polynomial is the sum of its
 monomial-symmetric orbit components. -/
-theorem eq_sum_msymm [Nontrivial R] [Fintype σ] [DecidableEq σ]
+theorem eq_sum_msymm [Fintype σ] [DecidableEq σ]
     {P : MvPolynomial σ R} {n : ℕ}
     (hP : P.IsSymmetric) (hhom : P.IsHomogeneous n) :
     P = ∑ mu : n.Partition, msymmCoeff P mu • msymm σ R mu := by
