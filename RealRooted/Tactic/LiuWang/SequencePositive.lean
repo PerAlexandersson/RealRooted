@@ -9,6 +9,12 @@ Parser declarations and macro implementations for this Liu--Wang tactic family.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_t_sequence_named)
   "rr_lw_positive_t_sequence" " using "
     "base" ":=" term ","
@@ -20,6 +26,13 @@ syntax (name := rr_lw_positive_t_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_t_sequence_auto_named)
   "rr_lw_positive_t_sequence_auto" " using "
     "base" ":=" term ","
@@ -30,6 +43,12 @@ syntax (name := rr_lw_positive_t_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_t_sequence_realrooted_named)
   "rr_lw_positive_t_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -41,6 +60,13 @@ syntax (name := rr_lw_positive_t_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_t_sequence_realrooted_auto_named)
   "rr_lw_positive_t_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -51,6 +77,12 @@ syntax (name := rr_lw_positive_t_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `StrictInterl f (a * f + (C c * X) * g)` for one lag step, from
+`interlaces : Interlaces g f`; `interlacer_pos_lc : HasPosLeadingCoeff g`;
+`source_nonneg_coeffs : HasNonnegCoeffs f`; `coeff_nonneg : 0 ≤ c`;
+`target_pos_lc : HasPosLeadingCoeff F`; `recurrence : F = a * f + (C c * X) * g`;
+`degree_succ : f.natDegree + 1 = F.natDegree`; and
+`no_common_roots : ∀ r, f.IsRoot r → ¬ g.IsRoot r`. -/
 syntax (name := rr_lw_positive_t_lag_step_named)
   "rr_lw_positive_t_lag_step" " using "
     "interlaces" ":=" term ","
@@ -63,6 +95,12 @@ syntax (name := rr_lw_positive_t_lag_step_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + X * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_X_lag_sequence_named)
   "rr_lw_positive_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -73,6 +111,12 @@ syntax (name := rr_lw_positive_X_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + X * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_X_lag_sequence_realrooted_named)
   "rr_lw_positive_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -83,6 +127,13 @@ syntax (name := rr_lw_positive_X_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `scalar_nonneg : ∀ n, 0 ≤ c n`;
+`constant_nonneg : ∀ n, 0 ≤ a n`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_named)
   "rr_lw_C_mul_X_sub_C_lag_sequence" " using "
     "base" ":=" term ","
@@ -95,6 +146,13 @@ syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_auto_named)
   "rr_lw_C_mul_X_sub_C_lag_sequence_auto" " using "
     "base" ":=" term ","
@@ -105,6 +163,13 @@ syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `scalar_nonneg : ∀ n, 0 ≤ c n`;
+`constant_nonneg : ∀ n, 0 ≤ a n`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_named)
   "rr_lw_C_mul_X_sub_C_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -117,6 +182,13 @@ syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X - C (a n)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto_named)
   "rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -127,6 +199,12 @@ syntax (name := rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`coeff_nonneg : ∀ n, 0 ≤ c n`; `root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`; `recurrence
+: ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_named)
   "rr_lw_positive_affine_lag_sequence" " using "
     "base" ":=" term ","
@@ -138,6 +216,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`; `recurrence : ∀ n, P (n + 2) = A n * P (n +
+1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_auto_named)
   "rr_lw_positive_affine_lag_sequence_auto" " using "
     "base" ":=" term ","
@@ -148,6 +233,12 @@ syntax (name := rr_lw_positive_affine_lag_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`coeff_nonneg : ∀ n, 0 ≤ c n`; `root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`; `recurrence
+: ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_named)
   "rr_lw_positive_affine_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -159,6 +250,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`; `recurrence : ∀ n, P (n + 2) = A n * P (n +
+1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_auto_named)
   "rr_lw_positive_affine_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -169,6 +267,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`coeff_nonneg : ∀ n, 0 ≤ c n`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`; `recurrence : ∀ n, P (n +
+2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_shift_nonneg_named)
   "rr_lw_positive_affine_lag_sequence_shift_nonneg" " using "
     "base" ":=" term ","
@@ -180,6 +285,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_shift_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`; `recurrence : ∀ n, P (n +
+2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_shift_nonneg_auto_named)
   "rr_lw_positive_affine_lag_sequence_shift_nonneg_auto" " using "
     "base" ":=" term ","
@@ -190,6 +302,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_shift_nonneg_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`coeff_nonneg : ∀ n, 0 ≤ c n`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`; `recurrence : ∀ n, P (n +
+2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_named)
   "rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg" " using "
     "base" ":=" term ","
@@ -201,6 +320,13 @@ syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_named
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`; `recurrence : ∀ n, P (n +
+2) = A n * P (n + 1) + (C (c n) * (C (a n) + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto_named)
   "rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto" " using "
     "base" ":=" term ","
@@ -211,6 +337,12 @@ syntax (name := rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto_
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_add_X_lag_sequence_named)
   "rr_lw_C_add_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -221,6 +353,12 @@ syntax (name := rr_lw_C_add_X_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`root_upper : ∀ n r, (P (n + 1)).IsRoot r → r ≤ -(a n)`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_add_X_lag_sequence_realrooted_named)
   "rr_lw_C_add_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -231,6 +369,12 @@ syntax (name := rr_lw_C_add_X_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_add_X_lag_sequence_shift_nonneg_named)
   "rr_lw_C_add_X_lag_sequence_shift_nonneg" " using "
     "base" ":=" term ","
@@ -241,6 +385,12 @@ syntax (name := rr_lw_C_add_X_lag_sequence_shift_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`shift_nonneg : ∀ n, HasNonnegCoeffs ((P (n + 1)).comp (X - C (a n)))`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (a n) + X) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg_named)
   "rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg" " using "
     "base" ":=" term ","
@@ -251,6 +401,12 @@ syntax (name := rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_X_one_add_X_lag_sequence_nonneg_named)
   "rr_lw_X_one_add_X_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -262,6 +418,12 @@ syntax (name := rr_lw_X_one_add_X_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg_named)
   "rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -273,6 +435,12 @@ syntax (name := rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg_named)
   "rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -284,6 +452,12 @@ syntax (name := rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name :=
     rr_lw_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named)
   "rr_lw_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg" " using "
@@ -296,6 +470,12 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X - X ^ 3) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_nonneg_named)
   "rr_lw_X_sub_X_pow_three_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -307,6 +487,12 @@ syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (X - X ^ 3) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named)
   "rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -318,6 +504,13 @@ syntax (name := rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_named)
   "rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -330,6 +523,13 @@ syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto_named)
   "rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto" " using "
     "base" ":=" term ","
@@ -341,6 +541,13 @@ syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_named)
   "rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -353,6 +560,13 @@ syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named)
   "rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto" " using "
     "base" ":=" term ","
@@ -364,6 +578,13 @@ syntax (name := rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto_name
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`; `recurrence : ∀ n, P (n + 2) = A n * P (n +
+1) + (C (c n) * X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_named)
   "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -376,6 +597,13 @@ syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto_named)
   "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto" " using "
     "base" ":=" term ","
@@ -387,6 +615,13 @@ syntax (name := rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto_named
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`; `recurrence : ∀ n, P (n + 2) = A n * P (n +
+1) + (C (c n) * X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name :=
     rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named)
   "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg" " using "
@@ -400,6 +635,13 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * X * (1 - X) * (1 + X)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name :=
     rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named)
   "rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto" " using "
@@ -412,6 +654,13 @@ syntax (name :=
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_named)
   "rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg" " using "
     "base" ":=" term ","
@@ -424,6 +673,13 @@ syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
+polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto_named)
   "rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto" " using "
     "base" ":=" term ","
@@ -435,6 +691,13 @@ syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `coeff_nonneg : ∀ n, 0 ≤ c n`;
+`root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
 syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named)
   "rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -447,6 +710,13 @@ syntax (name := rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_nam
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
+`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
+`nonneg_coeffs : ∀ n, HasNonnegCoeffs (P n)`; `root_lower : ∀ n r, (P (n + 1)).IsRoot r → -1 ≤ r`;
+`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (C (c n) * (X - X ^ 3)) * P n`;
+`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
+`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The nonnegativity of the scalar
+coefficients is closed row by row by `rr_lw_active_nonneg_at`. -/
 syntax (name :=
     rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto_named)
   "rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto" " using "
