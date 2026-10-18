@@ -1,7 +1,27 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+
+/-!
+# Limits of real-rooted polynomials
+
+Pointwise limits (on `ℂ`) of real polynomials that are zero or split, with uniformly bounded
+degree, are again zero or split. The proof applies the closed-root-set result of
+`RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots` to the closed set `{z | z.im = 0}`
+and `Polynomial.splits_of_all_roots_real`.
+
+## Main statements
+
+* `Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le`: if `p n` is zero or splits,
+  `(p n).natDegree ≤ N`, and the complexified evaluations converge pointwise to those of `p₀`,
+  then `p₀ = 0 ∨ p₀.Splits`.
+-/
 
 public section
 

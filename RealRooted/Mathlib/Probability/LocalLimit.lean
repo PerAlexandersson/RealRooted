@@ -1,6 +1,36 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Probability.CDF
 import RealRooted.Mathlib.Probability.CoeffDistribution
+
+/-!
+# Bender's local limit theorem for polynomial coefficients
+
+Let `P n` be real polynomials with nonnegative, log-concave coefficients and no internal zeros,
+whose coefficient distributions (see `RealRooted.Mathlib.Probability.CoeffDistribution`) have
+variances tending to infinity and, after standardization, converge weakly to the standard Gaussian.
+Then the coefficients satisfy the Gaussian local limit theorem uniformly in `k`:
+`σₙ * (P n).coeff k / (P n).eval 1 - φ ((k - μₙ) / σₙ)` tends to zero, where `μₙ` and `σₙ` are
+the mean and standard deviation of the coefficient distribution and `φ` is the standard Gaussian
+density. For real-rooted `P n`, the weak convergence hypothesis is Harper's central limit theorem.
+
+The proof is organized as follows. We first collect elementary facts about the Gaussian density
+and distribution function, and show that a log-concave sequence without internal zeros is
+quasi-concave. We then prove deterministic window estimates for a sequence on `ℤ` whose window sums
+are uniformly close to Gaussian integrals, which give an abstract local limit theorem. Pólya's
+theorem upgrades pointwise convergence of the distribution functions to uniform convergence, and
+the portmanteau theorem turns weak convergence into pointwise convergence of the standardized
+distribution functions at every point.
+
+## Main statements
+
+* `Polynomial.tendsto_localLimit_of_logConcave`: the local limit theorem described above (Bender
+  1973, Theorem 2). All other declarations in the file are private.
+-/
 
 open MeasureTheory ProbabilityTheory Filter Topology Polynomial
 

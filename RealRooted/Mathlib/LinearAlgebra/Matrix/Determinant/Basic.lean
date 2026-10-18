@@ -1,6 +1,38 @@
+/-
+Copyright (c) 2026 Per Alexandersson, Yaël Dillies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson, Yaël Dillies
+-/
 module
 
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+
+/-!
+# Determinant identities
+
+Several determinant identities used in the study of totally nonnegative matrices: a row-indexed
+Leibniz formula, a Laplace expansion for a matrix whose last column vanishes above its final entry,
+the determinant after subtracting adjacent rows of a matrix with constant first column, and the
+vanishing of the determinant of a submatrix with a noninjective column selector. In the last
+section we border matrices by an extra row and column, and prove a three-term Plücker-type
+identity for bordered minors, which is the form needed for Whitney elimination.
+
+## Main definitions
+
+* `Matrix.border`: the matrix obtained from a square matrix `A` by adjoining a final column `b`,
+  a final row `x` and a corner entry `a`.
+
+## Main statements
+
+* `Matrix.det_apply_row`: the Leibniz formula with rows indexed before columns.
+* `Matrix.transpose_mulVec_alternating_det_submatrix_succAbove`: the alternating vector of
+  maximal row-deletion minors of a `(q + 1) × q` matrix lies in the kernel of its transpose.
+* `Matrix.det_eq_det_adjacentRowDiff_of_firstColumn_eq_one`: determinant of a matrix with first
+  column equal to `1`, expressed through differences of adjacent rows.
+* `Matrix.det_eq_last_apply_mul_det_castSucc_of_above_eq_zero`: Laplace expansion along a last
+  column that is zero above its final entry.
+* `Matrix.det_border_plucker`: the three-term bordered-minor identity.
+-/
 
 public section
 

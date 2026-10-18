@@ -2,6 +2,37 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
+-/
+import Mathlib.Analysis.Normed.Algebra.Spectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+
+/-!
+# Dominance of the Perron root
+
+For an irreducible nonnegative real matrix `A`, the Perron root `perronRoot A` is an eigenvalue of
+`A` and its modulus is at least that of every other eigenvalue, so it is the spectral radius. For
+a primitive matrix the inequality is strict for all eigenvalues different from the Perron root.
+The proofs use the sub-invariance inequality `‖μ‖ • ‖x‖ ≤ A *ᵥ ‖x‖` for an eigenpair `(μ, x)`,
+the Collatz-Wielandt function, and the equality case of the triangle inequality (see
+`RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses`) to show that an eigenvector
+whose eigenvalue has modulus `perronRoot A` has all coordinates in a common phase.
+
+## Main statements
+
+* `Matrix.eigenvalue_abs_subinvariant`: for `A *ᵥ x = μ • x` with `A` nonnegative,
+  `‖μ‖ • ‖x‖ ≤ A *ᵥ ‖x‖` coordinatewise.
+* `Matrix.perronRoot_transpose_eq`: `perronRoot A = perronRoot Aᵀ` for irreducible `A`.
+* `Matrix.exists_positive_left_perron_eigenvector`: an irreducible nonnegative matrix has a
+  positive left eigenvector for the Perron root.
+* `Matrix.eigenvalue_abs_le_perron_root`: every complex eigenvalue `μ` satisfies
+  `‖μ‖ ≤ perronRoot A`.
+* `Matrix.perron_root_is_spectral_radius`: `perronRoot A` is an eigenvalue and bounds the
+  absolute value of every real eigenvalue.
+* `Matrix.spectral_dominance_of_primitive`: for primitive `A`, an eigenvalue of modulus
+  `perronRoot A` equals `perronRoot A`.
+* `Matrix.spectral_dominance_of_primitive'`: for primitive `A`, every eigenvalue `μ` different from
+  `perronRoot A` satisfies `‖μ‖ < perronRoot A`.
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
@@ -10,9 +41,6 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean
 -/
-import Mathlib.Analysis.Normed.Algebra.Spectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
 
 open Quiver.Path
 namespace Matrix

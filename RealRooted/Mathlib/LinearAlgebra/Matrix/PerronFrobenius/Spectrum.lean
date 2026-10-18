@@ -2,12 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.
-Declarations that RealRooted does not use were removed (2026-10-07).
-Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
 import Mathlib.Algebra.Lie.OfAssociative
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
@@ -149,6 +143,12 @@ Module.End.exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial
 Module.End.eigenvectors_linearIndependent [NoZeroSMulDivisors R M] (f : End R M) (μs : Set R)
   (xs : μs → M) (h_eigenvec).
 
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.
+Declarations that RealRooted does not use were removed (2026-10-07).
+Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
 
 namespace Matrix

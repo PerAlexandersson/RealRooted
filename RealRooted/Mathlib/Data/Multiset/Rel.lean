@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib.Data.List.Forall2
 import Mathlib.Data.Multiset.Basic
 import Mathlib.Data.Multiset.Sort

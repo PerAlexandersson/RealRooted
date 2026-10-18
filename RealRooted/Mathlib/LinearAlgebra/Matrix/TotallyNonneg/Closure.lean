@@ -1,8 +1,23 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Topology.Algebra.Ring.Real
 public import Mathlib.Topology.Instances.Matrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+
+/-!
+# Closure of total nonnegativity under limits
+
+The set of totally nonnegative real matrices is closed. `Matrix.IsTotallyNonneg.of_tendsto` shows
+that an entrywise sequential limit of totally nonnegative matrices is totally nonnegative, and
+`Matrix.IsTotallyNonneg.of_continuous_curve` shows that if a continuous curve `A : ℝ → Matrix ι ι ℝ`
+is totally nonnegative at every positive parameter, then `A 0` is totally nonnegative. Both follow
+from continuity of the determinant of a submatrix.
+-/
 
 public section
 

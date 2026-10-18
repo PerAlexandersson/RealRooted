@@ -2,11 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.  Original path:
-MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
 -/
 import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 import Mathlib.Combinatorics.Quiver.Path
@@ -17,6 +12,11 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 # Irreducible nonnegative matrices
 
 Quivers, path lifting, `1 + A` irreducibility, and consequences for nonnegative eigenvectors.
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.  Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
 -/
 
 open Quiver.Path

@@ -2,13 +2,6 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
-
-Ported into RealRooted from https://github.com/or4nge19/MCMC
-(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
-adaptations to the pinned Mathlib.
-Declarations that RealRooted does not use were removed (2026-10-07).
-Original path:
-MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
 import Mathlib.Data.Matrix.Mul
 import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
@@ -49,6 +42,13 @@ These results connect `Matrix.IsIrreducible` and `Matrix.IsPrimitive` to the qui
 - `Matrix.row_sum_pos_of_irreducible_nonneg`: each row sum of an irreducible nonnegative matrix is
   strictly positive (no zero row).
 
+
+Ported into RealRooted from https://github.com/or4nge19/MCMC
+(commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
+adaptations to the pinned Mathlib.
+Declarations that RealRooted does not use were removed (2026-10-07).
+Original path:
+MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
 
 namespace Pi

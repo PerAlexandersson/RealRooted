@@ -2,6 +2,31 @@
 Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
+-/
+import Mathlib.Algebra.BigOperators.Field
+import Mathlib.Algebra.EuclideanDomain.Basic
+import Mathlib.Algebra.EuclideanDomain.Field
+import Mathlib.Analysis.CStarAlgebra.Classes
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+
+/-!
+# Equality in the triangle inequality for complex numbers
+
+We study when `‖∑ i ∈ s, v i‖ = ∑ i ∈ s, ‖v i‖` holds for complex numbers `v i`. In that case,
+every nonzero `v i` has the same phase as the sum `u = ∑ i ∈ s, v i`; equivalently, each `v i` is
+a nonnegative real multiple of `u`. These facts are used for the equality case of the
+Perron-Frobenius dominance argument.
+
+## Main statements
+
+* `Complex.norm_sq_eq_sum_re_mul_star`: if `u = ∑ i ∈ s, v i`, then
+  `‖u‖ ^ 2 = ∑ i ∈ s, re (v i * star u)`.
+* `Complex.re_mul_star_eq_norm_mul_norm_of_triangle_eq`: under equality in the triangle
+  inequality, `re (v i * star u) = ‖v i‖ * ‖u‖` for each `i ∈ s`.
+* `Complex.each_term_is_nonneg_real_multiple_of_sum_of_triangle_eq`: if moreover `u ≠ 0`, each
+  `v i` equals `k * u` for some real `k ≥ 0`.
+* `Complex.align_each_with_sum`: `‖u‖ • v i = ‖v i‖ • u` for each `i ∈ s`.
+* `Complex.aligned_of_triangle_eq`: `v i / ‖v i‖ = u / ‖u‖` whenever `v i ≠ 0`.
 
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
@@ -9,11 +34,6 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Analysis/CstarAlgebra/Classes.lean
 -/
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.EuclideanDomain.Basic
-import Mathlib.Algebra.EuclideanDomain.Field
-import Mathlib.Analysis.CStarAlgebra.Classes
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 
 open Finset Real Complex Matrix
 

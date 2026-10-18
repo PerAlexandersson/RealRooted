@@ -1,9 +1,43 @@
+/-
+Copyright (c) 2026 Per Alexandersson, √2, Yaël Dillies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson, √2, Yaël Dillies
+-/
 module
 
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+
+/-!
+# Rectangular total nonnegativity
+
+We extend Mathlib's total nonnegativity of square matrices `Matrix.IsTotallyNonneg` to
+rectangular matrices indexed by partially ordered types: `Matrix.IsTotallyNonnegRect M` says that
+every minor `M.submatrix rows cols` with strictly monotone `rows` and `cols` has nonnegative
+determinant. We show that it is stable under taking submatrices along strictly monotone maps and
+under transposition, and that reversing rows and columns, or scaling rows and columns by
+nonnegative scalars, preserves total nonnegativity. We also show that the `2 × 2` minors (and
+hence all minors of size at most two) of an entrywise product of totally nonnegative matrices are
+nonnegative.
+
+## Main definitions
+
+* `Matrix.IsTotallyNonnegRect`: rectangular total nonnegativity.
+
+## Main statements
+
+* `Matrix.IsTotallyNonnegRect.submatrix`, `Matrix.IsTotallyNonnegRect.transpose`: closure
+  properties.
+* `Matrix.IsTotallyNonnegRect.nonneg`: all entries of a totally nonnegative matrix are nonnegative.
+* `Matrix.IsTotallyNonneg.finRev`: simultaneously reversing rows and columns of a finite totally
+  nonnegative matrix preserves total nonnegativity.
+* `Matrix.IsTotallyNonneg.scaleRowsCols`: multiplying rows and columns by nonnegative scalars
+  preserves total nonnegativity.
+* `Matrix.IsTotallyNonneg.hadamard_det_of_card_le_two`: minors of size at most two of the
+  Hadamard product of two totally nonnegative matrices are nonnegative.
+-/
 
 public section
 

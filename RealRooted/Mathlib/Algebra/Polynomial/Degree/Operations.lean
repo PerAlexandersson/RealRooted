@@ -1,9 +1,33 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.BigOperators
+
+/-!
+# Degree lemmas for sums and products of polynomials
+
+Degree and coefficient lemmas for sums, quotients by a linear factor, and products of polynomials.
+They cover the degree of `p + C a * q` in several regimes (`q` of smaller degree, `q` of larger
+degree, equal degree with a nonvanishing top coefficient), the degree of
+`∑ k ∈ range (n + 1), C (a k) * X ^ (n - k)`, and the second-highest coefficient of a product.
+
+## Main statements
+
+* `Polynomial.natDegree_divByMonic_X_sub_C`: `(p /ₘ (X - C r)).natDegree = p.natDegree - 1`.
+* `Polynomial.natDegree_add_C_mul_of_natDegree_lt`: if `f.natDegree < g.natDegree` and `a ≠ 0`,
+  then `(f + C a * g).natDegree = g.natDegree`.
+* `Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt`: in that situation the leading coefficient is
+  `a * g.leadingCoeff`.
+* `Polynomial.coeff_mul_add_add_one_eq_of_natDegree_le`: the coefficient of `p * q` in degree
+  `a + b + 1` when `p.natDegree ≤ a + 1` and `q.natDegree ≤ b + 1`.
+-/
 
 public section
 

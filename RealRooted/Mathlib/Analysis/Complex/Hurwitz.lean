@@ -1,4 +1,29 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# Hurwitz-type theorem for upper-half-plane-stable polynomials
+
+Hurwitz's theorem in the following form: a locally uniform limit of holomorphic functions on a
+ball that have no zeros there is either zero-free or identically zero. For multivariate complex
+polynomials, we deduce that a locally uniform limit of polynomials with no zeros in the product of
+upper half-planes is itself zero-free there or zero. The deduction restricts to a complex line
+through a point of the product of half-planes and applies the one-variable statement.
+
+## Main definitions
+
+* `MvPolynomial.upperHalfPlane`: the set `{z : τ → ℂ | ∀ i, 0 < (z i).im}`.
+
+## Main statements
+
+* `Complex.forall_ne_or_forall_eq_of_tendstoLocallyUniformlyOn_ball`: Hurwitz's theorem on a ball.
+* `MvPolynomial.eval_ne_zero_or_eq_zero_of_tendstoLocallyUniformlyOn`: the limit `q` of
+  polynomials `p k` with no zeros in `upperHalfPlane τ` has no zeros there, or `q = 0`.
+-/
 
 open Filter Topology Metric
 

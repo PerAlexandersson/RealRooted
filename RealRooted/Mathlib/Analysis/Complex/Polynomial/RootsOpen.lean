@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Eval.Degree
@@ -7,8 +12,6 @@ public import Mathlib.RingTheory.Polynomial.Vieta
 
 import Mathlib.Tactic
 
-public section
-
 /-!
 # Openness of strict upper-half-plane root location
 
@@ -16,6 +19,8 @@ This file proves that having all roots in the open upper half-plane is open
 among complex polynomials of bounded degree. The proof was found by Aristotle
 (Harmonic).
 -/
+
+public section
 
 namespace Polynomial
 

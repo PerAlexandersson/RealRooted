@@ -1,4 +1,30 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# Coefficient estimates for multivariate complex polynomials
+
+The coefficient of a monomial in a multivariate complex polynomial `P` is an average of `P` over
+the points of a torus whose coordinates are `r` times roots of unity, divided by the monomial
+(a discrete Fourier inversion). This gives Cauchy-type bounds on the coefficients in terms of the
+supremum of `‖P‖` on a torus, and hence a convergence criterion: a sequence of polynomials that is
+uniformly bounded on polydiscs and whose coefficients converge converges locally uniformly to the
+corresponding power series.
+
+## Main statements
+
+* `MvPolynomial.coeff_eq_rootOfUnity_avg`: the formula for `P.coeff m` as an average over the
+  `N`-th roots of unity on the torus of radius `r`, for `P.totalDegree < N`.
+* `MvPolynomial.norm_coeff_mul_pow_le_of_forall_norm_eval_le`: if `‖P‖ ≤ M` on the torus of radius
+  `r`, then `‖P.coeff m‖ * r ^ (∑ i, m i) ≤ M`.
+* `MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto`: uniformly bounded polynomials
+  `p k` with coefficients converging to `c m` converge locally uniformly to
+  `fun z => ∑' m, c m * ∏ i, z i ^ m i`, and this series converges absolutely.
+-/
 
 open Complex Filter Topology
 

@@ -1,7 +1,37 @@
+/-
+Copyright (c) 2026 Per Alexandersson, Yaël Dillies. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson, Yaël Dillies
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Algebra.Polynomial.Derivative
+
+/-!
+# Coefficient and degree lemmas for derivative-type operators on polynomials
+
+Coefficient formulas for operators built from the derivative `p.derivative` and multiplication by
+low-degree polynomials, such as `C u * p + (C v + C w * X) * p.derivative` (an affine Euler step),
+`(X - X ^ 2) * p.derivative` and `X * (1 - X) * p.derivative`. From them we compute the degree and
+leading coefficient of one step of such an operator, and of an iterated recurrence
+`P (n + 1) = (C a * X + C b * X ^ 2) * (P n).derivative + (C c + C d * X) * P n + r n`, whenever
+the prospective top coefficient does not vanish.
+
+## Main statements
+
+* `Polynomial.coeff_X_mul_derivative`: `(X * p.derivative).coeff k = k * p.coeff k`.
+* `Polynomial.coeff_C_mul_add_affine_mul_derivative`: coefficients of an affine Euler step.
+* `Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative`: exact degree and
+  leading coefficient of an affine Euler step under a nonvanishing top coefficient.
+* `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_recurrence`: degree and leading
+  coefficient of every term of the quadratic-derivative recurrence above.
+* `Polynomial.nextCoeff_derivative_of_two_le_natDegree`: `p.derivative.nextCoeff` equals
+  `(p.natDegree - 1) * p.nextCoeff` when `2 ≤ p.natDegree`.
+* `Polynomial.natDegree_le_of_C_mul_eq_X_add_C_mul_derivative_add`: a nonresonant first-order
+  Euler equation `C a * p = (X + C b) * p.derivative + q` forces `p.natDegree ≤ d` when
+  `q.natDegree ≤ d` and a coarse degree bound `p.natDegree ≤ N < a` holds.
+-/
 
 public section
 

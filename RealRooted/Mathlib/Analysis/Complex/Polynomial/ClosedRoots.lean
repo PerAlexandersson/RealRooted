@@ -1,10 +1,13 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.Complex.Polynomial.Basic
-
-public section
 
 /-!
 # Closed conditions on roots of polynomial limits
@@ -12,6 +15,8 @@ public section
 Pointwise limits of fixed-degree monic complex polynomials preserve any closed
 condition satisfied by all roots of the approximating polynomials.
 -/
+
+public section
 
 open Filter Topology
 

@@ -1,7 +1,25 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 module
 
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Data.Nat.Choose.Basic
+
+/-!
+# Polynomials determined by shifted binomial sums
+
+A polynomial of degree at most `d` over a semiring with left-cancellative addition is determined by
+the `d + 1` sums `∑ i ∈ range (d + 1), p.coeff i * choose (t + d - i) d` for `0 ≤ t ≤ d`.
+The proof is a triangular induction on the coefficients.
+
+## Main statements
+
+* `Polynomial.eq_of_sum_coeff_mul_shifted_choose_eq`: two polynomials of degree at most `d` with
+  equal shifted-binomial sums for all `t ≤ d` are equal.
+-/
 
 public section
 

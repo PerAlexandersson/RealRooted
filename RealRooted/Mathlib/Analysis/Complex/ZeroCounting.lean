@@ -1,4 +1,26 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# Zeros of entire functions of exponential type
+
+For an entire function `f` with `f 0 ≠ 0` and `‖f z‖ ≤ exp (C * (1 + ‖z‖))`, Jensen's formula
+(`MeromorphicOn.circleAverage_log_norm`) bounds the number of zeros, counted with multiplicity, in
+the closed disc of radius `r ≥ 1` by `A * r`. A dyadic decomposition of the zeros then shows that
+the convergence exponent of the zero sequence is at most one.
+
+## Main statements
+
+* `Differentiable.zero_count_le`: there is `A` such that the sum of `divisor f (closedBall 0 r)`
+  over all points is at most `A * r` for every `r ≥ 1`.
+* `Differentiable.summable_zeros_rpow`: if `z : ι → ℂ` enumerates the zeros of `f` with
+  multiplicity (`analyticOrderAt f w = #{k | z k = w}` for all `w`), then
+  `∑ k, ‖z k‖ ^ (-(1 + ε))` converges for every `ε > 0`.
+-/
 
 open Complex Filter Metric Topology
 /- `divisor` in the statements below refers to `MeromorphicOn.divisor`. -/

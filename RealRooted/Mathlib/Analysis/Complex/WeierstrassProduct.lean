@@ -1,4 +1,31 @@
+/-
+Copyright (c) 2026 Per Alexandersson. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Per Alexandersson
+-/
 import Mathlib
+
+/-!
+# Weierstrass products of genus zero and one
+
+Given a sequence of nonzero complex numbers `z k` with `∑ ‖z k‖⁻¹ < ∞` (genus zero) or
+`∑ ‖z k‖⁻¹ ^ 2 < ∞` (genus one), we construct an entire function `F` with `F 0 = 1` whose zeros
+are exactly the `z k`, with multiplicity `#{k | z k = w}` at `w`. The function `F` is the locally
+uniform infinite product of the factors `1 - w / z k`, respectively of the genus-one elementary
+factors `E₁ (w / z k)`. Both cases follow from a common argument that only uses a bound on the
+factor away from the zeros.
+
+## Main definitions
+
+* `Complex.weierstrassFactorOne`: the elementary factor `E₁ w = (1 - w) * exp w`.
+
+## Main statements
+
+* `Complex.norm_weierstrassFactorOne_sub_one_le`: `‖E₁ w - 1‖ ≤ ‖w‖ ^ 2` for `‖w‖ ≤ 1`.
+* `Complex.exists_entire_prod_genus_zero`: existence of the entire product `F` with
+  `HasProdLocallyUniformlyOn (fun k w => 1 - w / z k) F univ` and prescribed zeros.
+* `Complex.exists_entire_prod_genus_one`: the same for the factors `E₁ (w / z k)`.
+-/
 
 open Complex Filter Topology
 

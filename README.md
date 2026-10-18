@@ -155,11 +155,16 @@ python3 scripts/check_root_imports.py --fix        # register a new module (impo
 python3 scripts/check_import_architecture.py       # import graph, layers, budgets
 python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
+python3 scripts/check_upstream_headers.py          # Mathlib file headers in RealRooted/Mathlib
 lake exe lint-style                                # Mathlib text style: whitespace, `;`, unicode
 lake exe runLinter RealRooted                      # Mathlib environment linters (after `lake build`)
 ```
 
-The last two are Mathlib's own lint checks, and CI runs both. `lint-style --fix` repairs
+Files under `RealRooted/Mathlib/`, the upstream targets, carry Mathlib's file header: the
+copyright block (`Copyright (c) YYYY Names. All rights reserved.`, the Apache 2.0 line and
+`Authors: Names`), then `module` and the imports, then the module docstring `/-! ... -/`.
+
+The last two commands are Mathlib's own lint checks, and CI runs both. `lint-style --fix` repairs
 whitespace and semicolons. `runLinter` runs the Batteries and Mathlib environment linters
 (`docBlame`, `simpNF`, `unusedArguments`, `defsWithUnderscore`, …) on every declaration.
 Existing findings are listed in the baseline `scripts/nolints.json`. New code must not add
