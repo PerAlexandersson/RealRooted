@@ -97,12 +97,12 @@ theorem monic (hrec : SatisfiesFavardRecurrence P α β) (n : Nat) :
   (hrec.isMonicOfDegree n).monic
 
 /-- Every member of a Favard family has natural degree equal to its index. -/
-@[simp] theorem natDegree_eq (hrec : SatisfiesFavardRecurrence P α β) (n : Nat) :
+theorem natDegree_eq (hrec : SatisfiesFavardRecurrence P α β) (n : Nat) :
     (P n).natDegree = n :=
   (hrec.isMonicOfDegree n).natDegree_eq
 
 /-- Every member of a Favard family has degree equal to its index. -/
-@[simp] theorem degree_eq (hrec : SatisfiesFavardRecurrence P α β) (n : Nat) :
+theorem degree_eq (hrec : SatisfiesFavardRecurrence P α β) (n : Nat) :
     (P n).degree = n := by
   rw [Polynomial.degree_eq_natDegree (hrec.monic n).ne_zero, hrec.natDegree_eq]
 

@@ -89,7 +89,7 @@ def binaryRunSourceEquiv (n : ℕ) :
 
 /-- Source-block polarization, expressed in the canonical target/left/right
 ambient variable type. -/
-def binaryRunSourcePolarization {τ : Type*} [Fintype τ] (n : ℕ)
+def binaryRunSourcePolarization {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) :
     MvPolynomial (BorceaBranden.PaperThreeBlock τ (Fin n)) ℂ :=
   MvPolynomial.rename
@@ -97,7 +97,7 @@ def binaryRunSourcePolarization {τ : Type*} [Fintype τ] (n : ℕ)
     (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)
 
 private theorem degreeOf_binaryRunSourcePolarization_block_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (i : Fin 2) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (Sum.inr (binaryRunSourceEquiv n ⟨i, j⟩)) ≤ 1 := by
@@ -112,7 +112,7 @@ private theorem degreeOf_binaryRunSourcePolarization_block_le_one
     (fun _ : Fin 2 => n) P ⟨i, j⟩
 
 theorem degreeOf_binaryRunSourcePolarization_source_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperSourceEmbedding j) ≤ 1 := by
@@ -120,7 +120,7 @@ theorem degreeOf_binaryRunSourcePolarization_source_le_one
     degreeOf_binaryRunSourcePolarization_block_le_one n P 0 j
 
 theorem degreeOf_binaryRunSourcePolarization_input_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperInputEmbedding j) ≤ 1 := by
@@ -128,7 +128,7 @@ theorem degreeOf_binaryRunSourcePolarization_input_le_one
     degreeOf_binaryRunSourcePolarization_block_le_one n P (Fin.succ 0) j
 
 theorem degreeOf_binaryRunSourcePolarization_inr_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (x : Fin n ⊕ Fin n) :
     (binaryRunSourcePolarization n P).degreeOf (Sum.inr x) ≤ 1 := by
   rcases x with j | j
@@ -240,7 +240,7 @@ private theorem normalizedDiagonalContraction_polarizedTerm
 
 /-- Polarize two source variables, contract corresponding clone pairs, and
 set every remaining clone variable to zero. -/
-def normalizedDiagonalContraction {τ : Type*} [Fintype τ] (n : ℕ)
+def normalizedDiagonalContraction {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) : MvPolynomial τ ℂ :=
   specializeRight (fun _ : Fin n ⊕ Fin n => 0) <|
     contractMappedVariablePairs BorceaBranden.paperSourceEmbedding
@@ -250,7 +250,7 @@ def normalizedDiagonalContraction {τ : Type*} [Fintype τ] (n : ℕ)
 /-- Exact expansion of the contraction before reducing the surviving diagonal
 indices. -/
 theorem normalizedDiagonalContraction_eq_box_sum
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) :
     normalizedDiagonalContraction n P =
       ∑ a : {a : Fin 2 →₀ ℕ // ∀ i, a i ≤ n},
@@ -298,7 +298,7 @@ theorem normalizedDiagonalContraction_eq_box_sum
 factor, normalized diagonal contraction is a single sum over `k = 0, ..., n`.
 -/
 theorem normalizedDiagonalContraction_eq_diagonal_sum
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) :
     normalizedDiagonalContraction n P =
       ∑ k : Fin (n + 1),
@@ -349,7 +349,7 @@ theorem normalizedDiagonalContraction_eq_diagonal_sum
 /-- The normalized diagonal contraction preserves upper-half-plane stability,
 up to the zero polynomial. -/
 theorem mvUpperHalfPlaneStableOrZero_normalizedDiagonalContraction
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ)
     (hdegree : ∀ i, P.degreeOf (Sum.inr i) ≤ n)
     (hstable : MvUpperHalfPlaneStable P) :
@@ -383,7 +383,7 @@ theorem mvUpperHalfPlaneStableOrZero_normalizedDiagonalContraction
 /-- The normalized contraction also preserves the zero-aware form of
 upper-half-plane stability. -/
 theorem MvUpperHalfPlaneStableOrZero.normalizedDiagonalContraction
-    {τ : Type*} [Fintype τ] {n : ℕ}
+    {τ : Type*} {n : ℕ}
     {P : MvPolynomial (τ ⊕ Fin 2) ℂ}
     (hstable : MvUpperHalfPlaneStableOrZero P)
     (hdegree : ∀ i, P.degreeOf (Sum.inr i) ≤ n) :

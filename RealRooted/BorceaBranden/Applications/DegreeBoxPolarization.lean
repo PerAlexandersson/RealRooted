@@ -556,7 +556,7 @@ def sourceDiagonalVariableMap {τ : Type*} {n : ℕ} :
 
 /-- Diagonalizing source variables leaves the output-variable block
 unchanged. -/
-@[simp] theorem rename_sourceDiagonalVariableMap_rename_inl
+theorem rename_sourceDiagonalVariableMap_rename_inl
     {τ : Type*} {n : ℕ} (p : MvPolynomial τ ℂ) :
     rename (sourceDiagonalVariableMap (τ := τ) (n := n))
         (rename (Sum.inl : τ → τ ⊕ Fin n) p) =

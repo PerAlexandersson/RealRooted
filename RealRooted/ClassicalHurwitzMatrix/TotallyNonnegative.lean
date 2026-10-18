@@ -18,12 +18,10 @@ section Entries
 
 variable {R : Type*} [Zero R]
 
-@[simp]
 theorem hurwitz_zero_row_apply (c : ℕ → R) (j : ℕ) :
     hurwitz c 0 j = c (2 * j) := by
   simp [hurwitz]
 
-@[simp]
 theorem hurwitz_one_row_succ_apply (c : ℕ → R) (j : ℕ) :
     hurwitz c 1 (j + 1) = c (2 * j + 1) := by
   rw [hurwitz_apply, ite_eq_left (by lia)]

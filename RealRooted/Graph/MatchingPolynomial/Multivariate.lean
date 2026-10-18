@@ -72,7 +72,7 @@ theorem weightedMultivariateMatchingPolynomialByEdges_eq_weightedMultivariateInd
 /-- Common-phase restriction recovers the intrinsic weighted univariate
 matching polynomial. -/
 theorem commonPhaseRestriction_multivariateMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) :
     commonPhaseRestriction wt (multivariateMatchingPolynomialByEdges G) =
       weightedMatchingPolynomialByEdges G wt := by
@@ -87,7 +87,7 @@ theorem commonPhaseRestriction_multivariateMatchingPolynomialByEdges
     rfl
 
 theorem commonPhaseRestriction_weightedMultivariateMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt t : G.edgeSet → ℝ) :
     commonPhaseRestriction t
         (weightedMultivariateMatchingPolynomialByEdges G wt) =
@@ -98,8 +98,8 @@ theorem commonPhaseRestriction_weightedMultivariateMatchingPolynomialByEdges
 
 /-- Setting every edge variable to `X` recovers the ordinary univariate
 matching polynomial. -/
-@[simp] theorem commonPhaseRestriction_one_multivariateMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+theorem commonPhaseRestriction_one_multivariateMatchingPolynomialByEdges
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) :
     commonPhaseRestriction (fun _ => 1)
         (multivariateMatchingPolynomialByEdges G) =
@@ -109,9 +109,9 @@ matching polynomial. -/
 
 /-- Setting the phase direction to one recovers the existing weighted
 univariate edge-matching polynomial. -/
-@[simp] theorem
+theorem
     commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) :
     commonPhaseRestriction (fun _ => 1)
         (weightedMultivariateMatchingPolynomialByEdges G wt) =

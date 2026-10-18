@@ -39,7 +39,7 @@ def poissonSymbolC {τ : Type*} (f : MvPolynomial Bool ℝ) :
 
 /-- The Poisson signed Weyl symbol is stable.  The common-rotation input used
 here is the checked consequence of ordinary homogenization. -/
-theorem poissonSymbolC_stable {τ : Type*} [Finite τ]
+theorem poissonSymbolC_stable {τ : Type*}
     {f : MvPolynomial Bool ℝ} (hf : MvRealStable f)
     (hnn : f.HasNonnegCoeffs) :
     MvUpperHalfPlaneStable (poissonSymbolC (τ := τ) f) := by

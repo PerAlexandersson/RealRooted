@@ -169,14 +169,14 @@ namespace HeilmannLieb
 
 /-- **Heilmann–Lieb**: the matching-generating polynomial of a finite graph is
 real-rooted. -/
-theorem matchingPolynomial_splits {V : Type*} [Fintype V] [DecidableEq V]
+theorem matchingPolynomial_splits {V : Type*} [Fintype V]
     (G : SimpleGraph V) :
     (Graph.matchingPolynomialByEdges G).Splits :=
   Graph.matchingPolynomialByEdges_splits G
 
 /-- **Weighted Heilmann–Lieb**: the edge-weighted matching-generating
 polynomial is real-rooted for nonnegative weights. -/
-theorem weightedMatchingPolynomial_splits {V : Type*} [Fintype V] [DecidableEq V]
+theorem weightedMatchingPolynomial_splits {V : Type*} [Fintype V]
     (G : SimpleGraph V) (wt : G.edgeSet → ℝ) (hwt : ∀ e, 0 ≤ wt e) :
     (Graph.weightedMatchingPolynomialByEdges G wt).Splits :=
   Graph.weightedMatchingPolynomialByEdges_splits G wt hwt
@@ -184,7 +184,7 @@ theorem weightedMatchingPolynomial_splits {V : Type*} [Fintype V] [DecidableEq V
 /-- For nonnegative edge weights, the weighted matching-generating polynomial
 has nonnegative coefficients and only real nonpositive roots. -/
 theorem weightedMatchingPolynomial_isPFPolynomial {V : Type*} [Fintype V]
-    [DecidableEq V] (G : SimpleGraph V) (wt : G.edgeSet → ℝ) (hwt : ∀ e, 0 ≤ wt e) :
+    (G : SimpleGraph V) (wt : G.edgeSet → ℝ) (hwt : ∀ e, 0 ≤ wt e) :
     IsPFPolynomial (Graph.weightedMatchingPolynomialByEdges G wt) :=
   Graph.weightedMatchingPolynomialByEdges_isPFPolynomial G wt hwt
 

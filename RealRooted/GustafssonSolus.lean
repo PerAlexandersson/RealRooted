@@ -48,7 +48,7 @@ def gustafssonSolusAction {m n : ℕ} (phi : Fin m → Fin n)
     (gustafssonSolusRow phi dropPivot).length = n := by
   simp [gustafssonSolusRow]
 
-@[simp] theorem get_gustafssonSolusRow {n : ℕ} (phi : Fin n) (dropPivot : Bool)
+theorem get_gustafssonSolusRow {n : ℕ} (phi : Fin n) (dropPivot : Bool)
     (j : Fin n) :
     (gustafssonSolusRow phi dropPivot).get
         ⟨j.1, by simp [length_gustafssonSolusRow]⟩ =
@@ -60,7 +60,7 @@ def gustafssonSolusAction {m n : ℕ} (phi : Fin m → Fin n)
     (gustafssonSolusMatrix phi dropPivot).length = m := by
   simp [gustafssonSolusMatrix]
 
-@[simp] theorem get_gustafssonSolusMatrix {m n : ℕ}
+theorem get_gustafssonSolusMatrix {m n : ℕ}
     (phi : Fin m → Fin n) (dropPivot : Fin m → Bool) (i : Fin m) :
     (gustafssonSolusMatrix phi dropPivot).get
         ⟨i.1, by simp [length_gustafssonSolusMatrix]⟩ =

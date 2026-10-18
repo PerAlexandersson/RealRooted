@@ -26,7 +26,7 @@ namespace Polynomial
 
 /-- Differentiating the next probabilists' Hermite polynomial lowers its
 index. -/
-@[simp] theorem derivative_hermite_succ (n : ℕ) :
+theorem derivative_hermite_succ (n : ℕ) :
     (hermite (n + 1)).derivative = C (n + 1 : ℤ) * hermite n := by
   induction n with
   | zero => simp

@@ -132,7 +132,7 @@ def weightedMatchingGeneratingPolynomial
 
 /-- Intrinsic matching-generating polynomial as a sum over finite matchings of
 edge sets. -/
-def matchingPolynomialByEdges {V : Type u} [Fintype V] [DecidableEq V]
+def matchingPolynomialByEdges {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) : ℝ[X] := by
   classical
   exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet =>
@@ -142,7 +142,7 @@ def matchingPolynomialByEdges {V : Type u} [Fintype V] [DecidableEq V]
 /-- Intrinsic weighted matching-generating polynomial as a sum over finite
 matchings of edge sets. -/
 def weightedMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) : ℝ[X] := by
   classical
   exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet =>
@@ -151,7 +151,7 @@ def weightedMatchingPolynomialByEdges
 
 /-- Total weight of the size-`k` edge matchings of a graph. -/
 def weightedMatchingNumber
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) (k : ℕ) : ℝ := by
   classical
   exact ∑ M ∈ (Finset.univ.filter fun M : Finset G.edgeSet ↦
@@ -161,7 +161,7 @@ def weightedMatchingNumber
 /-- Coefficients of the intrinsic weighted matching polynomial are weighted
 matching numbers. -/
 theorem coeff_weightedMatchingPolynomialByEdges
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) (k : ℕ) :
     (weightedMatchingPolynomialByEdges G wt).coeff k =
       weightedMatchingNumber G wt k := by

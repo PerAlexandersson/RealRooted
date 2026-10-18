@@ -295,7 +295,6 @@ theorem signedCollisionNumber_succ {q p n : ℕ}
     (w : Fin (n + 1) → SignedLetter q p) :
     signedCollisionNumber w = (collisionSet w).card := rfl
 
-@[simp]
 theorem signedCollisionNumber_one {q p : ℕ}
     (w : Fin 1 → SignedLetter q p) : signedCollisionNumber w = 0 := by
   simp [collisionSet]

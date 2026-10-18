@@ -49,7 +49,6 @@ theorem regularizedLowerShift_apply_eq_zero_of_lt
   have hsucc : i.val ≠ j.val + 1 := by lia
   simp [hij, hsucc]
 
-@[simp]
 theorem regularizedLowerShift_apply_self
     (ε : ℝ) (N : ℕ) (i : Fin (N + 1)) :
     regularizedLowerShift ε N i i = ε := by

@@ -21,7 +21,7 @@ noncomputable section
 /-- A real linear operator on a coordinate-wise degree box preserves real
 stability, allowing the zero output. -/
 def PreservesRealStabilityOnDegreeBox
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) : Prop :=
   ∀ f, MvRealStable f.1 → MvRealStableOrZero (T f)
 
@@ -29,7 +29,7 @@ def PreservesRealStabilityOnDegreeBox
 classification, phrased invariantly by requiring the real span of `P,Q` to
 be stable or zero. -/
 def HasStableRankTwoRepresentation
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) : Prop :=
   ∃ (α β : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] ℝ)
       (P Q : MvPolynomial σ ℝ),
@@ -40,7 +40,7 @@ def HasStableRankTwoRepresentation
 real stability.  In fact, the proof shows that every output is stable or
 zero, independently of the input. -/
 theorem HasStableRankTwoRepresentation.preservesRealStabilityOnDegreeBox
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ}
     (h : HasStableRankTwoRepresentation κ T) :
     PreservesRealStabilityOnDegreeBox κ T := by
@@ -52,7 +52,7 @@ theorem HasStableRankTwoRepresentation.preservesRealStabilityOnDegreeBox
 /-- A representation whose two spanning polynomials form a stable affine
 pencil is an instance of the rank-at-most-two exceptional representation. -/
 theorem hasStableRankTwoRepresentation_of_stablePencil
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} [Finite σ] {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ}
     {α β : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] ℝ}
     {P Q : MvPolynomial σ ℝ}
@@ -64,7 +64,7 @@ theorem hasStableRankTwoRepresentation_of_stablePencil
 /-- The proper-position formulation in Borcea--Branden Theorem 1.2(a)
 implies the invariant stable-span rank-at-most-two representation. -/
 theorem hasStableRankTwoRepresentation_of_properPosition
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} [Finite σ] {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ}
     {α β : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] ℝ}
     {P Q : MvPolynomial σ ℝ}
@@ -76,7 +76,7 @@ theorem hasStableRankTwoRepresentation_of_properPosition
 /-- The zero operator belongs to the stable rank-at-most-two exceptional
 branch. -/
 theorem hasStableRankTwoRepresentation_zero
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
+    {σ : Type*} (κ : σ → ℕ) :
     HasStableRankTwoRepresentation κ
       (0 : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) := by
   refine ⟨0, 0, 0, 0, ?_, ?_⟩

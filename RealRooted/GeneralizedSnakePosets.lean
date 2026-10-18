@@ -59,7 +59,7 @@ def ferrersRookPolynomial (lam : List ℕ) : ℝ[X] :=
 def partitionSubOne (lam : List ℕ) : List ℕ :=
   lam.map fun n => n - 1
 
-@[simp] theorem partitionSubOne_getD (lam : List ℕ) (row : ℕ) :
+theorem partitionSubOne_getD (lam : List ℕ) (row : ℕ) :
     (partitionSubOne lam).getD row 0 = lam.getD row 0 - 1 := by
   rw [partitionSubOne, List.getD_eq_getElem?_getD,
     List.getD_eq_getElem?_getD, List.getElem?_map]

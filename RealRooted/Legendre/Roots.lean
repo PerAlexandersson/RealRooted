@@ -72,13 +72,13 @@ theorem shiftedLegendreReal_hasSimpleRoots (n : ℕ) :
 
 /-- Reflecting a real shifted Legendre polynomial through the origin preserves
 its degree. -/
-@[simp] theorem shiftedLegendreReal_comp_neg_X_natDegree (n : ℕ) :
+theorem shiftedLegendreReal_comp_neg_X_natDegree (n : ℕ) :
     ((shiftedLegendreReal n).comp (-X)).natDegree = n := by
   simp [Polynomial.natDegree_comp, shiftedLegendreReal_natDegree]
 
 /-- The reflected real shifted Legendre polynomial has central binomial
 leading coefficient. -/
-@[simp] theorem shiftedLegendreReal_comp_neg_X_leadingCoeff (n : ℕ) :
+theorem shiftedLegendreReal_comp_neg_X_leadingCoeff (n : ℕ) :
     ((shiftedLegendreReal n).comp (-X)).leadingCoeff =
       (Nat.choose (2 * n) n : ℝ) := by
   rw [Polynomial.comp_neg_X_leadingCoeff_eq,

@@ -55,7 +55,7 @@ theorem mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j
   exact Finset.sum_nonneg fun j _ => mul_nonneg (hA i j) (hx j)
 
 -- Matrix power multiplication
-theorem pow_mulVec_succ {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n] {A : Matrix n n ℝ}
+theorem pow_mulVec_succ {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
     (k : ℕ) (x : n → ℝ) :
     (A^(k+1)).mulVec x = A.mulVec ((A^k).mulVec x) := by
   simp only [mulVec_mulVec]
@@ -117,7 +117,7 @@ Indeed, the coordinates of a simplex‐vector sum to `1`, whereas the coordinate
 the zero vector sum to `0`.
 -/
 lemma ne_zero_of_mem_stdSimplex
-    {n : Type*} [Fintype n] [Nonempty n] {x : n → ℝ}
+    {n : Type*} [Fintype n] {x : n → ℝ}
     (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     x ≠ 0 := by
   intro h_zero

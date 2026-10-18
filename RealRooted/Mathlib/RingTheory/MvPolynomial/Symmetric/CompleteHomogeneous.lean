@@ -97,7 +97,6 @@ theorem hsymm_fin_zero_succ (n : ℕ) :
   simp [hsymm]
 
 /-- Evaluation in zero variables vanishes in positive degree. -/
-@[simp]
 theorem aeval_hsymm_fin_zero_succ [Algebra R S] (n : ℕ)
     (f : Fin 0 → S) :
     aeval f (hsymm (Fin 0) R (n + 1)) = 0 := by
@@ -105,7 +104,6 @@ theorem aeval_hsymm_fin_zero_succ [Algebra R S] (n : ℕ)
   simp
 
 /-- Degree-zero evaluation is one for every finite variable family. -/
-@[simp]
 theorem aeval_hsymm_zero [Algebra R S] (f : σ → S) :
     aeval f (hsymm σ R 0) = 1 := by
   simp

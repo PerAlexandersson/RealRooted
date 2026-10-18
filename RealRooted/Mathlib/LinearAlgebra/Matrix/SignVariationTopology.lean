@@ -14,7 +14,7 @@ namespace Fin
 
 /-- Nonzero coordinates eventually retain their signs under convergence. -/
 theorem eventually_sign_eq_of_tendsto
-    {α : Type*} {l : Filter α} [l.NeBot] {n : ℕ}
+    {α : Type*} {l : Filter α} {n : ℕ}
     {f : α → Fin n → ℝ} {x : Fin n → ℝ}
     (hf : Tendsto f l (𝓝 x)) :
     ∀ᶠ a in l, ∀ i, x i ≠ 0 →
@@ -100,7 +100,7 @@ theorem signVariations_le_of_tendsto
 /-- A convergent perturbation of a vector with nodal interior zeros eventually
 has at most two additional sign variations. -/
 theorem eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
-    {α : Type*} {l : Filter α} [l.NeBot]
+    {α : Type*} {l : Filter α}
     {n : ℕ} {f : α → Fin (n + 2) → ℝ}
     {x : Fin (n + 2) → ℝ}
     (hf : Tendsto f l (𝓝 x))

@@ -37,7 +37,7 @@ namespace RealRooted
 abbrev hermiteReal (n : ℕ) : ℝ[X] :=
   (Polynomial.hermite n).map (Int.castRingHom ℝ)
 
-@[simp] theorem coeff_hermiteReal (n k : ℕ) :
+theorem coeff_hermiteReal (n k : ℕ) :
     (hermiteReal n).coeff k = ((Polynomial.hermite n).coeff k : ℝ) := by
   simp [hermiteReal]
 
@@ -48,7 +48,7 @@ abbrev hermiteReal (n : ℕ) : ℝ[X] :=
   simp [hermiteReal]
 
 /-- Differentiating lowers the index of the real Hermite family. -/
-@[simp] theorem derivative_hermiteReal_succ (n : ℕ) :
+theorem derivative_hermiteReal_succ (n : ℕ) :
     (hermiteReal (n + 1)).derivative = C (n + 1 : ℝ) * hermiteReal n := by
   rw [show hermiteReal (n + 1) =
     (Polynomial.hermite (n + 1)).map (Int.castRingHom ℝ) by rfl]

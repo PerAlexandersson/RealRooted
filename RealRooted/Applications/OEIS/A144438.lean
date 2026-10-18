@@ -240,7 +240,6 @@ theorem A144438_hasNonnegCoeffs (n : ℕ) :
   decoEulerian_hasNonnegCoeffs n
 
 /-- Every A144438 polynomial has constant coefficient one. -/
-@[simp]
 theorem A144438_coeff_zero (n : ℕ) : (A144438 n).coeff 0 = 1 :=
   decoEulerian_coeff_zero n
 

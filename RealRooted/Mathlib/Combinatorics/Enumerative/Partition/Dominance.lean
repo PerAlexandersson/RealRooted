@@ -371,7 +371,6 @@ theorem mem_dominanceDownset {n : ℕ} {mu lambda : n.Partition} :
   classical
   simp [dominanceDownset]
 
-@[simp]
 theorem mem_erase_dominanceDownset {n : ℕ}
     {mu lambda : n.Partition} :
     mu ∈ (dominanceDownset lambda).erase lambda ↔ mu < lambda := by

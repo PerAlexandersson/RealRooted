@@ -121,7 +121,6 @@ theorem jacobiBetaOneInner_C_mul_right (α c : ℝ) (p q : ℝ[X]) :
   simpa only [jacobiBetaOneInner] using
     Polynomial.momentPairing_C_mul_right (jacobiBetaOneMoment α) c p q
 
-@[simp]
 theorem jacobiBetaOneInner_monomial (α a b : ℝ) (i j : ℕ) :
     jacobiBetaOneInner α (monomial i a) (monomial j b) =
       a * b * jacobiBetaOneMoment α (i + j) := by

@@ -29,7 +29,6 @@ def wordDescentRows (m : ℕ) : List (ℕ × ℝ[X]) :=
 theorem length_wordDescentRows (m : ℕ) : (wordDescentRows m).length = m := by
   simp [wordDescentRows]
 
-@[simp]
 theorem get_wordDescentRows_fst (m : ℕ) (i : Fin (wordDescentRows m).length) :
     ((wordDescentRows m).get i).1 = i.1 := by
   change ((List.map (fun j => (j, 1)) (List.range m)).get

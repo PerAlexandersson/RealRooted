@@ -241,7 +241,7 @@ private theorem pairing_eq_diagonalForm
 
 /-- Favard basis elements are orthogonal, with squared norm equal to the
 product of the preceding subdiagonal coefficients. -/
-@[simp] theorem pairing_apply_basis
+theorem pairing_apply_basis
     (hrec : SatisfiesFavardRecurrence P α β) (i j : Nat) :
     hrec.pairing (P i) (P j) =
       if i = j then favardNormSq β i else 0 := by

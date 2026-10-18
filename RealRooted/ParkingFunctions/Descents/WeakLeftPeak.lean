@@ -37,7 +37,6 @@ theorem previousPosition_last {r : ℕ} :
   apply Fin.ext
   simp [previousPosition]
 
-@[simp]
 theorem mem_map_castSuccEmb_iff {n : ℕ}
     (D : Finset (Fin n)) (i : Fin n) :
     i.castSucc ∈ D.map Fin.castSuccEmb ↔ i ∈ D := by

@@ -22,7 +22,6 @@ abbrev finiteToeplitz {R : Type*} [Zero R]
     (a : ℕ → R) (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) R :=
   toeplitzFin a N
 
-@[simp]
 theorem finiteToeplitz_apply {R : Type*} [Zero R]
     (a : ℕ → R) (N : ℕ) (i j : Fin (N + 1)) :
     finiteToeplitz a N i j = if j ≤ i then a (i.val - j.val) else 0 := by

@@ -138,7 +138,7 @@ noncomputable def ofEligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     {c : DecoNormalizedCode h} (s : Finset (EligibleStart c)) :
     (ofEligibleFinset s).starts = s.map eligibleStartValEmbedding := rfl
 
-@[simp] theorem mem_ofEligibleFinset_starts {h : Nat}
+theorem mem_ofEligibleFinset_starts {h : Nat}
     {c : DecoNormalizedCode h} {s : Finset (EligibleStart c)}
     (j : EligibleStart c) :
     j.1 ∈ (ofEligibleFinset s).starts ↔ j ∈ s := by

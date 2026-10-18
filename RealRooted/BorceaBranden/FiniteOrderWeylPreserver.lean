@@ -46,7 +46,7 @@ def finiteOrderWeylOperator {σ : Type*} (q : σ) (m : ℕ)
     ring_nf
 
 /-- The degree-box restriction of a finite-order differential operator. -/
-def finiteOrderWeylOperatorDegreeBox {σ : Type*} [Fintype σ]
+def finiteOrderWeylOperatorDegreeBox {σ : Type*}
     (q : σ) (m : ℕ) (Q : Fin (m + 1) → MvPolynomial σ ℂ) (κ : σ → ℕ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ :=
   { toFun := fun p => finiteOrderWeylOperator q m Q p.1
@@ -55,7 +55,7 @@ def finiteOrderWeylOperatorDegreeBox {σ : Type*} [Fintype σ]
     map_smul' := fun c p => by
       exact (finiteOrderWeylOperator q m Q).map_smul c p.1 }
 
-private def iteratedPDerivAtDegreeBox {σ : Type*} [Fintype σ]
+private def iteratedPDerivAtDegreeBox {σ : Type*}
     (q : σ) (j : ℕ) (κ : σ → ℕ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ where
   toFun p := iteratedPDerivAt q j p.1
@@ -102,7 +102,7 @@ private theorem pderiv_rightComplementMonomial_zero {σ τ : Type*} [Fintype σ]
   exact MvPolynomial.pderiv_eq_zero_of_notMem_vars
     (MvPolynomial.inl_notMem_vars_rename_inr q _)
 
-private def pderivAfter {σ τ : Type*} [Fintype σ]
+private def pderivAfter {σ τ : Type*}
     (q : τ) (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ where
@@ -161,14 +161,14 @@ private theorem coordinateJensenSymbol_one {σ : Type*} (n : ℕ) (q : σ) :
       rw [add_pow]
       simp [g, mul_comm, mul_assoc]
 
-private def degreeBoxInclusion {σ : Type*} [Fintype σ] (κ : σ → ℕ) :
+private def degreeBoxInclusion {σ : Type*} (κ : σ → ℕ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ where
   toFun p := p.1
   map_add' p r := rfl
   map_smul' c p := by rfl
 
 private theorem coordinateDiagonalOperatorDegreeBox_one_eq_inclusion
-    {σ : Type*} [Fintype σ] (q : σ) (κ : σ → ℕ) :
+    {σ : Type*} (q : σ) (κ : σ → ℕ) :
     coordinateDiagonalOperatorDegreeBox (fun _ => 1) q κ =
       degreeBoxInclusion κ := by
   classical
@@ -793,7 +793,7 @@ theorem signedWeylSymbol_descFactorial_invert_bind_zero_or
 /-- A stable signed Weyl symbol makes the corresponding finite-order operator
 preserve upper-half-plane stability on a coordinate-wise degree box. -/
 theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
-    {σ : Type*} [Fintype σ] (q : σ) (m n : ℕ)
+    {σ : Type*} [Finite σ] (q : σ) (m n : ℕ)
     (Q : Fin (m + 1) → MvPolynomial σ ℂ)
     (κ : σ → ℕ)
     (hκ : κ q = n)
@@ -803,7 +803,7 @@ theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
     MvUpperHalfPlaneStableOrZero
       (finiteOrderWeylOperatorDegreeBox q m Q κ p) := by
   classical
-  classical
+  have := Fintype.ofFinite σ
   have hdiag := coordinateDiagonalOperator_preserves_stability m
     (fun k => (n.descFactorial k : ℝ)) none
     (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence

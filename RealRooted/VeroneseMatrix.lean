@@ -43,7 +43,7 @@ def veroneseSectionPolynomialListDesc (r : ℕ) (p : ℝ[X]) : List ℝ[X] :=
     (veroneseSectionPolynomialListDesc r p).length = r := by
   simp [veroneseSectionPolynomialListDesc]
 
-@[simp] theorem get_veroneseSectionPolynomialListDesc
+theorem get_veroneseSectionPolynomialListDesc
     {r : ℕ} (p : ℝ[X]) (i : Fin r) :
     (veroneseSectionPolynomialListDesc r p).get
         ⟨i.1, by simp [length_veroneseSectionPolynomialListDesc]⟩ =
@@ -92,7 +92,7 @@ def veroneseLinearFactorMatrixDesc (r : ℕ) (a : ℝ) : List (List ℝ[X]) :=
     (veroneseLinearFactorRowDesc r a i).length = r := by
   by_cases hi : i.1 + 1 < r <;> simp [veroneseLinearFactorRowDesc, hi]
 
-@[simp] theorem get_veroneseLinearFactorMatrixDesc
+theorem get_veroneseLinearFactorMatrixDesc
     {r : ℕ} (a : ℝ) (i : Fin r) :
     (veroneseLinearFactorMatrixDesc r a).get
         ⟨i.1, by simp [length_veroneseLinearFactorMatrixDesc]⟩ =

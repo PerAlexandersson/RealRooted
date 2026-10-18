@@ -37,22 +37,18 @@ theorem gammaOperator_apply (n : ℕ) (p : ℝ[X]) :
       (1 + C (2 * n : ℝ) * X) * p + X * (1 - C (4 : ℝ) * X) * p.derivative :=
   rfl
 
-@[simp]
 theorem gammaOperator_zero (n : ℕ) : gammaOperator n (0 : ℝ[X]) = 0 :=
   (gammaOperator n).map_zero
 
-@[simp]
 theorem gammaOperator_add (n : ℕ) (p q : ℝ[X]) :
     gammaOperator n (p + q) = gammaOperator n p + gammaOperator n q :=
   (gammaOperator n).map_add p q
 
-@[simp]
 theorem gammaOperator_smul (n : ℕ) (a : ℝ) (p : ℝ[X]) :
     gammaOperator n (a • p) = a • gammaOperator n p :=
   (gammaOperator n).map_smul a p
 
 /-- The gamma operator leaves the constant coefficient unchanged. -/
-@[simp]
 theorem gammaOperator_constantCoeff (n : ℕ) (p : ℝ[X]) :
     (gammaOperator n p).constantCoeff = p.constantCoeff := by
   simp [gammaOperator]
@@ -105,7 +101,6 @@ theorem gammaV_succ_succ_succ (n : ℕ) :
 
 /-- Every constant component from rank two onwards has constant coefficient one.
 The index `n + 2` presents the natural rank range without a side condition. -/
-@[simp]
 theorem gammaU_constantCoeff_add_two (n : ℕ) :
     (gammaU (n + 2)).constantCoeff = 1 := by
   induction n with
@@ -117,7 +112,6 @@ theorem gammaU_constantCoeff_add_two (n : ℕ) :
 /-- Every parameter component from rank two onwards has vanishing constant
 coefficient.  The index `n + 2` presents the natural rank range without a
 side condition. -/
-@[simp]
 theorem gammaV_constantCoeff_add_two (n : ℕ) :
     (gammaV (n + 2)).constantCoeff = 0 := by
   induction n with
@@ -133,7 +127,6 @@ def gammaPencil (a : ℝ) (n : ℕ) : ℝ[X] := gammaU n + a • gammaV n
 theorem gammaPencil_two (a : ℝ) : gammaPencil a 2 = 1 + a • X := by
   simp [gammaPencil]
 
-@[simp]
 theorem gammaPencil_constantCoeff_add_two (a : ℝ) (n : ℕ) :
     (gammaPencil a (n + 2)).constantCoeff = 1 := by
   change (gammaU (n + 2)).coeff 0 + a * (gammaV (n + 2)).coeff 0 = 1

@@ -45,7 +45,7 @@ def IsUpperHalfPlaneStable (p : ℂ[X]) : Prop :=
 
 /-- Evaluation commutes with Mathlib's canonical identification of a
 univariate polynomial with a multivariate polynomial in one variable. -/
-@[simp] theorem eval_uniqueAlgEquiv_symm_finOne (p : ℂ[X]) (z : Fin 1 → ℂ) :
+theorem eval_uniqueAlgEquiv_symm_finOne (p : ℂ[X]) (z : Fin 1 → ℂ) :
     MvPolynomial.eval z ((MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm p) =
       p.eval (z 0) := by
   change

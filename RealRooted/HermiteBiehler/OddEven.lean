@@ -26,7 +26,7 @@ def oddEvenPolynomial (p q : ℝ[X]) : ℝ[X] :=
         X * (complexify p).comp (X ^ 2 : ℂ[X]) := by
   simp [complexify, oddEvenPolynomial, Polynomial.map_comp]
 
-@[simp] theorem eval_complexify_oddEvenPolynomial (p q : ℝ[X]) (z : ℂ) :
+theorem eval_complexify_oddEvenPolynomial (p q : ℝ[X]) (z : ℂ) :
     (complexify (oddEvenPolynomial p q)).eval z =
       (complexify q).eval (z ^ 2) + z * (complexify p).eval (z ^ 2) := by
   simp
@@ -64,7 +64,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
       rw [show 2 * (n + 1) = 2 * n + 1 + 1 by lia]
       simp
 
-@[simp] lemma coeff_X_mul_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
+lemma coeff_X_mul_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
     (X * p.comp (X ^ 2 : ℝ[X])).coeff (2 * n + 1) = p.coeff n := by
   simp
 

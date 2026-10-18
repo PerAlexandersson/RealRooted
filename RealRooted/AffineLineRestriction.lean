@@ -40,7 +40,7 @@ def realAffineLineRestriction {σ : Type*} (a b : σ → ℝ)
   rw [hC]
   rfl
 
-@[simp] theorem eval_complexify_realAffineLineRestriction {σ : Type*}
+theorem eval_complexify_realAffineLineRestriction {σ : Type*}
     (a b : σ → ℝ) (P : MvPolynomial σ ℝ) :
     ∀ t : ℂ,
       ((realAffineLineRestriction a b P).map (algebraMap ℝ ℂ)).eval t =

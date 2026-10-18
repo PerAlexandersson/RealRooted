@@ -54,7 +54,7 @@ def pathMatchingPolynomial (N : ℕ) : ℝ[X] :=
       Nat.choose_eq_zero_of_lt (by lia)]
     norm_num
 
-@[simp] theorem coeff_zero_pathMatchingPolynomial (N : ℕ) :
+theorem coeff_zero_pathMatchingPolynomial (N : ℕ) :
     (pathMatchingPolynomial N).coeff 0 = 1 := by
   rw [coeff_pathMatchingPolynomial_of_le (Nat.zero_le _)]
   simp

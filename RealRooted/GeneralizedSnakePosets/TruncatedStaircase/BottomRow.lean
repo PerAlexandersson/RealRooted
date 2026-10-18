@@ -16,7 +16,7 @@ namespace GeneralizedSnakePosets
 namespace FiniteSkewBoard
 
 /-- Membership in the bottom row of `mu_{n,i+1}`. -/
-@[simp] theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
+theorem bottomRow_mem_truncatedStaircase_cells {n i c : ℕ} :
     (i, c) ∈ (truncatedStaircase n (i + 1)).cells ↔ c < n - i := by
   simp
 
@@ -25,7 +25,7 @@ def bottomRowCells (n i : ℕ) : Finset (ℕ × ℕ) :=
   (Finset.range (n - i)).image fun c => (i, c)
 
 /-- Membership in the bottom-row cell set, in column coordinates. -/
-@[simp] theorem bottomRowCell_mem_bottomRowCells {n i c : ℕ} :
+theorem bottomRowCell_mem_bottomRowCells {n i c : ℕ} :
     (i, c) ∈ bottomRowCells n i ↔ c < n - i := by
   classical
   rw [bottomRowCells, Finset.mem_image]

@@ -75,7 +75,7 @@ theorem length_takePrefix_le_length (w : SnakeWord) (k : ℕ) :
 
 /-- Reading before the requested prefix length agrees with reading in the
 original word. -/
-@[simp] theorem getD_takePrefix_of_lt {w : SnakeWord} {k idx : ℕ}
+theorem getD_takePrefix_of_lt {w : SnakeWord} {k idx : ℕ}
     {default : SnakeLetter} (hidx : idx < k) :
     (w.takePrefix k).getD idx default = w.getD idx default := by
   rw [takePrefix, List.getD_eq_getElem?_getD,
@@ -179,7 +179,7 @@ theorem deleteFinal_eq_takePrefix_succ_of_length_sub_eq_one
 
 /-- Reading before the deleted final letter agrees with reading in the
 original word. -/
-@[simp] theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
+theorem getElem?_deleteFinal_of_lt {w : SnakeWord} {idx : ℕ}
     (hidx : idx < w.deleteFinal.length) :
     w.deleteFinal[idx]? = w[idx]? := by
   have hidx' : idx < w.length - 1 := by simpa [length_deleteFinal] using hidx
