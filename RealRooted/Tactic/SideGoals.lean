@@ -32,80 +32,152 @@ namespace Tactic
 /-- `rr_side` without `positivity`, `norm_num` and `nlinarith`, for use after an alternative
 list that has already tried them on the same goal. -/
 syntax (name := rr_side_rest) "rr_side_rest" : tactic
+/-- Closes a nonnegativity side goal `0 ≤ e` by assumption, a natural-number cast, `positivity`,
+`norm_num` or `nlinarith`. -/
 syntax (name := rr_side_nonneg) "rr_side_nonneg" : tactic
+/-- Closes a positivity side goal `0 < e` by assumption, casts, `positivity`, `norm_num` or
+`nlinarith`. -/
 syntax (name := rr_side_pos) "rr_side_pos" : tactic
+/-- Closes a nonvanishing side goal `e ≠ 0` by assumption, casts, powers, quotients, inverses,
+`positivity`, `norm_num` or `nlinarith`. -/
 syntax (name := rr_side_ne) "rr_side_ne" : tactic
+/-- Sequence form of `rr_side_nonneg`: introduces the row index `n` and closes the goal for it. -/
 syntax (name := rr_side_nonneg_seq) "rr_side_nonneg_seq" : tactic
+/-- Sequence form of `rr_side_pos`: introduces the row index `n` and closes the goal for it. -/
 syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
+/-- Sequence form of `rr_side_ne`: introduces the row index `n` and closes the goal for it. -/
 syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
+/-- Sequence form of `positivity`: introduces the row index `n` and closes the goal by
+`positivity`. -/
 syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
+/-- Simplifies polynomial coefficient expressions such as `coeff_add`, `coeff_C_mul` and
+`coeff_X_pow` using a fixed `simp only` set. -/
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
+/-- Normalizes the arithmetic left by `rr_coeff_simp` with `norm_num` and `ring_nf`, ignoring
+failures. -/
 syntax (name := rr_coeff_finish) "rr_coeff_finish" : tactic
+/-- Simplifies coefficient expressions with `rr_coeff_simp` and normalizes the remaining arithmetic
+with `rr_coeff_finish`, running the pair a second time. -/
 syntax (name := rr_coeff) "rr_coeff" : tactic
+/-- Closes `HasNonnegCoeffs p` for polynomials built from constants, `X`, sums, products, powers,
+scalar multiples and derivatives, using assumptions and scalar side goals. -/
 syntax (name := rr_nonneg_coeffs) "rr_nonneg_coeffs" : tactic
+/-- Variant of `rr_nonneg_coeffs` that first adds the given certificate as a hypothesis. -/
 syntax (name := rr_nonneg_coeffs_using_one)
   "rr_nonneg_coeffs" " using " term : tactic
+/-- Variant of `rr_nonneg_coeffs` that first adds the two given certificates as hypotheses. -/
 syntax (name := rr_nonneg_coeffs_using_two)
   "rr_nonneg_coeffs" " using " term "," term : tactic
+/-- Variant of `rr_nonneg_coeffs` that first adds the three given certificates as hypotheses. -/
 syntax (name := rr_nonneg_coeffs_using_three)
   "rr_nonneg_coeffs" " using " term "," term "," term : tactic
+/-- Closes `HasNonnegCoeffs 0`. -/
 syntax (name := rr_nonneg_coeffs_zero) "rr_nonneg_coeffs_zero" : tactic
+/-- Closes `HasNonnegCoeffs 1`. -/
 syntax (name := rr_nonneg_coeffs_one) "rr_nonneg_coeffs_one" : tactic
+/-- Closes `HasNonnegCoeffs (C a)` from `scalar_nonneg : 0 ≤ a`. -/
 syntax (name := rr_nonneg_coeffs_C)
   "rr_nonneg_coeffs_C" " using " "scalar_nonneg" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs X`. -/
 syntax (name := rr_nonneg_coeffs_X) "rr_nonneg_coeffs_X" : tactic
+/-- Closes `HasNonnegCoeffs (X + C a)` from `scalar_nonneg : 0 ≤ a`. -/
 syntax (name := rr_nonneg_coeffs_X_add_C)
   "rr_nonneg_coeffs_X_add_C" " using " "scalar_nonneg" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (X - C a)` from `root_nonpos : a ≤ 0`. -/
 syntax (name := rr_nonneg_coeffs_X_sub_C)
   "rr_nonneg_coeffs_X_sub_C" " using " "root_nonpos" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (C a * p)` from `scalar_nonneg : 0 ≤ a` and
+`poly_nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_C_mul)
   "rr_nonneg_coeffs_C_mul" " using "
     "scalar_nonneg" ":=" term "," "poly_nonneg" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (X * p)` from `poly_nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_X_mul)
   "rr_nonneg_coeffs_X_mul" " using " "poly_nonneg" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (p + q)` from `left : HasNonnegCoeffs p` and
+`right : HasNonnegCoeffs q`. -/
 syntax (name := rr_nonneg_coeffs_add)
   "rr_nonneg_coeffs_add" " using " "left" ":=" term "," "right" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (p * q)` from `left : HasNonnegCoeffs p` and
+`right : HasNonnegCoeffs q`. -/
 syntax (name := rr_nonneg_coeffs_mul)
   "rr_nonneg_coeffs_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+/-- Closes `HasNonnegCoeffs (p ^ n)` from `poly_nonneg : HasNonnegCoeffs p` and the `exponent`
+`n`. -/
 syntax (name := rr_nonneg_coeffs_pow)
   "rr_nonneg_coeffs_pow" " using " "poly_nonneg" ":=" term "," "exponent" ":=" term :
     tactic
+/-- Closes `HasPosLeadingCoeff p` for polynomials built from `1`, positive scalar multiples, `X`
+multiples, products, derivatives, sums with a dominant term, and polynomials with nonnegative
+coefficients. -/
 syntax (name := rr_pos_lc_auto) "rr_pos_lc" : tactic
+/-- Closes `HasPosLeadingCoeff 1`. -/
 syntax (name := rr_pos_lc_one) "rr_pos_lc_one" : tactic
+/-- Closes `HasPosLeadingCoeff p` from `nonneg : HasNonnegCoeffs p` and `nonzero : p ≠ 0`. -/
 syntax (name := rr_pos_lc_from_nonneg)
   "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
+/-- Closes `HasPosLeadingCoeff p` from `nonzero : p ≠ 0`, proving that `p` has nonnegative
+coefficients by `rr_nonneg_coeffs`. -/
 syntax (name := rr_pos_lc_from_nonzero)
   "rr_pos_lc" " using " "nonzero" ":=" term : tactic
+/-- Closes `HasPosLeadingCoeff (C a * p)` from `scalar_pos : 0 < a` and
+`pos_lc : HasPosLeadingCoeff p`. -/
 syntax (name := rr_pos_lc_C_mul)
   "rr_pos_lc_C_mul" " using " "scalar_pos" ":=" term "," "pos_lc" ":=" term : tactic
+/-- Closes `HasPosLeadingCoeff (p * q)` from `left : HasPosLeadingCoeff p` and
+`right : HasPosLeadingCoeff q`. -/
 syntax (name := rr_pos_lc_mul)
   "rr_pos_lc_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+/-- Closes `HasPosLeadingCoeff (X * p)` from `pos_lc : HasPosLeadingCoeff p`. -/
 syntax (name := rr_pos_lc_X_mul)
   "rr_pos_lc_X_mul" " using " "pos_lc" ":=" term : tactic
+/-- Simplifies polynomial evaluations in the goal and context with `simp_all`, using `eval_add`,
+`eval_sub`, `eval_mul`, `eval_pow`, `eval_C` and `eval_X`. -/
 syntax (name := rr_eval_simp) "rr_eval_simp" : tactic
+/-- Closes an arithmetic side goal by `positivity`, `norm_num`, `linarith`, `lia` or `nlinarith`. -/
 syntax (name := rr_side_arith) "rr_side_arith" : tactic
+/-- Runs `rr_eval_simp` and then `rr_side_arith`. -/
 syntax (name := rr_eval_simp_arith) "rr_eval_simp_arith" : tactic
+/-- Closes a side goal by assumption, `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`,
+`lia`, `nlinarith`, `rr_eval_simp` or `grind`. Each alternative must close the goal. -/
 syntax (name := rr_close_side) "rr_close_side" : tactic
+/-- Applies the first of `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`, `lia`,
+`nlinarith`, `rr_eval_simp` and `grind` that succeeds on a side goal, without requiring that the
+goal be closed. -/
 syntax (name := rr_side) "rr_side" : tactic
+/-- `rr_refine_then h with tac` refines the goal with the term `h` and runs `tac` on all resulting
+goals. -/
 syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
+/-- Closes the goal by `simpa` using `certificate`, after rewriting with the reversed `recurrence`
+equation. -/
 syntax (name := rr_recurrence_simpa)
   "rr_recurrence_simpa" " using "
     "recurrence" ":=" term ","
     "certificate" ":=" term :
   tactic
+/-- Rewrites the goal with the reversed `recurrence` equation and closes it by `lia` from the
+`degree` fact. -/
 syntax (name := rr_recurrence_degree)
   "rr_recurrence_degree" " using "
     "recurrence" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Term form of `positivity`: elaborates to `by positivity`. -/
 syntax (name := rr_positivity_term) "rr_positivity_term" : term
+/-- Term form of `rr_side_nonneg`: elaborates to `by rr_side_nonneg`. -/
 syntax (name := rr_side_nonneg_term) "rr_side_nonneg_term" : term
+/-- Term form of `rr_side_pos`: elaborates to `by rr_side_pos`. -/
 syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
+/-- Term form of `rr_side_ne`: elaborates to `by rr_side_ne`. -/
 syntax (name := rr_side_ne_term) "rr_side_ne_term" : term
+/-- Term form of `rr_positivity_seq`: elaborates to `by rr_positivity_seq`. -/
 syntax (name := rr_positivity_seq_term) "rr_positivity_seq_term" : term
+/-- Term form of `rr_side_nonneg_seq`: elaborates to `by rr_side_nonneg_seq`. -/
 syntax (name := rr_side_nonneg_seq_term) "rr_side_nonneg_seq_term" : term
+/-- Term form of `rr_side_pos_seq`: elaborates to `by rr_side_pos_seq`. -/
 syntax (name := rr_side_pos_seq_term) "rr_side_pos_seq_term" : term
+/-- Term form of `rr_side_ne_seq`: elaborates to `by rr_side_ne_seq`. -/
 syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 
 macro_rules

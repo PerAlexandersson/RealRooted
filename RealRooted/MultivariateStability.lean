@@ -351,7 +351,7 @@ def affineLineRestriction {sigma : Type*} (z v : sigma → ℂ)
 
 /-- Evaluating the affine-line restriction in a coordinate direction replaces
 that coordinate by the univariate argument. -/
-@[simp] theorem eval_affineLineRestriction_coordinate
+theorem eval_affineLineRestriction_coordinate
     {sigma : Type*} [DecidableEq sigma] (z : sigma → ℂ) (i : sigma)
     (P : MvPolynomial sigma ℂ) (t : ℂ) :
     (affineLineRestriction (Function.update z i 0)
@@ -1034,7 +1034,7 @@ theorem xyLift_ne_zero {p : ℂ[X]} (hp : p ≠ 0) :
   rw [hC]
   simp
 
-@[simp] theorem eval_complexifyMv_xyLift (p : ℝ[X]) (z : Fin 2 → ℂ) :
+theorem eval_complexifyMv_xyLift (p : ℝ[X]) (z : Fin 2 → ℂ) :
     MvPolynomial.eval z (complexifyMv (xyLift p)) =
       (p.map Complex.ofRealHom).eval (z 0 * z 1) := by
   rw [complexifyMv_xyLift, eval_xyLift]

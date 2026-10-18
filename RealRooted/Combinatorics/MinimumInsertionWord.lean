@@ -181,14 +181,14 @@ theorem StartsWithAscent.step_add_two {w : List Nat}
       simpa [step, raise, StartsWithAscent] using hw
 
 /-- The displayed inverse-word form of a normal `(0,2)` extension. -/
-@[simp] theorem step_normal_pair (a : Nat) (w : List Nat) :
+theorem step_normal_pair (a : Nat) (w : List Nat) :
     step 2 (step 0 (a :: w)) =
       2 :: (a + 2) :: 1 :: w.map (fun x => x + 2) := by
   simp [step, raise, Nat.succ_eq_add_one,
     Nat.add_comm, Nat.add_left_comm]
 
 /-- The displayed inverse-word form of an exceptional `(1,0)` extension. -/
-@[simp] theorem step_exceptional_pair (a : Nat) (w : List Nat) :
+theorem step_exceptional_pair (a : Nat) (w : List Nat) :
     step 0 (step 1 (a :: w)) =
       1 :: (a + 2) :: 2 :: w.map (fun x => x + 2) := by
   simp [step, raise, Nat.succ_eq_add_one,

@@ -623,7 +623,7 @@ theorem card_orderedKSubsetPairs_eq_choose_sq_sub {n k : ℕ} (hk : 0 < k) :
     simp
 
 /-- The ordered-pair count is one when `k = 0`. -/
-@[simp] theorem card_orderedKSubsetPairs_zero (n : ℕ) :
+theorem card_orderedKSubsetPairs_zero (n : ℕ) :
     (orderedKSubsetPairs n 0).card = 1 := by
   simp
 

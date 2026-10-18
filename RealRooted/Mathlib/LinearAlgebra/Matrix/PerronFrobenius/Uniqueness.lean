@@ -36,6 +36,7 @@ namespace Matrix
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]
 variable {A : Matrix n n ℝ} {r : ℝ}
 
+omit [Nonempty n] in
 /--
 A non-zero, non-negative eigenvector `z` of a primitive matrix `A` corresponding to a
 positive eigenvalue `r` cannot have any zero entries. This is a crucial lemma for

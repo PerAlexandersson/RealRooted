@@ -11,6 +11,7 @@ open RankTwoInternal
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
+omit [DecidableEq V] in
 /-- Orienting every edge of a complete-graph matching identifies it with two
 disjoint vertex sets and a bijection between them. -/
 theorem weightedMatchingNumber_completeGraph_rankTwo
@@ -19,6 +20,7 @@ theorem weightedMatchingNumber_completeGraph_rankTwo
         (completeGraphRankTwoWeight a b) k =
       (k.factorial : ℝ) *
         RankTwoMatchingModel.disjointSubsetWeight a b k := by
+  classical
   rw [weightedMatchingNumber_eq_orientedMatchingWeightSum,
     orientedMatchingWeightSum_eq_disjointEquivWeightSum,
     disjointEquivWeightSum_eq_factorial_mul,

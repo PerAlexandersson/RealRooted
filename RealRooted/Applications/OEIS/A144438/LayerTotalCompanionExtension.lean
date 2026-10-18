@@ -186,7 +186,7 @@ theorem
 
 /-- At the initial rank, every affine Rayleigh discriminant between the
 companion and its successor slope vanishes. -/
-@[simp] theorem
+theorem
     affineRayleighDiscriminant_decoBottomTotalWronskianCompanion_slope_zero
     (i j : Nat) :
     MvPolynomial.affineRayleighDiscriminant

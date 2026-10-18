@@ -316,7 +316,7 @@ structure ReversePerfectEliminationOrder (G : _root_.SimpleGraph V) where
 
 /-- The number of earlier neighbors in a reverse perfect elimination order. -/
 def ReversePerfectEliminationOrder.earlierDegree
-    [Fintype V] {G : _root_.SimpleGraph V}
+    {G : _root_.SimpleGraph V}
     (P : ReversePerfectEliminationOrder G)
     (v : V) : ℕ :=
   Nat.card {u : V // P.order.lt u v ∧ G.Adj u v}
@@ -375,7 +375,6 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
     P.prefixEmbedding hk i = ⟨i, lt_of_lt_of_le i.isLt hk⟩ :=
   rfl
 
-@[simp]
 theorem prefixEmbedding_succ_apply {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1)) (i : Fin m) :
     P.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by

@@ -103,7 +103,7 @@ theorem gammaTransform_C_mul_X_pow {D i : ℕ} (a : ℝ)
     gammaTransform D (C a * X ^ i) = C a * gammaBasisTerm D i := by
   rw [C_mul_X_pow_eq_monomial, gammaTransform_monomial, ite_eq_left hi]
 
-@[simp] lemma idTransform_X_add_one :
+lemma idTransform_X_add_one :
     idTransform 1 (X + 1 : ℝ[X]) = X + 1 := by
   simp [idTransform, add_comm]
 

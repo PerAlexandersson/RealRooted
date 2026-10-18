@@ -8,6 +8,7 @@ namespace RealRooted.BorceaBranden
 
 variable {σ : Type} [Fintype σ]
 
+omit [Fintype σ] in
 private theorem preservesRealStabilityOnDegreeBox_of_preservesRealStability
     (T : MvPolynomial σ ℝ →ₗ[ℝ] MvPolynomial σ ℝ)
     (hT : PreservesRealStability T) (κ : σ → ℕ) :
@@ -16,6 +17,7 @@ private theorem preservesRealStabilityOnDegreeBox_of_preservesRealStability
   intro p hp
   exact hT p.1 hp
 
+omit [Fintype σ] in
 private theorem not_hasStableRankTwoRepresentation_of_bad_polynomial
     (T : MvPolynomial σ ℝ →ₗ[ℝ] MvPolynomial σ ℝ)
     (p : MvPolynomial σ ℝ) (hp : ¬MvRealStableOrZero (T p))

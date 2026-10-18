@@ -20,7 +20,7 @@ def entryList {h : Nat} (c : DecoCode h) : List Nat := List.ofFn c
     c.entryList.length = h := by
   simp [entryList]
 
-@[simp] theorem get_entryList {h : Nat} (c : DecoCode h)
+theorem get_entryList {h : Nat} (c : DecoCode h)
     (i : Fin c.entryList.length) :
     c.entryList.get i = c ⟨i.1, by simpa using i.2⟩ := by
   change (List.ofFn c.entry)[i.val]'_ = c.entry _

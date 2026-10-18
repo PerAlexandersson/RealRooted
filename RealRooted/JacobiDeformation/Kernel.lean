@@ -208,7 +208,7 @@ theorem eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm
     rw [eval_mul, eval_C, eval_newtonPolynomial_eq_zero hjk, mul_zero]
 
 /-- The empty-product endpoint of the Newton expansion. -/
-@[simp] theorem eval_weightNewtonPolynomial_eigenvalue_zero
+theorem eval_weightNewtonPolynomial_eigenvalue_zero
     (m : ℕ) (δ s : ℝ) :
     (weightNewtonPolynomial m δ s).eval (eigenvalue s 0) = 1 := by
   rw [eval_weightNewtonPolynomial_eq_sum_newtonExpansionTerm

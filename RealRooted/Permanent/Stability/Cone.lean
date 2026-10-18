@@ -42,7 +42,7 @@ private theorem eval_div_im_nonneg_of_mvStablePencil
 /-- Proposition 2.4, additive part: bases of stable pencils with the same
 nonzero stable direction form a cone. -/
 theorem MvStablePencil.add_right_of_left_stable
-    {sigma : Type*} [Finite sigma] {F G H : MvPolynomial sigma Real}
+    {sigma : Type*} {F G H : MvPolynomial sigma Real}
     (hF : MvRealStable F) (hG : MvStablePencil F G)
     (hH : MvStablePencil F H) : MvStablePencil F (G + H) := by
   intro u hu
@@ -75,7 +75,7 @@ theorem MvStablePencil.add_right_of_left_stable
 /-- Proposition 2.4, scaling part: a nonnegative multiple of a pencil base
 stays in the common-direction cone. -/
 theorem MvStablePencil.nonneg_C_mul_right_of_left_stable
-    {sigma : Type*} [Finite sigma] {F G : MvPolynomial sigma Real}
+    {sigma : Type*} {F G : MvPolynomial sigma Real}
     (hF : MvRealStable F) (hG : MvStablePencil F G)
     (a : Real) (ha : 0 ≤ a) :
     MvStablePencil F (MvPolynomial.C a * G) := by

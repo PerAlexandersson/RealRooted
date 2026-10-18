@@ -71,7 +71,7 @@ theorem MvPolynomial.IsMultiaffine.specializeZeroList_preserves
 /-- Repeated specialization at zero preserves upper-half-plane stability, up
 to the zero polynomial. -/
 theorem MvUpperHalfPlaneStable.specializeZeroList_zero_or
-    {sigma : Type*} [Finite sigma] {P : MvPolynomial sigma ℂ}
+    {sigma : Type*} {P : MvPolynomial sigma ℂ}
     (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P)
     (l : List sigma) :
     specializeZeroList l P = 0 ∨

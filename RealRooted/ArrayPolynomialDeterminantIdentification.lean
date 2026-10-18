@@ -491,7 +491,7 @@ theorem arrayWeightedDeterminant_natDegree_le (n : ℕ) :
     ite_eq_right (Nat.not_le.mpr hk)]
   ring
 
-@[simp] theorem coeff_zero_arrayWeightedDeterminant (n : ℕ) :
+theorem coeff_zero_arrayWeightedDeterminant (n : ℕ) :
     ((fallingSchur n)^[3] (arrayNormalizedDeterminant n)).coeff 0 = 1 := by
   rw [coeff_fallingSchur_iterate, coeff_arrayNormalizedDeterminant,
     ite_eq_left (Nat.zero_le n)]

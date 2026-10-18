@@ -247,7 +247,6 @@ def embedding : Prefunctor S V where
   map := id
 
 /-- The vertices in a path mapped by the embedding are all in the original set S. -/
-@[simp]
 lemma mapPath_embedding_vertices_in_set {i j : S} (p : Path i j) :
   ∀ v, v ∈ ((embedding S).mapPath p).activeVertices → v ∈ S := by
   induction p with
@@ -301,7 +300,6 @@ This is a strict definition; a cycle `a ⟶ ... ⟶ a` of non-zero length is not
 @[simp]
 def IsStrictlySimple {a b : V} (p : Path a b) : Prop := p.vertices.Nodup
 
-@[simp]
 lemma isStrictlySimple_cons {a b c : V} (p : Path a b) (e : b ⟶ c) :
   IsStrictlySimple (p.cons e) ↔ IsStrictlySimple p ∧ c ∉ p.vertices := by
   classical

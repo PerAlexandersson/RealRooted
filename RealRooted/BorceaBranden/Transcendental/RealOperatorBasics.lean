@@ -99,6 +99,7 @@ theorem transcendentalSymbolPolynomial_complexificationMvLinearMap
     signedInvFactorial_eq_realSignedInvFactorial]
   simp [complexifyMv]
 
+omit [Fintype σ] in
 /-- Restriction to a real degree box commutes with complex-linear extension. -/
 theorem degreeBoxRestriction_complexificationMvLinearMap
     (T : MvPolynomial σ ℝ →ₗ[ℝ] MvPolynomial σ ℝ) (κ : σ → ℕ) :

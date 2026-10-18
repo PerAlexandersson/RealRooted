@@ -45,7 +45,7 @@ theorem shiftedLegendreReal_comp_neg_X_eq_shiftedJacobi (n : ℕ) :
       (Polynomial.shiftedJacobi n 0 0).comp (-X) := by
   rw [shiftedLegendreReal_eq_shiftedJacobi]
 
-@[simp] theorem coeff_shiftedLegendreReal (n k : ℕ) :
+theorem coeff_shiftedLegendreReal (n k : ℕ) :
     (shiftedLegendreReal n).coeff k =
       ((Polynomial.shiftedLegendre n).coeff k : ℝ) := by
   simp [shiftedLegendreReal]
@@ -91,12 +91,12 @@ binomial leading coefficient. -/
       coeff_C_mul, coeff_one, Polynomial.coeff_X_pow, Polynomial.coeff_X]
     simp [Nat.choose_eq_zero_of_lt (show 2 < k + 3 by lia)]
 
-@[simp] theorem shiftedLegendreReal_one_comp_neg_X :
+theorem shiftedLegendreReal_one_comp_neg_X :
     (shiftedLegendreReal 1).comp (-X) = 1 + 2 * X := by
   rw [shiftedLegendreReal_one]
   simp
 
-@[simp] theorem shiftedLegendreReal_two_comp_neg_X :
+theorem shiftedLegendreReal_two_comp_neg_X :
     (shiftedLegendreReal 2).comp (-X) = 1 + 6 * X + 6 * X ^ 2 := by
   rw [shiftedLegendreReal_two]
   simp

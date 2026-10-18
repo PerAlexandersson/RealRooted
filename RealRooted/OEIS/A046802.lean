@@ -78,7 +78,7 @@ theorem A046802_splits (n : ℕ) :
     A046802 0 = 1 := rfl
 
 /-- The first A046802 row. -/
-@[simp] theorem A046802_one :
+theorem A046802_one :
     A046802 1 = 1 + X := by
   norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
     HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,
@@ -88,7 +88,7 @@ theorem A046802_splits (n : ℕ) :
     thresholdRow, thresholdEntry, matPolyAction, List.range_succ]
 
 /-- The second A046802 row. -/
-@[simp] theorem A046802_two :
+theorem A046802_two :
     A046802 2 = 1 + 3 * X + X ^ 2 := by
   norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
     HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,
@@ -99,7 +99,7 @@ theorem A046802_splits (n : ℕ) :
   ring
 
 /-- The third A046802 row. -/
-@[simp] theorem A046802_three :
+theorem A046802_three :
     A046802 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 := by
   norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
     HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,

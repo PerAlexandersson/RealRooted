@@ -89,7 +89,7 @@ end RealRooted.BorceaBranden
 namespace Finsupp
 
 /-- A one-variable exponent vector is the singleton at its total degree. -/
-@[simp] theorem single_default_degree_fin_one (m : Fin 1 →₀ ℕ) :
+theorem single_default_degree_fin_one (m : Fin 1 →₀ ℕ) :
     single default m.degree = m := by
   have hdegree : m.degree = ∑ i, m i := by
     rw [degree_apply]

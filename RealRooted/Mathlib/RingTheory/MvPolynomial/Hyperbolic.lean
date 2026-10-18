@@ -150,7 +150,7 @@ theorem IsHomogeneous.natDegree_affineLineRestriction_le
 /-- If the value at the direction vector is nonzero, a homogeneous
 affine-line restriction has exactly the homogeneous degree. -/
 theorem IsHomogeneous.natDegree_affineLineRestriction_eq
-    {σ R : Type*} [CommSemiring R] [Nontrivial R]
+    {σ R : Type*} [CommSemiring R]
     {P : MvPolynomial σ R} {d : ℕ}
     (hP : P.IsHomogeneous d) (a b : σ → R)
     (hb : MvPolynomial.eval b P ≠ 0) :

@@ -50,7 +50,6 @@ theorem insertionOperator_add_parameters (a b s : ℝ) (f : ℝ[X]) :
       insertionOperator a b f + C s * (1 - X) * f := by
   simpa only [insertionOperator] using darbouxOperator_add_parameters a b s f
 
-@[simp]
 theorem insertionOperator_zero (a b : ℝ) :
     insertionOperator a b 0 = 0 := by
   simpa only [insertionOperator] using darbouxOperator_zero a b

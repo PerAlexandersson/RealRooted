@@ -17,7 +17,7 @@ open Finset
 
 namespace List
 
-private theorem card_filter_get {α : Type*} [LinearOrder α] (l : List α)
+private theorem card_filter_get {α : Type*} (l : List α)
     (p : α → Bool) :
     ((univ : Finset (Fin l.length)).filter (fun i => p (l.get i))).card =
       (l.filter p).length := by

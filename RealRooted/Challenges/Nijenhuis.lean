@@ -75,7 +75,7 @@ universe u v
 /-- Weighted rook placements are exactly weighted matchings in the complete
 bipartite row-column graph. -/
 theorem bipartiteMatchingIdentity {Row : Type u} {Column : Type v}
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) :
     Rook.weightedRookPolynomial A =
       Graph.weightedMatchingPolynomialByEdges
@@ -86,14 +86,14 @@ theorem bipartiteMatchingIdentity {Row : Type u} {Column : Type v}
 /-- Nijenhuis's theorem: a nonnegative finite rectangular matrix has a
 real-rooted weighted rook polynomial. -/
 theorem weightedRealRooted {Row : Type u} {Column : Type v}
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     (Rook.weightedRookPolynomial A).Splits :=
   Rook.weightedRookPolynomial_splits A hA
 
 /-- The roots in Nijenhuis's signed (-X)^k normalization are nonnegative. -/
 theorem signedRoots_nonnegative {Row : Type u} {Column : Type v}
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     ∀ z ∈ (Rook.nijenhuisRookPolynomial A).roots, 0 ≤ z :=
   Rook.nijenhuisRookPolynomial_roots_nonneg A hA

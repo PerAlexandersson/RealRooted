@@ -20,11 +20,9 @@ variable {R : Type*} [CommRing R]
 def signedFirstKind (z : R) (n k : ℕ) : R :=
   (-1 : R) ^ (n + k) * firstKind z n k
 
-@[simp]
 theorem signedFirstKind_zero_zero (z : R) : signedFirstKind z 0 0 = 1 := by
   simp [signedFirstKind]
 
-@[simp]
 theorem signedFirstKind_zero_succ (z : R) (k : ℕ) :
     signedFirstKind z 0 (k + 1) = 0 := by
   simp [signedFirstKind]

@@ -128,7 +128,7 @@ theorem symmetrizationSum_isSymmetric
 
 /-- Average all variable permutations of a complex multivariate polynomial. -/
 noncomputable def fullSymmetrization
-    {σ R : Type*} [Fintype σ] [Field R] [CharZero R]
+    {σ R : Type*} [Fintype σ] [Field R]
     (p : MvPolynomial σ R) : MvPolynomial σ R := by
   classical
   exact C (Fintype.card (Equiv.Perm σ) : R)⁻¹ *
@@ -136,7 +136,7 @@ noncomputable def fullSymmetrization
 
 /-- Full symmetrization is symmetric. -/
 theorem fullSymmetrization_isSymmetric
-    {σ R : Type*} [Fintype σ] [Field R] [CharZero R]
+    {σ R : Type*} [Fintype σ] [Field R]
     (p : MvPolynomial σ R) :
     IsSymmetric (fullSymmetrization p) := by
   classical

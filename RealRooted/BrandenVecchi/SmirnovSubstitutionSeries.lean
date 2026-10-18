@@ -208,7 +208,6 @@ theorem coeff_smirnovSubstitutionEndingSeries {m : ℕ} (t : A)
           (smirnovSubstitutionEndingFixed t weight k i) := by
   simp [smirnovSubstitutionEndingSeries]
 
-@[simp]
 theorem coeff_smirnovSubstitutionEndingSeries_zero {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A) (i : Fin m) :
     PowerSeries.coeff 0
@@ -218,7 +217,7 @@ theorem coeff_smirnovSubstitutionEndingSeries_zero {m : ℕ} (t : A)
 /-- The last-letter pieces sum to their coefficientwise locally finite
 series. -/
 theorem hasSum_smirnovSubstitutionEndingFixed [TopologicalSpace A]
-    [DiscreteTopology A] {m : ℕ} (t : A)
+    {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A)
     (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0)
     (i : Fin m) :
@@ -246,11 +245,11 @@ theorem smirnovSubstitutionEndingSeries_eq_tsum [TopologicalSpace A]
   exact
     (hasSum_smirnovSubstitutionEndingFixed t weight hweight i).tsum_eq.symm
 
-/-- The fixed-length contributions sum to the coefficientwise definition.
-The topology used in this proof is discrete on coefficients; the resulting
-formal-series equality is purely algebraic. -/
+/-- The fixed-length contributions sum to the coefficientwise definition, for
+any topology on the coefficients: each coefficient receives only finitely many
+nonzero contributions. -/
 theorem hasSum_smirnovSubstitutionFixed [TopologicalSpace A]
-    [DiscreteTopology A] {m : ℕ} (t : A)
+    {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A)
     (hweight : ∀ i, PowerSeries.constantCoeff (weight i) = 0) :
     HasSum (smirnovSubstitutionFixed t weight)

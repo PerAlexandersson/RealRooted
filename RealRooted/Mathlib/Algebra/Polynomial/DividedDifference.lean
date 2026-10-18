@@ -99,7 +99,6 @@ theorem dividedDifference_eq_zero_of_eval_eq_zero (n : ℕ)
       rw [ih _ (fun i => hp i.succ), ih _ (fun i => hp i.castSucc)]
       simp
 
-@[simp]
 theorem dividedDifference_zero_mul_X_sub_C (v : Fin 1 → K) (p : K[X]) (r : K) :
     dividedDifference 0 v (p * (X - C r)) =
       dividedDifference 0 v p * (v 0 - r) := by

@@ -113,7 +113,7 @@ variable [Nontrivial R]
   rw [Monic.def, leadingCoeff, natDegree_generalizedLaguerre]
   simp
 
-@[simp] theorem leadingCoeff_generalizedLaguerre (n : ℕ) (α : R) :
+theorem leadingCoeff_generalizedLaguerre (n : ℕ) (α : R) :
     (generalizedLaguerre n α).leadingCoeff = 1 :=
   (monic_generalizedLaguerre n α).leadingCoeff
 

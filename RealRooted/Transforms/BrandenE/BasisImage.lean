@@ -37,7 +37,7 @@ def brandenBasisImage (n k : ℕ) : R[X] :=
 def brandenEulerStep (r : R) (p : R[X]) : R[X] :=
   (X + C r) * p + X * (1 + X) * p.derivative
 
-@[simp] theorem brandenBasisImage_zero :
+theorem brandenBasisImage_zero :
     brandenBasisImage (R := R) 0 0 = 1 := by
   rw [brandenBasisImage, brandenBinomialBasis]
   simp only [pow_zero, Nat.zero_sub, mul_one]

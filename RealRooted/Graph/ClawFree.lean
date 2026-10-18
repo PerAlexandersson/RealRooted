@@ -68,7 +68,7 @@ private theorem ClawFree.adj_of_forced_triangle {V : Type u}
   exact hG z {a, b, c} hneigh hind
 
 /-- Neighbors of a vertex inside a finite support. -/
-def neighborSetOn {V : Type u} [DecidableEq V]
+def neighborSetOn {V : Type u}
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj]
     (S : Finset V) (v : V) : Finset V :=
   S.filter fun w => G.Adj v w

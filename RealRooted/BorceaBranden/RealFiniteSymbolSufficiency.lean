@@ -53,7 +53,7 @@ theorem complexifyDegreeBox_basis
 /-- The coefficientwise complex-linear extension of a real operator on a
 coordinate-wise degree box. -/
 def complexificationDegreeBoxLinearMap
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ :=
   (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).constr ℂ fun m =>
@@ -63,7 +63,7 @@ def complexificationDegreeBoxLinearMap
 complexification of its real-operator image. -/
 @[simp]
 theorem complexificationDegreeBoxLinearMap_basis
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ)
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
     complexificationDegreeBoxLinearMap κ T
@@ -75,7 +75,7 @@ theorem complexificationDegreeBoxLinearMap_basis
 real inputs. -/
 @[simp]
 theorem complexificationDegreeBoxLinearMap_complexify
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ)
     (p : MvPolynomial.degreeOfLE σ ℝ κ) :
     complexificationDegreeBoxLinearMap κ T (complexifyDegreeBox κ p) =

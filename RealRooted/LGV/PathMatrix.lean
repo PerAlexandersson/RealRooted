@@ -30,7 +30,7 @@ variable {V : Type u} [Quiver.{v} V] {R : Type w}
 
 /-- The matrix whose `(a, b)` entry is the sum of the weights of all arrows
 from `a` to `b`. -/
-def edgeSumMatrix [Semiring R] [Fintype V] [∀ a b : V, Fintype (a ⟶ b)]
+def edgeSumMatrix [Semiring R] [∀ a b : V, Fintype (a ⟶ b)]
     (w : ∀ {a b : V}, (a ⟶ b) → R) : Matrix V V R :=
   Matrix.of fun a b ↦ ∑ e : a ⟶ b, w e
 

@@ -97,7 +97,7 @@ abbrev upperBidiagonalFin (N : ℕ) (a : ℝ) :
     Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ :=
   Matrix.upperBidiagonalFin (N + 1) (fun _ ↦ a) (fun _ ↦ 1)
 
-@[simp] lemma upperBidiagonalFin_apply (N : ℕ) (a : ℝ)
+lemma upperBidiagonalFin_apply (N : ℕ) (a : ℝ)
     (i j : Fin (N + 1)) :
     upperBidiagonalFin N a i j =
       if j = i then a else if j.val = i.val + 1 then 1 else 0 := by

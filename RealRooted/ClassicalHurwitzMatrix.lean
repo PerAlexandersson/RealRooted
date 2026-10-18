@@ -19,7 +19,6 @@ open RealRooted
 
 /-- Even rows of the classical Hurwitz matrix of `q(X²) + X p(X²)` contain the
 coefficients of `q`. -/
-@[simp]
 theorem hurwitz_oddEvenPolynomial_even_row (p q : ℝ[X]) (i j : ℕ) :
     hurwitz (oddEvenPolynomial p q).coeff (2 * i) j =
       if i ≤ j then q.coeff (j - i) else 0 := by
@@ -28,7 +27,6 @@ theorem hurwitz_oddEvenPolynomial_even_row (p q : ℝ[X]) (i j : ℕ) :
 
 /-- Odd rows of the classical Hurwitz matrix of `q(X²) + X p(X²)` contain the
 coefficients of `p`, shifted one column farther to the right. -/
-@[simp]
 theorem hurwitz_oddEvenPolynomial_odd_row (p q : ℝ[X]) (i j : ℕ) :
     hurwitz (oddEvenPolynomial p q).coeff (2 * i + 1) j =
       if i < j then p.coeff (j - (i + 1)) else 0 := by

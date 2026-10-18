@@ -32,7 +32,6 @@ theorem coeff_sum_finset_monomial {R : Type*} [Semiring R]
   rw [Finset.sum_ite_eq' s k]
 
 /-- The coefficient of a finite initial-segment monomial sum. -/
-@[simp]
 theorem coeff_sum_range_monomial {R : Type*} [Semiring R] (a : ℕ → R)
     (n k : ℕ) :
     (∑ i ∈ Finset.range n, monomial i (a i)).coeff k =
@@ -58,7 +57,6 @@ theorem coeff_sum_range_C_mul_X_pow_sub {R : Type*} [Semiring R] (a : ℕ → R)
     intro k hk
     rw [coeff_C_mul, coeff_X_pow, ite_eq_right (fun _ => by lia), mul_zero]
 
-@[simp]
 theorem coeff_one_sub_X_mul_zero {R : Type*} [Ring R] (p : R[X]) :
     ((1 - X) * p).coeff 0 = p.coeff 0 := by
   simp [sub_mul]

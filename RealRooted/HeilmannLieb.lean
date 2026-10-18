@@ -28,8 +28,9 @@ theorem matchingGeneratingPolynomial_splits
 
 /-- Heilmann--Lieb theorem for the intrinsic edge-matching polynomial. -/
 theorem matchingPolynomialByEdges_splits
-    {V : Type u} [Fintype V] [DecidableEq V] (G : _root_.SimpleGraph V) :
+    {V : Type u} [Fintype V] (G : _root_.SimpleGraph V) :
     (matchingPolynomialByEdges G).Splits := by
+  classical
   rw [matchingPolynomialByEdges_eq_matchingGeneratingPolynomial]
   exact matchingGeneratingPolynomial_splits G
 
@@ -46,17 +47,18 @@ theorem weightedMatchingGeneratingPolynomial_splits
 /-- Weighted Heilmann--Lieb theorem for the intrinsic edge-matching
 polynomial. -/
 theorem weightedMatchingPolynomialByEdges_splits
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
     (hwt : ∀ e, 0 ≤ wt e) :
     (weightedMatchingPolynomialByEdges G wt).Splits := by
+  classical
   rw [weightedMatchingPolynomialByEdges_eq_weightedMatchingGeneratingPolynomial]
   exact weightedMatchingGeneratingPolynomial_splits G wt hwt
 
 /-- The intrinsic weighted matching polynomial is PF for nonnegative edge
 weights. -/
 theorem weightedMatchingPolynomialByEdges_isPFPolynomial
-    {V : Type u} [Fintype V] [DecidableEq V]
+    {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
     (hwt : ∀ e, 0 ≤ wt e) :
     IsPFPolynomial (weightedMatchingPolynomialByEdges G wt) := by

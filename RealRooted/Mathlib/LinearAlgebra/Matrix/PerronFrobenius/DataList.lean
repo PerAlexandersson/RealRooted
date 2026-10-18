@@ -44,7 +44,6 @@ variable {α : Type*}
 /--
 An element `a` is a member of `l.concat x` if and only if it is a member of `l` or is equal to `x`.
 -/
-@[simp]
 theorem mem_concat {a x : α} {l : List α} : a ∈ l.concat x ↔ a ∈ l ∨ a = x := by
   rw [concat_eq_append,List.mem_append, List.mem_singleton, or_comm]
 
@@ -98,7 +97,7 @@ attribute [simp] head_not_mem_tail_of_nodup
 
 /-- Membership in the tail of `l.concat y`.
 It is only useful if `l` is **non-empty** – we require `hl : l ≠ []`. -/
-@[simp] lemma mem_tail_concat_of_ne_nil
+lemma mem_tail_concat_of_ne_nil
     {α : Type*} {l : List α} (hl : l ≠ []) (x y : α) :
     x ∈ (l.concat y).tail ↔ x ∈ l.tail ∨ x = y := by
   cases l with

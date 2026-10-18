@@ -36,7 +36,6 @@ def lowerShift {R : Type*} [Zero R] [One R]
     (N : ℕ) : Matrix (Fin (N + 1)) (Fin (N + 1)) R :=
   weightedLowerShift (fun _ => 1) N
 
-@[simp]
 theorem lowerShift_apply {R : Type*} [Zero R] [One R]
     (N : ℕ) (i j : Fin (N + 1)) :
     lowerShift N i j = if i.val = j.val + 1 then 1 else 0 := by

@@ -65,7 +65,7 @@ theorem commonPhaseRestriction_weightedMultivariateIndepPoly
 
 /-- Setting every common-phase coordinate to `X` recovers the ordinary
 univariate independence polynomial. -/
-@[simp] theorem commonPhaseRestriction_one_multivariateIndepPoly
+theorem commonPhaseRestriction_one_multivariateIndepPoly
     {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) :
     commonPhaseRestriction (fun _ => 1) (multivariateIndepPoly G) =
@@ -75,7 +75,7 @@ univariate independence polynomial. -/
 
 /-- Setting the phase direction to one recovers the existing weighted
 univariate independence polynomial. -/
-@[simp] theorem commonPhaseRestriction_one_weightedMultivariateIndepPoly
+theorem commonPhaseRestriction_one_weightedMultivariateIndepPoly
     {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ) :
     commonPhaseRestriction (fun _ => 1)
