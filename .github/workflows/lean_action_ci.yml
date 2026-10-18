@@ -48,7 +48,9 @@ jobs:
     # (`gh workflow run lean_action_ci.yml --ref <branch>`).
     if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    # A change to low-level modules rebuilds nearly all ~11k jobs from the `main` cache, which
+    # takes about 90 minutes on a standard runner.
+    timeout-minutes: 150
     concurrency:
       # PRs are keyed by number so a new revision supersedes the old merge
       # ref. Pushes are keyed by ref. For main, cancel-in-progress=false
