@@ -53,7 +53,7 @@ theorem coordinateDiagonalOperator_monomial {σ : Type*} (gamma : ℕ → ℝ) (
 
 /-- The complex-linear restriction of a coordinate diagonal action to a
 coordinate-wise degree box. -/
-def coordinateDiagonalOperatorDegreeBox {σ : Type*} [Fintype σ]
+def coordinateDiagonalOperatorDegreeBox {σ : Type*}
     (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ) :
     _root_.MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] _root_.MvPolynomial σ ℂ where
   toFun p := coordinateDiagonalOperator gamma q p.1
@@ -68,7 +68,7 @@ def coordinateDiagonalOperatorDegreeBox {σ : Type*} [Fintype σ]
 
 /-- The degree-box map acts on its canonical monomial basis by the coordinate
 multiplier. -/
-theorem coordinateDiagonalOperatorDegreeBox_basis {σ : Type*} [Fintype σ]
+theorem coordinateDiagonalOperatorDegreeBox_basis {σ : Type*}
     (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ)
     (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :
     coordinateDiagonalOperatorDegreeBox gamma q κ
@@ -283,7 +283,7 @@ theorem coordinateJensenSymbol_eq_rename_complexifyMv_homogenize
 /-- A PF Jensen polynomial gives the fixed-degree coordinate stability
 preserver on every finite spectator degree box. -/
 theorem coordinateDiagonalOperatorDegreeBox_preserves_stability
-    {σ : Type*} [Fintype σ] (d : ℕ) (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ)
+    {σ : Type*} [Finite σ] (d : ℕ) (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ)
     (hκ : κ q = d)
     (hJ : IsPFPolynomial (jensenPolynomial d gamma))
     (p : _root_.MvPolynomial.degreeOfLE σ ℂ κ)
@@ -291,6 +291,7 @@ theorem coordinateDiagonalOperatorDegreeBox_preserves_stability
       MvUpperHalfPlaneStableOrZero
       (coordinateDiagonalOperatorDegreeBox gamma q κ p) := by
   classical
+  have := Fintype.ofFinite σ
   by_cases hzero : jensenPolynomial d gamma = 0
   · left
     ext m

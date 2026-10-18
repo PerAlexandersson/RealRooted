@@ -316,7 +316,7 @@ structure ReversePerfectEliminationOrder (G : _root_.SimpleGraph V) where
 
 /-- The number of earlier neighbors in a reverse perfect elimination order. -/
 def ReversePerfectEliminationOrder.earlierDegree
-    [Fintype V] {G : _root_.SimpleGraph V}
+    {G : _root_.SimpleGraph V}
     (P : ReversePerfectEliminationOrder G)
     (v : V) : ℕ :=
   Nat.card {u : V // P.order.lt u v ∧ G.Adj u v}

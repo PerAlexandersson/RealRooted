@@ -132,7 +132,7 @@ theorem prod_map_X_eq_monomial_toFinsupp [DecidableEq σ] (s : Multiset σ) :
 
 /-- The coefficient of a monomial in `msymm mu` is one exactly when its
 exponent multiset has shape `mu`, and is zero otherwise. -/
-theorem coeff_msymm [Nontrivial R] [Fintype σ] [DecidableEq σ]
+theorem coeff_msymm [Fintype σ] [DecidableEq σ]
     {n : ℕ} (mu : n.Partition)
     (d : σ →₀ ℕ) (hd : d.sum (fun _ k => k) = n) :
     (msymm σ R mu).coeff d =
@@ -184,14 +184,14 @@ theorem isHomogeneous_msymm [Fintype σ] [DecidableEq σ]
 
 /-- The coefficient of a symmetric polynomial on a monomial-symmetric
 orbit.  It is zero when that orbit is empty in the ambient variable type. -/
-noncomputable def msymmCoeff [Fintype σ] [DecidableEq σ] {n : ℕ}
+noncomputable def msymmCoeff [DecidableEq σ] {n : ℕ}
     (P : MvPolynomial σ R) (mu : n.Partition) : R := by
   classical
   exact if h : Nonempty {s : Sym σ n // Nat.Partition.ofSym s = mu} then
       P.coeff (Classical.choice h).1.1.toFinsupp
     else 0
 
-theorem msymmCoeff_eq_coeff [Fintype σ] [DecidableEq σ]
+theorem msymmCoeff_eq_coeff [Finite σ] [DecidableEq σ]
     {P : MvPolynomial σ R} (hP : P.IsSymmetric) {n : ℕ}
     (s : Sym σ n) :
     msymmCoeff P (Nat.Partition.ofSym s) = P.coeff s.1.toFinsupp := by

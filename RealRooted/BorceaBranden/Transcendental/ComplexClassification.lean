@@ -20,6 +20,7 @@ def HasGlobalStableRankOneRepresentation
   ∃ (α : MvPolynomial σ ℂ →ₗ[ℂ] ℂ) (P : MvPolynomial σ ℂ),
     MvUpperHalfPlaneStable P ∧ ∀ p, T p = (α p) • P
 
+omit [Fintype σ] in
 private theorem HasGlobalStableRankOneRepresentation.onDegreeBox
     {T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ}
     (hT : HasGlobalStableRankOneRepresentation T) (κ : σ → ℕ) :
@@ -99,6 +100,7 @@ def polynomialDegreeBox (p : MvPolynomial σ ℂ) : σ →₀ ℕ :=
 theorem polynomialDegreeBox_apply (p : MvPolynomial σ ℂ) (i : σ) :
     polynomialDegreeBox p i = p.degreeOf i := rfl
 
+omit [Fintype σ] in
 private theorem preservesComplexStabilityOnDegreeBox_of_preservesComplexStability
     (T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ)
     (hT : PreservesComplexStability T) (β : σ →₀ ℕ) :
@@ -188,6 +190,7 @@ theorem preservesComplexStability_of_transcendentalSymbol_stableLimit
       (degreeBoxRestriction (fun i => β i) T)).2 (Or.inr halgebraic)
     exact hpreserves q hp
 
+omit [Fintype σ] in
 private theorem not_hasStableRankOneRepresentation_of_bad_polynomial
     (T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ)
     (p : MvPolynomial σ ℂ) (hp : ¬MvUpperHalfPlaneStableOrZero (T p))

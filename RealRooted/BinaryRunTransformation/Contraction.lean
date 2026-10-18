@@ -89,7 +89,7 @@ def binaryRunSourceEquiv (n : ℕ) :
 
 /-- Source-block polarization, expressed in the canonical target/left/right
 ambient variable type. -/
-def binaryRunSourcePolarization {τ : Type*} [Fintype τ] (n : ℕ)
+def binaryRunSourcePolarization {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) :
     MvPolynomial (BorceaBranden.PaperThreeBlock τ (Fin n)) ℂ :=
   MvPolynomial.rename
@@ -97,7 +97,7 @@ def binaryRunSourcePolarization {τ : Type*} [Fintype τ] (n : ℕ)
     (sourceBlockwisePolarizationGeneral (fun _ : Fin 2 => n) P)
 
 private theorem degreeOf_binaryRunSourcePolarization_block_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (i : Fin 2) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (Sum.inr (binaryRunSourceEquiv n ⟨i, j⟩)) ≤ 1 := by
@@ -112,7 +112,7 @@ private theorem degreeOf_binaryRunSourcePolarization_block_le_one
     (fun _ : Fin 2 => n) P ⟨i, j⟩
 
 theorem degreeOf_binaryRunSourcePolarization_source_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperSourceEmbedding j) ≤ 1 := by
@@ -120,7 +120,7 @@ theorem degreeOf_binaryRunSourcePolarization_source_le_one
     degreeOf_binaryRunSourcePolarization_block_le_one n P 0 j
 
 theorem degreeOf_binaryRunSourcePolarization_input_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (j : Fin n) :
     (binaryRunSourcePolarization n P).degreeOf
         (BorceaBranden.paperInputEmbedding j) ≤ 1 := by
@@ -128,7 +128,7 @@ theorem degreeOf_binaryRunSourcePolarization_input_le_one
     degreeOf_binaryRunSourcePolarization_block_le_one n P (Fin.succ 0) j
 
 theorem degreeOf_binaryRunSourcePolarization_inr_le_one
-    {τ : Type*} [Fintype τ] (n : ℕ)
+    {τ : Type*} (n : ℕ)
     (P : MvPolynomial (τ ⊕ Fin 2) ℂ) (x : Fin n ⊕ Fin n) :
     (binaryRunSourcePolarization n P).degreeOf (Sum.inr x) ≤ 1 := by
   rcases x with j | j

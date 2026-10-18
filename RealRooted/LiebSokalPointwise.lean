@@ -895,7 +895,7 @@ theorem MvUpperHalfPlaneStable.pairedProduct
 /-- A finite sequence of paired contractions preserves stability, up to
 zero. -/
 theorem MvUpperHalfPlaneStable.contractVariablePairs_zero_or
-    {sigma : Type*} [Finite sigma]
+    {sigma : Type*}
     {P : MvPolynomial (Sum sigma sigma) ℂ}
     (hP : MvUpperHalfPlaneStable P)
     (hPma : MvPolynomial.IsMultiaffine P) (l : List sigma) :

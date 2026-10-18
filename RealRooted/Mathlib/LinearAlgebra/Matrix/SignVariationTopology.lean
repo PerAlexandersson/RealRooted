@@ -14,7 +14,7 @@ namespace Fin
 
 /-- Nonzero coordinates eventually retain their signs under convergence. -/
 theorem eventually_sign_eq_of_tendsto
-    {α : Type*} {l : Filter α} [l.NeBot] {n : ℕ}
+    {α : Type*} {l : Filter α} {n : ℕ}
     {f : α → Fin n → ℝ} {x : Fin n → ℝ}
     (hf : Tendsto f l (𝓝 x)) :
     ∀ᶠ a in l, ∀ i, x i ≠ 0 →

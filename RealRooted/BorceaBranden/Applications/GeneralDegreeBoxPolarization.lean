@@ -22,12 +22,12 @@ noncomputable section
 abbrev PolarizedSource {σ : Type*} (κ : σ → ℕ) := Σ i, Fin (κ i)
 
 /-- Variables after polarizing exactly the coordinates in `S`. -/
-def SourcePolarizationStageVars {σ : Type*} [DecidableEq σ]
+def SourcePolarizationStageVars {σ : Type*}
     (κ : σ → ℕ) (S : Finset σ) :=
   (Σ i : {i // i ∈ S}, Fin (κ i)) ⊕ {i : σ // i ∉ S}
 
 /-- Stage variables other than a selected unpolarized coordinate. -/
-def SourcePolarizationStageRest {σ : Type*} [DecidableEq σ]
+def SourcePolarizationStageRest {σ : Type*}
     (κ : σ → ℕ) (S : Finset σ) (i : σ) :=
   (Σ j : {j // j ∈ S}, Fin (κ j)) ⊕
     {j : σ // j ∉ S ∧ j ≠ i}
@@ -744,11 +744,11 @@ noncomputable def diagonalDegreeBoxIndexGeneral
   ⟨m.1.mapDomain Sigma.fst, mapDomain_sigma_fst_le κ m.1 m.2⟩
 
 /-- Multiaffine exponent vectors on the fully polarized source. -/
-abbrev ZeroOneExponent {σ : Type*} [Fintype σ] (κ : σ → ℕ) :=
+abbrev ZeroOneExponent {σ : Type*} (κ : σ → ℕ) :=
   {b : PolarizedSource κ →₀ ℕ // ∀ x, b x ≤ 1}
 
 /-- A choice of one finite support inside each polarized source block. -/
-abbrev BlockSupports {σ : Type*} [Fintype σ] (κ : σ → ℕ) :=
+abbrev BlockSupports {σ : Type*} (κ : σ → ℕ) :=
   ∀ i, Finset (Fin (κ i))
 
 /-- Read a zero-one exponent as its support in each source block. -/
@@ -826,7 +826,7 @@ abbrev DiagonalAggregateFiber {σ : Type*} [Fintype σ]
   {b : ZeroOneExponent κ // diagonalDegreeBoxIndexGeneral κ b = m}
 
 /-- Independent block supports whose cardinalities are prescribed by `m`. -/
-abbrev BlockSupportsOfCard {σ : Type*} [Fintype σ]
+abbrev BlockSupportsOfCard {σ : Type*}
     (κ : σ → ℕ) (m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i}) :=
   ∀ i, {s : Finset (Fin (κ i)) // s.card = m.1 i}
 

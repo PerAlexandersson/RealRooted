@@ -158,7 +158,7 @@ theorem hasStableRankTwoRangeRepresentation_of_forall_realStableOrZero
 Lemma 3.2(i): if every value of a real linear operator is real stable or zero,
 then its range has the stable rank-at-most-two representation. -/
 theorem hasStableRankTwoRepresentation_of_forall_realStableOrZero
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ}
     (hT : ∀ f, MvRealStableOrZero (T f)) :
     HasStableRankTwoRepresentation κ T := by

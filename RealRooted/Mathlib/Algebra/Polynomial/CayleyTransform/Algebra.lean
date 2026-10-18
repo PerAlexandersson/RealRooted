@@ -129,7 +129,7 @@ theorem cayleyTransform_binomialBasisRaw
   simp
 
 lemma homogenize_one_add_two_X_pow
-    {K : Type*} [Field K] [CharZero K] (n : ℕ) :
+    {K : Type*} [Field K] (n : ℕ) :
     ((1 + C 2 * X : K[X]) ^ n).homogenize n =
       (MvPolynomial.X 1 + MvPolynomial.C 2 * MvPolynomial.X 0) ^ n := by
   induction n with

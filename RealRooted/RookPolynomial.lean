@@ -112,7 +112,6 @@ theorem isRookPlacement_iff_isMatching (P : Finset (Row × Column)) :
 /-- The weighted rook polynomial of a finite matrix.  A placement contributes
 the product of its matrix entries times `X` to the number of its rooks. -/
 def weightedRookPolynomial [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) : ℝ[X] := by
   classical
   exact ∑ P ∈ (Finset.univ.filter fun P : Finset (Row × Column) ↦
@@ -134,7 +133,7 @@ theorem matrixEdgeWeight_apply (A : Row → Column → ℝ)
 /-- Exact weighted identity between the rook polynomial of a matrix and the
 matching polynomial of its complete bipartite row-column graph. -/
 theorem weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges
-    [Fintype Row] [Fintype Column] [DecidableEq Row] [DecidableEq Column]
+    [Fintype Row] [Fintype Column]
     (A : Row → Column → ℝ) :
     weightedRookPolynomial A =
       Graph.weightedMatchingPolynomialByEdges
@@ -171,7 +170,6 @@ theorem coeff_nijenhuisRookPolynomial [Fintype Row] [Fintype Column]
 /-- The positive-convention weighted rook polynomial is a Pólya-frequency
 polynomial when every matrix entry is nonnegative. -/
 theorem weightedRookPolynomial_isPFPolynomial [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     IsPFPolynomial (weightedRookPolynomial A) := by
   rw [weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges]
@@ -182,7 +180,6 @@ theorem weightedRookPolynomial_isPFPolynomial [Fintype Row] [Fintype Column]
 /-- Nijenhuis's weighted rook polynomial in the positive convention has only
 real roots. -/
 theorem weightedRookPolynomial_splits [Fintype Row] [Fintype Column]
-    [DecidableEq Row] [DecidableEq Column]
     (A : Row → Column → ℝ) (hA : ∀ r c, 0 ≤ A r c) :
     (weightedRookPolynomial A).Splits := by
   rw [weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges]

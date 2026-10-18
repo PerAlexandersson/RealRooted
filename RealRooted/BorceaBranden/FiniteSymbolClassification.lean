@@ -30,7 +30,7 @@ noncomputable section
 /-- A complex linear operator on a coordinate-wise degree box preserves
 upper-half-plane stability, allowing the zero output. -/
 def PreservesComplexStabilityOnDegreeBox
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ) : Prop :=
   ∀ f, MvUpperHalfPlaneStable f.1 →
     MvUpperHalfPlaneStableOrZero (T f)
@@ -411,7 +411,7 @@ theorem algebraicSymbol_stable_of_preserves_of_shiftedBox_ne_zero
 one-dimensional representation with a stable spanning polynomial. This also
 includes the zero operator by taking the functional to be zero. -/
 def HasStableRankOneRepresentation
-    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    {σ : Type*} (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ) : Prop :=
   ∃ (α : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] ℂ)
       (P : MvPolynomial σ ℂ),
@@ -425,7 +425,7 @@ This is the complex stable-subspace rigidity step used in the necessity proof.
 Fixing one nonzero stable output `P`, evaluation at an upper-half-plane point
 expresses every other output as a scalar multiple of `P`. -/
 theorem hasStableRankOneRepresentation_of_range_stableOrZero
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ}
     (hT : ∀ f, MvUpperHalfPlaneStableOrZero (T f)) :
     HasStableRankOneRepresentation κ T := by
@@ -556,7 +556,7 @@ theorem rankOne_or_algebraicSymbol_stable_of_preserves
 /-- The stable rank-at-most-one alternative in Borcea--Brändén Theorem 1.1
 preserves stability, with the zero scalar giving the allowed zero output. -/
 theorem HasStableRankOneRepresentation.preservesComplexStabilityOnDegreeBox
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
+    {σ : Type*} {κ : σ → ℕ}
     {T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ}
     (h : HasStableRankOneRepresentation κ T) :
     PreservesComplexStabilityOnDegreeBox κ T := by
