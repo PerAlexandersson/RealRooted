@@ -27,41 +27,65 @@ open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic.CFI
 
+/-- A rational function in `m`, stored as numerator and denominator polynomials with rational
+coefficients. -/
 structure RatFun where
+  /-- The numerator. -/
   num : QPoly
+  /-- The denominator. -/
   den : QPoly
 
+/-- The data of a successful interlacing probe: the closed-form plan together with the exact
+rational functions of `m` in the remainder certificate, and the first index `m0` from which all
+signs are certified. -/
 structure CFIPlan where
+  /-- The closed-form plan of the rows. -/
   plan : CFPlan
+  /-- The degree (one or two) of the residual `R m`. -/
   degree : Nat
+  /-- The first index `m₀` from which all sign conditions are certified. -/
   m0 : Nat
+  /-- The leading coefficient `p` of the quotient `p X + d`. -/
   p : RatFun
+  /-- The constant coefficient `d` of the quotient `p X + d`. -/
   d : RatFun
+  /-- The coefficient `α` of `X` in the remainder `α X + β`. -/
   α : RatFun
+  /-- The constant coefficient `β` of the remainder `α X + β`. -/
   β : RatFun
+  /-- The quadratic certificate `a β² - b α β + c α²` for `R m = a X² + b X + c`. -/
   cert : RatFun
 
+/-- Normalizes a rational function: cancels the common gcd and makes the denominator's leading
+coefficient nonnegative. -/
 def rfNorm (r : RatFun) : RatFun :=
   let g := QPoly.gcd r.num r.den
   let n := r.num.divExact? g |>.getD r.num
   let d := r.den.divExact? g |>.getD r.den
   if d.lead < 0 then ⟨-n, -d⟩ else ⟨n, d⟩
 
+/-- Sum of two rational functions, normalized by `rfNorm`. -/
 def rfAdd (x y : RatFun) : RatFun :=
   rfNorm ⟨x.num * y.den + y.num * x.den, x.den * y.den⟩
 
+/-- Negation of a rational function, normalized by `rfNorm`. -/
 def rfNeg (x : RatFun) : RatFun := rfNorm ⟨-x.num, x.den⟩
 
+/-- Difference of two rational functions, normalized by `rfNorm`. -/
 def rfSub (x y : RatFun) : RatFun := rfAdd x (rfNeg y)
 
+/-- Product of two rational functions, normalized by `rfNorm`. -/
 def rfMul (x y : RatFun) : RatFun :=
   rfNorm ⟨x.num * y.num, x.den * y.den⟩
 
+/-- Quotient of two rational functions, normalized by `rfNorm`. -/
 def rfDiv (x y : RatFun) : RatFun :=
   rfNorm ⟨x.num * y.den, x.den * y.num⟩
 
+/-- The constant rational function with value `r`. -/
 def rfConst (r : Rat) : RatFun := ⟨QPoly.const r, QPoly.const 1⟩
 
+/-- The shifted polynomial `p (X + n)` (the variable of `p` is `m`, so this is `m ↦ p (m + n)`). -/
 def qShift (p : QPoly) (n : Nat) : QPoly := Id.run do
   let z := QPoly.X + QPoly.const n
   let mut out := QPoly.const 0
@@ -71,22 +95,36 @@ def qShift (p : QPoly) (n : Nat) : QPoly := Id.run do
     pow := pow * z
   return out
 
+/-- Checks that `p` is nonzero, has positive constant coefficient and only nonnegative
+coefficients. -/
 def positiveAtZero (p : QPoly) : Bool :=
   !p.isZero && 0 < p.coeff 0 && p.coeffs.all (0 ≤ ·)
 
+/-- Checks that all coefficients of `p` are nonnegative. -/
 def nonnegative (p : QPoly) : Bool := p.coeffs.all (0 ≤ ·)
 
+/-- Checks `positiveAtZero (qShift p m)`: all coefficients of `p (X + m)` are nonnegative with
+positive constant term. -/
 def positiveShift (p : QPoly) (m : Nat) : Bool := positiveAtZero (qShift p m)
 
+/-- Checks `positiveShift (-p) m`: the polynomial `-p` has the positivity certificate after the
+shift by `m`. -/
 def negativeShift (p : QPoly) (m : Nat) : Bool :=
   positiveShift (-p) m
 
+/-- Checks that `r` is certified positive from `m` on: numerator and denominator both satisfy
+`positiveShift`. -/
 def goodPos (r : RatFun) (m : Nat) : Bool :=
   positiveShift r.num m && positiveShift r.den m
 
+/-- Checks that `r` is certified negative from `m` on: the numerator satisfies `negativeShift` and
+the denominator `positiveShift`. -/
 def goodNeg (r : RatFun) (m : Nat) : Bool :=
   negativeShift r.num m && positiveShift r.den m
 
+/-- For a plan with one linear factor `q` and one simple exponent law, returns the degree of the
+residual `R m` and the exact rational functions `p`, `d`, `α`, `β` and the quadratic certificate of
+the division `q * R (m + 1) = R m * (p X + d) + (α X + β)`. -/
 def remainderData (plan : CFPlan) : Option (Nat × RatFun × RatFun × RatFun × RatFun × RatFun) := do
   guard (plan.facs.size == 1)
   let q := plan.facs[0]!
@@ -120,6 +158,8 @@ def remainderData (plan : CFPlan) : Option (Nat × RatFun × RatFun × RatFun ×
       (rfNeg (rfMul ⟨c, QPoly.const 1⟩ (rfMul α α))))
   some (degree, p, d, α, β, cert)
 
+/-- Returns the data of `remainderData` together with the first shift `m₀ ≤ 80` from which all
+required signs are certified, if there is one. -/
 def certificateAt? (plan : CFPlan) : Option
     (Nat × RatFun × RatFun × RatFun × RatFun × RatFun × Nat) := do
   let (degree, p, d, α, β, cert) ← remainderData plan
@@ -130,14 +170,19 @@ def certificateAt? (plan : CFPlan) : Option
       return (degree, p, d, α, β, cert, m)
   none
 
+/-- Renders a polynomial in `m` as a string, for diagnostics. -/
 def qpolyText (p : QPoly) : String :=
   if p.isZero then "0"
   else String.intercalate " + " ((List.range p.coeffs.size).filterMap fun i =>
     let c := p.coeff i
     if c == 0 then none else some s!"({c})*m^{i}")
 
+/-- Renders a rational function in `m` as a string, for diagnostics. -/
 def ratFunText (r : RatFun) : String := s!"({qpolyText r.num}) / ({qpolyText r.den})"
 
+/-- Computes the rows of the recurrence and, for each drop `s < 3`, looks for an explicit one-factor
+plan with a certified remainder. Returns the first `CFIPlan`, or an error message listing the
+diagnostics. -/
 def cfiProbe (L : LinRecData) : MetaM (Except String CFIPlan) := do
   let some rows ← linRecRows? L 18 | return .error "the rows cannot be computed"
   let mut diagnostics : Array String := #[]
@@ -158,13 +203,17 @@ def cfiProbe (L : LinRecData) : MetaM (Except String CFIPlan) := do
     return .error "no explicit one-factor quadratic or linear plan"
   return .error (String.intercalate "; " diagnostics.toList)
 
+/-- The real-valued term for the polynomial `p` evaluated at the natural-number term `x`. -/
 def qpolyAtTerm (p : QPoly) (x : Term) : TacticM Term := do
   let xr ← `(($x : ℝ))
   ratPolyAtTerm p.coeffs xr
 
+/-- The real-valued term for the rational function `r` evaluated at the natural-number term `x`. -/
 def ratFunAtTerm (r : RatFun) (x : Term) : TacticM Term := do
   `($(← qpolyAtTerm r.num x) / $(← qpolyAtTerm r.den x))
 
+/-- The term `C c₀ + C c₁ * X + C c₂ * X ^ 2` for the quadratic residual of `plan`, with the
+coefficients evaluated at `x`. -/
 def residualAtTerm (plan : CFPlan) (x : Term) : TacticM Term := do
   let cT : Term := mkIdent ``Polynomial.C
   let xT : Term := mkIdent ``Polynomial.X
@@ -173,6 +222,8 @@ def residualAtTerm (plan : CFPlan) (x : Term) : TacticM Term := do
   let c2 ← qpolyAtTerm plan.resid[2]! x
   `($cT ($c0) + $cT ($c1) * $xT + $cT ($c2) * $xT ^ 2)
 
+/-- The term `C c₁ * X + C c₀` for the linear residual of `plan`, with the coefficients evaluated at
+`x`. -/
 def residualLinearAtTerm (plan : CFPlan) (x : Term) : TacticM Term := do
   let cT : Term := mkIdent ``Polynomial.C
   let xT : Term := mkIdent ``Polynomial.X
@@ -180,6 +231,8 @@ def residualLinearAtTerm (plan : CFPlan) (x : Term) : TacticM Term := do
   let c1 ← qpolyAtTerm plan.resid[1]! x
   `($cT ($c1) * $xT + $cT ($c0))
 
+/-- Builds the tactic `have name : p m = q k`, or `p m = -q k` if `negative`, where `q` is the
+polynomial `p` (respectively `-p`) composed with the shift `X + m₀` and `k = m - m₀`. -/
 def polyWithShiftProof (name : Ident) (p : QPoly) (m0 : Nat) (m k : Term)
     (negative : Bool) : TacticM (TSyntax `tactic) := do
   let lhs ← qpolyAtTerm p m
@@ -193,6 +246,8 @@ def polyWithShiftProof (name : Ident) (p : QPoly) (m0 : Nat) (m k : Term)
       simp only [rr_hshift] <;> ring)
   return eqn
 
+/-- Builds the tactics proving that the rational function `r` at `m` is positive (or negative if
+`negative`), through the shifted numerator and denominator and `k = m - m₀`. -/
 def proveSign (name : Ident) (r : RatFun) (m0 : Nat) (m k : Term)
     (negative : Bool) : TacticM (Array (TSyntax `tactic)) := do
   let hnum := mkIdent (Name.mkSimple s!"{name.getId}_num")
@@ -245,9 +300,13 @@ def proveSign (name : Ident) (r : RatFun) (m0 : Nat) (m k : Term)
       · $shiftedPos:tactic)
   return #[hnumEq, hdenEq, hsign]
 
+/-- The exponent term `D₀ + a` of the power of the factor `q` in the closed form (just `a` if
+`D₀ = 0`). -/
 def cfiExpTerm (law : CFLaw) (a : Term) : TacticM Term :=
   if law.D0 == 0 then pure a else `($(rowNumLit law.D0) + $a)
 
+/-- Proves by induction on `n` the closed-form statement `P (n + s) = R n * q ^ (D₀ + n)` (with the
+residual on the other side in degree two) for `k` consecutive rows, using the recurrence. -/
 def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
   let P := mkIdent plan.P
   let s := plan.s
@@ -325,6 +384,8 @@ def cfiKey (plan : CFPlan) (degree : Nat) : TacticM Unit := do
     | succ $n:ident $ih:ident => $tacs*)
   evalTactic keyStx
 
+/-- Proves interlacing of consecutive rows from a `CFIPlan`: the division identity by `rr_cf_field`,
+the signs from the certificate, and the finitely many earlier pairs by `rr_interlaces_explicit`. -/
 def cfiProof (cp : CFIPlan) : TacticM Unit := do
   let plan := cp.plan
   let P := mkIdent plan.P

@@ -169,195 +169,253 @@ theorem pf_sequence_interl_X_mul_both
     ∀ i : Nat, Interl (X * P i) (X * Q i) := fun i =>
   RealRooted.interl_X_mul_both_of_pf (hP i) (hQ i) (hPQ i)
 
+/-- Closes `IsPFPolynomial 0`. -/
 syntax (name := rr_pf_zero_named) "rr_pf_zero" : tactic
+/-- Closes `IsPFPolynomial 1`. -/
 syntax (name := rr_pf_one_named) "rr_pf_one" : tactic
+/-- Closes `IsPFPolynomial X`. -/
 syntax (name := rr_pf_X_named) "rr_pf_X" : tactic
+/-- Closes `IsPFPolynomial (X + 1)`. -/
 syntax (name := rr_pf_X_add_one_named) "rr_pf_X_add_one" : tactic
 
+/-- Closes a goal about `p` from `pf : IsPFPolynomial p`, trying in turn `pf` itself,
+`HasNonnegCoeffs p`, `p = 0 ∨ p.Splits`, the nonpositivity of the roots of `p`, `p.Splits`, and the
+PF property of the coefficient sequence of `p`. -/
 syntax (name := rr_pf_using_named)
   "rr_pf" " using " "pf" ":=" term :
   tactic
 
+/-- Variant of `rr_pf using ...` that also takes `nonzero : p ≠ 0`, so that it can close `p ≠ 0` and
+`p ≠ 0 ∧ p.Splits`. -/
 syntax (name := rr_pf_using_nonzero_named)
   "rr_pf" " using "
     "pf" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs p` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_has_nonneg_named)
   "rr_pf_has_nonneg" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `p.Splits` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_splits_named)
   "rr_pf_splits" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_has_nonneg`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_has_nonneg_named)
   "rr_pf_sequence_has_nonneg" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_splits`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_splits_named)
   "rr_pf_sequence_splits" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `p = 0 ∨ p.Splits` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_zero_or_splits_named)
   "rr_pf_zero_or_splits" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_zero_or_splits`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_zero_or_splits_named)
   "rr_pf_sequence_zero_or_splits" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `∀ i, P i ≠ 0 ∧ (P i).Splits` from `pf : ∀ i, IsPFPolynomial (P i)` and
+`nonzero : ∀ i, P i ≠ 0`. -/
 syntax (name := rr_pf_sequence_realrooted_named)
   "rr_pf_sequence_realrooted" " using "
     "pf" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `IsPolyaFreqSeq (fun n => p.coeff n)` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_to_coefficient_sequence_named)
   "rr_pf_to_coefficient_sequence" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_to_coefficient_sequence`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_pf_sequence_to_coefficient_sequence_named)
   "rr_pf_sequence_to_coefficient_sequence" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial p` from `nonneg : HasNonnegCoeffs p` and `splits : p.Splits`. -/
 syntax (name := rr_pf_of_nonneg_splits_named)
   "rr_pf_of_nonneg_splits" " using "
     "nonneg" ":=" term ","
     "splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_of_nonneg_splits`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_of_nonneg_splits_named)
   "rr_pf_sequence_of_nonneg_splits" " using "
     "nonneg" ":=" term ","
     "splits" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial p` from `nonneg : HasNonnegCoeffs p` and
+`zero_or_splits : p = 0 ∨ p.Splits`. -/
 syntax (name := rr_pf_of_nonneg_zero_or_splits_named)
   "rr_pf_of_nonneg_zero_or_splits" " using "
     "nonneg" ":=" term ","
     "zero_or_splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_of_nonneg_zero_or_splits`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_pf_sequence_of_nonneg_zero_or_splits_named)
   "rr_pf_sequence_of_nonneg_zero_or_splits" " using "
     "nonneg" ":=" term ","
     "zero_or_splits" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (C a)` from `scalar_nonneg : 0 ≤ a`. -/
 syntax (name := rr_pf_C_nonneg_named)
   "rr_pf_C_nonneg" " using " "scalar_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_C_nonneg`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_C_nonneg_named)
   "rr_pf_sequence_C_nonneg" " using " "scalar_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (C a * p)` from `scalar_pos : 0 < a` and `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_const_mul_named)
   "rr_pf_const_mul" " using "
     "scalar_pos" ":=" term ","
     "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_const_mul`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_const_mul_named)
   "rr_pf_sequence_const_mul" " using "
     "scalar_pos" ":=" term ","
     "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (X + C a)` from `scalar_nonneg : 0 ≤ a`. -/
 syntax (name := rr_pf_X_add_C_named)
   "rr_pf_X_add_C" " using " "scalar_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_X_add_C`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_X_add_C_named)
   "rr_pf_sequence_X_add_C" " using " "scalar_nonneg" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (X ^ m)` for the given `exponent : m`. -/
 syntax (name := rr_pf_X_pow_named)
   "rr_pf_X_pow" " using " "exponent" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_X_pow`: closes `∀ i, IsPFPolynomial (X ^ m i)` for the `exponent : m`, a
+function `ℕ → ℕ`. -/
 syntax (name := rr_pf_sequence_X_pow_named)
   "rr_pf_sequence_X_pow" " using " "exponent" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (X * p)` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_X_mul_named)
   "rr_pf_X_mul" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_X_mul`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_X_mul_named)
   "rr_pf_sequence_X_mul" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (p * q)` from `left_pf : IsPFPolynomial p` and
+`right_pf : IsPFPolynomial q`. -/
 syntax (name := rr_pf_mul_named)
   "rr_pf_mul" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_mul`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_mul_named)
   "rr_pf_sequence_mul" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (p ^ m)` from `pf : IsPFPolynomial p` and the `exponent : m`. -/
 syntax (name := rr_pf_pow_named)
   "rr_pf_pow" " using "
     "pf" ":=" term ","
     "exponent" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_pow`: closes `∀ i, IsPFPolynomial (P i ^ m i)` from
+`pf : ∀ i, IsPFPolynomial (P i)` and the `exponent : m`, a function `ℕ → ℕ`. -/
 syntax (name := rr_pf_sequence_pow_named)
   "rr_pf_sequence_pow" " using "
     "pf" ":=" term ","
     "exponent" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial p.derivative` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_derivative_named)
   "rr_pf_derivative" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_derivative`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_derivative_named)
   "rr_pf_sequence_derivative" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial p.reverse` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_reverse_named)
   "rr_pf_reverse" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_reverse`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_reverse_named)
   "rr_pf_sequence_reverse" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (reciprocalShift D p)` from `pf : IsPFPolynomial p` and
+`degree : p.natDegree ≤ D`. -/
 syntax (name := rr_pf_reciprocal_shift_named)
   "rr_pf_reciprocal_shift" " using "
     "pf" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_reciprocal_shift`: closes
+`∀ i, IsPFPolynomial (reciprocalShift (D i) (P i))` from `pf : ∀ i, IsPFPolynomial (P i)` and
+`degree : ∀ i, (P i).natDegree ≤ D i`. -/
 syntax (name := rr_pf_sequence_reciprocal_shift_named)
   "rr_pf_sequence_reciprocal_shift" " using "
     "pf" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial ((X + 1) * p)` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_mul_X_add_one_named)
   "rr_pf_mul_X_add_one" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_mul_X_add_one`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_mul_X_add_one_named)
   "rr_pf_sequence_mul_X_add_one" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `Interl p p` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_pf_interl_self_named)
   "rr_pf_interl_self" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_interl_self`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_interl_self_named)
   "rr_pf_sequence_interl_self" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `Interl (X * p) (X * q)` from `left_pf : IsPFPolynomial p`, `right_pf : IsPFPolynomial q`
+and `interl : Interl p q`. -/
 syntax (name := rr_pf_interl_X_mul_both_named)
   "rr_pf_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
@@ -365,6 +423,7 @@ syntax (name := rr_pf_interl_X_mul_both_named)
     "interl" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pf_interl_X_mul_both`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_pf_sequence_interl_X_mul_both_named)
   "rr_pf_sequence_interl_X_mul_both" " using "
     "left_pf" ":=" term ","

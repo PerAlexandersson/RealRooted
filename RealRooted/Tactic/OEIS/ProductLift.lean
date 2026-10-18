@@ -10,6 +10,10 @@ with explicit factorization and cutoff variants.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from `quotient_realrooted : ∀ n, Q n ≠ 0 ∧ (Q n).Splits`;
+`factor_realrooted : ∀ n, F n ≠ 0 ∧ (F n).Splits`; and `factorization : ∀ n, P n = F n * Q n`. The
+keyword `certificate := suppliedFactor` selects the row factor `F n` that comes with its own
+real-rootedness proof. -/
 syntax (name := rr_product_lift_sequence_supplied_factor)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -18,6 +22,11 @@ syntax (name := rr_product_lift_sequence_supplied_factor)
     "certificate" ":=" "suppliedFactor" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from `base : ∀ n ≤ N, P n ≠ 0 ∧ (P n).Splits`;
+`quotient_realrooted : ∀ n ≥ N, Q n ≠ 0 ∧ (Q n).Splits`;
+`factor_realrooted : ∀ n ≥ N, F n ≠ 0 ∧ (F n).Splits`; `cutoff : N`; and
+`factorization : ∀ n ≥ N, P n = F n * Q n`. The keyword `certificate := suppliedFactor` selects the
+row factor `F n` that comes with its own real-rootedness proof. -/
 syntax (name := rr_product_lift_sequence_supplied_factor_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -28,6 +37,8 @@ syntax (name := rr_product_lift_sequence_supplied_factor_cutoff)
     "certificate" ":=" "suppliedFactor" :
   tactic
 
+/-- Certificate form of `rr_product_lift_sequence_auto`: with `certificate := auto` it runs
+`rr_product_lift_sequence_auto` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -35,6 +46,9 @@ syntax (name := rr_product_lift_sequence_auto)
     "certificate" ":=" "auto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_sequence_auto`: with `certificate := auto` it runs
+`rr_product_lift_sequence_auto` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -44,6 +58,8 @@ syntax (name := rr_product_lift_sequence_auto_cutoff)
     "certificate" ":=" "auto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_sequence`: with `certificate := rootZero` it runs
+`rr_product_lift_X_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_root_zero)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -51,6 +67,9 @@ syntax (name := rr_product_lift_sequence_root_zero)
     "certificate" ":=" "rootZero" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_sequence`: with `certificate := rootZero` it runs
+`rr_product_lift_X_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_root_zero_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -60,6 +79,8 @@ syntax (name := rr_product_lift_sequence_root_zero_cutoff)
     "certificate" ":=" "rootZero" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_pow_sequence`: with `certificate := rootZeroPow` it runs
+`rr_product_lift_X_pow_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_root_zero_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -67,6 +88,9 @@ syntax (name := rr_product_lift_sequence_root_zero_pow)
     "certificate" ":=" "rootZeroPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_pow_sequence`: with `certificate := rootZeroPow` it runs
+`rr_product_lift_X_pow_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_root_zero_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -76,6 +100,8 @@ syntax (name := rr_product_lift_sequence_root_zero_pow_cutoff)
     "certificate" ":=" "rootZeroPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_sequence`: with `certificate := xAddC` it runs
+`rr_product_lift_X_add_C_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_x_add_c)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -83,6 +109,9 @@ syntax (name := rr_product_lift_sequence_x_add_c)
     "certificate" ":=" "xAddC" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_sequence`: with `certificate := xAddC` it runs
+`rr_product_lift_X_add_C_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_x_add_c_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -92,6 +121,8 @@ syntax (name := rr_product_lift_sequence_x_add_c_cutoff)
     "certificate" ":=" "xAddC" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_add_X_sequence`: with `certificate := cAddX` it runs
+`rr_product_lift_C_add_X_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_c_add_x)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -99,6 +130,9 @@ syntax (name := rr_product_lift_sequence_c_add_x)
     "certificate" ":=" "cAddX" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_add_X_sequence`: with `certificate := cAddX` it runs
+`rr_product_lift_C_add_X_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_c_add_x_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -108,6 +142,8 @@ syntax (name := rr_product_lift_sequence_c_add_x_cutoff)
     "certificate" ":=" "cAddX" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_pow_sequence`: with `certificate := fixedXAddCPow`
+it runs `rr_product_lift_X_add_C_pow_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_fixed_x_add_c_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -115,6 +151,9 @@ syntax (name := rr_product_lift_sequence_fixed_x_add_c_pow)
     "certificate" ":=" "fixedXAddCPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_pow_sequence`: with `certificate := fixedXAddCPow`
+it runs `rr_product_lift_X_add_C_pow_sequence` with the same arguments, including the `base` and
+`cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_fixed_x_add_c_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -124,6 +163,9 @@ syntax (name := rr_product_lift_sequence_fixed_x_add_c_pow_cutoff)
     "certificate" ":=" "fixedXAddCPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_row_pow_sequence`: with
+`certificate := rowXAddCPow` it runs `rr_product_lift_X_add_C_row_pow_sequence` with the same
+arguments. -/
 syntax (name := rr_product_lift_sequence_row_x_add_c_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -131,6 +173,9 @@ syntax (name := rr_product_lift_sequence_row_x_add_c_pow)
     "certificate" ":=" "rowXAddCPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_X_add_C_row_pow_sequence`: with
+`certificate := rowXAddCPow` it runs `rr_product_lift_X_add_C_row_pow_sequence` with the same
+arguments, including the `base` and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_row_x_add_c_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -140,6 +185,8 @@ syntax (name := rr_product_lift_sequence_row_x_add_c_pow_cutoff)
     "certificate" ":=" "rowXAddCPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_add_X_pow_sequence`: with `certificate := cAddXPow` it
+runs `rr_product_lift_C_add_X_pow_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_c_add_x_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -147,6 +194,9 @@ syntax (name := rr_product_lift_sequence_c_add_x_pow)
     "certificate" ":=" "cAddXPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_add_X_pow_sequence`: with `certificate := cAddXPow` it
+runs `rr_product_lift_C_add_X_pow_sequence` with the same arguments, including the `base` and
+`cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_c_add_x_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -156,6 +206,8 @@ syntax (name := rr_product_lift_sequence_c_add_x_pow_cutoff)
     "certificate" ":=" "cAddXPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_sequence`: with `certificate := scalar` it runs
+`rr_product_lift_C_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_scalar)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -164,6 +216,9 @@ syntax (name := rr_product_lift_sequence_scalar)
     "certificate" ":=" "scalar" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_sequence`: with `certificate := scalar` it runs
+`rr_product_lift_C_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_scalar_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -174,6 +229,8 @@ syntax (name := rr_product_lift_sequence_scalar_cutoff)
     "certificate" ":=" "scalar" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_sequence_auto`: with `certificate := scalarAuto` it runs
+`rr_product_lift_C_sequence_auto` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_scalar_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -181,6 +238,9 @@ syntax (name := rr_product_lift_sequence_scalar_auto)
     "certificate" ":=" "scalarAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_sequence_auto`: with `certificate := scalarAuto` it runs
+`rr_product_lift_C_sequence_auto` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_scalar_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -190,6 +250,8 @@ syntax (name := rr_product_lift_sequence_scalar_auto_cutoff)
     "certificate" ":=" "scalarAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_pow_sequence`: with `certificate := scalarPow` it runs
+`rr_product_lift_C_pow_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_scalar_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -198,6 +260,9 @@ syntax (name := rr_product_lift_sequence_scalar_pow)
     "certificate" ":=" "scalarPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_pow_sequence`: with `certificate := scalarPow` it runs
+`rr_product_lift_C_pow_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_scalar_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -208,6 +273,8 @@ syntax (name := rr_product_lift_sequence_scalar_pow_cutoff)
     "certificate" ":=" "scalarPow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_pow_sequence_auto`: with `certificate := scalarPowAuto`
+it runs `rr_product_lift_C_pow_sequence_auto` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_scalar_pow_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -215,6 +282,9 @@ syntax (name := rr_product_lift_sequence_scalar_pow_auto)
     "certificate" ":=" "scalarPowAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_C_pow_sequence_auto`: with `certificate := scalarPowAuto`
+it runs `rr_product_lift_C_pow_sequence_auto` with the same arguments, including the `base` and
+`cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_scalar_pow_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -224,6 +294,8 @@ syntax (name := rr_product_lift_sequence_scalar_pow_auto_cutoff)
     "certificate" ":=" "scalarPowAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_sequence`: with `certificate := affine` it runs
+`rr_product_lift_affine_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_affine)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -232,6 +304,9 @@ syntax (name := rr_product_lift_sequence_affine)
     "certificate" ":=" "affine" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_sequence`: with `certificate := affine` it runs
+`rr_product_lift_affine_sequence` with the same arguments, including the `base` and `cutoff` of the
+cutoff form. -/
 syntax (name := rr_product_lift_sequence_affine_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -242,6 +317,8 @@ syntax (name := rr_product_lift_sequence_affine_cutoff)
     "certificate" ":=" "affine" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_sequence_auto`: with `certificate := affineAuto` it
+runs `rr_product_lift_affine_sequence_auto` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_affine_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -249,6 +326,9 @@ syntax (name := rr_product_lift_sequence_affine_auto)
     "certificate" ":=" "affineAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_sequence_auto`: with `certificate := affineAuto` it
+runs `rr_product_lift_affine_sequence_auto` with the same arguments, including the `base` and
+`cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_affine_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -258,6 +338,9 @@ syntax (name := rr_product_lift_sequence_affine_auto_cutoff)
     "certificate" ":=" "affineAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_sequence`: with
+`certificate := constFirstAffine` it runs `rr_product_lift_const_first_sequence` with the same
+arguments. -/
 syntax (name := rr_product_lift_sequence_const_first_affine)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -266,6 +349,9 @@ syntax (name := rr_product_lift_sequence_const_first_affine)
     "certificate" ":=" "constFirstAffine" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_sequence`: with
+`certificate := constFirstAffine` it runs `rr_product_lift_const_first_sequence` with the same
+arguments, including the `base` and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -276,6 +362,9 @@ syntax (name := rr_product_lift_sequence_const_first_affine_cutoff)
     "certificate" ":=" "constFirstAffine" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_sequence_auto`: with
+`certificate := constFirstAffineAuto` it runs `rr_product_lift_const_first_sequence_auto` with the
+same arguments. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -283,6 +372,9 @@ syntax (name := rr_product_lift_sequence_const_first_affine_auto)
     "certificate" ":=" "constFirstAffineAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_sequence_auto`: with
+`certificate := constFirstAffineAuto` it runs `rr_product_lift_const_first_sequence_auto` with the
+same arguments, including the `base` and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -292,6 +384,8 @@ syntax (name := rr_product_lift_sequence_const_first_affine_auto_cutoff)
     "certificate" ":=" "constFirstAffineAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_pow_sequence`: with `certificate := affinePow` it
+runs `rr_product_lift_affine_pow_sequence` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_affine_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -300,6 +394,9 @@ syntax (name := rr_product_lift_sequence_affine_pow)
     "certificate" ":=" "affinePow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_pow_sequence`: with `certificate := affinePow` it
+runs `rr_product_lift_affine_pow_sequence` with the same arguments, including the `base` and
+`cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_affine_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -310,6 +407,9 @@ syntax (name := rr_product_lift_sequence_affine_pow_cutoff)
     "certificate" ":=" "affinePow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_pow_sequence_auto`: with
+`certificate := affinePowAuto` it runs `rr_product_lift_affine_pow_sequence_auto` with the same
+arguments. -/
 syntax (name := rr_product_lift_sequence_affine_pow_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -317,6 +417,9 @@ syntax (name := rr_product_lift_sequence_affine_pow_auto)
     "certificate" ":=" "affinePowAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_affine_pow_sequence_auto`: with
+`certificate := affinePowAuto` it runs `rr_product_lift_affine_pow_sequence_auto` with the same
+arguments, including the `base` and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_affine_pow_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -326,6 +429,9 @@ syntax (name := rr_product_lift_sequence_affine_pow_auto_cutoff)
     "certificate" ":=" "affinePowAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_affine_pow_sequence`: with
+`certificate := constFirstAffinePow` it runs `rr_product_lift_const_first_affine_pow_sequence` with
+the same arguments. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_pow)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -334,6 +440,9 @@ syntax (name := rr_product_lift_sequence_const_first_affine_pow)
     "certificate" ":=" "constFirstAffinePow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_affine_pow_sequence`: with
+`certificate := constFirstAffinePow` it runs `rr_product_lift_const_first_affine_pow_sequence` with
+the same arguments, including the `base` and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_pow_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
@@ -344,6 +453,9 @@ syntax (name := rr_product_lift_sequence_const_first_affine_pow_cutoff)
     "certificate" ":=" "constFirstAffinePow" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_affine_pow_sequence_auto`: with
+`certificate := constFirstAffinePowAuto` it runs
+`rr_product_lift_const_first_affine_pow_sequence_auto` with the same arguments. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_pow_auto)
   "rr_product_lift_sequence" " using "
     "quotient_realrooted" ":=" term ","
@@ -351,6 +463,10 @@ syntax (name := rr_product_lift_sequence_const_first_affine_pow_auto)
     "certificate" ":=" "constFirstAffinePowAuto" :
   tactic
 
+/-- Certificate form of `rr_product_lift_const_first_affine_pow_sequence_auto`: with
+`certificate := constFirstAffinePowAuto` it runs
+`rr_product_lift_const_first_affine_pow_sequence_auto` with the same arguments, including the `base`
+and `cutoff` of the cutoff form. -/
 syntax (name := rr_product_lift_sequence_const_first_affine_pow_auto_cutoff)
   "rr_product_lift_sequence" " using "
     "base" ":=" term ","
