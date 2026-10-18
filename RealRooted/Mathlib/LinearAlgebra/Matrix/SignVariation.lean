@@ -1631,12 +1631,16 @@ proof, not an assertion that the decomposition already exists. Separating the
 data keeps later matrix arguments independent of how maximal same-sign blocks
 are constructed and avoids formalizing an unrelated combinatorial model. -/
 structure Fin.SignBlockDecomposition {n : ℕ} (c : Fin n → ℝ) where
+  /-- The number of sign blocks. -/
   numBlocks : ℕ
   numBlocks_pos : 0 < numBlocks
+  /-- The block containing each index; blocks are visited in order. -/
   block : Fin n → Fin numBlocks
   block_mono : Monotone block
+  /-- The nonnegative weight of each entry within its block. -/
   weight : Fin n → ℝ
   weight_nonneg : ∀ j, 0 ≤ weight j
+  /-- The coefficient attached to each block. -/
   coeff : Fin numBlocks → ℝ
   reconstruct : ∀ j, weight j * coeff (block j) = c j
   numBlocks_sub_one : numBlocks - 1 = Fin.signVariations c

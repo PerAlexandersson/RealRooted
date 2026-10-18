@@ -25,6 +25,8 @@ namespace Polynomial
 
 variable {R S : Type*} [CommRing R] [CommRing S]
 
+/-- The degree-`n` Cayley transform `(1 - X)^n * p (X / (1 - X))`, computed without division by
+substituting `X` and `1 - X` into the degree-`n` homogenization of `p`. -/
 def cayleyTransform (n : ℕ) (p : R[X]) : R[X] :=
   MvPolynomial.aeval ![X, 1 - X] (p.homogenize n)
 

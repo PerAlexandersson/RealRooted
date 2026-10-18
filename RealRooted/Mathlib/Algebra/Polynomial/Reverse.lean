@@ -142,8 +142,6 @@ end CommRing
 
 variable {K : Type*} [Field K]
 
-local instance : DecidableEq K := Classical.decEq K
-
 section CharZero
 
 variable [CharZero K] {p : K[X]} {n : ℕ}
@@ -191,10 +189,9 @@ private theorem reverse_prod_X_sub_C_ne_zero (s : Multiset K) :
   rintro ⟨r, -, hr⟩
   exact X_sub_C_ne_zero r (by assumption)
 
-private theorem roots_reverse_prod_X_sub_C (s : Multiset K) :
+private theorem roots_reverse_prod_X_sub_C [DecidableEq K] (s : Multiset K) :
     ((s.map fun r => (X - C r : K[X])).prod).reverse.roots =
       (s.filter fun r => r ≠ 0).map (·⁻¹) := by
-  classical
   induction s using Multiset.induction_on with
   | empty => simp [Polynomial.reverse]
   | cons a s ih =>
@@ -212,10 +209,9 @@ private theorem roots_reverse_prod_X_sub_C (s : Multiset K) :
 
 /-- If `p` splits over a field, the roots of `p.reverse` are the inverses of
 the nonzero roots of `p`, retaining multiplicity. -/
-theorem roots_reverse_eq_filter_map_inv {p : K[X]}
+theorem roots_reverse_eq_filter_map_inv [DecidableEq K] {p : K[X]}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
     p.reverse.roots = (p.roots.filter fun r => r ≠ 0).map (·⁻¹) := by
-  classical
   have hlead : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp_ne
   conv_lhs => rw [Polynomial.Splits.eq_prod_roots hp_splits]
   rw [Polynomial.reverse_mul_of_domain, Polynomial.reverse_C,
@@ -225,6 +221,7 @@ theorem roots_reverse_eq_filter_map_inv {p : K[X]}
 roots of `p`, retaining multiplicity. -/
 theorem roots_reverse_eq_map_inv {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) :
     p.reverse.roots = p.roots.map (·⁻¹) := by
+  classical
   have hp0 : p ≠ 0 := fun h => h0 (by simp [h])
   rw [roots_reverse_eq_filter_map_inv hp0 hp, Multiset.filter_eq_self.mpr]
   rintro r hr rfl
