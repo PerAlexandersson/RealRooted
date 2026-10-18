@@ -9,6 +9,13 @@ Parser declarations and macro implementations for this Liu--Wang tactic family.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * Q n) * P n`. The arguments are
+`base : StrictInterl (P 0) (P 1)`; `pos_lc` and `nonneg_coeffs` (positive leading coefficients and
+nonnegative coefficients of every `P n`); `factor_nonneg : 0 ≤ (Q n).eval r` at every root `r` of
+`P (n + 1)`; `recurrence` (the recurrence above);
+`degree_succ : (P n).natDegree + 1 = (P (n + 1)).natDegree`; and `no_common_roots` (consecutive rows
+share no root). -/
 syntax (name := rr_lw_positive_X_mul_sequence_named)
   "rr_lw_positive_X_mul_sequence" " using "
     "base" ":=" term ","
@@ -20,6 +27,11 @@ syntax (name := rr_lw_positive_X_mul_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * Q n) * P n`. The arguments are the standard certificates `base`,
+`pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (Q n).eval r` at every root `r`
+of `P (n + 1)`. -/
 syntax (name := rr_lw_positive_X_mul_sequence_realrooted_named)
   "rr_lw_positive_X_mul_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -31,6 +43,11 @@ syntax (name := rr_lw_positive_X_mul_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`; and
+`factor_nonneg : 0 ≤ (Q n).eval r` at every root `r` of `P (n + 1)`. -/
 syntax (name := rr_lw_positive_C_mul_X_mul_sequence_named)
   "rr_lw_positive_C_mul_X_mul_sequence" " using "
     "base" ":=" term ","
@@ -43,6 +60,11 @@ syntax (name := rr_lw_positive_C_mul_X_mul_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (Q n).eval r` at every
+root `r` of `P (n + 1)`. The nonnegativity of the scalar coefficients is proved automatically. -/
 syntax (name := rr_lw_positive_C_mul_X_mul_sequence_auto_named)
   "rr_lw_positive_C_mul_X_mul_sequence_auto" " using "
     "base" ":=" term ","
@@ -54,6 +76,11 @@ syntax (name := rr_lw_positive_C_mul_X_mul_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`; and
+`factor_nonneg : 0 ≤ (Q n).eval r` at every root `r` of `P (n + 1)`. -/
 syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_named)
   "rr_lw_positive_C_mul_X_mul_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -66,6 +93,11 @@ syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * Q n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (Q n).eval r` at every
+root `r` of `P (n + 1)`. The nonnegativity of the scalar coefficients is proved automatically. -/
 syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto_named)
   "rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -77,6 +109,11 @@ syntax (name := rr_lw_positive_C_mul_X_mul_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * R n) * P n`. The arguments are the standard certificates `base`,
+`pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (R n).eval r` at every root `r`
+of `P (n + 1)`. -/
 syntax (name := rr_lw_tR_lag_sequence_named)
   "rr_lw_tR_lag_sequence" " using "
     "base" ":=" term ","
@@ -88,9 +125,17 @@ syntax (name := rr_lw_tR_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Short form of `rr_lw_tR_lag_sequence` taking only
+`recurrence : P (n + 2) = A n * P (n + 1) + (X * R n) * P n`; every other certificate is found by
+`rr_lookup`. Closes `∀ n, StrictInterl (P n) (P (n + 1))`. -/
 syntax (name := rr_lw_tR_lag_sequence_inferred_of_recurrence)
   "rr_lw_tR_lag_sequence" " using " "recurrence" ":=" term : tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * R n) * P n`. The arguments are the standard certificates `base`,
+`pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (R n).eval r` at every root `r`
+of `P (n + 1)`. -/
 syntax (name := rr_lw_tR_lag_sequence_realrooted_named)
   "rr_lw_tR_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -102,9 +147,17 @@ syntax (name := rr_lw_tR_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Short form of `rr_lw_tR_lag_sequence_realrooted` taking only
+`recurrence : P (n + 2) = A n * P (n + 1) + (X * R n) * P n`; every other certificate is found by
+`rr_lookup`. Closes `∀ n, P n ≠ 0 ∧ (P n).Splits`. -/
 syntax (name := rr_lw_tR_lag_sequence_realrooted_inferred_of_recurrence)
   "rr_lw_tR_lag_sequence_realrooted" " using " "recurrence" ":=" term : tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`; and
+`factor_nonneg : 0 ≤ (R n).eval r` at every root `r` of `P (n + 1)`. -/
 syntax (name := rr_lw_c_tR_lag_sequence_named)
   "rr_lw_c_tR_lag_sequence" " using "
     "base" ":=" term ","
@@ -117,6 +170,11 @@ syntax (name := rr_lw_c_tR_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (R n).eval r` at every
+root `r` of `P (n + 1)`. The nonnegativity of the scalar coefficients is proved automatically. -/
 syntax (name := rr_lw_c_tR_lag_sequence_auto_named)
   "rr_lw_c_tR_lag_sequence_auto" " using "
     "base" ":=" term ","
@@ -128,6 +186,11 @@ syntax (name := rr_lw_c_tR_lag_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`; and
+`factor_nonneg : 0 ≤ (R n).eval r` at every root `r` of `P (n + 1)`. -/
 syntax (name := rr_lw_c_tR_lag_sequence_realrooted_named)
   "rr_lw_c_tR_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -140,6 +203,11 @@ syntax (name := rr_lw_c_tR_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `factor_nonneg : 0 ≤ (R n).eval r` at every
+root `r` of `P (n + 1)`. The nonnegativity of the scalar coefficients is proved automatically. -/
 syntax (name := rr_lw_c_tR_lag_sequence_realrooted_auto_named)
   "rr_lw_c_tR_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -151,6 +219,10 @@ syntax (name := rr_lw_c_tR_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (1 - X)) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). -/
 syntax (name := rr_lw_X_one_sub_X_lag_sequence_named)
   "rr_lw_X_one_sub_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -161,6 +233,10 @@ syntax (name := rr_lw_X_one_sub_X_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (1 - X)) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). -/
 syntax (name := rr_lw_X_one_sub_X_lag_sequence_realrooted_named)
   "rr_lw_X_one_sub_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -171,6 +247,11 @@ syntax (name := rr_lw_X_one_sub_X_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `left_coeff_nonneg : 0 ≤ a n`; and
+`right_coeff_nonneg : 0 ≤ b n`. -/
 syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_named)
   "rr_lw_X_C_sub_C_mul_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -183,6 +264,11 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_auto_named)
   "rr_lw_X_C_sub_C_mul_X_lag_sequence_auto" " using "
     "base" ":=" term ","
@@ -193,6 +279,11 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `left_coeff_nonneg : 0 ≤ a n`; and
+`right_coeff_nonneg : 0 ≤ b n`. -/
 syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
   "rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -205,6 +296,11 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
   "rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -215,6 +311,11 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
+standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
+`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`), together with `scalar_nonneg : 0 ≤ c n`;
+`left_coeff_nonneg : 0 ≤ a n`; and `right_coeff_nonneg : 0 ≤ b n`. -/
 syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_named)
   "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence" " using "
     "base" ":=" term ","
@@ -228,6 +329,11 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
+standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
+`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar
+coefficients is proved automatically. -/
 syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto_named)
   "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto" " using "
     "base" ":=" term ","
@@ -238,6 +344,11 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
+standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
+`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`), together with `scalar_nonneg : 0 ≤ c n`;
+`left_coeff_nonneg : 0 ≤ a n`; and `right_coeff_nonneg : 0 ≤ b n`. -/
 syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
   "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -251,6 +362,11 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
+standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
+`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar
+coefficients is proved automatically. -/
 syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
   "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -261,6 +377,10 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_CX_sequence_named)
   "rr_lw_current_CX_sequence" " using "
     "base" ":=" term ","
@@ -272,6 +392,11 @@ syntax (name := rr_lw_current_CX_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_CX_sequence_auto_named)
   "rr_lw_current_CX_sequence_auto" " using "
     "base" ":=" term ","
@@ -282,6 +407,10 @@ syntax (name := rr_lw_current_CX_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_CX_sequence_realrooted_named)
   "rr_lw_current_CX_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -293,6 +422,11 @@ syntax (name := rr_lw_current_CX_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
+certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
+(as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_CX_sequence_realrooted_auto_named)
   "rr_lw_current_CX_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -303,6 +437,10 @@ syntax (name := rr_lw_current_CX_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_X_sequence_named)
   "rr_lw_current_X_sequence" " using "
     "base" ":=" term ","
@@ -314,6 +452,11 @@ syntax (name := rr_lw_current_X_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_X_sequence_auto_named)
   "rr_lw_current_X_sequence_auto" " using "
     "base" ":=" term ","
@@ -324,6 +467,10 @@ syntax (name := rr_lw_current_X_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_X_sequence_realrooted_named)
   "rr_lw_current_X_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -335,6 +482,11 @@ syntax (name := rr_lw_current_X_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_X_sequence_realrooted_auto_named)
   "rr_lw_current_X_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -345,6 +497,10 @@ syntax (name := rr_lw_current_X_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_one_add_X_sequence_named)
   "rr_lw_current_one_add_X_sequence" " using "
     "base" ":=" term ","
@@ -356,6 +512,11 @@ syntax (name := rr_lw_current_one_add_X_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
+`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_one_add_X_sequence_auto_named)
   "rr_lw_current_one_add_X_sequence_auto" " using "
     "base" ":=" term ","
@@ -366,6 +527,10 @@ syntax (name := rr_lw_current_one_add_X_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
 syntax (name := rr_lw_current_one_add_X_sequence_realrooted_named)
   "rr_lw_current_one_add_X_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -377,6 +542,11 @@ syntax (name := rr_lw_current_one_add_X_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
+`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
+`rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
+automatically. -/
 syntax (name := rr_lw_current_one_add_X_sequence_realrooted_auto_named)
   "rr_lw_current_one_add_X_sequence_realrooted_auto" " using "
     "base" ":=" term ","

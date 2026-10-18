@@ -129,34 +129,43 @@ theorem iterate_derivative_iterateTDeriv_sequence
   fun i =>
     RealRooted.iterate_derivative_iterateTDeriv (eps i) (L i) (K i) (P i)
 
+/-- Closes `HasPosLeadingCoeff (tDeriv eps p)` from `pos_lc : HasPosLeadingCoeff p`, where
+`tDeriv eps p = p - C eps * p.derivative`. -/
 syntax (name := rr_TDeriv_pos_lc_named)
   "rr_TDeriv_pos_lc" " using " "pos_lc" ":=" term :
   tactic
 
+/-- Sequence form of `rr_TDeriv_pos_lc`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_pos_lc_named)
   "rr_TDeriv_sequence_pos_lc" " using " "pos_lc" ":=" term :
   tactic
 
+/-- Closes `tDeriv eps p ≠ 0` from `nonzero : p ≠ 0`. -/
 syntax (name := rr_TDeriv_ne_zero_named)
   "rr_TDeriv_ne_zero" " using " "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_TDeriv_ne_zero`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_ne_zero_named)
   "rr_TDeriv_sequence_ne_zero" " using " "nonzero" ":=" term :
   tactic
 
+/-- Closes `(tDeriv eps p).Splits` from `eps_pos : 0 < eps` and `splits : p.Splits`. -/
 syntax (name := rr_TDeriv_splits_named)
   "rr_TDeriv_splits" " using "
     "eps_pos" ":=" term ","
     "splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_TDeriv_splits`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_splits_named)
   "rr_TDeriv_sequence_splits" " using "
     "eps_pos" ":=" term ","
     "splits" ":=" term :
   tactic
 
+/-- Closes `StrictInterl p (tDeriv eps p)` from `eps_pos : 0 < eps`, `nonzero : p ≠ 0` and
+`splits : p.Splits`. -/
 syntax (name := rr_TDeriv_strict_interl_named)
   "rr_TDeriv_strict_interl" " using "
     "eps_pos" ":=" term ","
@@ -164,6 +173,7 @@ syntax (name := rr_TDeriv_strict_interl_named)
     "splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_TDeriv_strict_interl`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_strict_interl_named)
   "rr_TDeriv_sequence_strict_interl" " using "
     "eps_pos" ":=" term ","
@@ -171,22 +181,29 @@ syntax (name := rr_TDeriv_sequence_strict_interl_named)
     "splits" ":=" term :
   tactic
 
+/-- Closes `iterateTDeriv eps k p ≠ 0` from `nonzero : p ≠ 0`, where `iterateTDeriv eps k` is the
+`k`-fold iterate of `tDeriv eps`. -/
 syntax (name := rr_iterateTDeriv_ne_zero_named)
   "rr_iterateTDeriv_ne_zero" " using " "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_ne_zero`: the same certificate for every index `i`. The
+argument `index` is the sequence `K` of iteration counts. -/
 syntax (name := rr_iterateTDeriv_sequence_ne_zero_named)
   "rr_iterateTDeriv_sequence_ne_zero" " using "
     "nonzero" ":=" term ","
     "index" ":=" term :
   tactic
 
+/-- Closes `(iterateTDeriv eps k p).Splits` from `eps_pos : 0 < eps` and `splits : p.Splits`. -/
 syntax (name := rr_iterateTDeriv_splits_named)
   "rr_iterateTDeriv_splits" " using "
     "eps_pos" ":=" term ","
     "splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_splits`: the same certificate for every index `i`. The
+argument `index` is the sequence `K` of iteration counts. -/
 syntax (name := rr_iterateTDeriv_sequence_splits_named)
   "rr_iterateTDeriv_sequence_splits" " using "
     "eps_pos" ":=" term ","
@@ -194,6 +211,8 @@ syntax (name := rr_iterateTDeriv_sequence_splits_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (iterateTDeriv eps k p) (iterateTDeriv eps (k + 1) p)` from
+`eps_pos : 0 < eps`, `nonzero : p ≠ 0` and `splits : p.Splits`. -/
 syntax (name := rr_iterateTDeriv_strict_interl_succ_named)
   "rr_iterateTDeriv_strict_interl_succ" " using "
     "eps_pos" ":=" term ","
@@ -201,6 +220,8 @@ syntax (name := rr_iterateTDeriv_strict_interl_succ_named)
     "splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_strict_interl_succ`: the same certificate for every index
+`i`. The argument `index` is the sequence `K` of iteration counts. -/
 syntax (name := rr_iterateTDeriv_sequence_strict_interl_succ_named)
   "rr_iterateTDeriv_sequence_strict_interl_succ" " using "
     "eps_pos" ":=" term ","
@@ -209,90 +230,123 @@ syntax (name := rr_iterateTDeriv_sequence_strict_interl_succ_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `(iterateTDeriv eps k p).natDegree = p.natDegree`: iterating `tDeriv` preserves the
+degree. -/
 syntax (name := rr_iterateTDeriv_natDegree_named)
   "rr_iterateTDeriv_natDegree" :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_natDegree`: the same certificate for every index `i`. -/
 syntax (name := rr_iterateTDeriv_sequence_natDegree_named)
   "rr_iterateTDeriv_sequence_natDegree" :
   tactic
 
+/-- Closes `(iterateTDeriv eps k p).leadingCoeff = p.leadingCoeff`: iterating `tDeriv` preserves the
+leading coefficient. -/
 syntax (name := rr_iterateTDeriv_leadingCoeff_named)
   "rr_iterateTDeriv_leadingCoeff" :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_leadingCoeff`: the same certificate for every index `i`. -/
 syntax (name := rr_iterateTDeriv_sequence_leadingCoeff_named)
   "rr_iterateTDeriv_sequence_leadingCoeff" :
   tactic
 
+/-- Closes `∀ i, HasPosLeadingCoeff (iterateTDeriv (eps i) (K i) (P i))` from
+`pos_lc : ∀ i, HasPosLeadingCoeff (P i)`. The argument `index` is the sequence `K` of iteration
+counts. -/
 syntax (name := rr_iterateTDeriv_sequence_pos_lc_named)
   "rr_iterateTDeriv_sequence_pos_lc" " using "
     "pos_lc" ":=" term ","
     "index" ":=" term :
   tactic
 
+/-- Closes `(iterateTDeriv eps k p).Monic` from `monic : p.Monic`. -/
 syntax (name := rr_iterateTDeriv_monic_named)
   "rr_iterateTDeriv_monic" " using " "monic" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_monic`: the same certificate for every index `i`. The
+argument `index` is the sequence `K` of iteration counts. -/
 syntax (name := rr_iterateTDeriv_sequence_monic_named)
   "rr_iterateTDeriv_sequence_monic" " using "
     "monic" ":=" term ","
     "index" ":=" term :
   tactic
 
+/-- Closes `tDeriv eps (p + q) = tDeriv eps p + tDeriv eps q`: `tDeriv` is additive. -/
 syntax (name := rr_TDeriv_add_named)
   "rr_TDeriv_add" :
   tactic
 
+/-- Sequence form of `rr_TDeriv_add`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_add_named)
   "rr_TDeriv_sequence_add" :
   tactic
 
+/-- Closes `tDeriv eps (C c * p) = C c * tDeriv eps p`: `tDeriv` commutes with scalar
+multiplication. -/
 syntax (name := rr_TDeriv_C_mul_named)
   "rr_TDeriv_C_mul" :
   tactic
 
+/-- Sequence form of `rr_TDeriv_C_mul`: the same certificate for every index `i`. -/
 syntax (name := rr_TDeriv_sequence_C_mul_named)
   "rr_TDeriv_sequence_C_mul" :
   tactic
 
+/-- Closes `iterateTDeriv eps k (p + q) = iterateTDeriv eps k p + iterateTDeriv eps k q`:
+`iterateTDeriv` is additive. -/
 syntax (name := rr_iterateTDeriv_add_named)
   "rr_iterateTDeriv_add" :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_add`: the same certificate for every index `i`. -/
 syntax (name := rr_iterateTDeriv_sequence_add_named)
   "rr_iterateTDeriv_sequence_add" :
   tactic
 
+/-- Closes `iterateTDeriv eps k (C c * p) = C c * iterateTDeriv eps k p`: `iterateTDeriv` commutes
+with scalar multiplication. -/
 syntax (name := rr_iterateTDeriv_C_mul_named)
   "rr_iterateTDeriv_C_mul" :
   tactic
 
+/-- Sequence form of `rr_iterateTDeriv_C_mul`: the same certificate for every index `i`. -/
 syntax (name := rr_iterateTDeriv_sequence_C_mul_named)
   "rr_iterateTDeriv_sequence_C_mul" :
   tactic
 
+/-- Closes `(tDeriv eps p).derivative = tDeriv eps p.derivative`: the derivative commutes with
+`tDeriv`. -/
 syntax (name := rr_derivative_TDeriv_named)
   "rr_derivative_TDeriv" :
   tactic
 
+/-- Sequence form of `rr_derivative_TDeriv`: the same certificate for every index `i`. -/
 syntax (name := rr_derivative_TDeriv_sequence_named)
   "rr_derivative_TDeriv_sequence" :
   tactic
 
+/-- Closes `(Polynomial.derivative^[k]) (tDeriv eps p) = tDeriv eps ((Polynomial.derivative^[k])
+p)`: iterated derivatives commute with `tDeriv`. -/
 syntax (name := rr_iterate_derivative_TDeriv_named)
   "rr_iterate_derivative_TDeriv" :
   tactic
 
+/-- Sequence form of `rr_iterate_derivative_TDeriv`: the same certificate for every index `i`. -/
 syntax (name := rr_iterate_derivative_TDeriv_sequence_named)
   "rr_iterate_derivative_TDeriv_sequence" :
   tactic
 
+/-- Closes `(Polynomial.derivative^[k]) (iterateTDeriv eps l p) = iterateTDeriv eps l
+((Polynomial.derivative^[k]) p)`: iterated derivatives commute with `iterateTDeriv`. -/
 syntax (name := rr_iterate_derivative_iterateTDeriv_named)
   "rr_iterate_derivative_iterateTDeriv" :
   tactic
 
+/-- Sequence form of `rr_iterate_derivative_iterateTDeriv`: the same certificate for every index
+`i`. -/
 syntax (name := rr_iterate_derivative_iterateTDeriv_sequence_named)
   "rr_iterate_derivative_iterateTDeriv_sequence" :
   tactic

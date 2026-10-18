@@ -147,6 +147,9 @@ theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
     StrictInterl.interl_hadamardProduct
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits`, the finite Schur--Szegő
+composition theorem, from `pf_factor : IsPFPolynomial f`, `pf_degree : f.natDegree ≤ n`,
+`input_degree : p.natDegree ≤ n` and `input_splits : p.Splits`. -/
 syntax (name := rr_schur_szego_named)
   "rr_schur_szego" " using "
     "pf_factor" ":=" term ","
@@ -155,6 +158,8 @@ syntax (name := rr_schur_szego_named)
     "input_splits" ":=" term :
   tactic
 
+/-- Closes `(schurSzegoComp n f p).Splits` from the arguments of `rr_schur_szego` together with
+`nonzero : schurSzegoComp n f p ≠ 0`. -/
 syntax (name := rr_schur_szego_splits_named)
   "rr_schur_szego_splits" " using "
     "pf_factor" ":=" term ","
@@ -164,6 +169,9 @@ syntax (name := rr_schur_szego_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits` for a PF factor of degree at
+most two: `pf_factor : IsPFPolynomial f`, `pf_degree_le_two : f.natDegree ≤ 2`,
+`input_degree : p.natDegree ≤ n` and `input_splits : p.Splits`. -/
 syntax (name := rr_schur_szego_pf_factor_degree_le_two_named)
   "rr_schur_szego_pf_factor_degree_le_two" " using "
     "pf_factor" ":=" term ","
@@ -172,6 +180,8 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_two_named)
     "input_splits" ":=" term :
   tactic
 
+/-- Closes `(schurSzegoComp n f p).Splits` from the arguments of
+`rr_schur_szego_pf_factor_degree_le_two` together with `nonzero : schurSzegoComp n f p ≠ 0`. -/
 syntax (name := rr_schur_szego_pf_factor_degree_le_two_splits_named)
   "rr_schur_szego_pf_factor_degree_le_two_splits" " using "
     "pf_factor" ":=" term ","
@@ -181,6 +191,10 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_two_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits` when both factors have degree
+at most two, for any level `n`: `pf_factor : IsPFPolynomial f`,
+`pf_degree_le_two : f.natDegree ≤ 2`, `input_degree_le_two : p.natDegree ≤ 2` and
+`input_splits : p.Splits`. -/
 syntax (name := rr_schur_szego_factors_degree_le_two_named)
   "rr_schur_szego_factors_degree_le_two" " using "
     "pf_factor" ":=" term ","
@@ -189,6 +203,8 @@ syntax (name := rr_schur_szego_factors_degree_le_two_named)
     "input_splits" ":=" term :
   tactic
 
+/-- Closes `(schurSzegoComp n f p).Splits` from the arguments of
+`rr_schur_szego_factors_degree_le_two` together with `nonzero : schurSzegoComp n f p ≠ 0`. -/
 syntax (name := rr_schur_szego_factors_degree_le_two_splits_named)
   "rr_schur_szego_factors_degree_le_two_splits" " using "
     "pf_factor" ":=" term ","
@@ -198,12 +214,18 @@ syntax (name := rr_schur_szego_factors_degree_le_two_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits` for a factor `f` of degree at
+most three, from `pf_degree_le_three : f.natDegree ≤ 3` and
+`cubic_discriminant : 0 ≤ cubicDiscr (schurSzegoComp n f p)`. -/
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_cubic_named)
   "rr_schur_szego_pf_factor_degree_le_three_cubic" " using "
     "pf_degree_le_three" ":=" term ","
     "cubic_discriminant" ":=" term :
   tactic
 
+/-- Closes `(schurSzegoComp n f p).Splits` from the arguments of
+`rr_schur_szego_pf_factor_degree_le_three_cubic` together with `nonzero : schurSzegoComp n f p ≠ 0`.
+-/
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_cubic_splits_named)
   "rr_schur_szego_pf_factor_degree_le_three_cubic_splits" " using "
     "pf_degree_le_three" ":=" term ","
@@ -211,6 +233,9 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_three_cubic_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits` for a factor `f` of degree at
+most three at a level `n ≥ 3`, from `level_ge_three : 3 ≤ n`, `pf_degree_le_three : f.natDegree ≤ 3`
+and `cubic_numerator : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p`. -/
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_named)
   "rr_schur_szego_pf_factor_degree_le_three_num" " using "
     "level_ge_three" ":=" term ","
@@ -218,6 +243,9 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_named)
     "cubic_numerator" ":=" term :
   tactic
 
+/-- Closes `(schurSzegoComp n f p).Splits` from the arguments of
+`rr_schur_szego_pf_factor_degree_le_three_num` together with `nonzero : schurSzegoComp n f p ≠ 0`.
+-/
 syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_splits_named)
   "rr_schur_szego_pf_factor_degree_le_three_num_splits" " using "
     "level_ge_three" ":=" term ","
@@ -226,6 +254,9 @@ syntax (name := rr_schur_szego_pf_factor_degree_le_three_num_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits` from nonzero inputs:
+`pf_factor : IsPFPolynomial f`, `pf_nonzero : f ≠ 0`, `pf_degree : f.natDegree ≤ n`,
+`input_nonzero : p ≠ 0`, `input_degree : p.natDegree ≤ n` and `input_splits : p.Splits`. -/
 syntax (name := rr_schur_szego_nonzero_named)
   "rr_schur_szego_nonzero" " using "
     "pf_factor" ":=" term ","
@@ -236,6 +267,8 @@ syntax (name := rr_schur_szego_nonzero_named)
     "input_splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_schur_szego`: the same certificate for every index `i`, with levels `N i`,
+factors `F i` and inputs `P i`. -/
 syntax (name := rr_schur_szego_sequence_named)
   "rr_schur_szego_sequence" " using "
     "pf_factor" ":=" term ","
@@ -244,6 +277,8 @@ syntax (name := rr_schur_szego_sequence_named)
     "input_splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_schur_szego_splits`: the same certificate for every index `i`, with levels
+`N i`, factors `F i` and inputs `P i`. -/
 syntax (name := rr_schur_szego_sequence_splits_named)
   "rr_schur_szego_sequence_splits" " using "
     "pf_factor" ":=" term ","
@@ -253,12 +288,18 @@ syntax (name := rr_schur_szego_sequence_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (hadamardProduct p q)` from `left_pf : IsPFPolynomial p` and
+`right_pf : IsPFPolynomial q`. -/
 syntax (name := rr_hadamard_pf_named)
   "rr_hadamard_pf" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term :
   tactic
 
+/-- Closes `(hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits) ∧ HasNonnegCoeffs
+(hadamardProduct p q) ∧ ∀ r ∈ (hadamardProduct p q).roots, r ≤ 0` from `left_nonneg`,
+`right_nonneg`, the nonnegativity of the coefficients of `p` and `q`, and `left_realrooted`,
+`right_realrooted`, the facts `p ≠ 0 ∧ p.Splits` and `q ≠ 0 ∧ q.Splits`. -/
 syntax (name := rr_hadamard_nonneg_realrooted_named)
   "rr_hadamard_nonneg_realrooted" " using "
     "left_nonneg" ":=" term ","
@@ -267,12 +308,18 @@ syntax (name := rr_hadamard_nonneg_realrooted_named)
     "right_realrooted" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs (hadamardProduct p q)` from `left_nonneg : HasNonnegCoeffs p` and
+`right_nonneg : HasNonnegCoeffs q`. -/
 syntax (name := rr_hadamard_nonneg_coeffs_named)
   "rr_hadamard_nonneg_coeffs" " using "
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
+/-- Closes `Interl (hadamardProduct f p) (hadamardProduct g q)` from the nonnegative coefficients of
+`f`, `g`, `p` and `q` (`first_left_nonneg`, `first_right_nonneg`, `second_left_nonneg`,
+`second_right_nonneg`) and the strict interlacings `first_strictInterl : StrictInterl f g` and
+`second_strictInterl : StrictInterl p q`. -/
 syntax (name := rr_hadamard_interl_named)
   "rr_hadamard_interl" " using "
     "first_left_nonneg" ":=" term ","
@@ -283,15 +330,23 @@ syntax (name := rr_hadamard_interl_named)
     "second_strictInterl" ":=" term :
   tactic
 
+/-- Closes `Interl (hadamardProduct f p) (hadamardProduct g q)` for PF polynomials from certificates
+found in the local context by `rr_lookup_term`; it tries the fixed-right-factor, fixed-left-factor
+and general PF forms in turn. -/
 syntax (name := rr_hadamard_pf_interl_named)
   "rr_hadamard_pf_interl" : tactic
 
+/-- Sequence form of `rr_hadamard_pf`: the same certificate for every index `i`. -/
 syntax (name := rr_hadamard_sequence_pf_named)
   "rr_hadamard_sequence_pf" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` when
+`factorization : ∀ n, P n = C (c n) * hadamardProduct (L n) (R n)`, with PF sequences `left_pf` and
+`right_pf`, `product_ne` stating that each Hadamard product is nonzero, and
+`scalar_ne : ∀ n, c n ≠ 0`. -/
 syntax (name := rr_hadamard_product_scalar_sequence_named)
   "rr_hadamard_product_scalar_sequence" " using "
     "left_pf" ":=" term ","
@@ -301,6 +356,7 @@ syntax (name := rr_hadamard_product_scalar_sequence_named)
     "factorization" ":=" term :
   tactic
 
+/-- Sequence form of `rr_hadamard_nonneg_realrooted`: the same certificate for every index `i`. -/
 syntax (name := rr_hadamard_sequence_nonneg_realrooted_named)
   "rr_hadamard_sequence_nonneg_realrooted" " using "
     "left_nonneg" ":=" term ","
@@ -309,12 +365,14 @@ syntax (name := rr_hadamard_sequence_nonneg_realrooted_named)
     "right_realrooted" ":=" term :
   tactic
 
+/-- Sequence form of `rr_hadamard_nonneg_coeffs`: the same certificate for every index `i`. -/
 syntax (name := rr_hadamard_sequence_nonneg_coeffs_named)
   "rr_hadamard_sequence_nonneg_coeffs" " using "
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_hadamard_interl`: the same certificate for every index `i`. -/
 syntax (name := rr_hadamard_sequence_interl_named)
   "rr_hadamard_sequence_interl" " using "
     "first_left_nonneg" ":=" term ","

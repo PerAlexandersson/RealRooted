@@ -72,34 +72,48 @@ theorem IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff_sequence
 
 namespace Tactic
 
+/-- Closes `gammaTransform d (γ + δ) = gammaTransform d γ + gammaTransform d δ`: the gamma transform
+is additive. -/
 syntax (name := rr_gamma_transform_add_named)
   "rr_gamma_transform_add" :
   tactic
 
+/-- Closes `gammaTransform d (C a * γ) = C a * gammaTransform d γ`: the gamma transform commutes
+with scalar multiplication. -/
 syntax (name := rr_gamma_transform_C_mul_named)
   "rr_gamma_transform_C_mul" :
   tactic
 
+/-- Closes `gammaTransform d (monomial n a) = if n ≤ d / 2 then C a * gammaBasisTerm d n else 0`,
+the gamma transform of a monomial. -/
 syntax (name := rr_gamma_transform_monomial_named)
   "rr_gamma_transform_monomial" :
   tactic
 
+/-- Closes `idTransform d (gammaTransform d γ) = gammaTransform d γ`: the gamma transform is fixed
+by `idTransform` in the same ambient degree `d`. -/
 syntax (name := rr_gamma_transform_fixed_named)
   "rr_gamma_transform_fixed" :
   tactic
 
+/-- Closes `HasNonnegCoeffs (gammaBasisTerm d i)`: each gamma basis term
+`X ^ i * (X + 1) ^ (d - 2 * i)` has nonnegative coefficients. -/
 syntax (name := rr_gamma_basis_nonneg_named)
   "rr_gamma_basis_nonneg" :
   tactic
 
+/-- Closes `HasNonnegCoeffs (gammaTransform d γ)` from `nonneg : HasNonnegCoeffs γ`. -/
 syntax (name := rr_gamma_transform_nonneg_named)
   "rr_gamma_transform_nonneg" " using " "nonneg" ":=" term :
   tactic
 
+/-- Closes `(gammaTransform d γ).natDegree ≤ d`. -/
 syntax (name := rr_gamma_transform_natDegree_le_named)
   "rr_gamma_transform_natDegree_le" :
   tactic
 
+/-- Closes `γ = δ` from `transform_eq : gammaTransform d γ = gammaTransform d δ`, where
+`left_degree : γ.natDegree ≤ d / 2` and `right_degree : δ.natDegree ≤ d / 2`. -/
 syntax (name := rr_gamma_transform_injective_named)
   "rr_gamma_transform_injective" " using "
     "left_degree" ":=" term ","
@@ -107,22 +121,30 @@ syntax (name := rr_gamma_transform_injective_named)
     "transform_eq" ":=" term :
   tactic
 
+/-- Closes `gammaTransform d γ = 0 ↔ γ = 0` from `gamma_degree : γ.natDegree ≤ d / 2`. -/
 syntax (name := rr_gamma_transform_zero_iff_named)
   "rr_gamma_transform_zero_iff" " using " "gamma_degree" ":=" term :
   tactic
 
+/-- Closes `gammaTransform (d + 2) (X * γ) = X * gammaTransform d γ`. -/
 syntax (name := rr_gamma_transform_X_mul_two_named)
   "rr_gamma_transform_X_mul_two" :
   tactic
 
+/-- Closes `gammaTransform (d + 2) γ = (X + 1) ^ 2 * gammaTransform d γ` from
+`gamma_degree : γ.natDegree ≤ d / 2`. -/
 syntax (name := rr_gamma_transform_pad_two_named)
   "rr_gamma_transform_pad_two" " using " "gamma_degree" ":=" term :
   tactic
 
+/-- Closes `gammaTransform (2 * m + 1) γ = (X + 1) * gammaTransform (2 * m) γ`. -/
 syntax (name := rr_gamma_transform_odd_named)
   "rr_gamma_transform_odd" :
   tactic
 
+/-- Closes `gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits` from
+`gamma_degree : γ.natDegree ≤ d / 2`, `gamma_nonzero : γ ≠ 0`, `gamma_splits : γ.Splits` and
+`gamma_nonneg : HasNonnegCoeffs γ`. -/
 syntax (name := rr_gamma_transform_realrooted_nonneg_named)
   "rr_gamma_transform_realrooted_nonneg" " using "
     "gamma_degree" ":=" term ","
@@ -131,11 +153,15 @@ syntax (name := rr_gamma_transform_realrooted_nonneg_named)
     "gamma_nonneg" ":=" term :
   tactic
 
+/-- Closes `HasRootsNonpos (gammaTransform d γ)` from `gamma_nonneg : HasNonnegCoeffs γ`. -/
 syntax (name := rr_gamma_transform_roots_nonpos_nonneg_named)
   "rr_gamma_transform_roots_nonpos_nonneg" " using "
     "gamma_nonneg" ":=" term :
   tactic
 
+/-- Closes the conjunction of `gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits` and
+`HasRootsNonpos (gammaTransform d γ)` from `gamma_degree : γ.natDegree ≤ d / 2`,
+`gamma_nonzero : γ ≠ 0`, `gamma_splits : γ.Splits` and `gamma_roots_nonpos : HasRootsNonpos γ`. -/
 syntax (name := rr_gamma_transform_realrooted_nonpos_named)
   "rr_gamma_transform_realrooted_nonpos" " using "
     "gamma_degree" ":=" term ","
@@ -144,6 +170,9 @@ syntax (name := rr_gamma_transform_realrooted_nonpos_named)
     "gamma_roots_nonpos" ":=" term :
   tactic
 
+/-- Closes `(γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ` from the corresponding facts `transform_nonzero`,
+`transform_splits` and `transform_roots_nonpos` for `gammaTransform (2 * γ.natDegree) γ`, the
+transform in the minimal even ambient degree. -/
 syntax (name := rr_gamma_transform_backward_minimal_named)
   "rr_gamma_transform_backward_minimal" " using "
     "transform_nonzero" ":=" term ","
@@ -151,6 +180,9 @@ syntax (name := rr_gamma_transform_backward_minimal_named)
     "transform_roots_nonpos" ":=" term :
   tactic
 
+/-- Closes `(γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ` from `gamma_degree : γ.natDegree ≤ d / 2` and the
+facts `transform_nonzero`, `transform_splits` and `transform_roots_nonpos` for `gammaTransform d γ`.
+-/
 syntax (name := rr_gamma_transform_backward_named)
   "rr_gamma_transform_backward" " using "
     "gamma_degree" ":=" term ","
@@ -159,12 +191,16 @@ syntax (name := rr_gamma_transform_backward_named)
     "transform_roots_nonpos" ":=" term :
   tactic
 
+/-- Closes `((γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ) ↔ ((p ≠ 0 ∧ p.Splits) ∧ HasRootsNonpos p)` from
+`gamma_degree : γ.natDegree ≤ d / 2` and `expansion : IsGammaExpansion d p γ`. -/
 syntax (name := rr_gamma_realrooted_iff_named)
   "rr_gamma_realrooted_iff" " using "
     "gamma_degree" ":=" term ","
     "expansion" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_transform_realrooted_nonneg`: the same certificate for every index
+`i`. -/
 syntax (name := rr_gamma_transform_sequence_realrooted_nonneg_named)
   "rr_gamma_transform_sequence_realrooted_nonneg" " using "
     "gamma_degree" ":=" term ","
@@ -173,11 +209,15 @@ syntax (name := rr_gamma_transform_sequence_realrooted_nonneg_named)
     "gamma_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_transform_roots_nonpos_nonneg`: the same certificate for every index
+`i`. -/
 syntax (name := rr_gamma_transform_sequence_roots_nonpos_nonneg_named)
   "rr_gamma_transform_sequence_roots_nonpos_nonneg" " using "
     "gamma_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_transform_realrooted_nonpos`: the same certificate for every index
+`i`. -/
 syntax (name := rr_gamma_transform_sequence_realrooted_nonpos_named)
   "rr_gamma_transform_sequence_realrooted_nonpos" " using "
     "gamma_degree" ":=" term ","
@@ -186,6 +226,8 @@ syntax (name := rr_gamma_transform_sequence_realrooted_nonpos_named)
     "gamma_roots_nonpos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_transform_backward_minimal`: the same certificate for every index
+`i`. -/
 syntax (name := rr_gamma_transform_sequence_backward_minimal_named)
   "rr_gamma_transform_sequence_backward_minimal" " using "
     "transform_nonzero" ":=" term ","
@@ -193,6 +235,7 @@ syntax (name := rr_gamma_transform_sequence_backward_minimal_named)
     "transform_roots_nonpos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_transform_backward`: the same certificate for every index `i`. -/
 syntax (name := rr_gamma_transform_sequence_backward_named)
   "rr_gamma_transform_sequence_backward" " using "
     "gamma_degree" ":=" term ","
@@ -201,6 +244,7 @@ syntax (name := rr_gamma_transform_sequence_backward_named)
     "transform_roots_nonpos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_gamma_realrooted_iff`: the same certificate for every index `i`. -/
 syntax (name := rr_gamma_sequence_realrooted_iff_named)
   "rr_gamma_sequence_realrooted_iff" " using "
     "gamma_degree" ":=" term ","

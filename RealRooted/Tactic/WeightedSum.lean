@@ -82,14 +82,19 @@ theorem sum_sequence_right_strictInterl
     ∀ i : Nat, StrictInterl (L i).sum (H i) := fun i =>
   RealRooted.StrictInterl.sum_right _ _ (hstrictInterl i) (hpos i) (hne i)
 
+/-- Closes `weightedSum L = 0` from `weights_zero : ∀ ap ∈ L, ap.1 = 0`, the statement that every
+weight in `L` is zero. -/
 syntax (name := rr_weighted_sum_zero_named)
   "rr_weighted_sum_zero" " using " "weights_zero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_sum_zero`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_weighted_sum_sequence_zero_named)
   "rr_weighted_sum_sequence_zero" " using " "weights_zero" ":=" term :
   tactic
 
+/-- Closes `HasPosLeadingCoeff (weightedSum L)` from `weights_nonneg : ∀ ap ∈ L, 0 ≤ ap.1`,
+`terms_pos_lc : ∀ ap ∈ L, HasPosLeadingCoeff ap.2` and `some_weight_pos : ∃ ap ∈ L, 0 < ap.1`. -/
 syntax (name := rr_weighted_sum_pos_lc_named)
   "rr_weighted_sum_pos_lc" " using "
     "weights_nonneg" ":=" term ","
@@ -97,6 +102,7 @@ syntax (name := rr_weighted_sum_pos_lc_named)
     "some_weight_pos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_sum_pos_lc`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_weighted_sum_sequence_pos_lc_named)
   "rr_weighted_sum_sequence_pos_lc" " using "
     "weights_nonneg" ":=" term ","
@@ -104,6 +110,8 @@ syntax (name := rr_weighted_sum_sequence_pos_lc_named)
     "some_weight_pos" ":=" term :
   tactic
 
+/-- Closes `WeightedCompatibleLeft H [(a, P)]` from `weight_pos : 0 < a`,
+`strictInterl : StrictInterl H P` and `pos_lc : HasPosLeadingCoeff P`. -/
 syntax (name := rr_weighted_compatible_left_singleton_named)
   "rr_weighted_compatible_left_singleton" " using "
     "weight_pos" ":=" term ","
@@ -111,6 +119,8 @@ syntax (name := rr_weighted_compatible_left_singleton_named)
     "pos_lc" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_compatible_left_singleton`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_weighted_compatible_left_sequence_singleton_named)
   "rr_weighted_compatible_left_sequence_singleton" " using "
     "weight_pos" ":=" term ","
@@ -118,6 +128,9 @@ syntax (name := rr_weighted_compatible_left_sequence_singleton_named)
     "pos_lc" ":=" term :
   tactic
 
+/-- Closes `WeightedCompatibleLeft H ((a, P) :: L)` for a zero head weight, from
+`weight_zero : a = 0`, `strictInterl : StrictInterl H P`, `pos_lc : HasPosLeadingCoeff P` and
+`tail : WeightedCompatibleLeft H L`. -/
 syntax (name := rr_weighted_compatible_left_cons_zero_named)
   "rr_weighted_compatible_left_cons_zero" " using "
     "weight_zero" ":=" term ","
@@ -126,6 +139,8 @@ syntax (name := rr_weighted_compatible_left_cons_zero_named)
     "tail" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_compatible_left_cons_zero`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_weighted_compatible_left_sequence_cons_zero_named)
   "rr_weighted_compatible_left_sequence_cons_zero" " using "
     "weight_zero" ":=" term ","
@@ -134,6 +149,9 @@ syntax (name := rr_weighted_compatible_left_sequence_cons_zero_named)
     "tail" ":=" term :
   tactic
 
+/-- Closes `WeightedCompatibleLeft H ((a, P) :: L)` for a positive head weight, from
+`weight_pos : 0 < a`, `strictInterl : StrictInterl H P`, `pos_lc : HasPosLeadingCoeff P` and
+`tail : WeightedCompatibleLeft H L`. -/
 syntax (name := rr_weighted_compatible_left_cons_pos_named)
   "rr_weighted_compatible_left_cons_pos" " using "
     "weight_pos" ":=" term ","
@@ -142,6 +160,8 @@ syntax (name := rr_weighted_compatible_left_cons_pos_named)
     "tail" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_compatible_left_cons_pos`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_weighted_compatible_left_sequence_cons_pos_named)
   "rr_weighted_compatible_left_sequence_cons_pos" " using "
     "weight_pos" ":=" term ","
@@ -150,30 +170,44 @@ syntax (name := rr_weighted_compatible_left_sequence_cons_pos_named)
     "tail" ":=" term :
   tactic
 
+/-- Closes `StrictInterl H (weightedSum L)` from `compatible : WeightedCompatibleLeft H L`. -/
 syntax (name := rr_weighted_compatible_left_strict_interl_named)
   "rr_weighted_compatible_left_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_compatible_left_strict_interl`: the same certificate for every
+index `i : Nat`. -/
 syntax (name := rr_weighted_compatible_left_sequence_strict_interl_named)
   "rr_weighted_compatible_left_sequence_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Closes `StrictInterl H (weightedSum L)` from `compatible : WeightedCompatibleLeft H L`; it
+applies the same lemma as `rr_weighted_compatible_left_strict_interl`. -/
 syntax (name := rr_weighted_sum_left_strict_interl_named)
   "rr_weighted_sum_left_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_sum_left_strict_interl`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_weighted_sum_sequence_left_strict_interl_named)
   "rr_weighted_sum_sequence_left_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Closes `StrictInterl H L.sum` for a list `L` of polynomials from
+`compatible : WeightedCompatibleLeft H (L.map fun p => (1, p))`, the compatibility data with all
+weights equal to `1`. -/
 syntax (name := rr_sum_left_strict_interl_named)
   "rr_sum_left_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Sequence form of `rr_sum_left_strict_interl`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_sum_sequence_left_strict_interl_named)
   "rr_sum_sequence_left_strict_interl" " using " "compatible" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (weightedSum L) H` from `weights_nonneg : ∀ ap ∈ L, 0 ≤ ap.1`,
+`all_strictInterl : ∀ ap ∈ L, StrictInterl ap.2 H`,
+`terms_pos_lc : ∀ ap ∈ L, HasPosLeadingCoeff ap.2` and `some_weight_pos : ∃ ap ∈ L, 0 < ap.1`. -/
 syntax (name := rr_weighted_sum_right_strict_interl_named)
   "rr_weighted_sum_right_strict_interl" " using "
     "weights_nonneg" ":=" term ","
@@ -182,6 +216,8 @@ syntax (name := rr_weighted_sum_right_strict_interl_named)
     "some_weight_pos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_weighted_sum_right_strict_interl`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_weighted_sum_sequence_right_strict_interl_named)
   "rr_weighted_sum_sequence_right_strict_interl" " using "
     "weights_nonneg" ":=" term ","
@@ -190,6 +226,9 @@ syntax (name := rr_weighted_sum_sequence_right_strict_interl_named)
     "some_weight_pos" ":=" term :
   tactic
 
+/-- Closes `StrictInterl L.sum H` for a list `L` of polynomials from
+`all_strictInterl : ∀ p ∈ L, StrictInterl p H`, `terms_pos_lc : ∀ p ∈ L, HasPosLeadingCoeff p` and
+`nonempty : L ≠ []`. -/
 syntax (name := rr_sum_right_strict_interl_named)
   "rr_sum_right_strict_interl" " using "
     "all_strictInterl" ":=" term ","
@@ -197,6 +236,8 @@ syntax (name := rr_sum_right_strict_interl_named)
     "nonempty" ":=" term :
   tactic
 
+/-- Sequence form of `rr_sum_right_strict_interl`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_sum_sequence_right_strict_interl_named)
   "rr_sum_sequence_right_strict_interl" " using "
     "all_strictInterl" ":=" term ","

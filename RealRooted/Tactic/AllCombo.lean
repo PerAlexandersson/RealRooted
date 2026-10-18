@@ -123,6 +123,8 @@ theorem allCombo_sequence_to_pos_combo_natDegree_gt {F G : Nat → ℝ[X]}
   AllComboRealRooted.toPosComboRealRooted_of_natDegree_gt
     (hall i) (hF i) (hdeg i)
 
+/-- Closes `(C a * f + C b * g).Splits` from `all_combo : AllComboRealRooted f g`, with
+`left_scalar` the real number `a` and `right_scalar` the real number `b`. -/
 syntax (name := rr_all_combo_splits_named)
   "rr_all_combo_splits" " using "
     "all_combo" ":=" term ","
@@ -130,12 +132,16 @@ syntax (name := rr_all_combo_splits_named)
     "right_scalar" ":=" term :
   tactic
 
+/-- Closes `p.Splits` from `all_combo : AllComboRealRooted f g` and
+`eq_combo : p = C a * f + C b * g`. -/
 syntax (name := rr_all_combo_splits_of_eq_combo_named)
   "rr_all_combo_splits_of_eq_combo" " using "
     "all_combo" ":=" term ","
     "eq_combo" ":=" term :
   tactic
 
+/-- Closes `p ≠ 0 ∧ p.Splits` from `all_combo : AllComboRealRooted f g`,
+`eq_combo : p = C a * f + C b * g` and `nonzero : p ≠ 0`. -/
 syntax (name := rr_all_combo_ne_zero_and_splits_of_eq_combo_named)
   "rr_all_combo_ne_zero_and_splits_of_eq_combo" " using "
     "all_combo" ":=" term ","
@@ -143,12 +149,16 @@ syntax (name := rr_all_combo_ne_zero_and_splits_of_eq_combo_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_splits_of_eq_combo`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_splits_of_eq_combo_named)
   "rr_all_combo_sequence_splits_of_eq_combo" " using "
     "all_combo" ":=" term ","
     "eq_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_ne_zero_and_splits_of_eq_combo`: the same certificate for every
+index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo_named)
   "rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo" " using "
     "all_combo" ":=" term ","
@@ -156,6 +166,8 @@ syntax (name := rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted p q` from `all_combo : AllComboRealRooted f g`,
+`left_eq_combo : p = C a * f + C b * g` and `right_eq_combo : q = C c * f + C d * g`. -/
 syntax (name := rr_all_combo_linear_recombination_named)
   "rr_all_combo_linear_recombination" " using "
     "all_combo" ":=" term ","
@@ -163,6 +175,8 @@ syntax (name := rr_all_combo_linear_recombination_named)
     "right_eq_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_linear_recombination`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_linear_recombination_named)
   "rr_all_combo_sequence_linear_recombination" " using "
     "all_combo" ":=" term ","
@@ -170,106 +184,142 @@ syntax (name := rr_all_combo_sequence_linear_recombination_named)
     "right_eq_combo" ":=" term :
   tactic
 
+/-- Closes `f ≠ 0 ∧ f.Splits` from `all_combo : AllComboRealRooted f g` and `nonzero : f ≠ 0`. -/
 syntax (name := rr_all_combo_left_realrooted_named)
   "rr_all_combo_left_realrooted" " using "
     "all_combo" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_left_realrooted`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_left_realrooted_named)
   "rr_all_combo_sequence_left_realrooted" " using "
     "all_combo" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `g ≠ 0 ∧ g.Splits` from `all_combo : AllComboRealRooted f g` and `nonzero : g ≠ 0`. -/
 syntax (name := rr_all_combo_right_realrooted_named)
   "rr_all_combo_right_realrooted" " using "
     "all_combo" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_right_realrooted`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_right_realrooted_named)
   "rr_all_combo_sequence_right_realrooted" " using "
     "all_combo" ":=" term ","
     "nonzero" ":=" term :
   tactic
 
+/-- Closes `f.Splits` from `all_combo : AllComboRealRooted f g`. -/
 syntax (name := rr_all_combo_left_splits_named)
   "rr_all_combo_left_splits" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_left_splits`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_left_splits_named)
   "rr_all_combo_sequence_left_splits" " using " "all_combo" ":=" term :
   tactic
 
+/-- Closes `g.Splits` from `all_combo : AllComboRealRooted f g`. -/
 syntax (name := rr_all_combo_right_splits_named)
   "rr_all_combo_right_splits" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_right_splits`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_right_splits_named)
   "rr_all_combo_sequence_right_splits" " using " "all_combo" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted g f` from `all_combo : AllComboRealRooted f g`. -/
 syntax (name := rr_all_combo_comm_named)
   "rr_all_combo_comm" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_comm`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_comm_named)
   "rr_all_combo_sequence_comm" " using " "all_combo" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted (C c * f) g` from `all_combo : AllComboRealRooted f g`, for any real
+number `c`. -/
 syntax (name := rr_all_combo_C_mul_left_named)
   "rr_all_combo_C_mul_left" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_C_mul_left`: closes
+`∀ i, AllComboRealRooted (C (c i) * F i) (G i)` from `scalar : c : Nat → ℝ` and `all_combo`, the
+certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_C_mul_left_named)
   "rr_all_combo_sequence_C_mul_left" " using "
     "scalar" ":=" term ","
     "all_combo" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted f (C c * g)` from `all_combo : AllComboRealRooted f g`, for any real
+number `c`. -/
 syntax (name := rr_all_combo_C_mul_right_named)
   "rr_all_combo_C_mul_right" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_C_mul_right`: closes
+`∀ i, AllComboRealRooted (F i) (C (c i) * G i)` from `scalar : c : Nat → ℝ` and `all_combo`, the
+certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_C_mul_right_named)
   "rr_all_combo_sequence_C_mul_right" " using "
     "scalar" ":=" term ","
     "all_combo" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted (d * f) (d * g)` from `all_combo : AllComboRealRooted f g` and
+`factor_splits : d.Splits`. -/
 syntax (name := rr_all_combo_mul_common_factor_named)
   "rr_all_combo_mul_common_factor" " using "
     "all_combo" ":=" term ","
     "factor_splits" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_mul_common_factor`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_mul_common_factor_named)
   "rr_all_combo_sequence_mul_common_factor" " using "
     "all_combo" ":=" term ","
     "factor_splits" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted f.derivative g.derivative` from
+`all_combo : AllComboRealRooted f g`. -/
 syntax (name := rr_all_combo_derivative_named)
   "rr_all_combo_derivative" " using " "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_derivative`: the same certificate for every index `i : Nat`. -/
 syntax (name := rr_all_combo_sequence_derivative_named)
   "rr_all_combo_sequence_derivative" " using " "all_combo" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted (derivative^[n] f) (derivative^[n] g)` from
+`all_combo : AllComboRealRooted f g`, where `index` is the number `n` of derivatives. -/
 syntax (name := rr_all_combo_iterate_derivative_named)
   "rr_all_combo_iterate_derivative" " using "
     "all_combo" ":=" term ","
     "index" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_iterate_derivative`: the same certificate for every index
+`i : Nat`, where `index : K : Nat → ℕ` gives the number `K i` of derivatives taken at index `i`. -/
 syntax (name := rr_all_combo_sequence_iterate_derivative_named)
   "rr_all_combo_sequence_iterate_derivative" " using "
     "all_combo" ":=" term ","
     "index" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g)` from
+`all_combo : AllComboRealRooted f g`, `eps_pos : 0 < eps` and `index`, the number `n` of
+iterations. -/
 syntax (name := rr_all_combo_iterateTDeriv_named)
   "rr_all_combo_iterateTDeriv" " using "
     "all_combo" ":=" term ","
@@ -277,6 +327,9 @@ syntax (name := rr_all_combo_iterateTDeriv_named)
     "index" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_iterateTDeriv`: the same certificate for every index `i : Nat`,
+where `eps_pos : ∀ i, 0 < eps i` and `index : K : Nat → ℕ` gives the number `K i` of iterations at
+index `i`. -/
 syntax (name := rr_all_combo_sequence_iterateTDeriv_named)
   "rr_all_combo_sequence_iterateTDeriv" " using "
     "all_combo" ":=" term ","
@@ -284,12 +337,17 @@ syntax (name := rr_all_combo_sequence_iterateTDeriv_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g` and
+`positive_combos_ne_zero : ∀ lam μ, 0 < lam → 0 < μ → C lam * f + C μ * g ≠ 0`. -/
 syntax (name := rr_all_combo_to_pos_combo_named)
   "rr_all_combo_to_pos_combo" " using "
     "all_combo" ":=" term ","
     "positive_combos_ne_zero" ":=" term :
   tactic
 
+/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
+`left_pos_lc : HasPosLeadingCoeff f`, `right_pos_lc : HasPosLeadingCoeff g` and
+`degree_eq : f.natDegree = g.natDegree`. -/
 syntax (name := rr_all_combo_to_pos_combo_sameDegree_named)
   "rr_all_combo_to_pos_combo_sameDegree" " using "
     "all_combo" ":=" term ","
@@ -298,6 +356,8 @@ syntax (name := rr_all_combo_to_pos_combo_sameDegree_named)
     "degree_eq" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_to_pos_combo_sameDegree`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_to_pos_combo_sameDegree_named)
   "rr_all_combo_sequence_to_pos_combo_sameDegree" " using "
     "all_combo" ":=" term ","
@@ -306,6 +366,8 @@ syntax (name := rr_all_combo_sequence_to_pos_combo_sameDegree_named)
     "degree_eq" ":=" term :
   tactic
 
+/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
+`right_pos_lc : HasPosLeadingCoeff g` and `degree_lt : f.natDegree < g.natDegree`. -/
 syntax (name := rr_all_combo_to_pos_combo_natDegree_lt_named)
   "rr_all_combo_to_pos_combo_natDegree_lt" " using "
     "all_combo" ":=" term ","
@@ -313,6 +375,8 @@ syntax (name := rr_all_combo_to_pos_combo_natDegree_lt_named)
     "degree_lt" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_to_pos_combo_natDegree_lt`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_to_pos_combo_natDegree_lt_named)
   "rr_all_combo_sequence_to_pos_combo_natDegree_lt" " using "
     "all_combo" ":=" term ","
@@ -320,6 +384,8 @@ syntax (name := rr_all_combo_sequence_to_pos_combo_natDegree_lt_named)
     "degree_lt" ":=" term :
   tactic
 
+/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
+`left_pos_lc : HasPosLeadingCoeff f` and `degree_gt : g.natDegree < f.natDegree`. -/
 syntax (name := rr_all_combo_to_pos_combo_natDegree_gt_named)
   "rr_all_combo_to_pos_combo_natDegree_gt" " using "
     "all_combo" ":=" term ","
@@ -327,6 +393,8 @@ syntax (name := rr_all_combo_to_pos_combo_natDegree_gt_named)
     "degree_gt" ":=" term :
   tactic
 
+/-- Sequence form of `rr_all_combo_to_pos_combo_natDegree_gt`: the same certificate for every index
+`i : Nat`. -/
 syntax (name := rr_all_combo_sequence_to_pos_combo_natDegree_gt_named)
   "rr_all_combo_sequence_to_pos_combo_natDegree_gt" " using "
     "all_combo" ":=" term ","
