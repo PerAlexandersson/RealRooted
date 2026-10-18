@@ -22,8 +22,7 @@ noncomputable section
 
 variable {K : Type*} [Field K]
 
-local instance instDecidableEqSturm : DecidableEq K := Classical.decEq K
-
+open Classical in
 /-- The signed Euclidean remainder sequence beginning with `p, q`.
 
 If `q = 0`, the sequence is the singleton `[p]`.  Otherwise its tail is the
