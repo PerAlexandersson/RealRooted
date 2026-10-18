@@ -151,13 +151,11 @@ theorem cutTransformQ_sub_cutTransformP {m : ℕ}
   ring
 
 /-- The empty family has zero aggregate output. -/
-@[simp]
 theorem sum_cutTransformP_empty (P Q : Fin 0 → ℝ[X]) :
     (∑ j : Fin 0, cutTransformP P Q j) = 0 := by
   simp
 
 /-- The empty family has zero marked aggregate output. -/
-@[simp]
 theorem sum_cutTransformQ_empty (P Q : Fin 0 → ℝ[X]) :
     (∑ j : Fin 0, cutTransformQ P Q j) = 0 := by
   simp

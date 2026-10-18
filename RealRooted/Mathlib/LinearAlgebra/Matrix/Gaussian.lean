@@ -36,7 +36,7 @@ noncomputable def gaussianMatrix (n : ℕ) (a : ℝ) : Matrix (Fin n) (Fin n) �
       Real.exp (-a * (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ^ 2) :=
   rfl
 
-@[simp] lemma gaussianMatrix_apply_self (n : ℕ) (a : ℝ) (i : Fin n) :
+lemma gaussianMatrix_apply_self (n : ℕ) (a : ℝ) (i : Fin n) :
     gaussianMatrix n a i i = 1 := by
   simp
 

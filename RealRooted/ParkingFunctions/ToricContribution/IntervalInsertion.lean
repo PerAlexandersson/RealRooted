@@ -19,7 +19,6 @@ namespace RealRooted
 namespace ParkingFunctions
 namespace ToricContribution
 
-@[simp]
 theorem insertionOperator_eval_one (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).eval 1 = (a - b) * f.eval 1 := by
   simpa only [insertionOperator] using darbouxOperator_eval_one a b f
@@ -29,7 +28,6 @@ theorem insertionOperator_eval_isRoot
     (insertionOperator a b f).eval r = r * (1 - r) * f.derivative.eval r := by
   simpa only [insertionOperator] using darbouxOperator_eval_isRoot a b hr
 
-@[simp]
 theorem insertionOperator_neg (a b : ℝ) (f : ℝ[X]) :
     insertionOperator a b (-f) = -insertionOperator a b f := by
   simpa only [insertionOperator] using darbouxOperator_neg a b f
@@ -509,7 +507,6 @@ theorem insertionOperator_eval_derivative_ne_zero_of_natDegree_zero
   rw [insertionOperator_eq_C_mul_X_sub_C_of_natDegree_zero a b hdeg hf0 hb]
   simp [hb, hf0]
 
-@[simp]
 theorem insertionOperator_C_mul (a b k : ℝ) (f : ℝ[X]) :
     insertionOperator a b (C k * f) = C k * insertionOperator a b f := by
   simpa only [insertionOperator] using darbouxOperator_C_mul a b k f

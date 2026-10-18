@@ -341,20 +341,20 @@ theorem auxiliaryG_five_of_bottom_row_expansion_statements
 
 /-- The one-row truncated staircase with one cell has rook polynomial
 `1 + X`. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_one_one :
+theorem truncatedStaircaseRookPolynomial_one_one :
     truncatedStaircaseRookPolynomial 1 1 = 1 + X := by
   rw [truncatedStaircaseRookPolynomial_one_row]
   norm_num
 
 /-- The one-row truncated staircase with six cells has rook polynomial
 `1 + 6X`. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_six_one :
+theorem truncatedStaircaseRookPolynomial_six_one :
     truncatedStaircaseRookPolynomial 6 1 = 1 + C (6 : ℝ) * X :=
   truncatedStaircaseRookPolynomial_one_row 6
 
 /-- The two-row truncated staircase with row lengths six and five has rook
 polynomial `1 + 11X + 15X^2`. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_six_two :
+theorem truncatedStaircaseRookPolynomial_six_two :
     truncatedStaircaseRookPolynomial 6 2 =
       1 + C (11 : ℝ) * X + C (15 : ℝ) * X ^ 2 := by
   rw [truncatedStaircaseRookPolynomial_two_rows]
@@ -458,13 +458,13 @@ and one has rook polynomial
 
 /-- The one-row truncated staircase with seven cells has rook polynomial
 `1 + 7X`. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_seven_one :
+theorem truncatedStaircaseRookPolynomial_seven_one :
     truncatedStaircaseRookPolynomial 7 1 = 1 + C (7 : ℝ) * X :=
   truncatedStaircaseRookPolynomial_one_row 7
 
 /-- The two-row truncated staircase with row lengths seven and six has rook
 polynomial `1 + 13X + 21X^2`. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_seven_two :
+theorem truncatedStaircaseRookPolynomial_seven_two :
     truncatedStaircaseRookPolynomial 7 2 =
       1 + C (13 : ℝ) * X + C (21 : ℝ) * X ^ 2 := by
   rw [truncatedStaircaseRookPolynomial_two_rows]

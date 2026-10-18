@@ -375,7 +375,6 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
     P.prefixEmbedding hk i = ⟨i, lt_of_lt_of_le i.isLt hk⟩ :=
   rfl
 
-@[simp]
 theorem prefixEmbedding_succ_apply {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1)) (i : Fin m) :
     P.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by

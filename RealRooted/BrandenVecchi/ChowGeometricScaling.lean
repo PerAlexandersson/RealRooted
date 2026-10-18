@@ -122,7 +122,6 @@ theorem chowPolynomial_geometricScale
   simp only [map_mul]
   ring
 
-@[simp]
 theorem chowDerangement_geometricScale_zero_rank
     (c : R) (A : LowerTriangularMatrix R) :
     chowDerangement (LowerTriangularMatrix.geometricScale c A) 0 =

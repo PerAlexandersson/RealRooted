@@ -295,18 +295,18 @@ theorem coeff_narayanaTransform (m : ℕ) (p : ℝ[X]) (j : ℕ) :
       p.sum fun k a => a * (narayanaPolynomial m k).coeff j :=
   coeff_basisTransform (narayanaPolynomial m) p j
 
-@[simp] theorem coeff_narayanaTransform_monomial (m n j : ℕ) (a : ℝ) :
+theorem coeff_narayanaTransform_monomial (m n j : ℕ) (a : ℝ) :
     (narayanaTransform m (Polynomial.monomial n a)).coeff j =
       a * (narayanaPolynomial m n).coeff j := by
   simp [narayanaTransform_monomial]
 
-@[simp] theorem coeff_narayanaTransform_monomial_of_le
+theorem coeff_narayanaTransform_monomial_of_le
     {m n j : ℕ} (hj : j ≤ n) (a : ℝ) :
     (narayanaTransform m (Polynomial.monomial n a)).coeff j =
       a * narayanaTransformCoeff m n j := by
   simp [hj]
 
-@[simp] theorem coeff_narayanaTransform_monomial_of_lt
+theorem coeff_narayanaTransform_monomial_of_lt
     {m n j : ℕ} (hj : n < j) (a : ℝ) :
     (narayanaTransform m (Polynomial.monomial n a)).coeff j = 0 := by
   simp [hj]

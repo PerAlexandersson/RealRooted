@@ -208,7 +208,6 @@ theorem coeff_smirnovSubstitutionEndingSeries {m : ℕ} (t : A)
           (smirnovSubstitutionEndingFixed t weight k i) := by
   simp [smirnovSubstitutionEndingSeries]
 
-@[simp]
 theorem coeff_smirnovSubstitutionEndingSeries_zero {m : ℕ} (t : A)
     (weight : Fin m → PowerSeries A) (i : Fin m) :
     PowerSeries.coeff 0

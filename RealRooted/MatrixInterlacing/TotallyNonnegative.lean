@@ -29,7 +29,7 @@ def constantPolynomialMatrix {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℝ) :
     (constantPolynomialMatrix A).length = m := by
   simp [constantPolynomialMatrix]
 
-@[simp] lemma get_constantPolynomialMatrix {m n : ℕ}
+lemma get_constantPolynomialMatrix {m n : ℕ}
     (A : Matrix (Fin m) (Fin n) ℝ) (i : Fin m) :
     (constantPolynomialMatrix A).get ⟨i, by simp⟩ =
       List.ofFn (fun j : Fin n => C (A i j)) := by

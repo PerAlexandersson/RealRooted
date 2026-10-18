@@ -140,7 +140,7 @@ def hermiteGaussianFunctional : ℝ[X] →ₗ[ℝ] ℝ where
   rfl
 
 /-- The total mass of the unnormalized standard Gaussian is `√(2π)`. -/
-@[simp] theorem hermiteGaussianFunctional_one :
+theorem hermiteGaussianFunctional_one :
     hermiteGaussianFunctional 1 = Real.sqrt (2 * Real.pi) := by
   rw [hermiteGaussianFunctional_apply]
   simp only [hermiteGaussianIntegrand, eval_one, one_mul,
@@ -159,7 +159,7 @@ def hermiteGaussianFunctional : ℝ[X] →ₗ[ℝ] ℝ where
 
 /-- Positive-degree real Hermite polynomials vanish under the Gaussian
 functional. -/
-@[simp] theorem hermiteGaussianFunctional_hermiteReal {n : ℕ} (hn : n ≠ 0) :
+theorem hermiteGaussianFunctional_hermiteReal {n : ℕ} (hn : n ≠ 0) :
     hermiteGaussianFunctional (hermiteReal n) = 0 :=
   integral_hermiteReal_mul_gaussian_eq_zero hn
 
@@ -204,7 +204,7 @@ theorem hermiteGaussianPairing_eq_smul_favardPairing :
   simpa [hermiteGaussianPairing, SatisfiesFavardRecurrence.pairing_apply,
     smul_eq_mul] using hfunctional
 
-@[simp] theorem hermiteGaussianPairing_apply_eq_favardPairing
+theorem hermiteGaussianPairing_apply_eq_favardPairing
     (p q : ℝ[X]) :
     hermiteGaussianPairing p q =
       Real.sqrt (2 * Real.pi) *

@@ -134,7 +134,7 @@ abbrev choiceMatrix (q : ℕ) (choices : List (ℕ × Bool)) : List (List ℝ[X]
     (choiceRows choices).length = choices.length := by
   simp [choiceRows]
 
-@[simp] lemma length_choiceMatrix (q : ℕ) (choices : List (ℕ × Bool)) :
+lemma length_choiceMatrix (q : ℕ) (choices : List (ℕ × Bool)) :
     (choiceMatrix q choices).length = choices.length := by
   simp [choiceMatrix]
 

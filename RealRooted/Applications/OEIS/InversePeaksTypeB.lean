@@ -32,7 +32,6 @@ theorem scaledInversePeakGamma_coeff (m k : ℕ) :
       (inversePeakEulerian m).coeff k * 4 ^ k :=
   Polynomial.comp_C_mul_X_coeff
 
-@[simp]
 theorem scaledInversePeakGamma_coeff_zero (m : ℕ) :
     (scaledInversePeakGamma m).coeff 0 = 1 := by
   rw [scaledInversePeakGamma_coeff, inversePeakEulerian_coeff_zero]

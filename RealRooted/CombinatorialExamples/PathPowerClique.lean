@@ -46,7 +46,6 @@ theorem hasNonnegCoeffs_pathPowerCliquePolynomial (k N : ℕ) :
   positivity
 
 /-- The constant coefficient of every path-power polynomial is one. -/
-@[simp]
 theorem pathPowerCliquePolynomial_coeff_zero (k N : ℕ) :
     (pathPowerCliquePolynomial k N).coeff 0 = 1 := by
   simp

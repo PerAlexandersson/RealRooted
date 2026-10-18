@@ -39,7 +39,6 @@ theorem constantCoeff_positivePartSeries
     coeff_positivePartSeries]
   simp
 
-@[simp]
 theorem coeff_positivePartSeries_of_pos
     {R : Type*} [Semiring R] (a : ℕ → R)
     {n : ℕ} (hn : 0 < n) :

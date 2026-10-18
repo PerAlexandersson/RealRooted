@@ -75,7 +75,7 @@ theorem singularUpperShift_ne_zero : singularUpperShift ≠ 0 := by
   rw [singularUpperShift, upperBidiagonalFin_charpoly]
   norm_num
 
-@[simp] theorem singularUpperShift_rootMultiplicity_zero :
+theorem singularUpperShift_rootMultiplicity_zero :
     singularUpperShift.charpoly.rootMultiplicity 0 = 2 := by
   rw [singularUpperShift_charpoly]
   simpa using (Polynomial.rootMultiplicity_X_sub_C_pow (R := ℝ) 0 2)
@@ -132,12 +132,12 @@ theorem reducibleIdentity_isTotallyNonneg :
   Matrix.isTotallyNonneg_upperBidiagonalFin 2 _ _
     (fun _ => zero_le_one) (fun _ => le_rfl)
 
-@[simp] theorem reducibleIdentity_charpoly :
+theorem reducibleIdentity_charpoly :
     reducibleIdentity.charpoly = (X - C 1) ^ 2 := by
   rw [reducibleIdentity, upperBidiagonalFin_charpoly]
   norm_num
 
-@[simp] theorem reducibleIdentity_trailing_charpoly :
+theorem reducibleIdentity_trailing_charpoly :
     (reducibleIdentity.submatrix Fin.succ Fin.succ).charpoly = X - C 1 := by
   rw [charpoly_fin_one]
   norm_num [reducibleIdentity, Matrix.upperBidiagonalFin_apply]
@@ -173,7 +173,7 @@ theorem repeatedUpperJordan_offDiagonal :
   rw [repeatedUpperJordan, upperBidiagonalFin_charpoly]
   norm_num
 
-@[simp] theorem repeatedUpperJordan_rootMultiplicity_one :
+theorem repeatedUpperJordan_rootMultiplicity_one :
     repeatedUpperJordan.charpoly.rootMultiplicity 1 = 2 := by
   rw [repeatedUpperJordan_charpoly]
   exact Polynomial.rootMultiplicity_X_sub_C_pow 1 2

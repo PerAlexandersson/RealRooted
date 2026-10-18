@@ -67,7 +67,6 @@ theorem hurwitz_apply_eq_zero_of_two_mul_lt (c : ℕ → R) {i j : ℕ}
   simp [hurwitz, show ¬ i ≤ 2 * j by lia]
 
 /-- The two-row/one-column self-similarity iterated by an arbitrary offset. -/
-@[simp]
 theorem hurwitz_add_two_mul_add (c : ℕ → R) (i j k : ℕ) :
     hurwitz c (i + 2 * k) (j + k) = hurwitz c i j := by
   simp only [hurwitz_apply]
@@ -80,7 +79,6 @@ theorem hurwitz_add_two_mul_add (c : ℕ → R) (i j k : ℕ) :
 
 /-- Deleting the first two rows and first column recovers the same infinite
 Hurwitz matrix. -/
-@[simp]
 theorem hurwitz_add_two_add_one (c : ℕ → R) (i j : ℕ) :
     hurwitz c (i + 2) (j + 1) = hurwitz c i j := by
   simpa using hurwitz_add_two_mul_add c i j 1

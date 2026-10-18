@@ -150,7 +150,7 @@ theorem StrictInterl.sum_left_of_common_left_signed
   · rcases List.exists_mem_of_ne_nil l hne with ⟨p, hp⟩
     exact ⟨(1, p), by simp [hp]⟩
 
-@[simp] lemma sum_filter_ne_zero (l : List ℝ[X]) :
+lemma sum_filter_ne_zero (l : List ℝ[X]) :
     (l.filter (· ≠ 0)).sum = l.sum := by
   induction l with
   | nil =>

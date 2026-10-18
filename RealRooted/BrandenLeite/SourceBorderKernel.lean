@@ -368,7 +368,6 @@ theorem sourceBorderReducedChain_zero
   simp [Matrix.strictLowerPart]
 
 /-- Exact first positive row of the literal source-border chain. -/
-@[simp]
 theorem chainPolynomial_sourceBorder_one
     {R : Type*} [CommSemiring R] {N : ℕ} (δ : R)
     (G H : Matrix (Fin (N + 1)) (Fin (N + 1)) R) :

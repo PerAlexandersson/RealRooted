@@ -109,19 +109,19 @@ theorem terminalPolynomial_cons (f : ℝ[X]) (fs : List ℝ[X]) :
   rw [replicate_one_zipWith_sum]
   ring
 
-@[simp] lemma length_binomialRows (ts : List ℕ) :
+lemma length_binomialRows (ts : List ℕ) :
     (binomialRows ts).length = ts.length := by
   simp [binomialRows]
 
-@[simp] lemma length_binomialMatrix (q : ℕ) (ts : List ℕ) :
+lemma length_binomialMatrix (q : ℕ) (ts : List ℕ) :
     (binomialMatrix q ts).length = ts.length := by
   simp [binomialMatrix]
 
-@[simp] lemma length_terminalRows :
+lemma length_terminalRows :
     terminalRows.length = 1 := by
   simp [terminalRows]
 
-@[simp] lemma length_terminalMatrix (q : ℕ) :
+lemma length_terminalMatrix (q : ℕ) :
     (terminalMatrix q).length = 1 := by
   simp [terminalMatrix]
 
@@ -179,7 +179,7 @@ lemma terminalRows_rowData :
   simp [terminalPolynomial, terminalMatrix, terminalRows, matrix,
     thresholdMatrix, matPolyAction]
 
-@[simp] lemma sum_matPolyAction_terminalMatrix (q : ℕ) (fs : List ℝ[X]) :
+lemma sum_matPolyAction_terminalMatrix (q : ℕ) (fs : List ℝ[X]) :
     (matPolyAction (terminalMatrix q) fs).sum = terminalPolynomial q fs := by
   simp
 

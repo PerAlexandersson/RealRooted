@@ -52,7 +52,7 @@ def squarecaseRookModelOfFiniteSkewBoard
 
 /-- Finite-skew-board squarecase models have constant coefficient one for every
 snake-word polynomial. -/
-@[simp] theorem squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_coeff_zero
+theorem squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_coeff_zero
     (boardOfSnake : SnakeWord → FiniteSkewBoard) (w : SnakeWord) :
     ((squarecaseRookModelOfFiniteSkewBoard boardOfSnake).snakePolynomial w).coeff 0 = 1 :=
   FiniteSkewBoard.rookPolynomial_coeff_zero _

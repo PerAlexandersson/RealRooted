@@ -121,7 +121,6 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
     a.prefixEmbedding hk i = ⟨i.val, lt_of_lt_of_le i.isLt hk⟩ :=
   rfl
 
-@[simp]
 theorem prefixEmbedding_succ_apply {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
     a.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
   apply Fin.ext

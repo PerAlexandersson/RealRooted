@@ -133,11 +133,11 @@ theorem last_not_mem_normal {h : ℕ} (H : DecoExceptionalHistory h) :
   have := (mem_bounds H hh).2
   lia
 
-@[simp] theorem last_mem_exceptional {h : ℕ} (H : DecoExceptionalHistory h) :
+theorem last_mem_exceptional {h : ℕ} (H : DecoExceptionalHistory h) :
     h + 1 ∈ (exceptional H).starts := by
   simp
 
-@[simp] theorem erase_last_exceptional {h : ℕ} (H : DecoExceptionalHistory h) :
+theorem erase_last_exceptional {h : ℕ} (H : DecoExceptionalHistory h) :
     (exceptional H).starts.erase (h + 1) = H.starts := by
   rw [starts_exceptional, Finset.erase_insert]
   intro hmem

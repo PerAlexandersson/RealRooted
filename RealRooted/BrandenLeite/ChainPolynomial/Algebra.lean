@@ -67,12 +67,12 @@ def subdivisionOperator {R : Type*} [Semiring R]
     subdivisionOperator A p = basisTransform (chainPolynomial A) p :=
   rfl
 
-@[simp] theorem subdivisionOperator_X_pow {R : Type*} [Semiring R]
+theorem subdivisionOperator_X_pow {R : Type*} [Semiring R]
     (A : LowerTriangularMatrix R) (n : ℕ) :
     subdivisionOperator A (X ^ n) = chainPolynomial A n := by
   simp [subdivisionOperator]
 
-@[simp] theorem subdivisionOperator_C_mul_X_pow
+theorem subdivisionOperator_C_mul_X_pow
     {R : Type*} [Semiring R] (A : LowerTriangularMatrix R) (a : R) (n : ℕ) :
     subdivisionOperator A (C a * X ^ n) = C a * chainPolynomial A n := by
   simp [subdivisionOperator, basisTransform_C_mul_X_pow]

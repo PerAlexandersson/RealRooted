@@ -1000,7 +1000,6 @@ theorem coe_diagonalProjectionDegreeBoxGeneral
     (diagonalProjectionDegreeBoxGeneral κ p : MvPolynomial σ ℂ) =
       MvPolynomial.rename Sigma.fst p.1 := rfl
 
-@[simp]
 theorem diagonalProjectionDegreeBoxGeneral_basis
     {σ : Type*} [Fintype σ] (κ : σ → ℕ)
     (m : {m : PolarizedSource κ →₀ ℕ // ∀ i, m i ≤ 1}) :

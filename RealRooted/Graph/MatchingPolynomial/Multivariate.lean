@@ -98,7 +98,7 @@ theorem commonPhaseRestriction_weightedMultivariateMatchingPolynomialByEdges
 
 /-- Setting every edge variable to `X` recovers the ordinary univariate
 matching polynomial. -/
-@[simp] theorem commonPhaseRestriction_one_multivariateMatchingPolynomialByEdges
+theorem commonPhaseRestriction_one_multivariateMatchingPolynomialByEdges
     {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) :
     commonPhaseRestriction (fun _ => 1)
@@ -109,7 +109,7 @@ matching polynomial. -/
 
 /-- Setting the phase direction to one recovers the existing weighted
 univariate edge-matching polynomial. -/
-@[simp] theorem
+theorem
     commonPhaseRestriction_one_weightedMultivariateMatchingPolynomialByEdges
     {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ) :

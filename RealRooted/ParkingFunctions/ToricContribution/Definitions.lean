@@ -238,7 +238,6 @@ def intervalWeight : ℝ[X] :=
 abbrev insertionOperator (a b : ℝ) (f : ℝ[X]) : ℝ[X] :=
   darbouxOperator a b f
 
-@[simp]
 theorem insertionOperator_eval_zero (a b : ℝ) (f : ℝ[X]) :
     (insertionOperator a b f).eval 0 = a * f.eval 0 := by
   simpa only [insertionOperator] using darbouxOperator_eval_zero a b f

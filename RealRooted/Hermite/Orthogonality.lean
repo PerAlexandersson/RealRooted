@@ -27,13 +27,13 @@ noncomputable section
 namespace RealRooted
 
 /-- For the Hermite subdiagonal `β n = n`, the Favard squared norm is `n!`. -/
-@[simp] theorem hermiteReal_favardNormSq_eq_factorial (n : ℕ) :
+theorem hermiteReal_favardNormSq_eq_factorial (n : ℕ) :
     favardNormSq (fun k : ℕ ↦ (k : ℝ)) n = (n.factorial : ℝ) :=
   favardNormSq_natCast n
 
 /-- The normalized Hermite Favard functional extracts the constant Hermite
 coordinate. -/
-@[simp] theorem hermiteReal_favardFunctional_apply (n : ℕ) :
+theorem hermiteReal_favardFunctional_apply (n : ℕ) :
     hermiteReal_satisfiesFavardRecurrence.functional (hermiteReal n) =
       if n = 0 then 1 else 0 :=
   hermiteReal_satisfiesFavardRecurrence.functional_apply_basis n
@@ -45,7 +45,7 @@ theorem hermiteReal_favardPairing_iIsOrtho :
 
 /-- The normalized Favard pairing of two real Hermite polynomials is diagonal,
 with diagonal entry `n!`. -/
-@[simp] theorem hermiteReal_favardPairing_apply (i j : ℕ) :
+theorem hermiteReal_favardPairing_apply (i j : ℕ) :
     hermiteReal_satisfiesFavardRecurrence.pairing
         (hermiteReal i) (hermiteReal j) =
       if i = j then (i.factorial : ℝ) else 0 := by

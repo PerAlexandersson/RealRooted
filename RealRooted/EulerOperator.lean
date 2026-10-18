@@ -73,7 +73,7 @@ theorem theta_C_mul (a : ℝ) (p : ℝ[X]) : theta (C a * p) = C a * theta p := 
 
 /-- A linear combination of the identity and Euler operators is diagonal in
 the monomial basis. -/
-@[simp] theorem coeff_C_mul_sub_C_mul_theta (a b : ℝ) (p : ℝ[X]) (n : ℕ) :
+theorem coeff_C_mul_sub_C_mul_theta (a b : ℝ) (p : ℝ[X]) (n : ℕ) :
     (C a * p - C b * theta p).coeff n =
       (a - b * (n : ℝ)) * p.coeff n := by
   simp [coeff_theta]
@@ -142,7 +142,7 @@ theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
   ring
 
 /-- The composite `(N - theta) (theta + 1)` is diagonal in the monomial basis. -/
-@[simp] theorem coeff_polarTheta_thetaPlusOne (N : ℕ) (p : ℝ[X]) (n : ℕ) :
+theorem coeff_polarTheta_thetaPlusOne (N : ℕ) (p : ℝ[X]) (n : ℕ) :
     (polarTheta N (thetaPlusOne p)).coeff n =
       ((N : ℝ) - (n : ℝ)) * ((n : ℝ) + 1) * p.coeff n := by
   rw [coeff_polarTheta, coeff_thetaPlusOne]
