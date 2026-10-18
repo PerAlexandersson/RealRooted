@@ -830,8 +830,8 @@ macro_rules
         degree_upper := $hdeg_hi:term,
         no_common_roots := $hno:term) =>
       `(tactic|
-        have _rr_lw_unit_coeff_nonneg : 0 ≤ (1 : ℝ) := $hc
-        ; rr_lw_positive_X using
+        have _rr_lw_unit_coeff_nonneg : 0 ≤ (1 : ℝ) := $hc;
+        rr_lw_positive_X using
           interlacer := $hgf,
           interlacer_pos_lc := $hg_pos,
           roots_nonpos := $hf_roots,

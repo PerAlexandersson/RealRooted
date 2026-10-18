@@ -81,7 +81,7 @@ private lemma mem_S {l : List DyckStep} {a b : ℕ} :
           false_and, exists_const, count_nil, Nat.right_eq_add, Nat.add_eq_zero_iff,
           one_ne_zero, and_false, and_self, iff_false]
         split_ifs with h
-        · simp only [Finset.mem_image, reduceCtorEq, 
+        · simp only [Finset.mem_image, reduceCtorEq,
             false_or]
           exact fun ⟨_, _, hfalse⟩ => hfalse
         · simp only [Finset.notMem_empty, false_or]
@@ -111,7 +111,7 @@ private lemma mem_S {l : List DyckStep} {a b : ℕ} :
           simp only [S, add_le_add_iff_right, Finset.mem_union, Finset.mem_image,
             cons.injEq, reduceCtorEq, false_and, and_false, exists_const,
             false_or, count_cons_self, Nat.add_right_cancel_iff, ne_eq,
-            not_false_eq_true, count_cons_of_ne, good_cons, 
+            not_false_eq_true, count_cons_of_ne, good_cons,
 ]
           split_ifs <;> grind
     | D =>
@@ -131,7 +131,7 @@ private lemma mem_S {l : List DyckStep} {a b : ℕ} :
       | succ a =>
         cases b with
         | zero =>
-          simp only [S, 
+          simp only [S,
             ne_eq, reduceCtorEq,
             Finset.notMem_empty, not_false_eq_true, count_cons_of_ne, count_cons_self,
             good_cons]

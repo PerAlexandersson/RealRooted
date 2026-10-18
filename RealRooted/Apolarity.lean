@@ -707,7 +707,7 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
           simp_all [ Finset.sum_multiset_count ];
       · intro z hz; specialize h_reciprocal_in_S z hz; aesop;
     convert h_reciprocal_in_S_ζ using 1;
-    rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ] ; ring_nf ; aesop;
+    rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ]; ring_nf; aesop;
   by_cases h : w - ζ = 0
   · simp_all only [ne_eq, Metric.mem_closedBall, not_le, div_eq_mul_inv,
       inv_zero, mul_zero, one_mul, Complex.mul_re, Set.mem_ofPred_eq, map_inv₀,
@@ -744,7 +744,7 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
   · unfold polarDeriv binomialLift polarShift;
     simp only [Polynomial.coeff_C_mul]
     simp [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
-      mul_comm ] ;
+      mul_comm ];
     rcases n <;> simp_all [ Polynomial.coeff_monomial ];
     ring;
   · simp only [Polynomial.coeff_C_mul]
@@ -881,7 +881,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     intro m hm;
     rcases m with ( _ | m ) <;>
       simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
-        sub_mul ] ;
+        sub_mul ];
     cases hm.eq_or_lt <;> simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
     ring;
   · refine Polynomial.le_natDegree_of_ne_zero ?_
@@ -904,12 +904,12 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
         rw [hA] at h_eq
         exact h_eq
       rcases n with ( _ | _ | n ) <;> simp_all [ Multiset.esymm ];
-      · simp_all [ Multiset.powersetCard_one, mul_sub ] ; ring_nf;
-        rw [ Polynomial.leadingCoeff, hA ] ; ring;
-      · simp_all [ Multiset.powersetCard_one, Polynomial.leadingCoeff ] ; ring;
+      · simp_all [ Multiset.powersetCard_one, mul_sub ]; ring_nf;
+        rw [ Polynomial.leadingCoeff, hA ]; ring;
+      · simp_all [ Multiset.powersetCard_one, Polynomial.leadingCoeff ]; ring;
     simp_all only [ ne_eq ];
     refine mul_ne_zero ?_ ?_
-    · rw [ ← hA, Polynomial.coeff_natDegree ] ; aesop;
+    · rw [ ← hA, Polynomial.coeff_natDegree ]; aesop;
     · intro h;
       rw [ sub_eq_zero ] at h
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ Metric.closedBall c r := by
@@ -921,8 +921,8 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
       rw [ ← h, mul_div_assoc ] at h_avg;
       rw [ show A.roots.card = n by
         rw [ ← hA, Polynomial.natDegree_eq_of_degree_eq_some
-          ( Polynomial.degree_eq_natDegree <| by aesop ) ] ;
-        exact Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits _ ] at h_avg ;
+          ( Polynomial.degree_eq_natDegree <| by aesop ) ];
+        exact Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits _ ] at h_avg;
       simp_all [ mul_div_cancel₀, ne_of_gt ( zero_lt_one.trans_le hn ) ];
       linarith
 
@@ -941,7 +941,7 @@ theorem apolarPairing_eq_sum_binomialLift (n : Nat) (f g : ℂ[X]) :
     simp [ binomialLift ];
     simp [ Polynomial.coeff_monomial ];
   exact Finset.sum_congr rfl fun x hx => by
-    rw [ h_coeff x hx, Nat.choose_symm ( Finset.mem_range_succ_iff.mp hx ) ] ; ring;
+    rw [ h_coeff x hx, Nat.choose_symm ( Finset.mem_range_succ_iff.mp hx ) ]; ring;
 
 /-
 Apolarity is preserved by polar-shifting one lift and deflating the other by
@@ -959,23 +959,23 @@ theorem apolarPairing_deflation {n : Nat} (hn : 1 ≤ n) {ζ : ℂ} {f g g' : �
     coeff_sub, coeff_mul_C, mul_left_comm, Finset.sum_sub_distrib,
     Finset.sum_range_succ', pow_zero, tsub_zero, one_mul, coeff_polarShift,
     zero_add]
-  rw [ add_comm 1 m, Finset.sum_range_succ ] ;
+  rw [ add_comm 1 m, Finset.sum_range_succ ];
   norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_add, add_mul,
-    Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
+    Finset.sum_add_distrib, Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ];
   ring_nf;
-  rw [ add_comm 1 m, Finset.sum_range_succ' ] ;
-  norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_comm, Finset.sum_range_succ ] ;
+  rw [ add_comm 1 m, Finset.sum_range_succ' ];
+  norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, mul_comm, Finset.sum_range_succ ];
   ring_nf;
-  simp [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ] ;
+  simp [ add_comm 1, add_comm 2, mul_assoc, mul_left_comm ];
   ring_nf;
   rw [ show ( binomialLift m g' ).coeff ( 1 + m ) = 0 from _ ];
   · ring_nf;
     rw [ Finset.sum_congr rfl fun x hx => by
         rw [ show m - x = m - ( 1 + x ) + 1 by
-          rw [ tsub_add_eq_add_tsub ( by linarith [ Finset.mem_range.mp hx ] ) ] ;
-          simp [ add_comm ] ] ] ;
+          rw [ tsub_add_eq_add_tsub ( by linarith [ Finset.mem_range.mp hx ] ) ];
+          simp [ add_comm ] ] ];
       norm_num [ Polynomial.coeff_X, mul_assoc, mul_left_comm, Finset.sum_add_distrib,
-        Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ] ;
+        Finset.mul_sum _ _ _, Finset.sum_mul _ _ _, pow_succ' ];
       ring;
   · rw [ add_comm, Polynomial.coeff_eq_zero_of_natDegree_lt ];
     exact Nat.lt_succ_of_le ( natDegree_binomialLift_le _ _ )
@@ -1019,11 +1019,11 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
         monomial_zero_right, natDegree_zero, one_mul, monomial_zero_left,
         natDegree_C, IsRoot.def, eval_zero, Metric.mem_closedBall,
         forall_const, not_forall, not_le]
-      rcases exists_nat_gt r with ⟨ n, hn ⟩ ;
+      rcases exists_nat_gt r with ⟨ n, hn ⟩;
       exact ⟨ c + n, by simpa [ abs_of_nonneg hr ] using hn ⟩;
   · obtain ⟨ζ, hζ⟩ : ∃ ζ : ℂ, (binomialLift n g).IsRoot ζ :=
       Complex.exists_root ( show Polynomial.degree ( binomialLift n g ) > 0 from
-        Polynomial.natDegree_pos_iff_degree_pos.mp ( by rw [ hg ] ; positivity ) )
+        Polynomial.natDegree_pos_iff_degree_pos.mp ( by rw [ hg ]; positivity ) )
     by_cases hζ' : ζ ∈ Metric.closedBall c r;
     · exact ⟨ ζ, hζ, hζ' ⟩;
     · -- Let `f' := polarShift ζ f`; then `polarDeriv n ζ A` equals
@@ -1033,7 +1033,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
         have hf' : (polarDeriv n ζ (binomialLift n f)).natDegree = n - 1 :=
           polarDeriv_natDegree (Nat.pos_of_ne_zero hn) hf hroots hζ'
         rw [ polarDeriv_binomialLift ( Nat.pos_of_ne_zero hn ) ζ f ] at hf';
-        rwa [ Polynomial.natDegree_C_mul ] at hf' ; aesop
+        rwa [ Polynomial.natDegree_C_mul ] at hf'; aesop
       have hf'_roots : (binomialLift (n - 1) f').RootsIn (Metric.closedBall c r) := by
         have hderiv_roots :=
           polarDeriv_rootsIn hr ( Nat.pos_of_ne_zero hn ) hf hroots hζ'
@@ -1052,7 +1052,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
           Polynomial.dvd_iff_isRoot.mpr hζ
         have hg'_deg : g'.natDegree = n - 1 := by
           rw [ hg', Polynomial.natDegree_mul' ] at hg <;> aesop;
-        obtain ⟨ g'', hg'' ⟩ := exists_binomialLift_eq g' ( by linarith ) ; use g''; aesop;
+        obtain ⟨ g'', hg'' ⟩ := exists_binomialLift_eq g' ( by linarith ); use g''; aesop;
       -- Apolarity: `apolarPairing (n-1) f' g' = apolarPairing n f g = 0`
       -- (`apolarPairing_deflation hn hdefl`, then `hap`); so `AreApolar (n-1) f' g'`.
       have hap' : AreApolar (n - 1) f' g' := by

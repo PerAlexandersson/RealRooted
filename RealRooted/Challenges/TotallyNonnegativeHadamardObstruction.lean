@@ -109,7 +109,7 @@ theorem hadamardCounterexampleRight_isTotallyNonneg :
   · obtain ⟨r0, r1, r2⟩ := strictMono_fin_three_eq hrows
     obtain ⟨c0, c1, c2⟩ := strictMono_fin_three_eq hcols
     erw [Matrix.det_fin_three]
-    simp [r0, r1, r2, c0, c1, c2, hadamardCounterexampleRight] ; norm_num
+    simp [r0, r1, r2, c0, c1, c2, hadamardCounterexampleRight]; norm_num
 
 /-- The Hadamard product of the two witness matrices has determinant `-2`. -/
 theorem hadamard_det_eq :

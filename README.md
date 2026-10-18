@@ -155,7 +155,16 @@ python3 scripts/check_root_imports.py --fix        # register a new module (impo
 python3 scripts/check_import_architecture.py       # import graph, layers, budgets
 python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
+lake exe lint-style                                # Mathlib text style: whitespace, `;`, unicode
+lake exe runLinter RealRooted                      # Mathlib environment linters (after `lake build`)
 ```
+
+The last two are Mathlib's own lint checks, and CI runs both. `lint-style --fix` repairs
+whitespace and semicolons. `runLinter` runs the Batteries and Mathlib environment linters
+(`docBlame`, `simpNF`, `unusedArguments`, `defsWithUnderscore`, …) on every declaration.
+Existing findings are listed in the baseline `scripts/nolints.json`. New code must not add
+entries; when you fix a listed declaration, remove its entry (`lake exe runLinter --update
+RealRooted` rewrites the file; check that the diff only removes lines).
 
 The import guards check the broad, production, and regression umbrellas
 separately, and reject production closures that contain tactic examples. The

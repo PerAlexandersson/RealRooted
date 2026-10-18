@@ -94,7 +94,7 @@ private theorem tendstoLocallyUniformly_finset_sum
         ((g a) + fun x => ∑ b ∈ s, g b x) l
       exact ha.add hs
 
-/-- Applying `Λ̄_β` to approximating polynomials commutes with the explicit locally uniform
+/-- Applying `Λbar_β` to approximating polynomials commutes with the explicit locally uniform
 series limit.  This is the coefficient-extraction step in Borcea--Brändén,
 arXiv:0809.0401, Theorem 5.1. -/
 theorem tendstoLocallyUniformly_eval_lambdaBar

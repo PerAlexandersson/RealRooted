@@ -170,7 +170,7 @@ private theorem xShiftedSplitSums_getD (fs : List ℝ[X]) (k : ℕ) (hk : k < fs
   simp [xShiftedSplitSums]
 
 /-- Window lemma for four pairwise interlacing polynomials (the engine of Hoster--Stump,
-Lemma 2.3(4),(5)): `f₁ + f₂ + f₃ ⪯ f₂ + f₃ + f₄`.  The relation `f₂ ⪯ f₃` is needed only
+Lemma 2.3(4),(5)): `f₁ + f₂ + f₃ ≼ f₂ + f₃ + f₄`.  The relation `f₂ ≼ f₃` is needed only
 through the splitting hypothesis on `f₂ + f₃`. -/
 theorem Interl.window_three {f₁ f₂ f₃ f₄ : ℝ[X]}
     (h12 : Interl f₁ f₂) (h13 : Interl f₁ f₃) (h14 : Interl f₁ f₄)

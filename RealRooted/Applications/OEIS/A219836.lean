@@ -81,7 +81,7 @@ private lemma next_natDegree_le (n : ℕ)
     (hqPos : 1 ≤ (row n).natDegree) :
     (row (n + 2)).natDegree ≤ n + 2 := by
   rw [row]
-  compute_degree! ; lia
+  compute_degree!; lia
 
 private theorem paired_top_coefficients : ∀ m : ℕ,
     ((row (2 * m + 1)).natDegree = 2 * m + 1 ∧

@@ -78,7 +78,7 @@ private theorem exists_coordinateFallingFactorialTransform_stableOrZero
         push_cast
         ring
 
-/-- The operator `Λ̄_β : z^γ w^α ↦ (β)_α z^γ w^α` preserves
+/-- The operator `Λbar_β : z^γ w^α ↦ (β)_α z^γ w^α` preserves
 upper-half-plane stability, with zero output allowed.  This is the spectator-variable form of
 Borcea--Brändén, arXiv:0809.0401, Lemma 5.2. -/
 theorem lambdaBar_stableOrZero (β : σ →₀ ℕ) {p : MvPolynomial (τ ⊕ σ) ℂ}
@@ -105,7 +105,7 @@ def degreeBoxRestriction (β : σ → ℕ)
     MvPolynomial.degreeOfLE σ ℂ β →ₗ[ℂ] MvPolynomial τ ℂ :=
   T.comp (MvPolynomial.degreeOfLE σ ℂ β).subtype
 
-/-- The finite Jensen truncation `J_β T = Λ̄_β G_T`. -/
+/-- The finite Jensen truncation `J_β T = Λbar_β G_T`. -/
 def jensenTruncation (β : σ →₀ ℕ)
     (T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial τ ℂ) :
     MvPolynomial (τ ⊕ σ) ℂ := by

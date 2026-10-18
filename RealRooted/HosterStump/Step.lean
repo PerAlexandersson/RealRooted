@@ -264,7 +264,7 @@ end Lvl
 /-! ### Lemma 3.8: assembly by Wagner's chain lemma -/
 
 /-- The path `t₀, …, tᵢ, mᵢ, …, mⱼ, bⱼ, …, b_N` of the proof of Lemma 3.8: if consecutive
-entries and the two ends interlace, then `tᵢ ⪯ mⱼ` and `mᵢ ⪯ bⱼ` for `i ≤ j`. -/
+entries and the two ends interlace, then `tᵢ ≼ mⱼ` and `mᵢ ≼ bⱼ` for `i ≤ j`. -/
 private theorem path_col (N : ℕ) (t m b : ℕ → ℝ[X])
     (htne : ∀ k, k < N → t k ≠ 0) (hmne : ∀ k, k ≤ N → m k ≠ 0)
     (hbne : ∀ k, 1 ≤ k → k ≤ N → b k ≠ 0)
@@ -319,7 +319,7 @@ private theorem path_col (N : ℕ) (t m b : ℕ → ℝ[X])
       Nat.add_sub_cancel] at this
 
 /-- The path `t₀, …, tₙ, b₁, …, b_{n+1}` of the proof of Lemma 3.8: if consecutive entries
-(in particular `tₙ ⪯ b₁`) and the two ends interlace, then `tᵢ ⪯ bⱼ` for `i ≤ n`,
+(in particular `tₙ ≼ b₁`) and the two ends interlace, then `tᵢ ≼ bⱼ` for `i ≤ n`,
 `1 ≤ j ≤ n + 1`. -/
 private theorem path_diag (n : ℕ) (t b : ℕ → ℝ[X])
     (htne : ∀ k, k ≤ n → t k ≠ 0) (hbne : ∀ k, 1 ≤ k → k ≤ n + 1 → b k ≠ 0)
@@ -364,7 +364,7 @@ private theorem nn_bot (n : ℕ) (T : Finset ℕ) (k : ℕ) : HasNonnegCoeffs (b
 
 /-- Hoster--Stump, Lemma 3.8: the diagram `D_{n+1}(T)` is an interlacing diagram as soon as
 its three rows interlace, every top entry interlaces the bottom entry below it, and
-`top_n ⪯ bot_1`, together with the nonvanishing and splitting statements. -/
+`top_n ≼ bot_1`, together with the nonvanishing and splitting statements. -/
 theorem IsInterlacingDiagram.of_five {n : ℕ} {T : Finset ℕ}
     (htne : ∀ k, k ≤ n → top (n + 1) T k ≠ 0)
     (hbne : ∀ k, 1 ≤ k → k ≤ n + 1 → bot (n + 1) T k ≠ 0)
