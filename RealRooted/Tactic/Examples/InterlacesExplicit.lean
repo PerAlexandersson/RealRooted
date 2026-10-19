@@ -43,6 +43,12 @@ def A064861 : ℕ → ℝ[X]
 theorem A064861_interlaces (n : ℕ) : Interlaces (A064861 n) (A064861 (n + 1)) := by
   rr_row_interlaces
 
+/-- A cubic with one rational root and an irrational quadratic factor. -/
+example : (1 + 7 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]).Splits := by rr_splits_explicit
+
+/-- A palindromic quartic without rational roots. -/
+example : (1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4 : ℝ[X]).Splits := by rr_splits_explicit
+
 end
 
 end RealRooted.Tactic.InterlacesExplicitExamples

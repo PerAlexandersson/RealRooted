@@ -213,6 +213,7 @@ private def cancelBase (P : Ident) : TacticM Unit := do
       evalTactic (← `(tactic| (
         beta_reduce
         first
+          | (simp [$P:ident]; done)
           | simpa [$P:ident] using RealRooted.hasNonnegCoeffs_one
           | (simp only [$P:ident, ← Polynomial.C_ofNat]
              apply RealRooted.hasNonnegCoeffs_C
