@@ -38,40 +38,51 @@ theorem staircaseSum_sequence_realrooted
   RealRooted.isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     (hFS i) (hM i)
 
+/-- Closes `staircaseSum fs 0 = fs.sum`. -/
 syntax (name := rr_staircaseSum_zero_named)
   "rr_staircaseSum_zero" :
   tactic
 
+/-- Sequence form of `rr_staircaseSum_zero`: closes `∀ i, staircaseSum (FS i) 0 = (FS i).sum`. -/
 syntax (name := rr_staircaseSum_sequence_zero_named)
   "rr_staircaseSum_sequence_zero" :
   tactic
 
+/-- Closes `staircaseSum fs fs.length = X * fs.sum`. -/
 syntax (name := rr_staircaseSum_length_named)
   "rr_staircaseSum_length" :
   tactic
 
+/-- Sequence form of `rr_staircaseSum_length`: closes `∀ i, staircaseSum (FS i) (FS i).length =
+X * (FS i).sum`. -/
 syntax (name := rr_staircaseSum_sequence_length_named)
   "rr_staircaseSum_sequence_length" :
   tactic
 
+/-- Closes `StrictInterl (fs.get ⟨m, _⟩) (staircaseSum fs m)` from
+`interlacing_nonneg : IsInterlacingSeqNonneg fs` and `index_lt : m < fs.length`. -/
 syntax (name := rr_staircaseSum_strict_interl_named)
   "rr_staircaseSum_strict_interl" " using "
     "interlacing_nonneg" ":=" term ","
     "index_lt" ":=" term :
   tactic
 
+/-- Sequence form of `rr_staircaseSum_strict_interl`: the same certificate for every index `i`. -/
 syntax (name := rr_staircaseSum_sequence_strict_interl_named)
   "rr_staircaseSum_sequence_strict_interl" " using "
     "interlacing_nonneg" ":=" term ","
     "index_lt" ":=" term :
   tactic
 
+/-- Closes `staircaseSum fs m ≠ 0 ∧ (staircaseSum fs m).Splits` from
+`interlacing_nonneg : IsInterlacingSeqNonneg fs` and `index_lt : m < fs.length`. -/
 syntax (name := rr_staircaseSum_realrooted_named)
   "rr_staircaseSum_realrooted" " using "
     "interlacing_nonneg" ":=" term ","
     "index_lt" ":=" term :
   tactic
 
+/-- Sequence form of `rr_staircaseSum_realrooted`: the same certificate for every index `i`. -/
 syntax (name := rr_staircaseSum_sequence_realrooted_named)
   "rr_staircaseSum_sequence_realrooted" " using "
     "interlacing_nonneg" ":=" term ","

@@ -6,6 +6,7 @@ open Polynomial Complex
 
 namespace RealRooted
 
+/-- The closed lower half-plane `{z : ℂ | z.im ≤ b}`. -/
 def lowerHalf (b : ℝ) : Set ℂ := {z : ℂ | z.im ≤ b}
 
 @[simp] theorem mem_lowerHalf {b : ℝ} {z : ℂ} : z ∈ lowerHalf b ↔ z.im ≤ b := Iff.rfl
@@ -358,10 +359,12 @@ theorem grace_apolarity_lowerHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
     (binomialLift n g).HasRootIn (lowerHalf b) :=
   grace_aux_lowerHalf n f g hf hg hap hroots
 
+/-- The closed upper half-plane `{z : ℂ | b ≤ z.im}`. -/
 def upperHalf (b : ℝ) : Set ℂ := {z : ℂ | b ≤ z.im}
 
 @[simp] theorem mem_upperHalf {b : ℝ} {z : ℂ} : z ∈ upperHalf b ↔ b ≤ z.im := Iff.rfl
 
+/-- The polynomial `p(-X)`, obtained by composing `p` with `-X`. -/
 noncomputable def negComp (p : ℂ[X]) : ℂ[X] := p.comp (-X)
 
 @[simp] theorem coeff_negComp (p : ℂ[X]) (k : ℕ) :

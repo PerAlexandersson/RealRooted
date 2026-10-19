@@ -288,9 +288,11 @@ pairs whose left component is nonzero. -/
 def filterLeftNonzeroPairs (fs gs : List ℝ[X]) : List (ℝ[X] × ℝ[X]) :=
   (fs.zip gs).filter fun p => p.1 ≠ 0
 
+/-- The left components of `filterLeftNonzeroPairs fs gs`. -/
 def filterLeftNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
   (filterLeftNonzeroPairs fs gs).map Prod.fst
 
+/-- The right components of `filterLeftNonzeroPairs fs gs`. -/
 def filterRightByLeftNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
   (filterLeftNonzeroPairs fs gs).map Prod.snd
 
@@ -402,12 +404,15 @@ lemma zipWith_mul_sum_filterLeftNonzero_eq
       (fun _ _ => by simp_all)
       fs gs
 
+/-- The pairs of `fs.zip gs` whose two components are both nonzero. -/
 def filterProductNonzeroPairs (fs gs : List ℝ[X]) : List (ℝ[X] × ℝ[X]) :=
   (fs.zip gs).filter fun p => p.1 ≠ 0 ∧ p.2 ≠ 0
 
+/-- The left components of `filterProductNonzeroPairs fs gs`. -/
 def filterProductLeftNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
   (filterProductNonzeroPairs fs gs).map Prod.fst
 
+/-- The right components of `filterProductNonzeroPairs fs gs`. -/
 def filterProductRightNonzero (fs gs : List ℝ[X]) : List ℝ[X] :=
   (filterProductNonzeroPairs fs gs).map Prod.snd
 

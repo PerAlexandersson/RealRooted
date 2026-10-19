@@ -19,11 +19,15 @@ namespace RealRooted.Tactic
 /-- The data of a lag recurrence with a feedback term: `α`, `c n` by powers of `n`, and the
 constant first rows. -/
 structure LagFeedbackData where
+  /-- The linear recurrence data of the sequence. -/
   L : LinRecData
+  /-- The positive coefficient `α` of `P (n + p - 1)`. -/
   α : Rat
+  /-- The coefficients of `c n` as a polynomial in `n`, listed by powers of `n`. -/
   c : Array Rat
   /-- the feedback term is `c n (X - r) P n` -/
   r : Rat
+  /-- The positive constant values of the first `p` rows. -/
   base : Array Rat
 
 /-- The lag recurrence with a feedback term of `P`, if any. -/

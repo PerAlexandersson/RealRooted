@@ -13,6 +13,7 @@ namespace A199221Downstream
 
 noncomputable section
 
+/-- The OEIS A199221 polynomial sequence, given by a literal recurrence. -/
 def A199221 : ℕ → ℝ[X]
   | 0 => 1 + 4 * X + 2 * X ^ 2
   | 1 => 2 + 12 * X + 18 * X ^ 2 + 6 * X ^ 3

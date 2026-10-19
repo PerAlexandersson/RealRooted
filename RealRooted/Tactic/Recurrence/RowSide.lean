@@ -51,6 +51,7 @@ def findRowDegree (P : Ident) (k : Nat) : TacticM (Option Nat) := do
 partial def denominators (e : Expr) : Array Expr :=
   go e #[]
 where
+  /-- Accumulates the denominators of `x⁻¹` and `a / x` occurring in `e` into `acc`. -/
   go (e : Expr) (acc : Array Expr) : Array Expr :=
     let acc :=
       if e.isAppOfArity ``Inv.inv 3 then acc.push e.appArg!

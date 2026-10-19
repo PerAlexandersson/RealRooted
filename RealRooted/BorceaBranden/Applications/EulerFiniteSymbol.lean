@@ -8,9 +8,13 @@ noncomputable section
 
 namespace RealRooted.BorceaBranden
 
+/-- The Euler symbol coefficient `eulerAlpha k = k + 1`. -/
 def eulerAlpha (k : ℕ) : ℝ := k + 1
+/-- The Euler symbol coefficient `eulerBeta d k = d + 1 - k`. -/
 def eulerBeta (d k : ℕ) : ℝ := d + 1 - k
 
+/-- The shifted Euler symbol coefficient `c + k`, where `c` replaces the constant `1` of
+`eulerAlpha`. -/
 def eulerAlphaWithConstant (c : ℝ) (k : ℕ) : ℝ := c + k
 
 theorem eulerAffineBidiagonalSymbolWithConstant_eq

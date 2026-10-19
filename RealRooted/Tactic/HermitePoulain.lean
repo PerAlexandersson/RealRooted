@@ -51,12 +51,16 @@ theorem sequence_splits_of_nonzero {F G : Nat → ℝ[X]}
 
 end HermitePoulain
 
+/-- Closes `applyAsDifferentialOperator f g = 0 ∨ (applyAsDifferentialOperator f g).Splits`
+where `operator := f` and `input := g` are real-rooted polynomials (nonzero and splitting). -/
 syntax (name := rr_hermite_poulain_named)
   "rr_hermite_poulain" " using "
     "operator" ":=" term ","
     "input" ":=" term :
   tactic
 
+/-- Closes `(applyAsDifferentialOperator f g).Splits` where `operator := f` and `input := g` are
+real-rooted polynomials, given also `nonzero : applyAsDifferentialOperator f g ≠ 0`. -/
 syntax (name := rr_hermite_poulain_splits_named)
   "rr_hermite_poulain_splits" " using "
     "operator" ":=" term ","
@@ -64,12 +68,14 @@ syntax (name := rr_hermite_poulain_splits_named)
     "nonzero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_hermite_poulain`: the same certificate for every index `n`. -/
 syntax (name := rr_hermite_poulain_sequence_named)
   "rr_hermite_poulain_sequence" " using "
     "operator" ":=" term ","
     "input" ":=" term :
   tactic
 
+/-- Sequence form of `rr_hermite_poulain_splits`: the same certificate for every index `n`. -/
 syntax (name := rr_hermite_poulain_sequence_splits_named)
   "rr_hermite_poulain_sequence_splits" " using "
     "operator" ":=" term ","

@@ -22,7 +22,9 @@ noncomputable section
 
 /-- A lower-bidiagonal chip on levels `0, ..., N`. -/
 structure Chip (R : Type*) (N : ℕ) where
+  /-- The weights of the diagonal transfers, indexed by the levels `0, ..., N`. -/
   diagonal : Fin (N + 1) → R
+  /-- The weights of the subdiagonal transfers, indexed by `Fin N`. -/
   subdiagonal : Fin N → R
 
 namespace Chip

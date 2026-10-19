@@ -24,7 +24,9 @@ universe u
 /-- Ordered source-row and sink-column maps describing a strict finite
 Toeplitz minor. -/
 structure StrictToeplitzMinorIndex (n : ℕ) where
+  /-- The strictly increasing source rows. -/
   sourceRow : Fin n → ℕ
+  /-- The strictly increasing sink columns. -/
   sinkColumn : Fin n → ℕ
   sourceRow_strictMono : StrictMono sourceRow
   sinkColumn_strictMono : StrictMono sinkColumn

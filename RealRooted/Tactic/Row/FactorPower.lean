@@ -24,13 +24,23 @@ private structure RatFit where
 
 /-- Exact probe data and the polynomial certificate parameters for fixed-factor deflation. -/
 structure FactorPowerData where
+  /-- The linear recurrence data of the sequence. -/
   recurrence : LinRecData
+  /-- The number `s` of initial rows dropped, so that `P (m + s) = q ^ m * Q m`. -/
   drop : Nat
+  /-- The index shift between the recurrence multipliers and the quotient rows. -/
   coefficientShift : Nat
+  /-- The fixed linear factor `q`. -/
   factor : QPoly
+  /-- The first quotient row `Q 0`, equal to `P s`. -/
   rowZero : QPoly
+  /-- The second quotient row `Q 1`, equal to `P (s + 1)` divided by `q`. -/
   rowOne : QPoly
+  /-- Rational-function fits in the index of the coefficients of the multiplier of the preceding
+  row divided by `q`. -/
   nextCoeff : Array RatFit
+  /-- Rational-function fits in the index of the coefficients of the multiplier of the row two
+  steps back divided by `q ^ 2`. -/
   lagCoeff : Array RatFit
 
 private def fitRatPolynomial? (ps : Array QPoly) (bound : Nat) : Option (Array RatFit) :=
@@ -172,6 +182,9 @@ def factorPowerSplits : TacticM Unit := do
     refine (?_ : RealRooted.Interlaces ($Q $targetIndex) ($Q ($targetIndex + 1))).2.1.2)))
   discard <| rowInterlacesCore {}
 
+/-- Proves that every row splits for a two-lag recurrence whose multipliers contain `q` and `q ^
+2` for one fixed linear `q`, by deflating `q` and applying the row interlacing core to the
+quotient rows. -/
 syntax (name := rrRowFactorPowerSplits) "rr_row_factor_power_splits" : tactic
 
 elab_rules : tactic

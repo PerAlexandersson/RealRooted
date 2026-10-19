@@ -32,14 +32,20 @@ the right block.  This makes the `z = 0` specialization a common-phase
 restriction with weights `1` on the output variable and `0` on the parameters.
 -/
 
+/-- The parameter variables `Sum.inr 0, ..., Sum.inr (m - 1)`, in order: the variables to which
+`oneSubPderivList` applies `1 - ∂`. -/
 def operatorList (m : ℕ) : List (Sum (Fin 1) (Fin m)) :=
   List.ofFn (fun i : Fin m => Sum.inr i)
 
+/-- The matrix family indexed by `Sum (Fin 1) (Fin m)`, equal to the identity on the output variable
+and to `As j` on the `j`-th parameter. -/
 def pencilMatrices (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     Sum (Fin 1) (Fin m) → Matrix (Fin n) (Fin n) ℝ
   | Sum.inl _ => 1
   | Sum.inr j => As j
 
+/-- The determinantal pencil `det (x I + ∑ j, z j • As j)` as a polynomial in the output variable
+`x` and the parameters `z`. -/
 def pencil (As : Fin m → Matrix (Fin n) (Fin n) ℝ) :
     MvPolynomial (Sum (Fin 1) (Fin m)) ℝ :=
   realDetPencil 0 (pencilMatrices As)
@@ -191,6 +197,7 @@ private theorem oneSubPderiv_isHomogeneous_zero
   rw [pderiv_eq_zero_of_isHomogeneous_zero hH i]
   simp
 
+/-- The weights `1` on the output variable and `0` on every parameter variable. -/
 def outputWeights (m : ℕ) : Sum (Fin 1) (Fin m) → ℝ
   | Sum.inl _ => 1
   | Sum.inr _ => 0

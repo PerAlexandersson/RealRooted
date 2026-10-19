@@ -215,6 +215,8 @@ theorem eval_divByMonic_at_other_root {f : ℝ[X]} {t s : ℝ}
     simp only [eval_sub, eval_X, eval_C]
     exact sub_ne_zero.mpr hst
 
+/-- The Lagrange interpolation `∑ s, (g(s) / f'(s)) * (f / (X - s))`, summed over the distinct roots
+`s` of `f`. -/
 noncomputable def lagInterp (f g : ℝ[X]) : ℝ[X] :=
   ∑ s ∈ f.roots.toFinset, C (g.eval s / f.derivative.eval s) * (f /ₘ (X - C s))
 

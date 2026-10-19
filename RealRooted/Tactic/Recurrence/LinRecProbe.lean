@@ -29,7 +29,9 @@ namespace RealRooted.Tactic
 
 /-- A rational function in the row index, represented by coprime rational polynomials. -/
 structure CoeffRatFun where
+  /-- Numerator of the rational function, as a rational polynomial. -/
   num : QPoly
+  /-- Denominator of the rational function, as a rational polynomial. -/
   den : QPoly
   deriving Inhabited
 

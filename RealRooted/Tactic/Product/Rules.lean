@@ -562,6 +562,9 @@ private def rootZeroPowerOfEvidence (label : String) (evidence : Syntax) :
   else
     throwError "rr_product checked root-zero power auto: no root-zero power found in {label}"
 
+/-- Checked form of `rr_product_lift_affine_sequence_auto`: reads the orientation of the affine
+factor off the type of `factorization` and runs the affine or the constant-first lift tactic;
+takes only `quotient_realrooted` and `factorization`. -/
 elab "rr_product_lift_checked_affine_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -579,6 +582,8 @@ elab "rr_product_lift_checked_affine_sequence_auto" " using "
             quotient_realrooted := $hquot,
             factorization := $hrow))
 
+/-- Cutoff form of `rr_product_lift_checked_affine_sequence_auto`; takes `base`,
+`quotient_realrooted`, `cutoff` and `factorization`. -/
 elab "rr_product_lift_checked_affine_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "quotient_realrooted" ":=" hquot:term ","
@@ -602,6 +607,9 @@ elab "rr_product_lift_checked_affine_sequence_auto" " using "
             cutoff := $N,
             factorization := $hrow))
 
+/-- Checked form of `rr_product_lift_affine_pow_sequence_auto`: reads the orientation of the
+affine power factor off the type of `factorization` and runs the affine-power or the
+constant-first affine-power lift tactic; takes only `quotient_realrooted` and `factorization`. -/
 elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -619,6 +627,8 @@ elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
             quotient_realrooted := $hquot,
             factorization := $hrow))
 
+/-- Cutoff form of `rr_product_lift_checked_affine_pow_sequence_auto`; takes `base`,
+`quotient_realrooted`, `cutoff` and `factorization`. -/
 elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "quotient_realrooted" ":=" hquot:term ","
@@ -642,6 +652,9 @@ elab "rr_product_lift_checked_affine_pow_sequence_auto" " using "
             cutoff := $N,
             factorization := $hrow))
 
+/-- Checked form of the scalar lift: reads off the type of `factorization` whether the factor is
+a scalar or a scalar power and runs `rr_product_lift_C_sequence_auto` or
+`rr_product_lift_C_pow_sequence_auto`; takes only `quotient_realrooted` and `factorization`. -/
 elab "rr_product_lift_checked_scalar_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -659,6 +672,8 @@ elab "rr_product_lift_checked_scalar_sequence_auto" " using "
             quotient_realrooted := $hquot,
             factorization := $hrow))
 
+/-- Cutoff form of `rr_product_lift_checked_scalar_sequence_auto`; takes `base`,
+`quotient_realrooted`, `cutoff` and `factorization`. -/
 elab "rr_product_lift_checked_scalar_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "quotient_realrooted" ":=" hquot:term ","
@@ -682,6 +697,10 @@ elab "rr_product_lift_checked_scalar_sequence_auto" " using "
             cutoff := $N,
             factorization := $hrow))
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by lifting real-rootedness through a row factor whose
+shape (`X`, a scalar, `X + C`, `C +
+X`, an affine factor, or a power of one of these) is read off `factorization`; takes only
+`quotient_realrooted` and `factorization`. -/
 elab "rr_product_lift_sequence_auto" " using "
     "quotient_realrooted" ":=" hquot:term ","
     "factorization" ":=" hrow:term : tactic => do
@@ -759,6 +778,8 @@ elab "rr_product_lift_sequence_auto" " using "
             quotient_realrooted := $hquot,
             factorization := $hrow))
 
+/-- Cutoff form of `rr_product_lift_sequence_auto`; takes `base`,
+`quotient_realrooted`, `cutoff` and `factorization`. -/
 elab "rr_product_lift_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "quotient_realrooted" ":=" hquot:term ","
@@ -862,6 +883,9 @@ elab "rr_product_lift_sequence_auto" " using "
             cutoff := $N,
             factorization := $hrow))
 
+/-- Checked form of `rr_product_affine_sequence_auto`: reads the orientation of the affine
+factor off the type of `recurrence` and runs the affine or the constant-first product tactic;
+takes `base` and `recurrence`. -/
 elab "rr_product_checked_affine_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "recurrence" ":=" hrec:term : tactic => do
@@ -879,6 +903,8 @@ elab "rr_product_checked_affine_sequence_auto" " using "
             base := $hbase,
             recurrence := $hrec))
 
+/-- Cutoff form of `rr_product_checked_affine_sequence_auto`; takes `base`,
+`cutoff` and `recurrence`. -/
 elab "rr_product_checked_affine_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "cutoff" ":=" N:term ","
@@ -899,6 +925,9 @@ elab "rr_product_checked_affine_sequence_auto" " using "
             cutoff := $N,
             recurrence := $hrec))
 
+/-- Checked form of the scalar product tactic: reads off the type of `recurrence` whether the
+factor is a scalar or a scalar power and runs `rr_product_scalar_sequence_auto` or
+`rr_product_C_pow_sequence_auto`; takes `base` and `recurrence`. -/
 elab "rr_product_checked_scalar_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "recurrence" ":=" hrec:term : tactic => do
@@ -916,6 +945,8 @@ elab "rr_product_checked_scalar_sequence_auto" " using "
             base := $hbase,
             recurrence := $hrec))
 
+/-- Cutoff form of `rr_product_checked_scalar_sequence_auto`; takes `base`,
+`cutoff` and `recurrence`. -/
 elab "rr_product_checked_scalar_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "cutoff" ":=" N:term ","
@@ -936,6 +967,9 @@ elab "rr_product_checked_scalar_sequence_auto" " using "
             cutoff := $N,
             recurrence := $hrec))
 
+/-- Checked form of `rr_product_affine_pow_sequence_auto`: reads the orientation of the affine
+power factor off the type of `recurrence` and runs the matching product tactic; takes
+`base` and `recurrence`. -/
 elab "rr_product_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "recurrence" ":=" hrec:term : tactic => do
@@ -954,6 +988,8 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             base := $hbase,
             recurrence := $hrec))
 
+/-- Checks that `recurrence` has a power of `X` (root zero) as its factor and then runs
+`rr_product_X_pow_sequence`; takes `base` and `recurrence`. -/
 elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "recurrence" ":=" hrec:term : tactic => do
@@ -964,6 +1000,8 @@ elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
         base := $hbase,
         recurrence := $hrec))
 
+/-- Cutoff form of `rr_product_checked_root_zero_pow_sequence_auto`; takes `base`,
+`cutoff` and `recurrence`. -/
 elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "cutoff" ":=" N:term ","
@@ -976,6 +1014,8 @@ elab "rr_product_checked_root_zero_pow_sequence_auto" " using "
         cutoff := $N,
         recurrence := $hrec))
 
+/-- Cutoff form of `rr_product_checked_affine_pow_sequence_auto`; takes `base`,
+`cutoff` and `recurrence`. -/
 elab "rr_product_checked_affine_pow_sequence_auto" " using "
     "base" ":=" hbase:term ","
     "cutoff" ":=" N:term ","
@@ -996,6 +1036,8 @@ elab "rr_product_checked_affine_pow_sequence_auto" " using "
             cutoff := $N,
             recurrence := $hrec))
 
+/-- Closes a real-rootedness goal from one of two certified terms: `hleft` or `hright` is chosen
+by the product orientation recognized in `hleft`, and both are tried if none is recognized. -/
 elab "rr_product_two_sequence_variants" hleft:term "," hright:term : tactic => do
   let orientation ←
     match ← liftProductOrientationOfCandidate? hleft with
@@ -1012,6 +1054,8 @@ elab "rr_product_two_sequence_variants" hleft:term "," hright:term : tactic => d
       evalTactic
         (← `(tactic| rr_first_realrooted_sequence_or_projection $hleft, $hright))
 
+/-- Closes a real-rootedness goal from one of four certified terms, chosen by the scalar and
+factor orientations recognized in the equalities of `hleft`. -/
 elab "rr_product_four_sequence_variants" hleft:term "," hright:term ","
     hscalarRight:term "," hfactorRight:term : tactic => do
   match ← productOrientationsOfCandidate hleft with

@@ -15,6 +15,9 @@ noncomputable section
 namespace RealRooted
 namespace LiuOppositeSigns
 
+/-- For a root-free gap `(a, b)` with endpoints roots of `f` or `g` and an even difference of the
+numbers of roots of `f` and `g` above a point of the gap, one endpoint is a root of `f` and the
+other of `g`. -/
 def CrossOwnedNotOddGaps (f g : ℝ[X]) : Prop :=
   ∀ a b x : ℝ, a < x → x < b →
     (f.IsRoot a ∨ g.IsRoot a) →

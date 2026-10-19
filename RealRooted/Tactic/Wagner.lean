@@ -38,6 +38,9 @@ theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
     ∀ n : Nat, StrictInterl (F n) (G n) ↔ StrictInterl (G n) (X * F n) := fun n =>
   Wagner.mulX_iff (hF n) (hG n)
 
+/-- Closes `StrictInterl (f + g) h` from `left : Wagner.HasNonposRootsPosLeading f`,
+`right` for `g`, `left_interlaces_common : StrictInterl f h` and
+`right_interlaces_common : StrictInterl g h`. -/
 syntax (name := rr_wagner_common_right_add_named)
   "rr_wagner_common_right_add" " using "
     "left" ":=" term ","
@@ -46,6 +49,9 @@ syntax (name := rr_wagner_common_right_add_named)
     "right_interlaces_common" ":=" term :
   tactic
 
+/-- Closes `StrictInterl h (f + g)` from `left : Wagner.HasNonposRootsPosLeading f`,
+`right` for `g`, `common_interlaces_left : StrictInterl h f` and
+`common_interlaces_right : StrictInterl h g`. -/
 syntax (name := rr_wagner_common_left_add_named)
   "rr_wagner_common_left_add" " using "
     "left" ":=" term ","
@@ -54,12 +60,15 @@ syntax (name := rr_wagner_common_left_add_named)
     "common_interlaces_right" ":=" term :
   tactic
 
+/-- Closes `StrictInterl f g ↔ StrictInterl g (X * f)` from
+`shorter : Wagner.HasNonposRootsPosLeading f` and `longer` for `g`. -/
 syntax (name := rr_wagner_mulX_iff_named)
   "rr_wagner_mulX_iff" " using "
     "shorter" ":=" term ","
     "longer" ":=" term :
   tactic
 
+/-- Sequence form of `rr_wagner_common_right_add`: the same certificate for every index `n`. -/
 syntax (name := rr_wagner_common_right_add_sequence_named)
   "rr_wagner_common_right_add_sequence" " using "
     "left" ":=" term ","
@@ -68,6 +77,7 @@ syntax (name := rr_wagner_common_right_add_sequence_named)
     "right_interlaces_common" ":=" term :
   tactic
 
+/-- Sequence form of `rr_wagner_common_left_add`: the same certificate for every index `n`. -/
 syntax (name := rr_wagner_common_left_add_sequence_named)
   "rr_wagner_common_left_add_sequence" " using "
     "left" ":=" term ","
@@ -76,12 +86,16 @@ syntax (name := rr_wagner_common_left_add_sequence_named)
     "common_interlaces_right" ":=" term :
   tactic
 
+/-- Sequence form of `rr_wagner_mulX_iff`: the same certificate for every index `n`. -/
 syntax (name := rr_wagner_mulX_iff_sequence_named)
   "rr_wagner_mulX_iff_sequence" " using "
     "shorter" ":=" term ","
     "longer" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (f + g) h` from `left_interlaces_common : StrictInterl f h`,
+`right_interlaces_common : StrictInterl g h` and the positive leading coefficients
+`left_pos_lc` and `right_pos_lc` of `f` and `g`. -/
 syntax (name := rr_wagner_common_right_add_pos_lc_named)
   "rr_wagner_common_right_add_pos_lc" " using "
     "left_interlaces_common" ":=" term ","
@@ -90,20 +104,29 @@ syntax (name := rr_wagner_common_right_add_pos_lc_named)
     "right_pos_lc" ":=" term :
   tactic
 
+/-- Hypothesis-free form of
+`rr_wagner_common_right_add_pos_lc`: the interlacings are found by `rr_lookup
+[rr_base_strict_interl]` and the leading coefficients by `rr_lookup [rr_pos_lc]`. -/
 syntax (name := rr_wagner_common_right_add_pos_lc_inferred)
   "rr_wagner_common_right_add_pos_lc" : tactic
 
+/-- Closes `StrictInterl f g` from `root : r` and
+`multiplied_interlacing : StrictInterl ((X - C r) * f) ((X - C r) * g)`. -/
 syntax (name := rr_strict_interl_cancel_common_linear_factor_named)
   "rr_strict_interl_cancel_common_linear_factor" " using "
     "root" ":=" term ","
     "multiplied_interlacing" ":=" term :
   tactic
 
+/-- Variant of `rr_strict_interl_cancel_common_linear_factor` that finds
+`multiplied_interlacing` by `rr_lookup [rr_base_strict_interl]`. -/
 syntax (name := rr_strict_interl_cancel_common_linear_factor_inferred)
   "rr_strict_interl_cancel_common_linear_factor" " using "
     "root" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (d * f) (d * g)` from `factor_nonzero : d ≠ 0`,
+`factor_splits : d.Splits` and `base_interlacing : StrictInterl f g`. -/
 syntax (name := rr_strict_interl_mul_common_factor_named)
   "rr_strict_interl_mul_common_factor" " using "
     "factor_nonzero" ":=" term ","
@@ -111,6 +134,9 @@ syntax (name := rr_strict_interl_mul_common_factor_named)
     "base_interlacing" ":=" term :
   tactic
 
+/-- Hypothesis-free form of `rr_strict_interl_mul_common_factor`: `factor_nonzero` is found by
+`rr_lookup [rr_nonzero]`, `factor_splits` by `assumption`, and `base_interlacing` by `rr_lookup
+[rr_base_strict_interl]`. -/
 syntax (name := rr_strict_interl_mul_common_factor_inferred)
   "rr_strict_interl_mul_common_factor" : tactic
 

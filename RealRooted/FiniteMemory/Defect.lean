@@ -180,6 +180,7 @@ structure SharpDefectBridges (r p q : ℕ) (active : Set ℕ) (δ K : ℕ → �
   critical_le : p ≤ r
   critical_cost : δ p = 0
   q_dvd_p : q ∣ p
+  /-- For each residue `a` modulo `p`, a lag word whose total lag is congruent to `a`. -/
   bridge : Fin p → List ℕ
   valid : ∀ a, IsLagWord r active (bridge a)
   congruent : ∀ a, Nat.ModEq p (wordLag (bridge a)) a.1

@@ -24,13 +24,19 @@ namespace RealRooted.Tactic
 `P (n + j)` is `num / den`, both listed by coefficients of powers of `n` (`den = 1` for a
 polynomial multiplier). -/
 structure PowerForm where
+  /-- The order `k` of the recurrence. -/
   k : Nat
   /-- the number `s` of rows before the form starts -/
   drop : Nat
+  /-- The linear factor `q = X - r`. -/
   q : QPoly
+  /-- The fixed factor `F` of the rows, coprime to `q`. -/
   F : QPoly
+  /-- The exponent shift `e`, so that the row `s` is `c 0 * F * q ^ e`. -/
   e : Nat
+  /-- The multipliers `α j n`, as numerator and denominator coefficients by powers of `n`. -/
   alphas : Array (Array Rat × Array Rat)
+  /-- The constants `c m` of the computed rows, with `P (m + s) = c m * F * q ^ (m + e)`. -/
   cs : Array Rat
   /-- every multiplier is nonnegative, the one of `P (n + k - 1)` positive, and every `c m`
   positive on the computed rows: the positive variant of the theorems applies -/

@@ -72,6 +72,8 @@ def findLocalProofByType? (target : Expr) : TacticM (Option Expr) :=
             return some proof
     return none
 
+/-- A proof of `target` from the declaration `decl`, instantiating a bounded prefix of its
+`forall` binders, if there is one. -/
 def mkProofFromDeclFor? (decl : Name) (target : Expr) : TacticM (Option Expr) :=
   withMainContext do
     withoutModifyingState do
@@ -80,6 +82,7 @@ def mkProofFromDeclFor? (decl : Name) (target : Expr) : TacticM (Option Expr) :=
         let proofType ← inferType proof
         mkProofFromPrefixFor? proof proofType target #[] #[]
 
+/-- All declarations tagged with `attr` that prove `target`, each with its proof term. -/
 def findTaggedProofsByType (attr : Lean.TagAttribute) (target : Expr) :
     TacticM (Array (Name × Expr)) := do
   let mut found := #[]
@@ -88,6 +91,8 @@ def findTaggedProofsByType (attr : Lean.TagAttribute) (target : Expr) :
       found := found.push (decl, proof)
   return found
 
+/-- All distinct declarations tagged with any certificate attribute that prove `target`, each
+with its proof term. -/
 def findRRCertificateProofsByType (target : Expr) : TacticM (Array (Name × Expr)) := do
   let mut found := #[]
   let mut seen : NameSet := {}
@@ -153,7 +158,11 @@ private def lookupCannotMatch (target : Expr) : TacticM Bool := withMainContext 
     unless ← isProp (← m.getType) do return true
   return false
 
+/-- Closes the goal by an exact local hypothesis, a local hypothesis with a determined `forall`
+prefix, or else the unique declaration tagged with a certificate attribute that matches. -/
 syntax (name := rr_lookup) "rr_lookup" : tactic
+/-- Variant of `rr_lookup [attr]` that restricts the search of tagged declarations to the
+certificate attribute `attr`; local hypotheses are still tried first. -/
 syntax (name := rr_lookup_attr) "rr_lookup" " [" ident "]" : tactic
 
 elab_rules : tactic

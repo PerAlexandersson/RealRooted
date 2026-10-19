@@ -252,7 +252,9 @@ noncomputable instance (h : Nat) : Fintype (DecoAdmissibleCode h) := by
 /-- A normalized code together with a set of eligible starts, flattened into
 one nondependent finite index type. -/
 structure DecoratedDecoNormalizedCode (h : Nat) where
+  /-- The underlying normalized code. -/
   code : DecoNormalizedCode h
+  /-- The chosen set of eligible starts of `code`. -/
   starts : Finset (Fin h)
   starts_subset : starts ⊆ code.eligibleStarts
 

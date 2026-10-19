@@ -18,6 +18,7 @@ def disjointSelectionWeight (a b : V → ℝ) (k : ℕ) : ℝ := by
       ∑ B ∈ (Finset.univ.filter fun B : Finset V ↦ B.card = k ∧ Disjoint A B),
         (∏ i ∈ A, a i) * ∏ j ∈ B, b j
 
+/-- The finite set of the matchings of the complete graph on `V` with exactly `k` edges. -/
 def sizeKMatchings (k : ℕ) :
     Finset (Finset (_root_.SimpleGraph.completeGraph V).edgeSet) := by
   classical
@@ -43,6 +44,8 @@ theorem weightedMatchingNumber_eq_sum_sizeK (a b : V → ℝ) (k : ℕ) :
     · by_cases hc : M.card = k <;> simp [hm, hc]
     · simp [hm]
 
+/-- The sum, over `k`-matchings `M` and endpoint choices on `M`, of the product of
+`edgeOrientationWeight`. -/
 def orientedMatchingWeightSum (a b : V → ℝ) (k : ℕ) : ℝ :=
   ∑ M ∈ sizeKMatchings k,
     ∑ o ∈ M.pi (fun e ↦ e.1.toFinset),
@@ -58,15 +61,21 @@ theorem weightedMatchingNumber_eq_orientedMatchingWeightSum
   intro M hM
   exact prod_completeGraphRankTwoWeight_eq_sum_orientations a b M
 
+/-- The sum of `(∏ i ∈ A, a i) * ∏ j ∈ B, b j` over disjoint `k`-sets `A`, `B` and bijections `A ≃
+B`. -/
 def disjointEquivWeightSum (a b : V → ℝ) (k : ℕ) : ℝ :=
   ∑ A ∈ (Finset.univ.filter fun A : Finset V ↦ A.card = k),
     ∑ B ∈ (Finset.univ.filter fun B : Finset V ↦ B.card = k ∧ Disjoint A B),
       ∑ _f : A ≃ B, (∏ i ∈ A, a i) * ∏ j ∈ B, b j
 
+/-- The type of `k`-matchings of the complete graph together with a choice of one endpoint of each
+edge. -/
 abbrev OrientedKMatching (k : ℕ) :=
   Σ M : {M // M ∈ sizeKMatchings (V := V) k},
     ∀ e : M.1, {i : V // i ∈ e.1.1}
 
+/-- The index type of triples `(A, B, f)` with `A` and `B` disjoint `k`-element vertex sets and `f :
+A ≃ B` a bijection. -/
 abbrev DisjointEquivIndex (k : ℕ) :=
   Σ A : {A : Finset V //
       A ∈ (Finset.univ.filter fun A : Finset V ↦ A.card = k)},
@@ -80,6 +89,7 @@ theorem orientedKMatching_mem
     ∀ e (he : e ∈ x.1.1), (x.2 ⟨e, he⟩).1 ∈ e.1 :=
   fun e he => (x.2 ⟨e, he⟩).2
 
+/-- The endpoint choice underlying an oriented `k`-matching. -/
 def orientedKMatchingOrientation
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
     ∀ e, e ∈ x.1.1 → V :=
@@ -96,6 +106,8 @@ theorem orientedKMatching_card
   classical
   exact (Finset.mem_filter.mp x.1.2).2.2
 
+/-- The map sending an oriented `k`-matching to the sets of chosen and non-chosen endpoints, with
+the bijection between them. -/
 def orientedMatchingToDisjointEquiv
     {k : ℕ} (x : OrientedKMatching (V := V) k) :
     DisjointEquivIndex (V := V) k := by
@@ -115,6 +127,8 @@ def orientedMatchingToDisjointEquiv
           (orientedKMatching_card x),
         orientationVertices_disjoint hM o ho⟩⟩
 
+/-- The map sending `(A, B, f)` to the matching with edges `s(i, f i)`, oriented to start at `i ∈
+A`. -/
 def disjointEquivToOrientedMatching
     {k : ℕ} (y : DisjointEquivIndex (V := V) k) :
     OrientedKMatching (V := V) k := by
@@ -295,6 +309,8 @@ theorem orientedMatchingToDisjointEquiv_disjointEquivToOrientedMatching
   apply orientationVertexEquiv_ofDisjointEquiv_val hAB f
   exact hij
 
+/-- The equivalence between oriented `k`-matchings and triples `(A, B, f)` with `f : A ≃ B` for
+disjoint `k`-sets. -/
 def orientedKMatchingEquivDisjointEquiv (k : ℕ) :
     OrientedKMatching (V := V) k ≃ DisjointEquivIndex (V := V) k where
   toFun := orientedMatchingToDisjointEquiv
@@ -302,10 +318,14 @@ def orientedKMatchingEquivDisjointEquiv (k : ℕ) :
   left_inv := disjointEquivToOrientedMatching_orientedMatchingToDisjointEquiv
   right_inv := orientedMatchingToDisjointEquiv_disjointEquivToOrientedMatching
 
+/-- The type of endpoint choices `o`, as dependent functions on `M` with `o e` an endpoint of
+`e`. -/
 abbrev PiOrientationIndex
     (M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet) :=
   {o // o ∈ M.pi (fun e ↦ e.1.toFinset)}
 
+/-- The equivalence between `PiOrientationIndex M` and endpoint choices given as dependent functions
+on the edges of `M`. -/
 def piOrientationEquiv
     (M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet) :
     PiOrientationIndex M ≃ (∀ e : M, {i : V // i ∈ e.1.1}) where
@@ -324,24 +344,32 @@ def piOrientationEquiv
     apply Subtype.ext
     rfl
 
+/-- The type of `k`-matchings with an endpoint choice, the choice given as an element of
+`PiOrientationIndex`. -/
 abbrev PiOrientedKMatching (k : ℕ) :=
   Σ M : {M // M ∈ sizeKMatchings (V := V) k}, PiOrientationIndex M.1
 
+/-- The equivalence between `PiOrientedKMatching k` and `OrientedKMatching k`. -/
 def piOrientedKMatchingEquiv (k : ℕ) :
     PiOrientedKMatching (V := V) k ≃ OrientedKMatching (V := V) k :=
   Equiv.sigmaCongrRight fun M ↦ piOrientationEquiv M.1
 
+/-- The product of `edgeOrientationWeight` over the edges of the matching, for a
+`PiOrientedKMatching`. -/
 def piOrientedKMatchingWeight (a b : V → ℝ) {k : ℕ}
     (x : PiOrientedKMatching (V := V) k) : ℝ :=
   ∏ e ∈ x.1.1.attach,
     edgeOrientationWeight a b e.1 (x.2.1 e.1 e.2)
 
+/-- The product over the edges of the matching of `edgeOrientationWeight` at the chosen
+endpoints. -/
 def orientedKMatchingWeight (a b : V → ℝ) {k : ℕ}
     (x : OrientedKMatching (V := V) k) : ℝ :=
   ∏ e ∈ x.1.1.attach,
     edgeOrientationWeight a b e.1
       (orientedKMatchingOrientation x e.1 e.2)
 
+/-- The weight `(∏ i ∈ A, a i) * ∏ j ∈ B, b j` of an index `(A, B, f)`. -/
 def disjointEquivIndexWeight (a b : V → ℝ) {k : ℕ}
     (y : DisjointEquivIndex (V := V) k) : ℝ :=
   (∏ i ∈ y.1.1, a i) * ∏ j ∈ y.2.1.1, b j

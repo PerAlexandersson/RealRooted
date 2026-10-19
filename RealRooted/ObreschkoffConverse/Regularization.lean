@@ -19,6 +19,7 @@ namespace RealRooted
 
 section
 
+/-- The Wronskian `g * f' - f * g'` of the polynomials `f` and `g`. -/
 def ObreschkoffConverseInternal.wronskianPoly (f g : ℝ[X]) : ℝ[X] :=
   g * f.derivative - f * g.derivative
 

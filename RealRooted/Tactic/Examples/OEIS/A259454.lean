@@ -13,6 +13,7 @@ noncomputable section
 
 namespace A259454Downstream
 
+/-- The OEIS A259454 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A259454 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + 3 * X

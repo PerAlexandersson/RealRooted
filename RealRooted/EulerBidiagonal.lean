@@ -746,6 +746,8 @@ theorem strictInterl_step_of_strictInterl {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤
     (mapsAffineNegativeSimple_step ha hb hab)
 
 /-! The rows of the Euler bidiagonal recurrence. -/
+/-- The rows of the Euler bidiagonal recurrence: `rows a b 0 = 1` and `rows a b (n + 1) = step a b
+(rows a b n)`. -/
 def rows (a b : ℝ) : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => step a b (rows a b n)

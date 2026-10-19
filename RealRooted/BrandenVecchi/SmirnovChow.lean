@@ -211,6 +211,7 @@ def weightedSmirnovEndingSummand {m n : ℕ}
         X ^ (List.ofFn (Fin.snoc word i)).descentCount
     else 0
 
+/-- The weighted descent enumerator of Smirnov words of length `n + 1` with final letter `i`. -/
 def weightedSmirnovEnding {m : ℕ} (weight : Fin m → R)
     (n : ℕ) (i : Fin m) : R[X] := by
   classical

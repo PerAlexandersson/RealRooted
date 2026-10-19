@@ -18,6 +18,9 @@ open Polynomial
 
 namespace RealRooted
 
+/-- Closes `∀ n, P n = Q n` for a target `P` and a model `Q` with the same lag-1 recurrence
+`P (n + 1) = update n (P n)`; `update` is the update function, `initial : P 0 = Q
+0`, and `target_recurrence` and `model_recurrence` are the recurrences of `P` and `Q`. -/
 syntax (name := rr_identify_lag_one_sequence_named)
   "rr_identify_lag_one_sequence" " using "
     "update" ":=" term ","
@@ -26,6 +29,10 @@ syntax (name := rr_identify_lag_one_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n = Q n` for a target `P` and a model `Q` with the same lag-2 recurrence
+`P (n + 2) = update n (P (n + 1)) (P n)`; `update` is the update function, `initial_zero` and
+`initial_one` (the equal first two rows), and `target_recurrence` and
+`model_recurrence` are the recurrences of `P` and `Q`. -/
 syntax (name := rr_identify_lag_two_sequence_named)
   "rr_identify_lag_two_sequence" " using "
     "update" ":=" term ","
@@ -35,6 +42,11 @@ syntax (name := rr_identify_lag_two_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n = Q n` for a target `P` and a model `Q` with the same lag-3 recurrence
+`P (n + 3) = update n (P (n + 2)) (P (n + 1)) (P n)`;
+`update` is the update function, `initial_zero`, `initial_one` and `initial_two` (the equal
+first three rows), and `target_recurrence` and `model_recurrence` are the recurrences of
+`P` and `Q`. -/
 syntax (name := rr_identify_lag_three_sequence_named)
   "rr_identify_lag_three_sequence" " using "
     "update" ":=" term ","
@@ -45,21 +57,34 @@ syntax (name := rr_identify_lag_three_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Variant of `rr_identify_lag_one_sequence` that takes only the explicit `update` (and the
+model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_identify_lag_one_sequence_update_inferred)
   "rr_identify_lag_one_sequence" " using "
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_identify_lag_two_sequence` that takes only the explicit `update` (and the
+model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_identify_lag_two_sequence_update_inferred)
   "rr_identify_lag_two_sequence" " using "
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_identify_lag_three_sequence` that takes only the explicit `update` (and the
+model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_identify_lag_three_sequence_update_inferred)
   "rr_identify_lag_three_sequence" " using "
     "update" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by identifying `P` with a model `Q` that has the same
+lag-1 recurrence `P (n + 1) = update n (P n)`; the arguments are
+`model_realrooted : ∀ n, Q n ≠ 0 ∧ (Q n).Splits`, `update`, `initial : P 0 = Q
+0` and the recurrences `target_recurrence` and `model_recurrence`. -/
 syntax (name := rr_model_lag_one_sequence_named)
   "rr_model_lag_one_sequence" " using "
     "model_realrooted" ":=" term ","
@@ -69,6 +94,11 @@ syntax (name := rr_model_lag_one_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by identifying `P` with a model `Q` that has the same
+lag-2 recurrence `P (n + 2) = update n (P (n + 1)) (P n)`; the arguments are
+`model_realrooted : ∀ n, Q n ≠ 0 ∧ (Q n).Splits`, `update`, `initial_zero` and
+`initial_one` (the equal first two rows) and the recurrences `target_recurrence` and
+`model_recurrence`. -/
 syntax (name := rr_model_lag_two_sequence_named)
   "rr_model_lag_two_sequence" " using "
     "model_realrooted" ":=" term ","
@@ -79,6 +109,11 @@ syntax (name := rr_model_lag_two_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by identifying `P` with a model `Q` that has the same
+lag-3 recurrence `P (n + 3) = update n (P (n + 2)) (P (n + 1)) (P n)`; the arguments are
+`model_realrooted : ∀ n, Q n ≠ 0 ∧ (Q n).Splits`, `update`, `initial_zero`,
+`initial_one` and `initial_two` (the equal first three rows) and the recurrences
+`target_recurrence` and `model_recurrence`. -/
 syntax (name := rr_model_lag_three_sequence_named)
   "rr_model_lag_three_sequence" " using "
     "model_realrooted" ":=" term ","
@@ -90,24 +125,38 @@ syntax (name := rr_model_lag_three_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_one_sequence` that takes only the explicit `update` (and the model
+certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_one_sequence_update_inferred)
   "rr_model_lag_one_sequence" " using "
     "model_realrooted" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_two_sequence` that takes only the explicit `update` (and the model
+certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_two_sequence_update_inferred)
   "rr_model_lag_two_sequence" " using "
     "model_realrooted" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_three_sequence` that takes only the explicit `update` (and the
+model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_three_sequence_update_inferred)
   "rr_model_lag_three_sequence" " using "
     "model_realrooted" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Closes `(∀ n, IsPFPolynomial (P n)) ∧ ∀ n, Interl (P n) (P (n + 1))` (or one of its
+components) by identifying `P` with a model `Q` that has the same lag-1 recurrence
+`P (n + 1) = update n (P n)`; the arguments are
+`model_pf_interl` (PF rows and consecutive interlacing of `Q`), `update`, `initial : P 0 = Q
+0` and the recurrences `target_recurrence` and `model_recurrence`. -/
 syntax (name := rr_model_lag_one_pf_interl_sequence_named)
   "rr_model_lag_one_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
@@ -117,6 +166,12 @@ syntax (name := rr_model_lag_one_pf_interl_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `(∀ n, IsPFPolynomial (P n)) ∧ ∀ n, Interl (P n) (P (n + 1))` (or one of its
+components) by identifying `P` with a model `Q` that has the same lag-2 recurrence
+`P (n + 2) = update n (P (n + 1)) (P n)`; the arguments are
+`model_pf_interl` (PF rows and consecutive interlacing of `Q`), `update`, `initial_zero` and
+`initial_one` (the equal first two rows) and the recurrences `target_recurrence` and
+`model_recurrence`. -/
 syntax (name := rr_model_lag_two_pf_interl_sequence_named)
   "rr_model_lag_two_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
@@ -127,6 +182,12 @@ syntax (name := rr_model_lag_two_pf_interl_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Closes `(∀ n, IsPFPolynomial (P n)) ∧ ∀ n, Interl (P n) (P (n + 1))` (or one of its
+components) by identifying `P` with a model `Q` that has the same lag-3 recurrence
+`P (n + 3) = update n (P (n + 2)) (P (n + 1)) (P n)`; the arguments are
+`model_pf_interl` (PF rows and consecutive interlacing of `Q`), `update`, `initial_zero`,
+`initial_one` and `initial_two` (the equal first three rows) and the recurrences
+`target_recurrence` and `model_recurrence`. -/
 syntax (name := rr_model_lag_three_pf_interl_sequence_named)
   "rr_model_lag_three_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
@@ -138,28 +199,41 @@ syntax (name := rr_model_lag_three_pf_interl_sequence_named)
     "model_recurrence" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_one_pf_interl_sequence` that takes only the explicit `update` (and
+the model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_one_pf_interl_sequence_update_inferred)
   "rr_model_lag_one_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_two_pf_interl_sequence` that takes only the explicit `update` (and
+the model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_two_pf_interl_sequence_update_inferred)
   "rr_model_lag_two_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Variant of `rr_model_lag_three_pf_interl_sequence` that takes only the explicit `update`
+(and the model certificate, if any): the other certificates are found in the local context by
+`rr_recurrence_identification_fact_term`. -/
 syntax (name := rr_model_lag_three_pf_interl_sequence_update_inferred)
   "rr_model_lag_three_pf_interl_sequence" " using "
     "model_pf_interl" ":=" term ","
     "update" ":=" term :
   tactic
 
+/-- Closes the goal by `exact h`, or by a projection of `h` (a first or second component,
+possibly applied to an index). -/
 syntax (name := rr_exact_pf_interl_sequence_or_projection)
   "rr_exact_pf_interl_sequence_or_projection" term :
   tactic
 
+/-- A term proving a recurrence-identification certificate by `assumption`, `rr_lookup` or
+`rfl`, failing with a message to pass it explicitly. -/
 syntax (name := rr_recurrence_identification_fact_term)
   "rr_recurrence_identification_fact_term" : term
 

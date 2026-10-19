@@ -10,6 +10,8 @@ theorems.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `IsBivariateUpperStable (complexifyMv (homogenizeBivariate p.natDegree p))` from
+`nonzero : p ≠ 0`, `splits : p.Splits` and `roots_nonpos : ∀ r ∈ p.roots, r ≤ 0`. -/
 syntax (name := rr_homogenize_bivariate_stable_named)
   "rr_homogenize_bivariate_stable" " using "
     "nonzero" ":=" term ","
@@ -17,6 +19,8 @@ syntax (name := rr_homogenize_bivariate_stable_named)
     "roots_nonpos" ":=" term :
   tactic
 
+/-- Closes `MvUpperHalfPlaneStableOrZero (complexifyMv (homogenizeBivariate p.natDegree p))`
+from `splits : p.Splits` and `roots_nonpos : ∀ r ∈ p.roots, r ≤ 0`. -/
 syntax (name := rr_homogenize_bivariate_stable_or_zero_named)
   "rr_homogenize_bivariate_stable_or_zero" " using "
     "splits" ":=" term ","

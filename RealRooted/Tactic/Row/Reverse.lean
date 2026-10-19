@@ -26,9 +26,14 @@ namespace RealRooted.Tactic
 multipliers of the reversed recurrence, as `(lag j, derivative order i, coefficients)` with
 the coefficients listed by powers of `X`, each by powers of `n`. -/
 structure Reversal where
+  /-- The linear recurrence data of the original sequence. -/
   L : LinRecData
+  /-- The degree of row `0`, so that row `n` has degree `D₀ + n`. -/
   D₀ : Nat
+  /-- The reversed first rows, `X ^ (D₀ + m) * P m (1 / X)`. -/
   base : Array QPoly
+  /-- The multipliers of the reversed recurrence, as
+  `(lag j, derivative order i, coefficients)`. -/
   terms : Array (Nat × Nat × Array (Array Rat))
 
 /-- `X ^ N p (1 / X)`, for `p` of degree at most `N`. -/

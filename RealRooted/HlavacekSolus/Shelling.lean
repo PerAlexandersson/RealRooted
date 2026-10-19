@@ -127,6 +127,7 @@ variable {V W : Type*} [Fintype V] [DecidableEq V] [Fintype W] [DecidableEq W]
 
 /-- A finite abstract simplicial complex, including its empty face. -/
 structure SimplicialComplex (U : Type*) [Fintype U] [DecidableEq U] where
+  /-- The set of faces, each a finite set of vertices. -/
   faces : Finset (Finset U)
   empty_mem : ∅ ∈ faces
   down_closed : ∀ {F G : Finset U}, G ∈ faces → F ⊆ G → F ∈ faces
@@ -138,7 +139,9 @@ relative face set is their set difference; this is the finite combinatorial
 form of the paper's relative complex convention.
 -/
 structure RelativeComplex (U : Type*) [DecidableEq U] where
+  /-- The set of faces of the ambient complex `C`. -/
   ambient : Finset (Finset U)
+  /-- The set of removed faces, the faces of the subcomplex `D`. -/
   removed : Finset (Finset U)
   removed_subset : removed ⊆ ambient
 
@@ -219,6 +222,7 @@ lemma relativeHPolynomial_eq_sub {R : RelativeComplex U} (d : ℕ) :
     represented.  The finite partition identity below needs only the carrier
     test and facet coverage. -/
 structure Subdivision (Base : SimplicialComplex V) (Subdivided : SimplicialComplex W) where
+  /-- The face of the base complex carrying a face of the subdivided complex. -/
   carrier : Finset W → Finset V
   carrier_mem : ∀ {Q : Finset W}, Q ∈ Subdivided.faces → carrier Q ∈ Base.faces
   covered_by_facet : ∀ {Q : Finset W}, Q ∈ Subdivided.faces →
@@ -362,6 +366,7 @@ facet dimension and recursive boundary fields are retained so the theorem has
 an honest shelling hypothesis, but are not needed by the finite partition
 argument. -/
 structure Shelling (Base : SimplicialComplex V) (d : ℕ) where
+  /-- The facets of the base complex, listed in shelling order. -/
   order : List (Finset V)
   nodup : order.Nodup
   facets_mem : ∀ F, F ∈ Base.faces.filter (fun G =>

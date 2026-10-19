@@ -312,6 +312,8 @@ lemma IsPolyaFreqSeq.one :
     IsPolyaFreqSeq (fun n ↦ (1 : ℝ[X]).coeff n) := by
   simp [IsPolyaFreqSeq, toeplitz_one_coeff, IsTotallyNonneg.one]
 
+/-- The lower bidiagonal matrix with `a` on the diagonal, `1` on the subdiagonal and `0`
+elsewhere. -/
 def bidiagonal (a : ℝ) : Matrix ℕ ℕ ℝ :=
   .of fun i j ↦ if i = j then a else if i = j + 1 then 1 else 0
 
@@ -428,9 +430,13 @@ lemma IsPolyaFreqSeq.linear {r : ℝ} (hr : r ≤ 0) :
   rw [IsPolyaFreqSeq, toeplitz_linear_coeff]
   exact bidiagonal_isTotallyNonneg (-r) (neg_nonneg.mpr hr)
 
+/-- The matrix `M` shifted down by one row: entry `(i, j)` is `0` if `i = 0` and `M (i - 1) j`
+otherwise. -/
 def mShift (M : Matrix ℕ ℕ ℝ) (i j : ℕ) : ℝ :=
   if i = 0 then 0 else M (i - 1) j
 
+/-- The `n × n` matrix with entries taken from rows `rows i` and columns `cols j` of `M`.  Row `i`
+uses `M` or `mShift M` as chosen by `choices i` for `i < k`, and `a • M + mShift M` for `i ≥ k`. -/
 def hybrid {n : ℕ} (rows cols : Fin n → ℕ) (M : Matrix ℕ ℕ ℝ) (a : ℝ) (k : ℕ)
     (choices : Fin k → Bool) : Matrix (Fin n) (Fin n) ℝ :=
   .of fun i j ↦
@@ -439,6 +445,7 @@ def hybrid {n : ℕ} (rows cols : Fin n → ℕ) (M : Matrix ℕ ℕ ℝ) (a : �
     else
       a * M (rows i) (cols j) + mShift M (rows i) (cols j)
 
+/-- The extension of `choices` to `Fin (k + 1)` taking the value `val` at the last index. -/
 def extendChoices (k : ℕ) (choices : Fin k → Bool) (val : Bool) (i : Fin (k + 1)) : Bool :=
   if h : (i : ℕ) < k then choices ⟨i, h⟩ else val
 

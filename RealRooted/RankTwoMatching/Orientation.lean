@@ -10,6 +10,8 @@ open scoped BigOperators
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
 
+/-- The weight `a i * b j` of the edge `e` oriented to start at its endpoint `i`, where `j` is the
+other endpoint, and `0` if `i` is not on `e`. -/
 def edgeOrientationWeight (a b : V → ℝ)
     (e : (_root_.SimpleGraph.completeGraph V).edgeSet) (i : V) : ℝ :=
   if hi : i ∈ e.1 then a i * b (Sym2.Mem.other' hi) else 0
@@ -99,11 +101,13 @@ theorem matchingOrientation_ne_other
     · rw [heq]
       exact Sym2.other_mem' (ho f.1 f.2)
 
+/-- The finite set of the chosen endpoints `o e` over the edges `e` of `M`. -/
 def orientationLeftVertices
     {M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet}
     (o : ∀ e, e ∈ M → V) : Finset V :=
   M.attach.image fun e ↦ o e.1 e.2
 
+/-- The finite set of the endpoints of the edges of `M` other than the chosen endpoints `o e`. -/
 def orientationRightVertices
     {M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet}
     (o : ∀ e, e ∈ M → V)
@@ -151,6 +155,8 @@ theorem orientationVertices_disjoint
   obtain ⟨f, hf, heq⟩ := hy
   exact matchingOrientation_ne_other hM o ho e f heq.symm
 
+/-- The bijection between the edges of the matching `M` and the chosen endpoints
+`orientationLeftVertices o`. -/
 def orientationLeftEquiv
     {M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet}
     (hM : IsMatchingEdgeFinset (_root_.SimpleGraph.completeGraph V) M)
@@ -169,6 +175,8 @@ def orientationLeftEquiv
         obtain ⟨e, he, hex⟩ := hx
         exact ⟨e, Subtype.ext hex⟩⟩
 
+/-- The bijection between the edges of the matching `M` and the non-chosen endpoints
+`orientationRightVertices o ho`. -/
 def orientationRightEquiv
     {M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet}
     (hM : IsMatchingEdgeFinset (_root_.SimpleGraph.completeGraph V) M)
@@ -188,6 +196,8 @@ def orientationRightEquiv
         obtain ⟨e, he, hex⟩ := hx
         exact ⟨e, Subtype.ext hex⟩⟩
 
+/-- The bijection from the chosen endpoints to the non-chosen endpoints, sending each to the other
+endpoint of its edge. -/
 def orientationVertexEquiv
     {M : Finset (_root_.SimpleGraph.completeGraph V).edgeSet}
     (hM : IsMatchingEdgeFinset (_root_.SimpleGraph.completeGraph V) M)

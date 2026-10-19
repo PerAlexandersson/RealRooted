@@ -18,6 +18,8 @@ namespace Graph
 
 universe u
 
+/-- The finite enumeration of the edge set of `G` obtained from its finiteness, independent of any
+adjacency decision. -/
 noncomputable local instance edgeSetFintype {V : Type u} [Fintype V]
     (G : _root_.SimpleGraph V) : Fintype G.edgeSet :=
   Fintype.ofFinite G.edgeSet

@@ -16,6 +16,7 @@ namespace RealRooted.Applications.OEIS
 
 /-- A chronological deco construction code of height `h`. -/
 structure DecoCode (h : ℕ) where
+  /-- The entry of the code in row `j`. -/
   entry : Fin h → ℕ
   entry_lt : ∀ j, entry j < j.1 + 1
 
@@ -109,6 +110,7 @@ theorem eligible_ne_succ {h : ℕ} {c : DecoNormalizedCode h} {i j : Fin h}
 
 /-- A choice of eligible pairs to turn back into exceptional `(1, 0)` pairs. -/
 structure Decoration {h : ℕ} (c : DecoNormalizedCode h) where
+  /-- The set of chosen eligible starts. -/
   starts : Finset (Fin h)
   starts_subset : starts ⊆ c.eligibleStarts
 
