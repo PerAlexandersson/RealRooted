@@ -72,28 +72,6 @@ macro_rules
         exact RealRooted.pairHasCommonLeftInterleaver_of_sameDegree_natDegree_le_one
           $hfpos $hgpos $hdeg $hfdeg)
   | `(tactic|
-      rr_compatible_pair_common_interleaver_degree_le_one using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        compatible := $hfg:term,
-        left_degree_le_one := $hfdeg:term,
-        right_degree_le_one := $hgdeg:term) =>
-      `(tactic|
-        have _hfg := ($hfg);
-        exact RealRooted.pairHasCommonInterleaver_of_natDegree_le_one
-          $hfpos $hgpos $hfdeg $hgdeg)
-  | `(tactic|
-      rr_compatible_pair_common_left_interleaver_degree_le_one using
-        left_pos_lc := $hfpos:term,
-        right_pos_lc := $hgpos:term,
-        compatible := $hfg:term,
-        left_degree_le_one := $hfdeg:term,
-        right_degree_le_one := $hgdeg:term) =>
-      `(tactic|
-        have _hfg := ($hfg);
-        exact RealRooted.pairHasCommonLeftInterleaver_of_natDegree_le_one
-          $hfpos $hgpos $hfdeg $hgdeg)
-  | `(tactic|
       rr_pairwise_common_interleaver_degree_le_one using
         member_pos_lc := $hpos:term,
         member_degree_le_one := $hdeg:term) =>
