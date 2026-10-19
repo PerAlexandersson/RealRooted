@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **305 IDs**; **35 formalized**, **257 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **306 IDs**; **36 formalized**, **257 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -163,6 +163,7 @@ Current totals: **305 IDs**; **35 formalized**, **257 shells**, **3 fragments**,
 | A122076 | `shell` | `/`: unit shifted-square lag, with centers `1` and `-1`.<br>`/`: expanded `B_n(t)=-1-2t-t^2`. | `rr_lw_negative_square_sequence_realrooted_unit`, `rr_sign` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A122542 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A122848 | `shell` | OEIS shapes `/`: `P_n = (1+t)P_{n-1}+c_n t P_{n-2}`.<br>after reindexing, `P_{n+2}=tP_{n+1}+n t P_n`.<br>+1 additional test intents | `rr_lw_current_X_sequence`, `rr_lw_current_X_sequence_auto`, `rr_lw_positive_t` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
+| A123382 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A124038 | `shell` | OEIS shape `/`: `P_{n+2}=tP_{n+1}-P_n`.<br>OEIS shapes `//`: real-rootedness consequence of<br>+1 additional test intents | `rr_favard_const`, `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A124039 | `shell` | row-sign normalized Chebyshev step `P_{n+2}=-tP_{n+1}-P_n`.<br>real-rootedness endpoint for the same row-sign normalization.<br>+1 additional test intents | `rr_favard_const_row_sign_unit`, `rr_favard_param_row_sign_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A124324 | `shell` | Active-offset `/` shape: | `rr_nonneg_coeffs`, `rr_strict_interl_mul_X_both`, `rr_strict_interl_wagner_derivative_gap_lag_sequence`, `rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted`, `rr_wagner_pos_seq` | `base`, `degree_two`, `derivative_coeff_pos`, `lag_coeff_pos`, `left_nonneg`, `natDegree`, `nonneg_coeffs`, `proper`, `recurrence`, `right_nonneg` | concrete row definition and proofs of the listed certificates |
