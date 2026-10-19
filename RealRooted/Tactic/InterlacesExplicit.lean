@@ -1,5 +1,6 @@
 import RealRooted.Interlacing.Euclid
 import RealRooted.Tactic.Recurrence.ODE
+import RealRooted.QuadraticRoot
 
 /-!
 # `rr_interlaces_explicit`
@@ -83,8 +84,9 @@ elab "rr_roots_explicit" : tactic => withMainContext do
   leaf
 
 /-- Prove `p.Splits` for an explicit `p` of degree at most two (degree one, or a
-nonnegative discriminant) or with only rational roots, after rewriting `p` into normal form. -/
-elab "rr_splits_explicit" : tactic => withMainContext do
+nonnegative discriminant), a palindromic quartic, or a product of rational linear factors
+with such a polynomial, after rewriting `p` into normal form. -/
+partial def splitsExplicit : TacticM Unit := withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   unless tgt.isAppOfArity ``Polynomial.Splits 3 || tgt.isAppOf ``Polynomial.Splits do
     throwError "rr_splits_explicit: the goal is not `p.Splits`"
@@ -110,9 +112,33 @@ elab "rr_splits_explicit" : tactic => withMainContext do
           Polynomial.coeff_X_pow, Polynomial.coeff_X, Polynomial.coeff_C,
           Polynomial.coeff_one, Polynomial.coeff_ofNat_mul]
         norm_num)))
+  else if let some r := pq.rationalRoots.head? then
+    -- split off one rational root and recurse on the quotient
+    let some q := pq.divExact? (QPoly.X - QPoly.const r)
+      | throwError "rr_splits_explicit: inexact division by a rational root"
+    evalTactic (← `(tactic| (
+      refine (congrArg Polynomial.Splits
+        (show $(← qpolyTerm pq) = (Polynomial.X - Polynomial.C ($(← ratTerm r) : ℝ)) *
+          $(← qpolyTerm q) by rr_poly_identity)).mpr ?_
+      refine Polynomial.Splits.mul (Polynomial.Splits.X_sub_C _) ?_)))
+    splitsExplicit
+  else if pq.natDegree == 4 && pq.coeff 0 == pq.coeff 4 && pq.coeff 1 == pq.coeff 3 &&
+      0 < pq.coeff 0 then
+    -- a palindromic quartic `a + b X + c X² + b X³ + a X⁴`
+    let (a, b, c) := (← ratTerm (pq.coeff 0), ← ratTerm (pq.coeff 1), ← ratTerm (pq.coeff 2))
+    evalTactic (← `(tactic| (
+      refine (congrArg Polynomial.Splits
+        (show $(← qpolyTerm pq) = Polynomial.C ($a : ℝ) + Polynomial.C ($b : ℝ) * Polynomial.X +
+          Polynomial.C ($c : ℝ) * Polynomial.X ^ 2 + Polynomial.C ($b : ℝ) * Polynomial.X ^ 3 +
+          Polynomial.C ($a : ℝ) * Polynomial.X ^ 4 by rr_poly_identity)).mpr ?_
+      exact RealRooted.splits_palindromic_quartic (by norm_num) (by norm_num) (by norm_num)
+        (by norm_num))))
   else
     throwError "rr_splits_explicit: degree {pq.natDegree} > 2 without rational roots \
       is not supported"
+
+@[inherit_doc splitsExplicit]
+elab "rr_splits_explicit" : tactic => splitsExplicit
 
 /-- Prove `p ≠ 0` for an explicit nonzero `p`, from its top coefficient. -/
 elab "rr_ne_zero_explicit" : tactic => withMainContext do

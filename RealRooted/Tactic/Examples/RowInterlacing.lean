@@ -580,6 +580,21 @@ def A106246 : ℕ → ℝ[X]
 theorem A106246_interlaces (n : ℕ) : Interlaces (A106246 n) (A106246 (n + 1)) := by
   rr_row_interlaces
 
+/-- Order three with characteristic polynomial `(λ - (1 + X))³` and a palindromic quartic
+residual (A124376): the rows are `(1 + X) ^ m` times `X⁴ + b X³ + c X² + b X + 1`. -/
+def A124376 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 1 + 4 * X + X ^ 2
+  | 3 => 1 + 7 * X + 7 * X ^ 2 + X ^ 3
+  | 4 => 1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4
+  | n + 5 => ((3 + (3 * X))) * A124376 (n + 4) + ((-3 + (-6 * X)
+      + (-3 * (X) ^ (2)))) * A124376 (n + 3) + ((1 + (X) ^ (3) + (3 * X)
+      + (3 * (X) ^ (2)))) * A124376 (n + 2)
+
+theorem A124376_splits (n : ℕ) : (A124376 n).Splits := by
+  rr_row_splits
+
 /-- An order-three recurrence with characteristic polynomial `(λ - (1 + X))³` and linear
 residuals (A124932). -/
 def A124932 : ℕ → ℝ[X]
