@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **305 IDs**; **34 formalized**, **258 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **306 IDs**; **34 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -166,6 +166,7 @@ Current totals: **305 IDs**; **34 formalized**, **258 shells**, **3 fragments**,
 | A124038 | `shell` | OEIS shape `/`: `P_{n+2}=tP_{n+1}-P_n`.<br>OEIS shapes `//`: real-rootedness consequence of<br>+1 additional test intents | `rr_favard_const`, `rr_favard_const_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A124039 | `shell` | row-sign normalized Chebyshev step `P_{n+2}=-tP_{n+1}-P_n`.<br>real-rootedness endpoint for the same row-sign normalization.<br>+1 additional test intents | `rr_favard_const_row_sign_unit`, `rr_favard_param_row_sign_unit` | `alpha`, `base_one`, `base_zero`, `step` | concrete row definition and proofs of the listed certificates |
 | A124324 | `shell` | Active-offset `/` shape: | `rr_nonneg_coeffs`, `rr_strict_interl_mul_X_both`, `rr_strict_interl_wagner_derivative_gap_lag_sequence`, `rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted`, `rr_wagner_pos_seq` | `base`, `degree_two`, `derivative_coeff_pos`, `lag_coeff_pos`, `left_nonneg`, `natDegree`, `nonneg_coeffs`, `proper`, `recurrence`, `right_nonneg` | concrete row definition and proofs of the listed certificates |
+| A124376 | `shell` | residual (): the rows are `(1 + X) ^ m` times `X⁴ + b X³ + c X² + b X + 1`.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A124848 | `formalized` | This is the denominator bookkeeping needed for `/`-style | `rr_lw_coeff_nonneg_seq_term`, `rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg` | `base`, `coeff`, `coeff_nonneg`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `raw_recurrence`, `root_lower` | none |
 | A124860 | `shell` | the numeric probe finds the factors and their exponents ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A124932 | `shell` | residuals ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

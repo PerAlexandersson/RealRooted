@@ -7,7 +7,8 @@ import RealRooted.Tactic.InterlacesExplicit
 
 `rr_row_closed_form_splits` closes `(P t).Splits` for a sequence `P : ℕ → ℝ[X]` given by a linear
 recurrence `P (n + k) = ∑ j, A j n * P (n + j)` (read by `linRec?`, no derivatives) whose rows,
-after dropping the first `s ≤ 2` rows, are a residual of degree at most two times a product of
+after dropping the first `s ≤ 4` rows, are a residual of degree at most two (or a palindromic
+quartic) times a product of
 recurring factors `qᵢ ^ eᵢ m`, where `qᵢ` is a monic irreducible factor of degree at most two with
 nonnegative discriminant and `eᵢ m = D₀ + d * ((m + φ) / p)` is a law with period `p ≤ 4`.
 
@@ -283,16 +284,30 @@ def cfExplicit? (L : LinRecData) (rows : Array QPoly) (s M : Nat) : MetaM (Optio
           if best.all (·.1 < tot) then best := some (tot, l)
     let some (_, l) := best | return none
     laws := laws.push l
-  let some res := cfResiduals? R facs laws 2 | return none
+  let some res := cfResiduals? R facs laws 4 | return none
+  let deg := res.foldl (fun d r => max d r.natDegree) 0
+  unless deg ≤ 2 || deg == 4 do return none
   let mut rs : Array QPoly := #[]
-  for l in [0:3] do
+  for l in [0:deg + 1] do
     let ys := res.map (·.coeff l)
     let pol := cfLagrange (ys.extract 0 5)
     unless (List.range (M + 1)).all fun m => pol.eval (m : Rat) == ys[m]! do return none
     rs := rs.push pol
-  -- the discriminant must have nonnegative coefficients
-  let disc := rs[1]! * rs[1]! - QPoly.smul 4 (rs[2]! * rs[0]!)
-  unless disc.coeffs.all (0 ≤ ·) do return none
+  if deg == 4 then
+    -- a palindromic quartic `a + b X + c X² + b X³ + a X⁴`: the conditions of
+    -- `RealRooted.splits_palindromic_quartic` must have nonnegative coefficients in `m`
+    unless rs[4]! == rs[0]! && rs[3]! == rs[1]! do return none
+    let (a, b, c) := (rs[0]!, rs[1]!, rs[2]!)
+    let conds := #[b - QPoly.smul 4 a, c + QPoly.smul 2 a - QPoly.smul 2 b,
+      b * b - QPoly.smul 4 (a * (c - QPoly.smul 2 a))]
+    unless !a.isZero && a.coeffs.all (0 ≤ ·) && conds.all (·.coeffs.all (0 ≤ ·)) do
+      return none
+    rs := rs.extract 0 3 |>.push b |>.push a
+  else
+    while rs.size < 3 do rs := rs.push (QPoly.const 0)
+    -- the discriminant must have nonnegative coefficients
+    let disc := rs[1]! * rs[1]! - QPoly.smul 4 (rs[2]! * rs[0]!)
+    unless disc.coeffs.all (0 ≤ ·) do return none
   let plan : CFPlan :=
     { P := L.P, eqn := L.eqn, s := s, k := k, facs := facs, laws := laws,
       lags := L.terms.map (·.1), tms := #[], isExplicit := true, base := #[], resid := rs }
@@ -303,7 +318,7 @@ def cfPlan? (L : LinRecData) : MetaM (Option CFPlan) := do
   if L.terms.any (·.2.1 != 0) then return none
   let M := 16
   let some rows ← linRecRows? L (M + 2) | return none
-  for s in [0:3] do
+  for s in [0:5] do
     if let some p ← cfExistential? L rows s (M + 2 - s) then return some p
     if let some p ← cfExplicit? L rows s (M + 2 - s) then return some p
   return none
@@ -508,7 +523,10 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
       let t0 ← ratPolyAtTerm (plan.resid[0]!).coeffs x
       let t1 ← ratPolyAtTerm (plan.resid[1]!).coeffs x
       let t2 ← ratPolyAtTerm (plan.resid[2]!).coeffs x
-      let res ← `($cT ($t0) + $cT ($t1) * $xT + $cT ($t2) * $xT ^ 2)
+      let res ← if plan.resid.size == 5 then
+          `($cT ($t0) + $cT ($t1) * $xT + $cT ($t2) * $xT ^ 2 + $cT ($t1) * $xT ^ 3 +
+            $cT ($t0) * $xT ^ 4)
+        else `($cT ($t0) + $cT ($t1) * $xT + $cT ($t2) * $xT ^ 2)
       `($(← rowAt a) = $(← withQ res a))
     else
       let res ← `($cT rr_c0 + $cT rr_c1 * $xT)
@@ -633,15 +651,20 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
       | some x => do pure (some (← `(($x).mul $t)))
   let m := mkIdent `rr_m
   let proj ← rightNestedAndProj (← `($key $m)) 0 k
+  let signTac ← `(tactic|
+    first
+      | (ring_nf; positivity)
+      | nlinarith [(Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)),
+          pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 2,
+          pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 3,
+          pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 4])
   let resSplits : Term ←
-    if plan.isExplicit then
-      `(RealRooted.splits_C_add_C_mul_X_add_C_mul_X_sq (by
-        first
-          | (ring_nf; positivity)
-          | nlinarith [(Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)),
-              pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 2,
-              pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 3,
-              pow_nonneg (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ)) 4]))
+    if plan.isExplicit && plan.resid.size == 5 then
+      `(RealRooted.splits_palindromic_quartic (by $signTac:tactic)
+        (sub_nonneg.1 (by $signTac:tactic)) (sub_nonneg.1 (by $signTac:tactic))
+        (by $signTac:tactic))
+    else if plan.isExplicit then
+      `(RealRooted.splits_C_add_C_mul_X_add_C_mul_X_sq (by $signTac:tactic))
     else `(Polynomial.Splits.of_natDegree_le_one (by compute_degree!))
   let finalExact ← match qsplits with
     | none => `(tactic| exact $resSplits)

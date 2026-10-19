@@ -309,4 +309,41 @@ theorem splits_C_add_C_mul_X_add_C_mul_X_sq {a b c : ℝ} (h : 0 ≤ b ^ 2 - 4 *
   unfold discrim
   linarith
 
+/-- A palindromic quartic `a + b X + c X² + b X³ + a X⁴` with `a > 0` splits when the quadratic
+`a y² + b y + (c - 2a)` in `y = X + 1/X` has both roots at most `-2`, that is, when `4a ≤ b`,
+`2b ≤ c + 2a` and `4a(c - 2a) ≤ b²`. -/
+theorem splits_palindromic_quartic {a b c : ℝ} (ha : 0 < a) (hb : 4 * a ≤ b)
+    (hc : 2 * b ≤ c + 2 * a) (hd : 0 ≤ b ^ 2 - 4 * a * (c - 2 * a)) :
+    (C a + C b * X + C c * X ^ 2 + C b * X ^ 3 + C a * X ^ 4 : ℝ[X]).Splits := by
+  set s := Real.sqrt (b ^ 2 - 4 * a * (c - 2 * a))
+  have hs2 : s ^ 2 = b ^ 2 - 4 * a * (c - 2 * a) := Real.sq_sqrt hd
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
+  have hsle : s ≤ b - 4 * a := by nlinarith
+  set y₁ := (-b + s) / (2 * a)
+  set y₂ := (-b - s) / (2 * a)
+  have h2a : 2 * a ≠ 0 := by positivity
+  have hsum : b = a * -(y₁ + y₂) := by
+    simp only [y₁, y₂]
+    field_simp
+    ring
+  have hprod : c = a * (2 + y₁ * y₂) := by
+    simp only [y₁, y₂]
+    field_simp
+    nlinarith
+  have hy₁ : y₁ ≤ -2 := by
+    rw [div_le_iff₀ (by positivity)]
+    linarith
+  have hy₂ : y₂ ≤ -2 := by
+    rw [div_le_iff₀ (by positivity)]
+    linarith
+  have hfac : (C a + C b * X + C c * X ^ 2 + C b * X ^ 3 + C a * X ^ 4 : ℝ[X]) =
+      C a * ((C 1 + C (-y₁) * X + C 1 * X ^ 2) * (C 1 + C (-y₂) * X + C 1 * X ^ 2)) := by
+    rw [hsum, hprod]
+    simp only [map_mul, map_neg, map_add, map_ofNat, map_one]
+    ring
+  rw [hfac]
+  refine (Splits.mul ?_ ?_).C_mul a
+  · exact splits_C_add_C_mul_X_add_C_mul_X_sq (by nlinarith)
+  · exact splits_C_add_C_mul_X_add_C_mul_X_sq (by nlinarith)
+
 end RealRooted
