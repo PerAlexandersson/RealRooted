@@ -1,6 +1,7 @@
 import RealRooted.Apolarity
 import RealRooted.BorceaBranden.Applications.PolarizationIff
 import RealRooted.GraceHalfPlane
+import RealRooted.GraceWalshSzego
 import RealRooted.LiebSokal
 import RealRooted.Polarization
 
@@ -12,7 +13,7 @@ version = 1
 section = "theorems"
 slug = "grace-apolarity"
 formalized = "2026-10-06"
-authors = ["Grace", "Szegő", "Lieb", "Sokal", "Borcea", "Brändén"]
+authors = ["Grace", "Walsh", "Szegő", "Lieb", "Sokal", "Borcea", "Brändén"]
 years = [1902, 1922, 1981, 2009]
 
 [[definitions]]
@@ -60,6 +61,39 @@ name = """RealRooted.Challenges.GraceApolarity.\
 mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero"""
 label = "Grace–Walsh–Szegő: a symmetric multiaffine polynomial is stable iff its diagonal is"
 headline = true
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_mem_closedBall"
+module = "RealRooted.GraceWalshSzego"
+label = "Grace–Walsh–Szegő coincidence theorem for closed disks"
+headline = true
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_mem_ball"
+module = "RealRooted.GraceWalshSzego"
+label = "Coincidence theorem for open disks"
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_im_div_pos"
+module = "RealRooted.GraceWalshSzego"
+label = "Coincidence theorem for open half-planes"
+headline = true
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_im_div_nonneg"
+module = "RealRooted.GraceWalshSzego"
+label = "Coincidence theorem for closed half-planes"
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_lt_dist"
+module = "RealRooted.GraceWalshSzego"
+label = "Coincidence theorem for the exterior of a disk, when the diagonal has degree n"
+headline = true
+
+[[theorems]]
+name = "RealRooted.exists_eval_const_eq_of_le_dist"
+module = "RealRooted.GraceWalshSzego"
+label = "Coincidence theorem for the closed exterior of a disk"
 
 [[theorems]]
 name = "RealRooted.Challenges.GraceApolarity.mvRealStable_iff_aeval_X_ne_zero_and_splits"
@@ -122,6 +156,16 @@ $p(z) = P(z, \dotsc, z)$, and $P$ is stable if and only if $p$ has no zeros
 in the open upper half-plane. If $P$ has real coefficients, then $P$ is real
 stable if and only if $p$ is nonzero and has only real zeros.
 
+**Theorem** (Grace–Walsh–Szegő coincidence theorem). Let
+$P \in \mathbb{C}[z_1, \dotsc, z_n]$ be symmetric and multiaffine, and let $C$
+be an open or closed disk, an open or closed half-plane, or the open or closed
+exterior of a disk. In the last case, assume that $P(z, \dotsc, z)$ has
+degree $n$. Then for all $\zeta_1, \dotsc, \zeta_n \in C$ there is
+$\zeta \in C$ with
+$$
+P(\zeta_1, \dotsc, \zeta_n) = P(\zeta, \dotsc, \zeta) .
+$$
+
 More generally, let $P \in \mathbb{C}[z_i : i \in \sigma]$, with $\sigma$
 finite, have degree at most $\kappa_i$ in $z_i$. Replacing each $z_i$ by a
 block of $\kappa_i$ new variables and polarizing $P$ in each block gives a
@@ -148,7 +192,16 @@ $\prod_i (w - z_i)$. All zeros of $p$ lie in the closed lower half-plane, so
 Grace's theorem would put some $z_i$ there, which is impossible. A symmetric
 multiaffine polynomial is a linear combination of elementary symmetric
 polynomials, so it is the polarization of its diagonal; this gives the
-Grace–Walsh–Szegő theorem. For the real form, a real polynomial without zeros
+Grace–Walsh–Szegő theorem. For the coincidence theorem in the upper
+half-plane, $P - P(\zeta)$ is symmetric, multiaffine and vanishes at a point
+of the product of upper half-planes, so it is not stable and its diagonal
+vanishes in the upper half-plane. Replacing each monomial
+$\prod_{i \in S} z_i$ by $\prod_{i \in S} (a z_i + b) \prod_{i \notin S} (c z_i + d)$
+transports this along Möbius maps to the other open regions; for exteriors,
+the degree condition rules out the pole of the map. The closed regions follow
+by shrinking open regions onto them, since $P(z, \dotsc, z) = P(\zeta)$ has
+finitely many solutions unless the diagonal is constant.
+For the real form, a real polynomial without zeros
 in the open upper half-plane has no nonreal zeros, since these come in
 conjugate pairs. Identifying the variables of each block recovers $P$ from its
 blockwise polarization, and identifying variables preserves stability. The
@@ -159,7 +212,9 @@ operation that preserves stability of multiaffine polynomials.
 ## References
 
 J. H. Grace, “The zeros of a polynomial,” *Proc. Cambridge Philos. Soc.* 11
-(1902), 352–357; G. Szegő, “Bemerkungen zu einem Satz von J. H. Grace über die
+(1902), 352–357; J. L. Walsh, “On the location of the roots of certain types
+of polynomials,” *Trans. Amer. Math. Soc.* 24 (1922), 163–180;
+G. Szegő, “Bemerkungen zu einem Satz von J. H. Grace über die
 Wurzeln algebraischer Gleichungen,” *Math. Z.* 13 (1922), 28–55; Q. I. Rahman
 and G. Schmeisser, *Analytic Theory of Polynomials*, Oxford University Press,
 2002; E. H. Lieb and A. D. Sokal, “A general Lee–Yang theorem for
