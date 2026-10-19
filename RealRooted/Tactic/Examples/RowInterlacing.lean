@@ -580,6 +580,30 @@ def A106246 : ℕ → ℝ[X]
 theorem A106246_interlaces (n : ℕ) : Interlaces (A106246 n) (A106246 (n + 1)) := by
   rr_row_interlaces
 
+/-- Order three, rows are orbit sums of the Haglund–Zhang threshold matrix with rows
+`(1, 1), (2, 1), (3, 1)` on the input `[1, 0, 0]` (A120987). -/
+def A120987 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3 * X
+  | 2 => 3 * X + 6 * X ^ 2
+  | n + 3 => ((3 * X)) * A120987 (n + 2) + (((-3 * (X) ^ (2)) + (3 * X))) * A120987 (n + 1)
+      + ((X + (X) ^ (3) + (-2 * (X) ^ (2)))) * A120987 n
+
+theorem A120987_splits (n : ℕ) : (A120987 n).Splits := by
+  rr_row_splits
+
+/-- Order three, rows shifted by one are orbit sums of a Gustafsson–Solus threshold matrix
+(A304429). -/
+def A304429 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1 + X
+  | n + 3 => (3) * A304429 (n + 2) + ((-3 + (2 * X))) * A304429 (n + 1) + ((1
+      + (-1 * X))) * A304429 n
+
+theorem A304429_splits (n : ℕ) : (A304429 n).Splits := by
+  rr_row_splits
+
 /-- An order-three recurrence with characteristic polynomial `(λ - (1 + X))³` and linear
 residuals (A124932). -/
 def A124932 : ℕ → ℝ[X]
@@ -622,8 +646,9 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 
 /--
 error: rr_row_splits: unknown route foo; the routes are derivativeXMul, factorPower,
-delayedProduct, closedForm, pathPower, lowerOrder, subseq, linearFactors, splitFactors, twoStep, shiftedProduct, nextRow, prevRow,
-halfGrowth, degreePattern, reversed, parityProduct, lagFeedback, fTransform
+delayedProduct, closedForm, pathPower, lowerOrder, thresholdOrbit, subseq, linearFactors,
+splitFactors, twoStep, shiftedProduct, nextRow, prevRow, halfGrowth, degreePattern, reversed,
+parityProduct, lagFeedback, fTransform
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
