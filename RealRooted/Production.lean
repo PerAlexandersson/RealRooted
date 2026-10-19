@@ -1869,6 +1869,7 @@ import RealRooted.OperatorMatrix.MixedLemma
 import RealRooted.OperatorMatrix.OneThetaXBoards
 import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
 import RealRooted.GraceWalshSzego
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
 
 /-!
 # RealRooted production umbrella
