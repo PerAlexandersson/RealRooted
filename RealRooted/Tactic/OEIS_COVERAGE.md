@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **305 IDs**; **34 formalized**, **258 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **305 IDs**; **35 formalized**, **257 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -57,7 +57,7 @@ Current totals: **305 IDs**; **34 formalized**, **258 shells**, **3 fragments**,
 | A038220 | `shell` | -style report order `3 + 2t`. | `rr_product_factor_const_first_auto` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A038226 | `shell` | -style report order `3 + 8t`.<br>The OEIS polynomial sequence, defined by a product recurrence with a linear factor.<br>+4 additional test intents | `rr_product_factor_const_first_auto`, `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A046739 | `shell` | active shift gives lag coefficient `(n+4)t`. | `rr_mw_lw_derivative_lag_sequence_sign_auto` | `base`, `degree_succ`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
-| A046741 | `shell` | A negative multiplier with Fibonacci top coefficients, by a ratio invariant ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_leadingCoeff_pos`, `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A046741 | `formalized` | A negative multiplier with Fibonacci top coefficients, by a ratio invariant ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_leadingCoeff_pos`, `rr_row_natDegree` | implicit/local certificates resolved by the route | none |
 | A046802 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+9 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A048854 | `shell` | generalized Lah `L[4,1]` `(2+X)f+(8+8X)f'+16Xf''=(1/4+D)(4(X-2)f+16Xf')`. | `rr_mw_plus_derivative_sequence_expanded_auto` | `base_one`, `base_zero`, `inner_degree_lower`, `inner_degree_upper`, `inner_pos_lc`, `outer`, `pos_lc`, `recurrence`, `root_nonpos` | concrete row definition and proofs of the listed certificates |
 | A049020 | `shell` | Distinguished-block set partitions: `v_n(t) = 1 + t` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign_at_roots_upper` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
