@@ -18,10 +18,12 @@ open Lean.Meta
 open Lean.Elab.Term
 open Lean.Elab.Tactic
 
+/-- The last component of a name, if it is a string. -/
 def nameLastString? : Name → Option String
   | .str _ value => some value
   | _ => none
 
+/-- Removes `suffix` from the last component of `name`, provided it is a proper suffix of it. -/
 def stripNameSuffix? (suffix : String) (name : Name) : Option Name := do
   let localName ← nameLastString? name
   let chars := localName.toList
@@ -32,12 +34,16 @@ def stripNameSuffix? (suffix : String) (name : Name) : Option Name := do
   else
     none
 
+/-- The name itself, followed by the names with a `Refined`, `Generated` or `generated` suffix
+removed. -/
 def namedConstantCandidates (name : Name) : List Name :=
   let stripped :=
     ["Refined", "Generated", "generated"].filterMap fun suffix =>
       stripNameSuffix? suffix name
   name :: stripped
 
+/-- The theorem-name suffixes to try for `suffix`, including the `_generated_` variants of the
+standard ones. -/
 def namedSuffixCandidates (suffix : String) : List String :=
   match suffix with
   | "_ne_zero" => ["_ne_zero", "_generated_ne_zero"]
@@ -47,6 +53,8 @@ def namedSuffixCandidates (suffix : String) : List String :=
   | "_strictInterl" => ["_strictInterl", "_generated_strictInterl"]
   | _ => [suffix]
 
+/-- Applies the theorem named after a candidate of `cName` with `suffix` appended, if it exists
+in the environment, to `arg`. -/
 def mkNamedTheoremApp? (cName : Name) (suffix : String) (arg : Expr) :
     TacticM (Option Expr) := do
   for name in namedConstantCandidates cName do
@@ -113,9 +121,14 @@ private partial def findNamedConstantAppWith?
         return some found
   return none
 
+/-- Finds an application of a named constant in `e` that is not Prop-valued, returning the name
+and its first argument; logical connectives, `Interlaces`, `StrictInterl` and `Polynomial`
+operations are skipped. -/
 def findNamedConstantApp? (e : Expr) : TacticM (Option (Name × Expr)) :=
   findNamedConstantAppWith? isIgnoredNamedHead (fun e => return !(← isPropValuedExpr e)) e
 
+/-- Finds an application of a named constant in `e` of type `ℝ[X]`, returning the name and its
+first argument; `Polynomial` operations are skipped. -/
 def findNamedPolynomialConstantApp? (e : Expr) : TacticM (Option (Name × Expr)) :=
   findNamedConstantAppWith? isIgnoredPolynomialHead isRealPolynomialExpr e
 

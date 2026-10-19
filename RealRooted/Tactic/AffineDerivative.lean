@@ -97,24 +97,33 @@ theorem affineDeriv_ne_zero_sequence
 
 namespace Tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).eval r = (1 - r) * f.derivative.eval r` from
+`root : f.IsRoot r`. -/
 syntax (name := rr_affine_deriv_eval_at_root_named)
   "rr_affine_deriv_eval_at_root" " using " "root" ":=" term :
   tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).eval r = 0 ↔ f.derivative.eval r = 0` from
+`root : f.IsRoot r` and `root_nonpos : r ≤ 0`. -/
 syntax (name := rr_affine_deriv_eval_zero_iff_named)
   "rr_affine_deriv_eval_zero_iff" " using "
     "root" ":=" term ","
     "root_nonpos" ":=" term :
   tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).coeff f.natDegree = (c - f.natDegree) *
+f.leadingCoeff` from `degree_ge_one : 1 ≤ f.natDegree`. -/
 syntax (name := rr_affine_deriv_coeff_named)
   "rr_affine_deriv_coeff" " using " "degree_ge_one" ":=" term :
   tactic
 
+/-- Sequence form of `rr_affine_deriv_coeff`: the same certificate for every index `n`. -/
 syntax (name := rr_affine_deriv_coeff_sequence_named)
   "rr_affine_deriv_coeff_sequence" " using " "degree_ge_one" ":=" term :
   tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).natDegree = f.natDegree` from `nonzero : f ≠ 0`,
+`degree_ge_one : 1 ≤ f.natDegree` and `scalar_ne_degree : c ≠ f.natDegree`. -/
 syntax (name := rr_affine_deriv_natDegree_named)
   "rr_affine_deriv_natDegree" " using "
     "nonzero" ":=" term ","
@@ -122,6 +131,7 @@ syntax (name := rr_affine_deriv_natDegree_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_affine_deriv_natDegree`: the same certificate for every index `n`. -/
 syntax (name := rr_affine_deriv_natDegree_sequence_named)
   "rr_affine_deriv_natDegree_sequence" " using "
     "nonzero" ":=" term ","
@@ -129,6 +139,9 @@ syntax (name := rr_affine_deriv_natDegree_sequence_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).leadingCoeff = (c - f.natDegree) *
+f.leadingCoeff` from `nonzero : f ≠ 0`, `degree_ge_one : 1 ≤ f.natDegree` and
+`scalar_ne_degree : c ≠ f.natDegree`. -/
 syntax (name := rr_affine_deriv_leadingCoeff_named)
   "rr_affine_deriv_leadingCoeff" " using "
     "nonzero" ":=" term ","
@@ -136,6 +149,7 @@ syntax (name := rr_affine_deriv_leadingCoeff_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_affine_deriv_leadingCoeff`: the same certificate for every index `n`. -/
 syntax (name := rr_affine_deriv_leadingCoeff_sequence_named)
   "rr_affine_deriv_leadingCoeff_sequence" " using "
     "nonzero" ":=" term ","
@@ -143,6 +157,8 @@ syntax (name := rr_affine_deriv_leadingCoeff_sequence_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Closes `C c * f + (1 - X) * f.derivative` `≠ 0` from `nonzero : f ≠ 0`,
+`degree_ge_one : 1 ≤ f.natDegree` and `scalar_ne_degree : c ≠ f.natDegree`. -/
 syntax (name := rr_affine_deriv_ne_zero_named)
   "rr_affine_deriv_ne_zero" " using "
     "nonzero" ":=" term ","
@@ -150,6 +166,7 @@ syntax (name := rr_affine_deriv_ne_zero_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_affine_deriv_ne_zero`: the same certificate for every index `n`. -/
 syntax (name := rr_affine_deriv_ne_zero_sequence_named)
   "rr_affine_deriv_ne_zero_sequence" " using "
     "nonzero" ":=" term ","
@@ -157,6 +174,9 @@ syntax (name := rr_affine_deriv_ne_zero_sequence_named)
     "scalar_ne_degree" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (C c * f + (1 - X) * f.derivative) f` from `splits : f.Splits`,
+`degree_ge_two : 2 ≤ f.natDegree`, `pos_lc : HasPosLeadingCoeff f`,
+`roots_nonpos : ∀ r ∈ f.roots, r ≤ 0` and `scalar_gt_degree : f.natDegree < c`. -/
 syntax (name := rr_strict_interl_affine_derivative_strong_named)
   "rr_strict_interl_affine_derivative_strong" " using "
     "splits" ":=" term ","
@@ -166,6 +186,8 @@ syntax (name := rr_strict_interl_affine_derivative_strong_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Degree-one variant of `rr_strict_interl_affine_derivative_strong`: `degree_eq_one :
+f.natDegree = 1` replaces `degree_ge_two`. -/
 syntax (name := rr_strict_interl_affine_derivative_degree_one_named)
   "rr_strict_interl_affine_derivative_degree_one" " using "
     "splits" ":=" term ","
@@ -175,6 +197,8 @@ syntax (name := rr_strict_interl_affine_derivative_degree_one_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Variant of `rr_strict_interl_affine_derivative_strong` that needs only `degree_ge_one : 1 ≤
+f.natDegree`. -/
 syntax (name := rr_strict_interl_affine_derivative_named)
   "rr_strict_interl_affine_derivative" " using "
     "splits" ":=" term ","
@@ -184,6 +208,8 @@ syntax (name := rr_strict_interl_affine_derivative_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Variant of `rr_strict_interl_affine_derivative` in which `nonneg : HasNonnegCoeffs
+f` replaces `pos_lc` and `roots_nonpos`. -/
 syntax (name := rr_strict_interl_affine_derivative_nonneg_named)
   "rr_strict_interl_affine_derivative_nonneg" " using "
     "splits" ":=" term ","
@@ -192,6 +218,8 @@ syntax (name := rr_strict_interl_affine_derivative_nonneg_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_strict_interl_affine_derivative`: closes `∀ n, StrictInterl (C (c n) *
+P n + (1 - X) * (P n).derivative) (P n)`. -/
 syntax (name := rr_strict_interl_affine_derivative_sequence_named)
   "rr_strict_interl_affine_derivative_sequence" " using "
     "splits" ":=" term ","
@@ -201,6 +229,8 @@ syntax (name := rr_strict_interl_affine_derivative_sequence_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Closes `∀ n, C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧ (C (c n) * P n + (1 - X) * (P
+n).derivative).Splits`, with the arguments of `rr_strict_interl_affine_derivative_sequence`. -/
 syntax (name := rr_strict_interl_affine_derivative_sequence_realrooted_named)
   "rr_strict_interl_affine_derivative_sequence_realrooted" " using "
     "splits" ":=" term ","
@@ -210,6 +240,8 @@ syntax (name := rr_strict_interl_affine_derivative_sequence_realrooted_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_strict_interl_affine_derivative_nonneg`: closes `∀ n, StrictInterl (C
+(c n) * P n + (1 - X) * (P n).derivative) (P n)`. -/
 syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_named)
   "rr_strict_interl_affine_derivative_nonneg_sequence" " using "
     "splits" ":=" term ","
@@ -218,6 +250,9 @@ syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_named)
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Closes `∀ n, C (c n) * P n + (1 - X) * (P n).derivative ≠ 0 ∧ (C (c n) * P n + (1 - X) * (P
+n).derivative).Splits`, with the arguments of
+`rr_strict_interl_affine_derivative_nonneg_sequence`. -/
 syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_realrooted_named)
   "rr_strict_interl_affine_derivative_nonneg_sequence_realrooted" " using "
     "splits" ":=" term ","
@@ -226,12 +261,16 @@ syntax (name := rr_strict_interl_affine_derivative_nonneg_sequence_realrooted_na
     "scalar_gt_degree" ":=" term :
   tactic
 
+/-- Closes `0 < (C c * f + (1 - X) * f.derivative).eval r ↔ 0 < f.derivative.eval r` from
+`root : f.IsRoot r` and `root_nonpos : r ≤ 0`. -/
 syntax (name := rr_affine_deriv_eval_pos_iff_named)
   "rr_affine_deriv_eval_pos_iff" " using "
     "root" ":=" term ","
     "root_nonpos" ":=" term :
   tactic
 
+/-- Closes `(C c * f + (1 - X) * f.derivative).eval r < 0 ↔ f.derivative.eval r < 0` from
+`root : f.IsRoot r` and `root_nonpos : r ≤ 0`. -/
 syntax (name := rr_affine_deriv_eval_neg_iff_named)
   "rr_affine_deriv_eval_neg_iff" " using "
     "root" ":=" term ","

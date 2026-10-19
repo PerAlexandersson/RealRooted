@@ -19,6 +19,7 @@ namespace RealRooted.BrandenVecchi
 /-- Canonical run-length data: adjacent representatives are distinct and
 every run length is positive. -/
 structure RunLengthData (α : Type*) where
+  /-- The list of pairs of a run representative and its run length. -/
   runs : List (α × ℕ)
   representatives_ne : (runs.map Prod.fst).IsChain (· ≠ ·)
   lengths_pos : ∀ run ∈ runs, 0 < run.2

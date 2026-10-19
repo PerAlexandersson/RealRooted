@@ -13,6 +13,7 @@ noncomputable section
 
 namespace BigDescents
 
+/-- The real polynomial `∑ k, C(n, 2k + 1) X ^ (2k)`, summed over `0 ≤ k < (n + 1) / 2`. -/
 noncomputable def oddBinomAuxReal (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
     C ((Nat.choose n (2 * k + 1) : ℝ)) * X ^ (2 * k)
@@ -68,18 +69,23 @@ theorem oddBinomAuxReal_identity (n : ℕ) :
         have heven : Even (2 * k + 1 + 1) := ⟨k + 1, by lia⟩
         simp_all
 
+/-- The complex polynomial `∑ k, C(n, 2k + 1) X ^ (2k)`, summed over `0 ≤ k < (n + 1) / 2`. -/
 noncomputable def oddBinomAux (n : ℕ) : ℂ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
     C ((Nat.choose n (2 * k + 1) : ℂ)) * X ^ (2 * k)
 
+/-- The complex polynomial `∑ k, C(n, 2k + 1) X ^ k`, summed over `0 ≤ k < (n + 1) / 2`. -/
 noncomputable def oddBinomPoly (n : ℕ) : ℂ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
     C ((Nat.choose n (2 * k + 1) : ℂ)) * X ^ k
 
+/-- The real polynomial `∑ k, C(n, 2k + 1) X ^ k`, summed over `0 ≤ k < (n + 1) / 2`. -/
 noncomputable def oddBinomPolyReal (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.range ((n + 1) / 2),
     C ((Nat.choose n (2 * k + 1) : ℝ)) * X ^ k
 
+/-- The real number `-tan(π j / n) ^ 2`, the `j`-th candidate root of the odd-binomial polynomial of
+degree `n`. -/
 noncomputable def tangentRoot (n j : ℕ) : ℝ :=
   - (Real.tan (Real.pi * (j : ℝ) / (n : ℝ))) ^ 2
 
@@ -349,6 +355,7 @@ lemma oddBinomPolyReal_tangentRoot_eval_eq_zero
     lia
   simp_all
 
+/-- The finite set of the numbers `tangentRoot n j` for `1 ≤ j ≤ (n - 1) / 2`. -/
 noncomputable def tangentRootFinset (n : ℕ) : Finset ℝ :=
   (Finset.Icc 1 ((n - 1) / 2)).image (tangentRoot n)
 

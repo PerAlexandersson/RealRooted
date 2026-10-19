@@ -24,6 +24,7 @@ universe u
 /-- A Boolean direction choice with exactly one direction on every edge and
 no direction on a nonedge. -/
 structure Orientation {V : Type u} (G : _root_.SimpleGraph V) where
+  /-- The direction choice: `dir u v` records whether the edge `u v` is directed from `u` to `v`. -/
   dir : V → V → Bool
   dir_ne_of_adj : ∀ ⦃u v⦄, G.Adj u v → dir u v ≠ dir v u
   dir_eq_false_of_not_adj : ∀ ⦃u v⦄, ¬G.Adj u v → dir u v = false

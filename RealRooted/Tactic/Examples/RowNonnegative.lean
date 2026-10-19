@@ -13,6 +13,7 @@ noncomputable section
 
 namespace RealRooted.Tactic.Examples
 
+/-- Example sequence with a first-order derivative recurrence and nonnegative coefficients. -/
 def nonnegativeLinRecRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
@@ -24,6 +25,7 @@ def nonnegativeLinRecRows : ℕ → ℝ[X]
 example : ∀ n, HasNonnegCoeffs (nonnegativeLinRecRows n) := by
   rr_row_nonneg_coeffs
 
+/-- Example sequence with an order-three recurrence and nonnegative coefficients. -/
 def orderThreeNonnegativeRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
@@ -36,6 +38,7 @@ def orderThreeNonnegativeRows : ℕ → ℝ[X]
 example : ∀ n, HasNonnegCoeffs (orderThreeNonnegativeRows n) := by
   rr_row_nonneg_coeffs
 
+/-- Example sequence whose rows have nonnegative coefficients only after dropping the first row. -/
 def nonnegativeRowsAfterDrop : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 0

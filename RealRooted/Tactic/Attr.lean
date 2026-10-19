@@ -28,54 +28,79 @@ Planned matrix attributes:
 - `[rr_matrix_threshold]`.
 -/
 
+/-- Tag attribute `rr_recurrence`, marking recurrence lemmas used by the RealRooted recurrence
+tactics. -/
 initialize rrRecurrenceAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_recurrence
     "recurrence lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_degree`, marking `natDegree` lemmas used by the RealRooted recurrence
+tactics. -/
 initialize rrDegreeAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_degree
     "natDegree lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_nonzero`, marking nonzero lemmas used by the RealRooted recurrence
+tactics. -/
 initialize rrNonzeroAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_nonzero
     "nonzero lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_pos_lc`, marking positive-leading-coefficient lemmas used by the
+RealRooted recurrence tactics. -/
 initialize rrPosLCAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_pos_lc
     "positive-leading-coefficient lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_nonneg`, marking nonnegative-coefficient lemmas used by the RealRooted
+recurrence tactics. -/
 initialize rrNonnegAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_nonneg
     "nonnegative-coefficient lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_root_bound`, marking root-location lemmas used by the RealRooted
+recurrence tactics. -/
 initialize rrRootBoundAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_root_bound
     "root-location lemmas used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_base_strict_interl`, marking base `StrictInterl` cases used by the
+RealRooted recurrence tactics. -/
 initialize rrBaseStrictInterlAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_strict_interl
     "base StrictInterl cases used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_base_prec`, a deprecated compatibility name for `rr_base_strict_interl`. -/
 initialize rrBasePrecAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_prec
     "deprecated compatibility name for rr_base_strict_interl"
 
+/-- Tag attribute `rr_base_interlaces`, marking base `Interlaces` cases used by the RealRooted
+recurrence tactics. -/
 initialize rrBaseInterlacesAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_interlaces
     "base Interlaces cases used by RealRooted recurrence tactics"
 
+/-- Tag attribute `rr_matrix_rect`, marking matrix rectangularity lemmas used by the RealRooted
+matrix tactics. -/
 initialize rrMatrixRectAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_matrix_rect
     "matrix rectangularity lemmas used by RealRooted matrix tactics"
 
+/-- Tag attribute `rr_matrix_nonneg`, marking matrix nonnegative-coefficient lemmas used by the
+RealRooted matrix tactics. -/
 initialize rrMatrixNonnegAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_matrix_nonneg
     "matrix nonnegative-coefficient lemmas used by RealRooted matrix tactics"
 
+/-- Tag attribute `rr_matrix_2x2`, marking matrix `2 × 2` interlacing lemmas used by the
+RealRooted matrix tactics. -/
 initialize rrMatrix2x2Attr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_matrix_2x2
     "matrix 2x2 interlacing lemmas used by RealRooted matrix tactics"
 
+/-- Tag attribute `rr_matrix_threshold`, marking row-threshold lemmas used by the RealRooted
+matrix tactics. -/
 initialize rrMatrixThresholdAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_matrix_threshold
     "row-threshold lemmas used by RealRooted matrix tactics"
@@ -88,6 +113,8 @@ open Lean.Elab
 open Lean.Elab.Command
 open Lean.Elab.Tactic
 
+/-- The certificate attributes, each paired with its name, in the order used for lookup and
+diagnostics. -/
 def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
   #[
     (`rr_recurrence, rrRecurrenceAttr),
@@ -127,11 +154,15 @@ end RealRooted
 
 open RealRooted.Tactic
 
+/-- Logs, for each certificate attribute, the number and the names of the declarations tagged
+with it. -/
 syntax (name := rr_certificates_cmd) "#rr_certificates" : command
 
 elab_rules : command
   | `(command| #rr_certificates) => logTaggedCertificates
 
+/-- Tactic form of `#rr_certificates`: logs the declarations tagged with each certificate
+attribute. -/
 syntax (name := rr_certificates_tac) "rr_certificates" : tactic
 
 elab_rules : tactic

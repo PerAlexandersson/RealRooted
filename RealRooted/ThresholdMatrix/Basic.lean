@@ -225,6 +225,7 @@ theorem interl_refl_of_realRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     Interl p p :=
   Interl.refl fun _ => hp.2
 
+/-- The entries `a, b, c, d` are equal to `A, B, C, D` respectively. -/
 def Threshold2x2EntryTuple
     (a b c d A B C D : ℝ[X]) : Prop :=
   a = A ∧ b = B ∧ c = C ∧ d = D

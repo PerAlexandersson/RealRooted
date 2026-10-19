@@ -90,6 +90,9 @@ theorem bezout_sequence_no_common_root_of_posDef
     ∀ i : Nat, ∀ r : ℝ, (P i).IsRoot r → ¬ (Q i).IsRoot r := fun i =>
   bezout_no_common_root_of_posDef (hd i) (hP_deg i) (hQ_deg i) (hpos i)
 
+/-- Closes `StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef` from
+`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
+`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
 syntax (name := rr_bezout_strict_interl_same_degree_iff_named)
   "rr_bezout_strict_interl_same_degree_iff" " using "
     "left_pos_lc" ":=" term ","
@@ -98,6 +101,10 @@ syntax (name := rr_bezout_strict_interl_same_degree_iff_named)
     "right_degree" ":=" term :
   tactic
 
+/-- Closes `(bezoutMatrix n q p).PosDef` from
+`strict_interl_same_degree : StrictInterlSameDegree p q` and `left_pos_lc` and `right_pos_lc`
+(positive leading coefficients of `p` and `q`) and `left_degree : p.natDegree = n` and
+`right_degree : q.natDegree = n`. -/
 syntax (name := rr_bezout_pos_def_of_strict_interl_same_degree_named)
   "rr_bezout_pos_def_of_strict_interl_same_degree" " using "
     "left_pos_lc" ":=" term ","
@@ -107,6 +114,9 @@ syntax (name := rr_bezout_pos_def_of_strict_interl_same_degree_named)
     "strict_interl_same_degree" ":=" term :
   tactic
 
+/-- Closes `StrictInterlSameDegree p q` from `pos_def : (bezoutMatrix n q p).PosDef` and
+`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
+`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
 syntax (name := rr_bezout_strict_interl_same_degree_of_pos_def_named)
   "rr_bezout_strict_interl_same_degree_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -116,6 +126,9 @@ syntax (name := rr_bezout_strict_interl_same_degree_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Closes `StrictInterl p q` from `pos_def : (bezoutMatrix n q p).PosDef` and
+`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
+`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
 syntax (name := rr_bezout_strict_interl_of_pos_def_named)
   "rr_bezout_strict_interl_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -125,6 +138,10 @@ syntax (name := rr_bezout_strict_interl_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Closes `(p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)` from
+`pos_def : (bezoutMatrix n q p).PosDef` and `left_pos_lc` and `right_pos_lc` (positive leading
+coefficients of `p` and `q`) and `left_degree : p.natDegree = n` and
+`right_degree : q.natDegree = n`. -/
 syntax (name := rr_bezout_realrooted_of_pos_def_named)
   "rr_bezout_realrooted_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -134,6 +151,9 @@ syntax (name := rr_bezout_realrooted_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Closes `∀ r, p.IsRoot r → ¬ q.IsRoot r` from `size_ne_zero : n ≠ 0`,
+`left_degree_le : p.natDegree ≤ n`, `right_degree_le : q.natDegree ≤ n` and
+`pos_def : (bezoutMatrix n q p).PosDef`. -/
 syntax (name := rr_bezout_no_common_root_of_pos_def_named)
   "rr_bezout_no_common_root_of_pos_def" " using "
     "size_ne_zero" ":=" term ","
@@ -142,6 +162,8 @@ syntax (name := rr_bezout_no_common_root_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Sequence form of `rr_bezout_pos_def_of_strict_interl_same_degree`: the same certificate for
+every index `i`, with `d i` in place of `n`. -/
 syntax (name := rr_bezout_sequence_pos_def_of_strict_interl_same_degree_named)
   "rr_bezout_sequence_pos_def_of_strict_interl_same_degree" " using "
     "left_pos_lc" ":=" term ","
@@ -151,6 +173,8 @@ syntax (name := rr_bezout_sequence_pos_def_of_strict_interl_same_degree_named)
     "strict_interl_same_degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_bezout_strict_interl_same_degree_of_pos_def`: the same certificate for
+every index `i`, with `d i` in place of `n`. -/
 syntax (name := rr_bezout_sequence_strict_interl_same_degree_of_pos_def_named)
   "rr_bezout_sequence_strict_interl_same_degree_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -160,6 +184,9 @@ syntax (name := rr_bezout_sequence_strict_interl_same_degree_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Sequence form of
+`rr_bezout_strict_interl_of_pos_def`: the same certificate for every index `i`, with `d i` in
+place of `n`. -/
 syntax (name := rr_bezout_sequence_strict_interl_of_pos_def_named)
   "rr_bezout_sequence_strict_interl_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -169,6 +196,9 @@ syntax (name := rr_bezout_sequence_strict_interl_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Sequence form of
+`rr_bezout_realrooted_of_pos_def`: the same certificate for every index `i`, with `d i` in place
+of `n`. -/
 syntax (name := rr_bezout_sequence_realrooted_of_pos_def_named)
   "rr_bezout_sequence_realrooted_of_pos_def" " using "
     "left_pos_lc" ":=" term ","
@@ -178,6 +208,9 @@ syntax (name := rr_bezout_sequence_realrooted_of_pos_def_named)
     "pos_def" ":=" term :
   tactic
 
+/-- Sequence form of
+`rr_bezout_no_common_root_of_pos_def`: the same certificate for every index `i`, with `d i` in
+place of `n`. -/
 syntax (name := rr_bezout_sequence_no_common_root_of_pos_def_named)
   "rr_bezout_sequence_no_common_root_of_pos_def" " using "
     "size_ne_zero" ":=" term ","

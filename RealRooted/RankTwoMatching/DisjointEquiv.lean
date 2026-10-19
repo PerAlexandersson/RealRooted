@@ -17,6 +17,8 @@ theorem ne_of_finset_disjoint {A B : Finset V} (hAB : Disjoint A B)
   subst j
   exact (Finset.disjoint_left.mp hAB hi) hj
 
+/-- The edge `s(i, f i)` of the complete graph determined by `i ∈ A` and the bijection `f : A ≃
+B`. -/
 def edgeOfDisjointEquiv {A B : Finset V} (hAB : Disjoint A B)
     (f : A ≃ B) (i : A) :
     (_root_.SimpleGraph.completeGraph V).edgeSet :=
@@ -35,6 +37,8 @@ theorem edgeOfDisjointEquiv_injective {A B : Finset V}
   · exact Subtype.ext hs.1
   · exact (ne_of_finset_disjoint hAB i.2 (f j).2 hs.1).elim
 
+/-- The matching with edges `s(i, f i)` for `i ∈ A`, given by a bijection `f : A ≃ B` of disjoint
+finite sets. -/
 def matchingOfDisjointEquiv {A B : Finset V} (hAB : Disjoint A B)
     (f : A ≃ B) :
     Finset (_root_.SimpleGraph.completeGraph V).edgeSet :=
@@ -134,6 +138,8 @@ theorem matchingOf_orientationVertexEquiv
       rfl
     rw [hleft, hright, Sym2.other_spec' (ho e he)]
 
+/-- The bijection between `A` and the edges of the matching `matchingOfDisjointEquiv hAB f`, sending
+`i` to `s(i, f i)`. -/
 def edgeIndexEquiv {A B : Finset V} (hAB : Disjoint A B)
     (f : A ≃ B) : A ≃ matchingOfDisjointEquiv hAB f :=
   Equiv.ofBijective
@@ -148,6 +154,8 @@ def edgeIndexEquiv {A B : Finset V} (hAB : Disjoint A B)
         obtain ⟨i, hi, hie⟩ := he
         exact ⟨i, Subtype.ext hie⟩⟩
 
+/-- The endpoint choice for the matching `matchingOfDisjointEquiv hAB f` selecting, for each edge,
+its endpoint in `A`. -/
 def orientationOfDisjointEquiv {A B : Finset V} (hAB : Disjoint A B)
     (f : A ≃ B) (e : (_root_.SimpleGraph.completeGraph V).edgeSet)
     (he : e ∈ matchingOfDisjointEquiv hAB f) : V :=

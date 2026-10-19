@@ -74,6 +74,11 @@ theorem magnitude_sequence_cert_of_abs_dominated
         (B2 i).eval r * ((G2 i).eval r * (G1 i).eval r) < 0 := fun i r =>
   RealRooted.magnitude_cert_of_abs_dominated (hhead i r) (hdom i r)
 
+/-- Closes `StrictInterl F (A * F + B1 * G1 + B2 * G2)` when the target has degree
+`F.natDegree + 1`; the arguments are `interlaces : Interlaces G1 F`,
+`interlacer_pos_lc : HasPosLeadingCoeff G1`, `target_pos_lc` for the target, and `certificate`
+saying that `B1 * G1 ^ 2 + B2 * (G2 * G1)` is negative at every root of `F`, and `degree` is the
+degree identity. -/
 syntax (name := rr_magnitude_dominated_succ_named)
   "rr_magnitude_dominated_succ" " using "
     "interlaces" ":=" term ","
@@ -83,6 +88,7 @@ syntax (name := rr_magnitude_dominated_succ_named)
     "certificate" ":=" term :
   tactic
 
+/-- Sequence form of `rr_magnitude_dominated_succ`: the same certificate for every index `i`. -/
 syntax (name := rr_magnitude_dominated_sequence_succ_named)
   "rr_magnitude_dominated_sequence_succ" " using "
     "interlaces" ":=" term ","
@@ -92,6 +98,8 @@ syntax (name := rr_magnitude_dominated_sequence_succ_named)
     "certificate" ":=" term :
   tactic
 
+/-- Variant of `rr_magnitude_dominated_succ` for a target of degree `F.natDegree`; `degree` is
+the degree identity. -/
 syntax (name := rr_magnitude_dominated_same_named)
   "rr_magnitude_dominated_same" " using "
     "interlaces" ":=" term ","
@@ -101,6 +109,7 @@ syntax (name := rr_magnitude_dominated_same_named)
     "certificate" ":=" term :
   tactic
 
+/-- Sequence form of `rr_magnitude_dominated_same`: the same certificate for every index `i`. -/
 syntax (name := rr_magnitude_dominated_sequence_same_named)
   "rr_magnitude_dominated_sequence_same" " using "
     "interlaces" ":=" term ","
@@ -110,6 +119,8 @@ syntax (name := rr_magnitude_dominated_sequence_same_named)
     "certificate" ":=" term :
   tactic
 
+/-- Variant of `rr_magnitude_dominated_succ` for a target whose degree lies between
+`F.natDegree` (`degree_lower`) and `F.natDegree + 1` (`degree_upper`). -/
 syntax (name := rr_magnitude_dominated_named)
   "rr_magnitude_dominated" " using "
     "interlaces" ":=" term ","
@@ -120,6 +131,7 @@ syntax (name := rr_magnitude_dominated_named)
     "certificate" ":=" term :
   tactic
 
+/-- Sequence form of `rr_magnitude_dominated`: the same certificate for every index `i`. -/
 syntax (name := rr_magnitude_dominated_sequence_named)
   "rr_magnitude_dominated_sequence" " using "
     "interlaces" ":=" term ","
@@ -130,12 +142,17 @@ syntax (name := rr_magnitude_dominated_sequence_named)
     "certificate" ":=" term :
   tactic
 
+/-- Closes `b1.eval r * (g1.eval r) ^ 2 + b2.eval r * (g2.eval r * g1.eval r) < 0` from
+`head_negative` (the first term is negative) and `domination` (the second term is smaller in
+absolute value). -/
 syntax (name := rr_magnitude_cert_abs_dominated_named)
   "rr_magnitude_cert_abs_dominated" " using "
     "head_negative" ":=" term ","
     "domination" ":=" term :
   tactic
 
+/-- Sequence form of `rr_magnitude_cert_abs_dominated`: the same certificate for every index `i`
+and point `r`. -/
 syntax (name := rr_magnitude_sequence_cert_abs_dominated_named)
   "rr_magnitude_sequence_cert_abs_dominated" " using "
     "head_negative" ":=" term ","

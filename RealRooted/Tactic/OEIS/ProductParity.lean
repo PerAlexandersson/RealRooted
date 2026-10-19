@@ -10,6 +10,10 @@ endpoint-pair certificates.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by a real-rooted factor `F n` (`certificate := scalarThenFactor`, as
+`rr_product_scalar_factor_sequence`); the arguments are `base`,
+`scalar_ne`, `factor_realrooted`, an optional `cutoff`, `scalar_step` and `factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_factor)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -21,6 +25,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_factor)
     "certificate" ":=" "scalarThenFactor" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by a real-rooted factor `F n` (`certificate := scalarThenFactorAuto`, as
+`rr_product_scalar_factor_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, `factor_realrooted`, an optional `cutoff`,
+`scalar_step` and `factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_factor_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -31,6 +40,10 @@ syntax (name := rr_product_parity_sequence_scalar_then_factor_auto)
     "certificate" ":=" "scalarThenFactorAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `X + C (b n)` (`certificate := scalarThenXAddC`, as
+`rr_product_scalar_linear_sequence`); the arguments are `base`,
+`scalar_ne`, an optional `cutoff`, `scalar_step` and `linear_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_x_add_c)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -41,6 +54,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c)
     "certificate" ":=" "scalarThenXAddC" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `X + C (b n)` (`certificate := scalarThenXAddCAuto`, as
+`rr_product_scalar_linear_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, an optional `cutoff`, `scalar_step` and
+`linear_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -50,6 +68,10 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_auto)
     "certificate" ":=" "scalarThenXAddCAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `C (b n) + X` (`certificate := scalarThenCAddX`, as
+`rr_product_scalar_C_add_X_sequence`); the arguments are `base`,
+`scalar_ne`, an optional `cutoff`, `scalar_step` and `linear_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_c_add_x)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -60,6 +82,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x)
     "certificate" ":=" "scalarThenCAddX" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `C (b n) + X` (`certificate := scalarThenCAddXAuto`, as
+`rr_product_scalar_C_add_X_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, an optional `cutoff`, `scalar_step` and
+`linear_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -69,6 +96,10 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_auto)
     "certificate" ":=" "scalarThenCAddXAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `X ^ m n` (`certificate := scalarThenRootZeroPow`, as
+`rr_product_scalar_X_pow_sequence`); the arguments are `base`,
+`scalar_ne`, an optional `cutoff`, `scalar_step` and `factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -79,6 +110,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow)
     "certificate" ":=" "scalarThenRootZeroPow" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `X ^ m n` (`certificate := scalarThenRootZeroPowAuto`, as
+`rr_product_scalar_X_pow_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, an optional `cutoff`, `scalar_step` and
+`factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -88,6 +124,10 @@ syntax (name := rr_product_parity_sequence_scalar_then_root_zero_pow_auto)
     "certificate" ":=" "scalarThenRootZeroPowAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `(X + C (b n)) ^ m n` (`certificate := scalarThenXAddCPow`, as
+`rr_product_scalar_X_add_C_pow_sequence`); the arguments are `base`,
+`scalar_ne`, an optional `cutoff`, `scalar_step` and `factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -98,6 +138,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow)
     "certificate" ":=" "scalarThenXAddCPow" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `(X + C (b n)) ^ m n` (`certificate := scalarThenXAddCPowAuto`, as
+`rr_product_scalar_X_add_C_pow_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, an optional `cutoff`, `scalar_step` and
+`factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -107,6 +152,10 @@ syntax (name := rr_product_parity_sequence_scalar_then_x_add_c_pow_auto)
     "certificate" ":=" "scalarThenXAddCPowAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `(C (b n) + X) ^ m n` (`certificate := scalarThenCAddXPow`, as
+`rr_product_scalar_C_add_X_pow_sequence`); the arguments are `base`,
+`scalar_ne`, an optional `cutoff`, `scalar_step` and `factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -117,6 +166,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow)
     "certificate" ":=" "scalarThenCAddXPow" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the two-step recurrence that multiplies by a scalar
+`C (a n)` and then by `(C (b n) + X) ^ m n` (`certificate := scalarThenCAddXPowAuto`, as
+`rr_product_scalar_C_add_X_pow_sequence_auto`); the nonvanishing of the scalars is proved
+automatically, and the arguments are `base`, an optional `cutoff`, `scalar_step` and
+`factor_step`. -/
 syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow_auto)
   "rr_product_parity_sequence" " using "
     "base" ":=" term ","
@@ -126,6 +180,11 @@ syntax (name := rr_product_parity_sequence_scalar_then_c_add_x_pow_auto)
     "certificate" ":=" "scalarThenCAddXPowAuto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a parity-split sequence
+(`certificate := scalarXOdd`, as
+`rr_even_product_odd_X_scalar_sequence`) from `even_realrooted`,
+`scalar_ne`, `even_factorization : P (2 * n) = Q n` and `odd_factorization : P (2 * n + 1) = C
+(a n) * X * Q n`. -/
 syntax (name := rr_product_parity_lift_sequence_scalar_x_odd)
   "rr_product_parity_lift_sequence" " using "
     "even_realrooted" ":=" term ","
@@ -135,6 +194,10 @@ syntax (name := rr_product_parity_lift_sequence_scalar_x_odd)
     "certificate" ":=" "scalarXOdd" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (A n) (B n)` for the endpoint pair with `A (n + 1) = A n + B n`
+and `B (n + 1) = B n + X * A (n + 1)` (`certificate := sumThenX`, as
+`rr_endpoint_sum_then_X_pair_sequence`); the arguments are `base`,
+`left_nonneg`, `right_nonneg`, `sum_step` and `x_step`. -/
 syntax (name := rr_endpoint_pair_sequence_sum_then_x)
   "rr_endpoint_pair_sequence" " using "
     "base" ":=" term ","
@@ -145,6 +208,8 @@ syntax (name := rr_endpoint_pair_sequence_sum_then_x)
     "certificate" ":=" "sumThenX" :
   tactic
 
+/-- Closes `∀ n, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits)` for the endpoint pair of
+`rr_endpoint_pair_sequence` with `certificate := sumThenX`, with the same arguments. -/
 syntax (name := rr_endpoint_pair_sequence_realrooted_sum_then_x)
   "rr_endpoint_pair_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -155,6 +220,10 @@ syntax (name := rr_endpoint_pair_sequence_realrooted_sum_then_x)
     "certificate" ":=" "sumThenX" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (A n) (B n)` for the endpoint pair with
+`B (n + 1) = B n + X * A n` and `A (n + 1) = A n + B (n + 1)` (`certificate := xThenSum`, as
+`rr_endpoint_X_then_sum_pair_sequence`); the arguments are `base`,
+`left_nonneg`, `right_nonneg`, `x_step` and `sum_step`. -/
 syntax (name := rr_endpoint_pair_sequence_x_then_sum)
   "rr_endpoint_pair_sequence" " using "
     "base" ":=" term ","
@@ -165,6 +234,8 @@ syntax (name := rr_endpoint_pair_sequence_x_then_sum)
     "certificate" ":=" "xThenSum" :
   tactic
 
+/-- Closes `∀ n, (A n ≠ 0 ∧ (A n).Splits) ∧ (B n ≠ 0 ∧ (B n).Splits)` for the endpoint pair of
+`rr_endpoint_pair_sequence` with `certificate := xThenSum`, with the same arguments. -/
 syntax (name := rr_endpoint_pair_sequence_realrooted_x_then_sum)
   "rr_endpoint_pair_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -175,6 +246,10 @@ syntax (name := rr_endpoint_pair_sequence_realrooted_x_then_sum)
     "certificate" ":=" "xThenSum" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` when the even and odd rows are endpoint powers times
+`A n` and `B n` for the pair of `rr_endpoint_pair_sequence` with `certificate :=
+sumThenX` (as `rr_endpoint_sum_then_X_pair_lift_sequence`);
+`even_factorization` and `odd_factorization` give the rows. -/
 syntax (name := rr_endpoint_pair_lift_sequence_sum_then_x)
   "rr_endpoint_pair_lift_sequence" " using "
     "base" ":=" term ","
@@ -187,6 +262,10 @@ syntax (name := rr_endpoint_pair_lift_sequence_sum_then_x)
     "certificate" ":=" "sumThenX" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` when the even and odd rows are endpoint powers times
+`A n` and `B n` for the pair of `rr_endpoint_pair_sequence` with `certificate :=
+xThenSum` (as `rr_endpoint_X_then_sum_pair_lift_sequence`);
+`even_factorization` and `odd_factorization` give the rows. -/
 syntax (name := rr_endpoint_pair_lift_sequence_x_then_sum)
   "rr_endpoint_pair_lift_sequence" " using "
     "base" ":=" term ","
@@ -199,6 +278,9 @@ syntax (name := rr_endpoint_pair_lift_sequence_x_then_sum)
     "certificate" ":=" "xThenSum" :
   tactic
 
+/-- Swapped form of the `xThenSum` lift (`certificate :=
+xThenSumSwapped`, as `rr_endpoint_X_then_sum_pair_lift_swapped_sequence`): the even rows are
+endpoint powers times `B n` and the odd rows endpoint powers times `A n`. -/
 syntax (name := rr_endpoint_pair_lift_sequence_x_then_sum_swapped)
   "rr_endpoint_pair_lift_sequence" " using "
     "base" ":=" term ","

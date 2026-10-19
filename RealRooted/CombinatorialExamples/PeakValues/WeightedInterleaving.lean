@@ -122,6 +122,8 @@ theorem pderiv_none_identifyLast_peakValuePolynomial_ne_zero
   rw [hnsub] at hprod
   linarith
 
+/-- The weights on `Option (Fin n)` sending `none` to `wt (Fin.last n)` and `some j` to `wt
+j.castSucc`. -/
 def peakValueOptionWeights (n : ℕ) (wt : Fin (n + 1) → ℝ) :
     Option (Fin n) → ℝ
   | none => wt (Fin.last n)

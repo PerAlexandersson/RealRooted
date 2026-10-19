@@ -15,8 +15,11 @@ namespace RealRooted
 
 namespace Tactic
 
+/-- Closes a scalar side goal of a coefficient-sign certificate, by
+`rr_side_nonneg` or else `rr_side_rest`. -/
 syntax (name := rr_sign_side) "rr_sign_side" : tactic
 
+/-- Term form of `rr_sign_side`: elaborates to `by rr_sign_side`. -/
 syntax (name := rr_sign_side_term) "rr_sign_side_term" : term
 
 macro_rules
@@ -33,6 +36,9 @@ end Tactic
 
 namespace Tactic
 
+/-- Closes a polynomial-evaluation sign inequality (a nonpositive evaluation) from the
+hypotheses in context, by assumption or by a library evaluation lemma whose side goals are
+closed by `rr_sign_side`. -/
 syntax (name := rr_sign) "rr_sign" : tactic
 
 macro_rules

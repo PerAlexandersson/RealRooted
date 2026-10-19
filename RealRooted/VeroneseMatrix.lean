@@ -342,6 +342,8 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_one (a : ℝ) :
   simpa [veroneseLinearFactorRowDesc, oneSupportSeq, hfactor] using
     (Interl.refl fun _ => hrr.2)
 
+/-- The entry `(i, j)` of the constant matrix: `a` if `j = i`, `1` if `j = i + 1`, and `0`
+otherwise. -/
 def veroneseLinearFactorConstEntry {r : ℕ} (a : ℝ) (i j : Fin r) : ℝ :=
   if j.1 = i.1 then a else if j.1 = i.1 + 1 then 1 else 0
 
@@ -399,6 +401,7 @@ theorem veroneseLinearFactorMatrixDesc_has2x2_nonlast
       hs
       (veroneseLinearFactorConstEntry_det_nonneg ha hi hj)
 
+/-- The entry of the last row in column `j`: `a` if `j` is the last column, and `0` otherwise. -/
 def veroneseLinearFactorLastConstEntry {r : ℕ} (a : ℝ) (j : Fin r) : ℝ :=
   if j.1 = r - 1 then a else 0
 

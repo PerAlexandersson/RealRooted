@@ -35,10 +35,17 @@ def QPoly.invF (d : Nat) (p : QPoly) : QPoly := Id.run do
 /-- The transformed recurrence: the base row and the numerators of the
 multipliers `a`, `b`, fitted over one denominator in `n`. -/
 structure FTransData where
+  /-- The linear recurrence data of the original sequence. -/
   L : LinRecData
+  /-- The first row of the original sequence, a nonzero constant polynomial. -/
   base : QPoly
+  /-- The second row of the transformed sequence, `a 0 * base' + b 0 * base`. -/
   shiftedBase : QPoly
+  /-- The numerators of the multiplier `a n` of the derivative term, by powers of
+  `X`, each by powers of `n`. -/
   a : Array (Array Rat)
+  /-- The numerators of the multiplier `b n` of the undifferentiated term, by powers of
+  `X`, each by powers of `n`. -/
   b : Array (Array Rat)
   /-- Common denominator of every coefficient of `a` and `b`. -/
   den : Array Rat

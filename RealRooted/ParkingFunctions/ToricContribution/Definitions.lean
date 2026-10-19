@@ -22,7 +22,9 @@ namespace ToricContribution
 /-- The parity data `n = 2m + ε`, with `ε ∈ {0,1}`, used throughout the
 toric-contribution normalization. -/
 structure ParityData (n : ℕ) where
+  /-- The quotient `m` of `n` by `2`. -/
   m : ℕ
+  /-- The remainder `ε ∈ {0, 1}` of `n` modulo `2`. -/
   epsilon : ℕ
   decompose : n = 2 * m + epsilon
   epsilon_lt_two : epsilon < 2

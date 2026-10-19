@@ -20,6 +20,10 @@ namespace RealRooted
 
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 1) = (X - C a) * (X - C b) * (P n)'`; the arguments are `lower_le_upper : a ≤ b`,
+`base_splits` and `base_roots` for `P 0` (all roots in `[a, b]`), `pos_lc`, `degree_pos` (every
+degree is at least one) and `recurrence`. -/
 syntax (name := rr_endpoint_derivative_sequence_named)
   "rr_endpoint_derivative_sequence" " using "
     "lower_le_upper" ":=" term ","
@@ -29,6 +33,9 @@ syntax (name := rr_endpoint_derivative_sequence_named)
     "degree_pos" ":=" term ","
     "recurrence" ":=" term : tactic
 
+/-- Closes `∀ n, Interlaces (P n) (P (n + 1))` for the recurrence of
+`rr_endpoint_derivative_sequence`; `degree_succ` gives
+`(P n).natDegree + 1 = (P (n + 1)).natDegree` and the other arguments are as there. -/
 syntax (name := rr_endpoint_derivative_sequence_interlaces_named)
   "rr_endpoint_derivative_sequence_interlaces" " using "
     "lower_le_upper" ":=" term ","
@@ -39,6 +46,8 @@ syntax (name := rr_endpoint_derivative_sequence_interlaces_named)
     "recurrence" ":=" term ","
     "degree_succ" ":=" term : tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the recurrence of
+`rr_endpoint_derivative_sequence`, with the same arguments. -/
 syntax (name := rr_endpoint_derivative_sequence_realrooted_named)
   "rr_endpoint_derivative_sequence_realrooted" " using "
     "lower_le_upper" ":=" term ","
@@ -48,6 +57,10 @@ syntax (name := rr_endpoint_derivative_sequence_realrooted_named)
     "degree_pos" ":=" term ","
     "recurrence" ":=" term : tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 1) = ((X - C a) * (X - C b) * P n)'`; the arguments are `lower_le_upper : a ≤ b`,
+`base_splits` and `base_roots` for `P 0` (all roots in `[a, b]`), `pos_lc`, `degree_pos` (every
+degree is at least one) and `recurrence`. -/
 syntax (name := rr_endpoint_product_derivative_sequence_named)
   "rr_endpoint_product_derivative_sequence" " using "
     "lower_le_upper" ":=" term ","
@@ -57,6 +70,9 @@ syntax (name := rr_endpoint_product_derivative_sequence_named)
     "degree_pos" ":=" term ","
     "recurrence" ":=" term : tactic
 
+/-- Closes `∀ n, Interlaces (P n) (P (n + 1))` for the recurrence of
+`rr_endpoint_product_derivative_sequence`; `degree_succ` gives
+`(P n).natDegree + 1 = (P (n + 1)).natDegree` and the other arguments are as there. -/
 syntax (name := rr_endpoint_product_derivative_sequence_interlaces_named)
   "rr_endpoint_product_derivative_sequence_interlaces" " using "
     "lower_le_upper" ":=" term ","
@@ -67,6 +83,8 @@ syntax (name := rr_endpoint_product_derivative_sequence_interlaces_named)
     "recurrence" ":=" term ","
     "degree_succ" ":=" term : tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the recurrence of
+`rr_endpoint_product_derivative_sequence`, with the same arguments. -/
 syntax (name := rr_endpoint_product_derivative_sequence_realrooted_named)
   "rr_endpoint_product_derivative_sequence_realrooted" " using "
     "lower_le_upper" ":=" term ","

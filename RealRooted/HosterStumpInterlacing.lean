@@ -70,10 +70,13 @@ obstruction; in particular, the source-exact predicate must not be used as the
 hypothesis of an unconditional lower-partial-sum preservation theorem.
 -/
 
+/-- The left polynomial `X + 1` of the low-degree counterexample. -/
 def lowDegreeCounterexampleLeft : ℝ[X] := X + C 1
 
+/-- The middle polynomial `2 (X + 3)` of the low-degree counterexample. -/
 def lowDegreeCounterexampleMiddle : ℝ[X] := C 2 * (X + C 3)
 
+/-- The right polynomial `(X + 1) (X + 3)` of the low-degree counterexample. -/
 def lowDegreeCounterexampleRight : ℝ[X] := (X + C 1) * (X + C 3)
 
 private lemma lowDegreeCounterexample_left_strictInterl_right :

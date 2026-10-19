@@ -9,6 +9,9 @@ noncomputable section
 namespace RealRooted
 namespace Kostov
 
+/-- The polynomial `Q` is monic of degree `j` and `X * (X + 1) ^ (n - j - 2) * Q` equals
+`monicPolynomial n v - monicPolynomial n 0` for a nonzero eigenvector `v` of `linearPart n` with
+eigenvalue `eigenvalue n (j + 1)`. -/
 def IsEigenpoly (n j : ℕ) (Q : ℝ[X]) : Prop :=
   Q.Monic ∧ Q.natDegree = j ∧
     ∃ v : Fin (n - 1) → ℝ, v ≠ 0 ∧

@@ -20,6 +20,7 @@ def IsDecoExceptionalSet (h : ℕ) (R : Finset ℕ) : Prop :=
 /-- A deco construction history, canonically represented by the exact set of
 exceptional two-step starts. -/
 structure DecoExceptionalHistory (h : ℕ) where
+  /-- The set of starting heights of the exceptional two-step moves. -/
   starts : Finset ℕ
   admissible : IsDecoExceptionalSet h starts
 

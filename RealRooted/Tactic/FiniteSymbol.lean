@@ -10,6 +10,8 @@ finite-symbol stability theorem.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `MvUpperHalfPlaneStableOrZero (T f)` from `operator := T`, `symbol_stable` for the
+algebraic symbol of `T`, `input := f` and `input_stable : MvUpperHalfPlaneStable f.1`. -/
 syntax (name := rr_finite_symbol_stable_or_zero_named)
   "rr_finite_symbol_stable_or_zero" " using "
     "operator" ":=" term ","
@@ -18,12 +20,16 @@ syntax (name := rr_finite_symbol_stable_or_zero_named)
     "input_stable" ":=" term :
   tactic
 
+/-- Variant of `rr_finite_symbol_stable_or_zero` in which the operator and the input are
+inferred by unification from the goal. -/
 syntax (name := rr_finite_symbol_stable_or_zero_inferred)
   "rr_finite_symbol_stable_or_zero" " using "
     "symbol_stable" ":=" term ","
     "input_stable" ":=" term :
   tactic
 
+/-- Variant of `rr_finite_symbol_stable_or_zero` that takes `symbol_stable` and `input_stable`
+from the local context by `assumption`. -/
 syntax (name := rr_finite_symbol_stable_or_zero_auto)
   "rr_finite_symbol_stable_or_zero_auto" : tactic
 

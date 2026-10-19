@@ -17,6 +17,7 @@ open Polynomial
 
 noncomputable section
 
+/-- The negatives of the roots of `p`, sorted in increasing order. -/
 def rootMags (p : ℝ[X]) : List ℝ := (p.roots.map (fun r => -r)).sort (· ≤ ·)
 
 /-- The `j`-th smallest root magnitude (junk value `0` past the end). -/

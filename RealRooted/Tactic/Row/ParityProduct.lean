@@ -22,12 +22,19 @@ namespace RealRooted.Tactic
 
 /-- The data of a parity product: the first rows of `s` and `t`, `β` and `μ`. -/
 structure ParityData where
+  /-- The linear recurrence data of the sequence. -/
   L : LinRecData
+  /-- The first row `s 0` of the sequence `s`. -/
   s₀ : QPoly
+  /-- The second row `s 1` of the sequence `s`. -/
   s₁ : QPoly
+  /-- The first row `t 0` of the sequence `t`, the monic gcd of `P 0` and `P 1`. -/
   t₀ : QPoly
+  /-- The second row `t 1` of the sequence `t`. -/
   t₁ : QPoly
+  /-- The coefficient `β` of `x (m + 2) = β x (m + 1) - μ ^ 2 x m`. -/
   β : QPoly
+  /-- The root `μ` in the characteristic polynomial `(z - μ) (z ^ 2 - β z + μ ^ 2)`. -/
   μ : QPoly
 
 /-- The parity product structure of an order-three recurrence with constant coefficients. -/

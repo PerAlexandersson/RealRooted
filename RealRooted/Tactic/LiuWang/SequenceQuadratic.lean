@@ -9,6 +9,10 @@ Parser declarations and macro implementations for this Liu--Wang tactic family.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`;
+`discriminant : ∀ n, b n ^ 2 ≤ 4 * c n`, and the standard certificates `base`, `pos_lc`,
+`recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_monic_quadratic_sequence_named)
   "rr_lw_negative_monic_quadratic_sequence" " using "
     "base" ":=" term ","
@@ -19,6 +23,10 @@ syntax (name := rr_lw_negative_monic_quadratic_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
+`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`;
+`discriminant : ∀ n, b n ^ 2 ≤ 4 * c n`, and the standard certificates `base`, `pos_lc`,
+`recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_monic_quadratic_sequence_realrooted_named)
   "rr_lw_negative_monic_quadratic_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -29,6 +37,10 @@ syntax (name := rr_lw_negative_monic_quadratic_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`; the discriminant
+condition is proved by `rr_lw_quadratic_discriminant`, and the arguments are the standard
+certificates `base`, `pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_monic_quadratic_sequence_auto_named)
   "rr_lw_negative_monic_quadratic_sequence_auto" " using "
     "base" ":=" term ","
@@ -38,6 +50,10 @@ syntax (name := rr_lw_negative_monic_quadratic_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
+`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`; the discriminant
+condition is proved by `rr_lw_quadratic_discriminant`, and the arguments are the standard
+certificates `base`, `pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_monic_quadratic_sequence_realrooted_auto_named)
   "rr_lw_negative_monic_quadratic_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -47,6 +63,10 @@ syntax (name := rr_lw_negative_monic_quadratic_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) *
+X ^ 2 + C (b n) * X + C (c n))) * P n`; the arguments are `leading_nonneg`, `constant_nonneg`
+and `discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c n`, and the standard certificates
+`base`, `pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_named)
   "rr_lw_negative_quadratic_sequence" " using "
     "base" ":=" term ","
@@ -59,6 +79,10 @@ syntax (name := rr_lw_negative_quadratic_sequence_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) * X ^ 2 +
+C (b n) * X + C (c n))) * P n`; the arguments are `leading_nonneg`, `constant_nonneg` and
+`discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c n`, and the standard certificates `base`, `pos_lc`,
+`recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_realrooted_named)
   "rr_lw_negative_quadratic_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -71,6 +95,10 @@ syntax (name := rr_lw_negative_quadratic_sequence_realrooted_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) *
+X ^ 2 + C (b n) * X + C (c n))) * P n`; the sign conditions are proved by
+`rr_lw_negative_quadratic_side`, and the arguments are the standard certificates `base`,
+`pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_auto_named)
   "rr_lw_negative_quadratic_sequence_auto" " using "
     "base" ":=" term ","
@@ -80,6 +108,10 @@ syntax (name := rr_lw_negative_quadratic_sequence_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) * X ^ 2 +
+C (b n) * X + C (c n))) * P n`; the sign conditions are proved by
+`rr_lw_negative_quadratic_side`, and the arguments are the standard certificates `base`,
+`pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_realrooted_auto_named)
   "rr_lw_negative_quadratic_sequence_realrooted_auto" " using "
     "base" ":=" term ","
@@ -89,6 +121,14 @@ syntax (name := rr_lw_negative_quadratic_sequence_realrooted_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and
+`constant` are the normalized ones. The sign conditions are `leading_nonneg`,
+`constant_nonneg` and `discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c
+n`. The equations are `den_nonzero`, `leading_coeff_eq`, `linear_coeff_eq` and
+`constant_coeff_eq`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_split_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_split" " using "
     "base" ":=" term ","
@@ -112,6 +152,13 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_split_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and
+`constant` are the normalized ones. The sign conditions are `leading_nonneg`,
+`constant_nonneg` and `discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c n`. The denominator and
+coefficient equations are proved automatically. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_split" " using "
     "base" ":=" term ","
@@ -131,6 +178,12 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_split_scalar_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and `constant` are the normalized ones. The sign conditions are proved
+automatically. The equations are `den_nonzero`, `leading_coeff_eq`, `linear_coeff_eq` and
+`constant_coeff_eq`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_auto_split" " using "
     "base" ":=" term ","
@@ -151,6 +204,11 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_named)
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and `constant` are the normalized ones. The sign conditions are proved
+automatically. The denominator and coefficient equations are proved automatically. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_auto_split" " using "
     "base" ":=" term ","
@@ -167,6 +225,14 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_na
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and
+`constant` are the normalized ones. The sign conditions are `leading_nonneg`,
+`constant_nonneg` and `discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c
+n`. The equations are `den_nonzero`, `leading_coeff_eq`, `linear_coeff_eq` and
+`constant_coeff_eq`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split" " using "
     "base" ":=" term ","
@@ -190,6 +256,13 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_nam
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and
+`constant` are the normalized ones. The sign conditions are `leading_nonneg`,
+`constant_nonneg` and `discriminant : ∀ n, b n ^ 2 ≤ 4 * a n * c n`. The denominator and
+coefficient equations are proved automatically. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split" " using "
     "base" ":=" term ","
@@ -209,6 +282,12 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_sca
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and `constant` are the normalized ones. The sign conditions are proved
+automatically. The equations are `den_nonzero`, `leading_coeff_eq`, `linear_coeff_eq` and
+`constant_coeff_eq`. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split" " using "
     "base" ":=" term ","
@@ -229,6 +308,11 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_spli
     "no_common_roots" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the quadratic lag recurrence of
+`rr_lw_negative_quadratic_sequence` given with a common denominator `den`:
+`raw_recurrence` has the raw coefficients `raw_leading`, `raw_linear` and `raw_constant`, and
+`leading`, `linear` and `constant` are the normalized ones. The sign conditions are proved
+automatically. The denominator and coefficient equations are proved automatically. -/
 syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_scalar_named)
   "rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split" " using "
     "base" ":=" term ","

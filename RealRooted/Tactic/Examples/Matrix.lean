@@ -489,8 +489,10 @@ example {G : List (List ℝ[X])}
 
 namespace MatrixInferenceSmoke
 
+/-- Empty matrix, used in the matrix-inference smoke tests. -/
 def baseMatrix : List (List ℝ[X]) := []
 
+/-- Matrix with a single empty row, used as a decoy in the matrix-inference smoke tests. -/
 def decoyMatrix : List (List ℝ[X]) := [[]]
 
 theorem baseMatrix_rect : ∀ row ∈ baseMatrix, row.length = 0 := by simp [baseMatrix]
@@ -509,6 +511,7 @@ theorem decoyMatrix_nonneg :
     ∀ row ∈ decoyMatrix, ∀ p ∈ row, HasNonnegCoeffs p := by
   simp [decoyMatrix]
 
+/-- The two-by-two interlacing property for a matrix of width zero, which holds vacuously. -/
 def ZeroWidthTwoByTwo (G : List (List ℝ[X])) : Prop :=
     ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin 0),
       i₁ ≤ i₂ → j₁ ≤ j₂ →

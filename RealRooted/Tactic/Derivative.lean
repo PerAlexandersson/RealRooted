@@ -51,77 +51,98 @@ theorem derivative_sequence_ne_zero
     ∀ i : Nat, (P i).derivative ≠ 0 := fun i =>
   Polynomial.derivative_ne_zero.mpr (hdeg i)
 
+/-- Closes `Interlaces p.derivative p` from `splits : p.Splits` and
+`degree_ne_zero : p.natDegree ≠ 0`. -/
 syntax (name := rr_derivative_interlaces_named)
   "rr_derivative_interlaces" " using "
     "splits" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_derivative_interlaces`: the same certificate for every index `i`. -/
 syntax (name := rr_derivative_sequence_interlaces_named)
   "rr_derivative_sequence_interlaces" " using "
     "splits" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Variant of `rr_derivative_interlaces` that proves the degree side goal `degree_ne_zero` by
+`rr_close_side`; takes only `splits`. -/
 syntax (name := rr_derivative_interlaces_auto)
   "rr_derivative_interlaces" " using "
     "splits" ":=" term :
   tactic
 
+/-- Closes `StrictInterl p.derivative p` from `splits : p.Splits` and
+`degree_ne_zero : p.natDegree ≠ 0`. -/
 syntax (name := rr_derivative_strict_interl_named)
   "rr_derivative_strict_interl" " using "
     "splits" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_derivative_strict_interl`: the same certificate for every index `i`. -/
 syntax (name := rr_derivative_sequence_strict_interl_named)
   "rr_derivative_sequence_strict_interl" " using "
     "splits" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Variant of `rr_derivative_strict_interl` that proves the degree side goal `degree_ne_zero`
+by `rr_close_side`; takes only `splits`. -/
 syntax (name := rr_derivative_strict_interl_auto)
   "rr_derivative_strict_interl" " using "
     "splits" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs p.derivative` from `nonneg_coeffs : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_derivative_named)
   "rr_nonneg_coeffs_derivative" " using "
     "nonneg_coeffs" ":=" term :
   tactic
 
+/-- Sequence form of `rr_nonneg_coeffs_derivative`: the same certificate for every index `i`. -/
 syntax (name := rr_nonneg_coeffs_sequence_derivative_named)
   "rr_nonneg_coeffs_sequence_derivative" " using "
     "nonneg_coeffs" ":=" term :
   tactic
 
+/-- Closes `HasPosLeadingCoeff p.derivative` from `pos_lc : HasPosLeadingCoeff p` and
+`degree_ne_zero : p.natDegree ≠ 0`. -/
 syntax (name := rr_pos_lc_derivative_named)
   "rr_pos_lc_derivative" " using "
     "pos_lc" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_pos_lc_derivative`: the same certificate for every index `i`. -/
 syntax (name := rr_pos_lc_sequence_derivative_named)
   "rr_pos_lc_sequence_derivative" " using "
     "pos_lc" ":=" term ","
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Variant of `rr_pos_lc_derivative` that proves the degree side goal `degree_ne_zero` by
+`rr_close_side`; takes only `pos_lc`. -/
 syntax (name := rr_pos_lc_derivative_auto)
   "rr_pos_lc_derivative" " using "
     "pos_lc" ":=" term :
   tactic
 
+/-- Closes `p.derivative ≠ 0` from `degree_ne_zero : p.natDegree ≠ 0`. -/
 syntax (name := rr_derivative_ne_zero_named)
   "rr_derivative_ne_zero" " using "
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Sequence form of `rr_derivative_ne_zero`: the same certificate for every index `i`. -/
 syntax (name := rr_derivative_sequence_ne_zero_named)
   "rr_derivative_sequence_ne_zero" " using "
     "degree_ne_zero" ":=" term :
   tactic
 
+/-- Variant of `rr_derivative_ne_zero` that proves the degree side goal `degree_ne_zero` by
+`rr_close_side`. -/
 syntax (name := rr_derivative_ne_zero_auto)
   "rr_derivative_ne_zero" :
   tactic

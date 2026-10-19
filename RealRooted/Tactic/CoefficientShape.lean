@@ -110,12 +110,17 @@ theorem sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
 
 namespace Tactic
 
+/-- Closes an ultra-log-concavity, no-internal-zeros, log-concavity or unimodality goal for the
+coefficients of a polynomial or of every row of a sequence, from
+`nonneg` (nonnegative coefficients) and `realrooted` (real-rootedness, possibly up to zero). -/
 syntax (name := rr_coeff_shape_named)
   "rr_coeff_shape" " using "
     "nonneg" ":=" term ","
     "realrooted" ":=" term :
   tactic
 
+/-- Variant of `rr_coeff_shape` that finds `nonneg` by `rr_lookup_term` and `realrooted` by
+`rr_lookup_term` or `rr_realrooted_term`. -/
 syntax (name := rr_coeff_shape_auto) "rr_coeff_shape" : tactic
 
 macro_rules

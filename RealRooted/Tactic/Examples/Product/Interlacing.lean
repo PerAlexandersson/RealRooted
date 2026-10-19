@@ -14,6 +14,7 @@ namespace RealRooted.Tactic.ProductInterlacingExamples
 
 noncomputable section
 
+/-- The OEIS A007318 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A007318 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => (1 + X) * A007318 n
@@ -22,6 +23,7 @@ theorem A007318_natDegree (n : ℕ) : (A007318 n).natDegree = n := by rr_product
 theorem A007318_interlaces (n : ℕ) : Interlaces (A007318 n) (A007318 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A008955 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A008955 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => (1 + C ((n + 1 : ℝ) ^ 2) * X) * A008955 n
@@ -30,6 +32,7 @@ theorem A008955_natDegree (n : ℕ) : (A008955 n).natDegree = n := by rr_product
 theorem A008955_interlaces (n : ℕ) : Interlaces (A008955 n) (A008955 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A088996 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A088996 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => (C (n : ℝ) + C (n + 1 : ℝ) * X) * A088996 n
@@ -38,6 +41,7 @@ theorem A088996_natDegree (n : ℕ) : (A088996 n).natDegree = n := by rr_product
 theorem A088996_interlaces (n : ℕ) : Interlaces (A088996 n) (A088996 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A178820 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A178820 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => (C ((n + 4 : ℝ) / (n + 1)) + C ((n + 4 : ℝ) / (n + 1)) * X) * A178820 n
@@ -59,6 +63,7 @@ theorem shiftedCubicProductRows_interlaces (n : ℕ) :
     Interlaces (shiftedCubicProductRows n) (shiftedCubicProductRows (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A013612 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A013612 : ℕ → ℝ[X]
   | 0 => 1 + 10 * X + 25 * X ^ 2
   | n + 1 => (1 + 5 * X) * A013612 n
@@ -67,6 +72,7 @@ theorem A013612_natDegree (n : ℕ) : (A013612 n).natDegree = n + 2 := by rr_pro
 theorem A013612_interlaces (n : ℕ) : Interlaces (A013612 n) (A013612 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A038226 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A038226 : ℕ → ℝ[X]
   | 0 => 9 + 48 * X + 64 * X ^ 2
   | n + 1 => (3 + 8 * X) * A038226 n
@@ -75,6 +81,7 @@ theorem A038226_natDegree (n : ℕ) : (A038226 n).natDegree = n + 2 := by rr_pro
 theorem A038226_interlaces (n : ℕ) : Interlaces (A038226 n) (A038226 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A159854 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A159854 : ℕ → ℝ[X]
   | 0 => X ^ 2
   | n + 1 => (1 + X) * A159854 n
@@ -83,6 +90,7 @@ theorem A159854_natDegree (n : ℕ) : (A159854 n).natDegree = n + 2 := by rr_pro
 theorem A159854_interlaces (n : ℕ) : Interlaces (A159854 n) (A159854 (n + 1)) := by
   rr_product_interlaces
 
+/-- The OEIS A028326 polynomial sequence, defined by a product recurrence with a linear factor. -/
 def A028326 : ℕ → ℝ[X]
   | 0 => 2
   | n + 1 => (1 + X) * A028326 n

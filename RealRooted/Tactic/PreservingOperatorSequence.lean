@@ -26,6 +26,9 @@ theorem isRealRooted_of_preserving_operator_sequence
 
 namespace Tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` (or a projection of it) for `P (n + 1) = T n (P n)`;
+`base` is the case `n = 0`, `preserves` says each `T n` preserves nonzero real-rooted
+polynomials, and `recurrence` is the recurrence. -/
 syntax (name := rr_preserving_operator_sequence)
   "rr_preserving_operator_sequence" " using "
     "base" ":=" term ","

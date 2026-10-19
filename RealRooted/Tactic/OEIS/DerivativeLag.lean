@@ -17,6 +17,11 @@ open Lean.Elab.Tactic
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a degree-two derivative-lag recurrence
+`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` with
+`certificate := directHalfLine`; the sign conditions are proved automatically from
+`nonneg_coeffs`, and the arguments are `base`, `pos_lc`, `nonneg_coeffs`,
+`recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_i2_derivative_lag_sequence_direct_halfline)
   "rr_i2_derivative_lag_sequence" " using "
     "base" ":=" term ","
@@ -28,6 +33,11 @@ syntax (name := rr_i2_derivative_lag_sequence_direct_halfline)
     "certificate" ":=" "directHalfLine" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a degree-two derivative-lag recurrence
+`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` with
+`certificate := directHalfLine`; the sign conditions are proved automatically from
+`nonneg_coeffs`, and the arguments are `base`, `pos_lc`, `nonneg_coeffs`,
+`recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_i2_derivative_lag_sequence_realrooted_direct_halfline)
   "rr_i2_derivative_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -39,6 +49,14 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_direct_halfline)
     "certificate" ":=" "directHalfLine" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a degree-two derivative-lag recurrence
+`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` with
+`certificate := directHalfLine`; the recurrence is given after clearing a denominator as
+`raw_recurrence`, with scalar sequences `den`, `raw_deriv_coeff`, `raw_lag_coeff`,
+`norm_deriv_coeff` and `norm_lag_coeff` and polynomial sequences
+`deriv_factor` and `lag_factor`; the equations `deriv_coeff_eq`, `lag_coeff_eq` and
+`den_nonzero` are optional (proved automatically when omitted). The other arguments are `base`,
+`pos_lc`, `nonneg_coeffs`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline)
   "rr_i2_derivative_lag_sequence_den_coeff" " using "
     "base" ":=" term ","
@@ -60,6 +78,14 @@ syntax (name := rr_i2_derivative_lag_sequence_den_direct_halfline)
     "certificate" ":=" "directHalfLine" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a degree-two derivative-lag recurrence
+`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n` with
+`certificate := directHalfLine`; the recurrence is given after clearing a denominator as
+`raw_recurrence`, with scalar sequences `den`, `raw_deriv_coeff`, `raw_lag_coeff`,
+`norm_deriv_coeff` and `norm_lag_coeff` and polynomial sequences
+`deriv_factor` and `lag_factor`; the equations `deriv_coeff_eq`, `lag_coeff_eq` and
+`den_nonzero` are optional (proved automatically when omitted). The other arguments are `base`,
+`pos_lc`, `nonneg_coeffs`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline)
   "rr_i2_derivative_lag_sequence_den_coeff_realrooted" " using "
     "base" ":=" term ","
@@ -81,6 +107,11 @@ syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_direct_halfline)
     "certificate" ":=" "directHalfLine" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = X * (C (c n) * (P (n + 1))' + C (a n) * P n)` with `lag_coeff_pos : ∀ n, 0 < a n`
+and `derivative_coeff_pos : ∀ n, 0 < c n` (`certificate := wagnerGap`, as
+`rr_strict_interl_wagner_derivative_gap_lag_sequence`); the other arguments are `base`,
+`nonneg_coeffs`, `degree_two` and `recurrence`. -/
 syntax (name := rr_i2_derivative_lag_sequence_wagner_gap)
   "rr_i2_derivative_lag_sequence" " using "
     "base" ":=" term ","
@@ -92,6 +123,11 @@ syntax (name := rr_i2_derivative_lag_sequence_wagner_gap)
     "certificate" ":=" "wagnerGap" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
+`P (n + 2) = X * (C (c n) * (P (n + 1))' + C (a n) * P n)` with `lag_coeff_pos : ∀ n, 0 < a n`
+and `derivative_coeff_pos : ∀ n, 0 < c n` (`certificate := wagnerGap`, as
+`rr_strict_interl_wagner_derivative_gap_lag_sequence_realrooted`); the other arguments are
+`base`, `nonneg_coeffs`, `degree_two` and `recurrence`. -/
 syntax (name := rr_i2_derivative_lag_sequence_realrooted_wagner_gap)
   "rr_i2_derivative_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -103,6 +139,9 @@ syntax (name := rr_i2_derivative_lag_sequence_realrooted_wagner_gap)
     "certificate" ":=" "wagnerGap" :
   tactic
 
+/-- Denominator form of the `wagnerGap` certificate of `rr_i2_derivative_lag_sequence`:
+`denom_pos : ∀ n, 0 < d n` and `recurrence : C (d n) * P (n + 2) = X * (C (c n) * (P (n + 1))' +
+C (a n) * P n)`; closes `∀ n, StrictInterl (P n) (P (n + 1))`. -/
 syntax (name := rr_i2_derivative_lag_sequence_den_wagner_gap)
   "rr_i2_derivative_lag_sequence_den" " using "
     "base" ":=" term ","
@@ -115,6 +154,10 @@ syntax (name := rr_i2_derivative_lag_sequence_den_wagner_gap)
     "certificate" ":=" "wagnerGap" :
   tactic
 
+/-- Denominator form of the
+`wagnerGap` certificate of `rr_i2_derivative_lag_sequence_realrooted`:
+`denom_pos : ∀ n, 0 < d n` and `recurrence : C (d n) * P (n + 2) = X * (C (c n) * (P (n + 1))' +
+C (a n) * P n)`; closes `∀ n, P n ≠ 0 ∧ (P n).Splits`. -/
 syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_wagner_gap)
   "rr_i2_derivative_lag_sequence_den_realrooted" " using "
     "base" ":=" term ","
@@ -127,31 +170,47 @@ syntax (name := rr_i2_derivative_lag_sequence_den_realrooted_wagner_gap)
     "certificate" ":=" "wagnerGap" :
   tactic
 
+/-- Rejection form of
+`rr_i2_derivative_lag_sequence`: always fails, since the `jacobiOrHypergeom` certificate needs a
+classical coefficient-formula or root-location bridge. -/
 syntax (name := rr_i2_derivative_lag_sequence_jacobi)
   "rr_i2_derivative_lag_sequence" " using "
     "certificate" ":=" "jacobiOrHypergeom" :
   tactic
 
+/-- Rejection form of `rr_i2_derivative_lag_sequence_realrooted`: always fails, since the
+`jacobiOrHypergeom` certificate needs a classical coefficient-formula or root-location bridge. -/
 syntax (name := rr_i2_derivative_lag_sequence_realrooted_jacobi)
   "rr_i2_derivative_lag_sequence_realrooted" " using "
     "certificate" ":=" "jacobiOrHypergeom" :
   tactic
 
+/-- Rejection form of `rr_i2_derivative_lag_sequence`: always fails, since the `transformNeeded`
+certificate needs an explicit transformed recurrence and root-window certificate. -/
 syntax (name := rr_i2_derivative_lag_sequence_transform)
   "rr_i2_derivative_lag_sequence" " using "
     "certificate" ":=" "transformNeeded" :
   tactic
 
+/-- Rejection form of `rr_i2_derivative_lag_sequence_realrooted`: always fails, since the
+`transformNeeded` certificate needs an explicit transformed recurrence and root-window
+certificate. -/
 syntax (name := rr_i2_derivative_lag_sequence_realrooted_transform)
   "rr_i2_derivative_lag_sequence_realrooted" " using "
     "certificate" ":=" "transformNeeded" :
   tactic
 
+/-- Rejection form of `rr_i2_derivative_lag_sequence`: always fails, since the `vectorNeeded`
+certificate means the scalar derivative-lag wrapper does not apply and a vector or PF
+certificate is needed. -/
 syntax (name := rr_i2_derivative_lag_sequence_vector)
   "rr_i2_derivative_lag_sequence" " using "
     "certificate" ":=" "vectorNeeded" :
   tactic
 
+/-- Rejection form of `rr_i2_derivative_lag_sequence_realrooted`: always fails, since the
+`vectorNeeded` certificate means the scalar derivative-lag wrapper does not apply and a vector
+or PF certificate is needed. -/
 syntax (name := rr_i2_derivative_lag_sequence_realrooted_vector)
   "rr_i2_derivative_lag_sequence_realrooted" " using "
     "certificate" ":=" "vectorNeeded" :

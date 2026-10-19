@@ -50,12 +50,16 @@ theorem veroneseSectionPolynomial_sequence_zero_or_splits_of_nonneg
 
 namespace Tactic
 
+/-- Closes `HasNonnegCoeffs (veroneseSectionPolynomial r k P)` from `nonneg : HasNonnegCoeffs P`
+and `r_pos : 0 < r`. -/
 syntax (name := rr_veronese_section_nonneg_named)
   "rr_veronese_section_nonneg" " using "
     "nonneg" ":=" term ","
     "r_pos" ":=" term :
   tactic
 
+/-- Closes `IsPolyaFreqSeq (veroneseSectionPolynomial r k P).coeff` from
+`pf_coeff : IsPolyaFreqSeq P.coeff`, `r_pos : 0 < r` and `k_lt_r : k < r`. -/
 syntax (name := rr_veronese_section_pf_coeff_named)
   "rr_veronese_section_pf_coeff" " using "
     "pf_coeff" ":=" term ","
@@ -63,6 +67,8 @@ syntax (name := rr_veronese_section_pf_coeff_named)
     "k_lt_r" ":=" term :
   tactic
 
+/-- Closes `veroneseSectionPolynomial r k P = 0 ∨ (veroneseSectionPolynomial r k P).Splits` from
+`pf_coeff : IsPolyaFreqSeq P.coeff`, `r_pos` and `k_lt_r`. -/
 syntax (name := rr_veronese_section_splits_pf_named)
   "rr_veronese_section_splits_pf" " using "
     "pf_coeff" ":=" term ","
@@ -70,6 +76,8 @@ syntax (name := rr_veronese_section_splits_pf_named)
     "k_lt_r" ":=" term :
   tactic
 
+/-- Closes `veroneseSectionPolynomial r k P = 0 ∨ (veroneseSectionPolynomial r k P).Splits` from
+`nonneg : HasNonnegCoeffs P`, `splits : P.Splits`, `r_pos` and `k_lt_r`. -/
 syntax (name := rr_veronese_section_splits_nonneg_named)
   "rr_veronese_section_splits_nonneg" " using "
     "nonneg" ":=" term ","
@@ -78,12 +86,14 @@ syntax (name := rr_veronese_section_splits_nonneg_named)
     "k_lt_r" ":=" term :
   tactic
 
+/-- Sequence form of `rr_veronese_section_nonneg`: the same certificate for every index `n`. -/
 syntax (name := rr_veronese_section_sequence_nonneg_named)
   "rr_veronese_section_sequence_nonneg" " using "
     "nonneg" ":=" term ","
     "r_pos" ":=" term :
   tactic
 
+/-- Sequence form of `rr_veronese_section_pf_coeff`: the same certificate for every index `n`. -/
 syntax (name := rr_veronese_section_sequence_pf_coeff_named)
   "rr_veronese_section_sequence_pf_coeff" " using "
     "pf_coeff" ":=" term ","
@@ -91,6 +101,7 @@ syntax (name := rr_veronese_section_sequence_pf_coeff_named)
     "k_lt_r" ":=" term :
   tactic
 
+/-- Sequence form of `rr_veronese_section_splits_pf`: the same certificate for every index `n`. -/
 syntax (name := rr_veronese_section_sequence_splits_pf_named)
   "rr_veronese_section_sequence_splits_pf" " using "
     "pf_coeff" ":=" term ","
@@ -98,6 +109,8 @@ syntax (name := rr_veronese_section_sequence_splits_pf_named)
     "k_lt_r" ":=" term :
   tactic
 
+/-- Sequence form of
+`rr_veronese_section_splits_nonneg`: the same certificate for every index `n`. -/
 syntax (name := rr_veronese_section_sequence_splits_nonneg_named)
   "rr_veronese_section_sequence_splits_nonneg" " using "
     "nonneg" ":=" term ","

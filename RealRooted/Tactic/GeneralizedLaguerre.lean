@@ -13,6 +13,9 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- Closes strict interlacing, interlacing, or real-rootedness of the rows of the generalized
+Laguerre second-derivative recurrence with parameters `scale := m` and `parameter := c`.
+Here `base : P 0 = 1` and `recurrence` is the recurrence `P (n + 1) = ...` for every `n`. -/
 syntax (name := rr_generalized_laguerre_second_derivative_sequence)
   "rr_generalized_laguerre_second_derivative_sequence" " using "
     "scale" " := " term ","

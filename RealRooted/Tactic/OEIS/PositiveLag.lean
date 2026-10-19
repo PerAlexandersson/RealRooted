@@ -12,6 +12,12 @@ the degree-two derivative-lag certificate language.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a positive-lag recurrence
+`P (n + 2) = A n * P (n + 1) + T n * P n` whose factors have a shape from the Liu--Wang family;
+`certificate` selects the shape of the recurrence: `currentX`, `currentCX`, `currentOneAddX`,
+`xOneSubX`, `xCSubCMulX` or
+`cMulXCSubCMulX`, and the arguments are the standard certificates `base`,
+`pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_strict)
   "rr_e_positive_t_lag_sequence" " using "
     "base" ":=" term ","
@@ -25,6 +31,11 @@ syntax (name := rr_e_positive_t_lag_sequence_strict)
         "xCSubCMulX" <|> "cMulXCSubCMulX") :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a positive-lag recurrence whose factors have a
+shape from the Liu--Wang family; `certificate` selects the shape of the recurrence: `currentX`,
+`currentCX`, `currentOneAddX`, `xOneSubX`, `xCSubCMulX` or
+`cMulXCSubCMulX`, and the arguments are the standard certificates `base`,
+`pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_realrooted_strict)
   "rr_e_positive_t_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -38,6 +49,10 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_strict)
         "xCSubCMulX" <|> "cMulXCSubCMulX") :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n` with positive `a` and `c`
+(`certificate := plateauX`); `a` and `c` are inferred from
+`recurrence`, and the arguments are `base`, `nonneg_coeffs` and `recurrence`. -/
 syntax (name := rr_e_positive_t_lag_sequence_plateau_x)
   "rr_e_positive_t_lag_sequence" " using "
     "base" ":=" term ","
@@ -46,6 +61,9 @@ syntax (name := rr_e_positive_t_lag_sequence_plateau_x)
     "certificate" ":=" "plateauX" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
+`P (n + 2) = C (a n) * P (n + 1) + (C (c n) * X) * P n` with positive `a` and `c`
+(`certificate := plateauX`); the arguments are `base`, `nonneg_coeffs` and `recurrence`. -/
 syntax (name := rr_e_positive_t_lag_sequence_realrooted_plateau_x)
   "rr_e_positive_t_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -54,6 +72,11 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_plateau_x)
     "certificate" ":=" "plateauX" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = A n * P (n + 1) + (X * R n) * P n` (`certificate := tR`, as
+`rr_lw_tR_lag_sequence`); `factor_nonneg : 0 ≤ (R n).eval r` at every root `r` of `P (n + 1)`,
+and the other arguments are the standard certificates `base`, `pos_lc`,
+`nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_tR)
   "rr_e_positive_t_lag_sequence" " using "
     "base" ":=" term ","
@@ -66,6 +89,10 @@ syntax (name := rr_e_positive_t_lag_sequence_tR)
     "certificate" ":=" "tR" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for `P (n + 2) = A n * P (n + 1) + (X * R n) * P n`
+(`certificate := tR`, as `rr_lw_tR_lag_sequence_realrooted`); `factor_nonneg : 0 ≤ (R n).eval
+r` at every root `r` of `P (n + 1)`, and the other arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_realrooted_tR)
   "rr_e_positive_t_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -78,6 +105,11 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_tR)
     "certificate" ":=" "tR" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n` (`certificate := cTR`, as
+`rr_lw_c_tR_lag_sequence`); `coeff_nonneg : 0 ≤ c n`, `factor_nonneg : 0 ≤ (R n).eval
+r` at every root `r` of `P (n + 1)`, and the other arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_cTR)
   "rr_e_positive_t_lag_sequence" " using "
     "base" ":=" term ","
@@ -91,6 +123,11 @@ syntax (name := rr_e_positive_t_lag_sequence_cTR)
     "certificate" ":=" "cTR" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
+`P (n + 2) = A n * P (n + 1) + (C (c n) * X * R n) * P n` (`certificate := cTR`, as
+`rr_lw_c_tR_lag_sequence_realrooted`); `coeff_nonneg : 0 ≤ c n`, `factor_nonneg : 0 ≤ (R n).eval
+r` at every root `r` of `P (n + 1)`, and the other arguments are the standard certificates
+`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`. -/
 syntax (name := rr_e_positive_t_lag_sequence_realrooted_cTR)
   "rr_e_positive_t_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -104,6 +141,9 @@ syntax (name := rr_e_positive_t_lag_sequence_realrooted_cTR)
     "certificate" ":=" "cTR" :
   tactic
 
+/-- Variant of the `cTR` form of `rr_e_positive_t_lag_sequence` with `certificate := cTRAuto`:
+the nonnegativity of the scalar coefficients `c n` is proved automatically, so `coeff_nonneg` is
+omitted. -/
 syntax (name := rr_e_positive_t_lag_sequence_cTR_auto)
   "rr_e_positive_t_lag_sequence" " using "
     "base" ":=" term ","
@@ -116,6 +156,9 @@ syntax (name := rr_e_positive_t_lag_sequence_cTR_auto)
     "certificate" ":=" "cTRAuto" :
   tactic
 
+/-- Variant of the `cTR` form of `rr_e_positive_t_lag_sequence_realrooted` with
+`certificate := cTRAuto`: the nonnegativity of the scalar coefficients `c n` is proved
+automatically, so `coeff_nonneg` is omitted. -/
 syntax (name := rr_e_positive_t_lag_sequence_realrooted_cTR_auto)
   "rr_e_positive_t_lag_sequence_realrooted" " using "
     "base" ":=" term ","

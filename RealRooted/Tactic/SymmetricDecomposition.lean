@@ -106,6 +106,8 @@ theorem posComboRealRooted_fPolynomial_sequence_of_strictInterl
 
 namespace Tactic
 
+/-- Closes `fPolynomial d p ≠ 0 ∧ (fPolynomial d p).Splits` from `degree : p.natDegree ≤ d`,
+`realrooted : p ≠ 0 ∧ p.Splits` and `nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_fPolynomial_realrooted_named)
   "rr_fPolynomial_realrooted" " using "
     "degree" ":=" term ","
@@ -113,6 +115,8 @@ syntax (name := rr_fPolynomial_realrooted_named)
     "nonneg" ":=" term :
   tactic
 
+/-- Closes `p ≠ 0 ∧ p.Splits` from `degree : p.natDegree ≤ d`,
+`transformed_realrooted` for `fPolynomial d p` and `nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_of_fPolynomial_realrooted_named)
   "rr_of_fPolynomial_realrooted" " using "
     "degree" ":=" term ","
@@ -120,6 +124,8 @@ syntax (name := rr_of_fPolynomial_realrooted_named)
     "nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_fPolynomial_realrooted`: the same certificate for every index `i`, with
+`d i` in place of `d`. -/
 syntax (name := rr_fPolynomial_sequence_realrooted_named)
   "rr_fPolynomial_sequence_realrooted" " using "
     "degree" ":=" term ","
@@ -127,6 +133,8 @@ syntax (name := rr_fPolynomial_sequence_realrooted_named)
     "nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_of_fPolynomial_realrooted`: the same certificate for every index `i`,
+with `d i` in place of `d`. -/
 syntax (name := rr_of_fPolynomial_sequence_realrooted_named)
   "rr_of_fPolynomial_sequence_realrooted" " using "
     "degree" ":=" term ","
@@ -134,6 +142,10 @@ syntax (name := rr_of_fPolynomial_sequence_realrooted_named)
     "nonneg" ":=" term :
   tactic
 
+/-- Closes `StrictInterl (fPolynomial d u) (fPolynomial d v)` from
+`strictInterl : StrictInterl u v` and `left_degree : u.natDegree ≤ d`,
+`right_degree : v.natDegree ≤ d`, `left_nonneg` and `right_nonneg` (nonnegative coefficients of
+`u` and `v`). -/
 syntax (name := rr_fPolynomial_strict_interl_named)
   "rr_fPolynomial_strict_interl" " using "
     "left_degree" ":=" term ","
@@ -143,6 +155,10 @@ syntax (name := rr_fPolynomial_strict_interl_named)
     "strictInterl" ":=" term :
   tactic
 
+/-- Closes `StrictInterl u v` from
+`transformed_strictInterl : StrictInterl (fPolynomial d u) (fPolynomial d v)` and
+`left_degree : u.natDegree ≤ d`, `right_degree : v.natDegree ≤ d`,
+`left_nonneg` and `right_nonneg` (nonnegative coefficients of `u` and `v`). -/
 syntax (name := rr_of_fPolynomial_strict_interl_named)
   "rr_of_fPolynomial_strict_interl" " using "
     "left_degree" ":=" term ","
@@ -152,6 +168,10 @@ syntax (name := rr_of_fPolynomial_strict_interl_named)
     "transformed_strictInterl" ":=" term :
   tactic
 
+/-- Closes the equivalence of `StrictInterl u v` with
+`StrictInterl (fPolynomial d u) (fPolynomial d v)` from `left_degree : u.natDegree ≤ d`,
+`right_degree : v.natDegree ≤ d`, `left_nonneg` and `right_nonneg` (nonnegative coefficients of
+`u` and `v`). -/
 syntax (name := rr_fPolynomial_strict_interl_iff_named)
   "rr_fPolynomial_strict_interl_iff" " using "
     "left_degree" ":=" term ","
@@ -160,6 +180,10 @@ syntax (name := rr_fPolynomial_strict_interl_iff_named)
     "right_nonneg" ":=" term :
   tactic
 
+/-- Closes `PosComboRealRooted (fPolynomial d u) (fPolynomial d v)` from
+`strictInterl : StrictInterl u v` and `left_degree : u.natDegree ≤ d`,
+`right_degree : v.natDegree ≤ d`, `left_nonneg` and `right_nonneg` (nonnegative coefficients of
+`u` and `v`). -/
 syntax (name := rr_fPolynomial_pos_combo_named)
   "rr_fPolynomial_pos_combo" " using "
     "strictInterl" ":=" term ","
@@ -169,6 +193,8 @@ syntax (name := rr_fPolynomial_pos_combo_named)
     "right_nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_fPolynomial_strict_interl`: the same certificate for every index `i`,
+with `d i` in place of `d`. -/
 syntax (name := rr_fPolynomial_sequence_strict_interl_named)
   "rr_fPolynomial_sequence_strict_interl" " using "
     "left_degree" ":=" term ","
@@ -178,6 +204,9 @@ syntax (name := rr_fPolynomial_sequence_strict_interl_named)
     "strictInterl" ":=" term :
   tactic
 
+/-- Sequence form of
+`rr_of_fPolynomial_strict_interl`: the same certificate for every index `i`, with `d i` in place
+of `d`. -/
 syntax (name := rr_of_fPolynomial_sequence_strict_interl_named)
   "rr_of_fPolynomial_sequence_strict_interl" " using "
     "left_degree" ":=" term ","
@@ -187,6 +216,8 @@ syntax (name := rr_of_fPolynomial_sequence_strict_interl_named)
     "transformed_strictInterl" ":=" term :
   tactic
 
+/-- Sequence form of `rr_fPolynomial_pos_combo`: the same certificate for every index `i`, with
+`d i` in place of `d`. -/
 syntax (name := rr_fPolynomial_sequence_pos_combo_named)
   "rr_fPolynomial_sequence_pos_combo" " using "
     "strictInterl" ":=" term ","

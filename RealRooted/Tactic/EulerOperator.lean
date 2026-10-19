@@ -122,74 +122,96 @@ theorem iterateThetaPlusOne_sequence_interl
     fun i =>
   RealRooted.iterateThetaPlusOne_preserves_interl (l i) (hP i) (hQ i) (hPQ i)
 
+/-- Closes `HasNonnegCoeffs (theta p)` from `nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_theta_nonneg_named)
   "rr_theta_nonneg" " using " "nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_theta_nonneg`: the same certificate for every index `i`. -/
 syntax (name := rr_theta_sequence_nonneg_named)
   "rr_theta_sequence_nonneg" " using " "nonneg" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs (thetaPlusOne p)` from `nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_thetaPlusOne_nonneg_named)
   "rr_thetaPlusOne_nonneg" " using " "nonneg" ":=" term :
   tactic
 
+/-- Sequence form of `rr_thetaPlusOne_nonneg`: the same certificate for every index `i`. -/
 syntax (name := rr_thetaPlusOne_sequence_nonneg_named)
   "rr_thetaPlusOne_sequence_nonneg" " using " "nonneg" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs (polarTheta N p)` from `nonneg : HasNonnegCoeffs p` and
+`degree : p.natDegree ≤ N`. -/
 syntax (name := rr_polarTheta_nonneg_named)
   "rr_polarTheta_nonneg" " using "
     "nonneg" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_polarTheta_nonneg`: the same certificate for every index `i`, with
+`N i` in place of `N`. -/
 syntax (name := rr_polarTheta_sequence_nonneg_named)
   "rr_polarTheta_sequence_nonneg" " using "
     "nonneg" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (theta p)` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_theta_pf_named)
   "rr_theta_pf" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_theta_pf`: the same certificate for every index `i`. -/
 syntax (name := rr_theta_sequence_pf_named)
   "rr_theta_sequence_pf" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (thetaPlusOne p)` from `pf : IsPFPolynomial p`. -/
 syntax (name := rr_thetaPlusOne_pf_named)
   "rr_thetaPlusOne_pf" " using " "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_thetaPlusOne_pf`: the same certificate for every index `i`. -/
 syntax (name := rr_thetaPlusOne_sequence_pf_named)
   "rr_thetaPlusOne_sequence_pf" " using " "pf" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (polarTheta N p)` from `pf : IsPFPolynomial p` and
+`degree : p.natDegree ≤ N`. -/
 syntax (name := rr_polarTheta_pf_named)
   "rr_polarTheta_pf" " using "
     "pf" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Sequence form of `rr_polarTheta_pf`: the same certificate for every index `i`, with `N i` in
+place of `N`. -/
 syntax (name := rr_polarTheta_sequence_pf_named)
   "rr_polarTheta_sequence_pf" " using "
     "pf" ":=" term ","
     "degree" ":=" term :
   tactic
 
+/-- Closes `IsPFPolynomial (iterateThetaPlusOne l p)` from `index : l` and
+`pf : IsPFPolynomial p`. -/
 syntax (name := rr_iterateThetaPlusOne_pf_named)
   "rr_iterateThetaPlusOne_pf" " using "
     "index" ":=" term ","
     "pf" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateThetaPlusOne_pf`: the same certificate for every index `i`, with
+`l i` in place of `l`. -/
 syntax (name := rr_iterateThetaPlusOne_sequence_pf_named)
   "rr_iterateThetaPlusOne_sequence_pf" " using "
     "index" ":=" term ","
     "pf" ":=" term :
   tactic
 
+/-- Closes `Interl (thetaPlusOne p) (thetaPlusOne q)` from `left_pf : IsPFPolynomial p`,
+`right_pf : IsPFPolynomial q` and `interl : Interl p q`. -/
 syntax (name := rr_thetaPlusOne_interl_named)
   "rr_thetaPlusOne_interl" " using "
     "left_pf" ":=" term ","
@@ -197,6 +219,7 @@ syntax (name := rr_thetaPlusOne_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Sequence form of `rr_thetaPlusOne_interl`: the same certificate for every index `i`. -/
 syntax (name := rr_thetaPlusOne_sequence_interl_named)
   "rr_thetaPlusOne_sequence_interl" " using "
     "left_pf" ":=" term ","
@@ -204,6 +227,8 @@ syntax (name := rr_thetaPlusOne_sequence_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Closes `Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q)` from `index : l`,
+`left_pf : IsPFPolynomial p`, `right_pf : IsPFPolynomial q` and `interl : Interl p q`. -/
 syntax (name := rr_iterateThetaPlusOne_interl_named)
   "rr_iterateThetaPlusOne_interl" " using "
     "index" ":=" term ","
@@ -212,6 +237,8 @@ syntax (name := rr_iterateThetaPlusOne_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Sequence form of `rr_iterateThetaPlusOne_interl`: the same certificate for every index `i`,
+with `l i` in place of `l`. -/
 syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
   "rr_iterateThetaPlusOne_sequence_interl" " using "
     "index" ":=" term ","
@@ -220,6 +247,10 @@ syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
+`P (n + 2) = (X * P (n + 1))' + C (c n) * (X * P n)`; the arguments are
+`base : StrictInterl (P 0) (P 1)`, `nonneg` and `positive_lc` for every `P n`,
+`lag_positive : ∀ n, 0 < c n` and `recurrence`. -/
 syntax (name := rr_strict_interl_positive_euler_lag_sequence_named)
   "rr_strict_interl_positive_euler_lag_sequence" " using "
     "base" ":=" term ","

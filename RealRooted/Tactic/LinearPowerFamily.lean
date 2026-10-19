@@ -37,6 +37,9 @@ theorem isRealRooted_of_monomial_tail_sequence
 
 namespace Tactic
 
+/-- Closes `StrictInterl (X ^ n * f) (X ^ (n + 1) * g)` from
+`reverse_strictInterl : StrictInterl g f`, `left_nonneg : HasNonnegCoeffs f`,
+`right_nonneg : HasNonnegCoeffs g` and `index : n`. -/
 syntax (name := rr_strict_interl_X_pow_mul_X_pow_succ_named)
   "rr_strict_interl_X_pow_mul_X_pow_succ" " using "
     "reverse_strictInterl" ":=" term ","
@@ -45,6 +48,8 @@ syntax (name := rr_strict_interl_X_pow_mul_X_pow_succ_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces ((C a + C b * X) ^ n) ((C a + C b * X) ^ (n + 1))` from `const : a`,
+`slope : b`, `slope_pos : 0 < b` and `index : n`. -/
 syntax (name := rr_interlaces_linear_pow_named)
   "rr_interlaces_linear_pow" " using "
     "const" ":=" term ","
@@ -53,6 +58,9 @@ syntax (name := rr_interlaces_linear_pow_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces (C c * (C a + C b * X) ^ n) (C c * (C a + C b * X) ^ (n + 1))` from
+`scalar : c`, `const : a`, `slope : b`, `scalar_ne : c ≠ 0`, `slope_pos : 0 < b` and
+`index : n`. -/
 syntax (name := rr_interlaces_C_mul_linear_pow_named)
   "rr_interlaces_C_mul_linear_pow" " using "
     "scalar" ":=" term ","
@@ -63,6 +71,9 @@ syntax (name := rr_interlaces_C_mul_linear_pow_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces (C c * (C a + C b * X) ^ n) (C d * (C a + C b * X) ^ (n + 1))` from
+`left_scalar : c`, `right_scalar : d`, `const : a`, `slope : b`, the nonvanishing
+`left_scalar_ne` and `right_scalar_ne`, `slope_pos : 0 < b` and `index : n`. -/
 syntax (name := rr_interlaces_C_mul_linear_pow_succ_named)
   "rr_interlaces_C_mul_linear_pow_succ" " using "
     "left_scalar" ":=" term ","
@@ -75,6 +86,8 @@ syntax (name := rr_interlaces_C_mul_linear_pow_succ_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs ((C a + C b * X) ^ n)` from `a_nonneg : 0 ≤ a`, `b_nonneg : 0 ≤ b`
+and `index : n`. -/
 syntax (name := rr_hasNonnegCoeffs_linear_pow_named)
   "rr_hasNonnegCoeffs_linear_pow" " using "
     "a_nonneg" ":=" term ","
@@ -82,6 +95,9 @@ syntax (name := rr_hasNonnegCoeffs_linear_pow_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces (A n) (A (n + 1))` for `A 0 = C c`, `A 1 = C a + C b * X` and
+`A (n + 2) = (C u + C v * X) * A (n + 1)`; the arguments are `c_pos`, `a_nonneg`,
+`b_pos`, `u_pos` (`0 ≤ u`), `v_pos`, `base0`, `base1`, `recurrence` and `index : n`. -/
 syntax (name := rr_linear_tail_sequence_interlaces_named)
   "rr_linear_tail_sequence_interlaces" " using "
     "c_pos" ":=" term ","
@@ -95,6 +111,8 @@ syntax (name := rr_linear_tail_sequence_interlaces_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `A n ≠ 0 ∧ (A n).Splits` for the linear-tail sequence of
+`rr_linear_tail_sequence_interlaces`, with `u_pos : 0 < u`; the other arguments are as there. -/
 syntax (name := rr_linear_tail_sequence_realrooted_named)
   "rr_linear_tail_sequence_realrooted" " using "
     "c_pos" ":=" term ","
@@ -108,6 +126,9 @@ syntax (name := rr_linear_tail_sequence_realrooted_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces (A n) (A (n + 1))` for `A 0 = C c`, `A 1 = C a + C b * X` and
+`A (n + 2) = (C u * X) * A (n + 1)`; the arguments are `c_pos`, `a_nonneg`, `b_pos`, `u_pos`,
+`base0`, `base1`, `recurrence` and `index : n`. -/
 syntax (name := rr_monomial_tail_sequence_interlaces_named)
   "rr_monomial_tail_sequence_interlaces" " using "
     "c_pos" ":=" term ","
@@ -120,6 +141,8 @@ syntax (name := rr_monomial_tail_sequence_interlaces_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `A n ≠ 0 ∧ (A n).Splits` for the monomial-tail sequence of
+`rr_monomial_tail_sequence_interlaces`, with the same arguments. -/
 syntax (name := rr_monomial_tail_sequence_realrooted_named)
   "rr_monomial_tail_sequence_realrooted" " using "
     "c_pos" ":=" term ","
@@ -132,6 +155,9 @@ syntax (name := rr_monomial_tail_sequence_realrooted_named)
     "index" ":=" term :
   tactic
 
+/-- Closes `Interlaces ((X - C r) ^ m * (C a + C b * X) ^ n) ((X - C r) ^ m * (C a + C b * X) ^
+(n + 1))` from `root : r`, `root_power : m`, `const : a`, `slope : b`, `slope_pos : 0 < b` and
+`index : n`. -/
 syntax (name := rr_interlaces_X_sub_C_pow_mul_linear_pow_named)
   "rr_interlaces_X_sub_C_pow_mul_linear_pow" " using "
     "root" ":=" term ","

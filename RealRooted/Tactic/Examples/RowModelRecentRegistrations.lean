@@ -62,6 +62,7 @@ end A104978Model
 
 namespace HA049325
 
+/-- The OEIS A049325 polynomial sequence, given by a literal fourth-order recurrence. -/
 def A049325 : ℕ → ℝ[X]
   | 0 => 16 + 12 * X + X ^ 2
   | 1 => 16 + 68 * X + 18 * X ^ 2 + X ^ 3
@@ -81,6 +82,7 @@ end HA049325
 
 namespace HA082649
 
+/-- The OEIS A082649 polynomial sequence, given by a literal third-order recurrence. -/
 def A082649 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 4 + 4 * X
@@ -96,6 +98,7 @@ end HA082649
 
 namespace HA099605
 
+/-- The OEIS A099605 polynomial sequence, given by a literal fourth-order recurrence. -/
 def A099605 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 2 + 2 * X
@@ -111,6 +114,7 @@ end HA099605
 
 namespace HA101842
 
+/-- The OEIS A101842 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A101842 : ℕ → ℝ[X]
   | 0 => 1 + X
   | n + 1 => ((C (1) * X + C (-1) * X ^ 3)) * (A101842 n).derivative +
@@ -123,6 +127,7 @@ end HA101842
 
 namespace HA104978
 
+/-- The OEIS A104978 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A104978 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
@@ -149,6 +154,7 @@ end HA104978
 
 namespace HA156308
 
+/-- The OEIS A156308 polynomial sequence, given by a literal third-order recurrence. -/
 def A156308 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 4 + X
@@ -163,6 +169,7 @@ end HA156308
 
 namespace HA165891
 
+/-- The OEIS A165891 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A165891 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => ((C (1) * X + C (-1) * X ^ 3)) * (A165891 n).derivative +
@@ -175,6 +182,7 @@ end HA165891
 
 namespace HA266326
 
+/-- The OEIS A266326 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A266326 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => ((C (1) * X ^ 2 + C (2) * X ^ 3)) * (A266326 n).derivative +
@@ -188,6 +196,7 @@ end HA266326
 
 namespace HA268647
 
+/-- The OEIS A268647 polynomial sequence, given by a literal second-order recurrence. -/
 def A268647 : ℕ → ℝ[X]
   | 0 => X
   | 1 => 2 + 5 * X + 4 * X ^ 2 + X ^ 3
@@ -207,6 +216,7 @@ end HA268647
 
 namespace HA297191
 
+/-- The OEIS A297191 polynomial sequence, given by a literal second-order recurrence. -/
 def A297191 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + 3 * X + X ^ 2
@@ -220,6 +230,7 @@ end HA297191
 
 namespace HA334009
 
+/-- The OEIS A334009 polynomial sequence, given by a literal third-order recurrence. -/
 def A334009 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 4 + 4 * X
@@ -234,6 +245,7 @@ end HA334009
 
 namespace HA394446
 
+/-- The OEIS A394446 polynomial sequence, given by a literal second-order derivative recurrence. -/
 def A394446 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + 3 * X + X ^ 2
@@ -258,6 +270,7 @@ end HA394446
 
 namespace HA330798
 
+/-- The OEIS A330798 polynomial sequence, given by a literal second-order derivative recurrence. -/
 def A330798 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 2 + 2 * X

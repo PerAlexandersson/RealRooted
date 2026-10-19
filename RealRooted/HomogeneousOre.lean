@@ -146,9 +146,13 @@ the real two-coordinate recombination coefficients, pencil-local preservation
 for `T`, and the two endpoint identities into the image pencil. -/
 structure HomogeneousOreTriangularStepCertificate
     (T A K : ℝ[X] →ₗ[ℝ] ℝ[X]) (f g : ℝ[X]) where
+  /-- The coefficient of `T f` in the identity for `A f + g`. -/
   a : ℝ
+  /-- The coefficient of `T g` in the identity for `A f + g`. -/
   b : ℝ
+  /-- The coefficient of `T f` in the identity for `K g`. -/
   c : ℝ
+  /-- The coefficient of `T g` in the identity for `K g`. -/
   d : ℝ
   preserves : PreservesRealRootedOnPencil T f g
   p_image :

@@ -9,11 +9,18 @@ namespace RealRooted.Tactic
 
 /-- Rational functions fitted for the two endpoints. -/
 structure EndpointWindowFit where
+  /-- The lower endpoint of the window, as numerator and denominator coefficients in `n`. -/
   lower : Array Rat × Array Rat
+  /-- The upper endpoint of the window, as numerator and denominator coefficients in `n`. -/
   upper : Array Rat × Array Rat
+  /-- All roots of the derivative coefficient, each as numerator and denominator coefficients in
+  `n`. -/
   roots : Array (Array Rat × Array Rat)
+  /-- The leading coefficient, as numerator and denominator coefficients in `n`. -/
   lead : Array Rat × Array Rat
+  /-- The position of the lower endpoint among the sorted roots. -/
   lowerIndex : Nat
+  /-- The degree of the derivative coefficient, which is the number of roots. -/
   degree : Nat
 
 /-- Fit sampled values to `(a + b n) / (1 + d n)`, including constants. -/
