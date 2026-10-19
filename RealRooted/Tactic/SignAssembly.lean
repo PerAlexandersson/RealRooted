@@ -239,6 +239,11 @@ theorem isRealRooted_of_strict_signs_of_natDegree_eq_add_two_even
   apply isRealRooted_of_strict_signs_of_natDegree_eq_length_add_two_even
     hF_pos hF_even hrs_sorted (by lia) hn hsign hleft hright ha_lt ha_neg
 
+/-- Closes `F ≠ 0 ∧ F.Splits` (or one of its components) for `F` of odd degree `f.natDegree +
+2` with positive leading coefficient, from strict sign changes of `F` at the sorted roots
+`rs` of the split polynomial `f`; `roots_eq : ↑rs = f.roots`, `left_sign` and `right_sign` are
+the signs of `F` at the ends, and `witness_lt` and `witness_sign : 0 < F.eval a` give a point
+`a` below the roots. -/
 syntax (name := rr_sign_assembly_gap_two_named)
   "rr_sign_assembly_gap_two" " using "
     "source_splits" ":=" term ","
@@ -284,6 +289,8 @@ macro_rules
               $hf $hFpos $hFodd $hsorted $hroots $hdeg $hn $hsign
               $hleft $hright $ha_lt $ha_pos).1)
 
+/-- Even-degree variant of `rr_sign_assembly_gap_two`: `target_even` replaces
+`target_odd`, `left_sign` is `0 < F.eval rs.head!`, and `witness_sign` is `F.eval a < 0`. -/
 syntax (name := rr_sign_assembly_gap_two_even_named)
   "rr_sign_assembly_gap_two_even" " using "
     "source_splits" ":=" term ","

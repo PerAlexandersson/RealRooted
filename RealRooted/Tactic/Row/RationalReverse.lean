@@ -47,12 +47,22 @@ local syntax (name := rrRationalReverseAuxInterlaces)
 elab_rules : tactic
   | `(tactic| rr_rational_reverse_aux_interlaces) => fTransformInterlacesGoal
 
+/-- The data of the reflected first-order recurrence whose multipliers are rational functions of
+`n`. -/
 structure RationalReversal where
+  /-- The linear recurrence data of the original sequence. -/
   L : LinRecData
+  /-- The degree of row `0`, so that row `n` has degree `D₀ + n`. -/
   D₀ : Nat
+  /-- The reflected first row `X ^ D₀ * P 0 (1 / X)`. -/
   base : QPoly
+  /-- The multiplier of the derivative term, by powers of `X`, each by powers of `n`, before
+  dividing by `den`. -/
   a₁ : Array (Array Rat)
+  /-- The multiplier of the undifferentiated term, by powers of `X`, each by powers of `n`,
+  before dividing by `den`. -/
   a₀ : Array (Array Rat)
+  /-- The common positive denominator of the multipliers, by powers of `n`. -/
   den : Array Rat
 
 /-- Exact recognizer for a non-palindromic first-order family whose inverse

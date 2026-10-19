@@ -51,6 +51,7 @@ example (n : Nat) : IsInterlacingSeq0Nonneg (namedFinishSmokeRefined n) := by rr
 -- Generated-style final wrappers are found by generic named-wrapper lookup.
 example (n : Nat) : namedFinishSmoke n ≠ 0 ∧ (namedFinishSmoke n).Splits := by rr_finish
 
+/-- Smoke-test sequence for `recurrence_eval`, defined by `P (n + 1) = (1 + X) * P n`. -/
 noncomputable def recurrenceEvalSmoke : Nat → ℝ[X]
   | 0 => 1
   | n + 1 => (1 + X) * recurrenceEvalSmoke n

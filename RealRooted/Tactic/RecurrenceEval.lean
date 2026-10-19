@@ -119,6 +119,8 @@ private def evalAndCloseSafely? (stx : TSyntax `tactic) : TacticM Bool := do
     evalAndClose? stx
   return result?.getD false
 
+/-- Evaluates a named polynomial recurrence in the goal by unfolding its definition and
+simplifying derivatives and constants. -/
 elab "recurrence_eval" : tactic => do
   withOptions (fun o => Lean.maxRecDepth.set o 200000) do
     withMainContext do

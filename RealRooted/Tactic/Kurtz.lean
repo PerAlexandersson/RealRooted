@@ -92,6 +92,11 @@ theorem kurtz_sequence_splits {P : Nat → ℝ[X]}
     ∀ n : Nat, (P n).Splits :=
   pf_sequence_splits (kurtz_sequence_isPFPolynomial hdeg hpos hineq)
 
+/-- Closes `p ≠ 0 ∧ p.Splits` (or a weaker conclusion: `p = 0 ∨ p.Splits`, `IsPFPolynomial p`,
+`p.Splits`, `p ≠ 0` or `HasNonnegCoeffs
+p`) by the Hutchinson--Kurtz coefficient criterion from `degree : 2 ≤
+p.natDegree`, `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i` and `inequalities :
+KurtzStrictInequalities p`. -/
 syntax (name := rr_kurtz_named)
   "rr_kurtz" " using "
     "degree" ":=" term ","
@@ -99,16 +104,20 @@ syntax (name := rr_kurtz_named)
     "inequalities" ":=" term :
   tactic
 
+/-- Closes `p ≠ 0` from `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i`. -/
 syntax (name := rr_kurtz_nonzero_named)
   "rr_kurtz_nonzero" " using "
     "positive_coeffs" ":=" term :
   tactic
 
+/-- Closes `HasNonnegCoeffs p` from `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i`. -/
 syntax (name := rr_kurtz_nonneg_coeffs_named)
   "rr_kurtz_nonneg_coeffs" " using "
     "positive_coeffs" ":=" term :
   tactic
 
+/-- Sequence form of `rr_kurtz`: the same certificate for every row `P n`, with `degree`,
+`positive_coeffs` and `inequalities` for every `P n`. -/
 syntax (name := rr_kurtz_sequence_named)
   "rr_kurtz_sequence" " using "
     "degree" ":=" term ","
@@ -116,11 +125,15 @@ syntax (name := rr_kurtz_sequence_named)
     "inequalities" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0` from
+`positive_coeffs : ∀ n, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i`. -/
 syntax (name := rr_kurtz_sequence_nonzero_named)
   "rr_kurtz_sequence_nonzero" " using "
     "positive_coeffs" ":=" term :
   tactic
 
+/-- Closes `∀ n, HasNonnegCoeffs (P n)` from
+`positive_coeffs : ∀ n, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i`. -/
 syntax (name := rr_kurtz_sequence_nonneg_coeffs_named)
   "rr_kurtz_sequence_nonneg_coeffs" " using "
     "positive_coeffs" ":=" term :

@@ -23,8 +23,11 @@ The concrete squarecase encoding is deliberately not fixed here.  Later files
 can instantiate `Board`, `boardOfSnake`, and `nonNestingRookPolynomial` with a
 Ferrers/skew-shape model while reusing the theorem-shaped interfaces below. -/
 structure SquarecaseRookModel where
+  /-- The type of boards of the model. -/
   Board : Type u
+  /-- The board attached to a generalized snake word. -/
   boardOfSnake : SnakeWord → Board
+  /-- The non-nesting rook polynomial of a board. -/
   nonNestingRookPolynomial : Board → ℝ[X]
 
 namespace SquarecaseRookModel

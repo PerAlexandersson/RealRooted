@@ -50,20 +50,27 @@ private theorem exp_apply_of_eigenvector
   rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum ℝ]
   congr
 
+/-- The index type of pairs `(n, μ)` with `n ≤ N` and `μ` a partition of `n` with at most `q`
+parts. -/
 abbrev MorrisDegreeIndex (q N : ℕ) :=
   Σ n : Fin (N + 1), {mu : n.val.Partition // mu.parts.card ≤ q}
 
 noncomputable instance (q N : ℕ) : Fintype (MorrisDegreeIndex q N) :=
   Fintype.ofFinite _
 
+/-- The monomial symmetric polynomial of the partition of an index `(n, μ)`, in `q` variables. -/
 def morrisMsymm (q N : ℕ) (i : MorrisDegreeIndex q N) :
     MvPolynomial (Fin q) ℝ :=
   msymm (Fin q) ℝ i.2.1
 
+/-- The submodule of `MvPolynomial (Fin q) ℝ` spanned by the monomial symmetric polynomials
+`morrisMsymm q N i`. -/
 def morrisDegreeSubmodule (q N : ℕ) :
     Submodule ℝ (MvPolynomial (Fin q) ℝ) :=
   Submodule.span ℝ (Set.range (morrisMsymm q N))
 
+/-- The space of symmetric polynomials in `q` variables of total degree at most `N`, spanned by the
+monomial symmetric polynomials `morrisMsymm q N`. -/
 abbrev MorrisDegreeSpace (q N : ℕ) := morrisDegreeSubmodule q N
 
 noncomputable instance (q N : ℕ) :
@@ -119,10 +126,12 @@ theorem isSymmetric_of_mem_morrisDegreeSubmodule {q N : ℕ}
   | add P Q _ _ hP hQ => exact hP.add hQ
   | smul r P _ hP => exact hP.smul r
 
+/-- The elementary product `morrisElementary q μ` attached to an index `(n, μ)`. -/
 def morrisElementaryPoly (q N : ℕ) (i : MorrisDegreeIndex q N) :
     MvPolynomial (Fin q) ℝ :=
   morrisElementary (R := ℝ) q i.2.1
 
+/-- The submodule spanned by the elementary products `morrisElementaryPoly q N i`. -/
 def morrisElementarySubmodule (q N : ℕ) :
     Submodule ℝ (MvPolynomial (Fin q) ℝ) :=
   Submodule.span ℝ (Set.range (morrisElementaryPoly q N))
@@ -234,16 +243,19 @@ theorem morrisB_mem_morrisDegreeSubmodule {q N : ℕ}
       rw [map_smul]
       exact Submodule.smul_mem _ r hP
 
+/-- The operator `A_q`, restricted to `MorrisDegreeSpace q N`. -/
 def morrisAOnDegree (q N : ℕ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N :=
   (morrisA q).restrict fun _ hP =>
     morrisA_mem_morrisDegreeSubmodule hP
 
+/-- The operator `B_q`, restricted to `MorrisDegreeSpace q N`. -/
 def morrisBOnDegree (q N : ℕ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N :=
   (morrisB q).restrict fun _ hP =>
     morrisB_mem_morrisDegreeSubmodule hP
 
+/-- The operator `B_q - A_q`, restricted to `MorrisDegreeSpace q N`. -/
 def morrisDOnDegree (q N : ℕ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N :=
   morrisBOnDegree q N - morrisAOnDegree q N
@@ -386,53 +398,67 @@ theorem morrisAFlow_mem_morrisDegreeSubmodule {q N : ℕ}
       rw [map_smul]
       exact Submodule.smul_mem _ r hP
 
+/-- The flow of `-A_q` at time `t`, restricted to `MorrisDegreeSpace q N`. -/
 def morrisAFlowOnDegree (q N : ℕ) (t : ℝ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N :=
   (morrisAFlow q t).restrict fun _ hP =>
     morrisAFlow_mem_morrisDegreeSubmodule t hP
 
+/-- The linear equivalence between `MorrisDegreeSpace q N` and its coordinate space, given by a
+chosen basis. -/
 noncomputable def morrisDegreeEquiv (q N : ℕ) :
     MorrisDegreeSpace q N ≃ₗ[ℝ]
       Module.Free.ChooseBasisIndex ℝ (MorrisDegreeSpace q N) → ℝ :=
   (Module.Free.chooseBasis ℝ (MorrisDegreeSpace q N)).repr ≪≫ₗ
     Finsupp.linearEquivFunOnFinite ℝ ℝ _
 
+/-- The coordinate space `ℝ ^ k` of `MorrisDegreeSpace q N`, indexed by a chosen basis. -/
 abbrev MorrisDegreeCoords (q N : ℕ) :=
   Module.Free.ChooseBasisIndex ℝ (MorrisDegreeSpace q N) → ℝ
 
+/-- The endomorphism of `MorrisDegreeCoords q N` corresponding to an endomorphism `T` of
+`MorrisDegreeSpace q N`. -/
 def endOnMorrisDegreeCoords (q N : ℕ)
     (T : MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   morrisDegreeEquiv q N |>.conj T
 
+/-- The operator `A_q` on `MorrisDegreeSpace q N`, written in coordinates. -/
 def morrisACoords (q N : ℕ) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   endOnMorrisDegreeCoords q N (morrisAOnDegree q N)
 
+/-- The operator `B_q` on `MorrisDegreeSpace q N`, written in coordinates. -/
 def morrisBCoords (q N : ℕ) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   endOnMorrisDegreeCoords q N (morrisBOnDegree q N)
 
+/-- The operator `B_q - A_q` on `MorrisDegreeSpace q N`, written in coordinates. -/
 def morrisDCoords (q N : ℕ) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   endOnMorrisDegreeCoords q N (morrisDOnDegree q N)
 
+/-- The flow of `-A_q` at time `t` on `MorrisDegreeSpace q N`, written in coordinates. -/
 def morrisAFlowCoords (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   endOnMorrisDegreeCoords q N (morrisAFlowOnDegree q N t)
 
+/-- The operator `A_q` on `MorrisDegreeCoords q N`, as a continuous linear map. -/
 def morrisAContinuous (q N : ℕ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisACoords q N)
 
+/-- The operator `B_q` on `MorrisDegreeCoords q N`, as a continuous linear map. -/
 def morrisBContinuous (q N : ℕ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisBCoords q N)
 
+/-- The operator `B_q - A_q` on `MorrisDegreeCoords q N`, as a continuous linear map. -/
 def morrisDContinuous (q N : ℕ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisDCoords q N)
 
+/-- The flow of `-A_q` at time `t` on `MorrisDegreeCoords q N`, as a continuous linear map. -/
 def morrisAFlowContinuous (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisAFlowCoords q N t)
@@ -608,12 +634,15 @@ theorem morrisBFlow_morrisElementary {n : ℕ} (q : ℕ) (t : ℝ)
       (fun k hk =>
         (mu.le_card_parts_of_mem_conjugate_parts hk).trans hmu)
 
+/-- The inclusion of `MorrisDegreeSpace q N` into the symmetric subalgebra. -/
 def morrisDegreeToSymmetric (q N : ℕ) :
     MorrisDegreeSpace q N →ₗ[ℝ] symmetricSubalgebra (Fin q) ℝ where
   toFun P := ⟨P, isSymmetric_of_mem_morrisDegreeSubmodule P.2⟩
   map_add' P Q := by ext; rfl
   map_smul' r P := by ext; rfl
 
+/-- The `B_q` flow at time `t` on `MorrisDegreeSpace q N`, with values in the full polynomial
+ring. -/
 def morrisBFlowAmbient (q N : ℕ) (t : ℝ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MvPolynomial (Fin q) ℝ where
   toFun P := morrisBFlow q t (morrisDegreeToSymmetric q N P)
@@ -708,15 +737,18 @@ theorem morrisBFlowAmbient_mem {q N : ℕ} (t : ℝ)
   simpa [morrisBFlowAmbient, morrisDegreeToSymmetric] using
     morrisBFlow_mem t P.2
 
+/-- The `B_q` flow at time `t`, restricted to `MorrisDegreeSpace q N`. -/
 def morrisBFlowOnDegree (q N : ℕ) (t : ℝ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N :=
   (morrisBFlowAmbient q N t).codRestrict
     (morrisDegreeSubmodule q N) (morrisBFlowAmbient_mem t)
 
+/-- The `B_q` flow at time `t` on `MorrisDegreeSpace q N`, written in coordinates. -/
 def morrisBFlowCoords (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →ₗ[ℝ] MorrisDegreeCoords q N :=
   endOnMorrisDegreeCoords q N (morrisBFlowOnDegree q N t)
 
+/-- The `B_q` flow at time `t` on `MorrisDegreeCoords q N`, as a continuous linear map. -/
 def morrisBFlowContinuous (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisBFlowCoords q N t)
@@ -843,6 +875,7 @@ theorem exp_morrisBContinuous_eq_flow (q N : ℕ) (t : ℝ) :
       simp only [map_smul]
       rw [hP hPm']
 
+/-- The polynomial with coordinate vector `x` in `MorrisDegreeSpace q N`. -/
 def morrisDegreePolynomial (q N : ℕ) (x : MorrisDegreeCoords q N) :
     MvPolynomial (Fin q) ℝ :=
   ((morrisDegreeEquiv q N).symm x : MorrisDegreeSpace q N)
@@ -903,11 +936,13 @@ theorem morrisDContinuous_eq_sub (q N : ℕ) :
     endOnMorrisDegreeCoords, LinearEquiv.conj_apply,
     LinearMap.comp_apply, morrisDOnDegree]
 
+/-- The Lie--Trotter step `exp (t * B_q) * exp (-(t * A_q))` on `MorrisDegreeCoords q N`. -/
 def morrisTrotterStep (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   NormedSpace.exp (t • morrisBContinuous q N) *
     NormedSpace.exp (t • (-morrisAContinuous q N))
 
+/-- The `n`-th Lie--Trotter approximation `(morrisTrotterStep (t / (n + 1))) ^ (n + 1)`. -/
 def morrisTrotterApprox (q N : ℕ) (t : ℝ) (n : ℕ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   morrisTrotterStep q N (t / (n + 1 : ℕ)) ^ (n + 1)
@@ -966,6 +1001,7 @@ private def morrisCoeffContinuous (q N : ℕ) (m : Fin q →₀ ℕ) :
     MorrisDegreeCoords q N →L[ℝ] ℝ :=
   LinearMap.toContinuousLinearMap (morrisCoeff q N m)
 
+/-- The polynomial given by applying `exp (t * (B_q - A_q))` to the coordinate vector `x`. -/
 def morrisDExp (q N : ℕ) (t : ℝ) (x : MorrisDegreeCoords q N) :
     MvPolynomial (Fin q) ℝ :=
   morrisDegreePolynomial q N

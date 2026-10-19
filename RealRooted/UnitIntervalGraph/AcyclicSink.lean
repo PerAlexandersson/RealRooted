@@ -37,6 +37,7 @@ theorem qNat_succ (q : ℝ) (m : ℕ) :
 /-- Left-endpoint data for a natural unit interval graph on Fin n.
 The condition left i ≤ i makes every interval nonempty. -/
 structure Data (n : ℕ) where
+  /-- The left endpoint of the interval of the vertex `i`. -/
   left : Fin n → ℕ
   left_le : ∀ i, left i ≤ i.val
   monotone_left : Monotone left

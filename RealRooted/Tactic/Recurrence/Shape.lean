@@ -490,6 +490,8 @@ private partial def rowIndex? (P : Name) (e : Expr) : Option Expr :=
   | .mdata _ b => rowIndex? P b
   | _ => none
 
+/-- The row index `t` of the first application `P t` in the main goal, or an error if there is
+none. -/
 def mainRowIndex (P : Ident) : TacticM Expr := do
   let tgt ← instantiateMVars (← getMainTarget)
   let some t := rowIndex? P.getId tgt | throwError "rr_row: no row `{P} t` in the goal"

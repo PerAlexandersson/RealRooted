@@ -12,6 +12,11 @@ quadratic negative-lag certificates, including denominator normalization.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence whose lag factor
+is negative; `certificate` selects the shape of the lag factor `B n`: `negativeSquare`
+(`-(C (c n)) * (q n) ^ 2`), `negativeMonicQuadratic` or `negativeQuadratic`, and the arguments
+are the standard certificates `base`, `pos_lc`, `degree_succ` and `no_common_roots` and
+`recurrence`. -/
 syntax (name := rr_g_negative_lag_sequence_auto)
   "rr_g_negative_lag_sequence" " using "
     "base" ":=" term ","
@@ -23,6 +28,11 @@ syntax (name := rr_g_negative_lag_sequence_auto)
       ("negativeSquare" <|> "negativeMonicQuadratic" <|> "negativeQuadratic") :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence whose lag factor is
+negative; `certificate` selects the shape of the lag factor `B n`: `negativeSquare`
+(`-(C (c n)) * (q n) ^ 2`), `negativeMonicQuadratic` or `negativeQuadratic`, and the arguments
+are the standard certificates `base`, `pos_lc`, `degree_succ` and `no_common_roots` and
+`recurrence`. -/
 syntax (name := rr_g_negative_lag_sequence_realrooted_auto)
   "rr_g_negative_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -34,6 +44,11 @@ syntax (name := rr_g_negative_lag_sequence_realrooted_auto)
       ("negativeSquare" <|> "negativeMonicQuadratic" <|> "negativeQuadratic") :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence
+`P (n + 2) = A n * P (n + 1) + B n * P n` with an arbitrary polynomial `A n`, with
+`certificate := globalNonpos`; `lag : B` is the lag coefficient sequence, its sign condition at
+the roots is proved automatically, and the other arguments are the standard certificates
+`base`, `pos_lc`, `degree_succ` and `no_common_roots` and `recurrence`. -/
 syntax (name := rr_g_negative_lag_sequence_global_nonpos)
   "rr_g_negative_lag_sequence" " using "
     "base" ":=" term ","
@@ -45,6 +60,11 @@ syntax (name := rr_g_negative_lag_sequence_global_nonpos)
     "certificate" ":=" "globalNonpos" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence
+`P (n + 2) = A n * P (n + 1) + B n * P n` with an arbitrary polynomial `A n`, with
+`certificate := globalNonpos`; `lag : B` is the lag coefficient sequence, its sign condition at
+the roots is proved automatically, and the other arguments are the standard certificates
+`base`, `pos_lc`, `degree_succ` and `no_common_roots` and `recurrence`. -/
 syntax (name := rr_g_negative_lag_sequence_realrooted_global_nonpos)
   "rr_g_negative_lag_sequence_realrooted" " using "
     "base" ":=" term ","
@@ -56,6 +76,11 @@ syntax (name := rr_g_negative_lag_sequence_realrooted_global_nonpos)
     "certificate" ":=" "globalNonpos" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence
+`P (n + 2) = A n * P (n + 1) + B n * P n` with an arbitrary polynomial `A n` given with a
+denominator by `raw_recurrence : ∀ n, C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1) + B n * P
+n)`; `lag : B`, `certificate := globalNonpos`, and `den_nonzero : ∀ n, d n ≠ 0` is optional
+(proved automatically when omitted). -/
 syntax (name := rr_g_negative_lag_sequence_den_global_nonpos)
   "rr_g_negative_lag_sequence_den" " using "
     "base" ":=" term ","
@@ -68,6 +93,11 @@ syntax (name := rr_g_negative_lag_sequence_den_global_nonpos)
     "certificate" ":=" "globalNonpos" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence
+`P (n + 2) = A n * P (n + 1) + B n * P n` with an arbitrary polynomial `A n` given with a
+denominator by `raw_recurrence : ∀ n, C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1) + B n * P
+n)`; `lag : B`, `certificate := globalNonpos`, and `den_nonzero : ∀ n, d n ≠ 0` is optional
+(proved automatically when omitted). -/
 syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos)
   "rr_g_negative_lag_sequence_den_realrooted" " using "
     "base" ":=" term ","
@@ -80,6 +110,12 @@ syntax (name := rr_g_negative_lag_sequence_den_realrooted_global_nonpos)
     "certificate" ":=" "globalNonpos" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a negative-square lag with a common
+denominator: `square_factor : q`, `coeff : c`, `raw_coeff : b`, `den : d`, and `raw_recurrence :
+∀ n, C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n)`, with
+`coeff_eq : (d n)⁻¹ * b n = c n` and `den_nonzero` optional (proved automatically when omitted),
+and the standard certificates `base`, `pos_lc`, `degree_succ` and
+`no_common_roots`. The certificate is `negativeSquare`. -/
 syntax (name := rr_g_neg_lag_den_sq)
   "rr_g_negative_lag_sequence_den_coeff" " using "
     "base" ":=" term ","
@@ -96,6 +132,12 @@ syntax (name := rr_g_neg_lag_den_sq)
     "certificate" ":=" "negativeSquare" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a negative-square lag with a common denominator:
+`square_factor : q`, `coeff : c`, `raw_coeff : b`, `den : d`, and `raw_recurrence : ∀ n, C (d n)
+* P (n + 2) = C (d n) * (A n * P (n + 1)) + C (b n) * (-(q n) ^ 2 * P n)`, with
+`coeff_eq : (d n)⁻¹ * b n = c n` and `den_nonzero` optional (proved automatically when omitted),
+and the standard certificates `base`, `pos_lc`, `degree_succ` and
+`no_common_roots`. The certificate is `negativeSquare`. -/
 syntax (name := rr_g_neg_lag_den_sq_rr)
   "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
     "base" ":=" term ","
@@ -112,6 +154,12 @@ syntax (name := rr_g_neg_lag_den_sq_rr)
     "certificate" ":=" "negativeSquare" :
   tactic
 
+/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a negative-quadratic lag with a common
+denominator, as in `rr_lw_negative_quadratic_sequence_den_coeff_auto_split`: `leading`,
+`linear` and `constant` are the normalized coefficients, `raw_leading`, `raw_linear` and
+`raw_constant` the raw ones, `den` the denominator, and `den_nonzero` and the coefficient
+equations are optional (proved automatically when omitted). The certificate is
+`negativeQuadratic`. -/
 syntax (name := rr_g_neg_lag_den_quad)
   "rr_g_negative_lag_sequence_den_coeff" " using "
     "base" ":=" term ","
@@ -133,6 +181,12 @@ syntax (name := rr_g_neg_lag_den_quad)
     "certificate" ":=" "negativeQuadratic" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a negative-quadratic lag with a common denominator,
+as in `rr_lw_negative_quadratic_sequence_den_coeff_auto_split`: `leading`,
+`linear` and `constant` are the normalized coefficients, `raw_leading`, `raw_linear` and
+`raw_constant` the raw ones, `den` the denominator, and `den_nonzero` and the coefficient
+equations are optional (proved automatically when omitted). The certificate is
+`negativeQuadratic`. -/
 syntax (name := rr_g_neg_lag_den_quad_rr)
   "rr_g_negative_lag_sequence_den_coeff_realrooted" " using "
     "base" ":=" term ","

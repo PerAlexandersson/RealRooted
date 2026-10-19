@@ -15,6 +15,8 @@ noncomputable section
 namespace RealRooted
 namespace LiuOppositeSigns
 
+/-- Both polynomials have positive leading coefficient and split, and their root counts are
+compatible. -/
 structure PositiveSplitRootCountPair (p q : ℝ[X]) : Prop where
   left_pos : HasPosLeadingCoeff p
   right_pos : HasPosLeadingCoeff q

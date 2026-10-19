@@ -15,6 +15,8 @@ noncomputable section
 
 namespace RealRooted.Applications.OEIS
 
+/-- The invariant for parameters `a` in the cube `[0, 1] ^ n`: the weighted image is split with
+simple negative roots, and the companion residue is positive at each root. -/
 structure WeightedDecoParameterInvariant (w : ℝ) (n : ℕ) : Prop where
   splits : ∀ a ∈ weightedDecoParameterCube n,
     (weightedDecoParameterImage w Finset.univ a).Splits

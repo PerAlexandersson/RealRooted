@@ -93,9 +93,15 @@ cutoff, and arithmetic proof.  The tactic layer then only needs this bundle,
 the recurrence, and the global PF-bidiagonal backend theorem. -/
 structure BidiagonalCubicResidualCertificate
     (alpha beta : ℕ → ℝ) (d : ℕ) where
+  /-- The exponent of the common factor `(X + 1) ^ m`. -/
   m : ℕ
+  /-- The cubic residual of `jensenPolynomial d alpha` after removing the factor `(X + 1) ^ m`. -/
   alphaResidual : ℝ[X]
+  /-- The cubic residual of `X * jensenPolynomial d beta` after removing the factor `(X + 1) ^
+  m`. -/
   betaResidual : ℝ[X]
+  /-- The cubic residual of the pencil at parameter `lam` after removing the factor `(X + 1) ^
+  m`. -/
   pencilResidual : ℝ → ℝ[X]
   alpha_factor :
     jensenPolynomial d alpha = ((X + 1 : ℝ[X]) ^ m) * alphaResidual

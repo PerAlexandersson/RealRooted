@@ -7,6 +7,7 @@ noncomputable section
 
 namespace HA318107
 
+/-- The OEIS A318107 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A318107 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 6 + X

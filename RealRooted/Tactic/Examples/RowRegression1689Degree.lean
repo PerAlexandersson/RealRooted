@@ -13,6 +13,7 @@ namespace RealRooted.Tactic.RowRegression1689DegreeExamples
 
 noncomputable section
 
+/-- The OEIS A008303 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A008303 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
@@ -22,6 +23,7 @@ def A008303 : ℕ → ℝ[X]
 example (n : ℕ) : (A008303 n).Splits := by
   rr_row_splits
 
+/-- The OEIS A008971 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A008971 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
@@ -31,6 +33,7 @@ def A008971 : ℕ → ℝ[X]
 example (n : ℕ) : (A008971 n).Splits := by
   rr_row_splits
 
+/-- The OEIS A094503 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A094503 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>
@@ -40,6 +43,7 @@ def A094503 : ℕ → ℝ[X]
 example (n : ℕ) : (A094503 n).Splits := by
   rr_row_splits
 
+/-- The OEIS A101280 polynomial sequence, given by a literal first-order derivative recurrence. -/
 def A101280 : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 =>

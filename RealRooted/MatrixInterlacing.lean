@@ -52,9 +52,13 @@ end AtomicMatrixEntry
 
 /-- A row-major `2 × 2` matrix code with entries in `{0, 1, X}`. -/
 structure Atomic2x2Matrix where
+  /-- The top-left entry. -/
   a : AtomicMatrixEntry
+  /-- The top-right entry. -/
   b : AtomicMatrixEntry
+  /-- The bottom-left entry. -/
   c : AtomicMatrixEntry
+  /-- The bottom-right entry. -/
   d : AtomicMatrixEntry
   deriving DecidableEq, Repr
 
@@ -226,6 +230,8 @@ def nondegeneratePreservingMatricesList : List Atomic2x2Matrix :=
     ⟨.one, .one, .x, .x⟩,
     ⟨.x, .one, .x, .x⟩]
 
+/-- The finite set of the 18 nondegenerate preserving codes, as the set of entries of the displayed
+list. -/
 def nondegeneratePreservingMatrices : Finset Atomic2x2Matrix :=
   nondegeneratePreservingMatricesList.toFinset
 

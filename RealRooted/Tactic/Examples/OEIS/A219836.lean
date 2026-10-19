@@ -15,6 +15,7 @@ noncomputable section
 
 namespace HA219836
 
+/-- The OEIS A219836 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A219836 : ℕ → ℝ[X]
   | 0 => 0
   | 1 => X

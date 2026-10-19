@@ -28,6 +28,7 @@ abbrev bezoutEntry (p q : ℝ[X]) (i j : ℕ) : ℝ := Polynomial.bezoutEntry p 
 abbrev bezoutMatrix (n : ℕ) (p q : ℝ[X]) : Matrix (Fin n) (Fin n) ℝ :=
   Polynomial.bezoutMatrix n p q
 
+/-- The `i`-th row of the Bezout matrix of `p` and `q`, as a polynomial in `X`. -/
 abbrev bezoutRowPoly (n : ℕ) (p q : ℝ[X]) (i : Fin n) : ℝ[X] :=
   Polynomial.bezoutRowPoly n p q i
 

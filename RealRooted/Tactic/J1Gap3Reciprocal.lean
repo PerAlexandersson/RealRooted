@@ -14,6 +14,8 @@ namespace RealRooted
 
 namespace Tactic
 
+/-- Compatibility alias of `rr_reciprocal_shift_sequence`, with the same `model_realrooted`,
+`degree` and `reciprocal` arguments. -/
 syntax (name := rr_j1_gap3_reciprocal_sequence_realrooted)
   "rr_j1_gap3_reciprocal_sequence_realrooted" " using "
     "model_realrooted" ":=" term ","
@@ -33,6 +35,8 @@ macro_rules
           degree := $hdegree,
           reciprocal := $hreciprocal)
 
+/-- Compatibility alias of `rr_reciprocal_shift_pf_sequence`, with the same `model_pf`,
+`model_ne`, `degree` and `reciprocal` arguments. -/
 syntax (name := rr_j1_gap3_reciprocal_pf_sequence_realrooted)
   "rr_j1_gap3_reciprocal_pf_sequence_realrooted" " using "
     "model_pf" ":=" term ","

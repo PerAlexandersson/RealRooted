@@ -125,6 +125,8 @@ theorem MvRealStable.of_normalizedMorrisDExp_tendsto {q N : ℕ}
   · exact hcoeff
   · exact hP
 
+/-- The index type of partitions `μ` of `N` with at most `q` parts that are dominated by
+`lambda`. -/
 abbrev MorrisDownsetIndex {N : ℕ} (q : ℕ) (lambda : N.Partition) :=
   {mu : N.Partition // mu ≤ lambda ∧ mu.parts.card ≤ q}
 
@@ -185,11 +187,14 @@ private theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
     mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
     Finset.mem_univ, ite_true] using hc
 
+/-- The submodule of `MvPolynomial (Fin q) ℝ` spanned by the monomial symmetric polynomials indexed
+by partitions dominated by `lambda`. -/
 def morrisDownsetSubmodule {N : ℕ} (q : ℕ)
     (lambda : N.Partition) :
     Submodule ℝ (MvPolynomial (Fin q) ℝ) :=
   Submodule.span ℝ (Set.range (morrisDownsetMsymm q lambda))
 
+/-- The space `morrisDownsetSubmodule q lambda`, viewed as a type. -/
 abbrev MorrisDownsetSpace {N : ℕ} (q : ℕ)
     (lambda : N.Partition) :=
   morrisDownsetSubmodule q lambda

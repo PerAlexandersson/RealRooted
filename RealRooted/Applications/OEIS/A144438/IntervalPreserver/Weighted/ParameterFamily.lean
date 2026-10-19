@@ -104,10 +104,13 @@ def weightedDecoParameterInputAt {I : Type*} [DecidableEq I]
     (s : Finset I) (a : I → ℝ) (j : I) (b : ℝ) : ℝ[X] :=
   (X + C b) * weightedDecoParameterInput (s.erase j) a
 
+/-- The weighted transform of the input with the factor at label `j` replaced by `X + C b`. -/
 def weightedDecoParameterImageAt {I : Type*} [DecidableEq I]
     (w : ℝ) (s : Finset I) (a : I → ℝ) (j : I) (b : ℝ) : ℝ[X] :=
   weightedDecoTransform w (weightedDecoParameterInputAt s a j b)
 
+/-- The weighted companion transform of the input with the factor at label `j` replaced by `X + C
+b`. -/
 def weightedDecoParameterCompanionAt {I : Type*} [DecidableEq I]
     (w : ℝ) (s : Finset I) (a : I → ℝ) (j : I) (b : ℝ) : ℝ[X] :=
   weightedDecoCompanionTransform w (weightedDecoParameterInputAt s a j b)

@@ -192,6 +192,7 @@ theorem RootCountCompatible.of_natDegree_le_one
   rw [abs_le]
   lia
 
+/-- The leading coefficients of `p` and `q` have opposite signs. -/
 def OppositeLeadingSigns (p q : ℝ[X]) : Prop :=
   p.leadingCoeff * q.leadingCoeff < 0
 

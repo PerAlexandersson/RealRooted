@@ -41,6 +41,7 @@ abbrev allOrientationDegree (G : _root_.SimpleGraph V) (v : V) : ℕ :=
   G.natCardDegree v
 
 /- The corresponding decision-free cardinality of the edge set. -/
+/-- The number of edges of `G`, as the cardinality of its edge set. -/
 def allOrientationEdgeCount (G : _root_.SimpleGraph V) : ℕ :=
   Nat.card (G.edgeSet)
 
@@ -48,6 +49,8 @@ def allOrientationEdgeCount (G : _root_.SimpleGraph V) : ℕ :=
 instance depends on an adjacency decision, so use the finite subtype directly
 to keep expressions independent of whichever classical decision is available
 at a call site. -/
+/-- The finite enumeration of the edge set of `G` obtained from its finiteness, independent of any
+adjacency decision. -/
 noncomputable local instance allOrientationEdgeSetFintype
     (G : _root_.SimpleGraph V) :
     Fintype G.edgeSet := Fintype.ofFinite G.edgeSet

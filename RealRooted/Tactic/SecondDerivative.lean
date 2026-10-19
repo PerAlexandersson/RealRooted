@@ -291,12 +291,26 @@ theorem ls4_mul_C_ofNat_right (a : ℝ) (m : Nat) [m.AtLeastTwo] (p : ℝ[X]) :
 
 namespace Tactic
 
+/-- Expands `C a * (U * f + V * f') + (U * f + V * f')'` in `f`, `f'` and
+`f''` by `ls4_factor_expansion` and normalizes the result by `rr_ls4_factorize_finish`. -/
 syntax (name := rr_ls4_factorize) "rr_ls4_factorize" : tactic
 
+/-- Normalization step of `rr_ls4_factorize`: simplifies derivatives of polynomial expressions,
+rewrites numeral and `C` casts, and finishes with `ring_nf`. -/
 syntax (name := rr_ls4_factorize_finish) "rr_ls4_factorize_finish" : tactic
 
+/-- Matches a factored recurrence step with the expanded recurrence `hrec`: introduces `n` if
+needed, rewrites with `hrec n` and runs `rr_ls4_factorize`. -/
 syntax (name := rr_ls4_recurrence_factorize) "rr_ls4_recurrence_factorize " term : tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` (or a projection of it) for
+`P (n + 2) = C (a n) * G n + (G n)'` with `G n = U n * P (n + 1) + V n * (P (n + 1))'`; a
+Ma--Wang step makes `G n` interlace `P (n + 1)` and `a n + D` preserves real-rootedness.
+Arguments: `outer := a`, `base_zero` and `base_one` for `P 0` and `P 1`, `pos_lc` for every `P
+n`, `outer_nonzero : ∀ n, a n ≠ 0`, `inner_pos_lc` for `G n`, `coeff_nonpos` (`V
+n` is nonpositive at the roots of `P (n + 1)`), the factored `recurrence`, and
+`inner_degree_lower` and `inner_degree_upper` (the degree of `G n` lies between that of
+`P (n + 1)` and one more). -/
 syntax (name := rr_mw_plus_derivative_sequence_named)
   "rr_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -311,6 +325,8 @@ syntax (name := rr_mw_plus_derivative_sequence_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_mw_plus_derivative_sequence` in which `recurrence` is the expanded recurrence
+in `P`, `P'` and `P''`; it is converted to the factored form by `rr_ls4_recurrence_factorize`. -/
 syntax (name := rr_mw_plus_derivative_sequence_expanded_named)
   "rr_mw_plus_derivative_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -325,6 +341,8 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_mw_plus_derivative_sequence` in which `outer_pos : ∀ n, 0 < a
+n` replaces `outer_nonzero`. -/
 syntax (name := rr_mw_plus_derivative_sequence_pos_named)
   "rr_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -339,6 +357,8 @@ syntax (name := rr_mw_plus_derivative_sequence_pos_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_mw_plus_derivative_sequence_expanded` in which `outer_pos : ∀ n, 0 < a
+n` replaces `outer_nonzero`. -/
 syntax (name := rr_mw_plus_derivative_sequence_expanded_pos_named)
   "rr_mw_plus_derivative_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -353,6 +373,9 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_pos_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_mw_plus_derivative_sequence_expanded` that proves `outer_nonzero` by
+`rr_side_ne_seq_term` and derives `coeff_nonpos` from the root bound
+`root_nonpos` by `rr_sign_at_roots_upper_seq`. -/
 syntax (name := rr_mw_plus_derivative_sequence_expanded_auto)
   "rr_mw_plus_derivative_sequence_expanded_auto" " using "
     "outer" ":=" term ","
@@ -366,6 +389,8 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_auto)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_mw_plus_derivative_sequence_expanded_auto` that takes the root bound as
+`root_upper` instead of `root_nonpos`. -/
 syntax (name := rr_mw_plus_derivative_sequence_expanded_upper_auto)
   "rr_mw_plus_derivative_sequence_expanded_auto" " using "
     "outer" ":=" term ","
@@ -379,6 +404,9 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_upper_auto)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Sign-flipped form of `rr_mw_plus_derivative_sequence`: `inner_neg_lc` says that `-G n` has
+positive leading coefficient and `coeff_nonneg` that `V n` is nonnegative at the roots of `P (n
++ 1)`. -/
 syntax (name := rr_neg_mw_plus_derivative_sequence_named)
   "rr_neg_mw_plus_derivative_sequence" " using "
     "outer" ":=" term ","
@@ -393,6 +421,8 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_neg_mw_plus_derivative_sequence` in which `recurrence` is the expanded
+recurrence in `P`, `P'` and `P''`. -/
 syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_named)
   "rr_neg_mw_plus_derivative_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -407,6 +437,9 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_named)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Variant of `rr_neg_mw_plus_derivative_sequence_expanded` that proves `outer_nonzero` by
+`rr_side_ne_seq_term` and derives `coeff_nonneg` from the root bound
+`root_nonneg` by `rr_sign_at_roots_lower_seq`. -/
 syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_auto)
   "rr_neg_mw_plus_derivative_sequence_expanded_auto" " using "
     "outer" ":=" term ","
@@ -420,6 +453,10 @@ syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_auto)
     "inner_degree_upper" ":=" term :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for the expanded form of
+`P (n + 2) = C (b n) * P (n + 1) + (C (a n) * G n + (G n)')` with
+`G n = U n * P (n + 1) + V n * (P (n + 1))'`; `tail := b` with `tail_nonneg`, `outer_pos_lc` and
+`outer_strictInterl` concern the outer term. -/
 syntax (name := rr_ls4_plus_current_sequence_expanded_named)
   "rr_ls4_plus_current_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -433,6 +470,8 @@ syntax (name := rr_ls4_plus_current_sequence_expanded_named)
     "recurrence" ":=" term :
   tactic
 
+/-- Variant of `rr_ls4_plus_current_sequence_expanded` that proves `tail_nonneg` by
+`rr_side_nonneg_seq_term`. -/
 syntax (name := rr_ls4_plus_current_sequence_expanded_auto)
   "rr_ls4_plus_current_sequence_expanded_auto" " using "
     "outer" ":=" term ","

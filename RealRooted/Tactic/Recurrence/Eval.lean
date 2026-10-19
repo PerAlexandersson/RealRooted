@@ -23,6 +23,7 @@ namespace RealRooted.Tactic
 /-- A polynomial with rational coefficients; `coeffs[i]` is the coefficient of `X ^ i`,
 with no trailing zeros. -/
 structure QPoly where
+  /-- The coefficients, with `coeffs[i]` the coefficient of `X ^ i`. -/
   coeffs : Array Rat
   deriving BEq, Inhabited
 
@@ -35,12 +36,17 @@ def norm (a : Array Rat) : QPoly := Id.run do
     a := a.pop
   return ⟨a⟩
 
+/-- The constant polynomial `r`. -/
 def const (r : Rat) : QPoly := norm #[r]
+/-- The polynomial `X`. -/
 def X : QPoly := ⟨#[0, 1]⟩
+/-- The coefficient of `X ^ i`, `0` beyond the degree. -/
 def coeff (p : QPoly) (i : Nat) : Rat := p.coeffs.getD i 0
+/-- Whether the polynomial is zero. -/
 def isZero (p : QPoly) : Bool := p.coeffs.isEmpty
 /-- The degree, `0` for the zero polynomial. -/
 def natDegree (p : QPoly) : Nat := p.coeffs.size - 1
+/-- The leading coefficient, `0` for the zero polynomial. -/
 def lead (p : QPoly) : Rat := p.coeffs.back?.getD 0
 
 instance : Add QPoly :=
@@ -49,6 +55,7 @@ instance : Add QPoly :=
 instance : Neg QPoly := ⟨fun p => ⟨p.coeffs.map (- ·)⟩⟩
 instance : Sub QPoly := ⟨fun p q => p + -q⟩
 
+/-- Multiplication by the scalar `r`. -/
 def smul (r : Rat) (p : QPoly) : QPoly := norm (p.coeffs.map (r * ·))
 
 instance : Mul QPoly := ⟨fun p q => Id.run do
@@ -59,10 +66,12 @@ instance : Mul QPoly := ⟨fun p q => Id.run do
       a := a.set! (i + j) (a[i + j]! + p.coeffs[i]! * q.coeffs[j]!)
   return norm a⟩
 
+/-- The natural power of a polynomial. -/
 def pow (p : QPoly) : Nat → QPoly
   | 0 => const 1
   | k + 1 => p.pow k * p
 
+/-- The formal derivative. -/
 def derivative (p : QPoly) : QPoly :=
   norm <| (Array.range (p.coeffs.size - 1)).map fun i => ((i + 1 : Nat) : Rat) * p.coeff (i + 1)
 

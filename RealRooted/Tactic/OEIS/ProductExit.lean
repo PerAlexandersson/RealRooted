@@ -10,6 +10,8 @@ at an identity, a zero root, or a period-two endpoint.
 namespace RealRooted
 namespace Tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a recurrence `P (n + 1) = P n`: the form of
+`rr_product_identity_sequence`, with `certificate := identity` and an optional `cutoff`. -/
 syntax (name := rr_product_exit_sequence_identity)
   "rr_product_exit_sequence" " using "
     "base" ":=" term ","
@@ -18,6 +20,9 @@ syntax (name := rr_product_exit_sequence_identity)
     "certificate" ":=" "identity" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a recurrence `P (n + 1) = X * P n` (or `P n * X`):
+the form of `rr_product_root_zero_sequence`, with `certificate :=
+rootZero` and an optional `cutoff`. -/
 syntax (name := rr_product_exit_sequence_root_zero)
   "rr_product_exit_sequence" " using "
     "base" ":=" term ","
@@ -26,6 +31,9 @@ syntax (name := rr_product_exit_sequence_root_zero)
     "certificate" ":=" "rootZero" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by trying
+`rr_product_identity_sequence` and then `rr_product_root_zero_sequence`, with
+`certificate := auto` and an optional `cutoff`. -/
 syntax (name := rr_product_exit_sequence_auto)
   "rr_product_exit_sequence" " using "
     "base" ":=" term ","
@@ -34,6 +42,9 @@ syntax (name := rr_product_exit_sequence_auto)
     "certificate" ":=" "auto" :
   tactic
 
+/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a recurrence `P (n + 2) = P n`: the form of
+`rr_product_period_two_sequence`, with `certificate := periodTwo`, `base_zero`,
+`base_one` and `recurrence`. -/
 syntax (name := rr_product_exit_sequence_period_two)
   "rr_product_exit_sequence" " using "
     "base_zero" ":=" term ","
@@ -42,6 +53,8 @@ syntax (name := rr_product_exit_sequence_period_two)
     "certificate" ":=" "periodTwo" :
   tactic
 
+/-- Cutoff form of `rr_product_exit_sequence` with `certificate :=
+periodTwo`, as `rr_product_period_two_sequence` with `base`, `cutoff` and `recurrence`. -/
 syntax (name := rr_product_exit_sequence_period_two_cutoff)
   "rr_product_exit_sequence" " using "
     "base" ":=" term ","

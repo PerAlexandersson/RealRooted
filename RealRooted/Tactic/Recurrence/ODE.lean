@@ -28,9 +28,13 @@ namespace RealRooted.Tactic
 /-- An eigen-ODE `A * p'' + β * p' = ev n • p` of the rows, and the correction `W` of
 `RealRooted.derivRec₂_ode`; `ev n = e₀ + e₁ n + e₂ n ^ 2`. -/
 structure EigenODE where
+  /-- The coefficient `A` of the second derivative in the eigen-ODE. -/
   A : QPoly
+  /-- The linear coefficient `β` of the first derivative in the eigen-ODE. -/
   β : QPoly
+  /-- The coefficients `(e₀, e₁, e₂)` of the eigenvalue `ev n = e₀ + e₁ n + e₂ n ^ 2`. -/
   ev : Rat × Rat × Rat
+  /-- The correction polynomial `W` of `RealRooted.derivRec₂_ode`. -/
   W : QPoly
 
 private def evAt (e : Rat × Rat × Rat) (n : Nat) : Rat :=

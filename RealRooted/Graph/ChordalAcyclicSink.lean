@@ -310,6 +310,7 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
 
 /-- An ordering in which the earlier neighbors of every vertex form a clique. -/
 structure ReversePerfectEliminationOrder (G : _root_.SimpleGraph V) where
+  /-- The linear order on the vertices. -/
   order : LinearOrder V
   earlier_isClique : ∀ v,
     G.IsClique {u | order.lt u v ∧ G.Adj u v}
@@ -349,6 +350,7 @@ theorem ReversePerfectEliminationOrder.sinkWeight_nonneg
 /-- A graph on `Fin n` whose natural order is a reverse perfect elimination
 order.  This is the implementation type used for induction on the order. -/
 structure FinReversePerfectEliminationOrder (n : ℕ) where
+  /-- The underlying simple graph on `Fin n`. -/
   graph : _root_.SimpleGraph (Fin n)
   earlier_isClique : ∀ v,
     graph.IsClique {u | u < v ∧ graph.Adj u v}
@@ -454,6 +456,7 @@ final vertex. -/
 structure InsertionCut {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1))
     (O : Orientation P.init.graph) where
+  /-- The initial segment of the earlier neighbors of the final vertex. -/
   lower : Finset (Fin m)
   lower_subset : lower ⊆ P.lastEarlierNeighbors
   directed_across :
@@ -741,8 +744,10 @@ theorem extendOrientation_cutOfAcyclicOrientation {m : ℕ}
 /-- A prefix acyclic orientation together with one insertion cut. -/
 structure ExtensionData {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1)) where
+  /-- The orientation of the graph on the vertices before the final one. -/
   orientation : Orientation P.init.graph
   isAcyclic : orientation.IsAcyclic
+  /-- The initial segment of the earlier neighbors of the final vertex, as in an insertion cut. -/
   lower : Finset (Fin m)
   lower_subset : lower ⊆ P.lastEarlierNeighbors
   directed_across :
@@ -752,6 +757,7 @@ structure ExtensionData {m : ℕ}
 
 namespace ExtensionData
 
+/-- The insertion cut of `data.orientation` given by the lower set of `data`. -/
 def cut {m : ℕ} {P : FinReversePerfectEliminationOrder (m + 1)}
     (data : ExtensionData P) : InsertionCut P data.orientation where
   lower := data.lower
@@ -797,6 +803,7 @@ def acyclicOrientationEquivExtensionData {m : ℕ}
 structure RankedNeighbor {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1))
     (O : Orientation.AcyclicOrientation P.init.graph) where
+  /-- The underlying earlier neighbor of the final vertex. -/
   val : Fin m
   mem_neighbors : val ∈ P.lastEarlierNeighbors
 
@@ -811,6 +818,7 @@ theorem ext {x y : RankedNeighbor P O} (hval : x.val = y.val) : x = y := by
   cases y
   simp_all
 
+/-- The equivalence between ranked neighbors and the earlier neighbors of the final vertex. -/
 def equivSubtype :
     RankedNeighbor P O ≃ {x // x ∈ P.lastEarlierNeighbors} where
   toFun x := ⟨x.val, x.mem_neighbors⟩

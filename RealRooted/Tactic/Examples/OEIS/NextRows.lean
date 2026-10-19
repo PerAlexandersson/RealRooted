@@ -13,6 +13,7 @@ noncomputable section
 
 namespace A046802Downstream
 
+/-- The OEIS A046802 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A046802 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
@@ -31,6 +32,7 @@ end A046802Downstream
 
 namespace A132166Downstream
 
+/-- The OEIS A132166 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A132166 : ℕ → ℝ[X]
   | 0 => 336 + 42 * X + X ^ 2
   | n + 1 =>
@@ -50,6 +52,7 @@ end A132166Downstream
 
 namespace A262226Downstream
 
+/-- The OEIS A262226 polynomial sequence, given by a literal recurrence with derivative terms. -/
 def A262226 : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1

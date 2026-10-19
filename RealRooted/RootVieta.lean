@@ -17,6 +17,7 @@ open Polynomial
 
 noncomputable section
 
+/-- The monic polynomial `∏ ξ ∈ s, (X - ξ)` with root multiset `s`. -/
 def rootProd (s : Multiset ℝ) : ℝ[X] := (s.map (fun ξ => X - C ξ)).prod
 
 @[simp] theorem rootProd_zero : rootProd 0 = 1 := by simp [rootProd]

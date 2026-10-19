@@ -14,9 +14,12 @@ noncomputable section
 
 namespace RealRooted.Applications.OEIS
 
+/-- The condition that every coordinate of `a` lies in the interval `[(1 - t) / 2, (1 + t) / 2]`. -/
 def weightedDecoExpandingBox {n : ℕ} (t : ℝ) (a : Fin n → ℝ) : Prop :=
   ∀ i, (1 - t) / 2 ≤ a i ∧ a i ≤ (1 + t) / 2
 
+/-- The set of triples `(t, a, r)` with `t ∈ [0, 1]`, `a` in the expanding box of radius `t`, `r` a
+root of the weighted image of `a`, and nonpositive companion residue sign at `r`. -/
 def weightedDecoBadContactSet (w : ℝ) (n : ℕ) :
     Set (ℝ × ((Fin n → ℝ) × ℝ)) :=
   {z | z.1 ∈ Icc 0 1 ∧

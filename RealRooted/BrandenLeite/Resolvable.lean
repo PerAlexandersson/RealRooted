@@ -29,7 +29,10 @@ sense of Brändén--Saud Leite, Definition 2.2. -/
 structure Resolution {S : Type*} [CommSemiring S] [LE S]
     (R : LowerTriangularMatrix S) where
   lowerUnitriangular : LowerTriangularMatrix.IsLowerUnitriangular R
+  /-- The nonnegative coefficients `lambda n k` in the recurrence for `polynomial`. -/
   lambda : ℕ → ℕ → S
+  /-- The monic polynomial `polynomial n k`, with `polynomial n 0` the `n`-th row polynomial and
+  `polynomial n n = X ^ n`. -/
   polynomial : ℕ → ℕ → S[X]
   lambda_nonneg : ∀ n k, k ≤ n → 0 ≤ lambda n k
   monic : ∀ n k, k ≤ n → (polynomial n k).Monic

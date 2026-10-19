@@ -119,6 +119,7 @@ theorem applySwaps_insert {h : Nat} {c : DecoNormalizedCode h}
 
 namespace Decoration
 
+/-- The embedding of the eligible starts of `c` into `Fin h` given by the underlying index. -/
 def eligibleStartValEmbedding {h : Nat} {c : DecoNormalizedCode h} :
     EligibleStart c ↪ Fin h where
   toFun := Subtype.val
@@ -356,6 +357,7 @@ noncomputable def eligibleStartEmbedding {h : Nat}
     intro i j hij
     exact Subtype.ext (congrArg (fun z : EligibleStart c => z.1) hij)
 
+/-- The set of chosen starts, viewed as a finite set of eligible starts of `c`. -/
 noncomputable def eligibleFinset {h : Nat} {c : DecoNormalizedCode h}
     (D : Decoration c) : Finset (EligibleStart c) :=
   D.starts.attach.map D.eligibleStartEmbedding

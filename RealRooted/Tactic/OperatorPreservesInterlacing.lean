@@ -35,40 +35,54 @@ theorem operator_interl_sequence_up_to_order
   operator_interl_sequence_of_interlacing_preserver
     (preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero hT) hfg
 
+/-- Closes `PreservesAllComboPairs T` from `preserves : PreservesRealRootedOrZero T`. -/
 syntax (name := rr_operator_all_combo_preserver_named)
   "rr_operator_all_combo_preserver" " using "
     "preserves" ":=" term :
   tactic
 
+/-- Closes `AllComboRealRooted (T f) (T g)` from `preserves : PreservesRealRootedOrZero T` and
+`all_combo : AllComboRealRooted f g`. -/
 syntax (name := rr_operator_all_combo_named)
   "rr_operator_all_combo" " using "
     "preserves" ":=" term ","
     "all_combo" ":=" term :
   tactic
 
+/-- Sequence form of `rr_operator_all_combo`: closes `∀ i, AllComboRealRooted (T (F i)) (T (G
+i))`. -/
 syntax (name := rr_operator_all_combo_sequence_named)
   "rr_operator_all_combo_sequence" " using "
     "preserves" ":=" term ","
     "all_combo" ":=" term :
   tactic
 
+/-- Closes `PreservesInterlacingPairsUpToOrder0 T` from
+`preserves : PreservesRealRootedOrZero T`. -/
 syntax (name := rr_operator_interlaces_up_to_order0_named)
   "rr_operator_interlaces_up_to_order0" " using "
     "preserves" ":=" term :
   tactic
 
+/-- Closes `∀ i, Interl (T (F i)) (T (G i)) ∨ Interl (T (G i)) (T (F i))` from
+`interlacing_preserver : PreservesInterlacingPairsUpToOrder0 T` and
+`strictInterl : ∀ i, StrictInterl (F i) (G i)`. -/
 syntax (name := rr_operator_interl_sequence_of_preserver_named)
   "rr_operator_interl_sequence_of_preserver" " using "
     "interlacing_preserver" ":=" term ","
     "strictInterl" ":=" term :
   tactic
 
+/-- Closes `Interl (T f) (T g) ∨ Interl (T g) (T f)` from
+`preserves : PreservesRealRootedOrZero T` and `strictInterl : StrictInterl f g`. -/
 syntax (name := rr_operator_interl_up_to_order_named)
   "rr_operator_interl_up_to_order" " using "
     "preserves" ":=" term ","
     "strictInterl" ":=" term :
   tactic
 
+/-- Sequence form of `rr_operator_interl_up_to_order`: closes `∀ i, Interl (T (F i)) (T (G i)) ∨
+Interl (T (G i)) (T (F i))`. -/
 syntax (name := rr_operator_interl_sequence_up_to_order_named)
   "rr_operator_interl_sequence_up_to_order" " using "
     "preserves" ":=" term ","

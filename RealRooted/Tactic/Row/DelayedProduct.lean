@@ -15,8 +15,11 @@ namespace RealRooted.Tactic
 
 /-- Exact shape data for an arbitrary-offset product tail. -/
 structure DelayedProductData where
+  /-- The linear recurrence data of the sequence, with a single active term. -/
   recurrence : LinRecData
+  /-- Number of initial rows dropped before the recurrence becomes a pure product, `k - 1`. -/
   drop : Nat
+  /-- The normalized factor `q n` multiplying the preceding row in the product tail. -/
   factor : Term
 
 /-- Recognize `P (n + k) = q n * P (n + k - 1)` and normalize `q`. -/

@@ -129,6 +129,7 @@ theorem comparisonBottomSupport_map (f : Nat ↪ Nat) (w : List Nat)
               (comparisonBottomSupport (b :: w)).map f
             exact ih htail
 
+/-- The embedding `Nat.succ` of the natural numbers into themselves. -/
 def succEmbedding : Nat ↪ Nat where
   toFun := Nat.succ
   inj' := Nat.succ_injective

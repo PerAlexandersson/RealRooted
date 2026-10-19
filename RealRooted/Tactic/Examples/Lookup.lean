@@ -19,11 +19,13 @@ example : True := by rr_lookup
 
 example : True := by rr_lookup [rr_pos_lc]
 
+/-- Reflexive relation used as a goal in the certificate-lookup smoke tests. -/
 def RRLookupSmokeRel {α : Type} (x : α) : Prop := x = x
 
 /-- This relation remains untagged so these examples can only use locals. -/
 def RRLookupFreshRel (n : Nat) : Prop := n = n
 
+/-- Polymorphic reflexive relation, untagged so that the examples can only use local hypotheses. -/
 def RRLookupFreshPolyRel {α : Type} (x : α) : Prop := x = x
 
 example (_h : ∀ n : Nat, RRLookupFreshRel n) : RRLookupFreshRel 5 := by rr_lookup
@@ -45,6 +47,7 @@ example (_h : ∀ n : Nat, RRLookupFreshRel n) : True := by
   fail_if_success (apply rr_lookup_mvar_goal_smoke; rr_lookup)
   trivial
 
+/-- Proposition with several tagged proofs below, used to test ambiguous tagged lookup. -/
 inductive RRLookupTaggedRel : Prop where
   | intro
 
@@ -67,6 +70,7 @@ example : RRLookupTaggedRel := by
   fail_if_success rr_lookup [rr_degree]
   exact rr_lookup_dual_tag_smoke
 
+/-- Proposition with two tagged proofs, used to test that a local certificate takes precedence. -/
 inductive RRLookupLocalPrecedenceRel : Prop where
   | intro
 
@@ -78,6 +82,7 @@ inductive RRLookupLocalPrecedenceRel : Prop where
 example (h : RRLookupLocalPrecedenceRel) : RRLookupLocalPrecedenceRel := by
   rr_lookup [rr_nonneg]
 
+/-- Proposition without any tagged proof, used to test the lookup failure message. -/
 inductive RRLookupNoCertificateRel : Prop where
   | intro
 
@@ -105,9 +110,11 @@ example : ∀ n : ℕ, RRLookupSmokeRel n := by rr_lookup [rr_base_strict_interl
 
 example : 37 = 37 := by rr_lookup [rr_degree]
 
+/-- Typeclass with an instance for `ℕ`, used to test lookup with instance arguments. -/
 class RRLookupSmokeClass (α : Type) : Prop where
   witness : True
 
+/-- Typeclass without any instance, used to test that lookup rejects declarations needing it. -/
 class RRLookupMissingClass (α : Type) : Prop where
   witness : True
 

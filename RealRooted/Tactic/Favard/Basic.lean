@@ -25,16 +25,26 @@ elab "rr_target_head_in" cs:(ppSpace ident)+ : tactic => withMainContext do
   unless f.isMVar || heads.any f.isConstOf do
     throwError "rr_target_head_in: the goal is not an application of {cs}"
 
+/-- The function `fun n => by simpa using hstep n`: a recurrence-step certificate for every
+`n` from `hstep`. -/
 syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
 
+/-- Variant of `rr_favard_step_seq` that unfolds with `dsimp` first and, if
+`simpa` fails, converts the goal to `hstep n` by `simp` and `ring_nf`. -/
 syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
 
+/-- The term `by simpa using hP1`: the base certificate for the second row from the hypothesis
+`hP1`. -/
 syntax (name := rr_favard_base_one) "rr_favard_base_one " term : term
 
+/-- Variant of `rr_favard_base_one` that unfolds with `dsimp` first and, if
+`simpa` fails, converts the goal to `hP1` by `simp` and `ring_nf`. -/
 syntax (name := rr_favard_base_one_dsimp) "rr_favard_base_one_dsimp " term : term
 
+/-- A term proving a base-case certificate by `rr_lookup`, after `dsimp` and `simp` if needed. -/
 syntax (name := rr_favard_base_lookup_term) "rr_favard_base_lookup_term" : term
 
+/-- A term proving a positivity certificate by `rr_lookup` or `rr_positivity_seq`. -/
 syntax (name := rr_favard_positive_lookup_term) "rr_favard_positive_lookup_term" : term
 
 macro_rules
@@ -76,42 +86,62 @@ macro_rules
           | rr_lookup
           | rr_positivity_seq)
 
+/-- Closes `∀ n, ...` by introducing `n` and deriving the normalized recurrence from `hraw
+n` by `simpa` with ring-normalization lemmas. -/
 syntax (name := rr_favard_den_raw) "rr_favard_den_raw" " using " term : tactic
 
+/-- Term form of `rr_favard_den_raw`: elaborates to `by rr_favard_den_raw using hraw`. -/
 syntax (name := rr_favard_den_raw_term) "rr_favard_den_raw_term " term : term
 
+/-- Alias of `rr_scalar_active_den_all`: closes the scalar denominator side goal at every row. -/
 macro "rr_favard_active_den_all" : tactic =>
   `(tactic| rr_scalar_active_den_all)
 
+/-- Alias of `rr_scalar_coeff_at n`: closes a scalar coefficient identity at row `n`. -/
 macro "rr_favard_coeff_at " n:term : tactic =>
   `(tactic| rr_scalar_coeff_at $n)
 
+/-- Alias of `rr_scalar_coeff_all`: closes a scalar coefficient identity at every row. -/
 macro "rr_favard_coeff_all" : tactic =>
   `(tactic| rr_scalar_coeff_all)
 
+/-- Term form of `rr_favard_active_den_all`: elaborates to `by rr_favard_active_den_all`. -/
 syntax (name := rr_favard_active_den_all_term)
   "rr_favard_active_den_all_term" : term
 
+/-- Term form of `rr_favard_coeff_at n`: elaborates to `by rr_favard_coeff_at n`. -/
 syntax (name := rr_favard_coeff_at_term)
   "rr_favard_coeff_at_term " term : term
 
+/-- Term form of `rr_favard_coeff_all`: elaborates to `by rr_favard_coeff_all`. -/
 syntax (name := rr_favard_coeff_all_term)
   "rr_favard_coeff_all_term" : term
 
+/-- Closes the goal by the first matching certificate among `hinterlace`, `hrealrooted` and
+`hnonzero` (for interlacing, real-rootedness and nonvanishing goals), followed by their
+projected forms; the six terms are in this order. -/
 syntax (name := rr_favard_goal_variants)
   "rr_favard_goal_variants"
     term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+/-- Variant of `rr_favard_goal_variants` that distinguishes `Interlaces` and
+`StrictInterl` goals; the eight terms are `hinterlaces`, `hstrictInterl`, `hrealrooted`,
+`hnonzero` and their projected forms. -/
 syntax (name := rr_favard_goal_variants_interlaces)
   "rr_favard_goal_variants"
     term ", " term ", " term ", " term ", " term ", " term ", " term ", " term :
   tactic
 
+/-- Three-term form of `rr_favard_goal_variants`: the projected forms are the same certificates
+applied to `_`. -/
 syntax (name := rr_favard_goal_variants_seq)
   "rr_favard_goal_variants" term ", " term ", " term :
   tactic
 
+/-- Closes the goal by trying three alternative certificate triples, separated by `;`, each
+given as interlacing, real-rootedness and nonvanishing certificates, with and without an
+argument `_`. -/
 syntax (name := rr_favard_goal_variant_alternatives3)
   "rr_favard_goal_variant_alternatives3"
     term ", " term ", " term "; "
@@ -119,10 +149,14 @@ syntax (name := rr_favard_goal_variant_alternatives3)
     term ", " term ", " term :
   tactic
 
+/-- Refines the goal with the term
+`h` and closes the remaining row-wise side goals by `rr_positivity_seq`. -/
 syntax (name := rr_favard_refine_positivity_seq)
   "rr_favard_refine_positivity_seq " term :
   tactic
 
+/-- Variant of `rr_favard_refine_positivity_seq` for real-rootedness goals, using
+`rr_exact_realrooted_refine_then`. -/
 syntax (name := rr_favard_exact_realrooted_positivity_seq)
   "rr_favard_exact_realrooted_positivity_seq " term :
   tactic

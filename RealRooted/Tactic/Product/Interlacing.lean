@@ -86,6 +86,8 @@ def productSideGoals (P : Ident) : TacticM Unit := do
     | fail "rr_product: could not discharge a side goal \
         (factor degree, or base row nonzero / splits)"))
 
+/-- Closes `Interlaces (P n) (P (n + 1))` for a product recurrence
+`P (n + 1) = (linear factor) * P n`, reading `P` off the goal. -/
 elab "rr_product_interlaces" : tactic => withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   let some P ← findPolySeqConst? tgt
@@ -95,6 +97,8 @@ elab "rr_product_interlaces" : tactic => withMainContext do
     refine RealRooted.productSequence_interlaces (P := $Pid) ?_ ?_ ?_ (fun _ => rfl) _))
   productSideGoals Pid
 
+/-- Closes `(P n).natDegree = d` for a product recurrence `P (n + 1) = (linear factor) * P n`,
+where `d` simplifies to `(P 0).natDegree + n`. -/
 elab "rr_product_natDegree" : tactic => withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   let some P ← findPolySeqConst? tgt

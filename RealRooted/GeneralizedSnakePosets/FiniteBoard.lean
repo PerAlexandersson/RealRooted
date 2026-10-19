@@ -22,6 +22,7 @@ This intentionally avoids committing to a Ferrers or squarecase coordinate
 system.  Concrete squarecase encodings can later prove that their cell sets
 agree with this finite model. -/
 structure FiniteSkewBoard where
+  /-- The finite set of cells `(row, column)` of the board. -/
   cells : Finset (ℕ × ℕ)
   deriving DecidableEq
 
@@ -532,6 +533,7 @@ private lemma finsetAllBool_iff {α : Type*} (s : Finset α) (p : α → Bool) :
         exact ⟨hall a (Finset.mem_insert_self a s), ih.mpr fun b hb =>
           hall b (Finset.mem_insert_of_mem hb)⟩
 
+/-- The Boolean test for `B.IsNonNestingPlacement P`; see `isNonNestingPlacementBool_iff`. -/
 def isNonNestingPlacementBool (B : FiniteSkewBoard)
     (P : Finset (ℕ × ℕ)) : Bool :=
   finsetAllBool P (fun a => decide (a ∈ B.cells)) &&

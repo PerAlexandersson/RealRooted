@@ -15,9 +15,12 @@ noncomputable section
 
 namespace RealRooted.Applications.OEIS
 
+/-- The parameter cube `[0, 1] ^ n` in `Fin n → ℝ`. -/
 def weightedDecoParameterCube (n : ℕ) : Set (Fin n → ℝ) :=
   Set.pi Set.univ fun _ : Fin n => Icc (0 : ℝ) 1
 
+/-- The product of the companion polynomial and the derivative of the weighted image, both evaluated
+at `r`. -/
 def weightedDecoResidueSign (w : ℝ) (n : ℕ)
     (a : Fin n → ℝ) (r : ℝ) : ℝ :=
   (weightedDecoParameterCompanion w Finset.univ a).eval r *

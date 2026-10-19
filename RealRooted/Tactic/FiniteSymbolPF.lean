@@ -231,6 +231,7 @@ theorem bivariateStableMulXAddYPow :
 /-- Residual certificate for the finite-symbol PF-bidiagonal route. -/
 structure BidiagonalCubicResidualCertificate
     (alpha beta : ℕ → ℝ) (d : ℕ) where
+  /-- The residual cubic polynomial in the factorization of the finite symbol. -/
   residual : ℝ[X]
   residual_cubic : residual.natDegree = 3
   symbol_factor :

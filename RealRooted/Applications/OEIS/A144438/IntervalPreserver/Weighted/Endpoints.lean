@@ -69,18 +69,24 @@ theorem weightedDecoDiagonalLag_eval_one_nonneg {w : ℝ} (hw : 0 ≤ w)
   exact Finset.sum_nonneg fun k _ ↦
     mul_nonneg (weightedDecoDiagonalLag_hasNonnegCoeffs hw ha k) (by positivity)
 
+/-- The value at `1` of the weighted diagonal polynomial `weightedDecoDiagonal w n a`. -/
 def weightedDecoDiagonalAtOne (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   (weightedDecoDiagonal w n a).eval 1
 
+/-- The value at `1` of the weighted lag polynomial `weightedDecoDiagonalLag w n a`. -/
 def weightedDecoDiagonalLagAtOne (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   (weightedDecoDiagonalLag w n a).eval 1
 
+/-- The ratio of the values at `1` of the weighted diagonal polynomials of degrees `n` and `n -
+1`. -/
 def weightedDecoEndpointRatio (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   weightedDecoDiagonalAtOne w n a / weightedDecoDiagonalAtOne w (n - 1) a
 
+/-- The ratio of `weightedDecoDiagonalLagAtOne w n a` to `weightedDecoDiagonalAtOne w n a`. -/
 def weightedDecoKappa (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   weightedDecoDiagonalLagAtOne w n a / weightedDecoDiagonalAtOne w n a
 
+/-- The quantity `n * a` divided by `weightedDecoEndpointRatio w n a`. -/
 def weightedDecoEta (w : ℝ) (n : ℕ) (a : ℝ) : ℝ :=
   (n : ℝ) * a / weightedDecoEndpointRatio w n a
 
