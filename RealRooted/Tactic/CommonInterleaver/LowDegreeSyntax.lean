@@ -83,32 +83,6 @@ syntax (name := rr_pair_common_left_interleaver_sameDegree_degree_le_one_named)
     "left_degree_le_one" ":=" term :
   tactic
 
-/-- Closes `∃ h, StrictInterl f h ∧ StrictInterl g h` for two polynomials of degree at most one. The
-arguments are `left_pos_lc`, `right_pos_lc`, `compatible : Compatible f g`, `left_degree_le_one` and
-`right_degree_le_one`; the proof does not use `compatible`, since degree at most one already
-suffices. -/
-syntax (name := rr_compatible_pair_common_interleaver_degree_le_one_named)
-  "rr_compatible_pair_common_interleaver_degree_le_one" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "compatible" ":=" term ","
-    "left_degree_le_one" ":=" term ","
-    "right_degree_le_one" ":=" term :
-  tactic
-
-/-- Closes `∃ h, StrictInterl h f ∧ StrictInterl h g` (a common left interleaver) for two
-polynomials of degree at most one. The arguments are `left_pos_lc`, `right_pos_lc`,
-`compatible : Compatible f g`, `left_degree_le_one` and `right_degree_le_one`; the proof does not
-use `compatible`. -/
-syntax (name := rr_compatible_pair_common_left_interleaver_degree_le_one_named)
-  "rr_compatible_pair_common_left_interleaver_degree_le_one" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "compatible" ":=" term ","
-    "left_degree_le_one" ":=" term ","
-    "right_degree_le_one" ":=" term :
-  tactic
-
 /-- Closes `PairwiseHasCommonInterleaver fs` for a list `fs` of polynomials of degree at most one,
 from `member_pos_lc : ∀ f ∈ fs, HasPosLeadingCoeff f` and
 `member_degree_le_one : ∀ f ∈ fs, f.natDegree ≤ 1`. -/
