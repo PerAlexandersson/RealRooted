@@ -38,6 +38,7 @@ label = "Fundamental rows have nonnegative coefficients"
 name = "RealRooted.FiniteMemory.SharpDefectBridges.exists_exact_minimizer"
 module = "RealRooted.FiniteMemory.Defect"
 label = "Sharp bridges give eventual minimum-cost words"
+headline = true
 
 [[theorems]]
 name = "RealRooted.FiniteMemory.SharpDefectBridges.exists_upper_degree_word"

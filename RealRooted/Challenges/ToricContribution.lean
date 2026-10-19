@@ -52,6 +52,7 @@ label = "Weighted normalized reversed contributions"
 name = "RealRooted.ParkingFunctions.ToricContribution.toricContributionRow_isInterlacingSeq"
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
 label = "Xiao's conjecture: toric contribution rows are interlacing sequences"
+headline = true
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.ToricContribution.\

@@ -37,6 +37,7 @@ label = "Balanced run transformation"
 name = "RealRooted.IsPFPolynomial.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Continuation"
 label = "The transformation preserves PF polynomials"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.BinaryRunTransformation.preservesStrictlyNegativeRoots"
@@ -46,6 +47,7 @@ label = "Positive constant term gives strictly negative zeros"
 name = "RealRooted.strictInterl_binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Interlacing"
 label = "The transformation preserves interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform_succ"

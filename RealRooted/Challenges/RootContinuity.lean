@@ -34,6 +34,7 @@ label = "Closure under coefficient approximation"
 name = "RealRooted.splits_of_monic_of_coeff_tendsto"
 module = "RealRooted.RootContinuity"
 label = "Closure under coefficientwise limits"
+headline = true
 
 [[theorems]]
 name = "RealRooted.exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close"
@@ -89,6 +90,7 @@ label = "Constancy of upper root counts"
 name = "RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc"
 module = "RealRooted.RootContinuity"
 label = "Bundled root-count constancy"
+headline = true
 
 [[theorems]]
 name = "RealRooted.card_roots_filter_le_sub_eq_of_no_isRoot_Icc"

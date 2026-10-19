@@ -16,6 +16,7 @@ years = [1992]
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonRight_add"
 label = "A sum of polynomials interlacing h interlaces h"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonLeft_add"

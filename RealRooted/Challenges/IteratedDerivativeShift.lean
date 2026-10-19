@@ -20,11 +20,13 @@ label = "Positive shifts preserve splitness"
 name = "RealRooted.splits_tDeriv_all"
 module = "RealRooted.IteratedDerivativeShift"
 label = "All real shifts preserve splitness"
+headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_tDeriv"
 module = "RealRooted.IteratedDerivativeShift"
 label = "Positive shifts give strict interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.derivative_strictInterl_tDeriv_of_nonpos"

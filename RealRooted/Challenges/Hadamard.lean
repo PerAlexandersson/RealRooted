@@ -51,11 +51,13 @@ label = "Factorial Hadamard product"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
 label = "Schur–Szegő composition preserves real-rootedness"
+headline = true
 
 [[theorems]]
 name = "RealRooted.rootMultiplicity_schurSzegoComp"
 module = "RealRooted.Hadamard.SchurSzegoMultiplicity"
 label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Szegő composition"
+headline = true
 
 [[theorems]]
 name = "RealRooted.exists_forced_factors_of_rootMultiplicity_schurSzegoComp"
@@ -71,6 +73,7 @@ label = "Kostov–Shapiro: composition with a negative-rooted polynomial preserv
 name = "RealRooted.Kostov.interiorCoeff_composition"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Kostov.coeffMap_eq_sigma"
@@ -81,6 +84,7 @@ label = "Kostov's coefficient map recovers the symmetric functions of a factoriz
 name = """RealRooted.Challenges.Hadamard.\
 isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial"""
 label = "Finite Pólya–Schur theorem"
+headline = true
 
 [[theorems]]
 name = """RealRooted.Challenges.Hadamard.\
@@ -90,10 +94,12 @@ label = "Finite Pólya–Schur theorem, alternating signs"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.interl_hadamardProduct_of_strictInterl"
 label = "Garloff–Wagner: Hadamard products preserve interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_mul_coeff"
 label = "Maló: termwise products of finite PF sequences are PF"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
@@ -103,6 +109,7 @@ label = "Products of polynomial value sequences are PF"
 name = "RealRooted.IsPFPolynomial.polynomialValueEulerNumerator_of_roots_mem_Icc"
 module = "RealRooted.PolynomialValueEulerNumerator.Product.Brenti"
 label = "Brenti: zeros in [−1, 0] give a PF Euler numerator"
+headline = true
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.hadamardProduct"
@@ -117,11 +124,13 @@ label = "Garloff–Wagner: the factorial Hadamard product preserves interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.factorialHadamardProduct_eq_zero_or_splits"
 label = "Schur: the factorial product preserves real-rootedness"
+headline = true
 
 [[theorems]]
 name = "RealRooted.LiuMao.coeffLCNIZ_polynomialValueEulerNumerator_mul"
 module = "RealRooted.CoefficientShape.LiuMao"
 label = "Liu–Mao: log-concave Euler numerators without internal zeros are closed under products"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

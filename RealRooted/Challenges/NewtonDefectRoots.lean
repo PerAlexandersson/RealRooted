@@ -53,6 +53,7 @@ label = "Quadratic box in polynomial coefficients"
 name = "RealRooted.NewtonDefectRoots.factorPolynomial_rootParameter_isEquivalent_coefficientRatio"
 module = "RealRooted.CoefficientDominance.NewtonDefectRoots"
 label = "Root parameters asymptotic to coefficient ratios"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

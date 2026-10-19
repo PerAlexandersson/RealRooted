@@ -15,6 +15,7 @@ formalized = "2026-05-12"
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
 label = "The monomial chain gives interlacing preservation"
+headline = true
 
 [[theorems]]
 name = "RealRooted.rootwiseLE_monomialChain_rootPolynomial_list_set"
@@ -30,6 +31,7 @@ label = "Output roots are bounded by the images of (x + a)^D and (x + b)^D"
 name = "RealRooted.strictInterl_narayanaTransform"
 module = "RealRooted.NarayanaTransformation.Interlacing"
 label = "The Mao–Wang Narayana transform preserves interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.exists_hasDerivAt_finRootPolynomial_shift"

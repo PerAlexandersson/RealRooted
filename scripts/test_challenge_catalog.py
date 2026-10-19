@@ -531,6 +531,29 @@ end RealRooted.Challenges.Sample
         with self.assertRaises(CatalogError):
             build_author_index(pages, load_author_profiles(self.root))
 
+    def test_theorem_page_card_names_main_results_other_than_its_title(self) -> None:
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                section="theorems",
+                theorems=(
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                    'label = "Sample"\nheadline = true\n\n'
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.minor"\n'
+                    'label = "A second main result"\nheadline = true'
+                ),
+            )
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "theorem proven\n  : True := by trivial\n"
+            + "theorem minor\n  : True := by trivial\n"
+            + "end RealRooted.Challenges.Sample\n",
+        )
+        pages = load_catalog(self.root)
+        output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        home = output["index.html"]
+        self.assertIn("Main results:</span> A second main result</span>", home)
+        self.assertNotIn("Main results:</span> Sample", home)
+
     def test_family_page_shows_counts_and_headline_theorems(self) -> None:
         self.write(
             "RealRooted/Challenges/Sample.lean",
@@ -572,7 +595,10 @@ end RealRooted.Challenges.Sample
         self.assertIn("Sample family is real-rooted<span class=\"headline-tag\">Main result</span>", page)
         results = output["results/index.html"]
         self.assertEqual(results.count("<tr data-kind="), 3)
+        self.assertEqual(results.count('data-headline="true"'), 1)
+        self.assertIn('value="headline"', results)
         self.assertIn('<tr data-kind="definition"', results)
+        self.assertIn('including <a href="results/#main-results">1 main result</a>', home)
         self.assertIn(f'href="../families/sample/#{anchor}"', results)
         self.assertIn("All 1 definition and 2 theorems in the catalog.", results)
         manifest = json.loads(output["catalog-manifest.json"])

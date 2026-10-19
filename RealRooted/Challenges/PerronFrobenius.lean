@@ -28,16 +28,19 @@ label = "The Perron root has a nonnegative eigenvector"
 name = "Matrix.exists_positive_eigenvector_of_irreducible"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
 label = "Irreducible matrices have a positive eigenvector"
+headline = true
 
 [[theorems]]
 name = "Matrix.pft_primitive"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
 label = "Primitive matrices: uniqueness of the eigenvector"
+headline = true
 
 [[theorems]]
 name = "Matrix.perron_root_is_spectral_radius"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance"
 label = "The Perron root is the spectral radius"
+headline = true
 
 [[theorems]]
 name = "Matrix.CollatzWielandt.eq_perron_root_of_positive_eigenvector"

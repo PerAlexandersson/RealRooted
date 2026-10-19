@@ -2049,4 +2049,10 @@ import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
 import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
 import RealRooted.RootVieta.SortedRoots
 import RealRooted.GraceWalshSzego
+import RealRooted.Challenges.CourantFischer
+import RealRooted.Challenges.LaguerrePolarDerivative
+import RealRooted.Challenges.LaguerrePolya
+import RealRooted.Challenges.MorrisFlow
+import RealRooted.Challenges.MultivariateObreschkoff
+import RealRooted.Challenges.SzaszGrowth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct

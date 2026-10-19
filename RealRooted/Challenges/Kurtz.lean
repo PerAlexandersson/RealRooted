@@ -25,6 +25,7 @@ label = "Kurtz inequalities a_k² > 4 a_{k-1} a_{k+1}"
 name = "RealRooted.Kurtz.coefficient_criterion"
 module = "RealRooted.Kurtz"
 label = "Kurtz's criterion"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

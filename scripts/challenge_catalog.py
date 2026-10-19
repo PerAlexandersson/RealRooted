@@ -1158,9 +1158,13 @@ def _page_card(page: CatalogPage, href: str) -> str:
     kind = "theorem" if page.section == "theorems" else "definition"
     label = SECTION_LABELS[page.section]
     year = page.years[0] if page.years else ""
-    headlines = [item.label for item in page.theorems if item.headline and item.label]
+    headlines = [
+        item.label
+        for item in page.theorems
+        if item.headline and item.label and item.label.casefold() != page.title.casefold()
+    ]
     headline_html = ""
-    if headlines and page.section != "theorems":
+    if headlines:
         shown = "; ".join(headlines[:2]) + ("; …" if len(headlines) > 2 else "")
         headline_html = (
             '<span class="card-headlines"><span>Main results:</span> '
@@ -1310,7 +1314,8 @@ def _results_page(
         ).casefold()
         href = f"../{page.section}/{page.slug}/#{item.anchor}"
         rows.append(
-            f'<tr data-kind="{kind}" data-search="{html.escape(search, quote=True)}">'
+            f'<tr data-kind="{kind}" data-headline="{"true" if item.headline else "false"}" '
+            f'data-search="{html.escape(search, quote=True)}">'
             f'<td class="result-kind result-kind--{kind}"><span aria-hidden="true">{symbol}</span>'
             f'<span class="visually-hidden">{kind}</span></td>'
             "<td class=\"result-name\">"
@@ -1340,7 +1345,12 @@ def _results_page(
             f'value="{value}"{" checked" if value == "all" else ""}>'
             '<span class="catalog-sort-indicator" aria-hidden="true"></span>'
             f"<span>{text}</span></label>"
-            for value, text in (("all", "All"), ("definition", "Definitions"), ("theorem", "Theorems"))
+            for value, text in (
+                ("all", "All"),
+                ("headline", "Main results"),
+                ("definition", "Definitions"),
+                ("theorem", "Theorems"),
+            )
         )
         + "</div></div>"
         '<table class="results-table"><thead><tr><th><span class="visually-hidden">Kind</span></th>'
@@ -1416,6 +1426,7 @@ def render_site(
     theorem_cards.sort(key=lambda entry: entry[0])
     total_definitions = sum(len(page.definitions) for page in pages)
     total_theorems = sum(len(page.theorems) for page in pages)
+    total_headlines = sum(item.headline for page in pages for item in page.theorems)
     index_body = (
         "<main class=\"catalog-home\"><section class=\"hero\">"
         "<p class=\"eyebrow\">Reference catalog</p>"
@@ -1423,7 +1434,14 @@ def render_site(
         "<p class=\"lede\">Definitions and theorems on real-rooted polynomials, interlacing "
         "and total positivity, formalized in Lean. Each statement links to its Lean source.</p>"
         f"<p class=\"hero-stats\"><a href=\"results/\">{_plural(total_definitions, 'definition')} and "
-        f"{_plural(total_theorems, 'theorem')}</a>.</p></section>"
+        f"{_plural(total_theorems, 'theorem')}</a>"
+        + (
+            f", including <a href=\"results/#main-results\">"
+            f"{_plural(total_headlines, 'main result')}</a>"
+            if total_headlines
+            else ""
+        )
+        + ".</p></section>"
         + _sort_controls()
         + '<div class="catalog-groups">'
         + _catalog_group(
