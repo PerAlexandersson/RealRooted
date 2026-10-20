@@ -30,67 +30,42 @@ private theorem mem_avoiders_singleton_iff {n k : ℕ} (σ : Equiv.Perm (Fin n))
   simp only [avoiders, Finset.mem_filter, Finset.mem_univ, true_and,
     List.all_cons, List.all_nil, Bool.and_eq_true, decide_eq_true_eq, and_true]
 
+private theorem card_eq_of_involutive {α : Type*} (s t : Finset α)
+    (f : α → α) (hf : Function.Involutive f)
+    (hmem : ∀ x, x ∈ s ↔ f x ∈ t) : s.card = t.card := by
+  apply Finset.card_bij (fun x _ ↦ f x)
+  · exact fun x hx ↦ (hmem x).1 hx
+  · exact fun _ _ _ _ h ↦ hf.injective h
+  · exact fun y hy ↦ ⟨f y, (hmem (f y)).2 (by simpa only [hf y] using hy), hf y⟩
+
 /-! ### Symmetry bijections -/
 
 /-- Reversal preserves the cardinality of a single-pattern avoidance class. -/
 theorem card_avoiders_reverse {n k : ℕ} (τ : Equiv.Perm (Fin k)) :
     (avoiders n [⟨k, τ⟩]).card =
       (avoiders n [⟨k, reverse τ⟩]).card := by
-  apply Finset.card_bij (fun σ _ ↦ reverse σ)
-  · intro σ hσ
-    rw [mem_avoiders_singleton_iff] at hσ ⊢
-    intro h
-    exact hσ ((containsPattern_reverse_iff σ τ).mpr h)
-  · intro σ₁ hσ₁ σ₂ hσ₂ h
-    have hh := congrArg (fun σ : Equiv.Perm (Fin n) ↦ reverse σ) h
-    simpa only [reverse_reverse] using hh
-  · intro σ hσ
-    refine ⟨reverse σ, ?_, ?_⟩
-    · rw [mem_avoiders_singleton_iff] at hσ ⊢
-      intro h
-      have hh := (containsPattern_reverse_iff (reverse σ) τ).mp h
-      exact hσ (by simpa only [reverse_reverse] using hh)
-    · exact reverse_reverse σ
+  apply card_eq_of_involutive _ _ reverse reverse_reverse
+  intro σ
+  rw [mem_avoiders_singleton_iff, mem_avoiders_singleton_iff]
+  exact not_congr (containsPattern_reverse_iff σ τ)
 
 /-- Complementation preserves the cardinality of a single-pattern avoidance class. -/
 theorem card_avoiders_complement {n k : ℕ} (τ : Equiv.Perm (Fin k)) :
     (avoiders n [⟨k, τ⟩]).card =
       (avoiders n [⟨k, complement τ⟩]).card := by
-  apply Finset.card_bij (fun σ _ ↦ complement σ)
-  · intro σ hσ
-    rw [mem_avoiders_singleton_iff] at hσ ⊢
-    intro h
-    exact hσ ((containsPattern_complement_iff σ τ).mpr h)
-  · intro σ₁ hσ₁ σ₂ hσ₂ h
-    have hh := congrArg (fun σ : Equiv.Perm (Fin n) ↦ complement σ) h
-    simpa only [complement_complement] using hh
-  · intro σ hσ
-    refine ⟨complement σ, ?_, ?_⟩
-    · rw [mem_avoiders_singleton_iff] at hσ ⊢
-      intro h
-      have hh := (containsPattern_complement_iff (complement σ) τ).mp h
-      exact hσ (by simpa only [complement_complement] using hh)
-    · exact complement_complement σ
+  apply card_eq_of_involutive _ _ complement complement_complement
+  intro σ
+  rw [mem_avoiders_singleton_iff, mem_avoiders_singleton_iff]
+  exact not_congr (containsPattern_complement_iff σ τ)
 
 /-- Inversion preserves the cardinality of a single-pattern avoidance class. -/
 theorem card_avoiders_inv {n k : ℕ} (τ : Equiv.Perm (Fin k)) :
     (avoiders n [⟨k, τ⟩]).card =
       (avoiders n [⟨k, τ⁻¹⟩]).card := by
-  apply Finset.card_bij (fun σ _ ↦ σ⁻¹)
-  · intro σ hσ
-    rw [mem_avoiders_singleton_iff] at hσ ⊢
-    intro h
-    exact hσ ((containsPattern_inv_iff σ τ).mpr h)
-  · intro σ₁ hσ₁ σ₂ hσ₂ h
-    have hh := congrArg (fun σ : Equiv.Perm (Fin n) ↦ σ⁻¹) h
-    simpa only [inv_inv] using hh
-  · intro σ hσ
-    refine ⟨σ⁻¹, ?_, ?_⟩
-    · rw [mem_avoiders_singleton_iff] at hσ ⊢
-      intro h
-      have hh := (containsPattern_inv_iff σ⁻¹ τ).mp h
-      exact hσ (by simpa only [inv_inv] using hh)
-    · exact inv_inv σ
+  apply card_eq_of_involutive _ _ Inv.inv inv_inv
+  intro σ
+  rw [mem_avoiders_singleton_iff, mem_avoiders_singleton_iff]
+  exact not_congr (containsPattern_inv_iff σ τ)
 
 /-! ### The six patterns of length three -/
 
@@ -174,11 +149,7 @@ theorem card_avoiders_p132_eq_p231_eq_p213_eq_p312 (n : ℕ) :
   rw [reverse_p132] at h132_231
   rw [complement_p132] at h132_312
   rw [reverse_p213] at h213_312
-  constructor
-  · exact h132_231
-  constructor
-  · exact h132_231.symm.trans (h132_312.trans h213_312.symm)
-  · exact h213_312
+  exact ⟨h132_231, h132_231.symm.trans (h132_312.trans h213_312.symm), h213_312⟩
 
 open Finset
 open scoped List
@@ -206,9 +177,8 @@ private lemma sameOrderType_132 {n : ℕ} {a b c : Fin n} :
   constructor
   · intro h
     have h' := of_decide_eq_true h
-    have h02 := h' ⟨0, by simp⟩ ⟨2, by simp⟩
-    have h21 := h' ⟨2, by simp⟩ ⟨1, by simp⟩
-    simpa using And.intro h02 h21
+    exact ⟨by simpa using h' ⟨0, by simp⟩ ⟨2, by simp⟩,
+      by simpa using h' ⟨2, by simp⟩ ⟨1, by simp⟩⟩
   · rintro ⟨hac, hcb⟩
     apply decide_eq_true
     intro i j
@@ -223,9 +193,8 @@ private lemma sameOrderType_123 {n : ℕ} {a b c : Fin n} :
   constructor
   · intro h
     have h' := of_decide_eq_true h
-    have h01 := h' ⟨0, by simp⟩ ⟨1, by simp⟩
-    have h12 := h' ⟨1, by simp⟩ ⟨2, by simp⟩
-    simpa using And.intro h01 h12
+    exact ⟨by simpa using h' ⟨0, by simp⟩ ⟨1, by simp⟩,
+      by simpa using h' ⟨1, by simp⟩ ⟨2, by simp⟩⟩
   · rintro ⟨hab, hbc⟩
     apply decide_eq_true
     intro i j
@@ -392,8 +361,8 @@ private theorem avoids132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
   · intro h a b c hs
     obtain ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩ := (triple_sublist_ofFn _ a b c).mp hs
     exact h i j k hij hjk
-  · intro h i j k hij hjk
-    exact h _ _ _ ((triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩)
+  · exact fun h i j k hij hjk ↦ h _ _ _ <|
+      (triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
 
 private theorem avoids123_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     Avoids123 σ ↔ LAvoids R123 (toL σ) := by
@@ -401,8 +370,8 @@ private theorem avoids123_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
   · intro h a b c hs
     obtain ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩ := (triple_sublist_ofFn _ a b c).mp hs
     exact h i j k hij hjk
-  · intro h i j k hij hjk
-    exact h _ _ _ ((triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩)
+  · exact fun h i j k hij hjk ↦ h _ _ _ <|
+      (triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
 
 private lemma toL_perm {n : ℕ} (σ : Equiv.Perm (Fin n)) : toL σ ~ List.range n := by
   rw [List.perm_ext_iff_of_nodup]
@@ -516,13 +485,11 @@ private lemma split_sorted (s A B : List ℕ) (hs : s.Pairwise (· < ·)) (hp : 
   have pB : sB ~ B := List.mergeSort_perm _ _
   have pA : sA ~ A := List.mergeSort_perm _ _
   have hsB : sB.Pairwise (· ≤ ·) := by
-    have := List.pairwise_mergeSort (le := fun a b : ℕ => decide (a ≤ b))
-      (by intro a b c; simpa using le_trans) (by intro a b; simpa using le_total a b) B
-    simpa using this
+    simpa using List.pairwise_mergeSort (le := fun a b : ℕ => decide (a ≤ b))
+      (by grind) (by grind) B
   have hsA : sA.Pairwise (· ≤ ·) := by
-    have := List.pairwise_mergeSort (le := fun a b : ℕ => decide (a ≤ b))
-      (by intro a b c; simpa using le_trans) (by intro a b; simpa using le_total a b) A
-    simpa using this
+    simpa using List.pairwise_mergeSort (le := fun a b : ℕ => decide (a ≤ b))
+      (by grind) (by grind) A
   have hsorted : (sB ++ sA).Pairwise (· ≤ ·) := by
     rw [List.pairwise_append]
     refine ⟨hsB, hsA, fun x hx y hy => le_of_lt (hBA x (pB.subset hx) y (pA.subset hy))⟩
@@ -614,13 +581,9 @@ private theorem count132 : ∀ n (L : List ℕ), L.Nodup → L.length = n →
     have hLs : L ~ m :: s := by
       rw [List.perm_ext_iff_of_nodup hL
         (List.nodup_cons.mpr ⟨fun h => lt_irrefl _ (hm m h), hsnd⟩)]
-      intro a; rw [List.mem_cons, hmem]; constructor
-      · intro ha; by_cases h : a = m
-        · exact Or.inl h
-        · exact Or.inr ⟨h, ha⟩
-      · rintro (rfl | ⟨_, ha⟩)
-        · exact hmL
-        · exact ha
+      intro a
+      rw [List.mem_cons, hmem]
+      grind
     rw [perms_congr hLs]
     have hset : perms (LAvoids R132) (m :: s) = (Finset.range (s.length + 1)).biUnion (fun j =>
         (perms (LAvoids R132) (s.drop j) ×ˢ perms (LAvoids R132) (s.take j)).image
@@ -765,7 +728,6 @@ private theorem count_G (P : ℕ → List ℕ → Prop) (Ext : List ℕ → ℕ 
     (hExt : ∀ (L : List ℕ) (t : ℕ), L.Nodup →
       (L.toFinset.filter (fun x => t ≤ x ∧ Ext L t x)).card = if cnt L t = 0 then 0 else 1) :
     ∀ n (L : List ℕ) t, L.Nodup → L.length = n → (perms (P t) L).card = G n (cnt L t) := by
-  classical
   intro n
   induction n with
   | zero =>
@@ -790,7 +752,6 @@ private theorem count_G (P : ℕ → List ℕ → Prop) (Ext : List ℕ → ℕ 
     have inner : ∀ x ∈ S, (perms (fun l => P t (x :: l)) (L.erase x)).card =
         if x < t then G n (S.filter (x < ·)).card
         else if Ext L t x then G n (cnt L t - 1) else 0 := by
-      classical
       intro x hxS
       have hx : x ∈ L := List.mem_toFinset.mp hxS
       by_cases hxt : x < t
@@ -878,17 +839,7 @@ private lemma P123_lt (t x : ℕ) (l' : List ℕ) (hxt : x < t) :
     P123 t (x :: l') ↔ P123 (x + 1) l' := by
   unfold P123
   rw [LAvoids_cons, pairs_cons]
-  constructor
-  · rintro ⟨⟨hA, h1⟩, -, -⟩
-    refine ⟨hA, fun b c hs hb hc => ?_⟩
-    by_contra hcb
-    exact h1 b c hs ⟨by lia, by lia⟩
-  · rintro ⟨hA, h⟩
-    refine ⟨⟨hA, fun b c hs hbc => ?_⟩, fun c _ h1 _ => absurd h1 (by lia),
-      fun b c hs hb hc => h b c hs (by lia) (by lia)⟩
-    obtain ⟨h1, h2⟩ := hbc
-    have := h b c hs (by lia) (by lia)
-    lia
+  grind [R123]
 
 private lemma P123_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     (hl : l' ~ L.erase x)
@@ -896,34 +847,13 @@ private lemma P123_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     P123 t (x :: l') ↔ (∀ y ∈ L, t ≤ y → y ≤ x) ∧ P123 t l' := by
   unfold P123
   rw [LAvoids_cons, pairs_cons]
-  constructor
-  · rintro ⟨⟨hA, -⟩, h2, h3⟩
-    refine ⟨fun y hy hty => ?_, hA, h3⟩
-    by_cases hyx : y = x
-    · lia
-    · exact h2 y (mem_perm_erase hL hl hy hyx) hxt hty
-  · rintro ⟨hE, hA, h3⟩
-    refine ⟨⟨hA, fun b c hs hbc => ?_⟩,
-      fun c hc _ htc => hE c (mem_L_of_perm_erase hl hc) htc, h3⟩
-    obtain ⟨h1, -⟩ := hbc
-    have := hE b (mem_L_of_perm_erase hl (hs.subset (by simp))) (by lia)
-    lia
+  grind [R123, mem_L_of_perm_erase, mem_perm_erase]
 
 private lemma P132_lt (t x : ℕ) (l' : List ℕ) (hxt : x < t) :
     P132 t (x :: l') ↔ P132 (x + 1) l' := by
   unfold P132
   rw [LAvoids_cons, pairs_cons]
-  constructor
-  · rintro ⟨⟨hA, h1⟩, -, -⟩
-    refine ⟨hA, fun b c hs hb hc => ?_⟩
-    by_contra hcb
-    exact h1 b c hs ⟨by lia, by lia⟩
-  · rintro ⟨hA, h⟩
-    refine ⟨⟨hA, fun b c hs hbc => ?_⟩, fun c _ h1 _ => absurd h1 (by lia),
-      fun b c hs hb hc => h b c hs (by lia) (by lia)⟩
-    obtain ⟨h1, h2⟩ := hbc
-    have := h b c hs (by lia) (by lia)
-    lia
+  grind [R132]
 
 private lemma P132_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     (hl : l' ~ L.erase x)
@@ -931,18 +861,7 @@ private lemma P132_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     P132 t (x :: l') ↔ (∀ y ∈ L, t ≤ y → x ≤ y) ∧ P132 t l' := by
   unfold P132
   rw [LAvoids_cons, pairs_cons]
-  constructor
-  · rintro ⟨⟨hA, -⟩, h2, h3⟩
-    refine ⟨fun y hy hty => ?_, hA, h3⟩
-    by_cases hyx : y = x
-    · lia
-    · exact h2 y (mem_perm_erase hL hl hy hyx) hxt hty
-  · rintro ⟨hE, hA, h3⟩
-    refine ⟨⟨hA, fun b c hs hbc => ?_⟩,
-      fun c hc _ htc => hE c (mem_L_of_perm_erase hl hc) htc, h3⟩
-    obtain ⟨h1, h2⟩ := hbc
-    have := h3 b c hs (by lia) (by lia)
-    lia
+  grind [R132, mem_L_of_perm_erase, mem_perm_erase]
 
 private lemma card_max_filter (L : List ℕ) (t : ℕ) :
     (L.toFinset.filter (fun x => t ≤ x ∧ ∀ y ∈ L, t ≤ y → y ≤ x)).card =
@@ -1057,16 +976,14 @@ theorem card_avoids123 (n : ℕ) :
 private lemma avoiders_p132_eq_filter (n : ℕ) :
     avoiders n [⟨3, p132⟩] = univ.filter (fun σ : Equiv.Perm (Fin n) => Avoids132 σ) := by
   ext σ
-  rw [mem_avoiders_singleton_iff]
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-  exact avoids_p132_iff σ
+  simpa only [mem_avoiders_singleton_iff, Finset.mem_filter, Finset.mem_univ, true_and]
+    using avoids_p132_iff σ
 
 private lemma avoiders_p123_eq_filter (n : ℕ) :
     avoiders n [⟨3, p123⟩] = univ.filter (fun σ : Equiv.Perm (Fin n) => Avoids123 σ) := by
   ext σ
-  rw [mem_avoiders_singleton_iff]
-  simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-  exact avoids_p123_iff σ
+  simpa only [mem_avoiders_singleton_iff, Finset.mem_filter, Finset.mem_univ, true_and]
+    using avoids_p123_iff σ
 
 /-- The canonical 132-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p132_catalan (n : ℕ) :
@@ -1076,29 +993,23 @@ theorem card_avoiders_p132_catalan (n : ℕ) :
 /-- The canonical 231-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p231_catalan (n : ℕ) :
     (avoiders n [⟨3, p231⟩]).card = catalan n := by
-  calc
-    (avoiders n [⟨3, p231⟩]).card = (avoiders n [⟨3, p132⟩]).card :=
-      (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.symm
-    _ = catalan n := card_avoiders_p132_catalan n
+  exact (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.symm.trans
+    (card_avoiders_p132_catalan n)
 
 /-- The canonical 213-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p213_catalan (n : ℕ) :
     (avoiders n [⟨3, p213⟩]).card = catalan n := by
-  calc
-    (avoiders n [⟨3, p213⟩]).card = (avoiders n [⟨3, p132⟩]).card :=
-      ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.trans
-        (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.1).symm
-    _ = catalan n := card_avoiders_p132_catalan n
+  exact ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.trans
+    (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.1).symm.trans
+      (card_avoiders_p132_catalan n)
 
 /-- The canonical 312-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p312_catalan (n : ℕ) :
     (avoiders n [⟨3, p312⟩]).card = catalan n := by
-  calc
-    (avoiders n [⟨3, p312⟩]).card = (avoiders n [⟨3, p132⟩]).card :=
-      ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.trans
-        ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.1.trans
-          (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.2)).symm
-    _ = catalan n := card_avoiders_p132_catalan n
+  exact ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).1.trans
+    ((card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.1.trans
+      (card_avoiders_p132_eq_p231_eq_p213_eq_p312 n).2.2)).symm.trans
+        (card_avoiders_p132_catalan n)
 
 /-- The canonical 123-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p123_catalan (n : ℕ) :
@@ -1108,13 +1019,9 @@ theorem card_avoiders_p123_catalan (n : ℕ) :
 /-- The canonical 321-avoiders have Catalan cardinality. -/
 theorem card_avoiders_p321_catalan (n : ℕ) :
     (avoiders n [⟨3, p321⟩]).card = catalan n := by
-  calc
-    (avoiders n [⟨3, p321⟩]).card = (avoiders n [⟨3, p123⟩]).card :=
-      by
-        have h := card_avoiders_reverse (n := n) p123
-        rw [reverse_p123] at h
-        exact h.symm
-    _ = catalan n := card_avoiders_p123_catalan n
+  have h := card_avoiders_reverse (n := n) p123
+  rw [reverse_p123] at h
+  exact h.symm.trans (card_avoiders_p123_catalan n)
 
 /-- The two monotone length-three patterns have equal avoidance counts. -/
 theorem card_avoiders_p123_eq_p321 (n : ℕ) :
