@@ -98,11 +98,8 @@ theorem strictInterl_of_eval_mul_derivative_nonpos {f F : ℝ[X]}
     have hG_sign : ∀ r, f.IsRoot r →
         (F - C δ * f.derivative).eval r * f.derivative.eval r < 0 := by
       intro r hr
-      have hne := hder_ne r hr
-      have hsq : 0 < f.derivative.eval r ^ 2 := by positivity
-      have hFr := hsign r hr
       simp only [eval_sub, eval_mul, eval_C]
-      nlinarith
+      nlinarith [hsign r hr, sq_pos_iff.mpr (hder_ne r hr)]
     have hG : StrictInterl f (F - C δ * f.derivative) := by
       rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
       · exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hG_pos

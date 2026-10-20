@@ -16,12 +16,10 @@ theorem strictInterl_of_step_succ {f u v : ℝ[X]} (hf : f.Splits)
     (hf_pos : HasPosLeadingCoeff f)
     (hroot_sign : ∀ r, f.IsRoot r → v.eval r * (f.derivative.eval r) ^ 2 < 0) :
     StrictInterl f (u * f + v * f.derivative) := by
-  have hder : Interlaces f.derivative f :=
-    interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf
-  have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
-  refine strictInterl_of_interlaces_eval_mul_neg_succ hder hf'_pos hF_pos hdeg ?_
+  refine strictInterl_of_interlaces_eval_mul_neg_succ
+    (interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf hf_pos hdegf)
+    (hf_pos.derivative (by lia)) hF_pos hdeg ?_
   intro r hr
-  rw [eval_mul_derivative_eq_of_isRoot hr]
-  simp_all
+  simpa only [eval_mul_derivative_eq_of_isRoot hr] using hroot_sign r hr
 
 end RealRooted.MaWangInternal
