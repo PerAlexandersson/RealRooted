@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **306 IDs**; **34 formalized**, **259 shells**, **3 fragments**, and **10 documented-only**.
+Current totals: **308 IDs**; **34 formalized**, **261 shells**, **3 fragments**, and **10 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -160,6 +160,7 @@ Current totals: **306 IDs**; **34 formalized**, **259 shells**, **3 fragments**,
 | A118931 | `shell` | A feedback coefficient depending on `n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A119308 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A120434 | `shell` | Permutations by big descents: `v_n(t) = t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits`, `rr_sign` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A120987 | `shell` | `(1, 1), (2, 1), (3, 1)` on the input `[1, 0, 0]` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A122076 | `shell` | `/`: unit shifted-square lag, with centers `1` and `-1`.<br>`/`: expanded `B_n(t)=-1-2t-t^2`. | `rr_lw_negative_square_sequence_realrooted_unit`, `rr_sign` | `base`, `degree_succ`, `no_common_roots`, `pos_lc`, `recurrence` | concrete row definition and proofs of the listed certificates |
 | A122542 | `shell` | OEIS shapes `///`: | `rr_lw_positive_t_auto` | `degree_lower`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
 | A122848 | `shell` | OEIS shapes `/`: `P_n = (1+t)P_{n-1}+c_n t P_{n-2}`.<br>after reindexing, `P_{n+2}=tP_{n+1}+n t P_n`.<br>+1 additional test intents | `rr_lw_current_X_sequence`, `rr_lw_current_X_sequence_auto`, `rr_lw_positive_t` | `base`, `coeff_nonneg`, `degree_lower`, `degree_succ`, `degree_upper`, `interlacer`, `interlacer_pos_lc`, `no_common_roots`, `nonneg_coeffs`, `pos_lc`, `recurrence`, `roots_nonpos`, `target_pos_lc` | concrete row definition and proofs of the listed certificates |
@@ -291,6 +292,7 @@ Current totals: **306 IDs**; **34 formalized**, **259 shells**, **3 fragments**,
 | A297191 | `formalized` | import RealRooted.Applications.OEIS.<br>namespace<br>+19 additional test intents | `rr_row_model`, `rr_row_splits` | `heq` | none |
 | A304330 | `formalized` | import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A304334 | `formalized` | import RealRooted.Applications.OEIS.<br># row-model regression<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
+| A304429 | `shell` | ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A306364 | `shell` | Half growth whose lag coefficients are quadratic in `n` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A307419 | `shell` | A second-order recurrence with derivatives of both earlier rows ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A316649 | `shell` | OEIS in its generated order-three coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

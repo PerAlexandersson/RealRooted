@@ -1868,6 +1868,8 @@ import RealRooted.OperatorMatrix.OneThetaX
 import RealRooted.OperatorMatrix.MixedLemma
 import RealRooted.OperatorMatrix.OneThetaXBoards
 import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.ThresholdMatrix.Orbit
 
 /-!
 # RealRooted production umbrella
