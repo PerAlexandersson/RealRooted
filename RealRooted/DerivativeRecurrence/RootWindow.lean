@@ -39,10 +39,8 @@ variable {p : ℝ[X]} {L U x : ℝ}
 
 theorem eval_pos_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, t ≤ U) (hx : U < x) : 0 < p.eval x := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hs x]
-  refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
-  obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
-  linarith [h t ht]
+  exact eval_pos_of_all_roots_lt (leadingCoeff_ne_zero.mp hpos.ne') hs hpos fun t ht =>
+    (h t ht).trans_lt hx
 
 theorem neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, L ≤ t) (hx : x < L) : 0 < (-1) ^ p.natDegree * p.eval x := by
@@ -200,9 +198,11 @@ theorem derivativeRecurrence_interlaces_of_windows (W : ℕ → ℝ → Prop)
     (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, W 0 t)
     (h01 : D₀ = 0 → Interlaces (P 0) (P 1)) :
     ∀ n, Interlaces (P n) (P (n + 1)) := by
-  have hroot : ∀ n, (∀ t ∈ (P n).roots, W n t) → ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0 :=
+  have hroot : ∀ n, (∀ t ∈ (P n).roots, W n t) →
+      ∀ r, (P n).IsRoot r → (A n).eval r ≤ 0 :=
     fun n hw r hr => hA n r (hw r ((mem_roots (leadingCoeff_ne_zero.mp (hpos n).ne')).mpr hr))
-  have key : ∀ n, (P n).Splits ∧ (∀ t ∈ (P n).roots, W n t) ∧ Interlaces (P n) (P (n + 1)) := by
+  have key : ∀ n, (P n).Splits ∧ (∀ t ∈ (P n).roots, W n t) ∧
+      Interlaces (P n) (P (n + 1)) := by
     intro n
     induction n with
     | zero =>
@@ -346,12 +346,11 @@ theorem threeTerm_roots_ge_step {f g F a b : ℝ[X]} {L : ℝ} (hF : F = a * f +
     rw [h0, mul_zero]
   nlinarith [mul_pos (neg_pos.mpr (ha t hlt)) hf, mul_nonneg (hb t hlt) hg.le]
 
-/-- Interlacing of a three-term recurrence from a root window `W`. -/
-theorem threeTerm_interlaces_of_window (W : ℝ → Prop)
+private theorem threeTerm_interlaces_of_window_aux (W : ℝ → Prop)
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hb : ∀ n x, W x → (b n).eval x ≤ 0)
-    (hW : ∀ n, (P n).Splits → (P (n + 1)).Splits → (∀ t ∈ (P n).roots, W t) →
+    (hW : ∀ n, Interlaces (P n) (P (n + 1)) → (∀ t ∈ (P n).roots, W t) →
       (∀ t ∈ (P (n + 1)).roots, W t) → ∀ t ∈ (P (n + 2)).roots, W t)
     (hW0 : ∀ t ∈ (P 0).roots, W t) (hW1 : ∀ t ∈ (P 1).roots, W t)
     (h01 : Interlaces (P 0) (P 1)) :
@@ -364,16 +363,28 @@ theorem threeTerm_interlaces_of_window (W : ℝ → Prop)
     | succ n ih =>
         obtain ⟨hw0, hw1, hi⟩ := ih
         have hne : P (n + 1) ≠ 0 := leadingCoeff_ne_zero.mp (hpos (n + 1)).ne'
-        have hF : P (n + 2) = a n * P (n + 1) + b n * P n := hrec n
+        have hF := hrec n
         have hprec : StrictInterl (P (n + 1)) (a n * P (n + 1) + b n * P n) :=
           strictInterl_of_interlaces_evalCoeff_nonpos hi (hpos n)
             (by rw [← hF]; exact hpos (n + 2))
             (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia)
             (fun r hr => hb n r (hw1 r ((mem_roots hne).mpr hr)))
         rw [← hF] at hprec
-        have hi' := hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
-        exact ⟨hw1, hW n hi.2.1.2 hi.1.2 hw0 hw1, hi'⟩
+        exact ⟨hw1, hW n hi hw0 hw1, hprec.toInterlaces (by rw [hdeg, hdeg]; lia)⟩
   exact fun n => (key n).2.2
+
+/-- Interlacing of a three-term recurrence from a root window `W`. -/
+theorem threeTerm_interlaces_of_window (W : ℝ → Prop)
+    (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hb : ∀ n x, W x → (b n).eval x ≤ 0)
+    (hW : ∀ n, (P n).Splits → (P (n + 1)).Splits → (∀ t ∈ (P n).roots, W t) →
+      (∀ t ∈ (P (n + 1)).roots, W t) → ∀ t ∈ (P (n + 2)).roots, W t)
+    (hW0 : ∀ t ∈ (P 0).roots, W t) (hW1 : ∀ t ∈ (P 1).roots, W t)
+    (h01 : Interlaces (P 0) (P 1)) :
+    ∀ n, Interlaces (P n) (P (n + 1)) :=
+  threeTerm_interlaces_of_window_aux W hrec hdeg hpos hb
+    (fun n hi => hW n hi.2.1.2 hi.1.2) hW0 hW1 h01
 
 /-- Three-term interlacing with roots in `[L, U]`. -/
 theorem threeTerm_interlaces_of_roots_mem_Icc {L U : ℝ}
@@ -382,7 +393,8 @@ theorem threeTerm_interlaces_of_roots_mem_Icc {L U : ℝ}
     (hb : ∀ n x, L ≤ x → x ≤ U → (b n).eval x ≤ 0)
     (haU : ∀ n x, U < x → 0 < (a n).eval x) (hbU : ∀ n x, U < x → 0 ≤ (b n).eval x)
     (haL : ∀ n x, x < L → (a n).eval x < 0) (hbL : ∀ n x, x < L → 0 ≤ (b n).eval x)
-    (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U) (hW1 : ∀ t ∈ (P 1).roots, L ≤ t ∧ t ≤ U)
+    (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U)
+    (hW1 : ∀ t ∈ (P 1).roots, L ≤ t ∧ t ≤ U)
     (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) :=
   threeTerm_interlaces_of_window (fun x => L ≤ x ∧ x ≤ U) hrec hdeg hpos
@@ -412,7 +424,8 @@ theorem threeTerm_interlaces_of_roots_le {U : ℝ}
 /-- Interlaced root lists `r₁ ≤ s₁ ≤ r₂ ≤ ⋯ ≤ sₘ ≤ r_{m+1} ≤ U`: beyond `U`,
 `(x - U) ∏ (x - sᵢ) ≤ ∏ (x - rᵢ)`. -/
 private theorem prod_sub_le_of_listInterlaces {U x : ℝ} (hx : U < x) :
-    ∀ (ss rs : List ℝ), rs.length = ss.length + 1 → ListInterlaces ss rs → (∀ r ∈ rs, r ≤ U) →
+    ∀ (ss rs : List ℝ), rs.length = ss.length + 1 → ListInterlaces ss rs →
+      (∀ r ∈ rs, r ≤ U) →
       (x - U) * (ss.map (x - ·)).prod ≤ (rs.map (x - ·)).prod
   | [], [], hl, _, _ => by simp at hl
   | [], [r], _, _, hU => by
@@ -492,25 +505,8 @@ theorem threeTerm_interlaces_of_window_of_interlaces (W : ℝ → Prop)
       (∀ t ∈ (P (n + 1)).roots, W t) → ∀ t ∈ (P (n + 2)).roots, W t)
     (hW0 : ∀ t ∈ (P 0).roots, W t) (hW1 : ∀ t ∈ (P 1).roots, W t)
     (h01 : Interlaces (P 0) (P 1)) :
-    ∀ n, Interlaces (P n) (P (n + 1)) := by
-  have key : ∀ n, (∀ t ∈ (P n).roots, W t) ∧ (∀ t ∈ (P (n + 1)).roots, W t) ∧
-      Interlaces (P n) (P (n + 1)) := by
-    intro n
-    induction n with
-    | zero => exact ⟨hW0, hW1, h01⟩
-    | succ n ih =>
-        obtain ⟨hw0, hw1, hi⟩ := ih
-        have hne : P (n + 1) ≠ 0 := leadingCoeff_ne_zero.mp (hpos (n + 1)).ne'
-        have hF : P (n + 2) = a n * P (n + 1) + b n * P n := hrec n
-        have hprec : StrictInterl (P (n + 1)) (a n * P (n + 1) + b n * P n) :=
-          strictInterl_of_interlaces_evalCoeff_nonpos hi (hpos n)
-            (by rw [← hF]; exact hpos (n + 2))
-            (by rw [← hF, hdeg, hdeg]; lia) (by rw [← hF, hdeg, hdeg]; lia)
-            (fun r hr => hb n r (hw1 r ((mem_roots hne).mpr hr)))
-        rw [← hF] at hprec
-        have hi' := hprec.toInterlaces (by rw [hdeg, hdeg]; lia)
-        exact ⟨hw1, hW n hi hw0 hw1, hi'⟩
-  exact fun n => (key n).2.2
+    ∀ n, Interlaces (P n) (P (n + 1)) :=
+  threeTerm_interlaces_of_window_aux W hrec hdeg hpos hb hW hW0 hW1 h01
 
 /-- Three-term interlacing with roots in `(-∞, U]`, where `b n` may be negative beyond `U`
 as long as `a n ρ n (x - U) + b n > 0` there, `ρ n` bounding the ratio of consecutive leading
@@ -531,7 +527,8 @@ theorem threeTerm_interlaces_of_roots_le_of_ratio {U : ℝ} {ρ : ℕ → ℝ}
     hW0 hW1 h01 n
 
 /-- Values beyond the roots of a three-term recurrence under a ratio barrier: if
-`0 < ρ ≤ a n` and `ρ ^ 2 ≤ a n ρ + b n` at `x`, then `0 < P n` and `ρ P n ≤ P (n + 1)` at `x`
+`0 < ρ ≤ a n` and `ρ ^ 2 ≤ a n ρ + b n` at `x`, then `0 < P n` and
+`ρ P n ≤ P (n + 1)` at `x`
 propagate from `n = 0`, whatever the sign of `b n`. -/
 theorem threeTerm_eval_pos_of_barrier {x ρ : ℝ}
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
@@ -554,7 +551,8 @@ theorem threeTerm_roots_le_of_barrier {U : ℝ} {ρ : ℝ → ℝ}
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
     (hρ : ∀ x, U < x → 0 < ρ x) (ha : ∀ n x, U < x → ρ x ≤ (a n).eval x)
     (hab : ∀ n x, U < x → ρ x ^ 2 ≤ (a n).eval x * ρ x + (b n).eval x)
-    (h0 : ∀ x, U < x → 0 < (P 0).eval x) (h1 : ∀ x, U < x → ρ x * (P 0).eval x ≤ (P 1).eval x)
+    (h0 : ∀ x, U < x → 0 < (P 0).eval x)
+    (h1 : ∀ x, U < x → ρ x * (P 0).eval x ≤ (P 1).eval x)
     (n : ℕ) : ∀ t ∈ (P n).roots, t ≤ U := by
   intro t ht
   refine le_of_not_gt fun hlt => ?_
@@ -564,8 +562,8 @@ theorem threeTerm_roots_le_of_barrier {U : ℝ} {ρ : ℝ → ℝ}
   exact lt_irrefl 0 h
 
 /-- Three-term interlacing with roots in `[L, U]`, where `b n` may be negative beyond `U`: a
-ratio barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` beyond `U`, started by `ρ P 0 ≤ P 1`, keeps
-every row positive there.  This covers Chebyshev-like rows such as
+ratio barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` beyond `U`, started by
+`ρ P 0 ≤ P 1`, keeps every row positive there.  This covers Chebyshev-like rows such as
 `P (n + 2) = 2 (1 + X) P (n + 1) - (1 + X) P n` (`ρ = 1`). -/
 theorem threeTerm_interlaces_of_roots_mem_Icc_of_barrier {L U : ℝ} {ρ : ℝ → ℝ}
     (hrec : ∀ n, P (n + 2) = a n * P (n + 1) + b n * P n)
@@ -575,7 +573,8 @@ theorem threeTerm_interlaces_of_roots_mem_Icc_of_barrier {L U : ℝ} {ρ : ℝ �
     (habU : ∀ n x, U < x → ρ x ^ 2 ≤ (a n).eval x * ρ x + (b n).eval x)
     (h1U : ∀ x, U < x → ρ x * (P 0).eval x ≤ (P 1).eval x)
     (haL : ∀ n x, x < L → (a n).eval x < 0) (hbL : ∀ n x, x < L → 0 ≤ (b n).eval x)
-    (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U) (hW1 : ∀ t ∈ (P 1).roots, L ≤ t ∧ t ≤ U)
+    (hW0 : ∀ t ∈ (P 0).roots, L ≤ t ∧ t ≤ U)
+    (hW1 : ∀ t ∈ (P 1).roots, L ≤ t ∧ t ≤ U)
     (h01 : Interlaces (P 0) (P 1)) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) :=
   have hU := threeTerm_roots_le_of_barrier hrec hρ haU habU
@@ -589,8 +588,6 @@ theorem threeTerm_interlaces_of_roots_mem_Icc_of_barrier {L U : ℝ} {ρ : ℝ �
     hW0 hW1 h01 n
 
 end ThreeTerm
-
-end RealRooted
 
 /-!
 ## Degree-bounded root windows for derivative recurrences
@@ -617,10 +614,6 @@ it suffices that `B (x - U) + min A 0 * deg f > 0`.
   `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_of_or`: the windows
   `[L n, U n]` with either condition on each side.
 -/
-
-open Polynomial
-
-namespace RealRooted
 
 section Bounds
 
@@ -696,23 +689,12 @@ theorem derivativeRecurrence_roots_le_step_of_or (hF : F = A * f.derivative + B 
     (hs : f.Splits) (hpos : 0 < f.leadingCoeff) (hU : ∀ t ∈ f.roots, t ≤ U)
     (hAB : ∀ x, U < x → (0 ≤ A.eval x ∧ 0 < B.eval x) ∨
       0 < B.eval x * (x - U) + min (A.eval x) 0 * f.natDegree) :
-    ∀ t ∈ F.roots, t ≤ U := by
-  intro t ht
-  refine le_of_not_gt fun hlt => ?_
-  have h0 : F.eval t = 0 := isRoot_of_mem_roots ht
-  rw [hF, eval_add, eval_mul, eval_mul] at h0
-  have hf := eval_pos_of_roots_le hs hpos hU hlt
-  have hf' := derivative_eval_nonneg_of_roots_le hs hpos hU hlt
-  rcases hAB t hlt with ⟨hA, hB⟩ | hab
-  · nlinarith [mul_nonneg hA hf', mul_pos hB hf]
-  · have hb := derivative_eval_mul_sub_le_of_roots_le hs hpos hU hlt
-    have hd : (0 : ℝ) ≤ f.natDegree := Nat.cast_nonneg _
-    have hsub : 0 < t - U := by linarith
-    rcases le_total (A.eval t) 0 with h | h
-    · rw [min_eq_left h] at hab
-      nlinarith [mul_nonneg (neg_nonneg.mpr h) (sub_nonneg.mpr hb), mul_pos hf hab]
-    · rw [min_eq_right h] at hab
-      nlinarith [mul_nonneg (mul_nonneg h hf') hsub.le, mul_pos hf hab]
+    ∀ t ∈ F.roots, t ≤ U :=
+  derivativeRecurrence_roots_le_step_of_degree hF hs hpos hU fun x hx => by
+    rcases hAB x hx with ⟨hA, hB⟩ | hD
+    · rw [min_eq_right hA]
+      positivity
+    · exact hD
 
 /-- Roots stay at least `L` when `B (x - L) + min A 0 * deg f > 0` below `L`. -/
 theorem derivativeRecurrence_roots_ge_step_of_degree (hF : F = A * f.derivative + B * f)
@@ -746,32 +728,12 @@ theorem derivativeRecurrence_roots_ge_step_of_or
     (hs : f.Splits) (hpos : 0 < f.leadingCoeff) (hL : ∀ t ∈ f.roots, L ≤ t)
     (hAB : ∀ x, x < L → (0 ≤ A.eval x ∧ B.eval x < 0) ∨
       0 < B.eval x * (x - L) + min (A.eval x) 0 * f.natDegree) :
-    ∀ t ∈ F.roots, L ≤ t := by
-  intro t ht
-  refine le_of_not_gt fun hlt => ?_
-  have h0 : F.eval t = 0 := isRoot_of_mem_roots ht
-  rw [hF, eval_add, eval_mul, eval_mul] at h0
-  have hf := neg_one_pow_mul_eval_pos_of_roots_ge hs hpos hL hlt
-  have hf' := derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge hs hpos hL hlt
-  rcases hAB t hlt with ⟨hA, hB⟩ | hab
-  · have key : (-1 : ℝ) ^ (f.natDegree + 1) *
-        (A.eval t * f.derivative.eval t + B.eval t * f.eval t) = 0 := by
-      rw [h0, mul_zero]
-    rw [pow_succ] at key hf'
-    nlinarith [mul_nonneg hA hf', mul_pos (neg_pos.mpr hB) hf]
-  · have hb := derivative_eval_mul_sub_le_of_roots_ge hs hpos hL hlt
-    have hd : (0 : ℝ) ≤ f.natDegree := Nat.cast_nonneg _
-    have hsub : 0 < L - t := by linarith
-    have key : (-1 : ℝ) ^ (f.natDegree + 1) *
-        (A.eval t * f.derivative.eval t + B.eval t * f.eval t) = 0 := by
-      rw [h0, mul_zero]
-    rw [pow_succ] at key hf' hb
-    rcases le_total (A.eval t) 0 with h | h
-    · rw [min_eq_left h] at hab
-      nlinarith [mul_nonneg (neg_nonneg.mpr h) (sub_nonneg.mpr hb),
-        mul_pos hf hab]
-    · rw [min_eq_right h] at hab
-      nlinarith [mul_nonneg (mul_nonneg h hf') hsub.le, mul_pos hf hab]
+    ∀ t ∈ F.roots, L ≤ t :=
+  derivativeRecurrence_roots_ge_step_of_degree hF hs hpos hL fun x hx => by
+    rcases hAB x hx with ⟨hA, hB⟩ | hD
+    · rw [min_eq_right hA]
+      exact add_pos_of_pos_of_nonneg (mul_pos_of_neg_of_neg hB (sub_neg.mpr hx)) (by positivity)
+    · exact hD
 
 end Step
 
@@ -907,7 +869,8 @@ theorem derivativeRecurrence_interlaces_of_roots_le_mono_div {p q : ℕ → ℝ}
     (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hq : ∀ n, 0 < q n) (hU : ∀ n, p n * q (n + 1) ≤ p (n + 1) * q n)
     (hA : ∀ n x, q n * x ≤ p n → (A n).eval x ≤ 0)
-    (hAB : ∀ n x, p (n + 1) < q (n + 1) * x → x ≤ r → 0 ≤ (A n).eval x ∧ 0 < (B n).eval x)
+    (hAB : ∀ n x, p (n + 1) < q (n + 1) * x → x ≤ r →
+      0 ≤ (A n).eval x ∧ 0 < (B n).eval x)
     (hD : ∀ n x, r < x → (A n).eval x ≤ 0 ∧
       0 < (B n).eval x * (q (n + 1) * x - p (n + 1)) + q (n + 1) * (A n).eval x * (D₀ + n))
     (h0 : (P 0).Splits) (hW0 : ∀ t ∈ (P 0).roots, q 0 * t ≤ p 0)
