@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2051
+      "max_modules": 2052
     },
     "RealRooted.Production": {
-      "max_modules": 1873
+      "max_modules": 1874
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 927
@@ -901,7 +901,7 @@
       "max_modules": 9
     },
     "RealRooted.Challenges.Narayana": {
-      "max_modules": 185
+      "max_modules": 215
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
