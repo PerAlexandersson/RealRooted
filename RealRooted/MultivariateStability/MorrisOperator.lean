@@ -84,9 +84,7 @@ def morrisA (q : ℕ) :
 @[simp]
 theorem morrisA_apply (q : ℕ) (P : MvPolynomial (Fin q) R) :
     morrisA q P = ∑ i, X i ^ 2 * pderiv i (pderiv i P) := by
-  simp only [morrisA, LinearMap.sum_apply, LinearMap.comp_apply,
-    squaredPDeriv_apply]
-  rfl
+  simp [morrisA, squaredPDeriv_apply]
 
 /-- Bijective renaming transports a coordinate second-derivative summand to
 the corresponding renamed coordinate. -/
@@ -94,8 +92,8 @@ theorem rename_squaredPDeriv_pderiv {σ τ : Type*}
     (e : σ ≃ τ) (i : σ) (P : MvPolynomial σ R) :
     rename e (squaredPDeriv i (pderiv i P)) =
       squaredPDeriv (e i) (pderiv (e i) (rename e P)) := by
-  rw [squaredPDeriv_apply, squaredPDeriv_apply, map_mul, map_pow, rename_X]
-  rw [← pderiv_rename (R := R) e.injective i (pderiv i P),
+  rw [squaredPDeriv_apply, squaredPDeriv_apply, map_mul, map_pow, rename_X,
+    ← pderiv_rename (R := R) e.injective i (pderiv i P),
     ← pderiv_rename (R := R) e.injective i P]
 
 /-- Bijective renaming transports a coordinate first-derivative summand to
@@ -103,20 +101,15 @@ the corresponding renamed coordinate. -/
 theorem rename_squaredPDeriv {σ τ : Type*}
     (e : σ ≃ τ) (i : σ) (P : MvPolynomial σ R) :
     rename e (squaredPDeriv i P) = squaredPDeriv (e i) (rename e P) := by
-  rw [squaredPDeriv_apply, squaredPDeriv_apply, map_mul, map_pow, rename_X]
-  rw [← pderiv_rename (R := R) e.injective i P]
+  rw [squaredPDeriv_apply, squaredPDeriv_apply, map_mul, map_pow, rename_X,
+    ← pderiv_rename (R := R) e.injective i P]
 
 /-- The operator `A_q` maps symmetric polynomials to symmetric polynomials. -/
 theorem IsSymmetric.morrisA {q : ℕ} {P : MvPolynomial (Fin q) R}
     (hP : P.IsSymmetric) : (morrisA q P).IsSymmetric := by
   intro e
   rw [morrisA_apply, map_sum]
-  simp_rw [← squaredPDeriv_apply]
-  rw [show (∑ i, rename e (squaredPDeriv i (pderiv i P))) =
-      ∑ i, squaredPDeriv (e i) (pderiv (e i) (rename e P)) by
-    apply Finset.sum_congr rfl
-    intro i _
-    exact rename_squaredPDeriv_pderiv e i P]
+  simp_rw [← squaredPDeriv_apply, rename_squaredPDeriv_pderiv]
   rw [hP e]
   exact Equiv.sum_comp e fun i => squaredPDeriv i (pderiv i P)
 
@@ -159,23 +152,12 @@ theorem squaredPDeriv_pderiv_monomial {σ : Type*}
     rw [pderiv_mul, pderiv_X_self]
     ring
   rw [hid, heuler, hrhs] at heuler2
-  have hresult : X i ^ 2 * pderiv i (pderiv i (monomial d r)) =
-      d i • (d i • monomial d r) - d i • monomial d r := by
-    calc
-      X i ^ 2 * pderiv i (pderiv i (monomial d r)) =
-          (d i • monomial d r +
-            X i ^ 2 * pderiv i (pderiv i (monomial d r))) -
-            d i • monomial d r := by
-        ring
-      _ = d i • (d i • monomial d r) - d i • monomial d r := by
-        rw [heuler2]
-  rw [hresult]
   cases hdi : d i with
-  | zero => simp
+  | zero => simp [hdi]
   | succ n =>
-      simp only [Nat.succ_sub_one, nsmul_eq_mul]
-      push_cast
-      ring
+      simp only [hdi, Nat.succ_sub_one, nsmul_eq_mul] at heuler2 ⊢
+      push_cast at heuler2 ⊢
+      linear_combination heuler2
 
 /-- The operator `A_q` acts diagonally on a monomial, with eigenvalue the sum
 of `d_i * (d_i - 1)` over its exponents. -/
@@ -184,9 +166,6 @@ theorem morrisA_monomial {q : ℕ} (d : Fin q →₀ ℕ) (r : R) :
       (∑ i, d i * (d i - 1)) • monomial d r := by
   rw [morrisA_apply]
   simp_rw [squaredPDeriv_pderiv_monomial]
-  change Finset.univ.sum (fun i =>
-      (d i * (d i - 1)) • monomial d r) =
-    Finset.univ.sum (fun i => d i * (d i - 1)) • monomial d r
   simpa using Finset.sum_nsmul_assoc Finset.univ
     (fun i => d i * (d i - 1)) (monomial d r)
 
@@ -243,9 +222,7 @@ theorem sum_toFinsupp_mul_pred_eq_morrisAWeight_ofSym
   symm
   apply Finset.sum_subset (Finset.subset_univ _)
   intro i _ hi
-  have hnotmem : i ∉ s.1 := by simpa using hi
-  have hcount : s.1.count i = 0 := Multiset.count_eq_zero.mpr hnotmem
-  rw [hcount, zero_mul]
+  rw [Multiset.count_eq_zero.mpr (by simpa using hi), zero_mul]
 
 /-- The action of `A_q` on the monomial-symmetric basis is diagonal, with
 coefficient `∑ i, mu_i * (mu_i - 1)` as in Lemma 4.10 of Liu--Zhang,
@@ -288,15 +265,10 @@ theorem squaredPDerivDividedDifference_comm_of_isSymmetric
   rw [X_sub_X_mul_squaredPDerivDividedDifference_of_isSymmetric hP]
   have hreverse :=
     X_sub_X_mul_squaredPDerivDividedDifference_of_isSymmetric hP j i hij.symm
-  symm
-  calc
-    (X i - X j) * squaredPDerivDividedDifference j i hij.symm P =
-        -((X j - X i) * squaredPDerivDividedDifference j i hij.symm P) := by
-      ring
-    _ = -(X j ^ 2 * pderiv j P - X i ^ 2 * pderiv i P) := by
-      rw [hreverse]
-    _ = X i ^ 2 * pderiv i P - X j ^ 2 * pderiv j P := by
-      ring
+  rw [show (X i - X j) * squaredPDerivDividedDifference j i hij.symm P =
+      -((X j - X i) * squaredPDerivDividedDifference j i hij.symm P) by ring,
+    hreverse]
+  ring
 
 /-- A pair summand of `B_q` obeys the Leibniz rule on symmetric
 polynomials. This is the polynomial form of equation (4.10) in Liu--Zhang,
@@ -378,11 +350,9 @@ theorem morrisB_eq_morrisBOrdered_of_isSymmetric
         ∑ i, ∑ j, if hji : j < i then
           squaredPDerivDividedDifference i j hji.ne.symm P else 0 := by
     rw [← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro i _
+    refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro j _
+    refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hne : i ≠ j
     · rcases lt_or_gt_of_ne hne with hij | hji
       · rw [dite_eq_left hne, dite_eq_left hij,
@@ -400,10 +370,8 @@ theorem morrisB_eq_morrisBOrdered_of_isSymmetric
         ∑ i, ∑ j, if hij : i < j then
           squaredPDerivDividedDifference i j hij.ne P else 0 := by
     rw [Finset.sum_comm]
-    apply Finset.sum_congr rfl
-    intro i _
-    apply Finset.sum_congr rfl
-    intro j _
+    refine Finset.sum_congr rfl fun i _ => ?_
+    refine Finset.sum_congr rfl fun j _ => ?_
     split_ifs with hij
     · exact (squaredPDerivDividedDifference_comm_of_isSymmetric
         hP i j hij.ne).symm
@@ -437,29 +405,15 @@ theorem IsSymmetric.morrisBOrdered {q : ℕ} {P : MvPolynomial (Fin q) R}
       (∑ i, ∑ j, if hij : i ≠ j then
         squaredPDerivDividedDifference (e i) (e j) (e.injective.ne hij)
           (rename e P) else 0) = ∑ i, ∑ j, f (e i) (e j) := by
-    apply Finset.sum_congr rfl
-    intro i _
-    apply Finset.sum_congr rfl
-    intro j _
+    refine Finset.sum_congr rfl fun i _ => ?_
+    refine Finset.sum_congr rfl fun j _ => ?_
     dsimp only [f]
-    by_cases hij : i ≠ j
-    · rw [dite_eq_left hij, dite_eq_left (e.injective.ne hij)]
-    · have heq : i = j := not_ne_iff.mp hij
-      subst j
-      rw [dite_eq_right (not_ne_iff.mpr rfl),
-        dite_eq_right (not_ne_iff.mpr rfl)]
+    by_cases hij : i ≠ j <;> simp_all
   rw [htoF]
-  calc
-    (∑ i, ∑ j, f (e i) (e j)) = ∑ i, ∑ j, f i (e j) :=
-      Equiv.sum_comp e fun i => ∑ j, f i (e j)
-    _ = ∑ i, ∑ j, f i j := by
-      apply Finset.sum_congr rfl
-      intro i _
-      exact Equiv.sum_comp e (f i)
-    _ = ∑ i, ∑ j, if hij : i ≠ j then
-        squaredPDerivDividedDifference i j hij P else 0 := by
-      dsimp only [f]
-      rw [hP e]
+  rw [Equiv.sum_comp e fun i => ∑ j, f i (e j)]
+  simp_rw [Equiv.sum_comp e]
+  dsimp only [f]
+  rw [hP e]
 
 /-- The operator `B_q` maps symmetric polynomials to symmetric polynomials. -/
 theorem IsSymmetric.morrisB {q : ℕ} {P : MvPolynomial (Fin q) R}
@@ -498,11 +452,9 @@ theorem morrisB_mul_of_isSymmetric {q : ℕ}
         P * ∑ i, ∑ j, if hij : i ≠ j then
           squaredPDerivDividedDifference i j hij Q else 0 := by
     rw [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro i _
+    refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.sum_mul, Finset.mul_sum, ← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro j _
+    refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hij : i ≠ j
     · simp only [dite_eq_left hij]
       rw [squaredPDerivDividedDifference_mul_of_isSymmetric hP hQ]
@@ -601,8 +553,8 @@ theorem squaredPDerivDividedDifference_eq_of_isMultiaffine
       (X i * pderiv i P + X j * pderiv j P -
         X i * X j * pderiv i (pderiv j P))
   rw [X_sub_X_mul_squaredPDerivDividedDifference_of_isSymmetric hP]
-  have hd := pderiv_sub_pderiv_of_isSymmetric_of_isMultiaffine hP hma i j
-  linear_combination -X i * X j * hd
+  linear_combination -X i * X j *
+    pderiv_sub_pderiv_of_isSymmetric_of_isMultiaffine hP hma i j
 
 private theorem sum_dite_ne_eq_pred_nsmul {q : ℕ} (i : Fin q)
     (A : MvPolynomial (Fin q) R) :
@@ -647,28 +599,21 @@ theorem morrisB_eq_smul_of_isSymmetric_of_isMultiaffine_of_isHomogeneous
       (∑ i, ∑ j, if hij : i ≠ j then
           X i * X j * pderiv i (pderiv j P) else 0) =
           ∑ i, X i * (∑ j, X j * pderiv j (pderiv i P)) := by
-        apply Finset.sum_congr rfl
-        intro i _
+        refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.mul_sum]
-        apply Finset.sum_congr rfl
-        intro j _
+        refine Finset.sum_congr rfl fun j _ => ?_
         by_cases hij : i ≠ j
         · rw [dite_eq_left hij, pderiv_comm]
           ring
-        · have hji : j = i := (not_ne_iff.mp hij).symm
-          subst j
-          rw [dite_eq_right (not_ne_iff.mpr rfl),
+        · rw [not_ne_iff.mp hij, dite_eq_right (not_ne_iff.mpr rfl),
             hma.pderiv_pderiv_self_eq_zero]
           simp
       _ = ∑ i, X i * ((n - 1) • pderiv i P) := by
-        apply Finset.sum_congr rfl
-        intro i _
-        rw [(hhom.pderiv (i := i)).sum_X_mul_pderiv]
+        exact Finset.sum_congr rfl fun i _ => by
+          rw [(hhom.pderiv (i := i)).sum_X_mul_pderiv]
       _ = (n - 1) • ∑ i, X i * pderiv i P := by
         simp only [Finset.smul_sum, nsmul_eq_mul]
-        apply Finset.sum_congr rfl
-        intro i _
-        ring
+        exact Finset.sum_congr rfl fun _ _ => by ring
   rw [morrisB_eq_morrisBOrdered_of_isSymmetric hP,
     morrisBOrdered_apply]
   have hexpand :
@@ -681,11 +626,9 @@ theorem morrisB_eq_smul_of_isSymmetric_of_isMultiaffine_of_isHomogeneous
         ∑ i, ∑ j, if hij : i ≠ j then
           X i * X j * pderiv i (pderiv j P) else 0 := by
     rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
-    apply Finset.sum_congr rfl
-    intro i _
+    refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
-    apply Finset.sum_congr rfl
-    intro j _
+    refine Finset.sum_congr rfl fun j _ => ?_
     by_cases hij : i ≠ j
     · simp only [dite_eq_left hij]
       rw [squaredPDerivDividedDifference_eq_of_isMultiaffine hP hma i j hij]
@@ -734,9 +677,7 @@ private theorem morrisB_prod_esymm_multiset [Nontrivial R]
         squaredPDeriv_apply]
   | @cons k s ih =>
       have hkq : k ≤ q := hs k (by simp)
-      have hsq : ∀ l ∈ s, l ≤ q := by
-        intro l hl
-        exact hs l (by simp [hl])
+      have hsq : ∀ l ∈ s, l ≤ q := fun l hl => hs l (by simp [hl])
       rw [Multiset.map_cons, Multiset.prod_cons,
         morrisB_mul_of_isSymmetric
           (esymm_isSymmetric (Fin q) R k)
@@ -753,9 +694,8 @@ theorem morrisB_esymmPart [Nontrivial R] {N : ℕ}
     (q : ℕ) (mu : N.Partition)
     (hmu : ∀ k ∈ mu.parts, k ≤ q) :
     morrisB q (esymmPart (Fin q) R mu) =
-      morrisBWeight q mu • esymmPart (Fin q) R mu := by
-  simpa only [esymmPart, morrisBWeight] using
-    morrisB_prod_esymm_multiset (R := R) q mu.parts hmu
+      morrisBWeight q mu • esymmPart (Fin q) R mu :=
+  morrisB_prod_esymm_multiset (R := R) q mu.parts hmu
 
 /-- The product `E_mu` in equation (4.3) of Liu--Zhang,
 arXiv:2609.15201v2. -/
@@ -769,10 +709,9 @@ theorem morrisB_morrisElementary [Nontrivial R] {N : ℕ}
     (q : ℕ) (mu : N.Partition)
     (hmu : mu.parts.card ≤ q) :
     morrisB q (morrisElementary (R := R) q mu) =
-      morrisBWeight q mu.conjugate • morrisElementary (R := R) q mu := by
-  apply morrisB_esymmPart q mu.conjugate
-  intro k hk
-  exact (mu.le_card_parts_of_mem_conjugate_parts hk).trans hmu
+      morrisBWeight q mu.conjugate • morrisElementary (R := R) q mu :=
+  morrisB_esymmPart q mu.conjugate fun _ hk =>
+    (mu.le_card_parts_of_mem_conjugate_parts hk).trans hmu
 
 private theorem morrisElementary_sub_msymm_mem_lowerSpan
     [Nontrivial R] {N q : ℕ}
@@ -793,8 +732,7 @@ private theorem morrisElementary_sub_msymm_mem_lowerSpan
     exact Nat.Partition.mem_erase_dominanceDownset.mp hmu
   · have hcard : Fintype.card (Fin q) < mu.parts.card := by
       simpa using Nat.lt_of_not_ge hlen
-    rw [msymm_eq_zero_of_card_lt mu hcard, smul_zero]
-    exact Submodule.zero_mem _
+    simp [msymm_eq_zero_of_card_lt mu hcard]
 
 private theorem msymm_sub_morrisElementary_mem_lowerSpan
     [Nontrivial R] {N q : ℕ}
@@ -822,18 +760,15 @@ theorem morrisB_isTriangularOn_msymm [Nontrivial R] {N q : ℕ} :
       (fun mu => (morrisBWeight q mu.1.conjugate : R)) := by
   let b := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
     morrisElementary (R := R) q mu.1
-  let d := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
-    msymm (Fin q) R mu.1
-  let c := fun mu : {mu : N.Partition // mu.parts.card ≤ q} =>
-    (morrisBWeight q mu.1.conjugate : R)
-  have hb : (morrisB q).IsTriangularOn b c := by
+  have hb : (morrisB q).IsTriangularOn b
+      (fun mu => (morrisBWeight q mu.1.conjugate : R)) := by
     intro mu
     rw [show b mu = morrisElementary (R := R) q mu.1 by rfl,
       morrisB_morrisElementary q mu.1 mu.2]
-    change morrisBWeight q mu.1.conjugate • b mu - c mu • b mu ∈ _
+    change morrisBWeight q mu.1.conjugate • b mu -
+      (morrisBWeight q mu.1.conjugate : R) • b mu ∈ _
     rw [← Nat.cast_smul_eq_nsmul R]
-    exact sub_self (c mu • b mu) ▸ Submodule.zero_mem _
-  change (morrisB q).IsTriangularOn d c
+    simpa only [sub_self] using Submodule.zero_mem _
   apply hb.change_generators_of_unitriangular
   · exact morrisElementary_sub_msymm_mem_lowerSpan
   · exact msymm_sub_morrisElementary_mem_lowerSpan
@@ -848,11 +783,10 @@ private theorem partitionRow_eq_rowLen {N : ℕ}
     symm
     apply Nat.eq_zero_of_not_pos
     intro hpos
-    have hcell : (i, 0) ∈ YoungDiagram.ofPartition mu :=
-      YoungDiagram.mem_iff_lt_rowLen.mpr hpos
     exact hi (by
       rw [YoungDiagram.length_rowLens]
-      exact YoungDiagram.mem_iff_lt_colLen.mp hcell)
+      exact YoungDiagram.mem_iff_lt_colLen.mp
+        (YoungDiagram.mem_iff_lt_rowLen.mpr hpos))
 
 private theorem cast_column_weight_eq_sum (q c : ℕ) (hc : c ≤ q) :
     ((c * (2 * q - c - 1) : ℕ) : ℤ) =
@@ -916,9 +850,7 @@ private theorem cast_morrisBWeight_conjugate_eq_sum_cells
     _ = ∑ j ∈ range (Y.rowLen 0),
           ∑ i ∈ range (Y.colLen j),
             2 * ((q : ℤ) - (i : ℤ) - 1) := by
-      apply sum_congr rfl
-      intro j _
-      exact cast_column_weight_eq_sum q (Y.colLen j) (hcols j)
+      exact sum_congr rfl fun j _ => cast_column_weight_eq_sum q (Y.colLen j) (hcols j)
     _ = ∑ c ∈ Y.cells, 2 * ((q : ℤ) - (c.1 : ℤ) - 1) := by
       rw [← Finset.sum_fiberwise_of_maps_to
         (g := fun c : ℕ × ℕ => c.2) (t := range (Y.rowLen 0))
@@ -955,9 +887,7 @@ private theorem cast_morrisAWeight_eq_sum_cells
       rfl
     _ = ∑ i ∈ range (Y.colLen 0),
           ∑ j ∈ range (Y.rowLen i), (2 : ℤ) * j := by
-      apply sum_congr rfl
-      intro i _
-      exact cast_row_weight_eq_sum (Y.rowLen i)
+      exact sum_congr rfl fun i _ => cast_row_weight_eq_sum (Y.rowLen i)
     _ = ∑ c ∈ Y.cells, (2 : ℤ) * c.2 := by
       rw [← Finset.sum_fiberwise_of_maps_to
         (g := fun c : ℕ × ℕ => c.1) (t := range (Y.colLen 0))
@@ -1097,11 +1027,9 @@ private theorem sum_mul_nonpos_of_prefix_nonneg_of_monotone
   apply neg_nonpos.mpr
   apply sum_nonneg
   intro i hi
-  have hi' : i + 1 < q := by
-    rw [mem_range] at hi
-    lia
+  have hi := mem_range.mp hi
   exact mul_nonneg (hprefix (i + 1) (by lia))
-    (sub_nonneg.mpr (hmono i hi'))
+    (sub_nonneg.mpr (hmono i (by lia)))
 
 private theorem partitionPart_eq_zero_of_card_le {N q : ℕ}
     (mu : N.Partition) (hmu : mu.parts.card ≤ q)
@@ -1109,10 +1037,8 @@ private theorem partitionPart_eq_zero_of_card_le {N q : ℕ}
   change (YoungDiagram.ofPartition mu).rowLen i = 0
   apply Nat.eq_zero_of_not_pos
   intro hpos
-  have hcell : (i, 0) ∈ YoungDiagram.ofPartition mu :=
-    YoungDiagram.mem_iff_lt_rowLen.mpr hpos
   have hiheight : i < (YoungDiagram.ofPartition mu).colLen 0 :=
-    YoungDiagram.mem_iff_lt_colLen.mp hcell
+    YoungDiagram.mem_iff_lt_colLen.mp (YoungDiagram.mem_iff_lt_rowLen.mpr hpos)
   have hheight : (YoungDiagram.ofPartition mu).colLen 0 ≤ q := by
     simpa [← YoungDiagram.length_rowLens,
       YoungDiagram.rowLens_ofPartition_eq_sort_parts] using hmu
@@ -1124,19 +1050,12 @@ private theorem removedRows_pos_of_lt {N q : ℕ}
     0 < ∑ i ∈ range q, (lambda.part i - mu.part i) := by
   have hstrict : ∃ k, mu.prefixSum k < lambda.prefixSum k := by
     by_contra h
-    have hreverse : lambda ≤ mu := by
-      intro k
-      exact Nat.le_of_not_gt fun hk => h ⟨k, hk⟩
-    exact hdom.ne (le_antisymm hdom.le hreverse)
+    exact hdom.2 fun k => Nat.le_of_not_gt fun hk => h ⟨k, hk⟩
   obtain ⟨k, hk⟩ := hstrict
   have hrow : ∃ i ∈ range k, mu.part i < lambda.part i := by
     by_contra h
-    have hle : ∑ i ∈ range k, lambda.part i ≤
-        ∑ i ∈ range k, mu.part i := by
-      apply sum_le_sum
-      intro i hi
-      exact Nat.le_of_not_gt fun hil => h ⟨i, hi, hil⟩
-    exact (Nat.not_le_of_lt hk) hle
+    exact (Nat.not_le_of_lt hk) <| sum_le_sum fun i hi =>
+      Nat.le_of_not_gt fun hil => h ⟨i, hi, hil⟩
   obtain ⟨i, _, hi⟩ := hrow
   have hiq : i < q := by
     by_contra hiq
@@ -1171,18 +1090,14 @@ theorem morrisEigenvalue_lt_of_lt_of_adjacent_drop {N q : ℕ}
     have hls := sum_partitionRow_eq_size lambda hlambda
     have hms := sum_partitionRow_eq_size mu hmu
     simp only [partitionRow_eq_rowLen] at hls hms
-    have hls' : (∑ i ∈ range q, (lambda.part i : ℤ)) = N := by
-      exact_mod_cast hls
-    have hms' : (∑ i ∈ range q, (mu.part i : ℤ)) = N := by
-      exact_mod_cast hms
-    rw [hls', hms', sub_self]
+    rw [sub_eq_zero]
+    exact_mod_cast hls.trans hms.symm
   have hmono : ∀ i, i + 1 < q → b i ≤ b (i + 1) := by
     intro i hi
     simp only [b]
     have han : lambda.part i ≤ 1 + lambda.part (i + 1) :=
       Nat.sub_le_iff_le_add.mp (hadj i hi)
-    have ha : (lambda.part i : ℤ) ≤
-        (lambda.part (i + 1) : ℤ) + 1 := by
+    have ha : (lambda.part i : ℤ) ≤ (lambda.part (i + 1) : ℤ) + 1 := by
       exact_mod_cast (by simpa [add_comm] using han)
     push_cast
     lia
@@ -1194,10 +1109,8 @@ theorem morrisEigenvalue_lt_of_lt_of_adjacent_drop {N q : ℕ}
             (2 * (i : ℤ) + (mu.part i : ℤ) - 1) -
           (lambda.part i : ℤ) *
             (2 * (i : ℤ) + (lambda.part i : ℤ) - 1) := by
-    have h := row_twiceIndexSum_gap_lower
-      i (lambda.part i) (mu.part i)
     dsimp only [d, b]
-    nlinarith
+    nlinarith [row_twiceIndexSum_gap_lower i (lambda.part i) (mu.part i)]
   have hrows := sum_le_sum fun i (_ : i ∈ range q) => hrow i
   have hindex :
       morrisTwiceIndexSum q mu - morrisTwiceIndexSum q lambda =
@@ -1255,9 +1168,7 @@ theorem morrisBWeight_conjugate_sub_morrisAWeight {N q : ℕ}
     cast_morrisAWeight_eq_sum_cells mu,
     morrisEigenvalue_eq_sum_cells mu hmu,
     ← Finset.sum_sub_distrib]
-  apply sum_congr rfl
-  intro c _
-  ring
+  exact sum_congr rfl fun _ _ => by ring
 
 /-- The operator `D_q = B_q - A_q` from
 Liu--Zhang, arXiv:2609.15201v2, equation (4.9). -/
@@ -1306,8 +1217,8 @@ theorem morrisD_isTriangularOn_msymm [Nontrivial R] {N q : ℕ} :
 polynomials. -/
 theorem IsSymmetric.morrisD {q : ℕ} {P : MvPolynomial (Fin q) R}
     (hP : P.IsSymmetric) : (morrisD q P).IsSymmetric := by
-  rw [morrisD_apply]
-  exact (IsSymmetric.morrisB hP).sub (IsSymmetric.morrisA hP)
+  simpa only [morrisD_apply] using
+    (IsSymmetric.morrisB hP).sub (IsSymmetric.morrisA hP)
 
 /-- The restriction of `D_q = B_q - A_q` to the symmetric polynomial ring,
 as in Liu--Zhang, arXiv:2609.15201v2, equation (4.9). -/
