@@ -24,11 +24,9 @@ real stable. This is the stability input in Liu--Zhang Lemma 4.4. -/
 theorem MvRealStable.esymm {q k : ℕ} (hk : k ≤ q) :
     MvRealStable (esymm (Fin q) ℝ k) := by
   unfold MvRealStable complexifyMv
-  have hpow : ∀ z : ℂ, 0 < z.im →
-      (Polynomial.X ^ k : ℂ[X]).eval z ≠ 0 := by
-    intro z hz
+  have hpow : ∀ z : ℂ, 0 < z.im → (Polynomial.X ^ k : ℂ[X]).eval z ≠ 0 := by
     simp only [Polynomial.eval_pow, Polynomial.eval_X]
-    exact pow_ne_zero _ (fun h => by simp [h] at hz)
+    exact fun z hz => pow_ne_zero _ fun h => by simp [h] at hz
   have hpolar := mvUpperHalfPlaneStable_polarization
     (p := (Polynomial.X ^ k : ℂ[X])) (by simpa using hk) hpow
   rw [polarization_X_pow hk] at hpolar
@@ -48,8 +46,7 @@ theorem MvRealStable.morrisElementary {q N : ℕ}
   rw [RealRooted.LiuZhang.morrisElementary, esymmPart]
   let s := lambda.conjugate.parts
   have hs : ∀ k ∈ s, k ≤ q := by
-    intro k hk
-    exact (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda
+    exact fun _ hk => (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda
   change MvRealStable (s.map (esymm (Fin q) ℝ)).prod
   have hprod : ∀ u : Multiset ℕ, (∀ k ∈ u, k ≤ q) →
       MvRealStable (u.map (esymm (Fin q) ℝ)).prod := by
@@ -58,9 +55,8 @@ theorem MvRealStable.morrisElementary {q N : ℕ}
     | empty => simpa using (MvRealStable.one (sigma := Fin q))
     | @cons k u ih =>
         rw [Multiset.map_cons, Multiset.prod_cons]
-        apply MvRealStable.mul
-        · exact MvRealStable.esymm (hu k (by simp))
-        · exact ih (fun l hl => hu l (by simp [hl]))
+        exact MvRealStable.mul (MvRealStable.esymm (hu k (by simp)))
+          (ih fun l hl => hu l (by simp [hl]))
   exact hprod s hs
 
 private def morrisElementaryPoint {q N : ℕ}
@@ -113,17 +109,12 @@ theorem MvRealStable.of_normalizedMorrisDExp_tendsto {q N : ℕ}
       Tendsto (fun n : ℕ =>
         (RealRooted.LiuZhang.normalizedMorrisDExp
           lambda hlambda n).coeff m)
-        atTop (𝓝 (P.coeff m))) (hP : P ≠ 0) : MvRealStable P := by
-  apply MvRealStable.of_coeff_tendsto_of_totalDegree_le
-    (P := fun n : ℕ => RealRooted.LiuZhang.normalizedMorrisDExp
-      lambda hlambda n) (N := N)
-  · intro n
-    exact MvRealStable.normalizedMorrisDExp lambda hlambda (by positivity)
-  · intro n
-    exact totalDegree_normalizedMorrisDExp_le lambda hlambda n
-  · exact hPdeg
-  · exact hcoeff
-  · exact hP
+        atTop (𝓝 (P.coeff m))) (hP : P ≠ 0) : MvRealStable P :=
+  MvRealStable.of_coeff_tendsto_of_totalDegree_le
+    (P := fun n : ℕ => RealRooted.LiuZhang.normalizedMorrisDExp lambda hlambda n)
+    (N := N)
+    (fun _ => MvRealStable.normalizedMorrisDExp lambda hlambda (by positivity))
+    (fun n => totalDegree_normalizedMorrisDExp_le lambda hlambda n) hPdeg hcoeff hP
 
 /-- The index type of partitions `μ` of `N` with at most `q` parts that are dominated by
 `lambda`. -/
@@ -146,14 +137,8 @@ private theorem sum_partition_part_fin {N q : ℕ}
   have hlength : (mu.parts.sort (· ≥ ·)).length ≤ q := by
     simpa using hmu
   rw [List.take_of_length_le hlength] at hp
-  calc
-    ∑ i : Fin q, mu.part i =
-        ∑ i ∈ Finset.range q, mu.part i :=
-      Fin.sum_univ_eq_sum_range (fun i => mu.part i) q
-    _ = mu.prefixSum q := rfl
-    _ = (mu.parts.sort (· ≥ ·)).sum := hp
-    _ = N := by
-      rw [← Multiset.sum_coe, Multiset.sort_eq, mu.parts_sum]
+  rw [Fin.sum_univ_eq_sum_range, show ∑ i ∈ Finset.range q, mu.part i =
+    mu.prefixSum q from rfl, hp, ← Multiset.sum_coe, Multiset.sort_eq, mu.parts_sum]
 
 private theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
     (lambda : N.Partition) :
@@ -162,17 +147,14 @@ private theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
   intro g hg i
   let d : Fin q →₀ ℕ :=
     Finsupp.equivFunOnFinite.symm (fun j => i.1.part j)
-  have hdApply (j : Fin q) : d j = i.1.part j := by
-    simp [d]
+  have hdApply (j : Fin q) : d j = i.1.part j := by simp [d]
   have hdSum : d.sum (fun _ e => e) = N := by
     rw [Finsupp.sum_fintype d (fun _ e => e) (by simp)]
     simpa only [hdApply] using sum_partition_part_fin i.1 i.2.2
   let s : Sym (Fin q) N :=
     ⟨Finsupp.toMultiset d,
       Finsupp.card_toMultiset d |>.trans hdSum⟩
-  have hsCount (j : Fin q) : s.1.count j = i.1.part j := by
-    change (Finsupp.toMultiset d).count j = i.1.part j
-    rw [Finsupp.count_toMultiset, hdApply]
+  have hsCount (j : Fin q) : s.1.count j = i.1.part j := by simp [s, hdApply]
   have hsShape : Nat.Partition.ofSym s = i.1 :=
     ofSym_eq_of_count_eq_part i.1 i.2.2 s hsCount
   have hcoeff (j : MorrisDownsetIndex q lambda) :
@@ -187,8 +169,8 @@ private theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
     mul_ite, mul_one, mul_zero, Finset.sum_ite_eq,
     Finset.mem_univ, ite_true] using hc
 
-/-- The submodule of `MvPolynomial (Fin q) ℝ` spanned by the monomial symmetric polynomials indexed
-by partitions dominated by `lambda`. -/
+/-- The submodule of `MvPolynomial (Fin q) ℝ` spanned by the monomial symmetric
+polynomials indexed by partitions dominated by `lambda`. -/
 def morrisDownsetSubmodule {N : ℕ} (q : ℕ)
     (lambda : N.Partition) :
     Submodule ℝ (MvPolynomial (Fin q) ℝ) :=
@@ -222,9 +204,8 @@ private def morrisDownsetIndexOfLt {N q : ℕ}
     (mu : {nu : N.Partition // nu.parts.card ≤ q})
     (hmu : mu < (⟨i.1, i.2.2⟩ :
       {nu : N.Partition // nu.parts.card ≤ q})) :
-    MorrisDownsetIndex q lambda := by
-  refine ⟨mu.1, ?_, mu.2⟩
-  exact (show mu.1 < i.1 from hmu).le.trans i.2.1
+    MorrisDownsetIndex q lambda :=
+  ⟨mu.1, (show mu.1 < i.1 from hmu).le.trans i.2.1, mu.2⟩
 
 private theorem lowerSpan_le_morrisDownset {N q : ℕ}
     {lambda : N.Partition} (i : MorrisDownsetIndex q lambda) :
@@ -337,6 +318,21 @@ private theorem morrisDOnDownset_isTriangular {N q : ℕ}
           MorrisDownsetSpace q lambda) : MvPolynomial (Fin q) ℝ) = _
   rw [coe_morrisDownsetBasis]
 
+private theorem repr_eq_zero_of_mem_lowerSpan {E ι : Type*}
+    [AddCommGroup E] [Module ℝ E] [Preorder ι]
+    (b : Module.Basis ι ℝ E) {x : E} {i j : ι}
+    (hx : x ∈ LinearMap.lowerSpan (R := ℝ) b i) (hij : i ≤ j) :
+    b.repr x j = 0 := by
+  classical
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+      rcases hx with ⟨k, hki, rfl⟩
+      rw [Module.Basis.repr_self,
+        Finsupp.single_eq_of_ne (ne_of_gt (hki.trans_le hij))]
+  | zero => simp
+  | add x y _ _ hx hy => simpa using congrArg₂ (· + ·) hx hy
+  | smul r x _ hx => simpa using congrArg (r • ·) hx
+
 private theorem toMatrix_isUpperTriangular_of_isTriangularOn
     {ι E : Type*} [Fintype ι] [DecidableEq ι] [LinearOrder ι]
     [AddCommGroup E] [Module ℝ E] (b : Module.Basis ι ℝ E)
@@ -348,17 +344,8 @@ private theorem toMatrix_isUpperTriangular_of_isTriangularOn
   change b.repr (T (b j)) i = 0
   let r := T (b j) - c j • b j
   have hr : r ∈ LinearMap.lowerSpan (R := ℝ) b j := hT j
-  have hzero {x : E} (hx : x ∈ LinearMap.lowerSpan (R := ℝ) b j) :
-      b.repr x i = 0 := by
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-        rcases hx with ⟨k, hkj, rfl⟩
-        rw [Module.Basis.repr_self]
-        rw [Finsupp.single_eq_of_ne (ne_of_gt (hkj.trans hji))]
-    | zero => simp
-    | add x y _ _ hx hy => simpa using congrArg₂ (· + ·) hx hy
-    | smul r x _ hx => simpa using congrArg (r • ·) hx
-  have hremCoord : b.repr r i = 0 := hzero hr
+  have hremCoord : b.repr r i = 0 :=
+    repr_eq_zero_of_mem_lowerSpan b hr hji.le
   simpa [r, map_sub, map_smul, Module.Basis.repr_self,
     Finsupp.single_eq_of_ne (ne_of_gt hji)] using hremCoord
 
@@ -372,19 +359,9 @@ private noncomputable def morrisDownsetFinOrderIso {N q : ℕ}
       (LinearExtension (MorrisDownsetIndex q lambda))
       (inferInstance : Fintype (MorrisDownsetIndex q lambda))
       (Equiv.refl _)
-  have hpos : 0 < Fintype.card (MorrisDownsetIndex q lambda) :=
-    Fintype.card_pos_iff.mpr
-      ⟨⟨lambda, le_rfl, hlambda⟩⟩
-  have hcard :
-      Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1 =
-        Fintype.card (MorrisDownsetIndex q lambda) :=
-    Nat.sub_add_cancel hpos
-  have hcardExt :
-      Fintype.card (LinearExtension (MorrisDownsetIndex q lambda)) =
-        Fintype.card (MorrisDownsetIndex q lambda) :=
-    Fintype.card_congr (Equiv.refl _)
-  exact (Fin.castOrderIso hcard).trans
-    (Fintype.orderIsoFinOfCardEq _ hcardExt)
+  exact (Fin.castOrderIso (Nat.sub_add_cancel
+      (Fintype.card_pos_iff.mpr ⟨⟨lambda, le_rfl, hlambda⟩⟩))).trans
+    (Fintype.orderIsoFinOfCardEq _ (Fintype.card_congr (Equiv.refl _)))
 
 private noncomputable def morrisDownsetFinEquiv {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
@@ -572,19 +549,6 @@ private theorem morrisElementary_remainder_mem_finLower {N q : ℕ}
       coe_morrisDownsetBasis] using hcy.symm]
   exact hy
 
-private theorem repr_eq_zero_of_mem_lowerSpan {n : ℕ} {E : Type*}
-    [AddCommGroup E] [Module ℝ E] (b : Module.Basis (Fin (n + 1)) ℝ E)
-    {x : E} {i j : Fin (n + 1)} (hx : x ∈ LinearMap.lowerSpan (R := ℝ) b i)
-    (hij : i ≤ j) : b.repr x j = 0 := by
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-      rcases hx with ⟨k, hki, rfl⟩
-      rw [Module.Basis.repr_self,
-        Finsupp.single_eq_of_ne (ne_of_gt (hki.trans_le hij))]
-  | zero => simp
-  | add x y _ _ hx hy => simpa using congrArg₂ (· + ·) hx hy
-  | smul r x _ hx => simpa using congrArg (r • ·) hx
-
 private theorem morrisElementaryDownset_last_repr {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
     (morrisDownsetFinBasis lambda hlambda).repr
@@ -675,11 +639,8 @@ private theorem ContinuousLinearMap.map_exp_apply_of_intertwines
           ih, hJ]
   rw [NormedSpace.exp_eq_tsum ℝ, NormedSpace.exp_eq_tsum ℝ]
   have hTsum := NormedSpace.expSeries_summable' (𝕂 := ℝ) T
-  have hSsum := NormedSpace.expSeries_summable' (𝕂 := ℝ) S
   have hTapply := hTsum.map (ContinuousLinearMap.apply ℝ E x)
     (ContinuousLinearMap.apply ℝ E x).continuous
-  have hSapply := hSsum.map (ContinuousLinearMap.apply ℝ F (J x))
-    (ContinuousLinearMap.apply ℝ F (J x)).continuous
   change J ((∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x) =
     (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • S ^ n) (J x)
   have hTeval : (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x =
@@ -689,7 +650,8 @@ private theorem ContinuousLinearMap.map_exp_apply_of_intertwines
   have hSeval : (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • S ^ n) (J x) =
       ∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • S ^ n) (J x) := by
     simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using
-      (ContinuousLinearMap.apply ℝ F (J x)).map_tsum hSsum
+      (ContinuousLinearMap.apply ℝ F (J x)).map_tsum
+        (NormedSpace.expSeries_summable' (𝕂 := ℝ) S)
   have hJsum : J (∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • T ^ n) x) =
       ∑' n : ℕ, J (((n.factorial : ℝ)⁻¹ • T ^ n) x) := by
     simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using
@@ -884,29 +846,9 @@ private theorem exists_unique_stable_morrisEigenfunction {N q : ℕ}
     intro m
     let Llin :
         (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) →ₗ[ℝ] ℝ :=
-      { toFun := fun z => (morrisDegreePolynomial q N (J z)).coeff m
-        map_add' := by
-          intro u v
-          change (((morrisDegreeEquiv q N).symm (J (u + v)) :
-              MorrisDegreeSpace q N) : MvPolynomial (Fin q) ℝ).coeff m = _
-          rw [map_add, map_add]
-          let p : MvPolynomial (Fin q) ℝ :=
-            (morrisDegreeEquiv q N).symm (J u)
-          let r : MvPolynomial (Fin q) ℝ :=
-            (morrisDegreeEquiv q N).symm (J v)
-          change (p + r).coeff m = p.coeff m + r.coeff m
-          exact congrArg (fun f => f m) (AddMonoidAlgebra.coeff_add p r)
-        map_smul' := by
-          intro r u
-          change (((morrisDegreeEquiv q N).symm (J (r • u)) :
-              MorrisDegreeSpace q N) : MvPolynomial (Fin q) ℝ).coeff m = _
-          rw [map_smul, map_smul]
-          let p : MvPolynomial (Fin q) ℝ :=
-            (morrisDegreeEquiv q N).symm (J u)
-          change (r • p).coeff m = r * p.coeff m
-          rw [show (r • p).coeff m = r • p.coeff m from
-            congrArg (fun f => f m) (AddMonoidAlgebra.coeff_smul r p)]
-          rfl }
+      (MvPolynomial.lcoeff ℝ m).comp
+        ((morrisDegreeSubmodule q N).subtype.comp
+          ((morrisDegreeEquiv q N).symm.toLinearMap.comp Jlin))
     let L := LinearMap.toContinuousLinearMap Llin
     have hreal := (L.continuous.tendsto y).comp (hlim x hx)
     have hreal' : Tendsto (fun t : ℝ =>
