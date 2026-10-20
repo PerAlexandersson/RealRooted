@@ -72,48 +72,15 @@ a power of `X` out of its reversal. -/
 theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : ℕ}
     (hN : f.natDegree ≤ N) :
     reflect N f = X ^ (N - f.natDegree) * f.reverse := by
-  ext n
-  by_cases hn : n ≤ N
-  · by_cases hNn : n ≥ N - f.natDegree
-    · rw [coeff_reflect, revAt_le hn, Polynomial.coeff_mul,
-        Finset.sum_eq_single (N - f.natDegree, n - (N - f.natDegree))]
-      · dsimp only
-        have h_sub : n - (N - f.natDegree) = f.natDegree - (N - n) := by lia
-        rw [h_sub, Polynomial.coeff_reverse, revAt_le (by lia), Nat.sub_sub_self (by lia),
-          Polynomial.coeff_X_pow, ite_eq_left rfl, one_mul]
-      · intro x hx hx_ne
-        have : x.1 ≠ N - f.natDegree := by
-          intro h_eq
-          apply hx_ne
-          ext
-          · exact h_eq
-          · have := Finset.mem_antidiagonal.mp hx
-            lia
-        rw [Polynomial.coeff_X_pow, ite_eq_right this, zero_mul]
-      · intro h
-        exfalso
-        apply h
-        rw [Finset.mem_antidiagonal]
-        lia
-    · rw [coeff_reflect, revAt_le hn]
-      have h_lt : f.natDegree < N - n := by lia
-      rw [Polynomial.coeff_eq_zero_of_natDegree_lt h_lt, Polynomial.coeff_mul]
-      exact Eq.symm (Finset.sum_eq_zero fun x hx => by
-        have h_eq : x.1 ≠ N - f.natDegree := by
-          have := Finset.mem_antidiagonal.mp hx
-          lia
-        rw [Polynomial.coeff_X_pow, ite_eq_right h_eq, zero_mul])
-  · rw [coeff_reflect, revAt_eq_self_of_lt (by lia),
-      Polynomial.coeff_eq_zero_of_natDegree_lt (by lia), Polynomial.coeff_mul]
-    exact Eq.symm (Finset.sum_eq_zero fun x hx => by
-      by_cases hx1 : x.1 = N - f.natDegree
-      · rw [hx1]
-        have : x.2 > f.natDegree := by
-          have := Finset.mem_antidiagonal.mp hx
-          lia
-        have : f.reverse.natDegree ≤ f.natDegree := Polynomial.reverse_natDegree_le _
-        rw [Polynomial.coeff_eq_zero_of_natDegree_lt (p := f.reverse) (by lia), mul_zero]
-      · rw [Polynomial.coeff_X_pow, ite_eq_right hx1, zero_mul])
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hN
+  induction k with
+  | zero => simp [Polynomial.reverse]
+  | succ k ih =>
+      rw [Nat.add_succ, Polynomial.reflect_succ f (Nat.le_add_right _ _),
+        ih (Nat.le_add_right _ _),
+        mul_assoc, ← Polynomial.commute_X, ← mul_assoc, ← pow_succ]
+      rw [show f.natDegree + k - f.natDegree = k by lia,
+        show f.natDegree + k + 1 - f.natDegree = k + 1 by lia]
 
 /-- Reflection is linear on a polynomial family `f + C μ * g`. -/
 theorem reflect_add_C_mul {R : Type*} [Semiring R] (f g : R[X]) (μ : R) (N : ℕ) :
@@ -133,8 +100,7 @@ polynomial is the original constant coefficient. -/
 theorem leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le {R : Type*} [Semiring R]
     {p : R[X]} {N : ℕ} (hN : p.natDegree ≤ N) (h0 : p.coeff 0 ≠ 0) :
     (reflect N p).leadingCoeff = p.coeff 0 := by
-  rw [Polynomial.leadingCoeff, natDegree_reflect_eq_of_coeff_zero_ne hN h0]
-  simp
+  simp [Polynomial.leadingCoeff, natDegree_reflect_eq_of_coeff_zero_ne hN h0]
 
 /-- Multiplying the reverse of a split polynomial by the degree-padding power
 of `X` still splits. -/
@@ -155,9 +121,8 @@ theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
     (reflect N p).Splits ↔ p.Splits := by
   refine ⟨?_, fun h ↦ splits_reflect_of_splits h hN⟩
   intro h
-  have hreflect_deg : (reflect N p).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by simp_all
-  simpa using splits_reflect_of_splits h hreflect_deg
+  simpa using splits_reflect_of_splits h <|
+    (Polynomial.natDegree_reflect_le (N := N) (p := p)).trans (max_eq_left hN).le
 
 /-- Reflection sends a nonzero root to its inverse at any valid degree bound. -/
 theorem isRoot_reflect_inv_iff {p : K[X]} {b : K} (hb : b ≠ 0)
@@ -194,9 +159,8 @@ theorem splits_X_mul_iff {p : K[X]} : (X * p).Splits ↔ p.Splits := by simp
 /-- A polynomial with zero constant coefficient is `X` times its `divX`
 quotient. -/
 theorem eq_X_mul_divX_of_coeff_zero {p : K[X]} (h0 : p.coeff 0 = 0) :
-    p = X * p.divX := by
-  have h := Polynomial.X_mul_divX_add p
-  simp_all
+    p = X * p.divX :=
+  by simpa [h0] using (Polynomial.X_mul_divX_add p).symm
 
 /-- If the constant coefficient is zero, splitting is equivalent to splitting
 after dividing by `X`. -/
@@ -239,13 +203,11 @@ theorem card_roots_reflect_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {N : ℕ} (hN : p.natDegree ≤ N) {a : K} (ha : 0 < a) :
     ((reflect N p).roots.filter (fun x => a < x)).card =
       (p.roots.filter (fun r => 0 < r ∧ r < a⁻¹)).card := by
-  have hpad :
-      Multiset.filter (fun x => a < x)
-        ((N - p.natDegree) • ({0} : Multiset K)) = 0 := by
-    rw [Multiset.filter_eq_nil]
-    intro x hx
-    rw [Multiset.mem_nsmul, Multiset.mem_singleton] at hx
-    grind
+  have hpad : Multiset.filter (fun x => a < x)
+      ((N - p.natDegree) • ({0} : Multiset K)) = 0 := by
+    rw [Multiset.filter_nsmul, Multiset.filter_singleton,
+      ite_eq_right (not_lt_of_ge ha.le)]
+    simp
   rw [reflect_eq_X_pow_mul_reverse p hN,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
@@ -285,8 +247,7 @@ theorem card_roots_reflect_Ioi_of_neg {p : K[X]} (hp : p.Splits)
         (reverse_ne_zero_of_coeff_zero_ne h0)),
     Multiset.filter_add, Multiset.card_add, Polynomial.roots_pow,
     Polynomial.roots_X, card_roots_reverse_Ioi_of_neg hp h0 ha hneg]
-  rw [Multiset.filter_nsmul]
-  rw [Multiset.filter_singleton, ite_eq_left ha]
+  rw [Multiset.filter_nsmul, Multiset.filter_singleton, ite_eq_left ha]
   simp
 
 /-- Complement form of negative-threshold root-count transport under
@@ -310,13 +271,8 @@ theorem card_roots_filter_gt_eq_reflect_compl {p : K[X]} (hp : p.Splits)
         p.roots.filter (fun q => r < q) :=
       Multiset.filter_congr fun q hq => by
       have hqr : q ≠ r := fun h => hrmem (h ▸ hq)
-      constructor
-      · intro hnlt
-        exact lt_of_le_of_ne (le_of_not_gt hnlt) hqr.symm
-      · exact fun hgt => not_lt_of_ge hgt.le
-    have hsum := Multiset.filter_add_not (p := fun q => q < r) p.roots
-    rw [hfilter] at hsum
-    simpa using congrArg Multiset.card hsum
+      grind
+    rw [← Multiset.card_add, ← hfilter, Multiset.filter_add_not]
   have hreflect := card_roots_reflect_Ioi_of_neg hp h0 hN
     (inv_lt_zero'.2 hr) hneg
   rw [inv_inv] at hreflect
