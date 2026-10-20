@@ -134,8 +134,6 @@ lemma Interl.X_add_C_iff {a b : ℝ} :
   · intro hab
     exact (StrictInterl.X_add_C_iff.mpr hab).toInterl
 
-/- Deprecated compatibility alias for `StrictInterl.X_add_C_iff`. -/
-
 lemma isRealRooted_of_deg_zero {p : ℝ[X]}
     (hp : p ≠ 0) (hdeg : p.natDegree = 0) :
     p ≠ 0 ∧ p.Splits :=
@@ -446,22 +444,6 @@ lemma Interl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
 /- Deprecated compatibility alias for
 `StrictInterl.comp_one_sub_X_of_natDegree_eq`. -/
 
-/- Deprecated compatibility alias for `StrictInterl.comp_X_add_C`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.comp_C_mul_X_iff`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.comp_neg_X_of_natDegree_eq`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.comp_X_add_C_iff`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.refl`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.C_mul_left`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.C_mul_right`. -/
-
 lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     (hp_deg : p.natDegree = 1) :
     Interlaces (C c) p := by
@@ -469,10 +451,6 @@ lemma interlaces_C_linear {p : ℝ[X]} {c : ℝ} (hc : c ≠ 0)
     (interlaces_one_linear hp_deg).toStrictInterl.C_mul_left hc
   have hdeg : (C c * (1 : ℝ[X])).natDegree + 1 = p.natDegree := by simp [hp_deg]
   simpa using hprec.toInterlaces hdeg
-
-/- Deprecated compatibility alias for `Interl.C_mul_right_of_nonneg`. -/
-
-/- Deprecated compatibility alias for `StrictInterl.C_mul_self`. -/
 
 /-- If two polynomials have the same degree and positive leading coefficients,
 their top coefficients cannot cancel. -/

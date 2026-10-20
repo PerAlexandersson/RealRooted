@@ -42,8 +42,6 @@ theorem exists_comp_X_add_C_hasNonnegCoeffs (fs : List ℝ[X])
   exact hasNonnegCoeffs_comp_X_add_C_of_roots_le
     (hfs p hp).1 (hfs p hp).2 (hr p hp)
 
-/- Deprecated compatibility alias for `Interl.comp_X_add_C_iff`. -/
-
 /-- Simultaneous translation is an equivalence for finite interlacing
 sequences. -/
 theorem isInterlacingSeq_map_comp_X_add_C_iff (fs : List ℝ[X]) (r : ℝ) :

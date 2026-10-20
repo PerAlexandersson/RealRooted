@@ -28,8 +28,6 @@ point from their root counts, for instance when proving interlacing.
   strictly above `x` is even.
 * `Polynomial.Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add`: an odd total count of roots above
   two non-root points forces `p.eval x * q.eval y < 0`.
-* `Polynomial.Splits.even_card_roots_le_add_iff_eval_pos_iff`: the analogue for roots weakly below
-  `x` and polynomials of equal degree.
 * `Polynomial.Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff`: the same, stated for the integer
   difference of the root counts above `x`.
 -/
