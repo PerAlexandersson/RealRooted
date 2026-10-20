@@ -21,16 +21,10 @@ theorem exists_pos_le_abs_sub_of_forall_mem_ne
     ∃ ε : ℝ, 0 < ε ∧ ∀ r ∈ s, ε ≤ |r - x| := by
   classical
   induction s using Multiset.induction with
-  | empty =>
-      refine ⟨1, by norm_num, ?_⟩
-      simp
+  | empty => exact ⟨1, by norm_num, by simp⟩
   | cons a s ih =>
-      have ha : a ≠ x := hx a (by simp)
-      have hs : ∀ r ∈ s, r ≠ x := by simp_all
-      obtain ⟨ε, hε, hεs⟩ := ih hs
-      refine ⟨min ε |a - x|, ?_, ?_⟩
-      · grind
-      · simp_all
+      obtain ⟨ε, hε, hεs⟩ := ih (by simp_all)
+      exact ⟨min ε |a - x|, by grind, by simp_all⟩
 
 /-- A finite real multiset has positive distance from any absent real number. -/
 theorem exists_pos_le_abs_sub_of_not_mem
@@ -44,12 +38,10 @@ private theorem exists_lt_forall_mem_lt (s : Multiset ℝ) :
     ∃ B : ℝ, ∀ r ∈ s, B < r := by
   classical
   induction s using Multiset.induction with
-  | empty =>
-      simp
+  | empty => simp
   | cons a s ih =>
       obtain ⟨B, hB⟩ := ih
-      refine ⟨min (a - 1) B, ?_⟩
-      simp_all
+      exact ⟨min (a - 1) B, by simp_all⟩
 
 /--
 Choose a guard below all elements of a finite multiset and one positive
@@ -97,52 +89,17 @@ theorem exists_le_card_eq_of_le_card {α : Type*} (t : Multiset α) {n : ℕ}
     (h : n ≤ t.card) :
     ∃ u : Multiset α, u ≤ t ∧ u.card = n := by
   induction t using Multiset.induction generalizing n with
-  | empty =>
-      simp_all
+  | empty => simp_all
   | cons a t ih =>
       cases n with
-      | zero =>
-          exact ⟨0, zero_le _, by simp⟩
+      | zero => exact ⟨0, zero_le _, by simp⟩
       | succ n =>
-          have hsucc : n.succ ≤ t.card.succ := by simpa using h
-          have hn : n ≤ t.card := by simp_all
+          have hn : n ≤ t.card := by simpa using h
           obtain ⟨u, hut, hcard⟩ := ih hn
           exact ⟨a ::ₘ u, Multiset.cons_le_cons a hut, by simp [hcard]⟩
 
 /-- Filter cardinality is monotone along a `Multiset.Rel` matching. -/
 private theorem card_filter_le_of_rel {α β : Type*} {r : α → β → Prop}
-    {p : α → Prop} {q : β → Prop} [DecidablePred p] [DecidablePred q]
-    {s : Multiset α} {t : Multiset β}
-    (h : Multiset.Rel r s t)
-    (hpq : ∀ a ∈ s, ∀ b, r a b → p a → q b) :
-    (s.filter p).card ≤ (t.filter q).card := by
-  induction h with
-  | zero => simp
-  | @cons a b s t hab _ ih =>
-      have hpq_tail : ∀ a ∈ s, ∀ b, r a b → p a → q b := by grind
-      by_cases ha : p a
-      · have hb : q b := hpq a (by simp) b hab ha
-        simpa [ha, hb] using Nat.succ_le_succ (ih hpq_tail)
-      · by_cases hb : q b
-        · simpa [ha, hb] using le_trans (ih hpq_tail) (Nat.le_succ (filter q t).card)
-        · simpa [ha, hb] using ih hpq_tail
-
-/-- A filter by a disjunction has cardinality bounded by the sum of the two
-filtered cardinalities. -/
-private theorem card_filter_or_le_add {α : Type*} {p q : α → Prop}
-    [DecidablePred p] [DecidablePred q] (s : Multiset α) :
-    (s.filter (fun a => p a ∨ q a)).card ≤
-      (s.filter p).card + (s.filter q).card := by
-  induction s using Multiset.induction with
-  | empty =>
-      simp
-  | cons a s ih =>
-      by_cases hp : p a <;> by_cases hq : q a <;> simp [hp, hq] <;> lia
-
-/-- Filter cardinality monotonicity along a relation, with membership in both
-matched multisets available to the predicate-transfer proof. -/
-private theorem card_filter_le_of_rel_with_right_mem
-    {α β : Type*} {r : α → β → Prop}
     {p : α → Prop} {q : β → Prop} [DecidablePred p] [DecidablePred q]
     {s : Multiset α} {t : Multiset β}
     (h : Multiset.Rel r s t)
@@ -156,8 +113,19 @@ private theorem card_filter_le_of_rel_with_right_mem
       · have hb : q b := hpq a (by simp) b (by simp) hab ha
         simpa [ha, hb] using Nat.succ_le_succ (ih hpq_tail)
       · by_cases hb : q b
-        · simpa [ha, hb] using le_trans (ih hpq_tail) (Nat.le_succ (filter q t).card)
+        · simpa [ha, hb] using (ih hpq_tail).trans (Nat.le_succ _)
         · simpa [ha, hb] using ih hpq_tail
+
+/-- A filter by a disjunction has cardinality bounded by the sum of the two
+filtered cardinalities. -/
+private theorem card_filter_or_le_add {α : Type*} {p q : α → Prop}
+    [DecidablePred p] [DecidablePred q] (s : Multiset α) :
+    (s.filter (fun a => p a ∨ q a)).card ≤
+      (s.filter p).card + (s.filter q).card := by
+  induction s using Multiset.induction with
+  | empty => simp
+  | cons a s ih =>
+      by_cases hp : p a <;> by_cases hq : q a <;> simp [hp, hq] <;> lia
 
 /-- If the only element of `s` in the interval `(a, b]` is a point `c` that
 appears exactly once in `s`, then that interval has cardinality one. -/
@@ -173,8 +141,7 @@ theorem card_filter_interval_eq_one_of_count_eq_one_of_forall_mem_eq
     constructor
     · intro hzI
       exact hmem z hz hzI.1 hzI.2
-    · intro hzc
-      subst hzc
+    · rintro rfl
       exact ⟨hac, hcb⟩
   rw [hfilter]
   simpa [hcount, eq_comm] using (Multiset.count_eq_card_filter_eq s c).symm
@@ -193,9 +160,8 @@ theorem rel_abs_sub_lt_of_repeated_left
     (hs : ∀ x ∈ s, x = r)
     (hu : ∀ q ∈ u, |q - r| < δ)
     (hcard : s.card = u.card) :
-    Multiset.Rel (fun x q => |q - x| < δ) s u := by
-  refine Multiset.rel_of_forall ?_ hcard
-  grind
+    Multiset.Rel (fun x q => |q - x| < δ) s u :=
+  Multiset.rel_of_forall (by grind) hcard
 
 /-- A proximity matching preserves weak-lower threshold counts when the source
 multiset is separated from the threshold. -/
@@ -204,9 +170,8 @@ theorem card_filter_le_le_of_rel_abs_sub_lt
     (hsep : ∀ r ∈ s, δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
     (s.filter (fun r ↦ r ≤ x)).card ≤
-      (t.filter (fun q ↦ q ≤ x)).card := by
-  refine card_filter_le_of_rel hmatch ?_
-  grind
+      (t.filter (fun q ↦ q ≤ x)).card :=
+  card_filter_le_of_rel hmatch (by grind)
 
 /-- A proximity matching preserves strict-upper threshold counts when the source
 multiset is separated from the threshold. -/
@@ -215,9 +180,8 @@ theorem card_filter_gt_le_of_rel_abs_sub_lt
     (hsep : ∀ r ∈ s, δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
     (s.filter (fun r ↦ x < r)).card ≤
-      (t.filter (fun q ↦ x < q)).card := by
-  refine card_filter_le_of_rel hmatch ?_
-  grind
+      (t.filter (fun q ↦ x < q)).card :=
+  card_filter_le_of_rel hmatch (by grind)
 
 /-- A proximity matching preserves strict-upper threshold counts when only the
 source roots already above the threshold are required to be separated from the
@@ -227,9 +191,8 @@ theorem card_filter_gt_le_of_rel_abs_sub_lt_of_gt_sep
     (hsep : ∀ r ∈ s, x < r → δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
     (s.filter (fun r ↦ x < r)).card ≤
-      (t.filter (fun q ↦ x < q)).card := by
-  refine card_filter_le_of_rel hmatch ?_
-  grind
+      (t.filter (fun q ↦ x < q)).card :=
+  card_filter_le_of_rel hmatch (by grind)
 
 /-- Under a proximity matching, target roots above a threshold can only come
 from source roots above that threshold or from source roots exactly at the
@@ -247,7 +210,7 @@ theorem card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt
   have hle_or :
       (t.filter (fun q => x < q)).card ≤
         (s.filter (fun r => x < r ∨ r = x)).card := by
-    refine card_filter_le_of_rel_with_right_mem hmatch_flip ?_
+    refine card_filter_le_of_rel hmatch_flip ?_
     grind
   exact le_trans hle_or (card_filter_or_le_add s)
 
@@ -261,12 +224,8 @@ theorem card_filter_gt_le_add_one_of_rel_abs_sub_lt_of_count_eq_one
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :
     (t.filter (fun q => x < q)).card ≤
       (s.filter (fun r => x < r)).card + 1 := by
-  have hle :=
+  simpa [← Multiset.count_eq_card_filter_eq, hx, eq_comm] using
     card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt hsep hmatch
-  have hx_card : (s.filter (fun r => r = x)).card = 1 := by
-    simpa [hx, eq_comm] using (Multiset.count_eq_card_filter_eq s x).symm
-  rw [hx_card] at hle
-  exact hle
 
 /-- The weak-lower and strict-upper filters partition a finite multiset over a
 linear order. -/
@@ -278,32 +237,11 @@ theorem card_filter_le_add_card_filter_gt {α : Type*} [LinearOrder α]
     congrArg Multiset.card (Multiset.filter_add_not (fun r => r ≤ x) s)
 
 /--
-Finite count reduction for a one-root degree jump.
+If `t` has one more element than `s`, at least as many strict-upper elements,
+and strictly more weak-lower elements, then the strict-upper counts agree.
 
-Assume `t` has one more element than `s`.  If `t` has at least all strict-upper
-elements of `s`, and at least all weak-lower elements of `s` plus one more,
-then the strict-upper counts are equal.  In the issue #42 route, the extra
-weak-lower element is the root escaping to the left.
--/
-private theorem card_filter_gt_eq_of_succ_le_filter_le
-    {α : Type*} [LinearOrder α] {s t : Multiset α} {x : α}
-    (hgt : (s.filter (fun r => x < r)).card ≤
-      (t.filter (fun r => x < r)).card)
-    (hle : (s.filter (fun r => r ≤ x)).card + 1 ≤
-      (t.filter (fun r => r ≤ x)).card)
-    (hcard : t.card = s.card + 1) :
-    (t.filter (fun r => x < r)).card =
-      (s.filter (fun r => x < r)).card := by
-  have hs := card_filter_le_add_card_filter_gt s x
-  have ht := card_filter_le_add_card_filter_gt t x
-  lia
-
-/--
-Strict lower-count version of `card_filter_gt_eq_of_succ_le_filter_le`.
-
-This is the form most directly consumed by the issue #42 escape argument: the
-continuity part gives the weak lower bound, and the escaping root turns it into
-a strict lower-count increase.
+In the issue #42 route, continuity gives the weak-lower increase, and the
+escaping root makes it strict.
 -/
 private theorem card_filter_gt_eq_of_filter_le_lt
     {α : Type*} [LinearOrder α] {s t : Multiset α} {x : α}
@@ -313,8 +251,10 @@ private theorem card_filter_gt_eq_of_filter_le_lt
       (t.filter (fun r => r ≤ x)).card)
     (hcard : t.card = s.card + 1) :
     (t.filter (fun r => x < r)).card =
-      (s.filter (fun r => x < r)).card :=
-  card_filter_gt_eq_of_succ_le_filter_le hgt (Nat.succ_le_iff.mpr hle) hcard
+      (s.filter (fun r => x < r)).card := by
+  have hs := card_filter_le_add_card_filter_gt s x
+  have ht := card_filter_le_add_card_filter_gt t x
+  lia
 
 /--
 Assembly form for a proximity matching plus one escaped root.
@@ -338,46 +278,16 @@ private theorem card_filter_gt_eq_of_rel_with_extra_le
     (t.filter (fun q => x < q)).card =
       (s.filter (fun r => x < r)).card := by
   refine card_filter_gt_eq_of_filter_le_lt ?_ ?_ hcard
-  · have hsu : (s.filter (fun r => x < r)).card ≤
-        (u.filter (fun q => x < q)).card :=
-      card_filter_gt_le_of_rel_abs_sub_lt hsep hmatch
-    have hut : u ≤ t := le_trans (Multiset.le_cons_self u a) hextra
-    have hut_gt : (u.filter (fun q ↦ x < q)).card ≤
-        (t.filter (fun q ↦ x < q)).card :=
-      Multiset.card_le_card (Multiset.filter_le_filter (fun q ↦ x < q) hut)
-    grind
-  · have hsu : (s.filter (fun r ↦ r ≤ x)).card ≤
-        (u.filter (fun q ↦ q ≤ x)).card :=
-      card_filter_le_le_of_rel_abs_sub_lt hsep hmatch
+  · exact (card_filter_gt_le_of_rel_abs_sub_lt hsep hmatch).trans
+      (Multiset.card_le_card (Multiset.filter_le_filter _
+        ((Multiset.le_cons_self u a).trans hextra)))
+  · have hsu := card_filter_le_le_of_rel_abs_sub_lt hsep hmatch
     have hfilter_extra : a ::ₘ (u.filter (fun q => q ≤ x)) ≤ t :=
-      le_trans
-        (Multiset.cons_le_cons a (Multiset.filter_le (fun q => q ≤ x) u))
-        hextra
+      (Multiset.cons_le_cons a (Multiset.filter_le _ u)).trans hextra
     have hcard_extra : (u.filter (fun q => q ≤ x)).card + 1 ≤
         (t.filter (fun q => q ≤ x)).card := by
-      have hle_filter : (a ::ₘ (u.filter (fun q => q ≤ x))).card ≤
-          (t.filter (fun q ↦ q ≤ x)).card := by
-        refine card_le_card_filter_of_le_of_forall_mem hfilter_extra ?_
-        simp_all
-      simp_all
+      simpa using card_le_card_filter_of_le_of_forall_mem hfilter_extra (by simp_all)
     grind
-
-/--
-Variant of `card_filter_gt_eq_of_rel_with_extra_le` for the form naturally
-produced by the two analytic ingredients: a matching submultiset `u ≤ t` and
-a separately found escaped root `a ∈ t`, with `a ∉ u`.
--/
-private theorem card_filter_gt_eq_of_rel_with_separate_extra_le
-    {s u t : Multiset ℝ} {x δ a : ℝ}
-    (hsep : ∀ r ∈ s, δ ≤ |r - x|)
-    (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s u)
-    (hu : u ≤ t) (ha_mem : a ∈ t) (ha_not_mem : a ∉ u)
-    (ha_le : a ≤ x)
-    (hcard : t.card = s.card + 1) :
-    (t.filter (fun q => x < q)).card =
-      (s.filter (fun r => x < r)).card :=
-  card_filter_gt_eq_of_rel_with_extra_le hsep hmatch
-    ((Multiset.cons_le_of_notMem ha_not_mem).mpr ⟨ha_mem, hu⟩) ha_le hcard
 
 /-- A proximity matching keeps the matched roots above any guard threshold
 which is separated from all source roots below them. -/
@@ -388,11 +298,10 @@ private theorem forall_mem_right_threshold_lt_of_rel_abs_sub_lt
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s u) :
     ∀ q ∈ u, B < q := by
   induction hmatch with
-  | zero =>
-      simp
+  | zero => simp
   | @cons r q s u hclose _ ih =>
       intro y hy
-      rw [Multiset.mem_cons] at hy
+      simp only [Multiset.mem_cons] at hy
       rcases hy with rfl | hy
       · exact threshold_lt_of_abs_sub_lt_of_threshold_lt
           (hB r (by simp)) (hsep r (by simp)) hclose
@@ -419,7 +328,8 @@ theorem card_filter_gt_eq_of_rel_with_escaped_extra
   have hcluster : ∀ q ∈ u, B < q :=
     forall_mem_right_threshold_lt_of_rel_abs_sub_lt hB hsep_B hmatch
   have ha_not_mem : a ∉ u := by grind
-  exact card_filter_gt_eq_of_rel_with_separate_extra_le hsep_x hmatch hu
-    ha_mem ha_not_mem (le_trans (le_of_lt ha_lt) hBx) hcard
+  exact card_filter_gt_eq_of_rel_with_extra_le hsep_x hmatch
+    ((Multiset.cons_le_of_notMem ha_not_mem).mpr ⟨ha_mem, hu⟩)
+    (le_trans (le_of_lt ha_lt) hBx) hcard
 
 end Multiset
