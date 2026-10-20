@@ -1,6 +1,7 @@
 import RealRooted.CombinatorialExamples.Avoid132Descents
 import RealRooted.CombinatorialExamples.DyckNarayana
 import RealRooted.MaoWangMatrixProduct
+import RealRooted.NarayanaInterpolation
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Falling
 import RealRooted.NarayanaTransformation.Rising
@@ -13,7 +14,7 @@ version = 1
 section = "families"
 slug = "narayana"
 formalized = "2026-07-18"
-authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti"]
+authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti", "Zeng"]
 years = [1989, 2013, 2026]
 
 [[definitions]]
@@ -114,6 +115,27 @@ label = "132-avoiding permutations counted by descents give N_{n,1}(x)"
 name = "RealRooted.Avoid132.strictInterl_descentGeneratingPolynomial_succ"
 module = "RealRooted.CombinatorialExamples.Avoid132Descents"
 label = "Descent polynomials of 132-avoiders are real-rooted and interlace"
+
+[[definitions]]
+name = "RealRooted.narayanaInterpolation"
+module = "RealRooted.NarayanaInterpolation"
+label = "Continuous Narayana interpolation between type B and shifted type A"
+
+[[theorems]]
+name = "RealRooted.narayanaInterpolation_eq_sum_gamma"
+module = "RealRooted.NarayanaInterpolation"
+label = "γ-expansion of the continuous Narayana interpolation"
+
+[[theorems]]
+name = "RealRooted.narayanaInterpolation_isPF"
+module = "RealRooted.NarayanaInterpolation"
+label = "The continuous Narayana interpolation is Pólya-frequency for θ > −1"
+headline = true
+
+[[theorems]]
+name = "RealRooted.narayanaInterpolation_roots_neg"
+module = "RealRooted.NarayanaInterpolation"
+label = "Its zeros are real and negative"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -173,6 +195,32 @@ row-generating polynomials, and let $B_1, \dotsc, B_r$ be admissible factors.
 Then $M B_1 \dotsm B_r$ has Pólya-frequency row-generating polynomials. In
 particular this holds for $M B^r$ with $B$ admissible and $r \geq 0$.
 
+## Continuous interpolation
+
+For real $\theta > -1$ put
+$$
+N_\theta(n, k) = \binom{n}{k} \frac{(\theta + 1)_n}{(\theta + 1)_k\,(\theta + 1)_{n-k}},
+\qquad
+P_n^{(\theta)}(t) = \sum_{k=0}^{n} N_\theta(n, k)\, t^k ,
+$$
+where $(a)_n$ is the rising factorial. At $\theta = 0$ these are the type B Narayana
+polynomials $\sum_k \binom{n}{k}^2 t^k$, and at $\theta = 1$ the shifted type A
+Narayana polynomials.
+
+**Theorem.** For every real $\theta > -1$,
+$$
+P_n^{(\theta)}(t) = \sum_{j \le n/2} \frac{n!}{j!\,(n - 2j)!\,(\theta + 1)_j}\,
+  t^j (1 + t)^{n - 2j},
+$$
+so $P_n^{(\theta)}$ is $\gamma$-positive, and $P_n^{(\theta)}$ is a Pólya-frequency
+polynomial: all its zeros are real and negative.
+
+We prove the root statement as a Schur–Szegő composition. $P_n^{(\theta)}$ is a positive
+multiple of the composition of the Jensen polynomial of $1 / (\theta + 1)_k$ with its
+reversal; the Jensen polynomial is Pólya-frequency because $1 / (\theta + 1)_k$ is a
+multiplier sequence. This covers the range $\theta > -1$; the paper proves
+real-rootedness for $\theta \ge 0$ through Jacobi polynomials.
+
 ## References
 
 The coefficient normalization is from Jianxi Mao and Lijie Wang, [“The
@@ -185,6 +233,9 @@ F. Brenti, [“Unimodal, log-concave and Pólya frequency sequences in
 combinatorics,”](https://doi.org/10.1090/memo/0413) *Memoirs of the American
 Mathematical Society* 81 (1989), no. 413, Theorem 2.4.2; Mao and Wang
 use it as Lemma 3.2, and the matrix-product theorem is their Theorem 1.3.
+The continuous interpolation is from J. Zeng, [“Continuous Narayana interpolations:
+Hankel total positivity and log-convexity preservation,”](https://arxiv.org/abs/2610.19548)
+arXiv:2610.19548 (2026), (1.1)–(1.3) and Corollary 3.5.
 See also the
 [Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm),
 [Brenti's falling-factorial theorem](https://www.symmetricfunctions.com/realRooted.htm#thm:brentiFallingFactorialBasis),
