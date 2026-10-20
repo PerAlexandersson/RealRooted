@@ -23,15 +23,14 @@ private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[
     ∃ c, (∀ r ∈ h.roots, r ≤ c) ∧ ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r ≤ c := by
   induction l with
   | nil =>
-      rcases exists_root_upper_bound h with ⟨c, hc⟩
+      obtain ⟨c, hc⟩ := exists_root_upper_bound h
       exact ⟨c, hc, by simp⟩
   | cons ap l ih =>
-      rcases ih with ⟨c₁, hc₁, hl₁⟩
-      rcases exists_root_upper_bound ap.2 with ⟨c₂, hc₂⟩
-      refine ⟨max c₁ c₂, ?_, ?_⟩
-      · simp_all
-      · intro ap' hap' r hr
-        grind
+      obtain ⟨c₁, hc₁, hl₁⟩ := ih
+      obtain ⟨c₂, hc₂⟩ := exists_root_upper_bound ap.2
+      refine ⟨max c₁ c₂, by simp_all, ?_⟩
+      intro ap' hap' r hr
+      grind
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
 if every polynomial in the family is interlaced on the left by the same `h`,
@@ -47,11 +46,9 @@ theorem StrictInterl.weightedSum_left_of_common_left
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl h (weightedSum l) := by
   rcases hex with ⟨ap0, hap0, ha0_pos⟩
-  have hex0 : ∃ ap ∈ l, 0 < ap.1 := ⟨ap0, hap0, ha0_pos⟩
   have hh : (h ≠ 0 ∧ h.Splits) := (hstrictInterl ap0 hap0).1
   rcases exists_common_root_upper_bound h l with ⟨r, hh_le, hl_le⟩
   let H := (X - C r) * h
-  have hH_pos : HasPosLeadingCoeff H := hasPosLeadingCoeff_X_sub_C_mul hpos
   have hstrictInterl_right : ∀ ap ∈ l, StrictInterl ap.2 H := by
     intro ap hap
     have hp := hstrictInterl ap hap
@@ -64,15 +61,15 @@ theorem StrictInterl.weightedSum_left_of_common_left
           hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
   have hweighted_right : StrictInterl (weightedSum l) H :=
     StrictInterl.weightedSum_right_of_nonneg
-      l H hnonneg hstrictInterl_right hpoly_pos hex0
+      l H hnonneg hstrictInterl_right hpoly_pos ⟨ap0, hap0, ha0_pos⟩
   have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
-    hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos hex0
+    hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos ⟨ap0, hap0, ha0_pos⟩
   have hH_deg : H.natDegree = h.natDegree + 1 := by
     rw [show H = (X - C r) * h by lia, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
     lia
-  have hH_le : ∀ s ∈ H.roots, s ≤ r := roots_le_X_sub_C_mul (hstrictInterl ap0 hap0).1.2 hh_le
   have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
-    hweighted_right.roots_le_of_right hH_le
+    hweighted_right.roots_le_of_right
+      (roots_le_X_sub_C_mul (hstrictInterl ap0 hap0).1.2 hh_le)
   rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
   · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
     exact
@@ -124,13 +121,10 @@ theorem StrictInterl.sum_left_of_common_left
   apply StrictInterl.weightedSum_left_of_common_left (l.map (fun p => ((1 : ℝ), p))) h
   · simp
   · simp_all
-  · lia
+  · exact hpos
   · simp_all
-  · cases l with
-    | nil =>
-        lia
-    | cons p ps =>
-        simp
+  · obtain ⟨p, hp⟩ := List.exists_mem_of_ne_nil l hne
+    exact ⟨(1, p), by simp [hp]⟩
 
 /-- Sign-normalized left-cone theorem: if all summands are interlaced on the
 left by the same nonzero real-rooted polynomial `h`, and the summands have
@@ -147,16 +141,14 @@ theorem StrictInterl.sum_left_of_common_left_signed
   · simp
   · simp_all
   · simp_all
-  · rcases List.exists_mem_of_ne_nil l hne with ⟨p, hp⟩
+  · obtain ⟨p, hp⟩ := List.exists_mem_of_ne_nil l hne
     exact ⟨(1, p), by simp [hp]⟩
 
 lemma sum_filter_ne_zero (l : List ℝ[X]) :
     (l.filter (· ≠ 0)).sum = l.sum := by
   induction l with
-  | nil =>
-      simp
-  | cons p l ih =>
-      grind
+  | nil => simp
+  | cons p l ih => grind
 
 /-- Borcea--Brändén left-cone lemma in the nonnegative-coefficients
 specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand and
@@ -171,7 +163,9 @@ theorem Interl.sum_left_of_common_left_of_nonneg
   let l' := l.filter (· ≠ 0)
   have hsum : l'.sum = l.sum := by simpa [l'] using sum_filter_ne_zero l
   by_cases hl' : l' = []
-  · have hsum0 : l.sum = 0 := by simp_all
+  · have hsum0 : l.sum = 0 := by
+      rw [← sum_filter_ne_zero l]
+      simpa [l'] using congrArg List.sum hl'
     simpa [hsum0] using interl_zero_right h
   · have hstrictInterl' : ∀ p ∈ l', StrictInterl h p := by
       intro p hp
@@ -182,7 +176,6 @@ theorem Interl.sum_left_of_common_left_of_nonneg
       intro p hp
       have hp_mem : p ∈ l := List.mem_of_mem_filter hp
       have hp_ne : p ≠ 0 := by grind
-      have hp_rr : (p ≠ 0 ∧ p.Splits) := (hstrictInterl' p hp).2.1
       exact (hnn p hp_mem).pos_leadingCoeff hp_ne
     have hstrict : StrictInterl h l'.sum :=
       StrictInterl.sum_left_of_common_left_signed l' h hstrictInterl' hpos' hl'
@@ -199,29 +192,24 @@ lemma Interl.finsetSum_right_of_nonneg {ι : Type}
   | empty =>
       simpa using interl_zero_left h
   | @insert a s ha ih =>
-      have hinterl_a : Interl (f a) h := hinterl a (by simp)
-      have hinterl_s : ∀ i ∈ s, Interl (f i) h := by simp_all
-      have hnn_a : HasNonnegCoeffs (f a) := hnn a (by simp)
+      have hinterl_a := hinterl a (by simp)
+      have hnn_a := hnn a (by simp)
       have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
-      have ih' : Interl (s.sum f) h := ih hinterl_s hnn_s
+      have ih' := ih (by simp_all) hnn_s
       by_cases hfa0 : f a = 0
       · simp_all
       by_cases hs0 : s.sum f = 0
       · simp_all
       by_cases hh0 : h = 0
       · simpa [Finset.sum_insert, ha, hh0] using interl_zero_right ((insert a s).sum f)
-      rcases hinterl_a with _ | hh0' | hstrictInterl_a
-      · lia
-      · lia
-      rcases ih' with _ | hh0' | hstrictInterl_s
-      · lia
-      · lia
-      have hs_pos : HasPosLeadingCoeff (s.sum f) :=
-        (hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0
-      have hfa_pos : HasPosLeadingCoeff (f a) := hnn_a.pos_leadingCoeff hfa0
+      have hstrictInterl_a : StrictInterl (f a) h := by
+        rcases hinterl_a with h | h | h <;> simp_all
+      have hstrictInterl_s : StrictInterl (s.sum f) h := by
+        rcases ih' with h | h | h <;> simp_all
       have hsum_strict : StrictInterl (f a + s.sum f) h :=
         StrictInterl.add_of_right_of_posLeadingCoeff
-          hstrictInterl_a hstrictInterl_s hfa_pos hs_pos
+          hstrictInterl_a hstrictInterl_s (hnn_a.pos_leadingCoeff hfa0)
+          ((hasNonnegCoeffs_finsetSum s f hnn_s).pos_leadingCoeff hs0)
       simpa [Finset.sum_insert, ha] using hsum_strict.toInterl
 
 /-- Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. -/
@@ -231,22 +219,10 @@ lemma Interl.finsetSum_left_of_nonneg {ι : Type}
     (hnn : ∀ i ∈ s, HasNonnegCoeffs (f i)) :
     Interl h (s.sum f) := by
   classical
-  induction s using Finset.induction_on with
-  | empty =>
-      simpa using interl_zero_right h
-  | @insert a s ha ih =>
-      have hinterl_s : ∀ i ∈ s, Interl h (f i) := by simp_all
-      have hnn_s : ∀ i ∈ s, HasNonnegCoeffs (f i) := by simp_all
-      have ih' : Interl h (s.sum f) := ih hinterl_s hnn_s
-      have hpair : Interl h ([f a, s.sum f].sum) := by
-        apply Interl.sum_left_of_common_left_of_nonneg
-        · simp_all
-        · intro p hp
-          simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-          rcases hp with rfl | rfl
-          · simp_all
-          · exact hasNonnegCoeffs_finsetSum s f hnn_s
-      simp_all
+  rw [← Finset.sum_map_toList]
+  apply Interl.sum_left_of_common_left_of_nonneg
+  · simp_all
+  · simp_all
 
 /-- Pairwise finite row-sum wrapper for `Interl`: if every selected left
 summand precedes every selected right summand, and all selected summands have
@@ -283,13 +259,7 @@ theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le
   have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_C_mul hf_pos
   have hsum : StrictInterl g ([g, t].sum) := by
     apply StrictInterl.sum_left_of_common_left_signed
-    · intro p hp
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-      rcases hp with rfl | rfl
-      · exact StrictInterl.refl hfg.2.1.1 hfg.2.1.2
-      · lia
-    · simp_all
-    · lia
+    all_goals simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
   grind
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `λ, μ`,
@@ -303,16 +273,7 @@ theorem StrictInterl.nonneg_combo_right {f g : ℝ[X]}
     StrictInterl (C a * f + C b * g) g := by
   have hweighted : StrictInterl (weightedSum [(a, f), (b, g)]) g := by
     apply StrictInterl.weightedSum_right_of_nonneg [(a, f), (b, g)] g
-    · simp_all
-    · intro ap hap
-      rcases List.mem_cons.mp hap with h | h
-      · lia
-      · rcases List.mem_cons.mp h with h | h
-        · cases h
-          exact StrictInterl.refl hfg.2.1.1 hfg.2.1.2
-        · simp at h
-    · simp_all
-    · simp_all
+    all_goals simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
   simp_all
 
 /-- Forward Obreschkoff direction: if `f ⊳ g` with positive leading coefficients,
@@ -341,17 +302,15 @@ lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N :
     (hfN : f.natDegree ≤ N) (hgN : g.natDegree ≤ N) :
     PosComboRealRooted (reflect N f) (reflect N g) := by
   intro lam μ hlam hμ
-  have hbase := hfg (lam := lam) (μ := μ) hlam hμ
+  obtain ⟨hne, hsplits⟩ := hfg (lam := lam) (μ := μ) hlam hμ
   have hdeg_combo : (C lam * f + C μ * g).natDegree ≤ N :=
     (Polynomial.natDegree_add_le _ _).trans <|
       max_le
         ((Polynomial.natDegree_C_mul_le lam f).trans hfN)
         ((Polynomial.natDegree_C_mul_le μ g).trans hgN)
-  have hsplit_ref : (reflect N (C lam * f + C μ * g)).Splits :=
-    DegreeDropReversal.splits_reflect_of_splits hbase.2 hdeg_combo
-  have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 := by
-    intro hzero
-    exact hbase.1 (Polynomial.reflect_eq_zero_iff.mp hzero)
+  have hsplit_ref := DegreeDropReversal.splits_reflect_of_splits hsplits hdeg_combo
+  have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 :=
+    fun hzero => hne (Polynomial.reflect_eq_zero_iff.mp hzero)
   simp_all
 
 /-- Reflecting both members at a common degree bound preserves and reflects
@@ -361,14 +320,12 @@ lemma reflect_iff_natDegree_le {f g : ℝ[X]} {N : ℕ}
     PosComboRealRooted (reflect N f) (reflect N g) ↔ PosComboRealRooted f g := by
   refine ⟨?_, fun hfg ↦ hfg.reflect_of_natDegree_le hfN hgN⟩
   intro hfg
-  have hf_ref_N : (reflect N f).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by simp_all
-  have hg_ref_N : (reflect N g).natDegree ≤ N :=
-    Polynomial.natDegree_reflect_le.trans <| by simp_all
   have hback :
       PosComboRealRooted (reflect N (reflect N f)) (reflect N (reflect N g)) :=
     PosComboRealRooted.reflect_of_natDegree_le
-      (f := reflect N f) (g := reflect N g) (N := N) hfg hf_ref_N hg_ref_N
+      (f := reflect N f) (g := reflect N g) (N := N) hfg
+      (Polynomial.natDegree_reflect_le.trans <| by simp_all)
+      (Polynomial.natDegree_reflect_le.trans <| by simp_all)
   simp_all
 
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
@@ -386,10 +343,8 @@ lemma divX_of_coeff_zero {f g : ℝ[X]} (h : PosComboRealRooted f g)
   have hg_eq : X * g.divX = g := by simpa [hg0] using Polynomial.X_mul_divX_add g
   have hfactor :
       X * (C lam * f.divX + C μ * g.divX) = C lam * f + C μ * g := by grind
-  have hX :
-      (X * (C lam * f.divX + C μ * g.divX) ≠ 0 ∧
-        (X * (C lam * f.divX + C μ * g.divX)).Splits) := by simp_all
-  exact isRealRooted_of_X_mul hX.1 hX.2
+  rw [← hfactor] at hbase
+  exact isRealRooted_of_X_mul hbase.1 hbase.2
 
 /-- Nonnegative right-family parameters split once the left endpoint is known to
 split.  The zero endpoint is supplied by `hf`; positive parameters are supplied
@@ -421,12 +376,9 @@ lemma iff_add_right {f g : ℝ[X]} :
           (C lam * (f + C (μ / lam) * g)).Splits) :=
       isRealRooted_C_mul hbase.1 hbase.2 hlam.ne'
     have hEq : C lam * (f + C (μ / lam) * g) = C lam * f + C μ * g := by
-      rw [mul_add]
-      congr 1
-      calc
-        C lam * (C (μ / lam) * g) = (C lam * C (μ / lam)) * g := by grind
-        _ = C (lam * (μ / lam)) * g := by simp
-        _ = C μ * g := by grind
+      rw [mul_add, ← mul_assoc, ← map_mul]
+      congr 2
+      field_simp
     lia
 
 lemma iff_add_left {f g : ℝ[X]} :
@@ -461,8 +413,8 @@ lemma of_commonLeftInterleaver {f g h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
   intro lam μ hlam hμ
-  have hhf' : StrictInterl h (C lam * f) := StrictInterl.C_mul_right hhf hlam.ne'
-  have hhg' : StrictInterl h (C μ * g) := StrictInterl.C_mul_right hhg hμ.ne'
+  have hhf' : StrictInterl h (C lam * f) := hhf.C_mul_right hlam.ne'
+  have hhg' : StrictInterl h (C μ * g) := hhg.C_mul_right hμ.ne'
   have hlam_pos : HasPosLeadingCoeff (C lam * f) := hasPosLeadingCoeff_C_mul hlam hf_pos
   have hμ_pos : HasPosLeadingCoeff (C μ * g) := hasPosLeadingCoeff_C_mul hμ hg_pos
   have hstrictInterl :
@@ -513,8 +465,7 @@ lemma isRealRooted_closed_segment_of_sameDegree {f g : ℝ[X]}
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).1
     (hfg.isRealRooted_left_of_sameDegree hf_pos hg_pos hdeg).2
     (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).1
-    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2
-    hβ0 hβ1
+    (hfg.isRealRooted_right_of_sameDegree hf_pos hg_pos hdeg).2 hβ0 hβ1
 
 /--
 ASW/PF bridge for the positive-combination endpoint target.
@@ -692,19 +643,17 @@ lemma common_root_reduction_data
   obtain ⟨qg, hqg⟩ := dvd_iff_isRoot.mpr hrg
   have hf_ne : f ≠ 0 := hf_pos.ne_zero
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
+  have hqf_ne : qf ≠ 0 := by simp_all
+  have hqg_ne : qg ≠ 0 := by simp_all
   refine ⟨qf, qg, hqf, hqg, ?_, ?_, ?_, ?_, ?_⟩
   · exact (of_mul_X_sub_C (f := qf) (g := qg) (r := r) (by
         lia))
   · exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqf] using hf_pos)
   · exact hasPosLeadingCoeff_of_X_sub_C_mul (by simpa [hqg] using hg_pos)
-  · have hqf_ne : qf ≠ 0 := by simp_all
-    have hqg_ne : qg ≠ 0 := by simp_all
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
+  · rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_lo
     lia
-  · have hqf_ne : qf ≠ 0 := by simp_all
-    have hqg_ne : qg ≠ 0 := by simp_all
-    rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
+  · rw [hqf, hqg, natDegree_mul (X_sub_C_ne_zero r) hqf_ne, natDegree_X_sub_C,
       natDegree_mul (X_sub_C_ne_zero r) hqg_ne, natDegree_X_sub_C] at hdeg_hi
     lia
 
@@ -756,14 +705,12 @@ theorem strictInterl_or_reverse_of_posComboRealRooted_of_no_common
     have hstrictInterl_q : StrictInterl qf qg ∨ StrictInterl qg qf :=
       ih qf.natDegree hqf_deg_lt rfl hqfg hqf_pos hqg_pos hqdeg_lo hqdeg_hi
     rcases hstrictInterl_q with hstrictInterl_q | hstrictInterl_q
-    · have hstrictInterl_mul : StrictInterl ((X - C r) * qf) ((X - C r) * qg) :=
-        hstrictInterl_q.mul_common_factor
-          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
-      lia
-    · have hstrictInterl_mul : StrictInterl ((X - C r) * qg) ((X - C r) * qf) :=
-        hstrictInterl_q.mul_common_factor
-          (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
-      lia
+    · left
+      simpa [hqf, hqg] using hstrictInterl_q.mul_common_factor
+        (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
+    · right
+      simpa [hqf, hqg] using hstrictInterl_q.mul_common_factor
+        (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
 end PosComboRealRooted
 
 namespace PosComboRealRooted
@@ -841,24 +788,15 @@ theorem strictInterl_or_reverse_of_same_degree_one
     Multiset.card_eq_one.mp (by simpa [hf_deg1] using card_roots_of_splits hf_rr.2)
   obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} :=
     Multiset.card_eq_one.mp (by
-    have : g.natDegree = 1 := by lia
-    simpa [this] using card_roots_of_splits hg_rr.2)
+      simpa [show g.natDegree = 1 by lia] using card_roots_of_splits hg_rr.2)
   by_cases hle : rf ≤ rg
   · left
-    refine
-      ⟨hf_rr, hg_rr, [rf], [rg], List.pairwise_singleton _ _,
-        List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-    · simp [hrf_eq]
-    · simp [hrg_eq]
-    · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hle]⟩
+    exact ⟨hf_rr, hg_rr, [rf], [rg], by simp, by simp, by simp [hrf_eq],
+      by simp [hrg_eq], Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hle]⟩⟩
   · right
     have hge : rg ≤ rf := le_of_not_ge hle
-    refine
-      ⟨hg_rr, hf_rr, [rg], [rf], List.pairwise_singleton _ _,
-        List.pairwise_singleton _ _, ?_, ?_, ?_⟩
-    · simp [hrg_eq]
-    · simp [hrf_eq]
-    · exact Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩
+    exact ⟨hg_rr, hf_rr, [rg], [rf], by simp, by simp, by simp [hrg_eq],
+      by simp [hrf_eq], Or.inr ⟨by simp, by simp [ListAlternates, ListInterlaces, hge]⟩⟩
 
 end PosComboRealRooted
 
@@ -900,17 +838,7 @@ theorem StrictInterl.nonneg_combo_left {f g : ℝ[X]}
     StrictInterl f (C a * f + C b * g) := by
   have hweighted : StrictInterl f (weightedSum [(a, f), (b, g)]) := by
     apply StrictInterl.weightedSum_left_of_common_left_signed [(a, f), (b, g)] f
-    · simp_all
-    · intro ap hap
-      rcases List.mem_cons.mp hap with h | h
-      · subst h
-        exact StrictInterl.refl hfg.1.1 hfg.1.2
-      · rcases List.mem_cons.mp h with h | h
-        · subst h
-          exact hfg
-        · simp at h
-    · simp_all
-    · simp_all
+    all_goals simp_all [StrictInterl.refl hfg.1.1 hfg.1.2]
   simp_all
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
