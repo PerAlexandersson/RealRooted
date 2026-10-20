@@ -64,27 +64,7 @@ lemma listInterlaces_iff_interleaves_of_length :
   | _ :: _, [_], h => by simp at h
   | s :: ss, r₁ :: r₂ :: rs, h => by
       have htail : ss.length + 1 = (r₂ :: rs).length := by simpa using h
-      constructor
-      · rintro ⟨hr₁s, hsr₂, htail_old⟩
-        exact List.Interleaves.cons_symm hr₁s
-          (List.Interleaves.cons_symm hsr₂
-            ((listInterlaces_iff_interleaves_of_length htail).1 htail_old))
-      · intro hnew
-        rw [List.interleaves_iff] at hnew
-        rcases hnew with hbad | hbad | ⟨a, b, hab, l₁, l₂, hmid, hleft, hright⟩
-        · lia
-        · lia
-        · simp only [List.cons.injEq] at hleft hright
-          rcases hleft with ⟨rfl, rfl⟩
-          rcases hright with ⟨rfl, rfl⟩
-          rw [List.interleaves_iff] at hmid
-          rcases hmid with hbad | hbad | ⟨a, b, hsr₂, l₁, l₂, htail_new, hleft, hright⟩
-          · lia
-          · lia
-          · simp only [List.cons.injEq] at hleft hright
-            rcases hleft with ⟨rfl, rfl⟩
-            rcases hright with ⟨rfl, rfl⟩
-            exact ⟨hab, hsr₂, (listInterlaces_iff_interleaves_of_length htail).2 htail_new⟩
+      simp [ListInterlaces, listInterlaces_iff_interleaves_of_length htail]
 
 lemma listAlternates_iff_interleaves_of_length :
     ∀ {ss rs : List ℝ}, ss.length = rs.length →
@@ -94,19 +74,7 @@ lemma listAlternates_iff_interleaves_of_length :
   | _ :: _, [], h => by simp at h
   | s :: ss, r :: rs, h => by
       have htail : ss.length + 1 = (r :: rs).length := by simpa using h
-      constructor
-      · rintro ⟨hsr, htail_old⟩
-        exact List.Interleaves.cons_symm hsr
-          ((listInterlaces_iff_interleaves_of_length htail).1 htail_old)
-      · intro hnew
-        rw [List.interleaves_iff] at hnew
-        rcases hnew with hbad | hbad | ⟨a, b, hsr, l₁, l₂, htail_new, hleft, hright⟩
-        · lia
-        · lia
-        · simp only [List.cons.injEq] at hleft hright
-          rcases hleft with ⟨rfl, rfl⟩
-          rcases hright with ⟨rfl, rfl⟩
-          exact ⟨hsr, (listInterlaces_iff_interleaves_of_length htail).2 htail_new⟩
+      simp [ListAlternates, listInterlaces_iff_interleaves_of_length htail]
 
 lemma listInterlaces_of_interleaves_of_length {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length)
@@ -180,18 +148,12 @@ theorem listInterlaces_getD_bounds :
         match i with
         | 0 => simpa using hr₁s
         | k + 1 =>
-            have hk : k < ss'.length := by
-              simp at hi
-              lia
-            simpa using ih1 k hk
+            simpa using ih1 k (by simpa using hi)
       · intro i hi
         match i with
         | 0 => simpa using hsr₂
         | k + 1 =>
-            have hk : k < ss'.length := by
-              simp at hi
-              lia
-            simpa using ih2 k hk
+            simpa using ih2 k (by simpa using hi)
 
 /-- Interior step bounds extracted from a same-degree list alternation. -/
 theorem listAlternates_getD_bounds :
@@ -210,22 +172,12 @@ theorem listAlternates_getD_bounds :
         match i with
         | 0 => simpa using hsr
         | k + 1 =>
-            have hk : k < ss'.length := by
-              simp at hi
-              lia
-            simpa using ih2 k hk
+            simpa using ih2 k (by simpa using hi)
       · intro i hi
         match i with
-        | 0 =>
-            have h0 : 0 < ss'.length := by
-              simp at hi
-              lia
-            simpa using ih1 0 h0
+        | 0 => simpa using ih1 0 (by simpa using hi)
         | k + 1 =>
-            have hk : k + 1 < ss'.length := by
-              simp at hi
-              lia
-            simpa using ih1 (k + 1) hk
+            simpa using ih1 (k + 1) (by simpa using hi)
 
 /-- A pair of coordinate bounds constructs a differ-by-one list interlacing. -/
 theorem listInterlaces_of_getD_bounds :
@@ -272,37 +224,30 @@ theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
         rs.reverse.getD j 0 ≤ ss.reverse.getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < ss.length →
         ss.reverse.getD j 0 ≤ rs.reverse.getD (j - 1) 0) := by
+  have aux : ∀ {as bs : List ℝ}, as.length = bs.length → ListAlternates as bs →
+      (∀ j, 1 ≤ j → j < as.length →
+        bs.reverse.getD j 0 ≤ as.reverse.getD (j - 1) 0) ∧
+      (∀ j, 1 ≤ j → j < as.length →
+        as.reverse.getD j 0 ≤ bs.reverse.getD (j - 1) 0) := by
+    intro as bs hlen halt
+    obtain ⟨hA, hB⟩ := listAlternates_getD_bounds as bs halt hlen
+    refine ⟨?_, ?_⟩
+    · intro j hj1 hj2
+      rw [getD_reverse_eq bs j (by lia), getD_reverse_eq as (j - 1) (by lia)]
+      have e1 : bs.length - 1 - j = as.length - 1 - j := by rw [hlen]
+      have e2 : as.length - 1 - (j - 1) = (as.length - 1 - j) + 1 := by lia
+      rw [e1, e2]
+      exact hB (as.length - 1 - j) (by lia)
+    · intro j hj1 hj2
+      rw [getD_reverse_eq as j (by lia), getD_reverse_eq bs (j - 1) (by lia)]
+      have e2 : bs.length - 1 - (j - 1) = (as.length - 1 - j) + 1 := by lia
+      rw [e2]
+      exact le_trans
+        (le_trans (hA (as.length - 1 - j) (by lia)) (hB (as.length - 1 - j) (by lia)))
+        (hA (as.length - 1 - j + 1) (by lia))
   rcases halt with halt | halt
-  · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds ss rs halt hlen
-    refine ⟨?_, ?_⟩
-    · intro j hj1 hj2
-      rw [getD_reverse_eq rs j (by lia), getD_reverse_eq ss (j - 1) (by lia)]
-      have e1 : rs.length - 1 - j = ss.length - 1 - j := by rw [hlen]
-      have e2 : ss.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
-      rw [e1, e2]
-      exact hB (ss.length - 1 - j) (by lia)
-    · intro j hj1 hj2
-      rw [getD_reverse_eq ss j (by lia), getD_reverse_eq rs (j - 1) (by lia)]
-      have e2 : rs.length - 1 - (j - 1) = (ss.length - 1 - j) + 1 := by lia
-      rw [e2]
-      exact le_trans
-        (le_trans (hA (ss.length - 1 - j) (by lia)) (hB (ss.length - 1 - j) (by lia)))
-        (hA (ss.length - 1 - j + 1) (by lia))
-  · obtain ⟨hA, hB⟩ := listAlternates_getD_bounds rs ss halt hlen.symm
-    refine ⟨?_, ?_⟩
-    · intro j hj1 hj2
-      rw [getD_reverse_eq rs j (by lia), getD_reverse_eq ss (j - 1) (by lia)]
-      have e2 : ss.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
-      rw [e2]
-      exact le_trans
-        (le_trans (hA (rs.length - 1 - j) (by lia)) (hB (rs.length - 1 - j) (by lia)))
-        (hA (rs.length - 1 - j + 1) (by lia))
-    · intro j hj1 hj2
-      rw [getD_reverse_eq ss j (by lia), getD_reverse_eq rs (j - 1) (by lia)]
-      have e1 : ss.length - 1 - j = rs.length - 1 - j := by rw [hlen]
-      have e2 : rs.length - 1 - (j - 1) = (rs.length - 1 - j) + 1 := by lia
-      rw [e1, e2]
-      exact hB (rs.length - 1 - j) (by lia)
+  · exact aux hlen halt
+  · simpa only [hlen] using ⟨(aux hlen.symm halt).2, (aux hlen.symm halt).1⟩
 
 /-- Same-degree weak alternation orders the sums of the two root lists. -/
 lemma listAlternates_sum_le {ss rs : List ℝ} (h : ListAlternates ss rs) :
@@ -334,13 +279,10 @@ lemma list_eq_of_forall₂_le_of_sum_ge :
       cases hle with
       | cons hsr htail =>
           simp only [List.sum_cons] at hsum
-          have htail_sum : ss.sum ≤ rs.sum := List.Forall₂.sum_le_sum htail
-          have hrs : r ≤ s := by linarith
-          have hs_eq : s = r := le_antisymm hsr hrs
-          have htail_ge : rs.sum ≤ ss.sum := by linarith
-          have htail_eq : ss = rs :=
-            list_eq_of_forall₂_le_of_sum_ge htail htail_ge
-          simp [hs_eq, htail_eq]
+          have hrs : r ≤ s := by linarith [List.Forall₂.sum_le_sum htail]
+          congr
+          · exact le_antisymm hsr hrs
+          · exact list_eq_of_forall₂_le_of_sum_ge htail (by linarith)
 
 /-- If same-degree weak alternation has the opposite inequality on sums, then
 the two lists are equal, so the alternation can be reversed. -/
@@ -572,8 +514,6 @@ lemma listInterlaces_cons_length_eq :
       ListInterlaces ss (r :: rest) → ss.length = rest.length
   | [], [], _, _ => by lia
   | _ :: _, [], _, h => by simp [ListInterlaces] at h
-  | s :: ss, r₂ :: rest, r₁, h => by
-      obtain ⟨_, _, htail⟩ := h
-      simpa [List.length_cons] using
-          listInterlaces_cons_length_eq htail
+  | _ :: _, _ :: _, _, ⟨_, _, htail⟩ => by
+      simpa using listInterlaces_cons_length_eq htail
 end RealRooted
