@@ -16,9 +16,8 @@ discriminant has a real root. -/
 lemma exists_root_of_disc_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (h : 0 ≤ b ^ 2 - 4 * a * c) :
     ∃ x : ℝ, a * x ^ 2 + b * x + c = 0 := by
-  set s := Real.sqrt (b ^ 2 - 4 * a * c) with hsdef
-  have hs : s ^ 2 = b ^ 2 - 4 * a * c := Real.sq_sqrt h
-  refine ⟨(-b + s) / (2 * a), ?_⟩
+  refine ⟨(-b + Real.sqrt (b ^ 2 - 4 * a * c)) / (2 * a), ?_⟩
+  have hs := Real.sq_sqrt h
   grind
 
 /-- Completing the square for a quadratic in discriminant form. -/
@@ -27,25 +26,16 @@ lemma four_mul_quadratic_eq (a b c x : ℝ) :
   rw [discrim]
   ring
 
-/-- The discriminant scales quadratically under common coefficient scaling. -/
-lemma discrim_smul (t a b c : ℝ) :
-    discrim (t * a) (t * b) (t * c) = t ^ 2 * discrim a b c := by
-  unfold discrim
-  ring
-
 /-- For a genuine quadratic, a real root exists iff the discriminant is
 nonnegative. -/
 lemma exists_root_iff_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0) :
     (∃ x : ℝ, a * x ^ 2 + b * x + c = 0) ↔ 0 ≤ discrim a b c := by
   constructor
   · rintro ⟨x, hx⟩
-    have hdisc : discrim a b c = (2 * a * x + b) ^ 2 := by
-      have hsq := four_mul_quadratic_eq a b c x
-      grind
-    rw [hdisc]
-    exact sq_nonneg _
-  · intro h
-    exact exists_root_of_disc_nonneg ha h
+    have hsq := four_mul_quadratic_eq a b c x
+    rw [hx, mul_zero] at hsq
+    nlinarith [sq_nonneg (2 * a * x + b)]
+  · exact exists_root_of_disc_nonneg ha
 
 /-- A real quadratic polynomial with nonzero leading coefficient and
 nonnegative discriminant splits over `ℝ`. -/
@@ -53,10 +43,7 @@ lemma quadraticPoly_splits_of_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0)
     (hdisc : 0 ≤ discrim a b c) :
     ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
   obtain ⟨x, hx⟩ := (exists_root_iff_discrim_nonneg ha).mpr hdisc
-  have hdeg : ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).natDegree = 2 :=
-    natDegree_quadratic ha
-  have heval : ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).eval x = 0 := by simp_all
-  exact Polynomial.Splits.of_natDegree_eq_two hdeg heval
+  exact Polynomial.Splits.of_natDegree_eq_two (natDegree_quadratic ha) (by simpa using hx)
 
 /-- Roots of a real quadratic with positive leading coefficient and
 nonnegative discriminant, ordered increasingly. -/
@@ -82,9 +69,8 @@ lemma quadraticPoly_splits_of_discrim_nonneg_or_linear {a b c : ℝ}
     (hdisc : 0 ≤ discrim a b c) :
     ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
   by_cases ha : a = 0
-  · have hlinear : ((C b * X + C c) : ℝ[X]).Splits :=
-      Polynomial.Splits.of_natDegree_le_one (by compute_degree)
-    simpa [ha] using hlinear
+  · simpa [ha] using
+      Polynomial.Splits.of_natDegree_le_one (by compute_degree : (C b * X + C c).natDegree ≤ 1)
   · exact quadraticPoly_splits_of_discrim_nonneg ha hdisc
 
 /-- A real quadratic polynomial with nonzero leading coefficient and negative
@@ -92,24 +78,11 @@ discriminant does not split over `ℝ`. -/
 lemma quadraticPoly_not_splits_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
     (hdisc : discrim a b c < 0) :
     ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits := by
-  set p : ℝ[X] := C a * X ^ 2 + C b * X + C c with hp
-  have hdeg : p.natDegree = 2 := natDegree_quadratic ha
-  have hne : ∀ s : ℝ, discrim a b c ≠ s ^ 2 := fun s h => by
-    linarith [sq_nonneg s]
-  have hnoroot : ∀ x : ℝ, ¬ p.IsRoot x := by
-    intro x hx
-    have hxeval : a * (x * x) + b * x + c = 0 := by
-      have hpx : p.eval x = 0 := hx
-      rw [hp] at hpx
-      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow] at hpx
-      grind
-    exact quadratic_ne_zero_of_discrim_ne_sq hne x hxeval
-  intro hsplit
-  have hcard : p.roots.card = p.natDegree := Polynomial.splits_iff_card_roots.1 hsplit
-  rw [hdeg] at hcard
-  have hpos : 0 < p.roots.card := by simp_all
-  obtain ⟨x, hxmem⟩ := Multiset.card_pos_iff_exists_mem.1 hpos
-  simp_all
+  intro hs
+  obtain ⟨x, hx⟩ := hs.exists_eval_eq_zero <|
+    Polynomial.degree_ne_of_natDegree_ne (by rw [natDegree_quadratic ha]; norm_num)
+  exact (not_le_of_gt hdisc) <| (exists_root_iff_discrim_nonneg ha).mp
+    ⟨x, by simpa using hx⟩
 
 /-- Splitting criterion for a real quadratic polynomial. -/
 lemma quadraticPoly_splits_iff_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0) :
@@ -118,92 +91,17 @@ lemma quadraticPoly_splits_iff_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0) :
   by_contra hneg
   exact quadraticPoly_not_splits_of_discrim_neg ha (lt_of_not_ge hneg) hsplit
 
-/-- Non-splitting criterion for a real quadratic polynomial: a genuine real
-quadratic fails to split over `ℝ` iff its discriminant is negative. -/
-lemma quadraticPoly_not_splits_iff_discrim_neg {a b c : ℝ} (ha : a ≠ 0) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ discrim a b c < 0 := by
-  rw [quadraticPoly_splits_iff_discrim_nonneg ha, not_le]
-
 /-- Splitting criterion for a normalized monic real quadratic, phrased with
 the explicit discriminant `b ^ 2 - 4 * c`. -/
 lemma monicQuadraticPoly_splits_iff_discrim_nonneg {b c : ℝ} :
     ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ 0 ≤ b ^ 2 - 4 * c := by
-  have h1 :
-      ((C (1 : ℝ) * X ^ 2 + C b * X + C c) : ℝ[X]) =
-        X ^ 2 + C b * X + C c := by
-    simp
-  have hd : discrim (1 : ℝ) b c = b ^ 2 - 4 * c := by
-    unfold discrim
-    ring
-  rw [← h1, quadraticPoly_splits_iff_discrim_nonneg (one_ne_zero), hd]
+  simpa [discrim] using
+    (quadraticPoly_splits_iff_discrim_nonneg (a := (1 : ℝ)) (b := b) (c := c) one_ne_zero)
 
 /-- Non-splitting criterion for a normalized monic real quadratic. -/
 lemma monicQuadraticPoly_not_splits_iff_discrim_neg {b c : ℝ} :
     ¬ ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ b ^ 2 - 4 * c < 0 := by
   rw [monicQuadraticPoly_splits_iff_discrim_nonneg, not_le]
-
-/-- Normalization to monic form preserves splitting for genuine quadratics. -/
-lemma quadraticPoly_splits_iff_monic_splits {a b c : ℝ} (ha : a ≠ 0) :
-    ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔
-      ((X ^ 2 + C (b / a) * X + C (c / a)) : ℝ[X]).Splits := by
-  rw [quadraticPoly_splits_iff_discrim_nonneg ha,
-    monicQuadraticPoly_splits_iff_discrim_nonneg]
-  have ha2 : (0 : ℝ) < a ^ 2 := by positivity
-  have hrel : discrim a b c = a ^ 2 * ((b / a) ^ 2 - 4 * (c / a)) := by
-    rw [discrim]
-    grind
-  simp_all
-
-/-- Obstruction form for a monic real quadratic, phrased as `b ^ 2 < 4 * c`. -/
-lemma monicQuadraticPoly_not_splits_iff_lt {b c : ℝ} :
-    ¬ ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ b ^ 2 < 4 * c := by
-  rw [monicQuadraticPoly_not_splits_iff_discrim_neg]
-  grind
-
-/-- Splitting criterion for a monic real quadratic, phrased as `4 * c ≤ b ^ 2`. -/
-lemma monicQuadraticPoly_splits_iff_le {b c : ℝ} :
-    ((X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ 4 * c ≤ b ^ 2 := by
-  rw [monicQuadraticPoly_splits_iff_discrim_nonneg]
-  grind
-
-/-- Non-splitting criterion after normalizing a genuine quadratic to monic form. -/
-lemma quadraticPoly_not_splits_iff_monic_discrim_neg {a b c : ℝ} (ha : a ≠ 0) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔
-      (b / a) ^ 2 - 4 * (c / a) < 0 := by
-  rw [quadraticPoly_splits_iff_monic_splits ha,
-    monicQuadraticPoly_not_splits_iff_discrim_neg]
-
-/-- Strict-comparison form of the normalized quadratic obstruction. -/
-lemma quadraticPoly_not_splits_iff_monic_lt {a b c : ℝ} (ha : a ≠ 0) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔
-      (b / a) ^ 2 < 4 * (c / a) := by
-  rw [quadraticPoly_not_splits_iff_monic_discrim_neg ha]
-  grind
-
-/-- Splitting criterion after normalizing a genuine quadratic to monic form. -/
-lemma quadraticPoly_splits_iff_monic_le {a b c : ℝ} (ha : a ≠ 0) :
-    ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔
-      4 * (c / a) ≤ (b / a) ^ 2 := by
-  rw [quadraticPoly_splits_iff_monic_splits ha, monicQuadraticPoly_splits_iff_le]
-
-/-- One-directional normalized obstruction for a genuine quadratic. -/
-lemma quadraticPoly_not_splits_of_monic_lt {a b c : ℝ} (ha : a ≠ 0)
-    (h : (b / a) ^ 2 < 4 * (c / a)) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_not_splits_iff_monic_lt ha).mpr h
-
-/-- One-directional normalized splitting criterion for a genuine quadratic. -/
-lemma quadraticPoly_splits_of_monic_le {a b c : ℝ} (ha : a ≠ 0)
-    (h : 4 * (c / a) ≤ (b / a) ^ 2) :
-    ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_splits_iff_monic_le ha).mpr h
-
-/-- Strict-comparison obstruction for a quadratic with positive leading coefficient. -/
-lemma quadraticPoly_not_splits_iff_lt {a b c : ℝ} (ha : 0 < a) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ b ^ 2 < 4 * a * c := by
-  rw [quadraticPoly_not_splits_iff_discrim_neg ha.ne']
-  rw [discrim]
-  grind
 
 /-- Splitting criterion for a quadratic with positive leading coefficient. -/
 lemma quadraticPoly_splits_iff_le {a b c : ℝ} (ha : 0 < a) :
@@ -211,13 +109,6 @@ lemma quadraticPoly_splits_iff_le {a b c : ℝ} (ha : 0 < a) :
   rw [quadraticPoly_splits_iff_discrim_nonneg ha.ne']
   rw [discrim]
   grind
-
-/-- One-directional obstruction for a quadratic with positive leading
-coefficient. -/
-lemma quadraticPoly_not_splits_of_lt {a b c : ℝ} (ha : 0 < a)
-    (h : b ^ 2 < 4 * a * c) :
-    ¬ ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits :=
-  (quadraticPoly_not_splits_iff_lt ha).mpr h
 
 /-- One-directional splitting criterion for a quadratic with positive leading
 coefficient. -/
@@ -231,22 +122,14 @@ coefficient form. -/
 theorem quadratic_disc_coeff_le_of_splits_natDegree_two
     {p : ℝ[X]} (hdeg : p.natDegree = 2) (hs : p.Splits) :
     4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
-  have hp0 : p ≠ 0 := by
-    rintro rfl
-    simp at hdeg
-  obtain ⟨x, hxmem⟩ : ∃ x, x ∈ p.roots := by
-    apply Multiset.card_pos_iff_exists_mem.mp
-    rw [← hs.natDegree_eq_card_roots, hdeg]
-    norm_num
-  have hxroot : p.IsRoot x := (Polynomial.mem_roots hp0).mp hxmem
-  have hxquad : p.coeff 2 * (x * x) + p.coeff 1 * x + p.coeff 0 = 0 := by
-    rw [Polynomial.IsRoot.def] at hxroot
-    rw [Polynomial.eval_eq_sum_range, hdeg] at hxroot
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero] at hxroot
-    linear_combination hxroot
-  have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hxquad
-  unfold discrim at hdisc_sq
-  linarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+  have ha : p.coeff 2 ≠ 0 := by
+    rw [← hdeg, Polynomial.coeff_natDegree, Polynomial.leadingCoeff_ne_zero]
+    exact Polynomial.ne_zero_of_natDegree_gt (n := 0) (by rw [hdeg]; norm_num)
+  rw [Polynomial.eq_quadratic_of_degree_le_two
+    (Polynomial.degree_le_of_natDegree_le hdeg.le)] at hs
+  have := (quadraticPoly_splits_iff_discrim_nonneg ha).mp hs
+  unfold discrim at this
+  nlinarith
 
 /-- A splitting real polynomial of degree at most two has nonnegative
 quadratic discriminant, expressed in coefficient form. -/
@@ -255,9 +138,7 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_le_two
     4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 := by
   by_cases h2 : p.natDegree = 2
   · exact quadratic_disc_coeff_le_of_splits_natDegree_two h2 hs
-  · have hle1 : p.natDegree ≤ 1 := Nat.lt_succ_iff.mp (lt_of_le_of_ne hdeg h2)
-    have hc2 : p.coeff 2 = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hle1 (by norm_num))
+  · have hc2 : p.coeff 2 = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
     rw [hc2]
     linarith [sq_nonneg (p.coeff 1)]
 
@@ -265,19 +146,10 @@ theorem quadratic_disc_coeff_le_of_splits_natDegree_le_two
 theorem splits_of_natDegree_eq_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegree = 2)
     (hd : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) : p.Splits := by
   have ha : p.coeff 2 ≠ 0 := by
-    have := Polynomial.leadingCoeff_ne_zero.mpr (Polynomial.ne_zero_of_natDegree_gt (n := 0)
-      (by rw [h]; norm_num))
-    rwa [Polynomial.leadingCoeff, h] at this
-  have hp : p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) := by
-    ext n
-    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C]
-    rcases n with _ | _ | _ | n
-    · simp
-    · simp
-    · simp
-    · simp only [Nat.reduceEqDiff, ↓reduceIte, mul_zero, add_zero]
-      exact Polynomial.coeff_eq_zero_of_natDegree_lt (by rw [h]; lia)
-  rw [hp]
+    rw [← h, Polynomial.coeff_natDegree, Polynomial.leadingCoeff_ne_zero]
+    exact Polynomial.ne_zero_of_natDegree_gt (n := 0) (by rw [h]; norm_num)
+  rw [Polynomial.eq_quadratic_of_degree_le_two
+    (Polynomial.degree_le_of_natDegree_le h.le)]
   exact quadraticPoly_splits_of_discrim_nonneg ha hd
 
 /-- A real polynomial of degree at most two splits when its discriminant is nonnegative;
@@ -299,15 +171,7 @@ theorem splits_of_natDegree_le_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegr
 theorem splits_C_add_C_mul_X_add_C_mul_X_sq {a b c : ℝ} (h : 0 ≤ b ^ 2 - 4 * c * a) :
     (C a + C b * X + C c * X ^ 2 : ℝ[X]).Splits := by
   refine splits_of_natDegree_le_two_of_discrim_nonneg (by compute_degree) ?_
-  have h2 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 2 = c := by
-    simp [coeff_X_pow]
-  have h1 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 1 = b := by
-    simp [coeff_C, coeff_X_pow]
-  have h0 : (C a + C b * X + C c * X ^ 2 : ℝ[X]).coeff 0 = a := by
-    simp [coeff_C, coeff_X_pow, coeff_X]
-  rw [h2, h1, h0]
-  unfold discrim
-  linarith
+  simpa [discrim, coeff_X_pow] using h
 
 /-- A palindromic quartic `a + b X + c X² + b X³ + a X⁴` with `a > 0` splits when the quadratic
 `a y² + b y + (c - 2a)` in `y = X + 1/X` has both roots at most `-2`, that is, when `4a ≤ b`,
@@ -321,14 +185,13 @@ theorem splits_palindromic_quartic {a b c : ℝ} (ha : 0 < a) (hb : 4 * a ≤ b)
   have hsle : s ≤ b - 4 * a := by nlinarith
   set y₁ := (-b + s) / (2 * a)
   set y₂ := (-b - s) / (2 * a)
-  have h2a : 2 * a ≠ 0 := by positivity
   have hsum : b = a * -(y₁ + y₂) := by
     simp only [y₁, y₂]
-    field_simp
+    field_simp [ha.ne']
     ring
   have hprod : c = a * (2 + y₁ * y₂) := by
     simp only [y₁, y₂]
-    field_simp
+    field_simp [ha.ne']
     nlinarith
   have hy₁ : y₁ ≤ -2 := by
     rw [div_le_iff₀ (by positivity)]
@@ -342,8 +205,7 @@ theorem splits_palindromic_quartic {a b c : ℝ} (ha : 0 < a) (hb : 4 * a ≤ b)
     simp only [map_mul, map_neg, map_add, map_ofNat, map_one]
     ring
   rw [hfac]
-  refine (Splits.mul ?_ ?_).C_mul a
-  · exact splits_C_add_C_mul_X_add_C_mul_X_sq (by nlinarith)
-  · exact splits_C_add_C_mul_X_add_C_mul_X_sq (by nlinarith)
+  refine (Splits.mul ?_ ?_).C_mul a <;>
+    exact splits_C_add_C_mul_X_add_C_mul_X_sq (by nlinarith)
 
 end RealRooted

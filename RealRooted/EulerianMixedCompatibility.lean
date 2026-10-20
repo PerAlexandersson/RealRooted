@@ -31,14 +31,10 @@ private theorem eval_divByMonic_X_sub_C_div_eval
   have hfactor : (X - C s) * (p /ₘ (X - C s)) = p :=
     mul_divByMonic_eq_iff_isRoot.mpr hs
   have hpx : p.eval x ≠ 0 := by simpa [Polynomial.IsRoot.def] using hx
-  have hxs : x - s ≠ 0 := by
-    intro hzero
-    have : x = s := sub_eq_zero.mp hzero
-    exact hx (this ▸ hs)
+  have hxs : x - s ≠ 0 := sub_ne_zero.mpr fun h => hx (h ▸ hs)
   have heval := congrArg (Polynomial.eval x) hfactor
   simp only [eval_mul, eval_sub, eval_X, eval_C] at heval
-  have hcofactor : (p /ₘ (X - C s)).eval x ≠ 0 := by
-    intro hzero
+  have hcofactor : (p /ₘ (X - C s)).eval x ≠ 0 := fun hzero => by
     rw [hzero, mul_zero] at heval
     exact hpx heval.symm
   rw [← heval]
@@ -52,17 +48,13 @@ private theorem eval_ratio_eq_sum_residues
     q.eval x / p.eval x =
       ∑ s ∈ p.roots.toFinset,
         (q.eval s / p.derivative.eval s) / (x - s) := by
-  have hlag : lagInterp p q = q :=
-    lagInterp_eq_g hp_splits hp_nodup hpdeg hqdeg
-  nth_rewrite 1 [← hlag]
+  nth_rewrite 1 [← lagInterp_eq_g hp_splits hp_nodup hpdeg hqdeg]
   unfold lagInterp
   rw [eval_finsetSum, Finset.sum_div]
-  apply Finset.sum_congr rfl
-  intro s hs
-  have hsroot : p.IsRoot s :=
-    isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)
+  refine Finset.sum_congr rfl fun s hs => ?_
   rw [eval_mul, eval_C, mul_div_assoc]
-  rw [eval_divByMonic_X_sub_C_div_eval hsroot hx]
+  rw [eval_divByMonic_X_sub_C_div_eval
+    (isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)) hx]
   ring
 
 /-- Every nonnegative residue term is bounded by the full positive-axis
@@ -76,17 +68,13 @@ private theorem residue_div_sub_le_eval_ratio
     (hhdeg : 1 ≤ h.natDegree)
     {r x : ℝ} (hr : r ∈ h.roots) (hx : 0 ≤ x) (hheval : 0 < h.eval x) :
     (g.eval r / h.derivative.eval r) / (x - r) ≤ g.eval x / h.eval x := by
-  have hxroot : ¬h.IsRoot x := by
-    simp only [Polynomial.IsRoot.def]
-    exact hheval.ne'
+  have hxroot : ¬h.IsRoot x := by simpa [Polynomial.IsRoot.def] using hheval.ne'
   have hroots_nonpos : ∀ s ∈ h.roots, s ≤ 0 :=
     roots_nonpos_of_hasNonnegCoeffs hh
   have hdenom_pos : ∀ s ∈ h.roots, 0 < x - s := by
     intro s hs
     have hs_nonpos := hroots_nonpos s hs
-    have hne : x ≠ s := by
-      intro hxs
-      exact hxroot (hxs ▸ isRoot_of_mem_roots hs)
+    have hne : x ≠ s := fun hxs => hxroot (hxs ▸ isRoot_of_mem_roots hs)
     exact lt_of_le_of_ne (sub_nonneg.mpr (hs_nonpos.trans hx))
       (Ne.symm (sub_ne_zero.mpr hne))
   have hres_nonneg : ∀ s ∈ h.roots,
@@ -96,12 +84,9 @@ private theorem residue_div_sub_le_eval_ratio
   by_cases hdeg : g.natDegree = h.natDegree
   · let c₀ : ℝ := g.leadingCoeff / h.leadingCoeff
     let q : ℝ[X] := g - C c₀ * h
-    have hc₀_nonneg : 0 ≤ c₀ := by
-      dsimp [c₀]
-      exact (div_pos hg_pos hh_pos).le
-    have hqdeg : q.degree < h.natDegree := by
-      exact degree_sub_c₀_mul_lt
-        hh_pos.ne_zero hg_pos.ne_zero hdeg hh_pos
+    have hc₀_nonneg : 0 ≤ c₀ := (div_pos hg_pos hh_pos).le
+    have hqdeg : q.degree < h.natDegree :=
+      degree_sub_c₀_mul_lt hh_pos.ne_zero hg_pos.ne_zero hdeg hh_pos
     have hqroot : ∀ s, h.IsRoot s → q.eval s = g.eval s := by
       intro s hs
       simp [q, Polynomial.IsRoot.def.mp hs]
@@ -162,9 +147,7 @@ private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
     (hhdeg : 2 ≤ h.natDegree) (hgdeg : g.natDegree < h.natDegree)
     {r : ℝ} (hr : r ∈ h.roots) (hheval : 0 < h.eval 0) :
     (g.eval r / h.derivative.eval r) / (-r) < g.eval 0 / h.eval 0 := by
-  have hxroot : ¬h.IsRoot 0 := by
-    simp only [Polynomial.IsRoot.def]
-    exact hheval.ne'
+  have hxroot : ¬h.IsRoot 0 := by simpa [Polynomial.IsRoot.def] using hheval.ne'
   have hgdegree : g.degree < h.natDegree := by
     rw [degree_eq_natDegree hg_pos.ne_zero]
     exact_mod_cast hgdeg
@@ -223,14 +206,11 @@ private theorem tendsto_coeff_eulerInsertionStep_iterateTDeriv
     simpa [Function.comp_def, iterateTDeriv_zero_eps] using
       (continuousAt_coeff_iterateTDeriv_zero iterations p j).tendsto.comp heps
   cases i with
-  | zero =>
-      simp only [coeff_eulerInsertionStep_zero]
-      exact tendsto_const_nhds.mul (hcoeff 0)
-  | succ i =>
-      simp only [coeff_eulerInsertionStep_succ]
-      exact
-        (tendsto_const_nhds.mul (hcoeff (i + 1))).add
-          (tendsto_const_nhds.mul (hcoeff i))
+  | zero => simpa only [coeff_eulerInsertionStep_zero] using
+      tendsto_const_nhds.mul (hcoeff 0)
+  | succ i => simpa only [coeff_eulerInsertionStep_succ] using
+      ((tendsto_const_nhds.mul (hcoeff (i + 1))).add
+        (tendsto_const_nhds.mul (hcoeff i)))
 
 /-- Applying the same nonnegative derivative regularization to a succ-degree
 strictly interlacing pair preserves its orientation and removes every common root.
@@ -254,43 +234,33 @@ private theorem regularized_strictInterl_no_common
   have hallε : AllComboRealRooted gε fε := by
     dsimp [fε, gε, k]
     exact allComboRealRooted_iterateTDeriv_all hall (-eps) f.natDegree
-  have hfε_ne : fε ≠ 0 := iterateTDeriv_ne_zero hf_pos.ne_zero
-  have hgε_ne : gε ≠ 0 := iterateTDeriv_ne_zero hg_pos.ne_zero
-  have hfε_splits : fε.Splits := by
-    dsimp [fε, k]
-    exact splits_iterateTDeriv_all hgf.2.1.2 f.natDegree
-  have hgε_splits : gε.Splits := by
-    dsimp [gε, k]
-    exact splits_iterateTDeriv_all hgf.1.2 f.natDegree
   have hdegε : gε.natDegree + 1 = fε.natDegree := by
-    dsimp [fε, gε]
-    simpa using hdeg
+    simpa [fε, gε] using hdeg
   have hStrictInterlε : StrictInterl gε fε := by
-    rcases strictInterl_of_allComboRealRooted hgε_ne hgε_splits hfε_ne hfε_splits
+    rcases strictInterl_of_allComboRealRooted
+        (iterateTDeriv_ne_zero hg_pos.ne_zero)
+        (by simpa [gε, k] using splits_iterateTDeriv_all hgf.1.2 f.natDegree)
+        (iterateTDeriv_ne_zero hf_pos.ne_zero)
+        (by simpa [fε, k] using splits_iterateTDeriv_all hgf.2.1.2 f.natDegree)
         hallε (Or.inl hdegε) with hforward | hreverse
     · exact hforward
     · exact False.elim <| hreverse.not_of_right_natDegree_lt_left (by lia)
   refine ⟨hStrictInterlε, ?_⟩
-  have hfε_simple : HasSimpleRoots fε := by
-    dsimp [fε, k]
-    exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
-      heps hf_pos.ne_zero hgf.2.1.2 le_rfl
-  have hgε_simple : HasSimpleRoots gε := by
-    dsimp [gε, k]
-    exact hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
-      heps hg_pos.ne_zero hgf.1.2 (by lia)
   intro r hrfε hrgε
   have hfder_ne : fε.derivative.eval r ≠ 0 :=
     eval_derivative_ne_zero_of_rootMultiplicity_eq_one hrfε <| by
-      simpa [count_roots] using hfε_simple r hrfε
+      simpa [count_roots, fε, k] using
+        hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+          heps hf_pos.ne_zero hgf.2.1.2 le_rfl r hrfε
   have hgder_ne : gε.derivative.eval r ≠ 0 :=
     eval_derivative_ne_zero_of_rootMultiplicity_eq_one hrgε <| by
-      simpa [count_roots] using hgε_simple r hrgε
+      simpa [count_roots, gε, k] using
+        hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
+          heps hg_pos.ne_zero hgf.1.2 (by lia) r hrgε
   let a : ℝ := gε.derivative.eval r
   let b : ℝ := -fε.derivative.eval r
   let q : ℝ[X] := C a * fε + C b * gε
   have ha_ne : a ≠ 0 := hgder_ne
-  have hb_ne : b ≠ 0 := neg_ne_zero.mpr hfder_ne
   have hqroot : q.IsRoot r := by
     have hrf_eval : fε.eval r = 0 := Polynomial.IsRoot.def.mp hrfε
     have hrg_eval : gε.eval r = 0 := Polynomial.IsRoot.def.mp hrgε
@@ -326,9 +296,8 @@ private theorem regularized_strictInterl_no_common
     have hsimple := hasSimpleRoots_iterateTDeriv_neg_of_natDegree_le
       heps hbase_ne hbase_splits hbase_deg
     simpa [q, fε, gε, k, iterateTDeriv_linear_combo] using hsimple
-  have hder_nonzero := eval_derivative_ne_zero_of_rootMultiplicity_eq_one hqroot <| by
-    simpa [count_roots] using hq_simple r hqroot
-  exact hder_nonzero (Polynomial.IsRoot.def.mp hqderroot)
+  exact (eval_derivative_ne_zero_of_rootMultiplicity_eq_one hqroot <| by
+    simpa [count_roots] using hq_simple r hqroot) (Polynomial.IsRoot.def.mp hqderroot)
 
 /-! ## The strict mixed adjacent step -/
 
@@ -336,8 +305,7 @@ theorem eulerInsertionStep_one_eq_zero_succ_add
     (n : ℕ) (p : ℝ[X]) :
     eulerInsertionStep 1 n p =
       eulerInsertionStep 0 (n + 1) p + (1 - X) * p := by
-  simp [eulerInsertionStep]
-  ring
+  simp [eulerInsertionStep] ; ring
 
 private theorem mixedEulerStep_eq
     (n : ℕ) (lam : ℝ) (f g : ℝ[X]) :
@@ -436,28 +404,11 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
     dsimp [h]
     simp only [coeff_add, coeff_C_mul]
     exact add_nonneg (hf k) (mul_nonneg hlam.le (hg k))
-  have hh_ne : h ≠ 0 := by
-    intro hzero
-    have hz := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
-    dsimp [h] at hz
-    simp only [coeff_add, coeff_C_mul] at hz
-    have hgzero : 0 ≤ g.coeff 0 := hg 0
-    rcases hfboundary with hfzero | hfdeg2
-    · nlinarith
-    · have hf_ne : f ≠ 0 := hf_pos.ne_zero
-      have hg_ne : g ≠ 0 := hg_pos.ne_zero
-      have heval_one : 0 < h.eval 1 := by
-        dsimp [h]
-        simp only [eval_add, eval_mul, eval_C]
-        have hf_one := eval_pos_of_hasNonnegCoeffs hf hf_ne zero_lt_one
-        have hg_one := eval_pos_of_hasNonnegCoeffs hg hg_ne zero_lt_one
-        nlinarith
-      simp [hzero] at heval_one
+  have hrr := StrictInterl.isRealRooted_pos_combo
+    hgf hg_pos hf_pos hlam zero_lt_one
+  have hh_ne : h ≠ 0 := by simpa [h, add_comm] using hrr.1
   have hh_pos : HasPosLeadingCoeff h := hh.pos_leadingCoeff hh_ne
-  have hh_splits : h.Splits := by
-    have hrr := StrictInterl.isRealRooted_pos_combo
-      hgf hg_pos hf_pos hlam zero_lt_one
-    simpa [h, add_comm] using hrr.2
+  have hh_splits : h.Splits := by simpa [h, add_comm] using hrr.2
   have hh_deg : h.natDegree = f.natDegree := by
     have hle : h.natDegree ≤ f.natDegree := by
       dsimp [h]
@@ -497,56 +448,10 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
   have hhdeg_pos : 1 ≤ h.natDegree := by
     rw [hh_deg, ← hdeg]
     exact Nat.succ_le_succ (Nat.zero_le _)
-  have hfdeg_step : f.natDegree ≤ n + 1 := hfdeg
-  have hgdeg_step : g.natDegree ≤ n := by lia
-  have hEf_nonneg : HasNonnegCoeffs (eulerInsertionStep 0 (n + 1) f) :=
-    hf.eulerInsertionStep (by norm_num) hfdeg_step
-  have hEg_nonneg : HasNonnegCoeffs (eulerInsertionStep 1 n g) :=
-    hg.eulerInsertionStep (by norm_num) hgdeg_step
-  have hP : HasNonnegCoeffs P := by
-    intro k
-    dsimp [P]
-    simp only [coeff_add, coeff_C_mul]
-    exact add_nonneg (hEf_nonneg k) (mul_nonneg hlam.le (hEg_nonneg k))
-  have hP_ne : P ≠ 0 := by
-    have hEf_pos :=
-      (eulerInsertionStep_degree_pos (c := (0 : ℝ)) hfdeg_step hf_pos).2
-    intro hzero
-    have heval := congrArg (Polynomial.eval 1) hzero
-    dsimp [P] at heval
-    simp only [eval_add, eval_mul, eval_C] at heval
-    have hEf_eval : 0 < (eulerInsertionStep 0 (n + 1) f).eval 1 :=
-      eval_pos_of_hasNonnegCoeffs hEf_nonneg hEf_pos.ne_zero zero_lt_one
-    have hEg_pos :=
-      (eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg_step hg_pos).2
-    have hEg_eval : 0 < (eulerInsertionStep 1 n g).eval 1 :=
-      eval_pos_of_hasNonnegCoeffs hEg_nonneg hEg_pos.ne_zero zero_lt_one
-    simp only [eval_zero] at heval
-    nlinarith
-  have hP_pos : HasPosLeadingCoeff P := hP.pos_leadingCoeff hP_ne
+  obtain ⟨_hP, hP_deg_f, _hP_lead, hP_pos⟩ :=
+    mixedEulerStep_nonneg_degree_leading hlam hf hg hf_pos hg_pos hdeg hfdeg
   have hP_deg : P.natDegree = h.natDegree + 1 := by
-    have hle : P.natDegree ≤ h.natDegree + 1 := by
-      dsimp [P]
-      refine (natDegree_add_le _ _).trans (max_le ?_ ?_)
-      · rw [hh_deg]
-        exact natDegree_eulerInsertionStep_le 0 (n + 1) f
-      · exact (natDegree_C_mul_le lam _).trans <| by
-          rw [hh_deg]
-          exact (natDegree_eulerInsertionStep_le 1 n g).trans (by lia)
-    have hcoeffEf :
-        0 < (eulerInsertionStep 0 (n + 1) f).coeff (f.natDegree + 1) := by
-      obtain ⟨hEfdeg, hEfpos⟩ :=
-        eulerInsertionStep_degree_pos (c := (0 : ℝ)) hfdeg_step hf_pos
-      unfold HasPosLeadingCoeff at hEfpos
-      rw [Polynomial.leadingCoeff, hEfdeg] at hEfpos
-      exact hEfpos
-    have hcoeffP : 0 < P.coeff (h.natDegree + 1) := by
-      rw [hh_deg]
-      dsimp [P]
-      rw [coeff_add, coeff_C_mul]
-      exact add_pos_of_pos_of_nonneg hcoeffEf
-        (mul_nonneg hlam.le (hEg_nonneg (f.natDegree + 1)))
-    exact natDegree_eq_of_le_of_coeff_ne_zero hle hcoeffP.ne'
+    rw [hP_deg_f, hh_deg]
   have hder : Interlaces h.derivative h :=
     interlaces_derivative_of_pos_natDegree
       hh_ne hh_splits hh_pos hhdeg_pos
@@ -634,13 +539,7 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
       ring
     rw [hidentity]
     have hone : 0 < 1 - r := by linarith
-    have hprod : (1 - r) * (r + lam * residue) < 0 :=
-      mul_neg_of_pos_of_neg hone hbound
-    calc
-      (1 - r) * h.derivative.eval r * (r + lam * residue) *
-          h.derivative.eval r =
-        ((1 - r) * (r + lam * residue)) * (h.derivative.eval r) ^ 2 := by ring
-      _ < 0 := mul_neg_of_neg_of_pos hprod (sq_pos_of_ne_zero hder_ne)
+    nlinarith [mul_neg_of_pos_of_neg hone hbound, sq_pos_of_ne_zero hder_ne]
   exact strictInterl_of_interlaces_eval_mul_neg_succ hder hder_pos hP_pos hP_deg hroot_sign
 
 /-- No-common-root mixed step, including the exceptional linear/constant
@@ -668,37 +567,20 @@ private theorem mixedEulerStep_strictInterl_of_no_common
   have hfdeg1 : f.natDegree = 1 := by lia
   have hgdeg0 : g.natDegree = 0 := by lia
   have hfform : f = C f.leadingCoeff * X := by
-    ext k
-    cases k with
-    | zero => simp [hfzero]
-    | succ k =>
-        cases k with
-        | zero => simp [Polynomial.leadingCoeff, hfdeg1]
-        | succ k =>
-            have hk : f.natDegree < k + 2 := by lia
-            rw [coeff_eq_zero_of_natDegree_lt hk]
-            simp
-  have hgzero : g.coeff 0 = g.leadingCoeff := by
-    rw [Polynomial.leadingCoeff, hgdeg0]
+    have hcoeff : f.coeff 1 = f.leadingCoeff := by
+      rw [Polynomial.leadingCoeff, hfdeg1]
+    have hform := eq_X_add_C_of_natDegree_le_one hfdeg1.le
+    rw [hfzero, C_0, add_zero, hcoeff] at hform
+    exact hform
   have hgform : g = C g.leadingCoeff := by
-    calc
-      g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
-      _ = C g.leadingCoeff := congrArg C hgzero
+    simpa [Polynomial.leadingCoeff, hgdeg0] using eq_C_of_natDegree_eq_zero hgdeg0
   let h : ℝ[X] := f + C lam * g
   let P : ℝ[X] := eulerInsertionStep 0 (n + 1) f +
     C lam * eulerInsertionStep 1 n g
-  have hh_ne : h ≠ 0 := by
-    intro hzero
-    have hz := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
-    dsimp [h] at hz
-    simp only [coeff_add, coeff_C_mul] at hz
-    rw [hfzero, hgzero] at hz
-    have hglc : 0 < g.leadingCoeff := hg_pos
-    nlinarith
-  have hh_splits : h.Splits := by
-    have hrr := StrictInterl.isRealRooted_pos_combo
-      hgf hg_pos hf_pos hlam zero_lt_one
-    simpa [h, add_comm] using hrr.2
+  have hrr := StrictInterl.isRealRooted_pos_combo
+    hgf hg_pos hf_pos hlam zero_lt_one
+  have hh_ne : h ≠ 0 := by simpa [h, add_comm] using hrr.1
+  have hh_splits : h.Splits := by simpa [h, add_comm] using hrr.2
   let c : ℝ := (n : ℝ) + 1
   let u : ℝ := -c⁻¹
   have hc_pos : 0 < c := by
@@ -712,24 +594,17 @@ private theorem mixedEulerStep_strictInterl_of_no_common
     ring
   have hlinear : (1 + C c * X : ℝ[X]) = C c * (X - C u) := by
     dsimp [u]
-    calc
-      1 + C c * X = C c * X + 1 := by ring
-      _ = C c * (X - C (-c⁻¹)) := by
-        rw [mul_sub]
-        rw [show C (-c⁻¹) = -(C c⁻¹ : ℝ[X]) by simp]
-        rw [mul_neg, show C c * C c⁻¹ = (1 : ℝ[X]) by
-          rw [← C_mul]
-          simp [hc_ne]]
-        ring
+    rw [mul_sub, show C (-c⁻¹) = -(C c⁻¹ : ℝ[X]) by simp,
+      mul_neg, ← C_mul]
+    simp [hc_ne]
+    ring
   have hPfactor : P = C c * ((X - C u) * h) := by
     rw [hPfactor0, hlinear]
     ring
-  have hbase : StrictInterl h ((X - C u) * h) :=
-    strictInterl_self_X_sub_C_mul hh_ne hh_splits u
-  have hscaled : StrictInterl h (C c * ((X - C u) * h)) :=
-    StrictInterl.C_mul_right hbase hc_pos.ne'
-  rw [← hPfactor] at hscaled
-  exact hscaled
+  change StrictInterl h P
+  rw [hPfactor]
+  exact StrictInterl.C_mul_right
+    (strictInterl_self_X_sub_C_mul hh_ne hh_splits u) hc_pos.ne'
 
 /-! ## The common-root-safe mixed step -/
 
@@ -749,12 +624,10 @@ theorem mixedEulerStep_splits
       C lam * eulerInsertionStep 1 n g).Splits := by
   let P : ℝ[X] := eulerInsertionStep 0 (n + 1) f +
     C lam * eulerInsertionStep 1 n g
-  obtain ⟨hP_nonneg, hP_deg, hP_lead, hP_pos⟩ :=
+  obtain ⟨_hP_nonneg, hP_deg, hP_lead, hP_pos⟩ :=
     mixedEulerStep_nonneg_degree_leading hlam hf hg hf_pos hg_pos hdeg hfdeg
   let delta : ℕ → ℝ := fun M ↦ ((M : ℝ) + 1)⁻¹
-  have hdelta_pos (M : ℕ) : 0 < delta M := by
-    dsimp [delta]
-    positivity
+  have hdelta_pos (M : ℕ) : 0 < delta M := by positivity
   have hdelta : Filter.Tendsto delta Filter.atTop (nhds 0) := by
     simpa [delta, one_div] using
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
@@ -769,10 +642,8 @@ theorem mixedEulerStep_splits
     eulerInsertionStep 0 (n + 1) (fM M) +
       C lam * eulerInsertionStep 1 n (gM M)
   have hfM_nonneg (M : ℕ) : HasNonnegCoeffs (fM M) := by
-    dsimp [fM]
     exact hf.iterateTDeriv_neg (hdelta_pos M).le f.natDegree
   have hgM_nonneg (M : ℕ) : HasNonnegCoeffs (gM M) := by
-    dsimp [gM]
     exact hg.iterateTDeriv_neg (hdelta_pos M).le f.natDegree
   have hfM_pos (M : ℕ) : HasPosLeadingCoeff (fM M) := by
     simpa [fM] using hf_pos
@@ -892,6 +763,10 @@ theorem compatible_eulerInsertionStep_one_zero_succ
   have hmixed : (B + C lam * A).Splits := by
     dsimp [A, B, lam]
     exact mixedEulerStep_splits hlam hgf hf hg hf_pos hg_pos hdeg hfdeg
+  have hmixed_ne : B + C lam * A ≠ 0 := by
+    dsimp [A, B, lam]
+    exact (mixedEulerStep_nonneg_degree_leading
+      hlam hf hg hf_pos hg_pos hdeg hfdeg).2.2.2.ne_zero
   have hcombo : C a * A + C b * B = C b * (B + C lam * A) := by
     dsimp [lam]
     rw [mul_add, ← mul_assoc, ← C_mul]
@@ -901,21 +776,7 @@ theorem compatible_eulerInsertionStep_one_zero_succ
   right
   refine ⟨?_, ?_⟩
   · rw [hcombo]
-    exact mul_ne_zero (C_ne_zero.mpr hb0) <| by
-      dsimp [A, B]
-      have hB_pos :=
-        (eulerInsertionStep_degree_pos (c := (0 : ℝ)) hfdeg hf_pos).2
-      have hA_nonneg := hg.eulerInsertionStep (c := (1 : ℝ)) (by norm_num) hgdeg
-      have hB_nonneg := hf.eulerInsertionStep (c := (0 : ℝ)) (by norm_num) hfdeg
-      intro hzero
-      have heval := congrArg (Polynomial.eval 1) hzero
-      simp only [eval_add, eval_mul, eval_C] at heval
-      simp only [eval_zero] at heval
-      have hBeval := eval_pos_of_hasNonnegCoeffs hB_nonneg hB_pos.ne_zero zero_lt_one
-      have hApos :=
-        (eulerInsertionStep_degree_pos (c := (1 : ℝ)) hgdeg hg_pos).2
-      have hAeval := eval_pos_of_hasNonnegCoeffs hA_nonneg hApos.ne_zero zero_lt_one
-      nlinarith
+    exact mul_ne_zero (C_ne_zero.mpr hb0) hmixed_ne
   · rw [hcombo]
     exact hmixed.C_mul b
 

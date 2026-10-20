@@ -126,7 +126,6 @@ import RealRooted.Basic
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Basic.Coefficients
 import RealRooted.Basic.Coefficients.Multivariate
-import RealRooted.Basic.IntervalInequalities
 import RealRooted.Basic.PolynomialFacts
 import RealRooted.Basic.ProperPosition
 import RealRooted.Basic.RootLists

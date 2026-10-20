@@ -34,23 +34,6 @@ lemma card_roots_of_splits {p : ℝ[X]} (h : p.Splits) : p.roots.card = p.natDeg
 lemma splits_of_card_roots {p : ℝ[X]} (h : p.roots.card = p.natDegree) : p.Splits :=
   splits_iff_card_roots.mpr h
 
-lemma ne_zero_and_splits_of_ne_zero_and_card_roots {p : ℝ[X]}
-    (h_ne : p ≠ 0) (h_card : p.roots.card = p.natDegree) : p ≠ 0 ∧ p.Splits :=
-  ⟨h_ne, splits_of_card_roots h_card⟩
-
-lemma ne_zero_and_card_roots_of_ne_zero_and_splits {p : ℝ[X]}
-    (h_ne : p ≠ 0) (h_splits : p.Splits) : p ≠ 0 ∧ p.roots.card = p.natDegree :=
-  ⟨h_ne, card_roots_of_splits h_splits⟩
-
-lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : ℝ[X]) :
-    (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔
-      (p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)) := by
-  constructor <;> rintro (rfl | h)
-  · exact Or.inl rfl
-  · exact Or.inr (ne_zero_and_card_roots_of_ne_zero_and_splits h.1 h.2)
-  · exact Or.inl rfl
-  · exact Or.inr (ne_zero_and_splits_of_ne_zero_and_card_roots h.1 h.2)
-
 lemma natDegree_X_add_one_pow_le (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
   have hX1 : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
@@ -94,9 +77,7 @@ lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
     ((X - C r) * q).coeff n =
       (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by
   simp only [sub_mul, coeff_sub, coeff_C_mul]
-  cases n with
-  | zero => simp
-  | succ m => simp [coeff_X_mul]
+  cases n <;> simp [coeff_X_mul]
 
 /-- A nonconstant real-rooted polynomial has a rightmost root. -/
 lemma exists_rightmost_root_of_isRealRooted
@@ -109,9 +90,7 @@ lemma exists_rightmost_root_of_isRealRooted
   have hrs_ne : rs ≠ [] := by grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
-    have : rs.getLast hrs_ne ∈ p.roots := by
-      rw [← hrs_eq]
-      simp
+    have : rs.getLast hrs_ne ∈ p.roots := by simp [← hrs_eq]
     simp_all
   · intro s hs
     have hs_mem : s ∈ rs := by
@@ -127,10 +106,9 @@ lemma exists_root_upper_bound (p : ℝ[X]) :
   let rs := p.roots.sort (· ≤ ·)
   by_cases hrs_nil : rs = []
   · refine ⟨0, ?_⟩
-    intro r hr
     have hroots_nil : p.roots = 0 := by
       simpa [rs, hrs_nil] using (Multiset.sort_eq (s := p.roots) (r := (· ≤ ·))).symm
-    simp_all
+    simp [hroots_nil]
   · refine ⟨rs.getLast hrs_nil, ?_⟩
     have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
     intro r hr

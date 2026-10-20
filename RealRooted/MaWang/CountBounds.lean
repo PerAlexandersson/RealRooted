@@ -13,39 +13,6 @@ noncomputable section
 
 namespace RealRooted.MaWangInternal
 
-theorem exists_signInterleaving {F : ℝ[X]} :
-    ∀ (rs : List ℝ),
-      rs.Pairwise (· ≤ ·) →
-      (∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ ≤ 0) →
-      ∃ us : List ℝ, us.length = rs.length - 1 ∧
-        ListInterlaces us rs ∧
-        (∀ u ∈ us, F.IsRoot u)
-  | [], _, _ => by
-      refine ⟨[], by simp, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-  | [_], _, _ => by
-      refine ⟨[], by simp, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-  | r₁ :: r₂ :: rest, hrs_sorted, hsign => by
-      have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
-      have hprod : F.eval r₁ * F.eval r₂ ≤ 0 := by simpa using hsign [] rfl
-      obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
-        exists_isRoot_between_of_eval_mul_nonpos hr₁r₂ hprod
-      have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
-        (List.pairwise_cons.mp hrs_sorted).2
-      obtain ⟨us, hus_len, hus_int, hus_roots⟩ :=
-        exists_signInterleaving (F := F) (r₂ :: rest) htail_sorted
-          (fun pre {a b tail} hEq => by
-            grind)
-      refine ⟨u :: us, ?_, ?_, ?_⟩
-      · simp [hus_len]
-      · exact ⟨hu₁, hu₂, hus_int⟩
-      · simp_all
-
 /-- Greedy ordered-matching lemma for the differ-by-1 case. The hypotheses say:
 after consuming the first `pre.length` left-hand points, the remaining right-hand
 points all lie to the right of the current left-hand point, and one of the
@@ -68,13 +35,7 @@ theorem listInterlaces_of_drop_bounds :
         ∃ u, u ∈ ts.drop (pre.length + 1) ∧ u ≤ s₂) →
       ListInterlaces ss ts
   | [], ts, _, _, hlen, _, _, _ => by
-      have hts_len : ts.length = 1 := by simp_all
-      cases ts with
-      | nil => lia
-      | cons t ts' =>
-          cases ts' with
-          | nil => simp [ListInterlaces]
-          | cons u us => simp at hts_len
+      cases ts <;> simp_all [ListInterlaces]
   | s :: ss, ts, hss, hts, hlen, hleft, hge, hexists => by
       cases ts with
       | nil => simp at hlen
@@ -82,11 +43,8 @@ theorem listInterlaces_of_drop_bounds :
           cases ts' with
           | nil => simp at hlen
           | cons u us =>
-              have htu_sorted : (u :: us).Pairwise (· ≤ ·) :=
-                (List.pairwise_cons.mp hts).2
               have ht_le_s : t ≤ s := by simp_all
-              have hs_le_u : s ≤ u :=
-                hge [] rfl u (by simp)
+              have hs_le_u : s ≤ u := hge [] rfl u (by simp)
               cases ss with
               | nil =>
                   have hus_nil : us = [] := by simp_all
@@ -94,7 +52,7 @@ theorem listInterlaces_of_drop_bounds :
                   simp [ListInterlaces, ht_le_s, hs_le_u]
               | cons s₂ ss' =>
                   have hu_le_s₂ : u ≤ s₂ := by
-                    obtain ⟨w, hw_drop, hw_le⟩ := hexists [] rfl
+                    obtain ⟨w, hw, hw_le⟩ := hexists [] rfl
                     grind
                   have hleft' :
                       ∀ {s' : ℝ} {rest : List ℝ},
@@ -115,12 +73,9 @@ theorem listInterlaces_of_drop_bounds :
                         s₂ :: ss' = pre ++ s₁ :: s₂' :: rest →
                         ∃ v, v ∈ (u :: us).drop (pre.length + 1) ∧ v ≤ s₂' := by
                     grind
-                  have hlen' : (s₂ :: ss').length + 1 = (u :: us).length := by simp_all
-                  have hint_tail : ListInterlaces (s₂ :: ss') (u :: us) :=
-                    listInterlaces_of_drop_bounds
-                      (ss := s₂ :: ss') (ts := u :: us)
-                      (List.pairwise_cons.mp hss).2 htu_sorted hlen' hleft' hge' hexists'
-                  exact ⟨ht_le_s, hs_le_u, hint_tail⟩
+                  exact ⟨ht_le_s, hs_le_u, listInterlaces_of_drop_bounds
+                    (List.pairwise_cons.mp hss).2 (List.pairwise_cons.mp hts).2
+                    (by simp_all) hleft' hge' hexists'⟩
 
 /-- Greedy ordered-matching lemma for the same-degree case. The `drop` hypotheses
 say that after consuming the first `pre.length` right-hand points, all remaining
@@ -140,18 +95,12 @@ theorem listAlternates_of_drop_bounds :
         ∃ u, u ∈ ts.drop pre.length ∧ u ≤ s₂) →
       ListAlternates ss ts
   | [], [], _, _, _, _, _ => by simp [ListAlternates]
-  | [], _ :: _, _, _, hlen, _, _ => by simp at hlen
+  | [], _ :: _, _, _, hlen, _, _
   | _ :: _, [], _, _, hlen, _, _ => by simp at hlen
   | s :: ss, t :: ts, hss, hts, hlen, hge, hexists => by
-      have hs_le_t : s ≤ t :=
-        hge [] rfl t (by simp)
+      have hs_le_t : s ≤ t := hge [] rfl t (by simp)
       cases ss with
-      | nil =>
-          cases ts with
-          | nil =>
-              simp [ListAlternates, hs_le_t, ListInterlaces]
-          | cons u us =>
-              simp at hlen
+      | nil => cases ts <;> simp_all [ListAlternates, ListInterlaces]
       | cons s₂ ss' =>
           have ht_le_s₂ : t ≤ s₂ := by
             obtain ⟨u, hu_mem, hu_le⟩ := hexists [] rfl
@@ -171,15 +120,8 @@ theorem listAlternates_of_drop_bounds :
               simp [List.cons_append, hEq]
             simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm] using
               hexists (s :: pre) hEq'
-          have hlen' : (s₂ :: ss').length + 1 = (t :: ts).length := by simp_all
-          have hint_tail : ListInterlaces (s₂ :: ss') (t :: ts) :=
-            listInterlaces_of_drop_bounds
-              (ss := s₂ :: ss') (ts := t :: ts)
-              (List.pairwise_cons.mp hss).2 hts hlen'
-              (by
-                simp_all)
-              hge' hexists'
-          exact ⟨hs_le_t, hint_tail⟩
+          exact ⟨hs_le_t, listInterlaces_of_drop_bounds
+            (List.pairwise_cons.mp hss).2 hts (by simp_all) (by simp_all) hge' hexists'⟩
 
 /-- If a sorted list has at most `k` entries strictly below `s`, then every entry
 in the `drop k` tail is `≥ s`. This is the count-to-tail bridge needed to feed
@@ -203,9 +145,8 @@ lemma all_ge_of_countP_lt_drop
   have htake_count : (ts.take k).countP (· < s) = k := by
     rw [List.countP_eq_length_filter]
     have hfilter :
-        List.filter (fun x => decide (x < s)) (ts.take k) = ts.take k := by
-      simp_all
-    grind
+        List.filter (fun x => decide (x < s)) (ts.take k) = ts.take k := by simp_all
+    rw [hfilter, List.length_take, min_eq_left hk]
   have hdrop_pos : 0 < (ts.drop k).countP (· < s) := by grind
   have hsplit :
       ts.countP (· < s) =
@@ -225,12 +166,12 @@ lemma exists_mem_drop_le_of_lt_countP
   have hsplit :
       ts.countP (· ≤ s) =
         (ts.take k).countP (· ≤ s) + (ts.drop k).countP (· ≤ s) := by
-    simpa [List.take_append_drop] using
-      (List.countP_append (p := fun x => decide (x ≤ s)) (l₁ := ts.take k) (l₂ := ts.drop k))
+    simpa [List.take_append_drop] using List.countP_append
+      (p := fun x => decide (x ≤ s)) (l₁ := ts.take k) (l₂ := ts.drop k)
   rw [hsplit, hdrop_zero] at hcount
-  have htake_le : (ts.take k).countP (· ≤ s) ≤ k :=
-    (List.countP_le_length (p := fun x => decide (x ≤ s)) (l := ts.take k)).trans
-      (by simp [List.length_take])
+  have htake_le : (ts.take k).countP (· ≤ s) ≤ k := by
+    simpa using (List.countP_le_length (p := fun x => decide (x ≤ s)) (l := ts.take k)).trans
+      (List.length_take_le k ts)
   lia
 
 /-- Count-based ordered matching for the differ-by-1 case. If the sorted
@@ -326,10 +267,9 @@ theorem strictInterl_of_count_bounds_succ
   have hts_len : ts.length = F.natDegree := by
     rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
   have hlen : rs.length + 1 = ts.length := by lia
-  exact
-    ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
-      hrs_eq, hts_eq,
-      Or.inl ⟨hlen, listInterlaces_of_count_bounds hrs_sorted hts_sorted hlen hhead hlt hle⟩⟩
+  exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
+    hrs_eq, hts_eq,
+    Or.inl ⟨hlen, listInterlaces_of_count_bounds hrs_sorted hts_sorted hlen hhead hlt hle⟩⟩
 
 /-- Build a same-degree `StrictInterl` witness from real-rootedness and root-count
 inequalities against explicit sorted root lists. -/
@@ -355,10 +295,9 @@ theorem strictInterl_of_count_bounds_same
   have hts_len : ts.length = F.natDegree := by
     rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
   have hlen : rs.length = ts.length := by lia
-  exact
-    ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
-      hrs_eq, hts_eq,
-      Or.inr ⟨hlen, listAlternates_of_count_bounds hrs_sorted hts_sorted hlen hlt hle⟩⟩
+  exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
+    hrs_eq, hts_eq,
+    Or.inr ⟨hlen, listAlternates_of_count_bounds hrs_sorted hts_sorted hlen hlt hle⟩⟩
 
 end RealRooted.MaWangInternal
 

@@ -21,21 +21,6 @@ namespace ToricContribution
 
 local notation "orderedRoot" => RealRooted.orderedRoot
 
-private theorem jPolynomial_intervalRootData (m ε : ℕ) (hm : 0 < m) :
-    IntervalRootData (jPolynomial m ε) (m - 1) := by
-  simpa [signedTriangleFamily] using
-    jPolynomial_signedTriangleFamily_intervalRootData m ε 0 0 hm (by lia) le_rfl
-
-private theorem signedDiagonal_intervalRootData
-    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
-    IntervalRootData
-      (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) d d) (m - 1) := by
-  convert jPolynomial_signedTriangleFamily_intervalRootData m ε d d hm hd le_rfl using 1
-  lia
-
-private theorem intervalRootData_ne {p : ℝ[X]} {n : ℕ} (h : IntervalRootData p n) :
-    p ≠ 0 := fun hzero => h.eval_zero_ne (by simp [hzero])
-
 private theorem rightClosedIntervalRootData_ne {p : ℝ[X]} {n : ℕ}
     (h : RightClosedIntervalRootData p n) : p ≠ 0 :=
   fun hzero => h.eval_zero_ne (by simp [hzero])
@@ -65,8 +50,9 @@ private theorem finite_roots_sort
   let S := signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
     d d
   let R := rPolynomial m ε d
-  have hS_data : IntervalRootData S (m - 1) := signedDiagonal_intervalRootData m ε d hm hd
-  have hS_ne : S ≠ 0 := intervalRootData_ne hS_data
+  have hS_data : IntervalRootData S (m - 1) :=
+    signedTriangleFamily_self_intervalRootData m ε d hm hd
+  have hS_ne : S ≠ 0 := hS_data.ne_zero
   obtain ⟨k, hk, hcollapse⟩ :=
     exists_one_sub_X_mul_signedTriangleFamily_diagonal_eq_C_mul_rPolynomial
       m ε d hm hd
@@ -359,7 +345,7 @@ private theorem orderedRoot_finite_eq_signedDiagonalRoot
     (i : Fin (m - 1)) :
     orderedRoot (rPolynomial m ε d) (m - 1 + 1) i.castSucc =
       signedDiagonalRoot m ε d i := by
-  have hSdata := signedDiagonal_intervalRootData m ε d hm hd
+  have hSdata := signedTriangleFamily_self_intervalRootData m ε d hm hd
   rw [RealRooted.orderedRoot, finite_roots_sort m ε d hm hd,
     signedDiagonalRoot, RealRooted.orderedRoot]
   have hi : i.val <
@@ -503,7 +489,7 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos
       have hJData : IntervalRootData J n := by
         simpa only [J, Nat.add_sub_cancel] using
           jPolynomial_intervalRootData (n + 1) ε (by lia)
-      have hJNe : J ≠ 0 := intervalRootData_ne hJData
+      have hJNe : J ≠ 0 := hJData.ne_zero
       have hinter := exceptionalRoot_interlacing_jPolynomialRoot
         (n + 1) ε (by lia)
       have hsLeft : ∀ j : Fin n, s j.castSucc < r j :=
@@ -582,7 +568,7 @@ theorem rPolynomial_exceptional_eval_mul_jPolynomial_derivative_pos_of_isRoot
     0 < (rPolynomial m ε m).eval x *
       (jPolynomial m ε).derivative.eval x := by
   have hJData := jPolynomial_intervalRootData m ε hm
-  have hJNe : jPolynomial m ε ≠ 0 := intervalRootData_ne hJData
+  have hJNe : jPolynomial m ε ≠ 0 := hJData.ne_zero
   obtain ⟨i, hi⟩ := exists_index_eq_of_mem_roots
     (jPolynomialRoot m ε) hJData.strictMono_orderedRoot
     (fun i => hJData.orderedRoot_isRoot i) hJNe hJData.natDegree_eq.le
@@ -611,7 +597,7 @@ private theorem orderedRoot_finite_last_eq_one
     orderedRoot (rPolynomial m ε d) (m - 1 + 1) (Fin.last (m - 1)) = 1 := by
   let S := signedTriangleFamily ((ε : ℝ) + 1 / 2)
     (jPolynomial m ε) d d
-  have hSData : IntervalRootData S (m - 1) := signedDiagonal_intervalRootData m ε d hm hd
+  have hSData : IntervalRootData S (m - 1) := signedTriangleFamily_self_intervalRootData m ε d hm hd
   rw [RealRooted.orderedRoot, finite_roots_sort m ε d hm hd]
   have hlength :
       ((signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε)
@@ -666,7 +652,7 @@ private theorem finiteRoot_interlacing_jPolynomialRoot
     · have hiLast : i.val = m - 2 := by lia
       have hroot := hJData.roots_mem_Ioo
         (jPolynomialRoot m ε i)
-        ((mem_roots (intervalRootData_ne hJData)).mpr (hJData.orderedRoot_isRoot i))
+        ((mem_roots (hJData.ne_zero)).mpr (hJData.orderedRoot_isRoot i))
       rw [show i.succ = Fin.last (m - 1) by
         apply Fin.ext
         simp [hiLast]
@@ -756,7 +742,7 @@ private theorem interlaces_of_intervalRootData_orderedRoot_bounds
     Interlaces g f := by
   let rs := f.roots.sort (· ≤ ·)
   let ss := g.roots.sort (· ≤ ·)
-  have hgNe : g ≠ 0 := intervalRootData_ne hg
+  have hgNe : g ≠ 0 := hg.ne_zero
   have hrsLength : rs.length = n + 1 := by
     rw [show rs = f.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
       card_roots_of_splits hfSplits, hfDegree]

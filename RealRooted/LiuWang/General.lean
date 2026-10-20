@@ -37,18 +37,14 @@ private theorem strictInterl_mul_add_mul_of_eval_nonpos_of_pos {f g a b : ℝ[X]
         refine Multiset.nodup_iff_count_le_one.mpr fun r ↦ ?_
         rw [count_roots]
         by_cases hr : f.IsRoot r
-        · have hg0 := rootMultiplicity_eq_zero (hno r hr)
-          have := (hgf.rootMultiplicity_bounds r).2
+        · have hbound := (hgf.rootMultiplicity_bounds r).2
+          rw [rootMultiplicity_eq_zero (hno r hr)] at hbound
           lia
-        · rw [rootMultiplicity_eq_zero hr]
-          lia
+        · simp [rootMultiplicity_eq_zero hr]
       refine strictInterl_of_eval_mul_derivative_nonpos hf_pos hgf.2.1.2 hnodup hF_pos hdeg_lo
         hdeg_hi fun r hr ↦ ?_
       have hW := hgf.eval_mul_eval_derivative_nonneg hg_pos hf_pos hr
-      have hFr : (a * f + b * g).eval r = b.eval r * g.eval r := by
-        simp [hr.eq_zero]
-      rw [hFr, mul_assoc]
-      exact mul_nonpos_of_nonpos_of_nonneg (hb r hr) hW
+      simpa [hr.eq_zero, mul_assoc] using mul_nonpos_of_nonpos_of_nonneg (hb r hr) hW
     push Not at hno
     obtain ⟨r, hrf, hrg⟩ := hno
     obtain ⟨qf, rfl⟩ := dvd_iff_isRoot.mpr hrf

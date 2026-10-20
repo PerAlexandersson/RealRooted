@@ -21,14 +21,10 @@ def HasNonnegCoeffs (p : ℝ[X]) : Prop := ∀ n, 0 ≤ p.coeff n
 
 /-! ### Elementary closure of nonnegative coefficients -/
 
-lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by
-  simp [HasNonnegCoeffs]
+lemma hasNonnegCoeffs_zero : HasNonnegCoeffs (0 : ℝ[X]) := by simp [HasNonnegCoeffs]
 
 lemma hasNonnegCoeffs_one : HasNonnegCoeffs (1 : ℝ[X]) := by
-  rintro (_ | n)
-  · simp
-  · rw [coeff_one]
-    simp
+  rintro (_ | n) <;> simp [coeff_one]
 
 lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
   intro n
@@ -124,15 +120,12 @@ lemma add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
     (hq_ne : q ≠ 0) :
     p + q ≠ 0 := by
-  let d : ℕ := q.natDegree
-  have hp_coeff : 0 ≤ p.coeff d := hp d
-  have hq_pos : 0 < q.coeff d := by
-    have hq_lc : 0 < q.leadingCoeff := hq.pos_leadingCoeff hq_ne
-    simpa [d] using hq_lc
-  intro hsum0
-  have hcoeff0 : (p + q).coeff d = 0 := by simp_all
-  rw [coeff_add] at hcoeff0
-  linarith
+  intro h
+  have hc := congrArg (fun r : ℝ[X] => r.coeff q.natDegree) h
+  have hq_pos : 0 < q.coeff q.natDegree := by
+    exact hq.pos_leadingCoeff hq_ne
+  simp only [coeff_add, coeff_zero] at hc
+  linarith [hp q.natDegree]
 
 /-- A nonzero polynomial with nonnegative coefficients is strictly positive at
 every strictly positive real argument. -/
@@ -149,14 +142,11 @@ theorem eval_pos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
 /-- A real polynomial with nonnegative coefficients has no positive real roots. -/
 theorem roots_nonpos_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     ∀ r ∈ p.roots, r ≤ 0 := fun r hr => by
-  by_contra hr_nonpos
   have hp0 : p ≠ 0 := fun hp0 => by
     simp [hp0] at hr
-  have hr_pos : 0 < r := lt_of_not_ge hr_nonpos
-  have hroot : p.IsRoot r := (Polynomial.mem_roots hp0).mp hr
-  have heval_pos : 0 < p.eval r := eval_pos_of_hasNonnegCoeffs hp hp0 hr_pos
-  rw [Polynomial.IsRoot.def] at hroot
-  linarith
+  by_contra hr_nonpos
+  exact (eval_pos_of_hasNonnegCoeffs hp hp0 (lt_of_not_ge hr_nonpos)).ne'
+    ((Polynomial.mem_roots hp0).mp hr)
 
 /-- A real root of a nonzero polynomial with nonnegative coefficients is
 nonpositive. -/

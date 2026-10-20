@@ -45,32 +45,40 @@ private theorem continuousAt_exceptionalPencilExteriorDensity
     ((continuousAt_const.mul continuousAt_const).mul
       (continuousAt_id.rpow_const (Or.inl hx)))
 
-private theorem mul_pos_of_continuousOn_of_ne_zero
-    {f : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
-    (hf : ContinuousOn f (Icc a b))
-    (hno : ∀ x, a ≤ x → x ≤ b → f x ≠ 0) :
-    0 < f a * f b := by
-  have ha : f a ≠ 0 := hno a le_rfl hab
-  have hb : f b ≠ 0 := hno b hab le_rfl
-  rcases lt_or_gt_of_ne ha with haNeg | haPos
-  · have hbNeg : f b < 0 := by
-      rcases lt_or_gt_of_ne hb with hbNeg | hbPos
-      · exact hbNeg
-      · have hzero : (0 : ℝ) ∈ Set.Icc (f a) (f b) :=
-          ⟨haNeg.le, hbPos.le⟩
-        obtain ⟨x, hx, hfx⟩ :=
-          intermediate_value_Icc hab hf hzero
-        exact ((hno x hx.1 hx.2) hfx).elim
-    exact mul_pos_of_neg_of_neg haNeg hbNeg
-  · have hbPos : 0 < f b := by
-      rcases lt_or_gt_of_ne hb with hbNeg | hbPos
-      · have hzero : (0 : ℝ) ∈ Set.Icc (f b) (f a) :=
-          ⟨hbNeg.le, haPos.le⟩
-        obtain ⟨x, hx, hfx⟩ :=
-          intermediate_value_Icc' hab hf hzero
-        exact ((hno x hx.1 hx.2) hfx).elim
-      · exact hbPos
-    exact mul_pos haPos hbPos
+private theorem exceptionalPencilExteriorDensity_factor
+    (m ε : ℕ) (γ₁ γ₂ a b : ℝ) {x : ℝ} (hx : 0 < x) :
+    exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x =
+      x ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) *
+        (a * (exceptionalEulerInverse m ε γ₁).eval 1 * x ^ (γ₂ - γ₁) +
+          b * (exceptionalEulerInverse m ε γ₂).eval 1) := by
+  rw [exceptionalPencilExteriorDensity,
+    show (ε : ℝ) + 1 / 2 - γ₁ - 1 =
+      ((ε : ℝ) + 1 / 2 - γ₂ - 1) + (γ₂ - γ₁) by ring,
+    Real.rpow_add hx]
+  ring
+
+private theorem exceptionalEulerInverse_eval_one_ne_zero
+    (m ε : ℕ) {γ : ℝ} (hm : 0 < m)
+    (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) :
+    (exceptionalEulerInverse m ε γ).eval 1 ≠ 0 :=
+  right_ne_zero_of_mul
+    (negOnePow_mul_exceptionalEulerInverse_eval_one_pos m ε hm hγ).ne'
+
+private theorem exceptionalPencil_natDegree_le
+    (m ε : ℕ) (γ₁ γ₂ a b : ℝ) :
+    (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).natDegree ≤ m :=
+  (Polynomial.natDegree_add_le _ _).trans
+    (max_le
+      ((Polynomial.natDegree_C_mul_le a _).trans
+        (natDegree_exceptionalEulerInverse_le m ε γ₁))
+      ((Polynomial.natDegree_C_mul_le b _).trans
+        (natDegree_exceptionalEulerInverse_le m ε γ₂)))
+
+private theorem left_ne_zero_of_mul_add_eq_zero
+    {A B z : ℝ} (hcoeff : A ≠ 0 ∨ B ≠ 0) (hzero : A * z + B = 0) :
+    A ≠ 0 := by
+  grind
 
 /-- A nonzero two-power exterior density has at most one zero on `(1, ∞)`.
 This is the analytic core of P6. -/
@@ -95,35 +103,13 @@ theorem exceptionalPencilExteriorDensity_ne_zero_of_lt
   have hxFactor :
       exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x =
         x ^ e * (A * x ^ d + B) := by
-    rw [exceptionalPencilExteriorDensity]
-    dsimp only [A, B, e, d]
-    have hxpow :
-        x ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-          x ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) * x ^ (γ₂ - γ₁) := by
-      calc
-        x ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-            x ^ (((ε : ℝ) + 1 / 2 - γ₂ - 1) + (γ₂ - γ₁)) := by
-          congr 1
-          ring
-        _ = _ := Real.rpow_add hxpos _ _
-    rw [hxpow]
-    ring
+    simpa only [A, B, e, d] using
+      exceptionalPencilExteriorDensity_factor m ε γ₁ γ₂ a b hxpos
   have hyFactor :
       exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b y =
         y ^ e * (A * y ^ d + B) := by
-    rw [exceptionalPencilExteriorDensity]
-    dsimp only [A, B, e, d]
-    have hypow :
-        y ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-          y ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) * y ^ (γ₂ - γ₁) := by
-      calc
-        y ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-            y ^ (((ε : ℝ) + 1 / 2 - γ₂ - 1) + (γ₂ - γ₁)) := by
-          congr 1
-          ring
-        _ = _ := Real.rpow_add hypos _ _
-    rw [hypow]
-    ring
+    simpa only [A, B, e, d] using
+      exceptionalPencilExteriorDensity_factor m ε γ₁ γ₂ a b hypos
   have hxLinear : A * x ^ d + B = 0 := by
     rw [hxFactor] at hxzero
     exact (mul_eq_zero.mp hxzero).resolve_left
@@ -133,12 +119,7 @@ theorem exceptionalPencilExteriorDensity_ne_zero_of_lt
     rw [hyFactor] at hyzero
     exact (mul_eq_zero.mp hyzero).resolve_left
       (Real.rpow_pos_of_pos hypos e).ne'
-  have hA : A ≠ 0 := by
-    intro hAzero
-    have hBzero : B = 0 := by simpa only [hAzero, zero_mul, zero_add] using hxLinear
-    rcases hcoeff with hcoeff | hcoeff
-    · exact hcoeff hAzero
-    · exact hcoeff hBzero
+  have hA : A ≠ 0 := left_ne_zero_of_mul_add_eq_zero hcoeff hxLinear
   have hpowers : x ^ d = y ^ d := by
     apply mul_left_cancel₀ hA
     linarith
@@ -170,32 +151,13 @@ private theorem exceptionalPencilExteriorDensity_crossing_pos
       exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b z =
         z ^ e * (A * z ^ d + B) := by
     intro z hz
-    rw [exceptionalPencilExteriorDensity]
-    dsimp only [A, B, e, d]
-    have hzpow :
-        z ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-          z ^ ((ε : ℝ) + 1 / 2 - γ₂ - 1) *
-            z ^ (γ₂ - γ₁) := by
-      calc
-        z ^ ((ε : ℝ) + 1 / 2 - γ₁ - 1) =
-            z ^ (((ε : ℝ) + 1 / 2 - γ₂ - 1) +
-              (γ₂ - γ₁)) := by
-          congr 1
-          ring
-        _ = _ := Real.rpow_add hz _ _
-    rw [hzpow]
-    ring
+    simpa only [A, B, e, d] using
+      exceptionalPencilExteriorDensity_factor m ε γ₁ γ₂ a b hz
   have hκLinear : A * κ ^ d + B = 0 := by
     rw [hfactor hκpos] at hκzero
     exact (mul_eq_zero.mp hκzero).resolve_left
       (Real.rpow_pos_of_pos hκpos e).ne'
-  have hA : A ≠ 0 := by
-    intro hAzero
-    have hBzero : B = 0 := by
-      simpa only [hAzero, zero_mul, zero_add] using hκLinear
-    rcases hcoeff with hcoeff | hcoeff
-    · exact hcoeff hAzero
-    · exact hcoeff hBzero
+  have hA : A ≠ 0 := left_ne_zero_of_mul_add_eq_zero hcoeff hκLinear
   have hOne :
       exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b 1 =
         A * (1 - κ ^ d) := by
@@ -431,10 +393,7 @@ private theorem exists_interiorRootComplement
   obtain ⟨s, hs⟩ := hPdvd
   have hP : P ≠ 0 :=
     (Polynomial.monic_multisetProd_X_sub_C rootsI).ne_zero
-  have hs0 : s ≠ 0 := by
-    intro hszero
-    rw [hszero, mul_zero] at hs
-    exact hq hs
+  have hs0 : s ≠ 0 := by grind
   refine ⟨s, ?_, ?_⟩
   · simpa only [interiorRootProduct, P, rootsI] using hs.symm
   · intro x hx0 hx1 hsx
@@ -446,11 +405,8 @@ private theorem exists_interiorRootComplement
       rw [hs, Polynomial.roots_mul (mul_ne_zero hP hs0),
         Polynomial.roots_multiset_prod_X_sub_C]
     have hcount := congrArg (fun u : Multiset ℝ => u.count x) hroots
-    have hfilter : rootsI.count x = q.roots.count x := by
-      simp [rootsI, hx0, hx1]
-    have hsCount : 0 < s.roots.count x :=
-      Multiset.count_pos.mpr hsMem
-    simp only [Multiset.count_add] at hcount
+    simp [rootsI, hx0, hx1] at hcount
+    have hsCount := Multiset.count_pos.mpr hsMem
     lia
 
 private theorem interiorRootProduct_signedIntegral_pos
@@ -471,15 +427,13 @@ private theorem interiorRootProduct_signedIntegral_pos
   have hPone : 0 < P.eval 1 := by
     dsimp only [P]
     exact interiorRootProduct_eval_pos_of_one_le q le_rfl
-  have hfactorEval : ∀ x : ℝ, P.eval x * s.eval x = q.eval x := by
-    intro x
+  have hfactorEval (x : ℝ) : P.eval x * s.eval x = q.eval x := by
     simpa only [eval_mul] using
       congrArg (Polynomial.eval x) hfactor
   have hsOne : s.eval 1 ≠ 0 := by
     intro hsOne
-    have h := hfactorEval 1
-    rw [hsOne, mul_zero] at h
-    exact hqOne h.symm
+    apply hqOne
+    simpa only [hsOne, mul_zero] using (hfactorEval 1).symm
   have hsSame : ∀ x : ℝ, 0 < x → x ≤ 1 →
       0 < s.eval x * s.eval 1 := by
     intro x hx0 hx1
@@ -490,6 +444,13 @@ private theorem interiorRootProduct_signedIntegral_pos
     · exact hsNo z (hx0.trans_le hxz) (lt_of_le_of_ne hz1 hz)
   let f : ℝ → ℝ := fun x =>
     q.eval 1 * ((q * (P * t)).eval x * x ^ α)
+  have hf_eq : ∀ x, f x = P.eval 1 * P.eval x ^ 2 *
+      (s.eval x * s.eval 1) * t.eval x * x ^ α := by
+    intro x
+    dsimp only [f]
+    simp only [eval_mul]
+    rw [← hfactorEval x, ← hfactorEval 1]
+    ring
   have hfInt : IntervalIntegrable f volume 0 1 := by
     have h := intervalIntegrable_shiftedJacobiIntegrand hα (by norm_num : (-1 : ℝ) < 0)
       (C (q.eval 1) * (q * (P * t)))
@@ -505,51 +466,28 @@ private theorem interiorRootProduct_signedIntegral_pos
     have hsPos := hsSame x hx.1 hx.2
     have hxpow : 0 < x ^ α := Real.rpow_pos_of_pos hx.1 α
     have htPos := ht x hx.1 hx.2
-    have hfactorX := hfactorEval x
-    have hfactorOne := hfactorEval 1
-    dsimp only [f]
-    simp only [eval_mul]
-    calc
-      q.eval 1 * (q.eval x * (P.eval x * t.eval x) * x ^ α) =
-          P.eval 1 * P.eval x ^ 2 *
-            (s.eval x * s.eval 1) * t.eval x * x ^ α := by
-        rw [← hfactorX, ← hfactorOne]
-        ring
-      _ ≥ 0 := by positivity
+    rw [hf_eq]
+    positivity
   obtain ⟨x, hx, havoid⟩ :=
     (Set.Ioo_infinite (show (0 : ℝ) < 1 by norm_num)).exists_notMem_finset
       P.roots.toFinset
   have hPx : P.eval x ≠ 0 := by
     intro hPx
     apply havoid
-    have hroot : P.IsRoot x := by
-      simpa only [Polynomial.IsRoot.def] using hPx
     exact Multiset.mem_toFinset.mpr
-      ((Polynomial.mem_roots hP).mpr hroot)
+      ((Polynomial.mem_roots hP).mpr (by simpa only [Polynomial.IsRoot.def] using hPx))
   have hfx : 0 < f x := by
     have hsPos := hsSame x hx.1 hx.2.le
     have hxpow : 0 < x ^ α := Real.rpow_pos_of_pos hx.1 α
     have htPos := ht x hx.1 hx.2.le
-    have hfactorX := hfactorEval x
-    have hfactorOne := hfactorEval 1
-    dsimp only [f]
-    simp only [eval_mul]
-    calc
-      q.eval 1 * (q.eval x * (P.eval x * t.eval x) * x ^ α) =
-          P.eval 1 * P.eval x ^ 2 *
-            (s.eval x * s.eval 1) * t.eval x * x ^ α := by
-        rw [← hfactorX, ← hfactorOne]
-        ring
-      _ > 0 := by positivity
+    rw [hf_eq]
+    positivity
   have hfCont : ContinuousAt f x := by
-    have hx0 : x ≠ 0 := hx.1.ne'
     dsimp only [f]
     exact continuousAt_const.mul
       ((q * (P * t)).continuousAt.mul
-        (continuousAt_id.rpow_const (Or.inl hx0)))
-  have hevent : ∀ᶠ y in nhds x, f y ≠ 0 :=
-    hfCont.eventually_ne hfx.ne'
-  obtain ⟨a, b, hxab, hab⟩ := hevent.exists_Ioo_subset
+        (continuousAt_id.rpow_const (Or.inl hx.1.ne')))
+  obtain ⟨a, b, hxab, hab⟩ := (hfCont.eventually_ne hfx.ne').exists_Ioo_subset
   let a' := max a 0
   let b' := min b 1
   have ha'x : a' < x := max_lt hxab.1 hx.1
@@ -558,9 +496,8 @@ private theorem interiorRootProduct_signedIntegral_pos
   have hsubset : Set.Ioo a' b' ⊆
       Function.support f ∩ Set.Ioc 0 1 := by
     intro y hy
-    have hay : a < y := (le_max_left a 0).trans_lt hy.1
-    have hyb : y < b := hy.2.trans_le (min_le_left b 1)
-    refine ⟨Function.mem_support.mpr (hab ⟨hay, hyb⟩), ?_⟩
+    refine ⟨Function.mem_support.mpr (hab
+      ⟨(le_max_left a 0).trans_lt hy.1, hy.2.trans_le (min_le_left b 1)⟩), ?_⟩
     exact ⟨(le_max_right a 0).trans_lt hy.1,
       (hy.2.trans_le (min_le_right b 1)).le⟩
   have hmeasure : 0 < volume
@@ -591,27 +528,9 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
   let K := exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b
   have hQOne : Q.eval 1 ≠ 0 := by
     simpa only [Q] using hOne
-  have hQ : Q ≠ 0 := by
-    intro hzero
-    apply hQOne
-    rw [hzero]
-    simp
-  have hR₁One :
-      (exceptionalEulerInverse m ε γ₁).eval 1 ≠ 0 := by
-    have hsign :=
-      negOnePow_mul_exceptionalEulerInverse_eval_one_pos
-        m ε hm hγ₁
-    intro hzero
-    rw [hzero, mul_zero] at hsign
-    linarith
-  have hR₂One :
-      (exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0 := by
-    have hsign :=
-      negOnePow_mul_exceptionalEulerInverse_eval_one_pos
-        m ε hm hγ₂
-    intro hzero
-    rw [hzero, mul_zero] at hsign
-    linarith
+  have hQ : Q ≠ 0 := fun hzero => hQOne (by simp [hzero])
+  have hR₁One := exceptionalEulerInverse_eval_one_ne_zero m ε hm hγ₁
+  have hR₂One := exceptionalEulerInverse_eval_one_ne_zero m ε hm hγ₂
   have hcoeff :
       a * (exceptionalEulerInverse m ε γ₁).eval 1 ≠ 0 ∨
         b * (exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0 := by
@@ -628,9 +547,8 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       (ε : ℝ) + 1 / 2 + p.natDegree < γ₁ ∧
         (ε : ℝ) + 1 / 2 + p.natDegree < γ₂ := by
     intro p hp
-    have hpOne : p.natDegree + 1 ≤ m := by lia
     have hpCast : (p.natDegree : ℝ) + 1 ≤ m := by
-      exact_mod_cast hpOne
+      exact_mod_cast (show p.natDegree + 1 ≤ m by lia)
     constructor <;> linarith
   by_contra hcount
   have hcard :
@@ -661,8 +579,7 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
         _ < m := hPdegSucc
     have hTpos : ∀ x : ℝ, 0 < x → x ≤ 1 → 0 < T.eval x := by
       intro x hx0 hx1
-      dsimp only [T]
-      simp only [eval_sub, eval_C, eval_X]
+      simp only [T, eval_sub, eval_C, eval_X]
       linarith
     have hInterior :
         0 < Q.eval 1 *
@@ -686,10 +603,7 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       filter_upwards with x hx
       by_cases hxκ : x = κ
       · subst x
-        change 0 ≤ f κ
-        dsimp only [f]
-        rw [hκzero]
-        simp
+        simp [f, hκzero]
       · have hcross :=
           exceptionalPencilExteriorDensity_crossing_pos
             m ε hγ hκ hx hxκ hcoeff hκzero
@@ -697,10 +611,10 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
         dsimp only [f, test, T]
         simp only [eval_mul, eval_sub, eval_C, eval_X]
         rw [← hKOne]
-        calc
-          K 1 * (P.eval x * (κ - x) * K x) =
-              P.eval x * (K 1 * ((κ - x) * K x)) := by ring
-          _ ≥ 0 := (mul_pos hP hcross).le
+        have hprod := mul_pos hP hcross
+        dsimp only [K] at hprod ⊢
+        ring_nf at hprod ⊢
+        exact hprod.le
     have hfInt : IntegrableOn f (Ioi 1) volume :=
       hExtInt.const_mul (Q.eval 1)
     have hsubset : Ioo (1 : ℝ) κ ⊆
@@ -715,13 +629,10 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       dsimp only [f, test, T]
       simp only [eval_mul, eval_sub, eval_C, eval_X]
       rw [← hKOne]
-      have hpos :
-          0 < K 1 * (P.eval x * (κ - x) * K x) := by
-        calc
-          K 1 * (P.eval x * (κ - x) * K x) =
-              P.eval x * (K 1 * ((κ - x) * K x)) := by ring
-          _ > 0 := mul_pos hP hcross
-      exact hpos.ne'
+      have hprod := mul_pos hP hcross
+      dsimp only [K] at hprod ⊢
+      ring_nf at hprod ⊢
+      exact hprod.ne'
     have hExterior :
         0 < Q.eval 1 *
           (∫ x in Ioi (1 : ℝ), test.eval x * K x) := by
@@ -731,7 +642,7 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       exact ((MeasureTheory.Measure.measure_Ioo_pos _).mpr hκ).trans_le
         (MeasureTheory.measure_mono hsubset)
     have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
-    dsimp only [Q, K] at hmoment hEq
+    dsimp only [Q, K] at hEq
     nlinarith
   · have hKNo : ∀ x : ℝ, 1 < x → K x ≠ 0 :=
       fun x hx hKx => hzero ⟨x, hx, hKx⟩
@@ -752,15 +663,15 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
         m ε (a := a) (b := b) test hbounds.1 hbounds.2
     have hKsame : ∀ x : ℝ, 1 < x → 0 < K 1 * K x := by
       intro x hx
-      apply mul_pos_of_continuousOn_of_ne_zero hx.le
+      apply mul_pos_of_forall_ne_zero_Icc hx.le
       · intro z hz
         exact (continuousAt_exceptionalPencilExteriorDensity
           m ε γ₁ γ₂ a b
             (one_pos.trans_le hz.1).ne').continuousWithinAt
-      · intro z hz1 hzx
+      · intro z hzmem
         by_cases hz : z = 1
         · simpa only [hz, hKOne] using hQOne
-        · exact hKNo z (lt_of_le_of_ne hz1 (Ne.symm hz))
+        · exact hKNo z (lt_of_le_of_ne hzmem.1 (Ne.symm hz))
     have hExterior :
         0 < Q.eval 1 *
           (∫ x in Ioi (1 : ℝ), test.eval x * K x) := by
@@ -774,7 +685,7 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
       rw [← hKOne]
       nlinarith
     have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
-    dsimp only [Q, K] at hmoment hEq
+    dsimp only [Q, K] at hEq
     nlinarith
 
 /-- A generic exceptional pencil member splits over `ℝ`.  The interior-root
@@ -794,11 +705,7 @@ theorem exceptionalEulerInverse_pencil_splits_of_eval_one_ne_zero
   let P := interiorRootProduct Q
   have hQOne : Q.eval 1 ≠ 0 := by
     simpa only [Q] using hOne
-  have hQ : Q ≠ 0 := by
-    intro hzero
-    apply hQOne
-    rw [hzero]
-    simp
+  have hQ : Q ≠ 0 := fun hzero => hQOne (by simp [hzero])
   have hPdeg : m - 1 ≤ P.natDegree := by
     rw [show P = interiorRootProduct Q by rfl,
       natDegree_interiorRootProduct]
@@ -806,16 +713,9 @@ theorem exceptionalEulerInverse_pencil_splits_of_eval_one_ne_zero
       exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
         m ε hm hγ₁ hγ₂ hγ hab hOne
   have hQdeg : Q.natDegree ≤ m := by
-    dsimp only [Q]
-    exact (Polynomial.natDegree_add_le _ _).trans
-      (max_le
-        ((Polynomial.natDegree_C_mul_le a _).trans
-          (natDegree_exceptionalEulerInverse_le m ε γ₁))
-        ((Polynomial.natDegree_C_mul_le b _).trans
-          (natDegree_exceptionalEulerInverse_le m ε γ₂)))
+    simpa only [Q] using exceptionalPencil_natDegree_le m ε γ₁ γ₂ a b
   obtain ⟨s, hfactor, -⟩ := exists_interiorRootComplement hQ
   have hP : P ≠ 0 := by
-    dsimp only [P, interiorRootProduct]
     exact (Polynomial.monic_multisetProd_X_sub_C _).ne_zero
   have hs : s ≠ 0 := by
     apply right_ne_zero_of_mul
@@ -862,20 +762,10 @@ private theorem exceptionalEulerInverse_pencil_splits_of_eval_one_eq_zero
       exceptionalEulerInverse_pencil_natDegree_ge_sub_one
         m ε hm hγ₁pos hγ₂pos hγ.ne hQ
   have hQdegUpper : Q.natDegree ≤ m := by
-    dsimp only [Q, R]
-    exact (Polynomial.natDegree_add_le _ _).trans
-      (max_le
-        ((Polynomial.natDegree_C_mul_le a _).trans
-          (natDegree_exceptionalEulerInverse_le m ε γ₁))
-        ((Polynomial.natDegree_C_mul_le b _).trans
-          (natDegree_exceptionalEulerInverse_le m ε γ₂)))
-  have hR : R ≠ 0 := by
-    intro hzero
-    have hdegree := natDegree_exceptionalEulerInverse m ε hγ₁pos
-    dsimp only [R] at hzero
-    rw [hzero] at hdegree
-    simp at hdegree
-    lia
+    simpa only [Q, R] using exceptionalPencil_natDegree_le m ε γ₁ γ₂ a b
+  have hROne : R.eval 1 ≠ 0 := by
+    simpa only [R] using exceptionalEulerInverse_eval_one_ne_zero m ε hm hγ₁
+  have hR : R ≠ 0 := fun hzero => hROne (by simp [hzero])
   have hQlc : Q.leadingCoeff ≠ 0 :=
     Polynomial.leadingCoeff_ne_zero.mpr hQ
   have hRlc : R.leadingCoeff ≠ 0 :=
@@ -897,14 +787,6 @@ private theorem exceptionalEulerInverse_pencil_splits_of_eval_one_eq_zero
     dsimp only [g, R]
     rw [Polynomial.natDegree_C_mul (inv_ne_zero hRlc),
       natDegree_exceptionalEulerInverse m ε hγ₁pos]
-  have hROne : R.eval 1 ≠ 0 := by
-    have hsign :=
-      negOnePow_mul_exceptionalEulerInverse_eval_one_pos
-        m ε hm hγ₁
-    dsimp only [R]
-    intro hzero
-    rw [hzero, mul_zero] at hsign
-    linarith
   have hfamily : ∀ {μ : ℝ}, 0 < μ →
       ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
     intro μ hμ
@@ -934,15 +816,11 @@ private theorem exceptionalEulerInverse_pencil_splits_of_eval_one_eq_zero
       apply hevalNe
       rw [hrewrite, hz.1, hz.2]
       simp
-    refine ⟨?_, ?_⟩
-    · intro hzero
-      apply hevalNe
-      rw [hzero]
-      simp
-    · rw [hrewrite]
-      apply exceptionalEulerInverse_pencil_splits_of_eval_one_ne_zero
-        m ε hm hγ₁ hγ₂ hγ hab'
-      simpa only [← hrewrite] using hevalNe
+    refine ⟨fun hzero => hevalNe (by simp [hzero]), ?_⟩
+    rw [hrewrite]
+    apply exceptionalEulerInverse_pencil_splits_of_eval_one_ne_zero
+      m ε hm hγ₁ hγ₂ hγ hab'
+    simpa only [← hrewrite] using hevalNe
   have hfSplit : f.Splits := by
     by_cases hdegree : Q.natDegree = m
     · have hpos : PosComboRealRooted f g :=

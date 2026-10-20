@@ -15,22 +15,14 @@ lemma nonneg_normalized_prod_sub_countP :
   | [], _ => by simp
   | x :: xs, s => by
       by_cases hx : s < x
-      · have ih := nonneg_normalized_prod_sub_countP xs s
-        rw [List.countP_cons_of_pos (by lia), List.map_cons, List.prod_cons]
-        have hfactor :
-            (-1 : ℝ) ^ (xs.countP (s < ·) + 1) * ((s - x) * (xs.map (fun y => s - y)).prod) =
-              (x - s) * ((-1 : ℝ) ^ (xs.countP (s < ·)) * (xs.map (fun y => s - y)).prod) := by
-          ring
-        simp_all
-      · have ih := nonneg_normalized_prod_sub_countP xs s
-        rw [List.countP_cons_of_neg (by lia), List.map_cons, List.prod_cons]
-        have hx_nonneg : 0 ≤ s - x := sub_nonneg.mpr (le_of_not_gt hx)
-        have hfactor :
-            (-1 : ℝ) ^ xs.countP (s < ·) * ((s - x) * (xs.map (fun y => s - y)).prod) =
-              (s - x) * ((-1 : ℝ) ^ xs.countP (s < ·) * (xs.map (fun y => s - y)).prod) := by
-          ring
-        rw [hfactor]
-        exact mul_nonneg hx_nonneg ih
+      · rw [List.countP_cons_of_pos (by lia), List.map_cons, List.prod_cons]
+        convert mul_nonneg (sub_nonneg.mpr hx.le)
+          (nonneg_normalized_prod_sub_countP xs s) using 1
+        ring
+      · rw [List.countP_cons_of_neg (by lia), List.map_cons, List.prod_cons]
+        convert mul_nonneg (sub_nonneg.mpr (le_of_not_gt hx))
+          (nonneg_normalized_prod_sub_countP xs s) using 1
+        ring
 
 /-- For a real-rooted polynomial with positive leading coefficient, the sign of
 `F.eval s` is controlled by the parity of the number of roots strictly to the
@@ -39,21 +31,11 @@ lemma nonneg_normalized_eval_of_countP_gt
     {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) (s : ℝ) :
     0 ≤ (-1 : ℝ) ^ (ts.countP (s < ·)) * F.eval s := by
-  have hprod := nonneg_normalized_prod_sub_countP ts s
-  have hlead_nonneg : 0 ≤ F.leadingCoeff := hF_pos.le
-  have hfactor :
-      (-1 : ℝ) ^ (ts.countP (s < ·)) *
-          (F.leadingCoeff * (ts.map (fun x => s - x)).prod) =
-        F.leadingCoeff *
-          (((-1 : ℝ) ^ (ts.countP (s < ·))) * (ts.map (fun x => s - x)).prod) := by
-    ring
-  have hmain :
-      0 ≤ (-1 : ℝ) ^ (ts.countP (s < ·)) *
-        (F.leadingCoeff * (ts.map (fun x => s - x)).prod) := by
-    rw [hfactor]
-    exact mul_nonneg hlead_nonneg hprod
   rw [eval_eq_leadingCoeff_mul_prod_sub hF_splits s, ← hts_eq]
-  simpa using hmain
+  change 0 ≤ (-1 : ℝ) ^ ts.countP (s < ·) *
+    (F.leadingCoeff * (ts.map (fun x => s - x)).prod)
+  convert mul_nonneg hF_pos.le (nonneg_normalized_prod_sub_countP ts s) using 1
+  ring
 
 /-- If the parity predicted by the root count would force a positive sign, then
 an assumed nonpositive value must actually be a root. -/
@@ -64,8 +46,7 @@ lemma isRoot_of_eval_nonpos_of_even_countP_gt
     F.IsRoot s := by
   rcases heven with ⟨k, hk⟩
   have hnorm := nonneg_normalized_eval_of_countP_gt hF_splits hF_pos hts_eq s
-  rw [hk] at hnorm
-  norm_num at hnorm
+  simp [hk] at hnorm
   rw [Polynomial.IsRoot.def]
   linarith
 
@@ -78,40 +59,9 @@ lemma isRoot_of_eval_nonneg_of_odd_countP_gt
     F.IsRoot s := by
   rcases hodd with ⟨k, hk⟩
   have hnorm := nonneg_normalized_eval_of_countP_gt hF_splits hF_pos hts_eq s
-  rw [hk] at hnorm
-  have hnorm' : 0 ≤ -F.eval s := by simpa [pow_add, pow_mul] using hnorm
+  have hnorm' : 0 ≤ -F.eval s := by simpa [hk, pow_add, pow_mul] using hnorm
   rw [Polynomial.IsRoot.def]
   grind
-
-/-- A strictly negative value occurs only when an odd number of roots lie
-strictly to the right. -/
-lemma odd_countP_gt_of_eval_neg
-    {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
-    {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
-    (hs : F.eval s < 0) :
-    Odd (ts.countP (s < ·)) := by
-  rcases Nat.even_or_odd (ts.countP (s < ·)) with heven | hodd
-  · exfalso
-    exact (show ¬ F.IsRoot s from by
-      intro hroot
-      simp_all) <|
-      isRoot_of_eval_nonpos_of_even_countP_gt hF_splits hF_pos hts_eq (le_of_lt hs) heven
-  · lia
-
-/-- A strictly positive value occurs only when an even number of roots lie
-strictly to the right. -/
-lemma even_countP_gt_of_eval_pos
-    {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
-    {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
-    (hs : 0 < F.eval s) :
-    Even (ts.countP (s < ·)) := by
-  rcases Nat.even_or_odd (ts.countP (s < ·)) with heven | hodd
-  · lia
-  · exfalso
-    exact (show ¬ F.IsRoot s from by
-      intro hroot
-      simp_all) <|
-      isRoot_of_eval_nonneg_of_odd_countP_gt hF_splits hF_pos hts_eq (le_of_lt hs) hodd
 
 /-- In an interlacing layout, every consecutive pair on the right-hand list has
 some left-hand element weakly between them. -/
@@ -190,15 +140,13 @@ lemma countP_lt_countP_of_exists
     (hpq : ∀ x, p x = true → q x = true)
     {a : ℝ} (ha : a ∈ ts) (hpa : p a = false) (hqa : q a = true) :
     ts.countP p < ts.countP q := by
-  have hcount :
-      (ts.filter q).countP p = ts.countP p := by
+  have hcount : (ts.filter q).countP p = ts.countP p := by
     rw [List.countP_eq_length_filter, List.countP_eq_length_filter]
     simp_rw [List.filter_filter]
     congr
     ext x
     simp_all
-  have hlt :
-      (ts.filter q).countP p < (ts.filter q).length := by
+  have hlt : (ts.filter q).countP p < (ts.filter q).length := by
     rw [List.countP_lt_length_iff]
     grind
   grind
@@ -254,13 +202,8 @@ lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                     (ss'.map (fun x => r₂ - x)).prod ≤
                   0 :=
                 listInterlaces_prod_mul_prod_nonpos_at_heads htail
-              calc
-                ((s :: ss').map (fun x => r₁ - x)).prod *
-                    ((s :: ss').map (fun x => r₂ - x)).prod
-                    = ((r₁ - s) * (r₂ - s)) *
-                      ((ss'.map (fun x => r₁ - x)).prod *
-                        (ss'.map (fun x => r₂ - x)).prod) := by simp [mul_assoc, mul_left_comm]
-                _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
+              simpa [mul_assoc, mul_left_comm, mul_comm] using
+                mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
           | cons a' pre' =>
               simp only [List.cons_append, List.cons.injEq] at hbEq
               rcases hbEq with ⟨rfl, htailEq⟩
@@ -273,9 +216,7 @@ lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
               obtain ⟨_, hs_le_a', hint_tail⟩ := hint'
               have hrs_tail : (a' :: pre' ++ r₁ :: r₂ :: rest).Pairwise (· ≤ ·) :=
                 by simp_all
-              have hr₁_mem : r₁ ∈ (a' :: pre' ++ r₁ :: r₂ :: rest) := by
-                simp [List.mem_cons, List.mem_append]
-              have ha'_le_r₁ : a' ≤ r₁ := by simp_all
+              have ha'_le_r₁ : a' ≤ r₁ := List.Pairwise.rel_head hrs_tail (by simp)
               have hs_factor_nonneg : 0 ≤ (r₁ - s) * (r₂ - s) := by
                 have hs_le_r₁ : s ≤ r₁ := le_trans hs_le_a' ha'_le_r₁
                 have hr₁r₂ : r₁ ≤ r₂ := by grind
@@ -287,47 +228,8 @@ lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                 listInterlaces_prod_mul_prod_nonpos_of_consecutive
                   (ss := ss') (rs := a' :: pre' ++ r₁ :: r₂ :: rest)
                   (pre := a' :: pre') (rest := rest) hrs_tail hint_tail (by lia)
-              calc
-                ((s :: ss').map (fun x => r₁ - x)).prod *
-                    ((s :: ss').map (fun x => r₂ - x)).prod
-                    = ((r₁ - s) * (r₂ - s)) *
-                      ((ss'.map (fun x => r₁ - x)).prod *
-                        (ss'.map (fun x => r₂ - x)).prod) := by simp [mul_assoc, mul_left_comm]
-                _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
-
-/-- At consecutive roots of the right-hand polynomial in an interlacing layout,
-the interlacing polynomial has opposite-or-zero signs. -/
-lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
-    (hg_splits : g.Splits)
-    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hss_eq : (↑ss : Multiset ℝ) = g.roots)
-    (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
-    g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
-      eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
-  have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod *
-        (ss.map (fun x => r₂ - x)).prod ≤
-      0 :=
-    listInterlaces_prod_mul_prod_nonpos_at_heads hint
-  have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
-    simpa [pow_two] using sq_nonneg g.leadingCoeff
-  have hprod_r₁ :
-      ((↑ss : Multiset ℝ).map (fun x => r₁ - x)).prod =
-        (ss.map (fun x => r₁ - x)).prod := rfl
-  have hprod_r₂ :
-      ((↑ss : Multiset ℝ).map (fun x => r₂ - x)).prod =
-        (ss.map (fun x => r₂ - x)).prod := rfl
-  have hfactor :
-      (g.leadingCoeff * (ss.map (fun x => r₁ - x)).prod) *
-          (g.leadingCoeff * (ss.map (fun x => r₂ - x)).prod) =
-        (g.leadingCoeff * g.leadingCoeff) *
-          (((ss.map (fun x => r₁ - x)).prod) *
-            ((ss.map (fun x => r₂ - x)).prod)) := by
-    ring
-  rw [hprod_r₁, hprod_r₂]
-  rw [hfactor]
-  exact mul_nonpos_of_nonneg_of_nonpos hlead_nonneg hprod_nonpos
+              simpa [mul_assoc, mul_left_comm, mul_comm] using
+                mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
 
 /-- At any consecutive pair in a sorted interlacing layout, the interlacing
 polynomial has opposite-or-zero signs. -/
@@ -342,27 +244,12 @@ lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
   rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
       eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
   have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod *
-        (ss.map (fun x => r₂ - x)).prod ≤
-      0 :=
+      (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
     listInterlaces_prod_mul_prod_nonpos_of_consecutive hrs_sorted hint hEq
-  have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
-    simpa [pow_two] using sq_nonneg g.leadingCoeff
-  have hprod_r₁ :
-      ((↑ss : Multiset ℝ).map (fun x => r₁ - x)).prod =
-        (ss.map (fun x => r₁ - x)).prod := rfl
-  have hprod_r₂ :
-      ((↑ss : Multiset ℝ).map (fun x => r₂ - x)).prod =
-        (ss.map (fun x => r₂ - x)).prod := rfl
-  have hfactor :
-      (g.leadingCoeff * (ss.map (fun x => r₁ - x)).prod) *
-          (g.leadingCoeff * (ss.map (fun x => r₂ - x)).prod) =
-        (g.leadingCoeff * g.leadingCoeff) *
-          (((ss.map (fun x => r₁ - x)).prod) *
-            ((ss.map (fun x => r₂ - x)).prod)) := by
-    ring
-  rw [hprod_r₁, hprod_r₂, hfactor]
-  exact mul_nonpos_of_nonneg_of_nonpos hlead_nonneg hprod_nonpos
+  change (g.leadingCoeff * (ss.map (fun x => r₁ - x)).prod) *
+    (g.leadingCoeff * (ss.map (fun x => r₂ - x)).prod) ≤ 0
+  convert mul_nonpos_of_nonneg_of_nonpos (sq_nonneg g.leadingCoeff) hprod_nonpos using 1
+  ring
 
 /-- Strict IVT bridge: strictly opposite endpoint signs give a real root in the
 open interval. -/

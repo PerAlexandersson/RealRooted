@@ -20,9 +20,7 @@ theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     {δ : ℝ} (hδ : 0 < δ) :
     StrictInterl f ((a * f + b * g) - C δ * g) := by
   let F : ℝ[X] := a * f + b * g
-  have hdeg_lo' : f.natDegree ≤ F.natDegree := by lia
-  have hdeg_hi' : F.natDegree ≤ f.natDegree + 1 := by lia
-  have hcases : F.natDegree = f.natDegree ∨ F.natDegree = f.natDegree + 1 := by lia
+  have hdeg_lo' : f.natDegree ≤ F.natDegree := by simpa [F] using hdeg_lo
   have hFδ_pos : HasPosLeadingCoeff (F - C δ * g) :=
     hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound hgf hdeg_lo' hF_pos δ
   have hnat_Fδ : (F - C δ * g).natDegree = F.natDegree :=
@@ -36,11 +34,11 @@ theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
       simp [F, sub_eq_add_neg, add_assoc, right_distrib]
     rw [hEq]
     exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr hbδ (hno r hr)
-  rcases hcases with hsame | hsucc
-  · have hdeg_same : (F - C δ * g).natDegree = f.natDegree := by lia
-    exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hFδ_pos hdeg_same hroot_sign
-  · have hdeg_succ : (F - C δ * g).natDegree = f.natDegree + 1 := by lia
-    exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hFδ_pos hdeg_succ hroot_sign
+  rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
+  · exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hFδ_pos
+      (hnat_Fδ.trans (by simpa [F] using hsame)) hroot_sign
+  · exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hFδ_pos
+      (hnat_Fδ.trans (by simpa [F] using hsucc)) hroot_sign
 
 /-- Real-rootedness for the perturbed weak-sign Liu--Wang combination. -/
 theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
@@ -60,13 +58,11 @@ lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]}
     (hp_splits : p.Splits)
     {z : ℂ} (hz : z ∈ p.aroots ℂ) :
     z ∈ (algebraMap ℝ ℂ).range := by
-  have hmap :
-      p.roots.map (algebraMap ℝ ℂ) = p.aroots ℂ := by
+  rw [← show p.roots.map (algebraMap ℝ ℂ) = p.aroots ℂ by
     simpa [Polynomial.aroots_def] using
       roots_map_of_injective_of_card_eq_natDegree
         (p := p) (f := algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
-        (card_roots_of_splits hp_splits)
-  rw [← hmap] at hz
+        (card_roots_of_splits hp_splits)] at hz
   rcases Multiset.mem_map.mp hz with ⟨x, _, rfl⟩
   simp
 
@@ -87,13 +83,10 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   have hq_monic : q.Monic := by
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hq_ne : q ≠ 0 :=
-    mul_ne_zero (by simp [hlc_ne]) hF_ne
+  have hq_ne : q ≠ 0 := mul_ne_zero (by simp [hlc_ne]) hF_ne
   have hq_deg_pos : 0 < q.natDegree := by
-    rw [show q = C F.leadingCoeff⁻¹ * F by grind, natDegree_C_mul (inv_ne_zero hlc_ne)]
-    have hF_deg_pos : 0 < F.natDegree := by
-      obtain ⟨_, _, hdeg, _, _, _, _, _, _, _⟩ := hgf
-      lia
+    simp only [q, natDegree_C_mul (inv_ne_zero hlc_ne)]
+    obtain ⟨_, _, hdeg, _, _, _, _, _, _, _⟩ := hgf
     lia
   have hroots_real :
       ∀ z ∈ (q.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
@@ -133,10 +126,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       apply monic_C_mul_of_mul_leadingCoeff_eq_one
       simp_all
     have hqδ_deg : qδ.natDegree = q.natDegree := by
-      rw [show qδ = C F.leadingCoeff⁻¹ * (F - C δ * g) by grind,
-        show q = C F.leadingCoeff⁻¹ * F by grind,
-        natDegree_C_mul (inv_ne_zero hlc_ne), natDegree_C_mul (inv_ne_zero hlc_ne),
-        hFδ_natdeg]
+      simp only [qδ, q, natDegree_C_mul (inv_ne_zero hlc_ne), hFδ_natdeg]
     have hqδ_coeff :
         ∀ i : ℕ, ‖qδ.coeff i - q.coeff i‖ < η := by
       intro i
@@ -164,8 +154,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
       Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
         (f := q) (g := qδ) hη_pos hz_aeval hq_monic hqδ_monic hqδ_deg hqδ_coeff
         (IsAlgClosed.splits _)
-    have hFδ_rr : ((F - C δ * g) ≠ 0 ∧ (F - C δ * g).Splits) := hsub_rr hδ_pos
-    have hqδ_rr : (qδ ≠ 0 ∧ qδ.Splits) := by simp_all [qδ]
+    have hFδ_rr := hsub_rr hδ_pos
+    have hqδ_rr : qδ ≠ 0 ∧ qδ.Splits := by simp_all [qδ]
     rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr.2 hw_mem with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
       unfold eps0
@@ -193,14 +183,10 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   have hq_split : q.Splits :=
     Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
       (IsAlgClosed.splits _) hroots_real
-  have hq_rr : (q ≠ 0 ∧ q.Splits) := by lia
+  have hq_rr : q ≠ 0 ∧ q.Splits := ⟨hq_ne, hq_split⟩
   have hF_eq : C F.leadingCoeff * q = F := by
-    unfold q
-    calc
-      C F.leadingCoeff * (C F.leadingCoeff⁻¹ * F)
-          = (C F.leadingCoeff * C F.leadingCoeff⁻¹) * F := by grind
-      _ = C (F.leadingCoeff * F.leadingCoeff⁻¹) * F := by simp
-      _ = F := by simp [hlc_ne]
+    change C F.leadingCoeff * (C F.leadingCoeff⁻¹ * F) = F
+    rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hlc_ne, C_1, one_mul]
   rw [← hF_eq]
   simp_all [-hF_eq]
 

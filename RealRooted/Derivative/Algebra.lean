@@ -17,12 +17,6 @@ The following lemmas restate a handful of `Polynomial` facts about derivatives
 using API that is stable across the Mathlib versions this file is built against.
 -/
 
-/-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
-@[deprecated "Use `Polynomial.natDegree_derivative`." (since := "2026-10-05")]
-lemma natDegree_derivative_eq (p : ℝ[X]) :
-    p.derivative.natDegree = p.natDegree - 1 :=
-  p.natDegree_derivative
-
 @[deprecated Polynomial.Splits.of_natDegree_eq_zero (since := "2026-10-06")]
 alias splits_of_natDegree_eq_zero := Polynomial.Splits.of_natDegree_eq_zero
 
@@ -58,27 +52,22 @@ theorem eval_derivative_ne_zero_of_rootMultiplicity_eq_one
     p.derivative.eval r ≠ 0 := by
   intro hder
   have hp₀ : p ≠ 0 := by rintro rfl; simp at hmult
-  have hmultiple := (one_lt_rootMultiplicity_iff_isRoot hp₀).2 ⟨hr, hder⟩
-  lia
+  exact (by have := (one_lt_rootMultiplicity_iff_isRoot hp₀).2 ⟨hr, hder⟩; lia)
 
 /-- An exact double root has nonvanishing second derivative. -/
 lemma eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
     {p : ℝ[X]} {x : ℝ} (hp0 : p ≠ 0) (hmult : p.rootMultiplicity x = 2) :
     p.derivative.derivative.eval x ≠ 0 := by
-  have hp_root : p.IsRoot x :=
-    (rootMultiplicity_pos hp0).mp (by lia)
+  have hp_root : p.IsRoot x := (rootMultiplicity_pos hp0).mp (by lia)
   have hp_deg_ge2 : 2 ≤ p.natDegree := by
     calc
-      2 = p.rootMultiplicity x := by lia
+      2 = p.rootMultiplicity x := hmult.symm
       _ = p.roots.count x := (count_roots p).symm
-      _ ≤ p.roots.card := p.roots.count_le_card x
-      _ ≤ p.natDegree := card_roots' p
-  have hpd_ne : p.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  have hpd_rootmult : p.derivative.rootMultiplicity x = 1 := by
+      _ ≤ p.natDegree := (p.roots.count_le_card x).trans (card_roots' p)
+  have hpd_ne := Polynomial.derivative_ne_zero.mpr (by lia : p.natDegree ≠ 0)
+  have hmult' : p.derivative.rootMultiplicity x = 1 := by
     rw [derivative_rootMultiplicity_of_root hp_root, hmult]
-  apply eval_derivative_ne_zero_of_rootMultiplicity_eq_one
-  · exact (rootMultiplicity_pos hpd_ne).mp (by lia)
-  · exact hpd_rootmult
+  exact eval_derivative_ne_zero_of_rootMultiplicity_eq_one
+    ((rootMultiplicity_pos hpd_ne).mp (by lia)) hmult'
 
 end RealRooted

@@ -198,7 +198,7 @@ theorem exceptionalBasePolynomial_eq_C_mul_shiftedJacobi (m ε : ℕ) :
     exact hscaled
 
 private theorem neg_one_lt_exceptionalAlpha (ε : ℕ) : -1 < (ε : ℝ) - 1 / 2 := by
-  have hε : 0 ≤ (ε : ℝ) := by positivity
+  have : 0 ≤ (ε : ℝ) := by positivity
   linarith
 
 theorem exceptionalBasePolynomial_shiftedJacobiInner_eq_zero
@@ -210,6 +210,19 @@ theorem exceptionalBasePolynomial_shiftedJacobiInner_eq_zero
     shiftedJacobiInner_eq_zero (neg_one_lt_exceptionalAlpha ε) (by norm_num) q hq,
     mul_zero]
 
+private theorem shiftedJacobiFunctional_sum_monomial_mul_X_pow
+    (a : ℕ → ℝ) (M ε j : ℕ) :
+    shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
+        ((∑ k ∈ Finset.range M, monomial k (a k)) * X ^ j) =
+      ∑ k ∈ Finset.range M, a k / ((ε : ℝ) + 1 / 2 + k + j) := by
+  rw [Finset.sum_mul, shiftedJacobiFunctional_sum]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp only [X_pow_eq_monomial, monomial_mul_monomial, shiftedJacobiFunctional_monomial,
+    shiftedJacobiMoment_beta_zero (neg_one_lt_exceptionalAlpha ε), mul_one]
+  push_cast
+  ring
+
 private theorem shiftedJacobiFunctional_exceptionalBase_mul_X_pow
     (m ε j : ℕ) :
     shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
@@ -217,14 +230,9 @@ private theorem shiftedJacobiFunctional_exceptionalBase_mul_X_pow
       ∑ k ∈ Finset.range (m + 1),
         exceptionalBaseCoeff m ε k /
           ((ε : ℝ) + 1 / 2 + k + j) := by
-  rw [exceptionalBasePolynomial, Finset.sum_mul,
-    shiftedJacobiFunctional_sum]
-  apply Finset.sum_congr rfl
-  intro k hk
-  simp only [X_pow_eq_monomial, monomial_mul_monomial, shiftedJacobiFunctional_monomial,
-    shiftedJacobiMoment_beta_zero (neg_one_lt_exceptionalAlpha ε), mul_one]
-  push_cast
-  ring
+  simpa only [exceptionalBasePolynomial] using
+    shiftedJacobiFunctional_sum_monomial_mul_X_pow
+      (exceptionalBaseCoeff m ε) (m + 1) ε j
 
 private theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow
     (m ε j : ℕ) (γ : ℝ) :
@@ -233,14 +241,9 @@ private theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow
       ∑ k ∈ Finset.range (m + 1),
         (exceptionalBaseCoeff m ε k * (γ / (γ + k))) /
           ((ε : ℝ) + 1 / 2 + k + j) := by
-  rw [exceptionalEulerInverse, Finset.sum_mul,
-    shiftedJacobiFunctional_sum]
-  apply Finset.sum_congr rfl
-  intro k hk
-  simp only [X_pow_eq_monomial, monomial_mul_monomial, shiftedJacobiFunctional_monomial,
-    shiftedJacobiMoment_beta_zero (neg_one_lt_exceptionalAlpha ε), mul_one]
-  push_cast
-  ring
+  simpa only [exceptionalEulerInverse, mul_div_assoc] using
+    shiftedJacobiFunctional_sum_monomial_mul_X_pow
+      (fun k => exceptionalBaseCoeff m ε k * γ / (γ + k)) (m + 1) ε j
 
 /-- Moments of the exterior power weight on `(1, ∞)`. -/
 def exceptionalExteriorFunctional (c γ : ℝ) (p : ℝ[X]) : ℝ :=
@@ -263,7 +266,7 @@ theorem exceptionalExteriorFunctional_sum {ι : Type*}
   classical
   induction s using Finset.induction_on with
   | empty => simp [exceptionalExteriorFunctional]
-  | insert i s hi hs => simp [hi, hs]
+  | insert i s hi hs => simp_all
 
 @[simp]
 theorem exceptionalExteriorFunctional_C_mul
@@ -316,13 +319,8 @@ private theorem integral_Ioi_finsetPolynomial
   intro j hj
   rw [integral_const_mul,
     integral_Ioi_rpow_of_lt (hexponent j hj) one_pos, Real.one_rpow]
-  have hexponentEq :
-      c - γ - 1 + (j : ℝ) + 1 = -(γ - c - j) := by ring
-  rw [hexponentEq]
-  have hden : γ - c - (j : ℝ) ≠ 0 := by
-    have hjγ := h j hj
-    linarith
-  field_simp
+  rw [show c - γ - 1 + (j : ℝ) + 1 = -(γ - c - j) by ring]
+  field_simp [show γ - c - (j : ℝ) ≠ 0 by linarith [h j hj]]
 
 /-- The exterior coefficient functional is integration on `(1, ∞)` against
 the signed-moment weight. -/
@@ -332,21 +330,15 @@ theorem exceptionalExteriorFunctional_eq_integral
       ∫ x in Ioi (1 : ℝ), p.eval x * x ^ (c - γ - 1) := by
   have hjγ : ∀ j ∈ Finset.range (p.natDegree + 1), c + j < γ := by
     intro j hj
-    have hjlt : j < p.natDegree + 1 := Finset.mem_range.mp hj
-    have hjle : j ≤ p.natDegree := by lia
-    have hjleCast : (j : ℝ) ≤ p.natDegree := by exact_mod_cast hjle
+    have hjleCast : (j : ℝ) ≤ p.natDegree := by
+      exact_mod_cast (show j ≤ p.natDegree by simpa using hj)
     linarith
   calc
     exceptionalExteriorFunctional c γ p =
         ∑ j ∈ Finset.range (p.natDegree + 1),
           p.coeff j / (γ - c - j) := by
       conv_lhs => rw [p.as_sum_range_C_mul_X_pow]
-      rw [exceptionalExteriorFunctional_sum]
-      apply Finset.sum_congr rfl
-      intro j hj
-      rw [exceptionalExteriorFunctional_C_mul,
-        exceptionalExteriorFunctional_X_pow]
-      ring
+      simp [div_eq_mul_inv]
     _ = ∫ x in Ioi (1 : ℝ),
           (∑ j ∈ Finset.range (p.natDegree + 1),
             p.coeff j * x ^ j) * x ^ (c - γ - 1) :=
@@ -386,8 +378,7 @@ private theorem exceptionalBase_partialFraction_eq_zero
   have horth : shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
       (exceptionalBasePolynomial m ε * X ^ j) = 0 :=
     exceptionalBasePolynomial_shiftedJacobiInner_eq_zero m ε (X ^ j) (by simp [hj])
-  rw [shiftedJacobiFunctional_exceptionalBase_mul_X_pow] at horth
-  exact horth
+  simpa only [shiftedJacobiFunctional_exceptionalBase_mul_X_pow] using horth
 
 /-- Common denominator for the exceptional endpoint sum, regarded as a
 polynomial in the Euler parameter. -/
@@ -432,8 +423,7 @@ theorem exceptionalEulerInverse_eval_one_mul_endpointDenominator
   apply Finset.sum_congr rfl
   intro k hk
   rw [← Finset.prod_erase_mul _ _ hk]
-  have hγk := hγ k hk
-  field_simp
+  field_simp [hγ k hk]
 
 theorem exceptionalEndpointNumerator_eval_parameterRoot
     (m ε j : ℕ) (hj : j < m) :
@@ -444,7 +434,7 @@ theorem exceptionalEndpointNumerator_eval_parameterRoot
     dsimp only [γ]
     positivity
   have hden : ∀ k ∈ Finset.range (m + 1), γ + k ≠ 0 := by
-    intro k hk
+    intro k _
     positivity
   rw [← exceptionalEulerInverse_eval_one_mul_endpointDenominator
     m ε hden]
@@ -476,15 +466,7 @@ private theorem prod_range_erase_natCast_sub
     ext l
     simp only [Finset.mem_erase, Finset.mem_range, Finset.mem_union,
       Finset.mem_Ioc]
-    constructor
-    · intro hl
-      by_cases hlr : l < r
-      · exact Or.inl hlr
-      · exact Or.inr ⟨by lia, by lia⟩
-    · intro hl
-      constructor
-      · rcases hl with hl | hl <;> lia
-      · rcases hl with hl | hl <;> lia
+    grind
   have hdisjoint : Disjoint (Finset.range r) (Finset.Ioc r m) := by
     rw [Finset.disjoint_left]
     intro l hlrange hlIoc
@@ -529,13 +511,10 @@ private theorem realRisingFactorial_neg_nat_eq_descFactorial
   induction r with
   | zero => simp
   | succ r ih =>
-      have hrle : r ≤ m := by lia
-      rw [realRisingFactorial_succ, ih hrle,
+      rw [realRisingFactorial_succ, ih (by lia),
         Nat.descFactorial_succ, pow_succ]
-      have hcast : ((m - r : ℕ) : ℝ) = (m : ℝ) - r := by
-        rw [Nat.cast_sub hrle]
       push_cast
-      rw [hcast]
+      rw [Nat.cast_sub (by lia)]
       ring
 
 /-- Rising factorial at a negative natural, in quotient form. This package
@@ -593,66 +572,45 @@ theorem exceptionalEndpointClosedNumerator_eval
     eval_C, eval_X, eval_prod]
   simp
 
+private theorem natDegree_C_mul_X_mul_prod_le {ι : Type*}
+    (a : ℝ) (s : Finset ι) (p : ι → ℝ[X])
+    (hmonic : ∀ i ∈ s, (p i).Monic)
+    (hdegree : ∀ i ∈ s, (p i).natDegree ≤ 1) :
+    (C a * X * ∏ i ∈ s, p i).natDegree ≤ s.card + 1 := by
+  classical
+  calc
+    (C a * X * ∏ i ∈ s, p i).natDegree ≤
+        (C a * X).natDegree + (∏ i ∈ s, p i).natDegree :=
+      Polynomial.natDegree_mul_le
+    _ ≤ 1 + s.card := by
+      apply Nat.add_le_add
+      · exact Polynomial.natDegree_mul_le.trans (by simp)
+      · rw [Polynomial.natDegree_prod_of_monic _ _ hmonic]
+        simpa using Finset.sum_le_sum hdegree
+    _ = s.card + 1 := Nat.add_comm _ _
+
 private theorem natDegree_exceptionalEndpointNumerator_le
     (m ε : ℕ) :
     (exceptionalEndpointNumerator m ε).natDegree ≤ m + 1 := by
   rw [exceptionalEndpointNumerator]
   apply Polynomial.natDegree_sum_le_of_forall_le
   intro k hk
-  calc
-    (C (exceptionalBaseCoeff m ε k) * X *
-          ∏ l ∈ (Finset.range (m + 1)).erase k,
-            (X + C (l : ℝ))).natDegree ≤
-        (C (exceptionalBaseCoeff m ε k) * X).natDegree +
-          (∏ l ∈ (Finset.range (m + 1)).erase k,
-            (X + C (l : ℝ))).natDegree :=
-      Polynomial.natDegree_mul_le
-    _ ≤ 1 + m := by
-      apply Nat.add_le_add
-      · exact Polynomial.natDegree_mul_le.trans (by simp)
-      · rw [Polynomial.natDegree_prod_of_monic]
-        · calc
-            ∑ l ∈ (Finset.range (m + 1)).erase k,
-                (X + C (l : ℝ)).natDegree =
-                ∑ l ∈ (Finset.range (m + 1)).erase k, 1 := by
-              apply Finset.sum_congr rfl
-              intro l hl
-              rw [Polynomial.natDegree_X_add_C]
-            _ = ((Finset.range (m + 1)).erase k).card := by simp
-            _ ≤ m := by simp [hk]
-        · intro l hl
-          exact Polynomial.monic_X_add_C _
-    _ = m + 1 := by lia
+  refine (natDegree_C_mul_X_mul_prod_le _ _ _ ?_ ?_).trans ?_
+  · exact fun l _ => Polynomial.monic_X_add_C _
+  · intro l _
+    rw [Polynomial.natDegree_X_add_C]
+  · simp [hk]
 
 private theorem natDegree_exceptionalEndpointClosedNumerator_le
     (m ε : ℕ) :
     (exceptionalEndpointClosedNumerator m ε).natDegree ≤ m + 1 := by
   rw [exceptionalEndpointClosedNumerator]
-  calc
-    (C (realRisingFactorial (-(m : ℝ)) m /
-          realRisingFactorial ((ε : ℝ) + 1 / 2) m) * X *
-        ∏ j ∈ Finset.range m,
-          (X - C ((ε : ℝ) + 1 / 2 + j))).natDegree ≤
-        (C (realRisingFactorial (-(m : ℝ)) m /
-          realRisingFactorial ((ε : ℝ) + 1 / 2) m) * X).natDegree +
-        (∏ j ∈ Finset.range m,
-          (X - C ((ε : ℝ) + 1 / 2 + j))).natDegree :=
-      Polynomial.natDegree_mul_le
-    _ ≤ 1 + m := by
-      apply Nat.add_le_add
-      · exact Polynomial.natDegree_mul_le.trans (by simp)
-      · rw [Polynomial.natDegree_prod_of_monic]
-        · calc
-            ∑ j ∈ Finset.range m,
-                (X - C ((ε : ℝ) + 1 / 2 + j)).natDegree =
-                ∑ j ∈ Finset.range m, 1 := by
-              apply Finset.sum_congr rfl
-              intro j hj
-              rw [Polynomial.natDegree_X_sub_C]
-            _ ≤ m := by simp
-        · intro j hj
-          exact Polynomial.monic_X_sub_C _
-    _ = m + 1 := by lia
+  simpa using natDegree_C_mul_X_mul_prod_le
+    (realRisingFactorial (-(m : ℝ)) m /
+      realRisingFactorial ((ε : ℝ) + 1 / 2) m)
+    (Finset.range m) (fun j => X - C ((ε : ℝ) + 1 / 2 + j))
+    (fun _ _ => Polynomial.monic_X_sub_C _)
+    (fun _ _ => (Polynomial.natDegree_X_sub_C _).le)
 
 private theorem exceptionalEndpointNumerator_eval_neg_nat
     (m ε r : ℕ) (hr : r ≤ m) :
@@ -678,14 +636,8 @@ private theorem exceptionalEndpointNumerator_eval_neg_nat
     · intro k hk hkr
       have hrmem : r ∈ (Finset.range (m + 1)).erase k := by
         simp [hr, hkr.symm]
-      have hprod :
-          ∏ l ∈ (Finset.range (m + 1)).erase k,
-              (-(r : ℝ) + l) = 0 := by
-        apply Finset.prod_eq_zero hrmem
-        ring
-      rw [hprod, mul_zero]
-    · intro hrnot
-      exact False.elim (hrnot (by simp [hr]))
+      rw [Finset.prod_eq_zero hrmem (by ring), mul_zero]
+    · simp_all
   have hclosed :
       (exceptionalEndpointClosedNumerator m ε).eval (-(r : ℝ)) =
         (realRisingFactorial (-(m : ℝ)) m /
@@ -745,16 +697,14 @@ private theorem exceptionalEndpointNumerator_eval_baseParameter
   | succ m =>
       have hnum := exceptionalEndpointNumerator_eval_parameterRoot
         (m + 1) ε 0 (by lia)
-      have hnum' :
-          (exceptionalEndpointNumerator (m + 1) ε).eval
-              ((ε : ℝ) + 1 / 2) = 0 := by
-        simpa only [Nat.cast_zero, add_zero] using hnum
       have hzero :
           ∏ j ∈ Finset.range (m + 1),
               ((ε : ℝ) + 1 / 2 - ((ε : ℝ) + 1 / 2 + j)) = 0 := by
         apply Finset.prod_eq_zero (Finset.mem_range.mpr (by lia : 0 < m + 1))
         ring
-      rw [hnum', exceptionalEndpointClosedNumerator_eval, hzero]
+      rw [show (exceptionalEndpointNumerator (m + 1) ε).eval
+          ((ε : ℝ) + 1 / 2) = 0 by simpa using hnum,
+        exceptionalEndpointClosedNumerator_eval, hzero]
       ring
 
 /-- The cleared endpoint numerator is the product predicted by the terminating
@@ -798,13 +748,8 @@ theorem exceptionalEndpointNumerator_eq_closed (m ε : ℕ) :
     · simpa only [f, hi, ↓reduceIte, c] using
         exceptionalEndpointNumerator_eval_baseParameter m ε
   · simp only [Fintype.card_fin]
-    have hnum := natDegree_exceptionalEndpointNumerator_le m ε
-    have hclosed := natDegree_exceptionalEndpointClosedNumerator_le m ε
-    have hmax : max
-        (exceptionalEndpointNumerator m ε).natDegree
-        (exceptionalEndpointClosedNumerator m ε).natDegree ≤ m + 1 :=
-      max_le hnum hclosed
-    lia
+    exact (max_le (natDegree_exceptionalEndpointNumerator_le m ε)
+      (natDegree_exceptionalEndpointClosedNumerator_le m ε)).trans_lt (by lia)
 
 /-- Product evaluation of the exceptional Euler inverse at the right
 endpoint. -/
@@ -868,32 +813,20 @@ theorem negOnePow_mul_exceptionalEulerInverse_eval_one_pos
         (γ - ((ε : ℝ) + 1 / 2 + j)) := by
     apply Finset.prod_pos
     intro j hj
-    have hjlt : j < m := Finset.mem_range.mp hj
-    have hjCast : (j : ℝ) ≤ m - 1 := by
-      have hjSucc : j + 1 ≤ m := by lia
-      have hjSuccCast : (j : ℝ) + 1 ≤ m := by
-        exact_mod_cast hjSucc
-      linarith
+    have hjCast : (j : ℝ) + 1 ≤ m := by
+      exact_mod_cast (show j + 1 ≤ m by simpa using hj)
     linarith
   have hsignSq : ((-1 : ℝ) ^ m) ^ 2 = 1 :=
     Parity.neg_one_pow_sq m
-  have hrearrange :
-      (-1 : ℝ) ^ m *
-          (((-1 : ℝ) ^ m * (m.factorial : ℝ) /
-              realRisingFactorial ((ε : ℝ) + 1 / 2) m) *
-            (∏ j ∈ Finset.range m,
-              (γ - ((ε : ℝ) + 1 / 2 + j))) /
-            realRisingFactorial (γ + 1) m) =
-        (m.factorial : ℝ) *
-            (∏ j ∈ Finset.range m,
-              (γ - ((ε : ℝ) + 1 / 2 + j))) /
+  calc
+    _ = (m.factorial : ℝ) *
+        (∏ j ∈ Finset.range m, (γ - ((ε : ℝ) + 1 / 2 + j))) /
           (realRisingFactorial ((ε : ℝ) + 1 / 2) m *
             realRisingFactorial (γ + 1) m) := by
-    field_simp [hbase.ne', hden.ne']
-    rw [hsignSq]
-    ring
-  rw [hrearrange]
-  positivity
+      field_simp [hbase.ne', hden.ne']
+      rw [hsignSq]
+      ring
+    _ > 0 := by positivity
 
 theorem exceptionalBaseCoeff_ne_zero_of_le
     (m ε k : ℕ) (hk : k ≤ m) :
@@ -909,6 +842,14 @@ theorem exceptionalBaseCoeff_ne_zero_of_le
     ne_of_gt (realRisingFactorial_pos k hc)
   positivity
 
+private theorem coeff_exceptionalEulerInverse_ne_zero_of_le
+    (m ε k : ℕ) {γ : ℝ} (hk : k ≤ m) (hγ : 0 < γ) :
+    (exceptionalEulerInverse m ε γ).coeff k ≠ 0 := by
+  rw [coeff_exceptionalEulerInverse, ite_eq_left hk]
+  exact div_ne_zero
+    (mul_ne_zero (exceptionalBaseCoeff_ne_zero_of_le m ε k hk) hγ.ne')
+    (by positivity)
+
 theorem natDegree_exceptionalEulerInverse_le
     (m ε : ℕ) (γ : ℝ) :
     (exceptionalEulerInverse m ε γ).natDegree ≤ m := by
@@ -923,11 +864,7 @@ theorem natDegree_exceptionalEulerInverse
     (exceptionalEulerInverse m ε γ).natDegree = m := by
   apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
     (natDegree_exceptionalEulerInverse_le m ε γ)
-  rw [coeff_exceptionalEulerInverse, ite_eq_left le_rfl]
-  exact div_ne_zero
-    (mul_ne_zero (exceptionalBaseCoeff_ne_zero_of_le m ε m le_rfl)
-      hγ.ne')
-    (by positivity)
+  exact coeff_exceptionalEulerInverse_ne_zero_of_le m ε m le_rfl hγ
 
 /-- Ratio of the two highest coefficients in the exceptional family. -/
 theorem exceptionalEulerInverse_topCoeff_ratio
@@ -969,21 +906,9 @@ theorem exceptionalEulerInverse_topCoeff_det_ne_zero
   let R₁ := exceptionalEulerInverse m ε γ₁
   let R₂ := exceptionalEulerInverse m ε γ₂
   have hb₁ : R₁.coeff (m - 1) ≠ 0 := by
-    dsimp only [R₁]
-    rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
-    exact div_ne_zero
-      (mul_ne_zero
-        (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
-        hγ₁.ne')
-      (by positivity)
+    exact coeff_exceptionalEulerInverse_ne_zero_of_le m ε _ (by lia) hγ₁
   have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
-    dsimp only [R₂]
-    rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
-    exact div_ne_zero
-      (mul_ne_zero
-        (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
-        hγ₂.ne')
-      (by positivity)
+    exact coeff_exceptionalEulerInverse_ne_zero_of_le m ε _ (by lia) hγ₂
   intro hdet
   have hratio : R₁.coeff m / R₁.coeff (m - 1) =
       R₂.coeff m / R₂.coeff (m - 1) :=
@@ -1004,11 +929,9 @@ theorem exceptionalEulerInverse_topCoeff_det_ne_zero
     mul_left_cancel₀ hbase (by
       simpa only [mul_div_assoc] using hratio)
   rcases lt_or_gt_of_ne hγ with hγlt | hγgt
-  · exact (ne_of_lt
-      (exceptionalParameterTopRatio_strictMono m hm hγ₁ hγ₂ hγlt))
+  · exact (exceptionalParameterTopRatio_strictMono m hm hγ₁ hγ₂ hγlt).ne
       hparameter
-  · exact (ne_of_gt
-      (exceptionalParameterTopRatio_strictMono m hm hγ₂ hγ₁ hγgt))
+  · exact (exceptionalParameterTopRatio_strictMono m hm hγ₂ hγ₁ hγgt).ne'
       hparameter
 
 /-- A nonzero pencil member at distinct positive parameters cannot drop below
@@ -1040,24 +963,13 @@ theorem exceptionalEulerInverse_pencil_natDegree_ge_sub_one
             R₂.coeff m * R₁.coeff (m - 1)) = 0 := by
         linear_combination R₂.coeff (m - 1) * htop' -
           R₂.coeff m * hprev'
-      have hdetSub : R₁.coeff m * R₂.coeff (m - 1) -
-          R₂.coeff m * R₁.coeff (m - 1) ≠ 0 :=
-        sub_ne_zero.mpr hdet
-      have ha : a = 0 := (mul_eq_zero.mp haDet).resolve_right hdetSub
+      have ha : a = 0 := (mul_eq_zero.mp haDet).resolve_right (sub_ne_zero.mpr hdet)
       have hb₂ : R₂.coeff (m - 1) ≠ 0 := by
-        dsimp only [R₂]
-        rw [coeff_exceptionalEulerInverse, ite_eq_left (by lia)]
-        exact div_ne_zero
-          (mul_ne_zero
-            (exceptionalBaseCoeff_ne_zero_of_le m ε (m - 1) (by lia))
-            hγ₂.ne')
-          (by positivity)
+        exact coeff_exceptionalEulerInverse_ne_zero_of_le m ε _ (by lia) hγ₂
       have hb : b = 0 := by
         rw [ha, zero_mul, zero_add] at hprev'
         exact (mul_eq_zero.mp hprev').resolve_right hb₂
-      apply hne
-      rw [ha, hb]
-      simp
+      exact hne (by simp [ha, hb])
     simpa only [Q, R₁, R₂] using
       Polynomial.le_natDegree_of_ne_zero hprev
   · have hdegree := (Nat.sub_le m 1).trans
@@ -1123,16 +1035,10 @@ private theorem exceptionalEulerInverse_partialFraction_sum
     dsimp only [c] at hc
     linarith
   have hden : c + (j : ℝ) - γ ≠ 0 := by
-    have hjcast : (j : ℝ) ≤ (m : ℝ) - 1 := by
-      have hjone : j + 1 ≤ m := by lia
-      have hjoneCast : (j : ℝ) + 1 ≤ m := by exact_mod_cast hjone
-      linarith
+    have hjcast : (j : ℝ) + 1 ≤ m := by exact_mod_cast (show j + 1 ≤ m by lia)
     dsimp only [c] at hγ ⊢
     linarith
-  have horth : shiftedJacobiFunctional ((ε : ℝ) - 1 / 2) 0
-      (exceptionalBasePolynomial m ε * X ^ j) = 0 :=
-    exceptionalBasePolynomial_shiftedJacobiInner_eq_zero m ε (X ^ j) (by simp [hj])
-  rw [shiftedJacobiFunctional_exceptionalBase_mul_X_pow] at horth
+  have horth := exceptionalBase_partialFraction_eq_zero m ε j hj
   have hkey : ∀ k ∈ Finset.range (m + 1),
       (exceptionalBaseCoeff m ε k * (γ / (γ + k))) /
           (c + k + j) =
@@ -1161,12 +1067,6 @@ theorem shiftedJacobiFunctional_exceptionalEulerInverse_mul_X_pow_eq
     exceptionalEulerInverse_partialFraction_sum m ε j hγ hj,
     exceptionalEulerInverse_eval_one_eq_sum,
     exceptionalExteriorFunctional_X_pow]
-  have hden : γ - ((ε : ℝ) + 1 / 2) - j ≠ 0 := by
-    have hjcast : (j : ℝ) ≤ (m : ℝ) - 1 := by
-      have hjone : j + 1 ≤ m := by lia
-      have hjoneCast : (j : ℝ) + 1 ≤ m := by exact_mod_cast hjone
-      linarith
-    linarith
   rw [show (ε : ℝ) + 1 / 2 + j - γ =
     -(γ - ((ε : ℝ) + 1 / 2) - j) by ring, div_neg]
   ring
@@ -1207,13 +1107,11 @@ theorem exceptionalEulerInverse_signedMomentIdentity
       -(exceptionalEulerInverse m ε γ).eval 1 *
         ∫ x in Ioi (1 : ℝ),
           p.eval x * x ^ ((ε : ℝ) + 1 / 2 - γ - 1) := by
-  have hε : 0 ≤ (ε : ℝ) := by positivity
-  have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
-  have hpOne : p.natDegree + 1 ≤ m := by lia
-  have hpOneCast : (p.natDegree : ℝ) + 1 ≤ m := by
-    exact_mod_cast hpOne
+  have hα := neg_one_lt_exceptionalAlpha ε
   have hExterior :
-      (ε : ℝ) + 1 / 2 + p.natDegree < γ := by linarith
+      (ε : ℝ) + 1 / 2 + p.natDegree < γ := by
+    have : (p.natDegree : ℝ) + 1 ≤ m := by exact_mod_cast (show p.natDegree + 1 ≤ m by lia)
+    linarith
   calc
     (∫ x : ℝ in 0..1,
         (exceptionalEulerInverse m ε γ * p).eval x *

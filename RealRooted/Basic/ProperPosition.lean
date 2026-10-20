@@ -44,8 +44,7 @@ private lemma listInterlaces_right_tail_ge :
       intro x hx
       rcases List.mem_cons.mp hx with rfl | hx
       · exact le_trans hr_s hs_r₂
-      · exact le_trans (le_trans hr_s hs_r₂)
-          (listInterlaces_right_tail_ge htail x hx)
+      · exact (hr_s.trans hs_r₂).trans (listInterlaces_right_tail_ge htail x hx)
 
 private lemma listInterlaces_left_ge_head :
     ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
@@ -56,8 +55,16 @@ private lemma listInterlaces_left_ge_head :
       intro x hx
       rcases List.mem_cons.mp hx with rfl | hx
       · exact hr_s
-      · exact le_trans (le_trans hr_s hs_r₂)
-          (listInterlaces_left_ge_head htail x hx)
+      · exact (hr_s.trans hs_r₂).trans (listInterlaces_left_ge_head htail x hx)
+
+private lemma listInterlaces_not_mem_of_lt_head {u r : ℝ} {ss rs : List ℝ}
+    (hur : u < r) (h : ListInterlaces ss (r :: rs)) :
+    u ∉ ss ∧ u ∉ r :: rs := by
+  constructor <;> intro hu
+  · linarith [listInterlaces_left_ge_head h u hu]
+  · rcases List.mem_cons.mp hu with hu | hu
+    · exact hur.ne hu
+    · linarith [listInterlaces_right_tail_ge h u hu]
 
 private lemma listInterlaces_count_left_le_right_of_head (u : ℝ) :
     ∀ {ss rs : List ℝ}, ListInterlaces ss (u :: rs) →
@@ -74,30 +81,14 @@ private lemma listInterlaces_count_left_le_right_of_head (u : ℝ) :
           simp at ih ⊢
           lia
         · have hu_lt_r₂ : u < r₂ := lt_of_le_of_ne hs_r₂ (Ne.symm hr₂)
-          have htail_no_mem : u ∉ r₂ :: rs := by
-            intro hu_mem
-            rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
-            · exact hr₂ hu_eq.symm
-            · have hge := listInterlaces_right_tail_ge htail u hu_rs
-              linarith
-          have hss_no_mem : u ∉ ss := by
-            intro hu_mem
-            have hge := listInterlaces_left_ge_head htail u hu_mem
-            linarith
+          obtain ⟨hss_no_mem, htail_no_mem⟩ :=
+            listInterlaces_not_mem_of_lt_head hu_lt_r₂ htail
           simp [List.count_eq_zero.mpr htail_no_mem,
             List.count_eq_zero.mpr hss_no_mem]
       · have hu_lt_s : u < s := lt_of_le_of_ne hus (Ne.symm hs)
         have hu_lt_r₂ : u < r₂ := lt_of_lt_of_le hu_lt_s hs_r₂
-        have htail_no_mem : u ∉ r₂ :: rs := by
-          intro hu_mem
-          rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
-          · exact ne_of_gt hu_lt_r₂ hu_eq.symm
-          · have hge := listInterlaces_right_tail_ge htail u hu_rs
-            linarith
-        have hss_no_mem : u ∉ ss := by
-          intro hu_mem
-          have hge := listInterlaces_left_ge_head htail u hu_mem
-          linarith
+        obtain ⟨hss_no_mem, htail_no_mem⟩ :=
+          listInterlaces_not_mem_of_lt_head hu_lt_r₂ htail
         simp [hs, List.count_eq_zero.mpr htail_no_mem,
           List.count_eq_zero.mpr hss_no_mem]
 
@@ -121,20 +112,10 @@ private lemma listInterlaces_count_right_le_left_add_one (u : ℝ) :
         · subst r₁
           have hu_lt_s : u < s := lt_of_le_of_ne hr₁s (by simpa [eq_comm] using hs)
           have hu_lt_r₂ : u < r₂ := lt_of_lt_of_le hu_lt_s hs_r₂
-          have htail_no_mem : u ∉ r₂ :: rs := by
-            intro hu_mem
-            rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
-            · exact ne_of_gt hu_lt_r₂ hu_eq.symm
-            · have hge := listInterlaces_right_tail_ge htail u hu_rs
-              linarith
-          have htail_count : (r₂ :: rs).count u = 0 :=
-            List.count_eq_zero.mpr htail_no_mem
-          have hss_no_mem : u ∉ ss := by
-            intro hu_mem
-            have hge := listInterlaces_left_ge_head htail u hu_mem
-            linarith
-          have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
-          simp [htail_count, hss_count, hs]
+          obtain ⟨hss_no_mem, htail_no_mem⟩ :=
+            listInterlaces_not_mem_of_lt_head hu_lt_r₂ htail
+          simp [List.count_eq_zero.mpr htail_no_mem,
+            List.count_eq_zero.mpr hss_no_mem, hs]
       · have ih := listInterlaces_count_right_le_left_add_one u htail
         by_cases hs : s = u
         · simp [hr₁, hs] at ih ⊢
@@ -163,20 +144,10 @@ private lemma listInterlaces_count_left_le_right_add_one (u : ℝ) :
           · have hu_lt_r₂ : u < r₂ := by
               rw [hs] at hs_r₂
               exact lt_of_le_of_ne hs_r₂ (Ne.symm hr₂)
-            have htail_no_mem : u ∉ r₂ :: rs := by
-              intro hu_mem
-              rcases List.mem_cons.mp hu_mem with hu_eq | hu_rs
-              · exact hr₂ hu_eq.symm
-              · have hge := listInterlaces_right_tail_ge htail u hu_rs
-                linarith
-            have hss_no_mem : u ∉ ss := by
-              intro hu_mem
-              have hge := listInterlaces_left_ge_head htail u hu_mem
-              linarith
-            have htail_count : (r₂ :: rs).count u = 0 :=
-              List.count_eq_zero.mpr htail_no_mem
-            have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
-            simp [hs, hr₁, htail_count, hss_count]
+            obtain ⟨hss_no_mem, htail_no_mem⟩ :=
+              listInterlaces_not_mem_of_lt_head hu_lt_r₂ htail
+            simp [hs, hr₁, List.count_eq_zero.mpr htail_no_mem,
+              List.count_eq_zero.mpr hss_no_mem]
       · by_cases hr₁ : r₁ = u <;> simp [hs, hr₁] at ih ⊢ <;> lia
 
 private lemma listAlternates_count_bounds (u : ℝ) :
@@ -198,12 +169,8 @@ private lemma listAlternates_count_bounds (u : ℝ) :
           · have hu_lt_r : u < r := by
               rw [hs] at hsr
               exact lt_of_le_of_ne hsr (Ne.symm hr)
-            have hss_no_mem : u ∉ ss := by
-              intro hu_mem
-              have hge := listInterlaces_left_ge_head htail u hu_mem
-              linarith
-            have hss_count : ss.count u = 0 := List.count_eq_zero.mpr hss_no_mem
-            simp [hs, hr, hss_count]
+            have hss_no_mem := (listInterlaces_not_mem_of_lt_head hu_lt_r htail).1
+            simp [hs, hr, List.count_eq_zero.mpr hss_no_mem]
         · simpa [hs] using ih
       · have ih := listInterlaces_count_right_le_left_add_one u htail
         by_cases hs : s = u
@@ -235,10 +202,8 @@ theorem StrictInterl.rootMultiplicity_bounds {f g : ℝ[X]} (h : StrictInterl f 
 theorem StrictInterl.natDegree_bounds {f g : ℝ[X]} (h : StrictInterl f g) :
     f.natDegree ≤ g.natDegree ∧ g.natDegree ≤ f.natDegree + 1 := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, _⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hss_len := hf.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have hrs_len := hg.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   lia
 
 /-- The proper-position relation respects degree: `StrictInterl f g` forces
@@ -303,10 +268,8 @@ theorem StrictInterl.roots_sum_le_of_sameDegree {f g : ℝ[X]}
     (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
     f.roots.sum ≤ g.roots.sum := by
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hss_len := hf.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have hrs_len := hg.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   have hsum_ss : ss.sum = f.roots.sum := by rw [← Multiset.sum_coe, hss_eq]
   have hsum_rs : rs.sum = g.roots.sum := by rw [← Multiset.sum_coe, hrs_eq]
   rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
@@ -321,13 +284,9 @@ theorem StrictInterl.nextCoeff_le_of_sameDegree_monic {f g : ℝ[X]}
     (h : StrictInterl f g) (hf_monic : f.Monic) (hg_monic : g.Monic)
     (hdeg : f.natDegree = g.natDegree) :
     g.nextCoeff ≤ f.nextCoeff := by
-  have hsum : f.roots.sum ≤ g.roots.sum :=
-    h.roots_sum_le_of_sameDegree hdeg
-  have hf_next : f.nextCoeff = -f.roots.sum :=
-    h.1.2.nextCoeff_eq_neg_sum_roots_of_monic hf_monic
-  have hg_next : g.nextCoeff = -g.roots.sum :=
-    h.2.1.2.nextCoeff_eq_neg_sum_roots_of_monic hg_monic
-  linarith
+  rw [h.1.2.nextCoeff_eq_neg_sum_roots_of_monic hf_monic,
+    h.2.1.2.nextCoeff_eq_neg_sum_roots_of_monic hg_monic]
+  exact neg_le_neg (h.roots_sum_le_of_sameDegree hdeg)
 
 /-- In the same-degree case, a reverse `StrictInterl g f` can be flipped back to
 `StrictInterl f g` once the root sums have the forward order. -/
@@ -336,10 +295,8 @@ theorem StrictInterl.of_reverse_of_roots_sum_le {f g : ℝ[X]}
     (hsum : f.roots.sum ≤ g.roots.sum) :
     StrictInterl f g := by
   rcases hgf with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
-  have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+  have hss_len := hg.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have hrs_len := hf.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   have hsum_ss : ss.sum = g.roots.sum := by rw [← Multiset.sum_coe, hss_eq]
   have hsum_rs : rs.sum = f.roots.sum := by rw [← Multiset.sum_coe, hrs_eq]
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, halt⟩
@@ -392,89 +349,6 @@ theorem of_quadratic_cubic_root_lists
   · rw [hg_roots]
   · simp [ListInterlaces, hau, hub, hbv, hvc]
 
-/-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
-roots of a quartic. -/
-theorem of_cubic_quartic_root_lists
-    {g f : ℝ[X]} {a b c d u v w : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3)
-    (hf_roots : f.roots = (↑[a, b, c, d] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
-    (huv : u ≤ v) (hvw : v ≤ w)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d], [u, v, w],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd,
-      hab.trans (hbc.trans hcd)]
-  · simp [huv, hvw, huv.trans hvw]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
-
-/-- Differ-by-one interlacing for a quartic whose roots lie between the
-ordered roots of a quintic. -/
-theorem of_quartic_quintic_root_lists
-    {g f : ℝ[X]} {a b c d e u v w z : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 5) (hgdeg : g.natDegree = 4)
-    (hf_roots : f.roots = (↑[a, b, c, d, e] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d, e],
-    [u, v, w, z], ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hde, hab.trans hbc, hbc.trans hcd, hcd.trans hde,
-      hab.trans (hbc.trans hcd), hbc.trans (hcd.trans hde),
-      hab.trans (hbc.trans (hcd.trans hde))]
-  · simp [huv, hvw, hwz, huv.trans hvw, hvw.trans hwz,
-      huv.trans (hvw.trans hwz)]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze]
-
-/-- Differ-by-one interlacing for a quintic whose roots lie between the ordered
-roots of a sextic. -/
-theorem of_quintic_sextic_root_lists
-    {g f : ℝ[X]} {a b c d e r u v w z y : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 6) (hgdeg : g.natDegree = 5)
-    (hf_roots : f.roots = (↑[a, b, c, d, e, r] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z, y] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (her : e ≤ r)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z) (hzy : z ≤ y)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) (hey : e ≤ y) (hyr : y ≤ r) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_,
-    [a, b, c, d, e, r], [u, v, w, z, y], ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hde, her, hab.trans hbc, hbc.trans hcd,
-      hcd.trans hde, hde.trans her, hab.trans (hbc.trans hcd),
-      hbc.trans (hcd.trans hde), hcd.trans (hde.trans her),
-      hab.trans (hbc.trans (hcd.trans hde)),
-      hbc.trans (hcd.trans (hde.trans her)),
-      hab.trans (hbc.trans (hcd.trans (hde.trans her)))]
-  · simp [huv, hvw, hwz, hzy, huv.trans hvw, hvw.trans hwz,
-      hwz.trans hzy, huv.trans (hvw.trans hwz), hvw.trans (hwz.trans hzy),
-      huv.trans (hvw.trans (hwz.trans hzy))]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze, hey, hyr]
-
 end Interlaces
 
 /-- A **Sturm sequence** is a list of polynomials where each consecutive
@@ -499,20 +373,16 @@ def IsGeneralizedSturmSeq : List ℝ[X] → Prop
 lemma Interlaces.toStrictInterl {g f : ℝ[X]} (h : Interlaces g f) : StrictInterl g f := by
   obtain ⟨hf, hg, _, rs, ss, hrs, hss, hrs_eq, hss_eq, hint⟩ := h
   refine ⟨hg, hf, _, _, hss, hrs, hss_eq, hrs_eq, Or.inl ⟨?_, hint⟩⟩
-  have : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have := hg.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have := hf.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   lia
 
 lemma StrictInterl.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
     (hdeg : g.natDegree + 1 = f.natDegree) : Interlaces g f := by
   rcases h with ⟨hg, hf, ss, rs, hss, hrs, hss_eq, hrs_eq, _⟩
   refine ⟨hf, hg, hdeg, _, _, hrs, hss, hrs_eq, hss_eq, ?_⟩
-  have : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, (card_roots_of_splits hg.2)]
-  have : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, (card_roots_of_splits hf.2)]
+  have := hg.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have := hf.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   lia
 
 /-! ## Canonical root-list interleavings -/
@@ -528,10 +398,8 @@ lemma StrictInterl.exists_interleaves_of_succDegree {f g : ℝ[X]}
       (↑rs : Multiset ℝ) = g.roots ∧
       List.Interleaves (fun x y : ℝ => x ≤ y) ss rs := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hss_len := hf.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have hrs_len := hg.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   refine ⟨ss, rs, hss_len, hrs_len, ?_⟩
   rcases hshape with hdiff | hsame
   · exact ⟨hdiff.1, hss, hrs, hss_eq, hrs_eq,
@@ -550,10 +418,8 @@ lemma StrictInterl.exists_interleaves_of_natDegree_eq {f g : ℝ[X]}
       (↑rs : Multiset ℝ) = g.roots ∧
       List.Interleaves (fun x y : ℝ => x ≤ y) rs ss := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
-  have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+  have hss_len := hf.2.length_eq_natDegree_of_coe_eq_roots hss_eq
+  have hrs_len := hg.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   refine ⟨ss, rs, hss_len, hrs_len, ?_⟩
   rcases hshape with hdiff | hsame
   · exfalso
@@ -572,10 +438,8 @@ lemma StrictInterl.exists_listAlternates_of_natDegree_eq {f g : ℝ[X]}
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hssRoots, hrsRoots, hshape⟩
   refine ⟨ss, rs, hss, hrs, hssRoots, hrsRoots, ?_⟩
   rcases hshape with hdiff | hsame
-  · have hssLength : ss.length = f.natDegree := by
-      rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hf.2]
-    have hrsLength : rs.length = g.natDegree := by
-      rw [← Multiset.coe_card, hrsRoots, card_roots_of_splits hg.2]
+  · have hssLength := hf.2.length_eq_natDegree_of_coe_eq_roots hssRoots
+    have hrsLength := hg.2.length_eq_natDegree_of_coe_eq_roots hrsRoots
     lia
   · exact hsame.2
 
@@ -667,11 +531,5 @@ lemma Interl.C_mul_right_of_nonneg {f g : ℝ[X]} (h : Interl f g)
   · simpa [hf0] using interl_zero_left (C a * g)
   · simp [hg0, interl_zero_right]
   · exact (hstrict.C_mul_right ha_pos.ne').toInterl
-
-/-- A nonnegative scalar multiple of a polynomial is in zero-aware proper
-position with that polynomial whenever the polynomial is zero or splits. -/
-lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : ℝ}
-    (ha : 0 ≤ a) : Interl (C a * f) f :=
-  (Interl.refl hf).C_mul_left_of_nonneg ha
 
 end RealRooted

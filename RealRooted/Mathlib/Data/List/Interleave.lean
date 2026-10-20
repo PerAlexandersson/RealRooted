@@ -43,20 +43,15 @@ lemma Interleaves.map_of_mem
       r a b → s (φ a) (φ b)) :
     Interleaves s (l₁.map φ) (l₂.map φ) := by
   induction h with
-  | nil_nil => simp
-  | nil_singleton a => simp
+  | nil_nil | nil_singleton => simp
   | cons_symm hab h ih =>
       simp only [map_cons]
       refine .cons_symm (hφ (Or.inr (by simp)) (Or.inl (by simp)) hab) ?_
       apply ih
       intro x y hx hy hxy
       apply hφ
-      · rcases hx with hx | hx
-        · exact Or.inr (by simp [hx])
-        · exact Or.inl (by simpa using hx)
-      · rcases hy with hy | hy
-        · exact Or.inr (by simp [hy])
-        · exact Or.inl (by simpa using hy)
+      · rcases hx with hx | hx <;> simp_all
+      · rcases hy with hy | hy <;> simp_all
       · exact hxy
 
 end UpstreamCandidates

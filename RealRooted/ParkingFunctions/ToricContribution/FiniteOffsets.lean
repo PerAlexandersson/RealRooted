@@ -34,6 +34,24 @@ noncomputable abbrev orderedRoot (p : ℝ[X]) (n : ℕ) (i : Fin n) : ℝ :=
 
 local notation "orderedRoot" => RealRooted.orderedRoot
 
+private theorem upperOffDiagonal_intervalRootData
+    (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
+    IntervalRootData
+      (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) (d + 1) d)
+      (m - 2) := by
+  convert jPolynomial_signedTriangleFamily_intervalRootData
+    m ε (d + 1) d (by lia) (by lia) (by lia) using 1
+  lia
+
+private theorem diagonalEigenvalue_pos
+    (m ε d : ℕ) (hm : 2 ≤ m) (hd : d ≤ m - 2) :
+    0 < (((m - 1 : ℕ) : ℝ) - d) * ((m - 1 : ℕ) + d + ε + 3) := by
+  have hdRow : d ≤ m - 1 := by lia
+  have hfirst : 0 < (((m - 1 : ℕ) : ℝ) - d) := by
+    rw [← Nat.cast_sub hdRow]
+    exact_mod_cast (show 0 < m - 1 - d by lia)
+  exact mul_pos hfirst (by positivity)
+
 theorem IntervalRootData.roots_sort_length
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) :
     (p.roots.sort (· ≤ ·)).length = n := by
@@ -87,6 +105,14 @@ theorem IntervalRootData.hasPosLeadingCoeff_negOnePow_mul
     (isUnit_iff_ne_zero.mpr (pow_ne_zero n (by norm_num)))]
   exact hfactor
 
+private theorem IntervalRootData.negOnePow_mul_leadingCoeff_pos
+    {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) (hpZero : 0 < p.eval 0) :
+    0 < (-1 : ℝ) ^ n * p.leadingCoeff := by
+  have h := hp.hasPosLeadingCoeff_negOnePow_mul hpZero
+  rw [HasPosLeadingCoeff, Polynomial.leadingCoeff_C_mul_of_isUnit
+    (isUnit_iff_ne_zero.mpr (pow_ne_zero n (by norm_num)))] at h
+  exact h
+
 /-- The interval-insertion interlacing theorem without a leading-sign
 hypothesis, using positive orientation at zero to normalize the input. -/
 theorem IntervalRootData.strictInterl_neg_insertionOperator
@@ -95,17 +121,14 @@ theorem IntervalRootData.strictInterl_neg_insertionOperator
     StrictInterl p (-ToricContribution.insertionOperator a b p) := by
   by_cases hn : n = 0
   · have hpDegree : p.natDegree = 0 := hp.natDegree_eq.trans hn
-    have hpNe : p ≠ 0 := by
-      intro hpEq
-      simp [hpEq] at hpZero
+    have hpNe := hp.ne_zero
     have houtputDegree :
         (-ToricContribution.insertionOperator a b p).natDegree = 1 := by
       rw [natDegree_neg]
       exact natDegree_insertionOperator_of_natDegree_zero
         a b hpDegree hpZero.ne' hb.ne'
-    have houtputNe : -ToricContribution.insertionOperator a b p ≠ 0 := by
-      intro houtputEq
-      simp [houtputEq] at houtputDegree
+    have houtputNe : -ToricContribution.insertionOperator a b p ≠ 0 :=
+      fun houtputEq => by simp [houtputEq] at houtputDegree
     have houtputSplits :
         (-ToricContribution.insertionOperator a b p).Splits := by
       simpa using insertionOperator_splits_of_natDegree_zero
@@ -135,10 +158,8 @@ theorem IntervalRootData.strictInterl_neg_insertionOperator
   have hleft := StrictInterl.C_mul_left hstrictInterl (inv_ne_zero hsign)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
     one_mul] at hleft
-  have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsign)
-  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
-    one_mul] at hboth
-  exact hboth
+  simpa only [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsign, C_1,
+    one_mul] using StrictInterl.C_mul_right hleft (inv_ne_zero hsign)
 
 /-- Multiplication by `1-X`, followed by a nonzero rescaling, adjoins one
 simple root at the right endpoint to an open-interval root package. -/
@@ -147,20 +168,14 @@ theorem rightClosedIntervalRootData_of_one_sub_X_mul_eq_C_mul
     (hf : IntervalRootData f n) (hs : s ≠ 0)
     (heq : (1 - X) * f = C s * p) :
     RightClosedIntervalRootData p (n + 1) := by
-  have hf_ne : f ≠ 0 := by
-    intro hzero
-    apply hf.eval_zero_ne
-    simp [hzero]
+  have hf_ne := hf.ne_zero
   have hp_eval_zero : p.eval 0 ≠ 0 := by
     intro hpzero
     have hzero := congrArg (Polynomial.eval 0) heq
     simp only [eval_mul, eval_sub, eval_one, eval_X, sub_zero, one_mul,
       eval_C, hpzero, mul_zero] at hzero
     exact hf.eval_zero_ne hzero
-  have hp_ne : p ≠ 0 := by
-    intro hzero
-    apply hp_eval_zero
-    simp [hzero]
+  have hp_ne : p ≠ 0 := fun hzero => hp_eval_zero (by simp [hzero])
   have hone_sub_ne : (1 - X : ℝ[X]) ≠ 0 := by
     intro hzero
     have h := congrArg (Polynomial.eval 0) hzero
@@ -347,23 +362,11 @@ theorem consecutive_signedTriangleFamily_strictInterl
   have hdRow : d ≤ m - 1 := by lia
   have hdNext : d + 1 ≤ m - 1 := by lia
   have hHData : IntervalRootData H (m - 2) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (d + 1) d hmPos hdNext (by lia)
-    dsimp only [H]
-    convert hdata using 1
-    lia
+    simpa only [H] using upperOffDiagonal_intervalRootData m ε d hm hd
   have hAData : IntervalRootData A (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε d d hmPos hdRow le_rfl
-    dsimp only [A]
-    convert hdata using 1
-    lia
+    simpa only [A] using signedTriangleFamily_self_intervalRootData m ε d hmPos hdRow
   have hBData : IntervalRootData B (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (d + 1) (d + 1) hmPos hdNext le_rfl
-    dsimp only [B]
-    convert hdata using 1
-    lia
+    simpa only [B] using signedTriangleFamily_self_intervalRootData m ε (d + 1) hmPos hdNext
   have hHEval : 0 < H.eval 0 :=
     signedTriangleFamily_eval_zero_pos m ε (d + 1) d hmPos hdNext
   have hAEval : 0 < A.eval 0 :=
@@ -371,12 +374,7 @@ theorem consecutive_signedTriangleFamily_strictInterl
   have hBEval : 0 < B.eval 0 :=
     signedTriangleFamily_eval_zero_pos m ε (d + 1) (d + 1) hmPos hdNext
   have heigenvalue : 0 < eigenvalue := by
-    have hfirst : 0 < (((m - 1 : ℕ) : ℝ) - d) := by
-      have hnat : 0 < m - 1 - d := by lia
-      rw [← Nat.cast_sub hdRow]
-      exact_mod_cast hnat
-    have hsecond : 0 < (((m - 1 : ℕ) : ℝ) + d + ε + 3) := by positivity
-    exact mul_pos hfirst hsecond
+    simpa only [eigenvalue] using diagonalEigenvalue_pos m ε d hm hd
   have hsignH : signH ≠ 0 := pow_ne_zero (m - 2) (by norm_num)
   have hsignAB : signAB ≠ 0 := pow_ne_zero (m - 1) (by norm_num)
   have hsignRelation : signAB = -signH := by
@@ -468,10 +466,9 @@ theorem consecutive_signedTriangleFamily_strictInterl
   have hleft := StrictInterl.C_mul_left hstrictInterlPos (inv_ne_zero hsignAB)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
     C_1, one_mul] at hleft
-  have hboth := StrictInterl.C_mul_right hleft (inv_ne_zero hsignAB)
-  rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
-    C_1, one_mul] at hboth
-  exact hboth
+  simpa only [Apos, B, eigenvalue, ← mul_assoc, ← Polynomial.C_mul,
+    inv_mul_cancel₀ hsignAB, C_1, one_mul] using
+    StrictInterl.C_mul_right hleft (inv_ne_zero hsignAB)
 
 /-- The consecutive signed-diagonal comparison is strict: adjacent
 diagonals have no common root. -/
@@ -498,30 +495,13 @@ theorem consecutive_signedTriangleFamily_strictInterlSameDegree
   have hd_row : d ≤ m - 1 := by lia
   have hd_next : d + 1 ≤ m - 1 := by lia
   have hH_data : IntervalRootData H (m - 2) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (d + 1) d hm_pos hd_next (by lia)
-    dsimp only [H]
-    convert hdata using 1
-    lia
+    simpa only [H] using upperOffDiagonal_intervalRootData m ε d hm hd
   have hA_data : IntervalRootData A (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε d d hm_pos hd_row le_rfl
-    dsimp only [A]
-    convert hdata using 1
-    lia
+    simpa only [A] using signedTriangleFamily_self_intervalRootData m ε d hm_pos hd_row
   have hB_data : IntervalRootData B (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (d + 1) (d + 1) hm_pos hd_next le_rfl
-    dsimp only [B]
-    convert hdata using 1
-    lia
+    simpa only [B] using signedTriangleFamily_self_intervalRootData m ε (d + 1) hm_pos hd_next
   have heigenvalue : 0 < eigenvalue := by
-    have hfirst : 0 < (((m - 1 : ℕ) : ℝ) - d) := by
-      rw [← Nat.cast_sub hd_row]
-      exact_mod_cast (by lia : 0 < m - 1 - d)
-    have hsecond : 0 < (((m - 1 : ℕ) : ℝ) + d + ε + 3) := by
-      positivity
-    exact mul_pos hfirst hsecond
+    simpa only [eigenvalue] using diagonalEigenvalue_pos m ε d hm hd
   have hhorizontal : B = insertionOperator a b H := by
     dsimp only [B, H, a, b, signedTriangleFamily]
     rw [triangleFamily_succ]
@@ -541,12 +521,8 @@ theorem consecutive_signedTriangleFamily_strictInterlSameDegree
       rw [Polynomial.IsRoot.def] at hr_scaledA ⊢
       simp only [eval_mul, eval_C] at hr_scaledA
       exact (mul_eq_zero.mp hr_scaledA).resolve_left heigenvalue.ne'
-    have hrI := hB_data.roots_mem_Ioo r (by
-      have hB_ne : B ≠ 0 := by
-        intro hzero
-        apply hB_data.eval_zero_ne
-        simp [hzero]
-      exact (mem_roots hB_ne).mpr hrB)
+    have hrI := hB_data.roots_mem_Ioo r
+      ((mem_roots (hB_data.ne_zero)).mpr hrB)
     have hrelation := congrArg (Polynomial.eval r)
       (signedTriangleFamily_diagonal_relation m ε d)
     have hAeval : A.eval r = 0 := hrA
@@ -555,23 +531,16 @@ theorem consecutive_signedTriangleFamily_strictInterlSameDegree
       (C (3 / 2 : ℝ) * (1 - X) * H).eval r at hrelation
     simp only [eval_sub, eval_mul, eval_C, hAeval, hBeval, mul_zero,
       sub_self, eval_one, eval_X] at hrelation
-    have hfactor : (3 / 2 : ℝ) * (1 - r) ≠ 0 := by
-      apply mul_ne_zero
-      · norm_num
-      · exact sub_ne_zero.mpr hrI.2.ne'
+    have hfactor : (3 / 2 : ℝ) * (1 - r) ≠ 0 :=
+      mul_ne_zero (by norm_num) (sub_ne_zero.mpr hrI.2.ne')
     have hrH : H.IsRoot r := by
       rw [Polynomial.IsRoot.def]
       exact (mul_eq_zero.mp hrelation.symm).resolve_left hfactor
     have hr_insert : (insertionOperator a b H).IsRoot r := by
-      rw [← hhorizontal]
-      exact hrB
+      rwa [← hhorizontal]
     exact insertionOperator_no_common_root a b
-      (fun x hx => hH_data.roots_mem_Ioo x (by
-        have hH_ne : H ≠ 0 := by
-          intro hzero
-          apply hH_data.eval_zero_ne
-          simp [hzero]
-        exact (mem_roots hH_ne).mpr hx))
+      (fun x hx => hH_data.roots_mem_Ioo x
+        ((mem_roots (hH_data.ne_zero)).mpr hx))
       hH_data.eval_derivative_ne_zero r hrH hr_insert
 
 /-- The strict adjacent-diagonal comparison written as increasing indexed
@@ -592,24 +561,11 @@ theorem consecutive_signedDiagonalRoot_interlacing
   have hd_row : d ≤ m - 1 := by lia
   have hd_next : d + 1 ≤ m - 1 := by lia
   have hA_data : IntervalRootData A (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε d d hm_pos hd_row le_rfl
-    dsimp only [A]
-    convert hdata using 1
-    lia
+    simpa only [A] using signedTriangleFamily_self_intervalRootData m ε d hm_pos hd_row
   have hB_data : IntervalRootData B (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (d + 1) (d + 1) hm_pos hd_next le_rfl
-    dsimp only [B]
-    convert hdata using 1
-    lia
+    simpa only [B] using signedTriangleFamily_self_intervalRootData m ε (d + 1) hm_pos hd_next
   have heigenvalue : 0 < eigenvalue := by
-    have hfirst : 0 < (((m - 1 : ℕ) : ℝ) - d) := by
-      rw [← Nat.cast_sub hd_row]
-      exact_mod_cast (by lia : 0 < m - 1 - d)
-    have hsecond : 0 < (((m - 1 : ℕ) : ℝ) + d + ε + 3) := by
-      positivity
-    exact mul_pos hfirst hsecond
+    simpa only [eigenvalue] using diagonalEigenvalue_pos m ε d hm hd
   have hstrict := consecutive_signedTriangleFamily_strictInterlSameDegree m ε d hm hd
   have hq_degree : (C eigenvalue * A).natDegree = m - 1 := by
     rw [natDegree_C_mul heigenvalue.ne', hA_data.natDegree_eq]
@@ -659,36 +615,16 @@ theorem signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
     · rw [natDegree_shiftedJacobiMonic (m - 1) hα (by norm_num),
         natDegree_shiftedJacobiMonic (m - 1) hupper (by norm_num)]
     · exact hno
-  let u : ℝ := (((-1 : ℝ) ^ (m - 1) *
-    Ring.choose ((m - 1 : ℕ) + ((ε : ℝ) - 1 / 2) + 1 +
-      ((m - 1 : ℕ) : ℝ))
-      (m - 1))⁻¹)
-  let v : ℝ := (((-1 : ℝ) ^ (m - 1) *
-    Ring.choose ((m - 1 : ℕ) + ((ε : ℝ) + 1) + 1 +
-      ((m - 1 : ℕ) : ℝ))
-      (m - 1))⁻¹)
-  have hu : u ≠ 0 := by
-    intro hu_zero
-    have hne := shiftedJacobiMonic_ne_zero (m - 1) hα
-      (by norm_num : (-1 : ℝ) < 1)
-    apply hne
-    rw [shiftedJacobiMonic]
-    change C u * shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1 = 0
-    rw [hu_zero, C_0, zero_mul]
-  have hv : v ≠ 0 := by
-    intro hv_zero
-    have hne := shiftedJacobiMonic_ne_zero (m - 1) hupper
-      (by norm_num : (-1 : ℝ) < 1)
-    apply hne
-    rw [shiftedJacobiMonic]
-    change C v * shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1 = 0
-    rw [hv_zero, C_0, zero_mul]
   have hstrict_shifted :
       StrictInterlSameDegree
         (shiftedJacobi (m - 1) ((ε : ℝ) - 1 / 2) 1)
         (shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1) := by
-    apply (StrictInterlSameDegree.C_mul_C_mul_iff hu hv).mp
-    simpa only [shiftedJacobiMonic, u, v] using hstrict_monic
+    apply (StrictInterlSameDegree.C_mul_C_mul_iff
+      (inv_ne_zero (shiftedJacobi_leadingScale_ne_zero
+        (m - 1) (α := (ε : ℝ) - 1 / 2) (β := 1) hα (by norm_num)))
+      (inv_ne_zero (shiftedJacobi_leadingScale_ne_zero
+        (m - 1) (α := (ε : ℝ) + 1) (β := 1) hupper (by norm_num)))).mp
+    simpa only [shiftedJacobiMonic] using hstrict_monic
   obtain ⟨k, hk, hterminal⟩ :=
     exists_signedTriangleFamily_terminal_eq_C_mul_shiftedJacobi m ε hm
   let scale : ℝ := Ring.choose (((m - 1 : ℕ) : ℝ) + (ε + 1)) (m - 1)
@@ -698,14 +634,9 @@ theorem signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial
   have hJ := C_mul_jPolynomial_eq_shiftedJacobi m ε hm
   have hJ_scaled : jPolynomial m ε =
       C scale⁻¹ * shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1 := by
-    calc
-      jPolynomial m ε = C 1 * jPolynomial m ε := by rw [C_1, one_mul]
-      _ = C (scale⁻¹ * scale) * jPolynomial m ε := by
-        rw [inv_mul_cancel₀ hscale.ne']
-      _ = C scale⁻¹ * (C scale * jPolynomial m ε) := by
-        rw [C_mul, mul_assoc]
-      _ = C scale⁻¹ * shiftedJacobi (m - 1) ((ε : ℝ) + 1) 1 := by
-        simpa only [scale] using congrArg (C scale⁻¹ * ·) hJ
+    have := congrArg (C scale⁻¹ * ·) hJ
+    simpa only [scale, ← mul_assoc, ← C_mul, inv_mul_cancel₀ hscale.ne',
+      C_1, one_mul] using this
   have hscaled := hstrict_shifted.C_mul_C_mul hk.ne'
     (inv_ne_zero hscale.ne')
   rw [← hterminal, ← hJ_scaled] at hscaled
@@ -722,15 +653,8 @@ theorem signedDiagonalRoot_terminal_interlacing_jPolynomialRoot
   let T := signedTriangleFamily ((ε : ℝ) + 1 / 2)
     (jPolynomial m ε) (m - 1) (m - 1)
   have hT_data : IntervalRootData T (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε (m - 1) (m - 1) hm le_rfl le_rfl
-    dsimp only [T]
-    convert hdata using 1
-    lia
-  have hJ_data : IntervalRootData (jPolynomial m ε) (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε 0 0 hm (by lia) le_rfl
-    simpa [signedTriangleFamily] using hdata
+    simpa only [T] using signedTriangleFamily_self_intervalRootData m ε (m - 1) hm le_rfl
+  have hJ_data := jPolynomial_intervalRootData m ε hm
   have hstrict := signedTriangleFamily_terminal_strictInterlSameDegree_jPolynomial m ε hm
   have hinter := hstrict.interlacing_fin hJ_data.natDegree_eq
     (signedDiagonalRoot m ε (m - 1))
@@ -804,33 +728,20 @@ theorem signedTriangleFamily_eval_mul_jPolynomial_derivative_pos
   let s : Fin (m - 1) → ℝ := signedDiagonalRoot m ε d
   let r : Fin (m - 1) → ℝ := jPolynomialRoot m ε
   have hS_data : IntervalRootData S (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε d d hm hd le_rfl
-    dsimp only [S]
-    convert hdata using 1
-    lia
-  have hJ_data : IntervalRootData (jPolynomial m ε) (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε 0 0 hm (by lia) le_rfl
-    simpa [signedTriangleFamily] using hdata
-  have hS_ne : S ≠ 0 := by
-    intro hzero
-    apply hS_data.eval_zero_ne
-    simp [hzero]
-  have hJ_ne : jPolynomial m ε ≠ 0 := by
-    intro hzero
-    apply hJ_data.eval_zero_ne
-    simp [hzero]
+    simpa only [S] using signedTriangleFamily_self_intervalRootData m ε d hm hd
+  have hJ_data := jPolynomial_intervalRootData m ε hm
+  have hS_ne := hS_data.ne_zero
+  have hJ_ne := hJ_data.ne_zero
   have hS_eq : S = C S.leadingCoeff *
       ∏ j : Fin (m - 1), (X - C (s j)) := by
-    apply Polynomial.splits_eq_C_mul_prod hS_ne hS_data.natDegree_eq
-      s (fun j => hS_data.orderedRoot_isRoot j)
-    exact hS_data.strictMono_orderedRoot.injective
+    exact Polynomial.splits_eq_C_mul_prod hS_ne hS_data.natDegree_eq s
+      (fun j => hS_data.orderedRoot_isRoot j)
+      hS_data.strictMono_orderedRoot.injective
   have hJ_eq : jPolynomial m ε = C (jPolynomial m ε).leadingCoeff *
       ∏ j : Fin (m - 1), (X - C (r j)) := by
-    apply Polynomial.splits_eq_C_mul_prod hJ_ne hJ_data.natDegree_eq
-      r (fun j => hJ_data.orderedRoot_isRoot j)
-    exact hJ_data.strictMono_orderedRoot.injective
+    exact Polynomial.splits_eq_C_mul_prod hJ_ne hJ_data.natDegree_eq r
+      (fun j => hJ_data.orderedRoot_isRoot j)
+      hJ_data.strictMono_orderedRoot.injective
   obtain ⟨hleft, hright⟩ :=
     signedDiagonalRoot_interlacing_jPolynomialRoot m ε d hm hd_pos hd
   have hprod := StrictMono.prod_sub_mul_prod_sub_pos_of_interlacing
@@ -841,18 +752,10 @@ theorem signedTriangleFamily_eval_mul_jPolynomial_derivative_pos
   have hJ_zero : 0 < (jPolynomial m ε).eval 0 := by
     rw [jPolynomial_eval_zero m ε hm]
     norm_num
-  have hS_leading := hS_data.hasPosLeadingCoeff_negOnePow_mul hS_zero
-  have hJ_leading := hJ_data.hasPosLeadingCoeff_negOnePow_mul hJ_zero
-  have hS_lead : 0 < sign * S.leadingCoeff := by
-    rw [HasPosLeadingCoeff,
-      Polynomial.leadingCoeff_C_mul_of_isUnit
-        (isUnit_iff_ne_zero.mpr (pow_ne_zero (m - 1) (by norm_num)))] at hS_leading
-    exact hS_leading
-  have hJ_lead : 0 < sign * (jPolynomial m ε).leadingCoeff := by
-    rw [HasPosLeadingCoeff,
-      Polynomial.leadingCoeff_C_mul_of_isUnit
-        (isUnit_iff_ne_zero.mpr (pow_ne_zero (m - 1) (by norm_num)))] at hJ_leading
-    exact hJ_leading
+  have hS_lead : 0 < sign * S.leadingCoeff :=
+    hS_data.negOnePow_mul_leadingCoeff_pos hS_zero
+  have hJ_lead : 0 < sign * (jPolynomial m ε).leadingCoeff :=
+    hJ_data.negOnePow_mul_leadingCoeff_pos hJ_zero
   have hsign_sq : sign * sign = 1 := by
     dsimp only [sign]
     rw [← pow_two, ← pow_mul]
@@ -861,34 +764,21 @@ theorem signedTriangleFamily_eval_mul_jPolynomial_derivative_pos
     nlinarith [mul_pos hS_lead hJ_lead]
   have hevalS : S.eval (r i) =
       S.leadingCoeff * ∏ j : Fin (m - 1), (r i - s j) := by
-    calc
-      S.eval (r i) =
-          (C S.leadingCoeff * ∏ j : Fin (m - 1), (X - C (s j))).eval
-            (r i) := congrArg (Polynomial.eval (r i)) hS_eq
-      _ = S.leadingCoeff * ∏ j : Fin (m - 1), (r i - s j) := by
-        simp only [eval_mul, eval_C, eval_prod, eval_sub, eval_X]
+    conv_lhs => rw [hS_eq]
+    simp only [eval_mul, eval_C, eval_prod, eval_sub, eval_X]
   have hevalJ : (jPolynomial m ε).derivative.eval (r i) =
       (jPolynomial m ε).leadingCoeff *
         ∏ j ∈ Finset.univ.erase i, (r i - r j) := by
-    calc
-      (jPolynomial m ε).derivative.eval (r i) =
-          (C (jPolynomial m ε).leadingCoeff *
-            ∏ j : Fin (m - 1), (X - C (r j))).derivative.eval (r i) :=
-        congrArg (fun p : ℝ[X] => p.derivative.eval (r i)) hJ_eq
-      _ = (jPolynomial m ε).leadingCoeff *
-          ∏ j ∈ Finset.univ.erase i, (r i - r j) :=
-        Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root
-          (jPolynomial m ε).leadingCoeff r i
-  have heval :
-      S.eval (r i) * (jPolynomial m ε).derivative.eval (r i) =
-        (S.leadingCoeff * (jPolynomial m ε).leadingCoeff) *
-          ((∏ j : Fin (m - 1), (r i - s j)) *
-            ∏ j ∈ Finset.univ.erase i, (r i - r j)) := by
-    rw [hevalS, hevalJ]
-    ring
+    conv_lhs => rw [hJ_eq]
+    exact Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root
+      (jPolynomial m ε).leadingCoeff r i
   change 0 < S.eval (r i) * (jPolynomial m ε).derivative.eval (r i)
-  rw [heval]
-  exact mul_pos hleading hprod
+  rw [hevalS, hevalJ]
+  calc
+    _ = (S.leadingCoeff * (jPolynomial m ε).leadingCoeff) *
+        ((∏ j : Fin (m - 1), (r i - s j)) *
+          ∏ j ∈ Finset.univ.erase i, (r i - r j)) := by ring
+    _ > 0 := mul_pos hleading hprod
 
 /-- The finite toric-contribution polynomial has the desired positive node
 sign at every root of `J`, for every nonexceptional offset. -/
@@ -903,16 +793,10 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos
   obtain ⟨k, hk, hcollapse⟩ :=
     exists_one_sub_X_mul_signedTriangleFamily_diagonal_eq_C_mul_rPolynomial
       m ε d hm hd
-  have hJ_data : IntervalRootData (jPolynomial m ε) (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε 0 0 hm (by lia) le_rfl
-    simpa [signedTriangleFamily] using hdata
+  have hJ_data := jPolynomial_intervalRootData m ε hm
   have hxI := hJ_data.roots_mem_Ioo x (by
-    have hJ_ne : jPolynomial m ε ≠ 0 := by
-      intro hzero
-      apply hJ_data.eval_zero_ne
-      simp [hzero]
-    exact (mem_roots hJ_ne).mpr (hJ_data.orderedRoot_isRoot i))
+    exact (mem_roots (hJ_data.ne_zero)).mpr
+      (hJ_data.orderedRoot_isRoot i))
   have hsign := signedTriangleFamily_eval_mul_jPolynomial_derivative_pos
     m ε d hm hd_pos hd i
   have heval := congrArg (Polynomial.eval x) hcollapse
@@ -933,9 +817,7 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos
           (1 - x) * (S.eval x *
             (jPolynomial m ε).derivative.eval x) := by ring
       _ > 0 := mul_pos (sub_pos.mpr hxI.2) hsign
-  rcases mul_pos_iff.mp hpositive with h | h
-  · exact h.2
-  · linarith
+  nlinarith
 
 /-- The finite toric-contribution polynomial has the desired positive sign at
 every root of `J`, without choosing an ordering index in the statement. -/
@@ -944,14 +826,8 @@ theorem rPolynomial_eval_mul_jPolynomial_derivative_pos_of_isRoot
     {x : ℝ} (hx : (jPolynomial m ε).IsRoot x) :
     0 < (rPolynomial m ε d).eval x *
       (jPolynomial m ε).derivative.eval x := by
-  have hJ_data : IntervalRootData (jPolynomial m ε) (m - 1) := by
-    have hdata := jPolynomial_signedTriangleFamily_intervalRootData
-      m ε 0 0 hm (by lia) le_rfl
-    simpa [signedTriangleFamily] using hdata
-  have hJ_ne : jPolynomial m ε ≠ 0 := by
-    intro hzero
-    apply hJ_data.eval_zero_ne
-    simp [hzero]
+  have hJ_data := jPolynomial_intervalRootData m ε hm
+  have hJ_ne := hJ_data.ne_zero
   obtain ⟨i, hi⟩ := exists_index_eq_of_mem_roots
     (jPolynomialRoot m ε) hJ_data.strictMono_orderedRoot
     (fun i => hJ_data.orderedRoot_isRoot i) hJ_ne hJ_data.natDegree_eq.le

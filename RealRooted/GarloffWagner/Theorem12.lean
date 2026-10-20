@@ -147,8 +147,6 @@ private theorem factorialHadamardProduct_pf_right_linearFactor_of_derivative_int
     · simpa [hright0] using IsPFPolynomial.zero
     · exact IsPFPolynomial.of_realRooted_nonneg htarget_nn hstrict.2.1.2
 
-/- Deprecated compatibility alias for `Interl.C_mul_left_of_nonneg`. -/
-
 theorem HasNonnegCoeffs.weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →

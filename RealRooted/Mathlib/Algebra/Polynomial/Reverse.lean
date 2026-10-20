@@ -48,19 +48,8 @@ theorem reflect_ofNat_mul (N n : ℕ) [n.AtLeastTwo] (p : R[X]) :
 /-- Multiplying by `X ^ k` and reflecting `k` further leaves the reflection unchanged. -/
 theorem reflect_X_pow_mul (q : R[X]) {N : ℕ} (k : ℕ) (hq : q.natDegree ≤ N) :
     reflect (N + k) (X ^ k * q) = reflect N q := by
-  ext j
-  rw [coeff_reflect, coeff_reflect, coeff_X_pow_mul']
-  rcases Nat.lt_or_ge (N + k) j with h1 | h1
-  · rw [revAt_eq_self_of_lt h1, revAt_eq_self_of_lt (by lia),
-      coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < j)]
-    simp only [show k ≤ j by lia, ↓reduceIte]
-    exact coeff_eq_zero_of_natDegree_lt (by lia)
-  · rw [revAt_le h1]
-    rcases Nat.lt_or_ge N j with h2 | h2
-    · rw [revAt_eq_self_of_lt h2, coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < j)]
-      simp only [show ¬k ≤ N + k - j by lia, ↓reduceIte]
-    · rw [revAt_le h2, show N + k - j - k = N - j by lia]
-      simp only [show k ≤ N + k - j by lia, ↓reduceIte]
+  simpa [Nat.add_comm] using
+    (reflect_mul (X ^ k : R[X]) q (F := k) (G := N) (natDegree_X_pow_le k) hq)
 
 section CommRing
 
@@ -75,13 +64,8 @@ theorem reflect_comp_neg_X_of_natDegree_le
   ext k
   rw [coeff_reflect, coeff_C_mul, coeff_comp_neg_X, coeff_comp_neg_X, coeff_reflect]
   by_cases hk : k ≤ n
-  · rw [revAt_le hk]
-    calc
-      p.coeff (n - k) * (-1 : A) ^ (n - k) =
-          ((-1 : A) ^ n * (-1 : A) ^ k) * p.coeff (n - k) := by
-        rw [Parity.neg_one_pow_mul_eq_neg_one_pow_sub hk]
-        ring
-      _ = (-1 : A) ^ n * (p.coeff (n - k) * (-1 : A) ^ k) := by ring
+  · rw [revAt_le hk, ← Parity.neg_one_pow_mul_eq_neg_one_pow_sub hk]
+    ring
   · have hlt : n < k := Nat.lt_of_not_le hk
     rw [revAt_eq_self_of_lt hlt,
       coeff_eq_zero_of_natDegree_lt (hp.trans_lt hlt)]
@@ -184,10 +168,7 @@ theorem roots_reverse_X_sub_C (r : K) (hr : r ≠ 0) :
 private theorem reverse_prod_X_sub_C_ne_zero (s : Multiset K) :
     ((s.map fun r => (X - C r : K[X])).prod).reverse ≠ 0 := by
   rw [Ne, Polynomial.reverse_eq_zero]
-  refine Multiset.prod_ne_zero ?_
-  rw [Multiset.mem_map]
-  rintro ⟨r, -, hr⟩
-  exact X_sub_C_ne_zero r (by assumption)
+  exact (monic_multiset_prod_of_monic _ _ fun r _ => monic_X_sub_C r).ne_zero
 
 private theorem roots_reverse_prod_X_sub_C [DecidableEq K] (s : Multiset K) :
     ((s.map fun r => (X - C r : K[X])).prod).reverse.roots =

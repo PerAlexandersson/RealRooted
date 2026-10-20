@@ -75,12 +75,8 @@ def acyclicOrientationRelabelEquiv (e : G ≃g H) :
     AcyclicOrientation G ≃ AcyclicOrientation H where
   toFun O := ⟨O.1.relabel e, O.2.relabel e⟩
   invFun O := ⟨O.1.relabel e.symm, O.2.relabel e.symm⟩
-  left_inv O := by
-    apply Subtype.ext
-    exact (relabelEquiv e).left_inv O.1
-  right_inv O := by
-    apply Subtype.ext
-    exact (relabelEquiv e).right_inv O.1
+  left_inv O := Subtype.ext ((relabelEquiv e).left_inv O.1)
+  right_inv O := Subtype.ext ((relabelEquiv e).right_inv O.1)
 
 @[simp]
 theorem relabel_isSink_iff
@@ -151,6 +147,38 @@ theorem ClawFree.comap_equiv
     · rw [Finset.card_map]
       exact hInd.card_eq
 
+private theorem weightedIndepPolyOn_map_embedding
+    {W : Type v} {G : _root_.SimpleGraph V} {H : _root_.SimpleGraph W}
+    [DecidableEq V] [DecidableEq W] [DecidableRel G.Adj] [DecidableRel H.Adj]
+    (e : V ↪ W) (hadj : ∀ x y, H.Adj (e x) (e y) ↔ G.Adj x y)
+    (S : Finset V) (wt : W → ℝ) :
+    weightedIndepPolyOn H (S.map e) wt = weightedIndepPolyOn G S (wt ∘ e) := by
+  classical
+  symm
+  unfold weightedIndepPolyOn indepSetsOn
+  refine Finset.sum_bij (fun s _ ↦ s.map e) ?_ ?_ ?_ ?_
+  · intro s hs
+    rcases Finset.mem_filter.mp hs with ⟨hsS, hsInd⟩
+    apply Finset.mem_filter.mpr
+    refine ⟨Finset.mem_powerset.mpr fun y hy ↦ ?_, ?_⟩
+    · rcases Finset.mem_map.mp hy with ⟨x, hx, rfl⟩
+      exact Finset.mem_map.mpr ⟨x, Finset.mem_powerset.mp hsS hx, rfl⟩
+    · intro a ha b hb hab habH
+      rcases Finset.mem_map.mp ha with ⟨x, hx, rfl⟩
+      rcases Finset.mem_map.mp hb with ⟨y, hy, hey⟩
+      subst hey
+      exact hsInd hx hy (fun h ↦ hab (congrArg e h)) ((hadj x y).mp habH)
+  · exact fun _ _ _ _ hst ↦ Finset.map_injective e hst
+  · intro t ht
+    rcases Finset.mem_filter.mp ht with ⟨htS, htInd⟩
+    obtain ⟨s, hsS, rfl⟩ := Finset.subset_map_iff.mp (Finset.mem_powerset.mp htS)
+    refine ⟨s, Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr hsS, ?_⟩, rfl⟩
+    intro x hx y hy hxy hxyG
+    exact htInd (Finset.mem_map.mpr ⟨x, hx, rfl⟩)
+      (Finset.mem_map.mpr ⟨y, hy, rfl⟩) (fun h ↦ hxy (e.injective h))
+      ((hadj x y).mpr hxyG)
+  · simp
+
 /-- Weighted independence polynomials on finite supports are invariant under
 graph isomorphism, with the weights pulled back along the isomorphism. -/
 theorem weightedIndepPolyOn_iso
@@ -160,62 +188,8 @@ theorem weightedIndepPolyOn_iso
     (e : G ≃g H) (S : Finset V) (wt : W → ℝ) :
     weightedIndepPolyOn H (S.map e.toEquiv.toEmbedding) wt =
       weightedIndepPolyOn G S (wt ∘ e) := by
-  classical
-  symm
-  unfold weightedIndepPolyOn indepSetsOn
-  refine Finset.sum_bij
-    (fun s _ ↦ s.map e.toEquiv.toEmbedding) ?_ ?_ ?_ ?_
-  · intro s hs
-    rcases Finset.mem_filter.mp hs with ⟨hsS, hsInd⟩
-    apply Finset.mem_filter.mpr
-    refine ⟨?_, ?_⟩
-    · exact Finset.mem_powerset.mpr fun y hy ↦ by
-        rcases Finset.mem_map.mp hy with ⟨x, hx, rfl⟩
-        exact Finset.mem_map.mpr
-          ⟨x, Finset.mem_powerset.mp hsS hx, rfl⟩
-    · intro a ha b hb hab hadj
-      rcases Finset.mem_map.mp ha with ⟨x, hx, rfl⟩
-      rcases Finset.mem_map.mp hb with ⟨y, hy, hey⟩
-      subst hey
-      exact hsInd hx hy (fun h ↦ hab (congrArg e h))
-        ((e.map_adj_iff (v := x) (w := y)).mp hadj)
-  · intro s hs t ht hst
-    exact Finset.map_injective e.toEquiv.toEmbedding hst
-  · intro t ht
-    rcases Finset.mem_filter.mp ht with ⟨htS, htInd⟩
-    let s := t.map e.symm.toEquiv.toEmbedding
-    refine ⟨s, ?_, ?_⟩
-    · apply Finset.mem_filter.mpr
-      refine ⟨?_, ?_⟩
-      · apply Finset.mem_powerset.mpr
-        intro x hx
-        rcases Finset.mem_map.mp hx with ⟨y, hy, rfl⟩
-        have hyS := Finset.mem_powerset.mp htS hy
-        rcases Finset.mem_map.mp hyS with ⟨z, hz, hez⟩
-        simpa [← hez] using hz
-      · intro x hx y hy hxy hadj
-        rcases Finset.mem_map.mp hx with ⟨a, ha, rfl⟩
-        rcases Finset.mem_map.mp hy with ⟨b, hb, heb⟩
-        subst heb
-        exact htInd ha hb (fun h ↦ hxy (congrArg e.symm h))
-          ((e.symm.map_adj_iff (v := a) (w := b)).mp hadj)
-    · dsimp [s]
-      ext y
-      constructor
-      · intro hy
-        rcases Finset.mem_map.mp hy with ⟨x, hx, hxy⟩
-        rcases Finset.mem_map.mp hx with ⟨z, hz, hzx⟩
-        have hzy : z = y := by
-          calc
-            z = e (e.symm z) := (e.apply_symm_apply z).symm
-            _ = e x := congrArg e hzx
-            _ = y := hxy
-        simpa [hzy] using hz
-      · intro hy
-        exact Finset.mem_map.mpr
-          ⟨e.symm y, Finset.mem_map.mpr ⟨y, hy, rfl⟩, by simp⟩
-  · intro s hs
-    simp
+  exact weightedIndepPolyOn_map_embedding e.toEquiv.toEmbedding
+    (fun x y ↦ e.map_adj_iff) S wt
 
 /-- Scale weights on a specified vertex set. -/
 def scaleWeightsOn {W : Type*} [DecidableEq W]
@@ -235,8 +209,8 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
   classical
   let L := K ∩ T
   have hL : G.IsClique (L : Set W) := by
-    intro x hx y hy hxy
-    exact hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
+    exact fun x hx y hy hxy ↦
+      hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
   have hLT : L ⊆ T := fun x hx ↦ (Finset.mem_inter.mp hx).2
   have hsdiff : T \ L = T \ K := by
     ext x
@@ -245,50 +219,27 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
       weightedIndepPolyOn G (T \ L) (scaleWeightsOn K c wt) =
         weightedIndepPolyOn G (T \ K) wt := by
     rw [hsdiff]
-    apply weightedIndepPolyOn_congr G
-    intro x hx
-    have hxK : x ∉ K := (Finset.mem_sdiff.mp hx).2
-    simp [scaleWeightsOn, hxK]
+    exact weightedIndepPolyOn_congr G fun x hx ↦ by
+      simp [scaleWeightsOn, (Finset.mem_sdiff.mp hx).2]
   have hres (v : W) (hv : v ∈ L) :
       weightedIndepPolyOn G (deleteClosedNeighborSupport G T v)
           (scaleWeightsOn K c wt) =
         weightedIndepPolyOn G (deleteClosedNeighborSupport G T v) wt := by
-    apply weightedIndepPolyOn_congr G
-    intro x hx
+    refine weightedIndepPolyOn_congr G fun x hx ↦ ?_
     have hvK : v ∈ K := (Finset.mem_inter.mp hv).1
     have hxData := Finset.mem_filter.mp hx
-    have hxne : x ≠ v := (Finset.mem_erase.mp hxData.1).1
-    have hxK : x ∉ K := by
-      intro hxK
-      exact hxData.2 (hK hvK hxK hxne.symm)
+    have hxK : x ∉ K := fun hxK ↦
+      hxData.2 (hK hvK hxK (Finset.mem_erase.mp hxData.1).1.symm)
     simp [scaleWeightsOn, hxK]
   have hscaled := weightedIndepPolyOn_sdiff_clique
     G (scaleWeightsOn K c wt) T L hL hLT
   have hold := weightedIndepPolyOn_sdiff_clique G wt T L hL hLT
   rw [hbase] at hscaled
-  have hsumres :
-      (∑ v ∈ L, C (scaleWeightsOn K c wt v) * X *
-          weightedIndepPolyOn G (deleteClosedNeighborSupport G T v)
-            (scaleWeightsOn K c wt)) =
-        ∑ v ∈ L, C (scaleWeightsOn K c wt v) * X *
-          weightedIndepPolyOn G (deleteClosedNeighborSupport G T v) wt := by
-    apply Finset.sum_congr rfl
-    intro v hv
-    rw [hres v hv]
-  rw [hsumres] at hscaled
+  rw [Finset.sum_congr rfl fun v hv ↦ by rw [hres v hv]] at hscaled
   have hcoefficient (v : W) (hv : v ∈ L) :
       C (scaleWeightsOn K c wt v) = C c * C (wt v) := by
-    have hvK : v ∈ K := (Finset.mem_inter.mp hv).1
-    simp [scaleWeightsOn, hvK, map_mul]
-  have hsumcoeff :
-      (∑ v ∈ L, C (scaleWeightsOn K c wt v) * X *
-          weightedIndepPolyOn G (deleteClosedNeighborSupport G T v) wt) =
-        ∑ v ∈ L, (C c * C (wt v)) * X *
-          weightedIndepPolyOn G (deleteClosedNeighborSupport G T v) wt := by
-    apply Finset.sum_congr rfl
-    intro v hv
-    rw [hcoefficient v hv]
-  rw [hsumcoeff] at hscaled
+    simp [scaleWeightsOn, (Finset.mem_inter.mp hv).1, map_mul]
+  rw [Finset.sum_congr rfl fun v hv ↦ by rw [hcoefficient v hv]] at hscaled
   have hfactor :
       (∑ v ∈ L, (C c * C (wt v)) * X *
           weightedIndepPolyOn G (deleteClosedNeighborSupport G T v) wt) =
@@ -298,8 +249,7 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
     apply Finset.sum_congr rfl
     intro v hv
     ring
-  rw [hscaled, hold]
-  rw [hfactor, hsdiff]
+  rw [hscaled, hold, hfactor, hsdiff]
   simp only [map_sub, map_one]
   ring_nf
   congr 1
@@ -366,10 +316,7 @@ noncomputable instance graphDecidableRel : DecidableRel P.graph.Adj :=
 def prefixEmbedding (_P : FinReversePerfectEliminationOrder n)
     {k : ℕ} (hk : k ≤ n) : Fin k ↪o Fin n where
   toFun i := ⟨i, lt_of_lt_of_le i.isLt hk⟩
-  inj' := by
-    intro i j hij
-    apply Fin.ext
-    exact congrArg (fun x : Fin n ↦ x.val) hij
+  inj' := fun _ _ hij ↦ Fin.ext (congrArg (fun x : Fin n ↦ x.val) hij)
   map_rel_iff' := Iff.rfl
 
 @[simp]
@@ -380,8 +327,7 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
 theorem prefixEmbedding_succ_apply {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1)) (i : Fin m) :
     P.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
-  apply Fin.ext
-  rfl
+  exact Fin.ext rfl
 
 /-- Restriction to an initial interval of the elimination order. -/
 def take (k : ℕ) (hk : k ≤ n) : FinReversePerfectEliminationOrder k where
@@ -468,10 +414,7 @@ structure InsertionCut {m : ℕ}
 theorem InsertionCut.ext {m : ℕ}
     {P : FinReversePerfectEliminationOrder (m + 1)}
     {O : Orientation P.init.graph} {c d : InsertionCut P O}
-    (hlower : c.lower = d.lower) : c = d := by
-  cases c
-  cases d
-  simp_all
+    (hlower : c.lower = d.lower) : c = d := by cases c; cases d; simp_all
 
 /-- The cut seen by a full acyclic orientation at its final vertex. -/
 def cutOfAcyclicOrientation {m : ℕ}
@@ -482,27 +425,20 @@ def cutOfAcyclicOrientation {m : ℕ}
     Q.1.Directed x.castSucc (Fin.last m)
   lower_subset := by
     intro x hx
-    rw [Finset.mem_filter] at hx
     exact (P.mem_lastEarlierNeighbors_iff x).mpr
-      (Q.1.directed_adj hx.2)
+      (Q.1.directed_adj (Finset.mem_filter.mp hx).2)
   directed_across := by
     intro x hx y hyK hyB
-    rw [Finset.mem_filter] at hx
-    have hxlast : Q.1.Directed x.castSucc (Fin.last m) := hx.2
+    have hxlast : Q.1.Directed x.castSucc (Fin.last m) := (Finset.mem_filter.mp hx).2
     have hxK : x ∈ P.lastEarlierNeighbors :=
       (P.mem_lastEarlierNeighbors_iff x).mpr (Q.1.directed_adj hxlast)
-    have hynotlast : ¬Q.1.Directed y.castSucc (Fin.last m) := by
-      intro hylast
-      apply hyB
-      exact Finset.mem_filter.mpr ⟨Finset.mem_univ y, hylast⟩
+    have hynotlast : ¬Q.1.Directed y.castSucc (Fin.last m) := fun hylast ↦
+      hyB (Finset.mem_filter.mpr ⟨Finset.mem_univ y, hylast⟩)
     have hlasty : Q.1.Directed (Fin.last m) y.castSucc :=
       (Q.1.directed_of_adj_iff_not_directed_reverse
         ((P.mem_lastEarlierNeighbors_iff y).mp hyK).symm).2 hynotlast
     have hxyInit : P.init.graph.Adj x y :=
-      P.lastEarlierNeighbors_isClique hxK hyK (by
-        intro hxy
-        subst y
-        exact hynotlast hxlast)
+      P.lastEarlierNeighbors_isClique hxK hyK (by grind)
     have hxy : P.graph.Adj x.castSucc y.castSucc :=
       (P.prefix_graph_adj (Nat.le_succ m) x y).1 hxyInit
     change Q.1.Directed x.castSucc y.castSucc
@@ -535,17 +471,13 @@ def extendOrientation {m : ℕ}
       · intro huv
         have hyK : y ∈ P.lastEarlierNeighbors :=
           (P.mem_lastEarlierNeighbors_iff y).mpr huv.symm
-        by_cases hyB : y ∈ cut.lower
-        · simp [hyB, hyK]
-        · simp [hyB, hyK]
+        by_cases hyB : y ∈ cut.lower <;> simp [hyB, hyK]
     · intro v
       refine Fin.lastCases ?_ (fun y ↦ ?_) v
       · intro huv
         have hxK : x ∈ P.lastEarlierNeighbors :=
           (P.mem_lastEarlierNeighbors_iff x).mpr huv
-        by_cases hxB : x ∈ cut.lower
-        · simp [hxB, hxK]
-        · simp [hxB, hxK]
+        by_cases hxB : x ∈ cut.lower <;> simp [hxB, hxK]
       · intro huv
         simpa using
           O.dir_ne_of_adj ((P.prefix_graph_adj (Nat.le_succ m) x y).mpr huv)
@@ -557,17 +489,15 @@ def extendOrientation {m : ℕ}
       · intro huv
         simp
       · intro huv
-        have hyK : y ∉ P.lastEarlierNeighbors := by
-          intro hyK
-          exact huv ((P.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
+        have hyK : y ∉ P.lastEarlierNeighbors := fun hyK ↦
+          huv ((P.mem_lastEarlierNeighbors_iff y).mp hyK |>.symm)
         have hyB : y ∉ cut.lower := fun hy ↦ hyK (cut.lower_subset hy)
         simp [hyK, hyB]
     · intro v
       refine Fin.lastCases ?_ (fun y ↦ ?_) v
       · intro huv
-        have hxK : x ∉ P.lastEarlierNeighbors := by
-          intro hxK
-          exact huv ((P.mem_lastEarlierNeighbors_iff x).mp hxK)
+        have hxK : x ∉ P.lastEarlierNeighbors := fun hxK ↦
+          huv ((P.mem_lastEarlierNeighbors_iff x).mp hxK)
         have hxB : x ∉ cut.lower := fun hx ↦ hxK (cut.lower_subset hx)
         simp [hxB]
       · intro huv
@@ -709,31 +639,25 @@ theorem extendOrientation_cutOfAcyclicOrientation {m : ℕ}
   apply Bool.eq_iff_iff.mpr
   refine Fin.lastCases ?_ (fun x ↦ ?_) u
   · refine Fin.lastCases ?_ (fun y ↦ ?_) v
-    · have hleft := (P.extendOrientation (P.restrictInit Q.1)
-          (P.cutOfAcyclicOrientation Q)).dir_eq_false_of_not_adj
-          (P.graph.loopless.irrefl (Fin.last m))
-      have hright := Q.1.dir_eq_false_of_not_adj
-        (P.graph.loopless.irrefl (Fin.last m))
-      rw [hleft, hright]
+    · exact iff_of_false
+        ((P.extendOrientation (P.restrictInit Q.1)
+          (P.cutOfAcyclicOrientation Q)).not_directed_self _)
+        (Q.1.not_directed_self _)
     · exact P.extendOrientation_directed_from_last
         (P.restrictInit Q.1) (P.cutOfAcyclicOrientation Q) y |>.trans <| by
           constructor
           · rintro ⟨hyK, hynot⟩
             have hadj := (P.mem_lastEarlierNeighbors_iff y).mp hyK
-            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) := by
-              intro hylast
-              exact hynot ((P.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
+            have hynot' : ¬Q.1.Directed y.castSucc (Fin.last m) := fun hylast ↦
+              hynot ((P.mem_cutOfAcyclicOrientation_lower Q y).2 hylast)
             exact (Q.1.directed_of_adj_iff_not_directed_reverse
               hadj.symm).2 hynot'
           · intro hlasty
             have hadj : P.graph.Adj y.castSucc (Fin.last m) :=
               (Q.1.directed_adj hlasty).symm
             refine ⟨(P.mem_lastEarlierNeighbors_iff y).mpr hadj, ?_⟩
-            intro hyLower
-            have hylast : Q.1.Directed y.castSucc (Fin.last m) :=
-              (P.mem_cutOfAcyclicOrientation_lower Q y).1 hyLower
-            exact (Q.1.directed_of_adj_iff_not_directed_reverse
-              hadj.symm).1 hlasty hylast
+            exact fun hyLower ↦ (Q.1.directed_of_adj_iff_not_directed_reverse
+              hadj.symm).1 hlasty ((P.mem_cutOfAcyclicOrientation_lower Q y).1 hyLower)
   · refine Fin.lastCases ?_ (fun y ↦ ?_) v
     · exact P.extendOrientation_directed_to_last
         (P.restrictInit Q.1) (P.cutOfAcyclicOrientation Q) x |>.trans <|
@@ -768,10 +692,7 @@ def cut {m : ℕ} {P : FinReversePerfectEliminationOrder (m + 1)}
 theorem ext {m : ℕ} {P : FinReversePerfectEliminationOrder (m + 1)}
     {x y : ExtensionData P}
     (horientation : x.orientation = y.orientation)
-    (hlower : x.lower = y.lower) : x = y := by
-  cases x
-  cases y
-  simp_all
+    (hlower : x.lower = y.lower) : x = y := by cases x; cases y; simp_all
 
 end ExtensionData
 
@@ -792,12 +713,9 @@ def acyclicOrientationEquivExtensionData {m : ℕ}
   left_inv Q := by
     apply Subtype.ext
     exact P.extendOrientation_cutOfAcyclicOrientation Q
-  right_inv := by
-    intro data
-    apply ExtensionData.ext
-    · exact P.restrictInit_extendOrientation data.orientation data.cut
-    · exact P.cutOfAcyclicOrientation_extendOrientation
-        data.orientation data.isAcyclic data.cut
+  right_inv data := ExtensionData.ext
+    (P.restrictInit_extendOrientation data.orientation data.cut)
+    (P.cutOfAcyclicOrientation_extendOrientation data.orientation data.isAcyclic data.cut)
 
 /-- A copy of the final-neighbor clique ordered by topological rank. -/
 structure RankedNeighbor {m : ℕ}
@@ -814,9 +732,7 @@ variable {m : ℕ} {P : FinReversePerfectEliminationOrder (m + 1)}
 
 @[ext]
 theorem ext {x y : RankedNeighbor P O} (hval : x.val = y.val) : x = y := by
-  cases x
-  cases y
-  simp_all
+  cases x; cases y; simp_all
 
 /-- The equivalence between ranked neighbors and the earlier neighbors of the final vertex. -/
 def equivSubtype :
@@ -890,33 +806,25 @@ theorem exists_insertionCut_card {m k : ℕ}
       apply hyLower
       exact Finset.mem_image.mpr ⟨j, hj, hej⟩
     have hiVal : i.val < k := by
-      rcases Finset.mem_map.mp hi with ⟨i₀, hi₀, hiEq⟩
-      rw [← hiEq]
+      rcases Finset.mem_map.mp hi with ⟨i₀, -, rfl⟩
       exact i₀.isLt
     have hkVal : k ≤ j.val := by
       by_contra hjlt
       apply hjnot
-      apply Finset.mem_map.mpr
-      refine ⟨⟨j.val, Nat.lt_of_not_ge hjlt⟩, Finset.mem_univ _, ?_⟩
-      apply Fin.ext
-      rfl
-    have hijVal : i.val < j.val := lt_of_lt_of_le hiVal hkVal
-    have hij : i < j := hijVal
+      refine Finset.mem_map.mpr ⟨⟨j.val, Nat.lt_of_not_ge hjlt⟩, Finset.mem_univ _, ?_⟩
+      exact Fin.ext rfl
+    have hij : i < j := show i.val < j.val from lt_of_lt_of_le hiVal hkVal
     have hrank :
         O.topologicalRank (e i).1.val < O.topologicalRank (e j).1.val :=
       e.lt_iff_lt.mpr hij
-    have hne : (e i).1.val ≠ y := by
-      rw [← hej]
-      exact fun h ↦ ne_of_lt hij
-        (e.injective (Subtype.ext (RankedNeighbor.ext h)))
+    have hne : (e i).1.val ≠ y := by grind
     have hadj : P.init.graph.Adj (e i).1.val y :=
       P.lastEarlierNeighbors_isClique (e i).1.mem_neighbors hyK hne
     by_contra hnot
     have hrev : O.1.Directed y (e i).1.val :=
       (O.1.directed_of_adj_iff_not_directed_reverse hadj.symm).2 hnot
     have hreverseRank := O.directed_topologicalRank_lt hrev
-    rw [← hej] at hreverseRank
-    exact Nat.lt_asymm hrank hreverseRank
+    grind
   refine ⟨{
     lower := lower
     lower_subset := hlowerSubset
@@ -997,12 +905,8 @@ def extensionDataEquivSigma {m : ℕ}
       lower := data.2.lower
       lower_subset := data.2.lower_subset
       directed_across := data.2.directed_across }
-  left_inv data := by
-    apply ExtensionData.ext <;> rfl
-  right_inv := by
-    intro data
-    apply Sigma.ext rfl
-    exact HEq.rfl
+  left_inv data := ExtensionData.ext (by rfl) (by rfl)
+  right_inv data := Sigma.ext rfl HEq.rfl
 
 /-- The simplicial-insertion equivalence in dependent-pair form. -/
 noncomputable def acyclicOrientationEquivSigma {m : ℕ}
@@ -1132,59 +1036,9 @@ theorem weightedIndepPolyOn_prefix_map {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1))
     (T : Finset (Fin m)) (wt : Fin (m + 1) → ℝ) :
     weightedIndepPolyOn P.graph (T.map Fin.castSuccEmb) wt =
-      weightedIndepPolyOn P.init.graph T (wt ∘ Fin.castSucc) := by
-  classical
-  symm
-  unfold weightedIndepPolyOn indepSetsOn
-  refine Finset.sum_bij (fun s _ ↦ s.map Fin.castSuccEmb) ?_ ?_ ?_ ?_
-  · intro s hs
-    rcases Finset.mem_filter.mp hs with ⟨hsT, hsInd⟩
-    apply Finset.mem_filter.mpr
-    refine ⟨?_, ?_⟩
-    · exact Finset.mem_powerset.mpr fun y hy ↦ by
-        rcases Finset.mem_map.mp hy with ⟨x, hx, rfl⟩
-        exact Finset.mem_map.mpr
-          ⟨x, Finset.mem_powerset.mp hsT hx, rfl⟩
-    · intro a ha b hb hab hadj
-      rcases Finset.mem_map.mp ha with ⟨x, hx, rfl⟩
-      rcases Finset.mem_map.mp hb with ⟨y, hy, hey⟩
-      subst hey
-      exact hsInd hx hy (fun h ↦ hab (congrArg Fin.castSucc h))
-        ((P.prefix_graph_adj (Nat.le_succ m) x y).mpr hadj)
-  · intro s hs t ht hst
-    exact Finset.map_injective Fin.castSuccEmb hst
-  · intro t ht
-    rcases Finset.mem_filter.mp ht with ⟨htT, htInd⟩
-    let s : Finset (Fin m) :=
-      Finset.univ.filter fun x ↦ x.castSucc ∈ t
-    refine ⟨s, ?_, ?_⟩
-    · apply Finset.mem_filter.mpr
-      refine ⟨?_, ?_⟩
-      · apply Finset.mem_powerset.mpr
-        intro x hx
-        have hxt : x.castSucc ∈ t := (Finset.mem_filter.mp hx).2
-        have hxMap := Finset.mem_powerset.mp htT hxt
-        rcases Finset.mem_map.mp hxMap with ⟨y, hyT, hyx⟩
-        exact Fin.castSucc_inj.mp hyx ▸ hyT
-      · intro x hx y hy hxy hadj
-        exact htInd (by simpa [s] using hx) (by simpa [s] using hy)
-          (fun h ↦ hxy (Fin.castSucc_inj.mp h))
-          ((P.prefix_graph_adj (Nat.le_succ m) x y).mp hadj)
-    · ext v
-      refine Fin.lastCases ?_ (fun x ↦ ?_) v
-      · constructor
-        · intro hv
-          rcases Finset.mem_map.mp hv with ⟨x, hx, hlast⟩
-          exact False.elim ((Nat.ne_of_lt x.isLt)
-            (congrArg Fin.val hlast))
-        · intro hv
-          have hvMap := Finset.mem_powerset.mp htT hv
-          rcases Finset.mem_map.mp hvMap with ⟨x, hx, hlast⟩
-          exact False.elim ((Nat.ne_of_lt x.isLt)
-            (congrArg Fin.val hlast))
-      · simp [s]
-  · intro s hs
-    simp
+      weightedIndepPolyOn P.init.graph T (wt ∘ Fin.castSucc) :=
+  weightedIndepPolyOn_map_embedding Fin.castSuccEmb
+    (fun x y ↦ (P.prefix_graph_adj (Nat.le_succ m) x y).symm) T wt
 
 theorem prefixSupport_map_eq_erase_last {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1))
@@ -1423,19 +1277,14 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
   induction n with
   | zero =>
       refine ⟨1, (fun i ↦ Fin.elim0 i), by norm_num, ?_, ?_⟩
-      · intro i
-        exact Fin.elim0 i
+      · exact fun i ↦ Fin.elim0 i
       · intro S
-        have hS : S = Finset.univ := by
-          ext i
-          exact Fin.elim0 i
+        have hS : S = Finset.univ := by ext i; exact Fin.elim0 i
         subst S
         rw [P.markedAcyclicSinkShift_univ,
           ← acyclicSinkPolynomial_one_eq_ordinary,
           acyclicSinkPolynomial_fin_zero]
-        have huniv : (Finset.univ : Finset (Fin 0)) = ∅ := by
-          ext i
-          exact Fin.elim0 i
+        have huniv : (Finset.univ : Finset (Fin 0)) = ∅ := by simp
         rw [huniv, weightedIndepPolyOn_empty]
         simp
   | succ m ih =>
@@ -1445,18 +1294,14 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
       let c : ℝ := d + 1
       let a : Fin m → ℝ := scaleWeightsOn K (d / c) wt
       let wt' : Fin (m + 1) → ℝ := Fin.lastCases (1 / c) a
-      have hd : 0 ≤ d := by
-        dsimp [d]
-        positivity
-      have hcpos : 0 < c := by
-        dsimp [c]
-        positivity
+      have hd : 0 ≤ d := by positivity
+      have hcpos : 0 < c := by positivity
       have hc : c ≠ 0 := ne_of_gt hcpos
       refine ⟨c * D, wt', mul_pos hcpos hD, ?_, ?_⟩
       · intro v
         refine Fin.lastCases ?_ (fun i ↦ ?_) v
-        · simpa only [wt', Fin.lastCases_last] using
-            (div_nonneg (by norm_num : (0 : ℝ) ≤ 1) hcpos.le)
+        · simp only [wt', Fin.lastCases_last]
+          positivity
         · dsimp [wt', a]
           by_cases hiK : i ∈ K
           · simp [scaleWeightsOn, hiK,
@@ -1473,10 +1318,8 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         have houtside :
             weightedIndepPolyOn P.init.graph (T \ K) a = B := by
           dsimp [B]
-          apply weightedIndepPolyOn_congr P.init.graph
-          intro i hi
-          have hiK : i ∉ K := (Finset.mem_sdiff.mp hi).2
-          simp [a, scaleWeightsOn, hiK]
+          exact weightedIndepPolyOn_congr P.init.graph fun i hi ↦ by
+            simp [a, scaleWeightsOn, (Finset.mem_sdiff.mp hi).2]
         have hcd : c * (d / c) = d := by
           field_simp
         have hcsub : c * (1 - d / c) = 1 := by
@@ -1496,15 +1339,10 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
                 (C c * C (d / c)) * A +
                   (C c * C (1 - d / c)) * B := by ring
             _ = C d * A + B := by rw [hCd, hCsub]; ring
-        have hq : c * (1 / c) = 1 := by
-          field_simp
-        have hqC : C c * C (1 / c) = (1 : ℝ[X]) := by
-          rw [← map_mul, hq, map_one]
         have hcoef : C c * C D * C (1 / c) = C D := by
-          calc
-            C c * C D * C (1 / c) =
-                C D * (C c * C (1 / c)) := by ring
-            _ = C D := by rw [hqC]; ring
+          rw [← map_mul, ← map_mul]
+          congr 1
+          field_simp
         have hI := P.weightedIndepPolyOn_last S wt'
         rw [hcomp] at hI
         rw [houtside] at hI
@@ -1552,12 +1390,10 @@ theorem exists_ordinaryAcyclicSinkPolynomial_comp_eq_weightedIndepPoly
       0 < D ∧ (∀ v, 0 ≤ wt v) ∧
         (ordinaryAcyclicSinkPolynomial P.graph).comp (X + C 1) =
           C D * weightedIndepPoly P.graph wt := by
-  obtain ⟨D, wt, hD, hwt, hmodel⟩ :=
-    P.exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
+  obtain ⟨D, wt, hD, hwt, hmodel⟩ := P.exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
   refine ⟨D, wt, hD, hwt, ?_⟩
-  rw [weightedIndepPoly_eq_weightedIndepPolyOn_univ]
-  rw [← P.markedAcyclicSinkShift_univ]
-  exact hmodel Finset.univ
+  simpa [weightedIndepPoly_eq_weightedIndepPolyOn_univ, P.markedAcyclicSinkShift_univ] using
+    hmodel Finset.univ
 
 /-- The ordinary acyclic sink polynomial splits for a claw-free graph supplied
 with a reverse perfect elimination order on `Fin n`. -/
@@ -1580,8 +1416,8 @@ theorem acyclicSinkPolynomial_one_splits_of_clawFree
     {n : ℕ} (P : FinReversePerfectEliminationOrder n)
     (hG : ClawFree P.graph) :
     (acyclicSinkPolynomial P.graph 1).Splits := by
-  rw [acyclicSinkPolynomial_one_eq_ordinary]
-  exact P.ordinaryAcyclicSinkPolynomial_splits_of_clawFree hG
+  simpa [acyclicSinkPolynomial_one_eq_ordinary] using
+    P.ordinaryAcyclicSinkPolynomial_splits_of_clawFree hG
 
 end FinReversePerfectEliminationOrder
 
@@ -1628,10 +1464,8 @@ a reverse perfect elimination order splits over the reals. -/
 theorem ordinaryAcyclicSinkPolynomial_splits_of_clawFree
     (P : ReversePerfectEliminationOrder G) (hG : ClawFree G) :
     (ordinaryAcyclicSinkPolynomial G).Splits := by
-  have hfin : ClawFree P.finModel.graph :=
-    ClawFree.comap_equiv (V := V) hG P.equivFin
-  have hsplits :=
-    P.finModel.ordinaryAcyclicSinkPolynomial_splits_of_clawFree hfin
+  have hsplits := P.finModel.ordinaryAcyclicSinkPolynomial_splits_of_clawFree
+    (ClawFree.comap_equiv (V := V) hG P.equivFin)
   rw [ordinaryAcyclicSinkPolynomial_iso P.finModelIso] at hsplits
   exact hsplits
 
