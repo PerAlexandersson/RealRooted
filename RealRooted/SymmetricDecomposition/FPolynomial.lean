@@ -22,30 +22,22 @@ def fPolynomial (d : ℕ) (h : ℝ[X]) : ℝ[X] :=
     (fun k => C (h.coeff k) * X ^ k * (X + 1) ^ (d - k))
 
 @[simp] lemma fPolynomial_zero (d : ℕ) :
-    fPolynomial d 0 = 0 := by
-  simp [fPolynomial]
+    fPolynomial d 0 = 0 := by simp [fPolynomial]
 
 @[simp] lemma fPolynomial_add (d : ℕ) (p q : ℝ[X]) :
     fPolynomial d (p + q) = fPolynomial d p + fPolynomial d q := by
   unfold fPolynomial
-  have hterm :
-      (fun x => C ((p + q).coeff x) * X ^ x * (X + 1) ^ (d - x)) =
-        (fun x => C (p.coeff x) * X ^ x * (X + 1) ^ (d - x) +
-          C (q.coeff x) * X ^ x * (X + 1) ^ (d - x)) := by
-    funext x
-    simp [coeff_add, add_mul]
-  rw [hterm, Finset.sum_add_distrib]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro k _
+  simp [coeff_add, add_mul]
 
 @[simp] lemma fPolynomial_C_mul (d : ℕ) (a : ℝ) (p : ℝ[X]) :
     fPolynomial d (C a * p) = C a * fPolynomial d p := by
   unfold fPolynomial
-  calc
-    ∑ k ∈ Finset.range (d + 1),
-        C ((C a * p).coeff k) * X ^ k * (X + 1) ^ (d - k)
-      = ∑ k ∈ Finset.range (d + 1),
-          C a * (C (p.coeff k) * X ^ k * (X + 1) ^ (d - k)) := by grind
-    _ = C a * ∑ k ∈ Finset.range (d + 1),
-          C (p.coeff k) * X ^ k * (X + 1) ^ (d - k) := by rw [Finset.mul_sum]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  grind
 
 lemma fPolynomial_succ_of_natDegree_le {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
@@ -241,14 +233,10 @@ lemma untransformRoot_nonpos {x : ℝ} (hx1 : -1 < x) (hx0 : x ≤ 0) :
   div_nonpos_of_nonpos_of_nonneg hx0 (by linarith)
 
 lemma transformedRoot_untransformRoot {x : ℝ} (hx1 : -1 < x) :
-    untransformRoot x / (1 - untransformRoot x) = x := by
-  unfold untransformRoot
-  grind
+    untransformRoot x / (1 - untransformRoot x) = x := by unfold untransformRoot; grind
 
 lemma untransformRoot_transformedRoot {r : ℝ} (hr : r ≤ 0) :
-    untransformRoot (r / (1 - r)) = r := by
-  unfold untransformRoot
-  grind
+    untransformRoot (r / (1 - r)) = r := by unfold untransformRoot; grind
 
 lemma eval_fPolynomial_eq_mul_eval_untransform {d : ℕ} {p : ℝ[X]}
     (hd : p.natDegree ≤ d) {x : ℝ} (hx : x ≠ -1) :
@@ -291,14 +279,14 @@ lemma fPolynomial_X_sub_C_mul_succ_of_ne_one (d : ℕ) {r : ℝ} (hr1 : r ≠ 1)
   rw [fPolynomial_X_sub_C_mul_succ d r hp, transformedLinearFactor_eq h1r_ne]
 
 lemma transformedLinearFactor_eq_of_nonpos {r : ℝ} (hr : r ≤ 0) :
-    C (1 - r) * X - C r = C (1 - r) * (X - C (r / (1 - r))) := by
-  exact transformedLinearFactor_eq (by linarith)
+    C (1 - r) * X - C r = C (1 - r) * (X - C (r / (1 - r))) :=
+  transformedLinearFactor_eq (by linarith)
 
 lemma fPolynomial_X_sub_C_mul_succ' (d : ℕ) {r : ℝ} (hr : r ≤ 0) {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     fPolynomial (d + 1) ((X - C r) * p) =
-      C (1 - r) * (X - C (r / (1 - r))) * fPolynomial d p := by
-  exact fPolynomial_X_sub_C_mul_succ_of_ne_one d (by linarith) hp
+      C (1 - r) * (X - C (r / (1 - r))) * fPolynomial d p :=
+  fPolynomial_X_sub_C_mul_succ_of_ne_one d (by linarith) hp
 
 
 private lemma fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one {p : ℝ[X]}
@@ -430,18 +418,39 @@ private lemma transformedRoot_mono_of_one_lt {r s : ℝ} (hrs : r ≤ s) (hr : 1
 
 private lemma pairwise_map_transformedRoot_of_lt_one :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → (∀ r ∈ rs, r < 1) →
-      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·)
-  | [], _, _ => by simp
-  | r :: rs, hrs, hbound => by
-      rw [List.pairwise_cons] at hrs
-      rw [List.map, List.pairwise_cons]
-      constructor
-      · intro y hy
-        rcases List.mem_map.mp hy with ⟨s, hs, rfl⟩
-        exact transformedRoot_mono_of_lt_one (hrs.1 s hs)
-          (hbound s (List.mem_cons_of_mem r hs))
-      · exact pairwise_map_transformedRoot_of_lt_one hrs.2
-          (fun s hs => hbound s (by simp_all))
+      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·) := by
+  intro rs hrs hbound
+  rw [List.pairwise_map]
+  exact hrs.imp_of_mem fun _ ht hst =>
+    transformedRoot_mono_of_lt_one hst (hbound _ ht)
+
+private lemma listInterlaces_map_of_mono {P : ℝ → Prop} {F : ℝ → ℝ}
+    (hmono : ∀ {x y}, P x → P y → x ≤ y → F x ≤ F y) :
+    ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ s ∈ ss, P s) →
+      (∀ r ∈ rs, P r) → ListInterlaces (ss.map F) (rs.map F)
+  | [], [], _, _, _ => by simp [ListInterlaces]
+  | [], [_], _, _, _ => by simp [ListInterlaces]
+  | s :: ss, r₁ :: r₂ :: rs, h, hss, hrs => by
+      rcases h with ⟨hr₁s, hsr₂, htail⟩
+      exact ⟨hmono (hrs r₁ (by simp)) (hss s (by simp)) hr₁s,
+        hmono (hss s (by simp)) (hrs r₂ (by simp)) hsr₂,
+        listInterlaces_map_of_mono hmono htail
+          (fun x hx => hss x (by simp_all)) (fun x hx => hrs x (by simp_all))⟩
+  | [], _ :: _ :: _, h, _, _ => by simp [ListInterlaces] at h
+  | _ :: _, [], h, _, _ => by simp [ListInterlaces] at h
+  | _ :: _ :: _, [_], h, _, _ => by simp [ListInterlaces] at h
+
+private lemma listAlternates_map_of_mono {P : ℝ → Prop} {F : ℝ → ℝ}
+    (hmono : ∀ {x y}, P x → P y → x ≤ y → F x ≤ F y) :
+    ∀ {ss rs : List ℝ}, ListAlternates ss rs → (∀ s ∈ ss, P s) →
+      (∀ r ∈ rs, P r) → ListAlternates (ss.map F) (rs.map F)
+  | [], [], _, _, _ => by simp [ListAlternates]
+  | s :: ss, r :: rs, h, hss, hrs => by
+      exact ⟨hmono (hss s (by simp)) (hrs r (by simp)) h.1,
+        listInterlaces_map_of_mono hmono h.2
+          (fun x hx => hss x (by simp_all)) (fun x hx => hrs x (by simp_all))⟩
+  | [], _ :: _, h, _, _ => by simp [ListAlternates] at h
+  | _ :: _, [], h, _, _ => by simp [ListAlternates] at h
 
 private lemma listInterlaces_map_transformedRoot_of_lt_one :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ r ∈ rs, r < 1) →
@@ -487,162 +496,96 @@ private lemma not_isRoot_one_of_forall_one_lt_roots {p : ℝ[X]} (hp : p ≠ 0)
   have hmem : (1 : ℝ) ∈ p.roots := (mem_roots hp).mpr hp_root
   linarith [h 1 hmem]
 
-/-- Strict interlacing is preserved when all roots lie below one. -/
-theorem StrictInterl.fPolynomial_natDegree_of_roots_lt_one {f g : ℝ[X]}
-    (h : StrictInterl f g) (hf : ∀ r ∈ f.roots, r < 1) (hg : ∀ r ∈ g.roots, r < 1) :
-    StrictInterl (fPolynomial f.natDegree f) (fPolynomial g.natDegree g) := by
-  rcases h with ⟨hf0, hg0, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hf1 : ¬ f.IsRoot 1 := not_isRoot_one_of_forall_roots_lt_one hf0.1 hf
-  have hg1 : ¬ g.IsRoot 1 := not_isRoot_one_of_forall_roots_lt_one hg0.1 hg
-  have hfdeg := natDegree_fPolynomial_natDegree hf1
-  have hgdeg := natDegree_fPolynomial_natDegree hg1
-  have hfr : (fPolynomial f.natDegree f ≠ 0 ∧ (fPolynomial f.natDegree f).Splits) := by
-    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hf1, ?_⟩
-    apply splits_of_card_roots
-    rw [roots_fPolynomial_natDegree_eq_map hf0.1 hf0.2 hf1, Multiset.card_map,
-      card_roots_of_splits hf0.2, hfdeg]
-  have hgr : (fPolynomial g.natDegree g ≠ 0 ∧ (fPolynomial g.natDegree g).Splits) := by
-    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hg1, ?_⟩
-    apply splits_of_card_roots
-    rw [roots_fPolynomial_natDegree_eq_map hg0.1 hg0.2 hg1, Multiset.card_map,
-      card_roots_of_splits hg0.2, hgdeg]
-  have hss_bound : ∀ r ∈ ss, r < 1 := by
-    intro r hr
-    apply hf r
-    rw [← hss_eq]
-    exact Multiset.mem_coe.mpr hr
-  have hrs_bound : ∀ r ∈ rs, r < 1 := by
-    intro r hr
-    apply hg r
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr hr
-  have hss_map_eq :
-      (↑(ss.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        f.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hss_eq
-  have hrs_map_eq :
-      (↑(rs.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        g.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hrs_eq
-  refine ⟨hfr, hgr, ss.map (fun r => r / (1 - r)),
-    rs.map (fun r => r / (1 - r)), ?_, ?_, ?_, ?_, ?_⟩
-  · exact pairwise_map_transformedRoot_of_lt_one hss
-      hss_bound
-  · exact pairwise_map_transformedRoot_of_lt_one hrs
-      hrs_bound
-  · rw [roots_fPolynomial_natDegree_eq_map hf0.1 hf0.2 hf1]
-    exact hss_map_eq
-  · rw [roots_fPolynomial_natDegree_eq_map hg0.1 hg0.2 hg1]
-    exact hrs_map_eq
-  · rcases hshape with hdiff | hsame
-    · exact Or.inl ⟨by simpa [hfdeg, hgdeg] using hdiff.1,
-        listInterlaces_map_transformedRoot_of_lt_one hdiff.2
-          hrs_bound⟩
-    · exact Or.inr ⟨by simpa [hfdeg, hgdeg] using hsame.1,
-        listAlternates_map_transformedRoot_of_lt_one hsame.2
-          hrs_bound⟩
-
 private lemma pairwise_map_transformedRoot_of_one_lt :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → (∀ r ∈ rs, 1 < r) →
-      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·)
-  | [], _, _ => by simp
-  | r :: rs, hrs, hbound => by
-      rw [List.pairwise_cons] at hrs
-      rw [List.map, List.pairwise_cons]
-      constructor
-      · intro y hy
-        rcases List.mem_map.mp hy with ⟨s, hs, rfl⟩
-        exact transformedRoot_mono_of_one_lt (hrs.1 s hs)
-          (hbound r List.mem_cons_self)
-      · exact pairwise_map_transformedRoot_of_one_lt hrs.2
-          (fun s hs => hbound s (by simp_all))
+      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·) := by
+  intro rs hrs hbound
+  rw [List.pairwise_map]
+  exact hrs.imp_of_mem fun hs _ hst =>
+    transformedRoot_mono_of_one_lt hst (hbound _ hs)
 
 private lemma listInterlaces_map_transformedRoot_of_one_lt :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ s ∈ ss, 1 < s) →
       (∀ r ∈ rs, 1 < r) →
       ListInterlaces (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
-  | [], [], _, _, _ => by simp [ListInterlaces]
-  | [], [_], _, _, _ => by simp [ListInterlaces]
-  | s :: ss, r₁ :: r₂ :: rs, h, hss, hrs => by
-      rcases h with ⟨hr₁s, hsr₂, htail⟩
-      refine ⟨?_, ?_, ?_⟩
-      · exact transformedRoot_mono_of_one_lt hr₁s (hrs r₁ (by simp))
-      · exact transformedRoot_mono_of_one_lt hsr₂ (hss s (by simp))
-      · exact listInterlaces_map_transformedRoot_of_one_lt htail
-          (fun s hs => hss s (by simp_all)) (fun r hr => hrs r (by simp_all))
-  | [], _ :: _ :: _, h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _, [], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _ :: _, [_], h, _, _ => by simp [ListInterlaces] at h
+        (rs.map (fun r : ℝ => r / (1 - r))) :=
+  listInterlaces_map_of_mono fun hx _ hxy => transformedRoot_mono_of_one_lt hxy hx
 
 private lemma listAlternates_map_transformedRoot_of_one_lt :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs → (∀ s ∈ ss, 1 < s) →
       (∀ r ∈ rs, 1 < r) →
       ListAlternates (ss.map (fun r : ℝ => r / (1 - r)))
-        (rs.map (fun r : ℝ => r / (1 - r)))
-  | [], [], _, _, _ => by simp [ListAlternates]
-  | s :: ss, r :: rs, h, hss, hrs => by
-      rcases h with ⟨hsr, htail⟩
-      exact ⟨transformedRoot_mono_of_one_lt hsr (hss s (by simp)),
-        listInterlaces_map_transformedRoot_of_one_lt htail
-          (fun t ht => hss t (by simp_all)) (fun t ht => hrs t (by simp_all))⟩
-  | [], _ :: _, h, _, _ => by simp [ListAlternates] at h
-  | _ :: _, [], h, _, _ => by simp [ListAlternates] at h
+        (rs.map (fun r : ℝ => r / (1 - r))) :=
+  listAlternates_map_of_mono fun hx _ hxy => transformedRoot_mono_of_one_lt hxy hx
+
+private lemma StrictInterl.fPolynomial_natDegree_of_root_property {P : ℝ → Prop}
+    {f g : ℝ[X]} (h : StrictInterl f g) (hf₁ : ¬ f.IsRoot 1) (hg₁ : ¬ g.IsRoot 1)
+    (hf : ∀ r ∈ f.roots, P r) (hg : ∀ r ∈ g.roots, P r)
+    (hpair : ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) → (∀ r ∈ rs, P r) →
+      (rs.map (fun r : ℝ => r / (1 - r))).Pairwise (· ≤ ·))
+    (hinter : ∀ {ss rs : List ℝ}, ListInterlaces ss rs → (∀ s ∈ ss, P s) →
+      (∀ r ∈ rs, P r) → ListInterlaces (ss.map fun r => r / (1 - r))
+        (rs.map fun r => r / (1 - r)))
+    (halt : ∀ {ss rs : List ℝ}, ListAlternates ss rs → (∀ s ∈ ss, P s) →
+      (∀ r ∈ rs, P r) → ListAlternates (ss.map fun r => r / (1 - r))
+        (rs.map fun r => r / (1 - r))) :
+    StrictInterl (fPolynomial f.natDegree f) (fPolynomial g.natDegree g) := by
+  rcases h with ⟨hf₀, hg₀, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hfdeg := natDegree_fPolynomial_natDegree hf₁
+  have hgdeg := natDegree_fPolynomial_natDegree hg₁
+  have hfr : fPolynomial f.natDegree f ≠ 0 ∧ (fPolynomial f.natDegree f).Splits := by
+    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hf₁, ?_⟩
+    apply splits_of_card_roots
+    rw [roots_fPolynomial_natDegree_eq_map hf₀.1 hf₀.2 hf₁, Multiset.card_map,
+      card_roots_of_splits hf₀.2, hfdeg]
+  have hgr : fPolynomial g.natDegree g ≠ 0 ∧ (fPolynomial g.natDegree g).Splits := by
+    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hg₁, ?_⟩
+    apply splits_of_card_roots
+    rw [roots_fPolynomial_natDegree_eq_map hg₀.1 hg₀.2 hg₁, Multiset.card_map,
+      card_roots_of_splits hg₀.2, hgdeg]
+  have hss_bound : ∀ r ∈ ss, P r := by
+    intro r hr
+    exact hf r (hss_eq ▸ Multiset.mem_coe.mpr hr)
+  have hrs_bound : ∀ r ∈ rs, P r := by
+    intro r hr
+    exact hg r (hrs_eq ▸ Multiset.mem_coe.mpr hr)
+  have hss_map_eq := congrArg (Multiset.map fun r : ℝ => r / (1 - r)) hss_eq
+  have hrs_map_eq := congrArg (Multiset.map fun r : ℝ => r / (1 - r)) hrs_eq
+  refine ⟨hfr, hgr, ss.map (fun r => r / (1 - r)), rs.map (fun r => r / (1 - r)),
+    hpair hss hss_bound, hpair hrs hrs_bound, ?_, ?_, ?_⟩
+  · rw [roots_fPolynomial_natDegree_eq_map hf₀.1 hf₀.2 hf₁]
+    simpa using hss_map_eq
+  · rw [roots_fPolynomial_natDegree_eq_map hg₀.1 hg₀.2 hg₁]
+    simpa using hrs_map_eq
+  · rcases hshape with hdiff | hsame
+    · exact Or.inl ⟨by simpa [hfdeg, hgdeg] using hdiff.1,
+        hinter hdiff.2 hss_bound hrs_bound⟩
+    · exact Or.inr ⟨by simpa [hfdeg, hgdeg] using hsame.1,
+        halt hsame.2 hss_bound hrs_bound⟩
+
+/-- Strict interlacing is preserved when all roots lie below one. -/
+theorem StrictInterl.fPolynomial_natDegree_of_roots_lt_one {f g : ℝ[X]}
+    (h : StrictInterl f g) (hf : ∀ r ∈ f.roots, r < 1) (hg : ∀ r ∈ g.roots, r < 1) :
+    StrictInterl (fPolynomial f.natDegree f) (fPolynomial g.natDegree g) := by
+  apply StrictInterl.fPolynomial_natDegree_of_root_property h
+    (not_isRoot_one_of_forall_roots_lt_one h.1.1 hf)
+    (not_isRoot_one_of_forall_roots_lt_one h.2.1.1 hg) hf hg
+    pairwise_map_transformedRoot_of_lt_one
+  · intro ss rs hint _ hrs
+    exact listInterlaces_map_transformedRoot_of_lt_one hint hrs
+  · intro ss rs halt _ hrs
+    exact listAlternates_map_transformedRoot_of_lt_one halt hrs
 
 /-- Strict interlacing is preserved when all roots lie above one. -/
 theorem StrictInterl.fPolynomial_natDegree_of_one_lt_roots {f g : ℝ[X]}
     (h : StrictInterl f g) (hf : ∀ r ∈ f.roots, 1 < r) (hg : ∀ r ∈ g.roots, 1 < r) :
     StrictInterl (fPolynomial f.natDegree f) (fPolynomial g.natDegree g) := by
-  rcases h with ⟨hf0, hg0, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
-  have hf1 : ¬ f.IsRoot 1 := not_isRoot_one_of_forall_one_lt_roots hf0.1 hf
-  have hg1 : ¬ g.IsRoot 1 := not_isRoot_one_of_forall_one_lt_roots hg0.1 hg
-  have hfdeg := natDegree_fPolynomial_natDegree hf1
-  have hgdeg := natDegree_fPolynomial_natDegree hg1
-  have hfr : (fPolynomial f.natDegree f ≠ 0 ∧ (fPolynomial f.natDegree f).Splits) := by
-    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hf1, ?_⟩
-    apply splits_of_card_roots
-    rw [roots_fPolynomial_natDegree_eq_map hf0.1 hf0.2 hf1, Multiset.card_map,
-      card_roots_of_splits hf0.2, hfdeg]
-  have hgr : (fPolynomial g.natDegree g ≠ 0 ∧ (fPolynomial g.natDegree g).Splits) := by
-    refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hg1, ?_⟩
-    apply splits_of_card_roots
-    rw [roots_fPolynomial_natDegree_eq_map hg0.1 hg0.2 hg1, Multiset.card_map,
-      card_roots_of_splits hg0.2, hgdeg]
-  have hss_bound : ∀ r ∈ ss, 1 < r := by
-    intro r hr
-    apply hf r
-    rw [← hss_eq]
-    exact Multiset.mem_coe.mpr hr
-  have hrs_bound : ∀ r ∈ rs, 1 < r := by
-    intro r hr
-    apply hg r
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr hr
-  have hss_map_eq :
-      (↑(ss.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        f.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hss_eq
-  have hrs_map_eq :
-      (↑(rs.map (fun r : ℝ => r / (1 - r))) : Multiset ℝ) =
-        g.roots.map (fun r : ℝ => r / (1 - r)) := by
-    simpa using congrArg (fun t : Multiset ℝ => t.map (fun r : ℝ => r / (1 - r))) hrs_eq
-  refine ⟨hfr, hgr, ss.map (fun r => r / (1 - r)),
-    rs.map (fun r => r / (1 - r)), ?_, ?_, ?_, ?_, ?_⟩
-  · exact pairwise_map_transformedRoot_of_one_lt hss
-      hss_bound
-  · exact pairwise_map_transformedRoot_of_one_lt hrs
-      hrs_bound
-  · rw [roots_fPolynomial_natDegree_eq_map hf0.1 hf0.2 hf1]
-    exact hss_map_eq
-  · rw [roots_fPolynomial_natDegree_eq_map hg0.1 hg0.2 hg1]
-    exact hrs_map_eq
-  · rcases hshape with hdiff | hsame
-    · exact Or.inl ⟨by simpa [hfdeg, hgdeg] using hdiff.1,
-        listInterlaces_map_transformedRoot_of_one_lt hdiff.2
-          hss_bound hrs_bound⟩
-    · exact Or.inr ⟨by simpa [hfdeg, hgdeg] using hsame.1,
-        listAlternates_map_transformedRoot_of_one_lt hsame.2
-          hss_bound hrs_bound⟩
+  exact StrictInterl.fPolynomial_natDegree_of_root_property h
+    (not_isRoot_one_of_forall_one_lt_roots h.1.1 hf)
+    (not_isRoot_one_of_forall_one_lt_roots h.2.1.1 hg) hf hg
+    pairwise_map_transformedRoot_of_one_lt
+    listInterlaces_map_transformedRoot_of_one_lt
+    listAlternates_map_transformedRoot_of_one_lt
 
 lemma neg_one_lt_transformedRoot {r : ℝ} (hr : r ≤ 0) :
     -1 < r / (1 - r) := by
@@ -701,50 +644,25 @@ lemma listAlternates_neg_one_cons_map_of_listInterlaces_of_nonpos
 lemma pairwise_map_untransformRoot_of_neg_one_lt :
     ∀ {rs : List ℝ}, rs.Pairwise (· ≤ ·) →
       (∀ r ∈ rs, -1 < r) →
-      (rs.map untransformRoot).Pairwise (· ≤ ·)
-  | [], _, _ => by simp
-  | r :: rs, hrs, hgt => by
-      rw [List.pairwise_cons] at hrs
-      rw [List.map, List.pairwise_cons]
-      constructor
-      · intro y hy
-        rcases List.mem_map.mp hy with ⟨z, hz, rfl⟩
-        exact untransformRoot_mono_of_neg_one_lt (hrs.1 z hz) (hgt r (by simp))
-      · exact pairwise_map_untransformRoot_of_neg_one_lt hrs.2 (fun z hz => hgt z (by simp_all))
+      (rs.map untransformRoot).Pairwise (· ≤ ·) := by
+  intro rs hrs hgt
+  rw [List.pairwise_map]
+  exact hrs.imp_of_mem fun hx _ hxy =>
+    untransformRoot_mono_of_neg_one_lt hxy (hgt _ hx)
 
 lemma listInterlaces_map_untransformRoot_of_neg_one_lt :
     ∀ {ss rs : List ℝ}, ListInterlaces ss rs →
       (∀ s ∈ ss, -1 < s) →
       (∀ r ∈ rs, -1 < r) →
-      ListInterlaces (ss.map untransformRoot) (rs.map untransformRoot)
-  | [], [], _, _, _ => by simp_all
-  | [], [_], _, _, _ => by simp [ListInterlaces]
-  | s :: ss, r₁ :: r₂ :: rs, h, hss, hrs => by
-      rcases h with ⟨hr₁s, hsr₂, htail⟩
-      refine ⟨?_, ?_, ?_⟩
-      · exact untransformRoot_mono_of_neg_one_lt hr₁s (hrs r₁ (by simp))
-      · exact untransformRoot_mono_of_neg_one_lt hsr₂ (hss s (by simp))
-      · exact listInterlaces_map_untransformRoot_of_neg_one_lt htail
-          (fun s hs => hss s (by simp_all))
-          (fun r hr => hrs r (by simp_all))
-  | [], _ :: _ :: _, h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _, [], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _ :: _, [_], h, _, _ => by simp [ListInterlaces] at h
+      ListInterlaces (ss.map untransformRoot) (rs.map untransformRoot) :=
+  listInterlaces_map_of_mono fun hx _ hxy => untransformRoot_mono_of_neg_one_lt hxy hx
 
 lemma listAlternates_map_untransformRoot_of_neg_one_lt :
     ∀ {ss rs : List ℝ}, ListAlternates ss rs →
       (∀ s ∈ ss, -1 < s) →
       (∀ r ∈ rs, -1 < r) →
-      ListAlternates (ss.map untransformRoot) (rs.map untransformRoot)
-  | [], [], _, _, _ => by simp_all
-  | s :: ss, r :: rs, h, hss, hrs => by
-      rcases h with ⟨hsr, htail⟩
-      exact ⟨untransformRoot_mono_of_neg_one_lt hsr (hss s (by simp)),
-        listInterlaces_map_untransformRoot_of_neg_one_lt htail
-          (fun t ht => hss t (by simp_all))
-          (fun t ht => hrs t (by lia))⟩
-  | [], _ :: _, h, _, _ => by simp [ListAlternates] at h
-  | _ :: _, [], h, _, _ => by simp [ListAlternates] at h
+      ListAlternates (ss.map untransformRoot) (rs.map untransformRoot) :=
+  listAlternates_map_of_mono fun hx _ hxy => untransformRoot_mono_of_neg_one_lt hxy hx
 
 lemma fPolynomial_natDegree_factor_of_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hpnn : HasNonnegCoeffs p) {r : ℝ}
@@ -752,14 +670,11 @@ lemma fPolynomial_natDegree_factor_of_isRoot
     ∃ q, p = (X - C r) * q ∧
       fPolynomial p.natDegree p =
         C (1 - r) * (X - C (r / (1 - r))) * fPolynomial q.natDegree q := by
-  have hr_mem : r ∈ p.roots := (mem_roots hp_ne).mpr hr
-  have hr_nonpos : r ≤ 0 :=
-    roots_nonpos_of_hasNonnegCoeffs hpnn r hr_mem
-  have hr1 : r ≠ 1 := by
-    intro hr_one
-    subst r
-    linarith
-  exact fPolynomial_natDegree_factor_of_isRoot_of_ne_one hp_ne hr1 hr
+  apply fPolynomial_natDegree_factor_of_isRoot_of_ne_one hp_ne _ hr
+  intro hr_one
+  subst r
+  have := roots_nonpos_of_hasNonnegCoeffs hpnn 1 ((mem_roots hp_ne).mpr hr)
+  linarith
 
 lemma isRoot_transformedRoot_fPolynomial_natDegree_of_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hpnn : HasNonnegCoeffs p) {r : ℝ}
@@ -833,63 +748,21 @@ theorem isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ d)
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) :
     ((fPolynomial d p) ≠ 0 ∧ (fPolynomial d p).Splits) := by
-  induction d generalizing p with
-  | zero =>
-      have hpC : p = C (p.coeff 0) := by simpa using (Polynomial.eq_C_of_natDegree_le_zero hpdeg)
-      rw [hpC]
-      have hfp : fPolynomial 0 (C (p.coeff 0)) = C (p.coeff 0) := by simp [fPolynomial]
-      lia
-  | succ d ih =>
-      by_cases hpd : p.natDegree ≤ d
-      · rw [fPolynomial_succ_of_natDegree_le hpd]
-        have hX1 : ((X + 1 : ℝ[X]) ≠ 0 ∧ (X + 1 : ℝ[X]).Splits) := by
-          simpa using (isRealRooted_X_sub_C (-1 : ℝ))
-        simp_all
-      · have hpdeg_eq : p.natDegree = d + 1 := by lia
-        have hroots_pos : 0 < p.roots.card := by
-          rw [card_roots_of_splits hp_splits, hpdeg_eq]
-          lia
-        obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
-        have hr_root : p.IsRoot r := (mem_roots hp_ne).mp hr_mem
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_of_hasNonnegCoeffs hpnn r hr_mem
-        obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hr_root
-        have hq' : p = (X - C r) * q := by lia
-        have hq_dvd : q ∣ p := ⟨X - C r, by grind⟩
-        have hq_ne : q ≠ 0 := by simp_all
-        have hq_rr : (q ≠ 0 ∧ q.Splits) := isRealRooted_of_dvd hp_ne hp_splits hq_ne hq_dvd
-        have hp_pos : HasPosLeadingCoeff p := hpnn.pos_leadingCoeff hp_ne
-        have hq_pos : HasPosLeadingCoeff q := by
-          apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
-          lia
-        have hq_nonneg : HasNonnegCoeffs q :=
-          hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
-            hp_ne hpnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
-        have hqdeg : q.natDegree ≤ d := by
-          have hmuldeg : p.natDegree = 1 + q.natDegree := by
-            rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
-          lia
-        rw [hq', fPolynomial_X_sub_C_mul_succ d r hqdeg]
-        have hlin :
-            ((C (1 - r) * X - C r) ≠ 0 ∧
-              (C (1 - r) * X - C r).Splits) := by
-          have h1r_pos : 0 < 1 - r := by linarith
-          have h1r_ne : 1 - r ≠ 0 := ne_of_gt h1r_pos
-          rw [transformedLinearFactor_eq h1r_ne]
-          exact isRealRooted_C_mul (isRealRooted_X_sub_C (r / (1 - r))).1
-            (isRealRooted_X_sub_C (r / (1 - r))).2 h1r_ne
-        simp_all
+  refine ⟨?_, splits_fPolynomial hpdeg hp_splits⟩
+  have hlead := leadingCoeff_fPolynomial_eq_eval_one hpdeg hpnn hp_ne
+  have heval := eval_one_pos_of_hasNonnegCoeffs hpnn hp_ne
+  intro hzero
+  rw [hzero] at hlead
+  simp_all
 
 theorem roots_fPolynomial_natDegree_eq_map_of_isRealRooted_of_hasNonnegCoeffs
     {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hpnn : HasNonnegCoeffs p) :
     (fPolynomial p.natDegree p).roots =
       p.roots.map (fun r : ℝ => r / (1 - r)) := by
   apply roots_fPolynomial_natDegree_eq_map hp_ne hp_splits
-  intro hp_root
-  have hmem : (1 : ℝ) ∈ p.roots := (mem_roots hp_ne).mpr hp_root
-  have hnonpos : (1 : ℝ) ≤ 0 :=
-    roots_nonpos_of_hasNonnegCoeffs hpnn 1 hmem
-  linarith
+  apply not_isRoot_one_of_forall_roots_lt_one hp_ne
+  intro r hr
+  exact (roots_nonpos_of_hasNonnegCoeffs hpnn r hr).trans_lt zero_lt_one
 
 theorem roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
     {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d)

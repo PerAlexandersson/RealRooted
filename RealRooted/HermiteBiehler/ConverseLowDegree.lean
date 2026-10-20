@@ -62,25 +62,38 @@ lemma im_nonpos_of_stable_root {p : ℂ[X]} (hstab : IsUpperHalfPlaneStable p)
   by_contra h
   exact hstab w (not_le.mp h) hw
 
+private lemma hermiteBiehler_natDegree_of_coeff_ne_zero {f g : ℝ[X]} {d : ℕ}
+    (hfd : f.natDegree = d) (hgd : g.natDegree = d)
+    (hne : (f.coeff d : ℂ) + Complex.I * (g.coeff d : ℂ) ≠ 0) :
+    (hermiteBiehlerPolynomial f g).natDegree = d ∧
+      (hermiteBiehlerPolynomial f g).coeff d =
+        (f.coeff d : ℂ) + Complex.I * (g.coeff d : ℂ) := by
+  have hcoeff := hermiteBiehler_coeff f g d
+  refine ⟨le_antisymm ?_ (le_natDegree_of_ne_zero (hcoeff.symm ▸ hne)), hcoeff⟩
+  apply natDegree_le_iff_coeff_eq_zero.mpr
+  intro n hn
+  rw [hermiteBiehler_coeff, coeff_eq_zero_of_natDegree_lt (hfd.symm ▸ hn),
+    coeff_eq_zero_of_natDegree_lt (hgd.symm ▸ hn)]
+  simp
+
 lemma hermiteBiehler_natDegree_of_monic {f g : ℝ[X]} {d : ℕ}
     (hf : f.Monic) (hg : g.Monic) (hfd : f.natDegree = d) (hgd : g.natDegree = d) :
     (hermiteBiehlerPolynomial f g).natDegree = d ∧
       (hermiteBiehlerPolynomial f g).coeff d = 1 + Complex.I := by
-  have h_coeff : (hermiteBiehlerPolynomial f g).coeff d = 1 + Complex.I := by
-    simp [hermiteBiehler_coeff, (by rw [← hfd]; exact hf : f.coeff d = 1),
-      (by rw [← hgd]; exact hg : g.coeff d = 1)]
-  have : (1 + Complex.I : ℂ) ≠ 0 := by
-    intro h
-    simpa using congrArg Complex.im h
-  constructor
-  · apply le_antisymm
-    · apply natDegree_le_iff_coeff_eq_zero.mpr
-      intro n hn
-      rw [hermiteBiehler_coeff, coeff_eq_zero_of_natDegree_lt (hfd.symm ▸ hn),
-        coeff_eq_zero_of_natDegree_lt (hgd.symm ▸ hn)]
-      simp
-    · exact le_natDegree_of_ne_zero (h_coeff.symm ▸ this)
-  · simp [*]
+  have hfc : f.coeff d = 1 := by rw [← hfd]; exact hf
+  have hgc : g.coeff d = 1 := by rw [← hgd]; exact hg
+  simpa [hfc, hgc] using hermiteBiehler_natDegree_of_coeff_ne_zero hfd hgd
+    (by rw [hfc, hgc]; intro h; simpa using congrArg Complex.im h)
+
+private lemma factor_two_of_natDegree_eq (p : ℂ[X]) (hdeg : p.natDegree = 2) :
+    ∃ w₁ w₂ : ℂ, p = C p.leadingCoeff * ((X - C w₁) * (X - C w₂)) ∧
+      p.roots = {w₁, w₂} := by
+  have hsplits : p.Splits := IsAlgClosed.splits _
+  obtain ⟨w₁, w₂, hroots⟩ := Multiset.card_eq_two.mp (by
+    rw [splits_iff_card_roots.mp hsplits, hdeg])
+  refine ⟨w₁, w₂, ?_, hroots⟩
+  rw [hsplits.eq_prod_roots, hroots]
+  simp
 
 lemma hermiteBiehler_factor_two {f g : ℝ[X]}
     (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2) :
@@ -89,87 +102,77 @@ lemma hermiteBiehler_factor_two {f g : ℝ[X]}
         = C (1 + Complex.I) * ((X - C w₁) * (X - C w₂)) ∧
       (hermiteBiehlerPolynomial f g).roots = {w₁, w₂} := by
   obtain ⟨hdeg, hlead⟩ := hermiteBiehler_natDegree_of_monic hf hg hf₂ hg₂
-  have h_splits : (hermiteBiehlerPolynomial f g).Splits := IsAlgClosed.splits _
-  have : (hermiteBiehlerPolynomial f g).roots.card = 2 := by
-    rw [splits_iff_card_roots.mp h_splits, hdeg]
-  obtain ⟨w₁, w₂, hroots⟩ := Multiset.card_eq_two.mp this
-  refine ⟨w₁, w₂, ?_, hroots⟩
-  have : (hermiteBiehlerPolynomial f g).leadingCoeff = 1 + Complex.I := by
-    rw [leadingCoeff, hdeg, hlead]
-  rw [h_splits.eq_prod_roots, this, hroots]
-  simp
+  simpa [leadingCoeff, hdeg, hlead] using
+    factor_two_of_natDegree_eq (hermiteBiehlerPolynomial f g) hdeg
+
+private lemma hermiteBiehler_vieta_two_of_factor {f g : ℝ[X]} {a b : ℝ}
+    (hfactor : ∃ w₁ w₂ : ℂ, hermiteBiehlerPolynomial f g =
+      C ((a : ℂ) + Complex.I * (b : ℂ)) * ((X - C w₁) * (X - C w₂)) ∧
+      (hermiteBiehlerPolynomial f g).roots = {w₁, w₂})
+    (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
+    ∃ u₁ u₂ v₁ v₂ : ℝ, v₁ ≤ 0 ∧ v₂ ≤ 0 ∧
+      f.coeff 1 = -(a * (u₁ + u₂)) + b * (v₁ + v₂) ∧
+      g.coeff 1 = -(a * (v₁ + v₂)) - b * (u₁ + u₂) ∧
+      f.coeff 0 = a * (u₁ * u₂ - v₁ * v₂) - b * (u₁ * v₂ + u₂ * v₁) ∧
+      g.coeff 0 = a * (u₁ * v₂ + u₂ * v₁) + b * (u₁ * u₂ - v₁ * v₂) := by
+  obtain ⟨w₁, w₂, hfact, hroots⟩ := hfactor
+  have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
+    intro hzero
+    exact hstab Complex.I (by simp) (by simp [hzero])
+  have hv₁ := im_nonpos_of_stable_root hstab (w := w₁) (by simp [*])
+  have hv₂ := im_nonpos_of_stable_root hstab (w := w₂) (by simp [*])
+  set L : ℂ := (a : ℂ) + Complex.I * (b : ℂ) with hL
+  have hpoly : hermiteBiehlerPolynomial f g =
+      C L * X ^ 2 + C (L * (-(w₁ + w₂))) * X + C (L * (w₁ * w₂)) := by
+    rw [hfact]
+    simp only [C_mul, C_add, C_neg]
+    ring
+  have hc₁ : (f.coeff 1 : ℂ) + Complex.I * (g.coeff 1 : ℂ) =
+      L * (-(w₁ + w₂)) := by rw [← hermiteBiehler_coeff, hpoly]; simp
+  have hc₀ : (f.coeff 0 : ℂ) + Complex.I * (g.coeff 0 : ℂ) = L * (w₁ * w₂) := by
+    rw [← hermiteBiehler_coeff, hpoly]
+    simp
+  refine ⟨w₁.re, w₂.re, w₁.im, w₂.im, hv₁, hv₂, ?_, ?_, ?_, ?_⟩
+  · have := congrArg Complex.re hc₁
+    simp [hL, Complex.add_re, Complex.mul_re, Complex.add_im,
+      Complex.neg_re, Complex.neg_im] at this
+    ring_nf at this ⊢
+    assumption
+  · have := congrArg Complex.im hc₁
+    simp [hL, Complex.add_re, Complex.mul_im, Complex.add_im,
+      Complex.neg_re, Complex.neg_im] at this
+    ring_nf at this ⊢
+    assumption
+  · have := congrArg Complex.re hc₀
+    simp [hL, Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
+    ring_nf at this ⊢
+    assumption
+  · have := congrArg Complex.im hc₀
+    simp [hL, Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
+    ring_nf at this ⊢
+    assumption
 
 theorem splits_of_stable_monic_two {f g : ℝ[X]}
     (hf : f.Monic) (hg : g.Monic) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
     f.Splits ∧ g.Splits := by
-  obtain ⟨w₁, w₂, hfact, hroots⟩ := hermiteBiehler_factor_two hf hg hf₂ hg₂
-  have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
-    intro h_zero
-    simp_all
-  have hv₁ : w₁.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hv₂ : w₂.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hpoly : hermiteBiehlerPolynomial f g
-      = C (1 + Complex.I) * X ^ 2 + C ((1 + Complex.I) * (-(w₁ + w₂))) * X
-        + C ((1 + Complex.I) * (w₁ * w₂)) := by
-    rw [hfact]
-    simp only [C_mul, C_add, C_neg]
-    ring
-  have hc₁ : (f.coeff 1 : ℂ) + Complex.I * (g.coeff 1 : ℂ)
-      = (1 + Complex.I) * (-(w₁ + w₂)) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_C, coeff_X_one]
-    simp [*]
-  have hc₀ : (f.coeff 0 : ℂ) + Complex.I * (g.coeff 0 : ℂ)
-      = (1 + Complex.I) * (w₁ * w₂) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  have hb₁ : f.coeff 1 = -(w₁.re + w₂.re) + (w₁.im + w₂.im) := by
-    have := congrArg Complex.re hc₁
-    simp [Complex.add_re, Complex.mul_re, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    linarith
-  have hb₂ : g.coeff 1 = -(w₁.re + w₂.re) - (w₁.im + w₂.im) := by
-    have := congrArg Complex.im hc₁
-    simp [Complex.add_re, Complex.mul_im, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    linarith
-  have hcf : f.coeff 0 = w₁.re * w₂.re - w₁.im * w₂.im
-      - (w₁.re * w₂.im + w₂.re * w₁.im) := by
-    have := congrArg Complex.re hc₀
-    simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    linarith
-  have hcg : g.coeff 0 = w₁.re * w₂.re - w₁.im * w₂.im
-      + (w₁.re * w₂.im + w₂.re * w₁.im) := by
-    have := congrArg Complex.im hc₀
-    simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    linarith
+  obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, hcf, hcg⟩ :=
+    hermiteBiehler_vieta_two_of_factor (a := 1) (b := 1)
+      (by simpa using hermiteBiehler_factor_two hf hg hf₂ hg₂) hstab
   have hdiscf : 0 ≤ discrim 1 (f.coeff 1) (f.coeff 0) := by
     rw [discrim, hb₁, hcf]
-    have := discrim_nonneg_of_im_nonpos (u₁ := w₁.re) (u₂ := w₂.re) hv₁ hv₂
+    have := discrim_nonneg_of_im_nonpos (u₁ := u₁) (u₂ := u₂) hv₁ hv₂
     linarith [this]
   have hdiscg : 0 ≤ discrim 1 (g.coeff 1) (g.coeff 0) := by
     rw [discrim, hb₂, hcg]
-    have := discrim_nonneg_of_im_nonpos' (u₁ := w₁.re) (u₂ := w₂.re) hv₁ hv₂
+    have := discrim_nonneg_of_im_nonpos' (u₁ := u₁) (u₂ := u₂) hv₁ hv₂
     linarith [this]
-  have hfexp : f = C 1 * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) := by
-    have h₂ : f.coeff 2 = 1 := by
-      rw [← hf₂]
-      exact hf
-    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := f) (by lia)
-  have hgexp : g = C 1 * X ^ 2 + C (g.coeff 1) * X + C (g.coeff 0) := by
-    have h₂ : g.coeff 2 = 1 := by
-      rw [← hg₂]
-      exact hg
-    simpa [h₂] using eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia)
   constructor
-  · rw [hfexp]
+  · rw [eq_X_sq_add_X_add_C_of_natDegree_le_two (p := f) (by lia),
+      show f.coeff 2 = 1 by rw [← hf₂]; exact hf]
     exact quadraticPoly_splits_of_discrim_nonneg one_ne_zero hdiscf
-  · rw [hgexp]
+  · rw [eq_X_sq_add_X_add_C_of_natDegree_le_two (p := g) (by lia),
+      show g.coeff 2 = 1 by rw [← hg₂]; exact hg]
     exact quadraticPoly_splits_of_discrim_nonneg one_ne_zero hdiscg
 
 lemma triangle_of_sq {A B t S : ℝ} (hA₀ : 0 ≤ A) (hB₀ : 0 ≤ B) (ht₀ : 0 ≤ t)
@@ -250,46 +253,9 @@ lemma hermiteBiehler_vieta_two {f g : ℝ[X]}
       g.coeff 1 = -(u₁ + u₂) - (v₁ + v₂) ∧
       f.coeff 0 = u₁ * u₂ - v₁ * v₂ - (u₁ * v₂ + u₂ * v₁) ∧
       g.coeff 0 = u₁ * u₂ - v₁ * v₂ + (u₁ * v₂ + u₂ * v₁) := by
-  obtain ⟨w₁, w₂, hfact, hroots⟩ := hermiteBiehler_factor_two hf hg hf₂ hg₂
-  have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
-    intro h_zero
-    simp_all
-  have hv₁ : w₁.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hv₂ : w₂.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hpoly : hermiteBiehlerPolynomial f g
-      = C (1 + Complex.I) * X ^ 2 + C ((1 + Complex.I) * (-(w₁ + w₂))) * X
-        + C ((1 + Complex.I) * (w₁ * w₂)) := by
-    rw [hfact]
-    simp only [C_mul, C_add, C_neg]
-    ring
-  have hc₁ : (f.coeff 1 : ℂ) + Complex.I * (g.coeff 1 : ℂ)
-      = (1 + Complex.I) * (-(w₁ + w₂)) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp only [coeff_add, coeff_C_mul, coeff_X_pow, coeff_C, coeff_X_one]
-    simp [*]
-  have hc₀ : (f.coeff 0 : ℂ) + Complex.I * (g.coeff 0 : ℂ)
-      = (1 + Complex.I) * (w₁ * w₂) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  refine ⟨w₁.re, w₂.re, w₁.im, w₂.im, hv₁, hv₂, ?_, ?_, ?_, ?_⟩
-  · have := congrArg Complex.re hc₁
-    simp [Complex.add_re, Complex.mul_re, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    linarith
-  · have := congrArg Complex.im hc₁
-    simp [Complex.add_re, Complex.mul_im, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    linarith
-  · have := congrArg Complex.re hc₀
-    simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    linarith
-  · have := congrArg Complex.im hc₀
-    simp [Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    linarith
+  simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+    hermiteBiehler_vieta_two_of_factor (a := 1) (b := 1)
+      (by simpa using hermiteBiehler_factor_two hf hg hf₂ hg₂) hstab
 
 lemma discrim_nonneg_of_im_nonpos_f {a b u₁ u₂ v₁ v₂ : ℝ}
     (hv₁ : v₁ ≤ 0) (hv₂ : v₂ ≤ 0) :
@@ -312,21 +278,10 @@ lemma hermiteBiehler_natDegree_of_posLead {f g : ℝ[X]} {d : ℕ}
     (hermiteBiehlerPolynomial f g).natDegree = d ∧
       (hermiteBiehlerPolynomial f g).coeff d
         = (f.coeff d : ℂ) + Complex.I * (g.coeff d : ℂ) := by
-  have h_coeff : (hermiteBiehlerPolynomial f g).coeff d
-      = (f.coeff d : ℂ) + Complex.I * (g.coeff d : ℂ) := hermiteBiehler_coeff f g d
-  have : ((f.coeff d : ℂ) + Complex.I * (g.coeff d : ℂ)) ≠ 0 := by
-    intro h
-    have hre : f.coeff d = 0 := by simpa using congrArg Complex.re h
-    exact hf.ne' hre
-  constructor
-  · apply le_antisymm
-    · apply natDegree_le_iff_coeff_eq_zero.mpr
-      intro n hn
-      rw [hermiteBiehler_coeff, coeff_eq_zero_of_natDegree_lt (hfd.symm ▸ hn),
-        coeff_eq_zero_of_natDegree_lt (hgd.symm ▸ hn)]
-      simp
-    · exact le_natDegree_of_ne_zero (h_coeff.symm ▸ this)
-  · simp [*]
+  apply hermiteBiehler_natDegree_of_coeff_ne_zero hfd hgd
+  intro h
+  apply hf.ne'
+  simpa using congrArg Complex.re h
 
 lemma hermiteBiehler_factor_two_posLead {f g : ℝ[X]}
     (hf : 0 < f.coeff 2) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2) :
@@ -336,16 +291,8 @@ lemma hermiteBiehler_factor_two_posLead {f g : ℝ[X]}
           * ((X - C w₁) * (X - C w₂)) ∧
       (hermiteBiehlerPolynomial f g).roots = {w₁, w₂} := by
   obtain ⟨hdeg, hlead⟩ := hermiteBiehler_natDegree_of_posLead hf hf₂ hg₂
-  have h_splits : (hermiteBiehlerPolynomial f g).Splits := IsAlgClosed.splits _
-  have : (hermiteBiehlerPolynomial f g).roots.card = 2 := by
-    rw [splits_iff_card_roots.mp h_splits, hdeg]
-  obtain ⟨w₁, w₂, hroots⟩ := Multiset.card_eq_two.mp this
-  refine ⟨w₁, w₂, ?_, hroots⟩
-  have : (hermiteBiehlerPolynomial f g).leadingCoeff
-      = (f.coeff 2 : ℂ) + Complex.I * (g.coeff 2 : ℂ) := by
-    rw [leadingCoeff, hdeg, hlead]
-  rw [h_splits.eq_prod_roots, this, hroots]
-  simp
+  simpa [leadingCoeff, hdeg, hlead] using
+    factor_two_of_natDegree_eq (hermiteBiehlerPolynomial f g) hdeg
 
 lemma hermiteBiehler_vieta_two_posLead {f g : ℝ[X]}
     (hf : 0 < f.coeff 2) (hf₂ : f.natDegree = 2) (hg₂ : g.natDegree = 2)
@@ -359,47 +306,8 @@ lemma hermiteBiehler_vieta_two_posLead {f g : ℝ[X]}
       g.coeff 0 =
         f.coeff 2 * (u₁ * v₂ + u₂ * v₁) +
           g.coeff 2 * (u₁ * u₂ - v₁ * v₂) := by
-  obtain ⟨w₁, w₂, hfact, hroots⟩ := hermiteBiehler_factor_two_posLead hf hf₂ hg₂
-  have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
-    intro h_zero
-    simp_all
-  have hv₁ : w₁.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hv₂ : w₂.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  set L : ℂ := (f.coeff 2 : ℂ) + Complex.I * (g.coeff 2 : ℂ) with hL
-  have hpoly : hermiteBiehlerPolynomial f g
-      = C L * X ^ 2 + C (L * (-(w₁ + w₂))) * X + C (L * (w₁ * w₂)) := by
-    rw [hfact]
-    simp only [C_mul, C_add, C_neg]
-    ring
-  have hc₁ : (f.coeff 1 : ℂ) + Complex.I * (g.coeff 1 : ℂ) = L * (-(w₁ + w₂)) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  have hc₀ : (f.coeff 0 : ℂ) + Complex.I * (g.coeff 0 : ℂ) = L * (w₁ * w₂) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  refine ⟨w₁.re, w₂.re, w₁.im, w₂.im, hv₁, hv₂, ?_, ?_, ?_, ?_⟩
-  · have := congrArg Complex.re hc₁
-    simp [hL, Complex.add_re, Complex.mul_re, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    ring_nf at this ⊢
-    assumption
-  · have := congrArg Complex.im hc₁
-    simp [hL, Complex.add_re, Complex.mul_im, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    ring_nf at this ⊢
-    assumption
-  · have := congrArg Complex.re hc₀
-    simp [hL, Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    ring_nf at this ⊢
-    assumption
-  · have := congrArg Complex.im hc₀
-    simp [hL, Complex.add_re, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    ring_nf at this ⊢
-    assumption
+  exact hermiteBiehler_vieta_two_of_factor
+    (hermiteBiehler_factor_two_posLead hf hf₂ hg₂) hstab
 
 theorem splits_of_stable_two {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
@@ -826,16 +734,12 @@ lemma hermiteBiehler_factor_two_left {f g : ℝ[X]} (h_f_ne : f ≠ 0)
   obtain ⟨hdeg, hlead⟩ :=
     hermiteBiehler_natDegree_of_left_dominant h_f_ne (show g.natDegree < f.natDegree by simp [*])
   rw [hf₂] at hdeg
-  have hsplits : (hermiteBiehlerPolynomial f g).Splits := IsAlgClosed.splits _
-  have hcard : (hermiteBiehlerPolynomial f g).roots.card = 2 := by
-    rw [splits_iff_card_roots.mp hsplits, hdeg]
-  obtain ⟨w₁, w₂, hroots⟩ := Multiset.card_eq_two.mp hcard
-  refine ⟨w₁, w₂, ?_, hroots⟩
-  have hlc : (hermiteBiehlerPolynomial f g).leadingCoeff = ((f.coeff 2 : ℝ) : ℂ) := by
+  have hlead' : (hermiteBiehlerPolynomial f g).leadingCoeff = (f.coeff 2 : ℂ) := by
     rw [hlead, Polynomial.leadingCoeff, hf₂]
-  have := hsplits.eq_prod_roots
-  rw [hlc, hroots] at this
-  simp [*]
+  obtain ⟨w₁, w₂, hfact, hroots⟩ :=
+    factor_two_of_natDegree_eq (hermiteBiehlerPolynomial f g) hdeg
+  rw [hlead'] at hfact
+  exact ⟨w₁, w₂, hfact, hroots⟩
 
 lemma hermiteBiehler_vieta_two_one {f g : ℝ[X]}
     (hf : 0 < f.coeff 2) (hf₂ : f.natDegree = 2) (hgd : g.natDegree < 2)
@@ -846,73 +750,23 @@ lemma hermiteBiehler_vieta_two_one {f g : ℝ[X]}
       f.coeff 0 = f.coeff 2 * (u₁ * u₂ - v₁ * v₂) ∧
       g.coeff 0 = f.coeff 2 * (u₁ * v₂ + u₂ * v₁) := by
   have h_f_ne : f ≠ 0 := fun h_zero => by simp [h_zero] at hf
-  obtain ⟨w₁, w₂, hfact, hroots⟩ := hermiteBiehler_factor_two_left h_f_ne hf₂ hgd
-  have hne : hermiteBiehlerPolynomial f g ≠ 0 := by
-    intro h_zero
-    simp_all
-  have hv₁ : w₁.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  have hv₂ : w₂.im ≤ 0 := by
-    apply im_nonpos_of_stable_root hstab
-    simp [*]
-  set L : ℂ := ((f.coeff 2 : ℝ) : ℂ) with hL
-  have hpoly : hermiteBiehlerPolynomial f g
-      = C L * X ^ 2 + C (L * (-(w₁ + w₂))) * X + C (L * (w₁ * w₂)) := by
-    rw [hfact]
-    simp only [C_mul, C_add, C_neg]
-    ring
-  have hc₁ : (f.coeff 1 : ℂ) + Complex.I * (g.coeff 1 : ℂ) = L * (-(w₁ + w₂)) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  have hc₀ : (f.coeff 0 : ℂ) + Complex.I * (g.coeff 0 : ℂ) = L * (w₁ * w₂) := by
-    rw [← hermiteBiehler_coeff, hpoly]
-    simp
-  refine ⟨w₁.re, w₂.re, w₁.im, w₂.im, hv₁, hv₂, ?_, ?_, ?_, ?_⟩
-  · have := congrArg Complex.re hc₁
-    simp [hL, Complex.add_re, Complex.mul_re, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    ring_nf at this ⊢
-    assumption
-  · have := congrArg Complex.im hc₁
-    simp [hL, Complex.add_re, Complex.mul_im, Complex.add_im,
-      Complex.neg_re, Complex.neg_im] at this
-    ring_nf at this ⊢
-    assumption
-  · have := congrArg Complex.re hc₀
-    simp [hL, Complex.add_re, Complex.mul_re, Complex.mul_im] at this
-    assumption
-  · have := congrArg Complex.im hc₀
-    simp [hL, Complex.mul_re, Complex.mul_im, Complex.add_im] at this
-    ring_nf at this ⊢
-    assumption
+  simpa using hermiteBiehler_vieta_two_of_factor (a := f.coeff 2) (b := 0)
+    (by simpa using hermiteBiehler_factor_two_left h_f_ne hf₂ hgd) hstab
 
 theorem strictInterl_of_stable_two_one {f g : ℝ[X]}
     (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
     (hf₂ : f.natDegree = 2) (hg₁ : g.natDegree = 1)
     (hstab : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) : StrictInterl g f := by
-  have ha : 0 < f.coeff 2 := by
-    rw [← hf₂]
-    exact hf
-  have hb₂_pos : 0 < g.coeff 1 := by
-    rw [← hg₁]
-    exact hg
+  have ha : 0 < f.coeff 2 := by rw [← hf₂]; exact hf
+  have hb₂_pos : 0 < g.coeff 1 := by rw [← hg₁]; exact hg
   have h_f_ne : f ≠ 0 := fun h_zero ↦ by simp [h_zero] at ha
   have h_g_ne : g ≠ 0 := fun h_zero ↦ by simp [h_zero] at hb₂_pos
   obtain ⟨u₁, u₂, v₁, v₂, hv₁, hv₂, hb₁, hb₂, hc₁, hc₂⟩ :=
     hermiteBiehler_vieta_two_one ha hf₂ (by simp [*]) hstab
   have hfexp : f = C (f.coeff 2) * X ^ 2 + C (f.coeff 1) * X + C (f.coeff 0) :=
     eq_X_sq_add_X_add_C_of_natDegree_le_two (by lia)
-  have hgexp : g = C (g.coeff 1) * X + C (g.coeff 0) := by
-    ext n
-    rcases n with _ | _ | n
-    · simp
-    · simp
-    · have h_lt : g.natDegree < n + 2 := by
-        rw [hg₁]
-        lia
-      have hz : g.coeff (n + 2) = 0 := coeff_eq_zero_of_natDegree_lt h_lt
-      simp [coeff_add, hz]
+  have hgexp : g = C (g.coeff 1) * X + C (g.coeff 0) :=
+    Polynomial.eq_X_add_C_of_natDegree_le_one (by lia)
   set a := f.coeff 2
   set b₁ := f.coeff 1
   set c₁ := f.coeff 0
