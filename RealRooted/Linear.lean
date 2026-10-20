@@ -161,19 +161,6 @@ lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
     (p + q).IsRoot x := by simp_all
 
-/-- If `(X - C r)^m` divides both summands, then it divides their sum. -/
-lemma pow_X_sub_C_dvd_add {p q : ℝ[X]} {r : ℝ} {m : ℕ}
-    (hp : (X - C r) ^ m ∣ p) (hq : (X - C r) ^ m ∣ q) :
-    (X - C r) ^ m ∣ p + q :=
-  dvd_add hp hq
-
-/-- The root multiplicity in a sum is at least the minimum multiplicity
-of the two summands. -/
-lemma min_rootMultiplicity_le_rootMultiplicity_add {p q : ℝ[X]} {r : ℝ}
-    (hpq : p + q ≠ 0) :
-    min (p.rootMultiplicity r) (q.rootMultiplicity r) ≤ (p + q).rootMultiplicity r :=
-  Polynomial.rootMultiplicity_add (p := p) (q := q) r hpq
-
 /-- A nonunit real-rooted polynomial has a real root. -/
 lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp_ne : p ≠ 0)
     (hp_splits : p.Splits) (hu : ¬ IsUnit p) : ∃ r : ℝ, p.IsRoot r := by
@@ -399,17 +386,6 @@ lemma StrictInterl.comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
       Or.inr ⟨by simpa using hlen, ?_⟩⟩
     exact listAlternates_of_interleaves_of_length (by simpa using hlen) hinter
 
-/-- Positive variable rescaling is an equivalence on `StrictInterl`. -/
-lemma StrictInterl.comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
-    StrictInterl (f.comp (C a * X)) (g.comp (C a * X)) ↔ StrictInterl f g := by
-  constructor
-  · intro h
-    have hscale : (C a * X : ℝ[X]).comp (C a⁻¹ * X) = X := by
-      simp only [mul_comp, C_comp, X_comp]
-      rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', map_one, one_mul]
-    simpa [Polynomial.comp_assoc, hscale] using h.comp_C_mul_X (inv_pos.mpr ha)
-  · exact fun h => h.comp_C_mul_X ha
-
 /-- Reflection through the origin reverses same-degree proper position. -/
 lemma StrictInterl.comp_neg_X_of_natDegree_eq {f g : ℝ[X]}
     (h : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) :
@@ -450,17 +426,6 @@ lemma Interl.comp_C_mul_X {f g : ℝ[X]} (h : Interl f g) {a : ℝ} (ha : 0 < a)
   · simpa using interl_zero_left (g.comp (C a * X))
   · simpa using interl_zero_right (f.comp (C a * X))
   · exact (hstrict.comp_C_mul_X ha).toInterl
-
-/-- Positive variable rescaling is an equivalence on zero-aware proper position. -/
-lemma Interl.comp_C_mul_X_iff {f g : ℝ[X]} {a : ℝ} (ha : 0 < a) :
-    Interl (f.comp (C a * X)) (g.comp (C a * X)) ↔ Interl f g := by
-  constructor
-  · intro h
-    have hscale : (C a * X : ℝ[X]).comp (C a⁻¹ * X) = X := by
-      simp only [mul_comp, C_comp, X_comp]
-      rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', map_one, one_mul]
-    simpa [Polynomial.comp_assoc, hscale] using h.comp_C_mul_X (inv_pos.mpr ha)
-  · exact fun h => h.comp_C_mul_X ha
 
 /-- Reflection about `1 / 2` reverses same-degree zero-aware proper position. -/
 lemma Interl.comp_one_sub_X_of_natDegree_eq {f g : ℝ[X]} (h : Interl f g)
@@ -538,99 +503,6 @@ lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
   have _ := hp_pos.ne_zero
   exact Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg
 
-/-- If `q` has degree at most that of a nonzero polynomial `p`, then all
-sufficiently small nonnegative right-family perturbations of `p` keep the
-degree of `p`. -/
-lemma exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le
-    {p q : ℝ[X]} (hp : p ≠ 0) (hdeg : q.natDegree ≤ p.natDegree) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ μ : ℝ, 0 ≤ μ → μ < ε →
-      (p + C μ * q).natDegree = p.natDegree := by
-  let ε : ℝ := |p.leadingCoeff| / (|q.coeff p.natDegree| + 1)
-  have hp_lc_ne : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp
-  have hε_pos : 0 < ε := by
-    unfold ε
-    positivity
-  refine ⟨ε, hε_pos, ?_⟩
-  intro μ hμ_nonneg hμε
-  apply Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hdeg
-  intro hsum_zero
-  have hμq_abs_lt : |μ * q.coeff p.natDegree| < |p.leadingCoeff| := by
-    calc
-      |μ * q.coeff p.natDegree| = μ * |q.coeff p.natDegree| := by
-        rw [abs_mul, abs_of_nonneg hμ_nonneg]
-      _ ≤ μ * (|q.coeff p.natDegree| + 1) := by
-        exact mul_le_mul_of_nonneg_left
-          (by linarith [abs_nonneg (q.coeff p.natDegree)]) hμ_nonneg
-      _ < ε * (|q.coeff p.natDegree| + 1) := mul_lt_mul_of_pos_right hμε (by positivity)
-      _ = |p.leadingCoeff| := by
-        have hden_ne : |q.coeff p.natDegree| + 1 ≠ 0 := by positivity
-        exact div_mul_cancel₀ |p.leadingCoeff| hden_ne
-  rw [show p.leadingCoeff = -(μ * q.coeff p.natDegree) by linarith, abs_neg]
-    at hμq_abs_lt
-  exact lt_irrefl _ hμq_abs_lt
-
-/-- If `q` has degree at most that of a nonzero polynomial `p`, then on a
-sufficiently small nonnegative parameter interval the right-family perturbation
-has the same degree as the zero-parameter member. -/
-lemma exists_pos_forall_natDegree_add_C_mul_eq_at_zero_on_Icc_of_natDegree_le
-    {p q : ℝ[X]} (hp : p ≠ 0) (hdeg : q.natDegree ≤ p.natDegree) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ ν : ℝ, ν < ε →
-      ∀ η ∈ Set.Icc (0 : ℝ) ν,
-        (p + C η * q).natDegree = (p + C (0 : ℝ) * q).natDegree := by
-  rcases exists_pos_forall_natDegree_add_C_mul_eq_left_of_natDegree_le hp hdeg with
-    ⟨ε, hε_pos, hε⟩
-  refine ⟨ε, hε_pos, ?_⟩
-  rintro ν hνε η ⟨hη_nonneg, hην⟩
-  simpa using hε η hη_nonneg (hην.trans_lt hνε)
-
-/-- If the left summand has strictly larger degree, then every member of the
-right-family perturbation has the same degree as any chosen parameter member. -/
-lemma forall_natDegree_add_C_mul_eq_left_of_natDegree_lt
-    {p q : ℝ[X]} {κ : ℝ} (hdeg : q.natDegree < p.natDegree) :
-    ∀ τ : ℝ,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  intro τ
-  rw [Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg,
-    Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_lt hdeg]
-
-/-- If the right summand has strictly larger degree, then every nonzero member
-of a right-family perturbation set has the same degree as any chosen
-nonzero parameter member. -/
-lemma forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
-    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
-    (hdeg : p.natDegree < q.natDegree)
-    (hκ : κ ≠ 0) (hτ : ∀ τ ∈ s, τ ≠ 0) :
-    ∀ τ ∈ s,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  intro τ hτmem
-  rw [Polynomial.natDegree_add_C_mul_of_natDegree_lt (hτ τ hτmem) hdeg,
-    Polynomial.natDegree_add_C_mul_of_natDegree_lt hκ hdeg]
-
-/-- If the endpoint degrees are unequal, then every nonzero member of a
-right-family perturbation set has the same degree as any chosen nonzero
-parameter member. -/
-lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero
-    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
-    (hdeg : p.natDegree ≠ q.natDegree)
-    (hκ : κ ≠ 0) (hτ : ∀ τ ∈ s, τ ≠ 0) :
-    ∀ τ ∈ s,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  rcases lt_or_gt_of_ne hdeg with hlt | hgt
-  · exact forall_mem_natDegree_add_C_mul_eq_right_of_natDegree_lt_of_ne_zero
-      hlt hκ hτ
-  · exact fun τ _ => forall_natDegree_add_C_mul_eq_left_of_natDegree_lt hgt τ
-
-/-- If the endpoint degrees are unequal, then the right-family perturbation has
-constant degree on any positive parameter interval. -/
-lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_ne
-    {p q : ℝ[X]} (hdeg : p.natDegree ≠ q.natDegree)
-    {μ ν : ℝ} (hμ_pos : 0 < μ) :
-    ∀ τ ∈ Set.Icc μ ν,
-      (p + C τ * q).natDegree = (p + C μ * q).natDegree :=
-  forall_mem_natDegree_add_C_mul_eq_of_natDegree_ne_of_ne_zero hdeg
-    (ne_of_gt hμ_pos)
-    (fun _ hτ => ne_of_gt (lt_of_lt_of_le hμ_pos hτ.1))
-
 /-- A real parameter avoids canceling `a + t * b` exactly when it is not the
 unique cancellation value `-a / b`. -/
 private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :
@@ -642,85 +514,6 @@ private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :
   · intro hzero
     field_simp [hb]
     linarith
-
-/-- If two summands have the same degree and the leading term never cancels on
-a parameter set, then every member of that set has the same degree as any
-chosen non-canceling parameter member. -/
-lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_add_ne_zero
-    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
-    (hdeg : p.natDegree = q.natDegree)
-    (hκ : p.leadingCoeff + κ * q.leadingCoeff ≠ 0)
-    (hτ : ∀ τ ∈ s, p.leadingCoeff + τ * q.leadingCoeff ≠ 0) :
-    ∀ τ ∈ s,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  intro τ hτmem
-  have hle : q.natDegree ≤ p.natDegree := hdeg.ge
-  rw [Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hle,
-    Polynomial.natDegree_add_C_mul_eq_left_of_natDegree_le_of_coeff_add_ne_zero hle]
-  · simpa [hdeg] using hκ
-  · simpa [hdeg] using hτ τ hτmem
-
-/-- In the same-degree case, the only leading-term cancellation parameter is
-`-p.leadingCoeff / q.leadingCoeff`.  Away from that value, all right-family
-members have the same degree.  If `p = 0`, this says exactly that the
-nonzero polynomial `q` is scaled by nonzero parameters. -/
-lemma forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
-    {p q : ℝ[X]} {s : Set ℝ} {κ : ℝ}
-    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
-    (hκ : κ ≠ -p.leadingCoeff / q.leadingCoeff)
-    (hτ : ∀ τ ∈ s, τ ≠ -p.leadingCoeff / q.leadingCoeff) :
-    ∀ τ ∈ s,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree := by
-  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq
-  apply
-    forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_add_ne_zero hdeg
-  · exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr hκ
-  · intro τ hτmem
-    exact (add_mul_ne_zero_iff_ne_neg_div hq_lc).mpr (hτ τ hτmem)
-
-/-- Same-degree right-family degree constancy on an interval strictly below
-the unique leading-term cancellation parameter. -/
-lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_upper_lt_cancel
-    {p q : ℝ[X]} {a b κ : ℝ}
-    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
-    (hκ : κ < -p.leadingCoeff / q.leadingCoeff)
-    (hb : b < -p.leadingCoeff / q.leadingCoeff) :
-    ∀ τ ∈ Set.Icc a b,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree :=
-  forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
-    hdeg hq (ne_of_lt hκ)
-    (fun _ hτ => ne_of_lt (lt_of_le_of_lt hτ.2 hb))
-
-/-- Same-degree right-family degree constancy on an interval strictly above
-the unique leading-term cancellation parameter. -/
-lemma forall_mem_Icc_natDegree_add_C_mul_eq_of_natDegree_eq_of_cancel_lt_lower
-    {p q : ℝ[X]} {a b κ : ℝ}
-    (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
-    (ha : -p.leadingCoeff / q.leadingCoeff < a)
-    (hκ : -p.leadingCoeff / q.leadingCoeff < κ) :
-    ∀ τ ∈ Set.Icc a b,
-      (p + C τ * q).natDegree = (p + C κ * q).natDegree :=
-  forall_mem_natDegree_add_C_mul_eq_of_natDegree_eq_of_forall_ne_cancel
-    hdeg hq (ne_of_gt hκ)
-    (fun _ hτ => ne_of_gt (lt_of_lt_of_le ha hτ.1))
-
-/-- In the same-degree case, the unique leading-term cancellation parameter
-strictly lowers the natural degree, provided the common degree is positive. -/
-lemma natDegree_add_C_mul_cancel_lt_of_natDegree_eq
-    {p q : ℝ[X]} (hdeg : p.natDegree = q.natDegree) (hq : q ≠ 0)
-    (hpdeg : 0 < p.natDegree) :
-    (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree < p.natDegree := by
-  have hq_lc : q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq
-  have hle :
-      (p + C (-p.leadingCoeff / q.leadingCoeff) * q).natDegree ≤ p.natDegree :=
-    (natDegree_add_le _ _).trans (max_le le_rfl
-      ((Polynomial.natDegree_C_mul_le _ q).trans hdeg.ge))
-  have hcoeff :
-      (p + C (-p.leadingCoeff / q.leadingCoeff) * q).coeff p.natDegree = 0 := by
-    rw [coeff_add, coeff_C_mul, coeff_natDegree, hdeg, coeff_natDegree]
-    field_simp [hq_lc]
-    ring
-  exact (Polynomial.natDegree_le_pred hle hcoeff).trans_lt (by lia)
 
 /-- In the natural positive-leading-coefficient situation, same-degree sums
 also have positive leading coefficient. -/
