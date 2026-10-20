@@ -57,6 +57,9 @@ theorem add_right_roots_gt_card_eq_add_left_inv
 def coeffSumRange (p : ℝ[X]) : ℝ :=
   Finset.sum (Finset.range (p.natDegree + 1)) fun j => ‖p.coeff j‖
 
+private lemma coeffSumRange_nonneg (p : ℝ[X]) : 0 ≤ coeffSumRange p :=
+  Finset.sum_nonneg fun _ _ => norm_nonneg _
+
 lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
     ‖p.coeff i‖ ≤ coeffSumRange p := by
   by_cases hi : i ∈ Finset.range (p.natDegree + 1)
@@ -64,10 +67,7 @@ lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
     exact Finset.single_le_sum (fun j _ => norm_nonneg _) hi
   · have hlt : p.natDegree < i := by simp_all
     rw [coeff_eq_zero_of_natDegree_lt hlt, norm_zero]
-    have hnonneg : 0 ≤ coeffSumRange p := by
-      unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-    lia
+    exact coeffSumRange_nonneg p
 
 /-- Coefficient difference for the affine perturbation `f + μ g`. -/
 lemma norm_coeff_sub_add_C_mul (f g : ℝ[X]) (μ : ℝ) (i : ℕ) :
@@ -82,10 +82,7 @@ lemma norm_coeff_sub_add_C_mul_le
     ∀ i : ℕ, ‖(f + C μ * g).coeff i - f.coeff i‖ ≤ μ * M := by
   intro i
   rw [norm_coeff_sub_add_C_mul]
-  calc
-    ‖μ * g.coeff i‖ = ‖μ‖ * ‖g.coeff i‖ := norm_mul _ _
-    _ = μ * ‖g.coeff i‖ := by simp [Real.norm_of_nonneg hμ]
-    _ ≤ μ * M := mul_le_mul_of_nonneg_left (hM i) hμ
+  simpa [norm_mul, Real.norm_of_nonneg hμ] using mul_le_mul_of_nonneg_left (hM i) hμ
 
 /-- Complex-root continuity wrapper (via `aroots`): if monic `g` is
 coefficientwise close to monic `f`, then each complex root of `f` has a nearby
@@ -101,11 +98,10 @@ theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
     (hg_rr_splits : g.Splits) :
     ∃ w : ℂ, w ∈ g.aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
-  obtain ⟨w, hw_mem, hw_dist⟩ :=
+  simpa using
     Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
       (f := f) (g := g) (L := ℂ) hε hz hf_monic hg_monic hdeg hcoeff
       (hg_rr_splits.map (algebraMap ℝ ℂ))
-  grind
 
 /-- Uniform coefficient control for normalized left-family perturbations:
 `(1/(t+1)) * (t f + g)` is coefficientwise `O((t+1)⁻¹)` away from `f`. -/
@@ -115,26 +111,19 @@ lemma norm_coeff_sub_normalized_left_family_le
       ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖ ≤
         (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by
   intro i
-  have hcoeff :
-      (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i =
-        (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by
-    calc
-      (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i
-          = ((t + 1)⁻¹ * (t * f.coeff i + g.coeff i)) - f.coeff i := by simp
-      _ = (t + 1)⁻¹ * (g.coeff i - f.coeff i) := by grind
-  have hden_nonneg : 0 ≤ (t + 1)⁻¹ := by positivity
+  rw [show (C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i =
+    (t + 1)⁻¹ * (g.coeff i - f.coeff i) by simp; grind]
   calc
-    ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖
-        = ‖(t + 1)⁻¹ * (g.coeff i - f.coeff i)‖ := by lia
-    _ = ‖(t + 1)⁻¹‖ * ‖g.coeff i - f.coeff i‖ := norm_mul _ _
-    _ = (t + 1)⁻¹ * ‖g.coeff i - f.coeff i‖ := by simp [Real.norm_of_nonneg hden_nonneg]
+    ‖(t + 1)⁻¹ * (g.coeff i - f.coeff i)‖ =
+        (t + 1)⁻¹ * ‖g.coeff i - f.coeff i‖ := by
+      rw [norm_mul, Real.norm_of_nonneg (by positivity)]
     _ ≤ (t + 1)⁻¹ * (‖g.coeff i‖ + ‖f.coeff i‖) := by
-          gcongr
-          exact norm_sub_le _ _
+      gcongr
+      exact norm_sub_le _ _
     _ ≤ (t + 1)⁻¹ * (coeffSumRange g + coeffSumRange f) := by
-          gcongr
-          · exact coeff_norm_le_coeffSumRange g i
-          · exact coeff_norm_le_coeffSumRange f i
+      gcongr
+      · exact coeff_norm_le_coeffSumRange g i
+      · exact coeff_norm_le_coeffSumRange f i
     _ = (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by ring
 
 /-- Strict coefficient control from an explicit scalar bound. -/
@@ -151,22 +140,38 @@ theorem exists_t_pos_with_normalized_left_family_bound
     (f g : ℝ[X]) {ε : ℝ} (hε : 0 < ε) :
     ∃ t : ℝ, 0 < t ∧ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε := by
   let c : ℝ := coeffSumRange f + coeffSumRange g
-  have hc : 0 ≤ c := by
-    refine add_nonneg ?_ ?_
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hc : 0 ≤ c := add_nonneg (coeffSumRange_nonneg f) (coeffSumRange_nonneg g)
   have hε0 : ε ≠ 0 := ne_of_gt hε
   refine ⟨c / ε + 1, by positivity, ?_⟩
-  have hden_pos : 0 < c / ε + 2 := by
-    have hdiv_nonneg : 0 ≤ c / ε := div_nonneg hc (le_of_lt hε)
-    linarith
+  have hden_pos : 0 < c / ε + 2 := by positivity
   have hbound_div : c / (c / ε + 2) < ε := by
     rw [div_lt_iff₀ hden_pos]
     have hceq : ε * (c / ε) = c := by grind
     grind
   grind
+
+private lemma normalized_left_family_monic_natDegree
+    {f g : ℝ[X]} (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hdeg : g.natDegree = f.natDegree) {t : ℝ} (ht : 0 < t) :
+    (C (t + 1)⁻¹ * (C t * f + g)).Monic ∧
+      (C (t + 1)⁻¹ * (C t * f + g)).natDegree = f.natDegree := by
+  have ht_ne : t ≠ 0 := ne_of_gt ht
+  have ht1_ne : t + 1 ≠ 0 := by positivity
+  have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
+  have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
+  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
+  have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
+  have hsum_deg : (C t * f + g).natDegree = f.natDegree :=
+    (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
+      (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
+  have hsum_lc : (C t * f + g).leadingCoeff = t + 1 := by
+    have hg_coeff : g.coeff f.natDegree = 1 := by simpa [hdeg] using hg_monic.coeff_natDegree
+    unfold Polynomial.leadingCoeff
+    simp_all
+  constructor
+  · apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    simp_all
+  · rw [natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
 
 /-- Root continuity for the normalized left affine family:
 if `f, g` are monic of the same degree and `C t * f + g` is real-rooted, then under a
@@ -181,37 +186,13 @@ theorem exists_real_root_near_in_left_family
     (hrr_ne : (C t * f + g) ≠ 0) (hrr_splits : (C t * f + g).Splits) :
     ∃ b : ℝ, (C t * f + g).IsRoot b ∧
       ‖a - b‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  have hsum_nonneg : 0 ≤ coeffSumRange f + coeffSumRange g := by
-    refine add_nonneg ?_ ?_
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) :=
-    mul_nonneg (by positivity) hsum_nonneg
-  have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
+  have hε : 0 < ε := lt_of_le_of_lt
+    (mul_nonneg (by positivity) (add_nonneg (coeffSumRange_nonneg f)
+      (coeffSumRange_nonneg g))) hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
-  have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
-  have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
-  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
-  have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
-    have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
-    exact
-      (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-        (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
-  have hsum_lc : (C t * f + g).leadingCoeff = t + 1 := by
-    have hg_coeff : g.coeff f.natDegree = 1 := by simpa [hdeg] using hg_monic.coeff_natDegree
-    unfold Polynomial.leadingCoeff
-    simp_all
-  have hq_monic : q.Monic := by
-    unfold q
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
-  have hq_deg : q.natDegree = f.natDegree := by
-    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by rfl,
-      natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
+  obtain ⟨hq_monic, hq_deg⟩ :=
+    normalized_left_family_monic_natDegree hf_monic hg_monic hdeg ht
   have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
   obtain ⟨b, hb_qroot, hb_dist⟩ :=
     exists_roots_norm_sub_lt_of_norm_coeff_sub_lt
@@ -236,37 +217,13 @@ theorem exists_complex_aroot_near_in_left_family
     (hrr_ne : (C t * f + g) ≠ 0) (hrr_splits : (C t * f + g).Splits) :
     ∃ w : ℂ, w ∈ (C t * f + g).aroots ℂ ∧
       ‖z - w‖ < ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * max ‖z‖ 1 := by
-  have hsum_nonneg : 0 ≤ coeffSumRange f + coeffSumRange g := by
-    refine add_nonneg ?_ ?_
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-    · unfold coeffSumRange
-      exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hcoeff_nonneg : 0 ≤ (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) :=
-    mul_nonneg (by positivity) hsum_nonneg
-  have hε : 0 < ε := lt_of_le_of_lt hcoeff_nonneg hcoeff_bound
+  have hε : 0 < ε := lt_of_le_of_lt
+    (mul_nonneg (by positivity) (add_nonneg (coeffSumRange_nonneg f)
+      (coeffSumRange_nonneg g))) hcoeff_bound
   let q : ℝ[X] := C (t + 1)⁻¹ * (C t * f + g)
-  have ht_ne : t ≠ 0 := ne_of_gt ht
   have ht1_ne : t + 1 ≠ 0 := by positivity
-  have hf_pos : HasPosLeadingCoeff f := hasPosLeadingCoeff_of_monic hf_monic
-  have hg_pos : HasPosLeadingCoeff g := hasPosLeadingCoeff_of_monic hg_monic
-  have hCt_f_pos : HasPosLeadingCoeff (C t * f) := hasPosLeadingCoeff_C_mul ht hf_pos
-  have hsum_deg : (C t * f + g).natDegree = f.natDegree := by
-    have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht_ne]
-    exact
-      (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
-        (hCt_deg.trans hdeg.symm) hCt_f_pos hg_pos).trans hCt_deg
-  have hsum_lc : (C t * f + g).leadingCoeff = t + 1 := by
-    have hg_coeff : g.coeff f.natDegree = 1 := by simpa [hdeg] using hg_monic.coeff_natDegree
-    unfold Polynomial.leadingCoeff
-    simp_all
-  have hq_monic : q.Monic := by
-    unfold q
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
-  have hq_deg : q.natDegree = f.natDegree := by
-    rw [show q = C (t + 1)⁻¹ * (C t * f + g) by rfl,
-      natDegree_C_mul (inv_ne_zero ht1_ne), hsum_deg]
+  obtain ⟨hq_monic, hq_deg⟩ :=
+    normalized_left_family_monic_natDegree hf_monic hg_monic hdeg ht
   have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
     exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
@@ -293,52 +250,28 @@ part. -/
 theorem splits_of_forall_aeval_im_eq_zero {p : ℝ[X]}
     (h : ∀ z : ℂ, p.aeval z = 0 → z.im = 0) :
     p.Splits := by
-  rcases eq_or_ne p 0 with rfl | hp
-  · exact Polynomial.Splits.zero
-  obtain ⟨m, hm⟩ := Polynomial.splits_iff_exists_multiset.mp
-    (IsAlgClosed.splits (p.map (algebraMap ℝ ℂ)))
-  have hmem : ∀ a ∈ m, ((a.re : ℝ) : ℂ) = a := by
-    intro a ha
-    have hdvd : (X - C a) ∣ p.map (algebraMap ℝ ℂ) := by
-      rw [hm]
-      exact Dvd.dvd.mul_left (Multiset.dvd_prod (Multiset.mem_map_of_mem _ ha)) _
-    have hroot : (p.map (algebraMap ℝ ℂ)).IsRoot a := by rwa [← Polynomial.dvd_iff_isRoot]
-    have hz : p.aeval a = 0 := by
-      rw [Polynomial.aeval_def, ← Polynomial.eval_map]
-      exact hroot
-    exact Complex.ext rfl (by simp [h a hz])
-  have hlc : (p.map (algebraMap ℝ ℂ)).leadingCoeff = ((p.leadingCoeff : ℝ) : ℂ) := by
-    apply Polynomial.leadingCoeff_map_of_leadingCoeff_ne_zero
-    simpa using Polynomial.leadingCoeff_ne_zero.mpr hp
-  refine Polynomial.splits_iff_exists_multiset.mpr ⟨m.map Complex.re, ?_⟩
-  apply Polynomial.map_injective (algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
-  rw [hm, hlc, Polynomial.map_mul, Polynomial.map_C, Polynomial.map_multiset_prod,
-    Multiset.map_map, Multiset.map_map]
-  refine congrArg _ (congrArg Multiset.prod (Multiset.map_congr rfl ?_))
-  intro a ha
-  simp [hmem a ha]
+  apply (IsAlgClosed.splits (p.map (algebraMap ℝ ℂ))).of_splits_algebraMap
+  intro z hz
+  exact ⟨z.re, Complex.ext (by simp)
+    (by simpa using (h z (Polynomial.mem_rootSet.mp hz).2).symm)⟩
 
 /-- A complex root of a nonzero split real polynomial is real. -/
 theorem im_eq_zero_of_aeval_eq_zero {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
     {z : ℂ} (hz : p.aeval z = 0) :
     z.im = 0 := by
-  have hzroot : (p.map (algebraMap ℝ ℂ)).IsRoot z := by
-    simpa [Polynomial.aeval_def, Polynomial.eval_map] using hz
-  rcases hs.mem_range_of_isRoot hp hzroot with ⟨r, rfl⟩
+  rcases hs.mem_range_of_isRoot hp (by
+    simpa [Polynomial.aeval_def, Polynomial.eval_map] using hz) with ⟨r, rfl⟩
   simp
 
 /-- If `(1 - u²) / u` is real for nonzero `u`, then `-u²` is real. -/
 theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
     (hreal : ((1 - u ^ 2) / u).im = 0) :
     (-(u ^ 2)).im = 0 := by
-  have heq : (1 - u ^ 2) / u = u⁻¹ - u := by field_simp
-  have him : u⁻¹.im - u.im = 0 := by
-    rw [heq, Complex.sub_im] at hreal
-    exact hreal
-  rw [Complex.inv_im] at him
+  rw [show (1 - u ^ 2) / u = u⁻¹ - u by field_simp, Complex.sub_im,
+    Complex.inv_im] at hreal
   have hnorm : 0 < Complex.normSq u := Complex.normSq_pos.mpr hu
   have huim : u.im = 0 := by
-    field_simp at him
+    field_simp at hreal
     nlinarith
   rw [Complex.neg_im, pow_two, Complex.mul_im, huim]
   ring
@@ -358,20 +291,16 @@ theorem splits_of_symmetric_substitution {f h : ℝ[X]} (n : ℕ)
   · simp [hz0]
   obtain ⟨u, hu2⟩ := IsAlgClosed.exists_pow_nat_eq (-z) (n := 2) (by norm_num)
   have hu : u ≠ 0 := by
-    intro hu0
-    have hneg : -z = 0 := hu2.symm.trans (by simp [hu0])
-    exact hz0 (neg_eq_zero.mp hneg)
-  have hneg : -(u ^ 2) = z := by
-    rw [hu2]
-    simp
+    rintro rfl
+    simp_all
+  have hneg : -(u ^ 2) = z := by simp [hu2]
   have heval : h.aeval ((1 - u ^ 2) / u) = 0 := by
     have h := hrel hu
     rw [hneg, hz] at h
     exact (mul_eq_zero.mp h.symm).resolve_left (pow_ne_zero n hu)
-  have hreal : ((1 - u ^ 2) / u).im = 0 :=
-    im_eq_zero_of_aeval_eq_zero hh hhs heval
   rw [← hneg]
-  exact neg_sq_im_eq_zero_of_substitution_real hu hreal
+  exact neg_sq_im_eq_zero_of_substitution_real hu
+    (im_eq_zero_of_aeval_eq_zero hh hhs heval)
 
 /-- A monic polynomial is real-rooted if it has arbitrarily close monic,
 same-degree, real-rooted approximants. -/
@@ -383,73 +312,45 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
   by_cases hd0 : f.natDegree = 0
   · rw [hf.natDegree_eq_zero.mp hd0]
     exact Polynomial.Splits.one
-  refine Polynomial.Splits.of_splits_map (algebraMap ℝ ℂ)
-    (IsAlgClosed.splits _) ?_
-  intro z hz
-  have hfmap_ne : f.map (algebraMap ℝ ℂ) ≠ 0 := by
-    intro hf0
-    rw [hf0] at hz
-    simp at hz
-  have hzroot : (f.map (algebraMap ℝ ℂ)).IsRoot z :=
-    (Polynomial.mem_roots hfmap_ne).mp hz
-  have hzeval : f.aeval z = 0 := by
-    change Polynomial.eval₂ (algebraMap ℝ ℂ) z f = 0
-    rw [Polynomial.eval₂_eq_eval_map]
-    exact hzroot
+  apply splits_of_forall_aeval_im_eq_zero
+  intro z hzeval
   have hdpos : 0 < f.natDegree := Nat.pos_of_ne_zero hd0
-  have himzero : z.im = 0 := by
-    by_contra him
-    have himpos : 0 < |z.im| := abs_pos.mpr him
-    let M : ℝ := max ‖z‖ 1
-    have hM : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
-    let q : ℝ := |z.im| / M
-    have hq : 0 < q := div_pos himpos hM
-    let ε : ℝ := q ^ f.natDegree / (2 * ((f.natDegree + 1 : ℕ) : ℝ))
-    have hε : 0 < ε := by
-      dsimp [ε]
-      positivity
-    obtain ⟨g, hgmonic, hgdeg, hgsplits, hgcoeff⟩ := happrox ε hε
-    obtain ⟨w, hwmem, hwdist⟩ :=
-      Polynomial.exists_aroots_norm_sub_lt_of_norm_coeff_sub_lt
-        (f := f) (g := g) hε hzeval hf hgmonic hgdeg hgcoeff
-        (hgsplits.map (algebraMap ℝ ℂ))
-    have hg_ne : g ≠ 0 := hgmonic.ne_zero
-    have hgmap_ne : g.map (algebraMap ℝ ℂ) ≠ 0 :=
-      (Polynomial.map_ne_zero_iff (algebraMap ℝ ℂ).injective).2 hg_ne
-    have hwroot : (g.map (algebraMap ℝ ℂ)).IsRoot w :=
-      (Polynomial.mem_roots hgmap_ne).mp hwmem
-    have hwim : w.im = 0 := by
-      have hwrange : w ∈ (algebraMap ℝ ℂ).range :=
-        hgsplits.mem_range_of_isRoot hg_ne hwroot
-      rcases hwrange with ⟨r, rfl⟩
-      simp
-    have hrootbound :
-        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) < q := by
-      rw [Real.rpow_inv_lt_iff_of_pos (by positivity) hq.le (by exact_mod_cast hdpos)]
-      rw [Real.rpow_natCast]
-      dsimp [ε]
-      have hpow : 0 < q ^ f.natDegree := pow_pos hq _
-      field_simp
-      linarith
-    have hbound :
-        (((f.natDegree + 1 : ℕ) : ℝ) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
-            max ‖z‖ 1 < |z.im| := by
-      change _ * M < |z.im|
-      calc
-        _ < q * M := mul_lt_mul_of_pos_right hrootbound hM
-        _ = |z.im| := by
-          dsimp [q]
-          field_simp
-    have hbound' :
-        (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
-            max ‖z‖ 1 < |z.im| := by
-      simpa [Nat.cast_add, Nat.cast_one] using hbound
-    have hlower : |z.im| ≤ ‖z - w‖ := by
-      calc
-        |z.im| = |(z - w).im| := by rw [Complex.sub_im, hwim, sub_zero]
-        _ ≤ ‖z - w‖ := Complex.abs_im_le_norm _
-    exact (not_lt_of_ge hlower) (hwdist.trans hbound')
-  exact ⟨z.re, Complex.ext (by simp) (by simpa using himzero.symm)⟩
+  by_contra him
+  have himpos : 0 < |z.im| := abs_pos.mpr him
+  let M : ℝ := max ‖z‖ 1
+  have hM : 0 < M := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  let q : ℝ := |z.im| / M
+  have hq : 0 < q := div_pos himpos hM
+  let ε : ℝ := q ^ f.natDegree / (2 * ((f.natDegree : ℝ) + 1))
+  have hε : 0 < ε := by
+    dsimp [ε]
+    positivity
+  obtain ⟨g, hgmonic, hgdeg, hgsplits, hgcoeff⟩ := happrox ε hε
+  obtain ⟨w, hwmem, hwdist⟩ :=
+    exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
+      hε hzeval hf hgmonic hgdeg hgcoeff hgsplits
+  have hwim : w.im = 0 :=
+    im_eq_zero_of_mem_aroots_of_isRealRooted hgmonic.ne_zero hgsplits hwmem
+  have hrootbound :
+      (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) < q := by
+    rw [Real.rpow_inv_lt_iff_of_pos (by positivity) hq.le (by exact_mod_cast hdpos)]
+    rw [Real.rpow_natCast]
+    dsimp [ε]
+    have hpow : 0 < q ^ f.natDegree := pow_pos hq _
+    field_simp
+    linarith
+  have hbound :
+      (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) *
+          max ‖z‖ 1 < |z.im| := by
+    change _ * M < |z.im|
+    calc
+      _ < q * M := mul_lt_mul_of_pos_right hrootbound hM
+      _ = |z.im| := by
+        dsimp [q]
+        field_simp
+  have hlower : |z.im| ≤ ‖z - w‖ := by
+    simpa [Complex.sub_im, hwim] using Complex.abs_im_le_norm (z - w)
+  exact (not_lt_of_ge hlower) (hwdist.trans hbound)
 
 /-- A pointwise coefficient limit of monic, same-degree split polynomials is
 split when the limit is monic. -/
@@ -471,7 +372,7 @@ theorem splits_of_monic_of_coeff_tendsto {f : ℝ[X]} (hf : f.Monic)
   refine ⟨g M, hg_monic M, hg_degree M, hg_splits M, ?_⟩
   intro i
   by_cases hi : i ≤ f.natDegree
-  · exact hM i (Finset.mem_range.mpr (Nat.lt_succ_iff.mpr hi))
+  · exact hM i (by simp_all)
   · have hlt : f.natDegree < i := Nat.lt_of_not_ge hi
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt hlt,
       Polynomial.coeff_eq_zero_of_natDegree_lt (by simpa [hg_degree M] using hlt)]
@@ -484,25 +385,18 @@ theorem mul_pos_of_forall_ne_zero_Icc
     (hcont : ContinuousOn F (Set.Icc a b))
     (hne : ∀ x ∈ Set.Icc a b, F x ≠ 0) :
     0 < F a * F b := by
-  have hmema : a ∈ Set.Icc a b := ⟨le_refl _, hab⟩
-  have hmemb : b ∈ Set.Icc a b := ⟨hab, le_refl _⟩
-  have ha : F a ≠ 0 := hne a hmema
-  have hb : F b ≠ 0 := hne b hmemb
-  rcases lt_or_gt_of_ne ha with hlt_a | hgt_a
-  · rcases lt_or_gt_of_ne hb with hlt_b | hgt_b
-    · exact mul_pos_of_neg_of_neg hlt_a hlt_b
-    · exfalso
-      have hzero : (0 : ℝ) ∈ Set.Icc (F a) (F b) :=
-        ⟨le_of_lt hlt_a, le_of_lt hgt_b⟩
-      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc hab hcont hzero
-      exact hne c hc_mem hc0
-  · rcases lt_or_gt_of_ne hb with hlt_b | hgt_b
-    · exfalso
-      have hzero : (0 : ℝ) ∈ Set.Icc (F b) (F a) :=
-        ⟨le_of_lt hlt_b, le_of_lt hgt_a⟩
-      obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc' hab hcont hzero
-      exact hne c hc_mem hc0
-    · exact mul_pos hgt_a hgt_b
+  have ha := hne a ⟨le_refl _, hab⟩
+  have hb := hne b ⟨hab, le_refl _⟩
+  rcases lt_or_gt_of_ne ha with hlt_a | hgt_a <;>
+    rcases lt_or_gt_of_ne hb with hlt_b | hgt_b
+  · exact mul_pos_of_neg_of_neg hlt_a hlt_b
+  · exfalso
+    obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc hab hcont ⟨hlt_a.le, hgt_b.le⟩
+    exact hne c hc_mem hc0
+  · exfalso
+    obtain ⟨c, hc_mem, hc0⟩ := intermediate_value_Icc' hab hcont ⟨hlt_b.le, hgt_a.le⟩
+    exact hne c hc_mem hc0
+  · exact mul_pos hgt_a hgt_b
 
 /-- **Endpoint noncrossing / constant sign for a continuous polynomial family.**
 
@@ -525,9 +419,8 @@ theorem eval_mul_pos_of_forall_not_isRoot_Icc
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
     (hno : ∀ x ∈ Set.Icc a b, ¬ p.IsRoot x) :
     0 < p.eval a * p.eval b := by
-  refine mul_pos_of_forall_ne_zero_Icc hab p.continuous.continuousOn ?_
-  intro x hx
-  exact (Polynomial.not_isRoot_iff_eval_ne_zero p x).mp (hno x hx)
+  exact mul_pos_of_forall_ne_zero_Icc hab p.continuous.continuousOn fun x hx =>
+    (Polynomial.not_isRoot_iff_eval_ne_zero p x).mp (hno x hx)
 
 /-- Fixed-threshold no-crossing constancy of the lower root count. -/
 theorem card_roots_filter_le_eq_of_no_isRoot_Ioc
@@ -586,9 +479,8 @@ theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc
     (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
     (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 := by
   have hdec := card_roots_filter_le_add_card_Ioc_eq (p := p) hab
-  have hcross := card_roots_filter_le_eq_of_no_isRoot_Ioc (p := p) hab h
-  rw [hcross] at hdec
-  exact Nat.add_left_cancel (hdec.trans (Nat.add_zero _).symm)
+  rw [card_roots_filter_le_eq_of_no_isRoot_Ioc (p := p) hab h] at hdec
+  grind
 
 /-- If the only root of `p` in `(a, b]` is a simple root `c`, then that
 window has root count one.  The hypothesis `p.roots.count c = 1` records
@@ -819,13 +711,12 @@ theorem card_roots_filter_gt_sub_eq_of_no_isRoot_Ioo
     (hax : a < x) (hxb : x < b) (hay : a < y) (hyb : y < b) :
     ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card =
       ((f.roots.filter (y < ·)).card : ℤ) - (g.roots.filter (y < ·)).card := by
-  by_cases hxy : x ≤ y
+  rcases le_total x y with hxy | hyx
   · exact
       card_roots_filter_gt_sub_eq_of_no_isRoot_Icc hxy
         (fun z hxz hzy => hf z (lt_of_lt_of_le hax hxz) (lt_of_le_of_lt hzy hyb))
         (fun z hxz hzy => hg z (lt_of_lt_of_le hax hxz) (lt_of_le_of_lt hzy hyb))
-  · have hyx : y ≤ x := le_of_not_ge hxy
-    exact
+  · exact
       (card_roots_filter_gt_sub_eq_of_no_isRoot_Icc hyx
         (fun z hyz hzx => hf z (lt_of_lt_of_le hay hyz) (lt_of_le_of_lt hzx hxb))
         (fun z hyz hzx => hg z (lt_of_lt_of_le hay hyz) (lt_of_le_of_lt hzx hxb))).symm
