@@ -444,7 +444,7 @@ private theorem narayanaInterpolation_eq_schurSzego
     simp
 
 /-- The constant coefficient is one throughout the open range `θ > -1`. -/
-@[simp] theorem coeff_zero_narayanaInterpolation {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
+theorem coeff_zero_narayanaInterpolation {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
     (narayanaInterpolation θ n).coeff 0 = 1 := by
   rw [coeff_narayanaInterpolation_of_le (Nat.zero_le n)]
   have hα : 0 < θ + 1 := by linarith
