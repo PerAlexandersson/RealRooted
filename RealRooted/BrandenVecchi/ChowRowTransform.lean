@@ -99,11 +99,9 @@ private theorem IsReflectionInterlacingSeq.collapseSuffixFromHead
         IsReflectionInterlacingSeq n (left ++ [f + right.sum])
   | [], h => by simpa using h
   | g :: right, h => by
-      have h' := h.replaceAdjacentAdd (left := left) (f := f) (g := g)
-        (right := right)
-      have ih := IsReflectionInterlacingSeq.collapseSuffixFromHead
-        (left := left) (f := f + g) right h'
-      simpa [List.sum_cons, add_assoc] using ih
+      simpa [List.sum_cons, add_assoc] using
+        IsReflectionInterlacingSeq.collapseSuffixFromHead (left := left)
+          (f := f + g) right (h.replaceAdjacentAdd (left := left) (right := right))
 
 private theorem IsReflectionInterlacingSeq.collapseBlockFromHead
     {n : ℕ} {left right : List ℝ[X]} {f : ℝ[X]} :
@@ -112,16 +110,13 @@ private theorem IsReflectionInterlacingSeq.collapseBlockFromHead
         IsReflectionInterlacingSeq n (left ++ [f + tail.sum] ++ right)
   | [], h => by simpa using h
   | g :: tail, h => by
-      have hnorm :
-          IsReflectionInterlacingSeq n
-            (left ++ f :: g :: (tail ++ right)) := by
-        simpa [List.append_assoc] using h
-      have h' := IsReflectionInterlacingSeq.replaceAdjacentAdd hnorm
-        (left := left) (f := f) (g := g) (right := tail ++ right)
-      have ih := IsReflectionInterlacingSeq.collapseBlockFromHead
-        (left := left) (right := right) (f := f + g) tail (by
-          simpa [List.append_assoc] using h')
-      simpa [List.sum_cons, add_assoc] using ih
+      simpa [List.sum_cons, add_assoc] using
+        IsReflectionInterlacingSeq.collapseBlockFromHead
+          (left := left) (right := right) (f := f + g) tail (by
+            simpa [List.append_assoc] using
+              (IsReflectionInterlacingSeq.replaceAdjacentAdd
+                (by simpa [List.append_assoc] using h)
+                (left := left) (right := tail ++ right)))
 
 /-- Replace a contiguous block by its sum. Empty blocks become a zero entry. -/
 theorem IsReflectionInterlacingSeq.collapseBlock
@@ -146,6 +141,14 @@ theorem IsReflectionInterlacingSeq.collapseSuffix
     (IsReflectionInterlacingSeq.collapseSuffixFromHead
       (left := left) (f := f) tail h)
 
+private theorem IsReflectionInterlacingSeq.twoBlockSums
+    {n : ℕ} {fs : List ℝ[X]} (h : IsReflectionInterlacingSeq n fs) (k : ℕ) :
+    IsReflectionInterlacingSeq n [(fs.take k).sum, (fs.drop k).sum] := by
+  have htake := IsReflectionInterlacingSeq.collapseBlock (left := []) (block := fs.take k)
+    (right := fs.drop k) (by simpa using h)
+  exact IsReflectionInterlacingSeq.collapseBlock
+    (left := [(fs.take k).sum]) (block := fs.drop k) (right := []) (by simpa using htake)
+
 /-- Three consecutive block sums of a reflection-interlacing row are again
 reflection-interlacing. -/
 theorem IsReflectionInterlacingSeq.threeBlockSums
@@ -158,13 +161,9 @@ theorem IsReflectionInterlacingSeq.threeBlockSums
   let right := fs.drop l
   have hsplit : left ++ middle ++ right = fs := by
     dsimp [left, middle, right]
-    have hright :
-        (fs.drop k).take (l - k) ++ fs.drop l = fs.drop k := by
-      calc
-        (fs.drop k).take (l - k) ++ fs.drop l =
-            (fs.drop k).take (l - k) ++ (fs.drop k).drop (l - k) := by
-              simp [List.drop_drop, Nat.add_sub_of_le hkl]
-        _ = fs.drop k := List.take_append_drop _ _
+    have hright : (fs.drop k).take (l - k) ++ fs.drop l = fs.drop k := by
+      simpa [List.drop_drop, Nat.add_sub_of_le hkl] using
+        List.take_append_drop (l - k) (fs.drop k)
     rw [List.append_assoc, hright, List.take_append_drop]
   have hblocks : IsReflectionInterlacingSeq n (left ++ middle ++ right) :=
     hsplit.symm ▸ h
@@ -195,10 +194,35 @@ private theorem IsReflectionInterlacingSeq.member_nonnegCoeffs
     {p : ℝ[X]} (hp : p ∈ fs) : HasNonnegCoeffs p :=
   h.closedSequence.nonnegCoeffs p (by simp [reflectionClosure, hp])
 
-private theorem IsReflectionInterlacingSeq.member_splits
-    {n : ℕ} {fs : List ℝ[X]} (h : IsReflectionInterlacingSeq n fs)
-    {p : ℝ[X]} (hp : p ∈ fs) (hp_ne : p ≠ 0) : p.Splits :=
-  h.closedSequence.splits (by simp [reflectionClosure, hp]) hp_ne
+private theorem chowEndpointSum_isPF {n : ℕ} {a b : ℝ[X]}
+    (h : IsReflectionInterlacingSeq n [a, b]) :
+    IsPFPolynomial ((X * chowS n b + b) + X * chowS n a) := by
+  have hadeg := h.natDegree_le (f := a) (by simp)
+  have hrefa : (chowS n a).reflect n = X * chowS n a :=
+    reflect_chowS n a hadeg
+  have hpair : IsInterlacingSeq0NonnegRealRooted
+      [X * chowS n b + b, X * chowS n a] := by
+    apply h.chowSExtension.closedSequence.sublist
+    simp only [reflectionClosure, List.map_cons, List.map_nil,
+      List.reverse_cons, List.reverse_nil, List.nil_append, hrefa]
+    apply List.Sublist.cons
+    apply List.Sublist.cons
+    apply List.Sublist.cons
+    apply List.Sublist.cons_cons
+    apply List.Sublist.cons
+    apply List.Sublist.cons
+    apply List.Sublist.cons
+    exact List.Sublist.refl _
+  have hsingle : IsInterlacingSeq0NonnegRealRooted
+      [(X * chowS n b + b) + X * chowS n a] :=
+    (hpair.insertAdjacentAdd
+      (left := []) (f := X * chowS n b + b) (g := X * chowS n a)
+      (right := [])).sublist (by simp)
+  apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+  · exact hsingle.nonnegCoeffs _ (by simp)
+  · rcases eq_or_ne ((X * chowS n b + b) + X * chowS n a) 0 with hz | hz
+    · exact Or.inl hz
+    · exact Or.inr (hsingle.splits (by simp) hz)
 
 /-- The finite row transform in Branden--Vecchi, Theorem 4.13. -/
 def chowRowTransform (n : ℕ) (fs : List ℝ[X]) : List ℝ[X] :=
@@ -220,9 +244,8 @@ theorem chowRowTransform_nonnegCoeffs
     {p : ℝ[X]} (hp : p ∈ chowRowTransform n fs) : HasNonnegCoeffs p := by
   rcases List.mem_map.mp hp with ⟨k, hk, rfl⟩
   have htotal : IsReflectionInterlacingSeq n [fs.sum] := by
-    have hcollapsed := IsReflectionInterlacingSeq.collapseBlock
+    simpa using IsReflectionInterlacingSeq.collapseBlock
       (left := []) (block := fs) (right := []) (by simpa using h)
-    simpa using hcollapsed
   have hSnn : HasNonnegCoeffs (chowS n fs.sum) :=
     (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).1
   exact hSnn.X_mul.add <| hasNonnegCoeffs_sum _ fun q hq =>
@@ -266,7 +289,6 @@ theorem chowRowTransform_interl_of_lt
     hthree.sublist (by simp)
   have h₁₂ : IsReflectionInterlacingSeq n [h₁, h₂] :=
     hthree.sublist (by simp)
-  have h₀nn := hthree.member_nonnegCoeffs (p := h₀) (by simp)
   have h₁nn := hthree.member_nonnegCoeffs (p := h₁) (by simp)
   have h₂nn := hthree.member_nonnegCoeffs (p := h₂) (by simp)
   have hS₀nn : HasNonnegCoeffs (chowS n h₀) := h₀₁.chowS_nonnegCoeffs
@@ -321,72 +343,33 @@ theorem chowRowTransform_interl_of_lt
       (X * chowS n h₀ + X * chowS n h₁ +
         (X * chowS n h₂ + h₂)) := by
     let pre := h₀ + h₁
-    let q₂ := X * chowS n h₂ + h₂
     have hpre₂ : IsReflectionInterlacingSeq n [pre, h₂] := by
       simpa [pre] using hthree.replaceAdjacentAdd
         (left := []) (f := h₀) (g := h₁) (right := [h₂])
-    have hpredeg : pre.natDegree ≤ n :=
-      (natDegree_add_le h₀ h₁).trans (max_le
-        (hthree.natDegree_le (f := h₀) (by simp))
-        (hthree.natDegree_le (f := h₁) (by simp)))
-    have hextpre := hpre₂.chowSExtension
-    have hrefpre : (chowS n pre).reflect n = X * chowS n pre :=
-      reflect_chowS n pre hpredeg
-    have hpairseq : IsInterlacingSeq0NonnegRealRooted
-        [q₂, X * chowS n pre] := by
-      apply hextpre.closedSequence.sublist
-      simp only [reflectionClosure, List.map_cons, List.map_nil,
-        List.reverse_cons, List.reverse_nil, List.nil_append, hrefpre]
-      apply List.Sublist.cons
-      apply List.Sublist.cons
-      apply List.Sublist.cons
-      apply List.Sublist.cons_cons
-      apply List.Sublist.cons
-      apply List.Sublist.cons
-      apply List.Sublist.cons
-      exact List.Sublist.refl _
-    have hsuminsert := hpairseq.insertAdjacentAdd
-      (left := []) (f := q₂) (g := X * chowS n pre) (right := [])
-    have hsumseq : IsInterlacingSeq0NonnegRealRooted
-        [q₂ + X * chowS n pre] :=
-      hsuminsert.sublist (by simp)
-    have hsumpf : IsPFPolynomial (q₂ + X * chowS n pre) := by
-      apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-      · exact hsumseq.nonnegCoeffs _ (by simp)
-      · by_cases hsumzero : q₂ + X * chowS n pre = 0
-        · exact Or.inl hsumzero
-        · exact Or.inr (hsumseq.splits (by simp) hsumzero)
     have hright_eq :
         X * chowS n h₀ + X * chowS n h₁ +
-            (X * chowS n h₂ + h₂) = q₂ + X * chowS n pre := by
+            (X * chowS n h₂ + h₂) =
+              (X * chowS n h₂ + h₂) + X * chowS n pre := by
       rw [show chowS n pre = chowS n h₀ + chowS n h₁ by
         exact chowS_add_of_degree_le
           (hthree.natDegree_le (f := h₀) (by simp))
           (hthree.natDegree_le (f := h₁) (by simp))]
-      simp only [q₂]
       ring
     rw [hright_eq]
-    exact hsumpf.interl_self
+    exact (chowEndpointSum_isPF hpre₂).interl_self
   have hpair := interl_add_left_of_common_right_of_nonneg
     hh₁right hrightself h₁nn hrightnn
   have htotal : fs.sum = h₀ + h₁ + h₂ := by
     have hsplit : fs.take k ++ (fs.drop k).take (l - k) ++ fs.drop l = fs := by
-      have hmiddle :
-          (fs.drop k).take (l - k) ++ fs.drop l = fs.drop k := by
-        calc
-          (fs.drop k).take (l - k) ++ fs.drop l =
-              (fs.drop k).take (l - k) ++ (fs.drop k).drop (l - k) := by
-                simp [List.drop_drop, Nat.add_sub_of_le hkl.le]
-          _ = fs.drop k := List.take_append_drop _ _
+      have hmiddle : (fs.drop k).take (l - k) ++ fs.drop l = fs.drop k := by
+        simpa [List.drop_drop, Nat.add_sub_of_le hkl.le] using
+          List.take_append_drop (l - k) (fs.drop k)
       rw [List.append_assoc, hmiddle, List.take_append_drop]
     rw [← hsplit, List.sum_append, List.sum_append]
   have hdropk : (fs.drop k).sum = h₁ + h₂ := by
     have hsplit : (fs.drop k).take (l - k) ++ fs.drop l = fs.drop k := by
-      calc
-        (fs.drop k).take (l - k) ++ fs.drop l =
-            (fs.drop k).take (l - k) ++ (fs.drop k).drop (l - k) := by
-              simp [List.drop_drop, Nat.add_sub_of_le hkl.le]
-        _ = fs.drop k := List.take_append_drop _ _
+      simpa [List.drop_drop, Nat.add_sub_of_le hkl.le] using
+        List.take_append_drop (l - k) (fs.drop k)
     rw [← hsplit, List.sum_append]
   have h₀deg := hthree.natDegree_le (f := h₀) (by simp)
   have h₁deg := hthree.natDegree_le (f := h₁) (by simp)
@@ -403,42 +386,8 @@ private theorem chowRowTerm_isPF
   let a := (fs.take k).sum
   let b := (fs.drop k).sum
   have hab : IsReflectionInterlacingSeq n [a, b] := by
-    have hsplit : fs.take k ++ fs.drop k = fs := List.take_append_drop _ _
-    have h' : IsReflectionInterlacingSeq n (fs.take k ++ fs.drop k) := hsplit.symm ▸ h
-    have ha := IsReflectionInterlacingSeq.collapseBlock
-      (left := []) (block := fs.take k) (right := fs.drop k) (by simpa using h')
-    have hb := IsReflectionInterlacingSeq.collapseBlock
-      (left := [(fs.take k).sum]) (block := fs.drop k) (right := [])
-      (by simpa using ha)
-    simpa [a, b] using hb
+    simpa [a, b] using h.twoBlockSums k
   have hadeg := hab.natDegree_le (f := a) (by simp)
-  have hext := hab.chowSExtension
-  have hrefa : (chowS n a).reflect n = X * chowS n a :=
-    reflect_chowS n a hadeg
-  have hpair : IsInterlacingSeq0NonnegRealRooted
-      [X * chowS n b + b, X * chowS n a] := by
-    apply hext.closedSequence.sublist
-    simp only [reflectionClosure, List.map_cons, List.map_nil,
-      List.reverse_cons, List.reverse_nil, List.nil_append, hrefa]
-    apply List.Sublist.cons
-    apply List.Sublist.cons
-    apply List.Sublist.cons
-    apply List.Sublist.cons_cons
-    apply List.Sublist.cons
-    apply List.Sublist.cons
-    apply List.Sublist.cons
-    exact List.Sublist.refl _
-  have hins := hpair.insertAdjacentAdd
-    (left := []) (f := X * chowS n b + b) (g := X * chowS n a) (right := [])
-  have hsingle : IsInterlacingSeq0NonnegRealRooted
-      [(X * chowS n b + b) + X * chowS n a] :=
-    hins.sublist (by simp)
-  have hsum_pf : IsPFPolynomial ((X * chowS n b + b) + X * chowS n a) := by
-    apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-    · exact hsingle.nonnegCoeffs _ (by simp)
-    · by_cases hz : (X * chowS n b + b) + X * chowS n a = 0
-      · exact Or.inl hz
-      · exact Or.inr (hsingle.splits (by simp) hz)
   have hsum : fs.sum = a + b := by
     rw [← List.take_append_drop k fs, List.sum_append]
   have hbdeg := hab.natDegree_le (f := b) (by simp)
@@ -447,8 +396,7 @@ private theorem chowRowTerm_isPF
     rw [hsum, chowS_add_of_degree_le hadeg hbdeg]
     simp only [a, b]
     ring
-  rw [heq]
-  exact hsum_pf
+  exact heq.symm ▸ chowEndpointSum_isPF hab
 
 /-- The direct transformed row is always a zero-aware nonnegative
 real-rooted interlacing sequence. -/
@@ -480,14 +428,7 @@ private theorem chowS_drop_eq_zero_of_sum_eq_zero
   let a := (fs.take k).sum
   let b := (fs.drop k).sum
   have hab : IsReflectionInterlacingSeq n [a, b] := by
-    have hsplit : fs.take k ++ fs.drop k = fs := List.take_append_drop _ _
-    have h' : IsReflectionInterlacingSeq n (fs.take k ++ fs.drop k) := hsplit.symm ▸ h
-    have ha := IsReflectionInterlacingSeq.collapseBlock
-      (left := []) (block := fs.take k) (right := fs.drop k) (by simpa using h')
-    have hb := IsReflectionInterlacingSeq.collapseBlock
-      (left := [(fs.take k).sum]) (block := fs.drop k) (right := [])
-      (by simpa using ha)
-    simpa [a, b] using hb
+    simpa [a, b] using h.twoBlockSums k
   have hadeg := hab.natDegree_le (f := a) (by simp)
   have hbdeg := hab.natDegree_le (f := b) (by simp)
   have hSann : HasNonnegCoeffs (chowS n a) := hab.chowS_nonnegCoeffs
@@ -499,12 +440,8 @@ private theorem chowS_drop_eq_zero_of_sum_eq_zero
   have hzero : chowS n a + chowS n b = 0 := by
     rw [← chowS_add_of_degree_le hadeg hbdeg, ← hsum, hS]
   have hSb : chowS n b = 0 := by
-    ext d
-    have hz := congrArg (fun p : ℝ[X] => p.coeff d) hzero
-    simp only [coeff_add, coeff_zero] at hz ⊢
-    have ha0 := hSann d
-    have hb0 := hSbnn d
-    linarith
+    by_contra hb
+    exact add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hSann hSbnn hb hzero
   simpa [b] using hSb
 
 private theorem drop_sum_reflect_eq_self_of_chowS_sum_eq_zero
@@ -513,14 +450,8 @@ private theorem drop_sum_reflect_eq_self_of_chowS_sum_eq_zero
     ((fs.drop k).sum).reflect n = (fs.drop k).sum := by
   have hdeg : (fs.drop k).sum.natDegree ≤ n :=
     natDegree_list_sum_le_of_forall_le fun p hp => h.natDegree_le (List.mem_of_mem_drop hp)
-  have hfactor := X_sub_one_mul_chowS n (fs.drop k).sum hdeg
-  have hSk := chowS_drop_eq_zero_of_sum_eq_zero h hS k
-  have hdiff : ((fs.drop k).sum).reflect n - (fs.drop k).sum = 0 := by
-    calc
-      ((fs.drop k).sum).reflect n - (fs.drop k).sum =
-          (X - 1) * chowS n (fs.drop k).sum := hfactor.symm
-      _ = 0 := by rw [hSk]; ring
-  exact sub_eq_zero.mp hdiff
+  rw [← sub_eq_zero, ← X_sub_one_mul_chowS n (fs.drop k).sum hdeg,
+    chowS_drop_eq_zero_of_sum_eq_zero h hS k, mul_zero]
 
 /-- The vanishing-total-quotient branch of Branden--Vecchi, Theorem 4.13. -/
 theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
@@ -545,11 +476,8 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
     exact drop_sum_reflect_eq_self_of_chowS_sum_eq_zero h hS k
   have houtpf : ∀ p ∈ out, IsPFPolynomial p := by
     intro p hp
-    apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-    · exact hdirect.nonnegCoeffs p hp
-    · by_cases hp0 : p = 0
-      · exact Or.inl hp0
-      · exact Or.inr (hdirect.splits hp hp0)
+    rcases List.mem_map.mp hp with ⟨k, _, rfl⟩
+    exact chowRowTerm_isPF h
   have hrefout : ∀ p ∈ out, p.reflect (n + 1) = X * p := by
     intro p hp
     rw [Polynomial.reflect_succ p (houtdeg p hp), houtsym p hp]
@@ -584,10 +512,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       refine ⟨isInterlacingSeq0_iff_pairwise.mp hdirect.interlacingSeq0,
         hrefs, ?_⟩
       intro p hp r hr
-      have hrrefs : r ∈ refs := by simpa [refs] using hr
-      have hrmap : r ∈ out.map (fun q => q.reflect (n + 1)) := by
-        simpa [refs] using hrrefs
-      rcases List.mem_map.mp hrmap with ⟨q, hq, rfl⟩
+      rcases List.mem_map.mp (by simpa [refs] using hr) with ⟨q, hq, rfl⟩
       rw [hrefout q hq]
       by_cases hp0 : p = 0
       · exact Or.inl hp0
@@ -600,13 +525,11 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       have hi_ne : out.get i ≠ 0 := hp0
       have hj_ne : out.get j ≠ 0 := hq0
       rcases lt_trichotomy i j with hij | rfl | hji
-      · have hpq0 := hdirect.interlacingSeq0.interl hij
-        have hpq := hpq0.toStrictInterl_of_ne hi_ne hj_ne
+      · have hpq := (hdirect.interlacingSeq0.interl hij).toStrictInterl_of_ne hi_ne hj_ne
         have hqXp := strictInterl_mul_X_of_strictInterl_of_nonneg hpq
           (houtpf _ hi_mem).hasNonnegCoeffs
           (houtpf _ hj_mem).hasNonnegCoeffs
         have hipdeg := houtdeg _ hi_mem
-        have hjdeg := houtdeg _ hj_mem
         have hXpdeg : (X * out.get i).natDegree ≤ n + 1 := by
           calc
             (X * out.get i).natDegree ≤ X.natDegree + (out.get i).natDegree :=
@@ -614,7 +537,8 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
             _ = 1 + (out.get i).natDegree := by simp
             _ ≤ 1 + n := Nat.add_le_add_left hipdeg 1
             _ = n + 1 := by ac_rfl
-        have hjdeg' : (out.get j).natDegree ≤ n + 1 := by lia
+        have hjdeg' : (out.get j).natDegree ≤ n + 1 :=
+          (houtdeg _ hj_mem).trans (by lia)
         have hrev := reciprocalShift_reverses_strictInterl (D := n + 1)
           (houtpf _ hj_mem) (houtpf _ hi_mem).X_mul hjdeg' hXpdeg hqXp
         change StrictInterl ((X * out.get i).reflect (n + 1))
@@ -629,29 +553,20 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       · exact (strictInterl_self_X_mul_of_nonneg hi_ne
           ((houtpf _ hi_mem).ne_zero_and_splits hi_ne).2
           (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
-      · have hqp0 := hdirect.interlacingSeq0.interl hji
-        have hqp := hqp0.toStrictInterl_of_ne hj_ne hi_ne
+      · have hqp := (hdirect.interlacingSeq0.interl hji).toStrictInterl_of_ne hj_ne hi_ne
         exact (strictInterl_mul_X_of_strictInterl_of_nonneg hqp
           (houtpf _ hj_mem).hasNonnegCoeffs
           (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
     · intro p hp
       rcases List.mem_append.mp hp with hp | hp
       · exact hdirect.nonnegCoeffs p hp
-      · have hprefs : p ∈ refs := by simpa [refs] using hp
-        have hpmap : p ∈ out.map (fun q => q.reflect (n + 1)) := by
-          simpa [refs] using hprefs
-        rcases List.mem_map.mp hpmap with ⟨q, hq, rfl⟩
+      · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
         exact (hdirect.nonnegCoeffs q hq).reflect (n + 1)
     · intro p hp hp_ne
       rcases List.mem_append.mp hp with hp | hp
       · exact ⟨hp_ne, (houtpf p hp).ne_zero_and_splits hp_ne |>.2⟩
-      · have hprefs : p ∈ refs := by simpa [refs] using hp
-        have hpmap : p ∈ out.map (fun q => q.reflect (n + 1)) := by
-          simpa [refs] using hprefs
-        rcases List.mem_map.mp hpmap with ⟨q, hq, rfl⟩
-        have hqdeg : q.natDegree ≤ n + 1 := by
-          have hqdeg0 := houtdeg q hq
-          lia
+      · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
+        have hqdeg : q.natDegree ≤ n + 1 := (houtdeg q hq).trans (by lia)
         have hpf : IsPFPolynomial (q.reflect (n + 1)) :=
           reciprocalShift_preserves_pf (D := n + 1) (p := q)
             (houtpf q hq) hqdeg
@@ -665,16 +580,11 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
   let out := chowRowTransform n fs
   let refs := (out.map fun p => p.reflect (n + 1)).reverse
   have hout_len : out.length = fs.length + 1 := by simp [out]
-  have hout_nonempty : out ≠ [] := by
-    intro hnil
-    rw [hnil] at hout_len
-    simp at hout_len
   have hsumdeg : fs.sum.natDegree ≤ n :=
     natDegree_list_sum_le_of_forall_le fun p hp => h.natDegree_le hp
   have htotal : IsReflectionInterlacingSeq n [fs.sum] := by
-    have hc := IsReflectionInterlacingSeq.collapseBlock
+    simpa using IsReflectionInterlacingSeq.collapseBlock
       (left := []) (block := fs) (right := []) (by simpa using h)
-    simpa using hc
   have hSnn : HasNonnegCoeffs (chowS n fs.sum) :=
     (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).1
   have hXS_ne : X * chowS n fs.sum ≠ 0 := mul_ne_zero X_ne_zero hS_ne
@@ -701,30 +611,13 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       (hout_ne _ (List.get_mem out i)) (hout_ne _ (List.get_mem out j))
   have hout_pf : ∀ p ∈ out, IsPFPolynomial p := by
     intro p hp
-    apply IsPFPolynomial.of_realRooted_nonneg (hout_nn p hp)
-    rcases List.get_of_mem hp with ⟨i, rfl⟩
-    by_cases hi : i.val < out.length - 1
-    · have hj : i.val + 1 < out.length := by lia
-      exact (hdirect.rel_get_of_lt (a := i) (b := ⟨i.val + 1, hj⟩)
-        (Fin.mk_lt_mk.mpr (Nat.lt_succ_self _))).1.2
-    · have hilast : i.val = out.length - 1 := by lia
-      have htotal_ne : fs.sum ≠ 0 := by
-        intro hzero
-        rw [hzero] at hS_ne
-        exact hS_ne (by simp [chowS])
-      have hSStrictInterl : StrictInterl (chowS n fs.sum) fs.sum :=
-        (htotal.chowS_nonnegCoeffs_and_interl_self_reflect).2.1.toStrictInterl_of_ne
-          hS_ne htotal_ne
-      have hlast : out.get i = X * chowS n fs.sum := by
-        have hi' : i.val < fs.length + 1 := by simpa [out] using i.isLt
-        rw [getElem_chowRowTransform hi']
-        simp [hilast, hout_len]
-      rw [hlast]
-      exact (isRealRooted_X_mul hS_ne hSStrictInterl.1.2).2
-  have hdirect_seq : IsInterlacingSeq out :=
-    isInterlacingSeq_iff_pairwise.mpr hdirect
+    rcases List.mem_map.mp hp with ⟨k, _, rfl⟩
+    exact chowRowTerm_isPF h
+  have hout_self : ∀ p ∈ out, StrictInterl p p := fun p hp =>
+    StrictInterl.refl (hout_ne p hp)
+      ((hout_pf p hp).ne_zero_and_splits (hout_ne p hp)).2
   have hrefs : refs.Pairwise StrictInterl := by
-    have hrev := hdirect_seq.reverse
+    have hrev := (isInterlacingSeq_iff_pairwise.mpr hdirect).reverse
     have hrev' := hrev.imp_of_mem (by
       intro p q hp hq hpq
       have hp_mem : p ∈ out := by simpa using hp
@@ -797,9 +690,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
       (out.get ⟨out.length - 1, by lia⟩)
       ((out.get ⟨out.length - 1, by lia⟩).reflect (n + 1)) := by
     rw [hlast_fixed]
-    exact StrictInterl.refl (hout_ne _ (List.get_mem _ _))
-      ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
-        (hout_ne _ (List.get_mem _ _))).2
+    exact hout_self _ (List.get_mem _ _)
   refine ⟨hout_deg, ?_⟩
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise, reflectionClosure,
@@ -813,9 +704,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
         ∀ (a b : Fin out.length), a ≤ b → StrictInterl (out.get a) (out.get b) := by
       intro a b hab
       rcases hab.eq_or_lt with rfl | hab
-      · exact StrictInterl.refl (hout_ne _ (List.get_mem _ _))
-          ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
-            (hout_ne _ (List.get_mem _ _))).2
+      · exact hout_self _ (List.get_mem _ _)
       · exact hdirect.rel_get_of_lt hab
     have href_le : ∀ (a b : Fin refs.length), a ≤ b →
         StrictInterl (refs.get a) (refs.get b) := by
@@ -881,18 +770,12 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
   · intro p hp
     rcases List.mem_append.mp hp with hp | hp
     · exact hout_nn p hp
-    · have hprefs : p ∈ refs := by simpa [refs] using hp
-      have hpmap : p ∈ out.map (fun q => q.reflect (n + 1)) := by
-        simpa [refs] using hprefs
-      rcases List.mem_map.mp hpmap with ⟨q, hq, rfl⟩
+    · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
       exact (hout_nn q hq).reflect (n + 1)
   · intro p hp hp_ne
     rcases List.mem_append.mp hp with hp | hp
     · exact ⟨hp_ne, (hout_pf p hp).ne_zero_and_splits hp_ne |>.2⟩
-    · have hprefs : p ∈ refs := by simpa [refs] using hp
-      have hpmap : p ∈ out.map (fun q => q.reflect (n + 1)) := by
-        simpa [refs] using hprefs
-      rcases List.mem_map.mp hpmap with ⟨q, hq, rfl⟩
+    · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
       have hpf := reciprocalShift_preserves_pf (hout_pf q hq) (hout_deg q hq)
       exact ⟨hp_ne, (hpf.ne_zero_and_splits hp_ne).2⟩
 
@@ -903,7 +786,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform
     IsReflectionInterlacingSeq (n + 1) (chowRowTransform n fs) := by
   by_cases hS : chowS n fs.sum = 0
   · exact h.chowRowTransform_of_chowS_eq_zero hS
-  · exact h.chowRowTransform_of_chowS_ne_zero hS
+  exact h.chowRowTransform_of_chowS_ne_zero hS
 
 end BrandenVecchi
 
