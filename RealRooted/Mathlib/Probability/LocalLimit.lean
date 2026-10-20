@@ -14,17 +14,18 @@ Let `P n` be real polynomials with nonnegative, log-concave coefficients and no 
 whose coefficient distributions (see `RealRooted.Mathlib.Probability.CoeffDistribution`) have
 variances tending to infinity and, after standardization, converge weakly to the standard Gaussian.
 Then the coefficients satisfy the Gaussian local limit theorem uniformly in `k`:
-`σₙ * (P n).coeff k / (P n).eval 1 - φ ((k - μₙ) / σₙ)` tends to zero, where `μₙ` and `σₙ` are
-the mean and standard deviation of the coefficient distribution and `φ` is the standard Gaussian
-density. For real-rooted `P n`, the weak convergence hypothesis is Harper's central limit theorem.
+`σₙ * (P n).coeff k / (P n).eval 1 - φ ((k - μₙ) / σₙ)` tends to zero, where `μₙ` and
+`σₙ` are the mean and standard deviation of the coefficient distribution and `φ` is the standard
+Gaussian density. For real-rooted `P n`, the weak convergence hypothesis is Harper's central limit
+theorem.
 
 The proof is organized as follows. We first collect elementary facts about the Gaussian density
 and distribution function, and show that a log-concave sequence without internal zeros is
-quasi-concave. We then prove deterministic window estimates for a sequence on `ℤ` whose window sums
-are uniformly close to Gaussian integrals, which give an abstract local limit theorem. Pólya's
-theorem upgrades pointwise convergence of the distribution functions to uniform convergence, and
-the portmanteau theorem turns weak convergence into pointwise convergence of the standardized
-distribution functions at every point.
+quasi-concave. We then prove deterministic window estimates for a sequence on `ℤ` whose window
+sums are uniformly close to Gaussian integrals, which give an abstract local limit theorem.
+Pólya's theorem upgrades pointwise convergence of the distribution functions to uniform
+convergence, and the portmanteau theorem turns weak convergence into pointwise convergence of the
+standardized distribution functions at every point.
 
 ## Main statements
 
@@ -72,7 +73,6 @@ private lemma gpdf_le_half (t : ℝ) : φ t ≤ 1 / 2 := by
   have h1 : Real.exp (-t ^ 2 / 2) ≤ 1 := Real.exp_le_one_iff.2 (by nlinarith [sq_nonneg t])
   have h2 : (√(2 * Real.pi))⁻¹ ≤ 1 / 2 := by
     rw [inv_eq_one_div]; exact one_div_le_one_div_of_le (by norm_num) sqrt_two_pi_ge_two
-  have h3 : 0 ≤ (√(2 * Real.pi))⁻¹ := by positivity
   nlinarith [Real.exp_pos (-t ^ 2 / 2)]
 
 private lemma gpdf_neg (t : ℝ) : φ (-t) = φ t := by
@@ -129,11 +129,8 @@ private lemma gpdf_lip (s t : ℝ) : |φ s - φ t| ≤ |s - t| := by
     (Set.mem_univ t) (Set.mem_univ s)
   simpa [Real.norm_eq_abs] using key
 
-private lemma gpdf_continuous : Continuous (fun t => φ t) :=
-  continuous_iff_continuousAt.2 fun t => (gpdf_hasDerivAt t).continuousAt
-
 private lemma gpdf_intervalIntegrable (u v : ℝ) : IntervalIntegrable (fun t => φ t) volume u v :=
-  gpdf_continuous.intervalIntegrable u v
+  (continuous_iff_continuousAt.2 fun t => (gpdf_hasDerivAt t).continuousAt).intervalIntegrable u v
 
 private lemma gpdf_tail {ε : ℝ} (hε : 0 < ε) :
     ∃ y : ℝ, 0 ≤ y ∧ ∀ t, y ≤ t → φ t < ε := by
@@ -175,10 +172,7 @@ private lemma int_gpdf_upper {u v s w : ℝ} (h : u ≤ v)
     ∫ t in u..v, φ t ≤ (v - u) * (φ s + w) := by
   have := intervalIntegral.integral_mono_on h (gpdf_intervalIntegrable u v)
     (intervalIntegrable_const (c := φ s + w)) fun t ht => by
-      have := gpdf_lip t s
-      have := hw t ht
-      have := le_abs_self (φ t - φ s)
-      linarith
+      linarith [gpdf_lip t s, hw t ht, le_abs_self (φ t - φ s)]
   simp at this; linarith
 
 private lemma int_gpdf_lower {u v s w : ℝ} (h : u ≤ v)
@@ -186,10 +180,7 @@ private lemma int_gpdf_lower {u v s w : ℝ} (h : u ≤ v)
     (v - u) * (φ s - w) ≤ ∫ t in u..v, φ t := by
   have := intervalIntegral.integral_mono_on h
     (intervalIntegrable_const (c := φ s - w)) (gpdf_intervalIntegrable u v) fun t ht => by
-      have := gpdf_lip t s
-      have := hw t ht
-      have := neg_abs_le (φ t - φ s)
-      linarith
+      linarith [gpdf_lip t s, hw t ht, neg_abs_le (φ t - φ s)]
   simp at this; linarith
 
 private lemma int_gpdf_upper_anti {u v : ℝ} (hu : 0 ≤ u) (h : u ≤ v) :
@@ -237,13 +228,7 @@ private lemma Phi_tendsto_atBot : Tendsto Phi atBot (𝓝 0) := by
   rw [this]; exact tendsto_cdf_atBot _
 
 private lemma Phi_mono {u v : ℝ} (h : u ≤ v) : Phi u ≤ Phi v := by
-  have := Phi_sub u v; have := int_gpdf_nonneg h; linarith
-
-private lemma Phi_nonneg (x : ℝ) : 0 ≤ Phi x :=
-  setIntegral_nonneg measurableSet_Iic fun t _ => (gpdf_pos t).le
-
-private lemma Phi_le_one (x : ℝ) : Phi x ≤ 1 := by
-  rw [Phi_eq_cdf]; exact cdf_le_one _ _
+  linarith [Phi_sub u v, int_gpdf_nonneg h]
 
 /-! ### Discrete concavity -/
 
@@ -317,11 +302,7 @@ variable {b : ℤ → ℝ}
 private lemma pos_between (hnn : ∀ j, 0 ≤ b j)
     (hnz : ∀ i j k, i < j → j < k → b i ≠ 0 → b k ≠ 0 → b j ≠ 0)
     {p q j : ℤ} (hp : 0 < b p) (hq : 0 < b q) (hpj : p ≤ j) (hjq : j ≤ q) : 0 < b j := by
-  rcases eq_or_lt_of_le hpj with rfl | h1
-  · exact hp
-  rcases eq_or_lt_of_le hjq with rfl | h2
-  · exact hq
-  exact lt_of_le_of_ne (hnn j) (Ne.symm (hnz p j q h1 h2 hp.ne' hq.ne'))
+  grind
 
 private lemma log_chord (hnn : ∀ j, 0 ≤ b j) (hlc : ∀ j, b (j - 1) * b (j + 1) ≤ b j ^ 2)
     (hnz : ∀ i j k, i < j → j < k → b i ≠ 0 → b k ≠ 0 → b j ≠ 0)
@@ -592,11 +573,11 @@ private lemma upper_det {b : ℤ → ℝ} {μ σ η c ε : ℝ} (hnn : ∀ j, 0 
   have hm0 : 0 ≤ m := mul_nonneg hσ.le (hnn _)
   have hApos : 0 < A := lt_of_lt_of_le hc hA
   have hmpos : 0 < m := by
-    rcases eq_or_lt_of_le hm0 with h | h
-    · rw [← h, zero_pow (by lia)] at hmpow
+    rcases eq_or_lt_of_le hm0 with hm | hm
+    · rw [← hm, zero_pow (by lia)] at hmpow
       have : 0 < A ^ (K - 1) * c := by positivity
       linarith
-    · exact h
+    · exact hm
   -- `m ≤ φ + ε / 2`
   have hm_le : m ≤ φ (xs μ σ k) + ε / 2 := by
     have h1 : m ≤ σ * ((M / σ * (φ (xs μ σ k) + M / σ) + η) / (M + 1)) := by
@@ -701,19 +682,16 @@ private lemma desc_det {b : ℤ → ℝ} {μ σ η y : ℝ}
       have : 2 / σ ≤ 1 / 2 := by rw [div_le_iff₀ hσ0]; linarith
       linarith
     have hx20 : 0 ≤ xs μ σ (k1 - 2 * L) := hx3.trans (xs_mono μ σ hσ0 (by lia))
-    have := gpdf_antitone hx20 hx2
-    have := gpdf_pos (y - 3 / 2)
-    have : (0 : ℝ) ≤ L / σ := by positivity
-    nlinarith [gpdf_pos (xs μ σ (k1 - 2 * L))]
+    nlinarith [gpdf_antitone hx20 hx2, gpdf_pos (y - 3 / 2),
+      gpdf_pos (xs μ σ (k1 - 2 * L)), show (0 : ℝ) ≤ L / σ by positivity]
   have hI2 : ∫ t in xs μ σ (k1 - L)..xs μ σ k1, φ t ≤ L / σ * φ (y - 5 / 4) := by
     have hx10 : 0 ≤ xs μ σ (k1 - L) := hx3.trans (xs_mono μ σ hσ0 (by lia))
     have h := int_gpdf_upper_anti hx10 (xs_mono μ σ hσ0 (by lia : k1 - L ≤ k1))
     have hlen : xs μ σ k1 - xs μ σ (k1 - L) = L / σ := by rw [e1]; ring
     rw [hlen] at h
     have hx1 : y - 5 / 4 ≤ xs μ σ (k1 - L) := by rw [e1]; linarith
-    have := gpdf_antitone (by linarith) hx1
-    have : (0 : ℝ) ≤ L / σ := by positivity
-    nlinarith
+    nlinarith [gpdf_antitone (show 0 ≤ y - 5 / 4 by linarith) hx1,
+      show (0 : ℝ) ≤ L / σ by positivity]
   have hgap := gpdf_strictAnti (s := y - 3 / 2) (t := y - 5 / 4) (by linarith) (by linarith)
   have h1 : L / σ * (φ (y - 3 / 2) - φ (y - 5 / 4)) ≤ 2 * η := by linarith
   have h2 : 3 / 4 * (φ (y - 3 / 2) - φ (y - 5 / 4)) ≤
@@ -754,9 +732,7 @@ private lemma rtail_det {b : ℤ → ℝ} {μ σ η y : ℝ}
     have h := int_gpdf_upper_anti (hy.trans hxL) (xs_mono μ σ hσ0 (by lia : k - L ≤ k))
     have hlen : xs μ σ k - xs μ σ (k - L) = L / σ := by rw [e1]; ring
     rw [hlen] at h
-    have := gpdf_antitone hy hxL
-    have : (0 : ℝ) ≤ L / σ := by positivity
-    nlinarith
+    nlinarith [gpdf_antitone hy hxL, show (0 : ℝ) ≤ L / σ by positivity]
   have hη := hH.nonneg
   have hL1 : (0 : ℝ) < L + 1 := by positivity
   have h1 : (L + 1) * b k ≤ L / σ * φ y + η := by linarith
@@ -789,11 +765,9 @@ private lemma LLTData.quasi (h : LLTData b μ σ) (n : ℕ) :
 private lemma LLTData.lower (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ n in atTop, ∀ j, φ (xs (μ n) (σ n) j) - ε < σ n * b n j := by
   set δ := ε / 4 with hδ
-  have hδ0 : 0 < δ := by positivity
   set η := δ * ε / 4
-  have hη0 : 0 < η := by positivity
-  filter_upwards [h.win η hη0, h.sigma.eventually_gt_atTop (2 * (1 + 1 / δ) / ε + 1)]
-    with n hW hσn
+  filter_upwards [h.win η (by positivity),
+    h.sigma.eventually_gt_atTop (2 * (1 + 1 / δ) / ε + 1)] with n hW hσn
   intro j
   have hσ0 : 0 < σ n := by
     have : 0 < 2 * (1 + 1 / δ) / ε := by positivity
@@ -802,14 +776,12 @@ private lemma LLTData.lower (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε) :
   have hLa : δ * σ n ≤ L := Nat.le_ceil _
   have hLb : (L : ℝ) < δ * σ n + 1 := Nat.ceil_lt_add_one (by positivity)
   have key := lower_det (h.quasi n) hσ0 L hW j
-  have hL1 : 0 < (L : ℝ) + 1 := by positivity
-  have hδσ : 0 < δ * σ n := by positivity
   have t1 : 1 / ((L : ℝ) + 1) ≤ 1 / (δ * σ n) :=
-    one_div_le_one_div_of_le hδσ (by linarith)
+    one_div_le_one_div_of_le (by positivity) (by linarith)
   have t2 : (L : ℝ) / σ n ≤ δ + 1 / σ n := by
     rw [div_le_iff₀ hσ0]; field_simp; linarith
   have t3 : η * σ n / ((L : ℝ) + 1) ≤ ε / 4 := by
-    rw [div_le_iff₀ hL1]
+    rw [div_le_iff₀ (by positivity)]
     have : η * σ n = ε / 4 * (δ * σ n) := by ring
     rw [this]; gcongr; linarith
   have t4 : 1 / (δ * σ n) + 1 / σ n < ε / 2 := by
@@ -829,20 +801,17 @@ private lemma LLTData.upper (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε)
   have hK1 : 1 ≤ K := by lia
   have hKbig : 1 < (1 + ((K : ℝ) - 1) * (ε / 2)) * c := by
     have h1 : 2 / (c * ε) ≤ (⌈2 / (c * ε)⌉₊ : ℝ) := Nat.le_ceil _
-    have h2 : ((K : ℝ) - 1) = ⌈2 / (c * ε)⌉₊ + 1 := by
-      simp only [K]; push_cast; ring
-    have h3 : 2 / (c * ε) * (ε / 2) * c = 1 := by field_simp
-    rw [h2]
     have : 1 ≤ (⌈2 / (c * ε)⌉₊ : ℝ) * (ε / 2) * c := by
-      calc (1 : ℝ) = 2 / (c * ε) * (ε / 2) * c := h3.symm
+      calc (1 : ℝ) = 2 / (c * ε) * (ε / 2) * c := by field_simp
         _ ≤ _ := by gcongr
+    simp only [K]
+    push_cast
     nlinarith
   have hKpos : (0 : ℝ) < K := by exact_mod_cast hK1
   set δ := min (ε / 8) (1 / (K : ℝ))
   have hδ0 : 0 < δ := lt_min (by positivity) (by positivity)
   set η := δ * ε / 8
-  have hη0 : 0 < η := by positivity
-  filter_upwards [h.win η hη0, h.lower hc0,
+  filter_upwards [h.win η (by positivity), h.lower hc0,
     h.sigma.eventually_gt_atTop (1 / δ)] with n hW hlow hσn
   intro j hj
   have hσ0 : 0 < σ n := lt_trans (by positivity) hσn
@@ -902,32 +871,30 @@ private lemma LLTData.rtail (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε) :
   set y := max y0 4
   have hy4 : 4 ≤ y := le_max_right _ _
   have hyε : φ y < ε / 2 := hy0 y (le_max_left _ _)
-  have hg : 0 < φ (y - 3 / 2) - φ (y - 5 / 4) := by
-    have := gpdf_strictAnti (s := y - 3 / 2) (t := y - 5 / 4) (by linarith) (by linarith)
-    linarith
+  have hg : 0 < φ (y - 3 / 2) - φ (y - 5 / 4) :=
+    sub_pos.mpr (gpdf_strictAnti (by linarith) (by linarith))
   set η := min (ε / 4) ((φ (y - 3 / 2) - φ (y - 5 / 4)) / 8)
   have hη0 : 0 < η := lt_min (by positivity) (by positivity)
   refine ⟨y + 1, by linarith, ?_⟩
   filter_upwards [h.win η hη0, h.sigma.eventually_ge_atTop 4] with n hW hσn
   intro j hj
   have hdesc := desc_det (h.quasi n) hσn hy4 (by
-    have : η ≤ (φ (y - 3 / 2) - φ (y - 5 / 4)) / 8 := min_le_right _ _
-    linarith) hW
+    linarith [min_le_right (ε / 4) ((φ (y - 3 / 2) - φ (y - 5 / 4)) / 8)]) hW
   have hup := rtail_det hdesc (by linarith) (by linarith) hW j hj
-  have hηε : η ≤ ε / 4 := min_le_left _ _
-  have hφ : φ (xs (μ n) (σ n) j) ≤ φ y := gpdf_antitone (by linarith) (by linarith)
   have h0 : 0 ≤ σ n * b n j := mul_nonneg (by linarith) (h.nonneg n j)
-  have := gpdf_pos (xs (μ n) (σ n) j)
-  rw [abs_lt]; constructor <;> linarith
+  rw [abs_lt]
+  constructor <;> linarith [min_le_left (ε / 4)
+      ((φ (y - 3 / 2) - φ (y - 5 / 4)) / 8),
+    gpdf_antitone (show 0 ≤ y by linarith) (show y ≤ xs (μ n) (σ n) j by linarith),
+    gpdf_pos (xs (μ n) (σ n) j)]
 
 /-- Reflection `j ↦ -j` of the data. -/
 private lemma LLTData.reflect (h : LLTData b μ σ) :
     LLTData (fun n j => b n (-j)) (fun n => -μ n) σ where
   nonneg n j := h.nonneg n (-j)
   logconc n j := by
-    have := h.logconc n (-j)
-    rw [show -(j - 1) = -j + 1 by ring, show -(j + 1) = -j - 1 by ring]
-    linarith
+    simpa only [show -(j - 1) = -j + 1 by ring,
+      show -(j + 1) = -j - 1 by ring, mul_comm] using h.logconc n (-j)
   nozero n i j k hij hjk hi hk := h.nozero n (-k) (-j) (-i) (by lia) (by lia) hk hi
   sigma := h.sigma
   win η hη := by
@@ -973,9 +940,8 @@ private theorem LLTData.llt {b : ℕ → ℤ → ℝ} {μ σ : ℕ → ℝ}
     rw [abs_le]; constructor
     · linarith [le_max_right T1 T2]
     · linarith [le_max_left T1 T2]
-  have := hlow j
-  have := hup j habs
-  rw [abs_lt]; constructor <;> linarith
+  rw [abs_lt]
+  constructor <;> linarith [hlow j, hup j habs]
 
 private lemma Phi_sub_le {u v : ℝ} (h : u ≤ v) : Phi v - Phi u ≤ (v - u) / 2 := by
   rw [Phi_sub]; exact int_gpdf_le_half h
@@ -1011,23 +977,18 @@ private lemma polya {F : ℕ → ℝ → ℝ} (hmono : ∀ n, Monotone (F n))
   by_cases hxa : x < a
   · have e1 := hn 0 (by simp)
     rw [hga] at e1
-    have := hmono n hxa.le
-    have := (abs_lt.1 e1).2
-    have := ha a le_rfl
-    have := Phi_mono hxa.le
-    have := h0 n x
-    have := Phi_nonneg x
-    rw [abs_lt]; constructor <;> linarith
+    rw [abs_lt] at e1 ⊢
+    constructor <;>
+      linarith [hmono n hxa.le, ha a le_rfl, Phi_mono hxa.le, h0 n x,
+        show 0 ≤ Phi x from
+          setIntegral_nonneg measurableSet_Iic fun t _ => (gpdf_pos t).le]
   push Not at hxa
   by_cases hxb : g m ≤ x
   · have e1 := hn m (by simp)
-    have := hmono n hxb
-    have := (abs_lt.1 e1).1
-    have := hb (g m) hgm
-    have := Phi_mono hxb
-    have := h1 n x
-    have := Phi_le_one x
-    rw [abs_lt]; constructor <;> linarith
+    rw [abs_lt] at e1 ⊢
+    constructor <;>
+      linarith [hmono n hxb, hb (g m) hgm, Phi_mono hxb, h1 n x,
+        show Phi x ≤ 1 by rw [Phi_eq_cdf]; exact cdf_le_one _ _]
   push Not at hxb
   set i : ℕ := ⌊(x - a) / (η / 2)⌋₊
   have hi1 : (i : ℝ) ≤ (x - a) / (η / 2) := Nat.floor_le (div_nonneg (by linarith) hη2.le)
@@ -1044,16 +1005,10 @@ private lemma polya {F : ℕ → ℝ → ℝ} (hmono : ∀ n, Monotone (F n))
     linarith
   have e1 := hn i (by simp; lia)
   have e2 := hn (i + 1) (by simp; lia)
-  have m1 := hmono n hgi
-  have m2 := hmono n hgi1.le
-  have p1 := Phi_sub_le hgi
-  have p2 := Phi_sub_le hgi1.le
-  have p3 := Phi_mono hgi
-  have p4 := Phi_mono hgi1.le
   have hstep : g (i + 1) - g i = η / 2 := by simp only [g]; push_cast; ring
-  have := abs_lt.1 e1
-  have := abs_lt.1 e2
-  rw [abs_lt]; constructor <;> nlinarith
+  rw [abs_lt] at e1 e2 ⊢
+  constructor <;> nlinarith [hmono n hgi, hmono n hgi1.le, Phi_sub_le hgi,
+    Phi_sub_le hgi1.le, Phi_mono hgi, Phi_mono hgi1.le]
 
 /-! ### From polynomials to the abstract data -/
 
@@ -1061,16 +1016,10 @@ private lemma eval_one_eq_sum (p : ℝ[X]) :
     p.eval 1 = ∑ i ∈ Finset.range (p.natDegree + 1), p.coeff i := by
   simp [eval_eq_sum_range]
 
-private lemma eval_one_pos {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (hp : p ≠ 0) :
-    0 < p.eval 1 := by
-  rw [eval_one_eq_sum]
-  apply Finset.sum_pos' (fun i _ => hnn i)
-  refine ⟨p.natDegree, by simp, ?_⟩
-  exact lt_of_le_of_ne (hnn _) (Ne.symm (leadingCoeff_ne_zero.2 hp))
-
 private lemma sum_coeff_div_eval_one {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (hp : p ≠ 0) :
     ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k / p.eval 1 = 1 := by
-  rw [← Finset.sum_div, ← eval_one_eq_sum, div_self (eval_one_pos hnn hp).ne']
+  rw [← Finset.sum_div, ← eval_one_eq_sum,
+    div_self (eval_pos_of_coeff_nonneg hnn hp one_pos).ne']
 
 /-- The coefficient sequence of `p`, normalized and extended by zero to `ℤ`. -/
 private def bP (p : ℝ[X]) (j : ℤ) : ℝ := if 0 ≤ j then p.coeff j.toNat / p.eval 1 else 0
@@ -1087,24 +1036,9 @@ private lemma cdfP_mono {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (hp : p ≠ 
     Monotone (cdfP p μ σ) := by
   intro x x' hxx'
   apply Finset.sum_le_sum_of_subset_of_nonneg
-  · intro k hk
-    simp only [Finset.mem_filter] at hk ⊢
-    exact ⟨hk.1, hk.2.trans hxx'⟩
+  · grind
   · intro k _ _
-    exact div_nonneg (hnn k) (eval_one_pos hnn hp).le
-
-private lemma cdfP_nonneg {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (hp : p ≠ 0)
-    (μ σ x : ℝ) :
-    0 ≤ cdfP p μ σ x :=
-  Finset.sum_nonneg fun k _ => div_nonneg (hnn k) (eval_one_pos hnn hp).le
-
-private lemma cdfP_le_one {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (hp : p ≠ 0)
-    (μ σ x : ℝ) :
-    cdfP p μ σ x ≤ 1 := by
-  rw [← sum_coeff_div_eval_one hnn hp]
-  apply Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
-  intro k _ _
-  exact div_nonneg (hnn k) (eval_one_pos hnn hp).le
+    exact div_nonneg (hnn k) (eval_pos_of_coeff_nonneg hnn hp one_pos).le
 
 private lemma cdfP_xs {p : ℝ[X]} {μ σ : ℝ} (hσ : 0 < σ) (q : ℤ) :
     cdfP p μ σ (xs μ σ q) = ∑ k ∈ Finset.range (p.natDegree + 1),
@@ -1169,10 +1103,10 @@ private theorem lltData_of_poly {P : ℕ → ℝ[X]} {μ σ : ℕ → ℝ}
     LLTData (fun n => bP (P n)) μ σ where
   nonneg n j := by
     unfold bP; split_ifs
-    · exact div_nonneg (hnn n _) (eval_one_pos (hnn n) (hne n)).le
+    · exact div_nonneg (hnn n _) (eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos).le
     · exact le_rfl
   logconc n j := by
-    have he := eval_one_pos (hnn n) (hne n)
+    have he := eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos
     by_cases hj : 1 ≤ j
     · have h1 : bP (P n) (j - 1) = (P n).coeff (j.toNat - 1) / (P n).eval 1 := by
         simp only [bP, show 0 ≤ j - 1 by lia, ite_true]
@@ -1192,7 +1126,7 @@ private theorem lltData_of_poly {P : ℕ → ℝ[X]} {μ σ : ℕ → ℝ}
       rw [h1, zero_mul]; positivity
   nozero n i j k hij hjk hi hk := by
     have hi0 : 0 ≤ i := by by_contra hc; simp [bP, hc] at hi
-    have he := eval_one_pos (hnn n) (hne n)
+    have he := eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos
     simp only [bP, hi0, ite_true, show 0 ≤ k by lia, show 0 ≤ j by lia, ne_eq,
       div_eq_zero_iff, he.ne', or_false] at hi hk ⊢
     exact hnz n i.toNat j.toNat k.toNat (by lia) (by lia) hi hk
@@ -1200,8 +1134,13 @@ private theorem lltData_of_poly {P : ℕ → ℝ[X]} {μ σ : ℕ → ℝ}
   win η hη := by
     have hη4 : 0 < η / 4 := by positivity
     filter_upwards [polya (fun n => cdfP_mono (hnn n) (hne n) (μ n) (σ n))
-      (fun n => cdfP_nonneg (hnn n) (hne n) (μ n) (σ n))
-      (fun n => cdfP_le_one (hnn n) (hne n) (μ n) (σ n)) hcdf hη4,
+      (fun n _ => Finset.sum_nonneg fun k _ =>
+        div_nonneg (hnn n k) (eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos).le)
+      (fun n _ => by
+        rw [← sum_coeff_div_eval_one (hnn n) (hne n)]
+        exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
+          (fun k _ _ => div_nonneg (hnn n k)
+            (eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos).le)) hcdf hη4,
       hσ.eventually_gt_atTop (2 / η)] with n hpol hσn
     have hσ0 : 0 < σ n := lt_trans (by positivity) hσn
     intro a b hab
@@ -1227,23 +1166,6 @@ private theorem lltData_of_poly {P : ℕ → ℝ[X]} {μ σ : ℕ → ℝ}
         linarith
       rw [abs_le]
       constructor <;> linarith
-
-/-- The local limit theorem in polynomial form, for arbitrary centering `μ` and scaling
-`σ → ∞`. -/
-private theorem llt_of_poly {P : ℕ → ℝ[X]} {μ σ : ℕ → ℝ}
-    (hnn : ∀ n k, 0 ≤ (P n).coeff k) (hne : ∀ n, P n ≠ 0)
-    (hlc : ∀ n k, 0 < k → (P n).coeff (k - 1) * (P n).coeff (k + 1) ≤ (P n).coeff k ^ 2)
-    (hnz : ∀ n i j k, i < j → j < k → (P n).coeff i ≠ 0 → (P n).coeff k ≠ 0 →
-      (P n).coeff j ≠ 0)
-    (hσ : Tendsto σ atTop atTop)
-    (hcdf : ∀ x, Tendsto (fun n => cdfP (P n) (μ n) (σ n) x) atTop (𝓝 (Phi x))) :
-    ∀ ε > 0, ∀ᶠ n in atTop, ∀ k : ℕ,
-      |σ n * ((P n).coeff k / (P n).eval 1) - φ (((k : ℝ) - μ n) / σ n)| < ε := by
-  intro ε hε
-  filter_upwards [(lltData_of_poly hnn hne hlc hnz hσ hcdf).llt hε] with n hn
-  intro k
-  have := hn k
-  rwa [bP_natCast, show xs (μ n) (σ n) (k : ℤ) = ((k : ℝ) - μ n) / σ n by simp [xs]] at this
 
 end Aux
 
@@ -1293,27 +1215,9 @@ private theorem tendsto_cdf_of_tendsto_standardized {P : ℕ → ℝ[X]}
   apply Finset.sum_congr rfl
   intro k _
   rw [Measure.dirac_apply' _ (hmeas measurableSet_Iic), ENNReal.toReal_mul,
-    ENNReal.toReal_ofReal (div_nonneg (hnn n k) (eval_one_pos (hnn n) (hne n)).le)]
+    ENNReal.toReal_ofReal
+      (div_nonneg (hnn n k) (eval_pos_of_coeff_nonneg (hnn n) (hne n) one_pos).le)]
   by_cases hk : ((k : ℝ) - coeffMean (P n)) / coeffStdDev (P n) ≤ x <;> simp [hk]
-
-/-- **Bender's local limit theorem, elementary form.**  A sequence of nonnegative, log-concave
-coefficient sequences without internal zeros, whose variances tend to infinity and whose
-standardized distribution functions converge to the Gaussian one, satisfies the Gaussian local
-limit theorem uniformly in `k`. -/
-private theorem local_limit_of_cdf {P : ℕ → ℝ[X]}
-    (hnn : ∀ n k, 0 ≤ (P n).coeff k) (hne : ∀ n, P n ≠ 0)
-    (hlc : ∀ n k, 0 < k → (P n).coeff (k - 1) * (P n).coeff (k + 1) ≤ (P n).coeff k ^ 2)
-    (hnz : ∀ n i j k, i < j → j < k → (P n).coeff i ≠ 0 → (P n).coeff k ≠ 0 →
-      (P n).coeff j ≠ 0)
-    (hvar : Tendsto (fun n => coeffVariance (P n)) atTop atTop)
-    (hcdf : ∀ x : ℝ, Tendsto (fun n => ∑ k ∈ (Finset.range ((P n).natDegree + 1)).filter
-        (fun k : ℕ => ((k : ℝ) - coeffMean (P n)) / coeffStdDev (P n) ≤ x),
-          (P n).coeff k / (P n).eval 1) atTop
-      (𝓝 (∫ t in Set.Iic x, gaussianPDFReal 0 1 t))) :
-    ∀ ε > 0, ∀ᶠ n in atTop, ∀ k : ℕ,
-      |coeffStdDev (P n) * ((P n).coeff k / (P n).eval 1) -
-        gaussianPDFReal 0 1 (((k : ℝ) - coeffMean (P n)) / coeffStdDev (P n))| < ε :=
-  llt_of_poly hnn hne hlc hnz (Real.tendsto_sqrt_atTop.comp hvar) hcdf
 
 /-- **Bender's local limit theorem** (Bender 1973, Theorem 2; log-concavity plus the CLT).
 If `P n` have nonnegative, log-concave coefficients without internal zeros, `Var → ∞`, and the
@@ -1331,8 +1235,11 @@ theorem tendsto_localLimit_of_logConcave {P : ℕ → ℝ[X]}
     ∀ ε > 0, ∀ᶠ n in atTop, ∀ k : ℕ,
       |coeffStdDev (P n) * ((P n).coeff k / (P n).eval 1) -
         gaussianPDFReal 0 1 (((k : ℝ) - coeffMean (P n)) / coeffStdDev (P n))| < ε := by
-  exact local_limit_of_cdf hnn hne hlc hnz hvar
-    (tendsto_cdf_of_tendsto_standardized hnn hne hclt)
+  intro ε hε
+  filter_upwards [(lltData_of_poly hnn hne hlc hnz (Real.tendsto_sqrt_atTop.comp hvar)
+    (tendsto_cdf_of_tendsto_standardized hnn hne hclt)).llt hε] with n hn
+  intro k
+  simpa [bP_natCast, Function.comp_apply, coeffStdDev, xs] using hn (k : ℤ)
 
 end Polynomial
 
