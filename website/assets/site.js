@@ -54,7 +54,8 @@ for (const control of document.querySelectorAll("[data-results-filter]")) {
     let shown = 0;
     for (const row of rows) {
       const visible =
-        (kind === "all" || row.dataset.kind === kind) &&
+        (kind === "all" ||
+          (kind === "headline" ? row.dataset.headline === "true" : row.dataset.kind === kind)) &&
         words.every((word) => row.dataset.search.includes(word));
       row.hidden = !visible;
       if (visible) shown += 1;
@@ -64,4 +65,13 @@ for (const control of document.querySelectorAll("[data-results-filter]")) {
 
   control.addEventListener("input", update);
   control.addEventListener("change", update);
+
+  // `results/#main-results` opens the list filtered to the main results.
+  if (window.location.hash === "#main-results") {
+    const headline = control.querySelector('input[name="results-kind"][value="headline"]');
+    if (headline) {
+      headline.checked = true;
+      update();
+    }
+  }
 }

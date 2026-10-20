@@ -49,6 +49,7 @@ label = "Chow polynomials have nonnegative coefficients"
 name = "RealRooted.BrandenVecchi.chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Chow polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowDerangement_nonnegCoeffs_of_isTotallyNonneg"
@@ -59,11 +60,13 @@ label = "Chow derangement polynomials have nonnegative coefficients"
 name = "RealRooted.BrandenVecchi.chowDerangement_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Chow derangement polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Consecutive Chow polynomials interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_chowDerangement_of_isTotallyNonneg"

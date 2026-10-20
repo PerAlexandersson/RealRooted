@@ -23,6 +23,7 @@ label = "Symmetric I_d-decomposition"
 [[theorems]]
 name = "RealRooted.Challenges.BrandenSolus.interlacing_equivalences"
 label = "Interlacing equivalences for the I_d-decomposition"
+headline = true
 
 [[definitions]]
 name = "RealRooted.DerangementTransform.transform"
@@ -48,6 +49,7 @@ label = "Derangements counted by excedances give the derangement polynomials d_n
 name = "RealRooted.DerangementStatistic.derangementExcGenPoly_isRealRooted"
 module = "RealRooted.CombinatorialExamples.DerangementStatistic"
 label = "The excedance polynomial of derangements is real-rooted"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

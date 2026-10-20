@@ -20,6 +20,7 @@ formalized = "2026-09-08"
 name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_abs_eval_deriv_of_root_separation"
 module = "RealRooted.RootAmplitude.Separation.Polynomial"
 label = "Derivative bound from separated roots"
+headline = true
 
 [[theorems]]
 name = "RealRooted.RootAmplitude.amplitude_at_smallest_root"
@@ -35,6 +36,7 @@ label = "Index-dependent bound for separated sequences"
 name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_amplitude_of_separation"
 module = "RealRooted.RootAmplitude.Separation.Euler"
 label = "Uniform bound for separated sequences"
+headline = true
 
 [[theorems]]
 name = "RealRooted.RootAmplitude.amplitude_zero_le"

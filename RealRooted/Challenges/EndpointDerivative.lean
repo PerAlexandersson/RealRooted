@@ -14,6 +14,7 @@ formalized = "2026-09-26"
 name = "RealRooted.strictInterl_endpointDerivative"
 module = "RealRooted.EndpointDerivative.Basic"
 label = "Strict interlacing after endpoint differentiation"
+headline = true
 
 [[theorems]]
 name = "RealRooted.roots_endpointDerivative_mem_Icc"

@@ -48,10 +48,12 @@ label = "The classical Hurwitz matrix"
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
 label = "Hermite–Biehler: interlacing gives stability"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
 label = "Hermite–Biehler: stability gives interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.isHurwitzStable_oddEvenPolynomial_iff"
@@ -60,6 +62,7 @@ label = "Hermite–Biehler for odd and even parts"
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
 label = "Hurwitz criterion via total nonnegativity"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hasNonnegCoeffs_of_isRightHalfPlaneStable"
@@ -83,6 +86,7 @@ label = "Hermite–Biehler in Lace form"
 name = "Matrix.strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Converse"
 label = "Routh–Hurwitz: strict stability iff all leading Hurwitz minors are positive"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

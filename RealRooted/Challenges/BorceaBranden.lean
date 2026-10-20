@@ -40,11 +40,13 @@ label = "Real-rootedness preserver up to degree d"
 name = "RealRooted.BorceaBranden.finiteComplexSymbolClassification"
 module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
 label = "Classification of stability preservers on a degree box"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserver"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability"

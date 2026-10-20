@@ -26,6 +26,7 @@ label = "Number of negative roots"
 name = "Polynomial.descartes_rule_of_signs"
 module = "RealRooted.RootCounting.Descartes"
 label = "Descartes' rule of signs"
+headline = true
 
 [[theorems]]
 name = "Polynomial.descartes_rule_of_signs_negative"
@@ -36,6 +37,7 @@ label = "Descartes' rule of signs for negative roots"
 name = "Polynomial.budan_fourier"
 module = "RealRooted.Mathlib.Algebra.Polynomial.BudanFourier"
 label = "Budan–Fourier theorem"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

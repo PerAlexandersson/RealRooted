@@ -49,6 +49,7 @@ label = "Cyclic path descents via the Narayana derivative"
 name = "RealRooted.peakValuePolynomial_mvRealStable"
 module = "RealRooted.CombinatorialExamples.PeakValues.Stability"
 label = "The peak-value polynomial is real stable"
+headline = true
 
 [[theorems]]
 name = "RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl"
@@ -69,6 +70,7 @@ label = "Consecutive ternary run polynomials interlace"
 name = "RealRooted.SuperEulerian.isRealRooted_superEulerian"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"

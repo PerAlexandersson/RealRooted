@@ -17,6 +17,7 @@ formalized = "2026-09-26"
 name = "RealRooted.reciprocalShift_reverses_strictInterl"
 module = "RealRooted.ReciprocalShift.ProperPosition"
 label = "Reciprocal shifts reverse strict interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.roots_reciprocalShift_eq"

@@ -20,6 +20,7 @@ years = [2006, 2007]
 name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing from a fixed root window"
+headline = true
 
 [[theorems]]
 name = "RealRooted.derivativeRecurrence_interlaces_of_roots_le"
@@ -50,6 +51,7 @@ label = "Two-sided moving windows, either condition on each side"
 name = "RealRooted.threeTerm_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Three-term interlacing in a fixed root window"
+headline = true
 
 [[theorems]]
 name = "RealRooted.threeTerm_interlaces_of_roots_le_of_ratio"

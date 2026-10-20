@@ -29,6 +29,7 @@ label = "A real-rooted pencil gives interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_iff_interlaces_or_reverse"
 label = "Obreschkoff’s theorem as an equivalence"
+headline = true
 
 [[theorems]]
 name = "RealRooted.natDegree_close_of_allComboRealRooted"

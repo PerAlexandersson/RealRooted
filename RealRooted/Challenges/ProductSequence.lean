@@ -18,6 +18,7 @@ formalized = "2026-07-08"
 name = "RealRooted.isRealRooted_of_product_factor_sequence"
 module = "RealRooted.ProductSequence.Core"
 label = "Closure under certified product factors"
+headline = true
 
 [[theorems]]
 name = "RealRooted.productSequence_interlaces"

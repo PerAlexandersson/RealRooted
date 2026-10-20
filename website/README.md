@@ -44,10 +44,13 @@ an imported canonical module.  A record may also add a human-readable `label`
 `headline = true` (which requires a `label`).  The optional record arrays are
 `[[definitions]]` and `[[theorems]]`.
 
-Headlines are how a concept or family page surfaces its main results: they are
-named on the page's overview card and listed alongside the theorem pages in the
-overview's Theorems group, linking to the declaration on its page.  Mark the
-main theorem of a paper, and every named theorem, as a headline.  Labels and
+Headlines mark a page's main results; give every page at least one.  They are
+named on the page's overview card (on a theorem page, unless the label repeats
+the page title), and the headlines of a concept or family page are listed
+alongside the theorem pages in the overview's Theorems group, linking to the
+declaration on its page.  `results/` can be filtered to the main results, and
+`results/#main-results` opens it filtered that way.  Mark the main theorem of
+a paper, and every named theorem, as a headline.  Labels and
 headlines are presentation only and do not enter the selected-declaration
 digest below.
 

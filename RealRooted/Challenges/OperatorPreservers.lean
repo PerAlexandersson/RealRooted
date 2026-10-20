@@ -43,6 +43,7 @@ label = "The reciprocal x^D p(1/x)"
 name = """RealRooted.Challenges.OperatorPreservers.\
 preservesInterlacing_of_preservesRealRootedOrZero"""
 label = "Real-rootedness preservers preserve interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.Interl.theta"

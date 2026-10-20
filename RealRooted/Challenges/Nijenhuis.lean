@@ -41,6 +41,7 @@ label = "The signed rook polynomial has nonnegative roots"
 [[theorems]]
 name = "RealRooted.Challenges.Nijenhuis.ordinaryRealRooted"
 label = "Rook polynomials of boards are real-rooted"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

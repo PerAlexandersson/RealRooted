@@ -42,11 +42,13 @@ label = "Rows of g / (1 - x g h)"
 name = "RealRooted.BrandenLeite.interl_chainPolynomial_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
 label = "Consecutive chain polynomials interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
 label = "Chain polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.roots_chainPolynomial_mem_Icc_of_isTotallyNonneg"
@@ -62,6 +64,7 @@ label = "Chain polynomials have nonnegative coefficients"
 name = "RealRooted.BrandenLeite.isResolvable_iff_lowerUnitriangular_and_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.ResolvableTotallyNonneg"
 label = "Resolvable if and only if totally nonnegative"
+headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_isPFPolynomial_of_pos_constantDiagonal"

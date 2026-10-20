@@ -31,6 +31,7 @@ label = "Edge-variable matching polynomial"
 name = "RealRooted.Graph.multivariateIndepPoly_samePhaseStable_iff_clawFree"
 module = "RealRooted.Graph.LeakeRyder"
 label = "Leake–Ryder: same-phase stable if and only if claw-free"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Graph.ClawFree.indepPoly_splits_of_leakeRyder"

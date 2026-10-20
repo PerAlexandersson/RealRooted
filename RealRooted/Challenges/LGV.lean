@@ -38,11 +38,13 @@ label = "Repeated-chip kernel sequence"
 name = "LGV.FinitePathNetwork.matrix_isTotallyNonneg_of_orderedCertificates"
 module = "RealRooted.LGV.TotallyNonnegative"
 label = "Path networks give totally nonnegative matrices"
+headline = true
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_of_minorOrderedCertificates"
 module = "RealRooted.LGV.PolyaFrequency"
 label = "Path networks give Pólya frequency sequences"
+headline = true
 
 [[theorems]]
 name = "RealRooted.LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq"

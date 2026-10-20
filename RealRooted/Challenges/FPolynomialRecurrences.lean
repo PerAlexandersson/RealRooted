@@ -39,6 +39,7 @@ label = "A constant initial row gives the transformed recurrence identity"
 name = "RealRooted.splits_fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
 label = "The f-polynomial transform preserves splitting"
+headline = true
 
 [[theorems]]
 name = "RealRooted.roots_fPolynomial_natDegree_eq_map"

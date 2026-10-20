@@ -13,6 +13,7 @@ formalized = "2026-10-11"
 name = "RealRooted.IsFinitePFMultiplierSequence.interl_diagonalOperator"
 module = "RealRooted.MultiplierSequence.ProperPositionPF"
 label = "Finite PF multipliers preserve directed interlacing"
+headline = true
 
 [[theorems]]
 name = "RealRooted.IsFiniteMultiplierSequence.strictInterl_diagonalOperator_reverse"

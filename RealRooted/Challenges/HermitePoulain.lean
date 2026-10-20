@@ -19,6 +19,7 @@ label = "The operator f(D)"
 name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
 module = "RealRooted.Hermite.Poulain"
 label = "Hermite–Poulain theorem"
+headline = true
 
 [[theorems]]
 name = "RealRooted.HermitePoulain.interl_or_interl_applyAsDifferentialOperator"

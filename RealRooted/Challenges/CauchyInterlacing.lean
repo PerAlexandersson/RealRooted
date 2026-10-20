@@ -15,6 +15,7 @@ years = [2005]
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
 label = "Eigenvalues of a principal submatrix interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces"
@@ -24,6 +25,7 @@ label = "Characteristic polynomials of a principal submatrix interlace"
 name = "RealRooted.sortedEigenvalues_add_vecMulVec_succ_le"
 module = "RealRooted.CauchyInterlacing.RankOne"
 label = "Weyl: eigenvalues of a rank-one update interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.charpoly_strictInterl_add_vecMulVec"

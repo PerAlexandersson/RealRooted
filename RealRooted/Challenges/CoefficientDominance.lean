@@ -19,6 +19,7 @@ formalized = "2026-09-01"
 name = "RealRooted.CoefficientDominance.eval_neg_ne_zero_of_dominant"
 module = "RealRooted.CoefficientDominance.LogConcavity"
 label = "Negative-root exclusion from coefficient dominance"
+headline = true
 
 [[theorems]]
 name = "RealRooted.CoefficientDominance.Symmetric.log_ratio_ge_of_pos"

@@ -17,6 +17,7 @@ label = "Veronese section"
 [[theorems]]
 name = "RealRooted.Challenges.VeroneseSections.veroneseSectionPolynomial_eq_zero_or_splits"
 label = "Veronese sections preserve real-rootedness"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

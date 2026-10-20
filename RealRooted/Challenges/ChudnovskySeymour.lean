@@ -26,6 +26,7 @@ label = "Independence polynomial"
 [[theorems]]
 name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
 label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
