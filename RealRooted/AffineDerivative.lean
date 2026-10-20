@@ -133,24 +133,15 @@ lemma eval_same_sign_of_no_roots {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
     0 < p.eval a * p.eval b := by
   have ha : p.eval a ≠ 0 := hno_roots a le_rfl hab
   have hb : p.eval b ≠ 0 := hno_roots b hab le_rfl
-  rcases lt_or_gt_of_ne ha with ha_neg | ha_pos
-  · have hb_neg : p.eval b < 0 := by
-      rcases lt_or_gt_of_ne hb with h | h
-      · lia
-      · -- p(a) < 0 < p(b), IVT gives a root
-        have h0 : (0 : ℝ) ∈ Set.Icc (p.eval a) (p.eval b) := ⟨le_of_lt ha_neg, le_of_lt h⟩
-        exact absurd (intermediate_value_Icc hab p.continuous.continuousOn h0).choose_spec.2
-          (hno_roots _ (intermediate_value_Icc hab p.continuous.continuousOn h0).choose_spec.1.1
-            (intermediate_value_Icc hab p.continuous.continuousOn h0).choose_spec.1.2)
-    exact mul_pos_of_neg_of_neg ha_neg hb_neg
-  · have hb_pos : 0 < p.eval b := by
-      rcases lt_or_gt_of_ne hb with h | h
-      · have h0 : (0 : ℝ) ∈ Set.Icc (p.eval b) (p.eval a) := ⟨le_of_lt h, le_of_lt ha_pos⟩
-        exact absurd (intermediate_value_Icc' hab p.continuous.continuousOn h0).choose_spec.2
-          (hno_roots _ (intermediate_value_Icc' hab p.continuous.continuousOn h0).choose_spec.1.1
-            (intermediate_value_Icc' hab p.continuous.continuousOn h0).choose_spec.1.2)
-      · lia
-    simp_all
+  rcases lt_or_gt_of_ne ha with ha | ha <;> rcases lt_or_gt_of_ne hb with hb | hb
+  · exact mul_pos_of_neg_of_neg ha hb
+  · obtain ⟨x, hx, hpx⟩ := intermediate_value_Icc hab p.continuous.continuousOn
+      ⟨ha.le, hb.le⟩
+    exact (hno_roots x hx.1 hx.2 hpx).elim
+  · obtain ⟨x, hx, hpx⟩ := intermediate_value_Icc' hab p.continuous.continuousOn
+      ⟨hb.le, ha.le⟩
+    exact (hno_roots x hx.1 hx.2 hpx).elim
+  · positivity
 
 /-- **Key sign lemma**: at consecutive roots `r₁ < r₂` of `f` (with no f-roots
     strictly between them), the derivative satisfies `f'(r₁) * f'(r₂) ≤ 0`.
@@ -168,62 +159,48 @@ lemma derivative_sign_at_consecutive_roots {f : ℝ[X]}
     f.derivative.eval r₁ * f.derivative.eval r₂ ≤ 0 := by
   by_cases hf1 : f.derivative.eval r₁ = 0; · simp [hf1]
   by_cases hf2 : f.derivative.eval r₂ = 0; · simp [hf2]
-  -- Factor f = (X - C r₁) * q₁
   obtain ⟨q₁, hfq₁⟩ := dvd_iff_isRoot.mpr hr₁
-  -- q₁(r₁) = f'(r₁) from product rule: f' = q₁ + (X - r₁)*q₁'
   have hq₁r₁ : q₁.eval r₁ = f.derivative.eval r₁ := by simp_all
-  -- Factor f = (X - C r₂) * q₂
   obtain ⟨q₂, hfq₂⟩ := dvd_iff_isRoot.mpr hr₂
   have hq₂r₂ : q₂.eval r₂ = f.derivative.eval r₂ := by
     have hd : f.derivative = q₂ + (X - C r₂) * q₂.derivative := by
       rw [hfq₂, derivative_mul, derivative_X_sub_C, one_mul]
-    calc q₂.eval r₂ = q₂.eval r₂ + 0 := (add_zero _).symm
-      _ = q₂.eval r₂ + (r₂ - r₂) * q₂.derivative.eval r₂ := by simp
-      _ = f.derivative.eval r₂ := by rw [hd, eval_add, eval_mul, eval_sub, eval_X, eval_C]
-  -- q₁, q₂ have no roots in (r₁, r₂) (otherwise f would)
+    rw [hd, eval_add, eval_mul, eval_sub, eval_X, eval_C]
+    simp
   have hq₁_nr : ∀ x, r₁ < x → x < r₂ → q₁.eval x ≠ 0 := by
     intro x hx1 hx2 hq
-    have hfx : f.eval x = 0 := by rw [hfq₁, eval_mul, eval_sub, eval_X, eval_C, hq, mul_zero]
-    exact hno_between x ((mem_roots hf_ne).mpr hfx) ⟨hx1, hx2⟩
+    apply hno_between x ((mem_roots hf_ne).mpr ?_) ⟨hx1, hx2⟩
+    simp [hfq₁, hq]
   have hq₂_nr : ∀ x, r₁ < x → x < r₂ → q₂.eval x ≠ 0 := by
     intro x hx1 hx2 hq
-    have hfx : f.eval x = 0 := by rw [hfq₂, eval_mul, eval_sub, eval_X, eval_C, hq, mul_zero]
-    exact hno_between x ((mem_roots hf_ne).mpr hfx) ⟨hx1, hx2⟩
-  -- Midpoint m = (r₁ + r₂) / 2
+    apply hno_between x ((mem_roots hf_ne).mpr ?_) ⟨hx1, hx2⟩
+    simp [hfq₂, hq]
   set m := (r₁ + r₂) / 2 with hm_def
   have hm1 : r₁ < m := by grind
   have hm2 : m < r₂ := by grind
-  -- q₁ has same sign at r₁ and m (no roots in [r₁, m])
   have hq₁_same : 0 < q₁.eval r₁ * q₁.eval m :=
-    eval_same_sign_of_no_roots (le_of_lt hm1) (fun x hx1 hx2 ↦ by
-      grind)
-  -- q₂ has same sign at m and r₂ (no roots in [m, r₂])
+    eval_same_sign_of_no_roots hm1.le fun x hx1 hx2 ↦ by grind
   have hq₂_same : 0 < q₂.eval m * q₂.eval r₂ :=
-    eval_same_sign_of_no_roots (le_of_lt hm2) (fun x hx1 hx2 => by
-      grind)
-  -- f(m) from both factorizations: (m-r₁)*q₁(m) = (m-r₂)*q₂(m)
+    eval_same_sign_of_no_roots hm2.le fun x hx1 hx2 => by grind
   have hmr₁ : 0 < m - r₁ := by linarith
   have hmr₂ : m - r₂ < 0 := by linarith
   have hq₁m_ne : q₁.eval m ≠ 0 := hq₁_nr m hm1 hm2
   have heq : (m - r₁) * q₁.eval m = (m - r₂) * q₂.eval m := by
-    have h1 : f.eval m = (m - r₁) * q₁.eval m := by rw [hfq₁, eval_mul, eval_sub, eval_X, eval_C]
-    have h2 : f.eval m = (m - r₂) * q₂.eval m := by rw [hfq₂, eval_mul, eval_sub, eval_X, eval_C]
+    have h1 : f.eval m = (m - r₁) * q₁.eval m := by
+      rw [hfq₁, eval_mul, eval_sub, eval_X, eval_C]
+    have h2 : f.eval m = (m - r₂) * q₂.eval m := by
+      rw [hfq₂, eval_mul, eval_sub, eval_X, eval_C]
     lia
-  -- q₁(m) and q₂(m) have opposite signs
   have hprod_neg : q₁.eval m * q₂.eval m < 0 := by
-    rcases lt_or_gt_of_ne hq₁m_ne with hq₁m_neg | hq₁m_pos
-    · exact mul_neg_of_neg_of_pos hq₁m_neg (by nlinarith)
-    · exact mul_neg_of_pos_of_neg hq₁m_pos (by nlinarith)
-  -- Combine signs: q₁(r₁)*q₂(r₂) < 0
+    rcases lt_or_gt_of_ne hq₁m_ne with h | h
+    · exact mul_neg_of_neg_of_pos h (by nlinarith)
+    · exact mul_neg_of_pos_of_neg h (by nlinarith)
   have : q₁.eval r₁ * q₂.eval r₂ < 0 := by
-    rcases lt_or_gt_of_ne hq₁m_ne with hq₁m_neg | hq₁m_pos
+    rcases lt_or_gt_of_ne hq₁m_ne with h | h
     · exact mul_neg_of_neg_of_pos
-        (by nlinarith [hq₁_same])
-        (by nlinarith [hq₂_same, hprod_neg])
+        (by nlinarith [hq₁_same]) (by nlinarith [hq₂_same, hprod_neg])
     · exact mul_neg_of_pos_of_neg
-        (by nlinarith [hq₁_same])
-        (by nlinarith [hq₂_same, hprod_neg])
-  -- q₁(r₁) = f'(r₁), q₂(r₂) = f'(r₂)
+        (by nlinarith [hq₁_same]) (by nlinarith [hq₂_same, hprod_neg])
   grind
 
 /-! ## Root existence between consecutive roots of f
@@ -244,44 +221,30 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
     ∃ s, r₁ ≤ s ∧ s ≤ r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
   set g := C c * f + (1 - X) * f.derivative
   rcases eq_or_lt_of_le hle with rfl | hlt
-  · -- Repeated root: f'(r₁) = 0 since rootMultiplicity ≥ 2
-    have hcount : 2 ≤ Multiset.count r₁ f.roots := by
-      have : 2 ≤ Multiset.count r₁ (↑[r₁, r₁] : Multiset ℝ) := by simp
-      exact le_trans this (Multiset.count_le_of_le r₁ hsub)
+  · have hcount : 2 ≤ Multiset.count r₁ f.roots := by
+      exact le_trans (by simp) (Multiset.count_le_of_le r₁ hsub)
     rw [count_roots] at hcount
     have hf'_root : f.derivative.IsRoot r₁ :=
       isRoot_derivative_of_rootMultiplicity_ge_two hcount
-    have : g.IsRoot r₁ := by rw [IsRoot.def, eval_affineDeriv_at_root hr₁ c, hf'_root, mul_zero]
+    have : g.IsRoot r₁ := by
+      change (C c * f + (1 - X) * f.derivative).eval r₁ = 0
+      rw [eval_affineDeriv_at_root hr₁ c, hf'_root, mul_zero]
     grind
-  · -- Distinct roots: IVT via sign change
-    -- g(rᵢ) = (1-rᵢ)*f'(rᵢ). Since 1-rᵢ > 0, sign(g) = sign(f').
-    -- f has no roots in (r₁, r₂), so f has constant sign there.
-    -- This forces f'(r₁) and f'(r₂) to have opposite signs.
-    have hsign : g.eval r₁ * g.eval r₂ ≤ 0 := by
+  · have hsign : g.eval r₁ * g.eval r₂ ≤ 0 := by
       rw [eval_affineDeriv_at_root hr₁ c, eval_affineDeriv_at_root hr₂ c]
       have h1 : 0 < 1 - r₁ := by linarith
       have h2 : 0 < 1 - r₂ := by linarith
-      -- f'(r₁) * f'(r₂) ≤ 0 (sign alternation at consecutive roots)
       suffices f.derivative.eval r₁ * f.derivative.eval r₂ ≤ 0 by nlinarith [mul_pos h1 h2]
       exact derivative_sign_at_consecutive_roots hr₁ hr₂ hlt hno_between hf_ne
-    -- IVT: g continuous on [r₁, r₂] with g(r₁)*g(r₂) ≤ 0
-    rcases le_or_gt (g.eval r₁) 0 with hg1 | hg1
-    · rcases le_or_gt (g.eval r₂) 0 with hg2 | hg2
-      · rcases eq_or_lt_of_le hg1 with hg1' | hg1'
-        · exact ⟨r₁, le_refl _, le_of_lt hlt, hg1'⟩
-        · have : g.eval r₂ = 0 := by nlinarith
-          exact ⟨r₂, le_of_lt hlt, le_refl _, this⟩
-      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₁) (g.eval r₂) := ⟨hg1, le_of_lt hg2⟩
-        obtain ⟨s, hs, hval⟩ := intermediate_value_Icc (le_of_lt hlt)
-          g.continuous.continuousOn h0
-        exact ⟨s, hs.1, hs.2, hval⟩
-    · rcases le_or_gt 0 (g.eval r₂) with hg2 | hg2
-      · have : g.eval r₂ = 0 := by nlinarith
-        exact ⟨r₂, le_of_lt hlt, le_refl _, this⟩
-      · have h0 : (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) := by grind
-        obtain ⟨s, hs, hval⟩ := intermediate_value_Icc' (le_of_lt hlt)
-          g.continuous.continuousOn h0
-        exact ⟨s, hs.1, hs.2, hval⟩
+    rcases le_total (g.eval r₁) (g.eval r₂) with h12 | h21
+    · obtain ⟨s, hs, hval⟩ := intermediate_value_Icc hlt.le
+        g.continuous.continuousOn (show (0 : ℝ) ∈ Set.Icc (g.eval r₁) (g.eval r₂) by
+          constructor <;> nlinarith)
+      exact ⟨s, hs.1, hs.2, hval⟩
+    · obtain ⟨s, hs, hval⟩ := intermediate_value_Icc' hlt.le
+        g.continuous.continuousOn (show (0 : ℝ) ∈ Set.Icc (g.eval r₂) (g.eval r₁) by
+          constructor <;> nlinarith)
+      exact ⟨s, hs.1, hs.2, hval⟩
 
 /-- In the distinct-root case, the affine derivative has a root strictly between the endpoints. -/
 private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
@@ -291,40 +254,22 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     (hr₂_nonpos : r₂ ≤ 0) :
     ∃ s, r₁ < s ∧ s < r₂ ∧ (C c * f + (1 - X) * f.derivative).IsRoot s := by
   let φ : ℝ → ℝ := fun x => f.eval x * (1 - x) ^ (-c)
-  have hfa_eval :
-      Filter.Tendsto (fun x => f.eval x) (nhdsWithin r₁ (Set.Ioi r₁)) (nhds (f.eval r₁)) :=
-    (f.continuous.continuousAt.tendsto).mono_left nhdsWithin_le_nhds
-  have hfa_pow :
-      Filter.Tendsto (fun x => (1 - x) ^ (-c)) (nhdsWithin r₁ (Set.Ioi r₁))
-        (nhds ((1 - r₁) ^ (-c))) := by
-    have hcont :
-        ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₁ := by
-      refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
-      left
+  have hfa : Filter.Tendsto φ (nhdsWithin r₁ (Set.Ioi r₁)) (nhds 0) := by
+    have hpow : ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₁ := by
+      refine (continuousAt_const.sub continuousAt_id).rpow_const (Or.inl ?_)
       change 1 - r₁ ≠ 0
       linarith
-    exact hcont.tendsto.mono_left nhdsWithin_le_nhds
-  have hfa : Filter.Tendsto φ (nhdsWithin r₁ (Set.Ioi r₁)) (nhds 0) := by
-    have := hfa_eval.mul hfa_pow
-    have hr₁eval : f.eval r₁ = 0 := hr₁
-    grind
-  have hfb_eval :
-      Filter.Tendsto (fun x => f.eval x) (nhdsWithin r₂ (Set.Iio r₂)) (nhds (f.eval r₂)) :=
-    (f.continuous.continuousAt.tendsto).mono_left nhdsWithin_le_nhds
-  have hfb_pow :
-      Filter.Tendsto (fun x => (1 - x) ^ (-c)) (nhdsWithin r₂ (Set.Iio r₂))
-        (nhds ((1 - r₂) ^ (-c))) := by
-    have hcont :
-        ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₂ := by
-      refine (continuousAt_const.sub continuousAt_id).rpow_const ?_
-      left
+    simpa only [φ, show f.eval r₁ = 0 from hr₁, zero_mul] using
+      (f.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).mul
+        (hpow.tendsto.mono_left nhdsWithin_le_nhds)
+  have hfb : Filter.Tendsto φ (nhdsWithin r₂ (Set.Iio r₂)) (nhds 0) := by
+    have hpow : ContinuousAt (fun x : ℝ => (1 - x) ^ (-c)) r₂ := by
+      refine (continuousAt_const.sub continuousAt_id).rpow_const (Or.inl ?_)
       change 1 - r₂ ≠ 0
       linarith
-    exact hcont.tendsto.mono_left nhdsWithin_le_nhds
-  have hfb : Filter.Tendsto φ (nhdsWithin r₂ (Set.Iio r₂)) (nhds 0) := by
-    have := hfb_eval.mul hfb_pow
-    have hr₂eval : f.eval r₂ = 0 := hr₂
-    grind
+    simpa only [φ, show f.eval r₂ = 0 from hr₂, zero_mul] using
+      (f.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).mul
+        (hpow.tendsto.mono_left nhdsWithin_le_nhds)
   have hderiv :
       ∀ x ∈ Set.Ioo r₁ r₂,
         HasDerivAt φ ((C c * f + (1 - X) * f.derivative).eval x * (1 - x) ^ (-c - 1)) x := by
@@ -361,9 +306,7 @@ private lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
     lia
   obtain ⟨s, hs, hs0⟩ := exists_hasDerivAt_eq_zero' hlt hfa hfb hderiv
   have hs_factor_ne : (1 - s) ^ (-c - 1) ≠ 0 := by
-    have hs_nonneg : 0 ≤ 1 - s := by grind
-    have hs_ne : 1 - s ≠ 0 := by grind
-    exact (Real.rpow_ne_zero hs_nonneg (by linarith)).2 hs_ne
+    exact (Real.rpow_ne_zero (by grind) (by linarith)).2 (by grind)
   have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by simp_all
   exact ⟨s, hs.1, hs.2, hs_root_eval⟩
 
@@ -909,26 +852,12 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     have hf_fact' : f = (X - C r₁) ^ m * q := by lia
     have hg_fact' : g = (X - C r₁) ^ (m - 1) * qg := by lia
     have hq_ne : q ≠ 0 := by grind
-    have hqg_ne : qg ≠ 0 := by
-      intro hqg
-      simpa [hg_fact', hqg] using hg₀.ne_zero
-    have hq_rr : (q ≠ 0 ∧ q.Splits) := by
-      have hprod_ne : ((X - C r₁) ^ m * q) ≠ 0 := by
-        rw [← hf_fact']
-        exact hf₀.ne_zero
-      have hprod_splits : ((X - C r₁) ^ m * q).Splits := by
-        rw [← hf_fact']
-        exact hf
-      exact isRealRooted_of_dvd hprod_ne hprod_splits hq_ne
+    have hqg_ne : qg ≠ 0 := by grind
+    have hq_rr : q ≠ 0 ∧ q.Splits :=
+      isRealRooted_of_dvd (hf_fact' ▸ hf₀.ne_zero) (hf_fact' ▸ hf) hq_ne
         ⟨(X - C r₁) ^ m, by rw [mul_comm]⟩
-    have hqg_rr : (qg ≠ 0 ∧ qg.Splits) := by
-      have hprod_ne : ((X - C r₁) ^ (m - 1) * qg) ≠ 0 := by
-        rw [← hg_fact']
-        exact hg₀.ne_zero
-      have hprod_splits : ((X - C r₁) ^ (m - 1) * qg).Splits := by
-        rw [← hg_fact']
-        exact hg_rr
-      exact isRealRooted_of_dvd hprod_ne hprod_splits hqg_ne
+    have hqg_rr : qg ≠ 0 ∧ qg.Splits :=
+      isRealRooted_of_dvd (hg_fact' ▸ hg₀.ne_zero) (hg_fact' ▸ hg_rr) hqg_ne
         ⟨(X - C r₁) ^ (m - 1), by rw [mul_comm]⟩
     have hq_pos : HasPosLeadingCoeff q :=
       hasPosLeadingCoeff_of_pow_X_sub_C_mul (by simpa [hf_fact'] using hf₀)
@@ -969,8 +898,6 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         f.derivative =
           (X - C r₁) ^ (m - 1) * (C (m : ℝ) * q + (X - C r₁) * q.derivative) := by
       have hm_succ : m = (m - 1) + 1 := by lia
-      have hm_succ' : 1 + (m - 1) = m := by lia
-      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by lia
       rw [hf_fact', derivative_mul, derivative_pow, derivative_sub, derivative_X, derivative_C,
         sub_zero]
       rw [hm_succ, pow_succ']
@@ -979,8 +906,6 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
         g = (X - C r₁) ^ (m - 1) *
           (C c * (X - C r₁) * q + (1 - X) * (C (m : ℝ) * q + (X - C r₁) * q.derivative)) := by
       have hm_succ : m = (m - 1) + 1 := by lia
-      have hm_succ' : 1 + (m - 1) = m := by lia
-      have hm_pred : 1 + (m - 1) - 1 = m - 1 := by lia
       rw [hg_def, hf_deriv_fact, hf_fact']
       rw [hm_succ, pow_succ']
       grind
@@ -997,23 +922,17 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     let Pq : ℝ := (q.roots.map (r₁ - ·)).prod
     let Pg : ℝ := (qg.roots.map (r₁ - ·)).prod
     have hPq_nonneg : 0 ≤ (-1 : ℝ) ^ q.roots.card * Pq := by
-      unfold Pq
-      have htmp :
-          0 ≤ (-1 : ℝ) ^ (q.roots.map (r₁ - ·)).card * (q.roots.map (r₁ - ·)).prod :=
-        neg_pow_prod_nonneg_of_all_nonpos _ (by
+      simpa only [Pq, Multiset.card_map] using
+        neg_pow_prod_nonneg_of_all_nonpos (q.roots.map (r₁ - ·)) (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
           exact sub_nonpos.mpr (hq_root_gt t ht).le)
-      simpa using htmp
     have hPg_nonneg : 0 ≤ (-1 : ℝ) ^ qg.roots.card * Pg := by
-      unfold Pg
-      have htmp :
-          0 ≤ (-1 : ℝ) ^ (qg.roots.map (r₁ - ·)).card * (qg.roots.map (r₁ - ·)).prod :=
-        neg_pow_prod_nonneg_of_all_nonpos _ (by
+      simpa only [Pg, Multiset.card_map] using
+        neg_pow_prod_nonneg_of_all_nonpos (qg.roots.map (r₁ - ·)) (by
           intro x hx
           rcases Multiset.mem_map.mp hx with ⟨t, ht, rfl⟩
           exact sub_nonpos.mpr (hqg_root_gt t ht).le)
-      simpa using htmp
     have hm_le_d : m ≤ d := by
       calc
         m = f.roots.count r₁ := by lia
@@ -1060,12 +979,9 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       nlinarith
     have hq_eval_ne : q.eval r₁ ≠ 0 := eval_ne_zero_of_not_dvd_X_sub_C hq_nodvd
     have hEval_pos : 0 < qg.eval r₁ * q.eval r₁ := by
-      have hfactor_pos : 0 < ((1 - r₁) * (m : ℝ)) := by
-        have hm_pos' : 0 < (m : ℝ) := Nat.cast_pos.mpr hm_pos
-        have h1 : 0 < 1 - r₁ := by linarith
-        exact mul_pos h1 hm_pos'
-      have hsq_pos : 0 < (q.eval r₁) ^ 2 :=
-        sq_pos_iff.mpr hq_eval_ne
+      have hfactor_pos : 0 < ((1 - r₁) * (m : ℝ)) :=
+        mul_pos (by linarith) (Nat.cast_pos.mpr hm_pos)
+      have hsq_pos : 0 < (q.eval r₁) ^ 2 := sq_pos_iff.mpr hq_eval_ne
       have hrewrite :
           qg.eval r₁ * q.eval r₁ = ((1 - r₁) * (m : ℝ)) * (q.eval r₁) ^ 2 := by
         rw [hqg_eval]
