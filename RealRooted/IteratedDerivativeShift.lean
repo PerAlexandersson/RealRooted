@@ -47,11 +47,7 @@ def iterateTDeriv (eps : ℝ) (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
 
 @[simp] lemma iterateTDeriv_zero_eps (n : ℕ) (p : ℝ[X]) :
     iterateTDeriv 0 n p = p := by
-  induction n with
-  | zero =>
-      simp
-  | succ n ih =>
-      simp_all
+  induction n <;> simp_all
 
 lemma tDeriv_of_natDegree_eq_zero (hdeg : p.natDegree = 0) (eps : ℝ) : tDeriv eps p = p := by
   simp [tDeriv, derivative_eq_zero.2 hdeg]
@@ -114,31 +110,22 @@ lemma not_pow_dvd_tDeriv_of_multiple
     ¬ (X - C a) ^ (p.rootMultiplicity a) ∣ tDeriv eps p := by
   set m := p.rootMultiplicity a with hm_def
   intro hdvd_T
-  -- (X-a)^m ∣ p (definition of rootMultiplicity)
   have hdvd_p : (X - C a) ^ m ∣ p := pow_rootMultiplicity_dvd p a
-  -- (X-a)^m ∣ p - T_ε(p) = ε·p'
   have hdiff_eq : p - tDeriv eps p = C eps * p.derivative := by unfold tDeriv; simp
   have hdvd_eps_p' : (X - C a) ^ m ∣ C eps * p.derivative :=
     hdiff_eq ▸ dvd_sub hdvd_p hdvd_T
-  -- ε ≠ 0 ⟹ C ε is a unit ⟹ (X-a)^m ∣ p'
-  have hdvd_p' : (X - C a) ^ m ∣ p.derivative := by
-    -- C ε is a unit, so (X-a)^m ∣ C ε * p' implies (X-a)^m ∣ p'
-    simp_all
-  -- p' ≠ 0 (since rootMultiplicity ≥ 2 implies natDegree ≥ 2)
+  have hdvd_p' : (X - C a) ^ m ∣ p.derivative := by simp_all
   have hm_le : m ≤ p.natDegree := by
     calc m = p.roots.count a := (count_roots p).symm
     _ ≤ p.roots.card := p.roots.count_le_card a
     _ ≤ p.natDegree := card_roots' p
   have hp'_ne : p.derivative ≠ 0 := by simp; lia
-  -- (X-a)^{m} ∤ p' since rootMultiplicity a p' = m - 1 (exact, in char 0)
   have hroot : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by lia)
-  -- In char 0: (m : ℝ) ≠ 0, so it's in nonZeroDivisors
   have hm_nzd : (↑m : ℝ) ∈ nonZeroDivisors ℝ :=
     IsRegular.mem_nonZeroDivisors
       (IsRegular.of_ne_zero (Nat.cast_ne_zero_of_pos (R := ℝ) (by lia)))
   have hp'_mult : p.derivative.rootMultiplicity a = m - 1 :=
     derivative_rootMultiplicity_of_root_of_mem_nonZeroDivisors hroot hm_nzd
-  -- (X-a)^m ∣ p' means m ≤ rootMultiplicity a p' = m - 1. Contradiction.
   have : m ≤ p.derivative.rootMultiplicity a :=
     (le_rootMultiplicity_iff hp'_ne).mpr hdvd_p'
   lia
@@ -153,9 +140,7 @@ lemma rootMultiplicity_tDeriv_of_multiple
     (tDeriv eps p).rootMultiplicity a = p.rootMultiplicity a - 1 := by
   set m := p.rootMultiplicity a
   apply le_antisymm
-  · -- rootMultiplicity ≤ m - 1 means ¬ (X-a)^{m-1+1} ∣ T_ε(p)
-    rw [Polynomial.rootMultiplicity_le_iff hT_ne]
-    -- m - 1 + 1 = m since m ≥ 2
+  · rw [Polynomial.rootMultiplicity_le_iff hT_ne]
     have hm_eq : m - 1 + 1 = m := by lia
     rw [hm_eq]
     exact not_pow_dvd_tDeriv_of_multiple heps hp_ne hm2
@@ -228,37 +213,26 @@ lemma tDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} (hp : p ≠ 0) :
     Proof: T_ε(p) = 1·p + (-C ε)·p'. Since p' interlaces p (derivative interlacing)
     and (-C ε) evaluates to -ε ≤ 0 at every point, the Ma-Wang theorem gives
     `StrictInterl p (T_ε(p))`, which implies T_ε(p) is real-rooted. -/
-private lemma isRealRooted_tDeriv_pos {eps : ℝ} {p : ℝ[X]}
+private lemma strictInterl_tDeriv_of_posLeadingCoeff {eps : ℝ} {p : ℝ[X]}
     (heps : 0 < eps)
     (hp : p.Splits)
     (hp_pos : HasPosLeadingCoeff p)
-    (hdeg2 : 2 ≤ p.natDegree) : ((tDeriv eps p) ≠ 0 ∧ (tDeriv eps p).Splits) := by
-  -- Write T_ε(p) = C 1 * p + C (-eps) * p'
+    (hdeg2 : 2 ≤ p.natDegree) : StrictInterl p (tDeriv eps p) := by
   have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by simp [tDeriv]; grind
-  -- derivative interlaces p
   have hder : Interlaces p.derivative p := derivative_interlaces_of_natDegree_ne_zero hp (by lia)
-  -- HasPosLeadingCoeff of p'
-  have hp'_pos : HasPosLeadingCoeff p.derivative :=
-    hp_pos.derivative (by lia)
-  -- HasPosLeadingCoeff of T_ε(p) (same leading coeff as p)
+  have hp'_pos : HasPosLeadingCoeff p.derivative := hp_pos.derivative (by lia)
   have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
     rw [← hrewrite]
     exact hp_pos.tDeriv
-  -- degree bounds
   have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
     rw [← hrewrite, natDegree_tDeriv eps p]
   have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
     rw [← hrewrite, natDegree_tDeriv eps p]; lia
-  -- sign condition: b = C(-eps), b.eval r = -eps ≤ 0 for all r
   have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by
-    intro r _
-    simp [eval_C]
-    grind
-  -- Apply Ma-Wang
+    intro r _; simp [eval_C]; grind
   rw [hrewrite]
-  exact
-    (strictInterl_of_interlaces_evalCoeff_nonpos
-      hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos).2.1
+  exact strictInterl_of_interlaces_evalCoeff_nonpos
+    hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
 
 /-- T_ε is additive. -/
 lemma tDeriv_add (eps : ℝ) (p q : ℝ[X]) :
@@ -330,27 +304,20 @@ theorem splits_tDeriv {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) 
   obtain rfl | hp₀ := eq_or_ne p 0
   · simp
   by_cases hdeg2 : 2 ≤ p.natDegree
-  · -- degree ≥ 2: use Ma-Wang
-    rcases lt_or_gt_of_ne (fun h ↦ hp₀ (leadingCoeff_eq_zero.mp h))
-      with hneg | hpos
-    · -- negative leading coefficient: T_ε(-p) = -T_ε(p)
-      have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
-      have hT_neg := isRealRooted_tDeriv_pos heps (by simp_all) hneg_pos (by simp_all)
-      -- T_ε(-p) = -T_ε(p) since T_ε is linear
+  · rcases lt_or_gt_of_ne (fun h ↦ hp₀ (leadingCoeff_eq_zero.mp h)) with hneg | hpos
+    · have hneg_pos : HasPosLeadingCoeff (-p) := hasPosLeadingCoeff_neg hneg
+      have hT_neg :=
+        (strictInterl_tDeriv_of_posLeadingCoeff heps (by simp_all) hneg_pos (by simp_all)).2.1
       have hlin : tDeriv eps (-p) = -tDeriv eps p := by simp [tDeriv, derivative_neg]; grind
       simp_all
-    · exact (isRealRooted_tDeriv_pos heps hp hpos hdeg2).2
-  · -- degree ≤ 1: T_ε(p) has same degree as p
-    push Not at hdeg2
-    -- p.natDegree < 2, so natDegree is 0 or 1
+    · exact (strictInterl_tDeriv_of_posLeadingCoeff heps hp hpos hdeg2).2.1.2
+  · push Not at hdeg2
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by lia
     rcases hdeg01 with h0 | h1
-    · -- degree 0: p is constant, derivative is 0, tDeriv eps p = p
-      have hpc := eq_C_of_natDegree_eq_zero h0
+    · have hpc := eq_C_of_natDegree_eq_zero h0
       have : tDeriv eps p = p := by unfold tDeriv; rw [hpc, derivative_C]; simp
       lia
-    · -- degree 1: tDeriv preserves degree, so result has degree 1
-      exact .of_natDegree_eq_one (by simp_all)
+    · exact .of_natDegree_eq_one (by simp_all)
 
 theorem splits_tDeriv_all {eps : ℝ} {p : ℝ[X]} (hp : p.Splits) :
     (tDeriv eps p).Splits := by
@@ -382,9 +349,8 @@ lemma roots_sum_tDeriv (eps : ℝ) {p : ℝ[X]} (hp_ne : p ≠ 0)
 theorem derivative_strictInterl_tDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
     (hdeg : p.natDegree = 1) :
     StrictInterl p.derivative (tDeriv eps p) := by
-  have hTdeg : (tDeriv eps p).natDegree = 1 := by rw [natDegree_tDeriv, hdeg]
   have hbase : StrictInterl (1 : ℝ[X]) (tDeriv eps p) :=
-    (interlaces_one_linear hTdeg).toStrictInterl
+    (interlaces_one_linear (by simp [hdeg])).toStrictInterl
   have hder_deg : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg]
   have hder_C : p.derivative = C (p.derivative.coeff 0) :=
     eq_C_of_natDegree_eq_zero hder_deg
@@ -393,12 +359,10 @@ theorem derivative_strictInterl_tDeriv_of_natDegree_one {eps : ℝ} {p : ℝ[X]}
   have hcoeff_ne : p.derivative.coeff 0 ≠ 0 := by
     intro hcoeff
     exact hder_ne (by rw [hder_C, hcoeff]; simp)
-  have hscaled : StrictInterl (C (p.derivative.coeff 0) * (1 : ℝ[X])) (tDeriv eps p) :=
-    StrictInterl.C_mul_left hbase hcoeff_ne
   have hleft : C (p.derivative.coeff 0) * (1 : ℝ[X]) = p.derivative := by
     rw [hder_C]
     simp
-  simpa [hleft] using hscaled
+  simpa [hleft] using StrictInterl.C_mul_left hbase hcoeff_ne
 
 /-- Common-left Wagner form for `T_ε`: if `ε ≤ 0`, then `p'` precedes
 `p - ε p'`.  This is the Garloff--Wagner Theorem 11 induction step; no
@@ -577,59 +541,13 @@ theorem strictInterl_tDeriv {eps : ℝ} {p : ℝ[X]}
       have hrewrite : tDeriv eps (-p) = -tDeriv eps p := by
         simp [tDeriv]
         ring
-      have hstrictInterl_neg :
-          StrictInterl (-p) (tDeriv eps (-p)) := by
-        have hder : Interlaces (-p).derivative (-p) := by
-          simpa using
-            derivative_interlaces_of_natDegree_ne_zero (f := -p) (by simp_all) (by simp_all; lia)
-        have hp'_pos : HasPosLeadingCoeff (-p).derivative := by
-          simpa using hneg_pos.derivative (by rw [natDegree_neg]; lia)
-        have hrewrite_neg : tDeriv eps (-p) = C 1 * (-p) + C (-eps) * (-p).derivative := by
-          simp [tDeriv]
-        have hT_pos : HasPosLeadingCoeff (C 1 * (-p) + C (-eps) * (-p).derivative) := by
-          rw [← hrewrite_neg]
-          exact hneg_pos.tDeriv
-        have hdeg_lo : (-p).natDegree ≤ (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree := by
-          simp_all
-        have hdeg_hi :
-            (C 1 * (-p) + C (-eps) * (-p).derivative).natDegree ≤
-              (-p).natDegree + 1 := by
-          simp_all
-        have hb_nonpos : ∀ r, (-p).IsRoot r → (C (-eps)).eval r ≤ 0 := by
-          intro r _
-          simp [eval_C]
-          linarith
-        rw [hrewrite_neg]
-        exact
-          strictInterl_of_interlaces_evalCoeff_nonpos
-            hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
+      have hstrictInterl_neg :=
+        strictInterl_tDeriv_of_posLeadingCoeff heps hneg_rr.2 hneg_pos (by simp_all)
       have hleft : StrictInterl p (tDeriv eps (-p)) := by
         simpa using StrictInterl.C_mul_left hstrictInterl_neg (by simp : (-1 : ℝ) ≠ 0)
-      have hboth : StrictInterl p (tDeriv eps p) := by
-        simpa [hrewrite] using StrictInterl.C_mul_right hleft (by simp : (-1 : ℝ) ≠ 0)
-      lia
-    · have hder : Interlaces p.derivative p :=
-        derivative_interlaces_of_natDegree_ne_zero hp (by lia)
-      have hp'_pos : HasPosLeadingCoeff p.derivative := hpos.derivative (by lia)
-      have hrewrite : tDeriv eps p = C 1 * p + C (-eps) * p.derivative := by
-        simp [tDeriv]
-        ring
-      have hT_pos : HasPosLeadingCoeff (C 1 * p + C (-eps) * p.derivative) := by
-        rw [← hrewrite]
-        exact hpos.tDeriv
-      have hdeg_lo : p.natDegree ≤ (C 1 * p + C (-eps) * p.derivative).natDegree := by
-        rw [← hrewrite, natDegree_tDeriv]
-      have hdeg_hi : (C 1 * p + C (-eps) * p.derivative).natDegree ≤ p.natDegree + 1 := by
-        rw [← hrewrite, natDegree_tDeriv]
-        lia
-      have hb_nonpos : ∀ r, p.IsRoot r → (C (-eps)).eval r ≤ 0 := by
-        intro r _
-        simp [eval_C]
-        linarith
-      rw [hrewrite]
-      exact
-        strictInterl_of_interlaces_evalCoeff_nonpos
-          hder hp'_pos hT_pos hdeg_lo hdeg_hi hb_nonpos
+      simpa [hrewrite] using
+        StrictInterl.C_mul_right hleft (by simp : (-1 : ℝ) ≠ 0)
+    · exact strictInterl_tDeriv_of_posLeadingCoeff heps hp hpos hdeg2
   · push Not at hdeg2
     have hdeg01 : p.natDegree = 0 ∨ p.natDegree = 1 := by lia
     rcases hdeg01 with h0 | h1
@@ -845,10 +763,8 @@ lemma continuous_coeff_iterateTDeriv (n : ℕ) (p : ℝ[X]) (i : ℕ) :
 coefficient as `eps → 0`. We record this as a `ContinuousAt` fact to keep the
 API lightweight for later root-continuity arguments. -/
 lemma continuousAt_coeff_iterateTDeriv_zero (n : ℕ) (p : ℝ[X]) (i : ℕ) :
-    ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).coeff i) 0 := by
-  have hcont0 : ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).coeff i) 0 :=
-    (continuous_coeff_iterateTDeriv n p i).continuousAt
-  lia
+    ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).coeff i) 0 :=
+  (continuous_coeff_iterateTDeriv n p i).continuousAt
 
 /-- For fixed `n`, `p`, and `x`, the evaluation
 `(iterateTDeriv eps n p).eval x` depends continuously on `eps`. This is the
@@ -863,10 +779,8 @@ lemma continuous_eval_iterateTDeriv (n : ℕ) (p : ℝ[X]) (x : ℝ) :
 /-- Evaluation at a fixed real point is continuous at `eps = 0` along the
 `iterateTDeriv` family. -/
 lemma continuousAt_eval_iterateTDeriv_zero (n : ℕ) (p : ℝ[X]) (x : ℝ) :
-    ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).eval x) 0 := by
-  have hcont0 : ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).eval x) 0 :=
-    (continuous_eval_iterateTDeriv n p x).continuousAt
-  lia
+    ContinuousAt (fun eps : ℝ => (iterateTDeriv eps n p).eval x) 0 :=
+  (continuous_eval_iterateTDeriv n p x).continuousAt
 
 /-- Joint continuity of the `iterateTDeriv` evaluation map in both the shift
 parameter `eps` and the evaluation point `x`. This is the local form needed to
@@ -881,11 +795,8 @@ lemma continuous_eval_iterateTDeriv_joint (n : ℕ) (p : ℝ[X]) :
 /-- Joint continuity of `eval (iterateTDeriv eps n p)` at the base point
 `(0, x)`. -/
 lemma continuousAt_eval_iterateTDeriv_joint_zero (n : ℕ) (p : ℝ[X]) (x : ℝ) :
-    ContinuousAt (fun z : ℝ × ℝ => (iterateTDeriv z.1 n p).eval z.2) (0, x) := by
-  have hcont0 :
-      ContinuousAt (fun z : ℝ × ℝ => (iterateTDeriv z.1 n p).eval z.2) (0, x) :=
-    (continuous_eval_iterateTDeriv_joint n p).continuousAt
-  lia
+    ContinuousAt (fun z : ℝ × ℝ => (iterateTDeriv z.1 n p).eval z.2) (0, x) :=
+  (continuous_eval_iterateTDeriv_joint n p).continuousAt
 
 /-- Epsilon-delta form of evaluation continuity at `eps = 0` for the
 `iterateTDeriv` family. -/
@@ -1265,6 +1176,34 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
         mul_nonpos_of_nonneg_of_nonpos (sq_nonneg ar) (le_of_lt h_neg)
       linarith [sq_pos_of_ne_zero ht_eval]
 
+private lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux
+    {eps : ℝ} {p : ℝ[X]} {a : ℝ} (hp : p.Splits) (ha : ¬ p.IsRoot a) :
+    (tDeriv eps p).rootMultiplicity a ≤ 1 := by
+  obtain hp₀ | hp₀ := eq_zero_or_pos p.natDegree
+  · simp [tDeriv_of_natDegree_eq_zero, rootMultiplicity_eq_zero ha, *]
+  by_contra h
+  push Not at h
+  have hT_ne : tDeriv eps p ≠ 0 := tDeriv_ne_zero <| by rintro rfl; simp at hp₀
+  have hT_root : (tDeriv eps p).IsRoot a := (rootMultiplicity_pos hT_ne).mp (by lia)
+  have hT_deriv_root : (tDeriv eps p).derivative.IsRoot a := by
+    have h2 : 2 ≤ (tDeriv eps p).rootMultiplicity a := by lia
+    have hdvd := pow_rootMultiplicity_dvd (tDeriv eps p) a
+    have hdvd2 : (X - C a) ^ 2 ∣ tDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
+    have hdvd1 : X - C a ∣ (tDeriv eps p).derivative := by
+      simpa only [Nat.reduceSub, pow_one] using
+        pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
+    exact dvd_iff_isRoot.mp hdvd1
+  have hpa : p.eval a ≠ 0 := ha
+  have hcond1 : p.eval a = eps * p.derivative.eval a := by
+    simpa only [tDeriv, Polynomial.IsRoot, eval_sub, eval_mul, eval_C, sub_eq_zero]
+      using hT_root
+  have hcond2 : p.derivative.eval a = eps * p.derivative.derivative.eval a := by
+    rw [derivative_tDeriv] at hT_deriv_root
+    simpa only [tDeriv, Polynomial.IsRoot, eval_sub, eval_mul, eval_C, sub_eq_zero]
+      using hT_deriv_root
+  have heq : p.derivative.derivative.eval a * p.eval a = p.derivative.eval a ^ 2 := by grind
+  linarith [deriv2_mul_lt_deriv_sq_at_non_root hp hp₀ hpa]
+
 /-- `T_ε` cannot create double roots at non-roots of a real-rooted polynomial.
 
 If `p` is real-rooted with `p(a) ≠ 0`, then `rootMultiplicity a (T_ε p) ≤ 1`.
@@ -1277,41 +1216,8 @@ lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot
     (heps : 0 < eps) (hp : p.Splits)
     (ha : ¬ p.IsRoot a) :
     (tDeriv eps p).rootMultiplicity a ≤ 1 := by
-  obtain hp₀ | hp₀ := eq_zero_or_pos p.natDegree
-  · simp [tDeriv_of_natDegree_eq_zero, rootMultiplicity_eq_zero ha, *]
-  by_contra h
-  push Not at h
-  -- rootMultiplicity ≥ 2 means (tDeriv eps p)(a) = 0 and (tDeriv eps p)'(a) = 0
-  have hT_ne : tDeriv eps p ≠ 0 := tDeriv_ne_zero <| by rintro rfl; simp at hp₀
-  have hT_root : (tDeriv eps p).IsRoot a :=
-    (rootMultiplicity_pos hT_ne).mp (by lia)
-  have hT_deriv_root : (tDeriv eps p).derivative.IsRoot a := by
-    have h2 : 2 ≤ (tDeriv eps p).rootMultiplicity a := by lia
-    have hdvd := pow_rootMultiplicity_dvd (tDeriv eps p) a
-    have hdvd2 : (X - C a) ^ 2 ∣ tDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
-    have hdvd1 : X - C a ∣ (tDeriv eps p).derivative := by
-      simpa only [Nat.reduceSub, pow_one] using
-        pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
-    exact dvd_iff_isRoot.mp hdvd1
-  -- Extract the two conditions
-  have hpa : p.eval a ≠ 0 := ha
-  have hcond1 : p.eval a = eps * p.derivative.eval a := by
-    have := hT_root
-    simp only [tDeriv, Polynomial.IsRoot, eval_sub, eval_mul, eval_C] at this
-    linarith
-  have hcond2 : p.derivative.eval a = eps * p.derivative.derivative.eval a := by
-    have := hT_deriv_root
-    have hT_deriv : (tDeriv eps p).derivative = p.derivative - C eps * p.derivative.derivative := by
-      simp [tDeriv, derivative_sub]
-    rw [hT_deriv] at this
-    simp only [Polynomial.IsRoot, eval_sub, eval_mul, eval_C] at this
-    linarith
-  -- From these: p''(a) · p(a) = p'(a)²
-  have heps_ne : eps ≠ 0 := ne_of_gt heps
-  have heq : p.derivative.derivative.eval a * p.eval a = p.derivative.eval a ^ 2 := by grind
-  -- But for real-rooted p at non-roots: p''(a) · p(a) < p'(a)²
-  have hlt := deriv2_mul_lt_deriv_sq_at_non_root hp hp₀ hpa
-  linarith
+  have _heps_ne : eps ≠ 0 := ne_of_gt heps
+  exact rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux hp ha
 
 /-- Backward chain: if `rootMultiplicity a (tDeriv eps p) ≥ 2` and `p` is real-rooted with
     `deg ≥ 1`, then `rootMultiplicity a p ≥ 2` and in fact equals
@@ -1344,38 +1250,8 @@ for arbitrary real `ε`. -/
 lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_all
     {eps : ℝ} {p : ℝ[X]} {a : ℝ}
     (hp : p.Splits) (ha : ¬ p.IsRoot a) :
-    (tDeriv eps p).rootMultiplicity a ≤ 1 := by
-  obtain hp₀ | hp₀ := eq_zero_or_pos p.natDegree
-  · simp [tDeriv_of_natDegree_eq_zero, rootMultiplicity_eq_zero ha, *]
-  by_contra h
-  push Not at h
-  have hT_ne : tDeriv eps p ≠ 0 := tDeriv_ne_zero <| by rintro rfl; simp at hp₀
-  have hT_root : (tDeriv eps p).IsRoot a :=
-    (rootMultiplicity_pos hT_ne).mp (by lia)
-  have hT_deriv_root : (tDeriv eps p).derivative.IsRoot a := by
-    have h2 : 2 ≤ (tDeriv eps p).rootMultiplicity a := by lia
-    have hdvd := pow_rootMultiplicity_dvd (tDeriv eps p) a
-    have hdvd2 : (X - C a) ^ 2 ∣ tDeriv eps p := (pow_dvd_pow _ h2).trans hdvd
-    have hdvd1 : X - C a ∣ (tDeriv eps p).derivative := by
-      simpa only [Nat.reduceSub, pow_one] using
-        pow_sub_one_dvd_derivative_of_pow_dvd hdvd2
-    exact dvd_iff_isRoot.mp hdvd1
-  have hpa : p.eval a ≠ 0 := ha
-  have hcond1 : p.eval a = eps * p.derivative.eval a := by
-    have := hT_root
-    simp only [tDeriv, Polynomial.IsRoot, eval_sub, eval_mul, eval_C] at this
-    linarith
-  have hcond2 : p.derivative.eval a = eps * p.derivative.derivative.eval a := by
-    have := hT_deriv_root
-    have hT_deriv :
-        (tDeriv eps p).derivative = p.derivative - C eps * p.derivative.derivative := by
-      simp [tDeriv, derivative_sub]
-    rw [hT_deriv] at this
-    simp only [Polynomial.IsRoot, eval_sub, eval_mul, eval_C] at this
-    linarith
-  have heq : p.derivative.derivative.eval a * p.eval a = p.derivative.eval a ^ 2 := by grind
-  have hlt := deriv2_mul_lt_deriv_sq_at_non_root hp hp₀ hpa
-  linarith
+    (tDeriv eps p).rootMultiplicity a ≤ 1 :=
+  rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux hp ha
 
 /-- Backward chain for an arbitrary nonzero derivative shift. -/
 lemma rootMultiplicity_eq_succ_of_tDeriv_ge_two_of_ne

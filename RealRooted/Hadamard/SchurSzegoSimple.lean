@@ -103,13 +103,8 @@ private theorem logDeriv_ineq (s : Multiset ℂ) {z : ℂ} (hz : 0 < z.im) (hs :
       rw [← hd] at ih'
       rw [hc]
       have hS : S.re * S.re + S.im * S.im = 0 := by
-        have h1 : 0 ≤ S.re * S.re + S.im * S.im := by
-          nlinarith [mul_self_nonneg S.re, mul_self_nonneg S.im]
-        have h2 : z.im * (S.re * S.re + S.im * S.im) ≤ 0 := by linarith
-        have := (mul_nonpos_iff.mp h2)
-        rcases this with ⟨h3, h4⟩ | ⟨h3, _⟩
-        · linarith
-        · linarith
+        nlinarith [mul_self_nonneg S.re, mul_self_nonneg S.im,
+          mul_nonneg hz.le (add_nonneg (mul_self_nonneg S.re) (mul_self_nonneg S.im))]
       have hre : S.re = 0 := by nlinarith [sq_nonneg S.re, sq_nonneg S.im]
       have him : S.im = 0 := by nlinarith [sq_nonneg S.re, sq_nonneg S.im]
       rw [hre, him]; linarith
@@ -345,11 +340,7 @@ namespace SchurSzegoAristotle
 
 private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     (derivative^[k] p).Splits := by
-  induction k with
-  | zero => simpa using hp
-  | succ k ih =>
-    rw [Function.iterate_succ_apply']
-    exact Polynomial.Splits.derivative ih
+  induction k <;> simp_all [Function.iterate_succ_apply', Polynomial.Splits.derivative]
 
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
@@ -425,7 +416,6 @@ private theorem gap_lemma {p : ℝ[X]} (hp : p.Splits) :
     interval_cases j <;> assumption
   | succ k ih =>
     intro hk h0 h1 j hj
-    -- show coeff k = 0 using derivatives of order k
     have hck : p.coeff k = 0 := by
       set h := derivative^[k] p with hh
       have hs : h.Splits := splits_iterate_derivative_real hp k
@@ -457,38 +447,10 @@ private theorem gap_lemma {p : ℝ[X]} (hp : p.Splits) :
     · have : j = k + 2 := by lia
       subst this; exact h1
 
-private theorem natDegree_reflect_one_le (a : ℝ) : (reflect 1 (X - C a)).natDegree ≤ 1 := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro i hi
-  have hi' : 1 < i := by exact_mod_cast hi
-  rw [coeff_reflect]
-  have : revAt 1 i = i := by
-    change revAtFun 1 i = i
-    unfold revAtFun
-    rw [ite_eq_right (Nat.not_le_of_gt hi')]
-  rw [this, coeff_sub, coeff_X, coeff_C]
-  simp [show i ≠ 0 by lia, show (1 : ℕ) ≠ i by lia]
-
 /-- `reflect` preserves splitting. -/
 private theorem splits_reflect {p : ℝ[X]} (hp : p.Splits) {N : ℕ} (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits := by
-  have key : ∀ (s : Multiset ℝ) (N : ℕ), Multiset.card s ≤ N →
-      (reflect N (s.map fun a => X - C a).prod).Splits := by
-    intro s
-    induction s using Multiset.induction_on with
-    | empty => intro N _; simp [reflect_one]
-    | cons a s ih =>
-      intro N hN
-      simp only [Multiset.card_cons] at hN
-      obtain ⟨M, rfl⟩ : ∃ M, N = M + 1 := ⟨N - 1, by lia⟩
-      simp only [Multiset.map_cons, Multiset.prod_cons]
-      rw [add_comm M 1, reflect_mul _ _ (natDegree_X_sub_C_le a)
-        (by rw [natDegree_multiset_prod_X_sub_C_eq_card]; lia)]
-      exact Splits.mul (Splits.of_natDegree_le_one (natDegree_reflect_one_le a)) (ih M (by lia))
-  rw [hp.eq_prod_roots, reflect_C_mul]
-  apply Splits.C_mul
-  apply key
-  rw [← hp.natDegree_eq_card_roots]; exact hN
+    (reflect N p).Splits :=
+  RealRooted.DegreeDropReversal.splits_reflect_of_splits hp hN
 
 end SchurSzegoAristotle
 
@@ -512,18 +474,18 @@ private noncomputable def apo (n : ℕ) (R W : ℝ[X]) : ℝ :=
   ∑ k ∈ range (n + 1), (-1 : ℝ) ^ k * ((k.factorial : ℝ) * ((n - k).factorial : ℝ)) *
     R.coeff k * W.coeff (n - k)
 
-private theorem apo_add_left (n : ℕ) (R R' W : ℝ[X]) : apo n (R + R') W = apo n R W + apo n R' W :=
-  by
+private theorem apo_add_left (n : ℕ) (R R' W : ℝ[X]) :
+    apo n (R + R') W = apo n R W + apo n R' W := by
   simp only [apo, coeff_add, ← sum_add_distrib]
   exact sum_congr rfl fun k _ => by ring
 
-private theorem apo_C_mul_left (n : ℕ) (c : ℝ) (R W : ℝ[X]) : apo n (C c * R) W = c * apo n R W :=
-  by
+private theorem apo_C_mul_left (n : ℕ) (c : ℝ) (R W : ℝ[X]) :
+    apo n (C c * R) W = c * apo n R W := by
   simp only [apo, coeff_C_mul, mul_sum]
   exact sum_congr rfl fun k _ => by ring
 
-private theorem apo_C_mul_right (n : ℕ) (c : ℝ) (R W : ℝ[X]) : apo n R (C c * W) = c * apo n R W :=
-  by
+private theorem apo_C_mul_right (n : ℕ) (c : ℝ) (R W : ℝ[X]) :
+    apo n R (C c * W) = c * apo n R W := by
   simp only [apo, coeff_C_mul, mul_sum]
   exact sum_congr rfl fun k _ => by ring
 
@@ -711,8 +673,7 @@ private theorem reflect_one_X_sub_C (d : ℝ) : reflect 1 (X - C d) = 1 - C d * 
   rw [reflect_sub, reflect_one_X, reflect_C, pow_one]
 
 private theorem natDegree_X_sub_C_pow_le (d : ℝ) (k : ℕ) : ((X - C d) ^ k).natDegree ≤ k := by
-  have := natDegree_pow_le (p := X - C d) (n := k)
-  rw [natDegree_X_sub_C, mul_one] at this; exact this
+  simp
 
 private theorem reflect_X_sub_C_pow (d : ℝ) (k : ℕ) : reflect k ((X - C d) ^ k) =
     (1 - C d * X) ^ k := by
@@ -800,7 +761,6 @@ private theorem p2_lemma {n k k' : ℕ} {a b : ℝ} (hab : a ≠ b) (hn : k + k'
     rw [taylor_eq_zero, reflect_eq_zero_iff, taylor_eq_zero] at h0; exact hW0 h0
   have hZn : Z.natDegree ≤ n := by
     rw [hZ, natDegree_taylor]; exact natDegree_reflect_le' (by rw [natDegree_taylor]; exact hWn)
-  -- Step 1: vanishing of the middle coefficients of `Z`.
   have hgap : ∀ j, k' ≤ j → j ≤ n - k → Z.coeff j = 0 := by
     intro j hj1 hj2
     set i := n - k - j with hi
@@ -830,7 +790,6 @@ private theorem p2_lemma {n k k' : ℕ} {a b : ℝ} (hab : a ≠ b) (hn : k + k'
     rcases h1 with h1 | h1
     · exact absurd h1.1 (by intro h2; exact hab h2.symm)
     · exact h1
-  -- Step 2: the gap lemma.
   rcases Nat.lt_or_ge (k' + 1) Z.natDegree with hdeg | hdeg
   · left
     have hlow := gap_lemma hZs k' hdeg (hgap k' le_rfl (by lia)) (hgap (k' + 1) (by lia)
@@ -882,9 +841,8 @@ private theorem natDegree_listProd_le (l : List (ℝ × ℕ)) (f : ℝ × ℕ �
     ((l.map fun p => (X - C (f p)) ^ p.2).prod).natDegree ≤ (l.map Prod.snd).sum := by
   induction l with
   | nil => simp
-  | cons p l ih =>
-    simp only [List.map_cons, List.prod_cons, List.sum_cons]
-    exact natDegree_mul_le.trans (add_le_add (natDegree_X_sub_C_pow_le _ _) ih)
+  | cons p l ih => simpa using
+      natDegree_mul_le.trans (add_le_add (natDegree_X_sub_C_pow_le (f p) p.2) ih)
 
 private theorem reflect_taylor_listProd (a1 : ℝ) (l : List (ℝ × ℕ)) (hl : ∀ p ∈ l, p.1 ≠ a1) :
     reflect (l.map Prod.snd).sum (taylor a1 (l.map fun p => (X - C p.1) ^ p.2).prod) =
@@ -909,6 +867,14 @@ private theorem prod_pow_ne_zero (a1 : ℝ) (l : List (ℝ × ℕ)) (hl : ∀ p 
     exact mul_ne_zero (pow_ne_zero _ (sub_ne_zero.mpr (hl p List.mem_cons_self).symm))
       (ih fun q hq => hl q (List.mem_cons_of_mem _ hq))
 
+private theorem not_apo_all_zero {n : ℕ} {W : ℝ[X]} (hW0 : W ≠ 0) (hWn : W.natDegree ≤ n)
+    (h : ∀ U : ℝ[X], U.natDegree ≤ n → apo n U W = 0) : False := by
+  have hd := dvd_of_apo_eq_zero (k := 0) (a := 0) (Nat.zero_le n) hWn
+    (fun U hU => by simpa using h U (by simpa using hU))
+  have := natDegree_le_of_dvd hd hW0
+  rw [natDegree_pow, C_0, sub_zero, natDegree_X] at this
+  lia
+
 /-- Statement of the lemma for lists of length at most `N`, by induction on `N`. -/
 private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ N → ∀ (n : ℕ) (W : ℝ[X]),
     (l.map Prod.fst).Nodup →
@@ -923,22 +889,12 @@ private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ 
     intro l hl n W _ _ hW0 _ hWn h
     have hl0 : l = [] := List.length_eq_zero_iff.mp (by lia)
     subst hl0
-    exfalso
-    have hd := dvd_of_apo_eq_zero (k := 0) (a := 0) (Nat.zero_le n) hWn
-      (fun U hU => by simpa using h U (by simpa using hU))
-    have := natDegree_le_of_dvd hd hW0
-    rw [natDegree_pow, C_0, sub_zero, natDegree_X] at this
-    lia
+    exact (not_apo_all_zero hW0 hWn fun U hU => by simpa using h U (by simpa using hU)).elim
   | succ N ih =>
     intro l0 hl0 n W hnd hsum hW0 hWs hWn h
     cases l0 with
     | nil =>
-      exfalso
-      have hd := dvd_of_apo_eq_zero (k := 0) (a := 0) (Nat.zero_le n) hWn
-        (fun U hU => by simpa using h U (by simpa using hU))
-      have := natDegree_le_of_dvd hd hW0
-      rw [natDegree_pow, C_0, sub_zero, natDegree_X] at this
-      lia
+      exact (not_apo_all_zero hW0 hWn fun U hU => by simpa using h U (by simpa using hU)).elim
     | cons p l =>
     simp only [List.length_cons] at hl0
     obtain ⟨a1, k1⟩ := p
@@ -958,7 +914,6 @@ private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ 
     · refine ⟨(a1, k1), List.mem_cons_self, dvd_of_apo_eq_zero (by lia) hWn fun U hU => ?_⟩
       rw [apo_kill (by lia) a1 hU hWn, ← hV, ← hW1, hW10]
       simp [apo]
-    -- apply the induction hypothesis to `W1`
     set L := l.map fun q : ℝ × ℕ => (1 / (q.1 - a1), q.2) with hL
     have hLfst : L.map Prod.fst = (l.map Prod.fst).map fun x => 1 / (x - a1) := by
       simp [hL, List.map_map, Function.comp_def]
@@ -1214,25 +1169,22 @@ namespace SchurSzegoAristotle
 local notation "ssc" => RealRooted.schurSzegoComp
 
 private theorem rootMultiplicity_le_natDegree' (p : ℝ[X])
-    (a : ℝ) : p.rootMultiplicity a ≤ p.natDegree := by
-  rw [← count_roots]; exact (Multiset.count_le_card _ _).trans (card_roots' p)
+    (a : ℝ) : p.rootMultiplicity a ≤ p.natDegree :=
+  Polynomial.rootMultiplicity_le_natDegree p a
 
 private theorem rootMultiplicity_C_mul' {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) (a : ℝ) :
     (C c * p).rootMultiplicity a = p.rootMultiplicity a := by
-  by_cases hp : p = 0
-  · simp [hp]
+  obtain rfl | hp := eq_or_ne p 0
+  · simp
   rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp), rootMultiplicity_C, zero_add]
 
 private theorem natDegree_derivative_eq' {p : ℝ[X]} {N : ℕ} (hp : p.natDegree = N + 1) :
     p.derivative.natDegree = N := by
-  rw [Polynomial.natDegree_derivative, hp]
-  lia
+  rw [Polynomial.natDegree_derivative, hp]; lia
 
 private theorem derivative_ne_zero' {p : ℝ[X]} {N : ℕ}
     (hp : p.natDegree = N + 1) : p.derivative ≠ 0 := by
-  apply Polynomial.derivative_ne_zero.mpr
-  rw [hp]
-  lia
+  exact Polynomial.derivative_ne_zero.mpr (by rw [hp]; lia)
 
 /-- Root multiplicities drop by one under differentiation of the composition. -/
 private theorem rootMultiplicity_ssc_derivative (N : ℕ) (P Q : ℝ[X]) {r : ℝ}
