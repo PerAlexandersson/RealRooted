@@ -529,188 +529,6 @@ theorem eval_mul_pos_of_forall_not_isRoot_Icc
   intro x hx
   exact (Polynomial.not_isRoot_iff_eval_ne_zero p x).mp (hno x hx)
 
-/-- If `g` is root-free on a compact interval, then the parameters for which
-`f + C μ * g` has a root in the interval are bounded in absolute value. -/
-theorem exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
-    ∃ K : ℝ, 0 < K ∧
-      ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| ≤ K := by
-  let ρ : ℝ → ℝ := fun z => - f.eval z / g.eval z
-  have hg_eval_ne : ∀ z ∈ Set.Icc a b, g.eval z ≠ 0 :=
-    fun z hz => (Polynomial.not_isRoot_iff_eval_ne_zero g z).mp (hg_no z hz)
-  have hρ_cont : ContinuousOn ρ (Set.Icc a b) := by
-    have hf_cont : ContinuousOn (fun z : ℝ => - f.eval z) (Set.Icc a b) :=
-      f.continuous.neg.continuousOn
-    have hg_cont : ContinuousOn (fun z : ℝ => g.eval z) (Set.Icc a b) :=
-      g.continuous.continuousOn
-    exact hf_cont.div₀ hg_cont hg_eval_ne
-  obtain ⟨c, _hc, hcmax⟩ :=
-    isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hab) hρ_cont.abs
-  refine ⟨|ρ c| + 1, by positivity, ?_⟩
-  intro μ z hz hroot
-  have hμ_eq : μ = ρ z := by
-    have hzero : f.eval z + μ * g.eval z = 0 := by
-      simpa [Polynomial.IsRoot.def, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-        using hroot
-    have hgz : g.eval z ≠ 0 := hg_eval_ne z hz
-    have hmul : μ * g.eval z = - f.eval z := by linarith
-    calc
-      μ = (μ * g.eval z) / g.eval z := by field_simp [hgz]
-      _ = - f.eval z / g.eval z := by rw [hmul]
-  calc
-    |μ| = |ρ z| := by rw [hμ_eq]
-    _ ≤ |ρ c| := hcmax hz
-    _ ≤ |ρ c| + 1 := by linarith
-
-/-- If the right polynomial is root-free on a compact interval, then all
-sufficiently large positive parameters dominate the right-family crossings in
-the interval and give a root-free reciprocal family. -/
-theorem exists_large_threshold_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
-    ∃ K : ℝ, 0 < K ∧
-      ∀ ν : ℝ, K < ν →
-        (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| < ν) ∧
-        ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
-  obtain ⟨K, hK_pos, hK_bound⟩ :=
-    exists_forall_isRoot_add_right_abs_le_of_right_not_isRoot_Icc hab hg_no
-  refine ⟨K, hK_pos, ?_⟩
-  intro ν hKν
-  constructor
-  · intro μ z hz hμ_root
-    have hμ_abs_le : |μ| ≤ K := hK_bound μ z hz hμ_root
-    linarith
-  · intro z hz hroot
-    have hν_pos : 0 < ν := lt_trans hK_pos hKν
-    have hscaled : (f + C ν * g).IsRoot z :=
-      (add_right_isRoot_iff_add_left_inv (f := f) (g := g)
-        (μ := ν) (x := z) (ne_of_gt hν_pos)).mpr hroot
-    have hν_abs_le : |ν| ≤ K := hK_bound ν z hz hscaled
-    rw [abs_of_pos hν_pos] at hν_abs_le
-    linarith
-
-/-- If the right polynomial is root-free on a compact interval, then there is a
-large parameter which dominates all right-family crossings in the interval and
-whose reciprocal family is root-free there. -/
-theorem exists_large_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hg_no : ∀ z ∈ Set.Icc a b, ¬ g.IsRoot z) :
-    ∃ ν : ℝ, 0 < ν ∧
-      (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → |μ| < ν) ∧
-      ∀ z ∈ Set.Icc a b, ¬ (g + C ν⁻¹ * f).IsRoot z := by
-  obtain ⟨K, hK_pos, hK⟩ :=
-    exists_large_threshold_add_left_inv_not_isRoot_Icc_of_right_not_isRoot_Icc hab hg_no
-  refine ⟨K + 1, by positivity, ?_⟩
-  exact hK (K + 1) (by linarith)
-
-/-- If `f` is root-free on a compact interval, then any parameter for which
-`f + C μ * g` has a root in the interval is bounded away from zero. -/
-theorem exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
-    ∃ m : ℝ, 0 < m ∧
-      ∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → m ≤ |μ| := by
-  have hF_cont : ContinuousOn (fun z : ℝ => |f.eval z|) (Set.Icc a b) :=
-    f.continuous.continuousOn.abs
-  obtain ⟨c, hc, hcmin⟩ :=
-    isCompact_Icc.exists_isMinOn (Set.nonempty_Icc.mpr hab) hF_cont
-  have hc_pos : 0 < |f.eval c| := by
-    have hne : f.eval c ≠ 0 :=
-      (Polynomial.not_isRoot_iff_eval_ne_zero f c).mp (hf_no c hc)
-    exact abs_pos.mpr hne
-  have hG_cont : ContinuousOn (fun z : ℝ => |g.eval z|) (Set.Icc a b) :=
-    g.continuous.continuousOn.abs
-  obtain ⟨d, _hd, hdmax⟩ :=
-    isCompact_Icc.exists_isMaxOn (Set.nonempty_Icc.mpr hab) hG_cont
-  refine ⟨|f.eval c| / (|g.eval d| + 1), by positivity, ?_⟩
-  intro μ z hz hroot
-  have hzero : f.eval z + μ * g.eval z = 0 := by
-    simpa [Polynomial.IsRoot.def, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C]
-      using hroot
-  have hf_eq : f.eval z = - (μ * g.eval z) := by linarith
-  have h_abs_eq : |f.eval z| = |μ| * |g.eval z| := by
-    rw [hf_eq]
-    simp [abs_mul]
-  have hmin_le : |f.eval c| ≤ |μ| * |g.eval z| := by simpa [h_abs_eq] using hcmin hz
-  have hgz_le : |g.eval z| ≤ |g.eval d| + 1 := by
-    have hmax : |g.eval z| ≤ |g.eval d| := hdmax hz
-    linarith
-  have hden_pos : 0 < |g.eval d| + 1 := by positivity
-  rw [div_le_iff₀ hden_pos]
-  exact le_trans hmin_le (mul_le_mul_of_nonneg_left hgz_le (abs_nonneg μ))
-
-/-- If the left polynomial is root-free on a compact interval, then all
-sufficiently small positive parameters give a root-free right-family member and
-are strictly below the absolute value of every crossing parameter in the
-interval. -/
-theorem exists_small_threshold_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
-    ∃ m : ℝ, 0 < m ∧
-      ∀ ν : ℝ, 0 < ν → ν < m →
-        (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → ν < |μ|) ∧
-        ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
-  obtain ⟨m, hm_pos, hm_bound⟩ :=
-    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
-  refine ⟨m, hm_pos, ?_⟩
-  intro ν hν_pos hνm
-  constructor
-  · intro μ z hz hroot
-    have hm_le : m ≤ |μ| := hm_bound μ z hz hroot
-    linarith
-  · intro z hz hroot
-    have hm_le : m ≤ |ν| := hm_bound ν z hz hroot
-    rw [abs_of_pos hν_pos] at hm_le
-    linarith
-
-/-- If the left polynomial is root-free on a compact interval, then there is a
-small positive parameter whose right-family member is root-free on the interval,
-and which is strictly below the absolute value of every crossing parameter in
-the interval. -/
-theorem exists_small_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
-    ∃ ν : ℝ, 0 < ν ∧
-      (∀ μ : ℝ, ∀ z ∈ Set.Icc a b, (f + C μ * g).IsRoot z → ν < |μ|) ∧
-      ∀ z ∈ Set.Icc a b, ¬ (f + C ν * g).IsRoot z := by
-  obtain ⟨m, hm_pos, hm⟩ :=
-    exists_small_threshold_add_right_not_isRoot_Icc_of_left_not_isRoot_Icc hab hf_no
-  have hm_half_pos : 0 < m / 2 := by positivity
-  have hm_half_lt : m / 2 < m := by linarith
-  refine ⟨m / 2, hm_half_pos, ?_⟩
-  exact hm (m / 2) hm_half_pos hm_half_lt
-
-/-- If `f` is root-free on a compact interval, then every sufficiently small
-right-family perturbation `f + C μ * g` is root-free on that interval. -/
-theorem exists_forall_abs_lt_not_isRoot_add_right_of_left_not_isRoot_Icc
-    {f g : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (hf_no : ∀ z ∈ Set.Icc a b, ¬ f.IsRoot z) :
-    ∃ ε : ℝ, 0 < ε ∧
-      ∀ μ : ℝ, |μ| < ε → ∀ z ∈ Set.Icc a b, ¬ (f + C μ * g).IsRoot z := by
-  obtain ⟨m, hm_pos, hm_bound⟩ :=
-    exists_forall_isRoot_add_right_le_abs_of_left_not_isRoot_Icc hab hf_no
-  refine ⟨m, hm_pos, ?_⟩
-  intro μ hμ z hz hroot
-  exact (not_le_of_gt hμ) (hm_bound μ z hz hroot)
-
-/-- Specialization of `eval_endpoint_pos_of_forall_ne_zero` to the affine
-left-family `C t * f + g` used throughout the Chudnovsky--Seymour route. -/
-theorem eval_endpoint_pos_left_family
-    {f g : ℝ[X]} {a t₀ t₁ : ℝ}
-    (hle : t₀ ≤ t₁)
-    (hne : ∀ t ∈ Set.Icc t₀ t₁, ¬ (C t * f + g).IsRoot a) :
-    0 < (C t₀ * f + g).eval a * (C t₁ * f + g).eval a := by
-  have hcont : ContinuousOn (fun t => (C t * f + g).eval a) (Set.Icc t₀ t₁) := by
-    have hrw : (fun t : ℝ => (C t * f + g).eval a)
-        = fun t : ℝ => t * f.eval a + g.eval a := by
-      funext t
-      simp
-    rw [hrw]
-    fun_prop
-  exact eval_endpoint_pos_of_forall_ne_zero (p := fun t => C t * f + g) hle hcont
-    (fun t ht => hne t ht)
-
 /-- Fixed-threshold no-crossing constancy of the lower root count. -/
 theorem card_roots_filter_le_eq_of_no_isRoot_Ioc
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
@@ -762,25 +580,6 @@ theorem card_roots_filter_le_and_gt_mono_of_le
       (p.roots.filter (b < ·)).card ≤ (p.roots.filter (a < ·)).card :=
   ⟨card_roots_filter_le_mono_of_le hab, card_roots_filter_gt_antitone_of_le hab⟩
 
-/-- Strict lower-count monotonicity and upper-count antitonicity. -/
-theorem card_roots_filter_le_and_gt_mono_of_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b) :
-    (p.roots.filter (· ≤ a)).card ≤ (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (b < ·)).card ≤ (p.roots.filter (a < ·)).card :=
-  card_roots_filter_le_and_gt_mono_of_le (le_of_lt hab)
-
-/-- Strict lower threshold root-count monotonicity. -/
-theorem card_roots_filter_le_mono_of_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b) :
-    (p.roots.filter (· ≤ a)).card ≤ (p.roots.filter (· ≤ b)).card :=
-  card_roots_filter_le_mono_of_le (le_of_lt hab)
-
-/-- Strict upper threshold root-count antitonicity. -/
-theorem card_roots_filter_gt_antitone_of_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b) :
-    (p.roots.filter (b < ·)).card ≤ (p.roots.filter (a < ·)).card :=
-  card_roots_filter_gt_antitone_of_le (le_of_lt hab)
-
 /-- If `p` has no root in `(a, b]`, that half-open window has root count zero. -/
 theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
@@ -790,27 +589,6 @@ theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc
   have hcross := card_roots_filter_le_eq_of_no_isRoot_Ioc (p := p) hab h
   rw [hcross] at hdec
   exact Nat.add_left_cancel (hdec.trans (Nat.add_zero _).symm)
-
-/-- Strict-interval wrapper for lower root-count constancy. -/
-theorem card_roots_filter_le_eq_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card :=
-  card_roots_filter_le_eq_of_no_isRoot_Ioc (le_of_lt hab) h
-
-/-- Strict-interval wrapper for upper root-count constancy. -/
-theorem card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  card_roots_filter_gt_eq_of_no_isRoot_Ioc (le_of_lt hab) h
-
-/-- Strict-interval wrapper for zero root count in `(a, b]`. -/
-theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 :=
-  card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc (le_of_lt hab) h
 
 /-- If the only root of `p` in `(a, b]` is a simple root `c`, then that
 window has root count one.  The hypothesis `p.roots.count c = 1` records
@@ -826,36 +604,6 @@ theorem card_roots_filter_Ioc_eq_one_of_count_eq_one_of_no_isRoot_ne
   by_contra hzc
   exact hno z haz hzb hzc ((Polynomial.mem_roots hp).mp hz)
 
-/-- Bundled strict-interval lower/upper root-count constancy. -/
-theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab h,
-    card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h⟩
-
-/-- Bundled strict-interval lower/upper/window root-count constancy. -/
-theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt
-    {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card ∧
-        (p.roots.filter (fun x => a < x ∧ x ≤ b)).card = 0 :=
-  ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab h,
-    card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab h,
-    card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt hab h⟩
-
-/-- Non-strict bundled lower/upper root-count constancy across a root-free
-window. -/
-theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc
-    {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
-    (h : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ b)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (b < ·)).card :=
-  ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc hab h,
-    card_roots_filter_gt_eq_of_no_isRoot_Ioc hab h⟩
-
 /-- Non-strict bundled lower/upper/window root-count constancy. -/
 theorem card_roots_filter_all_eq_of_no_isRoot_Ioc
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b)
@@ -866,72 +614,6 @@ theorem card_roots_filter_all_eq_of_no_isRoot_Ioc
   ⟨card_roots_filter_le_eq_of_no_isRoot_Ioc hab h,
     card_roots_filter_gt_eq_of_no_isRoot_Ioc hab h,
     card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc hab h⟩
-
-/-- The half-open window count is the difference of lower-threshold counts. -/
-theorem card_roots_filter_Ioc_eq_sub
-    {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ b)).card
-      = (p.roots.filter (· ≤ b)).card - (p.roots.filter (· ≤ a)).card :=
-  Nat.eq_sub_of_add_eq
-    ((Nat.add_comm _ _).trans (card_roots_filter_le_add_card_Ioc_eq (p := p) hab))
-
-/-- Transitive bundled strict-interval root-count constancy across two
-adjacent root-free windows. -/
-theorem card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ c)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card := by
-  constructor
-  · exact
-      (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_le_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
-  · exact
-      (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hab hab_no).trans
-        (card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt hbc hbc_no)
-
-/-- Transitive bundled strict-interval lower/upper/window root-count constancy
-across two adjacent root-free windows. -/
-theorem card_roots_filter_all_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ c)).card ∧
-      (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card ∧
-        (p.roots.filter (fun x => a < x ∧ x ≤ c)).card = 0 := by
-  refine card_roots_filter_all_eq_of_no_isRoot_Ioc_lt (hab.trans hbc) ?_
-  intro x hax hxc
-  rcases le_or_gt x b with hxb | hbx
-  · exact hab_no x hax hxb
-  · exact hbc_no x hbx hxc
-
-/-- Lower root-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_le_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (· ≤ a)).card = (p.roots.filter (· ≤ c)).card :=
-  (card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).1
-
-/-- Upper root-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_gt_eq_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (a < ·)).card = (p.roots.filter (c < ·)).card :=
-  (card_roots_filter_le_and_gt_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).2
-
-/-- Window-count projection from the transitive bundled theorem. -/
-theorem card_roots_filter_Ioc_eq_zero_of_no_isRoot_Ioc_lt_trans
-    {p : ℝ[X]} {a b c : ℝ} (hab : a < b) (hbc : b < c)
-    (hab_no : ∀ x, a < x → x ≤ b → ¬ p.IsRoot x)
-    (hbc_no : ∀ x, b < x → x ≤ c → ¬ p.IsRoot x) :
-    (p.roots.filter (fun x => a < x ∧ x ≤ c)).card = 0 :=
-  (card_roots_filter_all_eq_of_no_isRoot_Ioc_lt_trans
-    hab hbc hab_no hbc_no).2.2
 
 /-!
 ### Closed-segment and two-polynomial count-stability wrappers
@@ -1033,26 +715,6 @@ theorem card_roots_filter_gt_bound_of_no_isRoot_Ioc
     ← card_roots_filter_gt_eq_of_no_isRoot_Ioc hab hg]
   exact h
 
-/-- Transitive pairwise lower-threshold difference stability across two adjacent
-root-free windows. -/
-theorem card_roots_filter_le_sub_eq_of_no_isRoot_Ioc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a < x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a < x → x ≤ c → ¬ g.IsRoot x) :
-    ((f.roots.filter (· ≤ a)).card : ℤ) - (g.roots.filter (· ≤ a)).card
-      = ((f.roots.filter (· ≤ c)).card : ℤ) - (g.roots.filter (· ≤ c)).card :=
-  card_roots_filter_le_sub_eq_of_no_isRoot_Ioc (hab.trans hbc) hf hg
-
-/-- Transitive pairwise upper-threshold difference stability across two adjacent
-root-free windows. -/
-theorem card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a < x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a < x → x ≤ c → ¬ g.IsRoot x) :
-    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card
-      = ((f.roots.filter (c < ·)).card : ℤ) - (g.roots.filter (c < ·)).card :=
-  card_roots_filter_gt_sub_eq_of_no_isRoot_Ioc (hab.trans hbc) hf hg
-
 /-!
 ### Closed-segment and bundled count-stability wrappers
 
@@ -1140,46 +802,6 @@ theorem card_roots_filter_le_and_gt_bound_of_no_isRoot_Icc
         ((g.roots.filter (b < ·)).card : ℤ) - (f.roots.filter (b < ·)).card ≤ 1) :=
   ⟨card_roots_filter_le_bound_of_no_isRoot_Icc hab hf hg hle,
     card_roots_filter_gt_bound_of_no_isRoot_Icc hab hf hg hgt⟩
-
-/-- Transitive lower-threshold bound transport across adjacent root-free windows. -/
-theorem card_roots_filter_le_bound_of_no_isRoot_Ioc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a < x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a < x → x ≤ c → ¬ g.IsRoot x)
-    (h : ((f.roots.filter (· ≤ a)).card : ℤ) - (g.roots.filter (· ≤ a)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ a)).card : ℤ) - (f.roots.filter (· ≤ a)).card ≤ 1) :
-    ((f.roots.filter (· ≤ c)).card : ℤ) - (g.roots.filter (· ≤ c)).card ≤ 1 ∧
-      ((g.roots.filter (· ≤ c)).card : ℤ) - (f.roots.filter (· ≤ c)).card ≤ 1 :=
-  card_roots_filter_le_bound_of_no_isRoot_Ioc (hab.trans hbc) hf hg h
-
-/-- Transitive upper-threshold bound transport across adjacent root-free windows. -/
-theorem card_roots_filter_gt_bound_of_no_isRoot_Ioc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a < x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a < x → x ≤ c → ¬ g.IsRoot x)
-    (h : ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card ≤ 1 ∧
-      ((g.roots.filter (a < ·)).card : ℤ) - (f.roots.filter (a < ·)).card ≤ 1) :
-    ((f.roots.filter (c < ·)).card : ℤ) - (g.roots.filter (c < ·)).card ≤ 1 ∧
-      ((g.roots.filter (c < ·)).card : ℤ) - (f.roots.filter (c < ·)).card ≤ 1 :=
-  card_roots_filter_gt_bound_of_no_isRoot_Ioc (hab.trans hbc) hf hg h
-
-/-- Transitive closed-segment pairwise lower-threshold difference stability. -/
-theorem card_roots_filter_le_sub_eq_of_no_isRoot_Icc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a ≤ x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a ≤ x → x ≤ c → ¬ g.IsRoot x) :
-    ((f.roots.filter (· ≤ a)).card : ℤ) - (g.roots.filter (· ≤ a)).card
-      = ((f.roots.filter (· ≤ c)).card : ℤ) - (g.roots.filter (· ≤ c)).card :=
-  card_roots_filter_le_sub_eq_of_no_isRoot_Icc (hab.trans hbc) hf hg
-
-/-- Transitive closed-segment pairwise upper-threshold difference stability. -/
-theorem card_roots_filter_gt_sub_eq_of_no_isRoot_Icc_trans
-    {f g : ℝ[X]} {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c)
-    (hf : ∀ x, a ≤ x → x ≤ c → ¬ f.IsRoot x)
-    (hg : ∀ x, a ≤ x → x ≤ c → ¬ g.IsRoot x) :
-    ((f.roots.filter (a < ·)).card : ℤ) - (g.roots.filter (a < ·)).card
-      = ((f.roots.filter (c < ·)).card : ℤ) - (g.roots.filter (c < ·)).card :=
-  card_roots_filter_gt_sub_eq_of_no_isRoot_Icc (hab.trans hbc) hf hg
 
 /-!
 ### Open-interval sample invariance

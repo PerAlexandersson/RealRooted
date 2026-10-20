@@ -233,13 +233,6 @@ lemma eval_mul_right_eq_of_isRoot {f g a b : ℝ[X]} {r : ℝ}
     _ = (b.eval r * g.eval r) * g.eval r := by simp [hf0]
     _ = b.eval r * (g.eval r) ^ 2 := by ring
 
-lemma eval_mul_right_nonpos_of_isRoot {f g a b : ℝ[X]} {r : ℝ}
-    (hr : f.IsRoot r) (hb : b.eval r ≤ 0) :
-    (a * f + b * g).eval r * g.eval r ≤ 0 := by
-  rw [eval_mul_right_eq_of_isRoot hr]
-  have hsq : 0 ≤ (g.eval r) ^ 2 := sq_nonneg (g.eval r)
-  exact mul_nonpos_of_nonpos_of_nonneg hb hsq
-
 lemma eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot
     {f g a b : ℝ[X]} {r : ℝ}
     (hr : f.IsRoot r) (hb : b.eval r < 0) (hg : ¬ g.IsRoot r) :

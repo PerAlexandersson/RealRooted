@@ -447,12 +447,4 @@ theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
       (roots_nonpos_of_hasNonnegCoeffs hfnn)
       (roots_nonpos_of_hasNonnegCoeffs hgnn)).toInterl
 
-/-- Multiplication by `X` on both sides is an equivalence on zero-aware
-interlacing for polynomials with nonnegative coefficients. -/
-theorem Interl.mul_X_both_iff_of_nonneg {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    Interl f g ↔ Interl (X * f) (X * g) :=
-  ⟨fun h => h.mul_X_both_of_nonneg hfnn hgnn,
-    fun h => h.of_mul_X_both_of_nonneg hfnn hgnn⟩
-
 end RealRooted

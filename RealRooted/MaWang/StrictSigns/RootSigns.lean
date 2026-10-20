@@ -83,36 +83,6 @@ lemma isRoot_of_eval_nonneg_of_odd_countP_gt
   rw [Polynomial.IsRoot.def]
   grind
 
-/-- A strictly negative value occurs only when an odd number of roots lie
-strictly to the right. -/
-lemma odd_countP_gt_of_eval_neg
-    {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
-    {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
-    (hs : F.eval s < 0) :
-    Odd (ts.countP (s < ·)) := by
-  rcases Nat.even_or_odd (ts.countP (s < ·)) with heven | hodd
-  · exfalso
-    exact (show ¬ F.IsRoot s from by
-      intro hroot
-      simp_all) <|
-      isRoot_of_eval_nonpos_of_even_countP_gt hF_splits hF_pos hts_eq (le_of_lt hs) heven
-  · lia
-
-/-- A strictly positive value occurs only when an even number of roots lie
-strictly to the right. -/
-lemma even_countP_gt_of_eval_pos
-    {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
-    {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) {s : ℝ}
-    (hs : 0 < F.eval s) :
-    Even (ts.countP (s < ·)) := by
-  rcases Nat.even_or_odd (ts.countP (s < ·)) with heven | hodd
-  · lia
-  · exfalso
-    exact (show ¬ F.IsRoot s from by
-      intro hroot
-      simp_all) <|
-      isRoot_of_eval_nonneg_of_odd_countP_gt hF_splits hF_pos hts_eq (le_of_lt hs) hodd
-
 /-- In an interlacing layout, every consecutive pair on the right-hand list has
 some left-hand element weakly between them. -/
 lemma exists_mem_between_of_listInterlaces_consecutive :
@@ -294,40 +264,6 @@ lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
                       ((ss'.map (fun x => r₁ - x)).prod *
                         (ss'.map (fun x => r₂ - x)).prod) := by simp [mul_assoc, mul_left_comm]
                 _ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hs_factor_nonneg htail_nonpos
-
-/-- At consecutive roots of the right-hand polynomial in an interlacing layout,
-the interlacing polynomial has opposite-or-zero signs. -/
-lemma eval_mul_eval_nonpos_of_interlacing_heads {g : ℝ[X]}
-    (hg_splits : g.Splits)
-    {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ}
-    (hss_eq : (↑ss : Multiset ℝ) = g.roots)
-    (hint : ListInterlaces ss (r₁ :: r₂ :: rest)) :
-    g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
-      eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
-  have hprod_nonpos :
-      (ss.map (fun x => r₁ - x)).prod *
-        (ss.map (fun x => r₂ - x)).prod ≤
-      0 :=
-    listInterlaces_prod_mul_prod_nonpos_at_heads hint
-  have hlead_nonneg : 0 ≤ g.leadingCoeff * g.leadingCoeff := by
-    simpa [pow_two] using sq_nonneg g.leadingCoeff
-  have hprod_r₁ :
-      ((↑ss : Multiset ℝ).map (fun x => r₁ - x)).prod =
-        (ss.map (fun x => r₁ - x)).prod := rfl
-  have hprod_r₂ :
-      ((↑ss : Multiset ℝ).map (fun x => r₂ - x)).prod =
-        (ss.map (fun x => r₂ - x)).prod := rfl
-  have hfactor :
-      (g.leadingCoeff * (ss.map (fun x => r₁ - x)).prod) *
-          (g.leadingCoeff * (ss.map (fun x => r₂ - x)).prod) =
-        (g.leadingCoeff * g.leadingCoeff) *
-          (((ss.map (fun x => r₁ - x)).prod) *
-            ((ss.map (fun x => r₂ - x)).prod)) := by
-    ring
-  rw [hprod_r₁, hprod_r₂]
-  rw [hfactor]
-  exact mul_nonpos_of_nonneg_of_nonpos hlead_nonneg hprod_nonpos
 
 /-- At any consecutive pair in a sorted interlacing layout, the interlacing
 polynomial has opposite-or-zero signs. -/

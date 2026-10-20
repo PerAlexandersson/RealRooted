@@ -13,39 +13,6 @@ noncomputable section
 
 namespace RealRooted.MaWangInternal
 
-theorem exists_signInterleaving {F : ℝ[X]} :
-    ∀ (rs : List ℝ),
-      rs.Pairwise (· ≤ ·) →
-      (∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ ≤ 0) →
-      ∃ us : List ℝ, us.length = rs.length - 1 ∧
-        ListInterlaces us rs ∧
-        (∀ u ∈ us, F.IsRoot u)
-  | [], _, _ => by
-      refine ⟨[], by simp, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-  | [_], _, _ => by
-      refine ⟨[], by simp, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-  | r₁ :: r₂ :: rest, hrs_sorted, hsign => by
-      have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hrs_sorted (by simp)
-      have hprod : F.eval r₁ * F.eval r₂ ≤ 0 := by simpa using hsign [] rfl
-      obtain ⟨u, hu₁, hu₂, hu_root⟩ :=
-        exists_isRoot_between_of_eval_mul_nonpos hr₁r₂ hprod
-      have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
-        (List.pairwise_cons.mp hrs_sorted).2
-      obtain ⟨us, hus_len, hus_int, hus_roots⟩ :=
-        exists_signInterleaving (F := F) (r₂ :: rest) htail_sorted
-          (fun pre {a b tail} hEq => by
-            grind)
-      refine ⟨u :: us, ?_, ?_, ?_⟩
-      · simp [hus_len]
-      · exact ⟨hu₁, hu₂, hus_int⟩
-      · simp_all
-
 /-- Greedy ordered-matching lemma for the differ-by-1 case. The hypotheses say:
 after consuming the first `pre.length` left-hand points, the remaining right-hand
 points all lie to the right of the current left-hand point, and one of the

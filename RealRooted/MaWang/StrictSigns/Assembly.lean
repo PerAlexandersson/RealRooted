@@ -261,22 +261,6 @@ lemma eval_sign_of_interlaces_root
         have hg₂_pos : 0 < g.eval r₂ := hnext.1 heven_rest
         nlinarith
 
-lemma mul_nonpos_of_mul_nonpos_of_mul_neg {a b c d : ℝ}
-    (hab : a * b ≤ 0) (hcd : c * d ≤ 0) (hbd : b * d < 0) :
-    a * c ≤ 0 := by
-  have hb_ne : b ≠ 0 := by
-    intro hb0
-    simp [hb0] at hbd
-  rcases lt_or_gt_of_ne hb_ne with hb | hb
-  · have hd : 0 < d := by nlinarith
-    have ha : 0 ≤ a := by nlinarith
-    have hc : c ≤ 0 := by nlinarith
-    nlinarith
-  · have hd : d < 0 := by nlinarith
-    have ha : a ≤ 0 := by nlinarith
-    have hc : 0 ≤ c := by nlinarith
-    nlinarith
-
 lemma isRoot_of_eq_max_countP_le_of_sign
     {g F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
     {pre : List ℝ} {r : ℝ} {rest : List ℝ}

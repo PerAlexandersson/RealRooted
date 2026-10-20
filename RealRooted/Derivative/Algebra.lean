@@ -17,12 +17,6 @@ The following lemmas restate a handful of `Polynomial` facts about derivatives
 using API that is stable across the Mathlib versions this file is built against.
 -/
 
-/-- Exact `natDegree` of a derivative over `ℝ` (a characteristic-zero field). -/
-@[deprecated "Use `Polynomial.natDegree_derivative`." (since := "2026-10-05")]
-lemma natDegree_derivative_eq (p : ℝ[X]) :
-    p.derivative.natDegree = p.natDegree - 1 :=
-  p.natDegree_derivative
-
 @[deprecated Polynomial.Splits.of_natDegree_eq_zero (since := "2026-10-06")]
 alias splits_of_natDegree_eq_zero := Polynomial.Splits.of_natDegree_eq_zero
 
