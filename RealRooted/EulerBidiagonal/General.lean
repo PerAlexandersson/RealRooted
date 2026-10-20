@@ -15,7 +15,8 @@ leading coefficient and simple negative roots, `u + vk > 0` on the degrees `k �
 comparison defect `comparisonDefect κ a b u v σ` is negative for `σ ≤ 0` (implied by
 `2u ≥ (a + b + 1)v`, `comparisonDefect_neg_of_two_mul_u_ge`), then so does `generalStep q`, of
 one higher degree.  The proof evaluates the identity
-`q(σ)(T q)(σ) = κσ²(q q'' − q'²)(σ) + comparisonDefect(σ) q(σ)²` at the zeros `σ` of the comparison
+`q(σ)(T q)(σ) = κσ²(q q'' − q'²)(σ) + comparisonDefect(σ) q(σ)²`
+at the zeros `σ` of the comparison
 polynomial `generalComparison q = 2κXq' + (κ(a+b+1) + vX) q` and counts sign changes.  This step
 covers the OEIS rows A156289, A166960, A166961, A166962 and A166972 (#1074).
 -/
@@ -158,7 +159,8 @@ theorem eval_mul_generalStep_of_generalComparison_eval_eq_zero
   linarith
 
 /-- The parameter inequality implies the quadratic condition on all nonpositive inputs. -/
-theorem comparisonDefect_neg_of_two_mul_u_ge (κ a b u v : ℝ) (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
+theorem comparisonDefect_neg_of_two_mul_u_ge
+    (κ a b u v : ℝ) (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
     (hu : 2 * u ≥ (a + b + 1) * v) :
     ∀ σ ≤ 0, comparisonDefect κ a b u v σ < 0 := by
   intro σ hσ
@@ -184,6 +186,14 @@ noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
+private lemma eval_zero_pos_of_negativeSimple {q : ℝ[X]} (hq : IsNegativeSimple q) :
+    0 < q.eval 0 := by
+  have hmem : (0 : ℝ) ∉ q.roots := fun h => lt_irrefl _ (hq.2.2.2.2 0 h)
+  have hcount : q.roots.countP (fun x => 0 < x) = 0 :=
+    Multiset.countP_eq_zero.mpr fun x hx hpos =>
+      (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
+  simpa [hcount] using eval_sign hq.2.1 hq.2.2.2.1 0 hmem
+
 private lemma derivative_eval_mul_neg_of_adjacent_roots
     {q : ℝ[X]} {rs pre rest : List ℝ} {r₁ r₂ : ℝ}
     (hq : IsNegativeSimple q)
@@ -191,115 +201,37 @@ private lemma derivative_eval_mul_neg_of_adjacent_roots
     (hrs_eq : (↑rs : Multiset ℝ) = q.roots)
     (hdecomp : rs = pre ++ r₁ :: r₂ :: rest) :
     q.derivative.eval r₁ * q.derivative.eval r₂ < 0 := by
-  have hqne : q ≠ 0 := hq.1
-  have hroot₁ : q.IsRoot r₁ := by
-    apply isRoot_of_mem_roots
-    rw [← hrs_eq]
-    simp [hdecomp]
-  have hroot₂ : q.IsRoot r₂ := by
-    apply isRoot_of_mem_roots
-    rw [← hrs_eq]
-    simp [hdecomp]
-  have hcount₁ : q.roots.count r₁ = 1 :=
-    hq.2.2.1.roots_count_eq_one hroot₁
-  have hcount₂ : q.roots.count r₂ = 1 :=
-    hq.2.2.1.roots_count_eq_one hroot₂
+  have hroot₁ : q.IsRoot r₁ := isRoot_of_mem_roots (by rw [← hrs_eq]; simp [hdecomp])
+  have hroot₂ : q.IsRoot r₂ := isRoot_of_mem_roots (by rw [← hrs_eq]; simp [hdecomp])
   have hder₁ := deriv_at_root_sign hq.2.1 hq.2.2.2.1 r₁
-    ((mem_roots hqne).mpr hroot₁) hcount₁
+    ((mem_roots hq.1).mpr hroot₁) (hq.2.2.1.roots_count_eq_one hroot₁)
   have hder₂ := deriv_at_root_sign hq.2.1 hq.2.2.2.1 r₂
-    ((mem_roots hqne).mpr hroot₂) hcount₂
+    ((mem_roots hq.1).mpr hroot₂) (hq.2.2.1.roots_count_eq_one hroot₂)
   have hcount_rel : q.roots.countP (fun r => r₁ < r) =
       q.roots.countP (fun r => r₂ < r) + 1 := by
-    have hs := hrs_sorted
-    rw [hdecomp] at hs
-    have hpre : ∀ x ∈ pre, x < r₁ := by
-      intro x hx
-      exact (List.pairwise_append.mp hs).2.2 x hx r₁ (by simp)
-    have htail : ∀ x ∈ rest, r₂ < x := by
-      intro x hx
-      exact (List.pairwise_cons.mp
-        (List.pairwise_cons.mp (List.pairwise_append.mp hs).2.1).2).1 x hx
-    have hpre₁ : ∀ x ∈ pre, ¬ r₁ < x := by
-      intro x hx h
-      linarith [hpre x hx]
-    have hpre₂ : ∀ x ∈ pre, ¬ r₂ < x := by
-      intro x hx h
-      have hxr₂ : x < r₂ := (hpre x hx).trans
-        ((List.pairwise_cons.mp (List.pairwise_append.mp hs).2.1).1 r₂ (by simp))
-      linarith
-    have hr₁₂ : r₁ < r₂ :=
-      (List.pairwise_cons.mp (List.pairwise_append.mp hs).2.1).1 r₂ (by simp)
-    have hpre₁_zero : List.countP (fun x => decide (r₁ < x)) pre = 0 :=
-      List.countP_eq_zero.mpr (by
-        intro x hx
-        simp [hpre₁ x hx])
-    have hpre₂_zero : List.countP (fun x => decide (r₂ < x)) pre = 0 :=
-      List.countP_eq_zero.mpr (by
-        intro x hx
-        simp [hpre₂ x hx])
-    have htail₁ : ∀ x ∈ r₂ :: rest, r₁ < x := by
-      intro x hx
-      rcases List.mem_cons.mp hx with rfl | hx
-      · exact hr₁₂
-      · exact hr₁₂.trans (htail x hx)
-    have hlist :
-        List.countP (fun x => decide (r₁ < x)) (pre ++ r₁ :: r₂ :: rest) =
-          List.countP (fun x => decide (r₂ < x)) (pre ++ r₁ :: r₂ :: rest) + 1 := by
-      rw [List.countP_append, List.countP_append]
-      rw [hpre₁_zero, hpre₂_zero]
-      have hrest₁ :
-          List.countP (fun x => decide (r₁ < x)) rest = rest.length :=
-        List.countP_eq_length.mpr (by
-          intro x hx
-          simp [htail₁ x (by simp [hx])])
-      have hrest₂ :
-          List.countP (fun x => decide (r₂ < x)) rest = rest.length :=
-        List.countP_eq_length.mpr (by
-          intro x hx
-          simp [htail x hx])
-      have htail₁_count :
-          List.countP (fun x => decide (r₁ < x)) (r₂ :: rest) = rest.length + 1 := by
-        simp [hr₁₂, hrest₁]
-      have htail₂_count :
-          List.countP (fun x => decide (r₂ < x)) (r₁ :: r₂ :: rest) = rest.length := by
-        have hnot : ¬r₂ < r₁ := not_lt.mpr (le_of_lt hr₁₂)
-        simp [hnot, hrest₂]
-      have htail₁_all :
-          List.countP (fun x => decide (r₁ < x)) (r₁ :: r₂ :: rest) = rest.length + 1 := by
-        simp [hr₁₂, hrest₁]
-      rw [htail₁_all, htail₂_count]
-      simp
-    have hroots :
-        (↑(pre ++ r₁ :: r₂ :: rest) : Multiset ℝ) = q.roots := by
-      rw [← hdecomp, hrs_eq]
-    rw [← hroots]
-    simpa using hlist
-  have hparity : (-1 : ℝ) ^ q.roots.countP (fun r => r₁ < r) =
-      -(-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r) := by
-    rw [hcount_rel, pow_succ]
-    ring
-  have hprod : 0 <
-      (q.derivative.eval r₁ * (-1 : ℝ) ^ q.roots.countP (fun r => r₁ < r)) *
-        (q.derivative.eval r₂ * (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r)) :=
-    mul_pos hder₁ hder₂
-  rw [hparity] at hprod
-  have heven :
-      (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r) *
-          (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r) = 1 := by
-    rw [← pow_add]
-    simp
-  have hprod' : 0 <
-      -(q.derivative.eval r₁ * q.derivative.eval r₂) := by
-    calc
-      0 < (q.derivative.eval r₁ * -(-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r)) *
-          (q.derivative.eval r₂ * (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r)) := hprod
-      _ = -(q.derivative.eval r₁ * q.derivative.eval r₂) := by
-        calc
-          _ = -(q.derivative.eval r₁ * q.derivative.eval r₂) *
-              ((-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r) *
-                (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r)) := by ring
-          _ = _ := by rw [heven]; ring
-  linarith
+    obtain ⟨hpre, hmid, hcross⟩ := List.pairwise_append.mp (hdecomp ▸ hrs_sorted)
+    obtain ⟨hr₁, hmid'⟩ := List.pairwise_cons.mp hmid
+    obtain ⟨hr₂, _⟩ := List.pairwise_cons.mp hmid'
+    have h₁₂ : r₁ < r₂ := hr₁ r₂ (by simp)
+    have hpre₁ : pre.countP (fun r => decide (r₁ < r)) = 0 :=
+      List.countP_eq_zero.mpr fun x hx => by simpa using (hcross x hx r₁ (by simp)).le
+    have hpre₂ : pre.countP (fun r => decide (r₂ < r)) = 0 :=
+      List.countP_eq_zero.mpr fun x hx => by
+        simpa using ((hcross x hx r₁ (by simp)).trans h₁₂).le
+    have hrest₁ : rest.countP (fun r => decide (r₁ < r)) = rest.length :=
+      List.countP_eq_length.mpr fun x hx => by simpa using h₁₂.trans (hr₂ x hx)
+    have hrest₂ : rest.countP (fun r => decide (r₂ < r)) = rest.length :=
+      List.countP_eq_length.mpr fun x hx => by simpa using hr₂ x hx
+    rw [← hrs_eq, hdecomp, Multiset.coe_countP, Multiset.coe_countP]
+    simp only [List.countP_append, List.countP_cons, hpre₁, hpre₂, hrest₁,
+      hrest₂, h₁₂, lt_self_iff_false, decide_true, decide_false, ite_true,
+      not_lt.mpr h₁₂.le]
+    lia
+  rw [hcount_rel, pow_succ] at hder₁
+  generalize hE : (-1 : ℝ) ^ q.roots.countP (fun r => r₂ < r) = e at hder₁ hder₂
+  have he : e * e = 1 := by rw [← hE, ← pow_add]; exact Even.neg_one_pow ⟨_, rfl⟩
+  have := mul_pos hder₁ hder₂
+  nlinarith
 
 /-- The comparison polynomial has opposite signs at consecutive simple negative
 roots of the input polynomial. -/
@@ -318,14 +250,8 @@ theorem generalComparison_eval_mul_neg_of_adjacent_roots
     apply isRoot_of_mem_roots
     rw [← hrs_eq]
     simp [hdecomp]
-  have hneg₁ : r₁ < 0 := by
-    apply hq.2.2.2.2 r₁
-    rw [← hrs_eq]
-    simp [hdecomp]
-  have hneg₂ : r₂ < 0 := by
-    apply hq.2.2.2.2 r₂
-    rw [← hrs_eq]
-    simp [hdecomp]
+  have hneg₁ : r₁ < 0 := hq.2.2.2.2 r₁ (by rw [← hrs_eq]; simp [hdecomp])
+  have hneg₂ : r₂ < 0 := hq.2.2.2.2 r₂ (by rw [← hrs_eq]; simp [hdecomp])
   have hder := derivative_eval_mul_neg_of_adjacent_roots hq hrs_sorted hrs_eq hdecomp
   have heval₁ : (generalComparison κ a b v q).eval r₁ =
       2 * κ * r₁ * q.derivative.eval r₁ := by
@@ -337,18 +263,11 @@ theorem generalComparison_eval_mul_neg_of_adjacent_roots
     rw [generalComparison]
     simp only [eval_add, eval_mul, eval_C, eval_X, theta, hroot₂.eq_zero]
     ring
-  have hfac : 0 < (2 * κ * r₁) * (2 * κ * r₂) := by
-    have h2κ : 0 < 2 * κ := by linarith
-    have hleft : 2 * κ * r₁ < 0 := mul_neg_of_pos_of_neg h2κ hneg₁
-    have hright : 2 * κ * r₂ < 0 := mul_neg_of_pos_of_neg h2κ hneg₂
-    exact mul_pos_of_neg_of_neg hleft hright
-  calc
-    (generalComparison κ a b v q).eval r₁ * (generalComparison κ a b v q).eval r₂ =
-        ((2 * κ * r₁) * (2 * κ * r₂)) *
-          (q.derivative.eval r₁ * q.derivative.eval r₂) := by
-      rw [heval₁, heval₂]
-      ring
-    _ < 0 := mul_neg_of_pos_of_neg hfac hder
+  have hfac : 0 < (2 * κ * r₁) * (2 * κ * r₂) :=
+    mul_pos_of_neg_of_neg (mul_neg_of_pos_of_neg (by linarith) hneg₁)
+      (mul_neg_of_pos_of_neg (by linarith) hneg₂)
+  rw [heval₁, heval₂]
+  nlinarith [mul_neg_of_pos_of_neg hfac hder]
 
 /-- The comparison polynomial is negative at the rightmost input root. -/
 theorem generalComparison_eval_neg_at_last_root
@@ -388,25 +307,10 @@ theorem generalComparison_eval_zero_pos
     (κ a b v : ℝ) (q : ℝ[X]) (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
     (hq : IsNegativeSimple q) :
     0 < (generalComparison κ a b v q).eval 0 := by
-  have hqne : q ≠ 0 := hq.1
-  have hq0root : ¬q.IsRoot 0 := by
-    intro hroot
-    have hmem : (0 : ℝ) ∈ q.roots := (mem_roots hqne).mpr hroot
-    exact (not_lt_of_ge (le_refl 0)) (hq.2.2.2.2 0 hmem)
-  have hq0mem : (0 : ℝ) ∉ q.roots := by
-    intro hmem
-    exact hq0root ((mem_roots hqne).mp hmem)
-  have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
-    apply Multiset.countP_eq_zero.mpr
-    intro x hx hpos
-    exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
-  have hq0 : 0 < q.eval 0 := by
-    have hs := eval_sign hq.2.1 hq.2.2.2.1 0 hq0mem
-    simpa [hcount] using hs
+  have hq0 := eval_zero_pos_of_negativeSimple hq
   rw [generalComparison]
   simp only [eval_add, eval_mul, eval_C, eval_X, theta]
-  have hc : 0 < a + b + 1 := by linarith
-  nlinarith [mul_pos (mul_pos hκ hc) hq0]
+  nlinarith [mul_pos (mul_pos hκ (by linarith : 0 < a + b + 1)) hq0]
 
 /-- Inner comparison roots obtained from the strict sign changes at input roots. -/
 theorem exists_inner_comparison_roots
@@ -659,29 +563,12 @@ theorem generalStep_sign_of_input_sign
     (hqsign : 0 < (-1 : ℝ) ^ j * q.eval σ) :
     0 < (-1 : ℝ) ^ (j + 1) *
       (generalStep κ a b u v q).eval σ := by
-  have hpow : (-1 : ℝ) ^ j * (-1 : ℝ) ^ j = 1 := by
-    rw [← pow_add]
-    simp
-  have hqne : q.eval σ ≠ 0 := by
-    intro hz
-    rw [hz] at hqsign
-    simp at hqsign
-  have hTne : (generalStep κ a b u v q).eval σ ≠ 0 := by
-    intro hz
-    rw [hz] at hprod
-    simp at hprod
-  have hmul :
-      ((-1 : ℝ) ^ j * q.eval σ) *
-        ((-1 : ℝ) ^ j * (generalStep κ a b u v q).eval σ) < 0 := by
-    calc
-      _ = ((-1 : ℝ) ^ j * (-1 : ℝ) ^ j) *
-          (q.eval σ * (generalStep κ a b u v q).eval σ) := by ring
-      _ = q.eval σ * (generalStep κ a b u v q).eval σ := by rw [hpow]; ring
-      _ < 0 := hprod
-  have hTsign : (-1 : ℝ) ^ j *
-      (generalStep κ a b u v q).eval σ < 0 := by
-    nlinarith
   rw [pow_succ]
+  generalize hE : (-1 : ℝ) ^ j = e at hqsign ⊢
+  have he : e * e = 1 := by rw [← hE, ← pow_add]; exact Even.neg_one_pow ⟨_, rfl⟩
+  have hmul : (e * q.eval σ) *
+      (e * (generalStep κ a b u v q).eval σ) < 0 := by
+    nlinarith
   nlinarith
 
 theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
@@ -704,66 +591,40 @@ theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
     cases i using Fin.cases with
     | zero => simp at hi
     | succ k => simp [z]
-  have hzsucc (i : Fin d) : z i.succ = r i := by simp [z]
   have hzorder : ∀ i j, i < j → z i < z j := by
     intro i j hij
     by_cases hi : i.1 = 0
     · rw [hz0 i hi, hzpos j (by lia)]
       by_cases hj : j.1 = 1
-      · have heq : (⟨j.1 - 1, by lia⟩ : Fin d) = ⟨0, hd⟩ := by
-          ext
-          simp
-          lia
-        rwa [heq]
-      · apply hRlt.trans
-          (hr ⟨0, hd⟩ ⟨j.1 - 1, by lia⟩ (by simp; lia))
+      · convert hRlt using 1
+        exact congrArg r (Fin.ext (by simp [hj]))
+      · exact hRlt.trans (hr ⟨0, hd⟩ ⟨j.1 - 1, by lia⟩ (by simp; lia))
     · rw [hzpos i (Nat.pos_of_ne_zero hi), hzpos j (by lia)]
-      apply hr
-      simp
-      lia
-  have hzsign : ∀ (k : ℕ) (hk : k + 1 < d + 1),
-      p.eval (z ⟨k, by lia⟩) * p.eval (z ⟨k + 1, hk⟩) < 0 := by
-    intro k hk
-    by_cases hk0 : k = 0
-    · subst k
-      have hnext : z (⟨0 + 1, hk⟩ : Fin (d + 1)) = r ⟨0, hd⟩ := by
-        convert hzpos (⟨0 + 1, hk⟩ : Fin (d + 1)) (by lia) using 1
-        simp
-      rw [hz0 (⟨0, by lia⟩ : Fin (d + 1)) rfl,
-        hnext]
+      exact hr _ _ (by simp; lia)
+  have hzsign : ∀ i : Fin d,
+      p.eval (z i.castSucc) * p.eval (z i.succ) < 0 := by
+    intro i
+    by_cases hi : i.1 = 0
+    · have hi0 : i = ⟨0, hd⟩ := Fin.ext hi
+      subst i
+      rw [hz0 (⟨0, hd⟩ : Fin d).castSucc rfl]
+      simp only [z, Fin.cases_succ]
       have hpow : (-1 : ℝ) ^ d * (-1 : ℝ) ^ d = 1 := by
         rw [← pow_add]
         simp
       have hprod := mul_pos hRsign (neg_pos.mpr hfirst)
-      have heq :
-          ((-1 : ℝ) ^ d * p.eval R) *
-              (-((-1 : ℝ) ^ d * p.eval (r ⟨0, hd⟩))) =
-            -(p.eval R * p.eval (r ⟨0, hd⟩)) := by
-        calc
-          _ = -(((-1 : ℝ) ^ d * (-1 : ℝ) ^ d) *
-              (p.eval R * p.eval (r ⟨0, hd⟩))) := by ring
-          _ = _ := by rw [hpow]; ring
-      rw [heq] at hprod
+      rw [show ((-1 : ℝ) ^ d * p.eval R) *
+          (-((-1 : ℝ) ^ d * p.eval (r ⟨0, hd⟩))) =
+          -(p.eval R * p.eval (r ⟨0, hd⟩)) by
+            calc
+              _ = -(((-1 : ℝ) ^ d * (-1 : ℝ) ^ d) *
+                  (p.eval R * p.eval (r ⟨0, hd⟩))) := by ring
+              _ = _ := by rw [hpow]; ring] at hprod
       linarith
-    · rw [hzpos ⟨k, by lia⟩ (Nat.pos_of_ne_zero hk0),
-        hzpos ⟨k + 1, hk⟩ (by lia)]
-      have hidx1 :
-          (⟨↑(⟨k, by lia⟩ : Fin (d + 1)) - 1, by lia⟩ : Fin d) =
-            ⟨k - 1, by lia⟩ := by
-        ext
-        rfl
-      have hidx2 :
-          (⟨↑(⟨k + 1, hk⟩ : Fin (d + 1)) - 1, by lia⟩ : Fin d) =
-            ⟨k, by lia⟩ := by
-        ext
-        rfl
-      rw [hidx1, hidx2]
-      have hs := hsign (k - 1) (by lia)
-      have hidx3 : (⟨k - 1 + 1, by lia⟩ : Fin d) = ⟨k, by lia⟩ := by
-        ext
-        lia
-      rw [hidx3] at hs
-      exact hs
+    · rw [hzpos i.castSucc (Nat.pos_of_ne_zero hi)]
+      simp only [z, Fin.cases_succ]
+      simpa only [Fin.val_castSucc, Nat.sub_add_cancel (Nat.pos_of_ne_zero hi)] using
+        hsign (i.1 - 1) (by lia)
   have hsplits := splits_of_sign_changes_with_left_endpoint
     hd hp hdegree hlc r hr hfirst hsign
   obtain ⟨us, hus_len, _, hus_roots, hus_strict⟩ :=
@@ -782,10 +643,7 @@ theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
           simp only [List.getElem?_ofFn, hi₁] at hget₁
           simp only [List.getElem?_ofFn, hi₂] at hget₂
           simp at hget₁ hget₂
-          have hs := hzsign pre.length (by lia)
-          have hfin₁ : (⟨pre.length, hi₁⟩ : Fin (d + 1)) = i.castSucc := by
-            ext
-            rfl
+          have hs := hzsign i
           grind)
   have hus_nodup : us.Nodup := by
     rw [List.nodup_iff_pairwise_ne]
@@ -795,20 +653,14 @@ theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
     intro x hx
     simp only [Multiset.mem_coe] at hx
     exact (mem_roots hp).mpr (hus_roots x hx)
-  have hus_card : (↑us : Multiset ℝ).card = p.roots.card := by
-    have hus_card' : (↑us : Multiset ℝ).card = d := by
-      simpa [Multiset.coe_card] using hus_len
-    have hp_card : p.roots.card = d := by
-      rw [card_roots_of_splits hsplits, hdegree]
-    apply le_antisymm
-    · exact Multiset.card_le_card hus_sub
-    · rw [hp_card, hus_card']
   have hroots_eq : (↑us : Multiset ℝ) = p.roots :=
-    Multiset.eq_of_le_of_card_le hus_sub (le_of_eq hus_card.symm)
-  have : p.roots.Nodup := by
-    rw [← hroots_eq]
-    exact Multiset.coe_nodup.mpr hus_nodup
-  exact HasSimpleRoots.of_roots_nodup hp this
+    Multiset.eq_of_le_of_card_le hus_sub (by
+      simp only [List.length_ofFn] at hus_len
+      rw [card_roots_of_splits hsplits, hdegree, Multiset.coe_card, hus_len]
+      lia)
+  apply HasSimpleRoots.of_roots_nodup hp
+  rw [← hroots_eq]
+  exact Multiset.coe_nodup.mpr hus_nodup
 
 theorem isNegativeSimple_of_sign_changes_nonneg
     {p : ℝ[X]} {d : ℕ} (hd : 0 < d) (hp : p ≠ 0)
@@ -916,15 +768,7 @@ theorem isNegativeSimple_generalStep_zero
     IsNegativeSimple (generalStep κ a b u v q) ∧
       (generalStep κ a b u v q).natDegree = 1 := by
   have hqC : q = C (q.coeff 0) := eq_C_of_natDegree_eq_zero hqd
-  have hq0 : 0 < q.eval 0 := by
-    have hq0mem : (0 : ℝ) ∉ q.roots := by
-      intro hmem
-      exact (not_lt_of_ge (le_refl 0)) (hq.2.2.2.2 0 hmem)
-    have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
-      apply Multiset.countP_eq_zero.mpr
-      intro x hx hpos
-      exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
-    simpa [hcount] using (eval_sign hq.2.1 hq.2.2.2.1 0 hq0mem)
+  have hq0 := eval_zero_pos_of_negativeSimple hq
   have hq0c : 0 < q.coeff 0 := by
     simpa [coeff_zero_eq_eval_zero] using hq0
   have hform : generalStep κ a b u v q =
@@ -943,15 +787,8 @@ theorem isNegativeSimple_generalStep_zero
     ring
   have hsimple : IsNegativeSimple
       (C (q.coeff 0) * (C (κ * a * b) + C u * X)) := by
-    have hc : 0 < q.coeff 0 * u := mul_pos hq0c hu
-    have hscale : C (q.coeff 0) * C u = C (q.coeff 0 * u) := by
-      rw [← C_mul]
-    rw [hfactor]
-    have heq : C (q.coeff 0) * (C u * (X + C (κ * a * b / u))) =
-        C (q.coeff 0 * u) * (X + C (κ * a * b / u)) := by
-      rw [← mul_assoc, hscale]
-    rw [heq]
-    exact isNegativeSimple_C_mul_X_add_C hc
+    rw [hfactor, ← mul_assoc, ← C_mul]
+    exact isNegativeSimple_C_mul_X_add_C (mul_pos hq0c hu)
       (div_pos (mul_pos (mul_pos hκ ha) hb) hu)
   have hdeg : (generalStep κ a b u v q).natDegree = 1 := by
     have := generalStep_natDegree_and_leadingCoeff κ a b u v q 0 hqd
@@ -960,10 +797,7 @@ theorem isNegativeSimple_generalStep_zero
         subst k
         simpa using hu)
     exact this.1
-  have hsimpleT : IsNegativeSimple (generalStep κ a b u v q) := by
-    rw [hform]
-    exact hsimple
-  exact ⟨hsimpleT, hdeg⟩
+  exact ⟨hform.symm ▸ hsimple, hdeg⟩
 
 /-- The sorted roots of a negative-simple polynomial, together with the roots of its comparison
 polynomial interlacing them and zero, and the alternating signs of `T q` at those roots. -/
@@ -1095,15 +929,8 @@ theorem isNegativeSimple_generalStep_of_pos
     (hqcoeff : HasNonnegCoeffs q) :
     IsNegativeSimple (generalStep κ a b u v q) ∧
       (generalStep κ a b u v q).natDegree = m + 1 := by
-  have hqsplits : q.Splits := hq.2.1
   have hqlc : 0 < q.leadingCoeff := hq.2.2.2.1
-  have hq0mem : (0 : ℝ) ∉ q.roots := fun hmem => lt_irrefl _ (hq.2.2.2.2 0 hmem)
-  have hq0 : 0 < q.eval 0 := by
-    have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
-      apply Multiset.countP_eq_zero.mpr
-      intro x hx hpos
-      exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
-    simpa [hcount] using eval_sign hqsplits hqlc 0 hq0mem
+  have hq0 := eval_zero_pos_of_negativeSimple hq
   have hT0 : 0 < (generalStep κ a b u v q).eval 0 := by
     have hq0c : 0 < q.coeff 0 := by simpa [coeff_zero_eq_eval_zero] using hq0
     calc
@@ -1162,19 +989,9 @@ theorem isNegativeSimple_generalStep_of_pos
       set e : ℝ := (-1 : ℝ) ^ (m - (k + 1)) with he
       have hee : e * e = 1 := by
         rw [he, ← pow_add]
-        have : (-1 : ℝ) ^ ((m - (k + 1)) + (m - (k + 1))) =
-            ((-1 : ℝ) ^ 2) ^ (m - (k + 1)) := by
-          rw [← pow_mul]
-          congr 1
-          lia
-        rw [this]
-        simp
-      set x := (generalStep κ a b u v q).eval (P[k]'(by lia))
-      set y := (generalStep κ a b u v q).eval (P[k + 1]'(by lia))
-      have hprod : 0 < (e * y) * (-(e * x)) := mul_pos h2 (by linarith)
-      have : (e * y) * (-(e * x)) = -((e * e) * (x * y)) := by ring
-      rw [this, hee] at hprod
-      linarith
+        exact Even.neg_one_pow ⟨_, rfl⟩
+      nlinarith [mul_pos h2 (by
+        nlinarith [h1] : 0 < -(e * (generalStep κ a b u v q).eval (P[k]'(by lia))))]
   exact isNegativeSimple_generalStep_of_certificate κ a b u v q m hqdeg hqlc hκ ha hb hell hqcoeff
       hq0 hcert
 
