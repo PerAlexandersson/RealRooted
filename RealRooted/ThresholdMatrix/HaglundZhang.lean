@@ -164,15 +164,7 @@ lemma binomialRows_rowData {ts : List ℕ}
 
 lemma terminalRows_rowData :
     RowData terminalRows := by
-  constructor
-  · intro p hp
-    have hp' : p = (0, (1 + X : ℝ[X])) := by simpa [terminalRows] using hp
-    subst p
-    exact Or.inr rfl
-  · intro i j _
-    simp [terminalRows]
-  · intro i j _ _ _
-    simp [terminalRows]
+  constructor <;> simp [terminalRows]
 
 @[simp] lemma matPolyAction_terminalMatrix (q : ℕ) (fs : List ℝ[X]) :
     matPolyAction (terminalMatrix q) fs = [terminalPolynomial q fs] := by
@@ -217,34 +209,6 @@ private lemma hzMiddleQuadratic_posLeadingCoeff {s t : ℝ} (hs : 0 < s) :
   rw [hzMiddleQuadratic_eq, leadingCoeff_quadratic hs.ne']
   exact hs
 
-private lemma hzXAffineAddOne_eq (s t : ℝ) :
-    (X * (C s * X + C t + 1) : ℝ[X]) =
-      C s * X ^ 2 + C (t + 1) * X + C 0 := by
-  grind
-
-private lemma eval_hzXAffineAddOne (s t r : ℝ) :
-    ((X * (C s * X + C t + 1) : ℝ[X]).eval r) =
-      s * r ^ 2 + (t + 1) * r := by
-  rw [hzXAffineAddOne_eq]
-  simp [eval_add, eval_mul, eval_C, eval_X, pow_two]
-
-private lemma hzXAffineAddOne_natDegree {s t : ℝ} (hs : 0 < s) :
-    ((X * (C s * X + C t + 1) : ℝ[X]).natDegree) = 2 := by
-  rw [hzXAffineAddOne_eq]
-  exact natDegree_quadratic hs.ne'
-
-private lemma hzXAffineAddOne_splits {s t : ℝ} (hs : 0 < s) :
-    (X * (C s * X + C t + 1) : ℝ[X]).Splits := by
-  rw [hzXAffineAddOne_eq]
-  exact quadraticPoly_splits_of_le hs (by
-    nlinarith [sq_nonneg (t + 1)])
-
-private lemma hzXAffineAddOne_posLeadingCoeff {s t : ℝ} (hs : 0 < s) :
-    HasPosLeadingCoeff (X * (C s * X + C t + 1) : ℝ[X]) := by
-  unfold HasPosLeadingCoeff
-  rw [hzXAffineAddOne_eq, leadingCoeff_quadratic hs.ne']
-  exact hs
-
 private lemma interl_hz_linear_to_quadratic_of_eval_nonpos
     {f F : ℝ[X]}
     (hfdeg : f.natDegree = 1)
@@ -269,35 +233,6 @@ private lemma interl_hz_linear_to_quadratic_of_eval_nonpos
     (strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
       (by lia) (by lia) hno hroot).toInterl
-
-private lemma interl_hz_affine_add_one_affine_add_one_add_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) (C s * X + C t + (1 + X)) := by
-  rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-  rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
-    C (s + 1) * X + C (t + 1) by grind]
-  exact
-    interl_affine_linear_affine_linear_of_cross
-      (u := s) (v := t + 1) (U := s + 1) (V := t + 1)
-      hs (by positivity) (by nlinarith [ht])
-
-private lemma interl_hz_affine_add_one_add_X_self {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + (1 + X)) (C s * X + C t + (1 + X)) := by
-  rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
-    C (s + 1) * X + C (t + 1) by grind]
-  exact Interl.refl fun _ =>
-    (isRealRooted_affine_factor (s := s + 1) (t := t + 1) (by positivity)).2
-
-private lemma interl_hz_affine_add_one_add_X_affine_add_X
-    {s t : ℝ} (hs : 0 < s) :
-    Interl (C s * X + C t + (1 + X)) (C s * X + C t + X) := by
-  rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
-    C (s + 1) * X + C (t + 1) by grind]
-  rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-  exact
-    interl_affine_linear_affine_linear_of_cross
-      (u := s + 1) (v := t + 1) (U := s + 1) (V := t)
-      (by positivity) (by positivity) (by nlinarith)
 
 private lemma interl_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
@@ -364,81 +299,6 @@ private lemma interl_hz_affine_add_X_middleQuadratic
     have hscale_pos : 0 < (s + 1) ^ 2 := by positivity
     nlinarith [hscaled, sq_nonneg t, hscale_pos]
 
-private lemma interl_hz_affine_add_one_XAffineAddOne
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + 1) (X * (C s * X + C t + 1)) := by
-  have hf_rr :
-      ((C s * X + C t + 1 : ℝ[X]) ≠ 0 ∧
-        (C s * X + C t + 1 : ℝ[X]).Splits) := by
-    rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-    exact isRealRooted_affine_factor (s := s) (t := t + 1) hs
-  have hf_nn : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
-    rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-    exact hasNonnegCoeffs_affine_linear hs.le (by nlinarith)
-  simpa using (strictInterl_self_X_mul_of_nonneg hf_rr.1 hf_rr.2 hf_nn).toInterl
-
-private lemma interl_hz_affine_add_one_add_X_XAffineAddOne
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + (1 + X)) (X * (C s * X + C t + 1)) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
-  · rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
-        C (s + 1) * X + C (t + 1) by grind]
-    grind
-  · exact hzXAffineAddOne_natDegree hs
-  · exact hzXAffineAddOne_splits hs
-  · exact hzXAffineAddOne_posLeadingCoeff hs
-  · intro r hr
-    have hroot0 : t + (1 + (r + s * r)) = 0 := by
-      simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C, eval_X,
-        add_assoc, add_comm, add_left_comm] using hr
-    have hroot : (s + 1) * r + (t + 1) = 0 := by nlinarith
-    rw [eval_hzXAffineAddOne]
-    have hscaled : (s + 1) ^ 2 * (s * r ^ 2 + (t + 1) * r) =
-        -(t + 1) ^ 2 := by
-      linear_combination ((s ^ 2 + s) * r + t + 1) * hroot
-    have hscale_pos : 0 < (s + 1) ^ 2 := by positivity
-    nlinarith [hscaled, sq_nonneg (t + 1), hscale_pos]
-
-private lemma interl_hz_affine_add_X_XAffineAddOne
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t + X) (X * (C s * X + C t + 1)) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
-  · rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
-    grind
-  · exact hzXAffineAddOne_natDegree hs
-  · exact hzXAffineAddOne_splits hs
-  · exact hzXAffineAddOne_posLeadingCoeff hs
-  · intro r hr
-    have hroot0 : t + (r + s * r) = 0 := by
-      simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C, eval_X,
-        add_assoc, add_comm, add_left_comm] using hr
-    have hroot : (s + 1) * r + t = 0 := by nlinarith
-    rw [eval_hzXAffineAddOne]
-    have hscaled : (s + 1) ^ 2 * (s * r ^ 2 + (t + 1) * r) =
-        -t * (s + t + 1) := by
-      linear_combination ((s ^ 2 + s) * r + s + t + 1) * hroot
-    have hscale_pos : 0 < (s + 1) ^ 2 := by positivity
-    nlinarith [hscaled, ht, hs]
-
-private lemma interl_hz_affine_XAffineAddOne
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl (C s * X + C t) (X * (C s * X + C t + 1)) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
-  · grind
-  · exact hzXAffineAddOne_natDegree hs
-  · exact hzXAffineAddOne_splits hs
-  · exact hzXAffineAddOne_posLeadingCoeff hs
-  · intro r hr
-    have hroot0 : t + s * r = 0 := by
-      simpa [Polynomial.IsRoot.def, eval_add, eval_mul, eval_C, eval_X,
-        add_assoc, add_comm, add_left_comm] using hr
-    have hroot : s * r + t = 0 := by nlinarith
-    rw [eval_hzXAffineAddOne]
-    have hscaled : s ^ 2 * (s * r ^ 2 + (t + 1) * r) = -s * t := by
-      linear_combination (s ^ 2 * r + s) * hroot
-    have hscale_pos : 0 < s ^ 2 := sq_pos_of_pos hs
-    nlinarith [hscaled, hs, ht]
-
 private lemma interl_hz_affine_add_one_mul_one_add_X
     {s t : ℝ} (hs : 0 < s) :
     Interl (C s * X + C t + 1) ((C s * X + C t + 1) * (1 + X)) := by
@@ -468,12 +328,6 @@ private lemma interl_hz_mul_one_add_X_self
   exact Interl.refl fun _ =>
     (isRealRooted_mul hlin_rr.1 hlin_rr.2 hS_rr.1 hS_rr.2).2
 
-private lemma interl_hz_middleQuadratic_self
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl ((C s * X + C t) * (1 + X) + X)
-      ((C s * X + C t) * (1 + X) + X) := by
-  exact Interl.refl fun _ => hzMiddleQuadratic_splits hs ht
-
 private lemma interl_hz_mul_one_add_X_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t + 1) * (1 + X)) (X * (C s * X + C t + 1)) := by
@@ -493,28 +347,20 @@ private lemma interl_hz_mul_one_add_X_XAffineAddOne
     (C s * X + C t + 1) * X by ring]
   simpa using hmul.toInterl
 
-private lemma interl_hz_XAffineAddOne_self
-    {s t : ℝ} (hs : 0 < s) :
-    Interl (X * (C s * X + C t + 1)) (X * (C s * X + C t + 1)) := by
-  exact Interl.refl fun _ => hzXAffineAddOne_splits hs
-
 private lemma interl_hz_middleQuadratic_XAffineAddOne
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
-    Interl ((C s * X + C t) * (1 + X) + X) (X * (C s * X + C t + 1)) := by
-  have hself : Interl (X * (C s * X + C t + 1)) (X * (C s * X + C t + 1)) :=
-    interl_hz_XAffineAddOne_self hs
-  have hlin : Interl (C s * X + C t) (X * (C s * X + C t + 1)) :=
-    interl_hz_affine_XAffineAddOne hs ht
-  have hq_nn : HasNonnegCoeffs (X * (C s * X + C t + 1) : ℝ[X]) := by
-    refine hasNonnegCoeffs_X.mul ?_
-    rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-    exact hasNonnegCoeffs_affine_linear hs.le (by nlinarith)
+    Interl ((C s * X + C t) * (1 + X) + X) ((C s * X + C t) * X + X) := by
+  have hself := interl_affine_mul_X_add_X_self (t := t) hs
+  have hlin := interl_affine_affine_mul_X_add_X hs ht
+  have hq_nn : HasNonnegCoeffs ((C s * X + C t) * X + X : ℝ[X]) := by
+    rw [affine_mul_X_add_X_eq]
+    exact hasNonnegCoeffs_X.mul (hasNonnegCoeffs_affine_linear hs.le (by positivity))
   have hlin_nn : HasNonnegCoeffs (C s * X + C t : ℝ[X]) :=
     hasNonnegCoeffs_affine_linear hs.le ht.le
   have hsum :=
     interl_add_left_of_common_right_of_nonneg hself hlin hq_nn hlin_nn
   rw [show ((C s * X + C t) * (1 + X) + X : ℝ[X]) =
-      X * (C s * X + C t + 1) + (C s * X + C t) by grind]
+      ((C s * X + C t) * X + X) + (C s * X + C t) by grind]
   exact hsum
 
 private def HZ2x2EntryShape (a b c d : ℝ[X]) : Prop :=
@@ -545,10 +391,13 @@ private lemma HZ2x2EntryShape.has2x2 {a b c d : ℝ[X]}
     h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h | h <;>
     rcases h with ⟨rfl, rfl, rfl, rfl⟩
   · simpa using interl_affine_add_one_self hs
-  · simpa using interl_hz_affine_add_one_affine_add_one_add_X hs ht
-  · simpa using interl_hz_affine_add_one_add_X_self hs
+  · convert interl_affine_affine_add_X (s := s) (t := t + 1) hs
+      (by positivity) using 1 <;> grind
+  · convert interl_affine_self (s := s + 1) (t := t + 1)
+      (by positivity) using 1 <;> grind
   · simpa using interl_affine_add_one_affine_add_X hs ht
-  · simpa using interl_hz_affine_add_one_add_X_affine_add_X hs
+  · convert interl_affine_add_one_affine (s := s + 1) (t := t)
+      (by positivity) using 1 <;> grind
   · simpa using interl_affine_add_X_self hs
   · simpa [mul_add, add_mul, add_assoc, add_comm, add_left_comm] using
       interl_hz_affine_add_one_mul_one_add_X hs
@@ -557,27 +406,19 @@ private lemma HZ2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   · simpa using interl_hz_affine_add_X_middleQuadratic hs ht
   · simpa [mul_add, add_mul, add_assoc, add_comm, add_left_comm] using
       interl_hz_mul_one_add_X_self hs
-  · simpa using interl_hz_middleQuadratic_self hs ht
-  · rw [show ((C s * X + C t) * X + X : ℝ[X]) =
-        X * (C s * X + C t + 1) by grind]
-    simpa using interl_hz_affine_add_one_XAffineAddOne hs ht
-  · rw [show ((C s * X + C t) * X + X : ℝ[X]) =
-        X * (C s * X + C t + 1) by grind]
-    simpa using interl_hz_affine_add_one_add_X_XAffineAddOne hs ht
-  · rw [show ((C s * X + C t) * X + X : ℝ[X]) =
-        X * (C s * X + C t + 1) by grind]
-    simpa using interl_hz_affine_add_X_XAffineAddOne hs ht
+  · exact Interl.refl fun _ => hzMiddleQuadratic_splits hs ht
+  · simpa using interl_affine_add_one_affine_mul_X_add_X hs ht
+  · convert interl_affine_to_X_mul_affine
+      (u := s) (v := t + 1) (U := s + 1) (V := t + 1)
+      hs (by positivity) (by nlinarith) (by positivity) (by positivity) using 1 <;> grind
+  · simpa using interl_affine_add_X_affine_mul_X_add_X hs ht
   · rw [show ((C s * X + C t) * (1 + X) + (1 + X) : ℝ[X]) =
         (C s * X + C t + 1) * (1 + X) by grind]
     rw [show ((C s * X + C t) * X + X : ℝ[X]) =
         X * (C s * X + C t + 1) by grind]
     simpa using interl_hz_mul_one_add_X_XAffineAddOne hs
-  · rw [show ((C s * X + C t) * X + X : ℝ[X]) =
-        X * (C s * X + C t + 1) by grind]
-    simpa using interl_hz_middleQuadratic_XAffineAddOne hs ht
-  · rw [show ((C s * X + C t) * X + X : ℝ[X]) =
-        X * (C s * X + C t + 1) by grind]
-    simpa using interl_hz_XAffineAddOne_self hs
+  · simpa using interl_hz_middleQuadratic_XAffineAddOne hs ht
+  · simpa using interl_affine_mul_X_add_X_self (t := t) hs
 
 private lemma hzEntry_shape
     {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
@@ -915,10 +756,7 @@ lemma binomialRefined_zero_interlacing :
 
 lemma binomialRefined_zero_splits :
     ∀ f ∈ binomialRefined 0, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  intro f hf _
-  have hf' : f = 1 := mem_binomialRefined_zero.mp hf
-  subst f
-  exact ⟨one_ne_zero, Polynomial.Splits.one⟩
+  simp [binomialRefined, Polynomial.Splits.one]
 
 theorem binomialRefined_interlacing_and_realRooted (n : ℕ) :
     IsInterlacingSeq0Nonneg (binomialRefined n) ∧
