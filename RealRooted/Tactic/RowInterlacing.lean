@@ -12,6 +12,7 @@ import RealRooted.Tactic.Row.PathPower
 import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.Tactic.Row.FactorPower
 import RealRooted.Tactic.Row.DelayedProduct
+import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.DerivativeRecurrence.Nonnegative
 import RealRooted.Recurrence.RowModel
 
@@ -83,7 +84,8 @@ only the successful attempt, and the certificate.
 
 `factorPower` (deflate `q ^ n` from two-lag rows), `delayedProduct` (an arbitrary-offset
 product tail), `closedForm` (rows
-`residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`,
+`residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`, `thresholdOrbit`
+(order-three rows that are orbit sums of a threshold matrix, `Row.ThresholdOrbit`),
 `subseq`
 (residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
 `shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
@@ -805,7 +807,7 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   [`derivativeXMul, `factorPower, `delayedProduct, `closedForm, `pathPower, `lowerOrder,
-    `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
+    `thresholdOrbit, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
 
@@ -913,6 +915,12 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
       return { via := some `lowerOrder }
     if hints.via.isNone then
       if ← rowSucceeds viaLower then return { via := some `lowerOrder }
+    -- order-three recurrences as threshold-matrix orbits (`Row.ThresholdOrbit`)
+    if hints.via == some `thresholdOrbit then
+      thresholdOrbitSplits
+      return { via := some `thresholdOrbit }
+    if hints.via.isNone then
+      if ← rowSucceeds thresholdOrbitSplits then return { via := some `thresholdOrbit }
     if hints.via == some `parityProduct then
       parityProductGoal true
       return { via := some `parityProduct }

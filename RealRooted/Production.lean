@@ -1876,6 +1876,8 @@ import RealRooted.Challenges.MorrisFlow
 import RealRooted.Challenges.MultivariateObreschkoff
 import RealRooted.Challenges.SzaszGrowth
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.ThresholdMatrix.Orbit
 
 /-!
 # RealRooted production umbrella
