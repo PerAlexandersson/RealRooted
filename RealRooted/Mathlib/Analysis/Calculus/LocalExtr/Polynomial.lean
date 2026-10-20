@@ -23,17 +23,13 @@ theorem Splits.derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits := 
     simpa only [natDegree_derivative] using card_roots' p.derivative
   have hlower : p.natDegree ≤ p.derivative.roots.card + 1 := by
     simpa only [hp.natDegree_eq_card_roots] using card_roots_le_derivative p
-  have hcard : p.derivative.roots.card = p.natDegree - 1 := by
-    lia
-  simpa only [natDegree_derivative] using hcard
+  simpa only [natDegree_derivative] using Nat.le_antisymm hupper (by lia)
 
 /-- Every iterate of the derivative of a splitting real polynomial splits. -/
 theorem Splits.iterate_derivative {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     (Polynomial.derivative^[k] p).Splits := by
   induction k with
   | zero => simpa
-  | succ k ih =>
-      rw [Function.iterate_succ_apply']
-      exact ih.derivative
+  | succ k ih => simpa [Function.iterate_succ_apply'] using ih.derivative
 
 end Polynomial
