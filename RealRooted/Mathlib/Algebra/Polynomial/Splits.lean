@@ -28,8 +28,8 @@ point from their root counts, for instance when proving interlacing.
   strictly above `x` is even.
 * `Polynomial.Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add`: an odd total count of roots above
   two non-root points forces `p.eval x * q.eval y < 0`.
-* `Polynomial.Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff`: the same, stated for the integer
-  difference of the root counts above `x`.
+* `Polynomial.Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff`: two such polynomials have the
+  same sign at a common non-root `x` iff the difference of their root counts above `x` is even.
 -/
 
 public section
@@ -177,8 +177,7 @@ theorem Splits.eval_mul_eval_neg_of_odd_card_roots_gt_add
 
 The signed integer difference of the counts of roots strictly above `x` of two
 splitting polynomials with positive leading coefficients is even exactly when
-their values at a common non-root `x` share a sign.  Unlike the below-threshold
-form this needs no equal-degree hypothesis. -/
+their values at a common non-root `x` share a sign. -/
 theorem Splits.even_intCard_roots_gt_sub_iff_eval_pos_iff
     {p q : ℝ[X]} (hp : p.Splits) (hq : q.Splits)
     (hp_pos : 0 < p.leadingCoeff) (hq_pos : 0 < q.leadingCoeff)
