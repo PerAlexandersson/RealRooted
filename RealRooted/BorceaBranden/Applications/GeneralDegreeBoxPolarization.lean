@@ -45,10 +45,9 @@ def sourcePolarizationStageIsolateEquiv
       · exact Sum.inr 0
       · exact Sum.inl (Sum.inr ⟨j.1, j.2, hji⟩)
   invFun x := by
-    rcases x with x | _k
-    · rcases x with x | j
-      · exact Sum.inl x
-      · exact Sum.inr ⟨j.1, j.2.1⟩
+    rcases x with (x | j) | _k
+    · exact Sum.inl x
+    · exact Sum.inr ⟨j.1, j.2.1⟩
     · exact Sum.inr ⟨i, hi⟩
   left_inv x := by
     rcases x with x | j
@@ -63,11 +62,10 @@ def sourcePolarizationStageIsolateEquiv
       · simp only [dite_eq_right hji]
         rfl
   right_inv x := by
-    rcases x with x | k
-    · rcases x with x | j
-      · rfl
-      · dsimp
-        simp [j.2.2]
+    rcases x with (x | j) | k
+    · rfl
+    · dsimp
+      simp [j.2.2]
     · fin_cases k
       dsimp
       simp
@@ -79,25 +77,21 @@ def sourcePolarizationStageInstallEquiv
     SourcePolarizationStageVars κ (insert i S) ≃
       SourcePolarizationStageRest κ S i ⊕ Fin (κ i) where
   toFun x := by
-    rcases x with x | j
-    · rcases x with ⟨j, k⟩
-      by_cases hji : j.1 = i
+    rcases x with ⟨j, k⟩ | j
+    · by_cases hji : j.1 = i
       · exact Sum.inr (Fin.cast (congrArg κ hji) k)
       · exact Sum.inl (Sum.inl
           ⟨⟨j.1, (Finset.mem_insert.mp j.2).resolve_left hji⟩, k⟩)
     · have hj : j.1 ≠ i ∧ j.1 ∉ S := by simpa [Finset.mem_insert] using j.2
       exact Sum.inl (Sum.inr ⟨j.1, hj.2, hj.1⟩)
   invFun x := by
-    rcases x with x | k
-    · rcases x with x | j
-      · exact Sum.inl ⟨⟨x.1.1, Finset.mem_insert_of_mem x.1.2⟩, x.2⟩
-      · exact Sum.inr
-          ⟨j.1, by simp [Finset.mem_insert, j.2.1, j.2.2]⟩
+    rcases x with (x | j) | k
+    · exact Sum.inl ⟨⟨x.1.1, Finset.mem_insert_of_mem x.1.2⟩, x.2⟩
+    · exact Sum.inr ⟨j.1, by simp [Finset.mem_insert, j.2.1, j.2.2]⟩
     · exact Sum.inl ⟨⟨i, Finset.mem_insert_self i S⟩, k⟩
   left_inv x := by
-    rcases x with x | j
-    · rcases x with ⟨j, k⟩
-      dsimp
+    rcases x with ⟨j, k⟩ | j
+    · dsimp
       by_cases hji : j.1 = i
       · rcases j with ⟨j, hj⟩
         dsimp at hji ⊢
@@ -108,12 +102,11 @@ def sourcePolarizationStageInstallEquiv
         rfl
     · rfl
   right_inv x := by
-    rcases x with x | k
-    · rcases x with x | j
-      · have hne : x.1.1 ≠ i := fun h => hi (h ▸ x.1.2)
-        dsimp
-        simp [hne]
-      · rfl
+    rcases x with (x | j) | k
+    · have hne : x.1.1 ≠ i := fun h => hi (h ▸ x.1.2)
+      dsimp
+      simp [hne]
+    · rfl
     · dsimp
       simp
 
@@ -166,14 +159,12 @@ def sourcePolarizationStageEmptyEquiv
     SourcePolarizationStageVars κ ∅ ≃ σ where
   toFun x := by
     rcases x with x | i
-    · have hx : x.1.1 ∈ (∅ : Finset σ) := x.1.2
-      exact False.elim (Finset.notMem_empty _ hx)
+    · exact (Finset.notMem_empty _ x.1.2).elim
     · exact i.1
   invFun i := Sum.inr ⟨i, by simp⟩
   left_inv x := by
     rcases x with x | i
-    · have hx : x.1.1 ∈ (∅ : Finset σ) := x.1.2
-      exact False.elim (Finset.notMem_empty _ hx)
+    · exact (Finset.notMem_empty _ x.1.2).elim
     · rfl
   right_inv i := rfl
 
@@ -262,10 +253,8 @@ theorem degreeOf_sourcePolarizationStageStep_raw_le
         (Sum.inr ⟨j, hj⟩) ≤
       P.degreeOf (Sum.inr ⟨j, fun hjS => hj (Finset.mem_insert_of_mem hjS)⟩) := by
   have hji : j ≠ i := by
-    intro h
-    apply hj
-    subst j
-    exact Finset.mem_insert_self i S
+    rintro rfl
+    exact hj (Finset.mem_insert_self j S)
   have hjS : j ∉ S := fun h => hj (Finset.mem_insert_of_mem h)
   let rj : {j : σ // j ∉ S ∧ j ≠ i} := ⟨j, hjS, hji⟩
   let oldj : {j : σ // j ∉ S} := ⟨j, hjS⟩
@@ -318,10 +307,7 @@ theorem coeff_sourceCoefficientGeneral
   rw [MvPolynomial.coeff_coeff_sumAlgEquiv]
   have hmap :
       (u.sumElim r).mapDomain (Equiv.sumComm τ σ) = r.sumElim u := by
-    ext x
-    rcases x with i | i
-    · simp
-    · simp
+    ext (i | i) <;> simp
   rw [← hmap, MvPolynomial.coeff_rename_mapDomain
     (Equiv.sumComm τ σ) (Equiv.sumComm τ σ).injective]
 
@@ -350,21 +336,13 @@ theorem sourceCoefficientGeneral_monomial_sumElim
   rw [coeff_sourceCoefficientGeneral]
   by_cases hra : r = a
   · subst r
-    have hleft : u.sumElim a = d.sumElim a ↔ u = d := by
-      constructor
-      · intro h
-        ext i
-        exact DFunLike.congr_fun h (Sum.inl i)
-      · rintro rfl
-        rfl
+    have hleft : u.sumElim a = d.sumElim a ↔ u = d :=
+      ⟨fun h => Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inl i),
+        fun h => congrArg (fun v => v.sumElim a) h⟩
     simp [MvPolynomial.coeff_monomial, hleft]
-  · have hne : d.sumElim r ≠ u.sumElim a := by
-      intro h
-      apply hra
-      ext i
-      exact DFunLike.congr_fun h (Sum.inr i)
-    have hne' : u.sumElim a ≠ d.sumElim r := Ne.symm hne
-    simp [MvPolynomial.coeff_monomial, hra, hne']
+  · have hne : d.sumElim r ≠ u.sumElim a := fun h => hra <| Finsupp.ext fun i =>
+      DFunLike.congr_fun h (Sum.inr i)
+    simp [MvPolynomial.coeff_monomial, hra, hne.symm]
 
 @[simp] theorem sourceCoefficientGeneral_add
     {σ τ : Type*} (P Q : MvPolynomial (τ ⊕ σ) ℂ) (r : σ →₀ ℕ) :
@@ -437,17 +415,11 @@ private theorem rightComplementMonomial_eq_rename_boxComplement
     _ = MvPolynomial.rename Sum.inr
           (MvPolynomial.monomial (boxComplementIndex κ m).1 1) := by
       congr 1
-      calc
-        (∏ i, MvPolynomial.X (R := R) i ^ (κ i - m.1 i)) =
-            MvPolynomial.monomial
-              (Finsupp.indicator Finset.univ
-                (fun i _ => κ i - m.1 i)) 1 := by
-          simpa using MvPolynomial.prod_X_pow (R := R)
-            (fun i => κ i - m.1 i) Finset.univ
-        _ = MvPolynomial.monomial (boxComplementIndex κ m).1 1 := by
-          apply congrArg (fun d => MvPolynomial.monomial d (1 : R))
-          ext i
-          simp [Finsupp.indicator]
+      rw [MvPolynomial.prod_X_pow]
+      apply congrArg (fun d => MvPolynomial.monomial d (1 : R))
+      ext i
+      simp [boxComplementIndex, MvPolynomial.degreeOfLEIndexEquiv,
+        Finsupp.indicator]
 
 private theorem rename_inl_monomial_mul_rename_inr_monomial
     {σ τ R : Type*} [CommSemiring R]
@@ -505,9 +477,7 @@ theorem sourceCoefficientGeneral_sum {σ τ ι : Type*} (s : Finset ι)
     sourceCoefficientGeneral (∑ i ∈ s, f i) r =
       ∑ i ∈ s, sourceCoefficientGeneral (f i) r := by
   classical
-  induction s using Finset.induction_on with
-  | empty => simp [sourceCoefficientGeneral]
-  | @insert a s ha ih => simp [ha, ih]
+  induction s using Finset.induction_on <;> simp_all [sourceCoefficientGeneral]
 
 /-- The unpolarized source coefficient of a finite algebraic symbol is the operator
 image at the complementary exponent, with the expected binomial factor. -/
@@ -607,15 +577,10 @@ theorem sourceBlockwisePolarizationGeneral_algebraicSymbol_normalForm
   rw [sourceBlockwisePolarizationGeneral_algebraicSymbol_eq_sum]
   apply Fintype.sum_equiv (boxComplementEquiv κ)
   intro r
-  change
-    MvPolynomial.rename Sum.inl
-          (T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r))) *
-        MvPolynomial.rename Sum.inr (blockElementarySymmetric κ r.1) =
-      MvPolynomial.rename Sum.inl
-          (T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r))) *
-        MvPolynomial.rename Sum.inr
-          (blockElementarySymmetric κ
-            (boxComplementIndex κ (boxComplementIndex κ r)).1)
+  change _ = MvPolynomial.rename Sum.inl
+      (T (MvPolynomial.basisDegreeOfLE κ (boxComplementIndex κ r))) *
+    MvPolynomial.rename Sum.inr (blockElementarySymmetric κ
+      (boxComplementIndex κ (boxComplementIndex κ r)).1)
   rw [boxComplementIndex_involution]
 
 /-- General source-block polarization on a separated output/source
@@ -674,13 +639,11 @@ private theorem specializeLeft_mem_sourceDegreeBox
   have hcoeff : MvPolynomial.eval x (sourceCoefficientGeneral P r) ≠ 0 := by
     rw [← coeff_specializeLeft_eq_eval_sourceCoefficientGeneral]
     exact MvPolynomial.mem_support_iff.mp hr
-  have hsource : sourceCoefficientGeneral P r ≠ 0 := by
-    intro hzero
+  have hsource : sourceCoefficientGeneral P r ≠ 0 := fun hzero => by
     simp [hzero] at hcoeff
   obtain ⟨u, hu⟩ := MvPolynomial.exists_coeff_ne_zero hsource
-  have horig : P.coeff (u.sumElim r) ≠ 0 := by
-    rw [← coeff_sourceCoefficientGeneral]
-    exact hu
+  have horig : P.coeff (u.sumElim r) ≠ 0 := by simpa only
+    [coeff_sourceCoefficientGeneral] using hu
   have hmonomial : (u.sumElim r) (Sum.inr i) ≤ P.degreeOf (Sum.inr i) :=
     MvPolynomial.monomial_le_degreeOf (Sum.inr i)
       (MvPolynomial.mem_support_iff.mpr horig)
@@ -886,12 +849,10 @@ noncomputable def blockSupportsOfCardComplementEquiv
         Fintype.card_fin, Nat.sub_sub_self (m.2 i)]⟩
   left_inv s := by
     funext i
-    apply Subtype.ext
-    simp
+    exact Subtype.ext (by simp)
   right_inv s := by
     funext i
-    apply Subtype.ext
-    simp
+    exact Subtype.ext (by simp)
 
 /-- Aggregation fibers can equivalently be indexed by complementary supports,
 whose block cardinalities are `κ - m`. -/
@@ -987,11 +948,9 @@ noncomputable def diagonalProjectionDegreeBoxGeneral
     exact (MvPolynomial.mem_degreeOfLE p.1).mp p.2 u
       (MvPolynomial.mem_support_iff.mpr hcoeff) a⟩
   map_add' p q := by
-    apply Subtype.ext
-    simp
+    exact Subtype.ext (by simp)
   map_smul' c p := by
-    apply Subtype.ext
-    simp
+    exact Subtype.ext (by simp)
 
 @[simp]
 theorem coe_diagonalProjectionDegreeBoxGeneral
@@ -1028,9 +987,8 @@ private def blockEmbedding {σ : Type*} (κ : σ → ℕ) (i : σ) :
     Fin (κ i) → PolarizedSource κ := fun j => ⟨i, j⟩
 
 private theorem blockEmbedding_injective {σ : Type*} (κ : σ → ℕ) (i : σ) :
-    Function.Injective (blockEmbedding κ i) := by
-  intro j k h
-  exact eq_of_heq (Sigma.mk.inj_iff.mp h).2
+    Function.Injective (blockEmbedding κ i) := fun _ _ h =>
+  eq_of_heq (Sigma.mk.inj_iff.mp h).2
 
 /-- The blockwise polarization of a degree-box basis monomial. -/
 noncomputable def blockwisePolarizationBasis
@@ -1429,9 +1387,7 @@ theorem rename_pderiv_block_clone_eq
   let E : Equiv.Perm (PolarizedSource κ) := Equiv.Perm.sigmaCongrRight e
   have hE_j : E ⟨i, j⟩ = ⟨i, k⟩ := by
     simp [E, e]
-  have hfst : Sigma.fst ∘ E = Sigma.fst := by
-    funext x
-    rfl
+  have hfst : Sigma.fst ∘ E = Sigma.fst := rfl
   have hderiv :
       MvPolynomial.pderiv ⟨i, k⟩ Q =
         MvPolynomial.rename E (MvPolynomial.pderiv ⟨i, j⟩ Q) := by
@@ -1526,18 +1482,10 @@ theorem degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
   have houtput :
       (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ)
         (sourceCoefficientGeneral P r.1)).degreeOf (Sum.inr x) = 0 := by
-    apply Nat.le_zero.mp
-    rw [MvPolynomial.degreeOf_le_iff]
-    intro d hd
-    apply Nat.le_zero.mpr
-    by_contra hdx
-    have hxvars : Sum.inr x ∈
-        (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ)
-          (sourceCoefficientGeneral P r.1)).vars := by
-      rw [MvPolynomial.mem_vars_iff_mem_support]
-      exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdx⟩
-    obtain ⟨j, _hj, hji⟩ :=
-      MvPolynomial.mem_vars_rename Sum.inl _ hxvars
+    apply not_ne_iff.mp
+    rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
+    intro hxvars
+    obtain ⟨j, _hj, hji⟩ := MvPolynomial.mem_vars_rename Sum.inl _ hxvars
     exact Sum.inl_ne_inr hji
   have hsource :
       (MvPolynomial.rename (Sum.inr : PolarizedSource κ →
@@ -1613,18 +1561,7 @@ theorem specializeLeft_sourceBlockwisePolarizationGeneral
           (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ) Q) =
         MvPolynomial.C (MvPolynomial.eval x Q) := by
     rw [MvPolynomial.aeval_rename]
-    change MvPolynomial.aeval (MvPolynomial.C ∘ x) Q =
-      MvPolynomial.C (MvPolynomial.eval x Q)
-    induction Q using MvPolynomial.induction_on with
-    | C c => simp
-    | add Q R hQ hR =>
-        rw [map_add, hQ, hR, map_add]
-        exact (map_add MvPolynomial.C _ _).symm
-    | mul_X Q i hQ =>
-        rw [map_mul, MvPolynomial.aeval_X, hQ, map_mul,
-          MvPolynomial.eval_X]
-        simpa only [Function.comp_apply] using
-          (map_mul MvPolynomial.C (MvPolynomial.eval x Q) (x i)).symm
+    exact MvPolynomial.aeval_C_comp_left x Q
   have hsource (Q : MvPolynomial (PolarizedSource κ) ℂ) :
       MvPolynomial.aeval
           (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
