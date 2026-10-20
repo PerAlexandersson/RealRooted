@@ -67,7 +67,8 @@ private noncomputable def Lm (n : ℕ) : P2 →ₗ[ℝ] ℝ :=
   Finsupp.linearCombination ℝ (wt n) ∘ₗ
     (AddMonoidAlgebra.coeffLinearEquiv (R := ℝ) (S := ℝ) (M := Fin 2 →₀ ℕ)).toLinearMap
 
-private lemma Lm_monomial (n : ℕ) (s : Fin 2 →₀ ℕ) (c : ℝ) : Lm n (monomial s c) = c * wt n s := by
+private lemma Lm_monomial (n : ℕ) (s : Fin 2 →₀ ℕ) (c : ℝ) :
+    Lm n (monomial s c) = c * wt n s := by
   have h : (monomial s c : P2).coeff = Finsupp.single s c := by
     ext m
     simp only [coeff_monomial, Finsupp.single_apply]
@@ -79,8 +80,7 @@ private lemma Lm_C_mul (n : ℕ) (c : ℝ) (p : P2) : Lm n (C c * p) = c * Lm n 
   rw [C_mul', map_smul, smul_eq_mul]
 
 private lemma Lm_one (n : ℕ) : Lm n 1 = 1 := by
-  rw [show (1 : P2) = monomial 0 1 from rfl, Lm_monomial]
-  simp [wt, mu_zero]
+  rw [show (1 : P2) = monomial 0 1 from rfl, Lm_monomial]; simp [wt, mu_zero]
 
 private lemma Lm_X_pow (n a b : ℕ) : Lm n (X 0 ^ a * X 1 ^ b) = mu n a * mu n b := by
   rw [X_pow_eq_monomial, X_pow_eq_monomial, monomial_mul_monomial, Lm_monomial]
@@ -103,7 +103,8 @@ private lemma X_mul_monomial' (i : Fin 2) (s : Fin 2 →₀ ℕ) (c : ℝ) :
     X i * monomial s c = monomial (s + Finsupp.single i 1) c := by
   rw [X, monomial_mul_monomial, one_mul, add_comm]
 
-private lemma Lm_Dop_monomial (n : ℕ) (i : Fin 2) (s : Fin 2 →₀ ℕ) (c : ℝ) (hs : s i < 2 * n) :
+private lemma Lm_Dop_monomial (n : ℕ) (i : Fin 2) (s : Fin 2 →₀ ℕ)
+    (c : ℝ) (hs : s i < 2 * n) :
     Lm n (Dop n i (monomial s c)) = 0 := by
   rw [Dop_apply, X_mul_pderiv_monomial, nsmul_eq_mul]
   have e : C 2 * (1 + X i) * ((s i : P2) * monomial s c) + (1 - C (4 * (n:ℝ)) * X i) *
@@ -171,7 +172,8 @@ private lemma NN_C {c : ℝ} (hc : 0 ≤ c) : NN (C c) := fun s => by
   · exact hc
   · exact le_rfl
 
-private lemma Lm_nonneg (n : ℕ) (p : P2) (hp : NN p) (hd : p.totalDegree ≤ 2 * n) : 0 ≤ Lm n p := by
+private lemma Lm_nonneg (n : ℕ) (p : P2) (hp : NN p)
+    (hd : p.totalDegree ≤ 2 * n) : 0 ≤ Lm n p := by
   rw [p.as_sum, map_sum]
   apply Finset.sum_nonneg
   intro s hs
@@ -197,8 +199,7 @@ private lemma pow_xx_eq (a : ℕ) (i : Fin 2) : (1 + 2 * X i : P2) ^ a =
   apply Finset.sum_congr rfl
   intro r _
   simp only [one_pow, mul_one, map_mul, map_pow, map_natCast, mul_pow]
-  rw [map_ofNat C 2]
-  ring
+  rw [map_ofNat C 2]; ring
 
 private lemma Lm_xx_yy (n a b : ℕ) : Lm n (xx ^ a * yy ^ b) = mom n a * mom n b := by
   unfold xx yy mom
@@ -208,13 +209,11 @@ private lemma Lm_xx_yy (n a b : ℕ) : Lm n (xx ^ a * yy ^ b) = mom n a * mom n 
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro s _
-  rw [mul_mul_mul_comm, ← map_mul, Lm_C_mul, Lm_X_pow]
-  ring
+  rw [mul_mul_mul_comm, ← map_mul, Lm_C_mul, Lm_X_pow]; ring
 
 private lemma tt_eq : tt = C 2 * X 0 + C 2 * X 1 + C 4 * (X 0 * X 1) := by
   simp only [tt, xx, yy]
-  rw [map_ofNat C 2, map_ofNat C 4]
-  ring
+  rw [map_ofNat C 2, map_ofNat C 4]; ring
 
 private lemma NN_tt : NN tt := by
   rw [tt_eq]
@@ -264,11 +263,13 @@ private lemma pd1_tt : pderiv 1 tt = 2 * xx := by
       Derivation.map_one_eq_zero]
   ring
 
-private lemma pd0_tt_pow (k : ℕ) : pderiv 0 (tt ^ (k + 1)) = ((k:P2) + 1) * tt ^ k * (2 * yy) := by
+private lemma pd0_tt_pow (k : ℕ) :
+    pderiv 0 (tt ^ (k + 1)) = ((k:P2) + 1) * tt ^ k * (2 * yy) := by
   rw [Derivation.leibniz_pow, pd0_tt, nsmul_eq_mul, smul_eq_mul]
   push_cast; ring
 
-private lemma pd1_tt_pow (k : ℕ) : pderiv 1 (tt ^ (k + 1)) = ((k:P2) + 1) * tt ^ k * (2 * xx) := by
+private lemma pd1_tt_pow (k : ℕ) :
+    pderiv 1 (tt ^ (k + 1)) = ((k:P2) + 1) * tt ^ k * (2 * xx) := by
   rw [Derivation.leibniz_pow, pd1_tt, nsmul_eq_mul, smul_eq_mul]
   push_cast; ring
 
@@ -284,15 +285,13 @@ private lemma poly_star (n k : ℕ) :
   simp only [Dop_apply, Derivation.leibniz, map_sub, pd0_xx, pd0_yy, pd1_xx, pd1_yy, pd0_tt_pow,
     pd1_tt_pow, smul_eq_mul, C_four_n]
   simp only [map_mul, map_add, map_natCast, map_ofNat, map_one]
-  simp only [ee, tt, xx, yy]
-  ring
+  simp only [ee, tt, xx, yy]; ring
 
 private lemma poly_star_one (n : ℕ) :
     Dop n 0 (xx - yy) - Dop n 1 (xx - yy) = C 2 * tt - C (2 * (n : ℝ) - 1) * ee := by
   simp only [Dop_apply, map_sub, pd0_xx, pd0_yy, pd1_xx, pd1_yy, C_four_n]
   simp only [map_mul, map_natCast, map_ofNat, map_one]
-  simp only [ee, tt, xx, yy]
-  ring
+  simp only [ee, tt, xx, yy]; ring
 
 private lemma poly_S (n k : ℕ) :
     Dop n 0 (tt ^ (k + 1)) + Dop n 1 (tt ^ (k + 1)) =
@@ -300,8 +299,7 @@ private lemma poly_S (n k : ℕ) :
           (k + 1) := by
   simp only [Dop_apply, pd0_tt_pow, pd1_tt_pow, C_four_n]
   simp only [map_sub, map_mul, map_add, map_natCast, map_ofNat, map_one]
-  simp only [tt, xx, yy]
-  ring
+  simp only [tt, xx, yy]; ring
 
 private lemma poly_Y (n k : ℕ) :
     Dop n 0 (yy * tt ^ (k + 1)) + Dop n 1 (xx * tt ^ (k + 1)) =
@@ -311,8 +309,7 @@ private lemma poly_Y (n k : ℕ) :
   simp only [Dop_apply, Derivation.leibniz, pd0_yy, pd1_xx, pd0_tt_pow,
     pd1_tt_pow, smul_eq_mul, C_four_n]
   simp only [map_mul, map_add, map_natCast, map_ofNat, map_one]
-  simp only [ee, tt, xx, yy]
-  ring
+  simp only [ee, tt, xx, yy]; ring
 
 end Moments
 
@@ -334,8 +331,8 @@ private def RRec (n : ℕ) (u : ℝ) (R : ℕ → ℝ) : Prop :=
 
 /-- The increment identity: with `m = n-j+1`, `λ = (n+3)(1-u)`,
 `R(j+1) = R j + ((m-1)u/m)(R j - R(j-1)) - (λ/m) R j`. -/
-private lemma rrec_delta {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R) {j : ℕ} (hj1 : 1 ≤ j)
-    (hjn : j < n) :
+private lemma rrec_delta {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R)
+    {j : ℕ} (hj1 : 1 ≤ j) (hjn : j < n) :
     R (j + 1) = R j + (((((n : ℝ) - j + 1) - 1) * u / ((n : ℝ) - j + 1)) * (R j - R (j-1))
       - (((n : ℝ) + 3) * (1 - u) / ((n : ℝ) - j + 1)) * R j) := by
   have hm : (0:ℝ) < (n:ℝ) - j + 1 := by
@@ -349,8 +346,7 @@ private lemma small_step_identity (m lam u r d : ℝ) (hm : 0 < m) (hlam : 0 < l
     (r + ((m-1) * u / m * d - lam / m * r)) ^ 2 + ((m - 1 + 1 - lam) / lam) *
         ((m-1) * u / m * d - lam / m * r) ^ 2 =
       (1 - lam / m) * r ^ 2 + ((m-1) ^ 2 * u ^ 2 / (lam * m)) * d ^ 2 := by
-  field_simp
-  ring
+  field_simp; ring
 
 private lemma small_step (m lam u r d : ℝ) (hm : 1 ≤ m) (hlam : 0 < lam) (hlam1 : lam ≤ 1)
     (hu0 : 0 < u) (hu1 : u < 1) (hc1 : 1 - lam / m ≤ u) :
@@ -364,22 +360,34 @@ private lemma small_step (m lam u r d : ℝ) (hm : 1 ≤ m) (hlam : 0 < lam) (hl
     have h2 : (m-1)^2 ≤ m * (m + 1 - lam) := by nlinarith
     have e : u * ((m + 1 - lam) / lam) * (lam * m) = u * (m * (m + 1 - lam)) := by
       field_simp
-    rw [e]
-    nlinarith
+    rw [e]; nlinarith
   have hr := sq_nonneg r
   have hd := sq_nonneg d
   have := mul_le_mul_of_nonneg_right hc1 hr
   have := mul_le_mul_of_nonneg_right hc2 hd
   nlinarith
 
+private lemma antitone_to_one (E : ℕ → ℝ) {k : ℕ}
+    (hstep : ∀ j, 1 ≤ j → j < k → E (j + 1) ≤ E j) :
+    ∀ j, 1 ≤ j → j ≤ k → E j ≤ E 1 := by
+  intro j hj1 hjk
+  induction j with
+  | zero => lia
+  | succ i ih =>
+    rcases Nat.eq_zero_or_pos i with rfl | hi
+    · exact le_rfl
+    · exact (hstep i hi (by lia)).trans (ih hi (by lia))
+
 /-- Small `λ = (n+3)(1-u) ≤ 1`. -/
-private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R) (hu0 : 0 < u) (hu1 : u < 1)
+private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R)
+    (hu0 : 0 < u) (hu1 : u < 1)
     (hlam : ((n : ℝ) + 3) * (1 - u) ≤ 1) (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n) :
     R k ^ 2 < u := by
   obtain ⟨lam, hl⟩ : ∃ l : ℝ, l = ((n:ℝ) + 3) * (1 - u) := ⟨_, rfl⟩
   have hlam0 : 0 < lam := by rw [hl]; apply mul_pos <;> linarith
   rw [← hl] at hlam
-  let Es : ℕ → ℝ := fun j => R j ^ 2 + (((n:ℝ) - j + 1 + 1 - lam) / lam) * (R j - R (j-1)) ^ 2
+  let Es : ℕ → ℝ := fun j =>
+    R j ^ 2 + (((n:ℝ) - j + 1 + 1 - lam) / lam) * (R j - R (j-1)) ^ 2
   have hEs_ge : ∀ j, j ≤ n → R j ^ 2 ≤ Es j := by
     intro j hj
     have : (0:ℝ) ≤ ((n:ℝ) - j + 1 + 1 - lam) / lam := by
@@ -387,8 +395,7 @@ private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
       have : (j:ℝ) ≤ n := by exact_mod_cast hj
       linarith
     have := mul_nonneg this (sq_nonneg (R j - R (j-1)))
-    simp only [Es]
-    linarith
+    simp only [Es]; linarith
   have hstep : ∀ j, 1 ≤ j → j < n → Es (j+1) ≤ Es j := by
     intro j hj1 hjn
     have hD := rrec_delta h hj1 hjn
@@ -398,12 +405,12 @@ private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
     have hm1 : (1:ℝ) ≤ (n:ℝ) - j + 1 := by linarith
     have hc1 : 1 - lam / ((n:ℝ) - j + 1) ≤ u := by
       rw [sub_le_iff_le_add, ← sub_le_iff_le_add', le_div_iff₀ (by linarith)]
-      rw [hl]
-      nlinarith
+      rw [hl]; nlinarith
     have key := small_step ((n:ℝ) - j + 1) lam u (R j) (R j - R (j-1)) hm1 hlam0 hlam hu0 hu1 hc1
     have hEj1 : Es (j+1) = (R j + ((((n:ℝ) - j + 1)-1)*u/((n:ℝ) - j + 1)*(R j - R (j-1))
         - lam/((n:ℝ) - j + 1)*R j))^2 + ((((n:ℝ) - j + 1) - 1 + 1 - lam)/lam) *
-        ((((n:ℝ) - j + 1)-1)*u/((n:ℝ) - j + 1)*(R j - R (j-1)) - lam/((n:ℝ) - j + 1)*R j)^2 := by
+        ((((n:ℝ) - j + 1)-1)*u/((n:ℝ) - j + 1)*(R j - R (j-1)) -
+          lam/((n:ℝ) - j + 1)*R j)^2 := by
       simp only [Es]
       rw [show j + 1 - 1 = j by lia]
       have e2 : ((n:ℝ) - ((j+1:ℕ):ℝ) + 1 + 1 - lam) = ((n:ℝ) - j + 1) - 1 + 1 - lam := by
@@ -413,14 +420,8 @@ private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
     rw [hEj1]
     calc _ ≤ u * Es j := key
       _ ≤ Es j := by nlinarith
-  have hmono : ∀ j, 1 ≤ j → j ≤ k → Es j ≤ Es 1 := by
-    intro j hj1 hjk
-    induction j with
-    | zero => lia
-    | succ i ih =>
-      rcases Nat.eq_zero_or_pos i with rfl | hi
-      · exact le_rfl
-      · exact (hstep i hi (by lia)).trans (ih hi (by lia))
+  have hmono : ∀ j, 1 ≤ j → j ≤ k → Es j ≤ Es 1 :=
+    antitone_to_one Es fun j hj1 hjk ↦ hstep j hj1 (hjk.trans_le hkn)
   have hn : (0:ℝ) < (n:ℝ) + 1 := by positivity
   have hE1 : Es 1 = 1 - lam / ((n:ℝ) + 1) := by
     simp only [Es]
@@ -428,12 +429,10 @@ private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
     push_cast
     have hl' : lam ≠ 0 := hlam0.ne'
     field_simp
-    rw [hl]
-    ring
+    rw [hl]; ring
   have hE1u : Es 1 < u := by
     rw [hE1, sub_lt_iff_lt_add, ← sub_lt_iff_lt_add', lt_div_iff₀ hn]
-    rw [hl]
-    nlinarith
+    rw [hl]; nlinarith
   calc R k ^ 2 ≤ Es k := hEs_ge k hkn
     _ ≤ Es 1 := hmono k hk1 le_rfl
     _ < u := hE1u
@@ -457,11 +456,8 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
   have key : (nn + 3) * (m * a * q * u - dj ^ 2) = m * (a - 1) + a * (lam - 1) * (m + 1 - lam) := by
     rw [hdj, hlam_def, ha, hq_def]; ring
   have hpos : 0 < m * (a - 1) + a * (lam - 1) * (m + 1 - lam) := by
-    have h1 : 0 < m * (a - 1) := by nlinarith
-    have h2 : 0 ≤ a * (lam - 1) * (m + 1 - lam) := by
-      apply mul_nonneg; apply mul_nonneg <;> linarith
-      linarith
-    linarith
+    exact add_pos_of_pos_of_nonneg (mul_pos (by linarith) (by linarith))
+      (mul_nonneg (mul_nonneg (by linarith) (by linarith)) (by linarith))
   have hdj2 : dj ^ 2 < m * a * q * u := by
     have hN : 0 < nn + 3 := by linarith
     nlinarith
@@ -498,8 +494,7 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
   have hE : m * lam * (Ef nn m u r d - r ^ 2) = A * r ^ 2 + B * r * d + Cc * d ^ 2 := by
     unfold Ef
     rw [← hq_def, ← hlam_def, hA, hB, hC, hdj, ha]
-    field_simp
-    ring
+    field_simp; ring
   have : 0 ≤ m * lam * (Ef nn m u r d - r ^ 2) := by rw [hE]; exact hQ
   have hml : 0 < m * lam := mul_pos hm0 hlam0
   have := (mul_nonneg_iff_of_pos_left hml).1 this
@@ -549,7 +544,8 @@ private lemma large_step (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1) (hnn : 0
   nlinarith
 
 /-- Large `λ`: if `1 < λ ≤ n - k + 1`, then `R k ^ 2 ≤ u`. -/
-private lemma energy_large {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R) (hu0 : 0 < u) (hu1 : u < 1)
+private lemma energy_large {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R)
+    (hu0 : 0 < u) (hu1 : u < 1)
     (hlam1 : 1 < ((n : ℝ) + 3) * (1 - u)) (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n)
     (hk : ((n : ℝ) + 3) * (1 - u) ≤ (n : ℝ) - k + 1) :
     R k ^ 2 ≤ u := by
@@ -580,14 +576,8 @@ private lemma energy_large {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
       · ring
     rw [e]
     exact this
-  have hmono : ∀ j, 1 ≤ j → j ≤ k → Es j ≤ Es 1 := by
-    intro j hj1 hjk
-    induction j with
-    | zero => lia
-    | succ i ih =>
-      rcases Nat.eq_zero_or_pos i with rfl | hi
-      · exact le_rfl
-      · exact (hstep i hi (by lia)).trans (ih hi (by lia))
+  have hmono : ∀ j, 1 ≤ j → j ≤ k → Es j ≤ Es 1 :=
+    antitone_to_one Es hstep
   have hE1 : Es 1 = u := by
     simp only [Es]
     rw [h.2.1, show 1 - 1 = 0 from rfl, h.1]
@@ -599,16 +589,16 @@ private lemma energy_large {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R
       linarith
     have : (0:ℝ) < 1 - u := by linarith
     have hn' : (n:ℝ) ≠ 0 := hn.ne'
-    field_simp
-    ring
+    field_simp; ring
   calc R k ^ 2 ≤ Es k := hlow k hk1 le_rfl
     _ ≤ Es 1 := hmono k hk1 le_rfl
     _ = u := hE1
 
 /-- **Proposition (recurrence bound).** If `1 ≤ k ≤ n` and `k ≤ (n+3)u - 2`, then
 `R k ^ 2 ≤ u`. -/
-private theorem recurrence_bound {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R) (hu0 : 0 < u)
-    (hu1 : u < 1) (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n) (hk : (k : ℝ) ≤ ((n : ℝ) + 3) * u - 2) :
+private theorem recurrence_bound {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R)
+    (hu0 : 0 < u) (hu1 : u < 1) (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n)
+    (hk : (k : ℝ) ≤ ((n : ℝ) + 3) * u - 2) :
     R k ^ 2 ≤ u := by
   rcases le_or_gt (((n:ℝ) + 3) * (1 - u)) 1 with hl | hl
   · exact (energy_small h hu0 hu1 hl k hk1 hkn).le
@@ -643,25 +633,23 @@ private lemma star_succ (n k : ℕ) (h : k + 2 ≤ n) :
   have h1 := Lm_Dop n 1 _ hd
   have e := congrArg (Lm n) (poly_star n k)
   rw [map_sub, h0, h1, map_add, map_sub, Lm_C_mul, Lm_C_mul, Lm_C_mul] at e
-  unfold Imom Emom
-  linarith
+  unfold Imom Emom; linarith
 
 private lemma star_one (n : ℕ) (h : 1 ≤ n) : (2 * (n : ℝ) - 1) * Emom n 0 = 2 * Imom n 1 := by
   have hd : (xx - yy).totalDegree < 2 * n := by have := totalDegree_xx_sub_yy; lia
   have e := congrArg (Lm n) (poly_star_one n)
   rw [map_sub, Lm_Dop n 0 _ hd, Lm_Dop n 1 _ hd, map_sub, Lm_C_mul, Lm_C_mul] at e
   unfold Imom Emom
-  simp only [pow_zero, mul_one, pow_one]
-  linarith
+  simp only [pow_zero, mul_one, pow_one]; linarith
 
 private lemma S_id (n k : ℕ) (h : k + 1 < n) :
-    (2 * (n : ℝ) - ((k : ℝ) + 1)) * Smom n (k + 1) = 2 * (2 * (n : ℝ) + 1) * Imom n (k + 1) := by
+    (2 * (n : ℝ) - ((k : ℝ) + 1)) * Smom n (k + 1) =
+      2 * (2 * (n : ℝ) + 1) * Imom n (k + 1) := by
   have hd : (tt ^ (k+1)).totalDegree < 2 * n := by
     have := totalDegree_tt_pow (k+1); lia
   have e := congrArg (Lm n) (poly_S n k)
   rw [map_add, Lm_Dop n 0 _ hd, Lm_Dop n 1 _ hd, map_add, Lm_C_mul, Lm_C_mul] at e
-  unfold Imom Smom
-  linarith
+  unfold Imom Smom; linarith
 
 private lemma Y_id (n k : ℕ) (h : k + 1 < n) :
     2 * (2 * (n : ℝ) - ((k : ℝ) + 1)) * (Imom n (k + 2) + Imom n (k + 1)) =
@@ -675,15 +663,12 @@ private lemma Y_id (n k : ℕ) (h : k + 1 < n) :
   have e := congrArg (Lm n) (poly_Y n k)
   rw [map_add, Lm_Dop n 0 _ hdy, Lm_Dop n 1 _ hdx] at e
   simp only [LinearMap.map_sub, LinearMap.map_add, Lm_C_mul] at e
-  unfold Imom Smom Emom
-  linarith
+  unfold Imom Smom Emom; linarith
 
 /-! ### Positivity -/
 
 private lemma Imom_nonneg (n j : ℕ) (hj : j ≤ n) : 0 ≤ Imom n j :=
   Lm_nonneg n _ (NN_pow NN_tt j) ((totalDegree_tt_pow j).trans (by lia))
-
-private lemma Imom_zero (n : ℕ) : Imom n 0 = 1 := by simp [Imom, Lm_one]
 
 private lemma mu_one (n : ℕ) : mu n 1 = 1 / (4 * (n : ℝ)) := by
   rw [mu_succ, mu_zero]; simp
@@ -702,8 +687,7 @@ private lemma Emom_zero_pos (n : ℕ) (hn : 1 ≤ n) : 0 < Emom n 0 := by
   have h1 : (0:ℝ) < 4 * n - 2 := by linarith
   have h2 : (0:ℝ) < 4 * n := by linarith
   rw [← sub_pos]
-  field_simp
-  nlinarith
+  field_simp; nlinarith
 
 private lemma Emom_pos (n j : ℕ) (hj : j + 1 ≤ n) : 0 < Emom n j := by
   induction j using Nat.strong_induction_on with
@@ -727,7 +711,7 @@ noncomputable def eta (n r : ℕ) : ℝ :=
   Imom n r - ((r:ℝ) / (2 * ((n:ℝ) + 1))) *
     (((n:ℝ) - r) * Emom n (r - 1) - ((r:ℝ) - 1) * Emom n (r - 2))
 
-private lemma eta_zero (n : ℕ) : eta n 0 = 1 := by simp [eta, Imom_zero]
+private lemma eta_zero (n : ℕ) : eta n 0 = 1 := by simp [eta, Imom, Lm_one]
 
 /-- The positive form of `η_{n,r}`. -/
 private lemma eta_pos_form (n r : ℕ) (h1 : 1 ≤ r) (hr : r ≤ n) :
@@ -774,11 +758,12 @@ private noncomputable def ratioQ (r h : ℝ) : ℝ :=
   4 * h^3 + 12 * h^2 + 2 * (r - 2) * (r^2 - 3*r - 2) * h + r * (r - 4) * (r - 1) * (r + 1)
 
 private lemma ratio_identity (n q : ℕ) (hq : q + 4 ≤ n) :
-    2 * ((n : ℝ) + 1) * (2 * (n : ℝ) - ((q : ℝ) + 4)) * (2 * (n : ℝ) - ((q : ℝ) + 4) + 1) ^ 2 *
+    2 * ((n : ℝ) + 1) * (2 * (n : ℝ) - ((q : ℝ) + 4)) *
+        (2 * (n : ℝ) - ((q : ℝ) + 4) + 1) ^ 2 *
         (((q : ℝ) + 4) * eta n (q + 3) - ((n : ℝ) - ((q : ℝ) + 4) + 2) * eta n (q + 4)) =
       2 * ratioP ((q : ℝ) + 4) ((n : ℝ) - ((q : ℝ) + 4)) * Imom n (q + 3) +
-        ((q : ℝ) + 3) * ((q : ℝ) + 2) * ratioQ ((q : ℝ) + 4) ((n : ℝ) - ((q : ℝ) + 4)) * Emom n
-            (q + 1) := by
+        ((q : ℝ) + 3) * ((q : ℝ) + 2) *
+          ratioQ ((q : ℝ) + 4) ((n : ℝ) - ((q : ℝ) + 4)) * Emom n (q + 1) := by
   have e1 := star_succ n (q+2) (by lia)
   have e2 := star_succ n (q+1) (by lia)
   have e3 := S_id n (q+2) (by lia)
@@ -790,17 +775,23 @@ private lemma ratio_identity (n q : ℕ) (hq : q + 4 ≤ n) :
     show q + 1 + 1 = q + 2 by lia] at *
   push_cast at *
   unfold ratioP ratioQ
-  linear_combination (((q:ℝ)+4)^2*(-2*(n:ℝ) + ((q:ℝ)+4) - 1)^2*(-(n:ℝ) + ((q:ℝ)+4) - 2)/2) * e1 +
-      ((1 - ((q:ℝ)+4))*(-4*(n:ℝ)^3 + 12*(n:ℝ)^2*((q:ℝ)+4) - 12*(n:ℝ)^2 - 2*(n:ℝ)*((q:ℝ)+4)^3 -
-      2*(n:ℝ)*((q:ℝ)+4)^2 + 16*(n:ℝ)*((q:ℝ)+4) - 8*(n:ℝ) + ((q:ℝ)+4)^4 - 2*((q:ℝ)+4)^3 -
+  linear_combination
+      (((q:ℝ)+4)^2*(-2*(n:ℝ) + ((q:ℝ)+4) - 1)^2 *
+        (-(n:ℝ) + ((q:ℝ)+4) - 2)/2) * e1 +
+      ((1 - ((q:ℝ)+4))*(-4*(n:ℝ)^3 + 12*(n:ℝ)^2*((q:ℝ)+4) -
+      12*(n:ℝ)^2 - 2*(n:ℝ)*((q:ℝ)+4)^3 - 2*(n:ℝ)*((q:ℝ)+4)^2 +
+      16*(n:ℝ)*((q:ℝ)+4) - 8*(n:ℝ) + ((q:ℝ)+4)^4 - 2*((q:ℝ)+4)^3 -
       3*((q:ℝ)+4)^2 + 4*((q:ℝ)+4))/2) * e2 +
-      ((2*(n:ℝ) + 1)*(-(n:ℝ) + ((q:ℝ)+4) - 2)*(2*(n:ℝ)^2 - 2*(n:ℝ)*((q:ℝ)+4) + 2*(n:ℝ) + ((q:ℝ)+4)^2
-      - ((q:ℝ)+4))) * e3 + ((-(n:ℝ) + ((q:ℝ)+4) - 2)*(2*(n:ℝ) - ((q:ℝ)+4) + 1)*(2*(n:ℝ)^2 -
+      ((2*(n:ℝ) + 1)*(-(n:ℝ) + ((q:ℝ)+4) - 2)*(2*(n:ℝ)^2 -
+      2*(n:ℝ)*((q:ℝ)+4) + 2*(n:ℝ) + ((q:ℝ)+4)^2 - ((q:ℝ)+4))) * e3 +
+      ((-(n:ℝ) + ((q:ℝ)+4) - 2)*(2*(n:ℝ) - ((q:ℝ)+4) + 1)*(2*(n:ℝ)^2 -
       2*(n:ℝ)*((q:ℝ)+4) + 2*(n:ℝ) + ((q:ℝ)+4)^2 - ((q:ℝ)+4))) * e4 +
-      ((2*(n:ℝ) - ((q:ℝ)+4))*(-2*(n:ℝ) + ((q:ℝ)+4) - 1)^2*(-(n:ℝ) + ((q:ℝ)+4) - 2)/2) * e5 +
+      ((2*(n:ℝ) - ((q:ℝ)+4))*(-2*(n:ℝ) + ((q:ℝ)+4) - 1)^2 *
+        (-(n:ℝ) + ((q:ℝ)+4) - 2)/2) * e5 +
       (-((q:ℝ)+4)*(-2*(n:ℝ) + ((q:ℝ)+4))*(-2*(n:ℝ) + ((q:ℝ)+4) - 1)^2/2) * e6
 
-private lemma ratioP_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) : 0 < ratioP ((q : ℝ) + 4) (h : ℝ) := by
+private lemma ratioP_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) :
+    0 < ratioP ((q : ℝ) + 4) (h : ℝ) := by
   unfold ratioP
   rcases Nat.lt_or_ge q 5 with hq | hq
   · have hh : (32:ℝ) - q ≤ h := by
@@ -810,16 +801,14 @@ private lemma ratioP_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) : 0 < ratioP ((q : 
     have h28 : (28:ℝ) ≤ h := by
       have : (q:ℝ) ≤ 4 := by exact_mod_cast (show q ≤ 4 by lia)
       linarith
-    have hh0 : (0:ℝ) ≤ h := by positivity
     have a1 := mul_nonneg (sub_nonneg.2 h28) (sq_nonneg (h:ℝ))
-    have a2 := mul_nonneg (sub_nonneg.2 h28) hh0
+    have a2 := mul_nonneg (sub_nonneg.2 h28) (by positivity)
     interval_cases q <;> norm_num <;> nlinarith
   · obtain ⟨s, rfl⟩ : ∃ s, q = s + 5 := ⟨q - 5, by lia⟩
     push_cast
-    have hs : (0:ℝ) ≤ s := by positivity
-    have hh : (0:ℝ) ≤ h := by positivity
     have e : 2 * (((s:ℝ) + 5 + 4) ^ 2 - 3 * ((s:ℝ) + 5 + 4) - 1) * (h:ℝ) ^ 3 +
-        2 * (((s:ℝ) + 5 + 4) ^ 3 - 6 * ((s:ℝ) + 5 + 4) ^ 2 - 4 * ((s:ℝ) + 5 + 4) - 3) * (h:ℝ) ^ 2 +
+        2 * (((s:ℝ) + 5 + 4) ^ 3 - 6 * ((s:ℝ) + 5 + 4) ^ 2 -
+          4 * ((s:ℝ) + 5 + 4) - 3) * (h:ℝ) ^ 2 +
         (2 * ((s:ℝ) + 5 + 4) ^ 4 - 16 * ((s:ℝ) + 5 + 4) ^ 3 - 7 * ((s:ℝ) + 5 + 4) ^ 2 -
           5 * ((s:ℝ) + 5 + 4) - 4) * (h:ℝ) +
         ((s:ℝ) + 5 + 4) * ((s:ℝ) + 5 + 4 + 1) *
@@ -827,22 +816,22 @@ private lemma ratioP_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) : 0 < ratioP ((q : 
         2*h^3*s^2 + 30*h^3*s + 106*h^3 + 2*h^2*s^3 + 42*h^2*s^2 + 262*h^2*s + 408*h^2 +
         2*h*s^4 + 56*h*s^3 + 533*h*s^2 + 1813*h*s + 842*h + s^5 + 39*s^4 + 589*s^3 +
         4239*s^2 + 14092*s + 16020 := by ring
-    rw [e]
-    positivity
+    rw [e]; positivity
 
-private lemma ratioQ_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) : 0 < ratioQ ((q : ℝ) + 4) (h : ℝ) := by
+private lemma ratioQ_pos (q h : ℕ) (hn : 36 ≤ q + 4 + h) :
+    0 < ratioQ ((q : ℝ) + 4) (h : ℝ) := by
   unfold ratioQ
   have hh : (1:ℝ) ≤ h ∨ (1:ℝ) ≤ q := by
     rcases Nat.eq_zero_or_pos h with h0 | h0
     · right; exact_mod_cast (show 1 ≤ q by lia)
     · left; exact_mod_cast h0
   have e : 4 * (h:ℝ) ^ 3 + 12 * (h:ℝ) ^ 2 + 2 * ((q:ℝ) + 4 - 2) * (((q:ℝ) + 4) ^ 2 -
-      3 * ((q:ℝ) + 4) - 2) * h + ((q:ℝ) + 4) * ((q:ℝ) + 4 - 4) * ((q:ℝ) + 4 - 1) * ((q:ℝ) + 4 + 1) =
+      3 * ((q:ℝ) + 4) - 2) * h + ((q:ℝ) + 4) * ((q:ℝ) + 4 - 4) *
+      ((q:ℝ) + 4 - 1) * ((q:ℝ) + 4 + 1) =
       4*h^3 + 12*h^2 + 2*h*q^3 + 14*h*q^2 + 24*h*q + 8*h + q^4 + 12*q^3 + 47*q^2 + 60*q := by ring
   rw [e]
   rcases hh with hh | hh
-  · have : (0:ℝ) ≤ q := by positivity
-    positivity
+  · positivity
   · have : 0 ≤ 4*(h:ℝ)^3 + 12*h^2 + 2*h*q^3 + 14*h*q^2 + 24*h*q + 8*h + q^4 + 12*q^3 +
         47*q^2 := by positivity
     linarith
@@ -863,11 +852,8 @@ private theorem eta_ratio (n r : ℕ) (hn : 36 ≤ n) (hr4 : 4 ≤ r) (hrn : r �
   have eh : ((q:ℝ) + 4 + h - ((q:ℝ) + 4)) = h := by ring
   rw [eh] at hid
   have hrhs : 0 < 2 * ratioP ((q:ℝ) + 4) h * Imom (q + 4 + h) (q + 3) +
-      ((q:ℝ) + 3) * ((q:ℝ) + 2) * ratioQ ((q:ℝ) + 4) h * Emom (q + 4 + h) (q + 1) := by
-    have : 0 ≤ 2 * ratioP ((q:ℝ) + 4) h * Imom (q + 4 + h) (q + 3) := by positivity
-    have : 0 < ((q:ℝ) + 3) * ((q:ℝ) + 2) * ratioQ ((q:ℝ) + 4) h * Emom (q + 4 + h) (q + 1) := by
-      positivity
-    linarith
+      ((q:ℝ) + 3) * ((q:ℝ) + 2) * ratioQ ((q:ℝ) + 4) h *
+        Emom (q + 4 + h) (q + 1) := by positivity
   rw [← hid] at hrhs
   have hc : 0 < 2 * ((q:ℝ) + 4 + h + 1) * (2 * ((q:ℝ) + 4 + h) - ((q:ℝ) + 4)) *
       (2 * ((q:ℝ) + 4 + h) - ((q:ℝ) + 4) + 1) ^ 2 := by
@@ -938,7 +924,8 @@ private lemma bmCoeff_rev (n j : ℕ) (hj : j ≤ n) :
     bmCoeff n (n - j) = bmCoeff n n * (n.choose j : ℝ) * mom n j := by
   have hdn : bmCoeff n n = (1/4 : ℝ) ^ n * (2 ^ n * ((2 * n).choose n : ℝ)) := by
     simp [bmCoeff, two_mul]
-  have hre : ∑ k ∈ Finset.Icc (n - j) n, (2 : ℝ) ^ k * ((2 * n - 2 * k).choose (n - k) : ℝ) *
+  have hre : ∑ k ∈ Finset.Icc (n - j) n,
+      (2 : ℝ) ^ k * ((2 * n - 2 * k).choose (n - k) : ℝ) *
       ((n + k).choose n : ℝ) * (k.choose (n - j) : ℝ) =
       ∑ r ∈ Finset.range (j + 1), (2 : ℝ) ^ (n - r) *
           ((2 * n - 2 * (n - r)).choose (n - (n - r)) : ℝ) *
@@ -969,19 +956,21 @@ private lemma bmCoeff_rev (n j : ℕ) (hj : j ≤ n) :
 
 /-- `Λ_{n,j} = m_j^2 - (j(n-j)/(n+1)) (m_{j+1} m_{j-1} - m_j^2)`. -/
 private noncomputable def Lam (n j : ℕ) : ℝ :=
-  mom n j ^ 2 - ((j:ℝ) * ((n:ℝ) - j) / ((n:ℝ) + 1)) * (mom n (j+1) * mom n (j-1) - mom n j ^ 2)
+  mom n j ^ 2 - ((j:ℝ) * ((n:ℝ) - j) / ((n:ℝ) + 1)) *
+    (mom n (j+1) * mom n (j-1) - mom n j ^ 2)
 
 private lemma mom_zero (n : ℕ) : mom n 0 = 1 := by simp [mom, mu_zero]
 
 private lemma narC_mul (n j : ℕ) (hj : j ≤ n) :
-    narC n j * ((j : ℝ) + 1) * ((n : ℝ) - j + 1) = (n.choose j : ℝ) ^ 2 * ((n : ℝ) + 1) := by
+    narC n j * ((j : ℝ) + 1) * ((n : ℝ) - j + 1) =
+      (n.choose j : ℝ) ^ 2 * ((n : ℝ) + 1) := by
   have h := Nat.choose_mul_succ_eq n j
-  have h' : ((n.choose j : ℕ) : ℝ) * ((n:ℝ) + 1) = ((n+1).choose j : ℝ) * ((n:ℝ) - j + 1) := by
+  have h' : ((n.choose j : ℕ) : ℝ) * ((n:ℝ) + 1) =
+      ((n+1).choose j : ℝ) * ((n:ℝ) - j + 1) := by
     have := congrArg (fun x : ℕ => (x : ℝ)) h
     simp only [Nat.cast_mul] at this
     rw [Nat.cast_sub (by lia)] at this
-    push_cast at this
-    linarith
+    push_cast at this; linarith
   unfold narC
   field_simp
   linear_combination (-(n.choose j : ℝ)) * h'
@@ -995,25 +984,24 @@ private lemma bmL_eq_Lam (n j : ℕ) (hj : j ≤ n) :
   rcases Nat.eq_or_lt_of_le hj with rfl | hjn
   · simp only [Nat.sub_self, ite_true, zero_mul, sub_zero, narC_self, mul_one]
     rw [show (0:ℕ) = j - j from (Nat.sub_self j).symm, bmCoeff_rev j j le_rfl]
-    simp
-    ring
+    simp; ring
   · rw [ite_eq_right (by lia)]
     rw [show n - j - 1 = n - (j + 1) by lia, show n - j + 1 = n - (j - 1) by lia,
       bmCoeff_rev n j hj, bmCoeff_rev n (j+1) (by lia), bmCoeff_rev n (j-1) (by lia)]
     have hN := narC_mul n j hj
-    have hb : ((n.choose (j+1) : ℕ) : ℝ) * ((j:ℝ) + 1) = (n.choose j : ℝ) * ((n:ℝ) - j) := by
+    have hb : ((n.choose (j+1) : ℕ) : ℝ) * ((j:ℝ) + 1) =
+        (n.choose j : ℝ) * ((n:ℝ) - j) := by
       have := congrArg (fun x : ℕ => (x : ℝ)) (Nat.choose_succ_right_eq n j)
       simp only [Nat.cast_mul] at this
       rw [Nat.cast_sub (by lia)] at this
-      push_cast at this
-      linarith
-    have hc : (n.choose j : ℝ) * (j:ℝ) = ((n.choose (j-1) : ℕ) : ℝ) * ((n:ℝ) - j + 1) := by
+      push_cast at this; linarith
+    have hc : (n.choose j : ℝ) * (j:ℝ) =
+        ((n.choose (j-1) : ℕ) : ℝ) * ((n:ℝ) - j + 1) := by
       have := congrArg (fun x : ℕ => (x : ℝ)) (Nat.choose_succ_right_eq n (j-1))
       simp only [Nat.cast_mul] at this
       rw [Nat.cast_sub (by lia), show j - 1 + 1 = j by lia] at this
       rw [Nat.cast_sub (by lia)] at this
-      push_cast at this
-      linarith
+      push_cast at this; linarith
     have hj1 : (0:ℝ) < (j:ℝ) + 1 := by positivity
     have hj2 : (0:ℝ) < (n:ℝ) - j + 1 := by
       have : (j:ℝ) ≤ n := by exact_mod_cast hj
@@ -1032,8 +1020,7 @@ private lemma bmL_eq_Lam (n j : ℕ) (hj : j ≤ n) :
     have hea : e = a * j / ((n:ℝ) - j + 1) := by
       rw [eq_div_iff hj2.ne']; linarith
     rw [hNa, hca, hea]
-    field_simp
-    ring
+    field_simp; ring
 
 private lemma tt_add_one : tt + 1 = xx * yy := by simp [tt]
 
@@ -1047,8 +1034,7 @@ private lemma xxyy_pow_eq (i : ℕ) : (xx * yy) ^ i =
 private lemma sum_choose_Imom (n j : ℕ) :
     ∑ r ∈ Finset.range (j + 1), (j.choose r : ℝ) * Imom n r = mom n j ^ 2 := by
   have h := congrArg (Lm n) (xxyy_pow_eq j)
-  rw [mul_pow, Lm_xx_yy, map_sum] at h
-  simp only [Lm_C_mul] at h
+  rw [mul_pow, Lm_xx_yy, map_sum] at h; simp only [Lm_C_mul] at h
   unfold Imom
   rw [← h]; ring
 
@@ -1090,13 +1076,15 @@ private lemma sum_choose_E_terms (n j : ℕ) :
   rw [show i + 1 + 1 = i + 2 by ring] at *
   simp only [mul_sub, Finset.sum_sub_distrib]
   -- first sum
-  have hA : ∑ r ∈ Finset.range (i + 2), (((i+1).choose r : ℕ) : ℝ) * ((r:ℝ) * (((n:ℝ) - r) *
+  have hA : ∑ r ∈ Finset.range (i + 2),
+      (((i+1).choose r : ℕ) : ℝ) * ((r:ℝ) * (((n:ℝ) - r) *
       Emom n (r - 1))) = ∑ s ∈ Finset.range (i + 1), (((i+1).choose (s+1) : ℕ) : ℝ) *
       ((s:ℝ) + 1) * ((n:ℝ) - (s + 1)) * Emom n s := by
     rw [Finset.sum_range_succ']
     simp only [Nat.cast_zero, zero_mul, mul_zero, add_zero, Nat.add_sub_cancel]
     apply Finset.sum_congr rfl; intro s _; push_cast; ring
-  have hB : ∑ r ∈ Finset.range (i + 2), (((i+1).choose r : ℕ) : ℝ) * ((r:ℝ) * (((r:ℝ) - 1) *
+  have hB : ∑ r ∈ Finset.range (i + 2),
+      (((i+1).choose r : ℕ) : ℝ) * ((r:ℝ) * (((r:ℝ) - 1) *
       Emom n (r - 2))) = ∑ s ∈ Finset.range (i + 1), (((i+1).choose (s+2) : ℕ) : ℝ) *
       ((s:ℝ) + 2) * ((s:ℝ) + 2 - 1) * Emom n s := by
     rw [Finset.sum_range_succ', Finset.sum_range_succ', Finset.sum_range_succ _ i,
@@ -1108,15 +1096,15 @@ private lemma sum_choose_E_terms (n j : ℕ) :
   rw [show ∑ s ∈ Finset.range (i + 1), ((((i+1).choose (s+1) : ℕ) : ℝ) *
       ((s:ℝ) + 1) * ((n:ℝ) - (s + 1)) * Emom n s - (((i+1).choose (s+2) : ℕ) : ℝ) *
       ((s:ℝ) + 2) * ((s:ℝ) + 2 - 1) * Emom n s) =
-      ((i:ℝ) + 1) * ((n:ℝ) - (i + 1)) * ∑ s ∈ Finset.range (i + 1), (i.choose s : ℝ) * Emom n s by
+      ((i:ℝ) + 1) * ((n:ℝ) - (i + 1)) *
+        ∑ s ∈ Finset.range (i + 1), (i.choose s : ℝ) * Emom n s by
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl; intro s hs
     simp only [Finset.mem_range] at hs
     have := choose_term n i s (by lia)
     linear_combination (Emom n s) * this]
   rw [hE]
-  push_cast
-  ring
+  push_cast; ring
 
 /-- Binomial expansion: `∑_{r ≤ j} C(j,r) η_{n,r} = Λ_{n,j}`. -/
 private lemma sum_choose_eta (n j : ℕ) :
@@ -1125,7 +1113,8 @@ private lemma sum_choose_eta (n j : ℕ) :
   have h2 := sum_choose_E_terms n j
   have hn : (2 * ((n:ℝ) + 1)) ≠ 0 := by positivity
   unfold eta Lam
-  have : ∑ r ∈ Finset.range (j + 1), (j.choose r : ℝ) * (Imom n r - ((r:ℝ) / (2 * ((n:ℝ) + 1))) *
+  have : ∑ r ∈ Finset.range (j + 1), (j.choose r : ℝ) *
+      (Imom n r - ((r:ℝ) / (2 * ((n:ℝ) + 1))) *
       (((n:ℝ) - r) * Emom n (r - 1) - ((r:ℝ) - 1) * Emom n (r - 2))) =
       ∑ r ∈ Finset.range (j + 1), (j.choose r : ℝ) * Imom n r - (1 / (2 * ((n:ℝ) + 1))) *
       ∑ r ∈ Finset.range (j + 1), (j.choose r : ℝ) * ((r:ℝ) *
@@ -1182,25 +1171,20 @@ private lemma Lam_three (n : ℕ) : Lam n 3 = mom n 3 ^ 2 -
 
 private lemma eta_one_rec (n : ℕ) : eta n 1 = Lam n 1 - 1 := by
   have := sum_choose_eta n 1
-  simp [Finset.sum_range_succ, eta_zero] at this
-  linarith
+  simp [Finset.sum_range_succ, eta_zero] at this; linarith
 private lemma eta_two_rec (n : ℕ) : eta n 2 = Lam n 2 - 2 * eta n 1 - 1 := by
   have := sum_choose_eta n 2
-  simp [Finset.sum_range_succ, eta_zero] at this
-  linarith
+  simp [Finset.sum_range_succ, eta_zero] at this; linarith
 private lemma eta_three_rec (n : ℕ) : eta n 3 = Lam n 3 - 3 * eta n 2 - 3 * eta n 1 - 1 := by
   have := sum_choose_eta n 3
-  simp [Finset.sum_range_succ, eta_zero, Nat.choose] at this
-  linarith
+  simp [Finset.sum_range_succ, eta_zero, Nat.choose] at this; linarith
 
 private lemma eta_one_eq (n : ℕ) (hn : 36 ≤ n) :
     eta n 1 = (4 * (n : ℝ) + 1) / (2 * ((n : ℝ) + 1) * (2 * (n : ℝ) - 1)) := by
   have hn' : (36:ℝ) ≤ n := by exact_mod_cast hn
   rw [eta_one_rec, Lam_one, mom_one, mom_two, mu_one, mu_two]
-  have h1 : (4 * (n:ℝ) - 2) ≠ 0 := by linarith
-  have h2 : (2 * (n:ℝ) - 1) ≠ 0 := by linarith
-  have h3 : (n:ℝ) ≠ 0 := by linarith
-  field_simp
+  field_simp [show 4 * (n:ℝ) - 2 ≠ 0 by linarith,
+    show 2 * (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) ≠ 0 by linarith]
   ring
 
 private lemma eta_two_eq (n : ℕ) (hn : 36 ≤ n) :
@@ -1208,43 +1192,34 @@ private lemma eta_two_eq (n : ℕ) (hn : 36 ≤ n) :
       (4 * (n : ℝ) ^ 2 * ((n : ℝ) - 1) * ((n : ℝ) + 1) * (2 * (n : ℝ) - 1) ^ 2) := by
   have hn' : (36:ℝ) ≤ n := by exact_mod_cast hn
   rw [eta_two_rec, eta_one_eq n hn, Lam_two, mom_one, mom_two, mom_three, mu_one, mu_two, mu_three]
-  have h1 : (4 * (n:ℝ) - 2) ≠ 0 := by linarith
-  have h2 : (2 * (n:ℝ) - 1) ≠ 0 := by linarith
-  have h3 : (n:ℝ) ≠ 0 := by linarith
-  have h5 : ((n:ℝ) - 1) ≠ 0 := by linarith
-  have h6 : ((n:ℝ) + 1) ≠ 0 := by linarith
-  have h2' : (n:ℝ) * 2 - 1 ≠ 0 := by linarith
   rw [show 4 * (n:ℝ) - 2 = 2 * (2 * n - 1) by ring, show 4 * (n:ℝ) - 4 = 4 * (n - 1) by ring]
-  field_simp
+  field_simp [show 2 * (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) ≠ 0 by linarith,
+    show (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) + 1 ≠ 0 by linarith,
+    show (n:ℝ) * 2 - 1 ≠ 0 by linarith]
   ring
 
 private lemma eta_three_eq (n : ℕ) (hn : 36 ≤ n) :
     eta n 3 = 3 * (4 * (n : ℝ) - 1) * (4 * (n : ℝ) + 1) *
         (8 * (n : ℝ) ^ 3 - 19 * (n : ℝ) ^ 2 + 48 * n - 27) /
-      (8 * (n : ℝ) ^ 2 * ((n : ℝ) - 1) ^ 2 * ((n : ℝ) + 1) * (2 * (n : ℝ) - 3) * (2 * (n : ℝ) - 1) ^
-          2) := by
+      (8 * (n : ℝ) ^ 2 * ((n : ℝ) - 1) ^ 2 * ((n : ℝ) + 1) *
+        (2 * (n : ℝ) - 3) * (2 * (n : ℝ) - 1) ^ 2) := by
   have hn' : (36:ℝ) ≤ n := by exact_mod_cast hn
   rw [eta_three_rec, eta_two_eq n hn, eta_one_eq n hn, Lam_three, mom_two, mom_three, mom_four,
     mu_one, mu_two, mu_three, mu_four]
-  have h1 : (4 * (n:ℝ) - 2) ≠ 0 := by linarith
-  have h2 : (2 * (n:ℝ) - 1) ≠ 0 := by linarith
-  have h3 : (n:ℝ) ≠ 0 := by linarith
-  have h5 : ((n:ℝ) - 1) ≠ 0 := by linarith
-  have h7 : (2 * (n:ℝ) - 3) ≠ 0 := by linarith
-  have h8 : ((n:ℝ) + 1) ≠ 0 := by linarith
-  have h2' : (n:ℝ) * 2 - 1 ≠ 0 := by linarith
-  have h7' : (n:ℝ) * 2 - 3 ≠ 0 := by linarith
   rw [show 4 * (n:ℝ) - 2 = 2 * (2 * n - 1) by ring, show 4 * (n:ℝ) - 4 = 4 * (n - 1) by ring,
     show 4 * (n:ℝ) - 6 = 2 * (2 * n - 3) by ring]
-  field_simp
+  field_simp [show 2 * (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) ≠ 0 by linarith,
+    show (n:ℝ) - 1 ≠ 0 by linarith, show 2 * (n:ℝ) - 3 ≠ 0 by linarith,
+    show (n:ℝ) + 1 ≠ 0 by linarith, show (n:ℝ) * 2 - 1 ≠ 0 by linarith,
+    show (n:ℝ) * 2 - 3 ≠ 0 by linarith]
   ring
 
 private lemma bw_zero (n : ℕ) : bw n 0 = eta n 1 := by simp [bw]
 private lemma bw_one (n : ℕ) : bw n 1 = eta n 2 * (n : ℝ) / 2 := by simp [bw]
-private lemma bw_two (n : ℕ) (hn : 1 ≤ n) : bw n 2 = eta n 3 * ((n : ℝ) * ((n : ℝ) - 1)) / 6 := by
+private lemma bw_two (n : ℕ) (hn : 1 ≤ n) :
+    bw n 2 = eta n 3 * ((n : ℝ) * ((n : ℝ) - 1)) / 6 := by
   simp only [bw, Nat.descFactorial_succ, Nat.descFactorial_zero, Nat.factorial, Nat.sub_zero]
-  push_cast [Nat.cast_sub hn]
-  ring
+  push_cast [Nat.cast_sub hn]; ring
 
 private lemma bw_pos (n j : ℕ) (hj : j < n) : 0 < bw n j := by
   unfold bw
@@ -1257,30 +1232,22 @@ private lemma bw_pos (n j : ℕ) (hj : j < n) : 0 < bw n j := by
 private lemma bw_one_le_two (n : ℕ) (hn : 36 ≤ n) : bw n 1 ≤ bw n 2 := by
   have hn' : (36:ℝ) ≤ n := by exact_mod_cast hn
   have key : bw n 2 - bw n 1 = 3 * (4 * (n:ℝ) + 1) * (5 * (n:ℝ) - 1) * (7 * (n:ℝ) - 3) /
-      (16 * (n:ℝ) * ((n:ℝ) - 1) * ((n:ℝ) + 1) * (2 * (n:ℝ) - 3) * (2 * (n:ℝ) - 1) ^ 2) := by
+      (16 * (n:ℝ) * ((n:ℝ) - 1) * ((n:ℝ) + 1) * (2 * (n:ℝ) - 3) *
+        (2 * (n:ℝ) - 1) ^ 2) := by
     rw [bw_two n (by lia), bw_one, eta_two_eq n hn, eta_three_eq n hn]
-    have h2' : (n:ℝ) * 2 - 1 ≠ 0 := by linarith
-    have h7' : (n:ℝ) * 2 - 3 ≠ 0 := by linarith
-    have h2 : 2 * (n:ℝ) - 1 ≠ 0 := by linarith
-    have h7 : 2 * (n:ℝ) - 3 ≠ 0 := by linarith
-    have h3 : (n:ℝ) ≠ 0 := by linarith
-    have h5 : ((n:ℝ) - 1) ≠ 0 := by linarith
-    have h8 : ((n:ℝ) + 1) ≠ 0 := by linarith
-    field_simp
+    field_simp [show (n:ℝ) * 2 - 1 ≠ 0 by linarith,
+      show (n:ℝ) * 2 - 3 ≠ 0 by linarith, show 2 * (n:ℝ) - 1 ≠ 0 by linarith,
+      show 2 * (n:ℝ) - 3 ≠ 0 by linarith, show (n:ℝ) ≠ 0 by linarith,
+      show (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) + 1 ≠ 0 by linarith]
     ring
   have hA : 0 < 3 * (4 * (n:ℝ) + 1) * (5 * (n:ℝ) - 1) * (7 * (n:ℝ) - 3) := by
-    have a1 : 0 < 4 * (n:ℝ) + 1 := by linarith
-    have a2 : 0 < 5 * (n:ℝ) - 1 := by linarith
-    have a3 : 0 < 7 * (n:ℝ) - 3 := by linarith
-    positivity
+    exact mul_pos (mul_pos (mul_pos (by norm_num) (by linarith)) (by linarith)) (by linarith)
   have hB : 0 < 16 * (n:ℝ) * ((n:ℝ) - 1) * ((n:ℝ) + 1) * (2 * (n:ℝ) - 3) *
       (2 * (n:ℝ) - 1) ^ 2 := by
-    have a1 : 0 < (n:ℝ) - 1 := by linarith
-    have a2 : 0 < 2 * (n:ℝ) - 3 := by linarith
-    have a3 : 0 < 2 * (n:ℝ) - 1 := by linarith
-    positivity
-  have := div_pos hA hB
-  linarith
+    exact mul_pos
+      (mul_pos (mul_pos (mul_pos (mul_pos (by norm_num) (by linarith)) (by linarith))
+        (by linarith)) (by linarith)) (pow_pos (by linarith) 2)
+  nlinarith [div_pos hA hB]
 
 /-- **Weight shape**, part 2: `(b_1 - b_0) + 3 (b_2 - b_1) ≤ b_2 / 3`. -/
 private lemma bw_shape (n : ℕ) (hn : 36 ≤ n) :
@@ -1290,28 +1257,19 @@ private lemma bw_shape (n : ℕ) (hn : 36 ≤ n) :
       (4 * (n:ℝ) - 1) * (4 * (n:ℝ) + 1) * ((n:ℝ) ^ 2 - 3 * n - 27) /
       (12 * (n:ℝ) * ((n:ℝ) - 1) * ((n:ℝ) + 1) * (2 * (n:ℝ) - 3) * (2 * (n:ℝ) - 1)) := by
     rw [bw_two n (by lia), bw_one, bw_zero, eta_one_eq n hn, eta_two_eq n hn, eta_three_eq n hn]
-    have h2' : (n:ℝ) * 2 - 1 ≠ 0 := by linarith
-    have h7' : (n:ℝ) * 2 - 3 ≠ 0 := by linarith
-    have h2 : 2 * (n:ℝ) - 1 ≠ 0 := by linarith
-    have h7 : 2 * (n:ℝ) - 3 ≠ 0 := by linarith
-    have h3 : (n:ℝ) ≠ 0 := by linarith
-    have h5 : ((n:ℝ) - 1) ≠ 0 := by linarith
-    have h8 : ((n:ℝ) + 1) ≠ 0 := by linarith
-    field_simp
+    field_simp [show (n:ℝ) * 2 - 1 ≠ 0 by linarith,
+      show (n:ℝ) * 2 - 3 ≠ 0 by linarith, show 2 * (n:ℝ) - 1 ≠ 0 by linarith,
+      show 2 * (n:ℝ) - 3 ≠ 0 by linarith, show (n:ℝ) ≠ 0 by linarith,
+      show (n:ℝ) - 1 ≠ 0 by linarith, show (n:ℝ) + 1 ≠ 0 by linarith]
     ring
   have hA : 0 < (4 * (n:ℝ) - 1) * (4 * (n:ℝ) + 1) * ((n:ℝ) ^ 2 - 3 * n - 27) := by
-    have a1 : 0 < 4 * (n:ℝ) - 1 := by linarith
-    have a2 : 0 < 4 * (n:ℝ) + 1 := by linarith
-    have a3 : 0 < (n:ℝ) ^ 2 - 3 * n - 27 := by nlinarith
-    positivity
+    exact mul_pos (mul_pos (by linarith) (by linarith)) (by nlinarith)
   have hB : 0 < 12 * (n:ℝ) * ((n:ℝ) - 1) * ((n:ℝ) + 1) * (2 * (n:ℝ) - 3) *
       (2 * (n:ℝ) - 1) := by
-    have a1 : 0 < (n:ℝ) - 1 := by linarith
-    have a2 : 0 < 2 * (n:ℝ) - 3 := by linarith
-    have a3 : 0 < 2 * (n:ℝ) - 1 := by linarith
-    positivity
-  have := div_pos hA hB
-  linarith
+    exact mul_pos
+      (mul_pos (mul_pos (mul_pos (mul_pos (by norm_num) (by linarith)) (by linarith))
+        (by linarith)) (by linarith)) (by linarith)
+  nlinarith [div_pos hA hB]
 
 /-- **Weight shape**, part 3: `b_j < b_{j-1}` for `3 ≤ j < n`. -/
 private lemma bw_decr (n j : ℕ) (hn : 36 ≤ n) (hj3 : 3 ≤ j) (hjn : j < n) : bw n j < bw n
@@ -1351,7 +1309,9 @@ open Polynomial
 noncomputable def Apoly (n : ℕ) : ℕ → ℝ[X]
   | 0 => 1
   | 1 => C 2 * X - C (2 / (n : ℝ)) * (1 - X)
-  | (k + 2) => (C 2 * X - C (((k : ℝ) + 3) / ((n : ℝ) - ((k : ℝ) + 1))) * (1 - X)) * Apoly n (k + 1)
+  | (k + 2) =>
+      (C 2 * X - C (((k : ℝ) + 3) / ((n : ℝ) - ((k : ℝ) + 1))) * (1 - X)) *
+        Apoly n (k + 1)
       - X * Apoly n k
 
 /-- `A_{n,k-1}` with `A_{n,-1} = 0`. -/
@@ -1397,8 +1357,7 @@ private lemma Rpoly_one_eval (n : ℕ) (hn : 1 ≤ n) (x : ℝ) :
   have : (n:ℝ) ≠ 0 := by have : (1:ℝ) ≤ n := by exact_mod_cast hn
                          linarith
   push_cast
-  field_simp
-  ring
+  field_simp; ring
 
 /-- The three-term recurrence for `R_{n,k}` (evaluated). -/
 private lemma Rpoly_rec_eval (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) (x : ℝ) :
@@ -1433,12 +1392,12 @@ private lemma Rpoly_succ_sub_eval (n k : ℕ) (hkn : k < n) (x : ℝ) :
     linarith
   have hn1 : ((n:ℝ) + 1) ≠ 0 := by positivity
   push_cast
-  field_simp
-  ring
+  field_simp; ring
 
 /-- `(n+3)(1-w) V_{n,k} = (n+1)(1 - R_{n,k})` (evaluated), for `k ≤ n`. -/
 private lemma Vpoly_eval (n k : ℕ) (hkn : k ≤ n) (x : ℝ) :
-    ((n : ℝ) + 3) * (1 - x) * (Vpoly n k).eval x = ((n : ℝ) + 1) * (1 - (Rpoly n k).eval x) := by
+    ((n : ℝ) + 3) * (1 - x) * (Vpoly n k).eval x =
+      ((n : ℝ) + 1) * (1 - (Rpoly n k).eval x) := by
   induction k with
   | zero => simp [Vpoly, Rpoly_zero]
   | succ k ih =>
@@ -1450,8 +1409,7 @@ private lemma Vpoly_eval (n k : ℕ) (hkn : k ≤ n) (x : ℝ) :
     have : (Rpoly n (k+1)).eval x = (Rpoly n k).eval x -
         (((n:ℝ) + 3) / ((n:ℝ) + 1)) * (1 - x) * (Apoly n k).eval x := by linarith
     rw [this, mul_add, ih]
-    field_simp
-    ring
+    field_simp; ring
 
 private lemma Apoly_eval_one (n k : ℕ) : (Apoly n k).eval 1 = (k : ℝ) + 1 := by
   induction k using Nat.strong_induction_on with
@@ -1476,7 +1434,8 @@ lemma Rpoly_self (n : ℕ) : Rpoly n n = C (1 / ((n : ℝ) + 1)) * Apoly n n := 
   simp [Rpoly]
 
 /-- The remainders at `u` satisfy the recurrence of `RRec`. -/
-private lemma rrec_Rpoly (n : ℕ) (hn : 1 ≤ n) (u : ℝ) : RRec n u (fun k => (Rpoly n k).eval u) :=
+private lemma rrec_Rpoly (n : ℕ) (hn : 1 ≤ n) (u : ℝ) :
+    RRec n u (fun k => (Rpoly n k).eval u) :=
   ⟨by simp [Rpoly_zero], Rpoly_one_eval n hn u, fun j hj1 hjn => Rpoly_rec_eval n j hj1 hjn u⟩
 
 /-! ### Degrees and leading coefficients -/
@@ -1570,7 +1529,8 @@ private noncomputable def gc (n k s : ℕ) : ℝ :=
     ((n + 1).choose s : ℝ) * ((n - k + 1).choose (s + 2) : ℝ)
 
 /-- The generating polynomial `G_{n,k}(z) = ∑_s gc n k s z^s`. -/
-private noncomputable def Gpoly (n k : ℕ) : ℝ[X] := ∑ s ∈ Finset.range (n + 1), C (gc n k s) * X ^ s
+private noncomputable def Gpoly (n k : ℕ) : ℝ[X] :=
+  ∑ s ∈ Finset.range (n + 1), C (gc n k s) * X ^ s
 
 private lemma gc_eq_zero (n k s : ℕ) (hs : n - k ≤ s) : gc n k s = 0 := by
   unfold gc; rw [Nat.choose_eq_zero_of_lt (show n - k + 1 < s + 2 by lia)]; simp
@@ -1607,7 +1567,8 @@ private lemma gc_rec (n k s : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
     simp only [x, y]; rw [Nat.choose_succ_succ]; push_cast; ring
   have P2 : ((m+1).choose (s+3) : ℝ) = y + z := by
     simp only [y, z]; rw [Nat.choose_succ_succ]; push_cast; ring
-  have P3 : ((m+2).choose (s+3) : ℝ) = ((m+1).choose (s+2) : ℝ) + ((m+1).choose (s+3) : ℝ) := by
+  have P3 : ((m+2).choose (s+3) : ℝ) =
+      ((m+1).choose (s+2) : ℝ) + ((m+1).choose (s+3) : ℝ) := by
     rw [show m + 2 = (m+1) + 1 by ring, Nat.choose_succ_succ]; push_cast; ring
   have A1 : ((s:ℝ) + 2) * y = ((m:ℝ) - (s + 1)) * x := by
     simp only [x, y]
@@ -1772,7 +1733,8 @@ private lemma narC_identity (n s : ℕ) (hs : s < n) :
     rw [eq_div_iff (by positivity)]
     have := congrArg (fun t : ℕ => (t:ℝ)) r1
     push_cast [Nat.cast_sub (show s ≤ n + 1 by lia)] at this; linarith
-  have c2 : (((n+1).choose (s+1) : ℕ) : ℝ) = ((n+1).choose s) * ((n:ℝ) + 1 - s) / ((s:ℝ) + 1) := by
+  have c2 : (((n+1).choose (s+1) : ℕ) : ℝ) =
+      ((n+1).choose s) * ((n:ℝ) + 1 - s) / ((s:ℝ) + 1) := by
     rw [eq_div_iff (by positivity)]
     have := congrArg (fun t : ℕ => (t:ℝ)) r2
     push_cast [Nat.cast_sub (show s ≤ n + 1 by lia)] at this; linarith
@@ -1780,7 +1742,8 @@ private lemma narC_identity (n s : ℕ) (hs : s < n) :
     rw [eq_div_iff (by positivity)]
     have := congrArg (fun t : ℕ => (t:ℝ)) r3
     push_cast [Nat.cast_sub (show s ≤ n by lia)] at this; linarith
-  have c4 : (((n+1).choose (s+2) : ℕ) : ℝ) = ((n+1).choose (s+1)) * ((n:ℝ) - s) / ((s:ℝ) + 2) := by
+  have c4 : (((n+1).choose (s+2) : ℕ) : ℝ) =
+      ((n+1).choose (s+1)) * ((n:ℝ) - s) / ((s:ℝ) + 2) := by
     rw [eq_div_iff (by positivity)]
     have := congrArg (fun t : ℕ => (t:ℝ)) r4
     rw [show s + 1 + 1 = s + 2 from rfl, show n + 1 - (s + 1) = n - s by lia] at this
@@ -1792,8 +1755,7 @@ private lemma narC_identity (n s : ℕ) (hs : s < n) :
   have h1 : (n:ℝ) - s ≠ 0 := by linarith
   have h2 : (n:ℝ) - s + 1 ≠ 0 := by linarith
   have h3 : (n:ℝ) - 1 - s + 1 ≠ 0 := by linarith
-  field_simp
-  ring
+  field_simp; ring
 
 private lemma X_sub_one_eq : (X - 1 : ℝ[X]) = X - C 1 := by simp
 
@@ -1825,8 +1787,7 @@ private lemma Jpoly_derivative (n : ℕ) :
     refine Finset.sum_congr rfl fun s hs => ?_
     have hs' : s < n := Finset.mem_range.1 hs
     rw [show n - (n - 1 - s) - 1 = s by lia, show n - (n - 1 - s) = s + 1 by lia, C_mul]
-    push_cast
-    ring
+    push_cast; ring
   rw [S1, S2, ← Finset.sum_add_distrib, Finset.mul_sum]
   refine Finset.sum_congr rfl fun s hs => ?_
   have hs' : s < n := Finset.mem_range.1 hs
@@ -1865,8 +1826,6 @@ private lemma Ypoly_rec_eval (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) (w : ℝ)
   field_simp at this
   linear_combination w ^ (n - 1) * this
 
-private lemma Qpoly_self (n : ℕ) : Qpoly n n = 0 := by simp [Qpoly]
-
 private lemma Ypoly_last_eval (n : ℕ) (hn : 1 ≤ n) (w : ℝ) : (Ypoly n (n-1)).eval w =
     w ^ (n - 1) := by
   unfold Ypoly Qpoly
@@ -1882,7 +1841,7 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
   set r : ℕ → ℝ := fun k => (Rpoly n k).eval u
   set y : ℕ → ℝ := fun k => (Ypoly n k).eval u
   set D : ℕ → ℝ := fun k => r k * y (n-1) - y k * r (n-1)
-  have hyn : y n = 0 := by simp [y, Ypoly, Qpoly_self]
+  have hyn : y n = 0 := by simp [y, Ypoly, Qpoly]
   have hD : ∀ t, t ≤ n - 1 → D (n - 1 - t) = 0 ∧ D (n - t) = 0 := by
     intro t ht
     induction t with
@@ -1907,16 +1866,13 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
           - (Polynomial.eval u (Rpoly n (n-1))) * ey
       rw [h1, hD1] at hrec
       have hnk : ((n:ℝ) - k) * u ≠ 0 := by
-        apply mul_ne_zero _ hu
-        have : (k:ℝ) < n := by exact_mod_cast hkn
-        linarith
+        exact mul_ne_zero (sub_ne_zero.mpr (by exact_mod_cast hkn.ne')) hu
       rw [show n - 1 - (t + 1) = k - 1 by lia]
       have : ((n:ℝ) - k) * u * D (k-1) = 0 := by rw [hrec]; ring
       exact (mul_eq_zero.1 this).resolve_left hnk
   have hyl : y (n-1) = u ^ (n-1) := Ypoly_last_eval n (by lia) u
   have hyl0 : y (n-1) ≠ 0 := by rw [hyl]; exact pow_ne_zero _ hu
-  have hD0 : D 0 = 0 := by
-    have := (hD (n-1) le_rfl).1; rwa [Nat.sub_self] at this
+  have hD0 : D 0 = 0 := by simpa using (hD (n - 1) le_rfl).1
   have hr0 : r 0 = 1 := by simp [r, Rpoly_zero]
   have hy0 : y 0 ≠ 0 := by
     intro h0
@@ -1926,7 +1882,7 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
   have hDk : D k = 0 := by
     rcases Nat.eq_or_lt_of_le hk with rfl | hk'
     · simpa using (hD 0 (by lia)).2
-    · have := (hD (n - 1 - k) (by lia)).1; rwa [show n - 1 - (n - 1 - k) = k by lia] at this
+    · simpa [show n - 1 - (n - 1 - k) = k by lia] using (hD (n - 1 - k) (by lia)).1
   have hrn : r (n-1) = y (n-1) / y 0 := by
     simp only [D, hr0] at hD0
     field_simp; linarith
@@ -1976,8 +1932,7 @@ private lemma key_lc (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k + 1 ≤ n) :
     push_cast [Nat.cast_sub (show 1 ≤ n by lia)] at hn ⊢
     have h2 : (2:ℝ) * n - (n - 1) + 3 ≠ 0 := by linarith
     have h3 : (n:ℝ) - (n - 1) + 1 ≠ 0 := by linarith
-    field_simp
-    ring
+    field_simp; ring
   | succ t ih =>
     have ih := ih (by lia) (by lia)
     set k := n - 1 - (t + 1) with hk
@@ -2005,8 +1960,7 @@ private lemma key_lc (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k + 1 ≤ n) :
     rw [hG, show (Rpoly n k).coeff k * ((2 * (n:ℝ) - (k + 1) + 3) / ((n:ℝ) - (k + 1)) *
         (Gpoly n (k+1)).eval 1) = ((2 * (n:ℝ) - (k + 1) + 3) / ((n:ℝ) - (k + 1))) *
         ((Rpoly n k).coeff k * (Gpoly n (k+1)).eval 1) by ring, ha]
-    field_simp
-    ring
+    field_simp; ring
 
 open Classical in
 /-- **Gaussian bound.** -/
@@ -2014,8 +1968,8 @@ private theorem gauss_bound (n : ℕ) (hn : 2 ≤ n) (U : Finset ℝ) (hcard : U
     (hU : ∀ u ∈ U, 0 < u ∧ u < 1 ∧ (Jpoly n).eval u = 0 ∧ (Rpoly n n).eval u = 0)
     (u : ℝ) (hu : u ∈ U) (k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
     (Rpoly n k).eval u ^ 2 ≤
-      (((n : ℝ) + 3) / ((n : ℝ) + 1)) * (((n : ℝ) - k + 1) * ((n : ℝ) - k) / (2 * (n : ℝ) - k + 3))
-          *
+      (((n : ℝ) + 3) / ((n : ℝ) + 1)) *
+        (((n : ℝ) - k + 1) * ((n : ℝ) - k) / (2 * (n : ℝ) - k + 3)) *
         u ^ k := by
   set c : ℝ := ((n:ℝ) + 3) / ((n:ℝ) + 1) with hc
   have hc0 : 0 < c := by positivity
@@ -2047,8 +2001,7 @@ private theorem gauss_bound (n : ℕ) (hn : 2 ≤ n) (U : Finset ℝ) (hcard : U
     intro v hv
     have h := Lagrange.eval_nodal_derivative_eval_node_eq (s := U) (v := id) hv
     simp only [id] at h
-    rw [hfac, derivative_C_mul, eval_mul, eval_C, h, Lagrange.eval_nodal]
-    simp
+    rw [hfac, derivative_C_mul, eval_mul, eval_C, h, Lagrange.eval_nodal]; simp
   -- `R_n = J`
   have hRJ : Rpoly n n = Jpoly n := by
     have h1U : (1:ℝ) ∉ U := fun h => by linarith [(hU 1 h).2.1]
@@ -2144,9 +2097,11 @@ private lemma one_add_pow_ge (t : ℝ) (ht : 0 ≤ t) (k : ℕ) :
       (show (0:ℝ) ≤ 1 + t by linarith)]
 
 /-- The estimate used with the Gaussian bound when `k > (n+3)u - 2`. -/
-private lemma gauss_small (n k : ℕ) (hk3 : 3 ≤ k) (hkn : k < n) (hn : 36 ≤ n) (u : ℝ) (hu0 : 0 < u)
+private lemma gauss_small (n k : ℕ) (hk3 : 3 ≤ k) (hkn : k < n) (hn : 36 ≤ n)
+    (u : ℝ) (hu0 : 0 < u)
     (hu : ((n : ℝ) + 3) * u - 2 < k) :
-    (((n : ℝ) + 3) / ((n : ℝ) + 1)) * (((n : ℝ) - k + 1) * ((n : ℝ) - k) / (2 * (n : ℝ) - k + 3)) *
+    (((n : ℝ) + 3) / ((n : ℝ) + 1)) *
+      (((n : ℝ) - k + 1) * ((n : ℝ) - k) / (2 * (n : ℝ) - k + 3)) *
       u ^ k < 1 / 4 := by
   set a : ℝ := (k:ℝ) + 2 with ha
   set b : ℝ := (n:ℝ) - k + 1 with hb
@@ -2227,7 +2182,8 @@ private lemma R_two_lt (n : ℕ) (hn : 36 ≤ n) (u : ℝ) (hu0 : 0 < u) (hu1 : 
   nlinarith [mul_pos hu0 (sub_pos.2 hu1), mul_pos (mul_pos hu0 (sub_pos.2 hu1)) hn1]
 
 /-- `R_{n,k}(u) < (1+u)/2` at every zero `u` of `J_n`, `1 ≤ k ≤ n`. -/
-private lemma R_lt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U) (u : ℝ) (hu : u ∈ U)
+private lemma R_lt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
+    (u : ℝ) (hu : u ∈ U)
     (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n) : (Rpoly n k).eval u < (1 + u) / 2 := by
   obtain ⟨hu0, hu1, -, hRn⟩ := hU.2 u hu
   have hn' : (36:ℝ) ≤ n := by exact_mod_cast hn
@@ -2252,7 +2208,8 @@ private lemma R_lt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
     have hs := gauss_small n k (by lia) hkn' hn u hu0 hc
     nlinarith
 
-private lemma V_gt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U) (u : ℝ) (hu : u ∈ U)
+private lemma V_gt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
+    (u : ℝ) (hu : u ∈ U)
     (k : ℕ) (hk1 : 1 ≤ k) (hkn : k ≤ n) :
     ((n : ℝ) + 1) / (2 * ((n : ℝ) + 3)) < (Vpoly n k).eval u := by
   obtain ⟨hu0, hu1, -, -⟩ := hU.2 u hu
@@ -2264,9 +2221,6 @@ private lemma V_gt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
   rw [div_lt_iff₀ (by positivity)]
   have hn1 : (0:ℝ) < (n:ℝ) + 1 := by positivity
   nlinarith [mul_lt_mul_of_pos_left hR hn1]
-
-private lemma V_one (n : ℕ) (u : ℝ) : (Vpoly n 1).eval u = 1 := by
-  simp [Vpoly, Apoly]
 
 private lemma V_two_le (n : ℕ) (u : ℝ) (hu1 : u < 1) :
     (Vpoly n 2).eval u ≤ 3 := by
@@ -2313,7 +2267,7 @@ theorem weighted_sum_pos (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSe
     (fun j hj1 hjn => (V_gt n hn U hU u hu j hj1 hjn).le)
   beta_reduce at hab
   have hV0 : (Vpoly n 0).eval u = 0 := by simp [Vpoly]
-  rw [hV0, V_one] at hab
+  rw [hV0, show (Vpoly n 1).eval u = 1 by simp [Vpoly, Apoly]] at hab
   have hV2 := V_two_le n u hu1
   have h12 := bw_one_le_two n hn
   have hsh := bw_shape n hn

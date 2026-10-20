@@ -135,6 +135,13 @@ def quadraticInterlacingPencil (F G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
 def quadraticInterlacingTangent (F G : ℝ[X]) (a : ℝ) : ℝ[X] :=
   G + C a * F
 
+private lemma hasNonnegCoeffs_quadraticInterlacingPencil
+    {F G H : ℝ[X]} (hF : HasNonnegCoeffs F) (hG : HasNonnegCoeffs G)
+    (hH : HasNonnegCoeffs H) {a : ℝ} (ha : 0 ≤ a) :
+    HasNonnegCoeffs (quadraticInterlacingPencil F G H a) :=
+  (hH.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hG)).add
+    (nonnegCoeffs_C_mul (sq_nonneg a) hF)
+
 /-- The right member in the quadratic closure conclusion. -/
 def quadraticInterlacingRight (G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
   H + C a * G
@@ -187,11 +194,9 @@ theorem roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
     (hp0 : p.coeff 0 ≠ 0) : ∀ r ∈ p.roots, r < 0 := by
   intro r hr
   apply lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hp r hr)
-  intro hre
-  subst r
-  apply hp0
-  simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
-    (Polynomial.isRoot_of_mem_roots hr)
+  rintro rfl
+  exact hp0 (by simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
+    Polynomial.isRoot_of_mem_roots hr)
 
 /-- The compactified pencil has degree at most its reflection degree. -/
 theorem natDegree_compactifiedQuadraticInterlacingPencil_le
@@ -279,39 +284,19 @@ theorem C_sq_mul_quadraticInterlacingPencil_inv
     C (b ^ 2) * quadraticInterlacingPencil F G H b⁻¹ =
       quadraticInterlacingPencil H G F b := by
   simp only [quadraticInterlacingPencil, mul_add, map_mul, map_pow]
-  have hlinear : C (b ^ 2) * C (b⁻¹ * 2) = C (b * 2) := by
-    calc
-      C (b ^ 2) * C (b⁻¹ * 2) = C (b ^ 2 * (b⁻¹ * 2)) := C_mul.symm
-      _ = C (b * 2) := by
-        congr 1
-        field_simp [hb]
-  have hquadratic : C (b ^ 2) * C (b⁻¹ ^ 2) = (1 : ℝ[X]) := by
-    calc
-      C (b ^ 2) * C (b⁻¹ ^ 2) = C (b ^ 2 * b⁻¹ ^ 2) := C_mul.symm
-      _ = C 1 := by
-        congr 1
-        field_simp [hb]
-      _ = 1 := map_one C
-  have hlinear' : C b ^ 2 * (C 2 * C b⁻¹) = C 2 * C b := by
-    calc
-      C b ^ 2 * (C 2 * C b⁻¹) =
-          C (b ^ 2) * C (b⁻¹ * 2) := by
-        simp only [map_mul, map_pow]
-        ring
-      _ = C (b * 2) := hlinear
-      _ = C 2 * C b := by
-        simp only [map_mul]
-        ring
-  have hquadratic' : C b ^ 2 * C b⁻¹ ^ 2 = (1 : ℝ[X]) := by
-    simpa only [map_pow] using hquadratic
+  have hlinear : C b ^ 2 * (C 2 * C b⁻¹) = C 2 * C b := by
+    simp only [← map_mul, ← map_pow]
+    congr 1
+    field_simp
+  have hquadratic : C b ^ 2 * C b⁻¹ ^ 2 = (1 : ℝ[X]) := by
+    simp only [← map_mul, ← map_pow]
+    rw [show b ^ 2 * b⁻¹ ^ 2 = 1 by field_simp, map_one]
   calc
     C b ^ 2 * H + C b ^ 2 * (C 2 * C b⁻¹ * G) +
         C b ^ 2 * (C b⁻¹ ^ 2 * F) =
       C b ^ 2 * H + (C b ^ 2 * (C 2 * C b⁻¹)) * G +
         (C b ^ 2 * C b⁻¹ ^ 2) * F := by ring
-    _ = F + C 2 * C b * G + C b ^ 2 * H := by
-      rw [hlinear', hquadratic']
-      ring
+    _ = F + C 2 * C b * G + C b ^ 2 * H := by rw [hlinear, hquadratic]; ring
 
 /-- Splitting of the forward quadratic pencil implies splitting of its
 reciprocal pencil on nonnegative parameters. -/
@@ -1156,27 +1141,18 @@ theorem positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
       exact_mod_cast hFGcount.1
     have hle' : nG ≤ nF + 1 := by
       exact_mod_cast hFGcount.2
-    rcases eq_or_lt_of_le hle with h | h
-    · exact Or.inl h.symm
-    · right
-      lia
+    grind
   have hnGH : nH = nG ∨ nH = nG + 1 := by
     have hle : nG ≤ nH := by
       exact_mod_cast hGHcount.1
     have hle' : nH ≤ nG + 1 := by
       exact_mod_cast hGHcount.2
-    rcases eq_or_lt_of_le hle with h | h
-    · exact Or.inl h.symm
-    · right
-      lia
+    grind
   have hpdeg : p.natDegree = 2 :=
     quadraticParameterEvaluation_natDegree hrF
   have hFne : F.eval r ≠ 0 :=
     (Polynomial.not_isRoot_iff_eval_ne_zero F r).mp hrF
-  have hpne : p ≠ 0 := by
-    intro hpzero
-    have hcoeff := congrArg (fun q : ℝ[X] => q.coeff 2) hpzero
-    simp [p, quadraticParameterEvaluation, hFne] at hcoeff
+  have hpne : p ≠ 0 := fun hpzero => by simp [hpzero] at hpdeg
   have hHne : H.eval r ≠ 0 :=
     (Polynomial.not_isRoot_iff_eval_ne_zero H r).mp hrH
   have hpositiveRootsLeOne (hHe : H.eval r * e < 0) :
@@ -1276,12 +1252,8 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
       (quadraticParameterEvaluation F G H r).roots.count a = 1 := by
   let q := quadraticParameterEvaluation F G H r
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
-    rw [hrs]
-    simp
-  have hapos : 0 < a :=
-    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
-  have haq : a ∈ q.roots :=
-    (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
+    simp [hrs]
+  obtain ⟨haq, hapos⟩ := mem_positiveQuadraticParameterRoots_iff.mp hamem
   have haroot : q.IsRoot a := Polynomial.isRoot_of_mem_roots haq
   have haQroot : (quadraticInterlacingPencil F G H a).IsRoot r :=
     (quadraticParameterEvaluation_isRoot_iff F G H r a).1 haroot
@@ -1363,15 +1335,11 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
           q.roots.count b ∧
       q.roots.count a = 1 ∧ q.roots.count b = 1
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
-    rw [hrs]
-    simp
+    simp [hrs]
   have hbmem : b ∈ positiveQuadraticParameterRoots F G H r := by
-    rw [hrs]
-    simp
-  have hapos : 0 < a :=
-    (mem_positiveQuadraticParameterRoots_iff.mp hamem).2
-  have hbpos : 0 < b :=
-    (mem_positiveQuadraticParameterRoots_iff.mp hbmem).2
+    simp [hrs]
+  obtain ⟨hamemQ, hapos⟩ := mem_positiveQuadraticParameterRoots_iff.mp hamem
+  obtain ⟨hbmemQ, hbpos⟩ := mem_positiveQuadraticParameterRoots_iff.mp hbmem
   have hab : a < b := by
     have hpair := positiveQuadraticParameterRoots_pairwise F G H r
     rw [hrs] at hpair
@@ -1380,12 +1348,8 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   have hmb : m < b := by dsimp [m]; linarith
   have hmR : m < R := hmb.trans hbR
   have hm0 : (0 : ℝ) ≤ m := hapos.le.trans ham.le
-  have haRoot : q.IsRoot a :=
-    Polynomial.isRoot_of_mem_roots
-      (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
-  have hbRoot : q.IsRoot b :=
-    Polynomial.isRoot_of_mem_roots
-      (mem_positiveQuadraticParameterRoots_iff.mp hbmem).1
+  have haRoot : q.IsRoot a := Polynomial.isRoot_of_mem_roots hamemQ
+  have hbRoot : q.IsRoot b := Polynomial.isRoot_of_mem_roots hbmemQ
   have haQroot : (quadraticInterlacingPencil F G H a).IsRoot r :=
     (quadraticParameterEvaluation_isRoot_iff F G H r a).1 haRoot
   have hbQroot : (quadraticInterlacingPencil F G H b).IsRoot r :=
@@ -1419,12 +1383,8 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
         hrF habZip (ham.trans_le hμ.1) hμ.2)
       (fun μ hμ => quadraticParameterEvaluation_not_isRoot_after_last_positive
         hrF (xs := [a]) (by simpa using hrs) hμ.1)
-  have hmultA : 1 ≤ q.roots.count a :=
-    Multiset.one_le_count_iff_mem.mpr
-      (mem_positiveQuadraticParameterRoots_iff.mp hamem).1
-  have hmultB : 1 ≤ q.roots.count b :=
-    Multiset.one_le_count_iff_mem.mpr
-      (mem_positiveQuadraticParameterRoots_iff.mp hbmem).1
+  have hmultA : 1 ≤ q.roots.count a := Multiset.one_le_count_iff_mem.mpr hamemQ
+  have hmultB : 1 ≤ q.roots.count b := Multiset.one_le_count_iff_mem.mpr hbmemQ
   have hsum :=
     sum_count_positiveQuadraticParameterRoots_eq_positiveRootCount F G H r
   rw [hrs] at hsum
@@ -1450,11 +1410,7 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   have hmult_eq_drop : q.roots.count a + q.roots.count b =
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
     lia
-  constructor
-  · lia
-  · constructor
-    · lia
-    · constructor <;> lia
+  exact ⟨by lia, by lia, by lia, by lia⟩
 
 /-- Under the simple fixed-degree pencil hypotheses, every positive root of
 the parameter evaluation is simple.  The proof selects the root-count endpoint
@@ -1486,10 +1442,7 @@ theorem quadraticParameterEvaluation_positive_root_count_eq_one
     (quadraticParameterEvaluation F G H r).roots.count a = 1 := by
   let q := quadraticParameterEvaluation F G H r
   have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
-  have hqne : q ≠ 0 := by
-    intro hzero
-    rw [hzero] at hqdeg
-    simp at hqdeg
+  have hqne : q ≠ 0 := by grind
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
     rw [mem_positiveQuadraticParameterRoots_iff]
     exact ⟨(Polynomial.mem_roots hqne).2 haroot, ha⟩
@@ -1562,10 +1515,7 @@ theorem quadraticInterlacingTangent_residue_nonneg_of_nonexceptional
       (quadraticInterlacingPencil F G H a).derivative.eval r := by
   let q := quadraticParameterEvaluation F G H r
   have hqdeg : q.natDegree = 2 := quadraticParameterEvaluation_natDegree hrF
-  have hqne : q ≠ 0 := by
-    intro hzero
-    rw [hzero] at hqdeg
-    simp at hqdeg
+  have hqne : q ≠ 0 := by grind
   have haqroot : q.IsRoot a :=
     (quadraticParameterEvaluation_isRoot_iff F G H r a).2 haroot
   have hamem : a ∈ positiveQuadraticParameterRoots F G H r := by
@@ -1794,25 +1744,19 @@ theorem quadraticInterlacingTangent_residue_nonneg
   have hsrne : s ≠ r := ne_of_lt hsr
   have hsF : ¬F.IsRoot s := by
     intro hs
-    apply hsavoid
-    rw [Finset.mem_erase]
-    refine ⟨hsrne, ?_⟩
-    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
-    exact Or.inl (Or.inl ((Polynomial.mem_roots hFpos.ne_zero).2 hs))
+    exact hsavoid (Finset.mem_erase.mpr ⟨hsrne, by
+      simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+      exact Or.inl (Or.inl ((Polynomial.mem_roots hFpos.ne_zero).2 hs))⟩)
   have hsG : ¬G.IsRoot s := by
     intro hs
-    apply hsavoid
-    rw [Finset.mem_erase]
-    refine ⟨hsrne, ?_⟩
-    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
-    exact Or.inl (Or.inr ((Polynomial.mem_roots hGpos.ne_zero).2 hs))
+    exact hsavoid (Finset.mem_erase.mpr ⟨hsrne, by
+      simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+      exact Or.inl (Or.inr ((Polynomial.mem_roots hGpos.ne_zero).2 hs))⟩)
   have hsH : ¬H.IsRoot s := by
     intro hs
-    apply hsavoid
-    rw [Finset.mem_erase]
-    refine ⟨hsrne, ?_⟩
-    simp only [E, Finset.mem_union, Multiset.mem_toFinset]
-    exact Or.inr ((Polynomial.mem_roots hHpos.ne_zero).2 hs)
+    exact hsavoid (Finset.mem_erase.mpr ⟨hsrne, by
+      simp only [E, Finset.mem_union, Multiset.mem_toFinset]
+      exact Or.inr ((Polynomial.mem_roots hHpos.ne_zero).2 hs)⟩)
   have hsQroot :
       (quadraticInterlacingPencil F G H (α s)).IsRoot s :=
     (quadraticParameterEvaluation_isRoot_iff F G H s (α s)).1 hsroot
@@ -1833,10 +1777,7 @@ theorem im_ratio_nonpos_of_residue_nonneg
     (hres : ∀ s ∈ f.roots, 0 ≤ g.eval s / f.derivative.eval s)
     {z : ℂ} (hz : 0 < z.im) :
     ((complexify g).eval z / (complexify f).eval z).im ≤ 0 := by
-  have hfne : f ≠ 0 := by
-    intro hzero
-    subst f
-    simp at hfdeg
+  have hfne : f ≠ 0 := by grind
   by_cases hgne : g = 0
   · subst g
     simp
@@ -1855,8 +1796,7 @@ theorem im_ratio_nonpos_of_residue_nonneg
       degree_sub_c₀_mul_lt hfne hgne heq hfpos
     have hg'eval : ∀ s ∈ f.roots, g'.eval s = g.eval s := by
       intro s hs
-      have hsroot : f.IsRoot s := Polynomial.isRoot_of_mem_roots hs
-      simp [hg', Polynomial.IsRoot.def.mp hsroot]
+      simp [hg', Polynomial.IsRoot.def.mp (Polynomial.isRoot_of_mem_roots hs)]
     have hfz : (complexify f).eval z ≠ 0 :=
       eval_complexify_ne_zero_of_splits_of_im_pos hfs hfne hz
     have hproper : (complexify g').eval z / (complexify f).eval z =
@@ -1864,13 +1804,10 @@ theorem im_ratio_nonpos_of_residue_nonneg
           ((g.eval s / f.derivative.eval s : ℝ) : ℂ) / (z - (s : ℂ))).sum := by
       rw [complexify_ratio_eq_partialfraction hfs hfnd hfdeg hg'deg hz]
       congr 1
-      apply Multiset.map_congr rfl
-      simp_all
+      exact Multiset.map_congr rfl (by simp_all)
     have hsplit : (complexify g).eval z =
         (complexify g').eval z + (c₀ : ℂ) * (complexify f).eval z := by
-      rw [hg']
-      unfold complexify
-      simp
+      simp [hg', complexify]
     have hid : (complexify g).eval z / (complexify f).eval z =
         (c₀ : ℂ) + (f.roots.map fun s =>
           ((g.eval s / f.derivative.eval s : ℝ) : ℂ) / (z - (s : ℂ))).sum := by
@@ -2000,21 +1937,15 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
   have hGne : G ≠ 0 := hFG.2.1.1
   have hHne : H ≠ 0 := hGH.2.1.1
   have hQnn : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil F G H b) := by
-    intro b hb
-    exact (hH.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG)).add
-      (nonnegCoeffs_C_mul (sq_nonneg b) hF)
+      HasNonnegCoeffs (quadraticInterlacingPencil F G H b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hF hG hH hb
   have hQdegree : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil F G H b).natDegree = D := by
-    intro b hb
-    exact natDegree_quadraticInterlacingPencil_eq hF hG hH hHne
-      hFdeg hGdeg hb
+      (quadraticInterlacingPencil F G H b).natDegree = D :=
+    fun _ hb => natDegree_quadraticInterlacingPencil_eq hF hG hH hHne hFdeg hGdeg hb
   have hQne : ∀ b : ℝ, 0 ≤ b →
-      quadraticInterlacingPencil F G H b ≠ 0 := by
-    intro b hb hzero
-    have hdeg := hQdegree b hb
-    rw [hzero] at hdeg
-    exact hHdeg hdeg.symm
+      quadraticInterlacingPencil F G H b ≠ 0 := fun b hb hzero => by
+    have := hQdegree b hb
+    simp_all
   have hAnn : HasNonnegCoeffs (quadraticInterlacingTangent F G a) :=
     hG.add (nonnegCoeffs_C_mul ha.le hF)
   have hAne : quadraticInterlacingTangent F G a ≠ 0 := by
@@ -2043,50 +1974,34 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
   have hGεdeg : Gε.natDegree ≤ D := by simpa [Gε, D] using hGdeg
   have hHεdeg : Hε.natDegree ≤ D := by simp [Hε, D]
   have hQεdegree : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Fε Gε Hε b).natDegree = D := by
-    intro b hb
+      (quadraticInterlacingPencil Fε Gε Hε b).natDegree = D := fun b hb => by
     rw [← iterateTDeriv_quadraticInterlacingPencil,
       natDegree_iterateTDeriv]
     exact hQdegree b hb
   have hQεdegreeLocal : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
-      (quadraticInterlacingPencil Fε Gε Hε c).natDegree = D := by
-    intro b hb
-    apply Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+      (quadraticInterlacingPencil Fε Gε Hε c).natDegree = D := fun b hb =>
+    Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
       (fun c => quadraticInterlacingPencil Fε Gε Hε c)
       (hQεdegree b hb)
-    · intro hzero
-      have hdeg := hQεdegree b hb
-      rw [hzero] at hdeg
-      exact hD hdeg.symm
-    · intro c
-      exact natDegree_quadraticInterlacingPencil_le
-        hFεdeg hGεdeg hHεdeg c
-    · intro i
-      exact (contDiff_coeff_quadraticInterlacingPencil Fε Gε Hε i).continuous
+      (fun hzero => hD (by simpa [hzero] using (hQεdegree b hb).symm))
+      (natDegree_quadraticInterlacingPencil_le hFεdeg hGεdeg hHεdeg)
+      fun i => (contDiff_coeff_quadraticInterlacingPencil Fε Gε Hε i).continuous
   have hQεnn : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil Fε Gε Hε b) := by
-    intro b hb
-    exact (hHεnn.add
-      (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hGεnn)).add
-        (nonnegCoeffs_C_mul (sq_nonneg b) hFεnn)
+      HasNonnegCoeffs (quadraticInterlacingPencil Fε Gε Hε b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hFεnn hGεnn hHεnn hb
   have hQεne : ∀ b : ℝ, 0 ≤ b →
-      quadraticInterlacingPencil Fε Gε Hε b ≠ 0 := by
-    intro b hb hzero
-    have hdeg := hQεdegree b hb
-    rw [hzero] at hdeg
-    exact hD hdeg.symm
+      quadraticInterlacingPencil Fε Gε Hε b ≠ 0 := fun b hb hzero =>
+    hD (by simpa [hzero] using (hQεdegree b hb).symm)
   have hQεpos : ∀ b : ℝ, 0 ≤ b →
       HasPosLeadingCoeff (quadraticInterlacingPencil Fε Gε Hε b) :=
     fun b hb => (hQεnn b hb).pos_leadingCoeff (hQεne b hb)
   have hQεsplits : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Fε Gε Hε b).Splits := by
-    intro b hb
+      (quadraticInterlacingPencil Fε Gε Hε b).Splits := fun b hb => by
     rw [← iterateTDeriv_quadraticInterlacingPencil]
     exact splits_iterateTDeriv_all (hsplits b hb) D
   have hQεsimple : ∀ b : ℝ, 0 ≤ b →
-      HasSimpleRoots (quadraticInterlacingPencil Fε Gε Hε b) := by
-    intro b hb
-    exact hasSimpleRoots_regularized_quadraticInterlacingPencil heps
+      HasSimpleRoots (quadraticInterlacingPencil Fε Gε Hε b) := fun _ hb =>
+    hasSimpleRoots_regularized_quadraticInterlacingPencil heps
       hQne hsplits (fun c hc => (hQdegree c hc).le) hb
   have hQεcoeff0 : ∀ b : ℝ, 0 ≤ b →
       (quadraticInterlacingPencil Fε Gε Hε b).coeff 0 ≠ 0 := by
@@ -2096,22 +2011,18 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
     exact hpos.ne'
   have hQεneg : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
-      (quadraticInterlacingPencil Fε Gε Hε b).roots, q < 0 := by
-    intro b hb
-    exact roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+      (quadraticInterlacingPencil Fε Gε Hε b).roots, q < 0 := fun b hb =>
+    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
       (hQεnn b hb) (hQεcoeff0 b hb)
   have hsplitsRecip := splits_reciprocalQuadraticInterlacingPencil
     hFG.1.2 hsplits
   have hQεsplitsRecip : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Hε Gε Fε b).Splits := by
-    intro b hb
+      (quadraticInterlacingPencil Hε Gε Fε b).Splits := fun b hb => by
     rw [← iterateTDeriv_quadraticInterlacingPencil]
     exact splits_iterateTDeriv_all (hsplitsRecip b hb) D
   have hQrecipNN : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil H G F b) := by
-    intro b hb
-    exact (hF.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG)).add
-      (nonnegCoeffs_C_mul (sq_nonneg b) hH)
+      HasNonnegCoeffs (quadraticInterlacingPencil H G F b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hH hG hF hb
   have hQrecipNe : ∀ b : ℝ, 0 ≤ b →
       quadraticInterlacingPencil H G F b ≠ 0 := by
     intro b hb
@@ -2122,9 +2033,8 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     simpa [quadraticInterlacingPencil, add_comm, add_left_comm,
       add_assoc] using hsum
   have hQrecipDeg : ∀ b : ℝ,
-      (quadraticInterlacingPencil H G F b).natDegree ≤ D := by
-    intro b
-    exact natDegree_quadraticInterlacingPencil_le le_rfl hGdeg hFdeg b
+      (quadraticInterlacingPencil H G F b).natDegree ≤ D :=
+    natDegree_quadraticInterlacingPencil_le le_rfl hGdeg hFdeg
   have hQεcoeff0Recip : ∀ b : ℝ, 0 ≤ b →
       (quadraticInterlacingPencil Hε Gε Fε b).coeff 0 ≠ 0 := by
     intro b hb
@@ -2133,15 +2043,11 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
     exact hpos.ne'
   have hQεnnRecip : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil Hε Gε Fε b) := by
-    intro b hb
-    exact (hFεnn.add
-      (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hGεnn)).add
-        (nonnegCoeffs_C_mul (sq_nonneg b) hHεnn)
+      HasNonnegCoeffs (quadraticInterlacingPencil Hε Gε Fε b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hHεnn hGεnn hFεnn hb
   have hQεnegRecip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
-      (quadraticInterlacingPencil Hε Gε Fε b).roots, q < 0 := by
-    intro b hb
-    exact roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+      (quadraticInterlacingPencil Hε Gε Fε b).roots, q < 0 := fun b hb =>
+    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
       (hQεnnRecip b hb) (hQεcoeff0Recip b hb)
   have hAεnn : HasNonnegCoeffs (quadraticInterlacingTangent Fε Gε a) :=
     hGεnn.add (nonnegCoeffs_C_mul ha.le hFεnn)
@@ -2149,8 +2055,8 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     simpa [quadraticInterlacingTangent, add_comm] using
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
         (nonnegCoeffs_C_mul ha.le hFεnn) hGεnn hGεne
-  have hAεdeg : (quadraticInterlacingTangent Fε Gε a).natDegree ≤ D := by
-    exact (natDegree_add_le _ _).trans
+  have hAεdeg : (quadraticInterlacingTangent Fε Gε a).natDegree ≤ D :=
+    (natDegree_add_le _ _).trans
       (max_le hGεdeg ((natDegree_C_mul_le _ _).trans hFεdeg))
   exact strictInterl_quadraticInterlacingTangent_pencil_of_simple_path
     (hFεnn.pos_leadingCoeff hFεne)
@@ -2261,17 +2167,16 @@ theorem allComboRealRooted_quadraticInterlacingTangent_right
       (quadraticInterlacingTangent F G a)
       (quadraticInterlacingRight G H a) := by
   intro alpha beta
-  have hcomb := h (alpha - a * beta) beta
   rw [quadraticInterlacingRight_eq_pencil_sub_tangent]
-  rw [← show
-    C (alpha - a * beta) * quadraticInterlacingTangent F G a +
-        C beta * quadraticInterlacingPencil F G H a =
+  rw [← show C (alpha - a * beta) * quadraticInterlacingTangent F G a +
+      C beta * quadraticInterlacingPencil F G H a =
       C alpha * quadraticInterlacingTangent F G a +
         C beta * (quadraticInterlacingPencil F G H a -
           C a * quadraticInterlacingTangent F G a) by
     simp only [map_sub, map_mul]
-    ring]
-  exact hcomb
+    ring
+  ]
+  exact h (alpha - a * beta) beta
 
 /-- Algebraic end of the quadratic closure argument.
 
@@ -2290,26 +2195,15 @@ theorem strictInterl_quadraticInterlacingRight_of_tangent
     StrictInterl
       (quadraticInterlacingTangent F G a)
       (quadraticInterlacingRight G H a) := by
-  have hallAQ : AllComboRealRooted
-      (quadraticInterlacingTangent F G a)
-      (quadraticInterlacingPencil F G H a) :=
-    allComboRealRooted_of_strictInterl hAQ
   have hallAB : AllComboRealRooted
       (quadraticInterlacingTangent F G a)
       (quadraticInterlacingRight G H a) :=
-    allComboRealRooted_quadraticInterlacingTangent_right hallAQ
-  have hWQ : ∀ x : ℝ, 0 ≤
-      (wronskian (quadraticInterlacingTangent F G a)
-        (quadraticInterlacingPencil F G H a)).eval x :=
-    wronskian_eval_nonneg_of_strictInterl hQpos hApos hAQ
-  have hWB : ∀ x : ℝ, 0 ≤
-      (wronskian (quadraticInterlacingTangent F G a)
-        (quadraticInterlacingRight G H a)).eval x := by
-    intro x
-    rw [← wronskian_quadraticInterlacingTangent_pencil]
-    exact hWQ x
+    allComboRealRooted_quadraticInterlacingTangent_right
+      (allComboRealRooted_of_strictInterl hAQ)
   exact strictInterl_of_allComboRealRooted_of_wronskian_nonneg
-    hBpos hApos (hallAB.comm) hWB
+    hBpos hApos hallAB.comm fun x => by
+      rw [← wronskian_quadraticInterlacingTangent_pencil]
+      exact wronskian_eval_nonneg_of_strictInterl hQpos hApos hAQ x
 
 /-- A nonpositive upper-half-plane logarithmic ratio gives the full
 quadratic-closure conclusion.  This packages the Hermite--Biehler endpoint

@@ -507,13 +507,9 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
               (n - k) * (n + α + β + 1) *
                 Ring.choose (n + α + 1) (n - k) *
                 Ring.choose (n + α + β + k + 1) k := by
-          calc
-            _ = ((n + α + 1) * Ring.choose (n + α) (n - k - 1)) *
-                ((k + 1) * Ring.choose (n + α + β + k + 1) (k + 1)) := by ring
-            _ = ((n - k) * Ring.choose (n + α + 1) (n - k)) *
-                ((n + α + β + 1) * Ring.choose (n + α + β + k + 1) k) := by
-              rw [← hA0', hB0']
-            _ = _ := by ring
+          linear_combination
+            -((k + 1) * Ring.choose (n + α + β + k + 1) (k + 1)) * hA0' +
+              ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB0'
         have hterm2 :
             (α + k + 2) * (n + α + β + 2) *
                 Ring.choose (n + α + 2) (n - k) *
@@ -521,14 +517,9 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
               (n + α + 2) * (n + α + β + k + 2) *
                 Ring.choose (n + α + 1) (n - k) *
                 Ring.choose (n + α + β + k + 1) k := by
-          calc
-            _ = ((α + k + 2) * Ring.choose (n + α + 2) (n - k)) *
-                ((n + α + β + 2) * Ring.choose (n + α + β + k + 2) k) := by ring
-            _ = ((n + α + 2) * Ring.choose (n + α + 1) (n - k)) *
-                ((n + α + β + k + 2) *
-                  Ring.choose (n + α + β + k + 1) k) := by
-              rw [hA2', hB2']
-            _ = _ := by ring
+          linear_combination
+            ((n + α + β + 2) * Ring.choose (n + α + β + k + 2) k) * hA2' +
+              ((n + α + 2) * Ring.choose (n + α + 1) (n - k)) * hB2'
         have hterm1 :
             (k + 1) * (α + k + 2) *
                 Ring.choose (n + α + 1) (n - k - 1) *
@@ -536,14 +527,9 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
               (n - k) * (n + α + β + k + 2) *
                 Ring.choose (n + α + 1) (n - k) *
                 Ring.choose (n + α + β + k + 1) k := by
-          calc
-            _ = ((α + k + 2) * Ring.choose (n + α + 1) (n - k - 1)) *
-                ((k + 1) * Ring.choose (n + α + β + k + 2) (k + 1)) := by ring
-            _ = ((n - k) * Ring.choose (n + α + 1) (n - k)) *
-                ((n + α + β + k + 2) *
-                  Ring.choose (n + α + β + k + 1) k) := by
-              rw [← hA1', hB1']
-            _ = _ := by ring
+          linear_combination
+            -((k + 1) * Ring.choose (n + α + β + k + 2) (k + 1)) * hA1' +
+              ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB1'
         have hfactor : (k + 1 : ℝ) * (α + k + 2) ≠ 0 := by
           apply mul_ne_zero
           · positivity
@@ -1151,15 +1137,10 @@ private lemma leading_choose_succ_degree (n : ℕ) (α β : ℝ) :
       (n + α + β + 1) * Ring.choose (2 * n + α + β + 1) n =
         (2 * n + α + β + 1) * Ring.choose (2 * n + α + β) n := by
     convert hsecond using 1; ring
-  calc
-    _ = ((n + 1) * Ring.choose (2 * n + α + β + 2) (n + 1)) *
-        (n + α + β + 1) := by ring_nf
-    _ = ((2 * n + α + β + 2) *
-          Ring.choose (2 * n + α + β + 1) n) *
-        (n + α + β + 1) := by rw [hfirst']
-    _ = (2 * n + α + β + 2) *
-        ((n + α + β + 1) * Ring.choose (2 * n + α + β + 1) n) := by ring
-    _ = _ := by rw [hsecond']; ring_nf
+  ring_nf at hfirst' hsecond' ⊢
+  linear_combination
+    (n + α + β + 1) * hfirst' +
+      ((2 : ℝ) * n + α + β + 2) * hsecond'
 
 private lemma leading_scale_succ_degree (n : ℕ) (α β : ℝ) :
     (n + 1) * (n + α + β + 1) *
@@ -1230,24 +1211,17 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
     field_simp [hn1, hna]
     ring
   · have hkpos : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
+    have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
+    have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hkpos
     by_cases hkle : k ≤ n
     · have hup := coeff_shiftedJacobi_succ_degree n k α β hkle
       have hwithin := coeff_succ_relation n (k - 1) α β (by lia)
       have hdu : ((n + 1 - k : ℕ) : ℝ) * (n + α + β + 1) ≠ 0 := by
-        apply mul_ne_zero
-        · exact_mod_cast (Nat.ne_of_gt (Nat.sub_pos_of_lt (by lia : k < n + 1)))
-        · have : 0 < (n : ℝ) + α + β + 1 := by
-            have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-            linarith
-          exact this.ne'
+        exact mul_ne_zero
+          (by exact_mod_cast (Nat.ne_of_gt (Nat.sub_pos_of_lt (by lia : k < n + 1))))
+          (by linarith)
       have hdw : ((n - k + 1 : ℕ) : ℝ) * (n + α + β + k) ≠ 0 := by
-        apply mul_ne_zero
-        · positivity
-        · have : 0 < (n : ℝ) + α + β + k := by
-            have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-            have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hkpos
-            linarith
-          exact this.ne'
+        exact mul_ne_zero (by positivity) (by linarith)
       have hup' :
           (shiftedJacobi (n + 1) α β).coeff k =
             ((n + α + 1) * (n + α + β + k + 1) *
@@ -1287,12 +1261,7 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
       by_cases hklt : k < n
       · have hdown := coeff_shiftedJacobi_pred_degree n k α β (by lia) hklt
         have hdd : (n + α) * (n + α + β + k) ≠ 0 := by
-          apply mul_ne_zero
-          · have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-            linarith
-          · have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-            have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hkpos
-            linarith
+          exact mul_ne_zero (by linarith) (by linarith)
         have hdown' :
             (shiftedJacobi (n - 1) α β).coeff k =
               (((n - k : ℕ) : ℝ) * (n + α + β) *
@@ -1307,23 +1276,12 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
         have hcastDown : ((n - k : ℕ) : ℝ) = n - k := by
           rw [Nat.cast_sub hkle]
         rw [hcastDown]
-        have hu1 : (n + 1 - k : ℝ) ≠ 0 := by
-          have hnR : (n : ℝ) > k := by exact_mod_cast hklt
-          linarith
-        have hu2 : (n + α + β + 1 : ℝ) ≠ 0 := by
-          have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-          linarith
-        have hw1 : (n - k + 1 : ℝ) ≠ 0 := by
-          have hnR : (n : ℝ) > k := by exact_mod_cast hklt
-          linarith
-        have hw2 : (n + α + β + k : ℝ) ≠ 0 := by
-          have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-          have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hkpos
-          linarith
-        have ha : (n + α : ℝ) ≠ 0 := by
-          have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-          linarith
-        field_simp [hu1, hu2, hw1, hw2, ha]
+        have hnkR : (k : ℝ) < n := by exact_mod_cast hklt
+        field_simp [show (n + 1 - k : ℝ) ≠ 0 by linarith,
+          show (n + α + β + 1 : ℝ) ≠ 0 by linarith,
+          show (n - k + 1 : ℝ) ≠ 0 by linarith,
+          show (n + α + β + k : ℝ) ≠ 0 by linarith,
+          show (n + α : ℝ) ≠ 0 by linarith]
         ring
       · have hkn : k = n := by lia
         subst k
@@ -1336,13 +1294,8 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
         have hwithinParam : (n + α + β + n : ℝ) = 2 * n + α + β := by ring
         rw [hupDen, hwithinDen, hwithinParam]
         simp only [one_mul]
-        have hu2 : (n + α + β + 1 : ℝ) ≠ 0 := by
-          have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-          linarith
-        have hw2 : (2 * n + α + β : ℝ) ≠ 0 := by
-          have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-          linarith
-        field_simp [hu2, hw2]
+        field_simp [show (n + α + β + 1 : ℝ) ≠ 0 by linarith,
+          show (2 * n + α + β : ℝ) ≠ 0 by linarith]
         ring
     · by_cases hksucc : k = n + 1
       · subst k
@@ -1369,11 +1322,9 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
           rw [show k = k - 1 + 1 by lia, coeff_X_mul]
           rw [Nat.add_sub_cancel]
         rw [hcoeffX]
-        have hkn : ¬k ≤ n := by lia
-        have hknsucc : ¬k ≤ n + 1 := by lia
-        have hkpredn : ¬k - 1 ≤ n := by lia
-        have hknpred : ¬k ≤ n - 1 := by lia
-        simp [coeff_shiftedJacobi, hkn, hknsucc, hkpredn, hknpred]
+        simp [coeff_shiftedJacobi, Nat.not_le.mpr hklarge,
+          Nat.not_le.mpr (by lia : n < k), Nat.not_le.mpr (by lia : n < k - 1),
+          Nat.not_le.mpr (by lia : n - 1 < k)]
 
 /-- The monic shifted Jacobi polynomials satisfy their standard Favard
 recurrence from degree two onward. -/
