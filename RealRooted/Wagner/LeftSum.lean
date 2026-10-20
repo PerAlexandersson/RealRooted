@@ -27,22 +27,20 @@ theorem StrictInterl.add_of_left {f g h : ℝ[X]}
     StrictInterl h (f + g) := by
   wlog hh_pos : HasPosLeadingCoeff h generalizing h
   · have hneg_pos : HasPosLeadingCoeff (C (-1 : ℝ) * h) := by
+      unfold HasPosLeadingCoeff at hh_pos ⊢
       have hlt : h.leadingCoeff < 0 :=
         lt_of_le_of_ne (not_lt.mp hh_pos) (leadingCoeff_ne_zero.mpr hhf.1.1)
-      unfold HasPosLeadingCoeff
       rw [leadingCoeff_mul, leadingCoeff_C]
-      linarith
-    have hback := (this (hhf.C_mul_left (by norm_num)) (hhg.C_mul_left (by norm_num))
-      hneg_pos).C_mul_left (show (-1 : ℝ) ≠ 0 by norm_num)
-    rwa [← mul_assoc, ← C_mul, neg_one_mul, neg_neg, C_1, one_mul] at hback
-  obtain ⟨r, hh_le, hf_le, hg_le⟩ : ∃ r : ℝ, (∀ s ∈ h.roots, s ≤ r) ∧
-      (∀ s ∈ f.roots, s ≤ r) ∧ ∀ s ∈ g.roots, s ≤ r := by
-    obtain ⟨r₁, hr₁⟩ := exists_root_upper_bound h
-    obtain ⟨r₂, hr₂⟩ := exists_root_upper_bound f
-    obtain ⟨r₃, hr₃⟩ := exists_root_upper_bound g
-    exact ⟨max r₁ (max r₂ r₃), fun s hs => le_max_of_le_left (hr₁ s hs),
-      fun s hs => le_max_of_le_right (le_max_of_le_left (hr₂ s hs)),
-      fun s hs => le_max_of_le_right (le_max_of_le_right (hr₃ s hs))⟩
+      nlinarith
+    simpa only [← mul_assoc, ← C_mul, neg_one_mul, neg_neg, C_1, one_mul] using
+      (this (hhf.C_mul_left (by norm_num)) (hhg.C_mul_left (by norm_num))
+        hneg_pos).C_mul_left (show (-1 : ℝ) ≠ 0 by norm_num)
+  obtain ⟨r₁, hr₁⟩ := exists_root_upper_bound f
+  obtain ⟨r₂, hr₂⟩ := exists_root_upper_bound g
+  let r := max r₁ r₂
+  have hf_le : ∀ s ∈ f.roots, s ≤ r := fun s hs => le_max_of_le_left (hr₁ s hs)
+  have hg_le : ∀ s ∈ g.roots, s ≤ r := fun s hs => le_max_of_le_right (hr₂ s hs)
+  have hh_le : ∀ s ∈ h.roots, s ≤ r := hhf.roots_le_of_right hf_le
   have hright : ∀ p : ℝ[X], StrictInterl h p → HasPosLeadingCoeff p →
       (∀ s ∈ p.roots, s ≤ r) → StrictInterl p ((X - C r) * h) := by
     intro p hp hp_pos hp_le
@@ -54,10 +52,8 @@ theorem StrictInterl.add_of_left {f g h : ℝ[X]}
     StrictInterl.add_of_right_of_posLeadingCoeff (hright f hhf hf_pos hf_le)
       (hright g hhg hg_pos hg_le) hf_pos hg_pos
   have hsum_pos : HasPosLeadingCoeff (f + g) := by
-    rcases lt_trichotomy f.natDegree g.natDegree with hlt | heq | hgt
-    · exact hasPosLeadingCoeff_add_of_natDegree_lt_right hlt hg_pos
-    · exact hasPosLeadingCoeff_add_of_same_natDegree heq hf_pos hg_pos
-    · exact hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hf_pos
+    grind [hasPosLeadingCoeff_add_of_natDegree_lt_right,
+      hasPosLeadingCoeff_add_of_same_natDegree, hasPosLeadingCoeff_add_of_natDegree_lt_left]
   have hsum_le : ∀ s ∈ (f + g).roots, s ≤ r :=
     hsum.roots_le_of_right (roots_le_X_sub_C_mul hhf.1.2 hh_le)
   have hXh_deg : ((X - C r) * h).natDegree = h.natDegree + 1 := by
@@ -86,19 +82,15 @@ namespace SumCompatibleLeft
 
 lemma hasPosLeadingCoeff_sum {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → HasPosLeadingCoeff l.sum
-  | _, singleton _ hpos => by
-      simp_all
+  | _, singleton _ hpos => by simpa
   | _, @cons _ p l _ hpos hl => by
       have htail_pos : HasPosLeadingCoeff l.sum := hasPosLeadingCoeff_sum hl
-      rcases lt_trichotomy p.natDegree l.sum.natDegree with hlt | heq | hgt
-      · simpa using hasPosLeadingCoeff_add_of_natDegree_lt_right hlt htail_pos
-      · simpa [List.sum_cons] using hasPosLeadingCoeff_add_of_same_natDegree heq hpos htail_pos
-      · simpa using hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hpos
+      grind [hasPosLeadingCoeff_add_of_natDegree_lt_right,
+        hasPosLeadingCoeff_add_of_same_natDegree, hasPosLeadingCoeff_add_of_natDegree_lt_left]
 
 lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List ℝ[X]}, SumCompatibleLeft h l → StrictInterl h l.sum
-  | _, singleton hstrictInterl _ => by
-      simp_all
+  | _, singleton hstrictInterl _ => by simpa
   | _, @cons _ p l hstrictInterl hpos hl =>
       StrictInterl.add_of_left hstrictInterl (toStrictInterl hl)
         hpos (hasPosLeadingCoeff_sum hl)

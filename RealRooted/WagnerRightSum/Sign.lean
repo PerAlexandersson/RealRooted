@@ -82,10 +82,9 @@ lemma prod_mul_prod_nonneg_of_same_neg_count {s₁ s₂ : Multiset ℝ}
   have h1 := sign_of_prod_countP s₁ f p hf_pos hf_neg
   have h2 := sign_of_prod_countP s₂ g p hg_pos hg_neg
   rw [hcount] at h1
-  have hmul := mul_nonneg h1 h2
   have hsq : (-1 : ℝ) ^ s₂.countP p * (-1 : ℝ) ^ s₂.countP p = 1 := by
     rw [← pow_add, ← two_mul, pow_mul]; simp
-  nlinarith
+  nlinarith [mul_nonneg h1 h2]
 
 /-- If all factors in two lists are nonpositive and the lists have the same
 length, then the products have the same sign parity, so their product is
@@ -132,9 +131,8 @@ private lemma listInterlaces_prod_mul_prod_nonneg_at_mem :
             listInterlaces_all_ge (sg :: rest_g) (b :: rest_rs) r
               ⟨ha_sg, hsg_b, hint_g_tail⟩ y hy
           linarith
-        have hlen' : rest_f.length = rest_g.length := by grind
         exact prod_mul_prod_nonneg_of_forall_nonpos_of_eq_length
-          (by simp [hlen']) hall_f hall_g
+          (by grind) hall_f hall_g
       · have hr_ge_b : b ≤ r := by
           rcases List.mem_cons.mp hr_tail with rfl | hr_tail'
           · simp
@@ -248,10 +246,7 @@ lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
     (hlt : ∀ t ∈ p.roots, t < r) :
     0 < p.eval r := by
   rw [eval_eq_leadingCoeff_mul_prod_sub hp_splits r]
-  have hprod : 0 < (p.roots.map (r - ·)).prod := by
-    refine Multiset.prod_pos ?_
-    simp_all
-  exact mul_pos hp_pos hprod
+  exact mul_pos hp_pos (Multiset.prod_pos (by simp_all))
 
 /-- If two polynomials both precede the same right-hand polynomial with positive
 leading coefficients, then they have the same sign at every root of that common
@@ -280,27 +275,21 @@ lemma eval_mul_eval_nonneg_of_strictInterl_right {f g h : ℝ[X]}
       0 ≤ (ss_f.map (r - ·)).prod * (ss_g.map (r - ·)).prod := by
     rcases hcase_f with ⟨hlen_f, hint_f⟩ | ⟨hlen_f, halt_f⟩
     · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g, halt_g⟩
-      · have hlen : ss_f.length = ss_g.length := by lia
-        exact listInterlaces_prod_mul_prod_nonneg_at_mem hlen hint_f hint_g r hr_mem_rs
-      · have hlen : ss_f.length + 1 = ss_g.length := by lia
-        exact listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem
-          hlen hint_f halt_g r hr_mem_rs
+      · exact listInterlaces_prod_mul_prod_nonneg_at_mem (by lia) hint_f hint_g r hr_mem_rs
+      · exact listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem
+          (by lia) hint_f halt_g r hr_mem_rs
     · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g, halt_g⟩
-      · have hlen : ss_g.length + 1 = ss_f.length := by lia
-        simpa [mul_comm] using
+      · simpa [mul_comm] using
           (listInterlaces_listAlternates_prod_mul_prod_nonneg_at_mem
-            hlen hint_g halt_f r hr_mem_rs)
-      · have hlen : ss_f.length = ss_g.length := by lia
-        exact listAlternates_prod_mul_prod_nonneg_at_mem hlen halt_f halt_g r hr_mem_rs
-  have hlead : 0 ≤ f.leadingCoeff * g.leadingCoeff := mul_nonneg hf_pos.le hg_pos.le
+            (by lia) hint_g halt_f r hr_mem_rs)
+      · exact listAlternates_prod_mul_prod_nonneg_at_mem (by lia) halt_f halt_g r hr_mem_rs
   rw [hprod_f, hprod_g]
-  have hfactor :
-      f.leadingCoeff * (ss_f.map (r - ·)).prod * (g.leadingCoeff * (ss_g.map (r - ·)).prod)
-        = (f.leadingCoeff * g.leadingCoeff) *
-            ((ss_f.map (r - ·)).prod * (ss_g.map (r - ·)).prod) := by
-    ring
-  rw [hfactor]
-  exact mul_nonneg hlead hprod
+  calc
+    0 ≤ (f.leadingCoeff * g.leadingCoeff) *
+        ((ss_f.map (r - ·)).prod * (ss_g.map (r - ·)).prod) :=
+      mul_nonneg (mul_nonneg hf_pos.le hg_pos.le) hprod
+    _ = f.leadingCoeff * (ss_f.map (r - ·)).prod *
+        (g.leadingCoeff * (ss_g.map (r - ·)).prod) := by ring
 
 /-- At each root of the common right-hand polynomial, `f + g` has the same sign
 as `f`. -/
@@ -321,43 +310,21 @@ lemma isRoot_of_isRoot_right_of_isRoot_add {f g h : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     {r : ℝ} (hr : h.IsRoot r) (hadd : (f + g).IsRoot r) :
     f.IsRoot r ∧ g.IsRoot r := by
-  have hfg_nonneg := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
-  have hsum : f.eval r + g.eval r = 0 := by simp_all
-  have hf0 : f.eval r = 0 := by nlinarith
-  simp_all
+  have := eval_mul_eval_nonneg_of_strictInterl_right hfh hgh hf_pos hg_pos hr
+  constructor <;> simp_all [Polynomial.IsRoot.def] <;> nlinarith
 
 /-- Generic IVT bridge: opposite-or-zero endpoint signs give a real root in the
 closed interval. -/
 lemma exists_isRoot_between_of_eval_mul_nonpos {p : ℝ[X]} {a b : ℝ}
     (hab : a ≤ b) (hsign : p.eval a * p.eval b ≤ 0) :
     ∃ c, a ≤ c ∧ c ≤ b ∧ p.IsRoot c := by
-  rcases eq_or_lt_of_le hab with rfl | hab_lt
-  · have : p.IsRoot a := by
-      rw [Polynomial.IsRoot.def]
-      nlinarith [hsign]
-    grind
-  · rcases le_or_gt (p.eval a) 0 with ha | ha
-    · rcases le_or_gt (p.eval b) 0 with hb | hb
-      · have hzero : p.eval a = 0 ∨ p.eval b = 0 := by
-          by_cases hza : p.eval a = 0
-          · lia
-          · right
-            have ha_neg : p.eval a < 0 := lt_of_le_of_ne ha hza
-            nlinarith [hsign, ha_neg, hb]
-        rcases hzero with hza | hzb
-        · exact ⟨a, le_rfl, le_of_lt hab_lt, by simp_all⟩
-        · exact ⟨b, le_of_lt hab_lt, le_rfl, by simp_all⟩
-      · have hcont : ContinuousOn (fun x => p.eval x) (Set.Icc a b) := p.continuous.continuousOn
-        have h0_mem : (0 : ℝ) ∈ Set.Icc (p.eval a) (p.eval b) := ⟨ha, le_of_lt hb⟩
-        obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc (le_of_lt hab_lt) hcont h0_mem
-        exact ⟨c, hc.1, hc.2, hc_val⟩
-    · rcases le_or_gt 0 (p.eval b) with hb | hb
-      · have : p.eval b = 0 := by nlinarith
-        exact ⟨b, le_of_lt hab_lt, le_rfl, by simp_all⟩
-      · have hcont : ContinuousOn (fun x => p.eval x) (Set.Icc a b) := p.continuous.continuousOn
-        have h0_mem : (0 : ℝ) ∈ Set.Icc (p.eval b) (p.eval a) := ⟨le_of_lt hb, le_of_lt ha⟩
-        obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hab_lt) hcont h0_mem
-        exact ⟨c, hc.1, hc.2, hc_val⟩
+  rcases le_total (p.eval a) (p.eval b) with hev | hev
+  · obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc hab p.continuous.continuousOn
+      (show (0 : ℝ) ∈ Set.Icc (p.eval a) (p.eval b) by constructor <;> nlinarith)
+    exact ⟨c, hc.1, hc.2, hc_val⟩
+  · obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' hab p.continuous.continuousOn
+      (show (0 : ℝ) ∈ Set.Icc (p.eval b) (p.eval a) by constructor <;> nlinarith)
+    exact ⟨c, hc.1, hc.2, hc_val⟩
 
 /-- **Sign lemma**: Given real-rooted `f`, `g` with positive leading coefficients,
     roots `s` of `f` and `t` of `g` with `s ≤ t`, both in `[a, b]`, and the
@@ -391,16 +358,8 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
   set Pg := (Multiset.map (s - ·) (g.roots.erase t)).prod
   set Pf := (Multiset.map (t - ·) (f.roots.erase s)).prod
   have hst_neg : (s - t) * (t - s) ≤ 0 := by linarith [sq_nonneg (t - s)]
-  -- For each element r in the erased multisets:
-  -- If r ≤ a: (s - r) ≥ 0 and (t - r) ≥ 0
-  -- If r ≥ b: (s - r) ≤ 0 and (t - r) ≤ 0
-  -- Pg has k negative factors, Pf has k negative factors (from hcount_eq).
-  -- sign(Pg) = (-1)^k, sign(Pf) = (-1)^k, so Pg * Pf has sign (-1)^{2k} ≥ 0.
   have hrest_nonneg : 0 ≤ Pg * Pf := by
     apply prod_mul_prod_nonneg_of_same_neg_count (p := (b ≤ ·)) <;> grind
-  -- Goal: (s - t) * Pg * ((t - s) * Pf) ≤ 0
-  -- = (s - t) * (t - s) * (Pg * Pf) ≤ 0
-  -- since (s-t)(t-s) ≤ 0 and Pg*Pf ≥ 0
   have : (s - t) * Pg * ((t - s) * Pf) = (s - t) * (t - s) * (Pg * Pf) := by grind
   rw [this]
   exact mul_nonpos_of_nonpos_of_nonneg hst_neg hrest_nonneg
@@ -411,55 +370,20 @@ lemma sum_has_root_between {f g : ℝ[X]}
     {s t : ℝ} (hst : s ≤ t) (hfs : f.IsRoot s) (hgt : g.IsRoot t)
     (hsign : g.eval s * f.eval t ≤ 0) :
     ∃ c, s ≤ c ∧ c ≤ t ∧ (f + g).IsRoot c := by
-  rcases eq_or_lt_of_le hst with rfl | hlt
-  · have : (f + g).IsRoot s := by simp_all
-    grind
-  · -- (f+g)(s) = g(s), (f+g)(t) = f(t)
-    -- g(s) · f(t) ≤ 0, so they have opposite signs (or one is 0)
-    have hfgs : (f + g).eval s = g.eval s := by simp_all
-    have hfgt : (f + g).eval t = f.eval t := by simp_all
-    rcases le_or_gt (g.eval s) 0 with hgs | hgs
-    · rcases le_or_gt (f.eval t) 0 with hft | hft
-      · -- Both ≤ 0. Since g(s) · f(t) ≤ 0, one must be ≥ 0 too, so one is 0.
-        rcases eq_or_lt_of_le hgs with hgs0 | hgs'
-        · exact ⟨s, le_refl _, le_of_lt hlt, by simp_all⟩
-        · have : f.eval t = 0 := by nlinarith
-          exact ⟨t, le_of_lt hlt, le_refl _, by simp_all⟩
-      · -- g(s) ≤ 0, f(t) > 0: (f+g)(s) ≤ 0 ≤ (f+g)(t), IVT
-        have hcont : ContinuousOn (fun x => (f + g).eval x) (Set.Icc s t) :=
-          (f + g).continuous.continuousOn
-        -- (f+g)(s) = g(s) ≤ 0 ≤ f(t) = (f+g)(t), use IVT
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval s) ((f + g).eval t) := by grind
-        obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc (le_of_lt hlt) hcont h0_mem
-        exact ⟨c, hc.1, hc.2, hc_val⟩
-    · -- g(s) > 0
-      rcases le_or_gt 0 (f.eval t) with hft | hft
-      · -- g(s) > 0, f(t) ≥ 0: since g(s)·f(t) ≤ 0, f(t) = 0
-        have : f.eval t = 0 := by nlinarith
-        exact ⟨t, le_of_lt hlt, le_refl _, by simp_all⟩
-      · -- g(s) > 0, f(t) < 0: (f+g)(s) > 0 > (f+g)(t), IVT
-        have hcont : ContinuousOn (fun x => (f + g).eval x) (Set.Icc s t) :=
-          (f + g).continuous.continuousOn
-        -- g(s) > 0 > f(t), so Icc goes f(t)..g(s)
-        -- IVT gives Icc (eval a) (eval b), but (eval s) > 0 > (eval t)
-        -- (f+g)(s) = g(s) > 0 > f(t) = (f+g)(t), use IVT'
-        have h0_mem : (0 : ℝ) ∈ Set.Icc ((f + g).eval t) ((f + g).eval s) := by grind
-        obtain ⟨c, hc, hc_val⟩ := intermediate_value_Icc' (le_of_lt hlt) hcont h0_mem
-        exact ⟨c, hc.1, hc.2, hc_val⟩
+  apply exists_isRoot_between_of_eval_mul_nonpos hst
+  rw [Polynomial.eval_add, Polynomial.eval_add, show f.eval s = 0 from hfs,
+    show g.eval t = 0 from hgt, zero_add, add_zero]
+  exact hsign
 
 lemma tendsto_eval_atBot_atTop_of_posLeadingCoeff_even {p : ℝ[X]}
     (hp_pos : HasPosLeadingCoeff p) (hdeg : 0 < p.degree) (hpar : Even p.natDegree) :
     Tendsto (fun x => p.eval x) atBot atTop := by
   have hcomp_pos : 0 ≤ (p.comp (-X)).leadingCoeff := by
     rw [comp_neg_X_leadingCoeff_eq]
-    have hpow : (-1 : ℝ) ^ p.natDegree = 1 := by simp_all
-    unfold HasPosLeadingCoeff at hp_pos
-    simpa [hpow] using hp_pos.le
-  have htop :
-      Tendsto (fun x => (p.comp (-X)).eval x) atTop atTop :=
-    (p.comp (-X)).tendsto_atTop_of_leadingCoeff_nonneg
-      (by simp_all) hcomp_pos
-  convert htop.comp tendsto_neg_atBot_atTop using 1
+    rw [show (-1 : ℝ) ^ p.natDegree = 1 by simp_all]
+    simpa using hp_pos.le
+  convert ((p.comp (-X)).tendsto_atTop_of_leadingCoeff_nonneg (by simp_all) hcomp_pos).comp
+    tendsto_neg_atBot_atTop using 1
   ext x
   simp [Polynomial.eval_comp]
 
@@ -468,40 +392,31 @@ lemma tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd {p : ℝ[X]}
     Tendsto (fun x => p.eval x) atBot atBot := by
   have hcomp_nonpos : (p.comp (-X)).leadingCoeff ≤ 0 := by
     rw [comp_neg_X_leadingCoeff_eq]
-    have hpow : (-1 : ℝ) ^ p.natDegree = -1 := by simp_all
-    unfold HasPosLeadingCoeff at hp_pos
-    have hneg : -p.leadingCoeff ≤ 0 := by linarith
-    simp_all
-  have htop :
-      Tendsto (fun x => (p.comp (-X)).eval x) atTop atBot :=
-    (p.comp (-X)).tendsto_atBot_of_leadingCoeff_nonpos
-      (by simp_all) hcomp_nonpos
-  convert htop.comp tendsto_neg_atBot_atTop using 1
+    rw [show (-1 : ℝ) ^ p.natDegree = -1 by simp_all]
+    simpa using hp_pos.le
+  convert ((p.comp (-X)).tendsto_atBot_of_leadingCoeff_nonpos (by simp_all) hcomp_nonpos).comp
+    tendsto_neg_atBot_atTop using 1
   ext x
   simp [Polynomial.eval_comp]
 
 lemma exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot {p : ℝ[X]} {r : ℝ}
     (hr : 0 < p.eval r) (ht : Tendsto (fun x => p.eval x) atBot atBot) :
     ∃ u ≤ r, p.IsRoot u := by
-  have hneg : ∀ᶠ x in atBot, p.eval x < 0 :=
-    ht.eventually (Iio_mem_atBot 0)
-  have hlt : ∀ᶠ x : ℝ in atBot, x < r := eventually_lt_atBot r
-  obtain ⟨x, hx_lt_r, hx_neg⟩ := (hlt.and hneg).exists
-  have h0 : (0 : ℝ) ∈ Set.Icc (p.eval x) (p.eval r) := ⟨le_of_lt hx_neg, le_of_lt hr⟩
+  obtain ⟨x, hx_lt_r, hx_neg⟩ := ((eventually_lt_atBot r).and
+    (ht.eventually (Iio_mem_atBot 0))).exists
   obtain ⟨u, hu, hu_root⟩ :=
-    intermediate_value_Icc (le_of_lt hx_lt_r) p.continuous.continuousOn h0
+    intermediate_value_Icc (le_of_lt hx_lt_r) p.continuous.continuousOn
+      ⟨le_of_lt hx_neg, le_of_lt hr⟩
   exact ⟨u, hu.2, hu_root⟩
 
 lemma exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop {p : ℝ[X]} {r : ℝ}
     (hr : p.eval r < 0) (ht : Tendsto (fun x => p.eval x) atBot atTop) :
     ∃ u ≤ r, p.IsRoot u := by
-  have hpos : ∀ᶠ x in atBot, 0 < p.eval x :=
-    ht.eventually (Ioi_mem_atTop 0)
-  have hlt : ∀ᶠ x : ℝ in atBot, x < r := eventually_lt_atBot r
-  obtain ⟨x, hx_lt_r, hx_pos⟩ := (hlt.and hpos).exists
-  have h0 : (0 : ℝ) ∈ Set.Icc (p.eval r) (p.eval x) := ⟨le_of_lt hr, le_of_lt hx_pos⟩
+  obtain ⟨x, hx_lt_r, hx_pos⟩ := ((eventually_lt_atBot r).and
+    (ht.eventually (Ioi_mem_atTop 0))).exists
   obtain ⟨u, hu, hu_root⟩ :=
-    intermediate_value_Icc' (le_of_lt hx_lt_r) p.continuous.continuousOn h0
+    intermediate_value_Icc' (le_of_lt hx_lt_r) p.continuous.continuousOn
+      ⟨le_of_lt hr, le_of_lt hx_pos⟩
   exact ⟨u, hu.2, hu_root⟩
 
 lemma eval_pos_of_all_roots_gt_of_even {p : ℝ[X]} {r : ℝ}
