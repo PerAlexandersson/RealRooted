@@ -369,9 +369,6 @@
     "RealRooted.Basic.Coefficients": {
       "max_modules": 5
     },
-    "RealRooted.Basic.IntervalInequalities": {
-      "max_modules": 5
-    },
     "RealRooted.Basic.PolynomialFacts": {
       "max_modules": 6
     },

@@ -349,89 +349,6 @@ theorem of_quadratic_cubic_root_lists
   · rw [hg_roots]
   · simp [ListInterlaces, hau, hub, hbv, hvc]
 
-/-- Differ-by-one interlacing for a cubic whose roots lie between the ordered
-roots of a quartic. -/
-theorem of_cubic_quartic_root_lists
-    {g f : ℝ[X]} {a b c d u v w : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 4) (hgdeg : g.natDegree = 3)
-    (hf_roots : f.roots = (↑[a, b, c, d] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d)
-    (huv : u ≤ v) (hvw : v ≤ w)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d], [u, v, w],
-    ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hab.trans hbc, hbc.trans hcd,
-      hab.trans (hbc.trans hcd)]
-  · simp [huv, hvw, huv.trans hvw]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd]
-
-/-- Differ-by-one interlacing for a quartic whose roots lie between the
-ordered roots of a quintic. -/
-theorem of_quartic_quintic_root_lists
-    {g f : ℝ[X]} {a b c d e u v w z : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 5) (hgdeg : g.natDegree = 4)
-    (hf_roots : f.roots = (↑[a, b, c, d, e] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_, [a, b, c, d, e],
-    [u, v, w, z], ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hde, hab.trans hbc, hbc.trans hcd, hcd.trans hde,
-      hab.trans (hbc.trans hcd), hbc.trans (hcd.trans hde),
-      hab.trans (hbc.trans (hcd.trans hde))]
-  · simp [huv, hvw, hwz, huv.trans hvw, hvw.trans hwz,
-      huv.trans (hvw.trans hwz)]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze]
-
-/-- Differ-by-one interlacing for a quintic whose roots lie between the ordered
-roots of a sextic. -/
-theorem of_quintic_sextic_root_lists
-    {g f : ℝ[X]} {a b c d e r u v w z y : ℝ}
-    (hf_ne : f ≠ 0) (hf_splits : f.Splits)
-    (hg_ne : g ≠ 0) (hg_splits : g.Splits)
-    (hfdeg : f.natDegree = 6) (hgdeg : g.natDegree = 5)
-    (hf_roots : f.roots = (↑[a, b, c, d, e, r] : Multiset ℝ))
-    (hg_roots : g.roots = (↑[u, v, w, z, y] : Multiset ℝ))
-    (hab : a ≤ b) (hbc : b ≤ c) (hcd : c ≤ d) (hde : d ≤ e)
-    (her : e ≤ r)
-    (huv : u ≤ v) (hvw : v ≤ w) (hwz : w ≤ z) (hzy : z ≤ y)
-    (hau : a ≤ u) (hub : u ≤ b) (hbv : b ≤ v)
-    (hvc : v ≤ c) (hcw : c ≤ w) (hwd : w ≤ d)
-    (hdz : d ≤ z) (hze : z ≤ e) (hey : e ≤ y) (hyr : y ≤ r) :
-    Interlaces g f := by
-  refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, ?_,
-    [a, b, c, d, e, r], [u, v, w, z, y], ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hgdeg, hfdeg]
-  · simp [hab, hbc, hcd, hde, her, hab.trans hbc, hbc.trans hcd,
-      hcd.trans hde, hde.trans her, hab.trans (hbc.trans hcd),
-      hbc.trans (hcd.trans hde), hcd.trans (hde.trans her),
-      hab.trans (hbc.trans (hcd.trans hde)),
-      hbc.trans (hcd.trans (hde.trans her)),
-      hab.trans (hbc.trans (hcd.trans (hde.trans her)))]
-  · simp [huv, hvw, hwz, hzy, huv.trans hvw, hvw.trans hwz,
-      hwz.trans hzy, huv.trans (hvw.trans hwz), hvw.trans (hwz.trans hzy),
-      huv.trans (hvw.trans (hwz.trans hzy))]
-  · rw [hf_roots]
-  · rw [hg_roots]
-  · simp [ListInterlaces, hau, hub, hbv, hvc, hcw, hwd, hdz, hze, hey, hyr]
-
 end Interlaces
 
 /-- A **Sturm sequence** is a list of polynomials where each consecutive
@@ -614,11 +531,5 @@ lemma Interl.C_mul_right_of_nonneg {f g : ℝ[X]} (h : Interl f g)
   · simpa [hf0] using interl_zero_left (C a * g)
   · simp [hg0, interl_zero_right]
   · exact (hstrict.C_mul_right ha_pos.ne').toInterl
-
-/-- A nonnegative scalar multiple of a polynomial is in zero-aware proper
-position with that polynomial whenever the polynomial is zero or splits. -/
-lemma Interl.C_mul_self_of_nonneg {f : ℝ[X]} (hf : f ≠ 0 → f.Splits) {a : ℝ}
-    (ha : 0 ≤ a) : Interl (C a * f) f :=
-  (Interl.refl hf).C_mul_left_of_nonneg ha
 
 end RealRooted

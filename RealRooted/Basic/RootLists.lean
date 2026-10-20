@@ -215,40 +215,6 @@ theorem listAlternates_of_getD_bounds :
       · intro i hi
         simpa using h1 (i + 1) (by simpa using hi)
 
-/-- Same-degree alternation in either direction gives descending root crossing
-inequalities for the reversed lists. -/
-theorem rootCrossing_of_listAlternates_or {ss rs : List ℝ}
-    (hlen : ss.length = rs.length)
-    (halt : ListAlternates ss rs ∨ ListAlternates rs ss) :
-    (∀ j, 1 ≤ j → j < ss.length →
-        rs.reverse.getD j 0 ≤ ss.reverse.getD (j - 1) 0) ∧
-    (∀ j, 1 ≤ j → j < ss.length →
-        ss.reverse.getD j 0 ≤ rs.reverse.getD (j - 1) 0) := by
-  have aux : ∀ {as bs : List ℝ}, as.length = bs.length → ListAlternates as bs →
-      (∀ j, 1 ≤ j → j < as.length →
-        bs.reverse.getD j 0 ≤ as.reverse.getD (j - 1) 0) ∧
-      (∀ j, 1 ≤ j → j < as.length →
-        as.reverse.getD j 0 ≤ bs.reverse.getD (j - 1) 0) := by
-    intro as bs hlen halt
-    obtain ⟨hA, hB⟩ := listAlternates_getD_bounds as bs halt hlen
-    refine ⟨?_, ?_⟩
-    · intro j hj1 hj2
-      rw [getD_reverse_eq bs j (by lia), getD_reverse_eq as (j - 1) (by lia)]
-      have e1 : bs.length - 1 - j = as.length - 1 - j := by rw [hlen]
-      have e2 : as.length - 1 - (j - 1) = (as.length - 1 - j) + 1 := by lia
-      rw [e1, e2]
-      exact hB (as.length - 1 - j) (by lia)
-    · intro j hj1 hj2
-      rw [getD_reverse_eq as j (by lia), getD_reverse_eq bs (j - 1) (by lia)]
-      have e2 : bs.length - 1 - (j - 1) = (as.length - 1 - j) + 1 := by lia
-      rw [e2]
-      exact le_trans
-        (le_trans (hA (as.length - 1 - j) (by lia)) (hB (as.length - 1 - j) (by lia)))
-        (hA (as.length - 1 - j + 1) (by lia))
-  rcases halt with halt | halt
-  · exact aux hlen halt
-  · simpa only [hlen] using ⟨(aux hlen.symm halt).2, (aux hlen.symm halt).1⟩
-
 /-- Same-degree weak alternation orders the sums of the two root lists. -/
 lemma listAlternates_sum_le {ss rs : List ℝ} (h : ListAlternates ss rs) :
     ss.sum ≤ rs.sum :=
@@ -434,77 +400,6 @@ lemma listInterlaces_filter_lt_le_succ {x : ℝ} {ss rs : List ℝ}
       split <;> simp
     lia
   lia
-
-/-- With equal parity, the upper-threshold counts of `ss` and `rs` coincide. -/
-lemma listInterlaces_filter_lt_eq_of_parity {x : ℝ} {ss rs : List ℝ}
-    (h : ListInterlaces ss rs) (hlen : ss.length + 1 = rs.length)
-    (hpar :
-      (ss.filter (fun a => x < a)).length % 2 =
-        (rs.filter (fun a => x < a)).length % 2) :
-    (ss.filter (fun a => x < a)).length =
-      (rs.filter (fun a => x < a)).length := by
-  have h1 := listInterlaces_filter_lt_le (x := x) h hlen
-  have h2 := listInterlaces_filter_lt_le_succ (x := x) h hlen
-  lia
-
-/-- If an integer difference of two natural numbers is not odd, then the two
-natural numbers have the same parity. -/
-lemma nat_mod_two_eq_of_not_odd_int_sub {a b : ℕ}
-    (h : ¬ Odd ((a : ℤ) - (b : ℤ))) :
-    a % 2 = b % 2 := by
-  have he : Even ((a : ℤ) - (b : ℤ)) := Int.not_odd_iff_even.mp h
-  rw [Int.even_sub, Int.even_coe_nat, Int.even_coe_nat] at he
-  by_cases ha : Even a
-  · have hb : Even b := he.mp ha
-    rw [Nat.even_iff] at ha hb
-    rw [ha, hb]
-  · have hb : ¬ Even b := fun hb => ha (he.mpr hb)
-    rw [Nat.not_even_iff] at ha hb
-    rw [ha, hb]
-
-/-- Pure combinatorial core of issue #42, natural-number form: with a
-differ-by-one interlacing and equal upper-count parity, the lower-threshold
-count of `rs` is one more than that of `ss`. -/
-lemma listInterlaces_filter_le_length_eq_succ {x : ℝ} {ss rs : List ℝ}
-    (h : ListInterlaces ss rs) (hlen : ss.length + 1 = rs.length)
-    (hpar :
-      (ss.filter (fun a => x < a)).length % 2 =
-        (rs.filter (fun a => x < a)).length % 2) :
-    (rs.filter (fun a => a ≤ x)).length =
-      (ss.filter (fun a => a ≤ x)).length + 1 := by
-  have heq := listInterlaces_filter_lt_eq_of_parity (x := x) h hlen hpar
-  have hcs := filter_le_add_filter_lt_length (x := x) ss
-  have hcr := filter_le_add_filter_lt_length (x := x) rs
-  lia
-
-/-- Pure combinatorial core of issue #42, integer form: the lower-count
-difference of `rs` minus `ss` is exactly one. -/
-lemma listInterlaces_filter_le_sub_eq_one {x : ℝ} {ss rs : List ℝ}
-    (h : ListInterlaces ss rs) (hlen : ss.length + 1 = rs.length)
-    (hpar :
-      (ss.filter (fun a => x < a)).length % 2 =
-        (rs.filter (fun a => x < a)).length % 2) :
-    ((rs.filter (fun a => a ≤ x)).length : ℤ) -
-        (ss.filter (fun a => a ≤ x)).length = 1 := by
-  have hnat := listInterlaces_filter_le_length_eq_succ (x := x) h hlen hpar
-  rw [hnat]
-  push_cast
-  ring
-
-/-- Pure bridge form for issue #42: in a differ-by-one interlacing, if the
-strict-upper count difference is not odd, then the lower-count difference is
-exactly one.  This matches the output of the succ-degree endpoint-sign parity
-lemma. -/
-lemma listInterlaces_filter_le_sub_eq_one_of_not_odd_filter_lt_sub
-    {x : ℝ} {ss rs : List ℝ}
-    (h : ListInterlaces ss rs) (hlen : ss.length + 1 = rs.length)
-    (hnot :
-      ¬ Odd (((ss.filter (fun a => x < a)).length : ℤ) -
-        (rs.filter (fun a => x < a)).length)) :
-    ((rs.filter (fun a => a ≤ x)).length : ℤ) -
-        (ss.filter (fun a => a ≤ x)).length = 1 :=
-  listInterlaces_filter_le_sub_eq_one h hlen
-    (nat_mod_two_eq_of_not_odd_int_sub hnot)
 
 
 /-- For a nonempty right-hand list, `ListInterlaces` forces the expected length

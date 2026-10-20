@@ -34,19 +34,6 @@ lemma card_roots_of_splits {p : ℝ[X]} (h : p.Splits) : p.roots.card = p.natDeg
 lemma splits_of_card_roots {p : ℝ[X]} (h : p.roots.card = p.natDegree) : p.Splits :=
   splits_iff_card_roots.mpr h
 
-lemma ne_zero_and_splits_of_ne_zero_and_card_roots {p : ℝ[X]}
-    (h_ne : p ≠ 0) (h_card : p.roots.card = p.natDegree) : p ≠ 0 ∧ p.Splits :=
-  ⟨h_ne, splits_of_card_roots h_card⟩
-
-lemma ne_zero_and_card_roots_of_ne_zero_and_splits {p : ℝ[X]}
-    (h_ne : p ≠ 0) (h_splits : p.Splits) : p ≠ 0 ∧ p.roots.card = p.natDegree :=
-  ⟨h_ne, card_roots_of_splits h_splits⟩
-
-lemma eq_zero_or_ne_zero_and_splits_iff_eq_zero_or_ne_zero_and_card_roots (p : ℝ[X]) :
-    (p = 0 ∨ (p ≠ 0 ∧ p.Splits)) ↔
-      (p = 0 ∨ (p ≠ 0 ∧ p.roots.card = p.natDegree)) := by
-  constructor <;> rintro (rfl | h) <;> simp_all [splits_iff_card_roots]
-
 lemma natDegree_X_add_one_pow_le (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).natDegree ≤ n := by
   have hX1 : (X + 1 : ℝ[X]).natDegree ≤ 1 := by
