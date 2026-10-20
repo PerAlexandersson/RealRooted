@@ -311,6 +311,20 @@ theorem jPolynomial_signedTriangleFamily_intervalRootData
   signedTriangleFamily_intervalRootData
     (jPolynomial_triangleFamily_intervalRootData m ε d t hm hd ht)
 
+/-- `J` itself has the complete root package. -/
+theorem jPolynomial_intervalRootData (m ε : ℕ) (hm : 0 < m) :
+    IntervalRootData (jPolynomial m ε) (m - 1) := by
+  simpa [signedTriangleFamily] using
+    jPolynomial_signedTriangleFamily_intervalRootData m ε 0 0 hm (by lia) le_rfl
+
+/-- The diagonal entries of the signed `J` triangle have the complete root package. -/
+theorem signedTriangleFamily_self_intervalRootData
+    (m ε d : ℕ) (hm : 0 < m) (hd : d ≤ m - 1) :
+    IntervalRootData
+      (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) d d) (m - 1) := by
+  convert jPolynomial_signedTriangleFamily_intervalRootData m ε d d hm hd le_rfl using 1
+  lia
+
 /-- The value at zero of an iterated derivative of `J` is its corresponding
 coefficient times the factorial. -/
 theorem iterate_derivative_jPolynomial_eval_zero

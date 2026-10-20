@@ -24,6 +24,9 @@ structure IntervalRootData (p : ℝ[X]) (n : ℕ) : Prop where
   roots_mem_Ioo : ∀ r ∈ p.roots, r ∈ Set.Ioo (0 : ℝ) 1
   eval_derivative_ne_zero : ∀ r, p.IsRoot r → p.derivative.eval r ≠ 0
 
+theorem IntervalRootData.ne_zero {p : ℝ[X]} {n : ℕ} (h : IntervalRootData p n) : p ≠ 0 :=
+  fun hzero => h.eval_zero_ne (by simp [hzero])
+
 theorem IntervalRootData.insertionOperator
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n)
     (a b : ℝ) (ha : 0 < a) (hba : 0 < b - a) :
