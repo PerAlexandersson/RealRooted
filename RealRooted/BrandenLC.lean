@@ -50,16 +50,9 @@ private lemma Lam_add (w : ℕ → ℂ) (P Q : ℂ[X]) : Lam w (P + Q) = Lam w P
 
 private lemma Lam_C_mul (w : ℕ → ℂ) (c : ℂ) (P : ℂ[X]) :
     Lam w (C c * P) = c * Lam w P := by
-  set D := max (C c * P).natDegree P.natDegree + 1
-  have hD₁ : (C c * P).natDegree < D := by
-    dsimp [D]
-    exact Nat.lt_succ_of_le (le_max_left _ _)
-  have hD₂ : P.natDegree < D := by
-    dsimp [D]
-    exact Nat.lt_succ_of_le (le_max_right _ _)
-  rw [Lam_eq_sum_range w _ hD₁, Lam_eq_sum_range w _ hD₂, mul_sum]
-  refine sum_congr rfl fun k _ => ?_
-  simp [coeff_C_mul, mul_assoc]
+  unfold Lam
+  rw [← smul_eq_C_mul, sum_smul_index P c _ (by simp)]
+  simpa [mul_assoc] using (P.smul_sum c (fun k (a : ℂ) => a * w k)).symm
 
 private lemma Lam_sub (w : ℕ → ℂ) (P Q : ℂ[X]) : Lam w (P - Q) = Lam w P - Lam w Q := by
   have := Lam_add w (P - Q) Q
@@ -129,8 +122,7 @@ private lemma im_logDeriv_pos {P : ℂ[X]} (hP : P ≠ 0) {m : ℝ}
   intro x hx
   obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
   have hrm := hroots r ((mem_roots hP).mp hr)
-  have hzr : z - r ≠ 0 := by
-    intro h; rw [sub_eq_zero] at h; subst h; linarith
+  have hzr : z - r ≠ 0 := by rintro h; rw [sub_eq_zero] at h; subst h; linarith
   rw [one_div, Complex.inv_im, Complex.sub_im]
   apply div_pos
   · linarith
@@ -235,14 +227,12 @@ private noncomputable def wH (H : ℝ[X]) : ℕ → ℂ := fun k =>
 /-- Two opposite first-order shifts give the second-order moment recurrence. -/
 private lemma wstep_wstep (w : ℕ → ℂ) (c : ℝ) (k : ℕ) :
     wstep (wstep w c) (-c) k = w k - (c : ℂ) ^ 2 * k * (k - 1) * w (k - 2) := by
-  rcases k with _ | k
+  rcases k with _ | _ | k
   · simp [wstep]
-  · simp only [wstep, Nat.add_sub_cancel, (by lia : k + 1 - 2 = k - 1)]
-    rcases k with _ | k
-    · simp
-    · simp only [Nat.add_sub_cancel]
-      push_cast
-      ring
+  · simp [wstep]
+  · simp only [wstep, Nat.add_sub_cancel]
+    push_cast
+    ring
 
 /-- The constant polynomial gives the evaluation-at-zero moments. -/
 private lemma wH_one : wH 1 = w0 := by
@@ -300,9 +290,9 @@ private lemma good_wH : ∀ (n : ℕ) (H : ℝ[X]), H.natDegree = n → H.Splits
     have hH0 : H ≠ 0 := by rintro rfl; simp at h0
     obtain ⟨r, hr⟩ := Multiset.exists_mem_of_ne_zero (hs.roots_ne_zero (by lia))
     have hr0 : r < 0 := hneg r hr
-    have hroot : H.IsRoot r := (mem_roots hH0).mp hr
     set H₁ := H /ₘ (X - C r) with hH₁
-    have hfac : (X - C r) * H₁ = H := mul_divByMonic_eq_iff_isRoot.mpr hroot
+    have hfac : (X - C r) * H₁ = H :=
+      mul_divByMonic_eq_iff_isRoot.mpr ((mem_roots hH0).mp hr)
     have hH₁0 : H₁ ≠ 0 := by rintro h; rw [h, mul_zero] at hfac; exact hH0 hfac.symm
     have hdeg₁ : H₁.natDegree = n := by
       have := congrArg natDegree hfac
@@ -313,7 +303,7 @@ private lemma good_wH : ∀ (n : ℕ) (H : ℝ[X]), H.natDegree = n → H.Splits
       intro x hx
       apply hneg
       rw [← hfac, roots_mul (hfac.symm ▸ hH0)]
-      exact Multiset.mem_add.mpr (Or.inr hx)
+      simp [hx]
     have h0₁ : H₁.eval 0 = -1 / r := by
       have := congrArg (eval 0) hfac
       rw [eval_mul, h0] at this
@@ -326,27 +316,20 @@ private lemma good_wH : ∀ (n : ℕ) (H : ℝ[X]), H.natDegree = n → H.Splits
     have hGroots : ∀ x ∈ G.roots, x < 0 := by
       intro x hx
       rw [hG, roots_C_mul _ (by linarith)] at hx
-      exact hroots₁ x hx
+      exact hroots₁ _ hx
     have hG0 : G.eval 0 = 1 := by
       rw [hG, eval_mul, eval_C, h0₁]
-      calc -r * (-1 / r) = r / r := by ring
-        _ = 1 := div_self hr0.ne
+      field_simp [hr0.ne]
     have hgood := ih G hGdeg hGs hGroots hG0
     have hHG : H = G - C (1 / r) * X * G := by
       rw [← hfac, hG]
-      have : r ≠ 0 := by linarith
       have hC : C (1 / r) * C (-r) = (-1 : ℝ[X]) := by
-        have hscalar : (1 / r : ℝ) * (-r) = -1 := by
-          calc
-            (1 / r : ℝ) * (-r) = -(r / r) := by ring
-            _ = -1 := by rw [div_self this]
-        rw [← C_mul, hscalar]
+        rw [← C_mul]
+        field_simp [hr0.ne]
         simp
-      have hnegC : C (-r) = -C r := by rw [map_neg]
       have hC' : C (1 / r) * (-C r) = (-1 : ℝ[X]) := by
-        rw [← hnegC]
-        exact hC
-      rw [hnegC]
+        simpa using hC
+      rw [map_neg]
       linear_combination (X * H₁) * hC'
     set c := Real.sqrt (-1 / r)
     have hc : c ^ 2 = -1 / r := Real.sq_sqrt (by
@@ -435,9 +418,7 @@ private lemma gN_coeff_zero_pos (N : ℕ) : 0 < (gN N).coeff 0 := by
 
 private lemma gN_ne_zero (N : ℕ) : gN N ≠ 0 := by
   intro h
-  have := gN_coeff_zero_pos N
-  rw [h, coeff_zero] at this
-  exact lt_irrefl _ this
+  simpa [h] using gN_coeff_zero_pos N
 
 private lemma gN_natDegree_le (N : ℕ) : (gN N).natDegree ≤ N := by
   rw [natDegree_le_iff_coeff_eq_zero]
@@ -447,9 +428,6 @@ private lemma gN_natDegree_le (N : ℕ) : (gN N).natDegree ≤ N := by
 
 private lemma gN_splits (N : ℕ) : (gN N).Splits := by
   have hF : (FN N).Splits := (Splits.X_pow _).mul ((Splits.X_add_C _).pow _)
-  have hF0 : FN N ≠ 0 := by
-    unfold FN
-    exact mul_ne_zero (pow_ne_zero _ X_ne_zero) (pow_ne_zero _ (X_add_C_ne_zero _))
   have hFdeg : (FN N).natDegree = N + 1 + N := by
     unfold FN
     rw [natDegree_mul (pow_ne_zero _ X_ne_zero) (pow_ne_zero _ (X_add_C_ne_zero _)),
@@ -1052,9 +1030,8 @@ private lemma logConcavityTransform_natDegree (p : ℝ[X]) (hp0 : p ≠ 0) :
 private lemma logConcavityTransform_ne_zero (p : ℝ[X]) (hp0 : p ≠ 0) :
     logConcavityTransform p ≠ 0 := by
   intro h
-  have := logConcavityTransform_coeff_natDegree p
-  rw [h, coeff_zero] at this
-  exact pow_ne_zero 2 (leadingCoeff_ne_zero.mpr hp0) this.symm
+  simpa [h] using (logConcavityTransform_coeff_natDegree p).trans_ne
+    (pow_ne_zero 2 (leadingCoeff_ne_zero.mpr hp0))
 
 /-- Every complex number off `(-∞, 0]` is `-s²` for some `s` in the open upper half-plane. -/
 private lemma exists_upper_sqrt (z : ℂ) (hz : ¬ (z.im = 0 ∧ z.re ≤ 0)) :
@@ -1082,22 +1059,8 @@ private lemma roots_map_logConcavityTransform (p : ℝ[X]) (hp0 : p ≠ 0)
   exact hz
 
 theorem coeff_prod_X_sub_C_nonneg (s : Multiset ℝ) (h : ∀ r ∈ s, r ≤ 0) (k : ℕ) :
-    0 ≤ ((s.map fun a => X - C a).prod).coeff k := by
-  induction s using Multiset.induction_on generalizing k with
-  | empty =>
-    simp only [Multiset.map_zero, Multiset.prod_zero, coeff_one]
-    split_ifs <;> norm_num
-  | cons a t ih =>
-    have ha : a ≤ 0 := h a (Multiset.mem_cons_self a t)
-    have ih' := fun k => ih (fun r hr => h r (Multiset.mem_cons_of_mem hr)) k
-    rw [Multiset.map_cons, Multiset.prod_cons, mul_comm]
-    rcases k with _ | k
-    · rw [mul_coeff_zero, coeff_sub, coeff_X_zero, coeff_C_zero, zero_sub]
-      exact mul_nonneg (ih' 0) (by linarith)
-    · rw [coeff_mul_X_sub_C]
-      have := ih' k
-      have := ih' (k + 1)
-      nlinarith
+    0 ≤ ((s.map fun a => X - C a).prod).coeff k :=
+  hasNonnegCoeffs_multiset_prod_X_sub_C s h k
 
 /-- Brändén (J. reine angew. Math. 658 (2011), "Iterated sequences and the geometry of zeros",
 proving a conjecture of Fisk, McNamara–Sagan and Stanley): if `p` has nonnegative coefficients and
