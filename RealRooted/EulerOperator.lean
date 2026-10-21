@@ -192,36 +192,44 @@ theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
     (theta p = 0 ∨ (theta p).Splits) ∧ ∀ r ∈ (theta p).roots, r ≤ 0 :=
   ⟨(theta_preserves_pf hp).eq_zero_or_splits, (theta_preserves_pf hp).roots_nonpos⟩
 
-/-- `theta` preserves weak interlacing on the polynomial PF cone.  This
-proposition is proved by `thetaPreservesInterl`; the name is kept for
-downstream users. -/
+/-- `theta` preserves weak interlacing. This proposition is proved by
+`Interl.theta`. -/
 def thetaPreservesInterlStatement : Prop :=
   ∀ {p q : ℝ[X]},
-    IsPFPolynomial p →
-    IsPFPolynomial q →
     Interl p q →
     Interl (theta p) (theta q)
 
-/-- `theta` preserves weak interlacing on the polynomial PF cone, obtained
+/-- `theta` preserves weak interlacing, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
-theorem thetaPreservesInterl {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (theta p) (theta q) := by
-  simpa [theta] using
-    interl_X_mul_both_of_pf hp.derivative hq.derivative (derivativePreservesInterl hpq)
+  simpa [RealRooted.theta] using (derivativePreservesInterl hpq).mul_X_both
+
+/-- Compatibility form retaining the former PF hypotheses. -/
+@[deprecated Interl.theta +typeChanged (since := "2026-10-21")]
+theorem thetaPreservesInterl {p q : ℝ[X]}
+    (_hp : IsPFPolynomial p) (_hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (theta p) (theta q) :=
+  hpq.theta
 
 /-- `theta + 1` preserves the polynomial PF cone. -/
 theorem thetaPlusOne_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (thetaPlusOne p) := by
   simpa [thetaPlusOne_eq_derivative_X_mul] using hp.X_mul.derivative
 
-/-- `theta + 1` preserves weak interlacing on the polynomial PF cone, obtained
+/-- `theta + 1` preserves weak interlacing, obtained
 from the derivative preservation theorem. -/
-theorem thetaPlusOnePreservesInterl {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+theorem Interl.thetaPlusOne {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (thetaPlusOne p) (thetaPlusOne q) := by
   simpa [thetaPlusOne_eq_derivative_X_mul] using
-    derivativePreservesInterl (interl_X_mul_both_of_pf hp hq hpq)
+    derivativePreservesInterl hpq.mul_X_both
+
+/-- Compatibility form retaining the former PF hypotheses. -/
+@[deprecated Interl.thetaPlusOne +typeChanged (since := "2026-10-21")]
+theorem thetaPlusOnePreservesInterl {p q : ℝ[X]}
+    (_hp : IsPFPolynomial p) (_hq : IsPFPolynomial q) (hpq : Interl p q) :
+    Interl (thetaPlusOne p) (thetaPlusOne q) :=
+  hpq.thetaPlusOne
 
 /-- A PF polynomial need not interlace its iterates under `theta + 1`: for
 `p = (X + 2) (X + 3)`, `(theta + 1)^2 p = 9X² + 20X + 6` has both roots in `(-2, 0)`, to the
@@ -350,17 +358,12 @@ theorem iterateThetaPlusOne_preserves_pf
       simpa [iterateThetaPlusOne_succ] using thetaPlusOne_preserves_pf (ih hp)
 
 /-- `Interl` preservation for the `l`-fold iterate of `theta + 1`. -/
-theorem iterateThetaPlusOne_preserves_interl
-    (l : ℕ) {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
+theorem Interl.iterateThetaPlusOne {p q : ℝ[X]} (hpq : Interl p q) (l : ℕ) :
     Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q) := by
-  induction l generalizing p q with
+  induction l with
   | zero =>
       simpa using hpq
   | succ l ih =>
-      simpa [iterateThetaPlusOne_succ] using thetaPlusOnePreservesInterl
-        (iterateThetaPlusOne_preserves_pf l hp)
-        (iterateThetaPlusOne_preserves_pf l hq)
-        (ih hp hq hpq)
+      simpa [iterateThetaPlusOne_succ] using ih.thetaPlusOne
 
 end RealRooted

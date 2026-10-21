@@ -333,40 +333,19 @@ theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
 
 /-- Multiplication by `X` on both sides is an equivalence on strict
 interlacing when all roots are nonpositive. -/
-@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
+@[deprecated StrictInterl.mul_X_sub_C_both_iff +typeChanged (since := "2026-10-21")]
 theorem StrictInterl.mul_X_both_iff_of_roots_nonpos {f g : ℝ[X]}
     (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
     (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl f g ↔ StrictInterl (X * f) (X * g) :=
-  ⟨fun h => by simpa using h.mul_X_sub_C_both 0,
-    fun h => by
-      apply StrictInterl.of_mul_X_sub_C_both (r := 0)
-      simpa using h⟩
+    StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
+  simpa using StrictInterl.mul_X_sub_C_both_iff (f := f) (g := g) 0
 
-/-- Multiplying both polynomials by `X` preserves zero-aware interlacing for
-polynomials with nonnegative coefficients. -/
+/-- Compatibility form of common-`X` multiplication for zero-aware
+interlacing. -/
+@[deprecated Interl.mul_X_both +typeChanged (since := "2026-10-21")]
 theorem Interl.mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Interl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    (h : Interl f g) (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
     Interl (X * f) (X * g) := by
-  rcases h with rfl | rfl | hfg
-  · simpa using interl_zero_left (X * g)
-  · simpa using interl_zero_right (X * f)
-  · exact (by simpa using hfg.mul_X_sub_C_both 0 : StrictInterl (X * f) (X * g)).toInterl
-
-/-- Cancelling a common factor `X` preserves zero-aware interlacing for
-polynomials with nonnegative coefficients. -/
-theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Interl (X * f) (X * g)) (_hfnn : HasNonnegCoeffs f)
-    (_hgnn : HasNonnegCoeffs g) :
-    Interl f g := by
-  by_cases hf0 : f = 0
-  · simpa [hf0] using interl_zero_left g
-  by_cases hg0 : g = 0
-  · simpa [hg0] using interl_zero_right f
-  have hstrict : StrictInterl (X * f) (X * g) :=
-    h.toStrictInterl_of_ne (mul_ne_zero X_ne_zero hf0) (mul_ne_zero X_ne_zero hg0)
-  apply StrictInterl.toInterl
-  apply StrictInterl.of_mul_X_sub_C_both (r := 0)
-  simpa using hstrict
+  exact h.mul_X_both
 
 end RealRooted

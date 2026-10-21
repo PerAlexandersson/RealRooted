@@ -155,11 +155,7 @@ theorem touchardEulerQuotientRow_splits (n : ℕ) :
 theorem touchardEulerQuotientRow_strictInterl_succ (n : ℕ) :
     StrictInterl (touchardEulerQuotientRow n)
       (touchardEulerQuotientRow (n + 1)) := by
-  have hstrict := (strictInterl_touchard_succ (n + 1)).thetaPlusOne_of_pf
-    (IsPFPolynomial.of_realRooted_nonneg
-      (touchard_nonnegCoeffs (n + 1)) (isRealRooted_touchard (n + 1)).2)
-    (IsPFPolynomial.of_realRooted_nonneg
-      (touchard_nonnegCoeffs (n + 2)) (isRealRooted_touchard (n + 2)).2)
+  have hstrict := (strictInterl_touchard_succ (n + 1)).thetaPlusOne
   rw [← X_mul_touchardEulerQuotientRow,
     ← X_mul_touchardEulerQuotientRow] at hstrict
   exact StrictInterl.of_mul_X_sub_C_both (r := 0) (by simpa using hstrict)

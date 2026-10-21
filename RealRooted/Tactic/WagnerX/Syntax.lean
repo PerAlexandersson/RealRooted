@@ -23,17 +23,21 @@ syntax (name := rr_strict_interl_mul_X)
 syntax (name := rr_strict_interl_mul_X_inferred)
   "rr_strict_interl_mul_X" : tactic
 
-/-- Closes `StrictInterl (X * f) (X * g)` from `proper : StrictInterl f g`;
-`left_nonneg : HasNonnegCoeffs f`; and `right_nonneg : HasNonnegCoeffs g`. -/
+/-- Closes `StrictInterl (X * f) (X * g)` from `proper : StrictInterl f g`.
+The former `left_nonneg` and `right_nonneg` fields remain accepted for compatibility. -/
 syntax (name := rr_strict_interl_mul_X_both)
+  "rr_strict_interl_mul_X_both" " using " "proper" ":=" term :
+  tactic
+
+syntax (name := rr_strict_interl_mul_X_both_compat)
   "rr_strict_interl_mul_X_both" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
     "right_nonneg" ":=" term :
   tactic
 
-/-- Bare form of `rr_strict_interl_mul_X_both`: finds the three certificates in the local context by
-`rr_lookup`, using `rr_base_strict_interl` and `rr_nonneg`. -/
+/-- Bare form of `rr_strict_interl_mul_X_both`: finds the strict-interlacing
+certificate in the local context using `rr_base_strict_interl`. -/
 syntax (name := rr_strict_interl_mul_X_both_inferred)
   "rr_strict_interl_mul_X_both" : tactic
 
@@ -71,17 +75,24 @@ syntax (name := rr_strict_interl_C_mul_X_pos_inferred)
     "coeff_pos" ":=" term :
   tactic
 
-/-- Closes `StrictInterl (X * f.derivative) (X * f)` from `splits : f.Splits`,
-`degree_two : 2 ≤ f.natDegree` and `nonneg_coeffs : HasNonnegCoeffs f`. -/
+/-- Closes `StrictInterl (X * f.derivative) (X * f)` from `splits : f.Splits`
+and `degree_two : 2 ≤ f.natDegree`. The former `nonneg_coeffs` field remains
+accepted for compatibility. -/
 syntax (name := rr_strict_interl_X_derivative_X_self)
+  "rr_strict_interl_X_derivative_X_self" " using "
+    "splits" ":=" term ","
+    "degree_two" ":=" term :
+  tactic
+
+syntax (name := rr_strict_interl_X_derivative_X_self_compat)
   "rr_strict_interl_X_derivative_X_self" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term ","
     "nonneg_coeffs" ":=" term :
   tactic
 
-/-- Bare form of `rr_strict_interl_X_derivative_X_self`: finds the three certificates in the local
-context by `rr_lookup`, using `rr_degree` and `rr_nonneg`. -/
+/-- Bare form of `rr_strict_interl_X_derivative_X_self`: finds the splitting
+and degree certificates in the local context, using `rr_degree` for the latter. -/
 syntax (name := rr_strict_interl_X_derivative_X_self_inferred)
   "rr_strict_interl_X_derivative_X_self" : tactic
 

@@ -301,23 +301,7 @@ theorem qPolynomial_strictInterl_succ (n : ℕ) :
           (by rw [(qPolynomial_invariants n).1]; lia) ih
           (qPolynomial_invariants (n + 1)).2.2
           (qPolynomial_invariants n).2.2 hpout hqout hpoutdeg
-      simpa only [qPolynomial] using hm.thetaPlusOne_of_pf
-        (by
-          rw [mOperator_eq_bidiagonalOperator]
-          exact RealRooted.BorceaBranden.bidiagonalOperator_isPF_of_affineSymbol_stable
-            (affineBidiagonalSymbol_stable (n + 2) (by lia))
-            (fun k => by unfold alpha; positivity)
-            (fun k => by unfold beta; positivity)
-            (by rw [(qPolynomial_invariants n).1]; lia)
-            (qPolynomial_isPF n))
-        (by
-          rw [mOperator_eq_bidiagonalOperator]
-          exact RealRooted.BorceaBranden.bidiagonalOperator_isPF_of_affineSymbol_stable
-            (affineBidiagonalSymbol_stable (n + 2) (by lia))
-            (fun k => by unfold alpha; positivity)
-            (fun k => by unfold beta; positivity)
-            (by rw [(qPolynomial_invariants (n + 1)).1]; lia)
-            (qPolynomial_isPF (n + 1)))
+      simpa only [qPolynomial] using hm.thetaPlusOne
 
 /-- The A304330 model, with its common `X` factor visible after row zero. -/
 def polynomial : ℕ → ℝ[X]

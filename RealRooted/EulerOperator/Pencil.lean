@@ -23,9 +23,9 @@ theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
     intro hzero
     simp_all
   have hfs : f ≠ 0 ∧ f.Splits := hf.ne_zero_and_splits hf0
-  have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hleft : StrictInterl (X * f.derivative) (X * f) :=
-    strictInterl_X_derivative_X_self_of_splits_nonneg hfs.2 hdeg hnn
+    strictInterl_X_derivative_X_self_of_splits hfs.2 hdeg
+  have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hself : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hfs.1 hfs.2 hnn
   have hright : StrictInterl (C c * f) (X * f) := StrictInterl.C_mul_left hself hc.ne'
   have hfd_ne : f.derivative ≠ 0 :=

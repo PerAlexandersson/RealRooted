@@ -202,8 +202,7 @@ theorem IsPFPolynomial.interl_derivative_self {p : ℝ[X]} (hp : IsPFPolynomial 
 /-- The Euler derivative of a PF polynomial precedes its product by `X`. -/
 theorem IsPFPolynomial.interl_theta_X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl (theta p) (X * p) := by
-  simpa [theta] using interl_X_mul_both_of_pf hp.derivative hp
-    hp.interl_derivative_self
+  simpa [theta] using hp.interl_derivative_self.mul_X_both
 
 /-- Zero-aware `X`-duality for PF polynomials. -/
 theorem interl_iff_interl_X_mul {p q : ℝ[X]}

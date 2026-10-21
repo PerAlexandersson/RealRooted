@@ -361,15 +361,6 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
           isPFPolynomial_X_add_C (a := -r) (neg_nonneg.mpr (hs r (by simp)))
       exact hr.mul (ih fun x hx => hs x (by simp [hx]))
 
-theorem interl_X_mul_both_of_pf {p q : ℝ[X]}
-    (_hp : IsPFPolynomial p) (_hq : IsPFPolynomial q)
-    (hpq : Interl p q) :
-    Interl (X * p) (X * q) := by
-  rcases hpq with hp0 | hq0 | hpq'
-  · simpa [hp0] using interl_zero_left (X * q)
-  · simpa [hq0] using interl_zero_right (X * p)
-  · exact (by simpa using hpq'.mul_X_sub_C_both 0 : StrictInterl (X * p) (X * q)).toInterl
-
 /-- Fixed-left cone closure in the two-summand form used downstream:
 if a polynomial is a common left interleaver for two nonnegative-coefficient
 summands, it is also a common left interleaver for their sum. -/

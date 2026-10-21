@@ -490,4 +490,43 @@ theorem StrictInterl.of_mul_X_sub_C_both {f g : ℝ[X]} {r : ℝ}
       lia
     exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
+/-- Multiplication by the same affine factor on both sides is an equivalence
+on strict interlacing. -/
+theorem StrictInterl.mul_X_sub_C_both_iff {f g : ℝ[X]} (r : ℝ) :
+    StrictInterl f g ↔ StrictInterl ((X - C r) * f) ((X - C r) * g) :=
+  ⟨fun h => h.mul_X_sub_C_both r, StrictInterl.of_mul_X_sub_C_both⟩
+
+/-- Multiplying both polynomials by the same affine factor preserves
+zero-aware interlacing. -/
+theorem Interl.mul_X_sub_C_both {f g : ℝ[X]} (h : Interl f g) (r : ℝ) :
+    Interl ((X - C r) * f) ((X - C r) * g) := by
+  rcases h with rfl | rfl | hfg
+  · simpa using interl_zero_left ((X - C r) * g)
+  · simpa using interl_zero_right ((X - C r) * f)
+  · exact (hfg.mul_X_sub_C_both r).toInterl
+
+/-- Cancelling a common affine factor preserves zero-aware interlacing. -/
+theorem Interl.of_mul_X_sub_C_both {f g : ℝ[X]} {r : ℝ}
+    (h : Interl ((X - C r) * f) ((X - C r) * g)) :
+    Interl f g := by
+  by_cases hf0 : f = 0
+  · simpa [hf0] using interl_zero_left g
+  by_cases hg0 : g = 0
+  · simpa [hg0] using interl_zero_right f
+  have hstrict : StrictInterl ((X - C r) * f) ((X - C r) * g) :=
+    h.toStrictInterl_of_ne
+      (mul_ne_zero (X_sub_C_ne_zero r) hf0) (mul_ne_zero (X_sub_C_ne_zero r) hg0)
+  exact hstrict.of_mul_X_sub_C_both.toInterl
+
+/-- Multiplying both polynomials by `X` preserves zero-aware interlacing. -/
+theorem Interl.mul_X_both {f g : ℝ[X]} (h : Interl f g) :
+    Interl (X * f) (X * g) := by
+  simpa using h.mul_X_sub_C_both 0
+
+/-- Cancelling a common factor `X` preserves zero-aware interlacing. -/
+theorem Interl.of_mul_X_both {f g : ℝ[X]} (h : Interl (X * f) (X * g)) :
+    Interl f g := by
+  apply Interl.of_mul_X_sub_C_both (r := 0)
+  simpa using h
+
 end RealRooted

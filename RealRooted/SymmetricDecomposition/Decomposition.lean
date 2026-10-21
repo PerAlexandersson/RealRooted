@@ -172,15 +172,12 @@ lemma idTransform_X_mul_of_natDegree_le_two_pred {d : ℕ} {p : ℝ[X]}
     _ = X * idTransform (d - 2) p :=
       idTransform_of_natDegree_le_pred (d := d - 1) (by lia) (by lia)
 
+/-- Compatibility form of the common-`X` strict-interlacing equivalence. -/
+@[deprecated StrictInterl.mul_X_sub_C_both_iff +typeChanged (since := "2026-10-21")]
 theorem strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
     (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
-  constructor
-  · intro h
-    simpa using h.mul_X_sub_C_both 0
-  · intro h
-    apply StrictInterl.of_mul_X_sub_C_both (r := 0)
-    simpa using h
+  simpa using StrictInterl.mul_X_sub_C_both_iff (f := f) (g := g) 0
 
 lemma hasNonnegCoeffs_of_eq_X_mul {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (h : p = X * q) :

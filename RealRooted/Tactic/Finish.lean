@@ -1026,7 +1026,7 @@ macro_rules
             | rr_zero_or_splits using rr_lookup_term
             | assumption
             | (apply Or.inr; apply Polynomial.Splits.mul <;>
-                apply splits_of_eq_zero_or_splits; rr_zero_or_splits)
+                (apply splits_of_eq_zero_or_splits; rr_zero_or_splits))
             | (apply Or.inr; apply Polynomial.Splits.pow;
                 apply splits_of_eq_zero_or_splits; rr_zero_or_splits)
             -- `apply` rejects a non-disjunction before `rr_splits` runs; `exact Or.inr (by …)`

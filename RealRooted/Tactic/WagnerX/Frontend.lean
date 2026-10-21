@@ -26,6 +26,10 @@ macro_rules
           case hfnn => rr_lookup [rr_nonneg]
           case hgnn => rr_lookup [rr_nonneg]))
   | `(tactic|
+      rr_strict_interl_mul_X_both using proper := $hstrictInterl:term) =>
+      `(tactic|
+        simpa using RealRooted.StrictInterl.mul_X_sub_C_both $hstrictInterl 0)
+  | `(tactic|
       rr_strict_interl_mul_X_both using
         proper := $hstrictInterl:term,
         left_nonneg := $_hfnn:term,
@@ -78,18 +82,22 @@ macro_rules
   | `(tactic|
       rr_strict_interl_X_derivative_X_self using
         splits := $hf:term,
-        degree_two := $hdeg:term,
-        nonneg_coeffs := $hfnn:term) =>
+        degree_two := $hdeg:term) =>
       `(tactic|
-        exact RealRooted.strictInterl_X_derivative_X_self_of_splits_nonneg
-          $hf $hdeg $hfnn)
+        exact RealRooted.strictInterl_X_derivative_X_self_of_splits $hf $hdeg)
+  | `(tactic|
+      rr_strict_interl_X_derivative_X_self using
+        splits := $hf:term,
+        degree_two := $hdeg:term,
+        nonneg_coeffs := $_hfnn:term) =>
+      `(tactic|
+        exact RealRooted.strictInterl_X_derivative_X_self_of_splits $hf $hdeg)
   | `(tactic| rr_strict_interl_X_derivative_X_self) =>
       `(tactic|
         exact (by
-          apply RealRooted.strictInterl_X_derivative_X_self_of_splits_nonneg
+          apply RealRooted.strictInterl_X_derivative_X_self_of_splits
           case hf => rr_lookup
-          case hdeg => rr_lookup [rr_degree]
-          case hfnn => rr_lookup [rr_nonneg]))
+          case hdeg => rr_lookup [rr_degree]))
   | `(tactic|
       rr_strict_interl_wagner_derivative_gap_lag using
         proper := $hstrictInterl:term,

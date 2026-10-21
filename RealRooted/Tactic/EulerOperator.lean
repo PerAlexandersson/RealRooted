@@ -105,22 +105,16 @@ theorem iterateThetaPlusOne_sequence_pf
   RealRooted.iterateThetaPlusOne_preserves_pf (l i) (hP i)
 
 theorem thetaPlusOne_sequence_interl
-    {P Q : Nat → ℝ[X]}
-    (hP : ∀ i : Nat, IsPFPolynomial (P i))
-    (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+    {P Q : Nat → ℝ[X]} (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (thetaPlusOne (P i)) (thetaPlusOne (Q i)) := fun i =>
-  RealRooted.thetaPlusOnePreservesInterl (hP i) (hQ i) (hPQ i)
+  (hPQ i).thetaPlusOne
 
 theorem iterateThetaPlusOne_sequence_interl
-    {l : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hP : ∀ i : Nat, IsPFPolynomial (P i))
-    (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+    {l : Nat → Nat} {P Q : Nat → ℝ[X]} (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat,
       Interl (iterateThetaPlusOne (l i) (P i)) (iterateThetaPlusOne (l i) (Q i)) :=
     fun i =>
-  RealRooted.iterateThetaPlusOne_preserves_interl (l i) (hP i) (hQ i) (hPQ i)
+  (hPQ i).iterateThetaPlusOne (l i)
 
 /-- Closes `HasNonnegCoeffs (theta p)` from `nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_theta_nonneg_named)
@@ -210,26 +204,41 @@ syntax (name := rr_iterateThetaPlusOne_sequence_pf_named)
     "pf" ":=" term :
   tactic
 
-/-- Closes `Interl (thetaPlusOne p) (thetaPlusOne q)` from `left_pf : IsPFPolynomial p`,
-`right_pf : IsPFPolynomial q` and `interl : Interl p q`. -/
+/-- Closes `Interl (thetaPlusOne p) (thetaPlusOne q)` from `interl : Interl p q`.
+The former PF-certificate fields remain accepted for compatibility. -/
 syntax (name := rr_thetaPlusOne_interl_named)
+  "rr_thetaPlusOne_interl" " using " "interl" ":=" term :
+  tactic
+
+syntax (name := rr_thetaPlusOne_interl_compat_named)
   "rr_thetaPlusOne_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
     "interl" ":=" term :
   tactic
 
-/-- Sequence form of `rr_thetaPlusOne_interl`: the same certificate for every index `i`. -/
+/-- Sequence form of `rr_thetaPlusOne_interl`: the same certificate for every
+index `i`. The former PF-certificate fields remain accepted. -/
 syntax (name := rr_thetaPlusOne_sequence_interl_named)
+  "rr_thetaPlusOne_sequence_interl" " using " "interl" ":=" term :
+  tactic
+
+syntax (name := rr_thetaPlusOne_sequence_interl_compat_named)
   "rr_thetaPlusOne_sequence_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
     "interl" ":=" term :
   tactic
 
-/-- Closes `Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q)` from `index : l`,
-`left_pf : IsPFPolynomial p`, `right_pf : IsPFPolynomial q` and `interl : Interl p q`. -/
+/-- Closes `Interl (iterateThetaPlusOne l p) (iterateThetaPlusOne l q)` from
+`index : l` and `interl : Interl p q`. The former PF-certificate fields remain accepted. -/
 syntax (name := rr_iterateThetaPlusOne_interl_named)
+  "rr_iterateThetaPlusOne_interl" " using "
+    "index" ":=" term ","
+    "interl" ":=" term :
+  tactic
+
+syntax (name := rr_iterateThetaPlusOne_interl_compat_named)
   "rr_iterateThetaPlusOne_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","
@@ -237,9 +246,15 @@ syntax (name := rr_iterateThetaPlusOne_interl_named)
     "interl" ":=" term :
   tactic
 
-/-- Sequence form of `rr_iterateThetaPlusOne_interl`: the same certificate for every index `i`,
-with `l i` in place of `l`. -/
+/-- Sequence form of `rr_iterateThetaPlusOne_interl`: the same certificate for
+every index `i`, with `l i` in place of `l`. The former PF fields remain accepted. -/
 syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
+  "rr_iterateThetaPlusOne_sequence_interl" " using "
+    "index" ":=" term ","
+    "interl" ":=" term :
+  tactic
+
+syntax (name := rr_iterateThetaPlusOne_sequence_interl_compat_named)
   "rr_iterateThetaPlusOne_sequence_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","
@@ -318,33 +333,51 @@ macro_rules
         pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.iterateThetaPlusOne_sequence_pf (l := $l) $hp)
   | `(tactic|
+      rr_thetaPlusOne_interl using interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Interl.thetaPlusOne $hpq)
+  | `(tactic|
       rr_thetaPlusOne_interl using
-        left_pf := $hp:term,
-        right_pf := $hq:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
         interl := $hpq:term) =>
-      `(tactic| exact RealRooted.thetaPlusOnePreservesInterl $hp $hq $hpq)
+      `(tactic| exact RealRooted.Interl.thetaPlusOne $hpq)
+  | `(tactic|
+      rr_thetaPlusOne_sequence_interl using interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_interl $hpq)
   | `(tactic|
       rr_thetaPlusOne_sequence_interl using
-        left_pf := $hp:term,
-        right_pf := $hq:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
         interl := $hpq:term) =>
-      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_interl $hp $hq $hpq)
+      `(tactic| exact RealRooted.Tactic.thetaPlusOne_sequence_interl $hpq)
   | `(tactic|
       rr_iterateThetaPlusOne_interl using
         index := $l:term,
-        left_pf := $hp:term,
-        right_pf := $hq:term,
         interl := $hpq:term) =>
-      `(tactic| exact RealRooted.iterateThetaPlusOne_preserves_interl $l $hp $hq $hpq)
+      `(tactic| exact RealRooted.Interl.iterateThetaPlusOne $hpq $l)
+  | `(tactic|
+      rr_iterateThetaPlusOne_interl using
+        index := $l:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
+        interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Interl.iterateThetaPlusOne $hpq $l)
   | `(tactic|
       rr_iterateThetaPlusOne_sequence_interl using
         index := $l:term,
-        left_pf := $hp:term,
-        right_pf := $hq:term,
         interl := $hpq:term) =>
       `(tactic|
         exact RealRooted.Tactic.iterateThetaPlusOne_sequence_interl
-          (l := $l) $hp $hq $hpq)
+          (l := $l) $hpq)
+  | `(tactic|
+      rr_iterateThetaPlusOne_sequence_interl using
+        index := $l:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
+        interl := $hpq:term) =>
+      `(tactic|
+        exact RealRooted.Tactic.iterateThetaPlusOne_sequence_interl
+          (l := $l) $hpq)
 
 end Tactic
 end RealRooted

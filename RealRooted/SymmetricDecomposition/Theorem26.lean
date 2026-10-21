@@ -850,11 +850,10 @@ theorem BrandenSolus.last_equiv
     (idTransform_natDegree_le hd) hd hId_nonneg hp_nonneg).symm
 
 private lemma strictInterl_iff_of_eq_X_mul
-    {f g f' g' : ℝ[X]} (hf : f = X * f') (hg : g = X * g')
-    (hfnn : HasNonnegCoeffs f') (hgnn : HasNonnegCoeffs g') :
+    {f g f' g' : ℝ[X]} (hf : f = X * f') (hg : g = X * g') :
     StrictInterl f g ↔ StrictInterl f' g' := by
-  simpa only [hf, hg] using
-    (strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs hfnn hgnn).symm
+  simpa [hf, hg] using
+    (StrictInterl.mul_X_sub_C_both_iff (f := f') (g := g') 0).symm
 
 private theorem BrandenSolus.descend_of_lt_top
     {d : ℕ} {p a b : ℝ[X]}
@@ -910,12 +909,12 @@ private theorem BrandenSolus.descend_of_lt_top
         idTransform_X_mul_of_natDegree_le_two_pred hd2 hqdeg
   have hsmall := hprev hqdeg hidq ha'_nonneg hb'_nonneg ha'0 hb'0
   rcases hsmall with ⟨hfirst_small, hsecond_small, hthird_small, -⟩
-  have hba_transport := strictInterl_iff_of_eq_X_mul hbX haX hb'_nonneg ha'_nonneg
-  have hap_transport := strictInterl_iff_of_eq_X_mul haX hpX' ha'_nonneg hq_nonneg
-  have hbp_transport := strictInterl_iff_of_eq_X_mul hbX hpX' hb'_nonneg hq_nonneg
+  have hba_transport := strictInterl_iff_of_eq_X_mul hbX haX
+  have hap_transport := strictInterl_iff_of_eq_X_mul haX hpX'
+  have hbp_transport := strictInterl_iff_of_eq_X_mul hbX hpX'
   have hIdp_transport :
       StrictInterl (idTransform d p) p ↔ StrictInterl (idTransform (d - 2) q) q :=
-    strictInterl_iff_of_eq_X_mul hIdX hpX' hIdq_nonneg hq_nonneg
+    strictInterl_iff_of_eq_X_mul hIdX hpX'
   refine ⟨?_, ?_, ?_, BrandenSolus.last_equiv hd hid ha_nonneg hb_nonneg⟩ <;> lia
 
 /-- The naive fully strict translation of Brändén--Solus Theorem 2.6, without
