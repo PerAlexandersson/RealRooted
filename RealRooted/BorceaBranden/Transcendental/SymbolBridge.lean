@@ -26,11 +26,12 @@ theorem MvUpperHalfPlaneStable.invertVariableAt
     MvUpperHalfPlaneStable (invertVariableAt d i p) := by
   unfold RealRooted.BorceaBranden.invertVariableAt
   apply MvUpperHalfPlaneStable.rename
-  apply MvUpperHalfPlaneStable.invertVariable
-  · have hrename := MvPolynomial.degreeOf_rename_of_injective
-      (Equiv.optionSubtypeNe i).symm.injective i (p := p)
-    simpa using hrename.trans_le hdegree
-  · exact hp.rename
+  exact MvUpperHalfPlaneStable.invertVariable
+    (by
+      have hrename := MvPolynomial.degreeOf_rename_of_injective
+        (Equiv.optionSubtypeNe i).symm.injective i (p := p)
+      simpa using hrename.trans_le hdegree)
+    hp.rename
 
 private theorem coeff_invertVariable_of_degree
     {υ : Type*} {p : MvPolynomial (Option υ) ℂ} (d : ℕ)
@@ -77,11 +78,8 @@ private theorem degreeOf_invertVariable_none_le
     (invertVariable d p).degreeOf none ≤ d := by
   rw [MvPolynomial.degreeOf_le_iff]
   intro e he
-  rw [MvPolynomial.mem_support_iff] at he
-  rw [coeff_invertVariable_of_degree d hdegree e] at he
-  by_contra hle
-  rw [ite_eq_right hle] at he
-  exact he rfl
+  rw [MvPolynomial.mem_support_iff, coeff_invertVariable_of_degree d hdegree e] at he
+  split_ifs at he <;> simp_all
 
 private theorem degreeOf_invertVariable_some_le
     {υ : Type*} {p : MvPolynomial (Option υ) ℂ} (d : ℕ)
@@ -89,8 +87,7 @@ private theorem degreeOf_invertVariable_some_le
     (invertVariable d p).degreeOf (some j) ≤ p.degreeOf (some j) := by
   rw [MvPolynomial.degreeOf_le_iff]
   intro e he
-  rw [MvPolynomial.mem_support_iff] at he
-  rw [coeff_invertVariable_of_degree d hdegree e] at he
+  rw [MvPolynomial.mem_support_iff, coeff_invertVariable_of_degree d hdegree e] at he
   by_cases hle : e none ≤ d
   · rw [ite_eq_left hle] at he
     have hin : p.coeff (e.some.optionElim (d - e none)) ≠ 0 :=
@@ -98,8 +95,7 @@ private theorem degreeOf_invertVariable_some_le
     have hbound := MvPolynomial.monomial_le_degreeOf (some j)
       (MvPolynomial.mem_support_iff.mpr hin)
     simpa using hbound
-  · rw [ite_eq_right hle] at he
-    exact (he rfl).elim
+  · simp [hle] at he
 
 private theorem degreeOf_invertVariableAt_self_le
     {υ : Type*} [DecidableEq υ] {p : MvPolynomial υ ℂ}
@@ -111,10 +107,9 @@ private theorem degreeOf_invertVariableAt_self_le
       ((Equiv.optionSubtypeNe i) none) ≤ d
   rw [MvPolynomial.degreeOf_rename_of_injective
     (Equiv.optionSubtypeNe i).injective]
-  apply degreeOf_invertVariable_none_le d
   have hrename := MvPolynomial.degreeOf_rename_of_injective
     (Equiv.optionSubtypeNe i).symm.injective i (p := p)
-  simpa using hrename.trans_le hdegree
+  exact degreeOf_invertVariable_none_le d (by simpa using hrename.trans_le hdegree)
 
 private theorem degreeOf_invertVariableAt_of_ne_le
     {υ : Type*} [DecidableEq υ] {p : MvPolynomial υ ℂ}
@@ -259,8 +254,7 @@ private theorem coeff_invertVariables_of_nodup
             complementOnList d (i :: s) m := by
         ext j
         by_cases hji : j = i
-        · subst j
-          simp [complementOnList, hs.1]
+        · subst j; simp [complementOnList, hs.1]
         · simp [complementOnList, hji]
       rw [hcomp]
       simp only [inversionExponent, List.map_cons, List.sum_cons]
@@ -343,6 +337,18 @@ private theorem complementOnList_rightVariableList
       simp [complementOnList, inr_mem_rightVariableList (τ := τ) i,
         rightInversionBounds]
 
+omit [Finite τ] [Fintype σ] in
+private theorem coeff_eq_zero_of_right_degree
+    {β : σ →₀ ℕ} {p : MvPolynomial (τ ⊕ σ) ℂ}
+    (hdegree : ∀ i, p.degreeOf (Sum.inr i) ≤ β i) {e : τ ⊕ σ →₀ ℕ}
+    (hle : ¬(Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β) : p.coeff e = 0 := by
+  rw [Finsupp.le_def] at hle
+  push Not at hle
+  obtain ⟨i, hi⟩ := hle
+  apply MvPolynomial.notMem_support_iff.mp
+  exact fun hes => (Nat.not_le_of_gt hi)
+    ((MvPolynomial.monomial_le_degreeOf (Sum.inr i) hes).trans (hdegree i))
+
 /-- Complement/sign coefficient formula for the finite right-block composition of
 `invertVariable`. -/
 theorem coeff_invertRightVariables (β : σ →₀ ℕ)
@@ -375,15 +381,8 @@ theorem coeff_invertRightVariables (β : σ →₀ ℕ)
       obtain ⟨i, rfl⟩ := mem_rightVariableList_eq_inr x hx
       exact hle i
   · rw [ite_eq_right hle]
-    rw [Finsupp.le_def] at hle
-    push Not at hle
-    obtain ⟨i, hi⟩ := hle
-    apply MvPolynomial.notMem_support_iff.mp
-    intro hes
-    have hmon := MvPolynomial.monomial_le_degreeOf (Sum.inr i) hes
-    have hout := degreeOf_invertVariables_le d s p hd (Sum.inr i)
-    change (invertRightVariables β p).degreeOf (Sum.inr i) ≤ β i at hout
-    exact (Nat.not_le_of_gt hi) (hmon.trans hout)
+    apply coeff_eq_zero_of_right_degree (hle := hle)
+    exact fun i => degreeOf_invertVariables_le d s p hd (Sum.inr i)
 
 /-- The signed reciprocal in a finite right-coordinate degree box. -/
 def signedRightBoxReciprocal (β : σ →₀ ℕ)
@@ -416,10 +415,7 @@ theorem coeff_signedRightBoxReciprocal (β : σ →₀ ℕ)
   rw [signedRightBoxReciprocal, coeff_glue]
   unfold seriesCoeff
   rw [MvPolynomial.coeff_coeffPoly]
-  split_ifs with h
-  · push_cast
-    rfl
-  · simp
+  split_ifs <;> push_cast <;> simp_all
 
 /-- The direct complement/sign formula agrees with the finite right-coordinate
 composition of `invertVariable`. -/
@@ -428,8 +424,7 @@ theorem invertRightVariables_eq_signedRightBoxReciprocal
     (hdegree : ∀ i, p.degreeOf (Sum.inr i) ≤ β i) :
     invertRightVariables β p = signedRightBoxReciprocal β p := by
   ext e
-  rw [coeff_invertRightVariables β p hdegree e,
-    coeff_signedRightBoxReciprocal]
+  rw [coeff_invertRightVariables β p hdegree e, coeff_signedRightBoxReciprocal]
 
 /-- The arbitrary-degree signed right-box reciprocal preserves stability. -/
 theorem MvUpperHalfPlaneStable.signedRightBoxReciprocal
@@ -456,10 +451,7 @@ theorem coeff_paperRightBoxReciprocal (β : σ →₀ ℕ)
   rw [paperRightBoxReciprocal, coeff_glue]
   unfold seriesCoeff
   rw [MvPolynomial.coeff_coeffPoly]
-  split_ifs with h
-  · push_cast
-    rfl
-  · simp
+  split_ifs <;> push_cast <;> simp_all
 
 private theorem neg_one_pow_box_sub (β α : σ →₀ ℕ) (hαβ : α ≤ β) :
     (-1 : ℂ) ^ (∑ i, β i) * (-1 : ℂ) ^ (∑ i, (β i - α i)) =
@@ -498,9 +490,7 @@ theorem MvUpperHalfPlaneStable.paperRightBoxReciprocal
     (hp : MvUpperHalfPlaneStable p) :
     MvUpperHalfPlaneStable (paperRightBoxReciprocal β p) := by
   rw [paperRightBoxReciprocal_eq_globalSign_mul]
-  apply MvUpperHalfPlaneStable.C_mul
-  · exact MvUpperHalfPlaneStable.signedRightBoxReciprocal β hdegree hp
-  · simp
+  exact (MvUpperHalfPlaneStable.signedRightBoxReciprocal β hdegree hp).C_mul (by simp)
 
 /-- The signed right-box reciprocal has right-coordinate degree at most the box. -/
 theorem degreeOf_signedRightBoxReciprocal_inr_le
@@ -542,9 +532,8 @@ theorem signedRightBoxReciprocal_involutive
   let E : (τ ⊕ σ →₀ ℕ) ≃ (τ →₀ ℕ) × (σ →₀ ℕ) :=
     Finsupp.sumFinsuppEquivProdFinsupp
   by_cases hle : (E e).2 ≤ β
-  · have hle' : (Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β := by
-      simpa only [E] using hle
-    rw [ite_eq_left hle']
+  · change (Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β at hle
+    rw [ite_eq_left hle]
     rw [coeff_signedRightBoxReciprocal]
     have hsub : β - (E e).2 ≤ β := fun i => Nat.sub_le _ _
     have hpair :
@@ -552,39 +541,24 @@ theorem signedRightBoxReciprocal_involutive
             ((E e).1.sumElim (β - (E e).2)) =
           ((E e).1, β - (E e).2) := by
       change E (E.symm ((E e).1, β - (E e).2)) = _
-      exact E.apply_symm_apply _
+      rw [E.apply_symm_apply]
     rw [hpair]
     rw [ite_eq_left hsub]
     have hsubsub : β - (β - (E e).2) = (E e).2 := by
-      ext i
-      exact Nat.sub_sub_self (hle i)
+      ext i; exact Nat.sub_sub_self (hle i)
     have he : (E e).1.sumElim (E e).2 = e := by
       change E.symm (E e) = e
-      exact E.symm_apply_apply e
+      rw [E.symm_apply_apply]
     rw [hsubsub, he, ← mul_assoc]
-    have houter :
-        (∑ i, (β i - (Finsupp.sumFinsuppEquivProdFinsupp e).2 i)) =
-          ∑ i, (β i - (E e).2 i) := by
-      rfl
     have hinner :
         (∑ i, (β i - (β - (E e).2) i)) = ∑ i, (E e).2 i := by
       apply Finset.sum_congr rfl
       intro i _hi
       exact Nat.sub_sub_self (hle i)
-    rw [houter, hinner]
+    rw [hinner]
     rw [neg_one_pow_box_sub_mul β (E e).2 hle]
-  · have hle' : ¬(Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β := by
-      simpa only [E] using hle
-    rw [ite_eq_right hle']
-    have hpzero : p.coeff e = 0 := by
-      rw [Finsupp.le_def] at hle'
-      push Not at hle'
-      obtain ⟨i, hi⟩ := hle'
-      apply MvPolynomial.notMem_support_iff.mp
-      intro hes
-      have hmon := MvPolynomial.monomial_le_degreeOf (Sum.inr i) hes
-      exact (Nat.not_le_of_gt hi) (hmon.trans (hdegree i))
-    rw [hpzero, mul_zero]
+  · change ¬(Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β at hle
+    rw [ite_eq_right hle, coeff_eq_zero_of_right_degree hdegree hle, mul_zero]
 
 /-- Stability is equivalent before and after the signed right-box reciprocal. -/
 theorem signedRightBoxReciprocal_stable_iff
@@ -601,7 +575,7 @@ theorem signedRightBoxReciprocal_stable_iff
     have hne := htwice z hz
     simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C] at hne
     exact (mul_ne_zero_iff.mp hne).2
-  · exact fun hp => MvUpperHalfPlaneStable.signedRightBoxReciprocal β hdegree hp
+  · exact MvUpperHalfPlaneStable.signedRightBoxReciprocal β hdegree
 
 /-- Stability is equivalent before and after the normalized right-box reciprocal. -/
 theorem paperRightBoxReciprocal_stable_iff
@@ -618,8 +592,7 @@ theorem paperRightBoxReciprocal_stable_iff
     simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C] at hne
     exact (mul_ne_zero_iff.mp hne).2
   · intro hp
-    exact MvUpperHalfPlaneStable.C_mul
-      ((signedRightBoxReciprocal_stable_iff β p hdegree).mpr hp) (by simp)
+    exact ((signedRightBoxReciprocal_stable_iff β p hdegree).mpr hp).C_mul (by simp)
 
 private theorem fall_mul_signedInvFactorial_eq_boxChoose
     (α β : σ →₀ ℕ) :
@@ -643,13 +616,6 @@ private theorem fall_mul_signedInvFactorial_eq_boxChoose
     Finset.prod_ne_zero_iff.mpr fun i _hi => by
       exact_mod_cast Nat.factorial_ne_zero (α i)
   field_simp
-
-omit [Finite τ] [Fintype σ] in
-private theorem coeffPoly_eq_sourceCoefficientGeneral
-    (p : MvPolynomial (τ ⊕ σ) ℂ) (α : σ →₀ ℕ) :
-    MvPolynomial.coeffPoly α p = sourceCoefficientGeneral p α := by
-  ext γ
-  rw [MvPolynomial.coeff_coeffPoly, coeff_sourceCoefficientGeneral]
 
 omit [Finite τ] in
 private theorem coeff_algebraicSymbol_at_complement

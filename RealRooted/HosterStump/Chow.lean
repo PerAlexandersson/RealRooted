@@ -64,24 +64,19 @@ noncomputable def augChowOfFlagH (n : ℕ) (β : Finset ℕ → ℝ) : ℝ[X] :=
     C (β S) * X ^ S.card * (X + 1) ^ (n + 1 - 2 * S.card)
 
 /-- The flag `h`-vector of the dual poset: `β^*(S) = β(n + 1 - S)`. -/
-def dualFlagH (n : ℕ) (β : Finset ℕ → ℝ) : Finset ℕ → ℝ := fun S => β (reflectSet n S)
+def dualFlagH (n : ℕ) (β : Finset ℕ → ℝ) : Finset ℕ → ℝ :=
+  fun S => β (reflectSet n S)
 
 /-- Membership in `isolatedSubsets`. -/
-lemma mem_isolatedSubsets {U S : Finset ℕ} : S ∈ isolatedSubsets U ↔ S ⊆ U ∧ IsIsolated S := by
+lemma mem_isolatedSubsets {U S : Finset ℕ} :
+    S ∈ isolatedSubsets U ↔ S ⊆ U ∧ IsIsolated S := by
   simp [isolatedSubsets]
 
 /-- Membership in a reflected set. -/
 lemma mem_reflectSet {n : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.range n) {i : ℕ} :
     i ∈ reflectSet n S ↔ i < n ∧ n - 1 - i ∈ S := by
   simp only [reflectSet, Finset.mem_image]
-  constructor
-  · rintro ⟨s, hs, rfl⟩
-    have hs' := Finset.mem_range.1 (hS hs)
-    refine ⟨by lia, ?_⟩
-    have e : n - 1 - (n - 1 - s) = s := by lia
-    rwa [e]
-  · rintro ⟨hi, hmem⟩
-    exact ⟨n - 1 - i, hmem, by lia⟩
+  grind
 
 /-- A reflected set lies in `range n`. -/
 lemma reflectSet_subset_range {n : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.range n) :
@@ -101,24 +96,15 @@ lemma reflectSet_reflectSet {n : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.range 
     reflectSet n (reflectSet n S) = S := by
   ext i
   rw [mem_reflectSet (reflectSet_subset_range hS), mem_reflectSet hS]
-  constructor
-  · rintro ⟨_, _, hm⟩
-    have e : n - 1 - (n - 1 - i) = i := by lia
-    rwa [e] at hm
-  · intro hi
-    have h1 := Finset.mem_range.1 (hS hi)
-    have e : n - 1 - (n - 1 - i) = i := by lia
-    exact ⟨h1, by lia, by rw [e]; exact hi⟩
+  grind
 
 /-- Reflection preserves isolated sets. -/
 lemma isIsolated_reflectSet {n : ℕ} {S : Finset ℕ} (hS : S ⊆ Finset.range n)
     (hiso : IsIsolated S) : IsIsolated (reflectSet n S) := by
   intro i hi hi1
   rw [mem_reflectSet hS] at hi hi1
-  have := hiso (n - 1 - (i + 1)) hi1.2
-  have e : n - 1 - (i + 1) + 1 = n - 1 - i := by lia
-  rw [e] at this
-  exact this hi.2
+  exact (hiso (n - 1 - (i + 1)) hi1.2)
+    (by simpa only [show n - 1 - (i + 1) + 1 = n - 1 - i by lia] using hi.2)
 
 private lemma sum_isolatedSubsets_reflect {n : ℕ} {U V : Finset ℕ} (hU : U ⊆ Finset.range n)
     (hV : V ⊆ Finset.range n) (hUV : ∀ i, i < n → (i ∈ V ↔ n - 1 - i ∈ U))
@@ -136,10 +122,7 @@ private lemma sum_isolatedSubsets_reflect {n : ℕ} {U V : Finset ℕ} (hU : U �
     have hDr : D ⊆ Finset.range n := hD.1.trans hV
     refine ⟨fun i hi => ?_, isIsolated_reflectSet hDr hD.2⟩
     rw [mem_reflectSet hDr] at hi
-    have h1 := hD.1 hi.2
-    have := (hUV (n - 1 - i) (by lia)).1 h1
-    have e : n - 1 - (n - 1 - i) = i := by lia
-    rwa [e] at this
+    grind
   · intro S hS
     exact reflectSet_reflectSet ((mem_isolatedSubsets.1 hS).1.trans hU)
   · intro D hD
@@ -169,7 +152,8 @@ noncomputable def flagHOfH (n : ℕ) (h : ℕ → ℝ) : Finset ℕ → ℝ := f
   ∑ k ∈ Finset.range (n + 1), h k * (desCount n k (reflectSet n S) : ℝ)
 
 /-- The vector `flagHOfH n h` satisfies identity (1.3) by definition. -/
-theorem isSimplicialFlagH_flagHOfH (n : ℕ) (h : ℕ → ℝ) : IsSimplicialFlagH n h (flagHOfH n h) :=
+theorem isSimplicialFlagH_flagHOfH (n : ℕ) (h : ℕ → ℝ) :
+    IsSimplicialFlagH n h (flagHOfH n h) :=
   fun _ _ => rfl
 
 /-! ### Isolated sets and the refined family -/
@@ -199,28 +183,25 @@ private lemma card_le_of_isIsolated_of_subset_Ico {a m : ℕ} {D : Finset ℕ} (
 private lemma card_le_of_mem_isolatedSubsets_Icc {n : ℕ} {D : Finset ℕ}
     (hD : D ∈ isolatedSubsets (Finset.Icc 1 (n - 1))) : D.card ≤ n / 2 := by
   rw [mem_isolatedSubsets] at hD
-  have := card_le_of_isIsolated_of_subset_Ico (a := 1) (m := n - 1) hD.2 (fun i hi => by
-    have := Finset.mem_Icc.1 (hD.1 hi)
-    rw [Finset.mem_Ico]
-    lia)
+  have := card_le_of_isIsolated_of_subset_Ico (a := 1) (m := n - 1) hD.2 fun i hi => by
+    simp only [Finset.mem_Ico] at *
+    grind
   lia
 
 private lemma card_le_of_mem_isolatedSubsets_range_pred {n : ℕ} {D : Finset ℕ}
     (hD : D ∈ isolatedSubsets (Finset.range (n - 1))) : D.card ≤ n / 2 := by
   rw [mem_isolatedSubsets] at hD
-  have := card_le_of_isIsolated_of_subset_Ico (a := 0) (m := n - 1) hD.2 (fun i hi => by
-    have := Finset.mem_range.1 (hD.1 hi)
-    rw [Finset.mem_Ico]
-    lia)
+  have := card_le_of_isIsolated_of_subset_Ico (a := 0) (m := n - 1) hD.2 fun i hi => by
+    simp only [Finset.mem_Ico] at *
+    grind
   lia
 
 private lemma card_le_of_mem_isolatedSubsets_range {n : ℕ} {D : Finset ℕ}
     (hD : D ∈ isolatedSubsets (Finset.range n)) : D.card ≤ (n + 1) / 2 := by
   rw [mem_isolatedSubsets] at hD
-  exact card_le_of_isIsolated_of_subset_Ico (a := 0) (m := n) hD.2 (fun i hi => by
-    have := Finset.mem_range.1 (hD.1 hi)
+  exact card_le_of_isIsolated_of_subset_Ico (a := 0) (m := n) hD.2 fun i hi => by
     rw [Finset.mem_Ico]
-    lia)
+    exact ⟨Nat.zero_le _, by simpa using Finset.mem_range.1 (hD.1 hi)⟩
 
 private lemma refined_empty_eq_sum_isolatedSubsets {n k : ℕ} (hk : k ≤ n) (T : Finset ℕ) :
     refined n k ∅ T =
@@ -268,7 +249,8 @@ private lemma sum_C_mul_refined_eq (n : ℕ) (h : ℕ → ℝ) (T : Finset ℕ) 
 
 /-! ### Lemma 3.1: the gamma-polynomials of the Chow polynomials -/
 
-private lemma sum_isolatedSubsets_eq_gammaTransform {d : ℕ} {T : Finset ℕ} (c : Finset ℕ → ℝ)
+private lemma sum_isolatedSubsets_eq_gammaTransform {d : ℕ} {T : Finset ℕ}
+    (c : Finset ℕ → ℝ)
     (hcard : ∀ D ∈ isolatedSubsets T, D.card ≤ d / 2) :
     ∑ D ∈ isolatedSubsets T, C (c D) * X ^ D.card * (X + 1) ^ (d - 2 * D.card) =
       gammaTransform d (∑ D ∈ isolatedSubsets T, C (c D) * X ^ D.card) := by
@@ -277,10 +259,8 @@ private lemma sum_isolatedSubsets_eq_gammaTransform {d : ℕ} {T : Finset ℕ} (
   rw [mul_assoc, C_mul_X_pow_eq_monomial, gammaTransform_monomial]
   simp only [hcard D hD, ↓reduceIte, gammaBasisTerm]
 
-private lemma Icc_subset_range {n : ℕ} : Finset.Icc 1 (n - 1) ⊆ Finset.range n := fun i hi => by
-  have := Finset.mem_Icc.1 hi
-  rw [Finset.mem_range]
-  lia
+private lemma Icc_subset_range {n : ℕ} : Finset.Icc 1 (n - 1) ⊆ Finset.range n :=
+  fun i hi => Finset.mem_range.2 (by have := Finset.mem_Icc.1 hi; lia)
 
 private lemma range_pred_subset_range {n : ℕ} : Finset.range (n - 1) ⊆ Finset.range n :=
   Finset.range_mono (by lia)
@@ -292,8 +272,8 @@ theorem chowOfFlagH_eq_gammaTransform {n : ℕ} {h : ℕ → ℝ} {β : Finset �
     chowOfFlagH n β = gammaTransform n
       (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range (n - 1))) := by
   rw [sum_C_mul_refined_eq]
-  set b : Finset ℕ → ℝ := fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)
-    with hb
+  set b : Finset ℕ → ℝ :=
+    (fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)) with hb
   rw [← sum_isolatedSubsets_eq_gammaTransform b
     (fun D hD => card_le_of_mem_isolatedSubsets_range_pred hD)]
   unfold chowOfFlagH
@@ -315,8 +295,8 @@ theorem augChowOfFlagH_eq_gammaTransform {n : ℕ} {h : ℕ → ℝ} {β : Finse
     augChowOfFlagH n β = gammaTransform (n + 1)
       (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range n)) := by
   rw [sum_C_mul_refined_eq]
-  set b : Finset ℕ → ℝ := fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)
-    with hb
+  set b : Finset ℕ → ℝ :=
+    (fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)) with hb
   rw [← sum_isolatedSubsets_eq_gammaTransform b
     (fun D hD => card_le_of_mem_isolatedSubsets_range hD)]
   unfold augChowOfFlagH
@@ -333,13 +313,14 @@ theorem augChowOfFlagH_eq_gammaTransform {n : ℕ} {h : ℕ → ℝ} {β : Finse
 
 /-- Hoster--Stump, Lemma 3.1 (dual Chow polynomial): the `γ`-polynomial of the Chow polynomial
 of the dual poset is `∑ₖ hₖ p^{[2, n]}_{n,k}`, here `refined n k ∅ (Icc 1 (n - 1))`. -/
-theorem chowOfFlagH_dualFlagH_eq_gammaTransform {n : ℕ} {h : ℕ → ℝ} {β : Finset ℕ → ℝ}
+theorem chowOfFlagH_dualFlagH_eq_gammaTransform {n : ℕ} {h : ℕ → ℝ}
+    {β : Finset ℕ → ℝ}
     (hβ : IsSimplicialFlagH n h β) :
     chowOfFlagH n (dualFlagH n β) = gammaTransform n
       (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.Icc 1 (n - 1))) := by
   rw [sum_C_mul_refined_eq]
-  set b : Finset ℕ → ℝ := fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)
-    with hb
+  set b : Finset ℕ → ℝ :=
+    (fun D => ∑ k ∈ Finset.range (n + 1), h k * (desCount n k D : ℝ)) with hb
   rw [← sum_isolatedSubsets_eq_gammaTransform b
     (fun D hD => card_le_of_mem_isolatedSubsets_Icc hD)]
   unfold chowOfFlagH
@@ -371,11 +352,7 @@ theorem augChowOfFlagH_dualFlagH (n : ℕ) (β : Finset ℕ → ℝ) :
 
 private lemma list_sum_range_map (f : ℕ → ℝ[X]) (m : ℕ) :
     ((List.range m).map f).sum = ∑ k ∈ Finset.range m, f k := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    rw [List.range_succ, List.map_append, List.sum_append, ih, Finset.sum_range_succ]
-    simp
+  induction m <;> simp_all [List.range_succ, Finset.sum_range_succ]
 
 private theorem isRealRooted_sum_C_mul_of_interl {n : ℕ} (F : ℕ → ℝ[X]) (h : ℕ → ℝ)
     (hh : ∀ k, 0 ≤ h k) (hnn : ∀ k, HasNonnegCoeffs (F k))
@@ -389,7 +366,7 @@ private theorem isRealRooted_sum_C_mul_of_interl {n : ℕ} (F : ℕ → ℝ[X]) 
   have hpair : gs.Pairwise Interl := by
     rw [hgs, List.pairwise_map]
     refine (List.pairwise_lt_range : (List.range (n + 1)).Pairwise (· < ·)).imp_of_mem ?_
-    intro i j hi hj hij
+    intro i j _ hj hij
     have hj' := List.mem_range.1 hj
     exact ((hrow i j hij (by lia)).C_mul_left_of_nonneg (hh i)).C_mul_right_of_nonneg (hh j)
   have hseq : IsInterlacingSeq0Nonneg gs := by
@@ -400,20 +377,18 @@ private theorem isRealRooted_sum_C_mul_of_interl {n : ℕ} (F : ℕ → ℝ[X]) 
   have hreal : ∀ f ∈ gs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
     intro f hf hf0
     obtain ⟨k, hk, rfl⟩ := List.mem_map.1 hf
-    have hk' := List.mem_range.1 hk
     have hFk : F k ≠ 0 := fun h0 => hf0 (by simp [h0])
-    exact ⟨hf0, Polynomial.Splits.mul (Polynomial.Splits.C _) (hsp k (by lia) hFk)⟩
-  have := isRealRooted_sum_of_isInterlacingSeq0Nonneg hseq hreal (by rwa [hsum])
-  rwa [hsum] at this
+    exact ⟨hf0, Polynomial.Splits.mul (Polynomial.Splits.C _)
+      (hsp k (by simpa using List.mem_range.1 hk) hFk)⟩
+  simpa only [hsum] using isRealRooted_sum_of_isInterlacingSeq0Nonneg hseq hreal (by rwa [hsum])
 
 private lemma coeff_zero_sum_C_mul_refined (n : ℕ) (h : ℕ → ℝ) (T : Finset ℕ) :
     (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ T).coeff 0 = h 0 := by
-  rw [finsetSum_coeff]
-  simp only [coeff_C_mul, coeff_zero_refined]
-  simp
+  simp [finsetSum_coeff, coeff_zero_refined]
 
 private lemma hasNonnegCoeffs_sum_C_mul_refined (n : ℕ) {h : ℕ → ℝ} (hh : ∀ k, 0 ≤ h k)
-    (S T : Finset ℕ) : HasNonnegCoeffs (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k S T) :=
+    (S T : Finset ℕ) :
+    HasNonnegCoeffs (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k S T) :=
   hasNonnegCoeffs_finsetSum _ _ fun k _ =>
     nonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k S T)
 
@@ -434,9 +409,7 @@ private lemma isRealRooted_sum_C_mul_refined {n : ℕ} {T : Finset ℕ} {h : ℕ
     (fun k => hasNonnegCoeffs_refined n k ∅ T) hsp hrow ?_
   intro hzero
   have := coeff_zero_sum_C_mul_refined n h T
-  rw [hzero, coeff_zero_eq_eval_zero] at this
-  simp only [eval_zero] at this
-  exact h0.ne this
+  simp_all
 
 private lemma ne_zero_splits_of_natDegree_le_one {γ : ℝ[X]} (h0 : γ.coeff 0 ≠ 0)
     (hdeg : γ.natDegree ≤ 1) : γ ≠ 0 ∧ γ.Splits :=
@@ -451,12 +424,13 @@ private lemma erase_zero_range (n : ℕ) : (Finset.range n).erase 0 = Finset.Icc
 theorem isRealRooted_sum_refined_range_pred {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 0 ≤ h k)
     (h0 : 0 < h 0) :
     (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range (n - 1))) ≠ 0 ∧
-      (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range (n - 1))).Splits := by
+      (∑ k ∈ Finset.range (n + 1),
+        C (h k) * refined n k ∅ (Finset.range (n - 1))).Splits := by
   rcases lt_or_ge n 2 with hn | hn
-  · refine ne_zero_splits_of_natDegree_le_one (by
-      rw [coeff_zero_sum_C_mul_refined]; exact h0.ne') ?_
-    exact (natDegree_sum_C_mul_refined_le n h
-      (fun D hD => card_le_of_mem_isolatedSubsets_range_pred hD)).trans (by lia)
+  · exact ne_zero_splits_of_natDegree_le_one
+      (by rw [coeff_zero_sum_C_mul_refined]; exact h0.ne')
+      ((natDegree_sum_C_mul_refined_le n h fun D hD =>
+        card_le_of_mem_isolatedSubsets_range_pred hD).trans (by lia))
   · have hD := (isInterlacingDiagram_range n hn).2
     exact isRealRooted_sum_C_mul_refined hh h0 (fun k hk _ => (hD.splits k hk).2.1)
       (fun i j hij hj => hD.mid_row i j hij hj)
@@ -467,10 +441,10 @@ theorem isRealRooted_sum_refined_range {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 
     (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range n)) ≠ 0 ∧
       (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.range n)).Splits := by
   rcases lt_or_ge n 2 with hn | hn
-  · refine ne_zero_splits_of_natDegree_le_one (by
-      rw [coeff_zero_sum_C_mul_refined]; exact h0.ne') ?_
-    exact (natDegree_sum_C_mul_refined_le n h
-      (fun D hD => card_le_of_mem_isolatedSubsets_range hD)).trans (by lia)
+  · exact ne_zero_splits_of_natDegree_le_one
+      (by rw [coeff_zero_sum_C_mul_refined]; exact h0.ne')
+      ((natDegree_sum_C_mul_refined_le n h fun D hD =>
+        card_le_of_mem_isolatedSubsets_range hD).trans (by lia))
   · have hD := (isInterlacingDiagram_range n hn).1
     exact isRealRooted_sum_C_mul_refined hh h0 (fun k hk _ => (hD.splits k hk).2.1)
       (fun i j hij hj => hD.mid_row i j hij hj)
@@ -479,12 +453,13 @@ theorem isRealRooted_sum_refined_range {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 
 theorem isRealRooted_sum_refined_Icc {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 0 ≤ h k)
     (h0 : 0 < h 0) :
     (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.Icc 1 (n - 1))) ≠ 0 ∧
-      (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ (Finset.Icc 1 (n - 1))).Splits := by
+      (∑ k ∈ Finset.range (n + 1),
+        C (h k) * refined n k ∅ (Finset.Icc 1 (n - 1))).Splits := by
   rcases lt_or_ge n 2 with hn | hn
-  · refine ne_zero_splits_of_natDegree_le_one (by
-      rw [coeff_zero_sum_C_mul_refined]; exact h0.ne') ?_
-    exact (natDegree_sum_C_mul_refined_le n h
-      (fun D hD => card_le_of_mem_isolatedSubsets_Icc hD)).trans (by lia)
+  · exact ne_zero_splits_of_natDegree_le_one
+      (by rw [coeff_zero_sum_C_mul_refined]; exact h0.ne')
+      ((natDegree_sum_C_mul_refined_le n h fun D hD =>
+        card_le_of_mem_isolatedSubsets_Icc hD).trans (by lia))
   · have hD := (isInterlacingDiagram_range n hn).1
     rw [← erase_zero_range]
     exact isRealRooted_sum_C_mul_refined hh h0 (fun k hk => (hD.splits k hk).1)
@@ -582,9 +557,7 @@ private theorem strictInterl_sum_refined_Icc_sum_refined_range_one {h : ℕ → 
     simp [Finset.sum_range_succ, refined, add_comm]
   rw [e3, e2]
   rcases (hh 1).eq_or_lt with h1 | h1
-  · rw [← h1]
-    simp only [map_zero, zero_mul, zero_add]
-    exact StrictInterl.refl (by simpa using h0.ne') (Polynomial.Splits.C _)
+  · simpa [← h1] using StrictInterl.refl (by simpa using h0.ne') (Polynomial.Splits.C _)
   · have hdeg : (C (h 1) * X + C (h 0)).natDegree = 1 := natDegree_linear h1.ne'
     have := ((interlaces_one_linear hdeg).toStrictInterl).C_mul_left h0.ne'
     simpa using this
@@ -596,13 +569,13 @@ poset interlace the roots of the augmented Chow polynomial, that is,
 Since `augChowOfFlagH n (dualFlagH n β) = augChowOfFlagH n β`
 (`augChowOfFlagH_dualFlagH`), this is the paper's statement for `P̂^*`. -/
 theorem strictInterl_chowOfFlagH_dualFlagH_augChowOfFlagH {n : ℕ} (hn : 1 ≤ n) {h : ℕ → ℝ}
-    {β : Finset ℕ → ℝ} (hh : ∀ k, 0 ≤ h k) (h0 : 0 < h 0) (hβ : IsSimplicialFlagH n h β) :
+    {β : Finset ℕ → ℝ} (hh : ∀ k, 0 ≤ h k) (h0 : 0 < h 0)
+    (hβ : IsSimplicialFlagH n h β) :
     StrictInterl (chowOfFlagH n (dualFlagH n β)) (augChowOfFlagH n β) := by
   rw [chowOfFlagH_dualFlagH_eq_gammaTransform hβ, augChowOfFlagH_eq_gammaTransform hβ]
   have hcoeff : ∀ T : Finset ℕ,
-      (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ T).coeff 0 ≠ 0 := fun T => by
-    rw [coeff_zero_sum_C_mul_refined]
-    exact h0.ne'
+      (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ T).coeff 0 ≠ 0 :=
+    fun _ => by simpa only [coeff_zero_sum_C_mul_refined] using h0.ne'
   refine (strictInterl_gammaTransform_succ_iff (d := n)
     (natDegree_sum_C_mul_refined_le n h (fun D hD => card_le_of_mem_isolatedSubsets_Icc hD))
     (natDegree_sum_C_mul_refined_le n h (fun D hD => card_le_of_mem_isolatedSubsets_range hD))
@@ -630,7 +603,8 @@ theorem isRealRooted_augChowOfFlagH_flagHOfH {n : ℕ} {h : ℕ → ℝ} (hh : �
   isRealRooted_augChowOfFlagH hh h0 (isSimplicialFlagH_flagHOfH n h)
 
 /-- Theorem 1.2 (dual Chow polynomial) for the flag `h`-vector `flagHOfH n h` of (1.3). -/
-theorem isRealRooted_chowOfFlagH_dualFlagH_flagHOfH {n : ℕ} {h : ℕ → ℝ} (hh : ∀ k, 0 ≤ h k)
+theorem isRealRooted_chowOfFlagH_dualFlagH_flagHOfH {n : ℕ} {h : ℕ → ℝ}
+    (hh : ∀ k, 0 ≤ h k)
     (h0 : 0 < h 0) :
     chowOfFlagH n (dualFlagH n (flagHOfH n h)) ≠ 0 ∧
       (chowOfFlagH n (dualFlagH n (flagHOfH n h))).Splits :=
@@ -664,13 +638,10 @@ private lemma reflectSet_two_pair : reflectSet 2 {0, 1} = {0, 1} := by decide +k
 private lemma flagH_two : flagHOfH 2 exampleH ∅ = 1 ∧ flagHOfH 2 exampleH {0} = 3 ∧
     flagHOfH 2 exampleH {1} = 5 ∧ flagHOfH 2 exampleH {0, 1} = 3 := by
   obtain ⟨a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12⟩ := desCount_two
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet, a1, a5, a9]
-  · simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_zero, a2, a6, a10]
-    norm_num
-  · simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_one, a3, a7, a11]
-    norm_num
-  · simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_pair, a4, a8, a12]
+  refine ⟨by simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet, a1, a5, a9],
+    by norm_num [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_zero, a2, a6, a10],
+    by norm_num [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_one, a3, a7, a11],
+    by simp [flagHOfH, Finset.sum_range_succ, exampleH, reflectSet_two_pair, a4, a8, a12]⟩
 
 private lemma isolatedSubsets_Icc_two : isolatedSubsets (Finset.Icc 1 (2 - 1)) = {∅, {1}} := by
   decide +kernel
@@ -682,26 +653,24 @@ private lemma isolatedSubsets_range_two : isolatedSubsets (Finset.range 2) = {�
 example : chowOfFlagH 2 (flagHOfH 2 exampleH) = X ^ 2 + 7 * X + 1 := by
   obtain ⟨b0, b1, b2, b3⟩ := flagH_two
   rw [chowOfFlagH, isolatedSubsets_Icc_two, Finset.sum_pair (by decide), b0, b2]
-  simp [map_ofNat]
-  ring
+  simp [map_ofNat]; ring
 
 /-- Example 1.3: `H_{P̂^*}(x) = x² + 5x + 1`. -/
 example : chowOfFlagH 2 (dualFlagH 2 (flagHOfH 2 exampleH)) = X ^ 2 + 5 * X + 1 := by
   obtain ⟨b0, b1, b2, b3⟩ := flagH_two
   rw [chowOfFlagH, isolatedSubsets_Icc_two, Finset.sum_pair (by decide)]
-  simp [dualFlagH, reflectSet, b0, b1, map_ofNat]
-  ring
+  simp [dualFlagH, reflectSet, b0, b1, map_ofNat]; ring
 
 /-- Example 1.3: `H^{aug}_{P̂}(x) = x³ + 11x² + 11x + 1`. -/
 example : augChowOfFlagH 2 (flagHOfH 2 exampleH) = X ^ 3 + 11 * X ^ 2 + 11 * X + 1 := by
   obtain ⟨b0, b1, b2, b3⟩ := flagH_two
   rw [augChowOfFlagH, isolatedSubsets_range_two, Finset.sum_insert (by decide),
     Finset.sum_pair (by decide)]
-  simp [b0, b1, b2, map_ofNat]
-  ring
+  simp [b0, b1, b2, map_ofNat]; ring
 
 /-- Example 3.2: the `γ`-polynomials `1 + 5x`, `1 + 3x` and `1 + 8x`. -/
-example : (∑ k ∈ Finset.range (2 + 1), C (exampleH k) * refined 2 k ∅ (Finset.range (2 - 1))) =
+example : (∑ k ∈ Finset.range (2 + 1),
+    C (exampleH k) * refined 2 k ∅ (Finset.range (2 - 1))) =
     1 + 5 * X ∧
     (∑ k ∈ Finset.range (2 + 1), C (exampleH k) * refined 2 k ∅ (Finset.Icc 1 (2 - 1))) =
       1 + 3 * X ∧

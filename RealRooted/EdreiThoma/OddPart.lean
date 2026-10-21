@@ -2,13 +2,11 @@ import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
 
 section Quotient_part
 
-
 /-!
 # Proximity of `e^G` when `e^G · M = K` with `M, K` entire
 
 This is where the first main theorem of value distribution theory (as in Mathlib) is used.
 -/
-
 
 open Complex Real Filter ValueDistribution
 
@@ -17,8 +15,7 @@ noncomputable section
 namespace RealRooted.EdreiThoma
 
 private theorem posLog_norm_exp (w : ℂ) : log⁺ ‖Complex.exp w‖ = max w.re 0 := by
-  rw [Complex.norm_exp]
-  simp [Real.posLog, Real.log_exp, max_comm]
+  simp [Complex.norm_exp, Real.posLog, Real.log_exp, max_comm]
 
 /-- If `e^G · M = K` with `M, K` entire and `M ≢ 0`, then
 `posMean G r ≤ m(r, K) + m(r, M) + C` for `r ≥ 1`. -/
@@ -42,15 +39,11 @@ private theorem posMean_le_of_exp_mul_eq {G K M : ℂ → ℂ}
   have h2 := proximity_congr_codiscrete (a := ⊤) hcod hr0
   have h3 := proximity_mul_top_le hKm hMm.inv r
   have h4 : proximity M⁻¹ ⊤ r ≤ characteristic M⁻¹ ⊤ r := by
-    unfold characteristic
-    simp only [Pi.add_apply, le_add_iff_nonneg_right]
-    exact logCounting_nonneg hr
+    simpa only [characteristic, Pi.add_apply, le_add_iff_nonneg_right] using logCounting_nonneg hr
   have h5 := characteristic_sub_characteristic_inv_of_ne_zero hMm hr0
   have h6 : logCounting M ⊤ = 0 := by
     rw [logCounting_top]
-    have : (MeromorphicOn.divisor M Set.univ)⁻ = 0 :=
-      negPart_eq_zero.mpr (MeromorphicOn.AnalyticOnNhd.divisor_nonneg hMa)
-    rw [this, map_zero]
+    rw [negPart_eq_zero.mpr (MeromorphicOn.AnalyticOnNhd.divisor_nonneg hMa), map_zero]
   have h7 : characteristic M ⊤ r = proximity M ⊤ r := by
     unfold characteristic; simp [h6]
   have h8 : proximity K ⊤ r = circleAverage (fun z => log⁺ ‖K z‖) 0 r := by
@@ -66,7 +59,6 @@ end Quotient_part
 
 section KeyGrowth_part
 
-
 /-!
 # The key growth estimate (an elementary substitute for the second main theorem)
 
@@ -79,7 +71,6 @@ the first main theorem bounds `posMean g` by `m(r, K) + m(r, M)`, which only inv
 `log⁺ |g'|`, `log⁺ |F'|` (bounded through Cauchy estimates by `log` of `posMean g`, `posMean F`
 on a larger circle) and the growth of `P, Q`.  Borel's lemma absorbs the logarithmic terms.
 -/
-
 
 open Complex Real Filter Topology
 
@@ -102,8 +93,7 @@ private theorem circleAverage_posLog_le {K : ℂ → ℂ} (hK : Differentiable �
   · exact MeromorphicOn.circleIntegrable_posLog_norm
       (fun z _ => (hK.analyticAt z).meromorphicAt)
   · intro z hz
-    rw [mem_sphere_zero_iff_norm, abs_of_pos hr] at hz
-    exact h z hz
+    rw [mem_sphere_zero_iff_norm, abs_of_pos hr] at hz; exact h z hz
 
 private theorem norm_deriv_le_exp {P : ℂ → ℂ} (hP : Differentiable ℂ P) {C : ℝ}
     (hC : 0 ≤ C) (hb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2)) (z : ℂ) :
@@ -140,8 +130,7 @@ private theorem posLog_norm_add_le (a b : ℂ) :
   (posLog_le_posLog (by linarith [norm_nonneg (a + b)]) (norm_add_le a b)).trans posLog_add
 
 private theorem posLog_norm_mul_le (a b : ℂ) :
-    log⁺ ‖a * b‖ ≤ log⁺ ‖a‖ + log⁺ ‖b‖ := by
-  rw [norm_mul]; exact posLog_mul
+    log⁺ ‖a * b‖ ≤ log⁺ ‖a‖ + log⁺ ‖b‖ := by rw [norm_mul]; exact posLog_mul
 
 private theorem posLog_norm_le_of_exp_bound {P : ℂ → ℂ} {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2)) (z : ℂ) :
@@ -163,9 +152,7 @@ private theorem posMean_F_le {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     ∃ C₁, 0 ≤ C₁ ∧
       ∀ r, 1 ≤ r → posMean F r ≤ posMean g r + C₁ * (1 + r) ^ 2 := by
   set K : ℂ → ℂ := fun z => Complex.exp (g z / 2) * P z + Complex.exp (-(g z) / 2) * P (-z)
-  have hK : Differentiable ℂ K := by
-    have : Differentiable ℂ (fun z => P (-z)) := hP.comp differentiable_neg
-    fun_prop
+  have hK : Differentiable ℂ K := by simp only [K]; fun_prop
   have hM : Differentiable ℂ (fun z => 2 * Q z) := by fun_prop
   obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := F) hK hM (x₀ := 0) (by simp [hQ0])
     (fun z => by simp only [K]; rw [heq z]; ring)
@@ -225,10 +212,6 @@ private theorem posMean_F_le {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
   have h2 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (g 0).re)
   have h3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
   have h4 : |(g 0).re| / 2 ≤ |(g 0).re| := by linarith [abs_nonneg (g 0).re]
-  have e : (3 * C + |(g 0).re| + 2 + |C₀|) * (1 + r) ^ 2 =
-      3 * C * (1 + r) ^ 2 + |(g 0).re| * (1 + r) ^ 2 +
-        2 * (1 + r) ^ 2 + |C₀| * (1 + r) ^ 2 := by ring
-  rw [e]
   linarith
 
 /-- The Wronskian-type combination `M`. -/
@@ -254,9 +237,8 @@ private theorem wronskian_identity {g F P Q : ℂ → ℂ} (hg : Differentiable 
       (hg z).hasDerivAt.div_const 2
     have h2 : HasDerivAt (fun w => -(g w) / 2) (-(deriv g z) / 2) z :=
       (hg z).hasDerivAt.neg.div_const 2
-    have h3 : HasDerivAt (fun w => P (-w)) (deriv P (-z) * (-1)) z := by
-      have := (hP (-z)).hasDerivAt.comp z (hasDerivAt_neg z)
-      exact this
+    have h3 : HasDerivAt (fun w => P (-w)) (deriv P (-z) * (-1)) z :=
+      (hP (-z)).hasDerivAt.comp z (hasDerivAt_neg z)
     exact ((h1.cexp.mul (hP z).hasDerivAt)).add (h2.cexp.mul h3)
   have hR : HasDerivAt (fun w => 2 * Complex.exp (F w) * Q w)
       (2 * (Complex.exp (F z) * deriv F z) * Q z + 2 * Complex.exp (F z) * deriv Q z) z :=
@@ -357,20 +339,16 @@ private theorem norm_wM_bound {a b p p' q q' : ℂ} {E : ℝ} (hE : 0 ≤ E)
     (hq : ‖q‖ ≤ E) (hq' : ‖q'‖ ≤ E) :
     ‖q * (a / 2 * p + p') - (b * q + q') * p‖ ≤ E ^ 2 * (‖a‖ + ‖b‖ + 2) := by
   have h1 : ‖q * (a / 2 * p + p')‖ ≤ E * (‖a‖ * E + E) := by
-    rw [norm_mul]
-    apply mul_le_mul hq _ (norm_nonneg _) hE
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, norm_div]
+    rw [norm_mul]; apply mul_le_mul hq _ (norm_nonneg _) hE
+    refine (norm_add_le _ _).trans ?_; rw [norm_mul, norm_div]
     simp only [Complex.norm_ofNat]
     have : ‖a‖ / 2 * ‖p‖ ≤ ‖a‖ * E := by
       have := mul_le_mul_of_nonneg_left hp (norm_nonneg a)
       nlinarith [norm_nonneg a, norm_nonneg p]
     linarith
   have h2 : ‖(b * q + q') * p‖ ≤ (‖b‖ * E + E) * E := by
-    rw [norm_mul]
-    apply mul_le_mul _ hp (norm_nonneg _) (by positivity)
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul]
+    rw [norm_mul]; apply mul_le_mul _ hp (norm_nonneg _) (by positivity)
+    refine (norm_add_le _ _).trans ?_; rw [norm_mul]
     have := mul_le_mul_of_nonneg_left hq (norm_nonneg b)
     linarith
   calc _ ≤ ‖q * (a / 2 * p + p')‖ + ‖(b * q + q') * p‖ := norm_sub_le _ _
@@ -381,26 +359,11 @@ private theorem norm_wK_bound {a b p p' q q' : ℂ} {E : ℝ} (hE : 0 ≤ E)
     (hp : ‖p‖ ≤ E) (hp' : ‖p'‖ ≤ E)
     (hq : ‖q‖ ≤ E) (hq' : ‖q'‖ ≤ E) :
     ‖(b * q + q') * p - q * (-p' - a / 2 * p)‖ ≤ E ^ 2 * (‖a‖ + ‖b‖ + 2) := by
-  have h1 : ‖(b * q + q') * p‖ ≤ (‖b‖ * E + E) * E := by
-    rw [norm_mul]
-    apply mul_le_mul _ hp (norm_nonneg _) (by positivity)
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul]
-    have := mul_le_mul_of_nonneg_left hq (norm_nonneg b)
-    linarith
-  have h2 : ‖q * (-p' - a / 2 * p)‖ ≤ E * (E + ‖a‖ * E) := by
-    rw [norm_mul]
-    apply mul_le_mul hq _ (norm_nonneg _) hE
-    refine (norm_sub_le _ _).trans ?_
-    rw [norm_neg, norm_mul, norm_div]
-    simp only [Complex.norm_ofNat]
-    have : ‖a‖ / 2 * ‖p‖ ≤ ‖a‖ * E := by
-      have := mul_le_mul_of_nonneg_left hp (norm_nonneg a)
-      nlinarith [norm_nonneg a, norm_nonneg p]
-    linarith
-  calc _ ≤ ‖(b * q + q') * p‖ + ‖q * (-p' - a / 2 * p)‖ := norm_sub_le _ _
-    _ ≤ (‖b‖ * E + E) * E + E * (E + ‖a‖ * E) := add_le_add h1 h2
-    _ = E ^ 2 * (‖a‖ + ‖b‖ + 2) := by ring
+  calc
+    _ = ‖-(q * ((-a) / 2 * p + (-p')) - (b * q + q') * p)‖ := by congr 1; ring
+    _ = ‖q * ((-a) / 2 * p + (-p')) - (b * q + q') * p‖ := norm_neg _
+    _ ≤ E ^ 2 * (‖-a‖ + ‖b‖ + 2) := norm_wM_bound hE hp (by simpa using hp') hq hq'
+    _ = E ^ 2 * (‖a‖ + ‖b‖ + 2) := by rw [norm_neg]
 
 private theorem differentiable_deriv' {f : ℂ → ℂ} (hf : Differentiable ℂ f) :
     Differentiable ℂ (deriv f) :=
@@ -428,7 +391,6 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     linarith
   by_cases hdeg : ∀ z, wM g F P Q z = 0
   · obtain ⟨l, hl2, hl⟩ := degenerate_identity hg hF hP hQ hP0 hQ0 heq hdeg
-    have hPm : Differentiable ℂ (fun z => P (-z)) := hP.comp differentiable_neg
     have hK : Differentiable ℂ (fun z => l * Q z * P (-z)) := by fun_prop
     have hM : Differentiable ℂ (fun z => (2 - l) * P z * Q z) := by fun_prop
     obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM (x₀ := 0)
@@ -439,9 +401,8 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     refine ⟨log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C, hC', fun r ρ hr hrρ => ?_⟩
     have hr0 : 0 < r := by linarith
     have hKb : circleAverage (fun z => log⁺ ‖l * Q z * P (-z)‖) 0 r ≤
-        log⁺ ‖l‖ + 2 * C * (1 + r) ^ 2 := by
-      apply circleAverage_posLog_le hK hr0
-      intro z hz
+        log⁺ ‖l‖ + 2 * C * (1 + r) ^ 2 :=
+      circleAverage_posLog_le hK hr0 fun z hz => by
       have e1 := posLog_norm_mul_le (l * Q z) (P (-z))
       have e2 := posLog_norm_mul_le l (Q z)
       have p1 := posLog_norm_le_of_exp_bound hC hQb z
@@ -449,9 +410,8 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
       rw [hz] at p1; rw [norm_neg, hz] at p2
       linarith
     have hMb : circleAverage (fun z => log⁺ ‖(2 - l) * P z * Q z‖) 0 r ≤
-        log⁺ ‖2 - l‖ + 2 * C * (1 + r) ^ 2 := by
-      apply circleAverage_posLog_le hM hr0
-      intro z hz
+        log⁺ ‖2 - l‖ + 2 * C * (1 + r) ^ 2 :=
+      circleAverage_posLog_le hM hr0 fun z hz => by
       have e1 := posLog_norm_mul_le ((2 - l) * P z) (Q z)
       have e2 := posLog_norm_mul_le (2 - l) (P z)
       have p1 := posLog_norm_le_of_exp_bound hC hQb z
@@ -466,10 +426,6 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     have a2 := mul_le_mul_of_nonneg_left hsq (posLog_nonneg (x := ‖2 - l‖))
     have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
     have a4 := le_abs_self C₀
-    have e : (log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C) * (1 + r) ^ 2 =
-        log⁺ ‖l‖ * (1 + r) ^ 2 + log⁺ ‖2 - l‖ * (1 + r) ^ 2 + |C₀| * (1 + r) ^ 2 +
-          4 * C * (1 + r) ^ 2 := by ring
-    rw [e]
     linarith
   · push Not at hdeg
     obtain ⟨x₀, hx₀⟩ := hdeg
@@ -477,8 +433,6 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     have hF' := differentiable_deriv' hF
     have hP' := differentiable_deriv' hP
     have hQ' := differentiable_deriv' hQ
-    have hPm : Differentiable ℂ (fun z => P (-z)) := hP.comp differentiable_neg
-    have hPm' : Differentiable ℂ (fun z => deriv P (-z)) := hP'.comp differentiable_neg
     have hK : Differentiable ℂ (wK g F P Q) := by unfold wK; fun_prop
     have hM : Differentiable ℂ (wM g F P Q) := by unfold wM; fun_prop
     obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM hx₀
@@ -504,16 +458,8 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
         have b2 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (F 0).re)
         have b3 := neg_le_abs (g 0).re
         have b4 := neg_le_abs (F 0).re
-        have e : C₂ * (1 + ρ) ^ 2 = 2 * (C₁ * (1 + ρ) ^ 2) + |(g 0).re| * (1 + ρ) ^ 2 +
-            |(F 0).re| * (1 + ρ) ^ 2 := by rw [hC₂]; ring
-        rw [e]
-        linarith
-      calc ‖deriv g z‖ + ‖deriv F z‖
-          ≤ 2 * ρ / (ρ - r) ^ 2 * (2 * posMean g ρ - (g 0).re) +
-            2 * ρ / (ρ - r) ^ 2 * (2 * posMean F ρ - (F 0).re) := add_le_add h1 h2
-        _ = 2 * ρ / (ρ - r) ^ 2 * ((2 * posMean g ρ - (g 0).re) +
-            (2 * posMean F ρ - (F 0).re)) := by ring
-        _ ≤ D := mul_le_mul_of_nonneg_left hin hfac
+        nlinarith [hC₂]
+      nlinarith [mul_le_mul_of_nonneg_left hin hfac]
     set E := Real.exp (C * (2 + r) ^ 2) with hE
     have hE0 : 0 ≤ E := (Real.exp_pos _).le
     have hle : Real.exp (C * (1 + r) ^ 2) ≤ E := Real.exp_le_exp.mpr
@@ -528,11 +474,9 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
         rw [hE, sq, ← Real.exp_add]; ring_nf
       rw [← this]; exact hX
     have hKb : circleAverage (fun z => log⁺ ‖wK g F P Q z‖) 0 r ≤
-        2 * C * (2 + r) ^ 2 + Real.log (D + 2) := by
-      apply circleAverage_posLog_le hK hr0
-      intro z hz
+        2 * C * (2 + r) ^ 2 + Real.log (D + 2) :=
+      circleAverage_posLog_le hK hr0 fun z hz => by
       apply hlogb
-      have hd := hder z hz
       refine (norm_wK_bound (a := deriv g z) (b := deriv F z) (p := P (-z))
         (p' := deriv P (-z)) (q := Q z) (q' := deriv Q z) hE0
         ((hPb (-z)).trans (by rw [norm_neg, hz]; exact hle))
@@ -540,12 +484,11 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
         ((hQb z).trans (by rw [hz]; exact hle))
         ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans ?_
       gcongr
+      exact hder z hz
     have hMb : circleAverage (fun z => log⁺ ‖wM g F P Q z‖) 0 r ≤
-        2 * C * (2 + r) ^ 2 + Real.log (D + 2) := by
-      apply circleAverage_posLog_le hM hr0
-      intro z hz
+        2 * C * (2 + r) ^ 2 + Real.log (D + 2) :=
+      circleAverage_posLog_le hM hr0 fun z hz => by
       apply hlogb
-      have hd := hder z hz
       refine (norm_wM_bound (a := deriv g z) (b := deriv F z) (p := P z)
         (p' := deriv P z) (q := Q z) (q' := deriv Q z) hE0
         ((hPb z).trans (by rw [hz]; exact hle))
@@ -553,6 +496,7 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
         ((hQb z).trans (by rw [hz]; exact hle))
         ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans ?_
       gcongr
+      exact hder z hz
     have h := hC₀ r hr
     -- compare `log (D + 2)` with the target logarithm
     have hDle : D + 2 ≤ 2 + 2 * ρ / (ρ - r) ^ 2 *
@@ -570,9 +514,6 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
     have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
     have a4 := le_abs_self C₀
     have a5 : 0 ≤ C₂ * (1 + r) ^ 2 := by positivity
-    have e : (C₂ + 16 * C + |C₀|) * (1 + r) ^ 2 =
-        C₂ * (1 + r) ^ 2 + 16 * (C * (1 + r) ^ 2) + |C₀| * (1 + r) ^ 2 := by ring
-    rw [e]
     linarith
 
 /-- **Key growth estimate.** Under the functional identity
@@ -597,11 +538,9 @@ end KeyGrowth_part
 
 section Products_part
 
-
 /-!
 # Genus-zero products `∏ (1 + a_i z)` with `a_i ≥ 0` summable
 -/
-
 
 open Complex Real Filter Topology
 
@@ -614,8 +553,7 @@ private def gprod (a : ℕ → ℝ) (z : ℂ) : ℂ := ∏' i, (1 + (a i : ℂ) 
 
 variable {a : ℕ → ℝ}
 
-private theorem gprod_zero (a : ℕ → ℝ) : gprod a 0 = 1 := by
-  simp [gprod]
+private theorem gprod_zero (a : ℕ → ℝ) : gprod a 0 = 1 := by simp [gprod]
 
 private theorem gprod_differentiable (ha : ∀ i, 0 ≤ a i) (s : Summable a) :
     Differentiable ℂ (gprod a) := by
@@ -636,9 +574,7 @@ private theorem gprod_differentiable (ha : ∀ i, 0 ≤ a i) (s : Summable a) :
     apply DifferentiableOn.fun_finsetProd
     intro i _
     fun_prop
-  apply hd.differentiableAt
-  apply hU.mem_nhds
-  simp [R]
+  exact hd.differentiableAt (hU.mem_nhds (by simp [R]))
 
 private theorem norm_gprod_le (ha : ∀ i, 0 ≤ a i) (s : Summable a) (z : ℂ) :
     ‖gprod a z‖ ≤ Real.exp ((∑' i, a i) * ‖z‖) := by
@@ -673,11 +609,9 @@ end Products_part
 
 section Assembly_part
 
-
 /-!
 # Assembly: from Edrei's functional identity to the quadratic growth of the odd part
 -/
-
 
 open Complex Real Filter Topology
 
@@ -698,15 +632,11 @@ private theorem odd_quadratic_is_linear {g : ℂ → ℂ} (hodd : ∀ z, g (-z) 
     rw [hgp, Polynomial.eval_eq_sum_range' (n := 3) (by lia)]
     simp [Finset.sum_range_succ]
   have h0 : p.coeff 0 = 0 := by
-    have := hodd 0
-    rw [neg_zero] at this
-    have h : g 0 = p.coeff 0 := by simpa using hev 0
-    have : g 0 = 0 := by linear_combination this / 2
-    rw [this] at h; exact h.symm
+    have h := hodd 0; rw [neg_zero] at h
+    have hg0 : g 0 = 0 := by linear_combination h / 2
+    simpa [hg0] using (hev 0).symm
   have h2 : p.coeff 2 = 0 := by
-    have a := hodd 1
-    rw [hev, hev] at a
-    rw [h0] at a
+    have a := hodd 1; rw [hev, hev, h0] at a
     linear_combination a / 2
   refine ⟨p.coeff 1 / 2, fun z => ?_⟩
   rw [hev, h0, h2]; ring
@@ -737,20 +667,8 @@ private theorem entire_identity {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
     Complex.exp (φ (-z)) * (gprod α (-z) * gprod β (-z) * gprod βs (-(-z) ^ 2))
   set R : ℂ → ℂ := fun z =>
       2 * Complex.exp (φs (z ^ 2)) * (gprod αs (z ^ 2) * gprod β (-z) * gprod β z)
-  have hL : Differentiable ℂ L := by
-    have h1 : Differentiable ℂ (fun z => φ (-z)) := hφ.comp differentiable_neg
-    have h2 : Differentiable ℂ (fun z : ℂ => gprod α (-z)) := dα.comp differentiable_neg
-    have h3 : Differentiable ℂ (fun z : ℂ => gprod β (-z)) := dβ.comp differentiable_neg
-    have h4 : Differentiable ℂ (fun z : ℂ => gprod βs (-z ^ 2)) :=
-      dβs.comp (by fun_prop)
-    have h5 : Differentiable ℂ (fun z : ℂ => gprod βs (-(-z) ^ 2)) :=
-      dβs.comp (by fun_prop)
-    fun_prop
-  have hR : Differentiable ℂ R := by
-    have h3 : Differentiable ℂ (fun z : ℂ => gprod β (-z)) := dβ.comp differentiable_neg
-    have h6 : Differentiable ℂ (fun z : ℂ => gprod αs (z ^ 2)) := dαs.comp (by fun_prop)
-    have h7 : Differentiable ℂ (fun z : ℂ => φs (z ^ 2)) := hφs.comp (by fun_prop)
-    fun_prop
+  have hL : Differentiable ℂ L := by simp only [L]; fun_prop
+  have hR : Differentiable ℂ R := by simp only [R]; fun_prop
   -- the three denominators are nonzero near `0`
   have c1 : ∀ᶠ z in 𝓝 (0 : ℂ), gprod β (-z) ≠ 0 :=
     ((dβ.comp differentiable_neg).continuous.continuousAt (x := 0)).eventually_ne
@@ -771,9 +689,8 @@ private theorem entire_identity {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
     simp only [L, R, neg_sq]
     field_simp at h
     linear_combination h
-  have := AnalyticOnNhd.eq_of_eventuallyEq (fun z _ => hL.analyticAt z)
-    (fun z _ => hR.analyticAt z) hev
-  exact fun z => congrFun this z
+  exact fun z => congrFun (AnalyticOnNhd.eq_of_eventuallyEq
+    (fun z _ => hL.analyticAt z) (fun z _ => hR.analyticAt z) hev) z
 
 /-- Under the hypotheses of `odd_part_linear`, the odd part `g(z) = φ(z) - φ(-z)` satisfies
 `T(r, e^g) = posMean g r ≤ A (1 + r)^2`. -/
@@ -800,18 +717,10 @@ private theorem odd_part_growth {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
   set F : ℂ → ℂ := fun z => φs (z ^ 2) - (φ z + φ (-z)) / 2 with hF_def
   set P : ℂ → ℂ := fun z => gprod α z * gprod β z * gprod βs (-z ^ 2) with hP_def
   set Q : ℂ → ℂ := fun z => gprod αs (z ^ 2) * gprod β (-z) * gprod β z with hQ_def
-  have hφm : Differentiable ℂ (fun z => φ (-z)) := hφ.comp differentiable_neg
   have hg : Differentiable ℂ g := by simp only [hg_def]; fun_prop
-  have hF : Differentiable ℂ F := by
-    have : Differentiable ℂ (fun z : ℂ => φs (z ^ 2)) := hφs.comp (by fun_prop)
-    simp only [hF_def]; fun_prop
-  have hP : Differentiable ℂ P := by
-    have h4 : Differentiable ℂ (fun z : ℂ => gprod βs (-z ^ 2)) := dβs.comp (by fun_prop)
-    simp only [hP_def]; fun_prop
-  have hQ : Differentiable ℂ Q := by
-    have h3 : Differentiable ℂ (fun z : ℂ => gprod β (-z)) := dβ.comp differentiable_neg
-    have h6 : Differentiable ℂ (fun z : ℂ => gprod αs (z ^ 2)) := dαs.comp (by fun_prop)
-    simp only [hQ_def]; fun_prop
+  have hF : Differentiable ℂ F := by simp only [hF_def]; fun_prop
+  have hP : Differentiable ℂ P := by simp only [hP_def]; fun_prop
+  have hQ : Differentiable ℂ Q := by simp only [hQ_def]; fun_prop
   have hP0 : P 0 = 1 := by simp [hP_def, gprod_zero]
   have hQ0 : Q 0 = 1 := by simp [hQ_def, gprod_zero]
   set C := (∑' i, α i) + 2 * (∑' i, β i) + (∑' i, βs i) + (∑' i, αs i) with hC_def
@@ -823,8 +732,7 @@ private theorem odd_part_growth {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
   have hz1 : ∀ z : ℂ, ‖z‖ ≤ (1 + ‖z‖) ^ 2 := fun z => by nlinarith [norm_nonneg z]
   have hz2 : ∀ z : ℂ, ‖z‖ ^ 2 ≤ (1 + ‖z‖) ^ 2 := fun z => by nlinarith [norm_nonneg z]
   have hPb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2) := by
-    intro z
-    simp only [hP_def, norm_mul]
+    intro z; simp only [hP_def, norm_mul]
     have b1 := norm_gprod_le hα sα z
     have b2 := norm_gprod_le hβ sβ z
     have b3 := norm_gprod_le hβs sβs (-z ^ 2)
@@ -838,7 +746,6 @@ private theorem odd_part_growth {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
           rw [Real.exp_add, Real.exp_add]
       _ ≤ Real.exp (C * (1 + ‖z‖) ^ 2) := by
           apply Real.exp_le_exp.mpr
-          have := hz1 z; have := hz2 z
           have a1 := mul_le_mul_of_nonneg_left (hz1 z) hSα
           have a2 := mul_le_mul_of_nonneg_left (hz1 z) hSβ
           have a3 := mul_le_mul_of_nonneg_left (hz2 z) hSβs
@@ -846,8 +753,7 @@ private theorem odd_part_growth {φ φs : ℂ → ℂ} (hφ : Differentiable ℂ
           simp only [hC_def]
           nlinarith
   have hQb : ∀ z, ‖Q z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2) := by
-    intro z
-    simp only [hQ_def, norm_mul]
+    intro z; simp only [hQ_def, norm_mul]
     have b1 := norm_gprod_le hαs sαs (z ^ 2)
     have b2 := norm_gprod_le hβ sβ (-z)
     have b3 := norm_gprod_le hβ sβ z
