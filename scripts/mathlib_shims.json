@@ -65,6 +65,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Operator.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Operator"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/LinearRecurrence/Quadratic.lean"
       ],
       "modules": [
