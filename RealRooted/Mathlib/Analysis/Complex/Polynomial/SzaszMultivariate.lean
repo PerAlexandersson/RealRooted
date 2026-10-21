@@ -110,24 +110,13 @@ private lemma sum_powersetCard_two {k : ℕ} (ξ : Fin k → ℂ) :
     simp only [Finset.mem_sigma, Finset.mem_Ioi] at hx
     rw [Finset.mem_powersetCard]; exact ⟨Finset.subset_univ _, Finset.card_pair hx.2.ne⟩
   · rintro ⟨a, b⟩ hx ⟨c, d⟩ hy hxy
-    simp only [Finset.mem_sigma, Finset.mem_Ioi, Finset.mem_univ, true_and] at hx hy hxy
-    have h1 : a ∈ ({c, d} : Finset (Fin k)) := hxy ▸ by simp
-    have h2 : b ∈ ({c, d} : Finset (Fin k)) := hxy ▸ by simp
-    have h3 : c ∈ ({a, b} : Finset (Fin k)) := hxy.symm ▸ by simp
-    simp only [Finset.mem_insert, Finset.mem_singleton] at h1 h2 h3
-    have hac : a = c := by
-      rcases h1 with h1 | h1
-      · exact h1
-      · rcases h3 with h3 | h3
-        · exact h3.symm
-        · subst h1 h3; exact absurd (hx.trans hy) (lt_irrefl _)
-    subst hac
-    have hbd : b = d := by
-      rcases h2 with h2 | h2
-      · subst h2; exact absurd hx (lt_irrefl _)
-      · exact h2
-    subst hbd
-    rfl
+    simp only [Finset.mem_sigma, Finset.mem_Ioi, Finset.mem_univ, true_and] at hx hy
+    have hset : ({a, b} : Set (Fin k)) = {c, d} := by
+      ext x; simpa using Finset.ext_iff.mp hxy x
+    rw [Set.pair_eq_pair_iff] at hset
+    rcases hset with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
+    · rfl
+    · exact (lt_asymm hx hy).elim
   · intro t ht
     rw [Finset.mem_powersetCard] at ht
     obtain ⟨x, y, hxy, rfl⟩ := Finset.card_eq_two.1 ht.2
@@ -231,10 +220,7 @@ omit [Fintype σ] in
 private lemma eval_diag (p : MvPolynomial σ ℂ) (t : ℂ) :
     (diag p).eval t = MvPolynomial.eval (fun _ => t) p := by
   rw [diag]
-  induction p using MvPolynomial.induction_on with
-  | C a => simp
-  | add p q hp hq => simp [hp, hq]
-  | mul_X p i hp => simp [hp]
+  induction p using MvPolynomial.induction_on <;> simp_all
 
 private lemma coeff_diag (p : MvPolynomial σ ℂ) (s : Finset (σ →₀ ℕ))
     (hs : p.support ⊆ s) (d : ℕ) :
@@ -271,13 +257,10 @@ lemma coeff_jensenOp (β α : σ →₀ ℕ) (f : MvPolynomial σ ℂ) :
 
 private lemma support_jensenOp (β : σ →₀ ℕ) (f : MvPolynomial σ ℂ) :
     (jensenOp β f).support ⊆ f.support := by
-  intro α hα
-  rw [MvPolynomial.mem_support_iff, coeff_jensenOp] at hα
-  rw [MvPolynomial.mem_support_iff]
-  intro h; exact hα (by rw [h, mul_zero])
+  grind [coeff_jensenOp]
 
-private lemma jensen_nonneg (α β : σ →₀ ℕ) : 0 ≤ jensen α β := by
-  exact Finset.prod_nonneg fun i _ => by positivity
+private lemma jensen_nonneg (α β : σ →₀ ℕ) : 0 ≤ jensen α β :=
+  Finset.prod_nonneg fun i _ => by positivity
 
 private lemma jensen_le_one (α β : σ →₀ ℕ) : jensen α β ≤ 1 := by
   apply Finset.prod_le_one₀ (fun i _ => by positivity)
@@ -304,11 +287,9 @@ private lemma jensen_self_mul (β : σ →₀ ℕ) :
   apply Finset.prod_eq_one
   intro i _
   rw [Nat.descFactorial_self]
-  have h1 : ((β i).factorial : ℝ) ≠ 0 := by positivity
-  rcases Nat.eq_zero_or_pos (β i) with h | h
+  by_cases h : β i = 0
   · simp [h]
-  · have h2 : (β i : ℝ) ^ (β i) ≠ 0 := by positivity
-    field_simp
+  · field_simp [h]
 
 private lemma eq_of_le_of_sum_eq {α β : σ →₀ ℕ} (h : α ≤ β)
     (hs : ∑ i, α i = ∑ i, β i) : α = β := by
@@ -331,28 +312,22 @@ private lemma exists_single_of_sum_eq_succ {α : σ →₀ ℕ} {n : ℕ}
   · have : ∀ j,
         (α - Finsupp.single i 1 : σ →₀ ℕ) j +
           (Finsupp.single i 1 : σ →₀ ℕ) j = α j := by
-      intro j
-      simp only [Finsupp.coe_tsub, Pi.sub_apply, Finsupp.single_apply]
+      intro j; simp only [Finsupp.coe_tsub, Pi.sub_apply, Finsupp.single_apply]
       split_ifs with hj <;> subst_vars <;> lia
     have h2 := Finset.sum_congr rfl (fun j (_ : j ∈ Finset.univ) => this j)
     have h3 : ∑ j, (Finsupp.single i 1 : σ →₀ ℕ) j = 1 := by simp [Finsupp.single_apply]
-    rw [Finset.sum_add_distrib, h, h3] at h2
-    lia
+    rw [Finset.sum_add_distrib, h, h3] at h2; lia
 
 private lemma exists_single_of_sum_eq_one {α : σ →₀ ℕ} (h : ∑ i, α i = 1) :
     ∃ i, α = Finsupp.single i 1 := by
-  obtain ⟨i, α', rfl, h'⟩ := exists_single_of_sum_eq_succ (n := 0) h
-  have : α' = 0 := by
-    ext j
-    have := Finset.single_le_sum (fun j _ => Nat.zero_le (α' j)) (Finset.mem_univ j)
-    simp only [Finsupp.coe_zero, Pi.zero_apply]; lia
-  exact ⟨i, by rw [this, add_zero]⟩
+  apply (Finsupp.sum_eq_one_iff α).mp
+  simpa only [α.sum_fintype (fun _ n => n) (fun _ => rfl)] using h
 
 private lemma exists_pair_of_sum_eq_two {α : σ →₀ ℕ} (h : ∑ i, α i = 2) :
     ∃ i j, α = Finsupp.single i 1 + Finsupp.single j 1 := by
   obtain ⟨i, α', rfl, h'⟩ := exists_single_of_sum_eq_succ (n := 1) h
   obtain ⟨j, rfl⟩ := exists_single_of_sum_eq_one h'
-  exact ⟨i, j, rfl⟩
+  grind
 
 private lemma sum_half_pow_le (S : Finset (σ →₀ ℕ)) :
     ∑ α ∈ S, (1 / 2 : ℝ) ^ (∑ i, α i) ≤ 2 ^ Fintype.card σ := by
@@ -470,8 +445,7 @@ theorem norm_coeff_le_of_forall_jensenOp_stable (f : MvPolynomial σ ℂ)
   set g := diag p with hg
   have hcoeff : ∀ d, g.coeff d =
       ∑ α ∈ f.support with ∑ i, α i = d, (jensen α β : ℂ) * f.coeff α := by
-    intro d
-    rw [hg, coeff_diag p f.support (support_jensenOp β f) d]
+    intro d; rw [hg, coeff_diag p f.support (support_jensenOp β f) d]
     exact Finset.sum_congr rfl fun α _ => coeff_jensenOp β α f
   have hterm : ∀ α, (jensen α β : ℂ) * f.coeff α ≠ 0 → α ≤ β := by
     intro α h; apply le_of_jensen_ne_zero; intro h'; apply h; simp [h']
@@ -479,15 +453,13 @@ theorem norm_coeff_le_of_forall_jensenOp_stable (f : MvPolynomial σ ℂ)
     Finset.sum_le_sum fun i _ => h i
   have hJpos : 0 < jensen β β := by
     have h1 := jensen_self_mul β
-    have h2 := jensen_nonneg β β
-    rcases h2.lt_or_eq with h2 | h2
-    · exact h2
-    · rw [← h2, zero_mul] at h1; exact absurd h1 zero_ne_one
+    exact (jensen_nonneg β β).lt_of_ne fun h => by
+      rw [← h, zero_mul] at h1
+      exact zero_ne_one h1
   have hgk : g.coeff k = (jensen β β : ℂ) * f.coeff β := by
     rw [hcoeff, Finset.sum_eq_single β]
     · intro α hα hne
-      by_contra h
-      exact hne (eq_of_le_of_sum_eq (hterm α h) (Finset.mem_filter.1 hα).2)
+      by_contra h; exact hne (eq_of_le_of_sum_eq (hterm α h) (Finset.mem_filter.1 hα).2)
     · intro hβ
       exfalso; apply hβ
       simp only [Finset.mem_filter, MvPolynomial.mem_support_iff]
@@ -500,10 +472,9 @@ theorem norm_coeff_le_of_forall_jensenOp_stable (f : MvPolynomial σ ℂ)
       apply Finset.sum_eq_zero
       intro α hα
       by_contra h
-      have h1 := hsum_le α (hterm α h)
-      have h2 := (Finset.mem_filter.1 hα).2
-      have h3 : k < d := by exact_mod_cast hd
-      lia
+      have hle := hsum_le α (hterm α h)
+      have heq := (Finset.mem_filter.1 hα).2
+      exact (not_lt_of_ge hle) (by rw [heq]; exact_mod_cast hd)
     · rw [hgk]; exact mul_ne_zero (by exact_mod_cast hJpos.ne') ha
   have h0g : g.coeff 0 = 1 := by
     rw [hcoeff, Finset.sum_eq_single 0]
@@ -512,20 +483,16 @@ theorem norm_coeff_le_of_forall_jensenOp_stable (f : MvPolynomial σ ℂ)
       exfalso; apply hne
       have h2 := (Finset.mem_filter.1 hα).2
       ext i
-      have : α i ≤ ∑ j, α j :=
-        Finset.single_le_sum (fun j _ => Nat.zero_le _) (Finset.mem_univ i)
-      simp only [Finsupp.coe_zero, Pi.zero_apply]
-      lia
+      simpa only [Finsupp.coe_zero, Pi.zero_apply] using
+        (Finset.sum_eq_zero_iff_of_nonneg fun _ _ => Nat.zero_le _).mp h2 i (Finset.mem_univ i)
     · intro h
       exfalso; apply h
       simp [h0]
   have hs : ∀ z : ℂ, 0 < z.im → g.eval z ≠ 0 := fun z hz => by
-    rw [hg, eval_diag]
-    exact hJ β _ (fun _ => hz)
+    simpa only [hg, eval_diag] using hJ β (fun _ => z) (fun _ => hz)
   have hnorm : ∀ d,
       ‖g.coeff d‖ ≤ ∑ α ∈ f.support with ∑ i, α i = d, ‖f.coeff α‖ := by
-    intro d
-    rw [hcoeff]
+    intro d; rw [hcoeff]
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun α _ => ?_)
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (jensen_nonneg α β)]
     exact mul_le_of_le_one_left (norm_nonneg _) (jensen_le_one α β)
