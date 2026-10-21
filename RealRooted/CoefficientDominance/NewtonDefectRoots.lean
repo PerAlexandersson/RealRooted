@@ -29,12 +29,11 @@ open scoped Asymptotics Topology
 private theorem esym_nonneg (x : ℕ → ℝ) (hx : ∀ i, 0 ≤ x i) (n k : ℕ) :
     0 ≤ esym x n k := by
   rw [esym_eq_sum]
-  exact sum_nonneg fun S _ => prod_nonneg fun i _ => hx i
+  exact sum_nonneg fun S _ ↦ prod_nonneg fun i _ ↦ hx i
 
 private theorem esym_no_vars_succ (x : ℕ → ℝ) (k : ℕ) : esym x 0 (k + 1) = 0 := by
-  rw [esym_eq_sum, powersetCard_eq_empty.mpr]
-  · simp
-  · simp
+  rw [esym_eq_sum, powersetCard_eq_empty.mpr (by simp)]
+  simp
 
 private theorem esym_sq_sub_sq_esym_succ_le
     (x : ℕ → ℝ) (hx : ∀ i, 0 ≤ x i) (n k : ℕ) :
@@ -271,6 +270,46 @@ private theorem rootParameter_eq_coefficientRatio_mul_leadingRatio
   simp only [rootParameter, coefficientRatio, leadingRatio, hprod]
   field_simp
 
+private theorem coefficientRatio_mul_le_rootParameter_of_le_leadingRatio
+    (x : ℕ → ℝ) (hpos : ∀ i, 0 < x i) (hanti : Antitone x)
+    {n i : ℕ} (hi : i < n) (c : ℝ) (hc : c ≤ leadingRatio x n i) :
+    c * coefficientRatio x n i ≤ rootParameter x i := by
+  rw [rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi]
+  have htiPos : 0 < leadingRatio x n i :=
+    div_pos (topProd_pos hpos i) (esym_pos hpos hi.le)
+  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
+    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
+  have hratio : c ≤ leadingRatio x n i / leadingRatio x n (i + 1) := hc.trans (by
+    apply (le_div_iff₀ hti1Pos).2
+    nlinarith [mul_nonneg htiPos.le
+      (sub_nonneg.mpr (leadingRatio_mem_linear_box x hpos hanti hi).2)])
+  calc
+    c * coefficientRatio x n i = coefficientRatio x n i * c := mul_comm _ _
+    _ ≤ coefficientRatio x n i *
+        (leadingRatio x n i / leadingRatio x n (i + 1)) :=
+      mul_le_mul_of_nonneg_left hratio
+        (div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)).le
+
+private theorem rootParameter_le_coefficientRatio_div_of_le_leadingRatio
+    (x : ℕ → ℝ) (hpos : ∀ i, 0 < x i) (hanti : Antitone x)
+    {n i : ℕ} (hi : i < n) (c : ℝ) (hcPos : 0 < c)
+    (hc : c ≤ leadingRatio x n (i + 1)) :
+    rootParameter x i ≤ coefficientRatio x n i / c := by
+  rw [rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi]
+  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
+    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
+  have hratio : leadingRatio x n i / leadingRatio x n (i + 1) ≤ 1 / c := by
+    apply (div_le_div_iff₀ hti1Pos hcPos).2
+    nlinarith [mul_le_mul_of_nonneg_right
+      (leadingRatio_mem_linear_box x hpos hanti hi.le).2 hcPos.le]
+  calc
+    coefficientRatio x n i *
+        (leadingRatio x n i / leadingRatio x n (i + 1)) ≤
+        coefficientRatio x n i * (1 / c) :=
+      mul_le_mul_of_nonneg_left hratio
+        (div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)).le
+    _ = coefficientRatio x n i / c := by ring
+
 /-- The two-sided linear local-defect box for the `(i + 1)`-st ordered
 positive factor parameter.  The upper estimate needs the displayed positive
 denominator. -/
@@ -282,44 +321,10 @@ theorem rootParameter_mem_linear_box
         rootParameter x i ∧
       rootParameter x i ≤ coefficientRatio x n i /
         (1 - 2 * localDefect x n (i + 1)) := by
-  have hleftBox := leadingRatio_mem_linear_box x hpos hanti hi.le
-  have hrightBox := leadingRatio_mem_linear_box x hpos hanti hi
-  have htiPos : 0 < leadingRatio x n i :=
-    div_pos (topProd_pos hpos i) (esym_pos hpos hi.le)
-  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
-    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
-  have hrhoPos : 0 < coefficientRatio x n i :=
-    div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)
-  have hid := rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi
-  rw [hid]
-  constructor
-  · have hratio : 1 - 2 * localDefect x n i ≤
-        leadingRatio x n i / leadingRatio x n (i + 1) := by
-      refine hleftBox.1.trans ?_
-      apply (le_div_iff₀ hti1Pos).2
-      nlinarith [mul_nonneg htiPos.le (sub_nonneg.mpr hrightBox.2)]
-    calc
-      (1 - 2 * localDefect x n i) * coefficientRatio x n i =
-          coefficientRatio x n i * (1 - 2 * localDefect x n i) := mul_comm _ _
-      _ ≤ coefficientRatio x n i *
-          (leadingRatio x n i / leadingRatio x n (i + 1)) :=
-        mul_le_mul_of_nonneg_left hratio hrhoPos.le
-  · have hratio : leadingRatio x n i / leadingRatio x n (i + 1) ≤
-        1 / (1 - 2 * localDefect x n (i + 1)) := by
-      apply (div_le_div_iff₀ hti1Pos hright).2
-      have hmul : leadingRatio x n i *
-          (1 - 2 * localDefect x n (i + 1)) ≤
-          1 * (1 - 2 * localDefect x n (i + 1)) :=
-        mul_le_mul_of_nonneg_right hleftBox.2 hright.le
-      nlinarith [hrightBox.1]
-    calc
-      coefficientRatio x n i *
-          (leadingRatio x n i / leadingRatio x n (i + 1)) ≤
-          coefficientRatio x n i *
-            (1 / (1 - 2 * localDefect x n (i + 1))) :=
-        mul_le_mul_of_nonneg_left hratio hrhoPos.le
-      _ = coefficientRatio x n i /
-          (1 - 2 * localDefect x n (i + 1)) := by ring
+  exact ⟨coefficientRatio_mul_le_rootParameter_of_le_leadingRatio
+      x hpos hanti hi _ (leadingRatio_mem_linear_box x hpos hanti hi.le).1,
+    rootParameter_le_coefficientRatio_div_of_le_leadingRatio
+      x hpos hanti hi _ hright (leadingRatio_mem_linear_box x hpos hanti hi).1⟩
 
 private theorem defectConstant_pos (u : ℝ) : 0 < defectConstant u := by
   rw [defectConstant]
@@ -330,54 +335,18 @@ private theorem defectConstant_mul_coefficientRatio_le_rootParameter
     {n i : ℕ} (hi : i < n) (hquarter : localDefect x n i ≤ 1 / 4) :
     defectConstant (localDefect x n i) * coefficientRatio x n i ≤
       rootParameter x i := by
-  have hC := defectConstant_le_leadingRatio x hpos hanti hi.le hquarter
-  have hnextBox := leadingRatio_mem_linear_box x hpos hanti hi
-  have htiPos : 0 < leadingRatio x n i :=
-    div_pos (topProd_pos hpos i) (esym_pos hpos hi.le)
-  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
-    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
-  have hrhoPos : 0 < coefficientRatio x n i :=
-    div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)
-  rw [rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi]
-  have hratio : defectConstant (localDefect x n i) ≤
-      leadingRatio x n i / leadingRatio x n (i + 1) := by
-    refine hC.trans ?_
-    apply (le_div_iff₀ hti1Pos).2
-    nlinarith [mul_nonneg htiPos.le (sub_nonneg.mpr hnextBox.2)]
-  calc
-    defectConstant (localDefect x n i) * coefficientRatio x n i =
-        coefficientRatio x n i * defectConstant (localDefect x n i) := mul_comm _ _
-    _ ≤ coefficientRatio x n i *
-        (leadingRatio x n i / leadingRatio x n (i + 1)) :=
-      mul_le_mul_of_nonneg_left hratio hrhoPos.le
+  exact coefficientRatio_mul_le_rootParameter_of_le_leadingRatio
+    x hpos hanti hi _
+      (defectConstant_le_leadingRatio x hpos hanti hi.le hquarter)
 
 private theorem rootParameter_le_coefficientRatio_div_defectConstant
     (x : ℕ → ℝ) (hpos : ∀ i, 0 < x i) (hanti : Antitone x)
     {n i : ℕ} (hi : i < n) (hquarter : localDefect x n (i + 1) ≤ 1 / 4) :
     rootParameter x i ≤ coefficientRatio x n i /
       defectConstant (localDefect x n (i + 1)) := by
-  have hC := defectConstant_le_leadingRatio x hpos hanti hi hquarter
-  have hbox := leadingRatio_mem_linear_box x hpos hanti hi.le
-  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
-    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
-  have hrhoPos : 0 < coefficientRatio x n i :=
-    div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)
-  rw [rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi]
-  have hratio : leadingRatio x n i / leadingRatio x n (i + 1) ≤
-      1 / defectConstant (localDefect x n (i + 1)) := by
-    apply (div_le_div_iff₀ hti1Pos (defectConstant_pos _)).2
-    have hmul : leadingRatio x n i * defectConstant (localDefect x n (i + 1)) ≤
-        1 * defectConstant (localDefect x n (i + 1)) :=
-      mul_le_mul_of_nonneg_right hbox.2 (defectConstant_pos _).le
-    nlinarith
-  calc
-    coefficientRatio x n i *
-        (leadingRatio x n i / leadingRatio x n (i + 1)) ≤
-        coefficientRatio x n i *
-          (1 / defectConstant (localDefect x n (i + 1))) :=
-      mul_le_mul_of_nonneg_left hratio hrhoPos.le
-    _ = coefficientRatio x n i /
-        defectConstant (localDefect x n (i + 1)) := by ring
+  exact rootParameter_le_coefficientRatio_div_of_le_leadingRatio
+    x hpos hanti hi _ (defectConstant_pos _)
+      (defectConstant_le_leadingRatio x hpos hanti hi hquarter)
 
 /-- The two-sided `C(δ)` refinement for the `(i + 1)`-st ordered positive
 factor parameter. -/
@@ -390,45 +359,10 @@ theorem rootParameter_mem_quadratic_box
         rootParameter x i ∧
       rootParameter x i ≤ coefficientRatio x n i /
         defectConstant (localDefect x n (i + 1)) := by
-  have hleftC := defectConstant_le_leadingRatio x hpos hanti hi.le hleftQuarter
-  have hrightC := defectConstant_le_leadingRatio x hpos hanti hi hrightQuarter
-  have hleftBox := leadingRatio_mem_linear_box x hpos hanti hi.le
-  have hrightBox := leadingRatio_mem_linear_box x hpos hanti hi
-  have htiPos : 0 < leadingRatio x n i :=
-    div_pos (topProd_pos hpos i) (esym_pos hpos hi.le)
-  have hti1Pos : 0 < leadingRatio x n (i + 1) :=
-    div_pos (topProd_pos hpos (i + 1)) (esym_pos hpos hi)
-  have hrhoPos : 0 < coefficientRatio x n i :=
-    div_pos (esym_pos hpos hi.le) (esym_pos hpos hi)
-  have hid := rootParameter_eq_coefficientRatio_mul_leadingRatio x hpos hi
-  rw [hid]
-  constructor
-  · have hratio : defectConstant (localDefect x n i) ≤
-        leadingRatio x n i / leadingRatio x n (i + 1) := by
-      refine hleftC.trans ?_
-      apply (le_div_iff₀ hti1Pos).2
-      nlinarith [mul_nonneg htiPos.le (sub_nonneg.mpr hrightBox.2)]
-    calc
-      defectConstant (localDefect x n i) * coefficientRatio x n i =
-          coefficientRatio x n i * defectConstant (localDefect x n i) := mul_comm _ _
-      _ ≤ coefficientRatio x n i *
-          (leadingRatio x n i / leadingRatio x n (i + 1)) :=
-        mul_le_mul_of_nonneg_left hratio hrhoPos.le
-  · have hratio : leadingRatio x n i / leadingRatio x n (i + 1) ≤
-        1 / defectConstant (localDefect x n (i + 1)) := by
-      apply (div_le_div_iff₀ hti1Pos (defectConstant_pos _)).2
-      have hmul : leadingRatio x n i * defectConstant (localDefect x n (i + 1)) ≤
-          1 * defectConstant (localDefect x n (i + 1)) :=
-        mul_le_mul_of_nonneg_right hleftBox.2 (defectConstant_pos _).le
-      nlinarith
-    calc
-      coefficientRatio x n i *
-          (leadingRatio x n i / leadingRatio x n (i + 1)) ≤
-          coefficientRatio x n i *
-            (1 / defectConstant (localDefect x n (i + 1))) :=
-        mul_le_mul_of_nonneg_left hratio hrhoPos.le
-      _ = coefficientRatio x n i /
-          defectConstant (localDefect x n (i + 1)) := by ring
+  exact ⟨defectConstant_mul_coefficientRatio_le_rootParameter
+      x hpos hanti hi hleftQuarter,
+    rootParameter_le_coefficientRatio_div_defectConstant
+      x hpos hanti hi hrightQuarter⟩
 
 /-- The quadratic constant satisfies its defining equation on the real branch
 where the defect is at most `1 / 4`. -/
@@ -478,14 +412,12 @@ theorem rootParameter_div_succ_le
   have hdRatio := localDefect_eq_coefficientRatio_div x hpos hi
   have hscale : coefficientRatio x n i / c =
       (1 - c) * coefficientRatio x n (i + 1) := by
-    have hceq' : c * (1 - c) =
-        coefficientRatio x n i / coefficientRatio x n (i + 1) := by
-      exact hceq.trans (by simpa only [d] using hdRatio)
-    have hscaled := (eq_div_iff (ne_of_gt hrho)).mp hceq'
     apply (div_eq_iff (ne_of_gt hc)).2
     calc
       coefficientRatio x n i =
-          c * (1 - c) * coefficientRatio x n (i + 1) := hscaled.symm
+          c * (1 - c) * coefficientRatio x n (i + 1) :=
+        ((eq_div_iff hrho.ne').mp
+          (hceq.trans (by simpa only [d] using hdRatio))).symm
       _ = (1 - c) * coefficientRatio x n (i + 1) * c := by ring
   have hu := rootParameter_le_coefficientRatio_div_defectConstant
     x hpos hanti (Nat.lt_trans (Nat.lt_succ_self i) hi) hquarter
@@ -496,13 +428,8 @@ theorem rootParameter_div_succ_le
   have hu' : rootParameter x i ≤
       (1 - c) * coefficientRatio x n (i + 1) := by
     simpa only [c, d, hscale] using hu
-  have hmulLeft : rootParameter x i * c ≤
-      ((1 - c) * coefficientRatio x n (i + 1)) * c :=
-    mul_le_mul_of_nonneg_right hu' hc.le
-  have hmulRight : (1 - c) * (c * coefficientRatio x n (i + 1)) ≤
-      (1 - c) * rootParameter x (i + 1) :=
-    mul_le_mul_of_nonneg_left (by simpa only [c, d] using hl) hcle
-  nlinarith
+  nlinarith [mul_le_mul_of_nonneg_right hu' hc.le,
+    mul_le_mul_of_nonneg_left (by simpa only [c, d] using hl) hcle]
 
 open Polynomial
 
@@ -585,15 +512,10 @@ theorem factorPolynomial_rootParameter_mem_linear_box
         polynomialCoefficientRatio (factorPolynomial a₀ x n) i /
           (1 - 2 * polynomialLocalDefect
             (factorPolynomial a₀ x n) n (i + 1)) := by
-  have hdefLeft := polynomialLocalDefect_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos n i
-  have hdefRight := polynomialLocalDefect_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos n (i + 1)
-  have hratio := polynomialCoefficientRatio_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos hi
-  rw [hdefRight] at hright
-  rw [hdefLeft, hdefRight, hratio]
-  exact rootParameter_mem_linear_box x hpos hanti hi hright
+  rw [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos n (i + 1)] at hright
+  simpa only [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos,
+    polynomialCoefficientRatio_factorPolynomial a₀ ha₀.ne' x hpos hi] using
+    rootParameter_mem_linear_box x hpos hanti hi hright
 
 /-- Polynomial-coefficient form of the two-sided quadratic `C(δ)` box. -/
 theorem factorPolynomial_rootParameter_mem_quadratic_box
@@ -610,17 +532,13 @@ theorem factorPolynomial_rootParameter_mem_quadratic_box
         polynomialCoefficientRatio (factorPolynomial a₀ x n) i /
           defectConstant (polynomialLocalDefect
             (factorPolynomial a₀ x n) n (i + 1)) := by
-  have hdefLeft := polynomialLocalDefect_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos n i
-  have hdefRight := polynomialLocalDefect_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos n (i + 1)
-  have hratio := polynomialCoefficientRatio_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos hi
-  rw [hdefLeft] at hleftQuarter
-  rw [hdefRight] at hrightQuarter
-  rw [hdefLeft, hdefRight, hratio]
-  exact rootParameter_mem_quadratic_box
-    x hpos hanti hi hleftQuarter hrightQuarter
+  rw [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos n
+    i] at hleftQuarter
+  rw [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos n
+    (i + 1)] at hrightQuarter
+  simpa only [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos,
+    polynomialCoefficientRatio_factorPolynomial a₀ ha₀.ne' x hpos hi] using
+    rootParameter_mem_quadratic_box x hpos hanti hi hleftQuarter hrightQuarter
 
 /-- Polynomial-coefficient form of the adjacent-parameter separation bound. -/
 theorem factorPolynomial_rootParameter_div_succ_le
@@ -634,10 +552,9 @@ theorem factorPolynomial_rootParameter_div_succ_le
         (factorPolynomial a₀ x n) n (i + 1))) /
         defectConstant (polynomialLocalDefect
           (factorPolynomial a₀ x n) n (i + 1)) := by
-  have hdef := polynomialLocalDefect_factorPolynomial
-    a₀ (ne_of_gt ha₀) x hpos n (i + 1)
-  rw [hdef] at hquarter ⊢
-  exact rootParameter_div_succ_le x hpos hanti hi hquarter
+  rw [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos n (i + 1)] at hquarter
+  simpa only [polynomialLocalDefect_factorPolynomial a₀ ha₀.ne' x hpos] using
+    rootParameter_div_succ_le x hpos hanti hi hquarter
 
 /-- If a fixed local defect tends to zero, then its leading-subset ratio tends
 to one, uniformly in the ambient degree. -/
@@ -703,30 +620,28 @@ theorem factorPolynomial_rootParameter_isEquivalent_coefficientRatio
     (fun a => rootParameter (x a) i) ~[l]
       (fun a => polynomialCoefficientRatio
         (factorPolynomial (a₀ a) (x a) (n a)) i) := by
-  have hleft' : Filter.Tendsto (fun a => localDefect (x a) (n a) i) l (𝓝 0) := by
-    apply hleft.congr'
-    exact Eventually.of_forall fun a => polynomialLocalDefect_factorPolynomial
-      (a₀ a) (ne_of_gt (ha₀ a)) (x a) (hpos a) (n a) i
+  have hleft' : Filter.Tendsto (fun a => localDefect (x a) (n a) i) l (𝓝 0) :=
+    hleft.congr' <| Eventually.of_forall fun a =>
+      polynomialLocalDefect_factorPolynomial
+        (a₀ a) (ha₀ a).ne' (x a) (hpos a) (n a) i
   have hright' : Filter.Tendsto
-      (fun a => localDefect (x a) (n a) (i + 1)) l (𝓝 0) := by
-    apply hright.congr'
-    exact Eventually.of_forall fun a => polynomialLocalDefect_factorPolynomial
-      (a₀ a) (ne_of_gt (ha₀ a)) (x a) (hpos a) (n a) (i + 1)
+      (fun a => localDefect (x a) (n a) (i + 1)) l (𝓝 0) :=
+    hright.congr' <| Eventually.of_forall fun a =>
+      polynomialLocalDefect_factorPolynomial
+        (a₀ a) (ha₀ a).ne' (x a) (hpos a) (n a) (i + 1)
   have hresult := rootParameter_isEquivalent_coefficientRatio
     x n i hpos hanti hi hleft' hright'
   apply hresult.congr_right
   filter_upwards [hi] with a hai
   exact (polynomialCoefficientRatio_factorPolynomial
-    (a₀ a) (ne_of_gt (ha₀ a)) (x a) (hpos a) hai).symm
+    (a₀ a) (ha₀ a).ne' (x a) (hpos a) hai).symm
 
 /-! ## Regression examples -/
 
 example : (factorPolynomial 1 (fun _ => (1 : ℝ)) 2).IsRoot (-1) := by
-  have h := factorPolynomial_isRoot_neg_rootParameter
+  simpa [rootParameter] using factorPolynomial_isRoot_neg_rootParameter
     (a₀ := 1) (x := fun _ => (1 : ℝ)) (n := 2) (i := 0)
     (by norm_num) (by norm_num)
-  norm_num [rootParameter] at h
-  exact h
 
 private def separatedReciprocal (i : ℕ) : ℝ :=
   if i = 0 then 100 else if i = 1 then 10 else 1

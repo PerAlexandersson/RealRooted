@@ -175,13 +175,9 @@ lemma sign_p_at_root_of_wronskian_pos {n : ℕ}
     (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t)
     (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k))
     (k : Fin (n + 1)) : 0 < p.eval (r k) * (-1) ^ (n - k.val) := by
-  have hq_eq : q = C q.leadingCoeff * ∏ j : Fin (n + 1),
-    (X - C (r j)) := by
-    convert Polynomial.splits_eq_C_mul_prod _ _ _ _ _
-    · exact leadingCoeff_ne_zero.mp hq_pos.ne'
-    · simp_all
-    · simp_all
-    · exact hr_mono.injective
+  have hq_eq : q = C q.leadingCoeff * ∏ j : Fin (n + 1), (X - C (r j)) :=
+    Polynomial.splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hq_pos.ne')
+      hq_deg r hr_roots hr_mono.injective
   have h_eval_deriv :
       q.derivative.eval (r k) =
         q.leadingCoeff * ∏ j ∈ Finset.erase Finset.univ k, (r k - r j) := by
@@ -230,39 +226,26 @@ lemma Polynomial.exists_root_between_roots_of_wronskian_pos {n : ℕ}
   constructor
   · have h_sign_change_zero : 0 < p.eval (r 0) * (-1) ^ n :=
       sign_p_at_root_of_wronskian_pos hq_pos hq_deg hW r hr_mono hr_roots 0
-    have h_tendsto_bot :
-        Filter.Tendsto (fun x ↦ p.eval x * (-1) ^ (n + 1)) Filter.atBot Filter.atTop :=
-      tendsto_eval_mul_neg_one_pow_atBot hp_pos hp_deg
-    have h_sign_change_bot : ∃ x : ℝ, x < r 0 ∧ 0 < p.eval x * (-1) ^ (n + 1) :=
+    obtain ⟨x, hx₁, hx₂⟩ : ∃ x : ℝ, x < r 0 ∧ 0 < p.eval x * (-1) ^ (n + 1) :=
       (Filter.Eventually.and (Filter.eventually_lt_atBot (r 0))
-        (h_tendsto_bot.eventually_gt_atTop 0)).exists
-    obtain ⟨x, hx₁, hx₂⟩ := h_sign_change_bot
-    have h_ivt : ∃ c ∈ Set.Ioo x (r 0), p.eval c = 0 := by
-      have h_cont : ContinuousOn (fun t ↦ p.eval t) (Set.Icc x (r 0)) :=
-        p.continuous.continuousOn
-      have h_sign_change_ends : p.eval x * p.eval (r 0) < 0 :=
-        mul_neg_of_pos_mul_neg_one_pow_succ h_sign_change_zero hx₂
-      rw [mul_neg_iff] at h_sign_change_ends
-      rcases h_sign_change_ends with h | h
-      · exact intermediate_value_Ioo' hx₁.le h_cont (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
-      · exact intermediate_value_Ioo hx₁.le h_cont (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
-    rcases h_ivt with ⟨c, hc_in, hc_root⟩
-    exact ⟨c, hc_root, hc_in.2⟩
+        ((tendsto_eval_mul_neg_one_pow_atBot hp_pos hp_deg).eventually_gt_atTop 0)).exists
+    rcases mul_neg_iff.mp (mul_neg_of_pos_mul_neg_one_pow_succ h_sign_change_zero hx₂) with h | h
+    · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo' hx₁.le p.continuous.continuousOn
+        (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
+      exact ⟨c, hc0, hc.2⟩
+    · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo hx₁.le p.continuous.continuousOn
+        (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
+      exact ⟨c, hc0, hc.2⟩
   · intro k
-    have h_ivt : ∃ x ∈ Set.Ioo (r (Fin.castSucc k)) (r (Fin.succ k)), p.eval x = 0 := by
-      have h_cont :
-          ContinuousOn (fun x ↦ p.eval x)
-            (Set.Icc (r (Fin.castSucc k)) (r (Fin.succ k))) :=
-        p.continuous.continuousOn
-      have := sign_change_p_of_wronskian_pos hq_pos hq_deg hW r hr_mono hr_roots k
-      rw [mul_neg_iff] at this
-      have hle : r (Fin.castSucc k) ≤ r (Fin.succ k) :=
-        hr_mono.monotone (Nat.le_succ _)
-      rcases this with h | h
-      · exact intermediate_value_Ioo' hle h_cont (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
-      · exact intermediate_value_Ioo hle h_cont (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
-    rcases h_ivt with ⟨c, hc_in, hc_root⟩
-    exact ⟨c, hc_root, hc_in⟩
+    have hle : r (Fin.castSucc k) ≤ r (Fin.succ k) := hr_mono.monotone (Nat.le_succ _)
+    rcases mul_neg_iff.mp
+        (sign_change_p_of_wronskian_pos hq_pos hq_deg hW r hr_mono hr_roots k) with h | h
+    · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo' hle p.continuous.continuousOn
+        (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
+      exact ⟨c, hc0, hc⟩
+    · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo hle p.continuous.continuousOn
+        (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
+      exact ⟨c, hc0, hc⟩
 
 lemma sign_p_at_root_of_wronskian_pos' {n : ℕ}
     {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q)
@@ -270,33 +253,13 @@ lemma sign_p_at_root_of_wronskian_pos' {n : ℕ}
     (hW : ∀ t : ℝ, 0 < p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t)
     (r : Fin n → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k))
     (k : Fin n) : 0 < p.eval (r k) * (-1) ^ (n - k.val) := by
-  have hq_eq : q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) :=
-    Polynomial.splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hq_pos.ne')
-      hq_deg r hr_roots hr_mono.injective
-  have h_eval_deriv :
-      q.derivative.eval (r k) =
-        q.leadingCoeff * ∏ j ∈ Finset.erase Finset.univ k, (r k - r j) := by
-    conv_lhs => rw [hq_eq]
-    exact Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root q.leadingCoeff r k
-  have h_W_val :
-      0 < p.derivative.eval (r k) * q.eval (r k) - p.eval (r k) * q.derivative.eval (r k) :=
-    hW (r k)
-  rw [hr_roots k, mul_zero, zero_sub, h_eval_deriv] at h_W_val
-  have h_prod_neg : p.eval (r k) *
-      (∏ j ∈ Finset.erase Finset.univ k, (r k - r j)) < 0 := by
-    have : 0 < q.leadingCoeff := hq_pos
-    nlinarith [h_W_val, this]
-  have h_prod_sign :
-      ∏ j ∈ Finset.univ.erase k, (r k - r j) =
-        (-1) ^ (n - 1 - k.val) * ∏ j ∈ Finset.univ.erase k, |r k - r j| :=
-    prod_sub_eq_neg_one_pow_mul_prod_abs r hr_mono k
-  have h_abs_pos : 0 < ∏ j ∈ Finset.univ.erase k, |r k - r j| :=
-    Finset.prod_pos fun j hj ↦ abs_pos.mpr <| sub_ne_zero.mpr <|
-      hr_mono.injective.ne (Finset.ne_of_mem_erase hj).symm
-  rw [h_prod_sign] at h_prod_neg
-  have : n - k.val = (n - 1 - k.val) + 1 := by lia
-  rw [this, pow_succ]
-  nlinarith [h_abs_pos, h_prod_neg]
+  have hn : n ≠ 0 := (Fin.pos_iff_nonempty.mpr ⟨k⟩).ne'
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
+  have hsign := sign_p_at_root_of_wronskian_pos (p := -p) hq_pos hq_deg
+    (fun t ↦ by simpa [mul_comm] using hW t) r hr_mono hr_roots k
+  have hpow : m + 1 - k.val = (m - k.val) + 1 := by lia
+  rw [hpow, pow_succ]
+  simpa [Polynomial.eval_neg] using hsign
 
 lemma sign_change_p_of_wronskian_pos' {n : ℕ}
     {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q)
@@ -320,19 +283,16 @@ lemma exists_root_between_consecutive_of_wronskian_pos {n : ℕ}
     (r : Fin n → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k))
     (k : Fin n) (hk : k.val + 1 < n) :
     ∃ x, p.IsRoot x ∧ r k < x ∧ x < r ⟨k.val + 1, hk⟩ := by
-  have : p.eval (r k) * p.eval (r ⟨k.val + 1, hk⟩) < 0 :=
-    sign_change_p_of_wronskian_pos' hq_pos hq_deg hW r hr_mono hr_roots k hk
-  have h_lt : r k < r ⟨k.val + 1, hk⟩ := hr_mono (Nat.lt_succ_self k.val)
-  have h_cont : ContinuousOn (fun t ↦ p.eval t) (Set.Icc (r k) (r ⟨k.val + 1, hk⟩)) :=
-    p.continuous.continuousOn
-  rw [mul_neg_iff] at this
-  rcases this with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩
-  · obtain ⟨c, hc_in, hc_root⟩ :=
-      intermediate_value_Ioo' h_lt.le h_cont (Set.mem_Ioo.mpr ⟨h₂, h₁⟩)
-    exact ⟨c, hc_root, hc_in.1, hc_in.2⟩
-  · obtain ⟨c, hc_in, hc_root⟩ :=
-      intermediate_value_Ioo h_lt.le h_cont (Set.mem_Ioo.mpr ⟨h₁, h₂⟩)
-    exact ⟨c, hc_root, hc_in.1, hc_in.2⟩
+  have hlt : r k < r ⟨k.val + 1, hk⟩ := hr_mono (Nat.lt_succ_self k.val)
+  rcases mul_neg_iff.mp
+      (sign_change_p_of_wronskian_pos' hq_pos hq_deg hW r hr_mono hr_roots k hk) with
+    h | h
+  · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo' hlt.le p.continuous.continuousOn
+      (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
+    exact ⟨c, hc0, hc⟩
+  · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo hlt.le p.continuous.continuousOn
+      (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
+    exact ⟨c, hc0, hc⟩
 
 lemma exists_root_below_min_of_wronskian_pos {n : ℕ} (hn : n ≠ 0)
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
@@ -349,18 +309,13 @@ lemma exists_root_below_min_of_wronskian_pos {n : ℕ} (hn : n ≠ 0)
     tendsto_eval_mul_neg_one_pow_atBot hp_pos hp_deg
   obtain ⟨x, hx₁, hx₂⟩ := (Filter.Eventually.and (Filter.eventually_lt_atBot (r k))
     (h_tendsto_bot.eventually_gt_atTop 0)).exists
-  have h_cont : ContinuousOn (fun t ↦ p.eval t) (Set.Icc x (r k)) :=
-    p.continuous.continuousOn
-  have : p.eval x * p.eval (r k) < 0 :=
-    mul_neg_of_pos_mul_neg_one_pow_succ h_sign₀ hx₂
-  rw [mul_neg_iff] at this
-  rcases this with ⟨h₁, h₂⟩ | ⟨h₁, h₂⟩
-  · obtain ⟨c, hc_in, hc_root⟩ :=
-      intermediate_value_Ioo' hx₁.le h_cont (Set.mem_Ioo.mpr ⟨h₂, h₁⟩)
-    exact ⟨c, hc_root, hc_in.2⟩
-  · obtain ⟨c, hc_in, hc_root⟩ :=
-      intermediate_value_Ioo hx₁.le h_cont (Set.mem_Ioo.mpr ⟨h₁, h₂⟩)
-    exact ⟨c, hc_root, hc_in.2⟩
+  rcases mul_neg_iff.mp (mul_neg_of_pos_mul_neg_one_pow_succ h_sign₀ hx₂) with h | h
+  · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo' hx₁.le p.continuous.continuousOn
+      (Set.mem_Ioo.mpr ⟨h.2, h.1⟩)
+    exact ⟨c, hc0, hc.2⟩
+  · obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo hx₁.le p.continuous.continuousOn
+      (Set.mem_Ioo.mpr ⟨h.1, h.2⟩)
+    exact ⟨c, hc0, hc.2⟩
 
 lemma exists_root_above_max_of_wronskian_pos {n : ℕ} (hn : n ≠ 0)
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
@@ -382,11 +337,9 @@ lemma exists_root_above_max_of_wronskian_pos {n : ℕ} (hn : n ≠ 0)
   obtain ⟨x, hx₁, hx₂⟩ := (Filter.Eventually.and
     (Filter.eventually_gt_atTop (r k))
     (h_tendsto_top.eventually_gt_atTop 0)).exists
-  have h_cont : ContinuousOn (fun t ↦ p.eval t) (Set.Icc (r k) x) :=
-    p.continuous.continuousOn
-  obtain ⟨c, hc_in, hc_root⟩ :=
-    intermediate_value_Ioo hx₁.le h_cont (Set.mem_Ioo.mpr ⟨this, hx₂⟩)
-  exact ⟨c, hc_root, hc_in.1⟩
+  obtain ⟨c, hc, hc0⟩ := intermediate_value_Ioo hx₁.le p.continuous.continuousOn
+    (Set.mem_Ioo.mpr ⟨this, hx₂⟩)
+  exact ⟨c, hc0, hc.1⟩
 
 lemma apply_lt_of_card_lt_le {m : ℕ} {t : Fin m → ℝ} (ht : StrictMono t) {c : ℝ}
     {k : Fin m} (h_card : k.val + 1 ≤ (Finset.univ.filter (fun i ↦ t i < c)).card) :
@@ -434,14 +387,10 @@ lemma card_gt_le_of_inj_roots {N l : ℕ} {p : ℝ[X]} {t : Fin N → ℝ}
 lemma Polynomial.roots_nodup_of_wronskian_pos {p q : ℝ[X]}
     (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t) :
     p.roots.Nodup ∧ q.roots.Nodup := by
-  constructor
-  · apply Polynomial.roots_nodup_of_splits_and_simple
-    intro r hr hd
-    have := hW r
-    simp_all
-  · apply Polynomial.roots_nodup_of_splits_and_simple
-    intro r hr hd
-    have := hW r
+  constructor <;>
+    apply Polynomial.roots_nodup_of_splits_and_simple <;>
+    intro r hr hd <;>
+    have := hW r <;>
     simp_all
 
 lemma StrictInterlSameDegree.of_wronskian_pos {n : ℕ}
@@ -493,8 +442,7 @@ lemma strictMono_of_lt_and_lt {n : ℕ} {α : Type*} [LinearOrder α]
     (hu_lo : ∀ i : Fin n, s i < u i.succ) :
     StrictMono u := by
   rw [Fin.strictMono_iff_lt_succ]
-  intro i
-  exact lt_trans (hu_hi i) (hu_lo i)
+  exact fun i ↦ (hu_hi i).trans (hu_lo i)
 
 lemma interlace_of_interlaced_roots {n : ℕ} {p : ℝ[X]} (hp_ne : p ≠ 0)
     (t : Fin (n + 1) → ℝ) (ht_mono : StrictMono t) (ht_surj : ∀ x ∈ p.roots, ∃ i, t i = x)
@@ -510,8 +458,8 @@ lemma interlace_of_interlaced_roots {n : ℕ} {p : ℝ[X]} (hp_ne : p ≠ 0)
     have h_lt' : (Fin.castLE h_le j).val < n := by
       simp [Fin.castLE]
       lia
-    have h_lt_j := hu_hi ⟨(Fin.castLE h_le j).val, h_lt'⟩
-    refine lt_of_lt_of_le h_lt_j (hs_mono.monotone ?_)
+    refine (hu_hi ⟨(Fin.castLE h_le j).val, h_lt'⟩).trans_le
+      (hs_mono.monotone ?_)
     simp only [Fin.le_def, Fin.val_castLE]
     lia
   have hg_low_mono : StrictMono g_low :=
@@ -524,16 +472,10 @@ lemma interlace_of_interlaced_roots {n : ℕ} {p : ℝ[X]} (hp_ne : p ≠ 0)
   have hg_high_gt (j : Fin (n - k.val)) : s k < g_high j := by
     simp only [g_high]
     have h_pos' : k.val + j.val < n := by lia
-    have hlo := hu_lo ⟨k.val + j.val, h_pos'⟩
-    refine lt_of_le_of_lt (hs_mono.monotone ?_) hlo
+    refine (hs_mono.monotone ?_).trans_lt (hu_lo ⟨k.val + j.val, h_pos'⟩)
     simp only [Fin.le_def]
     lia
-  have hg_high_mono : StrictMono g_high := by
-    intro a b hab
-    simp only [g_high]
-    apply hu_mono
-    simp only [Fin.lt_def]
-    simp [*]
+  have hg_high_mono : StrictMono g_high := fun a b hab ↦ hu_mono (by simpa using hab)
   have h_card_h : n - k.val ≤ (Finset.univ.filter (fun i ↦ s k < t i)).card :=
     card_gt_le_of_inj_roots ht_surj hp_ne g_high hg_high_mono.injective
       (fun j ↦ hu_root _) hg_high_gt
@@ -603,9 +545,7 @@ lemma strictInterl_of_wronskian_pos_succ {n : ℕ}
     StrictInterl q p := by
   have hp_ne : p ≠ 0 := leadingCoeff_ne_zero.mp hp_pos.ne'
   have hq_ne : q ≠ 0 := leadingCoeff_ne_zero.mp hq_pos.ne'
-  have hpq_nodup := Polynomial.roots_nodup_of_wronskian_pos hW
-  have hp_nodup : p.roots.Nodup := hpq_nodup.2
-  have hq_nodup : q.roots.Nodup := hpq_nodup.1
+  obtain ⟨hq_nodup, hp_nodup⟩ := Polynomial.roots_nodup_of_wronskian_pos hW
   obtain ⟨s, hs_mono, hs_roots⟩ := Polynomial.exists_strictMono_roots hq_splits hq_deg hq_nodup
   obtain ⟨t, ht_mono, ht_roots⟩ := Polynomial.exists_strictMono_roots hp_splits hp_deg hp_nodup
   have hs_surj : ∀ x ∈ q.roots, ∃ i, s i = x :=
@@ -635,10 +575,8 @@ lemma strictInterl_of_wronskian_pos_succ {n : ℕ}
   have hj_succ_lt (j : Fin (n - 1)) : j.val + 1 < n := by lia
   have h_between (j : Fin (n - 1)) :
       ∃ x, p.IsRoot x ∧ s ⟨j.val, hj_lt j⟩ < x ∧ x < s ⟨j.val + 1, hj_succ_lt j⟩ := by
-    obtain ⟨x, hx_root, hx_lo, hx_hi⟩ :=
-      exists_root_between_consecutive_of_wronskian_pos hq_pos hq_deg hW s hs_mono hs_roots
-        ⟨j.val, hj_lt j⟩ (hj_succ_lt j)
-    exact ⟨x, hx_root, hx_lo, hx_hi⟩
+    exact exists_root_between_consecutive_of_wronskian_pos hq_pos hq_deg hW s hs_mono
+      hs_roots ⟨j.val, hj_lt j⟩ (hj_succ_lt j)
   choose xb h_xb_root h_xb_lo h_xb_hi using h_between
   obtain ⟨u, hu_mono, hu_hi, hu_lo, hu_root⟩ :=
     exists_strictMono_u_of_bounds hn s xl xh h_xl_lt h_xh_gt xb h_xb_lo h_xb_hi
@@ -667,12 +605,7 @@ lemma strictInterl_of_wronskian_pos_succ {n : ℕ}
     · intro i j hij
       have hlt : t (⟨j.val, j.isLt⟩ : Fin n).castSucc < s ⟨j.val, j.isLt⟩ :=
         (h_interlace ⟨j.val, j.isLt⟩).1
-      have h_le_ij : ⟨i.val, i.isLt⟩ ≤ (⟨j.val, j.isLt⟩ : Fin n).castSucc := by
-        simp only [Fin.le_def, Fin.val_castSucc]
-        lia
-      have hle : t ⟨i.val, i.isLt⟩ ≤ t (⟨j.val, j.isLt⟩ : Fin n).castSucc :=
-        ht_mono.monotone h_le_ij
-      exact lt_of_le_of_lt hle hlt
+      exact (ht_mono.monotone (by simp only [Fin.le_def, Fin.val_castSucc]; lia)).trans_lt hlt
 lemma StrictInterlSameDegree.of_splits_and_posDef {n : ℕ}
     {p q : ℝ[X]} (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
     (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)

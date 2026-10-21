@@ -108,15 +108,18 @@ private theorem root_sum_product {p q lam nu : ℝ}
       (lam - nu) * (lam + nu - p) =
           (lam ^ 2 - p * lam - q) - (nu ^ 2 - p * nu - q) := by ring
       _ = 0 := by rw [hLam, hNu]; ring
-  have hsum : lam + nu = p := by
-    rcases mul_eq_zero.mp hfactor with h | h
-    · exact False.elim (hDistinct (sub_eq_zero.mp h))
-    · linarith
-  constructor
-  · exact hsum
-  · calc
-      lam * nu = lam * (p - lam) := by linear_combination lam * hsum
-      _ = -q := by nlinarith [hLam]
+  have hsum := sub_eq_zero.mp
+    ((mul_eq_zero.mp hfactor).resolve_left (sub_ne_zero.mpr hDistinct))
+  refine ⟨hsum, ?_⟩
+  calc
+    lam * nu = lam * (p - lam) := by linear_combination lam * hsum
+    _ = -q := by nlinarith [hLam]
+
+private theorem add_modes_eq_factor {lam nu : ℝ} (hlam : lam ≠ 0)
+    (A B : ℝ) (n : ℕ) :
+    A * lam ^ n + B * nu ^ n = lam ^ n * (A + B * (nu / lam) ^ n) := by
+  rw [div_pow]
+  field_simp [hlam]
 
 private theorem value_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
     {lam nu : ℝ} (hP : ∀ n, P (n + 2) = a * P (n + 1) + b * P n)
@@ -130,8 +133,7 @@ private theorem value_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
     intro n
     dsimp [S]
     exact Polynomial.eval_one_recurrence hP n
-  obtain ⟨hsum, hprod⟩ :=
-    root_sum_product hLam hNu hDistinct
+  obtain ⟨hsum, hprod⟩ := root_sum_product hLam hNu hDistinct
   have h0 : S 0 = dominantCoeff P lam nu + companionCoeff P lam nu := by
     dsimp [S]
     unfold dominantCoeff companionCoeff
@@ -143,9 +145,7 @@ private theorem value_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
     unfold dominantCoeff companionCoeff
     field_simp [hDistinct]
     ring
-  have hform := LinearRecurrence.two_mode_solution hS hsum hprod h0 h1
-  intro n
-  exact hform n
+  exact LinearRecurrence.two_mode_solution hS hsum hprod h0 h1
 
 private theorem derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
     {lam nu : ℝ} (hP : ∀ n, P (n + 2) = a * P (n + 1) + b * P n)
@@ -161,22 +161,14 @@ private theorem derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
   let S : ℕ → ℝ := fun n => (P n).eval 1
   let T : ℕ → ℝ := fun n => (P n).derivative.eval 1
   have hS : ∀ n, S n = dominantCoeff P lam nu * lam ^ n +
-      companionCoeff P lam nu * nu ^ n := by
-    intro n
-    exact value_closed_form hP hLam hNu hDistinct n
+      companionCoeff P lam nu * nu ^ n := value_closed_form hP hLam hNu hDistinct
   obtain ⟨hsum, hprod⟩ := root_sum_product hLam hNu hDistinct
   have hnuSimple : 2 * nu - a.eval 1 ≠ 0 := by
     intro h
     apply hDistinct
     linarith [hsum]
-  have hSimple' : lam * 2 - a.eval 1 ≠ 0 := by
-    intro h
-    apply hSimple
-    linarith
-  have hnuSimple' : nu * 2 - a.eval 1 ≠ 0 := by
-    intro h
-    apply hnuSimple
-    linarith
+  have hSimple' : lam * 2 - a.eval 1 ≠ 0 := by simpa only [mul_comm] using hSimple
+  have hnuSimple' : nu * 2 - a.eval 1 ≠ 0 := by simpa only [mul_comm] using hnuSimple
   have hT : ∀ n, T (n + 2) = a.eval 1 * T (n + 1) + b.eval 1 * T n +
       a.derivative.eval 1 * S (n + 1) + b.derivative.eval 1 * S n := by
     intro n
@@ -202,20 +194,8 @@ private theorem derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
       (P 0).derivative.eval 1 - derivativeDominantConstant P a b lam nu := by
     rfl
   have hinit := LinearRecurrence.two_mode_linear_initial_values hβ hδ hDistinct
-  have h0 : T 0 = derivativeDominantConstant P a b lam nu +
-      derivativeCompanionConstant P a b lam nu := by
-    dsimp [T]
-    exact hinit.1
-  have h1 : T 1 =
-      (derivativeDominantCoeff P a b lam nu +
-        derivativeDominantConstant P a b lam nu) * lam +
-      (derivativeCompanionCoeff P a b lam nu +
-        derivativeCompanionConstant P a b lam nu) * nu := by
-    dsimp [T]
-    exact hinit.2
-  have hform := LinearRecurrence.forced_linear_two_mode_solution hT hsum hprod hS hα hγ h0 h1
-  intro n
-  exact hform n
+  exact LinearRecurrence.forced_linear_two_mode_solution hT hsum hprod hS hα hγ
+    (by simpa only [T] using hinit.1) (by simpa only [T] using hinit.2)
 
 private theorem second_derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]}
     {lam nu : ℝ} (hP : ∀ n, P (n + 2) = a * P (n + 1) + b * P n)
@@ -234,29 +214,20 @@ private theorem second_derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]
   let T : ℕ → ℝ := fun n => (P n).derivative.eval 1
   let U : ℕ → ℝ := fun n => (P n).derivative.derivative.eval 1
   have hS : ∀ n, S n = dominantCoeff P lam nu * lam ^ n +
-      companionCoeff P lam nu * nu ^ n := by
-    intro n
-    exact value_closed_form hP hLam hNu hDistinct n
+      companionCoeff P lam nu * nu ^ n := value_closed_form hP hLam hNu hDistinct
   have hT : ∀ n, T n =
       (derivativeDominantCoeff P a b lam nu * (n : ℝ) +
         derivativeDominantConstant P a b lam nu) * lam ^ n +
       (derivativeCompanionCoeff P a b lam nu * (n : ℝ) +
-        derivativeCompanionConstant P a b lam nu) * nu ^ n := by
-    intro n
-    exact derivative_closed_form hP hLam hNu hDistinct hLamNe hNuNe hSimple n
+          derivativeCompanionConstant P a b lam nu) * nu ^ n :=
+    derivative_closed_form hP hLam hNu hDistinct hLamNe hNuNe hSimple
   obtain ⟨hsum, hprod⟩ := root_sum_product hLam hNu hDistinct
   have hnuSimple : 2 * nu - a.eval 1 ≠ 0 := by
     intro h
     apply hDistinct
     linarith [hsum]
-  have hSimple' : lam * 2 - a.eval 1 ≠ 0 := by
-    intro h
-    apply hSimple
-    linarith
-  have hnuSimple' : nu * 2 - a.eval 1 ≠ 0 := by
-    intro h
-    apply hnuSimple
-    linarith
+  have hSimple' : lam * 2 - a.eval 1 ≠ 0 := by simpa only [mul_comm] using hSimple
+  have hnuSimple' : nu * 2 - a.eval 1 ≠ 0 := by simpa only [mul_comm] using hnuSimple
   have hU : ∀ n, U (n + 2) =
       a.eval 1 * U (n + 1) + b.eval 1 * U n +
         a.derivative.derivative.eval 1 * S (n + 1) +
@@ -322,11 +293,6 @@ private theorem second_derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]
     unfold secondCompanionLinear secondCompanionCoeff derivativeCompanionCoeff
     linear_combination companionCoeff P lam nu * hroot2' +
       2 * derivativeCompanionConstant P a b lam nu * hroot1'
-  have h0 : U 0 = secondDominantConstant P a b lam nu +
-      secondCompanionConstant P a b lam nu := by
-    dsimp [U]
-    unfold secondCompanionConstant
-    ring
   have hκ : secondDominantConstant P a b lam nu =
       ((P 1).derivative.derivative.eval 1 -
         (secondDominantCoeff P a b lam nu + secondDominantLinear P a b lam nu) * lam -
@@ -337,19 +303,8 @@ private theorem second_derivative_closed_form {P : ℕ → ℝ[X]} {a b : ℝ[X]
       (P 0).derivative.derivative.eval 1 - secondDominantConstant P a b lam nu := by
     rfl
   have hinit := LinearRecurrence.two_mode_quadratic_initial_values hκ hχ hDistinct
-  have h1 : U 1 =
-      (secondDominantCoeff P a b lam nu +
-        secondDominantLinear P a b lam nu +
-        secondDominantConstant P a b lam nu) * lam +
-      (secondCompanionCoeff P a b lam nu +
-        secondCompanionLinear P a b lam nu +
-        secondCompanionConstant P a b lam nu) * nu := by
-    dsimp [U]
-    exact hinit.2
-  have hform := LinearRecurrence.forced_quadratic_two_mode_solution hU hsum hprod hS hT
-    hη hθ hζ hξ h0 h1
-  intro n
-  exact hform n
+  exact LinearRecurrence.forced_quadratic_two_mode_solution hU hsum hprod hS hT
+    hη hθ hζ hξ (by simpa only [U] using hinit.1) (by simpa only [U] using hinit.2)
 
 /-- Mean asymptotics for a polynomial three-term recurrence with an explicitly
 given two-mode closed form. -/
@@ -369,87 +324,29 @@ private theorem mean_from_modes
       (𝓝 (meanSlope a b lam)) := by
   have hlam : lam ≠ 0 := ne_of_gt hDominant
   have hratio : |nu / lam| < 1 := by
-    rw [abs_div, abs_of_pos hDominant]
-    apply (div_lt_iff₀ hDominant).2
-    simpa only [one_mul] using hModulus
-  have hden : Tendsto (fun n : ℕ =>
-      dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n)
-      atTop (𝓝 (dominantCoeff P lam nu)) := by
-    simpa only [mul_zero, add_zero] using
-      (tendsto_const_nhds (f := atTop) (x := dominantCoeff P lam nu)).add
-        ((tendsto_const_nhds (f := atTop) (x := companionCoeff P lam nu)).mul
-          (tendsto_pow_atTop_nhds_zero_of_abs_lt_one hratio))
-  have hden_ne : ∀ᶠ n : ℕ in atTop,
-      dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n ≠ 0 :=
-    hden.eventually_ne hA
+    simpa only [abs_div, abs_of_pos hDominant, div_lt_one hDominant] using hModulus
   have hsub := LinearRecurrence.linear_ratio_tendsto
     (A := dominantCoeff P lam nu) (B := companionCoeff P lam nu)
     (α := derivativeDominantCoeff P a b lam nu)
     (β := derivativeDominantConstant P a b lam nu)
     (γ := derivativeCompanionCoeff P a b lam nu)
     (δ := derivativeCompanionConstant P a b lam nu) (r := nu / lam) hA hratio
-  have hpow : ∀ n : ℕ, lam ^ n ≠ 0 := fun n => pow_ne_zero n hlam
-  have hfactor : ∀ n : ℕ,
-      (P n).eval 1 = lam ^ n *
-        (dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n) := by
-    intro n
-    rw [hValue n]
-    rw [div_pow]
-    field_simp [hlam]
-  have hfactor' : ∀ n : ℕ,
-      (P n).derivative.eval 1 = lam ^ n *
-        (((derivativeDominantCoeff P a b lam nu * (n : ℝ) +
-            derivativeDominantConstant P a b lam nu)) +
-          (derivativeCompanionCoeff P a b lam nu * (n : ℝ) +
-            derivativeCompanionConstant P a b lam nu) * (nu / lam) ^ n) := by
-    intro n
-    rw [hDerivative n]
-    rw [div_pow]
-    field_simp [hlam]
   have hsub' : Tendsto (fun n : ℕ =>
       (P n).derivative.eval 1 / (P n).eval 1 -
         derivativeDominantCoeff P a b lam nu /
           dominantCoeff P lam nu * (n : ℝ)) atTop
       (𝓝 (derivativeDominantConstant P a b lam nu /
         dominantCoeff P lam nu)) := by
-    have heq : ∀ᶠ n : ℕ in atTop,
-        ((derivativeDominantCoeff P a b lam nu * (n : ℝ) +
-            derivativeDominantConstant P a b lam nu) +
-          (derivativeCompanionCoeff P a b lam nu * (n : ℝ) +
-            derivativeCompanionConstant P a b lam nu) * (nu / lam) ^ n) /
-            (dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n) -
-          derivativeDominantCoeff P a b lam nu /
-            dominantCoeff P lam nu * (n : ℝ) =
-        (P n).derivative.eval 1 / (P n).eval 1 -
-          derivativeDominantCoeff P a b lam nu /
-            dominantCoeff P lam nu * (n : ℝ) := by
-      filter_upwards [hden_ne] with n hn
-      have hp : (P n).eval 1 ≠ 0 := by
-        rw [hfactor n]
-        exact mul_ne_zero (hpow n) hn
-      rw [hfactor' n, hfactor n]
-      field_simp [hpow n, hn, hp]
-    exact hsub.congr' heq
+    convert hsub using 1
+    funext n
+    rw [hDerivative n, hValue n, add_modes_eq_factor hlam,
+      add_modes_eq_factor hlam, mul_div_mul_left _ _ (pow_ne_zero n hlam)]
   have hdiv := LinearRecurrence.tendsto_div_nat_of_tendsto_sub_linear hsub'
-  have heq : ∀ᶠ n : ℕ in atTop,
-      (P n).derivative.eval 1 / ((n : ℝ) * (P n).eval 1) =
-        ((P n).derivative.eval 1 / (P n).eval 1) / (n : ℝ) := by
-    filter_upwards [hden_ne, eventually_ge_atTop 1] with n hn hpos
-    have hp : (P n).eval 1 ≠ 0 := by
-      rw [hfactor n]
-      exact mul_ne_zero (hpow n) hn
-    have hn' : (n : ℝ) ≠ 0 := by
-      exact_mod_cast (Nat.ne_of_gt hpos)
-    field_simp [hp, hn']
-  have heq' :
-      (fun n : ℕ => ((P n).derivative.eval 1 / (P n).eval 1) / (n : ℝ)) =ᶠ[atTop]
-      (fun n : ℕ => (P n).derivative.eval 1 / ((n : ℝ) * (P n).eval 1)) :=
-    heq.mono fun _ h => h.symm
-  have hlim := hdiv.congr' heq'
-  convert hlim using 1
-  congr 1
-  unfold meanSlope derivativeDominantCoeff
-  field_simp [hA]
+  convert hdiv using 1
+  · funext n
+    rw [div_mul_eq_div_div_swap]
+  · unfold meanSlope derivativeDominantCoeff
+    field_simp [hA]
 
 /-- Variance asymptotics for the same polynomial recurrence and explicit
 two-mode value, first-derivative, and second-derivative closed forms. -/
@@ -478,46 +375,7 @@ private theorem variance_from_modes
       (𝓝 (varianceSlope a b lam)) := by
   have hlam : lam ≠ 0 := ne_of_gt hDominant
   have hratio : |nu / lam| < 1 := by
-    rw [abs_div, abs_of_pos hDominant]
-    apply (div_lt_iff₀ hDominant).2
-    simpa only [one_mul] using hModulus
-  have hden : Tendsto (fun n : ℕ =>
-      dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n)
-      atTop (𝓝 (dominantCoeff P lam nu)) := by
-    simpa only [mul_zero, add_zero] using
-      (tendsto_const_nhds (f := atTop) (x := dominantCoeff P lam nu)).add
-        ((tendsto_const_nhds (f := atTop) (x := companionCoeff P lam nu)).mul
-          (tendsto_pow_atTop_nhds_zero_of_abs_lt_one hratio))
-  have hden_ne : ∀ᶠ n : ℕ in atTop,
-      dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n ≠ 0 :=
-    hden.eventually_ne hA
-  have hpow : ∀ n : ℕ, lam ^ n ≠ 0 := fun n => pow_ne_zero n hlam
-  have hfactor : ∀ n : ℕ,
-      (P n).eval 1 = lam ^ n *
-        (dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n) := by
-    intro n
-    rw [hValue n, div_pow]
-    field_simp [hlam]
-  have hfactor' : ∀ n : ℕ,
-      (P n).derivative.eval 1 = lam ^ n *
-        ((derivativeDominantCoeff P a b lam nu * (n : ℝ) +
-            derivativeDominantConstant P a b lam nu) +
-          (derivativeCompanionCoeff P a b lam nu * (n : ℝ) +
-            derivativeCompanionConstant P a b lam nu) * (nu / lam) ^ n) := by
-    intro n
-    rw [hDerivative n, div_pow]
-    field_simp [hlam]
-  have hfactor'' : ∀ n : ℕ,
-      (P n).derivative.derivative.eval 1 = lam ^ n *
-        ((secondDominantCoeff P a b lam nu * (n : ℝ) ^ 2 +
-            secondDominantLinear P a b lam nu * (n : ℝ) +
-            secondDominantConstant P a b lam nu) +
-          (secondCompanionCoeff P a b lam nu * (n : ℝ) ^ 2 +
-            secondCompanionLinear P a b lam nu * (n : ℝ) +
-            secondCompanionConstant P a b lam nu) * (nu / lam) ^ n) := by
-    intro n
-    rw [hSecond n, div_pow]
-    field_simp [hlam]
+    simpa only [abs_div, abs_of_pos hDominant, div_lt_one hDominant] using hModulus
   have hquad : secondDominantCoeff P a b lam nu /
       dominantCoeff P lam nu = meanSlope a b lam ^ 2 := by
     unfold secondDominantCoeff meanSlope
@@ -582,20 +440,12 @@ private theorem variance_from_modes
           dominantCoeff P lam nu -
         (derivativeDominantConstant P a b lam nu /
           dominantCoeff P lam nu) ^ 2)) := by
-    have heq : ∀ᶠ n : ℕ in atTop,
-        (N2 n + N1 n - N1 n ^ 2 - varianceSlope a b lam * (n : ℝ)) =
-        (((P n).derivative.derivative.eval 1 / (P n).eval 1 +
-            (P n).derivative.eval 1 / (P n).eval 1 -
-            ((P n).derivative.eval 1 / (P n).eval 1) ^ 2) -
-          varianceSlope a b lam * (n : ℝ)) := by
-      filter_upwards [hden_ne] with n hn
-      have hp : (P n).eval 1 ≠ 0 := by
-        rw [hfactor n]
-        exact mul_ne_zero (hpow n) hn
-      dsimp [N1, N2]
-      rw [hfactor'' n, hfactor' n, hfactor n]
-      field_simp [hpow n, hn, hp]
-    exact hnorm.congr' heq
+    convert hnorm using 1
+    funext n
+    dsimp [N1, N2]
+    rw [hSecond n, hDerivative n, hValue n, add_modes_eq_factor hlam,
+      add_modes_eq_factor hlam, add_modes_eq_factor hlam]
+    simp only [mul_div_mul_left _ _ (pow_ne_zero n hlam)]
   have hdiv := LinearRecurrence.tendsto_div_nat_of_tendsto_sub_linear hvar'
   exact hdiv
 
@@ -603,13 +453,9 @@ private theorem variance_from_modes
 private theorem two_mul_sub_ne_zero_of_roots {A B lam nu : ℝ}
     (hLam : lam ^ 2 = A * lam + B) (hNu : nu ^ 2 = A * nu + B) (hDistinct : lam ≠ nu) :
     2 * lam - A ≠ 0 := by
-  have hsum : lam + nu = A := by
-    have h : (lam - nu) * (lam + nu - A) = 0 := by linear_combination hLam - hNu
-    rcases mul_eq_zero.mp h with h | h
-    · exact absurd (sub_eq_zero.mp h) hDistinct
-    · linarith
   intro h
-  exact hDistinct (by linarith)
+  apply hDistinct
+  linarith [(root_sum_product hLam hNu hDistinct).1]
 
 /-- Mean asymptotics derived from the polynomial recurrence itself. -/
 theorem tendsto_derivative_eval_div_nat_mul_eval
@@ -622,11 +468,10 @@ theorem tendsto_derivative_eval_div_nat_mul_eval
     Tendsto (fun n => (P n).derivative.eval 1 /
       ((n : ℝ) * (P n).eval 1)) atTop
       (𝓝 (meanSlope a b lam)) := by
-  have hLamNe : lam ≠ 0 := ne_of_gt hDominant
-  have hSimple := two_mul_sub_ne_zero_of_roots hLam hNu hDistinct
-  have hValue := value_closed_form hP hLam hNu hDistinct
-  have hDerivative := derivative_closed_form hP hLam hNu hDistinct hLamNe hNuNe hSimple
-  exact mean_from_modes hDominant hModulus hA hValue hDerivative
+  exact mean_from_modes hDominant hModulus hA
+    (value_closed_form hP hLam hNu hDistinct)
+    (derivative_closed_form hP hLam hNu hDistinct (ne_of_gt hDominant) hNuNe
+      (two_mul_sub_ne_zero_of_roots hLam hNu hDistinct))
 
 /-- Variance asymptotics derived from the polynomial recurrence itself. -/
 theorem tendsto_variance_eval_div_nat
@@ -641,11 +486,11 @@ theorem tendsto_variance_eval_div_nat
           (P n).derivative.eval 1 / (P n).eval 1 -
           ((P n).derivative.eval 1 / (P n).eval 1) ^ 2) / (n : ℝ)) atTop
       (𝓝 (varianceSlope a b lam)) := by
-  have hLamNe : lam ≠ 0 := ne_of_gt hDominant
   have hSimple := two_mul_sub_ne_zero_of_roots hLam hNu hDistinct
-  have hValue := value_closed_form hP hLam hNu hDistinct
-  have hDerivative := derivative_closed_form hP hLam hNu hDistinct hLamNe hNuNe hSimple
-  have hSecond := second_derivative_closed_form hP hLam hNu hDistinct hLamNe hNuNe hSimple
-  exact variance_from_modes hDominant hModulus hA hValue hDerivative hSecond
+  exact variance_from_modes hDominant hModulus hA
+    (value_closed_form hP hLam hNu hDistinct)
+    (derivative_closed_form hP hLam hNu hDistinct (ne_of_gt hDominant) hNuNe hSimple)
+    (second_derivative_closed_form hP hLam hNu hDistinct
+      (ne_of_gt hDominant) hNuNe hSimple)
 
 end RealRooted.ThreeTermRecurrence

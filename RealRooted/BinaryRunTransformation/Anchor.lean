@@ -138,8 +138,7 @@ def oddPathReverse (d : ℕ) : ℝ[X] :=
 
 @[simp] theorem evenPathReverse_one : evenPathReverse 1 = X + 1 := by
   ext k
-  rw [evenPathReverse, Polynomial.coeff_reflect,
-    coeff_pathMatchingPolynomial]
+  rw [evenPathReverse, Polynomial.coeff_reflect, coeff_pathMatchingPolynomial]
   rcases k with _ | k
   · rw [Polynomial.revAt_le (by lia)]
     norm_num
@@ -154,8 +153,7 @@ def oddPathReverse (d : ℕ) : ℝ[X] :=
 
 @[simp] theorem oddPathReverse_one : oddPathReverse 1 = X + 2 := by
   ext k
-  rw [oddPathReverse, Polynomial.coeff_reflect,
-    coeff_pathMatchingPolynomial]
+  rw [oddPathReverse, Polynomial.coeff_reflect, coeff_pathMatchingPolynomial]
   rcases k with _ | k
   · rw [Polynomial.revAt_le (by lia)]
     norm_num
@@ -168,107 +166,62 @@ def oddPathReverse (d : ℕ) : ℝ[X] :=
 
 private theorem reflect_one_add_two_mul_X :
     (1 + 2 * X : ℝ[X]).reflect 1 = X + 2 := by
-  ext k
-  rw [Polynomial.coeff_reflect]
-  rcases k with _ | k
-  · rw [Polynomial.revAt_le (by lia)]
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-  · rcases k with _ | k
-    · rw [Polynomial.revAt_le (by lia)]
-      norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-    · rw [Polynomial.revAt_eq_self_of_lt (by lia)]
-      simp [Polynomial.coeff_one, Polynomial.coeff_X]
+  rw [show (1 + 2 * X : ℝ[X]) = C 1 * X ^ 0 + C 2 * X ^ 1 by
+      norm_num [map_ofNat],
+    Polynomial.reflect_add, Polynomial.reflect_C_mul_X_pow,
+    Polynomial.reflect_C_mul_X_pow]
+  norm_num [map_ofNat, Polynomial.revAt_le]
 
 private theorem reflect_X_sq :
     (X ^ 2 : ℝ[X]).reflect 2 = 1 := by
-  ext k
-  rw [Polynomial.coeff_reflect]
-  rcases k with _ | k
-  · rw [Polynomial.revAt_le (by lia)]
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-  · rcases k with _ | k
-    · rw [Polynomial.revAt_le (by lia)]
-      norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-    · rcases k with _ | k
-      · rw [Polynomial.revAt_le (by lia)]
-        norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-      · rw [Polynomial.revAt_eq_self_of_lt (by lia)]
-        simp [Polynomial.coeff_one]
+  rw [show (X ^ 2 : ℝ[X]) = C 1 * X ^ 2 by simp,
+    Polynomial.reflect_C_mul_X_pow, Polynomial.revAt_le (by lia)]
+  simp
+
+private theorem pathMatchingPolynomial_reflect_add_four (N d : ℕ)
+    (hbase : (pathMatchingPolynomial N).natDegree ≤ d)
+    (hnext : (pathMatchingPolynomial (N + 2)).natDegree ≤ d + 1) :
+    (pathMatchingPolynomial (N + 4)).reflect (d + 2) =
+      (X + 2) * (pathMatchingPolynomial (N + 2)).reflect (d + 1) -
+        (pathMatchingPolynomial N).reflect d := by
+  have hmain := congrArg (fun p : ℝ[X] => p.reflect (d + 2))
+    (pathMatchingPolynomial_add_four N)
+  have hprodNext := Polynomial.reflect_mul
+    (F := 1) (G := d + 1) (1 + 2 * X : ℝ[X])
+      (pathMatchingPolynomial (N + 2)) (by norm_num) hnext
+  have hprodBase := Polynomial.reflect_mul
+    (F := 2) (G := d) (X ^ 2 : ℝ[X])
+      (pathMatchingPolynomial N) (by simp) hbase
+  rw [Polynomial.reflect_sub] at hmain
+  have hprodNext' : ((1 + 2 * X) * pathMatchingPolynomial (N + 2)).reflect (d + 2) =
+      (1 + 2 * X : ℝ[X]).reflect 1 *
+        (pathMatchingPolynomial (N + 2)).reflect (d + 1) := by
+    simpa only [show d + 2 = 1 + (d + 1) by lia] using hprodNext
+  have hprodBase' : (X ^ 2 * pathMatchingPolynomial N).reflect (d + 2) =
+      (X ^ 2 : ℝ[X]).reflect 2 * (pathMatchingPolynomial N).reflect d := by
+    simpa only [show d + 2 = 2 + d by lia] using hprodBase
+  rw [hprodNext', hprodBase', reflect_one_add_two_mul_X, reflect_X_sq, one_mul] at hmain
+  exact hmain
 
 theorem evenPathReverse_add_two (d : ℕ) :
     evenPathReverse (d + 2) =
       (X + 2) * evenPathReverse (d + 1) - evenPathReverse d := by
-  have hmain := congrArg (fun p : ℝ[X] => p.reflect (d + 2))
-    (pathMatchingPolynomial_add_four (2 * d))
-  have hlin : (1 + 2 * X : ℝ[X]).natDegree ≤ 1 := by
-    norm_num
-  have hnext : (pathMatchingPolynomial (2 * d + 2)).natDegree ≤ d + 1 := by
-    rw [natDegree_pathMatchingPolynomial]
-    norm_num [Nat.add_div]
-  have hbase : (pathMatchingPolynomial (2 * d)).natDegree ≤ d := by
-    rw [natDegree_pathMatchingPolynomial]
-    norm_num
-  have hprodNext := Polynomial.reflect_mul
-    (F := 1) (G := d + 1) (1 + 2 * X : ℝ[X])
-      (pathMatchingPolynomial (2 * d + 2)) hlin hnext
-  have hprodBase := Polynomial.reflect_mul
-    (F := 2) (G := d) (X ^ 2 : ℝ[X])
-      (pathMatchingPolynomial (2 * d)) (by simp) hbase
-  rw [Polynomial.reflect_sub] at hmain
-  have hprodNext' :
-      ((1 + 2 * X) * pathMatchingPolynomial (2 * d + 2)).reflect (d + 2) =
-        (1 + 2 * X : ℝ[X]).reflect 1 *
-          (pathMatchingPolynomial (2 * d + 2)).reflect (d + 1) := by
-    simpa only [show d + 2 = 1 + (d + 1) by lia] using hprodNext
-  have hprodBase' :
-      (X ^ 2 * pathMatchingPolynomial (2 * d)).reflect (d + 2) =
-        (X ^ 2 : ℝ[X]).reflect 2 *
-          (pathMatchingPolynomial (2 * d)).reflect d := by
-    simpa only [show d + 2 = 2 + d by lia] using hprodBase
-  rw [hprodNext', hprodBase', reflect_one_add_two_mul_X,
-    reflect_X_sq, one_mul] at hmain
   simpa only [evenPathReverse,
     show 2 * (d + 2) = 2 * d + 4 by ring,
-    show 2 * (d + 1) = 2 * d + 2 by ring] using hmain
+    show 2 * (d + 1) = 2 * d + 2 by ring] using
+    pathMatchingPolynomial_reflect_add_four (2 * d) d
+      (by rw [natDegree_pathMatchingPolynomial]; norm_num)
+      (by rw [natDegree_pathMatchingPolynomial]; norm_num [Nat.add_div])
 
 theorem oddPathReverse_add_two (d : ℕ) :
     oddPathReverse (d + 2) =
       (X + 2) * oddPathReverse (d + 1) - oddPathReverse d := by
-  have hmain := congrArg (fun p : ℝ[X] => p.reflect (d + 2))
-    (pathMatchingPolynomial_add_four (2 * d + 1))
-  have hlin : (1 + 2 * X : ℝ[X]).natDegree ≤ 1 := by
-    norm_num
-  have hnext :
-      (pathMatchingPolynomial (2 * d + 3)).natDegree ≤ d + 1 := by
-    rw [natDegree_pathMatchingPolynomial]
-    norm_num [Nat.add_div]
-  have hbase :
-      (pathMatchingPolynomial (2 * d + 1)).natDegree ≤ d := by
-    rw [natDegree_pathMatchingPolynomial]
-    norm_num [Nat.add_div]
-  have hprodNext := Polynomial.reflect_mul
-    (F := 1) (G := d + 1) (1 + 2 * X : ℝ[X])
-      (pathMatchingPolynomial (2 * d + 3)) hlin hnext
-  have hprodBase := Polynomial.reflect_mul
-    (F := 2) (G := d) (X ^ 2 : ℝ[X])
-      (pathMatchingPolynomial (2 * d + 1)) (by simp) hbase
-  rw [Polynomial.reflect_sub] at hmain
-  have hprodNext' :
-      ((1 + 2 * X) * pathMatchingPolynomial (2 * d + 3)).reflect (d + 2) =
-        (1 + 2 * X : ℝ[X]).reflect 1 *
-          (pathMatchingPolynomial (2 * d + 3)).reflect (d + 1) := by
-    simpa only [show d + 2 = 1 + (d + 1) by lia] using hprodNext
-  have hprodBase' :
-      (X ^ 2 * pathMatchingPolynomial (2 * d + 1)).reflect (d + 2) =
-        (X ^ 2 : ℝ[X]).reflect 2 *
-          (pathMatchingPolynomial (2 * d + 1)).reflect d := by
-    simpa only [show d + 2 = 2 + d by lia] using hprodBase
-  rw [show 2 * d + 1 + 2 = 2 * d + 3 by ring] at hmain
-  rw [hprodNext', hprodBase', reflect_one_add_two_mul_X,
-    reflect_X_sq, one_mul] at hmain
   simpa only [oddPathReverse,
     show 2 * (d + 2) + 1 = 2 * d + 1 + 4 by ring,
-    show 2 * (d + 1) + 1 = 2 * d + 3 by ring] using hmain
+    show 2 * (d + 1) + 1 = 2 * d + 3 by ring] using
+    pathMatchingPolynomial_reflect_add_four (2 * d + 1) d
+      (by rw [natDegree_pathMatchingPolynomial]; norm_num [Nat.add_div])
+      (by rw [natDegree_pathMatchingPolynomial]; norm_num [Nat.add_div])
 
 private def evenPathAlpha (d : ℕ) : ℝ :=
   if d = 0 then -1 else -2
@@ -324,39 +277,29 @@ theorem pathMatchingPolynomial_splits (N : ℕ) :
       norm_num [Nat.add_div])).mp
     exact oddPathReverse_splits d
 
+private theorem hasSimpleRoots_of_reflect_roots_nodup {p : ℝ[X]} {d : ℕ}
+    (hp0 : p ≠ 0) (hpconst : p.coeff 0 ≠ 0) (hdeg : p.natDegree = d) (hsplits : p.Splits)
+    (hroots : (p.reflect d).roots.Nodup) : HasSimpleRoots p := by
+  have hreverse : p.reverse = p.reflect d := by
+    rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hdeg.le, hdeg]
+    simp
+  rw [← hreverse, Polynomial.roots_reverse_eq_map_inv hsplits hpconst] at hroots
+  exact HasSimpleRoots.of_roots_nodup hp0
+    ((Multiset.nodup_map_iff_of_injective inv_injective).mp hroots)
+
 theorem pathMatchingPolynomial_hasSimpleRoots (N : ℕ) :
     HasSimpleRoots (pathMatchingPolynomial N) := by
   obtain ⟨d, rfl | rfl⟩ := Nat.even_or_odd' N
-  · have hreverse :
-        (pathMatchingPolynomial (2 * d)).reverse = evenPathReverse d := by
-      rw [evenPathReverse,
-        DegreeDropReversal.reflect_eq_X_pow_mul_reverse
-          _ (N := d) (by
-            rw [natDegree_pathMatchingPolynomial]
-            norm_num),
-        natDegree_pathMatchingPolynomial]
-      norm_num
-    have hmap := evenPathReverse_roots_nodup d
-    rw [← hreverse,
-      Polynomial.roots_reverse_eq_map_inv
-        (pathMatchingPolynomial_splits (2 * d)) (by simp)] at hmap
-    exact HasSimpleRoots.of_roots_nodup (pathMatchingPolynomial_ne_zero _)
-      ((Multiset.nodup_map_iff_of_injective inv_injective).mp hmap)
-  · have hreverse :
-        (pathMatchingPolynomial (2 * d + 1)).reverse = oddPathReverse d := by
-      rw [oddPathReverse,
-        DegreeDropReversal.reflect_eq_X_pow_mul_reverse
-          _ (N := d) (by
-            rw [natDegree_pathMatchingPolynomial]
-            norm_num [Nat.add_div]),
-        natDegree_pathMatchingPolynomial]
-      norm_num [Nat.add_div]
-    have hmap := oddPathReverse_roots_nodup d
-    rw [← hreverse,
-      Polynomial.roots_reverse_eq_map_inv
-        (pathMatchingPolynomial_splits (2 * d + 1)) (by simp)] at hmap
-    exact HasSimpleRoots.of_roots_nodup (pathMatchingPolynomial_ne_zero _)
-      ((Multiset.nodup_map_iff_of_injective inv_injective).mp hmap)
+  · exact hasSimpleRoots_of_reflect_roots_nodup (d := d)
+      (pathMatchingPolynomial_ne_zero _) (by simp)
+      (by simpa using natDegree_pathMatchingPolynomial (2 * d))
+      (pathMatchingPolynomial_splits _)
+      (by simpa [evenPathReverse] using evenPathReverse_roots_nodup d)
+  · exact hasSimpleRoots_of_reflect_roots_nodup (d := d)
+      (pathMatchingPolynomial_ne_zero _) (by simp)
+      (by simpa [Nat.add_div] using natDegree_pathMatchingPolynomial (2 * d + 1))
+      (pathMatchingPolynomial_splits _)
+      (by simpa [oddPathReverse] using oddPathReverse_roots_nodup d)
 
 theorem isPFPolynomial_pathMatchingPolynomial (N : ℕ) :
     IsPFPolynomial (pathMatchingPolynomial N) :=
@@ -470,33 +413,21 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
     exists_pos_pathMatchingPolynomial_add_C_splits hfdeg0
   let c := ε * p.coeff 0
   have hc : 0 < c := mul_pos hε hp0
-  have hplusComp : (schurSzegoComp n (f + C ε) p).Splits := by
+  have hperturbed (u : ℝ) (hu : -1 < u) (hs : (f + C u).Splits) :
+      (schurSzegoComp n (f + C u) p).Splits := by
     rw [schurSzegoComp_comm]
     exact (finiteSchurSzegoComposition hp hpdeg
-      (by simpa [f] using hfdeg) (by simpa [f] using hfplus)).resolve_left (by
+      (by rw [Polynomial.natDegree_add_C]; exact hfdeg) hs).resolve_left (by
         intro hz
-        have hz0 : p.coeff 0 * (1 + ε) = 0 := by
+        have hz0 : p.coeff 0 * (1 + u) = 0 := by
           simpa only [f, coeff_zero_schurSzegoComp, coeff_add, coeff_C,
             coeff_zero_pathMatchingPolynomial, one_mul, coeff_zero, ite_true]
             using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
         rcases mul_eq_zero.mp hz0 with hpzero | heq
         · exact hp0.ne' hpzero
         · linarith)
-  have hminusComp : (schurSzegoComp n (f + C (-ε)) p).Splits := by
-    rw [schurSzegoComp_comm]
-    exact (finiteSchurSzegoComposition hp hpdeg
-      (by
-        rw [Polynomial.natDegree_add_C]
-        exact hfdeg)
-      (by simpa [f] using hfminus)).resolve_left (by
-        intro hz
-        have hz0 : p.coeff 0 * (1 + -ε) = 0 := by
-          simpa only [f, coeff_zero_schurSzegoComp, coeff_add, coeff_C,
-            coeff_zero_pathMatchingPolynomial, one_mul, coeff_zero, ite_true]
-            using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
-        rcases mul_eq_zero.mp hz0 with hpzero | heq
-        · exact hp0.ne' hpzero
-        · linarith)
+  have hplusComp := hperturbed ε (by linarith) (by simpa [f] using hfplus)
+  have hminusComp := hperturbed (-ε) (by linarith) (by simpa [f] using hfminus)
   have hplus : (h + C c).Splits := by
     rw [schurSzegoComp_add_C_left] at hplusComp
     simpa [h, f, c, binaryRunAnchor] using hplusComp
@@ -505,11 +436,9 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
     simpa [h, f, c, binaryRunAnchor] using hminusComp
   have hh0 : h.coeff 0 = p.coeff 0 := by
     simp [h, binaryRunAnchor, coeff_zero_schurSzegoComp]
-  have hhne : h ≠ 0 := by
-    intro hz
-    have := congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz
-    rw [hh0] at this
-    simp_all
+  have hhne : h ≠ 0 := fun hz => hp0.ne' (by
+    rw [← hh0]
+    simpa using congrArg (fun q : ℝ[X] ↦ q.coeff 0) hz)
   by_cases hhdeg : h.natDegree ≤ 1
   · exact hasSimpleRoots_of_natDegree_le_one hhne hhdeg
   intro r hr
@@ -521,15 +450,13 @@ theorem binaryRunAnchor_hasSimpleRoots {n : ℕ} {p : ℝ[X]}
   have hmultTwo : 1 < h.rootMultiplicity r := by lia
   have hderRoot : h.derivative.IsRoot r :=
     ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hhne).1 hmultTwo).2
-  have hplusEval : (h + C c).eval r ≠ 0 := by
-    simp [hrh, hc.ne']
-  have hminusEval : (h + C (-c)).eval r ≠ 0 := by
-    simp [hrh, hc.ne']
+  have hplusEval : (h + C c).eval r ≠ 0 := by simp [hrh, hc.ne']
+  have hminusEval : (h + C (-c)).eval r ≠ 0 := by simp [hrh, hc.ne']
+  have hdegPos : 1 ≤ h.natDegree := (lt_of_not_ge hhdeg).le
   have hplusStrict := deriv2_mul_lt_deriv_sq_at_non_root hplus
-    (by simpa using (lt_of_not_ge hhdeg).le) hplusEval
+    (by simpa using hdegPos) hplusEval
   have hminusStrict := deriv2_mul_lt_deriv_sq_at_non_root hminus
-    (by rw [Polynomial.natDegree_add_C]; exact (lt_of_not_ge hhdeg).le)
-    hminusEval
+    (by rw [Polynomial.natDegree_add_C]; exact hdegPos) hminusEval
   simp [Polynomial.IsRoot.def] at hderRoot
   simp [hrh, hderRoot] at hplusStrict hminusStrict
   linarith

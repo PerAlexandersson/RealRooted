@@ -42,13 +42,9 @@ theorem IsFerrers.deleteLast {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : IsFerrers A) : IsFerrers (deleteLast A) := by
   rcases hA with ⟨hzeroOne, hcols, hrows⟩
-  refine ⟨?_, ?_, ?_⟩
-  · intro i j
-    exact hzeroOne i.castSucc j.castSucc
-  · intro j i k hik
-    exact hcols j.castSucc i.castSucc k.castSucc (by simpa using hik)
-  · intro i j k hjk
-    exact hrows i.castSucc j.castSucc k.castSucc (by simpa using hjk)
+  exact ⟨fun i j => hzeroOne i.castSucc j.castSucc,
+    fun j i k hik => hcols j.castSucc i.castSucc k.castSucc (by simpa using hik),
+    fun i j k hjk => hrows i.castSucc j.castSucc k.castSucc (by simpa using hjk)⟩
 
 end Matrix
 
@@ -88,15 +84,8 @@ theorem specializeFerrersRows_ferrersPermanent {n : ℕ}
     specializeFerrersRows (ferrersPermanent A) =
       ferrersColumnPolynomial A := by
   classical
-  unfold specializeFerrersRows ferrersPermanent ferrersColumnPolynomial
-    Matrix.permanent
-  rw [map_sum]
-  apply Finset.sum_congr rfl
-  intro σ hσ
-  rw [map_prod]
-  apply Finset.prod_congr rfl
-  intro i hi
-  simp
+  simp [specializeFerrersRows, ferrersPermanent, ferrersColumnPolynomial,
+    Matrix.permanent]
 
 /-- The Ferrers dual `J - Aᵀ`. -/
 def ferrersDual {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ) :
@@ -110,19 +99,13 @@ theorem isFerrers_ferrersDual {n : ℕ}
   rcases hA with ⟨hzeroOne, hcols, hrows⟩
   refine ⟨?_, ?_, ?_⟩
   · intro i j
-    rcases hzeroOne j i with hzero | hone
-    · right
-      simp [ferrersDual, hzero]
-    · left
-      simp [ferrersDual, hone]
+    rcases hzeroOne j i with hzero | hone <;> simp [ferrersDual, *]
   · intro j i k hik
-    have hle := hrows j i k hik
     dsimp only [ferrersDual]
-    linarith
+    linarith [hrows j i k hik]
   · intro i j k hjk
-    have hle := hcols i j k hjk
     dsimp only [ferrersDual]
-    linarith
+    linarith [hcols i j k hjk]
 
 /-- Exchange the row and column alphabets. -/
 def swapFerrersVariable {n : ℕ} :
@@ -158,8 +141,7 @@ theorem rename_ferrersPermanent_dual {n : ℕ}
               MvPolynomial.X (Sum.inl i))) = M.transpose := by
     funext i j
     change _ = M j i
-    simp [M, swapFerrersVariable]
-    ring
+    simp [M, swapFerrersVariable]; ring
   rw [hmatrix, Matrix.permanent_transpose]
 
 /-- Embed the two alphabets of an `n` by `n` deletion into the corresponding
@@ -188,13 +170,9 @@ theorem ferrersActiveWeight_nonneg {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : Matrix.IsZeroOne A) :
     ∀ u, 0 ≤ ferrersActiveWeight A u := by
-  intro u
-  cases u with
-  | inl i =>
-      rcases hA i.castSucc (Fin.last n) with hzero | hone
-      · simp [ferrersActiveWeight, hzero]
-      · simp [ferrersActiveWeight, hone]
-  | inr j => simp [ferrersActiveWeight]
+  rintro (i | j)
+  · rcases hA i.castSucc (Fin.last n) with h | h <;> simp [ferrersActiveWeight, h]
+  · simp [ferrersActiveWeight]
 
 /-- The zero count in the last column is positive for a zero-one matrix. -/
 theorem ferrersZeroWeight_pos {n : ℕ}
@@ -203,11 +181,8 @@ theorem ferrersZeroWeight_pos {n : ℕ}
   unfold ferrersZeroWeight
   have hnonneg :
       0 ≤ ∑ i : Fin n, (1 - A i.castSucc (Fin.last n)) := by
-    apply Finset.sum_nonneg
-    intro i hi
-    rcases hA i.castSucc (Fin.last n) with hzero | hone
-    · simp [hzero]
-    · simp [hone]
+    refine Finset.sum_nonneg fun i _ => ?_
+    rcases hA i.castSucc (Fin.last n) with hzero | hone <;> simp [*]
   linarith
 
 /-- The right-hand side of the Ferrers deletion recurrence. -/
@@ -266,13 +241,8 @@ theorem ferrersPermanent_eq_lastZeroContribution_add_lastOneContribution
         Finset.univ.filter
           (fun π : Equiv.Perm (Fin (n + 1)) =>
             A (π (Fin.last n)) (Fin.last n) = 1) := by
-    apply Finset.filter_congr
-    intro π hπ
-    constructor
-    · intro hne
-      exact (hzeroOne (π (Fin.last n)) (Fin.last n)).resolve_left hne
-    · intro hone hzero
-      linarith
+    apply Finset.filter_congr; intro π _
+    rcases hzeroOne (π (Fin.last n)) (Fin.last n) with h | h <;> simp [h]
   rw [hfilter]
 
 end
@@ -295,27 +265,17 @@ private theorem ferrersPermutationTerm_eq_prod_entry {n : ℕ}
     (A : Matrix (Fin n) (Fin n) ℝ) (π : Equiv.Perm (Fin n)) :
     ferrersPermutationTerm A π = ∏ j, ferrersEntry A (π j) j := rfl
 
-private theorem ferrersPermanent_eq_sum_term {n : ℕ}
-    (A : Matrix (Fin n) (Fin n) ℝ) :
-    ferrersPermanent A = ∑ π, ferrersPermutationTerm A π := rfl
-
-private theorem ferrers_row_eq_zero {n : ℕ}
-    {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
-    (hA : Matrix.IsFerrers A) {i : Fin (n + 1)}
-    (hi : A i (Fin.last n) = 0) (j : Fin (n + 1)) :
-    A i j = 0 := by
-  rcases hA with ⟨h01, -, hrows⟩
-  have hle := hrows i j (Fin.last n) (Fin.le_last j)
-  rcases h01 i j with h | h
-  · exact h
-  · linarith
-
 private theorem ferrersEntry_eq_X_of_zero {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : Matrix.IsFerrers A) {i : Fin (n + 1)}
     (hi : A i (Fin.last n) = 0) (j : Fin (n + 1)) :
     ferrersEntry A i j = MvPolynomial.X (Sum.inl i) := by
-  simp [ferrersEntry, ferrers_row_eq_zero hA hi j]
+  have hij : A i j = 0 := by
+    rcases hA with ⟨h01, -, hrows⟩
+    rcases h01 i j with h | h
+    · exact h
+    · linarith [hrows i j (Fin.last n) (Fin.le_last j)]
+  simp [ferrersEntry, hij]
 
 private theorem ferrersPermutationTerm_swap_last_zero {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
@@ -330,8 +290,7 @@ private theorem ferrersPermutationTerm_swap_last_zero {n : ℕ}
   have key : ∀ ρ : Equiv.Perm (Fin (n + 1)),
       ∏ j, ferrersEntry A (ρ j) j =
         ∏ i, ferrersEntry A i (ρ⁻¹ i) := by
-    intro ρ
-    rw [← Equiv.prod_comp ρ (fun i => ferrersEntry A i (ρ⁻¹ i))]
+    intro ρ; rw [← Equiv.prod_comp ρ (fun i => ferrersEntry A i (ρ⁻¹ i))]
     simp
   rw [key, key]
   refine Finset.prod_congr rfl fun i _ => ?_
@@ -350,13 +309,11 @@ private def extendLast {n : ℕ}
 
 @[simp] private theorem extendLast_last {n : ℕ}
     (σ : Equiv.Perm (Fin n)) :
-    extendLast σ (Fin.last n) = Fin.last n := by
-  simp [extendLast]
+    extendLast σ (Fin.last n) = Fin.last n := by simp [extendLast]
 
 @[simp] private theorem extendLast_castSucc {n : ℕ}
     (σ : Equiv.Perm (Fin n)) (i : Fin n) :
-    extendLast σ i.castSucc = (σ i).castSucc := by
-  simp [extendLast]
+    extendLast σ i.castSucc = (σ i).castSucc := by simp [extendLast]
 
 private theorem ferrersPermutationTerm_extendLast {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
@@ -384,7 +341,9 @@ private theorem sum_ferrersPermutationTerm_fixing_last {n : ℕ}
       MvPolynomial.X (Sum.inl (Fin.last n)) *
         MvPolynomial.rename embedSmallVariable
           (ferrersPermanent (Matrix.deleteLast A)) := by
-  rw [ferrersPermanent_eq_sum_term, map_sum, Finset.mul_sum]
+  rw [show ferrersPermanent (Matrix.deleteLast A) =
+      ∑ π, ferrersPermutationTerm (Matrix.deleteLast A) π from rfl,
+    map_sum, Finset.mul_sum]
   symm
   refine Finset.sum_bij (fun σ _ => extendLast σ) ?_ ?_ ?_ ?_
   · intro σ _
@@ -397,8 +356,7 @@ private theorem sum_ferrersPermutationTerm_fixing_last {n : ℕ}
   · intro π hπ
     simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hπ
     have hne : ∀ i : Fin n, π i.castSucc ≠ Fin.last n := by
-      intro i h
-      rw [← hπ] at h
+      intro i h; rw [← hπ] at h
       exact (Fin.castSucc_lt_last i).ne (π.injective h)
     let f : Fin n → Fin n :=
       fun i => (π i.castSucc).castPred (hne i)
@@ -514,17 +472,13 @@ private theorem active_weighted_pderiv_entry {n : ℕ}
     one_mul]
   rw [← MvPolynomial.C_1, ← map_sub, ← map_mul, ← map_add]
   congr 1
-  have hle := hA.2.2 s.castSucc t.castSucc
-    (Fin.last n) (Fin.le_last _)
   rcases hA.1 s.castSucc t.castSucc with h | h
-  · rw [h]
-    ring
+  · simp [h]
   · have hlast : A s.castSucc (Fin.last n) = 1 := by
       rcases hA.1 s.castSucc (Fin.last n) with h' | h'
-      · linarith
+      · linarith [hA.2.2 s.castSucc t.castSucc (Fin.last n) (Fin.le_last _)]
       · exact h'
-    rw [h, hlast]
-    ring
+    simp [h, hlast]
 
 private theorem directionalPDeriv_ferrersPermanent {n : ℕ}
     {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
@@ -584,13 +538,11 @@ private theorem ferrersLastOneContribution_eq_expansion {n : ℕ}
     (Equiv.Perm.decomposeOption (α := Fin n))).symm with he
   have he_last : ∀ p,
       e (p, σ) (Fin.last n) = finSuccEquivLast.symm p := by
-    intro p
-    simp [he]
+    intro p; simp [he]
   have he_cs : ∀ p x,
       e (p, σ) x.castSucc =
         finSuccEquivLast.symm (Equiv.swap none p (some (σ x))) := by
-    intro p x
-    simp [he]
+    intro p x; simp [he]
   have hF1 : ∀ j, A (Fin.last n) j = 0 := by
     intro j
     have hle := hA.2.2 (Fin.last n) j (Fin.last n) (Fin.le_last _)
@@ -615,8 +567,7 @@ private theorem ferrersLastOneContribution_eq_expansion {n : ℕ}
     ring
   · intro x hx
     have hxq : σ x ≠ σ q := by
-      intro h
-      simp [σ.injective h] at hx
+      intro h; simp [σ.injective h] at hx
     rw [he_cs, Equiv.swap_apply_of_ne_of_ne (by simp)
       (by simpa using hxq), finSuccEquivLast_symm_some]
 
@@ -648,8 +599,7 @@ theorem ferrersPermanent_eq_recurrenceRhs {n : ℕ}
   rw [ferrersPermanent_eq_lastZeroContribution_add_lastOneContribution
     hA.1, ferrersLastZeroContribution_eq hA hcorner,
     ferrersLastOneContribution_eq_directionalPDeriv hA hcorner]
-  unfold ferrersRecurrenceRhs
-  ring
+  unfold ferrersRecurrenceRhs; ring
 
 end
 
@@ -673,28 +623,22 @@ def prefixIndicator {n : ℕ} (r : Fin n) (i : Fin (n + 1)) : ℝ :=
 theorem prefixIndicator_zero_or_one {n : ℕ} (r : Fin n)
     (i : Fin (n + 1)) :
     prefixIndicator r i = 0 ∨ prefixIndicator r i = 1 := by
-  unfold prefixIndicator
-  split_ifs <;> simp
+  unfold prefixIndicator; split_ifs <;> simp
 
 /-- Every prefix indicator is weakly decreasing. -/
 theorem prefixIndicator_isWeaklyDecreasingVector {n : ℕ} (r : Fin n) :
     IsWeaklyDecreasingVector (prefixIndicator r) := by
   intro i k hik
   by_cases hi : i ≤ r.castSucc
-  · by_cases hk : k ≤ r.castSucc
-    · simp [prefixIndicator, hi, hk]
-    · simp [prefixIndicator, hi, hk]
-  · have hk : ¬k ≤ r.castSucc := by
-      intro hkr
-      exact hi (hik.trans hkr)
+  · by_cases hk : k ≤ r.castSucc <;> simp [prefixIndicator, hi, hk]
+  · have hk : ¬k ≤ r.castSucc := fun hkr => hi (hik.trans hkr)
     simp [prefixIndicator, hi, hk]
 
 /-- Adjacent differences of a weakly decreasing vector are nonnegative. -/
 theorem adjacentDifference_nonneg {n : ℕ} {v : Fin (n + 1) → ℝ}
     (hv : IsWeaklyDecreasingVector v) (r : Fin n) :
-    0 ≤ v r.castSucc - v r.succ := by
-  exact sub_nonneg.mpr
-    (hv r.castSucc r.succ Fin.castSucc_lt_succ.le)
+    0 ≤ v r.castSucc - v r.succ :=
+  sub_nonneg.mpr (hv r.castSucc r.succ Fin.castSucc_lt_succ.le)
 
 /-- The prefix decomposition of a decreasing column. -/
 def monotonePrefixCombination {n : ℕ} (v : Fin (n + 1) → ℝ)
@@ -712,11 +656,9 @@ private theorem prefix_telescope_eq :
   intro n
   induction n with
   | zero =>
-      intro v i
-      simp [Fin.fin_one_eq_zero i]
+      intro v i; simp [Fin.fin_one_eq_zero i]
   | succ n ih =>
-      intro v i
-      rw [Fin.sum_univ_succ]
+      intro v i; rw [Fin.sum_univ_succ]
       have key := fun j => ih (fun k => v k.succ) j
       have hcs : ∀ r : Fin n, r.succ.castSucc = r.castSucc.succ :=
         fun r => rfl
@@ -749,10 +691,8 @@ theorem monotonePrefixCombination_eq {n : ℕ}
       max (v (Fin.last n)) 0 - max (-v (Fin.last n)) 0 =
         v (Fin.last n) := by
     rcases le_total 0 (v (Fin.last n)) with h0 | h0
-    · rw [max_eq_left h0, max_eq_right (by linarith)]
-      ring
-    · rw [max_eq_right h0, max_eq_left (by linarith)]
-      ring
+    · rw [max_eq_left h0, max_eq_right (by linarith)]; ring
+    · rw [max_eq_right h0, max_eq_left (by linarith)]; ring
   rw [monotonePrefixCombination, hm, h]
 
 /-- The matrix column condition is exactly the decreasing-vector condition
@@ -760,8 +700,7 @@ on each column. -/
 theorem hasWeaklyDecreasingColumns_iff_columns {n : ℕ}
     (A : Matrix (Fin n) (Fin n) ℝ) :
     Matrix.HasWeaklyDecreasingColumns A ↔
-      ∀ j, IsWeaklyDecreasingVector (fun i => A i j) := by
-  rfl
+      ∀ j, IsWeaklyDecreasingVector (fun i => A i j) := Iff.rfl
 
 /-- Specializing every row variable to one gives the renamed one-alphabet
 Ferrers polynomial. Its formal proof was contributed
@@ -806,8 +745,7 @@ private theorem entry_eq_one_of_columnHeight_le {n : ℕ}
         · linarith
         · exact h1
   have hcard := Finset.card_lt_card hsub
-  unfold columnHeight at hjk
-  lia
+  unfold columnHeight at hjk; lia
 
 /-- Permuting decreasing zero-one columns by their heights produces a Ferrers
 matrix. Its formal proof was contributed by Aristotle
@@ -826,11 +764,10 @@ theorem exists_columnPermutation_isFerrers {n : ℕ}
     simp only [Function.comp_apply] at hmono
     simp only [Matrix.submatrix_apply, id]
     rcases hzeroOne i (Tuple.sort (columnHeight A) j) with h0 | h1
-    · rw [h0]
-      rcases hzeroOne i (Tuple.sort (columnHeight A) k) with h0' | h1'
-      · simp [h0']
-      · simp [h1']
-    · rw [h1, entry_eq_one_of_columnHeight_le hzeroOne hcols hmono h1]
+    · rcases hzeroOne i (Tuple.sort (columnHeight A) k) with h0' | h1'
+      · simp [h0, h0']
+      · simp [h0, h1']
+    · simp [h1, entry_eq_one_of_columnHeight_le hzeroOne hcols hmono h1]
 
 end
 

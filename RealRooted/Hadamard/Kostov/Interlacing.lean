@@ -26,6 +26,11 @@ lemma chain_lt {α : Type*} [Preorder α] {p : ℕ → α} {k : ℕ}
   intro i j hij hjk
   exact lt_of_lt_of_le (h i (by lia)) (chain_le h (i + 1) j hij hjk)
 
+private lemma moebius_lt' {a b : ℝ} (hab : a < b) (hb : b < 1) :
+    a / (1 - a) < b / (1 - b) := by
+  rw [div_lt_div_iff₀ (by linarith) (by linarith)]
+  nlinarith
+
 lemma Alt.mono {F : ℝ[X]} {k k' : ℕ} (h : Alt F k) (hk : k' ≤ k) : Alt F k' := by
   obtain ⟨p, h0, h1, hinc, halt⟩ := h
   exact ⟨p, h0, lt_of_le_of_lt (chain_le hinc k' k hk le_rfl) h1, fun i hi => hinc i (by lia),
@@ -41,10 +46,12 @@ lemma exists_root_of_mul_neg (R : ℝ[X]) {a b : ℝ} (hab : a < b)
       intermediate_value_Ioo hab.le (Polynomial.continuous R).continuousOn ⟨h1, h2⟩
     exact ⟨z, hz1, hz2, hz3⟩
 
-/-- A nonzero polynomial with `k` strict sign changes has degree at least `k`. -/
-lemma le_natDegree_of_alt (R : ℝ[X]) (hR : R ≠ 0) (p : ℕ → ℝ) (k : ℕ)
-    (hinc : ∀ i < k, p i < p (i + 1)) (halt : ∀ i < k, R.eval (p i) * R.eval (p (i + 1)) < 0) :
-    k ≤ R.natDegree := by
+private lemma root_witnesses_of_alt (R : ℝ[X]) (p : ℕ → ℝ) (k : ℕ)
+    (hinc : ∀ i < k, p i < p (i + 1))
+    (halt : ∀ i < k, R.eval (p i) * R.eval (p (i + 1)) < 0) :
+    ∃ r : ℕ → ℝ,
+      (∀ i, i < k → p i < r i ∧ r i < p (i + 1) ∧ R.eval (r i) = 0) ∧
+        Set.InjOn r (Finset.range k) := by
   have hr : ∀ i, ∃ r : ℝ, i < k → p i < r ∧ r < p (i + 1) ∧ R.eval r = 0 := by
     intro i
     by_cases hi : i < k
@@ -52,19 +59,19 @@ lemma le_natDegree_of_alt (R : ℝ[X]) (hR : R ≠ 0) (p : ℕ → ℝ) (k : ℕ
       exact ⟨r, fun _ => ⟨h1, h2, h3⟩⟩
     · exact ⟨0, fun h => absurd h hi⟩
   choose r hr using hr
-  have hinj : Set.InjOn r (Finset.range k) := by
-    intro a ha b hb hab
-    simp only [Finset.coe_range, Set.mem_Iio] at ha hb
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with h | h
-    · have := (hr a ha).2.1
-      have := (hr b hb).1
-      have := chain_le hinc (a + 1) b h hb.le
-      linarith
-    · have := (hr b hb).2.1
-      have := (hr a ha).1
-      have := chain_le hinc (b + 1) a h ha.le
-      linarith
+  refine ⟨r, hr, ?_⟩
+  intro a ha b hb hab
+  simp only [Finset.coe_range, Set.mem_Iio] at ha hb
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with h | h
+  · linarith [(hr a ha).2.1, (hr b hb).1, chain_le hinc (a + 1) b h hb.le]
+  · linarith [(hr b hb).2.1, (hr a ha).1, chain_le hinc (b + 1) a h ha.le]
+
+/-- A nonzero polynomial with `k` strict sign changes has degree at least `k`. -/
+lemma le_natDegree_of_alt (R : ℝ[X]) (hR : R ≠ 0) (p : ℕ → ℝ) (k : ℕ)
+    (hinc : ∀ i < k, p i < p (i + 1)) (halt : ∀ i < k, R.eval (p i) * R.eval (p (i + 1)) < 0) :
+    k ≤ R.natDegree := by
+  obtain ⟨r, hr, hinj⟩ := root_witnesses_of_alt R p k hinc halt
   have hsub : (Finset.range k).image r ⊆ R.roots.toFinset := by
     intro x hx
     obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
@@ -109,15 +116,10 @@ lemma signVariations_alt_idx : ∀ (N : ℕ) (P : ℝ[X]), P.support.card = N �
       · simp
       · simp only [leadingCoeff_zero, sign_zero, neg_zero]
         exact sign_ne_zero.mpr (leadingCoeff_ne_zero.mpr hP0)
-    refine ⟨fun _ => P.natDegree, ?_, by simp, ?_, ?_⟩
-    · intro i hi; rw [h0] at hi; exact absurd hi (Nat.not_lt_zero _)
-    · intro i _; exact hld
-    · intro i hi; rw [h0] at hi; exact absurd hi (Nat.not_lt_zero _)
+    refine ⟨fun _ => P.natDegree, ?_, by simp, fun _ _ => hld, ?_⟩ <;> simp_all
   set E := P.eraseLead with hE_def
-  have hEd : E.natDegree < P.natDegree := by
-    rcases eraseLead_natDegree_lt_or_eraseLead_eq_zero P with h | h
-    · exact h
-    · exact absurd h hE
+  have hEd : E.natDegree < P.natDegree :=
+    (eraseLead_natDegree_lt_or_eraseLead_eq_zero P).resolve_right hE
   have hNpos : 0 < N := by
     rw [← hN]; exact Finset.card_pos.mpr (support_nonempty.mpr hP0)
   obtain ⟨idE, hinc, hlast, hnz, halt⟩ := ih (N - 1) (by lia) E
@@ -176,11 +178,7 @@ lemma signVariations_alt_idx : ∀ (N : ℕ) (P : ℝ[X]), P.support.card = N �
         rw [hcoeff i hi.le]
         rw [hs1, hlast] at h1
         have hpos := mul_pos_of_not_sign_eq_neg hld hEl hcond
-        have hEi := hnz i hi.le
         -- `a * E < 0`, `P * E > 0` ⇒ `a * P < 0`
-        have : (E.coeff (idE i) * P.coeff P.natDegree) *
-            (P.coeff P.natDegree * E.coeff E.natDegree) =
-            (E.coeff (idE i) * E.coeff E.natDegree) * (P.coeff P.natDegree) ^ 2 := by ring
         have hsq : 0 < (P.coeff P.natDegree) ^ 2 := by positivity
         by_contra hge
         push Not at hge
@@ -191,26 +189,7 @@ lemma signVariations_alt_idx : ∀ (N : ℕ) (P : ℝ[X]), P.support.card = N �
 lemma exists_roots_of_alt (R : ℝ[X]) (p : ℕ → ℝ) (k : ℕ)
     (hinc : ∀ i < k, p i < p (i + 1)) (halt : ∀ i < k, R.eval (p i) * R.eval (p (i + 1)) < 0) :
     ∃ s : Finset ℝ, s.card = k ∧ ∀ r ∈ s, R.eval r = 0 ∧ p 0 < r ∧ r < p k := by
-  have hr : ∀ i, ∃ r : ℝ, i < k → p i < r ∧ r < p (i + 1) ∧ R.eval r = 0 := by
-    intro i
-    by_cases hi : i < k
-    · obtain ⟨r, h1, h2, h3⟩ := exists_root_of_mul_neg R (hinc i hi) (halt i hi)
-      exact ⟨r, fun _ => ⟨h1, h2, h3⟩⟩
-    · exact ⟨0, fun h => absurd h hi⟩
-  choose r hr using hr
-  have hinj : Set.InjOn r (Finset.range k) := by
-    intro a ha b hb hab
-    simp only [Finset.coe_range, Set.mem_Iio] at ha hb
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with h | h
-    · have := (hr a ha).2.1
-      have := (hr b hb).1
-      have := chain_le hinc (a + 1) b h hb.le
-      linarith
-    · have := (hr b hb).2.1
-      have := (hr a ha).1
-      have := chain_le hinc (b + 1) a h ha.le
-      linarith
+  obtain ⟨r, hr, hinj⟩ := root_witnesses_of_alt R p k hinc halt
   refine ⟨(Finset.range k).image r, by rw [Finset.card_image_of_injOn hinj, Finset.card_range],
     fun x hx => ?_⟩
   obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
@@ -235,14 +214,8 @@ lemma Alt.of_bernOp {n : ℕ} (hn : 2 ≤ n) {F : ℝ[X]} (h0 : F.eval 0 = 0) (h
   set t : ℕ → ℝ := fun i => a i / (1 - a i) with ht
   have hBt : ∀ i ≤ k, (bernOp n F).eval (a i) = (1 - a i) ^ n * p.eval (t i) := fun i hi =>
     bernOp_eval_eq n F (a i) (hlt1 i hi).ne
-  have htinc : ∀ i < k, t i < t (i + 1) := by
-    intro i hi
-    have h1 := hlt1 i hi.le
-    have h2 := hlt1 (i + 1) hi
-    have := hinc i hi
-    simp only [ht]
-    rw [div_lt_div_iff₀ (by linarith) (by linarith)]
-    nlinarith
+  have htinc : ∀ i < k, t i < t (i + 1) := fun i hi =>
+    moebius_lt' (hinc i hi) (hlt1 (i + 1) hi)
   have hpalt : ∀ i < k, p.eval (t i) * p.eval (t (i + 1)) < 0 := by
     intro i hi
     have := halt i hi
@@ -680,8 +653,7 @@ lemma interlace_of_between {k : ℕ} (z : Fin k → ℝ) (u : Fin (k + 1) → �
   exact this
 
 lemma moebius_lt {a b : ℝ} (hab : a < b) (hb : b < 1) : a / (1 - a) < b / (1 - b) := by
-  rw [div_lt_div_iff₀ (by linarith) (by linarith)]
-  nlinarith
+  exact moebius_lt' hab hb
 
 
 end Kostov

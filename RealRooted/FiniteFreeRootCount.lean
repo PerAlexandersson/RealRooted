@@ -81,9 +81,8 @@ private theorem coeff_schurSzegoComp_pred
 private theorem natDegree_schurSzegoComp_eq_of_coeff_top_ne
     {d : ℕ} {f p : ℝ[X]} (hf : f.coeff d ≠ 0) (hp : p.coeff d ≠ 0) :
     (schurSzegoComp d f p).natDegree = d := by
-  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_schurSzegoComp_le d f p)
-  simp [hf, hp]
+  exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    (natDegree_schurSzegoComp_le d f p) (by simp [hf, hp])
 
 /-- Vieta turns the next-to-leading coefficient formula into the exact
 root-sum scaling needed to resolve the operator orientation. -/
@@ -95,18 +94,10 @@ private theorem roots_sum_schurSzegoComp_scaled
       p.coeff (d - 1) * f.roots.sum := by
   have hf_top : f.coeff d ≠ 0 := by
     rw [← hfdeg, ← Polynomial.leadingCoeff]
-    apply Polynomial.leadingCoeff_ne_zero.mpr
-    intro hf0
-    subst f
-    simp at hfdeg
-    exact hd hfdeg.symm
+    exact Polynomial.leadingCoeff_ne_zero.mpr fun h ↦ hd (by simpa [h] using hfdeg.symm)
   have hp_top : p.coeff d ≠ 0 := by
     rw [← hpdeg, ← Polynomial.leadingCoeff]
-    apply Polynomial.leadingCoeff_ne_zero.mpr
-    intro hp0
-    subst p
-    simp at hpdeg
-    exact hd hpdeg.symm
+    exact Polynomial.leadingCoeff_ne_zero.mpr fun h ↦ hd (by simpa [h] using hpdeg.symm)
   have houtdeg : (schurSzegoComp d f p).natDegree = d :=
     natDegree_schurSzegoComp_eq_of_coeff_top_ne hf_top hp_top
   have hf_vieta := hfs.nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
@@ -137,11 +128,7 @@ private theorem schurSzegoComp_strictInterl_of_pred_coeff_pos
     (hfdeg : f.natDegree = d) (hgdeg : g.natDegree = d)
     (hfg : StrictInterl f g) :
     StrictInterl (schurSzegoComp d f p) (schurSzegoComp d g p) := by
-  have hp0 : p ≠ 0 := by
-    intro hp_zero
-    subst p
-    simp at hpdeg
-    exact hd hpdeg.symm
+  have hp0 : p ≠ 0 := fun h ↦ hd (by simpa [h] using hpdeg.symm)
   have hp_top_pos : 0 < p.coeff d := by
     rw [← hpdeg, ← Polynomial.leadingCoeff]
     exact hp.hasNonnegCoeffs.pos_leadingCoeff hp0
@@ -155,23 +142,12 @@ private theorem schurSzegoComp_strictInterl_of_pred_coeff_pos
     natDegree_schurSzegoComp_eq_of_coeff_top_ne hf_top hp_top_pos.ne'
   have hTgdeg : (schurSzegoComp d g p).natDegree = d :=
     natDegree_schurSzegoComp_eq_of_coeff_top_ne hg_top hp_top_pos.ne'
-  have hTf0 : schurSzegoComp d f p ≠ 0 := by
-    intro hzero
-    rw [hzero] at hTfdeg
-    simp at hTfdeg
-    exact hd hTfdeg.symm
-  have hTg0 : schurSzegoComp d g p ≠ 0 := by
-    intro hzero
-    rw [hzero] at hTgdeg
-    simp at hTgdeg
-    exact hd hTgdeg.symm
+  have hTf0 : schurSzegoComp d f p ≠ 0 := fun h ↦ hd (by simpa [h] using hTfdeg.symm)
+  have hTg0 : schurSzegoComp d g p ≠ 0 := fun h ↦ hd (by simpa [h] using hTgdeg.symm)
   have hor := schurSzegoComp_interl_or_reverse
     hp hpdeg.le hfdeg.le hgdeg.le hfg
   rcases hor with hforward | hreverse
-  · rcases hforward with hzero | hzero | hstrictInterl
-    · exact (hTf0 hzero).elim
-    · exact (hTg0 hzero).elim
-    · exact hstrictInterl
+  · rcases hforward with hzero | hzero | hstrictInterl <;> simp_all
   · rcases hreverse with hzero | hzero | hstrictInterl
     · exact (hTg0 hzero).elim
     · exact (hTf0 hzero).elim
@@ -291,13 +267,7 @@ private theorem forall₂_filter_gt_length_le (t : ℝ) :
   | [], [], List.Forall₂.nil => by simp
   | x :: xs, y :: ys, List.Forall₂.cons hxy htail => by
       have ih := forall₂_filter_gt_length_le t htail
-      by_cases htx : t < x
-      · have hty : t < y := htx.trans_le hxy
-        simp [htx, hty, ih]
-      · by_cases hty : t < y
-        · simp [htx, hty]
-          lia
-        · simp [htx, hty, ih]
+      by_cases htx : t < x <;> by_cases hty : t < y <;> simp_all <;> grind
 
 private theorem sorted_card_filter_ge_at_index
     {l : List ℝ} (hl : l.Pairwise (· ≤ ·)) {i : ℕ} (hi : i < l.length) :
@@ -426,10 +396,7 @@ theorem rootwiseLE_map_rootPolynomial_of_forall₂
       have hdegy : (rootPolynomial (y ::ₘ s)).natDegree = d := by
         rw [natDegree_rootPolynomial]
         simpa [s, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-      have hstrictInterl :
-          StrictInterl (rootPolynomial (x ::ₘ s)) (rootPolynomial (y ::ₘ s)) :=
-        strictInterl_rootPolynomial_cons_move s hxy
-      have hTstrictInterl := hT.2 hdegx hdegy hstrictInterl
+      have hTstrictInterl := hT.2 hdegx hdegy (strictInterl_rootPolynomial_cons_move s hxy)
       have hstep :
           RootwiseLE (T (rootPolynomial (x ::ₘ s)))
             (T (rootPolynomial (y ::ₘ s))) :=
@@ -446,13 +413,9 @@ theorem rootwiseLE_map_rootPolynomial_of_forall₂
           (↑ys : Multiset ℝ) + (y ::ₘ fixed) := by
         change (y ::ₘ (↑ys : Multiset ℝ)) + fixed =
           (↑ys : Multiset ℝ) + (y ::ₘ fixed)
-        ext z
-        by_cases hzy : z = y
-        · simp [Multiset.count_add, hzy, add_comm, add_left_comm, add_assoc]
-        · simp [Multiset.count_add, hzy, Ne.symm hzy, add_comm]
+        rw [Multiset.cons_add, Multiset.add_cons]
       rw [hx, hy]
-      apply hstep.trans
-      simpa [s, add_comm, add_left_comm, add_assoc] using hrec
+      exact hstep.trans (by simpa [s, add_comm, add_left_comm, add_assoc] using hrec)
 
 /-- Replace the first `ell` roots by a common upper guard. -/
 private def raiseSmallest : List ℝ → ℕ → ℝ → Multiset ℝ
@@ -513,36 +476,19 @@ private theorem rootCountAbove_map_raiseSmallest_le
               a ::ₘ ((↑xs : Multiset ℝ) + fixed)
             exact Multiset.cons_add a (↑xs : Multiset ℝ) fixed
           intro t
-          have hstep := (rootCountAboveOriented_of_strictInterl hstrictInterl t).2
-          have htotal' : xs.length + (M ::ₘ fixed).card = d := by
-            simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal
-          have hrec := ih hell htailM htotal' t
+          let count (z : Multiset ℝ) :=
+            ((T (rootPolynomial z)).roots.filter (t < ·)).card
+          have hstep : count (M ::ₘ s) ≤ count (a ::ₘ s) + 1 := by
+            exact_mod_cast (rootCountAboveOriented_of_strictInterl hstrictInterl t).2
+          have hrec := ih (fixed := M ::ₘ fixed) hell htailM
+            (by simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htotal) t
+          have hrec' : count (M ::ₘ (raiseSmallest xs ell M + fixed)) ≤
+              count (M ::ₘ s) + ell := by
+            simpa [count, s, add_comm, add_left_comm, add_assoc] using hrec
           simp only [raiseSmallest, Multiset.cons_add]
-          change
-            ((T (rootPolynomial
-              (M ::ₘ (raiseSmallest xs ell M + fixed)))).roots.filter
-                (t < ·)).card ≤
-              ((T (rootPolynomial
-                ((↑(a :: xs) : Multiset ℝ) + fixed))).roots.filter
-                  (t < ·)).card + (ell + 1)
-          have hrec' :
-              ((T (rootPolynomial
-                (M ::ₘ (raiseSmallest xs ell M + fixed)))).roots.filter
-                  (t < ·)).card ≤
-                ((T (rootPolynomial (M ::ₘ s))).roots.filter
-                  (t < ·)).card + ell := by
-            simpa [s, add_comm, add_left_comm, add_assoc] using hrec
-          have hstep' :
-              ((T (rootPolynomial (M ::ₘ s))).roots.filter (t < ·)).card ≤
-                ((T (rootPolynomial
-                  ((↑(a :: xs) : Multiset ℝ) + fixed))).roots.filter
-                    (t < ·)).card + 1 := by
-            rw [hcoe]
-            exact (show
-              ((T (rootPolynomial (M ::ₘ s))).roots.filter (t < ·)).card ≤
-                ((T (rootPolynomial (a ::ₘ s))).roots.filter
-                  (t < ·)).card + 1 by
-                    exact_mod_cast hstep)
+          change count (M ::ₘ (raiseSmallest xs ell M + fixed)) ≤
+            count ((↑(a :: xs) : Multiset ℝ) + fixed) + (ell + 1)
+          rw [hcoe]
           lia
 
 /-! ## Root-count contraction -/
@@ -569,22 +515,15 @@ theorem rootCountAbove_map_le_add_of_input_offset
   have hqraised :
       RootwiseLE (T (rootPolynomial (qs : Multiset ℝ)))
         (T (rootPolynomial (raised : Multiset ℝ))) := by
-    have hraw := rootwiseLE_map_rootPolynomial_of_forall₂ hT hcoord 0
+    simpa using rootwiseLE_map_rootPolynomial_of_forall₂ hT hcoord 0
       (by simpa [raised, hd] using hlen.symm)
-    simpa using hraw
   have hraise := rootCountAbove_map_raiseSmallest_le
     (T := T) hT hell hMps (fixed := 0) (by simpa using hd)
   intro t
-  have hqr := hqraised.rootCountAbove_le t
+  apply (hqraised.rootCountAbove_le t).trans
   have hrp := hraise t
   rw [raiseSmallest_eq hell] at hrp
-  have hrp' :
-      ((T (rootPolynomial (raised : Multiset ℝ))).roots.filter
-          (t < ·)).card ≤
-        ((T (rootPolynomial (ps : Multiset ℝ))).roots.filter
-          (t < ·)).card + ell := by
-    simpa [raised] using hrp
-  exact hqr.trans hrp'
+  simpa [raised] using hrp
 
 /-- The reflected-PF Schur operator satisfies the root-move hypotheses used by
 the abstract contraction theorem. -/
@@ -598,11 +537,7 @@ private theorem schurSzegoComp_reflect_preservesFullDegreeRootMoves
   · intro f hfdeg
     have hf_top : f.coeff d ≠ 0 := by
       rw [← hfdeg, ← Polynomial.leadingCoeff]
-      exact Polynomial.leadingCoeff_ne_zero.mpr (by
-        intro hfzero
-        subst f
-        simp at hfdeg
-        exact hd hfdeg.symm)
+      exact Polynomial.leadingCoeff_ne_zero.mpr fun h ↦ hd (by simpa [h] using hfdeg.symm)
     have href_top : (reflect d p).coeff d ≠ 0 := by simpa [coeff_reflect] using hp0
     exact natDegree_schurSzegoComp_eq_of_coeff_top_ne hf_top href_top
   · intro f g hfdeg hgdeg hfg
@@ -617,8 +552,7 @@ private theorem le_listMax {x : ℝ} :
     ∀ {xs : List ℝ}, x ∈ xs → x ≤ listMax xs
   | [], hx => by simp at hx
   | y :: ys, hx => by
-      rw [List.mem_cons] at hx
-      rcases hx with rfl | hx
+      rcases List.mem_cons.mp hx with rfl | hx
       · exact le_max_left _ _
       · exact (le_listMax hx).trans (le_max_right _ _)
 
@@ -656,10 +590,8 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
       (qs.filter (x ≤ ·)).length ≤ (ps.filter (x ≤ ·)).length + ell := by
     intro x
     have hx := hcount x
-    have hPsort : (↑ps : Multiset ℝ) = P.roots :=
-      Multiset.sort_eq P.roots (· ≤ ·)
-    have hQsort : (↑qs : Multiset ℝ) = Q.roots :=
-      Multiset.sort_eq Q.roots (· ≤ ·)
+    have hPsort : (↑ps : Multiset ℝ) = P.roots := Multiset.sort_eq P.roots (· ≤ ·)
+    have hQsort : (↑qs : Multiset ℝ) = Q.roots := Multiset.sort_eq Q.roots (· ≤ ·)
     rw [← hPsort, ← hQsort, Multiset.filter_coe, Multiset.filter_coe] at hx
     exact hx
   have hcontract := rootCountAbove_map_le_add_of_input_offset
@@ -669,17 +601,11 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
     hps_pair hqs_pair hlen hps_len (by simpa [hps_len] using hell)
     hMps hMqs hcount_lists
   have hPpoly : rootPolynomial (ps : Multiset ℝ) = P := by
-    have hPsort : (↑ps : Multiset ℝ) = P.roots :=
-      Multiset.sort_eq P.roots (· ≤ ·)
-    rw [hPsort]
-    simpa [rootPolynomial] using
-      (hPsplit.eq_prod_roots_of_monic hPmonic).symm
+    rw [show (↑ps : Multiset ℝ) = P.roots by simp [ps]]
+    simpa [rootPolynomial] using (hPsplit.eq_prod_roots_of_monic hPmonic).symm
   have hQpoly : rootPolynomial (qs : Multiset ℝ) = Q := by
-    have hQsort : (↑qs : Multiset ℝ) = Q.roots :=
-      Multiset.sort_eq Q.roots (· ≤ ·)
-    rw [hQsort]
-    simpa [rootPolynomial] using
-      (hQsplit.eq_prod_roots_of_monic hQmonic).symm
+    rw [show (↑qs : Multiset ℝ) = Q.roots by simp [qs]]
+    simpa [rootPolynomial] using (hQsplit.eq_prod_roots_of_monic hQmonic).symm
   simpa [hPpoly, hQpoly] using hcontract
 
 /-! ## Signed reciprocal root counts -/
@@ -728,8 +654,7 @@ theorem IsPFPolynomial.roots_neg_of_coeff_zero_ne
     ∀ x ∈ F.roots, x < 0 := by
   have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
   intro x hx
-  apply lt_of_le_of_ne (hF.roots_nonpos x hx)
-  intro hxzero
+  refine lt_of_le_of_ne (hF.roots_nonpos x hx) fun hxzero ↦ ?_
   subst x
   exact hF0 (by
     simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
@@ -748,8 +673,7 @@ theorem card_roots_signedReciprocal_filter_ge
     (hF.eq_zero_or_splits.resolve_left hFne)
     hFdeg hF0 (s ≤ ·) (not_le_of_gt hs)]
   apply congrArg Multiset.card
-  apply Multiset.filter_congr
-  intro x hx
+  refine Multiset.filter_congr fun x hx ↦ ?_
   have hxneg : x < 0 := hF.roots_neg_of_coeff_zero_ne hF0 x hx
   have hnegpos : 0 < -x := neg_pos.mpr hxneg
   change (s ≤ (-x)⁻¹) ↔ -s⁻¹ ≤ x
@@ -769,8 +693,7 @@ theorem card_roots_signedReciprocal_filter_gt
     (hF.eq_zero_or_splits.resolve_left hFne) hFdeg hF0 (s < ·)
     (not_lt_of_ge hs.le)]
   apply congrArg Multiset.card
-  apply Multiset.filter_congr
-  intro x hx
+  refine Multiset.filter_congr fun x hx ↦ ?_
   have hxneg : x < 0 := hF.roots_neg_of_coeff_zero_ne hF0 x hx
   have hnegpos : 0 < -x := neg_pos.mpr hxneg
   change (s < (-x)⁻¹) ↔ -s⁻¹ < x

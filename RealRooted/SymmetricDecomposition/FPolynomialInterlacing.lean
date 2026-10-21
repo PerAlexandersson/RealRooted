@@ -18,6 +18,38 @@ noncomputable section
 
 namespace RealRooted
 
+private theorem all_neg_one_lt_of_coe_eq_roots_map
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p) {l : List ℝ}
+    (hl : (↑l : Multiset ℝ) = p.roots.map fun r => r / (1 - r)) :
+    ∀ x ∈ l, -1 < x := by
+  intro x hx
+  have hx' : x ∈ (↑l : Multiset ℝ) := Multiset.mem_coe.mpr hx
+  rw [hl] at hx'; obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx'
+  exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hp r hr)
+
+private theorem coe_map_untransformRoot_eq_roots
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p) {l : List ℝ}
+    (hl : (↑l : Multiset ℝ) = p.roots.map fun r => r / (1 - r)) :
+    (↑(l.map untransformRoot) : Multiset ℝ) = p.roots := by
+  calc
+    (↑(l.map untransformRoot) : Multiset ℝ) =
+        (p.roots.map fun r => r / (1 - r)).map untransformRoot := by
+      simpa using congrArg (fun t : Multiset ℝ => t.map untransformRoot) hl
+    _ = p.roots.map (fun r => r) := by
+      rw [Multiset.map_map]
+      refine Multiset.map_congr rfl fun r hr => ?_
+      simp [untransformRoot_transformedRoot
+        (roots_nonpos_of_hasNonnegCoeffs hp r hr)]
+    _ = p.roots := by simp
+
+private theorem roots_fPolynomial_eq_map_of_natDegree_eq
+    {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree = d) (hne : p ≠ 0)
+    (hsplits : p.Splits) (hnonneg : HasNonnegCoeffs p) :
+    (fPolynomial d p).roots = p.roots.map fun r => r / (1 - r) := by
+  simpa [hdeg] using
+    roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
+      hdeg.le hne hsplits hnonneg
+
 theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
     {d : ℕ} {u v : ℝ[X]}
     (hd : d = max u.natDegree v.natDegree)
@@ -35,12 +67,12 @@ theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs hvd hv_rr.1 hv_rr.2 hv_nonneg
   have hss_nonpos : ∀ s ∈ ss, s ≤ 0 := by
     intro s hs
-    have hs_mem : s ∈ u.roots := by simpa [hss_eq] using Multiset.mem_coe.mpr hs
-    exact roots_nonpos_of_hasNonnegCoeffs hu_nonneg s hs_mem
+    exact roots_nonpos_of_hasNonnegCoeffs hu_nonneg s (by
+      simpa [hss_eq] using Multiset.mem_coe.mpr hs)
   have hrs_nonpos : ∀ r ∈ rs, r ≤ 0 := by
     intro r hr
-    have hr_mem : r ∈ v.roots := by simpa [hrs_eq] using Multiset.mem_coe.mpr hr
-    exact roots_nonpos_of_hasNonnegCoeffs hv_nonneg r hr_mem
+    exact roots_nonpos_of_hasNonnegCoeffs hv_nonneg r (by
+      simpa [hrs_eq] using Multiset.mem_coe.mpr hr)
   have hss_map_sorted : (ss.map φ).Pairwise (· ≤ ·) :=
     pairwise_map_transformedRoot_of_nonpos hss_sorted hss_nonpos
   have hrs_map_sorted : (rs.map φ).Pairwise (· ≤ ·) :=
@@ -67,30 +99,20 @@ theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
         have hleft_sorted : ((-1) :: ss.map φ).Pairwise (· ≤ ·) :=
           List.pairwise_cons.mpr ⟨hleft_all, hss_map_sorted⟩
         have hleft_eq : (↑((-1) :: ss.map φ) : Multiset ℝ) = (fPolynomial d u).roots := by
-          have hleft_multiset :
-              (↑((-1) :: ss.map φ) : Multiset ℝ) =
-                Multiset.replicate (d - u.natDegree) (-1) + u.roots.map φ := by
-            calc
-              (↑((-1) :: ss.map φ) : Multiset ℝ)
-                  = ({-1} : Multiset ℝ) + (↑(ss.map φ) : Multiset ℝ) := by simp
-              _ = ({-1} : Multiset ℝ) + u.roots.map φ := by lia
-              _ = Multiset.replicate (d - u.natDegree) (-1) + u.roots.map φ := by simp_all
           calc
-            (↑((-1) :: ss.map φ) : Multiset ℝ)
-                = Multiset.replicate (d - u.natDegree) (-1) + u.roots.map φ := hleft_multiset
+            _ = ({-1} : Multiset ℝ) + u.roots.map φ := by
+              simpa using congrArg (fun m : Multiset ℝ => {-1} + m) hss_map_eq
             _ = (fPolynomial d u).roots := by
-                    symm
-                    simpa [φ] using
-                      roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-                        hud hu_rr.1 hu_rr.2 hu_nonneg
+              simpa [φ, hud_pad] using
+                (roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
+                  hud hu_rr.1 hu_rr.2 hu_nonneg).symm
         have hright_eq : (↑((r₁ :: rest).map φ) : Multiset ℝ) = (fPolynomial d v).roots := by
           calc
-            (↑((r₁ :: rest).map φ) : Multiset ℝ) = v.roots.map φ := by lia
+            _ = v.roots.map φ := hrs_map_eq
             _ = (fPolynomial d v).roots := by
-                symm
-                simpa [φ, hvd_pad] using
-                  roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-                    hvd hv_rr.1 hv_rr.2 hv_nonneg
+              simpa [φ, hvd_pad] using
+                (roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
+                  hvd hv_rr.1 hv_rr.2 hv_nonneg).symm
         refine ⟨hfu_rr, hfv_rr, (-1) :: ss.map φ, (r₁ :: rest).map φ,
           hleft_sorted, hrs_map_sorted, hleft_eq, hright_eq, Or.inr ?_⟩
         refine ⟨by simp_all, ?_⟩
@@ -105,20 +127,18 @@ theorem strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
     have hvd_pad : d - v.natDegree = 0 := by lia
     have hleft_eq : (↑(ss.map φ) : Multiset ℝ) = (fPolynomial d u).roots := by
       calc
-        (↑(ss.map φ) : Multiset ℝ) = u.roots.map φ := by lia
+        _ = u.roots.map φ := hss_map_eq
         _ = (fPolynomial d u).roots := by
-            symm
-            simpa [φ, hud_pad] using
-              roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-                hud hu_rr.1 hu_rr.2 hu_nonneg
+          simpa [φ, hud_pad] using
+            (roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
+              hud hu_rr.1 hu_rr.2 hu_nonneg).symm
     have hright_eq : (↑(rs.map φ) : Multiset ℝ) = (fPolynomial d v).roots := by
       calc
-        (↑(rs.map φ) : Multiset ℝ) = v.roots.map φ := by lia
+        _ = v.roots.map φ := hrs_map_eq
         _ = (fPolynomial d v).roots := by
-            symm
-            simpa [φ, hvd_pad] using
-              roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-                hvd hv_rr.1 hv_rr.2 hv_nonneg
+          simpa [φ, hvd_pad] using
+            (roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
+              hvd hv_rr.1 hv_rr.2 hv_nonneg).symm
     refine ⟨hfu_rr, hfv_rr, ss.map φ, rs.map φ,
       hss_map_sorted, hrs_map_sorted, hleft_eq, hright_eq, Or.inr ?_⟩
     refine ⟨by simp_all, ?_⟩
@@ -145,61 +165,21 @@ theorem strictInterl_of_strictInterl_fPolynomial_of_sameDegree_of_isRealRooted_o
   have hrs_len : rs.length = d :=
     (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hfu_roots :
-      (fPolynomial d u).roots = u.roots.map φ := by
-    simpa [φ, hud] using
-      roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-        hud_le hu_rr_ne hu_rr_splits hu_nonneg
+      (fPolynomial d u).roots = u.roots.map φ :=
+    roots_fPolynomial_eq_map_of_natDegree_eq hud hu_rr_ne hu_rr_splits hu_nonneg
   have hfv_roots :
-      (fPolynomial d v).roots = v.roots.map φ := by
-    simpa [φ, hvd] using
-      roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-        hvd_le hv_rr_ne hv_rr_splits hv_nonneg
+      (fPolynomial d v).roots = v.roots.map φ :=
+    roots_fPolynomial_eq_map_of_natDegree_eq hvd hv_rr_ne hv_rr_splits hv_nonneg
   have hss_eq_map : (↑ss : Multiset ℝ) = u.roots.map φ := by lia
   have hrs_eq_map : (↑rs : Multiset ℝ) = v.roots.map φ := by lia
-  have hss_gt_neg_one : ∀ s ∈ ss, -1 < s := by
-    intro s hs
-    have hs_mem : s ∈ (fPolynomial d u).roots := by simpa [hss_eq] using Multiset.mem_coe.mpr hs
-    rw [hfu_roots] at hs_mem
-    rcases Multiset.mem_map.mp hs_mem with ⟨r, hr, rfl⟩
-    exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)
-  have hrs_gt_neg_one : ∀ r ∈ rs, -1 < r := by
-    intro r hr
-    have hr_mem : r ∈ (fPolynomial d v).roots := by simpa [hrs_eq] using Multiset.mem_coe.mpr hr
-    rw [hfv_roots] at hr_mem
-    rcases Multiset.mem_map.mp hr_mem with ⟨s, hs, rfl⟩
-    exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hv_nonneg s hs)
+  have hss_gt_neg_one := all_neg_one_lt_of_coe_eq_roots_map hu_nonneg hss_eq_map
+  have hrs_gt_neg_one := all_neg_one_lt_of_coe_eq_roots_map hv_nonneg hrs_eq_map
   have hss'_sorted : (ss.map untransformRoot).Pairwise (· ≤ ·) :=
     pairwise_map_untransformRoot_of_neg_one_lt hss_sorted hss_gt_neg_one
   have hrs'_sorted : (rs.map untransformRoot).Pairwise (· ≤ ·) :=
     pairwise_map_untransformRoot_of_neg_one_lt hrs_sorted hrs_gt_neg_one
-  have hss'_eq : (↑(ss.map untransformRoot) : Multiset ℝ) = u.roots := by
-    have hmap :
-        (↑(ss.map untransformRoot) : Multiset ℝ) = (u.roots.map φ).map untransformRoot := by
-      simpa [φ] using congrArg (fun t : Multiset ℝ => t.map untransformRoot) hss_eq_map
-    calc
-      (↑(ss.map untransformRoot) : Multiset ℝ)
-          = (u.roots.map φ).map untransformRoot := hmap
-      _ = u.roots.map (fun r : ℝ => untransformRoot (φ r)) := by simp
-      _ = u.roots.map (fun r : ℝ => r) := by
-            refine Multiset.map_congr rfl ?_
-            intro r hr
-            simp [φ, untransformRoot_transformedRoot
-              (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)]
-      _ = u.roots := by simp
-  have hrs'_eq : (↑(rs.map untransformRoot) : Multiset ℝ) = v.roots := by
-    have hmap :
-        (↑(rs.map untransformRoot) : Multiset ℝ) = (v.roots.map φ).map untransformRoot := by
-      simpa [φ] using congrArg (fun t : Multiset ℝ => t.map untransformRoot) hrs_eq_map
-    calc
-      (↑(rs.map untransformRoot) : Multiset ℝ)
-          = (v.roots.map φ).map untransformRoot := hmap
-      _ = v.roots.map (fun r : ℝ => untransformRoot (φ r)) := by simp
-      _ = v.roots.map (fun r : ℝ => r) := by
-            refine Multiset.map_congr rfl ?_
-            intro r hr
-            simp [φ, untransformRoot_transformedRoot
-              (roots_nonpos_of_hasNonnegCoeffs hv_nonneg r hr)]
-      _ = v.roots := by simp
+  have hss'_eq := coe_map_untransformRoot_eq_roots hu_nonneg hss_eq_map
+  have hrs'_eq := coe_map_untransformRoot_eq_roots hv_nonneg hrs_eq_map
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
   · lia
   · refine ⟨⟨hu_rr_ne, hu_rr_splits⟩, ⟨hv_rr_ne, hv_rr_splits⟩,
@@ -237,10 +217,8 @@ theorem strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_o
       roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
         hud_le hu_rr_ne hu_rr_splits hu_nonneg
   have hfv_roots :
-      (fPolynomial d v).roots = v.roots.map φ := by
-    simpa [φ, hvd_pad] using
-      roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-        hvd_le hv_rr_ne hv_rr_splits hv_nonneg
+      (fPolynomial d v).roots = v.roots.map φ :=
+    roots_fPolynomial_eq_map_of_natDegree_eq hvd hv_rr_ne hv_rr_splits hv_nonneg
   have hss_eq_full : (↑ss : Multiset ℝ) = ({-1} : Multiset ℝ) + u.roots.map φ := by lia
   have hrs_eq_map : (↑rs : Multiset ℝ) = v.roots.map φ := by lia
   cases ss with
@@ -270,52 +248,15 @@ theorem strictInterl_of_strictInterl_fPolynomial_of_succDegree_of_isRealRooted_o
           simp_all
         exact add_left_cancel hcons
       have hss_tail_sorted : ss'.Pairwise (· ≤ ·) := hss_sorted.tail
-      have hss_tail_gt_neg_one : ∀ x ∈ ss', -1 < x := by
-        intro x hx
-        have hx_mem : x ∈ (↑ss' : Multiset ℝ) := by simpa using hx
-        rw [hss_tail_eq] at hx_mem
-        rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
-        exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)
-      have hrs_gt_neg_one : ∀ x ∈ rs, -1 < x := by
-        intro x hx
-        have hx_mem : x ∈ (↑rs : Multiset ℝ) := by simpa using hx
-        rw [hrs_eq_map] at hx_mem
-        rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
-        exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hv_nonneg r hr)
+      have hss_tail_gt_neg_one :=
+        all_neg_one_lt_of_coe_eq_roots_map hu_nonneg hss_tail_eq
+      have hrs_gt_neg_one := all_neg_one_lt_of_coe_eq_roots_map hv_nonneg hrs_eq_map
       have hss'_sorted : (ss'.map untransformRoot).Pairwise (· ≤ ·) :=
         pairwise_map_untransformRoot_of_neg_one_lt hss_tail_sorted hss_tail_gt_neg_one
       have hrs'_sorted : (rs.map untransformRoot).Pairwise (· ≤ ·) :=
         pairwise_map_untransformRoot_of_neg_one_lt hrs_sorted hrs_gt_neg_one
-      have hss'_eq : (↑(ss'.map untransformRoot) : Multiset ℝ) = u.roots := by
-        have hmap :
-            (↑(ss'.map untransformRoot) : Multiset ℝ) =
-              (u.roots.map φ).map untransformRoot := by
-          simpa [φ] using congrArg (fun t : Multiset ℝ => t.map untransformRoot) hss_tail_eq
-        calc
-          (↑(ss'.map untransformRoot) : Multiset ℝ)
-              = (u.roots.map φ).map untransformRoot := hmap
-          _ = u.roots.map (fun r : ℝ => untransformRoot (φ r)) := by simp
-          _ = u.roots.map (fun r : ℝ => r) := by
-                refine Multiset.map_congr rfl ?_
-                intro r hr
-                simp [φ, untransformRoot_transformedRoot
-                  (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)]
-          _ = u.roots := by simp
-      have hrs'_eq : (↑(rs.map untransformRoot) : Multiset ℝ) = v.roots := by
-        have hmap :
-            (↑(rs.map untransformRoot) : Multiset ℝ) =
-              (v.roots.map φ).map untransformRoot := by
-          simpa [φ] using congrArg (fun t : Multiset ℝ => t.map untransformRoot) hrs_eq_map
-        calc
-          (↑(rs.map untransformRoot) : Multiset ℝ)
-              = (v.roots.map φ).map untransformRoot := hmap
-          _ = v.roots.map (fun r : ℝ => untransformRoot (φ r)) := by simp
-          _ = v.roots.map (fun r : ℝ => r) := by
-                refine Multiset.map_congr rfl ?_
-                intro r hr
-                simp [φ, untransformRoot_transformedRoot
-                  (roots_nonpos_of_hasNonnegCoeffs hv_nonneg r hr)]
-          _ = v.roots := by simp
+      have hss'_eq := coe_map_untransformRoot_eq_roots hu_nonneg hss_tail_eq
+      have hrs'_eq := coe_map_untransformRoot_eq_roots hv_nonneg hrs_eq_map
       rcases hshape with ⟨hlen, _⟩ | ⟨hlen, halt⟩
       · lia
       · cases rs with
@@ -357,21 +298,13 @@ private theorem not_strictInterl_fPolynomial_of_right_degree_lt_of_sameDegree_le
     (hfv_rr.2.length_eq_natDegree_of_coe_eq_roots hrs_eq).trans hfv_deg
   have hud_pad : d - u.natDegree = 0 := by lia
   have hfu_roots :
-      (fPolynomial d u).roots = u.roots.map φ := by
-    simpa [φ, hud_pad] using
-      roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-        hud_le hu_rr_ne hu_rr_splits hu_nonneg
-  have hss_gt_neg_one : ∀ x ∈ ss, -1 < x := by
-    intro x hx
-    have hx_mem : x ∈ (fPolynomial d u).roots := by simpa [hss_eq] using Multiset.mem_coe.mpr hx
-    rw [hfu_roots] at hx_mem
-    rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
-    exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)
+      (fPolynomial d u).roots = u.roots.map φ :=
+    roots_fPolynomial_eq_map_of_natDegree_eq hud hu_rr_ne hu_rr_splits hu_nonneg
+  have hss_gt_neg_one := all_neg_one_lt_of_coe_eq_roots_map hu_nonneg (hss_eq.trans hfu_roots)
   have hminus_mem : (-1 : ℝ) ∈ rs := by
     have hminus_mem' : (-1 : ℝ) ∈ (fPolynomial d v).roots :=
       (mem_roots hfv_rr.1).2 (isRoot_neg_one_fPolynomial_of_natDegree_lt hvd)
-    rw [← hrs_eq] at hminus_mem'
-    simpa using hminus_mem'
+    rw [← hrs_eq] at hminus_mem'; simpa using hminus_mem'
   cases rs with
   | nil =>
       simp_all
@@ -407,8 +340,7 @@ private theorem not_strictInterl_fPolynomial_of_right_degree_lt_of_sameDegree_le
               have hhalt : s ≤ r ∧ ListInterlaces ss' (r :: rs') := by
                 simpa [ListAlternates] using halt
               lia
-            have hs_gt_neg_one : -1 < s := hss_gt_neg_one s (by simp)
-            linarith
+            have hs_gt_neg_one : -1 < s := hss_gt_neg_one s (by simp); linarith
 
 private theorem not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_full
     {d : ℕ} {u v : ℝ[X]}
@@ -450,11 +382,9 @@ private theorem not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_
         neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hu_nonneg r hr)
   have hminus_mem : (-1 : ℝ) ∈ ss := by
     have hminus_mem' : (-1 : ℝ) ∈ (fPolynomial d u).roots := by
-      rw [hfu_roots]
-      exact Multiset.mem_add.mpr <| Or.inl <|
+      rw [hfu_roots]; exact Multiset.mem_add.mpr <| Or.inl <|
         Multiset.mem_replicate.mpr ⟨by lia, rfl⟩
-    rw [← hss_eq] at hminus_mem'
-    simpa using hminus_mem'
+    rw [← hss_eq] at hminus_mem'; simpa using hminus_mem'
   cases ss with
   | nil =>
       simp_all
@@ -486,23 +416,14 @@ private theorem not_strictInterl_fPolynomial_of_left_degree_le_sub_two_of_right_
         exact add_left_cancel hcons
       have hminus_mem_tail : (-1 : ℝ) ∈ ss' := by
         have hminus_mem_tail' : (-1 : ℝ) ∈ (↑ss' : Multiset ℝ) := by
-          rw [hss_tail_eq]
-          exact Multiset.mem_add.mpr <| Or.inl <|
+          rw [hss_tail_eq]; exact Multiset.mem_add.mpr <| Or.inl <|
             Multiset.mem_replicate.mpr ⟨by lia, rfl⟩
         simpa using hminus_mem_tail'
       have hfv_roots :
-          (fPolynomial d v).roots = v.roots.map φ := by
-        have hvd_pad : d - v.natDegree = 0 := by lia
-        simpa [φ, hvd_pad] using
-          roots_fPolynomial_eq_padding_map_of_isRealRooted_of_hasNonnegCoeffs
-            hvd_le hv_rr_ne hv_rr_splits hv_nonneg
-      have hrs_gt_neg_one : ∀ x ∈ rs, -1 < x := by
-        intro x hx
-        have hx_mem : x ∈ (fPolynomial d v).roots := by
-          simpa [hrs_eq] using Multiset.mem_coe.mpr hx
-        rw [hfv_roots] at hx_mem
-        rcases Multiset.mem_map.mp hx_mem with ⟨r, hr, rfl⟩
-        exact neg_one_lt_transformedRoot (roots_nonpos_of_hasNonnegCoeffs hv_nonneg r hr)
+          (fPolynomial d v).roots = v.roots.map φ :=
+        roots_fPolynomial_eq_map_of_natDegree_eq hvd hv_rr_ne hv_rr_splits hv_nonneg
+      have hrs_gt_neg_one :=
+        all_neg_one_lt_of_coe_eq_roots_map hv_nonneg (hrs_eq.trans hfv_roots)
       cases rs with
       | nil =>
           simp_all
@@ -553,12 +474,10 @@ theorem strictInterl_iff_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_
     (hv_rr_ne : v ≠ 0) (hv_rr_splits : v.Splits)
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     (StrictInterl (fPolynomial d u) (fPolynomial d v) ↔ StrictInterl u v) := by
-  constructor
-  · intro h
-    exact strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
+  refine ⟨fun h => ?_, fun h => ?_⟩
+  · exact strictInterl_of_strictInterl_fPolynomial_of_minimal_of_isRealRooted_of_hasNonnegCoeffs
       hd hu_rr_ne hu_rr_splits hv_rr_ne hv_rr_splits h hu_nonneg hv_nonneg
-  · intro h
-    exact strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
+  · exact strictInterl_fPolynomial_of_strictInterl_of_hasNonnegCoeffs_of_minimal
       hd h hu_nonneg hv_nonneg
 
 /-- If `u ≺ v` and both have nonnegative coefficients, then their
@@ -569,19 +488,14 @@ theorem posComboRealRooted_fPolynomial_of_strictInterl
     (hu_nonneg : HasNonnegCoeffs u) (hv_nonneg : HasNonnegCoeffs v) :
     PosComboRealRooted (fPolynomial d u) (fPolynomial d v) := by
   have hu_pos : HasPosLeadingCoeff u := hu_nonneg.pos_leadingCoeff h.1.1
-  have hv_pos : HasPosLeadingCoeff v := hv_nonneg.pos_leadingCoeff h.2.1.1
-  intro lam μ hlam hμ
+  have hv_pos : HasPosLeadingCoeff v := hv_nonneg.pos_leadingCoeff h.2.1.1; intro lam μ hlam hμ
   have hcombo_rr : ((C lam * u + C μ * v) ≠ 0 ∧ (C lam * u + C μ * v).Splits) :=
     PosComboRealRooted.of_strictInterl h hu_pos hv_pos hlam hμ
   have hcombo_nonneg : HasNonnegCoeffs (C lam * u + C μ * v) :=
     (nonnegCoeffs_C_mul hlam.le hu_nonneg).add (nonnegCoeffs_C_mul hμ.le hv_nonneg)
   have hcombo_deg : (C lam * u + C μ * v).natDegree ≤ d := by
-    have hud' : (C lam * u).natDegree ≤ d := by
-      rw [Polynomial.natDegree_C_mul hlam.ne']
-      lia
-    have hvd' : (C μ * v).natDegree ≤ d := by
-      rw [Polynomial.natDegree_C_mul hμ.ne']
-      lia
+    have hud' : (C lam * u).natDegree ≤ d := by simpa [Polynomial.natDegree_C_mul hlam.ne']
+    have hvd' : (C μ * v).natDegree ≤ d := by simpa [Polynomial.natDegree_C_mul hμ.ne']
     simpa using Polynomial.natDegree_add_le_of_le hud' hvd'
   simpa [fPolynomial_add, fPolynomial_C_mul] using
     isRealRooted_fPolynomial_of_isRealRooted_of_hasNonnegCoeffs

@@ -101,11 +101,7 @@ private theorem actionAlong_add_left {R σ : Type*} [CommSemiring R]
       actionAlong ι f P + actionAlong ι g P := by
   classical
   unfold actionAlong
-  apply Finsupp.sum_add_index'
-  · intro d
-    simp
-  · intro d a b
-    simp only [map_add, add_mul]
+  exact Finsupp.sum_add_index' (fun _ => by simp) fun _ _ _ => by simp only [map_add, add_mul]
 
 private theorem fin_sum_choose_of_le {σ : Type*} (n m : ℕ)
     (hnm : n ≤ m) (A : ℕ → MvPolynomial σ ℂ) :
@@ -120,8 +116,7 @@ private theorem fin_sum_choose_of_le {σ : Type*} (n m : ℕ)
   intro j hjm hjn
   simp only [Finset.mem_range] at hjm hjn
   have hlt : n < j := by lia
-  rw [Nat.choose_eq_zero_of_lt hlt]
-  simp
+  simp [Nat.choose_eq_zero_of_lt hlt]
 
 private theorem finiteOrderWeylOperator_monomial_eq_action
     {τ : Type*} (d : Bool →₀ ℕ) (c : ℂ) (m : ℕ)
@@ -138,28 +133,9 @@ private theorem finiteOrderWeylOperator_monomial_eq_action
     (fun j =>
       MvPolynomial.rename Sum.inl (MvPolynomial.monomial d c) *
         iteratedPDerivAt (Sum.inl true) j P)
-  calc
-    (∑ j : Fin (m + 1),
-        (MvPolynomial.C ((d false + d true).choose (j : ℕ) : ℂ) *
-          MvPolynomial.rename Sum.inl (MvPolynomial.monomial d c)) *
-            iteratedPDerivAt (Sum.inl true) j P) =
-      ∑ j : Fin (m + 1),
-        MvPolynomial.C ((d false + d true).choose (j : ℕ) : ℂ) *
-          (MvPolynomial.rename Sum.inl (MvPolynomial.monomial d c) *
-            iteratedPDerivAt (Sum.inl true) j P) := by
-              apply Finset.sum_congr rfl
-              intro j hj
-              ring
-    _ = ∑ j ∈ Finset.range (d false + d true + 1),
-        MvPolynomial.C ((d false + d true).choose j : ℂ) *
-          (MvPolynomial.rename Sum.inl (MvPolynomial.monomial d c) *
-            iteratedPDerivAt (Sum.inl true) j P) := hsum
-    _ = MvPolynomial.rename Sum.inl (MvPolynomial.monomial d c) *
-        shiftDeriv (Sum.inl true) (d false + d true) P := by
-      rw [shiftDeriv_eq_sum_iterated, Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro j hj
-      ring
+  simp only [mul_assoc]
+  rw [hsum, shiftDeriv_eq_sum_iterated, Finset.mul_sum]
+  exact Finset.sum_congr rfl fun j _ => by ring
 
 private theorem bool_degree_eq (d : Bool →₀ ℕ) :
     d.sum (fun _ e => e) = d false + d true := by
@@ -197,33 +173,17 @@ private theorem signed_binomial_sum {σ : Type*} (R W : MvPolynomial σ ℂ)
       R * (1 - W) ^ n := by
   have hsum := fin_sum_choose_of_le n m hnm
     (fun j => R * (MvPolynomial.C (-1 : ℂ) ^ j * W ^ j))
-  calc
-    (∑ j : Fin (m + 1),
-        MvPolynomial.C (n.choose (j : ℕ) : ℂ) * R *
-          MvPolynomial.C (-1 : ℂ) ^ (j : ℕ) * W ^ (j : ℕ)) =
-      ∑ j : Fin (m + 1), MvPolynomial.C (n.choose (j : ℕ) : ℂ) *
-        (R * (MvPolynomial.C (-1 : ℂ) ^ (j : ℕ) *
-          W ^ (j : ℕ))) := by
-      apply Finset.sum_congr rfl
-      intro j hj
-      ac_rfl
-    _ = ∑ j ∈ Finset.range (n + 1), MvPolynomial.C (n.choose j : ℂ) *
-        (R * (MvPolynomial.C (-1 : ℂ) ^ j * W ^ j)) := hsum
-    _ = R * (1 - W) ^ n := by
-      rw [show 1 - W = -W + 1 by ring, add_pow]
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro j hj
-      rw [one_pow, mul_one, neg_pow]
-      have hchoose :
-          (MvPolynomial.C (n.choose j : ℂ) : MvPolynomial σ ℂ) =
-            (n.choose j : MvPolynomial σ ℂ) := by
-        rw [map_natCast]
-      have hminus :
-          (MvPolynomial.C (-1 : ℂ) : MvPolynomial σ ℂ) = -1 := by
-        rw [map_neg, map_one]
-      rw [hchoose, hminus]
-      ac_rfl
+  simp only [mul_assoc]
+  rw [hsum, show 1 - W = -W + 1 by ring, add_pow, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [one_pow, mul_one, neg_pow]
+  have hchoose : (MvPolynomial.C (n.choose j : ℂ) : MvPolynomial σ ℂ) =
+      (n.choose j : MvPolynomial σ ℂ) := by rw [map_natCast]
+  have hminus : (MvPolynomial.C (-1 : ℂ) : MvPolynomial σ ℂ) = -1 := by
+    rw [map_neg, map_one]
+  rw [hchoose, hminus]
+  ac_rfl
 
 private theorem signedWeylSymbol_monomial {τ : Type*}
     (d : Bool →₀ ℕ) (c : ℂ) (m : ℕ)
@@ -268,6 +228,13 @@ theorem signedWeylSymbol_poissonWeylFamilyC {τ : Type*}
   simp only [poissonWeylFamilyC, poissonWeylCoeffC_monomial] at hmono
   exact hmono
 
+private theorem shiftDeriv_succ {R σ : Type*} [CommSemiring R]
+    (q : σ) (n : ℕ) (P : MvPolynomial σ R) :
+    shiftDeriv q (n + 1) P =
+      MvPolynomial.pderiv q (shiftDeriv q n P) + shiftDeriv q n P := by
+  rw [shiftDeriv, pow_succ', Module.End.mul_apply]
+  rfl
+
 private theorem shiftDeriv_complexify {σ : Type*} (q : σ) (n : ℕ)
     (P : MvPolynomial σ ℝ) :
     complexifyMv (shiftDeriv q n P) =
@@ -276,19 +243,8 @@ private theorem shiftDeriv_complexify {σ : Type*} (q : σ) (n : ℕ)
   | zero => rfl
   | succ n ih =>
       rw [complexifyMv] at ih
-      have hreal : shiftDeriv q (n + 1) P =
-          MvPolynomial.pderiv q (shiftDeriv q n P) +
-            shiftDeriv q n P := by
-        rw [shiftDeriv, pow_succ', Module.End.mul_apply]
-        rfl
-      have hcomplex : shiftDeriv q (n + 1) (complexifyMv P) =
-          MvPolynomial.pderiv q (shiftDeriv q n (complexifyMv P)) +
-            shiftDeriv q n (complexifyMv P) := by
-        rw [shiftDeriv, pow_succ', Module.End.mul_apply]
-        rfl
-      rw [hreal, hcomplex, complexifyMv, map_add,
-        ← MvPolynomial.pderiv_map]
-      rw [ih]
+      rw [shiftDeriv_succ, shiftDeriv_succ, complexifyMv, map_add,
+        ← MvPolynomial.pderiv_map, ih]
 
 private theorem complexify_actionAlong {σ : Type*} (ι : Bool → σ)
     (f : MvPolynomial Bool ℝ) (P : MvPolynomial σ ℝ) :
@@ -319,8 +275,8 @@ private theorem complexify_actionAlong {σ : Type*} (ι : Bool → σ)
 theorem complexify_spectatorAction {τ : Type*}
     (f : MvPolynomial Bool ℝ) (P : MvPolynomial (Bool ⊕ τ) ℝ) :
     complexifyMv (spectatorAction f P) =
-      actionAlong Sum.inl (complexifyMv f) (complexifyMv P) := by
-  exact complexify_actionAlong Sum.inl f P
+      actionAlong Sum.inl (complexifyMv f) (complexifyMv P) :=
+  complexify_actionAlong Sum.inl f P
 
 /-- Poisson left multiplication preserves real stability up to the possible
 zero output. -/
@@ -356,11 +312,9 @@ private theorem shiftRemainder_nonneg {σ : Type*} (q : σ) (n : ℕ)
     {P : MvPolynomial σ ℝ} (hP : P.HasNonnegCoeffs) :
     (shiftRemainder q n P).HasNonnegCoeffs := by
   unfold shiftRemainder
-  apply MvPolynomial.HasNonnegCoeffs.sum
-  intro j hj
-  apply MvPolynomial.HasNonnegCoeffs.mul
-  · exact MvPolynomial.HasNonnegCoeffs.C (Nat.cast_nonneg _)
-  · exact iteratedPDerivAt_nonneg hP q (j + 1)
+  exact MvPolynomial.HasNonnegCoeffs.sum fun j _ =>
+    (MvPolynomial.HasNonnegCoeffs.C (Nat.cast_nonneg _)).mul
+      (iteratedPDerivAt_nonneg hP q (j + 1))
 
 /-- The part of the Poisson action containing at least one derivative. -/
 def actionRemainder {σ : Type*} (ι : Bool → σ)
@@ -394,21 +348,18 @@ private theorem actionRemainder_nonneg {σ : Type*} (ι : Bool → σ)
   classical
   unfold actionRemainder
   rw [MvPolynomial.sum_def]
-  apply MvPolynomial.HasNonnegCoeffs.sum
-  intro d hd
-  apply MvPolynomial.HasNonnegCoeffs.mul
-  · exact (hasNonnegCoeffs_monomial d (hf d)).rename_of_injective hι
-  · exact shiftRemainder_nonneg (ι true) (d false + d true) hP
+  exact MvPolynomial.HasNonnegCoeffs.sum fun d _ =>
+    ((hasNonnegCoeffs_monomial d (hf d)).rename_of_injective hι).mul
+      (shiftRemainder_nonneg (ι true) (d false + d true) hP)
 
 private theorem add_ne_zero_of_nonnegative {σ : Type*}
     {P Q : MvPolynomial σ ℝ} (hP : P.HasNonnegCoeffs)
     (hP0 : P ≠ 0) (hQ : Q.HasNonnegCoeffs) : P + Q ≠ 0 := by
   intro hzero
-  have hpos := hP.eval_pos hP0 (fun _ => zero_lt_one)
-  have hnonneg := hQ.eval_nonneg (fun _ => zero_le_one)
   have heval := congrArg (MvPolynomial.eval fun _ => 1) hzero
   simp only [map_add, map_zero] at heval
-  linarith
+  linarith [hP.eval_pos hP0 (fun _ => zero_lt_one),
+    hQ.eval_nonneg (fun _ => zero_le_one)]
 
 /-- If the right input also has nonnegative coefficients, Poisson left
 multiplication is nonzero and real stable. -/
@@ -417,22 +368,18 @@ theorem spectatorAction_stable_of_nonneg {τ : Type*} [Finite τ]
     (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
     (hP : MvRealStable P) (hPnn : P.HasNonnegCoeffs) :
     MvRealStable (spectatorAction f P) := by
-  have hweak := spectatorAction_stableOrZero hf hfnn hP
-  rcases hweak with hzero | hstable
+  rcases spectatorAction_stableOrZero hf hfnn hP with hzero | hstable
   · exfalso
-    have hfrename :
-        MvPolynomial.rename (Sum.inl : Bool → Bool ⊕ τ) f ≠ 0 := by
-      exact fun hz => hf.ne_zero
-        (MvPolynomial.rename_injective
-          (Sum.inl : Bool → Bool ⊕ τ) Sum.inl_injective hz)
+    have hfrename : MvPolynomial.rename (Sum.inl : Bool → Bool ⊕ τ) f ≠ 0 :=
+      fun hz => hf.ne_zero (MvPolynomial.rename_injective _ Sum.inl_injective hz)
     have hprod0 :
         MvPolynomial.rename (Sum.inl : Bool → Bool ⊕ τ) f * P ≠ 0 :=
       mul_ne_zero hfrename hP.ne_zero
-    have hprodnn := hfnn.rename_of_injective Sum.inl_injective |>.mul hPnn
-    have hremnn := actionRemainder_nonneg Sum.inl Sum.inl_injective hfnn hPnn
-    have hne := add_ne_zero_of_nonnegative hprodnn hprod0 hremnn
-    rw [← actionAlong_eq_mul_add_remainder, ← spectatorAction] at hne
-    exact hne hzero
+    apply add_ne_zero_of_nonnegative
+      (hfnn.rename_of_injective Sum.inl_injective |>.mul hPnn) hprod0
+      (actionRemainder_nonneg Sum.inl Sum.inl_injective hfnn hPnn)
+    rw [spectatorAction, actionAlong_eq_mul_add_remainder] at hzero
+    exact hzero
   · exact hstable
 
 /-- With nonnegative inputs, Poisson left multiplication retains
@@ -556,19 +503,13 @@ private theorem iteratedPDerivAt_C_succ {σ : Type*} (q : σ)
     (j : ℕ) (c : ℝ) :
     iteratedPDerivAt q (j + 1) (MvPolynomial.C c) = 0 := by
   induction j with
-  | zero =>
-      rw [iteratedPDerivAt, iteratedPDerivAt,
-        MvPolynomial.pderiv_C]
-  | succ j ih =>
-      rw [iteratedPDerivAt]
-      rw [ih, map_zero]
+  | zero => simp [iteratedPDerivAt]
+  | succ j ih => rw [iteratedPDerivAt, ih, map_zero]
 
 private theorem shiftRemainder_C {σ : Type*} (q : σ) (n : ℕ) (c : ℝ) :
     shiftRemainder q n (MvPolynomial.C c) = 0 := by
   unfold shiftRemainder
-  apply Finset.sum_eq_zero
-  intro j hj
-  rw [iteratedPDerivAt_C_succ, mul_zero]
+  exact Finset.sum_eq_zero fun j _ => by rw [iteratedPDerivAt_C_succ, mul_zero]
 
 private theorem actionRemainder_C {τ : Type*}
     (f : MvPolynomial Bool ℝ) (c : ℝ) :
@@ -577,9 +518,7 @@ private theorem actionRemainder_C {τ : Type*}
   classical
   unfold actionRemainder
   rw [MvPolynomial.sum_def]
-  apply Finset.sum_eq_zero
-  intro d hd
-  rw [shiftRemainder_C, mul_zero]
+  exact Finset.sum_eq_zero fun d _ => by rw [shiftRemainder_C, mul_zero]
 
 private theorem spectatorAction_ne_zero {τ : Type*}
     {f : MvPolynomial Bool ℝ} (hf : f ≠ 0)
@@ -624,16 +563,14 @@ theorem spectatorAction_stable {τ : Type*} [Finite τ]
     {f : MvPolynomial Bool ℝ} (hf : MvRealStable f)
     (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
     (hP : MvRealStable P) :
-    MvRealStable (spectatorAction f P) := by
-  rcases spectatorAction_stableOrZero hf hfnn hP with hzero | hstable
-  · exact False.elim (spectatorAction_ne_zero hf.ne_zero hP.ne_zero hzero)
-  · exact hstable
+    MvRealStable (spectatorAction f P) :=
+  (spectatorAction_stableOrZero hf hfnn hP).resolve_left
+    (spectatorAction_ne_zero hf.ne_zero hP.ne_zero)
 
 private theorem shiftDeriv_add {R σ : Type*} [CommSemiring R]
     (q : σ) (n : ℕ) (P Q : MvPolynomial σ R) :
-    shiftDeriv q n (P + Q) = shiftDeriv q n P + shiftDeriv q n Q := by
-  unfold shiftDeriv
-  exact map_add _ P Q
+    shiftDeriv q n (P + Q) = shiftDeriv q n P + shiftDeriv q n Q :=
+  map_add _ P Q
 
 private theorem actionAlong_add_right {R σ : Type*} [CommSemiring R]
     (ι : Bool → σ) (f : MvPolynomial Bool R)
@@ -655,18 +592,7 @@ private theorem shiftDeriv_X_mul_of_ne {R σ : Type*} [CommSemiring R]
   induction n with
   | zero => rfl
   | succ n ih =>
-      have hleft : shiftDeriv q (n + 1) (MvPolynomial.X r * P) =
-          MvPolynomial.pderiv q
-              (shiftDeriv q n (MvPolynomial.X r * P)) +
-            shiftDeriv q n (MvPolynomial.X r * P) := by
-        rw [shiftDeriv, pow_succ', Module.End.mul_apply]
-        rfl
-      have hright : shiftDeriv q (n + 1) P =
-          MvPolynomial.pderiv q (shiftDeriv q n P) +
-            shiftDeriv q n P := by
-        rw [shiftDeriv, pow_succ', Module.End.mul_apply]
-        rfl
-      rw [hleft, hright, ih, MvPolynomial.pderiv_mul,
+      rw [shiftDeriv_succ, shiftDeriv_succ, ih, MvPolynomial.pderiv_mul,
         MvPolynomial.pderiv_X_of_ne (i := q) (j := r) (Ne.symm hqr)]
       ring
 
@@ -678,10 +604,9 @@ private theorem actionAlong_X_mul_of_ne {R σ : Type*} [CommSemiring R]
   classical
   unfold actionAlong
   rw [MvPolynomial.sum_def, MvPolynomial.sum_def, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro d hd
-  rw [shiftDeriv_X_mul_of_ne (ι true) r hr]
-  ring
+  exact Finset.sum_congr rfl fun d _ => by
+    rw [shiftDeriv_X_mul_of_ne (ι true) r hr]
+    ring
 
 /-- Poisson action transports a stable pencil in any spectator variable. -/
 theorem spectatorAction_pencil {τ : Type*} [Finite τ]
@@ -693,10 +618,9 @@ theorem spectatorAction_pencil {τ : Type*} [Finite τ]
     MvRealStable
       (spectatorAction f G +
         MvPolynomial.X (Sum.inr x) * spectatorAction f H) := by
-  have hstable := spectatorAction_stable hf hfnn hpencil
-  rw [spectatorAction, actionAlong_add_right,
-    actionAlong_X_mul_of_ne Sum.inl f (Sum.inr x) (by simp)] at hstable
-  exact hstable
+  simpa only [spectatorAction, actionAlong_add_right,
+    actionAlong_X_mul_of_ne Sum.inl f (Sum.inr x) (by simp)] using
+    spectatorAction_stable hf hfnn hpencil
 
 /-- The false extension in which a live left parameter is treated as a
 spectator has a concrete upper-half-plane zero. -/
@@ -713,11 +637,7 @@ theorem not_stable_leftParameterBadSymbol :
     if i = 0 then -2 + 2 * Complex.I
     else if i = 1 then 1 + Complex.I
     else 1 + 2 * Complex.I
-  have hu : ∀ i, 0 < (u i).im := by
-    intro i
-    fin_cases i <;> norm_num [u]
-  have hne := hstable u hu
-  apply hne
+  apply hstable u (by intro i; fin_cases i <;> norm_num [u])
   simp only [leftParameterBadSymbol, MvPolynomial.eval_add,
     MvPolynomial.eval_mul, MvPolynomial.eval_X, MvPolynomial.eval_sub,
     map_one]

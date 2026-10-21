@@ -189,31 +189,17 @@ theorem appellKernelCoefficient_coordinate_eq_summand (m i j : ℕ)
     rw [← pow_add]
     congr 1
     lia
-  have hU_pow : xi ^ i * (r * z) ^ i = (-U) ^ i := by
-    calc
-      xi ^ i * (r * z) ^ i = (xi * (r * z)) ^ i := (mul_pow _ _ _).symm
-      _ = (-U) ^ i := by rw [show xi * (r * z) = xi * r * z by ring, hU]
-  have hV_pow : xi ^ j * ((1 - r) * (1 - z)) ^ j = (-V) ^ j := by
-    calc
-      xi ^ j * ((1 - r) * (1 - z)) ^ j =
-          (xi * ((1 - r) * (1 - z))) ^ j := (mul_pow _ _ _).symm
-      _ = (-V) ^ j := by
-        rw [show xi * ((1 - r) * (1 - z)) = xi * (1 - r) * (1 - z) by ring, hV]
   have hcoordinates : xi ^ (i + j) * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
       (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by
     calc
       xi ^ (i + j) * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
-          (xi ^ i * (r * z) ^ i) *
-            (xi ^ j * ((1 - r) * (1 - z)) ^ j) := by
-        rw [pow_add]
+          (xi * r * z) ^ i * (xi * (1 - r) * (1 - z)) ^ j := by
+        simp only [pow_add, mul_pow]
         ring
-      _ = (-U) ^ i * (-V) ^ j := by rw [hU_pow, hV_pow]
+      _ = (-U) ^ i * (-V) ^ j := by rw [hU, hV]
       _ = (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by
-        rw [neg_pow U i, neg_pow V j]
-        calc
-          (-1 : ℝ) ^ i * U ^ i * ((-1 : ℝ) ^ j * V ^ j) =
-              ((-1 : ℝ) ^ i * (-1 : ℝ) ^ j) * U ^ i * V ^ j := by ring
-          _ = (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j := by rw [pow_add]
+        rw [neg_pow U i, neg_pow V j, pow_add]
+        ring
   have hxi_coordinates : xi ^ m * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
       (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j * xi ^ (m - i - j) := by
     calc
@@ -224,77 +210,38 @@ theorem appellKernelCoefficient_coordinate_eq_summand (m i j : ℕ)
         ring
       _ = (-1 : ℝ) ^ (i + j) * U ^ i * V ^ j * xi ^ (m - i - j) := by
         rw [hcoordinates]
-  have hnegative : risingFactorial (-(m : ℝ)) (i + j) =
-      (-1 : ℝ) ^ (i + j) * (m.descFactorial (i + j) : ℝ) := by
-    rw [risingFactorial, ascPochhammer_eval_neg_eq_descPochhammer,
-      descPochhammer_eval_eq_descFactorial]
-  have hfactorial : ((m - (i + j)).factorial : ℝ) *
-      (m.descFactorial (i + j) : ℝ) = (m.factorial : ℝ) := by
-    have hfactorial' := Nat.factorial_mul_descFactorial hij
-    exact_mod_cast congrArg (fun n : ℕ => (n : ℝ)) hfactorial'
-  have hfactorial_ne : ((m - (i + j)).factorial : ℝ) ≠ 0 := by
-    positivity
   have hratio : (m.descFactorial (i + j) : ℝ) =
       (m.factorial : ℝ) / ((m - (i + j)).factorial : ℝ) := by
-    apply (eq_div_iff hfactorial_ne).2
-    simpa [mul_comm] using hfactorial
+    apply (eq_div_iff (by positivity)).2
+    rw [mul_comm]
+    exact_mod_cast Nat.factorial_mul_descFactorial hij
   have hsub : m - i - j = m - (i + j) := by lia
-  have hkernel :
-      (-1 : ℝ) ^ m * xi ^ m *
-          ((-1 : ℝ) ^ m * ((-1 : ℝ) ^ (i + j) * (m.descFactorial (i + j) : ℝ)) *
-            risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-              (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial)) *
-          (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
-        (m.descFactorial (i + j) : ℝ) / ((i.factorial : ℝ) * (j.factorial : ℝ)) *
-          (risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-            (risingFactorial c i * risingFactorial d j)) *
-          U ^ i * V ^ j * xi ^ (m - i - j) := by
-    calc
-      (-1 : ℝ) ^ m * xi ^ m *
-          ((-1 : ℝ) ^ m * ((-1 : ℝ) ^ (i + j) * (m.descFactorial (i + j) : ℝ)) *
-            risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-              (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial)) *
-          (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
-          ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m * (-1 : ℝ) ^ (i + j)) *
-            (m.descFactorial (i + j) : ℝ) *
-            risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-              (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial) *
-            (xi ^ m * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j) := by
-        ring
-      _ = ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m * (-1 : ℝ) ^ (i + j)) *
-            (m.descFactorial (i + j) : ℝ) *
-            risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-              (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial) *
-            ((-1 : ℝ) ^ (i + j) * U ^ i * V ^ j * xi ^ (m - i - j)) := by
-        rw [hxi_coordinates]
-      _ = (m.descFactorial (i + j) : ℝ) / ((i.factorial : ℝ) * (j.factorial : ℝ)) *
-            (risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-              (risingFactorial c i * risingFactorial d j)) *
-            U ^ i * V ^ j * xi ^ (m - i - j) := by
-        ring_nf
-        rw [show (-1 : ℝ) ^ (m * 2) = 1 by
-              rw [Nat.mul_comm, pow_mul]
-              norm_num,
-          show (-1 : ℝ) ^ (i * 2) = 1 by
-              rw [Nat.mul_comm, pow_mul]
-              norm_num,
-          show (-1 : ℝ) ^ (j * 2) = 1 by
-              rw [Nat.mul_comm, pow_mul]
-              norm_num]
-        ring
+  rw [appellKernelCoefficient, ite_eq_left hij, risingFactorial_neg_natCast]
   calc
-    (-1 : ℝ) ^ m * xi ^ m *
-        appellKernelCoefficient m ((m : ℝ) + c + d - 1 + δ) c d i j *
-          (r * z) ^ i * ((1 - r) * (1 - z)) ^ j =
-        (m.descFactorial (i + j) : ℝ) / ((i.factorial : ℝ) * (j.factorial : ℝ)) *
-          (risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
-            (risingFactorial c i * risingFactorial d j)) *
-          U ^ i * V ^ j * xi ^ (m - i - j) := by
-      rw [appellKernelCoefficient, ite_eq_left hij, hnegative]
-      exact hkernel
+    _ = ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m * (-1 : ℝ) ^ (i + j)) *
+          (m.descFactorial (i + j) : ℝ) *
+          risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
+            (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial) *
+          (xi ^ m * (r * z) ^ i * ((1 - r) * (1 - z)) ^ j) := by ring
+    _ = ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m * (-1 : ℝ) ^ (i + j)) *
+          (m.descFactorial (i + j) : ℝ) *
+          risingFactorial ((m : ℝ) + c + d - 1 + δ) (i + j) /
+            (risingFactorial c i * risingFactorial d j * i.factorial * j.factorial) *
+          ((-1 : ℝ) ^ (i + j) * U ^ i * V ^ j * xi ^ (m - i - j)) := by
+      rw [hxi_coordinates]
     _ = summand m δ c d U V i j * xi ^ (m - i - j) := by
       unfold summand
       rw [hsub, hratio]
+      ring_nf
+      rw [show (-1 : ℝ) ^ (m * 2) = 1 by
+            rw [Nat.mul_comm, pow_mul]
+            norm_num,
+        show (-1 : ℝ) ^ (i * 2) = 1 by
+            rw [Nat.mul_comm, pow_mul]
+            norm_num,
+        show (-1 : ℝ) ^ (j * 2) = 1 by
+            rw [Nat.mul_comm, pow_mul]
+            norm_num]
       ring
 
 /-! ## Jacobi transport of the finite Appell kernel
@@ -315,54 +262,10 @@ theorem jacobiDifferentialOperator_jacobiBernstein (c d : ℝ) (i j : ℕ) :
         C ((j : ℝ) * ((j : ℝ) + d - 1)) * jacobiBernstein i (j - 1) -
           C (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
             jacobiBernstein i j := by
-  cases i with
-  | zero =>
-      cases j with
-      | zero =>
-          simp [jacobiBernstein, jacobiDifferentialOperator]
-      | succ j =>
-          cases j with
-          | zero =>
-              simp [jacobiBernstein, jacobiDifferentialOperator]
-              ring
-          | succ j =>
-              simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                derivative_pow]
-              ring
-  | succ i =>
-      cases i with
-      | zero =>
-          cases j with
-          | zero =>
-              simp [jacobiBernstein, jacobiDifferentialOperator]
-              ring
-          | succ j =>
-              cases j with
-              | zero =>
-                  norm_num [jacobiBernstein, jacobiDifferentialOperator,
-                    derivative_mul]
-                  rw [C_ofNat]
-                  ring
-              | succ j =>
-                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                    derivative_pow]
-                  ring
-      | succ i =>
-          cases j with
-          | zero =>
-              simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                derivative_pow]
-              ring
-          | succ j =>
-              cases j with
-              | zero =>
-                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                    derivative_pow]
-                  ring
-              | succ j =>
-                  simp [jacobiBernstein, jacobiDifferentialOperator, derivative_mul,
-                    derivative_pow]
-                  ring
+  rcases i with (_ | _ | i) <;> rcases j with (_ | _ | j) <;>
+    norm_num [jacobiBernstein, jacobiDifferentialOperator, derivative_mul, C_ofNat,
+      derivative_pow] <;>
+    ring
 
 /-- The Appell kernel after fixing its second Jacobi coordinate. -/
 def appellJacobiKernel (m : ℕ) (b c d z : ℝ) : ℝ[X] :=
@@ -414,10 +317,7 @@ private theorem jacobiDifferentialOperator_finset_sum (a s : ℝ)
     (u : Finset ℕ) (f : ℕ → ℝ[X]) :
     jacobiDifferentialOperator a s (∑ i ∈ u, f i) =
       ∑ i ∈ u, jacobiDifferentialOperator a s (f i) := by
-  induction u using Finset.induction_on with
-  | empty => simp [jacobiDifferentialOperator_zero]
-  | insert i u hi ih =>
-      simp [hi, jacobiDifferentialOperator_add, ih]
+  induction u using Finset.induction_on <;> simp_all
 
 /-- Applying the library Jacobi operator to the fixed-coordinate kernel
 is the finite sum of the three Bernstein action terms. -/
@@ -429,13 +329,8 @@ theorem jacobiDifferentialOperator_appellJacobiKernel (m : ℕ) (b c d z : ℝ) 
             C ((j : ℝ) * ((j : ℝ) + d - 1)) * jacobiBernstein i (j - 1) -
               C (((i + j : ℕ) : ℝ) * ((i + j : ℕ) + c + d - 1)) *
                 jacobiBernstein i j) := by
-  rw [appellJacobiKernel, jacobiDifferentialOperator_finset_sum]
-  apply Finset.sum_congr rfl
-  intro i _
-  rw [jacobiDifferentialOperator_finset_sum]
-  apply Finset.sum_congr rfl
-  intro j _
-  rw [jacobiDifferentialOperator_C_mul,
+  simp_rw [appellJacobiKernel, jacobiDifferentialOperator_finset_sum,
+    jacobiDifferentialOperator_C_mul,
     jacobiDifferentialOperator_jacobiBernstein]
 
 private theorem iLowering_fixed_second_coordinate (m : ℕ) (b c d r z : ℝ)
@@ -457,20 +352,12 @@ private theorem iLowering_fixed_second_coordinate (m : ℕ) (b c d r z : ℝ)
   let rightTerm : ℕ → ℝ := fun i =>
     appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
       ((i : ℝ) * ((i : ℝ) + c - 1)) * (jacobiBernstein (i - 1) j).eval z
-  have hleft_zero : leftTerm 0 = 0 := by simp [leftTerm]
-  have hright_zero : rightTerm 0 = 0 := by simp [rightTerm]
-  have hleft_top : leftTerm (m + 1) = 0 := by
-    simp only [leftTerm]
-    rw [show appellKernelCoefficient m b c d (m + 1) j = 0 by
-      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
-    ring
-  have hright_top : rightTerm (m + 1) = 0 := by
-    simp only [rightTerm]
-    rw [show appellKernelCoefficient m b c d (m + 1) j = 0 by
-      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
-    ring
-  have hleft := sum_range_shift_of_boundary_zero leftTerm m hleft_zero hleft_top
-  have hright := sum_range_shift_of_boundary_zero rightTerm m hright_zero hright_top
+  have htop : appellKernelCoefficient m b c d (m + 1) j = 0 :=
+    appellKernelCoefficient_eq_zero_of_lt (by lia)
+  have hleft := sum_range_shift_of_boundary_zero leftTerm m
+    (by simp [leftTerm]) (by simp [leftTerm, htop])
+  have hright := sum_range_shift_of_boundary_zero rightTerm m
+    (by simp [rightTerm]) (by simp [rightTerm, htop])
   change (∑ i ∈ Finset.range (m + 1), leftTerm i) -
       ∑ i ∈ Finset.range (m + 1), rightTerm i = _
   rw [hleft, hright, ← Finset.sum_sub_distrib]
@@ -503,20 +390,12 @@ private theorem jLowering_fixed_first_coordinate (m : ℕ) (b c d r z : ℝ)
   let rightTerm : ℕ → ℝ := fun j =>
     appellKernelCoefficient m b c d i j * r ^ i * (1 - r) ^ j *
       ((j : ℝ) * ((j : ℝ) + d - 1)) * (jacobiBernstein i (j - 1)).eval z
-  have hleft_zero : leftTerm 0 = 0 := by simp [leftTerm]
-  have hright_zero : rightTerm 0 = 0 := by simp [rightTerm]
-  have hleft_top : leftTerm (m + 1) = 0 := by
-    simp only [leftTerm]
-    rw [show appellKernelCoefficient m b c d i (m + 1) = 0 by
-      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
-    ring
-  have hright_top : rightTerm (m + 1) = 0 := by
-    simp only [rightTerm]
-    rw [show appellKernelCoefficient m b c d i (m + 1) = 0 by
-      exact appellKernelCoefficient_eq_zero_of_lt (by lia)]
-    ring
-  have hleft := sum_range_shift_of_boundary_zero leftTerm m hleft_zero hleft_top
-  have hright := sum_range_shift_of_boundary_zero rightTerm m hright_zero hright_top
+  have htop : appellKernelCoefficient m b c d i (m + 1) = 0 :=
+    appellKernelCoefficient_eq_zero_of_lt (by lia)
+  have hleft := sum_range_shift_of_boundary_zero leftTerm m
+    (by simp [leftTerm]) (by simp [leftTerm, htop])
+  have hright := sum_range_shift_of_boundary_zero rightTerm m
+    (by simp [rightTerm]) (by simp [rightTerm, htop])
   change (∑ j ∈ Finset.range (m + 1), leftTerm j) -
       ∑ j ∈ Finset.range (m + 1), rightTerm j = _
   rw [hleft, hright, ← Finset.sum_sub_distrib]
@@ -709,37 +588,12 @@ private theorem sum_antidiagonal_triangle (m : ℕ) (f : ℕ → ℕ → ℕ →
     _ = ∑ ij ∈ ((range (m + 1) ×ˢ range (m + 1)).filter fun ij => ij.1 + ij.2 ≤ m),
           f ij.1 ij.2 (m - ij.1 - ij.2) := by
       refine Finset.sum_bij (fun x _ => x.2) ?_ ?_ ?_ ?_
-      · rintro ⟨l, ij⟩ h
-        rcases Finset.mem_sigma.mp h with ⟨hl, hij⟩
-        have hl' := Finset.mem_range.mp hl
-        have hsum := Finset.mem_antidiagonal.mp hij
-        apply Finset.mem_filter.mpr
-        refine ⟨Finset.mem_product.mpr
-          ⟨Finset.mem_range.mpr ?_, Finset.mem_range.mpr ?_⟩, ?_⟩
-        · lia
-        · lia
-        · lia
-      · rintro ⟨l, ij⟩ h ⟨l', ij'⟩ h' heq
-        rcases Finset.mem_sigma.mp h with ⟨_, hij⟩
-        rcases Finset.mem_sigma.mp h' with ⟨_, hij'⟩
-        dsimp at heq
-        subst ij'
-        have hsum := Finset.mem_antidiagonal.mp hij
-        have hsum' := Finset.mem_antidiagonal.mp hij'
-        have hll : l = l' := by lia
-        subst l'
-        rfl
+      · grind [Finset.mem_antidiagonal]
+      · grind [Finset.mem_antidiagonal]
       · intro ij hij
-        rcases Finset.mem_filter.mp hij with ⟨hprod, hsum⟩
-        refine ⟨⟨ij.1 + ij.2, ij⟩, Finset.mem_sigma.mpr ?_, rfl⟩
-        refine ⟨Finset.mem_range.mpr ?_, Finset.mem_antidiagonal.mpr rfl⟩
-        exact by lia
-      · rintro ⟨l, ij⟩ h
-        rcases Finset.mem_sigma.mp h with ⟨_, hij⟩
-        have hsum := Finset.mem_antidiagonal.mp hij
-        dsimp
-        congr 1
-        lia
+        refine ⟨⟨ij.1 + ij.2, ij⟩, ?_, rfl⟩
+        grind [Finset.mem_antidiagonal]
+      · grind [Finset.mem_antidiagonal]
     _ = ∑ ij ∈ range (m + 1) ×ˢ range (m + 1),
           if ij.1 + ij.2 ≤ m then f ij.1 ij.2 (m - ij.1 - ij.2) else 0 := by
       rw [Finset.sum_filter]
