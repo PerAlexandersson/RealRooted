@@ -15,6 +15,9 @@ version = 1
 section = "theorems"
 slug = "root-amplitude"
 formalized = "2026-09-08"
+references = [
+  "Kozlov2022",
+]
 
 [[theorems]]
 name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_abs_eval_deriv_of_root_separation"
@@ -128,14 +131,12 @@ smallest magnitude, a reciprocal-square proportion $c > 1/2$ gives the factor
 $(2c-1)/c$; the Newton-type inequality on the first three coefficients
 specializes this to the one-fifth bound. The abstract square-sum result gives
 the related estimate for any finite family of negative factors.
+
 ## References
 
 These results were extracted from a formal proof that the rows of
 [OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace. The
-motivating combinatorial objects are the Stirling complexes of D. N. Kozlov,
-[“Stirling complexes,”](https://doi.org/10.1007/s41468-022-00096-4)
-*Journal of Applied and Computational Topology* 7 (2023), 57–74,
-[arXiv:2309.17142](https://arxiv.org/abs/2309.17142).
+motivating combinatorial objects are the Stirling complexes [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/
 

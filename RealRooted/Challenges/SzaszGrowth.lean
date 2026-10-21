@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "szasz-growth"
 formalized = "2026-10-13"
+references = [
+  "BorceaBranden2009I",
+]
 authors = ["Borcea", "Brändén"]
 years = [2009]
 
@@ -87,7 +90,8 @@ $$
 This applies to a polynomial $\prod_j (1 + \xi_j z)$ with no zeros in the open upper half-plane.
 
 In the next two theorems, assume that $a(0) = 1$ and that $J_\beta f$ is stable for every
-$\beta \in \mathbb N^\sigma$. (For stable $f$ this is Borcea–Brändén, Lemma 5.2.)
+$\beta \in \mathbb N^\sigma$. For stable $f$ this is Borcea–Brändén
+[@BorceaBranden2009I, Lemma 5.2].
 
 **Theorem** (coefficient bound). For every $\beta$,
 $$
@@ -144,13 +148,7 @@ general support.
 
 ## References
 
-J. Borcea and P. Brändén,
-[“The Lee–Yang and Pólya–Schur programs. I. Linear operators preserving
-stability,”](https://arxiv.org/abs/0809.0401) *Invent. Math.* 177
-(2009), 541–569,
-[doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3),
-[arXiv:0809.0401](https://arxiv.org/abs/0809.0401), Lemmas 5.2 and 5.4 and
-Theorems 5.5 and 5.6.
+See [@BorceaBranden2009I, Lemmas 5.2 and 5.4 and Thms. 5.5 and 5.6].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The univariate estimate is in

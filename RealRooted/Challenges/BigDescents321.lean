@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "big-descents-321"
 formalized = "2026-10-06"
+references = [
+  "ElizaldeRiveraZhuang2026",
+]
 authors = ["Elizalde", "Rivera", "Zhuang", "Alexandersson"]
 years = [2024, 2026]
 
@@ -55,10 +58,11 @@ polynomials.
 simple and strictly negative, $M_{n-2}$ interlaces $A_n$, and the two polynomials have no common
 root.
 
-This settles the case $\Pi = \{321\}$ of Conjecture 4.4 of Elizalde, Rivera and Zhuang. The Lean
+This settles the case $\Pi = \{321\}$ of Conjecture 4.4 of Elizalde, Rivera and Zhuang
+[@ElizaldeRiveraZhuang2026, Conj. 4.4]. The Lean
 statements are about the recurrence-defined polynomials; the enumeration of permutations is the
 combinatorial interpretation and is not formalized. See also
-[big descents on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#bigDescent).
+[big descents on symmetricfunctions.com](sf:bigDescent).
 
 ## Proof idea
 
@@ -81,9 +85,7 @@ The cases $n \le 24$ are exact interlacing and Bezout certificates.
 
 ## References
 
-S. Elizalde, J. Rivera, Jr., and Y. Zhuang, [“Counting pattern-avoiding permutations by big
-descents,”](https://arxiv.org/abs/2408.15111) *Annals of Combinatorics* (2026),
-[doi:10.1007/s00026-026-00805-1](https://doi.org/10.1007/s00026-026-00805-1).
+See [@ElizaldeRiveraZhuang2026].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

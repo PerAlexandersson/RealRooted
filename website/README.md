@@ -12,12 +12,14 @@ section = "families"
 slug = "example"
 authors = ["Example", "Author"]
 years = [1952]
+references = ["Example1952", {key = "Other1953", at = "Thm. 2"}]
 
 [[definitions]]
 name = "RealRooted.Challenges.Example.family"
 
 [[theorems]]
 name = "RealRooted.Challenges.Example.realRooted"
+symcat = "exampleRealRooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -30,6 +32,21 @@ Short human-readable account of the exact checked results.
 - [Primary reference](https://example.org/)
 <!-- /realrooted-catalog-content -->
 -/
+```
+
+Page-level `references` entries are bibliography keys exported by
+`symmetricfunctions.com`; a record may add an `at` locator. In prose, `[@Example1952]`,
+`[@Example1952, Thm. 2]`, and `[@Example1952; @Other1953]` produce linked short citations and
+a generated bibliography in the existing `## References` section. Links with an `sf:` target,
+such as `[related statement](sf:exampleRealRooted)`, resolve through the committed SymCat label
+snapshot. A declaration's optional `symcat` label adds a link beside its Lean source link and is
+exported in `catalog-manifest.json`.
+
+Refresh both snapshots from the live site, or from a local directory containing the two exports:
+
+```bash
+python3 scripts/symcat_sync.py
+python3 scripts/symcat_sync.py /path/to/exports --keep ExtraBibliographyKey
 ```
 
 `version`, `section`, and `slug` are required.  Sections are `concepts`,
@@ -120,6 +137,10 @@ Build a source-only local preview without invoking Lake or Lean:
 ```bash
 python3 scripts/build_challenge_pages.py --preview
 ```
+
+Use `--base-path /` when previewing the layout intended for a root-served custom domain. The
+default remains `/RealRooted/`; `--site-origin` controls absolute declaration URLs in the
+manifest. Legacy prose links beginning with `/RealRooted/` are rewritten to the selected base.
 
 The command writes to the system temporary directory and prints a ready-to-run
 `python3 -m http.server` command.  It does not perform the post-Lean publication

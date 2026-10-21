@@ -12,6 +12,10 @@ version = 1
 section = "theorems"
 slug = "binary-run-transformation"
 formalized = "2026-09-28"
+references = [
+  "BorceaBranden2009I",
+  "MaoWang2026x",
+]
 
 [[definitions]]
 name = "RealRooted.binaryRunPolynomial"
@@ -98,7 +102,8 @@ sends $X^m$, for $1 \leq m \leq n$, to
 
 $$\frac{1}{\binom{n}{m}} \sum_k \binom{m-1}{k-1}\binom{n+1-m}{k} X^k.$$
 
-If the input has degree at most $n$, nonnegative coefficients, and only real
+By the algebraic-symbol method [@BorceaBranden2009I], if the input has degree
+at most $n$, nonnegative coefficients, and only real
 nonpositive zeros, then its image has the same properties. If the input has
 positive constant coefficient, every zero of the image is strictly negative.
 
@@ -110,7 +115,8 @@ $$T_n(X^m) = \frac{\binom{n}{m}}{m+1}\, \mathtt{binaryRunPolynomial}\ n\ m.$$
 Equivalently, it is `binaryRunTransform n` after the standard finite
 Narayana/Schur–Szegő diagonal multiplier. Combined with preservation by that
 multiplier, this preservation theorem yields the corresponding
-[Narayana transformation theorem](/RealRooted/families/narayana/); that
+[Narayana transformation theorem](/RealRooted/families/narayana/)
+[@MaoWang2026x]; that
 deduction is cited, and Lean does not connect `binaryRunTransform` to
 `narayanaTransform`.
 
@@ -157,14 +163,8 @@ prevents collisions throughout the deformation.
 
 ## References
 
-The stability-preserving contraction uses the algebraic-symbol machinery of
-J. Borcea and P. Brändén, [“The Lee–Yang and Pólya–Schur programs. I. Linear
-operators preserving stability,”](https://arxiv.org/abs/0809.0401)
-*Inventiones Mathematicae* 177 (2009), 541–569,
-[doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3).
-For the related transform, see
-J. Mao and L. Wang, [“The Narayana transformation,”](https://arxiv.org/abs/2607.01572)
-arXiv:2607.01572 (2026).
+The stability-preserving contraction uses the algebraic-symbol machinery
+[@BorceaBranden2009I]. For the related Narayana transform, see [@MaoWang2026x].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the strictly negative root corollary of the checked

@@ -1,0 +1,3519 @@
+{
+  "entries": {
+    "AissenSchoenbergWhitney1952": {
+      "bibtex": "@article{AissenSchoenbergWhitney1952,\n  author = {Aissen, Michael and Schoenberg, I. J. and Whitney, A. M.},\n  title = {On the generating functions of totally positive sequences {I}},\n  year = {1952},\n  journal = {Journal d'Analyse Mathématique},\n  volume = {2},\n  number = {1},\n  pages = {93--103},\n  doi = {10.1007/BF02786970},\n  url = {https://doi.org/10.1007/BF02786970}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF02786970",
+        "URL": "https://doi.org/10.1007/BF02786970",
+        "author": [
+          {
+            "family": "Aissen",
+            "given": "Michael"
+          },
+          {
+            "family": "Schoenberg",
+            "given": "I. J."
+          },
+          {
+            "family": "Whitney",
+            "given": "A. M."
+          }
+        ],
+        "container-title": "Journal d’Analyse Mathématique",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1952
+            ]
+          ]
+        },
+        "page": "93-103",
+        "title": "On the generating functions of totally positive sequences I",
+        "type": "article-journal",
+        "volume": "2"
+      },
+      "label": "ASW52"
+    },
+    "AkianGaubertSharify2017": {
+      "bibtex": "@article{AkianGaubertSharify2017,\n  author = {Akian, Marianne and Gaubert, Stéphane and Sharify, Meisam},\n  title = {Log-majorization of the moduli of the eigenvalues of a matrix polynomial by tropical roots},\n  year = {2017},\n  journal = {Linear Algebra and its Applications},\n  volume = {528},\n  pages = {394--435},\n  doi = {10.1016/j.laa.2016.11.004},\n  url = {https://doi.org/10.1016/j.laa.2016.11.004}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.laa.2016.11.004",
+        "URL": "https://doi.org/10.1016/j.laa.2016.11.004",
+        "author": [
+          {
+            "family": "Akian",
+            "given": "Marianne"
+          },
+          {
+            "family": "Gaubert",
+            "given": "Stéphane"
+          },
+          {
+            "family": "Sharify",
+            "given": "Meisam"
+          }
+        ],
+        "container-title": "Linear Algebra and its Applications",
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "page": "394-435",
+        "title": "Log-majorization of the moduli of the eigenvalues of a matrix polynomial by tropical roots",
+        "type": "article-journal",
+        "volume": "528"
+      },
+      "label": "AGS17"
+    },
+    "Alexandersson2026Eulerian": {
+      "bibtex": "@article{Alexandersson2026Eulerian,\n  author = {Per Alexandersson},\n  title = {Real-rooted {E}ulerian polynomials from permutations, words, and\n    paths},\n  year = {2026},\n  eprint = {2609.07325v1},\n  url = {https://arxiv.org/abs/2609.07325v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.07325v1",
+        "author": [
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Real-rooted Eulerian polynomials from permutations, words, and paths",
+        "type": "article-journal"
+      },
+      "label": "Ale26"
+    },
+    "AlexanderssonJal2024x": {
+      "bibtex": "@article{AlexanderssonJal2024x,\nAuthor = {Per Alexandersson and Aryaman Jal},\nTitle = {Rook matroids and log-concavity of ${P}$-{E}ulerian polynomials},\nYear = {2024},\nEprint = {2410.00127},\n  url = {https://arxiv.org/abs/2410.00127},\njournal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2410.00127",
+        "author": [
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          },
+          {
+            "family": "Jal",
+            "given": "Aryaman"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "title": "Rook matroids and log-concavity of ${P}$-Eulerian polynomials",
+        "type": "article-journal"
+      },
+      "label": "AJ24"
+    },
+    "AndrewsEggeGawronskiLittlejohn2013": {
+      "bibtex": "@article{AndrewsEggeGawronskiLittlejohn2013,\n  author = {Andrews, George E. and Egge, Eric S. and Gawronski, Wolfgang and Littlejohn, Lance L.},\n  title = {The {J}acobi–{S}tirling numbers},\n  year = {2013},\n  journal = {Journal of Combinatorial Theory, Series A},\n  volume = {120},\n  number = {1},\n  pages = {288--303},\n  doi = {10.1016/j.jcta.2012.08.006},\n  url = {https://doi.org/10.1016/j.jcta.2012.08.006}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.jcta.2012.08.006",
+        "URL": "https://doi.org/10.1016/j.jcta.2012.08.006",
+        "author": [
+          {
+            "family": "Andrews",
+            "given": "George E."
+          },
+          {
+            "family": "Egge",
+            "given": "Eric S."
+          },
+          {
+            "family": "Gawronski",
+            "given": "Wolfgang"
+          },
+          {
+            "family": "Littlejohn",
+            "given": "Lance L."
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series A",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2013
+            ]
+          ]
+        },
+        "page": "288-303",
+        "title": "The Jacobi–Stirling numbers",
+        "type": "article-journal",
+        "volume": "120"
+      },
+      "label": "AEGL13"
+    },
+    "AndrewsGawronskiLittlejohn2011": {
+      "bibtex": "@article{AndrewsGawronskiLittlejohn2011,\n  author = {Andrews, G.E. and Gawronski, W. and Littlejohn, L.L.},\n  title = {The {L}egendre–{S}tirling numbers},\n  year = {2011},\n  journal = {Discrete Mathematics},\n  volume = {311},\n  number = {14},\n  pages = {1255--1272},\n  doi = {10.1016/j.disc.2011.02.028},\n  url = {https://doi.org/10.1016/j.disc.2011.02.028}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.disc.2011.02.028",
+        "URL": "https://doi.org/10.1016/j.disc.2011.02.028",
+        "author": [
+          {
+            "family": "Andrews",
+            "given": "G. E."
+          },
+          {
+            "family": "Gawronski",
+            "given": "W."
+          },
+          {
+            "family": "Littlejohn",
+            "given": "L. L."
+          }
+        ],
+        "container-title": "Discrete Mathematics",
+        "issue": "14",
+        "issued": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        },
+        "page": "1255-1272",
+        "title": "The Legendre–Stirling numbers",
+        "type": "article-journal",
+        "volume": "311"
+      },
+      "label": "AGL11"
+    },
+    "Asano1970": {
+      "bibtex": "@article{Asano1970,\n  author = {Asano, Taro},\n  title = {Lee-{Y}ang {T}heorem and the {G}riffiths {I}nequality for the {A}nisotropic {H}eisenberg {F}erromagnet},\n  year = {1970},\n  journal = {Physical Review Letters},\n  volume = {24},\n  number = {25},\n  pages = {1409--1411},\n  doi = {10.1103/PhysRevLett.24.1409},\n  url = {https://doi.org/10.1103/PhysRevLett.24.1409}\n}\n",
+      "csl": {
+        "DOI": "10.1103/PhysRevLett.24.1409",
+        "URL": "https://doi.org/10.1103/PhysRevLett.24.1409",
+        "author": [
+          {
+            "family": "Asano",
+            "given": "Taro"
+          }
+        ],
+        "container-title": "Physical Review Letters",
+        "issue": "25",
+        "issued": {
+          "date-parts": [
+            [
+              1970
+            ]
+          ]
+        },
+        "page": "1409-1411",
+        "title": "Lee-Yang Theorem and the Griffiths Inequality for the Anisotropic Heisenberg Ferromagnet",
+        "type": "article-journal",
+        "volume": "24"
+      },
+      "label": "Asa70"
+    },
+    "Athanasiadis2025EulerianTransformation": {
+      "bibtex": "@article{Athanasiadis2025EulerianTransformation,\n  author = {Athanasiadis, Christos A.},\n  title = {On the real-rootedness of the {E}ulerian transformation},\n  journal = {Journal of the London Mathematical Society},\n  volume = {111},\n  number = {2},\n  year = {2025},\n  doi = {10.1112/jlms.70083},\n  url2 = {https://doi.org/10.1112/jlms.70083},\n  eprint = {2302.00754},\n  archivePrefix = {arXiv}\n}\n",
+      "csl": {
+        "DOI": "10.1112/jlms.70083",
+        "URL": "https://arxiv.org/abs/2302.00754",
+        "author": [
+          {
+            "family": "Athanasiadis",
+            "given": "Christos A."
+          }
+        ],
+        "container-title": "Journal of the London Mathematical Society",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "title": "On the real-rootedness of the Eulerian transformation",
+        "type": "article-journal",
+        "volume": "111"
+      },
+      "label": "Ath25"
+    },
+    "AthanasiadisWagner2024x": {
+      "bibtex": "@article{AthanasiadisWagner2024x,\n  author = {Christos A. Athanasiadis and David G. Wagner},\n  title = {Veronese sections and interlacing matrices of polynomials and formal power series},\n  journal = {arXiv e-prints},\n  year = {2024},\n  eprint = {2404.12989},\n  doi = {10.48550/arXiv.2404.12989}\n}\n",
+      "csl": {
+        "DOI": "10.48550/arXiv.2404.12989",
+        "URL": "https://arxiv.org/abs/2404.12989",
+        "author": [
+          {
+            "family": "Athanasiadis",
+            "given": "Christos A."
+          },
+          {
+            "family": "Wagner",
+            "given": "David G."
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "title": "Veronese sections and interlacing matrices of polynomials and formal power series",
+        "type": "article-journal"
+      },
+      "label": "AW24"
+    },
+    "BarcucciLungoPinzani1996": {
+      "bibtex": "@article{BarcucciLungoPinzani1996,\n  author = {Barcucci, Elena and Del Lungo, Alberto and Pinzani, Renzo},\n  title = {“{D}eco” polyominoes, permutations and random generation},\n  year = {1996},\n  journal = {Theoretical Computer Science},\n  volume = {159},\n  number = {1},\n  pages = {29--42},\n  doi = {10.1016/0304-3975(95)00199-9},\n  url = {https://doi.org/10.1016/0304-3975(95)00199-9}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0304-3975(95)00199-9",
+        "URL": "https://doi.org/10.1016/0304-3975(95)00199-9",
+        "author": [
+          {
+            "family": "Barcucci",
+            "given": "Elena"
+          },
+          {
+            "family": "Del Lungo",
+            "given": "Alberto"
+          },
+          {
+            "family": "Pinzani",
+            "given": "Renzo"
+          }
+        ],
+        "container-title": "Theoretical Computer Science",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1996
+            ]
+          ]
+        },
+        "page": "29-42",
+        "title": "“Deco” polyominoes, permutations and random generation",
+        "type": "article-journal",
+        "volume": "159"
+      },
+      "label": "BDLP96"
+    },
+    "Bender1973": {
+      "bibtex": "@article{Bender1973,\n  title = {Central and local limit theorems applied to asymptotic enumeration},\n  volume = {15},\n  ISSN = {0097-3165},\n  url = {http://dx.doi.org/10.1016/0097-3165(73)90038-1},\n  DOI = {10.1016/0097-3165(73)90038-1},\n  number = {1},\n  journal = {Journal of Combinatorial Theory,  Series A},\n  publisher = {Elsevier BV},\n  author = {Bender,  Edward A},\n  year = {1973},\n  month = jul,\n  pages = {91–-111}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0097-3165(73)90038-1",
+        "URL": "http://dx.doi.org/10.1016/0097-3165(73)90038-1",
+        "author": [
+          {
+            "family": "Bender",
+            "given": "Edward A"
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series A",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1973,
+              7
+            ]
+          ]
+        },
+        "page": "91--111",
+        "title": "Central and local limit theorems applied to asymptotic enumeration",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "Ben73"
+    },
+    "BinderVecchi2026x": {
+      "bibtex": "@article{BinderVecchi2026x,\n  author = {Kyle Binder and Lorenzo Vecchi},\n  title = {Augmented singular cohomology, uniform matroids, and\n    real-rootedness},\n  year = {2026},\n  eprint = {2609.15946v1},\n  url = {https://arxiv.org/abs/2609.15946v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.15946v1",
+        "author": [
+          {
+            "family": "Binder",
+            "given": "Kyle"
+          },
+          {
+            "family": "Vecchi",
+            "given": "Lorenzo"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Augmented singular cohomology, uniform matroids, and real-rootedness",
+        "type": "article-journal"
+      },
+      "label": "BV26"
+    },
+    "BogvadHagg2017": {
+      "bibtex": "@article{BogvadHagg2017,\n  author = {Bøgvad, Rikard and Hägg, Christian},\n  title = {A refinement for rational functions of {P}ólya's method to construct {V}oronoi diagrams},\n  year = {2017},\n  journal = {Journal of Mathematical Analysis and Applications},\n  volume = {452},\n  number = {1},\n  pages = {312--334},\n  doi = {10.1016/j.jmaa.2017.02.071},\n  url = {https://doi.org/10.1016/j.jmaa.2017.02.071}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.jmaa.2017.02.071",
+        "URL": "https://doi.org/10.1016/j.jmaa.2017.02.071",
+        "author": [
+          {
+            "family": "Bøgvad",
+            "given": "Rikard"
+          },
+          {
+            "family": "Hägg",
+            "given": "Christian"
+          }
+        ],
+        "container-title": "Journal of Mathematical Analysis and Applications",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "page": "312-334",
+        "title": "A refinement for rational functions of Pólya’s method to construct Voronoi diagrams",
+        "type": "article-journal",
+        "volume": "452"
+      },
+      "label": "BH17"
+    },
+    "Bona2009": {
+      "bibtex": "@article{Bona2009,\n  doi = {10.1137/070702254},\n  url = {https://doi.org/10.1137/070702254},\n  year = {2009},\n  month = jan,\n  publisher = {Society for Industrial \\& Applied Mathematics ({SIAM})},\n  volume = {23},\n  number = {1},\n  pages = {401--406},\n  author = {Mikl{\\'{o}}s B{\\'{o}}na},\n  title = {Real Zeros and Normal Distribution for Statistics on {S}tirling Permutations Defined by {G}essel and {S}tanley},\n  journal = {{SIAM} Journal on Discrete Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1137/070702254",
+        "URL": "https://doi.org/10.1137/070702254",
+        "author": [
+          {
+            "family": "Bóna",
+            "given": "Miklós"
+          }
+        ],
+        "container-title": "SIAM Journal on Discrete Mathematics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2009,
+              1
+            ]
+          ]
+        },
+        "page": "401-406",
+        "title": "Real zeros and normal distribution for statistics on Stirling permutations defined by Gessel and Stanley",
+        "type": "article-journal",
+        "volume": "23"
+      },
+      "label": "Bo09"
+    },
+    "BonaHezo2016": {
+      "bibtex": "@article{BonaHezo2016,\n  doi = {10.1016/j.ejc.2015.07.021},\n  url = {https://doi.org/10.1016/j.ejc.2015.07.021},\n  year = {2016},\n  month = jan,\n  publisher = {Elsevier {BV}},\n  volume = {51},\n  pages = {500--510},\n  author = {Mikl{\\'{o}}s B{\\'{o}}na and Istv{\\'{a}}n Mez{\\H{o}}},\n  title = {Real zeros and partitions without singleton blocks},\n  journal = {European Journal of Combinatorics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.ejc.2015.07.021",
+        "URL": "https://doi.org/10.1016/j.ejc.2015.07.021",
+        "author": [
+          {
+            "family": "Bóna",
+            "given": "Miklós"
+          },
+          {
+            "family": "Mező",
+            "given": "István"
+          }
+        ],
+        "container-title": "European Journal of Combinatorics",
+        "issued": {
+          "date-parts": [
+            [
+              2016,
+              1
+            ]
+          ]
+        },
+        "page": "500-510",
+        "title": "Real zeros and partitions without singleton blocks",
+        "type": "article-journal",
+        "volume": "51"
+      },
+      "label": "BM16"
+    },
+    "BorceaBranden2008MixedDeterminants": {
+      "bibtex": "@article{BorceaBranden2008MixedDeterminants,\n  doi = {10.1215/00127094-2008-018},\n  url2 = {https://doi.org/10.1215/00127094-2008-018},\n  year = {2008},\n  month = jun,\n  publisher = {Duke University Press},\n  volume = {143},\n  number = {2},\n  pages = {205--223},\n  author = {Julius Borcea and Petter Br{\\\"{a}}nd{\\'{e}}n},\n  title = {Applications of stable polynomials to mixed determinants: {J}ohnson's conjectures, unimodality, and symmetrized {F}ischer products},\n  journal = {Duke Mathematical Journal}\n}\n",
+      "csl": {
+        "DOI": "10.1215/00127094-2008-018",
+        "author": [
+          {
+            "family": "Borcea",
+            "given": "Julius"
+          },
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Duke Mathematical Journal",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2008,
+              6
+            ]
+          ]
+        },
+        "page": "205-223",
+        "title": "Applications of stable polynomials to mixed determinants: Johnson’s conjectures, unimodality, and symmetrized Fischer products",
+        "type": "article-journal",
+        "volume": "143"
+      },
+      "label": "BB08"
+    },
+    "BorceaBranden2009I": {
+      "bibtex": "@article{BorceaBranden2009I,\n  doi = {10.1007/s00222-009-0189-3},\n  url2 = {https://doi.org/10.1007/s00222-009-0189-3},\n  year = {2009},\n  month = mar,\n  publisher = {Springer Science and Business Media {LLC}},\n  volume = {177},\n  number = {3},\n  pages = {541--569},\n  author = {Julius Borcea and Petter Br{\\\"{a}}nd{\\'{e}}n},\n  title = {The {L}ee--{Y}ang and {P}{\\'{o}}lya--{S}chur programs. {I}. {L}inear operators preserving stability},\n  journal = {Inventiones mathematicae}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s00222-009-0189-3",
+        "author": [
+          {
+            "family": "Borcea",
+            "given": "Julius"
+          },
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Inventiones mathematicae",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              2009,
+              3
+            ]
+          ]
+        },
+        "page": "541-569",
+        "title": "The Lee–Yang and Pólya–Schur programs. I. Linear operators preserving stability",
+        "type": "article-journal",
+        "volume": "177"
+      },
+      "label": "BB09"
+    },
+    "BorceaBranden2009II": {
+      "bibtex": "@article{BorceaBranden2009II,\n\tdoi = {10.1002/cpa.20295},\n\turl2 = {https://doi.org/10.1002%2Fcpa.20295},\n\tyear = 2009,\n\tmonth = {dec},\n\tpublisher = {Wiley},\n\tvolume = {62},\n\tnumber = {12},\n\tpages = {1595--1631},\n\tauthor = {Julius Borcea and Petter Br{\\\"{a}}nd{\\'{e}}n},\n\ttitle = {The {L}ee--{Y}ang and {P}{\\'{o}}lya--{S}chur programs. {II}. Theory of stable polynomials and applications},\n\tjournal = {Communications on Pure and Applied Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1002/cpa.20295",
+        "author": [
+          {
+            "family": "Borcea",
+            "given": "Julius"
+          },
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Communications on Pure and Applied Mathematics",
+        "issue": "12",
+        "issued": {
+          "date-parts": [
+            [
+              2009,
+              12
+            ]
+          ]
+        },
+        "page": "1595-1631",
+        "title": "The Lee–Yang and Pólya–Schur programs. II. Theory of stable polynomials and applications",
+        "type": "article-journal",
+        "volume": "62"
+      },
+      "label": "BB09"
+    },
+    "BorceaBranden2010": {
+      "bibtex": "@article{BorceaBranden2010,\n  doi = {10.1112/plms/pdp049},\n  url = {https://doi.org/10.1112/plms/pdp049},\n  year = {2010},\n  month = jul,\n  publisher = {Wiley},\n  volume = {101},\n  number = {1},\n  pages = {73--104},\n  author = {J. Borcea and P. Br{\\\"{a}}nd{\\'{e}}n},\n  title = {Multivariate {P}{\\'{o}}lya--{S}chur classification problems in the {W}eyl algebra},\n  journal = {Proceedings of the London Mathematical Society}\n}\n",
+      "csl": {
+        "DOI": "10.1112/plms/pdp049",
+        "URL": "https://doi.org/10.1112/plms/pdp049",
+        "author": [
+          {
+            "family": "Borcea",
+            "given": "J."
+          },
+          {
+            "family": "Brändén",
+            "given": "P."
+          }
+        ],
+        "container-title": "Proceedings of the London Mathematical Society",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2010,
+              7
+            ]
+          ]
+        },
+        "page": "73-104",
+        "title": "Multivariate Pólya–Schur classification problems in the Weyl algebra",
+        "type": "article-journal",
+        "volume": "101"
+      },
+      "label": "BB10"
+    },
+    "BorceaBrandenLiggett2008": {
+      "bibtex": "@article{BorceaBrandenLiggett2008,\n  title = {Negative dependence and the geometry of polynomials},\n  volume = {22},\n  ISSN = {1088-6834},\n  url = {http://dx.doi.org/10.1090/S0894-0347-08-00618-8},\n  DOI = {10.1090/s0894-0347-08-00618-8},\n  number = {2},\n  journal = {Journal of the American Mathematical Society},\n  publisher = {American Mathematical Society (AMS)},\n  author = {Borcea,  Julius and Br{\\\"{a}}nd{\\'{e}}n,  Petter and Liggett,  Thomas},\n  year = {2008},\n  month = sep,\n  pages = {521–567}\n}\n",
+      "csl": {
+        "DOI": "10.1090/s0894-0347-08-00618-8",
+        "URL": "http://dx.doi.org/10.1090/S0894-0347-08-00618-8",
+        "author": [
+          {
+            "family": "Borcea",
+            "given": "Julius"
+          },
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Liggett",
+            "given": "Thomas"
+          }
+        ],
+        "container-title": "Journal of the American Mathematical Society",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2008,
+              9
+            ]
+          ]
+        },
+        "page": "521-567",
+        "title": "Negative dependence and the geometry of polynomials",
+        "type": "article-journal",
+        "volume": "22"
+      },
+      "label": "BBL08"
+    },
+    "BorosMoll1999": {
+      "bibtex": "@article{BorosMoll1999,\n  author = {Boros, George and Moll, Victor H.},\n  title = {An integral hidden in {G}radshteyn and {R}yzhik},\n  year = {1999},\n  journal = {Journal of Computational and Applied Mathematics},\n  volume = {106},\n  number = {2},\n  pages = {361--368},\n  doi = {10.1016/S0377-0427(99)00081-3},\n  url = {https://doi.org/10.1016/S0377-0427(99)00081-3}\n}\n",
+      "csl": {
+        "DOI": "10.1016/S0377-0427(99)00081-3",
+        "URL": "https://doi.org/10.1016/S0377-0427(99)00081-3",
+        "author": [
+          {
+            "family": "Boros",
+            "given": "George"
+          },
+          {
+            "family": "Moll",
+            "given": "Victor H."
+          }
+        ],
+        "container-title": "Journal of Computational and Applied Mathematics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1999
+            ]
+          ]
+        },
+        "page": "361-368",
+        "title": "An integral hidden in Gradshteyn and Ryzhik",
+        "type": "article-journal",
+        "volume": "106"
+      },
+      "label": "BM99"
+    },
+    "Branden2004operators": {
+      "bibtex": "@article{Branden2004operators,\n  title = {On Operators on Polynomials Preserving Real-Rootedness and the {N}eggers-{S}tanley Conjecture},\n  volume = {20},\n  ISSN = {0925-9899},\n  url2 = {http://dx.doi.org/10.1023/B:JACO.0000047295.93525.df},\n  DOI = {10.1023/b:jaco.0000047295.93525.df},\n  number = {2},\n  journal = {Journal of Algebraic Combinatorics},\n  publisher = {Springer Science and Business Media LLC},\n  author = {Petter Br{\\\"{a}}nd{\\'{e}}n},\n  year = {2004},\n  month = sep,\n  pages = {119–130}\n}\n",
+      "csl": {
+        "DOI": "10.1023/b:jaco.0000047295.93525.df",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Journal of Algebraic Combinatorics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2004,
+              9
+            ]
+          ]
+        },
+        "page": "119-130",
+        "title": "On operators on polynomials preserving real-rootedness and the Neggers-Stanley conjecture",
+        "type": "article-journal",
+        "volume": "20"
+      },
+      "label": "Br04"
+    },
+    "Branden2006": {
+      "bibtex": "@article{Branden2006,\n  title = {On linear transformations preserving the {P}{\\'{o}}lya frequency property},\n  volume = {358},\n  ISSN = {1088-6850},\n  url = {http://dx.doi.org/10.1090/S0002-9947-06-03856-6},\n  DOI = {10.1090/s0002-9947-06-03856-6},\n  number = {8},\n  journal = {Transactions of the American Mathematical Society},\n  publisher = {American Mathematical Society (AMS)},\n  author = {Br{\\\"a}nd{\\'e}n, Petter},\n  year = {2006},\n  month = feb,\n  pages = {3697--3716}\n}\n",
+      "csl": {
+        "DOI": "10.1090/s0002-9947-06-03856-6",
+        "URL": "http://dx.doi.org/10.1090/S0002-9947-06-03856-6",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Transactions of the American Mathematical Society",
+        "issue": "8",
+        "issued": {
+          "date-parts": [
+            [
+              2006,
+              2
+            ]
+          ]
+        },
+        "page": "3697-3716",
+        "title": "On linear transformations preserving the Pólya frequency property",
+        "type": "article-journal",
+        "volume": "358"
+      },
+      "label": "Br06"
+    },
+    "Branden2007": {
+      "bibtex": "@article{Branden2007,\n  title={Polynomials with the half-plane property and matroid theory},\n  author={Br{\\\"{a}}nd{\\'{e}}n, Petter},\n  journal={Advances in Mathematics},\n  volume={216},\n  number={1},\n  pages={302--320},\n  year={2007},\n  doi={10.1016/j.aim.2007.05.011},\n  publisher={Elsevier}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aim.2007.05.011",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Advances in Mathematics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2007
+            ]
+          ]
+        },
+        "page": "302-320",
+        "title": "Polynomials with the half-plane property and matroid theory",
+        "type": "article-journal",
+        "volume": "216"
+      },
+      "label": "Br07"
+    },
+    "Branden2011b": {
+      "bibtex": "@article{Branden2011b,\n  author = {Brändén, Petter},\n  title = {Iterated sequences and the geometry of zeros},\n  year = {2011},\n  journal = {Journal für die reine und angewandte Mathematik (Crelles Journal)},\n  volume = {2011},\n  number = {658},\n  doi = {10.1515/crelle.2011.063},\n  url = {https://doi.org/10.1515/crelle.2011.063}\n}\n",
+      "csl": {
+        "DOI": "10.1515/crelle.2011.063",
+        "URL": "https://doi.org/10.1515/crelle.2011.063",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Journal für die reine und angewandte Mathematik (Crelles Journal)",
+        "issue": "658",
+        "issued": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        },
+        "title": "Iterated sequences and the geometry of zeros",
+        "type": "article-journal",
+        "volume": "2011"
+      },
+      "label": "Br11"
+    },
+    "Branden2015": {
+      "bibtex": "@incollection{Branden2015,\n  doi = {10.1201/b18255-10},\n  year = {2015},\n  month = mar,\n  publisher = {Chapman and Hall/{CRC}},\n  pages = {437--483},\n  author = {Petter Br{\\\"{a}}nd{\\'{e}}n},\n  title = {Unimodality, Log-Concavity, Real-Rootedness and Beyond},\n  booktitle = {Handbook of Enumerative Combinatorics}\n}\n",
+      "csl": {
+        "DOI": "10.1201/b18255-10",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          }
+        ],
+        "container-title": "Handbook of enumerative combinatorics",
+        "issued": {
+          "date-parts": [
+            [
+              2015,
+              3
+            ]
+          ]
+        },
+        "page": "437-483",
+        "title": "Unimodality, log-concavity, real-rootedness and beyond",
+        "type": "chapter"
+      },
+      "label": "Br15"
+    },
+    "BrandenFerroniJochemko2024x": {
+      "bibtex": "@article{BrandenFerroniJochemko2024x,\n  author = {Petter Br{\\\"{a}}nd{\\'{e}}n and Luis Ferroni and Katharina Jochemko},\n  title = {Preservation of inequalities under {H}adamard products},\n  year = {2024},\n  eprint = {2408.12386v2},\n  url = {https://arxiv.org/abs/2408.12386v2},\n  journal = {Transactions of the American Mathematical Society},\n  note = {To appear}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2408.12386v2",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Ferroni",
+            "given": "Luis"
+          },
+          {
+            "family": "Jochemko",
+            "given": "Katharina"
+          }
+        ],
+        "container-title": "Transactions of the American Mathematical Society",
+        "issued": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "title": "Preservation of inequalities under Hadamard products",
+        "type": "article-journal"
+      },
+      "label": "BFJ24"
+    },
+    "BrandenHaglundVisontaiWagner2011": {
+      "bibtex": "@incollection{BrandenHaglundVisontaiWagner2011,\n  doi = {10.1007/978-3-0348-0142-3_5},\n  url2 = {https://doi.org/10.1007/978-3-0348-0142-3_5},\n  year = {2011},\n  publisher = {Springer Basel},\n  pages = {63--78},\n  author = {Petter Br{\\\"{a}}nd{\\'{e}}n and James Haglund and Mirk{\\'{o}} Visontai and David G. Wagner},\n  title = {Proof of the Monotone Column Permanent Conjecture},\n  booktitle = {Notions of Positivity and the Geometry of Polynomials}\n}\n",
+      "csl": {
+        "DOI": "10.1007/978-3-0348-0142-3_5",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Haglund",
+            "given": "James"
+          },
+          {
+            "family": "Visontai",
+            "given": "Mirkó"
+          },
+          {
+            "family": "Wagner",
+            "given": "David G."
+          }
+        ],
+        "container-title": "Notions of positivity and the geometry of polynomials",
+        "issued": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        },
+        "page": "63-78",
+        "title": "Proof of the monotone column permanent conjecture",
+        "type": "chapter"
+      },
+      "label": "BHVW11"
+    },
+    "BrandenHuh2020": {
+      "bibtex": "@article{BrandenHuh2020,\n  title = {Lorentzian polynomials},\n  volume = {192},\n  ISSN = {0003-486X},\n  url = {http://dx.doi.org/10.4007/annals.2020.192.3.4},\n  DOI = {10.4007/annals.2020.192.3.4},\n  number = {3},\n  journal = {Annals of Mathematics},\n  publisher = {Annals of Mathematics},\n  author = {Br{\\\"{a}}nd{\\'{e}}n,  Petter and Huh,  June},\n  year = {2020},\n  month = nov\n}\n",
+      "csl": {
+        "DOI": "10.4007/annals.2020.192.3.4",
+        "URL": "http://dx.doi.org/10.4007/annals.2020.192.3.4",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Huh",
+            "given": "June"
+          }
+        ],
+        "container-title": "Annals of Mathematics",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              2020,
+              11
+            ]
+          ]
+        },
+        "title": "Lorentzian polynomials",
+        "type": "article-journal",
+        "volume": "192"
+      },
+      "label": "BH20"
+    },
+    "BrandenJochemko2022": {
+      "bibtex": "@article{BrandenJochemko2022,\n  author = {Petter Br{\\\"a}nd{\\'e}n and Katharina Jochemko},\n  title = {The {E}ulerian transformation},\n  journal = {Transactions of the American Mathematical Society},\n  volume = {375},\n  number = {3},\n  pages = {1917--1931},\n  year = {2022},\n  doi = {10.1090/tran/8539},\n  eprint = {2103.00890},\n  url = {https://arxiv.org/abs/2103.00890}\n}\n",
+      "csl": {
+        "DOI": "10.1090/tran/8539",
+        "URL": "https://arxiv.org/abs/2103.00890",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Jochemko",
+            "given": "Katharina"
+          }
+        ],
+        "container-title": "Transactions of the American Mathematical Society",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "page": "1917-1931",
+        "title": "The Eulerian transformation",
+        "type": "article-journal",
+        "volume": "375"
+      },
+      "label": "BJ22"
+    },
+    "BrandenLeite2024x": {
+      "bibtex": "@article{BrandenLeite2024x,\n  author = {Petter Brändén and Leonardo Saud Maia Leite},\n  title = {Totally nonnegative matrices, chain enumeration and zeros of polynomials},\n  journal = {arXiv e-prints},\n  Eprint = {2412.06595},\n  url = {https://arxiv.org/abs/2412.06595},\n  year = {2024}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2412.06595",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Leite",
+            "given": "Leonardo Saud Maia"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2024
+            ]
+          ]
+        },
+        "title": "Totally nonnegative matrices, chain enumeration and zeros of polynomials",
+        "type": "article-journal"
+      },
+      "label": "BL24"
+    },
+    "BrandenSolus2019": {
+      "bibtex": "@article{BrandenSolus2019,\n  title = {Symmetric Decompositions and Real-Rootedness},\n  volume = {2021},\n  ISSN = {1687-0247},\n  url = {http://dx.doi.org/10.1093/imrn/rnz059},\n  DOI = {10.1093/imrn/rnz059},\n  number = {10},\n  journal = {International Mathematics Research Notices},\n  publisher = {Oxford University Press (OUP)},\n  author = {Br\\\"{a}ndén, Petter and Solus, Liam},\n  year = {2019},\n  month = apr,\n  pages = {7764--7798}\n}\n",
+      "csl": {
+        "DOI": "10.1093/imrn/rnz059",
+        "URL": "http://dx.doi.org/10.1093/imrn/rnz059",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Solus",
+            "given": "Liam"
+          }
+        ],
+        "container-title": "International Mathematics Research Notices",
+        "issue": "10",
+        "issued": {
+          "date-parts": [
+            [
+              2019,
+              4
+            ]
+          ]
+        },
+        "page": "7764-7798",
+        "title": "Symmetric decompositions and real-rootedness",
+        "type": "article-journal",
+        "volume": "2021"
+      },
+      "label": "BS19"
+    },
+    "BrandenVecchi2025x": {
+      "bibtex": "@article{BrandenVecchi2025x,\n  author = {Petter Brändén and Lorenzo Vecchi},\n  title = {Chow polynomials of totally nonnegative matrices and posets},\n  year = {2025},\n  eprint = {2509.17852v3},\n  url = {https://arxiv.org/abs/2509.17852v3},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2509.17852v3",
+        "author": [
+          {
+            "family": "Brändén",
+            "given": "Petter"
+          },
+          {
+            "family": "Vecchi",
+            "given": "Lorenzo"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "title": "Chow polynomials of totally nonnegative matrices and posets",
+        "type": "article-journal"
+      },
+      "label": "BV25"
+    },
+    "BraunJal2026x": {
+      "bibtex": "@article{BraunJal2026x,\n  author = {Benjamin Braun and Aryaman Jal},\n  title = {Order polytopes of generalized snake posets are {$h^*$}-real-rooted},\n  year = {2026},\n  eprint = {2607.00922},\n  url = {https://arxiv.org/abs/2607.00922},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2607.00922",
+        "author": [
+          {
+            "family": "Braun",
+            "given": "Benjamin"
+          },
+          {
+            "family": "Jal",
+            "given": "Aryaman"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Order polytopes of generalized snake posets are $h^*$-real-rooted",
+        "type": "article-journal"
+      },
+      "label": "BJ26"
+    },
+    "Brenti1989": {
+      "bibtex": "@article{Brenti1989,\n    AUTHOR = {Brenti, Francesco},\n     TITLE = {Unimodal, log-concave and {P}{\\'{o}}lya frequency sequences in\n              combinatorics},\n   JOURNAL = {Mem. Amer. Math. Soc.},\n  FJOURNAL = {Memoirs of the American Mathematical Society},\n    VOLUME = {81},\n      YEAR = {1989},\n    NUMBER = {413},\n     PAGES = {viii+106},\n      ISSN = {0065-9266,1947-6221},\n   MRCLASS = {05A15 (05A10 05A20)},\n  MRNUMBER = {963833},\nMRREVIEWER = {Ira\\ Gessel},\n       DOI = {10.1090/memo/0413},\n       URL = {https://doi.org/10.1090/memo/0413},\n}\n",
+      "csl": {
+        "DOI": "10.1090/memo/0413",
+        "URL": "https://doi.org/10.1090/memo/0413",
+        "author": [
+          {
+            "family": "Brenti",
+            "given": "Francesco"
+          }
+        ],
+        "container-title": "Mem. Amer. Math. Soc.",
+        "issue": "413",
+        "issued": {
+          "date-parts": [
+            [
+              1989
+            ]
+          ]
+        },
+        "page": "viii+106",
+        "title": "Unimodal, log-concave and Pólya frequency sequences in combinatorics",
+        "type": "article-journal",
+        "volume": "81"
+      },
+      "label": "Bre89"
+    },
+    "Brenti1994": {
+      "bibtex": "@article{Brenti1994,\n  author = {Brenti, Francesco},\n  title = {q-{E}ulerian {P}olynomials {A}rising from {C}oxeter {G}roups},\n  year = {1994},\n  journal = {European Journal of Combinatorics},\n  volume = {15},\n  number = {5},\n  pages = {417--441},\n  doi = {10.1006/eujc.1994.1046},\n  url = {https://doi.org/10.1006/eujc.1994.1046}\n}\n",
+      "csl": {
+        "DOI": "10.1006/eujc.1994.1046",
+        "URL": "https://doi.org/10.1006/eujc.1994.1046",
+        "author": [
+          {
+            "family": "Brenti",
+            "given": "Francesco"
+          }
+        ],
+        "container-title": "European Journal of Combinatorics",
+        "issue": "5",
+        "issued": {
+          "date-parts": [
+            [
+              1994
+            ]
+          ]
+        },
+        "page": "417-441",
+        "title": "Q-Eulerian Polynomials Arising from Coxeter Groups",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "Bre94"
+    },
+    "ChoeOxleySokalWagner2004": {
+      "bibtex": "@article{ChoeOxleySokalWagner2004,\n  doi = {10.1016/s0196-8858(03)00078-2},\n  url2 = {https://doi.org/10.1016/s0196-8858(03)00078-2},\n  year = {2004},\n  month = jan,\n  publisher = {Elsevier {BV}},\n  volume = {32},\n  number = {1-2},\n  pages = {88--187},\n  author = {Young-Bin Choe and James G. Oxley and Alan D. Sokal and David G. Wagner},\n  title = {Homogeneous multivariate polynomials with the half-plane property},\n  journal = {Advances in Applied Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/s0196-8858(03)00078-2",
+        "author": [
+          {
+            "family": "Choe",
+            "given": "Young-Bin"
+          },
+          {
+            "family": "Oxley",
+            "given": "James G."
+          },
+          {
+            "family": "Sokal",
+            "given": "Alan D."
+          },
+          {
+            "family": "Wagner",
+            "given": "David G."
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issue": "1-2",
+        "issued": {
+          "date-parts": [
+            [
+              2004,
+              1
+            ]
+          ]
+        },
+        "page": "88-187",
+        "title": "Homogeneous multivariate polynomials with the half-plane property",
+        "type": "article-journal",
+        "volume": "32"
+      },
+      "label": "COSW04"
+    },
+    "ChowShiu2011": {
+      "bibtex": "@article{ChowShiu2011,\n  doi = {10.1007/s00026-011-0113-6},\n  url2 = {https://doi.org/10.1007/s00026-011-0113-6},\n  year = {2011},\n  month = oct,\n  publisher = {Springer Science and Business Media {LLC}},\n  volume = {15},\n  number = {4},\n  pages = {625--635},\n  author = {Chak-On Chow and Wai Chee Shiu},\n  title = {Counting Simsun Permutations by Descents},\n  journal = {Annals of Combinatorics}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s00026-011-0113-6",
+        "author": [
+          {
+            "family": "Chow",
+            "given": "Chak-On"
+          },
+          {
+            "family": "Shiu",
+            "given": "Wai Chee"
+          }
+        ],
+        "container-title": "Annals of Combinatorics",
+        "issue": "4",
+        "issued": {
+          "date-parts": [
+            [
+              2011,
+              10
+            ]
+          ]
+        },
+        "page": "625-635",
+        "title": "Counting simsun permutations by descents",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "CS11"
+    },
+    "ChudnovskySeymour2007": {
+      "bibtex": "@article{ChudnovskySeymour2007,\n  doi = {10.1016/j.jctb.2006.06.001},\n  url2 = {https://doi.org/10.1016/j.jctb.2006.06.001},\n  year = {2007},\n  month = may,\n  publisher = {Elsevier {BV}},\n  volume = {97},\n  number = {3},\n  pages = {350--357},\n  author = {Maria Chudnovsky and Paul Seymour},\n  title = {The roots of the independence polynomial of a clawfree graph},\n  journal = {Journal of Combinatorial Theory,  Series B}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.jctb.2006.06.001",
+        "author": [
+          {
+            "family": "Chudnovsky",
+            "given": "Maria"
+          },
+          {
+            "family": "Seymour",
+            "given": "Paul"
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series B",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              2007,
+              5
+            ]
+          ]
+        },
+        "page": "350-357",
+        "title": "The roots of the independence polynomial of a clawfree graph",
+        "type": "article-journal",
+        "volume": "97"
+      },
+      "label": "CS07"
+    },
+    "Cohn1922": {
+      "bibtex": "@article{Cohn1922,\n  author = {Cohn, A.},\n  title = {{\\\"U}ber die {A}nzahl der {W}urzeln einer algebraischen {G}leichung in einem {K}reise},\n  year = {1922},\n  journal = {Mathematische Zeitschrift},\n  volume = {14},\n  number = {1},\n  pages = {110--148},\n  doi = {10.1007/BF01215894},\n  url = {https://doi.org/10.1007/BF01215894}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01215894",
+        "URL": "https://doi.org/10.1007/BF01215894",
+        "author": [
+          {
+            "family": "Cohn",
+            "given": "A."
+          }
+        ],
+        "container-title": "Mathematische Zeitschrift",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1922
+            ]
+          ]
+        },
+        "page": "110-148",
+        "title": "Über die Anzahl der Wurzeln einer algebraischen Gleichung in einem Kreise",
+        "type": "article-journal",
+        "volume": "14"
+      },
+      "label": "Coh22"
+    },
+    "Courant1920": {
+      "bibtex": "@article{Courant1920,\n  author = {Courant, R.},\n  title = {{\\\"U}ber die {E}igenwerte bei den {D}ifferentialgleichungen der mathematischen {P}hysik},\n  year = {1920},\n  journal = {Mathematische Zeitschrift},\n  volume = {7},\n  number = {1-4},\n  pages = {1--57},\n  doi = {10.1007/BF01199396},\n  url = {https://doi.org/10.1007/BF01199396}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01199396",
+        "URL": "https://doi.org/10.1007/BF01199396",
+        "author": [
+          {
+            "family": "Courant",
+            "given": "R."
+          }
+        ],
+        "container-title": "Mathematische Zeitschrift",
+        "issue": "1-4",
+        "issued": {
+          "date-parts": [
+            [
+              1920
+            ]
+          ]
+        },
+        "page": "1-57",
+        "title": "Über die Eigenwerte bei den Differentialgleichungen der mathematischen Physik",
+        "type": "article-journal",
+        "volume": "7"
+      },
+      "label": "Cou20"
+    },
+    "Cryer1976": {
+      "bibtex": "@article{Cryer1976,\n  author = {Cryer, Colin W.},\n  title = {Some properties of totally positive matrices},\n  year = {1976},\n  journal = {Linear Algebra and its Applications},\n  volume = {15},\n  number = {1},\n  pages = {1--25},\n  doi = {10.1016/0024-3795(76)90076-8},\n  url = {https://doi.org/10.1016/0024-3795(76)90076-8}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0024-3795(76)90076-8",
+        "URL": "https://doi.org/10.1016/0024-3795(76)90076-8",
+        "author": [
+          {
+            "family": "Cryer",
+            "given": "Colin W."
+          }
+        ],
+        "container-title": "Linear Algebra and its Applications",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1976
+            ]
+          ]
+        },
+        "page": "1-25",
+        "title": "Some properties of totally positive matrices",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "Cry76"
+    },
+    "Dedieu1992": {
+      "bibtex": "@article{Dedieu1992,\n  author = {Dedieu, Jean-Pierre},\n  title = {Obreschkoff's theorem revisited: What convex sets are contained in the set of hyperbolic polynomials?},\n  journal = {Journal of Pure and Applied Algebra},\n  volume = {81},\n  number = {3},\n  pages = {269--278},\n  year = {1992}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Dedieu",
+            "given": "Jean-Pierre"
+          }
+        ],
+        "container-title": "Journal of Pure and Applied Algebra",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1992
+            ]
+          ]
+        },
+        "page": "269-278",
+        "title": "Obreschkoff’s theorem revisited: What convex sets are contained in the set of hyperbolic polynomials?",
+        "type": "article-journal",
+        "volume": "81"
+      },
+      "label": "Ded92"
+    },
+    "DiaconisHicks2017": {
+      "bibtex": "@article{DiaconisHicks2017,\nauthor = {Persi Diaconis and Angela Hicks},\ntitle = {Probabilizing parking functions},\njournal = {Advances in Applied Mathematics},\nvolume = {89},\npages = {125--155},\nyear = {2017},\ndoi = {10.1016/j.aam.2017.05.004},\nurl = {https://doi.org/10.1016/j.aam.2017.05.004},\neprint = {1611.09821}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aam.2017.05.004",
+        "URL": "https://arxiv.org/abs/1611.09821",
+        "author": [
+          {
+            "family": "Diaconis",
+            "given": "Persi"
+          },
+          {
+            "family": "Hicks",
+            "given": "Angela"
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "page": "125-155",
+        "title": "Probabilizing parking functions",
+        "type": "article-journal",
+        "volume": "89"
+      },
+      "label": "DH17"
+    },
+    "DominiciJohnstonJordaan2013x": {
+      "bibtex": "@article{DominiciJohnstonJordaan2013x,\n  author = {D. Dominici and S. J. Johnston and K. Jordaan},\n  title = {Real zeros of 2{F}1 hypergeometric polynomials},\n  year = {2013},\n  eprint = {1301.4771v1},\n  url = {https://arxiv.org/abs/1301.4771v1},\n  journal = {arXiv e-prints},\n  doi = {10.1016/j.cam.2012.12.024}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.cam.2012.12.024",
+        "URL": "https://arxiv.org/abs/1301.4771v1",
+        "author": [
+          {
+            "family": "Dominici",
+            "given": "D."
+          },
+          {
+            "family": "Johnston",
+            "given": "S. J."
+          },
+          {
+            "family": "Jordaan",
+            "given": "K."
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2013
+            ]
+          ]
+        },
+        "title": "Real zeros of 2F1 hypergeometric polynomials",
+        "type": "article-journal"
+      },
+      "label": "DJJ13"
+    },
+    "Edrei1953": {
+      "bibtex": "@article{Edrei1953,\n  author = {Edrei, Albert},\n  title = {Proof of a {C}onjecture of {S}choenberg on the {G}enerating {F}unction of a {T}otally {P}ositive {S}equence},\n  year = {1953},\n  journal = {Canadian Journal of Mathematics},\n  volume = {5},\n  pages = {86--94},\n  doi = {10.4153/CJM-1953-010-3},\n  url = {https://doi.org/10.4153/CJM-1953-010-3}\n}\n",
+      "csl": {
+        "DOI": "10.4153/CJM-1953-010-3",
+        "URL": "https://doi.org/10.4153/CJM-1953-010-3",
+        "author": [
+          {
+            "family": "Edrei",
+            "given": "Albert"
+          }
+        ],
+        "container-title": "Canadian Journal of Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              1953
+            ]
+          ]
+        },
+        "page": "86-94",
+        "title": "Proof of a Conjecture of Schoenberg on the Generating Function of a Totally Positive Sequence",
+        "type": "article-journal",
+        "volume": "5"
+      },
+      "label": "Edr53"
+    },
+    "Egorychev1981": {
+      "bibtex": "@article{Egorychev1981,\n  author = {Egorychev, G.P},\n  title = {The solution of van der {W}aerden's problem for permanents},\n  year = {1981},\n  journal = {Advances in Mathematics},\n  volume = {42},\n  number = {3},\n  pages = {299--305},\n  doi = {10.1016/0001-8708(81)90044-X},\n  url = {https://doi.org/10.1016/0001-8708(81)90044-X}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0001-8708(81)90044-X",
+        "URL": "https://doi.org/10.1016/0001-8708(81)90044-X",
+        "author": [
+          {
+            "family": "Egorychev",
+            "given": "G. P"
+          }
+        ],
+        "container-title": "Advances in Mathematics",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1981
+            ]
+          ]
+        },
+        "page": "299-305",
+        "title": "The solution of van der Waerden’s problem for permanents",
+        "type": "article-journal",
+        "volume": "42"
+      },
+      "label": "Ego81"
+    },
+    "ElizaldeRiveraZhuang2026": {
+      "bibtex": "@article{ElizaldeRiveraZhuang2026,\n  author = {Elizalde, Sergi and Rivera, Johnny and Zhuang, Yan},\n  title = {Counting {P}attern-{A}voiding {P}ermutations by {B}ig {D}escents},\n  year = {2026},\n  journal = {Annals of Combinatorics},\n  publisher = {Springer Science and Business Media LLC},\n  doi = {10.1007/s00026-026-00805-1},\n  url = {http://dx.doi.org/10.1007/s00026-026-00805-1},\n  issn = {0219-3094}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s00026-026-00805-1",
+        "URL": "http://dx.doi.org/10.1007/s00026-026-00805-1",
+        "author": [
+          {
+            "family": "Elizalde",
+            "given": "Sergi"
+          },
+          {
+            "family": "Rivera",
+            "given": "Johnny"
+          },
+          {
+            "family": "Zhuang",
+            "given": "Yan"
+          }
+        ],
+        "container-title": "Annals of Combinatorics",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Counting Pattern-Avoiding Permutations by Big Descents",
+        "type": "article-journal"
+      },
+      "label": "ERZ26"
+    },
+    "Engstrom2007": {
+      "bibtex": "@article{Engstrom2007,\nauthor = {Engström, Alexander},\nyear = {2007},\nmonth = {01},\npages = {1--10},\nurl = {https://emis.de/ft/14440},\ntitle = {Inequalities on well-distributed point sets on circles},\nvolume = {8},\njournal = {Journal of Inequalities in Pure and Applied Mathematics}\n}\n",
+      "csl": {
+        "URL": "https://emis.de/ft/14440",
+        "author": [
+          {
+            "family": "Engström",
+            "given": "Alexander"
+          }
+        ],
+        "container-title": "Journal of Inequalities in Pure and Applied Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              2007,
+              1
+            ]
+          ]
+        },
+        "page": "1-10",
+        "title": "Inequalities on well-distributed point sets on circles",
+        "type": "article-journal",
+        "volume": "8"
+      },
+      "label": "Eng07"
+    },
+    "Falikman1981": {
+      "bibtex": "@article{Falikman1981,\n  author = {Falikman, D. I.},\n  title = {Proof of the van der {W}aerden conjecture regarding the permanent of a doubly stochastic matrix},\n  year = {1981},\n  journal = {Mathematical Notes of the Academy of Sciences of the USSR},\n  volume = {29},\n  number = {6},\n  pages = {475--479},\n  doi = {10.1007/BF01163285},\n  url = {https://doi.org/10.1007/BF01163285}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01163285",
+        "URL": "https://doi.org/10.1007/BF01163285",
+        "author": [
+          {
+            "family": "Falikman",
+            "given": "D. I."
+          }
+        ],
+        "container-title": "Mathematical Notes of the Academy of Sciences of the USSR",
+        "issue": "6",
+        "issued": {
+          "date-parts": [
+            [
+              1981
+            ]
+          ]
+        },
+        "page": "475-479",
+        "title": "Proof of the van der Waerden conjecture regarding the permanent of a doubly stochastic matrix",
+        "type": "article-journal",
+        "volume": "29"
+      },
+      "label": "Fal81"
+    },
+    "FallatJohnson2011": {
+      "bibtex": "@book{FallatJohnson2011,\n  author    = {Fallat, Shaun M. and Johnson, Charles R.},\n  title     = {Totally Nonnegative Matrices},\n  publisher = {Princeton University Press},\n  series    = {Princeton Series in Applied Mathematics},\n  year      = {2011},\n  doi       = {10.1515/9781400839018}\n}\n",
+      "csl": {
+        "DOI": "10.1515/9781400839018",
+        "author": [
+          {
+            "family": "Fallat",
+            "given": "Shaun M."
+          },
+          {
+            "family": "Johnson",
+            "given": "Charles R."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2011
+            ]
+          ]
+        },
+        "title": "Totally nonnegative matrices",
+        "type": "book"
+      },
+      "label": "FJ11"
+    },
+    "Favard1935": {
+      "bibtex": "@article{Favard1935,\n  author = {Jean Favard},\n  title = {Sur les polyn{\\^o}mes de Tchebicheff},\n  journal = {C. R. Acad. Sci. Paris},\n  volume = {200},\n  year = {1935},\n  pages = {2052--2053}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Favard",
+            "given": "Jean"
+          }
+        ],
+        "container-title": "C. R. Acad. Sci. Paris",
+        "issued": {
+          "date-parts": [
+            [
+              1935
+            ]
+          ]
+        },
+        "page": "2052-2053",
+        "title": "Sur les polynômes de tchebicheff",
+        "type": "article-journal",
+        "volume": "200"
+      },
+      "label": "Fav35"
+    },
+    "Fischer1905": {
+      "bibtex": "@article{Fischer1905,\n  author = {Fischer, Ernst},\n  title = {Über quadratische {F}ormen mit reellen {K}oeffizienten},\n  year = {1905},\n  journal = {Monatshefte für Mathematik und Physik},\n  volume = {16},\n  number = {1},\n  pages = {234--249},\n  doi = {10.1007/BF01693781},\n  url = {https://doi.org/10.1007/BF01693781}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01693781",
+        "URL": "https://doi.org/10.1007/BF01693781",
+        "author": [
+          {
+            "family": "Fischer",
+            "given": "Ernst"
+          }
+        ],
+        "container-title": "Monatshefte für Mathematik und Physik",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1905
+            ]
+          ]
+        },
+        "page": "234-249",
+        "title": "Über quadratische Formen mit reellen Koeffizienten",
+        "type": "article-journal",
+        "volume": "16"
+      },
+      "label": "Fis05"
+    },
+    "Fisk2005x": {
+      "bibtex": "@article{Fisk2005x,\n  author = {Steve Fisk},\n  title = {A very short proof of {C}auchy's interlace theorem for eigenvalues of {H}ermitian matrices},\n  year = {2005},\n  eprint = {math/0502408},\n  url = {https://arxiv.org/abs/math/0502408},\n  journal = {arXiv e-prints},\n  journalref = {Amer. Math. Monthly, Vol 112, No. 2, Feb. 2005, page 118}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/math/0502408",
+        "author": [
+          {
+            "family": "Fisk",
+            "given": "Steve"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2005
+            ]
+          ]
+        },
+        "title": "A very short proof of Cauchy’s interlace theorem for eigenvalues of Hermitian matrices",
+        "type": "article-journal"
+      },
+      "label": "Fis05"
+    },
+    "Fisk2006x": {
+      "bibtex": "@article{Fisk2006x,\n  Author = {Steve Fisk},\n  Title = {Polynomials, roots, and interlacing},\n  Year = {2006},\n  Eprint = {arXiv:math/0612833},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/math/0612833",
+        "author": [
+          {
+            "family": "Fisk",
+            "given": "Steve"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2006
+            ]
+          ]
+        },
+        "title": "Polynomials, roots, and interlacing",
+        "type": "article-journal"
+      },
+      "label": "Fis06"
+    },
+    "FuLinZeng2018": {
+      "bibtex": "@article{FuLinZeng2018,\n  author = {Fu, Shishuo and Lin, Zhicong and Zeng, Jiang},\n  title = {On two unimodal descent polynomials},\n  year = {2018},\n  journal = {Discrete Mathematics},\n  volume = {341},\n  number = {9},\n  pages = {2616--2626},\n  publisher = {Elsevier BV},\n  doi = {10.1016/j.disc.2018.06.010},\n  url = {https://doi.org/10.1016/j.disc.2018.06.010},\n  issn = {0012-365X}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.disc.2018.06.010",
+        "URL": "https://doi.org/10.1016/j.disc.2018.06.010",
+        "author": [
+          {
+            "family": "Fu",
+            "given": "Shishuo"
+          },
+          {
+            "family": "Lin",
+            "given": "Zhicong"
+          },
+          {
+            "family": "Zeng",
+            "given": "Jiang"
+          }
+        ],
+        "container-title": "Discrete Mathematics",
+        "issue": "9",
+        "issued": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "page": "2616-2626",
+        "title": "On two unimodal descent polynomials",
+        "type": "article-journal",
+        "volume": "341"
+      },
+      "label": "FLZ18"
+    },
+    "Garding1959": {
+      "bibtex": "@article{Garding1959,\n  author = {Gårding, Lars},\n  title = {An {I}nequality for {H}yperbolic {P}olynomials},\n  year = {1959},\n  journal = {Indiana University Mathematics Journal},\n  volume = {8},\n  number = {6},\n  pages = {957--965},\n  doi = {10.1512/iumj.1959.8.58061},\n  url = {https://doi.org/10.1512/iumj.1959.8.58061}\n}\n",
+      "csl": {
+        "DOI": "10.1512/iumj.1959.8.58061",
+        "URL": "https://doi.org/10.1512/iumj.1959.8.58061",
+        "author": [
+          {
+            "family": "Gårding",
+            "given": "Lars"
+          }
+        ],
+        "container-title": "Indiana University Mathematics Journal",
+        "issue": "6",
+        "issued": {
+          "date-parts": [
+            [
+              1959
+            ]
+          ]
+        },
+        "page": "957-965",
+        "title": "An Inequality for Hyperbolic Polynomials",
+        "type": "article-journal",
+        "volume": "8"
+      },
+      "label": "Ga59"
+    },
+    "GarloffWagner1996": {
+      "bibtex": "@article{GarloffWagner1996,\n  doi = {10.1006/jmaa.1996.0348},\n  url2 = {https://doi.org/10.1006/jmaa.1996.0348},\n  year = {1996},\n  publisher = {Elsevier {BV}},\n  volume = {202},\n  number = {3},\n  pages = {797--809},\n  author = {J{\\\"u}rgen Garloff and David G. Wagner},\n  title = {Hadamard Products of Stable Polynomials Are Stable},\n  journal = {Journal of Mathematical Analysis and Applications}\n}\n",
+      "csl": {
+        "DOI": "10.1006/jmaa.1996.0348",
+        "author": [
+          {
+            "family": "Garloff",
+            "given": "Jürgen"
+          },
+          {
+            "family": "Wagner",
+            "given": "David G."
+          }
+        ],
+        "container-title": "Journal of Mathematical Analysis and Applications",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1996
+            ]
+          ]
+        },
+        "page": "797-809",
+        "title": "Hadamard products of stable polynomials are stable",
+        "type": "article-journal",
+        "volume": "202"
+      },
+      "label": "GW96"
+    },
+    "GelineauZeng2010": {
+      "bibtex": "@article{GelineauZeng2010,\n  author = {Gelineau, Yoann and Zeng, Jiang},\n  title = {Combinatorial {I}nterpretations of the {J}acobi-{S}tirling {N}umbers},\n  year = {2010},\n  journal = {The Electronic Journal of Combinatorics},\n  volume = {17},\n  number = {1},\n  doi = {10.37236/342},\n  url = {https://doi.org/10.37236/342}\n}\n",
+      "csl": {
+        "DOI": "10.37236/342",
+        "URL": "https://doi.org/10.37236/342",
+        "author": [
+          {
+            "family": "Gelineau",
+            "given": "Yoann"
+          },
+          {
+            "family": "Zeng",
+            "given": "Jiang"
+          }
+        ],
+        "container-title": "The Electronic Journal of Combinatorics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2010
+            ]
+          ]
+        },
+        "title": "Combinatorial Interpretations of the Jacobi-Stirling Numbers",
+        "type": "article-journal",
+        "volume": "17"
+      },
+      "label": "GZ10"
+    },
+    "GesselLinZeng2012": {
+      "bibtex": "@article{GesselLinZeng2012,\n  author = {Gessel, Ira M. and Lin, Zhicong and Zeng, Jiang},\n  title = {Jacobi--{S}tirling polynomials and {$P$}-partitions},\n  year = {2012},\n  journal = {European Journal of Combinatorics},\n  volume = {33},\n  number = {8},\n  pages = {1987--2000},\n  doi = {10.1016/j.ejc.2012.06.008},\n  eprint = {1201.0622v2},\n  url = {https://doi.org/10.1016/j.ejc.2012.06.008}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.ejc.2012.06.008",
+        "URL": "https://doi.org/10.1016/j.ejc.2012.06.008",
+        "author": [
+          {
+            "family": "Gessel",
+            "given": "Ira M."
+          },
+          {
+            "family": "Lin",
+            "given": "Zhicong"
+          },
+          {
+            "family": "Zeng",
+            "given": "Jiang"
+          }
+        ],
+        "container-title": "European Journal of Combinatorics",
+        "issue": "8",
+        "issued": {
+          "date-parts": [
+            [
+              2012
+            ]
+          ]
+        },
+        "page": "1987-2000",
+        "title": "Jacobi–Stirling polynomials and $P$-partitions",
+        "type": "article-journal",
+        "volume": "33"
+      },
+      "label": "GLZ12"
+    },
+    "GesselStanley1978": {
+      "bibtex": "@article{GesselStanley1978,\n  doi = {10.1016/0097-3165(78)90042-0},\n  url2 = {https://doi.org/10.1016/0097-3165(78)90042-0},\n  year = {1978},\n  month = jan,\n  publisher = {Elsevier {BV}},\n  volume = {24},\n  number = {1},\n  pages = {24--33},\n  author = {Ira Gessel and Richard P Stanley},\n  title = {Stirling polynomials},\n  journal = {Journal of Combinatorial Theory,  Series A}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0097-3165(78)90042-0",
+        "author": [
+          {
+            "family": "Gessel",
+            "given": "Ira"
+          },
+          {
+            "family": "Stanley",
+            "given": "Richard P"
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series A",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1978,
+              1
+            ]
+          ]
+        },
+        "page": "24-33",
+        "title": "Stirling polynomials",
+        "type": "article-journal",
+        "volume": "24"
+      },
+      "label": "GS78"
+    },
+    "GesselViennot1985": {
+      "bibtex": "@article{GesselViennot1985,\n  doi = {10.1016/0001-8708(85)90121-5},\n  url2 = {https://doi.org/10.1016/0001-8708(85)90121-5},\n  year = {1985},\n  month = dec,\n  publisher = {Elsevier {BV}},\n  volume = {58},\n  number = {3},\n  pages = {300--321},\n  author = {Ira Gessel and G{\\'{e}}rard Viennot},\n  title = {Binomial determinants,  paths, and hook length formulae},\n  journal = {Advances in Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0001-8708(85)90121-5",
+        "author": [
+          {
+            "family": "Gessel",
+            "given": "Ira"
+          },
+          {
+            "family": "Viennot",
+            "given": "Gérard"
+          }
+        ],
+        "container-title": "Advances in Mathematics",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1985,
+              12
+            ]
+          ]
+        },
+        "page": "300-321",
+        "title": "Binomial determinants, paths, and hook length formulae",
+        "type": "article-journal",
+        "volume": "58"
+      },
+      "label": "GV85"
+    },
+    "Godsil2017": {
+      "bibtex": "@book{Godsil2017,\n  doi = {10.1201/9781315137131},\n  url2 = {https://doi.org/10.1201/9781315137131},\n  year = {2017},\n  month = oct,\n  publisher = {Routledge},\n  author = {C.D. Godsil},\n  title = {Algebraic Combinatorics}\n}\n",
+      "csl": {
+        "DOI": "10.1201/9781315137131",
+        "author": [
+          {
+            "family": "Godsil",
+            "given": "C. D."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2017,
+              10
+            ]
+          ]
+        },
+        "title": "Algebraic combinatorics",
+        "type": "book"
+      },
+      "label": "God17"
+    },
+    "Grace1902": {
+      "bibtex": "@article{Grace1902,\n  author  = {J. H. Grace},\n  title   = {The zeros of a polynomial},\n  journal = {Proceedings of the Cambridge Philosophical Society},\n  volume  = {11},\n  pages   = {352--357},\n  year    = {1902}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Grace",
+            "given": "J. H."
+          }
+        ],
+        "container-title": "Proceedings of the Cambridge Philosophical Society",
+        "issued": {
+          "date-parts": [
+            [
+              1902
+            ]
+          ]
+        },
+        "page": "352-357",
+        "title": "The zeros of a polynomial",
+        "type": "article-journal",
+        "volume": "11"
+      },
+      "label": "Gra02"
+    },
+    "GribinskiMarcus2022": {
+      "bibtex": "@article{GribinskiMarcus2022,\n  author = {Gribinski, Aurelien and Marcus, Adam W.},\n  title = {A rectangular additive convolution for polynomials},\n  year = {2022},\n  journal = {Combinatorial Theory},\n  volume = {2},\n  number = {1},\n  doi = {10.5070/c62156888},\n  url = {https://doi.org/10.5070/c62156888}\n}\n",
+      "csl": {
+        "DOI": "10.5070/c62156888",
+        "URL": "https://doi.org/10.5070/c62156888",
+        "author": [
+          {
+            "family": "Gribinski",
+            "given": "Aurelien"
+          },
+          {
+            "family": "Marcus",
+            "given": "Adam W."
+          }
+        ],
+        "container-title": "Combinatorial Theory",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "title": "A rectangular additive convolution for polynomials",
+        "type": "article-journal",
+        "volume": "2"
+      },
+      "label": "GM22"
+    },
+    "Gurvits2008": {
+      "bibtex": "@article{Gurvits2008,\n  author = {Leonid Gurvits},\n  title = {Van der {W}aerden/{S}chrijver--{V}aliant like conjectures and stable\n    (aka hyperbolic) homogeneous polynomials: One theorem for all},\n  year = {2008},\n  journal = {The Electronic Journal of Combinatorics},\n  volume = {15},\n  number = {1},\n  pages = {Research Paper 66},\n  doi = {10.37236/790},\n  url = {https://doi.org/10.37236/790},\n  eprint = {0711.3496}\n}\n",
+      "csl": {
+        "DOI": "10.37236/790",
+        "URL": "https://arxiv.org/abs/0711.3496",
+        "author": [
+          {
+            "family": "Gurvits",
+            "given": "Leonid"
+          }
+        ],
+        "container-title": "The Electronic Journal of Combinatorics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2008
+            ]
+          ]
+        },
+        "page": "Research Paper 66",
+        "title": "Van der Waerden/Schrijver–Valiant like conjectures and stable (aka hyperbolic) homogeneous polynomials: One theorem for all",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "Gur08"
+    },
+    "Gurvits2009": {
+      "bibtex": "@article{Gurvits2009,\n  author = {Gurvits, Leonid},\n  title = {A {S}hort {P}roof, {B}ased on {M}ixed {V}olumes, of {L}iggett's {T}heorem on the {C}onvolution of {U}ltra-{L}ogconcave {S}equences},\n  year = {2009},\n  journal = {The Electronic Journal of Combinatorics},\n  volume = {16},\n  number = {1},\n  doi = {10.37236/243},\n  url = {https://doi.org/10.37236/243}\n}\n",
+      "csl": {
+        "DOI": "10.37236/243",
+        "URL": "https://doi.org/10.37236/243",
+        "author": [
+          {
+            "family": "Gurvits",
+            "given": "Leonid"
+          }
+        ],
+        "container-title": "The Electronic Journal of Combinatorics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2009
+            ]
+          ]
+        },
+        "title": "A Short Proof, Based on Mixed Volumes, of Liggett’s Theorem on the Convolution of Ultra-Logconcave Sequences",
+        "type": "article-journal",
+        "volume": "16"
+      },
+      "label": "Gur09"
+    },
+    "GustafssonSolus2020": {
+      "bibtex": "@article{GustafssonSolus2020,\n  doi = {10.1016/j.aim.2020.107169},\n  url2 = {https://doi.org/10.1016/j.aim.2020.107169},\n  year = {2020},\n  month = aug,\n  publisher = {Elsevier {BV}},\n  volume = {369},\n  pages = {107169},\n  author = {Nils Gustafsson and Liam Solus},\n  title = {Derangements,  {E}hrhart theory,  and local h-polynomials},\n  journal = {Advances in Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aim.2020.107169",
+        "author": [
+          {
+            "family": "Gustafsson",
+            "given": "Nils"
+          },
+          {
+            "family": "Solus",
+            "given": "Liam"
+          }
+        ],
+        "container-title": "Advances in Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              2020,
+              8
+            ]
+          ]
+        },
+        "page": "107169",
+        "title": "Derangements, Ehrhart theory, and local h-polynomials",
+        "type": "article-journal",
+        "volume": "369"
+      },
+      "label": "GS20"
+    },
+    "HaglundOnoWagner1999": {
+      "bibtex": "@incollection{HaglundOnoWagner1999,\n  doi = {10.1007/978-1-4613-0305-3_13},\n  url = {https://doi.org/10.1007/978-1-4613-0305-3_13},\n  year = {1999},\n  publisher = {Springer {US}},\n  pages = {207--221},\n  author = {James Haglund and Ken Ono and David G. Wagner},\n  title = {Theorems and Conjectures Involving Rook Polynomials with Only Real Zeros},\n  booktitle = {Topics in Number Theory}\n}\n",
+      "csl": {
+        "DOI": "10.1007/978-1-4613-0305-3_13",
+        "URL": "https://doi.org/10.1007/978-1-4613-0305-3_13",
+        "author": [
+          {
+            "family": "Haglund",
+            "given": "James"
+          },
+          {
+            "family": "Ono",
+            "given": "Ken"
+          },
+          {
+            "family": "Wagner",
+            "given": "David G."
+          }
+        ],
+        "container-title": "Topics in number theory",
+        "issued": {
+          "date-parts": [
+            [
+              1999
+            ]
+          ]
+        },
+        "page": "207-221",
+        "title": "Theorems and conjectures involving rook polynomials with only real zeros",
+        "type": "chapter"
+      },
+      "label": "HOW99"
+    },
+    "HaglundZhang2019": {
+      "bibtex": "@article{HaglundZhang2019,\n  doi = {10.1016/j.aam.2019.05.001},\n  url = {https://doi.org/10.1016/j.aam.2019.05.001},\n  year = {2019},\n  month = aug,\n  publisher = {Elsevier {BV}},\n  volume = {109},\n  pages = {38--54},\n  author = {James Haglund and Philip B. Zhang},\n  title = {Real-rootedness of variations of {E}ulerian polynomials},\n  journal = {Advances in Applied Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aam.2019.05.001",
+        "URL": "https://doi.org/10.1016/j.aam.2019.05.001",
+        "author": [
+          {
+            "family": "Haglund",
+            "given": "James"
+          },
+          {
+            "family": "Zhang",
+            "given": "Philip B."
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              2019,
+              8
+            ]
+          ]
+        },
+        "page": "38-54",
+        "title": "Real-rootedness of variations of Eulerian polynomials",
+        "type": "article-journal",
+        "volume": "109"
+      },
+      "label": "HZ19"
+    },
+    "Harper1967": {
+      "bibtex": "@article{Harper1967,\n  author = {Harper, L. H.},\n  title = {Stirling {B}ehavior is {A}symptotically {N}ormal},\n  year = {1967},\n  journal = {The Annals of Mathematical Statistics},\n  volume = {38},\n  number = {2},\n  pages = {410--414},\n  doi = {10.1214/aoms/1177698956},\n  url = {https://doi.org/10.1214/aoms/1177698956}\n}\n",
+      "csl": {
+        "DOI": "10.1214/aoms/1177698956",
+        "URL": "https://doi.org/10.1214/aoms/1177698956",
+        "author": [
+          {
+            "family": "Harper",
+            "given": "L. H."
+          }
+        ],
+        "container-title": "The Annals of Mathematical Statistics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1967
+            ]
+          ]
+        },
+        "page": "410-414",
+        "title": "Stirling Behavior is Asymptotically Normal",
+        "type": "article-journal",
+        "volume": "38"
+      },
+      "label": "Har67"
+    },
+    "HeilmannLieb1972": {
+      "bibtex": "@article{HeilmannLieb1972,\n  doi = {10.1007/bf01877590},\n  url2 = {https://doi.org/10.1007/bf01877590},\n  year = {1972},\n  month = sep,\n  publisher = {Springer Science and Business Media {LLC}},\n  volume = {25},\n  number = {3},\n  pages = {190--232},\n  author = {Ole J. Heilmann and Elliott H. Lieb},\n  title = {Theory of monomer-dimer systems},\n  journal = {Communications in Mathematical Physics}\n}\n",
+      "csl": {
+        "DOI": "10.1007/bf01877590",
+        "author": [
+          {
+            "family": "Heilmann",
+            "given": "Ole J."
+          },
+          {
+            "family": "Lieb",
+            "given": "Elliott H."
+          }
+        ],
+        "container-title": "Communications in Mathematical Physics",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1972,
+              9
+            ]
+          ]
+        },
+        "page": "190-232",
+        "title": "Theory of monomer-dimer systems",
+        "type": "article-journal",
+        "volume": "25"
+      },
+      "label": "HL72"
+    },
+    "Holtz2003": {
+      "bibtex": "@article{Holtz2003,\n  author = {Holtz, Olga},\n  title = {Hermite--{B}iehler, {R}outh--{H}urwitz, and total positivity},\n  year = {2003},\n  journal = {Linear Algebra and its Applications},\n  volume = {372},\n  pages = {105--110},\n  publisher = {Elsevier BV},\n  doi = {10.1016/s0024-3795(03)00501-9},\n  url = {http://dx.doi.org/10.1016/S0024-3795(03)00501-9},\n  issn = {0024-3795}\n}\n",
+      "csl": {
+        "DOI": "10.1016/s0024-3795(03)00501-9",
+        "URL": "http://dx.doi.org/10.1016/S0024-3795(03)00501-9",
+        "author": [
+          {
+            "family": "Holtz",
+            "given": "Olga"
+          }
+        ],
+        "container-title": "Linear Algebra and its Applications",
+        "issued": {
+          "date-parts": [
+            [
+              2003
+            ]
+          ]
+        },
+        "page": "105-110",
+        "title": "Hermite–Biehler, Routh–Hurwitz, and total positivity",
+        "type": "article-journal",
+        "volume": "372"
+      },
+      "label": "Hol03"
+    },
+    "HosterStump2025x": {
+      "bibtex": "@article{HosterStump2025x,\n  author = {Elena Hoster and Christian Stump},\n  title = {Chow polynomials of simplicial posets with positive $h$-vector are\n    real-rooted},\n  year = {2025},\n  eprint = {2508.15538},\n  url = {https://arxiv.org/abs/2508.15538},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2508.15538",
+        "author": [
+          {
+            "family": "Hoster",
+            "given": "Elena"
+          },
+          {
+            "family": "Stump",
+            "given": "Christian"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "title": "Chow polynomials of simplicial posets with positive $h$-vector are real-rooted",
+        "type": "article-journal"
+      },
+      "label": "HS25"
+    },
+    "Hutchinson1923": {
+      "bibtex": "@article{Hutchinson1923,\n  author = {Hutchinson, J. I.},\n  title = {On a remarkable class of entire functions},\n  year = {1923},\n  journal = {Transactions of the American Mathematical Society},\n  volume = {25},\n  number = {3},\n  pages = {325–332},\n  publisher = {American Mathematical Society (AMS)},\n  doi = {10.1090/s0002-9947-1923-1501248-1},\n  url = {http://dx.doi.org/10.1090/s0002-9947-1923-1501248-1},\n  issn = {0002-9947}\n}\n",
+      "csl": {
+        "DOI": "10.1090/s0002-9947-1923-1501248-1",
+        "URL": "http://dx.doi.org/10.1090/s0002-9947-1923-1501248-1",
+        "author": [
+          {
+            "family": "Hutchinson",
+            "given": "J. I."
+          }
+        ],
+        "container-title": "Transactions of the American Mathematical Society",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1923
+            ]
+          ]
+        },
+        "page": "325-332",
+        "title": "On a remarkable class of entire functions",
+        "type": "article-journal",
+        "volume": "25"
+      },
+      "label": "Hut23"
+    },
+    "Jensen1913": {
+      "bibtex": "@article{Jensen1913,\n  author = {Jensen, J. L. W. V.},\n  title = {Recherches sur la théorie des équations},\n  year = {1913},\n  journal = {Acta Mathematica},\n  volume = {36},\n  number = {0},\n  pages = {181--195},\n  doi = {10.1007/BF02422380},\n  url = {https://doi.org/10.1007/BF02422380}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF02422380",
+        "URL": "https://doi.org/10.1007/BF02422380",
+        "author": [
+          {
+            "family": "Jensen",
+            "given": "J. L. W. V."
+          }
+        ],
+        "container-title": "Acta Mathematica",
+        "issue": "0",
+        "issued": {
+          "date-parts": [
+            [
+              1913
+            ]
+          ]
+        },
+        "page": "181-195",
+        "title": "Recherches sur la théorie des équations",
+        "type": "article-journal",
+        "volume": "36"
+      },
+      "label": "Jen13"
+    },
+    "Karlin1968": {
+      "bibtex": "@book{Karlin1968,\n  author    = {Karlin, Samuel},\n  title     = {Total Positivity, {V}ol.~{I}},\n  publisher = {Stanford University Press},\n  year      = {1968}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Karlin",
+            "given": "Samuel"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1968
+            ]
+          ]
+        },
+        "title": "Total positivity, Vol. I",
+        "type": "book"
+      },
+      "label": "Kar68"
+    },
+    "KarpenkoVishnyakova2017": {
+      "bibtex": "@article{KarpenkoVishnyakova2017,\n  author = {Karpenko, Irina and Vishnyakova, Anna M.},\n  title = {On sufficient conditions for a polynomial to be sign-independently hyperbolic or to have real separated zeros},\n  year = {2017},\n  journal = {Mathematical Inequalities &amp; Applications},\n  number = {1},\n  pages = {237--245},\n  doi = {10.7153/mia-20-18},\n  url = {https://doi.org/10.7153/mia-20-18}\n}\n",
+      "csl": {
+        "DOI": "10.7153/mia-20-18",
+        "URL": "https://doi.org/10.7153/mia-20-18",
+        "author": [
+          {
+            "family": "Karpenko",
+            "given": "Irina"
+          },
+          {
+            "family": "Vishnyakova",
+            "given": "Anna M."
+          }
+        ],
+        "container-title": "Mathematical Inequalities &amp; Applications",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "page": "237-245",
+        "title": "On sufficient conditions for a polynomial to be sign-independently hyperbolic or to have real separated zeros",
+        "type": "article-journal"
+      },
+      "label": "KV17"
+    },
+    "Kostov2010": {
+      "bibtex": "@article{Kostov2010,\n  author = {Kostov, Vladimir P.},\n  title = {Interlacing properties and the {S}chur--{S}zeg{\\H{o}} composition},\n  year = {2010},\n  journal = {Functional Analysis and Other Mathematics},\n  volume = {3},\n  number = {1},\n  pages = {65--74},\n  doi = {10.1007/s11853-010-0039-2},\n  url = {https://doi.org/10.1007/s11853-010-0039-2}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s11853-010-0039-2",
+        "URL": "https://doi.org/10.1007/s11853-010-0039-2",
+        "author": [
+          {
+            "family": "Kostov",
+            "given": "Vladimir P."
+          }
+        ],
+        "container-title": "Functional Analysis and Other Mathematics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2010
+            ]
+          ]
+        },
+        "page": "65-74",
+        "title": "Interlacing properties and the Schur–Szegő composition",
+        "type": "article-journal",
+        "volume": "3"
+      },
+      "label": "Kos10"
+    },
+    "KostovShapiro2006": {
+      "bibtex": "@article{KostovShapiro2006,\n  author = {Kostov, Vladimir and Shapiro, Boris},\n  title = {On the {S}chur--{S}zeg{\\\"o} composition of polynomials},\n  year = {2006},\n  journal = {Comptes Rendus. Mathématique},\n  volume = {343},\n  number = {2},\n  pages = {81--86},\n  doi = {10.1016/j.crma.2006.06.007},\n  url = {https://doi.org/10.1016/j.crma.2006.06.007}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.crma.2006.06.007",
+        "URL": "https://doi.org/10.1016/j.crma.2006.06.007",
+        "author": [
+          {
+            "family": "Kostov",
+            "given": "Vladimir"
+          },
+          {
+            "family": "Shapiro",
+            "given": "Boris"
+          }
+        ],
+        "container-title": "Comptes Rendus. Mathématique",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2006
+            ]
+          ]
+        },
+        "page": "81-86",
+        "title": "On the Schur–Szegö composition of polynomials",
+        "type": "article-journal",
+        "volume": "343"
+      },
+      "label": "KS06"
+    },
+    "Kozlov2022": {
+      "bibtex": "@article{Kozlov2022,\n  author = {Kozlov, Dmitry N.},\n  title = {Stirling complexes},\n  year = {2022},\n  journal = {Journal of Applied and Computational Topology},\n  volume = {7},\n  number = {1},\n  pages = {57--74},\n  doi = {10.1007/s41468-022-00096-4},\n  url = {https://doi.org/10.1007/s41468-022-00096-4}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s41468-022-00096-4",
+        "URL": "https://doi.org/10.1007/s41468-022-00096-4",
+        "author": [
+          {
+            "family": "Kozlov",
+            "given": "Dmitry N."
+          }
+        ],
+        "container-title": "Journal of Applied and Computational Topology",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "page": "57-74",
+        "title": "Stirling complexes",
+        "type": "article-journal",
+        "volume": "7"
+      },
+      "label": "Koz22"
+    },
+    "Kurtz1992": {
+      "bibtex": "@article{Kurtz1992,\n  author = {Kurtz, David C.},\n  title = {A Sufficient Condition for All the Roots of a Polynomial To Be Real},\n  year = {1992},\n  journal = {The American Mathematical Monthly},\n  volume = {99},\n  number = {3},\n  pages = {259--263},\n  publisher = {Informa UK Limited},\n  doi = {10.1080/00029890.1992.11995845},\n  url = {http://dx.doi.org/10.1080/00029890.1992.11995845},\n  issn = {1930-0972}\n}\n",
+      "csl": {
+        "DOI": "10.1080/00029890.1992.11995845",
+        "URL": "http://dx.doi.org/10.1080/00029890.1992.11995845",
+        "author": [
+          {
+            "family": "Kurtz",
+            "given": "David C."
+          }
+        ],
+        "container-title": "The American Mathematical Monthly",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1992
+            ]
+          ]
+        },
+        "page": "259-263",
+        "title": "A sufficient condition for all the roots of a polynomial to be real",
+        "type": "article-journal",
+        "volume": "99"
+      },
+      "label": "Kur92"
+    },
+    "LeakeRyder2019": {
+      "bibtex": "@article{LeakeRyder2019,\n\tauthor = {Leake, Jonathan D. and Ryder, Nick R.},\n\ttitle = {Generalizations of the Matching Polynomial to the Multivariate Independence Polynomial},\n\tjournal = {Algebraic Combinatorics},\n\tpublisher = {MathOA foundation},\n\tvolume = {2},\n\tnumber = {5},\n\tyear = {2019},\n\tpages = {781-802},\n\tdoi = {10.5802/alco.63},\n\tlanguage = {en},\n\turl={alco.centre-mersenne.org/item/ALCO_2019__2_5_781_0/}\n}\n",
+      "csl": {
+        "DOI": "10.5802/alco.63",
+        "URL": "alco.centre-mersenne.org/item/ALCO_2019__2_5_781_0/",
+        "author": [
+          {
+            "family": "Leake",
+            "given": "Jonathan D."
+          },
+          {
+            "family": "Ryder",
+            "given": "Nick R."
+          }
+        ],
+        "container-title": "Algebraic Combinatorics",
+        "issue": "5",
+        "issued": {
+          "date-parts": [
+            [
+              2019
+            ]
+          ]
+        },
+        "page": "781-802",
+        "title": "Generalizations of the matching polynomial to the multivariate independence polynomial",
+        "type": "article-journal",
+        "volume": "2"
+      },
+      "label": "LR19"
+    },
+    "Leander2016x": {
+      "bibtex": "@article{Leander2016x,\n  author = {Madeleine Leander},\n  title = {Compatible polynomials and edgewise subdivisions},\n  year = {2016},\n  eprint = {1605.05287v1},\n  url = {https://arxiv.org/abs/1605.05287v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/1605.05287v1",
+        "author": [
+          {
+            "family": "Leander",
+            "given": "Madeleine"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2016
+            ]
+          ]
+        },
+        "title": "Compatible polynomials and edgewise subdivisions",
+        "type": "article-journal"
+      },
+      "label": "Lea16"
+    },
+    "LeeYang1952": {
+      "bibtex": "@article{LeeYang1952,\n  author = {T. D. Lee and C. N. Yang},\n  title = {Statistical theory of equations of state and phase transitions.\n    {II}. Lattice gas and {I}sing model},\n  year = {1952},\n  journal = {Physical Review},\n  volume = {87},\n  number = {3},\n  pages = {410--419},\n  doi = {10.1103/PhysRev.87.410},\n  url = {https://doi.org/10.1103/PhysRev.87.410}\n}\n",
+      "csl": {
+        "DOI": "10.1103/PhysRev.87.410",
+        "URL": "https://doi.org/10.1103/PhysRev.87.410",
+        "author": [
+          {
+            "family": "Lee",
+            "given": "T. D."
+          },
+          {
+            "family": "Yang",
+            "given": "C. N."
+          }
+        ],
+        "container-title": "Physical Review",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1952
+            ]
+          ]
+        },
+        "page": "410-419",
+        "title": "Statistical theory of equations of state and phase transitions. II. Lattice gas and Ising model",
+        "type": "article-journal",
+        "volume": "87"
+      },
+      "label": "LY52"
+    },
+    "Levin1964": {
+      "bibtex": "@book{Levin1964,\n  author = {Levin, B. Ja.},\n  title = {Distribution of Zeros of Entire Functions},\n  series = {Translations of Mathematical Monographs},\n  volume = {5},\n  publisher = {American Mathematical Society},\n  address = {Providence, RI},\n  year = {1964},\n  doi = {10.1090/mmono/005},\n  url2 = {https://doi.org/10.1090/mmono/005}\n}\n",
+      "csl": {
+        "DOI": "10.1090/mmono/005",
+        "author": [
+          {
+            "family": "Levin",
+            "given": "B. Ja."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1964
+            ]
+          ]
+        },
+        "title": "Distribution of zeros of entire functions",
+        "type": "book",
+        "volume": "5"
+      },
+      "label": "Lev64"
+    },
+    "LiebSokal1981": {
+      "bibtex": "@article{LiebSokal1981,\n  author = {Lieb, Elliott H. and Sokal, Alan D.},\n  title = {A general {L}ee-{Y}ang theorem for one-component and multicomponent ferromagnets},\n  year = {1981},\n  journal = {Communications in Mathematical Physics},\n  volume = {80},\n  number = {2},\n  pages = {153--179},\n  doi = {10.1007/bf01213009},\n  url = {https://doi.org/10.1007/bf01213009}\n}\n",
+      "csl": {
+        "DOI": "10.1007/bf01213009",
+        "URL": "https://doi.org/10.1007/bf01213009",
+        "author": [
+          {
+            "family": "Lieb",
+            "given": "Elliott H."
+          },
+          {
+            "family": "Sokal",
+            "given": "Alan D."
+          }
+        ],
+        "container-title": "Communications in Mathematical Physics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1981
+            ]
+          ]
+        },
+        "page": "153-179",
+        "title": "A general Lee-Yang theorem for one-component and multicomponent ferromagnets",
+        "type": "article-journal",
+        "volume": "80"
+      },
+      "label": "LS81"
+    },
+    "LinMaMaZhou2021": {
+      "bibtex": "@article{LinMaMaZhou2021,\n  author = {Lin, Zhicong and Ma, Jun and Ma, Shi-Mei and Zhou, Yanghongbo},\n  title = {Weakly increasing trees on a multiset},\n  year = {2021},\n  journal = {Advances in Applied Mathematics},\n  volume = {129},\n  pages = {102206},\n  doi = {10.1016/j.aam.2021.102206},\n  url = {https://doi.org/10.1016/j.aam.2021.102206}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aam.2021.102206",
+        "URL": "https://doi.org/10.1016/j.aam.2021.102206",
+        "author": [
+          {
+            "family": "Lin",
+            "given": "Zhicong"
+          },
+          {
+            "family": "Ma",
+            "given": "Jun"
+          },
+          {
+            "family": "Ma",
+            "given": "Shi-Mei"
+          },
+          {
+            "family": "Zhou",
+            "given": "Yanghongbo"
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issued": {
+          "date-parts": [
+            [
+              2021
+            ]
+          ]
+        },
+        "page": "102206",
+        "title": "Weakly increasing trees on a multiset",
+        "type": "article-journal",
+        "volume": "129"
+      },
+      "label": "LMMZ21"
+    },
+    "Lindstrom1973": {
+      "bibtex": "@article{Lindstrom1973,\n  title = {On the Vector Representations of Induced Matroids},\n  volume = {5},\n  ISSN = {0024-6093},\n  url = {http://dx.doi.org/10.1112/blms/5.1.85},\n  DOI = {10.1112/blms/5.1.85},\n  number = {1},\n  journal = {Bulletin of the London Mathematical Society},\n  publisher = {Wiley},\n  author = {Lindstr\\\"{o}m,  Bernt},\n  year = {1973},\n  month = mar,\n  pages = {85–90}\n}\n",
+      "csl": {
+        "DOI": "10.1112/blms/5.1.85",
+        "URL": "http://dx.doi.org/10.1112/blms/5.1.85",
+        "author": [
+          {
+            "family": "Lindström",
+            "given": "Bernt"
+          }
+        ],
+        "container-title": "Bulletin of the London Mathematical Society",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              1973,
+              3
+            ]
+          ]
+        },
+        "page": "85-90",
+        "title": "On the vector representations of induced matroids",
+        "type": "article-journal",
+        "volume": "5"
+      },
+      "label": "Lin73"
+    },
+    "Liu2012CompatibleSequences": {
+      "bibtex": "@article{Liu2012CompatibleSequences,\n  author = {Liu, Lily L.},\n  title = {Polynomials with real zeros and compatible sequences},\n  year = {2012},\n  journal = {The Electronic Journal of Combinatorics},\n  volume = {19},\n  number = {3},\n  pages = {P33},\n  doi = {10.37236/2674}\n}\n",
+      "csl": {
+        "DOI": "10.37236/2674",
+        "author": [
+          {
+            "family": "Liu",
+            "given": "Lily L."
+          }
+        ],
+        "container-title": "The Electronic Journal of Combinatorics",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              2012
+            ]
+          ]
+        },
+        "page": "P33",
+        "title": "Polynomials with real zeros and compatible sequences",
+        "type": "article-journal",
+        "volume": "19"
+      },
+      "label": "Liu12"
+    },
+    "LiuMao2026Hadamard": {
+      "bibtex": "@article{LiuMao2026Hadamard,\n  author = {Yanxin Liu and Jianxi Mao},\n  title = {Preservation of log-concavity under {H}adamard products},\n  year = {2026},\n  eprint = {2609.11589v1},\n  url = {https://arxiv.org/abs/2609.11589v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.11589v1",
+        "author": [
+          {
+            "family": "Liu",
+            "given": "Yanxin"
+          },
+          {
+            "family": "Mao",
+            "given": "Jianxi"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Preservation of log-concavity under Hadamard products",
+        "type": "article-journal"
+      },
+      "label": "LM26"
+    },
+    "LiuWang2007": {
+      "bibtex": "@article{LiuWang2007,\n  doi = {10.1016/j.aam.2006.02.003},\n  url2 = {https://doi.org/10.1016/j.aam.2006.02.003},\n  year = {2007},\n  month = may,\n  publisher = {Elsevier {BV}},\n  volume = {38},\n  number = {4},\n  pages = {542--560},\n  author = {Lily L. Liu and Yi Wang},\n  title = {A unified approach to polynomial sequences with only real zeros},\n  journal = {Advances in Applied Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aam.2006.02.003",
+        "author": [
+          {
+            "family": "Liu",
+            "given": "Lily L."
+          },
+          {
+            "family": "Wang",
+            "given": "Yi"
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issue": "4",
+        "issued": {
+          "date-parts": [
+            [
+              2007,
+              5
+            ]
+          ]
+        },
+        "page": "542-560",
+        "title": "A unified approach to polynomial sequences with only real zeros",
+        "type": "article-journal",
+        "volume": "38"
+      },
+      "label": "LW07"
+    },
+    "LiuZhang2026bx": {
+      "bibtex": "@article{LiuZhang2026bx,\n  author = {Feihu Liu and Zihao Zhang},\n  title = {Real-{R}ootedness and {G}amma-{P}ositivity for a {V}ariation of the {M}orris {C}onstant {T}erm},\n  year = {2026},\n  eprint = {2609.15201v3},\n  url = {https://arxiv.org/abs/2609.15201v3},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.15201v3",
+        "author": [
+          {
+            "family": "Liu",
+            "given": "Feihu"
+          },
+          {
+            "family": "Zhang",
+            "given": "Zihao"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Real-Rootedness and Gamma-Positivity for a Variation of the Morris Constant Term",
+        "type": "article-journal"
+      },
+      "label": "LZ26"
+    },
+    "MaMaYeh2017x": {
+      "bibtex": "@article{MaMaYeh2017x,\n  author = {Jun Ma and Shi-Mei Ma and Yeong-Nan Yeh},\n  title = {Recurrence relations for binomial-{E}ulerian polynomials},\n  year = {2017},\n  eprint = {1711.09016v2},\n  url = {https://arxiv.org/abs/1711.09016v2},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/1711.09016v2",
+        "author": [
+          {
+            "family": "Ma",
+            "given": "Jun"
+          },
+          {
+            "family": "Ma",
+            "given": "Shi-Mei"
+          },
+          {
+            "family": "Yeh",
+            "given": "Yeong-Nan"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2017
+            ]
+          ]
+        },
+        "title": "Recurrence relations for binomial-Eulerian polynomials",
+        "type": "article-journal"
+      },
+      "label": "MMY17"
+    },
+    "MaWang2008": {
+      "bibtex": "@article{MaWang2008,\n  doi = {10.37236/741},\n  url2 = {https://doi.org/10.37236/741},\n  year = {2008},\n  month = jan,\n  publisher = {The Electronic Journal of Combinatorics},\n  volume = {15},\n  number = {1},\n  author = {Shi-Mei Ma and Yi Wang},\n  title = {$q$-{E}ulerian Polynomials and Polynomials with Only Real Zeros},\n  pages = {Research Paper 17},\n  journal = {The Electronic Journal of Combinatorics}\n}\n",
+      "csl": {
+        "DOI": "10.37236/741",
+        "author": [
+          {
+            "family": "Ma",
+            "given": "Shi-Mei"
+          },
+          {
+            "family": "Wang",
+            "given": "Yi"
+          }
+        ],
+        "container-title": "The Electronic Journal of Combinatorics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2008,
+              1
+            ]
+          ]
+        },
+        "page": "Research Paper 17",
+        "title": "$q$-Eulerian polynomials and polynomials with only real zeros",
+        "type": "article-journal",
+        "volume": "15"
+      },
+      "label": "MW08"
+    },
+    "MaWang2026x": {
+      "bibtex": "@article{MaWang2026x,\n  author = {Shi-Mei Ma and Ming-Xin Wang},\n  title = {Binomial expansions of {J}acobi-{S}tirling numbers and real-rootedness of {J}acobi-{S}tirling descent polynomials},\n  year = {2026},\n  eprint = {2610.03111v1},\n  url = {https://arxiv.org/abs/2610.03111v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2610.03111v1",
+        "author": [
+          {
+            "family": "Ma",
+            "given": "Shi-Mei"
+          },
+          {
+            "family": "Wang",
+            "given": "Ming-Xin"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Binomial expansions of Jacobi-Stirling numbers and real-rootedness of Jacobi-Stirling descent polynomials",
+        "type": "article-journal"
+      },
+      "label": "MW26"
+    },
+    "MantaciRakotondrajao2003": {
+      "bibtex": "@article{MantaciRakotondrajao2003,\n  doi = {10.1016/s0196-8858(02)00531-6},\n  url2 = {https://doi.org/10.1016/s0196-8858(02)00531-6},\n  year = {2003},\n  month = feb,\n  publisher = {Elsevier {BV}},\n  volume = {30},\n  number = {1-2},\n  pages = {177--188},\n  author = {Roberto Mantaci and Fanja Rakotondrajao},\n  title = {Exceedingly deranging!},\n  journal = {Advances in Applied Mathematics}\n}\n",
+      "csl": {
+        "DOI": "10.1016/s0196-8858(02)00531-6",
+        "author": [
+          {
+            "family": "Mantaci",
+            "given": "Roberto"
+          },
+          {
+            "family": "Rakotondrajao",
+            "given": "Fanja"
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issue": "1-2",
+        "issued": {
+          "date-parts": [
+            [
+              2003,
+              2
+            ]
+          ]
+        },
+        "page": "177-188",
+        "title": "Exceedingly deranging!",
+        "type": "article-journal",
+        "volume": "30"
+      },
+      "label": "MR03"
+    },
+    "MaoWang2026x": {
+      "bibtex": "@article{MaoWang2026x,\n  author = {Jianxi Mao and Lijie Wang},\n  title = {The {N}arayana transformation},\n  year = {2026},\n  eprint = {2607.01572},\n  url = {https://arxiv.org/abs/2607.01572},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2607.01572",
+        "author": [
+          {
+            "family": "Mao",
+            "given": "Jianxi"
+          },
+          {
+            "family": "Wang",
+            "given": "Lijie"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "The Narayana transformation",
+        "type": "article-journal"
+      },
+      "label": "MW26"
+    },
+    "MarcusSpielmanSrivastava2015II": {
+      "bibtex": "@article{MarcusSpielmanSrivastava2015II,\n  author = {Adam Marcus and Daniel A. Spielman and Nikhil Srivastava},\n  title = {Interlacing families {II}: Mixed characteristic polynomials and the\n    {K}adison--{S}inger problem},\n  year = {2015},\n  journal = {Annals of Mathematics},\n  volume = {182},\n  number = {1},\n  pages = {327--350},\n  doi = {10.4007/annals.2015.182.1.8},\n  url = {https://doi.org/10.4007/annals.2015.182.1.8},\n  eprint = {1306.3969}\n}\n",
+      "csl": {
+        "DOI": "10.4007/annals.2015.182.1.8",
+        "URL": "https://arxiv.org/abs/1306.3969",
+        "author": [
+          {
+            "family": "Marcus",
+            "given": "Adam"
+          },
+          {
+            "family": "Spielman",
+            "given": "Daniel A."
+          },
+          {
+            "family": "Srivastava",
+            "given": "Nikhil"
+          }
+        ],
+        "container-title": "Annals of Mathematics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2015
+            ]
+          ]
+        },
+        "page": "327-350",
+        "title": "Interlacing families II: Mixed characteristic polynomials and the Kadison–Singer problem",
+        "type": "article-journal",
+        "volume": "182"
+      },
+      "label": "MSS15"
+    },
+    "MarcusSpielmanSrivastava2022": {
+      "bibtex": "@article{MarcusSpielmanSrivastava2022,\n  author = {Marcus, Adam W. and Spielman, Daniel A. and Srivastava, Nikhil},\n  title = {Finite free convolutions of polynomials},\n  year = {2022},\n  journal = {Probability Theory and Related Fields},\n  volume = {182},\n  number = {3-4},\n  pages = {807--848},\n  doi = {10.1007/s00440-021-01105-w},\n  url = {https://doi.org/10.1007/s00440-021-01105-w}\n}\n",
+      "csl": {
+        "DOI": "10.1007/s00440-021-01105-w",
+        "URL": "https://doi.org/10.1007/s00440-021-01105-w",
+        "author": [
+          {
+            "family": "Marcus",
+            "given": "Adam W."
+          },
+          {
+            "family": "Spielman",
+            "given": "Daniel A."
+          },
+          {
+            "family": "Srivastava",
+            "given": "Nikhil"
+          }
+        ],
+        "container-title": "Probability Theory and Related Fields",
+        "issue": "3-4",
+        "issued": {
+          "date-parts": [
+            [
+              2022
+            ]
+          ]
+        },
+        "page": "807-848",
+        "title": "Finite free convolutions of polynomials",
+        "type": "article-journal",
+        "volume": "182"
+      },
+      "label": "MSS22"
+    },
+    "MicchelliWilloughby1979": {
+      "bibtex": "@article{MicchelliWilloughby1979,\n  author = {Micchelli, Charles A. and Willoughby, R.A.},\n  title = {On functions which preserve the class of {S}tieltjes matrices},\n  year = {1979},\n  journal = {Linear Algebra and its Applications},\n  volume = {23},\n  pages = {141--156},\n  doi = {10.1016/0024-3795(79)90098-3},\n  url = {https://doi.org/10.1016/0024-3795(79)90098-3}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0024-3795(79)90098-3",
+        "URL": "https://doi.org/10.1016/0024-3795(79)90098-3",
+        "author": [
+          {
+            "family": "Micchelli",
+            "given": "Charles A."
+          },
+          {
+            "family": "Willoughby",
+            "given": "R. A."
+          }
+        ],
+        "container-title": "Linear Algebra and its Applications",
+        "issued": {
+          "date-parts": [
+            [
+              1979
+            ]
+          ]
+        },
+        "page": "141-156",
+        "title": "On functions which preserve the class of Stieltjes matrices",
+        "type": "article-journal",
+        "volume": "23"
+      },
+      "label": "MW79"
+    },
+    "Mongelli2012": {
+      "bibtex": "@article{Mongelli2012,\n  author = {Mongelli, Pietro},\n  title = {Total positivity properties of {J}acobi–{S}tirling numbers},\n  year = {2012},\n  journal = {Advances in Applied Mathematics},\n  volume = {48},\n  number = {2},\n  pages = {354--364},\n  doi = {10.1016/j.aam.2011.06.008},\n  url = {https://doi.org/10.1016/j.aam.2011.06.008}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.aam.2011.06.008",
+        "URL": "https://doi.org/10.1016/j.aam.2011.06.008",
+        "author": [
+          {
+            "family": "Mongelli",
+            "given": "Pietro"
+          }
+        ],
+        "container-title": "Advances in Applied Mathematics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2012
+            ]
+          ]
+        },
+        "page": "354-364",
+        "title": "Total positivity properties of Jacobi–Stirling numbers",
+        "type": "article-journal",
+        "volume": "48"
+      },
+      "label": "Mon12"
+    },
+    "Nijenhuis1976": {
+      "bibtex": "@article{Nijenhuis1976,\n  doi = {10.1016/0097-3165(76)90068-6},\n  url2 = {https://doi.org/10.1016/0097-3165(76)90068-6},\n  year = {1976},\n  month = sep,\n  publisher = {Elsevier {BV}},\n  volume = {21},\n  number = {2},\n  pages = {240--244},\n  author = {Albert Nijenhuis},\n  title = {On permanents and the zeros of rook polynomials},\n  journal = {Journal of Combinatorial Theory,  Series A}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0097-3165(76)90068-6",
+        "author": [
+          {
+            "family": "Nijenhuis",
+            "given": "Albert"
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series A",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1976,
+              9
+            ]
+          ]
+        },
+        "page": "240-244",
+        "title": "On permanents and the zeros of rook polynomials",
+        "type": "article-journal",
+        "volume": "21"
+      },
+      "label": "Nij76"
+    },
+    "NyandwiHaggKurujyibwamiUwimbabazi2026x": {
+      "bibtex": "@article{NyandwiHaggKurujyibwamiUwimbabazi2026x,\n  author = {Bosco Nyandwi and Christian Hägg and Celestin Kurujyibwami and Leon Fidele Ruganzu Uwimbabazi},\n  title = {Voronoi limit measures for iterates of constant-coefficient differential operators on rational functions with simple poles},\n  year = {2026},\n  eprint = {2604.05189v1},\n  url = {https://arxiv.org/abs/2604.05189v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2604.05189v1",
+        "author": [
+          {
+            "family": "Nyandwi",
+            "given": "Bosco"
+          },
+          {
+            "family": "Hägg",
+            "given": "Christian"
+          },
+          {
+            "family": "Kurujyibwami",
+            "given": "Celestin"
+          },
+          {
+            "family": "Uwimbabazi",
+            "given": "Leon Fidele Ruganzu"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Voronoi limit measures for iterates of constant-coefficient differential operators on rational functions with simple poles",
+        "type": "article-journal"
+      },
+      "label": "NHKU26"
+    },
+    "Obreschkoff1963": {
+      "bibtex": "@book{Obreschkoff1963,\n  author = {Obreschkoff, Nikola},\n  title = {Verteilung und Berechnung der Nullstellen reeller Polynome},\n  series = {Hochschulb{\\\"u}cher f{\\\"u}r Mathematik},\n  volume = {55},\n  publisher = {VEB Deutscher Verlag der Wissenschaften},\n  address = {Berlin},\n  year = {1963}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Obreschkoff",
+            "given": "Nikola"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1963
+            ]
+          ]
+        },
+        "title": "Verteilung und berechnung der nullstellen reeller polynome",
+        "type": "book",
+        "volume": "55"
+      },
+      "label": "Obr63"
+    },
+    "Perron1907": {
+      "bibtex": "@article{Perron1907,\n  author = {Perron, Oskar},\n  title = {Zur {T}heorie der {M}atrices},\n  year = {1907},\n  journal = {Mathematische Annalen},\n  volume = {64},\n  number = {2},\n  pages = {248--263},\n  doi = {10.1007/BF01449896},\n  url = {https://doi.org/10.1007/BF01449896}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01449896",
+        "URL": "https://doi.org/10.1007/BF01449896",
+        "author": [
+          {
+            "family": "Perron",
+            "given": "Oskar"
+          }
+        ],
+        "container-title": "Mathematische Annalen",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1907
+            ]
+          ]
+        },
+        "page": "248-263",
+        "title": "Zur Theorie der Matrices",
+        "type": "article-journal",
+        "volume": "64"
+      },
+      "label": "Per07"
+    },
+    "Petersen2015EulerianNumbers": {
+      "bibtex": "@book{Petersen2015EulerianNumbers,\n  author = {T. Kyle Petersen},\n  title = {Eulerian Numbers},\n  series = {Birkhäuser Advanced Texts Basler Lehrbücher},\n  publisher = {Birkhäuser},\n  address = {New York},\n  year = {2015},\n  isbn = {978-1-4939-3091-3},\n  doi = {10.1007/978-1-4939-3091-3},\n  url = {https://doi.org/10.1007/978-1-4939-3091-3}\n}\n",
+      "csl": {
+        "DOI": "10.1007/978-1-4939-3091-3",
+        "URL": "https://doi.org/10.1007/978-1-4939-3091-3",
+        "author": [
+          {
+            "family": "Petersen",
+            "given": "T. Kyle"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2015
+            ]
+          ]
+        },
+        "title": "Eulerian numbers",
+        "type": "book"
+      },
+      "label": "Pet15"
+    },
+    "RahmanSchmeisser2002": {
+      "bibtex": "@book{RahmanSchmeisser2002,\n  author    = {Rahman, Q. I. and Schmeisser, G.},\n  title     = {Analytic Theory of Polynomials},\n  publisher = {Oxford University Press},\n  series    = {London Mathematical Society Monographs},\n  year      = {2002}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Rahman",
+            "given": "Q. I."
+          },
+          {
+            "family": "Schmeisser",
+            "given": "G."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2002
+            ]
+          ]
+        },
+        "title": "Analytic theory of polynomials",
+        "type": "book"
+      },
+      "label": "RS02"
+    },
+    "Ruelle2010": {
+      "bibtex": "@article{Ruelle2010,\n  author = {Ruelle, David},\n  title = {Characterization of {L}ee-{Y}ang polynomials},\n  year = {2010},\n  journal = {Annals of Mathematics},\n  volume = {171},\n  number = {1},\n  pages = {589--603},\n  doi = {10.4007/annals.2010.171.589},\n  url = {https://doi.org/10.4007/annals.2010.171.589}\n}\n",
+      "csl": {
+        "DOI": "10.4007/annals.2010.171.589",
+        "URL": "https://doi.org/10.4007/annals.2010.171.589",
+        "author": [
+          {
+            "family": "Ruelle",
+            "given": "David"
+          }
+        ],
+        "container-title": "Annals of Mathematics",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2010
+            ]
+          ]
+        },
+        "page": "589-603",
+        "title": "Characterization of Lee-Yang polynomials",
+        "type": "article-journal",
+        "volume": "171"
+      },
+      "label": "Rue10"
+    },
+    "Schur1917": {
+      "bibtex": "@article{Schur1917,\n  author = {Schur, J.},\n  title = {Über {P}otenzreihen, die im {I}nnern des {E}inheitskreises beschränkt sind.},\n  year = {1917},\n  journal = {crll},\n  volume = {1917},\n  number = {147},\n  pages = {205--232},\n  doi = {10.1515/crll.1917.147.205},\n  url = {https://doi.org/10.1515/crll.1917.147.205}\n}\n",
+      "csl": {
+        "DOI": "10.1515/crll.1917.147.205",
+        "URL": "https://doi.org/10.1515/crll.1917.147.205",
+        "author": [
+          {
+            "family": "Schur",
+            "given": "J."
+          }
+        ],
+        "container-title": "crll",
+        "issue": "147",
+        "issued": {
+          "date-parts": [
+            [
+              1917
+            ]
+          ]
+        },
+        "page": "205-232",
+        "title": "Über Potenzreihen, die im Innern des Einheitskreises beschränkt sind.",
+        "type": "article-journal",
+        "volume": "1917"
+      },
+      "label": "Sch17"
+    },
+    "SchurPolya1914": {
+      "bibtex": "@article{SchurPolya1914,\n  title={{\\\"U}ber zwei {A}rten von {F}aktorenfolgen in der {T}heorie der algebraischen {G}leichungen},\n  author={Schur, J and Polya, G},\n  year={1914},\n  journal={J. Reine Angew. Math.},\n  publisher={Walter de Gruyter, Berlin/New York Berlin, New York}\n}\n",
+      "csl": {
+        "author": [
+          {
+            "family": "Schur",
+            "given": "J"
+          },
+          {
+            "family": "Polya",
+            "given": "G"
+          }
+        ],
+        "container-title": "J. Reine Angew. Math.",
+        "issued": {
+          "date-parts": [
+            [
+              1914
+            ]
+          ]
+        },
+        "title": "Über zwei Arten von Faktorenfolgen in der Theorie der algebraischen Gleichungen",
+        "type": "article-journal"
+      },
+      "label": "SP14"
+    },
+    "Sylvester1853": {
+      "bibtex": "@article{Sylvester1853,\n  author = {Sylvester, James Joseph},\n  title = {{XVIII}. {O}n a theory of the syzygetic relations of two rational integral functions, comprising an application to the theory of {S}turm's functions, and that of the greatest algebraical common measure},\n  year = {1853},\n  journal = {Philosophical Transactions of the Royal Society of London},\n  number = {143},\n  pages = {407--548},\n  doi = {10.1098/rstl.1853.0018},\n  url = {https://doi.org/10.1098/rstl.1853.0018}\n}\n",
+      "csl": {
+        "DOI": "10.1098/rstl.1853.0018",
+        "URL": "https://doi.org/10.1098/rstl.1853.0018",
+        "author": [
+          {
+            "family": "Sylvester",
+            "given": "James Joseph"
+          }
+        ],
+        "container-title": "Philosophical Transactions of the Royal Society of London",
+        "issue": "143",
+        "issued": {
+          "date-parts": [
+            [
+              1853
+            ]
+          ]
+        },
+        "page": "407-548",
+        "title": "XVIII. On a theory of the syzygetic relations of two rational integral functions, comprising an application to the theory of Sturm’s functions, and that of the greatest algebraical common measure",
+        "type": "article-journal"
+      },
+      "label": "Syl53"
+    },
+    "Szego1922": {
+      "bibtex": "@article{Szego1922,\n  doi     = {10.1007/BF01485280},\n  url2    = {https://doi.org/10.1007/BF01485280},\n  author  = {G. Szeg{\\\"{o}}},\n  title   = {Bemerkungen zu einem {S}atz von {J}. {H}. {G}race {\\\"{u}}ber die {W}urzeln algebraischer {G}leichungen},\n  journal = {Mathematische Zeitschrift},\n  volume  = {13},\n  pages   = {28--55},\n  year    = {1922}\n}\n",
+      "csl": {
+        "DOI": "10.1007/BF01485280",
+        "author": [
+          {
+            "family": "Szegö",
+            "given": "G."
+          }
+        ],
+        "container-title": "Mathematische Zeitschrift",
+        "issued": {
+          "date-parts": [
+            [
+              1922
+            ]
+          ]
+        },
+        "page": "28-55",
+        "title": "Bemerkungen zu einem Satz von J. H. Grace über die Wurzeln algebraischer Gleichungen",
+        "type": "article-journal",
+        "volume": "13"
+      },
+      "label": "Sze22"
+    },
+    "Szego1939": {
+      "bibtex": "@book{Szego1939,\n  author = {Szegő, G.},\n  title = {Orthogonal {P}olynomials},\n  year = {1939},\n  series = {Colloquium Publications},\n  publisher = {American Mathematical Society},\n  isbn = {9781470431716},\n  doi = {10.1090/coll/023},\n  url = {https://doi.org/10.1090/coll/023}\n}\n",
+      "csl": {
+        "DOI": "10.1090/coll/023",
+        "URL": "https://doi.org/10.1090/coll/023",
+        "author": [
+          {
+            "family": "Szegő",
+            "given": "G."
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              1939
+            ]
+          ]
+        },
+        "title": "Orthogonal Polynomials",
+        "type": "book"
+      },
+      "label": "Sze39"
+    },
+    "Wagner1992": {
+      "bibtex": "@article{Wagner1992,\n  doi = {10.1016/0022-247x(92)90261-b},\n  url2 = {https://doi.org/10.1016/0022-247x(92)90261-b},\n  year = {1992},\n  month = jan,\n  publisher = {Elsevier {BV}},\n  volume = {163},\n  number = {2},\n  pages = {459--483},\n  author = {David G Wagner},\n  title = {Total positivity of {H}adamard products},\n  journal = {Journal of Mathematical Analysis and Applications}\n}\n",
+      "csl": {
+        "DOI": "10.1016/0022-247x(92)90261-b",
+        "author": [
+          {
+            "family": "Wagner",
+            "given": "David G"
+          }
+        ],
+        "container-title": "Journal of Mathematical Analysis and Applications",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              1992,
+              1
+            ]
+          ]
+        },
+        "page": "459-483",
+        "title": "Total positivity of Hadamard products",
+        "type": "article-journal",
+        "volume": "163"
+      },
+      "label": "Wag92"
+    },
+    "Walsh1922": {
+      "bibtex": "@article{Walsh1922,\n  doi     = {10.1090/S0002-9947-1922-1501220-0},\n  url2    = {https://doi.org/10.1090/S0002-9947-1922-1501220-0},\n  author  = {J. L. Walsh},\n  title   = {On the location of the roots of certain types of polynomials},\n  journal = {Transactions of the American Mathematical Society},\n  volume  = {24},\n  number  = {3},\n  pages   = {163--180},\n  year    = {1922}\n}\n",
+      "csl": {
+        "DOI": "10.1090/S0002-9947-1922-1501220-0",
+        "author": [
+          {
+            "family": "Walsh",
+            "given": "J. L."
+          }
+        ],
+        "container-title": "Transactions of the American Mathematical Society",
+        "issue": "3",
+        "issued": {
+          "date-parts": [
+            [
+              1922
+            ]
+          ]
+        },
+        "page": "163-180",
+        "title": "On the location of the roots of certain types of polynomials",
+        "type": "article-journal",
+        "volume": "24"
+      },
+      "label": "Wal22"
+    },
+    "Wang2014": {
+      "bibtex": "@article{Wang2014,\n  title = {On colored set partitions of type $B_n$},\n  volume = {12},\n  ISSN = {2391-5455},\n  url = {http://dx.doi.org/10.2478/s11533-014-0419-9},\n  DOI = {10.2478/s11533-014-0419-9},\n  number = {9},\n  journal = {Open Mathematics},\n  publisher = {Walter de Gruyter GmbH},\n  author = {Wang,  David},\n  year = {2014},\n  month = jan\n}\n",
+      "csl": {
+        "DOI": "10.2478/s11533-014-0419-9",
+        "URL": "http://dx.doi.org/10.2478/s11533-014-0419-9",
+        "author": [
+          {
+            "family": "Wang",
+            "given": "David"
+          }
+        ],
+        "container-title": "Open Mathematics",
+        "issue": "9",
+        "issued": {
+          "date-parts": [
+            [
+              2014,
+              1
+            ]
+          ]
+        },
+        "title": "On colored set partitions of type $B_n$",
+        "type": "article-journal",
+        "volume": "12"
+      },
+      "label": "Wan14"
+    },
+    "WangYeh2005": {
+      "bibtex": "@article{WangYeh2005,\n  author = {Yi Wang and Yeong-Nan Yeh},\n  title = {Polynomials with real zeros and {P}{\\'o}lya frequency sequences},\n  year = {2005},\n  journal = {Journal of Combinatorial Theory, Series A},\n  volume = {109},\n  number = {1},\n  pages = {63--74},\n  doi = {10.1016/j.jcta.2004.07.008},\n  url = {https://doi.org/10.1016/j.jcta.2004.07.008},\n  eprint = {math/0611825}\n}\n",
+      "csl": {
+        "DOI": "10.1016/j.jcta.2004.07.008",
+        "URL": "https://arxiv.org/abs/math/0611825",
+        "author": [
+          {
+            "family": "Wang",
+            "given": "Yi"
+          },
+          {
+            "family": "Yeh",
+            "given": "Yeong-Nan"
+          }
+        ],
+        "container-title": "Journal of Combinatorial Theory, Series A",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2005
+            ]
+          ]
+        },
+        "page": "63-74",
+        "title": "Polynomials with real zeros and Pólya frequency sequences",
+        "type": "article-journal",
+        "volume": "109"
+      },
+      "label": "WY05"
+    },
+    "Xiao2026x": {
+      "bibtex": "@article{Xiao2026x,\n  author = {Qiqi Xiao},\n  title = {The real-rootedness of the toric $g$-contribution polynomials},\n  year = {2026},\n  eprint = {2609.01086v1},\n  url = {https://arxiv.org/abs/2609.01086v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.01086v1",
+        "author": [
+          {
+            "family": "Xiao",
+            "given": "Qiqi"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "The real-rootedness of the toric $g$-contribution polynomials",
+        "type": "article-journal"
+      },
+      "label": "Xia26"
+    },
+    "XieZhang2026InfiniteLogConcavity": {
+      "bibtex": "@article{XieZhang2026InfiniteLogConcavity,\n  author = {Matthew H. Y. Xie and Philip B. Zhang},\n  title = {Infinite log-concavity of the {B}oros--{M}oll sequences},\n  year = {2026},\n  eprint = {2609.20653v1},\n  url = {https://arxiv.org/abs/2609.20653v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2609.20653v1",
+        "author": [
+          {
+            "family": "Xie",
+            "given": "Matthew H. Y."
+          },
+          {
+            "family": "Zhang",
+            "given": "Philip B."
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Infinite log-concavity of the Boros–Moll sequences",
+        "type": "article-journal"
+      },
+      "label": "XZ26"
+    },
+    "Zeng2026x": {
+      "bibtex": "@article{Zeng2026x,\n  author = {Jiang Zeng},\n  title = {Continuous {N}arayana {I}nterpolations: {H}ankel {T}otal {P}ositivity and {L}og-{C}onvexity {P}reservation},\n  year = {2026},\n  eprint = {2610.19548v3},\n  url = {https://arxiv.org/abs/2610.19548v3},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2610.19548v3",
+        "author": [
+          {
+            "family": "Zeng",
+            "given": "Jiang"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Continuous Narayana Interpolations: Hankel Total Positivity and Log-Convexity Preservation",
+        "type": "article-journal"
+      },
+      "label": "Zen26"
+    },
+    "Zhang2026SeparableInterlacing": {
+      "bibtex": "@unpublished{Zhang2026SeparableInterlacing,\n  author = {Zhang, Zhanhe},\n  title = {Strict Interlacing of the Descent Polynomials of Separable Permutations},\n  date = {2026-09-10},\n  year = {2026},\n  note = {SSRN preprint 7510941, posted September 25, 2026},\n  doi = {10.2139/ssrn.7510941},\n  url = {https://ssrn.com/abstract=7510941}\n}\n",
+      "csl": {
+        "DOI": "10.2139/ssrn.7510941",
+        "URL": "https://ssrn.com/abstract=7510941",
+        "author": [
+          {
+            "family": "Zhang",
+            "given": "Zhanhe"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              10
+            ]
+          ]
+        },
+        "title": "Strict interlacing of the descent polynomials of separable permutations",
+        "type": "manuscript"
+      },
+      "label": "Zha26"
+    },
+    "ZhangZhao2026x": {
+      "bibtex": "@article{ZhangZhao2026x,\n  author = {Philip B. Zhang and Tongyuan Zhao},\n  title = {Zeros and interlacing for multiset {E}ulerian--{N}arayana polynomials},\n  year = {2026},\n  eprint = {2610.00966v1},\n  url = {https://arxiv.org/abs/2610.00966v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2610.00966v1",
+        "author": [
+          {
+            "family": "Zhang",
+            "given": "Philip B."
+          },
+          {
+            "family": "Zhao",
+            "given": "Tongyuan"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Zeros and interlacing for multiset Eulerian–Narayana polynomials",
+        "type": "article-journal"
+      },
+      "label": "ZZ26"
+    }
+  },
+  "schema_version": 1
+}

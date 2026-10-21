@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "courant-fischer"
 formalized = "2026-07-01"
+references = [
+  "Courant1920",
+  "Fischer1905",
+]
 authors = ["Fischer", "Courant"]
 years = [1905, 1920]
 
@@ -44,7 +48,7 @@ $$
 R_A(x) = \frac{\operatorname{Re}(x^* A x)}{\operatorname{Re}(x^* x)} .
 $$
 
-**Theorem** (Courant–Fischer). For every $k$ with $0 \leq k < N$:
+**Theorem** (Courant–Fischer). [@Courant1920; @Fischer1905] For every $k$ with $0 \leq k < N$:
 
 1. there is a subspace $W \subseteq \mathbb K^N$ of dimension $k + 1$ such that
    $R_A(x) \geq \lambda_k$ for every nonzero $x \in W$;
@@ -75,11 +79,7 @@ theorem](/RealRooted/theorems/cauchy-interlacing/) and Weyl's rank-one interlaci
 
 ## References
 
-R. Courant, “Über die Eigenwerte bei den Differentialgleichungen der mathematischen
-Physik,” *Math. Z.* 7 (1920), 1–57,
-[doi:10.1007/bf01199396](https://doi.org/10.1007/bf01199396); E. Fischer, “Über quadratische
-Formen mit reellen Koeffizienten,” *Monatsh. Math. Phys.* 16 (1905), 234–249,
-[doi:10.1007/bf01693781](https://doi.org/10.1007/bf01693781).
+See [@Courant1920; @Fischer1905].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the Courant–Fischer principle for Hermitian matrices and its

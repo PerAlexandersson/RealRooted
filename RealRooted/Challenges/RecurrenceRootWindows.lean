@@ -13,6 +13,10 @@ version = 1
 section = "theorems"
 slug = "recurrence-root-windows"
 formalized = "2026-10-01"
+references = [
+  "LiuWang2007",
+  "Branden2006",
+]
 authors = ["Liu", "Wang", "Brändén"]
 years = [2006, 2007]
 
@@ -183,13 +187,7 @@ tactics `rr_row_interlaces` and `rr_row_splits` use these routes.
 
 ## References
 
-L. L. Liu and Y. Wang, [“A unified approach to polynomial sequences with only
-real zeros,”](https://doi.org/10.1016/j.aam.2006.02.003) *Advances in Applied
-Mathematics* 38 (2007), 542–560.
-
-P. Brändén, [“On linear transformations preserving the Pólya frequency
-property,”](https://doi.org/10.1090/S0002-9947-06-03856-6) *Transactions of
-the American Mathematical Society* 358 (2006), 3697–3716.
+See [@LiuWang2007; @Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
 

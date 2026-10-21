@@ -9,6 +9,9 @@ version = 1
 section = "families"
 slug = "hermite-polynomials"
 formalized = "2026-09-07"
+references = [
+  "Szego1939",
+]
 
 [[definitions]]
 name = "RealRooted.hermiteReal"
@@ -76,8 +79,7 @@ positive.
 
 ## References
 
-G. Szegő, *Orthogonal Polynomials*, American Mathematical Society Colloquium
-Publications 23 (1939).
+See [@Szego1939].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Hermite`.

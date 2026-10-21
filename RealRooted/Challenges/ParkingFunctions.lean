@@ -10,6 +10,9 @@ version = 1
 section = "families"
 slug = "parking-functions"
 formalized = "2026-09-13"
+references = [
+  "DiaconisHicks2017",
+]
 
 [[definitions]]
 name = "ParkingFunction.IsParkingFunction"
@@ -64,8 +67,8 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Parking functions
 
-A [parking function](https://www.symmetricfunctions.com/parking-functions.htm#parkingFunctionDefinition)
-of length $n$ is a word $w$ with letters in
+A [parking function](sf:parkingFunctionDefinition)
+of length $n$ [@DiaconisHicks2017] is a word $w$ with letters in
 $\{0, \dotsc, n-1\}$ such that, for every $k \leq n$, at least $k$ of its letters are
 smaller than $k$. The following generating polynomials over parking functions
 of length $n$ are real-rooted:
@@ -80,9 +83,7 @@ of length $n$ are real-rooted:
 
 ## References
 
-P. Diaconis and A. Hicks, “Probabilizing parking functions,” *Adv. in Appl.
-Math.* 89 (2017), 125–155.
-The Chow polynomials appear on the
+See [@DiaconisHicks2017]. The Chow polynomials appear on the
 [Brändén–Vecchi page](/RealRooted/theorems/branden-vecchi/).
 <!-- /realrooted-catalog-content -->
 

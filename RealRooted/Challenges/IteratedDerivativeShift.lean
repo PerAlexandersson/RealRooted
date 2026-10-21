@@ -10,6 +10,10 @@ version = 1
 section = "theorems"
 slug = "iterated-derivative-shift"
 formalized = "2026-10-05"
+references = [
+  "SchurPolya1914",
+  "Obreschkoff1963",
+]
 
 [[theorems]]
 name = "RealRooted.splits_tDeriv"
@@ -129,12 +133,7 @@ split; the factor may occur on either side of the iterate.
 
 ## References
 
-That `p ↦ p - ε p'` preserves real-rootedness is a classical fact going back to Laguerre; for the
-general theory of such preservers see G. Pólya and J. Schur, “Über zwei Arten von Faktorenfolgen in
-der Theorie der algebraischen Gleichungen,” *J. Reine Angew. Math.* 144 (1914), 89–113. The
-iterated regularization is used in the converse of Obreschkoff's theorem: N. Obreschkoff,
-*Verteilung und Berechnung der Nullstellen reeller Polynome*, VEB Deutscher Verlag der
-Wissenschaften, 1963.
+See [@SchurPolya1914; @Obreschkoff1963].
 <!-- /realrooted-catalog-content -->
 -/
 

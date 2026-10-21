@@ -9,6 +9,10 @@ version = 1
 section = "theorems"
 slug = "separable-permutations"
 formalized = "2026-10-09"
+references = [
+  "Zhang2026SeparableInterlacing",
+  "FuLinZeng2018",
+]
 authors = ["Zhanhe Zhang", "Fu", "Lin", "Zeng"]
 years = [2018, 2026]
 
@@ -80,9 +84,11 @@ label = "Fu–Lin–Zeng's cubic for the gamma-polynomials (via Lagrange inversi
 
 A permutation is *separable* if it avoids the patterns $2413$ and $3142$.  Let
 $S_n(t) = \sum_\pi t^{\operatorname{des}\pi}$ be the descent enumerator of the separable
-permutations of $[n]$.  Its gamma-vector is given by a convolution recurrence of Fu, Lin
-and Zeng, and $S_n(t) = (1+t)^{n-1}\,\Gamma_n\bigl(t/(1+t)^2\bigr)$ for the gamma-polynomial
-$\Gamma_n$.  Zhang represents $\Gamma_{N+2}$ as a factorial compression of the polynomial
+permutations of $[n]$. Its gamma-vector is given by a convolution recurrence of Fu, Lin
+and Zeng [@FuLinZeng2018], and
+$S_n(t) = (1+t)^{n-1}\,\Gamma_n\bigl(t/(1+t)^2\bigr)$ for the gamma-polynomial
+$\Gamma_n$. Zhang [@Zhang2026SeparableInterlacing] represents $\Gamma_{N+2}$ as a
+factorial compression of the polynomial
 $B_N$, where $B_0 = 1$ and $B_{N+1} = (x + \tfrac{N+2}{2})B_N + x B_N'$.
 
 **Theorem.** For $n \ge 2$, the polynomials $\Gamma_n$ and $\Gamma_{n+1}$ strictly interlace
@@ -111,14 +117,9 @@ the central root $-1$ is excluded by the evaluation formula for the gamma transf
 
 ## References
 
-Z. Zhang, [“Strict interlacing of the descent polynomials of separable
-permutations,”](https://doi.org/10.2139/ssrn.7510941) SSRN preprint (2026).
-S. Fu, Z. Lin and J. Zeng, [“On two unimodal descent
-polynomials,”](https://doi.org/10.1016/j.disc.2018.06.010) *Discrete
-Mathematics* 341 (2018), 2616–2626,
-[arXiv:1507.05184](https://arxiv.org/abs/1507.05184). The Lean development follows the draft
-formalization of PR #1132 by yyou59548-design. See also the
-[separable-permutation descent theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedWords.htm#separableDescentRealRooted).
+See [@Zhang2026SeparableInterlacing; @FuLinZeng2018]. The Lean development
+follows the draft formalization of PR #1132 by yyou59548-design. See also the
+[separable-permutation descent theorem on symmetricfunctions.com](sf:separableDescentRealRooted).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and

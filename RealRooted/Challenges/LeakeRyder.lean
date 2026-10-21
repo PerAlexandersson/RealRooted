@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "leake-ryder"
 formalized = "2026-09-06"
+references = [
+  "LeakeRyder2019",
+]
 authors = ["Leake", "Ryder"]
 years = [2019]
 
@@ -53,8 +56,9 @@ label = "The matching polynomial is same-phase stable"
 # Same-phase stability for graph polynomials
 
 A multivariate polynomial is same-phase stable when every nonnegative
-one-dimensional specialization is real-rooted. Leake and Ryder proved that the
-multivariate independence polynomial is same-phase stable exactly for
+one-dimensional specialization is real-rooted. Leake and Ryder proved
+[@LeakeRyder2019] that the multivariate independence polynomial is same-phase
+stable exactly for
 claw-free graphs. Their result also gives same-phase stability of the
 edge-variable matching polynomial and recovers the Chudnovsky–Seymour theorem
 by setting every variable equal to the same univariate variable.
@@ -67,12 +71,7 @@ $1 + 4x + 3x^2 + x^3$, which has non-real roots.
 
 ## References
 
-J. D. Leake and N. R. Ryder, “Generalizations of the matching polynomial to
-the multivariate independence polynomial,” *Algebraic Combinatorics* 2 (2019),
-781–802. See the discussion of
-[same-phase stability][same-phase]
-on symmetricfunctions.com.
-
-[same-phase]: https://www.symmetricfunctions.com/stablePolynomials.htm#samePhaseStabilityDefinition
+See [@LeakeRyder2019] and the discussion of
+[same-phase stability](sf:samePhaseStabilityDefinition) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/

@@ -14,6 +14,9 @@ version = 1
 section = "families"
 slug = "eulerian"
 formalized = "2026-07-10"
+references = [
+  "Brenti1994",
+]
 authors = ["Frobenius", "Brenti"]
 years = [1910, 1994]
 
@@ -115,23 +118,21 @@ itself is still not formalized.
 
 ## References
 
-The ordinary Eulerian recurrence and its real-rootedness go back to
-F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
-Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften
-(1910), 809–847.  For type $B$, see F. Brenti, [“q-Eulerian polynomials arising
-from Coxeter groups,”](https://doi.org/10.1006/eujc.1994.1046) *European Journal
-of Combinatorics* 15 (1994), 417–441.  See also the
-[Eulerian polynomials on symmetricfunctions.com](https://www.symmetricfunctions.com/eulerian.htm#eulerianPolynomial).
+The ordinary Eulerian recurrence and its real-rootedness go back to F. G. Frobenius,
+“Über die Bernoullischen Zahlen und die Eulerschen Polynome,” *Sitzungsberichte der
+Königlich Preussischen Akademie der Wissenschaften* (1910), 809–847. For type $B$,
+see [@Brenti1994]. See also the
+[Eulerian polynomials on symmetricfunctions.com](sf:eulerianPolynomial).
 <!-- /realrooted-catalog-content -->
 
 Human statements:
 
 * Eulerian polynomials:
-  https://www.symmetricfunctions.com/eulerian.htm#eulerianPolynomial
+  sf:eulerianPolynomial
 * Eulerian Sturm sequence example:
-  https://www.symmetricfunctions.com/realRootedWords.htm#ex:eulerianSturm
+  sf:ex:eulerianSturm
 * Type `B` Eulerian polynomials:
-  https://www.symmetricfunctions.com/realRootedWords.htm#typeBEulerianPolynomial
+  sf:typeBEulerianPolynomial
 
 Classical origin: F. G. Frobenius, "Über die Bernoullischen Zahlen und die
 Eulerschen Polynome", Sitzungsberichte der Königlich Preussischen Akademie der

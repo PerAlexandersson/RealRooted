@@ -11,6 +11,10 @@ version = 1
 section = "families"
 slug = "multiset-eulerian-narayana"
 formalized = "2026-10-07"
+references = [
+  "ZhangZhao2026x",
+  "LinMaMaZhou2021",
+]
 authors = ["Lin", "Ma", "Zhou", "Zhang", "Zhao"]
 years = [2021, 2026]
 
@@ -72,7 +76,7 @@ label = "Zhang–Zhao: the closed transition matrices are totally nonnegative"
 Let $M = \{1^{p_1}, \dotsc, m^{p_m}\}$ be a multiset of size $N$. A weakly
 increasing tree on $M$ is a plane tree on $M \cup \{0\}$, rooted at $0$, whose
 labels weakly increase along every root-to-leaf path and from left to right
-among siblings. Lin, Ma, Ma and Zhou studied the normalized leaf enumerator
+among siblings. Lin, Ma, Ma and Zhou [@LinMaMaZhou2021] studied the normalized leaf enumerator
 $P_M(t)$ of these trees. It interpolates between the Eulerian polynomials
 ($p_i = 1$) and the Narayana polynomials ($m = 1$). They conjectured that it is
 real-rooted.
@@ -89,18 +93,20 @@ $$
 Here this factorization defines $P_\alpha$. The tree model and the
 Lagrange–Bürmann argument behind the factorization are not formalized.
 
-**Theorem** (Zhang–Zhao). For every composition $\alpha$ of $N \ge 1$, the
+**Theorem** (Zhang–Zhao). [@ZhangZhao2026x] For every composition $\alpha$ of
+$N \ge 1$, the
 polynomial $P_\alpha$ has degree $N - 1$, nonnegative coefficients and only
 simple negative zeros. Consecutive partial products of the factorization strictly
 interlace, and $P_\alpha$ is palindromic.
 
-**Theorem** (Zhang–Zhao, Theorem 1.3). The matrices $K^{(p,r)}$ that send the
+**Theorem** (Zhang–Zhao, Theorem 1.3). [@ZhangZhao2026x, Thm. 1.3] The
+matrices $K^{(p,r)}$ that send the
 coefficients of an input polynomial to those of its image under $r$ consecutive steps
 have an explicit binomial closed form. They are products of positive bidiagonal
 matrices, hence totally nonnegative.
 
 The conjecture itself also needs the identification of $P_\alpha$ with the leaf
-enumerator $P_M$ (Zhang–Zhao, Proposition 2.9). That identification is cited
+enumerator $P_M$ [@ZhangZhao2026x, Prop. 2.9]. That identification is cited
 from the paper, not formalized.
 
 ## Proof idea
@@ -113,12 +119,9 @@ $a_d(\alpha)$ are positive.
 
 ## References
 
-Z. Lin, J. Ma, S.-M. Ma and Y. Zhou, [“Weakly increasing trees on a multiset,”](https://doi.org/10.1016/j.aam.2021.102206)
-*Advances in Applied Mathematics* 129 (2021), 102206; P. B. Zhang and T. Zhao,
-[“Zeros and interlacing for multiset Eulerian–Narayana polynomials,”](https://arxiv.org/abs/2610.00966)
-arXiv:2610.00966 (2026).
-
-The real-rootedness theorem was formalized in RealRooted issue #1076.
+For the tree model, see [@LinMaMaZhou2021]. For the interlacing result, see
+[@ZhangZhao2026x]. The real-rootedness theorem was formalized in RealRooted
+issue #1076.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

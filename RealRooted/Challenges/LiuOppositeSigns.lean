@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "liu-opposite-signs"
 formalized = "2026-10-02"
+references = [
+  "Liu2012CompatibleSequences",
+]
 authors = ["Liu"]
 years = [2012]
 
@@ -75,7 +78,7 @@ signs**, where the answer is a root-count condition.
 Write $n_p(x)$ for the number of roots of $p$ in $[x, \infty)$, counted with
 multiplicity.
 
-**Theorem (Liu, corrected).** Let $f$ and $g$ be nonconstant
+**Theorem (Liu, corrected).** [@Liu2012CompatibleSequences] Let $f$ and $g$ be nonconstant
 real-rooted polynomials with opposite leading signs. Then $f$ and $g$ are
 compatible if and only if one of the following holds:
 
@@ -99,9 +102,7 @@ matching passes back to the limit.
 
 ## References
 
-Lily L. Liu, [“Polynomials with real zeros and compatible
-sequences,”](https://doi.org/10.37236/2674) Electronic Journal of
-Combinatorics 19(3) (2012), #P33.
+See [@Liu2012CompatibleSequences].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

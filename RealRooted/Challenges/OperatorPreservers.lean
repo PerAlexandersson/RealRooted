@@ -16,6 +16,10 @@ version = 1
 section = "theorems"
 slug = "operator-preservers"
 formalized = "2026-10-05"
+references = [
+  "Branden2004operators",
+  "Branden2006",
+]
 authors = ["Brändén"]
 years = [2004]
 
@@ -119,18 +123,13 @@ $ab > 0$.
 
 ## References
 
-P. Brändén, [“On operators on polynomials preserving real-rootedness and the
-Neggers–Stanley conjecture,”](https://arxiv.org/abs/math/0303147) *Journal of
-Algebraic Combinatorics* 20 (2004), 119–130 (Theorem 8 in the arXiv version).
-The strict-to-weak transfer follows P. Brändén, [“On linear transformations
-preserving the Pólya frequency property,”](https://arxiv.org/abs/math/0403364)
-*Transactions of the American Mathematical Society* 358 (2006), Corollary 3.5.
-See also the
-[operator-preserver overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#operatorPreservesInterlacing).
+The finite-degree criterion is [@Branden2004operators, Thm. 8 in the arXiv
+version]. The strict-to-weak transfer is [@Branden2006, Cor. 3.5]. See also the
+[operator-preserver overview on symmetricfunctions.com](sf:operatorPreservesInterlacing).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#operatorPreservesInterlacing
+sf:operatorPreservesInterlacing
 
 Catalog reference: P. Brändén, J. Algebraic Combin. 20 (2004), 119–130,
 arXiv:math/0303147; the site cites it as Theorem 9.

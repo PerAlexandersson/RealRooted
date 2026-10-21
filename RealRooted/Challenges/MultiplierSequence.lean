@@ -18,6 +18,9 @@ version = 1
 section = "concepts"
 slug = "multiplier-sequences"
 formalized = "2026-09-07"
+references = [
+  "SchurPolya1914",
+]
 authors = ["Pólya", "Schur"]
 years = [1914]
 
@@ -221,9 +224,8 @@ each approximating polynomial, and the Taylor coefficients converge.
 
 ## References
 
-G. Pólya and J. Schur, “Über zwei Arten von Faktorenfolgen in der Theorie der
-algebraischen Gleichungen,” *J. Reine Angew. Math.* 144 (1914), 89–113.
-The finite Pólya–Schur theorem through the Schur–Szegő composition is on the
+See [@SchurPolya1914]. The finite Pólya–Schur theorem through the
+Schur–Szegő composition is on the
 [Hadamard products page](/RealRooted/theorems/hadamard-products/).
 <!-- /realrooted-catalog-content -->
 

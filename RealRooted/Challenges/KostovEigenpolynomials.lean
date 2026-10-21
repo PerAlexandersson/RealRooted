@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "kostov-eigenpolynomials"
 formalized = "2026-10-12"
+references = [
+  "Kostov2010",
+]
 authors = ["Kostov"]
 years = [2015]
 
@@ -63,17 +66,16 @@ through the reduced eigenpolynomials $Q_{n,j}$: each $Q_{n,j}$ is monic of degre
 $j$, satisfies $X^j Q_{n,j}(1/X) = (-1)^j Q_{n,j}(X)$, and vanishes at $1$ when
 $j$ is odd.
 
-The roots of $Q_{n,j}$ are simple and positive. Kostov's Theorem 3 says that consecutive
-eigenpolynomials $Q_{n,j}$ and $Q_{n,j+1}$ strictly interlace, and his Theorem 4 compares
+The roots of $Q_{n,j}$ are simple and positive. Kostov's Theorem 3
+[@Kostov2010, Thm. 3] says that consecutive eigenpolynomials $Q_{n,j}$ and
+$Q_{n,j+1}$ strictly interlace, and his Theorem 4 [@Kostov2010, Thm. 4] compares
 the roots of $Q_{n,j}$ and $Q_{n,j+2}$, with the shared central root $1$ when $j$
 is odd. The proofs pass through the eigenproblem of a Bernstein-type operator, real zeros by
 a compactness argument, Descartes' rule of signs, and a Wronskian argument.
 
 ## References
 
-V. P. Kostov, “Interlacing properties and the Schur–Szegő composition,” *Functional
-Analysis and Other Mathematics* 3 (2010), 65–74; manuscript
-[arXiv:1504.02321](https://arxiv.org/abs/1504.02321).
+See [@Kostov2010].
 <!-- /realrooted-catalog-content -->
 -/
 

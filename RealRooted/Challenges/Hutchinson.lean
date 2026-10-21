@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "hutchinson"
 formalized = "2026-10-07"
+references = [
+  "Hutchinson1923",
+  "Kurtz1992",
+]
 authors = ["Hutchinson"]
 years = [1923]
 
@@ -26,7 +30,8 @@ label = "The Laguerre–Pólya class is closed under locally uniform limits"
 <!-- realrooted-catalog-content -->
 # Hutchinson's theorem
 
-**Theorem** (Hutchinson). If $a_k > 0$ and $a_{k+1}^2 \geq 4 a_k a_{k+2}$ for
+**Theorem** (Hutchinson). [@Hutchinson1923] If $a_k > 0$ and
+$a_{k+1}^2 \geq 4 a_k a_{k+2}$ for
 all $k$, then $\sum_k a_k z^k$ is an entire function in the Laguerre–Pólya
 class: a locally uniform limit of real-rooted real polynomials.
 
@@ -44,12 +49,7 @@ Laguerre–Pólya class is closed under locally uniform limits.
 
 ## References
 
-J. I. Hutchinson, “On a remarkable class of entire functions,” *Transactions
-of the American Mathematical Society* 25 (1923), 325–332,
-[doi:10.1090/s0002-9947-1923-1501248-1](https://doi.org/10.1090/s0002-9947-1923-1501248-1);
-D. C. Kurtz, “A sufficient condition for all the roots of a polynomial to be
-real,” *American Mathematical Monthly* 99 (1992), 259–263,
-[doi:10.1080/00029890.1992.11995845](https://doi.org/10.1080/00029890.1992.11995845).
+See [@Hutchinson1923; @Kurtz1992].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Hutchinson`

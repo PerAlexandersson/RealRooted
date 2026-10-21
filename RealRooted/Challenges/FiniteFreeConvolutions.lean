@@ -13,6 +13,10 @@ version = 1
 section = "theorems"
 slug = "finite-free-convolutions"
 formalized = "2026-09-11"
+references = [
+  "MarcusSpielmanSrivastava2022",
+  "GribinskiMarcus2022",
+]
 authors = ["Marcus", "Spielman", "Srivastava", "Gribinski"]
 years = [2022]
 
@@ -108,10 +112,10 @@ lists $p_k$, $q_k$.
 **Theorem.**
 
 - If $p$ and $q$ are real-rooted of degree at most $d$, then $p \boxplus_d q$ is
-  real-rooted (Marcus, Spielman, Srivastava).
+  real-rooted [@MarcusSpielmanSrivastava2022].
 - If $f$ and $g$ have degree exactly $n$, positive leading coefficients, and
   only nonnegative real roots, then $f \boxplus_{m,n} g$ is zero or has only
-  nonnegative real roots (Gribinski, Marcus).
+  nonnegative real roots [@GribinskiMarcus2022].
 - The same holds for the parameters $\alpha = -\tfrac12$ and
   $\alpha = \tfrac12$, for inputs of degree at most $n$ that are real-rooted with
   nonnegative roots.
@@ -134,16 +138,10 @@ composition theorem on the Hadamard page applies.
 
 ## References
 
-A. W. Marcus, D. A. Spielman, and N. Srivastava, “Finite free convolutions of
-polynomials,” *Probability Theory and Related Fields* 182 (2022), 807–848,
-[doi:10.1007/s00440-021-01105-w](https://doi.org/10.1007/s00440-021-01105-w);
-A. Gribinski and A. W. Marcus, [“A rectangular additive convolution for
-polynomials,”](https://doi.org/10.5070/c62156888) *Combinatorial Theory* 2(1)
-(2022), #16.
-For the application to the Narayana transformation, see
-[symmetricfunctions.com][mao-wang].
+See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022]. For the application to
+the Narayana transformation, see [symmetricfunctions.com][mao-wang].
 
-[mao-wang]: https://www.symmetricfunctions.com/realRooted.htm#thm:narayanaTransformationMaoWang
+[mao-wang]: sf:thm:narayanaTransformationMaoWang
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
