@@ -112,10 +112,7 @@ theorem symbolRow_eq_sum_mul_coeff_lagSeries {r : ℕ} (p : Fin r → ℝ[X])
   have hcoeff := congrArg (PowerSeries.coeff n)
     (symbolSeries_mul_one_sub_lagSeries p)
   simp only [mul_sub, mul_one] at hcoeff
-  rw [map_sub, PowerSeries.coeff_mul] at hcoeff
-  have hone : PowerSeries.coeff n (1 : PowerSeries ℝ[X]) = 0 := by
-    rw [PowerSeries.coeff_one, ite_eq_right hn]
-  rw [hone] at hcoeff
+  rw [map_sub, PowerSeries.coeff_mul, PowerSeries.coeff_one, ite_eq_right hn] at hcoeff
   change symbolRow p n - ∑ x ∈ Finset.antidiagonal n,
     symbolRow p x.1 * PowerSeries.coeff x.2 (lagSeries p) = 0 at hcoeff
   exact sub_eq_zero.mp hcoeff
@@ -133,9 +130,7 @@ theorem hasNonnegCoeffs_coeff_lagSeries {r : ℕ} {p : Fin r → ℝ[X]}
   rw [coeff_lagSeries]
   apply hasNonnegCoeffs_finsetSum
   intro i _
-  split
-  · exact hp i
-  · exact hasNonnegCoeffs_zero
+  split <;> simp_all only [hasNonnegCoeffs_zero]
 
 /-- Every fundamental row has nonnegative coefficients when all symbol coefficients do. -/
 theorem symbolRow_hasNonnegCoeffs {r : ℕ} {p : Fin r → ℝ[X]}
@@ -220,8 +215,7 @@ theorem SharpDefectBridges.exists_exact_minimizer
     rcases hl with hl | ⟨_, rfl⟩
     · exact h.valid a l hl
     · exact ⟨h.critical_active, h.p_pos, h.critical_le⟩
-  have hb_mod_q : wordLag b % q = n % q := by
-    exact hb_mod.of_dvd h.q_dvd_p
+  have hb_mod_q : wordLag b % q = n % q := hb_mod.of_dvd h.q_dvd_p
   have hw_cost : wordCost δ w = K (n % q) := by
     simp only [w, wordCost, List.map_append, List.sum_append, List.map_replicate,
       List.sum_replicate, h.critical_cost, nsmul_zero, add_zero]
@@ -244,23 +238,19 @@ theorem residueDefect_le_wordCost {r q : ℕ} {active : Set ℕ} {δ : ℕ → �
     {a : ℕ} {w : List ℕ} (hw : IsLagWord r active w)
     (hres : wordLag w % q = a % q) :
     residueDefect r q active δ a ≤ wordCost δ w := by
-  apply Nat.sInf_le
-  exact ⟨w, hw, hres, rfl⟩
+  exact Nat.sInf_le ⟨w, hw, hres, rfl⟩
 
 /-- A nonempty residue class contains a word whose cost is its residue defect. -/
 theorem exists_wordCost_eq_residueDefect {r q : ℕ} {active : Set ℕ} {δ : ℕ → ℕ}
     {a : ℕ} (h : ∃ w, IsLagWord r active w ∧ wordLag w % q = a % q) :
     ∃ w, IsLagWord r active w ∧ wordLag w % q = a % q ∧
       wordCost δ w = residueDefect r q active δ a := by
-  have hnonempty :
-      {c | ∃ w, IsLagWord r active w ∧ wordLag w % q = a % q ∧
-        wordCost δ w = c}.Nonempty := by
-    obtain ⟨w, hw, hres⟩ := h
-    exact ⟨wordCost δ w, w, hw, hres, rfl⟩
   change sInf {c | ∃ w, IsLagWord r active w ∧ wordLag w % q = a % q ∧
     wordCost δ w = c} ∈
       {c | ∃ w, IsLagWord r active w ∧ wordLag w % q = a % q ∧ wordCost δ w = c}
-  exact Nat.sInf_mem hnonempty
+  apply Nat.sInf_mem
+  obtain ⟨w, hw, hres⟩ := h
+  exact ⟨wordCost δ w, w, hw, hres, rfl⟩
 
 /-- Residue defects agree when their indices agree modulo the residue modulus. -/
 theorem residueDefect_eq_of_modEq {r q : ℕ} {active : Set ℕ} {δ : ℕ → ℕ}
@@ -295,17 +285,14 @@ private theorem exists_lagWord_modEq (r p : ℕ) (active : Set ℕ)
     ∃ w, IsLagWord r active w ∧ Nat.ModEq p (wordLag w) a.1 := by
   obtain ⟨N, hN⟩ := Nat.exists_mem_closure_of_ge active
   let m := a.1 + p * N
-  have hNm : N ≤ m := by
-    dsimp only [m]
-    nlinarith
+  have hNm : N ≤ m := by dsimp only [m]; nlinarith
   have hm : m ∈ AddSubmonoid.closure active := by
     apply hN m hNm
     rw [hsetGcd]
     exact one_dvd m
   obtain ⟨w, hw, hsum⟩ := AddSubmonoid.exists_list_of_mem_closure hm
   refine ⟨w, ?_, ?_⟩
-  · intro l hl
-    exact ⟨hw l hl, hpos l (hw l hl), hle l (hw l hl)⟩
+  · exact fun l hl ↦ ⟨hw l hl, hpos l (hw l hl), hle l (hw l hl)⟩
   · rw [wordLag, hsum]
     simp [m, Nat.ModEq, Nat.add_mod, Nat.mod_eq_of_lt a.isLt]
 
@@ -335,8 +322,8 @@ private theorem exists_short_lagWord {r p : ℕ} {active : Set ℕ} {δ : ℕ �
       simp only [w', hw_decomp, wordCost, List.map_append, List.sum_append]
       lia
     have hw'_length : w'.length < w.length := by
-      have hv_pos : 0 < v.length := List.length_pos_of_ne_nil hv
       simp only [w', hw_decomp, List.length_append]
+      have := List.length_pos_of_ne_nil hv
       lia
     obtain ⟨x, hx, hxmod, hxcost, hxlength⟩ :=
       exists_short_lagWord hp w' hw'_valid
@@ -353,18 +340,7 @@ private theorem eraseLag_isLagWord {r p : ℕ} {active : Set ℕ} {w : List ℕ}
   induction w with
   | nil => simp [eraseLag, IsLagWord]
   | cons l w ih =>
-      have htail : IsLagWord r active w := by
-        intro x hx
-        exact hw x (by simp [hx])
-      specialize ih htail
-      rw [eraseLag]
-      split
-      · exact ih
-      · intro x hx
-        simp only [List.mem_cons] at hx
-        rcases hx with rfl | hx
-        · exact hw _ (by simp)
-        · exact ih x hx
+      by_cases h : l = p <;> simp_all [eraseLag, IsLagWord]
 
 private theorem wordLag_eraseLag_modEq (p : ℕ) (w : List ℕ) :
     Nat.ModEq p (wordLag (eraseLag p w)) (wordLag w) := by
@@ -399,9 +375,8 @@ private theorem not_mem_eraseLag (p : ℕ) (w : List ℕ) : p ∉ eraseLag p w :
       rw [eraseLag]
       split
       · exact ih
-      · rename_i hl
-        simp only [List.mem_cons, not_or]
-        exact ⟨Ne.symm hl, ih⟩
+      · rename_i h
+        simpa only [List.mem_cons, not_or] using ⟨Ne.symm h, ih⟩
 
 private theorem length_eraseLag_le (p : ℕ) (w : List ℕ) :
     (eraseLag p w).length ≤ w.length := by
@@ -410,8 +385,8 @@ private theorem length_eraseLag_le (p : ℕ) (w : List ℕ) :
   | cons l w ih =>
       rw [eraseLag]
       split
-      · simpa only [List.length_cons] using ih.trans (Nat.le_succ _)
-      · simpa only [List.length_cons, Nat.succ_le_succ_iff] using ih
+      · exact ih.trans (Nat.le_succ _)
+      · exact Nat.succ_le_succ ih
 
 private theorem wordLag_le_length_mul {r : ℕ} {active : Set ℕ} {w : List ℕ}
     (hw : IsLagWord r active w) : wordLag w ≤ w.length * r := by
@@ -419,10 +394,7 @@ private theorem wordLag_le_length_mul {r : ℕ} {active : Set ℕ} {w : List ℕ
   | nil => simp [wordLag]
   | cons l w ih =>
       have hl := (hw l (by simp)).2.2
-      have htail : IsLagWord r active w := by
-        intro x hx
-        exact hw x (by simp [hx])
-      specialize ih htail
+      specialize ih (fun x hx ↦ hw x (by simp [hx]))
       simp only [wordLag, List.sum_cons, List.length_cons]
       calc
         l + w.sum ≤ r + w.length * r := Nat.add_le_add hl ih
@@ -430,18 +402,7 @@ private theorem wordLag_le_length_mul {r : ℕ} {active : Set ℕ} {w : List ℕ
 
 private theorem wordCost_eq_zero_of_mem {active : Set ℕ} {δ : ℕ → ℕ} {w : List ℕ}
     (hw : ∀ l ∈ w, l ∈ criticalLags active δ) : wordCost δ w = 0 := by
-  induction w with
-  | nil => rfl
-  | cons l w ih =>
-      have hl := (hw l (by simp)).2
-      have htail : ∀ u ∈ w, u ∈ criticalLags active δ := by
-        intro u hu
-        exact hw u (by simp [hu])
-      specialize ih htail
-      change (List.map δ w).sum = 0 at ih
-      change δ l + (List.map δ w).sum = 0
-      rw [hl, zero_add]
-      exact ih
+  induction w <;> simp_all [wordCost, criticalLags]
 
 private theorem exists_zeroCost_adjustment {r p q x y : ℕ} {active : Set ℕ}
     {δ : ℕ → ℕ} (hp : 0 < p) (hp_active : p ∈ active) (hp_cost : δ p = 0)
@@ -450,34 +411,26 @@ private theorem exists_zeroCost_adjustment {r p q x y : ℕ} {active : Set ℕ}
     (hxy : Nat.ModEq q x y) :
     ∃ z, IsLagWord r active z ∧ wordCost δ z = 0 ∧
       Nat.ModEq p (x + wordLag z) y := by
-  have hp_critical : p ∈ criticalLags active δ := ⟨hp_active, hp_cost⟩
   have hqp : q ∣ p := by
     rw [← hq]
-    exact Nat.setGcd_dvd_of_mem hp_critical
+    exact Nat.setGcd_dvd_of_mem ⟨hp_active, hp_cost⟩
   obtain ⟨N, hN⟩ := Nat.exists_mem_closure_of_ge (criticalLags active δ)
   let m := y + p * (x + N + 1)
-  have hxle : x ≤ m := by
-    dsimp only [m]
-    nlinarith
+  have hxle : x ≤ m := by dsimp only [m]; nlinarith
   have hNle : N ≤ m - x := by
     apply Nat.le_sub_of_add_le
     have hmul := Nat.mul_le_mul_right (x + N + 1) (Nat.succ_le_iff.mpr hp)
     dsimp only [m]
     nlinarith
-  have hprod : q ∣ p * (x + N + 1) := dvd_mul_of_dvd_left hqp _
   have hym : Nat.ModEq q y m := by
     simpa only [m, add_zero] using
-      (Nat.ModEq.refl y).add hprod.zero_modEq_nat
+      (Nat.ModEq.refl y).add (dvd_mul_of_dvd_left hqp _).zero_modEq_nat
   have hdiv : q ∣ m - x := (hxy.trans hym).dvd'
   have hmem : m - x ∈ AddSubmonoid.closure (criticalLags active δ) :=
     hN (m - x) hNle (hq ▸ hdiv)
   obtain ⟨z, hz, hsum⟩ := AddSubmonoid.exists_list_of_mem_closure hmem
-  have hz_valid : IsLagWord r active z := by
-    intro l hl
-    have hl_critical := hz l hl
-    exact ⟨hl_critical.1, hpos l hl_critical.1, hle l hl_critical.1⟩
-  have hz_cost : wordCost δ z = 0 := wordCost_eq_zero_of_mem hz
-  refine ⟨z, hz_valid, hz_cost, ?_⟩
+  refine ⟨z, fun l hl ↦ ⟨(hz l hl).1, hpos l (hz l hl).1, hle l (hz l hl).1⟩,
+    wordCost_eq_zero_of_mem hz, ?_⟩
   change (x + wordLag z) % p = y % p
   rw [wordLag, hsum, Nat.add_sub_of_le hxle]
   simp [m, Nat.add_mod]
@@ -500,9 +453,7 @@ private theorem exists_bounded_residue_minimizer {r p q : ℕ} {active : Set ℕ
     hpos hle hvmod
   have hvz_valid : IsLagWord r active (v ++ z) := by
     intro l hl
-    rcases List.mem_append.mp hl with hl | hl
-    · exact hv l hl
-    · exact hz l hl
+    exact (List.mem_append.mp hl).elim (hv l) (hz l)
   obtain ⟨u, hu, humod, hucost, hulength⟩ :=
     exists_short_lagWord hp (v ++ z) hvz_valid
   let w := eraseLag p u
@@ -521,12 +472,10 @@ private theorem exists_bounded_residue_minimizer {r p q : ℕ} {active : Set ℕ
       _ = wordCost δ v + wordCost δ z := by
         simp only [wordCost, List.map_append, List.sum_append]
       _ = residueDefect r q active δ a.1 := by rw [hvcost, hzcost, add_zero]
-  have hcost_le : residueDefect r q active δ a.1 ≤ wordCost δ w :=
-    residueDefect_le_wordCost (δ := δ) hw hwqmod
   have hwcost : wordCost δ w = residueDefect r q active δ a.1 :=
-    le_antisymm hwcost_le hcost_le
-  have hwlength : w.length < p := (length_eraseLag_le p u).trans_lt hulength
-  exact ⟨w, hw, hwpmod, hwcost, hwlength, not_mem_eraseLag p u⟩
+    le_antisymm hwcost_le (residueDefect_le_wordCost (δ := δ) hw hwqmod)
+  exact ⟨w, hw, hwpmod, hwcost, (length_eraseLag_le p u).trans_lt hulength,
+    not_mem_eraseLag p u⟩
 
 
 /-- Coprime active lags and a chosen zero-cost lag produce sharp residue bridges. -/
@@ -542,24 +491,16 @@ def sharpDefectBridges_residueDefect_of_setGcd_eq_one
   have hq_dvd_p : q ∣ p := Nat.setGcd_dvd_of_mem hp_critical
   have hq_pos : 0 < q := by
     apply Nat.pos_of_ne_zero
-    intro hq_zero
-    have hsubset := Nat.setGcd_eq_zero_iff.mp hq_zero
-    have hp_zero : p = 0 := Set.mem_singleton_iff.mp (hsubset hp_critical)
-    exact hp.ne' hp_zero
-  have hbridge : ∀ a : Fin p,
-      ∃ w, IsLagWord r active w ∧ Nat.ModEq p (wordLag w) a.1 ∧
-        wordCost δ w = residueDefect r q active δ a.1 ∧
-        w.length < p ∧ p ∉ w := by
-    intro a
-    exact exists_bounded_residue_minimizer hp hq_pos hp_active hp_cost rfl
+    exact fun hq_zero ↦ hp.ne' (Set.mem_singleton_iff.mp
+      (Nat.setGcd_eq_zero_iff.mp hq_zero hp_critical))
+  have hbridge (a : Fin p) :=
+    exists_bounded_residue_minimizer hp hq_pos hp_active hp_cost rfl
       hsetGcd hpos hle a
   let bridge : Fin p → List ℕ := fun a ↦ Classical.choose (hbridge a)
   have bridge_spec (a : Fin p) :
-      IsLagWord r active (bridge a) ∧
-        Nat.ModEq p (wordLag (bridge a)) a.1 ∧
+      IsLagWord r active (bridge a) ∧ Nat.ModEq p (wordLag (bridge a)) a.1 ∧
         wordCost δ (bridge a) = residueDefect r q active δ a.1 ∧
-        (bridge a).length < p ∧ p ∉ bridge a := by
-    exact Classical.choose_spec (hbridge a)
+        (bridge a).length < p ∧ p ∉ bridge a := Classical.choose_spec (hbridge a)
   refine
     { p_pos := hp
       critical_active := hp_active
@@ -576,11 +517,10 @@ def sharpDefectBridges_residueDefect_of_setGcd_eq_one
     have hres : Nat.ModEq q (wordLag (bridge a)) a.1 :=
       (bridge_spec a).2.1.of_dvd hq_dvd_p
     rw [(bridge_spec a).2.2.1]
-    apply residueDefect_eq_of_modEq
-    exact hres.symm.trans (Nat.mod_modEq (wordLag (bridge a)) q).symm
+    exact residueDefect_eq_of_modEq
+      (hres.symm.trans (Nat.mod_modEq (wordLag (bridge a)) q).symm)
   · intro w hw
-    apply residueDefect_le_wordCost hw
-    simp only [Nat.mod_mod]
+    exact residueDefect_le_wordCost hw (by simp only [Nat.mod_mod])
   · intro a
     have hlength := (bridge_spec a).2.2.2.1
     have hnotmem := (bridge_spec a).2.2.2.2
@@ -588,10 +528,8 @@ def sharpDefectBridges_residueDefect_of_setGcd_eq_one
     · have hlag := wordLag_le_length_mul (bridge_spec a).1
       have hlength_le : (bridge a).length ≤ p - 1 := Nat.le_sub_one_of_lt hlength
       have hlength_mul := Nat.mul_le_mul_right r hlength_le
-      have hp_sub : p - 1 + 1 = p := Nat.sub_add_cancel hp
-      have hr_sub_one : r - 1 + 1 = r := Nat.sub_add_cancel (by lia)
-      have hr_sub_two : r - 2 + 2 = r := Nat.sub_add_cancel (by lia)
-      nlinarith
+      nlinarith [Nat.sub_add_cancel hp, Nat.sub_add_cancel (n := r) (by lia : 1 ≤ r),
+        Nat.sub_add_cancel (n := r) (by lia : 2 ≤ r)]
     · have hpr_eq : p = r := le_antisymm hp_le (Nat.le_of_not_gt hpr)
       have hvalid : IsLagWord (r - 1) active (bridge a) := by
         intro l hl
@@ -610,10 +548,9 @@ def sharpDefectBridges_residueDefect_of_setGcd_eq_one
         subst p
         norm_num at hlag ⊢
         exact hlag
-      · have hp_sub : p - 1 + 1 = p := Nat.sub_add_cancel hp
-        have hr_sub_one : r - 1 + 1 = r := Nat.sub_add_cancel (by lia)
-        have hr_sub_two : r - 2 + 2 = r := Nat.sub_add_cancel (by lia)
-        nlinarith
+      · nlinarith [Nat.sub_add_cancel hp,
+          Nat.sub_add_cancel (n := r) (by lia : 1 ≤ r),
+          Nat.sub_add_cancel (n := r) (by lia : 2 ≤ r)]
 
 /-! ## Scaled upper and lower word degrees -/
 
@@ -626,11 +563,8 @@ theorem wordCost_add_scaledDegree_eq
   induction w with
   | nil => simp [wordCost, wordLag]
   | cons l w ih =>
-      have hl := hδ l (by simp)
-      have htail : ∀ x ∈ w, δ x + B * degree x = A * x := by
-        intro x hx
-        exact hδ x (by simp [hx])
-      have hi := ih htail
+      simp only [List.mem_cons, forall_eq_or_imp] at hδ
+      have hi := ih hδ.2
       simp only [wordCost, wordLag] at hi
       simp only [wordCost, wordLag, List.map_cons, List.sum_cons]
       rw [Nat.mul_add]
@@ -645,11 +579,8 @@ theorem wordCost_add_scaledTrailingDegree_eq
   induction w with
   | nil => simp [wordCost, wordLag]
   | cons l w ih =>
-      have hl := hexcess l (by simp)
-      have htail : ∀ x ∈ w, excess x + C * x = D * trailingDegree x := by
-        intro x hx
-        exact hexcess x (by simp [hx])
-      have hi := ih htail
+      simp only [List.mem_cons, forall_eq_or_imp] at hexcess
+      have hi := ih hexcess.2
       simp only [wordCost, wordLag] at hi
       simp only [wordCost, wordLag, List.map_cons, List.sum_cons]
       rw [Nat.mul_add, Nat.mul_add]
