@@ -1,4 +1,3 @@
-
 import RealRooted.Hadamard.Kostov.Roots
 
 open Polynomial
@@ -16,10 +15,9 @@ lemma alt_comb_gen (n m d : ℕ) (hm : 2 ≤ m) (hmd : m < d) (hdn : d ≤ n) (c
     Alt (eigPoly n d - c • eigPoly n m) (m - 2) := by
   have hn : 2 ≤ n := by lia
   by_cases hc : c = 0
-  · rw [hc, zero_smul, sub_zero]
-    exact (eigPoly_alt n d (by lia) hdn).mono (by lia)
+  · simpa [hc] using (eigPoly_alt n d (by lia) hdn).mono (by lia)
   rcases Nat.eq_zero_or_pos (m - 2) with hk | hk
-  · rw [hk]; exact alt_zero _
+  · simpa [hk] using alt_zero (eigPoly n d - c • eigPoly n m)
   set k := m - 2 with hkdef
   set f := eigPoly n m with hf
   set g := eigPoly n d with hg
@@ -34,39 +32,29 @@ lemma alt_comb_gen (n m d : ℕ) (hm : 2 ≤ m) (hmd : m < d) (hdn : d ≤ n) (c
     rcases lt_or_eq_of_le hi with h | h
     · exact left_ne_zero_of_mul (hqalt i h).ne
     · have := hqalt (k - 1) (by lia)
-      rw [show k - 1 + 1 = k by lia] at this
-      rw [h]
-      exact right_ne_zero_of_mul this.ne
+      rw [show k - 1 + 1 = k by lia] at this; rw [h]; exact right_ne_zero_of_mul this.ne
   have hμ : 0 < mu n m := mu_pos n m (by lia)
-  have hμ1 : 0 ≤ mu n d := (mu_pos n d hdn).le
-  have hratio0 : 0 ≤ mu n d / mu n m := div_nonneg hμ1 hμ.le
-  have hratio1 : mu n d / mu n m < 1 := by
-    rw [div_lt_one hμ]; exact mu_lt_of_lt n m d (by lia) hmd hdn
+  have hratio0 : 0 ≤ mu n d / mu n m := div_nonneg (mu_pos n d hdn).le hμ.le
+  have hratio1 : mu n d / mu n m < 1 := (div_lt_one hμ).2 (mu_lt_of_lt n m d (by lia) hmd hdn)
   have hBr : ∀ r : ℕ, ((bernOp n) ^ r) H =
       (mu n d) ^ r • g - (c * (mu n m) ^ r) • f := by
-    intro r
-    rw [hH, map_sub, map_smul, hg, hf, bernOp_pow_eigPoly n m hm (by lia),
+    intro r; rw [hH, map_sub, map_smul, hg, hf, bernOp_pow_eigPoly n m hm (by lia),
       bernOp_pow_eigPoly n d (by lia) hdn, smul_smul]
   set D : ℕ → ℝ := fun r => -(c * (mu n m) ^ r) with hD
   have hD0 : ∀ r, D r ≠ 0 := fun r => neg_ne_zero.mpr (mul_ne_zero hc (pow_ne_zero _ hμ.ne'))
   have hS : ∀ (r : ℕ) (y : ℝ), (((bernOp n) ^ r) H).eval y / D r =
       f.eval y - (mu n d / mu n m) ^ r * (g.eval y / c) := by
-    intro r y
-    rw [hBr]
+    intro r y; rw [hBr]
     simp only [eval_sub, eval_smul, smul_eq_mul, hD, div_pow]
-    field_simp
-    ring
+    field_simp; ring
   have hT : ∀ y : ℝ, Filter.Tendsto (fun r : ℕ => (((bernOp n) ^ r) H).eval y / D r)
       Filter.atTop (nhds (f.eval y)) := by
-    intro y
-    simp_rw [hS]
-    have := ((tendsto_pow_atTop_nhds_zero_of_lt_one hratio0 hratio1).mul_const
+    intro y; simp_rw [hS]
+    simpa using ((tendsto_pow_atTop_nhds_zero_of_lt_one hratio0 hratio1).mul_const
       (g.eval y / c)).const_sub (f.eval y)
-    simpa using this
   have hev : ∀ i ∈ Finset.range (k + 1), ∀ᶠ r in Filter.atTop,
       0 < (((bernOp n) ^ r) H).eval (q i) / D r * f.eval (q i) := by
-    intro i hi
-    rw [Finset.mem_range] at hi
+    intro i hi; rw [Finset.mem_range] at hi
     have hpos : 0 < f.eval (q i) * f.eval (q i) := mul_self_pos.mpr (hfq i (by lia))
     exact ((hT (q i)).mul_const (f.eval (q i))).eventually_const_lt hpos
   obtain ⟨r, hr⟩ := ((Filter.eventually_all_finset _).mpr hev).exists
@@ -78,13 +66,11 @@ lemma alt_comb_gen (n m d : ℕ) (hm : 2 ≤ m) (hmd : m < d) (hdn : d ≤ n) (c
   set b := (((bernOp n) ^ r) H).eval (q (i + 1))
   have hab : a / D r * (b / D r) < 0 := by
     have : 0 < (a / D r * (b / D r)) * (f.eval (q i) * f.eval (q (i + 1))) := by
-      have := mul_pos e1 e2
-      calc (0 : ℝ) < _ := this
+      calc (0 : ℝ) < _ := mul_pos e1 e2
         _ = _ := by ring
     exact neg_of_mul_pos_left this e3.le
   have : a * b = (a / D r * (b / D r)) * (D r) ^ 2 := by field_simp [hD0 r]
-  rw [this]
-  exact mul_neg_of_neg_of_pos hab (by have := hD0 r; positivity)
+  rw [this]; exact mul_neg_of_neg_of_pos hab (sq_pos_of_ne_zero (hD0 r))
 
 /-- If `p(s) = p'(s) = 0` then `(X - s)^2 ∣ p`. -/
 lemma sq_dvd_of_eval_deriv (p : ℝ[X]) (s : ℝ) (h : p.eval s = 0)
@@ -92,8 +78,7 @@ lemma sq_dvd_of_eval_deriv (p : ℝ[X]) (s : ℝ) (h : p.eval s = 0)
   by_cases hp : p = 0
   · simp [hp]
   rw [← le_rootMultiplicity_iff hp]
-  have := (one_lt_rootMultiplicity_iff_isRoot hp).mpr ⟨h, h'⟩
-  lia
+  lia [(one_lt_rootMultiplicity_iff_isRoot hp).mpr ⟨h, h'⟩]
 
 /-- A polynomial vanishing at `0`, `1` and doubly at two distinct interior points, with `k`
 strict sign changes in `(0,1)`, has degree at least `k + 6`. -/
@@ -118,8 +103,7 @@ lemma two_double_root_degree (F : ℝ[X]) (hF : F ≠ 0) (h0 : F.eval 0 = 0) (h1
     exact IsCoprime.mul_dvd ((c0s.mul_left c1s).mul_left cts)
       (IsCoprime.mul_dvd (c0t.mul_left c1t) (IsCoprime.mul_dvd c01 d0 d1) dt) ds
   obtain ⟨F4, hFeq'⟩ := hdvd
-  have hF4ne : F4 ≠ 0 := by
-    rintro rfl; rw [mul_zero] at hFeq'; exact hF hFeq'
+  have hF4ne : F4 ≠ 0 := by rintro rfl; simp_all
   have hmon : ((X - C 0) * (X - C 1) * (X - C t) ^ 2 * (X - C s) ^ 2 : ℝ[X]).Monic :=
     (((monic_X_sub_C 0).mul (monic_X_sub_C 1)).mul ((monic_X_sub_C t).pow 2)).mul
       ((monic_X_sub_C s).pow 2)
@@ -130,15 +114,13 @@ lemma two_double_root_degree (F : ℝ[X]) (hF : F ≠ 0) (h0 : F.eval 0 = 0) (h1
         ((monic_X_sub_C t).pow 2).ne_zero,
       natDegree_mul (monic_X_sub_C 0).ne_zero (monic_X_sub_C 1).ne_zero, natDegree_pow,
       natDegree_pow, natDegree_X_sub_C, natDegree_X_sub_C, natDegree_X_sub_C, natDegree_X_sub_C]
-  have hdeg : F.natDegree = 6 + F4.natDegree := by
-    rw [hFeq', hmon.natDegree_mul' hF4ne, hdeg6]
+  have hdeg : F.natDegree = 6 + F4.natDegree := by rw [hFeq', hmon.natDegree_mul' hF4ne, hdeg6]
   obtain ⟨p, hp0, hp1, hinc, halt⟩ := halt
   have hpin : ∀ i ≤ k, 0 < p i ∧ p i < 1 := fun i hi =>
     ⟨lt_of_lt_of_le hp0 (chain_le hinc 0 i (Nat.zero_le _) hi),
       lt_of_le_of_lt (chain_le hinc i k hi le_rfl) hp1⟩
   have hw : ∀ i ≤ k, (p i - 0) * (p i - 1) * (p i - t) ^ 2 * (p i - s) ^ 2 ≤ 0 := by
-    intro i hi
-    obtain ⟨a1, a2⟩ := hpin i hi
+    intro i hi; obtain ⟨a1, a2⟩ := hpin i hi
     have : (p i - 0) * (p i - 1) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos (by linarith) (by linarith)
     exact mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonpos_of_nonneg this (sq_nonneg _))
       (sq_nonneg _)
@@ -146,14 +128,11 @@ lemma two_double_root_degree (F : ℝ[X]) (hF : F ≠ 0) (h0 : F.eval 0 = 0) (h1
     have := halt i hi
     rw [hFeq'] at this
     simp only [eval_mul, eval_X, eval_sub, eval_C, eval_pow] at this
-    have w1 := hw i hi.le
-    have w2 := hw (i + 1) hi
-    by_contra hge
-    push Not at hge
+    by_contra hge; push Not at hge
     have : 0 ≤ ((p i - 0) * (p i - 1) * (p i - t) ^ 2 * (p i - s) ^ 2) *
         ((p (i + 1) - 0) * (p (i + 1) - 1) * (p (i + 1) - t) ^ 2 * (p (i + 1) - s) ^ 2) *
         (F4.eval (p i) * F4.eval (p (i + 1))) :=
-      mul_nonneg (mul_nonneg_of_nonpos_of_nonpos w1 w2) hge
+      mul_nonneg (mul_nonneg_of_nonpos_of_nonpos (hw i hi.le) (hw (i + 1) hi)) hge
     linarith)
   lia
 
@@ -169,8 +148,7 @@ lemma reflect_double_root (P : ℝ[X]) (e : ℝ) (hP : P.comp (1 - X) = C e * P)
     derivative_one, derivative_X, eval_mul, eval_comp, eval_sub, eval_one, eval_X, eval_C,
     eval_zero] at h2
   refine ⟨by rw [h1, h, mul_zero], ?_⟩
-  rw [h', mul_zero] at h2
-  linarith
+  rw [h', mul_zero] at h2; linarith
 
 lemma eigPoly_comb_reflect (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (c : ℝ) :
     (eigPoly n (m + 2) - c • eigPoly n m).comp (1 - X) =
@@ -178,8 +156,7 @@ lemma eigPoly_comb_reflect (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (c : �
   rw [sub_comp, smul_comp, eigPoly_reflect n (m + 2) (by lia) hmn,
     eigPoly_reflect n m hm (by lia), pow_add]
   simp only [smul_eq_C_mul]
-  norm_num
-  ring
+  norm_num; ring
 
 /-- The Wronskian of `G_m` and `G_{m+2}` has no zero in `(0, 1/2)`. -/
 lemma wronskian2_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (t : ℝ) (ht0 : 0 < t)
@@ -195,18 +172,16 @@ lemma wronskian2_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (t : ℝ
   have hg0 := eigPoly_eval_zero n (m + 2) (by lia) hmn
   have hg1 := eigPoly_eval_one n (m + 2) (by lia) hmn
   have hsimple : f.eval t = 0 → (derivative f).eval t ≠ 0 := by
-    intro h h'
-    have := double_root_degree f hfmon.ne_zero hf0 hf1 t ht0 (by linarith) h h' (m - 2)
-      (eigPoly_alt n m hm (by lia))
-    lia
+    intro h h'; have :=
+      double_root_degree f hfmon.ne_zero hf0 hf1 t ht0 (by linarith) h h' (m - 2)
+      (eigPoly_alt n m hm (by lia)); lia
   have hH : ∀ c : ℝ, (g - c • f).eval t = 0 →
       (derivative (g - c • f)).eval t = 0 → False := by
     intro c h h'
     have hdeg : (g - c • f).natDegree ≤ m + 2 :=
       (natDegree_sub_le _ _).trans (max_le hgdeg.le ((natDegree_smul_le _ _).trans (by lia)))
     have hne : g - c • f ≠ 0 := by
-      intro h0
-      have := congrArg (fun P => P.coeff (m + 2)) h0
+      intro h0; have := congrArg (fun P => P.coeff (m + 2)) h0
       simp only [coeff_sub, coeff_smul, smul_eq_mul, coeff_zero] at this
       rw [coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < m + 2), ← hgdeg,
         hgmon.coeff_natDegree] at this
@@ -225,12 +200,10 @@ lemma wronskian2_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (t : ℝ
     apply hH ((derivative g).eval t / (derivative f).eval t)
     · simp [hgt, hft]
     · simp only [derivative_sub, derivative_smul, eval_sub, eval_smul, smul_eq_mul]
-      field_simp
-      ring
+      field_simp; ring
   · apply hH (g.eval t / f.eval t)
     · simp only [eval_sub, eval_smul, smul_eq_mul]
-      field_simp
-      ring
+      field_simp; ring
     · simp only [derivative_sub, derivative_smul, eval_sub, eval_smul, smul_eq_mul]
       field_simp
       linear_combination hW
@@ -243,8 +216,7 @@ lemma zero_between2 (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (a b : ℝ) (
   set f := eigPoly n m with hf
   set g := eigPoly n (m + 2) with hg
   have hW := wronskian2_ne_zero n m hm hmn
-  by_contra hno
-  push Not at hno
+  by_contra hno; push Not at hno
   have hfa : f.eval a ≠ 0 := by
     intro h; apply hW a ha0 (by linarith); simp [← hf, ← hg, h, hga]
   have hfb : f.eval b ≠ 0 := by
@@ -264,8 +236,7 @@ lemma zero_between2 (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (a b : ℝ) (
     Polynomial.deriv, Polynomial.deriv] at hc
   apply hW c (by linarith) (by linarith)
   simp only [eval_sub, eval_mul]
-  have := (div_eq_zero_iff.mp hc).resolve_right (pow_ne_zero 2 hfc)
-  linear_combination this
+  linear_combination (div_eq_zero_iff.mp hc).resolve_right (pow_ne_zero 2 hfc)
 
 /-- A zero in `(0,1)` of `X (X - 1) ∏ (X - z_i)` is one of the `z_i`. -/
 lemma root_index_of_prod {k : ℕ} (z : Fin k → ℝ) (y : ℝ) (hy0 : 0 < y) (hy1 : y < 1)
@@ -279,8 +250,7 @@ lemma root_index_of_prod {k : ℕ} (z : Fin k → ℝ) (y : ℝ) (hy0 : 0 < y) (
 lemma fin_strictMono_eq_id {k : ℕ} (σ : Fin k → Fin k) (hσ : StrictMono σ) : σ = id := by
   have hs : Function.Surjective σ := Finite.surjective_of_injective hσ.injective
   have := Subsingleton.elim (StrictMono.orderIsoOfSurjective σ hσ hs) (OrderIso.refl _)
-  funext i
-  exact congrArg (fun e : Fin k ≃o Fin k => e i) this
+  funext i; exact congrArg (fun e : Fin k ≃o Fin k => e i) this
 
 /-- The sorted interior zeros of `G_m` are symmetric about `1/2`. -/
 lemma eigPoly_roots_symm (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (z : Fin (m - 2) → ℝ)
@@ -293,8 +263,7 @@ lemma eigPoly_roots_symm (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (z : Fin (m 
     rw [← hG]
     have h1 := congrArg (eval (z i)) (eigPoly_reflect n m hm hmn)
     simp only [eval_comp, eval_sub, eval_one, eval_X, eval_mul, eval_C] at h1
-    rw [h1, hG]
-    simp [eval_prod, Finset.prod_eq_zero (Finset.mem_univ i)]
+    rw [h1, hG]; simp [eval_prod, Finset.prod_eq_zero (Finset.mem_univ i)]
   choose τ hτ using hroot
   have hστ : StrictMono (fun i => Fin.rev (τ i)) := by
     intro i i' hii'
@@ -304,9 +273,7 @@ lemma eigPoly_roots_symm (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (z : Fin (m 
     exact hz.lt_iff_lt.mp this
   have hid := fin_strictMono_eq_id _ hστ
   intro i
-  have := congrFun hid i
-  simp only [id] at this
-  have h2 : τ i = i.rev := by rw [← Fin.rev_rev (τ i), this]
+  have h2 : τ i = i.rev := by rw [← Fin.rev_rev (τ i), congrFun hid i]; rfl
   rw [← h2]; exact hτ i
 
 /-- Combinatorial core of the lower-half comparison. -/
@@ -341,11 +308,7 @@ lemma lower_interlace {j : ℕ} (a : Fin j → ℝ) (b : Fin (j + 2) → ℝ) (h
       (hb (by rw [Fin.lt_def]; exact Nat.lt_succ_self _)) (hbhalf _ (by change i.1 + 1 ≤ K; lia))
     have hrK := hahalf r (by linarith [hbhalf ⟨i.1 + 1, by lia⟩ (by change i.1 + 1 ≤ K; lia)])
     exact ⟨⟨r.1, hrK⟩, hr1, hr2⟩
-  have hint := interlace_of_between _ _ hwm hum hbet'
-  intro i hi
-  exact hint ⟨i, hi⟩
-
-
+  exact fun i hi => interlace_of_between _ _ hwm hum hbet' ⟨i, hi⟩
 /-- Kostov's Theorem 4 compares roots two degrees apart.  For odd `j`, the central root is one.
 (Zero-based form below: `i` ranges over `0 ≤ i < j/2`, with `x i` the `(i+1)`-st root.)
 Checked exactly (rational isolating intervals) for `6 ≤ n ≤ 11`, all admissible `j`. -/
@@ -368,23 +331,20 @@ private theorem eigenpoly_two_step_aux {n j : ℕ} (_hj1 : 1 ≤ j) (hj : j + 5 
       ∃ r, b l < a r ∧ a r < b l' := by
     intro l l' hll' hl'
     have hgroot : ∀ l, (eigPoly n (j + 2 + 2)).eval (b l) = 0 := by
-      intro l
-      rw [hGb, eval_mul, eval_prod, Finset.prod_eq_zero (Finset.mem_univ l) (by simp), mul_zero]
+      intro l; rw [hGb, eval_mul, eval_prod,
+        Finset.prod_eq_zero (Finset.mem_univ l) (by simp), mul_zero]
     obtain ⟨t, ht1, ht2, hft⟩ := zero_between2 n (j + 2) (by lia) (by lia) (b l) (b l')
       (hb01 l).1 hll' hl' (hgroot l) (hgroot l')
     rw [hGa] at hft
     obtain ⟨r, hr⟩ := root_index_of_prod a t (by linarith [(hb01 l).1])
       (by linarith [(hb01 l').2]) hft
     exact ⟨r, hr ▸ ht1, hr ▸ ht2⟩
-  have hlow := lower_interlace a b ha hb has hbs hbet
   refine ⟨fun i => a i / (1 - a i), fun i => b i / (1 - b i), fun i i' h => moebius_lt (ha h)
     (ha01 i').2, fun i i' h => moebius_lt (hb h) (hb01 i').2, fun i => ?_, fun i => ?_,
     fun i hi => ?_, fun hodd => ?_⟩
-  · rw [hQe, IsRoot, eval_prod]
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
-  · rw [hRe, IsRoot, eval_prod]
-    exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
-  · obtain ⟨h1, h2⟩ := hlow i hi
+  · rw [hQe, IsRoot, eval_prod]; exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+  · rw [hRe, IsRoot, eval_prod]; exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp)
+  · obtain ⟨h1, h2⟩ := lower_interlace a b ha hb has hbs hbet i hi
     have e1 : a ⟨j - 1 - i, by lia⟩ = 1 - a ⟨i, by lia⟩ := by
       rw [← has]; congr 1; ext; simp; lia
     have e2 : b ⟨j - i, by lia⟩ = 1 - b ⟨i + 1, by lia⟩ := by
@@ -404,10 +364,8 @@ private theorem eigenpoly_two_step_aux {n j : ℕ} (_hj1 : 1 ≤ j) (hj : j + 5 
     have ea : a ⟨(2 * k + 1 - 1) / 2, by lia⟩ = 1 / 2 := by linarith
     have eb : b ⟨(2 * k + 1 + 1) / 2, by lia⟩ = 1 / 2 := by linarith
     refine ⟨?_, ?_⟩
-    · change a _ / (1 - a _) = 1
-      rw [ea]; norm_num
-    · change b _ / (1 - b _) = 1
-      rw [eb]; norm_num
+    · change a _ / (1 - a _) = 1; rw [ea]; norm_num
+    · change b _ / (1 - b _) = 1; rw [eb]; norm_num
 
 /-- **Kostov, Theorem 4 (#1320), index form.**  Let `1 ≤ j` and `j + 5 ≤ n` (that is
 `j + 2 ≤ n - 3`).  Let `x_0 < ... < x_{j-1}` be the roots of `Q_{n,j}` and `z_0 < ... < z_{j+1}`
@@ -442,20 +400,14 @@ private theorem eigenpoly_two_step {n j : ℕ} (hj1 : 1 ≤ j) (hj : j + 5 ≤ n
     exact hRz _
   · intro i hi
     have h := hmain i hi
-    have e1 : i < j := by lia
-    have e2 : i < j + 2 := by lia
-    have e3 : i + 1 < j + 2 := by lia
-    have e4 : j - i < j + 2 := by lia
-    have e5 : j - 1 - i < j := by lia
-    have e6 : j + 1 - i < j + 2 := by lia
-    simp only [e1, e2, e3, e4, e5, e6, dite_true]
-    exact h
+    have hs : i < j ∧ i < j + 2 ∧ i + 1 < j + 2 ∧ j - i < j + 2 ∧
+        j - 1 - i < j ∧ j + 1 - i < j + 2 := by lia
+    obtain ⟨e1, e2, e3, e4, e5, e6⟩ := hs
+    simpa only [e1, e2, e3, e4, e5, e6, dite_true] using h
   · intro ho
     have h := hodd ho
-    have e1 : (j - 1) / 2 < j := by lia
-    have e2 : (j + 1) / 2 < j + 2 := by lia
-    simp only [e1, e2, dite_true]
-    exact h
+    have hs : (j - 1) / 2 < j ∧ (j + 1) / 2 < j + 2 := by lia
+    simpa only [hs.1, hs.2, dite_true] using h
 
 /-- The canonical reduced eigenpolynomials satisfy Kostov's two-step comparison. -/
 theorem eigenpolynomial_two_step (n j : ℕ) (hj1 : 1 ≤ j) (hj : j + 5 ≤ n) :

@@ -103,10 +103,7 @@ theorem starC_C_mul_left (c a : ℝ) (f g : ℝ[X]) :
   rw [Finset.sum_eq_zero]
   · simp
   · intro j hj
-    have hone : (derivative^[j + 1]) (1 : ℝ[X]) = 0 := by
-      apply iterate_derivative_eq_zero
-      simp
-    rw [hone, mul_zero]
+    rw [iterate_derivative_eq_zero (p := (1 : ℝ[X])) (by simp), mul_zero]
 
 /-- The constant polynomial `1` is a left unit for `starC`. -/
 @[simp] theorem starC_one_left (c : ℝ) (g : ℝ[X]) :
@@ -125,11 +122,6 @@ def starCLinearMap (c : ℝ) (f : ℝ[X]) : ℝ[X] →ₗ[ℝ] ℝ[X] where
 @[simp] theorem starCLinearMap_apply (c : ℝ) (f g : ℝ[X]) :
     starCLinearMap c f g = starC c f g :=
   rfl
-
-private theorem iterate_derivative_X_succ_succ (n : ℕ) :
-    (derivative^[n + 2]) (X : ℝ[X]) = 0 := by
-  apply iterate_derivative_eq_zero
-  simp
 
 /-- Applying `starC` to `X` gives the first-order Euler pencil
 `X * (f + c f')`. -/
@@ -151,7 +143,7 @@ theorem starC_X_right (c : ℝ) (f : ℝ[X]) :
           (derivative^[j + 2]) f * (derivative^[j + 2]) X) = 0 := by
       apply Finset.sum_eq_zero
       intro j hj
-      rw [iterate_derivative_X_succ_succ, mul_zero]
+      rw [iterate_derivative_eq_zero (p := (X : ℝ[X])) (by simp), mul_zero]
     rw [htail]
     simp only [zero_add, pow_one, Nat.factorial_one,
       Nat.cast_one, div_one, Function.iterate_one, derivative_X, mul_one]
@@ -196,16 +188,11 @@ theorem starC_nonneg {c : ℝ} (hc : 0 ≤ c) {f g : ℝ[X]}
     (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
     HasNonnegCoeffs (starC c f g) := by
   unfold starC
-  apply hasNonnegCoeffs_finsetSum
-  intro j hj
-  apply HasNonnegCoeffs.mul
-  · apply HasNonnegCoeffs.mul
-    · apply HasNonnegCoeffs.mul
-      · exact hasNonnegCoeffs_C
-          (div_nonneg (pow_nonneg hc j) (Nat.cast_nonneg j.factorial))
-      · exact hasNonnegCoeffs_X.pow j
-    · exact hf.iterate_derivative j
-  · exact hg.iterate_derivative j
+  exact hasNonnegCoeffs_finsetSum _ _ fun j _ ↦
+    (((hasNonnegCoeffs_C
+      (div_nonneg (pow_nonneg hc j) (Nat.cast_nonneg j.factorial))).mul
+      (hasNonnegCoeffs_X.pow j)).mul (hf.iterate_derivative j)).mul
+      (hg.iterate_derivative j)
 
 /-- The sharp affine obstruction: a root `r` with `c*r > 0` produces a
 quadratic factor with negative discriminant. -/
@@ -325,8 +312,7 @@ theorem poissonSignedSymbol_stable {c : ℝ} {f : ℝ[X]} (hf : f ≠ 0)
         simp only [Complex.sub_im, Complex.one_im, Complex.mul_im,
           Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
           zero_sub, Complex.zero_im] at him
-        have hmul : c * (z 1).im = 0 := neg_eq_zero.mp him
-        exact hc ((mul_eq_zero.mp hmul).resolve_right (ne_of_gt (hz 1)))
+        exact hc ((mul_eq_zero.mp (neg_eq_zero.mp him)).resolve_right (ne_of_gt (hz 1)))
     intro hzero
     have hmul : z 0 * (1 - (c : ℂ) * z 1) = (r : ℂ) :=
       sub_eq_zero.mp hzero
@@ -392,9 +378,7 @@ cone. -/
 theorem not_preservesPF_X {c : ℝ} (hc : c < 0) :
     ¬PreservesPF c X := by
   intro hpres
-  have hX : IsPFPolynomial (X : ℝ[X]) := by
-    simpa using IsPFPolynomial.one.X_mul
-  have hcoeff := (hpres X hX).hasNonnegCoeffs 1
+  have hcoeff := (hpres X isPFPolynomial_X).hasNonnegCoeffs 1
   rw [starC_X_X] at hcoeff
   have hc_nonneg : 0 ≤ c := by
     simpa [coeff_add, coeff_C_mul, coeff_X_pow] using hcoeff
@@ -490,16 +474,13 @@ theorem not_preservesPF_affine_of_neg {c b : ℝ} (hc : c < 0) (hb : 0 < b)
     (a : ℝ) :
     ¬PreservesPF c (C a + C b * X) := by
   intro hpres
-  have hcb : c * b < 0 := mul_neg_of_neg_of_pos hc hb
-  have hden : 0 < -(c * b) := neg_pos.mpr hcb
+  have hden : 0 < -(c * b) := neg_pos.mpr (mul_neg_of_neg_of_pos hc hb)
   obtain ⟨N, hN⟩ := exists_nat_gt (a / (-(c * b)))
   have hscaled := mul_lt_mul_of_pos_right hN hden
   rw [div_mul_cancel₀ a hden.ne'] at hscaled
   have hnegative : a + c * b * N < 0 := by
     nlinarith
-  have hX : IsPFPolynomial (X : ℝ[X]) := by
-    simpa using IsPFPolynomial.one.X_mul
-  have hpow : IsPFPolynomial ((X : ℝ[X]) ^ N) := hX.pow N
+  have hpow : IsPFPolynomial ((X : ℝ[X]) ^ N) := isPFPolynomial_X.pow N
   have hcoeff := (hpres (X ^ N) hpow).hasNonnegCoeffs N
   rw [starC_affine_X_pow] at hcoeff
   have hnonneg : 0 ≤ a + c * b * N := by
@@ -528,9 +509,8 @@ theorem preservesPF_of_neg_iff {c : ℝ} (hc : c < 0) (f : ℝ[X]) :
       have hlc_pos : 0 < f.leadingCoeff :=
         hfpf.hasNonnegCoeffs.pos_leadingCoeff hf0
       have hnext : 0 ≤ f.nextCoeff := by
-        rw [Polynomial.nextCoeff]
-        simp only [hdeg, ite_false]
-        exact hfpf.hasNonnegCoeffs _
+        simpa [Polynomial.nextCoeff, hdeg] using
+          hfpf.hasNonnegCoeffs (f.natDegree - 1)
       have hscale : c * (f.natDegree : ℝ) * f.leadingCoeff < 0 :=
         mul_neg_of_neg_of_pos
           (mul_neg_of_neg_of_pos hc (Nat.cast_pos.mpr hdegree_pos)) hlc_pos
@@ -553,9 +533,7 @@ theorem preservesPF_of_neg_iff {c : ℝ} (hc : c < 0) (f : ℝ[X]) :
       have hnegative :
           f.nextCoeff + c * f.natDegree * N * f.leadingCoeff < 0 := by
         nlinarith
-      have hX : IsPFPolynomial (X : ℝ[X]) := by
-        simpa using IsPFPolynomial.one.X_mul
-      have hout := (hpres (X ^ N) (hX.pow N)).hasNonnegCoeffs
+      have hout := (hpres (X ^ N) (isPFPolynomial_X.pow N)).hasNonnegCoeffs
         (f.natDegree + N - 1)
       rw [coeff_starC_X_pow_next c f N hdeg hdegreeN] at hout
       exact (not_lt_of_ge hout) hnegative

@@ -51,7 +51,7 @@ theorem strictInterl_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
   strictInterl_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi => eval_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -87,7 +87,7 @@ theorem strictInterl_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
       eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `c_n X(1+X)` inner-window lag. -/
 theorem isRealRooted_of_C_mul_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -123,7 +123,7 @@ theorem strictInterl_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X * (1 - X) * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi =>
       eval_X_mul_one_sub_X_mul_one_add_X_nonpos_of_mem_Icc hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -162,7 +162,7 @@ theorem strictInterl_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_
     (fun n _ _ hlo hhi =>
       eval_C_mul_X_mul_one_sub_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
         (hc n) hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `c_n X(1-X)(1+X)` inner-window lag. -/
 theorem isRealRooted_of_C_mul_X_mul_one_sub_X_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -197,7 +197,7 @@ theorem strictInterl_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
   strictInterl_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun _ => X - X ^ 3) hbase hpos hnonneg hroot_lower
     (fun _ _ _ hlo hhi => eval_X_sub_X_pow_three_nonpos_of_mem_Icc hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `X-X^3` inner-window lag. -/
 theorem isRealRooted_of_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -233,7 +233,7 @@ theorem strictInterl_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * (X - X ^ 3)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
       eval_C_mul_X_sub_X_pow_three_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `c_n (X-X^3)` inner-window lag. -/
 theorem isRealRooted_of_C_mul_X_sub_X_pow_three_lag_sequence_of_nonneg_coeffs
@@ -289,7 +289,7 @@ theorem strictInterl_one_add_X_mul_one_add_two_mul_X_lag_sequence
     hroot_lower hroot_upper
     (fun _ _ _ hlo hhi =>
       eval_one_add_X_mul_one_add_two_mul_X_nonpos_of_mem_interval hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_one_add_X_mul_one_add_two_mul_X_lag_sequence
@@ -329,7 +329,7 @@ theorem strictInterl_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
     (fun n _ _ hlo hhi =>
       eval_C_mul_one_add_X_mul_one_add_two_mul_X_nonpos_of_nonneg_of_mem_interval
         (hc n) hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `c_n(1+X)(1+2X)` interval lag. -/
 theorem isRealRooted_of_C_mul_one_add_X_mul_one_add_two_mul_X_lag_sequence
@@ -372,7 +372,7 @@ theorem strictInterl_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
     (fun n _ _ hlo _ =>
       eval_neg_C_mul_C_add_C_mul_X_nonpos_of_nonneg_of_nonneg_of_le_of_ge_neg_one
         (hc n) (hb n) (hba n) hlo)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for inner-window negative affine lags. -/
 theorem isRealRooted_of_neg_C_mul_affine_inner_lag_sequence_of_nonneg_coeffs
@@ -411,7 +411,7 @@ theorem strictInterl_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
     (B := fun n => -(C (c n)) * (1 + X)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo _ => eval_neg_C_mul_one_add_X_nonpos_of_nonneg_of_ge_neg_one
       (hc n) hlo)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `-c_n(1+X)` inner-window lag. -/
 theorem isRealRooted_of_neg_C_mul_one_add_X_lag_sequence_of_nonneg_coeffs
@@ -507,13 +507,11 @@ theorem strictInterl_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
   strictInterl_inner_window_lag_sequence_of_nonneg_coeffs
     (B := fun n => -(C (c n)) * (1 + C (2 : ℝ) * X))
     hbase hpos hnonneg
-    (fun n r hr => by
-      have hhalf := hroot_lower n r hr
-      linarith)
+    (fun n r hr => by linarith [hroot_lower n r hr])
     (fun n r hr _ _ =>
       eval_neg_C_mul_one_add_two_mul_X_nonpos_of_nonneg_of_ge_neg_half
         (hc n) (hroot_lower n r hr))
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `-c_n(1+2X)` tighter-window lag. -/
 theorem isRealRooted_of_neg_C_mul_one_add_two_mul_X_lag_sequence_of_nonneg_coeffs
@@ -551,7 +549,7 @@ theorem strictInterl_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs
     (B := fun n => C (c n) * (X ^ 2 - 1)) hbase hpos hnonneg hroot_lower
     (fun n _ _ hlo hhi =>
       eval_C_mul_X_sq_sub_one_nonpos_of_nonneg_of_mem_Icc (hc n) hlo hhi)
-    (fun n => by simpa using hrec n) hdeg_succ hno
+    hrec hdeg_succ hno
 
 /-- Real-rootedness corollary for the `c_n(X^2-1)` inner-window lag. -/
 theorem isRealRooted_of_C_mul_X_sq_sub_one_lag_sequence_of_nonneg_coeffs

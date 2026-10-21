@@ -27,8 +27,8 @@ lemma monicPolynomial_sub (n : ℕ) (v : Fin (n - 1) → ℝ) :
   ring
 
 lemma Wv_natDegree (n : ℕ) (v : Fin (n - 1) → ℝ) : (Wv n v).natDegree ≤ n - 2 := by
-  refine natDegree_sum_le_of_forall_le _ _ fun i _ => ?_
-  exact (natDegree_C_mul_X_pow_le _ _).trans (by lia)
+  exact natDegree_sum_le_of_forall_le _ _ fun i _ =>
+    (natDegree_C_mul_X_pow_le _ _).trans (by lia)
 
 lemma Tv_natDegree (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ) :
     (Tv n v).natDegree ≤ n - 1 := by
@@ -70,17 +70,15 @@ lemma Gv_eq_Psi (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ) : Gv n v = Ps
 
 lemma Gv_eval_one (n : ℕ) (v : Fin (n - 1) → ℝ) : (Gv n v).eval 1 = 0 := by
   rw [Gv, eval_finsetSum]
-  refine Finset.sum_eq_zero fun i _ => ?_
-  simp
+  exact Finset.sum_eq_zero fun i _ => by simp
 
 lemma Gv_natDegree (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ) :
     (Gv n v).natDegree ≤ n - 1 := by
   refine natDegree_sum_le_of_forall_le _ _ fun i _ => ?_
   have hi := i.2
-  refine (natDegree_mul_le).trans ?_
-  refine (add_le_add (natDegree_C_mul_X_pow_le _ _) (natDegree_pow_le)).trans ?_
-  rw [natDegree_one_sub_X]
-  lia
+  exact (natDegree_mul_le).trans <|
+    (add_le_add (natDegree_C_mul_X_pow_le _ _) (natDegree_pow_le)).trans (by
+      rw [natDegree_one_sub_X]; lia)
 
 lemma Tv_zero (n : ℕ) : Tv n 0 = 0 := by simp [Tv, Wv]
 
@@ -119,18 +117,15 @@ lemma coeffMatrix_mulVec (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ) (i :
       n.choose (i.1 + 1) * (((n : ℝ) - (i.1 + 1)) / n) := by
     have h := Nat.choose_mul_succ_eq (n - 1) (i.1 + 1)
     rw [show n - 1 + 1 = n by lia] at h
-    have h' : ((n - 1).choose (i.1 + 1) : ℝ) * n =
-        n.choose (i.1 + 1) * ((n : ℝ) - (i.1 + 1)) := by
-      have := congrArg (fun x : ℕ => (x : ℝ)) h
-      push_cast [Nat.cast_sub (show i.1 + 1 ≤ n by lia)] at this
-      linarith
+    have h' := congrArg (fun x : ℕ => (x : ℝ)) h
+    push_cast [Nat.cast_sub (show i.1 + 1 ≤ n by lia)] at h'
     field_simp
     linarith
   have hb : ((n - 1).choose i.1 : ℝ) = n.choose (i.1 + 1) * (((i.1 : ℝ) + 1) / n) := by
     have h := Nat.add_one_mul_choose_eq (n - 1) i.1
     rw [show n - 1 + 1 = n by lia] at h
-    have h' : (n : ℝ) * ((n - 1).choose i.1 : ℝ) = n.choose (i.1 + 1) * ((i.1 : ℝ) + 1) := by
-      exact_mod_cast h
+    have h' : (n : ℝ) * ((n - 1).choose i.1 : ℝ) =
+        n.choose (i.1 + 1) * ((i.1 : ℝ) + 1) := by exact_mod_cast h
     field_simp
     linarith
   have e1 : 1 - ((i.1 : ℝ) + 1) / n = ((n : ℝ) - (i.1 + 1)) / n := by field_simp
@@ -181,8 +176,7 @@ lemma coeffMatrix_det_ne_zero (n : ℕ) (hn : 2 ≤ n) : (coeffMatrix n).det ≠
 lemma linearPart_eq (n : ℕ) (v : Fin (n - 1) → ℝ) :
     linearPart n v = (coeffMatrix n)⁻¹.mulVec (fun i => (Tv n v).coeff (i.1 + 1)) := by
   rw [linearPart, coeffMap, coeffMap, ← Matrix.mulVec_sub]
-  congr 1
-  funext i
+  congr 1; funext i
   simp only [Pi.sub_apply, interiorCoeff]
   rw [← monicPolynomial_sub, coeff_sub]
   ring
@@ -220,11 +214,7 @@ lemma linearPart_eigen_of_bern (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ
     Matrix.one_mulVec]
 
 lemma coeff_one_sub_X_pow (n : ℕ) : ((1 - X : ℝ[X]) ^ n).coeff n = (-1) ^ n := by
-  have h1 := natDegree_pow (1 - X : ℝ[X]) n
-  rw [natDegree_one_sub_X, mul_one] at h1
-  have h2 := leadingCoeff_pow (1 - X : ℝ[X]) n
-  rw [leadingCoeff_one_sub_X, leadingCoeff, h1] at h2
-  exact h2
+  simpa using Polynomial.coeff_one_sub_X_pow (R := ℝ) n n
 
 /-- Eigenvectors of the linear part give Bernstein eigenvectors. -/
 lemma bern_of_linearPart_eigen (n : ℕ) (hn : 2 ≤ n) (v : Fin (n - 1) → ℝ) (lam : ℝ)
@@ -291,9 +281,7 @@ lemma exists_v_of_T (n : ℕ) (hn : 2 ≤ n) (T : ℝ[X]) (hT : T.natDegree ≤ 
         rw [ite_eq_left (by lia), show n - 2 - (n - 2 - k) = k by lia]
       · intro j _ hj
         rw [ite_eq_right]
-        intro h
-        apply hj
-        ext
+        intro h; apply hj; ext
         simp only
         have := j.2
         lia
@@ -364,9 +352,7 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
   -- factor `G = X (X - 1) H`
   obtain ⟨G₁, hG₁⟩ : X ∣ G := X_dvd_iff.mpr (by rw [coeff_zero_eq_eval_zero, hG0])
   have hG₁1 : G₁.IsRoot 1 := by
-    have := hG1
-    rw [hG₁, eval_mul, eval_X, one_mul] at this
-    exact this
+    simpa [hG₁] using hG1
   obtain ⟨H, hH⟩ := dvd_iff_isRoot.mpr hG₁1
   have hGH : G = X * (X - C 1) * H := by rw [hG₁, hH, mul_assoc]
   have hXX : (X * (X - C 1) : ℝ[X]).Monic := monic_X.mul (monic_X_sub_C 1)
@@ -378,8 +364,7 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     rw [← hGH, hdeg, hXXd] at this
     lia
   have hH0 : H.eval 0 ≠ 0 := by
-    intro h
-    apply hGc1
+    intro h; apply hGc1
     rw [hGH, mul_assoc, show (1 : ℕ) = 0 + 1 from rfl, coeff_X_mul, coeff_zero_eq_eval_zero]
     simp [h]
   have hHrefl : H.comp (1 - X) = C ((-1 : ℝ) ^ j) * H := by
@@ -395,8 +380,7 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
   have hH1 : H.eval 1 ≠ 0 := by
     have := congrArg (eval 0) hHrefl
     simp only [eval_comp, eval_sub, eval_one, eval_X, sub_zero, eval_mul, eval_C] at this
-    rw [this]
-    exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hH0
+    rw [this]; exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hH0
   -- the polynomial `Q`
   set Q₀ := Phi j H with hQ₀
   have hQ₀d : Q₀.natDegree = j := natDegree_eq_of_le_of_coeff_ne_zero (Phi_natDegree_le j H)
@@ -411,25 +395,20 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hx
     obtain ⟨hx0, hx1⟩ := hx
     have hx1' : 1 + x ≠ 0 := by intro h; apply hx1; linarith
-    have hx2 : 1 / x ≠ -1 := by
-      intro h; field_simp at h; apply hx1; linarith
+    have hx2 : 1 / x ≠ -1 := by intro h; field_simp at h; apply hx1; linarith
     rw [eval_reflect_eq Q₀ j hQ₀d.le x hx0, eval_mul, eval_C, Phi_eval j H hHdeg.le x hx1,
       Phi_eval j H hHdeg.le (1 / x) hx2]
     have key : H.eval ((1 / x) / (1 + 1 / x)) = (-1) ^ j * H.eval (x / (1 + x)) := by
       have := congrArg (eval (x / (1 + x))) hHrefl
       simp only [eval_comp, eval_sub, eval_one, eval_X, eval_mul, eval_C] at this
-      rw [← this]
-      congr 1
+      rw [← this]; congr 1
       have h3 : 1 + 1 / x = (1 + x) / x := by field_simp; ring
       rw [h3, div_div_div_cancel_right₀ hx0]
       field_simp
       ring
     rw [key]
-    have e : x ^ j * (1 + 1 / x) ^ j = (1 + x) ^ j := by
-      rw [← mul_pow]; congr 1; field_simp; ring
-    calc x ^ j * ((1 + 1 / x) ^ j * ((-1) ^ j * H.eval (x / (1 + x))))
-        = (x ^ j * (1 + 1 / x) ^ j) * ((-1) ^ j * H.eval (x / (1 + x))) := by ring
-      _ = _ := by rw [e]; ring
+    rw [show 1 + 1 / x = (1 + x) / x by field_simp; ring, div_pow]
+    field_simp
   have hQrev : Q.reverse = C ((-1 : ℝ) ^ j) * Q := by
     rw [reverse, hQd, hQ, reflect_C_mul, hQ₀refl]
     ring
@@ -438,12 +417,10 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     have := congrArg (fun P => P.coeff 0) hQrev
     simp only [coeff_zero_reverse, hQmon.leadingCoeff, coeff_C_mul] at this
     rw [← coeff_zero_eq_eval_zero]
-    intro h
-    rw [h, mul_zero] at this
+    intro h; rw [h, mul_zero] at this
     exact one_ne_zero this
   have hQ1 : Odd j → Q.eval 1 = 0 := by
-    intro hodd
-    have := congrArg (eval 1) hQrev
+    intro hodd; have := congrArg (eval 1) hQrev
     rw [reverse, hQd, eval_reflect_eq Q j hQd.le 1 one_ne_zero, one_pow, one_mul, div_one,
       eval_mul, eval_C, hodd.neg_one_pow] at this
     linarith
@@ -480,8 +457,8 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
       have e1 : y / (1 - y) + 1 = 1 / (1 - y) := by field_simp; ring
       have e2 : 1 + y / (1 - y) = 1 / (1 - y) := by field_simp; ring
       have e3 : y / (1 - y) / (1 / (1 - y)) = y := by field_simp
-      rw [e1, e2, e3, show (1 - y) ^ n = (1 - y) ^ (n - j - 2) * (1 - y) ^ j * (1 - y) ^ 2 by
-        rw [← pow_add, ← pow_add]; congr 1; lia, one_div, inv_pow, inv_pow]
+      rw [show (1 - y) ^ n = (1 - y) ^ (n - j - 2) * (1 - y) ^ j * (1 - y) ^ 2 by
+        rw [← pow_add, ← pow_add]; congr 1; lia, e1, e2, e3, one_div, inv_pow, inv_pow]
       field_simp
       ring
     have e := eigenvalue_spec n (j + 1) (by lia)

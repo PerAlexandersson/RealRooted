@@ -46,90 +46,68 @@ private theorem eval_sub_X_mul_derivative_mul_eval_pos
   have hfr_ne : f.eval r ≠ 0 := by
     simpa [Polynomial.IsRoot.def] using hr_not_root
   have hfr_der : f.derivative.eval r = 0 := hr
+  have hroot (s : ℝ) (hs : s ∈ f.roots.toFinset) : f.IsRoot s :=
+    isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)
   have hroot_data (s : ℝ) (hs : s ∈ f.roots.toFinset) :
       s < 0 ∧ r - s ≠ 0 ∧
         u.eval s / f.derivative.eval s = g.eval s / f.derivative.eval s := by
-    have hs_mem : s ∈ f.roots := Multiset.mem_toFinset.mp hs
-    have hs_root : f.IsRoot s := isRoot_of_mem_roots hs_mem
-    have hs_neg : s < 0 := hf_roots_neg s hs_root
-    have hrs : r ≠ s := by
-      intro hrs
+    refine ⟨hf_roots_neg s (hroot s hs), sub_ne_zero.mpr ?_, ?_⟩
+    · intro hrs
       subst r
-      exact hr_not_root hs_root
-    have hu_s : u.eval s = g.eval s := by
-      simp [u, Polynomial.IsRoot.def.mp hs_root]
-    exact ⟨hs_neg, sub_ne_zero.mpr hrs, by rw [hu_s]⟩
-  have hquot_eval (s : ℝ) (hs : s ∈ f.roots.toFinset) :
-      (f /ₘ (X - C s)).eval r = f.eval r / (r - s) := by
-    have hs_root : f.IsRoot s :=
-      isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)
-    have hfactor := congrArg (Polynomial.eval r)
-      (mul_divByMonic_eq_iff_isRoot.mpr hs_root)
-    have hrs := (hroot_data s hs).2.1
+      exact hr_not_root (hroot s hs)
+    · simp [u, Polynomial.IsRoot.def.mp (hroot s hs)]
+  have hquot_eval (x s : ℝ) (hs : s ∈ f.roots.toFinset) (hxs : x - s ≠ 0) :
+      (f /ₘ (X - C s)).eval x = f.eval x / (x - s) := by
+    have hfactor := congrArg (Polynomial.eval x)
+      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
     simp only [eval_mul, eval_sub, eval_X, eval_C] at hfactor
-    exact (eq_div_iff hrs).mpr (by simpa [mul_comm] using hfactor)
+    exact (eq_div_iff hxs).mpr (by simpa [mul_comm] using hfactor)
   have hquot_derivative_eval (s : ℝ) (hs : s ∈ f.roots.toFinset) :
       (f /ₘ (X - C s)).derivative.eval r =
         -f.eval r / (r - s) ^ 2 := by
-    have hs_root : f.IsRoot s :=
-      isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)
     have hfactor := congrArg (fun p : ℝ[X] ↦ p.derivative.eval r)
-      (mul_divByMonic_eq_iff_isRoot.mpr hs_root)
+      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
     have hrs := (hroot_data s hs).2.1
     simp only [derivative_mul, derivative_sub, derivative_X, derivative_C,
       sub_zero, one_mul, eval_add, eval_mul, eval_sub, eval_X, eval_C] at hfactor
     rw [hfr_der] at hfactor
-    have hfactor' :
-        (r - s) * (f /ₘ (X - C s)).derivative.eval r =
-          -(f /ₘ (X - C s)).eval r := by
-      linarith
     calc
       (f /ₘ (X - C s)).derivative.eval r =
           -(f /ₘ (X - C s)).eval r / (r - s) := by
         rw [eq_div_iff hrs]
-        simpa [mul_comm] using hfactor'
-      _ = -(f.eval r / (r - s)) / (r - s) := by rw [hquot_eval s hs]
+        linarith
+      _ = -(f.eval r / (r - s)) / (r - s) := by
+        rw [hquot_eval r s hs (hroot_data s hs).2.1]
       _ = -f.eval r / (r - s) ^ 2 := by field_simp
   have hu_eval :
       u.eval r = ∑ s ∈ f.roots.toFinset,
         (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) := by
     rw [← hu_lagrange]
     simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl
-    intro s hs
-    rw [(hroot_data s hs).2.2, hquot_eval s hs]
+    apply Finset.sum_congr rfl; intro s hs
+    rw [(hroot_data s hs).2.2, hquot_eval r s hs (hroot_data s hs).2.1]
   have hu_derivative_eval :
       u.derivative.eval r = ∑ s ∈ f.roots.toFinset,
         (g.eval s / f.derivative.eval s) *
           (-f.eval r / (r - s) ^ 2) := by
     rw [← hu_lagrange]
     simp only [lagInterp, map_sum, derivative_C_mul, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl
-    intro s hs
+    apply Finset.sum_congr rfl; intro s hs
     rw [(hroot_data s hs).2.2, hquot_derivative_eval s hs]
   have hu_zero :
       u.eval 0 = ∑ s ∈ f.roots.toFinset,
         (g.eval s / f.derivative.eval s) * (f.eval 0 / (0 - s)) := by
     rw [← hu_lagrange]
     simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl
-    intro s hs
+    apply Finset.sum_congr rfl; intro s hs
     rw [(hroot_data s hs).2.2]
-    have hs_root : f.IsRoot s :=
-      isRoot_of_mem_roots (Multiset.mem_toFinset.mp hs)
-    have hfactor := congrArg (Polynomial.eval 0)
-      (mul_divByMonic_eq_iff_isRoot.mpr hs_root)
     have hs_ne : 0 - s ≠ 0 := by linarith [(hroot_data s hs).1]
-    simp only [eval_mul, eval_sub, eval_X, eval_C] at hfactor
-    have hquot : (f /ₘ (X - C s)).eval 0 = f.eval 0 / (0 - s) :=
-      (eq_div_iff hs_ne).mpr (by simpa [mul_comm] using hfactor)
-    rw [hquot]
+    rw [hquot_eval 0 s hs hs_ne]
   have ha_zero :
       a = g.eval 0 / f.eval 0 +
         ∑ s ∈ f.roots.toFinset,
           (g.eval s / f.derivative.eval s) / s := by
-    have hform : g.eval 0 = a * f.eval 0 + u.eval 0 := by
-      simp [u]
+    have hform : g.eval 0 = a * f.eval 0 + u.eval 0 := by simp [u]
     calc
       a = (a * f.eval 0) / f.eval 0 := by
         rw [mul_div_cancel_right₀ a hf_zero.ne']
@@ -138,84 +116,57 @@ private theorem eval_sub_X_mul_derivative_mul_eval_pos
       _ = g.eval 0 / f.eval 0 +
           ∑ s ∈ f.roots.toFinset,
             (g.eval s / f.derivative.eval s) / s := by
-        rw [hu_zero, Finset.sum_div]
-        rw [sub_eq_add_neg, ← Finset.sum_neg_distrib]
+        rw [hu_zero, Finset.sum_div, sub_eq_add_neg, ← Finset.sum_neg_distrib]
         congr 1
-        apply Finset.sum_congr rfl
-        intro s hs
+        apply Finset.sum_congr rfl; intro s hs
         have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
-        field_simp
-        ring
+        field_simp; ring
   have hmain :
       g.eval r - r * g.derivative.eval r =
         f.eval r * (g.eval 0 / f.eval 0 +
           ∑ s ∈ f.roots.toFinset,
             (g.eval s / f.derivative.eval s) * r ^ 2 /
               (s * (r - s) ^ 2)) := by
-    have hform : g = C a * f + u := by simp [u]
-    have hform_der : g.derivative = C a * f.derivative + u.derivative := by
-      rw [hform, derivative_add, derivative_C_mul]
     have hform_eval : g.eval r = a * f.eval r + u.eval r := by
-      rw [hform, eval_add, eval_mul, eval_C]
+      simp [u]
     have hform_der_eval : g.derivative.eval r =
         a * f.derivative.eval r + u.derivative.eval r := by
-      rw [hform_der, eval_add, eval_mul, eval_C]
+      simp [u]
     rw [hform_eval, hform_der_eval, hfr_der, mul_zero, zero_add,
       hu_eval, hu_derivative_eval, ha_zero]
-    calc
-      (g.eval 0 / f.eval 0 +
-            ∑ s ∈ f.roots.toFinset, g.eval s / f.derivative.eval s / s) *
-            f.eval r +
+    have hsum :
+        (∑ s ∈ f.roots.toFinset,
+            (g.eval s / f.derivative.eval s) / s * f.eval r) +
+          (∑ s ∈ f.roots.toFinset,
+            (g.eval s / f.derivative.eval s) * (f.eval r / (r - s))) -
+          (∑ s ∈ f.roots.toFinset,
+            r * ((g.eval s / f.derivative.eval s) * (-f.eval r / (r - s) ^ 2))) =
           ∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) -
-          r * (∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) *
-              (-f.eval r / (r - s) ^ 2)) =
-          g.eval 0 / f.eval 0 * f.eval r +
-            ((∑ s ∈ f.roots.toFinset,
-                (g.eval s / f.derivative.eval s) / s * f.eval r) +
-              (∑ s ∈ f.roots.toFinset,
-                (g.eval s / f.derivative.eval s) * (f.eval r / (r - s))) -
-              (∑ s ∈ f.roots.toFinset,
-                r * ((g.eval s / f.derivative.eval s) *
-                  (-f.eval r / (r - s) ^ 2)))) := by
-        rw [add_mul, Finset.sum_mul, Finset.mul_sum]
-        ring
-      _ = g.eval 0 / f.eval 0 * f.eval r +
-          ∑ s ∈ f.roots.toFinset,
+            f.eval r * ((g.eval s / f.derivative.eval s) * r ^ 2 /
+              (s * (r - s) ^ 2)) := by
+      calc
+        _ = ∑ s ∈ f.roots.toFinset,
             ((g.eval s / f.derivative.eval s) / s * f.eval r +
               (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) -
               r * ((g.eval s / f.derivative.eval s) *
                 (-f.eval r / (r - s) ^ 2))) := by
-        rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
-      _ = g.eval 0 / f.eval 0 * f.eval r +
-          ∑ s ∈ f.roots.toFinset,
-            f.eval r * ((g.eval s / f.derivative.eval s) * r ^ 2 /
-              (s * (r - s) ^ 2)) := by
-        congr 1
-        apply Finset.sum_congr rfl
-        intro s hs
-        have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
-        have hrs := (hroot_data s hs).2.1
-        field_simp
-        ring
-      _ = f.eval r * (g.eval 0 / f.eval 0 +
-          ∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) * r ^ 2 /
-              (s * (r - s) ^ 2)) := by
-        rw [mul_add, Finset.mul_sum]
-        ring
+          rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+        _ = _ := by
+          apply Finset.sum_congr rfl; intro s hs
+          have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
+          have hrs := (hroot_data s hs).2.1
+          field_simp; ring
+    rw [add_mul, Finset.sum_mul, Finset.mul_sum, mul_add, Finset.mul_sum]
+    linear_combination hsum
   have hconstant : 0 < g.eval 0 / f.eval 0 := div_pos hg_zero hf_zero
   have hterms : 0 ≤ ∑ s ∈ f.roots.toFinset,
       (g.eval s / f.derivative.eval s) * r ^ 2 /
         (s * (r - s) ^ 2) := by
     apply Finset.sum_nonneg
     intro s hs
-    have hs_mem : s ∈ f.roots := Multiset.mem_toFinset.mp hs
-    have hs_root : f.IsRoot s := isRoot_of_mem_roots hs_mem
     have hres_neg : g.eval s / f.derivative.eval s < 0 := by
       have hprod := hfg.eval_mul_derivative_neg_of_left_root_of_no_common
-        hf_pos hg_pos hno hs_root
+        hf_pos hg_pos hno (hroot s hs)
       exact (div_neg_iff.mpr (mul_neg_iff.mp hprod))
     have hden_neg : s * (r - s) ^ 2 < 0 :=
       mul_neg_of_neg_of_pos (hroot_data s hs).1
@@ -235,8 +186,7 @@ theorem IsPFPolynomial.interl_theta {p : ℝ[X]} (hp : IsPFPolynomial p) :
   by_cases hp0 : p = 0
   · simp [hp0, interl_zero_zero, theta]
   by_cases hdeg : p.natDegree = 0
-  · have htheta : theta p = 0 := by simp [theta, derivative_eq_zero.mpr hdeg]
-    rw [htheta]
+  · rw [show theta p = 0 by simp [theta, derivative_eq_zero.mpr hdeg]]
     exact interl_zero_right p
   · exact (strictInterl_self_theta_of_natDegree_ne_zero hp hdeg).toInterl
 
@@ -267,8 +217,8 @@ theorem interl_iff_interl_X_mul {p q : ℝ[X]}
     · exact interl_zero_left q
     rcases eq_or_ne q 0 with rfl | hq0
     · exact interl_zero_right p
-    have hX0 : X * p ≠ 0 := mul_ne_zero X_ne_zero hp0
-    have hstrict : StrictInterl q (X * p) := hqXp.toStrictInterl_of_ne hq0 hX0
+    have hstrict : StrictInterl q (X * p) :=
+      hqXp.toStrictInterl_of_ne hq0 (mul_ne_zero X_ne_zero hp0)
     exact ((strictInterl_iff_mul_X_of_roots_nonpos hp.roots_nonpos hq.roots_nonpos).mpr
       hstrict).toInterl
 
@@ -298,16 +248,14 @@ theorem isPFPolynomial_add_X_mul_derivative_of_interl
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     IsPFPolynomial (q + X * p.derivative) := by
-  have htheta := hp.interl_theta
   have hinterl : Interl p (q + theta p) :=
-    interl_add_right_of_common_left_of_nonneg hpq htheta hq.hasNonnegCoeffs
+    interl_add_right_of_common_left_of_nonneg hpq hp.interl_theta hq.hasNonnegCoeffs
       (theta_preserves_pf hp).hasNonnegCoeffs
-  have hnonneg : HasNonnegCoeffs (q + theta p) :=
-    hq.hasNonnegCoeffs.add (theta_preserves_pf hp).hasNonnegCoeffs
   have hpf : IsPFPolynomial (q + theta p) := by
     by_cases hp0 : p = 0
     · simpa [hp0, theta] using hq
-    apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg
+    apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+      (hq.hasNonnegCoeffs.add (theta_preserves_pf hp).hasNonnegCoeffs)
     by_cases hzero : q + theta p = 0
     · exact Or.inl hzero
     · exact Or.inr (hinterl.toStrictInterl_of_ne hp0 hzero).2.1.2
@@ -322,10 +270,8 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
     Interl (p.derivative + q.derivative) (q + X * p.derivative) := by
   let h : ℝ[X] := p + q
   let F : ℝ[X] := q + X * p.derivative
-  have hp_pos : HasPosLeadingCoeff p :=
-    hp.hasNonnegCoeffs.pos_leadingCoeff hpq.1.1
-  have hq_pos : HasPosLeadingCoeff q :=
-    hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
+  have hp_pos : HasPosLeadingCoeff p := hp.hasNonnegCoeffs.pos_leadingCoeff hpq.1.1
+  have hq_pos : HasPosLeadingCoeff q := hq.hasNonnegCoeffs.pos_leadingCoeff hpq.2.1.1
   have hhq : StrictInterl h q := by
     simpa [h] using hpq.convex_right hp_pos hq_pos one_pos one_pos
   have hh_pf : IsPFPolynomial h := by
@@ -333,15 +279,11 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
   have hh_pos : HasPosLeadingCoeff h :=
     hh_pf.hasNonnegCoeffs.pos_leadingCoeff hhq.1.1
   have hh_zero : 0 < h.eval 0 := by
-    dsimp [h]
-    simp only [eval_add]
-    linarith
+    simp only [h, eval_add]; linarith
   have hno : ∀ x, h.IsRoot x → ¬ q.IsRoot x := by
     intro x hhx hqx
     apply hcop.not_isRoot_right
-    · have hh_eval : p.eval x + q.eval x = 0 := by simpa [h] using hhx
-      have hq_eval : q.eval x = 0 := hqx
-      simpa [Polynomial.IsRoot.def, hq_eval] using hh_eval
+    · simpa [h, Polynomial.IsRoot.def, Polynomial.IsRoot.def.mp hqx] using hhx
     · exact hqx
   have hh_simple : HasSimpleRoots h :=
     (hhq.hasSimpleRoots_of_no_common_root fun x hx ↦ hno x hx.1 hx.2).1
@@ -354,7 +296,6 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
   have hF_pf : IsPFPolynomial F := by
     simpa [F] using isPFPolynomial_add_X_mul_derivative_of_interl
       hp hq hpq.toInterl
-  have hF_nonneg : HasNonnegCoeffs F := hF_pf.hasNonnegCoeffs
   have hF_coeff : 0 < F.coeff q.natDegree := by
     dsimp [F]
     rw [coeff_add]
@@ -367,7 +308,7 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
       simpa [theta] using (natDegree_theta_le p).trans hpq.natDegree_le
     · exact hF_coeff.ne'
   have hF_pos : HasPosLeadingCoeff F :=
-    hF_nonneg.pos_leadingCoeff (by
+    hF_pf.hasNonnegCoeffs.pos_leadingCoeff (by
       intro hzero
       rw [hzero] at hF_coeff
       simp at hF_coeff)
@@ -410,9 +351,8 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
       hG_pos.derivative (by lia)
     have hG_h : StrictInterl h.derivative h :=
       (derivative_interlaces_of_natDegree_ne_zero hh_splits (by lia)).toStrictInterl
-    have hG_h_no : ∀ x, h.derivative.IsRoot x → ¬ h.IsRoot x := by
-      intro x hGx hx
-      exact (hh_simple.eval_derivative_ne_zero hx) hGx
+    have hG_h_no : ∀ x, h.derivative.IsRoot x → ¬ h.IsRoot x :=
+      fun _ hGx hx ↦ (hh_simple.eval_derivative_ne_zero hx) hGx
     have hroot_sign : ∀ x, h.derivative.IsRoot x →
         F.eval x * h.derivative.derivative.eval x < 0 := by
       intro x hx
@@ -428,20 +368,12 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
         simp only [eval_add, eval_mul, eval_X, eval_sub]
         rw [hpq_eval]
         ring
-      have hratioF : 0 < F.eval x * h.eval x := by
-        rw [hF_eval]
-        exact hratio
+      have hratioF : 0 < F.eval x * h.eval x := by rw [hF_eval]; exact hratio
       have hopposite := hG_h.eval_mul_derivative_neg_of_left_root_of_no_common
         hG_pos hh_pos hG_h_no hx
       have hh_eval_ne : h.eval x ≠ 0 := by
         simpa [Polynomial.IsRoot.def] using hG_h_no x hx
-      rcases lt_or_gt_of_ne hh_eval_ne with hhneg | hhpos
-      · have hFneg : F.eval x < 0 := by nlinarith [hratioF]
-        have hGGpos : 0 < h.derivative.derivative.eval x := by nlinarith
-        exact mul_neg_of_neg_of_pos hFneg hGGpos
-      · have hFpos : 0 < F.eval x := by nlinarith [hratioF]
-        have hGGneg : h.derivative.derivative.eval x < 0 := by nlinarith
-        exact mul_neg_of_pos_of_neg hFpos hGGneg
+      nlinarith [mul_neg_of_pos_of_neg hratioF hopposite, sq_pos_of_ne_zero hh_eval_ne]
     have hstrict : StrictInterl h.derivative F :=
       strictInterl_of_interlaces_eval_mul_neg_succ hGG hGG_pos hF_pos
         (by rw [hF_deg, ← hh_deg, hGdeg]; lia) hroot_sign

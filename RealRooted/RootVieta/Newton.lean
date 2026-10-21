@@ -39,15 +39,13 @@ indices above the degree, where both sides vanish. -/
 theorem reverse_roots_esymm_eq_coeff_div
     {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) (k : ℕ) :
     p.reverse.roots.esymm k = (-1 : K) ^ k * p.coeff k / p.coeff 0 := by
+  have hqsplit : p.reverse.Splits := DegreeDropReversal.splits_reverse hp
+  have hqdeg : p.reverse.natDegree = p.natDegree := by
+    rw [Polynomial.reverse_natDegree,
+      Polynomial.natTrailingDegree_eq_zero.mpr (Or.inr h0)]
+    simp
   by_cases hk : k ≤ p.natDegree
-  · have hqsplit : p.reverse.Splits := DegreeDropReversal.splits_reverse hp
-    have hqdeg : p.reverse.natDegree = p.natDegree := by
-      calc
-        p.reverse.natDegree = p.reverse.roots.card :=
-          hqsplit.natDegree_eq_card_roots
-        _ = p.roots.card := DegreeDropReversal.card_roots_reverse hp h0
-        _ = p.natDegree := hp.natDegree_eq_card_roots.symm
-    have hqlc : p.reverse.leadingCoeff = p.coeff 0 := by
+  · have hqlc : p.reverse.leadingCoeff = p.coeff 0 := by
       rw [Polynomial.reverse_leadingCoeff,
         Polynomial.trailingCoeff_eq_coeff_zero h0]
     have hqcoeff :
@@ -60,8 +58,7 @@ theorem reverse_roots_esymm_eq_coeff_div
       hqcoeff, hqlc]
   · have hkn : p.natDegree < k := Nat.lt_of_not_ge hk
     have hcard : p.reverse.roots.card < k := by
-      rw [DegreeDropReversal.card_roots_reverse hp h0,
-        ← hp.natDegree_eq_card_roots]
+      rw [← hqsplit.natDegree_eq_card_roots, hqdeg]
       exact hkn
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt hkn]
     simp only [mul_zero, zero_div]
@@ -77,6 +74,45 @@ theorem reverse_roots_powerSum_eq_sum_inv_pow
     hp h0]
   simp [Multiset.powerSum]
 
+private theorem denominator_mul_powerSum
+    (s : Multiset K) (c : ℕ → K) (d : K) (hd : d ≠ 0)
+    (k : ℕ) (hk : 0 < k)
+    (hesymm : ∀ i ≤ k, s.esymm i = (-1 : K) ^ i * c i / d) :
+    d * s.powerSum k =
+      -(k : K) * c k -
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+          c a.1 * s.powerSum a.2 := by
+  have hn := Multiset.powerSum_eq_mul_esymm_sub_sum s k hk
+  rw [hesymm k le_rfl] at hn
+  have hsign (n : ℕ) : (-1 : K) ^ n * (-1 : K) ^ n = 1 := by
+    simpa [pow_two] using (Parity.neg_one_pow_sq n)
+  have hfirst :
+      (-1 : K) ^ (k + 1) * (k : K) * ((-1 : K) ^ k * c k / d) =
+        (-(k : K) * c k) / d := by
+    rw [pow_succ, div_eq_mul_inv]
+    calc
+      _ = -(((-1 : K) ^ k * (-1 : K) ^ k) * ((k : K) * c k * d⁻¹)) := by ring
+      _ = _ := by rw [hsign]; ring
+  have hsummand (i j : ℕ) (hi : i ≤ k) :
+      (-1 : K) ^ i * s.esymm i * s.powerSum j =
+        (c i * s.powerSum j) / d := by
+    rw [hesymm i hi, div_eq_mul_inv]
+    calc
+      _ = ((-1 : K) ^ i * (-1 : K) ^ i) *
+          (c i * s.powerSum j * d⁻¹) := by ring
+      _ = _ := by rw [hsign]; ring
+  rw [hfirst] at hn
+  have hsum :
+      (∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+          (-1 : K) ^ a.1 * s.esymm a.1 * s.powerSum a.2) =
+        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
+          (c a.1 * s.powerSum a.2) / d := by
+    apply Finset.sum_congr rfl
+    intro a ha
+    exact hsummand a.1 a.2 (Set.mem_Ioo.mp (Finset.mem_filter.mp ha).2).2.le
+  rw [hsum, ← Finset.sum_div, ← sub_div] at hn
+  simpa [mul_comm] using (eq_div_iff hd).mp hn
+
 /-- Newton recurrence for root power sums, expressed through the high
 coefficients of a split polynomial. -/
 theorem leadingCoeff_mul_roots_powerSum
@@ -86,51 +122,11 @@ theorem leadingCoeff_mul_roots_powerSum
       -(k : K) * p.coeff (p.natDegree - k) -
         ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           p.coeff (p.natDegree - a.1) * p.roots.powerSum a.2 := by
-  have hn := Multiset.powerSum_eq_mul_esymm_sub_sum p.roots k hk
-  have hlc : p.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hne
-  have hsign (n : ℕ) : (-1 : K) ^ n * (-1 : K) ^ n = 1 := by
-    rw [← pow_add, ← two_mul, pow_mul]
-    simp
-  have hfirst :
-      (-1 : K) ^ (k + 1) * (k : K) * p.roots.esymm k =
-        (-(k : K) * p.coeff (p.natDegree - k)) / p.leadingCoeff := by
-    rw [hp.esymm_roots_eq_coeff_div_leadingCoeff hne hkdeg,
-      pow_succ, div_eq_mul_inv]
-    calc
-      _ = -(((-1 : K) ^ k * (-1 : K) ^ k) *
-          ((k : K) * p.coeff (p.natDegree - k) *
-            p.leadingCoeff⁻¹)) := by ring
-      _ = _ := by rw [hsign]; ring
-  have hsummand (i j : ℕ) (hi : i ≤ p.natDegree) :
-      (-1 : K) ^ i * p.roots.esymm i * p.roots.powerSum j =
-        (p.coeff (p.natDegree - i) * p.roots.powerSum j) /
-          p.leadingCoeff := by
-    rw [hp.esymm_roots_eq_coeff_div_leadingCoeff hne hi,
-      div_eq_mul_inv]
-    calc
-      _ = ((-1 : K) ^ i * (-1 : K) ^ i) *
-          (p.coeff (p.natDegree - i) * p.roots.powerSum j *
-            p.leadingCoeff⁻¹) := by ring
-      _ = _ := by rw [hsign]; ring
-  rw [hfirst] at hn
-  have hsum :
-      (∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
-          (-1 : K) ^ a.1 * p.roots.esymm a.1 *
-            p.roots.powerSum a.2) =
-        ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
-          (p.coeff (p.natDegree - a.1) * p.roots.powerSum a.2) /
-            p.leadingCoeff := by
-    apply Finset.sum_congr rfl
-    intro a ha
-    simp only [Finset.mem_filter] at ha
-    apply hsummand
-    exact (Set.mem_Ioo.mp ha.2).2.le.trans hkdeg
-  rw [hsum, ← Finset.sum_div, ← sub_div] at hn
-  have hscaled := (eq_div_iff hlc).mp hn
-  calc
-    p.leadingCoeff * p.roots.powerSum k =
-        p.roots.powerSum k * p.leadingCoeff := mul_comm _ _
-    _ = _ := hscaled
+  apply denominator_mul_powerSum p.roots
+    (fun i ↦ p.coeff (p.natDegree - i)) p.leadingCoeff
+    (Polynomial.leadingCoeff_ne_zero.mpr hne) k hk
+  intro i hi
+  exact hp.esymm_roots_eq_coeff_div_leadingCoeff hne (hi.trans hkdeg)
 
 /-- Newton recurrence for power sums of the reversed roots, expressed through
 the low coefficients of the original polynomial. -/
@@ -141,40 +137,10 @@ theorem coeff_zero_mul_reverse_roots_powerSum
       -(k : K) * p.coeff k -
         ∑ a ∈ Finset.HasAntidiagonal.antidiagonal k with a.1 ∈ Set.Ioo 0 k,
           p.coeff a.1 * p.reverse.roots.powerSum a.2 := by
-  have hn := Multiset.powerSum_eq_mul_esymm_sub_sum
-    p.reverse.roots k hk
-  simp_rw [reverse_roots_esymm_eq_coeff_div hp h0] at hn
-  have hsign (n : ℕ) : (-1 : K) ^ n * (-1 : K) ^ n = 1 := by
-    rw [← pow_add, ← two_mul, pow_mul]
-    simp
-  have hfirst :
-      (-1 : K) ^ (k + 1) * (k : K) *
-          ((-1 : K) ^ k * p.coeff k / p.coeff 0) =
-        (-(k : K) * p.coeff k) / p.coeff 0 := by
-    rw [pow_succ, div_eq_mul_inv]
-    calc
-      _ = -(((-1 : K) ^ k * (-1 : K) ^ k) *
-          ((k : K) * p.coeff k * (p.coeff 0)⁻¹)) := by ring
-      _ = _ := by rw [hsign]; ring
-  have hsummand (i j : ℕ) :
-      (-1 : K) ^ i *
-          ((-1 : K) ^ i * p.coeff i / p.coeff 0) *
-          p.reverse.roots.powerSum j =
-        (p.coeff i * p.reverse.roots.powerSum j) / p.coeff 0 := by
-    rw [div_eq_mul_inv]
-    calc
-      _ = ((-1 : K) ^ i * (-1 : K) ^ i) *
-          (p.coeff i * p.reverse.roots.powerSum j *
-            (p.coeff 0)⁻¹) := by ring
-      _ = _ := by rw [hsign]; ring
-  rw [hfirst] at hn
-  simp_rw [hsummand] at hn
-  rw [← Finset.sum_div, ← sub_div] at hn
-  have hscaled := (eq_div_iff h0).mp hn
-  calc
-    p.coeff 0 * p.reverse.roots.powerSum k =
-        p.reverse.roots.powerSum k * p.coeff 0 := mul_comm _ _
-    _ = _ := hscaled
+  apply denominator_mul_powerSum p.reverse.roots (fun i ↦ p.coeff i)
+    (p.coeff 0) h0 k hk
+  intro i _
+  exact reverse_roots_esymm_eq_coeff_div hp h0 i
 
 /-- Consumer-facing reciprocal-root form of
 `coeff_zero_mul_reverse_roots_powerSum`. -/
@@ -343,8 +309,7 @@ theorem hermiteMatrix_posSemidef_of_splits {p : ℝ[X]} (hp : p.Splits) :
     rw [hermiteMatrix, newtonSum_eq_roots_powerSum hp, Matrix.mul_apply]
     simp_rw [Matrix.conjTranspose_apply]
     simp [V, pow_add, ← sum_coe_pow]
-  rw [hmatrix]
-  exact posSemidef_conjTranspose_mul_self V
+  simpa only [hmatrix] using posSemidef_conjTranspose_mul_self V
 
 private lemma eval_eq_sum_fin {f : ℂ[X]} {n : ℕ} (hdeg : f.natDegree < n) (z : ℂ) :
     f.eval z = ∑ i : Fin n, f.coeff i * z ^ i.val := by
@@ -370,15 +335,11 @@ private lemma sum_im_coeff_mul_pow {f : ℂ[X]} {n : ℕ}
   have hzstar : (starRingEnd ℂ) (star z) = z := star_star z
   rw [hzstar]
   simp_rw [ofReal_im_eq_sub_star_div]
-  calc
-    _ = ∑ i : Fin n, (f.coeff i * z ^ i.val -
-        star (f.coeff i) * z ^ i.val) / (2 * Complex.I) := by
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
-    _ = _ := by
-      rw [← Finset.sum_sub_distrib, Finset.sum_div]
-      simp only [starRingEnd_apply]
+  rw [← Finset.sum_sub_distrib, Finset.sum_div]
+  simp only [starRingEnd_apply]
+  apply Finset.sum_congr rfl
+  intro i _
+  ring
 
 private lemma ofReal_dotProduct_hermiteMatrix_mulVec (p : ℝ[X])
     (b : Fin p.natDegree → ℝ) :

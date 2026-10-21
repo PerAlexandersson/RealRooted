@@ -71,10 +71,10 @@ private theorem narayanaInterpolationCoeff_eq_choose_ratio
   have hnkP : (ascPochhammer ℝ (n - k)).eval (θ + 1) ≠ 0 :=
     (ascPochhammer_pos (n - k) (θ + 1) hα).ne'
   have hchoose : Ring.choose (θ + k) k ≠ 0 := by
-    have hden := factorial_mul_ring_choose_eq_ascPochhammer θ k
-    have hfac : (0 : ℝ) < k.factorial := by positivity
-    have hpoch := ascPochhammer_pos k (θ + 1) hα
-    nlinarith
+    intro h
+    have heq := factorial_mul_ring_choose_eq_ascPochhammer θ k
+    rw [h, mul_zero] at heq
+    exact hkP heq.symm
   have hsplit := congrArg (eval (θ + 1)) (ascPochhammer_mul ℝ (n - k) k)
   rw [Nat.sub_add_cancel hk, eval_mul, eval_comp, eval_add, eval_X,
     eval_natCast] at hsplit
@@ -134,12 +134,11 @@ private theorem ring_choose_mul_nat_choose_div
     {θ : ℝ} {k j : ℕ} (hθ : -1 < θ) (hj : j ≤ k) :
     Ring.choose (θ + k) k * (Nat.choose k j : ℝ) / Ring.choose (θ + j) j =
       Ring.choose (θ + k) (k - j) := by
-  have hα : 0 < θ + 1 := by linarith
   have hjChoose : Ring.choose (θ + j) j ≠ 0 := by
-    have hfac : (0 : ℝ) < j.factorial := by positivity
-    have hpoch := ascPochhammer_pos j (θ + 1) hα
+    intro h
     have heq := factorial_mul_ring_choose_eq_ascPochhammer θ j
-    nlinarith
+    rw [h, mul_zero] at heq
+    exact (ascPochhammer_pos j (θ + 1) (by linarith)).ne' heq.symm
   apply (div_eq_iff hjChoose).2
   have hmult : (j.factorial : ℝ) * (k - j).factorial ≠ 0 := by positivity
   apply mul_left_cancel₀ hmult
@@ -179,12 +178,11 @@ private theorem continuous_vandermonde
     ∑ j ∈ range (k + 1),
         (Nat.choose k j : ℝ) * Nat.choose (n - k) j / Ring.choose (θ + j) j =
       Ring.choose (n + θ) k / Ring.choose (θ + k) k := by
-  have hα : 0 < θ + 1 := by linarith
   have hkChoose : Ring.choose (θ + k) k ≠ 0 := by
-    have hfac : (0 : ℝ) < k.factorial := by positivity
-    have hpoch := ascPochhammer_pos k (θ + 1) hα
+    intro h
     have heq := factorial_mul_ring_choose_eq_ascPochhammer θ k
-    nlinarith
+    rw [h, mul_zero] at heq
+    exact (ascPochhammer_pos k (θ + 1) (by linarith)).ne' heq.symm
   apply (eq_div_iff hkChoose).2
   rw [Finset.sum_mul]
   have hv := Ring.add_choose_eq (R := ℝ) k
@@ -195,27 +193,18 @@ private theorem continuous_vandermonde
         ((Nat.choose k j : ℝ) * Nat.choose (n - k) j /
           Ring.choose (θ + j) j) * Ring.choose (θ + k) k =
         ∑ j ∈ range (k + 1),
-        Ring.choose (θ + k) k *
-          ((Nat.choose k j : ℝ) * Nat.choose (n - k) j /
-            Ring.choose (θ + j) j) := by
-              apply Finset.sum_congr rfl
-              intro j _
-              ring
-    _ =
-        ∑ j ∈ range (k + 1),
           Ring.choose ((n - k : ℕ) : ℝ) j *
             Ring.choose (θ + k) (k - j) := by
-              apply Finset.sum_congr rfl
-              intro j hj
-              have hjk : j ≤ k := by simpa using hj
-              rw [Ring.choose_natCast]
-              rw [show Ring.choose (θ + k) k *
-                ((Nat.choose k j : ℝ) * Nat.choose (n - k) j /
-                  Ring.choose (θ + j) j) =
-                  (Ring.choose (θ + k) k * (Nat.choose k j : ℝ) /
-                    Ring.choose (θ + j) j) * Nat.choose (n - k) j by ring]
-              rw [ring_choose_mul_nat_choose_div hθ hjk]
-              ring
+          apply Finset.sum_congr rfl
+          intro j hj
+          have hjk : j ≤ k := by simpa using hj
+          rw [Ring.choose_natCast]
+          rw [show ((Nat.choose k j : ℝ) * Nat.choose (n - k) j /
+              Ring.choose (θ + j) j) * Ring.choose (θ + k) k =
+              (Ring.choose (θ + k) k * (Nat.choose k j : ℝ) /
+                Ring.choose (θ + j) j) * Nat.choose (n - k) j by ring,
+            ring_choose_mul_nat_choose_div hθ hjk]
+          ring
     _ = Ring.choose (((n - k : ℕ) : ℝ) + (θ + k)) k := hv.symm
     _ = Ring.choose (n + θ) k := by
       apply congrArg (fun x : ℝ ↦ Ring.choose x k)
@@ -259,65 +248,41 @@ private theorem gammaTransform_narayanaInterpolationGammaPolynomial
         coeff_narayanaInterpolationGammaPolynomial, ite_eq_left hjhalf]
       split_ifs <;> ring
     rw [hcoeff]
+    let t (j : ℕ) := narayanaInterpolationGammaCoeff θ n j *
+      (Nat.choose (n - 2 * j) (k - j) : ℝ)
     have hrange :
-        ∑ j ∈ range (n / 2 + 1),
-            (if j ≤ k then
-              narayanaInterpolationGammaCoeff θ n j *
-                (Nat.choose (n - 2 * j) (k - j) : ℝ)
-            else 0) =
-          ∑ j ∈ range (k + 1),
-            narayanaInterpolationGammaCoeff θ n j *
-              (Nat.choose (n - 2 * j) (k - j) : ℝ) := by
+        ∑ j ∈ range (n / 2 + 1), (if j ≤ k then t j else 0) =
+          ∑ j ∈ range (k + 1), t j := by
       by_cases hkn : k ≤ n / 2
       · symm
         calc
-          ∑ j ∈ range (k + 1),
-              narayanaInterpolationGammaCoeff θ n j *
-                (Nat.choose (n - 2 * j) (k - j) : ℝ) =
-              ∑ j ∈ range (k + 1),
-                if j ≤ k then
-                  narayanaInterpolationGammaCoeff θ n j *
-                    (Nat.choose (n - 2 * j) (k - j) : ℝ)
-                else 0 := by
-                  apply Finset.sum_congr rfl
-                  intro j hj
-                  rw [ite_eq_left (by simpa using hj)]
-          _ = ∑ j ∈ range (n / 2 + 1),
-                if j ≤ k then
-                  narayanaInterpolationGammaCoeff θ n j *
-                    (Nat.choose (n - 2 * j) (k - j) : ℝ)
-                else 0 := by
-                  apply Finset.sum_subset (Finset.range_mono (by lia))
-                  intro j hj hnot
-                  have hkj : k < j := by simpa using hnot
-                  simp [hkj.not_ge]
+          ∑ j ∈ range (k + 1), t j =
+              ∑ j ∈ range (k + 1), if j ≤ k then t j else 0 := by
+            apply Finset.sum_congr rfl
+            intro j hj
+            rw [ite_eq_left (by simpa using hj)]
+          _ = ∑ j ∈ range (n / 2 + 1), if j ≤ k then t j else 0 := by
+            apply Finset.sum_subset (Finset.range_mono (by lia))
+            intro j _ hnot
+            have hkj : k < j := by simpa using hnot
+            simp [hkj.not_ge]
       · have hhalfk : n / 2 < k := Nat.lt_of_not_ge hkn
         calc
-          ∑ j ∈ range (n / 2 + 1),
-              (if j ≤ k then
-                narayanaInterpolationGammaCoeff θ n j *
-                  (Nat.choose (n - 2 * j) (k - j) : ℝ)
-              else 0) =
-              ∑ j ∈ range (n / 2 + 1),
-                narayanaInterpolationGammaCoeff θ n j *
-                  (Nat.choose (n - 2 * j) (k - j) : ℝ) := by
-                    apply Finset.sum_congr rfl
-                    intro j hj
-                    have hjk : j ≤ k := by
-                      have : j ≤ n / 2 := by simpa using hj
-                      lia
-                    rw [ite_eq_left hjk]
-          _ = ∑ j ∈ range (k + 1),
-                narayanaInterpolationGammaCoeff θ n j *
-                  (Nat.choose (n - 2 * j) (k - j) : ℝ) := by
-                    apply Finset.sum_subset (Finset.range_mono (by lia))
-                    intro j hj hnot
-                    have hjhalf : n / 2 < j := by simpa using hnot
-                    have hchoose : Nat.choose (n - j) j = 0 := by
-                      apply Nat.choose_eq_zero_of_lt
-                      lia
-                    simp [narayanaInterpolationGammaCoeff, hchoose]
+          ∑ j ∈ range (n / 2 + 1), (if j ≤ k then t j else 0) =
+              ∑ j ∈ range (n / 2 + 1), t j := by
+            apply Finset.sum_congr rfl
+            intro j hj
+            rw [ite_eq_left (by have := Finset.mem_range.mp hj; lia)]
+          _ = ∑ j ∈ range (k + 1), t j := by
+            apply Finset.sum_subset (Finset.range_mono (by lia))
+            intro j _ hnot
+            have hchoose : Nat.choose (n - j) j = 0 := by
+              apply Nat.choose_eq_zero_of_lt
+              have hjhalf : n / 2 < j := by simpa using hnot
+              lia
+            simp [t, narayanaInterpolationGammaCoeff, hchoose]
     rw [hrange]
+    dsimp only [t]
     calc
       ∑ j ∈ range (k + 1),
           narayanaInterpolationGammaCoeff θ n j *
@@ -362,13 +327,13 @@ private theorem narayanaInterpolationGammaCoeff_eq_factorial
   have hα : 0 < θ + 1 := by linarith
   have hjn : j ≤ n := by lia
   have hjrest : j ≤ n - j := by lia
-  have hchoose : Ring.choose (θ + j) j ≠ 0 := by
-    have hfac : (0 : ℝ) < j.factorial := by positivity
-    have hpoch := ascPochhammer_pos j (θ + 1) hα
-    have heq := factorial_mul_ring_choose_eq_ascPochhammer θ j
-    nlinarith
   have hpoch : (ascPochhammer ℝ j).eval (θ + 1) ≠ 0 :=
     (ascPochhammer_pos j (θ + 1) hα).ne'
+  have hchoose : Ring.choose (θ + j) j ≠ 0 := by
+    intro h
+    have heq := factorial_mul_ring_choose_eq_ascPochhammer θ j
+    rw [h, mul_zero] at heq
+    exact hpoch heq.symm
   have hden := factorial_mul_ring_choose_eq_ascPochhammer θ j
   have hfirst := Nat.choose_mul_factorial_mul_factorial hjn
   have hsecond := Nat.choose_mul_factorial_mul_factorial hjrest
@@ -475,24 +440,20 @@ theorem narayanaInterpolation_isPF {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
 /-- The continuous Narayana polynomial splits over `ℝ` for `θ > -1`. -/
 theorem narayanaInterpolation_splits {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
     (narayanaInterpolation θ n).Splits := by
-  apply (narayanaInterpolation_isPF hθ n).eq_zero_or_splits.resolve_left
-  intro hzero
+  refine (narayanaInterpolation_isPF hθ n).eq_zero_or_splits.resolve_left fun hzero ↦ ?_
   have hcoeff := congrArg (fun p : ℝ[X] ↦ p.coeff 0) hzero
-  rw [coeff_zero_narayanaInterpolation hθ n] at hcoeff
-  norm_num at hcoeff
+  simp [coeff_zero_narayanaInterpolation hθ n] at hcoeff
 
 /-- Every real root of the continuous Narayana polynomial is strictly negative. -/
 theorem narayanaInterpolation_roots_neg {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
     ∀ r ∈ (narayanaInterpolation θ n).roots, r < 0 := by
   intro r hr
-  have hnonpos := roots_nonpos_of_hasNonnegCoeffs
-    (narayanaInterpolation_hasNonnegCoeffs hθ n) r hr
-  apply lt_of_le_of_ne hnonpos
-  intro hrzero
+  refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs
+    (narayanaInterpolation_hasNonnegCoeffs hθ n) r hr) fun hrzero ↦ ?_
   have hroot := isRoot_of_mem_roots hr
-  rw [hrzero, Polynomial.IsRoot.def, ← coeff_zero_eq_eval_zero,
+  subst r
+  simp [Polynomial.IsRoot.def, ← coeff_zero_eq_eval_zero,
     coeff_zero_narayanaInterpolation hθ n] at hroot
-  norm_num at hroot
 
 /-- The degree-zero continuous Narayana polynomial is one. -/
 @[simp] theorem narayanaInterpolation_zero_right (θ : ℝ) :
@@ -516,12 +477,10 @@ theorem narayanaInterpolation_two_right {θ : ℝ} (hθ : -1 < θ) :
       (2 : ℝ) + 2 / (θ + 1) = 2 * (θ + 2) / (θ + 1) := by
     field_simp
     ring
-  have hCtwo : C (2 : ℝ) = (2 : ℝ[X]) := by rw [C_ofNat]
   calc
     (1 + X) ^ 2 + C (2 / (θ + 1)) * X =
         1 + C (2 + 2 / (θ + 1)) * X + X ^ 2 := by
-          rw [map_add]
-          rw [hCtwo]
+          rw [map_add, C_ofNat]
           ring
     _ = 1 + C (2 * (θ + 2) / (θ + 1)) * X + X ^ 2 := by rw [hscalar]
 

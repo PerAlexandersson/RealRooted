@@ -8,11 +8,12 @@ import Mathlib
 /-!
 # Entire functions with polynomially bounded real part are polynomials
 
-We show that an entire function `g : ℂ → ℂ` whose circle mean of the positive part of `Re g` grows
-at most like `A * (1 + r) ^ k` is a polynomial of degree at most `k`. The proof bounds the Taylor
-coefficients of `g` by circle means of `|Re g|`, and then gives a Cauchy-type estimate for the
-derivative. The file also contains an elementary version of Borel's growth lemma, used to turn a
-logarithmic growth inequality into a quadratic bound.
+We show that an entire function `g : ℂ → ℂ` whose circle mean of the positive part of
+`Re g` grows at most like `A * (1 + r) ^ k` is a polynomial of degree at most `k`. The
+proof bounds the Taylor coefficients of `g` by circle means of `|Re g|`, and then gives
+a Cauchy-type estimate for the derivative. The file also contains an elementary version
+of Borel's growth lemma, used to turn a logarithmic growth inequality into a quadratic
+bound.
 
 ## Main definitions
 
@@ -21,7 +22,8 @@ logarithmic growth inequality into a quadratic bound.
 ## Main statements
 
 * `Complex.circleAverage_abs_re`: the circle mean of `|Re h|` equals `2 * posMean h r - (h 0).re`.
-* `Complex.norm_deriv_le_posMean`: a Cauchy-type bound on `‖deriv h z‖` in terms of `posMean h ρ`.
+* `Complex.norm_deriv_le_posMean`: a Cauchy-type bound on `‖deriv h z‖` in terms of
+  `posMean h ρ`.
 * `Complex.borel_growth`: for monotone `V ≥ 1`, every interval `[r, r + 2]` contains `s` with
   `V (s + 1 / V s) ≤ 2 * V s`.
 * `Complex.growth_of_GI`: a logarithmic growth inequality for `T` implies `T r ≤ A * (1 + r) ^ 2`.
@@ -55,8 +57,7 @@ def posMean (g : ℂ → ℂ) (r : ℝ) : ℝ := Real.circleAverage (fun z => ma
 private theorem norm_circleAverage_le' {f : ℂ → ℂ} {c : ℂ} {R : ℝ} :
     ‖circleAverage f c R‖ ≤ circleAverage (fun z => ‖f z‖) c R := by
   unfold circleAverage
-  rw [norm_smul, smul_eq_mul]
-  rw [Real.norm_eq_abs, abs_of_pos (by positivity)]
+  rw [norm_smul, smul_eq_mul, Real.norm_eq_abs, abs_of_pos (by positivity)]
   gcongr
   exact intervalIntegral.norm_integral_le_integral_norm (by positivity)
 
@@ -66,21 +67,19 @@ private theorem cA_coeff {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : ℝ
   rw [circleAverage_eq_circleIntegral hρ.ne']
   have h1 : (∮ z in C(0, ρ), (z - 0)⁻¹ • ((z ^ n)⁻¹ * h z)) =
       ∮ z in C(0, ρ), (1 / (z - 0) ^ (n + 1)) • h z := by
-    apply circleIntegral.integral_congr hρ.le
-    intro z hz
+    apply circleIntegral.integral_congr hρ.le; intro z hz
     simp only [sub_zero, smul_eq_mul, pow_succ]
     field_simp
   rw [h1, (hh.diffContOnCl (s := Metric.ball (0:ℂ) ρ)).circleIntegral_one_div_sub_center_pow_smul
-    hρ n]
-  rw [smul_smul, smul_eq_mul]
+    hρ n, smul_smul, smul_eq_mul]
   have : (2 * ↑π * I) ≠ 0 := two_pi_I_ne_zero
   field_simp
 
 private theorem cA_mul_pow {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : ℝ}
     (n : ℕ) (hn : 1 ≤ n) :
     circleAverage (fun z => h z * z ^ n) 0 ρ = 0 := by
-  have hd : Differentiable ℂ (fun z => h z * z ^ n) := by fun_prop
-  rw [(hd.diffContOnCl (s := Metric.ball (0:ℂ) |ρ|)).circleAverage]
+  rw [((by fun_prop : Differentiable ℂ (fun z => h z * z ^ n)).diffContOnCl
+    (s := Metric.ball (0:ℂ) |ρ|)).circleAverage]
   simp; lia
 
 /-- Coefficient bound: `|a_n| ρ^n ≤ 2 · mean |Re h|`. -/
@@ -95,7 +94,7 @@ private theorem coeff_bound {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : 
         (1 / 2 : ℂ) • starRingEnd ℂ (h z * z ^ n) := by
     intro z hz
     rw [mem_sphere_zero_iff_norm, abs_of_pos hρ] at hz
-    have hz0 : z ≠ 0 := by rintro rfl; simp at hz; linarith
+    have hz0 : z ≠ 0 := by rintro rfl; simp_all
     have hzc : starRingEnd ℂ z = (ρ : ℂ) ^ 2 / z := by
       rw [eq_div_iff hz0, mul_comm, mul_conj, normSq_eq_norm_sq, hz]; push_cast; ring
     have hre : ((h z).re : ℂ) = (h z + starRingEnd ℂ (h z)) / 2 := by
@@ -110,7 +109,7 @@ private theorem coeff_bound {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : 
     refine ContinuousOn.const_smul (ContinuousOn.mul
       (ContinuousOn.inv₀ (f := fun z : ℂ => z ^ n) (continuous_pow n).continuousOn ?_)
       hh.continuous.continuousOn) ((ρ : ℂ) ^ (2 * n) / 2)
-    intro z hz; apply pow_ne_zero; rintro rfl; simp at hz; linarith
+    intro z hz; apply pow_ne_zero; rintro rfl; simp_all
   have hc2 : Continuous (fun z : ℂ => h z * z ^ n) := hh.continuous.mul (continuous_pow n)
   have hint2 : CircleIntegrable (fun z : ℂ => h z * z ^ n) 0 ρ :=
     hc2.continuousOn.circleIntegrable hρ.le
@@ -172,12 +171,6 @@ theorem circleAverage_abs_re {h : ℂ → ℂ} (hh : Differentiable ℂ h) (r : 
 theorem posMean_nonneg (h : ℂ → ℂ) (r : ℝ) : 0 ≤ posMean h r :=
   circleAverage_nonneg_of_nonneg (fun _ _ => le_max_right _ _)
 
-/-- `2 · posMean h r - Re h(0) ≥ 0`. -/
-private theorem posMean_sub_nonneg {h : ℂ → ℂ} (hh : Differentiable ℂ h) (r : ℝ) :
-    0 ≤ 2 * posMean h r - (h 0).re := by
-  rw [← circleAverage_abs_re hh]
-  exact circleAverage_nonneg_of_nonneg (fun _ _ => abs_nonneg _)
-
 private theorem coeff_bound' {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : ℝ}
     (hρ : 0 < ρ) {n : ℕ} (hn : 1 ≤ n) :
     ‖iteratedDeriv n h 0 / n.factorial‖ * ρ ^ n ≤ 2 * (2 * posMean h ρ - (h 0).re) := by
@@ -192,8 +185,7 @@ private theorem hasSum_succ_mul_geometric {x : ℝ} (h0 : 0 ≤ x) (h1 : x < 1) 
   convert A.add B using 1
   · funext m; ring
   · have : (1 - x) ≠ 0 := by linarith
-    field_simp
-    ring
+    field_simp; ring
 
 /-- Cauchy-type estimate of `h'` in terms of `posMean h` on a larger circle. -/
 theorem norm_deriv_le_posMean {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ : ℝ} {z : ℂ}
@@ -201,9 +193,8 @@ theorem norm_deriv_le_posMean {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ 
     ‖deriv h z‖ ≤ 2 * ρ / (ρ - ‖z‖) ^ 2 * (2 * posMean h ρ - (h 0).re) := by
   have hρ : 0 < ρ := lt_of_le_of_lt (norm_nonneg _) hz
   set S := 2 * posMean h ρ - (h 0).re
-  have hd : Differentiable ℂ (deriv h) := by
-    have := (hh.differentiableOn (s := Set.univ)).deriv isOpen_univ
-    exact differentiableOn_univ.mp this
+  have hd : Differentiable ℂ (deriv h) :=
+    differentiableOn_univ.mp ((hh.differentiableOn (s := Set.univ)).deriv isOpen_univ)
   have hT := Complex.hasSum_taylorSeries_of_entire hd 0 z
   set x := ‖z‖ / ρ
   have hx0 : 0 ≤ x := by positivity
@@ -221,7 +212,7 @@ theorem norm_deriv_le_posMean {h : ℂ → ℂ} (hh : Differentiable ℂ h) {ρ 
     rw [← iteratedDeriv_succ']
     have hc := coeff_bound' hh hρ (n := m + 1) (by lia)
     rw [norm_div, Complex.norm_natCast, Nat.factorial_succ, Nat.cast_mul] at hc
-    have hfac : (0 : ℝ) < m.factorial := by exact_mod_cast Nat.factorial_pos m
+    have hfac : (0 : ℝ) < m.factorial := by positivity
     have hρm : 0 < ρ ^ (m + 1) := pow_pos hρ _
     have hc' : ‖iteratedDeriv (m + 1) h 0‖ ≤
         2 * S * (((m : ℝ) + 1) * m.factorial) / ρ ^ (m + 1) := by
@@ -254,9 +245,8 @@ private theorem coeff_eq_zero_of_growth {g : ℂ → ℂ} (hg : Differentiable �
   have h1 : (1 + ρ) ^ k ≤ 2 ^ k * ρ ^ (n - 1) := by
     calc (1 + ρ) ^ k ≤ (2 * ρ) ^ k := by gcongr; linarith
       _ = 2 ^ k * ρ ^ k := mul_pow _ _ _
-      _ ≤ 2 ^ k * ρ ^ (n - 1) := by
-        apply mul_le_mul_of_nonneg_left _ (by positivity)
-        exact pow_le_pow_right₀ hρ1 (by lia)
+      _ ≤ 2 ^ k * ρ ^ (n - 1) := mul_le_mul_of_nonneg_left
+        (pow_le_pow_right₀ hρ1 (by lia)) (by positivity)
   have hpn : ρ ^ n = ρ * ρ ^ (n - 1) := by
     rw [← pow_succ']; congr 1; lia
   have hpos : 0 < ρ ^ (n - 1) := pow_pos hρ0 _
@@ -299,23 +289,21 @@ theorem borel_growth {V : ℝ → ℝ} (hmono : Monotone V) (h1 : ∀ r, 1 ≤ V
   by_contra H
   push Not at H
   let s : ℕ → ℝ := fun n => Nat.rec r (fun _ x => x + 1 / V x) n
-  have hs0 : s 0 = r := rfl
   have hsS : ∀ n, s (n + 1) = s n + 1 / V (s n) := fun n => rfl
   have key : ∀ n, (r ≤ s n ∧ s n ≤ r + 2 - 2 / 2 ^ n) ∧ (2:ℝ) ^ n ≤ V (s n) := by
     intro n
     induction n with
-    | zero => simp [hs0, h1 r]
+    | zero => simp [s, h1 r]
     | succ n ih =>
       obtain ⟨⟨ha, hb⟩, hc⟩ := ih
       have hVpos : 0 < V (s n) := lt_of_lt_of_le one_pos (h1 _)
-      have h2n : (0:ℝ) < 2 ^ n := by positivity
-      have hinv : 1 / V (s n) ≤ 1 / 2 ^ n := one_div_le_one_div_of_le h2n hc
+      have hinv : 1 / V (s n) ≤ 1 / 2 ^ n := one_div_le_one_div_of_le (by positivity) hc
       have hmem : s n ∈ Set.Icc r (r + 2) := ⟨ha, by
-        have : 0 ≤ 2 / (2:ℝ) ^ n := by positivity
-        linarith⟩
+        nlinarith [show 0 ≤ 2 / (2:ℝ) ^ n by positivity]⟩
       have hlt := H (s n) hmem
       refine ⟨⟨?_, ?_⟩, ?_⟩
-      · rw [hsS]; have : 0 ≤ 1 / V (s n) := by positivity
+      · rw [hsS]
+        have : 0 ≤ 1 / V (s n) := by positivity
         linarith
       · rw [hsS, pow_succ]
         have : 2 / ((2:ℝ) ^ n * 2) = 1 / 2 ^ n := by field_simp
@@ -328,8 +316,7 @@ theorem borel_growth {V : ℝ → ℝ} (hmono : Monotone V) (h1 : ∀ r, 1 ≤ V
   have := (key n).2
   have hle : V (s n) ≤ V (r + 2) := hmono (by
     have := (key n).1.2
-    have : 0 ≤ 2 / (2:ℝ) ^ n := by positivity
-    linarith)
+    nlinarith [show 0 ≤ 2 / (2:ℝ) ^ n by positivity])
   linarith
 
 private theorem log_le_div_twelve_add {x : ℝ} (hx : 0 < x) : Real.log x ≤ x / 12 + 2 := by
@@ -375,9 +362,9 @@ private theorem absorb_log {x t C : ℝ} (hx : 1 ≤ x) (ht : 1 ≤ t) (hC : 0 �
     have : 1 ≤ (t + 2) ^ 3 := one_le_pow₀ (by linarith)
     have h2 : (t + 1) ≤ (t + 2) := by linarith
     have h3 : (t + 1) * (t + 2) ^ 2 ≤ (t + 2) ^ 3 := by
-      have : (t + 2) ^ 3 = (t + 2) * (t + 2) ^ 2 := by ring
-      rw [this]; exact mul_le_mul_of_nonneg_right h2 (by positivity)
-    have h4 : (t + 1) ≤ (t + 2) ^ 3 := by nlinarith
+      calc _ ≤ (t + 2) * (t + 2) ^ 2 := mul_le_mul_of_nonneg_right h2 (by positivity)
+        _ = _ := by ring
+    have h4 : t + 1 ≤ (t + 2) ^ 3 := by nlinarith
     nlinarith [mul_le_mul_of_nonneg_left h3 hC]
   have hlogW : Real.log W ≤ (18 + 2 * C) + 3 * (t + 2) := by
     calc Real.log W ≤ Real.log ((18 + 2 * C) * (t + 2) ^ 3) :=
@@ -388,9 +375,8 @@ private theorem absorb_log {x t C : ℝ} (hx : 1 ≤ x) (ht : 1 ≤ t) (hC : 0 �
           have a1 := Real.log_le_sub_one_of_pos (show 0 < 18 + 2 * C by positivity)
           have a2 := Real.log_le_sub_one_of_pos (show 0 < t + 2 by positivity)
           linarith
-  have hsq : t + 2 ≤ (1 + t) ^ 2 := by nlinarith
-  have hsq1 : 1 ≤ (1 + t) ^ 2 := by nlinarith
-  nlinarith
+  nlinarith [show t + 2 ≤ (1 + t) ^ 2 by nlinarith,
+    show 1 ≤ (1 + t) ^ 2 by nlinarith]
 
 /-- From the "growth inequality" (the output of the Nevanlinna-type estimate) to a quadratic
 bound, via the sup-majorant and the elementary Borel lemma. -/
@@ -403,29 +389,22 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
   have hbddI : ∀ R, BddAbove (T '' Set.Icc 1 R) := by
     intro R
     obtain ⟨B, hB⟩ := hbdd R
-    refine ⟨B, ?_⟩
-    rintro _ ⟨s, hs, rfl⟩
-    exact hB s ⟨by linarith [hs.1], hs.2⟩
+    exact ⟨B, by rintro _ ⟨s, hs, rfl⟩; exact hB s ⟨by linarith [hs.1], hs.2⟩⟩
   let U : ℝ → ℝ := fun r => sSup (T '' Set.Icc 1 (max r 1))
   have hne : ∀ r, (T '' Set.Icc 1 (max r 1)).Nonempty :=
     fun r => ⟨T 1, 1, ⟨le_refl _, le_max_right _ _⟩, rfl⟩
   have hUmono : Monotone U := by
-    intro r r' hrr'
-    apply csSup_le_csSup (hbddI _) (hne r)
-    apply Set.image_mono
-    exact Set.Icc_subset_Icc (le_refl _) (max_le_max hrr' (le_refl _))
+    intro r r' hrr'; apply csSup_le_csSup (hbddI _) (hne r)
+    exact Set.image_mono (Set.Icc_subset_Icc (le_refl _) (max_le_max hrr' (le_refl _)))
   have hTU : ∀ r, 1 ≤ r → T r ≤ U r := by
-    intro r hr
-    apply le_csSup (hbddI _)
+    intro r hr; apply le_csSup (hbddI _)
     exact ⟨r, ⟨hr, le_max_left _ _⟩, rfl⟩
-  have hU0 : ∀ r, 0 ≤ U r := by
-    intro r
-    exact le_trans (hT0 1) (le_csSup (hbddI _) ⟨1, ⟨le_refl _, le_max_right _ _⟩, rfl⟩)
+  have hU0 : ∀ r, 0 ≤ U r := fun r =>
+    le_trans (hT0 1) (le_csSup (hbddI _) ⟨1, ⟨le_refl _, le_max_right _ _⟩, rfl⟩)
   have hUGI : ∀ r ρ, 1 ≤ r → r < ρ →
       U r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2)) +
         C * (1 + r) ^ 2 := by
-    intro r ρ hr hrρ
-    apply csSup_le (hne r)
+    intro r ρ hr hrρ; apply csSup_le (hne r)
     rintro _ ⟨s, ⟨hs1, hs2⟩, rfl⟩
     rw [max_eq_left hr] at hs2
     have hsρ : s < ρ := lt_of_le_of_lt hs2 hrρ
@@ -441,8 +420,7 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
     have hinner : 0 ≤ 4 * T ρ + C * (1 + ρ) ^ 2 := by
       have := hT0 ρ; positivity
     have harg1 : 0 < 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) := by
-      have : 0 ≤ 2 * ρ / (ρ - s) ^ 2 := by positivity
-      positivity
+      have := hT0 ρ; positivity
     have harg : 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) ≤
         2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2) := by
       have : 0 ≤ 2 * ρ / (ρ - s) ^ 2 := by positivity
@@ -465,19 +443,18 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
     set ρ := s + 1 / x
     have hρs : s < ρ := lt_add_of_pos_right s (by positivity)
     have hρle : ρ ≤ s + 1 := by
-      simp only [ρ]; have : 1 / x ≤ 1 := by rw [div_le_one (by linarith)]; exact hx1
-      linarith
+      simp only [ρ]
+      nlinarith [one_div_le_one_div_of_le one_pos hx1]
     have hGIs := hUGI s ρ hs1' hρs
     have hdiff : ρ - s = 1 / x := by simp only [ρ]; ring
-    have hfac : 2 * ρ / (ρ - s) ^ 2 = 2 * ρ * x ^ 2 := by
-      rw [hdiff]; field_simp
+    have hfac : 2 * ρ / (ρ - s) ^ 2 = 2 * ρ * x ^ 2 := by rw [hdiff]; field_simp
     rw [hfac] at hGIs
     have hUρ : U ρ ≤ 2 * x - 1 := by
-      have : V ρ ≤ 2 * x := hsV
-      simp only [V] at this; linarith
+      simp only [V] at hsV; linarith
     have hx_eq : U s = x - 1 := by simp only [x, V]; ring
     have harg1 : 0 < 2 + 2 * ρ * x ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2) := by
-      have := hU0 ρ; have : 0 < ρ := by linarith
+      have := hU0 ρ
+      have : 0 < ρ := by linarith
       positivity
     have harg : 2 + 2 * ρ * x ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2) ≤
         2 + 2 * (s + 1) * x ^ 2 * (8 * x + C * (s + 2) ^ 2) := by
@@ -494,23 +471,21 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
     have hlog := Real.log_le_log harg1 harg
     have hx_bound : x ≤ A' * (1 + s) ^ 2 := by
       apply absorb_log hx1 hs1' hC
-      rw [hx_eq] at hGIs
-      linarith
+      rw [hx_eq] at hGIs; linarith
     calc T r ≤ U r := hTU r hr
       _ ≤ U s := hUmono hs1
       _ ≤ x := by simp only [x, V]; linarith
       _ ≤ A' * (1 + s) ^ 2 := hx_bound
       _ ≤ A' * (3 * (1 + r)) ^ 2 := by
           have : 0 ≤ A' := by simp only [A']; positivity
-          have : 1 + s ≤ 3 * (1 + r) := by linarith
           gcongr
+          linarith
       _ = 9 * A' * (1 + r) ^ 2 := by ring
   obtain ⟨B, hB⟩ := hbdd 1
   refine ⟨max (9 * A') (max B 0), fun r hr => ?_⟩
   rcases le_or_gt 1 r with h1 | h1
   · refine (hmain r h1).trans ?_
-    gcongr
-    exact le_max_left _ _
+    gcongr; exact le_max_left _ _
   · have hTr := hB r ⟨hr, h1.le⟩
     have hsq : 1 ≤ (1 + r) ^ 2 := by nlinarith
     have : B ≤ max (9 * A') (max B 0) := le_trans (le_max_left _ _) (le_max_right _ _)
@@ -539,8 +514,8 @@ theorem poly_of_mean_pos_re_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {A 
     Polynomial.C (iteratedDeriv n g 0 / n.factorial) * Polynomial.X ^ n, ?_, ?_⟩
   · apply Polynomial.natDegree_sum_le_of_forall_le
     intro n hn
-    refine (Polynomial.natDegree_C_mul_X_pow_le _ _).trans ?_
-    simp at hn; lia
+    exact (Polynomial.natDegree_C_mul_X_pow_le _ _).trans
+      (Nat.le_of_lt_succ (Finset.mem_range.mp hn))
   · intro z
     rw [← Complex.taylorSeries_eq_of_entire' 0 z hg, Polynomial.eval_finsetSum]
     rw [tsum_eq_sum (s := Finset.range (k + 1))]

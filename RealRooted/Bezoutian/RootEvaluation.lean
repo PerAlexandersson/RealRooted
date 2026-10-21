@@ -39,12 +39,8 @@ lemma bezoutMatrix.mulVec_vandermonde_eq_zero_of_common_root
     exact (mul_eq_zero.mp this).resolve_left (sub_ne_zero.mpr htr)
   have h_P_zero : P = 0 := by
     apply Polynomial.eq_zero_of_infinite_isRoot
-    apply Set.Infinite.mono (s := {t : ℝ | t ≠ r}) h_roots_ne
-    have : {t : ℝ | t ≠ r} = (Set.univ : Set ℝ) \ {r} := by
-      ext t
-      simp
-    rw [this]
-    exact Set.Infinite.sdiff Set.infinite_univ (Set.finite_singleton r)
+    exact (Set.finite_singleton r).infinite_compl.mono fun t ht ↦
+      h_roots_ne t (by simpa using ht)
   have h_c_zero (i : Fin n) : c i = 0 := by
     have : P.coeff (i : ℕ) = c i := by
       rw [hP, Polynomial.finsetSum_coeff, Finset.sum_eq_single i]
@@ -73,9 +69,9 @@ lemma bezoutMatrix.det_eq_zero_of_common_root
       ((isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr h_det))
   have h_vec_ne : (fun j : Fin n => r ^ (j : ℕ)) ≠ 0 := fun h ↦
     one_ne_zero (congr_fun h ⟨0, Nat.pos_of_ne_zero hn⟩)
-  have : (bezoutMatrix n p q).mulVec (fun j => r ^ (j : ℕ)) = 0 :=
-    mulVec_vandermonde_eq_zero_of_common_root hp hq h_pr h_qr
-  exact h_vec_ne (h_inj (this.trans (mulVec_zero _).symm))
+  exact h_vec_ne <| h_inj <|
+    (mulVec_vandermonde_eq_zero_of_common_root hp hq h_pr h_qr).trans
+      (mulVec_zero _).symm
 
 lemma bezoutMatrix.not_posDef_of_common_root
     {p q : ℝ[X]} {n : ℕ} {r : ℝ} (hn : n ≠ 0)
@@ -174,9 +170,8 @@ lemma bezoutMatrix.vandermonde_eq_diagonal (p q : ℝ[X]) (n : ℕ)
 lemma Matrix.PosDef.of_congruent_diagonal {n : ℕ} {V : Matrix (Fin n) (Fin n) ℝ}
     {d : Fin n → ℝ} (hd : ∀ k, 0 < d k) (hV : V.det ≠ 0) :
     (Vᵀ * diagonal d * V).PosDef := by
-  have h_inj : Function.Injective V.mulVec := by
-    rwa [mulVec_injective_iff_isUnit, isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-  exact PosDef.conjTranspose_mul_mul_same (PosDef.diagonal hd) h_inj
+  apply PosDef.conjTranspose_mul_mul_same (PosDef.diagonal hd)
+  rwa [mulVec_injective_iff_isUnit, isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
 
 lemma Matrix.PosDef.of_congruent_to_diagonal {n : ℕ}
     {V B : Matrix (Fin n) (Fin n) ℝ}
@@ -274,19 +269,15 @@ lemma StrictInterlSameDegree.interlacing_fin {n : ℕ}
   obtain ⟨hp, hq, hdeg, h_interlaces⟩ := h
   rw [Polynomial.roots_sort_eq_of_isRoot hp.1 (hdeg.trans hq_deg) s hs_roots hs_sorted,
       Polynomial.roots_sort_eq_of_isRoot hq.1 hq_deg r hr_roots hr_sorted] at h_interlaces
-  have h_len : (List.map s (List.finRange n)).length =
-    (List.map r (List.finRange n)).length := by simp
-  obtain ⟨h_inter1, h_inter2⟩ := RealRooted.interlaced_of_interleaves_reverse h_len h_interlaces
+  obtain ⟨h_inter1, h_inter2⟩ :=
+    RealRooted.interlaced_of_interleaves_reverse (by simp) h_interlaces
   constructor
   · intro k
-    have hk : k.val < (List.map s (List.finRange n)).length := by simp
     simpa only [List.getElem_map, List.getElem_finRange, Fin.cast_mk] using
-      h_inter1 ⟨k.val, hk⟩
+      h_inter1 ⟨k.val, by simp⟩
   · intro i j hij
-    have hi : i.val < (List.map s (List.finRange n)).length := by simp
-    have hj : j.val < (List.map s (List.finRange n)).length := by simp
     simpa only [List.getElem_map, List.getElem_finRange, Fin.cast_mk] using
-      h_inter2 ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
+      h_inter2 ⟨i.val, by simp⟩ ⟨j.val, by simp⟩ hij
 lemma StrictInterlSameDegree.roots_nodup {p q : ℝ[X]}
     (h : StrictInterlSameDegree p q) :
     p.roots.Nodup ∧ q.roots.Nodup := by
@@ -326,17 +317,15 @@ lemma Polynomial.wronskian_at_root_pos_of_interlacing {n : ℕ}
   have hp_splits := h.1.2
   obtain ⟨s, hs_mono, hs_roots⟩ := exists_strictMono_roots hp_splits hp_deg hp_nodup
   obtain ⟨c₁, hc₁⟩ :
-      ∃ c₁ : ℝ, 0 < c₁ ∧ p = C c₁ * ∏ j : Fin n, (X - C (s j)) := by
-    have hp_eq : p = C p.leadingCoeff * ∏ j : Fin n, (X - C (s j)) :=
+      ∃ c₁ : ℝ, 0 < c₁ ∧ p = C c₁ * ∏ j : Fin n, (X - C (s j)) :=
+    ⟨p.leadingCoeff, hp_pos,
       splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hp_pos.ne')
-        hp_deg s hs_roots hs_mono.injective
-    exact ⟨p.leadingCoeff, hp_pos, hp_eq⟩
+        hp_deg s hs_roots hs_mono.injective⟩
   obtain ⟨c₂, hc₂⟩ :
-      ∃ c₂ : ℝ, 0 < c₂ ∧ q = C c₂ * ∏ j : Fin n, (X - C (r j)) := by
-    have hq_eq : q = C q.leadingCoeff * ∏ j : Fin n, (X - C (r j)) :=
+      ∃ c₂ : ℝ, 0 < c₂ ∧ q = C c₂ * ∏ j : Fin n, (X - C (r j)) :=
+    ⟨q.leadingCoeff, hq_pos,
       splits_eq_C_mul_prod (leadingCoeff_ne_zero.mp hq_pos.ne')
-        hq_deg r hr_roots hr_sorted.injective
-    exact ⟨q.leadingCoeff, hq_pos, hq_eq⟩
+        hq_deg r hr_roots hr_sorted.injective⟩
   have h_eval : q.derivative.eval (r k) * p.eval (r k) = c₂ * c₁ * (∏ j : Fin n,
     (r k - s j)) * (∏ j ∈ Finset.univ.erase k, (r k - r j)) := by
     rw [hc₂.2, hc₁.2]
@@ -448,9 +437,8 @@ lemma bezoutMatrix.wronskian_pos_of_posDef
     (hq_deg : q.natDegree ≤ n + 1) (hp_deg : p.natDegree ≤ n + 1)
     (h : (bezoutMatrix (n + 1) q p).PosDef) (t : ℝ) :
     0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t := by
-  have hvec_ne : (fun i : Fin (n + 1) ↦ t ^ (i : ℕ)) ≠ 0 := fun hzero ↦ by
-    have h0 := congr_fun hzero 0
-    simp_all
+  have hvec_ne : (fun i : Fin (n + 1) ↦ t ^ (i : ℕ)) ≠ 0 := fun hzero ↦
+    (one_ne_zero : (1 : ℝ) ≠ 0) (by simpa using congr_fun hzero 0)
   have h_sum_pos := Matrix.PosDef.sum_pos h hvec_ne
   have h_sum_eq :
       (∑ i : Fin (n + 1), ∑ j : Fin (n + 1),

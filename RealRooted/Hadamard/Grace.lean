@@ -26,12 +26,8 @@ theorem apolarEval_apolarTwist (n : Nat) (z : ℂ) (g : ℂ[X]) (w : ℂ) :
   refine Finset.sum_congr rfl fun j hj ↦ ?_
   have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
   rw [coeff_apolarTwist, ite_eq_left hj']
-  have he : n + 1 - 1 - j = n - j := by simp [*]
-  rw [he]
-  have hnn : n - (n - j) = j := by lia
-  rw [hnn]
-  have hnegz : (-z) ^ (n - j) = (-1 : ℂ) ^ (n - j) * z ^ (n - j) := by rw [neg_pow]
-  rw [hnegz, Nat.choose_symm hj']
+  rw [show n + 1 - 1 - j = n - j by simp, show n - (n - j) = j by lia,
+    neg_pow, Nat.choose_symm hj']
   ring
 
 theorem apolarEval_apolarTwist_eq_mul (n : Nat) (z : ℂ) (g : ℂ[X]) {w : ℂ}
@@ -60,10 +56,8 @@ theorem exists_apolarTwist_root_of_grace_lowerHalf {n : Nat} {b : ℝ}
     (hcomp : ∑ k ∈ Finset.range (n + 1),
       (Nat.choose n k : ℂ) * f.coeff k * g.coeff k * z ^ k = 0)
     (hroots : (binomialLift n f).RootsIn (lowerHalf b)) :
-    (binomialLift n (apolarTwist n z g)).HasRootIn (lowerHalf b) := by
-  have hap : AreApolar n f (apolarTwist n z g) :=
-    (areApolar_apolarTwist_iff n f g z).2 hcomp
-  exact grace_apolarity_lowerHalf hf.le htw hap hroots
+    (binomialLift n (apolarTwist n z g)).HasRootIn (lowerHalf b) :=
+  grace_apolarity_lowerHalf hf.le htw ((areApolar_apolarTwist_iff n f g z).2 hcomp) hroots
 
 theorem exists_apolarTwist_root_of_grace_upperHalf {n : Nat} {b : ℝ}
     {f g : ℂ[X]} {z : ℂ}
@@ -72,10 +66,8 @@ theorem exists_apolarTwist_root_of_grace_upperHalf {n : Nat} {b : ℝ}
     (hcomp : ∑ k ∈ Finset.range (n + 1),
       (Nat.choose n k : ℂ) * f.coeff k * g.coeff k * z ^ k = 0)
     (hroots : (binomialLift n f).RootsIn (upperHalf b)) :
-    (binomialLift n (apolarTwist n z g)).HasRootIn (upperHalf b) := by
-  have hap : AreApolar n f (apolarTwist n z g) :=
-    (areApolar_apolarTwist_iff n f g z).2 hcomp
-  exact grace_apolarity_upperHalf hf htw hap hroots
+    (binomialLift n (apolarTwist n z g)).HasRootIn (upperHalf b) :=
+  grace_apolarity_upperHalf hf htw ((areApolar_apolarTwist_iff n f g z).2 hcomp) hroots
 
 theorem eval_map_schurSzegoComp_eq_sum (n : Nat) (f p : ℝ[X])
     {F₀ P₀ : ℂ[X]}
@@ -103,39 +95,28 @@ theorem eval_map_schurSzegoComp_eq_sum (n : Nat) (f p : ℝ[X])
 theorem coeff_n_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
     (hF : binomialLift n F₀ = f) :
     (binomialLift n (apolarTwist n z F₀)).coeff n = f.coeff 0 := by
-  rw [coeff_binomialLift, ite_eq_left (le_refl n), coeff_apolarTwist, ite_eq_left (le_refl n)]
-  simp only [Nat.sub_self, pow_zero, mul_one, Nat.choose_self, Nat.cast_one, one_mul]
-  rw [← hF, coeff_binomialLift, ite_eq_left (Nat.zero_le n)]
-  simp
+  simpa [coeff_binomialLift, coeff_apolarTwist] using congrArg (fun p => p.coeff 0) hF
 
 theorem natDegree_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
     (hF : binomialLift n F₀ = f) (hf0 : f.coeff 0 ≠ 0) :
     (binomialLift n (apolarTwist n z F₀)).natDegree = n := by
-  refine le_antisymm (natDegree_binomialLift_le n _) ?_
-  apply Polynomial.le_natDegree_of_ne_zero
+  refine le_antisymm (natDegree_binomialLift_le n _) (Polynomial.le_natDegree_of_ne_zero ?_)
   rw [coeff_n_binomialLift_apolarTwist n z hF]
-  simp [*]
+  exact hf0
 
 theorem pf_complex_root_nonpos_real {f : ℝ[X]} (hf : IsPFPolynomial f) (hf0 : f ≠ 0)
     {μ : ℂ} (hμ : (f.map Complex.ofRealHom).IsRoot μ) :
     μ.im = 0 ∧ μ.re ≤ 0 := by
   have hsplits : f.Splits := hf.eq_zero_or_splits.resolve_left hf0
-  obtain ⟨r, hr⟩ : μ ∈ Complex.ofRealHom.range := hsplits.mem_range_of_isRoot hf0 hμ
-  have hr_root : f.IsRoot r := by
-    have hev : (f.map Complex.ofRealHom).eval μ = 0 := hμ
-    rw [← hr, Polynomial.eval_map, Polynomial.eval₂_hom] at hev
-    simp_all
+  obtain ⟨r, rfl⟩ : μ ∈ Complex.ofRealHom.range := hsplits.mem_range_of_isRoot hf0 hμ
+  have hr_root : f.IsRoot r := hμ.of_map Complex.ofReal_injective
   have : r ≤ 0 := hf.roots_nonpos r ((Polynomial.mem_roots hf0).mpr hr_root)
-  rw [← hr]
-  refine ⟨by simp [Complex.ofRealHom_eq_coe], ?_⟩
-  simp only [Complex.ofRealHom_eq_coe, Complex.ofReal_re]
-  grind
+  simpa [Complex.ofRealHom_eq_coe] using this
 
 theorem splits_complex_root_im_zero {p : ℝ[X]} (hp0 : p ≠ 0) (hsplit : p.Splits)
     {μ : ℂ} (hμ : (p.map Complex.ofRealHom).IsRoot μ) :
     μ.im = 0 := by
-  obtain ⟨r, hr⟩ : μ ∈ Complex.ofRealHom.range := hsplit.mem_range_of_isRoot hp0 hμ
-  rw [← hr]
+  obtain ⟨r, rfl⟩ : μ ∈ Complex.ofRealHom.range := hsplit.mem_range_of_isRoot hp0 hμ
   simp [Complex.ofRealHom_eq_coe]
 
 theorem core_squeeze {n : Nat} {f p : ℝ[X]}
@@ -143,8 +124,7 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
     (hf00 : f.coeff 0 ≠ 0)
     (hp0 : p ≠ 0) (hpdeg : p.natDegree = n) (hsplit : p.Splits) :
     (schurSzegoComp n f p).Splits := by
-  apply Polynomial.splits_of_all_roots_real
-  intro z hz
+  refine Polynomial.splits_of_all_roots_real fun z hz => ?_
   obtain ⟨F₀, hF⟩ := exists_binomialLift_eq (f.map Complex.ofRealHom)
     (le_of_eq (by rw [natDegree_map_eq_of_injective Complex.ofReal_injective, hfdeg]))
   obtain ⟨P₀, hP⟩ := exists_binomialLift_eq (p.map Complex.ofRealHom)
@@ -159,17 +139,12 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
   have hf00c : (f.map Complex.ofRealHom).coeff 0 ≠ 0 := by simp [*]
   have hTwdeg : (binomialLift n (apolarTwist n z F₀)).natDegree = n :=
     natDegree_binomialLift_apolarTwist n z hF hf00c
-  have hPmap : binomialLift n P₀ = p.map Complex.ofRealHom := hP
   have hRootsLower : (binomialLift n P₀).RootsIn (lowerHalf 0) := fun w hw => by
-    rw [mem_lowerHalf]
-    rw [hPmap] at hw
-    have := splits_complex_root_im_zero hp0 hsplit hw
-    simp [*]
+    rw [hP] at hw
+    simpa only [mem_lowerHalf] using (splits_complex_root_im_zero hp0 hsplit hw).le
   have hRootsUpper : (binomialLift n P₀).RootsIn (upperHalf 0) := fun w hw => by
-    rw [mem_upperHalf]
-    rw [hPmap] at hw
-    have := splits_complex_root_im_zero hp0 hsplit hw
-    simp [*]
+    rw [hP] at hw
+    simpa only [mem_upperHalf] using (splits_complex_root_im_zero hp0 hsplit hw).ge
   have hsum' : ∑ k ∈ Finset.range (n + 1),
       (Nat.choose n k : ℂ) * P₀.coeff k * F₀.coeff k * z ^ k = 0 := by grind
   obtain ⟨w, hwroot, hwmem⟩ :=
@@ -178,29 +153,19 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
     exists_apolarTwist_root_of_grace_upperHalf hPdeg hTwdeg hsum' hRootsUpper
   rw [mem_lowerHalf] at hwmem
   rw [mem_upperHalf] at hw'mem
-  have : f.coeff n ≠ 0 := by
-    rw [← hfdeg]
-    exact Polynomial.leadingCoeff_ne_zero.mpr hf0
-  have : F₀.coeff n = (f.map Complex.ofRealHom).coeff n := by
-    have : (f.map Complex.ofRealHom).coeff n = (Nat.choose n n : ℂ) * F₀.coeff n := by
-      rw [← hF, coeff_binomialLift, ite_eq_left (le_refl n)]
-    simp [*]
+  have hfn : f.coeff n ≠ 0 := hfdeg ▸ Polynomial.leadingCoeff_ne_zero.mpr hf0
+  have hFn : F₀.coeff n = (f.map Complex.ofRealHom).coeff n := by
+    simpa [coeff_binomialLift] using congrArg (fun q => q.coeff n) hF
   have hcoeff0 : (binomialLift n (apolarTwist n z F₀)).coeff 0 ≠ 0 := by
     rw [coeff_binomialLift, ite_eq_left (Nat.zero_le n), coeff_apolarTwist,
       ite_eq_left (Nat.zero_le n)]
     simp [*]
-  have hwne : w ≠ 0 := by
+  have root_ne_zero {u : ℂ} (hu : (binomialLift n (apolarTwist n z F₀)).IsRoot u) :
+      u ≠ 0 := by
     rintro rfl
-    apply hcoeff0
-    have : (binomialLift n (apolarTwist n z F₀)).eval 0 = 0 := hwroot
-    rw [Polynomial.coeff_zero_eq_eval_zero]
-    simp [*]
-  have hw'ne : w' ≠ 0 := by
-    rintro rfl
-    apply hcoeff0
-    have : (binomialLift n (apolarTwist n z F₀)).eval 0 = 0 := hw'root
-    rw [Polynomial.coeff_zero_eq_eval_zero]
-    simp [*]
+    exact hcoeff0 (by simpa [Polynomial.coeff_zero_eq_eval_zero] using hu)
+  have hwne := root_ne_zero hwroot
+  have hw'ne := root_ne_zero hw'root
   have hμ : (binomialLift n F₀).IsRoot (-z / w) :=
     (isRoot_binomialLift_apolarTwist_iff n z F₀ hwne).mp hwroot
   have hμ' : (binomialLift n F₀).IsRoot (-z / w') :=
@@ -212,36 +177,18 @@ theorem core_squeeze {n : Nat} {f p : ℝ[X]}
   set μ' := -z / w' with hμ'def
   have hzμ : z = -(μ * w) := by simp [*]
   have hzμ' : z = -(μ' * w') := by grind
-  have hμre0 : μ.re < 0 := by
-    rcases lt_or_eq_of_le hμre with h | h
-    · grind
-    · exfalso; apply hz0
-      have hμ0 : μ = 0 :=
-        Complex.ext (by rw [Complex.zero_re, ← h]) (by rw [hμim, Complex.zero_im])
-      grind
-  have hμ're0 : μ'.re < 0 := by
-    rcases lt_or_eq_of_le hμ're with h | h
-    · grind
-    · exfalso; apply hz0
-      have hμ'0 : μ' = 0 :=
-        Complex.ext (by rw [Complex.zero_re, ← h]) (by rw [hμ'im, Complex.zero_im])
-      grind
+  have re_neg {u : ℂ} (huim : u.im = 0) (hure : u.re ≤ 0) (hu : u ≠ 0) : u.re < 0 :=
+    lt_of_le_of_ne hure fun h => hu <| Complex.ext
+      (by simpa only [Complex.zero_re] using h) (by simpa only [Complex.zero_im] using huim)
+  have hμre0 := re_neg hμim hμre (fun h => hz0 (by simp [hzμ, h]))
+  have hμ're0 := re_neg hμ'im hμ're (fun h => hz0 (by simp [hzμ', h]))
   have hzim : z.im = -(μ.re * w.im) := by
-    rw [hzμ]
-    simp [Complex.mul_im, hμim]
+    simp [hzμ, Complex.mul_im, hμim]
   have hzim' : z.im = -(μ'.re * w'.im) := by
-    rw [hzμ']
-    simp [Complex.mul_im, hμ'im]
-  have : z.im ≤ 0 := by
-    rw [hzim]
-    nlinarith [hwmem, hμre0]
-  have : 0 ≤ z.im := by
-    rw [hzim']
-    nlinarith [hw'mem, hμ're0]
+    simp [hzμ', Complex.mul_im, hμ'im]
+  have : z.im ≤ 0 := by rw [hzim]; nlinarith [hwmem, hμre0]
+  have : 0 ≤ z.im := by rw [hzim']; nlinarith [hw'mem, hμ're0]
   linarith
-
-
-
 
 theorem schurSzegoComp_X_mul_left (n : Nat) (hn : 1 ≤ n) (f₁ p : ℝ[X]) :
     schurSzegoComp n (X * f₁) p =
@@ -261,8 +208,7 @@ theorem schurSzegoComp_X_mul_left (n : Nat) (hn : 1 ≤ n) (f₁ p : ℝ[X]) :
         have := Nat.add_one_mul_choose_eq (n - 1) k
         simp_all
       have : (n.choose (k + 1) : ℝ) * ((k : ℝ) + 1) = (n : ℝ) * ((n - 1).choose k : ℝ) := by
-        have := congrArg (Nat.cast (R := ℝ)) hnat
-        grind
+        exact_mod_cast hnat.symm
       grind
     · rw [coeff_schurSzegoComp_eq_zero_of_lt (by lia : n < k + 1),
         coeff_schurSzegoComp_eq_zero_of_lt (by lia : n - 1 < k)]
@@ -307,15 +253,12 @@ theorem diagonalOperator_pred_eq_reflect_derivative (n : Nat) (hn : 1 ≤ n)
       push_cast [Nat.cast_sub (by assumption : k ≤ n - 1), Nat.cast_sub hn]
       ring
     grind
-  · have hRHS : (derivative (reflect n q)).coeff (revAt (n - 1) k) = 0 := by
-      apply Polynomial.coeff_eq_zero_of_natDegree_lt
-      rw [revAt_eq_self_of_lt (by lia : n - 1 < k)]
-      calc (derivative (reflect n q)).natDegree
-          = (reflect n q).natDegree - 1 := (reflect n q).natDegree_derivative
-        _ ≤ n - 1 := by
-            have := Polynomial.natDegree_reflect_le (N := n) (p := q)
-            simp_all
-        _ < k := by lia
+  · have hRHS : (derivative (reflect n q)).coeff (revAt (n - 1) k) = 0 :=
+      Polynomial.coeff_eq_zero_of_natDegree_lt <| by
+        rw [revAt_eq_self_of_lt (by lia : n - 1 < k), (reflect n q).natDegree_derivative]
+        have := Polynomial.natDegree_reflect_le (N := n) (p := q)
+        simp_all
+        lia
     rw [hRHS, mul_zero]
     by_cases k = n
     · simp [*]
@@ -323,56 +266,45 @@ theorem diagonalOperator_pred_eq_reflect_derivative (n : Nat) (hn : 1 ≤ n)
 
 theorem isPFPolynomial_of_X_mul {f₁ : ℝ[X]} (hp : IsPFPolynomial (X * f₁)) :
     IsPFPolynomial f₁ := by
-  by_cases hf1 : f₁ = 0
-  · simp_all
-  refine IsPFPolynomial.of_realRooted_nonneg ?_ ?_
-  · intro k
-    have := hp.hasNonnegCoeffs (k + 1)
-    simp_all
-  · have hXsplit : (X * f₁).Splits := hp.eq_zero_or_splits.resolve_left (by
-      simp [mul_eq_zero, X_ne_zero, hf1])
-    simp_all
+  rcases eq_or_ne f₁ 0 with rfl | hf₁
+  · simpa using hp
+  have hX₁ : X * f₁ ≠ 0 := mul_ne_zero X_ne_zero hf₁
+  exact IsPFPolynomial.of_realRooted_nonneg
+    (fun k => by simpa using hp.hasNonnegCoeffs (k + 1))
+    (isRealRooted_of_X_mul hX₁ (hp.eq_zero_or_splits.resolve_left hX₁)).2
 
 theorem schurSzegoComp_X_mul_right (n : Nat) (hn : 1 ≤ n) (f p₁ : ℝ[X]) :
     schurSzegoComp n f (X * p₁) =
       X * schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p₁ := by
-  rw [schurSzegoComp_comm, schurSzegoComp_X_mul_left n hn p₁ f, schurSzegoComp_comm]
+  simpa [schurSzegoComp_comm] using schurSzegoComp_X_mul_left n hn p₁ f
 
 theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
     (hq : q.natDegree ≤ n) (hsplit : q.Splits) :
     (diagonalOperator (fun k ↦ ((n : ℝ) - k) / n) q).Splits := by
   rw [diagonalOperator_pred_eq_reflect_derivative n hn q hq]
-  refine (Polynomial.Splits.C (R := ℝ) _).mul ?_
-  · have hrq : (reflect n q).Splits :=
-      (DegreeDropReversal.splits_reflect_iff hq).mpr hsplit
-    have hder : (derivative (reflect n q)).Splits := Polynomial.Splits.derivative hrq
-    refine DegreeDropReversal.splits_reflect_of_splits hder ?_
-    rw [(reflect n q).natDegree_derivative]
-    have := Polynomial.natDegree_reflect_le (N := n) (p := q)
-    simp_all
+  refine (Polynomial.Splits.C (R := ℝ) _).mul <|
+    DegreeDropReversal.splits_reflect_of_splits
+      (Polynomial.Splits.derivative ((DegreeDropReversal.splits_reflect_iff hq).2 hsplit)) ?_
+  rw [(reflect n q).natDegree_derivative]
+  simpa [max_eq_left hq] using
+    Nat.sub_le_sub_right (Polynomial.natDegree_reflect_le (N := n) (p := q)) 1
 
 theorem splits_schurSzegoComp_X_mul_left {n : Nat} (hn : 1 ≤ n) {f₁ p : ℝ[X]}
     (hinner : (schurSzegoComp (n - 1) f₁ (C (n : ℝ)⁻¹ * derivative p)).Splits) :
     (schurSzegoComp n (X * f₁) p).Splits := by
-  rw [schurSzegoComp_X_mul_left n hn f₁ p]
-  simp [*]
+  rw [schurSzegoComp_X_mul_left n hn]
+  exact Polynomial.Splits.mul Polynomial.Splits.X hinner
 
 theorem splits_schurSzegoComp_X_mul_right {n : Nat} (hn : 1 ≤ n) {f p₁ : ℝ[X]}
     (hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p₁).Splits) :
     (schurSzegoComp n f (X * p₁)).Splits := by
-  rw [schurSzegoComp_X_mul_right n hn f p₁]
-  simp [*]
+  rw [schurSzegoComp_X_mul_right n hn]
+  exact Polynomial.Splits.mul Polynomial.Splits.X hinner
 
 theorem isPFPolynomial_reflect {n : Nat} {f : ℝ[X]} (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ n) : IsPFPolynomial (reflect n f) := by
   rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse f hfdeg]
-  have : IsPFPolynomial f.reverse := hf.reverse
-  clear hf hfdeg
-  induction (n - f.natDegree) with
-  | zero => simp [*]
-  | succ m ih =>
-    rw [pow_succ, mul_comm (X ^ m) X, mul_assoc]
-    exact ih.X_mul
+  exact (isPFPolynomial_X_pow _).mul hf.reverse
 
 theorem splits_schurSzegoComp_of_isPF (n : Nat) :
     ∀ (f p : ℝ[X]), IsPFPolynomial f → f ≠ 0 → f.natDegree ≤ n →
@@ -380,7 +312,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       (schurSzegoComp n f p).Splits := by
   induction n using Nat.strong_induction_on with
   | _ n ih =>
-    intro f p hf hf0 hfdeg _ hp hsplit
+    intro f p hf hf0 hfdeg hp0 hp hsplit
     by_cases htriv : (schurSzegoComp n f p).natDegree ≤ 1
     · by_cases hz : schurSzegoComp n f p = 0
       · simp [*]
@@ -396,20 +328,15 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative p).Splits :=
         (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hsplit)
       have hinner : (schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p)).Splits := by
-        by_cases hz : schurSzegoComp (n - 1) f.divX (C (n : ℝ)⁻¹ * derivative p) = 0
-        · rw [hz]; simp
-        refine ih (n - 1) (by lia) f.divX (C (n : ℝ)⁻¹ * derivative p) hf1pf ?_ ?_ ?_ ?_
-          hderiv_split
-        · grind
+        by_cases hq0 : C (n : ℝ)⁻¹ * derivative p = 0
+        · simp [hq0]
+        refine ih (n - 1) (by lia) f.divX (C (n : ℝ)⁻¹ * derivative p) hf1pf
+          (fun h => hf0 (by rw [hfX, h]; simp)) ?_ hq0 ?_ hderiv_split
         · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]; lia
-        · intro h
-          apply hz
-          rw [schurSzegoComp_comm, schurSzegoComp_eq_diagonalOperator, h]
-          simp
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
             (by rw [p.natDegree_derivative]; simp [*])
-      have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := f.divX) (p := p) hinner
-      grind
+      rw [hfX]
+      exact splits_schurSzegoComp_X_mul_left hn1 hinner
     by_cases hp00 : p.coeff 0 = 0
     · have hpX : p = X * p.divX := DegreeDropReversal.eq_X_mul_divX_of_coeff_zero hp00
       have hp1split : p.divX.Splits := (DegreeDropReversal.splits_X_mul_iff).mp (hpX ▸ hsplit)
@@ -419,18 +346,15 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
         (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative
           (hf.eq_zero_or_splits.resolve_left hf0))
       have hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX).Splits := by
-        by_cases hz : schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX = 0
-        · rw [hz]; simp
-        refine ih (n - 1) (by lia) (C (n : ℝ)⁻¹ * derivative f) p.divX hderiv_pf ?_ ?_ ?_ ?_
-          hp1split
-        · intro h; rw [h] at hz; simp at hz
+        by_cases hq0 : C (n : ℝ)⁻¹ * derivative f = 0
+        · simp [hq0]
+        refine ih (n - 1) (by lia) (C (n : ℝ)⁻¹ * derivative f) p.divX hderiv_pf
+          hq0 ?_ (fun h => hp0 (by rw [hpX, h]; simp)) ?_ hp1split
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
             (by rw [f.natDegree_derivative]; simp [*])
-        · grind
         · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one]; lia
-      have := splits_schurSzegoComp_X_mul_right hn1 (f := f)
-        (p₁ := p.divX) hinner
-      grind
+      rw [hpX]
+      exact splits_schurSzegoComp_X_mul_right hn1 hinner
     by_cases hlt : f.natDegree < n ∧ p.natDegree < n
     · have hpn : p.coeff n = 0 := Polynomial.coeff_eq_zero_of_natDegree_lt hlt.2
       rw [schurSzegoComp_eq_diagonalOperator_pred n hn1 f p hpn]
@@ -467,19 +391,16 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hinner :
           (schurSzegoComp (n - 1) (reflect n f).divX
             (C (n : ℝ)⁻¹ * derivative (reflect n p))).Splits := by
-        by_cases hz : schurSzegoComp (n - 1) (reflect n f).divX
-            (C (n : ℝ)⁻¹ * derivative (reflect n p)) = 0
-        · rw [hz]; simp
+        by_cases hq0 : C (n : ℝ)⁻¹ * derivative (reflect n p) = 0
+        · simp [hq0]
         refine ih (n - 1) (by lia) (reflect n f).divX
-          (C (n : ℝ)⁻¹ * derivative (reflect n p)) hRf1_pf ?_ ?_ ?_ ?_ hderiv_split
-        · grind
+          (C (n : ℝ)⁻¹ * derivative (reflect n p)) hRf1_pf
+          (fun h => hRf_ne (by rw [hRfX, h]; simp)) ?_ hq0 ?_ hderiv_split
         · rw [Polynomial.natDegree_divX_eq_natDegree_tsub_one, hRf_deg]
-        · intro h; rw [h] at hz; simp at hz
         · exact (Polynomial.natDegree_C_mul_le _ _).trans
             (by rw [(reflect n p).natDegree_derivative]; simp [*])
-      have := splits_schurSzegoComp_X_mul_left hn1 (f₁ := (reflect n f).divX)
-        (p := reflect n p) hinner
-      grind
+      rw [hRfX]
+      exact splits_schurSzegoComp_X_mul_left hn1 hinner
 
 /-- Nonzero finite Schur--Szegő composition theorem: `f` is a nonzero PF
 polynomial, `p` is a nonzero real-rooted polynomial, both have degree at most
@@ -517,26 +438,23 @@ theorem IsPFPolynomial.schurSzegoComp
     (hp : IsPFPolynomial p) (hfdeg : f.natDegree ≤ n)
     (hpdeg : p.natDegree ≤ n) :
     IsPFPolynomial (schurSzegoComp n f p) := by
-  apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-    (hf.hasNonnegCoeffs.schurSzegoComp hp.hasNonnegCoeffs)
-  by_cases hp0 : p = 0
-  · subst p
-    simp
-  · exact finiteSchurSzegoComposition
-      hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
+  refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hf.hasNonnegCoeffs.schurSzegoComp hp.hasNonnegCoeffs) ?_
+  rcases eq_or_ne p 0 with rfl | hp0
+  · simp
+  exact finiteSchurSzegoComposition hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
 
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
 finite Schur--Szegő composition theorem: the diagonal operator attached to
 `gamma` acting on a polynomial `p` of degree at most `n` is exactly the
 Schur--Szegő composition of the PF Jensen polynomial of `gamma` with `p`. -/
-theorem isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial {n : ℕ} {gamma : ℕ → ℝ}
+theorem isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial
+    {n : ℕ} {gamma : ℕ → ℝ}
     (hjensen : IsPFPolynomial (jensenPolynomial n gamma)) :
     IsFiniteMultiplierSequence n gamma := by
   intro p hp hsplit
-  have hfdeg : (jensenPolynomial n gamma).natDegree ≤ n :=
-    natDegree_jensenPolynomial_le n gamma
   simpa [← schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le hp] using
-    finiteSchurSzegoComposition hjensen hfdeg hp hsplit
+    finiteSchurSzegoComposition hjensen (natDegree_jensenPolynomial_le n gamma) hp hsplit
 
 /-- **Finite Pólya--Schur theorem** (nonnegative-coefficient convention): a nonnegative
 diagonal sequence preserves real-rootedness up to degree `n` if and only if its degree-`n`
