@@ -33,10 +33,8 @@ theorem sourcePolarizedOperator_comp_polarizationDegreeBoxLinearMap
     (sourcePolarizedOperator n T).comp
       (polarizationDegreeBoxLinearMap n) = T := by
   apply LinearMap.ext
-  intro q
-  change T (diagonalProjectionDegreeBox n
-    (polarizationDegreeBoxLinearMap n q)) = T q
-  rw [diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap q]
+  exact fun q => congrArg T
+    (diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap q)
 
 /-- The source-polarized operator sends a multiaffine basis monomial to the
 original operator applied to the one-variable basis monomial of the same total
@@ -50,9 +48,7 @@ theorem sourcePolarizedOperator_basisDegreeOfLE
         (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m) =
       T (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin 1 => n)
         (diagonalDegreeBoxIndex m)) := by
-  change T (diagonalProjectionDegreeBox n
-    (MvPolynomial.basisDegreeOfLE (R := ℂ) (fun _ : Fin n => 1) m)) = _
-  rw [diagonalProjectionDegreeBox_basisDegreeOfLE]
+  exact congrArg T (diagonalProjectionDegreeBox_basisDegreeOfLE m)
 
 /-- Reindex a sum over multiaffine exponent vectors by their finite supports.
 This is the subset reindexing in the source-side proof of Lemma 2.5. -/
@@ -141,22 +137,14 @@ theorem coeff_coeff_sumAlgEquiv
       rw [← hd, sumAlgEquiv_monomial]
       have hsum : d₁.sumElim d₂ = a.sumElim b ↔ d₁ = a ∧ d₂ = b := by
         constructor
-        · intro h
-          constructor
-          · ext i
-            exact DFunLike.congr_fun h (Sum.inl i)
-          · ext i
-            exact DFunLike.congr_fun h (Sum.inr i)
+        · exact fun h => ⟨Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inl i),
+            Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i)⟩
         · rintro ⟨rfl, rfl⟩
           rfl
       by_cases hda : d₁ = a
-      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b := by
-          constructor
-          · intro h
-            ext i
-            exact DFunLike.congr_fun h (Sum.inr i)
-          · rintro rfl
-            rfl
+      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b :=
+          ⟨fun h => Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i),
+            congrArg (Finsupp.sumElim a)⟩
         simp [MvPolynomial.coeff_monomial, hda, hright]
       · simp [MvPolynomial.coeff_monomial, hsum, hda]
 
@@ -183,10 +171,7 @@ theorem coeff_sourceCoefficient {τ : Type*}
       (d.sumElim (Finsupp.single default k)).mapDomain
           (Equiv.sumComm τ (Fin 1)) =
         (Finsupp.single default k).sumElim d := by
-    ext x
-    rcases x with i | i
-    · simp
-    · simp
+    ext (i | i) <;> simp
   rw [← hmap, coeff_rename_mapDomain
     (Equiv.sumComm τ (Fin 1)) (Equiv.sumComm τ (Fin 1)).injective]
 
@@ -251,14 +236,14 @@ noncomputable def sourceBlockPolarizationLinearMap {τ : Type*} (n : ℕ) :
     unfold sourceBlockPolarization
     rw [← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl
-    intro k _hk
+    intro k _
     rw [sourceCoefficient_add, map_add]
     ring
   map_smul' c P := by
     unfold sourceBlockPolarization
     rw [Finset.smul_sum]
     apply Finset.sum_congr rfl
-    intro k _hk
+    intro k _
     rw [sourceCoefficient_smul, map_smul]
     simp only [MvPolynomial.smul_eq_C_mul, RingHom.id_apply]
     ring
@@ -314,24 +299,14 @@ private theorem
           (sumAlgEquiv ℂ (Fin 1) τ
             (rename (Equiv.sumComm τ (Fin 1)) P)) := by
     unfold _root_.RealRooted.specializeLeft
-    change
-      (MvPolynomial.aeval
-          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)) P =
-        ((MvPolynomial.mapAlgHom (MvPolynomial.aeval x)).comp
-          ((sumAlgEquiv ℂ (Fin 1) τ).toAlgHom.comp
-            (rename (Equiv.sumComm τ (Fin 1))))) P
+    change _ = ((MvPolynomial.mapAlgHom (MvPolynomial.aeval x)).comp
+      ((sumAlgEquiv ℂ (Fin 1) τ).toAlgHom.comp
+        (rename (Equiv.sumComm τ (Fin 1))))) P
     congr 1
-    apply MvPolynomial.algHom_ext
-    rintro (i | i) <;>
+    ext (i | i) <;>
       simp [Function.comp_def, Equiv.sumComm_apply]
   rw [MvPolynomial.coeff_uniqueAlgEquiv, hspecial,
     MvPolynomial.coeff_map]
-  change
-    MvPolynomial.eval x
-        ((sumAlgEquiv ℂ (Fin 1) τ
-          (rename (Equiv.sumComm τ (Fin 1)) P)).coeff
-            (Finsupp.single default k)) =
-      MvPolynomial.eval x (sourceCoefficient P k)
   rfl
 
 /- Borcea--Branden, arXiv:0809.0401, Proposition 2.4 and equation (2.2).
@@ -351,33 +326,6 @@ theorem specializeLeft_sourceBlockPolarization
   have hpcoeff (k : ℕ) :
       p.coeff k = MvPolynomial.eval x (sourceCoefficient P k) :=
     coeff_uniqueAlgEquiv_specializeLeft_eq_eval_sourceCoefficient P x k
-  have houtput (q : MvPolynomial τ ℂ) :
-      MvPolynomial.aeval
-          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
-          (rename (Sum.inl : τ → τ ⊕ Fin n) q) =
-        C (MvPolynomial.eval x q) := by
-    rw [MvPolynomial.aeval_rename]
-    change
-      MvPolynomial.aeval (MvPolynomial.C ∘ x) q =
-        C (MvPolynomial.eval x q)
-    induction q using MvPolynomial.induction_on with
-    | C c => simp
-    | add q r hq hr =>
-        rw [map_add, hq, hr, map_add]
-        exact (map_add MvPolynomial.C _ _).symm
-    | mul_X q i hq =>
-        rw [map_mul, MvPolynomial.aeval_X, hq, map_mul,
-          MvPolynomial.eval_X]
-        simpa only [Function.comp_apply] using
-          (map_mul MvPolynomial.C (MvPolynomial.eval x q) (x i)).symm
-  have hsource (q : MvPolynomial (Fin n) ℂ) :
-      MvPolynomial.aeval
-          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
-          (rename (Sum.inr : Fin n → τ ⊕ Fin n) q) =
-        q := by
-    rw [MvPolynomial.aeval_rename]
-    change MvPolynomial.aeval MvPolynomial.X q = q
-    exact MvPolynomial.aeval_X_left_apply q
   change
     _root_.RealRooted.specializeLeft x
         (sourceBlockPolarization n P) =
@@ -388,8 +336,18 @@ theorem specializeLeft_sourceBlockPolarization
     _root_.RealRooted.reducedPolarization
   apply Finset.sum_congr rfl
   intro k hk
-  rw [map_mul, map_mul, MvPolynomial.aeval_C,
-    MvPolynomial.algebraMap_eq, houtput, hsource]
+  simp only [map_mul, MvPolynomial.aeval_C, MvPolynomial.algebraMap_eq,
+    MvPolynomial.aeval_rename]
+  rw [show MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X ∘ Sum.inl)
+        (sourceCoefficient P k) = C (MvPolynomial.eval x (sourceCoefficient P k)) by
+      simpa only [Function.comp_def, Sum.elim_inl, MvPolynomial.aeval_eq_eval] using
+        MvPolynomial.aeval_C_comp_left x (sourceCoefficient P k),
+    show MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X ∘ Sum.inr)
+        (esymm (Fin n) ℂ k) = esymm (Fin n) ℂ k by
+      simpa only [Function.comp_def, Sum.elim_inr] using
+        MvPolynomial.aeval_X_left_apply (esymm (Fin n) ℂ k)]
   have hbinom := _root_.RealRooted.coeff_binomialUnlift_of_le n p
     (Nat.le_of_lt_succ (Finset.mem_range.mp hk))
   rw [hbinom, hpcoeff]
@@ -412,18 +370,10 @@ theorem mvUpperHalfPlaneStable_sourceBlockPolarization
   let p : Polynomial ℂ :=
     MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
       (_root_.RealRooted.specializeLeft x P)
-  have hx : ∀ i, 0 < (x i).im :=
-    fun i => hz (Sum.inl i)
-  have hy : ∀ i, 0 < (y i).im :=
-    fun i => hz (Sum.inr i)
   have hpdeg : p.natDegree ≤ n := by
     exact
       (_root_.RealRooted.natDegree_uniqueAlgEquiv_specializeLeft_le_degreeOf
         x P).trans hdeg
-  have hspecial :
-      _root_.RealRooted.MvUpperHalfPlaneStable
-        (_root_.RealRooted.specializeLeft x P) :=
-    hstable.specializeLeft hx
   have hpstable :
       ∀ w : ℂ, 0 < w.im → p.eval w ≠ 0 := by
     intro w hw
@@ -432,19 +382,12 @@ theorem mvUpperHalfPlaneStable_sourceBlockPolarization
         (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
           (_root_.RealRooted.specializeLeft x P)) ≠ 0
     rw [MvPolynomial.eval₂_const_uniqueAlgEquiv]
-    exact hspecial (fun _ => w) (fun _ => hw)
-  have hpolar :
-      _root_.RealRooted.MvUpperHalfPlaneStable
-        (_root_.RealRooted.polarization n p) :=
-    _root_.RealRooted.mvUpperHalfPlaneStable_polarization
-      hpdeg hpstable
-  have hfiber :
-      _root_.RealRooted.MvUpperHalfPlaneStable
-        (_root_.RealRooted.specializeLeft x
-          (sourceBlockPolarization n P)) := by
-    rw [specializeLeft_sourceBlockPolarization]
-    exact hpolar
-  have hnonzero := hfiber y hy
+    exact (hstable.specializeLeft fun i => hz (Sum.inl i))
+      (fun _ => w) (fun _ => hw)
+  have hnonzero :=
+    (_root_.RealRooted.mvUpperHalfPlaneStable_polarization hpdeg hpstable)
+      y (fun i => hz (Sum.inr i))
+  rw [← specializeLeft_sourceBlockPolarization n P x] at hnonzero
   rw [_root_.RealRooted.eval_specializeLeft] at hnonzero
   have hxy : Sum.elim x y = z := by
     funext i
@@ -515,12 +458,10 @@ theorem sourceCoefficient_C_mul_rename_mul_X_pow {τ : Type*}
         (C a * rename (Sum.inl : τ → τ ⊕ Fin 1) q *
           X (Sum.inr default) ^ r) k =
       if k = r then C a * q else 0 := by
-  have hterm :
-      C a * rename (Sum.inl : τ → τ ⊕ Fin 1) q *
-          X (Sum.inr default) ^ r =
-        rename Sum.inl (C a * q) * X (Sum.inr default) ^ r := by
-    simp
-  rw [hterm, sourceCoefficient_rename_mul_X_pow]
+  rw [show C a * rename (Sum.inl : τ → τ ⊕ Fin 1) q *
+      X (Sum.inr default) ^ r =
+      rename Sum.inl (C a * q) * X (Sum.inr default) ^ r by simp,
+    sourceCoefficient_rename_mul_X_pow]
 
 /-- In a degree-`n` algebraic-symbol-shaped sum, source degree `r` selects the
 unique operator term indexed by `n - r`. -/
@@ -537,15 +478,8 @@ theorem sourceCoefficient_symbol_sum {τ : Type*} (n r : ℕ)
     simp [Nat.sub_sub_self hr]
   · intro k hk hne
     rw [sourceCoefficient_C_mul_rename_mul_X_pow]
-    have hk_le : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    have hnr : r ≠ n - k := by
-      intro heq
-      apply hne
-      lia
-    rw [ite_eq_right hnr]
-  · intro hnot
-    exact (hnot (Finset.mem_range.mpr
-      (Nat.lt_succ_of_le (Nat.sub_le n r)))).elim
+    rw [ite_eq_right (by grind)]
+  · grind
 
 /-- Identify all polarized source variables while leaving output variables
 unchanged. -/
@@ -642,8 +576,7 @@ private theorem sum_finset_card_compl
   intro s _
   rw [Finset.card_compl]
   simp only [Fintype.card_fin]
-  have hs : s.card ≤ n := by simpa using Finset.card_le_univ s
-  rw [Nat.sub_sub_self hs]
+  rw [Nat.sub_sub_self (by simpa using Finset.card_le_univ s)]
 
 /-- A degree-one exponent's complementary monomial is indexed by the complement
 of the corresponding finite support. -/
@@ -797,14 +730,11 @@ theorem finiteSymbol_finOne_preserves_stability
     MvUpperHalfPlaneStableOrZero (T f) := by
   have hdegree :
       (uniqueAlgEquiv ℂ (Fin 1) f.1).natDegree ≤ n := by
-    calc
-      (uniqueAlgEquiv ℂ (Fin 1) f.1).natDegree =
-          f.1.degreeOf default := by
-        simpa only [AlgEquiv.symm_apply_apply] using
-          (degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
-            (uniqueAlgEquiv ℂ (Fin 1) f.1)).symm
-      _ ≤ n :=
-        (mem_degreeOfLE_iff_degreeOf f.1).mp f.2 default
+    rw [show (uniqueAlgEquiv ℂ (Fin 1) f.1).natDegree = f.1.degreeOf default by
+      simpa only [AlgEquiv.symm_apply_apply] using
+        (degreeOf_uniqueAlgEquiv_symm (σ := Fin 1)
+          (uniqueAlgEquiv ℂ (Fin 1) f.1)).symm]
+    exact (mem_degreeOfLE_iff_degreeOf f.1).mp f.2 default
   have hunivariate :
       ∀ w : ℂ, 0 < w.im →
         (uniqueAlgEquiv ℂ (Fin 1) f.1).eval w ≠ 0 := by
@@ -813,19 +743,14 @@ theorem finiteSymbol_finOne_preserves_stability
       (uniqueAlgEquiv ℂ (Fin 1) f.1) ≠ 0
     rw [eval₂_const_uniqueAlgEquiv]
     exact hf (fun _ => w) (fun _ => hw)
-  have hpolarized : MvUpperHalfPlaneStable
-      (polarizationDegreeBoxLinearMap n f).1 := by
-    change MvUpperHalfPlaneStable
-      (polarization n (uniqueAlgEquiv ℂ (Fin 1) f.1))
-    exact mvUpperHalfPlaneStable_polarization hdegree hunivariate
-  have hlifted := finiteSymbol_preserves_stability
-    (sourcePolarizedOperator n T)
-    (mvUpperHalfPlaneStable_algebraicSymbol_sourcePolarizedOperator
-      n T hSymbol)
-    (polarizationDegreeBoxLinearMap n f) hpolarized
   simpa only [sourcePolarizedOperator, LinearMap.comp_apply,
     diagonalProjectionDegreeBox_comp_polarizationDegreeBoxLinearMap] using
-    hlifted
+    finiteSymbol_preserves_stability (sourcePolarizedOperator n T)
+      (mvUpperHalfPlaneStable_algebraicSymbol_sourcePolarizedOperator
+        n T hSymbol) (polarizationDegreeBoxLinearMap n f) (by
+          change MvUpperHalfPlaneStable
+            (polarization n (uniqueAlgEquiv ℂ (Fin 1) f.1))
+          exact mvUpperHalfPlaneStable_polarization hdegree hunivariate)
 
 /-- Termwise form of the source-polarized algebraic symbol after identifying
 all polarized source variables. -/
@@ -879,10 +804,7 @@ theorem rename_algebraicSymbol_sourcePolarizedOperator
         ∑ m : {m : Fin n →₀ ℕ // ∀ i, m i ≤ 1},
           g m.1.degree := by
       rw [rename_algebraicSymbol_sourcePolarizedOperator_eq_sum]
-      apply Finset.sum_congr rfl
-      intro m _
-      simp only [g]
-      rw [finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex]
+      simp_rw [g, finOneDegreeIndex_degree_eq_diagonalDegreeBoxIndex]
     _ = ∑ k ∈ Finset.range (n + 1), n.choose k • g k :=
       sum_degreeOneExponent_degreeFunction n g
     _ = algebraicSymbol (fun _ : Fin 1 => n) T := by
