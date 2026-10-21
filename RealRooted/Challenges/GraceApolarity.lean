@@ -13,6 +13,15 @@ version = 1
 section = "theorems"
 slug = "grace-apolarity"
 formalized = "2026-10-06"
+references = [
+  "Grace1902",
+  "Walsh1922",
+  "Szego1922",
+  "RahmanSchmeisser2002",
+  "BorceaBranden2009II",
+  "LiebSokal1981",
+  "GribinskiMarcus2022",
+]
 authors = ["Grace", "Walsh", "Szegő", "Lieb", "Sokal", "Borcea", "Brändén"]
 years = [1902, 1922, 1981, 2009]
 
@@ -132,7 +141,7 @@ $$
 \sum_{k=0}^n (-1)^k \binom{n}{k} a_k b_{n-k} = 0 .
 $$
 
-**Theorem** (Grace). Let $F$ and $G$ be apolar polynomials of degree exactly
+**Theorem** (Grace). [@Grace1902] Let $F$ and $G$ be apolar polynomials of degree exactly
 $n$. If all zeros of $F$ lie in a closed disk $\{z : |z - c| \leq r\}$ with
 $r \geq 0$, or in a closed half-plane $\{z : \operatorname{Im} z \geq b\}$,
 then $G$ has a zero in the same set.
@@ -150,7 +159,8 @@ specialization $z_1 = \dotsb = z_n = z$ is $p(z)$.
 and no zeros in the open upper half-plane. Then $\operatorname{Pol}_n(p)$ is
 stable: it does not vanish when all $z_i$ lie in the open upper half-plane.
 
-**Theorem** (Grace–Walsh–Szegő). Let $P \in \mathbb{C}[z_1, \dotsc, z_n]$ be
+**Theorem** (Grace–Walsh–Szegő). [@Walsh1922; @Szego1922] Let
+$P \in \mathbb{C}[z_1, \dotsc, z_n]$ be
 symmetric and multiaffine. Then $P = \operatorname{Pol}_n(p)$ for its diagonal
 $p(z) = P(z, \dotsc, z)$, and $P$ is stable if and only if $p$ has no zeros
 in the open upper half-plane. If $P$ has real coefficients, then $P$ is real
@@ -174,7 +184,7 @@ multiaffine polynomial.
 **Theorem.** The blockwise polarization of $P$ is stable if and only if $P$
 is stable.
 
-**Theorem** (Lieb–Sokal, multiaffine case). Let $F$ and $G$ be stable
+**Theorem** (Lieb–Sokal, multiaffine case). [@LiebSokal1981] Let $F$ and $G$ be stable
 multiaffine polynomials in $\mathbb{C}[z_1, \dotsc, z_m]$. Then
 $F(-\partial)\, G$, the result of substituting $-\partial/\partial z_i$ for
 $z_i$ in $F$ and applying it to $G$, is zero or stable.
@@ -211,24 +221,11 @@ operation that preserves stability of multiaffine polynomials.
 
 ## References
 
-J. H. Grace, “The zeros of a polynomial,” *Proc. Cambridge Philos. Soc.* 11
-(1902), 352–357; J. L. Walsh, “On the location of the roots of certain types
-of polynomials,” *Trans. Amer. Math. Soc.* 24 (1922), 163–180;
-G. Szegő, “Bemerkungen zu einem Satz von J. H. Grace über die
-Wurzeln algebraischer Gleichungen,” *Math. Z.* 13 (1922), 28–55; Q. I. Rahman
-and G. Schmeisser, *Analytic Theory of Polynomials*, Oxford University Press,
-2002; E. H. Lieb and A. D. Sokal, “A general Lee–Yang theorem for
-one-component and multicomponent ferromagnets,” *Comm. Math. Phys.* 80 (1981),
-153–179, [doi:10.1007/bf01213009](https://doi.org/10.1007/bf01213009);
-J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. II. Theory
-of stable polynomials and applications,” *Comm. Pure Appl. Math.* 62 (2009),
-1595–1631, [doi:10.1002/cpa.20295](https://doi.org/10.1002/cpa.20295);
-A. Gribinski and A. W. Marcus, “A rectangular additive
-convolution for polynomials,” *Combinatorial Theory* 2(1) (2022), #16,
-Theorem 2.4, [doi:10.5070/c62156888](https://doi.org/10.5070/c62156888). See
-[apolar polynomials](https://www.symmetricfunctions.com/stablePolynomials.htm#apolarPolynomial)
-and [polarization](https://www.symmetricfunctions.com/stablePolynomials.htm#polarizationDefinition)
-on symmetricfunctions.com.
+The classical sources are [@Grace1902; @Walsh1922; @Szego1922] and
+[@RahmanSchmeisser2002]. See also [@LiebSokal1981; @BorceaBranden2009II;
+@GribinskiMarcus2022, Thm. 2.4], as well as
+[apolar polynomials](sf:apolarPolynomial) and
+[polarization](sf:polarizationDefinition) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module exposes Grace's theorem for closed disks and closed upper

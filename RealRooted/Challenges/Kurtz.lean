@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "kurtz"
 formalized = "2026-07-18"
+references = [
+  "Kurtz1992",
+]
 authors = ["Kurtz"]
 years = [1992]
 
@@ -38,14 +41,12 @@ records real-rootedness only.
 
 ## References
 
-D. C. Kurtz, [“A sufficient condition for all the roots of a polynomial to be
-real,”](https://doi.org/10.1080/00029890.1992.11995845) *American Mathematical
-Monthly* 99 (1992), 259–263. See also the
-[contextual account on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#kurtzTheorem).
+See [@Kurtz1992] and the
+[contextual account on symmetricfunctions.com](sf:kurtzTheorem).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRooted.htm#kurtzTheorem
+sf:kurtzTheorem
 
 Original references: J. I. Hutchinson, "On a remarkable class of entire
 functions", Trans. Amer. Math. Soc. 25 (1923), 325--332, and D. C. Kurtz,

@@ -38,6 +38,7 @@ def catalog_block(
     slug: str = "sample",
     authors: str = "",
     years: str = "",
+    references: str = "",
     formalized: str = 'formalized = "2026-01-02"',
     definitions: str = "",
     theorems: str = '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
@@ -52,6 +53,7 @@ slug = "{slug}"
 {formalized}
 {authors}
 {years}
+{references}
 {definitions}
 {theorems}
 -->
@@ -91,6 +93,22 @@ class CatalogFixture(unittest.TestCase):
             + "theorem proven\n  : True := by trivial\n"
             + extra
             + "end RealRooted.Challenges.Sample\n"
+        )
+
+    def write_symcat(
+        self,
+        *,
+        labels: dict[str, str] | None = None,
+        entries: dict | None = None,
+    ) -> None:
+        directory = self.root / "website" / "symcat"
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "labels.json").write_text(
+            json.dumps(labels or {}, sort_keys=True), encoding="utf-8"
+        )
+        (directory / "bibliography.json").write_text(
+            json.dumps({"schema_version": 1, "entries": entries or {}}, sort_keys=True),
+            encoding="utf-8",
         )
 
     def pages_and_sources(self) -> tuple[tuple, dict]:
@@ -675,6 +693,152 @@ end RealRooted.Challenges.Sample
             ),
         )
         self.assertEqual(catalog_digest(load_catalog(self.root)), plain)
+
+    def test_symcat_citations_reference_list_and_manifest(self) -> None:
+        content = (
+            "# Sample\n\nSee [the statement](sf:sampleTheorem) "
+            "[@Brenti1995, Thm. 2.4.2; @Other].\n\n"
+            "## References\n\nA short contextual note."
+        )
+        theorems = (
+            '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+            'label = "Proven"\nheadline = true\nsymcat = "sampleTheorem"'
+        )
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                references='references = [{key = "Other", at = "Cor. 3"}]',
+                theorems=theorems,
+                content=content,
+            )
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "theorem proven : True := by trivial\n"
+            + "end RealRooted.Challenges.Sample\n",
+        )
+        self.write_symcat(
+            labels={"sampleTheorem": "realRooted.htm#sampleTheorem"},
+            entries={
+                "Brenti1995": {
+                    "label": "Bre95",
+                    "csl": {
+                        "author": [{"given": "Francesco", "family": "Brenti"}],
+                        "title": "A paper",
+                        "container-title": "A Journal",
+                        "volume": "4",
+                        "issue": "2",
+                        "page": "1-9",
+                        "issued": {"date-parts": [[1995]]},
+                        "DOI": "10.1000/example",
+                    },
+                    "bibtex": "@article{Brenti1995, title={A paper}}\n",
+                },
+                "Other": {
+                    "label": "Oth20",
+                    "csl": {"title": "Other paper", "issued": {"date-parts": [[2020]]}},
+                    "bibtex": "@misc{Other, title={Other paper}}\n",
+                },
+            },
+        )
+        pages = load_catalog(self.root)
+        self.assertEqual(pages[0].references[0].key, "Other")
+        self.assertEqual(pages[0].theorems[0].symcat, "sampleTheorem")
+        output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        page = output["families/sample/index.html"]
+        self.assertIn('href="#ref-Brenti1995">[Bre95, Thm. 2.4.2]</a>', page)
+        self.assertIn('href="#ref-Other">[Oth20]</a>', page)
+        self.assertIn(
+            'href="https://www.symmetricfunctions.com/realRooted.htm#sampleTheorem"', page
+        )
+        self.assertIn("statement on symmetricfunctions.com", page)
+        self.assertIn('id="ref-Brenti1995"', page)
+        self.assertIn("Francesco Brenti", page)
+        self.assertIn("https://doi.org/10.1000/example", page)
+        self.assertIn("BibTeX", page)
+        self.assertGreater(page.index("A short contextual note."), page.index("References</h2>"))
+        self.assertGreater(
+            page.index('class="reference-list"'), page.index("A short contextual note.")
+        )
+        manifest = json.loads(output["catalog-manifest.json"])
+        declaration = manifest["pages"][0]["declarations"][0]
+        self.assertEqual(declaration["symcat"], "sampleTheorem")
+        self.assertEqual(
+            declaration["url"],
+            "https://peralexandersson.github.io/RealRooted/families/sample/"
+            "#decl-RealRooted-Challenges-Sample-proven",
+        )
+
+    def test_unknown_bibliography_keys_and_symcat_labels_fail(self) -> None:
+        self.write_symcat()
+        for content, theorem, message in (
+            (
+                "# Sample\n\nUnknown [@Missing].\n\n## References\n",
+                '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
+                "unknown bibliography key Missing",
+            ),
+            (
+                "# Sample\n\n[Unknown](sf:missing).\n\n## References\n\n- prose",
+                '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
+                "unknown symmetricfunctions.com label missing",
+            ),
+            (
+                "# Sample\n\nText.\n\n## References\n\n- prose",
+                '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                'symcat = "missing"',
+                "unknown symmetricfunctions.com label missing",
+            ),
+        ):
+            with self.subTest(message=message):
+                self.write(
+                    "RealRooted/Challenges/Sample.lean",
+                    catalog_block(theorems=theorem, content=content)
+                    + "namespace RealRooted.Challenges.Sample\n"
+                    + "theorem proven : True := by trivial\n"
+                    + "end RealRooted.Challenges.Sample\n",
+                )
+                pages = load_catalog(self.root)
+                with self.assertRaisesRegex(CatalogError, message):
+                    render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+
+    def test_configurable_base_path_rewrites_legacy_absolute_links(self) -> None:
+        content = (
+            "# Sample\n\nSee [another page](/RealRooted/families/sample/).\n\n"
+            "## References\n\n- prose"
+        )
+        self.write("RealRooted/Challenges/Sample.lean", self.sample_source().replace(
+            "# Sample\n\nA checked result.\n\n## References\n\n- [Paper](https://example.org/)",
+            content,
+        ))
+        pages = load_catalog(self.root)
+        output = render_site(
+            self.root,
+            pages,
+            validate_sources(self.root, pages),
+            REVISION,
+            base_path="/",
+            site_origin="https://lean.symmetricfunctions.com",
+        )
+        self.assertIn('href="/families/sample/"', output["families/sample/index.html"])
+        self.assertNotIn('href="/RealRooted/', output["families/sample/index.html"])
+        declaration = json.loads(output["catalog-manifest.json"])["pages"][0]["declarations"][0]
+        self.assertEqual(
+            declaration["url"],
+            "https://lean.symmetricfunctions.com/families/sample/"
+            "#decl-RealRooted-Challenges-Sample-family",
+        )
+
+    def test_reference_section_may_be_populated_only_by_metadata(self) -> None:
+        source = catalog_block(
+            references='references = ["Only"]',
+            content="# Sample\n\nText.\n\n## References\n",
+        )
+        page = parse_challenge_source("Sample.lean", source, date(2026, 1, 2))
+        self.assertEqual(page.references[0].key, "Only")
+        with self.assertRaisesRegex(CatalogError, "References must not be empty"):
+            parse_challenge_source(
+                "Sample.lean",
+                catalog_block(content="# Sample\n\nText.\n\n## References\n"),
+                date(2026, 1, 2),
+            )
 
     def test_attribution_metadata_is_validated(self) -> None:
         bad_authors = catalog_block(authors='authors = ["Repeated", "Repeated"]')

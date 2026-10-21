@@ -45,8 +45,6 @@ private lemma affine_family_pair_data {f g : ℝ[X]}
   have hCt_nonneg : HasNonnegCoeffs (C t * f) := nonnegCoeffs_C_mul ht.le hfnn
   have hsum_nonneg : HasNonnegCoeffs (C t * f + g) := hCt_nonneg.add hgnn
   have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
-  have hCt_ne : C t * f ≠ 0 :=
-    mul_ne_zero (C_ne_zero.mpr ht.ne') hf0
   have hsum_ne : C t * f + g ≠ 0 :=
     add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hCt_nonneg hgnn hg0
   have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
@@ -77,7 +75,6 @@ protected theorem AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegr
     unfold g₀
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     simp_all
-  have hf₀_pos : HasPosLeadingCoeff f₀ := hasPosLeadingCoeff_of_monic hf₀_monic
   have hg₀_pos : HasPosLeadingCoeff g₀ := hasPosLeadingCoeff_of_monic hg₀_monic
   have hdeg₀ : f₀.natDegree < g₀.natDegree := by
     simp [f₀, g₀, natDegree_C_mul, hf_lc_ne, hg_lc_ne, hdeg]
@@ -103,103 +100,35 @@ protected theorem AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegr
       simp [g₀, f₀]
       grind
     lia
-  have hg₀_rr : (g₀ ≠ 0 ∧ g₀.Splits) := by
-    have hroots_real :
-        ∀ z ∈ (g₀.map (algebraMap ℝ ℂ)).roots, z ∈ (algebraMap ℝ ℂ).range := by
-      intro z hz_mem
-      have hmap_ne : g₀.map (algebraMap ℝ ℂ) ≠ 0 := by simp_all
-      have hz_root : (g₀.map (algebraMap ℝ ℂ)).IsRoot z :=
-        (Polynomial.mem_roots hmap_ne).1 hz_mem
-      have hz_aeval : g₀.aeval z = 0 := by simp_all
-      by_contra hz_range
-      have hz_im_ne : z.im ≠ 0 := by
-        intro hz_im
-        apply hz_range
-        refine ⟨z.re, ?_⟩
-        apply Complex.ext <;> simp [hz_im]
-      let δ : ℝ := |z.im| / 2
-      let R : ℝ := max ‖z‖ 1
-      have hδ_pos : 0 < δ := by grind
-      have hR_pos : 0 < R := by grind
-      have hg₀_deg_pos : 0 < g₀.natDegree := lt_of_le_of_lt (Nat.zero_le _) hdeg₀
-      have hdeg_nat_ne : g₀.natDegree ≠ 0 := Nat.ne_of_gt hg₀_deg_pos
-      let u : ℝ := δ / (2 * R)
-      let ε : ℝ := (u ^ g₀.natDegree) / (g₀.natDegree + 1)
-      have hu_nonneg : 0 ≤ u := by
-        unfold u
-        positivity
-      have hu_pos : 0 < u := by
-        unfold u
-        positivity
-      have hε_pos : 0 < ε := by
-        unfold ε
-        positivity
-      let μ : ℝ := ε / (coeffSumRange f₀ + 1)
-      have hcoeff_nonneg : 0 ≤ coeffSumRange f₀ := by
-        unfold coeffSumRange
-        exact Finset.sum_nonneg fun _ _ => norm_nonneg _
-      have hμ_pos : 0 < μ := by
-        unfold μ
-        positivity
-      have hμ_bound : μ * coeffSumRange f₀ < ε := by
-        unfold μ
-        have hden_pos : 0 < coeffSumRange f₀ + 1 := by linarith
-        have hfrac_lt_one : coeffSumRange f₀ / (coeffSumRange f₀ + 1) < 1 := by
-          rw [div_lt_iff₀ hden_pos]
-          linarith
-        have hcalc :
-            (ε / (coeffSumRange f₀ + 1)) * coeffSumRange f₀ =
-              ε * (coeffSumRange f₀ / (coeffSumRange f₀ + 1)) := by
-          grind
-        simp_all
-      have hcoeff :
-          ∀ i : ℕ, ‖(g₀ + C μ * f₀).coeff i - g₀.coeff i‖ < ε := by
-        intro i
-        exact lt_of_le_of_lt
-          (norm_coeff_sub_add_C_mul_le g₀ f₀ (μ := μ) (M := coeffSumRange f₀)
-            hμ_pos.le (fun j => coeff_norm_le_coeffSumRange f₀ j) i)
-          hμ_bound
-      have hμf_deg_lt : (C μ * f₀).natDegree < g₀.natDegree := by
-        simpa [natDegree_C_mul hμ_pos.ne'] using hdeg₀
-      have hsum_deg : (g₀ + C μ * f₀).natDegree = g₀.natDegree :=
-        natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hμf_deg_lt hg₀_pos
-      have hsum_monic : (g₀ + C μ * f₀).Monic := by
-        unfold Polynomial.Monic Polynomial.leadingCoeff
-        rw [hsum_deg, coeff_add, coeff_eq_zero_of_natDegree_lt hμf_deg_lt,
-          hg₀_monic.coeff_natDegree, add_zero]
-      obtain ⟨w, hw_root, hw_dist⟩ :=
-        exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
-          (f := g₀) (g := g₀ + C μ * f₀) (z := z) (ε := ε)
-          hε_pos hz_aeval hg₀_monic hsum_monic hsum_deg hcoeff
-            (hfamily₀ hμ_pos).2
-      have hw_im_zero : w.im = 0 :=
-        RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
-          (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2 hw_root
-      have hbound_eq :
-          ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R = δ / 2 := by
-        have hmul :
-            ((g₀.natDegree + 1 : ℝ) * ε) = u ^ g₀.natDegree := by
-          grind
-        calc
-          ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R
-              = (u ^ g₀.natDegree) ^ ((g₀.natDegree : ℝ)⁻¹) * R := by lia
-          _ = u * R := by rw [Real.pow_rpow_inv_natCast hu_nonneg hdeg_nat_ne]
-          _ = δ / 2 := by grind
-      have hdist_lt_delta : ‖z - w‖ < δ := by grind
-      have him_le : |z.im| ≤ ‖z - w‖ := by
-        simpa [Complex.sub_im, hw_im_zero] using (Complex.abs_im_le_norm (z - w))
-      grind
-    have hsplit : g₀.Splits :=
-      Polynomial.Splits.of_splits_map (i := algebraMap ℝ ℂ)
-        (IsAlgClosed.splits _) hroots_real
-    exact ⟨hg₀_monic.ne_zero, hsplit⟩
+  let δ : ℕ → ℝ := fun M => ((M : ℝ) + 1)⁻¹
+  have hδ_pos (M : ℕ) : 0 < δ M := by positivity
+  have hδ : Filter.Tendsto δ Filter.atTop (nhds 0) := by
+    simpa [δ, one_div] using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+  let p : ℕ → ℝ[X] := fun M => g₀ + C (δ M) * f₀
+  have hp_deg (M : ℕ) : (p M).natDegree = g₀.natDegree :=
+    natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
+      (by simpa [p, natDegree_C_mul (hδ_pos M).ne'] using hdeg₀) hg₀_pos
+  have hp_monic (M : ℕ) : (p M).Monic := by
+    unfold Polynomial.Monic Polynomial.leadingCoeff
+    rw [hp_deg]
+    dsimp only [p]
+    rw [coeff_add, hg₀_monic.coeff_natDegree,
+      coeff_eq_zero_of_natDegree_lt
+        (p := C (δ M) * f₀) (by simpa [natDegree_C_mul (hδ_pos M).ne'] using hdeg₀),
+      add_zero]
+  have hp_coeff (i : ℕ) : Filter.Tendsto (fun M => (p M).coeff i) Filter.atTop
+      (nhds (g₀.coeff i)) := by
+    simp only [p, coeff_add, coeff_C_mul]
+    simpa using tendsto_const_nhds.add (hδ.mul_const (f₀.coeff i))
+  have hg₀_rr : g₀ ≠ 0 ∧ g₀.Splits := ⟨hg₀_monic.ne_zero,
+    splits_of_monic_of_coeff_tendsto hg₀_monic hp_monic hp_deg
+      (fun M => (hfamily₀ (hδ_pos M)).2) hp_coeff⟩
   have hg_scale : C g.leadingCoeff * g₀ = g := by
     unfold g₀
     ext n
     simp_all
-  have hg_rr_scaled : ((C g.leadingCoeff * g₀) ≠ 0 ∧ (C g.leadingCoeff * g₀).Splits) :=
-    isRealRooted_C_mul hg₀_rr.1 hg₀_rr.2 hg_lc_ne
-  lia
+  rw [← hg_scale]
+  exact isRealRooted_C_mul hg₀_rr.1 hg₀_rr.2 hg_lc_ne
 
 /-- Boundary closure for a right family `g + μ f` when the perturbation has no
 higher degree than the base polynomial. The equal-degree case is exactly the
@@ -343,30 +272,16 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
     {s : ℝ} (hs : 0 < s) : ((g + C s * (X * f)) ≠ 0 ∧ (g + C s * (X * f)).Splits) := by
   have hf_pos : HasPosLeadingCoeff f := hfnn.pos_leadingCoeff hf0
   have hg_pos : HasPosLeadingCoeff g := hgnn.pos_leadingCoeff hg0
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
-  have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
-  have hCsXf_nonneg : HasNonnegCoeffs (C s * (X * f)) :=
-    nonnegCoeffs_C_mul hs.le hXf_nonneg
-  have hCsXf_ne : C s * (X * f) ≠ 0 :=
-    mul_ne_zero (C_ne_zero.mpr hs.ne') hXf_ne
-  have hbase_nonneg : HasNonnegCoeffs (g + C s * (X * f)) :=
-    hgnn.add hCsXf_nonneg
-  have hbase_ne : g + C s * (X * f) ≠ 0 :=
-    add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hgnn hCsXf_nonneg hCsXf_ne
   have hXf_pos : HasPosLeadingCoeff (X * f) := hf_pos.X_mul
   have hCsXf_pos : HasPosLeadingCoeff (C s * (X * f)) :=
     hasPosLeadingCoeff_C_mul hs hXf_pos
-  have hbase_pos : HasPosLeadingCoeff (g + C s * (X * f)) := by
-    rcases lt_trichotomy g.natDegree (X * f).natDegree with hdeg | hdeg | hdeg
-    · have hdeg' : g.natDegree < (C s * (X * f)).natDegree := by
-        simpa [natDegree_C_mul hs.ne'] using hdeg
-      exact hasPosLeadingCoeff_add_of_natDegree_lt_right hdeg' hCsXf_pos
-    · have hdeg' : g.natDegree = (C s * (X * f)).natDegree := by
-        simpa [natDegree_C_mul hs.ne'] using hdeg
-      exact hasPosLeadingCoeff_add_of_same_natDegree hdeg' hg_pos hCsXf_pos
-    · have hdeg' : (C s * (X * f)).natDegree < g.natDegree := by
-        simpa [natDegree_C_mul hs.ne'] using hdeg
-      exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg' hg_pos
+  have hCsXf_nonneg : HasNonnegCoeffs (C s * (X * f)) :=
+    nonnegCoeffs_C_mul hs.le hfnn.X_mul
+  have hbase_nonneg := hgnn.add hCsXf_nonneg
+  have hbase_ne : g + C s * (X * f) ≠ 0 := by
+    rw [add_comm]
+    exact add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hCsXf_nonneg hgnn hg0
+  have hbase_pos := hbase_nonneg.pos_leadingCoeff hbase_ne
   have hbase_deg : f.natDegree ≤ (g + C s * (X * f)).natDegree := by
     rcases lt_trichotomy g.natDegree (X * f).natDegree with hdeg | hdeg | hdeg
     · have hsum_deg : (g + C s * (X * f)).natDegree = (C s * (X * f)).natDegree :=
@@ -404,12 +319,9 @@ protected lemma AffineFamily.posComboRealRooted_right_of_affine_family
     (haff :
       ∀ {s t : ℝ}, 0 < s → 0 < t →
         ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits)) :
-    PosComboRealRooted g (X * f) := by
-  refine PosComboRealRooted.of_add_right ?_
-  intro s hs
-  exact
-    isRealRooted_add_X_mul_right_of_affine_family
-      hf0 hg0 hfnn hgnn haff hs
+    PosComboRealRooted g (X * f) :=
+  PosComboRealRooted.of_add_right fun {_} hs =>
+    isRealRooted_add_X_mul_right_of_affine_family hf0 hg0 hfnn hgnn haff hs
 
 /-- Data package for the fixed right-hand pair `(g, X * f)` extracted from the
 affine family after taking the boundary `t → 0`. This is the natural target
@@ -428,11 +340,9 @@ protected lemma AffineFamily.affine_family_right_pair_data {f g : ℝ[X]}
     X * f ≠ 0 ∧
     HasPosLeadingCoeff g ∧
     HasPosLeadingCoeff (X * f) := by
-  have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
-  have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   refine
     ⟨AffineFamily.posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff,
-      hgnn, hXf_nonneg, hg0, hXf_ne,
+      hgnn, hfnn.X_mul, hg0, mul_ne_zero X_ne_zero hf0,
       hgnn.pos_leadingCoeff hg0, (hfnn.pos_leadingCoeff hf0).X_mul⟩
 
 /-! ## Degree control for the affine family
@@ -512,18 +422,13 @@ theorem common_right_pair_iff_root_zero_or_common_fg
     (∃ r, g.IsRoot r ∧ (X * f).IsRoot r) ↔
       g.IsRoot 0 ∨ ∃ r, g.IsRoot r ∧ f.IsRoot r := by
   constructor
-  · intro h
-    rcases h with ⟨r, hgr, hXr⟩
+  · rintro ⟨r, hgr, hXr⟩
     by_cases hr0 : r = 0
     · lia
-    · right
-      exact ⟨r, hgr, isRoot_of_X_mul_of_ne_zero hr0 hXr⟩
-  · intro h
-    rcases h with hg0 | hcommon
+    · exact Or.inr ⟨r, hgr, isRoot_of_X_mul_of_ne_zero hr0 hXr⟩
+  · rintro (hg0 | ⟨r, hgr, hfr⟩)
     · exact ⟨0, hg0, by simp [Polynomial.IsRoot.def]⟩
-    · rcases hcommon with ⟨r, hgr, hfr⟩
-      refine ⟨r, hgr, ?_⟩
-      simp_all
+    · exact ⟨r, hgr, by simp_all⟩
 
 /-- If `g` has nonnegative coefficients and no common root with `X * f`, then
 every real root of `g` is strictly negative. -/

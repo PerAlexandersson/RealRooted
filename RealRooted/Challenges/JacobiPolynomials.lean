@@ -14,6 +14,9 @@ version = 1
 section = "families"
 slug = "jacobi-polynomials"
 formalized = "2026-09-07"
+references = [
+  "Szego1939",
+]
 authors = ["Jacobi", "Markoff", "Szegő"]
 years = [1859, 1886, 1939]
 
@@ -145,13 +148,10 @@ proved directly.
 ## References
 
 C. G. J. Jacobi, “Untersuchungen über die Differentialgleichung der
-hypergeometrischen Reihe,” *Journal für die reine und angewandte Mathematik*
-56 (1859), 149–165;
-A. Markoff, “Sur les racines de certaines équations (seconde note),”
-*Mathematische Annalen* 27 (1886), 177–182;
-G. Szegő, *Orthogonal Polynomials*, American Mathematical Society Colloquium
-Publications 23 (1939), Chapters IV and VI.
-The general three-term theory is on the
+hypergeometrischen Reihe,” *Journal für die reine und angewandte Mathematik* 56
+(1859), 149–165; A. Markoff, “Sur les racines de certaines équations (seconde
+note),” *Mathematische Annalen* 27 (1886), 177–182. See also [@Szego1939,
+Chs. IV and VI]. The general three-term theory is on the
 [Favard page](/RealRooted/theorems/favard/).
 <!-- /realrooted-catalog-content -->
 

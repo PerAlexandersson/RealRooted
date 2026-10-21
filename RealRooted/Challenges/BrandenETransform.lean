@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "branden-e-transform"
 formalized = "2026-09-14"
+references = [
+  "Branden2006",
+]
 authors = ["Brändén"]
 years = [2006]
 
@@ -68,7 +71,7 @@ $E(x^n) = F_n(x)$. Equivalently,
 $E\bigl(x(x - 1) \cdots (x - n + 1)\bigr) = n!\, x^n$, that is,
 $E\binom{x}{n} = x^n$.
 
-**Theorem (Brändén).** Let $p$ be a real polynomial whose roots are all real
+**Theorem (Brändén).** [@Branden2006] Let $p$ be a real polynomial whose roots are all real
 and lie in $[-1, 0]$.
 
 - If $p$ has positive leading coefficient, then $E(p)$ is a PF polynomial: it
@@ -92,10 +95,8 @@ combination of an interlacing sequence is real-rooted.
 
 ## References
 
-P. Brändén, “On linear transformations preserving the Pólya frequency
-property,” *Transactions of the American Mathematical Society* 358 (2006),
-3697–3716, [doi:10.1090/S0002-9947-06-03856-6](https://doi.org/10.1090/S0002-9947-06-03856-6).
-The ordered Bell numbers are [OEIS A000670](https://oeis.org/A000670).
+See [@Branden2006]. The ordered Bell numbers are
+[OEIS A000670](https://oeis.org/A000670).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

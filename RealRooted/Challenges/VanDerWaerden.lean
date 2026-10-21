@@ -8,6 +8,11 @@ version = 1
 section = "theorems"
 slug = "van-der-waerden"
 formalized = "2026-10-07"
+references = [
+  "Gurvits2008",
+  "Egorychev1981",
+  "Falikman1981",
+]
 authors = ["Egorychev", "Falikman", "Gurvits"]
 years = [1981, 2008]
 
@@ -36,12 +41,14 @@ label = "Gurvits' univariate coefficient inequality"
 <!-- realrooted-catalog-content -->
 # The van der Waerden permanent bound
 
-**Theorem (Egorychev, Falikman).** If $A$ is an $n \times n$ doubly stochastic matrix, then
+**Theorem (Egorychev, Falikman).** [@Egorychev1981; @Falikman1981]
+If $A$ is an $n \times n$ doubly stochastic matrix, then
 $$
 \operatorname{per} A \ge \frac{n!}{n^n}.
 $$
 
-The formal proof follows Gurvits. The *capacity* of a polynomial $p(x_1, \dotsc, x_n)$ with
+The formal proof follows Gurvits [@Gurvits2008]. The *capacity* of a polynomial
+$p(x_1, \dotsc, x_n)$ with
 nonnegative coefficients is $\inf_{x > 0} p(x) / (x_1 \cdots x_n)$. For a real stable
 polynomial $p$ of total degree at most $k$ in $k$ variables, differentiating in one variable
 and setting it to zero gives a real stable polynomial whose capacity is at least
@@ -53,15 +60,8 @@ $x_1 \cdots x_n$, which is $\operatorname{per} A$, and the factors multiply to $
 
 ## References
 
-G. P. Egorychev, [“The solution of van der Waerden's problem for
-permanents,”](https://doi.org/10.1016/0001-8708(81)90044-X) *Advances in
-Mathematics* 42 (1981), 299–305. D. I. Falikman, [“Proof of the van der
-Waerden conjecture regarding the permanent of a doubly stochastic
-matrix,”](https://doi.org/10.1007/BF01163285) *Mathematical Notes* 29 (1981),
-475–479. L. Gurvits, [“Van der Waerden/Schrijver–Valiant like conjectures and
-stable (aka hyperbolic) homogeneous polynomials: one theorem for
-all,”](https://doi.org/10.37236/790) *Electronic Journal of Combinatorics* 15
-(2008), R66.
+The classical proofs are [@Egorychev1981; @Falikman1981]. The formal proof
+follows [@Gurvits2008].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.Gurvits`.

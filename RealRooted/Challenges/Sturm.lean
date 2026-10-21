@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "sturm-root-counting"
 formalized = "2026-09-27"
+references = [
+  "Sylvester1853",
+]
 authors = ["Sturm", "Hermite", "Sylvester"]
 years = [1829, 1853]
 
@@ -77,7 +80,7 @@ distinct real roots in the open interval.
 Repeated factors are removed by a canonical squarefree normalization. If the
 interval contains every root, the same count tests whether all roots are real.
 
-**Hermite–Sylvester criterion.** Let $f$ be a monic real polynomial of degree
+**Hermite–Sylvester criterion.** [@Sylvester1853] Let $f$ be a monic real polynomial of degree
 $n$, and let $s_k = \sum_z z^k$ be the Newton power sums of its complex roots,
 counted with multiplicity. The Hermite matrix is
 $H_f = (s_{i+j})_{0 \le i, j \le n-1}$. Then $f$ is real-rooted if and only if
@@ -89,19 +92,15 @@ if its cubic discriminant is nonnegative.
 
 ## References
 
-J. C. F. Sturm, “Mémoire sur la résolution des équations numériques,”
-*Bulletin des Sciences de Férussac* 11 (1829), 419–422;
-C. Hermite, “Remarques sur le théorème de M. Sturm,” *Comptes rendus de
-l’Académie des sciences* 36 (1853), 52–54;
-J. J. Sylvester, [“On a theory of the syzygetic relations of two rational
-integral functions,”](https://doi.org/10.1098/rstl.1853.0018) *Philosophical
-Transactions of the Royal Society of London* 143 (1853), 407–548. See also
-the root-counting
-overview on [symmetricfunctions.com][sturm-overview] and the
+J. C. F. Sturm, “Mémoire sur la résolution des équations numériques,” *Bulletin
+des Sciences de Férussac* 11 (1829), 419–422; C. Hermite, “Remarques sur le
+théorème de M. Sturm,” *Comptes rendus de l’Académie des sciences* 36 (1853),
+52–54. See [@Sylvester1853], the root-counting overview on
+[symmetricfunctions.com][sturm-overview], and the
 [Hermite–Sylvester theorem][hermite-sylvester] there.
 
-[sturm-overview]: https://www.symmetricfunctions.com/realRootedInterlacing.htm#sturmRootCounting
-[hermite-sylvester]: https://www.symmetricfunctions.com/realRooted.htm#hermiteSylvesterTheorem
+[sturm-overview]: sf:sturmRootCounting
+[hermite-sylvester]: sf:hermiteSylvesterTheorem
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

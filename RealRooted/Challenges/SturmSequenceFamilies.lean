@@ -15,6 +15,14 @@ version = 1
 section = "families"
 slug = "sturm-sequence-families"
 formalized = "2026-05-12"
+references = [
+  "GesselStanley1978",
+  "MantaciRakotondrajao2003",
+  "Bona2009",
+  "ChowShiu2011",
+  "Wang2014",
+  "BonaHezo2016",
+]
 authors = ["Gessel", "Stanley", "Bóna", "Mantaci", "Rakotondrajao", "Chow", "Shiu", "Mező",
   "Wang"]
 years = [1978, 2003, 2009, 2011, 2014, 2016]
@@ -172,31 +180,12 @@ nonnegative combinations of common interlacers handles the extra term.
 
 ## References
 
-I. Gessel and R. P. Stanley, [“Stirling
-polynomials,”](https://doi.org/10.1016/0097-3165(78)90042-0) *Journal of
-Combinatorial Theory, Series A* 24 (1978), 24–33.
-R. Mantaci and F. Rakotondrajao, [“Exceedingly
-deranging!”](https://doi.org/10.1016/s0196-8858(02)00531-6) *Advances in
-Applied Mathematics* 30 (2003), 177–188.
-M. Bóna, [“Real zeros and normal distribution for statistics on Stirling
-permutations defined by Gessel and Stanley,”](https://doi.org/10.1137/070702254)
-*SIAM Journal on Discrete Mathematics* 23 (2009), 401–406.
-C.-O. Chow and W. C. Shiu, [“Counting simsun permutations by
-descents,”](https://doi.org/10.1007/s00026-011-0113-6) *Annals of
-Combinatorics* 15 (2011), 625–635.
-D. G. L. Wang, [“On colored set partitions of type
-$B_n$,”](https://doi.org/10.2478/s11533-014-0419-9) *Central European Journal
-of Mathematics* 12 (2014), 1372–1381.
-M. Bóna and I. Mező, [“Real zeros and partitions without singleton
-blocks,”](https://doi.org/10.1016/j.ejc.2015.07.021) *European Journal of
-Combinatorics* 51 (2016), 500–510.
-See also the
-[Touchard polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#touchardPolynomial),
-[Stirling permutations](https://www.symmetricfunctions.com/realRootedWords.htm#stirlingPermutationDescentPolynomial),
-the
-[derangement polynomials](https://www.symmetricfunctions.com/realRootedWords.htm#derangementPolynomial),
-and the
-[Motzkin-polynomial theorem](https://www.symmetricfunctions.com/realRootedCatalan.htm#motzkinPolynomialsRealRooted)
+See [@GesselStanley1978; @MantaciRakotondrajao2003; @Bona2009;
+@ChowShiu2011; @Wang2014; @BonaHezo2016]. See also the
+[Touchard polynomials](sf:touchardPolynomial),
+[Stirling permutations](sf:stirlingPermutationDescentPolynomial), the
+[derangement polynomials](sf:derangementPolynomial), and the
+[Motzkin-polynomial theorem](sf:motzkinPolynomialsRealRooted)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 

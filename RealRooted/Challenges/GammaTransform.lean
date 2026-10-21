@@ -10,6 +10,11 @@ version = 1
 section = "theorems"
 slug = "gamma-transform"
 formalized = "2026-10-06"
+references = [
+  "Petersen2015EulerianNumbers",
+  "HosterStump2025x",
+  "Branden2015",
+]
 authors = ["Petersen", "Hoster", "Stump"]
 years = [2015, 2025]
 
@@ -80,7 +85,8 @@ nonzero and real-rooted with only nonpositive zeros. In particular, if
 $\gamma \neq 0$ is real-rooted with nonnegative coefficients, then
 $\Gamma_d(\gamma)$ is real-rooted.
 
-**Theorem** (Hoster–Stump). Let $\deg \gamma \leq d/2$ and
+**Theorem** (Hoster–Stump). [@HosterStump2025x, Prop. 2.5] Let
+$\deg \gamma \leq d/2$ and
 $\deg \delta \leq (d+1)/2$, and let $\gamma$ and $\delta$ have nonnegative
 coefficients and nonzero constant terms. Then
 $\Gamma_d(\gamma) \ll \Gamma_{d+1}(\delta)$ if and only if
@@ -115,7 +121,8 @@ at a time. The Hoster–Stump equivalence follows by comparing the sorted root
 lists through the same monotone root map.
 
 For the pencil, the operator $T_n$ has a stable algebraic symbol, so the
-finite Borcea–Brändén theorem shows that it preserves real-rootedness on its
+finite Borcea–Brändén theorem [@Branden2015] shows that it preserves
+real-rootedness on its
 degree box. It therefore maps the real pencil spanned by $U_n$ and $V_n$ into
 the next one, starting from the linear pencil $a + bx$. By Obreschkoff's
 theorem, the pencil property makes $U_n$ and $V_n$ interlace, and the
@@ -123,12 +130,9 @@ constant terms $U_n(0) = 1$ and $V_n(0) = 0$ fix the orientation.
 
 ## References
 
-T. K. Petersen, *Eulerian Numbers*, Birkhäuser, 2015, Section 4.6;
-Hoster and Stump, [arXiv:2508.15538](https://arxiv.org/abs/2508.15538) (2025),
-Proposition 2.5; P. Brändén, “Unimodality, log-concavity,
-real-rootedness and beyond,” *Handbook of Enumerative Combinatorics*, CRC
-Press, 2015. See the
-[gamma polynomial on symmetricfunctions.com](https://www.symmetricfunctions.com/gammaPositivity.htm#gammaPolynomial).
+See [@Petersen2015EulerianNumbers, Sec. 4.6],
+[@HosterStump2025x, Prop. 2.5], and [@Branden2015]. See also the
+[gamma polynomial on symmetricfunctions.com](sf:gammaPolynomial).
 <!-- /realrooted-catalog-content -->
 
 This module exposes the real-rootedness transfer for the gamma transform, the

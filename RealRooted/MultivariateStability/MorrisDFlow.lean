@@ -463,6 +463,18 @@ def morrisAFlowContinuous (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisAFlowCoords q N t)
 
+private theorem continuous_conj_apply_of_apply_eq_smul (q N : ℕ)
+    (T : MorrisDegreeSpace q N →ₗ[ℝ] MorrisDegreeSpace q N)
+    (x : MorrisDegreeSpace q N) (c : ℝ) (hx : T x = c • x) :
+    LinearMap.toContinuousLinearMap (endOnMorrisDegreeCoords q N T)
+        (morrisDegreeEquiv q N x) = c • morrisDegreeEquiv q N x := by
+  change endOnMorrisDegreeCoords q N T (morrisDegreeEquiv q N x) = _
+  rw [endOnMorrisDegreeCoords, LinearEquiv.conj_apply]
+  simp only [LinearMap.comp_apply]
+  change morrisDegreeEquiv q N
+    (T ((morrisDegreeEquiv q N).symm (morrisDegreeEquiv q N x))) = _
+  rw [(morrisDegreeEquiv q N).symm_apply_apply, hx, map_smul]
+
 private def morrisMsymmDegree (q N : ℕ)
     (i : MorrisDegreeIndex q N) : MorrisDegreeSpace q N :=
   ⟨morrisMsymm q N i, morrisMsymm_mem q N i⟩
@@ -473,23 +485,10 @@ theorem morrisAContinuous_morrisMsymm (q N : ℕ)
         (morrisDegreeEquiv q N (morrisMsymmDegree q N i)) =
       (morrisAWeight i.2.1 : ℝ) •
         morrisDegreeEquiv q N (morrisMsymmDegree q N i) := by
-  simp only [morrisAContinuous]
-  change morrisACoords q N
-      (morrisDegreeEquiv q N (morrisMsymmDegree q N i)) = _
-  rw [morrisACoords, endOnMorrisDegreeCoords,
-    LinearEquiv.conj_apply]
-  simp only [LinearMap.comp_apply]
-  change morrisDegreeEquiv q N (morrisAOnDegree q N
-      ((morrisDegreeEquiv q N).symm
-        (morrisDegreeEquiv q N (morrisMsymmDegree q N i)))) = _
-  rw [(morrisDegreeEquiv q N).symm_apply_apply]
-  rw [show morrisAOnDegree q N (morrisMsymmDegree q N i) =
-      (morrisAWeight i.2.1 : ℝ) • morrisMsymmDegree q N i by
-    apply Subtype.ext
-    simpa [morrisMsymmDegree, morrisAOnDegree, morrisMsymm,
-      Nat.cast_smul_eq_nsmul] using
-        morrisA_msymm (R := ℝ) i.2.1]
-  exact map_smul (morrisDegreeEquiv q N) _ _
+  apply continuous_conj_apply_of_apply_eq_smul
+  apply Subtype.ext
+  simpa [morrisMsymmDegree, morrisAOnDegree, morrisMsymm,
+    Nat.cast_smul_eq_nsmul] using morrisA_msymm (R := ℝ) i.2.1
 
 theorem morrisAFlowContinuous_morrisMsymm (q N : ℕ) (t : ℝ)
     (i : MorrisDegreeIndex q N) :
@@ -497,65 +496,82 @@ theorem morrisAFlowContinuous_morrisMsymm (q N : ℕ) (t : ℝ)
         (morrisDegreeEquiv q N (morrisMsymmDegree q N i)) =
       Real.exp (-t * morrisAWeight i.2.1) •
         morrisDegreeEquiv q N (morrisMsymmDegree q N i) := by
-  simp only [morrisAFlowContinuous]
-  change morrisAFlowCoords q N t
-      (morrisDegreeEquiv q N (morrisMsymmDegree q N i)) = _
-  rw [morrisAFlowCoords, endOnMorrisDegreeCoords,
-    LinearEquiv.conj_apply]
-  simp only [LinearMap.comp_apply]
-  change morrisDegreeEquiv q N (morrisAFlowOnDegree q N t
-      ((morrisDegreeEquiv q N).symm
-        (morrisDegreeEquiv q N (morrisMsymmDegree q N i)))) = _
-  rw [(morrisDegreeEquiv q N).symm_apply_apply]
-  rw [show morrisAFlowOnDegree q N t (morrisMsymmDegree q N i) =
-      Real.exp (-t * morrisAWeight i.2.1) •
-        morrisMsymmDegree q N i by
-    apply Subtype.ext
-    simpa [morrisAFlowOnDegree, morrisMsymmDegree, morrisMsymm] using
-      morrisAFlow_msymm t i.2.1]
-  exact map_smul (morrisDegreeEquiv q N) _ _
+  apply continuous_conj_apply_of_apply_eq_smul
+  apply Subtype.ext
+  simpa [morrisAFlowOnDegree, morrisMsymmDegree, morrisMsymm] using
+    morrisAFlow_msymm t i.2.1
+
+private theorem span_degreeSubtype_eq_top {q N : ℕ} {ι : Type*}
+    (b : ι → MvPolynomial (Fin q) ℝ)
+    (hb : ∀ i, b i ∈ morrisDegreeSubmodule q N)
+    (hspan : Submodule.span ℝ (Set.range b) = morrisDegreeSubmodule q N) :
+    Submodule.span ℝ (Set.range fun i =>
+      (⟨b i, hb i⟩ : MorrisDegreeSpace q N)) = ⊤ := by
+  let b' : ι → MorrisDegreeSpace q N := fun i => ⟨b i, hb i⟩
+  apply top_unique
+  rintro ⟨P, hPd⟩ -
+  have hPb : P ∈ Submodule.span ℝ (Set.range b) := by
+    rw [hspan]
+    exact hPd
+  revert hPd
+  induction hPb using Submodule.span_induction with
+  | mem P hP =>
+      intro _
+      obtain ⟨i, rfl⟩ := hP
+      exact Submodule.subset_span ⟨i, Subtype.ext rfl⟩
+  | zero =>
+      intro hzero
+      change (0 : MorrisDegreeSpace q N) ∈ Submodule.span ℝ (Set.range b')
+      exact Submodule.zero_mem _
+  | add P Q hPb hQb hP hQ =>
+      intro hPQ
+      have hPd : P ∈ morrisDegreeSubmodule q N := by rw [← hspan]; exact hPb
+      have hQd : Q ∈ morrisDegreeSubmodule q N := by rw [← hspan]; exact hQb
+      change (⟨P, hPd⟩ + ⟨Q, hQd⟩ : MorrisDegreeSpace q N) ∈ _
+      exact Submodule.add_mem _ (hP hPd) (hQ hQd)
+  | smul r P hPb hP =>
+      intro hrP
+      have hPd : P ∈ morrisDegreeSubmodule q N := by rw [← hspan]; exact hPb
+      change (r • ⟨P, hPd⟩ : MorrisDegreeSpace q N) ∈ _
+      exact Submodule.smul_mem _ r (hP hPd)
+
+private theorem continuousLinearMap_ext_of_eq_on_span {q N : ℕ} {ι : Type*}
+    (b : ι → MvPolynomial (Fin q) ℝ)
+    (hb : ∀ i, b i ∈ morrisDegreeSubmodule q N)
+    (hspan : Submodule.span ℝ (Set.range b) = morrisDegreeSubmodule q N)
+    (F G : MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N)
+    (hFG : ∀ i, F (morrisDegreeEquiv q N ⟨b i, hb i⟩) =
+      G (morrisDegreeEquiv q N ⟨b i, hb i⟩)) : F = G := by
+  let b' : ι → MorrisDegreeSpace q N := fun i => ⟨b i, hb i⟩
+  have htop : Submodule.span ℝ (Set.range b') = ⊤ := by
+    simpa [b'] using span_degreeSubtype_eq_top b hb hspan
+  apply ContinuousLinearMap.ext
+  intro z
+  obtain ⟨x, rfl⟩ := (morrisDegreeEquiv q N).surjective z
+  have hx : x ∈ Submodule.span ℝ (Set.range b') := by rw [htop]; trivial
+  induction hx using Submodule.span_induction with
+  | mem x hx =>
+      obtain ⟨i, rfl⟩ := hx
+      exact hFG i
+  | zero => simp
+  | add x y _ _ hx hy => simpa only [map_add] using congrArg₂ (· + ·) hx hy
+  | smul r x _ hx => simpa only [map_smul] using congrArg (r • ·) hx
 
 theorem exp_neg_morrisAContinuous_eq_flow (q N : ℕ) (t : ℝ) :
     NormedSpace.exp ((-t) • morrisAContinuous q N) =
       morrisAFlowContinuous q N t := by
-  apply ContinuousLinearMap.ext
-  intro x
-  obtain ⟨P, rfl⟩ := (morrisDegreeEquiv q N).surjective x
-  rcases P with ⟨P, hP⟩
-  induction hP using Submodule.span_induction with
-  | mem P hP =>
-      obtain ⟨i, rfl⟩ := hP
-      let x := morrisDegreeEquiv q N (morrisMsymmDegree q N i)
-      have hx : ((-t) • morrisAContinuous q N) x =
-          (-t * morrisAWeight i.2.1) • x := by
-        rw [smul_apply, morrisAContinuous_morrisMsymm]
-        simp only [x, smul_smul]
-      change NormedSpace.exp ((-t) • morrisAContinuous q N) x =
-        morrisAFlowContinuous q N t x
-      rw [exp_apply_of_eigenvector _ _ _ hx]
-      exact morrisAFlowContinuous_morrisMsymm q N t i |>.symm
-  | zero =>
-      change NormedSpace.exp ((-t) • morrisAContinuous q N)
-          (morrisDegreeEquiv q N (0 : MorrisDegreeSpace q N)) =
-        morrisAFlowContinuous q N t
-          (morrisDegreeEquiv q N (0 : MorrisDegreeSpace q N))
-      simp
-  | add P Q hPm hQm hP hQ =>
-      change NormedSpace.exp ((-t) • morrisAContinuous q N)
-          (morrisDegreeEquiv q N
-            (⟨P, hPm⟩ + ⟨Q, hQm⟩ : MorrisDegreeSpace q N)) =
-        morrisAFlowContinuous q N t
-          (morrisDegreeEquiv q N
-            (⟨P, hPm⟩ + ⟨Q, hQm⟩ : MorrisDegreeSpace q N))
-      simp only [map_add]
-      rw [hP, hQ]
-  | smul r P hPm hP =>
-      change NormedSpace.exp ((-t) • morrisAContinuous q N)
-          (morrisDegreeEquiv q N (r • ⟨P, hPm⟩ : MorrisDegreeSpace q N)) =
-        morrisAFlowContinuous q N t
-          (morrisDegreeEquiv q N (r • ⟨P, hPm⟩ : MorrisDegreeSpace q N))
-      simp only [map_smul]
-      rw [hP]
+  apply continuousLinearMap_ext_of_eq_on_span (morrisMsymm q N)
+    (morrisMsymm_mem q N) rfl
+  intro i
+  let x := morrisDegreeEquiv q N (morrisMsymmDegree q N i)
+  have hx : ((-t) • morrisAContinuous q N) x =
+      (-t * morrisAWeight i.2.1) • x := by
+    rw [smul_apply, morrisAContinuous_morrisMsymm]
+    simp only [x, smul_smul]
+  change NormedSpace.exp ((-t) • morrisAContinuous q N) x =
+    morrisAFlowContinuous q N t x
+  rw [exp_apply_of_eigenvector _ _ _ hx]
+  exact morrisAFlowContinuous_morrisMsymm q N t i |>.symm
 
 private theorem isSymmetric_prod_esymm_real (q : ℕ)
     (s : Multiset ℕ) :
@@ -646,15 +662,11 @@ ring. -/
 def morrisBFlowAmbient (q N : ℕ) (t : ℝ) :
     MorrisDegreeSpace q N →ₗ[ℝ] MvPolynomial (Fin q) ℝ where
   toFun P := morrisBFlow q t (morrisDegreeToSymmetric q N P)
-  map_add' P Q := by
-    exact congrArg Subtype.val
-      (map_add (morrisBFlow q t)
-        (morrisDegreeToSymmetric q N P)
-        (morrisDegreeToSymmetric q N Q))
-  map_smul' r P := by
-    exact congrArg Subtype.val
-      (map_smul (morrisBFlow q t)
-        r (morrisDegreeToSymmetric q N P))
+  map_add' P Q := congrArg Subtype.val
+    (map_add (morrisBFlow q t) (morrisDegreeToSymmetric q N P)
+      (morrisDegreeToSymmetric q N Q))
+  map_smul' r P := congrArg Subtype.val
+    (map_smul (morrisBFlow q t) r (morrisDegreeToSymmetric q N P))
 
 private theorem morrisBFlow_mem {q N : ℕ} (t : ℝ)
     {P : MvPolynomial (Fin q) ℝ}
@@ -662,74 +674,47 @@ private theorem morrisBFlow_mem {q N : ℕ} (t : ℝ)
     (morrisBFlow q t
       ⟨P, isSymmetric_of_mem_morrisDegreeSubmodule hP0⟩ :
         MvPolynomial (Fin q) ℝ) ∈ morrisDegreeSubmodule q N := by
-  rw [morrisDegreeSubmodule_eq_elementary] at hP0 ⊢
-  induction hP0 using Submodule.span_induction with
-  | mem E hE =>
-      obtain ⟨i, rfl⟩ := hE
-      change (morrisBFlow q t
-        ⟨morrisElementaryPoly q N i,
-          isSymmetric_of_mem_morrisDegreeSubmodule
-            (morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
-              (Nat.lt_succ_iff.mp i.1.isLt))⟩ :
-          MvPolynomial (Fin q) ℝ) ∈ morrisElementarySubmodule q N
-      have heigen := morrisBFlow_morrisElementary q t i.2.1 i.2.2
-      rw [show (morrisBFlow q t
+  let b : MorrisDegreeIndex q N → MorrisDegreeSpace q N := fun i =>
+    ⟨morrisElementaryPoly q N i,
+      morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
+        (Nat.lt_succ_iff.mp i.1.isLt)⟩
+  have htop : Submodule.span ℝ (Set.range b) = ⊤ := by
+    simpa [b] using span_degreeSubtype_eq_top (morrisElementaryPoly q N)
+      (fun i => morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
+        (Nat.lt_succ_iff.mp i.1.isLt))
+      (morrisDegreeSubmodule_eq_elementary q N).symm
+  let x : MorrisDegreeSpace q N := ⟨P, hP0⟩
+  have hx : x ∈ Submodule.span ℝ (Set.range b) := by rw [htop]; trivial
+  change morrisBFlowAmbient q N t x ∈ morrisDegreeSubmodule q N
+  have hclosed : ∀ y ∈ Submodule.span ℝ (Set.range b),
+      morrisBFlowAmbient q N t y ∈ morrisDegreeSubmodule q N := by
+    intro y hy
+    induction hy using Submodule.span_induction with
+    | mem E hE =>
+        obtain ⟨i, rfl⟩ := hE
+        change (morrisBFlow q t
           ⟨morrisElementaryPoly q N i,
             isSymmetric_of_mem_morrisDegreeSubmodule
               (morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
                 (Nat.lt_succ_iff.mp i.1.isLt))⟩ :
-            MvPolynomial (Fin q) ℝ) =
-          Real.exp (t * morrisBWeight q i.2.1.conjugate) •
-            morrisElementaryPoly q N i by
-        exact congrArg Subtype.val heigen]
-      exact Submodule.smul_mem _ _
-        (Submodule.subset_span (Set.mem_range_self i))
-  | zero =>
-      have hzero : (0 : MvPolynomial (Fin q) ℝ) ∈
-          morrisDegreeSubmodule q N := Submodule.zero_mem _
-      change (morrisBFlow q t
-        ⟨0, isSymmetric_of_mem_morrisDegreeSubmodule hzero⟩ :
-          MvPolynomial (Fin q) ℝ) ∈ morrisElementarySubmodule q N
-      have hz : (⟨0, isSymmetric_of_mem_morrisDegreeSubmodule hzero⟩ :
-          symmetricSubalgebra (Fin q) ℝ) = 0 := Subtype.ext rfl
-      rw [hz, map_zero]
-      exact Submodule.zero_mem _
-  | add P Q hPe hQe hP hQ =>
-      have hPm : P ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hPe
-      have hQm : Q ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hQe
-      have hPQ : P + Q ∈ morrisDegreeSubmodule q N :=
-        Submodule.add_mem _ hPm hQm
-      change (morrisBFlow q t
-        ⟨P + Q, isSymmetric_of_mem_morrisDegreeSubmodule hPQ⟩ :
-          MvPolynomial (Fin q) ℝ) ∈ morrisElementarySubmodule q N
-      have hadd :
-          (⟨P + Q, isSymmetric_of_mem_morrisDegreeSubmodule hPQ⟩ :
-              symmetricSubalgebra (Fin q) ℝ) =
-            ⟨P, isSymmetric_of_mem_morrisDegreeSubmodule hPm⟩ +
-              ⟨Q, isSymmetric_of_mem_morrisDegreeSubmodule hQm⟩ :=
-        Subtype.ext rfl
-      rw [hadd, map_add]
-      exact Submodule.add_mem _ (hP hPm) (hQ hQm)
-  | smul r P hPe hP =>
-      have hPm : P ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hPe
-      have hrP : r • P ∈ morrisDegreeSubmodule q N :=
-        Submodule.smul_mem _ r hPm
-      change (morrisBFlow q t
-        ⟨r • P, isSymmetric_of_mem_morrisDegreeSubmodule hrP⟩ :
-          MvPolynomial (Fin q) ℝ) ∈ morrisElementarySubmodule q N
-      have hsmul :
-          (⟨r • P, isSymmetric_of_mem_morrisDegreeSubmodule hrP⟩ :
-              symmetricSubalgebra (Fin q) ℝ) =
-            r • ⟨P, isSymmetric_of_mem_morrisDegreeSubmodule hPm⟩ :=
-        Subtype.ext rfl
-      rw [hsmul, map_smul]
-      exact Submodule.smul_mem _ r (hP hPm)
+            MvPolynomial (Fin q) ℝ) ∈ morrisDegreeSubmodule q N
+        have heigen := morrisBFlow_morrisElementary q t i.2.1 i.2.2
+        rw [show (morrisBFlow q t
+            ⟨morrisElementaryPoly q N i,
+              isSymmetric_of_mem_morrisDegreeSubmodule
+                (morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
+                  (Nat.lt_succ_iff.mp i.1.isLt))⟩ :
+              MvPolynomial (Fin q) ℝ) =
+            Real.exp (t * morrisBWeight q i.2.1.conjugate) •
+              morrisElementaryPoly q N i by
+          exact congrArg Subtype.val heigen]
+        exact Submodule.smul_mem _ _
+          (morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
+            (Nat.lt_succ_iff.mp i.1.isLt))
+    | zero => simpa only [map_zero] using Submodule.zero_mem (morrisDegreeSubmodule q N)
+    | add P Q _ _ hP hQ => simpa only [map_add] using Submodule.add_mem _ hP hQ
+    | smul r P _ hP => simpa only [map_smul] using Submodule.smul_mem _ r hP
+  exact hclosed x hx
 
 theorem morrisBFlowAmbient_mem {q N : ℕ} (t : ℝ)
     (P : MorrisDegreeSpace q N) :
@@ -765,24 +750,11 @@ theorem morrisBContinuous_morrisElementary (q N : ℕ)
         (morrisDegreeEquiv q N (morrisElementaryDegree q N i)) =
       (morrisBWeight q i.2.1.conjugate : ℝ) •
         morrisDegreeEquiv q N (morrisElementaryDegree q N i) := by
-  simp only [morrisBContinuous]
-  change morrisBCoords q N
-      (morrisDegreeEquiv q N (morrisElementaryDegree q N i)) = _
-  rw [morrisBCoords, endOnMorrisDegreeCoords,
-    LinearEquiv.conj_apply]
-  simp only [LinearMap.comp_apply]
-  change morrisDegreeEquiv q N (morrisBOnDegree q N
-      ((morrisDegreeEquiv q N).symm
-        (morrisDegreeEquiv q N (morrisElementaryDegree q N i)))) = _
-  rw [(morrisDegreeEquiv q N).symm_apply_apply]
-  rw [show morrisBOnDegree q N (morrisElementaryDegree q N i) =
-      (morrisBWeight q i.2.1.conjugate : ℝ) •
-        morrisElementaryDegree q N i by
-    apply Subtype.ext
-    simpa [morrisElementaryDegree, morrisElementaryPoly,
-      morrisBOnDegree, Nat.cast_smul_eq_nsmul] using
-        morrisB_morrisElementary (R := ℝ) q i.2.1 i.2.2]
-  exact map_smul (morrisDegreeEquiv q N) _ _
+  apply continuous_conj_apply_of_apply_eq_smul
+  apply Subtype.ext
+  simpa [morrisElementaryDegree, morrisElementaryPoly, morrisBOnDegree,
+    Nat.cast_smul_eq_nsmul] using
+      morrisB_morrisElementary (R := ℝ) q i.2.1 i.2.2
 
 theorem morrisBFlowContinuous_morrisElementary (q N : ℕ)
     (t : ℝ) (i : MorrisDegreeIndex q N) :
@@ -790,90 +762,29 @@ theorem morrisBFlowContinuous_morrisElementary (q N : ℕ)
         (morrisDegreeEquiv q N (morrisElementaryDegree q N i)) =
       Real.exp (t * morrisBWeight q i.2.1.conjugate) •
         morrisDegreeEquiv q N (morrisElementaryDegree q N i) := by
-  simp only [morrisBFlowContinuous]
-  change morrisBFlowCoords q N t
-      (morrisDegreeEquiv q N (morrisElementaryDegree q N i)) = _
-  rw [morrisBFlowCoords, endOnMorrisDegreeCoords,
-    LinearEquiv.conj_apply]
-  simp only [LinearMap.comp_apply]
-  change morrisDegreeEquiv q N (morrisBFlowOnDegree q N t
-      ((morrisDegreeEquiv q N).symm
-        (morrisDegreeEquiv q N (morrisElementaryDegree q N i)))) = _
-  rw [(morrisDegreeEquiv q N).symm_apply_apply]
-  rw [show morrisBFlowOnDegree q N t (morrisElementaryDegree q N i) =
-      Real.exp (t * morrisBWeight q i.2.1.conjugate) •
-        morrisElementaryDegree q N i by
-    apply Subtype.ext
-    exact congrArg
-      (fun P : symmetricSubalgebra (Fin q) ℝ =>
-        (P : MvPolynomial (Fin q) ℝ))
-      (morrisBFlow_morrisElementary q t i.2.1 i.2.2)]
-  exact map_smul (morrisDegreeEquiv q N) _ _
+  apply continuous_conj_apply_of_apply_eq_smul
+  apply Subtype.ext
+  exact congrArg (fun P : symmetricSubalgebra (Fin q) ℝ =>
+    (P : MvPolynomial (Fin q) ℝ))
+    (morrisBFlow_morrisElementary q t i.2.1 i.2.2)
 
 theorem exp_morrisBContinuous_eq_flow (q N : ℕ) (t : ℝ) :
     NormedSpace.exp (t • morrisBContinuous q N) =
       morrisBFlowContinuous q N t := by
-  apply ContinuousLinearMap.ext
-  intro x
-  obtain ⟨P, rfl⟩ := (morrisDegreeEquiv q N).surjective x
-  rcases P with ⟨P, hP⟩
-  have hPe : P ∈ morrisElementarySubmodule q N := by
-    rw [← morrisDegreeSubmodule_eq_elementary]
-    exact hP
-  revert hP
-  induction hPe using Submodule.span_induction with
-  | mem P hE =>
-      intro hPm
-      obtain ⟨i, rfl⟩ := hE
-      let x := morrisDegreeEquiv q N (morrisElementaryDegree q N i)
-      have hx : (t • morrisBContinuous q N) x =
-          (t * morrisBWeight q i.2.1.conjugate) • x := by
-        rw [smul_apply, morrisBContinuous_morrisElementary]
-        simp only [x, smul_smul]
-      change NormedSpace.exp (t • morrisBContinuous q N) x =
-        morrisBFlowContinuous q N t x
-      rw [exp_apply_of_eigenvector _ _ _ hx]
-      exact morrisBFlowContinuous_morrisElementary q N t i |>.symm
-  | zero =>
-      intro hzero
-      change NormedSpace.exp (t • morrisBContinuous q N)
-          (morrisDegreeEquiv q N (0 : MorrisDegreeSpace q N)) =
-        morrisBFlowContinuous q N t
-          (morrisDegreeEquiv q N (0 : MorrisDegreeSpace q N))
-      simp
-  | add P Q hPm hQm hP hQ =>
-      intro hPQ
-      have hPm' : P ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hPm
-      have hQm' : Q ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hQm
-      change NormedSpace.exp (t • morrisBContinuous q N)
-          (morrisDegreeEquiv q N
-            (⟨P, hPm'⟩ + ⟨Q, hQm'⟩ :
-                MorrisDegreeSpace q N)) =
-        morrisBFlowContinuous q N t
-          (morrisDegreeEquiv q N
-            (⟨P, hPm'⟩ + ⟨Q, hQm'⟩ :
-                MorrisDegreeSpace q N))
-      simp only [map_add]
-      rw [hP hPm', hQ hQm']
-  | smul r P hPm hP =>
-      intro hrP
-      have hPm' : P ∈ morrisDegreeSubmodule q N := by
-        rw [morrisDegreeSubmodule_eq_elementary]
-        exact hPm
-      change NormedSpace.exp (t • morrisBContinuous q N)
-          (morrisDegreeEquiv q N
-            (r • ⟨P, hPm'⟩ :
-              MorrisDegreeSpace q N)) =
-        morrisBFlowContinuous q N t
-          (morrisDegreeEquiv q N
-            (r • ⟨P, hPm'⟩ :
-              MorrisDegreeSpace q N))
-      simp only [map_smul]
-      rw [hP hPm']
+  apply continuousLinearMap_ext_of_eq_on_span (morrisElementaryPoly q N)
+    (fun i => morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2
+      (Nat.lt_succ_iff.mp i.1.isLt))
+    (morrisDegreeSubmodule_eq_elementary q N).symm
+  intro i
+  let x := morrisDegreeEquiv q N (morrisElementaryDegree q N i)
+  have hx : (t • morrisBContinuous q N) x =
+      (t * morrisBWeight q i.2.1.conjugate) • x := by
+    rw [smul_apply, morrisBContinuous_morrisElementary]
+    simp only [x, smul_smul]
+  change NormedSpace.exp (t • morrisBContinuous q N) x =
+    morrisBFlowContinuous q N t x
+  rw [exp_apply_of_eigenvector _ _ _ hx]
+  exact morrisBFlowContinuous_morrisElementary q N t i |>.symm
 
 /-- The polynomial with coordinate vector `x` in `MorrisDegreeSpace q N`. -/
 def morrisDegreePolynomial (q N : ℕ) (x : MorrisDegreeCoords q N) :

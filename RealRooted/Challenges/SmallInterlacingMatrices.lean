@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "small-interlacing-matrices"
 formalized = "2026-10-06"
+references = [
+  "Fisk2006x",
+  "Branden2015",
+]
 authors = ["Fisk", "Brändén"]
 years = [2006, 2015]
 
@@ -87,7 +91,7 @@ In particular, exactly 18 nondegenerate matrices preserve interlacing.
 
 ## Proof idea
 
-By the matrix criterion of Brändén (Theorem 7.8.5), a nonnegative polynomial
+By the matrix criterion of Brändén [@Branden2015, Thm. 7.8.5], a nonnegative polynomial
 matrix preserves interlacing sequences exactly when each ordered
 $2 \times 2$ submatrix, repeated indices allowed, satisfies an affine
 interlacing condition. For entries in $\{0, 1, x\}$ these nine conditions
@@ -98,11 +102,8 @@ follow by deciding the finite table.
 
 ## References
 
-S. Fisk, *Polynomials, roots, and interlacing*, arXiv:math/0612833, Chapter 3;
-P. Brändén, “Unimodality, log-concavity, real-rootedness and beyond,”
-*Handbook of Enumerative Combinatorics*, CRC Press, 2015, Theorem 7.8.5.
-See the
-[table on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#smallInterlacingMatrices).
+See [@Fisk2006x, Ch. 3] and [@Branden2015, Thm. 7.8.5]. See the
+[table on symmetricfunctions.com](sf:smallInterlacingMatrices).
 <!-- /realrooted-catalog-content -->
 
 This module exposes the checked classification of the atomic `2 × 2`

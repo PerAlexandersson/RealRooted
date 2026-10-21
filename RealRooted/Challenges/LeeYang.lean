@@ -8,6 +8,11 @@ version = 1
 section = "theorems"
 slug = "lee-yang"
 formalized = "2026-10-07"
+references = [
+  "LeeYang1952",
+  "Asano1970",
+  "Ruelle2010",
+]
 authors = ["Lee", "Yang", "Asano", "Ruelle"]
 years = [1952, 1970]
 
@@ -44,12 +49,13 @@ P(z) = \sum_{S \subseteq V} \Bigl(\prod_{i \in S} \prod_{j \notin S} a_{ij}\Bigr
 $$
 has no zeros when every $|z_i| < 1$, and none when every $|z_i| > 1$.
 
-**Theorem (Lee–Yang).** All zeros of $P(z, z, \dotsc, z)$ lie on the unit circle $|z| = 1$.
+**Theorem (Lee–Yang).** [@LeeYang1952] All zeros of $P(z, z, \dotsc, z)$ lie on
+the unit circle $|z| = 1$.
 
 For the ferromagnetic Ising model, $a_{ij} = e^{-2\beta J_{ij}}$ with $J_{ij} \ge 0$, so the
 zeros of the partition function in the fugacity lie on the unit circle.
 
-The proof uses Asano contractions. The two-site polynomial $1 + c(z_1 + z_2) + z_1 z_2$
+The proof uses Asano contractions [@Asano1970]. The two-site polynomial $1 + c(z_1 + z_2) + z_1 z_2$
 with $|c| \le 1$ has no zeros in the open bidisc. If
 $\alpha + \beta u + \gamma v + \delta u v$ has no zeros there, then neither does
 $\alpha + \delta z$. Building $P$ edge by edge as a product of two-site factors in separate
@@ -58,13 +64,7 @@ exterior statement follows from the identity $P(z) = (\prod_i z_i)\, P(1/z)$.
 
 ## References
 
-T. D. Lee and C. N. Yang, [“Statistical theory of equations of state and phase transitions.
-II. Lattice gas and Ising model,”](https://doi.org/10.1103/PhysRev.87.410) *Physical Review*
-87 (1952), 410–419; T. Asano, [“Lee–Yang theorem and the Griffiths inequality for the
-anisotropic Heisenberg ferromagnet,”](https://doi.org/10.1103/PhysRevLett.24.1409) *Physical
-Review Letters* 24 (1970), 1409–1411; D. Ruelle, [“Characterization of Lee–Yang
-polynomials,”](https://doi.org/10.4007/annals.2010.171.589) *Annals of Mathematics* 171
-(2010), 589–603.
+See [@LeeYang1952; @Asano1970; @Ruelle2010].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.

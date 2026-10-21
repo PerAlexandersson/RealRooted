@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
 formalized = "2026-10-05"
+references = [
+  "AissenSchoenbergWhitney1952",
+]
 authors = ["Aissen", "Schoenberg", "Whitney"]
 years = [1952]
 
@@ -60,6 +63,8 @@ label = "Karlin: zeros of PF polynomials avoid a sector around the positive axis
 <!-- realrooted-catalog-content -->
 # Aissen–Schoenberg–Whitney
 
+[@AissenSchoenbergWhitney1952]
+
 A real sequence $(a_k)_{k \geq 0}$ is a Pólya frequency sequence if its
 lower-triangular Toeplitz matrix, whose $(i, j)$ entry is $a_{i-j}$ for
 $j \leq i$ and $0$ otherwise, is totally nonnegative. The coefficient sequence
@@ -82,14 +87,12 @@ totally nonnegative matrices is totally nonnegative.
 
 ## References
 
-M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
-of totally positive sequences. I,” *Journal d’Analyse Mathématique* 2 (1952),
-93–103, [doi:10.1007/BF02786970](https://doi.org/10.1007/BF02786970). See the
-[Pólya-frequency overview on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney).
+See [@AissenSchoenbergWhitney1952] and the
+[Pólya-frequency overview on symmetricfunctions.com](sf:aissenSchoenbergWhitney).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney
+sf:aissenSchoenbergWhitney
 
 Original publication: M. Aissen, I. J. Schoenberg, and A. M. Whitney,
 "On the generating functions of totally positive sequences. I",

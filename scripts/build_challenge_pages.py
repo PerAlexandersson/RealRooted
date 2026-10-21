@@ -11,6 +11,8 @@ import tempfile
 sys.dont_write_bytecode = True
 
 from challenge_catalog import (
+    BASE_PATH,
+    SITE_ORIGIN,
     CatalogError,
     load_catalog,
     render_site,
@@ -42,6 +44,16 @@ def parse_args() -> argparse.Namespace:
         type=pathlib.Path,
         help="post-Lean audit report required for publishable output",
     )
+    parser.add_argument(
+        "--base-path",
+        default=BASE_PATH,
+        help=f"URL path at which the site is served (default: {BASE_PATH})",
+    )
+    parser.add_argument(
+        "--site-origin",
+        default=SITE_ORIGIN,
+        help=f"origin used for absolute manifest links (default: {SITE_ORIGIN})",
+    )
     return parser.parse_args()
 
 
@@ -57,7 +69,14 @@ def main() -> int:
         if args.check:
             # Render in memory so this check covers templates, internal links,
             # and optional catalog side data such as the Authors directory.
-            render_site(root, pages, resolved, revision)
+            render_site(
+                root,
+                pages,
+                resolved,
+                revision,
+                base_path=args.base_path,
+                site_origin=args.site_origin,
+            )
             print(f"ok: validated {len(pages)} curated catalog pages")
             return 0
         output = (
@@ -67,7 +86,14 @@ def main() -> int:
         )
         if output == root or output.is_relative_to(root):
             raise CatalogError("generated pages must use an output directory outside the repository")
-        files = render_site(root, pages, resolved, revision)
+        files = render_site(
+            root,
+            pages,
+            resolved,
+            revision,
+            base_path=args.base_path,
+            site_origin=args.site_origin,
+        )
         write_site(output, files)
         print(f"ok: wrote {len(files)} catalog files to {output}")
         if args.preview:

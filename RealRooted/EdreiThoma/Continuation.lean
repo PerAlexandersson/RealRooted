@@ -17,18 +17,14 @@ namespace RealRooted.EdreiThoma
 
 private lemma summable_norm_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) {z : ℂ}
     (hz : a 1 * ‖z‖ < 1) : Summable fun n => ‖(a n : ℂ) * z ^ n‖ := by
-  have hz' : a 1 * ‖((‖z‖ : ℝ) : ℂ)‖ < 1 := by simpa using hz
-  have := (IsPolyaFreqSeq.summable_genFun h h0 hz').norm
+  have := (IsPolyaFreqSeq.summable_genFun h h0 (by simpa using hz)).norm
   refine this.congr fun n => ?_
   simp [norm_pow, abs_of_nonneg (IsPolyaFreqSeq.nonneg h n)]
 
 private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
-  have : Continuous fun z : ℂ => c * ‖z‖ := continuous_const.mul continuous_norm
-  exact this.continuousAt.eventually_lt continuousAt_const (by simp)
+  exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
+    (by simp)
 
-private lemma summable_norm_ofReal {α : ℕ → ℝ} (sα : Summable α) :
-    Summable fun i => ‖(α i : ℂ)‖ := by
-  simpa [Complex.norm_real] using (summable_abs_iff.2 sα)
 namespace E7
 
 /-- Coefficient `k` of the formal product `(∑ a_n z^n) * P(z)`. -/
@@ -52,23 +48,18 @@ private lemma cp_sum (a : ℕ → ℝ) {ι : Type*} (s : Finset ι) (P : ι → 
   classical
   induction s using Finset.induction_on with
   | empty => simp [cp]
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, cp_add, ih]
+  | insert i s hi ih => simp only [Finset.sum_insert hi, cp_add, ih]
 
 private lemma cp_X_mul_succ (a : ℕ → ℝ) (P : ℝ[X]) (k : ℕ) :
     cp a (X * P) (k + 1) = cp a P k := by
-  simp only [cp]
-  rw [Finset.sum_range_succ']
-  simp [coeff_X_mul]
+  simp [cp, Finset.sum_range_succ', coeff_X_mul]
 
 private lemma cp_X_mul_zero (a : ℕ → ℝ) (P : ℝ[X]) : cp a (X * P) 0 = 0 := by
   simp [cp]
 
 private lemma cp_one (a : ℕ → ℝ) (k : ℕ) : cp a 1 k = a k := by
   simp only [cp, coeff_one]
-  rw [Finset.sum_eq_single 0]
-  · simp
-  · intro b _ hb; simp [hb]
-  · simp
+  rw [Finset.sum_eq_single 0] <;> simp_all
 
 private lemma cp_C_mul_X_pow (a : ℕ → ℝ) (c : ℝ) (j k : ℕ) :
     cp a (C c * X ^ j) k = c * tc a ((k : ℤ) - j) := by
@@ -139,10 +130,8 @@ private lemma pc_eq_det (a : ℕ → ℝ) (m n k : ℕ) :
 private lemma toeplitz_eq_tc (a : ℕ → ℝ) (i j : ℕ) :
     (toeplitz a) i j = tc a ((i : ℤ) - j) := by
   rw [toeplitz_apply]
-  unfold tc
-  by_cases h : j ≤ i
-  · rw [ite_eq_left h, ite_eq_left (by lia)]; congr 1; lia
-  · rw [ite_eq_right h, ite_eq_right (by lia)]
+  simp only [tc]
+  split_ifs <;> congr 1 <;> lia
 
 private lemma det_Mk_nonneg {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
     {m n k : ℕ} (hk : k ≤ m) :
@@ -167,12 +156,8 @@ private lemma pc_nonneg {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
   exact mul_nonneg (div_nonneg zero_le_one (hP n m).le) (det_Mk_nonneg hpf hk)
 
 private lemma pc_succ_eq_zero (a : ℕ → ℝ) (m n : ℕ) : pc a m (n + 1) (m + 1) = 0 := by
-  rw [pc_eq_det]
-  have : Matrix.det (Mk a m (n + 1) (m + 1)) = 0 := by
-    refine Matrix.det_zero_of_row_eq (i := 0) (j := 1) (by simp) ?_
-    funext j
-    simp [Mk]
-  rw [this, mul_zero]
+  rw [pc_eq_det, Matrix.det_zero_of_row_eq (i := 0) (j := 1) (by simp)
+    (by funext j; simp [Mk]), mul_zero]
 
 private lemma Q_eq_S_comp (a : ℕ → ℝ) (m n : ℕ) : Q a m n = (S a m n).comp (-X) := by
   rw [S, comp_neg_X_comp_neg_X]
@@ -202,9 +187,8 @@ private lemma pc_succ_sub (a : ℕ → ℝ) (hA : ∀ n m, A a n m ≠ 0) (m n k
 
 private lemma pc_succ_sub_zero (a : ℕ → ℝ) (hA : ∀ n m, A a n m ≠ 0) (m n : ℕ) :
     pc a (m + 1) (n + 1) 0 = pc a m (n + 1) 0 := by
-  have : pc a (m + 1) (n + 1) 0 - pc a m (n + 1) 0 = 0 := by
-    rw [pc, pc, ← cp_sub, Q_succ_sub a hA, mul_assoc, cp_C_mul, cp_X_mul_zero, mul_zero]
-  linarith
+  rw [← sub_eq_zero, pc, pc, ← cp_sub, Q_succ_sub a hA, mul_assoc, cp_C_mul,
+    cp_X_mul_zero, mul_zero]
 
 private lemma A_zero (a : ℕ → ℝ) (m : ℕ) : A a 0 m = 1 := by
   simp [A]
@@ -229,29 +213,17 @@ private lemma w_zero (a : ℕ → ℝ) (m : ℕ) : w a 0 m = a m := by
 
 private lemma rr_eq {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
     rr a m n = w a n (m + 1) / w a n m := by
-  have h1 := (hP (n + 1) m).ne'
-  have h2 := (hP n m).ne'
-  have h3 := (hP (n + 1) (m + 1)).ne'
-  have h4 := (hP n (m + 1)).ne'
   simp only [rr, w]
-  field_simp
+  field_simp [ne_of_gt (hP _ _)]
 
 private lemma gam_eq {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
     gam a m n = w a (n + 1) (m + 1) / w a n m := by
-  have h1 := (hP (n + 1) m).ne'
-  have h2 := (hP n m).ne'
-  have h3 := (hP (n + 1) (m + 1)).ne'
-  have h4 := (hP (n + 2) (m + 1)).ne'
   simp only [gam, w]
-  field_simp
+  field_simp [ne_of_gt (hP _ _)]
 
 private lemma gam_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
     0 < gam a m n := by
   rw [gam_eq hP]; exact div_pos (w_pos hP _ _) (w_pos hP _ _)
-
-end E7
-
-namespace E7
 
 /-- `u k ≤ C (L + δ)^k` for every `δ > 0`. -/
 private def GrowthBound (u : ℕ → ℝ) (L : ℝ) : Prop :=
@@ -401,10 +373,6 @@ private lemma growth_step {u v γ W0 W1 : ℕ → ℝ} {b b' : ℝ}
         _ ≤ max (u 0) (E / (b' + δ)) * (b' + δ) ^ (k + 1) :=
             mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity)
 
-end E7
-
-namespace E7
-
 section Limits
 
 variable {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a) (hP : ∀ n m, 0 < A a n m)
@@ -454,8 +422,7 @@ private lemma pn_succ_le (n k : ℕ) :
   | zero => rw [pn_succ_zero hSrec]
   | succ k =>
     rw [pn_succ_succ hSrec]
-    have := mul_nonneg (hβ n) (pn_nonneg hpf hP hSlim n k)
-    linarith
+    linarith [mul_nonneg (hβ n) (pn_nonneg hpf hP hSlim n k)]
 
 include hpf hP hS0 hSlim in
 private lemma pc_le_pn {μ n k : ℕ} (hk : k ≤ μ) :
@@ -489,8 +456,7 @@ private lemma pc_telescope (n k : ℕ) : ∀ M, k ≤ M →
   | base => simp [pc_succ_eq_zero]
   | succ M hkM ih =>
     rw [Finset.sum_Ico_succ_top hkM, ← ih]
-    have := pc_succ_sub a hA M n k
-    linarith
+    linarith [pc_succ_sub a hA M n k]
 
 include hpf hP hS0 hSlim in
 private lemma pn_succ_le_T (n k : ℕ) (sγ : Summable fun m => gam a m n) :
@@ -515,10 +481,6 @@ private lemma pn_succ_le_T (n k : ℕ) (sγ : Summable fun m => gam a m n) :
   exact le_of_tendsto (pc_tendsto hSlim (n + 1) (k + 1)) ((eventually_ge_atTop k).mono hT)
 
 end Limits
-
-end E7
-
-namespace E7
 
 private lemma hasSum_cp (a : ℕ → ℝ) {z : ℂ} {f : ℂ}
     (hf : HasSum (fun n => (a n : ℂ) * z ^ n) f)
@@ -655,8 +617,7 @@ theorem exists_entire_series_mul_tprod {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a
         exact mul_le_mul_of_nonneg_right (pn_le_a n k) (norm_nonneg _)
     have hmult : Multipliable fun j => (1 - (β j : ℂ) * z) := by
       have hs : Summable fun j => ‖((-β j : ℝ) : ℂ) * z‖ := by
-        simpa only [norm_mul] using
-          (summable_norm_ofReal (α := fun i => -β i) sβ.neg).mul_right ‖z‖
+        simpa [norm_mul, Complex.norm_real] using sβ.neg.norm.mul_right ‖z‖
       have := multipliable_one_add_of_summable hs
       convert this using 2 with j
       push_cast; ring
@@ -683,6 +644,15 @@ theorem exists_exp_factorization_of_mul_neg_eq {F G Q N : ℂ → ℂ}
   classical
   set K : ℂ → ℂ := fun z => if N z ≠ 0 then F z / N z else Q z / G (-z) with hKdef
   have hGm : Differentiable ℂ (fun z => G (-z)) := hG.comp differentiable_neg
+  have hFnz : ∀ z, N z ≠ 0 → F z ≠ 0 := by
+    intro z hn hf
+    apply hQz z ?_ hf
+    exact (mul_eq_zero.mp (by rw [← hFG z, hf, zero_mul])).resolve_right hn
+  have hQnz : ∀ z, N z = 0 → Q z ≠ 0 := by
+    intro z hn hq
+    have hg := hNz z hn
+    apply hQz z hq
+    exact (mul_eq_zero.mp (by rw [hFG z, hq, zero_mul])).resolve_right hg
   have hK : Differentiable ℂ K := by
     intro w
     by_cases hw : N w ≠ 0
@@ -702,21 +672,10 @@ theorem exists_exp_factorization_of_mul_neg_eq {F G Q N : ℂ → ℂ}
     intro z
     by_cases hn : N z ≠ 0
     · simp only [K, ite_eq_left hn]
-      refine div_ne_zero ?_ hn
-      intro hf
-      have : Q z * N z = 0 := by rw [← hFG z, hf, zero_mul]
-      rcases mul_eq_zero.1 this with h | h
-      · exact hQz z h hf
-      · exact hn h
+      exact div_ne_zero (hFnz z hn) hn
     · push Not at hn
       simp only [K, hn, ne_eq, not_true_eq_false, ite_false]
-      have hg := hNz z hn
-      refine div_ne_zero ?_ hg
-      intro hq
-      have : F z * G (-z) = 0 := by rw [hFG z, hq, zero_mul]
-      rcases mul_eq_zero.1 this with h | h
-      · exact hQz z hq h
-      · exact hg h
+      exact div_ne_zero (hQnz z hn) (hNz z hn)
   obtain ⟨φ, hφ, hexp⟩ := hK.exists_log_of_ne_zero hK0
   refine ⟨φ, hφ, fun z => ?_, fun z => ?_⟩
   · rw [hexp z]
@@ -730,24 +689,12 @@ theorem exists_exp_factorization_of_mul_neg_eq {F G Q N : ℂ → ℂ}
   · rw [Complex.exp_neg, hexp z]
     by_cases hn : N z ≠ 0
     · simp only [K, ite_eq_left hn]
-      have hf : F z ≠ 0 := by
-        intro hf
-        have : Q z * N z = 0 := by rw [← hFG z, hf, zero_mul]
-        rcases mul_eq_zero.1 this with h | h
-        · exact hQz z h hf
-        · exact hn h
-      field_simp
+      field_simp [hFnz z hn]
       linear_combination hFG z
     · push Not at hn
       have hg := hNz z hn
       simp only [K, hn, ne_eq, not_true_eq_false, ite_false]
-      have hq : Q z ≠ 0 := by
-        intro hq
-        have : F z * G (-z) = 0 := by rw [hFG z, hq, zero_mul]
-        rcases mul_eq_zero.1 this with h | h
-        · exact hQz z hq h
-        · exact hg h
-      field_simp
+      field_simp [hQnz z hn]
 
 
 end RealRooted.EdreiThoma

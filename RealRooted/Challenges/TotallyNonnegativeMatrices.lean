@@ -14,6 +14,12 @@ version = 1
 section = "theorems"
 slug = "totally-nonnegative-matrices"
 formalized = "2026-09-05"
+references = [
+  "Fisk2006x",
+  "Cryer1976",
+  "Karlin1968",
+  "FallatJohnson2011",
+]
 authors = ["Gantmacher", "Krein", "Karlin", "Cryer", "Fisk"]
 years = [1937, 1968, 1976, 2006]
 
@@ -114,7 +120,8 @@ are positive (the oscillatory case), then both characteristic polynomials of
 $A$ and $A'$ have simple roots, they have no common root, the interlacing is
 strict, and all eigenvalues of $A$ are positive.
 
-**Theorem** (TNN mixing, Fisk). Let $f_1, \dotsc, f_n$ be real-rooted
+**Theorem** (TNN mixing, Fisk). [@Fisk2006x, Thm. 3.7] Let
+$f_1, \dotsc, f_n$ be real-rooted
 polynomials with positive leading coefficients that form an interlacing
 sequence, so $f_i \ll f_j$ for $i < j$, and let $A$ be a TNN $m \times n$
 matrix. Then the nonzero entries of $A (f_1, \dotsc, f_n)^{\mathsf T}$ are
@@ -125,7 +132,7 @@ sequence in row order.
 $c \in \mathbb{R}^n$, then $\operatorname{var}(Ac) \leq \operatorname{var}(c)$,
 where $\operatorname{var}$ counts sign changes after deleting zero entries.
 
-**Theorem** (Cryer). A nonsingular lower-triangular real matrix is TNN as soon
+**Theorem** (Cryer). [@Cryer1976] A nonsingular lower-triangular real matrix is TNN as soon
 as every minor formed from arbitrary rows and an initial segment of the
 columns is nonnegative.
 
@@ -133,7 +140,7 @@ columns is nonnegative.
 matrix $A$ is primitive, then the eigenvalues of $A$ are real, positive and
 simple. Karlin's Gaussian matrices $\bigl(e^{-a(i-j)^2}\bigr)$ with $a > 0$ are
 strictly totally positive: every minor with strictly increasing rows and
-columns is positive.
+columns is positive [@Karlin1968].
 
 ## Proof idea
 
@@ -161,18 +168,11 @@ and passing to the limit.
 
 F. R. Gantmacher and M. G. Krein, *Oscillation Matrices and Kernels and Small
 Vibrations of Mechanical Systems*, 1937; revised English edition, AMS Chelsea,
-2002. S. Karlin, *Total Positivity*, Vol. I, Stanford University Press, 1968.
-C. W. Cryer, “Some properties of totally positive matrices,” *Linear Algebra
-Appl.* 15 (1976), 1–25,
-[DOI 10.1016/0024-3795(76)90076-8](https://doi.org/10.1016/0024-3795(76)90076-8).
-S. M. Fallat and C. R. Johnson, *Totally Nonnegative
-Matrices*, Princeton University Press, 2011. S. Fisk, [*Polynomials, roots,
-and interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833
-(2006), Theorem 3.7. See the
-[TNN matrices](https://www.symmetricfunctions.com/polyaFrequency.htm#totallyNonnegativeMatrix),
-[variation-diminishing property](https://www.symmetricfunctions.com/polyaFrequency.htm#variationDiminishingProperty)
-and [TNN mixing](https://www.symmetricfunctions.com/realRootedInterlacing.htm#tnnMixingInterlacing)
-entries on symmetricfunctions.com.
+2002. See [@Karlin1968; @Cryer1976; @FallatJohnson2011]. TNN mixing appears
+in [@Fisk2006x, Thm. 3.7]. See the
+[TNN matrices](sf:totallyNonnegativeMatrix),
+[variation-diminishing property](sf:variationDiminishingProperty), and
+[TNN mixing](sf:tnnMixingInterlacing) entries on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the spectral, interlacing, mixing, sign-variation and
