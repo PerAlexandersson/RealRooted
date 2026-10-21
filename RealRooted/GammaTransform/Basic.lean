@@ -47,16 +47,7 @@ def HasRootsNonpos (p : ℝ[X]) : Prop :=
 
 @[simp] lemma gammaTransform_add (d : ℕ) (γ δ : ℝ[X]) :
     gammaTransform d (γ + δ) = gammaTransform d γ + gammaTransform d δ := by
-  unfold gammaTransform
-  calc
-    ∑ i ∈ Finset.range (d / 2 + 1), C ((γ + δ).coeff i) * gammaBasisTerm d i
-      = ∑ i ∈ Finset.range (d / 2 + 1),
-          (C (γ.coeff i) * gammaBasisTerm d i + C (δ.coeff i) * gammaBasisTerm d i) := by
-            apply Finset.sum_congr rfl
-            intro i hi
-            rw [coeff_add, C_add, add_mul]
-    _ = gammaTransform d γ + gammaTransform d δ := by
-      simp [gammaTransform, Finset.sum_add_distrib]
+  simp only [gammaTransform, coeff_add, C_add, add_mul, Finset.sum_add_distrib]
 
 /-- The gamma transform distributes over a finite sum. -/
 theorem gammaTransform_finset_sum {ι : Type*} (d : ℕ) (s : Finset ι)
@@ -77,25 +68,20 @@ lemma gammaTransform_monomial (d n : ℕ) (a : ℝ) :
     gammaTransform d (monomial n a) =
       if n ≤ d / 2 then C a * gammaBasisTerm d n else 0 := by
   by_cases h : n ≤ d / 2
-  · have hn : n ∈ Finset.range (d / 2 + 1) := by simp_all
+  · rw [ite_eq_left h]
     unfold gammaTransform
     rw [Finset.sum_eq_single n]
+    · simp
+    · intro k _ hkn
+      simp [coeff_monomial, hkn.symm]
     · simp_all
-    · intro k hk hkn
-      have hcoeff : (monomial n a).coeff k = 0 := by simp [coeff_monomial, mt Eq.symm hkn]
-      simp_all
-    · lia
-  · unfold gammaTransform
-    have hsum :
-        ∑ k ∈ Finset.range (d / 2 + 1),
-          C ((monomial n a).coeff k) * gammaBasisTerm d k = 0 := by
-      refine Finset.sum_eq_zero ?_
-      intro k hk
-      have hklt : k < d / 2 + 1 := Finset.mem_range.mp hk
-      have hkn : k ≠ n := by lia
-      have hcoeff : (monomial n a).coeff k = 0 := by simp [coeff_monomial, mt Eq.symm hkn]
-      simp_all
-    lia
+  · rw [ite_eq_right h]
+    unfold gammaTransform
+    apply Finset.sum_eq_zero
+    intro k hk
+    have hk_le : k ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+    have hnk : n ≠ k := by lia
+    simp [coeff_monomial, hnk]
 
 /-- A scalar monomial in the ambient gamma range maps to its basis term. -/
 theorem gammaTransform_C_mul_X_pow {D i : ℕ} (a : ℝ)
@@ -110,17 +96,11 @@ lemma idTransform_X_add_one :
 lemma idTransform_raise {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
     idTransform (m + k) p = X ^ k * idTransform m p := by
   induction k with
-  | zero =>
-      lia
+  | zero => simp
   | succ k ih =>
-      have hp' : p.natDegree ≤ m + k := le_trans hp (Nat.le_add_right _ _)
-      calc
-        idTransform (m + (k + 1)) p = X * idTransform (m + k) p := by
-          simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
-            (idTransform_succ (d := m + k) (p := p) hp')
-        _ = X * (X ^ k * idTransform m p) := by lia
-        _ = (X * X ^ k) * idTransform m p := by grind
-        _ = X ^ (k + 1) * idTransform m p := by grind
+      rw [show m + (k + 1) = (m + k) + 1 by lia,
+        idTransform_succ (hp.trans (Nat.le_add_right _ _)), ih, pow_succ']
+      ring
 
 lemma idTransform_X_pow_mul {m k : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m) :
     idTransform (k + m) (X ^ k * p) = idTransform m p := by
@@ -218,8 +198,7 @@ theorem coeff_gammaTransform_pos_of_nonneg_of_coeff_zero_pos
       (hasNonnegCoeffs_gammaBasisTerm d i)) k
   · refine ⟨0, by simp, ?_⟩
     simp only [gammaBasisTerm_zero, coeff_C_mul]
-    rw [show (X + 1 : ℝ[X]) = 1 + X by ring]
-    rw [Polynomial.coeff_one_add_X_pow]
+    rw [show (X + 1 : ℝ[X]) = 1 + X by ring, Polynomial.coeff_one_add_X_pow]
     exact mul_pos hγ0 (by exact_mod_cast Nat.choose_pos hk)
 
 lemma isRealRooted_X_add_one_pow (n : ℕ) :
@@ -252,43 +231,30 @@ lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d /
     gammaTransform (d + 2) γ = (X + 1) ^ 2 * gammaTransform d γ := by
   unfold gammaTransform
   have hhalf : (d + 2) / 2 + 1 = d / 2 + 2 := by lia
-  rw [hhalf, Finset.sum_range_succ]
   have htop : γ.coeff (d / 2 + 1) = 0 :=
     Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ (Nat.lt_succ_self _))
-  rw [htop]
+  rw [hhalf, Finset.sum_range_succ, htop]
   simp only [map_zero, zero_mul, add_zero]
-  calc
-    ∑ i ∈ Finset.range (d / 2 + 1), C (γ.coeff i) * gammaBasisTerm (d + 2) i
-      = ∑ i ∈ Finset.range (d / 2 + 1),
-          (X + 1) ^ 2 * (C (γ.coeff i) * gammaBasisTerm d i) := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-          have hsub : d + 2 - 2 * i = (d - 2 * i) + 2 := by lia
-          rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_add]
-          ring
-    _ = (X + 1) ^ 2 * ∑ i ∈ Finset.range (d / 2 + 1), C (γ.coeff i) * gammaBasisTerm d i := by
-          rw [Finset.mul_sum]
-    _ = (X + 1) ^ 2 * gammaTransform d γ := by simp [gammaTransform]
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hi_le : i ≤ d / 2 := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hsub : d + 2 - 2 * i = (d - 2 * i) + 2 := by lia
+  rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_add]
+  ring
 
 lemma gammaTransform_odd (m : ℕ) (γ : ℝ[X]) :
     gammaTransform (2 * m + 1) γ = (X + 1) * gammaTransform (2 * m) γ := by
   have hhalf_odd : (2 * m + 1) / 2 = m := by lia
   have hhalf_even : (2 * m) / 2 = m := by lia
-  calc
-    gammaTransform (2 * m + 1) γ
-      = ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i := by
-          simp [gammaTransform, hhalf_odd]
-    _ = ∑ i ∈ Finset.range (m + 1), (X + 1) * (C (γ.coeff i) * gammaBasisTerm (2 * m) i) := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          have hi_le : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-          have hsub : 2 * m + 1 - 2 * i = (2 * m - 2 * i) + 1 := by lia
-          rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_succ]
-          ring
-    _ = (X + 1) * ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * m) i := by
-          rw [Finset.mul_sum]
-    _ = (X + 1) * gammaTransform (2 * m) γ := by simp [gammaTransform, hhalf_even]
+  unfold gammaTransform
+  rw [hhalf_odd, hhalf_even, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hi_le : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+  have hsub : 2 * m + 1 - 2 * i = (2 * m - 2 * i) + 1 := by lia
+  rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_succ]
+  ring
 
 /-- Repeated source-degree padding factors off two copies of `X + 1` at each
 step. -/
@@ -299,17 +265,10 @@ lemma gammaTransform_add_two_mul (d k : ℕ) {γ : ℝ[X]}
   induction k with
   | zero => simp
   | succ k ih =>
-      have hkdeg : γ.natDegree ≤ (d + 2 * k) / 2 := by lia
-      calc
-        gammaTransform (d + 2 * (k + 1)) γ =
-            gammaTransform ((d + 2 * k) + 2) γ := by congr 1
-        _ = (X + 1) ^ 2 * gammaTransform (d + 2 * k) γ :=
-          gammaTransform_pad_two hkdeg
-        _ = (X + 1) ^ 2 *
-            ((X + 1) ^ (2 * k) * gammaTransform d γ) := by rw [ih]
-        _ = (X + 1) ^ (2 * (k + 1)) * gammaTransform d γ := by
-          rw [show 2 * (k + 1) = 2 + 2 * k by lia, pow_add]
-          ring
+      rw [show d + 2 * (k + 1) = (d + 2 * k) + 2 by lia,
+        gammaTransform_pad_two (by lia), ih,
+        show 2 * (k + 1) = 2 + 2 * k by lia, pow_add]
+      ring
 
 /-- Hoster--Stump, Proposition 2.5, equation (2.2), factorization input:
 the excess ambient degree is exactly a power of `X + 1`. -/
@@ -327,54 +286,29 @@ theorem gammaTransform_eq_X_add_one_pow_mul_minimal
   have hiter := gammaTransform_add_two_mul (2 * n) (m - n) hbase
   rcases Nat.mod_two_eq_zero_or_one d with heven | hodd
   · have hd : d = 2 * m := by dsimp [m]; lia
-    calc
-      gammaTransform d γ =
-          gammaTransform (2 * n + 2 * (m - n)) γ := by
-            congr 1
-            lia
-      _ = (X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ := hiter
-      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
-        rw [show 2 * (m - n) = d - 2 * n by lia]
+    rw [hd, show 2 * m = 2 * n + 2 * (m - n) by lia, hiter]
+    congr 2
+    lia
   · have hd : d = 2 * m + 1 := by dsimp [m]; lia
-    calc
-      gammaTransform d γ = gammaTransform (2 * m + 1) γ := by congr 1
-      _ = (X + 1) * gammaTransform (2 * m) γ := gammaTransform_odd m γ
-      _ = (X + 1) *
-          ((X + 1) ^ (2 * (m - n)) * gammaTransform (2 * n) γ) := by
-            rw [show 2 * m = 2 * n + 2 * (m - n) by lia, hiter]
-      _ = (X + 1) ^ (d - 2 * n) * gammaTransform (2 * n) γ := by
-        rw [show d - 2 * n = 2 * (m - n) + 1 by lia, pow_succ']
-        ring
+    rw [hd, gammaTransform_odd, show 2 * m = 2 * n + 2 * (m - n) by lia, hiter,
+      show 2 * n + 2 * (m - n) + 1 - 2 * n = 2 * (m - n) + 1 by lia, pow_succ']
+    ring
 
 lemma gammaTransform_even_succ (m : ℕ) (γ : ℝ[X]) :
     gammaTransform (2 * (m + 1)) γ =
       (X + 1) * gammaTransform (2 * m + 1) γ + C (γ.coeff (m + 1)) * X ^ (m + 1) := by
   have hhalf_even : (2 * (m + 1)) / 2 = m + 1 := by lia
   have hhalf_odd : (2 * m + 1) / 2 = m := by lia
-  have hprefix :
-      ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * (m + 1)) i
-        = (X + 1) * gammaTransform (2 * m + 1) γ := by
-    calc
-      ∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * (m + 1)) i
-      = ∑ i ∈ Finset.range (m + 1),
-          (X + 1) * (C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i) := by
-          apply Finset.sum_congr rfl
-          intro i hi
-          have hi_le : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-          have hsub : 2 * (m + 1) - 2 * i = (2 * m + 1 - 2 * i) + 1 := by lia
-          rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_succ]
-          ring
-    _ = (X + 1) * ∑ i ∈ Finset.range (m + 1),
-        C (γ.coeff i) * gammaBasisTerm (2 * m + 1) i := by rw [Finset.mul_sum]
-    _ = (X + 1) * gammaTransform (2 * m + 1) γ := by simp [gammaTransform, hhalf_odd]
-  calc
-    gammaTransform (2 * (m + 1)) γ
-      = (∑ i ∈ Finset.range (m + 1), C (γ.coeff i) * gammaBasisTerm (2 * (m + 1)) i) +
-          C (γ.coeff (m + 1)) * gammaBasisTerm (2 * (m + 1)) (m + 1) := by
-            simp [gammaTransform, hhalf_even, Finset.sum_range_succ]
-    _ = (X + 1) * gammaTransform (2 * m + 1) γ + C (γ.coeff (m + 1)) * X ^ (m + 1) := by
-          rw [hprefix]
-          simp [gammaBasisTerm]
+  unfold gammaTransform
+  rw [hhalf_even, hhalf_odd, Finset.sum_range_succ, Finset.mul_sum]
+  congr 1
+  · apply Finset.sum_congr rfl
+    intro i hi
+    have hi_le : i ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
+    have hsub : 2 * (m + 1) - 2 * i = (2 * m + 1 - 2 * i) + 1 := by lia
+    rw [gammaBasisTerm, gammaBasisTerm, hsub, pow_succ]
+    ring
+  · simp [gammaBasisTerm]
 
 /-- Increasing the ambient degree by one factors off one copy of `X + 1`
 when the gamma polynomial fits the old degree box. -/
@@ -405,9 +339,7 @@ lemma gammaTransform_even_eval_neg_one (m : ℕ) (γ : ℝ[X]) :
     (gammaTransform (2 * m) γ).eval (-1) = γ.coeff m * (-1) ^ m := by
   unfold gammaTransform
   have hhalf_even : (2 * m) / 2 = m := by lia
-  rw [hhalf_even]
-  rw [Polynomial.eval_finsetSum]
-  rw [Finset.sum_eq_single m]
+  rw [hhalf_even, Polynomial.eval_finsetSum, Finset.sum_eq_single m]
   · simp [gammaBasisTerm]
   · intro i hi him
     have hi_lt : i < m := lt_of_le_of_ne (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)) him
@@ -485,50 +417,40 @@ lemma gammaTransform_even_injective :
       let c : ℝ := γ.coeff (m + 1)
       let γ' : ℝ[X] := γ - Polynomial.monomial (m + 1) c
       let δ' : ℝ[X] := δ - Polynomial.monomial (m + 1) c
+      have trunc_degree (p : ℝ[X]) (hp : p.natDegree ≤ m + 1) :
+          (p - Polynomial.monomial (m + 1) (p.coeff (m + 1))).natDegree ≤ m := by
+        refine natDegree_le_iff_coeff_eq_zero.mpr ?_
+        intro k hk
+        by_cases hk_top : k = m + 1
+        · simp_all
+        · have hk_gt : m + 1 < k := by lia
+          have hk_ne' : m + 1 ≠ k := by lia
+          rw [coeff_sub,
+            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_gt),
+            Polynomial.coeff_monomial]
+          simp [hk_ne']
       have hγ'_deg : γ'.natDegree ≤ m := by
-        refine natDegree_le_iff_coeff_eq_zero.mpr ?_
-        intro k hk
-        dsimp [γ', c]
-        by_cases hk_top : k = m + 1
-        · simp_all
-        · have hk_gt : m + 1 < k := by lia
-          have hγk : γ.coeff k = 0 :=
-            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hγ hk_gt)
-          have hk_ne' : m + 1 ≠ k := by lia
-          rw [coeff_sub, hγk, Polynomial.coeff_monomial]
-          simp [hk_ne']
+        simpa [γ', c] using trunc_degree γ hγ
       have hδ'_deg : δ'.natDegree ≤ m := by
-        refine natDegree_le_iff_coeff_eq_zero.mpr ?_
-        intro k hk
-        dsimp [δ', c]
-        by_cases hk_top : k = m + 1
-        · simp_all
-        · have hk_gt : m + 1 < k := by lia
-          have hδk : δ.coeff k = 0 :=
-            Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hδ hk_gt)
-          have hk_ne' : m + 1 ≠ k := by lia
-          rw [coeff_sub, hδk, Polynomial.coeff_monomial]
-          simp [hk_ne']
+        simpa [δ', c, hcoeff_top] using trunc_degree δ hδ
+      have transform_sub (p : ℝ[X]) (a : ℝ) :
+          gammaTransform (2 * m) (p - Polynomial.monomial (m + 1) a) =
+            gammaTransform (2 * m) p := by
+        rw [sub_eq_add_neg, gammaTransform_add]
+        rw [show -(Polynomial.monomial (m + 1) a) =
+          C (-1) * Polynomial.monomial (m + 1) a by simp]
+        rw [gammaTransform_C_mul]
+        simp [gammaTransform_monomial]
       have hγsmall :
           gammaTransform (2 * m) γ' = gammaTransform (2 * m) γ := by
-        dsimp [γ', c]
-        rw [sub_eq_add_neg, gammaTransform_add]
-        rw [show -(Polynomial.monomial (m + 1) (γ.coeff (m + 1))) =
-              C (-1) * Polynomial.monomial (m + 1) (γ.coeff (m + 1)) by simp]
-        rw [gammaTransform_C_mul]
-        simp [gammaTransform_monomial]
+        simpa [γ', c] using transform_sub γ c
       have hδsmall :
           gammaTransform (2 * m) δ' = gammaTransform (2 * m) δ := by
-        dsimp [δ', c]
-        rw [sub_eq_add_neg, gammaTransform_add]
-        rw [show -(Polynomial.monomial (m + 1) (γ.coeff (m + 1))) =
-              C (-1) * Polynomial.monomial (m + 1) (γ.coeff (m + 1)) by simp]
-        rw [gammaTransform_C_mul]
-        simp [gammaTransform_monomial]
+        simpa [δ', c] using transform_sub δ c
+      have hX1 : (X + 1 : ℝ[X]) ≠ 0 := by
+        simpa [sub_eq_add_neg, add_comm] using (X_sub_C_ne_zero (-1 : ℝ))
       have hodd :
           gammaTransform (2 * m + 1) γ = gammaTransform (2 * m + 1) δ := by
-        have hX1 : (X + 1 : ℝ[X]) ≠ 0 := by
-          simpa [sub_eq_add_neg, add_comm] using (X_sub_C_ne_zero (-1 : ℝ))
         have hEq' :
             (X + 1) * gammaTransform (2 * m + 1) γ +
                 C c * X ^ (m + 1) =
@@ -536,8 +458,6 @@ lemma gammaTransform_even_injective :
                 C c * X ^ (m + 1) := by
           simpa [gammaTransform_even_succ, hcoeff_top, c] using hEq
         simp_all
-      have hX1 : (X + 1 : ℝ[X]) ≠ 0 := by
-        simpa [sub_eq_add_neg, add_comm] using (X_sub_C_ne_zero (-1 : ℝ))
       have hsmall :
           gammaTransform (2 * m) γ' = gammaTransform (2 * m) δ' := by
         calc
@@ -580,8 +500,9 @@ theorem gammaTransform_eq_zero_iff_of_natDegree_le {d : ℕ} {γ : ℝ[X]}
     gammaTransform d γ = 0 ↔ γ = 0 := by
   constructor
   · intro hzero
-    exact gammaTransform_injective_of_natDegree_le hγ (by simp) (by simp_all)
-  · simp_all
+    exact gammaTransform_injective_of_natDegree_le hγ (by simp) (by simpa using hzero)
+  · rintro rfl
+    simp
 
 lemma natDegree_gammaBasisTerm_le (d i : ℕ) (hi : i ≤ d / 2) :
     (gammaBasisTerm d i).natDegree ≤ d := by
