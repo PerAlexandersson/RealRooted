@@ -417,8 +417,9 @@ syntax (name := rr_pf_interl_X_mul_both_named)
   "rr_pf_interl_X_mul_both" " using " "interl" ":=" term :
   tactic
 
-/-- Compatibility form of `rr_pf_interl_X_mul_both`: the former extra certificate fields are accepted
-and ignored, since the conclusion no longer needs them. -/
+/-- Compatibility form of `rr_pf_interl_X_mul_both`:
+the former extra certificate fields are accepted and ignored,
+since the conclusion no longer needs them. -/
 syntax (name := rr_pf_interl_X_mul_both_compat_named)
   "rr_pf_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
@@ -432,8 +433,9 @@ syntax (name := rr_pf_sequence_interl_X_mul_both_named)
   "rr_pf_sequence_interl_X_mul_both" " using " "interl" ":=" term :
   tactic
 
-/-- Compatibility form of `rr_pf_sequence_interl_X_mul_both`: the former extra certificate fields are accepted
-and ignored, since the conclusion no longer needs them. -/
+/-- Compatibility form of `rr_pf_sequence_interl_X_mul_both`:
+the former extra certificate fields are accepted and ignored,
+since the conclusion no longer needs them. -/
 syntax (name := rr_pf_sequence_interl_X_mul_both_compat_named)
   "rr_pf_sequence_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
