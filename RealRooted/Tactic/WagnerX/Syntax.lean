@@ -29,9 +29,7 @@ syntax (name := rr_strict_interl_mul_X_both)
   "rr_strict_interl_mul_X_both" " using " "proper" ":=" term :
   tactic
 
-/-- Compatibility form of `rr_strict_interl_mul_X_both`:
-the former extra certificate fields are accepted and ignored,
-since the conclusion no longer needs them. -/
+@[tactic_alt rr_strict_interl_mul_X_both]
 syntax (name := rr_strict_interl_mul_X_both_compat)
   "rr_strict_interl_mul_X_both" " using "
     "proper" ":=" term ","
@@ -87,9 +85,7 @@ syntax (name := rr_strict_interl_X_derivative_X_self)
     "degree_two" ":=" term :
   tactic
 
-/-- Compatibility form of `rr_strict_interl_X_derivative_X_self`:
-the former extra certificate fields are accepted and ignored,
-since the conclusion no longer needs them. -/
+@[tactic_alt rr_strict_interl_X_derivative_X_self]
 syntax (name := rr_strict_interl_X_derivative_X_self_compat)
   "rr_strict_interl_X_derivative_X_self" " using "
     "splits" ":=" term ","
