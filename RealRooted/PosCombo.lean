@@ -258,8 +258,8 @@ theorem StrictInterl.add_of_sameDegree_shift_left_of_roots_le
         r hdeg hf_pos hg_pos hf_le hg_le
   have ht_pos : HasPosLeadingCoeff t := hasPosLeadingCoeff_X_sub_C_mul hf_pos
   have hsum : StrictInterl g ([g, t].sum) := by
-    apply StrictInterl.sum_left_of_common_left_signed
-    all_goals simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
+    apply StrictInterl.sum_left_of_common_left_signed <;>
+      simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
   grind
 
 /-- If `f ⊳ g` with positive leading coefficients and non-negative `λ, μ`,
@@ -272,8 +272,8 @@ theorem StrictInterl.nonneg_combo_right {f g : ℝ[X]}
     (hab : 0 < a ∨ 0 < b) :
     StrictInterl (C a * f + C b * g) g := by
   have hweighted : StrictInterl (weightedSum [(a, f), (b, g)]) g := by
-    apply StrictInterl.weightedSum_right_of_nonneg [(a, f), (b, g)] g
-    all_goals simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
+    apply StrictInterl.weightedSum_right_of_nonneg [(a, f), (b, g)] g <;>
+      simp_all [StrictInterl.refl hfg.2.1.1 hfg.2.1.2]
   simp_all
 
 /-- Forward Obreschkoff direction: if `f ⊳ g` with positive leading coefficients,
@@ -837,8 +837,8 @@ theorem StrictInterl.nonneg_combo_left {f g : ℝ[X]}
     (hab : 0 < a ∨ 0 < b) :
     StrictInterl f (C a * f + C b * g) := by
   have hweighted : StrictInterl f (weightedSum [(a, f), (b, g)]) := by
-    apply StrictInterl.weightedSum_left_of_common_left_signed [(a, f), (b, g)] f
-    all_goals simp_all [StrictInterl.refl hfg.1.1 hfg.1.2]
+    apply StrictInterl.weightedSum_left_of_common_left_signed [(a, f), (b, g)] f <;>
+      simp_all [StrictInterl.refl hfg.1.1 hfg.1.2]
   simp_all
 
 /-- If `f ⊳ g` with positive leading coefficients and positive `a, b`,
