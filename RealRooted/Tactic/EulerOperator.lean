@@ -210,6 +210,8 @@ syntax (name := rr_thetaPlusOne_interl_named)
   "rr_thetaPlusOne_interl" " using " "interl" ":=" term :
   tactic
 
+/-- Compatibility form of `rr_thetaPlusOne_interl`: the former extra certificate fields are accepted
+and ignored, since the conclusion no longer needs them. -/
 syntax (name := rr_thetaPlusOne_interl_compat_named)
   "rr_thetaPlusOne_interl" " using "
     "left_pf" ":=" term ","
@@ -223,6 +225,8 @@ syntax (name := rr_thetaPlusOne_sequence_interl_named)
   "rr_thetaPlusOne_sequence_interl" " using " "interl" ":=" term :
   tactic
 
+/-- Compatibility form of `rr_thetaPlusOne_sequence_interl`: the former extra certificate fields are accepted
+and ignored, since the conclusion no longer needs them. -/
 syntax (name := rr_thetaPlusOne_sequence_interl_compat_named)
   "rr_thetaPlusOne_sequence_interl" " using "
     "left_pf" ":=" term ","
@@ -238,6 +242,8 @@ syntax (name := rr_iterateThetaPlusOne_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Compatibility form of `rr_iterateThetaPlusOne_interl`: the former extra certificate fields are accepted
+and ignored, since the conclusion no longer needs them. -/
 syntax (name := rr_iterateThetaPlusOne_interl_compat_named)
   "rr_iterateThetaPlusOne_interl" " using "
     "index" ":=" term ","
@@ -254,6 +260,8 @@ syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
     "interl" ":=" term :
   tactic
 
+/-- Compatibility form of `rr_iterateThetaPlusOne_sequence_interl`: the former extra certificate fields are accepted
+and ignored, since the conclusion no longer needs them. -/
 syntax (name := rr_iterateThetaPlusOne_sequence_interl_compat_named)
   "rr_iterateThetaPlusOne_sequence_interl" " using "
     "index" ":=" term ","
