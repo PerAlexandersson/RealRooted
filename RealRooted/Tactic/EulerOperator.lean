@@ -211,7 +211,7 @@ syntax (name := rr_thetaPlusOne_interl_named)
   tactic
 
 @[tactic_alt rr_thetaPlusOne_interl_named]
-syntax (name := rr_thetaPlusOne_interl_compat_named)
+syntax (name := rrThetaPlusOneInterlCompat)
   "rr_thetaPlusOne_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
@@ -225,7 +225,7 @@ syntax (name := rr_thetaPlusOne_sequence_interl_named)
   tactic
 
 @[tactic_alt rr_thetaPlusOne_sequence_interl_named]
-syntax (name := rr_thetaPlusOne_sequence_interl_compat_named)
+syntax (name := rrThetaPlusOneSequenceInterlCompat)
   "rr_thetaPlusOne_sequence_interl" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
@@ -241,7 +241,7 @@ syntax (name := rr_iterateThetaPlusOne_interl_named)
   tactic
 
 @[tactic_alt rr_iterateThetaPlusOne_interl_named]
-syntax (name := rr_iterateThetaPlusOne_interl_compat_named)
+syntax (name := rrIterateThetaPlusOneInterlCompat)
   "rr_iterateThetaPlusOne_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","
@@ -258,7 +258,7 @@ syntax (name := rr_iterateThetaPlusOne_sequence_interl_named)
   tactic
 
 @[tactic_alt rr_iterateThetaPlusOne_sequence_interl_named]
-syntax (name := rr_iterateThetaPlusOne_sequence_interl_compat_named)
+syntax (name := rrIterateThetaPlusOneSequenceInterlCompat)
   "rr_iterateThetaPlusOne_sequence_interl" " using "
     "index" ":=" term ","
     "left_pf" ":=" term ","

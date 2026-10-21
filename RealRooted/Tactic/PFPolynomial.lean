@@ -418,7 +418,7 @@ syntax (name := rr_pf_interl_X_mul_both_named)
   tactic
 
 @[tactic_alt rr_pf_interl_X_mul_both_named]
-syntax (name := rr_pf_interl_X_mul_both_compat_named)
+syntax (name := rrPfInterlXMulBothCompat)
   "rr_pf_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
@@ -432,7 +432,7 @@ syntax (name := rr_pf_sequence_interl_X_mul_both_named)
   tactic
 
 @[tactic_alt rr_pf_sequence_interl_X_mul_both_named]
-syntax (name := rr_pf_sequence_interl_X_mul_both_compat_named)
+syntax (name := rrPfSequenceInterlXMulBothCompat)
   "rr_pf_sequence_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","

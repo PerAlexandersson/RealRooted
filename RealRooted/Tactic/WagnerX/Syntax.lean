@@ -30,7 +30,7 @@ syntax (name := rr_strict_interl_mul_X_both)
   tactic
 
 @[tactic_alt rr_strict_interl_mul_X_both]
-syntax (name := rr_strict_interl_mul_X_both_compat)
+syntax (name := rrStrictInterlMulXBothCompat)
   "rr_strict_interl_mul_X_both" " using "
     "proper" ":=" term ","
     "left_nonneg" ":=" term ","
@@ -86,7 +86,7 @@ syntax (name := rr_strict_interl_X_derivative_X_self)
   tactic
 
 @[tactic_alt rr_strict_interl_X_derivative_X_self]
-syntax (name := rr_strict_interl_X_derivative_X_self_compat)
+syntax (name := rrStrictInterlXDerivativeXSelfCompat)
   "rr_strict_interl_X_derivative_X_self" " using "
     "splits" ":=" term ","
     "degree_two" ":=" term ","
