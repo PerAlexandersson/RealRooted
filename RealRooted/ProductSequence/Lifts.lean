@@ -23,9 +23,7 @@ theorem isRealRooted_of_product_lift_sequence
     (hrow : ∀ n : Nat, P n = F n * Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
-  have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
-    isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
-  simpa [hrow n] using hnext
+  simpa [hrow n] using isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
 
 /-- Right-factor variant of `isRealRooted_of_product_lift_sequence`. -/
 theorem isRealRooted_of_product_lift_right_sequence
@@ -48,10 +46,7 @@ theorem isRealRooted_of_product_tail_sequence
   intro n
   cases n with
   | zero => exact hbase
-  | succ n =>
-      have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
-        isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
-      simpa [hrow n] using hnext
+  | succ n => simpa [hrow n] using isRealRooted_mul_of_isRealRooted (hfactor n) (hquot n)
 
 /-- Right-factor variant of `isRealRooted_of_product_tail_sequence`. -/
 theorem isRealRooted_of_product_tail_right_sequence
@@ -71,8 +66,7 @@ theorem isRealRooted_of_model_sequence
     (hidentify : ∀ n : Nat, P n = Q n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
-  rw [hidentify n]
-  exact hmodel n
+  simpa [hidentify n] using hmodel n
 
 /-- Lift a real-rooted model sequence through rowwise nonzero scalars and
 monomial factors. -/
@@ -83,10 +77,9 @@ theorem isRealRooted_of_scalar_monomial_lift_sequence
     (hrow : ∀ n : Nat, P n = C (c n) * (X ^ (m n) * Q n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
-  have hproduct : X ^ (m n) * Q n ≠ 0 ∧ (X ^ (m n) * Q n).Splits :=
-    isRealRooted_mul_of_isRealRooted
-      (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)
-  simpa [hrow n] using isRealRooted_C_mul_of_isRealRooted hproduct (hc n)
+  simpa [hrow n] using isRealRooted_C_mul_of_isRealRooted
+    (isRealRooted_mul_of_isRealRooted
+      (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)) (hc n)
 
 /-- A real-rooted base row followed by scalar-monomial lifts of a model
 sequence. -/
@@ -99,14 +92,12 @@ theorem isRealRooted_of_scalar_monomial_tail_sequence
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   intro n
   cases n with
-  | zero =>
-      exact hbase
+  | zero => exact hbase
   | succ n =>
-      have hproduct : X ^ (m n) * Q n ≠ 0 ∧ (X ^ (m n) * Q n).Splits :=
-        isRealRooted_mul_of_isRealRooted
-          (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)
       simpa [Nat.succ_eq_add_one, hrow n] using
-        isRealRooted_C_mul_of_isRealRooted hproduct (hc n)
+        isRealRooted_C_mul_of_isRealRooted
+          (isRealRooted_mul_of_isRealRooted
+            (isRealRooted_pow_of_isRealRooted isRealRooted_X (m n)) (hmodel n)) (hc n)
 
 /-- Lift separate even and odd real-rooted model sequences through rowwise
 nonzero scalars and monomial factors. -/
@@ -121,14 +112,10 @@ theorem isRealRooted_of_even_odd_scalar_monomial_lift_sequence
       P (2 * n) = C (ceven n) * (X ^ (meven n) * Qeven n))
     (hodd : ∀ n : Nat,
       P (2 * n + 1) = C (codd n) * (X ^ (modd n) * Qodd n)) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have heven_realrooted :
-      ∀ n : Nat, P (2 * n) ≠ 0 ∧ (P (2 * n)).Splits :=
-    isRealRooted_of_scalar_monomial_lift_sequence heven_model hceven heven
-  have hodd_realrooted :
-      ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
-    isRealRooted_of_scalar_monomial_lift_sequence hodd_model hcodd hodd
-  exact isRealRooted_of_even_odd_sequence heven_realrooted hodd_realrooted
+    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
+  isRealRooted_of_even_odd_sequence
+    (isRealRooted_of_scalar_monomial_lift_sequence heven_model hceven heven)
+    (isRealRooted_of_scalar_monomial_lift_sequence hodd_model hcodd hodd)
 
 /-- Tail-start lift from a quotient sequence through row-wise real-rooted
 left factors. -/
@@ -144,9 +131,8 @@ theorem isRealRooted_of_product_lift_sequence_from
   by_cases hn : n ≤ N
   · exact hbase n hn
   · have hNn : N ≤ n := by lia
-    have hnext : F n * Q n ≠ 0 ∧ (F n * Q n).Splits :=
+    simpa [hrow n hNn] using
       isRealRooted_mul_of_isRealRooted (hfactor n hNn) (hquot n hNn)
-    simpa [hrow n hNn] using hnext
 
 /-- Right-factor variant of `isRealRooted_of_product_lift_sequence_from`. -/
 theorem isRealRooted_of_product_lift_right_sequence_from

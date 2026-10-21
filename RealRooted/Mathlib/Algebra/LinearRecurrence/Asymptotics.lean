@@ -41,32 +41,12 @@ theorem linear_ratio_tendsto {A B α β γ δ r : ℝ} (hA : A ≠ 0)
   have hnum : Tendsto
       (fun n : ℕ => A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
         α * (n : ℝ) * B * r ^ n) atTop (𝓝 (A * β)) := by
-    have hγ : Tendsto (fun n : ℕ => γ * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := γ)).mul hpow1
-    have hδ : Tendsto (fun n : ℕ => δ * r ^ n) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := δ)).mul hpow0
-    have hinner : Tendsto (fun n : ℕ =>
-        γ * ((n : ℝ) * r ^ n) + δ * r ^ n) atTop (𝓝 0) := by
-      simpa only [add_zero] using hγ.add hδ
-    have hterm : Tendsto (fun n : ℕ =>
-        A * (γ * (n : ℝ) + δ) * r ^ n) atTop (𝓝 0) := by
-      convert (tendsto_const_nhds (f := atTop) (x := A)).mul hinner using 1
-      · funext n
-        ring
-      · simp
-    have hα : Tendsto (fun n : ℕ => α * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := α)).mul hpow1
-    have hαB : Tendsto (fun n : ℕ =>
-        α * (n : ℝ) * B * r ^ n) atTop (𝓝 0) := by
-      convert hα.mul (tendsto_const_nhds (f := atTop) (x := B)) using 1
-      · funext n
-        ring
-      · simp
-    simpa only [sub_zero, add_zero] using
-      (tendsto_const_nhds.add hterm).sub hαB
+    have h := ((tendsto_const_nhds (f := atTop) (x := A * β)).add
+      (hpow1.const_mul (A * γ - α * B))).add (hpow0.const_mul (A * δ))
+    convert h using 1
+    · funext n
+      ring
+    · simp
   have hquot := hnum.div (hden.const_mul A) (mul_ne_zero hA hA)
   have hquot' : Tendsto (fun n : ℕ =>
       (A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
@@ -81,26 +61,10 @@ theorem linear_ratio_tendsto {A B α β γ δ r : ℝ} (hA : A ≠ 0)
       (A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
         α * (n : ℝ) * B * r ^ n) / (A * (A + B * r ^ n)) := by
     filter_upwards [hden_ne] with n hn
-    have hn' : r ^ n * B + A ≠ 0 := by
-      intro h
-      apply hn
-      rw [← h]
-      ring
-    have hn'' : A + r ^ n * B ≠ 0 := by
-      intro h
-      apply hn
-      simpa [mul_comm, add_comm] using h
     apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, hn', hn'']
+    field_simp [hA, hn, add_comm, mul_comm]
     ring
-  have heq' :
-      (fun n : ℕ =>
-        (A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
-          α * (n : ℝ) * B * r ^ n) / (A * (A + B * r ^ n))) =ᶠ[atTop]
-      (fun n : ℕ =>
-        ((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
-          (A + B * r ^ n) - (α / A) * (n : ℝ)) := heq.mono fun _ h => h.symm
-  exact hquot'.congr' heq'
+  exact hquot'.congr' (heq.mono fun _ h => h.symm)
 
 /-- The linear ratio remainder is exponentially small after one extra factor of
 the index. -/
@@ -119,42 +83,15 @@ theorem linear_ratio_remainder_mul_tendsto {A B α β γ δ r : ℝ} (hA : A ≠
     simpa only [mul_zero, add_zero] using
       (tendsto_const_nhds (f := atTop) (x := A)).add
         ((tendsto_const_nhds (f := atTop) (x := B)).mul hpow0)
-  have hnum : Tendsto (fun n : ℕ =>
-      ((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) * r ^ n)
-      atTop (𝓝 0) := by
-    have hγ : Tendsto (fun n : ℕ =>
-        (A * γ - α * B) * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := A * γ - α * B)).mul hpow1
-    have hδ : Tendsto (fun n : ℕ =>
-        (A * δ - β * B) * r ^ n) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := A * δ - β * B)).mul hpow0
-    have hsum : Tendsto (fun n : ℕ =>
-        (A * γ - α * B) * ((n : ℝ) * r ^ n) +
-          (A * δ - β * B) * r ^ n) atTop (𝓝 0) := by
-      simpa only [add_zero] using hγ.add hδ
-    convert hsum using 1
-    · funext n
-      ring
   have hnum' : Tendsto (fun n : ℕ =>
       ((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
         (n : ℝ) * r ^ n) atTop (𝓝 0) := by
-    have hγ : Tendsto (fun n : ℕ =>
-        (A * γ - α * B) * ((n : ℝ) ^ 2 * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := A * γ - α * B)).mul hpow2
-    have hδ : Tendsto (fun n : ℕ =>
-        (A * δ - β * B) * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := A * δ - β * B)).mul hpow1
-    have hsum : Tendsto (fun n : ℕ =>
-        (A * γ - α * B) * ((n : ℝ) ^ 2 * r ^ n) +
-          (A * δ - β * B) * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [add_zero] using hγ.add hδ
-    convert hsum using 1
+    have h := (hpow2.const_mul (A * γ - α * B)).add
+      (hpow1.const_mul (A * δ - β * B))
+    convert h using 1
     · funext n
       ring
+    · simp
   have hquot := hnum'.div (hden.const_mul A) (mul_ne_zero hA hA)
   have hquot' : Tendsto (fun n : ℕ =>
       (((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
@@ -169,27 +106,10 @@ theorem linear_ratio_remainder_mul_tendsto {A B α β γ δ r : ℝ} (hA : A ≠
       (((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
         (n : ℝ) * r ^ n) / (A * (A + B * r ^ n)) := by
     filter_upwards [hden_ne] with n hn
-    have hn' : r ^ n * B + A ≠ 0 := by
-      intro h
-      apply hn
-      rw [← h]
-      ring
-    have hn'' : A + r ^ n * B ≠ 0 := by
-      intro h
-      apply hn
-      simpa [mul_comm, add_comm] using h
     apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, hn', hn'']
+    field_simp [hA, hn, add_comm, mul_comm]
     ring
-  have heq' :
-      (fun n : ℕ =>
-        (((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
-          (n : ℝ) * r ^ n) / (A * (A + B * r ^ n))) =ᶠ[atTop]
-      (fun n : ℕ => (n : ℝ) *
-        ((((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
-          (A + B * r ^ n) - (α / A) * (n : ℝ)) - β / A)) :=
-    heq.mono fun _ h => h.symm
-  exact hquot'.congr' heq'
+  exact hquot'.congr' (heq.mono fun _ h => h.symm)
 
 /-- The normalized quadratic root-mode ratio has a finite limit after its
 quadratic and linear terms are removed. -/
@@ -214,47 +134,13 @@ theorem quadratic_ratio_tendsto {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
       A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
         η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n)
       atTop (𝓝 (A * κ)) := by
-    have hζ : Tendsto (fun n : ℕ => ζ * ((n : ℝ) ^ 2 * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := ζ)).mul hpow2
-    have hξ : Tendsto (fun n : ℕ => ξ * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := ξ)).mul hpow1
-    have hχ : Tendsto (fun n : ℕ => χ * r ^ n) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := χ)).mul hpow0
-    have htail : Tendsto (fun n : ℕ =>
-        A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n)
-        atTop (𝓝 0) := by
-      have hsum : Tendsto (fun n : ℕ =>
-          ζ * ((n : ℝ) ^ 2 * r ^ n) + ξ * ((n : ℝ) * r ^ n) +
-            χ * r ^ n) atTop (𝓝 0) := by
-        simpa only [add_zero] using (hζ.add hξ).add hχ
-      convert (tendsto_const_nhds (f := atTop) (x := A)).mul hsum using 1
-      · funext n
-        ring
-      · simp
-    have hη : Tendsto (fun n : ℕ =>
-        η * ((n : ℝ) ^ 2 * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := η)).mul hpow2
-    have hηB : Tendsto (fun n : ℕ =>
-        η * (n : ℝ) ^ 2 * B * r ^ n) atTop (𝓝 0) := by
-      convert hη.mul (tendsto_const_nhds (f := atTop) (x := B)) using 1
-      · funext n
-        ring
-      · simp
-    have hθ : Tendsto (fun n : ℕ =>
-        θ * ((n : ℝ) * r ^ n)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
-        (tendsto_const_nhds (f := atTop) (x := θ)).mul hpow1
-    have hθB : Tendsto (fun n : ℕ =>
-        θ * (n : ℝ) * B * r ^ n) atTop (𝓝 0) := by
-      convert hθ.mul (tendsto_const_nhds (f := atTop) (x := B)) using 1
-      · funext n
-        ring
-      · simp
-    simpa only [sub_zero, add_zero] using ((tendsto_const_nhds.add htail).sub hηB).sub hθB
+    have h := (((tendsto_const_nhds (f := atTop) (x := A * κ)).add
+      (hpow2.const_mul (A * ζ - η * B))).add
+      (hpow1.const_mul (A * ξ - θ * B))).add (hpow0.const_mul (A * χ))
+    convert h using 1
+    · funext n
+      ring
+    · simp
   have hquot := hnum.div (hden.const_mul A) (mul_ne_zero hA hA)
   have hquot' : Tendsto (fun n : ℕ =>
       (A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
@@ -272,29 +158,10 @@ theorem quadratic_ratio_tendsto {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
         η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n) /
         (A * (A + B * r ^ n)) := by
     filter_upwards [hden_ne] with n hn
-    have hn' : r ^ n * B + A ≠ 0 := by
-      intro h
-      apply hn
-      rw [← h]
-      ring
-    have hn'' : A + r ^ n * B ≠ 0 := by
-      intro h
-      apply hn
-      simpa [mul_comm, add_comm] using h
     apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, hn', hn'']
+    field_simp [hA, hn, add_comm, mul_comm]
     ring
-  have heq' :
-      (fun n : ℕ =>
-        (A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
-          η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n) /
-          (A * (A + B * r ^ n))) =ᶠ[atTop]
-      (fun n : ℕ =>
-        (((η * (n : ℝ) ^ 2 + θ * (n : ℝ) + κ) +
-            (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n) /
-          (A + B * r ^ n) - (η / A) * (n : ℝ) ^ 2 -
-          (θ / A) * (n : ℝ))) := heq.mono fun _ h => h.symm
-  exact hquot'.congr' heq'
+  exact hquot'.congr' (heq.mono fun _ h => h.symm)
 
 /-- The mean correction is bounded in the algebraic two-mode model. -/
 theorem linear_ratio_isBigO {A B α β γ δ r : ℝ} (hA : A ≠ 0)
@@ -369,14 +236,9 @@ theorem variance_ratio_tendsto {A B α β γ δ η θ κ ζ ξ χ r m c σ : ℝ
     dsimp [X, Y]
     rw [hquad, hsigma]
     ring
-  have heq :
-      (fun n : ℕ =>
-        Y n + X n - X n ^ 2 - (2 * m) * ((n : ℝ) * (X n - c))) =ᶠ[atTop]
-      (fun n : ℕ => Q n + M n - M n ^ 2 - σ * (n : ℝ)) :=
-    Filter.Eventually.of_forall fun n => (halg n).symm
   change Tendsto (fun n : ℕ => Q n + M n - M n ^ 2 - σ * (n : ℝ)) atTop
     (𝓝 (κ / A + c - c ^ 2))
-  exact hrest.congr' heq
+  exact hrest.congr' <| Filter.Eventually.of_forall fun n => (halg n).symm
 
 
 /-- Divide a sequence with a linear asymptotic by its index. -/
@@ -416,7 +278,8 @@ private theorem mode_eq_of_quadratic_recurrence {p q : ℝ} {S T : ℕ → ℝ}
   | more n ih0 ih1 =>
       rw [hS n, hT n, ih0, ih1]
 
-/-- A solution of `S (n+2) = p S (n+1) + q S n` is `A rⁿ + B sⁿ` for the distinct roots `r, s`. -/
+/-- A solution of `S (n+2) = p S (n+1) + q S n` is `A rⁿ + B sⁿ` for the
+distinct roots `r, s`. -/
 theorem two_mode_solution {p q r s A B : ℝ} {S : ℕ → ℝ}
     (hS : ∀ n : ℕ, S (n + 2) = p * S (n + 1) + q * S n)
     (hsum : r + s = p) (hprod : r * s = -q)
@@ -435,7 +298,8 @@ theorem two_mode_solution {p q r s A B : ℝ} {S : ℕ → ℝ}
   exact mode_eq_of_quadratic_recurrence hS hT (by simpa [T] using h0)
     (by simpa [T] using h1)
 
-/-- A recurrence forced by a two-mode sequence has a solution `(α n + β) rⁿ + (γ n + δ) sⁿ`. -/
+/-- A recurrence forced by a two-mode sequence has a solution
+`(α n + β) rⁿ + (γ n + δ) sⁿ`. -/
 theorem forced_linear_two_mode_solution {S T : ℕ → ℝ}
     {p q r s u v A B α β γ δ : ℝ}
     (hT : ∀ n : ℕ, T (n + 2) =

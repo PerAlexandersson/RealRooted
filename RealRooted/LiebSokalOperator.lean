@@ -29,11 +29,9 @@ theorem iteratedPDerivAt_eq_pow
   induction n with
   | zero => rfl
   | succ n ih =>
-      rw [pow_succ']
-      change MvPolynomial.pderiv i
-          (((MvPolynomial.pderiv i).toLinearMap ^ n) P) = _
-      rw [ih]
-      simp only [iteratedPDerivAt]
+    rw [pow_succ']
+    change MvPolynomial.pderiv i (((MvPolynomial.pderiv i).toLinearMap ^ n) P) = _
+    simp only [ih, iteratedPDerivAt]
 
 /-- A fixed enumeration of a finite variable type, used to define iterated
 partial differentiation without imposing an order on the variable type. -/
@@ -65,11 +63,7 @@ def applyMonomialDifferential
     applyMonomialDifferential (0 : sigma →₀ ℕ) P = P := by
   unfold applyMonomialDifferential
   generalize differentialVariableOrder sigma = l
-  induction l generalizing P with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, Finsupp.zero_apply, iteratedPDerivAt]
-      exact ih P
+  induction l generalizing P <;> simp_all [iteratedPDerivAt]
 
 private theorem foldl_iteratedPDerivAt_single_of_not_mem
     {R sigma : Type*} [CommSemiring R] (i : sigma)
@@ -79,15 +73,8 @@ private theorem foldl_iteratedPDerivAt_single_of_not_mem
   induction l generalizing P with
   | nil => rfl
   | cons j l ih =>
-      have hji : j ≠ i := by
-        intro h
-        apply hi
-        simp [h]
-      have hil : i ∉ l := by
-        intro h
-        exact hi (by simp [h])
-      rw [List.foldl_cons, Finsupp.single_eq_of_ne hji, iteratedPDerivAt]
-      exact ih P hil
+    rw [List.foldl_cons, Finsupp.single_eq_of_ne (by grind), iteratedPDerivAt]
+    exact ih P (by grind)
 
 private theorem foldl_iteratedPDerivAt_single
     {R sigma : Type*} [CommSemiring R] (i : sigma)
@@ -99,18 +86,13 @@ private theorem foldl_iteratedPDerivAt_single
   induction l generalizing P with
   | nil => simp at hi
   | cons j l ih =>
-      rw [List.foldl_cons]
-      by_cases hji : j = i
-      · subst j
-        have hil : i ∉ l := List.nodup_cons.mp hl |>.1
-        simp only [Finsupp.single_eq_same, iteratedPDerivAt]
-        exact foldl_iteratedPDerivAt_single_of_not_mem i l
-          (MvPolynomial.pderiv i P) hil
-      · have hij : i ≠ j := Ne.symm hji
-        have hil : i ∈ l := by simpa [hij] using hi
-        have hlnodup : l.Nodup := List.nodup_cons.mp hl |>.2
-        rw [Finsupp.single_eq_of_ne hji, iteratedPDerivAt]
-        exact ih P hil hlnodup
+    rw [List.foldl_cons]
+    by_cases hji : j = i
+    · subst j
+      simp only [Finsupp.single_eq_same, iteratedPDerivAt]
+      exact foldl_iteratedPDerivAt_single_of_not_mem i l (MvPolynomial.pderiv i P) (by grind)
+    · rw [Finsupp.single_eq_of_ne hji, iteratedPDerivAt]
+      exact ih P (by grind) (by grind)
 
 @[simp] theorem applyMonomialDifferential_single
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
@@ -141,16 +123,14 @@ theorem degreeOf_contractVariables_le
     {R ω : Type*} [CommRing R]
     (P : MvPolynomial ω R) (i j k : ω) :
     (contractVariables i j P).degreeOf k ≤ P.degreeOf k := by
-  refine (MvPolynomial.degreeOf_sub_le k _ _).trans (max_le ?_ ?_)
-  · exact MvPolynomial.degreeOf_specializeZero_le P i k
-  · exact
-      (MvPolynomial.degreeOf_pderiv_le (MvPolynomial.pderiv i P) j k).trans
-        (MvPolynomial.degreeOf_pderiv_le P i k)
+  exact (MvPolynomial.degreeOf_sub_le k _ _).trans <| max_le
+    (MvPolynomial.degreeOf_specializeZero_le P i k)
+    ((MvPolynomial.degreeOf_pderiv_le (MvPolynomial.pderiv i P) j k).trans
+      (MvPolynomial.degreeOf_pderiv_le P i k))
 
 @[simp] theorem contractVariables_zero
     {R ω : Type*} [CommRing R] (i j : ω) :
-    contractVariables i j (0 : MvPolynomial ω R) = 0 := by
-  simp [contractVariables]
+    contractVariables i j (0 : MvPolynomial ω R) = 0 := by simp [contractVariables]
 
 /-- Successively contract pairs of variables selected by two maps into an
 arbitrary ambient variable type. -/
@@ -163,8 +143,7 @@ def contractMappedVariablePairs
 @[simp] theorem contractMappedVariablePairs_nil
     {R sigma ω : Type*} [CommRing R]
     (left right : sigma → ω) (P : MvPolynomial ω R) :
-    contractMappedVariablePairs left right [] P = P := by
-  rfl
+    contractMappedVariablePairs left right [] P = P := rfl
 
 @[simp] theorem contractMappedVariablePairs_cons
     {R sigma ω : Type*} [CommRing R]
@@ -172,18 +151,13 @@ def contractMappedVariablePairs
     (P : MvPolynomial ω R) :
     contractMappedVariablePairs left right (i :: l) P =
       contractMappedVariablePairs left right l
-        (contractVariables (left i) (right i) P) := by
-  rfl
+        (contractVariables (left i) (right i) P) := rfl
 
 @[simp] theorem contractMappedVariablePairs_zero
     {R sigma ω : Type*} [CommRing R]
     (left right : sigma → ω) (l : List sigma) :
     contractMappedVariablePairs left right l (0 : MvPolynomial ω R) = 0 := by
-  induction l with
-  | nil => rfl
-  | cons i l ih =>
-      rw [contractMappedVariablePairs_cons, contractVariables_zero]
-      exact ih
+  induction l <;> simp_all
 
 /-- Iterated mapped contraction does not increase the degree in any ambient
 coordinate. -/
@@ -225,17 +199,13 @@ def contractVariablePairs {R sigma : Type*} [CommRing R]
     applyNegDifferential (MvPolynomial.monomial d c) G =
       MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * c) *
         applyMonomialDifferential d G := by
-  unfold applyNegDifferential
-  rw [MvPolynomial.sum_monomial_eq]
-  simp
+  simp [applyNegDifferential, MvPolynomial.sum_monomial_eq]
 
 @[simp] theorem applyNegDifferential_C
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (c : R) (G : MvPolynomial sigma R) :
     applyNegDifferential (MvPolynomial.C c) G = MvPolynomial.C c * G := by
-  unfold applyNegDifferential
-  rw [MvPolynomial.sum_C (by simp)]
-  simp [applyMonomialDifferential_zero]
+  simp [applyNegDifferential, MvPolynomial.sum_C, applyMonomialDifferential_zero]
 
 @[simp] theorem applyNegDifferential_X
     {R sigma : Type*} [CommRing R] [Fintype sigma]
@@ -248,8 +218,7 @@ def contractVariablePairs {R sigma : Type*} [CommRing R]
 @[simp] theorem applyNegDifferential_zero_left
     {R sigma : Type*} [CommRing R] [Fintype sigma]
     (G : MvPolynomial sigma R) :
-    applyNegDifferential 0 G = 0 := by
-  simpa using applyNegDifferential_C (0 : R) G
+    applyNegDifferential 0 G = 0 := by simpa using applyNegDifferential_C (0 : R) G
 
 @[simp] theorem iteratedPDerivAt_zero
     {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ) :
@@ -263,11 +232,7 @@ def contractVariablePairs {R sigma : Type*} [CommRing R]
     applyMonomialDifferential d (0 : MvPolynomial sigma R) = 0 := by
   unfold applyMonomialDifferential
   generalize differentialVariableOrder sigma = l
-  induction l with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, iteratedPDerivAt_zero]
-      exact ih
+  induction l <;> simp_all
 
 @[simp] theorem applyNegDifferential_zero_right
     {R sigma : Type*} [CommRing R] [Fintype sigma]
@@ -275,9 +240,7 @@ def contractVariablePairs {R sigma : Type*} [CommRing R]
     applyNegDifferential F 0 = 0 := by
   unfold applyNegDifferential
   rw [MvPolynomial.sum_def]
-  apply Finset.sum_eq_zero
-  intro d hd
-  simp
+  exact Finset.sum_eq_zero fun _ _ => by simp
 
 theorem iteratedPDerivAt_add
     {R sigma : Type*} [CommSemiring R] (i : sigma) (n : ℕ)
@@ -294,11 +257,7 @@ theorem applyMonomialDifferential_add
       applyMonomialDifferential d P + applyMonomialDifferential d Q := by
   unfold applyMonomialDifferential
   generalize differentialVariableOrder sigma = l
-  induction l generalizing P Q with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, iteratedPDerivAt_add, ih]
-      rfl
+  induction l generalizing P Q <;> simp_all [iteratedPDerivAt_add]
 
 theorem applyNegDifferential_add_right
     {R sigma : Type*} [CommRing R] [Fintype sigma]
@@ -317,8 +276,7 @@ theorem applyNegDifferential_add_left
   unfold applyNegDifferential
   classical
   apply Finsupp.sum_add_index'
-  · intro d
-    simp
+  · simp
   · intro d a b
     simp [mul_add, add_mul]
 
@@ -338,11 +296,7 @@ theorem applyMonomialDifferential_C_mul
       MvPolynomial.C c * applyMonomialDifferential d P := by
   unfold applyMonomialDifferential
   generalize differentialVariableOrder sigma = l
-  induction l generalizing P with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, iteratedPDerivAt_C_mul, ih]
-      rfl
+  induction l generalizing P <;> simp_all [iteratedPDerivAt_C_mul]
 
 theorem applyNegDifferential_C_mul_right
     {R sigma : Type*} [CommRing R] [Fintype sigma]
@@ -351,8 +305,7 @@ theorem applyNegDifferential_C_mul_right
       MvPolynomial.C c * applyNegDifferential F G := by
   unfold applyNegDifferential
   rw [MvPolynomial.sum_def, MvPolynomial.sum_def, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro d _
+  refine Finset.sum_congr rfl fun d _ => ?_
   rw [applyMonomialDifferential_C_mul]
   ring
 
@@ -365,16 +318,11 @@ theorem applyNegDifferential_C_mul_left
   | monomial d a =>
       rw [MvPolynomial.C_mul_monomial, applyNegDifferential_monomial,
         applyNegDifferential_monomial]
-      have hC :
-          (MvPolynomial.C
-              ((-1 : R) ^ (d.sum fun _ n => n) * (c * a)) :
-              MvPolynomial sigma R) =
-            MvPolynomial.C c *
-              MvPolynomial.C ((-1 : R) ^ (d.sum fun _ n => n) * a) := by
-        rw [← map_mul]
-        congr 1
-        ring
-      rw [hC, mul_assoc]
+      conv_rhs => rw [← mul_assoc]
+      apply congrArg (· * applyMonomialDifferential d G)
+      rw [← map_mul]
+      congr 1
+      ring
   | add F H hF hH =>
       rw [mul_add, applyNegDifferential_add_left, hF, hH,
         applyNegDifferential_add_left, mul_add]
@@ -384,9 +332,7 @@ theorem isMultiaffine_iteratedPDerivAt
     (hP : MvPolynomial.IsMultiaffine P) (i : sigma) :
     ∀ n, MvPolynomial.IsMultiaffine (iteratedPDerivAt i n P) := by
   intro n
-  induction n with
-  | zero => exact hP
-  | succ n ih => exact ih.pderiv i
+  induction n <;> simp_all [iteratedPDerivAt, MvPolynomial.IsMultiaffine.pderiv]
 
 theorem isMultiaffine_applyMonomialDifferential
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
@@ -395,10 +341,7 @@ theorem isMultiaffine_applyMonomialDifferential
     MvPolynomial.IsMultiaffine (applyMonomialDifferential d P) := by
   unfold applyMonomialDifferential
   generalize differentialVariableOrder sigma = l
-  induction l generalizing P with
-  | nil => exact hP
-  | cons i l ih =>
-      exact ih (isMultiaffine_iteratedPDerivAt hP i (d i))
+  induction l generalizing P <;> simp_all [isMultiaffine_iteratedPDerivAt]
 
 /-- The differential action preserves multiaffineness of its argument. -/
 theorem isMultiaffine_applyNegDifferential
@@ -409,7 +352,7 @@ theorem isMultiaffine_applyNegDifferential
   unfold applyNegDifferential
   rw [MvPolynomial.sum_def]
   apply MvPolynomial.IsMultiaffine.sum
-  intro d hd
+  intro d _
   exact (isMultiaffine_applyMonomialDifferential hG d).C_mul _
 
 /-- A paired coordinate contraction preserves multiaffineness. -/
@@ -425,31 +368,29 @@ theorem pderiv_inl_pairedProduct
     (F G : MvPolynomial sigma R) :
     MvPolynomial.pderiv (Sum.inl i) (pairedProduct F G) =
       pairedProduct (MvPolynomial.pderiv i F) G := by
-  rw [pairedProduct, pairedProduct, MvPolynomial.pderiv_mul,
+  simp [pairedProduct, mul_comm,
     MvPolynomial.pderiv_rename Sum.inl_injective,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars
       (MvPolynomial.inl_notMem_vars_rename_inr i G)]
-  simp
 
 theorem pderiv_inr_pairedProduct
     {R sigma : Type*} [CommRing R] (i : sigma)
     (F G : MvPolynomial sigma R) :
     MvPolynomial.pderiv (Sum.inr i) (pairedProduct F G) =
       pairedProduct F (MvPolynomial.pderiv i G) := by
-  rw [pairedProduct, pairedProduct, MvPolynomial.pderiv_mul,
+  simp [pairedProduct,
     MvPolynomial.pderiv_rename Sum.inr_injective,
     MvPolynomial.pderiv_eq_zero_of_notMem_vars
       (MvPolynomial.inr_notMem_vars_rename_inl i F)]
-  simp
 
 theorem specializeZero_inl_pairedProduct
     {R sigma : Type*} [CommRing R]
     (i : sigma) (F G : MvPolynomial sigma R) :
     MvPolynomial.specializeZero (Sum.inl i) (pairedProduct F G) =
       pairedProduct (MvPolynomial.specializeZero i F) G := by
-  rw [pairedProduct, pairedProduct, MvPolynomial.specializeZero_mul,
-    MvPolynomial.specializeZero_rename Sum.inl Sum.inl_injective]
-  rw [MvPolynomial.specializeZero_eq_self_of_notMem_vars
+  simp [pairedProduct, MvPolynomial.specializeZero_mul,
+    MvPolynomial.specializeZero_rename Sum.inl Sum.inl_injective,
+    MvPolynomial.specializeZero_eq_self_of_notMem_vars
     (Sum.inl i) (MvPolynomial.rename Sum.inr G)
     (MvPolynomial.inl_notMem_vars_rename_inr i G)]
 
@@ -474,19 +415,14 @@ theorem contractVariables_pairedProduct_monomial
         (MvPolynomial.pderiv i G) := by
   rw [contractVariables_pairedProduct, MvPolynomial.specializeZero_monomial,
     MvPolynomial.pderiv_monomial]
-  have hcases : d i = 0 ∨ d i = 1 := by lia
-  rcases hcases with h | h
-  · simp [h, pairedProduct]
-  · simp [h, pairedProduct]
+  rcases (show d i = 0 ∨ d i = 1 by lia) with h | h <;> simp [h, pairedProduct]
 
 theorem contractVariables_add
     {R sigma : Type*} [CommRing R]
     (i j : sigma) (P Q : MvPolynomial sigma R) :
     contractVariables i j (P + Q) =
       contractVariables i j P + contractVariables i j Q := by
-  rw [contractVariables, contractVariables, contractVariables,
-    MvPolynomial.specializeZero_add]
-  simp only [map_add]
+  simp only [contractVariables, MvPolynomial.specializeZero_add, map_add]
   abel
 
 theorem contractVariablePairs_add
@@ -495,25 +431,12 @@ theorem contractVariablePairs_add
     contractVariablePairs l (P + Q) =
       contractVariablePairs l P + contractVariablePairs l Q := by
   unfold contractVariablePairs
-  induction l generalizing P Q with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, List.foldl_cons, List.foldl_cons,
-        contractVariables_add, ih]
+  induction l generalizing P Q <;> simp_all [contractVariables_add]
 
 @[simp] theorem contractVariablePairs_zero
     {R sigma : Type*} [CommRing R] (l : List sigma) :
-    contractVariablePairs l (0 : MvPolynomial (Sum sigma sigma) R) = 0 := by
-  unfold contractVariablePairs
-  induction l with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons]
-      have hstep : contractVariables (Sum.inl i) (Sum.inr i)
-          (0 : MvPolynomial (Sum sigma sigma) R) = 0 := by
-        simp [contractVariables]
-      rw [hstep]
-      exact ih
+    contractVariablePairs l (0 : MvPolynomial (Sum sigma sigma) R) = 0 :=
+  contractMappedVariablePairs_zero Sum.inl Sum.inr l
 
 theorem pairedProduct_add_left
     {R sigma : Type*} [CommRing R]
@@ -528,11 +451,7 @@ theorem contractVariablePairs_sum
     contractVariablePairs l (∑ i ∈ s, P i) =
       ∑ i ∈ s, contractVariablePairs l (P i) := by
   classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-      simp only [Finset.sum_insert hi]
-      rw [contractVariablePairs_add, ih]
+  induction s using Finset.induction_on <;> simp_all [contractVariablePairs_add]
 
 /-- Sum the exponents indexed by a list of variables. -/
 def listExponentSum {sigma : Type*} (l : List sigma) (d : sigma →₀ ℕ) : ℕ :=
@@ -549,9 +468,8 @@ def applyMonomialDifferentialAlong
 theorem listExponentSum_congr
     {sigma : Type*} {l : List sigma} {d e : sigma →₀ ℕ}
     (h : ∀ i ∈ l, d i = e i) :
-    listExponentSum l d = listExponentSum l e := by
-  unfold listExponentSum
-  rw [List.map_congr_left h]
+    listExponentSum l d = listExponentSum l e :=
+  congrArg List.sum (List.map_congr_left h)
 
 theorem applyMonomialDifferentialAlong_congr
     {R sigma : Type*} [CommSemiring R]
@@ -559,17 +477,7 @@ theorem applyMonomialDifferentialAlong_congr
     (h : ∀ i ∈ l, d i = e i) (G : MvPolynomial sigma R) :
     applyMonomialDifferentialAlong l d G =
       applyMonomialDifferentialAlong l e G := by
-  induction l generalizing G with
-  | nil => rfl
-  | cons i l ih =>
-      change applyMonomialDifferentialAlong l d
-          (iteratedPDerivAt i (d i) G) =
-        applyMonomialDifferentialAlong l e
-          (iteratedPDerivAt i (e i) G)
-      rw [h i (by simp)]
-      apply ih
-      intro j hj
-      exact h j (by simp [hj])
+  induction l generalizing G <;> simp_all [applyMonomialDifferentialAlong]
 
 /-- Iterated paired contraction of a multiaffine monomial gives its signed
 constant-coefficient differential action on the right factor. -/
@@ -585,10 +493,8 @@ theorem contractVariablePairs_pairedProduct_monomial
   induction l generalizing d c G with
   | nil =>
       have hd : d = 0 := by
-        ext i
-        by_contra hi
-        have hisupport : i ∈ d.support := Finsupp.mem_support_iff.mpr hi
-        simpa using hsupport hisupport
+        apply Finsupp.support_eq_empty.mp
+        exact Finset.eq_empty_iff_forall_notMem.mpr fun i hi => by simpa using hsupport hi
       subst d
       simp [contractVariablePairs, pairedProduct, listExponentSum,
         applyMonomialDifferentialAlong]
@@ -603,10 +509,7 @@ theorem contractVariablePairs_pairedProduct_monomial
           intro j hj
           have hjcons := hsupport hj
           rw [List.toFinset_cons, Finset.mem_insert] at hjcons
-          rcases hjcons with hji | hjl
-          · subst j
-            exact (Finsupp.mem_support_iff.mp hj hdi).elim
-          · exact hjl
+          rcases hjcons with rfl | hjl <;> simp_all
         change contractVariablePairs l
             (contractVariables (Sum.inl i) (Sum.inr i)
               (pairedProduct (MvPolynomial.monomial d c) G)) = _
@@ -618,24 +521,18 @@ theorem contractVariablePairs_pairedProduct_monomial
         have hei : e i = 0 := by simp [e, hdi]
         have hsupportTail : e.support ⊆ l.toFinset := by
           intro j hj
-          have hji : j ≠ i := by
-            intro hji
+          have hji : j ≠ i := fun hji => by
             subst j
             exact (Finsupp.mem_support_iff.mp hj hei).elim
           have hdj : d j ≠ 0 := by
             simpa [e, Finsupp.single_eq_of_ne hji] using
               (Finsupp.mem_support_iff.mp hj)
-          have hjcons := hsupport (Finsupp.mem_support_iff.mpr hdj)
-          rw [List.toFinset_cons, Finset.mem_insert] at hjcons
-          exact hjcons.resolve_left hji
-        have hedegree : ∀ j, e j ≤ 1 := by
-          intro j
-          exact (Nat.sub_le _ _).trans (hdegree j)
+          simpa [List.toFinset_cons, hji] using hsupport (Finsupp.mem_support_iff.mpr hdj)
+        have hedegree : ∀ j, e j ≤ 1 := fun j => (Nat.sub_le _ _).trans (hdegree j)
         have heq : ∀ j ∈ l, e j = d j := by
           intro j hj
           have hji : j ≠ i := by
-            intro hji
-            subst j
+            rintro rfl
             exact hil hj
           simp [e, Finsupp.single_eq_of_ne hji]
         have hsum : listExponentSum l e = listExponentSum l d :=
@@ -665,17 +562,16 @@ theorem listExponentSum_differentialVariableOrder
       ((differentialVariableOrder sigma).map fun i => d i).sum by rfl]
   rw [← List.sum_toFinset (fun i => d i)
     (nodup_differentialVariableOrder sigma)]
-  have hall : (differentialVariableOrder sigma).toFinset = Finset.univ := by
+  rw [show (differentialVariableOrder sigma).toFinset = Finset.univ by
     ext i
-    simp
-  rw [hall, Finsupp.sum_fintype d (fun _ n => n) (by simp)]
+    simp,
+    Finsupp.sum_fintype d (fun _ n => n) (by simp)]
 
 theorem applyMonomialDifferentialAlong_differentialVariableOrder
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
     (d : sigma →₀ ℕ) (G : MvPolynomial sigma R) :
     applyMonomialDifferentialAlong (differentialVariableOrder sigma) d G =
-      applyMonomialDifferential d G := by
-  rfl
+      applyMonomialDifferential d G := rfl
 
 /-- Contracting every left/right variable pair in `F(x) G(y)` realizes the
 constant-coefficient differential action `F(-∂){G}` in the right block. -/
@@ -690,8 +586,7 @@ theorem contractVariablePairs_pairedProduct
   rw [MvPolynomial.sum_def]
   conv_lhs => rw [MvPolynomial.as_sum F]
   rw [pairedProduct, map_sum, Finset.sum_mul, contractVariablePairs_sum, map_sum]
-  apply Finset.sum_congr rfl
-  intro d hd
+  refine Finset.sum_congr rfl fun d hd => ?_
   change contractVariablePairs (differentialVariableOrder sigma)
       (pairedProduct (MvPolynomial.monomial d (F.coeff d)) G) = _
   rw [contractVariablePairs_pairedProduct_monomial
@@ -725,11 +620,7 @@ theorem isMultiaffine_contractVariablePairs
     (hP : MvPolynomial.IsMultiaffine P) (l : List sigma) :
     MvPolynomial.IsMultiaffine (contractVariablePairs l P) := by
   unfold contractVariablePairs
-  induction l generalizing P with
-  | nil => exact hP
-  | cons i l ih =>
-      rw [List.foldl_cons]
-      exact ih (isMultiaffine_contractVariables hP (Sum.inl i) (Sum.inr i))
+  induction l generalizing P <;> simp_all [isMultiaffine_contractVariables]
 
 end
 

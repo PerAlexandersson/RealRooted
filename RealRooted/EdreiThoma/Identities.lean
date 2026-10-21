@@ -88,7 +88,6 @@ private lemma toep_dodgson (a : ℕ → ℝ) (n m : ℕ) :
   rw [e1, e2, e3, e4, e5] at h
   simpa [A_eq] using h
 
-
 private lemma Ctc_congr (a : ℕ → ℝ) {x y : ℤ} (h : x = y) :
     C (tc a x) = C (tc a y) := by
   rw [h]
@@ -262,8 +261,7 @@ private def toepMat (a : ℕ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
 private lemma toepMat_mul {a c : ℕ → ℝ}
     (hconv : ∀ n, ∑ k ∈ Finset.range (n + 1), c k * a (n - k) = if n = 0 then 1 else 0)
     (N : ℕ) : toepMat a N * toepMat c N = 1 := by
-  ext i j
-  simp only [Matrix.mul_apply, toepMat, Matrix.of_apply, Matrix.one_apply]
+  ext i j; simp only [Matrix.mul_apply, toepMat, Matrix.of_apply, Matrix.one_apply]
   rcases lt_or_ge (i : ℕ) j with hij | hij
   · rw [ite_eq_right (by intro e; subst e; exact lt_irrefl _ hij)]
     apply Finset.sum_eq_zero
@@ -323,17 +321,12 @@ private lemma toeplitz_eq_tc (a : ℕ → ℝ) (p q : ℕ) :
     toeplitz a p q = tc a ((p : ℤ) - q) := by
   rw [toeplitz_apply]
   unfold tc
-  split_ifs with h1 h2 h2
-  · congr 1; lia
-  · lia
-  · lia
-  · rfl
+  split_ifs <;> congr 1 <;> lia
 
 private lemma sq_prod_neg_one {ι : Type*} (s : Finset ι) (f : ι → ℕ) :
     (∏ i ∈ s, (-1 : ℝ) ^ f i) * (∏ i ∈ s, (-1 : ℝ) ^ f i) = 1 := by
   rw [← Finset.prod_mul_distrib]
-  apply Finset.prod_eq_one
-  intro i _
+  refine Finset.prod_eq_one fun i _ => ?_
   rw [← pow_add, ← two_mul, pow_mul]; simp
 
 /-- Duality (Edrei's Observation I with `a 0 = 1`): if `b` are the coefficients of `1 / f(-z)`
@@ -352,15 +345,10 @@ theorem A_eq_swap_of_inverse {a b : ℕ → ℝ} (h0 : a 0 = 1)
     with htdef
   have inj_s : Function.Injective (fun i : Fin m => (⟨n + i, by lia⟩ : Fin N)) := by
     intro i j h
-    apply Fin.ext
-    have hval := congrArg Fin.val h
-    simp only at hval ⊢
-    lia
+    exact Fin.ext <| by simpa using congrArg Fin.val h
   have inj_t : Function.Injective (fun i : Fin m => (⟨i, by lia⟩ : Fin N)) := by
     intro i j h
-    have hval : ((⟨i, by lia⟩ : Fin N) : ℕ) = ((⟨j, by lia⟩ : Fin N) : ℕ) :=
-      congrArg (fun x : Fin N => x.val) h
-    exact Fin.ext hval
+    exact Fin.ext (congrArg (fun x : Fin N => x.val) h)
   have hs : s.card = m := by rw [hsdef, Finset.card_image_of_injective _ inj_s]; simp
   have ht : t.card = m := by rw [htdef, Finset.card_image_of_injective _ inj_t]; simp
   have es : ⇑(s.orderEmbOfFin hs) = fun i : Fin m => (⟨n + i, by lia⟩ : Fin N) :=
@@ -454,8 +442,7 @@ private lemma minorK_nonneg {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a) (m n : �
     (fun i i' h => by simp only; lia) (fun l l' h => Fin.strictMono_succAbove j h)
   convert this using 1
   rw [minorK]
-  congr 1
-  refine Matrix.ext fun i l => ?_
+  congr 1; refine Matrix.ext fun i l => ?_
   simp only [Matrix.of_apply, Matrix.submatrix_apply]
   rw [toeplitz_eq_tc]
   congr 1
@@ -478,8 +465,7 @@ theorem coeff_S_nonneg {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
 
 private lemma minorK_zero (a : ℕ → ℝ) (m n : ℕ) : minorK a m n 0 = A a n m := by
   rw [minorK, A_eq, toepM]
-  congr 1
-  refine Matrix.ext fun i l => ?_
+  congr 1; refine Matrix.ext fun i l => ?_
   simp only [Matrix.of_apply, Fin.succAbove_zero, Fin.val_succ]
   congr 1; push_cast; ring
 
@@ -516,8 +502,7 @@ private lemma A_shift_zero {a : ℕ → ℝ} (h0 : a 0 = 1) (n : ℕ) : A a n 0 
     rw [Fin.lt_def] at this; lia
 
 private lemma S_size_zero {a : ℕ → ℝ} (m : ℕ) : S a m 0 = 1 := by
-  rw [S_eq_sum]
-  simp [A_zero_size, minorK]
+  rw [S_eq_sum]; simp [A_zero_size, minorK]
 
 private lemma coeff_CXmul_succ (r : ℝ) (P : ℝ[X]) (k : ℕ) :
     (C r * X * P).coeff (k + 1) = r * P.coeff k := by
@@ -585,15 +570,15 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
     have := congrArg (fun p => p.coeff (k + 1)) (S_succ_eq hA m n)
     simpa only [coeff_add, coeff_CXmul_succ] using this
   have i5z : ∀ m n, (S a m (n + 1)).coeff 0 = (S a (m + 1) n).coeff 0 := by
-    intro m n; rw [coeff_S_zero hA, coeff_S_zero hA]
+    intro m n
+    rw [coeff_S_zero hA, coeff_S_zero hA]
   have mono : ∀ n k m, (S a (m + 1) (n + 1)).coeff k ≤ (S a m (n + 1)).coeff k := by
     intro n k m
     cases k with
     | zero => rw [coeff_S_zero hA, coeff_S_zero hA]
     | succ k =>
       rw [i6]
-      have := mul_nonneg (gam_pos m n).le (coeff_S_nonneg hpf hP m n k)
-      linarith
+      exact sub_le_self _ (mul_nonneg (gam_pos m n).le (coeff_S_nonneg hpf hP m n k))
   have anti : ∀ n k, Antitone fun m => (S a m (n + 1)).coeff k :=
     fun n k => antitone_nat_of_succ_le (mono n k)
   have conv : ∀ n k, ∃ L, Tendsto (fun m => (S a m n).coeff k) atTop (𝓝 L) := by
@@ -616,18 +601,16 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
       rw [this]; exact tendsto_const_nhds
   have hS0 : Sinf 0 = 1 := by
     ext k
-    have h1 := hT 0 k
-    simp only [S_size_zero] at h1
-    exact tendsto_nhds_unique h1 tendsto_const_nhds
+    exact tendsto_nhds_unique (hT 0 k) <| by
+      simpa only [S_size_zero] using tendsto_const_nhds
   set β : ℕ → ℝ := fun n => (Sinf (n + 1)).coeff 1 - (Sinf n).coeff 1 with hβdef
   have hβ : ∀ n, Tendsto (fun m => rr a m n) atTop (𝓝 (β n)) := by
     intro n
     have hrr : (fun m => rr a m n) =
         fun m => (S a m (n + 1)).coeff 1 - (S a (m + 1) n).coeff 1 := by
       funext m
-      have := i5 m n 0
-      rw [coeff_S_zero hA] at this
-      linarith
+      rw [i5 m n 0, coeff_S_zero hA]
+      ring
     rw [hrr]
     exact (hT (n + 1) 1).sub ((hT n 1).comp (tendsto_add_atTop_nat 1))
   have hβ0 : ∀ n, 0 ≤ β n := fun n => ge_of_tendsto' (hβ n) (fun m => (rr_pos m n).le)
@@ -646,9 +629,8 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
   · intro n
     have hg : ∀ m, gam a m n = (S a m (n + 1)).coeff 1 - (S a (m + 1) (n + 1)).coeff 1 := by
       intro m
-      have := i6 m n 0
-      rw [coeff_S_zero hA] at this
-      linarith
+      rw [i6 m n 0, coeff_S_zero hA]
+      ring
     refine summable_of_sum_range_le (c := (S a 0 (n + 1)).coeff 1) (fun m => (gam_pos m n).le) ?_
     intro M
     rw [Finset.sum_congr rfl (fun m _ => hg m), Finset.sum_range_sub']

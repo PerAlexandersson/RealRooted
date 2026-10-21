@@ -64,8 +64,7 @@ theorem divFactorialShift_C_mul (a : ℝ) (k : ℕ) (p : ℝ[X]) :
 theorem divFactorialShift_list_sum (k : ℕ) :
     ∀ l : List ℝ[X], divFactorialShift k l.sum = (l.map (divFactorialShift k)).sum
   | [] => by simp
-  | p :: l => by
-      simp [divFactorialShift_add, divFactorialShift_list_sum k l]
+  | p :: l => by simp [divFactorialShift_add, divFactorialShift_list_sum k l]
 
 theorem divFactorialShift_weightedSum (k : ℕ) :
     ∀ l : List (ℝ × ℝ[X]),
@@ -230,13 +229,10 @@ theorem divFactorialShift_factor_strictInterl_of_nonpos {k : ℕ} {u : ℝ} {f :
   have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
     rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
-  have hstrictInterl :=
+  simpa only [derivative_divFactorialShift_succ,
+    divFactorialShift_X_sub_C_mul_eq_tDeriv] using
     derivative_strictInterl_tDeriv_of_nonpos
       (eps := u) (p := divFactorialShift (k + 1) f) hu hFs hFpos hdeg
-  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
-    derivative_divFactorialShift_succ k f
-  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
-  simpa [hD] using hstrictInterl
 
 /-- Common-factor branch of Garloff--Wagner's formula (3).  For
 `F = J^(k+1)L f`, if `F = d q` and `F' = d r`, then the formula (3) proper
@@ -253,15 +249,11 @@ theorem divFactorialShift_factor_strictInterl_of_common_factor
   have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
     rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
-  have hstrictInterl :=
+  simpa only [derivative_divFactorialShift_succ,
+    divFactorialShift_X_sub_C_mul_eq_tDeriv] using
     derivative_strictInterl_tDeriv_of_nonpos_of_common_factor
       (eps := u) (p := divFactorialShift (k + 1) f) (d := d) (q := q) (r := r)
-      hu hFs hdeg hd_ne hd_splits hF_def hFder_def
-      hrq hq_pos hr_pos
-  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
-    derivative_divFactorialShift_succ k f
-  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
-  simpa [hD] using hstrictInterl
+      hu hFs hdeg hd_ne hd_splits hF_def hFder_def hrq hq_pos hr_pos
 
 theorem antiderivative_C_mul_X_pow (a : ℝ) (k : ℕ) :
     antiderivative (C a * X ^ k) = C (a * (k + 1 : ℝ)⁻¹) * X ^ (k + 1) := by
@@ -304,43 +296,36 @@ lemma hasSimpleRootsExcept_zero_C_mul_X_pow {a : ℝ} (ha : a ≠ 0) (k : ℕ) :
 theorem divFactorialShift_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits) :
     ∀ k, (divFactorialShift k f).Splits := by
   classical
-  let P : ℕ → Prop := fun n =>
-    ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits → ∀ k, (divFactorialShift k f).Splits
-  have hP : ∀ n, P n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro f hfdeg hf0 hfs k
-        by_cases hn0 : n = 0
-        · have hfC : f = C (f.coeff 0) := by
-            apply eq_C_of_natDegree_eq_zero
-            rw [hfdeg, hn0]
-          rw [hfC]
-          exact divFactorialShift_C_splits (f.coeff 0) k
-        · have hroots_pos : 0 < f.roots.card := by
-            rw [card_roots_of_splits hfs, hfdeg]
-            exact Nat.pos_of_ne_zero hn0
-          obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
-          have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem
-          obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hu_root
-          have hq_dvd : q ∣ f := ⟨X - C u, by rw [hq]; ring⟩
-          have hq0 : q ≠ 0 := by
-            intro hq0
-            rw [hq0, mul_zero] at hq
-            exact hf0 hq
-          have hq_splits : q.Splits :=
-            (isRealRooted_of_dvd hf0 hfs hq0 hq_dvd).2
-          have hqdeg_lt : q.natDegree < n := by
-            have hmuldeg : n = q.natDegree + 1 := by
-              rw [← hfdeg, hq, natDegree_mul (X_sub_C_ne_zero u) hq0,
-                natDegree_X_sub_C]
-              lia
-            lia
-          have ihq : (divFactorialShift (k + 1) q).Splits :=
-            ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits (k + 1)
-          rw [hq]
-          exact divFactorialShift_X_sub_C_mul_splits (k := k) (u := u) (f := q) ihq
-  exact hP f.natDegree rfl hf0 hfs
+  refine
+    Nat.strong_induction_on
+      (p := fun n =>
+        ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits →
+          ∀ k, (divFactorialShift k f).Splits)
+      f.natDegree ?_ rfl hf0 hfs
+  intro n ih f hfdeg hf0 hfs k
+  by_cases hn0 : n = 0
+  · have hfC : f = C (f.coeff 0) := by
+      apply eq_C_of_natDegree_eq_zero
+      rw [hfdeg, hn0]
+    rw [hfC]
+    exact divFactorialShift_C_splits (f.coeff 0) k
+  · have hroots_pos : 0 < f.roots.card := by
+      rw [card_roots_of_splits hfs, hfdeg]
+      exact Nat.pos_of_ne_zero hn0
+    obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
+    have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem
+    obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hu_root
+    have hq_dvd : q ∣ f := ⟨X - C u, by rw [hq]; ring⟩
+    have hq0 : q ≠ 0 := right_ne_zero_of_mul (by simpa [hq] using hf0)
+    have hq_splits : q.Splits :=
+      (isRealRooted_of_dvd hf0 hfs hq0 hq_dvd).2
+    have hqdeg_lt : q.natDegree < n := by
+      rw [← hfdeg, hq, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+      lia
+    have ihq : (divFactorialShift (k + 1) q).Splits :=
+      ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits (k + 1)
+    rw [hq]
+    exact divFactorialShift_X_sub_C_mul_splits (k := k) (u := u) (f := q) ihq
 
 /-- All-real Garloff--Wagner formula (3), in the local `J^k L` notation. -/
 theorem divFactorialShift_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f : ℝ[X]}
@@ -352,13 +337,10 @@ theorem divFactorialShift_factor_strictInterl_of_splits {k : ℕ} {u : ℝ} {f :
   have hdeg : 1 ≤ (divFactorialShift (k + 1) f).natDegree := by
     rw [natDegree_divFactorialShift (k + 1) hf0]
     lia
-  have hstrictInterl :=
+  simpa only [derivative_divFactorialShift_succ,
+    divFactorialShift_X_sub_C_mul_eq_tDeriv] using
     derivative_strictInterl_tDeriv_of_splits
       (eps := u) (p := divFactorialShift (k + 1) f) hF0 hFs hdeg
-  have hD : (divFactorialShift (k + 1) f).derivative = divFactorialShift k f :=
-    derivative_divFactorialShift_succ k f
-  rw [divFactorialShift_X_sub_C_mul_eq_tDeriv]
-  simpa [hD] using hstrictInterl
 
 /-- Garloff--Wagner, Theorem 11(b), zero-aware PF-cone form: `J^k L` preserves
 PF polynomials. -/
@@ -370,19 +352,6 @@ theorem IsPFPolynomial.divFactorialShift {f : ℝ[X]} (hf : IsPFPolynomial f) (k
       (hf.hasNonnegCoeffs.divFactorialShift k)
       (divFactorialShift_splits_of_splits hf0 (hf.ne_zero_and_splits hf0).2 k)
 
-private theorem divFactorialShift_splits_pos_roots_nonpos {f : ℝ[X]}
-    (hf0 : f ≠ 0) (hfs : f.Splits) (hfpos : HasPosLeadingCoeff f)
-    (hfroots : ∀ r ∈ f.roots, r ≤ 0) (k : ℕ) :
-    (divFactorialShift k f).Splits ∧
-      HasPosLeadingCoeff (divFactorialShift k f) ∧
-      ∀ r ∈ (divFactorialShift k f).roots, r ≤ 0 := by
-  have hfnn : HasNonnegCoeffs f :=
-    ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hfs).2
-      ⟨hfpos, hfroots⟩).1
-  have hsplit : (divFactorialShift k f).Splits := divFactorialShift_splits_of_splits hf0 hfs k
-  exact ⟨hsplit, hfpos.divFactorialShift k,
-    roots_nonpos_of_hasNonnegCoeffs (hfnn.divFactorialShift k)⟩
-
 /-- Simple-except-origin part of Garloff--Wagner, Theorem 11(b). -/
 private theorem divFactorialShift_hasSimpleRootsExcept_zero
     {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
@@ -390,89 +359,61 @@ private theorem divFactorialShift_hasSimpleRootsExcept_zero
     (hfsimple : HasSimpleRootsExcept f 0) :
     ∀ k, HasSimpleRootsExcept (divFactorialShift k f) 0 := by
   classical
-  let P : ℕ → Prop := fun n =>
-    ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits →
-      (∀ r ∈ f.roots, r ≤ 0) → HasSimpleRootsExcept f 0 →
-      ∀ k, HasSimpleRootsExcept (divFactorialShift k f) 0
-  have hP : ∀ n, P n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro f hfdeg hf0 hfs hfroots hfsimple k
-        by_cases hn0 : n = 0
-        · have hfC : f = C (f.coeff 0) := by
-            apply eq_C_of_natDegree_eq_zero
-            rw [hfdeg, hn0]
-          obtain ⟨b, hb⟩ := divFactorialShift_C_eq_C_mul_X_pow (f.coeff 0) k
-          have hJ0 : divFactorialShift k f ≠ 0 := (divFactorialShift_ne_zero_iff k f).2 hf0
-          have hb_ne : b ≠ 0 := by
-            intro hb0
-            exact hJ0 (by rw [hfC, hb, hb0]; simp)
-          rw [hfC, hb]
-          exact hasSimpleRootsExcept_zero_C_mul_X_pow hb_ne k
-        · have hroots_pos : 0 < f.roots.card := by
-            rw [card_roots_of_splits hfs, hfdeg]
-            exact Nat.pos_of_ne_zero hn0
-          obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
-          have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem
-          have hu_nonpos : u ≤ 0 := hfroots u hu_mem
-          obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hu_root
-          have hq_dvd : q ∣ f := ⟨X - C u, by rw [hq]; ring⟩
-          have hq0 : q ≠ 0 := by
-            intro hq0
-            rw [hq0, mul_zero] at hq
-            exact hf0 hq
-          have hq_splits : q.Splits :=
-            (isRealRooted_of_dvd hf0 hfs hq0 hq_dvd).2
-          have hqroots : ∀ r ∈ q.roots, r ≤ 0 := by
-            intro r hr
-            have hr_root : q.IsRoot r := (mem_roots hq0).mp hr
-            have hf_root : f.IsRoot r := by
-              rw [hq, Polynomial.IsRoot.def, eval_mul]
-              simp [Polynomial.IsRoot.def] at hr_root
-              simp [hr_root]
-            exact hfroots r ((mem_roots hf0).mpr hf_root)
-          have hq_simple : HasSimpleRootsExcept q 0 :=
-            hasSimpleRootsExcept_of_X_sub_C_mul hq hfsimple
-          have hqdeg_lt : q.natDegree < n := by
-            have hmuldeg : n = q.natDegree + 1 := by
-              rw [← hfdeg, hq, natDegree_mul (X_sub_C_ne_zero u) hq0,
-                natDegree_X_sub_C]
-              lia
-            lia
-          have ihq : ∀ k, HasSimpleRootsExcept (divFactorialShift k q) 0 :=
-            ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits hqroots hq_simple
-          by_cases hu0 : u = 0
-          · subst u
-            have hstep : divFactorialShift k ((X - C 0) * q) = divFactorialShift (k + 1) q := by
-              rw [divFactorialShift_X_sub_C_mul_eq_tDeriv, tDeriv_zero_eps]
-            rw [hq, hstep]
-            exact ihq (k + 1)
-          · have hstep :
-                divFactorialShift k ((X - C u) * q) = tDeriv u (divFactorialShift (k + 1) q) :=
-              divFactorialShift_X_sub_C_mul_eq_tDeriv k u q
-            have hF0 : divFactorialShift (k + 1) q ≠ 0 :=
-              (divFactorialShift_ne_zero_iff (k + 1) q).2 hq0
-            have hFs : (divFactorialShift (k + 1) q).Splits :=
-              divFactorialShift_splits_of_splits hq0 hq_splits (k + 1)
-            rw [hq, hstep]
-            exact hasSimpleRootsExcept_tDeriv (ihq (k + 1)) hu0 hF0 hFs
-  exact hP f.natDegree rfl hf0 hfs hfroots hfsimple
-
-private theorem divFactorialShift_splits_pos_roots_nonpos_simpleExcept
-    {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
-    (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
-    (hfsimple : HasSimpleRootsExcept f 0) (k : ℕ) :
-    (divFactorialShift k f).Splits ∧
-      HasPosLeadingCoeff (divFactorialShift k f) ∧
-      (∀ r ∈ (divFactorialShift k f).roots, r ≤ 0) ∧
-      HasSimpleRootsExcept (divFactorialShift k f) 0 := by
-  obtain ⟨hsplits, hpos, hroots⟩ :=
-    divFactorialShift_splits_pos_roots_nonpos
-      hf0 hfs hfpos hfroots k
-  exact ⟨hsplits, hpos, hroots,
-    divFactorialShift_hasSimpleRootsExcept_zero
-      hf0 hfs hfroots hfsimple k⟩
+  refine
+    Nat.strong_induction_on
+      (p := fun n =>
+        ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits →
+          (∀ r ∈ f.roots, r ≤ 0) → HasSimpleRootsExcept f 0 →
+          ∀ k, HasSimpleRootsExcept (divFactorialShift k f) 0)
+      f.natDegree ?_ rfl hf0 hfs hfroots hfsimple
+  intro n ih f hfdeg hf0 hfs hfroots hfsimple k
+  by_cases hn0 : n = 0
+  · have hfC : f = C (f.coeff 0) := by
+      apply eq_C_of_natDegree_eq_zero
+      rw [hfdeg, hn0]
+    obtain ⟨b, hb⟩ := divFactorialShift_C_eq_C_mul_X_pow (f.coeff 0) k
+    have hJ0 : divFactorialShift k f ≠ 0 := (divFactorialShift_ne_zero_iff k f).2 hf0
+    have hb_ne : b ≠ 0 := by
+      intro hb0
+      exact hJ0 (by rw [hfC, hb, hb0]; simp)
+    rw [hfC, hb]
+    exact hasSimpleRootsExcept_zero_C_mul_X_pow hb_ne k
+  · have hroots_pos : 0 < f.roots.card := by
+      rw [card_roots_of_splits hfs, hfdeg]
+      exact Nat.pos_of_ne_zero hn0
+    obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
+    have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem
+    have hu_nonpos : u ≤ 0 := hfroots u hu_mem
+    obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hu_root
+    have hq_dvd : q ∣ f := ⟨X - C u, by rw [hq]; ring⟩
+    have hq0 : q ≠ 0 := right_ne_zero_of_mul (by simpa [hq] using hf0)
+    have hq_splits : q.Splits :=
+      (isRealRooted_of_dvd hf0 hfs hq0 hq_dvd).2
+    have hqroots : ∀ r ∈ q.roots, r ≤ 0 := by
+      intro r hr
+      have hr_root : q.IsRoot r := (mem_roots hq0).mp hr
+      have hf_root : f.IsRoot r := by
+        rw [hq, Polynomial.IsRoot.def, eval_mul]
+        simp [Polynomial.IsRoot.def] at hr_root
+        simp [hr_root]
+      exact hfroots r ((mem_roots hf0).mpr hf_root)
+    have hq_simple : HasSimpleRootsExcept q 0 :=
+      hasSimpleRootsExcept_of_X_sub_C_mul hq hfsimple
+    have hqdeg_lt : q.natDegree < n := by
+      rw [← hfdeg, hq, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+      lia
+    have ihq : ∀ k, HasSimpleRootsExcept (divFactorialShift k q) 0 :=
+      ih q.natDegree hqdeg_lt (f := q) rfl hq0 hq_splits hqroots hq_simple
+    by_cases hu0 : u = 0
+    · subst u
+      rw [hq, divFactorialShift_X_sub_C_mul_eq_tDeriv, tDeriv_zero_eps]
+      exact ihq (k + 1)
+    · rw [hq, divFactorialShift_X_sub_C_mul_eq_tDeriv]
+      have hF0 : divFactorialShift (k + 1) q ≠ 0 :=
+        (divFactorialShift_ne_zero_iff (k + 1) q).2 hq0
+      have hFs : (divFactorialShift (k + 1) q).Splits :=
+        divFactorialShift_splits_of_splits hq0 hq_splits (k + 1)
+      exact hasSimpleRootsExcept_tDeriv (ihq (k + 1)) hu0 hF0 hFs
 
 /-- Garloff--Wagner formula (3) for a standard polynomial with nonpositive
 roots and simple roots except possibly at the origin. -/
@@ -482,10 +423,16 @@ theorem divFactorialShift_factor_strictInterl_of_hasSimpleRootsExcept
     (hfpos : HasPosLeadingCoeff f) (hfroots : ∀ r ∈ f.roots, r ≤ 0)
     (hfsimple : HasSimpleRootsExcept f 0) :
     StrictInterl (divFactorialShift k f) (divFactorialShift k ((X - C u) * f)) := by
-  obtain ⟨hFs, -, -, -⟩ :=
-    divFactorialShift_splits_pos_roots_nonpos_simpleExcept
-      hf0 hfs hfpos hfroots hfsimple (k + 1)
-  exact divFactorialShift_factor_strictInterl_of_nonpos hu hf0 hFs hfpos
+  have hfnn := ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hfs).2
+    ⟨hfpos, hfroots⟩).1
+  have hpack : (divFactorialShift (k + 1) f).Splits ∧
+      HasPosLeadingCoeff (divFactorialShift (k + 1) f) ∧
+      (∀ r ∈ (divFactorialShift (k + 1) f).roots, r ≤ 0) ∧
+      HasSimpleRootsExcept (divFactorialShift (k + 1) f) 0 :=
+    ⟨divFactorialShift_splits_of_splits hf0 hfs (k + 1), hfpos.divFactorialShift _,
+      roots_nonpos_of_hasNonnegCoeffs (hfnn.divFactorialShift _),
+      divFactorialShift_hasSimpleRootsExcept_zero hf0 hfs hfroots hfsimple _⟩
+  exact divFactorialShift_factor_strictInterl_of_nonpos hu hf0 hpack.1 hfpos
 
 /-- Reduction for the Lemma 7/Krein step in Garloff--Wagner, Theorem 11(c):
 once `g` is expressed as a weighted sum whose `J^k L` images are compatible
@@ -544,25 +491,7 @@ theorem divFactorialShift_strictInterl_of_rightWeightedExpansion
     (hstrictInterl : ∀ ap ∈ l, StrictInterl (divFactorialShift k ap.2) (divFactorialShift k g))
     (hpos : ∀ ap ∈ l, HasPosLeadingCoeff (divFactorialShift k ap.2))
     (hex : ∃ ap ∈ l, 0 < ap.1) :
-    StrictInterl (divFactorialShift k f) (divFactorialShift k g) := by
-  rw [hf, divFactorialShift_weightedSum]
-  exact
-    StrictInterl.weightedSum_right_of_nonneg
-      (l.map fun ap => (ap.1, divFactorialShift k ap.2)) (divFactorialShift k g)
-      (by
-        intro ap hap
-        rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-        exact hnonneg ap0 hap0)
-      (by
-        intro ap hap
-        rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-        exact hstrictInterl ap0 hap0)
-      (by
-        intro ap hap
-        rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
-        exact hpos ap0 hap0)
-      (by
-        rcases hex with ⟨ap, hap, hapos⟩
-        exact ⟨(ap.1, divFactorialShift k ap.2), List.mem_map.mpr ⟨ap, hap, rfl⟩, hapos⟩)
+    StrictInterl (divFactorialShift k f) (divFactorialShift k g) :=
+  divFactorialShift_weightedExpansion_strictInterl_right hf hnonneg hstrictInterl hpos hex
 
 end RealRooted

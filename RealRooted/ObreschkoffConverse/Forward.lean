@@ -27,11 +27,8 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
   let hfg_inter : Interlaces f g := hfg.toInterlaces hdeg
   intro α β
   by_cases hβ0 : β = 0
-  · by_cases hα0 : α = 0
-    · simp [hα0, hβ0]
-    · have hrr : ((C α * f) ≠ 0 ∧ (C α * f).Splits) :=
-        isRealRooted_C_mul hfg.1.1 hfg.1.2 hα0
-      simp_all
+  · subst β
+    simpa using (Polynomial.Splits.C (R := ℝ) α).mul hfg.1.2
   · rcases lt_or_gt_of_ne hβ0 with hβneg | hβpos
     · by_cases hα_nonpos : α ≤ 0
       · have hrr_neg :
@@ -39,29 +36,19 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
           StrictInterl.isRealRooted_nonneg_combo
             hfg hf_pos hg_pos
             (by simp_all) (by grind) (Or.inr (by simp_all))
-        have hrr :
-            ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
-              (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
-          isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
+        have hrr := isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
         grind
       · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
-        have hmix_pos : HasPosLeadingCoeff (C (-β) * g + C (-α) * f) := by
-          have hdeg_scaled :
-              (C (-α) * f).natDegree < (C (-β) * g).natDegree := by
-            rw [natDegree_C_mul (show -α ≠ 0 by grind),
-              natDegree_C_mul (show -β ≠ 0 by simp_all)]
-            lia
-          exact
-            hasPosLeadingCoeff_add_of_natDegree_lt_left
-              hdeg_scaled
-              (hasPosLeadingCoeff_C_mul (by simp_all) hg_pos)
+        have hdeg_scaled :
+            (C (-α) * f).natDegree < (C (-β) * g).natDegree := by
+          rw [natDegree_C_mul (show -α ≠ 0 by grind),
+            natDegree_C_mul (show -β ≠ 0 by simp_all)]
+          lia
+        have hmix_pos : HasPosLeadingCoeff (C (-β) * g + C (-α) * f) :=
+          hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg_scaled
+            (hasPosLeadingCoeff_C_mul (by simp_all) hg_pos)
         have hmix_deg :
             (C (-β) * g + C (-α) * f).natDegree = g.natDegree := by
-          have hdeg_scaled :
-              (C (-α) * f).natDegree < (C (-β) * g).natDegree := by
-            rw [natDegree_C_mul (show -α ≠ 0 by grind),
-              natDegree_C_mul (show -β ≠ 0 by simp_all)]
-            lia
           calc
             (C (-β) * g + C (-α) * f).natDegree = (C (-β) * g).natDegree :=
               natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
@@ -69,23 +56,17 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
             _ = g.natDegree := by rw [natDegree_C_mul (by simp_all : (-β) ≠ 0)]
         have hrr_neg :
             ((C (-β) * g + C (-α) * f) ≠ 0 ∧ (C (-β) * g + C (-α) * f).Splits) := by
-          have hmix_lo : g.natDegree ≤ (C (-β) * g + C (-α) * f).natDegree := by lia
-          have hmix_hi : (C (-β) * g + C (-α) * f).natDegree ≤ g.natDegree + 1 := by lia
           have hstrictInterl_mix :
               StrictInterl g (C (-β) * g + C (-α) * f) :=
             strictInterl_of_interlaces_evalCoeff_nonpos
               (f := g) (g := f) (a := C (-β)) (b := C (-α))
               hfg_inter hf_pos hmix_pos
-              hmix_lo hmix_hi
+              (by lia) (by lia)
               (by
-                intro r _
-                simp
-                grind)
+                intros
+                simpa only [eval_C] using (neg_nonpos.mpr hαpos.le))
           exact hstrictInterl_mix.2.1
-        have hrr :
-            ((C (-1 : ℝ) * (C (-β) * g + C (-α) * f)) ≠ 0 ∧
-              (C (-1 : ℝ) * (C (-β) * g + C (-α) * f)).Splits) :=
-          isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
+        have hrr := isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
         simp_all
     · by_cases hα_nonneg : 0 ≤ α
       · by_cases hα0 : α = 0
@@ -97,38 +78,29 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
               hfg hf_pos hg_pos hα_nonneg (le_of_lt hβpos)
               (Or.inr hβpos)).2
       · have hαneg : α < 0 := lt_of_not_ge hα_nonneg
-        have hmix_pos : HasPosLeadingCoeff (C β * g + C α * f) := by
-          have hdeg_scaled :
-              (C α * f).natDegree < (C β * g).natDegree := by
-            rw [natDegree_C_mul (show α ≠ 0 by grind), natDegree_C_mul hβ0]
-            lia
-          exact
-            hasPosLeadingCoeff_add_of_natDegree_lt_left
-              hdeg_scaled
-              (hasPosLeadingCoeff_C_mul hβpos hg_pos)
+        have hdeg_scaled :
+            (C α * f).natDegree < (C β * g).natDegree := by
+          rw [natDegree_C_mul (show α ≠ 0 by grind), natDegree_C_mul hβ0]
+          lia
+        have hmix_pos : HasPosLeadingCoeff (C β * g + C α * f) :=
+          hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg_scaled
+            (hasPosLeadingCoeff_C_mul hβpos hg_pos)
         have hmix_deg :
             (C β * g + C α * f).natDegree = g.natDegree := by
-          have hdeg_scaled :
-              (C α * f).natDegree < (C β * g).natDegree := by
-            rw [natDegree_C_mul (show α ≠ 0 by grind), natDegree_C_mul hβ0]
-            lia
           calc
             (C β * g + C α * f).natDegree = (C β * g).natDegree :=
               natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
                 (hasPosLeadingCoeff_C_mul hβpos hg_pos)
             _ = g.natDegree := by rw [natDegree_C_mul hβ0]
-        have hmix_lo : g.natDegree ≤ (C β * g + C α * f).natDegree := by lia
-        have hmix_hi : (C β * g + C α * f).natDegree ≤ g.natDegree + 1 := by lia
         have hstrictInterl_mix :
             StrictInterl g (C β * g + C α * f) :=
           strictInterl_of_interlaces_evalCoeff_nonpos
             (f := g) (g := f) (a := C β) (b := C α)
             hfg_inter hf_pos hmix_pos
-            hmix_lo hmix_hi
+            (by lia) (by lia)
             (by
-              intro r _
-              simp
-              grind)
+              intros
+              simpa only [eval_C] using hαneg.le)
         simpa [add_comm, add_left_comm, add_assoc] using hstrictInterl_mix.2.1.2
 
 private theorem allComboRealRooted_of_strictInterl_succDegree
@@ -306,14 +278,10 @@ private theorem isRealRooted_of_right_factor_combo_posβ
       ObreschkoffConverseInternal.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
         hqf hq_no pre hEq
     exact mul_neg_of_mul_neg_of_mul_neg hFq₁ hFq₂ hqq
-  have hsign :
-      let rs := f.roots.sort (· ≤ ·)
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        rs = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ < 0 := by
-    grind
   by_cases hdeg_lt : F.natDegree < f.natDegree
-  · exact (interlaces_of_consecutive_signs_of_natDegree_lt hf.1 hf.2 hF_ne' hdeg_lt hsign).2.1
+  · exact
+      (interlaces_of_consecutive_signs_of_natDegree_lt
+        hf.1 hf.2 hF_ne' hdeg_lt hsign_core).2.1
   · have hdeg_eq : F.natDegree = f.natDegree := by lia
     by_cases hdeg_one : f.natDegree = 1
     · have hF_deg_one : F.natDegree = 1 := by lia
@@ -340,27 +308,13 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
   have hg : (g ≠ 0 ∧ g.Splits) := hfg.2.1
   by_cases hdeg0 : f.natDegree = 0
   · intro α β
-    by_cases hcomb : C α * f + C β * g = 0
-    · simp [hcomb]
-    · have hgdeg0 : g.natDegree = 0 := by lia
-      have hfC : f = C (f.coeff 0) := eq_C_of_natDegree_eq_zero hdeg0
-      have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
-      rw [hfC, hgC] at hcomb ⊢
-      have hsum_eq :
-          C α * C (f.coeff 0) + C β * C (g.coeff 0) =
-            C (α * f.coeff 0 + β * g.coeff 0) := by
-        simp
-      have hroots_eq :
-          (C α * C (f.coeff 0) + C β * C (g.coeff 0)).roots =
-            (C (α * f.coeff 0 + β * g.coeff 0)).roots := by
-        lia
-      have hnat_eq :
-          (C α * C (f.coeff 0) + C β * C (g.coeff 0)).natDegree =
-            (C (α * f.coeff 0 + β * g.coeff 0)).natDegree := by
-        lia
-      apply splits_of_card_roots
-      rw [hroots_eq, hnat_eq, roots_C, natDegree_C]
-      simp
+    have hgdeg0 : g.natDegree = 0 := by lia
+    rw [eq_C_of_natDegree_eq_zero hdeg0, eq_C_of_natDegree_eq_zero hgdeg0]
+    have hsum :
+        C α * C (f.coeff 0) + C β * C (g.coeff 0) =
+          C (α * f.coeff 0 + β * g.coeff 0) := by simp
+    rw [hsum]
+    exact Polynomial.Splits.C (R := ℝ) _
   have hdeg_pos : 1 ≤ f.natDegree := by lia
   obtain ⟨uR, huR_root, huR_max⟩ :=
     exists_rightmost_root_of_isRealRooted hg.1 hg.2 (by lia)
@@ -382,10 +336,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
           ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) :=
         StrictInterl.isRealRooted_nonneg_combo
           hfg hf_pos hg_pos (by simp_all) (by grind) (Or.inr (by simp_all))
-        have hrr :
-            ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
-              (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
-          isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
+        have hrr := isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
         grind
       · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
         have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 :=
@@ -399,10 +350,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
               (f := f) (q := qg) (uR := uR) (α := -α) (β := -β)
               hqg_inter hqg_pos hqg_no hroot_lt (by simp_all) (by lia)
               hdeg_pos
-        have hrr :
-            ((C (-1 : ℝ) * (C (-α) * f + C (-β) * g)) ≠ 0 ∧
-              (C (-1 : ℝ) * (C (-α) * f + C (-β) * g)).Splits) :=
-          isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
+        have hrr := isRealRooted_C_mul hrr_neg.1 hrr_neg.2 (by simp : (-1 : ℝ) ≠ 0)
         grind
     · by_cases hα_nonneg : 0 ≤ α
       · exact
@@ -467,17 +415,12 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree
     simp_all
   have hno₀ : ∀ r, f₀.IsRoot r → ¬ g₀.IsRoot r := by
     intro r hrf₀ hrg₀
-    have hrf : f.IsRoot r := by
-      have hrf₀_eval : (C sf * f).eval r = 0 := by
-        simpa [f₀, Polynomial.IsRoot.def] using hrf₀
-      simp_all
-    have hrg : g.IsRoot r := by
-      have hrg₀_eval : (C sg * g).eval r = 0 := by
-        simpa [g₀, Polynomial.IsRoot.def] using hrg₀
-      simp_all
-    simp_all
+    apply hno r
+    · simpa [f₀, Polynomial.IsRoot.def, hsf_ne] using hrf₀
+    · simpa [g₀, Polynomial.IsRoot.def, hsg_ne] using hrg₀
   have hall₀ : AllComboRealRooted f₀ g₀ :=
-    allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common hfg₀ hdeg₀ hf₀_pos hg₀_pos hno₀
+    allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
+      hfg₀ hdeg₀ hf₀_pos hg₀_pos hno₀
   intro α β
   have hEq_f : C α * C sf * (C sf * f) = C α * f := by grind
   have hEq_g : C β * C sg * (C sg * g) = C β * g := by grind

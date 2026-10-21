@@ -48,12 +48,13 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     intro x hx
     simp_all
   have hus_len_deg : us.length = F.natDegree - 1 := by lia
+  have hsplits {ws : List ℝ} (hsub : (↑ws : Multiset ℝ) ≤ F.roots)
+      (hlen : ws.length = F.natDegree) : F.Splits := by
+    apply splits_of_card_roots
+    exact le_antisymm (card_roots' F) (by
+      simpa [hlen] using Multiset.card_le_card hsub)
   rcases houter with ⟨uL, huL_root, huL_lt⟩ | ⟨uR, huR_root, huR_lt⟩
-  · obtain ⟨r₀, rs', hrs_cons⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
-      cases h : rs with
-      | nil => lia
-      | cons r₀ rs' =>
-          lia
+  · obtain ⟨r₀, rs', hrs_cons⟩ := List.exists_cons_of_ne_nil hrs_ne
     have hr₀_root : f.IsRoot r₀ := by
       apply (mem_roots hf_ne).mp
       rw [← hrs_eq, hrs_cons]
@@ -69,14 +70,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       intro x hx
       rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx' <;> simp_all
     have hws_len : (uL :: us).length = F.natDegree := by simp_all
-    have hws_eq : (↑(uL :: us) : Multiset ℝ) = F.roots :=
-      Multiset.eq_of_le_of_card_le hws_sub (by
-        calc
-          F.roots.card ≤ F.natDegree := card_roots' F
-          _ = (uL :: us).length := hws_len.symm
-          _ = (↑(uL :: us) : Multiset ℝ).card := (Multiset.coe_card _).symm)
-    refine ⟨hF_ne, ?_⟩
-    exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
+    exact ⟨hF_ne, hsplits hws_sub hws_len⟩
   · have hu_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne
     have hu_root : f.IsRoot (rs.getLast hrs_ne) := by
       apply (mem_roots hf_ne).mp
@@ -93,14 +87,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       intro x hx
       rcases List.mem_append.mp (Multiset.mem_coe.mp hx) with hx_us | hx_uR <;> simp_all
     have hws_len : (us ++ [uR]).length = F.natDegree := by simp_all
-    have hws_eq : (↑(us ++ [uR]) : Multiset ℝ) = F.roots :=
-      Multiset.eq_of_le_of_card_le hws_sub (by
-        calc
-          F.roots.card ≤ F.natDegree := card_roots' F
-          _ = (us ++ [uR]).length := hws_len.symm
-          _ = (↑(us ++ [uR]) : Multiset ℝ).card := (Multiset.coe_card _).symm)
-    refine ⟨hF_ne, ?_⟩
-    exact splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])
+    exact ⟨hF_ne, hsplits hws_sub hws_len⟩
 
 -- This private sign-change theorem is near the default heartbeat limit after
 -- dependency rebuilds; the proof term is unchanged.
@@ -380,45 +367,6 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
     strictInterl_of_allComboRealRooted_of_no_common
       ?_ hf_ne hf_splits hg_ne hg_splits hall hdeg
   intro f g hf hg hall hdeg hno
-  let eps : ℝ := 1
-  have heps : 0 < eps := by grind
-  let n : ℕ := max f.natDegree g.natDegree
-  have hsimple_data :
-      AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∧
-        ((iterateTDeriv eps n f) ≠ 0 ∧ (iterateTDeriv eps n f).Splits) ∧
-        ((iterateTDeriv eps n g) ≠ 0 ∧ (iterateTDeriv eps n g).Splits) ∧
-        HasSimpleRoots (iterateTDeriv eps n f) ∧
-        HasSimpleRoots (iterateTDeriv eps n g) ∧
-        ((iterateTDeriv eps n f).natDegree + 1 = (iterateTDeriv eps n g).natDegree ∨
-            (iterateTDeriv eps n f).natDegree = (iterateTDeriv eps n g).natDegree) := by
-    simpa [n] using
-      simple_pair_of_allComboRealRooted_iterateTDeriv hf.1 hg.1 hf.2 hg.2 hall hdeg heps
-  rcases hsimple_data with ⟨hall_iter, _, _, hf_simple, hg_simple, _⟩
-  have hstrictInterl_iter :
-      StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) ∨
-        StrictInterl (iterateTDeriv eps n g) (iterateTDeriv eps n f) := by
-    simpa [n] using
-      ObreschkoffConverseInternal.strictInterlOrReverseRegularized
-        hf.1 hf.2 hg.1 hg.2 hall hdeg heps hno
-  have hlead_f_iter :
-      (iterateTDeriv eps n f).leadingCoeff = f.leadingCoeff := by
-    simp
-  have hlead_g_iter :
-      (iterateTDeriv eps n g).leadingCoeff = g.leadingCoeff := by
-    simp
-  have hpos_f_iter :
-      HasPosLeadingCoeff (iterateTDeriv eps n f) ↔ HasPosLeadingCoeff f := by
-    simp
-  have hpos_g_iter :
-      HasPosLeadingCoeff (iterateTDeriv eps n g) ↔ HasPosLeadingCoeff g := by
-    simp
-  have hsucc_iter_forced :
-      f.natDegree + 1 = g.natDegree →
-        StrictInterl (iterateTDeriv eps n f) (iterateTDeriv eps n g) := by
-    intro hsucc
-    simpa [n] using
-      ObreschkoffConverseInternal.strictInterl_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
-        hf.1 hf.2 hg.1 hg.2 hall hsucc heps hno
   have hcombo_original :
       ∀ α β : ℝ,
         C α * f + C β * g = 0 ∨
@@ -431,26 +379,17 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
       have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgdeg0
       intro α β
       by_cases hcomb : C α * f + C β * g = 0
-      · lia
+      · exact Or.inl hcomb
       · rw [hfC, hgC] at hcomb ⊢
         let c : ℝ := α * f.coeff 0 + β * g.coeff 0
         have hsum_eq :
             C α * C (f.coeff 0) + C β * C (g.coeff 0) =
               C c := by
           grind
-        have hconst_ne : C c ≠ 0 := by lia
-        have hcoeff_ne : c ≠ 0 := by grind
-        have hnat0 :
-            (C α * C (f.coeff 0) + C β * C (g.coeff 0)).natDegree = 0 := by
-          rw [hsum_eq]
-          simp
         right
-        refine ⟨?_, ?_⟩
-        · exact isRealRooted_of_deg_zero hcomb hnat0
-        · rw [hsum_eq]
-          intro r hr
-          have : c = 0 := by simpa [Polynomial.IsRoot.def, c] using hr
-          lia
+        rw [hsum_eq] at hcomb ⊢
+        exact ⟨isRealRooted_of_deg_zero hcomb (by simp),
+          hasSimpleRoots_of_natDegree_le_one hcomb (by simp)⟩
     · have hmax_pos : 0 < max f.natDegree g.natDegree := Nat.pos_of_ne_zero hmax0
       have hW_ne : ∀ x : ℝ, (ObreschkoffConverseInternal.wronskianPoly f g).eval x ≠ 0 := by
         intro x hw
@@ -485,7 +424,6 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
         have hq_not_root : ¬ q.IsRoot x := by simp_all
         have hp_mult_gt : 1 < p.rootMultiplicity x :=
           (one_lt_rootMultiplicity_iff_isRoot hp0).2 ⟨hp_root, hp_der_root⟩
-        have hp_mult_ge2 : 2 ≤ p.rootMultiplicity x := by lia
         let m : ℕ := p.rootMultiplicity x
         let k : ℕ := m - 2
         obtain ⟨δ, hδ, hqk_not_root⟩ :=
@@ -514,21 +452,13 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
       exact
         ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
           hall hW_ne
-  have htransport :
-      (f.natDegree + 1 = g.natDegree → StrictInterl f g) ∧
-        (f.natDegree = g.natDegree → StrictInterl f g ∨ StrictInterl g f) := by
-    constructor
-    · intro hsucc
-      have hstrictInterl_or :
-          StrictInterl f g ∨ StrictInterl g f :=
-        ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
-          hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
-      exact StrictInterl.forward_of_orientation_of_succDegree hsucc.symm hstrictInterl_or
-    · intro hsame
-      exact
-        ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
-          hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
-  lia
+  rcases hdeg with hsucc | hsame
+  · exact Or.inl <| StrictInterl.forward_of_orientation_of_succDegree hsucc.symm <|
+      ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
+        hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
+  · exact
+      ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
+        hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
 
 end
 end RealRooted

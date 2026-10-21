@@ -47,23 +47,16 @@ private theorem esymmColumnMultiplicity_cons (q k : ℕ)
   ext i
   simp only [esymmColumnMultiplicity_apply, Multiset.count_cons,
     Finsupp.add_apply, Finsupp.single_apply]
-  have hindex : (⟨k - 1,
-      (Nat.sub_lt hkpos Nat.zero_lt_one).trans_le hkq⟩ : Fin q).val + 1 = k := by
-    simp [Nat.sub_add_cancel hkpos]
   by_cases hi : i = ⟨k - 1,
       (Nat.sub_lt hkpos Nat.zero_lt_one).trans_le hkq⟩
   · subst i
-    simp [hindex, Nat.add_comm]
+    simp [Nat.sub_add_cancel hkpos, Nat.add_comm]
   · have hik : k ≠ i.val + 1 := by
       intro h
       apply hi
-      apply Fin.ext
+      ext
       lia
-    have hi' : (⟨k - 1,
-        (Nat.sub_lt hkpos Nat.zero_lt_one).trans_le hkq⟩ : Fin q) ≠ i :=
-      Ne.symm hi
-    have hik' : i.val + 1 ≠ k := Ne.symm hik
-    simp [hi', hik']
+    simp [Ne.symm hi, Ne.symm hik]
 
 private theorem esymmAlgHomMonomial_esymmColumnMultiplicity
     (q : ℕ) (s : Multiset ℕ)
@@ -72,29 +65,18 @@ private theorem esymmAlgHomMonomial_esymmColumnMultiplicity
       (s.map (esymm (Fin q) R)).prod := by
   induction s using Multiset.induction_on with
   | empty =>
-      have hz : esymmColumnMultiplicity q 0 = 0 := by
-        ext i
-        simp
-      rw [hz, esymmAlgHom_zero]
+      rw [show esymmColumnMultiplicity q 0 = 0 by ext i; simp, esymmAlgHom_zero]
       simp
   | @cons k s ih =>
       have hkpos : 0 < k := hspos k (by simp)
       have hkq : k ≤ q := hsq k (by simp)
-      have hspos' : ∀ l ∈ s, 0 < l := by
-        intro l hl
-        exact hspos l (by simp [hl])
-      have hsq' : ∀ l ∈ s, l ≤ q := by
-        intro l hl
-        exact hsq l (by simp [hl])
       let i : Fin q :=
         ⟨k - 1, (Nat.sub_lt hkpos Nat.zero_lt_one).trans_le hkq⟩
       rw [esymmColumnMultiplicity_cons q k s hkpos hkq,
         esymmAlgHomMonomial_add,
-        esymmAlgHomMonomial_single_one, ih hspos' hsq']
-      have hi : i.val + 1 = k := by
-        dsimp [i]
-        exact Nat.sub_add_cancel hkpos
-      simp [i, hi]
+        esymmAlgHomMonomial_single_one,
+        ih (fun l hl ↦ hspos l (by simp [hl])) (fun l hl ↦ hsq l (by simp [hl]))]
+      simp [Nat.sub_add_cancel hkpos]
 
 private theorem accumulate_esymmColumnMultiplicity
     (q : ℕ) (s : Multiset ℕ)
@@ -107,18 +89,13 @@ private theorem accumulate_esymmColumnMultiplicity
   | @cons k s ih =>
       have hkpos : 0 < k := hspos k (by simp)
       have hkq : k ≤ q := hsq k (by simp)
-      have hspos' : ∀ l ∈ s, 0 < l := by
-        intro l hl
-        exact hspos l (by simp [hl])
-      have hsq' : ∀ l ∈ s, l ≤ q := by
-        intro l hl
-        exact hsq l (by simp [hl])
       let i : Fin q :=
         ⟨k - 1, (Nat.sub_lt hkpos Nat.zero_lt_one).trans_le hkq⟩
       rw [esymmColumnMultiplicity_cons q k s hkpos hkq,
         Fin.accumulate_apply]
       simp only [Finsupp.add_apply, Finset.sum_add_distrib]
-      have ih' := ih hspos' hsq'
+      have ih' := ih (fun l hl ↦ hspos l (by simp [hl]))
+        (fun l hl ↦ hsq l (by simp [hl]))
       rw [Fin.accumulate_apply] at ih'
       rw [ih', Multiset.filter_cons]
       by_cases hjk : j.val < k
@@ -127,32 +104,23 @@ private theorem accumulate_esymmColumnMultiplicity
         have hji : j ≤ i := by
           rw [Fin.le_def]
           lia
-        have hsum : ∑ x with j ≤ x,
-            (Finsupp.single i 1 : Fin q →₀ ℕ) x = 1 := by
-          rw [Finset.sum_eq_single i]
-          · simp
-          · intro x _ hxi
-            simp [Ne.symm hxi]
-          · simp [hji]
-        simpa [i] using congrArg
-          (fun z => z + (s.filter (j.val < ·)).card) hsum
+        rw [Finset.sum_eq_single i]
+        · simp [i]
+        · intro x _ hxi
+          exact Finsupp.single_eq_of_ne hxi
+        · simp [hji]
       · rw [ite_eq_right hjk]
         have hij : ¬j ≤ i := by
           rw [Fin.le_def]
           lia
-        have hsum : ∑ x with j ≤ x,
-            (Finsupp.single i 1 : Fin q →₀ ℕ) x = 0 := by
-          apply Finset.sum_eq_zero
-          intro x hx
-          have hjx : j ≤ x := (Finset.mem_filter.mp hx).2
+        rw [Finset.sum_eq_zero]
+        · simp
+        · intro x hx
           simp only [Finsupp.single_apply]
           split
-          · rename_i hix
-            subst x
-            exact (hij hjx).elim
+          · subst x
+            exact (hij (Finset.mem_filter.mp hx).2).elim
           · rfl
-        simpa [i] using congrArg
-          (fun z => z + (s.filter (j.val < ·)).card) hsum
 
 private theorem accumulate_esymmColumnMultiplicity_conjugate_parts
     {n q : ℕ} (lambda : n.Partition)
@@ -160,18 +128,10 @@ private theorem accumulate_esymmColumnMultiplicity_conjugate_parts
     Fin.accumulate q q
         (esymmColumnMultiplicity q lambda.conjugate.parts) j =
       lambda.part j := by
-  calc
-    Fin.accumulate q q
-        (esymmColumnMultiplicity q lambda.conjugate.parts) j =
-        (lambda.conjugate.parts.filter (j.val < ·)).card := by
-      apply accumulate_esymmColumnMultiplicity
-      · exact fun k hk => lambda.conjugate.parts_pos hk
-      · intro k hk
-        exact (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda
-    _ = lambda.part j := by
-      have h := Nat.Partition.conjugate_part_eq_card_filter_gt
-        lambda.conjugate j
-      simpa using h.symm
+  rw [accumulate_esymmColumnMultiplicity q lambda.conjugate.parts
+    (fun k hk ↦ lambda.conjugate.parts_pos hk)
+    (fun k hk ↦ (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda)]
+  simpa using (Nat.Partition.conjugate_part_eq_card_filter_gt lambda.conjugate j).symm
 
 private def esymmList (cs : List ℕ) : MvPolynomial σ R :=
   (cs.map (esymm σ R)).prod
@@ -179,10 +139,8 @@ private def esymmList (cs : List ℕ) : MvPolynomial σ R :=
 private theorem isHomogeneous_esymmList (cs : List ℕ) :
     IsHomogeneous (esymmList (R := R) (σ := σ) cs) cs.sum := by
   induction cs with
-  | nil =>
-      simpa [esymmList] using (isHomogeneous_one (σ := σ) (R := R))
-  | cons c cs ih =>
-      simpa [esymmList] using (isHomogeneous_esymm c).mul ih
+  | nil => simpa [esymmList] using (isHomogeneous_one (σ := σ) (R := R))
+  | cons c cs ih => simpa [esymmList] using (isHomogeneous_esymm c).mul ih
 
 private theorem degreeOf_esymm_le_one [Nontrivial R]
     (i : σ) (n : ℕ) : degreeOf i (esymm σ R n) ≤ 1 := by
@@ -191,9 +149,7 @@ private theorem degreeOf_esymm_le_one [Nontrivial R]
   intro d hd
   rw [support_esymm] at hd
   obtain ⟨t, _, rfl⟩ := Finset.mem_image.mp hd
-  by_cases hi : i ∈ t
-  · simp [Finsupp.single_apply, hi]
-  · simp [Finsupp.single_apply, hi]
+  by_cases hi : i ∈ t <;> simp [Finsupp.single_apply, hi]
 
 private theorem degreeOf_esymmList_le_length [Nontrivial R]
     (i : σ) (cs : List ℕ) :
@@ -269,36 +225,25 @@ theorem ofSym_le_of_mem_support_esymmPart {N : ℕ}
   apply take_sum_le_sum_min_of_mem_support_esymmList
     (R := R) (cs := mu.conjugate.parts.sort (· ≥ ·))
       (d := s.1.toFinsupp)
-  rw [← esymmPart_eq_esymmList_sort_parts]
-  exact hs
-
-private theorem isSymmetric_prod_esymm (s : Multiset ℕ) :
-    ((s.map (esymm σ R)).prod).IsSymmetric := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | @cons k s ih =>
-      simpa using (esymm_isSymmetric σ R k).mul ih
+  simpa only [← esymmPart_eq_esymmList_sort_parts] using hs
 
 /-- A product of elementary symmetric polynomials is symmetric. -/
 theorem isSymmetric_esymmPart {N : ℕ} (mu : N.Partition) :
     (esymmPart σ R mu).IsSymmetric := by
-  simpa only [esymmPart] using
-    isSymmetric_prod_esymm (R := R) (σ := σ) mu.parts
-
-private theorem isHomogeneous_prod_esymm (s : Multiset ℕ) :
-    IsHomogeneous (s.map (esymm σ R)).prod s.sum := by
-  induction s using Multiset.induction_on with
-  | empty =>
-      simpa using (isHomogeneous_one (σ := σ) (R := R))
-  | @cons k s ih =>
-      simpa using (isHomogeneous_esymm k).mul ih
+  rw [esymmPart]
+  induction mu.parts using Multiset.induction_on with
+  | empty => simp
+  | @cons k s ih => simpa using (esymm_isSymmetric σ R k).mul ih
 
 /-- The elementary product indexed by a partition is homogeneous of the
 size of the partition. -/
 theorem isHomogeneous_esymmPart {N : ℕ} (mu : N.Partition) :
     IsHomogeneous (esymmPart σ R mu) N := by
-  simpa only [esymmPart, mu.parts_sum] using
-    isHomogeneous_prod_esymm (R := R) (σ := σ) mu.parts
+  have h : IsHomogeneous (mu.parts.map (esymm σ R)).prod mu.parts.sum := by
+    induction mu.parts using Multiset.induction_on with
+    | empty => simpa using (isHomogeneous_one (σ := σ) (R := R))
+    | @cons k s ih => simpa using (isHomogeneous_esymm k).mul ih
+  simpa only [esymmPart, mu.parts_sum] using h
 
 /-- The coefficient of the diagonal monomial-symmetric term in the
 elementary product is one, provided the partition fits in the variables. -/
@@ -310,9 +255,8 @@ theorem msymmCoeff_esymmPart_conjugate_self
   let E := esymmPart (Fin q) R lambda.conjugate
   have hprod : esymmAlgHomMonomial (Fin q) t (1 : R) = E := by
     apply esymmAlgHomMonomial_esymmColumnMultiplicity
-    · exact fun k hk => lambda.conjugate.parts_pos hk
-    · intro k hk
-      exact (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda
+    · exact fun k hk ↦ lambda.conjugate.parts_pos hk
+    · exact fun k hk ↦ (lambda.le_card_parts_of_mem_conjugate_parts hk).trans hlambda
   have hlead : leadingCoeff toLex E = 1 := by
     rw [← hprod]
     exact leadingCoeff_esymmAlgHomMonomial t le_rfl
@@ -328,31 +272,18 @@ theorem msymmCoeff_esymmPart_conjugate_self
         lambda hlambda i)
   have hsumPart : ∑ i : Fin q, lambda.part i = n := by
     have hp := Nat.Partition.prefixSum_eq_sum_take_sort_parts lambda q
-    have hlength : (lambda.parts.sort (· ≥ ·)).length ≤ q := by
-      simpa using hlambda
-    rw [List.take_of_length_le hlength] at hp
-    calc
-      ∑ i : Fin q, lambda.part i =
-          ∑ i ∈ Finset.range q, lambda.part i :=
-        Fin.sum_univ_eq_sum_range (fun i => lambda.part i) q
-      _ = lambda.prefixSum q := rfl
-      _ = (lambda.parts.sort (· ≥ ·)).sum := hp
-      _ = n := by
-        rw [← Multiset.sum_coe, Multiset.sort_eq, lambda.parts_sum]
+    rw [List.take_of_length_le (by simpa using hlambda)] at hp
+    rw [Fin.sum_univ_eq_sum_range, show ∑ i ∈ Finset.range q,
+      lambda.part i = lambda.prefixSum q by rfl, hp, ← Multiset.sum_coe,
+      Multiset.sort_eq, lambda.parts_sum]
   have hdSum : d.sum (fun _ e => e) = n := by
     rw [Finsupp.sum_fintype d (fun _ e => e) (by simp)]
-    calc
-      ∑ i : Fin q, d i = ∑ i : Fin q, lambda.part i := by
-        apply Finset.sum_congr rfl
-        intro i _
-        rw [hdeg]
-      _ = n := hsumPart
+    rw [Finset.sum_congr rfl (fun i _ ↦ hdeg i), hsumPart]
   let s : Sym (Fin q) n :=
     ⟨Finsupp.toMultiset d,
       Finsupp.card_toMultiset d |>.trans hdSum⟩
   have hsCount (i : Fin q) : s.1.count i = lambda.part i := by
-    change (Finsupp.toMultiset d).count i = lambda.part i
-    rw [Finsupp.count_toMultiset, hdeg]
+    simp [s, hdeg]
   have hsShape : Nat.Partition.ofSym s = lambda :=
     ofSym_eq_of_count_eq_part lambda hlambda s hsCount
   have hcoeff := msymmCoeff_eq_coeff
@@ -360,11 +291,8 @@ theorem msymmCoeff_esymmPart_conjugate_self
   rw [hsShape] at hcoeff
   calc
     msymmCoeff E lambda = E.coeff s.1.toFinsupp := hcoeff
-    _ = E.coeff d := by
-      rw [show s.1.toFinsupp = d by
-        simp [s]]
-    _ = leadingCoeff toLex E := by
-      rw [leadingCoeff_toLex]
+    _ = E.coeff d := by simp [s]
+    _ = leadingCoeff toLex E := by rw [leadingCoeff_toLex]
     _ = 1 := hlead
 
 /-- The monomial-symmetric coefficient of an elementary product vanishes
@@ -380,10 +308,8 @@ theorem msymmCoeff_esymmPart_conjugate_eq_zero_of_not_le
     let s : Sym σ N := (Classical.choice h).1
     have hs : Nat.Partition.ofSym s = mu := (Classical.choice h).2
     by_contra hcoeff
-    have hsupp : s.1.toFinsupp ∈
-        (esymmPart σ R lambda.conjugate).support :=
-      mem_support_iff.mpr hcoeff
-    exact hmu (hs ▸ ofSym_le_of_mem_support_esymmPart lambda s hsupp)
+    exact hmu (hs ▸ ofSym_le_of_mem_support_esymmPart lambda s
+      (mem_support_iff.mpr hcoeff))
 
 /-- The elementary product only involves monomial symmetric polynomials
 whose indices are dominated by its partition index. -/
@@ -433,12 +359,11 @@ theorem esymmPart_conjugate_eq_msymm_add_lower
     simp
   calc
     esymmPart (Fin q) R lambda.conjugate =
-        ∑ mu ∈ Nat.Partition.dominanceDownset lambda, f mu := by
-      exact esymmPart_conjugate_eq_sum_msymm_downset lambda
+        ∑ mu ∈ Nat.Partition.dominanceDownset lambda, f mu :=
+      esymmPart_conjugate_eq_sum_msymm_downset lambda
     _ = f lambda +
         ∑ mu ∈ (Nat.Partition.dominanceDownset lambda).erase lambda,
-          f mu := by
-      exact (Finset.add_sum_erase _ f hlmem).symm
+          f mu := (Finset.add_sum_erase _ f hlmem).symm
     _ = msymm (Fin q) R lambda +
         ∑ mu ∈ (Nat.Partition.dominanceDownset lambda).erase lambda,
           f mu := by
@@ -516,20 +441,13 @@ theorem msymm_sub_esymmPart_conjugate_mem_span_lower
             change mu ∈ S
             simp [S, hmulambda, hlen]
           simpa only [sub_add_cancel] using V.add_mem hpromote hgen
-        · have hcard : Fintype.card (Fin q) < mu.parts.card := by
-            simpa using Nat.lt_of_not_ge hlen
-          rw [msymm_eq_zero_of_card_lt mu hcard]
+        · rw [msymm_eq_zero_of_card_lt mu (by simpa using Nat.lt_of_not_ge hlen)]
           exact V.zero_mem
       have hsum :
           ∑ mu ∈ (Nat.Partition.dominanceDownset lambda).erase lambda,
               a mu • msymm (Fin q) K mu ∈ V := by
-        apply Submodule.sum_mem
-        intro mu hmu
-        exact V.smul_mem (a mu) (hmu_mem mu hmu)
-      have hneg : -∑ mu ∈
-          (Nat.Partition.dominanceDownset lambda).erase lambda,
-            a mu • msymm (Fin q) K mu ∈ V := V.neg_mem hsum
-      convert hneg using 1
+        exact Submodule.sum_mem V fun mu hmu ↦ V.smul_mem (a mu) (hmu_mem mu hmu)
+      convert V.neg_mem hsum using 1
       rw [hforward]
       dsimp only [a]
       abel
@@ -548,9 +466,7 @@ theorem msymm_eq_esymmPart_conjugate_add_lower
     (K := K) lambda hlambda
   rw [Submodule.mem_span_image_finset_iff_exists_fun'] at hmem
   obtain ⟨b, hb⟩ := hmem
-  refine ⟨b, ?_⟩
-  rw [hb]
-  abel
+  exact ⟨b, by rw [hb]; abel⟩
 
 end
 

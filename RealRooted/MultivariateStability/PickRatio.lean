@@ -47,9 +47,7 @@ theorem polynomialRatio_hasDerivAt (F G : ℝ[X]) {t : ℝ} (hF : F.eval t ≠ 0
   have h := (G.hasDerivAt t).mul ((F.hasDerivAt t).inv hF)
   convert h using 1
   · rfl
-  · dsimp [polynomialRatioDerivative]
-    field_simp
-    ring_nf
+  · dsimp [polynomialRatioDerivative]; field_simp; ring_nf
 
 /-- A continuous function whose imaginary part is nonpositive for `s > 0` has nonpositive
 imaginary part at `0`. -/
@@ -69,8 +67,7 @@ private lemma sign_lemma (A : ℝ) (m : ℕ) (hm : 1 ≤ m) (hA : A ≠ 0)
     rw [div_lt_iff₀ (by positivity)]
     have hm' : (1 : ℝ) ≤ m := by exact_mod_cast hm
     nlinarith [Real.pi_pos])
-  have e1 : (m : ℝ) * (Real.pi / (2 * m)) = Real.pi / 2 := by
-    field_simp
+  have e1 : (m : ℝ) * (Real.pi / (2 * m)) = Real.pi / 2 := by field_simp
   rw [e1, Real.sin_pi_div_two, mul_one] at h1
   have hApos : 0 < A := lt_of_le_of_ne h1 (Ne.symm hA)
   refine ⟨?_, hApos⟩
@@ -80,14 +77,9 @@ private lemma sign_lemma (A : ℝ) (m : ℕ) (hm : 1 ≤ m) (hA : A ≠ 0)
     rw [div_lt_iff₀ (by positivity)]
     nlinarith [Real.pi_pos])
   have e2 : (m : ℝ) * (3 * Real.pi / (2 * m)) = Real.pi / 2 + Real.pi := by
-    field_simp
-    ring
+    field_simp; ring
   rw [e2, Real.sin_add_pi, Real.sin_pi_div_two] at h2
   linarith
-
-private lemma im_ofReal_mul_exp (A x : ℝ) :
-    ((A : ℂ) * Complex.exp (x * Complex.I)).im = A * Real.sin x := by
-  rw [Complex.im_ofReal_mul, Complex.exp_ofReal_mul_I_im]
 
 /-- Local analysis at a real root which is not a root of `G`. -/
 private lemma local_pole (F G : ℝ[X]) (hF : F ≠ 0) (r : ℝ) (hr : F.IsRoot r)
@@ -117,13 +109,9 @@ private lemma local_pole (F G : ℝ[X]) (hF : F ≠ 0) (r : ℝ) (hr : F.IsRoot 
         aeval_algebraMap_apply_eq_algebraMap_eval, hζ, ← Complex.exp_nat_mul]
       simp only [Complex.coe_algebraMap]
       have harg : ((-(m * θ) : ℝ) : ℂ) * Complex.I = -(m * (θ * Complex.I)) := by
-        push_cast
-        ring
+        push_cast; ring
       rw [harg, Complex.exp_neg]
-      have h' : ((F1.eval r : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hF1r
-      have h'' := Complex.exp_ne_zero (m * (θ * Complex.I))
-      push_cast
-      field_simp
+      push_cast; field_simp [hF1r, Complex.exp_ne_zero]
     have hcont : ContinuousAt φ 0 := by
       have hc : ∀ Q : ℝ[X], Continuous (fun s : ℝ => aeval ((r : ℂ) + s * ζ) Q) :=
         fun Q => (Polynomial.continuous_aeval Q).comp (by fun_prop)
@@ -144,26 +132,19 @@ private lemma local_pole (F G : ℝ[X]) (hF : F ≠ 0) (r : ℝ) (hr : F.IsRoot 
       obtain ⟨h1, h2⟩ := hUHP w hwim
       simp only [eval_map_algebraMap] at h1 h2
       have hFw : aeval w F = ((s : ℂ) * ζ) ^ m * aeval w F1 := by
-        rw [← hFe]
-        simp [hw]
+        rw [← hFe]; simp [hw]
       rw [hFw] at h1 h2
       have hF1w : aeval w F1 ≠ 0 := right_ne_zero_of_mul h1
       have hs0 : (s : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hs.ne'
       have heq : aeval w G / (ζ ^ m * aeval w F1) =
           ((s ^ m : ℝ) : ℂ) * (aeval w G / (((s : ℂ) * ζ) ^ m * aeval w F1)) := by
-        push_cast
-        field_simp
-        ring
+        push_cast; field_simp; ring
       rw [heq, Complex.im_ofReal_mul]
       exact mul_nonpos_of_nonneg_of_nonpos (by positivity) h2
     have h0 := im_nonpos_of_continuousAt φ hcont hpos
-    rw [hφ0, im_ofReal_mul_exp, Real.sin_neg] at h0
-    linarith
+    rw [hφ0, Complex.im_ofReal_mul, Complex.exp_ofReal_mul_I_im, Real.sin_neg] at h0; linarith
   obtain ⟨h1, h2⟩ := sign_lemma A m hm1 hA0 key
-  refine ⟨h1, ?_⟩
-  have hF1eq : F /ₘ (X - C r) = F1 := by rw [hF1, h1, pow_one]
-  rw [hF1eq]
-  exact h2
+  exact ⟨h1, by simpa [hA, hF1, h1] using h2⟩
 
 /-- Partial fraction identity for a split polynomial with simple roots. -/
 private lemma pf_identity (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits) (hnd : F.roots.Nodup) :
@@ -173,14 +154,12 @@ private lemma pf_identity (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits) (hnd : F
     (F /ₘ (X - C r))
   have hmult : ∀ r ∈ F.roots, F.rootMultiplicity r = 1 := by
     intro r hr
-    have h1 := (Multiset.nodup_iff_count_le_one.1 hnd) r
-    have h2 := Multiset.count_pos.2 hr
-    rw [count_roots] at h1 h2
-    lia
+    rw [← count_roots]
+    exact Nat.le_antisymm ((Multiset.nodup_iff_count_le_one.mp hnd) r)
+      (Multiset.count_pos.mpr hr)
   have hDr : ∀ r ∈ F.roots, (F /ₘ (X - C r)).eval r ≠ 0 := by
     intro r hr
-    have h := eval_divByMonic_pow_rootMultiplicity_ne_zero r hF
-    rwa [hmult r hr, pow_one] at h
+    simpa [hmult r hr] using eval_divByMonic_pow_rootMultiplicity_ne_zero r hF
   have hDr' : ∀ r ∈ F.roots, ∀ r' ∈ F.roots, r' ≠ r →
       (F /ₘ (X - C r)).eval r' = 0 := by
     intro r hr r' hr' hne
@@ -197,12 +176,10 @@ private lemma pf_identity (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits) (hnd : F
     · rw [div_mul_cancel₀ _ (hDr r hr), sub_self]
     · intro r' hr' hne
       rw [hDr' r' (Multiset.mem_toFinset.1 hr') r hr (Ne.symm hne), mul_zero]
-    · intro h
-      exact absurd (Multiset.mem_toFinset.2 hr) h
+    · exact fun h => absurd (Multiset.mem_toFinset.2 hr) h
   have hdvd : F ∣ G - S := by
     by_cases h0 : G - S = 0
-    · rw [h0]
-      exact dvd_zero _
+    · simp [h0]
     have hle : F.roots ≤ (G - S).roots :=
       (Multiset.le_iff_subset hnd).2 fun r hr => (mem_roots h0).2 (hroot r hr)
     have h1 := (Multiset.prod_X_sub_C_dvd_iff_le_roots h0 F.roots).2 hle
@@ -242,9 +219,7 @@ private lemma poly_part (Q : ℝ[X]) (S : Finset ℝ) (c : ℝ → ℝ)
   set d := Q.natDegree with hd
   rcases Nat.eq_zero_or_pos d with hd0 | hdpos
   · exact ⟨by lia, le_of_eq (coeff_eq_zero_of_natDegree_lt (by lia))⟩
-  have hQ0 : Q ≠ 0 := by
-    rintro rfl
-    simp [d] at hdpos
+  have hQ0 : Q ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by simpa [d] using hdpos)
   have hq : Q.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.2 hQ0
   have key : ∀ θ : ℝ, 0 < θ → θ < Real.pi →
       0 ≤ (-Q.leadingCoeff) * Real.sin (d * θ) := by
@@ -266,18 +241,12 @@ private lemma poly_part (Q : ℝ[X]) (S : Finset ℝ) (c : ℝ → ℝ)
       simp only [φ, Complex.ofReal_zero]
       rw [Finset.sum_eq_single d]
       · have hpow : Complex.exp ((d * θ : ℝ) * Complex.I) = ζ ^ d := by
-          rw [hζ, ← Complex.exp_nat_mul]
-          push_cast
-          ring_nf
-        rw [hpow, hd]
-        simp
+          rw [hζ, ← Complex.exp_nat_mul]; push_cast; ring_nf
+        rw [hpow, hd]; simp
       · intro i hi hne
-        have hdiff : 0 < d - i := by
-          have hi' := Finset.mem_range.1 hi
-          lia
+        have hdiff : 0 < d - i := by grind
         simp [zero_pow hdiff.ne']
-      · intro h
-        exact absurd (Finset.mem_range.2 (Nat.lt_succ_self d)) h
+      · exact fun h => absurd (Finset.mem_range.2 (Nat.lt_succ_self d)) h
     have hpos : ∀ s : ℝ, 0 < s → (φ s).im ≤ 0 := by
       intro s hs
       have hs0 : (s : ℂ) ≠ 0 := Complex.ofReal_ne_zero.2 hs.ne'
@@ -298,32 +267,22 @@ private lemma poly_part (Q : ℝ[X]) (S : Finset ℝ) (c : ℝ → ℝ)
           have hne : ζ - r * s ≠ 0 := by
             intro h0
             have him := congrArg Complex.im h0
-            have him' : ζ.im = 0 := by
-              simpa only [Complex.sub_im, Complex.mul_im, Complex.ofReal_im,
-                Complex.ofReal_re, zero_mul, mul_zero, add_zero, sub_zero,
-                Complex.zero_im] using him
-            rw [him'] at hζim
+            simp only [Complex.sub_im, Complex.mul_im, Complex.ofReal_im,
+              Complex.ofReal_re, zero_mul, mul_zero, add_zero, sub_zero,
+              Complex.zero_im] at him
             linarith
           have hne' : ζ / s - r ≠ 0 := by
-            rw [div_sub' hs0]
-            exact div_ne_zero (by rwa [mul_comm]) hs0
+            rw [div_sub' hs0]; exact div_ne_zero (by rwa [mul_comm]) hs0
           push_cast
-          rw [div_sub' hs0]
-          field_simp
-          ring
+          rw [div_sub' hs0]; field_simp; ring
       rw [heq, Complex.im_ofReal_mul]
       refine mul_nonpos_of_nonneg_of_nonpos (by positivity) (h _ ?_)
-      rw [Complex.div_ofReal_im]
-      exact div_pos hζim hs
+      rw [Complex.div_ofReal_im]; exact div_pos hζim hs
     have h0 := im_nonpos_of_continuousAt φ hcont hpos
-    rw [hφ0, im_ofReal_mul_exp] at h0
-    linarith
+    rw [hφ0, Complex.im_ofReal_mul, Complex.exp_ofReal_mul_I_im] at h0; linarith
   obtain ⟨h1, h2⟩ := sign_lemma (-Q.leadingCoeff) d hdpos (neg_ne_zero.2 hq) key
   refine ⟨h1.le, ?_⟩
-  have hcoeff : Q.coeff 1 = Q.leadingCoeff := by
-    rw [leadingCoeff, ← hd, h1]
-  rw [hcoeff]
-  linarith
+  simpa [leadingCoeff, ← hd, h1] using h2.le
 
 private lemma deriv_congr_open (f g : ℝ → ℝ) (U : Set ℝ) (hU : IsOpen U) (t : ℝ)
     (ht : t ∈ U) (hfg : ∀ x ∈ U, f x = g x) :
@@ -348,13 +307,9 @@ private lemma explicit_derivs (Q : ℝ[X]) (S : Finset ℝ) (c : ℝ → ℝ)
     have hx' : ∀ r ∈ S, x - r ≠ 0 := fun r hr =>
       sub_ne_zero.2 (ne_of_gt (Set.mem_iInter₂.1 hx r hr))
     have hQd : HasDerivAt (fun s => Q.eval s) (Q.coeff 1) x := by
-      rw [hQe]
-      simpa using ((hasDerivAt_id x).const_mul (Q.coeff 1)).add_const (Q.coeff 0)
+      rw [hQe]; simpa using ((hasDerivAt_id x).const_mul (Q.coeff 1)).add_const (Q.coeff 0)
     refine hQd.add (HasDerivAt.fun_sum fun r hr => ?_)
-    have h := (((hasDerivAt_id x).sub_const r).inv (hx' r hr)).const_mul (c r)
-    convert h using 1
-    · rfl
-    · rfl
+    exact (((hasDerivAt_id x).sub_const r).inv (hx' r hr)).const_mul (c r)
   have d2 : HasDerivAt (fun x => Q.coeff 1 + ∑ r ∈ S, c r * (-1 / (x - r) ^ 2))
       (∑ r ∈ S, c r * (2 * (t - r) / ((t - r) ^ 2) ^ 2)) t := by
     have h := (hasDerivAt_const t (Q.coeff 1)).add (HasDerivAt.fun_sum (u := S) fun r hr =>
@@ -364,23 +319,19 @@ private lemma explicit_derivs (Q : ℝ[X]) (S : Finset ℝ) (c : ℝ → ℝ)
     · ext x
       congr 1
       refine Finset.sum_congr rfl fun r _ => ?_
-      simp
-      ring
+      simp; ring
     · simp only [Nat.cast_ofNat, id_eq, Nat.add_one_sub_one, pow_one, mul_one, Pi.pow_apply,
         neg_mul, Finset.sum_neg_distrib, zero_add]
       rw [← Finset.sum_neg_distrib]
-      refine Finset.sum_congr rfl fun r _ => ?_
-      ring
+      exact Finset.sum_congr rfl fun r _ => by ring
   have hderiv : ∀ x ∈ U, deriv (fun s => Q.eval s + ∑ r ∈ S, c r / (s - r)) x =
       Q.coeff 1 + ∑ r ∈ S, c r * (-1 / (x - r) ^ 2) := fun x hx => (d1 x hx).deriv
   refine ⟨?_, ?_⟩
   · rw [hderiv t htU]
     have hsum : ∑ r ∈ S, c r * (-1 / (t - r) ^ 2) ≤ 0 :=
       Finset.sum_nonpos fun r hr => by
-        have hcr := hc r hr
-        have hsq : 0 < (t - r) ^ 2 := pow_pos (sub_pos.2 (ht r hr)) 2
-        have hneg : -1 / (t - r) ^ 2 < 0 := div_neg_of_neg_of_pos (by norm_num) hsq
-        nlinarith
+        exact mul_nonpos_of_nonneg_of_nonpos (hc r hr).le
+          (div_nonpos_of_nonpos_of_nonneg (by norm_num) (sq_nonneg _))
     linarith
   · rw [Filter.EventuallyEq.deriv_eq (Filter.eventually_of_mem (hU.mem_nhds htU) hderiv),
       d2.deriv]
@@ -402,28 +353,23 @@ private lemma coprime_case (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits)
       0 < G.eval r / (F /ₘ (X - C r)).eval r := fun r hr =>
     local_pole F G hF r ((mem_roots hF).1 hr) (hcop r hr) hUHP
   have hnd : F.roots.Nodup := by
-    rw [Multiset.nodup_iff_count_le_one]
-    intro a
-    rw [count_roots]
+    rw [Multiset.nodup_iff_count_le_one]; intro a; rw [count_roots]
     by_cases ha : a ∈ F.roots
     · rw [(hloc a ha).1]
-    · rw [rootMultiplicity_eq_zero (fun h => ha ((mem_roots hF).2 h))]
-      lia
+    · rw [rootMultiplicity_eq_zero (fun h => ha ((mem_roots hF).2 h))]; lia
   obtain ⟨Q, hQ⟩ := pf_identity F G hF hs hnd
   set S := F.roots.toFinset with hSdef
   set c : ℝ → ℝ := fun r => G.eval r / (F /ₘ (X - C r)).eval r with hcdef
   have hS : ∀ r ∈ S, F.IsRoot r := fun r hr =>
     (mem_roots hF).1 (Multiset.mem_toFinset.1 hr)
-  have hpos : ∀ r ∈ S, 0 < c r := fun r hr =>
-    (hloc r (Multiset.mem_toFinset.1 hr)).2
+  have hpos : ∀ r ∈ S, 0 < c r := fun r hr => (hloc r (Multiset.mem_toFinset.1 hr)).2
   have hpp := poly_part Q S c (by
     intro w hw
     have h1 := hUHP w hw
     rw [eval_map_algebraMap, eval_map_algebraMap] at h1
     have h2 := pf_eval F G Q S c hS hQ w h1.1
     simp only [Complex.coe_algebraMap] at h2
-    rw [← h2]
-    exact h1.2)
+    rw [← h2]; exact h1.2)
   have hexp := explicit_derivs Q S c hpp.1 hpp.2 hpos t
     (fun r hr => ht r (Multiset.mem_toFinset.1 hr))
   have hcongr := deriv_congr_open (fun s => G.eval s / F.eval s)
@@ -433,14 +379,11 @@ private lemma coprime_case (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits)
     (by
       intro x hx
       have hx' : ∀ r ∈ S, r < x := fun r hr => Set.mem_iInter₂.1 hx r hr
-      have hFx : F.eval x ≠ 0 := by
-        intro h0
-        have hr := hx' x (Multiset.mem_toFinset.2 ((mem_roots hF).2 h0))
-        exact lt_irrefl _ hr
+      have hFx : F.eval x ≠ 0 := fun h0 =>
+        lt_irrefl _ (hx' x (Multiset.mem_toFinset.2 ((mem_roots hF).2 h0)))
       have h2 := pf_eval (K := ℝ) F G Q S c hS hQ x (by simpa using hFx)
       simpa using h2)
-  rw [hcongr.1, hcongr.2]
-  exact hexp
+  simpa only [hcongr.1, hcongr.2] using hexp
 
 /-- A Pick-type lemma for rational functions.  This is the elementary core of the
 Marcus--Spielman--Srivastava Pick/Nevanlinna representation route (their Lemma 5.7).
@@ -466,17 +409,14 @@ theorem deriv_nonpos_and_second_deriv_nonneg (F G : ℝ[X]) (hF : F ≠ 0) (hs :
       have hFe : (X - C r) * F' = F := mul_divByMonic_eq_iff_isRoot.2 hrF'
       have hGe : (X - C r) * G' = G := mul_divByMonic_eq_iff_isRoot.2 hrG
       have hF' : F' ≠ 0 := by
-        rintro h0
-        rw [h0, mul_zero] at hFe
-        exact hF hFe.symm
+        rintro h0; rw [h0, mul_zero] at hFe; exact hF hFe.symm
       have hdeg : F'.natDegree < n := by
-        rw [← h, ← hFe, natDegree_mul (X_sub_C_ne_zero r) hF', natDegree_X_sub_C]
-        lia
+        rw [← h, ← hFe, natDegree_mul (X_sub_C_ne_zero r) hF', natDegree_X_sub_C]; lia
       have hs' : F'.Splits := hs.of_dvd hF ⟨X - C r, by rw [← hFe, mul_comm]⟩
       have hroots : ∀ x ∈ F'.roots, x ∈ F.roots := by
         intro x hx
         rw [← hFe, roots_mul (by rw [hFe]; exact hF)]
-        exact Multiset.mem_add.2 (Or.inr hx)
+        exact Multiset.mem_add.mpr (Or.inr hx)
       have hUHP' : ∀ w : ℂ, 0 < w.im →
           (F'.map (algebraMap ℝ ℂ)).eval w ≠ 0 ∧
             ((G'.map (algebraMap ℝ ℂ)).eval w /
@@ -485,12 +425,10 @@ theorem deriv_nonpos_and_second_deriv_nonneg (F G : ℝ[X]) (hF : F ≠ 0) (hs :
         obtain ⟨h1, h2⟩ := hUHP w hw
         have hwr : w - (r : ℂ) ≠ 0 := by
           intro h0
-          have him : w.im = 0 := by
-            have him' := congrArg Complex.im h0
-            simpa only [Complex.sub_im, Complex.ofReal_im, sub_zero, Complex.zero_im] using him'
+          have him := congrArg Complex.im h0
+          simp only [Complex.sub_im, Complex.ofReal_im, sub_zero, Complex.zero_im] at him
           linarith
-        rw [← hFe] at h1 h2
-        rw [← hGe] at h2
+        rw [← hFe] at h1 h2; rw [← hGe] at h2
         simp only [Polynomial.map_mul, Polynomial.map_sub, map_X, map_C, eval_mul, eval_sub,
           eval_X, eval_C, Complex.coe_algebraMap] at h1 h2
         refine ⟨fun h0 => h1 (by rw [h0, mul_zero]), ?_⟩
@@ -503,14 +441,10 @@ theorem deriv_nonpos_and_second_deriv_nonneg (F G : ℝ[X]) (hF : F ≠ 0) (hs :
           intro x hx
           simp only [Set.mem_ofPred_eq] at hx
           have hxr : x - r ≠ 0 := sub_ne_zero.2 hx
-          rw [← hFe, ← hGe]
-          simp only [eval_mul, eval_sub, eval_X, eval_C]
+          rw [← hFe, ← hGe]; simp only [eval_mul, eval_sub, eval_X, eval_C]
           rw [mul_div_mul_left _ _ hxr])
-      rw [hcongr.1, hcongr.2]
-      exact ⟨hd1, hd2⟩
+      simpa only [hcongr.1, hcongr.2] using ⟨hd1, hd2⟩
 
 end PickRatio
-
 end
-
 end RealRooted

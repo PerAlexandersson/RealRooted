@@ -22,13 +22,10 @@ theorem mem_of_mem_comparisonBottomSupport {w : List Nat} {x : Nat}
       cases w with
       | nil => simp [comparisonBottomSupport] at hx
       | cons b w =>
-          rw [comparisonBottomSupport] at hx
+          simp only [comparisonBottomSupport] at hx
           split at hx
           · exact List.mem_cons_of_mem a (ih hx)
-          · rw [Finset.mem_insert] at hx
-            rcases hx with rfl | hx
-            · simp
-            · exact List.mem_cons_of_mem a (ih hx)
+          · rcases Finset.mem_insert.mp hx with rfl | hx <;> simp_all
 
 /-- The head of a nodup word cannot be a comparison bottom. -/
 theorem head_not_mem_comparisonBottomSupport {a : Nat} {w : List Nat}
@@ -261,23 +258,13 @@ theorem positiveInsertionPolynomial_cons
           (∑ r : Fin (b :: w).length,
             comparisonBottomMonomial
               (step (r.1 + 2) (a :: b :: w))) = _
-      by_cases hab : a < b
-      · simp only [hab, ite_eq_left, one_mul]
-        rw [positiveInsertionPolynomial]
-        congr 1
-        apply Finset.sum_congr rfl
-        intro r hr
-        exact comparisonBottomMonomial_step_add_two_cons
-          (R := R) hpos hnodup (by simpa using r.isLt) |>.trans
-            (ite_eq_left hab)
-      · simp only [List.length_cons, ite_eq_right hab]
-        rw [positiveInsertionPolynomial, Finset.mul_sum]
-        congr 1
-        apply Finset.sum_congr rfl
-        intro r hr
-        exact comparisonBottomMonomial_step_add_two_cons
-          (R := R) hpos hnodup (by simpa using r.isLt) |>.trans
-            (ite_eq_right hab)
+      rw [positiveInsertionPolynomial, Finset.mul_sum]
+      congr 1
+      apply Finset.sum_congr rfl
+      intro r _
+      by_cases hab : a < b <;>
+        simpa [hab] using comparisonBottomMonomial_step_add_two_cons
+          (R := R) hpos hnodup (by simpa using r.isLt)
 
 /-- The support normal form for the positive-slot insertion sum. -/
 noncomputable def comparisonBottomInsertionCore
@@ -327,37 +314,22 @@ theorem comparisonBottomInsertionCore_cons_cons
   have htail : (b :: w).Nodup := (List.nodup_cons.mp hnodup).2
   have hbnot := head_not_mem_comparisonBottomSupport htail
   have hcard := card_comparisonBottomSupport_le_length htail
+  unfold comparisonBottomInsertionCore
+  rw [comparisonBottomSupport]
   by_cases hab : a < b
-  · rw [comparisonBottomInsertionCore]
-    rw [comparisonBottomSupport, ite_eq_left hab]
-    rw [comparisonBottomInsertionCore]
-    simp only [hab, ite_eq_left, one_mul]
-    have hdiff :
-        (a :: b :: w).length -
-            (comparisonBottomSupport (b :: w)).card =
-          ((b :: w).length -
-            (comparisonBottomSupport (b :: w)).card) + 1 := by
-      change (b :: w).length.succ -
-          (comparisonBottomSupport (b :: w)).card = _
-      exact Nat.succ_sub hcard
-    rw [hdiff, Nat.cast_add, Nat.cast_one, map_add]
-    rw [comparisonBottomMonomial_cons_cons hnodup, ite_eq_left hab]
+  · simp only [hab, ite_true, one_mul]
+    rw [show (a :: b :: w).length - (comparisonBottomSupport (b :: w)).card =
+        ((b :: w).length - (comparisonBottomSupport (b :: w)).card) + 1 by
+          exact Nat.succ_sub hcard,
+      Nat.cast_add, Nat.cast_one, map_add,
+      comparisonBottomMonomial_cons_cons hnodup, ite_eq_left hab]
     simp only [map_one]
     ring
-  · rw [comparisonBottomInsertionCore]
-    rw [comparisonBottomSupport, ite_eq_right hab]
-    rw [comparisonBottomInsertionCore]
-    simp only [hab, ite_false]
+  · simp only [hab, ite_false]
     rw [Finset.card_insert_of_notMem hbnot]
-    have hdiff :
-        (a :: b :: w).length -
-            ((comparisonBottomSupport (b :: w)).card + 1) =
-          (b :: w).length -
-            (comparisonBottomSupport (b :: w)).card := by
-      change (b :: w).length.succ -
-          (comparisonBottomSupport (b :: w)).card.succ = _
-      exact Nat.succ_sub_succ_eq_sub _ _
-    rw [hdiff]
+    rw [show (a :: b :: w).length - ((comparisonBottomSupport (b :: w)).card + 1) =
+        (b :: w).length - (comparisonBottomSupport (b :: w)).card by
+          exact Nat.succ_sub_succ_eq_sub _ _]
     rw [comparisonBottomMonomial_cons_cons hnodup, ite_eq_right hab]
     rw [Finset.sum_insert hbnot]
     simp only [Finset.erase_insert_eq_erase]
@@ -377,10 +349,8 @@ theorem comparisonBottomInsertionCore_cons_cons
       have hbx : b ≠ x := fun h => hbnot (h ▸ hx)
       rw [Finset.erase_insert_of_ne hbx]
       rw [MvPolynomial.finsetMonomial_insert]
-      intro hbErase
-      exact hbnot (Finset.mem_of_mem_erase hbErase)
-    rw [hsum]
-    rw [comparisonBottomMonomial]
+      exact fun hbErase => hbnot (Finset.mem_of_mem_erase hbErase)
+    rw [hsum, comparisonBottomMonomial]
     ring
 
 /-- The positive-slot insertion sum is the shifted support normal form. -/
@@ -415,11 +385,8 @@ theorem positiveInsertionPolynomial_eq_core
           rw [ih hposTail hnodupTail,
             comparisonBottomInsertionCore_cons_cons hnodup]
           rw [map_add, map_mul]
-          by_cases hab : a < b
-          · simp [hab]
-            ring
-          · simp [hab, MvPolynomial.rename_X, succEmbedding]
-            ring
+          by_cases hab : a < b <;>
+            simp [hab, MvPolynomial.rename_X, succEmbedding] <;> ring
 
 /-- Excluding slot one from an initial-ascent word leaves the front slot and
 the positive-slot insertion sum of its tail. -/
@@ -438,44 +405,27 @@ theorem sum_nonOne_comparisonBottomMonomial_step
     fun r => comparisonBottomMonomial (step r.1 (a :: b :: w))
   have hsplit := Fintype.sum_eq_add_sum_subtype_ne f
     (1 : Fin ((a :: b :: w).length + 1))
-  have htotal :
-      (∑ r, f r) = f 0 +
-        positiveInsertionPolynomial (R := R) (a :: b :: w) := by
-    rw [Fin.sum_univ_succ]
-    rfl
   have htailPos : IsPositive (b :: w) := by
     intro x hx
     exact hpos x (by simp [hx])
-  have htailNodup : (b :: w).Nodup :=
-    (List.nodup_cons.mp hnodup).2
-  have hpositive := positiveInsertionPolynomial_cons
-    (R := R) hpos hnodup
-  change positiveInsertionPolynomial (R := R) (a :: b :: w) =
-      MvPolynomial.X 1 *
-          MvPolynomial.rename succEmbedding
-            (comparisonBottomMonomial (b :: w)) +
-        (if a < b then 1 else MvPolynomial.X (b + 1)) *
-          positiveInsertionPolynomial (b :: w) at hpositive
+  have htailNodup : (b :: w).Nodup := (List.nodup_cons.mp hnodup).2
+  rw [Fin.sum_univ_succ] at hsplit
+  change f 0 + positiveInsertionPolynomial (R := R) (a :: b :: w) =
+    f 1 + ∑ r : {r // r ≠ (1 : Fin ((a :: b :: w).length + 1))}, f r.1 at hsplit
+  rw [positiveInsertionPolynomial_cons hpos hnodup] at hsplit
+  change f 0 + (MvPolynomial.X 1 * MvPolynomial.rename succEmbedding
+      (comparisonBottomMonomial (b :: w)) +
+      (if a < b then 1 else MvPolynomial.X (b + 1)) *
+        positiveInsertionPolynomial (b :: w)) = _ at hsplit
   rw [ite_eq_left hab, one_mul,
-    positiveInsertionPolynomial_eq_core htailPos htailNodup] at hpositive
-  have hzero := comparisonBottomMonomial_step_zero (R := R) hpos
-  have hone := comparisonBottomMonomial_step_one_cons (R := R) hpos
-  have hmonomial := comparisonBottomMonomial_cons_cons (R := R) hnodup
-  rw [ite_eq_left hab] at hmonomial
-  change f 0 = MvPolynomial.rename succEmbedding
-    (comparisonBottomMonomial (R := R) (a :: b :: w)) at hzero
-  change f (1 : Fin ((a :: b :: w).length + 1)) =
-    MvPolynomial.X 1 * MvPolynomial.rename succEmbedding
-      (comparisonBottomMonomial (R := R) (b :: w)) at hone
+    positiveInsertionPolynomial_eq_core htailPos htailNodup] at hsplit
+  change comparisonBottomMonomial (step 0 (a :: b :: w)) + _ =
+    comparisonBottomMonomial (step 1 (a :: b :: w)) + _ at hsplit
+  rw [comparisonBottomMonomial_step_zero hpos,
+    comparisonBottomMonomial_step_one_cons hpos] at hsplit
   change (∑ r : {r // r ≠
       (1 : Fin ((a :: b :: w).length + 1))}, f r.1) = _
-  rw [hmonomial]
-  rw [htotal, hpositive, hzero] at hsplit
-  rw [hmonomial] at hsplit
-  change _ = f (1 : Fin ((a :: b :: w).length + 1)) +
-    ∑ r : {r // r ≠ (1 : Fin ((a :: b :: w).length + 1))},
-      f r.1 at hsplit
-  rw [hone] at hsplit
+  rw [comparisonBottomMonomial_cons_cons hnodup, ite_eq_left hab] at hsplit ⊢
   apply add_left_cancel (a := MvPolynomial.X 1 *
     MvPolynomial.rename succEmbedding
       (comparisonBottomMonomial (R := R) (b :: w)))
@@ -493,26 +443,12 @@ theorem sum_val_ne_one_comparisonBottomMonomial_step
         MvPolynomial.X 1 *
           MvPolynomial.rename succEmbedding
             (comparisonBottomInsertionCore (R := R) (b :: w)) := by
-  let e :
-      {r : Fin ((a :: b :: w).length + 1) // (r : Nat) ≠ 1} ≃
-        {r : Fin ((a :: b :: w).length + 1) // r ≠ 1} := {
-    toFun := fun r => ⟨r.1, by
-      intro hr
-      apply r.2
-      simpa using congrArg Fin.val hr⟩
-    invFun := fun r => ⟨r.1, by
-      intro hr
-      apply r.2
-      apply Fin.ext
-      simpa using hr⟩
-    left_inv := fun r => Subtype.ext rfl
-    right_inv := fun r => Subtype.ext rfl }
+  let e : {r : Fin ((a :: b :: w).length + 1) // (r : Nat) ≠ 1} ≃
+      {r : Fin ((a :: b :: w).length + 1) // r ≠ 1} :=
+    Equiv.subtypeEquivRight fun r => (Fin.ne_iff_vne r 1).symm
   calc
-    (∑ r : {r : Fin ((a :: b :: w).length + 1) // (r : Nat) ≠ 1},
-        comparisonBottomMonomial (R := R) (step r.1 (a :: b :: w))) =
-        ∑ r : {r : Fin ((a :: b :: w).length + 1) // r ≠ 1},
-          comparisonBottomMonomial (R := R)
-            (step r.1 (a :: b :: w)) := by
+    _ = ∑ r : {r : Fin ((a :: b :: w).length + 1) // r ≠ 1},
+        comparisonBottomMonomial (R := R) (step r.1 (a :: b :: w)) := by
       apply Fintype.sum_equiv e
       intro r
       rfl
@@ -564,12 +500,10 @@ theorem comparisonBottomSupport_exceptional_pair {w : List Nat}
           else insert (b + 2)
             (comparisonBottomSupport ((b + 2) :: w.map (fun x => x + 2)))) = _
       rw [ite_eq_left (by lia)]
-      have hmap :
-          (b :: w).map (fun x => x + 2) = raise (raise (b :: w)) := by
-        simp [raise, Nat.add_assoc]
       change insert 2
         (comparisonBottomSupport ((b :: w).map (fun x => x + 2))) = _
-      rw [hmap, comparisonBottomSupport_raise,
+      rw [show (b :: w).map (fun x => x + 2) = raise (raise (b :: w)) by
+          simp [raise, Nat.add_assoc], comparisonBottomSupport_raise,
         comparisonBottomSupport_raise, Finset.map_map]
 
 /-- The exceptional pair shifts a bounded support by two and adds bottom two. -/
@@ -586,8 +520,7 @@ theorem mem_comparisonBottomSupport_exceptional_pair_bounds
     obtain ⟨y, hy, hxy⟩ := hx
     change y + 2 = x at hxy
     subst x
-    have := hbound y hy
-    constructor <;> lia
+    constructor <;> lia [hbound y hy]
 
 /-- The comparison-bottom monomial of an exceptional pair is the shifted old
 monomial times the new bottom variable `X 2`. -/

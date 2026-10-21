@@ -18,15 +18,23 @@ noncomputable section
 
 namespace RealRooted
 
-private def separateEven (eps : ℝ) : List ℝ → List ℝ
+private def separateBy (shift : ℕ → ℝ) (eps : ℝ) : List ℝ → List ℝ
   | [] => []
-  | x :: xs =>
-      (x - eps * (2 * (xs.length + 1) : ℝ)) :: separateEven eps xs
+  | x :: xs => (x - eps * shift xs.length) :: separateBy shift eps xs
 
-private def separateOdd (eps : ℝ) : List ℝ → List ℝ
-  | [] => []
-  | x :: xs =>
-      (x - eps * (2 * xs.length + 1 : ℝ)) :: separateOdd eps xs
+private def separateEven (eps : ℝ) (xs : List ℝ) : List ℝ :=
+  separateBy (fun n => 2 * ((n : ℝ) + 1)) eps xs
+
+private def separateOdd (eps : ℝ) (xs : List ℝ) : List ℝ :=
+  separateBy (fun n => 2 * (n : ℝ) + 1) eps xs
+
+private lemma separateEven_cons (eps x : ℝ) (xs : List ℝ) :
+    separateEven eps (x :: xs) =
+      (x - eps * (2 * (xs.length + 1) : ℝ)) :: separateEven eps xs := rfl
+
+private lemma separateOdd_cons (eps x : ℝ) (xs : List ℝ) :
+    separateOdd eps (x :: xs) =
+      (x - eps * (2 * xs.length + 1 : ℝ)) :: separateOdd eps xs := rfl
 
 private def mergeInter : List ℝ → List ℝ → List ℝ
   | [], rs => rs
@@ -38,41 +46,31 @@ private def mergeAlt : List ℝ → List ℝ → List ℝ
   | s :: ss, r :: rs => s :: mergeInter ss (r :: rs)
   | ss, rs => ss ++ rs
 
+private lemma length_separateBy (shift : ℕ → ℝ) (eps : ℝ) (xs : List ℝ) :
+    (separateBy shift eps xs).length = xs.length := by
+  induction xs <;> simp_all [separateBy]
+
 private lemma length_separateEven (eps : ℝ) (xs : List ℝ) :
-    (separateEven eps xs).length = xs.length := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih => simp [separateEven, ih]
+    (separateEven eps xs).length = xs.length := length_separateBy _ _ _
 
 private lemma length_separateOdd (eps : ℝ) (xs : List ℝ) :
-    (separateOdd eps xs).length = xs.length := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih => simp [separateOdd, ih]
+    (separateOdd eps xs).length = xs.length := length_separateBy _ _ _
 
-private lemma separateEven_zero (xs : List ℝ) : separateEven 0 xs = xs := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih => simp [separateEven, ih]
+private lemma separateBy_zero (shift : ℕ → ℝ) (xs : List ℝ) :
+    separateBy shift 0 xs = xs := by
+  induction xs <;> simp_all [separateBy]
 
-private lemma separateOdd_zero (xs : List ℝ) : separateOdd 0 xs = xs := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih => simp [separateOdd, ih]
+private lemma separateEven_zero (xs : List ℝ) : separateEven 0 xs = xs :=
+  separateBy_zero _ _
+
+private lemma separateOdd_zero (xs : List ℝ) : separateOdd 0 xs = xs :=
+  separateBy_zero _ _
 
 private lemma mergeInter_separated_head (eps r : ℝ) (ss rs : List ℝ)
     (hlen : ss.length = rs.length) :
     ∃ tail, mergeInter (separateEven eps ss) (separateOdd eps (r :: rs)) =
       (r - eps * (2 * rs.length + 1 : ℝ)) :: tail := by
-  cases ss with
-  | nil =>
-    have hrs : rs = [] := by simpa using hlen.symm
-    subst rs
-    simp [separateEven, separateOdd, mergeInter]
-  | cons s ss =>
-    cases rs with
-    | nil => simp at hlen
-    | cons r₂ rs => simp [separateEven, separateOdd, mergeInter]
+  cases ss <;> cases rs <;> simp_all [separateEven, separateOdd, separateBy, mergeInter]
 
 private lemma separated_listInterlaces
     {ss rs : List ℝ} {eps : ℝ} (heps : 0 < eps)
@@ -86,7 +84,7 @@ private lemma separated_listInterlaces
       | cons r rs =>
         have hrs : rs = [] := by simpa using hlen
         subst rs
-        simp [separateEven, separateOdd, mergeInter, ListInterlaces]
+        simp [separateEven, separateOdd, separateBy, mergeInter, ListInterlaces]
   | cons s ss ih =>
       cases rs with
       | nil => simp at hlen
@@ -131,7 +129,7 @@ private lemma separated_listInterlaces
             · exact lt_trans hr₁s' (htailAll x hx)
           refine ⟨?_, ?_⟩
           · exact ⟨hr₁s'.le, hsr₂'.le, ihInter⟩
-          · simp only [separateEven, separateOdd, mergeInter]
+          · simp only [separateEven_cons, separateOdd_cons, mergeInter]
             exact List.pairwise_cons.mpr
               ⟨hr₁All, List.pairwise_cons.mpr ⟨htailAll, ihPair⟩⟩
 
@@ -144,7 +142,7 @@ private lemma separated_listAlternates
   | nil =>
     have hrs : rs = [] := by simpa using hlen.symm
     subst rs
-    simp [separateEven, separateOdd, mergeAlt, ListAlternates]
+    simp [separateEven, separateOdd, separateBy, mergeAlt, ListAlternates]
   | cons s ss =>
     cases rs with
     | nil => simp at hlen
@@ -172,7 +170,7 @@ private lemma separated_listAlternates
         · exact hsr'
         · exact lt_trans hsr' ((List.pairwise_cons.mp htailPair).1 x hx)
       refine ⟨⟨hsr'.le, htailInter⟩, ?_⟩
-      simp only [separateEven, separateOdd, mergeAlt]
+      simp only [separateEven_cons, separateOdd_cons, mergeAlt]
       exact List.pairwise_cons.mpr ⟨hsAll, htailPair⟩
 
 private lemma mergeInter_perm_append {ss rs : List ℝ}
@@ -188,26 +186,12 @@ private lemma mergeInter_perm_append {ss rs : List ℝ}
         | cons r₂ rs =>
           rcases hint with ⟨_, _, htail⟩
           have hperm := ih htail
-          have hswap : List.Perm (r₁ :: s :: mergeInter ss (r₂ :: rs))
-              (s :: r₁ :: mergeInter ss (r₂ :: rs)) :=
-            (List.Perm.swap r₁ s _).symm
-          have htailPerm : List.Perm (s :: r₁ :: mergeInter ss (r₂ :: rs))
-              (s :: r₁ :: (ss ++ r₂ :: rs)) := (hperm.cons r₁).cons s
-          have hmiddle : List.Perm (s :: r₁ :: (ss ++ r₂ :: rs))
-              (s :: (ss ++ r₁ :: r₂ :: rs)) := List.Perm.cons s List.perm_middle.symm
-          exact hswap.trans (htailPerm.trans hmiddle)
+          exact (List.Perm.swap r₁ s _).symm.trans <|
+            ((hperm.cons r₁).cons s).trans (List.Perm.cons s List.perm_middle.symm)
 
 private lemma mergeAlt_perm_append {ss rs : List ℝ}
     (halt : ListAlternates ss rs) : List.Perm (mergeAlt ss rs) (ss ++ rs) := by
-  cases ss with
-  | nil =>
-    cases rs with
-    | nil => simp [mergeAlt]
-    | cons r rs => simp [ListAlternates] at halt
-  | cons s ss =>
-    cases rs with
-    | nil => simp [ListAlternates] at halt
-    | cons r rs => exact (mergeInter_perm_append halt.2).cons s
+  cases ss <;> cases rs <;> simp_all [mergeAlt, ListAlternates, mergeInter_perm_append]
 
 private lemma mergeInter_component_sublist {ss rs : List ℝ}
     (hint : ListInterlaces ss rs) :
@@ -230,17 +214,8 @@ private lemma mergeInter_component_sublist {ss rs : List ℝ}
 private lemma mergeAlt_component_sublist {ss rs : List ℝ}
     (halt : ListAlternates ss rs) :
     List.Sublist ss (mergeAlt ss rs) ∧ List.Sublist rs (mergeAlt ss rs) := by
-  cases ss with
-  | nil =>
-    cases rs with
-    | nil => simp [mergeAlt]
-    | cons r rs => simp [ListAlternates] at halt
-  | cons s ss =>
-    cases rs with
-    | nil => simp [ListAlternates] at halt
-    | cons r rs =>
-      obtain ⟨hleft, hright⟩ := mergeInter_component_sublist halt.2
-      exact ⟨List.Sublist.cons_cons s hleft, List.Sublist.cons s hright⟩
+  cases ss <;> cases rs <;>
+    simp_all [mergeAlt, ListAlternates, mergeInter_component_sublist]
 
 private lemma separated_lists_of_listInterlaces
     {ss rs : List ℝ} {eps : ℝ} (heps : 0 < eps)
@@ -250,11 +225,9 @@ private lemma separated_lists_of_listInterlaces
       (separateOdd eps rs).Pairwise (· ≤ ·) ∧
       (separateEven eps ss).Disjoint (separateOdd eps rs) := by
   obtain ⟨hinter, hpair⟩ := separated_listInterlaces heps hlen hint
-  have hperm := mergeInter_perm_append hinter
   have hsubs := mergeInter_component_sublist hinter
-  have happNodup : (separateEven eps ss ++ separateOdd eps rs).Nodup :=
-    (hperm.nodup_iff.mp hpair.nodup)
-  have hparts := List.nodup_append'.mp happNodup
+  have hparts := List.nodup_append'.mp <|
+    (mergeInter_perm_append hinter).nodup_iff.mp hpair.nodup
   exact ⟨hinter, (hpair.sublist hsubs.1).imp le_of_lt,
     (hpair.sublist hsubs.2).imp le_of_lt, hparts.2.2⟩
 
@@ -266,39 +239,32 @@ private lemma separated_lists_of_listAlternates
       (separateOdd eps rs).Pairwise (· ≤ ·) ∧
       (separateEven eps ss).Disjoint (separateOdd eps rs) := by
   obtain ⟨hinter, hpair⟩ := separated_listAlternates heps hlen halt
-  have hperm := mergeAlt_perm_append hinter
   have hsubs := mergeAlt_component_sublist hinter
-  have happNodup : (separateEven eps ss ++ separateOdd eps rs).Nodup :=
-    (hperm.nodup_iff.mp hpair.nodup)
-  have hparts := List.nodup_append'.mp happNodup
+  have hparts := List.nodup_append'.mp <|
+    (mergeAlt_perm_append hinter).nodup_iff.mp hpair.nodup
   exact ⟨hinter, (hpair.sublist hsubs.1).imp le_of_lt,
     (hpair.sublist hsubs.2).imp le_of_lt, hparts.2.2⟩
 
-private lemma separateEven_neg {eps : ℝ} (heps : 0 < eps) {xs : List ℝ}
-    (hxs : ∀ x ∈ xs, x ≤ 0) : ∀ x ∈ separateEven eps xs, x < 0 := by
+private lemma separateBy_neg {shift : ℕ → ℝ} (hshift : ∀ n, 0 < shift n)
+    {eps : ℝ} (heps : 0 < eps) {xs : List ℝ} (hxs : ∀ x ∈ xs, x ≤ 0) :
+    ∀ x ∈ separateBy shift eps xs, x < 0 := by
   induction xs with
-  | nil => simp [separateEven]
+  | nil => simp [separateBy]
   | cons y ys ih =>
       intro x hx
-      simp only [separateEven, List.mem_cons] at hx
+      simp only [separateBy, List.mem_cons] at hx
       rcases hx with rfl | hx
       · have hy := hxs y (List.mem_cons_self ..)
-        have hlen : 0 < (2 * (ys.length + 1) : ℝ) := by positivity
-        nlinarith
+        exact sub_neg.mpr <| lt_of_le_of_lt hy (mul_pos heps (hshift _))
       · exact ih (fun z hz => hxs z (List.mem_cons_of_mem y hz)) x hx
 
+private lemma separateEven_neg {eps : ℝ} (heps : 0 < eps) {xs : List ℝ}
+    (hxs : ∀ x ∈ xs, x ≤ 0) : ∀ x ∈ separateEven eps xs, x < 0 :=
+  separateBy_neg (fun _ => by positivity) heps hxs
+
 private lemma separateOdd_neg {eps : ℝ} (heps : 0 < eps) {xs : List ℝ}
-    (hxs : ∀ x ∈ xs, x ≤ 0) : ∀ x ∈ separateOdd eps xs, x < 0 := by
-  induction xs with
-  | nil => simp [separateOdd]
-  | cons y ys ih =>
-      intro x hx
-      simp only [separateOdd, List.mem_cons] at hx
-      rcases hx with rfl | hx
-      · have hy := hxs y (List.mem_cons_self ..)
-        have hlen : 0 < (2 * ys.length + 1 : ℝ) := by positivity
-        nlinarith
-      · exact ih (fun z hz => hxs z (List.mem_cons_of_mem y hz)) x hx
+    (hxs : ∀ x ∈ xs, x ≤ 0) : ∀ x ∈ separateOdd eps xs, x < 0 :=
+  separateBy_neg (fun _ => by positivity) heps hxs
 
 private def rootApproxEven (c : ℝ) (xs : List ℝ) (eps : ℝ) : ℝ[X] :=
   C c * rootPolynomial (separateEven eps xs : Multiset ℝ)
@@ -306,65 +272,41 @@ private def rootApproxEven (c : ℝ) (xs : List ℝ) (eps : ℝ) : ℝ[X] :=
 private def rootApproxOdd (c : ℝ) (xs : List ℝ) (eps : ℝ) : ℝ[X] :=
   C c * rootPolynomial (separateOdd eps xs : Multiset ℝ)
 
-private lemma continuous_coeff_rootPolynomial_separateEven (xs : List ℝ) :
+private lemma continuous_coeff_rootPolynomial_separateBy (shift : ℕ → ℝ) (xs : List ℝ) :
     ∀ i, Continuous fun eps : ℝ =>
-      (rootPolynomial (separateEven eps xs : Multiset ℝ)).coeff i := by
+      (rootPolynomial (separateBy shift eps xs : Multiset ℝ)).coeff i := by
   induction xs with
   | nil =>
       intro i
-      simpa [separateEven, rootPolynomial] using
+      simpa [separateBy, rootPolynomial] using
         (continuous_const : Continuous fun _ : ℝ => (1 : ℝ[X]).coeff i)
   | cons x xs ih =>
       intro i
+      have hlinear : Continuous fun eps : ℝ => x - eps * shift xs.length :=
+        continuous_const.sub (continuous_id.mul continuous_const)
       cases i with
       | zero =>
         change Continuous fun eps : ℝ =>
-          ((X - C (x - eps * (2 * (xs.length + 1) : ℝ))) *
-            rootPolynomial (separateEven eps xs : Multiset ℝ)).coeff 0
+          ((X - C (x - eps * shift xs.length)) *
+            rootPolynomial (separateBy shift eps xs : Multiset ℝ)).coeff 0
         simp only [coeff_X_sub_C_mul, ite_true, zero_sub]
-        have hlinear : Continuous fun eps : ℝ =>
-            x - eps * (2 * (xs.length + 1) : ℝ) :=
-          continuous_const.sub (continuous_id.mul continuous_const)
         exact (hlinear.mul (ih 0)).neg
       | succ i =>
         change Continuous fun eps : ℝ =>
-          ((X - C (x - eps * (2 * (xs.length + 1) : ℝ))) *
-            rootPolynomial (separateEven eps xs : Multiset ℝ)).coeff (i + 1)
+          ((X - C (x - eps * shift xs.length)) *
+            rootPolynomial (separateBy shift eps xs : Multiset ℝ)).coeff (i + 1)
         simp only [coeff_X_sub_C_mul, Nat.add_sub_cancel]
-        have hlinear : Continuous fun eps : ℝ =>
-            x - eps * (2 * (xs.length + 1) : ℝ) :=
-          continuous_const.sub (continuous_id.mul continuous_const)
         exact (ih i).sub (hlinear.mul (ih (i + 1)))
+
+private lemma continuous_coeff_rootPolynomial_separateEven (xs : List ℝ) :
+    ∀ i, Continuous fun eps : ℝ =>
+      (rootPolynomial (separateEven eps xs : Multiset ℝ)).coeff i :=
+  continuous_coeff_rootPolynomial_separateBy _ xs
 
 private lemma continuous_coeff_rootPolynomial_separateOdd (xs : List ℝ) :
     ∀ i, Continuous fun eps : ℝ =>
-      (rootPolynomial (separateOdd eps xs : Multiset ℝ)).coeff i := by
-  induction xs with
-  | nil =>
-      intro i
-      simpa [separateOdd, rootPolynomial] using
-        (continuous_const : Continuous fun _ : ℝ => (1 : ℝ[X]).coeff i)
-  | cons x xs ih =>
-      intro i
-      cases i with
-      | zero =>
-        change Continuous fun eps : ℝ =>
-          ((X - C (x - eps * (2 * xs.length + 1 : ℝ))) *
-            rootPolynomial (separateOdd eps xs : Multiset ℝ)).coeff 0
-        simp only [coeff_X_sub_C_mul, ite_true, zero_sub]
-        have hlinear : Continuous fun eps : ℝ =>
-            x - eps * (2 * xs.length + 1 : ℝ) :=
-          continuous_const.sub (continuous_id.mul continuous_const)
-        exact (hlinear.mul (ih 0)).neg
-      | succ i =>
-        change Continuous fun eps : ℝ =>
-          ((X - C (x - eps * (2 * xs.length + 1 : ℝ))) *
-            rootPolynomial (separateOdd eps xs : Multiset ℝ)).coeff (i + 1)
-        simp only [coeff_X_sub_C_mul, Nat.add_sub_cancel]
-        have hlinear : Continuous fun eps : ℝ =>
-            x - eps * (2 * xs.length + 1 : ℝ) :=
-          continuous_const.sub (continuous_id.mul continuous_const)
-        exact (ih i).sub (hlinear.mul (ih (i + 1)))
+      (rootPolynomial (separateOdd eps xs : Multiset ℝ)).coeff i :=
+  continuous_coeff_rootPolynomial_separateBy _ xs
 
 private lemma continuous_coeff_rootApproxEven (c : ℝ) (xs : List ℝ) (i : ℕ) :
     Continuous fun eps : ℝ => (rootApproxEven c xs eps).coeff i := by
@@ -422,26 +364,20 @@ private lemma strictInterl_rootApproximations
   rcases hshape with ⟨hlen, hinter⟩ | ⟨hlen, hinter⟩
   · obtain ⟨hinter', hss, hrs, hdisjoint⟩ :=
       separated_lists_of_listInterlaces heps hlen hinter
-    refine ⟨⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, separateEven eps ss, separateOdd eps rs,
-      hss, hrs, ?_, ?_, Or.inl ⟨?_, hinter'⟩⟩, hdisjoint⟩
-    · exact C_mul_rootPolynomial_ne_zero hc _
-    · exact C_mul_rootPolynomial_splits c _
-    · exact C_mul_rootPolynomial_ne_zero hd _
-    · exact C_mul_rootPolynomial_splits d _
-    · exact (roots_C_mul_rootPolynomial hc _).symm
-    · exact (roots_C_mul_rootPolynomial hd _).symm
-    · simpa only [length_separateEven, length_separateOdd] using hlen
+    refine ⟨⟨⟨C_mul_rootPolynomial_ne_zero hc _, C_mul_rootPolynomial_splits c _⟩,
+      ⟨C_mul_rootPolynomial_ne_zero hd _, C_mul_rootPolynomial_splits d _⟩,
+      separateEven eps ss, separateOdd eps rs, hss, hrs,
+      (roots_C_mul_rootPolynomial hc _).symm, (roots_C_mul_rootPolynomial hd _).symm,
+      Or.inl ⟨?_, hinter'⟩⟩, hdisjoint⟩
+    simpa only [length_separateEven, length_separateOdd] using hlen
   · obtain ⟨hinter', hss, hrs, hdisjoint⟩ :=
       separated_lists_of_listAlternates heps hlen hinter
-    refine ⟨⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, separateEven eps ss, separateOdd eps rs,
-      hss, hrs, ?_, ?_, Or.inr ⟨?_, hinter'⟩⟩, hdisjoint⟩
-    · exact C_mul_rootPolynomial_ne_zero hc _
-    · exact C_mul_rootPolynomial_splits c _
-    · exact C_mul_rootPolynomial_ne_zero hd _
-    · exact C_mul_rootPolynomial_splits d _
-    · exact (roots_C_mul_rootPolynomial hc _).symm
-    · exact (roots_C_mul_rootPolynomial hd _).symm
-    · simpa only [length_separateEven, length_separateOdd] using hlen
+    refine ⟨⟨⟨C_mul_rootPolynomial_ne_zero hc _, C_mul_rootPolynomial_splits c _⟩,
+      ⟨C_mul_rootPolynomial_ne_zero hd _, C_mul_rootPolynomial_splits d _⟩,
+      separateEven eps ss, separateOdd eps rs, hss, hrs,
+      (roots_C_mul_rootPolynomial hc _).symm, (roots_C_mul_rootPolynomial hd _).symm,
+      Or.inr ⟨?_, hinter'⟩⟩, hdisjoint⟩
+    simpa only [length_separateEven, length_separateOdd] using hlen
 
 /-- The weak directed mixed differential comparison for an interlacing PF pair. -/
 theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
@@ -463,14 +399,10 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     hq.hasNonnegCoeffs.pos_leadingCoeff hq0
   have hssNonpos : ∀ r ∈ ss, r ≤ 0 := by
     intro r hr
-    apply hp.roots_nonpos r
-    rw [← hssRoots]
-    exact Multiset.mem_coe.mpr hr
+    exact hp.roots_nonpos r (by simpa only [hssRoots] using Multiset.mem_coe.mpr hr)
   have hrsNonpos : ∀ r ∈ rs, r ≤ 0 := by
     intro r hr
-    apply hq.roots_nonpos r
-    rw [← hrsRoots]
-    exact Multiset.mem_coe.mpr hr
+    exact hq.roots_nonpos r (by simpa only [hrsRoots] using Multiset.mem_coe.mpr hr)
   let delta : ℕ → ℝ := fun M => ((M : ℝ) + 1)⁻¹
   have hdeltaPos (M : ℕ) : 0 < delta M := by
     simp only [delta]
@@ -481,33 +413,26 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
   let pM : ℕ → ℝ[X] := fun M => rootApproxEven p.leadingCoeff ss (delta M)
   let qM : ℕ → ℝ[X] := fun M => rootApproxOdd q.leadingCoeff rs (delta M)
   have hpair (M : ℕ) : StrictInterl (pM M) (qM M) ∧
-      (separateEven (delta M) ss).Disjoint (separateOdd (delta M) rs) := by
-    exact strictInterl_rootApproximations hpLeading.ne' hqLeading.ne'
-      (hdeltaPos M) hshape
+      (separateEven (delta M) ss).Disjoint (separateOdd (delta M) rs) :=
+    strictInterl_rootApproximations hpLeading.ne' hqLeading.ne' (hdeltaPos M) hshape
   have hpMRoots (M : ℕ) :
-      (pM M).roots = (separateEven (delta M) ss : Multiset ℝ) := by
-    exact roots_C_mul_rootPolynomial hpLeading.ne' _
+      (pM M).roots = (separateEven (delta M) ss : Multiset ℝ) :=
+    roots_C_mul_rootPolynomial hpLeading.ne' _
   have hqMRoots (M : ℕ) :
-      (qM M).roots = (separateOdd (delta M) rs : Multiset ℝ) := by
-    exact roots_C_mul_rootPolynomial hqLeading.ne' _
+      (qM M).roots = (separateOdd (delta M) rs : Multiset ℝ) :=
+    roots_C_mul_rootPolynomial hqLeading.ne' _
   have hpMPF (M : ℕ) : IsPFPolynomial (pM M) := by
-    apply isPFPolynomial_C_mul_rootPolynomial hpLeading
-    intro r hr
-    apply (separateEven_neg (hdeltaPos M) hssNonpos r
-      (Multiset.mem_coe.mp hr)).le
+    exact isPFPolynomial_C_mul_rootPolynomial hpLeading fun r hr =>
+      (separateEven_neg (hdeltaPos M) hssNonpos r (Multiset.mem_coe.mp hr)).le
   have hqMPF (M : ℕ) : IsPFPolynomial (qM M) := by
-    apply isPFPolynomial_C_mul_rootPolynomial hqLeading
-    intro r hr
-    apply (separateOdd_neg (hdeltaPos M) hrsNonpos r
-      (Multiset.mem_coe.mp hr)).le
+    exact isPFPolynomial_C_mul_rootPolynomial hqLeading fun r hr =>
+      (separateOdd_neg (hdeltaPos M) hrsNonpos r (Multiset.mem_coe.mp hr)).le
   have hpMZero (M : ℕ) : 0 < (pM M).eval 0 := by
-    apply eval_zero_C_mul_rootPolynomial_pos hpLeading
-    intro r hr
-    exact separateEven_neg (hdeltaPos M) hssNonpos r (Multiset.mem_coe.mp hr)
+    exact eval_zero_C_mul_rootPolynomial_pos hpLeading fun r hr =>
+      separateEven_neg (hdeltaPos M) hssNonpos r (Multiset.mem_coe.mp hr)
   have hqMZero (M : ℕ) : 0 < (qM M).eval 0 := by
-    apply eval_zero_C_mul_rootPolynomial_pos hqLeading
-    intro r hr
-    exact separateOdd_neg (hdeltaPos M) hrsNonpos r (Multiset.mem_coe.mp hr)
+    exact eval_zero_C_mul_rootPolynomial_pos hqLeading fun r hr =>
+      separateOdd_neg (hdeltaPos M) hrsNonpos r (Multiset.mem_coe.mp hr)
   have hcoprime (M : ℕ) : IsCoprime (pM M) (qM M) := by
     apply isCoprime_of_no_common_real_root_of_isRealRooted
       (hpair M).1.1.1 (hpair M).1.1.2
@@ -550,27 +475,21 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
       (card_roots_of_splits hqReal.2)
   have hpCoeff (i : ℕ) : Tendsto (fun M => (pM M).coeff i) atTop
       (nhds (p.coeff i)) := by
-    have hcontinuous : ContinuousAt
-        (fun eps : ℝ => (rootApproxEven p.leadingCoeff ss eps).coeff i) 0 :=
-      (continuous_coeff_rootApproxEven p.leadingCoeff ss i).continuousAt
     simpa only [pM, hpAtZero, Function.comp_def] using
-      hcontinuous.tendsto.comp hdelta
+      (continuous_coeff_rootApproxEven p.leadingCoeff ss i).continuousAt.tendsto.comp hdelta
   have hqCoeff (i : ℕ) : Tendsto (fun M => (qM M).coeff i) atTop
       (nhds (q.coeff i)) := by
-    have hcontinuous : ContinuousAt
-        (fun eps : ℝ => (rootApproxOdd q.leadingCoeff rs eps).coeff i) 0 :=
-      (continuous_coeff_rootApproxOdd q.leadingCoeff rs i).continuousAt
     simpa only [qM, hqAtZero, Function.comp_def] using
-      hcontinuous.tendsto.comp hdelta
+      (continuous_coeff_rootApproxOdd q.leadingCoeff rs i).continuousAt.tendsto.comp hdelta
   let leftM : ℕ → ℝ[X] := fun M =>
     (pM M).derivative + (qM M).derivative
   let rightM : ℕ → ℝ[X] := fun M =>
     qM M + X * (pM M).derivative
-  have hleftPF (M : ℕ) : IsPFPolynomial (leftM M) := by
-    exact isPFPolynomial_derivative_add_derivative_of_interl
+  have hleftPF (M : ℕ) : IsPFPolynomial (leftM M) :=
+    isPFPolynomial_derivative_add_derivative_of_interl
       (hpMPF M) (hqMPF M) (hpair M).1.toInterl
-  have hrightPF (M : ℕ) : IsPFPolynomial (rightM M) := by
-    exact isPFPolynomial_add_X_mul_derivative_of_interl
+  have hrightPF (M : ℕ) : IsPFPolynomial (rightM M) :=
+    isPFPolynomial_add_X_mul_derivative_of_interl
       (hpMPF M) (hqMPF M) (hpair M).1.toInterl
   have hleftDegree (M : ℕ) :
       (leftM M).natDegree ≤ max p.natDegree q.natDegree := by

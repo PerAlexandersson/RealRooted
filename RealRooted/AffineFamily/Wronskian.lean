@@ -150,6 +150,18 @@ private lemma pos_neg_div_of_mul_neg {a b : ℝ}
   have hmul_pos : 0 < (-(a / b)) * b ^ 2 := by lia
   nlinarith
 
+private lemma eval_neg_of_eval_neg_of_no_roots {p : ℝ[X]} {a b m c : ℝ}
+    (hm : m ∈ Set.Ioo a b) (hc : c ∈ Set.Ioo a b) (hpm : p.eval m < 0)
+    (hno : ∀ x, a < x → x < b → p.eval x ≠ 0) :
+    p.eval c < 0 := by
+  by_cases hmc : m ≤ c
+  · have hsame := eval_same_sign_of_no_roots (p := p) hmc
+      (fun x hmx hxc => hno x (hm.1.trans_le hmx) (hxc.trans_lt hc.2))
+    nlinarith
+  · have hsame := eval_same_sign_of_no_roots (p := p) (le_of_not_ge hmc)
+      (fun x hcx hxm => hno x (hc.1.trans_le hcx) (hxm.trans_lt hm.2))
+    nlinarith
+
 /-- Recursive root-picker: if a polynomial `F` has a root strictly between each
 consecutive pair of a sorted real list `rs`, we can package these roots as a
 strictly sorted interlacing list. -/
@@ -164,15 +176,9 @@ private theorem exists_roots_strictly_interlacing_of_consecutive_exists {F : ℝ
         (∀ u ∈ us, F.IsRoot u) ∧
         us.Pairwise (· < ·)
   | [], _, _ => by
-      refine ⟨[], by simp, ?_, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-      · simp
+      exact ⟨[], by simp [ListInterlaces]⟩
   | [_], _, _ => by
-      refine ⟨[], by simp, ?_, ?_, ?_⟩
-      · simp [ListInterlaces]
-      · simp
-      · simp
+      exact ⟨[], by simp [ListInterlaces]⟩
   | r₁ :: r₂ :: rest, hrs_sorted, hexists => by
       obtain ⟨u, hu₁, hu₂, hu_root⟩ := hexists [] rfl
       have htail_sorted : (r₂ :: rest).Pairwise (· ≤ ·) :=
@@ -276,50 +282,17 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     obtain ⟨c, hc_mem, hlocal⟩ :=
       exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
     have hprod_c_neg : g.eval c * f.eval c < 0 := by
-      by_cases hmc : m ≤ c
-      · have hno_mul :
-            ∀ x, m ≤ x → x ≤ c → (g * f).eval x ≠ 0 := by
-          intro x hmx hxc
-          have hx₁ : r₁ < x := lt_of_lt_of_le hm_mem.1 hmx
-          have hx₂ : x < r₂ := lt_of_le_of_lt hxc hc_mem.2
-          have hgx_ne : g.eval x ≠ 0 := by
-            intro hgx
-            have hroot : g.IsRoot x := by simpa [Polynomial.IsRoot.def] using hgx
-            exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
-          have hfx_ne : f.eval x ≠ 0 :=
-            hden_nonzero_f x (Set.mem_Icc.mpr ⟨le_of_lt hx₁, le_of_lt hx₂⟩)
-          simpa [eval_mul] using mul_ne_zero hgx_ne hfx_ne
-        have hsame :
-            0 < (g * f).eval m * (g * f).eval c :=
-          eval_same_sign_of_no_roots (p := g * f) hmc hno_mul
-        have hsame' : 0 < (g.eval m * f.eval m) * (g.eval c * f.eval c) := by
-          simp only [eval_mul] at hsame
-          exact hsame
-        have hmid_prod' : g.eval m * f.eval m < 0 := hmid_opp
-        have hprod_c' : g.eval c * f.eval c < 0 := by nlinarith
-        exact hprod_c'
-      · have hcm : c ≤ m := le_of_not_ge hmc
-        have hno_mul :
-            ∀ x, c ≤ x → x ≤ m → (g * f).eval x ≠ 0 := by
-          intro x hcx hxm
-          have hx₁ : r₁ < x := lt_of_lt_of_le hc_mem.1 hcx
-          have hx₂ : x < r₂ := lt_of_le_of_lt hxm hm_mem.2
-          have hgx_ne : g.eval x ≠ 0 := by
-            intro hgx
-            have hroot : g.IsRoot x := by simpa [Polynomial.IsRoot.def] using hgx
-            exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
-          have hfx_ne : f.eval x ≠ 0 :=
-            hden_nonzero_f x (Set.mem_Icc.mpr ⟨le_of_lt hx₁, le_of_lt hx₂⟩)
-          simpa [eval_mul] using mul_ne_zero hgx_ne hfx_ne
-        have hsame :
-            0 < (g * f).eval c * (g * f).eval m :=
-          eval_same_sign_of_no_roots (p := g * f) hcm hno_mul
-        have hsame' : 0 < (g.eval c * f.eval c) * (g.eval m * f.eval m) := by
-          simp only [eval_mul] at hsame
-          exact hsame
-        have hmid_prod' : g.eval m * f.eval m < 0 := hmid_opp
-        have hprod_c' : g.eval c * f.eval c < 0 := by nlinarith
-        exact hprod_c'
+      have hno_mul : ∀ x, r₁ < x → x < r₂ → (g * f).eval x ≠ 0 := by
+        intro x hx₁ hx₂
+        have hgx_ne : g.eval x ≠ 0 := by
+          intro hgx
+          exact hno_between_g x ((mem_roots hg0).mpr (by simpa [Polynomial.IsRoot.def]))
+            ⟨hx₁, hx₂⟩
+        simpa only [eval_mul] using
+          mul_ne_zero hgx_ne (hden_nonzero_f x ⟨hx₁.le, hx₂.le⟩)
+      simpa only [eval_mul] using
+        eval_neg_of_eval_neg_of_no_roots hm_mem hc_mem
+          (by simpa only [eval_mul] using hmid_opp) hno_mul
     have hf_c_ne : f.eval c ≠ 0 :=
       hden_nonzero_f c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
     have hpos_c : 0 < -(g.eval c / f.eval c) :=
@@ -356,58 +329,17 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
     have hprod_c_neg :
         g.eval c * (X * f).eval c < 0 := by
-      by_cases hmc : m ≤ c
-      · have hno_mul :
-            ∀ x, m ≤ x → x ≤ c → (g * (X * f)).eval x ≠ 0 := by
-          intro x hmx hxc
-          have hx₁ : r₁ < x := lt_of_lt_of_le hm_mem.1 hmx
-          have hx₂ : x < r₂ := lt_of_le_of_lt hxc hc_mem.2
-          have hgx_ne : g.eval x ≠ 0 := by
-            intro hgx
-            have hroot : g.IsRoot x := by simpa [Polynomial.IsRoot.def] using hgx
-            exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
-          have hXfx_ne : (X * f).eval x ≠ 0 := by
-            rw [eval_mul, eval_X]
-            have hx_neg : x < 0 := lt_trans hx₂ hr₂_neg
-            exact mul_ne_zero (ne_of_lt hx_neg)
-              (hden_nonzero_f x (Set.mem_Icc.mpr ⟨le_of_lt hx₁, le_of_lt hx₂⟩))
-          simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
-        have hsame :
-            0 < (g * (X * f)).eval m * (g * (X * f)).eval c :=
-          eval_same_sign_of_no_roots (p := g * (X * f)) hmc hno_mul
-        have hsame' :
-            0 < (g.eval m * (X * f).eval m) * (g.eval c * (X * f).eval c) := by
-          rw [eval_mul (p := g) (q := X * f), eval_mul (p := g) (q := X * f)] at hsame
-          exact hsame
-        have hmid_prod' : g.eval m * (X * f).eval m < 0 := hmid_right
-        have hprod_c' : g.eval c * (X * f).eval c < 0 := by nlinarith
-        exact hprod_c'
-      · have hcm : c ≤ m := le_of_not_ge hmc
-        have hno_mul :
-            ∀ x, c ≤ x → x ≤ m → (g * (X * f)).eval x ≠ 0 := by
-          intro x hcx hxm
-          have hx₁ : r₁ < x := lt_of_lt_of_le hc_mem.1 hcx
-          have hx₂ : x < r₂ := lt_of_le_of_lt hxm hm_mem.2
-          have hgx_ne : g.eval x ≠ 0 := by
-            intro hgx
-            have hroot : g.IsRoot x := by simpa [Polynomial.IsRoot.def] using hgx
-            exact hno_between_g x ((mem_roots hg0).mpr hroot) ⟨hx₁, hx₂⟩
-          have hXfx_ne : (X * f).eval x ≠ 0 := by
-            rw [eval_mul, eval_X]
-            have hx_neg : x < 0 := lt_trans hx₂ hr₂_neg
-            exact mul_ne_zero (ne_of_lt hx_neg)
-              (hden_nonzero_f x (Set.mem_Icc.mpr ⟨le_of_lt hx₁, le_of_lt hx₂⟩))
-          simpa [eval_mul] using mul_ne_zero hgx_ne hXfx_ne
-        have hsame :
-            0 < (g * (X * f)).eval c * (g * (X * f)).eval m :=
-          eval_same_sign_of_no_roots (p := g * (X * f)) hcm hno_mul
-        have hsame' :
-            0 < (g.eval c * (X * f).eval c) * (g.eval m * (X * f).eval m) := by
-          rw [eval_mul (p := g) (q := X * f), eval_mul (p := g) (q := X * f)] at hsame
-          exact hsame
-        have hmid_prod' : g.eval m * (X * f).eval m < 0 := hmid_right
-        have hprod_c' : g.eval c * (X * f).eval c < 0 := by nlinarith
-        exact hprod_c'
+      have hno_mul : ∀ x, r₁ < x → x < r₂ → (g * (X * f)).eval x ≠ 0 := by
+        intro x hx₁ hx₂
+        have hgx_ne : g.eval x ≠ 0 := by
+          intro hgx
+          exact hno_between_g x ((mem_roots hg0).mpr (by simpa [Polynomial.IsRoot.def]))
+            ⟨hx₁, hx₂⟩
+        simpa only [eval_mul] using
+          mul_ne_zero hgx_ne (hden_nonzero_Xf x ⟨hx₁.le, hx₂.le⟩)
+      simpa only [eval_mul] using
+        eval_neg_of_eval_neg_of_no_roots hm_mem hc_mem
+          (by simpa only [eval_mul] using hmid_right) hno_mul
     have hXf_c_ne : (X * f).eval c ≠ 0 :=
       hden_nonzero_Xf c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
     have hpos_c : 0 < -(g.eval c / (X * f).eval c) :=

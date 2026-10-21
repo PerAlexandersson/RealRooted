@@ -32,27 +32,20 @@ private theorem triangle_reindex
   apply Finset.sum_bij
       (fun x _ => ⟨n - x.2 + x.1, n - x.2⟩)
   · intro x hx
-    rw [Finset.mem_filter, Finset.mem_product] at hx
+    simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_range] at hx
     rw [Finset.mem_sigma]
     simp only [Finset.mem_range]
-    have hx1le : x.1 ≤ n :=
-      Nat.lt_succ_iff.mp (Finset.mem_range.mp hx.1.1)
-    have hx2le : x.2 ≤ n :=
-      Nat.lt_succ_iff.mp (Finset.mem_range.mp hx.1.2)
-    have hcancel : n - x.2 + x.2 = n := Nat.sub_add_cancel hx2le
+    have hx2le : x.2 ≤ n := by lia
+    have hcancel := Nat.sub_add_cancel hx2le
     constructor <;> lia
   · intro x₁ hx₁ x₂ hx₂ heq
-    rw [Finset.mem_filter, Finset.mem_product] at hx₁ hx₂
+    simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_range] at hx₁ hx₂
     have hfst := congrArg Sigma.fst heq
     have hsnd := congrArg (fun z => z.2) heq
-    have hx₁le : x₁.2 ≤ n :=
-      Nat.lt_succ_iff.mp (Finset.mem_range.mp hx₁.1.2)
-    have hx₂le : x₂.2 ≤ n :=
-      Nat.lt_succ_iff.mp (Finset.mem_range.mp hx₂.1.2)
-    have hcancel₁ : n - x₁.2 + x₁.2 = n :=
-      Nat.sub_add_cancel hx₁le
-    have hcancel₂ : n - x₂.2 + x₂.2 = n :=
-      Nat.sub_add_cancel hx₂le
+    have hx₁le : x₁.2 ≤ n := by lia
+    have hx₂le : x₂.2 ≤ n := by lia
+    have hcancel₁ := Nat.sub_add_cancel hx₁le
+    have hcancel₂ := Nat.sub_add_cancel hx₂le
     apply Prod.ext
     · dsimp at hfst hsnd
       lia
@@ -78,9 +71,8 @@ private theorem triangle_reindex
         lia
       · simp [x, Nat.sub_sub_self han]
   · intro x hx
-    rw [Finset.mem_filter, Finset.mem_product] at hx
-    have hx2le : x.2 ≤ n :=
-      Nat.lt_succ_iff.mp (Finset.mem_range.mp hx.1.2)
+    simp only [Finset.mem_filter, Finset.mem_product, Finset.mem_range] at hx
+    have hx2le : x.2 ≤ n := by lia
     simp [Nat.sub_sub_self hx2le]
 
 private theorem rectangularDifferentialTerm
@@ -114,8 +106,8 @@ private theorem rectangularDifferentialTerm
     applyNegDifferential_esymm, ite_eq_left himk]
   simp only [Fintype.card_fin, map_mul, MvPolynomial.rename_C,
     map_nsmul]
-  rw [show n + i - k = m + n + i - (m + k) by lia]
-  rw [show m + k - i = m + (k - i) by lia]
+  rw [show n + i - k = m + n + i - (m + k) by lia,
+    show m + k - i = m + (k - i) by lia]
   ring
 
 /-- Diagonal specialization sending the left block to `X 0` and the right block
@@ -171,25 +163,9 @@ private theorem collect_nsmul
           (a * b * s ^ 2 * (D : ℂ) ^ 2 * (L : ℂ) * (U : ℂ)) *
         P * Q := by
   simp only [nsmul_eq_mul]
-  have hD : (D : MvPolynomial sigma ℂ) = MvPolynomial.C (D : ℂ) :=
-    (map_natCast (MvPolynomial.C : ℂ →+* MvPolynomial sigma ℂ) D).symm
-  have hL : (L : MvPolynomial sigma ℂ) = MvPolynomial.C (L : ℂ) :=
-    (map_natCast (MvPolynomial.C : ℂ →+* MvPolynomial sigma ℂ) L).symm
-  have hU : (U : MvPolynomial sigma ℂ) = MvPolynomial.C (U : ℂ) :=
-    (map_natCast (MvPolynomial.C : ℂ →+* MvPolynomial sigma ℂ) U).symm
-  rw [hD, hL, hU]
-  have hcoeff :
-      (MvPolynomial.C
-          (a * b * s ^ 2 * (D : ℂ) ^ 2 * (L : ℂ) * (U : ℂ)) :
-          MvPolynomial sigma ℂ) =
-        MvPolynomial.C a * MvPolynomial.C b *
-          MvPolynomial.C s * MvPolynomial.C s *
-          MvPolynomial.C (D : ℂ) * MvPolynomial.C (D : ℂ) *
-          MvPolynomial.C (L : ℂ) * MvPolynomial.C (U : ℂ) := by
-    simp only [← map_mul]
-    congr 1
-    ring
-  rw [hcoeff]
+  rw [(map_natCast MvPolynomial.C D).symm, (map_natCast MvPolynomial.C L).symm,
+    (map_natCast MvPolynomial.C U).symm]
+  simp only [map_mul, map_pow]
   ring
 
 private theorem rectangularDifferentialTerm_diagonal_collected
@@ -214,10 +190,7 @@ private theorem rectangularDifferentialTerm_diagonal_collected
         MvPolynomial.X 1 ^ (m + k - i) := by
   rw [rectangularDifferentialTerm_diagonal m n i k hi,
     collect_nsmul]
-  have hsign : ((-1 : ℂ) ^ i) ^ 2 = 1 := by
-    rw [← pow_mul]
-    simp
-  rw [hsign, mul_one]
+  rw [show ((-1 : ℂ) ^ i) ^ 2 = 1 by rw [← pow_mul]; simp, mul_one]
 
 private theorem rectangularDifferentialTerm_diagonal_ite
     (m n i k : ℕ) (a b : ℂ) :
@@ -284,7 +257,6 @@ private theorem rectangularPolarization_eq_sum_terms
     (m n : ℕ) (p : ℂ[X]) :
   rectangularPolarization m n p =
       ∑ k ∈ Finset.range (n + 1), rectangularTerm m n p k := by
-  unfold rectangularPolarization rectangularTerm
   rfl
 
 private theorem rectangularDifferential_eq_doubleSum
@@ -330,8 +302,7 @@ private theorem rectangularDifferentialDiagonalSummand_triangle
           rectangularDifferentialDiagonalCore m n p q
             (K - a) (n - a) := by
   unfold rectangularDifferentialDiagonalSummand
-  exact triangle_reindex n
-    (rectangularDifferentialDiagonalCore m n p q)
+  exact triangle_reindex n (rectangularDifferentialDiagonalCore m n p q)
 
 private theorem rectangularDifferential_expansion
     (m n : ℕ) (p q : ℂ[X]) :
@@ -380,9 +351,7 @@ private theorem rectangularWeight_eq_gamma
     Nat.cast_choose ℂ (hik.trans (Nat.le_add_left n m)),
     Nat.cast_choose ℂ hk, Nat.cast_choose ℂ hmk,
     Nat.cast_choose ℂ hki, Nat.cast_choose ℂ hmki]
-  have f0 : ∀ p : ℕ, (Nat.factorial p : ℂ) ≠ 0 := fun p =>
-    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
-  field_simp [f0]
+  field_simp [Nat.cast_ne_zero.mpr (Nat.factorial_pos _).ne']
   rw [show n + i - k - i = n - k by lia,
     show m + n - (m + k) = n - k by lia,
     show n - (k - i) = n + i - k by lia,
@@ -403,15 +372,10 @@ private theorem rectangularSeparatedWeight_eq_gamma
   have hik : i ≤ n := hi.trans hk
   have hiM : i ≤ m + n := hik.trans (Nat.le_add_left n m)
   have hmk : m + k ≤ m + n := Nat.add_le_add_left hk m
-  have hni : (n.choose i : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (Nat.choose_pos hik).ne'
-  have hMi : ((m + n).choose i : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (Nat.choose_pos hiM).ne'
-  have hnk : (n.choose k : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (Nat.choose_pos hk).ne'
-  have hMk : ((m + n).choose (m + k) : ℂ) ≠ 0 :=
-    Nat.cast_ne_zero.mpr (Nat.choose_pos hmk).ne'
-  field_simp [hni, hMi, hnk, hMk]
+  field_simp [Nat.cast_ne_zero.mpr (Nat.choose_pos hik).ne',
+    Nat.cast_ne_zero.mpr (Nat.choose_pos hiM).ne',
+    Nat.cast_ne_zero.mpr (Nat.choose_pos hk).ne',
+    Nat.cast_ne_zero.mpr (Nat.choose_pos hmk).ne']
 
 private theorem xyLift_rectangularAdditiveConvolution_expansion
     (m n : ℕ) (f g : ℝ[X]) :
@@ -472,33 +436,19 @@ private theorem rectangularDifferentialDiagonalCore_reindex
   have hw := rectangularSeparatedWeight_eq_gamma
     m n (K - a) (n - a) hi hk
   rw [hka, hdegree, hma, hMdegree] at hw
-  have hcoeff :
-      ((g.coeff (n - (K - a)) : ℂ) /
-            (n.choose (K - a) : ℂ) /
-            ((m + n).choose (K - a) : ℂ)) *
-        ((f.coeff (n - a) : ℂ) /
-            (n.choose (n - a) : ℂ) /
-            ((m + n).choose (m + n - a) : ℂ)) *
+  rw [hma]
+  push_cast
+  congr 3
+  calc
+    _ = (g.coeff (n - (K - a)) : ℂ) * (f.coeff (n - a) : ℂ) *
+        (((1 : ℂ) / (n.choose (K - a) : ℂ) /
+          ((m + n).choose (K - a) : ℂ)) *
+        ((1 : ℂ) / (n.choose (n - a) : ℂ) /
+          ((m + n).choose (m + n - a) : ℂ)) *
         (Nat.choose (n + (K - a) - (n - a)) (K - a) : ℂ) ^ 2 *
         (Nat.choose n (n - K) : ℂ) *
-        (Nat.choose (m + n) (m + n - K) : ℂ) =
-          (rectangularConvolutionGamma m n a (K - a) : ℂ) *
-            (f.coeff (n - a) : ℂ) *
-            (g.coeff (n - (K - a)) : ℂ) := by
-    calc
-      _ = (g.coeff (n - (K - a)) : ℂ) *
-          (f.coeff (n - a) : ℂ) *
-          (((1 : ℂ) / (n.choose (K - a) : ℂ) /
-                ((m + n).choose (K - a) : ℂ)) *
-            ((1 : ℂ) / (n.choose (n - a) : ℂ) /
-                ((m + n).choose (m + n - a) : ℂ)) *
-            (Nat.choose (n + (K - a) - (n - a)) (K - a) : ℂ) ^ 2 *
-            (Nat.choose n (n - K) : ℂ) *
-            (Nat.choose (m + n) (m + n - K) : ℂ)) := by ring
-      _ = _ := by rw [hw]; ring
-  rw [hma, hcoeff]
-  push_cast
-  rfl
+        (Nat.choose (m + n) (m + n - K) : ℂ)) := by ring
+    _ = _ := by rw [hw]; ring
 
 private theorem rectangularConvolutionCoeff_monomial_expansion
     (m n K : ℕ) (f g : ℝ[X]) :
@@ -535,21 +485,11 @@ theorem rectangularDifferential_diagonal_identity
   apply Finset.sum_congr rfl
   intro K hK
   have hKn : K ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hK)
-  calc
-    _ = ∑ a ∈ Finset.range (K + 1),
-        MvPolynomial.C
-            ((rectangularConvolutionGamma m n a (K - a) *
-              f.coeff (n - a) * g.coeff (n - (K - a)) : ℝ) : ℂ) *
-          MvPolynomial.X (0 : Fin 2) ^ (n - K) *
-          MvPolynomial.X (1 : Fin 2) ^ (m + n - K) := by
-            apply Finset.sum_congr rfl
-            intro a ha
-            simpa only using
-              rectangularDifferentialDiagonalCore_reindex
-                m n K a hKn
-                  (Nat.lt_succ_iff.mp (Finset.mem_range.mp ha)) f g
-    _ = _ :=
-      (rectangularConvolutionCoeff_monomial_expansion m n K f g).symm
+  rw [rectangularConvolutionCoeff_monomial_expansion]
+  apply Finset.sum_congr rfl
+  intro a ha
+  exact rectangularDifferentialDiagonalCore_reindex m n K a hKn
+    (Nat.lt_succ_iff.mp (Finset.mem_range.mp ha)) f g
 
 end
 
