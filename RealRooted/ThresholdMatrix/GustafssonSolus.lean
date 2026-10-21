@@ -20,22 +20,14 @@ namespace GustafssonSolus
 /-! ### Finite-entry shape helpers -/
 
 private def GS2x2EntryShape (a b c d : ℝ[X]) : Prop :=
-  Threshold2x2EntryTuple a b c d 0 0 0 0 ∨
-  Threshold2x2EntryTuple a b c d 0 0 X X ∨
-  Threshold2x2EntryTuple a b c d 0 1 0 1 ∨
-  Threshold2x2EntryTuple a b c d 0 1 X 0 ∨
-  Threshold2x2EntryTuple a b c d 0 1 X 1 ∨
-  Threshold2x2EntryTuple a b c d 0 1 X X ∨
-  Threshold2x2EntryTuple a b c d 1 1 0 0 ∨
-  Threshold2x2EntryTuple a b c d 1 1 0 1 ∨
-  Threshold2x2EntryTuple a b c d 1 1 1 1 ∨
-  Threshold2x2EntryTuple a b c d 1 1 X 0 ∨
-  Threshold2x2EntryTuple a b c d 1 1 X 1 ∨
-  Threshold2x2EntryTuple a b c d 1 1 X X ∨
-  Threshold2x2EntryTuple a b c d X 0 X 0 ∨
-  Threshold2x2EntryTuple a b c d X 0 X X ∨
-  Threshold2x2EntryTuple a b c d X 1 X 0 ∨
-  Threshold2x2EntryTuple a b c d X 1 X 1 ∨
+  Threshold2x2EntryTuple a b c d 0 0 0 0 ∨ Threshold2x2EntryTuple a b c d 0 0 X X ∨
+  Threshold2x2EntryTuple a b c d 0 1 0 1 ∨ Threshold2x2EntryTuple a b c d 0 1 X 0 ∨
+  Threshold2x2EntryTuple a b c d 0 1 X 1 ∨ Threshold2x2EntryTuple a b c d 0 1 X X ∨
+  Threshold2x2EntryTuple a b c d 1 1 0 0 ∨ Threshold2x2EntryTuple a b c d 1 1 0 1 ∨
+  Threshold2x2EntryTuple a b c d 1 1 1 1 ∨ Threshold2x2EntryTuple a b c d 1 1 X 0 ∨
+  Threshold2x2EntryTuple a b c d 1 1 X 1 ∨ Threshold2x2EntryTuple a b c d 1 1 X X ∨
+  Threshold2x2EntryTuple a b c d X 0 X 0 ∨ Threshold2x2EntryTuple a b c d X 0 X X ∨
+  Threshold2x2EntryTuple a b c d X 1 X 0 ∨ Threshold2x2EntryTuple a b c d X 1 X 1 ∨
   Threshold2x2EntryTuple a b c d X 1 X X ∨
   Threshold2x2EntryTuple a b c d X X X X
 
@@ -65,14 +57,11 @@ private lemma GS2x2EntryShape.has2x2 {a b c d : ℝ[X]}
   · simpa using interl_affine_add_X_affine_mul_X_add_X hs ht
   · simpa using interl_affine_mul_X_add_X_self hs
 
-private lemma gsEntry_shape
-    {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
-    (hα₁ : α₁ = 0 ∨ α₁ = 1)
-    (hα₂ : α₂ = 0 ∨ α₂ = 1)
+private lemma gsEntry_shape {t₁ t₂ j₁ j₂ : ℕ} {α₁ α₂ : ℝ[X]}
+    (hα₁ : α₁ = 0 ∨ α₁ = 1) (hα₂ : α₂ = 0 ∨ α₂ = 1)
     (ht : t₁ ≤ t₂) (hj : j₁ ≤ j₂)
     (hcompat : t₁ = t₂ → α₁ = 0 → α₂ = 0) :
-    GS2x2EntryShape
-      (thresholdEntry t₁ α₁ j₁) (thresholdEntry t₁ α₁ j₂)
+    GS2x2EntryShape (thresholdEntry t₁ α₁ j₁) (thresholdEntry t₁ α₁ j₂)
       (thresholdEntry t₂ α₂ j₁) (thresholdEntry t₂ α₂ j₂) := by
   rcases hα₁ with rfl | rfl <;> rcases hα₂ with rfl | rfl <;>
     simp at hcompat <;>
@@ -152,21 +141,16 @@ lemma choiceRows_rowData {choices : List (ℕ × Bool)}
     dsimp only [choiceRows] at i j ⊢
     let i' : Fin choices.length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin choices.length := ⟨j.1, by simpa using j.2⟩
-    have hij' : i' ≤ j' := hij
-    have hkey := hmono i' j' hij'
-    simpa [choiceRows, List.get_eq_getElem, i', j'] using hkey
+    simpa [choiceRows, List.get_eq_getElem, i', j'] using hmono i' j' hij
   · intro i j hij heq hdel
     dsimp only [choiceRows] at i j heq hdel ⊢
     let i' : Fin choices.length := ⟨i.1, by simpa using i.2⟩
     let j' : Fin choices.length := ⟨j.1, by simpa using j.2⟩
-    have hij' : i' ≤ j' := hij
     have heq' : (choices.get i').1 = (choices.get j').1 := by
       simpa [choiceRows, List.get_eq_getElem, i', j'] using heq
-    have hdel_marker : choiceMarker (choices.get i').2 = 0 := by
+    have hdel' : (choices.get i').2 = true := choiceMarker_eq_zero.mp <| by
       simpa [choiceRows, List.get_eq_getElem, i'] using hdel
-    have hdel' : (choices.get i').2 = true := by simpa using hdel_marker
-    have hdelj := hdelete i' j' hij' heq' hdel'
-    simpa [choiceRows, List.get_eq_getElem, j', hdelj]
+    simpa [choiceRows, List.get_eq_getElem, j'] using hdelete i' j' hij heq' hdel'
 
 lemma delete_eq_true_of_local {choices : List (ℕ × Bool)}
     (hmono : ∀ i j : Fin choices.length, i ≤ j → (choices.get i).1 ≤ (choices.get j).1)
@@ -183,38 +167,22 @@ lemma delete_eq_true_of_local {choices : List (ℕ × Bool)}
         (choices.get i).1 := by
     intro k hik hkj
     let k' : Fin choices.length := ⟨k, Nat.lt_of_le_of_lt hkj j.2⟩
-    have hik' : i ≤ k' := hik
-    have hkj' : k' ≤ j := hkj
-    have hle1 : (choices.get i).1 ≤ (choices.get k').1 := hmono i k' hik'
-    have hle2 : (choices.get k').1 ≤ (choices.get i).1 := by
-      have hkj_le : (choices.get k').1 ≤ (choices.get j).1 := hmono k' j hkj'
-      rw [← heq] at hkj_le
-      exact hkj_le
-    exact le_antisymm hle2 hle1
+    apply le_antisymm
+    · simpa only [heq] using hmono k' j hkj
+    · exact hmono i k' hik
   have hmain := Nat.le_induction (m := i.1)
     (P := fun n _ => ∀ hnj : n ≤ j.1,
       (choices.get ⟨n, Nat.lt_of_le_of_lt hnj j.2⟩).2 = true)
-    (by
-      intro _
-      simpa using hdel)
+    (by intro _; simpa using hdel)
     (by
       intro n hin ih hsuccj
       have hnle : n ≤ j.1 := Nat.le_of_succ_le hsuccj
       have hsucc_len : n + 1 < choices.length := Nat.lt_of_le_of_lt hsuccj j.2
       have hdeln : (choices.get ⟨n, Nat.lt_of_le_of_lt hnle j.2⟩).2 = true :=
         ih hnle
-      have heq_step :
-          (choices.get ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hsucc_len⟩).1 =
-            (choices.get ⟨n + 1, hsucc_len⟩).1 := by
-        have hn_eq := hconst n hin hnle
-        have hisucc : i.1 ≤ n + 1 := Nat.le_trans hin (Nat.le_succ n)
-        have hsucc_eq := hconst (n + 1) hisucc hsuccj
-        simpa using hn_eq.trans hsucc_eq.symm
-      have hdeln' :
-          (choices.get ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hsucc_len⟩).2 =
-            true := by
-        simpa using hdeln
-      exact hlocal n hsucc_len heq_step hdeln')
+      have heq_step :=
+        (hconst n hin hnle).trans (hconst (n + 1) (by lia) hsuccj).symm
+      exact hlocal n hsucc_len (by simpa using heq_step) (by simpa using hdeln))
     j.1 hij
   simpa using hmain le_rfl
 
@@ -403,26 +371,12 @@ private lemma fin_mono_of_adjacent {m : ℕ} {phi : Fin (m + 1) → ℕ}
   intro i j hij
   have hmain := Nat.le_induction (m := i.1)
     (P := fun n _ => ∀ hn : n < m + 1, phi i ≤ phi ⟨n, hn⟩)
-    (by
-      intro hn
-      have hidx : (⟨i.1, hn⟩ : Fin (m + 1)) = i := by ext; rfl
-      simp [hidx])
+    (by intro hn; simp)
     (by
       intro n hin ih hsucc
-      have hn : n < m + 1 := Nat.lt_of_succ_lt hsucc
-      have hn_m : n < m := by lia
-      have hle := ih hn
-      have hstepn := hstep ⟨n, hn_m⟩
-      have hleft : (⟨n, hn_m⟩ : Fin m).castSucc =
-          (⟨n, hn⟩ : Fin (m + 1)) := by
-        ext
-        rfl
-      have hright : (⟨n, hn_m⟩ : Fin m).succ =
-          (⟨n + 1, hsucc⟩ : Fin (m + 1)) := by
-        ext
-        rfl
-      rw [hleft, hright] at hstepn
-      exact le_trans hle hstepn)
+      have hs := hstep ⟨n, by lia⟩
+      change phi ⟨n, _⟩ ≤ phi ⟨n + 1, _⟩ at hs
+      exact (ih (by lia)).trans hs)
     j.1 hij
   exact hmain j.2
 
@@ -433,17 +387,9 @@ private lemma finChoices_mono_of_adjacent {m : ℕ}
       ((finChoices m phi delete).get i).1 ≤
         ((finChoices m phi delete).get j).1 := by
   intro i j hij
-  have hi := get_finChoices m phi delete i
-  have hj := get_finChoices m phi delete j
-  let i' : Fin (m + 1) := Fin.cast (length_finChoices m phi delete) i
-  let j' : Fin (m + 1) := Fin.cast (length_finChoices m phi delete) j
-  have hij' : i' ≤ j' := hij
-  have hmonoFin : phi i' ≤ phi j' :=
-    fin_mono_of_adjacent hphi i' j' hij'
-  calc
-    ((finChoices m phi delete).get i).1 = phi i' := by rw [hi]
-    _ ≤ phi j' := hmonoFin
-    _ = ((finChoices m phi delete).get j).1 := by rw [hj]
+  simpa only [get_finChoices] using fin_mono_of_adjacent hphi
+    (Fin.cast (length_finChoices m phi delete) i)
+    (Fin.cast (length_finChoices m phi delete) j) hij
 
 private lemma finChoices_local_of_fin {m : ℕ}
     {phi : Fin (m + 1) → ℕ} {delete : Fin (m + 1) → Bool}
@@ -459,27 +405,18 @@ private lemma finChoices_local_of_fin {m : ℕ}
   intro n hn heq hdel
   have hn_m : n < m := by simpa [length_finChoices] using hn
   let i : Fin m := ⟨n, hn_m⟩
-  have hleft : (i.castSucc : Fin (m + 1)) =
-      Fin.cast (length_finChoices m phi delete)
-        ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hn⟩ := by
-    ext
-    rfl
+  have hleft : (i.castSucc : Fin (m + 1)) = Fin.cast (length_finChoices m phi delete)
+      ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hn⟩ := Fin.ext rfl
   have hright : (i.succ : Fin (m + 1)) =
-      Fin.cast (length_finChoices m phi delete) ⟨n + 1, hn⟩ := by
-    ext
-    rfl
-  have hget_left := get_finChoices m phi delete
-    ⟨n, Nat.lt_trans (Nat.lt_succ_self n) hn⟩
-  have hget_right := get_finChoices m phi delete ⟨n + 1, hn⟩
-  have heq' : phi i.castSucc = phi i.succ := by
-    rw [hget_left, hget_right] at heq
-    rwa [hleft, hright]
-  have hdel' : delete i.castSucc = true := by
-    rw [hget_left] at hdel
-    rwa [hleft]
-  have hnext := hlocal i heq' hdel'
-  rw [hget_right]
-  rwa [hright] at hnext
+      Fin.cast (length_finChoices m phi delete) ⟨n + 1, hn⟩ := Fin.ext rfl
+  have heq' : phi (⟨n, hn_m⟩ : Fin m).castSucc = phi (⟨n, hn_m⟩ : Fin m).succ := by
+    rw [get_finChoices, get_finChoices, ← hleft, ← hright] at heq
+    exact heq
+  have hdel' : delete (⟨n, hn_m⟩ : Fin m).castSucc = true := by
+    rw [get_finChoices, ← hleft] at hdel
+    exact hdel
+  rw [get_finChoices, ← hright]
+  exact hlocal ⟨n, hn_m⟩ heq' hdel'
 
 /-- Gustafsson--Solus Lemma 3.4 in finite-indexed row-choice form.
 
@@ -583,11 +520,9 @@ theorem isInterlacingSeq0Nonneg_rowPolynomials
       delete i.castSucc = true → delete i.succ = true)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (rowPolynomials q m phi delete fs) :=
-  by
-    simpa using
-      GustafssonSolus.isInterlacingSeq0Nonneg_choiceMatrix_finChoices
-        phi delete hphi hlocal fs hfs_len hfs
+    IsInterlacingSeq0Nonneg (rowPolynomials q m phi delete fs) := by
+  simpa using GustafssonSolus.isInterlacingSeq0Nonneg_choiceMatrix_finChoices
+    phi delete hphi hlocal fs hfs_len hfs
 
 /-- Real-rootedness projection of the paper-shaped Gustafsson--Solus
 polynomial-list recursion. -/
@@ -598,11 +533,9 @@ theorem realRooted_of_mem_rowPolynomials
       delete i.castSucc = true → delete i.succ = true)
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
-    ∀ f ∈ rowPolynomials q m phi delete fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) :=
-  by
-    simpa using
-      realRooted_of_mem_choiceMatrix_finChoices
-        phi delete hphi hlocal fs hfs_len hfs
+    ∀ f ∈ rowPolynomials q m phi delete fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
+  simpa using realRooted_of_mem_choiceMatrix_finChoices
+    phi delete hphi hlocal fs hfs_len hfs
 
 end GustafssonSolus
 

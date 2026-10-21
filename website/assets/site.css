@@ -425,11 +425,12 @@ h3 { font-size: 1.25rem; }
 .declaration-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 0.8rem;
   margin-bottom: 0.65rem;
 }
 .declaration-name { color: var(--ink); font-weight: 700; }
+.declaration-name + .source { margin-left: auto; }
 .lean-declaration {
   margin: 0;
   padding: 0.72rem 0.85rem;
@@ -454,6 +455,13 @@ h3 { font-size: 1.25rem; }
   font-weight: 750;
   text-decoration: none;
 }
+.symcat-source {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 650;
+  text-decoration: none;
+}
 .declaration-group--definition .source {
   background: var(--definition-soft);
   color: var(--definition);
@@ -461,6 +469,25 @@ h3 { font-size: 1.25rem; }
 code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
 code { overflow-wrap: anywhere; font-size: 0.88em; }
 .prose code { padding: 0.12rem 0.35rem; border-radius: 0.32rem; background: var(--accent-soft); }
+.citation { white-space: nowrap; }
+.reference-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.reference-list > li { scroll-margin-top: 6rem; }
+.reference-label { color: var(--accent-strong); font-weight: 750; }
+.reference-title { font-style: italic; }
+.reference-venue { color: var(--muted); }
+.bibtex {
+  margin-top: 0.3rem;
+  color: var(--muted);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+.bibtex summary { width: max-content; cursor: pointer; font-size: 0.68rem; font-weight: 750; }
+.bibtex pre { margin: 0.35rem 0 0; font-size: 0.7rem; }
 pre {
   overflow-x: auto;
   padding: 1rem;

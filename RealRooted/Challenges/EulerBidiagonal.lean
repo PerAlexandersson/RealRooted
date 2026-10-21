@@ -15,6 +15,11 @@ version = 1
 section = "theorems"
 slug = "euler-bidiagonal-interlacing"
 formalized = "2026-10-09"
+references = [
+  "AndrewsGawronskiLittlejohn2011",
+  "AndrewsEggeGawronskiLittlejohn2013",
+  "Mongelli2012",
+]
 years = [2026]
 
 [[definitions]]
@@ -125,8 +130,9 @@ negative roots, with $\deg g = \deg f + 1$ and no common root. Then $Tf \ll Tg$,
 without common roots. In particular consecutive rows strictly interlace:
 $P_n \ll P_{n+1}$ for all $n$.
 
-Real-rootedness of these rows is classical (Andrews–Gawronski–Littlejohn;
-Andrews–Egge–Gawronski–Littlejohn; Mongelli). Interlacing of consecutive rows, and the
+Real-rootedness of these rows is classical
+[@AndrewsGawronskiLittlejohn2011; @AndrewsEggeGawronskiLittlejohn2013;
+@Mongelli2012]. Interlacing of consecutive rows, and the
 preservation of interlacing pairs, appear to be new. They were found and formalized in this
 project; see issue #1324. The usual first-order step theorems (Liu–Wang, Wang–Yeh) do not
 apply, because the step is second order in $\theta$. Nor does $T$ preserve real-rootedness on
@@ -165,16 +171,8 @@ real-rooted, and the Obreschkoff converse gives $Tf \ll Tg$.
 
 ## References
 
-G. E. Andrews, W. Gawronski and L. L. Littlejohn, “The Legendre–Stirling numbers,”
-*Discrete Mathematics* 311 (2011), 1255–1272,
-[doi:10.1016/j.disc.2011.02.028](https://doi.org/10.1016/j.disc.2011.02.028); G. E. Andrews, E. S. Egge, W. Gawronski and
-L. L. Littlejohn, “The Jacobi–Stirling numbers,” *Journal of Combinatorial Theory, Series A*
-120 (2013), 288–303, [doi:10.1016/j.jcta.2012.08.006](https://doi.org/10.1016/j.jcta.2012.08.006);
-P. Mongelli, “Total positivity properties of Jacobi–Stirling numbers,”
-*Advances in Applied Mathematics* 48 (2012), 354–364,
-[doi:10.1016/j.aam.2011.06.008](https://doi.org/10.1016/j.aam.2011.06.008).
-
-The Jacobi–Stirling triangles are on the
+See [@AndrewsGawronskiLittlejohn2011; @AndrewsEggeGawronskiLittlejohn2013;
+@Mongelli2012]. The Jacobi–Stirling triangles are on the
 [Jacobi–Stirling page](/RealRooted/families/jacobi-stirling-numbers/).
 <!-- /realrooted-catalog-content -->
 

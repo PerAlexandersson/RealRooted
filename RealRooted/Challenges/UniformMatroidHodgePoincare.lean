@@ -9,6 +9,12 @@ version = 1
 section = "theorems"
 slug = "uniform-matroid-hodge-poincare"
 formalized = "2026-10-09"
+references = [
+  "BinderVecchi2026x",
+  "Athanasiadis2025EulerianTransformation",
+  "BrandenJochemko2022",
+  "BrandenSolus2019",
+]
 authors = ["Binder", "Vecchi", "Athanasiadis", "Brändén", "Jochemko", "Solus"]
 years = [2021, 2022, 2025, 2026]
 
@@ -74,7 +80,8 @@ $$
 where $d_j$ are the derangement polynomials, $A_s$ the Eulerian polynomials, and
 $W_{j,i}(r,n) = \binom nj \sum_{\ell=1}^{n-r-i+1}\binom{n-j-\ell}{r-j-1}\binom{n-r-\ell}{i-1}$.
 
-**Theorem** (Binder–Vecchi, Theorems 1.4 and 1.6). Both polynomials are real-rooted.
+**Theorem** (Binder–Vecchi, Theorems 1.4 and 1.6).
+[@BinderVecchi2026x, Thms. 1.4 and 1.6] Both polynomials are real-rooted.
 
 ## Proof idea
 
@@ -84,7 +91,8 @@ the Eulerian transformation $\mathcal A\colon 1 \mapsto 1,\ x^n \mapsto xA_n(x)$
 Brändén–Jochemko. A Vandermonde-type identity shows that $g$ has nonnegative coordinates in
 the magic basis $x^p(1+x)^{r-1-p}$. Both transforms send such polynomials to real-rooted ones:
 for $\mathcal D$ this is Brändén–Solus (via the Brändén–Vecchi Chow resolution of the Pascal
-matrix), and for $\mathcal A$ it is Athanasiadis's theorem, proved here with the Brändén–Vecchi
+matrix), and for $\mathcal A$ it is Athanasiadis's theorem
+[@Athanasiadis2025EulerianTransformation], proved here with the Brändén–Vecchi
 staircase row transform.
 
 For $i = 0$ the two families are the Chow and augmented Chow polynomials of $U_{r,n}$; their
@@ -96,16 +104,8 @@ about the explicit formulas.
 
 ## References
 
-K. Binder and L. Vecchi, “Augmented singular cohomology, uniform matroids,
-and real-rootedness,”
-[arXiv:2609.15946](https://arxiv.org/abs/2609.15946) (2026). C. A. Athanasiadis,
-[“On the real-rootedness of the Eulerian
-transformation,”](https://doi.org/10.1112/jlms.70083) *J. London Math. Soc.*
-111 (2025), e70083. P. Brändén and K. Jochemko, [“The Eulerian
-transformation,”](https://doi.org/10.1090/tran/8539) *Trans. Amer. Math. Soc.*
-375 (2022), 1917–1931. P. Brändén and L. Solus, [“Symmetric decompositions and
-real-rootedness,”](https://doi.org/10.1093/imrn/rnz059) *International
-Mathematics Research Notices* 2021, 7764–7798.
+See [@BinderVecchi2026x; @Athanasiadis2025EulerianTransformation;
+@BrandenJochemko2022; @BrandenSolus2019].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.

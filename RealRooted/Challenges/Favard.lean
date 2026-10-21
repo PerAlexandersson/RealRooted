@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "favard"
 formalized = "2026-09-07"
+references = [
+  "Favard1935",
+]
 authors = ["Favard"]
 years = [1935]
 
@@ -62,7 +65,7 @@ $$
 If every $\beta_{n+1}$ is positive, the real polynomials $P_n$ are nonzero and
 real-rooted, and consecutive polynomials interlace.
 
-**Favard’s theorem.** Over an integral domain $R$, the monic polynomials $P_n$
+**Favard’s theorem.** [@Favard1935] Over an integral domain $R$, the monic polynomials $P_n$
 form a basis of $R[x]$. Let $L$ be the linear functional that extracts the
 coefficient of $P_0$ in this basis, and let $\langle p, q \rangle = L(pq)$.
 
@@ -74,13 +77,12 @@ coefficient of $P_0$ in this basis, and let $\langle p, q \rangle = L(pq)$.
 
 ## References
 
-J. Favard, “Sur les polynômes de Tchebicheff,” *Comptes rendus de l’Académie
-des sciences* 200 (1935), 2052–2053.  See also the
-[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#favardInterlacing).
+See [@Favard1935] and the
+[interlacing overview on symmetricfunctions.com](sf:favardInterlacing).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#favardInterlacing
+sf:favardInterlacing
 
 Original publication: J. Favard, "Sur les polynomes de Tchebicheff",
 C. R. Acad. Sci. Paris 200 (1935), 2052--2053.

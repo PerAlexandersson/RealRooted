@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "monotone-column-permanent"
 formalized = "2026-10-13"
+references = [
+  "HaglundOnoWagner1999",
+  "BrandenHaglundVisontaiWagner2011",
+]
 authors = ["Haglund", "Ono", "Wagner", "Brändén", "Visontai"]
 years = [1999, 2011]
 
@@ -95,7 +99,7 @@ half-plane.
 Reversing the rows preserves the permanent and changes decreasing columns into
 increasing columns. Thus
 `columnPermanent_mvRealStable_of_increasingColumns` gives the convention used
-in the original Haglund–Ono–Wagner conjecture.
+in the original Haglund–Ono–Wagner conjecture [@HaglundOnoWagner1999].
 
 Setting every $z_j$ equal to one variable $z$ gives
 $$
@@ -118,18 +122,7 @@ fractional substitution yield the multivariate theorem.
 
 ## References
 
-J. Haglund, K. Ono, and D. G. Wagner,
-[“Theorems and conjectures involving rook polynomials with only real
-zeros,”](https://doi.org/10.1007/978-1-4613-0305-3_13) in *Topics in Number
-Theory*, Mathematics and Its Applications 467 (1999), 207–221,
-[doi:10.1007/978-1-4613-0305-3_13](https://doi.org/10.1007/978-1-4613-0305-3_13).
-
-P. Brändén, J. Haglund, M. Visontai, and D. G. Wagner,
-[“Proof of the monotone column permanent
-conjecture,”](https://arxiv.org/abs/1010.2565) in *Notions of Positivity and
-the Geometry of Polynomials*, Trends in Mathematics (2011), 63–78,
-[doi:10.1007/978-3-0348-0142-3_5](https://doi.org/10.1007/978-3-0348-0142-3_5),
-[arXiv:1010.2565](https://arxiv.org/abs/1010.2565).
+See [@HaglundOnoWagner1999; @BrandenHaglundVisontaiWagner2011].
 <!-- /realrooted-catalog-content -->
 -/
 

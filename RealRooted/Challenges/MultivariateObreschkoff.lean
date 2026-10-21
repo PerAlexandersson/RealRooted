@@ -10,6 +10,11 @@ version = 1
 section = "theorems"
 slug = "multivariate-obreschkoff"
 formalized = "2026-10-13"
+references = [
+  "BorceaBranden2009I",
+  "BorceaBranden2010",
+  "Obreschkoff1963",
+]
 authors = ["Obreschkoff", "Borcea", "Brändén"]
 years = [1963, 2009, 2010]
 
@@ -57,7 +62,8 @@ polynomial; in particular it is nonzero.
 For $F, G \in \mathbb R[z_i : i \in \sigma]$ we say that $F$ and $G$ are in
 **proper position**, written $F \ll G$, if the complex polynomial $G + iF$ is stable.
 
-**Theorem** (Hermite–Kakeya–Obreschkoff, converse). Let $\sigma$ be any index type and
+**Theorem** (Hermite–Kakeya–Obreschkoff, converse). [@Obreschkoff1963] Let
+$\sigma$ be any index type and
 $F, G \in \mathbb R[z_i : i \in \sigma]$. Suppose that for all real $\alpha, \beta$ the
 polynomial $\alpha F + \beta G$ is zero or real stable. Then $F = G = 0$, or
 $F \ll G$, or $G \ll F$.
@@ -94,17 +100,8 @@ $G + iF$ stable and a negative sign makes $F + iG$ stable.
 
 ## References
 
-J. Borcea and P. Brändén,
-[“The Lee–Yang and Pólya–Schur programs. I. Linear operators preserving
-stability,”](https://arxiv.org/abs/0809.0401) *Invent. Math.* 177 (2009), 541–569,
-[doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3),
-Lemma 1.8 and Theorem 1.9 (arXiv:0809.0401). The theorem was first proved in
-J. Borcea and P. Brändén,
-[“Multivariate Pólya–Schur classification problems in the Weyl
-algebra,”](https://arxiv.org/abs/math/0606360) *Proc. London Math. Soc.* (3) 101 (2010),
-73–104, [doi:10.1112/plms/pdp049](https://doi.org/10.1112/plms/pdp049). For the univariate
-theorem see N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller Polynome*,
-VEB Deutscher Verlag der Wissenschaften, 1963.
+See [@BorceaBranden2009I, Lemma 1.8 and Thm. 1.9],
+[@BorceaBranden2010], and [@Obreschkoff1963].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the two directions of the multivariate Hermite–Kakeya–Obreschkoff

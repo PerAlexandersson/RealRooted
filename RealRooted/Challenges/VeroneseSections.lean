@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "veronese-sections"
 formalized = "2026-10-05"
+references = [
+  "AthanasiadisWagner2024x",
+]
 
 [[definitions]]
 name = "RealRooted.veroneseSectionPolynomial"
@@ -32,15 +35,13 @@ nonnegativity.
 
 ## References
 
-[C. A. Athanasiadis and D. G. Wagner, “Veronese sections and interlacing
-matrices of polynomials and formal power
-series,”](https://arxiv.org/abs/2404.12989) arXiv:2404.12989 (2024), proves a
-stronger fully interlacing statement. See also the
-[Veronese sections on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted).
+A stronger fully interlacing statement appears in [@AthanasiadisWagner2024x].
+See also the
+[Veronese sections on symmetricfunctions.com](sf:veroneseSectionsRealRooted).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/polyaFrequency.htm#veroneseSectionsRealRooted
+sf:veroneseSectionsRealRooted
 
 Catalog reference: the standard PF/TNN proof via Aissen--Schoenberg--Whitney.
 

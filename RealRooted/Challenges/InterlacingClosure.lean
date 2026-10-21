@@ -13,6 +13,11 @@ version = 1
 section = "theorems"
 slug = "interlacing-closure"
 formalized = "2026-10-06"
+references = [
+  "Fisk2006x",
+  "Branden2015",
+  "BrandenLeite2024x",
+]
 authors = ["Fisk", "Brändén", "Saud Leite", "Hlavacek", "Solus"]
 years = [2006, 2015, 2021, 2024]
 
@@ -58,7 +63,8 @@ side is also allowed to be zero.
 coefficients. If $(sx + t) f + g$ is real-rooted for all $s, t > 0$, then
 $f \ll g$.
 
-**Cone lemma (Brändén, Saud Leite).** Let $f_0, \dots, f_n$ be real-rooted with
+**Cone lemma (Brändén, Saud Leite).** [@BrandenLeite2024x, Lemma 3.1] Let
+$f_0, \dots, f_n$ be real-rooted with
 nonnegative coefficients, and suppose $f_i \ll f_j$ for all $i < j \le n$.
 Then for all $\lambda_0, \dots, \lambda_n \ge 0$ the combination
 $F = \sum_i \lambda_i f_i$ satisfies $f_0 \ll F \ll f_n$, where either side
@@ -90,17 +96,9 @@ turn this into $f \ll g$ by Wagner's lemma.
 
 ## References
 
-S. Fisk, *Polynomials, roots, and interlacing*, arXiv:math/0612833 (2006);
-P. Brändén, “Unimodality, log-concavity, real-rootedness and beyond,”
-*Handbook of Enumerative Combinatorics*, CRC Press, 2015, Lemma 7.8.4;
-P. Brändén and L. Saud Maia Leite, “Totally nonnegative matrices, chain
-enumeration and zeros of polynomials,” *Advances in Mathematics* 487 (2026),
-110760, [doi:10.1016/j.aim.2025.110760](https://doi.org/10.1016/j.aim.2025.110760),
-arXiv:2412.06595, Lemma 3.1.
-See also the
-[interlacing sequences on symmetricfunctions.com][seq].
-
-[seq]: https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacingSequenceDefinition
+See [@Fisk2006x], [@Branden2015, Lemma 7.8.4], and
+[@BrandenLeite2024x, Lemma 3.1]. See also the
+[interlacing sequences on symmetricfunctions.com](sf:interlacingSequenceDefinition).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,

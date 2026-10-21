@@ -10,6 +10,11 @@ version = 1
 section = "theorems"
 slug = "heilmann-lieb"
 formalized = "2026-10-06"
+references = [
+  "HeilmannLieb1972",
+  "Engstrom2007",
+  "ChudnovskySeymour2007",
+]
 authors = ["Heilmann", "Lieb", "Godsil", "Engström"]
 years = [1972, 1981, 2007]
 
@@ -77,7 +82,8 @@ where $M$ ranges over the matchings of $G$, that is, the sets of pairwise
 disjoint edges. Given edge weights $w \colon E(G) \to \mathbb{R}$, the
 weighted version replaces $x^{|M|}$ by $\prod_{e \in M} w(e)\, x^{|M|}$.
 
-**Theorem** (Heilmann–Lieb). The polynomial $m_G(x)$ is real-rooted. More
+**Theorem** (Heilmann–Lieb). [@HeilmannLieb1972, Thm. 4.2] The polynomial
+$m_G(x)$ is real-rooted. More
 generally, if all edge weights are nonnegative, then the weighted
 matching-generating polynomial is real-rooted with nonnegative coefficients
 and nonpositive zeros, so its coefficients form a Pólya frequency sequence.
@@ -98,7 +104,7 @@ most $\Delta \geq 2$, every zero $x$ of $\mu_G$ satisfies
 $|x| \leq 2\sqrt{\Delta - 1}$. Heilmann and Lieb prove the strict inequality;
 the Lean statement records the weak form.
 
-**Theorem** (Engström). Let $G$ be a finite claw-free graph and let
+**Theorem** (Engström). [@Engstrom2007, Thm. 2.5] Let $G$ be a finite claw-free graph and let
 $w \colon V(G) \to \mathbb{R}$ be nonnegative vertex weights. Then the
 weighted independence polynomial
 $$
@@ -139,19 +145,11 @@ whenever $v$ has at most $\Delta - 1$ neighbours, and $\mu_G$ is even or odd.
 
 ## References
 
-O. J. Heilmann and E. H. Lieb, “Theory of monomer-dimer systems,” *Comm.
-Math. Phys.* 25 (1972), 190–232,
-[doi:10.1007/bf01877590](https://doi.org/10.1007/bf01877590), Theorem 4.2;
-C. D. Godsil, “Matchings and
-walks in graphs,” *J. Graph Theory* 5 (1981), 285–297; A. Engström, “Inequalities on
-well-distributed point sets on circles,” *J. Inequal. Pure Appl. Math.* 8
-(2007), Theorem 2.5; M. Chudnovsky and P. Seymour, “The roots of the
-independence polynomial of a clawfree graph,” *J. Combin. Theory Ser. B* 97
-(2007), 350–357, [doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
-See the
-[matching polynomial](https://www.symmetricfunctions.com/realRootedGraphs.htm#matchingPolynomial)
-and the
-[weighted independence polynomial](https://www.symmetricfunctions.com/realRootedGraphs.htm#weightedIndependencePolynomial)
+See [@HeilmannLieb1972, Thm. 4.2]. C. D. Godsil, “Matchings and walks in
+graphs,” *J. Graph Theory* 5 (1981), 285–297. The claw-free specialization is
+[@Engstrom2007, Thm. 2.5]; see also [@ChudnovskySeymour2007], the
+[matching polynomial](sf:matchingPolynomial), and the
+[weighted independence polynomial](sf:weightedIndependencePolynomial)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 

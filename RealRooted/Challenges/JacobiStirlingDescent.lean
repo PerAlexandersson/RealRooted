@@ -8,6 +8,10 @@ version = 1
 section = "families"
 slug = "jacobi-stirling-descent"
 formalized = "2026-10-07"
+references = [
+  "GesselLinZeng2012",
+  "MaWang2026x",
+]
 authors = ["Gessel", "Lin", "Zeng", "Ma", "Wang"]
 years = [2012, 2026]
 
@@ -71,7 +75,8 @@ $$D_L f = (1 + Lx) f + x(1 - x) f'.$$
 Here these recurrences define the polynomials. The permutation model is not
 formalized.
 
-**Theorem** (Ma–Wang). Let $1 \le i \le k$ with $i \in \{1, 2, 3, k-2, k-1\}$.
+**Theorem** (Ma–Wang). [@MaWang2026x, Sec. 4] Let $1 \le i \le k$ with
+$i \in \{1, 2, 3, k-2, k-1\}$.
 Every nonzero nonnegative combination $\sum_{|S| = i} c_S A_{k,S}$ has only
 simple negative zeros. In particular, $A_{k,i}$ is real-rooted.
 
@@ -95,12 +100,7 @@ all strictly interlace a common polynomial keep that property.
 
 ## References
 
-I. M. Gessel, Z. Lin and J. Zeng, “Jacobi–Stirling polynomials and
-$P$-partitions,” *European Journal of Combinatorics* 33 (2012), 1987–2000,
-[doi:10.1016/j.ejc.2012.06.008](https://doi.org/10.1016/j.ejc.2012.06.008);
-S.-M. Ma and M.-X. Wang, “Binomial expansions of Jacobi–Stirling numbers and
-real-rootedness of Jacobi–Stirling descent polynomials,” arXiv:2610.03111
-(2026), Section 4.
+See [@GesselLinZeng2012] and [@MaWang2026x, Sec. 4].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

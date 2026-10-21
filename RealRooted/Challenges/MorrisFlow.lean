@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "morris-flow"
 formalized = "2026-10-16"
+references = [
+  "LiuZhang2026bx",
+]
 authors = ["Liu", "Zhang"]
 years = [2026]
 
@@ -85,8 +88,8 @@ headline = true
 <!-- realrooted-catalog-content -->
 # The Morris flow and its stable eigenfunctions
 
-Following Liu and Zhang, we work with symmetric polynomials in $x_1, \dotsc, x_q$ and the
-differential operators
+Following Liu and Zhang [@LiuZhang2026bx], we work with symmetric polynomials in
+$x_1, \dotsc, x_q$ and the differential operators
 $$
 A_q = \sum_{i=1}^{q} x_i^2 \partial_i^2, \qquad
 B_q = 2 \sum_{1 \leq i < j \leq q}
@@ -100,7 +103,8 @@ nonzero (see [real stability](/RealRooted/theorems/real-stability/)). We write
 $\operatorname{Sym}_{q,\leq N}$ for the finite-dimensional real space of symmetric polynomials
 in $q$ variables of total degree at most $N$.
 
-**Theorem** (Liu–Zhang, Theorem 4.9). Let $t \geq 0$ and $N \in \mathbb N$. If
+**Theorem** (Liu–Zhang, Theorem 4.9). [@LiuZhang2026bx, Thm. 4.9]
+Let $t \geq 0$ and $N \in \mathbb N$. If
 $P \in \operatorname{Sym}_{q,\leq N}$ is real stable, then $e^{t D_q} P$ is real stable.
 
 In the Lean statement, $e^{tD_q}$ is the exponential of the restriction of $D_q$ to
@@ -123,7 +127,8 @@ $$
 $N$. A coefficientwise limit of this flow as $t = n \to \infty$ through the natural numbers,
 which is nonzero and of total degree at most $N$, is real stable.
 
-**Theorem** (Liu–Zhang, Theorem 4.12). Let $\lambda$ be a partition of $N$ with at most $q$
+**Theorem** (Liu–Zhang, Theorem 4.12). [@LiuZhang2026bx, Thm. 4.12]
+Let $\lambda$ be a partition of $N$ with at most $q$
 parts such that $\lambda_i - \lambda_{i+1} \leq 1$ for $1 \leq i < q$. Let $V_\lambda$ be the
 span of the monomial symmetric polynomials $m_\mu$ for partitions $\mu \preceq \lambda$ in
 dominance order with at most $q$ parts.
@@ -154,9 +159,8 @@ to every normalized eigenfunction.
 
 ## References
 
-F. Liu and Z. Zhang, [*Real-rootedness and gamma-positivity for a variation of the Morris
-constant term*](https://arxiv.org/abs/2609.15201), arXiv:2609.15201 (2026). Theorems 4.9 and
-4.12 are Theorems 1.2 and 1.3 of the paper, and Lemma 4.4 is the real stability of $E_\lambda$.
+See [@LiuZhang2026bx]. Theorems 4.9 and 4.12 here are Theorems 1.2 and 1.3
+of that paper, and Lemma 4.4 is its real-stability result for $E_\lambda$.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The operators and the eigenvalue are in

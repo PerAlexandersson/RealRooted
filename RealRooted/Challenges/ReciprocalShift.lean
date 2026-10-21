@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "reciprocal-shift"
 formalized = "2026-09-26"
+references = [
+  "Fisk2006x",
+]
 
 [[theorems]]
 name = "RealRooted.reciprocalShift_reverses_strictInterl"
@@ -89,9 +92,7 @@ $\operatorname{StrictInterl}(\operatorname{reciprocalShift}(D,q),
 ## References
 
 These results were promoted from proofs in the companion OEIS formalization
-project.  For background on interlacing and polynomial reversal, see S. Fisk,
-[*Polynomials, roots, and interlacing*](https://arxiv.org/abs/math/0612833),
-arXiv:math/0612833.
+project. For background on interlacing and polynomial reversal, see [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 -/
 

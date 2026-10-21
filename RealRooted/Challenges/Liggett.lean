@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "liggett-ultra-log-concavity"
 formalized = "2026-10-07"
+references = [
+  "Gurvits2009",
+]
 authors = ["Liggett"]
 years = [1997]
 
@@ -61,16 +64,13 @@ this ordering, by a $2 \times 2$ Cauchy–Binet argument as in Hoggar's theorem.
 A real-number inequality then combines the two induction hypotheses.
 
 This elementary argument is not Liggett's original proof. Other known proofs use
-mixed volumes (Gurvits), the Johnson scheme (Kahn–Neiman) or Lorentzian polynomials
+mixed volumes [@Gurvits2009], the Johnson scheme (Kahn–Neiman) or Lorentzian polynomials
 (Brändén–Huh).
 
 ## References
 
 T. M. Liggett, “Ultra logconcave sequences and negative dependence,” *Journal of
-Combinatorial Theory, Series A* 79 (1997), 315–325; L. Gurvits, [“A short proof,
-based on mixed volumes, of Liggett's theorem on the convolution of
-ultra-logconcave sequences,”](https://doi.org/10.37236/243) *Electronic Journal
-of Combinatorics* 16 (2009), #N5.
+Combinatorial Theory, Series A* 79 (1997), 315–325. See also [@Gurvits2009].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

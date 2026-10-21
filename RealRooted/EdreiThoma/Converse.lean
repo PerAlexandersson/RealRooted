@@ -32,9 +32,9 @@ private lemma hasSum_conv_mul {a b : ℕ → ℝ} {z : ℂ}
     funext n
     simp only [natCauchyConvolution, Complex.ofReal_sum, Complex.ofReal_mul, Finset.sum_mul]
     refine Finset.sum_congr rfl fun k hk => ?_
-    have hk' : k ≤ n := Nat.lt_succ_iff.1 (Finset.mem_range.1 hk)
-    have : z ^ n = z ^ k * z ^ (n - k) := by rw [← pow_add, Nat.add_sub_cancel' hk']
-    rw [this]; ring
+    rw [show z ^ n = z ^ k * z ^ (n - k) by
+      rw [← pow_add, Nat.add_sub_cancel' (Nat.lt_succ_iff.1 (Finset.mem_range.1 hk))]]
+    ring
   rw [e, tsum_mul_tsum_eq_tsum_sum_range_of_summable_norm ha hb]
   exact (summable_norm_sum_mul_range_of_summable_norm ha hb).of_norm.hasSum
 
@@ -50,20 +50,17 @@ private lemma hasSum_expSeq (ε : ℝ) (z : ℂ) :
 
 private lemma summable_norm_expSeq (ε : ℝ) (z : ℂ) :
     Summable fun n => ‖(expSeq ε n : ℂ) * z ^ n‖ := by
-  have h := (hasSum_expSeq |ε| ‖z‖).summable
-  refine (h.norm).congr fun n => ?_
-  simp [expSeq, norm_pow]
+  simpa [expSeq, norm_pow] using (hasSum_expSeq |ε| ‖z‖).summable.norm
 
 private lemma summable_norm_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) {z : ℂ}
     (hz : a 1 * ‖z‖ < 1) : Summable fun n => ‖(a n : ℂ) * z ^ n‖ := by
-  have hz' : a 1 * ‖((‖z‖ : ℝ) : ℂ)‖ < 1 := by simpa using hz
-  have := (IsPolyaFreqSeq.summable_genFun h h0 hz').norm
+  have := (IsPolyaFreqSeq.summable_genFun h h0 (by simpa using hz)).norm
   refine this.congr fun n => ?_
   simp [norm_pow, abs_of_nonneg (IsPolyaFreqSeq.nonneg h n)]
 
 private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
-  have : Continuous fun z : ℂ => c * ‖z‖ := continuous_const.mul continuous_norm
-  exact this.continuousAt.eventually_lt continuousAt_const (by simp)
+  exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
+    (by simp)
 
 private lemma eventually_hasSum_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) :
     ∀ᶠ z in 𝓝 (0 : ℂ),
@@ -78,10 +75,6 @@ private lemma eventually_hasSum_conv_exp {a : ℕ → ℝ} (h : IsPolyaFreqSeq a
   (eventually_disc (a 1)).mono fun z hz => by
     have := hasSum_conv_mul (summable_norm_genFun h h0 hz) (summable_norm_expSeq ε z)
     rwa [(hasSum_expSeq ε z).tsum_eq] at this
-
-end Lib
-
-namespace Lib
 
 private lemma differentiable_tprod_one_add {c : ℕ → ℂ} (hc : Summable fun i => ‖c i‖) :
     Differentiable ℂ (fun z => ∏' i, (1 + c i * z)) := by
@@ -102,8 +95,6 @@ private lemma differentiable_tprod_one_add {c : ℕ → ℂ} (hc : Summable fun 
 private lemma tprod_one_add_ne_zero {c : ℕ → ℂ} (hc : Summable fun i => ‖c i‖) {z : ℂ}
     (h : ∀ i, 1 + c i * z ≠ 0) : ∏' i, (1 + c i * z) ≠ 0 :=
   tprod_one_add_ne_zero_of_summable h (by simpa [norm_mul] using hc.mul_right ‖z‖)
-
-private lemma tprod_one_add_zero (c : ℕ → ℂ) : ∏' i, (1 + c i * 0) = 1 := by simp
 
 private lemma countable_zeros_tprod {c : ℕ → ℂ} (hc : Summable fun i => ‖c i‖) :
     {z : ℂ | ∏' i, (1 + c i * z) = 0}.Countable := by
@@ -129,7 +120,7 @@ private lemma countable_preimage_sq {S : Set ℂ} (hS : S.Countable) :
   intro z hz
   simp only [Set.mem_ofPred_eq] at hz
   rw [← hs] at hz
-  rcases sq_eq_sq_iff_eq_or_eq_neg.1 hz with h | h <;> simp [h]
+  rcases sq_eq_sq_iff_eq_or_eq_neg.1 hz with h | h <;> simp_all
 
 private lemma summable_norm_ofReal {α : ℕ → ℝ} (sα : Summable α) :
     Summable fun i => ‖(α i : ℂ)‖ := by
@@ -145,15 +136,13 @@ private lemma prod_sub_eq (β : ℕ → ℝ) (z : ℂ) :
 
 private lemma differentiable_prod_sub {β : ℕ → ℝ} (sβ : Summable β) :
     Differentiable ℂ (fun z => ∏' i, (1 - (β i : ℂ) * z)) := by
-  have := differentiable_prod_add (α := fun i => -β i) sβ.neg
   rw [show (fun z : ℂ => ∏' i, (1 - (β i : ℂ) * z)) = _ from funext (prod_sub_eq β)]
-  exact this
+  exact differentiable_prod_add (α := fun i => -β i) sβ.neg
 
 private lemma countable_zeros_prod_sub {β : ℕ → ℝ} (sβ : Summable β) :
     {z : ℂ | ∏' i, (1 - (β i : ℂ) * z) = 0}.Countable := by
-  have := countable_zeros_tprod (summable_norm_ofReal (α := fun i => -β i) sβ.neg)
   simp only [prod_sub_eq β]
-  exact this
+  exact countable_zeros_tprod (summable_norm_ofReal (α := fun i => -β i) sβ.neg)
 
 private lemma prod_sub_zero (β : ℕ → ℝ) : ∏' i, (1 - (β i : ℂ) * 0) = 1 := by simp
 
@@ -180,15 +169,12 @@ private lemma differentiable_powerSeries {c : ℕ → ℂ}
   exact hd.differentiableAt (hU.mem_nhds (by simp [R]))
 
 private lemma tsum_mul_zero_pow (c : ℕ → ℂ) : ∑' n, c n * (0 : ℂ) ^ n = c 0 := by
-  rw [tsum_eq_single 0]
-  · simp
-  · intro b hb; simp [zero_pow hb]
+  rw [tsum_eq_single 0] <;> simp_all [zero_pow]
 
 private lemma hasSum_mul_zero_pow (c : ℕ → ℂ) :
     HasSum (fun n => c n * (0 : ℂ) ^ n) (c 0) := by
-  convert hasSum_single (f := fun n => c n * (0 : ℂ) ^ n) 0 ?_ using 1
-  · simp
-  · intro b hb; simp [zero_pow hb]
+  convert hasSum_single (f := fun n => c n * (0 : ℂ) ^ n) 0 ?_ using 1 <;>
+    simp_all [zero_pow]
 
 private lemma eventually_inverse_mul {a b : ℕ → ℝ} (ha : IsPolyaFreqSeq a)
     (ha0 : a 0 = 1) (hb : IsPolyaFreqSeq b)
@@ -211,15 +197,10 @@ private lemma eventually_inverse_mul {a b : ℕ → ℝ} (ha : IsPolyaFreqSeq a)
     rw [hrec n]
     split_ifs <;> simp
   simp only [hc] at this
-  refine this.unique ?_
-  have h3 : HasSum
-      (fun n : ℕ => ((fun n : ℕ => if n = 0 then (1 : ℂ) else 0) n) * z ^ n) 1 := by
-    convert hasSum_ite_eq 0 (1 : ℂ) using 1
-    funext n
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
-    · simp [hn.ne']
-  exact h3
+  apply this.unique
+  convert hasSum_ite_eq 0 (1 : ℂ) using 1
+  funext n
+  rcases Nat.eq_zero_or_pos n with rfl | hn <;> simp_all
 
 private lemma eq_neg_inv_of_one_add_mul_eq_zero {c : ℝ} {z : ℂ} (h : 1 + (c : ℂ) * z = 0) :
     c ≠ 0 ∧ z = ((-(1 / c) : ℝ) : ℂ) := by
@@ -306,7 +287,6 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
     simp only [hN]; congr 1; funext i; ring
   have hQneg : ∀ z, Qf (-z) = ∏' i, (1 + (β i : ℂ) * z) := fun z => by
     simp only [hQf]; congr 1; funext i; ring
-  -- `p 0 = 1` and `q 0 = 1`
   have hp0 : p 0 = 1 := by
     have e := hpe.self_of_nhds
     rw [Lib.tsum_mul_zero_pow, Lib.tsum_mul_zero_pow, Lib.prod_sub_zero] at e
@@ -317,7 +297,6 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
     rw [Lib.tsum_mul_zero_pow, Lib.tsum_mul_zero_pow, Lib.prod_sub_zero] at e
     simp only [mul_one, hb0, Complex.ofReal_one] at e
     exact_mod_cast e
-  -- the functional identity `F(z) G(-z) = Q(z) N(z)`
   have hFG : ∀ z, F z * G (-z) = Qf z * N z := by
     have t1 : Tendsto (fun z : ℂ => -z) (𝓝 0) (𝓝 0) := by
       simpa using (continuous_neg.tendsto (0 : ℂ))
@@ -334,14 +313,12 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
     have h2 : AnalyticOnNhd ℂ (fun z => Qf z * N z) Set.univ :=
       (dQ.mul dN).differentiableOn.analyticOnNhd isOpen_univ
     exact congrFun (h1.eq_of_eventuallyEq h2 hev)
-  -- zeros
   have hNz : ∀ z, N z = 0 → G (-z) ≠ 0 := by
     intro z hz
-    have : ∃ i, 1 + (α i : ℂ) * z = 0 := by
+    obtain ⟨i, hi⟩ : ∃ i, 1 + (α i : ℂ) * z = 0 := by
       by_contra hc
       push Not at hc
       exact Lib.tprod_one_add_ne_zero (Lib.summable_norm_ofReal sα) hc hz
-    obtain ⟨i, hi⟩ := this
     obtain ⟨hai, hzi⟩ := Lib.eq_neg_inv_of_one_add_mul_eq_zero hi
     have hr : (0 : ℝ) ≤ 1 / α i := div_nonneg zero_le_one (hα i)
     have := FinalAux.nonneg_series_ge hq hGs hr
@@ -350,13 +327,12 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
     intro h0'; rw [h0', norm_zero] at this; linarith
   have hQz : ∀ z, Qf z = 0 → F z ≠ 0 := by
     intro z hz
-    have : ∃ i, 1 + ((-β i : ℝ) : ℂ) * z = 0 := by
+    obtain ⟨i, hi⟩ : ∃ i, 1 + ((-β i : ℝ) : ℂ) * z = 0 := by
       by_contra hc
       push Not at hc
       rw [show Qf z = _ from Lib.prod_sub_eq β z] at hz
       exact Lib.tprod_one_add_ne_zero
         (Lib.summable_norm_ofReal (α := fun i => -β i) sβ.neg) hc hz
-    obtain ⟨i, hi⟩ := this
     obtain ⟨hbi, hzi⟩ := Lib.eq_neg_inv_of_one_add_mul_eq_zero hi
     have hr : (0 : ℝ) ≤ -(1 / -β i) := by
       rw [div_neg, neg_neg]; exact div_nonneg zero_le_one (hβ i)
@@ -429,19 +405,13 @@ private theorem isPolyaFreqSeq_even {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) :
     IsPolyaFreqSeq (fun k => a (2 * k)) := by
   intro n r c hr hc
   have hm : StrictMono (fun x : ℕ => 2 * x) := fun x y (hxy : x < y) => by simp only; lia
-  have hminor := h (rows := fun i => 2 * r i) (cols := fun i => 2 * c i)
-    (hm.comp hr) (hm.comp hc)
   have e : (toeplitz fun k => a (2 * k)).submatrix r c =
       (toeplitz a).submatrix (fun i => 2 * r i) (fun i => 2 * c i) := by
     ext i j
     simp only [Matrix.submatrix_apply, toeplitz_apply]
-    by_cases hij : c j ≤ r i
-    · rw [ite_eq_left hij, ite_eq_left (by lia)]
-      congr 1
-      lia
-    · rw [ite_eq_right hij, ite_eq_right (by lia)]
+    split_ifs <;> congr 1 <;> lia
   rw [e]
-  exact hminor
+  exact h (hm.comp hr) (hm.comp hc)
 
 /-- **Edrei's Proposition A for arbitrary PF sequences (E8, via `e^{εz}`).**
 Apply `exists_hasSum_exp_mul_prod_div` to `a ⋆ exp(z)` and absorb `-z` into `φ`. -/
@@ -520,8 +490,7 @@ private theorem exists_hasSum_edreiFunction_of_property_P {a : ℕ → ℝ}
         {z | D z = 0} ∪ ({z | D (-z) = 0} ∪ {z | z ^ 2 ∈ {w | Ds w = 0}}) := by
       intro z hz
       simp only [hU, Set.mem_compl_iff, Set.mem_ofPred_eq, not_and_or, not_not] at hz
-      simp only [Set.mem_union, Set.mem_ofPred_eq]
-      tauto
+      simpa only [Set.mem_union, Set.mem_ofPred_eq] using hz
     refine Set.Countable.mono hsub ((Lib.countable_zeros_prod_sub sβ).union
       (Set.Countable.union ?_ (Lib.countable_preimage_sq (Lib.countable_zeros_prod_sub sβs))))
     have := (Lib.countable_zeros_prod_sub sβ).preimage neg_injective
@@ -544,24 +513,17 @@ private theorem exists_hasSum_edreiFunction_of_property_P {a : ℕ → ℝ}
     refine DifferentiableAt.differentiableWithinAt ?_
     have e1 : DifferentiableAt ℂ (fun z => Complex.exp (φ z) * N z / D z) z :=
       (((hφ z).cexp).mul (dN z)).div (dD z) h1
-    have e2 : DifferentiableAt ℂ (fun z => Complex.exp (φ (-z)) * N (-z) / D (-z)) z := by
-      have hn : DifferentiableAt ℂ (fun z : ℂ => -z) z := differentiableAt_id.neg
-      have d1 : DifferentiableAt ℂ (fun z => φ (-z)) z := (hφ (-z)).comp z hn
-      have d2 : DifferentiableAt ℂ (fun z => N (-z)) z := (dN (-z)).comp z hn
-      have d3 : DifferentiableAt ℂ (fun z => D (-z)) z := (dD (-z)).comp z hn
-      exact (d1.cexp.mul d2).div d3 h2
-    exact e1.add e2
+    have hn : DifferentiableAt ℂ (fun z : ℂ => -z) z := differentiableAt_id.neg
+    exact e1.add ((((hφ (-z)).comp z hn).cexp.mul ((dN (-z)).comp z hn)).div
+      ((dD (-z)).comp z hn) h2)
   have hRa : AnalyticOnNhd ℂ R U := by
     refine DifferentiableOn.analyticOnNhd (fun z hz => ?_) hUo
     obtain ⟨-, -, h3⟩ := hz
     refine DifferentiableAt.differentiableWithinAt ?_
     have hs : DifferentiableAt ℂ (fun z : ℂ => z ^ 2) z := differentiableAt_pow 2
-    have d1 : DifferentiableAt ℂ (fun z => φs (z ^ 2)) z := (hφs (z ^ 2)).comp z hs
-    have d2 : DifferentiableAt ℂ (fun z => Ns (z ^ 2)) z :=
-      DifferentiableAt.comp (g := Ns) z (dNs (z ^ 2)) hs
-    have d3 : DifferentiableAt ℂ (fun z => Ds (z ^ 2)) z :=
-      DifferentiableAt.comp (g := Ds) z (dDs (z ^ 2)) hs
-    exact ((d1.cexp.const_mul 2).mul d2).div d3 h3
+    exact (((((hφs (z ^ 2)).comp z hs).cexp.const_mul 2).mul
+      (DifferentiableAt.comp (g := Ns) z (dNs (z ^ 2)) hs)).div
+        (DifferentiableAt.comp (g := Ds) z (dDs (z ^ 2)) hs) h3)
   have hev : L =ᶠ[𝓝 0] R := by
     have t1 : Tendsto (fun z : ℂ => -z) (𝓝 0) (𝓝 0) := by
       simpa using (continuous_neg.tendsto (0 : ℂ))
@@ -583,12 +545,7 @@ private theorem exists_hasSum_edreiFunction_of_property_P {a : ℕ → ℝ}
   obtain ⟨γ, hγ, hφγ⟩ := exists_nonneg_eq_affine_of_series_zero hφ hc hα hβ sα sβ hp hq
   have hφ0 : Complex.exp (φ 0) = 1 := by
     have e0 := hrep.self_of_nhds
-    have e1 : HasSum (fun n => (a n : ℂ) * (0 : ℂ) ^ n) 1 := by
-      convert hasSum_single (f := fun n => (a n : ℂ) * (0 : ℂ) ^ n) 0 ?_ using 1
-      · simp [h0]
-      · intro b hb; simp [zero_pow hb]
-    have := e0.unique e1
-    simpa using this
+    simpa [h0] using e0.unique (Lib.hasSum_mul_zero_pow fun n => (a n : ℂ))
   refine ⟨γ, α, β, hγ, hα, hβ, sα, sβ, ?_⟩
   filter_upwards [hrep] with z hz
   convert hz using 1
@@ -599,10 +556,8 @@ private theorem exists_hasSum_edreiFunction_of_property_P {a : ℕ → ℝ}
 private lemma edreiFun_add_gamma (C γ δ : ℝ) (k : ℕ) (α β : ℕ → ℝ) (z : ℂ) :
     Complex.EdreiThoma.edreiFunction C (γ + δ) k α β z =
       Complex.exp (δ * z) * Complex.EdreiThoma.edreiFunction C γ k α β z := by
-  unfold Complex.EdreiThoma.edreiFunction
-  push_cast
-  rw [add_mul, Complex.exp_add]
-  ring
+  unfold Complex.EdreiThoma.edreiFunction; push_cast
+  rw [add_mul, Complex.exp_add]; ring
 
 private lemma exists_edreiFunction_eq_mul_exp {a : ℕ → ℝ} (h : IsPolyaFreqSeq a)
     (h0 : a 0 = 1) {ε : ℝ} (hε : 0 < ε) :

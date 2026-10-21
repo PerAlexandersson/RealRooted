@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "univariate-poisson-star-c"
 formalized = "2026-10-12"
+references = [
+  "Branden2006",
+]
 authors = ["Brändén"]
 years = [2006]
 
@@ -143,10 +146,7 @@ multiplication, proving both multiplicativity and associativity of $\star_c$.
 
 ## References
 
-P. Brändén, [“On linear transformations preserving the Pólya frequency
-property,”](https://doi.org/10.1090/S0002-9947-06-03856-6) *Transactions of
-the American Mathematical Society* 358 (2006), no. 8, 3697–3716,
-[arXiv:math/0403364](https://arxiv.org/abs/math/0403364).
+See [@Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
 

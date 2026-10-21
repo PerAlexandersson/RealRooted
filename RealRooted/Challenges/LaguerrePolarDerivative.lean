@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "laguerre-polar-derivative"
 formalized = "2026-07-01"
+references = [
+  "RahmanSchmeisser2002",
+]
 authors = ["Rahman", "Schmeisser"]
 years = [2002]
 
@@ -104,8 +107,7 @@ the derivative of a real-rooted polynomial is real-rooted by Rolle's theorem.
 
 ## References
 
-Q. I. Rahman and G. Schmeisser, *Analytic Theory of Polynomials*, Oxford University
-Press, 2002.
+See [@RahmanSchmeisser2002].
 <!-- /realrooted-catalog-content -->
 
 This module exposes Laguerre's theorem for closed disks, closed half-planes and the real

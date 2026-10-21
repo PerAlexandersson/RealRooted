@@ -62,7 +62,7 @@ résolution des équations numériques*, 1807; J. Fourier, *Analyse des
 équations déterminées*, 1831. See also the
 [contextual account on symmetricfunctions.com][descartes-context].
 
-[descartes-context]: https://www.symmetricfunctions.com/realRooted.htm#descartesRuleOfSigns
+[descartes-context]: sf:descartesRuleOfSigns
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

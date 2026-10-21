@@ -41,13 +41,13 @@ the two orientations, where either image may be zero.
 ## References
 
 The theorem goes back to Hermite and Poulain; see the
-[Hermite–Poulain theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheorem)
+[Hermite–Poulain theorem on symmetricfunctions.com](sf:hermitePoulainTheorem)
 for further references, and the
-[interlacing consequence](https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainInterlacing).
+[interlacing consequence](sf:hermitePoulainInterlacing).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#hermitePoulainTheorem
+sf:hermitePoulainTheorem
 
 Original references include C. Hermite, G. Polya--I. Schur, N. Obreschkoff,
 and B. Ya. Levin's account of entire functions.

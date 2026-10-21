@@ -13,6 +13,9 @@ version = 1
 section = "theorems"
 slug = "borcea-branden"
 formalized = "2026-08-09"
+references = [
+  "BorceaBranden2009I",
+]
 authors = ["Borcea", "Brändén"]
 years = [2009]
 
@@ -72,7 +75,8 @@ label = "Poisson left multiplication preserves real stability"
 <!-- realrooted-catalog-content -->
 # Borcea–Brändén finite-symbol theorems
 
-A linear operator on a finite multidegree box preserves stability precisely in
+A linear operator on a finite multidegree box preserves stability precisely
+as described by the finite-symbol classification [@BorceaBranden2009I]: in
 the rank-one or stable-symbol cases. The real univariate theorem gives the
 corresponding positive-symbol criterion for bounded-degree polynomials.
 
@@ -96,15 +100,12 @@ operator is $f(z(1-w), v(1-w))$.
 
 ## References
 
-J. Borcea and P. Brändén, “The Lee–Yang and Pólya–Schur programs. I. Linear
-operators preserving stability,” *Inventiones Mathematicae* 177 (2009),
-541–569, [doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3).
-See the
-[finite-symbol discussion on symmetricfunctions.com](https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol).
+See [@BorceaBranden2009I] and the
+[finite-symbol discussion on symmetricfunctions.com](sf:borceaBrandenFiniteSymbol).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/stablePolynomials.htm#borceaBrandenFiniteSymbol
+sf:borceaBrandenFiniteSymbol
 
 Original reference: J. Borcea and P. Branden, "The Lee-Yang and Polya-Schur
 programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),

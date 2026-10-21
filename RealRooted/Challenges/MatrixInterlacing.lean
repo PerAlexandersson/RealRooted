@@ -9,6 +9,10 @@ version = 1
 section = "theorems"
 slug = "matrix-interlacing"
 formalized = "2026-10-06"
+references = [
+  "Fisk2006x",
+  "Branden2015",
+]
 authors = ["Fisk", "Brändén"]
 years = [2006, 2015]
 
@@ -97,15 +101,13 @@ zero-aware forward forms.
 
 ## References
 
-S. Fisk, *Polynomials, roots, and interlacing*, 2006, Chapter 3, develops
-matrices preserving interlacing. P. Brändén gives the exact nonnegative
-polynomial characterization in “Unimodality, log-concavity, real-rootedness
-and beyond,” *Handbook of Enumerative Combinatorics*, 2015, Theorem 7.8.5. See the
-[matrix criterion on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences).
+Matrices preserving interlacing are treated in [@Fisk2006x, Ch. 3]. The exact
+nonnegative polynomial characterization is [@Branden2015, Thm. 7.8.5]. See the
+[matrix criterion on symmetricfunctions.com](sf:matrixPreservesInterlacingSequences).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#matrixPreservesInterlacingSequences
+sf:matrixPreservesInterlacingSequences
 
 References: S. Fisk, *Polynomials, roots, and interlacing* (2006), Chapter 3;
 P. Branden, *Unimodality, log-concavity, real-rootedness and beyond*,
