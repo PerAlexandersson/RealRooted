@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "finite-memory-defect-bridges"
 formalized = "2026-10-11"
+references = [
+  "BogvadHagg2017",
+  "NyandwiHaggKurujyibwamiUwimbabazi2026x",
+]
 
 [[theorems]]
 name = "RealRooted.HasNonnegCoeffs.natDegree_add_eq_max"
@@ -81,14 +85,7 @@ $3d+K_{n\bmod3}=2n$.
 
 ## References
 
-R. Bøgvad and C. Hägg, “A refinement for rational functions of Pólya's method
-to construct Voronoi diagrams,” *Journal of Mathematical Analysis and
-Applications* 452(1) (2017), 312–334,
-[doi:10.1016/j.jmaa.2017.02.071](https://doi.org/10.1016/j.jmaa.2017.02.071);
-B. Nyandwi, C. Hägg, C. Kurujyibwami, and L. F. R. Uwimbabazi, “Voronoi limit
-measures for iterates of constant-coefficient differential operators on
-rational functions with simple poles,”
-[arXiv:2604.05189](https://arxiv.org/abs/2604.05189).
+See [@BogvadHagg2017; @NyandwiHaggKurujyibwamiUwimbabazi2026x].
 <!-- /realrooted-catalog-content -->
 -/
 

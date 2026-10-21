@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "monomial-chain-operator"
 formalized = "2026-05-12"
+references = [
+  "Branden2011b",
+]
 
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
@@ -67,9 +70,7 @@ oriented interlacing pair.
 ## References
 
 The decomposition step uses the Krein expansion for interlacing polynomials;
-the operator perspective is related to P. Brändén, [“Iterated sequences and
-the geometry of zeros,”](https://doi.org/10.1515/crelle.2011.063) *Journal für
-die reine und angewandte Mathematik* 658 (2011), 115–131.
+the operator perspective is related to [@Branden2011b].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the fully checked monomial-chain upgrade.

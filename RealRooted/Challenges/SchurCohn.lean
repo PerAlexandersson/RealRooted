@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "schur-cohn"
 formalized = "2026-10-07"
+references = [
+  "Schur1917",
+  "Cohn1922",
+]
 authors = ["Schur", "Cohn"]
 years = [1917, 1922]
 
@@ -39,7 +43,7 @@ T p(z) = \frac{\overline{a_n}\, p(z) - a_0\, p^*(z)}{z},
 $$
 a polynomial of degree at most $n - 1$.
 
-**Theorem** (Schur–Cohn). All zeros of $p$ lie in the open unit disk if and
+**Theorem** (Schur–Cohn). [@Schur1917; @Cohn1922] All zeros of $p$ lie in the open unit disk if and
 only if $|a_0| < |a_n|$ and all zeros of $T p$ lie in the open unit disk.
 
 Iterating the transform decides disk stability in $n$ steps; this is the
@@ -55,11 +59,7 @@ has no zero with $|z| \geq 1$ when $T p$ is stable.
 
 ## References
 
-I. Schur, [“Über Potenzreihen, die im Innern des Einheitskreises beschränkt
-sind,”](https://doi.org/10.1515/crll.1917.147.205) *J. Reine Angew. Math.* 147
-(1917), 205–232; A. Cohn, [“Über die Anzahl der Wurzeln einer algebraischen
-Gleichung in einem Kreise,”](https://doi.org/10.1007/BF01215894) *Math. Z.* 14
-(1922), 110–148.
+See [@Schur1917; @Cohn1922].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

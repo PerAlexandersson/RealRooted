@@ -8,6 +8,9 @@ version = 1
 section = "concepts"
 slug = "interlacing"
 formalized = "2026-10-05"
+references = [
+  "Fisk2006x",
+]
 authors = ["Fisk"]
 years = [2006]
 
@@ -69,10 +72,8 @@ $\deg g = \deg f + 1$.
 
 ## References
 
-Steve Fisk, [“Polynomials, roots, and
-interlacing,”](https://arxiv.org/abs/math/0612833) arXiv:math/0612833 (2006).
-See also the
-[interlacing overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#interlacesPolynomial).
+See [@Fisk2006x] and the
+[interlacing overview on symmetricfunctions.com](sf:interlacesPolynomial).
 <!-- /realrooted-catalog-content -->
 -/
 

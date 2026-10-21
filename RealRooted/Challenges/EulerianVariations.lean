@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "eulerian-variations"
 formalized = "2026-09-09"
+references = [
+  "Alexandersson2026Eulerian",
+]
 authors = ["Alexandersson", "Shankar"]
 years = [2026]
 
@@ -105,8 +108,7 @@ statements are about the polynomials themselves.
 
 ## References
 
-P. Alexandersson, [“Real-rooted Eulerian polynomials from permutations,
-words, and paths,”](https://arxiv.org/abs/2609.07325) arXiv:2609.07325 (2026).
+See [@Alexandersson2026Eulerian].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

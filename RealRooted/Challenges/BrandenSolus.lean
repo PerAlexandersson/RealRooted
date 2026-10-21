@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "branden-solus"
 formalized = "2026-10-02"
+references = [
+  "BrandenSolus2019",
+]
 authors = ["Brändén", "Solus"]
 years = [2019]
 
@@ -63,7 +66,8 @@ $R_d(f) \ll f$ for the associated polynomial $f$ (`fPolynomial d p`).
 
 The derangement transform $D : x^j \mapsto d_j(x)$ sends every polynomial with nonnegative
 coordinates in the basis $x^k(1+x)^{d-k}$ to a real-rooted polynomial lying between the
-Eulerian polynomial $A_d$ and the derangement polynomial $d_d$ (Brändén–Solus, Corollary 3.7).
+Eulerian polynomial $A_d$ and the derangement polynomial $d_d$
+[@BrandenSolus2019, Cor. 3.7].
 Here it is derived from the Brändén–Vecchi Chow-resolution theorem for the Pascal matrix,
 whose resolving rows are exactly $x^k(1+x)^{d-k}$.
 
@@ -74,14 +78,12 @@ The proof establishes the excedance recurrence by removing the letter $0$ from a
 
 ## References
 
-P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,”
-*International Mathematics Research Notices* 2021 (2021), no. 10, 7764–7798,
-[doi:10.1093/imrn/rnz059](https://doi.org/10.1093/imrn/rnz059). See the
-[symmetric-decomposition overview on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricIDecomposition).
+See [@BrandenSolus2019] and the
+[symmetric-decomposition overview on symmetricfunctions.com](sf:symmetricIDecomposition).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricIDecomposition
+sf:symmetricIDecomposition
 
 Original publication: P. Branden and L. Solus, "Symmetric decompositions and
 real-rootedness", International Mathematics Research Notices 2021 (2019),

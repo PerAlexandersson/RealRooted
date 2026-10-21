@@ -13,6 +13,11 @@ version = 1
 section = "theorems"
 slug = "derivative-interlacing"
 formalized = "2026-05-12"
+references = [
+  "Fisk2006x",
+  "Obreschkoff1963",
+  "Jensen1913",
+]
 authors = ["Rolle", "Laguerre", "Jensen", "Obreschkoff", "Fisk"]
 years = [1691, 1882, 1913, 1963, 2006]
 
@@ -71,7 +76,7 @@ $f' \ll g'$. Here we use the zero-aware relation `Interl`, which holds
 whenever one side vanishes; if $f$ is nonconstant, both derivatives are
 nonzero and $f' \ll g'$ holds in the strict sense `StrictInterl`.
 
-**Theorem** (Jensen). Let $p$ be a nonconstant real polynomial. Every
+**Theorem** (Jensen). [@Jensen1913] Let $p$ be a nonconstant real polynomial. Every
 non-real zero of $p'$ lies in a *Jensen disk* of $p$: the closed disk whose
 diameter is the segment from a non-real zero $z$ of $p$ to $\bar z$.  In
 particular, if $p$ is real-rooted then so is $p'$.
@@ -89,7 +94,8 @@ further zero of $f'$ strictly between any two consecutive distinct zeros of
 $f$. This gives $d - 1$ zeros of $f'$, counted with multiplicity, in the
 required positions, and $f'$ has no others since its degree is $d - 1$.
 
-For the second theorem, we use Obreschkoff's theorem: $f \ll g$ implies that
+For the second theorem, we use Obreschkoff's theorem [@Obreschkoff1963]:
+$f \ll g$ implies that
 every real linear combination $\lambda f + \mu g$ is zero or real-rooted.
 Differentiating the combinations shows that the same holds for $f'$ and
 $g'$, and the converse direction of Obreschkoff's theorem returns
@@ -102,14 +108,9 @@ imaginary part of sign opposite to $\operatorname{Im} w$, which is impossible.
 
 ## References
 
-S. Fisk, [*Polynomials, roots, and
-interlacing*](https://arxiv.org/abs/math/0612833), arXiv:math/0612833 (2006),
-Chapter 1; N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
-Polynome*, VEB Deutscher Verlag der Wissenschaften, Berlin, 1963. J. L. W. V. Jensen,
-*Recherches sur la théorie des équations*, *Acta Mathematica* 36 (1913), 181–195,
-[doi:10.1007/BF02422380](https://doi.org/10.1007/BF02422380). The
-statement $f' \ll f$ is the remark after
-[Wagner's lemma on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wagnerLemma).
+For derivative interlacing, see [@Fisk2006x, Ch. 1] and [@Obreschkoff1963].
+Jensen's theorem is [@Jensen1913]. The statement $f' \ll f$ is the remark after
+[Wagner's lemma on symmetricfunctions.com](sf:wagnerLemma).
 <!-- /realrooted-catalog-content -->
 
 This module exposes Rolle's theorem, derivative interlacing in all positive

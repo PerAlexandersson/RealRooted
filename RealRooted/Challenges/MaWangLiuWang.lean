@@ -12,6 +12,10 @@ version = 1
 section = "theorems"
 slug = "ma-wang-liu-wang"
 formalized = "2026-10-06"
+references = [
+  "LiuWang2007",
+  "MaWang2008",
+]
 authors = ["Liu", "Wang", "Ma"]
 years = [2007, 2008]
 
@@ -70,7 +74,8 @@ the zeros interlace weakly and $F$ has the largest zero, so that
 $\deg F - \deg f \in \{0, 1\}$. Shared and repeated zeros are allowed. In
 particular, $f \ll F$ includes the statement that $F$ is real-rooted.
 
-**Theorem (Liu–Wang).** Let $f, g, a, b \in \mathbb{R}[x]$ and
+**Theorem (Liu–Wang).** [@LiuWang2007, Thm. 2.1] Let
+$f, g, a, b \in \mathbb{R}[x]$ and
 $F = a f + b g$. Suppose that $g \ll f$, that $g$ and $F$ have positive leading
 coefficients, and that $\deg f \leq \deg F \leq \deg f + 1$. If $b(r) \leq 0$
 at every real zero $r$ of $f$, then $f \ll F$.
@@ -87,7 +92,7 @@ $r$ of $f$, then $f \ll F$. Common zeros of $f$ and $F$ are allowed.
 Conversely, if $g \ll f$ and both have positive leading coefficients, then
 $g(r) f'(r) \geq 0$ at every zero $r$ of $f$.
 
-**Theorem (Ma–Wang).** Let $f, u, v \in \mathbb{R}[x]$ and
+**Theorem (Ma–Wang).** [@MaWang2008, Thm. 2] Let $f, u, v \in \mathbb{R}[x]$ and
 $F = u f + v f'$. Suppose that $f$ is real-rooted, that $f$ and $F$ have
 positive leading coefficients, and that $\deg f \leq \deg F \leq \deg f + 1$.
 If $v(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$.
@@ -129,14 +134,8 @@ stated here.
 
 ## References
 
-L. L. Liu and Y. Wang, [“A unified approach to polynomial sequences with only
-real zeros,”](https://doi.org/10.1016/j.aam.2006.02.003) *Advances in Applied
-Mathematics* 38 (2007), 542–560, Theorem 2.1.
-S.-M. Ma and Y. Wang, [“q-Eulerian polynomials and polynomials with only real
-zeros,”](https://doi.org/10.37236/741) *Electronic Journal of Combinatorics*
-15 (2008), #R17, Theorem 2.
-See also the
-[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#maWangDerivativeCriterion).
+See [@LiuWang2007, Thm. 2.1] and [@MaWang2008, Thm. 2]. See also the
+[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion).
 <!-- /realrooted-catalog-content -->
 
 The general Liu–Wang theorem lives in `RealRooted.LiuWang.General`, the

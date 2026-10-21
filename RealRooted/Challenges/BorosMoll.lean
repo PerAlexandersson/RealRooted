@@ -9,6 +9,11 @@ version = 1
 section = "theorems"
 slug = "boros-moll-log-concavity-transform"
 formalized = "2026-10-08"
+references = [
+  "XieZhang2026InfiniteLogConcavity",
+  "Branden2011b",
+  "BorosMoll1999",
+]
 authors = ["Xie", "Zhang"]
 years = [2026]
 
@@ -68,20 +73,23 @@ $M_n(x) = \sum_i L(d(n))_i x^i$, and let
 $N_n(x) = \sum_{i=0}^n \frac{1}{i+1} \binom{n}{i} \binom{n+1}{i} x^i$ be the
 Narayana polynomial.
 
-**Theorem** (Xie–Zhang). For $n \geq 1$, $M_n$ has $n$ simple negative zeros, and they
+**Theorem** (Xie–Zhang). [@XieZhang2026InfiniteLogConcavity] For $n \geq 1$,
+$M_n$ has $n$ simple negative zeros, and they
 strictly interlace the zeros of $N_n$, those of $M_n$ being the leftmost.
 
-**Theorem** (Brändén). If $p$ has nonnegative coefficients and only real, nonpositive
-zeros, then so does its log-concavity transform. Hence every Pólya-frequency polynomial is
+**Theorem** (Brändén). [@Branden2011b] If $p$ has nonnegative coefficients and
+only real, nonpositive zeros, then so does its log-concavity transform. Hence every
+Pólya-frequency polynomial is
 *infinitely log-concave*: all iterates of the transform have nonnegative coefficients.
 
 Since $M_n$ is the transform of the row $d(n)$ and is Pólya-frequency, the Boros–Moll rows
-are infinitely log-concave, as conjectured by Boros and Moll. All three statements are
+are infinitely log-concave, as conjectured by Boros and Moll [@BorosMoll1999].
+All three statements are
 formalized. The formal proof of Brändén's theorem is not Brändén's: it uses moment
 functionals that do not vanish on polynomials whose zeros lie in a half-plane, together
 with Laguerre-type approximations.
 
-See also [infinite log-concavity on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#infinitelyLogConcave).
+See also [infinite log-concavity on symmetricfunctions.com](sf:infinitelyLogConcave).
 
 ## Proof idea
 
@@ -93,13 +101,8 @@ certificates evaluated in the kernel. The formal proof follows the paper.
 
 ## References
 
-P. Brändén, “Iterated sequences and the geometry of zeros,” *Journal für die reine und
-angewandte Mathematik* 658 (2011), 115–131,
-[doi:10.1515/crelle.2011.063](https://doi.org/10.1515/crelle.2011.063); M. H. Y. Xie and P. B. Zhang, “Infinite
-log-concavity of the Boros–Moll sequences,”
-arXiv:2609.20653 (2026); G. Boros and V. H. Moll, “An integral hidden in Gradshteyn and
-Ryzhik,” *J. Comput. Appl. Math.* 106 (1999), 361–368,
-[doi:10.1016/S0377-0427(99)00081-3](https://doi.org/10.1016/S0377-0427(99)00081-3).
+See [@Branden2011b; @BorosMoll1999]. For the infinite log-concavity result,
+see [@XieZhang2026InfiniteLogConcavity].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

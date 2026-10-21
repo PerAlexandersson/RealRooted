@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "endpoint-derivative"
 formalized = "2026-09-26"
+references = [
+  "Fisk2006x",
+]
 
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative"
@@ -112,12 +115,10 @@ for both operators.
 
 ## References
 
-S. Fisk, [*Polynomials, roots, and interlacing*](https://arxiv.org/abs/math/0612833),
-arXiv:math/0612833 (2006), Chapter 1.
-
-The first applications are the rows of [OEIS A142071](https://oeis.org/A142071),
-[OEIS A172106](https://oeis.org/A172106), [OEIS A172107](https://oeis.org/A172107), and
-[OEIS A172108](https://oeis.org/A172108).
+For derivative interlacing, see [@Fisk2006x, Ch. 1]. The first applications
+are the rows of [OEIS A142071](https://oeis.org/A142071),
+[OEIS A172106](https://oeis.org/A172106), [OEIS A172107](https://oeis.org/A172107),
+and [OEIS A172108](https://oeis.org/A172108).
 <!-- /realrooted-catalog-content -->
 -/
 

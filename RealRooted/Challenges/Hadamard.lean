@@ -19,7 +19,17 @@ version = 1
 section = "theorems"
 slug = "hadamard-products"
 formalized = "2026-07-03"
-authors = ["Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
+references = [
+  "SchurPolya1914",
+  "Wagner1992",
+  "GarloffWagner1996",
+  "BrandenFerroniJochemko2024x",
+  "LiuMao2026Hadamard",
+  "KostovShapiro2006",
+  "Kostov2010",
+]
+authors = [
+  "Maló", "Pólya", "Schur", "Brenti", "Wagner", "Garloff", "Kostov", "Shapiro", "Brändén",
   "Ferroni", "Jochemko", "Liu", "Mao"]
 years = [1895, 1914, 1989, 1992, 1996, 2006, 2010, 2024, 2026]
 
@@ -143,7 +153,8 @@ Pólya frequency sequences is again a Pólya frequency sequence. Equivalently,
 the entrywise product of their totally nonnegative Toeplitz matrices is
 totally nonnegative.
 
-**Theorem** (Kostov–Shapiro; Kostov). Let $f$ and $g$ have degree $n$, let
+**Theorem** (Kostov–Shapiro; Kostov). [@KostovShapiro2006; @Kostov2010] Let
+$f$ and $g$ have degree $n$, let
 $a \neq 0$ be a root of $f$ of multiplicity $m$ and $b \neq 0$ a root of $g$ of
 multiplicity $l$, with $m + l \geq n$. Then $-ab$ is a root of the Schur–Szegő
 composition $f *_n g$ of multiplicity exactly $m + l - n$; in particular it is not a
@@ -192,11 +203,12 @@ nonnegative coefficients):
   factorial product), with coefficients $k!\, a_k b_k$, preserves interlacing in
   its first argument.
 
-**Theorem (Schur).** If $f = \sum_k a_k x^k$ is real-rooted and
+**Theorem (Schur).** [@SchurPolya1914] If $f = \sum_k a_k x^k$ is real-rooted and
 $g = \sum_k b_k x^k$ is real-rooted with all zeros of one sign, then the
 factorial Hadamard product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
 
-**Theorem (Liu–Mao).** For a polynomial $p$ of degree $d$ let $W(p)$ be its Euler
+**Theorem (Liu–Mao).** [@LiuMao2026Hadamard] For a polynomial $p$ of degree
+$d$ let $W(p)$ be its Euler
 numerator, $\sum_{n \geq 0} p(n) x^n = W(p)(x) / (1-x)^{d+1}$. If the coefficients of
 $W(p)$ and $W(q)$ are nonnegative, log-concave and without internal zeros, then so are
 the coefficients of $W(pq)$. The no-internal-zeros hypothesis cannot be dropped:
@@ -205,37 +217,27 @@ $W(p) = 1 + x^3$ and $W(q) = x$ give $W(pq) = 4x + 3x^3 + x^4$.
 ## References
 
 E. Maló, “Note sur les équations algébriques dont toutes les racines sont
-réelles,” *Journal de Mathématiques Spéciales* 4 (1895), 7–10; G. Pólya and
-I. Schur, “Über zwei Arten von Faktorenfolgen in der Theorie der algebraischen
-Gleichungen,” *Journal für die reine und angewandte Mathematik* 144 (1914),
-89–113; D. G. Wagner, “Total positivity of Hadamard products,” *Journal of
-Mathematical Analysis and Applications* 163 (1992), 459–483; J. Garloff and
-D. G. Wagner, “Hadamard products of stable polynomials are stable,” *Journal
-of Mathematical Analysis and Applications* 202 (1996), 797–809; P. Brändén,
-L. Ferroni and K. Jochemko, “Preservation of inequalities under Hadamard
-products,” arXiv:2408.12386 (2024); Y. Liu and J. Mao, “Preservation of
-log-concavity under Hadamard products,” arXiv:2609.11589 (2026); V. Kostov and B.
-Shapiro, “On the Schur–Szegő composition of polynomials,” *C. R. Math. Acad. Sci.
-Paris* 343 (2006), 81–86; V. P. Kostov, “Interlacing properties and the Schur–Szegő
-composition,” *Functional Analysis and Other Mathematics* 3 (2010), 65–74; V. P. Kostov,
-“Eigenvectors in the context of the Schur–Szegő composition of polynomials,” *Mathematica
-Balkanica* 22 (2008), 155–173.  See the
-[Hadamard-product overview](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems),
-[Schur–Szegő composition](https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition),
-and the [finite multiplier criterion](https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion)
+réelles,” *Journal de Mathématiques Spéciales* 4 (1895), 7–10. The matched
+sources are [@SchurPolya1914; @Wagner1992; @GarloffWagner1996;
+@BrandenFerroniJochemko2024x; @LiuMao2026Hadamard; @KostovShapiro2006;
+@Kostov2010]. V. P. Kostov, “Eigenvectors in the context of the Schur–Szegő
+composition of polynomials,” *Mathematica Balkanica* 22 (2008), 155–173. See the
+[Hadamard-product overview](sf:hadamardProductTheorems),
+[Schur–Szegő composition](sf:schurSzegoComposition), and the
+[finite multiplier criterion](sf:finiteMultiplierSequenceCriterion)
 on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statements:
 
 * Hadamard product theorems:
-  https://www.symmetricfunctions.com/realRooted.htm#hadamardProductTheorems
+  sf:hadamardProductTheorems
 * Schur--Szego composition:
-  https://www.symmetricfunctions.com/realRooted.htm#schurSzegoComposition
+  sf:schurSzegoComposition
 * Polya-frequency sequences:
-  https://www.symmetricfunctions.com/polyaFrequency.htm#aissenSchoenbergWhitney
+  sf:aissenSchoenbergWhitney
 * Finite multiplier criterion:
-  https://www.symmetricfunctions.com/realRooted.htm#finiteMultiplierSequenceCriterion
+  sf:finiteMultiplierSequenceCriterion
 
 Original publications include:
 

@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "toric-g-contributions"
 formalized = "2026-09-02"
+references = [
+  "Xiao2026x",
+]
 authors = ["Xiao"]
 years = [2026]
 
@@ -76,7 +79,8 @@ Xiao conjectured in Conjecture 4.2 that, for each
 $n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
 the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing sequence.
 
-**Theorem (Xiao's conjecture).** For all $m$ and $\varepsilon \leq 1$, the toric
+**Theorem (Xiao's conjecture).** [@Xiao2026x] For all $m$ and
+$\varepsilon \leq 1$, the toric
 contribution row is an interlacing sequence.
 
 The library indexes by the offset from the middle of the row:
@@ -89,11 +93,10 @@ reversed contributions is real-rooted.
 
 ## References
 
-Q. Xiao, [“The real-rootedness of the toric g-contribution
-polynomials,”](https://arxiv.org/abs/2609.01086) arXiv:2609.01086 (2026).
-Common interleavers are described on the
+See [@Xiao2026x]. Common interleavers are described on the
 [common interleaver page](/RealRooted/concepts/common-interleavers/). See also
-the [toric $g$-contribution polynomial on symmetricfunctions.com](https://www.symmetricfunctions.com/polytopes.htm#toricGContributionPolynomial).
+the [toric $g$-contribution polynomial](sf:toricGContributionPolynomial)
+on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

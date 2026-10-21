@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "borcea-branden-classification"
 formalized = "2026-10-13"
+references = [
+  "BorceaBranden2009I",
+]
 authors = ["Borcea", "Brändén"]
 years = [2009]
 
@@ -144,6 +147,8 @@ limits of complex stable-or-zero polynomials.
 `IsRealStableLimit` consists of entire real-coefficient series that are
 locally uniform limits of real stable polynomials.
 
+The theorem numbers below refer to [@BorceaBranden2009I].
+
 Theorem 1.2 is
 `preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight`: a
 real-linear operator on a coordinatewise degree box preserves real stability
@@ -178,12 +183,7 @@ using specialization and partial differentiation.
 
 ## References
 
-J. Borcea and P. Brändén,
-[“The Lee–Yang and Pólya–Schur programs. I. Linear operators preserving
-stability,”](https://arxiv.org/abs/0809.0401) *Invent. Math.* 177
-(2009), 541–569,
-[doi:10.1007/s00222-009-0189-3](https://doi.org/10.1007/s00222-009-0189-3),
-[arXiv:0809.0401](https://arxiv.org/abs/0809.0401).
+See [@BorceaBranden2009I].
 <!-- /realrooted-catalog-content -->
 -/
 

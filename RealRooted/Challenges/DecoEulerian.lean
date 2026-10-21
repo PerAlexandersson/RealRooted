@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "deco-eulerian-transform"
 formalized = "2026-10-05"
+references = [
+  "BarcucciLungoPinzani1996",
+]
 authors = ["Alexandersson"]
 years = [2026]
 
@@ -86,12 +89,8 @@ input over $\mathbb R$ completes the proof.
 
 ## References
 
-P. Alexandersson, *An Eulerian deformation from deco polyominoes*, manuscript
-(2026).
-
-E. Barcucci, A. Del Lungo, and R. Pinzani, [“Deco polyominoes, permutations
-and random generation,”](https://doi.org/10.1016/0304-3975(95)00199-9)
-*Theoretical Computer Science* 159 (1996), 29–42.
+P. Alexandersson, *An Eulerian deformation from deco polyominoes*, manuscript (2026).
+For the deco-polyomino background, see [@BarcucciLungoPinzani1996].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the checked interval-preservation theorem. The energy,

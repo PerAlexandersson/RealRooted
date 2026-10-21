@@ -10,6 +10,11 @@ version = 1
 section = "families"
 slug = "jacobi-stirling-numbers"
 formalized = "2026-09-13"
+references = [
+  "GelineauZeng2010",
+  "Mongelli2012",
+  "AndrewsEggeGawronskiLittlejohn2013",
+]
 authors = ["Gelineau", "Zeng", "Mongelli"]
 years = [2010, 2012]
 
@@ -66,7 +71,7 @@ symmetric function and $\mathrm{JS}(n,k)$ a complete homogeneous symmetric
 function of the weights $i(i+z)$. The signed first-kind triangle and the
 second-kind triangle are mutually inverse.
 
-**Theorem** (Mongelli). For $z \geq -1$ the first-kind triangle
+**Theorem** (Mongelli). [@Mongelli2012] For $z \geq -1$ the first-kind triangle
 $(\mathrm{Jc}(n,k;z))_{n,k}$ is totally nonnegative, and every row is a
 Pólya-frequency sequence: the row polynomial $\sum_k \mathrm{Jc}(n,k;z)\,x^k$
 factors into linear terms $x + i(i+z)$ with nonnegative constants.
@@ -80,14 +85,7 @@ network is needed.
 
 ## References
 
-Y. Gelineau and J. Zeng, [“Combinatorial interpretations of the Jacobi–Stirling
-numbers,”](https://doi.org/10.37236/342) *Electronic Journal of Combinatorics*
-17 (2010), #R70; P. Mongelli, [“Total positivity properties of Jacobi–Stirling
-numbers,”](https://doi.org/10.1016/j.aam.2011.06.008) *Advances in Applied
-Mathematics* 48 (2012), 354–364; G. E. Andrews, E. S. Egge, W. Gawronski and
-L. L. Littlejohn, [“The Jacobi–Stirling numbers,”](https://doi.org/10.1016/j.jcta.2012.08.006)
-*Journal of Combinatorial Theory, Series A* 120 (2013), 288–303.
-
+See [@GelineauZeng2010; @Mongelli2012; @AndrewsEggeGawronskiLittlejohn2013].
 The descent polynomials of Jacobi–Stirling permutations are on the
 [Jacobi–Stirling descent page](/RealRooted/families/jacobi-stirling-descent/).
 <!-- /realrooted-catalog-content -->

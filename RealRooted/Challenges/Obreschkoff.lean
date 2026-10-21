@@ -10,6 +10,10 @@ version = 1
 section = "theorems"
 slug = "obreschkoff"
 formalized = "2026-07-10"
+references = [
+  "Dedieu1992",
+  "Obreschkoff1963",
+]
 authors = ["Obreschkoff", "Dedieu"]
 years = [1963, 1992]
 
@@ -45,7 +49,8 @@ label = "Interlacing as stability of the bivariate pencil f(z) + w g(z)"
 <!-- realrooted-catalog-content -->
 # Obreschkoff’s theorem
 
-Two interlacing polynomials generate a real-rooted pencil: every real linear
+Obreschkoff's theorem [@Obreschkoff1963; @Dedieu1992] says that two interlacing
+polynomials generate a real-rooted pencil: every real linear
 combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, if
 every real linear combination of $f$ and $g$ splits, then $f$ and $g$
 interlace in one of the two orientations, where either polynomial may be zero.
@@ -64,15 +69,12 @@ $w = i$ and uses the Hermite–Biehler theorem.
 
 ## References
 
-N. Obreschkoff, *Verteilung und Berechnung der Nullstellen reeller
-Polynome*, VEB Deutscher Verlag der Wissenschaften, 1963; J.-P. Dedieu,
-“Obreschkoff’s theorem revisited,” *Journal of Pure and Applied Algebra* 81
-(1992), 269–278.  See the
-[contextual statement on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#obreschkoffDedieu).
+See [@Obreschkoff1963; @Dedieu1992] and the
+[contextual statement on symmetricfunctions.com](sf:obreschkoffDedieu).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#obreschkoffDedieu
+sf:obreschkoffDedieu
 
 Original references include N. Obreschkoff, *Verteilung und Berechnung der
 Nullstellen reeller Polynome* (1963), and J.-P. Dedieu, "Obreschkoff's theorem

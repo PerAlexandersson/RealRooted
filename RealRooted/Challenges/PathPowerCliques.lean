@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "path-power-cliques-and-rows"
 formalized = "2026-10-13"
+references = [
+  "ChudnovskySeymour2007",
+]
 
 [[definitions]]
 name = "RealRooted.pathPowerCliquePolynomial"
@@ -158,13 +161,11 @@ interlace.
 
 ## References
 
-M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a clawfree graph,”
-*Journal of Combinatorial Theory, Series B* 97 (2007), 350–357 (real-rootedness for claw-free
-graphs).  The row families are OEIS
-[A193636](https://oeis.org/A193636), [A109955](https://oeis.org/A109955),
+Real-rootedness follows from [@ChudnovskySeymour2007]. The row families are
+OEIS [A193636](https://oeis.org/A193636), [A109955](https://oeis.org/A109955),
 [A127893](https://oeis.org/A127893), [A206294](https://oeis.org/A206294),
 [A109960](https://oeis.org/A109960), [A116088](https://oeis.org/A116088),
-[A116089](https://oeis.org/A116089) and [A277627](https://oeis.org/A277627).
+[A116089](https://oeis.org/A116089), and [A277627](https://oeis.org/A277627).
 <!-- /realrooted-catalog-content -->
 -/
 

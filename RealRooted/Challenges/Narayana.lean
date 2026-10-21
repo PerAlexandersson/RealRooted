@@ -14,6 +14,12 @@ version = 1
 section = "families"
 slug = "narayana"
 formalized = "2026-07-18"
+references = [
+  "MaoWang2026x",
+  "Brenti1989",
+  "DominiciJohnstonJordaan2013x",
+  "Zeng2026x",
+]
 authors = ["Mao", "Wang", "Dominici", "Johnston", "Jordaan", "Brenti", "Zeng"]
 years = [1989, 2013, 2026]
 
@@ -170,7 +176,7 @@ $$
 for the falling factorials and the generalized rising factorials, and $T_n(x)$
 for the Touchard polynomials, $T_0 = 1$ and $T_{n+1} = x T_n + x T_n'$.
 
-**Theorem (Brenti).** If
+**Theorem (Brenti).** [@Brenti1989, Thm. 2.4.2] If
 $\sum_k a_k \langle x\rangle_k$ has only nonpositive zeros, then so does
 $\sum_k a_k x^k$.
 
@@ -190,7 +196,8 @@ $(ax + d)^n$ with $a > 0$ and $d \geq 0$, $T_n(x)$, $(x \mid \mu)_n$ with
 $\mu > 0$, and $N_{n,m}(x)$; row $n$ of the coefficient matrix of a basis
 $(B_n)$ lists the coefficients of $B_n$.
 
-**Theorem (Mao–Wang).** Let $M$ be lower-triangular with Pólya-frequency
+**Theorem (Mao–Wang).** [@MaoWang2026x, Thm. 1.3] Let $M$ be lower-triangular
+with Pólya-frequency
 row-generating polynomials, and let $B_1, \dotsc, B_r$ be admissible factors.
 Then $M B_1 \dotsm B_r$ has Pólya-frequency row-generating polynomials. In
 particular this holds for $M B^r$ with $B$ admissible and $r \geq 0$.
@@ -223,24 +230,14 @@ real-rootedness for $\theta \ge 0$ through Jacobi polynomials.
 
 ## References
 
-The coefficient normalization is from Jianxi Mao and Lijie Wang, [“The
-Narayana transformation,”](https://arxiv.org/abs/2607.01572) arXiv:2607.01572
-(2026).  The root-location input is D. Dominici, S. J. Johnston,
-and K. Jordaan, [“Real zeros of 2F1 hypergeometric
-polynomials,”](https://arxiv.org/abs/1301.4771) *Journal of Computational and
-Applied Mathematics* 247 (2013), 152–161.  The falling-factorial theorem is
-F. Brenti, [“Unimodal, log-concave and Pólya frequency sequences in
-combinatorics,”](https://doi.org/10.1090/memo/0413) *Memoirs of the American
-Mathematical Society* 81 (1989), no. 413, Theorem 2.4.2; Mao and Wang
-use it as Lemma 3.2, and the matrix-product theorem is their Theorem 1.3.
-The continuous interpolation is from J. Zeng, [“Continuous Narayana interpolations:
-Hankel total positivity and log-convexity preservation,”](https://arxiv.org/abs/2610.19548)
-arXiv:2610.19548 (2026), (1.1)–(1.3) and Corollary 3.5.
-See also the
-[Narayana real-rootedness examples on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedCatalan.htm#ex:narayanaSturm),
-[Brenti's falling-factorial theorem](https://www.symmetricfunctions.com/realRooted.htm#thm:brentiFallingFactorialBasis),
-and the
-[Mao–Wang row-generating functions](https://www.symmetricfunctions.com/realRooted.htm#rowGeneratingFunction).
+The coefficient normalization is from [@MaoWang2026x], and the root-location input
+is [@DominiciJohnstonJordaan2013x]. The falling-factorial theorem is
+[@Brenti1989, Thm. 2.4.2]; Mao and Wang use it as Lemma 3.2, and the
+matrix-product theorem is [@MaoWang2026x, Thm. 1.3]. The continuous interpolation
+is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also the
+[Narayana real-rootedness examples on symmetricfunctions.com](sf:ex:narayanaSturm),
+[Brenti's falling-factorial theorem](sf:thm:brentiFallingFactorialBasis), and the
+[Mao–Wang row-generating functions](sf:rowGeneratingFunction).
 <!-- /realrooted-catalog-content -->
 -/
 
