@@ -1,3 +1,4 @@
+import RealRooted.Tactic.Examples.A049325RecurrenceSpace
 import RealRooted.Tactic.Examples.AffineDerivative
 import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
 import RealRooted.Tactic.Examples.AllCombo

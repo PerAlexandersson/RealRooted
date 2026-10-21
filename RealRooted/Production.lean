@@ -1878,6 +1878,10 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
 import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.ThresholdMatrix.Orbit
 import RealRooted.NarayanaInterpolation
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
+import RealRooted.RecurrenceSpace.Defect
+import RealRooted.RecurrenceSpace.Filtered
+import RealRooted.RecurrenceSpace.Operators
 
 /-!
 # RealRooted production umbrella
