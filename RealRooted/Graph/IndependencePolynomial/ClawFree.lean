@@ -138,22 +138,13 @@ theorem compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeig
       (X * weightedIndepPolyOn G
         (deleteClosedNeighborSupport G S v) wt) := by
   let H := S \ commonClosedNeighborSetOn G S u v
-  have hKu : IsSimplicialCliqueOn G H (neighborSetOn G H u) :=
-    hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial huv
-  have hKv : IsSimplicialCliqueOn G H (neighborSetOn G H v) :=
-    hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial_right huv
-  have hp := hPair hKu hKv
-  have huSupport :
-      H \ neighborSetOn G H u = deleteClosedNeighborSupport G S u := by
-    exact
-      sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport
-        G huv
-  have hvSupport :
-      H \ neighborSetOn G H v = deleteClosedNeighborSupport G S v := by
-    exact
-      sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right
-        G huv
-  simpa [H, huSupport, hvSupport] using Compatible.X_mul hp
+  have hp := hPair
+    (hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial huv)
+    (hG.neighborSetOn_sdiff_commonClosedNeighbor_simplicial_right huv)
+  simpa [H,
+    sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport G huv,
+    sdiff_commonClosedNeighbor_sdiff_neighborSetOn_eq_deleteClosedNeighborSupport_right G huv]
+    using Compatible.X_mul hp
 
 /-- Weighted adjacent-neighbor case of the vertex-deletion compatibility
 lemma. The recurrence coefficient is the weight of the expanded vertex. -/
@@ -191,50 +182,33 @@ theorem compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
   have hrec :
       weightedIndepPolyOn G (S.erase v) wt =
         A + Polynomial.C (wt u) * B := by
-    have h := weightedIndepPolyOn_erase
-      (G := G) (wt := wt) (S := S.erase v) (v := u) huS
-    have hsupport :
-        deleteClosedNeighborSupport G (S.erase v) u =
-          deleteClosedNeighborSupport G S u :=
-      deleteClosedNeighborSupport_erase_eq_of_adj G huv
-    simpa [A, B, hsupport, mul_assoc] using h
+    simpa [A, B, deleteClosedNeighborSupport_erase_eq_of_adj G huv, mul_assoc] using
+      weightedIndepPolyOn_erase (G := G) (wt := wt) (S := S.erase v) (v := u) huS
   have hA : A ≠ 0 ∧ A.Splits :=
-    ⟨weightedIndepPolyOn_ne_zero G ((S.erase v).erase u) wt,
-      hBaseSplit⟩
-  have hB : B ≠ 0 ∧ B.Splits := by
-    dsimp [B]
-    exact isRealRooted_X_mul
-      (weightedIndepPolyOn_ne_zero G
-        (deleteClosedNeighborSupport G S u) wt) hDelUSplit
-  have hC : C ≠ 0 ∧ C.Splits := by
-    dsimp [C]
-    exact isRealRooted_X_mul
-      (weightedIndepPolyOn_ne_zero G
-        (deleteClosedNeighborSupport G S v) wt) hDelVSplit
-  have hApos : HasPosLeadingCoeff A := by
-    dsimp [A]
-    exact weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
+    ⟨weightedIndepPolyOn_ne_zero G ((S.erase v).erase u) wt, hBaseSplit⟩
+  have hB : B ≠ 0 ∧ B.Splits := isRealRooted_X_mul
+    (weightedIndepPolyOn_ne_zero G (deleteClosedNeighborSupport G S u) wt) hDelUSplit
+  have hC : C ≠ 0 ∧ C.Splits := isRealRooted_X_mul
+    (weightedIndepPolyOn_ne_zero G (deleteClosedNeighborSupport G S v) wt) hDelVSplit
+  have hApos : HasPosLeadingCoeff A :=
+    weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
       hwt w (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hw))
-  have hBpos : HasPosLeadingCoeff B := by
-    dsimp [B]
-    exact (weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
+  have hBpos : HasPosLeadingCoeff B :=
+    (weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
       hwt w (deleteClosedNeighborSupport_subset G S u hw)).X_mul
-  have hCpos : HasPosLeadingCoeff C := by
-    dsimp [C]
-    exact (weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
+  have hCpos : HasPosLeadingCoeff C :=
+    (weightedIndepPolyOn_hasPosLeadingCoeff G fun w hw =>
       hwt w (deleteClosedNeighborSupport_subset G S v hw)).X_mul
-  have hBC : Compatible B C := by
-    simpa [B, C] using
-      compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
-        hG wt huv hPair
-  have hABC : Compatible (A + Polynomial.C (wt u) * B) C :=
+  have hBC : Compatible B C :=
+    compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
+      hG wt huv hPair
+  simpa only [hrec] using
     Compatible.add_C_mul_left_of_pairwise_three
       (r := wt u) (hwt u (Finset.mem_of_mem_erase huS))
       hA hB hC hApos hBpos hCpos
       (by simpa [A, B] using hBaseDelU)
       (by simpa [A, C] using hBaseDelV)
       hBC
-  simpa [hrec, A, B, C] using hABC
 
 /-- Weighted support-level vertex-deletion compatibility induction step. -/
 theorem weightedSupportVertexDeletionCompatible_of_smaller
@@ -255,15 +229,11 @@ theorem weightedSupportVertexDeletionCompatible_of_smaller
       compatible_weightedIndepPolyOn_erase_X_mul_deleteClosedNeighborSupport_of_no_neighbors
         G wt hN_empty
         (hSplitSmall (S.erase v) (Finset.card_erase_lt_of_mem hvS))
-  · have hN_nonempty : N.Nonempty := Finset.nonempty_iff_ne_empty.mpr hN_empty
-    rcases hN_nonempty with ⟨u, huN⟩
-    have huN' := Finset.mem_filter.mp huN
-    have huS_erase_v : u ∈ S.erase v := huN'.1
-    have huv_vu : G.Adj v u := huN'.2
+  · rcases Finset.nonempty_iff_ne_empty.mpr hN_empty with ⟨u, huN⟩
+    rcases Finset.mem_filter.mp huN with ⟨huS_erase_v, huv_vu⟩
     have huv : G.Adj u v := huv_vu.symm
     have huS : u ∈ S := Finset.mem_of_mem_erase huS_erase_v
-    have hv_ne_u : v ≠ u := fun h =>
-      (Finset.mem_erase.mp huS_erase_v).1 h.symm
+    have hv_ne_u : v ≠ u := (Finset.mem_erase.mp huS_erase_v).1.symm
     have hvS_erase_u : v ∈ S.erase u :=
       Finset.mem_erase.mpr ⟨hv_ne_u, hvS⟩
     have hEraseVSmall : (S.erase v).card < S.card :=
@@ -273,61 +243,47 @@ theorem weightedSupportVertexDeletionCompatible_of_smaller
     have hBaseSplit :
         (weightedIndepPolyOn G ((S.erase v).erase u) wt).Splits :=
       hSplitSmall ((S.erase v).erase u) <|
-        lt_of_le_of_lt
-          (Finset.card_le_card (Finset.erase_subset u (S.erase v)))
+        (Finset.card_le_card (Finset.erase_subset u (S.erase v))).trans_lt
           hEraseVSmall
     have hDelUSplit :
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G S u) wt).Splits :=
       hSplitSmall (deleteClosedNeighborSupport G S u) <|
-        lt_of_le_of_lt
-          (Finset.card_le_card
-            (deleteClosedNeighborSupport_subset_erase G S u))
+        (Finset.card_le_card
+          (deleteClosedNeighborSupport_subset_erase G S u)).trans_lt
           hEraseUSmall
     have hDelVSplit :
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G S v) wt).Splits :=
       hSplitSmall (deleteClosedNeighborSupport G S v) <|
-        lt_of_le_of_lt
-          (Finset.card_le_card
-            (deleteClosedNeighborSupport_subset_erase G S v))
+        (Finset.card_le_card
+          (deleteClosedNeighborSupport_subset_erase G S v)).trans_lt
           hEraseVSmall
     have hBaseDelU :
         Compatible (weightedIndepPolyOn G ((S.erase v).erase u) wt)
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G S u) wt) := by
-      have h := hVertexSmall (S.erase v) hEraseVSmall huS_erase_v
-      have hsupport :
-          deleteClosedNeighborSupport G (S.erase v) u =
-            deleteClosedNeighborSupport G S u :=
-        deleteClosedNeighborSupport_erase_eq_of_adj G huv
-      simp_all
+      simpa only [deleteClosedNeighborSupport_erase_eq_of_adj G huv] using
+        hVertexSmall (S.erase v) hEraseVSmall huS_erase_v
     have hBaseDelV :
         Compatible (weightedIndepPolyOn G ((S.erase v).erase u) wt)
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G S v) wt) := by
-      have h := hVertexSmall (S.erase u) hEraseUSmall hvS_erase_u
       have herase : (S.erase u).erase v = (S.erase v).erase u := by
         ext w
         by_cases hwv : w = v <;> by_cases hwu : w = u <;>
           simp [Finset.mem_erase, hwv, hwu]
-      have hsupport :
-          deleteClosedNeighborSupport G (S.erase u) v =
-            deleteClosedNeighborSupport G S v :=
-        deleteClosedNeighborSupport_erase_eq_of_adj G huv_vu
-      simp_all
-    have hCommonSub : commonClosedNeighborSetOn G S u v ⊆ S :=
-      commonClosedNeighborSetOn_subset G S u v
+      simpa only [herase,
+        deleteClosedNeighborSupport_erase_eq_of_adj G huv_vu] using
+          hVertexSmall (S.erase u) hEraseUSmall hvS_erase_u
     have huCommon : u ∈ commonClosedNeighborSetOn G S u v :=
       Finset.mem_inter.mpr
         ⟨Finset.mem_filter.mpr ⟨huS, Or.inl rfl⟩,
           Finset.mem_filter.mpr ⟨huS, Or.inr huv.symm⟩⟩
-    have hCommonNonempty :
-        (commonClosedNeighborSetOn G S u v).Nonempty :=
-      ⟨u, huCommon⟩
     have hCommonSmall :
         (S \ commonClosedNeighborSetOn G S u v).card < S.card :=
-      Finset.card_lt_card (Finset.sdiff_ssubset hCommonSub hCommonNonempty)
+      Finset.card_lt_card <| Finset.sdiff_ssubset
+        (commonClosedNeighborSetOn_subset G S u v) ⟨u, huCommon⟩
     exact
       compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
         hG wt hwt huS_erase_v huv hBaseSplit hDelUSplit hDelVSplit
@@ -346,22 +302,15 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       WeightedSupportSimplicialXCompatible G wt T) :
     WeightedSupportSimplicialPairCompatible G wt S := by
   intro K L hK hL
-  have hUnionSub : K ∪ L ⊆ S := by
-    intro x hx
-    rcases Finset.mem_union.mp hx with hxK | hxL
-    · exact hK.1 hxK
-    · exact hL.1 hxL
+  have hUnionSub : K ∪ L ⊆ S := Finset.union_subset hK.1 hL.1
   by_cases hUnion_empty : K ∪ L = ∅
-  · have hK_empty : K = ∅ := by simp_all
-    have hL_empty : L = ∅ := by simp_all
+  · rcases Finset.union_eq_empty.mp hUnion_empty with ⟨rfl, rfl⟩
     have hS : (weightedIndepPolyOn G S wt).Splits :=
       hSplit S Subset.rfl
-    simpa [hK_empty, hL_empty] using
-      Compatible.self_of_splits hS
-  · have hUnion_nonempty : (K ∪ L).Nonempty :=
-      Finset.nonempty_iff_ne_empty.mpr hUnion_empty
-    have hsmall : (S \ (K ∪ L)).card < S.card :=
-      Finset.card_lt_card (Finset.sdiff_ssubset hUnionSub hUnion_nonempty)
+    simpa using Compatible.self_of_splits hS
+  · have hsmall : (S \ (K ∪ L)).card < S.card :=
+      Finset.card_lt_card <| Finset.sdiff_ssubset hUnionSub <|
+        Finset.nonempty_iff_ne_empty.mpr hUnion_empty
     have hbase :
         (weightedIndepPolyOn G (S \ (K ∪ L)) wt).Splits :=
       hSplit (S \ (K ∪ L)) sdiff_subset
@@ -390,51 +339,43 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
           (S \ (K ∪ L)) \
             neighborOutsideCliqueOn G (S \ L) (K \ L) v := by
       intro v hv
-      have h :=
+      simpa only [hK_support] using
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
           G (S := S \ L) hK_simp.2.1 hv
-      simp_all
     have hL_delete_support : ∀ v ∈ L \ K,
         deleteClosedNeighborSupport G (S \ K) v =
           (S \ (K ∪ L)) \
             neighborOutsideCliqueOn G (S \ K) (L \ K) v := by
       intro v hv
-      have h :=
+      simpa only [hL_support] using
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
           G (S := S \ K) hL_simp.2.1 hv
-      simp_all
     have hKdel : ∀ v ∈ K \ L,
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G (S \ L) v) wt).Splits := by
       intro v hv
-      have hsub : deleteClosedNeighborSupport G (S \ L) v ⊆ S := by
-        intro w hw
-        simp_all
-      exact hSplit (deleteClosedNeighborSupport G (S \ L) v) hsub
+      exact hSplit (deleteClosedNeighborSupport G (S \ L) v) <|
+        (deleteClosedNeighborSupport_subset G (S \ L) v).trans sdiff_subset
     have hLdel : ∀ v ∈ L \ K,
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G (S \ K) v) wt).Splits := by
       intro v hv
-      have hsub : deleteClosedNeighborSupport G (S \ K) v ⊆ S := by
-        intro w hw
-        simp_all
-      exact hSplit (deleteClosedNeighborSupport G (S \ K) v) hsub
+      exact hSplit (deleteClosedNeighborSupport G (S \ K) v) <|
+        (deleteClosedNeighborSupport_subset G (S \ K) v).trans sdiff_subset
     have hbase_k_x : ∀ v ∈ K \ L,
         Compatible (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ L) v) wt) := by
       intro v hv
-      have hx := hXSmall (S \ (K ∪ L)) hsmall
-        (hK_neighbor_simp v hv)
-      simp_all
+      simpa only [hK_delete_support v hv] using
+        hXSmall (S \ (K ∪ L)) hsmall (hK_neighbor_simp v hv)
     have hbase_l_x : ∀ v ∈ L \ K,
         Compatible (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ K) v) wt) := by
       intro v hv
-      have hx := hXSmall (S \ (K ∪ L)) hsmall
-        (hL_neighbor_simp v hv)
-      simp_all
+      simpa only [hL_delete_support v hv] using
+        hXSmall (S \ (K ∪ L)) hsmall (hL_neighbor_simp v hv)
     have hK_pair_x : ∀ u ∈ K \ L, ∀ v ∈ K \ L,
         Compatible
           (X * weightedIndepPolyOn G
@@ -442,10 +383,9 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ L) v) wt) := by
       intro u hu v hv
-      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
-        (hK_neighbor_simp u hu) (hK_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hK_delete_support v hv] using
-        Compatible.X_mul hp
+        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
+          (hK_neighbor_simp u hu) (hK_neighbor_simp v hv))
     have hL_pair_x : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
@@ -453,10 +393,9 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ K) v) wt) := by
       intro u hu v hv
-      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
-        (hL_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hL_delete_support u hu, hL_delete_support v hv] using
-        Compatible.X_mul hp
+        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
+          (hL_neighbor_simp u hu) (hL_neighbor_simp v hv))
     have hKL_pair_x : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
@@ -464,33 +403,26 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ K) v) wt) := by
       intro u hu v hv
-      have hp := (hPairSmall (S \ (K ∪ L)) hsmall)
-        (hK_neighbor_simp u hu) (hL_neighbor_simp v hv)
       simpa [hK_delete_support u hu, hL_delete_support v hv] using
-        Compatible.X_mul hp
+        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
+          (hK_neighbor_simp u hu) (hL_neighbor_simp v hv))
     have hpair : PairwiseCompatible
         (weightedCliquePairDeletionFamily G wt S K L) := by
       apply pairwiseCompatible_of_forall_mem
       intro f hf g hg
       simp only [weightedCliquePairDeletionFamily, List.mem_cons,
-        List.mem_append, List.mem_map] at hf hg
-      rcases hf with rfl | htailF
-      · rcases hg with rfl | htailG
-        · exact Compatible.self_of_splits hbase
-        · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;>
-            simp_all
-      · rcases htailF with ⟨u, huList, rfl⟩ | ⟨u, huList, rfl⟩
-        · have hu : u ∈ K \ L := Finset.mem_toList.mp huList
-          rcases hg with rfl | htailG
-          · exact (hbase_k_x u hu).comm
-          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩ <;>
-              simp_all
-        · have hu : u ∈ L \ K := Finset.mem_toList.mp huList
-          rcases hg with rfl | htailG
-          · exact (hbase_l_x u hu).comm
-          · rcases htailG with ⟨v, hvList, rfl⟩ | ⟨v, hvList, rfl⟩
-            · exact (hKL_pair_x v (Finset.mem_toList.mp hvList) u hu).comm
-            · simp_all
+        List.mem_append, List.mem_map, Finset.mem_toList] at hf hg
+      rcases hf with rfl | ⟨u, hu, rfl⟩ | ⟨u, hu, rfl⟩ <;>
+        rcases hg with rfl | ⟨v, hv, rfl⟩ | ⟨v, hv, rfl⟩
+      · exact Compatible.self_of_splits hbase
+      · exact hbase_k_x v hv
+      · exact hbase_l_x v hv
+      · exact (hbase_k_x u hu).comm
+      · exact hK_pair_x u hu v hv
+      · exact hKL_pair_x u hu v hv
+      · exact (hbase_l_x u hu).comm
+      · exact (hKL_pair_x v hv u hu).comm
+      · exact hL_pair_x u hu v hv
     exact
       compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
         G wt S K L hK.2.1 hL.2.1 hK.1 hL.1 hwt hbase hKdel hLdel hpair
@@ -544,11 +476,6 @@ theorem weightedSupportSimplicialXCompatible_of_smaller
             ((S \ K) \ neighborOutsideCliqueOn G S K v) wt) :=
       fun u hu v hv => (hPairSmall (S \ K) hsmall)
         (hneighbor_simp u hu) (hneighbor_simp v hv)
-    have hpair : PairwiseCompatible
-        (weightedCliqueDeletionCompatibilityFamily G wt S K) :=
-      weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
-        G wt hK.2.1 hbase hbase_neighbor_x hbase_neighbor
-          hneighbor_pair
     have hdel : ∀ v ∈ K,
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G S v) wt).Splits := by
@@ -556,15 +483,14 @@ theorem weightedSupportSimplicialXCompatible_of_smaller
       have hsupport :=
         deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
           G (S := S) hK.2.1 hv
-      have hsub :
-          (S \ K) \ neighborOutsideCliqueOn G S K v ⊆ S := by
-        intro w hw
-        simp_all
       simpa [hsupport] using
-        hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v) hsub
+        hSplit ((S \ K) \ neighborOutsideCliqueOn G S K v)
+          (sdiff_subset.trans sdiff_subset)
     exact
       compatible_weightedIndepPolyOn_X_mul_sdiff_of_cliqueDeletion_pairwiseCompatible
-        G wt S K hK.2.1 hK.1 hwt hbase hdel hpair
+        G wt S K hK.2.1 hK.1 hwt hbase hdel <|
+          weightedCliqueDeletionCompatibilityFamily_pairwiseCompatible_of_neighborOutside_compatible
+            G wt hK.2.1 hbase hbase_neighbor_x hbase_neighbor hneighbor_pair
 
 /-- Weighted support-level Chudnovsky--Seymour theorem: nonnegative vertex
 weights preserve real-rootedness of independence polynomials of claw-free
@@ -586,26 +512,19 @@ theorem weightedSupportIndepPoly_splits_of_clawFree
     have hSplitSmall : ∀ T : Finset V, T.card < S.card →
         (weightedIndepPolyOn G T wt).Splits := by
       intro T hT
-      have hTn : T.card < n := by simp_all
-      exact (ih T.card hTn T rfl).1 T Subset.rfl
+      exact (ih T.card (by simp_all) T rfl).1 T Subset.rfl
     have hPairSmall : ∀ T : Finset V, T.card < S.card →
         WeightedSupportSimplicialPairCompatible G wt T := by
-      intro T hT
-      have hTn : T.card < n := by simp_all
-      intro K L hK hL
-      exact (ih T.card hTn T rfl).2.1 hK hL
+      intro T hT K L hK hL
+      exact (ih T.card (by simp_all) T rfl).2.1 hK hL
     have hXSmall : ∀ T : Finset V, T.card < S.card →
         WeightedSupportSimplicialXCompatible G wt T := by
-      intro T hT
-      have hTn : T.card < n := by simp_all
-      intro K hK
-      exact (ih T.card hTn T rfl).2.2.1 hK
+      intro T hT K hK
+      exact (ih T.card (by simp_all) T rfl).2.2.1 hK
     have hVertexSmall : ∀ T : Finset V, T.card < S.card →
         WeightedSupportVertexDeletionCompatible G wt T := by
-      intro T hT
-      have hTn : T.card < n := by simp_all
-      intro v hv
-      exact (ih T.card hTn T rfl).2.2.2 hv
+      intro T hT v hv
+      exact (ih T.card (by simp_all) T rfl).2.2.2 hv
     have hVertex : WeightedSupportVertexDeletionCompatible G wt S :=
       weightedSupportVertexDeletionCompatible_of_smaller
         hG wt (fun v _hv => hwt v) hSplitSmall hPairSmall hVertexSmall
@@ -613,18 +532,14 @@ theorem weightedSupportIndepPoly_splits_of_clawFree
       by_cases hS_empty : S = ∅
       · subst hS_empty
         exact weightedIndepPolyOn_empty_splits G wt
-      · have hS_nonempty : S.Nonempty :=
-          Finset.nonempty_iff_ne_empty.mpr hS_empty
-        rcases hS_nonempty with ⟨v, hvS⟩
+      · rcases Finset.nonempty_iff_ne_empty.mpr hS_empty with ⟨v, hvS⟩
         have hsum_ne :
             weightedIndepPolyOn G (S.erase v) wt +
               C (wt v) *
                 (X * weightedIndepPolyOn G
                   (deleteClosedNeighborSupport G S v) wt) ≠ 0 := by
-          intro hzero
-          exact weightedIndepPolyOn_ne_zero G S wt (by
-            rw [weightedIndepPolyOn_erase G wt hvS]
-            simpa [mul_assoc] using hzero)
+          simpa [weightedIndepPolyOn_erase G wt hvS, mul_assoc] using
+            weightedIndepPolyOn_ne_zero G S wt
         have hsum_splits :=
           Compatible.splits_add_C_mul
             (hVertex hvS) (r := wt v) (hwt v) hsum_ne
@@ -662,13 +577,11 @@ theorem compatible_X_mul_deleteClosedNeighborSupport_pair_of_commonClosedNeighbo
     Compatible
       (X * indepPolyOn G (deleteClosedNeighborSupport G S u))
       (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
-  have hPair' : WeightedSupportSimplicialPairCompatible G (fun _ => 1)
-      (S \ commonClosedNeighborSetOn G S u v) :=
-    (weightedSupportSimplicialPairCompatible_one_iff G
-      (S \ commonClosedNeighborSetOn G S u v)).mpr hPair
   simpa only [weightedIndepPolyOn_one] using
     compatible_weighted_deleteClosedNeighborSupport_pair_of_commonClosedNeighbor
-      hG (fun _ => 1) huv hPair'
+      hG (fun _ => 1) huv <|
+        (weightedSupportSimplicialPairCompatible_one_iff G
+          (S \ commonClosedNeighborSetOn G S u v)).mpr hPair
 
 /-- The adjacent-neighbor case of Chudnovsky--Seymour Lemma 2.6. Expanding
 `I(S.erase v)` at an adjacent vertex `u` reduces compatibility with
@@ -688,10 +601,6 @@ theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
       (S \ commonClosedNeighborSetOn G S u v)) :
     Compatible (indepPolyOn G (S.erase v))
       (X * indepPolyOn G (deleteClosedNeighborSupport G S v)) := by
-  have hPair' : WeightedSupportSimplicialPairCompatible G (fun _ => 1)
-      (S \ commonClosedNeighborSetOn G S u v) :=
-    (weightedSupportSimplicialPairCompatible_one_iff G
-      (S \ commonClosedNeighborSetOn G S u v)).mpr hPair
   simpa only [weightedIndepPolyOn_one] using
     compatible_weighted_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
       hG (fun _ => 1) (by simp) huS huv
@@ -699,7 +608,9 @@ theorem compatible_erase_X_mul_deleteClosedNeighborSupport_of_adjacent
       (by simpa only [weightedIndepPolyOn_one] using hDelUSplit)
       (by simpa only [weightedIndepPolyOn_one] using hDelVSplit)
       (by simpa only [weightedIndepPolyOn_one] using hBaseDelU)
-      (by simpa only [weightedIndepPolyOn_one] using hBaseDelV) hPair'
+      (by simpa only [weightedIndepPolyOn_one] using hBaseDelV)
+      ((weightedSupportSimplicialPairCompatible_one_iff G
+        (S \ commonClosedNeighborSetOn G S u v)).mpr hPair)
 
 /-- Chudnovsky--Seymour Lemma 2.6, specialized from the weighted support-level
 induction step. -/
@@ -714,15 +625,13 @@ theorem supportVertexDeletionCompatible_of_smaller
       SupportVertexDeletionCompatible G T) :
     SupportVertexDeletionCompatible G S := by
   apply (weightedSupportVertexDeletionCompatible_one_iff G S).mp
-  exact weightedSupportVertexDeletionCompatible_of_smaller hG (fun _ => 1)
-    (by simp)
-    (by simpa only [weightedIndepPolyOn_one] using hSplitSmall)
-    (fun T hT =>
-      (weightedSupportSimplicialPairCompatible_one_iff G T).mpr
-        (hPairSmall T hT))
-    (fun T hT =>
-      (weightedSupportVertexDeletionCompatible_one_iff G T).mpr
-        (hVertexSmall T hT))
+  apply weightedSupportVertexDeletionCompatible_of_smaller hG (fun _ => 1)
+  · simp
+  · simpa only [weightedIndepPolyOn_one] using hSplitSmall
+  · simpa only [WeightedSupportSimplicialPairCompatible,
+      SupportSimplicialPairCompatible, weightedIndepPolyOn_one] using hPairSmall
+  · simpa only [WeightedSupportVertexDeletionCompatible,
+      SupportVertexDeletionCompatible, weightedIndepPolyOn_one] using hVertexSmall
 
 /-- Chudnovsky--Seymour Lemma 2.5.1, specialized from the weighted
 support-level induction step. -/
@@ -736,14 +645,13 @@ theorem supportSimplicialPairCompatible_of_smaller
       SupportSimplicialXCompatible G T) :
     SupportSimplicialPairCompatible G S := by
   apply (weightedSupportSimplicialPairCompatible_one_iff G S).mp
-  exact weightedSupportSimplicialPairCompatible_of_smaller hG (fun _ => 1)
-    (by simp) ((weightedSupportIndepPolySplits_one_iff G S).mpr hSplit)
-    (fun T hT =>
-      (weightedSupportSimplicialPairCompatible_one_iff G T).mpr
-        (hPairSmall T hT))
-    (fun T hT =>
-      (weightedSupportSimplicialXCompatible_one_iff G T).mpr
-        (hXSmall T hT))
+  apply weightedSupportSimplicialPairCompatible_of_smaller hG (fun _ => 1)
+  · simp
+  · exact (weightedSupportIndepPolySplits_one_iff G S).mpr hSplit
+  · simpa only [WeightedSupportSimplicialPairCompatible,
+      SupportSimplicialPairCompatible, weightedIndepPolyOn_one] using hPairSmall
+  · simpa only [WeightedSupportSimplicialXCompatible,
+      SupportSimplicialXCompatible, weightedIndepPolyOn_one] using hXSmall
 
 /-- Chudnovsky--Seymour Lemma 2.5.2, specialized from the weighted
 support-level induction step. -/
@@ -757,14 +665,13 @@ theorem supportSimplicialXCompatible_of_smaller
       SupportSimplicialXCompatible G T) :
     SupportSimplicialXCompatible G S := by
   apply (weightedSupportSimplicialXCompatible_one_iff G S).mp
-  exact weightedSupportSimplicialXCompatible_of_smaller hG (fun _ => 1)
-    (by simp) ((weightedSupportIndepPolySplits_one_iff G S).mpr hSplit)
-    (fun T hT =>
-      (weightedSupportSimplicialPairCompatible_one_iff G T).mpr
-        (hPairSmall T hT))
-    (fun T hT =>
-      (weightedSupportSimplicialXCompatible_one_iff G T).mpr
-        (hXSmall T hT))
+  apply weightedSupportSimplicialXCompatible_of_smaller hG (fun _ => 1)
+  · simp
+  · exact (weightedSupportIndepPolySplits_one_iff G S).mpr hSplit
+  · simpa only [WeightedSupportSimplicialPairCompatible,
+      SupportSimplicialPairCompatible, weightedIndepPolyOn_one] using hPairSmall
+  · simpa only [WeightedSupportSimplicialXCompatible,
+      SupportSimplicialXCompatible, weightedIndepPolyOn_one] using hXSmall
 
 /-- Support-level Chudnovsky--Seymour theorem for claw-free graphs, specialized
 from the stronger nonnegative-weight theorem. -/
