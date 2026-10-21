@@ -64,7 +64,7 @@ theorem brandenBasisWeightedSum_nonneg
   rw [brandenBasisWeightedSum]
   apply hasNonnegCoeffs_finsetSum
   intro k hk
-  exact nonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
+  exact hasNonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
 
 /-- Strictly positive combinations of in-range basis images are nonzero and
 split over the reals in every ambient degree. -/
@@ -157,7 +157,7 @@ theorem brandenBasisWeightedSum_interl_of_le
     exact Interl.C_mul_right_of_nonneg
       (brandenBasisImage_zero_strictInterl n k (hkn k hk)).toInterl (ha k hk)
   · intro k hk
-    exact nonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
+    exact hasNonnegCoeffs_C_mul (ha k hk) (brandenBasisImage_nonneg n k)
 
 /-- With at least one positive weight, the weak cone relation is strict. -/
 theorem brandenBasisWeightedSum_strictInterl_of_le

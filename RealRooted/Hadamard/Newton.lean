@@ -26,7 +26,7 @@ theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
       ((p.natDegree : ℝ) - 1) * p.coeff 1 ^ 2 := by
   set t := p.roots.map Neg.neg with ht_def
   have htcard : Multiset.card t = p.natDegree := by
-    rw [ht_def, Multiset.card_map, card_roots_of_splits hs]
+    rw [ht_def, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hs]
   have h1d : 1 ≤ p.natDegree := le_trans one_le_two hdeg
   have hc0 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 0) (Nat.zero_le _)
   have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d
@@ -115,7 +115,7 @@ theorem newton_three_coeff_one_coeff_three_of_splits
       2 * ((p.natDegree : ℝ) - 2) * p.coeff 2 ^ 2 := by
   set t := p.roots.map Neg.neg with ht_def
   have htcard : Multiset.card t = p.natDegree := by
-    rw [ht_def, Multiset.card_map, card_roots_of_splits hs]
+    rw [ht_def, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hs]
   have h1d : 1 ≤ p.natDegree := by lia
   have h2d : 2 ≤ p.natDegree := by lia
   have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d

@@ -224,18 +224,18 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
             hFnn hGnn hHnn hFG' hGH' hfamily ha
           have hAnn : HasNonnegCoeffs
               (quadraticInterlacingTangent F G (-u)) :=
-            hGnn.add (nonnegCoeffs_C_mul ha hFnn)
+            hGnn.add (hasNonnegCoeffs_C_mul ha hFnn)
           have hBnn : HasNonnegCoeffs
               (quadraticInterlacingRight G H (-u)) :=
-            hHnn.add (nonnegCoeffs_C_mul ha hGnn)
+            hHnn.add (hasNonnegCoeffs_C_mul ha hGnn)
           have hQnn : HasNonnegCoeffs
               (quadraticInterlacingPencil F G H (-u)) := by
-            exact (hHnn.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hGnn)).add
-              (nonnegCoeffs_C_mul (sq_nonneg (-u)) hFnn)
+            exact (hHnn.add (hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hGnn)).add
+              (hasNonnegCoeffs_C_mul (sq_nonneg (-u)) hFnn)
           have hB0 : quadraticInterlacingRight G H (-u) ≠ 0 := by
             have hsum : C (-u) * G + H ≠ 0 :=
               add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-                (nonnegCoeffs_C_mul ha hGnn) hHnn hGH'.2.1.1
+                (hasNonnegCoeffs_C_mul ha hGnn) hHnn hGH'.2.1.1
             simpa [quadraticInterlacingRight, add_comm] using hsum
           have hstep : StrictInterl
               (quadraticInterlacingTangent F G (-u))

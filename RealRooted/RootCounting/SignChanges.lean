@@ -36,7 +36,7 @@ theorem splits_of_strict_sign_changes {p : ℝ[X]} {rs : List ℝ}
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr hus_nodup)]
     intro r hr
     simp_all
-  apply RealRooted.splits_of_card_roots
+  apply Polynomial.splits_iff_card_roots.mpr
   apply le_antisymm (card_roots' p)
   calc
     p.natDegree = us.length := by lia

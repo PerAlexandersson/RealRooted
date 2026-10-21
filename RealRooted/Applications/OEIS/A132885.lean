@@ -148,7 +148,7 @@ multiplicity.  They are distinct and strictly negative by
 `splits_simple_roots_neg`. -/
 theorem roots_card {n : ℕ} (hn : 2 ≤ n) :
     (polynomial n).roots.card = n / 2 := by
-  rw [card_roots_of_splits (splits_simple_roots_neg hn).1,
+  rw [Polynomial.splits_iff_card_roots.mp (splits_simple_roots_neg hn).1,
     natDegree_polynomial]
 
 end RealRooted.Applications.OEIS.A132885

@@ -51,7 +51,7 @@ headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.Interl.theta"
-label = "θ preserves interlacing of PF polynomials"
+label = "θ preserves interlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.Interl.polarTheta"
@@ -150,10 +150,10 @@ theorem preservesInterlacing_of_preservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ
     Interl (T f) (T g) ∨ Interl (T g) (T f) :=
   RealRooted.operatorPreservesInterlacingPairsUpToOrder T hT hfg
 
-/-- The Euler operator `θ = X d/dX` preserves interlacing of PF polynomials. -/
-theorem Interl.theta {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Interl p q) : Interl (RealRooted.theta p) (RealRooted.theta q) :=
-  thetaPreservesInterl hp hq hpq
+/-- The Euler operator `θ = X d/dX` preserves interlacing. -/
+theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
+    Interl (RealRooted.theta p) (RealRooted.theta q) :=
+  hpq.theta
 
 /-- The polar Euler operator `N - θ` preserves interlacing of PF polynomials of
 degree at most `N`. -/

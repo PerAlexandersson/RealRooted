@@ -36,10 +36,10 @@ theorem compatible_X_mul_affine_affine_of_cross
   have hstrictInterl : StrictInterl (C u * X + C v) (C U * X + C V) :=
     strictInterl_affine_linear_affine_linear_of_cross hu hU hcross
   have hnn_left : HasNonnegCoeffs (C u * X + C v) :=
-    (nonnegCoeffs_C_mul hu.le hasNonnegCoeffs_X).add
+    (hasNonnegCoeffs_C_mul hu.le hasNonnegCoeffs_X).add
       (hasNonnegCoeffs_C hv)
   have hnn_right : HasNonnegCoeffs (C U * X + C V) :=
-    (nonnegCoeffs_C_mul hU.le hasNonnegCoeffs_X).add
+    (hasNonnegCoeffs_C_mul hU.le hasNonnegCoeffs_X).add
       (hasNonnegCoeffs_C hV)
   exact
     (Compatible.of_strictInterl <|

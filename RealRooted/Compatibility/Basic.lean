@@ -119,7 +119,7 @@ lemma reflect_of_natDegree_le {f g : ℝ[X]} (h : Compatible f g) {N : ℕ}
   · right
     rw [hcomb]
     exact ⟨fun hzero => hrr.1 (Polynomial.reflect_eq_zero_iff.mp hzero),
-      DegreeDropReversal.splits_reflect_of_splits hrr.2 hdeg_combo⟩
+      Polynomial.Splits.reflect hrr.2 hdeg_combo⟩
 
 /-- Reflecting both members at a common degree bound preserves and reflects
 compatibility. -/

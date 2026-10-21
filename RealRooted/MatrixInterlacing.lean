@@ -275,7 +275,7 @@ theorem hasAffineProperty_of_isAffineAdmissible
       | with_reducible exact interl_affine_add_one_affine_mul_X_add_X hs ht
       | with_reducible exact interl_affine_add_X_affine_mul_X_add_X hs ht
       | with_reducible exact interl_affine_mul_X_self hs
-      | with_reducible exact interl_affine_mul_X_add_X_affine_mul_X hs ht
+      | with_reducible exact interl_affine_mul_X_add_X_affine_mul_X hs
       | with_reducible exact interl_affine_mul_X_add_X_self hs
 
 /-! ### Exact obstructions for the excluded codes -/
@@ -441,14 +441,7 @@ private lemma not_interl_bad_quadratic_pair :
   have hfactor : Interl (X * (X + 1) : ℝ[X]) (X * (X + 2)) := by
     convert h using 1 <;> ring
   have hreduced : Interl (X + 1 : ℝ[X]) (X + 2) := by
-    apply Interl.of_mul_X_both_of_nonneg
-    · exact hfactor
-    · convert hasNonnegCoeffs_affine_linear
-        (a := 1) (b := 1) (by norm_num) (by norm_num) using 1
-      simp only [C_1, one_mul]
-    · convert hasNonnegCoeffs_affine_linear
-        (a := 1) (b := 2) (by norm_num) (by norm_num) using 1
-      simp only [Polynomial.C_ofNat, C_1, one_mul]
+    exact hfactor.of_mul_X_both
   have hcross := affine_cross_of_interl
     (u := 1) (v := 1) (U := 1) (V := 2)
     zero_lt_one zero_lt_one (by
@@ -738,30 +731,24 @@ private theorem not_interl_X_sq_X_add_X_sq :
     ¬ Interl (X ^ 2 : ℝ[X]) (X + X ^ 2) := by
   intro h
   have hreduced : Interl X (1 + X) := by
-    apply Interl.of_mul_X_both_of_nonneg
-    · convert h using 1 <;> ring
-    · exact hasNonnegCoeffs_X
-    · exact hasNonnegCoeffs_one.add hasNonnegCoeffs_X
+    apply Interl.of_mul_X_both
+    convert h using 1 <;> ring
   exact not_interl_X_X_add_one (by simpa [add_comm] using hreduced)
 
 private theorem not_interl_X_cube_X_sq_add_X_cube :
     ¬ Interl (X ^ 3 : ℝ[X]) (X ^ 2 + X ^ 3) := by
   intro h
   have hreduced : Interl (X ^ 2 : ℝ[X]) (X + X ^ 2) := by
-    apply Interl.of_mul_X_both_of_nonneg
-    · convert h using 1 <;> ring
-    · exact nonneg_X_sq
-    · exact hasNonnegCoeffs_X.add nonneg_X_sq
+    apply Interl.of_mul_X_both
+    convert h using 1 <;> ring
   exact not_interl_X_sq_X_add_X_sq hreduced
 
 private theorem not_interl_X_add_X_sq_X_cube :
     ¬ Interl (X + X ^ 2 : ℝ[X]) (X ^ 3) := by
   intro h
   have hreduced : Interl (1 + X : ℝ[X]) (X ^ 2) := by
-    apply Interl.of_mul_X_both_of_nonneg
-    · convert h using 1 <;> ring
-    · exact hasNonnegCoeffs_one.add hasNonnegCoeffs_X
-    · exact nonneg_X_sq
+    apply Interl.of_mul_X_both
+    convert h using 1 <;> ring
   have hstrict := hreduced.toStrictInterl_of_ne
     (ne_zero_of_natDegree_eq_succ (by compute_degree!))
     (pow_ne_zero 2 X_ne_zero)

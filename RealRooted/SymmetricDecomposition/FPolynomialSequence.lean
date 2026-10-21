@@ -45,17 +45,17 @@ lemma StrictInterl.of_mul_X_sub_C_left_of_roots_gt
     ring
   rcases h with ⟨hxf_rr, hg_rr, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hsslen : ss.length = f.natDegree + 1 := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hxf_rr.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hxf_rr.2]
     rw [hxfdeg]
   have hrslen : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have hss_eq_sort : (↑(f.roots.sort (· ≤ ·)) : Multiset ℝ) = f.roots :=
     Multiset.sort_eq ..
   let sf := f.roots.sort (· ≤ ·)
   have hsf : sf.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hsflen : sf.length = f.natDegree := by
     rw [← Multiset.coe_card, show (↑sf : Multiset ℝ) = f.roots from hss_eq_sort,
-      card_roots_of_splits hf.2]
+      Polynomial.splits_iff_card_roots.mp hf.2]
   have hrootmul : ((X - C r) * f).roots = ({r} : Multiset ℝ) + f.roots := by
     rw [roots_mul hxf, roots_X_sub_C]
   have hss_perm : ss.Perm (sf.orderedInsert (· ≤ ·) r) := by
@@ -131,9 +131,9 @@ lemma StrictInterl.of_mul_X_sub_C_right_of_roots_ge
   have hss_is : ss = sf := List.Perm.eq_of_pairwise' hss hsf hss_perm
   have hrs_is : rs = sg := List.Perm.eq_of_pairwise' hrs hsg hrs_perm
   have hsf_len : sf.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq_sort, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq_sort, Polynomial.splits_iff_card_roots.mp hf.2]
   have hsg_len : sg.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq_sort, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq_sort, Polynomial.splits_iff_card_roots.mp hg.2]
   have hrsg : ∀ s ∈ sg, r ≤ s := by
     intro s hs
     have hs' : s ∈ (↑sg : Multiset ℝ) := Multiset.mem_coe.mpr hs

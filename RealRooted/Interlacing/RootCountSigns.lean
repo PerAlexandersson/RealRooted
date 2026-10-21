@@ -75,7 +75,7 @@ theorem strictInterl_of_eval_mul_neg_one_pow_countP_neg {p F : ℝ[X]}
     have hrs_lt : rs.Pairwise (· < ·) :=
       (hrs_le.and hrs_nodup).imp (fun h => lt_of_le_of_ne h.1 h.2)
     have hrs_len : rs.length = p.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hps]
+      rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hps]
     have hrs_ne : rs ≠ [] := by
       intro h
       rw [h] at hrs_len

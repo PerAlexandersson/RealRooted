@@ -139,8 +139,8 @@ private lemma hasNonnegCoeffs_quadraticInterlacingPencil
     {F G H : ℝ[X]} (hF : HasNonnegCoeffs F) (hG : HasNonnegCoeffs G)
     (hH : HasNonnegCoeffs H) {a : ℝ} (ha : 0 ≤ a) :
     HasNonnegCoeffs (quadraticInterlacingPencil F G H a) :=
-  (hH.add (nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hG)).add
-    (nonnegCoeffs_C_mul (sq_nonneg a) hF)
+  (hH.add (hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hG)).add
+    (hasNonnegCoeffs_C_mul (sq_nonneg a) hF)
 
 /-- The right member in the quadratic closure conclusion. -/
 def quadraticInterlacingRight (G H : ℝ[X]) (a : ℝ) : ℝ[X] :=
@@ -260,7 +260,7 @@ theorem eventually_compactifiedQuadraticInterlacingPencil_card_roots_gt_eq
     exact hF0
   have hp0split : (p 0).Splits := by
     rw [hp0]
-    exact DegreeDropReversal.splits_reflect_of_splits hFsplit hF
+    exact Polynomial.Splits.reflect hFsplit hF
   have hcoeff : ∀ i, Continuous fun b => (p b).coeff i := fun i => by
     simpa [p] using
       continuous_coeff_compactifiedQuadraticInterlacingPencil F G H D i
@@ -377,7 +377,7 @@ theorem eventually_reciprocalQuadraticInterlacingPencil_card_roots_gt_eq
   have hFcount := DegreeDropReversal.card_roots_filter_gt_eq_reflect_compl
     hFsplit hF0 hF hr hrF hFneg
   have hreflect_eq := hbreflect
-    (DegreeDropReversal.splits_reflect_of_splits hbsplit hbdegree)
+    (Polynomial.Splits.reflect hbsplit hbdegree)
   change ((reflect D (quadraticInterlacingPencil H G F b)).roots.filter
       (r⁻¹ < ·)).card = ((reflect D F).roots.filter (r⁻¹ < ·)).card at hreflect_eq
   lia
@@ -1947,11 +1947,11 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     have := hQdegree b hb
     simp_all
   have hAnn : HasNonnegCoeffs (quadraticInterlacingTangent F G a) :=
-    hG.add (nonnegCoeffs_C_mul ha.le hF)
+    hG.add (hasNonnegCoeffs_C_mul ha.le hF)
   have hAne : quadraticInterlacingTangent F G a ≠ 0 := by
     simpa [quadraticInterlacingTangent, add_comm] using
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        (nonnegCoeffs_C_mul ha.le hF) hG hGne
+        (hasNonnegCoeffs_C_mul ha.le hF) hG hGne
   apply strictInterl_of_iterateTDeriv_neg hAnn (hQnn a ha.le)
     hAne (hQne a ha.le) D
   intro eps heps
@@ -2028,8 +2028,8 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     intro b hb
     have hsum : C (2 * b) * G + C (b ^ 2) * H + F ≠ 0 :=
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        ((nonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG).add
-          (nonnegCoeffs_C_mul (sq_nonneg b) hH)) hF hFne
+        ((hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG).add
+          (hasNonnegCoeffs_C_mul (sq_nonneg b) hH)) hF hFne
     simpa [quadraticInterlacingPencil, add_comm, add_left_comm,
       add_assoc] using hsum
   have hQrecipDeg : ∀ b : ℝ,
@@ -2050,11 +2050,11 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
     roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
       (hQεnnRecip b hb) (hQεcoeff0Recip b hb)
   have hAεnn : HasNonnegCoeffs (quadraticInterlacingTangent Fε Gε a) :=
-    hGεnn.add (nonnegCoeffs_C_mul ha.le hFεnn)
+    hGεnn.add (hasNonnegCoeffs_C_mul ha.le hFεnn)
   have hAεne : quadraticInterlacingTangent Fε Gε a ≠ 0 := by
     simpa [quadraticInterlacingTangent, add_comm] using
       add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        (nonnegCoeffs_C_mul ha.le hFεnn) hGεnn hGεne
+        (hasNonnegCoeffs_C_mul ha.le hFεnn) hGεnn hGεne
   have hAεdeg : (quadraticInterlacingTangent Fε Gε a).natDegree ≤ D :=
     (natDegree_add_le _ _).trans
       (max_le hGεdeg ((natDegree_C_mul_le _ _).trans hFεdeg))
@@ -2090,11 +2090,11 @@ theorem strictInterl_quadraticInterlacingTangent_pencil
     have hGne : G ≠ 0 := hFG.2.1.1
     have hHne : H ≠ 0 := hGH.2.1.1
     have hAnn : HasNonnegCoeffs (quadraticInterlacingTangent F G a) :=
-      hG.add (nonnegCoeffs_C_mul ha.le hF)
+      hG.add (hasNonnegCoeffs_C_mul ha.le hF)
     have hAne : quadraticInterlacingTangent F G a ≠ 0 := by
       simpa [quadraticInterlacingTangent, add_comm] using
         add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-          (nonnegCoeffs_C_mul ha.le hF) hG hGne
+          (hasNonnegCoeffs_C_mul ha.le hF) hG hGne
     have hAdeg : (quadraticInterlacingTangent F G a).natDegree = 0 := by
       apply Nat.eq_zero_of_le_zero
       calc
@@ -2108,8 +2108,8 @@ theorem strictInterl_quadraticInterlacingTangent_pencil
     have hQne : quadraticInterlacingPencil F G H a ≠ 0 := by
       have hsum : C (2 * a) * G + C (a ^ 2) * F + H ≠ 0 :=
         add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-          ((nonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha.le) hG).add
-            (nonnegCoeffs_C_mul (sq_nonneg a) hF)) hH hHne
+          ((hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha.le) hG).add
+            (hasNonnegCoeffs_C_mul (sq_nonneg a) hF)) hH hHne
       simpa [quadraticInterlacingPencil, add_comm, add_left_comm,
         add_assoc] using hsum
     have hQdeg : (quadraticInterlacingPencil F G H a).natDegree = 0 := by

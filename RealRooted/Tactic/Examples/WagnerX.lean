@@ -40,22 +40,12 @@ example {f g : ℝ[X]}
     StrictInterl g (X * f) := by
   rr_strict_interl_mul_X
 
-/-- Narayana/singleton-free-set-partition style common `X` factor:
-nonnegative coefficients discharge the root-nonpositive side conditions. -/
-example {f g : ℝ[X]}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g) :
+/-- Narayana/singleton-free-set-partition style common `X` factor. -/
+example {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (X * f) (X * g) := by
-  rr_strict_interl_mul_X_both using
-    proper := hfg,
-    left_nonneg := hfnn,
-    right_nonneg := hgnn
+  rr_strict_interl_mul_X_both using proper := hfg
 
-example {f g : ℝ[X]}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g) :
+example {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (X * f) (X * g) := by
   rr_strict_interl_mul_X_both
 
@@ -99,22 +89,18 @@ example {f g : ℝ[X]} {c : ℝ}
     StrictInterl g ((C c * X) * f) := by
   rr_strict_interl_C_mul_X using coeff_pos := hc
 
-/-- Derivative-lag bridge: a nonnegative real-rooted row gives
-`X * P'_n ≪ X * P_n`. -/
+/-- Derivative-lag bridge: a split row gives `X * P'_n ≪ X * P_n`. -/
 example {f : ℝ[X]}
     (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree)
-    (hfnn : HasNonnegCoeffs f) :
+    (hdeg : 2 ≤ f.natDegree) :
     StrictInterl (X * f.derivative) (X * f) := by
   rr_strict_interl_X_derivative_X_self using
     splits := hf,
-    degree_two := hdeg,
-    nonneg_coeffs := hfnn
+    degree_two := hdeg
 
 example {f : ℝ[X]}
     (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree)
-    (hfnn : HasNonnegCoeffs f) :
+    (hdeg : 2 ≤ f.natDegree) :
     StrictInterl (X * f.derivative) (X * f) := by
   rr_strict_interl_X_derivative_X_self
 
@@ -758,12 +744,8 @@ lemma a358623Shifted_base : StrictInterl (a358623Shifted 0) (a358623Shifted 1) :
   have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
     interlaces_one_linear (by simp)
   have hstrictInterl : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
-  have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by rr_nonneg_coeffs
   have hmul : StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
-    rr_strict_interl_mul_X_both using
-      proper := hstrictInterl,
-      left_nonneg := hasNonnegCoeffs_one,
-      right_nonneg := hlin_nonneg
+    rr_strict_interl_mul_X_both using proper := hstrictInterl
   simpa using hmul
 
 /-- Nonnegative coefficients for every shifted `A358623` active row. -/

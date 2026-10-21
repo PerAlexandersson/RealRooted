@@ -22,6 +22,10 @@ open Lean
 open Lean.Meta
 open Lean.Elab.Tactic
 
+private theorem splits_of_eq_zero_or_splits {p : ℝ[X]} (h : p = 0 ∨ p.Splits) :
+    p.Splits :=
+  h.elim (fun hp => hp ▸ Polynomial.Splits.zero) id
+
 /-- Term form of `rr_lookup`: elaborates to `by rr_lookup`. -/
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
 /-- Term form of `rr_realrooted`: elaborates to `by rr_realrooted`. -/
@@ -819,9 +823,9 @@ macro_rules
           RealRooted.swap_mul_splits_of_isRealRooted_pair $h,
           RealRooted.splits_pow_of_isRealRooted $h _,
           Polynomial.Splits.pow $h _,
-          RealRooted.DegreeDropReversal.splits_reverse $h,
-          RealRooted.DegreeDropReversal.splits_of_reverse $h,
-          RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _,
+          Polynomial.Splits.reverse $h,
+          Polynomial.Splits.of_reverse $h,
+          Polynomial.Splits.X_pow_mul_reverse $h _,
           (RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mpr $h,
           (RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mp $h)
   | `(tactic|
@@ -842,23 +846,23 @@ macro_rules
       rr_splits_reverse using
         splits := $h:term) =>
       `(tactic|
-        exact RealRooted.DegreeDropReversal.splits_reverse $h)
+        exact Polynomial.Splits.reverse $h)
   | `(tactic|
       rr_splits_of_reverse using
         reverse_splits := $h:term) =>
       `(tactic|
-        exact RealRooted.DegreeDropReversal.splits_of_reverse $h)
+        exact Polynomial.Splits.of_reverse $h)
   | `(tactic|
       rr_splits_reflect using
         splits := $h:term,
         degree_bound := $hN:term) =>
       `(tactic|
-        exact RealRooted.DegreeDropReversal.splits_reflect_of_splits $h $hN)
+        exact Polynomial.Splits.reflect $h $hN)
   | `(tactic|
       rr_splits_X_pow_mul_reverse using
         splits := $h:term) =>
       `(tactic|
-        exact RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _)
+        exact Polynomial.Splits.X_pow_mul_reverse $h _)
   | `(tactic|
       rr_splits_divX using
         coeff_zero := $h0:term,
@@ -914,12 +918,16 @@ macro_rules
           RealRooted.eq_zero_or_splits_of_isRealRooted $h,
           RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
           RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h,
-          (RealRooted.mul_eq_zero_or_splits
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)),
-          (RealRooted.mul_eq_zero_or_splits
-            (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)
-            (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)),
+          (Or.inr
+            ((splits_of_eq_zero_or_splits
+                (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)).mul
+              (splits_of_eq_zero_or_splits
+                (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)))),
+          (Or.inr
+            ((splits_of_eq_zero_or_splits
+                (RealRooted.right_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)).mul
+              (splits_of_eq_zero_or_splits
+                (RealRooted.left_eq_zero_or_splits_of_eq_zero_or_splits_pair $h)))),
           RealRooted.left_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.right_eq_zero_or_splits_of_isRealRooted_pair $h,
           RealRooted.mul_eq_zero_or_splits_of_isRealRooted_pair $h,
@@ -951,12 +959,12 @@ macro_rules
             $h _),
           Or.inr $h,
           Or.inr (Polynomial.Splits.pow $h _),
-          Or.inr (RealRooted.DegreeDropReversal.splits_reverse $h),
-          Or.inr (RealRooted.DegreeDropReversal.splits_of_reverse $h),
-          Or.inr (RealRooted.DegreeDropReversal.splits_X_pow_mul_reverse $h _),
+          Or.inr (Polynomial.Splits.reverse $h),
+          Or.inr (Polynomial.Splits.of_reverse $h),
+          Or.inr (Polynomial.Splits.X_pow_mul_reverse $h _),
           Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mpr $h),
           Or.inr ((RealRooted.DegreeDropReversal.splits_X_pow_mul_iff _).mp $h),
-          RealRooted.pow_eq_zero_or_splits $h _,
+          Or.inr ((splits_of_eq_zero_or_splits $h).pow _),
           RealRooted.pow_eq_zero_or_splits_of_isRealRooted $h _,
           RealRooted.reverse_eq_zero_or_splits $h,
           RealRooted.eq_zero_or_splits_of_reverse $h,
@@ -967,14 +975,16 @@ macro_rules
         right := $hq:term) =>
       `(tactic|
         rr_first_exact
-          RealRooted.mul_eq_zero_or_splits $hp $hq,
-          RealRooted.mul_eq_zero_or_splits $hq $hp)
+          (Or.inr ((splits_of_eq_zero_or_splits $hp).mul
+            (splits_of_eq_zero_or_splits $hq))),
+          (Or.inr ((splits_of_eq_zero_or_splits $hq).mul
+            (splits_of_eq_zero_or_splits $hp))))
   | `(tactic|
       rr_zero_or_splits_pow using
         zero_or_splits := $h:term,
         exponent := $n:term) =>
       `(tactic|
-        exact RealRooted.pow_eq_zero_or_splits $h $n)
+        exact Or.inr ((splits_of_eq_zero_or_splits $h).pow $n))
   | `(tactic|
       rr_zero_or_splits_reverse using
         zero_or_splits := $h:term) =>
@@ -1015,8 +1025,10 @@ macro_rules
             | rr_lookup
             | rr_zero_or_splits using rr_lookup_term
             | assumption
-            | (apply RealRooted.mul_eq_zero_or_splits <;> rr_zero_or_splits)
-            | (apply RealRooted.pow_eq_zero_or_splits <;> rr_zero_or_splits)
+            | (apply Or.inr; apply Polynomial.Splits.mul <;>
+                (apply splits_of_eq_zero_or_splits; rr_zero_or_splits))
+            | (apply Or.inr; apply Polynomial.Splits.pow;
+                apply splits_of_eq_zero_or_splits; rr_zero_or_splits)
             -- `apply` rejects a non-disjunction before `rr_splits` runs; `exact Or.inr (by …)`
             -- would elaborate the `by` block first
             | (apply Or.inr; rr_splits; done)

@@ -63,7 +63,7 @@ theorem imageProduct_natDegree {m : ℕ} (U V : ℝ) (x : Fin m → ℝ) :
     (imageProduct U V x).natDegree = m := by
   calc
     (imageProduct U V x).natDegree = (imageProduct U V x).roots.card :=
-      (card_roots_of_splits (imageProduct_splits U V x)).symm
+      (Polynomial.splits_iff_card_roots.mp (imageProduct_splits U V x)).symm
     _ = m := by rw [roots_imageProduct, Multiset.card_map]; simp
 
 /-- Distinct interior nodes give image-product root multiplicity at most two,

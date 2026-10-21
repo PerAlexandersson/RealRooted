@@ -47,7 +47,7 @@ def rootSeqDesc (f : ℝ[X]) : List ℝ :=
 
 @[simp] lemma rootSeqDesc_length {f : ℝ[X]} (hf : f.Splits) :
     (rootSeqDesc f).length = f.natDegree := by
-  simp [rootSeqDesc, card_roots_of_splits hf]
+  simp [rootSeqDesc, Polynomial.splits_iff_card_roots.mp hf]
 
 @[simp] lemma rootSeqDesc_eq_nil {f : ℝ[X]} (hf : f.Splits) :
     rootSeqDesc f = [] ↔ f.natDegree = 0 := by simp [← List.length_eq_zero_iff, hf]
@@ -194,9 +194,9 @@ theorem strictInterl_iff_rootSeqDesc {f g : ℝ[X]} :
   constructor
   · rintro ⟨hf, hg, ss, rs, hss_p, hrs_p, hss_eq, hrs_eq, hshape⟩
     have hssL : ss.length = f.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+      rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
     have hrsL : rs.length = g.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+      rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
     have hSf : rootSeqDesc f = ss.reverse := rootSeqDesc_eq_reverse_of_pairwise hss_p hss_eq
     have hSg : rootSeqDesc g = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs_p hrs_eq
     obtain ⟨d1, d2⟩ := desc_bounds_of_interlacing_shape ss rs hshape
@@ -214,9 +214,9 @@ theorem strictInterl_iff_rootSeqDesc {f g : ℝ[X]} :
     have hSf : rootSeqDesc f = (f.roots.sort (· ≤ ·)).reverse := rfl
     have hSg : rootSeqDesc g = (g.roots.sort (· ≤ ·)).reverse := rfl
     have hssL : (f.roots.sort (· ≤ ·)).length = f.natDegree := by
-      rw [Multiset.length_sort, card_roots_of_splits hf.2]
+      rw [Multiset.length_sort, Polynomial.splits_iff_card_roots.mp hf.2]
     have hrsL : (g.roots.sort (· ≤ ·)).length = g.natDegree := by
-      rw [Multiset.length_sort, card_roots_of_splits hg.2]
+      rw [Multiset.length_sort, Polynomial.splits_iff_card_roots.mp hg.2]
     refine ⟨hf, hg, f.roots.sort (· ≤ ·), g.roots.sort (· ≤ ·),
       Multiset.pairwise_sort .., Multiset.pairwise_sort .., Multiset.sort_eq ..,
       Multiset.sort_eq .., ?_⟩

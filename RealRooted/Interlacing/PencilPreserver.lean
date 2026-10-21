@@ -90,7 +90,7 @@ private lemma negativeSimple_shape_of_strictInterl
   have hrs_ne : rs ≠ [] := by
     intro hrs_nil
     have : p.natDegree = 0 := by
-      rw [← card_roots_of_splits hp_rr.2, ← hrs_eq, hrs_nil]
+      rw [← Polynomial.splits_iff_card_roots.mp hp_rr.2, ← hrs_eq, hrs_nil]
       simp
     have : f.natDegree + 1 = 0 := by lia
     simp at this

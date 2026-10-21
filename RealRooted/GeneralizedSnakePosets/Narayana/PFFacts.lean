@@ -98,7 +98,7 @@ theorem modifiedNarayanaPolynomial_six_exists_ordered_roots :
       Multiset.sort_eq .., Multiset.pairwise_sort ..⟩
   have hlen : rs.length = 6 := by
     rw [← Multiset.coe_card, hrs_eq,
-      card_roots_of_splits modifiedNarayanaPolynomial_six_splits]
+      Polynomial.splits_iff_card_roots.mp modifiedNarayanaPolynomial_six_splits]
     exact modifiedNarayanaPolynomial_six_natDegree
   match rs, hlen, hrs_eq, hrs_sorted with
   | [a, b, c, d, e, r], _, hrs_eq, hrs_sorted =>

@@ -283,8 +283,8 @@ theorem splits_diagonalOperator_pred (n : Nat) (hn : 1 ≤ n) {q : ℝ[X]}
     (diagonalOperator (fun k ↦ ((n : ℝ) - k) / n) q).Splits := by
   rw [diagonalOperator_pred_eq_reflect_derivative n hn q hq]
   refine (Polynomial.Splits.C (R := ℝ) _).mul <|
-    DegreeDropReversal.splits_reflect_of_splits
-      (Polynomial.Splits.derivative ((DegreeDropReversal.splits_reflect_iff hq).2 hsplit)) ?_
+    Polynomial.Splits.reflect
+      (Polynomial.Splits.derivative ((Polynomial.splits_reflect_iff hq).2 hsplit)) ?_
   rw [(reflect n q).natDegree_derivative]
   simpa [max_eq_left hq] using
     Nat.sub_le_sub_right (Polynomial.natDegree_reflect_le (N := n) (p := q)) 1
@@ -370,10 +370,10 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne hp hp00
     have hRp_ne : reflect n p ≠ 0 := by simp [*]
     have hRp_split : (reflect n p).Splits :=
-      DegreeDropReversal.splits_reflect_of_splits hsplit hp
+      Polynomial.Splits.reflect hsplit hp
     suffices hcore : (schurSzegoComp n (reflect n f) (reflect n p)).Splits by
       rw [← reflect_schurSzegoComp] at hcore
-      exact (DegreeDropReversal.splits_reflect_iff (natDegree_schurSzegoComp_le n f p)).mp hcore
+      exact (Polynomial.splits_reflect_iff (natDegree_schurSzegoComp_le n f p)).mp hcore
     by_cases hfn : f.natDegree = n
     · have hRf_coeff0 : (reflect n f).coeff 0 ≠ 0 := by
         rw [coeff_reflect, revAt_zero, ← hfn]

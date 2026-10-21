@@ -208,8 +208,8 @@ theorem posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
       hasPosLeadingCoeff_add_of_natDegree_lt_left
         (p := X * p) (q := -(C μ * q)) hnegC_deg_lt h.left_pos.X_mul
   · simpa [hXp_deg, sub_eq_add_neg] using
-      natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-        (p := X * p) (q := -(C μ * q)) hnegC_deg_lt h.left_pos.X_mul
+      Polynomial.natDegree_add_eq_left_of_natDegree_lt
+        (p := X * p) (q := -(C μ * q)) hnegC_deg_lt
 
 theorem rootCountAbove_bounds_of_nonRoot {p q : ℝ[X]}
     (h : PositiveSplitRootCountPair p q) {x : ℝ}
@@ -244,7 +244,7 @@ theorem left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
   have hp_count : rootCountAtOrAbove p a = p.natDegree := by
     have hfilter : p.roots.filter (fun r => a ≤ r) = p.roots :=
       Multiset.filter_eq_self.mpr hroots_ge
-    simp [rootCountAtOrAbove, hfilter, card_roots_of_splits h.left_splits]
+    simp [rootCountAtOrAbove, hfilter, Polynomial.splits_iff_card_roots.mp h.left_splits]
   have hpart : lower + upper = q.natDegree := by
     have hcard := congrArg Multiset.card
       (Multiset.filter_add_not (p := fun r : ℝ => r < a) q.roots)
@@ -254,7 +254,8 @@ theorem left_natDegree_add_card_right_roots_filter_lt_le_right_natDegree_add_one
       intro r _hr
       simp [not_lt]
     rw [Multiset.card_add] at hcard
-    simpa [lower, upper, rootCountAtOrAbove, hnot, card_roots_of_splits h.right_splits]
+    simpa [lower, upper, rootCountAtOrAbove, hnot,
+      Polynomial.splits_iff_card_roots.mp h.right_splits]
       using hcard
   have hbound : ((p.natDegree : ℤ) - upper) ≤ 1 := by
     simpa [hp_count, upper] using (h.count.bounds a).1

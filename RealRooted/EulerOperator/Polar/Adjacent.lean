@@ -79,13 +79,13 @@ theorem strictInterl_reverse_of_pf_of_natDegree_add_one
           C a * q.reverse + C b * p.reverse := by
       simp_all
     rw [← hreflect]
-    exact DegreeDropReversal.splits_reflect_of_splits hs hcomboDeg
+    exact Polynomial.Splits.reflect hs hcomboDeg
   have hprev0 : p.reverse ≠ 0 := by simp [hp0]
   have hqrev0 : q.reverse ≠ 0 := by simp [hq0]
   have hprevSplits : p.reverse.Splits :=
-    DegreeDropReversal.splits_reverse hpq.1.2
+    Polynomial.Splits.reverse hpq.1.2
   have hqrevSplits : q.reverse.Splits :=
-    DegreeDropReversal.splits_reverse hpq.2.1.2
+    Polynomial.Splits.reverse hpq.2.1.2
   have hptrail : p.natTrailingDegree = 0 :=
     Polynomial.natTrailingDegree_eq_zero.mpr (Or.inr hpconst)
   have hqtrail : q.natTrailingDegree = 0 :=
@@ -120,8 +120,7 @@ theorem strictInterl_polarTheta_adjacent
   have hprevPF : IsPFPolynomial p.reverse := hp.reverse
   have hqrevPF : IsPFPolynomial q.reverse := hq.reverse
   have hXrev : StrictInterl (X * p.reverse) (X * q.reverse) :=
-    StrictInterl.mul_X_both_of_roots_nonpos hrev
-      hprevPF.roots_nonpos hqrevPF.roots_nonpos
+    by simpa using hrev.mul_X_sub_C_both 0
   let P := X * p.reverse
   let Q := X * q.reverse
   have hPdeg : P.natDegree = N + 1 := by

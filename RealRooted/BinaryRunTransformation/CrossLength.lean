@@ -59,7 +59,7 @@ theorem strictInterl_C_mul_sub_two_theta_self {N : ℕ} {g : ℝ[X]}
   have hPnn : HasNonnegCoeffs (polarTheta d g) :=
     (polarTheta_preserves_pf hg le_rfl).hasNonnegCoeffs
   have hP2 : StrictInterl (C 2 * polarTheta d g) g := hpd.C_mul_left two_ne_zero
-  have hP2nn : HasNonnegCoeffs (C 2 * polarTheta d g) := nonnegCoeffs_C_mul (by norm_num) hPnn
+  have hP2nn : HasNonnegCoeffs (C 2 * polarTheta d g) := hasNonnegCoeffs_C_mul (by norm_num) hPnn
   have heq : C (N : ℝ) * g - C 2 * theta g =
       C 2 * polarTheta d g + C ((N : ℝ) - 2 * d) * g := by
     simp only [polarTheta, C_sub, C_mul, map_natCast, map_ofNat]
@@ -81,7 +81,7 @@ theorem strictInterl_C_mul_sub_two_theta_self {N : ℕ} {g : ℝ[X]}
     refine ⟨StrictInterl.add_of_right_of_posLeadingCoeff hP2 hgg
       (hP2nn.pos_leadingCoeff hP2.1.1)
       (hasPosLeadingCoeff_C_mul hpos (hgnn.pos_leadingCoeff hg_ne)), ?_⟩
-    exact hP2nn.add (nonnegCoeffs_C_mul hpos.le hgnn)
+    exact hP2nn.add (hasNonnegCoeffs_C_mul hpos.le hgnn)
 
 /-- Cross-length transport for the binary-run transformation:
 `J_n((N - 2Θ) g) ≪ J_{n+1}(g)` for `N = n + 1`, a PF polynomial `g` with

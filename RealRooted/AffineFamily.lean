@@ -111,8 +111,7 @@ private lemma natDegree_shifted_pair_eq_succ_of_affine_family
   rcases lt_or_eq_of_le hdeg_right with hlt | heq
   · have hg_lt : g.natDegree < (X * f).natDegree := by simp_all
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        hg_lt hXf_pos
+      Polynomial.natDegree_add_eq_right_of_natDegree_lt hg_lt
     simp_all
   · have hg_eq : g.natDegree = (X * f).natDegree := by simp_all
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
@@ -143,8 +142,7 @@ private lemma strictInterl_of_strictInterl_shifted_pair_sameDegree
       (hfnn.pos_leadingCoeff hf0).X_mul
     have hg_lt : g.natDegree < (X * f).natDegree := by lia
     have hsum_deg : (g + X * f).natDegree = (X * f).natDegree :=
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        hg_lt hXf_pos
+      Polynomial.natDegree_add_eq_right_of_natDegree_lt hg_lt
     lia
   let a : ℝ := f.leadingCoeff⁻¹
   have ha_ne : a ≠ 0 := inv_ne_zero (ne_of_gt hf_pos)
@@ -717,12 +715,14 @@ lemma isRealRooted_affine_factor {s t : ℝ} (hs : 0 < s) :
 
 lemma affine_family_of_zero_left {g : ℝ[X]} (hg_ne : g ≠ 0) (hg_splits : g.Splits) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
-      ((((C s * X + C t) * (0 : ℝ[X])) + g) ≠ 0 ∧ (((C s * X + C t) * (0 : ℝ[X])) + g).Splits) := by
+      ((((C s * X + C t) * (0 : ℝ[X])) + g) ≠ 0 ∧
+        (((C s * X + C t) * (0 : ℝ[X])) + g).Splits) := by
   simp [*]
 
 lemma affine_family_of_zero_right {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.Splits) :
     ∀ {s t : ℝ}, 0 < s → 0 < t →
-      ((((C s * X + C t) * f) + (0 : ℝ[X])) ≠ 0 ∧ (((C s * X + C t) * f) + (0 : ℝ[X])).Splits) := by
+      ((((C s * X + C t) * f) + (0 : ℝ[X])) ≠ 0 ∧
+        (((C s * X + C t) * f) + (0 : ℝ[X])).Splits) := by
   intro s t hs ht
   simpa using isRealRooted_mul (isRealRooted_affine_factor (t := t) hs).1
     (isRealRooted_affine_factor (t := t) hs).2 hf_ne hf_splits
@@ -730,7 +730,7 @@ lemma affine_family_of_zero_right {f : ℝ[X]} (hf_ne : f ≠ 0) (hf_splits : f.
 lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     HasNonnegCoeffs (C a * X + C b) := by
   have hCb : HasNonnegCoeffs (C b) := by rintro (_ | n) <;> simp [hb]
-  exact (nonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
+  exact (hasNonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
 lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     Interl (1 : ℝ[X]) (C a * X + C b) := by

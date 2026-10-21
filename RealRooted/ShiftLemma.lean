@@ -85,7 +85,7 @@ lemma shift_natDegree_of_same_degree {f h : ℝ[X]}
   have hXh_pos := hasPosLeadingCoeff_X_sub_C_mul (r := (1 : ℝ)) hh_pos
   have hlt : f.natDegree < ((X - C 1) * h).natDegree := by lia
   constructor
-  · exact natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hlt hXh_pos ▸ hXh_deg
+  · exact Polynomial.natDegree_add_eq_right_of_natDegree_lt hlt ▸ hXh_deg
   · exact hasPosLeadingCoeff_add_of_natDegree_lt_right hlt hXh_pos
 
 /-! ## Same-degree case -/
@@ -169,9 +169,9 @@ theorem strictInterl_shift
     StrictInterl f (f + (X - C 1) * h) := by
   obtain ⟨_, _, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
   have hss_len : ss.length = h.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh_splits]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hh_splits]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   rcases hshape with ⟨hdiffby1, hint⟩ | ⟨hsamedeg, halt⟩
   · have hdeg : h.natDegree + 1 = f.natDegree := by lia
     have hinterl : Interlaces h f :=

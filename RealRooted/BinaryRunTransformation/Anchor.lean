@@ -268,11 +268,11 @@ theorem oddPathReverse_roots_nodup (d : ℕ) :
 theorem pathMatchingPolynomial_splits (N : ℕ) :
     (pathMatchingPolynomial N).Splits := by
   obtain ⟨d, rfl | rfl⟩ := Nat.even_or_odd' N
-  · apply (DegreeDropReversal.splits_reflect_iff (N := d) (by
+  · apply (Polynomial.splits_reflect_iff (N := d) (by
       rw [natDegree_pathMatchingPolynomial]
       norm_num)).mp
     exact evenPathReverse_splits d
-  · apply (DegreeDropReversal.splits_reflect_iff (N := d) (by
+  · apply (Polynomial.splits_reflect_iff (N := d) (by
       rw [natDegree_pathMatchingPolynomial]
       norm_num [Nat.add_div])).mp
     exact oddPathReverse_splits d

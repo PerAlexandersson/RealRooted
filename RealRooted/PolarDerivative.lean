@@ -15,7 +15,7 @@ Translate `a` to `0`: with `g = f.comp (X + C a)` we get
 `(D_a f).comp (X + C a) = n • g - X * g'`.  On coefficients `n • g - X * g'` multiplies the
 coefficient of `X ^ i` by `n - i`, so it equals `reflect (n - 1) (derivative (reflect n g))`.
 Reversal preserves splitting over a field, and over `ℝ` the derivative of a split polynomial
-splits by Rolle's theorem (`eq_zero_or_splits_derivative`).
+splits by Rolle's theorem (`Polynomial.Splits.derivative`).
 
 ## Main results
 
@@ -75,10 +75,8 @@ theorem splits_polarDerivative_of_splits {f : ℝ[X]} (hf : f.Splits) (a : ℝ) 
     simp [g, natDegree_comp]
   have hs : ((polarDerivative a f).comp (X + C a)).Splits := by
     rw [polarDerivative_comp_X_add_C, C_mul_sub_X_mul_derivative_eq_reflect hdeg.le, ← hdeg]
-    refine DegreeDropReversal.splits_reflect_of_splits ?_ ?_
-    · exact ((eq_zero_or_splits_derivative
-        (Or.inr (DegreeDropReversal.splits_reverse (hf.comp_X_add_C a)))).elim
-          (fun h => h ▸ Splits.zero) id)
+    refine Polynomial.Splits.reflect ?_ ?_
+    · exact (Polynomial.Splits.reverse (hf.comp_X_add_C a)).derivative
     · exact (natDegree_derivative_le _).trans (Nat.sub_le_sub_right (reverse_natDegree_le g) 1)
   have h := hs.comp_X_sub_C a
   rwa [comp_assoc, add_comp, X_comp, C_comp, sub_add_cancel, comp_X] at h

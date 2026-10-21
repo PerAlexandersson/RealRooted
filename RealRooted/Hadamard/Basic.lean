@@ -483,11 +483,10 @@ theorem reflect_iterate_derivative_reflect_splits_of_splits
     (hsplit : p.Splits) :
     (reflect 3 ((derivative^[n - 3]) (reflect n p))).Splits := by
   have hreflect : (reflect n p).Splits :=
-    DegreeDropReversal.splits_reflect_of_splits hsplit hpdeg
+    Polynomial.Splits.reflect hsplit hpdeg
   have hqsplit : ((derivative^[n - 3]) (reflect n p)).Splits :=
-    (iterate_derivative_eq_zero_or_splits hreflect (n - 3)).elim
-      (fun h => by simp [h]) id
-  exact DegreeDropReversal.splits_reflect_of_splits hqsplit
+    hreflect.iterate_derivative (n - 3)
+  exact Polynomial.Splits.reflect hqsplit
     (natDegree_iterate_derivative_reflect_le_three hn hpdeg)
 
 /-- The level-`n` degree-three Jensen section of a splitting polynomial is

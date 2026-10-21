@@ -295,7 +295,7 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
     intro hfzero r hr
     have haroots : a.roots = 0 := by
       apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hasplit, hadegree, hfzero]
+      rw [Polynomial.splits_iff_card_roots.mp hasplit, hadegree, hfzero]
     have := (mem_roots hane).mpr hr.1
     simp [haroots] at this
   by_cases hgzero : g.natDegree = 0
@@ -304,10 +304,10 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
       lia
     have haroots : a.roots = 0 := by
       apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hasplit, hadegree, hfzero]
+      rw [Polynomial.splits_iff_card_roots.mp hasplit, hadegree, hfzero]
     have hbroots : b.roots = 0 := by
       apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hbsplit, hbdegree, hgzero]
+      rw [Polynomial.splits_iff_card_roots.mp hbsplit, hbdegree, hgzero]
     refine ⟨?_, fun r hr hbr => hno_of_f_const hfzero r ⟨hr, hbr⟩⟩
     rcases hweakOr with hab | hba
     · exact hab

@@ -53,7 +53,7 @@ theorem roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     ∀ r, f.IsRoot r → r < 0 := by
   obtain ⟨hf, hg, _, rs, ss, _, _, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_ne : rs ≠ [] := by grind
   have hss_neg : ∀ s ∈ ss, s < 0 := by
     intro s hs
@@ -64,7 +64,7 @@ theorem roots_neg_of_interlaces_of_eval_zero_pos {g f : ℝ[X]}
     listInterlaces_dropLast_lt_zero_of_forall_lt_zero hint hss_neg
   have h_eval :
       f.eval 0 = f.leadingCoeff * (rs.map (0 - ·)).prod := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0, ← hrs_eq]
+    rw [Polynomial.Splits.eval_eq_prod_roots hf.2 0, ← hrs_eq]
     simp
   have hrs_drop_prod_pos : 0 < (rs.dropLast.map (0 - ·)).prod :=
     list_prod_pos_of_forall_pos (by grind)
@@ -211,9 +211,9 @@ theorem roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
     ∀ r, g.IsRoot r → r ≤ 0 := by
   obtain ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩ := hfg
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have halt : ListAlternates ss rs := by
     rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
     · lia
@@ -248,9 +248,9 @@ theorem roots_neg_of_strictInterl_sameDegree_of_roots_neg {g f : ℝ[X]}
     ∀ r, g.IsRoot r → r < 0 := by
   obtain ⟨hg, hf, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩ := hgf
   have hss_len : ss.length = g.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   rcases hshape with ⟨_, hint⟩ | ⟨_, halt⟩
   · lia
   · have hrs_neg : ∀ s ∈ rs, s < 0 := by

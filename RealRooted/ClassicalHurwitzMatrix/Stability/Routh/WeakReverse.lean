@@ -275,7 +275,7 @@ theorem IsHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial_of_natDegree
     exact hasNonnegCoeffs_oddEvenPolynomial hoddnn
       (by
         rw [even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0]
-        exact (nonnegCoeffs_C_mul hc.le hoddnn).add hrednn.X_mul)
+        exact (hasNonnegCoeffs_C_mul hc.le hoddnn).add hrednn.X_mul)
   · have hlimit := isRightHalfPlaneStable_of_monic_tendsto_eval
       hp₀ne hPmonic hPdegree hPstable hPeval
     intro z hz hroot

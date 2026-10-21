@@ -135,6 +135,6 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
     refine le_antisymm (card_roots' g) ?_
     rw [hg_deg]
     exact le_trans hcard (Multiset.toFinset_card_le _)
-  exact splits_of_card_roots hcard_roots
+  exact Polynomial.splits_iff_card_roots.mpr hcard_roots
 
 end RealRooted

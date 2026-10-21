@@ -240,7 +240,7 @@ theorem eval_lagInterp_at_root {f g : ℝ[X]} (hnd : f.roots.Nodup)
 theorem lagInterp_degree_lt {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup)
     (h_deg₁ : 1 ≤ f.natDegree) :
     (lagInterp f g).degree < f.roots.toFinset.card := by
-  rw [Multiset.toFinset_card_of_nodup hnd, card_roots_of_splits hfs, lagInterp]
+  rw [Multiset.toFinset_card_of_nodup hnd, Polynomial.splits_iff_card_roots.mp hfs, lagInterp]
   apply lt_of_le_of_lt (Polynomial.degree_sum_le _ _)
   have : (⊥ : WithBot ℕ) < (f.natDegree : WithBot ℕ) := by simp
   rw [Finset.sup_lt_iff this]
@@ -263,7 +263,7 @@ theorem lagInterp_eq_g {f g : ℝ[X]} (hfs : f.Splits) (hnd : f.roots.Nodup)
     (h_deg₁ : 1 ≤ f.natDegree) (hgdeg : g.degree < f.natDegree) :
     lagInterp f g = g := by
   have : f.roots.toFinset.card = f.natDegree := by
-    rw [Multiset.toFinset_card_of_nodup hnd, card_roots_of_splits hfs]
+    rw [Multiset.toFinset_card_of_nodup hnd, Polynomial.splits_iff_card_roots.mp hfs]
   have h_deg_lt : (lagInterp f g).degree < f.roots.toFinset.card :=
     lagInterp_degree_lt hfs hnd h_deg₁
   apply eq_of_degrees_lt_of_eval_finset_eq f.roots.toFinset h_deg_lt

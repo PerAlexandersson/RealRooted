@@ -704,7 +704,7 @@ private theorem interl_X_mul_add_X_mul_add_X_mul
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
     Interl (X * p + q) (X * p + X * q) := by
-  have hXpXq : Interl (X * p) (X * q) := interl_X_mul_both_of_pf hp hq hpq
+  have hXpXq : Interl (X * p) (X * q) := hpq.mul_X_both
   have hqXp : Interl q (X * p) := (interl_iff_interl_X_mul hp hq).mp hpq
   have hqXq : Interl q (X * q) :=
     (interl_iff_interl_X_mul hq hq).mp hq.interl_self
@@ -723,7 +723,7 @@ private theorem interl_theta_add_X_mul_add_theta
     Interl (RealRooted.theta p + q) (X * p + RealRooted.theta q) := by
   have hthetaP_Xp : Interl (RealRooted.theta p) (X * p) := hp.interl_theta_X_mul
   have hthetaP_thetaQ : Interl (RealRooted.theta p) (RealRooted.theta q) :=
-    thetaPreservesInterl hp hq hpq
+    hpq.theta
   have hqXp : Interl q (X * p) := (interl_iff_interl_X_mul hp hq).mp hpq
   have hqthetaQ : Interl q (RealRooted.theta q) := hq.interl_theta
   have hthetaP_out : Interl (RealRooted.theta p) (X * p + RealRooted.theta q) :=

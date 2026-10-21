@@ -167,7 +167,7 @@ lemma hasRootsNonpos_of_dvd {p q : ℝ[X]}
     HasRootsNonpos q := by
   intro r hr
   have hrq : q.IsRoot r := (mem_roots hq0).mp hr
-  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
+  have hrp : p.IsRoot r := hrq.dvd hqp
   exact hp_nonpos r ((mem_roots hp0).mpr hrp)
 
 lemma HasRootsNonpos.mul {p q : ℝ[X]}

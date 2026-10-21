@@ -358,7 +358,7 @@ theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : â„
   Â· intro k hk0 hkd
     set t := p.roots.map Neg.neg with ht_def
     have htcard : Multiset.card t = p.natDegree := by
-      rw [ht_def, Multiset.card_map, card_roots_of_splits hsplits]
+      rw [ht_def, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hsplits]
     have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k - 1) (by lia)
     have hck := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k) (by lia)
     have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits (k := k + 1) (by lia)

@@ -315,7 +315,7 @@ theorem generalComparison_sign_at_generalStep_root_of_one_le
       have hcnt : q.roots.countP (fun r => e < r) = m := by
         have : q.roots.countP (fun r => e < r) = Multiset.card q.roots :=
           Multiset.countP_eq_card.mpr (fun r hr => he r hr)
-        rw [this, card_roots_of_splits hq.2.1, hqdeg]
+        rw [this, Polynomial.splits_iff_card_roots.mp hq.2.1, hqdeg]
       rw [hcnt] at h
       linarith
     have hLT := generalStep_sign_of_input_sign κ a b u v q e m hprod hqe

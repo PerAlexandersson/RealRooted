@@ -23,9 +23,8 @@ lemma natDegree_pos_combo_eq_right_of_natDegree_le {f g : ℝ[X]}
     (C a * f + C b * g).natDegree = g.natDegree := by
   rcases lt_or_eq_of_le hdeg with hlt | heq
   · simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using
-      (natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt)
-        (hasPosLeadingCoeff_C_mul hb hg_pos) :
+      (Polynomial.natDegree_add_eq_right_of_natDegree_lt
+        (by simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using hlt) :
           (C a * f + C b * g).natDegree = (C b * g).natDegree)
   · have hsame : (C a * f + C b * g).natDegree = f.natDegree := by
       simpa [natDegree_C_mul ha.ne', natDegree_C_mul hb.ne'] using

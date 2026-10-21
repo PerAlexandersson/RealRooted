@@ -45,7 +45,7 @@ theorem logDeriv_complexify_im_neg {p : ℝ[X]} (hp : p.Splits) (hp₀ : p ≠ 0
     ((complexify p).derivative.eval z / (complexify p).eval z).im < 0 := by
   rw [logDeriv_complexify_eq_sum hp hp₀ hz, multiset_sum_im, Multiset.map_map]
   apply multiset_sum_neg
-  · rw [Ne, Multiset.map_eq_zero, ← Multiset.card_eq_zero, card_roots_of_splits hp]
+  · rw [Ne, Multiset.map_eq_zero, ← Multiset.card_eq_zero, Polynomial.splits_iff_card_roots.mp hp]
     lia
   · intro x hx
     simp only [Multiset.mem_map] at hx
@@ -128,7 +128,7 @@ private theorem strictInterl_roots_deg1 (f g : ℝ[X]) (hpq : StrictInterl g f)
     (hd : f.natDegree = 1) :
     g.roots = 0 ∨ ∃ r s, f.roots = {s} ∧ g.roots = {r} ∧ r ≤ s := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨hf₀, hfs⟩, ss, rs, hss, hrs, hsseq, hrseq, hshape⟩ := hpq
-  have hfcard : f.roots.card = 1 := by rw [card_roots_of_splits hfs, hd]
+  have hfcard : f.roots.card = 1 := by rw [Polynomial.splits_iff_card_roots.mp hfs, hd]
   have hrslen : rs.length = 1 := by
     have : (rs : Multiset ℝ).card = 1 := by simp [*]
     simpa using this
@@ -154,12 +154,14 @@ theorem hermiteBiehlerForwardPos_of_natDegree_le_one {f g : ℝ[X]}
   · have hd₀ : f.natDegree = 0 := by lia
     have hgr : g.roots = 0 := by
       obtain ⟨_, _, ss, rs, _, _, hsseq, hrseq, hshape⟩ := hpq
-      have hfcard : f.roots.card = 0 := by rw [card_roots_of_splits hfs, hd₀]
+      have hfcard : f.roots.card = 0 := by
+        rw [Polynomial.splits_iff_card_roots.mp hfs, hd₀]
       simp_all
     intro z hz hroot
     rw [eval_hermiteBiehlerPolynomial, eval_complexify_eq_prod hfs, eval_complexify_eq_prod hgs,
       hgr] at hroot
-    have hfr : f.roots = 0 := by rw [← Multiset.card_eq_zero, card_roots_of_splits hfs, hd₀]
+    have hfr : f.roots = 0 := by
+      rw [← Multiset.card_eq_zero, Polynomial.splits_iff_card_roots.mp hfs, hd₀]
     rw [hfr] at hroot
     simp only [Multiset.map_zero, Multiset.prod_zero, mul_one] at hroot
     have h_im :
@@ -172,7 +174,8 @@ theorem hermiteBiehlerForwardPos_of_natDegree_le_one {f g : ℝ[X]}
     apply stable_of_im_ratio_nonpos hf₀ hfs
     intro z hz
     rcases strictInterl_roots_deg1 f g hpq hd₁ with hgr | ⟨r, s, hfr, hgr, hrs⟩
-    · obtain ⟨s, hfr⟩ := Multiset.card_eq_one.mp (by rw [card_roots_of_splits hfs, hd₁])
+    · obtain ⟨s, hfr⟩ := Multiset.card_eq_one.mp (by
+        rw [Polynomial.splits_iff_card_roots.mp hfs, hd₁])
       exact im_ratio_deg1_deg0 f g z hz hfs hgs hf hg s hfr hgr
     · exact im_ratio_deg1_deg1 f g z hz hfs hgs hf hg s r hfr hgr hrs
 
@@ -294,8 +297,8 @@ theorem im_ratio_nonpos {f g : ℝ[X]} (hpq : StrictInterl g f)
     {z : ℂ} (hz : 0 < z.im) :
     ((complexify g).eval z / (complexify f).eval z).im ≤ 0 := by
   obtain ⟨⟨hg₀, hgs⟩, ⟨-, hfs⟩, ss, rs, -, -, hsseq, hrseq, hshape⟩ := id hpq
-  have hgc : g.roots.card = g.natDegree := card_roots_of_splits hgs
-  have hfc : f.roots.card = f.natDegree := card_roots_of_splits hfs
+  have hgc : g.roots.card = g.natDegree := Polynomial.splits_iff_card_roots.mp hgs
+  have hfc : f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hfs
   rcases hshape with ⟨hlen, _⟩ | ⟨hlen, _⟩
   · have hdd : g.natDegree + 1 = f.natDegree := by
       rw [← hgc, ← hfc, ← hsseq, ← hrseq]

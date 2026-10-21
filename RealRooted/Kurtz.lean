@@ -463,7 +463,7 @@ theorem coefficient_criterion_card_roots {p : ℝ[X]}
   have : s.card + 1 = p.natDegree := by
     have : 1 ≤ n := (Nat.le_succ 1).trans (hn ▸ hdeg)
     rw [hs_card, Nat.sub_add_cancel this, hn]
-  exact card_roots_of_splits (roots_card_of_sub_pred hpne hs_le this)
+  exact Polynomial.splits_iff_card_roots.mp (roots_card_of_sub_pred hpne hs_le this)
 
 /-- Kurtz's sufficient condition: positive coefficients and the strict
 Hutchinson--Kurtz log-concavity inequalities imply real-rootedness. -/
@@ -472,7 +472,7 @@ theorem coefficient_criterion {p : ℝ[X]}
     (hpos : PositiveCoeffsUpToDegree p)
     (hineq : KurtzStrictInequalities p) :
     p.Splits :=
-  splits_of_card_roots (coefficient_criterion_card_roots hdeg hpos hineq)
+  Polynomial.splits_iff_card_roots.mpr (coefficient_criterion_card_roots hdeg hpos hineq)
 
 end Kurtz
 end RealRooted

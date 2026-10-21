@@ -464,7 +464,7 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
     have hself := strictInterl_self_thetac hg (by rw [hdeg]; lia) hα
     rw [← motzkinWeightedInput_inv_ascPochhammer_shift hα n] at hself
     have hCnn : HasNonnegCoeffs (C α * motzkinWeightedInput γ n) :=
-      nonnegCoeffs_C_mul hα.le (motzkinWeightedInput_isPFPolynomial hγPF n).hasNonnegCoeffs
+      hasNonnegCoeffs_C_mul hα.le (motzkinWeightedInput_isPFPolynomial hγPF n).hasNonnegCoeffs
     have hT := strictInterl_binaryRunTransform (n := n) hself hg.hasNonnegCoeffs hCnn
       ((natDegree_C_mul_le _ _).trans (by rw [natDegree_motzkinWeightedInput hγpos]; lia))
     rw [binaryRunTransform_C_mul] at hT

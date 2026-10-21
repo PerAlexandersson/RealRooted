@@ -357,10 +357,10 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
   by_cases hdegreeZero : odd.natDegree = 0
   · have hevenDegreeZero : even.natDegree = 0 := hdegree.trans hdegreeZero
     have hoddRoots : odd.roots = 0 := by
-      rw [← Multiset.card_eq_zero, card_roots_of_splits hoddSplits,
+      rw [← Multiset.card_eq_zero, Polynomial.splits_iff_card_roots.mp hoddSplits,
         hdegreeZero]
     have hevenRoots : even.roots = 0 := by
-      rw [← Multiset.card_eq_zero, card_roots_of_splits hevenSplits,
+      rw [← Multiset.card_eq_zero, Polynomial.splits_iff_card_roots.mp hevenSplits,
         hevenDegreeZero]
     exact ⟨⟨hodd.ne_zero, hoddSplits⟩, ⟨heven.ne_zero, hevenSplits⟩,
       [], [], by simp, by simp, by simp [hoddRoots], by simp [hevenRoots],
@@ -512,9 +512,10 @@ theorem IsStrictlyHurwitzStable.routhReducedOddPart_ne_zero_of_oddShape
     h.coeff_zero_pos_parts_of_oddShape hodd heven hdegree
   have hoddSplits :=
     (h.splits_parts_of_oddShape hodd heven hdegree).1
-  obtain ⟨r, hroot⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hodd.ne_zero hoddSplits
-      (Polynomial.not_isUnit_of_natDegree_pos odd hdegreePos)
+  obtain ⟨r, hroot⟩ : ∃ r : ℝ, odd.IsRoot r := by
+    simpa [Polynomial.IsRoot.def] using hoddSplits.exists_eval_eq_zero
+      (degree_pos_of_ne_zero_of_nonunit hodd.ne_zero
+        (Polynomial.not_isUnit_of_natDegree_pos odd hdegreePos)).ne'
   intro hred
   apply h.noCommonRoot_parts_of_hasNonnegCoeffs hodd.ne_zero hoddnn r
   refine ⟨hroot, ?_⟩

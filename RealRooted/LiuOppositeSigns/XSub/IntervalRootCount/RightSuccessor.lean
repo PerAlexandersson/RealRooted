@@ -258,7 +258,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_right_successor_nonneg_of_noCo
         rw [hrs] at hx_sort
         simp at hx_sort
       have hpdeg_zero : p.natDegree = 0 := by
-        rw [← card_roots_of_splits hpair.left_splits, hroots_zero]
+        rw [← Polynomial.splits_iff_card_roots.mp hpair.left_splits, hroots_zero]
         simp
       have hqdeg_one : q.natDegree = 1 := by lia
       simpa using

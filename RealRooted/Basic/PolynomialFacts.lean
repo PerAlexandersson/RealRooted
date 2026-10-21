@@ -28,9 +28,11 @@ theorem IsCoprime.not_isRoot_right {p q : R[X]}
 
 namespace RealRooted
 
+@[deprecated Polynomial.splits_iff_card_roots +typeChanged (since := "2026-10-21")]
 lemma card_roots_of_splits {p : ℝ[X]} (h : p.Splits) : p.roots.card = p.natDegree :=
   splits_iff_card_roots.mp h
 
+@[deprecated Polynomial.splits_iff_card_roots +typeChanged (since := "2026-10-21")]
 lemma splits_of_card_roots {p : ℝ[X]} (h : p.roots.card = p.natDegree) : p.Splits :=
   splits_iff_card_roots.mpr h
 
@@ -56,23 +58,6 @@ lemma isRealRooted_mul {p q : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
     (hq_ne : q ≠ 0) (hq_splits : q.Splits) : (p * q ≠ 0 ∧ (p * q).Splits) :=
   ⟨mul_ne_zero hp_ne hq_ne, hp_splits.mul hq_splits⟩
 
-/-- Product transport for zero-aware splitting certificates. -/
-theorem mul_eq_zero_or_splits {p q : ℝ[X]}
-    (hp : p = 0 ∨ p.Splits) (hq : q = 0 ∨ q.Splits) :
-    p * q = 0 ∨ (p * q).Splits := by
-  rcases hp with rfl | hp
-  · simp
-  rcases hq with rfl | hq
-  · simp
-  · exact Or.inr (hp.mul hq)
-
-/-- Power transport for zero-aware splitting certificates. -/
-theorem pow_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) (n : ℕ) :
-    p ^ n = 0 ∨ (p ^ n).Splits := by
-  rcases hp with rfl | hp
-  · cases n <;> simp
-  · exact Or.inr (hp.pow n)
-
 lemma coeff_X_sub_C_mul (r : ℝ) (q : ℝ[X]) (n : ℕ) :
     ((X - C r) * q).coeff n =
       (if n = 0 then 0 else q.coeff (n - 1)) - r * q.coeff n := by
@@ -86,7 +71,8 @@ lemma exists_rightmost_root_of_isRealRooted
   let rs := p.roots.sort (· ≤ ·)
   have hrs_eq : (↑rs : Multiset ℝ) = p.roots := Multiset.sort_eq ..
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs_len : rs.length = p.natDegree := by simp [rs, card_roots_of_splits hp_splits]
+  have hrs_len : rs.length = p.natDegree := by
+    simp [rs, Polynomial.splits_iff_card_roots.mp hp_splits]
   have hrs_ne : rs ≠ [] := by grind
   refine ⟨rs.getLast hrs_ne, ?_, ?_⟩
   · have hr_mem : rs.getLast hrs_ne ∈ rs := List.getLast_mem hrs_ne

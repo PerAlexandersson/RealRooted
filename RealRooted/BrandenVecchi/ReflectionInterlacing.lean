@@ -57,7 +57,7 @@ theorem IsInterlacingSeq0NonnegRealRooted.nonnegScalarMultiples
     have hi : i.val < fs.length := by simp [hlen]
     rcases hscale.get hi i.isLt with ⟨a, ha, hia⟩
     rw [hia]
-    exact nonnegCoeffs_C_mul ha
+    exact hasNonnegCoeffs_C_mul ha
       (hfs.nonnegCoeffs (fs.get ⟨i, hi⟩) (List.get_mem _ _))
   · intro g hg hg_ne
     rcases List.get_of_mem hg with ⟨i, rfl⟩

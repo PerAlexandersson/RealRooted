@@ -135,10 +135,10 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator
     · by_cases hd : f.natDegree = 0
       · have hroots_f : (diagonalOperator gamma f).roots = 0 := by
           apply Multiset.card_eq_zero.mp
-          rw [card_roots_of_splits hTf_splits, hfd, hd]
+          rw [Polynomial.splits_iff_card_roots.mp hTf_splits, hfd, hd]
         have hroots_g : (diagonalOperator gamma g).roots = 0 := by
           apply Multiset.card_eq_zero.mp
-          rw [card_roots_of_splits hTg_splits, hgd, hsame, hd]
+          rw [Polynomial.splits_iff_card_roots.mp hTg_splits, hgd, hsame, hd]
         apply hreverse.of_reverse_of_roots_sum_le hdeg_out
         rw [hroots_f, hroots_g]
       · have hpos : 0 < f.natDegree := Nat.pos_of_ne_zero hd

@@ -161,13 +161,10 @@ theorem pf_sequence_interl_self
     ∀ i : Nat, Interl (P i) (P i) := fun i =>
   RealRooted.IsPFPolynomial.interl_self (hP i)
 
-theorem pf_sequence_interl_X_mul_both
-    {P Q : Nat → ℝ[X]}
-    (hP : ∀ i : Nat, IsPFPolynomial (P i))
-    (hQ : ∀ i : Nat, IsPFPolynomial (Q i))
-    (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
+theorem interl_sequence_mul_X_both
+    {P Q : Nat → ℝ[X]} (hPQ : ∀ i : Nat, Interl (P i) (Q i)) :
     ∀ i : Nat, Interl (X * P i) (X * Q i) := fun i =>
-  RealRooted.interl_X_mul_both_of_pf (hP i) (hQ i) (hPQ i)
+  (hPQ i).mul_X_both
 
 /-- Closes `IsPFPolynomial 0`. -/
 syntax (name := rr_pf_zero_named) "rr_pf_zero" : tactic
@@ -414,17 +411,28 @@ syntax (name := rr_pf_sequence_interl_self_named)
   "rr_pf_sequence_interl_self" " using " "pf" ":=" term :
   tactic
 
-/-- Closes `Interl (X * p) (X * q)` from `left_pf : IsPFPolynomial p`, `right_pf : IsPFPolynomial q`
-and `interl : Interl p q`. -/
+/-- Closes `Interl (X * p) (X * q)` from `interl : Interl p q`.
+The former `left_pf`, `right_pf`, `interl` syntax remains accepted for compatibility. -/
 syntax (name := rr_pf_interl_X_mul_both_named)
+  "rr_pf_interl_X_mul_both" " using " "interl" ":=" term :
+  tactic
+
+@[tactic_alt rr_pf_interl_X_mul_both_named]
+syntax (name := rrPfInterlXMulBothCompat)
   "rr_pf_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
     "interl" ":=" term :
   tactic
 
-/-- Sequence form of `rr_pf_interl_X_mul_both`: the same certificate for every index `i : Nat`. -/
+/-- Sequence form of `rr_pf_interl_X_mul_both`: the same interlacing certificate
+for every index `i : Nat`. The former PF-certificate fields remain accepted. -/
 syntax (name := rr_pf_sequence_interl_X_mul_both_named)
+  "rr_pf_sequence_interl_X_mul_both" " using " "interl" ":=" term :
+  tactic
+
+@[tactic_alt rr_pf_sequence_interl_X_mul_both_named]
+syntax (name := rrPfSequenceInterlXMulBothCompat)
   "rr_pf_sequence_interl_X_mul_both" " using "
     "left_pf" ":=" term ","
     "right_pf" ":=" term ","
@@ -575,20 +583,22 @@ macro_rules
       `(tactic| exact RealRooted.IsPFPolynomial.interl_self $hp)
   | `(tactic| rr_pf_sequence_interl_self using pf := $hp:term) =>
       `(tactic| exact RealRooted.Tactic.pf_sequence_interl_self $hp)
+  | `(tactic| rr_pf_interl_X_mul_both using interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Interl.mul_X_both $hpq)
   | `(tactic|
       rr_pf_interl_X_mul_both using
-        left_pf := $hp:term,
-        right_pf := $hq:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
         interl := $hpq:term) =>
-      `(tactic| exact RealRooted.interl_X_mul_both_of_pf $hp $hq $hpq)
+      `(tactic| exact RealRooted.Interl.mul_X_both $hpq)
+  | `(tactic| rr_pf_sequence_interl_X_mul_both using interl := $hpq:term) =>
+      `(tactic| exact RealRooted.Tactic.interl_sequence_mul_X_both $hpq)
   | `(tactic|
       rr_pf_sequence_interl_X_mul_both using
-        left_pf := $hp:term,
-        right_pf := $hq:term,
+        left_pf := $_hp:term,
+        right_pf := $_hq:term,
         interl := $hpq:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.pf_sequence_interl_X_mul_both
-          $hp $hq $hpq)
+      `(tactic| exact RealRooted.Tactic.interl_sequence_mul_X_both $hpq)
 
 end Tactic
 end RealRooted

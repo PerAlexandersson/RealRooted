@@ -28,7 +28,7 @@ noncomputable def mkInterleaving (f : ℝ[X]) :
     else r₁
     s :: mkInterleaving f (r₂ :: rest) hrest
 
-lemma mkInterleaving_length (f : ℝ[X]) :
+private lemma mkInterleaving_length (f : ℝ[X]) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r),
     (mkInterleaving f rs hrs).length = rs.length - 1
   | [], _ | [_], _ => by simp [mkInterleaving]
@@ -42,7 +42,7 @@ so that the induction goes through when we drop the first element. -/
 
 /-- Each constructed element is a root of f' in [r₁, r₂].
     Uses sub-multiset condition `≤` to handle repeated roots. -/
-lemma mkInterleaving_spec (f : ℝ[X]) :
+private lemma mkInterleaving_spec (f : ℝ[X]) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
       (_ : rs.Pairwise (· ≤ ·))
       (_ : (↑rs : Multiset ℝ) ≤ f.roots),
@@ -78,28 +78,6 @@ lemma mkInterleaving_spec (f : ℝ[X]) :
       · grind
       · grind
 
-/-! ## Sortedness from interleaving -/
-
-/-- If `ss` interleaves with sorted `rs`, then `ss` is sorted. -/
-lemma sorted_of_listInterlaces :
-    ∀ (ss rs : List ℝ),
-    rs.Pairwise (· ≤ ·) →
-    ListInterlaces ss rs →
-    ss.Pairwise (· ≤ ·)
-  | [], _, _, _ => List.Pairwise.nil
-  | [_], _, _, _ => List.pairwise_singleton _ _
-  | s₁ :: s₂ :: ss', r₁ :: r₂ :: r₃ :: rs', hrs, hint => by
-    obtain ⟨_, hs₁r₂, hint_tail⟩ := hint
-    have hr₂s₂ : r₂ ≤ s₂ := hint_tail.1
-    have hrs_tail : (r₂ :: r₃ :: rs').Pairwise (· ≤ ·) :=
-      (List.pairwise_cons.mp hrs).2
-    have ih := sorted_of_listInterlaces (s₂ :: ss') (r₂ :: r₃ :: rs') hrs_tail hint_tail
-    grind
-  | _ :: _ :: _, _ :: _ :: [], _, hint => by
-    simp [ListInterlaces] at hint
-  | _ :: _ :: _, _ :: [], _, hint => by simp [ListInterlaces] at hint
-  | _ :: _ :: _, [], _, hint => by simp [ListInterlaces] at hint
-
 /-! ## Sub-multiset relation -/
 
 /-- All elements of the interleaving of `r₁ :: rest` are ≥ r₁. -/
@@ -123,7 +101,7 @@ private lemma mkInterleaving_ge (f : ℝ[X]) :
       exact le_trans hr₁r₂ (mkInterleaving_ge f r₂ rest' hrest hsorted_tail hsub_tail x hx)
 
 /-- The sub-multiset relation: `↑ss ≤ f'.roots`. -/
-lemma mkInterleaving_sub_multiset (f : ℝ[X])
+private lemma mkInterleaving_sub_multiset (f : ℝ[X])
     (hdeg : 2 ≤ f.natDegree) :
     ∀ (rs : List ℝ) (hrs : ∀ r ∈ rs, f.IsRoot r)
       (_ : rs.Pairwise (· ≤ ·))
@@ -267,9 +245,9 @@ lemma StrictInterl.of_degree_zero_right_of_degree_one
     (hf_deg0 : f.natDegree = 0) (hg_deg1 : g.natDegree = 1) :
     StrictInterl f g := by
   obtain ⟨r, hr_eq⟩ := Multiset.card_eq_one.mp (by
-    simpa [hg_deg1] using card_roots_of_splits hg_splits)
+    simpa [hg_deg1] using Polynomial.splits_iff_card_roots.mp hg_splits)
   have hroots_f : f.roots = 0 := Multiset.card_eq_zero.mp (by
-    simpa [hf_deg0] using card_roots_of_splits hf_splits)
+    simpa [hf_deg0] using Polynomial.splits_iff_card_roots.mp hf_splits)
   refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [r], by simp,
     List.pairwise_singleton _ _, ?_, ?_, ?_⟩
   · simp [hroots_f]
@@ -293,7 +271,7 @@ theorem derivative_interlaces_of_natDegree_ne_zero {f : ℝ[X]} (hf : f.Splits)
     have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
     have hrs_multiset : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
     have hrs_length : rs.length = f.natDegree := by
-      rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
+      rw [hrs_def, Multiset.length_sort, Polynomial.splits_iff_card_roots.mp hf]
     have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
     set ss := mkInterleaving f rs hrs_root
     have hss_length : ss.length = f.natDegree - 1 := by rw [mkInterleaving_length]; lia
@@ -314,9 +292,9 @@ theorem derivative_interlaces_of_natDegree_ne_zero {f : ℝ[X]} (hf : f.Splits)
         (le_of_eq (by rw [hf'_card, f.natDegree_derivative, ← hss_length,
           ← Multiset.coe_card]))
     have hss_sorted : ss.Pairwise (· ≤ ·) :=
-      sorted_of_listInterlaces ss rs hrs_sorted hss_interlaces
+      pairwise_le_of_listInterlaces ss rs hss_interlaces
     exact ⟨⟨by rintro rfl; simp at hf'_ne, hf⟩,
-      ⟨hf'_ne, splits_of_card_roots hf'_card⟩, by rw [f.natDegree_derivative]; lia,
+      ⟨hf'_ne, Polynomial.splits_iff_card_roots.mpr hf'_card⟩, by rw [f.natDegree_derivative]; lia,
       rs, ss, hrs_sorted, hss_sorted, hrs_multiset, hss_eq, hss_interlaces⟩
 
 /-- Deprecated degree-two form of `derivative_interlaces_of_natDegree_ne_zero`. -/
@@ -338,7 +316,7 @@ theorem exists_derivative_root_eval_nonneg_of_four_le_natDegree
       ⟨_, hpd, _, rs, ss, _, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces_of_natDegree_ne_zero hp (by lia)
   have hss_length : ss.length = p.derivative.natDegree := by
-    rw [← card_roots_of_splits hpd.2, ← hss_eq, Multiset.coe_card]
+    rw [← Polynomial.splits_iff_card_roots.mp hpd.2, ← hss_eq, Multiset.coe_card]
   have hss_two : 2 ≤ ss.length := by
     rw [hss_length, p.natDegree_derivative]
     lia

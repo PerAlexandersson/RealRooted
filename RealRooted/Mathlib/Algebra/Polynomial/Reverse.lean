@@ -126,6 +126,76 @@ end CommRing
 
 variable {K : Type*} [Field K]
 
+namespace Splits
+
+private theorem reverse_X_add_C (a : K) :
+    (X + C a).reverse.Splits :=
+  Splits.of_natDegree_le_one <|
+    (reverse_natDegree_le (X + C a)).trans <| by simp
+
+/-- Reversal preserves splitting over a field. -/
+theorem reverse {p : K[X]} (h : p.Splits) : p.reverse.Splits := by
+  induction h using Submonoid.closure_induction with
+  | mem x hx =>
+      rcases hx with ⟨a, rfl⟩ | ⟨a, rfl⟩
+      · simp
+      · exact reverse_X_add_C a
+  | one =>
+      exact Splits.of_natDegree_le_one <|
+        (reverse_natDegree_le (1 : K[X])).trans <| by simp
+  | mul x y _ _ ihx ihy => simp_all
+
+/-- Multiplying the reverse of a split polynomial by a power of `X` preserves
+splitting. -/
+theorem X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
+    (X ^ (N - p.natDegree) * p.reverse).Splits :=
+  (Splits.X_pow (N - p.natDegree)).mul h.reverse
+
+end Splits
+
+/-- Reflecting at a degree bound factors through reversal and a power of `X`. -/
+theorem reflect_eq_X_pow_mul_reverse (p : K[X]) {N : ℕ} (hN : p.natDegree ≤ N) :
+    reflect N p = X ^ (N - p.natDegree) * p.reverse := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hN
+  induction k with
+  | zero => simp [Polynomial.reverse]
+  | succ k ih =>
+      rw [Nat.add_succ, reflect_succ p (Nat.le_add_right _ _),
+        ih (Nat.le_add_right _ _), mul_assoc, ← commute_X, ← mul_assoc,
+        ← pow_succ]
+      rw [show p.natDegree + k - p.natDegree = k by lia,
+        show p.natDegree + k + 1 - p.natDegree = k + 1 by lia]
+
+namespace Splits
+
+/-- Reflection at any degree bound preserves splitting. -/
+theorem reflect {p : K[X]} (h : p.Splits) {N : ℕ} (hN : p.natDegree ≤ N) :
+    (reflect N p).Splits := by
+  simpa [reflect_eq_X_pow_mul_reverse p hN] using h.X_pow_mul_reverse N
+
+end Splits
+
+/-- At a valid degree bound, reflection preserves and reflects splitting. -/
+theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
+    (reflect N p).Splits ↔ p.Splits := by
+  refine ⟨?_, fun h ↦ h.reflect hN⟩
+  intro h
+  simpa using h.reflect <|
+    (natDegree_reflect_le (N := N) (p := p)).trans (max_eq_left hN).le
+
+/-- Reversal preserves and reflects splitting over a field. -/
+theorem splits_reverse_iff {p : K[X]} : p.reverse.Splits ↔ p.Splits := by
+  simpa [Polynomial.reverse] using
+    (splits_reflect_iff (p := p) (N := p.natDegree) le_rfl)
+
+namespace Splits
+
+/-- If the reverse splits, then the original polynomial splits. -/
+theorem of_reverse {p : K[X]} (h : p.reverse.Splits) : p.Splits :=
+  splits_reverse_iff.mp h
+
+end Splits
+
 section CharZero
 
 variable [CharZero K] {p : K[X]} {n : ℕ}

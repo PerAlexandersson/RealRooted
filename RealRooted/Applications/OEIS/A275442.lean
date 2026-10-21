@@ -227,13 +227,13 @@ lemma strictInterl_shiftedRow_partial_step
   · apply strictInterl_shiftedRow_succ n
     · exact h13
     · exact h12
-    · exact h01.insert_X_lag_of_nonneg
+    · exact strictInterl_mul_X_of_strictInterl_of_nonneg h01
         (shiftedRow_hasNonnegCoeffs n) (shiftedRow_hasNonnegCoeffs (n + 1))
   · apply strictInterl_shiftedRow_succ n
     · exact h23
     · exact StrictInterl.refl
         (shiftedRow_hasPosLeadingCoeff (n + 2)).ne_zero h23.1.2
-    · exact h02.insert_X_lag_of_nonneg
+    · exact strictInterl_mul_X_of_strictInterl_of_nonneg h02
         (shiftedRow_hasNonnegCoeffs n) (shiftedRow_hasNonnegCoeffs (n + 2))
 
 /-- The bridge has the degree of the next shifted row. -/
@@ -246,15 +246,13 @@ lemma natDegree_shiftedBridge (n : ℕ) :
       natDegree_shiftedRow]
   rcases lt_trichotomy (shiftedRow (n + 2)).natDegree
       (X * shiftedRow n).natDegree with hlt | heq | hgt
-  · rw [natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hlt
-      (shiftedRow_hasPosLeadingCoeff n).X_mul, hright]
+  · rw [Polynomial.natDegree_add_eq_right_of_natDegree_lt hlt, hright]
     lia
   · rw [natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff heq
       (shiftedRow_hasPosLeadingCoeff (n + 2))
       (shiftedRow_hasPosLeadingCoeff n).X_mul, hleft]
     lia
-  · rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hgt
-      (shiftedRow_hasPosLeadingCoeff (n + 2)), hleft]
+  · rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hgt, hleft]
     lia
 
 /-- The two positive bridge summands give it positive leading coefficient. -/

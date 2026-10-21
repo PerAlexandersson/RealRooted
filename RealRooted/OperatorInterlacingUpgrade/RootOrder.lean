@@ -310,7 +310,7 @@ theorem PreservesFullDegreeRootMoves.rootwiseLE_bounds
       RootwiseLE (T p) (T ((X + C a) ^ D)) := by
   let ps := p.roots.sort (· ≤ ·)
   have hps_len : ps.length = D := by
-    simp [ps, card_roots_of_splits hsplits, hdeg]
+    simp [ps, Polynomial.splits_iff_card_roots.mp hsplits, hdeg]
   have hps_sort : (↑ps : Multiset ℝ) = p.roots :=
     Multiset.sort_eq p.roots (· ≤ ·)
   have hlo_list : List.Forall₂ (· ≤ ·) (List.replicate D (-b)) ps := by
@@ -360,7 +360,7 @@ theorem rootwiseLE_monomialChain_component_bounds
       RootwiseLE (T p) (T ((X + C a) ^ D)) := by
   let ps := p.roots.sort (· ≤ ·)
   have hps_len : ps.length = D := by
-    simp [ps, card_roots_of_splits hsplits, hdeg]
+    simp [ps, Polynomial.splits_iff_card_roots.mp hsplits, hdeg]
   have hps_sort : (↑ps : Multiset ℝ) = p.roots :=
     Multiset.sort_eq p.roots (· ≤ ·)
   have hlo_list : List.Forall₂ (· ≤ ·) (List.replicate D (-b)) ps := by

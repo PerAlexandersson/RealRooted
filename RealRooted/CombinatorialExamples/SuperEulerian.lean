@@ -78,7 +78,7 @@ theorem hasNonnegCoeffs_of_splits_of_roots_nonpos_of_coeff_zero_pos {p : ℝ[X]}
   have hP : HasNonnegCoeffs ((p.roots.map (X - C ·)).prod) :=
     hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hr
   have hp : p = C p.leadingCoeff * (p.roots.map (X - C ·)).prod :=
-    (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hs)).symm
+    (C_leadingCoeff_mul_prod_multiset_X_sub_C (Polynomial.splits_iff_card_roots.mp hs)).symm
   have hc := congrArg (fun q => q.coeff 0) hp
   simp only [coeff_C_mul] at hc
   have hlc : 0 < p.leadingCoeff := by
@@ -87,7 +87,7 @@ theorem hasNonnegCoeffs_of_splits_of_roots_nonpos_of_coeff_zero_pos {p : ℝ[X]}
     have := mul_nonpos_of_nonpos_of_nonneg hneg (hP 0)
     linarith
   rw [hp]
-  exact nonnegCoeffs_C_mul hlc.le hP
+  exact hasNonnegCoeffs_C_mul hlc.le hP
 
 private lemma gamma_expansion_remainder {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree ≤ d)
     (hfix : idTransform d p = p) (hd : 1 ≤ d) :
@@ -164,8 +164,10 @@ theorem orderedRoot_lt_of_strictInterl {p q : ℝ[X]} {n : ℕ} (h : StrictInter
     (hp : p.natDegree = n) (hq : q.natDegree = n) (hno : ∀ r, p.IsRoot r → ¬ q.IsRoot r)
     (i : Fin n) : orderedRoot p n i < orderedRoot q n i := by
   refine lt_of_le_of_ne (h.orderedRoot_le hp hq i) fun heq => ?_
-  have hpm := orderedRoot_mem_roots (n := n) (by rw [card_roots_of_splits h.1.2, hp]) i
-  have hqm := orderedRoot_mem_roots (n := n) (by rw [card_roots_of_splits h.2.1.2, hq]) i
+  have hpm := orderedRoot_mem_roots (n := n)
+    (by rw [Polynomial.splits_iff_card_roots.mp h.1.2, hp]) i
+  have hqm := orderedRoot_mem_roots (n := n)
+    (by rw [Polynomial.splits_iff_card_roots.mp h.2.1.2, hq]) i
   rw [← heq] at hqm
   exact hno _ ((mem_roots h.1.1).mp hpm) ((mem_roots h.2.1.1).mp hqm)
 
@@ -1006,8 +1008,10 @@ private lemma strictInterl_superEulerian_step {l m : ℕ}
   have hVU : StrictInterl V U :=
     (interl_polarThetaIterate_thetaPlusOneIterate l m).toStrictInterl_of_ne hV.pos.ne_zero
       hU.pos.ne_zero
-  have hEcard : E.roots.card = m := by rw [card_roots_of_splits hE.splits, hE.natDegree_eq]
-  have hUcard : U.roots.card = m := by rw [card_roots_of_splits hU.splits, hU.natDegree_eq]
+  have hEcard : E.roots.card = m := by
+    rw [Polynomial.splits_iff_card_roots.mp hE.splits, hE.natDegree_eq]
+  have hUcard : U.roots.card = m := by
+    rw [Polynomial.splits_iff_card_roots.mp hU.splits, hU.natDegree_eq]
   have hno : ∀ r, E.IsRoot r → ¬ U.IsRoot r :=
     not_isRoot_of_orderedRoot_chain hE0 hU.pos.ne_zero hEcard hUcard
       (hE.orderedRoot_lt_iterateThetaPlusOne l)

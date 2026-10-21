@@ -104,11 +104,7 @@ theorem interl_regularizedKernelRow_succ
       (g * η) G H i.castSucc,
     chainPolynomial_sourceBorder_eq_X_mul_regularizedKernelRow
       (g * η) G H i.succ] at hchain
-  apply hchain.of_mul_X_both_of_nonneg
-  · exact (regularizedKernelRow_isPFPolynomial hg hη hG hH hGlower
-      hHlower hGdiag hHdiag i.castSucc).hasNonnegCoeffs
-  · exact (regularizedKernelRow_isPFPolynomial hg hη hG hH hGlower
-      hHlower hGdiag hHdiag i.succ).hasNonnegCoeffs
+  exact hchain.of_mul_X_both
 
 /-- Strictly lower entrywise limits of positive-diagonal TN approximations
 have PF kernel rows and consecutive zero-aware interlacing. -/

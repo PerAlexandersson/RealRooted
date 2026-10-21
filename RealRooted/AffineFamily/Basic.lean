@@ -91,7 +91,7 @@ theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
     StrictInterl.add_of_right_of_posLeadingCoeff hg_Xf hsXf hg_pos hsXf_pos
   have hmid_nonneg : HasNonnegCoeffs (g + C s * (X * f)) := by
     refine hgnn.add ?_
-    exact (nonnegCoeffs_C_mul hs.le hfnn.X_mul)
+    exact (hasNonnegCoeffs_C_mul hs.le hfnn.X_mul)
   have hmid_pos : HasPosLeadingCoeff (g + C s * (X * f)) :=
     hmid_nonneg.pos_leadingCoeff hmid.1.1
   have hsum : StrictInterl (C t * f + (g + C s * (X * f))) (X * f) :=

@@ -95,9 +95,9 @@ private theorem Interlaces.orderedRoot_bounds {g f : ℝ[X]} {n : ℕ}
       orderedRoot g n i ≤ orderedRoot f (n + 1) i.succ := by
   obtain ⟨hf, hg, _, rs, ss, hrs, hss, hrs_eq, hss_eq, hint⟩ := h
   have hrs_len : rs.length = n + 1 := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2, hfdeg]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2, hfdeg]
   have hss_len : ss.length = n := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hg.2, hgdeg]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hg.2, hgdeg]
   have hrs_canonical : f.roots.sort (· ≤ ·) = rs := by
     rw [← hrs_eq, Multiset.coe_sort]
     exact List.mergeSort_eq_self (· ≤ ·) hrs
@@ -292,7 +292,8 @@ private theorem exceptionalBasePolynomial_strictInterl_exceptionalEulerInverse
     simpa only [mul_comm] using hFlead
   have hUne : U ≠ 0 := fun hzero => by rw [hzero] at hUdegree; simp_all
   have huSplits : u.Splits :=
-    (isRealRooted_comp_one_sub_X hUne hUsplits).2
+    hUsplits.comp_of_natDegree_le_one
+      ((natDegree_sub_le (1 : ℝ[X]) X).trans (by simp))
   have hrec : C γ * f = C γ * u + -(1 - X) * u.derivative := by
     have heuler := eulerShiftOperator_exceptionalEulerInverse m ε hγ
     have hcomp := congrArg (fun p : ℝ[X] => p.comp (1 - X)) heuler
@@ -745,10 +746,10 @@ private theorem interlaces_of_intervalRootData_orderedRoot_bounds
   have hgNe : g ≠ 0 := hg.ne_zero
   have hrsLength : rs.length = n + 1 := by
     rw [show rs = f.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
-      card_roots_of_splits hfSplits, hfDegree]
+      Polynomial.splits_iff_card_roots.mp hfSplits, hfDegree]
   have hssLength : ss.length = n := by
     rw [show ss = g.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
-      card_roots_of_splits hg.splits, hg.natDegree_eq]
+      Polynomial.splits_iff_card_roots.mp hg.splits, hg.natDegree_eq]
   refine ⟨⟨hfNe, hfSplits⟩, ⟨hgNe, hg.splits⟩, ?_, rs, ss,
     by simp [rs], by simp [ss], by simp [rs], by simp [ss], ?_⟩
   · rw [hg.natDegree_eq, hfDegree]

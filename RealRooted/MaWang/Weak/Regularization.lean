@@ -8,7 +8,7 @@ namespace RealRooted.MaWangInternal
 
 /-- Weak-sign Liu--Wang perturbation step: subtracting a small positive constant from the
 coefficient of `g` makes the root-sign condition strict, so the strict mixed theorem applies. -/
-theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+private theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -41,7 +41,7 @@ theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
       (hnat_Fδ.trans (by simpa [F] using hsucc)) hroot_sign
 
 /-- Real-rootedness for the perturbed weak-sign Liu--Wang combination. -/
-theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
+private theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -54,18 +54,6 @@ theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
   (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
     hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
-lemma mem_range_of_mem_aroots_of_isRealRooted {p : ℝ[X]}
-    (hp_splits : p.Splits)
-    {z : ℂ} (hz : z ∈ p.aroots ℂ) :
-    z ∈ (algebraMap ℝ ℂ).range := by
-  rw [← show p.roots.map (algebraMap ℝ ℂ) = p.aroots ℂ by
-    simpa [Polynomial.aroots_def] using
-      roots_map_of_injective_of_card_eq_natDegree
-        (p := p) (f := algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
-        (card_roots_of_splits hp_splits)] at hz
-  rcases Multiset.mem_map.mp hz with ⟨x, _, rfl⟩
-  simp
-
 /-- If every positive perturbation `F - C δ * g` is real-rooted, then `F` is
 real-rooted as well. The interlacing hypothesis is only used to keep the degree
 and leading coefficient stable under the subtraction. -/
@@ -156,7 +144,8 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
         (IsAlgClosed.splits _)
     have hFδ_rr := hsub_rr hδ_pos
     have hqδ_rr : qδ ≠ 0 ∧ qδ.Splits := by simp_all [qδ]
-    rcases mem_range_of_mem_aroots_of_isRealRooted hqδ_rr.2 hw_mem with ⟨x, rfl⟩
+    have hw_root : (qδ.map (algebraMap ℝ ℂ)).IsRoot w := by simp_all
+    rcases hqδ_rr.2.mem_range_of_isRoot hqδ_rr.1 hw_root with ⟨x, rfl⟩
     have him_le : eps0 ≤ ‖z - x‖ := by
       unfold eps0
       simpa using (Complex.abs_im_le_norm (z - x))
@@ -191,7 +180,7 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   simp_all [-hF_eq]
 
 /-- Weak-sign Liu--Wang real-rootedness theorem in the no-common-roots regime. -/
-theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
+private theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
     {f g a b : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)

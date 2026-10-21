@@ -322,18 +322,13 @@ theorem interl_affine_mul_X_self {s t : ℝ} (hs : 0 < s) :
     (isRealRooted_affine_factor hs).2).2
 
 theorem interl_affine_mul_X_add_X_affine_mul_X
-    {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
+    {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X) := by
   rw [show ((C s * X + C t) * X + X : ℝ[X]) =
     X * (C s * X + C (t + 1)) by grind]
   rw [show ((C s * X + C t) * X : ℝ[X]) = X * (C s * X + C t) by ring]
-  have hleft_nonneg : HasNonnegCoeffs (C s * X + C t + 1 : ℝ[X]) := by
-    rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
-    exact hasNonnegCoeffs_affine_linear hs.le (by positivity)
   simpa [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind] using
-    (interl_affine_add_one_affine (t := t) hs).mul_X_both_of_nonneg
-      hleft_nonneg
-      (hasNonnegCoeffs_affine_linear (a := s) (b := t) hs.le ht.le)
+    (interl_affine_add_one_affine (t := t) hs).mul_X_both
 
 theorem interl_affine_mul_X_add_X_self {s t : ℝ} (hs : 0 < s) :
     Interl ((C s * X + C t) * X + X) ((C s * X + C t) * X + X) := by

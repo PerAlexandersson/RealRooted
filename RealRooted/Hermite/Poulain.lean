@@ -200,7 +200,7 @@ theorem applyAsDifferentialOperator_X_add_C_eq_zero_or_splits {a : ℝ} {g : ℝ
       (applyAsDifferentialOperator (X + C a) g).Splits := by
   rw [applyAsDifferentialOperator_X_add_C, add_comm]
   rcases eq_or_ne a 0 with rfl | ha
-  · simpa using eq_zero_or_splits_derivative (.inr hg)
+  · simpa using (Or.inr hg.derivative : g.derivative = 0 ∨ g.derivative.Splits)
   · exact .inr (splits_C_mul_add_derivative hg ha)
 
 /-- Hermite--Poulain theorem target, zero-aware because a differential operator

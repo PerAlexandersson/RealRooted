@@ -581,7 +581,7 @@ theorem aissenSchoenbergWhitney_reverse {p : ℝ[X]}
   · convert isPolyaFreqSeq_zero
     exact coeff_zero _
   · have hp_eq : p = C p.leadingCoeff * (p.roots.map fun r ↦ X - C r).prod :=
-      (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hsplits)).symm
+      (C_leadingCoeff_mul_prod_multiset_X_sub_C (Polynomial.splits_iff_card_roots.mp hsplits)).symm
     rw [hp_eq]
     have hlc_nonneg : 0 ≤ p.leadingCoeff := (hpnn.pos_leadingCoeff hp0).le
     exact IsPolyaFreqSeq.const_mul p.leadingCoeff hlc_nonneg
@@ -599,7 +599,7 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
     (a := p.coeff) (b := q.coeff) (by
       intro μ hμ
       have hnn : HasNonnegCoeffs (p + C μ * q) :=
-        hpnn.add (nonnegCoeffs_C_mul hμ.le hqnn)
+        hpnn.add (hasNonnegCoeffs_C_mul hμ.le hqnn)
       convert aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
         (roots_nonpos_of_hasNonnegCoeffs hnn) using 1
       funext n

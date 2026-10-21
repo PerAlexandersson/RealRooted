@@ -135,7 +135,7 @@ private theorem factorialHadamardProduct_pf_right_linearFactor_of_derivative_int
     have hneg :
         HasNonnegCoeffs (-(C u * factorialHadamardProduct f p)) := by
       simpa [neg_mul, C_neg] using
-        nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hF.hasNonnegCoeffs
+        hasNonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hF.hasNonnegCoeffs
     exact hD.hasNonnegCoeffs.X_mul.add hneg
   by_cases hF0 : F = 0
   · rw [factorialHadamardProduct_X_sub_C_mul_right]
@@ -163,7 +163,7 @@ theorem HasNonnegCoeffs.weightedSum :
       have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
         fun ap hap => hnn ap (by simp [hap])
       simpa [weightedSum_cons] using
-        (nonnegCoeffs_C_mul ha hp).add
+        (hasNonnegCoeffs_C_mul ha hp).add
           (HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn)
 
 /-- Zero-aware weighted common-right cone closure. -/
@@ -190,7 +190,7 @@ theorem interl_weightedSum_right_of_nonneg :
       have htail_strictInterl_sum : Interl (weightedSum l) h :=
         interl_weightedSum_right_of_nonneg l h htail_nonneg htail_strictInterl htail_nn
       have hhead_nn : HasNonnegCoeffs (C a * p) :=
-        nonnegCoeffs_C_mul ha hp_nn
+        hasNonnegCoeffs_C_mul ha hp_nn
       have htail_sum_nn : HasNonnegCoeffs (weightedSum l) :=
         HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn
       simpa [weightedSum_cons] using
@@ -290,7 +290,7 @@ theorem divFactorial_sub_C_mul_derivative_interl_self {p : ℝ[X]} {u : ℝ}
     hpL.derivative.hasNonnegCoeffs
   have hscaled_nn :
       HasNonnegCoeffs (C (-u) * derivative (divFactorial p)) :=
-    nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
+    hasNonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
   have hsum :
       Interl (divFactorial p + C (-u) * derivative (divFactorial p)) (divFactorial p) :=
     interl_add_left_of_common_right_of_nonneg hpL.interl_self hscaled
@@ -312,7 +312,7 @@ theorem divFactorial_sub_C_mul_derivative_pf {p : ℝ[X]} {u : ℝ}
     change HasNonnegCoeffs (divFactorial p - C u * derivative (divFactorial p))
     have hscaled_nn :
         HasNonnegCoeffs (C (-u) * derivative (divFactorial p)) :=
-      nonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
+      hasNonnegCoeffs_C_mul (by linarith : 0 ≤ -u) hDnn
     simpa [sub_eq_add_neg, C_neg, neg_mul] using
       hpL.hasNonnegCoeffs.add hscaled_nn
   by_cases hT0 : T = 0

@@ -143,8 +143,8 @@ theorem RootCountCompatible.natDegree_abs_sub_le_one {p q : ℝ[X]}
   have hq_count : rootCountAtOrAbove q x = q.roots.card :=
     rootCountAtOrAbove_eq_card_of_forall_le_roots hqx
   have hgap := h x
-  rw [hp_count, hq_count, card_roots_of_splits hp_splits,
-    card_roots_of_splits hq_splits] at hgap
+  rw [hp_count, hq_count, Polynomial.splits_iff_card_roots.mp hp_splits,
+    Polynomial.splits_iff_card_roots.mp hq_splits] at hgap
   exact hgap
 
 theorem rootCountAtOrAbove_le_natDegree_of_splits {p : ℝ[X]}
@@ -153,7 +153,7 @@ theorem rootCountAtOrAbove_le_natDegree_of_splits {p : ℝ[X]}
   have hfilter_le :
       (p.roots.filter (fun r => x ≤ r)).card ≤ p.roots.card :=
     Multiset.card_le_card (Multiset.filter_le (fun r => x ≤ r) p.roots)
-  simpa [rootCountAtOrAbove, card_roots_of_splits hp_splits] using hfilter_le
+  simpa [rootCountAtOrAbove, Polynomial.splits_iff_card_roots.mp hp_splits] using hfilter_le
 
 theorem rootCountAtOrAbove_eq_zero_of_splits_natDegree_eq_zero {p : ℝ[X]}
     (hp_splits : p.Splits) (hpdeg : p.natDegree = 0) (x : ℝ) :

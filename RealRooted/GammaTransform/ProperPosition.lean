@@ -60,7 +60,7 @@ private lemma length_preferredRoots
     (preferredRoots d γ).length = γ.natDegree := by
   have hcoe := coe_map_gammaRootMap_preferredRoots hγdeg hγ hγneg
   have hcard := congrArg Multiset.card hcoe
-  simpa [card_roots_of_splits hγsplits] using hcard
+  simpa [Polynomial.splits_iff_card_roots.mp hγsplits] using hcard
 
 private lemma map_gammaRootMap_preferredRoots_pairwise (d : ℕ) (γ : ℝ[X]) :
     ((preferredRoots d γ).map gammaRootMap).Pairwise (· ≤ ·) := by

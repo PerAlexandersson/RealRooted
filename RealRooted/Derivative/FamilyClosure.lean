@@ -15,6 +15,7 @@ noncomputable section
 namespace RealRooted
 
 /-- Splitting is preserved by differentiation in the zero-aware convention. -/
+@[deprecated Polynomial.Splits.derivative +typeChanged (since := "2026-10-21")]
 theorem eq_zero_or_splits_derivative {p : ℝ[X]}
     (hp : p = 0 ∨ p.Splits) :
     p.derivative = 0 ∨ p.derivative.Splits := by
@@ -23,6 +24,7 @@ theorem eq_zero_or_splits_derivative {p : ℝ[X]}
   · exact Or.inr hp.derivative
 
 /-- Iterating the zero-aware derivative closure preserves splitting. -/
+@[deprecated Polynomial.Splits.iterate_derivative +typeChanged (since := "2026-10-21")]
 theorem iterate_derivative_eq_zero_or_splits {p : ℝ[X]} (hsplit : p.Splits)
     (n : ℕ) :
     (derivative^[n]) p = 0 ∨ ((derivative^[n]) p).Splits :=

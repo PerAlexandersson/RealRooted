@@ -153,7 +153,7 @@ private theorem scale_range_interlacing
   · intro p hp
     rcases List.mem_map.mp hp with ⟨j, hj, rfl⟩
     have hjq : j < q := by simpa using hj
-    exact nonnegCoeffs_C_mul (ha j hjq)
+    exact hasNonnegCoeffs_C_mul (ha j hjq)
       (hf.nonnegCoeffs _ (List.mem_map.mpr ⟨j, hj, rfl⟩))
   · intro p hp hp_ne
     rcases List.mem_map.mp hp with ⟨j, hj, rfl⟩
@@ -358,13 +358,13 @@ theorem interl_chainPolynomial_succ
         (resolution.lambda_nonneg n j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (resolution.lambda_nonneg n j hjn)
+      exact hasNonnegCoeffs_C_mul (resolution.lambda_nonneg n j hjn)
         (hrow.nonnegCoeffs _ (hmem j hjn))
   have hSnn : HasNonnegCoeffs S := by
     apply hasNonnegCoeffs_finsetSum
     intro j hj
     have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-    exact nonnegCoeffs_C_mul (resolution.lambda_nonneg n j hjn)
+    exact hasNonnegCoeffs_C_mul (resolution.lambda_nonneg n j hjn)
       (hrow.nonnegCoeffs _ (hmem j hjn))
   have hFn : F n = chainPolynomial R n :=
     subdivisionOperator_resolutionPolynomial_diagonal resolution n

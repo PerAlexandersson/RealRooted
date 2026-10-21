@@ -292,7 +292,7 @@ theorem StrictInterlSameDegree.toStrictInterl {p q : ℝ[X]}
     (h : StrictInterlSameDegree p q) : StrictInterl p q := by
   obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, hdeg, h_inter⟩ := h
   have h_len : (p.roots.sort (· ≤ ·)).length = (q.roots.sort (· ≤ ·)).length := by
-    simp [card_roots_of_splits, *]
+    simp [Polynomial.splits_iff_card_roots.mp, *]
   rw [List.interleaves_reverse_reverse_of_length_eq_length h_len] at h_inter
   have h_le : List.Interleaves (· ≤ ·) (q.roots.sort (· ≤ ·))
       (p.roots.sort (· ≤ ·)) := h_inter.mono fun _ _ hab ↦ le_of_lt hab

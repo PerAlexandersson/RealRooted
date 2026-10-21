@@ -308,7 +308,7 @@ lemma reflect_of_natDegree_le {f g : ℝ[X]} (hfg : PosComboRealRooted f g) {N :
       max_le
         ((Polynomial.natDegree_C_mul_le lam f).trans hfN)
         ((Polynomial.natDegree_C_mul_le μ g).trans hgN)
-  have hsplit_ref := DegreeDropReversal.splits_reflect_of_splits hsplits hdeg_combo
+  have hsplit_ref := Polynomial.Splits.reflect hsplits hdeg_combo
   have hne_ref : reflect N (C lam * f + C μ * g) ≠ 0 :=
     fun hzero => hne (Polynomial.reflect_eq_zero_iff.mp hzero)
   simp_all
@@ -739,7 +739,7 @@ theorem strictInterl_same_of_root_sign_data
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hlen : rs.length = f.natDegree := by
     rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hf_splits]
+      Polynomial.splits_iff_card_roots.mp hf_splits]
   have hn : 1 ≤ rs.length := by lia
   have hg_ne : g ≠ 0 := hg_pos.ne_zero
   exact
@@ -785,10 +785,10 @@ theorem strictInterl_or_reverse_of_same_degree_one
   have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one (by lia)
   obtain ⟨rf, hrf_eq⟩ : ∃ rf, f.roots = {rf} :=
-    Multiset.card_eq_one.mp (by simpa [hf_deg1] using card_roots_of_splits hf_rr.2)
+    Multiset.card_eq_one.mp (by simpa [hf_deg1] using Polynomial.splits_iff_card_roots.mp hf_rr.2)
   obtain ⟨rg, hrg_eq⟩ : ∃ rg, g.roots = {rg} :=
     Multiset.card_eq_one.mp (by
-      simpa [show g.natDegree = 1 by lia] using card_roots_of_splits hg_rr.2)
+      simpa [show g.natDegree = 1 by lia] using Polynomial.splits_iff_card_roots.mp hg_rr.2)
   by_cases hle : rf ≤ rg
   · left
     exact ⟨hf_rr, hg_rr, [rf], [rg], by simp, by simp, by simp [hrf_eq],

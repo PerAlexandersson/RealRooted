@@ -789,8 +789,8 @@ theorem strictInterl_of_stable_two_one {f g : ℝ[X]}
     have : b₂ * (-c₂ / b₂) = -c₂ := by field_simp
     rw [this, C_neg, sub_neg_eq_add]
   have hgroots : g.roots = {-c₂ / b₂} := by rw [hgfact, roots_C_mul _ hb₂_ne, roots_X_sub_C]
-  have hfs : f.Splits := splits_of_card_roots (by rw [hfroots, hf₂]; simp)
-  have hgs : g.Splits := splits_of_card_roots (by rw [hgroots, hg₁]; simp)
+  have hfs : f.Splits := Polynomial.splits_iff_card_roots.mpr (by rw [hfroots, hf₂]; simp)
+  have hgs : g.Splits := Polynomial.splits_iff_card_roots.mpr (by rw [hgroots, hg₁]; simp)
   obtain ⟨h₁, h₂⟩ := interlace_core_two_one ha hv₁ hv₂ hb₂_pos hb₁ hb₂ hc₁ hc₂
   refine ⟨⟨h_g_ne, hgs⟩, ⟨h_f_ne, hfs⟩,
     [-c₂ / b₂],

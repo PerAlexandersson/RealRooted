@@ -682,7 +682,7 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
   have h1 : p.roots.card ≤ p.natDegree := card_roots' p
   have h2 : S.card ≤ p.roots.card := Multiset.card_le_card hle
   have hne_card : p.roots.card ≠ p.natDegree :=
-    fun h => hne (splits_of_card_roots h)
+    fun h => hne (Polynomial.splits_iff_card_roots.mpr h)
   -- p.roots.card = natDegree - 1
   have hrc : p.roots.card = p.natDegree - 1 := by lia
   -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
@@ -708,7 +708,7 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
     rw [natDegree_multiset_prod_X_sub_C_eq_card, hrc, ← hpq] at h3
     lia
   have hq_split := (isRealRooted_of_degree_one hq_deg).2
-  have hq_card := card_roots_of_splits hq_split
+  have hq_card := Polynomial.splits_iff_card_roots.mp hq_split
   rw [hq_empty, Multiset.card_zero, hq_deg] at hq_card
   lia
 
@@ -754,7 +754,7 @@ private lemma strictInterl_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (
     (hu : u ≤ r₁) :
     StrictInterl g f := by
   have hss_sorted : ss.Pairwise (· ≤ ·) :=
-    sorted_of_listInterlaces ss (r₁ :: rest) hrs_sorted hint
+    pairwise_le_of_listInterlaces ss (r₁ :: rest) hint
   have hu_le_all : ∀ s ∈ ss, u ≤ s :=
     fun s hs => le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs)
   have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by simp_all
@@ -781,7 +781,8 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   set rs := f.roots.sort (· ≤ ·) with hrs_def
   have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_length : rs.length = d := by rw [hrs_def, Multiset.length_sort, card_roots_of_splits hf]
+  have hrs_length : rs.length = d := by
+    rw [hrs_def, Multiset.length_sort, Polynomial.splits_iff_card_roots.mp hf]
   have hrs_root : ∀ r ∈ rs, f.IsRoot r := by simp_all
   have hsub_rs : (↑rs : Multiset ℝ) ≤ f.roots := le_of_eq hrs_eq
   have hgap_rs : ConsecNoRoots f rs := consecNoRoots_of_sorted_eq hrs_eq hrs_sorted
@@ -812,7 +813,7 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     roots_card_of_sub_pred hg₀.ne_zero hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; lia)
   have hss_eq_card : (↑ss : Multiset ℝ).card + 1 = g.roots.card := by
-    rw [Multiset.coe_card, hss_length, card_roots_of_splits hg_rr, hg_deg]
+    rw [Multiset.coe_card, hss_length, Polynomial.splits_iff_card_roots.mp hg_rr, hg_deg]
     lia
   obtain ⟨r₁, rest, hrs_cons⟩ : ∃ r₁ rest, rs = r₁ :: rest := by
     cases h : rs with
@@ -937,7 +938,7 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       calc
         m = f.roots.count r₁ := by lia
         _ ≤ f.roots.card := Multiset.count_le_card _ _
-        _ = d := by rw [card_roots_of_splits hf, hd_def]
+        _ = d := by rw [Polynomial.splits_iff_card_roots.mp hf, hd_def]
     have hq_deg : q.natDegree = d - m := by
       have hdegmul :=
           natDegree_mul (p := (X - C r₁) ^ m) (q := q)
@@ -953,11 +954,11 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       lia
     have hcard_step : qg.roots.card = q.roots.card + 1 := by
       calc
-        qg.roots.card = qg.natDegree := card_roots_of_splits hqg_rr.2
+        qg.roots.card = qg.natDegree := Polynomial.splits_iff_card_roots.mp hqg_rr.2
         _ = d - (m - 1) := hqg_deg
         _ = d - m + 1 := by lia
         _ = q.natDegree + 1 := by lia
-        _ = q.roots.card + 1 := by rw [← card_roots_of_splits hq_rr.2]
+        _ = q.roots.card + 1 := by rw [← Polynomial.splits_iff_card_roots.mp hq_rr.2]
     have hPg_nonneg' : 0 ≤ -(((-1 : ℝ) ^ q.roots.card) * Pg) := by
       rw [hcard_step, pow_add, pow_one, mul_neg_one] at hPg_nonneg
       grind
@@ -970,8 +971,8 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       have hmulp' : 0 ≤ -(Pg * Pq) := by nlinarith [hmulp, hsquare]
       linarith
     have hEval_nonpos : qg.eval r₁ * q.eval r₁ ≤ 0 := by
-      rw [eval_eq_leadingCoeff_mul_prod_sub hqg_rr.2 r₁,
-        eval_eq_leadingCoeff_mul_prod_sub hq_rr.2 r₁,
+      rw [Polynomial.Splits.eval_eq_prod_roots hqg_rr.2 r₁,
+        Polynomial.Splits.eval_eq_prod_roots hq_rr.2 r₁,
         show (q.roots.map (r₁ - ·)).prod = Pq by lia,
         show (qg.roots.map (r₁ - ·)).prod = Pg by lia]
       have hlc_pos : 0 < qg.leadingCoeff * q.leadingCoeff :=
@@ -1008,9 +1009,11 @@ theorem strictInterl_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     exact mul_pos (by simp_all) hf₀
   -- f and g each have exactly one root
   obtain ⟨r, hr_eq⟩ :=
-    Multiset.card_eq_one.mp (show f.roots.card = 1 by rw [card_roots_of_splits hf, hdeg])
+    Multiset.card_eq_one.mp (show f.roots.card = 1 by
+      rw [Polynomial.splits_iff_card_roots.mp hf, hdeg])
   obtain ⟨s, hs_eq⟩ :=
-    Multiset.card_eq_one.mp (show g.roots.card = 1 by rw [card_roots_of_splits hg_rr.2, hg_deg])
+    Multiset.card_eq_one.mp (show g.roots.card = 1 by
+      rw [Polynomial.splits_iff_card_roots.mp hg_rr.2, hg_deg])
   have hr_root : f.IsRoot r :=
     (mem_roots hf₀.ne_zero).mp (hr_eq ▸ Multiset.mem_singleton_self r)
   have hr_nonpos : r ≤ 0 := hroots_nonpos r (hr_eq ▸ Multiset.mem_singleton_self r)
@@ -1026,7 +1029,7 @@ theorem strictInterl_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
     exact hf₀
   -- g(r) = lc(g) * (r - s)
   have hgr_eq : g.eval r = g.leadingCoeff * (r - s) := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hg_rr.2 r, hs_eq]; simp
+    rw [Polynomial.Splits.eval_eq_prod_roots hg_rr.2 r, hs_eq]; simp
   -- s ≤ r
   have hsr : s ≤ r := by
     have : 0 < r - s := by simp_all

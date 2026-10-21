@@ -143,8 +143,8 @@ theorem strictInterl_add_derivative_add_thetaPlusOne
   have hrpos : HasPosLeadingCoeff r := hr.pos_leadingCoeff hrp.1.1
   let u := C a * p.derivative + C b * r
   have hunn : HasNonnegCoeffs u :=
-    (nonnegCoeffs_C_mul ha.le hdernn).add
-      (nonnegCoeffs_C_mul hb.le hr)
+    (hasNonnegCoeffs_C_mul ha.le hdernn).add
+      (hasNonnegCoeffs_C_mul hb.le hr)
   have hup : StrictInterl u p := by
     dsimp [u]
     simpa [weightedSum, weightedSum_cons] using

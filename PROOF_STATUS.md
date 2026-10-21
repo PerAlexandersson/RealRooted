@@ -30,7 +30,7 @@ None.
 | Liu theorem with common roots | `compatible_iff_rootCountBranchesWithCommon` |
 | Garloff--Wagner PF closure | `garloffWagnerHadamardPFInterl_of_nonnegStrictInterl` |
 | Bounded-degree polar-theta interlacing preservation | `polarThetaPreservesInterlStatement`, witnessed by `polarTheta_preserves_interl` |
-| Theta interlacing preservation on the PF cone | `thetaPreservesInterlStatement`, witnessed by `thetaPreservesInterl` |
+| Theta interlacing preservation | `thetaPreservesInterlStatement`, witnessed by `Interl.theta` |
 | Derivative preservation of weak interlacing | `derivativePreservesInterl` |
 | Nonnegative interlacing pair gives a Hurwitz-stable odd/even polynomial | `isHurwitzStable_oddEvenPolynomial_of_strictInterl` |
 | Hurwitz-stable odd/even polynomial gives an interlacing pair (issue #1112) | `strictInterl_of_isHurwitzStable_oddEvenPolynomial`, `isHurwitzStable_oddEvenPolynomial_iff` |

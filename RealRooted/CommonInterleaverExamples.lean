@@ -39,11 +39,11 @@ private lemma threeMul_xAddOne_hasPosLeadingCoeff :
 
 private lemma twoMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (2 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
+  hasNonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 private lemma threeMul_xAddOne_hasNonnegCoeffs :
     HasNonnegCoeffs (C (3 : ℝ) * (X + 1)) :=
-  nonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
+  hasNonnegCoeffs_C_mul (by simp) hasNonnegCoeffs_X_add_one
 
 lemma scaledLinearFamily_isRealRooted :
     ∀ f ∈ scaledLinearFamily, (f ≠ 0 ∧ f.Splits) := by

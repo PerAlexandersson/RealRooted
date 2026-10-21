@@ -105,7 +105,7 @@ theorem map_linearMap_of_nonneg
   let p := C α * f + C β * g
   have hp : HasNonnegCoeffs p := by
     dsimp [p]
-    exact (nonnegCoeffs_C_mul hα hf).add (nonnegCoeffs_C_mul hβ hg)
+    exact (hasNonnegCoeffs_C_mul hα hf).add (hasNonnegCoeffs_C_mul hβ hg)
   have hpdeg : p.natDegree ≤ d :=
     (natDegree_add_le _ _).trans <|
       max_le ((natDegree_C_mul_le α f).trans hfdeg)
