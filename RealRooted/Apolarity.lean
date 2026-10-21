@@ -806,7 +806,7 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
           coeff_sub, coeff_C_mul, coeff_derivative, sub_sub_cancel, one_mul,
           mul_assoc]
         rcases n with (_ | _ | n) <;>
-          simp_all [Polynomial.coeff_derivative, mul_comm] ; ring
+          simp_all [Polynomial.coeff_derivative, mul_comm]; ring
       have h_vieta : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
         simpa [hA] using Polynomial.coeff_eq_esymm_roots_of_card
