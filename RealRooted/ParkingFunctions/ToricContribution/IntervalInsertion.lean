@@ -36,19 +36,9 @@ theorem coeff_neg_insertionOperator_succ_natDegree
     (a b : ℝ) {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) :
     (-insertionOperator a b f).coeff (f.natDegree + 1) =
       ((f.natDegree : ℝ) + b) * f.leadingCoeff := by
-  have hform :
-      -insertionOperator a b f =
-        X * (X * f.derivative) - X * f.derivative +
-          C b * (X * f) - C a * f := by
-    simp only [insertionOperator, darbouxOperator]
-    ring
-  rw [hform, coeff_sub, coeff_add, coeff_sub, coeff_X_mul, coeff_X_mul,
-    show f.natDegree = (f.natDegree - 1) + 1 by lia, coeff_X_mul,
-    coeff_C_mul, coeff_X_mul, coeff_C_mul]
-  simp only [coeff_derivative, Nat.sub_add_cancel hdeg]
-  rw [coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < f.natDegree + 1)]
-  rw [coeff_natDegree]
-  simp only [Nat.cast_sub hdeg, Nat.cast_one]
+  rw [coeff_neg, coeff_insertionOperator_succ,
+    coeff_eq_zero_of_natDegree_lt (by have := hdeg; lia : f.natDegree < f.natDegree + 1),
+    coeff_natDegree]
   ring
 
 theorem natDegree_neg_insertionOperator
@@ -147,10 +137,8 @@ theorem insertionOperator_no_common_root
     ∀ r, f.IsRoot r → ¬(insertionOperator a b f).IsRoot r := by
   intro r hr hMr
   rw [IsRoot.def, insertionOperator_eval_isRoot a b hr] at hMr
-  have hrI := hroots r hr
-  have hd := hsimple r hr
-  exact (mul_ne_zero (mul_ne_zero (ne_of_gt hrI.1) (sub_ne_zero.mpr (ne_of_gt hrI.2))) hd)
-    hMr
+  exact (mul_ne_zero (mul_ne_zero (hroots r hr).1.ne' (sub_ne_zero.mpr (hroots r hr).2.ne'))
+    (hsimple r hr)) hMr
 
 /-- Under the endpoint inequalities, the inserted outer roots also remain
 strictly inside the unit interval. -/
@@ -184,18 +172,11 @@ theorem roots_neg_insertionOperator_mem_Ioo
   have hlen : ss.length + 1 = rs.length := by lia
   have hss_Ioo : ∀ s ∈ ss, s ∈ Set.Ioo (0 : ℝ) 1 := by
     intro s hs
-    apply hroots s
-    apply (mem_roots hfrr.1).mp
-    rw [← hss_eq]
-    exact Multiset.mem_coe.mpr hs
-  have hf0_not_root : ¬f.IsRoot 0 := by
-    intro h0
-    have := hroots 0 h0
-    simp at this
-  have hf1_not_root : ¬f.IsRoot 1 := by
-    intro h1
-    have := hroots 1 h1
-    simp at this
+    exact hroots s ((mem_roots hfrr.1).mp (by
+      rw [← hss_eq]
+      exact Multiset.mem_coe.mpr hs))
+  have hf0_not_root : ¬f.IsRoot 0 := fun h => by simpa using (hroots 0 h).1
+  have hf1_not_root : ¬f.IsRoot 1 := fun h => by simpa using (hroots 1 h).2
   have hF0_eval : F.eval 0 = -a * f.eval 0 := by
     simp only [F, eval_neg, insertionOperator_eval_zero]
     ring
@@ -234,15 +215,10 @@ theorem roots_neg_insertionOperator_mem_Ioo
       hFrr.2 hf_pos hF_pos hf1_not_root hF1_not_root).mpr hsign_one
   have hss_above_zero :
       (ss.filter ((0 : ℝ) < ·)).length = ss.length := by
-    congr 1
-    apply List.filter_eq_self.mpr
-    intro s hs
-    simpa using (hss_Ioo s hs).1
+    rw [List.filter_eq_self.mpr fun s hs => by simpa using (hss_Ioo s hs).1]
   have hss_above_one : (ss.filter ((1 : ℝ) < ·)).length = 0 := by
-    rw [List.length_eq_zero_iff]
-    apply List.filter_eq_nil_iff.mpr
-    intro s hs
-    simpa using not_lt_of_ge (hss_Ioo s hs).2.le
+    rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+    exact fun s hs => by simpa using not_lt_of_ge (hss_Ioo s hs).2.le
   have hodd_zero_list :
       Odd ((ss.filter ((0 : ℝ) < ·)).length +
         (rs.filter ((0 : ℝ) < ·)).length) := by
@@ -267,9 +243,7 @@ theorem roots_neg_insertionOperator_mem_Ioo
     lia
   intro r hr
   have hr_rs : r ∈ rs := by
-    apply Multiset.mem_coe.mp
-    rw [hrs_eq]
-    exact hr
+    exact Multiset.mem_coe.mp (by rw [hrs_eq]; exact hr)
   constructor
   · by_contra hr0
     have hrle : r ≤ 0 := not_lt.mp hr0
@@ -320,14 +294,11 @@ theorem rootMultiplicity_neg_insertionOperator_eq_one
     (hb : 0 < b) {r : ℝ} (hr : (-insertionOperator a b f).IsRoot r) :
     (-insertionOperator a b f).rootMultiplicity r = 1 := by
   have hstrictInterl := strictInterl_neg_insertionOperator a b hf hf_pos (by lia) hroots hsimple hb
-  have hnot : ¬f.IsRoot r := by
-    intro hfr
-    exact insertionOperator_no_common_root a b hroots hsimple r hfr (by
+  have hfmult : f.rootMultiplicity r = 0 := rootMultiplicity_eq_zero fun hfr =>
+    insertionOperator_no_common_root a b hroots hsimple r hfr (by
       simpa [IsRoot.def] using hr)
-  have hfmult : f.rootMultiplicity r = 0 := rootMultiplicity_eq_zero hnot
   have hbound := (hstrictInterl.rootMultiplicity_bounds r).2
-  have hpos : 0 < (-insertionOperator a b f).rootMultiplicity r :=
-    (rootMultiplicity_pos hstrictInterl.2.1.1).mpr hr
+  have hpos := (rootMultiplicity_pos hstrictInterl.2.1.1).mpr hr
   lia
 
 theorem rootMultiplicity_insertionOperator_eq_one
@@ -366,6 +337,19 @@ theorem roots_insertionOperator_mem_Ioo
   simpa using roots_neg_insertionOperator_mem_Ioo
     a b hf hf_pos hdeg hroots hsimple ha hba
 
+private theorem neg_interval_data {f : ℝ[X]}
+    (hf : f.Splits) (hlc : f.leadingCoeff < 0)
+    (hroots : ∀ r, f.IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1)
+    (hsimple : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0) :
+    (-f).Splits ∧ HasPosLeadingCoeff (-f) ∧
+      (∀ r, (-f).IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1) ∧
+      (∀ r, (-f).IsRoot r → (-f).derivative.eval r ≠ 0) := by
+  refine ⟨by simpa, hasPosLeadingCoeff_neg hlc, ?_, ?_⟩
+  · intro r hr
+    exact hroots r (by simpa [IsRoot.def] using hr)
+  · intro r hr
+    simpa using neg_ne_zero.mpr (hsimple r (by simpa [IsRoot.def] using hr))
+
 /-- Sign-free splitting form of interval insertion.  The leading coefficient
 orientation is chosen internally and does not appear in the hypotheses. -/
 theorem insertionOperator_splits_of_simple_roots_Ioo
@@ -379,16 +363,8 @@ theorem insertionOperator_splits_of_simple_roots_Ioo
     intro hzero
     simp [hzero] at hdeg
   rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hf_ne) with hlc | hlc
-  · have hneg_pos : HasPosLeadingCoeff (-f) := hasPosLeadingCoeff_neg hlc
-    have hneg_splits : (-f).Splits := by simpa using hf
-    have hneg_roots : ∀ r, (-f).IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1 := by
-      intro r hr
-      apply hroots r
-      simpa [IsRoot.def] using hr
-    have hneg_simple : ∀ r, (-f).IsRoot r → (-f).derivative.eval r ≠ 0 := by
-      intro r hr
-      have hs := hsimple r (by simpa [IsRoot.def] using hr)
-      simpa using neg_ne_zero.mpr hs
+  · obtain ⟨hneg_splits, hneg_pos, hneg_roots, hneg_simple⟩ :=
+      neg_interval_data hf hlc hroots hsimple
     simpa using insertionOperator_splits
       a b hneg_splits hneg_pos (by simpa using hdeg) hneg_roots hneg_simple hb
   · exact insertionOperator_splits a b hf hlc hdeg hroots hsimple hb
@@ -404,16 +380,8 @@ theorem roots_insertionOperator_mem_Ioo_of_simple_roots_Ioo
     intro hzero
     simp [hzero] at hdeg
   rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hf_ne) with hlc | hlc
-  · have hneg_pos : HasPosLeadingCoeff (-f) := hasPosLeadingCoeff_neg hlc
-    have hneg_splits : (-f).Splits := by simpa using hf
-    have hneg_roots : ∀ r, (-f).IsRoot r → r ∈ Set.Ioo (0 : ℝ) 1 := by
-      intro r hr
-      apply hroots r
-      simpa [IsRoot.def] using hr
-    have hneg_simple : ∀ r, (-f).IsRoot r → (-f).derivative.eval r ≠ 0 := by
-      intro r hr
-      have hs := hsimple r (by simpa [IsRoot.def] using hr)
-      simpa using neg_ne_zero.mpr hs
+  · obtain ⟨hneg_splits, hneg_pos, hneg_roots, hneg_simple⟩ :=
+      neg_interval_data hf hlc hroots hsimple
     simpa using roots_insertionOperator_mem_Ioo
       a b hneg_splits hneg_pos (by simpa using hdeg) hneg_roots hneg_simple ha hba
   · exact roots_insertionOperator_mem_Ioo
@@ -430,16 +398,8 @@ theorem insertionOperator_eval_derivative_ne_zero_of_simple_roots_Ioo
     intro hzero
     simp [hzero] at hdeg
   rcases lt_or_gt_of_ne (leadingCoeff_ne_zero.mpr hf_ne) with hlc | hlc
-  · have hneg_pos : HasPosLeadingCoeff (-f) := hasPosLeadingCoeff_neg hlc
-    have hneg_splits : (-f).Splits := by simpa using hf
-    have hneg_roots : ∀ s, (-f).IsRoot s → s ∈ Set.Ioo (0 : ℝ) 1 := by
-      intro s hs
-      apply hroots s
-      simpa [IsRoot.def] using hs
-    have hneg_simple : ∀ s, (-f).IsRoot s → (-f).derivative.eval s ≠ 0 := by
-      intro s hs
-      have hs' := hsimple s (by simpa [IsRoot.def] using hs)
-      simpa using neg_ne_zero.mpr hs'
+  · obtain ⟨hneg_splits, hneg_pos, hneg_roots, hneg_simple⟩ :=
+      neg_interval_data hf hlc hroots hsimple
     have hout := insertionOperator_eval_derivative_ne_zero
       a b hneg_splits hneg_pos (by simpa using hdeg) hneg_roots hneg_simple hb
       (r := r) (by simpa [IsRoot.def] using hr)
@@ -452,11 +412,7 @@ theorem insertionOperator_eq_C_mul_X_sub_C_of_natDegree_zero
     (hb : b ≠ 0) :
     insertionOperator a b f =
       C (-b * f.eval 0) * (X - C (a / b)) := by
-  have hfC : f = C (f.eval 0) := by
-    calc
-      f = C (f.coeff 0) := eq_C_of_natDegree_eq_zero hdeg
-      _ = C (f.eval 0) := by rw [coeff_zero_eq_eval_zero]
-  conv_lhs => rw [hfC]
+  rw [eq_C_of_natDegree_eq_zero hdeg, coeff_zero_eq_eval_zero]
   apply Polynomial.funext
   intro x
   simp [insertionOperator, darbouxOperator]
@@ -612,35 +568,17 @@ theorem insertionOperator_C_mul_X_sub_C_data
   obtain ⟨hdeg, hsplits, hroots, hsimple⟩ :=
     insertionOperator_X_sub_C_data a b u hu ha hba
   let p := insertionOperator a b (X - C u)
-  have hp_ne : p ≠ 0 := by
-    intro hzero
-    simp [p, hzero] at hdeg
-  have hscaled_ne : C k * p ≠ 0 := mul_ne_zero (C_ne_zero.mpr hk) hp_ne
-  have hscaled_deg : (C k * p).natDegree = 2 := by
-    rw [natDegree_C_mul hk]
-    exact hdeg
-  have hscaled_splits : (C k * p).Splits := hsplits.C_mul k
-  have hscaled_roots : ∀ r ∈ (C k * p).roots, r ∈ Set.Ioo (0 : ℝ) 1 := by
-    intro r hr
-    have hr_scaled := (mem_roots hscaled_ne).mp hr
-    have hrp : p.IsRoot r := by
-      rw [IsRoot.def] at hr_scaled ⊢
-      simpa [hk] using hr_scaled
-    apply hroots r
-    exact (mem_roots hp_ne).mpr hrp
-  have hscaled_simple :
-      ∀ r, (C k * p).IsRoot r → (C k * p).derivative.eval r ≠ 0 := by
-    intro r hr
-    have hrp : p.IsRoot r := by
-      rw [IsRoot.def] at hr ⊢
-      simpa [hk] using hr
-    have hpder := hsimple r hrp
-    simpa [hk, p] using mul_ne_zero hk hpder
   rw [insertionOperator_C_mul]
   change (C k * p).natDegree = 2 ∧ (C k * p).Splits ∧
     (∀ r ∈ (C k * p).roots, r ∈ Set.Ioo (0 : ℝ) 1) ∧
     (∀ r, (C k * p).IsRoot r → (C k * p).derivative.eval r ≠ 0)
-  exact ⟨hscaled_deg, hscaled_splits, hscaled_roots, hscaled_simple⟩
+  refine ⟨by rwa [natDegree_C_mul hk], hsplits.C_mul k, ?_, ?_⟩
+  · simpa only [roots_C_mul p hk] using hroots
+  · intro r hr
+    have hrp : p.IsRoot r := by
+      rw [IsRoot.def] at hr ⊢
+      simpa [hk] using hr
+    simpa [p] using mul_ne_zero hk (hsimple r hrp)
 
 theorem insertionOperator_natDegree_one_data
     (a b : ℝ) {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree = 1)
@@ -651,25 +589,20 @@ theorem insertionOperator_natDegree_one_data
       (∀ r ∈ (insertionOperator a b f).roots, r ∈ Set.Ioo (0 : ℝ) 1) ∧
       (∀ r, (insertionOperator a b f).IsRoot r →
         (insertionOperator a b f).derivative.eval r ≠ 0) := by
-  have hf_ne : f ≠ 0 := by
-    intro hzero
-    simp [hzero] at hdeg
-  have hcard : f.roots.card = 1 := by
-    rw [card_roots_of_splits hf, hdeg]
+  have hf_ne : f ≠ 0 := by rintro rfl; simp at hdeg
+  have hcard : f.roots.card = 1 := by rw [card_roots_of_splits hf, hdeg]
   obtain ⟨u, hu_roots⟩ := Multiset.card_eq_one.mp hcard
   have hu_root : f.IsRoot u := by
-    apply (mem_roots hf_ne).mp
-    rw [hu_roots]
-    simp
+    exact (mem_roots hf_ne).mp (by simp [hu_roots])
   have hu := hroots u hu_root
   have hfactor : f = C f.leadingCoeff * (X - C u) := by
     have hprod :=
       (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hf)).symm
     rw [hu_roots] at hprod
     simpa using hprod
-  have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf_ne
   rw [hfactor]
-  exact insertionOperator_C_mul_X_sub_C_data a b f.leadingCoeff u hlc hu ha hba
+  exact insertionOperator_C_mul_X_sub_C_data a b f.leadingCoeff u
+    (leadingCoeff_ne_zero.mpr hf_ne) hu ha hba
 
 /-- Uniform interval-insertion data in every input degree.  The endpoint value
 hypothesis excludes the zero polynomial in the constant case. -/

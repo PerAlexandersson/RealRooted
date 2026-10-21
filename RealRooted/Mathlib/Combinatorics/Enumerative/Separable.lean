@@ -49,20 +49,17 @@ def HasSkewSumCut {n : ℕ} (σ : Perm (Fin n)) (m : ℕ) : Prop :=
   0 < m ∧ m < n ∧ ∀ i j : Fin n, i.val < m → m ≤ j.val → σ j < σ i
 
 instance {n : ℕ} (σ : Perm (Fin n)) : DecidablePred (HasDirectSumCut σ) := fun m => by
-  unfold HasDirectSumCut
-  infer_instance
+  simp only [HasDirectSumCut]; infer_instance
 
 instance {n : ℕ} (σ : Perm (Fin n)) : DecidablePred (HasSkewSumCut σ) := fun m => by
-  unfold HasSkewSumCut
-  infer_instance
+  simp only [HasSkewSumCut]; infer_instance
 
 /-- Separable permutations are exactly the `2413`- and `3142`-avoiders. -/
 def IsSeparable {n : ℕ} (σ : Perm (Fin n)) : Prop :=
   σ.Avoids pattern2413 ∧ σ.Avoids pattern3142
 
 instance {n : ℕ} : DecidablePred (IsSeparable (n := n)) := fun σ => by
-  unfold IsSeparable
-  infer_instance
+  simp only [IsSeparable]; infer_instance
 
 /-- A permutation is sum-indecomposable when it has no proper direct-sum cut. -/
 def IsSumIndecomposable {n : ℕ} (σ : Perm (Fin n)) : Prop :=
@@ -73,12 +70,10 @@ def IsSkewIndecomposable {n : ℕ} (σ : Perm (Fin n)) : Prop :=
   ∀ m < n, ¬HasSkewSumCut σ m
 
 instance {n : ℕ} : DecidablePred (IsSumIndecomposable (n := n)) := fun σ => by
-  unfold IsSumIndecomposable
-  infer_instance
+  simp only [IsSumIndecomposable]; infer_instance
 
 instance {n : ℕ} : DecidablePred (IsSkewIndecomposable (n := n)) := fun σ => by
-  unfold IsSkewIndecomposable
-  infer_instance
+  simp only [IsSkewIndecomposable]; infer_instance
 
 /-- A cut `m` is the first direct-sum cut when it is the smallest one. -/
 def IsFirstSumCut {n : ℕ} (σ : Perm (Fin n)) (m : ℕ) : Prop :=
@@ -109,13 +104,7 @@ theorem not_hasSkewSumCut_of_hasDirectSumCut {n m m' : ℕ} {σ : Perm (Fin n)}
 /-- Complement exchanges direct-sum and skew-sum cuts. -/
 theorem hasDirectSumCut_complement_iff {n : ℕ} (σ : Perm (Fin n)) (m : ℕ) :
     HasDirectSumCut (complement σ) m ↔ HasSkewSumCut σ m := by
-  constructor
-  · rintro ⟨hm, hn, h⟩
-    refine ⟨hm, hn, fun i j hi hj => ?_⟩
-    simpa only [complement, Equiv.trans_apply, Fin.revPerm_apply, Fin.rev_lt_rev] using
-      h i j hi hj
-  · rintro ⟨hm, hn, h⟩
-    refine ⟨hm, hn, fun i j hi hj => ?_⟩
+  constructor <;> rintro ⟨hm, hn, h⟩ <;> refine ⟨hm, hn, fun i j hi hj => ?_⟩ <;>
     simpa only [complement, Equiv.trans_apply, Fin.revPerm_apply, Fin.rev_lt_rev] using
       h i j hi hj
 
@@ -132,22 +121,17 @@ theorem complement_pattern2413 : complement pattern2413 = pattern3142 := by
 theorem complement_pattern3142 : complement pattern3142 = pattern2413 := by
   decide
 
+private theorem avoids_complement_iff {n k : ℕ} (σ : Perm (Fin n)) (τ : Perm (Fin k)) :
+    (complement σ).Avoids (complement τ) ↔ σ.Avoids τ :=
+  (not_congr (containsPattern_complement_iff σ τ)).symm
+
 /-- Complement preserves separability. -/
 theorem isSeparable_complement_iff {n : ℕ} (σ : Perm (Fin n)) :
     IsSeparable (complement σ) ↔ IsSeparable σ := by
-  constructor
-  · intro h
-    refine ⟨fun hc => h.2 ?_, fun hc => h.1 ?_⟩
-    · rw [← complement_pattern2413]
-      exact (containsPattern_complement_iff σ pattern2413).mp hc
-    · rw [← complement_pattern3142]
-      exact (containsPattern_complement_iff σ pattern3142).mp hc
-  · intro h
-    refine ⟨fun hc => h.2 ?_, fun hc => h.1 ?_⟩
-    · rw [← complement_pattern3142] at hc
-      exact (containsPattern_complement_iff σ pattern3142).mpr hc
-    · rw [← complement_pattern2413] at hc
-      exact (containsPattern_complement_iff σ pattern2413).mpr hc
+  unfold IsSeparable
+  simpa only [complement_pattern2413, complement_pattern3142] using
+    (and_congr (avoids_complement_iff σ pattern3142)
+      (avoids_complement_iff σ pattern2413)).trans and_comm
 
 /-- Complement exchanges sum- and skew-indecomposability. -/
 theorem isSumIndecomposable_complement_iff {n : ℕ} (σ : Perm (Fin n)) :
@@ -254,7 +238,7 @@ theorem exists_eq_skewSum_of_hasSkewSumCut {m k : ℕ} {σ : Perm (Fin (m + k))}
   obtain ⟨a, b, hab⟩ := exists_eq_directSum_of_hasDirectSumCut
     ((hasDirectSumCut_complement_iff σ m).mpr h)
   refine ⟨complement a, complement b, ?_⟩
-  rw [skewSum, complement_complement, complement_complement, ← hab, complement_complement]
+  simpa only [skewSum, complement_complement] using congrArg complement hab
 
 /-! ### Separable permutations have a cut -/
 
@@ -290,10 +274,7 @@ private theorem avoids_pattern2413_iff {n : ℕ} (σ : Perm (Fin n)) :
     have hf : StrictMono f := by
       rw [Fin.strictMono_iff_lt_succ]
       intro a
-      fin_cases a
-      · exact hij
-      · exact hjk
-      · exact hkl
+      fin_cases a <;> assumption
     refine ⟨OrderEmbedding.ofStrictMono f hf, ?_⟩
     obtain ⟨h1, h2, h3⟩ := hrel
     intro a b
@@ -303,11 +284,9 @@ private theorem avoids_pattern2413_iff {n : ℕ} (σ : Perm (Fin n)) :
       pattern2413, coe_fn_mk, Fin.reduceLT, iff_true, iff_false, not_lt, not_lt_zero,
       lt_self_iff_false, f] <;> grind
   · rintro hav ⟨e, he⟩
-    have h1 := (he 2 0).mpr (by decide)
-    have h2 := (he 0 3).mpr (by decide)
-    have h3 := (he 3 1).mpr (by decide)
     exact hav (e 0) (e 1) (e 2) (e 3) (e.lt_iff_lt.mpr (by decide)) (e.lt_iff_lt.mpr (by decide))
-      (e.lt_iff_lt.mpr (by decide)) ⟨h1, h2, h3⟩
+      (e.lt_iff_lt.mpr (by decide)) ⟨(he 2 0).mpr (by decide), (he 0 3).mpr (by decide),
+        (he 3 1).mpr (by decide)⟩
 
 
 private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
@@ -321,10 +300,7 @@ private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
     have hf : StrictMono f := by
       rw [Fin.strictMono_iff_lt_succ]
       intro a
-      fin_cases a
-      · exact hij
-      · exact hjk
-      · exact hkl
+      fin_cases a <;> assumption
     refine ⟨OrderEmbedding.ofStrictMono f hf, ?_⟩
     obtain ⟨h1, h2, h3⟩ := hrel
     intro a b
@@ -334,11 +310,9 @@ private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
       pattern3142, coe_fn_mk, Fin.reduceLT, iff_true, iff_false, not_lt, not_lt_zero,
       lt_self_iff_false, f] <;> grind
   · rintro hav ⟨e, he⟩
-    have h1 := (he 1 3).mpr (by decide)
-    have h2 := (he 3 0).mpr (by decide)
-    have h3 := (he 0 2).mpr (by decide)
     exact hav (e 0) (e 1) (e 2) (e 3) (e.lt_iff_lt.mpr (by decide)) (e.lt_iff_lt.mpr (by decide))
-      (e.lt_iff_lt.mpr (by decide)) ⟨h1, h2, h3⟩
+      (e.lt_iff_lt.mpr (by decide)) ⟨(he 1 3).mpr (by decide), (he 3 0).mpr (by decide),
+        (he 0 2).mpr (by decide)⟩
 
 
 /-- A split of the prefix `[0, N)` of a sequence `f`. -/
@@ -357,19 +331,13 @@ private theorem step_sum {α : Type*} [LinearOrder α] (f : ℕ → α) (n : ℕ
     have := hinj i n (by lia) (by lia) h; lia
   by_cases hA : ∀ i, i < m → f i < f n
   · refine ⟨m, hm, by lia, Or.inl fun i j hi hj hjn => ?_⟩
-    rcases Nat.lt_or_ge j n with h | h
-    · exact hsum i j hi hj h
-    · obtain rfl : j = n := by lia
-      exact hA i hi
+    grind
   push Not at hA
   obtain ⟨a, ha, hax⟩ := hA
   have hax' : f n < f a := lt_of_le_of_ne hax (fun h => hne a (by lia) h.symm)
   by_cases hH : ∀ i, i < m → f n < f i
   · refine ⟨n, by lia, by lia, Or.inr fun i j hi hj hjn => ?_⟩
-    obtain rfl : j = n := by lia
-    rcases Nat.lt_or_ge i m with h | h
-    · exact hH i h
-    · exact lt_trans hax' (hsum a i ha h hi)
+    grind
   push Not at hH
   obtain ⟨b, hb, hbx⟩ := hH
   have hbx' : f b < f n := lt_of_le_of_ne hbx (hne b (by lia))
@@ -385,25 +353,11 @@ private theorem step_sum {α : Type*} [LinearOrder α] (f : ℕ → α) (n : ℕ
   have hm'2 : ∀ i, i < m' → ¬ (f n < f i ∧ i < m) := fun i hi => Nat.find_min hex hi
   have hlow : ∀ i, i < m' → f i < f n := by
     intro i hi
-    have h1 : ¬ f n < f i := fun h => hm'2 i hi ⟨h, by lia⟩
-    exact lt_of_le_of_ne (not_lt.mp h1) (hne i (by lia))
+    grind
   have hbm : b < m' := by
-    by_contra hc
-    rcases Nat.lt_or_ge m' b with h | h
-    · exact absurd hbx' (not_lt.mpr (hP m' b h hb hm'1.1))
-    · obtain rfl : b = m' := by lia
-      exact absurd hm'1.1 (not_lt.mpr hbx'.le)
+    grind
   refine ⟨m', by lia, by lia, Or.inl fun i j hi hj hjn => ?_⟩
-  rcases Nat.lt_or_ge j m with h | h
-  · rcases Nat.lt_or_ge m' j with h' | h'
-    · have : f n ≤ f j := hP m' j h' h hm'1.1
-      exact lt_of_lt_of_le (hlow i hi) this
-    · obtain rfl : j = m' := by lia
-      exact lt_trans (hlow i hi) hm'1.1
-  · rcases Nat.lt_or_ge j n with h' | h'
-    · exact hsum i j (by lia) h h'
-    · obtain rfl : j = n := by lia
-      exact hlow i hi
+  grind
 
 private theorem main_aux {α : Type*} [LinearOrder α] (f : ℕ → α) (N : ℕ) (hN : 2 ≤ N)
     (hinj : ∀ i j, i < N → j < N → f i = f j → i = j)
@@ -417,14 +371,8 @@ private theorem main_aux {α : Type*} [LinearOrder α] (f : ℕ → α) (N : ℕ
     refine ⟨1, by lia, by lia, ?_⟩
     have h01 : f 0 ≠ f 1 := fun h => by have := hinj 0 1 (by lia) (by lia) h; lia
     rcases lt_or_gt_of_ne h01 with h | h
-    · left; intro i j hi hj hjn
-      obtain rfl : i = 0 := by lia
-      obtain rfl : j = 1 := by lia
-      exact h
-    · right; intro i j hi hj hjn
-      obtain rfl : i = 0 := by lia
-      obtain rfl : j = 1 := by lia
-      exact h
+    · left; grind
+    · right; grind
   | succ n hn ih =>
     obtain ⟨m, hm, hmn, hs⟩ := ih f (fun i j hi hj => hinj i j (by lia) (by lia))
       (fun i j k l a b c d => h2413 i j k l a b c (by lia))
@@ -436,10 +384,9 @@ private theorem main_aux {α : Type*} [LinearOrder α] (f : ℕ → α) (N : ℕ
         (fun i j k l a b c d => by
           simpa [and_comm, and_left_comm, and_assoc] using h2413 i j k l a b c d)
         m hm hmn (fun i j a b c => by simpa using hs i j a b c)
-      refine ⟨m', h1, h2, ?_⟩
-      rcases h3 with h3 | h3
-      · exact Or.inr fun i j a b c => by simpa using h3 i j a b c
-      · exact Or.inl fun i j a b c => by simpa using h3 i j a b c
+      exact ⟨m', h1, h2, h3.elim
+        (fun h => Or.inr fun i j a b c => by simpa using h i j a b c)
+        (fun h => Or.inl fun i j a b c => by simpa using h i j a b c)⟩
 
 /-- Every separable permutation (avoiding 2413 and 3142) of length at least two is a direct sum or
 a skew sum of two nonempty blocks.  Classical: a permutation of length ≥ 2 that is both sum- and
@@ -540,13 +487,11 @@ private theorem directSum_inj {m k : ℕ} {a a' : Perm (Fin m)} {b b' : Perm (Fi
 
 private theorem skewSum_inj {m k : ℕ} {a a' : Perm (Fin m)} {b b' : Perm (Fin k)}
     (h : skewSum a b = skewSum a' b') : a = a' ∧ b = b' := by
-  have h' := congrArg complement h
-  rw [skewSum, skewSum, complement_complement, complement_complement] at h'
-  obtain ⟨h1, h2⟩ := directSum_inj h'
-  have h1' := congrArg complement h1
-  have h2' := congrArg complement h2
-  rw [complement_complement, complement_complement] at h1' h2'
-  exact ⟨h1', h2'⟩
+  obtain ⟨h1, h2⟩ := directSum_inj (by
+    simpa only [skewSum, complement_complement] using congrArg complement h)
+  constructor
+  · simpa only [complement_complement] using congrArg complement h1
+  · simpa only [complement_complement] using congrArg complement h2
 
 private theorem isSeparable_directSum_iff {m k : ℕ} (a : Perm (Fin m)) (b : Perm (Fin k)) :
     IsSeparable (directSum a b) ↔ IsSeparable a ∧ IsSeparable b := by
@@ -633,9 +578,7 @@ private theorem genPoly_image_directSum {R : Type*} [CommSemiring R] {m k : ℕ}
   rw [Finset.sum_image]
   · refine Finset.sum_congr rfl fun p _ => ?_
     rw [descentCount_directSum _ _ hk]
-  · intro p _ q _ h
-    obtain ⟨h1, h2⟩ := directSum_inj h
-    exact Prod.ext h1 h2
+  · exact fun p _ q _ h => Prod.ext (directSum_inj h).1 (directSum_inj h).2
 
 private theorem genPoly_image_skewSum {R : Type*} [CommSemiring R] {m k : ℕ} (hm : 0 < m)
     (hk : 0 < k) (A : Finset (Perm (Fin m))) (B : Finset (Perm (Fin k))) :
@@ -647,9 +590,7 @@ private theorem genPoly_image_skewSum {R : Type*} [CommSemiring R] {m k : ℕ} (
   · refine Finset.sum_congr rfl fun p _ => ?_
     rw [descentCount_skewSum _ _ hm hk]
     ring
-  · intro p _ q _ h
-    obtain ⟨h1, h2⟩ := skewSum_inj h
-    exact Prod.ext h1 h2
+  · exact fun p _ q _ h => Prod.ext (skewSum_inj h).1 (skewSum_inj h).2
 
 open scoped Classical in
 /-- Separable permutations whose first direct-sum cut is at `m`. -/
@@ -722,14 +663,30 @@ private theorem genPoly_biUnion {R : Type*} [CommSemiring R] {ι κ : Type*} [De
   rw [Finset.sum_biUnion h]
 
 private theorem exists_isFirstSumCut {n : ℕ} {σ : Perm (Fin n)}
-    (h : ∃ c, HasDirectSumCut σ c) : ∃ m, IsFirstSumCut σ m := by
+    (h : ∃ c, HasDirectSumCut σ c) :
+    ∃ m ∈ Finset.Ico 1 n, IsFirstSumCut σ m := by
   classical
-  exact ⟨Nat.find h, Nat.find_spec h, fun c hc => Nat.find_min' h hc⟩
+  exact ⟨Nat.find h, Finset.mem_Ico.mpr ⟨(Nat.find_spec h).1, (Nat.find_spec h).2.1⟩,
+    Nat.find_spec h, fun c hc => Nat.find_min' h hc⟩
 
 private theorem exists_isFirstSkewCut {n : ℕ} {σ : Perm (Fin n)}
-    (h : ∃ c, HasSkewSumCut σ c) : ∃ m, IsFirstSkewCut σ m := by
+    (h : ∃ c, HasSkewSumCut σ c) :
+    ∃ m ∈ Finset.Ico 1 n, IsFirstSkewCut σ m := by
   classical
-  exact ⟨Nat.find h, Nat.find_spec h, fun c hc => Nat.find_min' h hc⟩
+  exact ⟨Nat.find h, Finset.mem_Ico.mpr ⟨(Nat.find_spec h).1, (Nat.find_spec h).2.1⟩,
+    Nat.find_spec h, fun c hc => Nat.find_min' h hc⟩
+
+private theorem pairwiseDisjoint_directFirst (n : ℕ) :
+    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (directFirst n) := by
+  intro m _ m' _ hne
+  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
+  exact IsFirstSumCut.unique (mem_directFirst.mp h1).2 (mem_directFirst.mp h2).2
+
+private theorem pairwiseDisjoint_skewFirst (n : ℕ) :
+    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (skewFirst n) := by
+  intro m _ m' _ hne
+  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
+  exact IsFirstSkewCut.unique (mem_skewFirst.mp h1).2 (mem_skewFirst.mp h2).2
 
 private theorem separablePermutations_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
     separablePermutations n =
@@ -740,12 +697,10 @@ private theorem separablePermutations_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
   · intro hσ
     have hsep := mem_separablePermutations.mp hσ
     obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
-    · obtain ⟨m0, hm0⟩ := exists_isFirstSumCut ⟨m, hcut⟩
-      exact Or.inl ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩,
-        mem_directFirst.mpr ⟨hsep, hm0⟩⟩
-    · obtain ⟨m0, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
-      exact Or.inr ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩,
-        mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
+    · obtain ⟨m0, hm0I, hm0⟩ := exists_isFirstSumCut ⟨m, hcut⟩
+      exact Or.inl ⟨m0, hm0I, mem_directFirst.mpr ⟨hsep, hm0⟩⟩
+    · obtain ⟨m0, hm0I, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
+      exact Or.inr ⟨m0, hm0I, mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
   · rintro (⟨m, -, hσ⟩ | ⟨m, -, hσ⟩)
     · exact mem_separablePermutations.mpr (mem_directFirst.mp hσ).1
     · exact mem_separablePermutations.mpr (mem_skewFirst.mp hσ).1
@@ -765,14 +720,6 @@ theorem separableDescentEnumerator_recurrence (R : Type*) [CommSemiring R] {n : 
       X * ∑ k ∈ Finset.Ico 1 n,
         separableSkewIndecomposableEnumerator R k * separableDescentEnumerator R (n - k) := by
   classical
-  have hd1 : ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (directFirst n) := by
-    intro m _ m' _ hne
-    refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
-    exact IsFirstSumCut.unique (mem_directFirst.mp h1).2 (mem_directFirst.mp h2).2
-  have hd2 : ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (skewFirst n) := by
-    intro m _ m' _ hne
-    refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
-    exact IsFirstSkewCut.unique (mem_skewFirst.mp h1).2 (mem_skewFirst.mp h2).2
   have hdisj : _root_.Disjoint ((Finset.Ico 1 n).biUnion (directFirst n))
       ((Finset.Ico 1 n).biUnion (skewFirst n)) := by
     refine Finset.disjoint_left.mpr fun σ h1 h2 => ?_
@@ -782,20 +729,18 @@ theorem separableDescentEnumerator_recurrence (R : Type*) [CommSemiring R] {n : 
       (mem_skewFirst.mp hm').2.1
   unfold separableDescentEnumerator
   rw [separablePermutations_eq_biUnion hn, Finset.genPoly_union _ _ hdisj,
-    genPoly_biUnion _ _ _ hd1, genPoly_biUnion _ _ _ hd2, Finset.mul_sum]
+    genPoly_biUnion _ _ _ (pairwiseDisjoint_directFirst n),
+    genPoly_biUnion _ _ _ (pairwiseDisjoint_skewFirst n), Finset.mul_sum]
   congr 1
-  · refine Finset.sum_congr rfl fun m hm => ?_
-    have := Finset.mem_Ico.mp hm
-    exact genPoly_directFirst (by lia) this.2
-  · refine Finset.sum_congr rfl fun m hm => ?_
-    have := Finset.mem_Ico.mp hm
-    exact genPoly_skewFirst (by lia) this.2
+  · exact Finset.sum_congr rfl fun _ hm =>
+      genPoly_directFirst (Finset.mem_Ico.mp hm).1 (Finset.mem_Ico.mp hm).2
+  · exact Finset.sum_congr rfl fun _ hm =>
+      genPoly_skewFirst (Finset.mem_Ico.mp hm).1 (Finset.mem_Ico.mp hm).2
 
 /-! ### Reflection and small cases -/
 
 private theorem descentCount_le {n : ℕ} (σ : Perm (Fin n)) : σ.descentCount ≤ n - 1 := by
-  have := descentCount_add_ascentCount σ
-  lia
+  lia [descentCount_add_ascentCount σ]
 
 private theorem card_skew_fibre_eq {n k : ℕ} (hk : k ≤ n - 1) :
     ((separableSkewIndecomposables n).filter fun σ => σ.descentCount = k).card =
@@ -857,18 +802,6 @@ theorem separableDescentEnumerator_one (R : Type*) [CommSemiring R] :
   have : (1 : Perm (Fin 1)).descentCount = 0 := by decide
   rw [this, pow_zero]
 
-private theorem pairwiseDisjoint_directFirst (n : ℕ) :
-    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (directFirst n) := by
-  intro m _ m' _ hne
-  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
-  exact IsFirstSumCut.unique (mem_directFirst.mp h1).2 (mem_directFirst.mp h2).2
-
-private theorem pairwiseDisjoint_skewFirst (n : ℕ) :
-    ((Finset.Ico 1 n : Finset ℕ) : Set ℕ).PairwiseDisjoint (skewFirst n) := by
-  intro m _ m' _ hne
-  refine Finset.disjoint_left.mpr fun σ h1 h2 => hne ?_
-  exact IsFirstSkewCut.unique (mem_skewFirst.mp h1).2 (mem_skewFirst.mp h2).2
-
 private theorem separableSkewIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
     separableSkewIndecomposables n = (Finset.Ico 1 n).biUnion (directFirst n) := by
   ext σ
@@ -876,9 +809,8 @@ private theorem separableSkewIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n)
   constructor
   · rintro ⟨hsep, hskew⟩
     obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
-    · obtain ⟨m0, hm0⟩ := exists_isFirstSumCut ⟨m, hcut⟩
-      exact ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩,
-        mem_directFirst.mpr ⟨hsep, hm0⟩⟩
+    · obtain ⟨m0, hm0I, hm0⟩ := exists_isFirstSumCut ⟨m, hcut⟩
+      exact ⟨m0, hm0I, mem_directFirst.mpr ⟨hsep, hm0⟩⟩
     · exact (hskew m hmn hcut).elim
   · rintro ⟨m, -, hσ⟩
     obtain ⟨hsep, hm⟩ := mem_directFirst.mp hσ
@@ -892,8 +824,8 @@ private theorem separableSumIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n) 
   · rintro ⟨hsep, hsum⟩
     obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
     · exact (hsum m hmn hcut).elim
-    · obtain ⟨m0, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
-      exact ⟨m0, Finset.mem_Ico.mpr ⟨hm0.1.1, hm0.1.2.1⟩, mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
+    · obtain ⟨m0, hm0I, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
+      exact ⟨m0, hm0I, mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
   · rintro ⟨m, -, hσ⟩
     obtain ⟨hsep, hm⟩ := mem_skewFirst.mp hσ
     exact ⟨hsep, fun c _ hc => not_hasSkewSumCut_of_hasDirectSumCut hc hm.1⟩
@@ -910,9 +842,8 @@ theorem separableSkewIndecomposableEnumerator_recurrence (R : Type*) [CommSemiri
   unfold separableSkewIndecomposableEnumerator
   rw [separableSkewIndecomposables_eq_biUnion hn, genPoly_biUnion _ _ _
     (pairwiseDisjoint_directFirst n)]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have := Finset.mem_Ico.mp hm
-  exact genPoly_directFirst (by lia) this.2
+  exact Finset.sum_congr rfl fun _ hm =>
+    genPoly_directFirst (Finset.mem_Ico.mp hm).1 (Finset.mem_Ico.mp hm).2
 
 /-- **Companion recurrence for sum-indecomposables.**  For `n ≥ 2`, a separable permutation
 without a direct-sum cut has a skew-sum cut, so
@@ -926,9 +857,8 @@ theorem separableSumIndecomposableEnumerator_recurrence (R : Type*) [CommSemirin
   unfold separableSumIndecomposableEnumerator
   rw [separableSumIndecomposables_eq_biUnion hn, genPoly_biUnion _ _ _
     (pairwiseDisjoint_skewFirst n), Finset.mul_sum]
-  refine Finset.sum_congr rfl fun m hm => ?_
-  have := Finset.mem_Ico.mp hm
-  exact genPoly_skewFirst (by lia) this.2
+  exact Finset.sum_congr rfl fun _ hm =>
+    genPoly_skewFirst (Finset.mem_Ico.mp hm).1 (Finset.mem_Ico.mp hm).2
 
 /-- The enumerator of separable sum-indecomposable permutations of length one is `1`. -/
 theorem separableSumIndecomposableEnumerator_one (R : Type*) [CommSemiring R] :
