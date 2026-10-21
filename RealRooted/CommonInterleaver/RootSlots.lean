@@ -131,7 +131,8 @@ protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
     {f g : ℝ[X]} (hfg : StrictInterl f g) (j : Fin g.natDegree) :
     (rootSeqDesc g).get ⟨j.1, by
       rcases hfg with ⟨_, hg, _, _, _, _, _, _, _⟩
-      simp [rootSeqDesc, card_roots_of_splits hg.2]⟩ ∈ rootSlotInterval (rootSeqDesc f)
+      simp [rootSeqDesc, Polynomial.splits_iff_card_roots.mp hg.2]⟩ ∈
+        rootSlotInterval (rootSeqDesc f)
       ⟨j.1, by
         have hdeg := hfg.natDegree_le_succ
         rcases hfg with ⟨hf, hg, _, _, _, _, _, _, _⟩
@@ -141,11 +142,11 @@ protected lemma CommonInterleaver.RootSlots.mem_rootSlotInterval_of_strictInterl
   have hss_desc : rootSeqDesc f = ss.reverse := rootSeqDesc_eq_reverse_of_pairwise hss hss_eq
   have hrs_desc : rootSeqDesc g = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs hrs_eq
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   let jg_desc : Fin (rootSeqDesc g).length := ⟨j.1, by
-    simp [rootSeqDesc, card_roots_of_splits hg.2]⟩
+    simp [rootSeqDesc, Polynomial.splits_iff_card_roots.mp hg.2]⟩
   let jg_rev : Fin rs.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hrs_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1, by
@@ -201,7 +202,7 @@ protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_stri
     {h f : ℝ[X]} (hhf : StrictInterl h f) (j : Fin h.natDegree) :
     (rootSeqDesc h).get ⟨j.1, by
       rcases hhf with ⟨hh, _, _, _, _, _, _, _, _⟩
-      simp [rootSeqDesc, card_roots_of_splits hh.2]⟩ ∈
+      simp [rootSeqDesc, Polynomial.splits_iff_card_roots.mp hh.2]⟩ ∈
       rootSlotInterval (rootSeqDesc f)
         ⟨j.1 + 1, by
           have hdeg := hhf.natDegree_le
@@ -212,11 +213,11 @@ protected lemma CommonInterleaver.RootSlots.mem_shifted_rootSlotInterval_of_stri
   have hss_desc : rootSeqDesc h = ss.reverse := rootSeqDesc_eq_reverse_of_pairwise hss hss_eq
   have hrs_desc : rootSeqDesc f = rs.reverse := rootSeqDesc_eq_reverse_of_pairwise hrs hrs_eq
   have hss_len : ss.length = h.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hh.2]
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   let jh_desc : Fin (rootSeqDesc h).length := ⟨j.1, by
-    simp [rootSeqDesc, card_roots_of_splits hh.2]⟩
+    simp [rootSeqDesc, Polynomial.splits_iff_card_roots.mp hh.2]⟩
   let jh_rev : Fin ss.reverse.length := ⟨j.1, by
     simp [List.length_reverse, hss_len]⟩
   let jf_desc : Fin ((rootSeqDesc f).length + 1) := ⟨j.1 + 1, by

@@ -41,7 +41,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
       (F := F) hrs_sorted (by grind)
   have hrs_len : rs.length = f.natDegree := by
     rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hf_splits]
+      Polynomial.splits_iff_card_roots.mp hf_splits]
   have hrs_ne : rs ≠ [] := by grind
   have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
@@ -50,7 +50,7 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
   have hus_len_deg : us.length = F.natDegree - 1 := by lia
   have hsplits {ws : List ℝ} (hsub : (↑ws : Multiset ℝ) ≤ F.roots)
       (hlen : ws.length = F.natDegree) : F.Splits := by
-    apply splits_of_card_roots
+    apply Polynomial.splits_iff_card_roots.mpr
     exact le_antisymm (card_roots' F) (by
       simpa [hlen] using Multiset.card_le_card hsub)
   rcases houter with ⟨uL, huL_root, huL_lt⟩ | ⟨uR, huR_root, huR_lt⟩
@@ -129,7 +129,8 @@ theorem ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same
   have hF_lc_neg : F.leadingCoeff < 0 :=
     lt_of_le_of_ne (not_lt.mp hF_pos) hF_lc_ne
   have hrs_len : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort, card_roots_of_splits hf.2]
+    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
+      Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_ne : rs ≠ [] := by
     intro h
     rw [h] at hrs_len

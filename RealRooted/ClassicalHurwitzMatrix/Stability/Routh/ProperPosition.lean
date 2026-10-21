@@ -206,7 +206,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
     refine Multiset.prod_pos ?_
     simp_all
   have hdivPos : HasPosLeadingCoeff q.divX := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hdivSplits 0] at hdivEval
+    rw [Polynomial.Splits.eval_eq_prod_roots hdivSplits 0] at hdivEval
     exact (mul_pos_iff_of_pos_right hprodPos).mp hdivEval
   have hdivnn : HasNonnegCoeffs q.divX :=
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hdivSplits).2

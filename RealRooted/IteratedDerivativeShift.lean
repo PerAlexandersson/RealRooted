@@ -1109,7 +1109,7 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
     have hq₀ : q ≠ 0 := by rintro rfl; simp_all
   -- Get a root r of q (exists since degree ≥ 1 and real-rooted)
     have hroots_pos : 0 < q.roots.card := by
-      rw [card_roots_of_splits hq_rr]
+      rw [Polynomial.splits_iff_card_roots.mp hq_rr]
       lia
     obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
     have hr_root : q.IsRoot r := (mem_roots hq₀).mp hr

@@ -80,7 +80,7 @@ theorem exceptionalEulerInverse_roots_pos
     dsimp only [R]
     exact natDegree_exceptionalEulerInverse m ε hγpos
   have hcardRoots : R.roots.card = m := by
-    rw [card_roots_of_splits hsplit, hdegree]
+    rw [Polynomial.splits_iff_card_roots.mp hsplit, hdegree]
   have hOne : R.eval 1 ≠ 0 := by
     have hsign :=
       negOnePow_mul_exceptionalEulerInverse_eval_one_pos
@@ -177,7 +177,7 @@ private theorem neg_coeff_one_eq_sum_roots_inv
     Polynomial.roots_reverse_eq_map_inv
       hp hzeroNe
   have hnext :=
-    (DegreeDropReversal.splits_reverse hp).nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
+    (Polynomial.Splits.reverse hp).nextCoeff_eq_neg_sum_roots_mul_leadingCoeff
   rw [hrevNext, hrevLead, hroots] at hnext
   simp only [neg_mul, one_mul] at hnext
   linarith
@@ -192,9 +192,9 @@ private theorem neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
   rcases hstrictInterl with
     ⟨hf, hg, ss, rs, hssSorted, hrsSorted, hssRoots, hrsRoots, hshape⟩
   have hssLength : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hssRoots, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hssRoots, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrsLength : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrsRoots, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrsRoots, Polynomial.splits_iff_card_roots.mp hg.2]
   have halt : ListAlternates ss rs := by
     rcases hshape with hinter | halt
     · exfalso

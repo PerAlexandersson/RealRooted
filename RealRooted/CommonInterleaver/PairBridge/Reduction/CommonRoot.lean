@@ -59,7 +59,7 @@ private lemma hasNonnegCoeffs_quotient_add_right_of_common_root
   have hp_rr : (p ≠ 0 ∧ p.Splits) := by simpa [p] using hfg.isRealRooted_add_right hμ
   have hp_nn : HasNonnegCoeffs p := by
     dsimp [p]
-    exact hfnn.add (nonnegCoeffs_C_mul hμ.le hgnn)
+    exact hfnn.add (hasNonnegCoeffs_C_mul hμ.le hgnn)
   have hp_eq : p = (X - C r) * (qf + C μ * qg) := by grind
   have hq_ne : qf + C μ * qg ≠ 0 := by simp_all
   have hq_rr : ((qf + C μ * qg) ≠ 0 ∧ (qf + C μ * qg).Splits) :=

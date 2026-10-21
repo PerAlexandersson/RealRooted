@@ -47,7 +47,7 @@ theorem rightFamily_card_roots_Ioo_zero_eq_zero_param_of_degree_bound
       (reflect N f + C η * reflect N g).Splits := by
     intro η hη
     rw [← reflect_add_C_mul]
-    exact splits_reflect_of_splits (hsplit η hη) (hN η hη)
+    exact Polynomial.Splits.reflect (hsplit η hη) (hN η hη)
   have hreflect_not_root : ∀ η ∈ Set.Icc (0 : ℝ) μ,
       ¬ (reflect N f + C η * reflect N g).IsRoot b⁻¹ := by
     intro η hη

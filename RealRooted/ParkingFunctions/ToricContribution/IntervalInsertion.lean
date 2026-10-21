@@ -162,9 +162,9 @@ theorem roots_neg_insertionOperator_mem_Ioo
   rcases hstrictInterl with
     ⟨hfrr, hFrr, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfrr.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hfrr.2]
   have hrs_len : rs.length = F.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hFrr.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hFrr.2]
   have hint : ListInterlaces ss rs := by
     rcases hshape with ⟨_, hint⟩ | ⟨hlen, _⟩
     · exact hint
@@ -522,7 +522,7 @@ theorem insertionOperator_X_sub_C_data
     · simpa [hFdeg] using card_roots' F
     · simpa using Multiset.card_le_card hsub
   have hF_splits : F.Splits := by
-    apply splits_of_card_roots
+    apply Polynomial.splits_iff_card_roots.mpr
     simpa [hFdeg] using hcard
   have heq : (↑[sL, sR] : Multiset ℝ) = F.roots :=
     Multiset.eq_of_le_of_card_le hsub (by simp [hcard])
@@ -590,14 +590,14 @@ theorem insertionOperator_natDegree_one_data
       (∀ r, (insertionOperator a b f).IsRoot r →
         (insertionOperator a b f).derivative.eval r ≠ 0) := by
   have hf_ne : f ≠ 0 := by rintro rfl; simp at hdeg
-  have hcard : f.roots.card = 1 := by rw [card_roots_of_splits hf, hdeg]
+  have hcard : f.roots.card = 1 := by rw [Polynomial.splits_iff_card_roots.mp hf, hdeg]
   obtain ⟨u, hu_roots⟩ := Multiset.card_eq_one.mp hcard
   have hu_root : f.IsRoot u := by
     exact (mem_roots hf_ne).mp (by simp [hu_roots])
   have hu := hroots u hu_root
   have hfactor : f = C f.leadingCoeff * (X - C u) := by
     have hprod :=
-      (C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hf)).symm
+      (C_leadingCoeff_mul_prod_multiset_X_sub_C (Polynomial.splits_iff_card_roots.mp hf)).symm
     rw [hu_roots] at hprod
     simpa using hprod
   rw [hfactor]

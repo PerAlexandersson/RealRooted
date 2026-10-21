@@ -420,11 +420,11 @@ private lemma allComboRealRooted_of_affine_family_succDegree_not_isRoot_zero
     simp_all
   have hrs_len : rs.length = g.natDegree := by
     rw [show rs = g.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hg_rr.2]
+      Polynomial.splits_iff_card_roots.mp hg_rr.2]
   have hus_eq : (↑us : Multiset ℝ) = f.roots := by
     apply Multiset.eq_of_le_of_card_le hus_sub
     calc
-      f.roots.card = f.natDegree := card_roots_of_splits hf_rr.2
+      f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hf_rr.2
       _ = g.natDegree - 1 := by lia
       _ = rs.length - 1 := by lia
       _ = us.length := hus_len.symm
@@ -458,8 +458,8 @@ protected lemma AffineFamily.allComboRealRooted_of_affine_family_succDegree
       have hdeg_lt : f.natDegree < g.natDegree := by lia
       calc
         (g + f).natDegree = g.natDegree :=
-          natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-            hdeg_lt (hgnn.pos_leadingCoeff hg0)
+          Polynomial.natDegree_add_eq_left_of_natDegree_lt
+            hdeg_lt
         _ = f.natDegree + 1 := hsucc
     have hshift_aff :
         ∀ {s t : ℝ}, 0 < s → 0 < t →

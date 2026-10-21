@@ -54,7 +54,7 @@ theorem splits_and_rootSeq_eq_of_exhibited {p : ℝ[X]} {n : ℕ}
     p.Splits ∧ ∀ i, i < n → rootSeq p i = x i := by
   classical
   have hcard := card_roots_eq_natDegree_of_exhibited hdeg hp hmono hroot
-  have hsp : p.Splits := splits_of_card_roots (by lia)
+  have hsp : p.Splits := Polynomial.splits_iff_card_roots.mpr (by lia)
   refine ⟨hsp, ?_⟩
   have hlen : (rootMags p).length = n := by
     rw [rootMags_length, hcard, hdeg]

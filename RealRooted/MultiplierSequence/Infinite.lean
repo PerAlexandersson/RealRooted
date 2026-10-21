@@ -240,11 +240,8 @@ theorem isMultiplierSequence_natCast :
   rw [isMultiplierSequence_iff_preserves]
   intro p hp
   rw [← eulerOperator_eq_diagonalOperator_natCast]
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with hder | hder
-  · left
-    simp [hder]
-  · right
-    exact Polynomial.splits_X_mul.mpr hder
+  right
+  exact Polynomial.splits_X_mul.mpr hp.derivative
 
 /-- Every nonnegative integral shift `k + r` of the Euler diagonal is an
 infinite multiplier sequence. -/

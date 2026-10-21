@@ -317,7 +317,7 @@ private theorem a082649_eq_reverse (n : ℕ) :
 
 private theorem a082649_splits (n : ℕ) : (a082649 n).Splits := by
   rw [a082649_eq_reverse]
-  exact RealRooted.DegreeDropReversal.splits_reverse (a334009_splits n)
+  exact Polynomial.Splits.reverse (a334009_splits n)
 
 /-- Split-row transfer for the reversed three-lag A082649 presentation. -/
 @[rr_row_model]
@@ -599,7 +599,7 @@ private theorem shifted049325_nonneg : ∀ n : ℕ, HasNonnegCoeffs (shifted0493
             simp_all
           _ = C (1 / ((n : ℝ) + 4)) * R := by rw [shifted049325_first_order]
       rw [heq]
-      exact nonnegCoeffs_C_mul (by positivity) hR
+      exact hasNonnegCoeffs_C_mul (by positivity) hR
 
 private theorem shifted049325_ne_zero (n : ℕ) : shifted049325 n ≠ 0 := by
   have hudeg : (C (-16 : ℝ) - X).natDegree = 1 := by compute_degree!

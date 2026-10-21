@@ -68,17 +68,17 @@ lemma interlaces_reverse_of_roots_neg {g f : ℝ[X]} (h : Interlaces g f)
   have hg0 := coeff_zero_ne_of_roots_neg hgne hg
   have hfr' := Polynomial.roots_reverse_eq_map_inv hfs hf0
   have hgr' := Polynomial.roots_reverse_eq_map_inv hgs hg0
-  have hfrs := DegreeDropReversal.splits_reverse hfs
-  have hgrs := DegreeDropReversal.splits_reverse hgs
+  have hfrs := Polynomial.Splits.reverse hfs
+  have hgrs := Polynomial.Splits.reverse hgs
   have hnat : ∀ {p : ℝ[X]}, p.Splits → p.coeff 0 ≠ 0 → p.reverse.natDegree = p.natDegree := by
     intro p hp hp0
-    rw [← card_roots_of_splits (DegreeDropReversal.splits_reverse hp),
+    rw [← Polynomial.splits_iff_card_roots.mp (Polynomial.Splits.reverse hp),
       Polynomial.roots_reverse_eq_map_inv hp hp0,
-      Multiset.card_map, card_roots_of_splits hp]
+      Multiset.card_map, Polynomial.splits_iff_card_roots.mp hp]
   have hrslen : rs.length = f.natDegree := by
-    rw [← card_roots_of_splits hfs, ← hfr, Multiset.coe_card]
+    rw [← Polynomial.splits_iff_card_roots.mp hfs, ← hfr, Multiset.coe_card]
   have hsslen : ss.length = g.natDegree := by
-    rw [← card_roots_of_splits hgs, ← hgsr, Multiset.coe_card]
+    rw [← Polynomial.splits_iff_card_roots.mp hgs, ← hgsr, Multiset.coe_card]
   refine ⟨⟨DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hf0, hfrs⟩,
     ⟨DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hg0, hgrs⟩, ?_,
     ⟨(rs.map Inv.inv).reverse, (ss.map Inv.inv).reverse, ?_, ?_, ?_, ?_, ?_⟩⟩
@@ -216,6 +216,6 @@ theorem splits_of_eq_reflect {P R : ℕ → ℝ[X]} {D₀ : ℕ}
     (hPR : ∀ n, P n = reflect (D₀ + n) (R n)) (hdeg : ∀ n, (R n).natDegree ≤ D₀ + n)
     (hR : ∀ n, (R n).Splits) (n : ℕ) : (P n).Splits := by
   rw [hPR]
-  exact DegreeDropReversal.splits_reflect_of_splits (hR n) (hdeg n)
+  exact Polynomial.Splits.reflect (hR n) (hdeg n)
 
 end RealRooted

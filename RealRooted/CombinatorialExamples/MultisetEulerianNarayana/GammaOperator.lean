@@ -330,7 +330,7 @@ private theorem simpleNegRooted_gammaOperator_zero
       exact hasPosLeadingCoeff_C_mul hb (hasPosLeadingCoeff_X_add_C _)
     have hpnn : HasNonnegCoeffs p := by
       rw [hp_eq]
-      exact nonnegCoeffs_C_mul hb.le (hasNonnegCoeffs_X_add_C (by positivity))
+      exact hasNonnegCoeffs_C_mul hb.le (hasNonnegCoeffs_X_add_C (by positivity))
     have hp0 : 0 < p.coeff 0 := by
       simp [p]
     have hbase : SimpleNegRooted p 1 :=

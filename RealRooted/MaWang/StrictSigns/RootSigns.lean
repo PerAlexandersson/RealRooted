@@ -9,7 +9,7 @@ namespace RealRooted.MaWangInternal
 /-- Sign-normalization for a product of linear factors: multiplying by
 `(-1) ^ countP (s < ·)` flips exactly the negative factors and makes the product
 nonnegative. -/
-lemma nonneg_normalized_prod_sub_countP :
+private lemma nonneg_normalized_prod_sub_countP :
     ∀ (ts : List ℝ) (s : ℝ),
       0 ≤ (-1 : ℝ) ^ (ts.countP (s < ·)) * (ts.map (fun x => s - x)).prod
   | [], _ => by simp
@@ -27,11 +27,11 @@ lemma nonneg_normalized_prod_sub_countP :
 /-- For a real-rooted polynomial with positive leading coefficient, the sign of
 `F.eval s` is controlled by the parity of the number of roots strictly to the
 right of `s`. -/
-lemma nonneg_normalized_eval_of_countP_gt
+private lemma nonneg_normalized_eval_of_countP_gt
     {F : ℝ[X]} (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
     {ts : List ℝ} (hts_eq : (↑ts : Multiset ℝ) = F.roots) (s : ℝ) :
     0 ≤ (-1 : ℝ) ^ (ts.countP (s < ·)) * F.eval s := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hF_splits s, ← hts_eq]
+  rw [Polynomial.Splits.eval_eq_prod_roots hF_splits s, ← hts_eq]
   change 0 ≤ (-1 : ℝ) ^ ts.countP (s < ·) *
     (F.leadingCoeff * (ts.map (fun x => s - x)).prod)
   convert mul_nonneg hF_pos.le (nonneg_normalized_prod_sub_countP ts s) using 1
@@ -65,7 +65,7 @@ lemma isRoot_of_eval_nonneg_of_odd_countP_gt
 
 /-- In an interlacing layout, every consecutive pair on the right-hand list has
 some left-hand element weakly between them. -/
-lemma exists_mem_between_of_listInterlaces_consecutive :
+private lemma exists_mem_between_of_listInterlaces_consecutive :
     ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       ListInterlaces ss rs →
       rs = pre ++ r₁ :: r₂ :: rest →
@@ -162,7 +162,7 @@ lemma isRoot_of_mem_sorted_roots_eq
 
 /-- In a sorted interlacing layout, the polynomial-factor product has
 opposite-or-zero signs at any consecutive pair on the right-hand list. -/
-lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
+private lemma listInterlaces_prod_mul_prod_nonpos_of_consecutive :
     ∀ {ss rs pre : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       rs.Pairwise (· ≤ ·) →
       ListInterlaces ss rs →
@@ -241,8 +241,8 @@ lemma eval_mul_eval_nonpos_of_interlacing_consecutive {g : ℝ[X]}
     (hint : ListInterlaces ss rs)
     (hEq : rs = pre ++ r₁ :: r₂ :: rest) :
     g.eval r₁ * g.eval r₂ ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits r₁,
-      eval_eq_leadingCoeff_mul_prod_sub hg_splits r₂, ← hss_eq]
+  rw [Polynomial.Splits.eval_eq_prod_roots hg_splits r₁,
+      Polynomial.Splits.eval_eq_prod_roots hg_splits r₂, ← hss_eq]
   have hprod_nonpos :
       (ss.map (fun x => r₁ - x)).prod * (ss.map (fun x => r₂ - x)).prod ≤ 0 :=
     listInterlaces_prod_mul_prod_nonpos_of_consecutive hrs_sorted hint hEq

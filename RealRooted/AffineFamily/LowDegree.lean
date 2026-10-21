@@ -63,7 +63,7 @@ private theorem not_degree_gap_ge_two_of_add_left_family_nonneg
     intro μ hμ
     have hbase := hfamily hμ
     have hbase_deg : (C μ * f + g).natDegree = g.natDegree := by
-      apply natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff _ hg_pos
+      apply Polynomial.natDegree_add_eq_right_of_natDegree_lt
       rw [natDegree_C_mul hμ.ne']
       lia
     have hn_lt : n < (C μ * f + g).natDegree := by lia
@@ -295,7 +295,7 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     nlinarith [sq_nonneg (2 * (s * a + A) * x + (a + B))]
   have hq_deg2 : q.natDegree = 2 := by rw [hq_eq]; exact natDegree_quadratic hquad_pos.ne'
   obtain ⟨x, hx_mem⟩ := Multiset.card_pos_iff_exists_mem.mp (show 0 < q.roots.card by
-    rw [card_roots_of_splits hq_rr.2, hq_deg2]
+    rw [Polynomial.splits_iff_card_roots.mp hq_rr.2, hq_deg2]
     lia)
   exact hq_noRoot x ((mem_roots hq_rr.1).mp hx_mem)
 

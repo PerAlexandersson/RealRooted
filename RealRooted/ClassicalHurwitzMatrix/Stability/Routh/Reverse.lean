@@ -59,7 +59,7 @@ theorem IsStrictlyHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial
       even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0
   have hevennn : HasNonnegCoeffs even := by
     rw [heq]
-    exact (nonnegCoeffs_C_mul hc.le hoddnn).add hrednn.X_mul
+    exact (hasNonnegCoeffs_C_mul hc.le hoddnn).add hrednn.X_mul
   have heven0 : even.coeff 0 ≠ 0 := by
     rw [h0]
     exact mul_ne_zero hc.ne' hodd0.ne'

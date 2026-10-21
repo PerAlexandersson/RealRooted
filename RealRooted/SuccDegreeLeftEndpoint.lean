@@ -461,7 +461,7 @@ theorem splits_right_of_closedSegmentIcc_family_of_succDegree {f g : ℝ[X]}
 
 These bundle the closed-segment endpoint-splitting facts with the corresponding
 full real root-count equality `roots.card = natDegree` (via
-`card_roots_of_splits`), the form consumed by the root-count leg of the direct
+`Polynomial.splits_iff_card_roots.mp`), the form consumed by the root-count leg of the direct
 #42 route.  They introduce no new mathematics. -/
 
 /-- Root-count package for the lower-degree endpoint: under the succ-degree
@@ -472,7 +472,7 @@ theorem left_card_roots_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     f.roots.card = f.natDegree :=
-  card_roots_of_splits
+  Polynomial.splits_iff_card_roots.mp
     (hfg.left_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the higher-degree endpoint. -/
@@ -481,7 +481,7 @@ theorem right_card_roots_of_succDegree {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hsucc : f.natDegree = g.natDegree + 1) :
     g.roots.card = g.natDegree :=
-  card_roots_of_splits
+  Polynomial.splits_iff_card_roots.mp
     (hfg.right_splits_of_succDegree hf_pos hg_pos hsucc)
 
 /-- Root-count package for the lower-degree endpoint, packaged as the
@@ -509,7 +509,7 @@ theorem left_card_roots_of_closedSegmentIcc_family_of_succDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hsucc : g.natDegree = f.natDegree + 1) :
     f.roots.card = f.natDegree :=
-  card_roots_of_splits
+  Polynomial.splits_iff_card_roots.mp
     (splits_of_closedSegmentIcc_family_of_succDegree hfamily hf_pos hg_pos hsucc)
 
 /-- Closed-segment (inclusive) root-count package at the higher-degree endpoint. -/
@@ -519,7 +519,7 @@ theorem right_card_roots_of_closedSegmentIcc_family_of_succDegree {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hsucc : f.natDegree = g.natDegree + 1) :
     g.roots.card = g.natDegree :=
-  card_roots_of_splits
+  Polynomial.splits_iff_card_roots.mp
     (splits_right_of_closedSegmentIcc_family_of_succDegree hfamily hf_pos hg_pos
       hsucc)
 

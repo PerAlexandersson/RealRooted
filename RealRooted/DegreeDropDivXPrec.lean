@@ -41,7 +41,7 @@ lemma card_divX_roots_succ_eq_natDegree_of_coeff_zero {g : ℝ[X]}
     (hg : g ≠ 0) (hg0 : g.coeff 0 = 0) (hgs : g.Splits) :
     Multiset.card g.divX.roots + 1 = g.natDegree := by
   rw [card_divX_roots_succ_eq_card_roots_of_coeff_zero hg hg0,
-    card_roots_of_splits hgs]
+    Polynomial.splits_iff_card_roots.mp hgs]
 
 /-- Succ-degree form of `card_divX_roots_succ_eq_natDegree_of_coeff_zero`,
 keyed to the lower-degree endpoint. -/
@@ -260,9 +260,9 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
   obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq,
     hshape⟩ := hstrictInterl
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have hAlt : ListAlternates ss rs := by
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
     · lia
@@ -334,9 +334,9 @@ theorem strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     StrictInterl (g.divX) f := by
   obtain ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hstrictInterl
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hrs_len : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have hlen1 : ss.length + 1 = rs.length := by simp_all
   have hInter : ListInterlaces ss rs := by simp_all
   have hrs_ne : rs ≠ [] := by grind
@@ -396,9 +396,9 @@ theorem strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
   obtain ⟨hdivX, hf, aa, bb, haa_sorted, hbb_sorted, haa_eq, hbb_eq, hshape⟩ :=
     hstrictInterl
   have haa_len : aa.length = g.divX.natDegree := by
-    rw [← Multiset.coe_card, haa_eq, card_roots_of_splits hdivX.2]
+    rw [← Multiset.coe_card, haa_eq, Polynomial.splits_iff_card_roots.mp hdivX.2]
   have hbb_len : bb.length = f.natDegree := by
-    rw [← Multiset.coe_card, hbb_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hbb_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hdivX_deg : g.divX.natDegree = f.natDegree :=
     natDegree_divX_eq_of_succDegree hdeg
   have hAlt : ListAlternates aa bb := by simp_all

@@ -108,7 +108,7 @@ theorem weightedIndepPolyOn_hasNonnegCoeffs {V : Type u} [DecidableEq V]
     · intro v t hv ih hsub
       rw [Finset.prod_insert hv]
       have hv_nonneg : HasNonnegCoeffs (C (wt v)) := by
-        simpa using nonnegCoeffs_C_mul (hwt v (hsub (Finset.mem_insert_self v t)))
+        simpa using hasNonnegCoeffs_C_mul (hwt v (hsub (Finset.mem_insert_self v t)))
           hasNonnegCoeffs_one
       have hsub_t : t ⊆ S := fun w hw => hsub (Finset.mem_insert.mpr (Or.inr hw))
       exact hv_nonneg.mul (ih hsub_t)

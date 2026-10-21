@@ -225,7 +225,8 @@ private theorem interl_X_mul_add_add_X_mul {P M W : ℝ[X]} (hPM : Interl P M)
     Interl (X * P + (M + W)) (X * (P + M) + W) := by
   have key := Interl.window_three (f₁ := M) (f₂ := W) (f₃ := X * P) (f₄ := X * M) hMW
     (interl_mul_X_of_interl hPM nnP nnM) (interl_mul_X_of_interl (Interl.refl sM) nnM nnM)
-    (interl_mul_X_of_interl hMW nnM nnW) (hPM.mul_X_both_of_nonneg nnP nnM) nnM nnW nnP.X_mul
+    (interl_mul_X_of_interl hMW nnM nnW)
+    hPM.mul_X_both nnM nnW nnP.X_mul
     nnM.X_mul (splits_add_X_mul_of_interl hPW nnP nnW sP sW)
   rw [show X * P + (M + W) = M + W + X * P by ring,
     show X * (P + M) + W = W + X * P + X * M by ring]

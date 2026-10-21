@@ -131,7 +131,7 @@ private theorem a144696Polynomial_reciprocal_strictInterl_of_two_le
     loweringEulerStep_nonneg hEnn
       (generalizedEulerian_natDegree 1 n).le
   have hAnn : HasNonnegCoeffs (C 2 * E) :=
-    nonnegCoeffs_C_mul (by norm_num) hEnn
+    hasNonnegCoeffs_C_mul (by norm_num) hEnn
   have hpdeg : (C 2 * a144696Polynomial n).natDegree ≤ n := by
     rw [natDegree_C_mul (by norm_num), natDegree_a144696Polynomial]
   have hendpoint :

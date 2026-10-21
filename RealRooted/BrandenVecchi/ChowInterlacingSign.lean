@@ -60,9 +60,9 @@ theorem leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_c
   rcases hstrictInterl with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
     hss_eq, hrs_eq, hshape⟩
   have hlen_ss : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hlen_rs : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have halt : ListAlternates ss rs := by simp_all
   have hpair : List.Forall₂ (fun x y : ℝ => x ≤ y) ss rs :=
     listAlternates_forall₂_le halt
@@ -103,8 +103,8 @@ theorem leadingCoeff_cross_mul_eq_of_strictInterl_sameDegree_of_nonneg_of_eval_c
   have hflc : 0 < f.leadingCoeff := hfnn.pos_leadingCoeff hf.1
   have hglc : 0 < g.leadingCoeff := hgnn.pos_leadingCoeff hg.1
   have hprod : (rs.map (0 - ·)).prod = (ss.map (0 - ·)).prod := by
-    rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 0,
-      eval_eq_leadingCoeff_mul_prod_sub hg.2 0, ← hss_eq, ← hrs_eq] at hcross
+    rw [Polynomial.Splits.eval_eq_prod_roots hf.2 0,
+      Polynomial.Splits.eval_eq_prod_roots hg.2 0, ← hss_eq, ← hrs_eq] at hcross
     simp only [Multiset.map_coe, Multiset.prod_coe] at hcross
     have hcancel : f.leadingCoeff * g.leadingCoeff * (rs.map (0 - ·)).prod =
         f.leadingCoeff * g.leadingCoeff * (ss.map (0 - ·)).prod := by

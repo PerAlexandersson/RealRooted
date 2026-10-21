@@ -123,10 +123,10 @@ lemma StrictInterl.of_degree_zero_degree_zero
     StrictInterl f g := by
   have hroots_f : f.roots = 0 := by
     apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hf_splits, hf_deg0]
+    rw [Polynomial.splits_iff_card_roots.mp hf_splits, hf_deg0]
   have hroots_g : g.roots = 0 := by
     apply Multiset.card_eq_zero.mp
-    rw [card_roots_of_splits hg_splits, hg_deg0]
+    rw [Polynomial.splits_iff_card_roots.mp hg_splits, hg_deg0]
   refine ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [], by simp, by simp, ?_, ?_, ?_⟩
   · simp [hroots_f]
   · simp [hroots_g]

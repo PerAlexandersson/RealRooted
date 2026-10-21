@@ -71,7 +71,7 @@ private lemma sign_of_prod_countP (s : Multiset ℝ) (f : ℝ → ℝ) (p : ℝ 
 
 /-- If two multisets have the same count of "negative-producing" elements,
     then the product of their mapped products is non-negative. -/
-lemma prod_mul_prod_nonneg_of_same_neg_count {s₁ s₂ : Multiset ℝ}
+private lemma prod_mul_prod_nonneg_of_same_neg_count {s₁ s₂ : Multiset ℝ}
     {f g : ℝ → ℝ} {p : ℝ → Prop} [DecidablePred p]
     (hf_pos : ∀ x ∈ s₁, ¬p x → 0 ≤ f x)
     (hf_neg : ∀ x ∈ s₁, p x → f x ≤ 0)
@@ -233,19 +233,17 @@ This holds because:
 The count equality (3) follows from the interlacing giving one root per interval. -/
 
 /-- Evaluation of a real-rooted polynomial via its factorization. -/
+@[deprecated Polynomial.Splits.eval_eq_prod_roots +typeChanged (since := "2026-10-21")]
 lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]}
   (hp_splits : p.Splits) (x : ℝ) :
-    p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod := by
-  have hfact := C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hp_splits)
-  conv_lhs => rw [← hfact]
-  simp only [eval_C_mul, eval_multiset_prod, Multiset.map_map, Function.comp,
-    eval_sub, eval_X, eval_C]
+    p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod :=
+  hp_splits.eval_eq_prod_roots x
 
 lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :
     0 < p.eval r := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hp_splits r]
+  rw [Polynomial.Splits.eval_eq_prod_roots hp_splits r]
   exact mul_pos hp_pos (Multiset.prod_pos (by simp_all))
 
 /-- If two polynomials both precede the same right-hand polynomial with positive
@@ -265,7 +263,7 @@ lemma eval_mul_eval_nonneg_of_strictInterl_right {f g h : ℝ[X]}
   have hr_mem_rs : r ∈ rs_f := by
     apply Multiset.mem_coe.mp
     simp_all
-  rw [eval_eq_leadingCoeff_mul_prod_sub hf.2 r, eval_eq_leadingCoeff_mul_prod_sub hg.2 r]
+  rw [Polynomial.Splits.eval_eq_prod_roots hf.2 r, Polynomial.Splits.eval_eq_prod_roots hg.2 r]
   rw [← hss_f_eq, ← hss_g_eq]
   have hprod_f :
       ((↑ss_f : Multiset ℝ).map (r - ·)).prod = (ss_f.map (r - ·)).prod := rfl
@@ -345,8 +343,8 @@ lemma opposite_sign_at_interlacing_roots {f g : ℝ[X]}
     (hg_dichotomy : ∀ r ∈ g.roots.erase t, r ≤ a ∨ b ≤ r)
     (hcount_eq : (g.roots.erase t).countP (b ≤ ·) = (f.roots.erase s).countP (b ≤ ·)) :
     g.eval s * f.eval t ≤ 0 := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hg_splits s,
-      eval_eq_leadingCoeff_mul_prod_sub hf_splits t]
+  rw [Polynomial.Splits.eval_eq_prod_roots hg_splits s,
+      Polynomial.Splits.eval_eq_prod_roots hf_splits t]
   have hlcg := hg_pos; have hlcf := hf_pos
   unfold HasPosLeadingCoeff at hlcg hlcf
   suffices h : (g.roots.map (s - ·)).prod * (f.roots.map (t - ·)).prod ≤ 0 by

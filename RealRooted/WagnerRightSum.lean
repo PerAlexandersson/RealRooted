@@ -154,7 +154,7 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
 /-- If `bigger` has a root `p` below all roots of `smaller`, and `smaller + bigger`
     and `smaller + bigger` has degree one more than `smaller`, then
     `smaller + bigger` has a root ≤ p. Used for the mixed-degree cases in Wagner (1). -/
-lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
+private lemma exists_root_le_of_mixed {smaller bigger : ℝ[X]}
     (hsmaller_ne : smaller ≠ 0)
     (hsmaller_pos : HasPosLeadingCoeff smaller)
     (hsum_pos : HasPosLeadingCoeff (smaller + bigger))
@@ -215,9 +215,9 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
           (by simp [hss_f_eq]) (by simp [hss_g_eq])
           (by simp) (by simp) hno_rs_f
       have hf_deg : ss_f.length = f.natDegree := by
-        rw [← card_roots_of_splits hf.2, ← Multiset.coe_card, hss_f_eq]
+        rw [← Polynomial.splits_iff_card_roots.mp hf.2, ← Multiset.coe_card, hss_f_eq]
       have hg_deg : ss_g.length = g.natDegree := by
-        rw [← card_roots_of_splits hg.2, ← Multiset.coe_card, hss_g_eq]
+        rw [← Polynomial.splits_iff_card_roots.mp hg.2, ← Multiset.coe_card, hss_g_eq]
       have hdeg_eq : f.natDegree = g.natDegree := by lia
       have hfg_ne := add_ne_zero_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
       have hfg_deg := natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff hdeg_eq hf_pos hg_pos
@@ -233,7 +233,7 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
           (f + g).roots.card ≤ (f + g).natDegree := card_roots' (f + g)
           _ = us.length := hfg_natDeg
       have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
-        refine ⟨hfg_ne, splits_of_card_roots ?_⟩
+        refine ⟨hfg_ne, Polynomial.splits_iff_card_roots.mpr ?_⟩
         rw [← hus_eq, Multiset.coe_card, hfg_natDeg]
       exact ⟨hfg_rr, hh, us, rs_f,
         pairwise_le_of_listInterlaces us rs_f hus_int, hrs_f_sorted, hus_eq, hrs_f_eq,
@@ -254,18 +254,18 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
       have hs₁_root : g.IsRoot s₁_g :=
         (mem_roots hg.1).mp (by rw [← hss_g_eq]; simp)
       have hf_deg : ss_f.length = f.natDegree := by
-        have := card_roots_of_splits hf.2
+        have := Polynomial.splits_iff_card_roots.mp hf.2
         rw [← hss_f_eq, Multiset.coe_card] at this
         lia
       have hg_deg : g.natDegree = f.natDegree + 1 := by
         have : (s₁_g :: rest_g).length = g.natDegree := by
-          have := card_roots_of_splits hg.2
+          have := Polynomial.splits_iff_card_roots.mp hg.2
           rw [← hss_g_eq, Multiset.coe_card] at this
           lia
         lia
       have hdeg_lt : f.natDegree < g.natDegree := by lia
       have hfg_deg : (f + g).natDegree = g.natDegree :=
-        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hdeg_lt hg_pos
+        Polynomial.natDegree_add_eq_right_of_natDegree_lt hdeg_lt
       have hfg_pos : HasPosLeadingCoeff (f + g) :=
         hasPosLeadingCoeff_add_of_natDegree_lt_right hdeg_lt hg_pos
       have hsmaller_gt : ∀ t ∈ f.roots, s₁_g < t := by
@@ -316,7 +316,7 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
           _ = us.length + 1 := by lia
           _ = (u₀ :: us).length := by simp
       have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
-        refine ⟨hfg_ne, splits_of_card_roots ?_⟩
+        refine ⟨hfg_ne, Polynomial.splits_iff_card_roots.mpr ?_⟩
         rw [← hroots_eq, Multiset.coe_card]
         grind
       exact ⟨hfg_rr, hh, u₀ :: us, r₁ :: rest_rs,
@@ -325,9 +325,9 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
                  ⟨le_trans hu₀_le hs₁_le, hus_int⟩⟩⟩
   · rcases hcase_g with ⟨hlen_g, hint_g⟩ | ⟨hlen_g_alt, halt_g⟩
     · have hf_deg : ss_f.length = f.natDegree := by
-        rw [← card_roots_of_splits hf.2, ← Multiset.coe_card, hss_f_eq]
+        rw [← Polynomial.splits_iff_card_roots.mp hf.2, ← Multiset.coe_card, hss_f_eq]
       have hg_deg : ss_g.length = g.natDegree := by
-        rw [← card_roots_of_splits hg.2, ← Multiset.coe_card, hss_g_eq]
+        rw [← Polynomial.splits_iff_card_roots.mp hg.2, ← Multiset.coe_card, hss_g_eq]
       have hrs_eq : rs_f = rs_g := by
         apply List.Perm.eq_of_pairwise' hrs_f_sorted hrs_g_sorted
         exact Multiset.coe_eq_coe.mp (hrs_f_eq.trans hrs_g_eq.symm)
@@ -339,11 +339,11 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
       rcases rs_f with _ | ⟨r₁, rest_rs⟩
       · simp only [List.length_nil] at hlen_f_alt hlen_g_alt
         have hfnd : f.natDegree = 0 := by
-          have := card_roots_of_splits hf.2
+          have := Polynomial.splits_iff_card_roots.mp hf.2
           rw [← hss_f_eq, Multiset.coe_card] at this
           lia
         have hgnd : g.natDegree = 0 := by
-          have := card_roots_of_splits hg.2
+          have := Polynomial.splits_iff_card_roots.mp hg.2
           rw [← hss_g_eq, Multiset.coe_card] at this
           lia
         have hfgnd : (f + g).natDegree = 0 := by grind [natDegree_add_le f g]
@@ -353,7 +353,8 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
           ⟨hfg_ne, Polynomial.Splits.of_natDegree_eq_zero hfgnd⟩
         refine ⟨hfg_rr, hh, [], [], List.Pairwise.nil, List.Pairwise.nil, ?_,
           hrs_f_eq, Or.inr ⟨rfl, trivial⟩⟩
-        exact (Multiset.card_eq_zero.mp (by rw [card_roots_of_splits hfg_rr.2, hfgnd])).symm
+        exact (Multiset.card_eq_zero.mp (by
+          rw [Polynomial.splits_iff_card_roots.mp hfg_rr.2, hfgnd])).symm
       · obtain ⟨s₁_f, rest_f, rfl⟩ : ∃ a l, ss_f = a :: l := by
           cases ss_f with
           | nil => simp at hlen_f_alt
@@ -369,11 +370,11 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
         have hs₁g_root : g.IsRoot s₁_g :=
           (mem_roots hg.1).mp (by rw [← hss_g_eq]; simp)
         have hf_deg : (s₁_f :: rest_f).length = f.natDegree := by
-          have := card_roots_of_splits hf.2
+          have := Polynomial.splits_iff_card_roots.mp hf.2
           rw [← hss_f_eq, Multiset.coe_card] at this
           lia
         have hg_deg : (s₁_g :: rest_g).length = g.natDegree := by
-          have := card_roots_of_splits hg.2
+          have := Polynomial.splits_iff_card_roots.mp hg.2
           rw [← hss_g_eq, Multiset.coe_card] at this
           lia
         have hdeg_eq : f.natDegree = g.natDegree := by lia
@@ -444,7 +445,7 @@ theorem StrictInterl.add_of_right_of_no_common_right {f g h : ℝ[X]}
             _ = us.length + 1 := by lia
             _ = (c :: us).length := by simp
         have hfg_rr : ((f + g) ≠ 0 ∧ (f + g).Splits) := by
-          refine ⟨hfg_ne, splits_of_card_roots ?_⟩
+          refine ⟨hfg_ne, Polynomial.splits_iff_card_roots.mpr ?_⟩
           rw [← hroots_eq, Multiset.coe_card]
           grind
         exact ⟨hfg_rr, hh, c :: us, r₁ :: rest_rs, hpw.imp le_of_lt,

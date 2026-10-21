@@ -25,7 +25,7 @@ theorem roots_lt_iff_eval_pos_of_interlaces (hinter : Interlaces f F)
     (∀ t ∈ F.roots, t < U) ↔ 0 < F.eval U := by
   constructor
   · intro hFU
-    rw [eval_eq_leadingCoeff_mul_prod_sub hinter.1.2 U]
+    rw [Polynomial.Splits.eval_eq_prod_roots hinter.1.2 U]
     refine mul_pos hFpos (Multiset.prod_pos fun y hy => ?_)
     obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
     exact sub_pos.mpr (hFU t ht)
@@ -58,7 +58,7 @@ theorem roots_le_iff_eval_nonneg_of_interlaces (hinter : Interlaces f F)
     (∀ t ∈ F.roots, t ≤ U) ↔ 0 ≤ F.eval U := by
   constructor
   · intro hFU
-    rw [eval_eq_leadingCoeff_mul_prod_sub hinter.1.2 U]
+    rw [Polynomial.Splits.eval_eq_prod_roots hinter.1.2 U]
     refine mul_nonneg hFpos.le (Multiset.prod_nonneg fun y hy => ?_)
     obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
     exact sub_nonneg.mpr (hFU t ht)
@@ -91,7 +91,8 @@ theorem roots_gt_iff_neg_one_pow_mul_eval_pos_of_interlaces (hinter : Interlaces
     (∀ t ∈ F.roots, L < t) ↔ 0 < (-1 : ℝ) ^ F.natDegree * F.eval L := by
   constructor
   · intro hFL
-    rw [eval_eq_leadingCoeff_mul_prod_sub hinter.1.2 L, ← card_roots_of_splits hinter.1.2,
+    rw [Polynomial.Splits.eval_eq_prod_roots hinter.1.2 L,
+      ← Polynomial.splits_iff_card_roots.mp hinter.1.2,
       mul_left_comm, show F.roots.card = (F.roots.map (L - ·)).card by simp,
       ← Multiset.prod_map_neg]
     refine mul_pos hFpos (Multiset.prod_pos fun y hy => ?_)
@@ -159,7 +160,8 @@ theorem roots_ge_iff_neg_one_pow_mul_eval_nonneg_of_interlaces (hinter : Interla
     (∀ t ∈ F.roots, L ≤ t) ↔ 0 ≤ (-1 : ℝ) ^ F.natDegree * F.eval L := by
   constructor
   · intro hFL
-    rw [eval_eq_leadingCoeff_mul_prod_sub hinter.1.2 L, ← card_roots_of_splits hinter.1.2,
+    rw [Polynomial.Splits.eval_eq_prod_roots hinter.1.2 L,
+      ← Polynomial.splits_iff_card_roots.mp hinter.1.2,
       mul_left_comm, show F.roots.card = (F.roots.map (L - ·)).card by simp,
       ← Multiset.prod_map_neg]
     refine mul_nonneg hFpos.le (Multiset.prod_nonneg fun y hy => ?_)
@@ -269,7 +271,7 @@ namespace RealRooted
 private theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
     (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, t < U) : 0 < p.eval U := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hs U]
+  rw [Polynomial.Splits.eval_eq_prod_roots hs U]
   refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
   obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
   linarith [h t ht]
@@ -279,7 +281,7 @@ private theorem neg_one_pow_mul_eval_pos_at_lower_of_roots_gt
     (h : ∀ t ∈ p.roots, L < t) :
     0 < (-1 : ℝ) ^ p.natDegree * p.eval L := by
   have hcard : p.roots.card = (p.roots.map (L - ·)).card := by simp
-  rw [eval_eq_leadingCoeff_mul_prod_sub hs L, ← card_roots_of_splits hs,
+  rw [Polynomial.Splits.eval_eq_prod_roots hs L, ← Polynomial.splits_iff_card_roots.mp hs,
     mul_left_comm, hcard, ← Multiset.prod_map_neg]
   refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
   obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hy

@@ -287,7 +287,7 @@ theorem resolvedChowCombination_endpoint_interl
       exact Interl.C_mul_right_of_nonneg (hleft j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn)
+      exact hasNonnegCoeffs_C_mul (ha j hjn)
         (hdirect.nonnegCoeffs _ (hmem j hjn))
   · apply Interl.finsetSum_right_of_nonneg
     · intro j hj
@@ -295,7 +295,7 @@ theorem resolvedChowCombination_endpoint_interl
       exact Interl.C_mul_left_of_nonneg (hright j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn)
+      exact hasNonnegCoeffs_C_mul (ha j hjn)
         (hdirect.nonnegCoeffs _ (hmem j hjn))
 
 /-- Strict endpoint form of Theorem 4.16.  All three nonvanishing hypotheses

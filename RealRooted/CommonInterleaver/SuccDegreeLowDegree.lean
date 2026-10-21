@@ -209,14 +209,14 @@ theorem succDegreeRootCount_of_natDegree_eq_zero
       calc
         (f.roots.filter (· ≤ x)).card ≤ f.roots.card :=
           Multiset.card_le_card (Multiset.filter_le _ _)
-        _ = f.natDegree := card_roots_of_splits hf
+        _ = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
         _ = 0 := hfdeg
     exact Nat.eq_zero_of_le_zero hle
   have hgcard_nat : (g.roots.filter (· ≤ x)).card ≤ 1 := by
     calc
       (g.roots.filter (· ≤ x)).card ≤ g.roots.card :=
         Multiset.card_le_card (Multiset.filter_le _ _)
-      _ = g.natDegree := card_roots_of_splits hg
+      _ = g.natDegree := Polynomial.splits_iff_card_roots.mp hg
       _ = f.natDegree + 1 := hdeg
       _ = 1 := by rw [hfdeg]
   have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) = 0 := by exact_mod_cast hfcard_nat
@@ -256,7 +256,7 @@ private lemma exists_linear_factor_of_natDegree_one
     (hfdeg : f.natDegree = 1) :
     ∃ a α : ℝ, 0 < a ∧ f.roots = {α} ∧ f = C a * (X - C α) := by
   obtain ⟨α, hα⟩ : ∃ α, f.roots = {α} :=
-    Multiset.card_eq_one.mp (by rw [card_roots_of_splits hf_split, hfdeg])
+    Multiset.card_eq_one.mp (by rw [Polynomial.splits_iff_card_roots.mp hf_split, hfdeg])
   refine ⟨f.leadingCoeff, α, hf_pos, hα, ?_⟩
   have hprod := hf_split.eq_prod_roots
   rw [hα] at hprod
@@ -270,7 +270,7 @@ private lemma exists_quadratic_factor_of_natDegree_two
     ∃ b β γ : ℝ, 0 < b ∧ γ ≤ β ∧ g.roots = {β, γ} ∧
       g = C b * ((X - C β) * (X - C γ)) := by
   obtain ⟨r, s, hrs⟩ : ∃ r s, g.roots = {r, s} :=
-    Multiset.card_eq_two.mp (by rw [card_roots_of_splits hg_split, hgdeg])
+    Multiset.card_eq_two.mp (by rw [Polynomial.splits_iff_card_roots.mp hg_split, hgdeg])
   have hprod := hg_split.eq_prod_roots
   rcases le_total s r with hle | hle
   · refine ⟨g.leadingCoeff, r, s, hg_pos, hle, hrs, ?_⟩

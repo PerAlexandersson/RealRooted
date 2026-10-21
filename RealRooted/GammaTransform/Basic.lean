@@ -182,7 +182,7 @@ lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoe
   unfold gammaTransform
   apply hasNonnegCoeffs_finsetSum
   intro i _
-  exact nonnegCoeffs_C_mul (hγ i) (hasNonnegCoeffs_gammaBasisTerm d i)
+  exact hasNonnegCoeffs_C_mul (hγ i) (hasNonnegCoeffs_gammaBasisTerm d i)
 
 /-- A positive constant gamma coefficient makes every coefficient in the
 ambient degree box strictly positive. -/
@@ -194,7 +194,7 @@ theorem coeff_gammaTransform_pos_of_nonneg_of_coeff_zero_pos
   rw [Polynomial.finsetSum_coeff]
   apply Finset.sum_pos'
   · intro i hi
-    exact (nonnegCoeffs_C_mul (hγ i)
+    exact (hasNonnegCoeffs_C_mul (hγ i)
       (hasNonnegCoeffs_gammaBasisTerm d i)) k
   · refine ⟨0, by simp, ?_⟩
     simp only [gammaBasisTerm_zero, coeff_C_mul]

@@ -173,8 +173,8 @@ theorem natDegree_pos_X_lag_combo_sequence {P : Nat → ℝ[X]}
               exact hlt
             refine ⟨?_, ?_⟩
             · rw [hrec m,
-                natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-                  hdlt hlag_pos,
+                Polynomial.natDegree_add_eq_right_of_natDegree_lt
+                  hdlt,
                 hlag_deg]
               lia
             · rw [hrec m]

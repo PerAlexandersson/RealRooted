@@ -32,7 +32,7 @@ theorem commonPhaseRestriction_hasNonnegCoeffs {σ : Type*}
   unfold Finsupp.prod
   apply hasNonnegCoeffs_finsetProd
   intro i hi
-  exact (nonnegCoeffs_C_mul (hwt i) hasNonnegCoeffs_X).pow (d i)
+  exact (hasNonnegCoeffs_C_mul (hwt i) hasNonnegCoeffs_X).pow (d i)
 
 end
 

@@ -102,7 +102,7 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCom
         rw [hdeg]
         exact Nat.succ_pos _
       have hroots_pos : 0 < p.roots.card := by
-        simpa [card_roots_of_splits hpair.left_splits] using hp_nat_pos
+        simpa [Polynomial.splits_iff_card_roots.mp hpair.left_splits] using hp_nat_pos
       obtain ⟨x, hx⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
       have hx_sort : x ∈ p.roots.toFinset.sort (· ≤ ·) := by
         rw [Finset.mem_sort, Multiset.mem_toFinset]

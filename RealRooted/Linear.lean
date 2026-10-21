@@ -93,18 +93,6 @@ lemma isRealRooted_X_mul_of_isRealRooted {f : ℝ[X]} (hf : f ≠ 0 ∧ f.Splits
     X * f ≠ 0 ∧ (X * f).Splits :=
   isRealRooted_X_mul hf.1 hf.2
 
-/-- If `p` has zero constant coefficient, splitting of `p.divX` gives splitting
-of `p` by restoring the common factor `X`. -/
-lemma splits_of_divX_splits_of_coeff_zero {p : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff p) (h0 : p.coeff 0 = 0)
-    (hdiv : p.divX.Splits) :
-    p.Splits := by
-  have hX : X * p.divX = p := by simpa [h0] using Polynomial.X_mul_divX_add p
-  have _ := hp_pos.ne_zero
-  rw [← hX]
-  have hX_splits : (X : ℝ[X]).Splits := by simp
-  exact hX_splits.mul hdiv
-
 lemma isRealRooted_X : ((X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits) := by simp
 
 /-- Orientation sanity check for the local `StrictInterl` convention on linear factors.
@@ -120,8 +108,8 @@ lemma StrictInterl.X_add_C_iff {a b : ℝ} :
     simpa using hsum
   · intro hab
     refine ⟨?_, ?_, [(-b)], [(-a)], by simp, by simp, by simp, by simp, ?_⟩
-    · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-b)
-    · simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
+    · simpa [sub_eq_add_neg] using X_sub_C_ne_zero (-b : ℝ)
+    · simpa [sub_eq_add_neg] using X_sub_C_ne_zero (-a : ℝ)
     · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hab⟩
 
 /-- Orientation criterion for zero-aware proper position of linear factors. -/
@@ -149,21 +137,9 @@ lemma isRealRooted_of_X_mul {f : ℝ[X]}
     f ≠ 0 ∧ f.Splits := by
   simp_all
 
-/-- A root of a divisor is a root of the dividend. -/
-lemma IsRoot.of_dvd {p q : ℝ[X]} (hpq : p ∣ q) {x : ℝ} (hx : p.IsRoot x) :
-    q.IsRoot x := by
-  rcases hpq with ⟨r, rfl⟩
-  simp_all
-
 /-- A common root of two polynomials is also a root of their sum. -/
 lemma IsRoot.add {p q : ℝ[X]} {x : ℝ} (hp : p.IsRoot x) (hq : q.IsRoot x) :
     (p + q).IsRoot x := by simp_all
-
-/-- A nonunit real-rooted polynomial has a real root. -/
-lemma exists_isRoot_of_isRealRooted_of_not_isUnit {p : ℝ[X]} (hp_ne : p ≠ 0)
-    (hp_splits : p.Splits) (hu : ¬ IsUnit p) : ∃ r : ℝ, p.IsRoot r := by
-  have hdeg := degree_pos_of_ne_zero_of_nonunit hp_ne hu
-  simpa [Polynomial.IsRoot.def] using hp_splits.exists_eval_eq_zero hdeg.ne'
 
 /-- If two real-rooted polynomials have no common real root, then they are coprime. -/
 lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
@@ -174,9 +150,12 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
   · lia
   · intro z hz_nonunit hz0 hzf hzg
     have hz_notunit : ¬ IsUnit z := by simp_all
-    have hz_rr : (z ≠ 0 ∧ z.Splits) := isRealRooted_of_dvd hf_ne hf_splits hz0 hzf
-    obtain ⟨r, hzr⟩ := exists_isRoot_of_isRealRooted_of_not_isUnit hz_rr.1 hz_rr.2 hz_notunit
-    exact hno r (IsRoot.of_dvd hzf hzr) (IsRoot.of_dvd hzg hzr)
+    have hz_rr : z ≠ 0 ∧ z.Splits :=
+      ⟨hz0, hf_splits.of_dvd hf_ne hzf⟩
+    obtain ⟨r, hzr⟩ : ∃ r : ℝ, z.IsRoot r := by
+      simpa [Polynomial.IsRoot.def] using hz_rr.2.exists_eval_eq_zero
+        (degree_pos_of_ne_zero_of_nonunit hz_rr.1 hz_notunit).ne'
+    exact hno r (hzr.dvd hzf) (hzr.dvd hzg)
 
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
 lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
@@ -191,7 +170,9 @@ lemma isRealRooted_of_natDegree_le_one {p : ℝ[X]}
 lemma interlaces_one_linear {p : ℝ[X]} (hp_deg : p.natDegree = 1) :
     Interlaces (1 : ℝ[X]) p := by
   have h1_rr : ((1 : ℝ[X]) ≠ 0 ∧ (1 : ℝ[X]).Splits) := by simp
-  have hp_rr : (p ≠ 0 ∧ p.Splits) := isRealRooted_of_degree_one hp_deg
+  have hp_rr : p ≠ 0 ∧ p.Splits := by
+    refine ⟨ne_zero_of_natDegree_gt (n := 0) ?_, Splits.of_natDegree_eq_one hp_deg⟩
+    lia
   have hp_deg' : p.degree = 1 := by simpa [hp_deg] using degree_eq_natDegree hp_rr.1
   refine ⟨hp_rr, h1_rr, by simp [Polynomial.natDegree_one, hp_deg], ?_⟩
   refine ⟨[-(p.coeff 1)⁻¹ * p.coeff 0], [], by simp, by simp, ?_, by simp,
@@ -284,18 +265,10 @@ private lemma listAlternates_reverse_map_one_sub {ss rs : List ℝ}
     intro a b hab
     linarith)
 
-lemma roots_comp_one_sub_X (p : ℝ[X]) :
+private lemma roots_comp_one_sub_X (p : ℝ[X]) :
     (p.comp (1 - X)).roots = p.roots.map (1 - ·) := by
   simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
     Polynomial.roots_comp_C_mul_X_add_C p (-1) 1 isUnit_neg_one
-
-lemma isRealRooted_comp_one_sub_X
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) :
-    (p.comp (1 - X) ≠ 0 ∧ (p.comp (1 - X)).Splits) := by
-  refine ⟨?_, hp_splits.comp_of_natDegree_le_one
-    ((natDegree_sub_le (1 : ℝ[X]) X).trans (by simp))⟩
-  rw [Ne, Polynomial.comp_eq_zero_iff]
-  simp [hp_ne]
 
 /-- Reflection about `1 / 2` reverses same-degree proper position. -/
 lemma StrictInterl.comp_one_sub_X_of_natDegree_eq {f g : ℝ[X]}
@@ -303,16 +276,22 @@ lemma StrictInterl.comp_one_sub_X_of_natDegree_eq {f g : ℝ[X]}
     StrictInterl (g.comp (1 - X)) (f.comp (1 - X)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hlen : ss.length = rs.length := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2,
-      hdeg, ← card_roots_of_splits hg.2, ← hrs_eq, Multiset.coe_card]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2,
+      hdeg, ← Polynomial.splits_iff_card_roots.mp hg.2, ← hrs_eq, Multiset.coe_card]
   obtain ⟨_, halt⟩ := hshape.resolve_left (by simp_all)
   have halt' := listAlternates_reverse_map_one_sub hlen halt
   have hinter :
       List.Interleaves (· ≤ ·) (ss.reverse.map (1 - ·))
         (rs.reverse.map (1 - ·)) :=
     interleaves_of_listAlternates_of_length (by simp [hlen]) halt'
-  refine ⟨isRealRooted_comp_one_sub_X hg.1 hg.2,
-    isRealRooted_comp_one_sub_X hf.1 hf.2,
+  have hcomp : ∀ {p : ℝ[X]}, p ≠ 0 → p.Splits →
+      p.comp (1 - X) ≠ 0 ∧ (p.comp (1 - X)).Splits := by
+    intro p hp_ne hp_splits
+    refine ⟨?_, hp_splits.comp_of_natDegree_le_one
+      ((natDegree_sub_le (1 : ℝ[X]) X).trans (by simp))⟩
+    rw [Ne, Polynomial.comp_eq_zero_iff]
+    simp [hp_ne]
+  refine ⟨hcomp hg.1 hg.2, hcomp hf.1 hf.2,
     rs.reverse.map (1 - ·), ss.reverse.map (1 - ·),
     hinter.pairwise_right, hinter.pairwise_left, ?_, ?_, Or.inr ⟨?_, halt'⟩⟩
   · rw [roots_comp_one_sub_X, ← hrs_eq]
@@ -326,7 +305,11 @@ so the relative order is unchanged. -/
 lemma StrictInterl.comp_X_add_C {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
     StrictInterl (f.comp (X + C r)) (g.comp (X + C r)) := by
   rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
-  refine ⟨isRealRooted_comp_X_add_C hf.1 hf.2 r, isRealRooted_comp_X_add_C hg.1 hg.2 r,
+  have hfcomp : f.comp (X + C r) ≠ 0 ∧ (f.comp (X + C r)).Splits :=
+    ⟨comp_X_add_C_ne_zero_iff.mpr hf.1, hf.2.comp_X_add_C r⟩
+  have hgcomp : g.comp (X + C r) ≠ 0 ∧ (g.comp (X + C r)).Splits :=
+    ⟨comp_X_add_C_ne_zero_iff.mpr hg.1, hg.2.comp_X_add_C r⟩
+  refine ⟨hfcomp, hgcomp,
     ss.map (· - r), rs.map (· - r), ?_, ?_, ?_, ?_, ?_⟩
   · grind
   · grind
@@ -346,6 +329,12 @@ lemma StrictInterl.comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
   rcases h with ⟨hf, hg, ss, rs, _, _, hss_eq, hrs_eq, hcase⟩
   have ha_ne : a ≠ 0 := ne_of_gt ha
   have ha_unit : IsUnit a := isUnit_iff_ne_zero.mpr ha_ne
+  have hfcomp : f.comp (C a * X) ≠ 0 ∧ (f.comp (C a * X)).Splits :=
+    ⟨mt (comp_C_mul_X_eq_zero_iff (by simp [ha_ne])).mp hf.1,
+      hf.2.comp_of_natDegree_le_one (by simp [ha_ne])⟩
+  have hgcomp : g.comp (C a * X) ≠ 0 ∧ (g.comp (C a * X)).Splits :=
+    ⟨mt (comp_C_mul_X_eq_zero_iff (by simp [ha_ne])).mp hg.1,
+      hg.2.comp_of_natDegree_le_one (by simp [ha_ne])⟩
   have hmono : ∀ {x y : ℝ}, x ≤ y → a⁻¹ * x ≤ a⁻¹ * y := by
     exact fun {_ _} hxy => mul_le_mul_of_nonneg_left hxy (inv_nonneg.mpr ha.le)
   have hroots_f :
@@ -366,8 +355,7 @@ lemma StrictInterl.comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
           (ss.map (a⁻¹ * ·)) (rs.map (a⁻¹ * ·)) :=
       (interleaves_of_listInterlaces_of_length hlen hinterlaces).map
         (a⁻¹ * ·) @hmono
-    refine ⟨isRealRooted_comp_C_mul_X hf.1 hf.2 ha_ne,
-      isRealRooted_comp_C_mul_X hg.1 hg.2 ha_ne,
+    refine ⟨hfcomp, hgcomp,
       ss.map (a⁻¹ * ·), rs.map (a⁻¹ * ·),
       hinter.pairwise_left, hinter.pairwise_right, hroots_f, hroots_g,
       Or.inl ⟨by simpa using hlen, ?_⟩⟩
@@ -377,8 +365,7 @@ lemma StrictInterl.comp_C_mul_X {f g : ℝ[X]} (h : StrictInterl f g)
           (rs.map (a⁻¹ * ·)) (ss.map (a⁻¹ * ·)) :=
       (interleaves_of_listAlternates_of_length hlen halternates).map
         (a⁻¹ * ·) @hmono
-    refine ⟨isRealRooted_comp_C_mul_X hf.1 hf.2 ha_ne,
-      isRealRooted_comp_C_mul_X hg.1 hg.2 ha_ne,
+    refine ⟨hfcomp, hgcomp,
       ss.map (a⁻¹ * ·), rs.map (a⁻¹ * ·),
       hinter.pairwise_right, hinter.pairwise_left, hroots_f, hroots_g,
       Or.inr ⟨by simpa using hlen, ?_⟩⟩
@@ -467,6 +454,8 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
 
 /-- If the right summand has strictly larger degree and positive leading coefficient,
 then the sum keeps that degree. -/
+@[deprecated Polynomial.natDegree_add_eq_right_of_natDegree_lt +typeChanged
+  (since := "2026-10-21")]
 lemma natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : p.natDegree < q.natDegree) (hq_pos : HasPosLeadingCoeff q) :
     (p + q).natDegree = q.natDegree := by
@@ -475,6 +464,8 @@ lemma natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
 
 /-- If the left summand has strictly larger degree and positive leading coefficient,
 then the sum keeps that degree. -/
+@[deprecated Polynomial.natDegree_add_eq_left_of_natDegree_lt +typeChanged
+  (since := "2026-10-21")]
 lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : q.natDegree < p.natDegree) (hp_pos : HasPosLeadingCoeff p) :
     (p + q).natDegree = p.natDegree := by

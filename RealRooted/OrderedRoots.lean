@@ -32,7 +32,7 @@ theorem orderedRoot_isRoot_of_splits
     (hdeg : p.natDegree = n) (i : Fin n) :
     p.IsRoot (orderedRoot p n i) :=
   Polynomial.isRoot_of_mem_roots <|
-    orderedRoot_mem_roots (by rw [card_roots_of_splits hp, hdeg]) i
+    orderedRoot_mem_roots (by rw [Polynomial.splits_iff_card_roots.mp hp, hdeg]) i
 
 /-- For two nonzero, split polynomials of degree `n`, interlacing is
 equivalent to the coordinate bounds on their canonically ordered roots. -/
@@ -49,9 +49,9 @@ theorem strictInterl_iff_orderedRoot_bounds
   · intro h
     obtain ⟨_, _, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩ := h
     have hssLength : ss.length = n := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hpSplits, hpDegree]
+      rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hpSplits, hpDegree]
     have hrsLength : rs.length = n := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hqSplits, hqDegree]
+      rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hqSplits, hqDegree]
     obtain ⟨_, halt⟩ := hshape.resolve_left (by intro hbad; lia)
     have hssCanonical : p.roots.sort (· ≤ ·) = ss := by
       rw [← hss_eq, Multiset.coe_sort]
@@ -77,10 +77,10 @@ theorem strictInterl_iff_orderedRoot_bounds
     let rs := q.roots.sort (· ≤ ·)
     have hssLength : ss.length = n := by
       rw [show ss = p.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
-        card_roots_of_splits hpSplits, hpDegree]
+        Polynomial.splits_iff_card_roots.mp hpSplits, hpDegree]
     have hrsLength : rs.length = n := by
       rw [show rs = q.roots.sort (· ≤ ·) by rfl, Multiset.length_sort,
-        card_roots_of_splits hqSplits, hqDegree]
+        Polynomial.splits_iff_card_roots.mp hqSplits, hqDegree]
     refine ⟨⟨hpNe, hpSplits⟩, ⟨hqNe, hqSplits⟩, ss, rs,
       Multiset.pairwise_sort .., Multiset.pairwise_sort .., ?_, ?_,
       Or.inr ⟨by lia, ?_⟩⟩

@@ -373,7 +373,7 @@ private theorem isRealRooted_sum_C_mul_of_interl {n : ℕ} (F : ℕ → ℝ[X]) 
     refine ⟨isInterlacingSeq0_iff_pairwise.2 hpair, ?_⟩
     intro f hf
     obtain ⟨k, -, rfl⟩ := List.mem_map.1 hf
-    exact nonnegCoeffs_C_mul (hh k) (hnn k)
+    exact hasNonnegCoeffs_C_mul (hh k) (hnn k)
   have hreal : ∀ f ∈ gs, f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
     intro f hf hf0
     obtain ⟨k, hk, rfl⟩ := List.mem_map.1 hf
@@ -390,7 +390,7 @@ private lemma hasNonnegCoeffs_sum_C_mul_refined (n : ℕ) {h : ℕ → ℝ} (hh 
     (S T : Finset ℕ) :
     HasNonnegCoeffs (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k S T) :=
   hasNonnegCoeffs_finsetSum _ _ fun k _ =>
-    nonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k S T)
+    hasNonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k S T)
 
 private lemma natDegree_sum_C_mul_refined_le (n : ℕ) (h : ℕ → ℝ) {T : Finset ℕ} {b : ℕ}
     (hcard : ∀ D ∈ isolatedSubsets T, D.card ≤ b) :
@@ -521,8 +521,8 @@ private theorem strictInterl_sum_refined_Icc_sum_refined_range {n : ℕ} (hn : 2
         C (h k) * refined n k ∅ ((Finset.range n).erase 0))
       (∑ k ∈ Finset.range (n + 1), C (h k) * bot n (Finset.range n) k) := by
     refine Interl.finsetSum_pairwise_of_nonneg _ _ _ _ (fun i hi j hj => ?_)
-      (fun k _ => nonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k ∅ _))
-      (fun k _ => nonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k {0} _))
+      (fun k _ => hasNonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k ∅ _))
+      (fun k _ => hasNonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k {0} _))
     have hi' := Finset.mem_range.1 hi
     have hj' := Finset.mem_range.1 hj
     exact ((hD.top_bot i j (by lia) (by lia)).C_mul_left_of_nonneg (hh i)).C_mul_right_of_nonneg
@@ -541,7 +541,7 @@ private theorem strictInterl_sum_refined_Icc_sum_refined_range {n : ℕ} (hn : 2
     exact interl_add_right_of_common_left_of_nonneg (Interl.refl fun _ => hsp3) hbot
       (hasNonnegCoeffs_sum_C_mul_refined n hh _ _)
       (hasNonnegCoeffs_finsetSum _ _ fun k _ =>
-        nonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k {0} _))
+        hasNonnegCoeffs_C_mul (hh k) (hasNonnegCoeffs_refined n k {0} _))
   exact hint.toStrictInterl_of_ne hne3 hne2
 
 

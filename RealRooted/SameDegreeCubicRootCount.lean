@@ -19,7 +19,7 @@ theorem exists_roots_triple_of_splits_natDegree_three {f : ℝ[X]}
     ∃ a b c : ℝ, a ≤ b ∧ b ≤ c ∧ f.roots = {a, b, c} ∧
       f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
   let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 3 := by simp [rs, card_roots_of_splits hf, hdeg]
+  have hrs_len : rs.length = 3 := by simp [rs, Polynomial.splits_iff_card_roots.mp hf, hdeg]
   obtain ⟨a, b, c, hrs⟩ := List.length_eq_three.mp hrs_len
   have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
   have hsorted : ([a, b, c] : List ℝ).Pairwise (· ≤ ·) := by simp_all
@@ -50,7 +50,7 @@ theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
         f = C f.leadingCoeff *
           ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
   let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 4 := by simp [rs, card_roots_of_splits hf, hdeg]
+  have hrs_len : rs.length = 4 := by simp [rs, Polynomial.splits_iff_card_roots.mp hf, hdeg]
   obtain ⟨a, b, c, d, hrs⟩ := List.length_eq_four.mp hrs_len
   have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
   have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by simpa [hrs] using hrs_sorted

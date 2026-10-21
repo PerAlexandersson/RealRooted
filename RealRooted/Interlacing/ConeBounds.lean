@@ -30,11 +30,6 @@ Note that the endpoints must be compared with themselves, so the statement also
 consumes reflexivity of `StrictInterl` on the real-rooted members.
 -/
 
-/-- Compatibility name for the foundational nonnegative-scaling lemma. -/
-theorem hasNonnegCoeffs_C_mul {a : ℝ} {p : ℝ[X]} (ha : 0 ≤ a)
-    (hp : HasNonnegCoeffs p) : HasNonnegCoeffs (C a * p) :=
-  nonnegCoeffs_C_mul ha hp
-
 /-- **Branden--Saud Leite Lemma 3.1(1).**  A nonnegative combination of an
 interlacing sequence is caught between its first and last members. -/
 theorem interl_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → ℝ)
@@ -49,7 +44,7 @@ theorem interl_weightedSum_cone {n : ℕ} (f : ℕ → ℝ[X]) (lam : ℕ → �
     intro i hi
     simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hi
   have hnn' : ∀ i ∈ Finset.range (n + 1), HasNonnegCoeffs (C (lam i) * f i) :=
-    fun i hi => nonnegCoeffs_C_mul (hlam i) (hnn i (hmem i hi))
+    fun i hi => hasNonnegCoeffs_C_mul (hlam i) (hnn i (hmem i hi))
   refine ⟨?_, ?_⟩
   · refine Interl.finsetSum_left_of_nonneg _ _ _ ?_ hnn'
     intro i hi

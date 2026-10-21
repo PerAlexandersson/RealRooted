@@ -147,7 +147,7 @@ private theorem Lvl.top_row (h : Lvl n A B C) {i j : ℕ} (hij : i < j) (hj : j 
 
 private theorem Lvl.bot_row (h : Lvl n A B C) {i j : ℕ} (hij : i < j) (hj : j ≤ n + 1) :
     Interl (X * ∑ k ∈ Finset.range i, A k) (X * ∑ k ∈ Finset.range j, A k) := by
-  refine Interl.mul_X_both_of_nonneg ?_ (h.nnSA _) (h.nnSA _)
+  apply Interl.mul_X_both
   rw [← Finset.sum_range_add_sum_Ico A hij.le]
   refine interl_add_right_of_common_left_of_nonneg (Interl.refl (h.splitsSA (by lia)))
     ?_ (h.nnSA _) (h.nnSA _)
@@ -217,7 +217,7 @@ private theorem Lvl.mid_cons (h : Lvl n A B C) {k : ℕ} (hk : k ≤ n) :
     exact Interl.finsetSum_left_of_nonneg _ _ _ (fun j hj =>
       h.AB k j (by have := Finset.mem_Ico.1 hj; lia) (by have := Finset.mem_Ico.1 hj; lia))
       fun _ _ => h.nnB _
-  · refine Interl.mul_X_both_of_nonneg ?_ (h.nnSA _) (h.nnA k)
+  · apply Interl.mul_X_both
     exact Interl.finsetSum_right_of_nonneg _ _ _ (fun l hl =>
       h.rowA l k (by have := Finset.mem_range.1 hl; lia) hk) fun _ _ => h.nnA _
   · exact splits_add_of_interl hWP (h.nnSB _) (h.nnSA _).X_mul (h.splitsSB (by lia))

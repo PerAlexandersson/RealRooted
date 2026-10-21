@@ -72,7 +72,7 @@ theorem interlaces_of_consecutive_signs_of_natDegree_lt
       (F := F) hrs_sorted (by grind)
   have hrs_len : rs.length = f.natDegree := by
     rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hf_splits]
+      Polynomial.splits_iff_card_roots.mp hf_splits]
   have hus_sub : (↑us : Multiset ℝ) ≤ F.roots := by
     rw [Multiset.le_iff_subset (Multiset.coe_nodup.mpr (hus_pw.imp ne_of_lt))]
     intro x hx
@@ -88,7 +88,7 @@ theorem interlaces_of_consecutive_signs_of_natDegree_lt
     apply Multiset.eq_of_le_of_card_le hus_sub
     simpa [Multiset.coe_card, hus_len_deg] using card_roots' F
   have hF : F ≠ 0 ∧ F.Splits :=
-    ⟨hF_ne, splits_of_card_roots (by rw [← hus_eq, Multiset.coe_card, hus_len_deg])⟩
+    ⟨hF_ne, Polynomial.splits_iff_card_roots.mpr (by rw [← hus_eq, Multiset.coe_card, hus_len_deg])⟩
   exact
     ⟨⟨hf_ne, hf_splits⟩, hF, hdeg, rs, us, hrs_sorted,
       hus_pw.imp le_of_lt, hrs_eq, hus_eq, hus_int⟩
@@ -144,7 +144,7 @@ theorem interlaces_of_eval_mul_derivative_pos
 
 /-- If every element of the right-hand list is strictly above `a`, then so is
 every element of the interlacing left-hand list. -/
-lemma listInterlaces_all_gt_of_lowerBound :
+private lemma listInterlaces_all_gt_of_lowerBound :
     ∀ {us rs : List ℝ},
       ListInterlaces us rs →
       ∀ {a : ℝ}, (∀ r ∈ rs, a < r) → ∀ u ∈ us, a < u
@@ -161,7 +161,7 @@ lemma listInterlaces_all_gt_of_lowerBound :
 
 /-- If every element of the right-hand list is strictly below `a`, then so is
 every element of the interlacing left-hand list. -/
-lemma listInterlaces_all_lt_of_upperBound :
+private lemma listInterlaces_all_lt_of_upperBound :
     ∀ {us rs : List ℝ},
       ListInterlaces us rs →
       ∀ {a : ℝ}, (∀ r ∈ rs, r < a) → ∀ u ∈ us, u < a
@@ -322,7 +322,7 @@ lemma mul_neg_of_mul_neg_of_mul_neg {a b c d : ℝ}
 /-- If `ss` interlaces a nonempty sorted list `rs`, then adjoining one extra
 point `uR` to the right turns the tail of `rs` into a `ListInterlaces` witness
 against `ss ++ [uR]`. -/
-lemma listInterlaces_of_interlacing_append_right :
+private lemma listInterlaces_of_interlacing_append_right :
     ∀ {ss rs : List ℝ},
       rs ≠ [] →
       ListInterlaces ss rs →
@@ -360,7 +360,7 @@ theorem strictInterl_same_of_strict_signs_of_right_root
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
     exists_roots_strictly_interlacing_of_consecutive_signs (F := F) hrs_sorted hsign
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   obtain ⟨r, rs', rfl⟩ := List.exists_cons_of_ne_nil (by grind : rs ≠ [])
   have hall_us_lt_uR : ∀ u ∈ us, u < uR :=
     listInterlaces_all_lt_of_upperBound hus_int huR_lt
@@ -374,7 +374,7 @@ theorem strictInterl_same_of_strict_signs_of_right_root
     apply Multiset.eq_of_le_of_card_le hws_sub
     simpa [Multiset.coe_card, hws_len] using card_roots' F
   have hF : F ≠ 0 ∧ F.Splits :=
-    ⟨hF_ne, splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])⟩
+    ⟨hF_ne, Polynomial.splits_iff_card_roots.mpr (by rw [← hws_eq, Multiset.coe_card, hws_len])⟩
   have hws_sorted : (us ++ [uR]).Pairwise (· ≤ ·) := hws_pw.imp le_of_lt
   have hshape : ListAlternates (r :: rs') (us ++ [uR]) := by
     cases us with
@@ -396,7 +396,7 @@ theorem strictInterl_same_of_strict_signs_of_right_root
     Or.inr ⟨hlen_shape, hshape⟩⟩
 
 /-- Add one outer point on each side of a sorted interlacing layout. -/
-lemma listInterlaces_with_outer :
+private lemma listInterlaces_with_outer :
     ∀ {us rs : List ℝ},
       rs ≠ [] →
       rs.Pairwise (· ≤ ·) →
@@ -427,7 +427,7 @@ lemma listInterlaces_with_outer :
 
 /-- Assemble a differ-by-1 `StrictInterl` statement from strict sign changes on a sorted
 root list together with one strict outer root on each side. -/
-theorem strictInterl_of_strict_signs_of_strict_outer_roots
+private theorem strictInterl_of_strict_signs_of_strict_outer_roots
     {f F : ℝ[X]} {rs : List ℝ}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hF_ne : F ≠ 0)
     (hrs_sorted : rs.Pairwise (· ≤ ·))
@@ -446,7 +446,7 @@ theorem strictInterl_of_strict_signs_of_strict_outer_roots
   obtain ⟨us, hus_len, hus_int, hus_roots, hus_pw⟩ :=
     exists_roots_strictly_interlacing_of_consecutive_signs (F := F) hrs_sorted hsign
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   obtain ⟨r, rs', rfl⟩ := List.exists_cons_of_ne_nil (by grind : rs ≠ [])
   have huL_lt_uR : uL < uR := lt_trans (huL_lt r (by simp)) (huR_lt r (by simp))
   have huL_lt_all_us : ∀ u ∈ us, uL < u :=
@@ -470,7 +470,7 @@ theorem strictInterl_of_strict_signs_of_strict_outer_roots
     rw [Multiset.coe_card, hws_len]
     exact card_roots' F
   have hF : F ≠ 0 ∧ F.Splits :=
-    ⟨hF_ne, splits_of_card_roots (by rw [← hws_eq, Multiset.coe_card, hws_len])⟩
+    ⟨hF_ne, Polynomial.splits_iff_card_roots.mpr (by rw [← hws_eq, Multiset.coe_card, hws_len])⟩
   have hws_sorted : (uL :: us ++ [uR]).Pairwise (· ≤ ·) := hws_pw.imp le_of_lt
   have hshape : ListInterlaces (r :: rs') (uL :: us ++ [uR]) :=
     listInterlaces_with_outer (by simp) hrs_sorted hus_int

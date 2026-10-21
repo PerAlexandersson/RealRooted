@@ -221,8 +221,8 @@ private theorem compatible_jensen_output_of_translate_core
             C b * (X * schurSzegoComp d (B.comp (X + C eps))
               (p.comp (X + C eps)))) := by
         apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-          ((nonnegCoeffs_C_mul ha hUA.hasNonnegCoeffs).add
-            (nonnegCoeffs_C_mul hb hVB.hasNonnegCoeffs))
+          ((hasNonnegCoeffs_C_mul ha hUA.hasNonnegCoeffs).add
+            (hasNonnegCoeffs_C_mul hb hVB.hasNonnegCoeffs))
         rcases hcore heps a b ha hb with hzero | hsplits
         · exact Or.inl hzero
         · exact Or.inr hsplits.2

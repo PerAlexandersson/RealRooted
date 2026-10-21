@@ -18,7 +18,7 @@ lemma exists_linear_factor_of_splits_natDegree_one
     {p : ℝ[X]} (hp_split : p.Splits) (hpdeg : p.natDegree = 1) :
     ∃ a : ℝ, p.roots = {a} ∧ p = C p.leadingCoeff * (X - C a) := by
   obtain ⟨a, ha⟩ : ∃ a : ℝ, p.roots = {a} :=
-    Multiset.card_eq_one.mp (by rw [card_roots_of_splits hp_split, hpdeg])
+    Multiset.card_eq_one.mp (by rw [Polynomial.splits_iff_card_roots.mp hp_split, hpdeg])
   refine ⟨a, ha, ?_⟩
   have hprod := hp_split.eq_prod_roots
   rw [ha] at hprod

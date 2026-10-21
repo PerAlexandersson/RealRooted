@@ -252,13 +252,13 @@ theorem a184883_splits (n : ℕ) : (a184883 n).Splits := by
 
 /-- Every A114123 row polynomial splits over `ℝ`. -/
 theorem a114123_splits (n : ℕ) : (a114123 n).Splits := by
-  apply (DegreeDropReversal.splits_reflect_iff (a114123_natDegree_le n)).1
+  apply (Polynomial.splits_reflect_iff (a114123_natDegree_le n)).1
   rw [reflect_a114123_eq_a184883]
   exact a184883_splits n
 
 /-- Every A216182 row polynomial splits over `ℝ`. -/
 theorem a216182_splits (n : ℕ) : (a216182 n).Splits := by
-  apply (DegreeDropReversal.splits_reflect_iff (a216182_natDegree_le n)).1
+  apply (Polynomial.splits_reflect_iff (a216182_natDegree_le n)).1
   rw [reflect_a216182_eq_odd_parent]
   exact (CubicParent.polynomial_splits (2 * n + 1)).C_mul (-1)
 

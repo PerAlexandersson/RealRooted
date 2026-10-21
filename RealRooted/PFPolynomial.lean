@@ -69,25 +69,27 @@ theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (C a * p) :=
-  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-    (nonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
-    (mul_eq_zero_or_splits (Or.inr (by simp)) hp.eq_zero_or_splits)
+  IsPFPolynomial.of_realRooted_nonneg
+    (hasNonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
+    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).C_mul a)
 
 theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :=
   IsPFPolynomial.of_realRooted_nonneg (hasNonnegCoeffs_C ha) (by simp)
 
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) :=
-  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+  IsPFPolynomial.of_realRooted_nonneg
     (hasNonnegCoeffs_X.mul hp.hasNonnegCoeffs)
-    (mul_eq_zero_or_splits (Or.inr (by simp)) hp.eq_zero_or_splits)
+    ((by simp : (X : ℝ[X]).Splits).mul
+      (hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id))
 
 theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (p * q) :=
-  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+  IsPFPolynomial.of_realRooted_nonneg
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
-    (mul_eq_zero_or_splits hp.eq_zero_or_splits hq.eq_zero_or_splits)
+    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).mul
+      (hq.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id))
 
 /-- If a PF polynomial is factored by a real linear factor, then the quotient
 is again PF. -/
@@ -122,7 +124,7 @@ theorem exists_X_sub_C_factor_of_pos_natDegree {p : ℝ[X]}
   have hp0 : p ≠ 0 := by grind
   have hpsplits : p.Splits := hp.ne_zero_and_splits hp0 |>.2
   have hroots_pos : 0 < p.roots.card := by
-    rw [card_roots_of_splits hpsplits]
+    rw [Polynomial.splits_iff_card_roots.mp hpsplits]
     exact hdeg
   rcases Multiset.card_pos_iff_exists_mem.mp hroots_pos with ⟨u, hu_mem⟩
   have hu_root : p.IsRoot u := (mem_roots hp0).mp hu_mem
@@ -207,14 +209,14 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
 
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) :=
-  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-    (hp.hasNonnegCoeffs.pow n) (pow_eq_zero_or_splits hp.eq_zero_or_splits n)
+  IsPFPolynomial.of_realRooted_nonneg (hp.hasNonnegCoeffs.pow n)
+    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).pow n)
 
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative :=
-  IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hp.hasNonnegCoeffs.derivative
-    (eq_zero_or_splits_derivative hp.eq_zero_or_splits)
+  IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.derivative
+    (hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).derivative
 
 /-- Construct a PF polynomial directly from its Pólya-frequency coefficient
 sequence using the proved forward ASW theorem. -/
@@ -338,7 +340,7 @@ theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
     (by
       rcases hp.eq_zero_or_splits with rfl | hsplits
       · exact Or.inl (by simp)
-      · exact Or.inr (DegreeDropReversal.splits_reverse hsplits))
+      · exact Or.inr (Polynomial.Splits.reverse hsplits))
 
 theorem reverse_X_sub_C_isPF {r : ℝ} (hr : r ≤ 0) :
     IsPFPolynomial ((X - C r : ℝ[X]).reverse) := by
@@ -358,15 +360,6 @@ theorem isPFPolynomial_reverse_prod_X_sub_C
         simpa [sub_eq_add_neg] using
           isPFPolynomial_X_add_C (a := -r) (neg_nonneg.mpr (hs r (by simp)))
       exact hr.mul (ih fun x hx => hs x (by simp [hx]))
-
-theorem interl_X_mul_both_of_pf {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Interl p q) :
-    Interl (X * p) (X * q) := by
-  rcases hpq with hp0 | hq0 | hpq'
-  · simpa [hp0] using interl_zero_left (X * q)
-  · simpa [hq0] using interl_zero_right (X * p)
-  · exact (hpq'.mul_X_both_of_roots_nonpos hp.roots_nonpos hq.roots_nonpos).toInterl
 
 /-- Fixed-left cone closure in the two-summand form used downstream:
 if a polynomial is a common left interleaver for two nonnegative-coefficient
@@ -408,7 +401,7 @@ theorem interl_nonneg_combo_right_of_common_left_of_nonneg {p q r : ℝ[X]}
   interl_add_right_of_common_left_of_nonneg
     (Interl.C_mul_right_of_nonneg hpq ha)
     (Interl.C_mul_right_of_nonneg hpr hb)
-    (nonnegCoeffs_C_mul ha hq) (nonnegCoeffs_C_mul hb hr)
+    (hasNonnegCoeffs_C_mul ha hq) (hasNonnegCoeffs_C_mul hb hr)
 
 /-- Fixed-left cone closure in the polynomial PF notation. -/
 theorem interl_nonneg_combo_right_of_common_left_of_pf {p q r : ℝ[X]}

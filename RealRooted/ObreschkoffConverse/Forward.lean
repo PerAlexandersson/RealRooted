@@ -51,8 +51,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
             (C (-β) * g + C (-α) * f).natDegree = g.natDegree := by
           calc
             (C (-β) * g + C (-α) * f).natDegree = (C (-β) * g).natDegree :=
-              natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
-                (hasPosLeadingCoeff_C_mul (by simp_all) hg_pos)
+              Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg_scaled
             _ = g.natDegree := by rw [natDegree_C_mul (by simp_all : (-β) ≠ 0)]
         have hrr_neg :
             ((C (-β) * g + C (-α) * f) ≠ 0 ∧ (C (-β) * g + C (-α) * f).Splits) := by
@@ -89,8 +88,7 @@ private theorem allComboRealRooted_of_strictInterl_succDegree_pos
             (C β * g + C α * f).natDegree = g.natDegree := by
           calc
             (C β * g + C α * f).natDegree = (C β * g).natDegree :=
-              natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg_scaled
-                (hasPosLeadingCoeff_C_mul hβpos hg_pos)
+              Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg_scaled
             _ = g.natDegree := by rw [natDegree_C_mul hβ0]
         have hstrictInterl_mix :
             StrictInterl g (C β * g + C α * f) :=

@@ -85,7 +85,7 @@ lemma quadraticPoly_not_splits_of_discrim_neg {a b c : ℝ} (ha : a ≠ 0)
     ⟨x, by simpa using hx⟩
 
 /-- Splitting criterion for a real quadratic polynomial. -/
-lemma quadraticPoly_splits_iff_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0) :
+private lemma quadraticPoly_splits_iff_discrim_nonneg {a b c : ℝ} (ha : a ≠ 0) :
     ((C a * X ^ 2 + C b * X + C c) : ℝ[X]).Splits ↔ 0 ≤ discrim a b c := by
   refine ⟨fun hsplit => ?_, quadraticPoly_splits_of_discrim_nonneg ha⟩
   by_contra hneg
@@ -152,26 +152,12 @@ theorem splits_of_natDegree_eq_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegr
     (Polynomial.degree_le_of_natDegree_le h.le)]
   exact quadraticPoly_splits_of_discrim_nonneg ha hd
 
-/-- A real polynomial of degree at most two splits when its discriminant is nonnegative;
-degenerate cases (`coeff 2 = 0`) are of degree at most one. -/
-theorem splits_of_natDegree_le_two_of_discrim_nonneg {p : ℝ[X]} (h : p.natDegree ≤ 2)
-    (hd : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) : p.Splits := by
-  rcases eq_or_ne (p.coeff 2) 0 with h2 | h2
-  · refine Polynomial.Splits.of_natDegree_le_one ?_
-    rw [natDegree_le_iff_coeff_eq_zero]
-    intro N hN
-    by_cases hN2 : N = 2
-    · subst hN2
-      exact h2
-    · exact coeff_eq_zero_of_natDegree_lt (by lia)
-  · exact splits_of_natDegree_eq_two_of_discrim_nonneg
-      (le_antisymm h (Polynomial.le_natDegree_of_ne_zero h2)) hd
-
 /-- The quadratic `C a + C b * X + C c * X ^ 2` splits when `0 ≤ b ^ 2 - 4 * c * a`. -/
 theorem splits_C_add_C_mul_X_add_C_mul_X_sq {a b c : ℝ} (h : 0 ≤ b ^ 2 - 4 * c * a) :
     (C a + C b * X + C c * X ^ 2 : ℝ[X]).Splits := by
-  refine splits_of_natDegree_le_two_of_discrim_nonneg (by compute_degree) ?_
-  simpa [discrim, coeff_X_pow] using h
+  simpa [add_comm, add_left_comm, add_assoc] using
+    quadraticPoly_splits_of_discrim_nonneg_or_linear
+      (a := c) (b := b) (c := a) (by simpa [discrim] using h)
 
 /-- A palindromic quartic `a + b X + c X² + b X³ + a X⁴` with `a > 0` splits when the quadratic
 `a y² + b y + (c - 2a)` in `y = X + 1/X` has both roots at most `-2`, that is, when `4a ≤ b`,

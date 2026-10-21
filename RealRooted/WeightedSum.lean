@@ -51,7 +51,7 @@ theorem hasNonnegCoeffs_weightedSum (l : List (ℝ × ℝ[X]))
   apply hasNonnegCoeffs_sum
   intro p hp
   rcases List.mem_map.mp hp with ⟨ap, hap, rfl⟩
-  exact nonnegCoeffs_C_mul (hweights ap hap) (hpolys ap hap)
+  exact hasNonnegCoeffs_C_mul (hweights ap hap) (hpolys ap hap)
 
 /-- Finite-function form of `weightedSum_eq_sum_map`. -/
 theorem weightedSum_ofFn {n : ℕ} (w : Fin n → ℝ × ℝ[X]) :

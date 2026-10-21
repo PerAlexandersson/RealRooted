@@ -190,29 +190,26 @@ theorem thetaPlusOne_ne_zero_of_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
   rw [hzero, coeff_zero] at hcoeff
   exact hcoeff rfl
 
-/-- `thetaPlusOne` preserves a directed nonzero PF interlacing edge. -/
-theorem StrictInterl.thetaPlusOne_of_pf {p q : ℝ[X]}
-    (h : StrictInterl p q) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
+/-- `thetaPlusOne` preserves a directed nonzero interlacing edge. -/
+theorem StrictInterl.thetaPlusOne {p q : ℝ[X]} (h : StrictInterl p q) :
     StrictInterl (thetaPlusOne p) (thetaPlusOne q) := by
-  have hinterl := thetaPlusOnePreservesInterl hp hq h.toInterl
+  have hinterl := h.toInterl.thetaPlusOne
   rcases hinterl with hp0 | hq0 | hstrict
   · exact absurd hp0 (thetaPlusOne_ne_zero_of_ne_zero h.1.1)
   · exact absurd hq0 (thetaPlusOne_ne_zero_of_ne_zero h.2.1.1)
   · exact hstrict
 
 /-- Applying `theta + 1` to a polar comparison preserves strict interlacing. -/
-theorem StrictInterl.polarTheta_thetaPlusOne_of_pf {N : ℕ} {p q : ℝ[X]}
-    (h : StrictInterl (polarTheta N p) q) (hp : IsPFPolynomial p)
-    (hq : IsPFPolynomial q) (hdeg : p.natDegree ≤ N) :
-    StrictInterl (polarTheta N (thetaPlusOne p)) (thetaPlusOne q) := by
+theorem StrictInterl.polarTheta_thetaPlusOne {N : ℕ} {p q : ℝ[X]}
+    (h : StrictInterl (polarTheta N p) q) :
+    StrictInterl (polarTheta N (RealRooted.thetaPlusOne p)) (RealRooted.thetaPlusOne q) := by
   rw [polarTheta_thetaPlusOne_comm]
-  exact h.thetaPlusOne_of_pf (polarTheta_preserves_pf hp hdeg) hq
+  exact h.thetaPlusOne
 
-/-- `thetaPlusOne` preserves a differ-by-one PF interlacing edge. -/
-theorem Interlaces.thetaPlusOne_of_pf {p q : ℝ[X]}
-    (h : Interlaces p q) (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
-    Interlaces (thetaPlusOne p) (thetaPlusOne q) := by
-  apply (h.toStrictInterl.thetaPlusOne_of_pf hp hq).toInterlaces
+/-- `thetaPlusOne` preserves a differ-by-one interlacing edge. -/
+theorem Interlaces.thetaPlusOne {p q : ℝ[X]} (h : Interlaces p q) :
+    Interlaces (RealRooted.thetaPlusOne p) (RealRooted.thetaPlusOne q) := by
+  apply h.toStrictInterl.thetaPlusOne.toInterlaces
   rw [natDegree_thetaPlusOne_of_ne_zero h.2.1.1,
     natDegree_thetaPlusOne_of_ne_zero h.1.1]
   exact h.2.2.1
@@ -240,12 +237,5 @@ theorem StrictInterl.add_mul_X_of_common_left {h u v : ℝ[X]} {c : ℝ}
       · exact hscaledPos
     · simp
   simpa only [List.sum_cons, List.sum_nil, add_zero, mul_assoc] using hsum
-
-/-- Lag insertion through multiplication by `X`, in the orientation used by
-positive-lag window recurrences. -/
-theorem StrictInterl.insert_X_lag_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) :=
-  strictInterl_mul_X_of_strictInterl_of_nonneg h hf hg
 
 end RealRooted

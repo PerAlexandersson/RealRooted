@@ -656,7 +656,7 @@ theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
   have hroots_eq : (↑us : Multiset ℝ) = p.roots :=
     Multiset.eq_of_le_of_card_le hus_sub (by
       simp only [List.length_ofFn] at hus_len
-      rw [card_roots_of_splits hsplits, hdegree, Multiset.coe_card, hus_len]
+      rw [Polynomial.splits_iff_card_roots.mp hsplits, hdegree, Multiset.coe_card, hus_len]
       lia)
   apply HasSimpleRoots.of_roots_nodup hp
   rw [← hroots_eq]
@@ -822,7 +822,7 @@ theorem exists_comparison_data
   have hrs_lt : rs.Pairwise (· < ·) :=
     (hrs_le.and hrs_nodup).imp (fun h => lt_of_le_of_ne h.1 h.2)
   have hrs_len : rs.length = m := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hqsplits, hqdeg]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hqsplits, hqdeg]
   have hrs_ne : rs ≠ [] := by
     intro h
     rw [h] at hrs_len

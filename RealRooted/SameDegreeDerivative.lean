@@ -29,7 +29,7 @@ theorem le_roots_derivative_of_le_roots {p : ℝ[X]} {c : ℝ}
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
-    have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
+    have hcard : p.roots.card = p.natDegree := Polynomial.splits_iff_card_roots.mp hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp
@@ -82,7 +82,7 @@ theorem lt_roots_derivative_of_lt_roots {p : ℝ[X]} {u : ℝ}
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
-    have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
+    have hcard : p.roots.card = p.natDegree := Polynomial.splits_iff_card_roots.mp hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp
@@ -110,7 +110,7 @@ theorem roots_derivative_lt_of_roots_lt {p : ℝ[X]} {v : ℝ}
   have hs_ss : s ∈ ss := Multiset.mem_coe.mp (by simp_all)
   have hrs_ne : rs ≠ [] := by
     rintro rfl
-    have hcard : p.roots.card = p.natDegree := card_roots_of_splits hp
+    have hcard : p.roots.card = p.natDegree := Polynomial.splits_iff_card_roots.mp hp
     have : (0 : ℕ) = p.roots.card := by
       rw [← hrs_eq]
       simp

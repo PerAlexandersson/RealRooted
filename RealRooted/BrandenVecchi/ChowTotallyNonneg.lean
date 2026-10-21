@@ -164,7 +164,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         (hdirectReflect 0 (Nat.zero_le n) j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
   have hFref0 : Interl F ((d 0).reflect n) := by
     dsimp only [F, resolvedChowWeightSum]
     apply Interl.finsetSum_right_of_nonneg
@@ -174,7 +174,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         (hdirectReflect j hjn 0 (Nat.zero_le n)) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
   have hrefFref0 : Interl (F.reflect n) ((d 0).reflect n) := by
     rw [hreflectF]
     apply Interl.finsetSum_right_of_nonneg
@@ -183,7 +183,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       exact Interl.C_mul_left_of_nonneg (hreflectLeft j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
   have hFrefn : Interl F ((d n).reflect n) := by
     dsimp only [F, resolvedChowWeightSum]
     apply Interl.finsetSum_right_of_nonneg
@@ -193,7 +193,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         (hdirectReflect j hjn n le_rfl) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
   have hnrefF : Interl (d n) (F.reflect n) := by
     rw [hreflectF]
     apply Interl.finsetSum_left_of_nonneg
@@ -203,7 +203,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         (hdirectReflect n le_rfl j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
   have hrefnrefF : Interl ((d n).reflect n) (F.reflect n) := by
     rw [hreflectF]
     apply Interl.finsetSum_left_of_nonneg
@@ -212,7 +212,7 @@ private theorem resolvedChowWeightSum_endpoint_pairs
       exact Interl.C_mul_right_of_nonneg (hreflectRight j hjn) (ha j hjn)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
   have hFrefF : Interl F (F.reflect n) := by
     rw [hreflectF]
     dsimp only [F, resolvedChowWeightSum]
@@ -225,10 +225,10 @@ private theorem resolvedChowWeightSum_endpoint_pairs
         (ha j hjn)
     · intro i hi
       have hin : i ≤ n := by simpa using Finset.mem_range.mp hi
-      exact nonnegCoeffs_C_mul (ha i hin) (hdnn i hin)
+      exact hasNonnegCoeffs_C_mul (ha i hin) (hdnn i hin)
     · intro j hj
       have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
   constructor
   · exact reflectionInterlacing_pair_of_relations
       (hdpf 0 (Nat.zero_le n)) hFpf (hddeg 0 (Nat.zero_le n)) hFdeg

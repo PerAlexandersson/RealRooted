@@ -166,8 +166,8 @@ theorem legendre_strictInterl_polynomial (n : ℕ) :
     hasPosLeadingCoeff_add_of_natDegree_lt_left (by grind) haf_pos
   have hsum_deg :
       (a * legendre (n + 1) + b * legendre n).natDegree = n + 2 :=
-    (natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-      (by grind) haf_pos).trans hdeg_af
+    (Polynomial.natDegree_add_eq_left_of_natDegree_lt
+      (by grind)).trans hdeg_af
   have hb_nonpos :
       ∀ r : ℝ, (legendre (n + 1)).IsRoot r → b.eval r ≤ 0 := by
     intro r _

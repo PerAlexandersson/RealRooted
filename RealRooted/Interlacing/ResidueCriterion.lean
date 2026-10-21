@@ -228,7 +228,7 @@ theorem residueAuxiliary_interlaces
   have hroots_ne : f.roots ≠ 0 := by
     intro hzero
     have hcard : f.roots.card = f.natDegree :=
-      card_roots_of_splits hgf.2.1.2
+      Polynomial.splits_iff_card_roots.mp hgf.2.1.2
     rw [hzero] at hcard
     simp at hcard
     lia

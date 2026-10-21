@@ -172,20 +172,12 @@ lemma idTransform_X_mul_of_natDegree_le_two_pred {d : ℕ} {p : ℝ[X]}
     _ = X * idTransform (d - 2) p :=
       idTransform_of_natDegree_le_pred (d := d - 1) (by lia) (by lia)
 
+/-- Compatibility form of the common-`X` strict-interlacing equivalence. -/
+@[deprecated StrictInterl.mul_X_sub_C_both_iff +typeChanged (since := "2026-10-21")]
 theorem strictInterl_iff_strictInterl_mul_X_both_of_hasNonnegCoeffs {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
+    (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
-  constructor
-  · intro h
-    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
-    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn
-    exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).1 h
-  · intro h
-    have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_X_mul h.1.1 h.1.2
-    have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_X_mul h.2.1.1 h.2.1.2
-    have hf_nonpos : ∀ r ∈ f.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hfnn
-    have hg_nonpos : ∀ r ∈ g.roots, r ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn
-    exact (StrictInterl.mul_X_both_iff_of_roots_nonpos hf_nonpos hg_nonpos).2 h
+  simpa using StrictInterl.mul_X_sub_C_both_iff (f := f) (g := g) 0
 
 lemma hasNonnegCoeffs_of_eq_X_mul {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (h : p = X * q) :

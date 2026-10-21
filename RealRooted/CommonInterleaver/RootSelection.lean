@@ -42,9 +42,9 @@ theorem StrictInterl.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
     p.eval x < 0 := by
   obtain ⟨hh, hp, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, hshape⟩ := hhp
   have hss_length : ss.length = h.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hh.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hh.2]
   have hrs_length : rs.length = p.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hp.2]
   rcases hshape with ⟨hlen, hinter⟩ | ⟨hlen, _⟩
   · have hrs_ne : rs ≠ [] := by
       intro hrs_nil
@@ -71,7 +71,7 @@ theorem StrictInterl.eval_neg_of_left_top_gap {h p : ℝ[X]} {x : ℝ}
       exact sub_pos.mpr (hdrop_lt z hz)
     calc
       p.eval x = p.leadingCoeff * (rs.map (x - ·)).prod := by
-        rw [eval_eq_leadingCoeff_mul_prod_sub hp.2 x, ← hrs_eq]
+        rw [Polynomial.Splits.eval_eq_prod_roots hp.2 x, ← hrs_eq]
         rfl
       _ = p.leadingCoeff *
           ((rs.dropLast.map (x - ·)).prod * (x - rs.getLast hrs_ne)) := by

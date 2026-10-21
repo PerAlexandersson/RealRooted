@@ -24,7 +24,7 @@ namespace RealRooted
 
 /-- A nonzero right-pencil parameter can be inverted by scaling: `f + μ g`
 is `μ` times `g + μ⁻¹ f`. -/
-theorem add_right_eq_C_mul_add_left_inv
+private theorem add_right_eq_C_mul_add_left_inv
     {f g : ℝ[X]} {μ : ℝ} (hμ : μ ≠ 0) :
     f + C μ * g = C μ * (g + C μ⁻¹ * f) := by
   rw [mul_add, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hμ, C_1, one_mul,
@@ -70,7 +70,7 @@ lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
     exact coeffSumRange_nonneg p
 
 /-- Coefficient difference for the affine perturbation `f + μ g`. -/
-lemma norm_coeff_sub_add_C_mul (f g : ℝ[X]) (μ : ℝ) (i : ℕ) :
+private lemma norm_coeff_sub_add_C_mul (f g : ℝ[X]) (μ : ℝ) (i : ℕ) :
     ‖(f + C μ * g).coeff i - f.coeff i‖ = ‖μ * g.coeff i‖ := by
   simp [Polynomial.coeff_add, Polynomial.coeff_C_mul]
 
@@ -105,7 +105,7 @@ theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
 
 /-- Uniform coefficient control for normalized left-family perturbations:
 `(1/(t+1)) * (t f + g)` is coefficientwise `O((t+1)⁻¹)` away from `f`. -/
-lemma norm_coeff_sub_normalized_left_family_le
+private lemma norm_coeff_sub_normalized_left_family_le
     (f g : ℝ[X]) {t : ℝ} (ht : 0 < t) :
     ∀ i : ℕ,
       ‖(C (t + 1)⁻¹ * (C t * f + g)).coeff i - f.coeff i‖ ≤
@@ -127,7 +127,7 @@ lemma norm_coeff_sub_normalized_left_family_le
     _ = (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) := by ring
 
 /-- Strict coefficient control from an explicit scalar bound. -/
-lemma norm_coeff_sub_normalized_left_family_lt
+private lemma norm_coeff_sub_normalized_left_family_lt
     (f g : ℝ[X]) {t ε : ℝ} (ht : 0 < t)
     (hbound :
       (t + 1)⁻¹ * (coeffSumRange f + coeffSumRange g) < ε) :
@@ -233,18 +233,6 @@ theorem exists_complex_aroot_near_in_left_family
     simpa [q, Polynomial.aroots_C_mul _ (inv_ne_zero ht1_ne)] using hw_qroot
   grind
 
-/-- Any complex algebraic root of a real-rooted polynomial over `ℝ` has zero
-imaginary part. -/
-lemma im_eq_zero_of_mem_aroots_of_isRealRooted
-    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits) {z : ℂ}
-    (hz : z ∈ p.aroots ℂ) :
-    z.im = 0 := by
-  have hz_root : (p.map (algebraMap ℝ ℂ)).IsRoot z := by simp_all
-  have hz_range : z ∈ (algebraMap ℝ ℂ).range :=
-    hp_splits.mem_range_of_isRoot hp_ne hz_root
-  rcases hz_range with ⟨r, rfl⟩
-  simp
-
 /-- A real polynomial splits if all of its complex roots have zero imaginary
 part. -/
 theorem splits_of_forall_aeval_im_eq_zero {p : ℝ[X]}
@@ -264,7 +252,7 @@ theorem im_eq_zero_of_aeval_eq_zero {p : ℝ[X]} (hp : p ≠ 0) (hs : p.Splits)
   simp
 
 /-- If `(1 - u²) / u` is real for nonzero `u`, then `-u²` is real. -/
-theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
+private theorem neg_sq_im_eq_zero_of_substitution_real {u : ℂ} (hu : u ≠ 0)
     (hreal : ((1 - u ^ 2) / u).im = 0) :
     (-(u ^ 2)).im = 0 := by
   rw [show (1 - u ^ 2) / u = u⁻¹ - u by field_simp, Complex.sub_im,
@@ -329,8 +317,10 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
   obtain ⟨w, hwmem, hwdist⟩ :=
     exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
       hε hzeval hf hgmonic hgdeg hgcoeff hgsplits
-  have hwim : w.im = 0 :=
-    im_eq_zero_of_mem_aroots_of_isRealRooted hgmonic.ne_zero hgsplits hwmem
+  have hwroot : (g.map (algebraMap ℝ ℂ)).IsRoot w := by simp_all
+  have hwim : w.im = 0 := by
+    rcases hgsplits.mem_range_of_isRoot hgmonic.ne_zero hwroot with ⟨r, rfl⟩
+    simp
   have hrootbound :
       (((f.natDegree : ℝ) + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) < q := by
     rw [Real.rpow_inv_lt_iff_of_pos (by positivity) hq.le (by exact_mod_cast hdpos)]
@@ -441,7 +431,7 @@ theorem card_roots_filter_gt_eq_of_no_isRoot_Ioc
     fun hx' => lt_of_le_of_lt hab hx'⟩
 
 /-- Additive threshold decomposition of the lower root count. -/
-theorem card_roots_filter_le_add_card_Ioc_eq
+private theorem card_roots_filter_le_add_card_Ioc_eq
     {p : ℝ[X]} {a b : ℝ} (hab : a ≤ b) :
     (p.roots.filter (· ≤ a)).card
         + (p.roots.filter (fun x => a < x ∧ x ≤ b)).card

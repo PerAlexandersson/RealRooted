@@ -110,9 +110,10 @@ private lemma wronskian_eval_ne_zero_of_eq_zero_or_simple_combo
       have hscale_ne : f.eval x / g.eval x ≠ 0 := div_ne_zero hfx0 hgx0
       have hdeg_eq : f.natDegree = g.natDegree := by rw [hscalar, natDegree_C_mul hscale_ne]
       have hg_deg_pos : 0 < g.natDegree := by grind
-      obtain ⟨r, hr⟩ :=
-        exists_isRoot_of_isRealRooted_of_not_isUnit hg_ne hg_splits
-          (not_isUnit_of_natDegree_pos g hg_deg_pos)
+      obtain ⟨r, hr⟩ : ∃ r : ℝ, g.IsRoot r := by
+        simpa [Polynomial.IsRoot.def] using hg_splits.exists_eval_eq_zero
+          (degree_pos_of_ne_zero_of_nonunit hg_ne
+            (not_isUnit_of_natDegree_pos g hg_deg_pos)).ne'
       have hfr : f.IsRoot r := by
         have hgr_eval : g.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hr
         have hfr_eval : f.eval r = 0 := by
@@ -360,9 +361,10 @@ lemma ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_roo
     have hcoeff := congrArg (fun q : ℝ[X] => q.coeff n) hEq
     grind
   have hscale_ne : (-β) / α ≠ 0 := div_ne_zero (neg_ne_zero.mpr hβ) hα
-  obtain ⟨r, hr⟩ :=
-    exists_isRoot_of_isRealRooted_of_not_isUnit hf_ne hf_splits
-      (not_isUnit_of_natDegree_pos f hf_deg_pos)
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, f.IsRoot r := by
+    simpa [Polynomial.IsRoot.def] using hf_splits.exists_eval_eq_zero
+      (degree_pos_of_ne_zero_of_nonunit hf_ne
+        (not_isUnit_of_natDegree_pos f hf_deg_pos)).ne'
   simp_all
 
 private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
@@ -412,7 +414,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
       have hcard :
           0 < (iterateTDeriv eps (max f.natDegree g.natDegree) f).roots.card :=
         Multiset.card_pos_iff_exists_mem.mpr ⟨r, hr_mem⟩
-      rw [card_roots_of_splits hf'.2] at hcard
+      rw [Polynomial.splits_iff_card_roots.mp hf'.2] at hcard
       lia
     have hf_deg_pos : 0 < f.natDegree := by simp_all
     exact ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
@@ -489,10 +491,10 @@ private theorem strictInterl_or_reverse_of_eq_zero_or_simple_combo_sameDegree
   · have hgdeg0 : g.natDegree = 0 := by lia
     have hroots_f : f.roots = 0 := by
       apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hf_splits, hdeg0]
+      rw [Polynomial.splits_iff_card_roots.mp hf_splits, hdeg0]
     have hroots_g : g.roots = 0 := by
       apply Multiset.card_eq_zero.mp
-      rw [card_roots_of_splits hg_splits, hgdeg0]
+      rw [Polynomial.splits_iff_card_roots.mp hg_splits, hgdeg0]
     left
     refine
       ⟨⟨hf_ne, hf_splits⟩, ⟨hg_ne, hg_splits⟩, [], [], by simp, by simp,

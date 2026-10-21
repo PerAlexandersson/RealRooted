@@ -224,7 +224,7 @@ theorem peakValueWeightedDiagonal_consecutive_strictInterl_of_stable
   have hA0 : A ≠ 0 := by rw [hAeq]; exact mul_ne_zero (by norm_num) hlower0
   have hApos : HasPosLeadingCoeff A := hAnn.pos_leadingCoeff hA0
   have hDnn : HasNonnegCoeffs D :=
-    nonnegCoeffs_C_mul (hwpos none).le
+    hasNonnegCoeffs_C_mul (hwpos none).le
       (commonPhaseRestriction_hasNonnegCoeffs hDQnn w
         fun j => (hwpos j).le)
   have hD0 : D ≠ 0 := by

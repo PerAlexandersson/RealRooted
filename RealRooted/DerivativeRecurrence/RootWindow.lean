@@ -44,8 +44,10 @@ theorem eval_pos_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
 
 theorem neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, L ≤ t) (hx : x < L) : 0 < (-1) ^ p.natDegree * p.eval x := by
-  rw [eval_eq_leadingCoeff_mul_prod_sub hs x, ← card_roots_of_splits hs, mul_left_comm,
-    show p.roots.card = (p.roots.map (x - ·)).card by simp, ← Multiset.prod_map_neg]
+  rw [Polynomial.Splits.eval_eq_prod_roots hs x,
+    ← Polynomial.splits_iff_card_roots.mp hs, mul_left_comm,
+    show p.roots.card = (p.roots.map (x - ·)).card by simp,
+    ← Multiset.prod_map_neg]
   refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
   obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.mp hy
   obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hz
@@ -459,11 +461,11 @@ theorem leadingCoeff_mul_sub_mul_eval_le_of_interlaces {f g : ℝ[X]} {U x : ℝ
     f.leadingCoeff * (x - U) * g.eval x ≤ g.leadingCoeff * f.eval x := by
   obtain ⟨⟨_, hfs⟩, ⟨_, hgs⟩, hdeg, rs, ss, _, _, hrs, hss, hint⟩ := h
   have hlen : rs.length = ss.length + 1 := by
-    rw [← Multiset.coe_card, ← Multiset.coe_card, hrs, hss, card_roots_of_splits hfs,
-      card_roots_of_splits hgs, hdeg]
+    rw [← Multiset.coe_card, ← Multiset.coe_card, hrs, hss, Polynomial.splits_iff_card_roots.mp hfs,
+      Polynomial.splits_iff_card_roots.mp hgs, hdeg]
   have key := prod_sub_le_of_listInterlaces hx ss rs hlen hint
     (fun r hr => hU r (by rw [← hrs]; exact Multiset.mem_coe.mpr hr))
-  rw [eval_eq_leadingCoeff_mul_prod_sub hgs x, eval_eq_leadingCoeff_mul_prod_sub hfs x,
+  rw [Polynomial.Splits.eval_eq_prod_roots hgs x, Polynomial.Splits.eval_eq_prod_roots hfs x,
     ← hrs, ← hss, Multiset.map_coe, Multiset.map_coe, Multiset.prod_coe, Multiset.prod_coe]
   have hc : 0 ≤ f.leadingCoeff * g.leadingCoeff := (mul_pos hfpos hgpos).le
   nlinarith [mul_le_mul_of_nonneg_left key hc]
@@ -627,7 +629,7 @@ theorem derivative_eval_mul_sub_le_of_roots_le (hs : f.Splits) (hpos : 0 < f.lea
   have hf := eval_pos_of_roots_le hs hpos hU hx
   rw [hs.eval_derivative_eq_eval_mul_sum hf.ne']
   have hle : (x - U) * (f.roots.map fun z => 1 / (x - z)).sum ≤ f.natDegree := by
-    rw [← Multiset.sum_map_mul_left, ← card_roots_of_splits hs]
+    rw [← Multiset.sum_map_mul_left, ← Polynomial.splits_iff_card_roots.mp hs]
     refine (Multiset.sum_le_card_nsmul _ (1 : ℝ) fun y hy => ?_).trans (by simp)
     obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.mp hy
     have := hU z hz
@@ -646,7 +648,7 @@ theorem derivative_eval_mul_sub_le_of_roots_ge (hs : f.Splits) (hpos : 0 < f.lea
   have hne : f.eval x ≠ 0 := fun h => by simp [h] at hf
   rw [hs.eval_derivative_eq_eval_mul_sum hne]
   have hle : (x - L) * (f.roots.map fun z => 1 / (x - z)).sum ≤ f.natDegree := by
-    rw [← Multiset.sum_map_mul_left, ← card_roots_of_splits hs]
+    rw [← Multiset.sum_map_mul_left, ← Polynomial.splits_iff_card_roots.mp hs]
     refine (Multiset.sum_le_card_nsmul _ (1 : ℝ) fun y hy => ?_).trans (by simp)
     obtain ⟨z, hz, rfl⟩ := Multiset.mem_map.mp hy
     have := hL z hz

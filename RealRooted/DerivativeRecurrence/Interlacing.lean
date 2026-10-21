@@ -336,10 +336,7 @@ theorem derivProduct_splits {P A : ℕ → ℝ[X]}
   | zero => exact h0
   | succ n ih =>
     rw [hrec]
-    refine (hA n).mul ?_
-    rcases eq_zero_or_splits_derivative (Or.inr ih) with h | h
-    · simp [h]
-    · exact h
+    exact (hA n).mul ih.derivative
 
 /-!
 ## Degrees when the top terms cancel

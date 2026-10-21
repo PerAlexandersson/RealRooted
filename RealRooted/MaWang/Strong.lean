@@ -18,7 +18,7 @@ theorem strictInterl_of_interlaces_eval_mul_neg_succ {f g F : ℝ[X]}
     StrictInterl f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hn : 1 ≤ rs.length := by lia
   have hrs_ne : rs ≠ [] := by grind
   obtain ⟨r₀, rs', rfl⟩ := List.exists_cons_of_ne_nil hrs_ne
@@ -95,7 +95,7 @@ theorem strictInterl_of_interlaces_eval_mul_neg_same {f g F : ℝ[X]}
     StrictInterl f F := by
   obtain ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ := hgf
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hn : 1 ≤ rs.length := by lia
   have hrs_ne : rs ≠ [] := by grind
   obtain ⟨r₀, rs', rfl⟩ := List.exists_cons_of_ne_nil hrs_ne
@@ -177,7 +177,7 @@ lemma eval_mul_derivative_eq_of_isRoot {f u v : ℝ[X]} {r : ℝ}
   simp only [eval_add, eval_mul, hr.eq_zero, mul_zero, zero_add]
   ring
 
-lemma eval_mul_right_eq_of_isRoot {f g a b : ℝ[X]} {r : ℝ}
+private lemma eval_mul_right_eq_of_isRoot {f g a b : ℝ[X]} {r : ℝ}
     (hr : f.IsRoot r) :
     (a * f + b * g).eval r * g.eval r =
       b.eval r * (g.eval r) ^ 2 := by

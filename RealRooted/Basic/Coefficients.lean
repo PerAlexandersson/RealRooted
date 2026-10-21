@@ -34,11 +34,17 @@ lemma hasNonnegCoeffs_X : HasNonnegCoeffs (X : ℝ[X]) := by
 lemma hasNonnegCoeffs_C {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
   rintro (_ | n) <;> simp [ha]
 
-lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
+lemma hasNonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (C a * p) := by
   intro n
   simpa [coeff_C_mul] using mul_nonneg ha (hp n)
+
+/-- Compatibility alias for `hasNonnegCoeffs_C_mul`. -/
+@[deprecated hasNonnegCoeffs_C_mul (since := "2026-10-21")]
+lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) : HasNonnegCoeffs (C a * p) :=
+  hasNonnegCoeffs_C_mul ha hp
 
 lemma HasNonnegCoeffs.add {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :

@@ -310,7 +310,7 @@ theorem divFactorialShift_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f
     rw [hfC]
     exact divFactorialShift_C_splits (f.coeff 0) k
   · have hroots_pos : 0 < f.roots.card := by
-      rw [card_roots_of_splits hfs, hfdeg]
+      rw [Polynomial.splits_iff_card_roots.mp hfs, hfdeg]
       exact Nat.pos_of_ne_zero hn0
     obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
     have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem
@@ -379,7 +379,7 @@ private theorem divFactorialShift_hasSimpleRootsExcept_zero
     rw [hfC, hb]
     exact hasSimpleRootsExcept_zero_C_mul_X_pow hb_ne k
   · have hroots_pos : 0 < f.roots.card := by
-      rw [card_roots_of_splits hfs, hfdeg]
+      rw [Polynomial.splits_iff_card_roots.mp hfs, hfdeg]
       exact Nat.pos_of_ne_zero hn0
     obtain ⟨u, hu_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
     have hu_root : f.IsRoot u := (mem_roots hf0).mp hu_mem

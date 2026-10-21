@@ -166,7 +166,7 @@ theorem leadingCoeff_signedReciprocal_eq_coeff_zero
 theorem signedReciprocal_splits_of_splits
     {d : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ d) (hsplit : p.Splits) :
     (signedReciprocal d p).Splits :=
-  DegreeDropReversal.splits_reflect_of_splits hsplit.comp_neg_X
+  Polynomial.Splits.reflect hsplit.comp_neg_X
     (natDegree_comp_neg_X_le hp)
 
 /-- Applying degree-`d` signed reciprocal reversal twice gives the parity

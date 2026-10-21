@@ -37,10 +37,10 @@ theorem strictInterl_of_allComboRealRooted_of_wronskian_nonneg
       by_cases hdeg0 : f.natDegree = 0
       · have hfroots : f.roots = 0 := by
           apply Multiset.card_eq_zero.mp
-          rw [card_roots_of_splits hfrr.2, hdeg0]
+          rw [Polynomial.splits_iff_card_roots.mp hfrr.2, hdeg0]
         have hgroots : g.roots = 0 := by
           apply Multiset.card_eq_zero.mp
-          rw [card_roots_of_splits hgrr.2, ← hsame, hdeg0]
+          rw [Polynomial.splits_iff_card_roots.mp hgrr.2, ← hsame, hdeg0]
         simp [hfroots, hgroots]
       · let n := f.natDegree
         have hn : 1 ≤ n := by simp only [n]; lia

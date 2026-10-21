@@ -23,15 +23,11 @@ example {P : Nat → ℝ[X]}
 /-- Iterated Euler-operator proper-position row-family exit exposed through
 the OEIS facade. -/
 example {l : Nat → Nat} {P Q : Nat → ℝ[X]}
-    (hP : ∀ n : Nat, IsPFPolynomial (P n))
-    (hQ : ∀ n : Nat, IsPFPolynomial (Q n))
     (hPQ : ∀ n : Nat, Interl (P n) (Q n)) :
     ∀ n : Nat,
       Interl (iterateThetaPlusOne (l n) (P n)) (iterateThetaPlusOne (l n) (Q n)) := by
   rr_iterateThetaPlusOne_sequence_interl using
     index := l,
-    left_pf := hP,
-    right_pf := hQ,
     interl := hPQ
 
 /-- Derivative-shift row-family real-rootedness exit exposed through the OEIS

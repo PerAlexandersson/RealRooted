@@ -79,8 +79,7 @@ theorem interlaces_of_recurrence
   | succ n =>
       rw [heq n, heq (n + 1)]
       have hstrict : StrictInterl (X * dividedRows n) (X * dividedRows (n + 1)) :=
-        (strictInterl_dividedRows_succ n).mul_X_both_of_roots_nonpos
-          (dividedRows_roots_nonpos n) (dividedRows_roots_nonpos (n + 1))
+        by simpa using (strictInterl_dividedRows_succ n).mul_X_sub_C_both 0
       apply hstrict.toInterlaces
       have hspec :=
         isNegativeSimple_generalRows 1 1 1 6 4 (by norm_num) (by norm_num)

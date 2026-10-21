@@ -56,7 +56,7 @@ theorem IsLaguerrePolya.deriv {f : ℂ → ℂ} (hf : IsLaguerrePolya f) :
     IsLaguerrePolya (deriv f) := by
   rcases hf with ⟨p, hp, hptend⟩
   refine ⟨fun n => (p n).derivative, fun n =>
-    eq_zero_or_splits_derivative (hp n), ?_⟩
+    Or.inr ((hp n).elim (fun h => h ▸ Splits.zero) id |>.derivative), ?_⟩
   have hderiv := (tendstoLocallyUniformlyOn_univ.mpr hptend).deriv
     (Eventually.of_forall fun n =>
       (Polynomial.differentiable ((p n).map Complex.ofRealHom)).differentiableOn)

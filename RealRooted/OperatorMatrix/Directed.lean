@@ -202,8 +202,7 @@ theorem IsPFPolynomial.interl_derivative_self {p : ℝ[X]} (hp : IsPFPolynomial 
 /-- The Euler derivative of a PF polynomial precedes its product by `X`. -/
 theorem IsPFPolynomial.interl_theta_X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl (theta p) (X * p) := by
-  simpa [theta] using interl_X_mul_both_of_pf hp.derivative hp
-    hp.interl_derivative_self
+  simpa [theta] using hp.interl_derivative_self.mul_X_both
 
 /-- Zero-aware `X`-duality for PF polynomials. -/
 theorem interl_iff_interl_X_mul {p q : ℝ[X]}
@@ -291,8 +290,7 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
     rcases hpq.natDegree_eq_or_eq_succ with hsame | hsucc
     · exact (natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff
         hsame.symm hp_pos hq_pos).trans hsame.symm
-    · exact natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by lia) hq_pos
+    · exact Polynomial.natDegree_add_eq_right_of_natDegree_lt (by lia)
   have hF_pf : IsPFPolynomial F := by
     simpa [F] using isPFPolynomial_add_X_mul_derivative_of_interl
       hp hq hpq.toInterl

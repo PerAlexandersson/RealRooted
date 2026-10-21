@@ -55,7 +55,7 @@ private theorem strictInterl_affine_favard_step {f g aPoly bPoly : ℝ[X]}
       hasPosLeadingCoeff_add_of_natDegree_lt_right hBg_lt_Af hAf_pos
   have hF_deg : (aPoly * f + bPoly * g).natDegree = f.natDegree + 1 := by
     simpa [add_comm, hAf_deg] using
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hBg_lt_Af hAf_pos
+      Polynomial.natDegree_add_eq_right_of_natDegree_lt hBg_lt_Af
   have hStrictInterl_step : StrictInterl f (aPoly * f + bPoly * g) :=
     strictInterl_of_interlaces_evalCoeff_nonpos
       (f := f) (g := g) (a := aPoly) (b := bPoly)
