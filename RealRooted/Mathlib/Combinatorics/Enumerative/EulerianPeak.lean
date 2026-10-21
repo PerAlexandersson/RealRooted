@@ -122,19 +122,14 @@ private lemma des_cons (a : ℕ) (m : List ℕ) :
     (a :: m).descentSet.card = (if IsDes (a :: m) 0 then 1 else 0) +
       m.descentSet.card := by
   cases m with
-  | nil =>
-    rw [List.descentSet_singleton, List.descentSet_nil]
-    unfold IsDes
-    simp
+  | nil => simp [IsDes]
   | cons b m =>
     rw [List.descentSet_cons_cons]
     have hd : _root_.Disjoint (if b < a then ({0} : Finset ℕ) else ∅)
         ((b :: m).descentSet.map ⟨Nat.succ, Nat.succ_injective⟩) := by
       split_ifs <;> simp [Finset.disjoint_left]
     rw [Finset.card_union_of_disjoint hd, Finset.card_map]
-    have hdes : IsDes (a :: b :: m) 0 ↔ b < a := by
-      simp only [IsDes, List.length_cons, List.getD_cons_zero, List.getD_cons_succ]
-      simp
+    have hdes : IsDes (a :: b :: m) 0 ↔ b < a := by simp [IsDes]
     simp only [hdes]
     split_ifs <;> simp
 
@@ -180,8 +175,7 @@ private lemma getD_insertIdx (l : List ℕ) (x : ℕ) (j i : ℕ) (hj : j ≤ l.
 
 private lemma getD_lt_of_forall {l : List ℕ} {N : ℕ} (hN : ∀ x ∈ l, x < N)
     (i : ℕ) (hi : i < l.length) : l.getD i 0 < N := by
-  rw [List.getD_eq_getElem _ _ hi]
-  exact hN _ (List.getElem_mem hi)
+  simpa only [List.getD_eq_getElem _ _ hi] using hN _ (List.getElem_mem hi)
 
 /-- Inserting a largest letter changes the descent count by the displayed terms. -/
 private lemma des_insert (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (j : ℕ)
@@ -261,6 +255,31 @@ private lemma IsPk_not_succ {l : List ℕ} {i : ℕ} (h : IsPk l i) :
   simp only [add_tsub_cancel_right] at *
   lia
 
+private lemma card_filter_eq_of_eq_or_eq_succ {α : Type*}
+    (s : Finset α) (v : α → ℕ) (d a m : ℕ)
+    (hval : ∀ x ∈ s, v x = d ∨ v x = d + 1)
+    (hcard : (s.filter fun x => v x = d).card = a) :
+    (s.filter fun x => v x = m).card =
+      (if d = m then a else 0) + (if d + 1 = m then s.card - a else 0) := by
+  have hsucc : (s.filter fun x => v x = d + 1).card = s.card - a := by
+    have h := Finset.card_filter_add_card_filter_not (s := s) fun x => v x = d
+    have heq : (s.filter fun x => ¬v x = d) = (s.filter fun x => v x = d + 1) := by
+      apply Finset.filter_congr
+      intro x hx
+      rcases hval x hx with h | h <;> lia
+    rw [heq, hcard] at h
+    lia
+  by_cases hm : d = m
+  · subst m
+    simp [hcard]
+  · by_cases hm' : d + 1 = m
+    · subst m
+      simp [hsucc]
+    · simp only [hm, hm', ite_false]
+      rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+      intro x hx hv
+      rcases hval x hx with h | h <;> lia
+
 private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : ℕ) :
     ((range (l.length + 1)).filter
         (fun j => (l.insertIdx j N).descentSet.card = m)).card =
@@ -288,11 +307,7 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
       · refine ⟨by simp, ?_⟩
         have hkey := key L (by simp)
         rw [← hL] at hkey
-        have hnot : ¬(0 < L ∧ IsDes l (L - 1)) := by
-          rintro ⟨_, hdes⟩
-          have hlt := hdes.1
-          rw [← hL] at hlt
-          lia
+        have hnot : ¬(0 < L ∧ IsDes l (L - 1)) := by grind [IsDes]
         simp only [hnot, Nat.lt_irrefl, ite_false] at hkey
         lia
       · have hi' := hi
@@ -306,9 +321,7 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
     rw [hK, Finset.card_insert_of_notMem, Finset.card_image_of_injective _
       Nat.succ_injective]
     simp only [Finset.mem_image, mem_descentSet_iff_isDes, not_exists, not_and]
-    intro i hi h
-    unfold IsDes at hi
-    lia
+    grind [IsDes]
   have hval : ∀ j ∈ range (L + 1),
       (l.insertIdx j N).descentSet.card = d ∨
         (l.insertIdx j N).descentSet.card = d + 1 := by
@@ -317,38 +330,13 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
     rw [← hL] at hkey
     have e1 : (if 0 < j ∧ IsDes l (j - 1) then 1 else 0) ≤
         (if j < L then 1 else 0) := by
-      by_cases h1 : 0 < j ∧ IsDes l (j - 1)
-      · have h1' := h1.2.1
-        simp only [h1, show j < L by lia, true_and, ite_true]
-        lia
-      · simp only [h1, ite_false]
-        exact Nat.zero_le _
+      split_ifs with h1 h2 <;> simp_all [IsDes]
+      lia
     have e2 : (if j < L then 1 else 0) ≤ 1 := by split_ifs <;> lia
     lia
-  have hIc : ((range (L + 1)).filter
-      (fun j => (l.insertIdx j N).descentSet.card = d + 1)).card = L - d := by
-    have h1 := Finset.card_filter_add_card_filter_not
-      (s := range (L + 1)) (fun j => (l.insertIdx j N).descentSet.card = d)
-    have h2 : (range (L + 1)).filter
-        (fun j => ¬ (l.insertIdx j N).descentSet.card = d) =
-        (range (L + 1)).filter
-          (fun j => (l.insertIdx j N).descentSet.card = d + 1) := by
-      apply Finset.filter_congr
-      intro j hj
-      rcases hval j hj with h | h <;> lia
-    rw [h2, hKc] at h1
-    simp only [Finset.card_range] at h1
-    lia
-  by_cases hm : d = m
-  · subst hm
-    simp [hKc]
-  · by_cases hm' : d + 1 = m
-    · subst hm'
-      simp [hIc]
-    · simp only [hm, hm', ite_false]
-      rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-      intro j hj hv
-      rcases hval j hj with h | h <;> lia
+  have hsub : L + 1 - (d + 1) = L - d := by lia
+  simpa only [Finset.card_range, hsub] using card_filter_eq_of_eq_or_eq_succ
+    (range (L + 1)) (fun j => (l.insertIdx j N).descentSet.card) d (d + 1) m hval hKc
 
 private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
     (hl : 1 ≤ l.length) (m : ℕ) :
@@ -389,19 +377,9 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
         lia
       · refine ⟨by simp, ?_⟩
         have hkey := key L (by simp)
-        have hprev : ¬(0 < L ∧ IsPk l (L - 1)) := by
-          rintro ⟨_, hprev⟩
-          have hlt := hprev.2.1
-          rw [← hL] at hlt
-          lia
-        have hcurr : ¬IsPk l L := by
-          intro hcurr
-          have hlt := hcurr.2.1
-          rw [← hL] at hlt
-          lia
-        have hright : ¬(0 < L ∧ L < l.length) := by
-          rw [← hL]
-          lia
+        have hprev : ¬(0 < L ∧ IsPk l (L - 1)) := by grind [IsPk]
+        have hcurr : ¬IsPk l L := by grind [IsPk]
+        have hright : ¬(0 < L ∧ L < l.length) := by lia
         simp only [hprev, hcurr, hright, ite_false] at hkey
         lia
       · have h' := h
@@ -445,12 +423,10 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
     · lia
     · simp only [Finset.mem_union, Finset.mem_image, mem_peakSet_iff_isPk, not_or,
         not_exists, not_and]
-      refine ⟨fun h => by unfold IsPk at h; lia,
-        fun i hi h => by unfold IsPk at hi; lia⟩
+      grind [IsPk]
     · simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_image,
         mem_peakSet_iff_isPk, not_or, not_exists, not_and]
-      refine ⟨by lia, fun h => by unfold IsPk at h; lia,
-        fun i _ h => by lia⟩
+      grind [IsPk]
   have hval : ∀ j ∈ range (L + 1),
       (l.insertIdx j N).peakSet.card = p ∨
         (l.insertIdx j N).peakSet.card = p + 1 := by
@@ -459,21 +435,11 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
     rw [← hL] at hkey
     have e1 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) ≤
         (if 0 < j ∧ j < L then 1 else 0) := by
-      by_cases h1 : 0 < j ∧ IsPk l (j - 1)
-      · have h1' := h1.2.2.1
-        simp only [h1, show j < L by lia, true_and, ite_true]
-        lia
-      · simp only [h1, ite_false]
-        exact Nat.zero_le _
+      split_ifs with h1 h2 <;> simp_all [IsPk]
+      lia
     have e2 : (if IsPk l j then 1 else 0) ≤
         (if 0 < j ∧ j < L then 1 else 0) := by
-      by_cases h1 : IsPk l j
-      · have h1' := h1.2.1
-        simp only [h1, show 0 < j ∧ j < L by exact ⟨h1.1, by lia⟩,
-          true_and, ite_true]
-        lia
-      · simp only [h1, ite_false]
-        exact Nat.zero_le _
+      split_ifs with h1 h2 <;> simp_all [IsPk]
     have e3 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) +
         (if IsPk l j then 1 else 0) ≤ 1 := by
       by_cases h1 : 0 < j ∧ IsPk l (j - 1)
@@ -486,30 +452,9 @@ private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
     have e4 : (if 0 < j ∧ j < L then 1 else 0) ≤ 1 := by
       split_ifs <;> lia
     lia
-  have hIc : ((range (L + 1)).filter
-      (fun j => (l.insertIdx j N).peakSet.card = p + 1)).card =
-        L - 1 - 2 * p := by
-    have h1 := Finset.card_filter_add_card_filter_not
-      (s := range (L + 1)) (fun j => (l.insertIdx j N).peakSet.card = p)
-    have h2 : (range (L + 1)).filter
-        (fun j => ¬ (l.insertIdx j N).peakSet.card = p) =
-        (range (L + 1)).filter
-          (fun j => (l.insertIdx j N).peakSet.card = p + 1) := by
-      apply Finset.filter_congr
-      intro j hj
-      rcases hval j hj with h | h <;> lia
-    rw [h2, hKc, Finset.card_range] at h1
-    lia
-  by_cases hm : p = m
-  · subst hm
-    simp [hKc]
-  · by_cases hm' : p + 1 = m
-    · subst hm'
-      simp [hIc]
-    · simp only [hm, hm', ite_false]
-      rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-      intro j hj hv
-      rcases hval j hj with h | h <;> lia
+  have hsub : L + 1 - (2 * p + 2) = L - 1 - 2 * p := by lia
+  simpa only [Finset.card_range, hsub] using card_filter_eq_of_eq_or_eq_succ
+    (range (L + 1)) (fun j => (l.insertIdx j N).peakSet.card) p (2 * p + 2) m hval hKc
 private def perms (n : ℕ) : List (List ℕ) :=
   (List.range n).reverse.permutations'
 
@@ -612,26 +557,14 @@ private lemma sum_map_ite (L : List (List ℕ)) (f : List ℕ → ℕ)
 private lemma eulerian_eq_countP (n m : ℕ) :
     eulerianNumber n m = (perms n).countP
       (fun l => decide (l.descentSet.card = m)) := by
-  rw [eulerianNumber]
-  have h := card_filter_natWord n (fun l => l.descentSet.card = m)
-  rw [← h]
-  congr 1
-  apply Finset.filter_congr
-  intro σ hσ
-  change σ.descentSet.card = m ↔ (natWord σ).descentSet.card = m
-  rw [natWord_descentSet]
+  simpa only [eulerianNumber, descentCount, natWord_descentSet] using
+    card_filter_natWord n (fun l => l.descentSet.card = m)
 
 private lemma peakNumber_eq_countP (n m : ℕ) :
     peakNumber n m = (perms n).countP
       (fun l => decide (l.peakSet.card = m)) := by
-  rw [peakNumber]
-  have h := card_filter_natWord n (fun l => l.peakSet.card = m)
-  rw [← h]
-  congr 1
-  apply Finset.filter_congr
-  intro σ hσ
-  change σ.peakSet.card = m ↔ (natWord σ).peakSet.card = m
-  rw [natWord_peakSet]
+  simpa only [peakNumber, peakCount, natWord_peakSet] using
+    card_filter_natWord n (fun l => l.peakSet.card = m)
 
 private lemma eulerian_succ_sum (n m : ℕ) :
     eulerianNumber (n + 1) m = ((perms n).map fun l =>
@@ -639,10 +572,9 @@ private lemma eulerian_succ_sum (n m : ℕ) :
       (if l.descentSet.card + 1 = m then n - l.descentSet.card else 0)).sum := by
   rw [eulerian_eq_countP, countP_perms_succ]
   congr 1
-  apply List.map_congr_left
-  intro l hl
-  obtain ⟨hlen, hN⟩ := mem_perms hl
-  rw [count_des n l hN m, hlen]
+  exact List.map_congr_left fun l hl => by
+    obtain ⟨hlen, hN⟩ := mem_perms hl
+    rw [count_des n l hN m, hlen]
 
 private lemma peakNumber_succ_sum (n m : ℕ) (hn : 1 ≤ n) :
     peakNumber (n + 1) m = ((perms n).map fun l =>
@@ -650,10 +582,9 @@ private lemma peakNumber_succ_sum (n m : ℕ) (hn : 1 ≤ n) :
       (if l.peakSet.card + 1 = m then n - 1 - 2 * l.peakSet.card else 0)).sum := by
   rw [peakNumber_eq_countP, countP_perms_succ]
   congr 1
-  apply List.map_congr_left
-  intro l hl
-  obtain ⟨hlen, hN⟩ := mem_perms hl
-  rw [count_pk n l hN (by lia) m, hlen]
+  exact List.map_congr_left fun l hl => by
+    obtain ⟨hlen, hN⟩ := mem_perms hl
+    rw [count_pk n l hN (by lia) m, hlen]
 
 private lemma peakSet_card_le (l : List ℕ) : l.peakSet.card ≤ l.length - 1 := by
   have h := List.peakCount_le l
@@ -665,15 +596,11 @@ private lemma peakNumber_succ_of_le_one (n k : ℕ) (hn : n ≤ 1) :
   rw [peakNumber, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
   intro σ _
   have h1 := peakSet_card_le (natWord σ)
-  have h2 : (natWord σ).length = n := by simp [natWord]
+  simp only [natWord, List.length_map, List.length_ofFn] at h1
   have h3 : σ.peakCount = (natWord σ).peakSet.card := by
     change σ.peakSet.card = (natWord σ).peakSet.card
     rw [natWord_peakSet]
-  have h1' : σ.peakCount ≤ n - 1 := by
-    calc
-      σ.peakCount = (natWord σ).peakSet.card := h3
-      _ ≤ (natWord σ).length - 1 := h1
-      _ = n - 1 := by rw [h2]
+  unfold natWord at h3
   lia
 
 /-- The Eulerian insertion recurrence for the canonical descent statistic. -/
