@@ -29,19 +29,18 @@ theorem eval_mul_neg_of_alternating {F : ℝ[X]} {Pts : List ℝ}
   have e2 : (pre ++ r₁ :: r₂ :: rest)[pre.length + 1]'(by simp) = r₂ := by simp
   rw [e1] at h1
   rw [e2] at h2
-  have hl1 : (pre ++ r₁ :: r₂ :: rest).length - 1 - pre.length = rest.length + 1 := by
-    simp
+  have hl1 : (pre ++ r₁ :: r₂ :: rest).length - 1 - pre.length = rest.length + 1 := by simp
   have hl2 : (pre ++ r₁ :: r₂ :: rest).length - 1 - (pre.length + 1) = rest.length := by
     simp only [List.length_append, List.length_cons]
     lia
   rw [hl1, pow_succ] at h1
   rw [hl2] at h2
   have hsq : (-1 : ℝ) ^ rest.length * (-1 : ℝ) ^ rest.length = 1 := by
-    rw [← pow_add]
-    exact Even.neg_one_pow ⟨rest.length, rfl⟩
+    simp [← pow_add]
   have hprod := mul_pos h1 h2
   have : (-1 : ℝ) ^ rest.length * -1 * F.eval r₁ * ((-1 : ℝ) ^ rest.length * F.eval r₂) =
-      -(F.eval r₁ * F.eval r₂) * ((-1 : ℝ) ^ rest.length * (-1 : ℝ) ^ rest.length) := by ring
+      -(F.eval r₁ * F.eval r₂) *
+        ((-1 : ℝ) ^ rest.length * (-1 : ℝ) ^ rest.length) := by ring
   rw [this, hsq] at hprod
   linarith
 
@@ -49,10 +48,8 @@ theorem eval_mul_neg_of_alternating {F : ℝ[X]} {Pts : List ℝ}
 theorem eval_zero_pos_of_isNegativeSimple {q : ℝ[X]} (hq : IsNegativeSimple q) :
     0 < q.eval 0 := by
   have hq0mem : (0 : ℝ) ∉ q.roots := fun hmem => lt_irrefl _ (hq.2.2.2.2 0 hmem)
-  have hcount : q.roots.countP (fun x => 0 < x) = 0 := by
-    apply Multiset.countP_eq_zero.mpr
-    intro x hx hpos
-    exact (not_lt_of_ge (hq.2.2.2.2 x hx).le) hpos
+  have hcount : q.roots.countP (fun x => 0 < x) = 0 :=
+    Multiset.countP_eq_zero.mpr fun x hx => not_lt_of_ge (hq.2.2.2.2 x hx).le
   simpa [hcount] using eval_sign hq.2.1 hq.2.2.2.1 0 hq0mem
 
 /-- `(T q)(0) > 0` for a negative-simple `q`. -/
@@ -92,14 +89,13 @@ theorem generalStep_alternating_signs (κ a b u v : ℝ) (q : ℝ[X]) (m : ℕ) 
         rw [this]
         exact h
       · have hjm' : j = m := by
-          have : j < A.length + 1 := by simpa [hAlen] using hj
+          have : j < A.length + 1 := by simpa using hj
           lia
         subst hjm'
         rw [List.getElem_append_right (by lia)]
         have : (L :: (A ++ [0])).length - 1 - (j + 1) = 0 := by lia
         rw [this]
         simpa [hAlen] using hT0
-
 
 /-- The sample points `L, A₀, …, A_{m-1}, 0` are strictly increasing. -/
 theorem pairwise_lt_cons_append_zero {A : List ℝ} {L : ℝ} {m : ℕ} (hm : 1 ≤ m)
@@ -131,29 +127,20 @@ theorem exists_generalStep_roots_interlacing
       us.Pairwise (· < ·) ∧ (↑us : Multiset ℝ) = (generalStep κ a b u v q).roots := by
   have hT := generalStep_natDegree_and_leadingCoeff κ a b u v q m hqdeg hq.2.2.2.1 hell
   have hT0 := generalStep_eval_zero_pos κ a b u v q hκ ha hb hq
-  have hTne : generalStep κ a b u v q ≠ 0 := by
-    intro h
-    have := hT.2
-    rw [h] at this
-    simp at this
+  have hTne : generalStep κ a b u v q ≠ 0 := leadingCoeff_ne_zero.mp hT.2.ne'
   have hsigns := generalStep_alternating_signs κ a b u v q m L A hAlen hLT hAsign hT0
   have hsorted : (L :: (A ++ [0])).Pairwise (· ≤ ·) :=
     (pairwise_lt_cons_append_zero hm hAlen hApair hAneg hLA).imp le_of_lt
   obtain ⟨us, hus_len, hint, hus_roots, hus_pair⟩ :=
     MaWangInternal.exists_roots_strictly_interlacing_of_consecutive_signs
       (F := generalStep κ a b u v q) hsorted (eval_mul_neg_of_alternating hsigns)
-  have hlen : us.length = m + 1 := by
-    simp only [List.length_cons, List.length_append, hAlen, List.length_nil] at hus_len
-    lia
+  have hlen : us.length = m + 1 := by simp_all
   have hnd : (↑us : Multiset ℝ).Nodup :=
     Multiset.coe_nodup.mpr (List.Pairwise.imp (fun h => ne_of_lt h) hus_pair)
   obtain ⟨hroots, _⟩ := roots_eq_of_nodup_of_natDegree_le hTne hnd
     (fun x hx => hus_roots x (Multiset.mem_coe.mp hx)) (by
       rw [Multiset.coe_card, hlen, hT.1])
   exact ⟨us, hlen, hint, hus_pair, hroots.symm⟩
-
-
-
 /-- Sign of the comparison polynomial at the roots of `T q`, given its root structure. -/
 theorem generalComparison_sign_of_comparison_roots
     (κ a b u v : ℝ) (q : ℝ[X]) (m : ℕ) (hq : IsNegativeSimple q) (hqdeg : q.natDegree = m)
@@ -177,11 +164,10 @@ theorem generalComparison_sign_of_comparison_roots
   have hsigns := generalStep_alternating_signs κ a b u v q m L A hAlen hLT hAsign hT0
   have hPts_lt := pairwise_lt_cons_append_zero hm hAlen hApair hAneg hLA
   have hPts_ne : ∀ y ∈ L :: (A ++ [0]), (generalStep κ a b u v q).eval y ≠ 0 := by
-    intro y hy h
+    intro y hy
     obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp hy
-    have := hsigns j hj
-    rw [h] at this
-    simp at this
+    intro h
+    simpa [h] using hsigns j hj
   have hdisj : ∀ s ∈ us, s ∉ L :: (A ++ [0]) := by
     intro s hs hmem
     have hs' : s ∈ (generalStep κ a b u v q).roots := by
@@ -201,8 +187,8 @@ theorem generalComparison_sign_of_comparison_roots
     refine listInterlaces_left_le_of_right_le hint (c := 0) ?_ x hxus
     intro r hr
     rcases List.mem_cons.mp hr with rfl | hr
-    · exact ((hLA _ (List.getElem_mem (show 0 < A.length by lia))).trans
-        (hAneg _ (List.getElem_mem (show 0 < A.length by lia)))).le
+    · have hy := List.getElem_mem (l := A) (show 0 < A.length by lia)
+      exact ((hLA _ hy).trans (hAneg _ hy)).le
     · rcases List.mem_append.mp hr with hr | hr
       · exact (hAneg r hr).le
       · simp only [List.mem_singleton] at hr
@@ -228,43 +214,21 @@ theorem generalComparison_sign_of_comparison_roots
   have hsing : ∀ c : ℝ, Multiset.countP (fun r => x < r) ({c} : Multiset ℝ) =
       if x < c then 1 else 0 := by
     intro c
-    rw [← Multiset.cons_zero, Multiset.countP_cons]
-    simp
+    rw [← Multiset.cons_zero, Multiset.countP_cons]; simp
   rcases hE with ⟨hE0, hlc⟩ | ⟨hEL, hlc⟩ | ⟨e, hEe, he, hlc⟩
-  · have hxG : x ∉ (generalComparison κ a b v q).roots := by
-      rw [hGroots, hE0]
-      simpa using hxA
-    have h := eval_sign hGsp hlc x hxG
-    simp only [hGroots, hE0, Multiset.coe_countP, hcntA, add_zero] at h
-    exact h
-  · have hxG : x ∉ (generalComparison κ a b v q).roots := by
-      rw [hGroots, hEL]
-      simp [hxA, hxL]
-    have h := eval_sign hGsp hlc x hxG
-    simp only [hGroots, hEL, Multiset.countP_add, Multiset.coe_countP, hcntA,
-      hsing, not_lt.mpr hLx, ite_false,
-      add_zero] at h
-    exact h
-  · have hxG : x ∉ (generalComparison κ a b v q).roots := by
-      rw [hGroots, hEe]
+  · have h := eval_sign hGsp hlc x (by rw [hGroots, hE0]; simpa using hxA)
+    simpa only [hGroots, hE0, Multiset.coe_countP, hcntA, add_zero] using h
+  · have h := eval_sign hGsp hlc x (by rw [hGroots, hEL]; simp [hxA, hxL])
+    simpa only [hGroots, hEL, Multiset.countP_add, Multiset.coe_countP, hcntA,
+      hsing, not_lt.mpr hLx, ite_false, add_zero] using h
+  · have h := eval_sign hGsp.neg (by simpa using neg_pos.mpr hlc) x (by
+      rw [roots_neg, hGroots, hEe]
       simp only [Multiset.mem_add, Multiset.mem_coe, Multiset.mem_singleton, not_or]
-      exact ⟨hxA, (hx0.trans he).ne⟩
-    have hNsp : (-(generalComparison κ a b v q)).Splits := by
-      apply splits_of_card_roots
-      rw [roots_neg, natDegree_neg]
-      exact card_roots_of_splits hGsp
-    have hNlc : 0 < (-(generalComparison κ a b v q)).leadingCoeff := by
-      rw [leadingCoeff_neg]
-      exact neg_pos.mpr hlc
-    have hxN : x ∉ (-(generalComparison κ a b v q)).roots := by
-      rw [roots_neg]
-      exact hxG
-    have h := eval_sign hNsp hNlc x hxN
+      exact ⟨hxA, (hx0.trans he).ne⟩)
     simp only [roots_neg, hGroots, hEe, Multiset.countP_add, Multiset.coe_countP, hcntA,
       hsing, hx0.trans he, ite_true, eval_neg] at h
     rw [pow_succ] at h
     nlinarith
-
 
 /-- (A1) for `m ≥ 1`: at every root of `T q`, the comparison polynomial has the sign
 `(-1)^(number of roots of T q to the right)`. -/
@@ -283,9 +247,8 @@ theorem generalComparison_sign_at_generalStep_root_of_one_le
   have hAnd : (↑A : Multiset ℝ).Nodup :=
     Multiset.coe_nodup.mpr (hApair.imp (fun h => ne_of_lt h))
   have hAne : A ≠ [] := by
-    intro h
-    rw [h] at hAlen
-    simp only [List.length_nil] at hAlen
+    rintro rfl
+    simp at hAlen
     lia
   -- a left sample point for the case `v ≤ 0`
   have hleft : ∃ L, (∀ x ∈ A, L < x) ∧
@@ -293,60 +256,47 @@ theorem generalComparison_sign_at_generalStep_root_of_one_le
     obtain ⟨R, hR, hRs⟩ := exists_left_endpoint_sign hT.1 hT.2 A.head!
     exact ⟨R, fun x hx => hR.trans_le ((hApair.imp le_of_lt).head!_le hx), hRs⟩
   rcases lt_trichotomy v 0 with hv | hv | hv
-  · -- `v < 0`
-    obtain ⟨e, heroot, he⟩ := exists_comparison_root_pos_of_neg κ a b v q m hv hκ ha hb hq hqdeg
-    obtain ⟨hGdeg, hGlc⟩ := generalComparison_natDegree_of_v_ne_zero κ a b v q m hv.ne hqdeg hqlc
+  · obtain ⟨e, heroot, he⟩ :=
+      exists_comparison_root_pos_of_neg κ a b v q m hv hκ ha hb hq hqdeg
+    obtain ⟨hGdeg, hGlc⟩ :=
+      generalComparison_natDegree_of_v_ne_zero κ a b v q m hv.ne hqdeg hqlc
     have hlc : (generalComparison κ a b v q).leadingCoeff < 0 := by
       rw [hGlc]
       exact mul_neg_of_neg_of_pos hv hqlc
-    have hGne : generalComparison κ a b v q ≠ 0 := by
-      intro h
-      rw [h] at hlc
-      simp at hlc
+    have hGne : generalComparison κ a b v q ≠ 0 := leadingCoeff_ne_zero.mp hlc.ne
     have heA : e ∉ A := fun h => (lt_asymm he (hAneg e h)).elim
     obtain ⟨hroots, hsp⟩ := roots_eq_of_nodup_of_natDegree_le hGne
       (M := ↑(e :: A)) (Multiset.coe_nodup.mpr (List.nodup_cons.mpr ⟨heA, hAnd⟩)) (by
-        intro x hx
-        rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx
-        · exact heroot
-        · exact hAroot x hx) (by
-        rw [Multiset.coe_card, hGdeg]
-        simp [hAlen])
+        rintro x hx
+        rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx <;> simp_all) (by
+        simp [hGdeg, hAlen])
     obtain ⟨L, hLA, hLT⟩ := hleft
     refine generalComparison_sign_of_comparison_roots κ a b u v q m hq hqdeg hm hκ ha hb hell
       A hAlen hApair hAneg L hLA hLT hAsign {e} ?_ hsp (Or.inr (Or.inr ⟨e, rfl, he, hlc⟩))
     rw [hroots, ← Multiset.cons_coe, ← Multiset.singleton_add, add_comm]
-  · -- `v = 0`
-    subst hv
-    obtain ⟨hGdeg, hGlc⟩ := generalComparison_natDegree_of_v_eq_zero κ a b q m hκ ha hb hqdeg hqlc
-    have hGne : generalComparison κ a b 0 q ≠ 0 := by
-      intro h
-      rw [h] at hGlc
-      simp at hGlc
+  · subst hv
+    obtain ⟨hGdeg, hGlc⟩ :=
+      generalComparison_natDegree_of_v_eq_zero κ a b q m hκ ha hb hqdeg hqlc
+    have hGne : generalComparison κ a b 0 q ≠ 0 := leadingCoeff_ne_zero.mp hGlc.ne'
     obtain ⟨hroots, hsp⟩ := roots_eq_of_nodup_of_natDegree_le hGne (M := ↑A) hAnd
-      (fun x hx => hAroot x (Multiset.mem_coe.mp hx)) (by
-        rw [Multiset.coe_card, hGdeg, hAlen])
+      (fun x hx => hAroot x (Multiset.mem_coe.mp hx)) (by simp [hGdeg, hAlen])
     obtain ⟨L, hLA, hLT⟩ := hleft
     refine generalComparison_sign_of_comparison_roots κ a b u 0 q m hq hqdeg hm hκ ha hb hell
       A hAlen hApair hAneg L hLA hLT hAsign 0 ?_ hsp (Or.inl ⟨rfl, hGlc⟩)
     rw [hroots, add_zero]
-  · -- `v > 0`
-    obtain ⟨e, heroot, he⟩ := exists_comparison_root_lt_roots_of_pos κ a b v q m hv hκ hq hqdeg
-      rs hrs hrs_eq hrs_len hm
-    obtain ⟨hGdeg, hGlc⟩ := generalComparison_natDegree_of_v_ne_zero κ a b v q m hv.ne' hqdeg hqlc
+  · obtain ⟨e, heroot, he⟩ :=
+      exists_comparison_root_lt_roots_of_pos κ a b v q m hv hκ hq hqdeg
+        rs hrs hrs_eq hrs_len hm
+    obtain ⟨hGdeg, hGlc⟩ :=
+      generalComparison_natDegree_of_v_ne_zero κ a b v q m hv.ne' hqdeg hqlc
     have hlc : 0 < (generalComparison κ a b v q).leadingCoeff := by
       rw [hGlc]
       exact mul_pos hv hqlc
-    have hGne : generalComparison κ a b v q ≠ 0 := by
-      intro h
-      rw [h] at hlc
-      simp at hlc
+    have hGne : generalComparison κ a b v q ≠ 0 := leadingCoeff_ne_zero.mp hlc.ne'
     have heA' : ∀ x ∈ A, e < x := by
       intro x hx
       obtain ⟨r, hr, hrx⟩ := hlow x hx
-      have : r ∈ q.roots := by
-        rw [← hrs_eq]
-        exact Multiset.mem_coe.mpr hr
+      have : r ∈ q.roots := hrs_eq ▸ Multiset.mem_coe.mpr hr
       exact (he r this).trans_le hrx
     have heA : e ∉ A := fun h => lt_irrefl _ (heA' e h)
     have heneg : e < 0 := by
@@ -354,18 +304,13 @@ theorem generalComparison_sign_at_generalStep_root_of_one_le
       exact (heA' _ hy).trans (hAneg _ hy)
     obtain ⟨hroots, hsp⟩ := roots_eq_of_nodup_of_natDegree_le hGne
       (M := ↑(e :: A)) (Multiset.coe_nodup.mpr (List.nodup_cons.mpr ⟨heA, hAnd⟩)) (by
-        intro x hx
-        rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx
-        · exact heroot
-        · exact hAroot x hx) (by
-        rw [Multiset.coe_card, hGdeg]
-        simp [hAlen])
+        rintro x hx
+        rcases List.mem_cons.mp (Multiset.mem_coe.mp hx) with rfl | hx <;> simp_all) (by
+        simp [hGdeg, hAlen])
     have hprod := generalStep_eval_mul_neg_of_generalComparison_root κ a b u v q e hκ hq hQ
       heroot heneg
     have hqe : 0 < (-1 : ℝ) ^ m * q.eval e := by
-      have hnot : e ∉ q.roots := by
-        intro h
-        exact lt_irrefl _ (he e h)
+      have hnot : e ∉ q.roots := fun h => lt_irrefl _ (he e h)
       have h := eval_sign hq.2.1 hqlc e hnot
       have hcnt : q.roots.countP (fun r => e < r) = m := by
         have : q.roots.countP (fun r => e < r) = Multiset.card q.roots :=
@@ -377,7 +322,6 @@ theorem generalComparison_sign_at_generalStep_root_of_one_le
     refine generalComparison_sign_of_comparison_roots κ a b u v q m hq hqdeg hm hκ ha hb hell
       A hAlen hApair hAneg e heA' hLT hAsign {e} ?_ hsp (Or.inr (Or.inl ⟨rfl, hlc⟩))
     rw [hroots, ← Multiset.cons_coe, ← Multiset.singleton_add, add_comm]
-
 
 /-- (A1) for constant `q`. -/
 theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
@@ -410,11 +354,7 @@ theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
     rw [hTeval] at h
     exact (mul_eq_zero.mp h).resolve_left hc0.ne'
   have hx0 : x < 0 := by
-    have : u * x = -(κ * a * b) := by linarith
-    have hpos : 0 < κ * a * b := by positivity
-    by_contra hcon
-    push Not at hcon
-    nlinarith [mul_nonneg hu.le hcon]
+    apply neg_of_mul_neg_right (b := x) (by nlinarith [mul_pos (mul_pos hκ ha) hb]) hu.le
   have hcnt : (generalStep κ a b u v q).roots.countP (fun r => x < r) = 0 := by
     apply Multiset.countP_eq_zero.mpr
     intro y hy hxy
@@ -422,9 +362,7 @@ theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
       have h := (isRoot_of_mem_roots hy).eq_zero
       rw [hTeval] at h
       exact (mul_eq_zero.mp h).resolve_left hc0.ne'
-    have : u * (y - x) = 0 := by linarith
-    have := (mul_eq_zero.mp this).resolve_left hu.ne'
-    linarith
+    nlinarith [mul_pos hu (sub_pos.mpr hxy)]
   rw [hcnt, pow_zero, mul_one, hGeval]
   have hc : 0 < κ * (a + b + 1) := by positivity
   apply mul_pos hc0
@@ -436,11 +374,9 @@ theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
       exact div_neg_of_neg_of_pos (by linarith) hv
     have hσroot : (generalComparison κ a b v q).IsRoot σ := by
       rw [IsRoot.def, hGeval]
-      have : κ * (a + b + 1) + v * σ = 0 := by
-        rw [hσ]
-        field_simp
-        ring
-      rw [this, mul_zero]
+      rw [hσ]
+      field_simp
+      ring
     have hprod := generalStep_eval_mul_neg_of_generalComparison_root κ a b u v q σ hκ hq hQ
       hσroot hσneg
     rw [hTeval] at hprod
@@ -449,14 +385,10 @@ theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
       simp
     rw [hqσ] at hprod
     have hneg : κ * a * b + u * σ < 0 := by
-      by_contra hcon
-      push Not at hcon
-      nlinarith [mul_nonneg hc0.le hcon]
+      exact neg_of_mul_neg_right (neg_of_mul_neg_right hprod hc0.le) hc0.le
     have hσx : σ < x := by
       have : u * (σ - x) < 0 := by linarith
-      by_contra hcon
-      push Not at hcon
-      nlinarith [mul_nonneg hu.le (sub_nonneg.mpr hcon)]
+      exact sub_neg.mp (neg_of_mul_neg_right this hu.le)
     have hvx : 0 < v * (x - σ) := mul_pos hv (by linarith)
     have : κ * (a + b + 1) + v * x = v * (x - σ) := by
       rw [hσ]
@@ -464,7 +396,6 @@ theorem generalComparison_sign_at_generalStep_root_of_natDegree_eq_zero
       ring
     rw [this]
     exact hvx
-
 
 /-- **(A1)**: for a negative-simple `q` of degree `m`, at every root `x` of `T q` the comparison
 polynomial has the sign `(-1)^(number of roots of T q to the right of x)`. -/
@@ -482,5 +413,4 @@ theorem generalComparison_sign_at_generalStep_root
   | succ m =>
       exact generalComparison_sign_at_generalStep_root_of_one_le κ a b u v q (m + 1) (by lia) hq
         hqdeg hκ ha hb hell hQ
-
 end RealRooted.EulerBidiagonal

@@ -27,12 +27,7 @@ private lemma odd_tendsto (P : ℝ[X]) (hd : P.natDegree = 3)
     (∃ x < M, P.eval x < 0) ∧ (∃ x > M, 0 < P.eval x) := by
   constructor
   · have hdeg : 0 < (P.comp (-X)).degree := by
-      rw [degree_eq_natDegree, natDegree_comp]
-      · simp [hd]
-      intro h
-      have h' := congrArg natDegree h
-      rw [natDegree_comp] at h'
-      simp [hd] at h'
+      exact natDegree_pos_iff_degree_pos.mp (by simp [natDegree_comp, hd])
     have hlc : (P.comp (-X)).leadingCoeff ≤ 0 := by
       rw [leadingCoeff_comp (by simp)]
       simp [hd]
@@ -44,11 +39,7 @@ private lemma odd_tendsto (P : ℝ[X]) (hd : P.natDegree = 3)
     refine ⟨-y, by linarith [hy.2], ?_⟩
     simpa using hy.1
   · have hdeg : 0 < P.degree := by
-      rw [degree_eq_natDegree]
-      · simp [hd]
-      intro h
-      rw [h] at hd
-      simp at hd
+      exact natDegree_pos_iff_degree_pos.mp (by simp [hd])
     have := tendsto_atTop_of_leadingCoeff_nonneg _ hdeg hl.le
     obtain ⟨y, hy⟩ :=
       ((this.eventually (eventually_gt_atTop 0)).and
@@ -60,12 +51,7 @@ private lemma even_tendsto (P : ℝ[X]) (hd : P.natDegree = 2)
     (∃ x < M, 0 < P.eval x) ∧ (∃ x > M, 0 < P.eval x) := by
   constructor
   · have hdeg : 0 < (P.comp (-X)).degree := by
-      rw [degree_eq_natDegree, natDegree_comp]
-      · simp [hd]
-      intro h
-      have h' := congrArg natDegree h
-      rw [natDegree_comp] at h'
-      simp [hd] at h'
+      exact natDegree_pos_iff_degree_pos.mp (by simp [natDegree_comp, hd])
     have hlc : 0 ≤ (P.comp (-X)).leadingCoeff := by
       rw [leadingCoeff_comp (by simp)]
       simp [hd]
@@ -77,11 +63,7 @@ private lemma even_tendsto (P : ℝ[X]) (hd : P.natDegree = 2)
     refine ⟨-y, by linarith [hy.2], ?_⟩
     simpa using hy.1
   · have hdeg : 0 < P.degree := by
-      rw [degree_eq_natDegree]
-      · simp [hd]
-      intro h
-      rw [h] at hd
-      simp at hd
+      exact natDegree_pos_iff_degree_pos.mp (by simp [hd])
     have := tendsto_atTop_of_leadingCoeff_nonneg _ hdeg hl.le
     obtain ⟨y, hy⟩ :=
       ((this.eventually (eventually_gt_atTop 0)).and
@@ -139,16 +121,9 @@ private theorem quadratic_cubic_roots_of_remainder {a b c p d α β : ℝ}
     apply div_lt_div_of_pos_right _ (by positivity)
     linarith
   have hroot1 : a * r₁ ^ 2 + b * r₁ + c = 0 := by
-    have : a * r₁ ^ 2 + b * r₁ + c = r₁ * (a * r₁ + b) + c := by
-      ring
-    rw [this, ← hprod]
-    have : b = -(a * (r₁ + r₂)) := by linarith
-    rw [this]
-    ring
+    linear_combination r₁ * hsum - hprod
   have hroot2 : a * r₂ ^ 2 + b * r₂ + c = 0 := by
-    have : b = -(a * (r₁ + r₂)) := by linarith
-    rw [← hprod, this]
-    ring
+    linear_combination r₂ * hsum - hprod
   have hP : a * ((α * r₁ + β) * (α * r₂ + β)) < 0 := by
     have : a * ((α * r₁ + β) * (α * r₂ + β)) =
         α ^ 2 * (a * (r₁ * r₂)) + α * β * (a * (r₁ + r₂)) + a * β ^ 2 := by
@@ -265,14 +240,8 @@ theorem strictInterl_linear_of_remainder {a b p d β : ℝ} (ha : 0 < a)
       ring
     rw [hform]
     exact natDegree_quadratic (mul_ne_zero ha.ne' hp.ne')
-  have hfn : f ≠ 0 := by
-    intro h
-    rw [h] at hfgdeg
-    simp at hfgdeg
-  have hgn : g ≠ 0 := by
-    intro h
-    rw [h] at hggdeg
-    simp at hggdeg
+  have hfn : f ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hfgdeg]; norm_num)
+  have hgn : g ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hggdeg]; norm_num)
   have hfs : f.Splits := Splits.of_natDegree_le_one (by rw [hfgdeg])
   have hgs : g.Splits := by
     apply Polynomial.splits_of_finset_roots_of_natDegree_le_card
@@ -286,30 +255,12 @@ theorem strictInterl_linear_of_remainder {a b p d β : ℝ} (ha : 0 < a)
       have hs₁s₂ : s₁ ≠ s₂ := ne_of_lt (lt_trans hs₁r hrs₂)
       simp [hs₁s₂]
   have hfrts : (↑[r] : Multiset ℝ) = f.roots := by
-    have h := roots_eq_of_list_roots (xs := [r]) hfn hfs (by simp) (by
-      intro x hx
-      have hx' : x = r := by simpa using hx
-      subst x
-      exact hfr') (by
-      simpa only [List.length_cons, List.length_nil] using hfgdeg)
-    simpa using h
+    apply roots_eq_of_list_roots hfn hfs <;> simp_all
   have hgrts : (↑[s₁, s₂] : Multiset ℝ) = g.roots := by
     have hs₁s₂ : s₁ ≠ s₂ := ne_of_lt (lt_trans hs₁r hrs₂)
-    have h := roots_eq_of_list_roots (xs := [s₁, s₂]) hgn hgs (by
-      simp [hs₁s₂]) (by
-      intro x hx
-      have hx' : x = s₁ ∨ x = s₂ := by simpa using hx
-      rcases hx' with rfl | rfl
-      · exact hgs₁'
-      · exact hgs₂') (by
-      simpa only [List.length_cons, List.length_nil] using hggdeg)
-    exact h
+    apply roots_eq_of_list_roots hgn hgs <;> simp_all
   refine ⟨⟨hfn, hfs⟩, ⟨hgn, hgs⟩, [r], [s₁, s₂], by simp, ?_, ?_, ?_, ?_⟩
-  · apply List.pairwise_cons.mpr
-    refine ⟨?_, by simp⟩
-    intro x hx
-    have hx' : x = s₂ := by simpa using hx
-    simpa [hx'] using (le_of_lt (lt_trans hs₁r hrs₂))
+  · simp [le_of_lt (lt_trans hs₁r hrs₂)]
   · exact hfrts
   · exact hgrts
   · exact Or.inl ⟨by simp, ⟨hs₁r.le, hrs₂.le, by simp [ListInterlaces]⟩⟩
@@ -340,14 +291,8 @@ theorem strictInterl_quadratic_of_remainder {a b c p d α β : ℝ}
   have hgs₁' : g.IsRoot s₁ := by simpa [g, f] using hgs₁
   have hgs₂' : g.IsRoot s₂ := by simpa [g, f] using hgs₂
   have hgs₃' : g.IsRoot s₃ := by simpa [g, f] using hgs₃
-  have hfn : f ≠ 0 := by
-    intro h
-    rw [h] at hfdeg
-    simp at hfdeg
-  have hgn : g ≠ 0 := by
-    intro h
-    rw [h] at hgdeg
-    simp at hgdeg
+  have hfn : f ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hfdeg]; norm_num)
+  have hgn : g ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hgdeg]; norm_num)
   have hfs : f.Splits := by
     apply Polynomial.splits_of_finset_roots_of_natDegree_le_card
       (s := {r₁, r₂})
@@ -375,32 +320,13 @@ theorem strictInterl_quadratic_of_remainder {a b c p d α β : ℝ}
       simp [hs₁s₂.ne, hs₂s₃.ne, hs₁s₃.ne]
   have hr₁r₂ : r₁ ≠ r₂ := ne_of_lt (lt_trans hr₁s₂ hs₂r₂)
   have hfrts : (↑[r₁, r₂] : Multiset ℝ) = f.roots := by
-    have h := roots_eq_of_list_roots (xs := [r₁, r₂]) hfn hfs (by
-      simp [hr₁r₂]) (by
-      intro x hx
-      have hx' : x = r₁ ∨ x = r₂ := by simpa using hx
-      rcases hx' with rfl | rfl
-      · exact hfr₁'
-      · exact hfr₂') (by
-      simpa only [List.length_cons, List.length_nil] using hfdeg)
-    exact h
+    apply roots_eq_of_list_roots hfn hfs <;> simp_all
   have hgrts : (↑[s₁, s₂, s₃] : Multiset ℝ) = g.roots := by
     have hs₁s₂' : s₁ < s₂ := lt_trans hs₁r₁ hr₁s₂
     have hs₂s₃' : s₂ < s₃ := lt_trans hs₂r₂ hr₂s₃
     have hs₁s₃' : s₁ < s₃ := lt_trans hs₁s₂' hs₂s₃'
-    have hs₁s₂ : s₁ ≠ s₂ := hs₁s₂'.ne
-    have hs₂s₃ : s₂ ≠ s₃ := hs₂s₃'.ne
-    have hs₁s₃ : s₁ ≠ s₃ := hs₁s₃'.ne
-    have h := roots_eq_of_list_roots (xs := [s₁, s₂, s₃]) hgn hgs (by
-      simp [hs₁s₂, hs₂s₃, hs₁s₃]) (by
-      intro x hx
-      have hx' : x = s₁ ∨ x = s₂ ∨ x = s₃ := by simpa using hx
-      rcases hx' with rfl | rfl | rfl
-      · exact hgs₁'
-      · exact hgs₂'
-      · exact hgs₃') (by
-      simpa only [List.length_cons, List.length_nil] using hgdeg)
-    exact h
+    exact roots_eq_of_list_roots hgn hgs
+      (by simp [hs₁s₂'.ne, hs₁s₃'.ne, hs₂s₃'.ne]) (by simp_all) (by simp [hgdeg])
   apply Interlaces.toStrictInterl
   apply Interlaces.of_quadratic_cubic_root_lists
     (g := f) (f := g) hgn hgs hfn hfs
@@ -424,20 +350,14 @@ theorem Interlaces.pow_mul_of_quadratic_remainder {q R S : ℝ[X]} (m : ℕ)
   have hstrict : StrictInterl R (q * S) := by
     rw [hR, hqS, hR]
     exact hbase
-  have hRdeg : R.natDegree = 2 := by
-    rw [hR]
-    exact natDegree_quadratic ha.ne'
+  have hRdeg : R.natDegree = 2 := by rw [hR]; exact natDegree_quadratic ha.ne'
   have hqSform : q * S =
       C (a * p) * X ^ 3 + C (a * d + b * p) * X ^ 2 +
         C (b * d + c * p + α) * X + C (c * d + β) := by
-    rw [hqS, hR]
-    simp only [C_mul, C_add]
-    ring
+    rw [hqS, hR]; simp only [C_mul, C_add]; ring
   have hqSdeg : (q * S).natDegree = 3 := by
-    rw [hqSform]
-    exact natDegree_cubic (mul_ne_zero ha.ne' hp.ne')
-  have hdeg : R.natDegree + 1 = (q * S).natDegree := by
-    rw [hRdeg, hqSdeg]
+    rw [hqSform]; exact natDegree_cubic (mul_ne_zero ha.ne' hp.ne')
+  have hdeg : R.natDegree + 1 = (q * S).natDegree := by rw [hRdeg, hqSdeg]
   have hmul := (hstrict.toInterlaces hdeg).mul_both_of_splits (hq.pow m)
     (pow_ne_zero m hq0)
   simpa [pow_succ, mul_assoc] using hmul
@@ -454,19 +374,13 @@ theorem Interlaces.pow_mul_of_linear_remainder {q R S : ℝ[X]} (m : ℕ)
   have hstrict : StrictInterl R (q * S) := by
     rw [hR, hqS, hR]
     exact hbase
-  have hRdeg : R.natDegree = 1 := by
-    rw [hR]
-    exact natDegree_linear ha.ne'
+  have hRdeg : R.natDegree = 1 := by rw [hR]; exact natDegree_linear ha.ne'
   have hqSform : q * S =
       C (a * p) * X ^ 2 + C (a * d + b * p) * X + C (b * d + β) := by
-    rw [hqS, hR]
-    simp only [C_mul, C_add]
-    ring
+    rw [hqS, hR]; simp only [C_mul, C_add]; ring
   have hqSdeg : (q * S).natDegree = 2 := by
-    rw [hqSform]
-    exact natDegree_quadratic (mul_ne_zero ha.ne' hp.ne')
-  have hdeg : R.natDegree + 1 = (q * S).natDegree := by
-    rw [hRdeg, hqSdeg]
+    rw [hqSform]; exact natDegree_quadratic (mul_ne_zero ha.ne' hp.ne')
+  have hdeg : R.natDegree + 1 = (q * S).natDegree := by rw [hRdeg, hqSdeg]
   have hmul := (hstrict.toInterlaces hdeg).mul_both_of_splits (hq.pow m)
     (pow_ne_zero m hq0)
   simpa [pow_succ, mul_assoc] using hmul
