@@ -31,23 +31,20 @@ theorem IsPFPolynomial.coeff_pos_of_coeff_zero_pos
   have hnonneg : 0 ≤ p.coeff k := hp.hasNonnegCoeffs k
   apply lt_of_le_of_ne hnonneg
   intro hcoeff
+  have hlead : p.coeff p.natDegree ≠ 0 := by
+    rw [Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
   have hkzero : k ≠ 0 := by
     intro hkzero
     subst k
     exact hzero.ne' hcoeff.symm
   have hktop : p.natDegree ≠ k := by
     intro hktop
-    have hlead : p.coeff p.natDegree ≠ 0 := by
-      rw [Polynomial.coeff_natDegree]
-      exact Polynomial.leadingCoeff_ne_zero.mpr hp0
     apply hlead
     rw [hktop]
     exact hcoeff.symm
   have hkcoeff := hp.hasNoInternalCoeffZeros 0 k p.natDegree
-    (Nat.pos_of_ne_zero hkzero) (lt_of_le_of_ne hk hktop.symm) le_rfl hzero.ne' (by
-      change p.coeff p.natDegree ≠ 0
-      rw [Polynomial.coeff_natDegree]
-      exact Polynomial.leadingCoeff_ne_zero.mpr hp0)
+    (Nat.pos_of_ne_zero hkzero) (lt_of_le_of_ne hk hktop.symm) le_rfl hzero.ne' hlead
   exact hkcoeff hcoeff.symm
 
 private def pfJensenKernel (N : ℕ) (J : ℝ[X]) (ε : ℝ) : ℝ[X] :=
@@ -72,15 +69,11 @@ private theorem pfJensenKernel_natDegree
   have hfactor0 :
       (((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp
         (C epsilon * X)) ≠ 0 := by
-    have hbase0 : ((X + C 1 : ℝ[X]) ^ (N - J.natDegree)) ≠ 0 :=
-      pow_ne_zero _ (Polynomial.X_add_C_ne_zero 1)
     intro hzero
-    apply hbase0
-    exact (Polynomial.comp_C_mul_X_eq_zero_iff (by simpa using hepsilon.ne')).mp
-      hzero
-  have htranslate0 : J.comp (X + C epsilon) ≠ 0 :=
-    Polynomial.comp_X_add_C_ne_zero_iff.mpr hJ0
-  rw [pfJensenKernel, Polynomial.natDegree_mul hfactor0 htranslate0,
+    exact pow_ne_zero _ (Polynomial.X_add_C_ne_zero 1)
+      ((Polynomial.comp_C_mul_X_eq_zero_iff (by simpa using hepsilon.ne')).mp hzero)
+  rw [pfJensenKernel, Polynomial.natDegree_mul hfactor0
+      (Polynomial.comp_X_add_C_ne_zero_iff.mpr hJ0),
     Polynomial.natDegree_comp, Polynomial.natDegree_pow,
     Polynomial.natDegree_X_add_C,
     Polynomial.natDegree_C_mul_X epsilon hepsilon.ne',
@@ -89,25 +82,11 @@ private theorem pfJensenKernel_natDegree
 
 private theorem continuous_coeff_pfJensenKernel (N : ℕ) (J : ℝ[X]) (i : ℕ) :
     Continuous fun epsilon : ℝ => (pfJensenKernel N J epsilon).coeff i := by
-  rw [show (fun epsilon : ℝ => (pfJensenKernel N J epsilon).coeff i) =
-      fun epsilon : ℝ => ∑ j ∈ Finset.range (i + 1),
-        ((((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp
-          (C epsilon * X)).coeff j) *
-          (J.comp (X + C epsilon)).coeff (i - j) by
-    funext epsilon
-    rw [pfJensenKernel, Polynomial.coeff_mul,
-      Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]]
+  simp_rw [pfJensenKernel, Polynomial.coeff_mul,
+    Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk,
+    Polynomial.comp_C_mul_X_coeff]
   apply continuous_finsetSum
-  intro j _hj
-  rw [show (fun epsilon : ℝ =>
-      ((((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp
-        (C epsilon * X)).coeff j) *
-      (J.comp (X + C epsilon)).coeff (i - j)) =
-      fun epsilon : ℝ =>
-        (((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).coeff j * epsilon ^ j) *
-          (J.comp (X + C epsilon)).coeff (i - j) by
-    funext epsilon
-    rw [Polynomial.comp_C_mul_X_coeff]]
+  intro j _
   exact (continuous_const.mul (continuous_id.pow j)).mul
     (J.continuous_coeff_comp_X_add_C (i - j))
 
@@ -138,14 +117,10 @@ theorem IsFinitePFMultiplierSequence.interl_diagonalOperator
     (hfdeg : f.natDegree ≤ N) (hgdeg : g.natDegree ≤ N) :
     Interl (diagonalOperator gamma f) (diagonalOperator gamma g) := by
   let J : ℝ[X] := jensenPolynomial N gamma
-  have hJpf : IsPFPolynomial J := by
-    exact isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence hgamma
+  have hJpf := isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence hgamma
   by_cases hJ0 : J = 0
-  · have hf0 : diagonalOperator gamma f = 0 :=
-      diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hfdeg
-    have hg0 : diagonalOperator gamma g = 0 :=
-      diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hgdeg
-    rw [hf0, hg0]
+  · rw [diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hfdeg,
+      diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hgdeg]
     exact interl_zero_left 0
   let epsilon : ℕ → ℝ := fun m => 1 / (m + 1 : ℝ)
   let K : ℕ → ℝ[X] := fun m => pfJensenKernel N J (epsilon m)
@@ -154,22 +129,17 @@ theorem IsFinitePFMultiplierSequence.interl_diagonalOperator
   have hepsilon_pos (m : ℕ) : 0 < epsilon m := by
     dsimp [epsilon]
     positivity
-  have hJdeg : J.natDegree ≤ N := by
-    exact natDegree_jensenPolynomial_le N gamma
-  have hKpf (m : ℕ) : IsPFPolynomial (K m) := by
-    exact pfJensenKernel_isPF hJpf (hepsilon_pos m)
-  have hKdeg (m : ℕ) : (K m).natDegree = N := by
-    exact pfJensenKernel_natDegree hJdeg hJ0 (hepsilon_pos m)
+  have hJdeg : J.natDegree ≤ N := natDegree_jensenPolynomial_le N gamma
+  have hKpf (m : ℕ) : IsPFPolynomial (K m) :=
+    pfJensenKernel_isPF hJpf (hepsilon_pos m)
+  have hKdeg (m : ℕ) : (K m).natDegree = N :=
+    pfJensenKernel_natDegree hJdeg hJ0 (hepsilon_pos m)
   have hKzero_pos (m : ℕ) : 0 < (K m).coeff 0 := by
-    have hfactor :
-        ((((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp
-          (C (epsilon m) * X)).coeff 0) = 1 := by
-      rw [Polynomial.comp_C_mul_X_coeff, pow_zero, mul_one,
-        Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_pow,
-        Polynomial.eval_add, Polynomial.eval_X, Polynomial.eval_C]
-      norm_num
     dsimp [K, pfJensenKernel]
-    rw [Polynomial.mul_coeff_zero, hfactor, one_mul]
+    rw [Polynomial.mul_coeff_zero, Polynomial.comp_C_mul_X_coeff, pow_zero, mul_one,
+      Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_pow, Polynomial.eval_add,
+      Polynomial.eval_X, Polynomial.eval_C]
+    norm_num
     have htranslated := hJpf.comp_X_add_C_and_coeff_zero_pos hJ0 (hepsilon_pos m)
     simpa using htranslated.2
   have hgammaReg_pos (m k : ℕ) (hk : k ≤ N) : 0 < gammaReg m k := by
@@ -188,21 +158,17 @@ theorem IsFinitePFMultiplierSequence.interl_diagonalOperator
     · intro k
       by_cases hk : k ≤ N
       · exact (hgammaReg_pos m k hk).le
-      · dsimp [gammaReg]
-        rw [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
-        simp
+      · simp [gammaReg, Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
     · exact hgammaReg_mult m
   have hinterl (m : ℕ) :
       Interl (diagonalOperator (gammaReg m) f)
         (diagonalOperator (gammaReg m) g) := by
     by_cases hf0 : f = 0
     · subst f
-      rw [diagonalOperator_zero]
-      exact interl_zero_left _
+      simpa only [diagonalOperator_zero] using interl_zero_left (diagonalOperator (gammaReg m) g)
     by_cases hg0 : g = 0
     · subst g
-      rw [diagonalOperator_zero]
-      exact interl_zero_right _
+      simpa only [diagonalOperator_zero] using interl_zero_right (diagonalOperator (gammaReg m) f)
     apply StrictInterl.toInterl
     apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator
       (hgammaReg_mult m)
@@ -218,16 +184,12 @@ theorem IsFinitePFMultiplierSequence.interl_diagonalOperator
   have hKcoeff (i : ℕ) : Tendsto (fun m => (K m).coeff i) atTop
       (𝓝 (J.coeff i)) := by
     have hcont : Tendsto
-        (fun epsilon : ℝ => (pfJensenKernel N J epsilon).coeff i)
-        (𝓝 0) (𝓝 ((pfJensenKernel N J 0).coeff i)) :=
+        (fun e : ℝ ↦ (pfJensenKernel N J e).coeff i) (𝓝 0)
+          (𝓝 ((pfJensenKernel N J 0).coeff i)) :=
       (continuous_coeff_pfJensenKernel N J i).continuousAt
-    have hcomp := hcont.comp hepsilon
-    have hfun :
-        (fun epsilon : ℝ => (pfJensenKernel N J epsilon).coeff i) ∘ epsilon =
-          fun m => (K m).coeff i := by
-      rfl
-    rw [hfun] at hcomp
-    simpa only [pfJensenKernel_zero] using hcomp
+    change Tendsto ((fun e : ℝ ↦ (pfJensenKernel N J e).coeff i) ∘ epsilon)
+      atTop (𝓝 (J.coeff i))
+    simpa only [pfJensenKernel_zero] using hcont.comp hepsilon
   have hcoeff (p : ℝ[X]) (hpdeg : p.natDegree ≤ N) (i : ℕ) :
       Tendsto (fun m => (diagonalOperator (gammaReg m) p).coeff i) atTop
         (𝓝 ((diagonalOperator gamma p).coeff i)) := by
@@ -282,7 +244,7 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator_reverse
     apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator
       hgamma.alternating hfg hfdeg hgdeg
       hdelta_f hdelta_g
-    intro hsame hpos
+    intro _ hpos
     have hpred : f.natDegree - 1 + 1 = f.natDegree := by lia
     have hpow :
         (-1 : ℝ) ^ (f.natDegree - 1) *
@@ -329,10 +291,7 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator_of_ratio_nonneg
   apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator hgamma
     hfg hfdeg hgdeg hgamma_f hgamma_g
   intro _hdegree _hpos
-  have hrewrite : gamma (f.natDegree - 1) =
-      (gamma (f.natDegree - 1) / gamma f.natDegree) *
-        gamma f.natDegree := by
-    field_simp
+  have hrewrite := (div_mul_cancel₀ (gamma (f.natDegree - 1)) hgamma_f).symm
   rw [hrewrite]
   nlinarith [sq_nonneg (gamma f.natDegree)]
 
@@ -350,10 +309,7 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator_reverse_of_rati
     StrictInterl (diagonalOperator gamma g) (diagonalOperator gamma f) := by
   apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator_reverse hgamma
     hfg hfdeg hgdeg hdegree hgamma_f hgamma_g
-  have hrewrite : gamma (f.natDegree - 1) =
-      (gamma (f.natDegree - 1) / gamma f.natDegree) *
-        gamma f.natDegree := by
-    field_simp
+  have hrewrite := (div_mul_cancel₀ (gamma (f.natDegree - 1)) hgamma_f).symm
   rw [hrewrite]
   nlinarith [sq_nonneg (gamma f.natDegree)]
 
@@ -370,14 +326,10 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator_both_of_ratio_e
     (hratio : gamma (f.natDegree - 1) / gamma f.natDegree = 0) :
     StrictInterl (diagonalOperator gamma f) (diagonalOperator gamma g) ∧
       StrictInterl (diagonalOperator gamma g) (diagonalOperator gamma f) := by
-  constructor
-  · apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator_of_ratio_nonneg
-      hgamma hfg hfdeg hgdeg hgamma_f hgamma_g
-    rw [hratio]
-  · apply
-      IsFiniteMultiplierSequence.strictInterl_diagonalOperator_reverse_of_ratio_nonpos
-        hgamma hfg hfdeg hgdeg hdegree hgamma_f hgamma_g
-    rw [hratio]
+  exact ⟨hgamma.strictInterl_diagonalOperator_of_ratio_nonneg hfg hfdeg hgdeg
+      hgamma_f hgamma_g hratio.ge,
+    hgamma.strictInterl_diagonalOperator_reverse_of_ratio_nonpos hfg hfdeg hgdeg
+      hdegree hgamma_f hgamma_g hratio.le⟩
 
 private theorem HasPosLeadingCoeff.diagonalOperator_of_pos
     {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 < gamma k)
@@ -403,21 +355,16 @@ theorem IsMultiplierSequence.strictInterl_weightedSum_left_of_pos
     StrictInterl (diagonalOperator gamma h)
       (weightedSum (l.map fun ap => (ap.1, diagonalOperator gamma ap.2))) := by
   apply StrictInterl.weightedSum_left_of_common_left_signed
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
-    exact hnonneg bp hbp
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+  · simpa only [List.forall_mem_map] using hnonneg
+  · rw [List.forall_mem_map]
+    intro bp hbp
     exact IsMultiplierSequence.strictInterl_diagonalOperator_of_pos
       hgamma hgamma_pos (hinterl bp hbp)
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+  · rw [List.forall_mem_map]
+    intro bp hbp
     exact (hpoly_pos bp hbp).diagonalOperator_of_pos hgamma_pos
   · rcases hex with ⟨ap, hap, hpos⟩
-    have hmem : (ap.1, diagonalOperator gamma ap.2) ∈
-        l.map (fun bp => (bp.1, diagonalOperator gamma bp.2)) :=
-      List.mem_map.mpr ⟨ap, hap, rfl⟩
-    exact ⟨(ap.1, diagonalOperator gamma ap.2), hmem, hpos⟩
+    exact ⟨_, List.mem_map.mpr ⟨ap, hap, rfl⟩, hpos⟩
 
 /-- A strictly positive multiplier sequence transports a common-right family
 and its nontrivial nonnegative weighted sums. -/
@@ -433,21 +380,16 @@ theorem IsMultiplierSequence.strictInterl_weightedSum_right_of_pos
       (weightedSum (l.map fun ap => (ap.1, diagonalOperator gamma ap.2)))
       (diagonalOperator gamma h) := by
   apply StrictInterl.weightedSum_right_of_nonneg
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
-    exact hnonneg bp hbp
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+  · simpa only [List.forall_mem_map] using hnonneg
+  · rw [List.forall_mem_map]
+    intro bp hbp
     exact IsMultiplierSequence.strictInterl_diagonalOperator_of_pos
       hgamma hgamma_pos (hinterl bp hbp)
-  · intro ap hap
-    rcases List.mem_map.mp hap with ⟨bp, hbp, rfl⟩
+  · rw [List.forall_mem_map]
+    intro bp hbp
     exact (hpoly_pos bp hbp).diagonalOperator_of_pos hgamma_pos
   · rcases hex with ⟨ap, hap, hpos⟩
-    have hmem : (ap.1, diagonalOperator gamma ap.2) ∈
-        l.map (fun bp => (bp.1, diagonalOperator gamma bp.2)) :=
-      List.mem_map.mpr ⟨ap, hap, rfl⟩
-    exact ⟨(ap.1, diagonalOperator gamma ap.2), hmem, hpos⟩
+    exact ⟨_, List.mem_map.mpr ⟨ap, hap, rfl⟩, hpos⟩
 
 /-- Applying a finite PF multiplier coordinatewise preserves zero-aware
 nonnegative real-rooted interlacing lists under a uniform degree bound. -/
