@@ -218,28 +218,8 @@ theorem idDecompositionFormula_eq_add_X_mul {d : ℕ} {p : ℝ[X]} (hd : p.natDe
     p = idDecompositionAFormula d p + X * idDecompositionBFormula d p := by
   have hA := idDecompositionAFormula_mul_X_sub_one hd
   have hB := idDecompositionBFormula_mul_X_sub_one hd
-  have hstep :
-    (X - 1) * (idDecompositionAFormula d p + X * idDecompositionBFormula d p)
-        = (X - 1) * idDecompositionAFormula d p + X * ((X - 1) * idDecompositionBFormula d p) := by
-            ring
-  have hmul :
-      (X - 1) * (idDecompositionAFormula d p + X * idDecompositionBFormula d p) = (X - 1) * p := by
-    grind
-  have hdiv := congrArg (fun q => q /ₘ (X - 1)) hmul
-  rw [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp] at hdiv
-  have hleft_cancel :
-      ((X - C (1 : ℝ)) * (idDecompositionAFormula d p + X * idDecompositionBFormula d p)) /ₘ
-          (X - C (1 : ℝ)) =
-        idDecompositionAFormula d p + X * idDecompositionBFormula d p := by
-    simpa using
-      (Polynomial.mul_divByMonic_cancel_left
-        (idDecompositionAFormula d p + X * idDecompositionBFormula d p)
-        (Polynomial.monic_X_sub_C (1 : ℝ)))
-  have hright_cancel :
-      ((X - C (1 : ℝ)) * p) /ₘ (X - C (1 : ℝ)) = p := by
-    simpa using
-      (Polynomial.mul_divByMonic_cancel_left p (Polynomial.monic_X_sub_C (1 : ℝ)))
-  lia
+  apply mul_left_cancel₀ (show (X - 1 : ℝ[X]) ≠ 0 by simpa using X_sub_C_ne_zero (1 : ℝ))
+  grind
 
 theorem idDecompositionFormula_idTransform_eq_add {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     idTransform d p = idDecompositionAFormula d p + idDecompositionBFormula d p := by
@@ -256,62 +236,18 @@ theorem idDecompositionFormula_idTransform_eq_add {d : ℕ} {p : ℝ[X]} (hd : p
 theorem idDecompositionFormula_eq_of_system {d : ℕ} {p a b : ℝ[X]} (hd : p.natDegree ≤ d)
     (hp : p = a + X * b) (hI : idTransform d p = a + b) :
     a = idDecompositionAFormula d p ∧ b = idDecompositionBFormula d p := by
+  have hB := idDecompositionBFormula_mul_X_sub_one hd
   have hsub : p - idTransform d p = (X - 1) * b := by grind
-  have hdiv := congrArg (fun q => q /ₘ (X - 1)) hsub
-  rw [show (X - 1 : ℝ[X]) = X - C (1 : ℝ) by simp] at hdiv
-  have hb' : idDecompositionBFormula d p = b := by
-    have hcancel : ((X - C (1 : ℝ)) * b) /ₘ (X - C (1 : ℝ)) = b := by
-      simpa using
-        (Polynomial.mul_divByMonic_cancel_left b (Polynomial.monic_X_sub_C (1 : ℝ)))
-    calc
-      idDecompositionBFormula d p = (p - idTransform d p) /ₘ (X - C (1 : ℝ)) := by
-        simp [idDecompositionBFormula]
-      _ = ((X - C (1 : ℝ)) * b) /ₘ (X - C (1 : ℝ)) := hdiv
-      _ = b := hcancel
-  have hb : b = idDecompositionBFormula d p := hb'.symm
+  have hb : b = idDecompositionBFormula d p := by
+    apply mul_left_cancel₀ (show (X - 1 : ℝ[X]) ≠ 0 by simpa using X_sub_C_ne_zero (1 : ℝ))
+    grind
   refine ⟨?_, hb⟩
-  calc
-    a = p - X * b := by grind
-    _ = p - X * idDecompositionBFormula d p := by lia
-    _ = idDecompositionAFormula d p := by
-      nth_rw 1 [idDecompositionFormula_eq_add_X_mul hd]
-      ring
+  rw [idDecompositionFormula_eq_add_X_mul hd] at hp
+  grind
 
-lemma idDecompositionBFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
-    idTransform (d - 1) (idDecompositionBFormula d p) = idDecompositionBFormula d p := by
-  cases d with
-  | zero =>
-      have hp0 : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_le_zero hd
-      have hI0 : idTransform 0 p = p := by
-        rw [hp0, idTransform, Polynomial.reflect_C]
-        lia
-      rw [idDecompositionBFormula, hI0, sub_self, zero_divByMonic]
-      simp
-  | succ n =>
-      let a := idDecompositionAFormula (n + 1) p
-      let b := idDecompositionBFormula (n + 1) p
-      have ha : p = a + X * b := by
-        simpa [a, b] using idDecompositionFormula_eq_add_X_mul (d := n + 1) hd
-      have hI : idTransform (n + 1) p = a + b := by
-        simpa [a, b] using idDecompositionFormula_idTransform_eq_add (d := n + 1) hd
-      have hbdeg : b.natDegree ≤ n := by
-        simpa [b] using natDegree_idDecompositionBFormula_le (d := n + 1) hd
-      have ha' : p = idTransform (n + 1) a + X * idTransform n b := by
-        have h0 : p = idTransform (n + 1) a + idTransform (n + 1) b := by
-          simpa [idTransform, Polynomial.reflect_add, a, b] using
-            (congrArg (idTransform (n + 1)) hI)
-        rw [idTransform_of_natDegree_le_pred (d := n + 1) (Nat.succ_pos _) hbdeg] at h0
-        lia
-      have hI' : idTransform (n + 1) p = idTransform (n + 1) a + idTransform n b := by
-        have h0 : idTransform (n + 1) p = idTransform (n + 1) a + idTransform (n + 1) (X * b) := by
-          simp_all
-        rw [idTransform_X_mul_of_natDegree_le_pred (d := n + 1) (Nat.succ_pos _) hbdeg] at h0
-        lia
-      have hsys := idDecompositionFormula_eq_of_system (d := n + 1) (p := p) hd ha' hI'
-      lia
-
-lemma idDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
-    idTransform d (idDecompositionAFormula d p) = idDecompositionAFormula d p := by
+private lemma idDecompositionFormulas_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    idTransform d (idDecompositionAFormula d p) = idDecompositionAFormula d p ∧
+      idTransform (d - 1) (idDecompositionBFormula d p) = idDecompositionBFormula d p := by
   cases d with
   | zero =>
       have hp0 : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_le_zero hd
@@ -322,7 +258,7 @@ lemma idDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤
         rw [idDecompositionBFormula, hI0, sub_self, zero_divByMonic]
       have hA0 : idDecompositionAFormula 0 p = p := by
         simpa [hB0] using (idDecompositionFormula_eq_add_X_mul (d := 0) hd).symm
-      lia
+      simp [hA0, hB0, hI0]
   | succ n =>
       let a := idDecompositionAFormula (n + 1) p
       let b := idDecompositionBFormula (n + 1) p
@@ -343,8 +279,15 @@ lemma idDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤
           simp_all
         rw [idTransform_X_mul_of_natDegree_le_pred (d := n + 1) (Nat.succ_pos _) hbdeg] at h0
         lia
-      have hsys := idDecompositionFormula_eq_of_system (d := n + 1) (p := p) hd ha' hI'
-      lia
+      simpa [a, b] using idDecompositionFormula_eq_of_system (d := n + 1) (p := p) hd ha' hI'
+
+lemma idDecompositionBFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    idTransform (d - 1) (idDecompositionBFormula d p) = idDecompositionBFormula d p :=
+  (idDecompositionFormulas_fixed hd).2
+
+lemma idDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    idTransform d (idDecompositionAFormula d p) = idDecompositionAFormula d p :=
+  (idDecompositionFormulas_fixed hd).1
 
 theorem isIdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     IsIdDecomposition d p (idDecompositionAFormula d p) (idDecompositionBFormula d p) := by
@@ -412,38 +355,26 @@ lemma rdTransform_X_add_one_mul_succ (d : ℕ) (p : ℝ[X]) :
 
 lemma rdTransform_basis_term (d n : ℕ) (a : ℝ) (hn : n ≤ d) :
     rdTransform d (C a * X ^ n * (X + 1) ^ (d - n)) = C a * X ^ (d - n) * (X + 1) ^ n := by
-  induction d generalizing n with
-  | zero =>
-      have hn0 : n = 0 := Nat.eq_zero_of_le_zero hn
-      subst hn0
-      simp [rdTransform]
-  | succ d ih =>
-      cases n with
-      | zero =>
-          have hzero :
-              C a * X ^ 0 * (X + 1) ^ (d + 1 - 0) = (X + 1) * (C a * X ^ 0 * (X + 1) ^ d) := by
-            grind
-          calc
-            rdTransform (d + 1) (C a * X ^ 0 * (X + 1) ^ (d + 1 - 0))
-                = rdTransform (d + 1) ((X + 1) * (C a * X ^ 0 * (X + 1) ^ d)) := by lia
-            _ = X * rdTransform d (C a * X ^ 0 * (X + 1) ^ d) := by
-                  rw [rdTransform_X_add_one_mul_succ]
-            _ = X * (C a * X ^ (d - 0) * (X + 1) ^ 0) := by
-                  simpa using congrArg (fun q => X * q) (ih 0 (Nat.zero_le d))
-            _ = C a * X ^ (d + 1 - 0) * (X + 1) ^ 0 := by grind
-      | succ n =>
-          have hn' : n ≤ d := Nat.succ_le_succ_iff.mp hn
-          have hsucc :
-              C a * X ^ (n + 1) * (X + 1) ^ (d + 1 - (n + 1)) =
-                X * (C a * X ^ n * (X + 1) ^ (d - n)) := by
-            grind
-          calc
-            rdTransform (d + 1) (C a * X ^ (n + 1) * (X + 1) ^ (d + 1 - (n + 1)))
-                = rdTransform (d + 1) (X * (C a * X ^ n * (X + 1) ^ (d - n))) := by lia
-            _ = (X + 1) * rdTransform d (C a * X ^ n * (X + 1) ^ (d - n)) := by
-                  rw [rdTransform_X_mul_succ]
-            _ = (X + 1) * (C a * X ^ (d - n) * (X + 1) ^ n) := by simp_all
-            _ = C a * X ^ (d + 1 - (n + 1)) * (X + 1) ^ (n + 1) := by grind
+  simp only [rdTransform, mul_comp, pow_comp, add_comp, C_comp, X_comp, one_comp]
+  rw [show (-X - 1 : ℝ[X]) = -(X + 1) by ring,
+    show (-(X + 1) + 1 : ℝ[X]) = -X by ring]
+  have hsign : (-1 : ℝ) ^ d * ((-1) ^ n * (-1) ^ (d - n)) = 1 := by
+    rw [← pow_add, Nat.add_sub_of_le hn, ← pow_add, ← two_mul, pow_mul]
+    norm_num
+  have hneg (q : ℝ[X]) (m : ℕ) : (-q) ^ m = C ((-1 : ℝ) ^ m) * q ^ m := by
+    rw [neg_pow, show (-1 : ℝ[X]) = C (-1 : ℝ) by simp, Polynomial.C_pow]
+  rw [hneg, hneg]
+  calc
+    C ((-1 : ℝ) ^ d) *
+          (C a * (C ((-1 : ℝ) ^ n) * (X + 1) ^ n) *
+            (C ((-1 : ℝ) ^ (d - n)) * X ^ (d - n))) =
+        (C ((-1 : ℝ) ^ d) *
+          (C ((-1 : ℝ) ^ n) * C ((-1 : ℝ) ^ (d - n))) * C a) *
+            X ^ (d - n) * (X + 1) ^ n := by ring
+    _ = C (((-1 : ℝ) ^ d * ((-1) ^ n * (-1) ^ (d - n))) * a) *
+          X ^ (d - n) * (X + 1) ^ n := by
+      rw [← Polynomial.C_mul, ← Polynomial.C_mul, ← Polynomial.C_mul]
+    _ = C a * X ^ (d - n) * (X + 1) ^ n := by rw [hsign, one_mul]
 
 lemma rdTransform_fPolynomial (d : ℕ) (h : ℝ[X]) :
     rdTransform d (fPolynomial d h) = fPolynomial d (idTransform d h) := by
@@ -576,25 +507,9 @@ lemma natDegree_rdDecompositionAFormula_le {d : ℕ} {p : ℝ[X]} (hd : p.natDeg
       rw [hA]
       simpa using Polynomial.natDegree_sub_le_of_le hd hXb
 
-lemma rdDecompositionBFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
-    rdTransform (d - 1) (rdDecompositionBFormula d p) = rdDecompositionBFormula d p := by
-  cases d with
-  | zero =>
-      have hp0 : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_le_zero hd
-      rw [rdDecompositionBFormula, hp0]
-      simp [rdTransform]
-  | succ n =>
-      have hpred : rdTransform n (rdTransform (n + 1) p) = -p := by
-        rw [rdTransform_succ, rdTransform_neg, rdTransform_involutive]
-      have hs : rdTransform n p = -rdTransform (n + 1) p := by
-        rw [rdTransform_succ]
-        simp
-      change rdTransform n (rdTransform (n + 1) p - p) = rdTransform (n + 1) p - p
-      rw [rdTransform_sub, hpred, hs]
-      ring
-
-lemma rdDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
-    rdTransform d (rdDecompositionAFormula d p) = rdDecompositionAFormula d p := by
+private lemma rdDecompositionFormulas_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    rdTransform d (rdDecompositionAFormula d p) = rdDecompositionAFormula d p ∧
+      rdTransform (d - 1) (rdDecompositionBFormula d p) = rdDecompositionBFormula d p := by
   cases d with
   | zero =>
       have hp0 : p = C (p.coeff 0) := Polynomial.eq_C_of_natDegree_le_zero hd
@@ -603,17 +518,31 @@ lemma rdDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤
         simp [rdTransform]
       have hA0 : rdDecompositionAFormula 0 p = p := by
         simpa [hB0] using (rdDecompositionFormula_eq_add_X_mul 0 p).symm
-      rw [hA0, hp0]
-      simp [rdTransform]
+      constructor
+      · rw [hA0, hp0]
+        simp [rdTransform]
+      · rw [hB0, rdTransform_zero]
   | succ n =>
       have hpred : rdTransform n (rdTransform (n + 1) p) = -p := by
         rw [rdTransform_succ, rdTransform_neg, rdTransform_involutive]
       have hs : rdTransform n p = -rdTransform (n + 1) p := by
         rw [rdTransform_succ]
         simp
-      rw [rdDecompositionAFormula, rdTransform_sub, rdTransform_X_add_one_mul_succ,
-        rdTransform_X_mul_succ, hpred, hs]
-      ring
+      constructor
+      · rw [rdDecompositionAFormula, rdTransform_sub, rdTransform_X_add_one_mul_succ,
+          rdTransform_X_mul_succ, hpred, hs]
+        ring
+      · change rdTransform n (rdTransform (n + 1) p - p) = rdTransform (n + 1) p - p
+        rw [rdTransform_sub, hpred, hs]
+        ring
+
+lemma rdDecompositionBFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    rdTransform (d - 1) (rdDecompositionBFormula d p) = rdDecompositionBFormula d p :=
+  (rdDecompositionFormulas_fixed hd).2
+
+lemma rdDecompositionAFormula_fixed {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
+    rdTransform d (rdDecompositionAFormula d p) = rdDecompositionAFormula d p :=
+  (rdDecompositionFormulas_fixed hd).1
 
 theorem isRdDecomposition_formula {d : ℕ} {p : ℝ[X]} (hd : p.natDegree ≤ d) :
     IsRdDecomposition d p (rdDecompositionAFormula d p) (rdDecompositionBFormula d p) := by
