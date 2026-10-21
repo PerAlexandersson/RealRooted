@@ -27,22 +27,9 @@ private theorem mw_lw_derivative_lag_den_coeff_recurrence
       U n * P (n + 1) +
         (C (c n) * V n) * (P (n + 1)).derivative +
         (C (a n) * W n) * P n := by
-  have hnorm :
-      P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * (V n * (P (n + 1)).derivative) +
-          C (a n) * (W n * P n) :=
+  simpa only [mul_assoc] using
     eq_add_C_mul_add_C_mul_of_C_mul_eq_C_mul_add_C_mul_add_C_mul
       (hden n) (hcoeffV n) (hcoeffW n) (hraw n)
-  calc
-    P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * (V n * (P (n + 1)).derivative) +
-          C (a n) * (W n * P n) := hnorm
-    _ =
-        U n * P (n + 1) +
-          (C (c n) * V n) * (P (n + 1)).derivative +
-          (C (a n) * W n) * P n := by ring
 
 private theorem mw_derivative_den_coeff_recurrence
     {P : Nat → ℝ[X]} {U V : Nat → ℝ[X]} {b c d : Nat → ℝ}
@@ -55,17 +42,8 @@ private theorem mw_derivative_den_coeff_recurrence
     (n : Nat) :
     P (n + 2) =
       U n * P (n + 1) + (C (c n) * V n) * (P (n + 1)).derivative := by
-  have hnorm :
-      P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * (V n * (P (n + 1)).derivative) :=
+  simpa only [mul_assoc] using
     eq_add_C_mul_of_C_mul_eq_C_mul_add_C_mul (hden n) (hcoeff n) (hraw n)
-  calc
-    P (n + 2) =
-        U n * P (n + 1) +
-          C (c n) * (V n * (P (n + 1)).derivative) := hnorm
-    _ =
-        U n * P (n + 1) + (C (c n) * V n) * (P (n + 1)).derivative := by ring
 
 /-- Denominator-fused combined Ma--Wang/Liu--Wang induction.
 
@@ -164,15 +142,9 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_lag_sequence_of_nonneg_coeffs
-    (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos hnonneg
-    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
-    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
-      (hc n) (hV_nonpos n r hr))
-    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
-      (ha n) (hW_nonpos n r hr))
-    hdeg_succ hno
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_lag_sequence_den_coeff_of_nonneg_coeffs
+      hbase hpos hnonneg hc ha hV_nonpos hW_nonpos hden hcoeffV hcoeffW hraw hdeg_succ hno)
 
 /-- Real-rootedness corollary for denominator-fused combined Ma--Wang/Liu--Wang
 induction with explicit root-window sign certificates. -/
@@ -202,16 +174,10 @@ theorem isRealRooted_of_derivative_lag_sequence_den_coeff_of_root_window
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  LiuWang.isRealRooted_of_derivative_lag_sequence_of_root_window
-    (U := U) (V := fun n => C (c n) * V n) (W := fun n => C (a n) * W n)
-    hbase hpos
-    (mw_lw_derivative_lag_den_coeff_recurrence hden hcoeffV hcoeffW hraw)
-    hroot_lower hroot_upper
-    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
-      (hc n) (hV_nonpos n r hr hlo hhi))
-    (fun n r hr hlo hhi => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
-      (ha n) (hW_nonpos n r hr hlo hhi))
-    hdeg_succ hno
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_lag_sequence_den_coeff_of_root_window
+      hbase hpos hc ha hroot_lower hroot_upper hV_nonpos hW_nonpos hden hcoeffV hcoeffW
+      hraw hdeg_succ hno)
 
 /-- Denominator-fused nonpositive-factor Ma--Wang induction with
 nonnegative coefficients.
@@ -261,12 +227,9 @@ theorem isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (U := U) (V := fun n => C (c n) * V n) hbase hpos hnonneg
-    (fun n r hr => eval_C_mul_nonpos_of_nonneg_of_eval_nonpos
-      (hc n) (hV_nonpos n r hr))
-    (mw_derivative_den_coeff_recurrence hden hcoeff hraw)
-    hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
+      hbase hpos hnonneg hc hV_nonpos hden hcoeff hraw hdeg_lo hdeg_hi)
 
 /-- Sequence-level `X Q_n P'` Ma--Wang wrapper.  The current-row root bound is
 derived internally from nonnegative coefficients; the remaining input is the
@@ -303,11 +266,9 @@ theorem isRealRooted_of_derivative_X_mul_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => X * Q n) hbase hpos hnonneg
-    (fun n r hr hroot_nonpos =>
-      eval_X_mul_nonpos_of_nonpos_of_nonneg hroot_nonpos (hQ_nonneg n r hr))
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_X_mul_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hQ_nonneg hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `c_n X Q_n P'` Ma--Wang wrapper. -/
 theorem strictInterl_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
@@ -345,12 +306,9 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * Q n) hbase hpos hnonneg
-    (fun n r hr hroot_nonpos =>
-      eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
-        (hc n) hroot_nonpos (hQ_nonneg n r hr))
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hQ_nonneg hrec hdeg_lo hdeg_hi)
 
 /-- Denominator-fused `c_n X Q_n P'` Ma--Wang induction with nonnegative
 coefficients.
@@ -401,13 +359,9 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coef
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_C_mul_X_mul_sequence_of_nonneg_coeffs
-    (U := U) (Q := Q) (c := c) hbase hpos hnonneg hc hQ_nonneg
-    (fun n => by
-      simpa only [mul_assoc] using
-        mw_derivative_den_coeff_recurrence
-          (P := P) (U := U) (V := fun n => X * Q n) hden hcoeff hraw n)
-    hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_C_mul_X_mul_sequence_den_coeff_of_nonneg_coeffs
+      hbase hpos hnonneg hc hQ_nonneg hden hcoeff hraw hdeg_lo hdeg_hi)
 
 /-- Sequence-level `X P'` Ma--Wang wrapper.  The current-row root bound is
 derived internally from nonnegative coefficients. -/
@@ -437,10 +391,9 @@ theorem isRealRooted_of_derivative_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun _ => X) hbase hpos hnonneg
-    (fun _ _ hroot_nonpos => eval_X_nonpos_of_nonpos hroot_nonpos)
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_X_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `c_n X P'` Ma--Wang wrapper for positive-constant MW2
 derivative coefficients. -/
@@ -474,11 +427,9 @@ theorem isRealRooted_of_derivative_C_mul_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X) hbase hpos hnonneg
-    (fun n _ hroot_nonpos =>
-      eval_C_mul_X_nonpos_of_nonneg_of_nonpos (hc n) hroot_nonpos)
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_C_mul_X_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `X(1+X) P'` Ma--Wang wrapper for inner-window roots.
 The upper bound `r <= 0` is derived from nonnegative coefficients, while the
@@ -513,11 +464,9 @@ theorem isRealRooted_of_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun _ => X * (1 + X)) hbase hpos hnonneg
-    (fun n r hr hroot_nonpos =>
-      eval_X_mul_one_add_X_nonpos_of_mem_Icc (hroot_lower n r hr) hroot_nonpos)
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_X_mul_one_add_X_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hroot_lower hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `c_n X(1+X) P'` Ma--Wang wrapper for inner-window roots. -/
 theorem strictInterl_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
@@ -555,12 +504,9 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coef
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs_on_roots
-    (V := fun n => C (c n) * X * (1 + X)) hbase hpos hnonneg
-    (fun n r hr hroot_nonpos =>
-      eval_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_mem_Icc
-        (hc n) (hroot_lower n r hr) hroot_nonpos)
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_C_mul_X_mul_one_add_X_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hroot_lower hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `-c_n X(1+X) P'` Ma--Wang wrapper for outer-window roots. -/
 theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_sequence
@@ -597,11 +543,9 @@ theorem isRealRooted_of_derivative_neg_C_mul_X_mul_one_add_X_sequence
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence hbase hpos
-    (fun n r hr =>
-      eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
-        (hc n) (hroot_upper n r hr))
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_neg_C_mul_X_mul_one_add_X_sequence
+      hbase hpos hc hroot_upper hrec hdeg_lo hdeg_hi)
 
 /-- Sequence-level `c_n X(1-X) P'` Ma--Wang wrapper where nonpositive roots of
 the current row are derived internally from nonnegative coefficients. -/
@@ -637,11 +581,9 @@ theorem isRealRooted_of_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coef
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_nonpos_sequence_of_nonneg_coeffs
-    (V := fun n => C (c n) * X * (1 - X)) hbase hpos hnonneg
-    (fun n _ hr =>
-      eval_C_mul_X_mul_one_sub_X_nonpos_of_nonneg_of_nonpos (hc n) hr)
-    hrec hdeg_lo hdeg_hi
+  isRealRooted_of_strictInterl_chain hbase
+    (strictInterl_derivative_C_mul_X_mul_one_sub_X_sequence_of_nonneg_coeffs
+      hbase hpos hnonneg hc hrec hdeg_lo hdeg_hi)
 
 end RealRooted.MaWang
 
