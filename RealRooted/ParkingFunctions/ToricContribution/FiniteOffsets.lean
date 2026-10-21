@@ -55,7 +55,7 @@ private theorem diagonalEigenvalue_pos
 theorem IntervalRootData.roots_sort_length
     {p : ℝ[X]} {n : ℕ} (hp : IntervalRootData p n) :
     (p.roots.sort (· ≤ ·)).length = n := by
-  rw [Multiset.length_sort, card_roots_of_splits hp.splits,
+  rw [Multiset.length_sort, Polynomial.splits_iff_card_roots.mp hp.splits,
     hp.natDegree_eq]
 
 theorem IntervalRootData.orderedRoot_isRoot

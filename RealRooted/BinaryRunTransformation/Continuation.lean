@@ -623,9 +623,12 @@ private theorem isPFPolynomial_binaryRunTransform_of_le_three
         mul_nonneg (hp.hasNonnegCoeffs 1) htail,
         sq_nonneg (2 * p.coeff 2 / 3 + p.coeff 3)]
     have hqSplit : q.Splits := by
-      apply splits_of_natDegree_le_two_of_discrim_nonneg hqdeg
-      unfold discrim
-      nlinarith
+      by_cases hq2 : q.natDegree = 2
+      · apply splits_of_natDegree_eq_two_of_discrim_nonneg hq2
+        unfold discrim
+        nlinarith
+      · apply Polynomial.Splits.of_natDegree_le_one
+        lia
     exact IsPFPolynomial.of_realRooted_nonneg hqnn hqSplit
   · have hn2 : n ≤ 2 := by lia
     apply IsPFPolynomial.of_realRooted_nonneg hqnn

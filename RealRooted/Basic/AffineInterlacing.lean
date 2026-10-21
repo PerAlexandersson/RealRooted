@@ -74,11 +74,11 @@ lemma interlaces_comp_neg_X {g f : ℝ[X]} (h : Interlaces g f) :
       _ = Multiset.map Neg.neg g.roots := by rw [hgsr]
   · have hrslen : rs.length = f.natDegree := by
       have hc : (↑rs : Multiset ℝ).card = f.natDegree := by
-        rw [hfr, card_roots_of_splits hfs]
+        rw [hfr, Polynomial.splits_iff_card_roots.mp hfs]
       simpa using hc
     have hsslen : ss.length = g.natDegree := by
       have hc : (↑ss : Multiset ℝ).card = g.natDegree := by
-        rw [hgsr, card_roots_of_splits hgs]
+        rw [hgsr, Polynomial.splits_iff_card_roots.mp hgs]
       simpa using hc
     exact interlaces_reverse_map_neg hlist (by lia)
 

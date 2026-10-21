@@ -241,11 +241,4 @@ theorem StrictInterl.add_mul_X_of_common_left {h u v : ℝ[X]} {c : ℝ}
     · simp
   simpa only [List.sum_cons, List.sum_nil, add_zero, mul_assoc] using hsum
 
-/-- Lag insertion through multiplication by `X`, in the orientation used by
-positive-lag window recurrences. -/
-theorem StrictInterl.insert_X_lag_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g) :
-    StrictInterl g (X * f) :=
-  strictInterl_mul_X_of_strictInterl_of_nonneg h hf hg
-
 end RealRooted

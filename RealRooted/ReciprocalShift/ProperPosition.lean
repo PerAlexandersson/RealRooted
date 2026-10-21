@@ -54,9 +54,9 @@ theorem reciprocalShift_reverses_strictInterl
     · grind
   refine ⟨hrecipQ, hrecipP, SSout, RSout, hSSsorted, hRSsorted, hSSroots, hRSroots, ?_⟩
   have hss_length : ss.length = p.natDegree := by
-    rw [← Multiset.coe_card, hss_roots, card_roots_of_splits hp_splits]
+    rw [← Multiset.coe_card, hss_roots, Polynomial.splits_iff_card_roots.mp hp_splits]
   have hrs_length : rs.length = q.natDegree := by
-    rw [← Multiset.coe_card, hrs_roots, card_roots_of_splits hq_splits]
+    rw [← Multiset.coe_card, hrs_roots, Polynomial.splits_iff_card_roots.mp hq_splits]
   set ssneg := ss.filter (fun r ↦ decide (r ≠ 0)) with hssneg
   set rsneg := rs.filter (fun r ↦ decide (r ≠ 0)) with hrsneg
   set zp := ss.count (0 : ℝ) with hzp

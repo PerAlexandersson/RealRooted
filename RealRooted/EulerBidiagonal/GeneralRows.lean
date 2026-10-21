@@ -25,7 +25,7 @@ def generalRows (κ a b u v : ℝ) : ℕ → ℝ[X]
 theorem strictInterl_one_of_natDegree_eq_one {p : ℝ[X]} (hp : p ≠ 0) (hps : p.Splits)
     (hdeg : p.natDegree = 1) : StrictInterl (1 : ℝ[X]) p := by
   have hcard : Multiset.card p.roots = 1 := by
-    rw [card_roots_of_splits hps, hdeg]
+    rw [Polynomial.splits_iff_card_roots.mp hps, hdeg]
   obtain ⟨r, hr⟩ := Multiset.card_eq_one.mp hcard
   refine ⟨⟨one_ne_zero, Splits.one⟩, ⟨hp, hps⟩, [], [r], by simp, by simp, ?_, ?_, ?_⟩
   · simp

@@ -66,7 +66,7 @@ lemma hasNonnegCoeffs_fPolynomial {d : ℕ} {h : ℝ[X]} (hh : HasNonnegCoeffs h
   unfold fPolynomial
   apply hasNonnegCoeffs_finsetSum
   intro k _
-  simpa [mul_assoc] using nonnegCoeffs_C_mul (hh k)
+  simpa [mul_assoc] using hasNonnegCoeffs_C_mul (hh k)
     ((hasNonnegCoeffs_X.pow k).mul
       (hasNonnegCoeffs_X_add_one.pow (d - k)))
 
@@ -341,7 +341,7 @@ theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.S
         rw [hpC]
         simp [fPolynomial]
       · have hroots_pos : 0 < p.roots.card := by
-          rw [card_roots_of_splits hp.2, hpdeg]
+          rw [Polynomial.splits_iff_card_roots.mp hp.2, hpdeg]
           lia
         obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hr_root : p.IsRoot r := (mem_roots hp.1).mp hr_mem
@@ -372,8 +372,8 @@ theorem roots_fPolynomial_natDegree_eq_map {p : ℝ[X]} (hp : p ≠ 0) (hs : p.S
         have hqf_ne : fPolynomial q.natDegree q ≠ 0 :=
           fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hq1
         have hqf_splits : (fPolynomial q.natDegree q).Splits := by
-          apply splits_of_card_roots
-          rw [ihq, Multiset.card_map, card_roots_of_splits hq_rr.2,
+          apply Polynomial.splits_iff_card_roots.mpr
+          rw [ihq, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hq_rr.2,
             natDegree_fPolynomial_natDegree hq1]
         have h1r_ne : 1 - r ≠ 0 := by grind
         have hroots_f :
@@ -535,14 +535,14 @@ private lemma StrictInterl.fPolynomial_natDegree_of_root_property {P : ℝ → P
   have hgdeg := natDegree_fPolynomial_natDegree hg₁
   have hfr : fPolynomial f.natDegree f ≠ 0 ∧ (fPolynomial f.natDegree f).Splits := by
     refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hf₁, ?_⟩
-    apply splits_of_card_roots
+    apply Polynomial.splits_iff_card_roots.mpr
     rw [roots_fPolynomial_natDegree_eq_map hf₀.1 hf₀.2 hf₁, Multiset.card_map,
-      card_roots_of_splits hf₀.2, hfdeg]
+      Polynomial.splits_iff_card_roots.mp hf₀.2, hfdeg]
   have hgr : fPolynomial g.natDegree g ≠ 0 ∧ (fPolynomial g.natDegree g).Splits := by
     refine ⟨fPolynomial_ne_zero_of_ne_zero_of_not_isRoot_one hg₁, ?_⟩
-    apply splits_of_card_roots
+    apply Polynomial.splits_iff_card_roots.mpr
     rw [roots_fPolynomial_natDegree_eq_map hg₀.1 hg₀.2 hg₁, Multiset.card_map,
-      card_roots_of_splits hg₀.2, hgdeg]
+      Polynomial.splits_iff_card_roots.mp hg₀.2, hgdeg]
   have hss_bound : ∀ r ∈ ss, P r := by
     intro r hr
     exact hf r (hss_eq ▸ Multiset.mem_coe.mpr hr)
@@ -727,7 +727,7 @@ theorem splits_fPolynomial {d : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ d) (h
       by_cases hp0 : p = 0
       · simp [hp0]
       have hcard : 0 < p.roots.card := by
-        rw [card_roots_of_splits hp]
+        rw [Polynomial.splits_iff_card_roots.mp hp]
         lia
       obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hcard
       obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr ((mem_roots hp0).mp hr)
@@ -803,7 +803,7 @@ private theorem isRealRooted_of_fPolynomial_natDegree_roots_gt_neg_one
       by_cases hn : n = 0
       · exact isRealRooted_of_deg_zero hp0 (by lia)
       · have hroots_pos : 0 < (fPolynomial n p).roots.card := by
-          rw [card_roots_of_splits hq_rr.2, hqdeg]
+          rw [Polynomial.splits_iff_card_roots.mp hq_rr.2, hqdeg]
           lia
         obtain ⟨x, hx_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hx_root : (fPolynomial n p).IsRoot x := (mem_roots hq_rr.1).mp hx_mem

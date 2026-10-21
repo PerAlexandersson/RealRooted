@@ -34,7 +34,7 @@ theorem hasNonnegCoeffs_cayleyTransform_of_roots_mem_Icc
     (hroots : ∀ r ∈ p.roots, r ∈ Set.Icc (-1 : ℝ) 0) :
     HasNonnegCoeffs (p.cayleyTransform n) := by
   rw [Polynomial.cayleyTransform_eq_rootFactorProduct hp hdeg]
-  apply nonnegCoeffs_C_mul hlead
+  apply hasNonnegCoeffs_C_mul hlead
   apply hasNonnegCoeffs_multisetProd
   intro q hq
   obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hq

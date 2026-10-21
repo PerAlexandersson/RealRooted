@@ -88,9 +88,9 @@ private theorem strictInterl_sub_X_mul_core {f g : ℝ[X]}
       intro hfq
       rcases hfq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+        rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
       have hrs_len : rs.length = q.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+        rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hq.2]
       lia
     have hqf : StrictInterl q f := by
       rcases hstrictInterl_or with hqf | hfq
@@ -113,9 +113,9 @@ private theorem strictInterl_sub_X_mul_core {f g : ℝ[X]}
       intro hXgq
       rcases hXgq with ⟨_, _, ss, rs, _, _, hss_eq, hrs_eq, hshape⟩
       have hss_len : ss.length = (X * g).natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hXg.2]
+        rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hXg.2]
       have hrs_len : rs.length = q.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2]
+        rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hq.2]
       lia
     have hstrictInterl_qXg : StrictInterl q (X * g) := by
       rcases hstrictInterl_qXg_or with hqXg | hXgq

@@ -448,9 +448,7 @@ lemma strictInterl_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
 lemma strictInterl_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
     StrictInterl (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
-  (strictInterl_affine_sturmDerangementsExc hn hrr).mul_X_both_of_nonneg
-    (affine_sturmDerangementsExc_nonnegCoeffs hn)
-    (sturmDerangementsExc_nonnegCoeffs n)
+  by simpa using (strictInterl_affine_sturmDerangementsExc hn hrr).mul_X_sub_C_both 0
 
 lemma strictInterl_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     (hstrictInterl : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
@@ -461,9 +459,8 @@ lemma strictInterl_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
     strictInterl_lowerTerm_sturmDerangementsExc (by lia) hstrictInterl
   have hlower_nonneg :
       HasNonnegCoeffs (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
-    nonnegCoeffs_C_mul (by positivity) (sturmDerangementsExc_nonnegCoeffs (n - 1))
-  exact hlower.mul_X_both_of_nonneg hlower_nonneg
-    (sturmDerangementsExc_nonnegCoeffs n)
+    hasNonnegCoeffs_C_mul (by positivity) (sturmDerangementsExc_nonnegCoeffs (n - 1))
+  simpa using hlower.mul_X_sub_C_both 0
 
 /-- The two inner summands in the derangement recurrence both precede `X * P_n`.
 This matches the main induction-step input in the human proof. -/

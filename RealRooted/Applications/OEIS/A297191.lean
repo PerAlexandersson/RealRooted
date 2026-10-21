@@ -356,7 +356,7 @@ end
 section
 open Real
 
-private lemma splits_of_card_roots_finset (p : ℝ[X]) (hp : p ≠ 0) (S : Finset ℝ)
+private lemma Polynomial.splits_iff_card_roots.mpr_finset (p : ℝ[X]) (hp : p ≠ 0) (S : Finset ℝ)
     (hS : ∀ r ∈ S, p.IsRoot r) (hcard : p.natDegree ≤ S.card) : p.Splits := by
   rw [splits_iff_card_roots]
   have h1 : S.card ≤ p.roots.card := by
@@ -461,7 +461,7 @@ private lemma isRoot_polynomial_ang (n k : ℕ) (hk : k < 2 * n) :
 `R_{n+2} = (u+4) R_{n+1} - R_n`, a Chebyshev-type recurrence in `w = (u+4)/2`: `R_n = U_n(w) -
 U_{n-1}(w)`.  Roots: `X + 1/X = 2 cos θ - 4` with `θ = (2k+1)π/(2n+1)`.) -/
 theorem splits_polynomial (n : ℕ) : (polynomial n).Splits := by
-  refine splits_of_card_roots_finset _ (monic_natDegree_polynomial n).1.ne_zero
+  refine Polynomial.splits_iff_card_roots.mpr_finset _ (monic_natDegree_polynomial n).1.ne_zero
     ((Finset.range (2 * n)).image (fun k => xpar (ang n k))) ?_ ?_
   · intro r hr
     obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hr
@@ -675,7 +675,7 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     rw [Finset.disjoint_left]
     intro r h1 h2
     linarith [(hSL r h1).2.2, (hSR r h2).2.1]
-  refine splits_of_card_roots_finset G hG0 (SL ∪ SR) ?_ ?_
+  refine Polynomial.splits_iff_card_roots.mpr_finset G hG0 (SL ∪ SR) ?_ ?_
   · intro r hr
     rcases Finset.mem_union.1 hr with h | h
     · exact (hSL r h).1
@@ -773,7 +773,7 @@ theorem hasSimpleRoots_polynomial (n : ℕ) : HasSimpleRoots (polynomial n) := b
 
 /-- Row `n` has exactly `2n` roots, counted with multiplicity. -/
 theorem roots_card_polynomial (n : ℕ) : (polynomial n).roots.card = 2 * n := by
-  rw [card_roots_of_splits (splits_polynomial n), natDegree_polynomial]
+  rw [Polynomial.splits_iff_card_roots.mp (splits_polynomial n), natDegree_polynomial]
 
 
 /-- The A054142 gamma polynomial whose transform is the A297191 row. -/

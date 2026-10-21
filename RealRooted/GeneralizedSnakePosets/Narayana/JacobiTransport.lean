@@ -297,8 +297,7 @@ theorem narayanaDifference_modified_natDegree {n : ℕ} (hn : 1 ≤ n) :
       modifiedNarayanaPolynomial_natDegree]
     lia
   simpa [modifiedNarayanaPolynomial_natDegree] using
-    natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg
-      (modifiedNarayanaPolynomial_posLeadingCoeff n)
+    Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg
 
 /-- The named difference `Q_n = P_n - P_{n-1}` has positive leading
 coefficient for the concrete modified Narayana family. -/
@@ -344,7 +343,7 @@ private theorem affineLinear_natDegree_of_lam_pos
     rw [Polynomial.natDegree_C, Polynomial.natDegree_C_mul hlam.ne',
       Polynomial.natDegree_X]
     norm_num
-  rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hdeg hCX_pos,
+  rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg,
     Polynomial.natDegree_C_mul hlam.ne', Polynomial.natDegree_X]
 
 private theorem affineLinear_posLeadingCoeff_of_lam_pos
@@ -413,7 +412,7 @@ theorem modifiedNarayana_linear_hasNonnegCoeffs
     HasNonnegCoeffs
       ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1)) := by
   have hlin : HasNonnegCoeffs (C lam * X + C mu : ℝ[X]) :=
-    (nonnegCoeffs_C_mul hlam hasNonnegCoeffs_X).add (hasNonnegCoeffs_C hmu)
+    (hasNonnegCoeffs_C_mul hlam hasNonnegCoeffs_X).add (hasNonnegCoeffs_C hmu)
   exact hlin.mul (modifiedNarayanaPolynomial_hasNonnegCoeffs (m - 1))
 
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has
@@ -497,7 +496,7 @@ theorem affineModifiedNarayanaShifted_left_natDegree
       rw [hQ_deg]
       exact lt_of_le_of_lt hA_le (Nat.sub_one_lt (Nat.ne_of_gt hm))
     simpa [hQ_deg] using
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff hA_lt hQ_pos
+      Polynomial.natDegree_add_eq_right_of_natDegree_lt hA_lt
 
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma is nonzero.
 -/

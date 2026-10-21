@@ -248,8 +248,9 @@ theorem exists_isPFPolynomial_not_interl_iterateThetaPlusOne :
   -- the least root of `q` would lie below the largest root of `p`
   obtain ⟨-, hright⟩ := (strictInterl_iff_orderedRoot_bounds h.1.1 h.1.2 h.2.1.1 h.2.1.2
     hpdeg hqdeg).mp h
-  have hpr := orderedRoot_mem_roots ((card_roots_of_splits h.1.2).trans hpdeg) ⟨1, by norm_num⟩
-  have hqr := orderedRoot_mem_roots ((card_roots_of_splits h.2.1.2).trans hqdeg) 0
+  have hpr := orderedRoot_mem_roots
+    ((Polynomial.splits_iff_card_roots.mp h.1.2).trans hpdeg) ⟨1, by norm_num⟩
+  have hqr := orderedRoot_mem_roots ((Polynomial.splits_iff_card_roots.mp h.2.1.2).trans hqdeg) 0
   have hle := hright 0 (by norm_num)
   rw [mem_roots h.1.1, IsRoot.def] at hpr
   rw [mem_roots h.2.1.1, IsRoot.def] at hqr

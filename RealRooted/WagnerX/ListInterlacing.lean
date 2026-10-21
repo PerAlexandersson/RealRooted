@@ -21,21 +21,6 @@ namespace RealRooted
 /-! ## List-level lemmas for interlacing -/
 
 /-- Every element of `ss` is `≥` the first element of `rs` in a ListInterlaces. -/
-lemma listInterlaces_all_ge :
-    ∀ (ss rs : List ℝ) (r : ℝ),
-    ListInterlaces ss (r :: rs) →
-    ∀ s ∈ ss, r ≤ s
-  | [], _, _, _ => by simp
-  | [s], [], r, hint => by simp [ListInterlaces] at hint
-  | s :: ss', r₁ :: rs', r, hint => by
-    obtain ⟨hr, hsr₁, htail⟩ := hint
-    intro s' hs'
-    rcases List.mem_cons.mp hs' with rfl | hs''
-    · lia
-    · exact le_trans (le_trans hr hsr₁) (listInterlaces_all_ge ss' rs' r₁ htail s' hs'')
-  | _ :: _ :: _, [], _, hint => by simp [ListInterlaces] at hint
-
-/-- All elements of `rs` in a `ListInterlaces ss (r :: rs)` are `≥ r`. -/
 lemma listInterlaces_rs_all_ge :
     ∀ (ss rs : List ℝ) (r : ℝ),
     ListInterlaces ss (r :: rs) →
@@ -52,7 +37,7 @@ lemma listInterlaces_rs_all_ge :
 
 /-- The tail factors in a differ-by-one interlacing layout are all
 nonnegative when paired against two ordered right-hand points. -/
-lemma listInterlaces_tail_pair_prod_nonneg :
+private lemma listInterlaces_tail_pair_prod_nonneg :
     ∀ {ss : List ℝ} {r₁ r₂ : ℝ} {rest : List ℝ},
       r₁ ≤ r₂ →
       ListInterlaces ss (r₂ :: rest) →
@@ -86,18 +71,6 @@ lemma listInterlaces_prod_mul_prod_nonpos_at_heads
     _ ≤ 0 := mul_nonpos_of_nonpos_of_nonneg hs_head_nonpos htail_nonneg'
 
 /-- A list satisfying `ListInterlaces ss rs` is sorted (pairwise ≤). -/
-lemma pairwise_le_of_listInterlaces :
-    ∀ (ss rs : List ℝ), ListInterlaces ss rs → ss.Pairwise (· ≤ ·)
-  | [], _, _ => List.Pairwise.nil
-  | [_], _, _ => List.pairwise_singleton _ _
-  | s₁ :: s₂ :: ss', r₁ :: r₂ :: rs', h => by
-      obtain ⟨_, hs₁r₂, htail⟩ := h
-      refine List.pairwise_cons.mpr ⟨?_, pairwise_le_of_listInterlaces _ _ htail⟩
-      intro s hs
-      exact le_trans hs₁r₂ (listInterlaces_all_ge (s₂ :: ss') rs' r₂ htail s hs)
-  | _ :: _ :: _, [], h => by simp [ListInterlaces] at h
-  | _ :: _ :: _, [_], h => by simp [ListInterlaces] at h
-
 lemma orderedInsert_eq_cons_of_forall_le {a : ℝ} :
     ∀ {l : List ℝ}, (∀ b ∈ l, a ≤ b) → l.orderedInsert (· ≤ ·) a = a :: l
   | [], _ => by simp
@@ -307,7 +280,7 @@ lemma listInterlaces_of_listAlternates_append_zero :
       exact listInterlaces_of_listAlternates_append_zero (s' :: ss'') (r₂ :: rs'')
         (by simp_all) (by simp only [ListAlternates, List.cons_append]; lia)
 
-lemma listInterlaces_of_listAlternates_append_right
+private lemma listInterlaces_of_listAlternates_append_right
     {ss qs : List ℝ} {uR : ℝ}
     (hlen : qs.length + 1 = ss.length)
     (halt : ListAlternates ss (qs ++ [uR])) :
@@ -334,7 +307,7 @@ lemma interlaces_of_strictInterl_sameDegree_rightmost_factor
   obtain ⟨ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, halt⟩ :=
     hfg.exists_listAlternates_of_natDegree_eq hdeg
   have hss_len : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hfg.1.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hfg.1.2]
   have hq_ne : q ≠ 0 := right_ne_zero_of_mul (by rw [← hgq]; exact hfg.2.1.1)
   have hq : q ≠ 0 ∧ q.Splits := by
     apply isRealRooted_of_dvd hfg.2.1.1 hfg.2.1.2 hq_ne
@@ -347,7 +320,7 @@ lemma interlaces_of_strictInterl_sameDegree_rightmost_factor
   have hqs_eq : (↑qs : Multiset ℝ) = q.roots := Multiset.sort_eq ..
   have hqs_sorted : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hqs_len : qs.length = q.natDegree := by
-    simp [qs, card_roots_of_splits hq.2]
+    simp [qs, Polynomial.splits_iff_card_roots.mp hq.2]
   have hqs_le_uR : ∀ r ∈ qs, r ≤ uR :=
     fun r hr => hright r (by
       rw [hgq, roots_mul (mul_ne_zero (X_sub_C_ne_zero uR) hq_ne), roots_X_sub_C]
@@ -436,5 +409,85 @@ lemma listAlternates_of_append_zero_both :
       exact listInterlaces_of_append_zero_both ss' (r :: rs') (by simp_all) halt.2
   | [], _ :: _, hlen, _ => by simp at hlen
   | _ :: _, [], hlen, _ => by simp at hlen
+
+private lemma coe_orderedInsert_eq_roots_mul_X_sub_C {p : ℝ[X]} (hp : p ≠ 0)
+    {ss : List ℝ} (hss : (↑ss : Multiset ℝ) = p.roots) (r : ℝ) :
+    (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * p).roots := by
+  have hinsert :
+      (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ({r} : Multiset ℝ) + ↑ss := by
+    calc
+      (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ↑(r :: ss) :=
+        Multiset.coe_eq_coe.mpr (List.perm_orderedInsert (r := (· ≤ ·)) r ss)
+      _ = ({r} : Multiset ℝ) + ↑ss := by simp
+  have hroots : ({r} : Multiset ℝ) + ↑ss = ((X - C r) * p).roots := by
+    rw [hss]
+    simpa [roots_X_sub_C] using
+      (roots_mul (mul_ne_zero (X_sub_C_ne_zero r) hp)).symm
+  exact hinsert.trans hroots
+
+/-- Multiplying both polynomials by the same affine factor preserves strict
+interlacing. -/
+theorem StrictInterl.mul_X_sub_C_both {f g : ℝ[X]} (h : StrictInterl f g) (r : ℝ) :
+    StrictInterl ((X - C r) * f) ((X - C r) * g) := by
+  rcases h with ⟨hf, hg, ss, rs, hss, hrs, hss_eq, hrs_eq, hcase⟩
+  refine ⟨isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hf.1 hf.2,
+    isRealRooted_mul (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2 hg.1 hg.2,
+    ss.orderedInsert (· ≤ ·) r, rs.orderedInsert (· ≤ ·) r,
+    hss.orderedInsert _ _, hrs.orderedInsert _ _, ?_, ?_, ?_⟩
+  · exact coe_orderedInsert_eq_roots_mul_X_sub_C hf.1 hss_eq r
+  · exact coe_orderedInsert_eq_roots_mul_X_sub_C hg.1 hrs_eq r
+  · rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+    · refine Or.inl ⟨?_, listInterlaces_orderedInsert hlen hint r⟩
+      rw [List.orderedInsert_length (r := (· ≤ ·)) ss r,
+        List.orderedInsert_length (r := (· ≤ ·)) rs r]
+      lia
+    · exact Or.inr ⟨by
+        rw [List.orderedInsert_length (r := (· ≤ ·)) ss r,
+          List.orderedInsert_length (r := (· ≤ ·)) rs r]
+        lia,
+        listAlternates_orderedInsert hlen halt r⟩
+
+/-- Cancelling a common affine factor preserves strict interlacing. -/
+theorem StrictInterl.of_mul_X_sub_C_both {f g : ℝ[X]} {r : ℝ}
+    (h : StrictInterl ((X - C r) * f) ((X - C r) * g)) :
+    StrictInterl f g := by
+  rcases h with
+    ⟨hXf, hXg, ss_mul, rs_mul, hss_mul, hrs_mul, hss_mul_eq, hrs_mul_eq, hcase⟩
+  have hf0 : f ≠ 0 := right_ne_zero_of_mul hXf.1
+  have hg0 : g ≠ 0 := right_ne_zero_of_mul hXg.1
+  have hf : f ≠ 0 ∧ f.Splits :=
+    ⟨hf0, hXf.2.of_dvd hXf.1 (dvd_mul_left f _)⟩
+  have hg : g ≠ 0 ∧ g.Splits :=
+    ⟨hg0, hXg.2.of_dvd hXg.1 (dvd_mul_left g _)⟩
+  set ss := f.roots.sort (· ≤ ·)
+  set rs := g.roots.sort (· ≤ ·)
+  have hss_eq : (↑ss : Multiset ℝ) = f.roots := Multiset.sort_eq ..
+  have hrs_eq : (↑rs : Multiset ℝ) = g.roots := Multiset.sort_eq ..
+  have hss_sorted : ss.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
+  have hss_insert_eq :
+      (↑(ss.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * f).roots :=
+    coe_orderedInsert_eq_roots_mul_X_sub_C hf.1 hss_eq r
+  have hrs_insert_eq :
+      (↑(rs.orderedInsert (· ≤ ·) r) : Multiset ℝ) = ((X - C r) * g).roots :=
+    coe_orderedInsert_eq_roots_mul_X_sub_C hg.1 hrs_eq r
+  have hss_mul_is : ss_mul = ss.orderedInsert (· ≤ ·) r :=
+    List.Perm.eq_of_pairwise' hss_mul (hss_sorted.orderedInsert _ _)
+      (Multiset.coe_eq_coe.mp (hss_mul_eq.trans hss_insert_eq.symm))
+  have hrs_mul_is : rs_mul = rs.orderedInsert (· ≤ ·) r :=
+    List.Perm.eq_of_pairwise' hrs_mul (hrs_sorted.orderedInsert _ _)
+      (Multiset.coe_eq_coe.mp (hrs_mul_eq.trans hrs_insert_eq.symm))
+  refine ⟨hf, hg, ss, rs, hss_sorted, hrs_sorted, hss_eq, hrs_eq, ?_⟩
+  rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+  · rw [hss_mul_is, hrs_mul_is] at hint hlen
+    have hlen' : ss.length + 1 = rs.length := by
+      simp only [List.orderedInsert_length] at hlen
+      lia
+    exact Or.inl ⟨hlen', listInterlaces_of_orderedInsert r hlen' hss_sorted hrs_sorted hint⟩
+  · rw [hss_mul_is, hrs_mul_is] at halt hlen
+    have hlen' : ss.length = rs.length := by
+      simp only [List.orderedInsert_length] at hlen
+      lia
+    exact Or.inr ⟨hlen', listAlternates_of_orderedInsert r hlen' hss_sorted hrs_sorted halt⟩
 
 end RealRooted

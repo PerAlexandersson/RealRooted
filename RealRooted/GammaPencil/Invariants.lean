@@ -196,7 +196,7 @@ theorem gammaPencil_hasNonnegCoeffs_add_two {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :
     HasNonnegCoeffs (gammaPencil a (n + 2)) := by
   rw [gammaPencil, Polynomial.smul_eq_C_mul]
   exact (gammaU_hasNonnegCoeffs_add_two n).add
-    (nonnegCoeffs_C_mul ha (gammaV_hasNonnegCoeffs_add_two n))
+    (hasNonnegCoeffs_C_mul ha (gammaV_hasNonnegCoeffs_add_two n))
 
 theorem gammaPencil_natDegree_le_add_two (a : ℝ) (n : ℕ) :
     (gammaPencil a (n + 2)).natDegree ≤ (n + 2) / 2 := by

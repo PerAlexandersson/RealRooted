@@ -34,9 +34,9 @@ theorem StrictInterl.eq_of_sameDegree_of_leadingCoeff_eq_of_roots_sum_eq
   rcases hstrictInterl with ⟨hf, hg, ss, rs, _hss_sorted, _hrs_sorted,
     hss_eq, hrs_eq, hshape⟩
   have hlen_ss : ss.length = f.natDegree := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hlen_rs : rs.length = g.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have halt : ListAlternates ss rs := by simp_all
   have hlist : ss = rs := by
     apply list_eq_of_forall₂_le_of_sum_ge (listAlternates_forall₂_le halt)

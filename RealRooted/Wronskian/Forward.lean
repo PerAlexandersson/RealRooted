@@ -114,10 +114,10 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
   have hp_deg : p.natDegree = n + 1 := hp_deg_succ
   have hss_len : ss.length = n := by
     have h1 : (↑ss : Multiset ℝ).card = q.roots.card := congrArg Multiset.card hss_coe
-    rwa [Multiset.coe_card, card_roots_of_splits hq_splits] at h1
+    rwa [Multiset.coe_card, Polynomial.splits_iff_card_roots.mp hq_splits] at h1
   have hrs_len : rs.length = n + 1 := by
     have h1 : (↑rs : Multiset ℝ).card = p.roots.card := congrArg Multiset.card hrs_coe
-    rwa [Multiset.coe_card, card_roots_of_splits hp_splits, hp_deg] at h1
+    rwa [Multiset.coe_card, Polynomial.splits_iff_card_roots.mp hp_splits, hp_deg] at h1
   have hinter : ListInterlaces ss rs := by
     rcases hbranch with ⟨_, h⟩ | ⟨hl, _⟩
     · exact h

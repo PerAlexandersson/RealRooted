@@ -160,9 +160,12 @@ theorem im_eq_zero_of_aeval_zero_of_monic_sameDegree
   obtain ⟨w, hw_root, hw_dist⟩ :=
     exists_complex_aroot_near_right_family
       (hfg := hfg) (hz := hz) hf_monic hg_monic hdeg hμ hcoeff_bound
-  have hw_im_zero : w.im = 0 :=
-    RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
-      (hfg.isRealRooted_add_right hμ).1 (hfg.isRealRooted_add_right hμ).2 hw_root
+  have hsum_rr := hfg.isRealRooted_add_right hμ
+  have hw_isRoot : ((f + C μ * g).map (algebraMap ℝ ℂ)).IsRoot w := by
+    simp_all
+  have hw_im_zero : w.im = 0 := by
+    rcases hsum_rr.2.mem_range_of_isRoot hsum_rr.1 hw_isRoot with ⟨r, rfl⟩
+    simp
   have hbound_eq :
       ((f.natDegree + 1) * ε) ^ ((f.natDegree : ℝ)⁻¹) * R = δ / 2 := by
     have hmul :

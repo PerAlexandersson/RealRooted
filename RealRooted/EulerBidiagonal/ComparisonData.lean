@@ -208,7 +208,7 @@ theorem roots_eq_of_nodup_of_natDegree_le {G : ℝ[X]} {M : Multiset ℝ} (hG : 
   have hcard' : G.roots.card ≤ M.card := (card_roots' G).trans hcard
   have heq : M = G.roots := Multiset.eq_of_le_of_card_le hle hcard'
   refine ⟨heq.symm, ?_⟩
-  apply splits_of_card_roots
+  apply Polynomial.splits_iff_card_roots.mpr
   apply le_antisymm (card_roots' G)
   rw [← heq]
   exact hcard

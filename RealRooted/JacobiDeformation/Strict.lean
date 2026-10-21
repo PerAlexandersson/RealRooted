@@ -120,7 +120,7 @@ theorem roots_card_polynomial_strict
     (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V)
     (hδ : 0 < δ) (hδ1 : δ < 1) :
     (polynomial m δ c d U V).roots.card = m := by
-  rw [card_roots_of_splits
+  rw [Polynomial.splits_iff_card_roots.mp
     (polynomial_strict_splits_simple_roots_neg hm hc hd hU hV hδ hδ1).1,
     natDegree_polynomial]
 

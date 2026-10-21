@@ -44,7 +44,7 @@ lemma exists_root_ge_of_derivative_root
   obtain ⟨hp_rr, hp'_rr, _, rs, ss, hrs_sorted, hss_sorted, hrs_eq, hss_eq, hint⟩ :=
     derivative_interlaces_of_natDegree_ne_zero hp_splits (by lia)
   have hrs_len : rs.length = p.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hp_rr.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hp_rr.2]
   have hrs_ne : rs ≠ [] := by grind
   have hc_mem : c ∈ ss := by
     apply Multiset.mem_coe.mp

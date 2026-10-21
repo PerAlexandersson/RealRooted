@@ -38,7 +38,7 @@ theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
     grind
   have hCf_ne : C c * f ≠ 0 := mul_ne_zero hCc_ne hf0
   have hpos_right : HasPosLeadingCoeff (C c * f) :=
-    (nonnegCoeffs_C_mul hc.le hnn).pos_leadingCoeff hCf_ne
+    (hasNonnegCoeffs_C_mul hc.le hnn).pos_leadingCoeff hCf_ne
   exact StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hpos_left hpos_right
 
 /-- A polynomial-PF `f` precedes every positive Euler pencil of `f` when its
@@ -48,7 +48,7 @@ theorem strictInterl_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
     StrictInterl f (X * f.derivative + C c * f) := by
   have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hnn_thc : HasNonnegCoeffs (X * f.derivative + C c * f) :=
-    HasNonnegCoeffs.add hnn.derivative.X_mul (nonnegCoeffs_C_mul hc.le hnn)
+    HasNonnegCoeffs.add hnn.derivative.X_mul (hasNonnegCoeffs_C_mul hc.le hnn)
   exact strictInterl_of_strictInterl_X_mul_of_nonneg
     (strictInterl_thetac_X_mul hf hdeg hc) hnn hnn_thc
 
@@ -70,9 +70,9 @@ theorem strictInterl_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
   have hCab_ne : (C (a - b) : ℝ[X]) ≠ 0 := by grind
   have hCf_ne : C (a - b) * f ≠ 0 := mul_ne_zero hCab_ne hf0
   have hpos_cf : HasPosLeadingCoeff (C (a - b) * f) :=
-    (nonnegCoeffs_C_mul hab0.le hnn).pos_leadingCoeff hCf_ne
+    (hasNonnegCoeffs_C_mul hab0.le hnn).pos_leadingCoeff hCf_ne
   have hnn_g : HasNonnegCoeffs g :=
-    HasNonnegCoeffs.add hnn.derivative.X_mul (nonnegCoeffs_C_mul hb.le hnn)
+    HasNonnegCoeffs.add hnn.derivative.X_mul (hasNonnegCoeffs_C_mul hb.le hnn)
   have hpos_g : HasPosLeadingCoeff g := hnn_g.pos_leadingCoeff hg0
   have hsum : StrictInterl (C (a - b) * f + g) g :=
     StrictInterl.add_of_right_of_posLeadingCoeff hcf hgg hpos_cf hpos_g

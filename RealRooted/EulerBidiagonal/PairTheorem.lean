@@ -29,8 +29,8 @@ theorem isNegativeSimple_divByMonic_X_sub_C {f : ℝ[X]} (hf : IsNegativeSimple 
   have hroots : (f /ₘ (X - C s)).roots = f.roots.erase s := roots_divByMonic_X_sub_C hs
   have hmem : s ∈ f.roots := (mem_roots hf.1).mpr hs
   have hsplits : (f /ₘ (X - C s)).Splits := by
-    apply splits_of_card_roots
-    rw [hroots, Multiset.card_erase_of_mem hmem, card_roots_of_splits hf.2.1,
+    apply Polynomial.splits_iff_card_roots.mpr
+    rw [hroots, Multiset.card_erase_of_mem hmem, Polynomial.splits_iff_card_roots.mp hf.2.1,
       natDegree_divByMonic_X_sub_C, Nat.pred_eq_sub_one]
   refine ⟨hne, hsplits, ?_, ?_, ?_⟩
   · apply HasSimpleRoots.of_roots_nodup hne
@@ -140,7 +140,7 @@ theorem strictInterl_generalStep_add_C_mul_X_mul_of_strictInterl
     have hd1 : 1 ≤ d := by
       have hcard : 0 < Multiset.card f.roots :=
         Multiset.card_pos_iff_exists_mem.mpr ⟨s, Multiset.mem_toFinset.mp hs⟩
-      rw [card_roots_of_splits hf.2.1, hfd] at hcard
+      rw [Polynomial.splits_iff_card_roots.mp hf.2.1, hfd] at hcard
       exact hcard
     obtain ⟨hBint, hBno⟩ := strictInterl_generalStep_mul_X_sub_C κ a b u v s (f /ₘ (X - C s))
       (d - 1) hfs hfsdeg hκ ha hb (fun k hk => hell k (by lia)) hQ

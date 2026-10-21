@@ -722,7 +722,7 @@ theorem exceptionalEulerInverse_pencil_splits_of_eval_one_ne_zero
     rw [hfactor]
     exact hQ
   have hPsplit : P.Splits := by
-    apply splits_of_card_roots
+    apply Polynomial.splits_iff_card_roots.mpr
     rw [show P = interiorRootProduct Q by rfl, interiorRootProduct,
       Polynomial.roots_multiset_prod_X_sub_C,
       Polynomial.natDegree_multiset_prod_X_sub_C_eq_card]

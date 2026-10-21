@@ -105,7 +105,7 @@ private theorem isRealRooted_of_two_left_roots_of_strict_signs
     rw [← Multiset.coe_card]
     exact Multiset.card_le_card hroots_sub
   have hupper : F.roots.card ≤ F.natDegree := card_roots' F
-  refine ⟨hF_pos.ne_zero, splits_of_card_roots ?_⟩
+  refine ⟨hF_pos.ne_zero, Polynomial.splits_iff_card_roots.mpr ?_⟩
   lia
 
 /-- Strict sign changes on a nonempty sorted list, together with a positive
@@ -169,7 +169,7 @@ theorem isRealRooted_of_strict_signs_of_natDegree_eq_add_two
     (ha_pos : 0 < F.eval a) :
     F ≠ 0 ∧ F.Splits := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   apply isRealRooted_of_strict_signs_of_natDegree_eq_length_add_two
     hF_pos hF_odd hrs_sorted (by lia) hn hsign hleft hright ha_lt ha_pos
 
@@ -235,7 +235,7 @@ theorem isRealRooted_of_strict_signs_of_natDegree_eq_add_two_even
     (ha_neg : F.eval a < 0) :
     F ≠ 0 ∧ F.Splits := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   apply isRealRooted_of_strict_signs_of_natDegree_eq_length_add_two_even
     hF_pos hF_even hrs_sorted (by lia) hn hsign hleft hright ha_lt ha_neg
 

@@ -28,17 +28,15 @@ macro_rules
   | `(tactic|
       rr_strict_interl_mul_X_both using
         proper := $hstrictInterl:term,
-        left_nonneg := $hfnn:term,
-        right_nonneg := $hgnn:term) =>
+        left_nonneg := $_hfnn:term,
+        right_nonneg := $_hgnn:term) =>
       `(tactic|
-        exact RealRooted.StrictInterl.mul_X_both_of_nonneg $hstrictInterl $hfnn $hgnn)
+        simpa using RealRooted.StrictInterl.mul_X_sub_C_both $hstrictInterl 0)
   | `(tactic| rr_strict_interl_mul_X_both) =>
       `(tactic|
         exact (by
-          apply RealRooted.StrictInterl.mul_X_both_of_nonneg
-          case h => rr_lookup [rr_base_strict_interl]
-          case hfnn => rr_lookup [rr_nonneg]
-          case hgnn => rr_lookup [rr_nonneg]))
+          simpa using RealRooted.StrictInterl.mul_X_sub_C_both
+            (by rr_lookup [rr_base_strict_interl]) 0))
   | `(tactic|
       rr_strict_interl_C_mul_X using
         proper := $hstrictInterl:term,

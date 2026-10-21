@@ -39,7 +39,7 @@ indices above the degree, where both sides vanish. -/
 theorem reverse_roots_esymm_eq_coeff_div
     {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0) (k : ℕ) :
     p.reverse.roots.esymm k = (-1 : K) ^ k * p.coeff k / p.coeff 0 := by
-  have hqsplit : p.reverse.Splits := DegreeDropReversal.splits_reverse hp
+  have hqsplit : p.reverse.Splits := Polynomial.Splits.reverse hp
   have hqdeg : p.reverse.natDegree = p.natDegree := by
     rw [Polynomial.reverse_natDegree,
       Polynomial.natTrailingDegree_eq_zero.mpr (Or.inr h0)]

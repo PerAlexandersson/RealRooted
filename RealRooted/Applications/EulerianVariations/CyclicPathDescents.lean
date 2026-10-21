@@ -160,7 +160,7 @@ theorem cyclicPathDescentPolynomial_simple_root_description
       exact hsimple.roots_nodup.notMem_erase hr
     exact lt_of_le_of_ne (hpf.roots_nonpos r hrRoot) hrne
   · rw [Multiset.card_erase_of_mem hzeroMem,
-      card_roots_of_splits hsplits,
+      Polynomial.splits_iff_card_roots.mp hsplits,
       natDegree_cyclicPathDescentPolynomial n hn]
     rfl
 

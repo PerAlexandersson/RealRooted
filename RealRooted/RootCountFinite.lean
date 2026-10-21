@@ -197,7 +197,7 @@ theorem card_filter_gt_le_of_rel_abs_sub_lt_of_gt_sep
 /-- Under a proximity matching, target roots above a threshold can only come
 from source roots above that threshold or from source roots exactly at the
 threshold, provided all other source roots are separated from the threshold. -/
-theorem card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt
+private theorem card_filter_gt_le_add_card_filter_eq_of_rel_abs_sub_lt
     {s t : Multiset ℝ} {x δ : ℝ}
     (hsep : ∀ r ∈ s, r ≠ x → δ ≤ |r - x|)
     (hmatch : Multiset.Rel (fun r q => |q - r| < δ) s t) :

@@ -242,8 +242,8 @@ theorem RootwiseLE.of_strictInterl_sameDegree {p q : ℝ[X]} (hpq : StrictInterl
     (hdeg : p.natDegree = q.natDegree) : RootwiseLE p q := by
   rcases hpq with ⟨hp, hq, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
   have hlen : ss.length = rs.length := by
-    rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hp.2,
-      ← Multiset.coe_card, hrs_eq, card_roots_of_splits hq.2, hdeg]
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hp.2,
+      ← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hq.2, hdeg]
   have halt : ListAlternates ss rs := by
     rcases hshape with hbad | halt
     · exfalso
@@ -579,8 +579,8 @@ theorem rootCountAbove_schurSzegoComp_reflect_le_add
   let M := max (listMax ps) (listMax qs)
   have hps_pair : ps.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
   have hqs_pair : qs.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hps_len : ps.length = d := by simp [ps, card_roots_of_splits hPsplit, hPdeg]
-  have hqs_len : qs.length = d := by simp [qs, card_roots_of_splits hQsplit, hQdeg]
+  have hps_len : ps.length = d := by simp [ps, Polynomial.splits_iff_card_roots.mp hPsplit, hPdeg]
+  have hqs_len : qs.length = d := by simp [qs, Polynomial.splits_iff_card_roots.mp hQsplit, hQdeg]
   have hlen : ps.length = qs.length := hps_len.trans hqs_len.symm
   have hMps : ∀ r ∈ ps, r ≤ M :=
     fun _ hr => (le_listMax hr).trans (le_max_left _ _)

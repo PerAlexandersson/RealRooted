@@ -415,14 +415,14 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close
       hff', hgg', hbranch'⟩ := hclose 1 zero_lt_one
   have hf_degree : f'.natDegree = f.natDegree := by
     calc
-      f'.natDegree = f'.roots.card := (card_roots_of_splits hf'_split).symm
+      f'.natDegree = f'.roots.card := (Polynomial.splits_iff_card_roots.mp hf'_split).symm
       _ = f.roots.card := (Multiset.card_eq_card_of_rel hff').symm
-      _ = f.natDegree := card_roots_of_splits hf
+      _ = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
   have hg_degree : g'.natDegree = g.natDegree := by
     calc
-      g'.natDegree = g'.roots.card := (card_roots_of_splits hg'_split).symm
+      g'.natDegree = g'.roots.card := (Polynomial.splits_iff_card_roots.mp hg'_split).symm
       _ = g.roots.card := (Multiset.card_eq_card_of_rel hgg').symm
-      _ = g.natDegree := card_roots_of_splits hg
+      _ = g.natDegree := Polynomial.splits_iff_card_roots.mp hg
   have hdegrees :=
     hbranch'.natDegree_eq_or_eq_succ_or_eq_succ_succ
       hf'_ne hf'_split hg'_split

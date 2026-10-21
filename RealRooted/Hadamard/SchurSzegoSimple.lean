@@ -450,7 +450,7 @@ private theorem gap_lemma {p : ℝ[X]} (hp : p.Splits) :
 /-- `reflect` preserves splitting. -/
 private theorem splits_reflect {p : ℝ[X]} (hp : p.Splits) {N : ℕ} (hN : p.natDegree ≤ N) :
     (reflect N p).Splits :=
-  RealRooted.DegreeDropReversal.splits_reflect_of_splits hp hN
+  Polynomial.Splits.reflect hp hN
 
 end SchurSzegoAristotle
 

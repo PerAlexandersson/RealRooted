@@ -49,8 +49,8 @@ theorem exists_delta_roots_rel_tDeriv
         ((tDeriv eps p).roots.filter (fun q ↦ |q - a| < η)).card := by
     simpa [tDeriv] using hcount
   have hcard : (tDeriv eps p).roots.card = p.roots.card := by
-    rw [card_roots_of_splits (splits_tDeriv heps_pos hp), natDegree_tDeriv,
-      card_roots_of_splits hp]
+    rw [Polynomial.splits_iff_card_roots.mp (splits_tDeriv heps_pos hp), natDegree_tDeriv,
+      Polynomial.splits_iff_card_roots.mp hp]
   have hrel :=
     Multiset.rel_of_forall_le_count_of_card_eq hsep hcount' hcard
   exact hrel.mono fun _ _ _ _ hclose ↦ lt_trans hclose hηρ

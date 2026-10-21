@@ -53,7 +53,7 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
     exact ⟨hnn.pos_leadingCoeff hp₀, roots_nonpos_of_hasNonnegCoeffs hnn⟩
   · rintro ⟨hp₀, hroots_nonpos⟩
     refine ⟨?_, hp₀.ne_zero⟩
-    rw [← C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hp)]
+    rw [← C_leadingCoeff_mul_prod_multiset_X_sub_C (Polynomial.splits_iff_card_roots.mp hp)]
     exact (hasNonnegCoeffs_C hp₀.le).mul
       (hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hroots_nonpos)
 
@@ -83,7 +83,7 @@ lemma hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
   refine ⟨hq_pos, ?_⟩
   intro r hr
   have hrq : q.IsRoot r := (mem_roots hq_ne).mp hr
-  have hrp : p.IsRoot r := IsRoot.of_dvd hqp hrq
+  have hrp : p.IsRoot r := hrq.dvd hqp
   exact roots_nonpos_of_hasNonnegCoeffs hpnn r ((mem_roots hp_ne).mpr hrp)
 
 private lemma coe_append_zero_eq_roots_X_mul {f : ℝ[X]} (hf : f ≠ 0)
@@ -109,8 +109,8 @@ theorem strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos {f g : 
     exact List.Perm.eq_of_pairwise' hrs_Xf hrs_f0 <| Multiset.coe_eq_coe.mp <|
       hrs_Xf_eq.trans (coe_append_zero_eq_roots_X_mul hf.1 hrs_f_eq).symm
   have hlen_fg : rs_f.length = ss_g.length := by
-    rw [← Multiset.coe_card, hrs_f_eq, card_roots_of_splits hf.2,
-      ← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg.2, hdeg]
+    rw [← Multiset.coe_card, hrs_f_eq, Polynomial.splits_iff_card_roots.mp hf.2,
+      ← Multiset.coe_card, hss_g_eq, Polynomial.splits_iff_card_roots.mp hg.2, hdeg]
   rcases hshape with ⟨hlen, hint⟩ | ⟨hlen, _⟩
   · rw [hrs_Xf_is] at hint hlen
     have hlen' : ss_g.length + 1 = (rs_f ++ [(0 : ℝ)]).length := by lia
@@ -148,17 +148,17 @@ private theorem strictInterl_iff_mul_X_of_roots_nonpos_of_succ {f g : ℝ[X]}
           hrs_eq, hss0_eq,
           Or.inr ⟨by simp_all, listAlternates_append_zero ss rs hlen hint hrs_nonpos⟩⟩
     · have : ss.length = f.natDegree := by
-        rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf]
+        rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf]
       have : rs.length = g.natDegree := by
-        rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg]
+        rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg]
       lia
   · -- Backward: StrictInterl g (X * f) → StrictInterl f g
     intro ⟨_, _, ss_g, rs_xf, hss_g, hrs_xf, hss_g_eq, hrs_xf_eq, hcase⟩
     rcases hcase with ⟨hlen, _⟩ | ⟨hlen, halt⟩
     · have : ss_g.length = g.natDegree := by
-        rw [← Multiset.coe_card, hss_g_eq, card_roots_of_splits hg]
+        rw [← Multiset.coe_card, hss_g_eq, Polynomial.splits_iff_card_roots.mp hg]
       have : rs_xf.length = (X * f).natDegree := by
-        rw [← Multiset.coe_card, hrs_xf_eq, card_roots_of_splits (by simp_all)]
+        rw [← Multiset.coe_card, hrs_xf_eq, Polynomial.splits_iff_card_roots.mp (by simp_all)]
       lia
     · set ss_f := f.roots.sort (· ≤ ·)
       have hss_f_eq : (↑ss_f : Multiset ℝ) = f.roots := Multiset.sort_eq ..
@@ -193,9 +193,9 @@ theorem strictInterl_sameDegree_to_strictInterl_mul_X_of_roots_nonpos {f g : ℝ
     coe_append_zero_eq_roots_X_mul hf.1 hss_eq
   rcases hcase with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
   · have hss_len : ss.length = f.natDegree := by
-      rw [← Multiset.coe_card, hss_eq, card_roots_of_splits hf.2]
+      rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hf.2]
     have hrs_len : rs.length = g.natDegree := by
-      rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hg.2]
+      rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
     lia
   · refine ⟨hg, hXf_rr, rs, ss ++ [0], hrs, hss0_sorted, hrs_eq, hss0_eq, Or.inl ?_⟩
     refine ⟨?_, listInterlaces_right_of_listAlternates_append_zero ss rs ?_ halt ?_⟩
@@ -284,34 +284,25 @@ theorem interl_mul_X_of_interl {f g : ℝ[X]}
   · exact interl_zero_left (X * f)
   · exact (strictInterl_mul_X_of_strictInterl_of_nonneg hfg hfnn hgnn).toInterl
 
-private lemma roots_X_mul_nonpos {f : ℝ[X]} (hf : f ≠ 0)
-    (h : ∀ r ∈ f.roots, r ≤ 0) : ∀ r ∈ (X * f).roots, r ≤ 0 := by
-  intro r hr
-  rw [roots_mul (mul_ne_zero X_ne_zero hf), roots_X] at hr
-  rcases Multiset.mem_add.mp hr with hr | hr
-  · exact (Multiset.mem_singleton.mp hr).le
-  · exact h r hr
-
 /-- Multiplying both polynomials by `X` preserves strict interlacing when all
 roots are nonpositive. -/
+@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
 theorem StrictInterl.mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl (X * f) (X * g) :=
-  (strictInterl_iff_mul_X_of_roots_nonpos hg_nonpos
-    (roots_X_mul_nonpos h.1.1 hf_nonpos)).mp
-    ((strictInterl_iff_mul_X_of_roots_nonpos hf_nonpos hg_nonpos).mp h)
+    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl (X * f) (X * g) := by
+  simpa using h.mul_X_sub_C_both 0
 
 /-- Cancelling a common factor `X` preserves strict interlacing when all
 remaining roots are nonpositive. -/
+@[deprecated StrictInterl.of_mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
 theorem StrictInterl.of_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
     (h : StrictInterl (X * f) (X * g))
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl f g :=
-  (strictInterl_iff_mul_X_of_roots_nonpos hf_nonpos hg_nonpos).mpr
-    ((strictInterl_iff_mul_X_of_roots_nonpos hg_nonpos
-      (roots_X_mul_nonpos (right_ne_zero_of_mul h.1.1) hf_nonpos)).mpr h)
+    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    StrictInterl f g := by
+  apply StrictInterl.of_mul_X_sub_C_both (r := 0)
+  simpa using h
 
 /-! ## Wagner `X`-multiplication interlacing bridges -/
 
@@ -334,21 +325,23 @@ lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
     (roots_nonpos_of_hasNonnegCoeffs hgnn)).mpr h
 
 /-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
+@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
 theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g) :
-    StrictInterl (X * f) (X * g) :=
-  h.mul_X_both_of_roots_nonpos
-    (roots_nonpos_of_hasNonnegCoeffs hfnn)
-    (roots_nonpos_of_hasNonnegCoeffs hgnn)
+    (h : StrictInterl f g) (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
+    StrictInterl (X * f) (X * g) := by
+  simpa using h.mul_X_sub_C_both 0
 
 /-- Multiplication by `X` on both sides is an equivalence on strict
 interlacing when all roots are nonpositive. -/
+@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
 theorem StrictInterl.mul_X_both_iff_of_roots_nonpos {f g : ℝ[X]}
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
+    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
     StrictInterl f g ↔ StrictInterl (X * f) (X * g) :=
-  ⟨fun h => h.mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos,
-    fun h => h.of_mul_X_both_of_roots_nonpos hf_nonpos hg_nonpos⟩
+  ⟨fun h => by simpa using h.mul_X_sub_C_both 0,
+    fun h => by
+      apply StrictInterl.of_mul_X_sub_C_both (r := 0)
+      simpa using h⟩
 
 /-- Multiplying both polynomials by `X` preserves zero-aware interlacing for
 polynomials with nonnegative coefficients. -/
@@ -358,13 +351,13 @@ theorem Interl.mul_X_both_of_nonneg {f g : ℝ[X]}
   rcases h with rfl | rfl | hfg
   · simpa using interl_zero_left (X * g)
   · simpa using interl_zero_right (X * f)
-  · exact (hfg.mul_X_both_of_nonneg hfnn hgnn).toInterl
+  · exact (by simpa using hfg.mul_X_sub_C_both 0 : StrictInterl (X * f) (X * g)).toInterl
 
 /-- Cancelling a common factor `X` preserves zero-aware interlacing for
 polynomials with nonnegative coefficients. -/
 theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Interl (X * f) (X * g)) (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g) :
+    (h : Interl (X * f) (X * g)) (_hfnn : HasNonnegCoeffs f)
+    (_hgnn : HasNonnegCoeffs g) :
     Interl f g := by
   by_cases hf0 : f = 0
   · simpa [hf0] using interl_zero_left g
@@ -372,9 +365,8 @@ theorem Interl.of_mul_X_both_of_nonneg {f g : ℝ[X]}
   · simpa [hg0] using interl_zero_right f
   have hstrict : StrictInterl (X * f) (X * g) :=
     h.toStrictInterl_of_ne (mul_ne_zero X_ne_zero hf0) (mul_ne_zero X_ne_zero hg0)
-  exact
-    (hstrict.of_mul_X_both_of_roots_nonpos
-      (roots_nonpos_of_hasNonnegCoeffs hfnn)
-      (roots_nonpos_of_hasNonnegCoeffs hgnn)).toInterl
+  apply StrictInterl.toInterl
+  apply StrictInterl.of_mul_X_sub_C_both (r := 0)
+  simpa using hstrict
 
 end RealRooted

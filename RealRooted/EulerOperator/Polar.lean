@@ -36,7 +36,7 @@ theorem reciprocalShift_splits {D : ℕ} {p : ℝ[X]}
     (hp : p.Splits) (hdeg : p.natDegree ≤ D) :
     (reciprocalShift D p).Splits := by
   rw [reciprocalShift_eq_X_pow_mul_reverse hdeg]
-  exact DegreeDropReversal.splits_X_pow_mul_reverse hp _
+  exact Polynomial.Splits.X_pow_mul_reverse hp _
 
 /-- The polar theta operator preserves ordinary splitness in a finite degree
 box. -/
@@ -47,7 +47,7 @@ theorem polarTheta_splits_of_splits {N : ℕ} {p : ℝ[X]}
   have hshift : (reciprocalShift N p).Splits := reciprocalShift_splits hp hdeg
   have hderivative :
       (reciprocalShift N p).derivative = 0 ∨ (reciprocalShift N p).derivative.Splits :=
-    eq_zero_or_splits_derivative (Or.inr hshift)
+    Or.inr hshift.derivative
   have hdegree : (reciprocalShift N p).derivative.natDegree ≤ N - 1 := by
     have hshift_degree : (reciprocalShift N p).natDegree ≤ N := by
       unfold reciprocalShift

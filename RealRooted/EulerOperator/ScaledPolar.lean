@@ -63,7 +63,7 @@ theorem comp_negXsq_splits_of_isPFPolynomial {h : ℝ[X]} (hh : IsPFPolynomial h
   by_cases hzero : h = 0
   · simp [hzero]
   have hsplits : h.Splits := (hh.ne_zero_and_splits hzero).2
-  have hroots_card : h.roots.card = h.natDegree := card_roots_of_splits hsplits
+  have hroots_card : h.roots.card = h.natDegree := Polynomial.splits_iff_card_roots.mp hsplits
   have hfactor : h = C h.leadingCoeff * (h.roots.map fun r => X - C r).prod :=
     (C_leadingCoeff_mul_prod_multiset_X_sub_C hroots_card).symm
   rw [hfactor, Polynomial.mul_comp, Polynomial.C_comp, Polynomial.multiset_prod_comp]

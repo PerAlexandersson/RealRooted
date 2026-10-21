@@ -100,7 +100,7 @@ lemma interleaves_of_listAlternates_of_length {ss rs : List ℝ}
 
 /-- In a nonempty right-hand list, each left entry of a weak interlacing is at
 most the corresponding later right entry. -/
-lemma listInterlaces_forall₂_le_tail :
+private lemma listInterlaces_forall₂_le_tail :
     ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) →
       List.Forall₂ (fun s t : ℝ => s ≤ t) ss rs
   | [], [], _, _ => by simp
@@ -109,6 +109,37 @@ lemma listInterlaces_forall₂_le_tail :
   | s :: ss, r₂ :: rs, r₁, h => by
       rcases h with ⟨_, hsr₂, htail⟩
       exact List.Forall₂.cons hsr₂ (listInterlaces_forall₂_le_tail htail)
+
+/-- Every element of `ss` is at least the first element of the right-hand
+list in a `ListInterlaces` relation. -/
+lemma listInterlaces_all_ge :
+    ∀ (ss rs : List ℝ) (r : ℝ),
+      ListInterlaces ss (r :: rs) →
+      ∀ s ∈ ss, r ≤ s
+  | [], _, _, _ => by simp
+  | [s], [], r, hint => by simp [ListInterlaces] at hint
+  | s :: ss', r₁ :: rs', r, hint => by
+      obtain ⟨hr, hsr₁, htail⟩ := hint
+      intro s' hs'
+      rcases List.mem_cons.mp hs' with rfl | hs''
+      · lia
+      · exact le_trans (le_trans hr hsr₁)
+          (listInterlaces_all_ge ss' rs' r₁ htail s' hs'')
+  | _ :: _ :: _, [], _, hint => by simp [ListInterlaces] at hint
+
+/-- The left-hand list in a `ListInterlaces` relation is sorted. -/
+lemma pairwise_le_of_listInterlaces :
+    ∀ (ss rs : List ℝ), ListInterlaces ss rs → ss.Pairwise (· ≤ ·)
+  | [], _, _ => List.Pairwise.nil
+  | [_], _, _ => List.pairwise_singleton _ _
+  | s₁ :: s₂ :: ss', r₁ :: r₂ :: rs', h => by
+      obtain ⟨_, hs₁r₂, htail⟩ := h
+      refine List.pairwise_cons.mpr ⟨?_, pairwise_le_of_listInterlaces _ _ htail⟩
+      intro s hs
+      exact le_trans hs₁r₂
+        (listInterlaces_all_ge (s₂ :: ss') rs' r₂ htail s hs)
+  | _ :: _ :: _, [], h => by simp [ListInterlaces] at h
+  | _ :: _ :: _, [_], h => by simp [ListInterlaces] at h
 
 /-- Same-degree weak alternation gives pairwise coordinate inequalities. -/
 lemma listAlternates_forall₂_le :

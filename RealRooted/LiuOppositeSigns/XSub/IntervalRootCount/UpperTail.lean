@@ -114,14 +114,14 @@ theorem
         (p := p) (q := -(C μ * q.divX)) hnegCdiv_deg_lt hpair.left_pos
   have hR_natDegree : R.natDegree = p.natDegree := by
     simpa [R, sub_eq_add_neg] using
-      natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-        (p := p) (q := -(C μ * q.divX)) hnegCdiv_deg_lt hpair.left_pos
+      Polynomial.natDegree_add_eq_left_of_natDegree_lt
+        (p := p) (q := -(C μ * q.divX)) hnegCdiv_deg_lt
   have hp_nat_pos : 0 < p.natDegree := by
     have ha_mem : a ∈ p.roots :=
       (Polynomial.mem_roots hpair.left_pos.ne_zero).mpr ha.isRoot
     have hcard_pos : 0 < p.roots.card :=
       Multiset.card_pos_iff_exists_mem.mpr ⟨a, ha_mem⟩
-    simpa [card_roots_of_splits hpair.left_splits] using hcard_pos
+    simpa [Polynomial.splits_iff_card_roots.mp hpair.left_splits] using hcard_pos
   have hR_nat_pos : 0 < R.natDegree := by simpa [hR_natDegree] using hp_nat_pos
   have hR_degree_pos : 0 < R.degree :=
     Polynomial.natDegree_pos_iff_degree_pos.mp hR_nat_pos
@@ -213,7 +213,7 @@ theorem
       (Polynomial.mem_roots hpair.left_pos.ne_zero).mpr ha.isRoot
     have hcard_pos : 0 < p.roots.card :=
       Multiset.card_pos_iff_exists_mem.mpr ⟨a, ha_mem⟩
-    simpa [card_roots_of_splits hpair.left_splits] using hcard_pos
+    simpa [Polynomial.splits_iff_card_roots.mp hpair.left_splits] using hcard_pos
   have hR_nat_pos : 0 < R.natDegree := by simpa [hR_natDegree] using hp_nat_pos
   have hR_degree_pos : 0 < R.degree :=
     Polynomial.natDegree_pos_iff_degree_pos.mp hR_nat_pos

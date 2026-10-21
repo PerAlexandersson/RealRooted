@@ -111,7 +111,7 @@ private theorem card_roots_monicSignedReciprocal_filter_ge_of_nonpos
     {s : ℝ} (hs : s ≤ 0) :
     ((monicSignedReciprocal d F).roots.filter (s ≤ ·)).card = d := by
   rw [roots_monicSignedReciprocal hF0, Multiset.filter_eq_self.mpr]
-  · rw [card_roots_of_splits
+  · rw [Polynomial.splits_iff_card_roots.mp
       (signedReciprocal_splits_of_splits hFdeg
         (hF.2.1.resolve_left (by
           intro h
@@ -152,7 +152,7 @@ private theorem rootCount_band_monicSignedReciprocal
       · have hPAcard :
             (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d :=
           (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
-            rw [card_roots_of_splits
+            rw [Polynomial.splits_iff_card_roots.mp
               (hA.2.1.resolve_left (by
                 intro h
                 subst A

@@ -828,7 +828,7 @@ theorem shiftedJacobiMonic_roots_sort_length (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
     ((shiftedJacobiMonic n α β).roots.sort (· ≤ ·)).length = n := by
   rw [Multiset.length_sort,
-    card_roots_of_splits (shiftedJacobiMonic_splits n hα hβ),
+    Polynomial.splits_iff_card_roots.mp (shiftedJacobiMonic_splits n hα hβ),
     natDegree_shiftedJacobiMonic n hα hβ]
 
 theorem shiftedJacobiMonicRoot_isRoot (n : ℕ) (i : Fin n)

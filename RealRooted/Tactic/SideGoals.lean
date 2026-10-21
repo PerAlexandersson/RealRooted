@@ -323,8 +323,8 @@ macro_rules
       rr_nonneg_coeffs_C_mul using scalar_nonneg := $ha:term, poly_nonneg := $hp:term) =>
       `(tactic|
         first
-          | exact RealRooted.nonnegCoeffs_C_mul $ha $hp
-          | simpa only [mul_comm] using RealRooted.nonnegCoeffs_C_mul $ha $hp)
+          | exact RealRooted.hasNonnegCoeffs_C_mul $ha $hp
+          | simpa only [mul_comm] using RealRooted.hasNonnegCoeffs_C_mul $ha $hp)
   | `(tactic| rr_nonneg_coeffs_X_mul using poly_nonneg := $hp:term) =>
       `(tactic|
         first
@@ -374,7 +374,7 @@ macro_rules
               rr_close_side
             | apply RealRooted.HasNonnegCoeffs.derivative
               rr_nonneg_coeffs
-            | apply RealRooted.nonnegCoeffs_C_mul
+            | apply RealRooted.hasNonnegCoeffs_C_mul
               · rr_side_nonneg
               · rr_nonneg_coeffs
             | apply RealRooted.HasNonnegCoeffs.X_mul

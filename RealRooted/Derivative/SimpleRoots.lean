@@ -87,7 +87,7 @@ theorem roots_derivative_lt_of_roots_le_of_rootMultiplicity_eq_one
     have hcard : f.derivative.roots.card = 0 := by
       calc
         f.derivative.roots.card = f.derivative.natDegree :=
-          card_roots_of_splits hfder_splits
+          Polynomial.splits_iff_card_roots.mp hfder_splits
         _ = f.natDegree - 1 := f.natDegree_derivative
         _ = 0 := by simp [hdeg1]
     intro r hr

@@ -210,7 +210,7 @@ theorem reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) :
   rcases hp with hp | hp
   · left
     simp [hp]
-  · exact Or.inr (DegreeDropReversal.splits_reverse hp)
+  · exact Or.inr (Polynomial.Splits.reverse hp)
 
 /-- Consume a reverse zero-aware real-rootedness certificate. -/
 theorem eq_zero_or_splits_of_reverse {p : ℝ[X]}
@@ -218,7 +218,7 @@ theorem eq_zero_or_splits_of_reverse {p : ℝ[X]}
     p = 0 ∨ p.Splits := by
   rcases hp with hp | hp
   · exact Or.inl (Polynomial.reverse_eq_zero.mp hp)
-  · exact Or.inr (DegreeDropReversal.splits_of_reverse hp)
+  · exact Or.inr (Polynomial.Splits.of_reverse hp)
 
 /-- Reflect transport for zero-aware real-rootedness certificates. -/
 theorem reflect_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) {N : ℕ}
@@ -227,7 +227,7 @@ theorem reflect_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) {N : �
   rcases hp with hp | hp
   · left
     simp [hp]
-  · exact Or.inr (DegreeDropReversal.splits_reflect_of_splits hp hN)
+  · exact Or.inr (Polynomial.Splits.reflect hp hN)
 
 /-- Degree-padded reverse transport for zero-aware real-rootedness certificates. -/
 theorem X_pow_mul_reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits)
@@ -237,7 +237,7 @@ theorem X_pow_mul_reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Split
   rcases hp with hp | hp
   · left
     simp [hp]
-  · exact Or.inr (DegreeDropReversal.splits_X_pow_mul_reverse hp N)
+  · exact Or.inr (Polynomial.Splits.X_pow_mul_reverse hp N)
 
 /-- Divide out a zero root in a zero-aware real-rootedness certificate. -/
 theorem divX_eq_zero_or_splits_of_coeff_zero {p : ℝ[X]} (h0 : p.coeff 0 = 0)
@@ -261,19 +261,19 @@ theorem eq_zero_or_splits_of_divX {p : ℝ[X]} (h0 : p.coeff 0 = 0)
 theorem reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) :
     p.reverse ≠ 0 ∧ p.reverse.Splits :=
   ⟨fun h => hp.1 (Polynomial.reverse_eq_zero.mp h),
-    DegreeDropReversal.splits_reverse hp.2⟩
+    Polynomial.Splits.reverse hp.2⟩
 
 /-- Consume a reverse nonzero real-rootedness certificate. -/
 theorem isRealRooted_of_reverse {p : ℝ[X]} (hp : p.reverse ≠ 0 ∧ p.reverse.Splits) :
     p ≠ 0 ∧ p.Splits :=
-  ⟨fun h => hp.1 (by simp [h]), DegreeDropReversal.splits_of_reverse hp.2⟩
+  ⟨fun h => hp.1 (by simp [h]), Polynomial.Splits.of_reverse hp.2⟩
 
 /-- Reflect transport for nonzero real-rootedness certificates. -/
 theorem reflect_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
     (reflect N p) ≠ 0 ∧ (reflect N p).Splits :=
   ⟨fun h => hp.1 (Polynomial.reflect_eq_zero_iff.mp h),
-    DegreeDropReversal.splits_reflect_of_splits hp.2 hN⟩
+    Polynomial.Splits.reflect hp.2 hN⟩
 
 /-- Degree-padded reverse transport for nonzero real-rootedness certificates. -/
 theorem X_pow_mul_reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits)
@@ -282,7 +282,7 @@ theorem X_pow_mul_reverse_isRealRooted {p : ℝ[X]} (hp : p ≠ 0 ∧ p.Splits)
       (X ^ (N - p.natDegree) * p.reverse).Splits :=
   ⟨mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
       (fun h => hp.1 (Polynomial.reverse_eq_zero.mp h)),
-    DegreeDropReversal.splits_X_pow_mul_reverse hp.2 N⟩
+    Polynomial.Splits.X_pow_mul_reverse hp.2 N⟩
 
 /-- Divide out a zero root in a nonzero real-rootedness certificate. -/
 theorem divX_isRealRooted_of_coeff_zero {p : ℝ[X]} (h0 : p.coeff 0 = 0)
@@ -649,7 +649,8 @@ theorem mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
     (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
       (B n = 0 ∨ (B n).Splits)) :
     ∀ n : Nat, A n * B n = 0 ∨ (A n * B n).Splits :=
-  fun n => mul_eq_zero_or_splits (hP n).1 (hP n).2
+  fun n => Or.inr (((hP n).1.elim (fun h => h ▸ Splits.zero) id).mul
+    ((hP n).2.elim (fun h => h ▸ Splits.zero) id))
 
 /-- Row-wise swapped product transport for zero-aware pair-sequences. -/
 theorem swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
@@ -657,6 +658,7 @@ theorem swap_mul_eq_zero_or_splits_of_eq_zero_or_splits_pair_sequence
     (hP : ∀ n : Nat, (A n = 0 ∨ (A n).Splits) ∧
       (B n = 0 ∨ (B n).Splits)) :
     ∀ n : Nat, B n * A n = 0 ∨ (B n * A n).Splits :=
-  fun n => mul_eq_zero_or_splits (hP n).2 (hP n).1
+  fun n => Or.inr (((hP n).2.elim (fun h => h ▸ Splits.zero) id).mul
+    ((hP n).1.elim (fun h => h ▸ Splits.zero) id))
 
 end RealRooted

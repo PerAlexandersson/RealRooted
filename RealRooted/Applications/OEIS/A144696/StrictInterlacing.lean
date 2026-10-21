@@ -197,7 +197,7 @@ theorem a144696Auxiliary_diagonal_interlaces
       simp
   have hroots_ne : f.roots ≠ 0 := by
     intro hzero
-    have hcard : f.roots.card = f.natDegree := card_roots_of_splits hsplitsF
+    have hcard : f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hsplitsF
     rw [hzero] at hcard
     simp [hfdeg] at hcard
     lia

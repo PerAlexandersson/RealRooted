@@ -18,14 +18,6 @@ namespace RealRooted.DegreeDropReversal
 
 variable {K : Type*} [Field K]
 
-/-- Reversal sends a monic linear factor `X + C a` to a polynomial that still
-splits. -/
-theorem splits_reverse_X_add_C (a : K) :
-    (X + C a).reverse.Splits :=
-  Polynomial.Splits.of_natDegree_le_one <|
-    (Polynomial.reverse_natDegree_le (X + C a)).trans <| by
-      simp
-
 /-- Predicate root-count transport across `reverse`: filtering roots of the
 reverse by `q` counts exactly the original roots whose inverse satisfies `q`. -/
 theorem card_filter_reverse_roots {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
@@ -54,18 +46,10 @@ theorem mem_roots_reverse_iff {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
   rw [Polynomial.roots_reverse_eq_map_inv hp h0, Multiset.mem_map]
 
 /-- Reversal preserves `Splits` over a field. -/
+@[deprecated Polynomial.Splits.reverse (since := "2026-10-21")]
 theorem splits_reverse {p : K[X]} (h : p.Splits) :
-    p.reverse.Splits := by
-  induction h using Submonoid.closure_induction with
-  | mem x hx =>
-    rcases hx with ⟨a, rfl⟩ | ⟨a, rfl⟩
-    · simp
-    · exact splits_reverse_X_add_C a
-  | one =>
-    exact Polynomial.Splits.of_natDegree_le_one <|
-      (Polynomial.reverse_natDegree_le (1 : K[X])).trans <| by simp
-  | mul x y _ _ ihx ihy =>
-    simp_all
+    p.reverse.Splits :=
+  h.reverse
 
 /-- Reflecting a polynomial at a degree `N` at least its own `natDegree` factors
 a power of `X` out of its reversal. -/
@@ -102,27 +86,19 @@ theorem leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le {R : Type*} [Semiring
     (reflect N p).leadingCoeff = p.coeff 0 := by
   simp [Polynomial.leadingCoeff, natDegree_reflect_eq_of_coeff_zero_ne hN h0]
 
-/-- Multiplying the reverse of a split polynomial by the degree-padding power
-of `X` still splits. -/
-theorem splits_X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
-    (X ^ (N - p.natDegree) * p.reverse).Splits :=
-  (Polynomial.Splits.X_pow (N - p.natDegree)).mul (splits_reverse h)
-
 /-- Reflection at any degree at least `p.natDegree` preserves splitting. -/
+@[deprecated Polynomial.Splits.reflect (since := "2026-10-21")]
 theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits := by
-  simpa [reflect_eq_X_pow_mul_reverse p hN] using
-    splits_X_pow_mul_reverse h N
+    (reflect N p).Splits :=
+  h.reflect hN
 
 /-- For polynomials of degree at most `N`, reflection preserves and reflects
 splitting. -/
+@[deprecated Polynomial.splits_reflect_iff (since := "2026-10-21")]
 theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits ↔ p.Splits := by
-  refine ⟨?_, fun h ↦ splits_reflect_of_splits h hN⟩
-  intro h
-  simpa using splits_reflect_of_splits h <|
-    (Polynomial.natDegree_reflect_le (N := N) (p := p)).trans (max_eq_left hN).le
+    (reflect N p).Splits ↔ p.Splits :=
+  Polynomial.splits_reflect_iff hN
 
 /-- Reflection sends a nonzero root to its inverse at any valid degree bound. -/
 theorem isRoot_reflect_inv_iff {p : K[X]} {b : K} (hb : b ≠ 0)
@@ -132,17 +108,6 @@ theorem isRoot_reflect_inv_iff {p : K[X]} {b : K} (hb : b ≠ 0)
   change eval b⁻¹ (reflect N p) = 0 ↔ eval b p = 0
   simpa [Polynomial.eval₂_id, invOf_eq_inv] using
     (Polynomial.eval₂_reflect_eq_zero_iff (RingHom.id K) b N p hN)
-
-/-- Reversal preserves and reflects splitting over a field. -/
-theorem splits_reverse_iff {p : K[X]} :
-    p.reverse.Splits ↔ p.Splits := by
-  simpa [Polynomial.reverse] using
-    (splits_reflect_iff (p := p) (N := p.natDegree) le_rfl)
-
-/-- If the reverse of a polynomial splits, then the original polynomial splits. -/
-theorem splits_of_reverse {p : K[X]} (h : p.reverse.Splits) :
-    p.Splits :=
-  splits_reverse_iff.mp h
 
 /-- Multiplying by a power of `X` does not change whether a polynomial splits. -/
 theorem splits_X_pow_mul_iff {p : K[X]} (k : ℕ) :
@@ -180,7 +145,7 @@ section Ordered
 variable [LinearOrder K] [IsStrictOrderedRing K]
 
 /-- Inversion sends the positive half-line `(a, ∞)` to `(0, a⁻¹)`. -/
-theorem mem_Ioi_inv_iff {a r : K} (ha : 0 < a) :
+private theorem mem_Ioi_inv_iff {a r : K} (ha : 0 < a) :
     a < r⁻¹ ↔ (0 < r ∧ r < a⁻¹) := by
   by_cases hr : 0 < r
   · constructor <;> intro h <;> simp_all [lt_inv_comm₀]
@@ -190,7 +155,7 @@ theorem mem_Ioi_inv_iff {a r : K} (ha : 0 < a) :
       inv_pos.2 ha]
 
 /-- Half-line root-count transport under reversal. -/
-theorem card_roots_reverse_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
+private theorem card_roots_reverse_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {a : K} (ha : 0 < a) :
     (p.reverse.roots.filter (fun x => a < x)).card =
       (p.roots.filter (fun r => 0 < r ∧ r < a⁻¹)).card := by
@@ -217,13 +182,13 @@ theorem card_roots_reflect_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     Multiset.card_zero, zero_add]
 
 /-- On the negative half-line, inversion reverses a strict-upper comparison. -/
-theorem mem_Ioi_inv_iff_of_neg {a r : K} (ha : a < 0) (hr : r < 0) :
+private theorem mem_Ioi_inv_iff_of_neg {a r : K} (ha : a < 0) (hr : r < 0) :
     a < r⁻¹ ↔ r < a⁻¹ := by
   simpa using inv_lt_inv_of_neg (inv_lt_zero'.2 ha) hr
 
 /-- Strict-upper root-count transport under reversal at a negative threshold,
 assuming all original roots are strictly negative. -/
-theorem card_roots_reverse_Ioi_of_neg {p : K[X]} (hp : p.Splits)
+private theorem card_roots_reverse_Ioi_of_neg {p : K[X]} (hp : p.Splits)
     (h0 : p.coeff 0 ≠ 0) {a : K} (ha : a < 0)
     (hneg : ∀ r ∈ p.roots, r < 0) :
     (p.reverse.roots.filter (fun x => a < x)).card =
@@ -235,7 +200,7 @@ theorem card_roots_reverse_Ioi_of_neg {p : K[X]} (hp : p.Splits)
 /-- At a negative threshold, the reflected strict-upper count consists of all
 degree-padding zeros together with the original roots lying below the inverse
 threshold. -/
-theorem card_roots_reflect_Ioi_of_neg {p : K[X]} (hp : p.Splits)
+private theorem card_roots_reflect_Ioi_of_neg {p : K[X]} (hp : p.Splits)
     (h0 : p.coeff 0 ≠ 0) {N : ℕ} (hN : p.natDegree ≤ N)
     {a : K} (ha : a < 0) (hneg : ∀ r ∈ p.roots, r < 0) :
     ((reflect N p).roots.filter (fun x => a < x)).card =

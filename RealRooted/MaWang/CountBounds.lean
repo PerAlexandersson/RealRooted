@@ -19,7 +19,7 @@ points all lie to the right of the current left-hand point, and one of the
 remaining points after the next consumed root already lies before the next
 left-hand point. This is exactly the data needed to assemble an actual sorted
 right-hand root list into a weak `ListInterlaces` layout. -/
-theorem listInterlaces_of_drop_bounds :
+private theorem listInterlaces_of_drop_bounds :
     ∀ {ss ts : List ℝ},
       ss.Pairwise (· ≤ ·) →
       ts.Pairwise (· ≤ ·) →
@@ -82,7 +82,7 @@ say that after consuming the first `pre.length` right-hand points, all remaining
 points lie to the right of the current left-hand point, and one of them already
 lies before the next left-hand point. This packages an actual sorted root list
 into a weak `ListAlternates` layout. -/
-theorem listAlternates_of_drop_bounds :
+private theorem listAlternates_of_drop_bounds :
     ∀ {ss ts : List ℝ},
       ss.Pairwise (· ≤ ·) →
       ts.Pairwise (· ≤ ·) →
@@ -126,7 +126,7 @@ theorem listAlternates_of_drop_bounds :
 /-- If a sorted list has at most `k` entries strictly below `s`, then every entry
 in the `drop k` tail is `≥ s`. This is the count-to-tail bridge needed to feed
 actual sorted root lists into the `drop`-based layout lemmas above. -/
-lemma all_ge_of_countP_lt_drop
+private lemma all_ge_of_countP_lt_drop
     {ts : List ℝ} (hts : ts.Pairwise (· ≤ ·)) {s : ℝ} {k : ℕ}
     (hcount : ts.countP (· < s) ≤ k) :
     ∀ u ∈ ts.drop k, s ≤ u := by
@@ -157,7 +157,7 @@ lemma all_ge_of_countP_lt_drop
 
 /-- If a list has more than `k` entries `≤ s`, then some entry of the `drop k`
 tail is still `≤ s`. -/
-lemma exists_mem_drop_le_of_lt_countP
+private lemma exists_mem_drop_le_of_lt_countP
     {ts : List ℝ} {s : ℝ} {k : ℕ}
     (hcount : k < ts.countP (· ≤ s)) :
     ∃ u, u ∈ ts.drop k ∧ u ≤ s := by
@@ -181,7 +181,7 @@ right-hand list has:
 - more than `pre.length + 1` elements `≤` the next left-hand point,
 
 then the two lists satisfy the weak `ListInterlaces` layout. -/
-theorem listInterlaces_of_count_bounds
+private theorem listInterlaces_of_count_bounds
     {ss ts : List ℝ}
     (hss : ss.Pairwise (· ≤ ·))
     (hts : ts.Pairwise (· ≤ ·))
@@ -218,7 +218,7 @@ right-hand list has:
 - more than `pre.length` elements `≤` the next left-hand point,
 
 then the two lists satisfy the weak `ListAlternates` layout. -/
-theorem listAlternates_of_count_bounds
+private theorem listAlternates_of_count_bounds
     {ss ts : List ℝ}
     (hss : ss.Pairwise (· ≤ ·))
     (hts : ts.Pairwise (· ≤ ·))
@@ -263,9 +263,9 @@ theorem strictInterl_of_count_bounds_succ
         pre.length + 1 < ts.countP (· ≤ s₂)) :
     StrictInterl f F := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   have hts_len : ts.length = F.natDegree := by
-    rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
+    rw [← Multiset.coe_card, hts_eq, Polynomial.splits_iff_card_roots.mp hF_splits]
   have hlen : rs.length + 1 = ts.length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
     hrs_eq, hts_eq,
@@ -291,9 +291,9 @@ theorem strictInterl_of_count_bounds_same
         pre.length < ts.countP (· ≤ s₂)) :
     StrictInterl f F := by
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf_splits]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf_splits]
   have hts_len : ts.length = F.natDegree := by
-    rw [← Multiset.coe_card, hts_eq, card_roots_of_splits hF_splits]
+    rw [← Multiset.coe_card, hts_eq, Polynomial.splits_iff_card_roots.mp hF_splits]
   have hlen : rs.length = ts.length := by lia
   exact ⟨⟨hf_ne, hf_splits⟩, ⟨hF_ne, hF_splits⟩, rs, ts, hrs_sorted, hts_sorted,
     hrs_eq, hts_eq,

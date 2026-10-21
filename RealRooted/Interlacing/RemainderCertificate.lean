@@ -218,7 +218,7 @@ private lemma roots_eq_of_list_roots {p : ℝ[X]} {xs : List ℝ}
     intro x hx
     exact (mem_roots hp).mpr (hroot x (by simpa using hx))
   apply Multiset.eq_of_le_of_card_le hsub
-  rw [card_roots_of_splits hps, hcard]
+  rw [Polynomial.splits_iff_card_roots.mp hps, hcard]
   simp
 
 /-- Remainder certificates for an affine perturbation of a linear polynomial. -/

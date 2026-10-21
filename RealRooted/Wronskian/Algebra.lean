@@ -106,9 +106,7 @@ theorem iterated_laguerre_form_nonneg {p : ℝ[X]} (hp : p.Splits) (k : ℕ)
     0 ≤ (derivative ((derivative^[k]) p)).eval t ^ 2 -
       ((derivative^[k]) p).eval t *
         (derivative (derivative ((derivative^[k]) p))).eval t := by
-  rcases iterate_derivative_eq_zero_or_splits hp k with h | h
-  · simp [h]
-  · exact laguerre_form_nonneg h t
+  exact laguerre_form_nonneg (hp.iterate_derivative k) t
 
 /-! ### The shifted Euler operator `θ⁺ = 1 + X·d/dX` -/
 
@@ -181,9 +179,7 @@ theorem laguerre_form_derivative_nonneg {p : ℝ[X]} (hp : p.Splits) (t : ℝ) :
     0 ≤ (derivative (derivative p)).eval t ^ 2 -
       (derivative p).eval t *
         (derivative (derivative (derivative p))).eval t := by
-  rcases eq_zero_or_splits_derivative (Or.inr hp) with h0 | hs
-  · simp [h0]
-  · exact laguerre_form_nonneg hs t
+  exact laguerre_form_nonneg hp.derivative t
 
 /-! ### Wronskians of consecutive derivatives -/
 

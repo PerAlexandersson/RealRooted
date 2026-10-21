@@ -207,7 +207,7 @@ lemma strictInterl_singletonFreeSetPartitions_three_four :
   have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
     have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
     have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-      nonnegCoeffs_C_mul (by simp) hX_nonneg
+      hasNonnegCoeffs_C_mul (by simp) hX_nonneg
     exact fun m => add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
   have hmul :
       StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by

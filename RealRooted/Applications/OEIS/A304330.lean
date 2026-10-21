@@ -357,9 +357,9 @@ theorem polynomial_interlaces (n : ℕ) :
       exact interlaces_one_linear (p := X) (by simp)
   | succ n =>
       simp only [polynomial]
-      apply (qPolynomial_strictInterl_succ n).mul_X_both_of_roots_nonpos
-        (qPolynomial_isPF n).roots_nonpos
-        (qPolynomial_isPF (n + 1)).roots_nonpos |>.toInterlaces
+      apply (by
+        simpa using (qPolynomial_strictInterl_succ n).mul_X_sub_C_both 0 :
+          StrictInterl (X * qPolynomial n) (X * qPolynomial (n + 1))).toInterlaces
       rw [natDegree_mul X_ne_zero (qPolynomial_invariants n).2.2.ne_zero,
         natDegree_mul X_ne_zero (qPolynomial_invariants (n + 1)).2.2.ne_zero,
         natDegree_X, (qPolynomial_invariants n).1,

@@ -134,7 +134,7 @@ theorem terminalPairMixReal_orderedCutCompatible_zero (m : ℕ) :
       HasNonnegCoeffs (terminalXPairMixReal m 0 i) := by
     rw [terminalXPairMixReal_zero_closed]
     exact
-      (nonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X).add
+      (hasNonnegCoeffs_C_mul (by positivity) hasNonnegCoeffs_X).add
         (hasNonnegCoeffs_C (by positivity))
   have hQ_pos (i : Fin m) :
       HasPosLeadingCoeff (terminalXPairMixReal m 0 i) := by

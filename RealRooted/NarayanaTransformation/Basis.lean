@@ -104,10 +104,9 @@ private theorem touchardFactorStep_preservesPF {r : ℝ} (hr : 0 ≤ r)
     hasPosLeadingCoeff_add_of_natDegree_lt_left (by lia) hfirst_pos
   have hsum_deg : ((X + C r) * f + X * f.derivative).natDegree =
       f.natDegree + 1 := by
-    rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff]
+    rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt]
     · exact hfirst_deg
     · lia
-    · exact hfirst_pos
   have hstrictInterl : StrictInterl f ((X + C r) * f + X * f.derivative) := by
     apply strictInterl_of_interlaces_evalCoeff_nonpos hder hder_pos hsum_pos
     · rw [hsum_deg]
@@ -340,7 +339,7 @@ theorem risingFactorialStep_pf_shiftStrictInterl
       hfμ.hasNonnegCoeffs hfμ.hasNonnegCoeffs
   have hXfμnn : HasNonnegCoeffs (X * fμ) := hfμ.X_mul.hasNonnegCoeffs
   have hrf_nn : HasNonnegCoeffs (C r * f) :=
-    nonnegCoeffs_C_mul hr hf.hasNonnegCoeffs
+    hasNonnegCoeffs_C_mul hr hf.hasNonnegCoeffs
   have hf_g0 : Interl f (X * fμ + C r * f) :=
     interl_add_right_of_common_left_of_nonneg hf_Xfμ.toInterl
       (Interl.C_mul_right_of_nonneg hf.interl_self hr) hXfμnn hrf_nn
@@ -369,11 +368,9 @@ theorem risingFactorialStep_pf_shiftStrictInterl
     simp [add_comm]
   have hrfdeg : (C r * f).natDegree ≤ f.natDegree := Polynomial.natDegree_C_mul_le r f
   have hgdeg : (X * fμ + C r * f).natDegree = f.natDegree + 1 := by
-    rw [natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff]
+    rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt]
     · exact hXfμdeg
-    · rw [hXfμdeg]
-      lia
-    · exact (hfμ.hasNonnegCoeffs.pos_leadingCoeff hfμrr.1).X_mul
+    · lia
   have hgpf : IsPFPolynomial (X * fμ + C r * f) :=
     IsPFPolynomial.of_realRooted_nonneg (hXfμnn.add hrf_nn) hfg.2.1.2
   exact ⟨hgpf, strictInterl_comp_X_add_C_of_two_interlacings hμ hfg hfμg (by lia)⟩

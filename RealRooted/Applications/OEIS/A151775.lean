@@ -83,7 +83,7 @@ private theorem splits_splitFactorDerivative {a f : ℝ[X]}
     · exact absurd (pow_eq_zero_iff'.mp h).1 hf0
     · rw [h]; exact Splits.zero
   have hderivative : (derivative (a * f ^ m)).Splits :=
-    (eq_zero_or_splits_derivative (Or.inr (ha.mul (hf.pow m)))).resolve_left hD
+    (ha.mul (hf.pow m)).derivative
   exact Splits.of_dvd hderivative hD ⟨_, by rw [key, mul_comm]⟩
 
 private theorem splits_lowerStep {f : ℝ[X]} (hf : f.Splits) :

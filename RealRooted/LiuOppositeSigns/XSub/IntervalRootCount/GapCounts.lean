@@ -280,7 +280,7 @@ theorem
         hpair.left_pos.ne_zero hpair.right_pos.ne_zero huv_lt hp_no (hno v hv)
     rw [Nat.min_eq_right hgap_le_two]
   have hq_part : lowerTail + plainGapSum + upperTail = q.natDegree := by
-    rw [← card_roots_of_splits hpair.right_splits]
+    rw [← Polynomial.splits_iff_card_roots.mp hpair.right_splits]
     simpa [lowerTail, plainGapSum, upperTail, gaps] using hpartition
   rw [← hq_part]
   exact Nat.add_le_add (Nat.add_le_add le_rfl hplain_le_min) le_rfl
@@ -343,7 +343,7 @@ theorem PositiveSplitRootCountPair.card_right_roots_lt_head_le_card_xSub_le
         simp [not_lt]
       rw [Multiset.card_add] at hcard
       simpa [lower, upper, rootCountAtOrAbove, hnot,
-        card_roots_of_splits hpair.right_splits] using hcard
+        Polynomial.splits_iff_card_roots.mp hpair.right_splits] using hcard
     have hP_data :=
       hpair.posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
         (by rw [hdeg]) μ
@@ -421,7 +421,7 @@ theorem
       simp [not_lt]
     rw [Multiset.card_add] at hcard
     simpa [lower, upper, rootCountAtOrAbove, hnot,
-      card_roots_of_splits hpair.right_splits] using hcard
+      Polynomial.splits_iff_card_roots.mp hpair.right_splits] using hcard
   have hupper_eq :
       upper = (q.roots.filter (a < ·)).card := by
     simpa [upper] using
@@ -512,7 +512,7 @@ theorem
       simp [not_lt]
     rw [Multiset.card_add] at hcard
     simpa [lower, upper, rootCountAtOrAbove, hnot,
-      card_roots_of_splits hpair.right_splits] using hcard
+      Polynomial.splits_iff_card_roots.mp hpair.right_splits] using hcard
   have hupper_eq :
       upper = (q.roots.filter (a < ·)).card := by
     simpa [upper] using
@@ -696,7 +696,7 @@ theorem
     exact lt_of_le_of_ne har (Ne.symm hne)
   have hfilter : q.roots.filter (a < ·) = q.roots :=
     Multiset.filter_eq_self.mpr hq_all_gt
-  simp [hfilter, card_roots_of_splits hpair.right_splits]
+  simp [hfilter, Polynomial.splits_iff_card_roots.mp hpair.right_splits]
 
 end LiuOppositeSigns
 end RealRooted

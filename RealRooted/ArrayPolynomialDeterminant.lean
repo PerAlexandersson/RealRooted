@@ -317,7 +317,7 @@ theorem arrayDetPolynomialFin_splits (N : ℕ) :
     (arrayDetPolynomialFin N).Splits := by
   rw [arrayDetPolynomialFin,
     det_one_add_X_smul_eq_reverse_charpoly_comp_neg_X]
-  apply (DegreeDropReversal.splits_reverse ?_).comp_of_natDegree_le_one
+  apply (Polynomial.Splits.reverse ?_).comp_of_natDegree_le_one
   · simp
   · exact charpoly_splits_of_complex_roots_real fun z hz => by
       obtain ⟨r, hr, hrz⟩ := arrayKernelShiftFin_complex_roots_nonneg N z hz

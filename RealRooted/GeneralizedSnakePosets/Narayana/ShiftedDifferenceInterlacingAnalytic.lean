@@ -197,12 +197,12 @@ theorem auxiliaryGPencil_hasNonnegCoeffs_of_difference
   have hlam_term :
       HasNonnegCoeffs
         (C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1))) :=
-    nonnegCoeffs_C_mul hlam
+    hasNonnegCoeffs_C_mul hlam
       (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1)).X_mul
   have hnu_term :
       HasNonnegCoeffs
         (C (nu + 1) * FiniteSkewBoard.auxiliaryG (m - 1)) :=
-    nonnegCoeffs_C_mul hnu_one
+    hasNonnegCoeffs_C_mul hnu_one
       (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1))
   rw [show
       (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +

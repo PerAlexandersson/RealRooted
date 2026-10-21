@@ -42,7 +42,7 @@ private lemma affine_family_pair_data {f g : ℝ[X]}
     X * f ≠ 0 ∧
     HasPosLeadingCoeff (C t * f + g) ∧
     HasPosLeadingCoeff (X * f) := by
-  have hCt_nonneg : HasNonnegCoeffs (C t * f) := nonnegCoeffs_C_mul ht.le hfnn
+  have hCt_nonneg : HasNonnegCoeffs (C t * f) := hasNonnegCoeffs_C_mul ht.le hfnn
   have hsum_nonneg : HasNonnegCoeffs (C t * f + g) := hCt_nonneg.add hgnn
   have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hCt_ne : C t * f ≠ 0 :=
@@ -162,7 +162,7 @@ protected theorem AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegr
       have hμf_deg_lt : (C μ * f₀).natDegree < g₀.natDegree := by
         simpa [natDegree_C_mul hμ_pos.ne'] using hdeg₀
       have hsum_deg : (g₀ + C μ * f₀).natDegree = g₀.natDegree :=
-        natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff hμf_deg_lt hg₀_pos
+        Polynomial.natDegree_add_eq_left_of_natDegree_lt hμf_deg_lt
       have hsum_monic : (g₀ + C μ * f₀).Monic := by
         unfold Polynomial.Monic Polynomial.leadingCoeff
         rw [hsum_deg, coeff_add, coeff_eq_zero_of_natDegree_lt hμf_deg_lt,
@@ -172,9 +172,13 @@ protected theorem AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegr
           (f := g₀) (g := g₀ + C μ * f₀) (z := z) (ε := ε)
           hε_pos hz_aeval hg₀_monic hsum_monic hsum_deg hcoeff
             (hfamily₀ hμ_pos).2
-      have hw_im_zero : w.im = 0 :=
-        RealRooted.im_eq_zero_of_mem_aroots_of_isRealRooted
-          (hfamily₀ hμ_pos).1 (hfamily₀ hμ_pos).2 hw_root
+      have hsum_rr := hfamily₀ hμ_pos
+      have hw_isRoot :
+          ((g₀ + C μ * f₀).map (algebraMap ℝ ℂ)).IsRoot w := by
+        simp_all
+      have hw_im_zero : w.im = 0 := by
+        rcases hsum_rr.2.mem_range_of_isRoot hsum_rr.1 hw_isRoot with ⟨r, rfl⟩
+        simp
       have hbound_eq :
           ((g₀.natDegree + 1) * ε) ^ ((g₀.natDegree : ℝ)⁻¹) * R = δ / 2 := by
         have hmul :
@@ -281,9 +285,7 @@ protected lemma AffineFamily.isRealRooted_add_left_of_affine_family_of_natDegree
   have hsum_deg : (C t * f + g).natDegree = g.natDegree := by
     have hCt_deg : (C t * f).natDegree = f.natDegree := by rw [natDegree_C_mul ht.ne']
     exact
-      natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-        (by lia)
-        (hgnn.pos_leadingCoeff hg0)
+      Polynomial.natDegree_add_eq_right_of_natDegree_lt (by lia)
   apply AffineFamily.isRealRooted_of_add_C_mul_right_family_of_natDegree_le
   · intro s hs
     simpa [add_assoc, add_left_comm, add_comm, mul_assoc, left_distrib, right_distrib] using
@@ -346,7 +348,7 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
   have hXf_nonneg : HasNonnegCoeffs (X * f) := hfnn.X_mul
   have hXf_ne : X * f ≠ 0 := mul_ne_zero X_ne_zero hf0
   have hCsXf_nonneg : HasNonnegCoeffs (C s * (X * f)) :=
-    nonnegCoeffs_C_mul hs.le hXf_nonneg
+    hasNonnegCoeffs_C_mul hs.le hXf_nonneg
   have hCsXf_ne : C s * (X * f) ≠ 0 :=
     mul_ne_zero (C_ne_zero.mpr hs.ne') hXf_ne
   have hbase_nonneg : HasNonnegCoeffs (g + C s * (X * f)) :=
@@ -370,8 +372,8 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
   have hbase_deg : f.natDegree ≤ (g + C s * (X * f)).natDegree := by
     rcases lt_trichotomy g.natDegree (X * f).natDegree with hdeg | hdeg | hdeg
     · have hsum_deg : (g + C s * (X * f)).natDegree = (C s * (X * f)).natDegree :=
-        natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff
-          (by simpa [natDegree_C_mul hs.ne'] using hdeg) hCsXf_pos
+        Polynomial.natDegree_add_eq_right_of_natDegree_lt
+          (by simpa [natDegree_C_mul hs.ne'] using hdeg)
       rw [hsum_deg, natDegree_C_mul hs.ne', natDegree_mul X_ne_zero hf0, natDegree_X]
       lia
     · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree :=
@@ -379,8 +381,8 @@ private lemma isRealRooted_add_X_mul_right_of_affine_family
           (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos hCsXf_pos
       simp_all
     · have hsum_deg : (g + C s * (X * f)).natDegree = g.natDegree :=
-        natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff
-          (by simpa [natDegree_C_mul hs.ne'] using hdeg) hg_pos
+        Polynomial.natDegree_add_eq_left_of_natDegree_lt
+          (by simpa [natDegree_C_mul hs.ne'] using hdeg)
       rw [hsum_deg]
       have hXf_deg : (X * f).natDegree = f.natDegree + 1 := by simp_all
       lia

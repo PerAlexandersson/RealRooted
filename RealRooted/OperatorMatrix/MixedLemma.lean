@@ -451,7 +451,7 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     change (rootApproxEven p.leadingCoeff ss (delta M)).natDegree = p.natDegree
     rw [rootApproxEven, natDegree_C_mul_rootPolynomial hpLeading.ne']
     change (separateEven (delta M) ss).length = p.natDegree
-    have hcard := card_roots_of_splits hpReal.2
+    have hcard := Polynomial.splits_iff_card_roots.mp hpReal.2
     rw [← hssRoots] at hcard
     change ss.length = p.natDegree at hcard
     exact (length_separateEven (delta M) ss).trans hcard
@@ -459,7 +459,7 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     change (rootApproxOdd q.leadingCoeff rs (delta M)).natDegree = q.natDegree
     rw [rootApproxOdd, natDegree_C_mul_rootPolynomial hqLeading.ne']
     change (separateOdd (delta M) rs).length = q.natDegree
-    have hcard := card_roots_of_splits hqReal.2
+    have hcard := Polynomial.splits_iff_card_roots.mp hqReal.2
     rw [← hrsRoots] at hcard
     change rs.length = q.natDegree at hcard
     exact (length_separateOdd (delta M) rs).trans hcard
@@ -467,12 +467,12 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     simp only [rootApproxEven, separateEven_zero]
     rw [hssRoots]
     exact C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (card_roots_of_splits hpReal.2)
+      (Polynomial.splits_iff_card_roots.mp hpReal.2)
   have hqAtZero : rootApproxOdd q.leadingCoeff rs 0 = q := by
     simp only [rootApproxOdd, separateOdd_zero]
     rw [hrsRoots]
     exact C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (card_roots_of_splits hqReal.2)
+      (Polynomial.splits_iff_card_roots.mp hqReal.2)
   have hpCoeff (i : ℕ) : Tendsto (fun M => (pM M).coeff i) atTop
       (nhds (p.coeff i)) := by
     simpa only [pM, hpAtZero, Function.comp_def] using

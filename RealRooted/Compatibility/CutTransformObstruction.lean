@@ -36,11 +36,11 @@ private theorem qConst_nonneg (i : Fin 2) : 0 ≤ qConst i := by
   fin_cases i <;> norm_num [qConst]
 
 private theorem P_nonneg (i : Fin 2) : HasNonnegCoeffs (P i) :=
-  (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
+  (hasNonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
     (hasNonnegCoeffs_C (pConst_nonneg i))
 
 private theorem Q_nonneg (i : Fin 2) : HasNonnegCoeffs (Q i) :=
-  (nonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
+  (hasNonnegCoeffs_C_mul zero_le_one hasNonnegCoeffs_X).add
     (hasNonnegCoeffs_C (qConst_nonneg i))
 
 private theorem P_pos (i : Fin 2) : HasPosLeadingCoeff (P i) := by

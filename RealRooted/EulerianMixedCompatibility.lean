@@ -155,7 +155,7 @@ private theorem residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
     eval_ratio_eq_sum_residues hgh.2.1.2 hh_nodup (by lia) hgdegree hxroot
   have hcard : 2 ≤ h.roots.toFinset.card := by
     rw [Multiset.toFinset_card_of_nodup hh_nodup,
-      card_roots_of_splits hgh.2.1.2]
+      Polynomial.splits_iff_card_roots.mp hgh.2.1.2]
     exact hhdeg
   obtain ⟨s, hs, hsr⟩ := h.roots.toFinset.exists_mem_ne (by lia) r
   have hsroots : s ∈ h.roots := Multiset.mem_toFinset.mp hs

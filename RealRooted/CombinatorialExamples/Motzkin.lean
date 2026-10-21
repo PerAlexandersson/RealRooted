@@ -162,7 +162,6 @@ lemma strictInterl_motzkin_zero_one :
 
 lemma strictInterl_motzkin_shifted_succ {n : Nat}
     (hprev : StrictInterl (motzkin n) (motzkin (n + 1)))
-    (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
     StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) := by
   have hscalarA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
@@ -177,7 +176,7 @@ lemma strictInterl_motzkin_shifted_succ {n : Nat}
   have hright_core :
       StrictInterl ((X - C motzkinShift) * motzkin n)
         ((X - C motzkinShift) * motzkin (n + 1)) :=
-    hprev.mul_X_sub_C_both_of_roots_le motzkinShift hle_n hle_succ
+    hprev.mul_X_sub_C_both motzkinShift
   have hright :
       StrictInterl (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
         ((X - C motzkinShift) * motzkin (n + 1)) :=
@@ -252,7 +251,7 @@ theorem strictInterl_motzkin_succ_and_roots_le :
       rcases strictInterl_motzkin_succ_and_roots_le n with ⟨hprev, hle_n, hle_succ⟩
       have hshift :
           StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) :=
-        strictInterl_motzkin_shifted_succ hprev hle_n hle_succ
+        strictInterl_motzkin_shifted_succ hprev hle_succ
       have hright_le :
           ∀ r ∈ ((X - C motzkinShift) * motzkin (n + 1)).roots, r ≤ motzkinShift :=
         roots_le_X_sub_C_mul hprev.2.1.2 hle_succ

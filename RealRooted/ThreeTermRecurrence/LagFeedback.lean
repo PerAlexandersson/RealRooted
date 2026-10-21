@@ -41,8 +41,8 @@ theorem strictInterl_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c
       have hNn : HasNonnegCoeffs (P n) := by simpa using hN 0 (by lia)
       have hlast : HasNonnegCoeffs (P (n + p)) := by
         rw [hrec n]
-        exact (nonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia))).add
-          ((nonnegCoeffs_C_mul (hc n).le hasNonnegCoeffs_X).mul hNn)
+        exact (hasNonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia))).add
+          ((hasNonnegCoeffs_C_mul (hc n).le hasNonnegCoeffs_X).mul hNn)
       -- the new pairs `P (n + 1 + i) ≺ P (n + p)`
       have hnew : ∀ i, i + 1 < p → StrictInterl (P (n + (i + 1))) (P (n + p)) := by
         intro i hi
@@ -60,10 +60,10 @@ theorem strictInterl_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c
         have hg := h2.C_mul_right (hc n).ne'
         rw [hrec n, mul_assoc (C (c n))]
         exact hf.add_of_left hg
-          (hasPosLeadingCoeff_of_nonneg (nonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia)))
+          (hasPosLeadingCoeff_of_nonneg (hasNonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia)))
             hf.2.1.1)
           (hasPosLeadingCoeff_of_nonneg
-            ((nonnegCoeffs_C_mul (hc n).le (hasNonnegCoeffs_X.mul hNn))) hg.2.1.1)
+            ((hasNonnegCoeffs_C_mul (hc n).le (hasNonnegCoeffs_X.mul hNn))) hg.2.1.1)
       refine ⟨fun i j hij hj => ?_, fun i hi => ?_⟩
       · rcases Nat.lt_or_ge (j + 1) p with h | h
         · rw [show n + 1 + i = n + (i + 1) by lia, show n + 1 + j = n + (j + 1) by lia]

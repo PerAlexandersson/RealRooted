@@ -444,14 +444,14 @@ theorem transform_magicExpansion_interl {d : ℕ} {c : ℕ → ℝ}
       exact Interl.C_mul_right_of_nonneg (hleft j hjn) (hc j hjn)
     · intro j hj
       have hjn : j ≤ d := by simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (hc j hjn) (hdirect.nonnegCoeffs _ (hmem j hjn))
+      exact hasNonnegCoeffs_C_mul (hc j hjn) (hdirect.nonnegCoeffs _ (hmem j hjn))
   · apply Interl.finsetSum_right_of_nonneg
     · intro j hj
       have hjn : j ≤ d := by simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hj
       exact Interl.C_mul_left_of_nonneg (hright j hjn) (hc j hjn)
     · intro j hj
       have hjn : j ≤ d := by simpa [Nat.lt_succ_iff] using Finset.mem_range.mp hj
-      exact nonnegCoeffs_C_mul (hc j hjn) (hdirect.nonnegCoeffs _ (hmem j hjn))
+      exact hasNonnegCoeffs_C_mul (hc j hjn) (hdirect.nonnegCoeffs _ (hmem j hjn))
 
 end EulerianTransform
 end RealRooted

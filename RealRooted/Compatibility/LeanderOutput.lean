@@ -15,7 +15,7 @@ theorem leanderAffineFactor_hasNonnegCoeffs {a b : ℝ}
     (ha : 0 ≤ a) (hb : 0 ≤ b) :
     HasNonnegCoeffs (leanderAffineFactor a b) :=
   (hasNonnegCoeffs_C ha).add
-    (nonnegCoeffs_C_mul hb hasNonnegCoeffs_X)
+    (hasNonnegCoeffs_C_mul hb hasNonnegCoeffs_X)
 
 theorem leanderAffineFactor_eq_zero_iff (a b : ℝ) :
     leanderAffineFactor a b = 0 ↔ a = 0 ∧ b = 0 := by

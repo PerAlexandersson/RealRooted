@@ -535,7 +535,7 @@ theorem hasNonnegCoeffs_veroneseLinearFactorRowDesc_entry
   rw [hqeq]
   apply HasNonnegCoeffs.add
   · split
-    · exact nonnegCoeffs_C_mul ha hasNonnegCoeffs_one
+    · exact hasNonnegCoeffs_C_mul ha hasNonnegCoeffs_one
     · simpa using hasNonnegCoeffs_zero
   · split <;> split <;>
       simp_all [hasNonnegCoeffs_one, hasNonnegCoeffs_zero, hasNonnegCoeffs_X]
@@ -742,7 +742,7 @@ lemma isInterlacingSeq0Nonneg_map_C_mul
     simpa [i', j'] using interl_C_mul_both hc hinterl
   · intro p hp
     rcases List.mem_map.1 hp with ⟨q, hq, rfl⟩
-    exact nonnegCoeffs_C_mul hc_nonneg (hfs.2 q hq)
+    exact hasNonnegCoeffs_C_mul hc_nonneg (hfs.2 q hq)
 
 /-- General real-rooted nonnegative-coefficient case: the descending Veronese
 sections are weakly interlacing, and every nonzero section is real-rooted. -/
@@ -762,7 +762,7 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
       C p.leadingCoeff * linearFactorProduct as = p := by
     rw [hprod]
     exact Polynomial.C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (card_roots_of_splits hprr_splits)
+      (Polynomial.splits_iff_card_roots.mp hprr_splits)
   have hlead_pos : 0 < p.leadingCoeff := hpnn.pos_leadingCoeff hprr_ne
   have hpkg :=
     isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_linearFactorProduct

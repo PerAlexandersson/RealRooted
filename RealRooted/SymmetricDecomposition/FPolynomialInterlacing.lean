@@ -492,7 +492,7 @@ theorem posComboRealRooted_fPolynomial_of_strictInterl
   have hcombo_rr : ((C lam * u + C μ * v) ≠ 0 ∧ (C lam * u + C μ * v).Splits) :=
     PosComboRealRooted.of_strictInterl h hu_pos hv_pos hlam hμ
   have hcombo_nonneg : HasNonnegCoeffs (C lam * u + C μ * v) :=
-    (nonnegCoeffs_C_mul hlam.le hu_nonneg).add (nonnegCoeffs_C_mul hμ.le hv_nonneg)
+    (hasNonnegCoeffs_C_mul hlam.le hu_nonneg).add (hasNonnegCoeffs_C_mul hμ.le hv_nonneg)
   have hcombo_deg : (C lam * u + C μ * v).natDegree ≤ d := by
     have hud' : (C lam * u).natDegree ≤ d := by simpa [Polynomial.natDegree_C_mul hlam.ne']
     have hvd' : (C μ * v).natDegree ≤ d := by simpa [Polynomial.natDegree_C_mul hμ.ne']

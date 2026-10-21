@@ -29,7 +29,7 @@ coefficient is PF. -/
 private theorem isPFPolynomial_of_splits_of_roots_nonpos {g : ℝ[X]} (hg : g.Splits)
     (hroots : ∀ r ∈ g.roots, r ≤ 0) (hlc : 0 ≤ g.leadingCoeff) :
     IsPFPolynomial g := by
-  rw [← C_leadingCoeff_mul_prod_multiset_X_sub_C (card_roots_of_splits hg)]
+  rw [← C_leadingCoeff_mul_prod_multiset_X_sub_C (Polynomial.splits_iff_card_roots.mp hg)]
   refine (IsPFPolynomial.of_C_nonneg hlc).mul ?_
   generalize g.roots = t at hroots ⊢
   induction t using Multiset.induction_on with

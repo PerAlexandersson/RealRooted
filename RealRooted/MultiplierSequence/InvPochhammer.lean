@@ -63,7 +63,7 @@ theorem isPFMultiplierSequence_inv_ascPochhammer {α : ℝ} (hα : 0 < α) :
       inv_mul_cancel₀ hpos.ne', C_1, one_mul]
   rw [heq]
   exact IsPFPolynomial.of_realRooted_nonneg
-    (nonnegCoeffs_C_mul (inv_pos.mpr hpos).le
+    (hasNonnegCoeffs_C_mul (inv_pos.mpr hpos).le
       (generalizedLaguerre_hasNonnegCoeffs n hα1))
     ((generalizedLaguerre_splits n hα1).C_mul _)
 

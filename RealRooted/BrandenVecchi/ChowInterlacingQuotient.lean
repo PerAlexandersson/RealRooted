@@ -198,7 +198,7 @@ theorem chowS_nonnegCoeffs_and_strictInterl_of_triple
     intro r hr
     apply hdiff_le_one r
     apply (mem_roots houter.2.1.1).mpr
-    exact IsRoot.of_dvd hS_dvd ((mem_roots hS_ne).mp hr)
+    exact ((mem_roots hS_ne).mp hr).dvd hS_dvd
   have hg_le_one : ∀ r ∈ g.roots, r ≤ 1 := by
     intro r hr
     linarith [hg_nonpos r hr]

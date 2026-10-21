@@ -18,10 +18,10 @@ private theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common_aux
   have hts_eq : (↑ts : Multiset ℝ) = F.roots := Multiset.sort_eq ..
   have hts_sorted : ts.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
   have hrs_len : rs.length = f.natDegree := by
-    rw [← Multiset.coe_card, hrs_eq, card_roots_of_splits hf.2]
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hf.2]
   have hts_len : ts.length = F.natDegree := by
     rw [show ts = F.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      card_roots_of_splits hF_splits]
+      Polynomial.splits_iff_card_roots.mp hF_splits]
   have hoff : ts.length = rs.length + off := by lia
   have hstrict :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},

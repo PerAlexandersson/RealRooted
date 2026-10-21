@@ -19,7 +19,7 @@ lemma hasNonnegCoeffs_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
   have hneg : 0 ≤ -r := by simp_all
   simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc, mul_assoc] using
     hasNonnegCoeffs_X.add
-      (nonnegCoeffs_C_mul hneg (hasNonnegCoeffs_X_add_one.pow 2))
+      (hasNonnegCoeffs_C_mul hneg (hasNonnegCoeffs_X_add_one.pow 2))
 
 lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     ((X - C r * (X + 1) ^ 2) ≠ 0 ∧ (X - C r * (X + 1) ^ 2).Splits) := by
@@ -95,7 +95,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       exact isRealRooted_C_mul
         (isRealRooted_X_add_one_pow d).1 (isRealRooted_X_add_one_pow d).2 hcoeff_ne
     · have hroots_pos : 0 < γ.roots.card := by
-        rw [card_roots_of_splits hrr.2, hγdeg_eq]
+        rw [Polynomial.splits_iff_card_roots.mp hrr.2, hγdeg_eq]
         lia
       obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
       have hr_root : γ.IsRoot r := (mem_roots hrr.1).mp hr_mem
@@ -197,7 +197,7 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
             (natDegree_gammaTransform_le (2 * n) δ)
             (by simp_all)
         have hroots_pos : 0 < (gammaTransform (2 * n) δ).roots.card := by
-          rw [card_roots_of_splits hpδ.2, htop_deg]
+          rw [Polynomial.splits_iff_card_roots.mp hpδ.2, htop_deg]
           lia
         obtain ⟨x, hx_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
         have hx_root : (gammaTransform (2 * n) δ).IsRoot x := (mem_roots hpδ.1).mp hx_mem
@@ -305,7 +305,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       rw [roots_C_mul _ hcoeff_ne] at hr
       exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_X_add_one.pow d) r hr
     · have hroots_pos : 0 < δ.roots.card := by
-        rw [card_roots_of_splits hδ_rr.2, hδdeg]
+        rw [Polynomial.splits_iff_card_roots.mp hδ_rr.2, hδdeg]
         lia
       obtain ⟨r, hr_mem⟩ := Multiset.card_pos_iff_exists_mem.mp hroots_pos
       have hr_root : δ.IsRoot r := (mem_roots hδ_rr.1).mp hr_mem

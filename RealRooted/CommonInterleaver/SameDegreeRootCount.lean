@@ -144,8 +144,8 @@ theorem rootCrossing_of_rootCountAbove_diff_le_one
         (rootSeqDesc g).getD j 0 ≤ (rootSeqDesc f).getD (j - 1) 0) ∧
     (∀ j, 1 ≤ j → j < f.natDegree →
         (rootSeqDesc f).getD j 0 ≤ (rootSeqDesc g).getD (j - 1) 0) := by
-  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
+  have hMcard : f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
+  have hNcard : g.roots.card = f.natDegree := by rw [Polynomial.splits_iff_card_roots.mp hg, hdeg]
   exact rootCrossing_of_count_gt_diff_le_one hMcard hNcard hcount
 
 /-- Same-degree descending-root crossing implies the lower-threshold root-count
@@ -161,8 +161,8 @@ theorem sameDegreeRootCount_of_rootCrossing
     ∀ x : ℝ,
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 1 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 1 := by
-  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
+  have hMcard : f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
+  have hNcard : g.roots.card = f.natDegree := by rw [Polynomial.splits_iff_card_roots.mp hg, hdeg]
   simpa [rootSeqDesc] using
     (count_diff_le_one_of_rootCrossing (M := f.roots) (N := g.roots)
       hMcard hNcard hcross)
@@ -178,8 +178,8 @@ theorem sameDegreeRootCountAbove_of_rootCount
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  have hMcard : f.roots.card = f.natDegree := card_roots_of_splits hf
-  have hNcard : g.roots.card = f.natDegree := by rw [card_roots_of_splits hg, hdeg]
+  have hMcard : f.roots.card = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
+  have hNcard : g.roots.card = f.natDegree := by rw [Polynomial.splits_iff_card_roots.mp hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_diff_le_one hMcard hNcard hcount
 
 /-- Low-degree base case for the same-degree root-count formulation.
@@ -195,13 +195,13 @@ theorem rootCount_diff_le_one_of_natDegree_le_one
     calc
       (f.roots.filter (· ≤ x)).card ≤ f.roots.card :=
         Multiset.card_le_card (Multiset.filter_le _ _)
-      _ = f.natDegree := card_roots_of_splits hf
+      _ = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
       _ ≤ 1 := hfdeg
   have hgcard_nat : (g.roots.filter (· ≤ x)).card ≤ 1 := by
     calc
       (g.roots.filter (· ≤ x)).card ≤ g.roots.card :=
         Multiset.card_le_card (Multiset.filter_le _ _)
-      _ = g.natDegree := card_roots_of_splits hg
+      _ = g.natDegree := Polynomial.splits_iff_card_roots.mp hg
       _ = f.natDegree := hdeg
       _ ≤ 1 := hfdeg
   have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by exact_mod_cast hfcard_nat
