@@ -11,17 +11,13 @@ lemma opp_sign_cases {a b : ℝ} (h : SignType.sign a = -SignType.sign b) (ha : 
     (a < 0 ∧ 0 < b) ∨ (0 < a ∧ b < 0) := by
   rcases lt_or_gt_of_ne ha with ha | ha
   · left
-    refine ⟨ha, ?_⟩
     rw [sign_neg ha] at h
-    have : SignType.sign b = 1 := by
-      rcases (SignType.sign b).trichotomy with h' | h' | h' <;> simp_all
-    exact sign_eq_one_iff.mp this
+    refine ⟨ha, sign_eq_one_iff.mp ?_⟩
+    rcases (SignType.sign b).trichotomy with h' | h' | h' <;> simp_all
   · right
-    refine ⟨ha, ?_⟩
     rw [sign_pos ha] at h
-    have : SignType.sign b = -1 := by
-      rcases (SignType.sign b).trichotomy with h' | h' | h' <;> simp_all
-    exact sign_eq_neg_one_iff.mp this
+    refine ⟨ha, sign_eq_neg_one_iff.mp ?_⟩
+    rcases (SignType.sign b).trichotomy with h' | h' | h' <;> simp_all
 
 /-- **Sign variations of the coefficients are bounded by roots.** If the signs of the
 coefficients of `P` agree with the signs of `f` at increasing nodes `x k`, then `f` has at least
@@ -44,24 +40,18 @@ lemma signVariations_le_roots (f : ℝ → ℝ) (hf : Continuous f) (x : ℕ →
   have hld : P.coeff d ≠ 0 := leadingCoeff_ne_zero.mpr hP0
   obtain ⟨hlo_d, hd_hi, hsd⟩ := hP d hld
   by_cases hE : P.eraseLead = 0
-  · refine ⟨∅, ?_, by simp⟩
-    rw [hsv, hE, ite_eq_right]
-    · simp
-    · simp only [leadingCoeff_zero, sign_zero, neg_zero]
-      exact sign_ne_zero.mpr (leadingCoeff_ne_zero.mpr hP0)
+  · have := sign_ne_zero.mpr (leadingCoeff_ne_zero.mpr hP0)
+    exact ⟨∅, by simp_all, by simp⟩
   set E := P.eraseLead with hE_def
   have hEd : E.natDegree < d := by
-    rcases eraseLead_natDegree_lt_or_eraseLead_eq_zero P with h | h
-    · exact h
-    · exact absurd h hE
+    rcases eraseLead_natDegree_lt_or_eraseLead_eq_zero P with h | h <;> simp_all
   have hEcoeff : ∀ k, E.coeff k ≠ 0 → k ≠ d ∧ E.coeff k = P.coeff k := by
     intro k hk
     rw [hE_def, eraseLead_coeff] at hk ⊢
-    by_cases hkd : k = d
-    · rw [ite_eq_left hkd] at hk; exact absurd rfl hk
-    · rw [ite_eq_right hkd]; exact ⟨hkd, rfl⟩
+    by_cases hkd : k = d <;> simp_all
   have hNpos : 0 < N := by
-    rw [← hN]; exact Finset.card_pos.mpr (support_nonempty.mpr hP0)
+    rw [← hN]
+    exact Finset.card_pos.mpr (support_nonempty.mpr hP0)
   obtain ⟨s, hs1, hs2⟩ := ih (N - 1) (by lia) E E.natDegree
     (by rw [hE_def, card_support_eraseLead, hN]) (by
       intro k hk
@@ -76,7 +66,8 @@ lemma signVariations_le_roots (f : ℝ → ℝ) (hf : Continuous f) (x : ℕ →
   by_cases hcond : SignType.sign P.leadingCoeff = -SignType.sign E.leadingCoeff
   · -- a genuine sign change: produce a new root between `x e` and `x d`
     have hcond' : SignType.sign (f (x d)) = -SignType.sign (f (x e)) := by
-      rw [← hsd, ← hse, ← hEe]; exact hcond
+      rw [← hsd, ← hse, ← hEe]
+      exact hcond
     have hfd : f (x d) ≠ 0 := by
       intro h0; rw [h0, sign_zero] at hsd; exact hld (sign_eq_zero_iff.mp hsd)
     have hz : ∃ z, x e < z ∧ z < x d ∧ f z = 0 := by
@@ -114,16 +105,21 @@ lemma coeffPoly_coeff (n : ℕ) (G : ℝ[X]) (k : ℕ) :
   rw [Finset.sum_ite_eq]
   simp
 
-lemma bernOp_eval_eq (n : ℕ) (G : ℝ[X]) (y : ℝ) (hy : y ≠ 1) :
-    (bernOp n G).eval y = (1 - y) ^ n * (coeffPoly n G).eval (y / (1 - y)) := by
+private lemma sum_bb_eval (n : ℕ) (c : ℕ → ℝ) (y : ℝ) (hy : y ≠ 1) :
+    (∑ k ∈ Finset.range (n + 1), C (c k) * bb n k).eval y =
+      (1 - y) ^ n * ∑ k ∈ Finset.range (n + 1), c k * (y / (1 - y)) ^ k := by
   have hy' : 1 - y ≠ 0 := sub_ne_zero.mpr (Ne.symm hy)
-  rw [bernOp_apply, eval_finsetSum, coeffPoly, eval_finsetSum, Finset.mul_sum]
+  rw [eval_finsetSum, Finset.mul_sum]
   refine Finset.sum_congr rfl fun k hk => ?_
-  rw [Finset.mem_range] at hk
   simp only [bb, eval_mul, eval_C, eval_pow, eval_X, eval_sub, eval_one]
   rw [show (1 - y) ^ n = (1 - y) ^ (n - k) * (1 - y) ^ k by
-    rw [← pow_add, Nat.sub_add_cancel (by lia)], div_pow]
+    rw [← pow_add, Nat.sub_add_cancel (by simpa using Finset.mem_range.mp hk)], div_pow]
   field_simp
+
+lemma bernOp_eval_eq (n : ℕ) (G : ℝ[X]) (y : ℝ) (hy : y ≠ 1) :
+    (bernOp n G).eval y = (1 - y) ^ n * (coeffPoly n G).eval (y / (1 - y)) := by
+  rw [bernOp_apply, sum_bb_eval n _ y hy, coeffPoly, eval_finsetSum]
+  simp
 
 lemma card_le_countP_roots (p : ℝ[X]) (hp : p ≠ 0) (s : Finset ℝ)
     (hs : ∀ t ∈ s, p.IsRoot t ∧ 0 < t) : s.card ≤ p.roots.countP (0 < ·) := by
@@ -156,10 +152,9 @@ lemma bernOp_roots_le (n : ℕ) (hn : 2 ≤ n) (G : ℝ[X]) (h0 : G.eval 0 = 0) 
   set s₁ := s.image (fun y => y / (1 - y)) with hs₁
   have hinj : Set.InjOn (fun y : ℝ => y / (1 - y)) s := by
     intro y hy y' hy' h
-    have a1 : 1 - y ≠ 0 := by linarith [(hs y hy).2.2]
-    have a2 : 1 - y' ≠ 0 := by linarith [(hs y' hy').2.2]
     simp only at h
-    field_simp at h
+    field_simp [show 1 - y ≠ 0 by linarith [(hs y hy).2.2],
+      show 1 - y' ≠ 0 by linarith [(hs y' hy').2.2]] at h
     linarith
   have hcard : s₁.card = s.card := Finset.card_image_of_injOn hinj
   have hroots : ∀ t ∈ s₁, p.IsRoot t ∧ 0 < t := by
@@ -195,9 +190,7 @@ lemma bernOp_roots_le (n : ℕ) (hn : 2 ≤ n) (G : ℝ[X]) (h0 : G.eval 0 = 0) 
 
 lemma bernOp_pow_eval_zero (n r : ℕ) (G : ℝ[X]) :
     (((bernOp n) ^ r) G).eval 0 = G.eval 0 := by
-  induction r generalizing G with
-  | zero => simp
-  | succ r ih => rw [pow_succ, Module.End.mul_apply, ih, bernOp_eval_zero]
+  induction r generalizing G <;> simp_all [pow_succ, Module.End.mul_apply, bernOp_eval_zero]
 
 /-- Iterating the variation diminishing property. -/
 lemma bernOp_pow_roots_le (n : ℕ) (hn : 2 ≤ n) : ∀ (r : ℕ) (G : ℝ[X]), G.eval 0 = 0 →
@@ -218,8 +211,7 @@ lemma bernOp_pow_roots_le (n : ℕ) (hn : 2 ≤ n) : ∀ (r : ℕ) (G : ℝ[X]),
     rw [pow_succ, Module.End.mul_apply] at hG hs
     obtain ⟨s₁, hs₁, hs₁'⟩ := ih (bernOp n G) (by rw [bernOp_eval_zero, h0])
       (by rw [bernOp_eval_one n hn0, h1]) hG s hs
-    have hBG : bernOp n G ≠ 0 := by
-      intro h; rw [h, map_zero] at hG; exact hG rfl
+    have hBG : bernOp n G ≠ 0 := fun h => hG (by simp [h])
     obtain ⟨s', hs', hs''⟩ := bernOp_roots_le n hn G h0 h1 hBG s₁ (by
       intro y hy
       obtain ⟨e1, e2, e3⟩ := hs₁' y hy
@@ -235,16 +227,14 @@ lemma eigPoly_eval_one (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) : (eigPoly n m
 lemma eigPoly_coeff_self (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     (eigPoly n m).coeff m = 1 := by
   obtain ⟨h1, h2, -⟩ := eigPoly_spec n m hm hmn
-  have := h1.leadingCoeff
-  rwa [leadingCoeff, h2] at this
+  simpa [leadingCoeff, h2] using h1.leadingCoeff
 
 lemma eq_zero_of_natDegree_le_one_of_eval (F : ℝ[X]) (hF : F.natDegree ≤ 1) (h0 : F.eval 0 = 0)
     (h1 : F.eval 1 = 0) : F = 0 := by
   have hform := eq_X_add_C_of_natDegree_le_one hF
-  have e0 : F.coeff 0 = 0 := by rw [coeff_zero_eq_eval_zero, h0]
-  have e1 : F.coeff 1 = 0 := by
-    rw [hform] at h1; simp at h1; linarith
-  rw [hform, e0, e1]; simp
+  rw [hform] at h0 h1 ⊢
+  simp at h0 h1 ⊢
+  simp [h0, show F.coeff 1 = 0 by linarith]
 
 /-- Expansion in the eigenbasis of the polynomials vanishing at `0` and `1`. -/
 lemma eig_expand (n : ℕ) : ∀ m : ℕ, m ≤ n → ∀ F : ℝ[X], F.natDegree ≤ m →
@@ -277,9 +267,9 @@ lemma eig_expand (n : ℕ) : ∀ m : ℕ, m ≤ n → ∀ F : ℝ[X], F.natDegre
         rw [eigPoly_coeff_self n (m + 1) (by lia) hmn]
         ring
     have hF'0 : F'.eval 0 = 0 := by
-      rw [hF', eval_sub, eval_smul, eigPoly_eval_zero n (m + 1) (by lia) hmn, h0]; simp
+      simp [hF', h0, eigPoly_eval_zero n (m + 1) (by lia) hmn]
     have hF'1 : F'.eval 1 = 0 := by
-      rw [hF', eval_sub, eval_smul, eigPoly_eval_one n (m + 1) (by lia) hmn, h1]; simp
+      simp [hF', h1, eigPoly_eval_one n (m + 1) (by lia) hmn]
     obtain ⟨a', ha', -⟩ := ih (by lia) F' hF'd hF'0 hF'1
     refine ⟨Function.update a' (m + 1) c, ?_, by simp⟩
     rw [Finset.sum_Icc_succ_top (by lia), Function.update_self]
@@ -339,11 +329,8 @@ lemma coeff_one_bound (P : ℝ[X]) (m : ℕ) (hm : 2 ≤ m) (hP : P.Monic) (hd :
 
 lemma bernOp_pow_eigPoly (n d : ℕ) (hd : 2 ≤ d) (hdn : d ≤ n) (r : ℕ) :
     ((bernOp n) ^ r) (eigPoly n d) = (mu n d) ^ r • eigPoly n d := by
-  induction r with
-  | zero => simp
-  | succ r ih =>
-    rw [pow_succ, Module.End.mul_apply, (eigPoly_spec n d hd hdn).2.2, map_smul, ih, smul_smul,
-      pow_succ, mul_comm]
+  induction r <;> simp_all [pow_succ, Module.End.mul_apply, (eigPoly_spec n d hd hdn).2.2,
+    map_smul, smul_smul, mul_comm]
 
 /-- **Simple root at `0`.** The eigenpolynomial `G_m` (`2 ≤ m ≤ n`) has a simple zero at `0`:
 its linear coefficient does not vanish.  (Proved by a variation-diminishing argument.) -/
@@ -382,15 +369,13 @@ theorem eigPoly_coeff_one_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   have hFr0 : ∀ r, (Fr r).eval 0 = 0 := by
     intro r
     rw [hFr, eval_finsetSum]
-    refine Finset.sum_eq_zero fun d hd => ?_
-    rw [eval_smul, eigPoly_eval_zero n d (by simp at hd; lia) (by simp at hd; lia)]
-    simp
+    exact Finset.sum_eq_zero fun d hd => by
+      simp [eigPoly_eval_zero n d (by simp at hd; lia) (by simp at hd; lia)]
   have hFr1 : ∀ r, (Fr r).eval 1 = 0 := by
     intro r
     rw [hFr, eval_finsetSum]
-    refine Finset.sum_eq_zero fun d hd => ?_
-    rw [eval_smul, eigPoly_eval_one n d (by simp at hd; lia) (by simp at hd; lia)]
-    simp
+    exact Finset.sum_eq_zero fun d hd => by
+      simp [eigPoly_eval_one n d (by simp at hd; lia) (by simp at hd; lia)]
   have hFrc : ∀ r k, (Fr r).coeff k =
       ∑ d ∈ Finset.Icc 2 m, a d * (mu n m / mu n d) ^ r * (eigPoly n d).coeff k := by
     intro r k
@@ -398,23 +383,23 @@ theorem eigPoly_coeff_one_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   have hFrdeg : ∀ r, (Fr r).natDegree ≤ m := by
     intro r
     refine natDegree_sum_le_of_forall_le _ _ fun d hd => ?_
-    refine (natDegree_smul_le _ _).trans ?_
-    rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]
-    simp at hd; lia
+    exact (natDegree_smul_le _ _).trans <| by
+      rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]
+      simp at hd
+      lia
   have hFrm : ∀ r, (Fr r).coeff m = 1 := by
     intro r
     rw [hFrc, Finset.sum_eq_single m]
-    · rw [div_self (mu_pos n m hmn).ne', one_pow, eigPoly_coeff_self n m hm hmn, ham1]; ring
+    · simp [div_self (mu_pos n m hmn).ne', eigPoly_coeff_self n m hm hmn, ham1]
     · intro d hd hdm
       rw [coeff_eq_zero_of_natDegree_lt]
       · ring
-      rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]
-      simp at hd; lia
+      simpa [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1] using
+        (show d < m by simp at hd; lia)
     · intro h; simp at h; lia
   have hFrd : ∀ r, (Fr r).natDegree = m := fun r =>
     natDegree_eq_of_le_of_coeff_ne_zero (hFrdeg r) (by rw [hFrm r]; exact one_ne_zero)
-  have hFrmon : ∀ r, (Fr r).Monic := fun r => by
-    rw [Monic, leadingCoeff, hFrd r, hFrm r]
+  have hFrmon : ∀ r, (Fr r).Monic := fun r => by simp [Monic, leadingCoeff, hFrd r, hFrm r]
   -- the roots of `F` between the interior nodes
   set s₀ := (Finset.range (m - 2)).image z with hs₀
   have hzinj : Set.InjOn z (Finset.range (m - 2)) := by
@@ -565,14 +550,7 @@ def Psi (n : ℕ) (T : ℝ[X]) : ℝ[X] := ∑ k ∈ Finset.range (n + 1), C (T.
 
 lemma Psi_eval (n : ℕ) (T : ℝ[X]) (hT : T.natDegree ≤ n) (y : ℝ) (hy : y ≠ 1) :
     (Psi n T).eval y = (1 - y) ^ n * T.eval (y / (1 - y)) := by
-  have hy' : 1 - y ≠ 0 := sub_ne_zero.mpr (Ne.symm hy)
-  rw [Psi, eval_finsetSum, eval_eq_sum_range' (n := n + 1) (by lia), Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  rw [Finset.mem_range] at hk
-  simp only [bb, eval_mul, eval_C, eval_pow, eval_X, eval_sub, eval_one]
-  rw [show (1 - y) ^ n = (1 - y) ^ (n - k) * (1 - y) ^ k by
-    rw [← pow_add, Nat.sub_add_cancel (by lia)], div_pow]
-  field_simp
+  rw [Psi, sum_bb_eval n _ y hy, eval_eq_sum_range' (n := n + 1) (by lia)]
 
 /-- `Φ_d H = ∑_i H_i X^i (X+1)^(d-i)`, i.e. `(1+x)^d H(x/(1+x))`. -/
 def Phi (d : ℕ) (H : ℝ[X]) : ℝ[X] :=

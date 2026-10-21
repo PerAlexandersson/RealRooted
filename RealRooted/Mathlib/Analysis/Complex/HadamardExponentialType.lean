@@ -66,11 +66,9 @@ private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
   push_cast
   calc ∑ b ∈ T, (({a ∈ s' | z a = b}.card : ℕ) : ℤ)
       ≤ ∑ b ∈ T, D b := by
-        apply Finset.sum_le_sum
-        intro b hb
+        refine Finset.sum_le_sum fun b hb => ?_
         obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hb
-        have hkr : ‖z k‖ ≤ r := (Finset.mem_filter.1 hk).2
-        refine le_trans ?_ (fibre_card_le hf h0 hz s hkr)
+        refine le_trans ?_ (fibre_card_le hf h0 hz s (Finset.mem_filter.1 hk).2)
         exact_mod_cast Finset.card_le_card
           (Finset.filter_subset_filter _ (Finset.filter_subset _ _))
     _ ≤ ∑ b ∈ T ∪ hfin.toFinset, D b :=
@@ -80,13 +78,11 @@ private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
         intro u hu
         simp only [Finset.coe_union, Set.Finite.coe_toFinset]
         exact Or.inr hu
-
-
-
 private theorem exists_entire_quotient {f P : ℂ → ℂ} (hf : Differentiable ℂ f) (hP :
   Differentiable ℂ P)
     (hf0 : f 0 ≠ 0) (hord : ∀ w, analyticOrderAt f w = analyticOrderAt P w) :
-    ∃ G : ℂ → ℂ, Differentiable ℂ G ∧ (∀ w, G w ≠ 0) ∧ ∀ w, f w = G w * P w := by
+    ∃ G : ℂ → ℂ, Differentiable ℂ G ∧ (∀ w, G w ≠ 0) ∧
+      ∀ w, f w = G w * P w := by
   have hfa : ∀ w, AnalyticAt ℂ f w := fun w => hf.analyticAt w
   have hPa : ∀ w, AnalyticAt ℂ P w := fun w => hP.analyticAt w
   have hfin : ∀ w, analyticOrderAt f w ≠ ⊤ := fun w => order_ne_top hf hf0 w
@@ -110,21 +106,17 @@ private theorem exists_entire_quotient {f P : ℂ → ℂ} (hf : Differentiable 
   refine ⟨G, fun w => (hGa w).differentiableAt,
     fun w => (hGnf (Set.mem_univ w)).meromorphicOrderAt_eq_zero_iff.1 (hordG w), fun w => ?_⟩
   have h2 : ∀ᶠ x in 𝓝[≠] w, P x ≠ 0 := by
-    refine ((hPa w).eventually_eq_zero_or_eventually_ne_zero).resolve_left ?_
-    intro hz
-    exact hfin w (by rw [hord w]; exact analyticOrderAt_eq_top.2 hz)
+    exact ((hPa w).eventually_eq_zero_or_eventually_ne_zero).resolve_left fun hz =>
+      hfin w (by rw [hord w]; exact analyticOrderAt_eq_top.2 hz)
   have hev : G * P =ᶠ[𝓝[≠] w] f := by
     have h1 := hq.toMeromorphicNFOn_eq_self_on_nhdsNE (Set.mem_univ w)
     filter_upwards [h1, h2] with x hx hx2
     simp only [Pi.mul_apply]
     rw [← hGdef] at hx
-    rw [hx, hqdef]
-    simp [hx2]
-  have t1 : Tendsto (G * P) (𝓝[≠] w) (𝓝 ((G * P) w)) :=
-    ((hGa w).mul (hPa w)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-  have t2 : Tendsto f (𝓝[≠] w) (𝓝 (f w)) :=
-    (hfa w).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-  exact (tendsto_nhds_unique (t1.congr' hev) t2).symm
+    simp [hx, hqdef, hx2]
+  exact (tendsto_nhds_unique
+    (((hGa w).mul (hPa w)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds |>.congr' hev)
+    ((hfa w).continuousAt.tendsto.mono_left nhdsWithin_le_nhds)).symm
 
 /-- Common core: if `f = G P` with `G` zero-free and `P` bounded below on suitable circles,
 then `f = exp (a w) P`. -/
@@ -183,7 +175,8 @@ private theorem eq_exp_mul_of_lower_bound {f P : ℂ → ℂ} (hf : Differentiab
     refine hGR.trans (Real.exp_le_exp.2 ?_)
     have hK0 : 0 ≤ K := by positivity
     have hD : R ≤ ‖w‖ + |D| := hRD.trans (by linarith [le_abs_self D])
-    have : (1 + R) ^ (3 / 2 : ℝ) ≤ (1 + |D|) ^ (3 / 2 : ℝ) * (1 + ‖w‖) ^ (3 / 2 : ℝ) := by
+    have : (1 + R) ^ (3 / 2 : ℝ) ≤
+        (1 + |D|) ^ (3 / 2 : ℝ) * (1 + ‖w‖) ^ (3 / 2 : ℝ) := by
       rw [← Real.mul_rpow (by positivity) (by positivity)]
       apply Real.rpow_le_rpow (by positivity) _ (by norm_num)
       nlinarith [abs_nonneg D, norm_nonneg w]
@@ -198,8 +191,7 @@ private theorem eq_exp_mul_of_lower_bound {f P : ℂ → ℂ} (hf : Differentiab
   obtain ⟨a, b, hab⟩ := exists_affine_of_re_le_rpow hL hre
   have hG0 : G 0 = 1 := by
     have := hfG 0
-    rw [h0, hP0, mul_one] at this
-    exact this.symm
+    simpa [h0, hP0] using this.symm
   have hb : Complex.exp b = 1 := by
     rw [← hG0, ← hLG 0, hab 0]; simp
   refine ⟨a, fun w => ?_⟩
@@ -208,7 +200,8 @@ private theorem eq_exp_mul_of_lower_bound {f P : ℂ → ℂ} (hf : Differentiab
 /-! ### Lower bound for the genus-one product -/
 
 private theorem log_norm_weierstrassFactorOne_ge {u : ℂ} (hu : u ≠ 1) :
-    -(2 * ‖u‖ ^ (3 / 2 : ℝ)) + (if 1 / 2 ≤ ‖u‖ then min 0 (Real.log ‖1 - u‖) else 0) ≤
+    -(2 * ‖u‖ ^ (3 / 2 : ℝ)) +
+        (if 1 / 2 ≤ ‖u‖ then min 0 (Real.log ‖1 - u‖) else 0) ≤
       Real.log ‖weierstrassFactorOne u‖ := by
   by_cases hs : 1 / 2 ≤ ‖u‖
   · rw [ite_eq_left hs]
@@ -219,8 +212,7 @@ private theorem log_norm_weierstrassFactorOne_ge {u : ℂ} (hu : u ≠ 1) :
         Real.log_exp]
     rw [e]
     have h1 : -‖u‖ ≤ u.re := by
-      have := Complex.abs_re_le_norm u
-      linarith [neg_abs_le u.re]
+      linarith [Complex.abs_re_le_norm u, neg_abs_le u.re]
     have hu0 : 0 ≤ ‖u‖ := norm_nonneg u
     have h2 : ‖u‖ ≤ 2 * ‖u‖ ^ (3 / 2 : ℝ) := by
       have e2 : ‖u‖ ^ (3 / 2 : ℝ) = ‖u‖ * ‖u‖ ^ (1 / 2 : ℝ) := by
@@ -282,9 +274,8 @@ private theorem exists_gap (M : Finset ℝ) (a : ℝ) :
   rw [Real.volume_Icc, ENNReal.ofReal_le_ofReal_iff (by positivity)] at h4
   have h5 : (M.card : ℝ) * (2 * ε) < 1 := by
     rw [hε]
-    have : (0 : ℝ) < (M.card : ℝ) + 1 := by positivity
     field_simp
-    linarith
+    linarith [show (0 : ℝ) < (M.card : ℝ) + 1 by positivity]
   linarith
 
 private theorem finite_of_count {z : ℕ → ℂ} {A : ℝ}
@@ -297,21 +288,24 @@ private theorem finite_of_count {z : ℕ → ℂ} {A : ℝ}
   obtain ⟨t, ht, hcard⟩ := Set.Infinite.exists_subset_card_eq hinf (⌈A * r'⌉₊ + 1)
   have h1 := hcount t r' (le_max_right _ _)
   have hfilt : t.filter (fun k => ‖z k‖ ≤ r') = t :=
-    Finset.filter_true_of_mem (fun k hk => (show ‖z k‖ ≤ r from ht hk).trans (le_max_left _ _))
+    Finset.filter_true_of_mem fun k hk =>
+      (show ‖z k‖ ≤ r from ht hk).trans (le_max_left _ _)
   rw [hfilt, hcard] at h1
   push_cast at h1
-  have := Nat.le_ceil (A * r')
-  linarith
+  linarith [Nat.le_ceil (A * r')]
 
-private theorem weierstrassFactorOne_ne_zero {u : ℂ} (hu : u ≠ 1) : weierstrassFactorOne u ≠ 0 :=
+private theorem weierstrassFactorOne_ne_zero {u : ℂ} (hu : u ≠ 1) :
+    weierstrassFactorOne u ≠ 0 :=
   mul_ne_zero (sub_ne_zero.2 (Ne.symm hu)) (Complex.exp_ne_zero u)
 
 private theorem log_norm_partial_prod_ge {z : ℕ → ℂ} (hz : ∀ k, z k ≠ 0)
     (hS : Summable fun k => ‖z k‖ ^ (-(3 / 2 : ℝ))) {T : Finset ℕ} {R ε : ℝ} (hR : 0 < R)
     (hε : 0 < ε) (hε1 : ε ≤ 2 * R)
-    (hT : ∀ k, ‖z k‖ ≤ 2 * R → k ∈ T) (hgap : ∀ k, ε ≤ |R - ‖z k‖|) {w : ℂ} (hw : ‖w‖ = R)
+    (hT : ∀ k, ‖z k‖ ≤ 2 * R → k ∈ T) (hgap : ∀ k, ε ≤ |R - ‖z k‖|)
+    {w : ℂ} (hw : ‖w‖ = R)
     (s : Finset ℕ) :
-    -(2 * R ^ (3 / 2 : ℝ) * ∑' k, ‖z k‖ ^ (-(3 / 2 : ℝ))) + T.card * Real.log (ε / (2 * R)) ≤
+    -(2 * R ^ (3 / 2 : ℝ) * ∑' k, ‖z k‖ ^ (-(3 / 2 : ℝ))) +
+        T.card * Real.log (ε / (2 * R)) ≤
       Real.log ‖∏ k ∈ s, weierstrassFactorOne (w / z k)‖ := by
   classical
   have hne1 : ∀ k, w / z k ≠ 1 := by
@@ -331,7 +325,8 @@ private theorem log_norm_partial_prod_ge {z : ℕ → ℂ} (hz : ∀ k, z k ≠ 
     have hzk : 0 < ‖z k‖ := norm_pos_iff.2 (hz k)
     have hb := log_norm_weierstrassFactorOne_ge (hne1 k)
     have hnorm : ‖w / z k‖ = R / ‖z k‖ := by rw [norm_div, hw]
-    have hpow : ‖w / z k‖ ^ (3 / 2 : ℝ) = R ^ (3 / 2 : ℝ) * ‖z k‖ ^ (-(3 / 2 : ℝ)) := by
+    have hpow : ‖w / z k‖ ^ (3 / 2 : ℝ) =
+        R ^ (3 / 2 : ℝ) * ‖z k‖ ^ (-(3 / 2 : ℝ)) := by
       rw [hnorm, Real.div_rpow hR.le hzk.le, Real.rpow_neg hzk.le, div_eq_mul_inv]
     rw [hpow] at hb
     refine le_trans ?_ hb
@@ -368,7 +363,8 @@ private theorem log_norm_partial_prod_ge {z : ℕ → ℂ} (hz : ∀ k, z k ≠ 
       R ^ (3 / 2 : ℝ) * ∑' k, ‖z k‖ ^ (-(3 / 2 : ℝ)) := mul_le_mul_of_nonneg_left hS1 hRp
   linarith
 
-private theorem numeric_bound {A t R N : ℝ} (hA : 0 ≤ A) (ht : 1 ≤ t) (hR : 0 < R) (hRt : R ≤ t)
+private theorem numeric_bound {A t R N : ℝ} (hA : 0 ≤ A) (ht : 1 ≤ t)
+    (hR : 0 < R) (hRt : R ≤ t)
     (hN0 : 0 ≤ N) (hN : N ≤ 3 * A * t) :
     N * Real.log (8 * R * (N + 1)) ≤
       3 * A * (Real.log (8 * (3 * A + 1)) + 4) * t ^ (3 / 2 : ℝ) := by
@@ -387,7 +383,8 @@ private theorem numeric_bound {A t R N : ℝ} (hA : 0 ≤ A) (ht : 1 ≤ t) (hR 
     linarith [show t ^ (1 / 2 : ℝ) / (1 / 2) = 2 * t ^ (1 / 2 : ℝ) by ring]
   have hc1 : 0 ≤ Real.log (8 * (3 * A + 1)) := Real.log_nonneg (by nlinarith)
   have hsq : 1 ≤ t ^ (1 / 2 : ℝ) := Real.one_le_rpow ht (by norm_num)
-  have hlog2 : Real.log (8 * R * (N + 1)) ≤ (Real.log (8 * (3 * A + 1)) + 4) * t ^ (1 / 2 : ℝ) := by
+  have hlog2 : Real.log (8 * R * (N + 1)) ≤
+      (Real.log (8 * (3 * A + 1)) + 4) * t ^ (1 / 2 : ℝ) := by
     nlinarith
   have hpos : 0 ≤ (Real.log (8 * (3 * A + 1)) + 4) * t ^ (1 / 2 : ℝ) := by positivity
   have e : t ^ (3 / 2 : ℝ) = t * t ^ (1 / 2 : ℝ) := by
@@ -464,7 +461,8 @@ private theorem lower_bound_prod {z : ℕ → ℂ} (hz : ∀ k, z k ≠ 0) {A : 
   have hD := numeric_bound hA (t := 1 + R) (by linarith) hR0 (by linarith) hN0 hN
   have hRp : R ^ (3 / 2 : ℝ) ≤ (1 + R) ^ (3 / 2 : ℝ) :=
     Real.rpow_le_rpow hR0.le (by linarith) (by norm_num)
-  have h1 : R ^ (3 / 2 : ℝ) * S ≤ (1 + R) ^ (3 / 2 : ℝ) * S := mul_le_mul_of_nonneg_right hRp hS0
+  have h1 : R ^ (3 / 2 : ℝ) * S ≤ (1 + R) ^ (3 / 2 : ℝ) * S :=
+    mul_le_mul_of_nonneg_right hRp hS0
   rw [hlog]
   have e : (2 * S + 3 * A * (Real.log (8 * (3 * A + 1)) + 4)) * (1 + R) ^ (3 / 2 : ℝ) =
       2 * ((1 + R) ^ (3 / 2 : ℝ) * S) +
@@ -488,14 +486,14 @@ private lemma analyticOrderAt_one_sub_div {ι : Type*} (z : ι → ℂ)
 
 /-! ### Finite products -/
 
-private theorem analyticOrderAt_finset_prod_one_sub {ι : Type*} (z : ι → ℂ) (hz : ∀ i, z i ≠ 0)
+private theorem analyticOrderAt_finset_prod_one_sub {ι : Type*} (z : ι → ℂ)
+    (hz : ∀ i, z i ≠ 0)
     (s : Finset ι) (w : ℂ) [DecidablePred (fun i => z i = w)] :
-    analyticOrderAt (fun x => ∏ i ∈ s, (1 - x / z i)) w = ((s.filter (fun i => z i = w)).card) := by
+    analyticOrderAt (fun x => ∏ i ∈ s, (1 - x / z i)) w =
+      ((s.filter (fun i => z i = w)).card) := by
   classical
   induction s using Finset.induction_on with
-  | empty =>
-    simp only [Finset.prod_empty, Finset.filter_empty, Finset.card_empty, Nat.cast_zero]
-    exact (analyticAt_const).analyticOrderAt_eq_zero.mpr one_ne_zero
+  | empty => simpa using (analyticAt_const).analyticOrderAt_eq_zero.mpr one_ne_zero
   | insert i s hi ih =>
     have hfac : AnalyticAt ℂ (fun x => 1 - x / z i) w := by fun_prop
     have hrest : AnalyticAt ℂ (fun x => ∏ j ∈ s, (1 - x / z j)) w := by fun_prop
@@ -505,23 +503,31 @@ private theorem analyticOrderAt_finset_prod_one_sub {ι : Type*} (z : ι → ℂ
     rw [e, analyticOrderAt_mul hfac hrest, ih, Finset.filter_insert]
     by_cases hzi : z i = w
     · rw [ite_eq_left hzi, Finset.card_insert_of_notMem (by simp [hi])]
-      have h1 : analyticOrderAt (fun x => 1 - x / z i) w = 1 :=
-        analyticOrderAt_one_sub_div z hz i hzi
-      rw [h1]; push_cast; ring
+      rw [analyticOrderAt_one_sub_div z hz i hzi]
+      push_cast
+      ring
     · rw [ite_eq_right hzi]
-      have h1 : analyticOrderAt (fun x => 1 - x / z i) w = 0 := by
-        refine hfac.analyticOrderAt_eq_zero.mpr ?_
+      rw [hfac.analyticOrderAt_eq_zero.mpr (by
         intro h
         apply hzi
         have : w / z i = 1 := by linear_combination -h
         rw [div_eq_one_iff_eq (hz i)] at this
-        exact this.symm
-      rw [h1, zero_add]
+        exact this.symm), zero_add]
 
-/-- **Hadamard factorization for entire functions of exponential type (genus ≤ 1), infinitely many
-zeros.**  Let `f` be entire with `f 0 = 1` and `‖f z‖ ≤ exp (C (1 + ‖z‖))`, and let `z : ℕ → ℂ`
-enumerate its zeros with multiplicity (`analyticOrderAt f w = #{k | z k = w}`).  Then there is
-`a : ℂ` with `f w = exp (a w) * ∏' k, E₁ (w / z k)`, the product being multipliable. -/
+private lemma zero_enumeration_ne_zero {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hf0 : f 0 ≠ 0) {z : ι → ℂ}
+    (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w}) : ∀ k, z k ≠ 0 := by
+  intro k hk
+  have h1 := hz 0
+  rw [(hf.analyticAt 0).analyticOrderAt_eq_zero.mpr hf0, eq_comm, Set.encard_eq_zero] at h1
+  have : k ∉ {j | z j = 0} := by simp [h1]
+  exact this hk
+
+/-- **Hadamard factorization for entire functions of exponential type (genus ≤ 1), infinitely
+many zeros.**  Let `f` be entire with `f 0 = 1` and `‖f z‖ ≤ exp (C (1 + ‖z‖))`, and let
+`z : ℕ → ℂ` enumerate its zeros with multiplicity
+(`analyticOrderAt f w = #{k | z k = w}`).  Then there is `a : ℂ` with
+`f w = exp (a w) * ∏' k, E₁ (w / z k)`, the product being multipliable. -/
 theorem exists_eq_exp_mul_tprod_of_norm_le_exp {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (h0 : f 0 = 1) {C : ℝ}
     (h : ∀ z, ‖f z‖ ≤ Real.exp (C * (1 + ‖z‖))) {z : ℕ → ℂ}
@@ -530,13 +536,7 @@ theorem exists_eq_exp_mul_tprod_of_norm_le_exp {f : ℂ → ℂ} (hf : Different
       f w = Complex.exp (a * w) * ∏' k, weierstrassFactorOne (w / z k) := by
   classical
   have hf0 : f 0 ≠ 0 := by rw [h0]; exact one_ne_zero
-  have hz0 : ∀ k, z k ≠ 0 := by
-    intro k hk
-    have h1 := hz 0
-    rw [(hf.analyticAt 0).analyticOrderAt_eq_zero.mpr hf0, eq_comm, Set.encard_eq_zero] at h1
-    have : k ∈ {j | z j = 0} := hk
-    rw [h1] at this
-    exact this
+  have hz0 := zero_enumeration_ne_zero hf hf0 hz
   obtain ⟨A, hA⟩ := hf.zero_count_le hf0 h
   have hcount : ∀ s : Finset ℕ, ∀ r : ℝ, 1 ≤ r →
       ((s.filter (fun k => ‖z k‖ ≤ r)).card : ℝ) ≤ A * r := by
@@ -570,21 +570,17 @@ theorem exists_eq_exp_mul_prod_of_norm_le_exp {f : ℂ → ℂ} (hf : Differenti
     ∃ a : ℂ, ∀ w : ℂ, f w = Complex.exp (a * w) * ∏ i, (1 - w / z i) := by
   classical
   have hf0 : f 0 ≠ 0 := by rw [h0]; exact one_ne_zero
-  have hz0 : ∀ k, z k ≠ 0 := by
-    intro k hk
-    have h1 := hz 0
-    rw [(hf.analyticAt 0).analyticOrderAt_eq_zero.mpr hf0, eq_comm, Set.encard_eq_zero] at h1
-    have : k ∈ {j | z j = 0} := hk
-    rw [h1] at this
-    exact this
+  have hz0 := zero_enumeration_ne_zero hf hf0 hz
   have hPd : Differentiable ℂ (fun x => ∏ i, (1 - x / z i)) := by fun_prop
   have hord : ∀ w, analyticOrderAt f w = analyticOrderAt (fun x => ∏ i, (1 - x / z i)) w := by
     intro w
     rw [hz, analyticOrderAt_finset_prod_one_sub z hz0, ← Set.encard_coe_eq_coe_finsetCard]
     simp
   have hlow : ∃ B D : ℝ, ∀ x : ℝ, 0 ≤ x → ∃ R, x ≤ R ∧ R ≤ x + D ∧
-      ∀ w : ℂ, ‖w‖ = R → Real.exp (-(B * (1 + R) ^ (3 / 2 : ℝ))) ≤ ‖∏ i, (1 - w / z i)‖ := by
-    refine ⟨0, 2 * ∑ i, ‖z i‖, fun x hx => ⟨x + 2 * ∑ i, ‖z i‖, ?_, le_rfl, fun w hw => ?_⟩⟩
+      ∀ w : ℂ, ‖w‖ = R → Real.exp (-(B * (1 + R) ^ (3 / 2 : ℝ))) ≤
+        ‖∏ i, (1 - w / z i)‖ := by
+    refine ⟨0, 2 * ∑ i, ‖z i‖, fun x hx =>
+      ⟨x + 2 * ∑ i, ‖z i‖, ?_, le_rfl, fun w hw => ?_⟩⟩
     · have : 0 ≤ ∑ i, ‖z i‖ := Finset.sum_nonneg fun i _ => norm_nonneg _
       linarith
     · simp only [zero_mul, neg_zero, Real.exp_zero, norm_prod]
@@ -592,7 +588,8 @@ theorem exists_eq_exp_mul_prod_of_norm_le_exp {f : ℂ → ℂ} (hf : Differenti
         _ ≤ _ := Finset.prod_le_prod₀ (fun _ _ => zero_le_one) (fun i _ => ?_)
       have hzi : 0 < ‖z i‖ := norm_pos_iff.2 (hz0 i)
       have hle : ‖z i‖ ≤ ∑ j, ‖z j‖ :=
-        Finset.single_le_sum (f := fun j => ‖z j‖) (fun j _ => norm_nonneg _) (Finset.mem_univ i)
+        Finset.single_le_sum (f := fun j => ‖z j‖) (fun j _ => norm_nonneg _)
+          (Finset.mem_univ i)
       have h1 : 2 * ‖z i‖ ≤ ‖w‖ := by rw [hw]; linarith
       have h2 : ‖w / z i‖ - ‖(1 : ℂ)‖ ≤ ‖1 - w / z i‖ := by
         rw [norm_sub_rev]; exact norm_sub_norm_le _ _
@@ -601,8 +598,4 @@ theorem exists_eq_exp_mul_prod_of_norm_le_exp {f : ℂ → ℂ} (hf : Differenti
       linarith
   obtain ⟨a, ha⟩ := eq_exp_mul_of_lower_bound hf hPd h0 (by simp) h hord hlow
   exact ⟨a, ha⟩
-
-
 end Differentiable
-
-
