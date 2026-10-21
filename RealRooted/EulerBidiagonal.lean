@@ -35,8 +35,8 @@ The key step is the identity
 `2 X q' + c q`, combined with Laguerre's inequality `q q'' − q'² < 0`.  The rows include the
 central factorial numbers (A036969, `a = b = 1`) and the Legendre–Stirling numbers (A071951,
 `a = 1, b = 2`); real-rootedness of these rows is classical (Andrews–Gawronski–Littlejohn,
-Andrews–Egge–Gawronski–Littlejohn, Mongelli), but interlacing of consecutive rows appears to be
-new.  The argument was found in this project (see issue #1324).
+Andrews–Egge–Gawronski–Littlejohn, Mongelli), but interlacing of consecutive rows appears to
+be new.  The argument was found in this project (see issue #1324).
 -/
 
 /-- The operator `T = X + (theta + a) (theta + b)`. -/
@@ -66,8 +66,7 @@ def stepLinearMap (a b : ℝ) : ℝ[X] →ₗ[ℝ] ℝ[X] :=
 
 /-- Applying the linear-map packaging gives the original polynomial operator. -/
 @[simp] theorem stepLinearMap_apply (a b : ℝ) (p : ℝ[X]) :
-    stepLinearMap a b p = step a b p :=
-  rfl
+    stepLinearMap a b p = step a b p := rfl
 
 /-- Coefficients of the bidiagonal Euler step. -/
 @[simp] theorem coeff_step (a b : ℝ) (p : ℝ[X]) (k : ℕ) :
@@ -80,8 +79,7 @@ def stepLinearMap (a b : ℝ) : ℝ[X] →ₗ[ℝ] ℝ[X] :=
   | succ k =>
       simp only [step, coeff_add, coeff_X_mul, coeff_C_mul, coeff_theta,
         Nat.cast_add, Nat.cast_one]
-      rw [ite_eq_right (Nat.add_one_ne_zero k)]
-      simp only [Nat.add_sub_cancel]
+      rw [ite_eq_right (Nat.add_one_ne_zero k), Nat.add_sub_cancel]
       ring
 
 /-- Differential form of the bidiagonal Euler step. -/
@@ -89,8 +87,7 @@ theorem step_eq_second_derivative (a b : ℝ) (p : ℝ[X]) :
     step a b p =
       X ^ 2 * p.derivative.derivative + C (a + b + 1) * X * p.derivative +
         (C (a * b) + X) * p := by
-  simp only [step, theta, derivative_mul, derivative_X, add_mul, one_mul]
-  simp only [map_add, map_one]
+  simp only [step, theta, derivative_mul, derivative_X, add_mul, one_mul, map_add, map_one]
   ring
 
 /-- The operator intertwines multiplication by `X` with a shifted parameter pair. -/
@@ -114,17 +111,10 @@ private theorem u_natDegree_and_leadingCoeff
     (htop : (c / 2 + (d : ℝ)) * p.leadingCoeff ≠ 0) :
     (comparison c p).natDegree = d ∧
       (comparison c p).leadingCoeff = (c / 2 + (d : ℝ)) * p.leadingCoeff := by
-  have htop' : (c / 2 + (p.natDegree : ℝ)) * p.leadingCoeff ≠ 0 := by
-    simpa [hd, add_comm] using htop
-  have h := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
-    p (c / 2) 0 1 (by simpa using htop')
-  rw [hd] at h
-  have hu_eq : comparison c p = C (c / 2) * p + (C 0 + C 1 * X) * p.derivative := by
-    simp only [comparison, map_zero, map_one]
-    ring
-  dsimp only at h
-  rw [hu_eq]
-  simpa using h
+  subst d
+  simpa [comparison, add_comm] using
+    Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+      p (c / 2) 0 1 (by simpa [add_comm] using htop)
 
 private theorem step_natDegree_and_leadingCoeff
     (a b : ℝ) (p : ℝ[X]) (d : ℕ) (hd : p.natDegree = d)
@@ -134,10 +124,8 @@ private theorem step_natDegree_and_leadingCoeff
   let F := step a b p
   have htop : F.coeff (d + 1) = p.leadingCoeff := by
     rw [coeff_step]
-    have hzero : p.coeff (d + 1) = 0 := by
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [hd]
-      lia
+    have hzero : p.coeff (d + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by rw [hd]; lia)
     rw [ite_eq_right (Nat.add_one_ne_zero d), Nat.add_sub_cancel, hzero]
     simp only [mul_zero, zero_add, leadingCoeff, hd]
   have hle : F.natDegree ≤ d + 1 := by
@@ -146,19 +134,12 @@ private theorem step_natDegree_and_leadingCoeff
     rw [coeff_step]
     have hpk : p.coeff k = 0 :=
       coeff_eq_zero_of_natDegree_lt (by rw [hd]; lia)
-    have hpkm : p.coeff (k - 1) = 0 := by
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [hd]
-      lia
+    have hpkm : p.coeff (k - 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by rw [hd]; lia)
     simp only [hpk, hpkm, mul_zero, zero_add]
     rw [ite_eq_right (by lia)]
   have hdeg : F.natDegree = d + 1 :=
-    natDegree_eq_of_le_of_coeff_ne_zero hle (by
-      intro hzero
-      have hp : p.leadingCoeff = 0 := by rw [← htop, hzero]
-      have hpos' : 0 < p.leadingCoeff := hpos
-      rw [hp] at hpos'
-      linarith)
+    natDegree_eq_of_le_of_coeff_ne_zero hle (by rw [htop]; exact ne_of_gt hpos)
   refine ⟨hdeg, ?_⟩
   rw [leadingCoeff, hdeg]
   exact htop
@@ -181,8 +162,61 @@ theorem eval_mul_step_of_two_mul_eval_X_mul_derivative_add_eq_zero
 
 /-- The strict parameter inequality used in the sign argument for real-rootedness. -/
 private theorem param_gap_neg {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
-    a * b - (a + b + 1) ^ 2 / 4 < 0 := by
-  nlinarith [sq_nonneg (a - b)]
+    a * b - (a + b + 1) ^ 2 / 4 < 0 := by nlinarith [sq_nonneg (a - b)]
+
+private theorem no_common_comparison {c : ℝ} {d : ℕ} (q : ℝ[X])
+    (hq : SimpleNegRooted q d) :
+    ∀ r : ℝ, ¬ (q.IsRoot r ∧ (comparison c q).IsRoot r) := by
+  intro r hr
+  have hu_eval : (comparison c q).eval r = r * q.derivative.eval r := by
+    simp only [comparison, eval_add, eval_mul, eval_X, eval_C, hr.1.eq_zero, mul_zero,
+      add_zero]
+  rw [hr.2.eq_zero] at hu_eval
+  exact mul_ne_zero (ne_of_lt (hq.isRoot_neg hr.1))
+    (hq.simple.eval_derivative_ne_zero hr.1) hu_eval.symm
+
+private theorem eval_mul_step_neg_of_comparison_isRoot
+    {a b c : ℝ} {d : ℕ} (q : ℝ[X]) (ha : 0 ≤ a) (hb : 0 ≤ b)
+    (hc : c = a + b + 1) (hq : SimpleNegRooted q d) {s : ℝ}
+    (hs : (comparison c q).IsRoot s) :
+    q.eval s * (step a b q).eval s < 0 := by
+  have hcpos : 0 < c := by rw [hc]; nlinarith
+  have hU_nonneg : HasNonnegCoeffs (comparison c q) := by
+    intro k
+    rw [coeff_comparison]
+    exact mul_nonneg (by positivity) (hq.nonneg k)
+  have hU_zero : 0 < (comparison c q).coeff 0 := by
+    rw [coeff_comparison]
+    simpa only [Nat.cast_zero, zero_add] using
+      mul_pos (half_pos hcpos) hq.coeff_zero_pos
+  have hU_ne : comparison c q ≠ 0 := by
+    intro hzero
+    rw [hzero, coeff_zero] at hU_zero
+    exact lt_irrefl 0 hU_zero
+  have hs_mem : s ∈ (comparison c q).roots := (mem_roots hU_ne).mpr hs
+  have hs_neg : s < 0 := by
+    refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hU_nonneg s hs_mem) fun hs0 => ?_
+    subst s
+    exact (ne_of_gt hU_zero) (by
+      simpa [Polynomial.IsRoot.def, coeff_zero_eq_eval_zero] using
+        Polynomial.isRoot_of_mem_roots hs_mem)
+  have hq_ne : q.eval s ≠ 0 := by
+    intro hzero
+    exact no_common_comparison q hq s
+      ⟨by simpa [Polynomial.IsRoot.def] using hzero, hs⟩
+  have hrel : 2 * s * q.derivative.eval s + c * q.eval s = 0 := by
+    have hzero := hs.eq_zero
+    simp only [comparison, eval_add, eval_mul, eval_X, eval_C] at hzero
+    nlinarith
+  rw [eval_mul_step_of_two_mul_eval_X_mul_derivative_add_eq_zero a b c s q hc hrel]
+  have hlag := laguerre_form_nonneg hq.splits s
+  have hfirst : s ^ 2 *
+      (q.eval s * q.derivative.derivative.eval s - q.derivative.eval s ^ 2) ≤ 0 :=
+    mul_nonpos_of_nonneg_of_nonpos (sq_nonneg s) (by linarith)
+  have hgap : a * b - c ^ 2 / 4 + s < 0 := by
+    rw [hc]
+    nlinarith [param_gap_neg ha hb]
+  nlinarith [mul_neg_of_neg_of_pos hgap (sq_pos_of_ne_zero hq_ne)]
 
 /-- The bidiagonal step has simple negative roots and is right of
 the half-Euler comparison polynomial. -/
@@ -202,15 +236,6 @@ private theorem step_simpleNegRooted_and_strictInterl {a b c : ℝ} {d : ℕ} (q
   have hu_pos : HasPosLeadingCoeff (comparison c q) := by
     rw [HasPosLeadingCoeff, hu_data.2]
     exact mul_pos hfac_u hq.pos
-  have hu_nonneg : HasNonnegCoeffs (comparison c q) := by
-    intro k
-    rw [coeff_comparison]
-    have hk : 0 ≤ (k : ℝ) := by positivity
-    exact mul_nonneg (by nlinarith) (hq.nonneg k)
-  have hu_zero : 0 < (comparison c q).coeff 0 := by
-    rw [coeff_comparison]
-    simp only [Nat.cast_zero, zero_add]
-    exact mul_pos (by nlinarith) hq.coeff_zero_pos
   have hdq : 1 ≤ q.natDegree := by
     rw [hq.natDegree_eq]
     exact hd
@@ -236,57 +261,19 @@ private theorem step_simpleNegRooted_and_strictInterl {a b c : ℝ} {d : ℕ} (q
         simp only [eval_X]
         exact (hq.isRoot_neg hr).le)
     simpa [comparison, add_comm] using h
-  have hno_qu : ∀ r : ℝ, ¬ (q.IsRoot r ∧ (comparison c q).IsRoot r) := by
-    intro r hr
-    have hqr := hq.simple.eval_derivative_ne_zero hr.1
-    have hu_eval : (comparison c q).eval r = r * q.derivative.eval r := by
-      rw [comparison]
-      simp only [eval_add, eval_mul, eval_X, eval_C]
-      rw [hr.1.eq_zero]
-      ring
-    rw [hr.2.eq_zero] at hu_eval
-    exact mul_ne_zero (ne_of_lt (hq.isRoot_neg hr.1)) hqr hu_eval.symm
+  have hno_qu := no_common_comparison (c := c) q hq
   have hu_simple : HasSimpleRoots (comparison c q) :=
     hstrict_qu.hasSimpleRoots_of_no_common_root hno_qu |>.2
   have hroot_sign : ∀ s : ℝ, (comparison c q).IsRoot s →
       (step a b q).eval s * (comparison c q).derivative.eval s < 0 := by
     intro s hs
     have hs_mem : s ∈ (comparison c q).roots := (mem_roots hu_simple.ne_zero).mpr hs
-    have hs_nonpos := roots_nonpos_of_hasNonnegCoeffs hu_nonneg s hs_mem
-    have hs_ne : s ≠ 0 := by
-      intro hs0
-      subst s
-      have hzero := hs.eq_zero
-      have hzero_pos : 0 < (comparison c q).eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hu_zero
-      linarith
-    have hs_neg : s < 0 := lt_of_le_of_ne hs_nonpos hs_ne
     have hq_ne : q.eval s ≠ 0 := by
       intro hzero
       have hq_root : q.IsRoot s := by
         simpa [Polynomial.IsRoot.def] using hzero
       exact hno_qu s ⟨hq_root, hs⟩
-    have hrel : 2 * s * q.derivative.eval s + c * q.eval s = 0 := by
-      have hzero := hs.eq_zero
-      rw [comparison] at hzero
-      simp only [eval_add, eval_mul, eval_X, eval_C] at hzero
-      nlinarith
-    have hidentity :=
-      eval_mul_step_of_two_mul_eval_X_mul_derivative_add_eq_zero a b c s q hc hrel
-    have hlag := laguerre_form_nonneg hq.splits s
-    have hfirst : s ^ 2 *
-        (q.eval s * q.derivative.derivative.eval s - q.derivative.eval s ^ 2) ≤ 0 := by
-      apply mul_nonpos_of_nonneg_of_nonpos (sq_nonneg s)
-      linarith
-    have hgap : a * b - c ^ 2 / 4 + s < 0 := by
-      have hparam := param_gap_neg (a := a) (b := b) (by assumption) (by assumption)
-      rw [← hc] at hparam
-      linarith
-    have hsecond : (a * b - c ^ 2 / 4 + s) * q.eval s ^ 2 < 0 :=
-      mul_neg_of_neg_of_pos hgap (sq_pos_of_ne_zero hq_ne)
-    have hqF : q.eval s * (step a b q).eval s < 0 := by
-      rw [hidentity]
-      nlinarith
+    have hqF := eval_mul_step_neg_of_comparison_isRoot q ha hb hc hq hs
     have hres : 0 < q.eval s * (comparison c q).derivative.eval s := by
       apply residue_sign_pos hstrict_qu hu_pos hq.pos hu_simple.roots_nodup
         hq.simple.roots_nodup s hs_mem
@@ -333,16 +320,11 @@ private theorem step_simpleNegRooted_and_strictInterl {a b c : ℝ} {d : ℕ} (q
     nlinarith [mul_pos hab hq.coeff_zero_pos]
   have hF_neg : ∀ r ∈ (step a b q).roots, r < 0 := by
     intro r hr
-    have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs hF_nonneg r hr
-    have hr_ne : r ≠ 0 := by
-      intro hr0
-      subst r
-      have hroot := (mem_roots hF_pos.ne_zero).mp hr
-      have hzero := hroot.eq_zero
-      have hzero_pos : 0 < (step a b q).eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hF_zero
-      linarith
-    exact lt_of_le_of_ne hr_nonpos hr_ne
+    refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hF_nonneg r hr) fun hr0 => ?_
+    subst r
+    exact (ne_of_gt hF_zero) (by
+      simpa [Polynomial.IsRoot.def, coeff_zero_eq_eval_zero] using
+        Polynomial.isRoot_of_mem_roots hr)
   refine ⟨⟨hF_data.1, hF_pos, hF_nonneg, hF_zero, hUF.2.1.2, hF_simple⟩, hUF⟩
 
 /- The step is linear on the pencil generated by `X * p` and `p`. -/
@@ -378,58 +360,9 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
     rw [HasPosLeadingCoeff, hU_data.2]
     exact mul_pos (by nlinarith) hq.pos
   have hU_ne : comparison c q ≠ 0 := hU_pos.ne_zero
-  have hU_zero : 0 < (comparison c q).coeff 0 := by
-    rw [coeff_comparison]
-    simp only [Nat.cast_zero, zero_add]
-    exact mul_pos (by nlinarith) hq.coeff_zero_pos
-  have hno_qu : ∀ r : ℝ, ¬ (q.IsRoot r ∧ (comparison c q).IsRoot r) := by
-    intro r hr
-    have hqr := hq.simple.eval_derivative_ne_zero hr.1
-    have hu_eval : (comparison c q).eval r = r * q.derivative.eval r := by
-      rw [comparison]
-      simp only [eval_add, eval_mul, eval_X, eval_C]
-      rw [hr.1.eq_zero]
-      ring
-    rw [hr.2.eq_zero] at hu_eval
-    exact mul_ne_zero (ne_of_lt (hq.isRoot_neg hr.1)) hqr hu_eval.symm
   have hno_UF : ∀ r : ℝ, ¬ ((comparison c q).IsRoot r ∧ (step a b q).IsRoot r) := by
     intro s hs
-    have hs_mem : s ∈ (comparison c q).roots := (mem_roots hU_ne).mpr hs.1
-    have hs_nonpos := roots_nonpos_of_hasNonnegCoeffs hU_nonneg s hs_mem
-    have hs_ne : s ≠ 0 := by
-      intro hs0
-      subst s
-      have hzero := hs.1.eq_zero
-      have hzero_pos : 0 < (comparison c q).eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hU_zero
-      linarith
-    have hs_neg : s < 0 := lt_of_le_of_ne hs_nonpos hs_ne
-    have hq_ne : q.eval s ≠ 0 := by
-      intro hzero
-      have hq_root : q.IsRoot s := by
-        simpa [Polynomial.IsRoot.def] using hzero
-      exact hno_qu s ⟨hq_root, hs.1⟩
-    have hrel : 2 * s * q.derivative.eval s + c * q.eval s = 0 := by
-      have hzero := hs.1.eq_zero
-      rw [comparison] at hzero
-      simp only [eval_add, eval_mul, eval_X, eval_C] at hzero
-      nlinarith
-    have hidentity :=
-      eval_mul_step_of_two_mul_eval_X_mul_derivative_add_eq_zero a b c s q hc hrel
-    have hlag := laguerre_form_nonneg hq.splits s
-    have hfirst : s ^ 2 *
-        (q.eval s * q.derivative.derivative.eval s - q.derivative.eval s ^ 2) ≤ 0 := by
-      apply mul_nonpos_of_nonneg_of_nonpos (sq_nonneg s)
-      linarith
-    have hgap : a * b - c ^ 2 / 4 + s < 0 := by
-      have hparam := param_gap_neg (a := a) (b := b) ha hb
-      rw [← hc] at hparam
-      linarith
-    have hsecond : (a * b - c ^ 2 / 4 + s) * q.eval s ^ 2 < 0 :=
-      mul_neg_of_neg_of_pos hgap (sq_pos_of_ne_zero hq_ne)
-    have hqF : q.eval s * (step a b q).eval s < 0 := by
-      rw [hidentity]
-      nlinarith
+    have hqF := eval_mul_step_neg_of_comparison_isRoot q ha hb hc hq hs.1
     rw [hs.2.eq_zero] at hqF
     linarith
   have hXF : StrictInterl (step a b q) (X * step a b q) :=
@@ -445,30 +378,9 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
       (weightedSum [(1, X * step a b q), (2, X * comparison c q)]) := by
     apply StrictInterl.weightedSum_left_of_common_left_signed
       [(1, X * step a b q), (2, X * comparison c q)] (step a b q)
-    · intro p hp
-      simp only [List.mem_cons] at hp
-      rcases hp with rfl | hp
-      · norm_num
-      · rcases hp with hp | hp
-        · rw [hp]
-          norm_num
-        · simp at hp
-    · intro p hp
-      simp only [List.mem_cons] at hp
-      rcases hp with rfl | hp
-      · exact hXF
-      · rcases hp with hp | hp
-        · rw [hp]
-          exact hXU
-        · simp at hp
-    · intro p hp
-      simp only [List.mem_cons] at hp
-      rcases hp with rfl | hp
-      · exact hXF_pos
-      · rcases hp with hp | hp
-        · rw [hp]
-          exact hXU_pos
-        · simp at hp
+    · norm_num
+    · simp_all
+    · simp_all
     · exact ⟨(1, X * step a b q), by simp, by norm_num⟩
   have hshift : step (a + 1) (b + 1) q = step a b q + C 2 * comparison c q := by
     have hs := step_shift_sub a b q
@@ -575,20 +487,16 @@ private theorem IsNegativeSimple.toSimpleNegRooted {p : ℝ[X]}
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hp.2.1).2
       ⟨hp.2.2.2.1, fun r hr => (hp.2.2.2.2 r hr).le⟩).1
   have hzero : 0 < p.coeff 0 := by
-    apply lt_of_le_of_ne (hnonneg 0)
-    intro hz
-    have hroot : p.IsRoot 0 := by
+    refine lt_of_le_of_ne (hnonneg 0) fun hz => ?_
+    exact lt_irrefl 0 (hp.2.2.2.2 0 ((mem_roots hp.1).mpr (by
       rw [Polynomial.IsRoot.def]
-      simpa [coeff_zero_eq_eval_zero] using hz.symm
-    have hmem : (0 : ℝ) ∈ p.roots := (mem_roots hp.1).mpr hroot
-    exact lt_irrefl 0 (hp.2.2.2.2 0 hmem)
+      simpa [coeff_zero_eq_eval_zero] using hz.symm)))
   exact ⟨hd, hp.2.2.2.1, hnonneg, hzero, hp.2.1, hp.2.2.1⟩
 
 private theorem isNegativeSimple_of_simpleNegRooted {p : ℝ[X]} {d : ℕ}
     (hp : SimpleNegRooted p d) : IsNegativeSimple p := by
-  refine ⟨hp.pos.ne_zero, hp.splits, hp.simple, hp.pos, ?_⟩
-  intro r hr
-  exact hp.isRoot_neg ((mem_roots hp.pos.ne_zero).mp hr)
+  exact ⟨hp.pos.ne_zero, hp.splits, hp.simple, hp.pos,
+    fun r hr => hp.isRoot_neg ((mem_roots hp.pos.ne_zero).mp hr)⟩
 
 namespace EulerBidiagonal
 
@@ -597,8 +505,8 @@ theorem isNegativeSimple_step {a b : ℝ} {d : ℕ} (q : ℝ[X])
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b)
     (hq : IsNegativeSimple q) (hd : 1 ≤ d) (hqd : q.natDegree = d) :
     IsNegativeSimple (step a b q) ∧ (step a b q).natDegree = d + 1 := by
-  have hq' := hq.toSimpleNegRooted d hqd
-  have h := step_simpleNegRooted_and_strictInterl q ha hb hab rfl hq' hd
+  have h := step_simpleNegRooted_and_strictInterl q ha hb hab rfl
+    (hq.toSimpleNegRooted d hqd) hd
   exact ⟨isNegativeSimple_of_simpleNegRooted h.1, h.1.natDegree_eq⟩
 
 /-- The comparison polynomial strictly interlaces the Euler step. -/
@@ -628,16 +536,10 @@ private theorem isNegativeSimple_step_of_natDegree_zero {a b : ℝ}
     · intro k
       simp only [coeff_add, coeff_X, coeff_C]
       split <;> positivity
-    · simp only [coeff_add, coeff_X, coeff_C]
-      norm_num [hab]
+    · norm_num [hab]
     · simpa [sub_eq_add_neg] using (isRealRooted_X_sub_C (-a * b : ℝ)).2
-    · have hne : X + C (a * b) ≠ 0 := by
-        intro hzero
-        have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 1) hzero
-        norm_num at hcoeff
-      exact hasSimpleRoots_of_natDegree_le_one hne
-        (by
-          exact (Polynomial.natDegree_X_add_C (a * b)).le)
+    · exact hasSimpleRoots_of_natDegree_le_one (X_add_C_ne_zero _)
+        (Polynomial.natDegree_X_add_C (a * b)).le
   have hscaled := hbase.C_mul hc
   have hstep : step a b q = C (q.coeff 0) * (X + C (a * b)) := by
     rw [hconst]
@@ -654,12 +556,11 @@ theorem mapsNegativeSimpleBySucc_step {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     MapsNegativeSimpleBySucc (stepLinearMap a b) := by
   intro q hq
   by_cases hqd : q.natDegree = 0
-  · have h := isNegativeSimple_step_of_natDegree_zero hab hq hqd
-    rw [hqd]
-    simpa only [stepLinearMap_apply] using h
-  · have hd : 1 ≤ q.natDegree := Nat.one_le_iff_ne_zero.mpr hqd
-    have h := isNegativeSimple_step q ha hb hab hq hd rfl
-    simpa only [stepLinearMap_apply] using h
+  · rw [hqd]
+    simpa only [stepLinearMap_apply] using
+      isNegativeSimple_step_of_natDegree_zero hab hq hqd
+  · simpa only [stepLinearMap_apply] using
+      isNegativeSimple_step q ha hb hab hq (Nat.one_le_iff_ne_zero.mpr hqd) rfl
 
 /-- The Euler step sends an affine negative-simple input to simple real roots. -/
 theorem mapsAffineNegativeSimple_step {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -710,16 +611,9 @@ theorem mapsAffineNegativeSimple_step {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     have hstep : step a b ((X - C ρ) * q) = C (q.coeff 0) * Q := by
       rw [hconst]
       simp only [coeff_C, ite_true]
-      calc
-        step a b ((X - C ρ) * C (q.coeff 0)) =
-            step a b (C (q.coeff 0) * (X - C ρ)) := by
-              congr 1
-              ring
-        _ = C (q.coeff 0) * step a b (X - C ρ) := by
-          change (stepLinearMap a b) (C (q.coeff 0) * (X - C ρ)) = _
-          rw [← smul_eq_C_mul, (stepLinearMap a b).map_smul]
-          simp only [stepLinearMap_apply, smul_eq_C_mul]
-        _ = C (q.coeff 0) * Q := by rw [hQ]
+      rw [mul_comm (X - C ρ), show step a b = stepLinearMap a b from rfl,
+        ← smul_eq_C_mul, (stepLinearMap a b).map_smul, stepLinearMap_apply, hQ,
+        smul_eq_C_mul]
     rw [stepLinearMap_apply, hstep]
     have hrr := isRealRooted_C_mul hQne hQs (ne_of_gt hq0)
     have hs : HasSimpleRoots (C (q.coeff 0) * Q) := by
@@ -727,11 +621,9 @@ theorem mapsAffineNegativeSimple_step {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
       rw [Polynomial.roots_C_mul _ (ne_of_gt hq0)]
       exact hQsimple.roots_nodup
     exact ⟨hrr.1, hrr.2, hs⟩
-  · have hd : 1 ≤ q.natDegree := Nat.one_le_iff_ne_zero.mpr hqd
-    have hq' := hq.toSimpleNegRooted q.natDegree rfl
-    have h := splits_step_X_sub_C_mul q ha hb hab hq hd rfl ρ
-    have hstep_ne := h.2.ne_zero
-    exact ⟨hstep_ne, h.1, h.2⟩
+  · have h := splits_step_X_sub_C_mul q ha hb hab hq
+      (Nat.one_le_iff_ne_zero.mpr hqd) rfl ρ
+    exact ⟨h.2.ne_zero, h.1, h.2⟩
 
 /-- The Euler step preserves strict successor-degree interlacing. -/
 theorem strictInterl_step_of_strictInterl {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -740,8 +632,8 @@ theorem strictInterl_step_of_strictInterl {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤
     (hcop : ∀ r, ¬ (f.IsRoot r ∧ g.IsRoot r))
     (hf : IsNegativeSimple f) (hg : IsNegativeSimple g) :
     StrictInterl (step a b f) (step a b g) ∧
-      ∀ r, ¬ ((step a b f).IsRoot r ∧ (step a b g).IsRoot r) := by
-  exact strictInterl_map_of_negative_simple_pencil hfg hdeg hcop hf hg
+      ∀ r, ¬ ((step a b f).IsRoot r ∧ (step a b g).IsRoot r) :=
+  strictInterl_map_of_negative_simple_pencil hfg hdeg hcop hf hg
     (mapsNegativeSimpleBySucc_step ha hb hab)
     (mapsAffineNegativeSimple_step ha hb hab)
 
@@ -755,8 +647,7 @@ def rows (a b : ℝ) : ℕ → ℝ[X]
 private theorem isNegativeSimple_one : IsNegativeSimple (1 : ℝ[X]) := by
   refine ⟨by norm_num, Splits.one, ?_, hasPosLeadingCoeff_one, ?_⟩
   · exact fun r hr => absurd hr (by simp)
-  · intro r hr
-    exact absurd hr (by simp)
+  · simp
 
 /-- Consecutive Euler rows strictly interlace and have no common roots. -/
 theorem strictInterl_rows {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -765,24 +656,20 @@ theorem strictInterl_rows {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
       ∀ r, ¬ ((rows a b n).IsRoot r ∧ (rows a b (n + 1)).IsRoot r) := by
   have hP1 : IsNegativeSimple (rows a b 1) := by
     change IsNegativeSimple (step a b 1)
-    have h := isNegativeSimple_step_of_natDegree_zero hab isNegativeSimple_one (by simp)
-    simpa using h.1
+    exact (isNegativeSimple_step_of_natDegree_zero hab isNegativeSimple_one (by simp)).1
   have hP1_eq : rows a b 1 = X + C (a * b) := by
-    simp only [rows, step, theta, derivative_one, map_zero, mul_zero, add_zero]
-    simp only [mul_one, zero_add]
+    simp only [rows, step, theta, derivative_one, map_zero, mul_zero, add_zero, mul_one,
+      zero_add]
   have hbase : StrictInterl (rows a b 0) (rows a b 1) := by
     rw [hP1_eq]
     simpa [rows] using
       (interlaces_one_linear (p := X + C (a * b))
         (Polynomial.natDegree_X_add_C (a * b))).toStrictInterl
   have hbase_cop : ∀ r, ¬ ((rows a b 0).IsRoot r ∧ (rows a b 1).IsRoot r) := by
-    intro r hr
-    have hzero : (1 : ℝ[X]).eval r = 0 := by
-      simpa [rows, Polynomial.IsRoot.def] using hr.1
-    norm_num at hzero
+    simp [rows, Polynomial.IsRoot.def]
   have hrec : ∀ n, rows a b (n + 1) = stepLinearMap a b (rows a b n) := by
     intro n
-    simp only [rows, stepLinearMap_apply]
+    rfl
   exact strictInterl_iterate_of_negative_simple hrec isNegativeSimple_one
     (by simpa [hP1_eq] using hP1) hbase hbase_cop
     (mapsNegativeSimpleBySucc_step ha hb hab)
@@ -794,23 +681,15 @@ theorem isNegativeSimple_rows {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
     ∀ n, IsNegativeSimple (rows a b n) ∧ (rows a b n).natDegree = n := by
   have hrec : ∀ n, rows a b (n + 1) = stepLinearMap a b (rows a b n) := by
     intro n
-    simp only [rows, stepLinearMap_apply]
+    rfl
   intro n
   induction n with
   | zero =>
       exact ⟨isNegativeSimple_one, by simp [rows]⟩
   | succ n ih =>
       have hs := mapsNegativeSimpleBySucc_step ha hb hab ih.1
-      have hnext : IsNegativeSimple (rows a b (n + 1)) := by
-        rw [hrec n]
-        exact hs.1
-      have hnextdeg : (rows a b (n + 1)).natDegree = n + 1 := by
-        calc
-          (rows a b (n + 1)).natDegree =
-              (stepLinearMap a b (rows a b n)).natDegree := by rw [hrec n]
-          _ = (rows a b n).natDegree + 1 := hs.2
-          _ = n + 1 := by rw [ih.2]
-      exact ⟨hnext, hnextdeg⟩
+      rw [hrec n]
+      exact ⟨hs.1, by simpa [ih.2] using hs.2⟩
 
 end EulerBidiagonal
 end RealRooted
