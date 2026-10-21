@@ -50,10 +50,9 @@ def finiteOrderWeylOperatorDegreeBox {σ : Type*}
     (q : σ) (m : ℕ) (Q : Fin (m + 1) → MvPolynomial σ ℂ) (κ : σ → ℕ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ :=
   { toFun := fun p => finiteOrderWeylOperator q m Q p.1
-    map_add' := fun p r => by
-      exact (finiteOrderWeylOperator q m Q).map_add p.1 r.1
-    map_smul' := fun c p => by
-      exact (finiteOrderWeylOperator q m Q).map_smul c p.1 }
+    map_add' := fun p r =>
+      (finiteOrderWeylOperator q m Q).map_add p.1 r.1
+    map_smul' := fun c p => (finiteOrderWeylOperator q m Q).map_smul c p.1 }
 
 private def iteratedPDerivAtDegreeBox {σ : Type*}
     (q : σ) (j : ℕ) (κ : σ → ℕ) :
@@ -107,9 +106,7 @@ private def pderivAfter {σ τ : Type*}
     (T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ) :
     MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ where
   toFun p := MvPolynomial.pderiv q (T p)
-  map_add' p r := by
-    rw [T.map_add]
-    exact map_add _ _ _
+  map_add' p r := by rw [T.map_add, map_add]
   map_smul' c p := by
     rw [T.map_smul, MvPolynomial.smul_eq_C_mul,
       MvPolynomial.pderiv_C_mul]
@@ -121,20 +118,11 @@ private theorem algebraicSymbol_pderivAfter {σ τ : Type*} [Fintype σ]
     MvPolynomial.algebraicSymbol κ (pderivAfter q κ T) =
       MvPolynomial.pderiv (Sum.inl q) (MvPolynomial.algebraicSymbol κ T) := by
   classical
-  let D : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial τ ℂ :=
-    { toFun p := MvPolynomial.pderiv q (T p)
-      map_add' p r := by
-        rw [T.map_add, map_add]
-      map_smul' c p := by
-        rw [T.map_smul, MvPolynomial.smul_eq_C_mul,
-          MvPolynomial.pderiv_C_mul]
-        simp only [RingHom.id_apply, MvPolynomial.smul_eq_C_mul] }
-  change MvPolynomial.algebraicSymbol κ D = _
   rw [MvPolynomial.algebraicSymbol_eq_sum,
     MvPolynomial.algebraicSymbol_eq_sum]
-  simp only [LinearMap.coe_mk, AddHom.coe_mk, map_sum,
+  simp only [pderivAfter, LinearMap.coe_mk, AddHom.coe_mk, map_sum,
     MvPolynomial.pderiv_mul, MvPolynomial.pderiv_C,
-    MvPolynomial.pderiv_rename Sum.inl_injective, D,
+    MvPolynomial.pderiv_rename Sum.inl_injective,
     pderiv_rightComplementMonomial_zero, zero_mul]
   apply Finset.sum_congr rfl
   intro b hb
@@ -174,8 +162,7 @@ private theorem coordinateDiagonalOperatorDegreeBox_one_eq_inclusion
   classical
   ext p m
   by_cases h : p.1.coeff m = 0 <;>
-    simp [coordinateDiagonalOperatorDegreeBox, coordinateDiagonalOperator,
-      degreeBoxInclusion, h]
+    simp [coordinateDiagonalOperatorDegreeBox, coordinateDiagonalOperator, degreeBoxInclusion, h]
 
 private theorem algebraicSymbol_inclusion_eq_product
     {σ : Type*} [Fintype σ] [DecidableEq σ] (q : σ) (n : ℕ) (κ : σ → ℕ)
@@ -262,24 +249,10 @@ private theorem pderiv_spectatorProduct_zero {σ : Type*} [Fintype σ]
     | empty => simp
     | @insert i s hi ih =>
         have hiq : i ≠ q := hs i (by simp)
-        have hiq' : (Sum.inl i : σ ⊕ σ) ≠ Sum.inl q := by
-          intro h
-          exact hiq (Sum.inl.inj h)
-        have hs' : ∀ j ∈ s, j ≠ q := by
-          intro j hj
-          exact hs j (by simp [hj])
-        rw [Finset.prod_insert hi, MvPolynomial.pderiv_mul, ih hs']
-        have hfactor :
-            MvPolynomial.pderiv (Sum.inl q)
-                ((MvPolynomial.X (Sum.inl i) : MvPolynomial (σ ⊕ σ) ℂ) +
-                  MvPolynomial.X (Sum.inr i)) = 0 := by
-          rw [map_add,
-            MvPolynomial.pderiv_X_of_ne (i := Sum.inl q) (j := Sum.inl i)
-              hiq',
-            MvPolynomial.pderiv_X_of_ne (i := Sum.inl q) (j := Sum.inr i)
-              (Ne.symm (Sum.inl_ne_inr : Sum.inl q ≠ Sum.inr i))]
-          simp
-        rw [MvPolynomial.pderiv_pow, hfactor]
+        rw [Finset.prod_insert hi, MvPolynomial.pderiv_mul, ih (by simp_all),
+          MvPolynomial.pderiv_pow, map_add,
+          MvPolynomial.pderiv_X_of_ne (by simpa using hiq),
+          MvPolynomial.pderiv_X_of_ne Sum.inr_ne_inl]
         simp
   apply hprod (Finset.univ.erase q)
   intro i hi
@@ -329,10 +302,9 @@ private theorem finiteOrderWeylOperatorDegreeBox_algebraicSymbol_explicit
   have hmap : finiteOrderWeylOperatorDegreeBox q m Q κ =
       ∑ j : Fin (m + 1),
         leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ := by
-    apply LinearMap.ext
-    intro p
-    change finiteOrderWeylOperator q m Q p.1 = _
-    simp [finiteOrderWeylOperator, iteratedPDerivAtDegreeBox, leftMultiply]
+    ext p
+    simp [finiteOrderWeylOperatorDegreeBox, finiteOrderWeylOperator,
+      iteratedPDerivAtDegreeBox, leftMultiply]
   rw [hmap]
   have hsum : ∀ s : Finset (Fin (m + 1)),
       MvPolynomial.algebraicSymbol κ
@@ -344,34 +316,22 @@ private theorem finiteOrderWeylOperatorDegreeBox_algebraicSymbol_explicit
     induction s using Finset.induction_on with
     | empty => simp
     | @insert j s hj ih =>
-        rw [Finset.sum_insert hj, MvPolynomial.algebraicSymbol_add, ih,
-          Finset.sum_insert hj]
-  calc
-    MvPolynomial.algebraicSymbol κ
-        (∑ j : Fin (m + 1),
-          leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ) =
-        ∑ j : Fin (m + 1),
-          MvPolynomial.algebraicSymbol κ
-            (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ) := by
-      exact hsum Finset.univ
-    _ = _ := by
-      rw [show (∑ j : Fin (m + 1),
-          MvPolynomial.algebraicSymbol κ
-            (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ)) =
-          (∑ j : Fin (m + 1),
-            MvPolynomial.C (n.descFactorial (j : ℕ) : ℂ) *
-              MvPolynomial.rename (Sum.inl : σ → σ ⊕ σ) (Q j) *
-              (MvPolynomial.X (Sum.inl q) + MvPolynomial.X (Sum.inr q)) ^
-                (n - (j : ℕ)) *
-              ∏ i ∈ Finset.univ.erase q,
-                (MvPolynomial.X (Sum.inl i) + MvPolynomial.X (Sum.inr i)) ^ κ i) by
-            apply Finset.sum_congr rfl
-            intro j hj
-            rw [algebraicSymbol_leftMultiply,
-              algebraicSymbol_iteratedPDerivAtDegreeBox_explicit q (j : ℕ)
-                n κ hκ]
-            ring_nf]
-      rw [Finset.sum_mul]
+        simp only [Finset.sum_insert hj, MvPolynomial.algebraicSymbol_add, ih]
+  rw [hsum Finset.univ]
+  rw [show (∑ j : Fin (m + 1), MvPolynomial.algebraicSymbol κ
+      (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ)) =
+      (∑ j : Fin (m + 1),
+        MvPolynomial.C (n.descFactorial (j : ℕ) : ℂ) *
+          MvPolynomial.rename (Sum.inl : σ → σ ⊕ σ) (Q j) *
+          (MvPolynomial.X (Sum.inl q) + MvPolynomial.X (Sum.inr q)) ^ (n - (j : ℕ)) *
+          ∏ i ∈ Finset.univ.erase q,
+            (MvPolynomial.X (Sum.inl i) + MvPolynomial.X (Sum.inr i)) ^ κ i) by
+        apply Finset.sum_congr rfl
+        intro j _
+        rw [algebraicSymbol_leftMultiply,
+          algebraicSymbol_iteratedPDerivAtDegreeBox_explicit q (j : ℕ) n κ hκ]
+        ring_nf,
+    Finset.sum_mul]
 
 /-- The signed Weyl symbol of a finite-order differential operator. -/
 def signedWeylSymbol {σ : Type*} (m : ℕ)
@@ -507,8 +467,7 @@ private theorem invertVariable_add {σ : Type*} (n : ℕ)
 
 private theorem invertVariable_zero {σ : Type*} (n : ℕ) :
     invertVariable n (0 : MvPolynomial (Option σ) ℂ) = 0 := by
-  unfold invertVariable
-  simp
+  simp [invertVariable]
 
 private theorem invertVariable_fintype_sum {ι σ : Type*} [Fintype ι]
     (n : ℕ) (P : ι → MvPolynomial (Option σ) ℂ) :
@@ -516,8 +475,7 @@ private theorem invertVariable_fintype_sum {ι σ : Type*} [Fintype ι]
   classical
   induction (Finset.univ : Finset ι) using Finset.induction_on with
   | empty => exact invertVariable_zero n
-  | @insert i s hi ih =>
-      rw [Finset.sum_insert hi, Finset.sum_insert hi, invertVariable_add, ih]
+  | @insert i s hi ih => simp only [Finset.sum_insert hi, invertVariable_add, ih]
 
 private theorem mul_mul_mul_mul_self {R : Type*} [CommMonoid R]
     (A B u v : R) :
@@ -554,16 +512,9 @@ private theorem invertVariable_signed_monomial {σ : Type*}
     rw [neg_pow (Polynomial.X : Polynomial (MvPolynomial σ ℂ)) j,
       mul_mul_mul_mul_self, hsign, mul_one]
   rw [hcomp, Polynomial.reflect_C_mul_X_pow, Polynomial.revAt_le hj]
-  have hout :
-      MvPolynomial.optionEquivLeft ℂ σ
-          (MvPolynomial.C a * MvPolynomial.rename some P *
-            MvPolynomial.X none ^ (n - j)) =
-        Polynomial.C (MvPolynomial.C a) * Polynomial.C P *
-          Polynomial.X ^ (n - j) := by
-    rw [map_mul, map_mul, map_pow, MvPolynomial.optionEquivLeft_C,
-      optionEquivLeft_rename_some, MvPolynomial.optionEquivLeft_X_none]
-  rw [hout, map_mul]
-  rw [mul_comm (Polynomial.C P)
+  rw [map_mul, map_mul, map_mul, map_pow, MvPolynomial.optionEquivLeft_C,
+    optionEquivLeft_rename_some, MvPolynomial.optionEquivLeft_X_none,
+    mul_comm (Polynomial.C P)
     (Polynomial.C (MvPolynomial.C a))]
 
 private theorem invertVariable_descFactorial_signedWeylSymbol
@@ -583,17 +534,12 @@ private theorem invertVariable_descFactorial_signedWeylSymbol
   · exact invertVariable_signed_monomial n (j : ℕ) hjn
       (n.descFactorial (j : ℕ) : ℂ) (Q j)
   · have hnj : n < (j : ℕ) := Nat.lt_of_not_ge hjn
-    have hzero : (n.descFactorial (j : ℕ) : ℝ) = 0 := by
-      rw [Nat.descFactorial_eq_zero_iff_lt.mpr hnj]
-      norm_num
-    have htermzero :
-        MvPolynomial.rename some (Q j) *
-            MvPolynomial.C
-              (((n.descFactorial (j : ℕ) : ℝ) : ℂ) * (-1 : ℂ) ^ (j : ℕ)) *
-            MvPolynomial.X none ^ (j : ℕ) = 0 := by
-      rw [hzero]
-      norm_num
-    rw [htermzero, invertVariable_zero,
+    rw [show MvPolynomial.rename some (Q j) *
+          MvPolynomial.C
+            (((n.descFactorial (j : ℕ) : ℝ) : ℂ) * (-1 : ℂ) ^ (j : ℕ)) *
+          MvPolynomial.X none ^ (j : ℕ) = 0 by
+        simp [Nat.descFactorial_eq_zero_iff_lt.mpr hnj],
+      invertVariable_zero,
       Nat.descFactorial_eq_zero_iff_lt.mpr hnj]
     norm_num
 
@@ -673,9 +619,7 @@ private theorem signedWeylSymbol_descFactorial_eq_zero_imp
     exact (mul_eq_zero.mp
       ((mul_eq_zero.mp hcoeff).resolve_left hCdesc)).resolve_right hsign
   · intro k _hk hkj
-    have hval : (j : ℕ) ≠ (k : ℕ) := by
-      intro h
-      exact hkj (Fin.ext h.symm)
+    have hval : (j : ℕ) ≠ (k : ℕ) := fun h => hkj (Fin.ext h.symm)
     simp only [hval, ↓reduceIte]
   · simp
 
@@ -703,11 +647,8 @@ private theorem degreeOf_iteratedPDerivAt_le {σ : Type*} (q : σ)
   | zero => exact le_rfl
   | succ j ih =>
       rw [iteratedPDerivAt]
-      refine (degreeOf_pderiv_self_le q (iteratedPDerivAt q j P)).trans ?_
-      calc
-        (iteratedPDerivAt q j P).degreeOf q - 1 ≤
-            (P.degreeOf q - j) - 1 := Nat.sub_le_sub_right ih 1
-        _ = P.degreeOf q - (j + 1) := Nat.sub_sub _ _ _
+      exact (degreeOf_pderiv_self_le q (iteratedPDerivAt q j P)).trans <| by
+        simpa [Nat.sub_sub] using Nat.sub_le_sub_right ih 1
 
 private theorem iteratedPDerivAt_eq_zero_of_degreeOf_lt {σ : Type*}
     (q : σ) (j : ℕ) (P : MvPolynomial σ ℂ) (hdegree : P.degreeOf q < j) :
@@ -719,11 +660,10 @@ private theorem iteratedPDerivAt_eq_zero_of_degreeOf_lt {σ : Type*}
       apply MvPolynomial.pderiv_eq_zero_of_notMem_vars
       rw [MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
       have hPdegree : P.degreeOf q ≤ j := Nat.lt_succ_iff.mp hdegree
-      have hdegreeZero : (iteratedPDerivAt q j P).degreeOf q = 0 := by
-        apply Nat.eq_zero_of_le_zero
-        exact (degreeOf_iteratedPDerivAt_le q j P).trans (by
-          rw [Nat.sub_eq_zero_of_le hPdegree])
-      exact not_ne_iff.mpr hdegreeZero
+      apply not_ne_iff.mpr
+      apply Nat.eq_zero_of_le_zero
+      exact (degreeOf_iteratedPDerivAt_le q j P).trans (by
+        rw [Nat.sub_eq_zero_of_le hPdegree])
 
 /-- The descending-factorial multiplier kills every coordinate exponent above
 the chosen degree.  This is the `n < m` regression used by the finite proof. -/
@@ -749,6 +689,37 @@ theorem coordinateDiagonalOperator_eq_zero_of_jensenPolynomial_eq_zero
   · have hcoeff : p.coeff m = 0 := Finsupp.notMem_support_iff.mp hm
     simp [hcoeff]
 
+private theorem descFactorialTransform_zero_or_invert_bind_stable
+    {σ : Type*} [Finite σ] (q : σ) (m n : ℕ)
+    (Q : Fin (m + 1) → MvPolynomial σ ℂ)
+    (hW : MvUpperHalfPlaneStable (signedWeylSymbol m Q)) :
+    coordinateDiagonalOperator (fun k => (n.descFactorial k : ℝ)) none
+        (signedWeylSymbol m Q) = 0 ∨
+      MvUpperHalfPlaneStable
+        (MvPolynomial.bind₁ (weylSymbolSubstitution q)
+          (invertVariable n
+            (coordinateDiagonalOperator (fun k => (n.descFactorial k : ℝ)) none
+              (signedWeylSymbol m Q)))) := by
+  have := Fintype.ofFinite σ
+  rcases coordinateDiagonalOperator_preserves_stability m
+      (fun k => (n.descFactorial k : ℝ)) none
+      (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence
+        (isPFMultiplierSequence_descFactorial n) m)
+      (signedWeylSymbol_degreeOf_none_le m Q) hW with hzero | hstable
+  · exact Or.inl hzero
+  · right
+    apply (hstable.invertVariable
+      (descFactorialTransform_degreeOf_none_le m n Q)).bind₁_of_im_eval_pos
+    intro o z hz
+    cases o with
+    | none =>
+        simpa only [weylSymbolSubstitution, Option.elim, MvPolynomial.eval_add,
+          MvPolynomial.eval_X, Complex.add_im] using
+          add_pos (hz (Sum.inl q)) (hz (Sum.inr q))
+    | some i =>
+        simpa only [weylSymbolSubstitution, Option.elim, MvPolynomial.eval_X] using
+          hz (Sum.inl i)
+
 /-- The descending-factorial transform of a stable Weyl symbol is stable or
 zero after inversion and the positive substitution `w = x_q + y_q`. -/
 theorem signedWeylSymbol_descFactorial_invert_bind_zero_or
@@ -763,32 +734,11 @@ theorem signedWeylSymbol_descFactorial_invert_bind_zero_or
         (invertVariable n
           (coordinateDiagonalOperator (fun k => (n.descFactorial k : ℝ)) none
             (signedWeylSymbol m Q)))) := by
-  have := Fintype.ofFinite σ
-  have hdiag := coordinateDiagonalOperator_preserves_stability m
-    (fun k => (n.descFactorial k : ℝ)) none
-    (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence
-      (isPFMultiplierSequence_descFactorial n) m)
-    (signedWeylSymbol_degreeOf_none_le m Q) hW
-  rcases hdiag with hzero | hstable
+  rcases descFactorialTransform_zero_or_invert_bind_stable q m n Q hW with hzero | hstable
   · left
-    have hinvzero : invertVariable n
-        (0 : MvPolynomial (Option σ) ℂ) = 0 := by
-      unfold invertVariable
-      simp
-    rw [hzero, hinvzero]
+    rw [hzero, invertVariable_zero]
     exact map_zero _
-  · have hinv := MvUpperHalfPlaneStable.invertVariable
-      (descFactorialTransform_degreeOf_none_le m n Q) hstable
-    right
-    apply hinv.bind₁_of_im_eval_pos
-    intro o z hz
-    cases o with
-    | none =>
-        simpa only [Option.elim, MvPolynomial.eval_add, MvPolynomial.eval_X,
-          Complex.add_im] using
-          add_pos (hz (Sum.inl q)) (hz (Sum.inr q))
-    | some i =>
-        simpa only [Option.elim, MvPolynomial.eval_X] using hz (Sum.inl i)
+  · exact Or.inr hstable
 
 /-- A stable signed Weyl symbol makes the corresponding finite-order operator
 preserve upper-half-plane stability on a coordinate-wise degree box. -/
@@ -804,11 +754,7 @@ theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
       (finiteOrderWeylOperatorDegreeBox q m Q κ p) := by
   classical
   have := Fintype.ofFinite σ
-  have hdiag := coordinateDiagonalOperator_preserves_stability m
-    (fun k => (n.descFactorial k : ℝ)) none
-    (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence
-      (isPFMultiplierSequence_descFactorial n) m)
-    (signedWeylSymbol_degreeOf_none_le m Q) hW
+  have hdiag := descFactorialTransform_zero_or_invert_bind_stable q m n Q hW
   have hspect : MvUpperHalfPlaneStable
       (∏ i ∈ Finset.univ.erase q,
         (MvPolynomial.X (Sum.inl i) + MvPolynomial.X (Sum.inr i)) ^ κ i) := by
@@ -823,7 +769,7 @@ theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
           (MvUpperHalfPlaneStable.mul_X_add_X_pow
           (MvUpperHalfPlaneStable.one (sigma := σ ⊕ σ))
           (Sum.inl i) (Sum.inr i) (κ i)).mul ih
-  rcases hdiag with hdiagZero | hdiagStable
+  rcases hdiag with hdiagZero | hbaseStable
   · left
     have hQzero := signedWeylSymbol_descFactorial_eq_zero_imp m n Q hdiagZero
     change (∑ j : Fin (m + 1),
@@ -839,24 +785,7 @@ theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
         lt_of_le_of_lt hpDegree (Nat.lt_of_not_ge hjn)
       rw [iteratedPDerivAt_eq_zero_of_degreeOf_lt q (j : ℕ) p.1 hdegree,
         mul_zero]
-  · have hinvStable := MvUpperHalfPlaneStable.invertVariable
-      (descFactorialTransform_degreeOf_none_le m n Q) hdiagStable
-    have hbaseStable : MvUpperHalfPlaneStable
-        (MvPolynomial.bind₁ (weylSymbolSubstitution q)
-          (invertVariable n
-            (coordinateDiagonalOperator (fun k => (n.descFactorial k : ℝ)) none
-              (signedWeylSymbol m Q)))) := by
-      apply hinvStable.bind₁_of_im_eval_pos
-      intro o z hz
-      cases o with
-      | none =>
-          simpa only [weylSymbolSubstitution, Option.elim,
-            MvPolynomial.eval_add, MvPolynomial.eval_X, Complex.add_im] using
-            add_pos (hz (Sum.inl q)) (hz (Sum.inr q))
-      | some i =>
-          simpa only [weylSymbolSubstitution, Option.elim,
-            MvPolynomial.eval_X] using hz (Sum.inl i)
-    have hsymbol : MvUpperHalfPlaneStable
+  · have hsymbol : MvUpperHalfPlaneStable
         (MvPolynomial.algebraicSymbol κ
           (finiteOrderWeylOperatorDegreeBox q m Q κ)) := by
       rw [finiteOrderWeylOperatorDegreeBox_algebraicSymbol q m n Q κ hκ]
@@ -880,9 +809,8 @@ theorem finiteOrderWeylOperator_preserves_stability
     intro i
     exact le_rfl
   let pκ : MvPolynomial.degreeOfLE σ ℂ κ := ⟨p, hpκ⟩
-  have hresult := finiteOrderWeylOperatorDegreeBox_preserves_stability
+  exact finiteOrderWeylOperatorDegreeBox_preserves_stability
     q m (κ q) Q κ rfl pκ hp hW
-  exact hresult
 
 end
 

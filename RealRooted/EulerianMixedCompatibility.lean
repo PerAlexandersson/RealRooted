@@ -305,7 +305,7 @@ theorem eulerInsertionStep_one_eq_zero_succ_add
     (n : ℕ) (p : ℝ[X]) :
     eulerInsertionStep 1 n p =
       eulerInsertionStep 0 (n + 1) p + (1 - X) * p := by
-  simp [eulerInsertionStep] ; ring
+  simp [eulerInsertionStep]; ring
 
 private theorem mixedEulerStep_eq
     (n : ℕ) (lam : ℝ) (f g : ℝ[X]) :

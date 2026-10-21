@@ -111,10 +111,7 @@ def toFinRPEO : Graph.FinReversePerfectEliminationOrder n where
 /-- The order embedding of an initial vertex interval. -/
 def prefixEmbedding (_a : Data n) {k : ℕ} (hk : k ≤ n) : Fin k ↪o Fin n where
   toFun i := ⟨i.val, lt_of_lt_of_le i.isLt hk⟩
-  inj' := by
-    intro i j h
-    apply Fin.ext
-    exact congrArg (fun x : Fin n ↦ x.val) h
+  inj' := fun _ _ h ↦ Fin.ext <| congrArg (fun x : Fin n ↦ x.val) h
   map_rel_iff' := Iff.rfl
 
 @[simp]
@@ -124,7 +121,6 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
 
 theorem prefixEmbedding_succ_apply {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
     a.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
-  apply Fin.ext
   rfl
 
 /-- Restriction of left-endpoint data to its first k vertices. -/
@@ -138,13 +134,11 @@ def take (k : ℕ) (hk : k ≤ n) : Data k where
 @[simp]
 theorem take_self : a.take n le_rfl = a := by
   apply Data.ext
-  funext i
   rfl
 
 theorem take_take {k l : ℕ} (hk : k ≤ n) (hl : l ≤ k) :
     (a.take k hk).take l hl = a.take l (hl.trans hk) := by
   apply Data.ext
-  funext i
   rfl
 
 @[simp]
@@ -192,7 +186,6 @@ theorem init_toFinRPEO {m : ℕ} (a : Data (m + 1)) : a.init.toFinRPEO = a.toFin
 theorem take_succ_init {k : ℕ} (hk : k + 1 ≤ n) :
     (a.take (k + 1) hk).init = a.take k (Nat.le_trans (Nat.le_succ k) hk) := by
   apply Data.ext
-  funext i
   rfl
 
 @[simp]
@@ -203,7 +196,6 @@ theorem init_width {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
 theorem init_take {m k : ℕ} (a : Data (m + 1)) (hk : k ≤ m) :
     a.init.take k hk = a.take k (hk.trans (Nat.le_succ m)) := by
   apply Data.ext
-  funext i
   rfl
 
 @[simp]
@@ -480,16 +472,15 @@ theorem extendOrientation_sinkCount_of_fullCut {m : ℕ}
       (O.sinks.filter fun x ↦ x ∉ a.lastEarlierNeighbors).card + 1 := by
   classical
   rw [Graph.Orientation.sinkCount,
-    a.extendOrientation_sinks_of_fullCut O cut hfull]
-  rw [Finset.card_union_of_disjoint]
+    a.extendOrientation_sinks_of_fullCut O cut hfull,
+    Finset.card_union_of_disjoint]
   · simp
   · rw [Finset.disjoint_left]
     intro v hv hlast
     rw [Finset.mem_singleton] at hlast
     subst v
-    rcases Finset.mem_map.mp hv with ⟨x, hx, hxeq⟩
-    have hval := congrArg Fin.val hxeq
-    exact (Nat.ne_of_lt x.isLt) hval
+    obtain ⟨x, -, h⟩ := Finset.mem_map.mp hv
+    exact (Nat.ne_of_lt x.isLt) (congrArg Fin.val h)
 
 /-- If the prefix orientation has no sink in the final-neighbor clique, the
 full cut adds exactly one sink. -/
@@ -665,10 +656,8 @@ theorem sum_extensionMonomials {m : ℕ} (a : Data (m + 1))
       pow_succ]
     ring
   · have hhasSink : ∃ x ∈ a.lastEarlierNeighbors, O.1.IsSink x := by
-      by_contra hnone
-      apply hnoSink
-      intro x hxK hxSink
-      exact hnone ⟨x, hxK, hxSink⟩
+      push Not at hnoSink
+      exact hnoSink
     have hfullTerm :
         Graph.orientationMonomial q (a.extendOrientation O.1 fullCut) =
           C (q ^ (Rel.ascentCount O.1.Directed +
@@ -740,8 +729,7 @@ theorem suffixFactor_succ_of_le {m k : ℕ} (a : Data (m + 1))
 
 theorem noSinkFrom_card {n : ℕ} (a : Data n)
     (O : Graph.Orientation a.graph) : a.NoSinkFrom O n := by
-  intro v hnv
-  exact False.elim ((Nat.not_le_of_gt v.isLt) hnv)
+  exact fun v hnv ↦ (Nat.not_le_of_gt v.isLt hnv).elim
 
 theorem noSinkFromPolynomial_card {n : ℕ} (a : Data n) (q : ℝ) :
     a.noSinkFromPolynomial n q = Graph.acyclicSinkPolynomial a.graph q := by
@@ -907,21 +895,12 @@ theorem graph_clawFree : Graph.ClawFree a.graph := by
   have hvx : a.graph.Adj v x := hs x (by simp)
   have hvy : a.graph.Adj v y := hs y (by simp)
   have hvz : a.graph.Adj v z := hs z (by simp)
-  have sx : x < v ∨ v < x :=
-    lt_or_gt_of_ne (a.graph_adj.mp hvx).1.symm
-  have sy : y < v ∨ v < y :=
-    lt_or_gt_of_ne (a.graph_adj.mp hvy).1.symm
-  have sz : z < v ∨ v < z :=
-    lt_or_gt_of_ne (a.graph_adj.mp hvz).1.symm
-  have hnxy : ¬a.graph.Adj x y := by
-    intro hadj
-    exact hind.isIndepSet (by simp) (by simp) hxy hadj
-  have hnxz : ¬a.graph.Adj x z := by
-    intro hadj
-    exact hind.isIndepSet (by simp) (by simp) hxz hadj
-  have hnyz : ¬a.graph.Adj y z := by
-    intro hadj
-    exact hind.isIndepSet (by simp) (by simp) hyz hadj
+  have sx : x < v ∨ v < x := lt_or_gt_of_ne (a.graph_adj.mp hvx).1.symm
+  have sy : y < v ∨ v < y := lt_or_gt_of_ne (a.graph_adj.mp hvy).1.symm
+  have sz : z < v ∨ v < z := lt_or_gt_of_ne (a.graph_adj.mp hvz).1.symm
+  have hnxy : ¬a.graph.Adj x y := fun h ↦ hind.isIndepSet (by simp) (by simp) hxy h
+  have hnxz : ¬a.graph.Adj x z := fun h ↦ hind.isIndepSet (by simp) (by simp) hxz h
+  have hnyz : ¬a.graph.Adj y z := fun h ↦ hind.isIndepSet (by simp) (by simp) hyz h
   rcases sx with hxv | hvx' <;>
     rcases sy with hyv | hvy' <;>
       rcases sz with hzv | hvz'
@@ -1004,10 +983,8 @@ theorem weightedIndepPoly_eq_prefix (wt : Fin n → ℝ) :
 end Data
 
 theorem qNat_nonneg {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
-    0 ≤ qNat q m := by
-  apply Finset.sum_nonneg
-  intro k hk
-  positivity
+    0 ≤ qNat q m :=
+  Finset.sum_nonneg fun _ _ ↦ pow_nonneg hq _
 
 theorem qNat_succ_pos {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
     0 < qNat q (m + 1) := by
@@ -1030,10 +1007,8 @@ def weight (a : Data n) (q : ℝ) (i : Fin n) : ℝ :=
       a.prefixNormalization q (i.val + 1)
 
 theorem prefixNormalization_pos (a : Data n) {q : ℝ} (hq : 0 ≤ q)
-    (k : ℕ) : 0 < a.prefixNormalization q k := by
-  apply Finset.prod_pos
-  intro i hi
-  exact qNat_succ_pos hq (a.width i)
+    (k : ℕ) : 0 < a.prefixNormalization q k :=
+  Finset.prod_pos fun i _ ↦ qNat_succ_pos hq (a.width i)
 
 theorem prefixNormalization_succ (a : Data n) {k : ℕ} (hk : k < n)
     (q : ℝ) :
@@ -1194,16 +1169,15 @@ theorem acyclicSinkPolynomial_splits_of_eq_closedForm
       Graph.acyclicSinkPolynomial a.graph q =
         acyclicSinkClosedForm a q) :
     (Graph.acyclicSinkPolynomial a.graph q).Splits := by
-  rw [hidentity]
-  exact acyclicSinkClosedForm_splits a hq
+  simpa only [hidentity] using acyclicSinkClosedForm_splits a hq
 
 /-- The ascent-refined acyclic sink polynomial of every natural unit interval
 graph is real-rooted when q ≥ 0. -/
 theorem acyclicSinkPolynomial_splits
     (a : Data n) {q : ℝ} (hq : 0 ≤ q) :
     (Graph.acyclicSinkPolynomial a.graph q).Splits := by
-  rw [acyclicSinkPolynomial_eq_closedForm a hq]
-  exact acyclicSinkClosedForm_splits a hq
+  simpa only [acyclicSinkPolynomial_eq_closedForm a hq] using
+    acyclicSinkClosedForm_splits a hq
 
 end UnitIntervalGraph
 end RealRooted

@@ -239,21 +239,13 @@ theorem snakeReachableFuel_colCode_add (w : SnakeWord) :
       snakeReachableFuel w k (snakeColCode c) (snakeColCode (c + k)) = true := by
   intro c k
   induction k generalizing c with
-  | zero =>
-      intro hck
-      simp
+  | zero => simp
   | succ k ih =>
       intro hck
-      have hc : c < w.length := by lia
-      have hnext_bound : snakeColCode (c + 1) < snakeCodeBound w := by
-        simp [snakeColCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_colCode_succ (w := w) (c := c) hc
-      have htail : c + 1 + k ≤ w.length := by lia
-      have hreach := ih (c := c + 1) htail
-      have hend : c + (k + 1) = c + 1 + k := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show c + (k + 1) = c + 1 + k by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeColCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_colCode_succ (by lia)) (ih (c := c + 1) (by lia))
 
 /-- Repeated row-chain successor covers give reachability with the exact number
 of steps as fuel. -/
@@ -262,21 +254,13 @@ theorem snakeReachableFuel_rowCode_add (w : SnakeWord) :
       snakeReachableFuel w k (snakeRowCode r) (snakeRowCode (r + k)) = true := by
   intro r k
   induction k generalizing r with
-  | zero =>
-      intro hrk
-      simp
+  | zero => simp
   | succ k ih =>
       intro hrk
-      have hr : r < w.length := by lia
-      have hnext_bound : snakeRowCode (r + 1) < snakeCodeBound w := by
-        simp [snakeRowCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_rowCode_succ (w := w) (r := r) hr
-      have htail : r + 1 + k ≤ w.length := by lia
-      have hreach := ih (r := r + 1) htail
-      have hend : r + (k + 1) = r + 1 + k := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show r + (k + 1) = r + 1 + k by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeRowCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_rowCode_succ (by lia)) (ih (r := r + 1) (by lia))
 
 /-- In an all-`R` snake word, walking `k` column steps and then taking the
 cross edge reaches row `c + k + 1`. -/
@@ -286,25 +270,15 @@ theorem snakeReachableFuel_replicate_R_colCode_rowCode_succ_add {n c k : ℕ}
       (snakeColCode c) (snakeRowCode (c + k + 1)) = true := by
   induction k generalizing c with
   | zero =>
-      have hrow_bound :
-          snakeRowCode (c + 1) < snakeCodeBound (List.replicate n SnakeLetter.R) := by
-        simp [snakeRowCode, snakeCodeBound]
-        lia
-      exact snakeReachableFuel_succ_of_coverEdge hrow_bound
+      exact snakeReachableFuel_succ_of_coverEdge
+        (by simp [snakeRowCode, snakeCodeBound]; lia)
         (snakeCoverEdge_replicate_R_colCode_rowCode_succ hck)
   | succ k ih =>
-      have hc : c < n := by lia
-      have hnext_bound :
-          snakeColCode (c + 1) < snakeCodeBound (List.replicate n SnakeLetter.R) := by
-        simp [snakeColCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_colCode_succ (w := List.replicate n SnakeLetter.R)
-        (c := c) (by simpa using hc)
-      have htail : c + 1 + k < n := by lia
-      have hreach := ih (c := c + 1) htail
-      have hend : c + (k + 1) + 1 = c + 1 + k + 1 := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show c + (k + 1) + 1 = c + 1 + k + 1 by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeColCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_colCode_succ (w := List.replicate n SnakeLetter.R) (by simp; lia))
+        (ih (c := c + 1) (by lia))
 
 /-- In an all-`L` snake word, walking `k` row steps and then taking the cross
 edge reaches column `r + k + 1`. -/
@@ -314,25 +288,15 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_succ_add {n r k : ℕ}
       (snakeRowCode r) (snakeColCode (r + k + 1)) = true := by
   induction k generalizing r with
   | zero =>
-      have hcol_bound :
-          snakeColCode (r + 1) < snakeCodeBound (List.replicate n SnakeLetter.L) := by
-        simp [snakeColCode, snakeCodeBound]
-        lia
-      exact snakeReachableFuel_succ_of_coverEdge hcol_bound
+      exact snakeReachableFuel_succ_of_coverEdge
+        (by simp [snakeColCode, snakeCodeBound]; lia)
         (snakeCoverEdge_replicate_L_rowCode_colCode_succ hrk)
   | succ k ih =>
-      have hr : r < n := by lia
-      have hnext_bound :
-          snakeRowCode (r + 1) < snakeCodeBound (List.replicate n SnakeLetter.L) := by
-        simp [snakeRowCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_rowCode_succ (w := List.replicate n SnakeLetter.L)
-        (r := r) (by simpa using hr)
-      have htail : r + 1 + k < n := by lia
-      have hreach := ih (r := r + 1) htail
-      have hend : r + (k + 1) + 1 = r + 1 + k + 1 := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show r + (k + 1) + 1 = r + 1 + k + 1 by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeRowCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_rowCode_succ (w := List.replicate n SnakeLetter.L) (by simp; lia))
+        (ih (r := r + 1) (by lia))
 
 /-- In a final `R` suffix after a last-change index, walking `steps` column
 steps and then taking the suffix cross edge reaches row `c + steps + 1`. -/
@@ -344,27 +308,15 @@ theorem snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
       (snakeColCode c) (snakeRowCode (c + steps + 1)) = true := by
   induction steps generalizing c with
   | zero =>
-      have hrow_bound : snakeRowCode (c + 1) < snakeCodeBound w := by
-        simp [snakeRowCode, snakeCodeBound]
-        lia
       have hcross := snakeCrossCoverEdge_suffix_R_of_isLastChangeIndex
         (w := w) (k := last) (d := c) hlast (by simpa using hcs) hfinal
-      have hcover :
-          snakeCoverEdge w (snakeColCode c) (snakeRowCode (c + 1)) = true := by
-        rw [snakeCoverEdge]
-        simp [hcross]
-      exact snakeReachableFuel_succ_of_coverEdge hrow_bound hcover
+      exact snakeReachableFuel_succ_of_coverEdge
+        (by simp [snakeRowCode, snakeCodeBound]; lia) (by simp [snakeCoverEdge, hcross])
   | succ steps ih =>
-      have hc : c < w.length := by lia
-      have hnext_bound : snakeColCode (c + 1) < snakeCodeBound w := by
-        simp [snakeColCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_colCode_succ (w := w) (c := c) hc
-      have htail : c + 1 + steps < w.length - (last + 1) := by lia
-      have hreach := ih (c := c + 1) htail
-      have hend : c + (steps + 1) + 1 = c + 1 + steps + 1 := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show c + (steps + 1) + 1 = c + 1 + steps + 1 by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeColCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_colCode_succ (by lia)) (ih (c := c + 1) (by lia))
 
 /-- In a final `L` suffix after a last-change index, walking `steps` row steps
 and then taking the suffix cross edge reaches column `r + steps + 1`. -/
@@ -376,27 +328,15 @@ theorem snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
       (snakeRowCode r) (snakeColCode (r + steps + 1)) = true := by
   induction steps generalizing r with
   | zero =>
-      have hcol_bound : snakeColCode (r + 1) < snakeCodeBound w := by
-        simp [snakeColCode, snakeCodeBound]
-        lia
       have hcross := snakeCrossCoverEdge_suffix_L_of_isLastChangeIndex
         (w := w) (k := last) (d := r) hlast (by simpa using hrs) hfinal
-      have hcover :
-          snakeCoverEdge w (snakeRowCode r) (snakeColCode (r + 1)) = true := by
-        rw [snakeCoverEdge]
-        simp [hcross]
-      exact snakeReachableFuel_succ_of_coverEdge hcol_bound hcover
+      exact snakeReachableFuel_succ_of_coverEdge
+        (by simp [snakeColCode, snakeCodeBound]; lia) (by simp [snakeCoverEdge, hcross])
   | succ steps ih =>
-      have hr : r < w.length := by lia
-      have hnext_bound : snakeRowCode (r + 1) < snakeCodeBound w := by
-        simp [snakeRowCode, snakeCodeBound]
-        lia
-      have hcover := snakeCoverEdge_rowCode_succ (w := w) (r := r) hr
-      have htail : r + 1 + steps < w.length - (last + 1) := by lia
-      have hreach := ih (r := r + 1) htail
-      have hend : r + (steps + 1) + 1 = r + 1 + steps + 1 := by lia
-      rw [hend]
-      exact snakeReachableFuel_succ_of_coverEdge_of_reachable hnext_bound hcover hreach
+      rw [show r + (steps + 1) + 1 = r + 1 + steps + 1 by lia]
+      exact snakeReachableFuel_succ_of_coverEdge_of_reachable
+        (by simp [snakeRowCode, snakeCodeBound]; lia)
+        (snakeCoverEdge_rowCode_succ (by lia)) (ih (r := r + 1) (by lia))
 
 /-- In a final `R` suffix after a last-change index, suffix rows never reach
 suffix columns. -/
@@ -568,17 +508,9 @@ theorem snakeReachableFuel_replicate_R_colCode_rowCode_of_lt {n c r : ℕ}
     (hcr : c < r) (hr : r ≤ n) :
     snakeReachableFuel (List.replicate n SnakeLetter.R) (r - c)
       (snakeColCode c) (snakeRowCode r) = true := by
-  have hgap : c + (r - c - 1) < n := by lia
-  have hreach := snakeReachableFuel_replicate_R_colCode_rowCode_succ_add
-    (n := n) (c := c) (k := r - c - 1) hgap
-  have htarget :
-      snakeReachableFuel (List.replicate n SnakeLetter.R) (r - c)
-          (snakeColCode c) (snakeRowCode r) =
-        snakeReachableFuel (List.replicate n SnakeLetter.R) (r - c - 1 + 1)
-          (snakeColCode c) (snakeRowCode (c + (r - c - 1) + 1)) := by
-    congr 2 <;> lia
-  rw [htarget]
-  exact hreach
+  convert snakeReachableFuel_replicate_R_colCode_rowCode_succ_add
+    (n := n) (c := c) (k := r - c - 1) (by lia) using 1
+  congr 2 <;> lia
 
 /-- In an all-`L` snake word, a row reaches exactly the higher columns in exact
 path fuel. -/
@@ -586,17 +518,9 @@ theorem snakeReachableFuel_replicate_L_rowCode_colCode_of_lt {n r c : ℕ}
     (hrc : r < c) (hc : c ≤ n) :
     snakeReachableFuel (List.replicate n SnakeLetter.L) (c - r)
       (snakeRowCode r) (snakeColCode c) = true := by
-  have hgap : r + (c - r - 1) < n := by lia
-  have hreach := snakeReachableFuel_replicate_L_rowCode_colCode_succ_add
-    (n := n) (r := r) (k := c - r - 1) hgap
-  have htarget :
-      snakeReachableFuel (List.replicate n SnakeLetter.L) (c - r)
-          (snakeRowCode r) (snakeColCode c) =
-        snakeReachableFuel (List.replicate n SnakeLetter.L) (c - r - 1 + 1)
-          (snakeRowCode r) (snakeColCode (r + (c - r - 1) + 1)) := by
-    congr 2 <;> lia
-  rw [htarget]
-  exact hreach
+  convert snakeReachableFuel_replicate_L_rowCode_colCode_succ_add
+    (n := n) (r := r) (k := c - r - 1) (by lia) using 1
+  congr 2 <;> lia
 
 /-- In an all-`R` word, rows never reach columns. -/
 theorem snakeReachableFuel_replicate_R_rowCode_colCode_eq_false
@@ -687,49 +611,8 @@ theorem snakeReachableFuel_replicate_R_colCode_rowCode_eq_false_of_le
 theorem snakeReachableFuel_replicate_L_rowCode_colCode_eq_false_of_le
     {n fuel r c : ℕ} (hcr : c ≤ r) :
     snakeReachableFuel (List.replicate n SnakeLetter.L) fuel
-      (snakeRowCode r) (snakeColCode c) = false := by
-  induction fuel generalizing r with
-  | zero =>
-      exact Bool.eq_false_of_not_eq_true fun hreach => by
-        simp only [snakeReachableFuel, beq_iff_eq] at hreach
-        exact snakeRowCode_ne_colCode r c hreach
-  | succ fuel ih =>
-      apply Bool.eq_false_of_not_eq_true
-      intro hreach
-      change ((snakeRowCode r == snakeColCode c) ||
-        (List.range (snakeCodeBound (List.replicate n SnakeLetter.L))).any fun x =>
-          snakeCoverEdge (List.replicate n SnakeLetter.L) (snakeRowCode r) x &&
-            snakeReachableFuel (List.replicate n SnakeLetter.L) fuel x
-              (snakeColCode c)) = true at hreach
-      rw [Bool.or_eq_true] at hreach
-      rcases hreach with heq | hstep
-      · rw [beq_iff_eq] at heq
-        exact snakeRowCode_ne_colCode r c heq
-      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
-        rcases hstep with ⟨x, _hx, hcover, htail⟩
-        rw [snakeCoverEdge_replicate_L] at hcover
-        rcases hcover with hchain | hcross
-        · rcases hchain with ⟨hnext, _hbound⟩
-          have hx : x = snakeRowCode (r + 1) := by
-            rw [← hnext]
-            simp [snakeRowCode]
-            lia
-          rw [hx] at htail
-          have hfalse := ih (r := r + 1) (by lia)
-          rw [hfalse] at htail
-          cases htail
-        · rcases hcross with ⟨d, _hd, hrow, hxcol⟩
-          have hrd : r = d := by simpa [snakeRowCode] using hrow
-          rw [← hrd] at hxcol
-          rw [hxcol] at htail
-          have hdrop : snakeColCode c < snakeColCode (r + 1) := by
-            simp [snakeColCode]
-            lia
-          have hfalse := snakeReachableFuel_eq_false_of_target_lt
-            (w := List.replicate n SnakeLetter.L) (fuel := fuel)
-            (a := snakeColCode (r + 1)) (b := snakeColCode c) hdrop
-          rw [hfalse] at htail
-          cases htail
+      (snakeRowCode r) (snakeColCode c) = false :=
+  snakeReachableFuel_rowCode_colCode_eq_false_of_le hcr
 
 /-- Adding one unit of fuel preserves reachability. -/
 theorem snakeReachableFuel_succ_of_reachable {w : SnakeWord} {fuel a b : ℕ}
@@ -818,19 +701,11 @@ theorem snakeElementReachable_suffix_R_colCode_rowCode_of_lt
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
     snakeElementReachable w (snakeColCode c) (snakeRowCode r) = true := by
   unfold snakeElementReachable
-  have hgap : c + (r - c - 1) < w.length - (last + 1) := by lia
-  have hreach := snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
-    (w := w) (last := last) (c := c) (steps := r - c - 1) hlast hgap hfinal
-  have hreach_exact :
-      snakeReachableFuel w (r - c) (snakeColCode c) (snakeRowCode r) = true := by
-    have htarget :
-        snakeReachableFuel w (r - c) (snakeColCode c) (snakeRowCode r) =
-          snakeReachableFuel w (r - c - 1 + 1) (snakeColCode c)
-            (snakeRowCode (c + (r - c - 1) + 1)) := by
-      congr 2 <;> lia
-    rw [htarget]
-    exact hreach
-  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia) hreach_exact
+  refine snakeReachableFuel_of_le (fuel := r - c) (by simp [snakeCodeBound]; lia) ?_
+  convert snakeReachableFuel_suffix_R_colCode_rowCode_succ_add
+    (w := w) (last := last) (c := c) (steps := r - c - 1) hlast (by lia) hfinal
+      using 1
+  congr 2 <;> lia
 
 /-- In a final `R` suffix after a last-change index, suffix rows do not reach
 suffix columns at the element-reachability level. -/
@@ -850,19 +725,11 @@ theorem snakeElementReachable_suffix_L_rowCode_colCode_of_lt
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
     snakeElementReachable w (snakeRowCode r) (snakeColCode c) = true := by
   unfold snakeElementReachable
-  have hgap : r + (c - r - 1) < w.length - (last + 1) := by lia
-  have hreach := snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
-    (w := w) (last := last) (r := r) (steps := c - r - 1) hlast hgap hfinal
-  have hreach_exact :
-      snakeReachableFuel w (c - r) (snakeRowCode r) (snakeColCode c) = true := by
-    have htarget :
-        snakeReachableFuel w (c - r) (snakeRowCode r) (snakeColCode c) =
-          snakeReachableFuel w (c - r - 1 + 1) (snakeRowCode r)
-            (snakeColCode (r + (c - r - 1) + 1)) := by
-      congr 2 <;> lia
-    rw [htarget]
-    exact hreach
-  exact snakeReachableFuel_of_le (by simp [snakeCodeBound]; lia) hreach_exact
+  refine snakeReachableFuel_of_le (fuel := c - r) (by simp [snakeCodeBound]; lia) ?_
+  convert snakeReachableFuel_suffix_L_rowCode_colCode_succ_add
+    (w := w) (last := last) (r := r) (steps := c - r - 1) hlast (by lia) hfinal
+      using 1
+  congr 2 <;> lia
 
 /-- In a final `L` suffix after a last-change index, suffix columns do not
 reach suffix rows at the element-reachability level. -/
@@ -909,17 +776,9 @@ theorem snakeElementReachable_replicate_L_rowCode_colCode_eq_true_iff
   constructor
   · intro hreach
     by_contra hnot
-    have hcr : c ≤ r := Nat.le_of_not_gt hnot
-    have hreachFuel :
-        snakeReachableFuel (List.replicate n SnakeLetter.L)
-          (snakeCodeBound (List.replicate n SnakeLetter.L))
-          (snakeRowCode r) (snakeColCode c) = true := by
-      simpa [snakeElementReachable] using hreach
-    have hfalse :=
-      snakeReachableFuel_replicate_L_rowCode_colCode_eq_false_of_le
-        (n := n) (fuel := snakeCodeBound (List.replicate n SnakeLetter.L)) hcr
-    rw [hfalse] at hreachFuel
-    cases hreachFuel
+    rw [snakeElementReachable_rowCode_colCode_eq_false_of_le
+      (w := List.replicate n SnakeLetter.L) (Nat.le_of_not_gt hnot)] at hreach
+    cases hreach
   · intro hrc
     exact snakeElementReachable_replicate_L_rowCode_colCode_of_lt hrc hc
 

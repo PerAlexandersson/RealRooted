@@ -72,13 +72,12 @@ instance Letter.instDecidableIsAllowedBlock (a b c d : Letter) :
     simp only [Letter.IsAllowedBlock] <;> infer_instance
 
 private theorem ne_zero_of_eval_one_ne {p : ℝ[X]} (h : p.eval 1 ≠ 0) : p ≠ 0 := by
-  intro hp
-  apply h
-  simp only [hp, eval_zero]
+  rintro rfl
+  exact h (by simp)
 
 private theorem interl_P_Q :
     Interl (X + 1 : ℝ[X]) (X * (X + 1)) := by
-  exact (interl_iff_interl_X_mul isPFPolynomial_X_add_one
+  simpa using (interl_iff_interl_X_mul isPFPolynomial_X_add_one
     isPFPolynomial_X_add_one).mp isPFPolynomial_X_add_one.interl_self
 
 private theorem not_interl_of_sorted_roots {f g : ℝ[X]} {leftRoots rightRoots : List ℝ}
@@ -96,24 +95,18 @@ private theorem not_interl_of_sorted_roots {f g : ℝ[X]} {leftRoots rightRoots 
   · exact hg hright
   rcases hstrict with ⟨_, _, left, right, hleftSort', hrightSort', hleftEq, hrightEq, hshape'⟩
   have hleftList : left = leftRoots := by
-    apply List.Perm.eq_of_pairwise (fun a b _ _ hab hba => le_antisymm hab hba)
-    · exact hleftSort'
-    · exact hleftSort
-    · exact Multiset.coe_eq_coe.mp (hleftEq.trans hleftRoots)
+    exact List.Perm.eq_of_pairwise (fun a b _ _ hab hba => le_antisymm hab hba)
+      hleftSort' hleftSort (Multiset.coe_eq_coe.mp (hleftEq.trans hleftRoots))
   have hrightList : right = rightRoots := by
-    apply List.Perm.eq_of_pairwise (fun a b _ _ hab hba => le_antisymm hab hba)
-    · exact hrightSort'
-    · exact hrightSort
-    · exact Multiset.coe_eq_coe.mp (hrightEq.trans hrightRoots)
+    exact List.Perm.eq_of_pairwise (fun a b _ _ hab hba => le_antisymm hab hba)
+      hrightSort' hrightSort (Multiset.coe_eq_coe.mp (hrightEq.trans hrightRoots))
   exact hshape (hleftList ▸ hrightList ▸ hshape')
 
 private theorem roots_square_P :
     ((X + 1 : ℝ[X]) ^ 2).roots = ↑([-1, -1] : List ℝ) := by
-  rw [pow_two, Polynomial.roots_mul (mul_ne_zero (ne_zero_of_eval_one_ne (by norm_num))
-    (ne_zero_of_eval_one_ne (by norm_num)))]
-  simp only [show (X + 1 : ℝ[X]) = X - C (-1) by
-    simp only [map_neg, map_one]
-    ring, Polynomial.roots_X_sub_C]
+  rw [Polynomial.roots_pow]
+  change 2 • (X + C 1 : ℝ[X]).roots = _
+  rw [Polynomial.roots_X_add_C]
   rfl
 
 private theorem roots_X_mul_X_add_two :
@@ -121,21 +114,17 @@ private theorem roots_X_mul_X_add_two :
   rw [Polynomial.roots_mul
       (mul_ne_zero Polynomial.X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))),
     Polynomial.roots_X]
-  simp only [show (X + 2 : ℝ[X]) = X - C (-2) by
-    simp only [map_neg, map_ofNat]
-    ring, Polynomial.roots_X_sub_C]
-  rw [Multiset.add_comm]
+  change {0} + (X + C 2 : ℝ[X]).roots = _
+  rw [Polynomial.roots_X_add_C, Multiset.add_comm]
+  norm_num
   rfl
 
 private theorem not_interl_square_P_X_mul_X_add_two :
     ¬ Interl ((X + 1 : ℝ[X]) ^ 2) (X * (X + 2)) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-1, -1]) (rightRoots := [-2, 0])
+  exact not_interl_of_sorted_roots (leftRoots := [-1, -1]) (rightRoots := [-2, 0])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_square_P
-  · exact roots_X_mul_X_add_two
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_square_P roots_X_mul_X_add_two
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_isPFPolynomial_of_not_splits {p : ℝ[X]}
     (hp0 : p ≠ 0) (hnot : ¬ p.Splits) :
@@ -148,23 +137,20 @@ private theorem not_isPFPolynomial_of_not_splits {p : ℝ[X]}
 private theorem not_isPFPolynomial_one_add_X_sq :
     ¬ IsPFPolynomial (1 + X ^ 2 : ℝ[X]) := by
   apply not_isPFPolynomial_of_not_splits (ne_zero_of_eval_one_ne (by norm_num))
-  have hnot : ¬ ((C 1 * X ^ 2 + C 0 * X + C 1) : ℝ[X]).Splits :=
-    quadraticPoly_not_splits_of_discrim_neg one_ne_zero (by norm_num [discrim])
-  have heq : (1 + X ^ 2 : ℝ[X]) = C 1 * X ^ 2 + C 0 * X + C 1 := by
-    norm_num [map_ofNat]
-    ring
-  rwa [heq]
+  convert (quadraticPoly_not_splits_of_discrim_neg one_ne_zero
+    (by norm_num [discrim]) :
+      ¬ ((C 1 * X ^ 2 + C 0 * X + C 1) : ℝ[X]).Splits) using 1
+  norm_num [map_ofNat]
+  ring
 
 private theorem not_isPFPolynomial_one_add_two_X_add_two_X_sq :
     ¬ IsPFPolynomial (1 + 2 * X + 2 * X ^ 2 : ℝ[X]) := by
   apply not_isPFPolynomial_of_not_splits (ne_zero_of_eval_one_ne (by norm_num))
-  have hnot : ¬ ((C 2 * X ^ 2 + C 2 * X + C 1) : ℝ[X]).Splits :=
-    quadraticPoly_not_splits_of_discrim_neg (by norm_num : (2 : ℝ) ≠ 0)
-      (by norm_num [discrim])
-  have heq : (1 + 2 * X + 2 * X ^ 2 : ℝ[X]) = C 2 * X ^ 2 + C 2 * X + C 1 := by
-    norm_num [map_ofNat]
-    ring
-  rwa [heq]
+  convert (quadraticPoly_not_splits_of_discrim_neg (by norm_num : (2 : ℝ) ≠ 0)
+    (by norm_num [discrim]) :
+      ¬ ((C 2 * X ^ 2 + C 2 * X + C 1) : ℝ[X]).Splits) using 1
+  norm_num [map_ofNat]
+  ring
 
 private theorem not_isPFPolynomial_X_add_X_sq_add_X_cu :
     ¬ IsPFPolynomial (X + X ^ 2 + X ^ 3 : ℝ[X]) := by
@@ -187,10 +173,9 @@ private theorem interl_one_X : Interl (1 : ℝ[X]) X := by
 private theorem not_preservesOrderedPFPair_of_top_row_one_x (c d : Letter) :
     ¬ PreservesOrderedPFPair Letter.one.linearMap Letter.x.linearMap c.linearMap d.linearMap := by
   intro hpreserves
-  obtain ⟨hpf, _, _⟩ := hpreserves 1 X IsPFPolynomial.one isPFPolynomial_X interl_one_X
   apply not_isPFPolynomial_one_add_X_sq
-  change IsPFPolynomial (1 + X * X) at hpf
-  simpa only [pow_two] using hpf
+  simpa only [Letter.linearMap_one, Letter.linearMap_x, pow_two] using
+    (hpreserves 1 X IsPFPolynomial.one isPFPolynomial_X interl_one_X).1
 
 private theorem not_preservesOrderedPFPair_of_top_row_one_theta (c d : Letter) :
     ¬ PreservesOrderedPFPair Letter.one.linearMap Letter.theta.linearMap
@@ -202,11 +187,9 @@ private theorem not_preservesOrderedPFPair_of_top_row_one_theta (c d : Letter) :
     interl_P_Q
   apply not_isPFPolynomial_one_add_two_X_add_two_X_sq
   change IsPFPolynomial ((X + 1) + X * (X * (X + 1)).derivative) at hpf
-  have htop : (X + 1 : ℝ[X]) + X * (X * (X + 1)).derivative =
-      1 + 2 * X + 2 * X ^ 2 := by
-    simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
-    ring
-  rwa [htop] at hpf
+  convert hpf using 1
+  simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
+  ring
 
 private theorem not_preservesOrderedPFPair_of_top_row_theta_x (c d : Letter) :
     ¬ PreservesOrderedPFPair Letter.theta.linearMap Letter.x.linearMap
@@ -218,19 +201,16 @@ private theorem not_preservesOrderedPFPair_of_top_row_theta_x (c d : Letter) :
     interl_P_Q
   apply not_isPFPolynomial_X_add_X_sq_add_X_cu
   change IsPFPolynomial (X * (X + 1).derivative + X * (X * (X + 1))) at hpf
-  have htop : X * (X + 1 : ℝ[X]).derivative + X * (X * (X + 1)) =
-      X + X ^ 2 + X ^ 3 := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
-    ring
-  rwa [htop] at hpf
+  convert hpf using 1
+  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  ring
 
 private theorem not_preservesOrderedPFPair_of_bottom_row_one_x (a b : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap b.linearMap Letter.one.linearMap Letter.x.linearMap := by
   intro hpreserves
-  obtain ⟨_, hpf, _⟩ := hpreserves 1 X IsPFPolynomial.one isPFPolynomial_X interl_one_X
   apply not_isPFPolynomial_one_add_X_sq
-  change IsPFPolynomial (1 + X * X) at hpf
-  simpa only [pow_two] using hpf
+  simpa only [Letter.linearMap_one, Letter.linearMap_x, pow_two] using
+    (hpreserves 1 X IsPFPolynomial.one isPFPolynomial_X interl_one_X).2.1
 
 private theorem not_preservesOrderedPFPair_of_bottom_row_one_theta (a b : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap b.linearMap
@@ -242,11 +222,9 @@ private theorem not_preservesOrderedPFPair_of_bottom_row_one_theta (a b : Letter
     interl_P_Q
   apply not_isPFPolynomial_one_add_two_X_add_two_X_sq
   change IsPFPolynomial ((X + 1) + X * (X * (X + 1)).derivative) at hpf
-  have hbottom : (X + 1 : ℝ[X]) + X * (X * (X + 1)).derivative =
-      1 + 2 * X + 2 * X ^ 2 := by
-    simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
-    ring
-  rwa [hbottom] at hpf
+  convert hpf using 1
+  simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
+  ring
 
 private theorem not_preservesOrderedPFPair_of_bottom_row_theta_x (a b : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap b.linearMap
@@ -258,26 +236,22 @@ private theorem not_preservesOrderedPFPair_of_bottom_row_theta_x (a b : Letter) 
     interl_P_Q
   apply not_isPFPolynomial_X_add_X_sq_add_X_cu
   change IsPFPolynomial (X * (X + 1).derivative + X * (X * (X + 1))) at hpf
-  have hbottom : X * (X + 1 : ℝ[X]).derivative + X * (X * (X + 1)) =
-      X + X ^ 2 + X ^ 3 := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
-    ring
-  rwa [hbottom] at hpf
+  convert hpf using 1
+  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  ring
 
 private theorem roots_P : (X + 1 : ℝ[X]).roots = ↑([-1] : List ℝ) := by
-  simp only [show (X + 1 : ℝ[X]) = X - C (-1) by
-    simp only [map_neg, map_one]
-    ring, Polynomial.roots_X_sub_C]
-  rfl
+  change (X + C 1 : ℝ[X]).roots = _
+  rw [Polynomial.roots_X_add_C]
+  norm_num
 
 private theorem roots_X_mul_P : (X * (X + 1) : ℝ[X]).roots = ↑([-1, 0] : List ℝ) := by
   rw [Polynomial.roots_mul
       (mul_ne_zero Polynomial.X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))),
     Polynomial.roots_X]
-  simp only [show (X + 1 : ℝ[X]) = X - C (-1) by
-    simp only [map_neg, map_one]
-    ring, Polynomial.roots_X_sub_C]
-  rw [Multiset.add_comm]
+  change {0} + (X + C 1 : ℝ[X]).roots = _
+  rw [Polynomial.roots_X_add_C, Multiset.add_comm]
+  norm_num
   rfl
 
 private theorem roots_X : (X : ℝ[X]).roots = ↑([0] : List ℝ) := by
@@ -293,22 +267,16 @@ private theorem not_interl_X_X_add_one : ¬ Interl (X : ℝ[X]) (X + 1) := by
   simpa only [map_zero, map_one, add_zero] using hinterl
 
 private theorem not_interl_X_mul_P_P : ¬ Interl (X * (X + 1)) (X + 1) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-1, 0]) (rightRoots := [-1])
+  exact not_interl_of_sorted_roots (leftRoots := [-1, 0]) (rightRoots := [-1])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_X_mul_P
-  · exact roots_P
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_X_mul_P roots_P
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_interl_X_mul_P_X : ¬ Interl (X * (X + 1)) X := by
-  apply not_interl_of_sorted_roots (leftRoots := [-1, 0]) (rightRoots := [0])
+  exact not_interl_of_sorted_roots (leftRoots := [-1, 0]) (rightRoots := [0])
     (ne_zero_of_eval_one_ne (by norm_num)) Polynomial.X_ne_zero
-  · norm_num
-  · norm_num
-  · exact roots_X_mul_P
-  · exact roots_X
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_X_mul_P roots_X
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_preservesOrderedPFPair_of_left_column_theta_one (b d : Letter) :
     ¬ PreservesOrderedPFPair Letter.theta.linearMap b.linearMap
@@ -317,11 +285,9 @@ private theorem not_preservesOrderedPFPair_of_left_column_theta_one (b d : Lette
   obtain ⟨_, _, hinterl⟩ := hpreserves (X + 1) 0
     isPFPolynomial_X_add_one IsPFPolynomial.zero (interl_zero_right (X + 1))
   apply not_interl_X_X_add_one
-  simp only [Letter.linearMap_theta, Letter.linearMap_one, LinearMap.map_zero,
-    add_zero] at hinterl
-  change Interl (X * (X + 1).derivative) (X + 1) at hinterl
-  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero] at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_theta, Letter.linearMap_one, LinearMap.map_zero,
+    add_zero, RealRooted.theta, derivative_add, derivative_X, derivative_one, mul_one]
+    using hinterl
 
 private theorem not_preservesOrderedPFPair_of_left_column_x_one (b d : Letter) :
     ¬ PreservesOrderedPFPair Letter.x.linearMap b.linearMap Letter.one.linearMap d.linearMap := by
@@ -329,10 +295,8 @@ private theorem not_preservesOrderedPFPair_of_left_column_x_one (b d : Letter) :
   obtain ⟨_, _, hinterl⟩ := hpreserves (X + 1) 0
     isPFPolynomial_X_add_one IsPFPolynomial.zero (interl_zero_right (X + 1))
   apply not_interl_X_mul_P_P
-  simp only [Letter.linearMap_x, Letter.linearMap_one, LinearMap.map_zero,
-    add_zero] at hinterl
-  change Interl (X * (X + 1)) (X + 1) at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_x, Letter.linearMap_one, LinearMap.map_zero, add_zero]
+    using hinterl
 
 private theorem not_preservesOrderedPFPair_of_left_column_x_theta (b d : Letter) :
     ¬ PreservesOrderedPFPair Letter.x.linearMap b.linearMap
@@ -341,11 +305,9 @@ private theorem not_preservesOrderedPFPair_of_left_column_x_theta (b d : Letter)
   obtain ⟨_, _, hinterl⟩ := hpreserves (X + 1) 0
     isPFPolynomial_X_add_one IsPFPolynomial.zero (interl_zero_right (X + 1))
   apply not_interl_X_mul_P_X
-  simp only [Letter.linearMap_x, Letter.linearMap_theta, LinearMap.map_zero,
-    add_zero] at hinterl
-  change Interl (X * (X + 1)) (X * (X + 1).derivative) at hinterl
-  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero] at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_x, Letter.linearMap_theta, LinearMap.map_zero,
+    add_zero, RealRooted.theta, derivative_add, derivative_X, derivative_one, mul_one]
+    using hinterl
 
 private theorem not_preservesOrderedPFPair_of_right_column_theta_one (a c : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap Letter.theta.linearMap
@@ -354,11 +316,9 @@ private theorem not_preservesOrderedPFPair_of_right_column_theta_one (a c : Lett
   obtain ⟨_, _, hinterl⟩ := hpreserves 0 (X + 1)
     IsPFPolynomial.zero isPFPolynomial_X_add_one (interl_zero_left (X + 1))
   apply not_interl_X_X_add_one
-  simp only [Letter.linearMap_theta, Letter.linearMap_one, LinearMap.map_zero,
-    zero_add] at hinterl
-  change Interl (X * (X + 1).derivative) (X + 1) at hinterl
-  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero] at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_theta, Letter.linearMap_one, LinearMap.map_zero,
+    zero_add, RealRooted.theta, derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+    using hinterl
 
 private theorem not_preservesOrderedPFPair_of_right_column_x_one (a c : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap Letter.x.linearMap c.linearMap Letter.one.linearMap := by
@@ -366,10 +326,8 @@ private theorem not_preservesOrderedPFPair_of_right_column_x_one (a c : Letter) 
   obtain ⟨_, _, hinterl⟩ := hpreserves 0 (X + 1)
     IsPFPolynomial.zero isPFPolynomial_X_add_one (interl_zero_left (X + 1))
   apply not_interl_X_mul_P_P
-  simp only [Letter.linearMap_x, Letter.linearMap_one, LinearMap.map_zero,
-    zero_add] at hinterl
-  change Interl (X * (X + 1)) (X + 1) at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_x, Letter.linearMap_one, LinearMap.map_zero, zero_add]
+    using hinterl
 
 private theorem not_preservesOrderedPFPair_of_right_column_x_theta (a c : Letter) :
     ¬ PreservesOrderedPFPair a.linearMap Letter.x.linearMap
@@ -378,11 +336,9 @@ private theorem not_preservesOrderedPFPair_of_right_column_x_theta (a c : Letter
   obtain ⟨_, _, hinterl⟩ := hpreserves 0 (X + 1)
     IsPFPolynomial.zero isPFPolynomial_X_add_one (interl_zero_left (X + 1))
   apply not_interl_X_mul_P_X
-  simp only [Letter.linearMap_x, Letter.linearMap_theta, LinearMap.map_zero,
-    zero_add] at hinterl
-  change Interl (X * (X + 1)) (X * (X + 1).derivative) at hinterl
-  simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero] at hinterl
-  exact hinterl
+  simpa only [Letter.linearMap_x, Letter.linearMap_theta, LinearMap.map_zero,
+    zero_add, RealRooted.theta, derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+    using hinterl
 
 /-- The first exceptional Ferrers block in the table does not preserve ordered
 PF pairs. -/
@@ -397,11 +353,10 @@ private theorem not_preservesOrderedPFPair_one_one_theta_one :
   apply not_interl_square_P_X_mul_X_add_two
   change Interl ((X + 1) + X * (X + 1))
     (X * (X + 1).derivative + X * (X + 1)) at hinterl
-  have htop : (X + 1 : ℝ[X]) + X * (X + 1) = (X + 1) ^ 2 := by ring
-  have hbottom : X * (X + 1 : ℝ[X]).derivative + X * (X + 1) = X * (X + 2) := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  convert hinterl using 1
+  · ring
+  · simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
     ring
-  rwa [htop, hbottom] at hinterl
 
 private theorem interl_P_P : Interl (X + 1 : ℝ[X]) (X + 1) :=
   Interl.refl fun hne => isPFPolynomial_X_add_one.eq_zero_or_splits.resolve_left hne
@@ -415,18 +370,15 @@ private theorem interl_X_add_ten_X_add_eleven_mul_X_add_one :
   have hq0 : ((X + 11) * (X + 1) : ℝ[X]) ≠ 0 :=
     ne_zero_of_eval_one_ne (by norm_num)
   have hpRoots : (X + 10 : ℝ[X]).roots = ↑([-10] : List ℝ) := by
-    simp only [show (X + 10 : ℝ[X]) = X - C (-10) by
-      simp only [map_neg, map_ofNat]
-      ring, Polynomial.roots_X_sub_C]
-    rfl
+    change (X + C 10 : ℝ[X]).roots = _
+    rw [Polynomial.roots_X_add_C]
+    norm_num
   have hqRoots : ((X + 11) * (X + 1) : ℝ[X]).roots =
       ↑([-11, -1] : List ℝ) := by
     rw [Polynomial.roots_mul hq0]
-    simp only [show (X + 11 : ℝ[X]) = X - C (-11) by
-      simp only [map_neg, map_ofNat]
-      ring, show (X + 1 : ℝ[X]) = X - C (-1) by
-      simp only [map_neg, map_one]
-      ring, Polynomial.roots_X_sub_C]
+    change (X + C 11 : ℝ[X]).roots + (X + C 1 : ℝ[X]).roots = _
+    rw [Polynomial.roots_X_add_C, Polynomial.roots_X_add_C]
+    norm_num
     rfl
   apply StrictInterl.toInterl
   refine ⟨⟨hp0, (hp.ne_zero_and_splits hp0).2⟩,
@@ -442,20 +394,16 @@ private theorem roots_X_mul_three_X_add_two :
   rw [Polynomial.roots_mul
       (mul_ne_zero Polynomial.X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))),
     Polynomial.roots_X]
-  have hfactor : (3 * X + 2 : ℝ[X]) = C 3 * (X - C (-(2 / 3))) := by
-    rw [mul_sub, ← Polynomial.C_mul]
-    norm_num [map_ofNat]
-  rw [hfactor, Polynomial.roots_C_mul _ (by norm_num), Polynomial.roots_X_sub_C]
-  rw [Multiset.add_comm]
+  change {0} + (C 3 * X + C 2 : ℝ[X]).roots = _
+  rw [Polynomial.roots_C_mul_X_add_C 2 (by norm_num), Multiset.add_comm]
+  norm_num
   rfl
 
 private theorem roots_two_X_add_one :
     (2 * X + 1 : ℝ[X]).roots = ↑([-(1 / 2)] : List ℝ) := by
-  have hfactor : (2 * X + 1 : ℝ[X]) = C 2 * (X - C (-(1 / 2))) := by
-    rw [mul_sub, ← Polynomial.C_mul]
-    norm_num [map_ofNat]
-  rw [hfactor, Polynomial.roots_C_mul _ (by norm_num), Polynomial.roots_X_sub_C]
-  rfl
+  change (C 2 * X + C 1 : ℝ[X]).roots = _
+  rw [Polynomial.roots_C_mul_X_add_C 1 (by norm_num)]
+  norm_num
 
 private theorem roots_X_mul_square_P :
     (X * (X + 1) ^ 2 : ℝ[X]).roots = ↑([-1, -1, 0] : List ℝ) := by
@@ -469,11 +417,9 @@ private theorem roots_X_mul_two_X_add_thirteen :
   rw [Polynomial.roots_mul
       (mul_ne_zero Polynomial.X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))),
     Polynomial.roots_X]
-  have hfactor : (2 * X + 13 : ℝ[X]) = C 2 * (X - C (-(13 / 2))) := by
-    rw [mul_sub, ← Polynomial.C_mul]
-    norm_num [map_ofNat]
-  rw [hfactor, Polynomial.roots_C_mul _ (by norm_num), Polynomial.roots_X_sub_C]
-  rw [Multiset.add_comm]
+  change {0} + (C 2 * X + C 13 : ℝ[X]).roots = _
+  rw [Polynomial.roots_C_mul_X_add_C 13 (by norm_num), Multiset.add_comm]
+  norm_num
   rfl
 
 private theorem roots_X_mul_three_X_add_twenty_two :
@@ -481,67 +427,50 @@ private theorem roots_X_mul_three_X_add_twenty_two :
   rw [Polynomial.roots_mul
       (mul_ne_zero Polynomial.X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))),
     Polynomial.roots_X]
-  have hfactor : (3 * X + 22 : ℝ[X]) = C 3 * (X - C (-(22 / 3))) := by
-    rw [mul_sub, ← Polynomial.C_mul]
-    norm_num [map_ofNat]
-  rw [hfactor, Polynomial.roots_C_mul _ (by norm_num), Polynomial.roots_X_sub_C]
-  rw [Multiset.add_comm]
+  change {0} + (C 3 * X + C 22 : ℝ[X]).roots = _
+  rw [Polynomial.roots_C_mul_X_add_C 22 (by norm_num), Multiset.add_comm]
+  norm_num
   rfl
 
 private theorem not_interl_square_P_X_mul_three_X_add_two :
     ¬ Interl ((X + 1 : ℝ[X]) ^ 2) (X * (3 * X + 2)) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-1, -1])
+  exact not_interl_of_sorted_roots (leftRoots := [-1, -1])
     (rightRoots := [-(2 / 3), 0])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_square_P
-  · exact roots_X_mul_three_X_add_two
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_square_P roots_X_mul_three_X_add_two
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_interl_two_X_add_one_square_P :
     ¬ Interl (2 * X + 1 : ℝ[X]) ((X + 1) ^ 2) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-(1 / 2)])
+  exact not_interl_of_sorted_roots (leftRoots := [-(1 / 2)])
     (rightRoots := [-1, -1])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_two_X_add_one
-  · exact roots_square_P
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_two_X_add_one roots_square_P
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_interl_X_mul_X_add_two_X_mul_square_P :
     ¬ Interl (X * (X + 2) : ℝ[X]) (X * (X + 1) ^ 2) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-2, 0])
+  exact not_interl_of_sorted_roots (leftRoots := [-2, 0])
     (rightRoots := [-1, -1, 0])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_X_mul_X_add_two
-  · exact roots_X_mul_square_P
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_X_mul_X_add_two roots_X_mul_square_P
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_interl_X_mul_three_X_add_two_X_mul_square_P :
     ¬ Interl (X * (3 * X + 2) : ℝ[X]) (X * (X + 1) ^ 2) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-(2 / 3), 0])
+  exact not_interl_of_sorted_roots (leftRoots := [-(2 / 3), 0])
     (rightRoots := [-1, -1, 0])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_X_mul_three_X_add_two
-  · exact roots_X_mul_square_P
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_X_mul_three_X_add_two roots_X_mul_square_P
+    (by norm_num [ListInterlaces, ListAlternates])
 
 private theorem not_interl_special_outputs :
     ¬ Interl (X * (2 * X + 13) : ℝ[X]) (X * (3 * X + 22)) := by
-  apply not_interl_of_sorted_roots (leftRoots := [-(13 / 2), 0])
+  exact not_interl_of_sorted_roots (leftRoots := [-(13 / 2), 0])
     (rightRoots := [-(22 / 3), 0])
     (ne_zero_of_eval_one_ne (by norm_num)) (ne_zero_of_eval_one_ne (by norm_num))
-  · norm_num
-  · norm_num
-  · exact roots_X_mul_two_X_add_thirteen
-  · exact roots_X_mul_three_X_add_twenty_two
-  · norm_num [ListInterlaces, ListAlternates]
+    (by norm_num) (by norm_num) roots_X_mul_two_X_add_thirteen
+    roots_X_mul_three_X_add_twenty_two (by norm_num [ListInterlaces, ListAlternates])
 
 /-- The exceptional block `(1, 1) / (X, θ)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_one_one_x_theta :
@@ -555,12 +484,10 @@ private theorem not_preservesOrderedPFPair_one_one_x_theta :
   apply not_interl_square_P_X_mul_three_X_add_two
   change Interl ((X + 1) + X * (X + 1))
     (X * (X + 1) + X * (X * (X + 1)).derivative) at hinterl
-  have htop : (X + 1 : ℝ[X]) + X * (X + 1) = (X + 1) ^ 2 := by ring
-  have hbottom : X * (X + 1 : ℝ[X]) + X * (X * (X + 1)).derivative =
-      X * (3 * X + 2) := by
-    simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
+  convert hinterl using 1
+  · ring
+  · simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
     ring
-  rwa [htop, hbottom] at hinterl
 
 /-- The exceptional block `(θ, 1) / (X, 1)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_theta_one_x_one :
@@ -572,11 +499,10 @@ private theorem not_preservesOrderedPFPair_theta_one_x_one :
   apply not_interl_two_X_add_one_square_P
   change Interl (X * (X + 1).derivative + (X + 1))
     (X * (X + 1) + (X + 1)) at hinterl
-  have htop : X * (X + 1 : ℝ[X]).derivative + (X + 1) = 2 * X + 1 := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  convert hinterl using 1
+  · simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
     ring
-  have hbottom : X * (X + 1 : ℝ[X]) + (X + 1) = (X + 1) ^ 2 := by ring
-  rwa [htop, hbottom] at hinterl
+  · ring
 
 /-- The exceptional block `(θ, 1) / (X, X)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_theta_one_x_x :
@@ -590,12 +516,10 @@ private theorem not_preservesOrderedPFPair_theta_one_x_x :
   apply not_interl_X_mul_X_add_two_X_mul_square_P
   change Interl (X * (X + 1).derivative + X * (X + 1))
     (X * (X + 1) + X * (X * (X + 1))) at hinterl
-  have htop : X * (X + 1 : ℝ[X]).derivative + X * (X + 1) = X * (X + 2) := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  convert hinterl using 1
+  · simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
     ring
-  have hbottom : X * (X + 1 : ℝ[X]) + X * (X * (X + 1)) =
-      X * (X + 1) ^ 2 := by ring
-  rwa [htop, hbottom] at hinterl
+  · ring
 
 /-- The exceptional block `(X, 1) / (X, θ)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_x_one_x_theta :
@@ -607,11 +531,10 @@ private theorem not_preservesOrderedPFPair_x_one_x_theta :
   apply not_interl_square_P_X_mul_X_add_two
   change Interl (X * (X + 1) + (X + 1))
     (X * (X + 1) + X * (X + 1).derivative) at hinterl
-  have htop : X * (X + 1 : ℝ[X]) + (X + 1) = (X + 1) ^ 2 := by ring
-  have hbottom : X * (X + 1 : ℝ[X]) + X * (X + 1).derivative = X * (X + 2) := by
-    simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
+  convert hinterl using 1
+  · ring
+  · simp only [derivative_add, derivative_X, derivative_one, mul_one, add_zero]
     ring
-  rwa [htop, hbottom] at hinterl
 
 /-- The exceptional block `(X, θ) / (X, X)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_x_theta_x_x :
@@ -625,13 +548,10 @@ private theorem not_preservesOrderedPFPair_x_theta_x_x :
   apply not_interl_X_mul_three_X_add_two_X_mul_square_P
   change Interl (X * (X + 1) + X * (X * (X + 1)).derivative)
     (X * (X + 1) + X * (X * (X + 1))) at hinterl
-  have htop : X * (X + 1 : ℝ[X]) + X * (X * (X + 1)).derivative =
-      X * (3 * X + 2) := by
-    simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
+  convert hinterl using 1
+  · simp only [derivative_mul, derivative_X, derivative_add, mul_one, one_mul, mul_add]
     ring
-  have hbottom : X * (X + 1 : ℝ[X]) + X * (X * (X + 1)) =
-      X * (X + 1) ^ 2 := by ring
-  rwa [htop, hbottom] at hinterl
+  · ring
 
 /-- The exceptional block `(θ, θ) / (X, θ)` does not preserve ordered PF pairs. -/
 private theorem not_preservesOrderedPFPair_theta_theta_x_theta :
@@ -645,17 +565,13 @@ private theorem not_preservesOrderedPFPair_theta_theta_x_theta :
   apply not_interl_special_outputs
   change Interl (X * (X + 10).derivative + X * ((X + 11) * (X + 1)).derivative)
     (X * (X + 10) + X * ((X + 11) * (X + 1)).derivative) at hinterl
-  have htop : X * (X + 10 : ℝ[X]).derivative +
-      X * ((X + 11) * (X + 1)).derivative = X * (2 * X + 13) := by
-    simp only [derivative_mul, derivative_X, derivative_add, derivative_ofNat,
+  convert hinterl using 1
+  · simp only [derivative_mul, derivative_X, derivative_add, derivative_ofNat,
       mul_one, one_mul, add_zero, mul_add]
     ring
-  have hbottom : X * (X + 10 : ℝ[X]) +
-      X * ((X + 11) * (X + 1)).derivative = X * (3 * X + 22) := by
-    simp only [derivative_mul, derivative_X, derivative_add, derivative_ofNat,
+  · simp only [derivative_mul, derivative_X, derivative_add, derivative_ofNat,
       mul_one, one_mul, add_zero, mul_add]
     ring
-  rwa [htop, hbottom] at hinterl
 
 /-- Every letter block outside the thirteen classified blocks fails to preserve
 ordered PF pairs. -/

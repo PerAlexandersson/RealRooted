@@ -55,13 +55,11 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
   refine ⟨rows, cols, hrows, cols.strictMono, ?_⟩
   intro hzero
   apply hdetf
-  have hmatrix :
-      A.submatrix rows f =
-        (A.submatrix rows cols).submatrix id p := by
+  rw [show A.submatrix rows f =
+      (A.submatrix rows cols).submatrix id p by
     ext i j
     simp only [Matrix.submatrix_apply, id_eq]
-    rw [hp j]
-  rw [hmatrix, Matrix.det_permute', hzero, mul_zero]
+    rw [hp j], Matrix.det_permute', hzero, mul_zero]
 
 /-- Karlin's signed row-cofactor vector of a singular square matrix lies in
 its kernel. The retained-row equations come from the rectangular alternating
@@ -97,17 +95,10 @@ theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
   apply funext
   refine Fin.succAboveCases i0 ?_ (fun i => ?_)
   · simp only [Matrix.mulVec, dotProduct, z, Pi.zero_apply]
-    calc
-      ∑ j : Fin (k + 1), B i0 j * ((-1 : R) ^
-          ((i0 : ℕ) + (j : ℕ)) *
-          (B.submatrix i0.succAbove j.succAbove).det) =
-          ∑ j : Fin (k + 1), (-1 : R) ^ ((i0 : ℕ) + (j : ℕ)) *
-            B i0 j * (B.submatrix i0.succAbove j.succAbove).det := by
-        apply Finset.sum_congr rfl
-        intro j _
-        ring
-      _ = B.det := (Matrix.det_succ_row B i0).symm
-      _ = 0 := hdet
+    convert (Matrix.det_succ_row B i0).symm.trans hdet using 1
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
   · have hi := congrFun hremoved i
     simpa only [C, Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
       Pi.zero_apply] using hi
@@ -127,14 +118,12 @@ theorem Matrix.rank_deleteColumn_eq_of_minor_ne_zero
   have hdet : (A'.submatrix rows cols).det ≠ 0 := by
     simpa only [A', Matrix.submatrix_submatrix, Function.id_comp] using hminor
   have hunit : IsUnit (A'.submatrix rows cols) := by
-    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    exact hdet
+    simpa only [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero] using hdet
   apply le_antisymm
+  · exact hrank ▸ Matrix.rank_submatrix_le A id j0.succAbove
   · calc
-      A'.rank ≤ A.rank := Matrix.rank_submatrix_le A id j0.succAbove
-      _ = r := hrank
-  · calc
-      r = (A'.submatrix rows cols).rank := by simpa using (Matrix.rank_of_isUnit _ hunit).symm
+      r = (A'.submatrix rows cols).rank :=
+        by simpa using (Matrix.rank_of_isUnit _ hunit).symm
       _ ≤ A'.rank := Matrix.rank_submatrix_le A' rows cols
 
 /-- Karlin's nonzero-cofactor branch for a selected singular square submatrix.
@@ -162,15 +151,11 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
   change A.rank = k ∧ B.mulVec z = 0 ∧ z j0 ≠ 0 ∧
     (A.submatrix id j0.succAbove).rank = k
   have hunit : IsUnit (B.submatrix i0.succAbove j0.succAbove) := by
-    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    simpa only [B] using hminor
-  have hcofactor_rank :
-      (B.submatrix i0.succAbove j0.succAbove).rank = k := by
-    simpa using Matrix.rank_of_isUnit _ hunit
+    simpa only [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero, B] using hminor
   have hrank_ge : k ≤ A.rank := by
     calc
       k = (B.submatrix i0.succAbove j0.succAbove).rank :=
-        hcofactor_rank.symm
+        by simpa using (Matrix.rank_of_isUnit _ hunit).symm
       _ ≤ B.rank :=
         Matrix.rank_submatrix_le B i0.succAbove j0.succAbove
       _ ≤ A.rank := Matrix.rank_submatrix_le A rows id
@@ -178,8 +163,7 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
   have hdet : B.det = 0 := by
     by_contra hdet
     have hBunit : IsUnit B := by
-      rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-      exact hdet
+      simpa only [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero] using hdet
     have hBrank : B.rank = k + 1 := by simpa using Matrix.rank_of_isUnit B hBunit
     have hle : B.rank ≤ A.rank := Matrix.rank_submatrix_le A rows id
     rw [hBrank, hrank] at hle
@@ -194,11 +178,9 @@ theorem Matrix.signedRowCofactor_spec_of_minor_ne_zero
         (j0.succAbove ∘ (id : Fin k → Fin k))).det ≠ 0 := by
     simpa only [B, Matrix.submatrix_submatrix, Function.id_comp,
       Function.comp_id] using hminor
-  have hdelete :
-      (A.submatrix id j0.succAbove).rank = k :=
+  exact ⟨hrank, hkernel, hzj0,
     A.rank_deleteColumn_eq_of_minor_ne_zero hrank j0
-      (rows ∘ i0.succAbove) id hminorA
-  exact ⟨hrank, hkernel, hzj0, hdelete⟩
+      (rows ∘ i0.succAbove) id hminorA⟩
 
 /-- A zero coefficient can be removed together with its matrix column when
 forming a matrix-vector product. -/
@@ -226,8 +208,8 @@ theorem Matrix.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec
       (A.submatrix id j0.succAbove).mulVec
         (Fin.removeNth j0 (c + (-c j0 / z j0) • z)) := by
   apply A.mulVec_eq_deleteColumn_mulVec_removeNth_of_apply_eq_zero
-  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-  rw [div_mul_cancel₀ _ hz, add_neg_cancel]
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, div_mul_cancel₀ _ hz,
+    add_neg_cancel]
 
 /-- Perturbing coefficients along a vector annihilated by a selected-row
 submatrix does not change the selected coordinates of the matrix-vector
@@ -239,9 +221,8 @@ theorem Matrix.mulVec_add_smul_apply_eq_of_submatrix_mulVec_eq_zero
     (t : ℝ) (i : Fin k) :
     A.mulVec (c + t • z) (rows i) = A.mulVec c (rows i) := by
   have hzi : A.mulVec z (rows i) = 0 := by
-    have hi := congrFun hz i
     simpa only [Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
-      Pi.zero_apply] using hi
+      Pi.zero_apply] using congrFun hz i
   rw [Matrix.mulVec_add, Matrix.mulVec_smul]
   simp [hzi]
 
@@ -258,9 +239,9 @@ theorem Fin.StrictlyAlternates.matrix_mulVec_add_smul
   change
     A.mulVec (c + t • z) (rows i.castSucc) *
       A.mulVec (c + t • z) (rows i.succ) < 0
-  have heq (j : Fin (k + 1)) :=
-    A.mulVec_add_smul_apply_eq_of_submatrix_mulVec_eq_zero rows c z hz t j
-  rw [heq i.castSucc, heq i.succ]
+  rw [A.mulVec_add_smul_apply_eq_of_submatrix_mulVec_eq_zero
+      rows c z hz t i.castSucc,
+    A.mulVec_add_smul_apply_eq_of_submatrix_mulVec_eq_zero rows c z hz t i.succ]
   exact h i
 
 /-- Karlin's nonzero-cofactor branch contradicts the full-rank variation
@@ -279,37 +260,28 @@ theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_n
     (c : Fin (k + 1) → ℝ)
     (hAlt : Fin.StrictlyAlternates (fun i => A.mulVec c (rows i))) :
     False := by
-  let B : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ :=
-    A.submatrix rows id
+  let B : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ := A.submatrix rows id
   let z : Fin (k + 1) → ℝ := fun j =>
     (-1 : ℝ) ^ (i0 + j : ℕ) *
       (B.submatrix i0.succAbove j.succAbove).det
-  let A' : Matrix (Fin n) (Fin k) ℝ :=
-    A.submatrix id j0.succAbove
-  have hcase :
+  let A' : Matrix (Fin n) (Fin k) ℝ := A.submatrix id j0.succAbove
+  obtain ⟨_, hkernel, hzj0, hdelete⟩ :
       A.rank = k ∧ B.mulVec z = 0 ∧ z j0 ≠ 0 ∧ A'.rank = k := by
     simpa only [B, z, A'] using
       A.signedRowCofactor_spec_of_minor_ne_zero
         rows i0 j0 hrank_lt hminor
-  obtain ⟨_hrank, hkernel, hzj0, hdelete⟩ := hcase
   let t0 : ℝ := -c j0 / z j0
   let d : Fin (k + 1) → ℝ := c + t0 • z
   let d' : Fin k → ℝ := Fin.removeNth j0 d
-  have hAltPert :
-      Fin.StrictlyAlternates (fun i => A.mulVec d (rows i)) := by
-    simpa only [d, t0] using
-      hAlt.matrix_mulVec_add_smul hkernel t0
   have hreassemble : A.mulVec d = A'.mulVec d' := by
     simpa only [A', d', d, t0] using
       A.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec c z j0 hzj0
   have hAltDeleted :
       Fin.StrictlyAlternates (fun i => A'.mulVec d' (rows i)) := by
-    rw [hreassemble] at hAltPert
-    exact hAltPert
-  have hA' : A'.IsSignConsistentOrder k :=
-    hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
-  have hk1n : k + 1 ≤ n := by simpa using Fintype.card_le_of_injective rows hrows.injective
-  have hkn : k ≤ n := (Nat.le_succ k).trans hk1n
+    rw [← hreassemble]
+    simpa only [d, t0] using hAlt.matrix_mulVec_add_smul hkernel t0
+  have hkn : k ≤ n := (Nat.le_succ k).trans (by
+    simpa using Fintype.card_le_of_injective rows hrows.injective)
   have hA'inj : Function.Injective A'.mulVec := by
     rw [Matrix.mulVec_injective_iff,
       linearIndependent_iff_card_eq_finrank_span]
@@ -318,7 +290,8 @@ theorem Matrix.IsSignConsistentOrder.not_strictlyAlternates_mulVec_of_cofactor_n
   have hlower : k ≤ Fin.signVariations (A'.mulVec d') :=
     hAltDeleted.le_signVariations_of_strictMono hrows
   have hupper : Fin.signVariations (A'.mulVec d') ≤ k - 1 :=
-    hA'.signVariations_mulVec_le_card_sub_one hkn hA'inj d'
+    (hA.submatrix strictMono_id
+      (Fin.strictMono_succAbove j0)).signVariations_mulVec_le_card_sub_one hkn hA'inj d'
   lia
 
 /-- Extending a coefficient vector by zero along an injective column selector
@@ -336,8 +309,7 @@ theorem Matrix.mulVec_extend_eq_submatrix_mulVec
   symm
   apply Fintype.sum_of_injective cols hcols
   · intro j hj
-    rw [Function.extend_apply' d (0 : κ → R) j hj, Pi.zero_apply,
-      mul_zero]
+    simp [Function.extend_apply' d (0 : κ → R) j hj]
   · intro j
     rw [hcols.extend_apply d (0 : κ → R) j]
 
@@ -409,18 +381,15 @@ theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
   let selected : Fin r → Fin (m + 1) := j0.succAbove ∘ cols
   let B : Matrix (Fin n) (Fin r) R := A.submatrix id selected
   have hunit : IsUnit (B.submatrix rows id) := by
-    rw [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero]
-    simpa only [B, selected, Matrix.submatrix_submatrix,
+    simpa only [Matrix.isUnit_iff_isUnit_det, isUnit_iff_ne_zero, B, selected,
+      Matrix.submatrix_submatrix,
       Function.id_comp, Function.comp_id] using hminor
-  have hminor_rank : (B.submatrix rows id).rank = r := by simpa using Matrix.rank_of_isUnit _ hunit
   have hBge : r ≤ B.rank := by
     calc
-      r = (B.submatrix rows id).rank := hminor_rank.symm
+      r = (B.submatrix rows id).rank :=
+        by simpa using (Matrix.rank_of_isUnit _ hunit).symm
       _ ≤ B.rank := Matrix.rank_submatrix_le B rows id
-  have hBle : B.rank ≤ r := by
-    calc
-      B.rank ≤ A.rank := Matrix.rank_submatrix_le A id selected
-      _ = r := hrank
+  have hBle : B.rank ≤ r := hrank ▸ Matrix.rank_submatrix_le A id selected
   have hBrank : B.rank = r := le_antisymm hBle hBge
   have hrange_le :
       LinearMap.range B.mulVecLin ≤ LinearMap.range A.mulVecLin := by
@@ -432,19 +401,15 @@ theorem Matrix.exists_supportedColumnRelation_of_minor_ne_zero
       LinearMap.range B.mulVecLin = LinearMap.range A.mulVecLin :=
     Submodule.eq_of_le_of_finrank_le hrange_le (by
       change A.rank ≤ B.rank
-      rw [hrank, hBrank])
+      simp [hrank, hBrank])
   have hcol : A.col j0 ∈ LinearMap.range B.mulVecLin := by
     rw [hrange]
-    refine ⟨Pi.single j0 1, ?_⟩
-    simpa only [Matrix.mulVecLin_apply] using A.mulVec_single_one j0
+    exact ⟨Pi.single j0 1, by
+      simpa only [Matrix.mulVecLin_apply] using A.mulVec_single_one j0⟩
   obtain ⟨d, hd⟩ := hcol
   refine ⟨d, ?_⟩
-  have hcombo :
-      (A.submatrix id (j0.succAbove ∘ cols)).mulVec d =
-        A.col j0 := by
-    simpa only [B, selected, Matrix.mulVecLin_apply] using hd
   exact A.supportedColumnRelation_spec j0 rows cols hcols hrank
-    hminor d hcombo
+    hminor d (by simpa only [B, selected, Matrix.mulVecLin_apply] using hd)
 
 /-- Karlin's deficient-rank induction adapter. The printed proof's claim that
 an arbitrary kernel coordinate can be prescribed is false in general. Instead,
@@ -471,25 +436,19 @@ theorem Matrix.exists_kernelVector_apply_ne_zero_rank_deleteColumn_eq_of_rank_lt
       hcols_not_surj
   choose cols' hcols' using fun i =>
     Fin.exists_succAbove_eq (hj0 i)
-  have hcols_factor : j0.succAbove ∘ cols' = cols := by
-    funext i
-    exact hcols' i
+  have hcols_factor : j0.succAbove ∘ cols' = cols := funext hcols'
   have hcols'_inj : Function.Injective cols' := by
     intro i j hij
-    apply hcols.injective
-    rw [← hcols_factor]
-    exact congrArg j0.succAbove hij
-  have hminor' :
-      (A.submatrix rows (j0.succAbove ∘ cols')).det ≠ 0 := by
-    simpa only [hcols_factor] using hminor
+    exact hcols.injective (by
+      rw [← hcols_factor]
+      exact congrArg j0.succAbove hij)
   obtain ⟨d, hkernel, hzj0, hdelete⟩ :=
     A.exists_supportedColumnRelation_of_minor_ne_zero
-      j0 rows cols' hcols'_inj hrank hminor'
+      j0 rows cols' hcols'_inj hrank (by simpa only [hcols_factor] using hminor)
   refine ⟨j0,
     Function.extend (j0.succAbove ∘ cols') d 0 - Pi.single j0 1,
     hkernel, ?_, hdelete⟩
-  rw [hzj0]
-  exact neg_ne_zero.mpr one_ne_zero
+  simpa only [hzj0, neg_ne_zero] using one_ne_zero
 
 /-- Karlin's positive-rank, one-column induction step for the deficient-rank
 case. The induction hypothesis handles the rank-preserving matrix obtained by
@@ -526,19 +485,15 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one_of_in
   let B : Matrix (Fin n) (Fin k) ℝ :=
     A.submatrix id j0.succAbove
   let d' : Fin k → ℝ := Fin.removeNth j0 d
-  have halt_d :
-      Fin.StrictlyAlternates (fun i => A.mulVec d (rows i)) := by
-    simpa only [d] using halt.matrix_mulVec_add_smul hzrows t
   have hcancel : A.mulVec d = B.mulVec d' := by
     simpa only [d, t, B, d'] using
       A.mulVec_add_neg_div_smul_eq_deleteColumn_mulVec c z j0 hzj0
   have halt_delete :
       Fin.StrictlyAlternates (fun i => B.mulVec d' (rows i)) := by
     rw [← hcancel]
-    exact halt_d
-  have hB : B.IsSignConsistentOrder r :=
-    hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)
-  have hupper := hind hB hdelete d'
+    simpa only [d] using halt.matrix_mulVec_add_smul hzrows t
+  have hupper := hind
+    (hA.submatrix strictMono_id (Fin.strictMono_succAbove j0)) hdelete d'
   have hlower := halt_delete.le_signVariations_of_strictMono hrows
   lia
 
@@ -561,16 +516,14 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
         ∀ d : Fin p → ℝ,
           Fin.signVariations (B.mulVec d) ≤ 0 := by
     intro p B hBrank d
-    have hlin : B.mulVecLin = 0 :=
-      LinearMap.range_eq_bot.mp
-        (Submodule.finrank_eq_zero.mp hBrank)
-    rw [← Matrix.mulVecLin_apply, hlin, LinearMap.zero_apply,
+    rw [← Matrix.mulVecLin_apply,
+      show B.mulVecLin = 0 from
+        LinearMap.range_eq_bot.mp (Submodule.finrank_eq_zero.mp hBrank),
+      LinearMap.zero_apply,
       Fin.signVariations_zero]
   induction m generalizing r with
   | zero =>
-      have hrzero : r = 0 := by
-        have hrle : r ≤ 0 := hrank ▸ A.rank_le_width
-        exact Nat.eq_zero_of_le_zero hrle
+      have hrzero : r = 0 := Nat.eq_zero_of_le_zero (hrank ▸ A.rank_le_width)
       rw [hrzero] at hrank ⊢
       exact hzero hrank c
   | succ k ih =>
@@ -578,9 +531,7 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
       · rw [hrzero] at hrank ⊢
         exact hzero hrank c
       · have hrpos : 0 < r := Nat.pos_of_ne_zero hrzero
-        have hrle : r ≤ k + 1 := by
-          rw [← hrank]
-          exact A.rank_le_width
+        have hrle : r ≤ k + 1 := hrank ▸ A.rank_le_width
         by_cases hrfull : r = k + 1
         · rw [hrfull] at hA hrank ⊢
           have hkn : k + 1 ≤ n := hrank ▸ A.rank_le_height
@@ -593,13 +544,6 @@ theorem Matrix.IsSignConsistentOrder.signVariations_mulVec_le_rank_sub_one
         · have hrlt : r < k + 1 := lt_of_le_of_ne hrle hrfull
           exact hA.signVariations_mulVec_le_rank_sub_one_of_induction
             hrank hrlt hrpos ih c
-
-private lemma mul_mul_nonneg_of_cross_mul_nonneg
-    {a b c d : ℝ} (hac : 0 ≤ a * c) (hbd : 0 ≤ b * d) :
-    0 ≤ (a * b) * (c * d) := by
-  calc
-    0 ≤ (a * c) * (b * d) := mul_nonneg hac hbd
-    _ = (a * b) * (c * d) := by ring
 
 /-- Right multiplication by a totally nonnegative rectangular matrix preserves
 the common weak sign of ordered minors of a fixed size. Cauchy--Binet expands
@@ -615,30 +559,15 @@ theorem Matrix.IsSignConsistentOrder.mul_of_right_isTotallyNonnegRect
   classical
   intro rows rows' cols cols' hrows hrows' hcols hcols'
   rw [Matrix.det_submatrix_mul_eq_sum_powersetCard L A rows cols,
-    Matrix.det_submatrix_mul_eq_sum_powersetCard L A rows' cols']
-  rw [Finset.sum_mul]
-  apply Finset.sum_nonneg
-  intro s hs
+    Matrix.det_submatrix_mul_eq_sum_powersetCard L A rows' cols', Finset.sum_mul]
+  refine Finset.sum_nonneg fun s _ => ?_
   rw [Finset.mul_sum]
-  apply Finset.sum_nonneg
-  intro t ht
-  let es : Fin r ↪o Fin n :=
-    Set.powersetCard.ofFinEmbEquiv.symm s
-  let et : Fin r ↪o Fin n :=
-    Set.powersetCard.ofFinEmbEquiv.symm t
-  have hsign :
-      0 ≤
-        (L.submatrix rows es).det *
-          (L.submatrix rows' et).det :=
-    hL hrows hrows' es.strictMono et.strictMono
-  have hright :
-      0 ≤
-        (A.submatrix es cols).det *
-          (A.submatrix et cols').det :=
-    mul_nonneg
-      (hA es.strictMono hcols)
-      (hA et.strictMono hcols')
-  exact mul_mul_nonneg_of_cross_mul_nonneg hsign hright
+  refine Finset.sum_nonneg fun t _ => ?_
+  let es : Fin r ↪o Fin n := Set.powersetCard.ofFinEmbEquiv.symm s
+  let et : Fin r ↪o Fin n := Set.powersetCard.ofFinEmbEquiv.symm t
+  convert mul_nonneg (hL hrows hrows' es.strictMono et.strictMono)
+    (mul_nonneg (hA es.strictMono hcols) (hA et.strictMono hcols')) using 1
+  ring
 
 /-- The weighted incidence matrix associated with a block map. -/
 def Matrix.weightedIncidence
@@ -693,11 +622,8 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
         Matrix.weightedIncidence_apply]
       rw [hdiag i]
       by_cases hij : i = j
-      · subst j
-        simp
-      · have hc : cols i ≠ cols j := fun h =>
-          hij (hcols.injective h)
-        simp [hc, hij]
+      · subst j; simp
+      · simp [hij, hcols.injective.ne hij]
     rw [hmatrix, Matrix.det_diagonal]
   · rw [ite_eq_right hdiag, Matrix.det_apply']
     apply Finset.sum_eq_zero
@@ -706,18 +632,15 @@ theorem Matrix.det_submatrix_monotoneWeightedIncidence
     · have hsigma_mono : StrictMono sigma := by
         intro i j hij
         by_contra hnot
-        have hle : sigma j ≤ sigma i := le_of_not_gt hnot
-        have hf :
-            block (rows (sigma j)) ≤ block (rows (sigma i)) :=
-          (hblock.comp hrows.monotone) hle
+        have hf := (hblock.comp hrows.monotone) (le_of_not_gt hnot)
+        change block (rows (sigma j)) ≤ block (rows (sigma i)) at hf
         rw [hterm j, hterm i] at hf
         exact (not_le_of_gt (hcols hij)) hf
-      have hsigma_eq : ∀ i, sigma i = i := fun i =>
-        le_antisymm (hsigma_mono.le_id i) (hsigma_mono.id_le i)
+      have hsigma_eq := congrFun hsigma_mono.eq_id
       exfalso
       apply hdiag
       intro i
-      simpa only [hsigma_eq i] using hterm i
+      simpa only [hsigma_eq i, id_eq] using hterm i
     · simp only [not_forall] at hterm
       obtain ⟨i, hi⟩ := hterm
       have hprod :
@@ -767,9 +690,8 @@ theorem Matrix.weightedIncidence_mulVec
     (weight : Fin n → ℝ)
     (sign : Fin q → ℝ) :
     (Matrix.weightedIncidence block weight).mulVec sign =
-      fun j => weight j * sign (block j) := by
-  ext j
-  simp [Matrix.mulVec, dotProduct]
+      fun j => weight j * sign (block j) :=
+  funext fun j => by simp [Matrix.mulVec, dotProduct]
 
 /-- Multiplying an aggregated matrix by block coefficients reconstructs the
 corresponding coefficient vector before multiplication by the original matrix. -/
@@ -812,8 +734,7 @@ theorem Matrix.IsSignRegular.signVariations_mulVec_le_of_signBlockDecomposition
     (c : Fin n → ℝ)
     (d : Fin.SignBlockDecomposition c) :
     Fin.signVariations (A.mulVec c) ≤ Fin.signVariations c := by
-  let B :=
-    A * Matrix.weightedIncidence d.block d.weight
+  let B := A * Matrix.weightedIncidence d.block d.weight
   have hBsign : B.IsSignConsistentOrder B.rank := by
     simpa only [B] using
       (hA B.rank).mul_weightedIncidence
@@ -822,21 +743,17 @@ theorem Matrix.IsSignRegular.signVariations_mulVec_le_of_signBlockDecomposition
       Fin.signVariations (B.mulVec d.coeff) ≤ B.rank - 1 :=
     hBsign.signVariations_mulVec_le_rank_sub_one rfl d.coeff
   have hmul : B.mulVec d.coeff = A.mulVec c := by
-    calc
-      B.mulVec d.coeff =
-          A.mulVec (fun j => d.weight j * d.coeff (d.block j)) := by
-        simpa only [B] using
-          Matrix.mul_weightedIncidence_mulVec
-            A d.block d.weight d.coeff
-      _ = A.mulVec c :=
-        congrArg A.mulVec (funext fun j => d.reconstruct j)
+    rw [show B.mulVec d.coeff =
+        A.mulVec (fun j => d.weight j * d.coeff (d.block j)) by
+      simpa only [B] using Matrix.mul_weightedIncidence_mulVec
+        A d.block d.weight d.coeff]
+    exact congrArg A.mulVec (funext fun j => d.reconstruct j)
   calc
     Fin.signVariations (A.mulVec c) =
         Fin.signVariations (B.mulVec d.coeff) :=
       congrArg Fin.signVariations hmul.symm
     _ ≤ B.rank - 1 := hbound
-    _ ≤ d.numBlocks - 1 :=
-      (Nat.sub_le_sub_right B.rank_le_width) 1
+    _ ≤ d.numBlocks - 1 := (Nat.sub_le_sub_right B.rank_le_width) 1
     _ = Fin.signVariations c := d.numBlocks_sub_one
 
 /-- Karlin's variation-diminishing theorem for sign-regular matrices. -/
@@ -877,22 +794,14 @@ theorem Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_sur
       let f : ℝ → Fin (n + 2) → ℝ := fun t => x + t • z
       have hf :
           Tendsto f (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (𝓝 x) := by
-        have hfull :
-            Tendsto f (𝓝 (0 : ℝ)) (𝓝 (x + (0 : ℝ) • z)) :=
-          tendsto_const_nhds.add (tendsto_id.smul_const z)
-        have hle :
-            nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ 𝓝 (0 : ℝ) := by
-          simp only [nhdsWithin]
-          exact inf_le_left
-        have hrestricted := hfull.mono_left hle
-        simpa only [zero_smul, add_zero] using hrestricted
+        simpa only [f, id_eq, zero_smul, add_zero] using
+          (tendsto_const_nhds.add (tendsto_id.smul_const z)).mono_left
+            (show nhdsWithin (0 : ℝ) (Set.Ioi 0) ≤ 𝓝 0 by
+              exact inf_le_left)
       have hbound :=
         Fin.eventually_signVariations_le_add_two_of_tendsto_of_interior_nodal
           hf hnodal
-      have hpos :
-          ∀ᶠ t in nhdsWithin (0 : ℝ) (Set.Ioi 0), 0 < t :=
-        self_mem_nhdsWithin
-      obtain ⟨t, htbound, ht⟩ := (hbound.and hpos).exists
+      obtain ⟨t, htbound, ht⟩ := (hbound.and self_mem_nhdsWithin).exists
       have himage :
           A.mulVec (f t) =
             fun i : Fin (k + 1) => (-1 : ℝ) ^ (i : ℕ) * t := by
@@ -900,13 +809,11 @@ theorem Matrix.IsTotallyNonnegRect.card_sub_one_le_signVariations_add_two_of_sur
           Matrix.mulVec_smul, hker, hz]
         funext i
         simp only [Pi.smul_apply, zero_add, alt, smul_eq_mul, mul_comm]
-      have halt : Fin.StrictlyAlternates (A.mulVec (f t)) := by
+      have hlower : k ≤ Fin.signVariations (A.mulVec (f t)) := by
         rw [himage]
-        exact Fin.strictlyAlternates_alternating k ht
-      have hlower : k ≤ Fin.signVariations (A.mulVec (f t)) :=
-        halt.le_signVariations_of_strictMono strictMono_id
-      simpa using
-        hlower.trans ((hA.signVariations_mulVec_le (f t)).trans htbound)
+        exact Fin.StrictlyAlternates.le_signVariations_of_strictMono
+          (Fin.strictlyAlternates_alternating k ht) strictMono_id
+      simpa using hlower.trans ((hA.signVariations_mulVec_le (f t)).trans htbound)
 
 /-- Cardinality-equality wrapper for the surjective totally nonnegative nodal
 kernel bound. -/

@@ -28,32 +28,30 @@ def desc (x : ℝ) (m : ℕ) : ℝ := ∏ t ∈ range m, (x - t)
 def rise (x : ℝ) (m : ℕ) : ℝ := ∏ t ∈ range m, (x + t)
 
 private theorem desc_succ (x : ℝ) (m : ℕ) : desc x (m + 1) = desc x m * (x - m) := by
-  unfold desc; rw [prod_range_succ]
+  simp [desc, prod_range_succ]
 
 private theorem desc_succ' (x : ℝ) (m : ℕ) : desc x (m + 1) = x * desc (x - 1) m := by
   unfold desc; rw [prod_range_succ']
-  simp only [Nat.cast_zero, sub_zero, Nat.cast_succ]
-  rw [mul_comm]; congr 1
-  apply prod_congr rfl; intro t _; ring
+  simp only [Nat.cast_zero, sub_zero, Nat.cast_succ]; rw [mul_comm]; congr 1
+  exact prod_congr rfl fun t _ => by ring
 
 private theorem rise_succ (x : ℝ) (m : ℕ) : rise x (m + 1) = rise x m * (x + m) := by
-  unfold rise; rw [prod_range_succ]
+  simp [rise, prod_range_succ]
 
 private theorem rise_succ' (x : ℝ) (m : ℕ) : rise x (m + 1) = x * rise (x + 1) m := by
   unfold rise; rw [prod_range_succ']
-  simp only [Nat.cast_zero, add_zero, Nat.cast_succ]
-  rw [mul_comm]; congr 1
-  apply prod_congr rfl; intro t _; ring
+  simp only [Nat.cast_zero, add_zero, Nat.cast_succ]; rw [mul_comm]; congr 1
+  exact prod_congr rfl fun t _ => by ring
 
 /-- Splitting a falling product. -/
 theorem desc_add (x : ℝ) (k l : ℕ) : desc x (k + l) = desc x k * desc (x - k) l := by
   unfold desc; rw [prod_range_add]; congr 1
-  apply prod_congr rfl; intro t _; push_cast; ring
+  exact prod_congr rfl fun t _ => by push_cast; ring
 
 /-- Splitting a rising product. -/
 theorem rise_add (x : ℝ) (k l : ℕ) : rise x (k + l) = rise x k * rise (x + k) l := by
   unfold rise; rw [prod_range_add]; congr 1
-  apply prod_congr rfl; intro t _; push_cast; ring
+  exact prod_congr rfl fun t _ => by push_cast; ring
 
 private theorem desc_nat_eq_zero {a k : ℕ} (h : a < k) : desc (a : ℝ) k = 0 :=
   prod_eq_zero (mem_range.mpr h) (sub_self _)
@@ -63,23 +61,18 @@ private theorem desc_self (a : ℕ) : desc (a : ℝ) a = (a.factorial : ℝ) := 
   | zero => simp [desc]
   | succ a ih =>
     rw [desc_succ', Nat.factorial_succ]
-    push_cast
-    rw [show (a : ℝ) + 1 - 1 = a by ring, ih]
+    push_cast; rw [show (a : ℝ) + 1 - 1 = a by ring, ih]
 
 private theorem desc_pos {x : ℝ} {m : ℕ} (h : (m : ℝ) ≤ x) : 0 < desc x m := by
   unfold desc
-  apply prod_pos
-  intro t ht
+  refine prod_pos fun t ht => ?_
   rw [mem_range] at ht
   have : (t : ℝ) + 1 ≤ m := by exact_mod_cast ht
   linarith
 
 /-- A rising product of a positive number is positive. -/
 theorem rise_pos {x : ℝ} (hx : 0 < x) (m : ℕ) : 0 < rise x m := by
-  unfold rise
-  apply prod_pos
-  intro t _
-  positivity
+  unfold rise; exact prod_pos fun _ _ => by positivity
 
 /-- A rising product starting at a natural number plus one is a binomial times a factorial. -/
 theorem rise_nat_add_one (a k : ℕ) :
@@ -90,8 +83,7 @@ theorem rise_nat_add_one (a k : ℕ) :
     | succ k ih =>
       rw [rise_succ, ih, Nat.ascFactorial_succ]
       push_cast; ring
-  rw [h1, Nat.ascFactorial_eq_factorial_mul_choose, Nat.choose_symm_add]
-  push_cast; ring
+  rw [h1, Nat.ascFactorial_eq_factorial_mul_choose, Nat.choose_symm_add]; push_cast; ring
 
 /-! ### The explicit level-`n` vectors -/
 
@@ -110,12 +102,11 @@ private theorem betaK_elev {d n k : ℕ} (hk : k ≤ d) (hn : d ≤ n) (x : ℝ)
       ((n : ℝ) + 1) * betaK d (n + 1) x k := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le hk
   have hl : k + l - k = l := by lia
-  unfold betaK
-  rw [hl]
+  unfold betaK; rw [hl]
   have hA : x * desc (x - 1) k = desc x k * (x - k) := by rw [← desc_succ', desc_succ]
   have hB : ((n : ℝ) + 1 - x) * desc ((n : ℝ) - x) l =
       desc ((n : ℝ) + 1 - x) l * ((n : ℝ) + 1 - x - l) := by
-    rw [← desc_succ]; rw [desc_succ']; congr 2; ring
+    rw [← desc_succ, desc_succ']; congr 2; ring
   have hE : ((n : ℝ) + 1) * desc (n : ℝ) (k + l) =
       desc ((n : ℝ) + 1) (k + l) * ((n : ℝ) + 1 - (k + l : ℕ)) := by
     rw [← desc_succ, desc_succ']; congr 2; ring
@@ -160,11 +151,8 @@ private theorem gammaK_red {d n k : ℕ} (hk : k ≤ d) (x : ℝ) :
         (x + 1) * gammaK d (n + 1) (x + 1) k =
       (((n + 1 : ℕ) : ℝ) + 1) * gammaK d n x k := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le hk
-  have hl : k + l - k = l := by lia
-  unfold gammaK
-  rw [hl]
-  have := gamma_core x ((n : ℝ) + 1) (by positivity) k l
-  push_cast
+  unfold gammaK; rw [show k + l - k = l by lia]
+  have := gamma_core x ((n : ℝ) + 1) (by positivity) k l; push_cast
   rw [show (n : ℝ) + 1 - (x + 1) + 1 = (n : ℝ) + 1 - x by ring,
     show (n : ℝ) - x + 1 = (n : ℝ) + 1 - x by ring,
     show (n : ℝ) + 2 = (n : ℝ) + 1 + 1 by ring]
@@ -185,13 +173,13 @@ noncomputable def bseq (d : ℕ) (u : ℕ → ℝ) : ℕ → ℕ → ℝ
 
 private theorem betaK_self {d j : ℕ} (hj : j ≤ d) : (d.choose j : ℝ) * betaK d d j j = 1 := by
   unfold betaK
-  rw [show (d : ℝ) - j = ((d - j : ℕ) : ℝ) by rw [Nat.cast_sub hj], desc_self, desc_self, desc_self]
+  rw [show (d : ℝ) - j = ((d - j : ℕ) : ℝ) by rw [Nat.cast_sub hj],
+    desc_self, desc_self, desc_self]
   have h := Nat.choose_mul_factorial_mul_factorial hj
   have h' : (d.choose j : ℝ) * (j.factorial : ℝ) * ((d - j).factorial : ℝ) = (d.factorial : ℝ) := by
     exact_mod_cast h
   have hf : (0 : ℝ) < d.factorial := by exact_mod_cast Nat.factorial_pos d
-  field_simp
-  linarith
+  field_simp; linarith
 
 private theorem betaK_self_ne {d j k : ℕ} (hj : j ≤ d) (hjk : k ≠ j) : betaK d d j k = 0 := by
   unfold betaK
@@ -207,13 +195,11 @@ theorem bseq_eq {d : ℕ} {u : ℕ → ℝ} : ∀ r j, j ≤ d + r → bseq d u 
   induction r with
   | zero =>
     intro j hj
-    simp only [bseq, Nat.add_zero]
-    unfold bvec
+    simp only [bseq, Nat.add_zero]; unfold bvec
     rw [sum_eq_single j]
     · rw [mul_assoc, betaK_self (by lia), mul_one]
     · intro k hk hkj
-      rw [mem_range] at hk
-      rw [betaK_self_ne (by lia) hkj, mul_zero]
+      rw [mem_range] at hk; rw [betaK_self_ne (by lia) hkj, mul_zero]
     · intro h; exact absurd (mem_range.mpr (by lia)) h
   | succ r ih =>
     intro j hj
@@ -232,11 +218,8 @@ theorem bseq_eq {d : ℕ} {u : ℕ → ℝ} : ∀ r j, j ≤ d + r → bseq d u 
       by_cases h : j ≤ d + r
       · rw [ih j h]
       · rw [show j = d + r + 1 by lia]; push_cast; ring
-    rw [e1, e2]
-    unfold bvec
-    rw [mul_sum, mul_sum, ← sum_add_distrib, sum_div]
-    apply sum_congr rfl
-    intro k hk
+    rw [e1, e2]; unfold bvec; rw [mul_sum, mul_sum, ← sum_add_distrib, sum_div]
+    apply sum_congr rfl; intro k hk
     rw [mem_range] at hk
     have := betaK_elev (d := d) (n := d + r) (k := k) (by lia) (by lia) (j : ℝ)
     rw [show d + (r + 1) = d + r + 1 by lia]
@@ -254,15 +237,12 @@ theorem bseq_glcn {d : ℕ} {u : ℕ → ℝ} (hu : GLCN d u) : ∀ r, GLCN (d +
   | zero => simpa [bseq] using hu
   | succ r ih =>
     simp only [bseq]
-    rw [show d + (r + 1) = d + r + 1 by lia]
-    exact ih.elev
+    simpa only [show d + (r + 1) = d + r + 1 by lia] using ih.elev
 
 private theorem gvec_red (d : ℕ) (u : ℕ → ℝ) (n j : ℕ) :
     Dop (n + 1) (gvec d u (n + 1)) j = gvec d u n j := by
-  unfold Dop gvec
-  rw [mul_sum, mul_sum, ← sum_add_distrib, sum_div]
-  apply sum_congr rfl
-  intro k hk
+  unfold Dop gvec; rw [mul_sum, mul_sum, ← sum_add_distrib, sum_div]
+  apply sum_congr rfl; intro k hk
   rw [mem_range] at hk
   have := gammaK_red (d := d) (n := n) (k := k) (by lia) (j : ℝ)
   rw [div_eq_iff (by positivity)]
@@ -285,10 +265,8 @@ theorem descend_glcn (m : ℕ) : ∀ r (v : ℕ → ℝ), GLCN (m + r) v → GLC
   | zero => intro v hv; simpa [descend] using hv
   | succ r ih =>
     intro v hv
-    simp only [descend]
-    apply ih
-    rw [show m + (r + 1) = m + r + 1 by lia] at hv
-    exact hv.reduce
+    simp only [descend]; apply ih
+    rw [show m + (r + 1) = m + r + 1 by lia] at hv; exact hv.reduce
 
 /-- Iterated degree reduction maps the moment vector at level `m + r` to level `m`. -/
 theorem descend_gvec (d : ℕ) (u : ℕ → ℝ) (m : ℕ) :
@@ -300,8 +278,7 @@ theorem descend_gvec (d : ℕ) (u : ℕ → ℝ) (m : ℕ) :
     simp only [descend]
     have : Dop (m + r + 1) (gvec d u (m + (r + 1))) = gvec d u (m + r) := by
       funext j
-      rw [show m + (r + 1) = m + r + 1 by lia]
-      exact gvec_red d u (m + r) j
+      rw [show m + (r + 1) = m + r + 1 by lia]; exact gvec_red d u (m + r) j
     rw [this, ih]
 
 /-- Degree reduction does not increase the sup-distance between two vectors. -/
@@ -313,9 +290,7 @@ theorem descend_contract (m : ℕ) : ∀ r (v v' : ℕ → ℝ) (B : ℝ),
   | zero => intro v v' B h i hi; simpa [descend] using h i (by lia)
   | succ r ih =>
     intro v v' B h i hi
-    simp only [descend]
-    apply ih _ _ B _ i hi
-    intro j hj
+    simp only [descend]; apply ih _ _ B _ i hi; intro j hj
     unfold Dop
     have hj1 : (j : ℝ) ≤ (m + r : ℕ) := by exact_mod_cast hj
     have h1 := h j (by lia)
@@ -372,9 +347,8 @@ private theorem factor_diff {x n α β α' β' c : ℝ} (hc : 1 ≤ c) (hn : 2 *
   rw [div_sub_div _ _ hp1.ne' hp2.ne', abs_div, abs_of_pos (mul_pos hp1 hp2),
     div_le_div_iff₀ (mul_pos hp1 hp2) hn0]
   have hnum : |(x + α) * (n + β') - (n + β) * (x + α')| ≤ 5 * c * n := by
-    have e : (x + α) * (n + β') - (n + β) * (x + α') =
-        x * (β' - β) + n * (α - α') + (α * β' - α' * β) := by ring
-    rw [e]
+    rw [show (x + α) * (n + β') - (n + β) * (x + α') =
+      x * (β' - β) + n * (α - α') + (α * β' - α' * β) by ring]
     have h1 : |x * (β' - β)| ≤ n * (2 * c) := by
       rw [abs_mul, abs_of_nonneg hx0]
       apply mul_le_mul hxn _ (abs_nonneg _) (by linarith)
@@ -449,10 +423,8 @@ private theorem betaK_eq_prod {d n k : ℕ} (hk : k ≤ d) (hn : d ≤ n) (x : �
     betaK d n x k = (∏ t ∈ range k, (x + (-(t : ℝ))) / ((n : ℝ) + (-(t : ℝ)))) *
       ∏ t ∈ range (d - k), (((n : ℝ) - x) + (-(t : ℝ))) / ((n : ℝ) + (-((k : ℝ) + t))) := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le hk
-  unfold betaK
-  rw [show k + l - k = l by lia, desc_add]
-  unfold desc
-  rw [prod_div_distrib, prod_div_distrib, mul_div_mul_comm]
+  unfold betaK; rw [show k + l - k = l by lia, desc_add]
+  unfold desc; rw [prod_div_distrib, prod_div_distrib, mul_div_mul_comm]
   congr 2
   exact prod_congr rfl fun t _ => by ring
 
@@ -460,10 +432,8 @@ private theorem gammaK_eq_prod {d n k : ℕ} (hk : k ≤ d) (x : ℝ) :
     gammaK d n x k = (∏ t ∈ range k, (x + (1 + (t : ℝ))) / ((n : ℝ) + (2 + (t : ℝ)))) *
       ∏ t ∈ range (d - k), (((n : ℝ) - x) + (1 + (t : ℝ))) / ((n : ℝ) + (2 + ((k : ℝ) + t))) := by
   obtain ⟨l, rfl⟩ := Nat.exists_eq_add_of_le hk
-  unfold gammaK
-  rw [show k + l - k = l by lia, rise_add]
-  unfold rise
-  rw [prod_div_distrib, prod_div_distrib, mul_div_mul_comm]
+  unfold gammaK; rw [show k + l - k = l by lia, rise_add]
+  unfold rise; rw [prod_div_distrib, prod_div_distrib, mul_div_mul_comm]
   congr 2 <;> exact prod_congr rfl fun t _ => by ring
 
 private theorem betaK_sub_gammaK {d n k : ℕ} (hk : k ≤ d) (hn : 2 * (2 * (d : ℝ) + 2) ≤ n) {x : ℝ}
@@ -473,9 +443,7 @@ private theorem betaK_sub_gammaK {d n k : ℕ} (hk : k ≤ d) (hn : 2 * (2 * (d 
   have hc1 : 1 ≤ c := by
     have : (0 : ℝ) ≤ d := Nat.cast_nonneg d
     linarith
-  have hdn : d ≤ n := by
-    have : (d : ℝ) ≤ n := by linarith
-    exact_mod_cast this
+  have hdn : d ≤ n := by exact_mod_cast (show (d : ℝ) ≤ n by linarith)
   have hn0 : 0 < (n : ℝ) := by linarith
   have hδ : 0 ≤ 20 * c / n := by positivity
   have hkd : (k : ℝ) ≤ d := by exact_mod_cast hk
@@ -523,13 +491,11 @@ private theorem betaK_sub_gammaK {d n k : ℕ} (hk : k ≤ d) (hn : 2 * (2 * (d 
         (abs_le_of (by positivity) (by linarith [ht2 t ht]))
         (abs_le_of (by positivity) (by linarith [ht2 t ht]))
   have hBb : |B| ≤ 3 ^ (d - k) := by
-    apply abs_prod_le_pow
-    intro t ht
+    apply abs_prod_le_pow; intro t ht
     exact factor_bound hc1 hn hnx0 hnxn (abs_neg_le_of (by positivity) (by linarith [ht2 t ht]))
       (abs_neg_le_of (by positivity) (by linarith [ht2 t ht]))
   have hAb : |A'| ≤ 3 ^ k := by
-    apply abs_prod_le_pow
-    intro t ht
+    apply abs_prod_le_pow; intro t ht
     exact factor_bound hc1 hn hx0 hxn (abs_le_of (by positivity) (by linarith [ht1 t ht]))
       (abs_le_of (by positivity) (by linarith [ht1 t ht]))
   have hsplit : (d : ℝ) = k + ((d - k : ℕ) : ℝ) := by push_cast [Nat.cast_sub hk]; ring
@@ -547,15 +513,14 @@ private theorem bvec_sub_gvec (d : ℕ) (u : ℕ → ℝ) {n j : ℕ} (hn : 2 * 
     |bvec d u n j - gvec d u n j| ≤
       (∑ k ∈ range (d + 1), |u k| * (d.choose k : ℝ)) *
         (d * 3 ^ d * (20 * (2 * (d : ℝ) + 2) / n)) := by
-  unfold bvec gvec
-  rw [← sum_sub_distrib, sum_mul]
+  unfold bvec gvec; rw [← sum_sub_distrib, sum_mul]
   refine le_trans (abs_sum_le_sum_abs _ _) (sum_le_sum ?_)
-  intro k hk
-  rw [mem_range] at hk
+  intro k hk; rw [mem_range] at hk
   have hjr : (j : ℝ) ≤ n := by exact_mod_cast hj
   have := betaK_sub_gammaK (d := d) (n := n) (k := k) (by lia) hn (x := (j : ℝ))
     (by positivity) hjr
-  rw [← mul_sub, abs_mul, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ d.choose k)]
+  rw [← mul_sub, abs_mul, abs_mul,
+    abs_of_nonneg (by positivity : (0 : ℝ) ≤ d.choose k)]
   exact mul_le_mul_of_nonneg_left this (by positivity)
 
 /-! ### The moment vector at level `m` is a multiple of the kernel image -/
@@ -564,21 +529,16 @@ private theorem gvec_eq_kernel (d : ℕ) (u : ℕ → ℝ) {m i : ℕ} (hi : i �
     gvec d u m i = ((d.factorial : ℝ) / rise ((m : ℝ) + 2) d) *
       ∑ k ∈ range (d + 1),
         ((i + k).choose i * (m - i + (d - k)).choose (m - i) : ℝ) * u k := by
-  unfold gvec
-  rw [mul_sum]
-  apply sum_congr rfl
-  intro k hk
-  rw [mem_range] at hk
-  unfold gammaK
+  unfold gvec; rw [mul_sum]
+  apply sum_congr rfl; intro k hk; rw [mem_range] at hk; unfold gammaK
   rw [show (m : ℝ) - i + 1 = ((m - i : ℕ) : ℝ) + 1 by rw [Nat.cast_sub hi],
     rise_nat_add_one, rise_nat_add_one, Nat.add_comm i k, Nat.choose_symm_add,
     show m - i + (d - k) = (d - k) + (m - i) by lia, Nat.choose_symm_add]
   have h := Nat.choose_mul_factorial_mul_factorial (show k ≤ d by lia)
   have h' : (d.choose k : ℝ) * (k.factorial : ℝ) * ((d - k).factorial : ℝ) = (d.factorial : ℝ) := by
     exact_mod_cast h
-  rw [Nat.add_comm k i, Nat.choose_symm_add, Nat.add_comm (d - k) (m - i), Nat.choose_symm_add]
-  rw [← h']
-  ring
+  rw [Nat.add_comm k i, Nat.choose_symm_add, Nat.add_comm (d - k) (m - i),
+    Nat.choose_symm_add, ← h']; ring
 
 /-! ### The main result -/
 
@@ -594,12 +554,9 @@ theorem pathKernel_LCNIZ (m d : ℕ) {w : ℕ → ℝ} (hw : LCNIZ d w) :
       ((i + k).choose i * (m - i + (d - k)).choose (m - i) : ℝ) * w k with hf
   have hfu : ∀ i, f i = ∑ k ∈ range (d + 1),
       ((i + k).choose i * (m - i + (d - k)).choose (m - i) : ℝ) * u k := by
-    intro i
-    rw [hf]
-    apply sum_congr rfl
-    intro k hk
-    rw [mem_range] at hk
-    rw [hu, trunc_eq_of_le w (by lia)]
+    intro i; rw [hf]
+    apply sum_congr rfl; intro k hk
+    rw [mem_range] at hk; rw [hu, trunc_eq_of_le w (by lia)]
   set C0 : ℝ := (d.factorial : ℝ) / rise ((m : ℝ) + 2) d with hC0
   have hC0pos : 0 < C0 :=
     div_pos (by exact_mod_cast Nat.factorial_pos d) (rise_pos (by positivity) d)
@@ -624,9 +581,7 @@ theorem pathKernel_LCNIZ (m d : ℕ) {w : ℕ → ℝ} (hw : LCNIZ d w) :
       have hbound : ∀ r, 2 * (2 * (d : ℝ) + 2) ≤ ((r + (m + d) : ℕ) : ℝ) →
           |cseq r i' - gvec d u m i'| ≤ K / ((r + (m + d) : ℕ) : ℝ) := by
         intro r hr
-        rw [hcseq]
-        simp only
-        rw [← descend_gvec d u m (d + r)]
+        rw [hcseq]; simp only; rw [← descend_gvec d u m (d + r)]
         apply descend_contract m (d + r) _ _ _ _ i' hi'
         intro j hj
         rw [bseq_eq (m + r) j (by lia), show d + (m + r) = m + (d + r) by lia]
@@ -643,8 +598,7 @@ theorem pathKernel_LCNIZ (m d : ℕ) {w : ℕ → ℝ} (hw : LCNIZ d w) :
       apply squeeze_zero' (Eventually.of_forall (fun r => norm_nonneg _)) _ hlim
       have hev : ∀ᶠ r : ℕ in atTop, (4 * d + 4 : ℕ) ≤ r := eventually_ge_atTop _
       filter_upwards [hev] with r hr
-      rw [Real.norm_eq_abs]
-      apply hbound
+      rw [Real.norm_eq_abs]; apply hbound
       have : ((4 * d + 4 : ℕ) : ℝ) ≤ ((r + (m + d) : ℕ) : ℝ) := by
         exact_mod_cast (show 4 * d + 4 ≤ r + (m + d) by lia)
       push_cast at this ⊢
@@ -661,18 +615,15 @@ theorem pathKernel_LCNIZ (m d : ℕ) {w : ℕ → ℝ} (hw : LCNIZ d w) :
     have hwl : w l ≠ 0 := right_ne_zero_of_mul hne
     have hpos : 0 < w l := lt_of_le_of_ne (h0 l (by lia)) (Ne.symm hwl)
     apply ne_of_gt
-    have hterm : 0 < ((j + l).choose j * (m - j + (d - l)).choose (m - j) : ℝ) * w l := by
-      apply mul_pos _ hpos
-      have h1 : 0 < (j + l).choose j := Nat.choose_pos (by lia)
-      have h2 : 0 < (m - j + (d - l)).choose (m - j) := Nat.choose_pos (by lia)
-      positivity
-    calc (0 : ℝ) < ((j + l).choose j * (m - j + (d - l)).choose (m - j) : ℝ) * w l := hterm
-      _ ≤ ∑ k ∈ range (d + 1),
-          ((j + k).choose j * (m - j + (d - k)).choose (m - j) : ℝ) * w k := by
-        apply single_le_sum
-          (f := fun k => ((j + k).choose j * (m - j + (d - k)).choose (m - j) : ℝ) * w k)
-          (fun k hk => mul_nonneg (by positivity) (h0 k (by rw [mem_range] at hk; lia)))
-          (mem_range.mpr hl)
+    have hterm : 0 <
+        ((j + l).choose j * (m - j + (d - l)).choose (m - j) : ℝ) * w l :=
+      mul_pos
+        (by exact_mod_cast Nat.mul_pos (Nat.choose_pos (by lia)) (Nat.choose_pos (by lia))) hpos
+    refine lt_of_lt_of_le hterm ?_
+    apply single_le_sum
+        (f := fun k => ((j + k).choose j * (m - j + (d - k)).choose (m - j) : ℝ) * w k)
+        (fun k hk => mul_nonneg (by positivity) (h0 k (by rw [mem_range] at hk; lia)))
+        (mem_range.mpr hl)
 
 end RealRooted.LiuMao
 
@@ -732,21 +683,17 @@ def Hk (d1 d2 i j : ℕ) : ℝ :=
   if i ≤ d2 ∧ j ≤ d1 then ((d1 + i - j).choose i * (d2 + j - i).choose j : ℝ) else 0
 
 private theorem Hk_nonneg (d1 d2 i j : ℕ) : 0 ≤ Hk d1 d2 i j := by
-  unfold Hk; split_ifs
-  · positivity
-  · exact le_refl 0
+  unfold Hk
+  split_ifs <;> positivity
 
 private theorem Hk_pos {d1 d2 i j : ℕ} (hi : i ≤ d2) (hj : j ≤ d1) : 0 < Hk d1 d2 i j := by
-  unfold Hk; rw [ite_eq_left ⟨hi, hj⟩]
+  rw [Hk, ite_eq_left ⟨hi, hj⟩]
   have h1 := Nat.choose_pos (show i ≤ d1 + i - j by lia)
   have h2 := Nat.choose_pos (show j ≤ d2 + j - i by lia)
   positivity
 
 private theorem Hk_symm (d1 d2 i j : ℕ) : Hk d2 d1 j i = Hk d1 d2 i j := by
-  unfold Hk
-  by_cases h : i ≤ d2 ∧ j ≤ d1
-  · rw [ite_eq_left ⟨h.2, h.1⟩, ite_eq_left h]; ring
-  · rw [ite_eq_right (fun h' => h ⟨h'.2, h'.1⟩), ite_eq_right h]
+  simp [Hk, and_comm, mul_comm]
 
 private theorem Hk_mul_eq {d1 d2 i j : ℕ} (hi : i ≤ d2) (hj : j ≤ d1) :
     Hk d1 d2 i j * ((d1 + d2).choose (d1 + i - j) : ℝ) *
@@ -784,8 +731,7 @@ private theorem Hk_rr2 (d1 d2 : ℕ) {i₁ i₂ j₁ j₂ : ℕ} (hi : i₁ < i�
   have e21 := Hk_mul_eq (d1 := d1) (d2 := d2) (i := i₂) (j := j₁) (by lia) (by lia)
   have hD : D i₁ j₁ * D i₂ j₂ = D i₁ j₂ * D i₂ j₁ := by simp only [D]; push_cast; ring
   have hF : F i₁ j₂ * F i₂ j₁ ≤ F i₁ j₁ * F i₂ j₂ := by
-    simp only [F]
-    exact (binom_glc N).inner_outer (by lia) (by lia) (by lia)
+    simp only [F]; exact (binom_glc N).inner_outer (by lia) (by lia) (by lia)
   have hFpos : 0 < F i₁ j₁ * F i₂ j₂ := by
     simp only [F]
     have := Nat.choose_pos (show d1 + i₁ - j₁ ≤ N by lia)
@@ -815,8 +761,7 @@ def Cmat (a b : ℕ → ℝ) (d1 d2 r s : ℕ) : ℝ :=
 
 private theorem Cmat_swap (a b : ℕ → ℝ) (d1 d2 r s : ℕ) :
     Cmat a b d1 d2 r s = Cmat b a d2 d1 s r := by
-  unfold Cmat
-  rw [sum_comm]
+  unfold Cmat; rw [sum_comm]
   apply sum_congr rfl; intro j _; apply sum_congr rfl; intro i _
   rw [Hk_symm]; ring
 
@@ -830,8 +775,7 @@ theorem Cmat_nonneg (ha : GLC a) (hb : GLC b) (d1 d2 r s : ℕ) : 0 ≤ Cmat a b
 private theorem Cmat_eq_sum_M (a b : ℕ → ℝ) (d1 d2 r s : ℕ) :
     Cmat a b d1 d2 r s = ∑ j ∈ range (d1 + 1),
       toep b s j * ∑ i ∈ range (d2 + 1), toep a r i * Hk d1 d2 i j := by
-  unfold Cmat
-  rw [sum_comm]
+  unfold Cmat; rw [sum_comm]
   apply sum_congr rfl; intro j _
   rw [mul_sum]; apply sum_congr rfl; intro i _; ring
 
@@ -858,12 +802,8 @@ theorem Cmat_col_glc (ha : GLC a) (hb : GLC b) (d1 d2 s : ℕ) :
   have hw : LCNIZ d1 (fun k => toep b s (d1 - k)) := ((hb.window s).lcniz d1).rev
   have hpk := pathKernel_LCNIZ d2 d1 hw
   have hgl : LCNIZ d2 g := by
-    apply hpk.congr
-    intro i hi
-    simp only [hg]
-    rw [← sum_range_reflect]
-    apply sum_congr rfl
-    intro j hj
+    apply hpk.congr; intro i hi; simp only [hg]; rw [← sum_range_reflect]
+    apply sum_congr rfl; intro j hj
     rw [mem_range] at hj
     rw [show d1 + 1 - 1 - j = d1 - j by lia, show d1 - (d1 - j) = j by lia]
     unfold Hk
@@ -876,8 +816,7 @@ theorem Cmat_col_glc (ha : GLC a) (hb : GLC b) (d1 d2 s : ℕ) :
     rw [conv_eq_sum_toep_of_support a (trunc d2 g) d2 r
       (fun i hi => by unfold trunc; rw [ite_eq_right (by lia)])]
     unfold Cmat
-    apply sum_congr rfl
-    intro i hi
+    apply sum_congr rfl; intro i hi
     rw [mem_range] at hi
     rw [trunc_eq_of_le _ (by lia), hg, mul_sum]
     apply sum_congr rfl; intro j _; ring
@@ -887,8 +826,7 @@ theorem Cmat_col_glc (ha : GLC a) (hb : GLC b) (d1 d2 s : ℕ) :
 theorem Cmat_row_glc (ha : GLC a) (hb : GLC b) (d1 d2 r : ℕ) :
     GLC (fun s => Cmat a b d1 d2 r s) := by
   have := Cmat_col_glc hb ha d2 d1 r
-  simp only [← Cmat_swap] at this
-  exact this
+  simpa only [← Cmat_swap] using this
 
 private theorem Cmat_diag_witness (d1 d2 k : ℕ) (h : Cmat a b d1 d2 k k ≠ 0) :
     ∃ i j, i ≤ d2 ∧ j ≤ d1 ∧ i ≤ k ∧ j ≤ k ∧ a (k - i) ≠ 0 ∧ b (k - j) ≠ 0 := by
@@ -898,21 +836,14 @@ private theorem Cmat_diag_witness (d1 d2 k : ℕ) (h : Cmat a b d1 d2 k k ≠ 0)
   rw [mem_range] at hi hj
   have h1 := left_ne_zero_of_mul (left_ne_zero_of_mul hne')
   have h2 := right_ne_zero_of_mul hne'
-  have hik : i ≤ k := by
-    by_contra hik
-    exact h1 (by rw [toep, ite_eq_right hik])
-  have hjk : j ≤ k := by
-    by_contra hjk
-    exact h2 (by rw [toep, ite_eq_right hjk])
-  rw [toep, ite_eq_left hik] at h1
-  rw [toep, ite_eq_left hjk] at h2
-  exact ⟨i, j, by lia, by lia, hik, hjk, h1, h2⟩
+  have h1' : i ≤ k ∧ a (k - i) ≠ 0 := by simpa [toep] using h1
+  have h2' : j ≤ k ∧ b (k - j) ≠ 0 := by simpa [toep] using h2
+  exact ⟨i, j, by lia, by lia, h1'.1, h2'.1, h1'.2, h2'.2⟩
 
 private theorem Cmat_diag_ne_zero (ha : GLC a) (hb : GLC b) {d1 d2 k i j : ℕ} (hi : i ≤ d2)
     (hj : j ≤ d1) (hik : i ≤ k) (hjk : j ≤ k) (hai : a (k - i) ≠ 0) (hbj : b (k - j) ≠ 0) :
     Cmat a b d1 d2 k k ≠ 0 := by
-  unfold Cmat
-  intro h0
+  unfold Cmat; intro h0
   have h1 := (sum_eq_zero_iff_of_nonneg (fun x _ => sum_nonneg fun y _ =>
     mul_nonneg (mul_nonneg (ha.toep_nonneg _ _) (Hk_nonneg _ _ _ _)) (hb.toep_nonneg _ _))).mp
     h0 i (by rw [mem_range]; lia)

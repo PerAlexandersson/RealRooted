@@ -233,10 +233,8 @@ theorem exceptionalEulerInverse_allComboRealRooted
     (hγ : γ₁ < γ₂) :
     AllComboRealRooted
       (exceptionalEulerInverse m ε γ₁)
-      (exceptionalEulerInverse m ε γ₂) := by
-  intro a b
-  exact exceptionalEulerInverse_pencil_splits
-    m ε hm hγ₁ hγ₂ hγ
+      (exceptionalEulerInverse m ε γ₂) :=
+  fun _ _ => exceptionalEulerInverse_pencil_splits m ε hm hγ₁ hγ₂ hγ
 
 /-- Larger exceptional Euler parameter gives the left-hand root set in proper
 position.  The strict reciprocal-root sum selects this orientation from the
@@ -255,21 +253,13 @@ theorem exceptionalEulerInverse_strictInterl
   have hγ₁pos : 0 < γ₁ := by linarith
   have hγ₂pos : 0 < γ₂ := by linarith
   have hdeg₁ : R₁.natDegree = m := by
-    dsimp only [R₁]
-    exact natDegree_exceptionalEulerInverse m ε hγ₁pos
+    simpa only [R₁] using natDegree_exceptionalEulerInverse m ε hγ₁pos
   have hdeg₂ : R₂.natDegree = m := by
-    dsimp only [R₂]
-    exact natDegree_exceptionalEulerInverse m ε hγ₂pos
-  have hR₁ : R₁ ≠ 0 := by
-    intro hzero
-    rw [hzero] at hdeg₁
-    simp at hdeg₁
-    lia
-  have hR₂ : R₂ ≠ 0 := by
-    intro hzero
-    rw [hzero] at hdeg₂
-    simp at hdeg₂
-    lia
+    simpa only [R₂] using natDegree_exceptionalEulerInverse m ε hγ₂pos
+  have hR₁ : R₁ ≠ 0 :=
+    Polynomial.ne_zero_of_natDegree_gt (by rw [hdeg₁]; exact hm)
+  have hR₂ : R₂ ≠ 0 :=
+    Polynomial.ne_zero_of_natDegree_gt (by rw [hdeg₂]; exact hm)
   have hall : AllComboRealRooted R₁ R₂ := by
     simpa only [R₁, R₂] using
       exceptionalEulerInverse_allComboRealRooted
@@ -281,13 +271,11 @@ theorem exceptionalEulerInverse_strictInterl
       (Or.inr (hdeg₁.trans hdeg₂.symm))
   rcases horient with hforward | hreverse
   · have hzero₁ : R₁.coeff 0 = 1 := by
-      rw [coeff_zero_eq_eval_zero]
-      dsimp only [R₁]
-      exact exceptionalEulerInverse_eval_zero m ε hγ₁pos.ne'
+      simpa only [coeff_zero_eq_eval_zero, R₁] using
+        exceptionalEulerInverse_eval_zero m ε hγ₁pos.ne'
     have hzero₂ : R₂.coeff 0 = 1 := by
-      rw [coeff_zero_eq_eval_zero]
-      dsimp only [R₂]
-      exact exceptionalEulerInverse_eval_zero m ε hγ₂pos.ne'
+      simpa only [coeff_zero_eq_eval_zero, R₂] using
+        exceptionalEulerInverse_eval_zero m ε hγ₂pos.ne'
     have hrecipLe :=
       neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
         hforward (hdeg₁.trans hdeg₂.symm) hzero₁ hzero₂
@@ -311,11 +299,7 @@ theorem eulerShiftOperator_exceptionalEulerInverse
   ext k
   rw [coeff_eulerShiftOperator, coeff_C_mul,
     coeff_exceptionalEulerInverse, coeff_exceptionalBasePolynomial]
-  split_ifs
-  · have hden : γ + (k : ℝ) ≠ 0 := by positivity
-    field_simp
-    ring
-  · ring
+  split_ifs <;> field_simp <;> ring
 
 private theorem realRisingFactorial_mul_shift
     (a : ℝ) (k : ℕ) :
@@ -377,39 +361,13 @@ theorem exceptionalEulerInverse_lower_eq_rPolynomial
       dsimp only [A]
       ring
     rw [hfirst, hsecond, hthird]
-    have hratio' :
-        A * realRisingFactorial (c + m) k =
-          (A + k) * realRisingFactorial A k := by
-      have hAone : A + 1 = c + m := by
-        dsimp only [A]
-        ring
-      simpa only [hAone] using hratio
-    have hquotient :
-        realRisingFactorial (c + m) k * A / (A + k) =
-          realRisingFactorial A k := by
-      rw [div_eq_iff hAk]
-      nlinarith
-    calc
-      (realRisingFactorial (-(m : ℝ)) k *
-              realRisingFactorial (c + m) k /
-            (realRisingFactorial c k * k.factorial)) * A / (A + k) =
-          (realRisingFactorial (-(m : ℝ)) k /
-              (realRisingFactorial c k * k.factorial)) *
-            (realRisingFactorial (c + m) k * A / (A + k)) := by ring
-      _ = realRisingFactorial (-(m : ℝ)) k /
-            (realRisingFactorial c k * k.factorial) *
-          realRisingFactorial A k := by rw [hquotient]
-      _ = realRisingFactorial (-(m : ℝ)) k *
-              realRisingFactorial (c + m + 1 / 2) k *
-              realRisingFactorial A k /
-            (realRisingFactorial c k *
-              realRisingFactorial (c + m + 1 / 2) k *
-              k.factorial) := by
-        have hDnorm : 0 <
-            realRisingFactorial (((c + m) * 2 + 1) / 2) k := by
-          apply realRisingFactorial_pos
-          positivity
-        field_simp [hC.ne', hD.ne', hDnorm.ne', hF.ne']
+    have hAone : A + 1 = c + m := by dsimp only [A]; ring
+    rw [hAone] at hratio
+    have hDnorm : 0 < realRisingFactorial (((c + m) * 2 + 1) / 2) k := by
+      apply realRisingFactorial_pos
+      positivity
+    field_simp [hC.ne', hD.ne', hDnorm.ne', hF.ne', hAk]
+    linear_combination (realRisingFactorial (-(m : ℝ)) k) * hratio
   · rfl
 
 /-- The upper distinguished Euler parameter is exactly the exceptional
@@ -455,43 +413,9 @@ theorem exceptionalEulerInverse_upper_eq_rPolynomial
       dsimp only [B]
       ring
     rw [hfirst, hsecond]
-    have hratioDiv :
-        realRisingFactorial B k / realRisingFactorial (B + 1) k =
-          B / (B + k) := by
-      rw [div_eq_div_iff hD.ne' hBk]
-      nlinarith
-    have hquotient :
-        realRisingFactorial B k *
-            realRisingFactorial (c + m) k /
-              realRisingFactorial (B + 1) k =
-          realRisingFactorial (c + m) k * B / (B + k) := by
-      calc
-        realRisingFactorial B k *
-              realRisingFactorial (c + m) k /
-                realRisingFactorial (B + 1) k =
-            realRisingFactorial (c + m) k *
-              (realRisingFactorial B k /
-                realRisingFactorial (B + 1) k) := by ring
-        _ = realRisingFactorial (c + m) k * (B / (B + k)) := by
-          rw [hratioDiv]
-        _ = realRisingFactorial (c + m) k * B / (B + k) := by ring
-    calc
-      (realRisingFactorial (-(m : ℝ)) k *
-              realRisingFactorial (c + m) k /
-            (realRisingFactorial c k * k.factorial)) * B / (B + k) =
-          realRisingFactorial (-(m : ℝ)) k /
-              (realRisingFactorial c k * k.factorial) *
-            (realRisingFactorial (c + m) k * B / (B + k)) := by ring
-      _ = realRisingFactorial (-(m : ℝ)) k /
-              (realRisingFactorial c k * k.factorial) *
-            (realRisingFactorial B k *
-              realRisingFactorial (c + m) k /
-                realRisingFactorial (B + 1) k) := by rw [hquotient]
-      _ = realRisingFactorial (-(m : ℝ)) k *
-              realRisingFactorial B k *
-              realRisingFactorial (c + m) k /
-            (realRisingFactorial c k *
-              realRisingFactorial (B + 1) k * k.factorial) := by ring
+    field_simp [hC.ne', hD.ne', hF.ne', hBk]
+    linear_combination (realRisingFactorial (-(m : ℝ)) k *
+      realRisingFactorial (c + m) k) * hratio
   · rfl
 
 /-- The pencil between the lower distinguished parameter and any larger
@@ -719,12 +643,10 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
   let q := C Q.leadingCoeff⁻¹ * Q
   let qn : ℕ → ℝ[X] := fun n => C Q.leadingCoeff⁻¹ * Qn n
   have hqMonic : q.Monic := by
-    dsimp only [q]
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     exact inv_mul_cancel₀ hQlead
   have hqnMonic : ∀ n, (qn n).Monic := by
     intro n
-    dsimp only [qn]
     apply monic_C_mul_of_mul_leadingCoeff_eq_one
     rw [show (Qn n).leadingCoeff = Q.leadingCoeff by
       simp only [Polynomial.leadingCoeff, hQnDegree n]
@@ -737,17 +659,11 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
     dsimp only [qn, q]
     rw [Polynomial.natDegree_C_mul (inv_ne_zero hQlead),
       Polynomial.natDegree_C_mul (inv_ne_zero hQlead), hQnDegree]
-  have hqnSplits : ∀ n, (qn n).Splits :=
-    fun n => (hQnSplits n).C_mul Q.leadingCoeff⁻¹
-  have hqnCoeffTendsto : ∀ k,
-      Filter.Tendsto (fun n => (qn n).coeff k) Filter.atTop
-        (nhds (q.coeff k)) := by
-    intro k
-    dsimp only [qn, q]
-    simp only [coeff_C_mul]
-    exact tendsto_const_nhds.mul (hQnCoeffTendsto k)
-  have hqSplits := splits_of_monic_of_coeff_tendsto
-    hqMonic hqnMonic hqnDegree hqnSplits hqnCoeffTendsto
+  have hqSplits := splits_of_monic_of_coeff_tendsto hqMonic hqnMonic hqnDegree
+    (fun n => (hQnSplits n).C_mul Q.leadingCoeff⁻¹) (fun k => by
+      dsimp only [qn, q]
+      simp only [coeff_C_mul]
+      exact tendsto_const_nhds.mul (hQnCoeffTendsto k))
   have hscaled := hqSplits.C_mul Q.leadingCoeff
   rw [show C Q.leadingCoeff * q = Q by
     dsimp only [q]
@@ -779,21 +695,13 @@ theorem exceptionalEulerInverse_upper_strictInterl_lower
     dsimp only [A, B]
     linarith
   have hLdegree : L.natDegree = m := by
-    dsimp only [L]
-    exact natDegree_exceptionalEulerInverse m ε hA
+    simpa only [L] using natDegree_exceptionalEulerInverse m ε hA
   have hUdegree : U.natDegree = m := by
-    dsimp only [U]
-    exact natDegree_exceptionalEulerInverse m ε hB
-  have hL : L ≠ 0 := by
-    intro hzero
-    rw [hzero] at hLdegree
-    simp at hLdegree
-    lia
-  have hU : U ≠ 0 := by
-    intro hzero
-    rw [hzero] at hUdegree
-    simp at hUdegree
-    lia
+    simpa only [U] using natDegree_exceptionalEulerInverse m ε hB
+  have hL : L ≠ 0 :=
+    Polynomial.ne_zero_of_natDegree_gt (by rw [hLdegree]; exact hm)
+  have hU : U ≠ 0 :=
+    Polynomial.ne_zero_of_natDegree_gt (by rw [hUdegree]; exact hm)
   have hall : AllComboRealRooted L U := by
     simpa only [L, U, A, B] using
       exceptionalEulerInverse_lower_allComboRealRooted
@@ -803,13 +711,11 @@ theorem exceptionalEulerInverse_upper_strictInterl_lower
       hall (Or.inr (hLdegree.trans hUdegree.symm))
   rcases horient with hwrong | hright
   · have hLzero : L.coeff 0 = 1 := by
-      rw [coeff_zero_eq_eval_zero]
-      dsimp only [L]
-      exact exceptionalEulerInverse_eval_zero m ε hA.ne'
+      simpa only [coeff_zero_eq_eval_zero, L] using
+        exceptionalEulerInverse_eval_zero m ε hA.ne'
     have hUzero : U.coeff 0 = 1 := by
-      rw [coeff_zero_eq_eval_zero]
-      dsimp only [U]
-      exact exceptionalEulerInverse_eval_zero m ε hB.ne'
+      simpa only [coeff_zero_eq_eval_zero, U] using
+        exceptionalEulerInverse_eval_zero m ε hB.ne'
     have hwrongCoeff :=
       neg_coeff_one_le_of_strictInterl_sameDegree_of_roots_pos
         hwrong (hLdegree.trans hUdegree.symm) hLzero hUzero

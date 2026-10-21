@@ -77,14 +77,11 @@ private theorem binaryRun_expanded_monomial
       · simp [binaryRunOutputIndex]
         lia
       · simp [binaryRunOutputIndex]
-    · fin_cases i
-      · simp [binaryRunSourceIndex]
-      · simp [binaryRunSourceIndex]
+    · fin_cases i <;> simp [binaryRunSourceIndex]
   rw [MvPolynomial.C_apply]
   simp only [MvPolynomial.X_pow_eq_monomial,
     MvPolynomial.monomial_mul_monomial]
-  rw [hindex]
-  simp
+  rw [hindex]; simp
 
 theorem binaryRunHomogenizedSource_eq_sum (n : ℕ) (p : ℝ[X]) (t : ℝ) :
     binaryRunHomogenizedSource n p t =
@@ -101,8 +98,7 @@ theorem binaryRunHomogenizedSource_eq_expanded
     (n : ℕ) (p : ℝ[X]) (t : ℝ) :
     binaryRunHomogenizedSource n p t = binaryRunExpandedSource n p t := by
   rw [binaryRunHomogenizedSource_eq_sum, binaryRunExpandedSource]
-  apply Finset.sum_congr rfl
-  intro m hm
+  apply Finset.sum_congr rfl; intro m hm
   have hmle : m ≤ n + 1 := by
     simp only [Finset.mem_range] at hm
     lia
@@ -117,10 +113,8 @@ theorem binaryRunHomogenizedSource_eq_expanded
   have hrange : n + 1 - m + 1 = n + 2 - m := by lia
   rw [hrange]
   conv_lhs => rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro a ha
-  apply Finset.sum_congr rfl
-  intro b hb
+  apply Finset.sum_congr rfl; intro a ha
+  apply Finset.sum_congr rfl; intro b hb
   have hale : a ≤ m := by simpa [Finset.mem_range] using ha
   have hble : b ≤ n + 1 - m := by
     simp only [Finset.mem_range] at hb
@@ -131,18 +125,14 @@ theorem binaryRunHomogenizedSource_eq_expanded
       MvPolynomial.C (Nat.choose m a : ℂ) by simp,
     show (Nat.choose (n + 1 - m) b : MvPolynomial (Fin 2 ⊕ Fin 2) ℂ) =
       MvPolynomial.C (Nat.choose (n + 1 - m) b : ℂ) by simp]
-  rw [map_mul, map_mul]
-  ring
+  rw [map_mul, map_mul]; ring
 
 theorem binaryRunSourceIndex_inj {a b c d : ℕ} :
     binaryRunSourceIndex a b = binaryRunSourceIndex c d ↔ a = c ∧ b = d := by
   constructor
   · intro h
-    constructor
-    · have := DFunLike.congr_fun h 0
-      simpa [binaryRunSourceIndex] using this
-    · have := DFunLike.congr_fun h 1
-      simpa [binaryRunSourceIndex] using this
+    exact ⟨by simpa [binaryRunSourceIndex] using DFunLike.congr_fun h 0,
+      by simpa [binaryRunSourceIndex] using DFunLike.congr_fun h 1⟩
   · rintro ⟨rfl, rfl⟩
     rfl
 
@@ -160,12 +150,9 @@ theorem sourceCoefficientGeneral_binaryRunHomogenizedSource
             else 0 := by
   rw [binaryRunHomogenizedSource_eq_expanded, binaryRunExpandedSource]
   simp only [sourceCoefficientGeneral_sum]
-  apply Finset.sum_congr rfl
-  intro m hm
-  apply Finset.sum_congr rfl
-  intro a ha
-  apply Finset.sum_congr rfl
-  intro b hb
+  apply Finset.sum_congr rfl; intro m hm
+  apply Finset.sum_congr rfl; intro a ha
+  apply Finset.sum_congr rfl; intro b hb
   exact sourceCoefficientGeneral_monomial_sumElim
     (binaryRunOutputIndex (n + 1 - a - b))
     (binaryRunSourceIndex a b) r _
@@ -184,8 +171,7 @@ theorem sourceCoefficientGeneral_binaryRunHomogenizedSource_index
           else 0
         else 0 := by
   rw [sourceCoefficientGeneral_binaryRunHomogenizedSource]
-  apply Finset.sum_congr rfl
-  intro m hm
+  apply Finset.sum_congr rfl; intro m hm
   simp [binaryRunSourceIndex_inj, ite_and]
 
 theorem sourceCoefficientGeneral_binaryRunHomogenizedSource_monomial
@@ -204,8 +190,7 @@ theorem sourceCoefficientGeneral_binaryRunHomogenizedSource_monomial
             (binaryRunOutputIndex (n + 1 - k - l))
             (((scalePolynomial t p).coeff m : ℂ) * Nat.choose m k *
               Nat.choose (n + 1 - m) l) := by
-        apply Finset.sum_congr rfl
-        intro m hm
+        apply Finset.sum_congr rfl; intro m hm
         have hmle : m ≤ n + 1 := by
           simp only [Finset.mem_range] at hm
           lia
@@ -239,13 +224,11 @@ theorem binaryRunHomogenizedSource_diagonal_scalar
     (natDegree_scalePolynomial_le t p).trans hp
   have htop : (scalePolynomial t p).coeff (n + 1) = 0 :=
     coeff_eq_zero_of_natDegree_lt (by lia)
-  rw [Finset.sum_range_succ, htop]
-  simp only [zero_mul, add_zero]
+  rw [Finset.sum_range_succ, htop]; simp only [zero_mul, add_zero]
   rw [coeff_shiftedBinaryRunDeformation_eq_sum_range hp, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m hm
+  apply Finset.sum_congr rfl; intro m hm
   have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-    exact_mod_cast (Nat.ne_of_gt (Nat.choose_pos hk))
+    exact_mod_cast Nat.ne_of_gt (Nat.choose_pos hk)
   field_simp
 
 theorem sourceCoefficientGeneral_binaryRunHomogenizedSource_diagonal
@@ -260,8 +243,7 @@ theorem sourceCoefficientGeneral_binaryRunHomogenizedSource_diagonal
   rw [sourceCoefficientGeneral_binaryRunHomogenizedSource_monomial]
   have hscalar := congrArg Complex.ofReal
     (binaryRunHomogenizedSource_diagonal_scalar hp t hk)
-  push_cast at hscalar
-  rw [hscalar]
+  push_cast at hscalar; rw [hscalar]
   rw [MvPolynomial.C_mul_X_pow_eq_monomial]
   have hindex : binaryRunOutputIndex (n + 1 - k - k) =
       Finsupp.single 0 (n + 1 - 2 * k) := by
@@ -290,12 +272,8 @@ theorem sourceCoefficientGeneral_pderiv_source
     ext j
     rcases j with j | j
     · simp
-    · by_cases hji : j = i
-      · subst j
-        simp
-      · simp [hji]
-  rw [hindex]
-  simp
+    · by_cases hji : j = i <;> simp [hji]
+  rw [hindex]; simp
   ring
 
 /-- Multiplication by a retained variable commutes with source-coefficient
@@ -344,23 +322,17 @@ theorem sourceCoefficientGeneral_X_mul_pderiv_source
     have hle : Finsupp.single (Sum.inr i) 1 ≤ u.sumElim r := by
       rw [Finsupp.single_le_iff]
       simpa using Nat.one_le_iff_ne_zero.mpr hi
-    have hrestore :
-        u.sumElim r - Finsupp.single (Sum.inr i) 1 +
-            Finsupp.single (Sum.inr i) 1 = u.sumElim r :=
-      tsub_add_cancel_of_le hle
-    rw [hrestore]
+    rw [tsub_add_cancel_of_le hle]
     have hcoord :
         (u.sumElim r - Finsupp.single (Sum.inr i) 1 :
-          (τ ⊕ σ) →₀ ℕ) (Sum.inr i) + 1 =
-          r i := by
+          (τ ⊕ σ) →₀ ℕ) (Sum.inr i) + 1 = r i := by
       simp
       lia
     have hcoordC :
         ((u.sumElim r - Finsupp.single (Sum.inr i) 1 :
             (τ ⊕ σ) →₀ ℕ) (Sum.inr i) : ℂ) + 1 = (r i : ℂ) := by
       norm_cast
-    rw [hcoordC]
-    ring
+    rw [hcoordC]; ring
 
 /-- Applying a coordinate Euler operator cannot introduce a new monomial, so
 it cannot increase the degree in any coordinate. -/
@@ -370,8 +342,7 @@ theorem degreeOf_X_mul_pderiv_le
       P.degreeOf j := by
   classical
   rw [MvPolynomial.degreeOf_le_iff]
-  intro d hd
-  apply MvPolynomial.monomial_le_degreeOf j
+  intro d hd; apply MvPolynomial.monomial_le_degreeOf j
   rw [MvPolynomial.mem_support_iff] at hd ⊢
   have himem : i ∈ d.support := by
     by_contra hi
@@ -382,11 +353,8 @@ theorem degreeOf_X_mul_pderiv_le
   have hle : Finsupp.single i 1 ≤ d := by
     rw [Finsupp.single_le_iff]
     exact Nat.one_le_iff_ne_zero.mpr (Finsupp.mem_support_iff.mp himem)
-  have hrestore : d - Finsupp.single i 1 + Finsupp.single i 1 = d :=
-    tsub_add_cancel_of_le hle
-  rw [hrestore] at hd
-  intro hzero
-  simp [hzero] at hd
+  rw [tsub_add_cancel_of_le hle] at hd
+  intro hzero; simp [hzero] at hd
 
 theorem binaryRunHomogenizedSource_pointing_scalar
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ)
@@ -401,8 +369,7 @@ theorem binaryRunHomogenizedSource_pointing_scalar
     (natDegree_scalePolynomial_le t p).trans hp
   have htop : (scalePolynomial t p).coeff (n + 1) = 0 :=
     coeff_eq_zero_of_natDegree_lt (by lia)
-  rw [Finset.sum_range_succ, htop]
-  simp only [zero_mul, add_zero]
+  rw [Finset.sum_range_succ, htop]; simp only [zero_mul, add_zero]
   rw [binaryRunPointingRemainder, coeff_sub,
     coeff_shiftedBinaryRunPointing_eq_sum_range hp,
     Polynomial.coeff_X_mul_derivative,
@@ -410,10 +377,9 @@ theorem binaryRunHomogenizedSource_pointing_scalar
     Finset.mul_sum, mul_sub]
   simp_rw [Finset.mul_sum]
   rw [← Finset.sum_sub_distrib]
-  apply Finset.sum_congr rfl
-  intro m hm
+  apply Finset.sum_congr rfl; intro m hm
   have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-    exact_mod_cast (Nat.ne_of_gt (Nat.choose_pos hk))
+    exact_mod_cast Nat.ne_of_gt (Nat.choose_pos hk)
   have hbinomial := congrArg (fun x : ℕ => (x : ℝ))
     (Nat.choose_succ_right_eq m k)
   push_cast at hbinomial
@@ -498,8 +464,7 @@ theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal
   rw [sourceCoefficientGeneral_binaryRunPointingSource_diagonal_aux,
     sourceCoefficientGeneral_binaryRunHomogenizedSource_diagonal hp t hk,
     sourceCoefficientGeneral_pderiv_binaryRunHomogenizedSource_diagonal hp t hk]
-  simp only [map_mul]
-  ring
+  simp only [map_mul]; ring
 
 theorem eval₂_complexify_signedParityLift_eq_sum
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n / 2) :
@@ -511,10 +476,8 @@ theorem eval₂_complexify_signedParityLift_eq_sum
           MvPolynomial.X 0 ^ (n - 2 * (k : ℕ)) := by
   rw [signedParityLift_eq_sum_range_succ hp]
   unfold complexify
-  rw [Polynomial.map_sum, Polynomial.eval₂_finsetSum,
-    ← Fin.sum_univ_eq_sum_range]
-  apply Fintype.sum_congr
-  intro k
+  rw [Polynomial.map_sum, Polynomial.eval₂_finsetSum, ← Fin.sum_univ_eq_sum_range]
+  apply Fintype.sum_congr; intro k
   rw [Polynomial.map_mul, Polynomial.map_C, Polynomial.map_pow,
     Polynomial.map_X, Polynomial.eval₂_mul, Polynomial.eval₂_C,
     Polynomial.eval₂_pow, Polynomial.eval₂_X]
@@ -536,8 +499,7 @@ theorem eval₂_complexify_neg_signedParityLift_derivative_eq_sum
         simp [complexify],
     Polynomial.eval₂_neg,
     eval₂_complexify_signedParityLift_eq_sum hq]
-  rw [← Finset.sum_neg_distrib]
-  rw [hnsub]
+  rw [← Finset.sum_neg_distrib, hnsub]
   rw [Fin.sum_univ_eq_sum_range (fun k : ℕ =>
     -(MvPolynomial.C ((-1 : ℂ) ^ k * q.derivative.coeff k) *
       MvPolynomial.X 0 ^ (n - 1 - 2 * k)))]
@@ -546,15 +508,12 @@ theorem eval₂_complexify_neg_signedParityLift_derivative_eq_sum
       MvPolynomial.X 0 ^ (n + 1 - 2 * k)), Finset.sum_range_succ']
   norm_num
   rw [← Finset.sum_neg_distrib]
-  apply Finset.sum_congr rfl
-  intro k hk
+  apply Finset.sum_congr rfl; intro k hk
   simp only [Finset.mem_range] at hk
   rw [Polynomial.coeff_derivative]
   have hpow : n + 1 - 2 * (k + 1) = n - 1 - 2 * k := by lia
   rw [hpow, pow_succ]
-  push_cast
-  simp only [map_add, map_mul, map_natCast, map_one]
-  ring
+  push_cast; simp only [map_add, map_mul, map_natCast, map_one]; ring
 
 /-- The contracted pointing source is the explicit signed diagonal sum before
 the two summands are repackaged as signed parity lifts. -/
@@ -573,8 +532,7 @@ theorem normalizedDiagonalContraction_binaryRunPointingSource_eq_sum
               MvPolynomial.X 0 ^ (n - 2 * (k : ℕ))) := by
   classical
   rw [normalizedDiagonalContraction_eq_diagonal_sum]
-  apply Fintype.sum_congr
-  intro k
+  apply Fintype.sum_congr; intro k
   have hk : (k : ℕ) ≤ n := Nat.lt_succ_iff.mp k.isLt
   rw [sourceCoefficientGeneral_binaryRunPointingSource_diagonal hp t hk]
   have hchoose : (Nat.choose n (k : ℕ) : ℂ) ≠ 0 := by
@@ -600,8 +558,7 @@ theorem normalizedDiagonalContraction_binaryRunPointingSource
     eval₂_complexify_signedParityLift_eq_sum
       (natDegree_binaryRunPointingRemainder_le hp t),
     Finset.mul_sum, ← Finset.sum_add_distrib]
-  apply Fintype.sum_congr
-  intro k
+  apply Fintype.sum_congr; intro k
   ring
 
 theorem pderiv_binaryRunHomogenizedSource_eq_sum
@@ -615,59 +572,29 @@ theorem pderiv_binaryRunHomogenizedSource_eq_sum
             (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 1)) ^
               (n + 1 - m) := by
   rw [binaryRunHomogenizedSource_eq_sum, map_sum]
-  apply Finset.sum_congr rfl
-  intro m hm
+  apply Finset.sum_congr rfl; intro m hm
   simp
   ring
 
 theorem degreeOf_binaryRunHomogenizedSource_source_zero_le
     {n : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ n) (t : ℝ) :
     (binaryRunHomogenizedSource n p t).degreeOf (Sum.inr 0) ≤ n := by
-  rw [binaryRunHomogenizedSource_eq_sum]
-  refine (MvPolynomial.degreeOf_sum_le (Sum.inr 0) (Finset.range (n + 2))
-    (fun m =>
-      MvPolynomial.C ((scalePolynomial t p).coeff m : ℂ) *
-        (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 0)) ^ m *
-          (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 1)) ^
-            (n + 1 - m))).trans ?_
-  apply Finset.sup_le
-  intro m hm
-  by_cases hmn : m ≤ n
-  · have hfirst :
-        (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 0) :
-          MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 0) ≤ 1 :=
-      (MvPolynomial.degreeOf_add_le _ _ _).trans (by
-        simp [MvPolynomial.degreeOf_X])
-    have hsecond :
-        (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 1) :
-          MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 0) ≤ 0 :=
-      (MvPolynomial.degreeOf_add_le _ _ _).trans (by
-        simp [MvPolynomial.degreeOf_X])
-    calc
-      _ ≤
-          (MvPolynomial.C ((scalePolynomial t p).coeff m : ℂ) *
-            (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 0)) ^ m :
-              MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 0) +
-            ((MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 1)) ^
-              (n + 1 - m) : MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf
-                (Sum.inr 0) := MvPolynomial.degreeOf_mul_le _ _ _
-      _ ≤ (0 + m) + 0 := Nat.add_le_add
-        ((MvPolynomial.degreeOf_mul_le _ _ _).trans <|
-          Nat.add_le_add (by simp)
-            ((MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
-              simpa using Nat.mul_le_mul_left m hfirst))
-        ((MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
-          simpa using Nat.mul_le_mul_left (n + 1 - m) hsecond)
-      _ ≤ n := by simpa using hmn
-  · have hmTop : m = n + 1 := by
-      simp only [Finset.mem_range] at hm
-      lia
-    subst m
-    have hdegree : (scalePolynomial t p).natDegree ≤ n :=
-      (natDegree_scalePolynomial_le t p).trans hp
-    have hcoeff : (scalePolynomial t p).coeff (n + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by lia)
-    simp [hcoeff]
+  rw [binaryRunHomogenizedSource_eq_expanded, binaryRunExpandedSource]
+  refine (MvPolynomial.degreeOf_sum_le _ _ _).trans (Finset.sup_le fun m _ => ?_)
+  refine (MvPolynomial.degreeOf_sum_le _ _ _).trans (Finset.sup_le fun a ha => ?_)
+  refine (MvPolynomial.degreeOf_sum_le _ _ _).trans (Finset.sup_le fun b _ => ?_)
+  let c : ℂ := (scalePolynomial t p).coeff m * Nat.choose m a *
+    Nat.choose (n + 1 - m) b
+  by_cases hc : c = 0
+  · simp [c, hc]
+  rw [MvPolynomial.degreeOf_monomial_eq _ _ hc]
+  have hcoeff : (scalePolynomial t p).coeff m ≠ 0 := by
+    intro h
+    simp [c, h] at hc
+  have hm : m ≤ n := (Polynomial.le_natDegree_of_ne_zero hcoeff).trans
+    ((natDegree_scalePolynomial_le t p).trans hp)
+  simpa [binaryRunSourceIndex] using
+    (Nat.lt_succ_iff.mp (Finset.mem_range.mp ha)).trans hm
 
 theorem degreeOf_pderiv_binaryRunHomogenizedSource_source_one_le
     (n : ℕ) (p : ℝ[X]) (t : ℝ) :
@@ -680,8 +607,7 @@ theorem degreeOf_pderiv_binaryRunHomogenizedSource_source_one_le
         (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 0)) ^ (m - 1) *
           (MvPolynomial.X (Sum.inl 0) + MvPolynomial.X (Sum.inr 1)) ^
             (n + 1 - m))).trans ?_
-  apply Finset.sup_le
-  intro m _hm
+  apply Finset.sup_le; intro m _hm
   by_cases hm0 : m = 0
   · subst m
     simp
@@ -698,17 +624,6 @@ theorem degreeOf_pderiv_binaryRunHomogenizedSource_source_one_le
     have hsecond : B.degreeOf (Sum.inr 1) ≤ 1 :=
       (MvPolynomial.degreeOf_add_le _ _ _).trans (by
         simp [MvPolynomial.degreeOf_X])
-    have hconst :
-        (MvPolynomial.C ((m : ℂ) * (scalePolynomial t p).coeff m) :
-          MvPolynomial (Fin 2 ⊕ Fin 2) ℂ).degreeOf (Sum.inr 1) ≤ 0 :=
-      le_of_eq (MvPolynomial.degreeOf_C _ _)
-    have hfirstPow : (A ^ (m - 1)).degreeOf (Sum.inr 1) ≤ 0 :=
-      (MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
-        simpa using Nat.mul_le_mul_left (m - 1) hfirst
-    have hsecondPow : (B ^ (n + 1 - m)).degreeOf (Sum.inr 1) ≤
-        n + 1 - m :=
-      (MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
-        simpa using Nat.mul_le_mul_left (n + 1 - m) hsecond
     calc
       _ ≤ (MvPolynomial.C
           ((m : ℂ) * (scalePolynomial t p).coeff m) *
@@ -717,8 +632,11 @@ theorem degreeOf_pderiv_binaryRunHomogenizedSource_source_one_le
         MvPolynomial.degreeOf_mul_le _ _ _
       _ ≤ (0 + 0) + (n + 1 - m) := Nat.add_le_add
         ((MvPolynomial.degreeOf_mul_le _ _ _).trans <|
-          Nat.add_le_add hconst hfirstPow)
-        hsecondPow
+          Nat.add_le_add (le_of_eq (MvPolynomial.degreeOf_C _ _))
+            ((MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
+              simpa using Nat.mul_le_mul_left (m - 1) hfirst))
+        ((MvPolynomial.degreeOf_pow_le _ _ _).trans <| by
+          simpa using Nat.mul_le_mul_left (n + 1 - m) hsecond)
       _ ≤ n := by
         have hmpos : 1 ≤ m := Nat.one_le_iff_ne_zero.mpr hm0
         lia
@@ -771,11 +689,8 @@ theorem mvUpperHalfPlaneStable_binaryRunHomogenizedSource
     simpa [scalePolynomial] using
       hp.comp_C_mul_X_add_C (a := t) (d := 0) ht le_rfl
   have hscaled0 : scalePolynomial t p ≠ 0 := by
-    rw [scalePolynomial]
-    intro hzero
-    apply hp0
-    exact (Polynomial.comp_C_mul_X_eq_zero_iff (by simpa using ht.ne')).mp
-      hzero
+    simpa [scalePolynomial] using
+      (Polynomial.comp_C_mul_X_eq_zero_iff (by simpa using ht.ne')).not.mpr hp0
   have hscaledDegree : (scalePolynomial t p).natDegree ≤ n + 1 :=
     (natDegree_scalePolynomial_le t p).trans (by lia)
   have hhom :=
@@ -783,9 +698,7 @@ theorem mvUpperHalfPlaneStable_binaryRunHomogenizedSource
       hscaledDegree hscaled0 (hscaled.ne_zero_and_splits hscaled0).2
         hscaled.roots_nonpos
   intro z hz
-  rw [eval_binaryRunHomogenizedSource]
-  apply hhom
-  intro i
+  rw [eval_binaryRunHomogenizedSource]; apply hhom; intro i
   fin_cases i
   · simpa using add_pos (hz (Sum.inl 0)) (hz (Sum.inr 0))
   · simpa using add_pos (hz (Sum.inl 0)) (hz (Sum.inr 1))
@@ -796,11 +709,9 @@ theorem mvUpperHalfPlaneStableOrZero_binaryRunPointingSource
     {n : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p) (hp0 : p ≠ 0)
     (hdegree : p.natDegree ≤ n) {t : ℝ} (ht : 0 < t) :
     MvUpperHalfPlaneStableOrZero (binaryRunPointingSource n p t) := by
-  have hsource := mvUpperHalfPlaneStable_binaryRunHomogenizedSource
-    hp hp0 hdegree ht
-  have hderiv := hsource.pderiv_zero_or_of_finite (Sum.inr 0)
   exact (MvUpperHalfPlaneStable.X_add_X (Sum.inr 0) (Sum.inl 1)).orZero.mul
-    hderiv
+    ((mvUpperHalfPlaneStable_binaryRunHomogenizedSource hp hp0 hdegree ht).pderiv_zero_or_of_finite
+      (Sum.inr 0))
 
 /-- The concrete signed-parity pencil obtained from the pointing construction
 is stable, with the zero-pair alternative retained explicitly. -/
@@ -837,19 +748,14 @@ theorem binaryRunDeformation_critical_sign
   have hpencil := mvUpperHalfPlaneStableOrZero_binaryRunPointingPencil
     (by lia) hp hp0 hdegree ht
   rcases hpencil.eq_zero_pair_or_stablePencil with hzero | hstable
-  · have hqzero :
-        (shiftedBinaryRunDeformation n p t).derivative = 0 := by
-      apply (signedParityLift_eq_zero_iff
+  · have hqzero : (shiftedBinaryRunDeformation n p t).derivative = 0 :=
+      (signedParityLift_eq_zero_iff
         (natDegree_derivative_shiftedBinaryRunDeformation_le hdegree t)).mp
-      exact neg_eq_zero.mp hzero.1
-    have hEzero : binaryRunPointingRemainder n p t = 0 := by
-      apply (signedParityLift_eq_zero_iff
-        (natDegree_binaryRunPointingRemainder_le hdegree t)).mp
-      exact hzero.2
-    have hpointing : shiftedBinaryRunPointing n p t = 0 := by
-      rw [shiftedBinaryRunPointing_eq_remainder_add, hEzero, hqzero]
-      simp
-    rw [hpointing]
+        (neg_eq_zero.mp hzero.1)
+    have hEzero : binaryRunPointingRemainder n p t = 0 :=
+      (signedParityLift_eq_zero_iff
+        (natDegree_binaryRunPointingRemainder_le hdegree t)).mp hzero.2
+    rw [shiftedBinaryRunPointing_eq_remainder_add, hEzero, hqzero]
     simp
   · exact binaryRunDeformation_critical_sign_of_stablePencil
       hn hdegree hr hcritical hstable

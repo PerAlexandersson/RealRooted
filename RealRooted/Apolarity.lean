@@ -39,15 +39,13 @@ def HasRootIn {R : Type*} [Semiring R] (s : Set R) (p : R[X]) : Prop :=
 
 theorem RootsIn.mono {R : Type*} [Semiring R] {s t : Set R} {p : R[X]}
     (hst : s ⊆ t) (h : p.RootsIn s) :
-    p.RootsIn t := by
-  intro z hz
-  exact hst (h z hz)
+    p.RootsIn t := fun z hz => hst (h z hz)
 
 theorem HasRootIn.mono {R : Type*} [Semiring R] {s t : Set R} {p : R[X]}
     (hst : s ⊆ t) (h : p.HasRootIn s) :
     p.HasRootIn t := by
-  rcases h with ⟨z, hzroot, hzs⟩
-  exact ⟨z, hzroot, hst hzs⟩
+  obtain ⟨z, hz, hs⟩ := h
+  exact ⟨z, hz, hst hs⟩
 
 theorem hasRootIn_of_isRoot {R : Type*} [Semiring R] {s : Set R} {p : R[X]} {z : R}
     (hzroot : p.IsRoot z) (hzs : z ∈ s) :
@@ -66,17 +64,19 @@ def apolarPairing {R : Type*} [CommRing R] (n : Nat) (f g : R[X]) : R :=
   Finset.sum (Finset.range (n + 1)) fun k =>
     (-1 : R) ^ k * (Nat.choose n k : R) * f.coeff k * g.coeff (n - k)
 
+private lemma neg_one_pow_mul_self {R : Type*} [CommRing R] (k : Nat) :
+    (-1 : R) ^ k * (-1 : R) ^ k = 1 := by
+  rw [← pow_add]
+  have heven : Even (k + k) := ⟨k, rfl⟩
+  simp [heven.neg_one_pow (α := R)]
+
 private lemma neg_one_pow_sub_eq_mul {R : Type*} [CommRing R]
     {n k : Nat} (hk : k ≤ n) :
     (-1 : R) ^ (n - k) = (-1 : R) ^ n * (-1 : R) ^ k := by
   conv_rhs =>
     rw [← Nat.sub_add_cancel hk, pow_add]
   rw [mul_assoc]
-  have hsq : (-1 : R) ^ k * (-1 : R) ^ k = 1 := by
-    rw [← pow_add]
-    have heven : Even (k + k) := ⟨k, rfl⟩
-    simp [heven.neg_one_pow (α := R)]
-  rw [hsq, mul_one]
+  rw [neg_one_pow_mul_self, mul_one]
 
 /-- Swapping the two arguments in the apolar pairing introduces the usual
 degree-`n` sign. -/
@@ -151,11 +151,7 @@ theorem apolarPairing_C_mul_right {R : Type*} [CommRing R]
     (n : Nat) (f g : R[X]) (a : R) :
     apolarPairing n f (C a * g) = a * apolarPairing n f g := by
   rw [apolarPairing_comm_sign n (C a * g) f, apolarPairing_C_mul_left]
-  calc
-    (-1 : R) ^ n * (a * apolarPairing n g f) =
-        a * ((-1 : R) ^ n * apolarPairing n g f) := by ring
-    _ = a * apolarPairing n f g := by
-      rw [← apolarPairing_comm_sign n g f]
+  rw [mul_left_comm, ← apolarPairing_comm_sign n g f]
 
 theorem apolarPairing_neg_left {R : Type*} [CommRing R]
     (n : Nat) (f g : R[X]) :
@@ -184,10 +180,7 @@ theorem apolarPairing_sum_left {R : Type*} [CommRing R]
     apolarPairing n (Finset.sum s f) g =
       Finset.sum s fun i => apolarPairing n (f i) g := by
   classical
-  refine Finset.induction_on s ?_ ?_
-  · simp
-  · intro a s ha ih
-    simp [ha, apolarPairing_add_left, ih]
+  induction s using Finset.induction_on <;> simp_all [apolarPairing_add_left]
 
 theorem apolarPairing_sum_right {R : Type*} [CommRing R]
     {ι : Type*} (n : Nat) (f : R[X]) (s : Finset ι) (g : ι → R[X]) :
@@ -298,8 +291,7 @@ theorem apolarPairing_monomial_right {R : Type*} [CommRing R]
       else 0 := by
   rw [apolarPairing_comm_sign, apolarPairing_monomial_left]
   by_cases hj : j ≤ n
-  · rw [ite_eq_left hj, ite_eq_left hj, Nat.choose_symm hj,
-      neg_one_pow_sub_eq_mul hj]
+  · rw [ite_eq_left hj, ite_eq_left hj, Nat.choose_symm hj, neg_one_pow_sub_eq_mul hj]
     ring
   · simp [hj]
 
@@ -311,20 +303,12 @@ theorem apolarPairing_monomial_monomial {R : Type*} [CommRing R]
       if i + j = n then (-1 : R) ^ i * (Nat.choose n i : R) * a * b else 0 := by
   rw [apolarPairing_monomial_left]
   by_cases hsum : i + j = n
-  · rw [ite_eq_left hsum]
-    have hi : i ≤ n := by lia
-    rw [ite_eq_left hi]
-    have hsub : n - i = j := by lia
-    simp [hsub]
+  · have hi : i ≤ n := by lia
+    simp [hsum, hi, show n - i = j by lia]
   · rw [ite_eq_right hsum]
     by_cases hi : i ≤ n
-    · rw [ite_eq_left hi]
-      have hneq : j ≠ n - i := by
-        intro h
-        apply hsum
-        lia
-      simp [coeff_monomial, hneq]
-    · rw [ite_eq_right hi]
+    · simp [hi, coeff_monomial, show j ≠ n - i by lia]
+    · simp [hi]
 
 /-- Pairing with a power of `X` on the left, obtained from
 `apolarPairing_monomial_left` since `X ^ i = monomial i 1`. -/
@@ -381,29 +365,11 @@ fail to sum to `n`, or one of the coefficients vanishes. -/
 theorem areApolar_monomial_monomial_iff_complex
     {n i j : Nat} {a b : ℂ} :
     AreApolar n (monomial i a) (monomial j b) ↔ i + j ≠ n ∨ a = 0 ∨ b = 0 := by
-  rw [AreApolar, apolarPairing_monomial_monomial]
   by_cases hsum : i + j = n
-  · rw [ite_eq_left hsum]
-    have hi : i ≤ n := by lia
-    have hchoose : (Nat.choose n i : ℂ) ≠ 0 :=
-      Nat.cast_choose_ne_zero (R := ℂ) hi
-    have hsign : ((-1 : ℂ) ^ i) ≠ 0 := pow_ne_zero _ (by norm_num)
-    constructor
-    · intro hzero
-      right
-      rcases mul_eq_zero.mp hzero with hpre | hb
-      · rcases mul_eq_zero.mp hpre with hpre2 | ha
-        · rcases mul_eq_zero.mp hpre2 with hs | hc
-          · exact absurd hs hsign
-          · exact absurd hc hchoose
-        · exact Or.inl ha
-      · exact Or.inr hb
-    · rintro (hne | ha | hb)
-      · exact absurd hsum hne
-      · simp [ha]
-      · simp [hb]
-  · rw [ite_eq_right hsum]
-    simp [hsum]
+  · have hi : i ≤ n := by lia
+    simp [AreApolar, apolarPairing_monomial_monomial, hsum,
+      Nat.cast_choose_ne_zero (R := ℂ) hi]
+  · simp [AreApolar, apolarPairing_monomial_monomial, hsum]
 
 /-!
 ## Binomial evaluation and the apolarity-root dictionary
@@ -467,9 +433,7 @@ theorem apolarPairing_coApolarPoint {R : Type*} [CommRing R]
   have hk' : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
   simp only [Nat.add_sub_cancel]
   rw [apolarPairing_monomial_right, ite_eq_left hk', neg_pow z (n - k)]
-  have h1 : (-1 : R) ^ (n - k) * (-1 : R) ^ (n - k) = 1 := by
-    rw [← mul_pow]
-    norm_num
+  have h1 := neg_one_pow_mul_self (R := R) (n - k)
   linear_combination (↑(n.choose (n - k)) * f.coeff (n - k) * z ^ (n - k)) * h1
 
 /-- `f` is apolar to `coApolarPoint n z` exactly when its binomial evaluation at
@@ -493,19 +457,14 @@ theorem areApolar_coApolarPoint_iff_isRoot {R : Type*} [CommRing R]
 theorem apolarEval_add {R : Type*} [CommRing R]
     (n : Nat) (f₁ f₂ : R[X]) (z : R) :
     apolarEval n (f₁ + f₂) z = apolarEval n f₁ z + apolarEval n f₂ z := by
-  simp only [apolarEval, Polynomial.coeff_add]
-  rw [← Finset.sum_add_distrib]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  ring
+  simp only [apolarEval, Polynomial.coeff_add, mul_add, add_mul,
+    Finset.sum_add_distrib]
 
 theorem apolarEval_C_mul {R : Type*} [CommRing R]
     (n : Nat) (a : R) (f : R[X]) (z : R) :
     apolarEval n (C a * f) z = a * apolarEval n f z := by
   simp only [apolarEval, Polynomial.coeff_C_mul, Finset.mul_sum]
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  ac_rfl
+  exact Finset.sum_congr rfl fun _ _ => by ac_rfl
 
 /-!
 ## Grace's apolarity theorem
@@ -549,20 +508,18 @@ theorem polarDeriv_natDegree_le
     {n : Nat} {ζ : ℂ} {A : ℂ[X]}
     (hn : 1 ≤ n) (hA : A.natDegree ≤ n) :
     (polarDeriv n ζ A).natDegree ≤ n - 1 := by
-  rw [Polynomial.natDegree_le_iff_degree_le,
-    Polynomial.degree_le_iff_coeff_zero]
+  rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro m hm
-  have hm' : n - 1 < m := by exact_mod_cast hm
   have hnm : n ≤ m := by lia
+  unfold polarDeriv
+  rw [sub_mul]
+  simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
+    Polynomial.coeff_C_mul, Polynomial.coeff_derivative]
   rcases hnm.eq_or_lt with rfl | hlt
   · have hnext : A.coeff (n + 1) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt
         (lt_of_le_of_lt hA (Nat.lt_succ_self n))
-    unfold polarDeriv
-    rw [sub_mul]
-    simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
-      Polynomial.coeff_C_mul, Polynomial.coeff_derivative, hnext]
-    rw [show n = (n - 1) + 1 by lia, Polynomial.coeff_X_mul,
+    rw [hnext, show n = (n - 1) + 1 by lia, Polynomial.coeff_X_mul,
       Polynomial.coeff_derivative]
     norm_num
     ring
@@ -571,11 +528,7 @@ theorem polarDeriv_natDegree_le
     have hm1 : A.coeff (m + 1) = 0 :=
       Polynomial.coeff_eq_zero_of_natDegree_lt
         (lt_of_le_of_lt hA (hlt.trans (Nat.lt_succ_self m)))
-    unfold polarDeriv
-    rw [sub_mul]
-    simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
-      Polynomial.coeff_C_mul, Polynomial.coeff_derivative, hm0, hm1]
-    rw [show m = (m - 1) + 1 by lia, Polynomial.coeff_X_mul,
+    rw [hm0, hm1, show m = (m - 1) + 1 by lia, Polynomial.coeff_X_mul,
       Polynomial.coeff_derivative]
     rw [show m - 1 + 1 = m by lia, hm0]
     simp
@@ -608,9 +561,22 @@ theorem exists_binomialLift_eq {n : Nat} (Q : ℂ[X]) (hQ : Q.natDegree ≤ n) :
     · intro hknot
       exact (hknot (by simpa [Finset.mem_range, Nat.lt_succ_iff] using hk)).elim
   · rw [ite_eq_right hk]
-    exact (Polynomial.coeff_eq_zero_of_natDegree_lt (by
-      exact Nat.lt_of_le_of_lt hQ (Nat.lt_of_not_ge hk))
-    ).symm
+    exact (Polynomial.coeff_eq_zero_of_natDegree_lt
+      (hQ.trans_lt (Nat.lt_of_not_ge hk))).symm
+
+private theorem convex_multiset_avg_mem {s : Set ℂ} (hs : Convex ℝ s)
+    {S : Multiset ℂ} (hS : S ≠ 0) (hz : ∀ z ∈ S, z ∈ s) :
+    S.sum / (S.card : ℂ) ∈ s := by
+  have hfin : ∀ (t : Finset ℂ) (w : ℂ → ℝ), (∀ z ∈ t, 0 ≤ w z) →
+      (∑ z ∈ t, w z = 1) → (∀ z ∈ t, z ∈ s) → (∑ z ∈ t, w z • z) ∈ s := by
+    intros t w hw hsum hmem
+    convert hs.sum_mem _ _ _ <;> aesop
+  convert hfin S.toFinset (fun z => (S.count z : ℝ) / S.card) _ _ _ using 1
+  · simp [div_eq_inv_mul, ← Finset.mul_sum _ _ _, mul_assoc,
+      Finset.sum_multiset_count]
+  · exact fun _ _ => div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+  · rw [← Finset.sum_div, div_eq_iff] <;> norm_cast <;> simp_all
+  · grind
 
 /-
 Geometric core of Laguerre's theorem.  If `w` lies outside the closed disk,
@@ -639,14 +605,11 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
       (1 / (w - z)) ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
     intro z hzS
     have hz_dist : Complex.normSq (z - c) ≤ r^2 := by
-      have hz_norm : ‖z - c‖ ≤ r := by simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
+      have hz_norm : ‖z - c‖ ≤ r := by
+        simpa [Metric.mem_closedBall, dist_eq_norm] using hz z hzS
       rw [Complex.normSq_eq_norm_sq]
       exact pow_le_pow_left₀ (norm_nonneg (z - c)) hz_norm 2
-    have hwz_ne : w - z ≠ 0 := by
-      intro h
-      apply hw
-      have hw_eq_z : w = z := sub_eq_zero.mp h
-      simpa [hw_eq_z] using hz z hzS
+    have hwz_ne : w - z ≠ 0 := by grind
     let u := 1 / (w - z)
     have hz_reciprocal :
         Complex.normSq (α * u - 1) ≤ r^2 * Complex.normSq u := by
@@ -656,27 +619,20 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
         ring
       rw [hmul, Complex.normSq_mul]
       exact mul_le_mul_of_nonneg_right hz_dist (Complex.normSq_nonneg u)
-    have h_normSq_identity :
-        ∀ x : ℂ, Complex.normSq (x - 1) = Complex.normSq x - 2 * x.re + 1 := by
-      intro x
-      simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
-        Complex.one_re, Complex.one_im]
-      ring
     have h_normSq_identity2 : Complex.normSq (α * u - 1) =
         Complex.normSq α * Complex.normSq u - 2 * (α * u).re + 1 := by
-      rw [h_normSq_identity (α * u), Complex.normSq_mul]
-    have h_expand : A * Complex.normSq u =
-        Complex.normSq α * Complex.normSq u - r^2 * Complex.normSq u := by
-      dsimp [A]
+      simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+        Complex.one_re, Complex.one_im, Complex.mul_re, Complex.mul_im]
       ring
     simp only [Set.mem_ofPred_eq]
-    linarith [hz_reciprocal, h_normSq_identity2, h_expand]
+    dsimp [A]
+    nlinarith [hz_reciprocal, h_normSq_identity2]
   -- By definition of $S$, we know that $1 / (w - ζ) \in S$.
   have h_reciprocal_in_S_ζ :
       (1 / (w - ζ)) ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
     have h_reciprocal_in_S_ζ : (S.card : ℂ)⁻¹ * (S.map (fun z => 1 / (w - z))).sum ∈
         {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
-      have h_reciprocal_in_S_ζ :
+      have hconvex :
           Convex ℝ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
         rw [show {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} =
             Metric.closedBall ((starRingEnd ℂ α) / A) (r / A) by
@@ -691,21 +647,12 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
             constructor <;> intro <;> nlinarith [Complex.normSq_apply α]
           · positivity]
         exact convex_closedBall ((starRingEnd ℂ α) / A) (r / A)
-      have h_reciprocal_in_S_ζ : ∀ (t : Finset ℂ) (wt : ℂ → ℝ) (zpt : ℂ → ℂ),
-          (∀ i ∈ t, 0 ≤ wt i) → (∑ i ∈ t, wt i = 1) →
-          (∀ i ∈ t, zpt i ∈ {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0}) →
-          (∑ i ∈ t, wt i • zpt i) ∈
-            {u : ℂ | A * Complex.normSq u - 2 * (α * u).re + 1 ≤ 0} := by
-        intros t wt zpt hwt hsum hzpt;
-        convert h_reciprocal_in_S_ζ.sum_mem _ _ _ <;> aesop;
-      convert h_reciprocal_in_S_ζ ( S.toFinset ) ( fun i => ( S.count i : ℝ ) / S.card )
-        ( fun i => 1 / ( w - i ) ) _ _ _ using 1 <;> norm_num;
-      · simp [ div_eq_inv_mul, Finset.sum_multiset_map_count ];
-        simp only [Finset.mul_sum _ _ _, mul_assoc];
-      · exact fun _ _ => div_nonneg ( Nat.cast_nonneg _ ) ( Nat.cast_nonneg _ );
-      · rw [ ← Finset.sum_div, div_eq_iff ] <;> norm_cast <;>
-          simp_all [ Finset.sum_multiset_count ];
-      · intro z hz; specialize h_reciprocal_in_S z hz; aesop;
+      have havg := convex_multiset_avg_mem hconvex (S := S.map fun z => 1 / (w - z))
+        (by simpa using hS) (by
+          intro u hu
+          rcases Multiset.mem_map.mp hu with ⟨z, hz, rfl⟩
+          exact h_reciprocal_in_S z hz)
+      simpa [div_eq_inv_mul] using havg
     convert h_reciprocal_in_S_ζ using 1;
     rw [ ← hζ, inv_mul_eq_div, div_eq_mul_inv ]; ring_nf; aesop;
   by_cases h : w - ζ = 0
@@ -724,12 +671,8 @@ theorem mem_closedBall_of_recip_avg {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {w ζ : �
     norm_num [ Complex.normSq ] at *;
     have hD_pos :
         0 < (w.re - ζ.re) * (w.re - ζ.re) + (w.im - ζ.im) * (w.im - ζ.im) := by
-      have h_normSq_pos : 0 < Complex.normSq (w - ζ) := Complex.normSq_pos.mpr h
-      simp only [Complex.normSq_apply, Complex.sub_re, Complex.sub_im] at h_normSq_pos
-      exact h_normSq_pos
-    have hD_ne : (w.re - ζ.re) * (w.re - ζ.re) + (w.im - ζ.im) * (w.im - ζ.im) ≠ 0 :=
-      ne_of_gt hD_pos
-    nlinarith [inv_pos.mpr hD_pos, mul_inv_cancel₀ hD_ne]
+      simpa [Complex.normSq_apply] using Complex.normSq_pos.mpr h
+    nlinarith [inv_pos.mpr hD_pos, mul_inv_cancel₀ (ne_of_gt hD_pos)]
 
 /-
 The polar derivative of a binomial lift is, up to the nonzero factor `n`, the
@@ -741,12 +684,11 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
   refine Polynomial.ext fun k => ?_
   rcases k with _ | k
-  · unfold polarDeriv binomialLift polarShift;
+  · unfold polarDeriv binomialLift polarShift
     simp only [Polynomial.coeff_C_mul]
     simp [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
-      mul_comm ];
-    rcases n <;> simp_all [ Polynomial.coeff_monomial ];
-    ring;
+      mul_comm ]
+    rcases n <;> simp_all [Polynomial.coeff_monomial] ; ring
   · simp only [Polynomial.coeff_C_mul]
     by_cases hk : k + 1 ≤ n
     · simp_all only [Order.add_one_le_iff, polarDeriv, map_natCast,
@@ -757,15 +699,13 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
         Finset.sum_range_succ, Nat.choose_self, Nat.cast_one, one_mul, sub_mul,
         coeff_sub, coeff_C_mul, coeff_add, finsetSum_coeff, coeff_derivative,
         Nat.cast_add, ite_mul, mul_assoc, zero_mul, coeff_X_mul]
-      have hk_le : k + 1 ≤ n := hk
-      rcases eq_or_lt_of_le hk_le with heq1 | hlt1
-      · have : n = k + 1 := heq1.symm
-        subst this
+      have hk' : k + 1 ≤ n := by lia
+      rcases eq_or_lt_of_le hk' with heq1 | hlt1
+      · subst n
         simp; ring
       · have hlt1_le : k + 2 ≤ n := hlt1
         rcases eq_or_lt_of_le hlt1_le with heq2 | hlt2
-        · have : n = k + 2 := heq2.symm
-          subst this
+        · subst n
           simp; ring
         · simp only [show ¬n = k + 1 by lia, ↓reduceIte, show ¬n = k + 1 + 1 by lia]
           rcases n with _ | n
@@ -819,24 +759,17 @@ theorem polarDeriv_rootsIn {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r) {ζ : �
   have hstar : (n : ℂ) * eval w A + (ζ - w) * eval w (derivative A) = 0 := by
     have h := hw0
     simp only [IsRoot, polarDeriv, eval_add, eval_mul, eval_sub, eval_C, eval_X] at h
-    linear_combination h
-  have hwζ : w - ζ ≠ 0 := by
-    intro h
-    apply hAw
-    have hzw : ζ - w = 0 := by linear_combination -h
-    rw [hzw, zero_mul, add_zero] at hstar
-    exact (mul_eq_zero.mp hstar).resolve_left hn0
+    grind
+  have hwζ : w - ζ ≠ 0 := by grind
   have hsplit : A.Splits := IsAlgClosed.splits A
   have hcard : A.roots.card = n := (splits_iff_card_roots.mp hsplit).trans hA
   have hlog : eval w (derivative A) / eval w A
       = (A.roots.map (fun z => 1 / (w - z))).sum :=
     hsplit.eval_derivative_div_eval_of_ne_zero hAw
   have hdiv : eval w (derivative A) / eval w A = (n : ℂ) / (w - ζ) := by
-    rw [div_eq_div_iff hAw hwζ]
-    linear_combination -hstar
+    grind
   have hζeq : (A.roots.card : ℂ) / (w - ζ)
-      = (A.roots.map (fun z => 1 / (w - z))).sum := by
-    rw [hcard, ← hdiv, hlog]
+      = (A.roots.map (fun z => 1 / (w - z))).sum := by simp_all
   have hmem : ζ ∈ Metric.closedBall c r := by
     refine mem_closedBall_of_recip_avg hr A.roots ?_ hwmem ?_ hζeq
     · rw [← Multiset.card_pos, hcard]; exact hn
@@ -849,21 +782,8 @@ lies in the disk.
 -/
 theorem multiset_avg_mem_closedBall {c : ℂ} {r : ℝ} (S : Multiset ℂ) (hS : S ≠ 0)
     (hz : ∀ z ∈ S, z ∈ Metric.closedBall c r) :
-    S.sum / (S.card : ℂ) ∈ Metric.closedBall c r := by
-  have h_convex : ∀ (s : Finset ℂ) (w : ℂ → ℝ), (∀ z ∈ s, 0 ≤ w z) →
-      (∑ z ∈ s, w z = 1) → (∀ z ∈ s, z ∈ Metric.closedBall c r) →
-      (∑ z ∈ s, w z • z) ∈ Metric.closedBall c r := by
-    intros s w hw_nonneg hw_sum hw_mem
-    have h_convex : Convex ℝ (Metric.closedBall c r) :=
-      convex_closedBall c r
-    convert h_convex.sum_mem _ _ _ <;> aesop;
-  convert h_convex ( S.toFinset ) ( fun z => ( S.count z : ℝ ) / S.card ) _ _ _ using 1;
-  · simp [ div_eq_inv_mul ];
-    simp [ ← Finset.mul_sum _ _ _, mul_assoc, Finset.sum_multiset_count ];
-  · exact fun z hz => div_nonneg ( Nat.cast_nonneg _ ) ( Nat.cast_nonneg _ );
-  · rw [ ← Finset.sum_div, div_eq_iff ] <;> norm_cast <;>
-      simp_all;
-  · grind
+    S.sum / (S.card : ℂ) ∈ Metric.closedBall c r :=
+  convex_multiset_avg_mem (convex_closedBall c r) hS hz
 
 /-
 The polar derivative drops the degree by exactly one when the pole lies
@@ -875,55 +795,43 @@ theorem polarDeriv_natDegree {n : Nat} {c : ℂ} {r : ℝ} {ζ : ℂ}
     (hζ : ζ ∉ Metric.closedBall c r) :
     (polarDeriv n ζ A).natDegree = n - 1 := by
   refine le_antisymm ?_ ?_
-  · rw [ Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero ];
-    unfold polarDeriv; simp_all only [Nat.cast_lt, map_natCast, coeff_add,
-      coeff_natCast_mul];
-    intro m hm;
-    rcases m with ( _ | m ) <;>
-      simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt, Polynomial.coeff_derivative,
-        sub_mul ];
-    cases hm.eq_or_lt <;> simp_all [ Polynomial.coeff_eq_zero_of_natDegree_lt ];
-    ring;
+  · exact polarDeriv_natDegree_le hn hA.le
   · refine Polynomial.le_natDegree_of_ne_zero ?_
     have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
         = A.coeff n * ((n : ℂ) * ζ - Multiset.sum A.roots) := by
       have h_coeff : (polarDeriv n ζ A).coeff (n - 1)
           = ((n : ℂ) - (n - 1)) * A.coeff (n - 1) + ζ * (n : ℂ) * A.coeff n := by
-        unfold polarDeriv;
+        unfold polarDeriv
         simp only [map_natCast, sub_mul, coeff_add, coeff_natCast_mul,
           coeff_sub, coeff_C_mul, coeff_derivative, sub_sub_cancel, one_mul,
           mul_assoc]
-        rcases n with ( _ | _ | n ) <;>
-          simp_all [ Polynomial.coeff_derivative, mul_comm ];
-        ring;
+        rcases n with (_ | _ | n) <;>
+          simp_all [Polynomial.coeff_derivative, mul_comm]; ring
       have h_vieta : A.coeff (n - 1)
           = A.leadingCoeff * (-1) ^ (n - (n - 1)) * Multiset.esymm A.roots (n - (n - 1)) := by
-        have h_eq := Polynomial.coeff_eq_esymm_roots_of_card
+        simpa [hA] using Polynomial.coeff_eq_esymm_roots_of_card
           (splits_iff_card_roots.mp (IsAlgClosed.splits A))
           (show n - 1 ≤ A.natDegree by lia)
-        rw [hA] at h_eq
-        exact h_eq
       rcases n with ( _ | _ | n ) <;> simp_all [ Multiset.esymm ];
       · simp_all [ Multiset.powersetCard_one, mul_sub ]; ring_nf;
         rw [ Polynomial.leadingCoeff, hA ]; ring;
       · simp_all [ Multiset.powersetCard_one, Polynomial.leadingCoeff ]; ring;
-    simp_all only [ ne_eq ];
+    simp_all only [ne_eq]
     refine mul_ne_zero ?_ ?_
-    · rw [ ← hA, Polynomial.coeff_natDegree ]; aesop;
-    · intro h;
-      rw [ sub_eq_zero ] at h
+    · rw [← hA, Polynomial.coeff_natDegree]
+      aesop
+    · intro h
+      rw [sub_eq_zero] at h
+      have hcard : A.roots.card = n :=
+        (Polynomial.splits_iff_card_roots.mp (IsAlgClosed.splits A)).trans hA
       have h_avg : A.roots.sum / (A.roots.card : ℂ) ∈ Metric.closedBall c r := by
-        apply multiset_avg_mem_closedBall;
+        apply multiset_avg_mem_closedBall
         · rw [ ← Multiset.card_pos ]
-          rw [ Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits A, hA ]
+          rw [hcard]
           linarith
-        · exact fun z hz => hAroots z <| Polynomial.isRoot_of_mem_roots hz;
-      rw [ ← h, mul_div_assoc ] at h_avg;
-      rw [ show A.roots.card = n by
-        rw [ ← hA, Polynomial.natDegree_eq_of_degree_eq_some
-          ( Polynomial.degree_eq_natDegree <| by aesop ) ];
-        exact Polynomial.splits_iff_card_roots.mp <| IsAlgClosed.splits _ ] at h_avg;
-      simp_all [ mul_div_cancel₀, ne_of_gt ( zero_lt_one.trans_le hn ) ];
+        · exact fun z hz => hAroots z <| Polynomial.isRoot_of_mem_roots hz
+      rw [← h, mul_div_assoc, hcard] at h_avg
+      simp_all [mul_div_cancel₀, ne_of_gt (zero_lt_one.trans_le hn)]
       linarith
 
 /-
@@ -934,14 +842,11 @@ theorem apolarPairing_eq_sum_binomialLift (n : Nat) (f g : ℂ[X]) :
     apolarPairing n f g
       = ∑ k ∈ Finset.range (n + 1),
           (-1 : ℂ) ^ k * f.coeff k * (binomialLift n g).coeff (n - k) := by
-  -- By definition of `binomialLift`, rewrite the coefficient of `binomialLift n g`
-  -- at position `n - k`.
-  have h_coeff : ∀ k ∈ Finset.range (n + 1),
-      (binomialLift n g).coeff (n - k) = (Nat.choose n (n - k) : ℂ) * g.coeff (n - k) := by
-    simp [ binomialLift ];
-    simp [ Polynomial.coeff_monomial ];
-  exact Finset.sum_congr rfl fun x hx => by
-    rw [ h_coeff x hx, Nat.choose_symm ( Finset.mem_range_succ_iff.mp hx ) ]; ring;
+  rw [apolarPairing]
+  exact Finset.sum_congr rfl fun k hk => by
+    rw [coeff_binomialLift, ite_eq_left (Nat.sub_le n k),
+      Nat.choose_symm (Finset.mem_range_succ_iff.mp hk)]
+    ring
 
 /-
 Apolarity is preserved by polar-shifting one lift and deflating the other by
@@ -988,30 +893,18 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       (binomialLift n f).natDegree = n → (binomialLift n g).natDegree = n →
       AreApolar n f g → (binomialLift n f).RootsIn (Metric.closedBall c r) →
       (binomialLift n g).HasRootIn (Metric.closedBall c r) := by
-  -- Apply induction on $n$.
   intro n
   refine Nat.strong_induction_on n ?_
   intro n ih f g hf hg hap hroots
   by_cases hn : n = 0
-  · by_cases h : g.coeff 0 = 0
-    · simp_all only [not_lt_zero, not_isEmpty_of_nonempty,
-        IsEmpty.forall_iff, implies_true]
-      refine ⟨ c, ?_, ?_ ⟩
-      · simp_all only [binomialLift, zero_add, Finset.range_one,
-          Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
-          monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
-          natDegree_zero, IsRoot.def, eval_zero]
-      · simp_all only [binomialLift, zero_add, Finset.range_one,
-          Finset.sum_singleton, Nat.choose_self, Nat.cast_one, one_mul,
-          monomial_zero_left, natDegree_C, mul_zero, monomial_zero_right,
-          natDegree_zero, Metric.mem_closedBall, dist_self]
-    · simp_all only [not_lt_zero, not_isEmpty_of_nonempty,
-        IsEmpty.forall_iff, implies_true]
-      have h_contra : f.coeff 0 = 0 := by
-        unfold AreApolar at hap;
-        simp_all only [apolarPairing, zero_add, Finset.range_one,
-          zero_tsub, Finset.sum_singleton, pow_zero, Nat.choose_self,
-          Nat.cast_one, mul_one, one_mul, mul_eq_zero, or_false]
+  · subst n
+    by_cases h : g.coeff 0 = 0
+    · refine ⟨c, ?_, ?_⟩
+      · simp [binomialLift, h, IsRoot.def]
+      · simpa [Metric.mem_closedBall] using hr
+    · have h_contra : f.coeff 0 = 0 := by
+        unfold AreApolar at hap
+        simp_all [apolarPairing]
       contrapose! hroots;
       unfold RootsIn;
       simp_all only [binomialLift, zero_add, Finset.range_one,
@@ -1056,9 +949,9 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
       -- Apolarity: `apolarPairing (n-1) f' g' = apolarPairing n f g = 0`
       -- (`apolarPairing_deflation hn hdefl`, then `hap`); so `AreApolar (n-1) f' g'`.
       have hap' : AreApolar (n - 1) f' g' := by
-        convert apolarPairing_deflation ( Nat.pos_of_ne_zero hn ) hg' using 1;
-        rw [ hap ];
-        rfl;
+        convert apolarPairing_deflation (Nat.pos_of_ne_zero hn) hg' using 1
+        rw [hap]
+        rfl
       -- Apply the induction hypothesis to `f'` and `g'`.
       obtain ⟨w, hw⟩ :
           ∃ w : ℂ, (binomialLift (n - 1) g').IsRoot w ∧ w ∈ Metric.closedBall c r := by
@@ -1143,9 +1036,7 @@ theorem apolarPairing_apolarTwist {R : Type*} [CommRing R]
   have hj' : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
   simp only [Nat.add_sub_cancel]
   rw [apolarPairing_monomial_right, ite_eq_left hj']
-  have h1 : (-1 : R) ^ (n - j) * (-1 : R) ^ (n - j) = 1 := by
-    rw [← mul_pow]
-    norm_num
+  have h1 := neg_one_pow_mul_self (R := R) (n - j)
   linear_combination
     ((n.choose (n - j) : R) * f.coeff (n - j) *
         g.coeff (n - j) * z ^ (n - j)) * h1

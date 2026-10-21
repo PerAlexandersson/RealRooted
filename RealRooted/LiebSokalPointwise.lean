@@ -25,30 +25,23 @@ theorem _root_.Polynomial.derivative_eval_div_eval_im_neg
     (hdegree : p.natDegree ≠ 0) {z : ℂ} (hz : 0 < z.im) :
     (p.derivative.eval z / p.eval z).im < 0 := by
   have hpz : p.eval z ≠ 0 := hp z hz
-  have hpne : p ≠ 0 := by
-    intro hzero
-    simp [hzero] at hpz
+  have hpne : p ≠ 0 := fun hzero => hpz (by simp [hzero])
   have hsplits : p.Splits := IsAlgClosed.splits p
   have hroots_ne : p.roots ≠ 0 := hsplits.roots_ne_zero hdegree
   have hroots_im : ∀ r ∈ p.roots, r.im ≤ 0 := by
     intro r hr
-    exact le_of_not_gt fun hrpos =>
-      hp r hrpos ((Polynomial.mem_roots hpne).mp hr)
+    exact le_of_not_gt fun hrpos => hp r hrpos ((Polynomial.mem_roots hpne).mp hr)
   let S : Multiset ℂ := p.roots.map fun r => 1 / (z - r)
   have hS_ne : S ≠ 0 := by simp [S, hroots_ne]
   have hS_im (u : ℂ) (hu : u ∈ S) : u.im < 0 := by
-    dsimp [S] at hu
-    rw [Multiset.mem_map] at hu
+    simp only [S, Multiset.mem_map] at hu
     obtain ⟨r, hr, rfl⟩ := hu
     exact Complex.one_div_sub_im_neg ((hroots_im r hr).trans_lt hz)
   have hsum_im : S.sum.im < 0 := by
     have hmap : S.sum.im = (S.map fun u => u.im).sum := by
       simpa using map_multiset_sum Complex.imAddGroupHom S
     rw [hmap]
-    have hlt : (S.map fun u => u.im).sum <
-        (S.map fun _ : ℂ => (0 : ℝ)).sum :=
-      Multiset.sum_lt_sum_of_nonempty hS_ne hS_im
-    simpa using hlt
+    simpa using Multiset.sum_lt_sum_of_nonempty hS_ne hS_im
   rw [hsplits.eval_derivative_div_eval_of_ne_zero hpz]
   exact hsum_im
 
@@ -75,22 +68,19 @@ theorem _root_.Polynomial.derivative_zero_or_upperHalfPlaneStable (p : Polynomia
   intro z hz hzero
   have hpdeg : 0 < p.degree := by
     by_contra h
-    push Not at h
-    have ha := Polynomial.degree_le_zero_iff.mp h
-    rw [ha] at hd
-    simp at hd
+    apply hd
+    rw [Polynomial.degree_le_zero_iff.mp (le_of_not_gt h)]
+    simp
   have hzmem : z ∈ p.derivative.rootSet ℂ := by
     rw [Polynomial.mem_rootSet]
     exact ⟨hd, by simpa using hzero⟩
   have hsub := Polynomial.rootSet_derivative_subset_convexHull_rootSet (P := p) hpdeg hzmem
   have hconv : convexHull ℝ (p.rootSet ℂ) ⊆ {w : ℂ | Complex.imLm w ≤ 0} := by
-    apply convexHull_min
-    · intro w hw
-      rw [Polynomial.mem_rootSet] at hw
-      simp only [Set.mem_ofPred_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk]
-      by_contra hcon
-      exact hp w (not_le.mp hcon) (by simpa using hw.2)
-    · exact convex_halfSpace_le Complex.imLm.isLinear 0
+    refine convexHull_min ?_ (convex_halfSpace_le Complex.imLm.isLinear 0)
+    intro w hw
+    rw [Polynomial.mem_rootSet] at hw
+    simp only [Set.mem_ofPred_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk]
+    exact le_of_not_gt fun hcon => hp w hcon (by simpa using hw.2)
   have hmem := hconv hsub
   simp only [Set.mem_ofPred_eq, Complex.imLm, LinearMap.coe_mk, AddHom.coe_mk] at hmem
   linarith
@@ -107,12 +97,9 @@ theorem _root_.Polynomial.sub_derivative_upperHalfPlaneStable
     simpa using hpz
   have hratio_im := p.derivative_eval_div_eval_im_neg hp hdegree hz
   intro hzero
-  have heval : p.eval z = p.derivative.eval z := by
-    apply sub_eq_zero.mp
-    simpa only [Polynomial.eval_sub] using hzero
-  have hratio : p.derivative.eval z / p.eval z = 1 :=
-    (div_eq_one_iff_eq hpz).mpr heval.symm
-  rw [hratio] at hratio_im
+  have heval : p.eval z = p.derivative.eval z :=
+    sub_eq_zero.mp (by simpa only [Polynomial.eval_sub] using hzero)
+  rw [(div_eq_one_iff_eq hpz).mpr heval.symm] at hratio_im
   simp at hratio_im
 
 /-- Each coordinate logarithmic derivative of a stable multivariate
@@ -164,22 +151,16 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil
         (MvPolynomial.eval x (MvPolynomial.pderiv i P) / q) := by
       simp only [d]
       rw [div_eq_mul_inv, Finset.sum_mul]
-      apply Finset.sum_congr rfl
-      intro i _
-      ring
+      exact Finset.sum_congr rfl fun _ _ => by ring
     rw [heq, Complex.im_sum]
-    apply Finset.sum_nonpos
-    intro i _
-    rw [Complex.mul_im]
-    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero]
-    exact mul_nonpos_of_nonneg_of_nonpos (hc i)
-      (hP.eval_pderiv_div_eval_im_nonpos i x fun j => hz (some j))
+    exact Finset.sum_nonpos fun i _ => by
+      rw [Complex.mul_im]
+      simpa only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero] using
+        mul_nonpos_of_nonneg_of_nonpos (hc i)
+          (hP.eval_pderiv_div_eval_im_nonpos i x fun j => hz (some j))
+  have hzne : z none ≠ 0 := by
+    exact fun h => (ne_of_gt (hz none)) (by simpa using congrArg Complex.im h)
   have hw : 0 < (-1 / z none).im := by
-    have hzne : z none ≠ 0 := by
-      intro h
-      have him : (z none).im = 0 := by
-        simpa only [Complex.zero_im] using congrArg Complex.im h
-      exact (ne_of_gt (hz none)) him
     rw [neg_div, one_div, Complex.neg_im, Complex.inv_im]
     exact neg_pos.mpr (div_neg_of_neg_of_pos (neg_neg_of_pos (hz none))
       (Complex.normSq_pos.mpr hzne))
@@ -188,11 +169,6 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil
     map_sum, MvPolynomial.eval_C]
   change q + z none * d ≠ 0
   intro hzero
-  have hzne : z none ≠ 0 := by
-    intro h
-    have him : (z none).im = 0 := by
-      simpa only [Complex.zero_im] using congrArg Complex.im h
-    exact (ne_of_gt (hz none)) him
   have heq : d / q = -1 / z none := by
     apply (div_eq_iff hq).2
     rw [div_mul_eq_mul_div]
@@ -308,11 +284,7 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
   let z₁ : sigma → ℂ := fun j =>
     if j ∈ (MvPolynomial.pderiv i P).vars then u j else z j
   have hQz₁ : MvPolynomial.eval z₁ (MvPolynomial.pderiv i P) ≠ 0 := by
-    have heval := MvPolynomial.eval_eq_of_eq_on_vars
-      (MvPolynomial.pderiv i P) z₁ u (by
-      intro j hj
-      simp [z₁, hj])
-    rw [heval]
+    rw [MvPolynomial.eval_eq_of_eq_on_vars _ z₁ u fun j hj => by simp [z₁, hj]]
     exact hQu
   let v : sigma → ℂ := fun j => z₁ j - z j
   let A : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
@@ -320,35 +292,25 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
     (Function.update z i 0) (Function.update v i 0) P
   have hA0 : A.eval 0 = 0 := by simp [A, hQz]
   have hA1 : A.eval 1 ≠ 0 := by simpa [A, v] using hQz₁
-  have hA : A ≠ 0 := by
-    intro hzero
-    rw [hzero, Polynomial.eval_zero] at hA1
-    exact hA1 rfl
+  have hA : A ≠ 0 := fun hzero => by simp [hzero] at hA1
   have hB_eval (t : ℂ) :
       B.eval t = MvPolynomial.eval
         (Function.update (fun j => z j + v j * t) i 0) P := by
-    change (affineLineRestriction
-      (Function.update z i 0) (Function.update v i 0) P).eval t = _
-    rw [eval_affineLineRestriction]
+    simp only [B, eval_affineLineRestriction]
     apply congrArg (fun u : sigma → ℂ => MvPolynomial.eval u P)
     funext j
-    by_cases hji : j = i
-    · subst j
-      simp
-    · simp only [Function.update_of_ne hji]
+    by_cases hji : j = i <;> simp [hji]
   have hPz : MvPolynomial.eval z P ≠ 0 := hP z hz
   have hconst :
       MvPolynomial.eval (Function.update z i 0) P = MvPolynomial.eval z P := by
-    have h := MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
-      hi z (z i)
-    rw [hQz] at h
-    simpa only [Function.update_eq_self, zero_mul, zero_add] using h.symm
+    simpa [hQz] using
+      (MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+        hi z (z i)).symm
   have hB0 : B.eval 0 ≠ 0 := by
     rw [hB_eval]
     simpa [hconst] using hPz
-  let U : Set ℂ :=
-    {t | ∀ j ∈ (MvPolynomial.pderiv i P).vars,
-      0 < (z j + v j * t).im}
+  let U : Set ℂ := {t | ∀ j ∈ (MvPolynomial.pderiv i P).vars,
+    0 < (z j + v j * t).im}
   have hUopen : IsOpen U := by
     rw [show U = ⋂ j ∈ (MvPolynomial.pderiv i P).vars,
         {t : ℂ | 0 < (z j + v j * t).im} by
@@ -356,20 +318,17 @@ theorem MvUpperHalfPlaneStable.pderiv_zero_or_of_degreeOf_le_one
       simp [U]]
     exact isOpen_biInter_finset fun _ _ =>
       isOpen_lt continuous_const (by fun_prop)
-  have hzeroU : (0 : ℂ) ∈ U := by
-    intro j _
-    simpa using hz j
-  have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
+  have hzeroU : (0 : ℂ) ∈ U := fun j _ => by simpa using hz j
   obtain ⟨t, htU, hAt, _, hroot⟩ :=
-    Polynomial.exists_neg_div_im_pos_of_mem_nhds A B hA hA0 hB0 U hUnhds
+    Polynomial.exists_neg_div_im_pos_of_mem_nhds A B hA hA0 hB0 U
+      (hUopen.mem_nhds hzeroU)
   let zt : sigma → ℂ := fun j => z j + v j * t
   let r : ℂ := -B.eval t / A.eval t
-  have hr : 0 < r.im := hroot
   have hzroot : ∀ j, 0 < (Function.update zt i r j).im := by
     intro j
     by_cases hji : j = i
     · subst j
-      simpa using hr
+      simpa [r] using hroot
     · rw [Function.update_of_ne hji]
       by_cases hjQ : j ∈ (MvPolynomial.pderiv i P).vars
       · exact htU j hjQ
@@ -409,8 +368,7 @@ theorem MvRealStable.pderiv_zero_or_of_degreeOf_le_one
   have h := hP.pderiv_zero_or_of_degreeOf_le_one i (by
     rw [hdegree]
     exact hi)
-  change MvUpperHalfPlaneStableOrZero
-    (complexifyMv (MvPolynomial.pderiv i P))
+  change MvUpperHalfPlaneStableOrZero (complexifyMv (MvPolynomial.pderiv i P))
   rw [complexifyMv, ← MvPolynomial.pderiv_map]
   exact h
 
@@ -439,28 +397,21 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
   obtain ⟨u, _, hQu⟩ := exists_upperHalfPlane_eval_ne_zero hQ
   let z₁ : sigma → ℂ := fun j => if j ∈ Q.vars then u j else z j
   have hQz₁ : MvPolynomial.eval z₁ Q ≠ 0 := by
-    have heval := MvPolynomial.eval_eq_of_eq_on_vars Q z₁ u (by
-      intro j hj
-      simp [z₁, hj])
-    rw [heval]
+    rw [MvPolynomial.eval_eq_of_eq_on_vars _ z₁ u fun j hj => by simp [z₁, hj]]
     exact hQu
   let v : sigma → ℂ := fun j => z₁ j - z j
   let A : Polynomial ℂ := affineLineRestriction z v Q
   let B : Polynomial ℂ := affineLineRestriction z v (MvPolynomial.pderiv i P)
   have hA0 : A.eval 0 = 0 := by
-    simp only [A, eval_affineLineRestriction, mul_zero, add_zero]
-    simpa [Q] using hQz
+    simpa [A, Q] using hQz
   have hA1 : A.eval 1 ≠ 0 := by simpa [A, v] using hQz₁
-  have hA : A ≠ 0 := by
-    intro hzero
-    rw [hzero, Polynomial.eval_zero] at hA1
-    exact hA1 rfl
+  have hA : A ≠ 0 := fun hzero => by simp [hzero] at hA1
   have hPz : MvPolynomial.eval z P ≠ 0 := hP z hz
   have hPaff := MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
     hi z (z i)
   have hQeval : MvPolynomial.eval z Q =
-      MvPolynomial.eval (Function.update z i 0) P := by
-    exact MvPolynomial.eval_specializeZero i P z
+      MvPolynomial.eval (Function.update z i 0) P :=
+    MvPolynomial.eval_specializeZero i P z
   have hB0 : B.eval 0 ≠ 0 := by
     simp only [B, eval_affineLineRestriction, mul_zero, add_zero]
     intro hzero
@@ -474,20 +425,17 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_of_degreeOf_le_one
       simp [U]]
     exact isOpen_biInter_finset fun _ _ =>
       isOpen_lt continuous_const (by fun_prop)
-  have hzeroU : (0 : ℂ) ∈ U := by
-    intro j _
-    simpa using hz j
-  have hUnhds : U ∈ 𝓝 0 := hUopen.mem_nhds hzeroU
+  have hzeroU : (0 : ℂ) ∈ U := fun j _ => by simpa using hz j
   obtain ⟨t, htU, _, hBt, hroot⟩ :=
-    Polynomial.exists_neg_self_div_im_pos_of_mem_nhds A B hA hA0 hB0 U hUnhds
+    Polynomial.exists_neg_self_div_im_pos_of_mem_nhds A B hA hA0 hB0 U
+      (hUopen.mem_nhds hzeroU)
   let zt : sigma → ℂ := fun j => z j + v j * t
   let r : ℂ := -A.eval t / B.eval t
-  have hr : 0 < r.im := hroot
   have hzroot : ∀ j, 0 < (Function.update zt i r j).im := by
     intro j
     by_cases hji : j = i
     · subst j
-      simpa using hr
+      simpa [r] using hroot
     · rw [Function.update_of_ne hji]
       by_cases hjQ : j ∈ Q.vars
       · exact htU j hjQ
@@ -536,12 +484,9 @@ theorem liebSokalPointwise_of_ne
     nlinarith
   have hratio : 0 ≤ (f / (a * z + b)).im := by
     by_contra hnonneg
-    have hlt : (f / (a * z + b)).im < 0 := lt_of_not_ge hnonneg
-    have hwim : 0 < (-f / (a * z + b)).im := by
+    apply hw (-f / (a * z + b)) (by
       rw [neg_div, Complex.neg_im]
-      exact neg_pos.mpr hlt
-    have hne := hw (-f / (a * z + b)) hwim
-    apply hne
+      exact neg_pos.mpr (lt_of_not_ge hnonneg))
     field_simp
     ring
   have hbim : 0 ≤ (b / a).im := by
@@ -552,10 +497,7 @@ theorem liebSokalPointwise_of_ne
     simp only [u, Complex.add_im]
     linarith
   have hune : u ≠ 0 := by
-    intro h
-    have := congrArg Complex.im h
-    have hzero : u.im = 0 := by simpa using this
-    linarith
+    exact fun h => (ne_of_gt huim) (by simpa using congrArg Complex.im h)
   have hratioeq : a / (a * z + b) = 1 / u := by
     dsimp [u]
     field_simp
@@ -580,16 +522,14 @@ theorem MvUpperHalfPlaneStable.affineRoot_im_nonpos_of_degreeOf_le_one
     lt_of_not_ge hnonpos
   let t : ℂ := -MvPolynomial.eval (Function.update z i 0) P /
     MvPolynomial.eval z (MvPolynomial.pderiv i P)
-  let zroot : sigma → ℂ := Function.update z i t
-  have hzroot : ∀ j, 0 < (zroot j).im := by
+  have hzroot : ∀ j, 0 < (Function.update z i t j).im := by
     intro j
     by_cases hji : j = i
     · subst j
-      simpa [zroot] using hpos
-    · simp [zroot, hji, hz j]
-  apply hP zroot hzroot
-  rw [show zroot = Function.update z i t by rfl,
-    MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
+      simpa [t] using hpos
+    · simp [hji, hz j]
+  apply hP (Function.update z i t) hzroot
+  rw [MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
   dsimp [t]
   field_simp
   ring
@@ -626,13 +566,11 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil_of_degreeOf_le_one
       (hG.affineRoot_im_nonpos_of_degreeOf_le_one i hi z hz ha)
     intro w hw
     have hne := hFG z hz w hw
-    have haff :
-        MvPolynomial.eval z G =
-          MvPolynomial.eval z (MvPolynomial.pderiv i G) * z i +
-            MvPolynomial.eval (Function.update z i 0) G := by
-      simpa using MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
-        hi z (z i)
-    rwa [haff] at hne
+    rwa [show MvPolynomial.eval z G =
+      MvPolynomial.eval z (MvPolynomial.pderiv i G) * z i +
+        MvPolynomial.eval (Function.update z i 0) G by
+          simpa using MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one
+            hi z (z i)] at hne
 
 /-- One-variable Lieb--Sokal step under an explicit stable-pencil hypothesis. -/
 theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil
@@ -706,15 +644,14 @@ theorem MvUpperHalfPlaneStable.oneSubPderiv
       exact hz j
   have hq := Polynomial.sub_derivative_upperHalfPlaneStable q hqstable (z i) (hz i)
   have hqeval : q.eval (z i) = MvPolynomial.eval z P := by
-    rw [show q.eval (z i) = MvPolynomial.eval (Function.update z i (z i)) P by
-      exact eval_affineLineRestriction_coordinate z i P (z i)]
+    dsimp [q]
+    rw [eval_affineLineRestriction_coordinate]
     simp
   have hqderiv : q.derivative.eval (z i) =
       MvPolynomial.eval z (MvPolynomial.pderiv i P) := by
-    have hderiv := congrArg (fun p : Polynomial ℂ => p.eval (z i))
-      (affineLineRestriction_derivative_coordinate z i P)
-    change q.derivative.eval (z i) = _
-    rw [hderiv, eval_affineLineRestriction_coordinate]
+    dsimp [q]
+    rw [affineLineRestriction_derivative_coordinate,
+      eval_affineLineRestriction_coordinate]
     simp
   change MvPolynomial.eval z (P - MvPolynomial.pderiv i P) ≠ 0
   rw [MvPolynomial.eval_sub]
@@ -765,10 +702,9 @@ theorem MvUpperHalfPlaneStable.pencil_nonzero
     MvPolynomial.eval z F + w * MvPolynomial.eval z G ≠ 0 := by
   rw [← eval_mvPencil]
   apply hFG (Sum.elim z fun _ => w)
-  intro i
-  cases i with
-  | inl i => exact hz i
-  | inr i => exact hw
+  rintro (i | i)
+  · exact hz i
+  · exact hw
 
 /-- One-variable Lieb--Sokal step stated using a stable polynomial pencil on
 an added variable. -/
@@ -813,16 +749,12 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or_of_degreeOf_le_one
   change F - MvPolynomial.pderiv j G = 0 ∨
     MvUpperHalfPlaneStable (F - MvPolynomial.pderiv j G)
   rcases hFzero with hF | hF <;> rcases hGzero with hG | hG
-  · left
-    simp [hF, hG]
+  · simp [hF, hG]
   · rcases hG.pderiv_zero_or_of_degreeOf_le_one j hGj with hD | hD
-    · left
-      simp [hF, hD]
+    · simp [hF, hD]
     · right
-      rw [hF, zero_sub]
       intro z hz
-      rw [MvPolynomial.eval_neg]
-      exact neg_ne_zero.mpr (hD z hz)
+      simpa [hF] using neg_ne_zero.mpr (hD z hz)
   · right
     simpa [hG] using hF
   · right
@@ -833,8 +765,7 @@ theorem MvUpperHalfPlaneStable.contractVariables_zero_or_of_degreeOf_le_one
       by_cases hki : k = i
       · subst k
         simpa using hw
-      · rw [Function.update_of_ne hki]
-        exact hz k
+      · simpa [hki] using hz k
     have hne := hP (Function.update z i w) hzupdate
     rw [MvPolynomial.eval_update_eq_eval_pderiv_mul_add_of_degreeOf_le_one hi]
       at hne
@@ -910,8 +841,7 @@ theorem MvUpperHalfPlaneStable.contractVariablePairs_zero_or
       · left
         change contractVariablePairs l
           (contractVariables (Sum.inl i) (Sum.inr i) P) = 0
-        rw [hQ]
-        exact contractVariablePairs_zero l
+        simpa only [hQ] using contractVariablePairs_zero (R := ℂ) l
       · exact ih hQ (isMultiaffine_contractVariables hPma (Sum.inl i) (Sum.inr i))
 
 end RealRooted
