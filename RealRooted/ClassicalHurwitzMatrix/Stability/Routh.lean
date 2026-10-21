@@ -119,16 +119,12 @@ theorem hasSimpleRoots_of_comp_neg_X_sq {p : ℝ[X]} (hp0 : p ≠ 0)
     exact hroot
   have hpos := (Polynomial.rootMultiplicity_pos hp0).mpr hroot
   by_contra hmult_ne
-  have hmult_gt : 1 < p.rootMultiplicity r := by lia
   have hderRoot : p.derivative.IsRoot r :=
-    ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hp0).mp hmult_gt).2
+    ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hp0).mp (by lia)).2
   change p.derivative.eval r = 0 at hderRoot
   apply hcomp.eval_derivative_ne_zero hcompRoot
-  rw [Polynomial.derivative_comp, Polynomial.eval_mul,
-    Polynomial.eval_comp]
-  simp only [Polynomial.eval_neg, Polynomial.eval_pow, Polynomial.eval_X]
-  rw [hw_sq]
-  rw [hderRoot, mul_zero]
+  simp [Polynomial.derivative_comp, Polynomial.eval_mul,
+    Polynomial.eval_comp, hw_sq, hderRoot]
 
 /-- In the even-degree parity shape, both rotated parts of a strictly stable
 polynomial have simple real roots. -/
@@ -151,10 +147,24 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_rotatedParts_of_oddShape
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree) :
     HasSimpleRoots (hurwitzRotatedEvenPart even) ∧
-      HasSimpleRoots (hurwitzRotatedOddPart odd) := by
-  exact
-    (h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
+      HasSimpleRoots (hurwitzRotatedOddPart odd) :=
+  (h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree).hasSimpleRoots_of_no_common_root
     h.noCommonRoot_rotatedParts
+
+private theorem hasSimpleRoots_parts
+    {odd even : ℝ[X]} (hodd : HasPosLeadingCoeff odd)
+    (heven : HasPosLeadingCoeff even) (hoddnn : HasNonnegCoeffs odd)
+    (hevennn : HasNonnegCoeffs even)
+    (hrotOdd : HasSimpleRoots (hurwitzRotatedOddPart odd))
+    (hrotEven : HasSimpleRoots (hurwitzRotatedEvenPart even)) :
+    HasSimpleRoots odd ∧ HasSimpleRoots even := by
+  exact ⟨hasSimpleRoots_of_comp_neg_X_sq hodd.ne_zero
+      (fun _ ↦ isRoot_nonpos_of_hasNonnegCoeffs hoddnn hodd.ne_zero)
+      (hasSimpleRoots_of_neg_X_mul (by
+        simpa only [hurwitzRotatedOddPart] using hrotOdd)),
+    hasSimpleRoots_of_comp_neg_X_sq heven.ne_zero
+      (fun _ ↦ isRoot_nonpos_of_hasNonnegCoeffs hevennn heven.ne_zero)
+      (by simpa only [hurwitzRotatedEvenPart] using hrotEven)⟩
 
 /-- In the even-degree parity shape, both unrotated parity inputs of a
 strictly stable polynomial have simple real roots. -/
@@ -168,19 +178,7 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_parts_of_evenShape
     h.hasNonnegCoeffs_parts_of_evenShape hodd heven hdegree
   obtain ⟨hrotOdd, hrotEven⟩ :=
     h.hasSimpleRoots_rotatedParts_of_evenShape hodd heven hdegree
-  have hoddComp : HasSimpleRoots (odd.comp (-(X ^ 2))) :=
-    hasSimpleRoots_of_neg_X_mul (by
-      simpa only [hurwitzRotatedOddPart] using hrotOdd)
-  constructor
-  · apply hasSimpleRoots_of_comp_neg_X_sq hodd.ne_zero _ hoddComp
-    intro r hroot
-    exact roots_nonpos_of_hasNonnegCoeffs hoddnn r
-      ((Polynomial.mem_roots hodd.ne_zero).mpr hroot)
-  · apply hasSimpleRoots_of_comp_neg_X_sq heven.ne_zero _
-      (by simpa only [hurwitzRotatedEvenPart] using hrotEven)
-    intro r hroot
-    exact roots_nonpos_of_hasNonnegCoeffs hevennn r
-      ((Polynomial.mem_roots heven.ne_zero).mpr hroot)
+  exact hasSimpleRoots_parts hodd heven hoddnn hevennn hrotOdd hrotEven
 
 /-- In the odd-degree parity shape, both unrotated parity inputs of a strictly
 stable polynomial have simple real roots. -/
@@ -194,19 +192,7 @@ theorem IsStrictlyHurwitzStable.hasSimpleRoots_parts_of_oddShape
     h.hasNonnegCoeffs_parts_of_oddShape hodd heven hdegree
   obtain ⟨hrotEven, hrotOdd⟩ :=
     h.hasSimpleRoots_rotatedParts_of_oddShape hodd heven hdegree
-  have hoddComp : HasSimpleRoots (odd.comp (-(X ^ 2))) :=
-    hasSimpleRoots_of_neg_X_mul (by
-      simpa only [hurwitzRotatedOddPart] using hrotOdd)
-  constructor
-  · apply hasSimpleRoots_of_comp_neg_X_sq hodd.ne_zero _ hoddComp
-    intro r hroot
-    exact roots_nonpos_of_hasNonnegCoeffs hoddnn r
-      ((Polynomial.mem_roots hodd.ne_zero).mpr hroot)
-  · apply hasSimpleRoots_of_comp_neg_X_sq heven.ne_zero _
-      (by simpa only [hurwitzRotatedEvenPart] using hrotEven)
-    intro r hroot
-    exact roots_nonpos_of_hasNonnegCoeffs hevennn r
-      ((Polynomial.mem_roots heven.ne_zero).mpr hroot)
+  exact hasSimpleRoots_parts hodd heven hoddnn hevennn hrotOdd hrotEven
 
 /-- In the even-degree parity shape, the Wronskian of the raw rotated parts
 has the strict sign needed to descend interlacing. -/
@@ -220,7 +206,7 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
         (hurwitzRotatedEvenPart even).eval x *
           (hurwitzRotatedOddPart odd).derivative.eval x := by
   let s : ℝ := (-1 : ℝ) ^ even.natDegree
-  have hs0 : s ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hs0 : s ≠ 0 := by simp [s]
   have hsquare : s * s = 1 := by
     dsimp [s]
     rw [← pow_add]
@@ -228,8 +214,6 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
   have hsign : s = -((-1 : ℝ) ^ odd.natDegree) := by
     simp only [s, hdegree, pow_succ]
     ring
-  have hstrictInterl := h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree
-  have hstrictInterlScaled := (hstrictInterl.C_mul_left hs0).C_mul_right hs0
   have hevenPos : HasPosLeadingCoeff
       (Polynomial.C s * hurwitzRotatedEvenPart even) :=
     by simpa only [s] using
@@ -242,20 +226,16 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
     h.hasSimpleRoots_rotatedParts_of_evenShape hodd heven hdegree
   have hevenNodup :
       (Polynomial.C s * hurwitzRotatedEvenPart even).roots.Nodup := by
-    rw [Polynomial.roots_C_mul _ hs0]
-    exact hevenSimple.roots_nodup
+    simpa only [Polynomial.roots_C_mul _ hs0] using hevenSimple.roots_nodup
   have hoddNodup :
       (Polynomial.C s * hurwitzRotatedOddPart odd).roots.Nodup := by
-    rw [Polynomial.roots_C_mul _ hs0]
-    exact hoddSimple.roots_nodup
+    simpa only [Polynomial.roots_C_mul _ hs0] using hoddSimple.roots_nodup
   have hno (r : ℝ) :
       (Polynomial.C s * hurwitzRotatedEvenPart even).IsRoot r →
         ¬ (Polynomial.C s * hurwitzRotatedOddPart odd).IsRoot r := by
-    intro hevenRoot hoddRoot
-    apply h.noCommonRoot_rotatedParts r
-    simp only [Polynomial.IsRoot.def, Polynomial.eval_mul,
-      Polynomial.eval_C, mul_eq_zero, hs0, false_or] at hevenRoot hoddRoot
-    exact ⟨hevenRoot, hoddRoot⟩
+    simpa only [Polynomial.IsRoot.def, Polynomial.eval_mul,
+      Polynomial.eval_C, mul_eq_zero, hs0, false_or] using
+      fun he ho ↦ h.noCommonRoot_rotatedParts r ⟨he, ho⟩
   have hW := wronskian_pos_of_strictInterl_succ hevenPos hoddPos
     (by
       rw [Polynomial.natDegree_C_mul hs0,
@@ -263,22 +243,11 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_evenShape
         natDegree_hurwitzRotatedEvenPart,
         natDegree_hurwitzRotatedOddPart hodd.ne_zero]
       lia)
-    hstrictInterlScaled hevenNodup hoddNodup hno x
-  have hscale :
-      (Polynomial.C s * hurwitzRotatedEvenPart even).derivative.eval x *
-            (Polynomial.C s * hurwitzRotatedOddPart odd).eval x -
-          (Polynomial.C s * hurwitzRotatedEvenPart even).eval x *
-            (Polynomial.C s * hurwitzRotatedOddPart odd).derivative.eval x =
-        s * s *
-          ((hurwitzRotatedEvenPart even).derivative.eval x *
-              (hurwitzRotatedOddPart odd).eval x -
-            (hurwitzRotatedEvenPart even).eval x *
-              (hurwitzRotatedOddPart odd).derivative.eval x) := by
-    simp only [Polynomial.derivative_C_mul, Polynomial.eval_mul,
-      Polynomial.eval_C]
-    ring
-  rw [hscale, hsquare, one_mul] at hW
-  exact hW
+    (((h.strictInterl_rotatedParts_of_evenShape hodd heven hdegree).C_mul_left
+      hs0).C_mul_right hs0) hevenNodup hoddNodup hno x
+  simp only [Polynomial.derivative_C_mul, Polynomial.eval_mul,
+    Polynomial.eval_C] at hW
+  nlinarith
 
 /-- In the odd-degree parity shape, opposite sign normalizations again give a
 positive Wronskian for the raw rotated even/odd pair. -/
@@ -293,14 +262,12 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
           (hurwitzRotatedOddPart odd).derivative.eval x := by
   let s : ℝ := (-1 : ℝ) ^ odd.natDegree
   let t : ℝ := -s
-  have hs0 : s ≠ 0 := pow_ne_zero _ (by norm_num)
+  have hs0 : s ≠ 0 := by simp [s]
   have ht0 : t ≠ 0 := neg_ne_zero.mpr hs0
   have hsquare : s * s = 1 := by
     dsimp [s]
     rw [← pow_add]
     simp [← two_mul]
-  have hstrictInterl := h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree
-  have hstrictInterlScaled := (hstrictInterl.C_mul_left hs0).C_mul_right ht0
   have hevenPos : HasPosLeadingCoeff
       (Polynomial.C s * hurwitzRotatedEvenPart even) := by
     simpa only [s, hdegree] using
@@ -313,45 +280,28 @@ theorem IsStrictlyHurwitzStable.wronskian_rotatedParts_pos_of_oddShape
     h.hasSimpleRoots_rotatedParts_of_oddShape hodd heven hdegree
   have hoddNodup :
       (Polynomial.C t * hurwitzRotatedOddPart odd).roots.Nodup := by
-    rw [Polynomial.roots_C_mul _ ht0]
-    exact hoddSimple.roots_nodup
+    simpa only [Polynomial.roots_C_mul _ ht0] using hoddSimple.roots_nodup
   have hevenNodup :
       (Polynomial.C s * hurwitzRotatedEvenPart even).roots.Nodup := by
-    rw [Polynomial.roots_C_mul _ hs0]
-    exact hevenSimple.roots_nodup
+    simpa only [Polynomial.roots_C_mul _ hs0] using hevenSimple.roots_nodup
   have hno (r : ℝ) :
       (Polynomial.C t * hurwitzRotatedOddPart odd).IsRoot r →
         ¬ (Polynomial.C s * hurwitzRotatedEvenPart even).IsRoot r := by
-    intro hoddRoot hevenRoot
-    apply h.noCommonRoot_rotatedParts r
-    simp only [Polynomial.IsRoot.def, Polynomial.eval_mul,
-      Polynomial.eval_C, mul_eq_zero, hs0, ht0, false_or] at hoddRoot hevenRoot
-    exact ⟨hevenRoot, hoddRoot⟩
+    simpa only [Polynomial.IsRoot.def, Polynomial.eval_mul,
+      Polynomial.eval_C, mul_eq_zero, hs0, ht0, false_or, and_comm] using
+      fun ho he ↦ h.noCommonRoot_rotatedParts r ⟨he, ho⟩
   have hW := wronskian_pos_of_strictInterl_succ hoddPos hevenPos
     (by
       rw [Polynomial.natDegree_C_mul ht0,
         Polynomial.natDegree_C_mul hs0,
         natDegree_hurwitzRotatedOddPart hodd.ne_zero,
         natDegree_hurwitzRotatedEvenPart, hdegree])
-    hstrictInterlScaled hoddNodup hevenNodup hno x
-  have hscale :
-      (Polynomial.C t * hurwitzRotatedOddPart odd).derivative.eval x *
-            (Polynomial.C s * hurwitzRotatedEvenPart even).eval x -
-          (Polynomial.C t * hurwitzRotatedOddPart odd).eval x *
-            (Polynomial.C s * hurwitzRotatedEvenPart even).derivative.eval x =
-        (hurwitzRotatedEvenPart even).derivative.eval x *
-            (hurwitzRotatedOddPart odd).eval x -
-          (hurwitzRotatedEvenPart even).eval x *
-            (hurwitzRotatedOddPart odd).derivative.eval x := by
-    simp only [Polynomial.derivative_C_mul, Polynomial.eval_mul,
-      Polynomial.eval_C]
-    dsimp only [t]
-    have hsquare' : s ^ 2 = 1 := by linarith [hsquare]
-    ring_nf
-    rw [hsquare']
-    ring
-  rw [hscale] at hW
-  exact hW
+    (((h.strictInterl_rotatedParts_of_oddShape hodd heven hdegree).C_mul_left
+      hs0).C_mul_right ht0) hoddNodup hevenNodup hno x
+  simp only [Polynomial.derivative_C_mul, Polynomial.eval_mul,
+    Polynomial.eval_C] at hW
+  dsimp only [t] at hW
+  nlinarith
 
 /-- In the even-degree parity shape, strict stability descends from the
 rotated Hermite--Biehler pair to strict interlacing of the original parity
@@ -371,16 +321,11 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
   apply interlaces_of_wronskian_neg_succ_atRoots hodd heven rfl hdegree
     hoddSplits hevenSplits
   intro r hevenRoot
-  have hr_nonpos : r ≤ 0 :=
-    roots_nonpos_of_hasNonnegCoeffs hevennn r
-      ((Polynomial.mem_roots heven.ne_zero).mpr hevenRoot)
-  have hr_ne : r ≠ 0 := by
-    intro hr
-    subst r
-    change even.eval 0 = 0 at hevenRoot
-    rw [← Polynomial.coeff_zero_eq_eval_zero] at hevenRoot
-    exact heven0.ne' hevenRoot
-  have hr_neg : r < 0 := lt_of_le_of_ne hr_nonpos hr_ne
+  have hr_neg : r < 0 := lt_of_le_of_ne
+    (isRoot_nonpos_of_hasNonnegCoeffs hevennn heven.ne_zero hevenRoot) fun hr ↦ by
+      subst r
+      change even.eval 0 = 0 at hevenRoot
+      exact heven0.ne' (by simpa only [Polynomial.coeff_zero_eq_eval_zero] using hevenRoot)
   let w : ℝ := Real.sqrt (-r)
   have hw_pos : 0 < w := Real.sqrt_pos.2 (by linarith)
   have hw_sq : -(w ^ 2) = r := by
@@ -392,10 +337,8 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_evenShape
   change even.eval r = 0 at hevenRoot
   rw [hevenRoot] at hW ⊢
   simp only [zero_mul, zero_add, sub_zero] at hW
-  have hprod : 0 < even.derivative.eval r * odd.eval r :=
-    pos_of_mul_pos_right hW (by positivity)
   simp only [mul_zero, zero_sub]
-  linarith
+  nlinarith [pos_of_mul_pos_right hW (by positivity)]
 
 /-- In the odd-degree parity shape, strict stability descends from the
 rotated Hermite--Biehler pair to strict same-degree interlacing of the
@@ -431,16 +374,12 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
         0 < even.derivative.eval r * odd.eval r -
           even.eval r * odd.derivative.eval r := by
       intro r hoddRoot
-      have hr_nonpos : r ≤ 0 :=
-        roots_nonpos_of_hasNonnegCoeffs hoddnn r
-          ((Polynomial.mem_roots hodd.ne_zero).mpr hoddRoot)
-      have hr_ne : r ≠ 0 := by
-        intro hr
-        subst r
-        change odd.eval 0 = 0 at hoddRoot
-        rw [← Polynomial.coeff_zero_eq_eval_zero] at hoddRoot
-        exact hodd0.ne' hoddRoot
-      have hr_neg : r < 0 := lt_of_le_of_ne hr_nonpos hr_ne
+      have hr_neg : r < 0 := lt_of_le_of_ne
+        (isRoot_nonpos_of_hasNonnegCoeffs hoddnn hodd.ne_zero hoddRoot) fun hr ↦ by
+          subst r
+          change odd.eval 0 = 0 at hoddRoot
+          exact hodd0.ne'
+            (by simpa only [Polynomial.coeff_zero_eq_eval_zero] using hoddRoot)
       let w : ℝ := Real.sqrt (-r)
       have hw_pos : 0 < w := Real.sqrt_pos.2 (by linarith)
       have hw_sq : -(w ^ 2) = r := by
@@ -452,9 +391,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_parts_of_oddShape
       change odd.eval r = 0 at hoddRoot
       rw [hoddRoot] at hW ⊢
       simp only [mul_zero, zero_add, zero_sub] at hW
-      have hprod : 0 < -(even.eval r * odd.derivative.eval r) :=
-        pos_of_mul_pos_right hW (by positivity)
-      simpa only [mul_zero, zero_sub] using hprod
+      simpa only [mul_zero, zero_sub] using pos_of_mul_pos_right hW (by positivity)
     have hW : ∀ t : ℝ,
         0 < even.derivative.eval t * odd.eval t -
           even.eval t * odd.derivative.eval t :=
@@ -521,9 +458,8 @@ theorem hasPosLeadingCoeff_routhReducedOddPart_of_evenShape
     (c : ℝ) {odd even : ℝ[X]} (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree + 1) :
     HasPosLeadingCoeff (routhReducedOddPart c odd even) := by
-  rw [HasPosLeadingCoeff,
-    leadingCoeff_routhReducedOddPart_of_evenShape c hdegree]
-  exact heven
+  simpa only [HasPosLeadingCoeff,
+    leadingCoeff_routhReducedOddPart_of_evenShape c hdegree] using heven
 
 /-- An even-shape Routh step lowers the degree of the represented polynomial
 by exactly one. -/
@@ -595,10 +531,9 @@ all-real-combinations plane generated by a strictly interlacing pair. -/
 theorem allComboRealRooted_routhNumerator {odd even : ℝ[X]}
     (hstrictInterl : StrictInterl odd even) (c : ℝ) :
     AllComboRealRooted odd (even - C c * odd) := by
-  apply (allComboRealRooted_of_strictInterl hstrictInterl).linear_recombination
-    (f := odd) (g := even) (a := 1) (b := 0) (c := -c) (d := 1)
-  · simp
-  · simp [sub_eq_add_neg, mul_comm, add_comm]
+  refine (allComboRealRooted_of_strictInterl hstrictInterl).linear_recombination
+    (f := odd) (g := even) (a := 1) (b := 0) (c := -c) (d := 1) ?_ ?_ <;>
+    simp [sub_eq_add_neg, mul_comm, add_comm]
 
 /-- In an even-shape Routh step, the reduced input precedes the old odd
 input and has nonnegative coefficients. -/
@@ -623,14 +558,10 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
         Polynomial.natDegree_C_mul_le c odd
       _ < even.natDegree := by lia
   have hqDegree : q.natDegree = even.natDegree := by
-    dsimp only [q]
     exact Polynomial.natDegree_sub_eq_left_of_natDegree_lt hlt
   have hqPos : HasPosLeadingCoeff q := by
-    rw [HasPosLeadingCoeff, Polynomial.leadingCoeff, hqDegree]
-    dsimp only [q]
-    rw [Polynomial.coeff_sub,
-      Polynomial.coeff_eq_zero_of_natDegree_lt hlt, sub_zero]
-    exact heven
+    simpa only [q, HasPosLeadingCoeff,
+      Polynomial.leadingCoeff_sub_of_degree_lt (Polynomial.degree_lt_degree hlt)] using heven
   have hq0 : q.coeff 0 = 0 := by
     dsimp only [q, c]
     rw [Polynomial.coeff_sub, Polynomial.coeff_C_mul, sub_eq_zero]
@@ -648,16 +579,11 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
     · rcases hqo.natDegree_eq_or_eq_succ with hsame | hsucc <;> lia
   have hoddNeg : ∀ r, odd.IsRoot r → r < 0 := by
     intro r hr
-    have hrNonpos : r ≤ 0 :=
-      roots_nonpos_of_hasNonnegCoeffs hoddnn r
-        ((Polynomial.mem_roots hodd.ne_zero).mpr hr)
-    have hrNe : r ≠ 0 := by
-      intro hr0
-      subst r
-      change odd.eval 0 = 0 at hr
-      rw [← Polynomial.coeff_zero_eq_eval_zero] at hr
-      exact hodd0.ne' hr
-    exact lt_of_le_of_ne hrNonpos hrNe
+    exact lt_of_le_of_ne
+      (isRoot_nonpos_of_hasNonnegCoeffs hoddnn hodd.ne_zero hr) fun hr0 ↦ by
+        subst r
+        change odd.eval 0 = 0 at hr
+        exact hodd0.ne' (by simpa only [Polynomial.coeff_zero_eq_eval_zero] using hr)
   have hqNonpos : ∀ r, q.IsRoot r → r ≤ 0 :=
     roots_nonpos_of_interlaces_of_zero_root_of_roots_neg
       (hstrictInterlQ.toInterlaces (by lia)) hqRoot hoddNeg
@@ -665,10 +591,8 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_evenShape
     ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hqSplits).2
       ⟨hqPos, fun r hr =>
         hqNonpos r ((Polynomial.mem_roots hqPos.ne_zero).mp hr)⟩).1
-  have hredStrictInterl : StrictInterl q.divX odd :=
-    strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-      hstrictInterlQ hqnn hq0 (by lia)
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
-  exact ⟨hredStrictInterl, hqnn.divX⟩
+  exact ⟨strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
+      hstrictInterlQ hqnn hq0 (by lia), hqnn.divX⟩
 
 end RealRooted

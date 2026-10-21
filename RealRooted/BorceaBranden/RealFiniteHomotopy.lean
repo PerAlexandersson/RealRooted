@@ -73,14 +73,13 @@ theorem shiftedBoxRealPart_conj {σ : Type*} [Fintype σ]
   apply Finset.sum_congr rfl
   intro m _hm
   congr 1
-  have hconj :
+  rw [show
       (MvPolynomial.boxChoose κ m.1 : ℂ) *
           ∏ i, (starRingEnd ℂ (W i)) ^ (κ i - m.1 i) =
         starRingEnd ℂ
           ((MvPolynomial.boxChoose κ m.1 : ℂ) *
-            ∏ i, W i ^ (κ i - m.1 i)) := by
-    simp only [map_mul, map_prod, map_pow, map_natCast]
-  rw [hconj, Complex.conj_re]
+            ∏ i, W i ^ (κ i - m.1 i)) by
+      simp only [map_mul, map_prod, map_pow, map_natCast], Complex.conj_re]
 
 /-- Conjugating every shift negates the imaginary part of a shifted box. -/
 theorem shiftedBoxImagPart_conj {σ : Type*} [Fintype σ]
@@ -92,14 +91,13 @@ theorem shiftedBoxImagPart_conj {σ : Type*} [Fintype σ]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl
   intro m _hm
-  have hconj :
+  rw [show
       (MvPolynomial.boxChoose κ m.1 : ℂ) *
           ∏ i, (starRingEnd ℂ (W i)) ^ (κ i - m.1 i) =
         starRingEnd ℂ
           ((MvPolynomial.boxChoose κ m.1 : ℂ) *
-            ∏ i, W i ^ (κ i - m.1 i)) := by
-    simp only [map_mul, map_prod, map_pow, map_natCast]
-  rw [hconj, Complex.conj_im]
+            ∏ i, W i ^ (κ i - m.1 i)) by
+      simp only [map_mul, map_prod, map_pow, map_natCast], Complex.conj_im]
   exact neg_smul _ _
 
 /-- The real output part of a shifted-box fiber. -/
@@ -166,13 +164,9 @@ theorem allCombo_shiftedBox_outputs_of_preserves
   rw [← hp] at hin
   rcases hin with hzero | hstable
   · left
-    have hpzero : p = 0 := Subtype.ext hzero
-    have hout : c • T (shiftedBoxRealPart κ W) +
-        d • T (shiftedBoxImagPart κ W) = 0 := by
-      have hmap := congrArg T hpzero
-      simpa [p, map_add, map_smul] using hmap
     simpa [shiftedBoxOutputReal, shiftedBoxOutputImag,
-      MvPolynomial.smul_eq_C_mul] using hout
+      MvPolynomial.smul_eq_C_mul, p, map_add, map_smul] using
+        congrArg T (Subtype.ext hzero : p = 0)
   · have hout := hT p hstable
     simpa [shiftedBoxOutputReal, shiftedBoxOutputImag, p, map_add,
       map_smul, MvPolynomial.smul_eq_C_mul] using hout
@@ -239,10 +233,8 @@ theorem exists_nontrivial_combo_eq_zero_of_orientationValue_eq_zero
     have hratioIm : (a / b).im = 0 := by
       rw [Complex.div_im, ← sub_div, hnum, zero_div]
     let c : ℝ := (a / b).re
-    have hratio : a / b = (c : ℂ) := by
-      apply Complex.ext
-      · rfl
-      · simpa [c] using hratioIm
+    have hratio : a / b = (c : ℂ) :=
+      Complex.ext rfl (by simpa [c] using hratioIm)
     have heval : a - (c : ℂ) * b = 0 := by
       apply (div_eq_iff hb).mp at hratio
       linear_combination hratio
@@ -340,9 +332,7 @@ theorem forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
   let A := shiftedBoxOutputReal κ T W
   let B := shiftedBoxOutputImag κ T W
   have hall := allCombo_shiftedBox_outputs_of_preserves hT W hW
-  have hz : ∀ i, 0 < (upperBasePoint σ i).im := by
-    intro i
-    simp [upperBasePoint]
+  have hz : ∀ i, 0 < (upperBasePoint σ i).im := by simp [upperBasePoint]
   have horient' : mvPencilOrientationValue (upperBasePoint σ) A B = 0 := by
     exact horient
   obtain ⟨r, s, hrs, hrelation⟩ :=
@@ -353,19 +343,10 @@ theorem forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
   let c : ℂ := (r : ℂ) - Complex.I * (s : ℂ)
   have hc : c ≠ 0 := by
     intro hczero
-    have hre : r = 0 := by
-      have h := congrArg Complex.re hczero
-      simpa only [c, Complex.sub_re, Complex.ofReal_re, Complex.mul_re,
-        Complex.I_re, Complex.I_im, Complex.ofReal_im, zero_mul, mul_zero,
-        sub_zero, Complex.zero_re] using h
-    have him : s = 0 := by
-      have h := congrArg Complex.im hczero
-      simpa only [c, Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
-        Complex.I_re, Complex.I_im, Complex.ofReal_re, zero_mul, one_mul,
-        zero_add, zero_sub, Complex.zero_im, neg_eq_zero] using h
-    rcases hrs with hr | hs
-    · exact hr hre
-    · exact hs him
+    have hre := congrArg Complex.re hczero
+    have him := congrArg Complex.im hczero
+    norm_num [c, Complex.mul_re, Complex.mul_im] at hre him
+    exact hrs.elim (fun hr ↦ hr hre) fun hs ↦ hs him
   have hK : T K = 0 := by
     have hrelation' : r • A + s • B = 0 := by
       simpa only [MvPolynomial.smul_eq_C_mul] using hrelation
@@ -385,22 +366,7 @@ theorem forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
     simp only [H, K, L, F, G, Submodule.coe_add, Submodule.coe_sub,
       Submodule.coe_smul, coe_complexifyDegreeBox, complexifyMv, map_add,
       map_sub, MvPolynomial.smul_eq_C_mul]
-    simp only [map_mul, MvPolynomial.map_C]
-    change MvPolynomial.C ((r : ℂ) - Complex.I * (s : ℂ)) *
-          (MvPolynomial.map Complex.ofRealHom (shiftedBoxRealPart κ W).1 +
-            MvPolynomial.C Complex.I *
-              MvPolynomial.map Complex.ofRealHom (shiftedBoxImagPart κ W).1) +
-        MvPolynomial.C (ε : ℂ) * MvPolynomial.map Complex.ofRealHom h.1 =
-      (MvPolynomial.C (r : ℂ) *
-          MvPolynomial.map Complex.ofRealHom (shiftedBoxRealPart κ W).1 +
-        MvPolynomial.C (s : ℂ) *
-          MvPolynomial.map Complex.ofRealHom (shiftedBoxImagPart κ W).1 +
-        MvPolynomial.C (ε : ℂ) * MvPolynomial.map Complex.ofRealHom h.1) +
-      MvPolynomial.C Complex.I *
-        (MvPolynomial.C (r : ℂ) *
-            MvPolynomial.map Complex.ofRealHom (shiftedBoxImagPart κ W).1 -
-          MvPolynomial.C (s : ℂ) *
-            MvPolynomial.map Complex.ofRealHom (shiftedBoxRealPart κ W).1)
+    simp only [map_mul, MvPolynomial.map_C, Complex.ofRealHom_eq_coe]
     rw [map_sub, map_mul]
     ring_nf
     rw [← map_pow, Complex.I_sq, map_neg, map_one]
@@ -421,6 +387,23 @@ theorem forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
       simp only [H, map_add, map_smul, hK, zero_add]
     rwa [hTHvalue] at hTH
   exact mvRealStableOrZero_of_nonzero_smul hε.ne' hscaled
+
+private theorem continuousOn_pos_iff_of_ne_zero {f : ℝ → ℝ} {a b : ℝ}
+    (hab : a ≤ b) (hf : ContinuousOn f (Icc a b))
+    (hne : ∀ t ∈ Icc a b, f t ≠ 0) : 0 < f a ↔ 0 < f b := by
+  constructor
+  · intro ha
+    rcases lt_or_gt_of_ne (hne b ⟨hab, le_rfl⟩) with hb | hb
+    · obtain ⟨t, ht, hzero⟩ := intermediate_value_Icc' hab hf
+        (show 0 ∈ Icc (f b) (f a) from ⟨hb.le, ha.le⟩)
+      exact (hne t ht hzero).elim
+    · exact hb
+  · intro hb
+    rcases lt_or_gt_of_ne (hne a ⟨le_rfl, hab⟩) with ha | ha
+    · obtain ⟨t, ht, hzero⟩ := intermediate_value_Icc hab hf
+        (show 0 ∈ Icc (f a) (f b) from ⟨ha.le, hb.le⟩)
+      exact (hne t ht hzero).elim
+    · exact ha
 
 /-- On the preconnected open upper-half-plane shift set, a nowhere-zero
 shifted-box orientation has constant sign.  The proof is the literal affine
@@ -454,33 +437,8 @@ theorem shiftedBoxOrientationValue_pos_iff_of_ne_zero
   have horientNe : ∀ t ∈ Icc (0 : ℝ) 1, orient t ≠ 0 := by
     intro t ht
     exact hne (path t) (hpath t ht)
-  have hzero_of_neg_pos (h0 : orient 0 < 0) (h1 : 0 < orient 1) : False := by
-    have himage := intermediate_value_Icc (show (0 : ℝ) ≤ 1 by norm_num)
-      hcontinuous (show 0 ∈ Icc (orient 0) (orient 1) from ⟨h0.le, h1.le⟩)
-    obtain ⟨t, ht, htzero⟩ := himage
-    exact horientNe t ht htzero
-  have hzero_of_pos_neg (h0 : 0 < orient 0) (h1 : orient 1 < 0) : False := by
-    have himage := intermediate_value_Icc' (show (0 : ℝ) ≤ 1 by norm_num)
-      hcontinuous (show 0 ∈ Icc (orient 1) (orient 0) from ⟨h1.le, h0.le⟩)
-    obtain ⟨t, ht, htzero⟩ := himage
-    exact horientNe t ht htzero
-  have hpath0 : path 0 = W := by funext i; simp [path]
-  have hpath1 : path 1 = V := by funext i; simp [path]
-  have horient0 : orient 0 = shiftedBoxOrientationValue κ T W := by
-    simp [orient, hpath0]
-  have horient1 : orient 1 = shiftedBoxOrientationValue κ T V := by
-    simp [orient, hpath1]
-  constructor
-  · intro hpos
-    rcases lt_or_gt_of_ne (hne V hV) with hneg | hposV
-    · apply (hzero_of_pos_neg (by simpa [horient0] using hpos)
-        (by simpa [horient1] using hneg)).elim
-    · exact hposV
-  · intro hpos
-    rcases lt_or_gt_of_ne (hne W hW) with hneg | hposW
-    · apply (hzero_of_neg_pos (by simpa [horient0] using hneg)
-        (by simpa [horient1] using hpos)).elim
-    · exact hposW
+  simpa [orient, path] using continuousOn_pos_iff_of_ne_zero
+    (show (0 : ℝ) ≤ 1 by norm_num) hcontinuous horientNe
 
 private theorem stable_shiftedBox_output_of_orientation_pos
     {σ : Type*} [Fintype σ] {κ : σ → ℕ}
@@ -490,13 +448,9 @@ private theorem stable_shiftedBox_output_of_orientation_pos
     (hpos : 0 < shiftedBoxOrientationValue κ T W) :
     MvUpperHalfPlaneStable
       (complexificationDegreeBoxLinearMap κ T (shiftedBoxPolynomial κ W)) := by
-  have hall := allCombo_shiftedBox_outputs_of_preserves hT W hW
-  have hz : ∀ i, 0 < (upperBasePoint σ i).im := by
-    intro i
-    simp [upperBasePoint]
-  have hproper := hall.mvProperPosition_of_orientationValue_pos hz hpos
   rw [complexificationDegreeBoxLinearMap_shiftedBox]
-  exact hproper
+  exact (allCombo_shiftedBox_outputs_of_preserves hT W hW)
+    |>.mvProperPosition_of_orientationValue_pos (by simp [upperBasePoint]) hpos
 
 private theorem stable_conj_shiftedBox_output_of_orientation_neg
     {σ : Type*} [Fintype σ] {κ : σ → ℕ}
@@ -508,12 +462,9 @@ private theorem stable_conj_shiftedBox_output_of_orientation_neg
       (complexifyMv (shiftedBoxOutputReal κ T W) -
         MvPolynomial.C Complex.I *
           complexifyMv (shiftedBoxOutputImag κ T W)) := by
-  have hall := allCombo_shiftedBox_outputs_of_preserves hT W hW
-  have hz : ∀ i, 0 < (upperBasePoint σ i).im := by
-    intro i
-    simp [upperBasePoint]
-  have hproper := hall.mvProperPosition_of_orientationValue_neg hz hneg
-  have hscaled := hproper.C_mul (show -Complex.I ≠ 0 by simp)
+  have hscaled := ((allCombo_shiftedBox_outputs_of_preserves hT W hW)
+    |>.mvProperPosition_of_orientationValue_neg (by simp [upperBasePoint]) hneg).C_mul
+      (show -Complex.I ≠ 0 by simp)
   change MvUpperHalfPlaneStable
     (MvPolynomial.C (-Complex.I) *
       (complexifyMv (shiftedBoxOutputImag κ T W) +
@@ -533,14 +484,11 @@ theorem complexifyMv_negRightVariablesHom
   | C a => simp [complexifyMv]
   | add P Q hP hQ =>
       unfold complexifyMv at hP hQ ⊢
-      rw [map_add, map_add, map_add, hP, hQ]
-      rw [map_add]
+      simpa only [map_add] using congrArg₂ (fun x y => x + y) hP hQ
   | mul_X P i hP =>
       unfold complexifyMv at hP ⊢
       rw [map_mul, map_mul, map_mul, hP]
-      cases i with
-      | inl i => simp
-      | inr i => simp
+      cases i <;> simp
 
 /-- The negative-right symbol of the complexification is the complexification
 of the real negative-right symbol. -/
@@ -567,9 +515,7 @@ theorem eval_negRightVariablesHom
   | add P Q hP hQ => simp only [map_add, hP, hQ]
   | mul_X P i hP =>
       rw [map_mul, MvPolynomial.eval_mul, MvPolynomial.eval_mul, hP]
-      cases i with
-      | inl i => simp
-      | inr i => simp
+      cases i <;> simp
 
 private theorem algebraicSymbol_realStable_of_orientation_pos
     {σ : Type*} [Fintype σ] {κ : σ → ℕ}
@@ -590,9 +536,7 @@ private theorem algebraicSymbol_realStable_of_orientation_pos
     hT W hW (hpos W hW)
   have heval := hfiber z hz
   rw [← eval_algebraicSymbol_eq_eval_shiftedBoxPolynomial] at heval
-  have huEq : Sum.elim z W = u := by
-    funext i
-    cases i <;> rfl
+  have huEq : Sum.elim z W = u := funext fun i ↦ by cases i <;> rfl
   simpa only [huEq] using heval
 
 private theorem algebraicSymbolNegRight_realStable_of_orientation_neg
@@ -611,13 +555,10 @@ private theorem algebraicSymbolNegRight_realStable_of_orientation_neg
   let U : σ → ℂ := fun i => -starRingEnd ℂ (W i)
   have hz : ∀ i, 0 < (z i).im := fun i => hu (Sum.inl i)
   have hW : ∀ i, 0 < (W i).im := fun i => hu (Sum.inr i)
-  have hU : ∀ i, 0 < (U i).im := by
-    intro i
-    simp only [U, Complex.neg_im, Complex.conj_im, neg_neg]
-    exact hW i
-  have hconjU : (fun i => starRingEnd ℂ (U i)) = fun i => -W i := by
-    funext i
-    simp [U]
+  have hU : ∀ i, 0 < (U i).im := fun i ↦ by simpa only
+    [U, Complex.neg_im, Complex.conj_im, neg_neg] using hW i
+  have hconjU : (fun i => starRingEnd ℂ (U i)) = fun i => -W i :=
+    funext fun i ↦ by simp [U]
   have hreal : shiftedBoxRealPart κ (fun i => -W i) =
       shiftedBoxRealPart κ U := by
     rw [← hconjU, shiftedBoxRealPart_conj]
@@ -639,9 +580,7 @@ private theorem algebraicSymbolNegRight_realStable_of_orientation_neg
     ring
   rw [← hfiberEq] at hfiber
   have heval := hfiber z hz
-  have huEq : Sum.elim z W = u := by
-    funext i
-    cases i <;> rfl
+  have huEq : Sum.elim z W = u := funext fun i ↦ by cases i <;> rfl
   rw [← huEq, MvPolynomial.algebraicSymbolNegRight,
     eval_negRightVariablesHom,
     eval_algebraicSymbol_eq_eval_shiftedBoxPolynomial]
@@ -664,13 +603,10 @@ theorem forall_realStableOrZero_or_symbol_or_negRight_of_preserves
       (forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
         hT W hW horient)
   · have hne : ∀ W, (∀ i, 0 < (W i).im) →
-        shiftedBoxOrientationValue κ T W ≠ 0 := by
-      intro W hW horient
-      exact hcross ⟨W, hW, horient⟩
+        shiftedBoxOrientationValue κ T W ≠ 0 :=
+      fun W hW horient ↦ hcross ⟨W, hW, horient⟩
     let W₀ : σ → ℂ := fun _ => Complex.I
-    have hW₀ : ∀ i, 0 < (W₀ i).im := by
-      intro i
-      simp [W₀]
+    have hW₀ : ∀ i, 0 < (W₀ i).im := by simp [W₀]
     rcases lt_or_gt_of_ne (hne W₀ hW₀) with hneg₀ | hpos₀
     · right
       right
