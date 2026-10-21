@@ -32,8 +32,7 @@ supports. -/
 theorem support_hadamardProduct_eq (p q : ℝ[X]) :
     (hadamardProduct p q).support = p.support ∩ q.support := by
   rw [support_hadamardProduct_eq_filter_right]
-  ext n
-  simp [mem_support_iff]
+  ext n; simp [mem_support_iff]
 
 /-- The support of a Hadamard product is contained in the left support. -/
 theorem support_hadamardProduct_subset_left (p q : ℝ[X]) :
@@ -88,8 +87,7 @@ theorem coeff_schurSzegoComp_eq_zero_of_lt {n k : Nat} (hk : n < k) (f g : ℝ[X
 
 theorem schurSzegoComp_comm (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g = schurSzegoComp n g f := by
-  ext k
-  simp [coeff_schurSzegoComp, mul_comm]
+  ext k; simp [coeff_schurSzegoComp, mul_comm]
 
 theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).natDegree ≤ n :=
@@ -99,8 +97,7 @@ theorem natDegree_schurSzegoComp_le (n : Nat) (f g : ℝ[X]) :
 theorem reflect_schurSzegoComp (n : Nat) (f p : ℝ[X]) :
     reflect n (schurSzegoComp n f p) =
       schurSzegoComp n (reflect n f) (reflect n p) := by
-  ext k
-  rw [coeff_reflect]
+  ext k; rw [coeff_reflect]
   by_cases hk : k ≤ n
   · rw [revAt_le hk, coeff_schurSzegoComp_of_le (Nat.sub_le n k),
       coeff_schurSzegoComp_of_le hk, coeff_reflect, coeff_reflect,
@@ -135,8 +132,7 @@ coefficient sequences. -/
 theorem schurSzegoComp_binomialLift (n : Nat) (f₀ g₀ : ℝ[X]) :
     schurSzegoComp n (binomialLift n f₀) (binomialLift n g₀) =
       binomialLift n (hadamardProduct f₀ g₀) := by
-  ext k
-  simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
+  ext k; simp only [coeff_schurSzegoComp, coeff_binomialLift, coeff_hadamardProduct]
   by_cases hk : k ≤ n
   · simp only [ite_eq_left hk]
     have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hk).ne'
@@ -182,9 +178,8 @@ theorem coeff_two_schurSzegoComp_of_two_le
   have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hn0 : 0 < (n : ℝ) := by linarith
   have hn1 : 0 < (n : ℝ) - 1 := by linarith
-  have hden : (n : ℝ) * ((n : ℝ) - 1) ≠ 0 := (mul_pos hn0 hn1).ne'
   rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_two]
-  field_simp [hden]
+  field_simp [show (n : ℝ) * ((n : ℝ) - 1) ≠ 0 by positivity]
 
 /-- Cubic coefficient of a fixed-degree Schur--Szegő composition, with
 `Nat.choose n 3` expanded. -/
@@ -197,18 +192,14 @@ theorem coeff_three_schurSzegoComp_of_three_le
   have hn0 : 0 < (n : ℝ) := by linarith
   have hn1 : 0 < (n : ℝ) - 1 := by linarith
   have hn2 : 0 < (n : ℝ) - 2 := by linarith
-  have hdenpos : 0 < (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) :=
-    mul_pos (mul_pos hn0 hn1) hn2
-  have hden : (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) ≠ 0 := hdenpos.ne'
   rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_three]
-  field_simp [hden]
+  field_simp [show (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) ≠ 0 by positivity]
 
 /-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
 theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g =
       diagonalOperator (fun k => g.coeff k / (Nat.choose n k : ℝ)) f := by
-  ext k
-  rw [coeff_diagonalOperator, coeff_schurSzegoComp]
+  ext k; rw [coeff_diagonalOperator, coeff_schurSzegoComp]
   by_cases hk : k ≤ n
   · rw [ite_eq_left hk]
     ring
@@ -257,8 +248,7 @@ theorem six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial
     calc
       6 * (n * (n - 1).descFactorial (n - 3)) =
           3 * ((2 * (n - 1).descFactorial (n - 3)) * n) := by ring
-      _ = 3 * (Nat.factorial (n - 1) * n) := by rw [hdesc]
-      _ = 3 * Nat.factorial n := by rw [hfact]
+      _ = 3 * Nat.factorial n := by rw [hdesc, hfact]
   · norm_num
     have hsub : n - 2 - (n - 3) = 1 := by lia
     have hdesc : (n - 2).descFactorial (n - 3) = Nat.factorial (n - 2) := by
@@ -272,8 +262,7 @@ theorem six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial
       6 * (Nat.choose n 2 * (n - 2).descFactorial (n - 3)) =
           3 * (Nat.choose n 2 * 2 * (n - 2).descFactorial (n - 3)) := by
         ring
-      _ = 3 * (Nat.choose n 2 * 2 * Nat.factorial (n - 2)) := by rw [hdesc]
-      _ = 3 * Nat.factorial n := by rw [hchoose]
+      _ = 3 * Nat.factorial n := by rw [hdesc, hchoose]
   · norm_num
     rw [Nat.descFactorial_self,
       ← Nat.choose_mul_factorial_mul_factorial (show 3 ≤ n from hn)]
@@ -289,16 +278,13 @@ theorem choose_three_div_choose_eq_six_mul_descFactorial_div_factorial
   have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
     Nat.cast_choose_ne_zero (R := ℝ) (hk.trans hn)
   have hfact : (Nat.factorial n : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
-  have h :
-      (6 : ℝ) *
-          ((Nat.choose n k : ℝ) * ((n - k).descFactorial (n - 3) : ℝ)) =
-        (Nat.choose 3 k : ℝ) * (Nat.factorial n : ℝ) := by
-    exact_mod_cast
-      six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial
-        hn hk
   field_simp [hchoose, hfact]
-  rw [← h]
-  ring
+  have h : (6 : ℝ) * ((Nat.choose n k : ℝ) *
+      ((n - k).descFactorial (n - 3) : ℝ)) =
+      (Nat.choose 3 k : ℝ) * Nat.factorial n := by
+    exact_mod_cast
+      six_mul_choose_mul_descFactorial_sub_three_eq_choose_three_mul_factorial hn hk
+  simpa [mul_assoc, mul_comm, mul_left_comm] using h.symm
 
 /-- Coefficient form of
 `choose_three_div_choose_eq_six_mul_descFactorial_div_factorial`, matching the
@@ -377,11 +363,9 @@ theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
   ext k
   rw [coeff_schurSzegoComp, coeff_jensenPolynomial]
   by_cases hk3 : k ≤ 3
-  · have hchoose3 : (Nat.choose 3 k : ℝ) ≠ 0 :=
-      Nat.cast_choose_ne_zero (R := ℝ) hk3
-    by_cases hkn : k ≤ n
+  · by_cases hkn : k ≤ n
     · simp only [hk3, hkn, ite_true]
-      field_simp [hchoose3]
+      field_simp [Nat.cast_choose_ne_zero (R := ℝ) hk3]
     · have hnlt : n < k := Nat.lt_of_not_le hkn
       simp [hk3, hkn, Nat.choose_eq_zero_of_lt hnlt]
   · have hklt : 3 < k := Nat.lt_of_not_le hk3
@@ -413,8 +397,7 @@ theorem schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
     ← jensenPolynomial_mul_sequence_eq_diagonalOperator
       3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
         (fun k => p.coeff k / (Nat.choose n k : ℝ))]
-  congr with k
-  ring
+  congr with k; ring
 
 /-- Cubic-discriminant form of
 `schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized`. -/
@@ -481,13 +464,10 @@ three after `n - 3` derivatives. -/
 theorem natDegree_iterate_derivative_reflect_le_three
     {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) :
     ((derivative^[n - 3]) (reflect n p)).natDegree ≤ 3 := by
-  calc
-    ((derivative^[n - 3]) (reflect n p)).natDegree ≤
-        (reflect n p).natDegree - (n - 3) := by
-      simpa using natDegree_iterate_derivative (reflect n p) (n - 3)
-    _ ≤ n - (n - 3) := Nat.sub_le_sub_right
-      (Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hpdeg]) _
-    _ = 3 := by lia
+  have hder := natDegree_iterate_derivative (reflect n p) (n - 3)
+  have href : (reflect n p).natDegree ≤ n :=
+    Polynomial.natDegree_reflect_le.trans <| by rw [max_eq_left hpdeg]
+  lia
 
 /-- The reflected iterated-derivative section has degree at most three. -/
 theorem natDegree_reflect_iterate_derivative_reflect_le_three
@@ -565,9 +545,6 @@ theorem cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le
   have hc2R : (0 : ℝ) < (Nat.choose n 2 : ℝ) := by exact_mod_cast Nat.choose_pos h2n
   have hc3R : (0 : ℝ) < (Nat.choose n 3 : ℝ) := by exact_mod_cast Nat.choose_pos hn
   have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast lt_of_lt_of_le (by norm_num) hn
-  have hc2ne : (Nat.choose n 2 : ℝ) ≠ 0 := ne_of_gt hc2R
-  have hc3ne : (Nat.choose n 3 : ℝ) ≠ 0 := ne_of_gt hc3R
-  have hnne : (n : ℝ) ≠ 0 := ne_of_gt hnR
   have hKpos : (0 : ℝ) <
       (n : ℝ) ^ 3 * (Nat.choose n 2 : ℝ) ^ 3 * (Nat.choose n 3 : ℝ) ^ 2 := by
     positivity
@@ -580,7 +557,7 @@ theorem cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le
         coeff_schurSzegoComp_of_le h2n f p,
         coeff_schurSzegoComp_of_le hn f p,
         Nat.choose_zero_right, Nat.choose_one_right, Nat.cast_one]
-    field_simp
+    field_simp [ne_of_gt hc2R, ne_of_gt hc3R, ne_of_gt hnR]
   rw [← mul_nonneg_iff_of_pos_right hKpos, hEq]
 
 /-- The diagonal-operator Jensen form is enough for the denominator-cleared
@@ -703,21 +680,16 @@ theorem schurSzegoComp_jensenPolynomial_eq_diagonalOperator_of_natDegree_le
     {n : Nat} {gamma : ℕ → ℝ} {p : ℝ[X]} (hp : p.natDegree ≤ n) :
     schurSzegoComp n (jensenPolynomial n gamma) p = diagonalOperator gamma p := by
   rw [schurSzegoComp_eq_diagonalOperator]
-  ext k
-  rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_jensenPolynomial]
+  ext k; rw [coeff_diagonalOperator, coeff_diagonalOperator, coeff_jensenPolynomial]
   by_cases hk : k ≤ n
-  · have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero (R := ℝ) hk
-    simp only [hk, ite_true]
-    field_simp [hchoose]
-  · have hk_lt : n < k := Nat.lt_of_not_le hk
-    have hp_coeff : p.coeff k = 0 :=
-      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp hk_lt)
-    simp [hk, hp_coeff]
+  · simp only [hk, ite_true]
+    field_simp [Nat.cast_choose_ne_zero (R := ℝ) hk]
+  · simp [hk, coeff_eq_zero_of_natDegree_lt
+      (lt_of_le_of_lt hp (Nat.lt_of_not_le hk))]
 
 @[simp] theorem schurSzegoComp_zero_left (n : Nat) (p : ℝ[X]) :
     schurSzegoComp n 0 p = 0 := by
-  ext k
-  simp [coeff_schurSzegoComp]
+  ext k; simp [coeff_schurSzegoComp]
 
 @[simp] theorem schurSzegoComp_zero_right (n : Nat) (f : ℝ[X]) :
     schurSzegoComp n f 0 = 0 := by
@@ -783,8 +755,7 @@ theorem HasNonnegCoeffs.schurSzegoComp {n : Nat} {f g : ℝ[X]}
 coefficient of the right argument. -/
 theorem schurSzegoComp_C_left (n : ℕ) (u : ℝ) (Q : ℝ[X]) :
     schurSzegoComp n (C u) Q = C (u * Q.coeff 0) := by
-  ext k
-  rw [coeff_schurSzegoComp]
+  ext k; rw [coeff_schurSzegoComp]
   rcases k with _ | k
   · simp only [Nat.zero_le, ite_true, Nat.choose_zero_right, Nat.cast_one, div_one, coeff_C]
   · simp only [coeff_C_succ, zero_mul, zero_div, ite_self]
