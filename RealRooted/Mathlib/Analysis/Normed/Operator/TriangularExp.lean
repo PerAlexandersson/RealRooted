@@ -45,8 +45,7 @@ private lemma exp_mulVec_of_mulVec_eq_zero (X : Matrix m m ℝ) (v : m → ℝ)
     { toFun := fun M => M *ᵥ v
       map_add' := fun _ _ => Matrix.add_mulVec _ _ _
       map_smul' := fun _ _ => Matrix.smul_mulVec _ _ _ }
-  have hL := (LinearMap.continuous_of_finiteDimensional L)
-  have := (hs.hasSum.map L hL).tsum_eq
+  have := (hs.hasSum.map L (LinearMap.continuous_of_finiteDimensional L)).tsum_eq
   calc
     L (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • X ^ n) =
         ∑' n : ℕ, L ((n.factorial : ℝ)⁻¹ • X ^ n) := by
@@ -78,19 +77,14 @@ private lemma norm_one_add_smul_le (M : Matrix m m ℝ) (c h : ℝ) (hh : 0 ≤ 
       rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
       have h1 : |((1 : Matrix m m ℝ) + h • M) i i| = 1 + h * M i i := by
         simp only [Matrix.add_apply, Matrix.one_apply_eq, Matrix.smul_apply, smul_eq_mul]
-        rw [abs_of_nonneg]
-        have := hdiag i
-        have := neg_abs_le (M i i)
-        nlinarith
+        rw [abs_of_nonneg (by nlinarith [hdiag i, neg_abs_le (M i i)])]
       have h2 : ∑ j ∈ Finset.univ.erase i, |((1 : Matrix m m ℝ) + h • M) i j| =
           h * ∑ j ∈ Finset.univ.erase i, |M i j| := by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun j hj => ?_
-        have hij : i ≠ j := (Finset.ne_of_mem_erase hj).symm
-        simp [Matrix.one_apply_ne hij, abs_mul, abs_of_nonneg hh]
+        simp [Matrix.one_apply_ne (Finset.ne_of_mem_erase hj).symm, abs_mul, abs_of_nonneg hh]
       rw [h1, h2]
-      have := hrow i
-      nlinarith
+      nlinarith [hrow i]
     convert hi using 1
     · rw [NNReal.coe_sum]
       simp only [coe_nnnorm]
@@ -105,7 +99,7 @@ private lemma exists_norm_exp_lt_one (M : Matrix m m ℝ) (c : ℝ) (hc : 0 < c)
   have he := hd.def (half_pos hc)
   obtain ⟨ε, hε, hball⟩ := Metric.eventually_nhds_iff.1 he
   have hS : 0 ≤ ∑ i, |M i i| := Finset.sum_nonneg fun i _ => abs_nonneg _
-  set R : ℝ := c + 1 + ∑ i, |M i i| with hR
+  set R : ℝ := c + 1 + ∑ i, |M i i|
   have hRpos : 0 < R := by linarith
   set h : ℝ := min (ε / 2) (1 / R) with hh
   have hpos : 0 < h := lt_min (half_pos hε) (by positivity)
@@ -114,11 +108,8 @@ private lemma exists_norm_exp_lt_one (M : Matrix m m ℝ) (c : ℝ) (hc : 0 < c)
     rwa [le_div_iff₀ hRpos] at this
   have hsum : ∀ i, |M i i| ≤ ∑ j, |M j j| := fun i =>
     Finset.single_le_sum (f := fun j => |M j j|) (fun j _ => abs_nonneg _) (Finset.mem_univ i)
-  have hdiag : ∀ i, h * |M i i| ≤ 1 := by
-    intro i
-    have := hsum i
-    have : h * |M i i| ≤ h * R := mul_le_mul_of_nonneg_left (by linarith) hpos.le
-    linarith
+  have hdiag : ∀ i, h * |M i i| ≤ 1 := fun i =>
+    (mul_le_mul_of_nonneg_left (by linarith [hsum i]) hpos.le).trans hhR
   have hch : c * h ≤ 1 := by nlinarith
   have h1 := norm_one_add_smul_le M c h hpos.le hch hdiag hrow
   have h2 := hball (y := h) (by
@@ -127,9 +118,8 @@ private lemma exists_norm_exp_lt_one (M : Matrix m m ℝ) (c : ℝ) (hc : 0 < c)
   simp only [zero_add, zero_smul, NormedSpace.exp_zero, one_mul, Real.norm_eq_abs,
     abs_of_pos hpos] at h2
   refine ⟨h, hpos, ?_⟩
-  have : NormedSpace.exp (h • M) = (1 + h • M) + (NormedSpace.exp (h • M) - 1 - h • M) := by
-    abel
-  rw [this]
+  rw [show NormedSpace.exp (h • M) =
+    (1 + h • M) + (NormedSpace.exp (h • M) - 1 - h • M) by abel]
   calc _ ≤ ‖(1 : Matrix m m ℝ) + h • M‖ + ‖NormedSpace.exp (h • M) - 1 - h • M‖ :=
         norm_add_le _ _
     _ ≤ (1 - c * h) + c / 2 * h := add_le_add h1 h2
@@ -188,8 +178,8 @@ private lemma tendsto_exp_of_upperTriangular {k : ℕ} (M : Matrix (Fin k) (Fin 
   have hR0 : 0 ≤ R := Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => abs_nonneg _
   set K : ℝ := 1 + 2 * R / c with hK
   have hK1 : 1 ≤ K := by
-    have : 0 ≤ 2 * R / c := by positivity
-    linarith
+    rw [hK]
+    exact le_add_of_nonneg_right (by positivity)
   have hKpos : 0 < K := by linarith
   have hRK : R / K ≤ c / 2 := by
     rw [div_le_iff₀ hKpos, hK]
@@ -211,12 +201,10 @@ private lemma tendsto_exp_of_upperTriangular {k : ℕ} (M : Matrix (Fin k) (Fin 
     intro i j hij
     rw [hentry]
     rcases lt_or_gt_of_ne hij with h | h
-    · have hle : (i : ℕ) + 1 ≤ j := h
-      have hdj : d j = d i * K ^ ((j : ℕ) - i) := by
+    · have hdj : d j = d i * K ^ ((j : ℕ) - i) := by
         simp only [d, ← pow_add]; congr 1; lia
       have hpow : K ≤ K ^ ((j : ℕ) - i) := by
-        calc K = K ^ 1 := (pow_one K).symm
-          _ ≤ K ^ ((j : ℕ) - i) := pow_le_pow_right₀ hK1 (by lia)
+        simpa using pow_le_pow_right₀ hK1 (show 1 ≤ (j : ℕ) - i by lia)
       have hKp : 0 < K ^ ((j : ℕ) - i) := pow_pos hKpos _
       have heq : d i * M i j * (d j)⁻¹ = M i j / K ^ ((j : ℕ) - i) := by
         rw [hdj]; field_simp [hd i]
@@ -229,15 +217,14 @@ private lemma tendsto_exp_of_upperTriangular {k : ℕ} (M : Matrix (Fin k) (Fin 
     have h1 : ∑ j ∈ Finset.univ.erase i, |M' i j| ≤
         ∑ j ∈ Finset.univ.erase i, |M i j| / K :=
       Finset.sum_le_sum fun j hj => hoff i j (Finset.ne_of_mem_erase hj).symm
-    have h2 : ∑ j ∈ Finset.univ.erase i, |M i j| ≤ ∑ j, |M i j| :=
-      Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _)
-        fun j _ _ => abs_nonneg _
-    have h3 : ∑ j, |M i j| ≤ R :=
-      Finset.single_le_sum (f := fun i => ∑ j, |M i j|)
-        (fun i _ => Finset.sum_nonneg fun j _ => abs_nonneg _) (Finset.mem_univ i)
+    have h2 : ∑ j ∈ Finset.univ.erase i, |M i j| ≤ R :=
+      (Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _)
+        fun j _ _ => abs_nonneg _).trans <|
+          Finset.single_le_sum (f := fun i => ∑ j, |M i j|)
+            (fun i _ => Finset.sum_nonneg fun j _ => abs_nonneg _) (Finset.mem_univ i)
     rw [← Finset.sum_div] at h1
     have h4 : (∑ j ∈ Finset.univ.erase i, |M i j|) / K ≤ R / K :=
-      div_le_div_of_nonneg_right (h2.trans h3) hKpos.le
+      div_le_div_of_nonneg_right h2 hKpos.le
     linarith [hci i]
   obtain ⟨h, hh, hq⟩ := exists_norm_exp_lt_one M' (c / 2) (half_pos hc) hrow
   have hlim := tendsto_exp_of_norm_exp_lt_one M' h hh hq
@@ -262,16 +249,12 @@ private lemma exists_kernel_vec {n : ℕ} (S : Matrix (Fin (n + 1)) (Fin (n + 1)
     exact Finset.prod_eq_zero (Finset.mem_univ (Fin.last n)) hlast
   obtain ⟨v, hv0, hv⟩ := Matrix.exists_mulVec_eq_zero_iff.2 hdet
   have hne : (Finset.univ.filter fun j => v j ≠ 0).Nonempty := by
-    by_contra h
-    apply hv0
-    funext j
-    by_contra hj
-    exact h ⟨j, by simpa using hj⟩
+    obtain ⟨j, hj⟩ := Function.ne_iff.mp hv0
+    refine ⟨j, Finset.mem_filter.2 ⟨Finset.mem_univ _, ?_⟩⟩
+    simpa only [Pi.zero_apply] using hj
   set i := (Finset.univ.filter fun j => v j ≠ 0).max' hne with hidef
   have hi : v i ≠ 0 := by
-    have := Finset.max'_mem _ hne
-    rw [← hidef] at this
-    exact (Finset.mem_filter.1 this).2
+    simpa only [← hidef] using (Finset.mem_filter.1 (Finset.max'_mem _ hne)).2
   have hgt : ∀ j, i < j → v j = 0 := fun j hj => by
     by_contra h
     exact not_le.2 hj (Finset.le_max' _ j (by simp [h]))
@@ -318,9 +301,8 @@ private lemma matrix_main {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
   have hrow : ∀ j, S (Fin.last n) j = 0 := by
     intro j
     rcases (Fin.le_last j).lt_or_eq with h | h
-    · change j < Fin.last n at h
-      exact hSU h
-    · rw [h]; exact hSl
+    · exact hSU h
+    · simpa [h] using hSl
   refine ⟨η, ?_, hηl, ?_⟩
   · have : A = S + a • (1 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) := by simp [hSdef]
     rw [this, Matrix.add_mulVec, hη, Matrix.smul_mulVec, Matrix.one_mulVec, zero_add]
@@ -374,12 +356,7 @@ private lemma matrix_main {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
     by_cases hi : i = Fin.last n
     · subst hi; simp [hNdef, hPdef, hSl, hηl]
     · obtain ⟨i', rfl⟩ := Fin.exists_castSucc_eq.2 hi
-      have := hgap i'
-      have hNii : N i'.castSucc i'.castSucc =
-          A i'.castSucc i'.castSucc - a := by
-        simp [hNdef, hPdef, hSe, hi]
-      rw [hNii]
-      linarith
+      simpa [hNdef, hPdef, hSe, hi] using sub_neg.mpr (hgap i')
   have hlimN := tendsto_exp_of_upperTriangular N hNU hNd
   set v := ξ - η with hvdef
   have hPv : P *ᵥ v = 0 := by
@@ -400,9 +377,8 @@ private lemma matrix_main {n : ℕ} (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
     have := ((continuous_id.matrix_mulVec (continuous_const (y := v))).tendsto
       (0 : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)).comp hlimN
     simpa [Function.comp_def] using this
-  have := (tendsto_const_nhds (x := η)).add hlimv
-  rw [add_zero] at this
-  exact this.congr fun t => (hfun t).symm
+  simpa only [add_zero] using
+    ((tendsto_const_nhds (x := η)).add hlimv).congr fun t => (hfun t).symm
 
 private lemma repr_exp_smul {n : ℕ} {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [FiniteDimensional ℝ E]
@@ -432,6 +408,44 @@ private lemma repr_exp_smul {n : ℕ} {E : Type*}
     _ = NormedSpace.exp (t • LinearMap.toMatrix b b T.toLinearMap) *ᵥ
         ⇑(b.repr z) := congrArg (fun M => M *ᵥ ⇑(b.repr z)) h
 
+private lemma continuous_main {n : ℕ} {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E] [FiniteDimensional ℝ E]
+    (b : Module.Basis (Fin (n + 1)) ℝ E) (T : E →L[ℝ] E)
+    (hT : (LinearMap.toMatrix b b T.toLinearMap).IsUpperTriangular)
+    (hgap : ∀ i : Fin n, LinearMap.toMatrix b b T.toLinearMap i.castSucc i.castSucc <
+      LinearMap.toMatrix b b T.toLinearMap (Fin.last n) (Fin.last n)) :
+    ∃ y : E,
+      T y = LinearMap.toMatrix b b T.toLinearMap (Fin.last n) (Fin.last n) • y ∧
+      b.repr y (Fin.last n) = 1 ∧
+      ∀ x : E, b.repr x (Fin.last n) = 1 →
+        Tendsto (fun t : ℝ =>
+          Real.exp (-t * LinearMap.toMatrix b b T.toLinearMap
+            (Fin.last n) (Fin.last n)) • NormedSpace.exp (t • T) x)
+          atTop (𝓝 y) := by
+  set A := LinearMap.toMatrix b b T.toLinearMap with hAdef
+  set a := A (Fin.last n) (Fin.last n)
+  obtain ⟨eta, heta, hetal, hlim⟩ := matrix_main A hT hgap
+  let y := b.equivFunL.symm eta
+  have hrep : ⇑(b.repr y) = eta := b.equivFunL.apply_symm_apply eta
+  have heigen : T y = a • y := by
+    apply b.repr.injective
+    ext i
+    have hmul := congrFun (LinearMap.toMatrix_mulVec_repr b b T.toLinearMap y) i
+    rw [ContinuousLinearMap.coe_coe, ← hAdef, hrep, heta] at hmul
+    simpa [map_smul, Finsupp.smul_apply, hrep] using hmul.symm
+  refine ⟨y, heigen, by rw [hrep, hetal], ?_⟩
+  intro x hx
+  have hkey : ∀ t : ℝ,
+      b.equivFunL (Real.exp (-t * a) • NormedSpace.exp (t • T) x) =
+        Real.exp (-t * a) • (NormedSpace.exp (t • A) *ᵥ ⇑(b.repr x)) := by
+    intro t
+    rw [map_smul]
+    congr 1
+    exact repr_exp_smul b T t x
+  refine ((b.equivFunL.symm.continuous.tendsto eta).comp (hlim (⇑(b.repr x)) hx)).congr
+    fun t => ?_
+  rw [Function.comp_apply, ← hkey t, ContinuousLinearEquiv.symm_apply_apply]
+
 end TriExp
 
 namespace ContinuousLinearMap
@@ -455,30 +469,9 @@ theorem tendsto_exp_neg_mul_smul_exp_of_isUpperTriangular {n : ℕ} {E : Type*}
           Real.exp (-t * LinearMap.toMatrix b b T.toLinearMap (Fin.last n) (Fin.last n)) •
             NormedSpace.exp (t • T) x)
         atTop (𝓝 y) := by
-  set A := LinearMap.toMatrix b b T.toLinearMap with hAdef
-  set a := A (Fin.last n) (Fin.last n) with hadef
-  obtain ⟨η, hη, hηl, hlim⟩ := matrix_main A hT hgap
-  have key : ∀ t : ℝ, b.equivFunL (Real.exp (-t * a) • NormedSpace.exp (t • T) x) =
-      Real.exp (-t * a) • (NormedSpace.exp (t • A) *ᵥ ⇑(b.repr x)) := by
-    intro t
-    rw [map_smul]
-    congr 1
-    exact repr_exp_smul b T t x
-  have hT' : Tendsto (fun t : ℝ => Real.exp (-t * a) • NormedSpace.exp (t • T) x) atTop
-      (𝓝 (b.equivFunL.symm η)) := by
-    have := (b.equivFunL.symm.continuous.tendsto η).comp (hlim (⇑(b.repr x)) hx)
-    refine this.congr fun t => ?_
-    rw [Function.comp_apply, ← key t, ContinuousLinearEquiv.symm_apply_apply]
-  have hrep : ⇑(b.repr (b.equivFunL.symm η)) = η := b.equivFunL.apply_symm_apply η
-  refine ⟨b.equivFunL.symm η, ⟨?_, ?_, hT'⟩, ?_⟩
-  · apply b.repr.injective
-    ext i
-    have h1 := congrFun (LinearMap.toMatrix_mulVec_repr b b T.toLinearMap (b.equivFunL.symm η)) i
-    rw [ContinuousLinearMap.coe_coe, ← hAdef, hrep, hη] at h1
-    rw [← h1, map_smul, Finsupp.smul_apply, hrep]; rfl
-  · rw [hrep, hηl]
-  · rintro y ⟨-, -, hy⟩
-    exact tendsto_nhds_unique hy hT'
+  obtain ⟨y, heigen, hy, hlim⟩ := continuous_main b T hT hgap
+  refine ⟨y, ⟨heigen, hy, hlim x hx⟩, ?_⟩
+  exact fun _ ⟨_, _, hz⟩ => tendsto_nhds_unique hz (hlim x hx)
 
 /-- An upper-triangular flow with a strict top diagonal gap has a normalized
 top eigenvector, and every vector with top coordinate one converges to it
@@ -499,35 +492,7 @@ theorem exists_eigenvector_tendsto_of_isUpperTriangular {n : ℕ} {E : Type*}
         Tendsto (fun t : ℝ =>
           Real.exp (-t * LinearMap.toMatrix b b T.toLinearMap
             (Fin.last n) (Fin.last n)) • NormedSpace.exp (t • T) x)
-          atTop (𝓝 y) := by
-  set A := LinearMap.toMatrix b b T.toLinearMap with hAdef
-  set a := A (Fin.last n) (Fin.last n) with hadef
-  obtain ⟨eta, heta, hetal, hlim⟩ := matrix_main A hT hgap
-  let y := b.equivFunL.symm eta
-  have hrep : ⇑(b.repr y) = eta := b.equivFunL.apply_symm_apply eta
-  have heigen : T y = a • y := by
-    apply b.repr.injective
-    ext i
-    have hmul := congrFun
-      (LinearMap.toMatrix_mulVec_repr b b T.toLinearMap y) i
-    rw [ContinuousLinearMap.coe_coe, ← hAdef, hrep, heta] at hmul
-    rw [← hmul, map_smul, Finsupp.smul_apply, hrep]
-    rfl
-  refine ⟨y, heigen, by rw [hrep, hetal], ?_⟩
-  intro x hx
-  have hkey : ∀ t : ℝ,
-      b.equivFunL
-          (Real.exp (-t * a) • NormedSpace.exp (t • T) x) =
-        Real.exp (-t * a) •
-          (NormedSpace.exp (t • A) *ᵥ ⇑(b.repr x)) := by
-    intro t
-    rw [map_smul]
-    congr 1
-    exact repr_exp_smul b T t x
-  have hlim' := (b.equivFunL.symm.continuous.tendsto eta).comp
-    (hlim (⇑(b.repr x)) hx)
-  refine hlim'.congr fun t => ?_
-  rw [Function.comp_apply, ← hkey t,
-    ContinuousLinearEquiv.symm_apply_apply]
+          atTop (𝓝 y) :=
+  continuous_main b T hT hgap
 
 end ContinuousLinearMap
