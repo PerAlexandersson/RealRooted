@@ -73,11 +73,8 @@ theorem isRealRooted_of_product_scalar_factor_sequence
     sequence_of_base_and_step (by simpa using hbase) fun n hP => by
       have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
         simpa [hscalar n] using isRealRooted_C_mul_of_isRealRooted hP (ha n)
-      have hnext :
-          (F n * P (2 * n + 1) ≠ 0 ∧ (F n * P (2 * n + 1)).Splits) :=
-        isRealRooted_mul_of_isRealRooted (hfactor n) hodd
       simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-        (by simpa [hstep n] using hnext)
+        (by simpa [hstep n] using isRealRooted_mul_of_isRealRooted (hfactor n) hodd)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits :=
     isRealRooted_of_C_lift_sequence heven ha hscalar
   exact isRealRooted_of_even_odd_sequence heven hodd
@@ -140,12 +137,9 @@ theorem isRealRooted_of_product_scalar_factor_sequence_from
         have hodd : P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
           simpa [hscalar n hn] using
             isRealRooted_C_mul_of_isRealRooted hP (ha n hn)
-        have hnext :
-            (F n * P (2 * n + 1) ≠ 0 ∧
-              (F n * P (2 * n + 1)).Splits) :=
-          isRealRooted_mul_of_isRealRooted (hfactor n hn) hodd
         simpa [Nat.mul_succ, Nat.succ_eq_add_one, Nat.add_assoc] using
-          (by simpa [hstep n hn] using hnext)
+          (by simpa [hstep n hn] using
+            isRealRooted_mul_of_isRealRooted (hfactor n hn) hodd)
   have hodd : ∀ n : Nat, P (2 * n + 1) ≠ 0 ∧ (P (2 * n + 1)).Splits := by
     intro n
     by_cases hn : n < N
