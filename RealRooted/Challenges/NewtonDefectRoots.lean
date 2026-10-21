@@ -8,6 +8,10 @@ version = 1
 section = "theorems"
 slug = "local-newton-defect-roots"
 formalized = "2026-10-11"
+references = [
+  "KarpenkoVishnyakova2017",
+  "AkianGaubertSharify2017",
+]
 
 [[theorems]]
 name = "RealRooted.NewtonDefectRoots.esym_sq_sub_sq_esym_le"
@@ -81,14 +85,7 @@ ratio; no bound on the ambient degrees is assumed.
 
 ## References
 
-I. Karpenko and A. Vishnyakova, “On sufficient conditions for a polynomial to
-be sign-independently hyperbolic or to have real separated zeros,” *Mathematical
-Inequalities & Applications* 20 (2017),
-[doi:10.7153/mia-20-18](https://doi.org/10.7153/mia-20-18).
-M. Akian, S. Gaubert, and M. Sharify, “Log-majorization of the moduli of the
-eigenvalues of a matrix polynomial by tropical roots,” *Linear Algebra and its
-Applications*, [doi:10.1016/j.laa.2016.11.004](https://doi.org/10.1016/j.laa.2016.11.004),
-[arXiv:1304.2967](https://arxiv.org/abs/1304.2967).
+See [@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
 <!-- /realrooted-catalog-content -->
 -/
 

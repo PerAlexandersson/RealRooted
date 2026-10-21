@@ -10,6 +10,9 @@ version = 1
 section = "families"
 slug = "laguerre-polynomials"
 formalized = "2026-09-07"
+references = [
+  "Szego1939",
+]
 
 [[definitions]]
 name = "Polynomial.generalizedLaguerre"
@@ -74,9 +77,7 @@ $$
 
 ## References
 
-G. Szegő, [*Orthogonal Polynomials*](https://doi.org/10.1090/coll/023),
-American Mathematical Society Colloquium Publications 23 (1939), Chapter V.
-The general three-term theory is on the
+See [@Szego1939, Ch. V]. The general three-term theory is on the
 [Favard page](/RealRooted/theorems/favard/).
 <!-- /realrooted-catalog-content -->
 

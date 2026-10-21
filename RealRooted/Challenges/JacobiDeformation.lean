@@ -10,6 +10,9 @@ version = 1
 section = "families"
 slug = "jacobi-deformation"
 formalized = "2026-10-06"
+references = [
+  "MicchelliWilloughby1979",
+]
 authors = ["Micchelli", "Willoughby", "Alexandersson"]
 years = [1979, 2026]
 
@@ -105,7 +108,8 @@ eigenvalues of the Jacobi operator.
 2. At the roots of a quasi-Jacobi polynomial $p_q - \tau p_{q-1}$, exact
    quadrature symmetrizes the collocation matrix of the Jacobi operator, and
    all its entries are strictly positive.
-3. The **Micchelli–Willoughby theorem** makes the initial spectral products of
+3. The **Micchelli–Willoughby theorem** [@MicchelliWilloughby1979] makes the initial
+   spectral products of
    that matrix entrywise nonnegative: if $A$ is a real symmetric matrix with
    nonnegative entries and, in the simple-spectrum case formalized here,
    eigenvalues $\mu_1 < \dots < \mu_N$, then
@@ -121,15 +125,11 @@ eigenvalues of the Jacobi operator.
 
 ## References
 
-The theorem and its proof are original to this library (P. Alexandersson,
-2026); there is no preprint yet.
-
-C. A. Micchelli and R. A. Willoughby, “On functions which preserve the class
-of Stieltjes matrices,” *Linear Algebra and its Applications* 23 (1979),
-141–156, [doi:10.1016/0024-3795(79)90098-3](https://doi.org/10.1016/0024-3795(79)90098-3).
+The theorem and its proof are original to this library (P. Alexandersson, 2026);
+there is no preprint yet. For Stieltjes matrices, see [@MicchelliWilloughby1979].
 The triangle is [OEIS A132885](https://oeis.org/A132885); the central trinomial
-coefficients are [OEIS A002426](https://oeis.org/A002426). The Jacobi
-polynomials used in the proof are on the
+coefficients are [OEIS A002426](https://oeis.org/A002426). The Jacobi polynomials
+used in the proof are on the
 [Jacobi polynomials page](/RealRooted/families/jacobi-polynomials/).
 <!-- /realrooted-catalog-content -->
 

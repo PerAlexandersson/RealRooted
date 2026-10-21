@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "totally-nonnegative-hadamard-obstruction"
 formalized = "2026-09-30"
+references = [
+  "Wagner1992",
+]
 
 [[theorems]]
 name = "RealRooted.TotallyNonnegativeHadamardObstruction.exists_totallyNonneg_hadamard_det_neg"
@@ -34,10 +37,8 @@ fails; see `RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 
 ## References
 
-D. G. Wagner, [“Total positivity of Hadamard
-products,”](https://doi.org/10.1016/0022-247X(92)90261-B) *Journal of
-Mathematical Analysis and Applications* 163 (1992), 459–483. See also the
-[Hadamard product on symmetricfunctions.com](https://www.symmetricfunctions.com/realRooted.htm#hadamardProductDefinition).
+See [@Wagner1992] and the
+[Hadamard product on symmetricfunctions.com](sf:hadamardProductDefinition).
 <!-- /realrooted-catalog-content -->
 -/
 

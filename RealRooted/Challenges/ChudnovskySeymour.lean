@@ -10,6 +10,9 @@ version = 1
 section = "theorems"
 slug = "chudnovsky-seymour"
 formalized = "2026-07-09"
+references = [
+  "ChudnovskySeymour2007",
+]
 authors = ["Chudnovsky", "Seymour"]
 years = [2007]
 
@@ -34,19 +37,16 @@ headline = true
 
 The independence polynomial counts independent vertex sets by cardinality.
 Chudnovsky and Seymour proved that it is real-rooted for every finite
-claw-free graph.
+claw-free graph [@ChudnovskySeymour2007].
 
 ## References
 
-M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a
-clawfree graph,” *Journal of Combinatorial Theory, Series B* 97 (2007),
-350–357, [doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
-See also the
-[graph-polynomial context on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#clawFreeGraph).
+See [@ChudnovskySeymour2007] and the
+[graph-polynomial context on symmetricfunctions.com](sf:clawFreeGraph).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedGraphs.htm#clawFreeGraph
+sf:clawFreeGraph
 
 Original publication: M. Chudnovsky and P. Seymour, "The roots of the
 independence polynomial of a clawfree graph", J. Combin. Theory Ser. B 97

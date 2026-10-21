@@ -11,6 +11,10 @@ version = 1
 section = "theorems"
 slug = "lindstrom-gessel-viennot"
 formalized = "2026-09-17"
+references = [
+  "Lindstrom1973",
+  "GesselViennot1985",
+]
 authors = ["Lindström", "Gessel", "Viennot"]
 years = [1973, 1985]
 
@@ -65,7 +69,7 @@ label = "Paths of length n and powers of the edge matrix"
 <!-- realrooted-catalog-content -->
 # Lindström–Gessel–Viennot and total positivity
 
-The [Lindström–Gessel–Viennot lemma](https://www.symmetricfunctions.com/lgv-lemma.htm#lindstromGesselViennotLemma)
+The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma)
 expresses a path-matrix minor as a signed sum over vertex-disjoint path
 families. The formalization uses ordered cancellation certificates to show
 that the surviving terms have nonnegative weights.
@@ -87,11 +91,7 @@ Building on the path-cancellation proof in the LeanLGV library:
 
 ## References
 
-B. Lindström, “On the vector representations of induced matroids,” *Bull.
-London Math. Soc.* 5 (1973), 85–90.
-I. Gessel and G. Viennot, “Binomial determinants, paths, and hook length
-formulae,” *Advances in Mathematics* 58 (1985), 300–321.
-The kernel rows connect to the
+See [@Lindstrom1973; @GesselViennot1985]. The kernel rows connect to the
 [Brändén–Saud Leite page](/RealRooted/theorems/branden-leite/).
 <!-- /realrooted-catalog-content -->
 

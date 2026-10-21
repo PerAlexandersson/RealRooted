@@ -9,6 +9,10 @@ version = 1
 section = "theorems"
 slug = "cauchy-interlacing"
 formalized = "2026-07-10"
+references = [
+  "Godsil2017",
+  "Fisk2005x",
+]
 authors = ["Fisk"]
 years = [2005]
 
@@ -49,14 +53,12 @@ from the Courant–Fischer min-max principle.
 
 ## References
 
-C. D. Godsil, *Algebraic Combinatorics*, Routledge, 2017; and S. Fisk,
-“A very short proof of Cauchy’s interlace theorem for eigenvalues of Hermitian
-matrices,” *American Mathematical Monthly* 112 (2005), 118.  See also the
-[Cauchy interlacing entry on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#cauchyInterlacingTheorem).
+See [@Godsil2017; @Fisk2005x] and the
+[Cauchy interlacing entry on symmetricfunctions.com](sf:cauchyInterlacingTheorem).
 <!-- /realrooted-catalog-content -->
 
 Human statement:
-https://www.symmetricfunctions.com/realRootedInterlacing.htm#cauchyInterlacingTheorem
+sf:cauchyInterlacingTheorem
 
 References used by the catalog:
 

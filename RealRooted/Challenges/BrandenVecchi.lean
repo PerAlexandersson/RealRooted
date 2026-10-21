@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "branden-vecchi"
 formalized = "2026-09-12"
+references = [
+  "BrandenVecchi2025x",
+]
 authors = ["Brändén", "Vecchi"]
 years = [2025]
 
@@ -115,9 +118,9 @@ $$c_n = \sum_{k \leq n} A(n,k)\, d_k.$$
 
 For the incidence data of a poset, these generalize the Chow polynomials of
 matroids and posets; see the
-[Chow-polynomial definition on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedGraphs.htm#chowPolynomialDefinition).
+[Chow-polynomial definition on symmetricfunctions.com](sf:chowPolynomialDefinition).
 
-**Theorem (Brändén–Vecchi).** If $A$ is lower unitriangular
+**Theorem (Brändén–Vecchi).** [@BrandenVecchi2025x] If $A$ is lower unitriangular
 and totally nonnegative, then $c_n$ and $d_n$ have nonnegative coefficients
 and only real zeros. Moreover $c_n$ interlaces $c_{n+1}$, and $c_n$
 interlaces $d_n$.
@@ -137,9 +140,7 @@ Further results:
 
 ## References
 
-P. Brändén and L. Vecchi, “Chow polynomials of totally nonnegative matrices
-and posets” (2025).
-The resolution machinery comes from the
+See [@BrandenVecchi2025x]. The resolution machinery comes from the
 [Brändén–Saud Leite page](/RealRooted/theorems/branden-leite/).
 <!-- /realrooted-catalog-content -->
 

@@ -16,6 +16,11 @@ version = 1
 section = "concepts"
 slug = "laguerre-polya-class"
 formalized = "2026-09-11"
+references = [
+  "SchurPolya1914",
+  "Levin1964",
+  "Hutchinson1923",
+]
 authors = ["Pólya", "Schur"]
 years = [1914]
 
@@ -214,12 +219,7 @@ $\varphi(D)\, g$. Real-rootedness passes to limits of polynomials of bounded deg
 
 ## References
 
-G. Pólya and J. Schur, “Über zwei Arten von Faktorenfolgen in der Theorie der
-algebraischen Gleichungen,” *J. Reine Angew. Math.* 144 (1914), 89–113;
-B. Ja. Levin, *Distribution of zeros of entire functions*, Chapter VIII;
-J. I. Hutchinson, “On a remarkable class of entire functions,” *Transactions
-of the American Mathematical Society* 25 (1923), 325–332,
-[doi:10.1090/s0002-9947-1923-1501248-1](https://doi.org/10.1090/s0002-9947-1923-1501248-1).
+See [@SchurPolya1914], [@Levin1964, Ch. VIII], and [@Hutchinson1923].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The definition is in

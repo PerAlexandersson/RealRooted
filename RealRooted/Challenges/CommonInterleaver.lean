@@ -15,6 +15,11 @@ version = 1
 section = "concepts"
 slug = "common-interleavers"
 formalized = "2026-07-03"
+references = [
+  "ChudnovskySeymour2007",
+  "Branden2015",
+  "Leander2016x",
+]
 authors = ["Chudnovsky", "Seymour", "Leander"]
 years = [2007, 2016]
 
@@ -114,7 +119,8 @@ interleaver** if a single real-rooted $h$ satisfies $f_i \ll h$ for every $i$.
 The family is **compatible** if every nonnegative combination
 $c_1 f_1 + \dotsb + c_m f_m$ is zero or real-rooted.
 
-**Theorem (Chudnovsky–Seymour).** For real-rooted polynomials with positive
+**Theorem (Chudnovsky–Seymour).** [@ChudnovskySeymour2007] For real-rooted
+polynomials with positive
 leading coefficients, the following are equivalent:
 
 1. every pair is compatible;
@@ -136,7 +142,7 @@ This is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the
 [Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
 
-**Theorem (Leander).** Let $f_0, \dotsc, f_{n-1}$ have positive leading
+**Theorem (Leander).** [@Leander2016x, Thm. 2.3] Let $f_0, \dotsc, f_{n-1}$ have positive leading
 coefficients, and suppose that $f_i$ and $f_j$ are compatible and $x f_i$ and
 $f_j$ are compatible whenever $i \le j$. Define
 $$
@@ -153,15 +159,7 @@ has largest root at most that of the polynomial at the root.
 
 ## References
 
-M. Chudnovsky and P. Seymour, “The roots of the independence polynomial of a
-clawfree graph,” *J. Combin. Theory Ser. B* 97 (2007), 350–357,
-[doi:10.1016/j.jctb.2006.06.001](https://doi.org/10.1016/j.jctb.2006.06.001).
-P. Brändén, [“Unimodality, log-concavity, real-rootedness and
-beyond,”](https://arxiv.org/abs/1410.6601) in *Handbook of Enumerative
-Combinatorics*, CRC Press (2015), Section 7.8.
-M. Leander, [“Compatible polynomials and edgewise
-subdivisions,”](https://arxiv.org/abs/1605.05287) arXiv:1605.05287 (2016),
-Theorem 2.3.
+See [@ChudnovskySeymour2007; @Branden2015, Sec. 7.8; @Leander2016x, Thm. 2.3].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

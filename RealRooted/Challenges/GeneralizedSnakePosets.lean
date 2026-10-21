@@ -14,6 +14,10 @@ version = 1
 section = "families"
 slug = "generalized-snake-posets"
 formalized = "2026-10-05"
+references = [
+  "BraunJal2026x",
+  "AlexanderssonJal2024x",
+]
 authors = ["Braun", "Jal", "Alexandersson"]
 years = [2024, 2026]
 
@@ -111,13 +115,16 @@ A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
 the letters $L$ and $R$. Braun and Jal show that the $h^*$-polynomial of its
 order polytope is the non-nesting rook polynomial $M_w$ of a skew board whose
 cells are the incomparable cross-chain pairs of $P(w)$. The board comes from
-the Alexandersson–Jal correspondence between naturally labeled width-two posets
+the Alexandersson–Jal correspondence [@AlexanderssonJal2024x] between
+naturally labeled width-two posets
 and skew shapes, under which the $P$-Eulerian polynomial is the non-nesting rook
 polynomial. The identification with the $h^*$-polynomial is
-cited from Braun–Jal and is not formalized. Lean formalizes the rook model:
+cited from Braun–Jal [@BraunJal2026x] and is not formalized. Lean formalizes
+the rook model:
 the board, its non-nesting rook polynomial $M_w$, and the recurrence below.
 
-**Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is real-rooted, and
+**Theorem (Braun–Jal).** [@BraunJal2026x] If $w$ is nonempty, then $M_w$ is
+real-rooted, and
 deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
 
 The proof uses the **modified Narayana polynomials** $P_n = t^{-1} N_{n+1}$,
@@ -140,14 +147,8 @@ Induction on the length of $w$ along the recurrence then gives the theorem.
 
 ## References
 
-Braun and Jal, [“Order polytopes of generalized snake posets are
-h*-real-rooted,”](https://arxiv.org/abs/2607.00922) arXiv:2607.00922 (2026);
-P. Alexandersson and A. Jal, [“Rook matroids and log-concavity of
-$P$-Eulerian polynomials,”](https://arxiv.org/abs/2410.00127) arXiv:2410.00127
-(2024), extended abstract in *Séminaire Lotharingien de Combinatoire* 93B
-(2025), Art. 59. See the
-[rook matroid section](https://www.symmetricfunctions.com/lattice-path-matroids.htm#rookMatroidPolynomials)
-of the lattice path matroids page on symmetricfunctions.com.
+See [@BraunJal2026x] and [@AlexanderssonJal2024x, Art. 59]. See also the
+[rook matroid section](sf:rookMatroidPolynomials) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

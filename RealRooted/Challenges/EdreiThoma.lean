@@ -9,6 +9,10 @@ version = 1
 section = "theorems"
 slug = "edrei-thoma"
 formalized = "2026-10-13"
+references = [
+  "AissenSchoenbergWhitney1952",
+  "Edrei1953",
+]
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.exists_canonicalProduct_representation"
@@ -127,20 +131,16 @@ Pólya-frequency sequence with $a_0 = 1$ arises this way: there are
 $\gamma \ge 0$ and nonnegative $\alpha_i, \beta_i$ with
 $\sum_i(\alpha_i+\beta_i) < \infty$ such that the generating function equals
 $e^{\gamma z}\prod_i(1+\alpha_i z)/\prod_i(1-\beta_i z)$ near $0$. The proof
-follows Edrei's determinant identities and monotone limits, but replaces his
+follows Edrei's determinant identities [@Edrei1953] and monotone limits, but replaces his
 use of Nevanlinna's second main theorem by an elementary growth argument
 (Jensen's formula and a Borel-type lemma). Together the two directions give the
 classification of all one-sided Pólya-frequency sequences.
 
 ## References
 
-M. Aissen, I. J. Schoenberg, and A. M. Whitney, “On the generating functions
-of totally positive sequences. I,” *Journal d’Analyse Mathématique* 2 (1952),
-93–103, [doi:10.1007/BF02786970](https://doi.org/10.1007/BF02786970), prove the easy direction.
-The converse is due to A. Edrei (1952); we
-follow his proof in *Canadian Journal of Mathematics* 5 (1953), 86–94,
-[doi:10.4153/CJM-1953-010-3](https://doi.org/10.4153/CJM-1953-010-3). See the
-[Edrei–Thoma theorem on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#edreiThomaTheorem).
+The easy direction is [@AissenSchoenbergWhitney1952]. The converse is due to Edrei;
+we follow [@Edrei1953]. See the
+[Edrei–Thoma theorem on symmetricfunctions.com](sf:edreiThomaTheorem).
 <!-- /realrooted-catalog-content -->
 -/
 

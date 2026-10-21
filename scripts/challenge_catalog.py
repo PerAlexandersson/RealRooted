@@ -28,6 +28,8 @@ from urllib.parse import urlsplit
 
 
 BASE_PATH = "/RealRooted/"
+SITE_ORIGIN = "https://peralexandersson.github.io"
+SYMCAT_ORIGIN = "https://www.symmetricfunctions.com/"
 # Lean identifier characters (Lean's `isLetterLike` and `isSubScriptAlnum`), so
 # names such as `embedComplₗ` or `forall₂_le` are not truncated to an ASCII prefix.
 _LEAN_LETTER = (
@@ -67,10 +69,21 @@ FORWARDING_ABBREV_RE = re.compile(
     r"(?:_root_\.)?[A-Za-z_][A-Za-z0-9_'.]*"
     r"(?:\s+[A-Za-z_][A-Za-z0-9_'.]*)*\s*$"
 )
+CITATION_GROUP_RE = re.compile(
+    r"\[((?:\s*@[^\];,\s]+(?:\s*,\s*[^;\]\n]+)?\s*)"
+    r"(?:;\s*@[^\];,\s]+(?:\s*,\s*[^;\]\n]+)?\s*)*)\]"
+)
+SF_TARGET_RE = re.compile(r"(?:\]\(\s*|\]:\s*)sf:([^)\s]+)")
 
 
 class CatalogError(ValueError):
     """A deterministic catalog source or audit validation error."""
+
+
+@dataclass(frozen=True)
+class Citation:
+    key: str
+    at: str | None = None
 
 
 @dataclass(frozen=True)
@@ -80,6 +93,7 @@ class CatalogItem:
     module: str | None
     label: str | None = None
     headline: bool = False
+    symcat: str | None = None
 
     @property
     def anchor(self) -> str:
@@ -95,6 +109,7 @@ class CatalogPage:
     authors: tuple[str, ...]
     years: tuple[int, ...]
     formalized: str
+    references: tuple[Citation, ...]
     definitions: tuple[CatalogItem, ...]
     theorems: tuple[CatalogItem, ...]
     content: str
@@ -107,6 +122,17 @@ class CatalogPage:
     @property
     def url(self) -> str:
         return f"{BASE_PATH}{self.section}/{self.slug}/"
+
+    @property
+    def citations(self) -> tuple[Citation, ...]:
+        """All listed and inline citations, in stable first-occurrence order."""
+        result: list[Citation] = []
+        seen: set[str] = set()
+        for citation in self.references + extract_citations(self.content):
+            if citation.key not in seen:
+                seen.add(citation.key)
+                result.append(citation)
+        return tuple(result)
 
 
 @dataclass(frozen=True)
@@ -238,12 +264,15 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
     result: list[CatalogItem] = []
     seen: set[str] = set()
     for index, record in enumerate(raw, start=1):
-        if not isinstance(record, dict) or set(record) - {"name", "module", "label", "headline"}:
+        if not isinstance(record, dict) or set(record) - {
+            "name", "module", "label", "headline", "symcat"
+        }:
             raise _source_error(path, f"invalid {expected_kind} record {index}")
         name = record.get("name")
         module = record.get("module")
         label = record.get("label")
         headline = record.get("headline", False)
+        symcat = record.get("symcat")
         if label is not None and (
             not isinstance(label, str) or not label.strip() or label.strip() != label or "\n" in label
         ):
@@ -254,6 +283,13 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
             raise _source_error(path, f"{expected_kind} record {index}: only theorems can be headlines")
         if headline and label is None:
             raise _source_error(path, f"{expected_kind} record {index}: a headline needs a label")
+        if symcat is not None and (
+            not isinstance(symcat, str)
+            or not symcat
+            or symcat.strip() != symcat
+            or any(character.isspace() for character in symcat)
+        ):
+            raise _source_error(path, f"{expected_kind} record {index} has an invalid symcat label")
         if not isinstance(name, str) or not NAME_RE.fullmatch(name):
             raise _source_error(path, f"{expected_kind} record {index} needs a fully qualified name")
         if module is not None:
@@ -272,11 +308,57 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         if name in seen:
             raise _source_error(path, f"duplicate {expected_kind} declaration {name}")
         seen.add(name)
-        result.append(CatalogItem(name, expected_kind, module, label, headline))
+        result.append(CatalogItem(name, expected_kind, module, label, headline, symcat))
     return tuple(result)
 
 
-def _published_title(path: str, content: str) -> str:
+def extract_citations(content: str) -> tuple[Citation, ...]:
+    """Extract the supported Pandoc-style citation groups from catalog Markdown."""
+    citations: list[Citation] = []
+    for group in CITATION_GROUP_RE.finditer(content):
+        for raw in group.group(1).split(";"):
+            key_and_at = raw.strip().removeprefix("@").split(",", 1)
+            key = key_and_at[0].strip()
+            at = key_and_at[1].strip() if len(key_and_at) == 2 else None
+            citations.append(Citation(key, at or None))
+    return tuple(citations)
+
+
+def extract_sf_labels(content: str) -> tuple[str, ...]:
+    """Return labels used as ``sf:`` Markdown link targets."""
+    return tuple(match.group(1) for match in SF_TARGET_RE.finditer(content))
+
+
+def _read_references(path: str, raw: Any) -> tuple[Citation, ...]:
+    if raw is None:
+        return ()
+    if not isinstance(raw, list):
+        raise _source_error(path, "references must be an array")
+    result: list[Citation] = []
+    seen: set[str] = set()
+    for index, item in enumerate(raw, start=1):
+        if isinstance(item, str):
+            key, at = item, None
+        elif isinstance(item, dict) and set(item) <= {"key", "at"}:
+            key, at = item.get("key"), item.get("at")
+        else:
+            raise _source_error(path, f"invalid reference record {index}")
+        if not isinstance(key, str) or not key or key.strip() != key or any(
+            character.isspace() for character in key
+        ):
+            raise _source_error(path, f"reference record {index} has an invalid key")
+        if at is not None and (
+            not isinstance(at, str) or not at or at.strip() != at or "\n" in at
+        ):
+            raise _source_error(path, f"reference record {index} has an invalid locator")
+        if key in seen:
+            raise _source_error(path, f"duplicate reference key {key}")
+        seen.add(key)
+        result.append(Citation(key, at))
+    return tuple(result)
+
+
+def _published_title(path: str, content: str, has_reference_keys: bool = False) -> str:
     lines = content.splitlines()
     headings = [line[2:].strip() for line in lines if re.fullmatch(r"#\s+.+", line)]
     if len(headings) != 1:
@@ -287,7 +369,17 @@ def _published_title(path: str, content: str) -> str:
     )
     if reference_at is None:
         raise _source_error(path, 'published content must contain a "## References" section')
-    if not any(line.strip() for line in lines[reference_at + 1 :]):
+    reference_end = next(
+        (
+            index
+            for index, line in enumerate(lines[reference_at + 1 :], start=reference_at + 1)
+            if re.fullmatch(r"#{1,2}\s+.+", line)
+        ),
+        len(lines),
+    )
+    if not has_reference_keys and not any(
+        line.strip() for line in lines[reference_at + 1 : reference_end]
+    ):
         raise _source_error(path, "References must not be empty")
     return headings[0]
 
@@ -369,6 +461,7 @@ def parse_challenge_source(
         "authors",
         "years",
         "formalized",
+        "references",
         "definitions",
         "theorems",
     }
@@ -385,6 +478,7 @@ def parse_challenge_source(
         raise _source_error(source_path, "slug must be lowercase hyphenated text")
     authors, years = _read_attribution(source_path, metadata)
     formalized = _read_formalized(source_path, metadata, commit_date)
+    references = _read_references(source_path, metadata.get("references"))
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
     if not definitions and not theorems:
@@ -397,10 +491,13 @@ def parse_challenge_source(
         authors=authors,
         years=years,
         formalized=formalized,
+        references=references,
         definitions=definitions,
         theorems=theorems,
         content=content,
-        title=_published_title(source_path, content),
+        title=_published_title(
+            source_path, content, bool(references or extract_citations(content))
+        ),
     )
 
 
@@ -902,6 +999,51 @@ def validate_audit_report(
     return report
 
 
+def load_symcat_snapshots(
+    repo_root: pathlib.Path,
+) -> tuple[dict[str, str], dict[str, dict[str, Any]]]:
+    """Load and validate the committed symmetricfunctions.com snapshots."""
+    directory = repo_root / "website" / "symcat"
+    labels_path = directory / "labels.json"
+    bibliography_path = directory / "bibliography.json"
+    try:
+        labels = json.loads(labels_path.read_text(encoding="utf-8"))
+        bibliography = json.loads(bibliography_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise CatalogError(f"cannot load SymCat snapshots: {error}") from error
+    if not isinstance(labels, dict) or not all(
+        isinstance(label, str)
+        and label
+        and isinstance(href, str)
+        and href
+        and not urlsplit(href).scheme
+        and not urlsplit(href).netloc
+        and not href.startswith("/")
+        for label, href in labels.items()
+    ):
+        raise CatalogError(f"{labels_path}: expected a mapping of labels to relative links")
+    if (
+        not isinstance(bibliography, dict)
+        or bibliography.get("schema_version") != 1
+        or set(bibliography) != {"schema_version", "entries"}
+        or not isinstance(bibliography["entries"], dict)
+    ):
+        raise CatalogError(f"{bibliography_path}: invalid bibliography snapshot schema")
+    entries = bibliography["entries"]
+    for key, entry in entries.items():
+        if (
+            not isinstance(key, str)
+            or not isinstance(entry, dict)
+            or set(entry) != {"label", "csl", "bibtex"}
+            or not isinstance(entry["label"], str)
+            or not entry["label"]
+            or not isinstance(entry["csl"], dict)
+            or not isinstance(entry["bibtex"], str)
+        ):
+            raise CatalogError(f"{bibliography_path}: invalid entry {key!r}")
+    return labels, entries
+
+
 def _safe_url(url: str) -> str | None:
     parsed = urlsplit(url)
     if parsed.scheme and parsed.scheme.lower() not in {"http", "https", "mailto"}:
@@ -915,7 +1057,14 @@ LINK_DEFINITION_RE = re.compile(r"\s{0,3}\[([^\]]+)\]:\s*(\S+)\s*")
 LIST_ITEM_RE = re.compile(r"(\s*)(?:([-*])|(\d+)\.)\s+(.+)")
 
 
-def render_markdown(markdown: str) -> str:
+def render_markdown(
+    markdown: str,
+    *,
+    symcat_labels: dict[str, str] | None = None,
+    bibliography: dict[str, dict[str, Any]] | None = None,
+    base_path: str = BASE_PATH,
+    generated_references: str = "",
+) -> str:
     """Render the deliberate Markdown subset, escaping raw HTML by default.
 
     Supported: headings, paragraphs, `-`/`*` and numbered lists whose items may
@@ -944,7 +1093,7 @@ def render_markdown(markdown: str) -> str:
     code_indent = 0
 
     def inline(text: str) -> str:
-        return _inline(text, references)
+        return _inline(text, references, symcat_labels, bibliography, base_path)
 
     def flush_paragraph() -> None:
         if paragraph:
@@ -1009,7 +1158,22 @@ def render_markdown(markdown: str) -> str:
         raise CatalogError("unterminated Markdown code fence")
     flush_paragraph()
     flush_list()
-    return "\n".join(blocks)
+    rendered = "\n".join(blocks)
+    if generated_references:
+        marker = '<h2 id="references">References</h2>'
+        marker_at = rendered.find(marker)
+        if marker_at == -1:
+            raise CatalogError('generated references need a "## References" section')
+        following = rendered.find("<h2 ", marker_at + len(marker))
+        insert_at = len(rendered) if following == -1 else following
+        rendered = (
+            rendered[:insert_at].rstrip()
+            + "\n"
+            + generated_references
+            + "\n"
+            + rendered[insert_at:]
+        )
+    return rendered
 
 
 def _anchor(text: str) -> str:
@@ -1017,8 +1181,16 @@ def _anchor(text: str) -> str:
     return plain or "section"
 
 
-def _inline(text: str, references: dict[str, str] | None = None) -> str:
+def _inline(
+    text: str,
+    references: dict[str, str] | None = None,
+    symcat_labels: dict[str, str] | None = None,
+    bibliography: dict[str, dict[str, Any]] | None = None,
+    base_path: str = BASE_PATH,
+) -> str:
     references = references or {}
+    symcat_labels = symcat_labels or {}
+    bibliography = bibliography or {}
     escaped = html.escape(text, quote=False)
     # protect code spans from emphasis and link rewriting
     codes: list[str] = []
@@ -1037,8 +1209,33 @@ def _inline(text: str, references: dict[str, str] | None = None) -> str:
 
     rendered = re.sub(r"\$\$.+?\$\$|\$[^$\n]+?\$", stash_math, rendered)
 
+    def citation_group(match: re.Match[str]) -> str:
+        rendered_citations: list[str] = []
+        for raw in match.group(1).split(";"):
+            key_and_at = raw.strip().removeprefix("@").split(",", 1)
+            key = html.unescape(key_and_at[0].strip())
+            at = key_and_at[1].strip() if len(key_and_at) == 2 else None
+            entry = bibliography.get(key)
+            if entry is None:
+                return match.group(0)
+            label = html.escape(entry["label"])
+            suffix = f", {at}" if at else ""
+            rendered_citations.append(
+                f'<a class="citation" href="#ref-{html.escape(key, quote=True)}">'
+                f"[{label}{suffix}]</a>"
+            )
+        return "; ".join(rendered_citations)
+
+    rendered = CITATION_GROUP_RE.sub(citation_group, rendered)
+
     def anchor(label: str, target: str) -> str:
-        safe = _safe_url(html.unescape(target.strip()))
+        raw_target = html.unescape(target.strip())
+        if raw_target.startswith("sf:"):
+            href = symcat_labels.get(raw_target.removeprefix("sf:"))
+            raw_target = SYMCAT_ORIGIN + href if href else raw_target
+        elif raw_target.startswith(BASE_PATH) and base_path != BASE_PATH:
+            raw_target = base_path + raw_target.removeprefix(BASE_PATH)
+        safe = _safe_url(raw_target)
         if safe is None:
             return label
         return f'<a href="{html.escape(safe, quote=True)}">{label}</a>'
@@ -1057,6 +1254,111 @@ def _inline(text: str, references: dict[str, str] | None = None) -> str:
     return re.sub(r"\x00(\d+)\x00", lambda m: f"<code>{codes[int(m.group(1))]}</code>", rendered)
 
 
+def _csl_authors(csl: dict[str, Any]) -> str:
+    authors = csl.get("author", [])
+    if not isinstance(authors, list):
+        return ""
+    names: list[str] = []
+    for author in authors:
+        if not isinstance(author, dict):
+            continue
+        literal = author.get("literal")
+        if isinstance(literal, str) and literal:
+            names.append(literal)
+            continue
+        given = author.get("given") if isinstance(author.get("given"), str) else ""
+        family = author.get("family") if isinstance(author.get("family"), str) else ""
+        name = " ".join(part for part in (given, family) if part)
+        if name:
+            names.append(name)
+    if len(names) == 2:
+        return " & ".join(names)
+    if len(names) > 2:
+        return ", ".join(names[:-1]) + ", & " + names[-1]
+    return "".join(names)
+
+
+def _csl_year(csl: dict[str, Any]) -> str:
+    issued = csl.get("issued")
+    if not isinstance(issued, dict):
+        return ""
+    parts = issued.get("date-parts")
+    if (
+        isinstance(parts, list)
+        and parts
+        and isinstance(parts[0], list)
+        and parts[0]
+        and isinstance(parts[0][0], int)
+    ):
+        return str(parts[0][0])
+    return ""
+
+
+def _reference_list(
+    citations: tuple[Citation, ...], bibliography: dict[str, dict[str, Any]]
+) -> str:
+    rows: list[str] = []
+    for citation in citations:
+        entry = bibliography[citation.key]
+        csl = entry["csl"]
+        authors = _csl_authors(csl)
+        title = csl.get("title") if isinstance(csl.get("title"), str) else citation.key
+        doi = csl.get("DOI") if isinstance(csl.get("DOI"), str) else ""
+        url = csl.get("URL") if isinstance(csl.get("URL"), str) else ""
+        target = f"https://doi.org/{doi}" if doi else url
+        title_html = html.escape(title)
+        if target and _safe_url(target):
+            title_html = f'<a href="{html.escape(target, quote=True)}">{title_html}</a>'
+        venue = csl.get("container-title", "")
+        if isinstance(venue, list):
+            venue = ", ".join(str(part) for part in venue)
+        if not isinstance(venue, str):
+            venue = ""
+        volume = csl.get("volume") if isinstance(csl.get("volume"), str) else ""
+        issue = csl.get("issue") if isinstance(csl.get("issue"), str) else ""
+        pages = csl.get("page") if isinstance(csl.get("page"), str) else ""
+        venue_parts = [venue]
+        if volume:
+            venue_parts.append(volume + (f"({issue})" if issue else ""))
+        elif issue:
+            venue_parts.append(f"({issue})")
+        if pages:
+            venue_parts.append(pages)
+        year = _csl_year(csl)
+        if year:
+            venue_parts.append(year)
+        details = ", ".join(part for part in venue_parts if part)
+        label = entry["label"] + (f", {citation.at}" if citation.at else "")
+        rows.append(
+            f'<li id="ref-{html.escape(citation.key, quote=True)}">'
+            f'<span class="reference-label">[{html.escape(label)}]</span> '
+            + (
+                f'<span class="reference-authors">{html.escape(authors)}.</span> '
+                if authors
+                else ""
+            )
+            + f'<span class="reference-title">{title_html}.</span> '
+            + (f'<span class="reference-venue">{html.escape(details)}.</span>' if details else "")
+            + '<details class="bibtex"><summary>BibTeX</summary><pre><code>'
+            + html.escape(entry["bibtex"].strip())
+            + "</code></pre></details></li>"
+        )
+    return '<ol class="reference-list">' + "".join(rows) + "</ol>"
+
+
+def _normalize_base_path(base_path: str) -> str:
+    if not isinstance(base_path, str) or not base_path.startswith("/"):
+        raise CatalogError("site base path must start with /")
+    if "?" in base_path or "#" in base_path or any(character.isspace() for character in base_path):
+        raise CatalogError("site base path must not contain whitespace, a query, or a fragment")
+    normalized = "/" + base_path.strip("/")
+    return "/" if normalized == "/" else normalized + "/"
+
+
+def _page_url(page: CatalogPage, base_path: str) -> str:
+    return f"{base_path}{page.section}/{page.slug}/"
+
+
 def _source_link(revision: str, source: SourceDeclaration) -> str:
     return (
         "https://github.com/PerAlexandersson/RealRooted/blob/"
@@ -1064,11 +1366,11 @@ def _source_link(revision: str, source: SourceDeclaration) -> str:
     )
 
 
-def _relative_url(target: str, current_url: str) -> str:
-    if not target.startswith(BASE_PATH) or not current_url.startswith(BASE_PATH):
+def _relative_url(target: str, current_url: str, base_path: str = BASE_PATH) -> str:
+    if not target.startswith(base_path) or not current_url.startswith(base_path):
         raise CatalogError("generator received a URL outside its base path")
-    current_relative = current_url.removeprefix(BASE_PATH).strip("/")
-    target_relative = target.removeprefix(BASE_PATH).strip("/")
+    current_relative = current_url.removeprefix(base_path).strip("/")
+    target_relative = target.removeprefix(base_path).strip("/")
     current_directory = pathlib.PurePosixPath(current_relative).parts if current_relative else ()
     target_parts = pathlib.PurePosixPath(target_relative).parts if target_relative else ()
     common = 0
@@ -1084,14 +1386,20 @@ def _relative_url(target: str, current_url: str) -> str:
     return relative
 
 
-def _template(repo_root: pathlib.Path, body: str, title: str, current_url: str) -> str:
+def _template(
+    repo_root: pathlib.Path,
+    body: str,
+    title: str,
+    current_url: str,
+    base_path: str = BASE_PATH,
+) -> str:
     template_path = repo_root / "website" / "templates" / "page.html"
     template = template_path.read_text(encoding="utf-8")
-    home = _relative_url(BASE_PATH, current_url)
-    stylesheet = _relative_url(f"{BASE_PATH}assets/site.css", current_url)
-    script = _relative_url(f"{BASE_PATH}assets/site.js", current_url)
-    results = _relative_url(f"{BASE_PATH}results/", current_url)
-    authors = _relative_url(f"{BASE_PATH}authors/", current_url)
+    home = _relative_url(base_path, current_url, base_path)
+    stylesheet = _relative_url(f"{base_path}assets/site.css", current_url, base_path)
+    script = _relative_url(f"{base_path}assets/site.js", current_url, base_path)
+    results = _relative_url(f"{base_path}results/", current_url, base_path)
+    authors = _relative_url(f"{base_path}authors/", current_url, base_path)
     return (
         template.replace("{{ title }}", html.escape(title))
         .replace("{{ body }}", body)
@@ -1228,7 +1536,10 @@ def _catalog_group(identifier: str, title: str, intro: str, rows: str) -> str:
 
 
 def _item_list(
-    items: Iterable[CatalogItem], resolved: dict[str, SourceDeclaration], revision: str
+    items: Iterable[CatalogItem],
+    resolved: dict[str, SourceDeclaration],
+    revision: str,
+    symcat_labels: dict[str, str],
 ) -> str:
     rows: list[str] = []
     for item in items:
@@ -1241,6 +1552,14 @@ def _item_list(
                 + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
                 + "</p>"
             )
+        symcat_link = ""
+        if item.symcat:
+            symcat_url = SYMCAT_ORIGIN + symcat_labels[item.symcat]
+            symcat_link = (
+                '<a class="symcat-source" href="'
+                + html.escape(symcat_url, quote=True)
+                + '">statement on symmetricfunctions.com <span aria-hidden="true">↗</span></a>'
+            )
         rows.append(
             f"<li id=\"{item.anchor}\">"
             + label
@@ -1248,17 +1567,21 @@ def _item_list(
             + html.escape(item.name)
             + "</code><a class=\"source\" href=\""
             + html.escape(_source_link(revision, source), quote=True)
-            + "\">source</a></div><pre class=\"lean-declaration\"><code>"
+            + '">source</a>'
+            + symcat_link
+            + '</div><pre class="lean-declaration"><code>'
             + html.escape(source.source_code)
             + "</code></pre></li>"
         )
     return "<ul class=\"declarations\">" + "".join(rows) + "</ul>"
 
 
-def _authors_page(entries: Iterable[AuthorIndexEntry]) -> str:
+def _authors_page(
+    entries: Iterable[AuthorIndexEntry], base_path: str = BASE_PATH
+) -> str:
     """Render the page-level credits index without adding editorial data to Lean files."""
     entries = tuple(entries)
-    current_url = f"{BASE_PATH}authors/"
+    current_url = f"{base_path}authors/"
     rows: list[str] = []
     for entry in entries:
         heading = html.escape(entry.display_name)
@@ -1270,7 +1593,7 @@ def _authors_page(entries: Iterable[AuthorIndexEntry]) -> str:
         credits: list[str] = []
         for page in entry.pages:
             years = _years_label(page.years) or "year not recorded"
-            href = _relative_url(page.url, current_url)
+            href = _relative_url(_page_url(page, base_path), current_url, base_path)
             credits.append(
                 '<li><a class="author-credit-title" href="'
                 + html.escape(href, quote=True)
@@ -1370,7 +1693,7 @@ class _HrefCollector(HTMLParser):
             self.hrefs.extend(value for name, value in attrs if name == "href" and value is not None)
 
 
-def validate_internal_links(files: dict[str, str]) -> None:
+def validate_internal_links(files: dict[str, str], base_path: str = BASE_PATH) -> None:
     """Reject generated links that cannot resolve under the project-site base path."""
     known = set(files)
     for source_name, document in files.items():
@@ -1382,9 +1705,9 @@ def validate_internal_links(files: dict[str, str]) -> None:
             if parsed.scheme or parsed.netloc or href.startswith("#"):
                 continue
             if href.startswith("/"):
-                if not href.startswith(BASE_PATH):
-                    raise CatalogError(f"{source_name}: link escapes {BASE_PATH}: {href}")
-                target_path = href[len(BASE_PATH) :].split("#", 1)[0]
+                if not href.startswith(base_path):
+                    raise CatalogError(f"{source_name}: link escapes {base_path}: {href}")
+                target_path = href[len(base_path) :].split("#", 1)[0]
                 target = target_path
             else:
                 target_path = href.split("#", 1)[0]
@@ -1402,8 +1725,32 @@ def render_site(
     pages: tuple[CatalogPage, ...],
     resolved: dict[str, SourceDeclaration],
     revision: str,
+    *,
+    base_path: str = BASE_PATH,
+    site_origin: str = SITE_ORIGIN,
 ) -> dict[str, str]:
     """Render deterministic generated files keyed by their output-relative path."""
+    base_path = _normalize_base_path(base_path)
+    parsed_origin = urlsplit(site_origin)
+    if parsed_origin.scheme not in {"http", "https"} or not parsed_origin.netloc:
+        raise CatalogError("site origin must be an absolute HTTP(S) URL")
+    site_origin = site_origin.rstrip("/")
+    symcat_labels, bibliography = load_symcat_snapshots(repo_root)
+    for page in pages:
+        for citation in page.citations:
+            if citation.key not in bibliography:
+                raise _source_error(page.source_path, f"unknown bibliography key {citation.key}")
+        for label in extract_sf_labels(page.content):
+            if label not in symcat_labels:
+                raise _source_error(
+                    page.source_path, f"unknown symmetricfunctions.com label {label}"
+                )
+        for item in page.items:
+            if item.symcat and item.symcat not in symcat_labels:
+                raise _source_error(
+                    page.source_path,
+                    f"unknown symmetricfunctions.com label {item.symcat} for {item.name}",
+                )
     files: dict[str, str] = {}
     author_entries = build_author_index(pages, load_author_profiles(repo_root))
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
@@ -1460,7 +1807,9 @@ def render_site(
         )
         + "</div></main>"
     )
-    files["index.html"] = _template(repo_root, index_body, "RealRooted catalog", BASE_PATH)
+    files["index.html"] = _template(
+        repo_root, index_body, "RealRooted catalog", base_path, base_path
+    )
     for section, section_pages in grouped.items():
         links = "".join(_page_card(page, f"{page.slug}/") for page in section_pages)
         body = (
@@ -1469,11 +1818,21 @@ def render_site(
             + _sort_controls()
             + f'<ul class="section-index" data-catalog-list>{links}</ul></main>'
         )
-        section_url = f"{BASE_PATH}{section}/"
-        files[f"{section}/index.html"] = _template(repo_root, body, section.title(), section_url)
+        section_url = f"{base_path}{section}/"
+        files[f"{section}/index.html"] = _template(
+            repo_root, body, section.title(), section_url, base_path
+        )
     for page in pages:
-        definition_html = _item_list(page.definitions, resolved, revision) if page.definitions else ""
-        theorem_html = _item_list(page.theorems, resolved, revision) if page.theorems else ""
+        definition_html = (
+            _item_list(page.definitions, resolved, revision, symcat_labels)
+            if page.definitions
+            else ""
+        )
+        theorem_html = (
+            _item_list(page.theorems, resolved, revision, symcat_labels)
+            if page.theorems
+            else ""
+        )
         selected = ""
         if definition_html:
             selected += (
@@ -1495,7 +1854,15 @@ def render_site(
             + html.escape(page.section.title())
             + "</a></p>"
             + "<article class=\"prose\">"
-            + render_markdown(page.content)
+            + render_markdown(
+                page.content,
+                symcat_labels=symcat_labels,
+                bibliography=bibliography,
+                base_path=base_path,
+                generated_references=_reference_list(page.citations, bibliography)
+                if page.citations
+                else "",
+            )
             + "</article><div class=\"lean-results\">"
             + selected
             + "</div>"
@@ -1505,13 +1872,21 @@ def render_site(
             + f"Formalized {page.formalized}</span>.</p></main>"
         )
         files[f"{page.section}/{page.slug}/index.html"] = _template(
-            repo_root, body, page.title, page.url
+            repo_root, body, page.title, _page_url(page, base_path), base_path
         )
     files["results/index.html"] = _template(
-        repo_root, _results_page(pages, resolved, revision), "All results", f"{BASE_PATH}results/"
+        repo_root,
+        _results_page(pages, resolved, revision),
+        "All results",
+        f"{base_path}results/",
+        base_path,
     )
     files["authors/index.html"] = _template(
-        repo_root, _authors_page(author_entries), "Authors", f"{BASE_PATH}authors/"
+        repo_root,
+        _authors_page(author_entries, base_path),
+        "Authors",
+        f"{base_path}authors/",
+        base_path,
     )
     manifest = {
         "schema_version": 1,
@@ -1520,7 +1895,7 @@ def render_site(
         "pages": [
             {
                 "title": page.title,
-                "url": page.url,
+                "url": _page_url(page, base_path),
                 "source_path": page.source_path,
                 "authors": list(page.authors),
                 "years": list(page.years),
@@ -1529,6 +1904,15 @@ def render_site(
                 "theorems": [item.name for item in page.theorems],
                 "headlines": [item.name for item in page.theorems if item.headline],
                 "labels": {item.name: item.label for item in page.items if item.label},
+                "declarations": [
+                    {
+                        "name": item.name,
+                        "kind": item.expected_kind,
+                        "url": site_origin + _page_url(page, base_path) + f"#{item.anchor}",
+                        **({"symcat": item.symcat} if item.symcat else {}),
+                    }
+                    for item in page.items
+                ],
             }
             for page in pages
         ],
@@ -1538,7 +1922,7 @@ def render_site(
     files["assets/site.css"] = asset.read_text(encoding="utf-8")
     script = repo_root / "website" / "assets" / "site.js"
     files["assets/site.js"] = script.read_text(encoding="utf-8")
-    validate_internal_links(files)
+    validate_internal_links(files, base_path)
     return files
 
 

@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "perron-frobenius"
 formalized = "2026-08-21"
+references = [
+  "Perron1907",
+]
 authors = ["Perron", "Frobenius"]
 years = [1907, 1912]
 
@@ -58,7 +61,7 @@ $$
 r(A) = \sup_{v \geq 0,\ v \neq 0}\ \min_{i\,:\,v_i > 0} \frac{(Av)_i}{v_i}.
 $$
 
-**Theorem (Perron–Frobenius).**
+**Theorem (Perron–Frobenius).** [@Perron1907]
 
 - Every nonnegative matrix has $r(A)$ as an eigenvalue, with a nonnegative
   eigenvector.
@@ -76,11 +79,9 @@ one through $1 + A$.
 
 ## References
 
-O. Perron, [“Zur Theorie der Matrices,”](https://doi.org/10.1007/BF01449896)
-*Mathematische Annalen* 64 (1907), 248–263.
-
-G. Frobenius, “Über Matrizen aus nicht negativen Elementen,” Sitzungsberichte
-der Königlich Preussischen Akademie der Wissenschaften (1912), 456–477.
+See [@Perron1907]. G. Frobenius, “Über Matrizen aus nicht negativen Elementen,”
+*Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1912),
+456–477.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

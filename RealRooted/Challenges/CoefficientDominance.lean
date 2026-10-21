@@ -14,6 +14,9 @@ version = 1
 section = "theorems"
 slug = "coefficient-dominance"
 formalized = "2026-09-01"
+references = [
+  "Kozlov2022",
+]
 
 [[theorems]]
 name = "RealRooted.CoefficientDominance.eval_neg_ne_zero_of_dominant"
@@ -132,12 +135,12 @@ the explicit correction sums under positivity. Finally, if positive
 `x (j - 1)` and `x j` lie on opposite sides of reciprocal endpoints, then
 `log_gap_ge` converts a ratio at least `exp 2` between those endpoints into a
 logarithmic gap of at least two.
+
 ## References
 
 These results were extracted from a formal proof that the rows of
-[OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace.  The
-triangle appears in D. N. Kozlov, [“Stirling
-complexes,”](https://arxiv.org/abs/2309.17142) arXiv:2309.17142 (2023).
+[OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace. The triangle
+appears in [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/
 

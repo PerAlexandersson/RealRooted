@@ -145,7 +145,7 @@ polynomials depends on an open conjecture and is not part of this page.
 P. Alexandersson, A. Jal and M. Quemener, “Rook-Eulerian polynomials and
 permutation ideals,” manuscript, Theorem `thm:peak_rr_ferrers` and
 Lemma `lem:t_minus_1`. For peaks of permutations, see the
-[entry on symmetricfunctions.com](https://www.symmetricfunctions.com/gammaPositivity.htm#permutationPeak).
+[entry on symmetricfunctions.com](sf:permutationPeak).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

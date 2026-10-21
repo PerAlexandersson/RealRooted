@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "f-transform-recurrences"
 formalized = "2026-10-11"
+references = [
+  "BrandenSolus2019",
+]
 
 [[theorems]]
 name = "RealRooted.fPolynomial_derivative"
@@ -148,16 +151,11 @@ theorem.
 
 ## References
 
-P. Brändén and L. Solus, “Symmetric decompositions and real-rootedness,”
-*International Mathematics Research Notices* 2021 (2021), 7764–7798,
-[doi:10.1093/imrn/rnz059](https://doi.org/10.1093/imrn/rnz059). See the
-[symmetric-decomposition overview on symmetricfunctions.com][bs-overview].
-
+See [@BrandenSolus2019] and the
+[symmetric-decomposition overview on symmetricfunctions.com](sf:symmetricIDecomposition).
 For the alternating-runs families and their references, see OEIS
 [A008970](https://oeis.org/A008970), [A059427](https://oeis.org/A059427), and
 [A186370](https://oeis.org/A186370).
-
-[bs-overview]: https://www.symmetricfunctions.com/realRootedInterlacing.htm#symmetricIDecomposition
 <!-- /realrooted-catalog-content -->
 -/
 

@@ -25,6 +25,7 @@ jobs:
       - name: Check catalog sources and renderer
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_challenge_catalog.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_symcat_sync.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_challenge_catalog_audit.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_challenge_pages.py --check
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_challenge_catalog.py --check

@@ -15,6 +15,9 @@ version = 1
 section = "theorems"
 slug = "branden-leite"
 formalized = "2026-09-24"
+references = [
+  "BrandenLeite2024x",
+]
 authors = ["Brändén", "Saud Maia Leite"]
 years = [2026]
 
@@ -112,7 +115,7 @@ $$P_{n+1}(x) = x \sum_{k \leq n} A(n+1,k)\, P_k(x).$$
 When $A$ counts weighted chains in a poset, $P_n$ enumerates the chains by
 length.
 
-**Theorem (Brändén–Saud Leite).** If $A$ is lower unitriangular
+**Theorem (Brändén–Saud Leite).** [@BrandenLeite2024x] If $A$ is lower unitriangular
 and totally nonnegative, then every $P_n$ has nonnegative coefficients and
 only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
 
@@ -120,7 +123,7 @@ The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
 only if it is totally nonnegative. The same conclusion holds for totally
 nonnegative matrices with a positive constant diagonal. See also the
-[lower-unitriangular characterization on symmetricfunctions.com](https://www.symmetricfunctions.com/polyaFrequency.htm#tnnLowerUnitriangularMatrix).
+[lower-unitriangular characterization on symmetricfunctions.com](sf:tnnLowerUnitriangularMatrix).
 
 Applied to power-series kernels built from Pólya frequency sequences, the
 theorem gives PF polynomials whose consecutive rows interlace, for two row
@@ -147,10 +150,7 @@ under the nonnegative combinations that assemble the chain polynomials.
 
 ## References
 
-P. Brändén and L. Saud Maia Leite, [“Totally nonnegative matrices, chain
-enumeration and zeros of polynomials,”](https://arxiv.org/abs/2412.06595)
-*Advances in Mathematics* 487 (2026), 110760,
-[doi:10.1016/j.aim.2025.110760](https://doi.org/10.1016/j.aim.2025.110760).
+See [@BrandenLeite2024x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

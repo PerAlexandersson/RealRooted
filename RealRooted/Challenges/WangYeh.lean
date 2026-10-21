@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "wang-yeh"
 formalized = "2026-10-06"
+references = [
+  "WangYeh2005",
+]
 authors = ["Wang", "Yeh"]
 years = [2005]
 
@@ -46,7 +49,8 @@ either zero or real-rooted with nonpositive zeros. A sequence is
 Pólya-frequency (`IsPolyaFreqSeq`) if its Toeplitz matrix is totally
 nonnegative.
 
-**Theorem (Wang–Yeh).** Let $f, g \in \mathbb{R}[x]$ have positive leading
+**Theorem (Wang–Yeh).** [@WangYeh2005, Thm. 1] Let $f, g \in \mathbb{R}[x]$
+have positive leading
 coefficients and satisfy $g \ll f$. If $a, b, c, d \in \mathbb{R}$ satisfy
 $bc \leq ad$, then
 $$
@@ -96,14 +100,9 @@ inequalities give the determinant condition at every step.
 
 ## References
 
-Y. Wang and Y.-N. Yeh, [“Polynomials with real zeros and Pólya frequency
-sequences,”](https://doi.org/10.1016/j.jcta.2004.07.008) *Journal of
-Combinatorial Theory, Series A* 109 (2005), 63–74, Theorem 1 and Corollaries 2
-and 3.
-See also the
-[Wang–Yeh criterion on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#wangYehAffineCriterion)
-and the
-[Wang–Yeh PF preserver](https://www.symmetricfunctions.com/polyaFrequency.htm#wangYehPfPreserver).
+The affine criterion and PF preserver are [@WangYeh2005, Thm. 1 and Cors. 2–3].
+See also the [Wang–Yeh criterion](sf:wangYehAffineCriterion) and the
+[Wang–Yeh PF preserver](sf:wangYehPfPreserver) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 The affine criterion lives in `RealRooted.WangYeh.Affine`, the PF preserver in

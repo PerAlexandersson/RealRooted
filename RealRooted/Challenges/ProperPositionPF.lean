@@ -8,6 +8,11 @@ version = 1
 section = "theorems"
 slug = "pf-multiplier-proper-position"
 formalized = "2026-10-11"
+references = [
+  "BorceaBranden2009I",
+  "BorceaBranden2010",
+  "Branden2015",
+]
 
 [[theorems]]
 name = "RealRooted.IsFinitePFMultiplierSequence.interl_diagonalOperator"
@@ -75,16 +80,7 @@ nonzero splitness properties.
 
 ## References
 
-J. Borcea and P. Brändén, [“The Lee–Yang and Pólya–Schur programs. I. Linear
-operators preserving stability,”](https://doi.org/10.1007/s00222-009-0189-3)
-*Inventiones Mathematicae* 177 (2009), 541–569,
-[arXiv:0809.0401](https://arxiv.org/abs/0809.0401).
-J. Borcea and P. Brändén, [“Multivariate Pólya–Schur classification problems
-in the Weyl algebra,”](https://doi.org/10.1112/plms/pdp049) *Proceedings of
-the London Mathematical Society* 101 (2010), 73–104,
-[arXiv:math/0606360](https://arxiv.org/abs/math/0606360). See also P. Brändén,
-“Unimodality, log-concavity, real-rootedness and beyond,”
-[arXiv:1410.6601](https://arxiv.org/abs/1410.6601).
+See [@BorceaBranden2009I; @BorceaBranden2010; @Branden2015].
 <!-- /realrooted-catalog-content -->
 -/
 

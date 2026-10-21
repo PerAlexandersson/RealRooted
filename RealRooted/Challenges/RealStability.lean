@@ -22,6 +22,15 @@ version = 1
 section = "theorems"
 slug = "real-stability"
 formalized = "2026-10-12"
+references = [
+  "ChoeOxleySokalWagner2004",
+  "Branden2007",
+  "BorceaBranden2008MixedDeterminants",
+  "BorceaBrandenLiggett2008",
+  "MarcusSpielmanSrivastava2015II",
+  "BrandenHuh2020",
+  "Garding1959",
+]
 authors = ["Gårding", "Choe", "Oxley", "Sokal", "Wagner", "Brändén", "Borcea",
   "Liggett", "Marcus", "Spielman", "Srivastava", "Huh"]
 years = [1959, 2004, 2007, 2008, 2009, 2015, 2020]
@@ -176,7 +185,8 @@ $P \neq 0$. A polynomial with real coefficients is **real stable** if it is
 stable as a complex polynomial. It is **multiaffine** if it has degree at most
 one in each variable.
 
-**Theorem** (Brändén). A multiaffine $P \in \mathbb{R}[z_1, \dotsc, z_n]$ is
+**Theorem** (Brändén). [@Branden2007] A multiaffine
+$P \in \mathbb{R}[z_1, \dotsc, z_n]$ is
 real stable if and only if $P \neq 0$ and
 $$
 \frac{\partial P}{\partial z_i}(x) \frac{\partial P}{\partial z_j}(x) -
@@ -185,7 +195,8 @@ $$
 for all $i$, $j$ and all $x \in \mathbb{R}^n$ (the Rayleigh property).
 No homogeneity is needed.
 
-**Corollary** (Borcea–Brändén–Liggett). Let $\mu$ be a weight function on the
+**Corollary** (Borcea–Brändén–Liggett). [@BorceaBrandenLiggett2008] Let $\mu$
+be a weight function on the
 subsets of $\{1, \dotsc, n\}$ whose generating polynomial
 $\sum_S \mu(S) \prod_{i \in S} z_i$ is real stable. Then for $i \neq j$,
 $$
@@ -194,13 +205,15 @@ $$
 For a probability measure this is pairwise negative correlation; it is the
 Rayleigh inequality at the all-ones point.
 
-**Theorem** (Borcea–Brändén). Let $A$ be a Hermitian $m \times m$ matrix and
+**Theorem** (Borcea–Brändén). [@BorceaBranden2008MixedDeterminants] Let $A$
+be a Hermitian $m \times m$ matrix and
 let $B_1, \dotsc, B_n$ be positive semidefinite $m \times m$ matrices. Then
 $\det(A + z_1 B_1 + \dotsb + z_n B_n)$ is stable or identically zero. If all
 matrices are real and the determinant is not identically zero, then it is
 real stable.
 
-**Corollary** (Choe–Oxley–Sokal–Wagner). If a finite graph $G$ has a
+**Corollary** (Choe–Oxley–Sokal–Wagner). [@ChoeOxleySokalWagner2004] If a
+finite graph $G$ has a
 spanning tree, its spanning-tree polynomial
 $\sum_T \prod_{e \in T} z_e$ is real stable. By Kirchhoff's weighted
 matrix-tree theorem it equals the determinant of the reduced Laplacian
@@ -213,7 +226,7 @@ real-rooted for every $x \in \mathbb{R}^n$.
 **Theorem.** A homogeneous $P \in \mathbb{R}[z_1, \dotsc, z_n]$ is real stable
 if and only if it is hyperbolic in every direction $e$ with all $e_i > 0$.
 
-**Theorem** (Gårding). If a homogeneous $P$ is hyperbolic in the direction
+**Theorem** (Gårding). [@Garding1959] If a homogeneous $P$ is hyperbolic in the direction
 $e$, its hyperbolicity cone, the connected component of $e$ in
 $\{x : P(x) \neq 0\}$, is convex.
 
@@ -233,7 +246,8 @@ then so is this inversion. Without further variables: if $p$ has no zeros in
 the open upper half-plane and $\deg p \leq d$, then neither has
 $z^d p(-1/z)$.
 
-**Theorem** (Marcus–Spielman–Srivastava). Let $A_1, \dotsc, A_m$ be real positive
+**Theorem** (Marcus–Spielman–Srivastava).
+[@MarcusSpielmanSrivastava2015II] Let $A_1, \dotsc, A_m$ be real positive
 semidefinite $n \times n$ matrices with $\sum_i A_i = I$ and $\operatorname{tr} A_i \leq
 \varepsilon$, where $\varepsilon > 0$. Then every root of the mixed characteristic polynomial
 $$
@@ -243,7 +257,8 @@ is at most $(1 + \sqrt{\varepsilon})^2$. This is the root bound behind the solut
 Kadison–Singer problem. The formal proof follows the barrier argument, with the
 Helton–Vinnikov step replaced by an elementary Pick-function lemma.
 
-Theorem 4.1 of Marcus–Spielman–Srivastava identifies the expected characteristic
+Theorem 4.1 of Marcus–Spielman–Srivastava
+[@MarcusSpielmanSrivastava2015II, Thm. 4.1] identifies the expected characteristic
 polynomial of a sum of independent random rank-one matrices with the mixed
 characteristic polynomial of their second-moment matrices. This is the bridge
 from random vector sums to the deterministic polynomial controlled by the MSS
@@ -278,7 +293,8 @@ itself: $\operatorname{Im}(-1/z) = \operatorname{Im} z / |z|^2$. For
 $z_0 \neq 0$ the inverted polynomial evaluates to $z_0^d$ times a value of
 $P$ at a point in the product of upper half-planes.
 
-**Theorem (Brändén).** The support of a real stable polynomial is a jump system: for
+**Theorem (Brändén).** [@Branden2007] The support of a real stable polynomial
+is a jump system: for
 support points $\alpha, \beta$ and a unit step $s = \pm e_i$ from $\alpha$ towards
 $\beta$, either $\alpha + s$ is in the support, or some further unit step $t$ towards
 $\beta$ has $\alpha + s + t$ in the support. Partial derivatives, inversion in one
@@ -286,35 +302,16 @@ variable, truncation and lowest weighted-homogeneous parts preserve stability; t
 the claim to a box between $\alpha$ and $\beta$, where a homogeneous part of degree at least
 three would vanish somewhere in the product of upper half-planes.
 
-**Theorem** (Brändén–Huh). A homogeneous real stable polynomial with
+**Theorem** (Brändén–Huh). [@BrandenHuh2020] A homogeneous real stable polynomial with
 nonnegative coefficients is Lorentzian.
 
 ## References
 
-L. Gårding, [“An inequality for hyperbolic polynomials,”](https://doi.org/10.1512/iumj.1959.8.58061)
-*J. Math. Mech.* 8 (1959), 957–965. Y.-B. Choe, J. G. Oxley, A. D. Sokal and
-D. G. Wagner, [“Homogeneous multivariate polynomials with the half-plane
-property,”](https://doi.org/10.1016/S0196-8858(03)00078-2) *Adv. Appl. Math.*
-32 (2004), 88–187. P. Brändén, [“Polynomials with the half-plane property and
-matroid theory,”](https://doi.org/10.1016/j.aim.2007.05.011) *Adv. Math.* 216
-(2007), 302–320. J. Borcea and P. Brändén, [“Applications of stable
-polynomials to mixed determinants: Johnson's conjectures, unimodality, and
-symmetrized Fischer products,”](https://doi.org/10.1215/00127094-2008-018)
-*Duke Math. J.* 143 (2008), 205–223. J. Borcea, P. Brändén and T. Liggett,
-[“Negative dependence and the geometry of polynomials,”](https://doi.org/10.1090/S0894-0347-08-00618-8)
-*J. Amer. Math. Soc.* 22 (2009), 521–567. A. Marcus, D. A. Spielman and
-N. Srivastava, [“Interlacing families II: Mixed characteristic polynomials
-and the Kadison–Singer problem,”](https://doi.org/10.4007/annals.2015.182.1.8)
-*Ann. of Math.* 182 (2015), 327–350,
-[arXiv:1306.3969](https://arxiv.org/abs/1306.3969). P. Brändén and J. Huh,
-[“Lorentzian polynomials,”](https://doi.org/10.4007/annals.2020.192.3.4)
-*Ann. of Math.* 192 (2020), 821–891. See also the
-[stable polynomials](
-https://www.symmetricfunctions.com/stablePolynomials.htm#stablePolynomialDefinition)
-and the
-[Rayleigh property](
-https://www.symmetricfunctions.com/stablePolynomials.htm#stronglyRayleighProperty)
-on symmetricfunctions.com.
+See [@Garding1959; @ChoeOxleySokalWagner2004; @Branden2007;
+@BorceaBranden2008MixedDeterminants; @BorceaBrandenLiggett2008;
+@MarcusSpielmanSrivastava2015II; @BrandenHuh2020]. See also the
+[stable polynomials](sf:stablePolynomialDefinition) and the
+[Rayleigh property](sf:stronglyRayleighProperty) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the multiaffine Rayleigh criterion, determinantal

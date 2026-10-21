@@ -8,6 +8,9 @@ version = 1
 section = "theorems"
 slug = "chow-polynomials-simplicial-posets"
 formalized = "2026-10-08"
+references = [
+  "HosterStump2025x",
+]
 authors = ["Hoster", "Stump"]
 years = [2025]
 
@@ -73,7 +76,7 @@ H^{\mathrm{aug}}_{\hat P}(x) = \sum_{\substack{S \subseteq \{1,\dots,n\}\\ S \te
 $$
 where a set is *isolated* if it contains no two consecutive integers.
 
-**Theorem** (Hoster–Stump). If the $h$-vector of $P$ is nonnegative, then
+**Theorem** (Hoster–Stump). [@HosterStump2025x] If the $h$-vector of $P$ is nonnegative, then
 $H_{\hat P}$, $H_{\hat P^*}$ and $H^{\mathrm{aug}}_{\hat P}$ are real-rooted, and the
 roots of $H_{\hat P^*}$ interlace those of $H^{\mathrm{aug}}_{\hat P}$.
 
@@ -96,10 +99,9 @@ false; the library records an explicit counterexample.
 
 ## References
 
-E. Hoster and C. Stump, “Chow polynomials of simplicial posets with positive $h$-vector are
-real-rooted,” arXiv:2508.15538 (2025); R. P. Stanley, *Combinatorics and Commutative
-Algebra*, 2nd ed., Birkhäuser, 1996, III.6; L. Ferroni, J. P. Matherne and L. Vecchi, “Chow
-functions for partially ordered sets,” 2024.
+See [@HosterStump2025x]. R. P. Stanley, *Combinatorics and Commutative
+Algebra*, 2nd ed., Birkhäuser, 1996, III.6. L. Ferroni, J. P. Matherne and
+L. Vecchi, “Chow functions for partially ordered sets,” 2024.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.HosterStump`.

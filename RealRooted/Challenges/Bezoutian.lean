@@ -9,6 +9,9 @@ version = 1
 section = "theorems"
 slug = "bezoutian"
 formalized = "2026-10-06"
+references = [
+  "Fisk2006x",
+]
 authors = ["Hermite", "Krein", "Naimark", "Fisk"]
 years = [1856, 1936, 2006]
 
@@ -64,7 +67,8 @@ Positive definiteness alone already forces both polynomials to split over
 $\mathbb R$, and it makes the Wronskian $q'p - qp'$ positive on all of
 $\mathbb R$.
 
-**Theorem** (successor degree). Let $f$ have degree $d+1$ and $g$ degree $d$,
+**Theorem** (successor degree). [@Fisk2006x, Cor. 9.145] Let $f$ have degree
+$d+1$ and $g$ degree $d$,
 both with positive leading coefficients. Then $g$ interlaces $f$ and the two
 polynomials have no common zero, that is
 $$
@@ -89,10 +93,9 @@ C. Hermite, “Sur le nombre des racines d'une équation algébrique comprise
 entre des limites données,” *J. Reine Angew. Math.* 52 (1856), 39–51;
 M. G. Krein and M. A. Naimark, “The method of symmetric and Hermitian forms in
 the theory of the separation of the roots of algebraic equations” (1936),
-English translation in *Linear and Multilinear Algebra* 10 (1981), 265–308;
-S. Fisk, *Polynomials, roots, and interlacing*, arXiv:math/0612833, Cor. 9.145.
-See the
-[contextual statement on symmetricfunctions.com](https://www.symmetricfunctions.com/realRootedInterlacing.htm#bezoutMatrix).
+English translation in *Linear and Multilinear Algebra* 10 (1981), 265–308.
+The successor-degree criterion is [@Fisk2006x, Cor. 9.145]. See the
+[contextual statement on symmetricfunctions.com](sf:bezoutMatrix).
 <!-- /realrooted-catalog-content -->
 
 This module exposes the checked same-degree and successor-degree Bézout
