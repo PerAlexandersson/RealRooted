@@ -5,8 +5,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 # The Poisson star algebra
 
 This file develops the algebraic part of the Poisson star product
-`f ⋆ g = ∑_{a,b} f_{a,b} z^a v^b (1 + ∂_v)^{a+b} g`.  The two distinguished variables are indexed
-by `Bool`: `false` is `z` and `true` is `v`.  A right input may additionally use an arbitrary
+`f ⋆ g = ∑_{a,b} f_{a,b} z^a v^b (1 + ∂_v)^{a+b} g`. The two distinguished variables are
+indexed by `Bool`: `false` is `z` and `true` is `v`. A right input may additionally use an arbitrary
 spectator block `τ`.  We prove the monomial law, coefficientwise nonnegativity, the products
 `v ⋆ z = z v` and `z ⋆ v = z v + z`, the units, `T_f ∘ T_g = T_(f ⋆ g)`, and associativity
 (`star_assoc`).
@@ -66,25 +66,16 @@ def spectatorAction {R τ : Type*} [CommSemiring R]
         ((d q).descFactorial j * c) := by
   induction j with
   | zero =>
-      simp only [iteratedPDerivAt, Finsupp.single_zero,
-        Nat.descFactorial_zero, Nat.cast_one, one_mul]
-      have hzero : d - (0 : σ →₀ ℕ) = d := by
-        ext i
-        simp
-      rw [hzero]
+      simp [iteratedPDerivAt]
   | succ j ih =>
       rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_monomial]
       have hsub : d - Finsupp.single q j - Finsupp.single q 1 =
           d - Finsupp.single q (j + 1) := by
         ext i
-        by_cases hi : i = q
-        · subst i
-          simp [Nat.sub_sub]
-        · simp [hi]
+        by_cases hi : i = q <;> simp [hi, Nat.sub_sub]
       rw [hsub]
       have hq : (d - Finsupp.single q j) q = d q - j := by simp
-      rw [hq, Nat.descFactorial_succ, Nat.cast_mul]
-      ring_nf
+      rw [hq, Nat.descFactorial_succ, Nat.cast_mul]; ring_nf
 
 /-- Explicit monomial formula for the binomial shift-derivative operator. -/
 theorem shiftDeriv_monomial {R σ : Type*} [CommSemiring R]
@@ -96,18 +87,15 @@ theorem shiftDeriv_monomial {R σ : Type*} [CommSemiring R]
   rw [shiftDeriv, shiftMap,
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
-  apply Finset.sum_congr rfl
-  intro j hj
+  apply Finset.sum_congr rfl; intro j hj
   rw [Module.End.mul_apply, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • MvPolynomial.monomial d c) = _
-  rw [map_nsmul, iteratedPDerivAt_eq_pow, iteratedPDerivAt_monomial]
-  rw [nsmul_eq_mul]
+  rw [map_nsmul, iteratedPDerivAt_eq_pow, iteratedPDerivAt_monomial, nsmul_eq_mul]
   change MvPolynomial.C (n.choose j : R) *
       MvPolynomial.monomial (d - Finsupp.single q j)
         ((d q).descFactorial j * c) = _
-  rw [MvPolynomial.C_mul_monomial]
-  rw [mul_assoc]
+  rw [MvPolynomial.C_mul_monomial, mul_assoc]
 
 /-- Expand the binomial shift derivative into ordinary iterated
 derivatives. -/
@@ -119,22 +107,13 @@ theorem shiftDeriv_eq_sum_iterated {R σ : Type*} [CommSemiring R]
   rw [shiftDeriv, shiftMap,
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
-  apply Finset.sum_congr rfl
-  intro j hj
+  apply Finset.sum_congr rfl; intro j hj
   rw [Module.End.mul_apply, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • P) = _
   rw [map_nsmul, iteratedPDerivAt_eq_pow, nsmul_eq_mul]
   change MvPolynomial.C (n.choose j : R) * iteratedPDerivAt q j P = _
   rfl
-
-private theorem bidegree_apply_false (a b : ℕ) :
-    (Finsupp.single false a + Finsupp.single true b : Bool →₀ ℕ) false = a := by
-  simp
-
-private theorem bidegree_apply_true (a b : ℕ) :
-    (Finsupp.single false a + Finsupp.single true b : Bool →₀ ℕ) true = b := by
-  simp
 
 /-- The monomial `c z^a v^b`, in sparse-exponent form. -/
 def zvMonomial {R : Type*} [CommSemiring R] (a b : ℕ) (c : R) :
@@ -153,23 +132,11 @@ def zvMonomial {R : Type*} [CommSemiring R] (a b : ℕ) (c : R) :
 
 @[simp] theorem zvMonomial_z {R : Type*} [CommSemiring R] :
     zvMonomial 1 0 (1 : R) = z := by
-  rw [zvMonomial]
-  have he : (Finsupp.single false 1 + Finsupp.single true 0 : Bool →₀ ℕ) =
-      Finsupp.single false 1 := by
-    ext i
-    cases i <;> simp
-  rw [he, ← MvPolynomial.X_pow_eq_monomial]
-  simp only [pow_one]
+  simp [zvMonomial, ← MvPolynomial.X_pow_eq_monomial]
 
 @[simp] theorem zvMonomial_v {R : Type*} [CommSemiring R] :
     zvMonomial 0 1 (1 : R) = v := by
-  rw [zvMonomial]
-  have he : (Finsupp.single false 0 + Finsupp.single true 1 : Bool →₀ ℕ) =
-      Finsupp.single true 1 := by
-    ext i
-    cases i <;> simp
-  rw [he, ← MvPolynomial.X_pow_eq_monomial]
-  simp only [pow_one]
+  simp [zvMonomial, ← MvPolynomial.X_pow_eq_monomial]
 
 private theorem bidegree_sub_v (a b j : ℕ) :
     (Finsupp.single false a + Finsupp.single true b : Bool →₀ ℕ) -
@@ -194,10 +161,12 @@ theorem star_zvMonomial {R : Type*} [CommSemiring R]
   rw [actionAlong, MvPolynomial.sum_monomial_eq (by simp)]
   simp only [zvMonomial, MvPolynomial.rename_id_apply, id_eq,
     shiftDeriv_monomial,
-    bidegree_apply_false, bidegree_apply_true, Finset.mul_sum,
+    Finsupp.add_apply, Finsupp.single_eq_same,
+    Finsupp.single_eq_of_ne (by decide : true ≠ false),
+    Finsupp.single_eq_of_ne (by decide : false ≠ true), add_zero, zero_add,
+    Finset.mul_sum,
     MvPolynomial.monomial_mul_monomial, bidegree_sub_v]
-  apply Finset.sum_congr rfl
-  intro j hj
+  apply Finset.sum_congr rfl; intro j hj
   by_cases hjd : j ≤ d
   · have hexp :
         (Finsupp.single false a + Finsupp.single true b : Bool →₀ ℕ) +
@@ -240,8 +209,7 @@ theorem hasNonnegCoeffs_monomial {σ : Type*}
     (d : σ →₀ ℕ) {c : ℝ} (hc : 0 ≤ c) :
     (MvPolynomial.monomial d c).HasNonnegCoeffs := by
   classical
-  intro e
-  rw [MvPolynomial.coeff_monomial]
+  intro e; rw [MvPolynomial.coeff_monomial]
   split <;> simp_all
 
 /-- Poisson action preserves nonnegative coefficients when both inputs have
@@ -253,32 +221,25 @@ theorem actionAlong_nonneg {σ : Type*} (ι : Bool → σ)
     (actionAlong ι f P).HasNonnegCoeffs := by
   classical
   rw [actionAlong, MvPolynomial.sum_def]
-  apply MvPolynomial.HasNonnegCoeffs.sum
-  intro d hd
+  apply MvPolynomial.HasNonnegCoeffs.sum; intro d hd
   exact (hasNonnegCoeffs_monomial d (hf d)).rename_of_injective hι |>.mul
     (shiftDeriv_nonneg hP (ι true) (d false + d true))
 
 /-- The Poisson star product preserves coefficientwise nonnegativity. -/
 theorem star_nonneg {f g : MvPolynomial Bool ℝ}
     (hf : f.HasNonnegCoeffs) (hg : g.HasNonnegCoeffs) :
-    (star f g).HasNonnegCoeffs := by
-  exact actionAlong_nonneg id Function.injective_id hf hg
+    (star f g).HasNonnegCoeffs :=
+  actionAlong_nonneg id Function.injective_id hf hg
 
 /-- The first degree-one noncommutativity regression: `v star z = zv`. -/
 theorem v_star_z {R : Type*} [CommSemiring R] :
     star (v : MvPolynomial Bool R) z = z * v := by
   have hzv : zvMonomial 1 1 (1 : R) = z * v := by
     rw [zvMonomial]
-    calc
-      MvPolynomial.monomial
-          (Finsupp.single false 1 + Finsupp.single true 1) (1 : R) =
-          MvPolynomial.monomial (Finsupp.single false 1) 1 *
-            MvPolynomial.monomial (Finsupp.single true 1) 1 := by
-        symm
-        rw [MvPolynomial.monomial_mul_monomial]
-        simp only [one_mul]
-      _ = z * v := by
-        simp only [← MvPolynomial.X_pow_eq_monomial, pow_one]
+    change MvPolynomial.monomial _ 1 =
+      MvPolynomial.monomial (Finsupp.single false 1) 1 *
+        MvPolynomial.monomial (Finsupp.single true 1) 1
+    rw [MvPolynomial.monomial_mul_monomial, one_mul]
   rw [← zvMonomial_v, ← zvMonomial_z, star_zvMonomial]
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
     Nat.choose_zero_right, Nat.descFactorial_zero, Nat.cast_one, one_mul,
@@ -292,16 +253,10 @@ theorem z_star_v {R : Type*} [CommSemiring R] :
     star (z : MvPolynomial Bool R) v = z * v + z := by
   have hzv : zvMonomial 1 1 (1 : R) = z * v := by
     rw [zvMonomial]
-    calc
-      MvPolynomial.monomial
-          (Finsupp.single false 1 + Finsupp.single true 1) (1 : R) =
-          MvPolynomial.monomial (Finsupp.single false 1) 1 *
-            MvPolynomial.monomial (Finsupp.single true 1) 1 := by
-        symm
-        rw [MvPolynomial.monomial_mul_monomial]
-        simp only [one_mul]
-      _ = z * v := by
-        simp only [← MvPolynomial.X_pow_eq_monomial, pow_one]
+    change MvPolynomial.monomial _ 1 =
+      MvPolynomial.monomial (Finsupp.single false 1) 1 *
+        MvPolynomial.monomial (Finsupp.single true 1) 1
+    rw [MvPolynomial.monomial_mul_monomial, one_mul]
   rw [← zvMonomial_z, ← zvMonomial_v, star_zvMonomial]
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
     Nat.choose_zero_right, Nat.descFactorial_zero, Nat.cast_one, one_mul,
@@ -314,8 +269,7 @@ private def mulLinear {R : Type*} [CommSemiring R]
   toFun Q := P * Q
   map_add' Q H := by rw [mul_add]
   map_smul' c Q := by
-    simp only [RingHom.id_apply, MvPolynomial.smul_eq_C_mul]
-    ring
+    simp only [RingHom.id_apply, MvPolynomial.smul_eq_C_mul]; ring
 
 private def opZ {R : Type*} [CommSemiring R] :
     Module.End R (MvPolynomial Bool R) :=
@@ -351,8 +305,7 @@ private theorem pderiv_comm_bool {R : Type*} [CommSemiring R]
 
 private theorem opZ_commute_mulZ {R : Type*} [CommSemiring R] :
     opZ * (mulZ : Module.End R (MvPolynomial Bool R)) = mulZ * opZ := by
-  apply LinearMap.ext
-  intro P
+  apply LinearMap.ext; intro P
   change z * (MvPolynomial.pderiv true (z * P) + z * P) =
     z * (z * (MvPolynomial.pderiv true P + P))
   rw [MvPolynomial.pderiv_mul,
@@ -361,8 +314,7 @@ private theorem opZ_commute_mulZ {R : Type*} [CommSemiring R] :
 
 private theorem opV_commute_mulZ {R : Type*} [CommSemiring R] :
     opV * (mulZ : Module.End R (MvPolynomial Bool R)) = mulZ * opV := by
-  apply LinearMap.ext
-  intro P
+  apply LinearMap.ext; intro P
   change v * (MvPolynomial.pderiv true (z * P) + z * P) =
     z * (v * (MvPolynomial.pderiv true P + P))
   rw [MvPolynomial.pderiv_mul,
@@ -371,8 +323,7 @@ private theorem opV_commute_mulZ {R : Type*} [CommSemiring R] :
 
 private theorem opZ_commute_euler {R : Type*} [CommSemiring R] :
     opZ * (eulerOp : Module.End R (MvPolynomial Bool R)) = eulerOp * opZ := by
-  apply LinearMap.ext
-  intro P
+  apply LinearMap.ext; intro P
   change z * (MvPolynomial.pderiv true
       (v * (MvPolynomial.pderiv true P + P) +
         z * MvPolynomial.pderiv false P) +
@@ -386,13 +337,11 @@ private theorem opZ_commute_euler {R : Type*} [CommSemiring R] :
   simp only [MvPolynomial.pderiv_mul, MvPolynomial.pderiv_X_self,
     MvPolynomial.pderiv_X_of_ne (i := true) (j := false) (by decide),
     one_mul, zero_mul, zero_add, map_add]
-  rw [pderiv_comm_bool]
-  ring
+  rw [pderiv_comm_bool]; ring
 
 private theorem opV_commute_euler {R : Type*} [CommSemiring R] :
     opV * (eulerOp : Module.End R (MvPolynomial Bool R)) = eulerOp * opV := by
-  apply LinearMap.ext
-  intro P
+  apply LinearMap.ext; intro P
   change v * (MvPolynomial.pderiv true
       (v * (MvPolynomial.pderiv true P + P) +
         z * MvPolynomial.pderiv false P) +
@@ -407,8 +356,7 @@ private theorem opV_commute_euler {R : Type*} [CommSemiring R] :
     MvPolynomial.pderiv_X_of_ne (i := true) (j := false) (by decide),
     MvPolynomial.pderiv_X_of_ne (i := false) (j := true) (by decide),
     one_mul, zero_mul, zero_add, map_add]
-  rw [pderiv_comm_bool]
-  ring
+  rw [pderiv_comm_bool]; ring
 
 private def fallingEnd {R M : Type*} [CommRing R] [AddCommGroup M]
     [Module R M] (A : Module.End R M) : ℕ → Module.End R M
@@ -512,17 +460,13 @@ private theorem termOp_apply {R : Type*} [CommRing R]
     shiftDeriv_z_pow_mul, shiftDeriv_comp]
   ring
 
-private theorem finsupp_bool_decompose (d : Bool →₀ ℕ) :
-    d = Finsupp.single false (d false) + Finsupp.single true (d true) := by
-  ext i
-  cases i <;> simp
-
 /-- A sparse monomial over `Bool` is the corresponding `z,v` monomial. -/
 theorem monomial_bool_eq {R : Type*} [CommSemiring R]
     (d : Bool →₀ ℕ) (c : R) :
     MvPolynomial.monomial d c =
       MvPolynomial.C c * z ^ d false * v ^ d true := by
-  rw [finsupp_bool_decompose d]
+  rw [show d = Finsupp.single false (d false) +
+      Finsupp.single true (d true) by ext i; cases i <;> simp]
   simp only [Finsupp.add_apply, Finsupp.single_eq_same,
     Finsupp.single_eq_of_ne (by decide : true ≠ false),
     Finsupp.single_eq_of_ne (by decide : false ≠ true), add_zero, zero_add]
@@ -539,8 +483,7 @@ theorem monomial_bool_eq {R : Type*} [CommSemiring R]
       rw [MvPolynomial.monomial_mul_monomial]
       simp only [one_mul]
     _ = MvPolynomial.C c * z ^ d false * v ^ d true := by
-      simp only [← MvPolynomial.X_pow_eq_monomial]
-      ring
+      simp only [← MvPolynomial.X_pow_eq_monomial]; ring
 
 private def actionEnd {R : Type*} [CommRing R]
     (f : MvPolynomial Bool R) : Module.End R (MvPolynomial Bool R) :=
@@ -552,12 +495,10 @@ private theorem actionEnd_apply {R : Type*} [CommRing R]
   classical
   rw [actionEnd, star, actionAlong, MvPolynomial.sum_def,
     LinearMap.sum_apply]
-  apply Finset.sum_congr rfl
-  intro d hd
+  apply Finset.sum_congr rfl; intro d hd
   rw [LinearMap.smul_apply, termOp_apply,
     MvPolynomial.rename_id_apply, monomial_bool_eq]
-  simp only [MvPolynomial.smul_eq_C_mul, id_eq]
-  ring
+  simp only [MvPolynomial.smul_eq_C_mul, id_eq]; ring
 
 private theorem natCast_commute {S : Type*} [Ring S] (n : ℕ) (B : S) :
     Commute (n : S) B := by
@@ -590,28 +531,21 @@ private theorem termOp_commute_euler {R : Type*} [CommRing R]
   exact Commute.mul_left (fallingEnd_commute opV_commute_euler b)
     (Commute.pow_left opZ_commute_euler a)
 
-private theorem commute_smul_left {R M : Type*} [CommRing R]
-    [AddCommGroup M] [Module R M] (c : R) {A B : Module.End R M}
-    (h : Commute A B) : Commute (c • A) B :=
-  Commute.smul_left h c
-
 private theorem actionEnd_commute_mulZ {R : Type*} [CommRing R]
     (f : MvPolynomial Bool R) :
     Commute (actionEnd f) (mulZ : Module.End R (MvPolynomial Bool R)) := by
   classical
   rw [actionEnd]
-  apply Commute.sum_left
-  intro d hd
-  exact commute_smul_left (f.coeff d) (termOp_commute_mulZ (d false) (d true))
+  apply Commute.sum_left; intro d hd
+  exact Commute.smul_left (termOp_commute_mulZ (d false) (d true)) (f.coeff d)
 
 private theorem actionEnd_commute_euler {R : Type*} [CommRing R]
     (f : MvPolynomial Bool R) :
     Commute (actionEnd f) (eulerOp : Module.End R (MvPolynomial Bool R)) := by
   classical
   rw [actionEnd]
-  apply Commute.sum_left
-  intro d hd
-  exact commute_smul_left (f.coeff d) (termOp_commute_euler (d false) (d true))
+  apply Commute.sum_left; intro d hd
+  exact Commute.smul_left (termOp_commute_euler (d false) (d true)) (f.coeff d)
 
 private theorem shiftDeriv_one {R σ : Type*} [CommSemiring R]
     (q : σ) (n : ℕ) : shiftDeriv q n (1 : MvPolynomial σ R) = 1 := by
@@ -633,8 +567,7 @@ theorem star_one_right {R : Type*} [CommRing R]
   calc
     (∑ d ∈ f.support, (f.coeff d • termOp (d false) (d true)) 1) =
         ∑ d ∈ f.support, MvPolynomial.monomial d (f.coeff d) := by
-      apply Finset.sum_congr rfl
-      intro d hd
+      apply Finset.sum_congr rfl; intro d hd
       rw [LinearMap.smul_apply, termOp_apply, shiftDeriv_one,
         mul_one, MvPolynomial.smul_eq_C_mul, monomial_bool_eq]
       ring
@@ -655,8 +588,7 @@ private theorem eulerOp_v_pow {R : Type*} [CommRing R] (b : ℕ) :
       simp only [Nat.succ_sub_one, pow_succ]
       push_cast
       rw [MvPolynomial.smul_eq_C_mul]
-      simp only [map_add, map_one, map_natCast]
-      ring
+      simp only [map_add, map_one, map_natCast]; ring
 
 private theorem end_eq_on_v_pow {R : Type*} [CommRing R]
     (A B : Module.End R (MvPolynomial Bool R))
@@ -684,23 +616,14 @@ private theorem end_eq_on_z_pow_v_pow {R : Type*} [CommRing R]
   induction a with
   | zero => simpa using end_eq_on_v_pow A B hAD hBD h1 b
   | succ a ih =>
-      have hA : A (z * (z ^ a * v ^ b)) = z * A (z ^ a * v ^ b) := by
-        have hc := congrArg (fun T : Module.End R (MvPolynomial Bool R) =>
-          T (z ^ a * v ^ b)) hAZ
-        rw [Module.End.mul_apply, Module.End.mul_apply] at hc
-        change A (z * (z ^ a * v ^ b)) = z * A (z ^ a * v ^ b) at hc
-        exact hc
-      have hB : B (z * (z ^ a * v ^ b)) = z * B (z ^ a * v ^ b) := by
-        have hc := congrArg (fun T : Module.End R (MvPolynomial Bool R) =>
-          T (z ^ a * v ^ b)) hBZ
-        rw [Module.End.mul_apply, Module.End.mul_apply] at hc
-        change B (z * (z ^ a * v ^ b)) = z * B (z ^ a * v ^ b) at hc
-        exact hc
+      have hA := LinearMap.congr_fun hAZ.eq (z ^ a * v ^ b)
+      change A (z * (z ^ a * v ^ b)) = z * A (z ^ a * v ^ b) at hA
+      have hB := LinearMap.congr_fun hBZ.eq (z ^ a * v ^ b)
+      change B (z * (z ^ a * v ^ b)) = z * B (z ^ a * v ^ b) at hB
       rw [pow_succ]
       have hz : (z : MvPolynomial Bool R) ^ a * z * v ^ b =
           z * (z ^ a * v ^ b) := by ring
-      rw [hz]
-      rw [hA, hB, ih]
+      rw [hz, hA, hB, ih]
 
 private theorem end_eq_of_commute {R : Type*} [CommRing R]
     (A B : Module.End R (MvPolynomial Bool R))
@@ -709,8 +632,7 @@ private theorem end_eq_of_commute {R : Type*} [CommRing R]
     (hAD : Commute A (eulerOp : Module.End R (MvPolynomial Bool R)))
     (hBD : Commute B (eulerOp : Module.End R (MvPolynomial Bool R)))
     (h1 : A 1 = B 1) : A = B := by
-  apply LinearMap.ext
-  intro P
+  apply LinearMap.ext; intro P
   induction P using MvPolynomial.induction_on' with
   | monomial d c =>
       rw [monomial_bool_eq]
@@ -746,25 +668,15 @@ theorem action_comp {R : Type*} [CommRing R]
   have hBD : Commute B (eulerOp : Module.End R (MvPolynomial Bool R)) :=
     actionEnd_commute_euler (star f g)
   have h1 : A 1 = B 1 := by
-    change (actionEnd f * actionEnd g) 1 = actionEnd (star f g) 1
-    calc
-      (actionEnd f * actionEnd g) 1 = star f (star g 1) := by
-        rw [Module.End.mul_apply, actionEnd_apply, actionEnd_apply]
-      _ = star f g := by rw [star_one_right]
-      _ = star (star f g) 1 := by rw [star_one_right]
-      _ = actionEnd (star f g) 1 := (actionEnd_apply (star f g) 1).symm
-  have hEnd : A = B := end_eq_of_commute A B hAZ hBZ hAD hBD h1
-  have hP := congrArg (fun T : Module.End R (MvPolynomial Bool R) => T P) hEnd
-  change (actionEnd f * actionEnd g) P = actionEnd (star f g) P at hP
-  rw [Module.End.mul_apply, actionEnd_apply, actionEnd_apply,
-    actionEnd_apply] at hP
-  exact hP
+    simp [A, B, Module.End.mul_apply, actionEnd_apply, star_one_right]
+  have hP := LinearMap.congr_fun (end_eq_of_commute A B hAZ hBZ hAD hBD h1) P
+  simpa [A, B, Module.End.mul_apply, actionEnd_apply] using hP
 
 /-- The Poisson star product is associative. -/
 theorem star_assoc {R : Type*} [CommRing R]
     (f g h : MvPolynomial Bool R) :
-    star (star f g) h = star f (star g h) := by
-  exact (action_comp f g h).symm
+    star (star f g) h = star f (star g h) :=
+  (action_comp f g h).symm
 
 end
 
