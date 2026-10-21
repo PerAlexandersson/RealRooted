@@ -32,54 +32,34 @@ private theorem exists_fin_ne {n : ℕ} (hn : 2 ≤ n) (i : Fin n) : ∃ k : Fin
 
 private theorem allowed_one_theta_top_right_one
     {a b c d : Letter}
-    (ha : a = .one ∨ a = .theta) (hb : b = .one ∨ b = .theta)
-    (hc : c = .one ∨ c = .theta) (hd : d = .one ∨ d = .theta)
+    (hb : b = .one ∨ b = .theta)
     (hallowed : a.IsAllowedBlock b c d) (hatop : a = .one) :
-    b = .one := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    b = .one := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_one_theta_bottom_right_one
     {a b c d : Letter}
-    (ha : a = .one ∨ a = .theta) (hb : b = .one ∨ b = .theta)
-    (hc : c = .one ∨ c = .theta) (hd : d = .one ∨ d = .theta)
+    (hd : d = .one ∨ d = .theta)
     (hallowed : a.IsAllowedBlock b c d) (hcbottom : c = .one) :
-    d = .one := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    d = .one := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_one_theta_top_right_of_bottom_right
     {a b c d : Letter}
-    (ha : a = .one ∨ a = .theta) (hb : b = .one ∨ b = .theta)
-    (hc : c = .one ∨ c = .theta) (hd : d = .one ∨ d = .theta)
+    (hb : b = .one ∨ b = .theta)
     (hallowed : a.IsAllowedBlock b c d) (hdbottom : d = .one) :
-    b = .one := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    b = .one := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_one_theta_top_left_one
     {a b c d : Letter}
-    (ha : a = .one ∨ a = .theta) (hb : b = .one ∨ b = .theta)
-    (hc : c = .one ∨ c = .theta) (hd : d = .one ∨ d = .theta)
+    (ha : a = .one ∨ a = .theta)
     (hallowed : a.IsAllowedBlock b c d) (hcbottom : c = .one) :
-    a = .one := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    a = .one := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_one_theta_bottom_left_one
     {a b c d : Letter}
-    (ha : a = .one ∨ a = .theta) (hb : b = .one ∨ b = .theta)
-    (hc : c = .one ∨ c = .theta) (hd : d = .one ∨ d = .theta)
+    (hc : c = .one ∨ c = .theta)
     (hallowed : a.IsAllowedBlock b c d) (hatop : a = .one)
     (hdbottom : d = .one) :
-    c = .one := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    c = .one := by grind [Letter.IsAllowedBlock]
 
 private theorem one_right_of_allowed_blocks {m n : ℕ}
     (L : Fin m → Fin n → Letter) (hm : 2 ≤ m)
@@ -91,11 +71,9 @@ private theorem one_right_of_allowed_blocks {m n : ℕ}
   obtain ⟨k, hki⟩ := exists_fin_ne hm i
   rcases lt_or_gt_of_ne hki with hki | hik
   · exact allowed_one_theta_bottom_right_one
-      (halpha k j) (halpha k l) (halpha i j) (halpha i l)
-      (hblocks k i j l hki hjl) hij
+      (halpha i l) (hblocks k i j l hki hjl) hij
   · exact allowed_one_theta_top_right_one
-      (halpha i j) (halpha i l) (halpha k j) (halpha k l)
-      (hblocks i k j l hik hjl) hij
+      (halpha i l) (hblocks i k j l hik hjl) hij
 
 private theorem one_above_of_allowed_blocks {m n : ℕ}
     (L : Fin m → Fin n → Letter) (halpha : IsOneThetaMatrix L)
@@ -105,8 +83,7 @@ private theorem one_above_of_allowed_blocks {m n : ℕ}
     (l : Fin n) (hjl : j < l) :
     L i j = .one := by
   exact allowed_one_theta_top_left_one
-    (halpha i j) (halpha i l) (halpha k j) (halpha k l)
-    (hblocks i k j l hik hjl) hkj
+    (halpha i j) (hblocks i k j l hik hjl) hkj
 
 private theorem bottom_left_one_of_allowed_blocks {m n : ℕ}
     (L : Fin m → Fin n → Letter) (halpha : IsOneThetaMatrix L)
@@ -116,8 +93,7 @@ private theorem bottom_left_one_of_allowed_blocks {m n : ℕ}
     (hij : L i j = .one) (hkl : L k l = .one) :
     L k j = .one := by
   exact allowed_one_theta_bottom_left_one
-    (halpha i j) (halpha i l) (halpha k j) (halpha k l)
-    (hblocks i k j l hik hjl) hij hkl
+    (halpha k j) (hblocks i k j l hik hjl) hij hkl
 
 /-- For matrices with at least two rows and columns over `{1, θ}`, ordered-PF
 preservation is equivalent to the `1` entries forming an upper-right rectangle. -/
@@ -183,8 +159,7 @@ theorem preservesOrderedPF_one_theta_iff_upperRightRectangle
           · obtain ⟨l, hcl⟩ := exists_fin_ne hn c
             rcases lt_or_gt_of_ne hcl with hlc | hcl
             · exact allowed_one_theta_top_right_of_bottom_right
-                (halpha i l) (halpha i c) (halpha a l) (halpha a c)
-                (hblocks i a l c hia_lt hlc) hac
+                (halpha i c) (hblocks i a l c hia_lt hlc) hac
             · exact one_above_of_allowed_blocks L halpha hblocks hia_lt c hac l hcl
         rcases hcj.eq_or_lt with hcj_eq | hcj_lt
         · have hc_eq_j : c = j := Fin.ext hcj_eq
@@ -192,25 +167,15 @@ theorem preservesOrderedPF_one_theta_iff_upperRightRectangle
         · have hc_lt_j : c < j := by simpa using hcj_lt
           exact one_right_of_allowed_blocks L hm halpha hblocks i hc_lt_j hic
     · refine ⟨0, Nat.zero_le m, 0, Nat.zero_le n, ?_⟩
-      intro i j
-      constructor
-      · intro hij
-        exact (hone ⟨i, j, hij⟩).elim
-      · intro hfalse
-        exact (Nat.not_lt_zero i.1 hfalse.1).elim
+      grind
   · rintro ⟨r, hr, c, hc, hrect⟩
     intro i k j l hik hjl
     have hij := hrect i j
     have hil := hrect i l
     have hkj := hrect k j
     have hkl := hrect k l
-    have ha_alpha := halpha i j
-    have hb_alpha := halpha i l
-    have hc_alpha := halpha k j
-    have hd_alpha := halpha k l
-    clear hrect halpha
-    rcases ha_alpha with ha | ha <;> rcases hb_alpha with hb | hb <;>
-      rcases hc_alpha with hcc | hcc <;> rcases hd_alpha with hd | hd <;>
+    rcases halpha i j with ha | ha <;> rcases halpha i l with hb | hb <;>
+      rcases halpha k j with hcc | hcc <;> rcases halpha k l with hd | hd <;>
       simp only [ha, hb, hcc, hd, Letter.IsAllowedBlock] <;> grind
 
 /-- Every entry of a letter matrix belongs to the alphabet `{θ, X}`. -/
@@ -228,73 +193,49 @@ def XsFormBottomRows {m n : ℕ} (L : Fin m → Fin n → Letter) : Prop :=
 private theorem allowed_theta_x_top_left_x_of_top_right_x
     {a b c d : Letter}
     (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
-    (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
+    (hd : d = .theta ∨ d = .x)
     (hallowed : a.IsAllowedBlock b c d) (hbtop : b = .x) :
-    a = .x := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    a = .x := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_bottom_left_x_of_bottom_right_x
     {a b c d : Letter}
-    (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
     (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
     (hallowed : a.IsAllowedBlock b c d) (hdbottom : d = .x) :
-    c = .x := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    c = .x := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_bottom_left_x_of_top_left_x
     {a b c d : Letter}
-    (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
+    (ha : a = .theta ∨ a = .x)
     (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
     (hallowed : a.IsAllowedBlock b c d) (hatop : a = .x) :
-    c = .x := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    c = .x := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_bottom_right_x_of_top_right_x
     {a b c d : Letter}
-    (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
-    (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
+    (hd : d = .theta ∨ d = .x)
     (hallowed : a.IsAllowedBlock b c d) (hbtop : b = .x) :
-    d = .x := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    d = .x := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_bottom_of_top_mixed
     {a b c d : Letter}
-    (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
-    (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
+    (ha : a = .theta ∨ a = .x) (hc : c = .theta ∨ c = .x)
     (hallowed : a.IsAllowedBlock b c d) (hatop : a = .x) (hbtop : b = .theta) :
-    c = .x ∧ d = .theta := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    c = .x ∧ d = .theta := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_top_of_bottom_mixed
     {a b c d : Letter}
     (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
-    (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
+    (hc : c = .theta ∨ c = .x)
     (hallowed : a.IsAllowedBlock b c d) (hcbottom : c = .x)
     (hdbottom : d = .theta) :
-    a = .x ∧ b = .theta := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    a = .x ∧ b = .theta := by grind [Letter.IsAllowedBlock]
 
 private theorem allowed_theta_x_right_eq_of_left_x
     {a b c d : Letter}
     (ha : a = .theta ∨ a = .x) (hb : b = .theta ∨ b = .x)
     (hc : c = .theta ∨ c = .x) (hd : d = .theta ∨ d = .x)
     (hallowed : a.IsAllowedBlock b c d) (hatop : a = .x) (hcbottom : c = .x) :
-    b = d := by
-  rcases ha with rfl | rfl <;> rcases hb with rfl | rfl <;>
-    rcases hc with rfl | rfl <;> rcases hd with rfl | rfl <;>
-    simp_all [Letter.IsAllowedBlock]
+    b = d := by grind [Letter.IsAllowedBlock]
 
 private theorem x_left_of_allowed_blocks {m n : ℕ}
     (L : Fin m → Fin n → Letter) (hm : 2 ≤ m)
@@ -306,11 +247,9 @@ private theorem x_left_of_allowed_blocks {m n : ℕ}
   obtain ⟨k, hki⟩ := exists_fin_ne hm i
   rcases lt_or_gt_of_ne hki with hki | hik
   · exact allowed_theta_x_bottom_left_x_of_bottom_right_x
-      (halpha k j) (halpha k l) (halpha i j) (halpha i l)
-      (hblocks k i j l hki hjl) hil
+      (halpha i j) (halpha i l) (hblocks k i j l hki hjl) hil
   · exact allowed_theta_x_top_left_x_of_top_right_x
-      (halpha i j) (halpha i l) (halpha k j) (halpha k l)
-      (hblocks i k j l hik hjl) hil
+      (halpha i j) (halpha i l) (halpha k l) (hblocks i k j l hik hjl) hil
 
 private theorem theta_right_of_allowed_blocks {m n : ℕ}
     (L : Fin m → Fin n → Letter) (hm : 2 ≤ m)
@@ -334,11 +273,9 @@ private theorem x_below_of_allowed_blocks {m n : ℕ}
   obtain ⟨l, hlj⟩ := exists_fin_ne hn j
   rcases lt_or_gt_of_ne hlj with hlj | hjl
   · exact allowed_theta_x_bottom_right_x_of_top_right_x
-      (halpha i l) (halpha i j) (halpha k l) (halpha k j)
-      (hblocks i k l j hik hlj) hij
+      (halpha k j) (hblocks i k l j hik hlj) hij
   · exact allowed_theta_x_bottom_left_x_of_top_left_x
-      (halpha i j) (halpha i l) (halpha k j) (halpha k l)
-      (hblocks i k j l hik hjl) hij
+      (halpha i j) (halpha k j) (halpha k l) (hblocks i k j l hik hjl) hij
 
 private theorem exists_x_prefix_cut {n : ℕ} (f : Fin n → Letter)
     (halpha : ∀ j, f j = .theta ∨ f j = .x)
@@ -414,46 +351,29 @@ private theorem row_eq_of_mixed_row {m n : ℕ}
   by_cases hia : i = a
   · subst i
     rfl
-  rcases lt_or_gt_of_ne hia with hia | hai
-  · have hmixed := allowed_theta_x_top_of_bottom_mixed
-      (halpha i u) (halpha i v) (halpha a u) (halpha a v)
-      (hblocks i a u v hia huv) hau hav
-    have hiu : L i u = .x := hmixed.1
-    have hiv : L i v = .theta := hmixed.2
-    rcases le_total j u with hju | huj
-    · rcases hju.eq_or_lt with rfl | hju_lt
+  have horder : i < a ∨ a < i := lt_or_gt_of_ne hia
+  obtain ⟨hiu, hiv⟩ : L i u = .x ∧ L i v = .theta := by
+    rcases horder with hia | hai
+    · exact allowed_theta_x_top_of_bottom_mixed
+        (halpha i u) (halpha i v) (halpha a u) (hblocks i a u v hia huv) hau hav
+    · exact allowed_theta_x_bottom_of_top_mixed
+        (halpha a u) (halpha i u) (hblocks a i u v hai huv) hau hav
+  rcases le_total j u with hju | huj
+  · rcases hju.eq_or_lt with rfl | hju_lt
+    · exact hiu.trans hau.symm
+    · exact (x_left_of_allowed_blocks L hm halpha hblocks i hju_lt hiu).trans
+        (x_left_of_allowed_blocks L hm halpha hblocks a hju_lt hau).symm
+  · rcases le_total v j with hvj | hjv
+    · rcases hvj.eq_or_lt with rfl | hvj_lt
+      · exact hiv.trans hav.symm
+      · exact (theta_right_of_allowed_blocks L hm halpha hblocks i hvj_lt hiv).trans
+          (theta_right_of_allowed_blocks L hm halpha hblocks a hvj_lt hav).symm
+    · rcases huj.eq_or_lt with rfl | huj_lt
       · exact hiu.trans hau.symm
-      · exact (x_left_of_allowed_blocks L hm halpha hblocks i hju_lt hiu).trans
-          (x_left_of_allowed_blocks L hm halpha hblocks a hju_lt hau).symm
-    · rcases le_total v j with hvj | hjv
-      · rcases hvj.eq_or_lt with rfl | hvj_lt
-        · exact hiv.trans hav.symm
-        · exact (theta_right_of_allowed_blocks L hm halpha hblocks i hvj_lt hiv).trans
-            (theta_right_of_allowed_blocks L hm halpha hblocks a hvj_lt hav).symm
-      · rcases huj.eq_or_lt with huj_eq | huj_lt
-        · subst j
-          exact hiu.trans hau.symm
+      · rcases horder with hia | hai
         · exact allowed_theta_x_right_eq_of_left_x
             (halpha i u) (halpha i j) (halpha a u) (halpha a j)
             (hblocks i a u j hia huj_lt) hiu hau
-  · have hmixed := allowed_theta_x_bottom_of_top_mixed
-      (halpha a u) (halpha a v) (halpha i u) (halpha i v)
-      (hblocks a i u v hai huv) hau hav
-    have hiu : L i u = .x := hmixed.1
-    have hiv : L i v = .theta := hmixed.2
-    rcases le_total j u with hju | huj
-    · rcases hju.eq_or_lt with rfl | hju_lt
-      · exact hiu.trans hau.symm
-      · exact (x_left_of_allowed_blocks L hm halpha hblocks i hju_lt hiu).trans
-          (x_left_of_allowed_blocks L hm halpha hblocks a hju_lt hau).symm
-    · rcases le_total v j with hvj | hjv
-      · rcases hvj.eq_or_lt with rfl | hvj_lt
-        · exact hiv.trans hav.symm
-        · exact (theta_right_of_allowed_blocks L hm halpha hblocks i hvj_lt hiv).trans
-            (theta_right_of_allowed_blocks L hm halpha hblocks a hvj_lt hav).symm
-      · rcases huj.eq_or_lt with huj_eq | huj_lt
-        · subst j
-          exact hiu.trans hau.symm
         · exact (allowed_theta_x_right_eq_of_left_x
             (halpha a u) (halpha a j) (halpha i u) (halpha i j)
             (hblocks a i u j hai huj_lt) hau hiu).symm
@@ -503,34 +423,14 @@ theorem preservesOrderedPF_theta_x_iff_rowCut_or_columnCut
       refine ⟨r, hr, fun i j ↦ ?_⟩
       rw [hrowConstant i j]
       exact hcut i
-  · rintro (hcolumns | hrows)
-    · obtain ⟨c, hc, hcut⟩ := hcolumns
-      intro i k j l hik hjl
-      have hij := hcut i j
-      have hil := hcut i l
-      have hkj := hcut k j
-      have hkl := hcut k l
-      have ha_alpha := halpha i j
-      have hb_alpha := halpha i l
-      have hc_alpha := halpha k j
-      have hd_alpha := halpha k l
-      clear hcut halpha
-      rcases ha_alpha with ha | ha <;> rcases hb_alpha with hb | hb <;>
-        rcases hc_alpha with hcc | hcc <;> rcases hd_alpha with hd | hd <;>
-        simp only [ha, hb, hcc, hd, Letter.IsAllowedBlock] <;> grind
-    · obtain ⟨r, hr, hcut⟩ := hrows
-      intro i k j l hik hjl
-      have hij := hcut i j
-      have hil := hcut i l
-      have hkj := hcut k j
-      have hkl := hcut k l
-      have ha_alpha := halpha i j
-      have hb_alpha := halpha i l
-      have hc_alpha := halpha k j
-      have hd_alpha := halpha k l
-      clear hcut halpha
-      rcases ha_alpha with ha | ha <;> rcases hb_alpha with hb | hb <;>
-        rcases hc_alpha with hcc | hcc <;> rcases hd_alpha with hd | hd <;>
-        simp only [ha, hb, hcc, hd, Letter.IsAllowedBlock] <;> grind
+  · rintro (⟨c, hc, hcut⟩ | ⟨r, hr, hcut⟩) <;>
+      intro i k j l hik hjl <;>
+      have hij := hcut i j <;>
+      have hil := hcut i l <;>
+      have hkj := hcut k j <;>
+      have hkl := hcut k l <;>
+      rcases halpha i j with ha | ha <;> rcases halpha i l with hb | hb <;>
+      rcases halpha k j with hcc | hcc <;> rcases halpha k l with hd | hd <;>
+      simp only [ha, hb, hcc, hd, Letter.IsAllowedBlock] <;> grind
 
 end RealRooted.OperatorMatrix
