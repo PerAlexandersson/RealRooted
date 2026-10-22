@@ -1483,7 +1483,7 @@
       "max_modules": 112
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 558
+      "max_modules": 561
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 16
@@ -1576,7 +1576,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 588
+      "max_modules": 591
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182
