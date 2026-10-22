@@ -1,5 +1,31 @@
 {
   "entries": {
+    "AhlbergAlexandersson2026": {
+      "bibtex": "@article{AhlbergAlexandersson2026,\n  author = {John Ahlberg and Per Alexandersson},\n  title = {Polynomials from tilings of rectangles},\n  year = {2026},\n  eprint = {2605.03473},\n  archivePrefix = {arXiv},\n  primaryClass = {math.CO}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2605.03473",
+        "author": [
+          {
+            "family": "Ahlberg",
+            "given": "John"
+          },
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Polynomials from tilings of rectangles",
+        "type": "article-journal"
+      },
+      "label": "AA26"
+    },
     "AissenSchoenbergWhitney1952": {
       "bibtex": "@article{AissenSchoenbergWhitney1952,\n  author = {Aissen, Michael and Schoenberg, I. J. and Whitney, A. M.},\n  title = {On the generating functions of totally positive sequences {I}},\n  year = {1952},\n  journal = {Journal d'Analyse Mathématique},\n  volume = {2},\n  number = {1},\n  pages = {93--103},\n  doi = {10.1007/BF02786970},\n  url = {https://doi.org/10.1007/BF02786970}\n}\n",
       "csl": {
