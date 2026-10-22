@@ -2062,4 +2062,12 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 import RealRooted.RecurrenceSpace.Defect
 import RealRooted.RecurrenceSpace.Filtered
 import RealRooted.RecurrenceSpace.Operators
+import RealRooted.FerrersTiling.AnchorRefined
+import RealRooted.FerrersTiling.FaultFreeRectangle
+import RealRooted.FerrersTiling.FaultLines
+import RealRooted.FerrersTiling.LTiling
+import RealRooted.FerrersTiling.Rigid
+import RealRooted.FerrersTiling.RowRefined
+import RealRooted.FerrersTiling.TwoColumn
+import RealRooted.Challenges.FerrersTilings
 import RealRooted.Tactic.Examples.A049325RecurrenceSpace
