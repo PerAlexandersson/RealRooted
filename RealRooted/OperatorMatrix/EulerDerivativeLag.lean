@@ -59,6 +59,35 @@ theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
       ← mul_assoc, theta_mul_x, add_mul, mul_add]
   · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
 
+/-- The identity-top factor sends `(p,q)` to `(q, theta q + Xp)`. -/
+theorem apply_identityTop_pair (p q : ℝ[X]) :
+    apply identityTop ![p, q] = ![q, RealRooted.theta q + X * p] := by
+  funext i
+  fin_cases i <;>
+    simp [apply, identityTop, Fin.sum_univ_two, Letter.linearMap_one,
+      Letter.linearMap_x, Letter.linearMap_theta, add_comm]
+
+/-- The theta-top factor sends `(p,q)` to `(theta q, theta q + X theta p)`. -/
+theorem apply_thetaTop_pair (p q : ℝ[X]) :
+    apply thetaTop ![p, q] =
+      ![RealRooted.theta q, RealRooted.theta q + X * RealRooted.theta p] := by
+  funext i
+  fin_cases i <;>
+    simp [apply, thetaTop, Fin.sum_univ_two, Module.End.mul_apply,
+      Letter.linearMap_x, Letter.linearMap_theta, add_comm]
+
+/-- One application of the dense matrix advances any family satisfying the Euler-derivative
+lag recurrence by two indices. -/
+theorem apply_twoStep_pair_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (n : ℕ) :
+    apply twoStep ![P n, P (n + 1)] = ![P (n + 2), P (n + 3)] := by
+  have hnext :
+      RealRooted.theta (P (n + 2)) + X * RealRooted.theta (P (n + 1)) = P (n + 3) := by
+    simpa [Nat.add_assoc] using (hrec (n + 1)).symm
+  rw [twoStep_eq_mul, apply_mul, apply_thetaTop_pair, ← hrec n,
+    apply_identityTop_pair, hnext]
+
 /-- The identity-top factor preserves every zero-aware ordered PF pair. -/
 theorem preservesOrderedPFPair_identityTop :
     PreservesOrderedPFPair 0 Letter.one.linearMap
