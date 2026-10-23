@@ -350,12 +350,14 @@ theorem not_preservesOrderedPF_transition_identity_identity :
   rw [show C (2 : ℝ) = (2 : ℝ[X]) from map_ofNat C 2,
     show C (3 : ℝ) = (3 : ℝ[X]) from map_ofNat C 3] at himage
   have hf : IsPFPolynomial (6 + 5 * X + X ^ 2 : ℝ[X]) := by
-    convert himage.1 using 1 <;>
-      simp [FactorLabel.rightFactor, Letter.linearMap_one] <;> ring
+    convert himage.1 using 1
+    simp [FactorLabel.rightFactor, Letter.linearMap_one]
+    ring
   have hg : IsPFPolynomial (5 * X + 3 * X ^ 2 : ℝ[X]) := by
-    convert himage.2.1 using 1 <;>
-      simp [FactorLabel.leftQuotient, Module.End.mul_apply, Letter.linearMap_x,
-        Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
+    convert himage.2.1 using 1
+    simp [FactorLabel.leftQuotient, Module.End.mul_apply, Letter.linearMap_x,
+      Letter.linearMap_theta, RealRooted.theta, derivative_mul]
+    ring
   have hsign :
       0 < (5 * X + 3 * X ^ 2 : ℝ[X]).eval (-2) *
         (6 + 5 * X + X ^ 2 : ℝ[X]).derivative.eval (-2) := by
@@ -387,8 +389,9 @@ theorem not_preservesOrderedPF_transition_euler_euler :
   have hp : IsPFPolynomial ((X + C 2) * (X + C 3) : ℝ[X]) := hp2.mul hp3
   have hq : IsPFPolynomial (X * (X + C 2) : ℝ[X]) := isPFPolynomial_X.mul hp2
   have hpq : Interl ((X + C 2) * (X + C 3) : ℝ[X]) (X * (X + C 2)) := by
-    have hlin : StrictInterl (X + C 3 : ℝ[X]) X :=
-      (StrictInterl.X_add_C_iff (a := 0) (b := 3)).2 (by norm_num)
+    have hlin : StrictInterl (X + C 3 : ℝ[X]) X := by
+      simpa only [map_zero, add_zero] using
+        (StrictInterl.X_add_C_iff (a := 0) (b := 3)).2 (by norm_num)
     have hcommon := hlin.mul_common_factor
       (by simpa using (X_add_C_ne_zero (2 : ℝ)))
       (Polynomial.Splits.X_add_C 2)
