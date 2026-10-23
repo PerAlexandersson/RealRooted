@@ -1,5 +1,6 @@
 import RealRooted.OperatorMatrix.Composition
 import RealRooted.OperatorMatrix.OneThetaX
+import RealRooted.ObreschkoffConverse.Derivative
 
 /-!
 # The Euler-derivative lag operator matrices
@@ -18,6 +19,11 @@ namespace RealRooted.OperatorMatrix.EulerDerivativeLag
 /-- The identity-top factor `U = [[0, I], [X, theta]]`. -/
 def identityTop : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
   !![0, Letter.one.linearMap; Letter.x.linearMap, Letter.theta.linearMap]
+
+/-- The theta-top factor `V = [[0, theta], [X theta, theta]]`. -/
+def thetaTop : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
+  !![0, Letter.theta.linearMap;
+    Letter.x.linearMap * Letter.theta.linearMap, Letter.theta.linearMap]
 
 /-- The identity-top factor preserves every zero-aware ordered PF pair. -/
 theorem preservesOrderedPFPair_identityTop :
@@ -52,5 +58,35 @@ theorem preservesOrderedPFPair_identityTop :
 theorem preservesOrderedPF_identityTop : PreservesOrderedPF identityTop := by
   rw [preservesOrderedPF_two_two_iff]
   simpa [identityTop] using preservesOrderedPFPair_identityTop
+
+/-- The theta-top factor preserves every zero-aware ordered PF pair. -/
+theorem preservesOrderedPFPair_thetaTop :
+    PreservesOrderedPFPair 0 Letter.theta.linearMap
+      (Letter.x.linearMap * Letter.theta.linearMap) Letter.theta.linearMap := by
+  intro p q hp hq hpq
+  have hpder : IsPFPolynomial p.derivative := hp.derivative
+  have hqder : IsPFPolynomial q.derivative := hq.derivative
+  have hder : Interl p.derivative q.derivative := derivativePreservesInterl hpq
+  have hqderThetaP : Interl q.derivative (X * p.derivative) :=
+    (interl_iff_interl_X_mul hpder hqder).mp hder
+  have hbaseBottom : IsPFPolynomial (X * p.derivative + q.derivative) := by
+    simpa only [add_comm] using hqder.add_of_interl hpder.X_mul hqderThetaP
+  have hbaseInterl : Interl q.derivative (X * p.derivative + q.derivative) :=
+    interl_add_right_of_common_left_of_nonneg hqderThetaP hqder.interl_self
+      hpder.X_mul.hasNonnegCoeffs hqder.hasNonnegCoeffs
+  have hbottom := hbaseBottom.X_mul
+  have hinterl := hbaseInterl.mul_X_both
+  refine ⟨?_, ?_, ?_⟩
+  · simpa only [Letter.linearMap_theta, LinearMap.zero_apply, zero_add] using
+      theta_preserves_pf hq
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, Module.End.mul_apply,
+      RealRooted.theta, mul_add, LinearMap.zero_apply, zero_add] using hbottom
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, Module.End.mul_apply,
+      RealRooted.theta, mul_add, LinearMap.zero_apply, zero_add] using hinterl
+
+/-- The matrix `thetaTop` preserves ordered PF vectors. -/
+theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
+  rw [preservesOrderedPF_two_two_iff]
+  simpa [thetaTop] using preservesOrderedPFPair_thetaTop
 
 end RealRooted.OperatorMatrix.EulerDerivativeLag
