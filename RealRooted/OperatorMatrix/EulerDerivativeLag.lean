@@ -44,6 +44,26 @@ theorem theta_mul_x :
     Letter.linearMap_x, RealRooted.theta, derivative_mul, derivative_X, one_mul]
   ring
 
+/-- The basic Weyl relation `D X = X D + I` on real polynomials. -/
+theorem derivative_mul_x :
+    (Polynomial.derivative : Module.End ℝ ℝ[X]) * Letter.x.linearMap =
+      Letter.x.linearMap * Polynomial.derivative + Letter.one.linearMap := by
+  apply LinearMap.ext
+  intro p
+  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_x,
+    Letter.linearMap_one, derivative_mul, derivative_X, one_mul]
+  ring
+
+/-- The multiplication-divisor correction `(theta - I) X = X theta`. -/
+theorem theta_sub_one_mul_x :
+    (Letter.theta.linearMap - Letter.one.linearMap) * Letter.x.linearMap =
+      Letter.x.linearMap * Letter.theta.linearMap := by
+  have hone : Letter.one.linearMap = (1 : Module.End ℝ ℝ[X]) := by
+    apply LinearMap.ext
+    intro p
+    rfl
+  rw [hone, sub_mul, one_mul, theta_mul_x, add_sub_cancel_right]
+
 /-- The dense two-step matrix is the product `U * V` in action order. -/
 theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
   have hone : Letter.one.linearMap = (1 : Module.End ℝ ℝ[X]) := by
