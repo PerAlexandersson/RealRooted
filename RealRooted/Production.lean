@@ -1882,6 +1882,9 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 import RealRooted.RecurrenceSpace.Defect
 import RealRooted.RecurrenceSpace.Filtered
 import RealRooted.RecurrenceSpace.Operators
+import RealRooted.IntervalDifferential.Basic
+import RealRooted.IntervalDifferential.Certificates
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
 
 /-!
 # RealRooted production umbrella

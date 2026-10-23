@@ -2063,3 +2063,6 @@ import RealRooted.RecurrenceSpace.Defect
 import RealRooted.RecurrenceSpace.Filtered
 import RealRooted.RecurrenceSpace.Operators
 import RealRooted.Tactic.Examples.A049325RecurrenceSpace
+import RealRooted.IntervalDifferential.Basic
+import RealRooted.IntervalDifferential.Certificates
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
