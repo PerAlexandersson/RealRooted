@@ -2622,6 +2622,36 @@
       ],
       "note": "Convergence of normalized upper-triangular operator exponentials; proof found by Aristotle (Harmonic). Not yet proposed upstream.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedColumnBound.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedColumnBound"
+      ],
+      "note": "Finite positive weighted column-sum bound on the norm of a scalar admitting a nonzero eigenvector. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/IntervalSignChanges.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.IntervalSignChanges"
+      ],
+      "note": "Finite strict sign changes give exact degree, splitting, simple roots and strict outer interval bounds. Not yet proposed upstream.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/RealQuadraticFactor.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.RealQuadraticFactor"
+      ],
+      "note": "Real monic quadratic divisor, coefficient form and real/conjugate-pair factor shapes. Not yet proposed upstream.",
+      "speculative": true
     }
   ]
 }
