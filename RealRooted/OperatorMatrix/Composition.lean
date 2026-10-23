@@ -49,7 +49,7 @@ theorem apply_mul {m n r : ℕ}
     apply (A * B) f = apply A (apply B f) := by
   classical
   funext i
-  simp only [apply, Matrix.mul_apply, Finset.sum_apply, Module.End.mul_apply,
+  simp only [apply, Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply,
     map_sum]
   rw [Finset.sum_comm]
 
@@ -59,7 +59,11 @@ theorem apply_one {n : ℕ} (f : Fin n → ℝ[X]) :
     apply (1 : Matrix (Fin n) (Fin n) (Module.End ℝ ℝ[X])) f = f := by
   classical
   funext i
-  simp [apply, Matrix.one_apply]
+  simp only [apply, Matrix.one_apply]
+  apply Finset.sum_eq_single i
+  · intro j _ hji
+    simp [hji.symm]
+  · simp
 
 /-- The identity operator matrix preserves ordered PF vectors. -/
 theorem preservesOrderedPF_one {n : ℕ} :
@@ -69,8 +73,8 @@ theorem preservesOrderedPF_one {n : ℕ} :
 
 /-- A product of ordered-PF-preserving operator matrices preserves ordered PF vectors. -/
 protected theorem PreservesOrderedPF.mul {m n r : ℕ}
-    {A : Matrix (Fin m) (Fin n) (Module.End ℝ ℝ[X]))}
-    {B : Matrix (Fin n) (Fin r) (Module.End ℝ ℝ[X]))}
+    {A : Matrix (Fin m) (Fin n) (Module.End ℝ ℝ[X])}
+    {B : Matrix (Fin n) (Fin r) (Module.End ℝ ℝ[X])}
     (hA : PreservesOrderedPF A) (hB : PreservesOrderedPF B) :
     PreservesOrderedPF (A * B) := by
   intro f hf
@@ -79,7 +83,7 @@ protected theorem PreservesOrderedPF.mul {m n r : ℕ}
 
 /-- Every power of an ordered-PF-preserving square operator matrix preserves ordered PF vectors. -/
 protected theorem PreservesOrderedPF.pow {n : ℕ}
-    {M : Matrix (Fin n) (Fin n) (Module.End ℝ ℝ[X]))}
+    {M : Matrix (Fin n) (Fin n) (Module.End ℝ ℝ[X])}
     (hM : PreservesOrderedPF M) (k : ℕ) :
     PreservesOrderedPF (M ^ k) := by
   induction k with
