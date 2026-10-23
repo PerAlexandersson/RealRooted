@@ -31,6 +31,14 @@ def zigzagLinearFactor (a : ℝ) (F : ℝ[X]) : ℝ[X] :=
 def zigzagQuadraticFactor (a b : ℝ) (F : ℝ[X]) : ℝ[X] :=
   zigzagLinearFactor a (zigzagLinearFactor a F) + C (b ^ 2) * F
 
+/-- Multiplication by a conjugate-pair factor becomes quadratic operator insertion. -/
+theorem zigzagTransform_quadratic_mul (a b : ℝ) (Q : ℝ[X]) :
+    zigzagTransform (((X - C a) ^ 2 + C (b ^ 2)) * Q) =
+      zigzagQuadraticFactor a b (zigzagTransform Q) := by
+  rw [add_mul, zigzagTransform_add, pow_two, mul_assoc,
+    zigzagTransform_linear_mul, zigzagTransform_linear_mul, zigzagTransform_C_mul]
+  rfl
+
 /-- The polynomial `J` in the Appendix C.2 sign certificate. -/
 def zigzagJ (d : ℕ) (F : ℝ[X]) : ℝ[X] :=
   (1 - X ^ 2) * (F.derivative ^ 2 - F * F.derivative.derivative) +
