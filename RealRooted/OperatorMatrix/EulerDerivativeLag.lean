@@ -39,17 +39,20 @@ theorem theta_mul_x :
     Letter.theta.linearMap * Letter.x.linearMap =
       Letter.x.linearMap * Letter.theta.linearMap + Letter.x.linearMap := by
   ext p
-  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_theta,
-    Letter.linearMap_x]
-  rw [RealRooted.theta, ← thetaPlusOne_eq_derivative_X_mul]
-  simp [thetaPlusOne, RealRooted.theta, mul_add]
+  change RealRooted.theta (X * p) = X * RealRooted.theta p + X * p
+  simp only [RealRooted.theta, derivative_mul, derivative_X, one_mul]
+  ring
 
 /-- The dense two-step matrix is the product `U * V` in action order. -/
 theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two,
-      theta_mul_x, mul_add, add_mul, mul_assoc]
+  apply Matrix.ext
+  intro i j
+  fin_cases i <;> fin_cases j
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two,
+      ← mul_assoc, theta_mul_x, add_mul, mul_add]
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
 
 /-- The identity-top factor preserves every zero-aware ordered PF pair. -/
 theorem preservesOrderedPFPair_identityTop :
