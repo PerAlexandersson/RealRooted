@@ -404,13 +404,15 @@ theorem not_preservesOrderedPF_transition_euler_euler :
   rw [show C (2 : ℝ) = (2 : ℝ[X]) from map_ofNat C 2,
     show C (3 : ℝ) = (3 : ℝ[X]) from map_ofNat C 3] at himage
   have hf : IsPFPolynomial (2 * X + 2 * X ^ 2 : ℝ[X]) := by
-    convert himage.1 using 1 <;>
-      simp [FactorLabel.rightFactor, Letter.linearMap_theta,
-        RealRooted.theta, derivative_mul] <;> ring
+    convert himage.1 using 1
+    simp [FactorLabel.rightFactor, Letter.linearMap_theta,
+      RealRooted.theta, derivative_mul]
+    ring
   have hg : IsPFPolynomial (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) := by
-    convert himage.2.1 using 1 <;>
-      simp [FactorLabel.leftQuotient, Letter.linearMap_x, RealRooted.theta,
-        derivative_mul] <;> ring
+    convert himage.2.1 using 1
+    simp [FactorLabel.leftQuotient, Letter.linearMap_x, RealRooted.theta,
+      derivative_mul]
+    ring
   have hsign :
       0 < (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]).eval (-1) *
         (2 * X + 2 * X ^ 2 : ℝ[X]).derivative.eval (-1) := by
