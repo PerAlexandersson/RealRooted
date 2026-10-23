@@ -297,7 +297,8 @@ private theorem not_interl_of_left_root_sign_pos {f g : ℝ[X]}
   intro hinterl
   have hnonpos :=
     (hinterl.toStrictInterl_of_ne hf0 hg0).eval_mul_derivative_nonpos_of_left_root
-      (hf.pos_leadingCoeff hf0) (hg.pos_leadingCoeff hg0) hr
+      (hf.hasNonnegCoeffs.pos_leadingCoeff hf0)
+      (hg.hasNonnegCoeffs.pos_leadingCoeff hg0) hr
   exact (not_lt_of_ge hnonpos) hsign
 
 /-- A transition whose source label is `X` cannot preserve ordered PF vectors. -/
@@ -330,21 +331,24 @@ theorem not_preservesOrderedPF_transition_x_target (source : FactorLabel) :
 theorem not_preservesOrderedPF_transition_identity_identity :
     ¬ PreservesOrderedPF (transition .identity .identity) := by
   intro hpreserves
-  have hp : IsPFPolynomial (X + 2 : ℝ[X]) := by
-    simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num))
-  have hq : IsPFPolynomial ((X + 2) * (X + 3) : ℝ[X]) := by
-    exact hp.mul (by simpa using (isPFPolynomial_X_add_C (a := 3) (by norm_num)))
-  have hpq : Interl (X + 2 : ℝ[X]) ((X + 2) * (X + 3)) := by
-    have h :=
-      (interlaces_linear_quadratic_of_roots_between
-        (c := 1) (r := -3) (α := -2) (s := -2)
-        (by norm_num) (by norm_num) (by norm_num)).toStrictInterl.toInterl
-    convert h using 1 <;> ring
-  have hseed : IsOrderedPF ![(X + 2 : ℝ[X]), (X + 2) * (X + 3)] := by
+  have hp : IsPFPolynomial (X + C 2 : ℝ[X]) :=
+    isPFPolynomial_X_add_C (by norm_num)
+  have hp3 : IsPFPolynomial (X + C 3 : ℝ[X]) :=
+    isPFPolynomial_X_add_C (by norm_num)
+  have hq : IsPFPolynomial ((X + C 2) * (X + C 3) : ℝ[X]) := hp.mul hp3
+  have hpq : Interl (X + C 2 : ℝ[X]) ((X + C 2) * (X + C 3)) := by
+    have hbase : StrictInterl (1 : ℝ[X]) (X + C 3) :=
+      (interlaces_one_linear (natDegree_X_add_C 3)).toStrictInterl
+    have hcommon := hbase.mul_common_factor
+      (X_add_C_ne_zero 2) (Polynomial.Splits.X_add_C 2)
+    simpa only [mul_one] using hcommon.toInterl
+  have hseed : IsOrderedPF ![(X + C 2 : ℝ[X]), (X + C 2) * (X + C 3)] := by
     rw [isOrderedPF_pair_iff]
     exact ⟨hp, hq, hpq⟩
-  have himage := hpreserves ![(X + 2 : ℝ[X]), (X + 2) * (X + 3)] hseed
+  have himage := hpreserves ![(X + C 2 : ℝ[X]), (X + C 2) * (X + C 3)] hseed
   rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  rw [show C (2 : ℝ) = (2 : ℝ[X]) from map_ofNat C 2,
+    show C (3 : ℝ) = (3 : ℝ[X]) from map_ofNat C 3] at himage
   have hf : IsPFPolynomial (6 + 5 * X + X ^ 2 : ℝ[X]) := by
     convert himage.1 using 1 <;>
       simp [FactorLabel.rightFactor, Letter.linearMap_one] <;> ring
@@ -352,9 +356,21 @@ theorem not_preservesOrderedPF_transition_identity_identity :
     convert himage.2.1 using 1 <;>
       simp [FactorLabel.leftQuotient, Module.End.mul_apply, Letter.linearMap_x,
         Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
-  apply not_interl_of_left_root_sign_pos hf hg (by compute_degree!) (by compute_degree!)
+  have hsign :
+      0 < (5 * X + 3 * X ^ 2 : ℝ[X]).eval (-2) *
+        (6 + 5 * X + X ^ 2 : ℝ[X]).derivative.eval (-2) := by
+    norm_num
+  have hf0 : (6 + 5 * X + X ^ 2 : ℝ[X]) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hsign
+    norm_num at hsign
+  have hg0 : (5 * X + 3 * X ^ 2 : ℝ[X]) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hsign
+    norm_num at hsign
+  apply not_interl_of_left_root_sign_pos hf hg hf0 hg0 (r := -2)
   · norm_num [Polynomial.IsRoot.def]
-  · norm_num
+  · exact hsign
   convert himage.2.2 using 1 <;>
     simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Module.End.mul_apply,
       Letter.linearMap_one, Letter.linearMap_x, Letter.linearMap_theta,
@@ -364,36 +380,49 @@ theorem not_preservesOrderedPF_transition_identity_identity :
 theorem not_preservesOrderedPF_transition_euler_euler :
     ¬ PreservesOrderedPF (transition .euler .euler) := by
   intro hpreserves
-  have hp : IsPFPolynomial ((X + 2) * (X + 3) : ℝ[X]) := by
-    exact (by simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num))).mul
-      (by simpa using (isPFPolynomial_X_add_C (a := 3) (by norm_num)))
-  have hq : IsPFPolynomial (X * (X + 2) : ℝ[X]) := by
-    exact isPFPolynomial_X.mul
-      (by simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num)))
-  have hpq : Interl ((X + 2) * (X + 3) : ℝ[X]) (X * (X + 2)) := by
-    have hlin : StrictInterl (X + 3 : ℝ[X]) X := by
-      simpa only [map_zero, add_zero] using
-        (StrictInterl.X_add_C_iff (a := 0) (b := 3)).2 (by norm_num)
+  have hp2 : IsPFPolynomial (X + C 2 : ℝ[X]) :=
+    isPFPolynomial_X_add_C (by norm_num)
+  have hp3 : IsPFPolynomial (X + C 3 : ℝ[X]) :=
+    isPFPolynomial_X_add_C (by norm_num)
+  have hp : IsPFPolynomial ((X + C 2) * (X + C 3) : ℝ[X]) := hp2.mul hp3
+  have hq : IsPFPolynomial (X * (X + C 2) : ℝ[X]) := isPFPolynomial_X.mul hp2
+  have hpq : Interl ((X + C 2) * (X + C 3) : ℝ[X]) (X * (X + C 2)) := by
+    have hlin : StrictInterl (X + C 3 : ℝ[X]) X :=
+      (StrictInterl.X_add_C_iff (a := 0) (b := 3)).2 (by norm_num)
     have hcommon := hlin.mul_common_factor
       (by simpa using (X_add_C_ne_zero (2 : ℝ)))
       (Polynomial.Splits.X_add_C 2)
-    convert hcommon.toInterl using 1 <;> ring
-  have hseed : IsOrderedPF ![((X + 2) * (X + 3) : ℝ[X]), X * (X + 2)] := by
+    simpa only [mul_comm] using hcommon.toInterl
+  have hseed : IsOrderedPF ![((X + C 2) * (X + C 3) : ℝ[X]), X * (X + C 2)] := by
     rw [isOrderedPF_pair_iff]
     exact ⟨hp, hq, hpq⟩
-  have himage := hpreserves ![((X + 2) * (X + 3) : ℝ[X]), X * (X + 2)] hseed
+  have himage := hpreserves ![((X + C 2) * (X + C 3) : ℝ[X]), X * (X + C 2)] hseed
   rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  rw [show C (2 : ℝ) = (2 : ℝ[X]) from map_ofNat C 2,
+    show C (3 : ℝ) = (3 : ℝ[X]) from map_ofNat C 3] at himage
   have hf : IsPFPolynomial (2 * X + 2 * X ^ 2 : ℝ[X]) := by
     convert himage.1 using 1 <;>
       simp [FactorLabel.rightFactor, Letter.linearMap_theta,
         RealRooted.theta, derivative_mul] <;> ring
   have hg : IsPFPolynomial (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) := by
     convert himage.2.1 using 1 <;>
-      simp [FactorLabel.leftQuotient, Letter.linearMap_x, Letter.linearMap_theta,
-        RealRooted.theta, derivative_mul] <;> ring
-  apply not_interl_of_left_root_sign_pos hf hg (by compute_degree!) (by compute_degree!)
+      simp [FactorLabel.leftQuotient, Letter.linearMap_x, RealRooted.theta,
+        derivative_mul] <;> ring
+  have hsign :
+      0 < (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]).eval (-1) *
+        (2 * X + 2 * X ^ 2 : ℝ[X]).derivative.eval (-1) := by
+    norm_num
+  have hf0 : (2 * X + 2 * X ^ 2 : ℝ[X]) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hsign
+    norm_num at hsign
+  have hg0 : (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) ≠ 0 := by
+    intro hzero
+    rw [hzero] at hsign
+    norm_num at hsign
+  apply not_interl_of_left_root_sign_pos hf hg hf0 hg0 (r := -1)
   · norm_num [Polynomial.IsRoot.def]
-  · norm_num
+  · exact hsign
   convert himage.2.2 using 1 <;>
     simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Letter.linearMap_x,
       Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
