@@ -34,6 +34,17 @@ def twoStep : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
       Letter.x.linearMap * Letter.theta.linearMap +
         Letter.theta.linearMap * Letter.theta.linearMap]
 
+/-- The dense two-step matrix with every entry in left-normal Weyl form. -/
+def twoStepLeftNormal : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
+  !![(LinearMap.mulLeft ℝ (X ^ 2)).comp Polynomial.derivative,
+      (LinearMap.mulLeft ℝ X).comp Polynomial.derivative;
+    (LinearMap.mulLeft ℝ (X ^ 3)).comp
+        (Polynomial.derivative.comp Polynomial.derivative) +
+      (LinearMap.mulLeft ℝ (2 * X ^ 2)).comp Polynomial.derivative,
+    (LinearMap.mulLeft ℝ (X ^ 2)).comp
+        (Polynomial.derivative.comp Polynomial.derivative) +
+      (LinearMap.mulLeft ℝ (X ^ 2 + X)).comp Polynomial.derivative]
+
 /-- The Euler and multiplication operators satisfy `theta X = X theta + X`. -/
 theorem theta_mul_x :
     Letter.theta.linearMap * Letter.x.linearMap =
@@ -98,6 +109,18 @@ theorem lag_eq_leftQuotient_mul_rightFactor (label : FactorLabel) :
   | x =>
       simpa [FactorLabel.leftQuotient, FactorLabel.rightFactor] using
         theta_sub_one_mul_x.symm
+
+/-- The structural and left-normal displays of the dense matrix agree exactly. -/
+theorem twoStep_eq_leftNormal : twoStep = twoStepLeftNormal := by
+  apply Matrix.ext
+  intro i j
+  apply LinearMap.ext
+  intro p
+  fin_cases i <;> fin_cases j <;>
+    simp [twoStep, twoStepLeftNormal, Module.End.mul_apply, LinearMap.add_apply,
+      LinearMap.comp_apply, LinearMap.mulLeft_apply, Letter.linearMap_x,
+      Letter.linearMap_theta, RealRooted.theta, derivative_mul, derivative_X] <;>
+    ring
 
 /-- The dense two-step matrix is the product `U * V` in action order. -/
 theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
