@@ -59,8 +59,19 @@ theorem apply_one {n : ℕ} (f : Fin n → ℝ[X]) :
     apply (1 : Matrix (Fin n) (Fin n) (Module.End ℝ ℝ[X])) f = f := by
   classical
   funext i
-  simp only [apply, Matrix.one_apply, ite_apply, Module.End.one_apply,
-    LinearMap.zero_apply, Fintype.sum_ite_eq']
+  simp only [apply, Matrix.one_apply]
+  calc
+    (∑ j : Fin n, (if i = j then (1 : Module.End ℝ ℝ[X]) else 0) (f j)) =
+        ∑ j : Fin n, if j = i then f j else 0 := by
+      apply Finset.sum_congr rfl
+      intro j _
+      by_cases hji : j = i
+      · subst j
+        simp
+      · simp [hji, hji.symm]
+    _ = f i := by
+      rw [Finset.sum_ite_eq']
+      simp
 
 /-- The identity operator matrix preserves ordered PF vectors. -/
 theorem preservesOrderedPF_one {n : ℕ} :
