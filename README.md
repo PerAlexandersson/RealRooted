@@ -210,8 +210,13 @@ curated in the `RealRooted/Challenges/` entry points and rendered by
   or statement scaffolds.
 - Each catalog metadata block requires `formalized = "YYYY-MM-DD"`, the date its
   selected headline result (or first theorem) was first formalized.
-- The bounded module comment holds the explanatory prose and the primary
-  references.
+- The bounded module comment holds the explanatory prose. References come from
+  the shared symmetricfunctions.com bibliography: list keys in the metadata
+  (`references = [...]`), cite inline with `[@Key]` or `[@Key, Thm. 2.4]`, and
+  link SymCat statements with `sf:label`. `scripts/symcat_sync.py` refreshes the
+  snapshot in `website/symcat/` (see `website/README.md`). Works without a
+  bibliography entry stay in prose until one is added to the SymCat
+  `bibliography.bib`.
 - After the ordinary build, `scripts/audit_challenge_catalog.py` verifies the
   selected declaration kinds and transitive axioms. Only that validated `main`
   revision deploys to GitHub Pages. Documentation never replaces proof
