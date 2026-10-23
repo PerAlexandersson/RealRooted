@@ -2650,7 +2650,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.RealQuadraticFactor"
       ],
-      "note": "Nonmonic normalization corollary of Mathlib real monic quadratic factorization. Not yet proposed upstream.",
+      "note": "Real monic quadratic divisor, coefficient form and real/conjugate-pair factor shapes. Not yet proposed upstream.",
       "speculative": true
     }
   ]

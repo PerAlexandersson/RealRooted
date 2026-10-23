@@ -1896,6 +1896,7 @@ import RealRooted.IntervalDifferential.RootSums
 import RealRooted.IntervalDifferential.Seeds
 import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
 import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
+import RealRooted.IntervalDifferential.FactorShapes
 
 /-!
 # RealRooted production umbrella

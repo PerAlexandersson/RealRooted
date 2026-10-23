@@ -99,4 +99,85 @@ theorem zigzagQuadraticFactor_eval_mul_neg_of_splits (F : ℝ[X])
     nlinarith
   · exact hlinear
 
+/-- At each interior root of the linear insertion, the quadratic insertion
+has the opposite sign to its derivative. This is the strict sign input for
+the interval root criterion in Appendix C.2. -/
+theorem zigzagQuadraticFactor_eval_derivative_mul_neg (F : ℝ[X])
+    (hF : F.Splits) (hdeg : 4 ≤ F.natDegree)
+    (hroots : ∀ r ∈ F.roots, -1 < r ∧ r < 1)
+    (a b s : ℝ) (hdisk : a ^ 2 + b ^ 2 ≤ 13 / 3)
+    (hs : -1 < s ∧ s < 1) (hFs : F.eval s ≠ 0)
+    (hlinear : (zigzagLinearFactor a F).eval s = 0) :
+    (zigzagQuadraticFactor a b F).eval s *
+      (zigzagLinearFactor a F).derivative.eval s < 0 := by
+  have hpos := zigzagLinearFactor_eval_derivative_mul_pos F hF (by lia)
+    hroots a s hFs hlinear
+  have hneg := zigzagQuadraticFactor_eval_mul_neg_of_splits F hF hdeg
+    hroots a b s hdisk hs hFs hlinear
+  rcases lt_or_gt_of_ne hFs with h | h
+  · exact mul_neg_of_pos_of_neg (pos_of_mul_neg_right hneg (le_of_lt h))
+      (neg_of_mul_pos_right hpos (le_of_lt h))
+  · exact mul_neg_of_neg_of_pos (neg_of_mul_neg_right hneg (le_of_lt h))
+      (pos_of_mul_pos_right hpos (le_of_lt h))
+
+/-- The quadratic and linear insertions have the endpoint signs required
+by the strict interval root criterion. -/
+theorem zigzagQuadraticFactor_endpoint_signs (F : ℝ[X]) (hF : F ≠ 0)
+    (hroots : ∀ r ∈ F.roots, -1 < r ∧ r < 1)
+    (a b : ℝ) (hdisk : a ^ 2 + b ^ 2 ≤ 13 / 3) :
+    (zigzagQuadraticFactor a b F).eval (-1) *
+        (zigzagLinearFactor a F).eval (-1) < 0 ∧
+      0 < (zigzagQuadraticFactor a b F).eval 1 *
+        (zigzagLinearFactor a F).eval 1 := by
+  have ha : -3 < a ∧ a < 3 := by
+    constructor <;> nlinarith [sq_nonneg b]
+  have hleft : F.eval (-1) ≠ 0 := by
+    intro h
+    have hr := hroots (-1) ((mem_roots hF).mpr h)
+    linarith [hr.1]
+  have hright : F.eval 1 ≠ 0 := by
+    intro h
+    have hr := hroots 1 ((mem_roots hF).mpr h)
+    linarith [hr.2]
+  have hplus : 0 < 3 + a := by linarith [ha.1]
+  have hminus : 0 < 3 - a := by linarith [ha.2]
+  have hplus2 : 0 < (3 + a) ^ 2 + b ^ 2 :=
+    add_pos_of_pos_of_nonneg (sq_pos_of_pos hplus) (sq_nonneg b)
+  have hminus2 : 0 < (3 - a) ^ 2 + b ^ 2 :=
+    add_pos_of_pos_of_nonneg (sq_pos_of_pos hminus) (sq_nonneg b)
+  rw [zigzagQuadraticFactor_eval_neg_one, zigzagLinearFactor_eval_neg_one,
+    zigzagQuadraticFactor_eval_one, zigzagLinearFactor_eval_one]
+  constructor
+  · have h := mul_pos (mul_pos hplus2 hplus) (sq_pos_of_ne_zero hleft)
+    nlinarith
+  · have h := mul_pos (mul_pos hminus2 hminus) (sq_pos_of_ne_zero hright)
+    nlinarith
+
+/-- Inserting a conjugate pair in the closed squared-radius `13/3` disk
+preserves simple roots in `(-1,1)` when the input degree is at least four.
+This is Appendix C.2 of the zig-zag transfer argument. -/
+theorem zigzagQuadraticFactor_roots (F : ℝ[X]) (a b : ℝ)
+    (hF : F.Splits) (hnd : F.roots.Nodup) (hdeg : 4 ≤ F.natDegree)
+    (hinside : ∀ r ∈ F.roots, -1 < r ∧ r < 1)
+    (hdisk : a ^ 2 + b ^ 2 ≤ 13 / 3) :
+    (zigzagQuadraticFactor a b F).Splits ∧
+      (zigzagQuadraticFactor a b F).roots.Nodup ∧
+      ∀ r ∈ (zigzagQuadraticFactor a b F).roots, -1 < r ∧ r < 1 := by
+  have hF0 : F ≠ 0 := ne_zero_of_natDegree_gt (show 0 < F.natDegree by lia)
+  have ha : -3 < a ∧ a < 3 := by
+    constructor <;> nlinarith [sq_nonneg b]
+  obtain ⟨hG, hGnd, hGinside⟩ :=
+    zigzagLinearFactor_roots F a hF hF0 hnd hinside ha.1 ha.2
+  have hG0 := zigzagLinearFactor_ne_zero a F hF0
+  apply splits_nodup_interval_of_root_derivative_signs hG hG0 hGnd hGinside
+  · rw [zigzagQuadraticFactor_natDegree a b F hF0,
+      zigzagLinearFactor_natDegree a F hF0]
+  · intro s hs
+    have hlinear := (mem_roots hG0).mp hs
+    exact zigzagQuadraticFactor_eval_derivative_mul_neg F hF hdeg hinside
+      a b s hdisk (hGinside s hs)
+      (zigzagLinearFactor_eval_base_ne_zero hF hF0 hnd hinside a s hlinear) hlinear
+  · exact (zigzagQuadraticFactor_endpoint_signs F hF0 hinside a b hdisk).1
+  · exact (zigzagQuadraticFactor_endpoint_signs F hF0 hinside a b hdisk).2
+
 end RealRooted.IntervalDifferential
