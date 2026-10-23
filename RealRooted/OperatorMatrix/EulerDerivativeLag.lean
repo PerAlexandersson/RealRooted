@@ -172,6 +172,17 @@ theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
   rw [twoStep_eq_mul]
   exact preservesOrderedPF_identityTop.mul preservesOrderedPF_thetaTop
 
+/-- The initial pair `(1,X)` is an ordered PF vector. -/
+theorem isOrderedPF_one_X : IsOrderedPF ![(1 : ℝ[X]), X] := by
+  rw [isOrderedPF_pair_iff]
+  have hX : IsPFPolynomial X := by
+    simpa only [mul_one] using IsPFPolynomial.one.X_mul
+  have hinterl : Interl (1 : ℝ[X]) X := by
+    simpa only [mul_one] using
+      (interl_iff_interl_X_mul IsPFPolynomial.one IsPFPolynomial.one).mp
+        IsPFPolynomial.one.interl_self
+  exact ⟨IsPFPolynomial.one, hX, hinterl⟩
+
 /-- An ordered-PF seed remains ordered at every even/odd state of the two-step orbit. -/
 theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
@@ -181,6 +192,13 @@ theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (preservesOrderedPF_twoStep.pow m) _ hseed
   rw [apply_twoStep_pow_pair_of_recurrence P hrec m 0] at hpres
   simpa using hpres
+
+/-- The two-step orbit exposes every even-indexed adjacent interlacing edge. -/
+theorem interl_even_odd_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hseed : IsOrderedPF ![P 0, P 1]) (m : ℕ) :
+    Interl (P (2 * m)) (P (2 * m + 1)) :=
+  (isOrderedPF_even_odd_of_recurrence P hrec hseed m).2 0 1 (by decide)
 
 /-- Every row of a family in the two-step orbit is a PF polynomial. -/
 theorem isPFPolynomial_of_recurrence (P : ℕ → ℝ[X])
@@ -196,5 +214,20 @@ theorem splits_of_recurrence (P : ℕ → ℝ[X])
     (hseed : IsOrderedPF ![P 0, P 1]) (n : ℕ) : (P n).Splits :=
   (isPFPolynomial_of_recurrence P hrec hseed n).eq_zero_or_splits.elim
     (fun h => h ▸ Splits.zero) id
+
+/-- The initial values `P 0 = 1` and `P 1 = X` supply the ordered seed needed by the orbit
+theorem. -/
+theorem isPFPolynomial_of_recurrence_one_X (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) : IsPFPolynomial (P n) := by
+  apply isPFPolynomial_of_recurrence P hrec
+  simpa [hzero, hone] using isOrderedPF_one_X
+
+/-- Every recurrence family with initial values `(1,X)` splits in every row. -/
+theorem splits_of_recurrence_one_X (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) : (P n).Splits := by
+  apply splits_of_recurrence P hrec
+  simpa [hzero, hone] using isOrderedPF_one_X
 
 end RealRooted.OperatorMatrix.EulerDerivativeLag
