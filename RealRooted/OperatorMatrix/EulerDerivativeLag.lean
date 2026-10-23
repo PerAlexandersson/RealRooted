@@ -278,6 +278,43 @@ theorem preservesOrderedPF_transition_identity_euler :
   rw [transition_identity_euler]
   exact preservesOrderedPF_thetaTop
 
+private theorem not_interl_X_mul_X_add_one_X :
+    ¬ Interl (X * (X + 1) : ℝ[X]) X := by
+  intro hinterl
+  have hdegrees :=
+    (hinterl.toStrictInterl_of_ne
+      (mul_ne_zero X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))) X_ne_zero).natDegree_bounds
+  have hleft : (X * (X + 1) : ℝ[X]).natDegree = 2 := by
+    compute_degree!
+  rw [hleft, natDegree_X] at hdegrees
+  norm_num at hdegrees
+
+/-- A transition whose source label is `X` cannot preserve ordered PF vectors. -/
+theorem not_preservesOrderedPF_transition_x_source (target : FactorLabel) :
+    ¬ PreservesOrderedPF (transition .x target) := by
+  intro hpreserves
+  have hseed : IsOrderedPF ![(1 : ℝ[X]), 0] := by
+    rw [isOrderedPF_pair_iff]
+    exact ⟨IsPFPolynomial.one, IsPFPolynomial.zero, interl_zero_right 1⟩
+  have himage := hpreserves ![(1 : ℝ[X]), 0] hseed
+  rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  have hcoeff := himage.2.1.hasNonnegCoeffs 0
+  norm_num [FactorLabel.leftQuotient, Letter.linearMap_one,
+    Letter.linearMap_theta, RealRooted.theta] at hcoeff
+
+/-- A transition whose target label is `X` cannot preserve ordered PF vectors. -/
+theorem not_preservesOrderedPF_transition_x_target (source : FactorLabel) :
+    ¬ PreservesOrderedPF (transition source .x) := by
+  intro hpreserves
+  have hseed : IsOrderedPF ![(0 : ℝ[X]), X + 1] := by
+    rw [isOrderedPF_pair_iff]
+    exact ⟨IsPFPolynomial.zero, isPFPolynomial_X_add_one, interl_zero_left (X + 1)⟩
+  have himage := hpreserves ![(0 : ℝ[X]), X + 1] hseed
+  rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  apply not_interl_X_mul_X_add_one_X
+  simpa [FactorLabel.rightFactor, Letter.linearMap_x, Letter.linearMap_theta,
+    RealRooted.theta] using himage.2.2
+
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
 theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
   rw [twoStep_eq_mul]
