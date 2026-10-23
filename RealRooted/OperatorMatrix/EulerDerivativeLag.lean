@@ -40,8 +40,8 @@ theorem theta_mul_x :
       Letter.x.linearMap * Letter.theta.linearMap + Letter.x.linearMap := by
   apply LinearMap.ext
   intro p
-  change RealRooted.theta (X * p) = X * RealRooted.theta p + X * p
-  simp only [RealRooted.theta, derivative_mul, derivative_X, one_mul]
+  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_theta,
+    Letter.linearMap_x, RealRooted.theta, derivative_mul, derivative_X, one_mul]
   ring
 
 /-- The dense two-step matrix is the product `U * V` in action order. -/
