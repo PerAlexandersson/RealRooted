@@ -94,6 +94,11 @@ def FactorLabel.leftQuotient : FactorLabel → Module.End ℝ ℝ[X]
   | .euler => Letter.x.linearMap
   | .x => Letter.theta.linearMap - Letter.one.linearMap
 
+/-- The mixed transition from a source lag factor to a target lag factor. -/
+def transition (source target : FactorLabel) :
+    Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
+  !![0, target.rightFactor; source.leftQuotient, Letter.theta.linearMap]
+
 /-- Every registered label gives an exact right factorization of the lag `X theta`. -/
 theorem lag_eq_leftQuotient_mul_rightFactor (label : FactorLabel) :
     Letter.x.linearMap * Letter.theta.linearMap =
@@ -109,6 +114,22 @@ theorem lag_eq_leftQuotient_mul_rightFactor (label : FactorLabel) :
   | x =>
       simpa [FactorLabel.leftQuotient, FactorLabel.rightFactor] using
         theta_sub_one_mul_x.symm
+
+/-- The preserving edge from the Euler label to the identity label is `identityTop`. -/
+theorem transition_euler_identity :
+    transition .euler .identity = identityTop := rfl
+
+/-- The preserving edge from the identity label to the Euler label is `thetaTop`. -/
+theorem transition_identity_euler :
+    transition .identity .euler = thetaTop := rfl
+
+/-- A mixed transition sends `(p,q)` to `(B_target q, K_source p + theta q)`. -/
+theorem apply_transition_pair (source target : FactorLabel) (p q : ℝ[X]) :
+    apply (transition source target) ![p, q] =
+      ![target.rightFactor q, source.leftQuotient p + RealRooted.theta q] := by
+  funext i
+  fin_cases i <;>
+    simp [apply, transition, Fin.sum_univ_two, Letter.linearMap_theta]
 
 /-- The structural and left-normal displays of the dense matrix agree exactly. -/
 theorem twoStep_eq_leftNormal : twoStep = twoStepLeftNormal := by
@@ -245,6 +266,18 @@ theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
   rw [preservesOrderedPF_two_two_iff]
   simpa [thetaTop] using preservesOrderedPFPair_thetaTop
 
+/-- The mixed edge from the Euler label to the identity label preserves ordered PF vectors. -/
+theorem preservesOrderedPF_transition_euler_identity :
+    PreservesOrderedPF (transition .euler .identity) := by
+  rw [transition_euler_identity]
+  exact preservesOrderedPF_identityTop
+
+/-- The mixed edge from the identity label to the Euler label preserves ordered PF vectors. -/
+theorem preservesOrderedPF_transition_identity_euler :
+    PreservesOrderedPF (transition .identity .euler) := by
+  rw [transition_identity_euler]
+  exact preservesOrderedPF_thetaTop
+
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
 theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
   rw [twoStep_eq_mul]
@@ -260,6 +293,11 @@ theorem isOrderedPF_one_X : IsOrderedPF ![(1 : ℝ[X]), X] := by
       (interl_iff_interl_X_mul IsPFPolynomial.one IsPFPolynomial.one).mp
         IsPFPolynomial.one.interl_self
   exact ⟨IsPFPolynomial.one, hX, hinterl⟩
+
+/-- The phase-shifted initial pair `(0,X)` is an ordered PF vector. -/
+theorem isOrderedPF_zero_X : IsOrderedPF ![(0 : ℝ[X]), X] := by
+  rw [isOrderedPF_pair_iff]
+  exact ⟨IsPFPolynomial.zero, isPFPolynomial_X, interl_zero_left X⟩
 
 /-- An ordered-PF seed remains ordered at every even/odd state of the two-step orbit. -/
 theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
