@@ -38,18 +38,23 @@ def twoStep : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
 theorem theta_mul_x :
     Letter.theta.linearMap * Letter.x.linearMap =
       Letter.x.linearMap * Letter.theta.linearMap + Letter.x.linearMap := by
-  ext p
+  apply LinearMap.ext
+  intro p
   change RealRooted.theta (X * p) = X * RealRooted.theta p + X * p
   simp only [RealRooted.theta, derivative_mul, derivative_X, one_mul]
   ring
 
 /-- The dense two-step matrix is the product `U * V` in action order. -/
 theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
+  have hone : Letter.one.linearMap = (1 : Module.End ℝ ℝ[X]) := by
+    apply LinearMap.ext
+    intro p
+    rfl
   apply Matrix.ext
   intro i j
   fin_cases i <;> fin_cases j
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two, hone]
+  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two, hone]
   · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two,
       ← mul_assoc, theta_mul_x, add_mul, mul_add]
   · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
