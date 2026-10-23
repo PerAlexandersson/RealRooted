@@ -283,7 +283,8 @@ private theorem not_interl_X_mul_X_add_one_X :
   intro hinterl
   have hdegrees :=
     (hinterl.toStrictInterl_of_ne
-      (mul_ne_zero X_ne_zero (ne_zero_of_eval_one_ne (by norm_num))) X_ne_zero).natDegree_bounds
+      (mul_ne_zero X_ne_zero (by
+        simpa only [C_1] using (X_add_C_ne_zero (1 : ℝ)))) X_ne_zero).natDegree_bounds
   have hleft : (X * (X + 1) : ℝ[X]).natDegree = 2 := by
     compute_degree!
   rw [hleft, natDegree_X] at hdegrees
