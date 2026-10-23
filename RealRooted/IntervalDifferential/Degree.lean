@@ -8,6 +8,7 @@ module
 public import RealRooted.IntervalDifferential.Basic
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Inductions
+public import Mathlib.Algebra.Polynomial.Monic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 
@@ -167,5 +168,33 @@ natural degree when applied to `1`. Appendix C. -/
 theorem zigzagTransform_natDegree (Q : ℝ[X]) :
     (zigzagTransform Q).natDegree = Q.natDegree :=
   (zigzagTransform_degree_and_ne_zero Q).1
+
+/-- The finite centered basis is monic. -/
+theorem zigzagBasis_monic (a b : ℕ) : (zigzagBasis a b).Monic := by
+  induction a with
+  | zero =>
+    induction b with
+    | zero => simp
+    | succ b ih =>
+      rw [zigzagBasis_succ_right]
+      exact (monic_X_add_C _).mul ih
+  | succ a ih =>
+    rw [zigzagBasis_succ_left]
+    exact (monic_X_sub_C _).mul ih
+
+/-- Each centered basis polynomial has the sum of its two indices as degree. -/
+theorem zigzagBasis_natDegree (a b : ℕ) : (zigzagBasis a b).natDegree = a + b := by
+  induction a with
+  | zero =>
+    induction b with
+    | zero => simp
+    | succ b ih =>
+      rw [zigzagBasis_succ_right,
+        (monic_X_add_C _).natDegree_mul (zigzagBasis_monic 0 b), natDegree_X_add_C]
+      lia
+  | succ a ih =>
+    rw [zigzagBasis_succ_left,
+      (monic_X_sub_C _).natDegree_mul (zigzagBasis_monic a b), natDegree_X_sub_C]
+    lia
 
 end RealRooted.IntervalDifferential
