@@ -101,6 +101,11 @@ curated list. Some representative checked theorems:
   (`UnitIntervalGraph.acyclicSinkPolynomial_splits`,
   `Graph.allOrientationSinkPolynomial_splits_of_clawFree`), and minima
   polynomials (`Graph.minimaPolynomial_splits`).
+- **Zig-zag Eulerian polynomials.** The actual alternating-permutation swap
+  enumerators have exact degree and distinct negative roots
+  (`ZigzagEulerian.zigzagEulerianPolynomial_roots`). The word recurrence,
+  standardization identity, centered root bound and differential-operator
+  transfer are proved in the library.
 - **Combinatorial families.** Eulerian and type-B Eulerian polynomials
   (`Challenges.Eulerian`), generalized snake posets
   (`snakeInterlacing_generalizedSnakeRookModel`), peak-value enumerators

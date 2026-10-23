@@ -1806,3 +1806,16 @@ are diagnostics rather than hard line-count limits.
    solely to reduce line count.
 4. Maintain the Mathlib-upstream queue: small Wronskian, multiset, list,
    homogenization, Mahler-measure, and scalar-polynomial normalization lemmas.
+
+## Zig-zag Eulerian application
+
+`CombinatorialExamples.ZigzagEulerian` owns the permutation swap enumerator,
+weak alternating words, their recurrence and standardization bijection, and the
+final root theorem. Its analytical dependencies remain in `CenteredEulerian`
+and `IntervalDifferential`; the general forced-gap word count lives in
+`Combinatorics.ForcedGapWords`. The downstream paper repository imports this public
+application through compatibility names rather than maintaining a second proof.
+
+The extraction adds the application modules and a catalog facade to the broad
+and production umbrellas. Their module budgets increase by that exact count;
+existing narrow entry-point budgets and dependency restrictions are unchanged.
