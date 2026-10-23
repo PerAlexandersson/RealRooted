@@ -5,9 +5,10 @@ import RealRooted.ObreschkoffConverse.Derivative
 /-!
 # The Euler-derivative lag operator matrices
 
-This file begins the structural operator-matrix proof for polynomial families
-satisfying `P (n + 2) = theta (P (n + 1)) + X * theta (P n)`.  The first
-factor is the identity-top matrix `[[0, I], [X, theta]]`.
+This file develops the structural operator-matrix proof for polynomial families
+satisfying `P (n + 2) = theta (P (n + 1)) + X * theta (P n)`.  It proves
+ordered-PF preservation for the factors `[[0, I], [X, theta]]` and
+`[[0, theta], [X theta, theta]]`, then obtains their dense product by composition.
 -/
 
 open Polynomial
@@ -24,6 +25,31 @@ def identityTop : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
 def thetaTop : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
   !![0, Letter.theta.linearMap;
     Letter.x.linearMap * Letter.theta.linearMap, Letter.theta.linearMap]
+
+/-- The fixed dense two-step matrix, displayed in structural Weyl normal form. -/
+def twoStep : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
+  !![Letter.x.linearMap * Letter.theta.linearMap, Letter.theta.linearMap;
+    Letter.x.linearMap *
+        (Letter.theta.linearMap * Letter.theta.linearMap + Letter.theta.linearMap),
+      Letter.x.linearMap * Letter.theta.linearMap +
+        Letter.theta.linearMap * Letter.theta.linearMap]
+
+/-- The Euler and multiplication operators satisfy `theta X = X theta + X`. -/
+theorem theta_mul_x :
+    Letter.theta.linearMap * Letter.x.linearMap =
+      Letter.x.linearMap * Letter.theta.linearMap + Letter.x.linearMap := by
+  ext p
+  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_theta,
+    Letter.linearMap_x]
+  rw [RealRooted.theta, ← thetaPlusOne_eq_derivative_X_mul]
+  simp [thetaPlusOne, RealRooted.theta, mul_add]
+
+/-- The dense two-step matrix is the product `U * V` in action order. -/
+theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two,
+      theta_mul_x, mul_add, add_mul, mul_assoc]
 
 /-- The identity-top factor preserves every zero-aware ordered PF pair. -/
 theorem preservesOrderedPFPair_identityTop :
@@ -88,5 +114,10 @@ theorem preservesOrderedPFPair_thetaTop :
 theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
   rw [preservesOrderedPF_two_two_iff]
   simpa [thetaTop] using preservesOrderedPFPair_thetaTop
+
+/-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
+theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
+  rw [twoStep_eq_mul]
+  exact preservesOrderedPF_identityTop.mul preservesOrderedPF_thetaTop
 
 end RealRooted.OperatorMatrix.EulerDerivativeLag
