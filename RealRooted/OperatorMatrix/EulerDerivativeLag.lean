@@ -69,7 +69,7 @@ inductive FactorLabel where
   | identity
   | euler
   | x
-  deriving DecidableEq, Fintype, Repr
+  deriving DecidableEq, Repr
 
 /-- The right factor selected by a lag-factor label. -/
 def FactorLabel.rightFactor : FactorLabel → Module.End ℝ ℝ[X]
