@@ -290,6 +290,16 @@ private theorem not_interl_X_mul_X_add_one_X :
   rw [hleft, natDegree_X] at hdegrees
   norm_num at hdegrees
 
+private theorem not_interl_of_left_root_sign_pos {f g : ℝ[X]}
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hf0 : f ≠ 0) (hg0 : g ≠ 0)
+    {r : ℝ} (hr : f.IsRoot r) (hsign : 0 < g.eval r * f.derivative.eval r) :
+    ¬ Interl f g := by
+  intro hinterl
+  have hnonpos :=
+    (hinterl.toStrictInterl_of_ne hf0 hg0).eval_mul_derivative_nonpos_of_left_root
+      (hf.pos_leadingCoeff hf0) (hg.pos_leadingCoeff hg0) hr
+  exact (not_lt_of_ge hnonpos) hsign
+
 /-- A transition whose source label is `X` cannot preserve ordered PF vectors. -/
 theorem not_preservesOrderedPF_transition_x_source (target : FactorLabel) :
     ¬ PreservesOrderedPF (transition .x target) := by
@@ -315,6 +325,78 @@ theorem not_preservesOrderedPF_transition_x_target (source : FactorLabel) :
   apply not_interl_X_mul_X_add_one_X
   simpa [FactorLabel.rightFactor, Letter.linearMap_x, Letter.linearMap_theta,
     RealRooted.theta] using himage.2.2
+
+/-- The identity-to-identity transition fails on a linear/quadratic ordered PF pair. -/
+theorem not_preservesOrderedPF_transition_identity_identity :
+    ¬ PreservesOrderedPF (transition .identity .identity) := by
+  intro hpreserves
+  have hp : IsPFPolynomial (X + 2 : ℝ[X]) := by
+    simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num))
+  have hq : IsPFPolynomial ((X + 2) * (X + 3) : ℝ[X]) := by
+    exact hp.mul (by simpa using (isPFPolynomial_X_add_C (a := 3) (by norm_num)))
+  have hpq : Interl (X + 2 : ℝ[X]) ((X + 2) * (X + 3)) := by
+    have h :=
+      (interlaces_linear_quadratic_of_roots_between
+        (c := 1) (r := -3) (α := -2) (s := -2)
+        (by norm_num) (by norm_num) (by norm_num)).toStrictInterl.toInterl
+    convert h using 1 <;> ring
+  have hseed : IsOrderedPF ![(X + 2 : ℝ[X]), (X + 2) * (X + 3)] := by
+    rw [isOrderedPF_pair_iff]
+    exact ⟨hp, hq, hpq⟩
+  have himage := hpreserves ![(X + 2 : ℝ[X]), (X + 2) * (X + 3)] hseed
+  rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  have hf : IsPFPolynomial (6 + 5 * X + X ^ 2 : ℝ[X]) := by
+    convert himage.1 using 1 <;>
+      simp [FactorLabel.rightFactor, Letter.linearMap_one] <;> ring
+  have hg : IsPFPolynomial (5 * X + 3 * X ^ 2 : ℝ[X]) := by
+    convert himage.2.1 using 1 <;>
+      simp [FactorLabel.leftQuotient, Module.End.mul_apply, Letter.linearMap_x,
+        Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
+  apply not_interl_of_left_root_sign_pos hf hg (by compute_degree!) (by compute_degree!)
+  · norm_num [Polynomial.IsRoot.def]
+  · norm_num
+  convert himage.2.2 using 1 <;>
+    simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Module.End.mul_apply,
+      Letter.linearMap_one, Letter.linearMap_x, Letter.linearMap_theta,
+      RealRooted.theta, derivative_mul] <;> ring
+
+/-- The Euler-to-Euler transition fails on a quadratic/quadratic ordered PF pair. -/
+theorem not_preservesOrderedPF_transition_euler_euler :
+    ¬ PreservesOrderedPF (transition .euler .euler) := by
+  intro hpreserves
+  have hp : IsPFPolynomial ((X + 2) * (X + 3) : ℝ[X]) := by
+    exact (by simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num))).mul
+      (by simpa using (isPFPolynomial_X_add_C (a := 3) (by norm_num)))
+  have hq : IsPFPolynomial (X * (X + 2) : ℝ[X]) := by
+    exact isPFPolynomial_X.mul
+      (by simpa using (isPFPolynomial_X_add_C (a := 2) (by norm_num)))
+  have hpq : Interl ((X + 2) * (X + 3) : ℝ[X]) (X * (X + 2)) := by
+    have hlin : StrictInterl (X + 3 : ℝ[X]) X := by
+      simpa only [map_zero, add_zero] using
+        (StrictInterl.X_add_C_iff (a := 0) (b := 3)).2 (by norm_num)
+    have hcommon := hlin.mul_common_factor
+      (by simpa using (X_add_C_ne_zero (2 : ℝ)))
+      (Polynomial.Splits.X_add_C 2)
+    convert hcommon.toInterl using 1 <;> ring
+  have hseed : IsOrderedPF ![((X + 2) * (X + 3) : ℝ[X]), X * (X + 2)] := by
+    rw [isOrderedPF_pair_iff]
+    exact ⟨hp, hq, hpq⟩
+  have himage := hpreserves ![((X + 2) * (X + 3) : ℝ[X]), X * (X + 2)] hseed
+  rw [apply_transition_pair, isOrderedPF_pair_iff] at himage
+  have hf : IsPFPolynomial (2 * X + 2 * X ^ 2 : ℝ[X]) := by
+    convert himage.1 using 1 <;>
+      simp [FactorLabel.rightFactor, Letter.linearMap_theta,
+        RealRooted.theta, derivative_mul] <;> ring
+  have hg : IsPFPolynomial (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) := by
+    convert himage.2.1 using 1 <;>
+      simp [FactorLabel.leftQuotient, Letter.linearMap_x, Letter.linearMap_theta,
+        RealRooted.theta, derivative_mul] <;> ring
+  apply not_interl_of_left_root_sign_pos hf hg (by compute_degree!) (by compute_degree!)
+  · norm_num [Polynomial.IsRoot.def]
+  · norm_num
+  convert himage.2.2 using 1 <;>
+    simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Letter.linearMap_x,
+      Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
 
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
 theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
