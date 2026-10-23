@@ -64,6 +64,41 @@ theorem theta_sub_one_mul_x :
     rfl
   rw [hone, sub_mul, one_mul, theta_mul_x, add_sub_cancel_right]
 
+/-- The three elementary right factors of the lag operator `X theta`. -/
+inductive FactorLabel where
+  | identity
+  | euler
+  | x
+  deriving DecidableEq, Fintype, Repr
+
+/-- The right factor selected by a lag-factor label. -/
+def FactorLabel.rightFactor : FactorLabel → Module.End ℝ ℝ[X]
+  | .identity => Letter.one.linearMap
+  | .euler => Letter.theta.linearMap
+  | .x => Letter.x.linearMap
+
+/-- The left quotient paired with a lag-factor label. -/
+def FactorLabel.leftQuotient : FactorLabel → Module.End ℝ ℝ[X]
+  | .identity => Letter.x.linearMap * Letter.theta.linearMap
+  | .euler => Letter.x.linearMap
+  | .x => Letter.theta.linearMap - Letter.one.linearMap
+
+/-- Every registered label gives an exact right factorization of the lag `X theta`. -/
+theorem lag_eq_leftQuotient_mul_rightFactor (label : FactorLabel) :
+    Letter.x.linearMap * Letter.theta.linearMap =
+      label.leftQuotient * label.rightFactor := by
+  cases label with
+  | identity =>
+      have hone : Letter.one.linearMap = (1 : Module.End ℝ ℝ[X]) := by
+        apply LinearMap.ext
+        intro p
+        rfl
+      simp [FactorLabel.leftQuotient, FactorLabel.rightFactor, hone]
+  | euler => rfl
+  | x =>
+      simpa [FactorLabel.leftQuotient, FactorLabel.rightFactor] using
+        theta_sub_one_mul_x.symm
+
 /-- The dense two-step matrix is the product `U * V` in action order. -/
 theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
   have hone : Letter.one.linearMap = (1 : Module.End ℝ ℝ[X]) := by
