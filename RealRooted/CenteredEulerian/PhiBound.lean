@@ -131,6 +131,7 @@ lemma inv_factorial_le (k : ℕ) (hk : 2 ≤ k) :
 /-- The constant in the majorant of `w`. -/
 noncomputable def cW : ℝ := 63 / 25
 
+/-- Nonnegative coefficient majorant for the scalar factor in the transformed basis. -/
 noncomputable def wM : ℝ⟦X⟧ :=
   mk (fun k => if k = 0 then 1 else if Even k then cW * (2 / π) ^ (k + 3) else 0)
 

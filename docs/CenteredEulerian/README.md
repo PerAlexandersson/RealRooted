@@ -26,3 +26,9 @@ uses explicit imports and project proof conventions, and checks the actual
 statements and axiom closure locally. The full default build passes (11144 jobs); all five endpoint axiom
 audits use only `propext`, `Classical.choice` and `Quot.sound`. The universal
 disk-to-interval transfer lives in `IntervalDifferential/`.
+
+The text-lint import closures and environment linters pass. Environment lint
+was run separately on `ColumnBound` and `Riccati`, covering the complete
+centered development; the interval-transfer and Möbius import closures also
+pass. A combined many-entry-point runner was killed before reporting results,
+so separate processes were used without weakening any linter.
