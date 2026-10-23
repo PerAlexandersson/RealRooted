@@ -68,7 +68,8 @@ theorem apply_one {n : ℕ} (f : Fin n → ℝ[X]) :
       by_cases hji : j = i
       · subst j
         simp
-      · simp [hji, hji.symm]
+      · have hij : i ≠ j := fun h => hji h.symm
+        simp [hji, hij]
     _ = f i := by
       rw [Finset.sum_ite_eq']
       simp
