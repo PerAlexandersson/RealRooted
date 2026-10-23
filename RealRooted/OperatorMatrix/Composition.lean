@@ -14,6 +14,33 @@ noncomputable section
 
 namespace RealRooted.OperatorMatrix
 
+/-- A two-coordinate vector is ordered PF exactly when its coordinates are PF and interlace. -/
+theorem isOrderedPF_pair_iff (p q : ℝ[X]) :
+    IsOrderedPF ![p, q] ↔
+      IsPFPolynomial p ∧ IsPFPolynomial q ∧ Interl p q := by
+  constructor
+  · intro h
+    exact ⟨h.1 0, h.1 1, h.2 0 1 (by decide)⟩
+  · rintro ⟨hp, hq, hpq⟩
+    constructor
+    · intro i
+      fin_cases i <;> assumption
+    · intro i k hik
+      fin_cases i <;> fin_cases k <;> simp_all
+
+/-- A two-by-two operator matrix preserves ordered PF vectors exactly when its four entries
+preserve ordered PF pairs. -/
+theorem preservesOrderedPF_two_two_iff
+    (M : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X])) :
+    PreservesOrderedPF M ↔ PreservesOrderedPFPair (M 0 0) (M 0 1) (M 1 0) (M 1 1) := by
+  rw [preservesOrderedPF_iff_preservesBlock_of_two_le M (by decide) (by decide)]
+  constructor
+  · intro h
+    exact h 0 1 0 1 (by decide) (by decide)
+  · intro h i k j l hik hjl
+    fin_cases i <;> fin_cases k <;> fin_cases j <;> fin_cases l <;>
+      simp_all [PreservesBlock]
+
 /-- The action of a product of operator matrices is the composite action. -/
 theorem apply_mul {m n r : ℕ}
     (A : Matrix (Fin m) (Fin n) (Module.End ℝ ℝ[X]))
