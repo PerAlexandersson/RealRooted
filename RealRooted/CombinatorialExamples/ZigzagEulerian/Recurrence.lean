@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
 
 /-!
 # The first-maximum recurrence as a definition
@@ -13,6 +15,8 @@ of words and permutations. The lexicographic recursion first decreases the lengt
 or keeps the length fixed and decreases the alphabet. Its equality with the actual
 word count in particular proves that the division by two is exact.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ZigzagEulerian
 
@@ -28,10 +32,10 @@ def recursiveWordCount : ℕ → ℕ → ℕ
         (if 2 ≤ n + 1 then recursiveWordCount (n - 1) (k + 1) else 0)) / 2
 termination_by n k => (n, k)
 decreasing_by
-  · simp_wf
-  · simp_wf <;> exact p.isLt
-  · simp_wf <;> lia
-  · simp_wf <;> lia
+  · exact Prod.Lex.right _ (by lia)
+  · exact Prod.Lex.left _ _ p.isLt
+  · exact Prod.Lex.left _ _ (by lia)
+  · exact Prod.Lex.left _ _ (by lia)
 
 /-- The recursively defined numbers count actual weak up-down words. -/
 theorem recursiveWordCount_eq_weakUpDownWordCount (n k : ℕ) :
@@ -42,7 +46,7 @@ theorem recursiveWordCount_eq_weakUpDownWordCount (n k : ℕ) :
     | zero => simp [recursiveWordCount]
     | succ n =>
       induction k with
-      | zero => simp [recursiveWordCount, weakUpDownWordCount_zero_alphabet, Nat.succ_pos]
+      | zero => simp [recursiveWordCount, weakUpDownWordCount_zero_alphabet]
       | succ k hk =>
         rw [recursiveWordCount, hk]
         have hsum :
@@ -56,10 +60,13 @@ theorem recursiveWordCount_eq_weakUpDownWordCount (n k : ℕ) :
               apply Finset.sum_congr rfl
               intro p _
               rw [ih p.val p.isLt k, ih (n - p.val) (by lia) (k + 1)]
-            _ = _ := Fin.sum_univ_eq_sum_range _ _
+            _ = _ := Fin.sum_univ_eq_sum_range
+              (fun p => weakUpDownWordCount p k * weakUpDownWordCount (n - p) (k + 1))
+              (n + 1)
         rw [hsum, ih (n - 1) (by lia) (k + 1)]
         have hrec := weakUpDownWordCount_recurrence (n + 1) k
-        simp only [Nat.add_sub_cancel] at hrec
+        have hsub : n + 1 - 2 = n - 1 := by lia
+        simp only [Nat.add_sub_cancel, hsub] at hrec
         rw [← hrec]
         exact Nat.mul_div_cancel_left _ (by decide)
 

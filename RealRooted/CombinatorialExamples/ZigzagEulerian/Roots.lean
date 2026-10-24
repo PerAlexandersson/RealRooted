@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
-import RealRooted.IntervalDifferential.UniversalTransfer
-import RealRooted.IntervalDifferential.MobiusRoots
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
+public import RealRooted.IntervalDifferential.UniversalTransfer
+public import RealRooted.IntervalDifferential.MobiusRoots
 
 /-!
 # From the centered quotient to the actual zig-zag polynomial
@@ -15,6 +17,8 @@ The parity identity and complex root disk are explicit inputs here.
 `ZigzagEulerian.RealRooted` proves these inputs for the actual finite permutation
 quotient and obtains the unconditional paper theorem.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted.IntervalDifferential
 

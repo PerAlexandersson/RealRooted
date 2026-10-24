@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Card
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Tactic
 
 /-!
 # Zig-zag Eulerian polynomials from alternating permutations
@@ -14,6 +16,8 @@ zero-based, even positions ascend and odd positions descend, while a swap at
 value `i` means that the position of `i + 1` exceeds the position of `i` by
 at least two. The polynomial is the sum over these actual permutations.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 
@@ -68,7 +72,7 @@ private theorem zigzagValue_involutive {n k : ℕ} (hk : k < n) :
     · simp [zigzagValue, hzero, heven, hnext]
 
 /-- A concrete up-down permutation, used to witness nonemptiness at every size. -/
-def zigzagWitness (n : ℕ) : Equiv.Perm (Fin n) where
+@[no_expose] def zigzagWitness (n : ℕ) : Equiv.Perm (Fin n) where
   toFun i := ⟨zigzagValue n i.val, zigzagValue_lt i.isLt⟩
   invFun i := ⟨zigzagValue n i.val, zigzagValue_lt i.isLt⟩
   left_inv i := Fin.ext (zigzagValue_involutive i.isLt)

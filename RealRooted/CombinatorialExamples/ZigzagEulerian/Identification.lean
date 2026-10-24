@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
-import RealRooted.IntervalDifferential.Basic
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
+public import RealRooted.IntervalDifferential.Basic
 
 /-!
 # The finite zig-zag operator identity
@@ -15,6 +17,8 @@ of the centered exponential generating function is a separate combinatorial
 statement. This module proves the exact operator identity of Appendix A.3
 and its rational-evaluation form for the actual permutation sum.
 -/
+
+@[expose] public section
 
 open Polynomial Finset RealRooted.IntervalDifferential
 

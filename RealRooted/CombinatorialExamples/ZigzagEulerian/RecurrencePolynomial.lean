@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Recurrence
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Recurrence
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
 
 /-!
 # Zig-zag Eulerian polynomials defined by recurrences
@@ -15,6 +17,8 @@ coefficients by triangular binomial inversion. Thus the polynomial definition do
 not enumerate permutations. Standardization identifies it with the swap enumerator,
 and transfers the simple negative root theorem to the recurrence-defined family.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 
@@ -60,13 +64,13 @@ private theorem binomialWordTransform_succ (n j : ℕ) (hn : 0 < n) (p : ℝ[X])
     rw [htop]
     simp only [coeff_monomial, ite_mul, zero_mul]
     by_cases hd : d < j
-    · simp [Finset.sum_ite_eq', hd, ne_of_lt hd]
+    · simp [hd, ne_of_lt hd]
     · by_cases he : d = j
       · subst d
         simp
       · have hzero : Nat.choose (n + j - d) n = 0 :=
           Nat.choose_eq_zero_of_lt (by lia)
-        simp [Finset.sum_ite_eq', hd, he, hzero]
+        simp [hd, he, hzero]
 
 /-- Numerator coefficients recovered from recursively defined word counts.
 For a positive row, the binomial transform is triangular with diagonal one. -/
@@ -93,7 +97,9 @@ theorem recursiveCoefficient_eq_coeff (n j : ℕ) (hn : 0 < n) :
           apply Finset.sum_congr rfl
           intro i _
           rw [ih i.val i.isLt]
-        _ = _ := Fin.sum_univ_eq_sum_range _ _
+        _ = _ := Fin.sum_univ_eq_sum_range
+            (fun i => (zigzagEulerianPolynomial n).coeff i *
+              (Nat.choose (n + j - i) n : ℝ)) j
     rw [hsum, ← binomialWordTransform_zigzagEulerianPolynomial,
       binomialWordTransform_succ n j hn]
     ring
@@ -108,7 +114,7 @@ def polynomial (n : ℕ) : ℝ[X] :=
 theorem polynomial_eq_zigzagEulerianPolynomial (n : ℕ) (hn : 0 < n) :
     polynomial n = zigzagEulerianPolynomial n := by
   classical
-  rw [polynomial, if_neg (by lia)]
+  rw [polynomial, ite_eq_right (by lia)]
   simp_rw [recursiveCoefficient_eq_coeff n _ hn]
   have hdegree : (zigzagEulerianPolynomial n).natDegree ≤ n := by
     by_cases hsmall : n = 1

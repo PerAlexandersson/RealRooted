@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
+public import Mathlib.Tactic
 
 /-!
 # Weak alternating words and the first-maximum recurrence
@@ -13,6 +15,8 @@ Appendix A.1 of the zig-zag Eulerian proof. The auxiliary list
 model proves the first-maximum recurrence. A direct finite bijection identifies
 its count with the actual `Fin n → Fin k` weak up-down words used in the paper.
 -/
+
+@[expose] public section
 
 open Finset
 

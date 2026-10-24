@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
-import RealRooted.Combinatorics.ForcedGapWords
-import Mathlib.Data.Fin.Tuple.Sort
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
+public import RealRooted.Combinatorics.ForcedGapWords
+public import Mathlib.Data.Fin.Tuple.Sort
 
 /-!
 # Fence standardization for weak up-down words
@@ -15,6 +17,8 @@ run through two-position blocks in reverse order, with the even position
 first inside each block. Sorting by letter and this label turns a weak
 up-down word into its up-down permutation of ranks.
 -/
+
+@[expose] public section
 
 open Finset
 

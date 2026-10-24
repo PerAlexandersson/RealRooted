@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
-import RealRooted.QuadraticRoot
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # The initial zig-zag Eulerian rows
@@ -15,6 +18,8 @@ import Mathlib.Tactic.Ring
 This records the splitness and simple negative roots of the first four actual
 permutation sums, as in the small cases of `thm:zigzagEulerian`.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -56,10 +61,10 @@ private theorem zigzagEulerianPolynomial_four_root_properties :
   have hroots : (zigzagEulerianPolynomial 4).roots =
       {(-3 - Real.sqrt 5) / 2, (-3 + Real.sqrt 5) / 2} := by
     rw [hrow]
-    have hquad := RealRooted.roots_quadratic_posLead
-      (a := (1 : ℝ)) (b := 3) (c := 1) (by norm_num) (by norm_num)
-    rw [show (3 : ℝ) ^ 2 - 4 * 1 * 1 = 5 by norm_num] at hquad
-    simpa only [mul_one] using hquad
+    apply (Polynomial.roots_quadratic_eq_pair_iff_of_ne_zero (by norm_num : (1 : ℝ) ≠ 0)).2
+    constructor
+    · ring
+    · nlinarith [Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 5)]
   have hsqrt : (Real.sqrt 5) ^ 2 = 5 := Real.sq_sqrt (by norm_num)
   have hsqrt_nonneg : 0 ≤ Real.sqrt 5 := Real.sqrt_nonneg 5
   have hsqrt_lt : Real.sqrt 5 < 3 := by nlinarith
@@ -73,9 +78,9 @@ private theorem zigzagEulerianPolynomial_four_root_properties :
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [hrow]
     exact Polynomial.natDegree_quadratic (by norm_num : (1 : ℝ) ≠ 0)
-  · rw [hrow]
-    exact RealRooted.quadraticPoly_splits_of_discrim_nonneg
-      (a := (1 : ℝ)) (by norm_num) (by norm_num [discrim])
+  · apply Polynomial.splits_iff_card_roots.mpr
+    rw [hroots, hrow, Polynomial.natDegree_quadratic (by norm_num : (1 : ℝ) ≠ 0)]
+    simp
   · rw [hroots]
     simp [hneq]
   · intro r hr

@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial
 
 /-!
 # Zig-zag Eulerian polynomials

@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
-import RealRooted.CenteredEulerian.Riccati
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+public import RealRooted.CenteredEulerian.Riccati
+public import Mathlib.Tactic
 
 /-!
 # Odd evaluations of the centered zig-zag polynomials
@@ -14,6 +16,8 @@ Appendix A.1. The first-maximum recurrence gives a Möbius recurrence for the
 word generating series; the reusable Riccati uniqueness theorem identifies it
 with the centered Eulerian series.
 -/
+
+@[expose] public section
 
 open PowerSeries
 open RealRooted.CenteredEulerian

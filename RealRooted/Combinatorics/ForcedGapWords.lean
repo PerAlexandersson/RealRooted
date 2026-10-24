@@ -3,11 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Sort
-import Mathlib.Data.Finset.Powerset
-import Mathlib.Data.Fintype.Card
-import Mathlib.Order.Fin.Basic
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Data.Finset.Powerset
+public import Mathlib.Data.Fintype.Card
+public import Mathlib.Order.Fin.Basic
+public import Mathlib.Tactic
 
 /-!
 # Weakly increasing words with prescribed strict gaps
@@ -17,6 +19,8 @@ equalities.  The resulting count depends only on the number of marked gaps.
 This is the finite stars-and-bars lemma used by fence standardization in
 Appendix A.2 of the zig-zag Eulerian proof.
 -/
+
+@[expose] public section
 
 open Finset
 

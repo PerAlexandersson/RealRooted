@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
 
 /-!
 # Weak alternating words and the finite centered evaluation
@@ -13,6 +15,8 @@ alternating words to the centered zig-zag polynomial.  This module keeps the
 word count independent of the permutation sum and proves the finite factor
 evaluation used in that identification.
 -/
+
+@[expose] public section
 
 open Polynomial Finset RealRooted.IntervalDifferential
 
@@ -108,7 +112,7 @@ private theorem factor_eval_odd (a b k : ℕ) (hk : a + b + 2 ≤ k) :
               (Nat.choose (k + (b + 1) + 1) (0 + (b + 1) + 2) : ℝ) := by
                 conv_rhs => rw [hindex, pow_succ, Nat.factorial_succ]
                 push_cast
-                ring
+                ring_nf
   | succ a ih =>
     have hk' : a + b + 2 ≤ k := by lia
     have h := ih hk'

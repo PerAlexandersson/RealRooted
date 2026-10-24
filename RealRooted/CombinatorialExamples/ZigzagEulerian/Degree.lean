@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
-import RealRooted.IntervalDifferential.Degree
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+public import RealRooted.IntervalDifferential.Degree
 
 /-!
 # Degree of the finite centered zig-zag quotient
@@ -12,6 +14,8 @@ import RealRooted.IntervalDifferential.Degree
 Each summand in Appendix A.6 is monic of degree `n - 2`. The alternating
 class is nonempty, so its finite sum has exactly that degree.
 -/
+
+@[expose] public section
 
 open Polynomial Finset RealRooted.IntervalDifferential
 

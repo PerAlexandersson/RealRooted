@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
-import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
-import RealRooted.CenteredEulerian.ColumnBound
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
+public import RealRooted.CenteredEulerian.ColumnBound
 
 /-!
 # Simple negative roots of the zig-zag Eulerian polynomials
@@ -14,6 +16,8 @@ import RealRooted.CenteredEulerian.ColumnBound
 Theorem `thm:zigzagEulerian` of the compendium. We combine the actual finite
 word-counting identity with the centered disk bound and the interval transfer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

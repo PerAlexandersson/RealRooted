@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
 
 /-!
 # Identifying the finite centered polynomial with its generating series
@@ -12,6 +14,8 @@ import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
 Appendix A.6 in the proof of `thm:zigzagEulerian`. We compare evaluations at
 infinitely many odd integers, using the actual weak-word counting bijection.
 -/
+
+@[expose] public section
 
 open Polynomial
 
