@@ -11,7 +11,10 @@ None.
 
 ## Open statement targets
 
-None.
+None in the maintained Lean source. This does not mean every research problem
+is solved: open conjectures and proof tasks belong in
+[GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in
+Lean statement scaffolds or a second Markdown backlog.
 
 ## Checked replacements
 

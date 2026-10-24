@@ -15,7 +15,8 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
 2. Prefer small local changes over broad rewrites.
 3. Reuse existing Mathlib/project APIs instead of introducing wrappers.
 4. Avoid public API churn unless the signature cleanup is clearly useful.
-5. Build focused targets, then run full `lake build` before pushing Lean edits.
+5. Follow the [README verification policy](README.md#ci-and-pull-requests):
+   distinguish source-checked draft checkpoints from build-verified changes.
 
 ## Good Golfing Targets
 
@@ -69,7 +70,7 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
 
 - Prefer upstream-shaped and receiver-style APIs:
   ```lean
-  p.natDegree_derivative h
+  p.natDegree_derivative
   (p.derivative_ne_zero).mpr h
   hp_pos.derivative h
   hnn.iterate_derivative n
@@ -102,10 +103,15 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
   ```
 - For cross-module or public API changes, build the downstream target set if it
   is obvious.
-- Before committing or pushing Lean changes, run:
+- Before merging, the exact candidate revision must pass the full default
+  build and the source and axiom checks required by the README:
   ```bash
   lake build
   ```
+- A source-checked draft checkpoint may be pushed before compilation under the
+  README's CI-first policy. Draft PRs do not automatically run the full build;
+  state what remains unverified. Use the prescribed build wrapper in managed
+  workspaces and serialize access to shared caches.
 - Keep `git diff --check` clean.  Avoid introducing new long lines or tabs.
 
 ## Finding Slow Proofs
@@ -120,3 +126,4 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
 - For one slow tactic call, `set_option trace.profiler true in` on a scratch copy
   of the declaration shows which strategy attempts fail and what they cost.
   Expensive failed attempts in a search loop are the usual target.
+  Never commit that instrumentation: source `set_option` remains forbidden.
