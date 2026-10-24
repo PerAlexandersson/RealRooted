@@ -78,7 +78,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
-label = "Consecutive super-Eulerian polynomials strictly interlace"
+label = "Consecutive super-Eulerian polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.SuperEulerian.exists_gamma_superEulerian"
@@ -89,7 +89,7 @@ label = "Super-Eulerian gamma-polynomials are real-rooted and nonnegative"
 <!-- realrooted-catalog-content -->
 # Real-rooted Eulerian variations
 
-Three Eulerian-type families, coming from permutations, words and paths, are
+Four Eulerian-type families, coming from permutations, words and paths, are
 real-rooted.
 
 - **Cyclic path descents:** the polynomial with coefficients
@@ -99,12 +99,16 @@ real-rooted.
   negative zeros.
 - **Peak values:** the multivariate peak-value polynomial is real stable.
   For every choice of positive weights, consecutive weighted diagonals
-  strictly interlace.
+  interlace.
 - **Ternary runs:** the ternary run polynomials are PF polynomials, and
-  consecutive ones strictly interlace.
+  consecutive ones interlace.
 
-The combinatorial interpretations are taken from the paper; the Lean
-statements are about the polynomials themselves.
+- **Super-Eulerian polynomials:** consecutive rows interlace, and their
+  gamma-polynomials are real-rooted with nonnegative coefficients.
+
+This page states the polynomial results. `Challenges.EulerianCompendium`
+collects the full paper statements, including the public proofs identifying
+the cyclic and ternary models with their actual word enumerators.
 
 ## References
 

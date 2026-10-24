@@ -101,6 +101,10 @@ curated list. Some representative checked theorems:
   (`UnitIntervalGraph.acyclicSinkPolynomial_splits`,
   `Graph.allOrientationSinkPolynomial_splits_of_clawFree`), and minima
   polynomials (`Graph.minimaPolynomial_splits`).
+- **Eulerian compendium.** `Challenges.EulerianCompendium` collects all eight
+  main theorems in paper order, with public enumeration definitions and proofs
+  for derangement descents, balanced cyclic words, even-top descents,
+  super-Eulerian polynomials, ternary runs, peaks and zig-zag swaps.
 - **Zig-zag Eulerian polynomials.** The actual alternating-permutation swap
   enumerators have exact degree and distinct negative roots
   (`ZigzagEulerian.zigzagEulerianPolynomial_roots`). The word recurrence,

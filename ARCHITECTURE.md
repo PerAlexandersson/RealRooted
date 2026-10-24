@@ -1819,3 +1819,9 @@ application through compatibility names rather than maintaining a second proof.
 The extraction adds the application modules and a catalog facade to the broad
 and production umbrellas. Their module budgets increase by that exact count;
 existing narrow entry-point budgets and dependency restrictions are unchanged.
+
+The complete Eulerian compendium challenge adds sixteen modules: twelve
+combinatorial application modules, two finite-word/permutation helpers, a result
+facade and the eight-theorem public challenge. Root and production import budgets
+increase by exactly sixteen; tactic closures are unchanged. Actual enumeration
+definitions and their recurrence identifications are public library code.
