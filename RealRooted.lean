@@ -1262,7 +1262,9 @@ import RealRooted.OperatorInterlacingUpgrade
 import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
 import RealRooted.OperatorInterlacingUpgrade.StablePencil
+import RealRooted.OperatorMatrix.Composition
 import RealRooted.OperatorMatrix.Directed
+import RealRooted.OperatorMatrix.EulerDerivativeLag
 import RealRooted.OperatorMatrix.LocalToGlobal
 import RealRooted.OperatorMatrix.MixedLemma
 import RealRooted.OperatorMatrix.OneThetaX
