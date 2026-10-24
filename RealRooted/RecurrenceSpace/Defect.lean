@@ -191,6 +191,45 @@ theorem liftDefect_eq_zero_of_lagDefect_eq_zero {k : ℕ} (a : Fin k → K[X])
   intro n hn
   exact hseed n (mem_range.mp hn)
 
+/-- A source recurrence valid from `n₀` and `k` consecutive lift-defect seeds imply
+the differential lift from `n₀` onward. -/
+theorem liftDefect_eq_zero_from_of_lagDefect_eq_zero_from {k : ℕ}
+    (a : Fin k → K[X]) (d₁ d₀ A₁ A₀ B gamma : K[X]) (P : ℕ → K[X]) (n₀ : ℕ)
+    (hsource : ∀ n, n₀ ≤ n → lagDefect a P n = 0)
+    (hfactor : defectCorrection a d₁ A₁ B = C gamma * lagCharacteristic a)
+    (hseed : ∀ n, n₀ ≤ n → n < n₀ + k → liftDefect d₁ d₀ A₁ A₀ B P n = 0) :
+    ∀ n, n₀ ≤ n → liftDefect d₁ d₀ A₁ A₀ B P n = 0 := by
+  let E := liftDefect d₁ d₀ A₁ A₀ B P
+  have hcorr := shiftAction_defectCorrection_eq_smul_lagDefect a d₁ A₁ B gamma P hfactor
+  intro m hm
+  induction m using Nat.strong_induction_on with
+  | h m ih =>
+      by_cases hmk : m < n₀ + k
+      · exact hseed m hm hmk
+      · let n := m - k
+        have hn : n₀ ≤ n := by
+          dsimp only [n]
+          lia
+        have hnk : n + k = m := by
+          dsimp only [n]
+          lia
+        have hid := lagDefect_liftDefect a d₁ d₀ A₁ A₀ B P n
+        have hc := congr_fun hcorr n
+        have hRn := hsource n hn
+        have hRn1 := hsource (n + 1) (by lia)
+        simp only [Pi.smul_apply, smul_eq_mul, hRn, hRn1, map_zero, mul_zero,
+          sub_zero, zero_add] at hid hc
+        rw [hc] at hid
+        change E (n + k) - ∑ i, a i * E (n + i) = 0 at hid
+        have hrec : E (n + k) = ∑ i, a i * E (n + i) := by
+          exact sub_eq_zero.mp hid
+        change E m = 0
+        rw [← hnk, hrec]
+        apply sum_eq_zero
+        intro i _
+        have hi : E (n + i) = 0 := ih (n + i) (by have := i.isLt; lia) (by lia)
+        rw [hi, mul_zero]
+
 /-- Conversely, a differential lift, one zero source-defect seed, and nonvanishing affine
 leaders imply the pure-lag recurrence when the same factor certificate holds. -/
 theorem lagDefect_eq_zero_of_liftDefect_eq_zero {k : ℕ} (a : Fin k → K[X])
@@ -218,6 +257,74 @@ theorem lagDefect_eq_zero_of_liftDefect_eq_zero {k : ℕ} (a : Fin k → K[X])
       have hmul : affineIndex d₁ d₀ (n + k) * lagDefect a P (n + 1) = 0 := by
         simpa only [add_zero] using hid.symm
       exact (mul_eq_zero.mp hmul).resolve_left (hleader n)
+
+/-- A differential lift valid from `n₀`, one source-defect seed, and explicit
+source-defect seeds at every exceptional leader rank imply the source recurrence
+from `n₀` onward.  A finite exceptional set can discharge `hexception` by cases. -/
+theorem lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional {k : ℕ}
+    (a : Fin k → K[X]) (d₁ d₀ A₁ A₀ B gamma : K[X]) (P : ℕ → K[X]) (n₀ : ℕ)
+    (hlift : ∀ n, n₀ ≤ n → liftDefect d₁ d₀ A₁ A₀ B P n = 0)
+    (hfactor : defectCorrection a d₁ A₁ B = C gamma * lagCharacteristic a)
+    (hseed : lagDefect a P n₀ = 0)
+    (hexception : ∀ n, n₀ ≤ n → affineIndex d₁ d₀ (n + k) = 0 →
+      lagDefect a P (n + 1) = 0) :
+    ∀ n, n₀ ≤ n → lagDefect a P n = 0 := by
+  have hcorr := shiftAction_defectCorrection_eq_smul_lagDefect a d₁ A₁ B gamma P hfactor
+  intro m hm
+  obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hm
+  induction r with
+  | zero => simpa using hseed
+  | succ r ih =>
+      let n := n₀ + r
+      have hn : n₀ ≤ n := by simp [n]
+      have hRn : lagDefect a P n = 0 := by simpa [n] using ih
+      by_cases hleader : affineIndex d₁ d₀ (n + k) = 0
+      · simpa [n, Nat.add_assoc] using hexception n hn hleader
+      · have hid := lagDefect_liftDefect a d₁ d₀ A₁ A₀ B P n
+        change liftDefect d₁ d₀ A₁ A₀ B P (n + k) -
+          ∑ i, a i * liftDefect d₁ d₀ A₁ A₀ B P (n + i) = _ at hid
+        have hc : LinearRecurrence.shiftAction (defectCorrection a d₁ A₁ B) P n = 0 := by
+          rw [congr_fun hcorr n, Pi.smul_apply, smul_eq_mul, hRn, mul_zero]
+        have hEnk := hlift (n + k) (by lia)
+        have hEi : ∀ i : Fin k, liftDefect d₁ d₀ A₁ A₀ B P (n + i) = 0 :=
+          fun i ↦ hlift (n + i) (by lia)
+        simp only [hEnk, hEi, mul_zero, sum_const_zero, sub_zero, hRn,
+          derivative_zero, hc] at hid
+        have hmul : affineIndex d₁ d₀ (n + k) * lagDefect a P (n + 1) = 0 := by
+          simpa only [add_zero] using hid.symm
+        have := (mul_eq_zero.mp hmul).resolve_left hleader
+        simpa [n, Nat.add_assoc] using this
+
+/-- The regular-leader specialization of
+`lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional`. -/
+theorem lagDefect_eq_zero_from_of_liftDefect_eq_zero_from {k : ℕ}
+    (a : Fin k → K[X]) (d₁ d₀ A₁ A₀ B gamma : K[X]) (P : ℕ → K[X]) (n₀ : ℕ)
+    (hlift : ∀ n, n₀ ≤ n → liftDefect d₁ d₀ A₁ A₀ B P n = 0)
+    (hfactor : defectCorrection a d₁ A₁ B = C gamma * lagCharacteristic a)
+    (hseed : lagDefect a P n₀ = 0)
+    (hleader : ∀ n, n₀ ≤ n → affineIndex d₁ d₀ (n + k) ≠ 0) :
+    ∀ n, n₀ ≤ n → lagDefect a P n = 0 := by
+  apply lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional a
+    d₁ d₀ A₁ A₀ B gamma P n₀ hlift hfactor hseed
+  intro n hn hzero
+  exact absurd hzero (hleader n hn)
+
+/-- A zero lift defect with a nonzero scalar leader is the derivative recurrence in
+the coefficient order used by the root-window theorems. -/
+theorem derivativeRecurrence_of_liftDefect_eq_zero
+    (d₁ d₀ A₁ A₀ B : K[X]) (P : ℕ → K[X]) (delta : ℕ → K)
+    (hlift : ∀ n, liftDefect d₁ d₀ A₁ A₀ B P n = 0)
+    (hdelta : ∀ n, affineIndex d₁ d₀ n = C (delta n))
+    (hdelta_ne : ∀ n, delta n ≠ 0) (n : ℕ) :
+    P (n + 1) = C (delta n)⁻¹ * B * (P n).derivative +
+      C (delta n)⁻¹ * affineIndex A₁ A₀ n * P n := by
+  have h := hlift n
+  rw [liftDefect, hdelta n] at h
+  have hc : C (delta n) ≠ 0 := C_ne_zero.mpr (hdelta_ne n)
+  apply mul_left_cancel₀ hc
+  rw [mul_add]
+  simp only [← mul_assoc, ← C_mul, mul_inv_cancel₀ (hdelta_ne n), C_1, one_mul]
+  linear_combination h
 
 end
 
