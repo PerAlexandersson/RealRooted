@@ -13,8 +13,6 @@ It is a research formalization workspace rather than a polished Mathlib
 contribution. Every named theorem is checked by Lean. We aim to upstream stable,
 reusable pieces to Mathlib over time.
 
-- [`PROOF_STATUS.md`](PROOF_STATUS.md) lists proof assumptions, open statement
-  targets, and refuted legacy interfaces.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) describes the module layers, import
   budgets, and module-splitting rules.
 - [`AGENTS.md`](AGENTS.md) and [`LEAN_GOLF.md`](LEAN_GOLF.md) give development
@@ -143,8 +141,8 @@ this file.
 - `sorry`, `admit`, and source `axiom` commands are not accepted as proofs.
   Track an unproved result in a GitHub issue.
 - A temporary `...Statement : Prop` interface is allowed only when it is
-  genuinely useful. List it in `PROOF_STATUS.md`, document that it is an
-  unproved target, and keep it out of production theorem dependencies.
+  genuinely useful. Its docstring must identify it as an unproved target and
+  link the tracking GitHub issue. Keep it out of production theorem dependencies.
 - Keep a known-false candidate interface only when it helps diagnosis, and
   then only next to its checked negation. Any reduction through such an
   interface must take it as an explicit hypothesis and document that the route
@@ -195,8 +193,9 @@ RealRooted` rewrites the file; check that the diff only removes lines).
 
 The import guards check the broad, production, and regression umbrellas
 separately, and reject production closures that contain tactic examples. The
-proof-status guard also reports low-use theorem-shaped propositions that still
-need an explicit entry in `PROOF_STATUS.md`.
+proof-status guard also reports theorem-shaped propositions referenced only by
+their definition for review. Document assumptions and checked counterexamples
+beside their declarations; track missing proofs in GitHub issues.
 
 ### CI and pull requests
 

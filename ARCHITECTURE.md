@@ -1,8 +1,8 @@
 # RealRooted architecture
 
 This guide describes dependency boundaries and module-maintenance rules.
-[README.md](README.md) governs verification and contributions;
-[PROOF_STATUS.md](PROOF_STATUS.md) records exceptional proof-status interfaces.
+[README.md](README.md) governs verification and contributions. Assumption
+boundaries and counterexamples are documented beside their Lean declarations.
 Research questions and unfinished work belong in GitHub issues.
 
 ## Dependency layers
@@ -75,7 +75,8 @@ Some important boundaries are:
 - `HermiteBiehler/Basic` separates definitions from the forward and converse
   theorem layers. `ClassicalHurwitzMatrix/` uses the classical matrix
   convention; `HurwitzMatrix` also retains the distinct legacy Lace interface.
-  Do not conflate their orientations; consult `PROOF_STATUS.md`.
+  Do not conflate their orientations; inspect the definitions and checked
+  counterexamples in those modules.
 - The Favard recurrence and root layers remain separate from algebraic
   orthogonality and from analytic integral representations.
 - `CombinatorialExamples/ZigzagEulerian/` owns the finite word and permutation
