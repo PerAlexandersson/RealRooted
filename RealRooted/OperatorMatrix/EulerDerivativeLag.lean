@@ -34,6 +34,11 @@ def twoStep : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
       Letter.x.linearMap * Letter.theta.linearMap +
         Letter.theta.linearMap * Letter.theta.linearMap]
 
+/-- The phase-shifted two-step product, acting first by `identityTop` and then by
+`thetaTop`. -/
+def shiftedTwoStep : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
+  thetaTop * identityTop
+
 /-- The dense two-step matrix with every entry in left-normal Weyl form. -/
 def twoStepLeftNormal : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
   !![(LinearMap.mulLeft ℝ (X ^ 2)).comp Polynomial.derivative,
@@ -243,6 +248,31 @@ theorem apply_twoStep_pow_pair_of_recurrence (P : ℕ → ℝ[X])
       have hodd : (n + 2) + 2 * m + 1 = n + 2 * (m + 1) + 1 := by ring
       simpa [heven, hodd] using ih (n := n + 2)
 
+/-- The phase-shifted product advances an Euler-decorated recurrence state by two ranks. -/
+theorem apply_shiftedTwoStep_decoratedState_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (n : ℕ) :
+    apply shiftedTwoStep (decoratedState P n .euler) =
+      decoratedState P (n + 2) .euler := by
+  rw [shiftedTwoStep, apply_mul, ← transition_euler_identity,
+    apply_transition_decoratedState_of_recurrence P hrec n .euler .identity,
+    ← transition_identity_euler,
+    apply_transition_decoratedState_of_recurrence P hrec (n + 1) .identity .euler]
+  congr 2 <;> lia
+
+/-- Powers of the phase-shifted product generate every even-rank Euler-decorated state. -/
+theorem apply_shiftedTwoStep_pow_decoratedState_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (m n : ℕ) :
+    apply (shiftedTwoStep ^ m) (decoratedState P n .euler) =
+      decoratedState P (n + 2 * m) .euler := by
+  induction m generalizing n with
+  | zero => simp
+  | succ m ih =>
+      rw [pow_succ, apply_mul, apply_shiftedTwoStep_decoratedState_of_recurrence P hrec n]
+      have hindex : (n + 2) + 2 * m = n + 2 * (m + 1) := by ring
+      simpa [hindex] using ih (n := n + 2)
+
 /-- The identity-top factor preserves every zero-aware ordered PF pair. -/
 theorem preservesOrderedPFPair_identityTop :
     PreservesOrderedPFPair 0 Letter.one.linearMap
@@ -306,6 +336,10 @@ theorem preservesOrderedPFPair_thetaTop :
 theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
   rw [preservesOrderedPF_two_two_iff]
   simpa [thetaTop] using preservesOrderedPFPair_thetaTop
+
+/-- The phase-shifted two-step product preserves ordered PF vectors. -/
+theorem preservesOrderedPF_shiftedTwoStep : PreservesOrderedPF shiftedTwoStep := by
+  exact preservesOrderedPF_thetaTop.mul preservesOrderedPF_identityTop
 
 /-- The mixed edge from the Euler label to the identity label preserves ordered PF vectors. -/
 theorem preservesOrderedPF_transition_euler_identity :
