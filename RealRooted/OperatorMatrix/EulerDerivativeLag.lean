@@ -258,7 +258,6 @@ theorem apply_shiftedTwoStep_decoratedState_of_recurrence (P : ℕ → ℝ[X])
     apply_transition_decoratedState_of_recurrence P hrec n .euler .identity,
     ← transition_identity_euler,
     apply_transition_decoratedState_of_recurrence P hrec (n + 1) .identity .euler]
-  congr 2 <;> lia
 
 /-- Powers of the phase-shifted product generate every even-rank Euler-decorated state. -/
 theorem apply_shiftedTwoStep_pow_decoratedState_of_recurrence (P : ℕ → ℝ[X])
