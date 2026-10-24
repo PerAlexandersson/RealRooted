@@ -11,6 +11,10 @@
   --accent-soft: hsl(28, 90%, 94%);
   --definition: hsl(210, 72%, 43%);
   --definition-soft: hsl(210, 78%, 94%);
+  --coauthored: hsl(145, 54%, 31%);
+  --coauthored-soft: hsl(142, 45%, 92%);
+  --original: hsl(288, 43%, 39%);
+  --original-soft: hsl(286, 45%, 93%);
   --eyebrow: hsl(25, 78%, 39%);
   --shadow: 0 20px 55px rgba(88, 55, 30, 0.12);
   background: var(--paper);
@@ -324,6 +328,53 @@ h3 { font-size: 1.25rem; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+.provenance-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+.provenance-tag {
+  padding: 0.08rem 0.48rem;
+  border-radius: 999px;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 780;
+  line-height: 1.35;
+}
+.provenance-tag--coauthored-paper {
+  background: var(--coauthored-soft);
+  color: var(--coauthored);
+}
+.provenance-tag--realrooted-original {
+  background: var(--original-soft);
+  color: var(--original);
+}
+.provenance-legend {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem 1.2rem;
+  margin: 0 0 1.2rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+.provenance-legend h2 {
+  flex: none;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0;
+}
+.provenance-legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.provenance-legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.prose > h1 + .provenance-tags { margin: -0.55rem 0 1.1rem; }
 .declarations li { scroll-margin-top: 6rem; }
 .declarations li:target .lean-declaration { outline: 2px solid var(--accent); outline-offset: 2px; }
 .results-page { width: min(100% - 2rem, 72rem); }
@@ -526,6 +577,7 @@ pre {
   .declaration-meta { align-items: flex-start; flex-direction: column; }
   .result-page, .result-source { display: none; }
   .source { align-self: flex-start; }
+  .provenance-legend { align-items: flex-start; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -546,6 +598,10 @@ pre {
     --accent-soft: #3b2417;
     --definition: #79b8f3;
     --definition-soft: #172c3f;
+    --coauthored: #9be2b3;
+    --coauthored-soft: #173724;
+    --original: #deb3eb;
+    --original-soft: #38203f;
     --eyebrow: #f2a064;
     --shadow: 0 20px 55px rgba(0, 0, 0, 0.32);
   }

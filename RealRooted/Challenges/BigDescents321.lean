@@ -8,6 +8,7 @@ version = 1
 section = "theorems"
 slug = "big-descents-321"
 formalized = "2026-10-06"
+tags = ["realrooted-original"]
 references = [
   "ElizaldeRiveraZhuang2026",
 ]
@@ -27,7 +28,7 @@ label = "Reference Motzkin polynomial"
 [[theorems]]
 name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "Bulk interlacing with simple roots"
+label = "Motzkin interlacing, simple roots and no common roots"
 headline = true
 
 [[theorems]]
@@ -58,10 +59,11 @@ polynomials.
 simple and strictly negative, $M_{n-2}$ interlaces $A_n$, and the two polynomials have no common
 root.
 
-This settles the case $\Pi = \{321\}$ of Conjecture 4.4 of Elizalde, Rivera and Zhuang
-[@ElizaldeRiveraZhuang2026, Conj. 4.4]. The Lean
-statements are about the recurrence-defined polynomials; the enumeration of permutations is the
-combinatorial interpretation and is not formalized. See also
+Together with the recurrence identification of Elizalde, Rivera and Zhuang,
+this proves the case $\Pi = \{321\}$ of their Conjecture 4.4
+[@ElizaldeRiveraZhuang2026, Conj. 4.4]. Lean verifies the recurrence-defined
+polynomials; the identification with the permutation enumerator is taken from
+their paper. See also
 [big descents on symmetricfunctions.com](sf:bigDescent).
 
 ## Proof idea

@@ -30,19 +30,23 @@ module = "RealRooted.RookPolynomial"
 label = "Nijenhuis's signed rook polynomial"
 
 [[theorems]]
-name = "RealRooted.Challenges.Nijenhuis.bipartiteMatchingIdentity"
+name = "RealRooted.Rook.weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges"
+module = "RealRooted.RookPolynomial"
 label = "Rook polynomials are bipartite matching polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.Nijenhuis.weightedRealRooted"
+name = "RealRooted.Rook.weightedRookPolynomial_splits"
+module = "RealRooted.RookPolynomial"
 label = "Weighted rook polynomials are real-rooted"
 
 [[theorems]]
-name = "RealRooted.Challenges.Nijenhuis.signedRoots_nonnegative"
+name = "RealRooted.Rook.nijenhuisRookPolynomial_roots_nonneg"
+module = "RealRooted.RookPolynomial"
 label = "The signed rook polynomial has nonnegative roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.Nijenhuis.ordinaryRealRooted"
+name = "RealRooted.Rook.rookPolynomial_splits"
+module = "RealRooted.RookPolynomial"
 label = "Rook polynomials of boards are real-rooted"
 headline = true
 -->
