@@ -28,11 +28,6 @@ module = "RealRooted.Applications.EulerianCompendium.Definitions"
 label = "Even-top descents"
 
 [[definitions]]
-name = "RealRooted.SuperEulerian.superEulerian"
-module = "RealRooted.CombinatorialExamples.SuperEulerian"
-label = "Super-Eulerian recurrence"
-
-[[definitions]]
 name = "RealRooted.EulerianCompendium.ternaryWordRunEnumerator"
 module = "RealRooted.Applications.EulerianCompendium.TernaryWords"
 label = "Ternary-word runs"
