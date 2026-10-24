@@ -552,6 +552,12 @@ theorem isOrderedPF_zero_X : IsOrderedPF ![(0 : ℝ[X]), X] := by
   rw [isOrderedPF_pair_iff]
   exact ⟨IsPFPolynomial.zero, isPFPolynomial_X, interl_zero_left X⟩
 
+/-- Initial values `(1,X)` make the rank-zero Euler-decorated state equal to `(0,X)`. -/
+theorem isOrderedPF_euler_seed_one_X (P : ℕ → ℝ[X])
+    (hzero : P 0 = 1) (hone : P 1 = X) :
+    IsOrderedPF (decoratedState P 0 .euler) := by
+  simpa [hzero, hone, RealRooted.theta] using isOrderedPF_zero_X
+
 /-- An ordered-PF seed remains ordered at every even/odd state of the two-step orbit. -/
 theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
@@ -562,12 +568,63 @@ theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
   rw [apply_twoStep_pow_pair_of_recurrence P hrec m 0] at hpres
   simpa using hpres
 
+/-- An ordered Euler-decorated seed remains ordered at every even rank of the shifted
+two-step orbit. -/
+theorem isOrderedPF_euler_even_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hseed : IsOrderedPF (decoratedState P 0 .euler)) (m : ℕ) :
+    IsOrderedPF (decoratedState P (2 * m) .euler) := by
+  have hpres : IsOrderedPF
+      (apply (shiftedTwoStep ^ m) (decoratedState P 0 .euler)) :=
+    (preservesOrderedPF_shiftedTwoStep.pow m) _ hseed
+  rw [apply_shiftedTwoStep_pow_decoratedState_of_recurrence P hrec m 0] at hpres
+  simpa using hpres
+
+/-- The shifted phase exposes every odd-indexed original adjacent pair. -/
+theorem isOrderedPF_odd_even_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hseed : IsOrderedPF (decoratedState P 0 .euler)) (m : ℕ) :
+    IsOrderedPF ![P (2 * m + 1), P (2 * m + 2)] := by
+  have heuler := isOrderedPF_euler_even_of_recurrence P hrec hseed m
+  have hnext : IsOrderedPF
+      (apply (transition .euler .identity) (decoratedState P (2 * m) .euler)) :=
+    preservesOrderedPF_transition_euler_identity _ heuler
+  rw [apply_transition_decoratedState_of_recurrence P hrec (2 * m) .euler .identity]
+    at hnext
+  simpa [Nat.add_assoc] using hnext
+
 /-- The two-step orbit exposes every even-indexed adjacent interlacing edge. -/
 theorem interl_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF ![P 0, P 1]) (m : ℕ) :
     Interl (P (2 * m)) (P (2 * m + 1)) :=
   (isOrderedPF_even_odd_of_recurrence P hrec hseed m).2 0 1 (by decide)
+
+/-- The shifted two-step orbit exposes every odd-indexed adjacent interlacing edge. -/
+theorem interl_odd_even_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hseed : IsOrderedPF (decoratedState P 0 .euler)) (m : ℕ) :
+    Interl (P (2 * m + 1)) (P (2 * m + 2)) :=
+  (isOrderedPF_odd_even_of_recurrence P hrec hseed m).2 0 1 (by decide)
+
+/-- The two rotated phases together expose every original adjacent interlacing edge. -/
+theorem interl_adjacent_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hidentity : IsOrderedPF ![P 0, P 1])
+    (heuler : IsOrderedPF (decoratedState P 0 .euler)) (n : ℕ) :
+    Interl (P n) (P (n + 1)) := by
+  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
+  · exact interl_even_odd_of_recurrence P hrec hidentity m
+  · simpa [Nat.add_assoc] using interl_odd_even_of_recurrence P hrec heuler m
+
+/-- Every adjacent pair interlaces for a recurrence family with initial values `(1,X)`. -/
+theorem interl_adjacent_of_recurrence_one_X (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) :
+    Interl (P n) (P (n + 1)) := by
+  apply interl_adjacent_of_recurrence P hrec
+  · simpa [hzero, hone] using isOrderedPF_one_X
+  · exact isOrderedPF_euler_seed_one_X P hzero hone
 
 /-- Every row of a family in the two-step orbit is a PF polynomial. -/
 theorem isPFPolynomial_of_recurrence (P : ℕ → ℝ[X])
