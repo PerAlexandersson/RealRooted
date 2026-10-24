@@ -99,6 +99,22 @@ def transition (source target : FactorLabel) :
     Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X]) :=
   !![0, target.rightFactor; source.leftQuotient, Letter.theta.linearMap]
 
+/-- The recurrence state decorated by the right factor of a lag label. -/
+def decoratedState (P : ℕ → ℝ[X]) (n : ℕ) (label : FactorLabel) : Fin 2 → ℝ[X] :=
+  ![label.rightFactor (P n), P (n + 1)]
+
+/-- The identity label exposes the original adjacent pair. -/
+@[simp] theorem decoratedState_identity (P : ℕ → ℝ[X]) (n : ℕ) :
+    decoratedState P n .identity = ![P n, P (n + 1)] := by
+  funext i
+  fin_cases i <;> simp [decoratedState, FactorLabel.rightFactor, Letter.linearMap_one]
+
+/-- The Euler label decorates the left coordinate by `theta`. -/
+@[simp] theorem decoratedState_euler (P : ℕ → ℝ[X]) (n : ℕ) :
+    decoratedState P n .euler = ![RealRooted.theta (P n), P (n + 1)] := by
+  funext i
+  fin_cases i <;> simp [decoratedState, FactorLabel.rightFactor, Letter.linearMap_theta]
+
 /-- Every registered label gives an exact right factorization of the lag `X theta`. -/
 theorem lag_eq_leftQuotient_mul_rightFactor (label : FactorLabel) :
     Letter.x.linearMap * Letter.theta.linearMap =
@@ -130,6 +146,24 @@ theorem apply_transition_pair (source target : FactorLabel) (p q : ℝ[X]) :
   funext i
   fin_cases i <;>
     simp [apply, transition, Fin.sum_univ_two, Letter.linearMap_theta]
+
+/-- Every registered mixed transition advances its correspondingly decorated recurrence
+state by one rank. -/
+theorem apply_transition_decoratedState_of_recurrence (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
+    (n : ℕ) (source target : FactorLabel) :
+    apply (transition source target) (decoratedState P n source) =
+      decoratedState P (n + 1) target := by
+  have hfactor :
+      source.leftQuotient (source.rightFactor (P n)) = X * RealRooted.theta (P n) := by
+    have h := congrArg (fun T : Module.End ℝ ℝ[X] => T (P n))
+      (lag_eq_leftQuotient_mul_rightFactor source)
+    simpa [Module.End.mul_apply, Letter.linearMap_x, Letter.linearMap_theta] using h.symm
+  rw [apply_transition_pair]
+  funext i
+  fin_cases i
+  · rfl
+  · simpa [decoratedState, hfactor, Nat.add_assoc, add_comm] using (hrec n).symm
 
 /-- The structural and left-normal displays of the dense matrix agree exactly. -/
 theorem twoStep_eq_leftNormal : twoStep = twoStepLeftNormal := by
