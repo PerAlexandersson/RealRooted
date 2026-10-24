@@ -626,6 +626,17 @@ theorem interl_adjacent_of_recurrence_one_X (P : ℕ → ℝ[X])
   · simpa [hzero, hone] using isOrderedPF_one_X
   · exact isOrderedPF_euler_seed_one_X P hzero hone
 
+/-- Every adjacent pair interlaces when the same recurrence is written using derivatives. -/
+theorem interl_adjacent_of_derivative_recurrence_one_X (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = X * (P (k + 1)).derivative + X ^ 2 * (P k).derivative)
+    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) :
+    Interl (P n) (P (n + 1)) := by
+  apply interl_adjacent_of_recurrence_one_X P ?_ hzero hone
+  intro k
+  rw [hrec k]
+  simp only [RealRooted.theta]
+  ring
+
 /-- Every row of a family in the two-step orbit is a PF polynomial. -/
 theorem isPFPolynomial_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
@@ -655,5 +666,15 @@ theorem splits_of_recurrence_one_X (P : ℕ → ℝ[X])
     (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) : (P n).Splits := by
   apply splits_of_recurrence P hrec
   simpa [hzero, hone] using isOrderedPF_one_X
+
+/-- Every row splits when the same recurrence is written using derivatives. -/
+theorem splits_of_derivative_recurrence_one_X (P : ℕ → ℝ[X])
+    (hrec : ∀ k, P (k + 2) = X * (P (k + 1)).derivative + X ^ 2 * (P k).derivative)
+    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) : (P n).Splits := by
+  apply splits_of_recurrence_one_X P ?_ hzero hone
+  intro k
+  rw [hrec k]
+  simp only [RealRooted.theta]
+  ring
 
 end RealRooted.OperatorMatrix.EulerDerivativeLag
