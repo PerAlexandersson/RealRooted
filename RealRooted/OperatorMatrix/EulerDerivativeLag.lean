@@ -432,6 +432,31 @@ theorem not_preservesOrderedPF_transition_euler_euler :
     simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Letter.linearMap_x,
       Letter.linearMap_theta, RealRooted.theta, derivative_mul] <;> ring
 
+/-- Among the nine mixed transitions, exactly the two alternating identity/Euler edges
+preserve ordered PF vectors. -/
+theorem preservesOrderedPF_transition_iff (source target : FactorLabel) :
+    PreservesOrderedPF (transition source target) ↔
+      (source = .euler ∧ target = .identity) ∨
+        (source = .identity ∧ target = .euler) := by
+  constructor
+  · intro hpreserves
+    cases source with
+    | identity =>
+        cases target with
+        | identity =>
+            exact (not_preservesOrderedPF_transition_identity_identity hpreserves).elim
+        | euler => exact Or.inr ⟨rfl, rfl⟩
+        | x => exact (not_preservesOrderedPF_transition_x_target .identity hpreserves).elim
+    | euler =>
+        cases target with
+        | identity => exact Or.inl ⟨rfl, rfl⟩
+        | euler => exact (not_preservesOrderedPF_transition_euler_euler hpreserves).elim
+        | x => exact (not_preservesOrderedPF_transition_x_target .euler hpreserves).elim
+    | x => exact (not_preservesOrderedPF_transition_x_source target hpreserves).elim
+  · rintro (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+    · exact preservesOrderedPF_transition_euler_identity
+    · exact preservesOrderedPF_transition_identity_euler
+
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
 theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
   rw [twoStep_eq_mul]
