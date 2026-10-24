@@ -36,21 +36,25 @@ module = "RealRooted.GeneralizedEulerian"
 label = "Generalized Eulerian polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.realRooted"
+name = "RealRooted.isRealRooted_eulerianTilde"
+module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Eulerian polynomials are real-rooted"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.interlaces_succ"
+name = "RealRooted.interlaces_eulerianTilde_succ"
+module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Consecutive Eulerian polynomials interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.typeB_realRooted"
+name = "RealRooted.isRealRooted_typeBEulerian"
+module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Type B Eulerian polynomials are real-rooted"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.typeB_interlaces_succ"
+name = "RealRooted.interlaces_typeBEulerian_succ"
+module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Consecutive type B Eulerian polynomials interlace"
 
 [[theorems]]

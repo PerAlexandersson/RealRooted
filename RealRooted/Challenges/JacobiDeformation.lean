@@ -10,6 +10,7 @@ version = 1
 section = "families"
 slug = "jacobi-deformation"
 formalized = "2026-10-06"
+tags = ["realrooted-original"]
 references = [
   "MicchelliWilloughby1979",
 ]

@@ -10,6 +10,7 @@ version = 1
 section = "families"
 slug = "zigzag-eulerian"
 formalized = "2026-10-23"
+tags = ["realrooted-original"]
 authors = ["Alexandersson"]
 years = [2026]
 
@@ -47,22 +48,24 @@ label = "Zig-zag Eulerian polynomial"
 name = "RealRooted.ZigzagEulerian.polynomial_roots"
 module = "RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial"
 label = "Simple negative roots of the recurrence-defined family"
-headline = true
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.polynomial_eq_zigzagEulerianPolynomial"
 module = "RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial"
 label = "The recurrence-defined polynomial equals the swap enumerator"
+tags = []
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.zigzagEulerianPolynomial_roots"
 module = "RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted"
 label = "Simple negative roots of zig-zag Eulerian polynomials"
+headline = true
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.weakUpDownWordCount_recurrence"
 module = "RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence"
 label = "First-maximum recurrence for weak alternating words"
+tags = []
 -->
 
 <!-- realrooted-catalog-content -->
@@ -108,6 +111,7 @@ Zig-Zag Poset*, Electronic Journal of Combinatorics 30(2) (2023), P2.44,
 [doi:10.37236/11526](https://doi.org/10.37236/11526).
 
 T. K. Petersen and Y. Zhuang, *Zig-zag Eulerian polynomials*,
-[arXiv:2403.07181](https://arxiv.org/abs/2403.07181).
+[arXiv:2403.07181](https://arxiv.org/abs/2403.07181), Conjecture 6.1(a).
+Their polynomial $Z_n(t)$ equals $tH_n(t)$ in the normalization used here.
 <!-- /realrooted-catalog-content -->
 -/

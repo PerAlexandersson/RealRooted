@@ -10,8 +10,10 @@ block inside a `/-! ... -/` module comment:
 version = 1
 section = "families"
 slug = "example"
+formalized = "2026-01-02"
 authors = ["Example", "Author"]
 years = [1952]
+tags = ["coauthored-paper"]
 references = ["Example1952", {key = "Other1953", at = "Thm. 2"}]
 
 [[definitions]]
@@ -20,6 +22,7 @@ name = "RealRooted.Challenges.Example.family"
 [[theorems]]
 name = "RealRooted.Challenges.Example.realRooted"
 symcat = "exampleRealRooted"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -60,6 +63,15 @@ an imported canonical module.  A record may also add a human-readable `label`
 (one line, shown above the Lean name), and a theorem record may set
 `headline = true` (which requires a `label`).  The optional record arrays are
 `[[definitions]]` and `[[theorems]]`.
+
+The optional `tags` array records provenance. The supported values are
+`coauthored-paper`, for a result from a paper coauthored by Per Alexandersson,
+and `realrooted-original`, for a result first developed in this library and not
+currently attached to a paper. Page-level tags decorate the page and are the
+default for its selected theorems. Definitions are untagged unless their own
+record supplies `tags`; any item can use `tags = []` to clear the page default.
+Tags are editorial metadata: they are displayed on cards, declaration pages,
+and the all-results table, but do not enter the selected-declaration digest.
 
 Headlines mark a page's main results; give every page at least one.  They are
 named on the page's overview card (on a theorem page, unless the label repeats

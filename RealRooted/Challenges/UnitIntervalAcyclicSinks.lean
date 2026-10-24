@@ -8,6 +8,7 @@ version = 1
 section = "families"
 slug = "unit-interval-acyclic-sinks"
 formalized = "2026-09-12"
+tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 
@@ -80,9 +81,7 @@ which also covers line graphs of trees; see also the
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
-
-The orientation theorem was formalized in RealRooted issue #639. For the
-claw-free background, see the
+For the claw-free background, see the
 [Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
 [Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
 <!-- /realrooted-catalog-content -->

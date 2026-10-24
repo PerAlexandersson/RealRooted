@@ -110,8 +110,8 @@ $U_n \ll V_n$.
 
 ## Proof idea
 
-The map $x \mapsto x/(1+x)^2$ sends $(-\infty, 0]$ onto $(-\infty, 1/4]$,
-except that $-1$ goes to infinity, and
+The map $x \mapsto x/(1+x)^2$ sends $(-\infty, 0]\setminus\{-1\}$ onto
+$(-\infty,0]$, and
 $\Gamma_d(\gamma)(x) = (1+x)^d \gamma(x/(1+x)^2)$. Each nonpositive zero $y$
 of $\gamma$ therefore pulls back to two nonpositive zeros of
 $\Gamma_d(\gamma)$, which are real since $y \leq 0 < 1/4$, and the factor

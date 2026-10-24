@@ -8,6 +8,7 @@ version = 1
 section = "families"
 slug = "chordal-claw-free-acyclic-sinks"
 formalized = "2026-09-13"
+tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 
@@ -72,9 +73,7 @@ the forest $F$.
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
-
-The theorem was formalized in RealRooted issue #677. For the claw-free
-background, see the
+For the claw-free background, see the
 [Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
 [Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
 <!-- /realrooted-catalog-content -->
