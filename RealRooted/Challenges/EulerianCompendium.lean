@@ -28,8 +28,8 @@ module = "RealRooted.Applications.EulerianCompendium.Definitions"
 label = "Even-top descents"
 
 [[definitions]]
-name = "RealRooted.EulerianCompendium.superEulerianPolynomial"
-module = "RealRooted.Applications.EulerianCompendium.Definitions"
+name = "RealRooted.SuperEulerian.superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian recurrence"
 
 [[definitions]]
@@ -109,6 +109,9 @@ The zig-zag theorem asserts simple negative roots, without consecutive interlaci
 
 These are library-backed challenge statements with checked proofs and fixed
 imported definitions, not isolated Mathlib-only proof-discovery benchmarks.
+## References
+
+- [@Alexandersson2026Eulerian]
 <!-- /realrooted-catalog-content -->
 -/
 
