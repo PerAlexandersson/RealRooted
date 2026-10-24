@@ -159,11 +159,17 @@ theorem apply_transition_decoratedState_of_recurrence (P : ℕ → ℝ[X])
     have h := congrArg (fun T : Module.End ℝ ℝ[X] => T (P n))
       (lag_eq_leftQuotient_mul_rightFactor source)
     simpa [Module.End.mul_apply, Letter.linearMap_x, Letter.linearMap_theta] using h.symm
-  rw [apply_transition_pair]
-  funext i
-  fin_cases i
-  · rfl
-  · simpa [decoratedState, hfactor, Nat.add_assoc, add_comm] using (hrec n).symm
+  calc
+    apply (transition source target) (decoratedState P n source) =
+        ![target.rightFactor (P (n + 1)),
+          source.leftQuotient (source.rightFactor (P n)) + RealRooted.theta (P (n + 1))] := by
+      simpa only [decoratedState] using
+        apply_transition_pair source target (source.rightFactor (P n)) (P (n + 1))
+    _ = decoratedState P (n + 1) target := by
+      funext i
+      fin_cases i
+      · rfl
+      · simpa [decoratedState, hfactor, Nat.add_assoc, add_comm] using (hrec n).symm
 
 /-- The structural and left-normal displays of the dense matrix agree exactly. -/
 theorem twoStep_eq_leftNormal : twoStep = twoStepLeftNormal := by
