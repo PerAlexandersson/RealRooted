@@ -207,6 +207,13 @@ theorem hurwitz_apply_of_band (c : ℕ → ℝ) {i j : ℕ} (h : 2 * j ≤ i) :
 private theorem strictMono_pair {x y : ℕ} (hxy : x < y) :
     StrictMono ![x, y] := by simp_all
 
+private theorem det_pair_nonneg {M : Matrix ℕ ℕ ℝ} (hM : M.IsTotallyNonneg)
+    {r₀ r₁ c₀ c₁ : ℕ} (hr : r₀ < r₁) (hc : c₀ < c₁) :
+    0 ≤ M r₀ c₀ * M r₁ c₁ - M r₀ c₁ * M r₁ c₀ := by
+  have h := hM (strictMono_pair hr) (strictMono_pair hc)
+  rw [Matrix.det_fin_two] at h
+  simpa only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] using h
+
 /-- Triangular reduction along the top row.  If the top selected row lies below
 the staircase of the middle column, then the two entries to the right of the
 top-left corner vanish and the determinant reduces to a `2 × 2` Hadamard minor. -/
@@ -216,10 +223,9 @@ theorem hurwitz_schurProduct_det_fin_three_of_row0_below {a b : ℕ → ℝ}
     (h : rows 0 < 2 * cols 1) :
     0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
   have hc12 : cols 1 < cols 2 := hcols (by simp)
-  have hr12 : rows 1 < rows 2 := hrows (by simp)
-  have h2 : 0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix
-      ![rows 1, rows 2] ![cols 1, cols 2]).det :=
-    ha.hadamard_det_fin_two hb (strictMono_pair hr12) (strictMono_pair hc12)
+  have h2 := ha.hadamard_det_fin_two hb (rows := ![rows 1, rows 2])
+    (cols := ![cols 1, cols 2])
+    (strictMono_pair (hrows (by simp))) (strictMono_pair hc12)
   rw [Matrix.det_fin_two] at h2
   simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one] at h2
@@ -240,11 +246,10 @@ theorem hurwitz_schurProduct_det_fin_three_of_row1_below {a b : ℕ → ℝ}
     {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
     (h : rows 1 < 2 * cols 2) :
     0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
-  have hc01 : cols 0 < cols 1 := hcols (by simp)
   have hr01 : rows 0 < rows 1 := hrows (by simp)
-  have h2 : 0 ≤ ((Matrix.of fun i j ↦ hurwitz a i j * hurwitz b i j).submatrix
-      ![rows 0, rows 1] ![cols 0, cols 1]).det :=
-    ha.hadamard_det_fin_two hb (strictMono_pair hr01) (strictMono_pair hc01)
+  have h2 := ha.hadamard_det_fin_two hb (rows := ![rows 0, rows 1])
+    (cols := ![cols 0, cols 1])
+    (strictMono_pair hr01) (strictMono_pair (hcols (by simp)))
   rw [Matrix.det_fin_two] at h2
   simp only [Matrix.submatrix_apply, Matrix.of_apply, Matrix.cons_val_zero,
     Matrix.cons_val_one] at h2
@@ -356,24 +361,14 @@ theorem hurwitz_schurProduct_det_fin_three_nonneg_of_cornerZero {a b : ℕ → �
     hurwitz_apply_eq_zero_of_lt a hcz
   have czb : hurwitz b (rows 0) (cols 2) = 0 :=
     hurwitz_apply_eq_zero_of_lt b hcz
-  have hr01 : StrictMono ![rows 0, rows 1] := strictMono_pair (hrows (by simp))
-  have hr02 : StrictMono ![rows 0, rows 2] := strictMono_pair (hrows (by simp))
-  have hr12 : StrictMono ![rows 1, rows 2] := strictMono_pair (hrows (by simp))
-  have hc01 : StrictMono ![cols 0, cols 1] := strictMono_pair (hcols (by simp))
-  have hc02 : StrictMono ![cols 0, cols 2] := strictMono_pair (hcols (by simp))
-  have hc12 : StrictMono ![cols 1, cols 2] := strictMono_pair (hcols (by simp))
-  have mA02 := ha hr02 hc01
-  rw [Matrix.det_fin_two] at mA02
-  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mA02
-  have mAc02 := ha hr12 hc02
-  rw [Matrix.det_fin_two] at mAc02
-  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mAc02
-  have mB01 := hb hr01 hc01
-  rw [Matrix.det_fin_two] at mB01
-  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mB01
-  have mBc12 := hb hr12 hc12
-  rw [Matrix.det_fin_two] at mBc12
-  simp only [Matrix.submatrix_apply, Matrix.cons_val_zero, Matrix.cons_val_one] at mBc12
+  have mA02 := det_pair_nonneg ha (hrows (by simp : (0 : Fin 3) < 2))
+    (hcols (by simp : (0 : Fin 3) < 1))
+  have mAc02 := det_pair_nonneg ha (hrows (by simp : (1 : Fin 3) < 2))
+    (hcols (by simp : (0 : Fin 3) < 2))
+  have mB01 := det_pair_nonneg hb (hrows (by simp : (0 : Fin 3) < 1))
+    (hcols (by simp : (0 : Fin 3) < 1))
+  have mBc12 := det_pair_nonneg hb (hrows (by simp : (1 : Fin 3) < 2))
+    (hcols (by simp : (1 : Fin 3) < 2))
   have detAraw := ha hrows hcols
   rw [Matrix.det_fin_three] at detAraw
   simp only [Matrix.submatrix_apply] at detAraw
@@ -491,15 +486,9 @@ private theorem hurwitzMatrixCriterionCounterexampleRoot_cube :
     calc
       Real.sqrt 3 ^ 3 = Real.sqrt 3 ^ 2 * Real.sqrt 3 := by ring
       _ = 3 * Real.sqrt 3 := by rw [hs]
-  apply Complex.ext
-  · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
-      Complex.mul_re, Complex.mul_im]
-    ring_nf
-    linarith
-  · simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
-      Complex.mul_re, Complex.mul_im]
-    ring_nf
-    linarith
+  apply Complex.ext <;>
+    simp [hurwitzMatrixCriterionCounterexampleRoot, pow_succ,
+      Complex.mul_re, Complex.mul_im] <;> ring_nf <;> linarith
 
 theorem not_isHurwitzStable_hurwitzMatrixCriterionCounterexample :
     ¬ IsHurwitzStable hurwitzMatrixCriterionCounterexample := by
@@ -530,20 +519,11 @@ noncomputable def cexFirstColumn : ℕ → ℝ := fun k => (Nat.choose 16 k : �
 
 /-- The binomial sequence `k ↦ C(16, k)` is a Pólya-frequency sequence. -/
 theorem cexFirstColumn_isPolyaFreqSeq : IsPolyaFreqSeq cexFirstColumn := by
-  have hpf := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 16 (-1 : ℝ))
-    (by
-      simp)
-  have heq : ((Multiset.replicate 16 (-1 : ℝ)).map fun r ↦ X - C r).prod =
-      (X + 1) ^ 16 := by
-    rw [Multiset.map_replicate, Multiset.prod_replicate]
-    simp
-  have hfun :
-      (fun n ↦ (((Multiset.replicate 16 (-1 : ℝ)).map fun r ↦ X - C r).prod).coeff n)
-        = cexFirstColumn := by
-    funext n
-    rw [heq, Polynomial.coeff_X_add_one_pow]
-    rfl
-  simp_all
+  convert IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 16 (-1 : ℝ)) (by simp)
+    using 1
+  funext n
+  rw [Multiset.map_replicate, Multiset.prod_replicate]
+  simp [cexFirstColumn, Polynomial.coeff_X_add_one_pow]
 
 /-- The counterexample coefficient sequence: the parity swap of
 `cexFirstColumn`, chosen so that the first column of `hurwitz cexA` is exactly
@@ -679,21 +659,7 @@ theorem det_hadamard_fin_two_nonneg
     {M N : Matrix (Fin 2) (Fin 2) ℝ}
     (hM : M.IsTotallyNonneg) (hN : N.IsTotallyNonneg) :
     0 ≤ (Matrix.of fun i j => M i j * N i j).det := by
-  have hM01 : 0 ≤ M 0 1 := hM.nonneg 0 1
-  have hM10 : 0 ≤ M 1 0 := hM.nonneg 1 0
-  have hN01 : 0 ≤ N 0 1 := hN.nonneg 0 1
-  have hN10 : 0 ≤ N 1 0 := hN.nonneg 1 0
-  have hdM : 0 ≤ M 0 0 * M 1 1 - M 0 1 * M 1 0 := by
-    have h := hM (rows := id) (cols := id) strictMono_id strictMono_id
-    simpa [Matrix.det_fin_two] using h
-  have hdN : 0 ≤ N 0 0 * N 1 1 - N 0 1 * N 1 0 := by
-    have h := hN (rows := id) (cols := id) strictMono_id strictMono_id
-    simpa [Matrix.det_fin_two] using h
-  rw [Matrix.det_fin_two]
-  simp only [Matrix.of_apply]
-  linarith [mul_nonneg hM01 hM10, mul_nonneg hN01 hN10,
-    mul_nonneg (mul_nonneg hM01 hM10) hdN, mul_nonneg hdM (mul_nonneg hN01 hN10),
-    mul_nonneg hdM hdN]
+  simpa using hM.hadamard_det_fin_two hN strictMono_id strictMono_id
 
 /-- Even-column Toeplitz minors of the column-`0` product sequence of two
 totally nonnegative Hurwitz matrices are nonnegative at every size `n ≤ 2`.
@@ -890,39 +856,18 @@ def cexOddZero : ℕ → ℝ :=
 
 /-- The odd-indexed coefficients of `cexOddZero` vanish. -/
 theorem cexOddZero_odd_zero (n : ℕ) : cexOddZero (2 * n + 1) = 0 := by
-  simp only [cexOddZero]
-  simp
+  simp [cexOddZero]
 
 /-- The even coefficient subsequence of `cexOddZero` is `(1 + X)`, a
 Pólya-frequency sequence. -/
 theorem cexOddZero_even_isPolyaFreqSeq :
     IsPolyaFreqSeq (fun n ↦ cexOddZero (2 * n)) := by
-  have h := IsPolyaFreqSeq.prod_X_sub_C (Multiset.replicate 1 (-1 : ℝ))
-    (by
-      simp)
-  have heq :
-      (fun n ↦
-          (((Multiset.replicate 1 (-1 : ℝ)).map fun r ↦ X - C r).prod).coeff n)
-        = fun n => cexOddZero (2 * n) := by
-    funext n
-    rw [Multiset.map_replicate, Multiset.prod_replicate, pow_one]
-    match n with
-    | 0 =>
-        rw [coeff_sub, coeff_X, coeff_C]
-        norm_num [cexOddZero]
-    | 1 =>
-        rw [coeff_sub, coeff_X, coeff_C]
-        norm_num [cexOddZero]
-    | m + 2 =>
-        have hL : ((X - C (-1 : ℝ)).coeff (m + 2)) = 0 := by
-          rw [coeff_sub, coeff_X, coeff_C,
-            ite_eq_right (by lia : ¬ (1 : ℕ) = m + 2),
-            ite_eq_right (by lia : ¬ m + 2 = 0), sub_zero]
-        have hR : cexOddZero (2 * (m + 2)) = 0 := by
-          simp only [cexOddZero]
-          simp
-        simp_all
-  simp_all
+  convert IsPolyaFreqSeq.linear (r := (-1 : ℝ)) (by norm_num) using 1
+  funext n
+  match n with
+  | 0 => norm_num [cexOddZero]
+  | 1 => norm_num [cexOddZero, Polynomial.coeff_one]
+  | m + 2 => simp [cexOddZero, Polynomial.coeff_X, Polynomial.coeff_one]
 
 /-- The Hurwitz matrix of `cexOddZero` is totally nonnegative. -/
 theorem cexOddZero_hurwitz_isTotallyNonneg :

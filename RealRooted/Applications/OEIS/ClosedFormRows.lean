@@ -51,6 +51,25 @@ theorem sqrt_parameters_ge_two_of_certificate (c d : ℝ) (hc : 4 ≤ c)
     Real.sq_sqrt hdisc
   constructor <;> rw [le_div_iff₀ (by norm_num : (0 : ℝ) < 2)] <;> linarith
 
+private theorem reciprocal_quartic_splits_of_certificate (c d : ℝ) (hc : 4 ≤ c)
+    (hdisc : 0 ≤ c ^ 2 - 4 * (d - 2))
+    (hbound : c ^ 2 - 4 * (d - 2) ≤ (c - 4) ^ 2) :
+    (X ^ 4 + C c * X ^ 3 + C d * X ^ 2 + C c * X + 1 : ℝ[X]).Splits := by
+  obtain ⟨hp, hq⟩ := sqrt_parameters_ge_two_of_certificate c d hc hdisc hbound
+  let p := (c + Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
+  let q := (c - Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
+  rw [show (X ^ 4 + C c * X ^ 3 + C d * X ^ 2 + C c * X + 1 : ℝ[X]) =
+      X ^ 4 + C (p + q) * X ^ 3 + C (p * q + 2) * X ^ 2 + C (p + q) * X + 1 by
+        apply Polynomial.funext
+        intro x
+        simp only [eval_add, eval_mul, eval_pow, eval_X, eval_C, eval_one]
+        dsimp [p, q]
+        ring_nf
+        rw [show 8 + c ^ 2 - d * 4 = c ^ 2 - 4 * (d - 2) by ring,
+          Real.sq_sqrt hdisc]
+        ring]
+  exact reciprocal_quartic_splits_of_parameters p q hp hq
+
 /-- The order-four repeated-root row A286100. -/
 def A286100 : ℕ → ℝ[X]
   | 0 => 2 * X
@@ -112,27 +131,12 @@ def A124376_parameters (k : ℕ) : ℝ × ℝ :=
 
 /-- The A124376 quartic cofactor splits over the reals. -/
 theorem A124376_quartic_splits (k : ℕ) : (A124376_quartic k).Splits := by
-  let c : ℝ := 2 * (k : ℝ) + 10
-  let d : ℝ := (k : ℝ) ^ 2 / 2 + 11 * (k : ℝ) / 2 + 19
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hparameters := sqrt_parameters_ge_two_of_certificate c d (by dsimp [c]; linarith)
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-  rcases hparameters with ⟨hp, hq⟩
-  let p := (c + Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  let q := (c - Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  have hpoly : A124376_quartic k =
-      X ^ 4 + C (p + q) * X ^ 3 + C (p * q + 2) * X ^ 2 + C (p + q) * X + 1 := by
-    apply Polynomial.funext
-    intro x
-    simp only [A124376_quartic, eval_add, eval_mul, eval_pow, eval_X, eval_C, eval_one]
-    dsimp [p, q, c, d]
-    ring_nf
-    rw [Real.sq_sqrt]
-    · ring
-    · nlinarith [sq_nonneg (k : ℝ)]
-  rw [hpoly]
-  exact reciprocal_quartic_splits_of_parameters p q hp hq
+  rw [A124376_quartic]
+  apply reciprocal_quartic_splits_of_certificate
+  · linarith
+  · nlinarith [sq_nonneg (k : ℝ)]
+  · nlinarith [sq_nonneg (k : ℝ)]
 
 /-- The quartic cofactor for A157169. -/
 def A157169_quartic (k : ℕ) : ℝ[X] :=
@@ -142,27 +146,12 @@ def A157169_quartic (k : ℕ) : ℝ[X] :=
 
 /-- The A157169 quartic cofactor splits over the reals. -/
 theorem A157169_quartic_splits (k : ℕ) : (A157169_quartic k).Splits := by
-  let c : ℝ := 3 * (k : ℝ) + 13
-  let d : ℝ := (k : ℝ) ^ 2 + 9 * (k : ℝ) + 26
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hparameters := sqrt_parameters_ge_two_of_certificate c d (by dsimp [c]; linarith)
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-  rcases hparameters with ⟨hp, hq⟩
-  let p := (c + Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  let q := (c - Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  have hpoly : A157169_quartic k =
-      X ^ 4 + C (p + q) * X ^ 3 + C (p * q + 2) * X ^ 2 + C (p + q) * X + 1 := by
-    apply Polynomial.funext
-    intro x
-    simp only [A157169_quartic, eval_add, eval_mul, eval_pow, eval_X, eval_C, eval_one]
-    dsimp [p, q, c, d]
-    ring_nf
-    rw [Real.sq_sqrt]
-    · ring
-    · nlinarith [sq_nonneg (k : ℝ)]
-  rw [hpoly]
-  exact reciprocal_quartic_splits_of_parameters p q hp hq
+  rw [A157169_quartic]
+  apply reciprocal_quartic_splits_of_certificate
+  · linarith
+  · nlinarith [sq_nonneg (k : ℝ)]
+  · nlinarith [sq_nonneg (k : ℝ)]
 
 /-- The quartic cofactor for A157171. -/
 def A157171_quartic (k : ℕ) : ℝ[X] :=
@@ -172,27 +161,12 @@ def A157171_quartic (k : ℕ) : ℝ[X] :=
 
 /-- The A157171 quartic cofactor splits over the reals. -/
 theorem A157171_quartic_splits (k : ℕ) : (A157171_quartic k).Splits := by
-  let c : ℝ := 9 * (k : ℝ) + 31
-  let d : ℝ := 3 * (k : ℝ) ^ 2 + 27 * (k : ℝ) + 66
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-  have hparameters := sqrt_parameters_ge_two_of_certificate c d (by dsimp [c]; linarith)
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-    (by dsimp [c, d]; nlinarith [sq_nonneg (k : ℝ)])
-  rcases hparameters with ⟨hp, hq⟩
-  let p := (c + Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  let q := (c - Real.sqrt (c ^ 2 - 4 * (d - 2))) / 2
-  have hpoly : A157171_quartic k =
-      X ^ 4 + C (p + q) * X ^ 3 + C (p * q + 2) * X ^ 2 + C (p + q) * X + 1 := by
-    apply Polynomial.funext
-    intro x
-    simp only [A157171_quartic, eval_add, eval_mul, eval_pow, eval_X, eval_C, eval_one]
-    dsimp [p, q, c, d]
-    ring_nf
-    rw [Real.sq_sqrt]
-    · ring
-    · nlinarith [sq_nonneg (k : ℝ)]
-  rw [hpoly]
-  exact reciprocal_quartic_splits_of_parameters p q hp hq
+  rw [A157171_quartic]
+  apply reciprocal_quartic_splits_of_certificate
+  · linarith
+  · nlinarith [sq_nonneg (k : ℝ)]
+  · nlinarith [sq_nonneg (k : ℝ)]
 
 /-- The order-five row A124376, in the recurrence form used downstream. -/
 def A124376 : ℕ → ℝ[X]
@@ -207,29 +181,9 @@ def A124376 : ℕ → ℝ[X]
 /-- The recurrence solution for A124376. -/
 theorem A124376_closed : ∀ k : ℕ,
     A124376 (k + 4) = (1 + X) ^ k * A124376_quartic k
-  | 0 => by
-      rw [show A124376 4 = 1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4 from rfl,
-        A124376_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 1 => by
-      rw [show A124376 5 = (3 + 3 * X) * A124376 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A124376 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A124376 2 from rfl,
-        show A124376 4 = 1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4 from rfl,
-        show A124376 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 from rfl,
-        show A124376 2 = 1 + 4 * X + X ^ 2 from rfl, A124376_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 2 => by
-      rw [show A124376 6 = (3 + 3 * X) * A124376 5 + (-3 + -6 * X + -3 * X ^ 2) *
-          A124376 4 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A124376 3 from rfl,
-        show A124376 5 = (3 + 3 * X) * A124376 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A124376 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A124376 2 from rfl,
-        show A124376 4 = 1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4 from rfl,
-        show A124376 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 from rfl,
-        show A124376 2 = 1 + 4 * X + X ^ 2 from rfl, A124376_quartic]
-      norm_num [map_ofNat]
-      ring
+  | 0 => by norm_num [A124376, A124376_quartic, map_ofNat]; ring
+  | 1 => by norm_num [A124376, A124376_quartic, map_ofNat]; ring
+  | 2 => by norm_num [A124376, A124376_quartic, map_ofNat]; ring
   | k + 3 => by
       rw [show A124376 (k + 3 + 4) = (3 + 3 * X) * A124376 (k + 6) +
           (-3 + -6 * X + -3 * X ^ 2) * A124376 (k + 5) +
@@ -293,29 +247,9 @@ def A157169 : ℕ → ℝ[X]
 /-- The recurrence solution for A157169. -/
 theorem A157169_closed : ∀ k : ℕ,
     A157169 (k + 4) = (1 + X) ^ k * A157169_quartic k
-  | 0 => by
-      rw [show A157169 4 = 1 + 13 * X + 26 * X ^ 2 + 13 * X ^ 3 + X ^ 4 from rfl,
-        A157169_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 1 => by
-      rw [show A157169 5 = (3 + 3 * X) * A157169 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157169 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157169 2 from rfl,
-        show A157169 4 = 1 + 13 * X + 26 * X ^ 2 + 13 * X ^ 3 + X ^ 4 from rfl,
-        show A157169 3 = 1 + 9 * X + 9 * X ^ 2 + X ^ 3 from rfl,
-        show A157169 2 = 1 + 5 * X + X ^ 2 from rfl, A157169_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 2 => by
-      rw [show A157169 6 = (3 + 3 * X) * A157169 5 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157169 4 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157169 3 from rfl,
-        show A157169 5 = (3 + 3 * X) * A157169 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157169 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157169 2 from rfl,
-        show A157169 4 = 1 + 13 * X + 26 * X ^ 2 + 13 * X ^ 3 + X ^ 4 from rfl,
-        show A157169 3 = 1 + 9 * X + 9 * X ^ 2 + X ^ 3 from rfl,
-        show A157169 2 = 1 + 5 * X + X ^ 2 from rfl, A157169_quartic]
-      norm_num [map_ofNat]
-      ring
+  | 0 => by norm_num [A157169, A157169_quartic, map_ofNat]; ring
+  | 1 => by norm_num [A157169, A157169_quartic, map_ofNat]; ring
+  | 2 => by norm_num [A157169, A157169_quartic, map_ofNat]; ring
   | k + 3 => by
       rw [show A157169 (k + 3 + 4) = (3 + 3 * X) * A157169 (k + 6) +
           (-3 + -6 * X + -3 * X ^ 2) * A157169 (k + 5) +
@@ -378,29 +312,9 @@ def A157171 : ℕ → ℝ[X]
 /-- The recurrence solution for A157171. -/
 theorem A157171_closed : ∀ k : ℕ,
     A157171 (k + 4) = (1 + X) ^ k * A157171_quartic k
-  | 0 => by
-      rw [show A157171 4 = 1 + 31 * X + 66 * X ^ 2 + 31 * X ^ 3 + X ^ 4 from rfl,
-        A157171_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 1 => by
-      rw [show A157171 5 = (3 + 3 * X) * A157171 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157171 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157171 2 from rfl,
-        show A157171 4 = 1 + 31 * X + 66 * X ^ 2 + 31 * X ^ 3 + X ^ 4 from rfl,
-        show A157171 3 = 1 + 21 * X + 21 * X ^ 2 + X ^ 3 from rfl,
-        show A157171 2 = 1 + 11 * X + X ^ 2 from rfl, A157171_quartic]
-      norm_num [map_ofNat]
-      ring
-  | 2 => by
-      rw [show A157171 6 = (3 + 3 * X) * A157171 5 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157171 4 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157171 3 from rfl,
-        show A157171 5 = (3 + 3 * X) * A157171 4 + (-3 + -6 * X + -3 * X ^ 2) *
-          A157171 3 + (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A157171 2 from rfl,
-        show A157171 4 = 1 + 31 * X + 66 * X ^ 2 + 31 * X ^ 3 + X ^ 4 from rfl,
-        show A157171 3 = 1 + 21 * X + 21 * X ^ 2 + X ^ 3 from rfl,
-        show A157171 2 = 1 + 11 * X + X ^ 2 from rfl, A157171_quartic]
-      norm_num [map_ofNat]
-      ring
+  | 0 => by norm_num [A157171, A157171_quartic, map_ofNat]; ring
+  | 1 => by norm_num [A157171, A157171_quartic, map_ofNat]; ring
+  | 2 => by norm_num [A157171, A157171_quartic, map_ofNat]; ring
   | k + 3 => by
       rw [show A157171 (k + 3 + 4) = (3 + 3 * X) * A157171 (k + 6) +
           (-3 + -6 * X + -3 * X ^ 2) * A157171 (k + 5) +

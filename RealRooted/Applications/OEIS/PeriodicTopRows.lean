@@ -166,33 +166,27 @@ private lemma fac1 (n : ℕ) : ((n + 1).factorial : ℝ) = (n + 1) * n.factorial
   rw [Nat.factorial_succ]
   simp
 private lemma fac2 (n : ℕ) : ((n + 2).factorial : ℝ) = (n + 2) * (n + 1) * n.factorial := by
-  rw [show n + 2 = (n + 1) +1 from rfl, Nat.factorial_succ, Nat.factorial_succ]
-  grind
+  norm_num [Nat.factorial_succ]
+  ring
 private lemma fac3 (n : ℕ) : ((n + 3).factorial : ℝ) = (n + 3) * (n + 2) * (n + 1) * n.factorial
   := by
-  rw [show n + 3 = (n + 2) +1 from rfl, Nat.factorial_succ, show n + 2 = (n + 1) +1 from rfl,
-      Nat.factorial_succ, Nat.factorial_succ]; grind
+  norm_num [Nat.factorial_succ]
+  ring
 private lemma fac4 (n : ℕ) : ((n + 4).factorial : ℝ) = (n + 4) * (n + 3) * (n + 2) * (n + 1)
   * n.factorial
   := by
-  rw [show n + 4 = (n + 3) +1 from rfl, Nat.factorial_succ, show n + 3 = (n + 2) +1 from rfl,
-      Nat.factorial_succ, show n + 2 = (n + 1) +1 from rfl, Nat.factorial_succ, Nat.factorial_succ]
-  grind
+  norm_num [Nat.factorial_succ]
+  ring
 private lemma fac5 (n : ℕ) : ((n + 5).factorial : ℝ) = (n + 5) * (n + 4) * (n + 3) * (n + 2)
   * (n + 1) * n.factorial
   := by
-  rw [show n + 5 = (n + 4) +1 from rfl, Nat.factorial_succ, show n + 4 = (n + 3) +1 from rfl,
-      Nat.factorial_succ, show n + 3 = (n + 2) +1 from rfl, Nat.factorial_succ,
-      show n + 2 = (n + 1) +1 from rfl, Nat.factorial_succ, Nat.factorial_succ]
-  grind
+  norm_num [Nat.factorial_succ]
+  ring
 private lemma fac6 (n : ℕ) : ((n + 6).factorial : ℝ) = (n + 6) * (n + 5) * (n + 4) * (n + 3)
   * (n + 2) * (n + 1) * n.factorial
   := by
-  rw [show n + 6 = (n + 5) +1 from rfl, Nat.factorial_succ, show n + 5 = (n + 4) +1 from rfl,
-      Nat.factorial_succ, show n + 4 = (n + 3) +1 from rfl, Nat.factorial_succ,
-      show n + 3 = (n + 2) +1 from rfl, Nat.factorial_succ, show n + 2 = (n + 1) +1 from rfl,
-      Nat.factorial_succ, Nat.factorial_succ]
-  grind
+  norm_num [Nat.factorial_succ]
+  ring
 private lemma choose_ratio (x y : ℕ) (h : y ≤ x) :
     (x.choose y : ℝ) = x.factorial / (y.factorial * (x - y).factorial) := by
   have hne : (y.factorial : ℝ) * (x - y).factorial ≠ 0 := by
@@ -822,75 +816,15 @@ private lemma A177040_natDegree_raw (n : ℕ) : (A177040 n).natDegree = n / 2 :=
   · rw [A177040_coeff n (n / 2), ite_eq_left (le_refl _)]
     simp
 
-private def A177040EvenState (m : ℕ) (p : ℝ[X]) : Prop :=
-  ∀ i, p.coeff i = Bcoef (2 * m) i
-
-private def A177040OddState (m : ℕ) (p : ℝ[X]) : Prop :=
-  ∀ i, p.coeff i = Bcoef (2 * m + 1) i
-
-private lemma A177040_state (n : ℕ) : ∀ i, (A177040 n).coeff i = Bcoef n i := by
-  intro i
-  exact A177040_coeff n i
-
-private lemma A177040_top_coeff_pos (n : ℕ) :
-    0 < (A177040 n).coeff (n / 2) := by
-  rw [A177040_coeff, ite_eq_left (le_refl _)]
-  simp
-
-private lemma two_mul_add_one_div_two (n : ℕ) : (2 * n + 1) / 2 = n := by
-  rw [show 2 * n + 1 = 1 + 2 * n by lia, Nat.add_mul_div_left] <;> norm_num
-
-private lemma A177040_parity_degree_and_leadingCoeff_pos (m : ℕ) :
-    ((A177040 (2 * m)).natDegree = m ∧
-        0 < (A177040 (2 * m)).leadingCoeff ∧
-        A177040EvenState m (A177040 (2 * m))) ∧
-      ((A177040 (2 * m + 1)).natDegree = m ∧
-        0 < (A177040 (2 * m + 1)).leadingCoeff ∧
-        A177040OddState m (A177040 (2 * m + 1))) := by
-  apply RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_parity_topWindows
-    (evenExcess := 1) (oddExcess := 1)
-    (evenDegree := fun j => j) (oddDegree := fun j => j)
-  · constructor
-    · refine ⟨by simp [A177040_natDegree_raw], ?_, ?_⟩
-      · simpa using A177040_top_coeff_pos 0
-      · intro i
-        exact A177040_state 0 i
-    · refine ⟨by simp [A177040_natDegree_raw], ?_, ?_⟩
-      · simpa using A177040_top_coeff_pos 1
-      · intro i
-        simpa [A177040OddState] using A177040_state 1 i
-  · intro j _ _
-    have hevenDegree := A177040_natDegree_raw (2 * (j + 1))
-    have hoddDegree := A177040_natDegree_raw (2 * (j + 1) + 1)
-    have hevenTop := A177040_top_coeff_pos (2 * (j + 1))
-    have hoddTop := A177040_top_coeff_pos (2 * (j + 1) + 1)
-    have hevenState := A177040_state (2 * (j + 1))
-    have hoddState := A177040_state (2 * (j + 1) + 1)
-    rw [two_mul_add_one_div_two] at hoddDegree hoddTop
-    constructor
-    · refine ⟨by simpa using hevenDegree.le.trans (Nat.le_add_right _ _), ?_, ?_, ?_⟩
-      · intro r hr hre
-        exact coeff_eq_zero_of_natDegree_lt (by rw [hevenDegree]; lia)
-      · simpa using hevenTop
-      · intro i
-        exact hevenState i
-    · refine ⟨by simpa using hoddDegree.le.trans (Nat.le_add_right _ _), ?_, ?_, ?_⟩
-      · intro r hr hre
-        exact coeff_eq_zero_of_natDegree_lt (by rw [hoddDegree]; lia)
-      · simpa using hoddTop
-      · intro i
-        exact hoddState i
-
 /-- The A177040 row indexed by `n` has degree `n / 2` and positive leading
 coefficient.  The proof carries the exact even and odd coefficient vectors as two separate
 states of the parity top-window law. -/
 theorem A177040_natDegree_eq_and_leadingCoeff_pos (n : ℕ) :
     (A177040 n).natDegree = n / 2 ∧ 0 < (A177040 n).leadingCoeff := by
-  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
-  · have h := (A177040_parity_degree_and_leadingCoeff_pos m).1
-    simpa using ⟨h.1, h.2.1⟩
-  · have h := (A177040_parity_degree_and_leadingCoeff_pos m).2
-    simpa [two_mul_add_one_div_two] using ⟨h.1, h.2.1⟩
+  refine ⟨A177040_natDegree_raw n, ?_⟩
+  rw [leadingCoeff, A177040_natDegree_raw, A177040_coeff,
+    ite_eq_left (le_refl (n / 2))]
+  simp
 
 /-- The natural degree of the A177040 row indexed by `n` is `n / 2`. -/
 theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 :=
