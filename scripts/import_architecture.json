@@ -1566,9 +1566,6 @@
     "RealRooted.RowThresholdOne": {
       "max_modules": 175
    },
-    "RealRooted.OEIS.A046802": {
-      "max_modules": 134
-   },
     "RealRooted.GustafssonSolus": {
       "max_modules": 134
    },
@@ -2189,7 +2186,6 @@
     "RealRooted.ThresholdMatrix.GustafssonSolus",
     "RealRooted.ThresholdMatrix",
     "RealRooted.RowThresholdOne",
-    "RealRooted.OEIS.A046802",
     "RealRooted.GustafssonSolus",
     "RealRooted.Kurtz",
     "RealRooted.Challenges.Kurtz",

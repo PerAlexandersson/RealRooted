@@ -47,13 +47,4 @@ theorem preservesComplexStabilityOnDegreeBox_one_of_rankOne_or_symbol
 
 end
 
-
 end RealRooted.BorceaBranden
-
-namespace RealRooted.Challenges.BorceaBranden
-
-export RealRooted.BorceaBranden
-  (preservesComplexStabilityOnDegreeBox_one_of_algebraicSymbol_stable
-    preservesComplexStabilityOnDegreeBox_one_of_rankOne_or_symbol)
-
-end RealRooted.Challenges.BorceaBranden
