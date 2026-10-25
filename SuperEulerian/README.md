@@ -1,7 +1,10 @@
 # SuperEulerian
 
-This directory is reserved for the SuperEulerian Lean development that is now
-part of the public RealRooted repository.
+This is a legacy navigation location, not a separate Lean project.
 
-Keep source files and project-local notes here.  Generated Lake artifacts such
-as `.lake/` stay ignored and should not be committed.
+The implementation is
+[`RealRooted/CombinatorialExamples/SuperEulerian.lean`](../RealRooted/CombinatorialExamples/SuperEulerian.lean).
+The paper-facing result is `superEulerian_roots_interlacing_gamma` in
+[`RealRooted/Challenges/EulerianCompendium.lean`](../RealRooted/Challenges/EulerianCompendium.lean).
+Use those modules; do not start a second development or research-note collection
+in this directory.
