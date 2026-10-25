@@ -204,101 +204,18 @@ lemma simsun_nonzero (n : Nat) :
     simsun n ≠ 0 := by
   rr_row_ne_zero
 
-lemma interlaces_derivative_simsun_three :
-    Interlaces (simsun 3).derivative (simsun 3) := by
-  have hstrictInterl : StrictInterl (1 : ℝ[X]) (1 + C (4 : ℝ) * X) :=
-    (interlaces_one_linear (by simp)).toStrictInterl
-  have hstrictInterlC : StrictInterl (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    StrictInterl.C_mul_left hstrictInterl (by simp)
-  have hInter : Interlaces (C (4 : ℝ) * (1 : ℝ[X])) (1 + C (4 : ℝ) * X) :=
-    hstrictInterlC.toInterlaces (by simp)
-  simpa [simsun_three] using hInter
-
 lemma simsun_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (simsun n) := by
   simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_simsun] using
     (coeff_simsun_top_pos_and_above n).1
 
-lemma roots_nonpos_simsun_of_isRealRooted {n : Nat} :
-    ∀ r ∈ (simsun n).roots, r ≤ 0 :=
-  roots_nonpos_of_hasNonnegCoeffs (simsun_nonnegCoeffs n)
-
 lemma interlaces_simsun_zero_one :
     StrictInterl (simsun 0) (simsun 1) :=
   by simpa [simsun_zero, simsun_one] using StrictInterl.refl (f := (1 : ℝ[X])) (by simp)
 
-lemma interlaces_simsun_one_two :
-    Interlaces (simsun 1) (simsun 2) := by
-  simpa [simsun_one, simsun_two, add_comm] using
-    interlaces_one_linear (p := X + C (1 : ℝ))
-      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
-
-lemma interlaces_derivative_simsun :
-    ∀ n : Nat, 2 ≤ n → (simsun n).Splits →
-      Interlaces (simsun n).derivative (simsun n)
-  | 0, hn, _ => by
-      lia
-  | 1, hn, _ => by
-      lia
-  | 2, _, _ => by
-      simpa [simsun_two, add_comm] using
-        interlaces_one_linear (p := X + C (1 : ℝ))
-          (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
-  | 3, _, _ => interlaces_derivative_simsun_three
-  | n + 4, _, hrr =>
-      derivative_interlaces_of_natDegree_ne_zero hrr (by rw [natDegree_simsun]; lia)
-
-lemma eval_simsunCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
-    simsunCoeffB.eval r ≤ 0 := by
-  simp [simsunCoeffB]
-  nlinarith
-
 /-- Consecutive simsun descent polynomials satisfy `StrictInterl`. -/
-theorem strictInterl_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1))
-  | 0 => interlaces_simsun_zero_one
-  | 1 => interlaces_simsun_one_two.toStrictInterl
-  | n + 2 => by
-    have hInter :
-        Interlaces (simsun (n + 2)).derivative (simsun (n + 2)) :=
-      interlaces_derivative_simsun (n + 2) (by simp) (strictInterl_simsun_succ (n + 1)).2.1.2
-    have hg_pos : HasPosLeadingCoeff (simsun (n + 2)).derivative :=
-      (simsun_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_simsun])
-    have hNext_eq :
-        simsunCoeffA (n + 2) * simsun (n + 2) +
-          simsunCoeffB * (simsun (n + 2)).derivative =
-        simsun (n + 3) :=
-      (simsun_succ (n + 2)).symm
-    have hF_pos :
-        HasPosLeadingCoeff
-          (simsunCoeffA (n + 2) * simsun (n + 2) +
-            simsunCoeffB * (simsun (n + 2)).derivative) := by
-      simpa [hNext_eq] using simsun_posLeadingCoeff (n + 3)
-    have hdeg_lo :
-        (simsun (n + 2)).natDegree ≤
-          (simsunCoeffA (n + 2) * simsun (n + 2) +
-            simsunCoeffB * (simsun (n + 2)).derivative).natDegree := by
-      rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-      lia
-    have hdeg_hi :
-        (simsunCoeffA (n + 2) * simsun (n + 2) +
-            simsunCoeffB * (simsun (n + 2)).derivative).natDegree ≤
-          (simsun (n + 2)).natDegree + 1 := by
-      rw [hNext_eq, natDegree_simsun, natDegree_simsun]
-      lia
-    have hb_nonpos :
-        ∀ r, (simsun (n + 2)).IsRoot r → simsunCoeffB.eval r ≤ 0 := by
-      intro r hr
-      have hr_nonpos :
-          r ≤ 0 := roots_nonpos_simsun_of_isRealRooted r
-            ((mem_roots (strictInterl_simsun_succ (n + 1)).2.1.1).mpr hr)
-      exact eval_simsunCoeffB_nonpos_of_nonpos hr_nonpos
-    simpa [hNext_eq] using
-      strictInterl_of_interlaces_evalCoeff_nonpos
-        (f := simsun (n + 2))
-        (g := (simsun (n + 2)).derivative)
-        (a := simsunCoeffA (n + 2))
-        (b := simsunCoeffB)
-        hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+theorem strictInterl_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun (n + 1)) := by
+  rr_row_strictInterl
 
 theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits) :=
   fun n => ⟨by rr_row_ne_zero, by rr_row_splits⟩
