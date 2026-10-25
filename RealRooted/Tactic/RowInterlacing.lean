@@ -645,6 +645,7 @@ private def linRecNonneg : TacticM Unit := withMainContext do
       evalTactic (← `(tactic| (
         intro n
         $recStep:tactic <;>
+        rr_row_unfold <;>
         simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil,
           List.sum_cons, List.sum_nil, Function.iterate_zero_apply,
           Function.iterate_succ_apply', add_zero] <;>

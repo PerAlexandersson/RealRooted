@@ -125,6 +125,7 @@ private def multiplierGoal : TacticM Unit := do
     intro n i j hj
     have hj' : ((j : ℕ) : ℝ) ≤ _ := Nat.cast_le.mpr hj
     push_cast at hj'
+    ring_nf
     rcases i with _ | _ | _ | i <;> (
       simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
         Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
@@ -134,6 +135,20 @@ private def multiplierGoal : TacticM Unit := do
       push_cast
       try norm_num
       first | done | positivity | nlinarith | rr_row_field))))
+
+/-- Close `A.coeff 0 ≥ 0` after a product in the coefficient has been normalized. -/
+private def constantCoeffGoal : TacticM Unit := do
+  evalTactic (← `(tactic| (
+    intro n
+    ring_nf
+    simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+      Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+      Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+      Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+    push_cast
+    try norm_num
+    first | done | positivity | nlinarith | rr_row_field)))
 
 /-- The multiplier goal of
 `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the half-growth
@@ -204,6 +219,7 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : Bool :=
   has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
     has ``RealRooted.HasNonnegCoeffs || (!ty.isForall && mentionsP && has ``Polynomial.Splits) ||
     (ty.isForall && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
+    (ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff) ||
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
       has ``Polynomial.coeff)
 
@@ -346,6 +362,8 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
          explicitNonnegCoeffs]
     else if ty.isForall && ty.bindingBody!.isForall then
       [multiplierGoal]
+    else if ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff then
+      [constantCoeffGoal]
     else [rowSideGoal P?]
   for strategy in strategies do
     if ← rowSucceeds (do
