@@ -136,9 +136,9 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
     (N := 2)
-    (fun {_f _g} hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg =>
-      posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi hno hgdeg)
+    (fun {_f _g} hf_pos hg_pos _ _ hfg hdeg_lo hdeg_hi _ hgdeg =>
+      posComboPairHasCommonInterleaver_of_adjacent_natDegree_le_two
+        hf_pos hg_pos hfg hdeg_lo hdeg_hi hgdeg)
     hf_pos hg_pos hf_splits hg_splits hfg hfdeg hgdeg
 
 /-- Compatibility-level degree-`≤ 2` two-polynomial Chudnovsky--Seymour
