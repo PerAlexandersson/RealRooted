@@ -37,7 +37,8 @@ module = "RealRooted.Basic.ProperPosition"
 label = "Sturm sequence"
 
 [[theorems]]
-name = "RealRooted.Challenges.Interlacing.interlaces_iff"
+name = "RealRooted.Interlaces.iff_strictInterl_and_natDegree"
+module = "RealRooted.Basic.ProperPosition"
 label = "Interlaces is interlacing with a degree increase"
 headline = true
 
@@ -79,22 +80,3 @@ See [@Fisk2006x] and the
 <!-- /realrooted-catalog-content -->
 -/
 
-@[expose] public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Interlacing
-
-/-- `Interlaces f g` is exactly `StrictInterl f g` together with the degree
-condition `f.natDegree + 1 = g.natDegree`. -/
-theorem interlaces_iff {f g : ℝ[X]} :
-    Interlaces f g ↔ StrictInterl f g ∧ f.natDegree + 1 = g.natDegree := by
-  refine ⟨fun h ↦ ⟨h.toStrictInterl, ?_⟩, fun h ↦ h.1.toInterlaces h.2⟩
-  rcases h with ⟨-, -, hdeg, -⟩
-  exact hdeg
-
-end Interlacing
-end Challenges
-end RealRooted

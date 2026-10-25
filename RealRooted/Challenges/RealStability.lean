@@ -98,7 +98,8 @@ label = "Gårding: hyperbolicity cones are convex"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_realDetPencil"
+name = "RealRooted.mvRealStable_realDetPencil_of_ne"
+module = "RealRooted.DeterminantalStability"
 label = "Real determinantal pencils are real stable"
 
 [[theorems]]
@@ -346,16 +347,6 @@ theorem detPencil_eq_zero_or_stable {m σ : Type*} [Fintype m] [DecidableEq m]
     (hB : ∀ k, (B k).PosSemidef) :
     detPencil A B = 0 ∨ MvUpperHalfPlaneStable (detPencil A B) :=
   mvUpperHalfPlaneStableOrZero_detPencil A B hA hB
-
-/-- A nonzero real determinantal pencil with symmetric `A` and positive
-semidefinite `B k` is real stable. -/
-theorem mvRealStable_realDetPencil {m σ : Type*} [Fintype m] [DecidableEq m]
-    [Fintype σ] (A : Matrix m m ℝ) (B : σ → Matrix m m ℝ) (hA : A.IsHermitian)
-    (hB : ∀ k, (B k).PosSemidef) (hne : realDetPencil A B ≠ 0) :
-    MvRealStable (realDetPencil A B) := by
-  refine RealRooted.mvRealStable_realDetPencil A B hA hB fun h ↦ hne ?_
-  apply MvPolynomial.map_injective Complex.ofRealHom Complex.ofReal_injective
-  simpa [complexifyMv] using h
 
 /-- A homogeneous real polynomial is real stable exactly when it is hyperbolic
 in every strictly positive direction. -/

@@ -736,6 +736,21 @@ lemma hasNonnegCoeffs_affine_linear {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
   have hCb : HasNonnegCoeffs (C b) := by rintro (_ | n) <;> simp [hb]
   exact (hasNonnegCoeffs_C_mul ha hasNonnegCoeffs_X).add hCb
 
+/-- If two nonzero polynomials have nonnegative coefficients and every
+positive affine combination `(s X + t) f + g` splits, then `f ≪ g`. -/
+theorem strictInterl_of_forall_affine_mul_add_splits {f g : ℝ[X]}
+    (hf0 : f ≠ 0) (hg0 : g ≠ 0) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (haff : ∀ s t : ℝ, 0 < s → 0 < t → ((C s * X + C t) * f + g).Splits) :
+    StrictInterl f g := by
+  refine strictInterl_of_affine_family_nonneg hf0 hg0 hf hg fun {s t} hs ht ↦
+    ⟨?_, haff s t hs ht⟩
+  intro h0
+  have hcoeff := congrArg (coeff · g.natDegree) h0
+  simp only [coeff_add, coeff_zero] at hcoeff
+  have hprod := (hasNonnegCoeffs_affine_linear hs.le ht.le).mul hf g.natDegree
+  have hlead : 0 < g.coeff g.natDegree := hg.pos_leadingCoeff hg0
+  linarith
+
 lemma interl_one_affine_linear {a b : ℝ} (ha : 0 < a) :
     Interl (1 : ℝ[X]) (C a * X + C b) := by
   have hInter : Interlaces (1 : ℝ[X]) (C a * X + C b) := by

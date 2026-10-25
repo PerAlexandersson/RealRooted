@@ -794,4 +794,17 @@ theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
   · exact Or.inl hzero
   · exact Or.inr (hpkg.2 _ hmem hzero).2
 
+/-- Veronese sections preserve real-rootedness for polynomials with
+nonnegative coefficients, allowing the selected section to vanish. -/
+theorem veroneseSectionPolynomial_eq_zero_or_splits {r k : ℕ} (hk : k < r)
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hsplits : p.Splits) :
+    veroneseSectionPolynomial r k p = 0 ∨ (veroneseSectionPolynomial r k p).Splits := by
+  have hr : 0 < r := by lia
+  rcases eq_or_ne p 0 with rfl | hp0
+  · left
+    ext n
+    simp [coeff_veroneseSectionPolynomial hr]
+  · exact isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
+      hr hk hp hp0 hsplits
+
 end RealRooted

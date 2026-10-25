@@ -389,6 +389,14 @@ lemma StrictInterl.toInterlaces {g f : ℝ[X]} (h : StrictInterl g f)
   have := hf.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
   lia
 
+/-- `Interlaces f g` is exactly proper position together with a one-step
+increase in degree. -/
+theorem Interlaces.iff_strictInterl_and_natDegree {f g : ℝ[X]} :
+    Interlaces f g ↔ StrictInterl f g ∧ f.natDegree + 1 = g.natDegree := by
+  refine ⟨fun h ↦ ⟨h.toStrictInterl, ?_⟩, fun h ↦ h.1.toInterlaces h.2⟩
+  rcases h with ⟨-, -, hdeg, -⟩
+  exact hdeg
+
 /-! ## Canonical root-list interleavings -/
 
 lemma StrictInterl.exists_interleaves_of_succDegree {f g : ℝ[X]}

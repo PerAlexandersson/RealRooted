@@ -45,7 +45,8 @@ label = "For 0 < δ < 1 the roots are simple and strictly interlace J′_{m,0}"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.JacobiDeformation.isPFPolynomial_polynomial"
+name = "RealRooted.JacobiDeformation.isPFPolynomial_polynomial"
+module = "RealRooted.JacobiDeformation.Strict"
 label = "For every δ ≥ 0 the deformation is a PF polynomial"
 
 [[theorems]]
@@ -60,7 +61,8 @@ module = "RealRooted.Applications.OEIS.A132885"
 label = "Rows of A132885 are PF polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.JacobiDeformation.aeval_prod_sub_increasingEigenvalues_nonneg"
+name = "RealRooted.aeval_prod_sub_increasingEigenvalues_nonneg"
+module = "RealRooted.SpectralProduct"
 label = "Micchelli–Willoughby: initial spectral products are entrywise nonnegative"
 -->
 
@@ -170,33 +172,6 @@ theorem interlaces_derivative_polynomial_zero {m : ℕ} (hm : m ≠ 0) {δ c d U
   have h := RealRooted.JacobiDeformation.polynomial_strict_package
     (Nat.one_le_iff_ne_zero.mpr hm) hc hd hU hV hδ hδ1
   ⟨h.2.1, h.2.2.2.2.1, h.2.2.2.2.2⟩
-
-/-- For every `δ ≥ 0`, the Jacobi deformation is a PF polynomial. -/
-theorem isPFPolynomial_polynomial (m : ℕ) {δ c d U V : ℝ} (hδ : 0 ≤ δ)
-    (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) :
-    IsPFPolynomial (RealRooted.JacobiDeformation.polynomial m δ c d U V) := by
-  cases m with
-  | zero =>
-      rw [RealRooted.JacobiDeformation.polynomial_zero]
-      exact IsPFPolynomial.one
-  | succ m =>
-      exact IsPFPolynomial.of_realRooted_nonneg
-        (RealRooted.JacobiDeformation.hasNonnegCoeffs_polynomial_of_pos (by lia) hδ hc hd hU hV)
-        (polynomial_splits_and_roots_neg (m + 1) hδ hc hd hU hV).1
-
-/-- **Micchelli–Willoughby.** Let `A` be a real symmetric matrix with
-nonnegative entries and simple spectrum `μ_0 < μ_1 < ⋯`. Then every initial
-spectral product `(A - μ_0) ⋯ (A - μ_{k-1})` is entrywise nonnegative. -/
-theorem aeval_prod_sub_increasingEigenvalues_nonneg {N : ℕ}
-    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (hA : A.IsHermitian)
-    (hentry : ∀ i j, 0 ≤ A i j) (hsimple : StrictAnti (sortedEigenvalues A hA))
-    (k : Fin (N + 1)) (i j : Fin (N + 1)) :
-    0 ≤ aeval A (∏ l : Fin k,
-      (X - C (increasingEigenvalues A hA ⟨l, l.isLt.trans k.isLt⟩))) i j := by
-  have h := spectralProduct_entrywise_nonneg A hA hentry hsimple k i j
-  rw [spectralInitialRoots, List.map_ofFn] at h
-  rw [← List.prod_ofFn, map_list_prod, List.map_ofFn]
-  simpa [Function.comp_def, Algebra.algebraMap_eq_smul_one] using h
 
 end JacobiDeformation
 end Challenges

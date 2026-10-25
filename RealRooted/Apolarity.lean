@@ -983,6 +983,16 @@ theorem grace_apolarity_closedBall {n : Nat} {c : ℂ} {r : ℝ} (hr : 0 ≤ r)
     (binomialLift n g).HasRootIn (Metric.closedBall c r) :=
   grace_aux hr n f g hf hg hap hroots
 
+/-- If two degree-`n` binomial lifts are apolar and every root of the first
+lies in a closed disk, then the second has a root in that disk. -/
+theorem exists_isRoot_mem_closedBall_of_areApolar {n : ℕ} {c : ℂ} {r : ℝ}
+    (hr : 0 ≤ r) {f g : ℂ[X]} (hf : (binomialLift n f).natDegree = n)
+    (hg : (binomialLift n g).natDegree = n) (hap : AreApolar n f g)
+    (hroots : ∀ z, (binomialLift n f).IsRoot z → z ∈ Metric.closedBall c r) :
+    ∃ z ∈ Metric.closedBall c r, (binomialLift n g).IsRoot z := by
+  obtain ⟨z, hz, hmem⟩ := grace_apolarity_closedBall hr hf hg hap hroots
+  exact ⟨z, hmem, hz⟩
+
 /-- Root-transfer corollary in the form most convenient for Schur-Szego
 composition: from Grace's theorem, if `binomialLift n f` has all its zeros in a
 closed disk and `f`, `g` are apolar, then some `z` in that disk is a zero of

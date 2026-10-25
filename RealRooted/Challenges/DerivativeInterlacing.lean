@@ -34,7 +34,8 @@ label = "Differentiation preserves interlacing"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.DerivativeInterlacing.exists_mem_Ioo_isRoot_derivative"
+name = "RealRooted.exists_mem_Ioo_isRoot_derivative"
+module = "RealRooted.Derivative.RootCounting"
 label = "Rolle's theorem for polynomials"
 
 [[theorems]]
@@ -42,7 +43,8 @@ name = "RealRooted.Challenges.DerivativeInterlacing.splits_derivative"
 label = "The derivative of a real-rooted polynomial is real-rooted"
 
 [[theorems]]
-name = "RealRooted.Challenges.DerivativeInterlacing.strictInterl_derivative"
+name = "RealRooted.StrictInterl.derivative"
+module = "RealRooted.ObreschkoffConverse.Derivative"
 label = "Differentiation preserves interlacing of nonconstant polynomials"
 
 [[theorems]]
@@ -129,14 +131,6 @@ namespace RealRooted
 namespace Challenges
 namespace DerivativeInterlacing
 
-/-- **Rolle's theorem** for real polynomials: between two zeros of `p` lies a
-zero of `p'`. -/
-theorem exists_mem_Ioo_isRoot_derivative {p : ℝ[X]} {a b : ℝ} (hab : a < b)
-    (ha : p.IsRoot a) (hb : p.IsRoot b) :
-    ∃ c ∈ Set.Ioo a b, p.derivative.IsRoot c := by
-  obtain ⟨c, hac, hcb, hc⟩ := exists_root_derivative_between hab ha hb
-  exact ⟨c, ⟨hac, hcb⟩, hc⟩
-
 /-- **Derivative interlacing**: the derivative of a nonconstant real-rooted
 polynomial interlaces it. -/
 theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree ≠ 0) :
@@ -151,16 +145,6 @@ theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits :=
 theorem interl_derivative {f g : ℝ[X]} (h : Interl f g) :
     Interl f.derivative g.derivative :=
   derivativePreservesInterl h
-
-/-- Differentiation preserves interlacing of nonzero polynomials when the
-left polynomial is nonconstant. -/
-theorem strictInterl_derivative {f g : ℝ[X]} (h : StrictInterl f g)
-    (hf : f.natDegree ≠ 0) :
-    StrictInterl f.derivative g.derivative := by
-  have hg : g.natDegree ≠ 0 := by
-    rcases h.natDegree_eq_or_eq_succ with hfg | hfg <;> lia
-  exact (derivativePreservesInterl h.toInterl).toStrictInterl_of_ne
-    (derivative_ne_zero.mpr hf) (derivative_ne_zero.mpr hg)
 
 end DerivativeInterlacing
 end Challenges

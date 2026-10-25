@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import RealRooted.GeneralizedEulerian
 public import Mathlib.Tactic
 
 /-!
@@ -208,5 +209,15 @@ theorem isSturmSeq_typeBEulerianPrefix :
       | succ k =>
           simpa [typeBEulerianPrefix, IsSturmSeq] using
             And.intro (interlaces_typeBEulerian_succ (k + 1)) ih
+
+/-- The type `B` Eulerian polynomials are the generalized Eulerian
+polynomials at parameter two. -/
+theorem typeBEulerian_eq_generalizedEulerian_two (n : ℕ) :
+    typeBEulerian n = generalizedEulerian 2 n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [typeBEulerian_succ, generalizedEulerian_succ, ih, typeBEulerianCoeffA,
+      typeBEulerianCoeffB]
 
 end RealRooted

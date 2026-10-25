@@ -68,15 +68,18 @@ label = "Generalized Eulerian polynomials are real-rooted for c > 0"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.interlaces_generalizedEulerian_succ"
+name = "RealRooted.interlaces_generalizedEulerian_succ"
+module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "Consecutive generalized Eulerian polynomials interlace for c > 0"
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.eulerianTilde_eq_X_mul_generalizedEulerian_one"
+name = "RealRooted.eulerianTilde_eq_X_mul_generalizedEulerian_one"
+module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "The Eulerian polynomials are x times the case c = 1"
 
 [[theorems]]
-name = "RealRooted.Challenges.Eulerian.typeBEulerian_eq_generalizedEulerian_two"
+name = "RealRooted.typeBEulerian_eq_generalizedEulerian_two"
+module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "The type B Eulerian polynomials are the case c = 2"
 
 [[theorems]]
@@ -178,46 +181,6 @@ theorem typeB_interlaces_succ (n : ℕ) :
 /-- Descending type `B` Eulerian prefixes form Sturm sequences. -/
 theorem typeB_sturmPrefix (n : ℕ) : IsSturmSeq (typeBEulerianPrefix n) :=
   RealRooted.isSturmSeq_typeBEulerianPrefix n
-
-/-- The ordinary Eulerian polynomials are `X` times the generalized Eulerian polynomials at
-`c = 1`. -/
-theorem eulerianTilde_eq_X_mul_generalizedEulerian_one (n : ℕ) :
-    eulerianTilde n = X * generalizedEulerian 1 n := by
-  induction n with
-  | zero => simp [generalizedEulerian]
-  | succ n ih =>
-    rw [eulerianTilde_recurrence, generalizedEulerian_succ, ih, derivative_mul, derivative_X]
-    simp only [one_mul, map_add, map_natCast, map_one, map_ofNat]
-    ring
-
-/-- The type `B` Eulerian polynomials are the generalized Eulerian polynomials at `c = 2`. -/
-theorem typeBEulerian_eq_generalizedEulerian_two (n : ℕ) :
-    typeBEulerian n = generalizedEulerian 2 n := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-    rw [typeBEulerian_succ, generalizedEulerian_succ, ih, typeBEulerianCoeffA,
-      typeBEulerianCoeffB]
-
-/-- For `c > 0`, consecutive generalized Eulerian polynomials interlace. -/
-theorem interlaces_generalizedEulerian_succ {c : ℝ} (hc : 0 < c) (n : ℕ) :
-    Interlaces (generalizedEulerian c n) (generalizedEulerian c (n + 1)) := by
-  obtain ⟨hdeg, hnonneg, hsplit⟩ := generalizedEulerian_invariants hc n
-  have hpos : ∀ k, HasPosLeadingCoeff (generalizedEulerian c k) := fun k ↦ by
-    simp [HasPosLeadingCoeff, (generalizedEulerian_monic c k).leadingCoeff]
-  have hdeg' := generalizedEulerian_natDegree c (n + 1)
-  have hstep : StrictInterl (generalizedEulerian c n) (generalizedEulerian c (n + 1)) := by
-    have hpos' := hpos (n + 1)
-    have hdeg'' := hdeg'
-    rw [generalizedEulerian_succ] at hpos' hdeg'' ⊢
-    refine MaWang.strictInterl_derivative_of_nonpos_of_splits hsplit (by lia) (by lia) hpos'
-      (hpos n) fun r hr ↦ ?_
-    have hr0 : r ≤ 0 :=
-      roots_nonpos_of_hasNonnegCoeffs hnonneg r ((mem_roots (hpos n).ne_zero).mpr hr)
-    simp only [eval_mul, eval_C, eval_X, eval_sub, eval_one]
-    exact mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos hc.le hr0)
-      (by linarith)
-  exact hstep.toInterlaces (by rw [hdeg, hdeg'])
 
 end Eulerian
 end Challenges

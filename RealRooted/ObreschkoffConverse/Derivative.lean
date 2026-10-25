@@ -331,5 +331,15 @@ theorem derivative_strictInterl_of_strictInterl_succDegree
     (derivative_interl_of_strictInterl_succDegree h hdeg).toStrictInterl_of_ne
       hfder_ne hgder_ne
 
+/-- Differentiation preserves proper position when the left polynomial is
+nonconstant. -/
+theorem StrictInterl.derivative {f g : ℝ[X]} (h : StrictInterl f g)
+    (hf : f.natDegree ≠ 0) :
+    StrictInterl f.derivative g.derivative := by
+  have hg : g.natDegree ≠ 0 := by
+    rcases h.natDegree_eq_or_eq_succ with hfg | hfg <;> lia
+  exact (derivativePreservesInterl h.toInterl).toStrictInterl_of_ne
+    (derivative_ne_zero.mpr hf) (derivative_ne_zero.mpr hg)
+
 end
 end RealRooted

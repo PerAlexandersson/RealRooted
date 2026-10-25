@@ -33,7 +33,8 @@ name = "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinatio
 label = "A real-rooted pencil gives interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_iff_interlaces_or_reverse"
+name = "RealRooted.allComboRealRooted_iff_interl_or_reverse"
+module = "RealRooted.OperatorPreservesInterlacing"
 label = "Obreschkoff’s theorem as an equivalence"
 headline = true
 
@@ -109,26 +110,6 @@ theorem interlaces_or_reverse_of_allCombinationsRealRooted {f g : ℝ[X]}
     (hall : AllComboRealRooted f g) :
     Interl f g ∨ Interl g f :=
   RealRooted.interl_or_reverse_of_allComboRealRooted hall
-
-private theorem allComboRealRooted_of_interl {f g : ℝ[X]} (hf : f.Splits)
-    (hg : g.Splits) (hfg : Interl f g) : AllComboRealRooted f g := by
-  rcases hfg with rfl | rfl | hfg
-  · intro α β
-    simpa using hg.C_mul β
-  · intro α β
-    simpa using hf.C_mul α
-  · exact RealRooted.allComboRealRooted_of_strictInterl hfg
-
-/-- Obreschkoff's theorem: two polynomials, each zero or real-rooted, generate
-a real-rooted pencil if and only if they interlace in one of the two
-orientations. -/
-theorem allCombinationsRealRooted_iff_interlaces_or_reverse {f g : ℝ[X]}
-    (hf : f.Splits) (hg : g.Splits) :
-    AllComboRealRooted f g ↔ Interl f g ∨ Interl g f := by
-  refine ⟨interlaces_or_reverse_of_allCombinationsRealRooted, ?_⟩
-  rintro (hfg | hgf)
-  · exact allComboRealRooted_of_interl hf hg hfg
-  · exact (allComboRealRooted_of_interl hg hf hgf).comm
 
 end Obreschkoff
 end Challenges

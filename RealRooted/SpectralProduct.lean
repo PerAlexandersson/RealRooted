@@ -524,6 +524,20 @@ theorem spectralProduct_entrywise_nonneg {N : ℕ}
   exact polynomialDividedDifference_adjugate_charmatrix_nonneg
     A hA hentry hsimple k i j
 
+/-- Initial products of the linear factors determined by the increasing
+eigenvalues of a symmetric entrywise nonnegative matrix are entrywise
+nonnegative. -/
+theorem aeval_prod_sub_increasingEigenvalues_nonneg {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (hA : A.IsHermitian)
+    (hentry : ∀ i j, 0 ≤ A i j) (hsimple : StrictAnti (sortedEigenvalues A hA))
+    (k : Fin (N + 1)) (i j : Fin (N + 1)) :
+    0 ≤ aeval A (∏ l : Fin k,
+      (X - C (increasingEigenvalues A hA ⟨l, l.isLt.trans k.isLt⟩))) i j := by
+  have h := spectralProduct_entrywise_nonneg A hA hentry hsimple k i j
+  rw [spectralInitialRoots, List.map_ofFn] at h
+  rw [← List.prod_ofFn, map_list_prod, List.map_ofFn]
+  simpa [Function.comp_def, Algebra.algebraMap_eq_smul_one] using h
+
 /-- The characteristic polynomial of a real symmetric matrix is the ordered
 product of its decreasing eigenvalues. -/
 theorem charpoly_eq_rootsProduct_sortedEigenvalues {N : ℕ}

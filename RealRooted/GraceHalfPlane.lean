@@ -434,4 +434,13 @@ theorem grace_apolarity_upperHalf {n : Nat} {b : ℝ} {f g : ℂ[X]}
     simp only [mem_upperHalf, Complex.neg_im]
     linarith
 
+/-- If two degree-`n` binomial lifts are apolar and every root of the first
+lies in a closed upper half-plane, then the second has a root there. -/
+theorem exists_isRoot_le_im_of_areApolar {n : ℕ} {b : ℝ} {f g : ℂ[X]}
+    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
+    (hap : AreApolar n f g) (hroots : ∀ z, (binomialLift n f).IsRoot z → b ≤ z.im) :
+    ∃ z, b ≤ z.im ∧ (binomialLift n g).IsRoot z := by
+  obtain ⟨z, hz, hmem⟩ := grace_apolarity_upperHalf hf hg hap hroots
+  exact ⟨z, hmem, hz⟩
+
 end RealRooted

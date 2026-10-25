@@ -248,4 +248,31 @@ theorem IsTotallyNonneg.map_interlacingSeq_of_posLeadingCoeff
         HasPosLeadingCoeff p ∧ p.Splits :=
   hA.toRect.map_interlacingSeq_of_posLeadingCoeff fs hfs_len hfs_real hfs
 
+/-- A totally nonnegative rectangular matrix maps a positive-leading
+interlacing family to another such family after its zero rows are removed. -/
+theorem IsTotallyNonnegRect.isInterlacingSeq_filter_mulVec
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
+    (hA : A.IsTotallyNonnegRect) (f : Fin n → ℝ[X])
+    (hf_real : ∀ j, HasPosLeadingCoeff (f j) ∧ (f j).Splits)
+    (hf : IsInterlacingSeq (List.ofFn f)) :
+    IsInterlacingSeq ((List.ofFn fun i => ∑ j, A i j • f j).filter (· ≠ 0)) ∧
+      ∀ i, ∑ j, A i j • f j ≠ 0 →
+        HasPosLeadingCoeff (∑ j, A i j • f j) ∧ (∑ j, A i j • f j).Splits := by
+  have hrow : tnnMatrixAction A (List.ofFn f) = List.ofFn fun i => ∑ j, A i j • f j := by
+    apply List.ext_get
+    · simp
+    · intro k _ hk
+      have hzip : ((List.ofFn fun j => C (A ⟨k, by simpa using hk⟩ j)).zipWith (· * ·)
+          (List.ofFn f)) = List.ofFn fun j => A ⟨k, by simpa using hk⟩ j • f j := by
+        apply List.ext_get
+        · simp
+        · intro l _ _
+          simp [Polynomial.smul_eq_C_mul]
+      simp [tnnMatrixAction, matPolyAction, constantPolynomialMatrix, hzip, List.sum_ofFn]
+  obtain ⟨hseq, hreal⟩ := hA.map_interlacingSeq_of_posLeadingCoeff (List.ofFn f) (by simp)
+    (by simpa using hf_real) hf
+  rw [hrow] at hseq hreal
+  exact ⟨hseq, fun i hi ↦ hreal _ (List.mem_filter.mpr ⟨List.mem_ofFn.mpr ⟨i, rfl⟩,
+    by simpa using hi⟩)⟩
+
 end Matrix

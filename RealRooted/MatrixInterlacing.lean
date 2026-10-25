@@ -866,6 +866,38 @@ theorem mem_nondegeneratePreservingMatrices_iff (M : Atomic2x2Matrix) :
   simp [nondegeneratePreserving, IsNondegenerate,
     preservesInterlacing_iff_mem_preserving, and_comm]
 
+/-- There are `3 ^ 4 = 81` atomic matrices. -/
+theorem card : Fintype.card Atomic2x2Matrix = 81 := by
+  rw [← Finset.card_univ]
+  exact card_all
+
+/-- Exactly 56 atomic matrices have no zero row and two distinct rows. -/
+theorem ncard_isNondegenerate :
+    {M : Atomic2x2Matrix | M.IsNondegenerate}.ncard = 56 := by
+  rw [← card_nondegenerate, ← Set.ncard_coe_finset]
+  congr 1
+  ext M
+  simp [nondegenerate, all, IsNondegenerate]
+
+/-- Exactly 40 atomic matrices preserve interlacing. -/
+theorem ncard_preservesInterlacing :
+    {M : Atomic2x2Matrix | M.PreservesInterlacing}.ncard = 40 := by
+  rw [← card_preserving, ← Set.ncard_coe_finset]
+  congr 1
+  ext M
+  simp [preservesInterlacing_iff_mem_preserving]
+
+/-- Exactly 18 atomic matrices are both nondegenerate and
+interlacing-preserving. -/
+theorem ncard_isNondegenerate_and_preservesInterlacing :
+    {M : Atomic2x2Matrix | M.IsNondegenerate ∧ M.PreservesInterlacing}.ncard = 18 := by
+  rw [← card_nondegeneratePreserving,
+    nondegeneratePreserving_eq_nondegeneratePreservingMatrices,
+    ← Set.ncard_coe_finset]
+  congr 1
+  ext M
+  simp [mem_nondegeneratePreservingMatrices_iff]
+
 end Atomic2x2Matrix
 
 end RealRooted
