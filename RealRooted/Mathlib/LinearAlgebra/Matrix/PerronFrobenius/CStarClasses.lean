@@ -52,11 +52,6 @@ lemma norm_sq_eq_re_sq_add_im_sq (z : ℂ) : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 :
   rw [Complex.sq_norm]; rw [← normSq_add_mul_I]
   simp [normSq_apply]
 
-/-- The real part of a sum is the sum of the real parts. -/
-lemma RCLike.re_sum {F : Type*} [RCLike F] {v : ι → F} {s : Finset ι} :
-    RCLike.re (∑ i ∈ s, v i) = ∑ i ∈ s, RCLike.re (v i) :=
-  map_sum RCLike.re v s
-
 /-- A complex number whose norm equals its real part is a non-negative real number. -/
 lemma eq_re_of_norm_eq (h : ‖z‖ = z.re) : z = z.re := by
   have h_re_nonneg : z.re ≥ 0 := by

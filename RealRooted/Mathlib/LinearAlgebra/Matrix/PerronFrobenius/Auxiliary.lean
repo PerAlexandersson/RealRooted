@@ -50,26 +50,6 @@ Prefer Mathlib statements when they already exist; this file keeps only what dow
 -/
 
 /-!
-## Helper Lemmas for Continuity
--/
-
--- Eventually to open set conversion
-theorem eventually_to_open {α : Type*} [TopologicalSpace α] {p : α → Prop} {a : α}
-    (h : ∀ᶠ x in 𝓝 a, p x) :
-    ∃ (U : Set α), IsOpen U ∧ a ∈ U ∧ ∀ x ∈ U, p x := by
-  rcases mem_nhds_iff.mp h with ⟨U, hU_open, haU, hU⟩
-  simp_all only
-  apply Exists.intro
-  · apply And.intro
-    on_goal 2 => apply And.intro
-    on_goal 2 => {exact hU
-    }
-    · simp_all only
-    · intro x a_1
-      apply hU_open
-      simp_all only
-
-/-!
 ## Matrix & Vector Operations
 -/
 
@@ -173,13 +153,6 @@ lemma dotProduct_pos_of_pos_of_nonneg_ne_zero {n : Type*} [Fintype n]
   have hi_mem : i ∈ Finset.univ := Finset.mem_univ i
   have h_pos : 0 < u i * v i := mul_pos (hu_pos i) hi
   exact Finset.sum_pos' h_nonneg ⟨i, hi_mem, h_pos⟩
-
-/-- Dot‐product is linear in the first argument. -/
-lemma dotProduct_smul_left {n : Type*} [Fintype n]
-    (c : ℝ) (v w : n → ℝ) :
-    (c • v) ⬝ᵥ w = c * (v ⬝ᵥ w) := by
-  unfold dotProduct
-  simp [smul_eq_mul, Finset.mul_sum, mul_comm, mul_left_comm]
 
 -- This could be a general lemma in the Matrix API
 lemma diagonal_mulVec_ones [DecidableEq n] [Fintype n] (d : n → ℝ) :
