@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Coefficients and degree of `p.comp (-X)`
@@ -11,6 +13,8 @@ import Mathlib.Algebra.Polynomial.Degree.Lemmas
 Companions of `Polynomial.degree_comp_neg_X`: the coefficients of `p.comp (-X)` are those of
 `p` with alternating signs, and the natural degree is unchanged.
 -/
+
+@[expose] public section
 
 namespace Polynomial
 

@@ -3,10 +3,12 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
-import Mathlib.Combinatorics.Quiver.Path
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+public import Mathlib.Combinatorics.Quiver.Path
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 
 /-!
 # Irreducible nonnegative matrices
@@ -18,6 +20,8 @@ Ported into RealRooted from https://github.com/or4nge19/MCMC
 adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Irreducible.lean
 -/
+
+@[expose] public section
 
 open Quiver.Path
 namespace Matrix

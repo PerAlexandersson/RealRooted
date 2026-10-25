@@ -3,8 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.Tactic.Ring
+public import Mathlib.Order.Filter.AtTopBot.Group
+public import Mathlib.Order.Filter.Defs
+public import Mathlib.Order.Filter.AtTopBot.Field
 
 /-!
 # Ordered quadratic inequalities
@@ -13,6 +18,8 @@ This file supplements `Mathlib.Algebra.QuadraticDiscriminant` with elementary
 ordered-ring consequences of global nonnegativity and nonpositive
 discriminant.
 -/
+
+@[expose] public section
 
 open Filter
 

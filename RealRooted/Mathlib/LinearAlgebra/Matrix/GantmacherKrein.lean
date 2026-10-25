@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.LinearAlgebra.Eigenspace.Zero
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+module
+
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.LinearAlgebra.Eigenspace.Zero
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 
 /-!
 # Gantmacher-Krein for matrices with primitive compounds
@@ -33,6 +35,8 @@ Hence every partial product is real and positive, and
 different selections with the same Perron-root product in a compound.  This
 contradicts algebraic simplicity of that compound's Perron root.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

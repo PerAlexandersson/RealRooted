@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Ordinary homogenization of multivariate polynomials
@@ -14,6 +16,8 @@ This file defines total-degree homogenization by adjoining one distinguished
 variable. It also records the algebraic identities needed by multivariate
 stability arguments.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

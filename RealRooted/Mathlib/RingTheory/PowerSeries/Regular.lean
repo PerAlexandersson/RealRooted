@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Regular formal power series
@@ -11,6 +13,8 @@ import Mathlib.RingTheory.PowerSeries.WellKnown
 This Mathlib-shaped shim records a coefficientwise regularity criterion for
 formal power series over a commutative ring.
 -/
+
+@[expose] public section
 
 open BigOperators
 

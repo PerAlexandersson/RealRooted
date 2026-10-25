@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Zeros of entire functions of exponential type
@@ -21,6 +23,8 @@ the convergence exponent of the zero sequence is at most one.
   multiplicity (`analyticOrderAt f w = #{k | z k = w}` for all `w`), then
   `∑ k, ‖z k‖ ^ (-(1 + ε))` converges for every `ε > 0`.
 -/
+
+@[expose] public section
 
 open Complex Filter Metric Topology
 /- `divisor` in the statements below refers to `MeromorphicOn.divisor`. -/

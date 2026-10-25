@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Algebra.MvPolynomial.CommRing
-import Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+module
+
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 
 /-!
 # Diagonal restriction of a multivariate polynomial
@@ -15,6 +17,8 @@ This file defines the univariate restriction obtained by identifying every
 multivariate coordinate with `X`.  It proves the finite-variable chain rule
 and the corresponding diagonal formula for the Euler operator.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

@@ -3,14 +3,18 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Nat.Choose.Cast
-import Mathlib.Tactic
+module
+
+public import Mathlib.Data.Nat.Choose.Cast
+public import Mathlib.Tactic
 
 /-!
 # Extra lemmas about casts of binomial coefficients
 
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Choose.Cast`.
 -/
+
+@[expose] public section
 
 namespace Nat
 

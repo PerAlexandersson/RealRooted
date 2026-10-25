@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Entire functions with polynomially bounded real part are polynomials
@@ -30,6 +32,8 @@ bound.
 * `Complex.poly_of_mean_pos_re_le`: an entire function with `posMean g r ≤ A * (1 + r) ^ k` for
   all `r > 0` agrees with a polynomial of natural degree at most `k`.
 -/
+
+@[expose] public section
 
 section Coeff_part
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 
 /-!
@@ -23,6 +25,8 @@ radius / Gelfand formula).  The uniqueness part follows from uniqueness of limit
 
 The proof was found by Aristotle (Harmonic).
 -/
+
+@[expose] public section
 
 open Filter Topology
 

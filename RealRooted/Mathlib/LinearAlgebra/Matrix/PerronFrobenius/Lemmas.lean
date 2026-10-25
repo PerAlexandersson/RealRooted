@@ -3,9 +3,11 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import Mathlib.Data.Matrix.Mul
-import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
+module
+
+public import Mathlib.Data.Matrix.Mul
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
 
 /-!
 # Perron-Frobenius support lemmas
@@ -50,6 +52,8 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
+
+@[expose] public section
 
 namespace Pi
 

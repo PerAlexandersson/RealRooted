@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.MvPolynomial.Degrees
+module
+
+public import Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # Additional total-degree bounds
@@ -11,6 +13,8 @@ import Mathlib.Algebra.MvPolynomial.Degrees
 This file contains Mathlib-shaped compatibility lemmas for multivariate
 polynomial degrees.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

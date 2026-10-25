@@ -139,7 +139,7 @@ variable {R : Type*} [CommRing R]
 open scoped BigOperators
 
 /-- Adjoin a final column and a final row to a square matrix. -/
-def border {q : ℕ} (A : Matrix (Fin q) (Fin q) R)
+@[expose] def border {q : ℕ} (A : Matrix (Fin q) (Fin q) R)
     (b x : Fin q → R) (a : R) : Matrix (Fin (q + 1)) (Fin (q + 1)) R :=
   fun i j ↦ Fin.lastCases (motive := fun _ ↦ Fin (q + 1) → R)
     (Fin.snoc x a) (fun k ↦ Fin.snoc (A k) (b k)) i j

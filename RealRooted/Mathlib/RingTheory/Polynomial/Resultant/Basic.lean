@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.FieldTheory.Separable
-import Mathlib.RingTheory.Polynomial.Resultant.Basic
+module
+
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 
 /-!
 # Discriminants and separability
@@ -15,6 +17,8 @@ resultant `resultant f f.derivative` through `Polynomial.resultant_deriv`, paddi
 of the derivative with `Polynomial.resultant_add_right_deg`, so no characteristic assumption
 is needed.
 -/
+
+@[expose] public section
 
 namespace Polynomial
 

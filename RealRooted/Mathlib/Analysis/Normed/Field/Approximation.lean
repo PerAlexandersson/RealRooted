@@ -3,11 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Analysis.Polynomial.CauchyBound
-import Mathlib.Topology.Connected.Clopen
-import Mathlib.Topology.MetricSpace.Thickening
+module
+
+public import Mathlib.Analysis.Normed.Field.Approximation
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.Topology.Connected.Clopen
+public import Mathlib.Topology.MetricSpace.Thickening
 
 /-!
 # One-sided continuity of polynomial roots
@@ -15,6 +17,8 @@ import Mathlib.Topology.MetricSpace.Thickening
 This file adds a coefficient-neighborhood form of root continuity intended
 for upstreaming to `Mathlib.Analysis.Normed.Field.Approximation`.
 -/
+
+@[expose] public section
 
 open Polynomial
 open Filter Topology

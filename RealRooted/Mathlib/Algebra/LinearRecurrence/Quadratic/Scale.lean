@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.Tactic.Ring
 
 /-!
 # Multiplicative scaling of quadratic recurrences
@@ -12,6 +14,8 @@ import Mathlib.Tactic.Ring
 This division-free rescaling works over every commutative semiring, including
 the zero scale.  The field-valued inverse scaling belongs in `Rescale`.
 -/
+
+@[expose] public section
 
 namespace LinearRecurrence
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.PowerSeries.PiTopology
+module
+
+public import Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Coefficientwise limits of powers of power series
@@ -11,6 +13,8 @@ import Mathlib.RingTheory.PowerSeries.PiTopology
 This file adds a small compatibility lemma for the product topology on power
 series. It is stated in the namespace of the corresponding Mathlib API.
 -/
+
+@[expose] public section
 
 open Filter Topology
 open scoped PowerSeries.WithPiTopology

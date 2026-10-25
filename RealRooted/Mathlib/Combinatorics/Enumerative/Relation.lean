@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Fintype.Order
+module
+
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Data.Fintype.Order
 
 /-!
 # Ascent statistics of finite relations
@@ -13,6 +15,8 @@ This file defines the number of related pairs that increase in the ambient
 linear order. Directed graphs and other finite relations can share this
 statistic without introducing an object-specific copy.
 -/
+
+@[expose] public section
 
 open Finset
 

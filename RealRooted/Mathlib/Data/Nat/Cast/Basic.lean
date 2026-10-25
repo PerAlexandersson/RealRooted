@@ -3,13 +3,17 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Nat.Cast.Basic
+module
+
+public import Mathlib.Data.Nat.Cast.Basic
 
 /-!
 # Extra lemmas about casts of natural numbers
 
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Cast.Basic`.
 -/
+
+@[expose] public section
 
 namespace Nat
 

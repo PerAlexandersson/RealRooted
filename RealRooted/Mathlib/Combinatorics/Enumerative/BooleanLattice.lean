@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Module.BigOperators
-import Mathlib.Data.Nat.Choose.Sum
+module
+
+public import Mathlib.Algebra.Module.BigOperators
+public import Mathlib.Data.Nat.Choose.Sum
 
 /-!
 # Möbius inversion on a finite Boolean lattice
@@ -12,6 +14,8 @@ import Mathlib.Data.Nat.Choose.Sum
 This module packages upper-set summation and its inversion over the subsets
 of a finite ambient set.
 -/
+
+@[expose] public section
 
 namespace Finset
 

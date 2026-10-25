@@ -3,11 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.BigOperators
-import Mathlib.Algebra.Polynomial.Eval.Defs
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.GroupTheory.Perm.Fin
-import Mathlib.Tactic.IntervalCases
+module
+
+public import Mathlib.Algebra.Polynomial.BigOperators
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.GroupTheory.Perm.Fin
+public import Mathlib.Tactic.IntervalCases
 
 /-!
 # Generating polynomials of finite statistics
@@ -16,6 +18,8 @@ For a finite set and a natural-valued statistic, `Finset.genPoly` records the
 distribution of the statistic as a polynomial.  This is deliberately stated
 in the `Finset` namespace so that the definition is suitable for Mathlib.
 -/
+
+@[expose] public section
 
 open scoped BigOperators Polynomial
 open Polynomial
@@ -152,8 +156,7 @@ example :
       ((2 + 3 * X + X ^ 3 : ℕ[X]).coeff k) =
         (if k = 0 then 2 else 0) + 3 * (if k = 1 then 1 else 0) +
           (if k = 3 then 1 else 0) := by
-    change (Nat.cast 2 : ℕ[X]).coeff k + (3 * X).coeff k + (X ^ 3).coeff k = _
-    rw [coeff_natCast_ite]
+    rw [coeff_add, coeff_add, ← Nat.cast_ofNat (R := ℕ[X]) (n := 2), coeff_natCast_ite]
     simp [coeff_X, coeff_X_pow, eq_comm]
   apply Polynomial.ext
   intro k

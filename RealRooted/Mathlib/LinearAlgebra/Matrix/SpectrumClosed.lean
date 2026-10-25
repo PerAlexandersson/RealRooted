@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 
 /-!
 # Closed spectral conditions pass to matrix limits
@@ -25,6 +27,8 @@ factorization of a monic polynomial over `ℂ` gives
 `(charpoly (A k)).eval μ = det (scalar μ - A k) → det (scalar μ - A₀) = 0`
 by continuity of the determinant in the entries — a contradiction.
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology Finset
 

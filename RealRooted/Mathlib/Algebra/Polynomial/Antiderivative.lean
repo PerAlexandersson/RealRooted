@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Eval.Defs
-import Mathlib.Algebra.Algebra.Rat
-import Mathlib.Tactic.LinearCombination
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Algebra.Rat
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # Antiderivatives and definite integrals of polynomials
@@ -24,6 +26,8 @@ polynomial ring.
 * `integral_mul_derivative`: integration by parts.
 * `integral_X_pow`: `∫_a^b X^m = (b^(m+1) - a^(m+1)) / (m + 1)`, with `invSucc R m = 1/(m+1)`.
 -/
+
+@[expose] public section
 
 namespace Polynomial
 

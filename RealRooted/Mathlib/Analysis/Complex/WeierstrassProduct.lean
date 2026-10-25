@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Weierstrass products of genus zero and one
@@ -26,6 +28,8 @@ factor away from the zeros.
   `HasProdLocallyUniformlyOn (fun k w => 1 - w / z k) F univ` and prescribed zeros.
 * `Complex.exists_entire_prod_genus_one`: the same for the factors `E₁ (w / z k)`.
 -/
+
+@[expose] public section
 
 open Complex Filter Topology
 

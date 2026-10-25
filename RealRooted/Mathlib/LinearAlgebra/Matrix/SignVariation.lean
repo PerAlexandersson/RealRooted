@@ -560,7 +560,7 @@ namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
-def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
+@[expose] def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
     (x : Fin n → R) : ℕ :=
   (List.ofFn x).signVariations
 
@@ -1166,7 +1166,7 @@ lemma signVariations_le_succ_of_natAdd_nonpos {m n : ℕ}
       (fun i : Fin n => x (Fin.natAdd m i)) hright
 
 /-- Every consecutive pair of entries has opposite strict signs. -/
-def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
+@[expose] def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
   ∀ i : Fin n, x i.castSucc * x i.succ < 0
 
 lemma strictlyAlternates_iff {n : ℕ} {x : Fin (n + 1) → ℝ} :

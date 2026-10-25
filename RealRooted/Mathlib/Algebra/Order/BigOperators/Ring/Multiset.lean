@@ -3,11 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # Ordered multiset product inequalities
@@ -15,6 +18,8 @@ import Mathlib.Tactic.Linarith
 Additional upstream-shaped inequalities for products of terms in the unit
 interval.
 -/
+
+@[expose] public section
 
 namespace Multiset
 

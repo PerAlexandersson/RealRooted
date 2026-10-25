@@ -3,14 +3,16 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import Mathlib.Tactic
-import Mathlib.Data.List.Infix
-import Mathlib.Data.List.Nodup
-import Mathlib.Data.Nat.Cast.Order.Ring
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Analysis.Normed.Ring.Lemmas
-import Mathlib.Algebra.Order.Star.Int
-import Mathlib.Data.List.Basic
+module
+
+public import Mathlib.Tactic
+public import Mathlib.Data.List.Infix
+public import Mathlib.Data.List.Nodup
+public import Mathlib.Data.Nat.Cast.Order.Ring
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Analysis.Normed.Ring.Lemmas
+public import Mathlib.Algebra.Order.Star.Int
+public import Mathlib.Data.List.Basic
 
 /-!
 # Auxiliary list lemmas
@@ -36,6 +38,8 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Data/List.lean
 -/
+
+@[expose] public section
 
 namespace List
 open List

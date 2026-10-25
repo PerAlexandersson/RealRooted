@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.RingDivision
-import Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import Mathlib.Algebra.Polynomial.RingDivision
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Chow polynomial operator
@@ -13,6 +15,8 @@ This module packages the quotient operator occurring in the defining recursion
 for Chow and Chow-derangement polynomials.  It is stated over a commutative
 ring, independently of any matrix or positivity assumptions.
 -/
+
+@[expose] public section
 
 open Polynomial
 

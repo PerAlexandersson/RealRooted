@@ -3,18 +3,20 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Fin.Rev
-import Mathlib.Data.List.FinRange
-import Mathlib.Data.List.Chain
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Data.Finset.Filter
-import Mathlib.Data.Finset.Image
-import Mathlib.Data.Finset.Range
-import Mathlib.Data.Finset.Union
-import Mathlib.Tactic.Linarith
-import Mathlib.Data.Fin.Tuple.Basic
-import Mathlib.Data.Fintype.Basic
+module
+
+public import Mathlib.Data.Fin.Rev
+public import Mathlib.Data.List.FinRange
+public import Mathlib.Data.List.Chain
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Data.Finset.Filter
+public import Mathlib.Data.Finset.Image
+public import Mathlib.Data.Finset.Range
+public import Mathlib.Data.Finset.Union
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Data.Fin.Tuple.Basic
+public import Mathlib.Data.Fintype.Basic
 
 /-!
 # Descents, ascents, and the major index of a word
@@ -28,21 +30,22 @@ All statistics in this file are computable `Finset ℕ`s (and their cardinalitie
 or sums), so small examples can be checked by `decide`.
 -/
 
+@[expose] public section
+
 namespace List
 
 variable {α β : Type*} [LinearOrder α] [LinearOrder β]
 
-private theorem lt_length_of_succ_lt {i n : ℕ} (h : i + 1 < n) : i < n :=
-  Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
-
-private def isDescent (l : List α) (i : ℕ) : Bool :=
+/-- Whether position `i` of `l` is a descent, `l[i + 1] < l[i]`. -/
+def isDescent (l : List α) (i : ℕ) : Bool :=
   if h : i + 1 < l.length then
-    decide (l[i + 1]'h < l[i]'(lt_length_of_succ_lt h))
+    decide (l[i + 1]'h < l[i]'(Nat.lt_of_succ_lt h))
   else false
 
-private def isAscent (l : List α) (i : ℕ) : Bool :=
+/-- Whether position `i` of `l` is an ascent, `l[i] < l[i + 1]`. -/
+def isAscent (l : List α) (i : ℕ) : Bool :=
   if h : i + 1 < l.length then
-    decide (l[i]'(lt_length_of_succ_lt h) < l[i + 1]'h)
+    decide (l[i]'(Nat.lt_of_succ_lt h) < l[i + 1]'h)
   else false
 
 /-- The zero-based descent positions of a word. -/
@@ -65,7 +68,7 @@ def majorIndex (l : List α) : ℕ := ∑ i ∈ l.descentSet, (i + 1)
 /-- Membership in `descentSet`, in terms of adjacent list entries. -/
 @[simp] theorem mem_descentSet {l : List α} {i : ℕ} :
     i ∈ l.descentSet ↔
-      ∃ h : i + 1 < l.length, l[i + 1]'h < l[i]'(lt_length_of_succ_lt h) := by
+      ∃ h : i + 1 < l.length, l[i + 1]'h < l[i]'(Nat.lt_of_succ_lt h) := by
   change i ∈ (Finset.range l.length).filter (fun j => isDescent l j) ↔ _
   rw [Finset.mem_filter, Finset.mem_range]
   constructor
@@ -76,13 +79,13 @@ def majorIndex (l : List α) : ℕ := ∑ i ∈ l.descentSet, (i + 1)
     · simp [isDescent, h] at hi
   · rintro ⟨h, hi⟩
     constructor
-    · exact lt_length_of_succ_lt h
+    · exact Nat.lt_of_succ_lt h
     · simpa [isDescent, h] using hi
 
 /-- Membership in `ascentSet`, in terms of adjacent list entries. -/
 @[simp] theorem mem_ascentSet {l : List α} {i : ℕ} :
     i ∈ l.ascentSet ↔
-      ∃ h : i + 1 < l.length, l[i]'(lt_length_of_succ_lt h) < l[i + 1]'h := by
+      ∃ h : i + 1 < l.length, l[i]'(Nat.lt_of_succ_lt h) < l[i + 1]'h := by
   change i ∈ (Finset.range l.length).filter (fun j => isAscent l j) ↔ _
   rw [Finset.mem_filter, Finset.mem_range]
   constructor
@@ -93,7 +96,7 @@ def majorIndex (l : List α) : ℕ := ∑ i ∈ l.descentSet, (i + 1)
     · simp [isAscent, h] at hi
   · rintro ⟨h, hi⟩
     constructor
-    · exact lt_length_of_succ_lt h
+    · exact Nat.lt_of_succ_lt h
     · simpa [isAscent, h] using hi
 
 /-- Every descent position is a position before the last entry. -/

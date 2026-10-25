@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The univariate Szász estimate
@@ -24,6 +26,8 @@ for `∑ ‖ξ j‖`.
 * `Complex.sum_norm_le_sqrt_of_im_nonpos`: a bound on `∑ j, ‖ξ j‖` by `√k` times the square root of
   the same right-hand side.
 -/
+
+@[expose] public section
 
 open Complex
 
