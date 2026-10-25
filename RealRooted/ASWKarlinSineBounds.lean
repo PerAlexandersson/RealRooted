@@ -37,12 +37,10 @@ lemma signVariations_aswKarlinSineVector_eq_zero_of_last_le_pi
     {θ : ℝ} {degree order blocks : ℕ} (hθ : 0 ≤ θ)
     (hlast : ((blocks * (degree + order - 1) : ℕ) : ℝ) * θ ≤ Real.pi) :
     Fin.signVariations (aswKarlinSineVector θ degree order blocks) = 0 := by
-  have h := signVariations_sin_mul_eq_zero_of_last_le_pi
-    (N := blocks * (degree + order - 1)) hθ hlast
   change Fin.signVariations
       (fun j : Fin (blocks * (degree + order - 1) + 1) =>
         Real.sin ((j : ℕ) * θ)) = 0
-  exact h
+  exact signVariations_sin_mul_eq_zero_of_last_le_pi hθ hlast
 
 /-- If an explicit cut separates nonnegative sampled sine entries from
 nonpositive sampled sine entries, then there is at most one sign variation. -/
@@ -160,49 +158,39 @@ lemma signVariations_sin_mul_lt_of_last_le_nat_mul_pi
                       Real.sin ((j : ℕ) * θ)) ≤
                   Fin.signVariations
                     (fun j : Fin (q + 1) => Real.sin ((j : ℕ) * θ)) + 1 := by
+              have hq_lt :
+                  ((k : ℝ) * Real.pi) / θ < ((q + 1 : ℕ) : ℝ) := by
+                simpa [q, Nat.cast_add, Nat.cast_one] using
+                  Nat.lt_floor_add_one (((k : ℝ) * Real.pi) / θ)
+              have hbase : (k : ℝ) * Real.pi < ((q + 1 : ℕ) : ℝ) * θ := by
+                nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
+              have hlow (i : Fin (N + 1 - (q + 1))) :
+                  (k : ℝ) * Real.pi ≤
+                    ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ := by
+                have hbase_le :
+                    ((q + 1 : ℕ) : ℝ) ≤ ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
+                  exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
+                simpa [Fin.natAdd] using
+                  hbase.le.trans (mul_le_mul_of_nonneg_right hbase_le hθ0)
+              have hhigh (i : Fin (N + 1 - (q + 1))) :
+                  ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ ≤
+                    ((k + 1 : ℕ) : ℝ) * Real.pi := by
+                have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
+                  have hi := i.isLt
+                  dsimp [Fin.natAdd]
+                  lia
+                have hindex_cast : ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
+                  exact_mod_cast hindex
+                exact (mul_le_mul_of_nonneg_right hindex_cast hθ0).trans hlast
               rcases Nat.even_or_odd k with hk_even | hk_odd
               · apply Fin.signVariations_le_succ_of_natAdd_nonneg
                 intro i
                 apply Real.sin_nonneg_of_even_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                  hk_even
-                · have hq_lt :
-                      ((k : ℝ) * Real.pi) / θ < ((q + 1 : ℕ) : ℝ) := by
-                    simpa [q, Nat.cast_add, Nat.cast_one] using
-                      Nat.lt_floor_add_one (((k : ℝ) * Real.pi) / θ)
-                  have hbase : (k : ℝ) * Real.pi < ((q + 1 : ℕ) : ℝ) * θ := by
-                    nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
-                  have hbase_le :
-                      ((q + 1 : ℕ) : ℝ) ≤ ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
-                    exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
-                  exact hbase.le.trans (mul_le_mul_of_nonneg_right hbase_le hθ0)
-                · have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
-                    have hi := i.isLt
-                    dsimp [Fin.natAdd]
-                    lia
-                  have hindex_cast : ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
-                    exact_mod_cast hindex
-                  exact (mul_le_mul_of_nonneg_right hindex_cast hθ0).trans hlast
+                  hk_even (hlow i) (hhigh i)
               · apply Fin.signVariations_le_succ_of_natAdd_nonpos
                 intro i
                 apply Real.sin_nonpos_of_odd_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                  hk_odd
-                · have hq_lt :
-                      ((k : ℝ) * Real.pi) / θ < ((q + 1 : ℕ) : ℝ) := by
-                    simpa [q, Nat.cast_add, Nat.cast_one] using
-                      Nat.lt_floor_add_one (((k : ℝ) * Real.pi) / θ)
-                  have hbase : (k : ℝ) * Real.pi < ((q + 1 : ℕ) : ℝ) * θ := by
-                    nlinarith [mul_div_cancel₀ ((k : ℝ) * Real.pi) hθpos.ne']
-                  have hbase_le :
-                      ((q + 1 : ℕ) : ℝ) ≤ ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
-                    exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
-                  exact hbase.le.trans (mul_le_mul_of_nonneg_right hbase_le hθ0)
-                · have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
-                    have hi := i.isLt
-                    dsimp [Fin.natAdd]
-                    lia
-                  have hindex_cast : ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
-                    exact_mod_cast hindex
-                  exact (mul_le_mul_of_nonneg_right hindex_cast hθ0).trans hlast
+                  hk_odd (hlow i) (hhigh i)
             have hsum : q + 1 + (N + 1 - (q + 1)) = N + 1 :=
               Nat.add_sub_of_le hcut
             rw [hsum] at happend
@@ -342,57 +330,40 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
                         ((q + 1 : ℕ) : ℝ) * θ := by
                     simpa [div_mul_cancel₀ _ hθpos.ne'] using hmul
                   linarith
+                have hlow (i : Fin (N + 1 - (q + 1))) :
+                    (k : ℝ) * Real.pi ≤
+                      phase + ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ := by
+                  have hbase_le :
+                      ((q + 1 : ℕ) : ℝ) ≤ ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
+                    exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
+                  have hangle_ge :
+                      phase + ((q + 1 : ℕ) : ℝ) * θ ≤
+                        phase + ((q + 1 + (i : ℕ) : ℕ) : ℝ) * θ := by
+                    nlinarith [mul_le_mul_of_nonneg_right hbase_le hθpos.le]
+                  simpa [Fin.natAdd] using hbase.le.trans hangle_ge
+                have hhigh (i : Fin (N + 1 - (q + 1))) :
+                    phase + ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ ≤
+                      ((k + 1 : ℕ) : ℝ) * Real.pi := by
+                  have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
+                    have hi := i.isLt
+                    dsimp [Fin.natAdd]
+                    lia
+                  have hindex_cast : ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
+                    exact_mod_cast hindex
+                  have hangle_le_last :
+                      phase + ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ ≤
+                        phase + (N : ℝ) * θ := by
+                    nlinarith [mul_le_mul_of_nonneg_right hindex_cast hθpos.le]
+                  exact hangle_le_last.trans hlast_succ
                 rcases Nat.even_or_odd k with hk_even | hk_odd
                 · apply Fin.signVariations_le_succ_of_natAdd_nonneg
                   intro i
                   apply Real.sin_nonneg_of_even_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                    hk_even
-                  · have hbase_le :
-                        ((q + 1 : ℕ) : ℝ) ≤
-                          ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
-                      exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
-                    have hangle_ge :
-                        phase + ((q + 1 : ℕ) : ℝ) * θ ≤
-                          phase + ((q + 1 + (i : ℕ) : ℕ) : ℝ) * θ := by
-                      nlinarith [mul_le_mul_of_nonneg_right hbase_le hθpos.le]
-                    exact hbase.le.trans hangle_ge
-                  · have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
-                      have hi := i.isLt
-                      dsimp [Fin.natAdd]
-                      lia
-                    have hindex_cast :
-                        ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
-                      exact_mod_cast hindex
-                    have hangle_le_last :
-                        phase + ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ ≤
-                          phase + (N : ℝ) * θ := by
-                      nlinarith [mul_le_mul_of_nonneg_right hindex_cast hθpos.le]
-                    exact hangle_le_last.trans hlast_succ
+                    hk_even (hlow i) (hhigh i)
                 · apply Fin.signVariations_le_succ_of_natAdd_nonpos
                   intro i
                   apply Real.sin_nonpos_of_odd_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                    hk_odd
-                  · have hbase_le :
-                        ((q + 1 : ℕ) : ℝ) ≤
-                          ((q + 1 + (i : ℕ) : ℕ) : ℝ) := by
-                      exact_mod_cast Nat.le_add_right (q + 1) (i : ℕ)
-                    have hangle_ge :
-                        phase + ((q + 1 : ℕ) : ℝ) * θ ≤
-                          phase + ((q + 1 + (i : ℕ) : ℕ) : ℝ) * θ := by
-                      nlinarith [mul_le_mul_of_nonneg_right hbase_le hθpos.le]
-                    exact hbase.le.trans hangle_ge
-                  · have hindex : (Fin.natAdd (q + 1) i : ℕ) ≤ N := by
-                      have hi := i.isLt
-                      dsimp [Fin.natAdd]
-                      lia
-                    have hindex_cast :
-                        ((Fin.natAdd (q + 1) i : ℕ) : ℝ) ≤ N := by
-                      exact_mod_cast hindex
-                    have hangle_le_last :
-                        phase + ((Fin.natAdd (q + 1) i : ℕ) : ℝ) * θ ≤
-                          phase + (N : ℝ) * θ := by
-                      nlinarith [mul_le_mul_of_nonneg_right hindex_cast hθpos.le]
-                    exact hangle_le_last.trans hlast_succ
+                    hk_odd (hlow i) (hhigh i)
               have hsum : q + 1 + (N + 1 - (q + 1)) = N + 1 :=
                 Nat.add_sub_of_le hcut
               rw [hsum] at happend
@@ -424,35 +395,30 @@ private lemma signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi_of_theta_pos
                 Fin.signVariations
                     (fun j : Fin (N + 1) =>
                       Real.sin (phase + (j : ℕ) * θ)) = 0 := by
+              have hlow (j : Fin (N + 1)) :
+                  (k : ℝ) * Real.pi ≤ phase + ((j : ℕ) : ℝ) * θ := by
+                have hphase_le_angle :
+                    phase ≤ phase + ((j : ℕ) : ℝ) * θ := by
+                  nlinarith [mul_nonneg (Nat.cast_nonneg (j : ℕ)) hθpos.le]
+                exact hphase_ge.trans hphase_le_angle
+              have hhigh (j : Fin (N + 1)) :
+                  phase + ((j : ℕ) : ℝ) * θ ≤
+                    ((k + 1 : ℕ) : ℝ) * Real.pi := by
+                have hj : (j : ℕ) ≤ N := Nat.lt_succ_iff.mp j.isLt
+                have hj_cast : ((j : ℕ) : ℝ) ≤ N := by exact_mod_cast hj
+                have hangle_le_last :
+                    phase + ((j : ℕ) : ℝ) * θ ≤ phase + (N : ℝ) * θ := by
+                  nlinarith [mul_le_mul_of_nonneg_right hj_cast hθpos.le]
+                exact hangle_le_last.trans hlast_succ
               rcases Nat.even_or_odd k with hk_even | hk_odd
               · apply Fin.signVariations_eq_zero_of_forall_nonneg
                 intro j
                 apply Real.sin_nonneg_of_even_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                  hk_even
-                · have hphase_le_angle :
-                      phase ≤ phase + ((j : ℕ) : ℝ) * θ := by
-                    nlinarith [mul_nonneg (Nat.cast_nonneg (j : ℕ)) hθpos.le]
-                  exact hphase_ge.trans hphase_le_angle
-                · have hj : (j : ℕ) ≤ N := Nat.lt_succ_iff.mp j.isLt
-                  have hj_cast : ((j : ℕ) : ℝ) ≤ N := by exact_mod_cast hj
-                  have hangle_le_last :
-                      phase + ((j : ℕ) : ℝ) * θ ≤ phase + (N : ℝ) * θ := by
-                    nlinarith [mul_le_mul_of_nonneg_right hj_cast hθpos.le]
-                  exact hangle_le_last.trans hlast_succ
+                  hk_even (hlow j) (hhigh j)
               · apply Fin.signVariations_eq_zero_of_forall_nonpos
                 intro j
                 apply Real.sin_nonpos_of_odd_nat_mul_pi_le_of_le_succ_nat_mul_pi
-                  hk_odd
-                · have hphase_le_angle :
-                      phase ≤ phase + ((j : ℕ) : ℝ) * θ := by
-                    nlinarith [mul_nonneg (Nat.cast_nonneg (j : ℕ)) hθpos.le]
-                  exact hphase_ge.trans hphase_le_angle
-                · have hj : (j : ℕ) ≤ N := Nat.lt_succ_iff.mp j.isLt
-                  have hj_cast : ((j : ℕ) : ℝ) ≤ N := by exact_mod_cast hj
-                  have hangle_le_last :
-                      phase + ((j : ℕ) : ℝ) * θ ≤ phase + (N : ℝ) * θ := by
-                    nlinarith [mul_le_mul_of_nonneg_right hj_cast hθpos.le]
-                  exact hangle_le_last.trans hlast_succ
+                  hk_odd (hlow j) (hhigh j)
             rw [hzero]
             norm_num
 
@@ -495,13 +461,12 @@ lemma signVariations_aswKarlinPhasedSineVector_lt_of_last_le_order_pi
         (aswKarlinPhasedSineVector phase θ degree order blocks) <
       blocks * order := by
   have horder_bound : 0 < blocks * order := Nat.mul_pos hblocks horder
-  have h := signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi
-    (N := blocks * (degree + order - 1)) horder_bound hphase0 hθ0 hlast
   change Fin.signVariations
       (fun j : Fin (blocks * (degree + order - 1) + 1) =>
         Real.sin (phase + (j : ℕ) * θ)) <
     blocks * order
-  exact h
+  exact signVariations_sin_add_mul_lt_of_last_le_nat_mul_pi
+    horder_bound hphase0 hθ0 hlast
 
 /-- One-block Karlin sine vectors inherit the general sampled-sine
 sign-variation bound from a last-angle estimate. -/
@@ -510,12 +475,10 @@ lemma signVariations_aswKarlinSineVector_lt_of_last_le_order_pi
     (hlast : ((1 * (degree + order - 1) : ℕ) : ℝ) * θ ≤
       (order : ℝ) * Real.pi) :
     Fin.signVariations (aswKarlinSineVector θ degree order 1) < order := by
-  have h := signVariations_sin_mul_lt_of_last_le_nat_mul_pi
-    (N := 1 * (degree + order - 1)) horder hθ0 hlast
   change Fin.signVariations
       (fun j : Fin (1 * (degree + order - 1) + 1) => Real.sin ((j : ℕ) * θ)) <
     order
-  exact h
+  exact signVariations_sin_mul_lt_of_last_le_nat_mul_pi horder hθ0 hlast
 
 /-- Below Karlin's sector threshold, the one-block Karlin sine vector has
 fewer than `order` sign variations. -/
@@ -571,9 +534,9 @@ lemma signVariations_aswKarlinSineVector_order_one_lt
     {θ : ℝ} {degree : ℕ} (hdegree : 0 < degree) (hθ0 : 0 ≤ θ)
     (hθ : θ < aswSectorThreshold degree 1) :
     Fin.signVariations (aswKarlinSineVector θ degree 1 1) < 1 := by
-  rw [signVariations_aswKarlinSineVector_order_one_eq_zero_of_le_threshold
-    hdegree hθ0 hθ.le]
-  norm_num
+  simpa only [Nat.lt_one_iff] using
+    signVariations_aswKarlinSineVector_order_one_eq_zero_of_le_threshold
+      hdegree hθ0 hθ.le
 
 /-- In degree one, the one-block Karlin sine vector always has fewer than
 `order` sign variations.  The first sampled sine is zero, leaving at most

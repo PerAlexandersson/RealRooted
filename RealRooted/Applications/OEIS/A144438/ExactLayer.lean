@@ -32,23 +32,18 @@ abbrev DecoLayerCoord (n : ℕ) := Option (Fin n)
 /-- Embed the ordinary coordinate `u_(i+1)` into its positive integer label. -/
 def decoLayerBottomEmbedding (n : Nat) : Fin n ↪ Nat where
   toFun i := i.1 + 1
-  inj' := by
-    intro i j hij
-    apply Fin.ext
-    lia
+  inj' _i _j hij := Fin.ext (Nat.add_right_cancel hij)
 
 @[simp] theorem decoLayerBottomEmbedding_apply {n : Nat} (i : Fin n) :
     decoLayerBottomEmbedding n i = i.1 + 1 := rfl
 
 @[simp] theorem decoLayerBottomEmbedding_succ {n : Nat} (i : Fin n) :
     decoLayerBottomEmbedding (n + 1) i.succ =
-      decoLayerBottomEmbedding n i + 1 := by
-  rfl
+      decoLayerBottomEmbedding n i + 1 := rfl
 
 @[simp] theorem decoLayerBottomEmbedding_succ_succ {n : Nat} (i : Fin n) :
     decoLayerBottomEmbedding (n + 2) i.succ.succ =
-      decoLayerBottomEmbedding n i + 2 := by
-  rfl
+      decoLayerBottomEmbedding n i + 2 := rfl
 
 /-- The ordinary-label form of the Euler/partial-derivative bracket in a
 normal exact-layer step. -/
@@ -161,35 +156,15 @@ def decoExceptionalRename {n : ℕ} :
 theorem decoNormalRename_injective {n : ℕ} :
     Function.Injective (decoNormalRename : DecoLayerCoord n →
       DecoLayerCoord (n + 1)) := by
-  intro i j hij
-  cases i with
-  | none =>
-      cases j with
-      | none => rfl
-      | some j => simp [decoNormalRename] at hij
-  | some i =>
-      cases j with
-      | none => simp [decoNormalRename] at hij
-      | some j =>
-          simp only [decoNormalRename, Option.some.injEq, Fin.succ_inj] at hij
-          simp [hij]
+  intro i j
+  cases i <;> cases j <;> simp [decoNormalRename]
 
 /-- The exceptional-step relabeling does not identify old coordinates. -/
 theorem decoExceptionalRename_injective {n : ℕ} :
     Function.Injective (decoExceptionalRename : DecoLayerCoord n →
       DecoLayerCoord (n + 2)) := by
-  intro i j hij
-  cases i with
-  | none =>
-      cases j with
-      | none => rfl
-      | some j => simp [decoExceptionalRename] at hij
-  | some i =>
-      cases j with
-      | none => simp [decoExceptionalRename] at hij
-      | some j =>
-          simp only [decoExceptionalRename, Option.some.injEq, Fin.succ_inj] at hij
-          simp [hij]
+  intro i j
+  cases i <;> cases j <;> simp [decoExceptionalRename]
 
 /-- The normal one-step operator `f ↦ s (f + u₁ Df)`, where `D` is the
 sum of the partial derivatives in all old coordinates. -/
@@ -216,16 +191,11 @@ theorem decoNormalLayerStep_hasNonnegCoeffs {n : ℕ}
     (hP : MvPolynomial.HasNonnegCoeffs P) :
     MvPolynomial.HasNonnegCoeffs (decoNormalLayerStep P) := by
   unfold decoNormalLayerStep
-  apply MvPolynomial.HasNonnegCoeffs.mul (MvPolynomial.HasNonnegCoeffs.X none)
-  apply MvPolynomial.HasNonnegCoeffs.add
-  · exact hP.rename_of_injective decoNormalRename_injective
-  · apply MvPolynomial.HasNonnegCoeffs.mul
-      (MvPolynomial.HasNonnegCoeffs.X (some 0))
-    apply MvPolynomial.HasNonnegCoeffs.rename_of_injective
-      _ decoNormalRename_injective
-    apply MvPolynomial.HasNonnegCoeffs.sum
-    intro i hi
-    exact hP.pderiv i
+  exact (MvPolynomial.HasNonnegCoeffs.X none).mul
+    ((hP.rename_of_injective decoNormalRename_injective).add
+      ((MvPolynomial.HasNonnegCoeffs.X (some 0)).mul
+        ((MvPolynomial.HasNonnegCoeffs.sum fun i _ => hP.pderiv i).rename_of_injective
+          decoNormalRename_injective)))
 
 /-- The exceptional exact-layer operator preserves coefficientwise
 nonnegativity. -/
@@ -370,39 +340,30 @@ theorem decoNormalLayerStep_isHomogeneous {R : Type*}
     (decoNormalLayerStep P).IsHomogeneous (n + 2) := by
   have hderiv :
       (∑ i : DecoLayerCoord n, MvPolynomial.pderiv i P).IsHomogeneous n := by
-    apply MvPolynomial.IsHomogeneous.sum
-    intro i hi
-    simpa using hP.pderiv (i := i)
-  have hpencil :
-      (MvPolynomial.rename decoNormalRename P + MvPolynomial.X (some 0) *
-        MvPolynomial.rename decoNormalRename
-          (∑ i : DecoLayerCoord n, MvPolynomial.pderiv i P)).IsHomogeneous
-            (n + 1) := by
-    apply hP.rename_isHomogeneous.add
-    simpa [Nat.add_comm] using
-      (MvPolynomial.isHomogeneous_X R (some 0)).mul
-        hderiv.rename_isHomogeneous
+    exact MvPolynomial.IsHomogeneous.sum Finset.univ
+      (fun i => MvPolynomial.pderiv i P) n fun i _ => by
+        simpa using hP.pderiv (i := i)
   change (MvPolynomial.X none *
     (MvPolynomial.rename decoNormalRename P + MvPolynomial.X (some 0) *
       MvPolynomial.rename decoNormalRename
         (∑ i : DecoLayerCoord n, MvPolynomial.pderiv i P))).IsHomogeneous
           (n + 2)
-  have hproduct := (MvPolynomial.isHomogeneous_X R none).mul hpencil
-  simpa only [show 1 + (n + 1) = n + 2 by lia] using hproduct
+  simpa only [show 1 + (n + 1) = n + 2 by lia] using
+    (MvPolynomial.isHomogeneous_X R none).mul
+      (hP.rename_isHomogeneous.add <| by
+        simpa [Nat.add_comm] using
+          (MvPolynomial.isHomogeneous_X R (some 0)).mul hderiv.rename_isHomogeneous)
 
 /-- An exceptional step raises the homogeneous degree by two. -/
 theorem decoExceptionalLayerStep_isHomogeneous {R : Type*}
     [CommSemiring R] {n : ℕ} {P : MvPolynomial (DecoLayerCoord n) R}
     (hP : P.IsHomogeneous (n + 1)) :
     (decoExceptionalLayerStep P).IsHomogeneous (n + 3) := by
-  have hrename :
-      (MvPolynomial.rename decoExceptionalRename P).IsHomogeneous (n + 1) :=
-    hP.rename_isHomogeneous
   change (MvPolynomial.X none * MvPolynomial.X (some 1) *
     MvPolynomial.rename decoExceptionalRename P).IsHomogeneous (n + 3)
-  have hproduct := ((MvPolynomial.isHomogeneous_X R none).mul
-    (MvPolynomial.isHomogeneous_X R (some 1))).mul hrename
-  simpa only [show 1 + 1 + (n + 1) = n + 3 by lia] using hproduct
+  simpa only [show 1 + 1 + (n + 1) = n + 3 by lia] using
+    ((MvPolynomial.isHomogeneous_X R none).mul
+      (MvPolynomial.isHomogeneous_X R (some 1))).mul hP.rename_isHomogeneous
 
 /-- The normal exact-layer operator preserves multivariate real stability. -/
 theorem decoNormalLayerStep_mvRealStable {n : ℕ}

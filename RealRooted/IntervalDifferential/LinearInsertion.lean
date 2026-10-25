@@ -120,6 +120,12 @@ private theorem eval_signed_away_from_roots {F : ℝ[X]}
   have hlc : F.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hF0
   nlinarith [sq_pos_of_ne_zero hlc]
 
+private theorem sq_sub_one_neg_of_mem_Ioo {s : ℝ} (hs : -1 < s ∧ s < 1) :
+    s ^ 2 - 1 < 0 := by
+  have hprod := mul_pos (show 0 < 1 - s by linarith)
+    (show 0 < 1 + s by linarith)
+  nlinarith
+
 /-- A root of the linear insertion is never an old root when all old roots
 are simple and strictly inside the unit interval. Appendix C.1. -/
 theorem zigzagLinearFactor_eval_base_ne_zero {F : ℝ[X]}
@@ -134,11 +140,7 @@ theorem zigzagLinearFactor_eval_base_ne_zero {F : ℝ[X]}
     intro hderzero
     rw [hderzero] at hderpos
     simp at hderpos
-  have hfactor : s ^ 2 - 1 < 0 := by
-    obtain ⟨hl, hr⟩ := hinside _ hs
-    have hprod := mul_pos (show 0 < 1 - s by linarith)
-      (show 0 < 1 + s by linarith)
-    nlinarith
+  have hfactor := sq_sub_one_neg_of_mem_Ioo (hinside _ hs)
   rw [zigzagLinearFactor_eval_root a s F ((mem_roots hF0).mp hs)] at hG
   exact (mul_ne_zero (ne_of_lt hfactor) hder) hG
 
@@ -312,16 +314,8 @@ private theorem linear_eval_mul_neg_at_adjacent {F : ℝ[X]} {n : ℕ}
   have hderprod : F.derivative.eval (r i.castSucc) *
       F.derivative.eval (r i.succ) < 0 :=
     derivative_eval_mul_neg_at_adjacent hF hF0 hnd s hs hcard i
-  have hqi : (r i.castSucc) ^ 2 - 1 < 0 := by
-    obtain ⟨hl, hr⟩ := hinside _ hri
-    have hprod := mul_pos (show 0 < 1 - r i.castSucc by linarith)
-      (show 0 < 1 + r i.castSucc by linarith)
-    nlinarith
-  have hqj : (r i.succ) ^ 2 - 1 < 0 := by
-    obtain ⟨hl, hr⟩ := hinside _ hrj
-    have hprod := mul_pos (show 0 < 1 - r i.succ by linarith)
-      (show 0 < 1 + r i.succ by linarith)
-    nlinarith
+  have hqi := sq_sub_one_neg_of_mem_Ioo (hinside _ hri)
+  have hqj := sq_sub_one_neg_of_mem_Ioo (hinside _ hrj)
   have hqprod : 0 < ((r i.castSucc) ^ 2 - 1) * ((r i.succ) ^ 2 - 1) :=
     mul_pos_of_neg_of_neg hqi hqj
   change (zigzagLinearFactor a F).eval (r i.castSucc) *
@@ -364,11 +358,7 @@ private theorem linear_eval_mul_neg_at_left {F : ℝ[X]} {n : ℕ}
   have hFprod : F.eval (-1) * F.derivative.eval (r 0) < 0 :=
     signed_product_opposite F.leadingCoeff _ _ _
       (leadingCoeff_ne_zero.mpr hF0) heval hder
-  have hfactor : (r 0) ^ 2 - 1 < 0 := by
-    obtain ⟨hl, hr⟩ := hinside _ hr0
-    have hprod := mul_pos (show 0 < 1 - r 0 by linarith)
-      (show 0 < 1 + r 0 by linarith)
-    nlinarith
+  have hfactor := sq_sub_one_neg_of_mem_Ioo (hinside _ hr0)
   have hcoef : -(3 + a) < 0 := by linarith
   have hcoefprod : 0 < (-(3 + a)) * ((r 0) ^ 2 - 1) :=
     mul_pos_of_neg_of_neg hcoef hfactor
@@ -415,11 +405,7 @@ private theorem linear_eval_mul_neg_at_right {F : ℝ[X]} {n : ℕ}
   have hFprod : 0 < F.derivative.eval (r (Fin.last n)) * F.eval 1 :=
     signed_product_same F.leadingCoeff _ _ 0
       (leadingCoeff_ne_zero.mpr hF0) hder heval
-  have hfactor : (r (Fin.last n)) ^ 2 - 1 < 0 := by
-    obtain ⟨hl, hr⟩ := hinside _ hrlast
-    have hprod := mul_pos (show 0 < 1 - r (Fin.last n) by linarith)
-      (show 0 < 1 + r (Fin.last n) by linarith)
-    nlinarith
+  have hfactor := sq_sub_one_neg_of_mem_Ioo (hinside _ hrlast)
   have hcoef : 0 < 3 - a := by linarith
   have hcoefprod : ((r (Fin.last n)) ^ 2 - 1) * (3 - a) < 0 :=
     mul_neg_of_neg_of_pos hfactor hcoef
@@ -514,11 +500,7 @@ theorem splits_nodup_interval_of_root_derivative_signs {F H : ℝ[X]}
     have hanchorRoot (i : Fin (n + 1)) :
         0 < H.eval (r i) * B.eval (r i) := by
       have hfi := hroot _ (hrmem i)
-      have hq : (r i) ^ 2 - 1 < 0 := by
-        obtain ⟨hl, hr⟩ := hinside _ (hrmem i)
-        have hp := mul_pos (show 0 < 1 - r i by linarith)
-          (show 0 < 1 + r i by linarith)
-        nlinarith
+      have hq := sq_sub_one_neg_of_mem_Ioo (hinside _ (hrmem i))
       have hp := mul_pos_of_neg_of_neg hfi hq
       change 0 < H.eval (r i) * (zigzagLinearFactor 0 F).eval (r i)
       rw [zigzagLinearFactor_eval_root 0 _ F ((mem_roots hF0).mp (hrmem i))]
@@ -607,11 +589,7 @@ theorem zigzagLinearFactor_roots (F : ℝ[X]) (a : ℝ)
       intro hzero
       rw [hzero] at hderpos
       simp at hderpos
-    have hfactor : z ^ 2 - 1 < 0 := by
-      obtain ⟨hl, hr⟩ := hinside z hz
-      have hp := mul_pos (show 0 < 1 - z by linarith)
-        (show 0 < 1 + z by linarith)
-      nlinarith
+    have hfactor := sq_sub_one_neg_of_mem_Ioo (hinside z hz)
     rw [zigzagLinearFactor_eval_root a z F ((mem_roots hFne0).mp hz)]
     nlinarith [sq_pos_of_ne_zero hder]
   · have hnotroot : (-1 : ℝ) ∉ F.roots := by

@@ -39,15 +39,7 @@ lemma toeplitz_tail_of_zero {a : ℕ → ℝ} (h0 : a 0 = 0) :
       (toeplitz a).submatrix (fun i => i + 1) id := by
   ext i j
   simp only [toeplitz_apply, submatrix_apply, id_eq]
-  by_cases hji : j ≤ i
-  · rw [ite_eq_left hji, ite_eq_left (by lia)]
-    congr 1
-    lia
-  · rw [ite_eq_right hji]
-    by_cases hnext : j = i + 1
-    · rw [hnext, ite_eq_left (by lia)]
-      simp [h0]
-    · rw [ite_eq_right (by lia)]
+  split_ifs <;> grind
 
 /-- Deleting a zero first term preserves the Pólya-frequency property. -/
 protected theorem IsPolyaFreqSeq.tail_of_zero {a : ℕ → ℝ}
@@ -81,14 +73,7 @@ protected theorem IsPolyaFreqSeq.prefix_zeros {a : ℕ → ℝ}
       (toeplitz a).submatrix id (fun j => j + s) := by
     ext i j
     simp only [toeplitz_apply, submatrix_apply, id_eq]
-    by_cases hji : j ≤ i
-    · rw [ite_eq_left hji]
-      have hsub : s ≤ i - j ↔ j + s ≤ i := by lia
-      simp [hsub]
-      congr 1
-      lia
-    · have hshift : ¬ j + s ≤ i := fun h => hji (le_trans (Nat.le_add_right _ _) h)
-      simp [hji, hshift]
+    split_ifs <;> grind
   rw [htoeplitz]
   exact hpf.submatrix strictMono_id (fun _ _ h => by lia)
 
@@ -148,11 +133,8 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_mul {a b : ℕ → ℝ}
       Tendsto D (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds (D 0)) :=
     (continuous_toeplitz_minor_det_add_mul (a := a) (b := b) rows cols).continuousAt
       |>.continuousWithinAt
-  have hconst_lim : Tendsto (fun _ : ℝ => (0 : ℝ))
-      (nhdsWithin (0 : ℝ) (Set.Ioi 0)) (nhds 0) :=
-    tendsto_const_nhds
   have hD0 : 0 ≤ D 0 :=
-    le_of_tendsto_of_tendsto hconst_lim hD_lim (by
+    ge_of_tendsto hD_lim (by
       filter_upwards [self_mem_nhdsWithin] with μ hμ
       exact hD_nonneg μ hμ)
   simpa [D, toeplitz] using hD0
@@ -492,14 +474,7 @@ lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMon
             have hrows_lt := hrows hlt
             grind
         by_cases h_inj : Function.Injective rows'
-        · have h_strict : StrictMono rows' := by
-            intro i j hij
-            have hmono_ij := hmono hij.le
-            rcases eq_or_lt_of_le hmono_ij with heq | hlt
-            · exfalso
-              exact hij.ne (h_inj heq)
-            · grind
-          exact hM h_strict hcols
+        · exact hM (hmono.strictMono_of_injective h_inj) hcols
         · unfold Function.Injective at h_inj
           push Not at h_inj
           rcases h_inj with ⟨i, j, heq, hne⟩

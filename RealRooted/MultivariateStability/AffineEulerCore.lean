@@ -98,9 +98,8 @@ theorem MvPolynomial.IsHomogeneous.directionalPDeriv_one
     (hhom : H.IsHomogeneous d) :
     (directionalPDeriv (fun _ : σ => (1 : Real)) H).IsHomogeneous
       (d - 1) := by
-  apply MvPolynomial.IsHomogeneous.sum
-  intro i hi
-  simpa [directionalPDeriv] using hhom.pderiv (i := i)
+  exact MvPolynomial.IsHomogeneous.sum Finset.univ _ _ fun i _ => by
+    simpa [directionalPDeriv] using hhom.pderiv (i := i)
 
 /-- The all-ones directional derivative preserves coefficient
 nonnegativity. -/
@@ -108,9 +107,8 @@ theorem MvPolynomial.HasNonnegCoeffs.directionalPDeriv_one
     {σ : Type*} [Fintype σ] {H : MvPolynomial σ Real}
     (hnn : H.HasNonnegCoeffs) :
     (directionalPDeriv (fun _ : σ => (1 : Real)) H).HasNonnegCoeffs := by
-  apply MvPolynomial.HasNonnegCoeffs.sum
-  intro i hi
-  simpa [directionalPDeriv] using hnn.pderiv i
+  exact MvPolynomial.HasNonnegCoeffs.sum fun i _ => by
+    simpa [directionalPDeriv] using hnn.pderiv i
 
 /-- The all-ones directional derivative of a positive-degree stable
 homogeneous polynomial with nonnegative coefficients is nonzero. -/
@@ -136,8 +134,7 @@ theorem MvRealStable.directionalPDeriv_one_ne_zero
         (MvPolynomial.pderiv i H) := by
     simp [D, directionalPDeriv]
   rw [← hD_eval', hD_eval] at heuler
-  have hdpos : 0 < (d : Real) := by
-    exact_mod_cast Nat.pos_of_ne_zero hd
+  have hdpos : 0 < (d : Real) := by exact_mod_cast Nat.pos_of_ne_zero hd
   simp only [nsmul_eq_mul] at heuler
   nlinarith
 
@@ -151,7 +148,7 @@ theorem MvRealStable.directionalPDeriv_one
   rcases hstable.directionalPDeriv_zero_or
       (fun _ : σ => (1 : Real)) (fun _ => zero_le_one) with hzero | hderiv
   · exact ((hstable.directionalPDeriv_one_ne_zero hnn hhom hd) hzero).elim
-  · exact hderiv
+  · assumption
 
 /-- A nonzero nonnegative directional derivative of a homogeneous stable
 polynomial is Wronskian-oriented against the polynomial. -/
@@ -164,13 +161,11 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_nonneg_of_nonzer
       (MvPolynomial.coordinateWronskian (directionalPDeriv b H) H i) := by
   let D := directionalPDeriv b H
   have hDhom : D.IsHomogeneous (d - 1) := by
-    apply MvPolynomial.IsHomogeneous.sum
-    intro i hi
-    simpa [D, directionalPDeriv] using (hhom.pderiv (i := i)).C_mul (b i)
+    exact MvPolynomial.IsHomogeneous.sum Finset.univ _ _ fun i _ => by
+      simpa [D, directionalPDeriv] using (hhom.pderiv (i := i)).C_mul (b i)
   have hDnn : MvPolynomial.HasNonnegCoeffs D := by
-    apply MvPolynomial.HasNonnegCoeffs.sum
-    intro i hi
-    exact (MvPolynomial.HasNonnegCoeffs.C (hb i)).mul (hnn.pderiv i)
+    exact MvPolynomial.HasNonnegCoeffs.sum fun i _ =>
+      (MvPolynomial.HasNonnegCoeffs.C (hb i)).mul (hnn.pderiv i)
   have hpencil := hstable.directionalPDeriv_pencil b hb
   exact hpencil.eval_coordinateWronskian_nonneg_of_homogeneous_affineExtension
     hhom hDhom hnn hDnn hstable.ne_zero hD0
@@ -300,8 +295,7 @@ theorem
   intro i x
   let y : Option σ → Real := fun o => o.elim 1 x
   have hy : Function.update y none 1 = y := by
-    funext o
-    cases o <;> simp [y]
+    funext o; cases o <;> simp [y]
   have h := hpencils i y
   have hspecialized :
       MvPolynomial.specializeAt none 1
@@ -383,8 +377,7 @@ theorem MvRealStable.eval_coordinateWronskian_directionalPDeriv_plucker
       MvPolynomial.eval_X, MvPolynomial.eval_pow,
       MvPolynomial.eval_rename] at ht
     have hy : y ∘ some = x := by
-      funext j
-      simp [y]
+      funext j; simp [y]
     have hynone : y none = t := by simp [y]
     rw [hy, hynone] at ht
     simpa [pow_two, mul_comm, add_comm, add_left_comm, add_assoc] using ht
@@ -535,8 +528,7 @@ theorem MvRealStableOrZero.dehomogenize_general
     (hP : MvRealStableOrZero P) :
     MvRealStableOrZero (MvPolynomial.dehomogenize P) := by
   have hspecialize := hP.specializeAt_general none 1
-  rw [MvPolynomial.specializeAt_none_one_eq_rename_some_dehomogenize]
-    at hspecialize
+  rw [MvPolynomial.specializeAt_none_one_eq_rename_some_dehomogenize] at hspecialize
   exact MvRealStableOrZero.of_rename hspecialize
     (Option.some_injective σ)
 
@@ -566,8 +558,7 @@ theorem MvRealStable.allCombo_affineEulerCore
     have hdehom := haffine.dehomogenize_general
     have hC : MvPolynomial.dehomogenize
         (MvPolynomial.C t : MvPolynomial (Option σ) Real) =
-        MvPolynomial.C t := by
-      simp [MvPolynomial.dehomogenize]
+        MvPolynomial.C t := by simp [MvPolynomial.dehomogenize]
     rw [map_add, map_mul, hC,
       MvPolynomial.dehomogenize_ordinaryHomogenization_of_totalDegree_le
         P hdeg, hDcore] at hdehom

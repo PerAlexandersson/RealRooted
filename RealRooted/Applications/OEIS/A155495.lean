@@ -64,12 +64,11 @@ theorem polynomial_natDegree (n : ℕ) : (polynomial n).natDegree = n := by
 theorem polynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (polynomial n) (polynomial (n + 1)) := by
   rw [polynomial, polynomial]
-  have hinter := strictInterl_twoSidedJensenPolynomial_succ
+  exact ((strictInterl_twoSidedJensenPolynomial_succ
     evenFactorialJensenWeight_isMultiplierSequence
-    evenFactorialJensenWeight_isMultiplierSequence
-    evenFactorialJensenWeight_pos evenFactorialJensenWeight_pos n
-  exact (hinter.C_mul_left (scale_pos n).ne').C_mul_right
-    (scale_pos (n + 1)).ne'
+    evenFactorialJensenWeight_isMultiplierSequence evenFactorialJensenWeight_pos
+    evenFactorialJensenWeight_pos n).C_mul_left (scale_pos n).ne').C_mul_right
+      (scale_pos (n + 1)).ne'
 
 /-- Consecutive A155495 model rows interlace. -/
 theorem polynomial_interlaces (n : ℕ) :
@@ -543,11 +542,9 @@ private theorem recurrencePolynomial_eq_polynomial :
 theorem polynomial_recurrence (n : ℕ) :
     polynomial (n + 3) = nextRow n (polynomial (n + 2))
       (polynomial (n + 1)) (polynomial n) := by
-  rw [← recurrencePolynomial_eq_polynomial (n + 3),
-    ← recurrencePolynomial_eq_polynomial (n + 2),
-    ← recurrencePolynomial_eq_polynomial (n + 1),
-    ← recurrencePolynomial_eq_polynomial n]
-  rfl
+  simpa only [← recurrencePolynomial_eq_polynomial] using
+    (show recurrencePolynomial (n + 3) = nextRow n (recurrencePolynomial (n + 2))
+      (recurrencePolynomial (n + 1)) (recurrencePolynomial n) from rfl)
 
 private theorem polynomial_zero : polynomial 0 = 1 := by
   simpa only [recurrencePolynomial] using

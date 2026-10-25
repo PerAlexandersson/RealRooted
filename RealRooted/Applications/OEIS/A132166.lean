@@ -121,11 +121,7 @@ private theorem inv_zero : Invariant 0 := by
   refine ⟨?_, ?_, ?_⟩
   · intro j
     rw [hc, translatedPolynomial_zero]
-    rcases j with _ | _ | _ | j
-    · simp
-    · simp [coeff_C]
-    · simp [coeff_X_pow]
-    · simp [coeff_X_pow]
+    rcases j with _ | _ | _ | j <;> simp [coeff_C, coeff_X_pow]
   · intro j hj; lia
   · rw [show multiplicity 0 = 0 from rfl, hc, translatedPolynomial_zero]; simp
 
@@ -235,8 +231,8 @@ theorem polynomial_eq_pow_mul_quotient (n : ℕ) :
 
 /-- `-36` is a root of `P_n` of exact multiplicity `⌊(n+2)/6⌋`. -/
 theorem rootMultiplicity_neg_thirty_six_polynomial (n : ℕ) :
-    (polynomial n).rootMultiplicity (-36) = multiplicity n := by
-  exact rootMultiplicity_neg_thirty_six_polynomial_aux n
+    (polynomial n).rootMultiplicity (-36) = multiplicity n :=
+  rootMultiplicity_neg_thirty_six_polynomial_aux n
 
 /-- The residual quotient does not vanish at `-36`. -/
 theorem eval_neg_thirty_six_quotient_ne_zero (n : ℕ) :
@@ -337,14 +333,14 @@ private theorem polynomial_degree_and_monic (n : ℕ) :
   have hrem : ∀ k, (0 : ℝ[X]).natDegree ≤ (polynomial 0).natDegree + k := by
     intro k
     simp
+  have hzeroDegree : (polynomial 0).natDegree = 2 := by
+    rw [polynomial]
+    compute_degree!
   have hfactor : ∀ k,
       (1 / den k) * (((polynomial 0).natDegree + k : ℕ) : ℝ) +
         2 / den k ≠ 0 := by
     intro k
-    have hdegree : (polynomial 0).natDegree = 2 := by
-      rw [polynomial]
-      compute_degree!
-    rw [hdegree]
+    rw [hzeroDegree]
     simp only [den]
     positivity
   have hresult :=
@@ -352,9 +348,6 @@ private theorem polynomial_degree_and_monic (n : ℕ) :
       polynomial (fun _ => 0) (fun k => 36 / den k) (fun k => 1 / den k)
       (fun k => (6 * (k : ℝ) + 54) / den k) (fun k => 2 / den k)
       hrec hseed hrem hfactor n
-  have hzeroDegree : (polynomial 0).natDegree = 2 := by
-    rw [polynomial]
-    compute_degree!
   have hfactorOne : ∀ k,
       (1 / den k) * (((polynomial 0).natDegree + k : ℕ) : ℝ) +
         2 / den k = 1 := by
@@ -496,9 +489,8 @@ private theorem quotient_splits (n : ℕ) : (quotient n).Splits := by
         let v : ℝ[X] := C (1 / ((n : ℝ) + 4)) * X * (X + C 36)
         have hrec : quotient (n + 1) =
             u * quotient n + v * (quotient n).derivative := by
-          have h := quotient_succ_of_multiplicity_eq n hm
-          have hn : (n : ℝ) + 4 ≠ 0 := by positivity
-          have hnorm := eq_C_inv_mul_of_C_mul_eq hn h
+          have hnorm := eq_C_inv_mul_of_C_mul_eq (by positivity)
+            (quotient_succ_of_multiplicity_eq n hm)
           simp only [u, v]
           rw [hnorm]
           simp only [one_div]
@@ -534,9 +526,8 @@ private theorem quotient_splits (n : ℕ) : (quotient n).Splits := by
         let v : ℝ[X] := C (1 / ((n : ℝ) + 4)) * X
         have hrec : quotient (n + 1) =
             u * quotient n + v * (quotient n).derivative := by
-          have h := quotient_succ_of_multiplicity_succ n hm
-          have hn : (n : ℝ) + 4 ≠ 0 := by positivity
-          have hnorm := eq_C_inv_mul_of_C_mul_eq hn h
+          have hnorm := eq_C_inv_mul_of_C_mul_eq (by positivity)
+            (quotient_succ_of_multiplicity_succ n hm)
           simp only [u, v]
           rw [hnorm]
           simp only [one_div]

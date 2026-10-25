@@ -185,55 +185,9 @@ theorem mvUpperHalfPlaneStable_ordinaryHomogenization_iff
     (hdeg : p.totalDegree ≤ d) :
     MvUpperHalfPlaneStable (MvPolynomial.ordinaryHomogenization p d) ↔
       MvCommonRotationStable p := by
-  constructor
-  · intro hstable z hz
-    obtain ⟨c, hc, hcz⟩ := hz
-    have hc0 : c ≠ 0 := by
-      intro hzero
-      rw [hzero] at hc
-      simp at hc
-    have heval := hstable
-      (fun o => Option.elim o c (fun i => c * z i)) (by
-        intro o
-        cases o with
-        | none => exact hc
-        | some i => exact hcz i)
-    rw [MvPolynomial.eval_ordinaryHomogenization_eq_pow_mul_eval_div
-      p hdeg hc0] at heval
-    have hdiv : (fun i => c * z i / c) = z := by
-      funext i
-      rw [div_eq_mul_inv, mul_comm c (z i), mul_assoc,
-        mul_inv_cancel₀ hc0, mul_one]
-    rw [hdiv] at heval
-    intro hpzero
-    exact heval (by rw [hpzero, mul_zero])
-  · intro hrotation w hw
-    let c : ℂ := w none
-    let z : σ → ℂ := fun i => w (some i) / c
-    have hc : 0 < c.im := hw none
-    have hc0 : c ≠ 0 := by
-      intro hzero
-      rw [hzero] at hc
-      simp at hc
-    have hcz : ∀ i, 0 < (c * z i).im := by
-      intro i
-      have heq : c * z i = w (some i) := by
-        dsimp only [z]
-        rw [div_eq_mul_inv, ← mul_assoc, mul_comm c (w (some i)),
-          mul_assoc, mul_inv_cancel₀ hc0, mul_one]
-      rw [heq]
-      exact hw (some i)
-    have hp := hrotation z ⟨c, hc, hcz⟩
-    have hw_eq :
-        w = fun o => Option.elim o c (fun i => w (some i)) := by
-      funext o
-      cases o <;> rfl
-    rw [hw_eq,
-      MvPolynomial.eval_ordinaryHomogenization_eq_pow_mul_eval_div
-        p hdeg hc0]
-    have hz : (fun i => w (some i) / c) = z := rfl
-    rw [hz]
-    exact mul_ne_zero (pow_ne_zero d hc0) hp
+  rw [mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize
+      (MvPolynomial.ordinaryHomogenization_isHomogeneous p d),
+    MvPolynomial.dehomogenize_ordinaryHomogenization_of_totalDegree_le p hdeg]
 
 /-- Stability of ordinary homogenization is independent of the chosen
 admissible homogenizing degree. -/
@@ -254,21 +208,9 @@ theorem mvUpperHalfPlaneStableOrZero_ordinaryHomogenization_iff
     MvUpperHalfPlaneStableOrZero
         (MvPolynomial.ordinaryHomogenization p d) ↔
       p = 0 ∨ MvCommonRotationStable p := by
-  constructor
-  · rintro (hzero | hstable)
-    · exact Or.inl
-        ((MvPolynomial.ordinaryHomogenization_eq_zero_iff_of_totalDegree_le
-          p hdeg).mp hzero)
-    · exact Or.inr
-        ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mp
-          hstable)
-  · rintro (hzero | hrotation)
-    · exact Or.inl
-        ((MvPolynomial.ordinaryHomogenization_eq_zero_iff_of_totalDegree_le
-          p hdeg).mpr hzero)
-    · exact Or.inr
-        ((mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg).mpr
-          hrotation)
+  rw [MvUpperHalfPlaneStableOrZero,
+    MvPolynomial.ordinaryHomogenization_eq_zero_iff_of_totalDegree_le p hdeg,
+    mvUpperHalfPlaneStable_ordinaryHomogenization_iff hdeg]
 
 /-- Differentiating a stable polynomial in a distinguished variable preserves
 stability when its degree is positive and its leading coefficient in that
@@ -390,25 +332,9 @@ one preserves upper-half-plane stability. -/
 theorem MvUpperHalfPlaneStable.dehomogenize
     {σ : Type*} [Finite σ] {Q : MvPolynomial (Option σ) ℂ} {d : ℕ}
     (hQ : MvUpperHalfPlaneStable Q) (hhom : Q.IsHomogeneous d) :
-    MvUpperHalfPlaneStable (MvPolynomial.dehomogenize Q) := by
-  intro z hz hzero
-  obtain ⟨c, hc, hcz⟩ := exists_common_upperHalfPlane_multiplier z hz
-  let base : Option σ → ℂ := fun o => Option.elim o 1 z
-  let scaled : Option σ → ℂ := fun o => c * base o
-  have hscaled : scaled = fun o => Option.elim o c (fun i => c * z i) := by
-    funext o
-    cases o <;> simp [scaled, base]
-  have hne : MvPolynomial.eval scaled Q ≠ 0 := by
-    rw [hscaled]
-    apply hQ
-    intro o
-    cases o with
-    | none => exact hc
-    | some i => exact hcz i
-  have hscale := hhom.eval_const_mul c base
-  have hbase : MvPolynomial.eval base Q = 0 := by
-    simpa [base] using hzero
-  exact hne (by rw [hscale, hbase, mul_zero])
+    MvUpperHalfPlaneStable (MvPolynomial.dehomogenize Q) :=
+  ((mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize hhom).mp
+    hQ).mvUpperHalfPlaneStable
 
 /-- Complexification commutes with setting the distinguished homogenizing
 variable to one. -/
