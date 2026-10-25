@@ -45,9 +45,7 @@ private lemma polynomial_add_two (n : ℕ) :
 private lemma recurrenceFactor_monic_natDegree :
     (1 + 4 * X + X ^ 2 : ℝ[X]).Monic ∧
       (1 + 4 * X + X ^ 2 : ℝ[X]).natDegree = 2 := by
-  constructor
-  · monicity!
-  · compute_degree!
+  exact ⟨by monicity!, by compute_degree!⟩
 
 private lemma monic_natDegree_polynomial (n : ℕ) :
     (polynomial n).Monic ∧ (polynomial n).natDegree = 2 * n := by
@@ -98,25 +96,21 @@ private lemma hasNonnegCoeffs_polynomial_succ_aux (n : ℕ) :
     refine ⟨?_, (hasNonnegCoeffs_one.add hasNonnegCoeffs_X).mul
       (hasNonnegCoeffs_one.add hasNonnegCoeffs_X)⟩
     simp only [polynomial]
-    have hXsq : HasNonnegCoeffs (X ^ 2 : ℝ[X]) := by
-      simpa only [pow_two] using hasNonnegCoeffs_X.mul hasNonnegCoeffs_X
     exact (hasNonnegCoeffs_one.add
-      (hasNonnegCoeffs_three.mul hasNonnegCoeffs_X)).add hXsq
+      (hasNonnegCoeffs_three.mul hasNonnegCoeffs_X)).add (by
+        simpa only [pow_two] using hasNonnegCoeffs_X.mul hasNonnegCoeffs_X)
   | succ n ih =>
-    have hD : polynomial (n + 2) - X * polynomial (n + 1) =
-        (1 + X) * (1 + X) * polynomial (n + 1) +
-          X * (polynomial (n + 1) - X * polynomial n) := by
-      rw [polynomial_add_two]; ring
     have hD' : HasNonnegCoeffs (polynomial (n + 2) - X * polynomial (n + 1)) := by
-      rw [hD]
+      rw [show polynomial (n + 2) - X * polynomial (n + 1) =
+          (1 + X) * (1 + X) * polynomial (n + 1) +
+            X * (polynomial (n + 1) - X * polynomial n) by
+        rw [polynomial_add_two]; ring]
       exact (((hasNonnegCoeffs_one.add hasNonnegCoeffs_X).mul
         (hasNonnegCoeffs_one.add hasNonnegCoeffs_X)).mul ih.1).add
         (hasNonnegCoeffs_X.mul ih.2)
     refine ⟨?_, hD'⟩
-    have : polynomial (n + 2) = X * polynomial (n + 1) +
-        (polynomial (n + 2) - X * polynomial (n + 1)) := by
-      ring
-    rw [this]
+    rw [show polynomial (n + 2) = X * polynomial (n + 1) +
+        (polynomial (n + 2) - X * polynomial (n + 1)) by ring]
     exact (hasNonnegCoeffs_X.mul ih.1).add hD'
 
 /-- Every A297191 row has nonnegative coefficients. -/
@@ -144,8 +138,7 @@ theorem roots_mem_Iio_zero (n : ℕ) :
   have hnonpos := roots_nonpos_of_hasNonnegCoeffs
     (hasNonnegCoeffs_polynomial n) r hr
   have hne : r ≠ 0 := by
-    intro hr0
-    subst r
+    rintro rfl
     have hroot := (mem_roots (monic_polynomial n).ne_zero).mp hr
     rw [Polynomial.IsRoot.def, ← coeff_zero_eq_eval_zero,
       coeff_zero_polynomial] at hroot
@@ -287,16 +280,12 @@ private lemma tpar_eq (φ : ℝ) : tpar φ ^ 2 = 2 * sin (φ / 2) * tpar φ + 1 
 
 private lemma xpar_key (φ : ℝ) : xpar φ ^ 2 + 4 * xpar φ + 1 = 2 * cos φ * xpar φ := by
   have h := tpar_eq φ
-  have hc : cos φ = 1 - 2 * sin (φ / 2) ^ 2 := by
-    exact cos_eq_half φ
-  unfold xpar; rw [hc]
+  unfold xpar
+  rw [cos_eq_half]
   set t := tpar φ; set s := sin (φ / 2)
   linear_combination (t ^ 2 + 2 * s * t - 1) * h
 
 private lemma xpar_zero : xpar 0 = -1 := by simp [xpar, tpar]
-
-private lemma xpar_neg (φ : ℝ) : xpar φ < 0 := by
-  unfold xpar; have := tpar_pos φ; nlinarith
 
 private lemma tpar_strictMonoOn : StrictMonoOn tpar (Set.Icc (-π) π) := by
   intro a ha b hb hab
@@ -329,14 +318,13 @@ private lemma eval_polynomial_mul_cos (x φ : ℝ)
   | 0 => simp [polynomial]
   | 1 =>
     have e : (2 * ((1:ℕ):ℝ) + 1) * φ / 2 = φ / 2 + φ := by push_cast; ring
-    have hc : cos φ = 1 - 2 * sin (φ / 2) ^ 2 := by
-      exact cos_eq_half φ
     have hs : sin φ = 2 * sin (φ/2) * cos (φ/2) := by
       rw [← Real.sin_two_mul]; ring_nf
     rw [e, cos_add, hs]
     simp only [polynomial, eval_add, eval_mul, eval_pow, eval_X, eval_one, eval_ofNat]
     have : 1 + 3 * x + x ^ 2 = x * (2 * cos φ - 1) := by linarith
-    rw [this, hc]; ring
+    rw [this, cos_eq_half]
+    ring
   | n + 2 =>
     have h1 := ih (n+1) (by lia)
     have h0 := ih n (by lia)
@@ -356,7 +344,8 @@ end
 section
 open Real
 
-private lemma Polynomial.splits_iff_card_roots.mpr_finset (p : ℝ[X]) (hp : p ≠ 0) (S : Finset ℝ)
+private lemma Polynomial.splits_iff_card_roots.mpr_finset
+    (p : ℝ[X]) (hp : p ≠ 0) (S : Finset ℝ)
     (hS : ∀ r ∈ S, p.IsRoot r) (hcard : p.natDegree ≤ S.card) : p.Splits := by
   rw [splits_iff_card_roots]
   have h1 : S.card ≤ p.roots.card := by
@@ -626,14 +615,12 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     (by
       intro j hj
       by_cases hjn : j < n
-      · have hjle : j ≤ n := by lia
-        have hjsuccle : j + 1 ≤ n := by lia
-        simp only [hjle, hjsuccle, ite_true]
+      · simp only [show j ≤ n by lia, show j + 1 ≤ n by lia, ite_true]
         exact xpar_strictAntiOn (neg_cang_mem n (j+1) (by lia)) (neg_cang_mem n j (by lia))
           (neg_lt_neg (cang_lt n j))
-      · have : j = n := by lia
-        subst this
-        have hnot : ¬ (j + 1 ≤ j) := by lia
+      · have hjeq : j = n := by lia
+        subst j
+        have hnot : ¬ (n + 1 ≤ n) := by lia
         simp only [le_refl, ite_true, hnot, ite_false]
         exact hM2)
     (by
@@ -641,8 +628,8 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
       by_cases hjn : j ≤ n
       · simp only [hjn, ite_true]
         rw [hval j hjn _ (Or.inr rfl)]; exact pencil_P_sign n j hjn _ (Or.inr rfl)
-      · have : j = n + 1 := by lia
-        subst this; simp only [hjn, ite_false]
+      · obtain rfl : j = n + 1 := by lia
+        simp only [hjn, ite_false]
         rw [← mul_pow]; norm_num; exact hM1)
   -- left branch
   obtain ⟨SL, hSLc, -, hSL⟩ := roots_of_alt_dec G ((-1) ^ (n + 1))
@@ -650,14 +637,12 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     (by
       intro j hj
       by_cases hjn : j < n
-      · have hjle : j ≤ n := by lia
-        have hjsuccle : j + 1 ≤ n := by lia
-        simp only [hjle, hjsuccle, ite_true]
+      · simp only [show j ≤ n by lia, show j + 1 ≤ n by lia, ite_true]
         exact xpar_strictAntiOn (cang_mem' n j (by lia)) (cang_mem' n (j+1) (by lia))
           (cang_lt n j)
-      · have : j = n := by lia
-        subst this
-        have hnot : ¬ (j + 1 ≤ j) := by lia
+      · have hjeq : j = n := by lia
+        subst j
+        have hnot : ¬ (n + 1 ≤ n) := by lia
         simp only [le_refl, ite_true, hnot, ite_false]
         linarith)
     (by
@@ -665,12 +650,10 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
       by_cases hjn : j ≤ n
       · simp only [hjn, ite_true]
         rw [hval j hjn _ (Or.inl rfl)]; exact pencil_P_sign n j hjn _ (Or.inl rfl)
-      · have : j = n + 1 := by lia
-        subst this; simp only [hjn, ite_false]
+      · obtain rfl : j = n + 1 := by lia
+        simp only [hjn, ite_false]
         rw [← mul_pow]; norm_num; exact hy1)
-  have h0 : xpar (-cang n 0) = -1 := by simp [cang, xpar_zero]
-  have h0' : xpar (cang n 0) = -1 := by simp [cang, xpar_zero]
-  simp only [Nat.zero_le, ite_true, h0, h0'] at hSR hSL
+  simp only [Nat.zero_le, ite_true, cang, neg_zero, xpar_zero] at hSR hSL
   have hdisj : Disjoint SL SR := by
     rw [Finset.disjoint_left]
     intro r h1 h2
@@ -682,6 +665,10 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     · exact (hSR r h).1
   · rw [Finset.card_union_of_disjoint hdisj, hSLc, hSRc, hdeg]; lia
 
+private lemma one_add_X_splits : (1 + X : ℝ[X]).Splits := by
+  rw [show (1 + X : ℝ[X]) = X - C (-1) by simp [add_comm]]
+  exact Splits.X_sub_C _
+
 /-- **Half-step chain.**  With `H_n = (1+X) P_n`, every real combination of `H_n` and `P_{n+1}`
 is real-rooted (or zero): `H_n ≺ P_{n+1}` in the Obreschkoff sense (degrees `2n+1`, `2n+2`).
 The other half step `P_n ≺ H_n` is trivial since `α P_n + β (1+X) P_n = P_n (α + β(1+X))`. -/
@@ -691,11 +678,7 @@ theorem allComboRealRooted_halfStep_polynomial_succ (n : ℕ) :
   by_cases hβ : β = 0
   · subst hβ
     simp only [C_0, zero_mul, add_zero]
-    have h1X : (1 + X : ℝ[X]).Splits := by
-      have hfactor : (1 + X : ℝ[X]) = X - C (-1) := by simp [add_comm]
-      rw [hfactor]
-      exact Splits.X_sub_C _
-    exact (h1X.mul (splits_polynomial n)).C_mul α
+    exact (one_add_X_splits.mul (splits_polynomial n)).C_mul α
   · have e : C α * ((1 + X) * polynomial n) + C β * polynomial (n + 1) =
         C β * (C (α / β) * ((1 + X) * polynomial n) + polynomial (n + 1)) := by
       rw [mul_add, ← mul_assoc (C β), ← C_mul, mul_div_cancel₀ _ hβ]
@@ -703,11 +686,6 @@ theorem allComboRealRooted_halfStep_polynomial_succ (n : ℕ) :
     exact (pencil_normalized_splits n (α / β)).C_mul β
 
 end
-
-private lemma one_add_X_splits : (1 + X : ℝ[X]).Splits := by
-  have hfactor : (1 + X : ℝ[X]) = X - C (-1) := by simp [add_comm]
-  rw [hfactor]
-  exact Splits.X_sub_C _
 
 /-- Every real combination of `Pₙ` and `(1 + X)Pₙ` splits. -/
 theorem allComboRealRooted_polynomial_halfStep (n : ℕ) :
@@ -723,16 +701,13 @@ theorem allComboRealRooted_polynomial_halfStep (n : ℕ) :
 /-- Each A297191 row strictly interlaces its `(1 + X)` half-step. -/
 theorem strictInterl_polynomial_halfStep (n : ℕ) :
     StrictInterl (polynomial n) ((1 + X) * polynomial n) := by
-  have hlinearMonic : (1 + X : ℝ[X]).Monic := by
-    monicity!
-  have hhalfMonic : ((1 + X) * polynomial n).Monic :=
-    hlinearMonic.mul (monic_polynomial n)
+  have hlinearMonic : (1 + X : ℝ[X]).Monic := by monicity!
+  have hhalfMonic := hlinearMonic.mul (monic_polynomial n)
   have hdegree : ((1 + X) * polynomial n).natDegree =
       (polynomial n).natDegree + 1 := by
-    have hlinearDegree : (1 + X : ℝ[X]).natDegree = 1 := by
-      compute_degree!
-    rw [hlinearMonic.natDegree_mul (monic_polynomial n), natDegree_polynomial]
-    rw [hlinearDegree]
+    have hlinearDegree : (1 + X : ℝ[X]).natDegree = 1 := by compute_degree!
+    rw [hlinearMonic.natDegree_mul (monic_polynomial n), natDegree_polynomial,
+      hlinearDegree]
     ring
   have horientation := strictInterl_of_allComboRealRooted
     (monic_polynomial n).ne_zero (splits_polynomial n) hhalfMonic.ne_zero
@@ -743,17 +718,14 @@ theorem strictInterl_polynomial_halfStep (n : ℕ) :
 /-- The half-step `(1 + X)Pₙ` strictly interlaces `Pₙ₊₁`. -/
 theorem strictInterl_halfStep_polynomial_succ (n : ℕ) :
     StrictInterl ((1 + X) * polynomial n) (polynomial (n + 1)) := by
-  have hlinearMonic : (1 + X : ℝ[X]).Monic := by
-    monicity!
-  have hhalfMonic : ((1 + X) * polynomial n).Monic :=
-    hlinearMonic.mul (monic_polynomial n)
+  have hlinearMonic : (1 + X : ℝ[X]).Monic := by monicity!
+  have hhalfMonic := hlinearMonic.mul (monic_polynomial n)
   have hdegree : (polynomial (n + 1)).natDegree =
       ((1 + X) * polynomial n).natDegree + 1 := by
-    have hlinearDegree : (1 + X : ℝ[X]).natDegree = 1 := by
-      compute_degree!
+    have hlinearDegree : (1 + X : ℝ[X]).natDegree = 1 := by compute_degree!
     rw [natDegree_polynomial,
-      hlinearMonic.natDegree_mul (monic_polynomial n), natDegree_polynomial]
-    rw [hlinearDegree]
+      hlinearMonic.natDegree_mul (monic_polynomial n), natDegree_polynomial,
+      hlinearDegree]
     ring
   have horientation := strictInterl_of_allComboRealRooted
     hhalfMonic.ne_zero (one_add_X_splits.mul (splits_polynomial n))
@@ -797,19 +769,11 @@ private lemma coeff_gammaPolynomial_add_two (n m : ℕ) :
           (gammaPolynomial n).coeff m := by
   rw [gammaPolynomial_add_two]
   simp only [coeff_add, add_mul, one_mul]
-  have htwoX : (2 * X : ℝ[X]) = C 2 * X := by
-    rw [map_ofNat]
-  have hnegXsq : (-1 * X ^ 2 : ℝ[X]) = C (-1) * X ^ 2 := by
-    simp
-  rw [htwoX, hnegXsq]
-  rw [mul_assoc, coeff_C_mul, coeff_X_mul, mul_assoc, coeff_C_mul,
+  rw [show (2 * X : ℝ[X]) = C 2 * X by rw [map_ofNat],
+    show (-1 * X ^ 2 : ℝ[X]) = C (-1) * X ^ 2 by simp,
+    mul_assoc, coeff_C_mul, coeff_X_mul, mul_assoc, coeff_C_mul,
     coeff_X_pow_mul]
   ring
-
-private lemma choose_gammaPolynomial (N k : ℕ) :
-    Nat.choose (N + 2) (k + 2) + Nat.choose N k =
-      Nat.choose N (k + 2) + 2 * Nat.choose (N + 1) (k + 1) := by
-  grind
 
 private lemma choose_gammaPolynomial_sub (n k : ℕ) :
     Nat.choose (2 * n + 2 - k) (k + 2) + Nat.choose (2 * n - k) k =
@@ -844,25 +808,16 @@ private lemma coeff_zero_gammaPolynomial (n : ℕ) :
       | n + 2 =>
           simpa [gammaPolynomial_add_two, coeff_mul] using ih (n + 1) (by lia)
 
-private lemma coeff_X_sq_mul_one (p : ℝ[X]) : (X ^ 2 * p).coeff 1 = 0 := by
-  have hXsq : X ^ 2 * p = X * (X * p) := by
-    ring
-  rw [hXsq]
-  simp
-
 private lemma coeff_one_gammaPolynomial_step (n : ℕ) :
     (gammaPolynomial (n + 2)).coeff 1 =
       (gammaPolynomial (n + 1)).coeff 1 +
         2 * (gammaPolynomial (n + 1)).coeff 0 := by
   rw [gammaPolynomial_add_two]
-  have hexpand : (1 + 2 * X : ℝ[X]) * gammaPolynomial (n + 1) +
+  rw [show (1 + 2 * X : ℝ[X]) * gammaPolynomial (n + 1) +
       (-1 * X ^ 2) * gammaPolynomial n =
       gammaPolynomial (n + 1) + 2 * (X * gammaPolynomial (n + 1)) -
-        X ^ 2 * gammaPolynomial n := by
-    ring
-  rw [hexpand]
-  simp only [coeff_sub, coeff_add, coeff_X_sq_mul_one, sub_zero]
-  rw [Polynomial.coeff_ofNat_mul, coeff_X_mul]
+        X ^ 2 * gammaPolynomial n by ring]
+  simp [coeff_X_pow_mul']
 
 private lemma coeff_one_gammaPolynomial (n : ℕ) :
     (gammaPolynomial n).coeff 1 = (2 * n - 1 : ℕ) := by
@@ -888,22 +843,10 @@ private lemma coeff_gammaPolynomial_eq_choose (n k : ℕ) :
       intro k
       match n with
       | 0 =>
-          by_cases hk : k = 0
-          · subst k
-            simp [gammaPolynomial]
-          · simp only [gammaPolynomial, coeff_one, hk, ite_false]
-            have hkpos : 0 < k := Nat.pos_of_ne_zero hk
-            have hsub : 2 * 0 - k = 0 := by lia
-            rw [hsub, Nat.choose_eq_zero_of_lt hkpos]
-            norm_num
+          rcases k with _ | k <;> simp [gammaPolynomial, coeff_one]
       | 1 =>
-          rw [gammaPolynomial]
-          cases k with
-          | zero => simp
-          | succ k =>
-              cases k with
-              | zero => norm_num [coeff_add, coeff_one, coeff_X]
-              | succ k => simp [coeff_add, coeff_one, coeff_X]
+          rcases k with _ | _ | k <;>
+            simp [gammaPolynomial, coeff_add, coeff_one, coeff_X]
       | n + 2 =>
           cases k with
           | zero => simp [coeff_zero_gammaPolynomial]
