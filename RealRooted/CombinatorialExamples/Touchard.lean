@@ -6,6 +6,7 @@ public import RealRooted.MaWang
 public import RealRooted.Touchard
 public import Mathlib.Combinatorics.Enumerative.Stirling
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Touchard Polynomials
@@ -58,10 +59,7 @@ lemma coeff_touchard_top_and_above :
 
 lemma natDegree_touchard (n : Nat) :
     (touchard n).natDegree = n := by
-  rcases coeff_touchard_top_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    (by simp [htop])
+  rr_row_natDegree
 
 lemma monic_touchard (n : Nat) :
     (touchard n).Monic := by
@@ -70,23 +68,15 @@ lemma monic_touchard (n : Nat) :
   lia
 
 lemma touchard_ne_zero (n : Nat) :
-    touchard n ≠ 0 :=
-  (monic_touchard n).ne_zero
+    touchard n ≠ 0 := by
+  rr_row_ne_zero
 
 lemma touchard_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (touchard n) :=
   hasPosLeadingCoeff_of_monic (monic_touchard n)
 
-lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n)
-  | 0 => by
-      intro m
-      cases m <;> simp [touchard_zero, coeff_one]
-  | n + 1 => by
-      rintro (_ | m)
-      · simp [touchard_succ]
-      · rw [coeff_touchard_succ]
-        exact add_nonneg (touchard_nonnegCoeffs n m)
-          (mul_nonneg (by positivity) (touchard_nonnegCoeffs n (m + 1)))
+lemma touchard_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (touchard n) := by
+  rr_row_nonneg_coeffs
 
 lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} :
     ∀ r ∈ (touchard n).roots, r ≤ 0 :=
@@ -96,41 +86,19 @@ lemma interlaces_touchard_zero_one :
     Interlaces (touchard 0) (touchard 1) :=
   by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
 
-private lemma strictInterl_touchard_step (n : Nat) (hn : 1 ≤ n) (hsplit : (touchard n).Splits) :
-    StrictInterl (touchard n) (touchard (n + 1)) := by
-  have hInter : Interlaces (touchard n).derivative (touchard n) :=
-    derivative_interlaces_of_natDegree_ne_zero hsplit (by rw [natDegree_touchard]; lia)
-  have hderiv_pos : HasPosLeadingCoeff (touchard n).derivative :=
-    (touchard_posLeadingCoeff n).derivative (by rw [natDegree_touchard]; lia)
-  have hnext_pos : HasPosLeadingCoeff (X * touchard n + X * (touchard n).derivative) := by
-    simpa [touchard_succ, add_comm] using touchard_posLeadingCoeff (n + 1)
-  have hdeg_lo :
-      (touchard n).natDegree ≤ (X * touchard n + X * (touchard n).derivative).natDegree := by
-    rw [← touchard_succ, natDegree_touchard, natDegree_touchard]
-    lia
-  have hdeg_hi :
-      (X * touchard n + X * (touchard n).derivative).natDegree ≤
-        (touchard n).natDegree + 1 := by
-    rw [← touchard_succ, natDegree_touchard, natDegree_touchard]
-  exact strictInterl_of_interlaces_evalCoeff_nonpos hInter hderiv_pos hnext_pos
-    hdeg_lo hdeg_hi (fun r hr => by
-      simpa using roots_nonpos_touchard_of_isRealRooted r
-        ((mem_roots (touchard_ne_zero n)).mpr hr))
-
 lemma strictInterl_touchard_one_two :
     StrictInterl (touchard 1) (touchard 2) := by
-  exact strictInterl_touchard_step 1 (by simp)
-    interlaces_touchard_zero_one.toStrictInterl.2.1.2
+  exact (show Interlaces (touchard 1) (touchard 2) by
+    rr_row_interlaces).toStrictInterl
 
 /-- Consecutive Touchard polynomials satisfy `StrictInterl`, hence are real-rooted. -/
 theorem strictInterl_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n + 1))
-  | 0 => interlaces_touchard_zero_one.toStrictInterl
-  | n + 1 => strictInterl_touchard_step (n + 1) (by simp)
-      (strictInterl_touchard_succ n).2.1.2
+  | n => (show Interlaces (touchard n) (touchard (n + 1)) by
+      rr_row_interlaces).toStrictInterl
 
 theorem interlaces_touchard_succ (n : Nat) :
-    Interlaces (touchard n) (touchard (n + 1)) :=
-  (strictInterl_touchard_succ n).toInterlaces (by simp [natDegree_touchard])
+    Interlaces (touchard n) (touchard (n + 1)) := by
+  rr_row_interlaces
 
 theorem isRealRooted_touchard : ∀ n : Nat, ((touchard n) ≠ 0 ∧ (touchard n).Splits)
   | 0 => by simp

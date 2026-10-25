@@ -2133,3 +2133,4 @@ import RealRooted.Tactic.Examples.RowReaderNormalization
 import RealRooted.ClassicalHurwitzMatrix.Examples
 import RealRooted.HurwitzMatrix.CornerZeroedCounterexample
 import RealRooted.HurwitzMatrix.HadamardObstruction
+import RealRooted.Tactic.Examples.RowStrictInterl
