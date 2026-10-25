@@ -3,6 +3,15 @@ module
 public import RealRooted.CommonInterleaverTwo
 public import RealRooted.Mathlib.Data.List.Sort.Endpoint
 
+/-!
+# Examples and counterexamples for common interleavers
+
+A concrete family (`scaledLinearFamily`) exercising the finite-list common-interleaver,
+pairwise-compatibility and family-compatibility interfaces, and two counterexamples: a pair
+whose positive combinations are all real-rooted, with no common roots, that is interlacing in
+neither orientation; and the failure of successor-degree orientation even when `f.coeff 0 = 0`.
+-/
+
 @[expose] public section
 
 open Polynomial
