@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 
 /-!
 # Jacobi transport for Braun--Jal Narayana inputs
@@ -6,6 +8,8 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 This module contains the Jacobi-polynomial transport and the affine-Narayana side lemmas
 for the modified Narayana family.
 -/
+
+@[expose] public section
 
 open Polynomial
 

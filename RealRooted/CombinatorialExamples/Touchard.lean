@@ -1,8 +1,10 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.MaWang
-import RealRooted.Touchard
-import Mathlib.Combinatorics.Enumerative.Stirling
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.MaWang
+public import RealRooted.Touchard
+public import Mathlib.Combinatorics.Enumerative.Stirling
+public import Mathlib.Tactic
 
 /-!
 # Touchard Polynomials
@@ -10,6 +12,8 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for the Touchard polynomial
 recurrence.
 -/
+
+@[expose] public section
 
 open Polynomial
 

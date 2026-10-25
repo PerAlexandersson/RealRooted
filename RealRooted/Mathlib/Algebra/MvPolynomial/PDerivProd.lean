@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives of finite products
@@ -11,6 +13,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 This file gives the finite-product Leibniz rule for multivariate
 polynomials.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

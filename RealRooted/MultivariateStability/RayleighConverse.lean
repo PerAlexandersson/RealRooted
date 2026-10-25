@@ -1,5 +1,7 @@
-import RealRooted.MultivariateStability.Rayleigh
-import RealRooted.MultivariateStability.RayleighPencil
+module
+
+public import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.MultivariateStability.RayleighPencil
 
 /-!
 # The multiaffine Rayleigh converse
@@ -10,6 +12,8 @@ that actually occur.  The one-coordinate analytic step lives in
 `RayleighPencil`; this file owns only the finite-support induction, injective
 rename reflection, and algebraic closure facts.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

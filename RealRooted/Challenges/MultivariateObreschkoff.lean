@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.MultivariateHKO
-import RealRooted.BorceaBranden.RealHKOConverse
-import RealRooted.MultivariateStability.AllCombo
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import RealRooted.BorceaBranden.RealHKOConverse
+public import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Multivariate Hermite–Kakeya–Obreschkoff theorem
@@ -108,3 +110,5 @@ This module exposes the two directions of the multivariate Hermite–Kakeya–Ob
 theorem and the pencil reformulation. The proofs live in
 `RealRooted.BorceaBranden.MultivariateHKO` and `RealRooted.BorceaBranden.RealHKOConverse`.
 -/
+
+@[expose] public section

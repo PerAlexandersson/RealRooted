@@ -1,4 +1,6 @@
-import RealRooted.Linear
+module
+
+public import RealRooted.Linear
 
 /-!
 # Degrees of positive polynomial combinations
@@ -6,6 +8,8 @@ import RealRooted.Linear
 Degree and positive-leading-coefficient bookkeeping for positive linear
 combinations of two real polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial
 

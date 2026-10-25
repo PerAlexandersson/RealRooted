@@ -1,5 +1,7 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # General recurrences and half growth
@@ -12,6 +14,8 @@ two-step products, derivative-lag recurrences, residue subsequences, closed form
 derivative products, order-three recurrences through three-term ones and degrees with
 cancelling top terms, on OEIS rows drawn from `real-rooted-oeis-proofs`.
 -/
+
+@[expose] public section
 
 open Polynomial
 open RealRooted.Tactic.RowFixtures

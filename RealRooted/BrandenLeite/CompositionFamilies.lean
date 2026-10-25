@@ -1,8 +1,10 @@
-import RealRooted.BrandenLeite.ZeroConstant
-import RealRooted.BrandenLeite.TwoKernelAlgebra
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import Mathlib.Algebra.Order.Floor.Div
-import Mathlib.Algebra.Polynomial.Div
+module
+
+public import RealRooted.BrandenLeite.ZeroConstant
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import Mathlib.Algebra.Order.Floor.Div
+public import Mathlib.Algebra.Polynomial.Div
 
 /-!
 # Finite supersymmetric composition-row families
@@ -15,6 +17,8 @@ and applies the zero-constant composition-row theorem.  The parameterized API
 keeps the Pólya-frequency argument independent of the later OEIS
 specializations.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import LGV.Quiver.LGV
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import LGV.Quiver.LGV
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 
 /-!
 # Finite lower-bidiagonal chip networks
@@ -13,6 +14,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 This file supplies the finite ranked quiver used for a word of lower-bidiagonal
 chips. Matrix-entry and path-sum identification are deliberately deferred.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LGV

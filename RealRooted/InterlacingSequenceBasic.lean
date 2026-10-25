@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.WagnerX
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.WagnerX
 
 /-!
 # Interlacing sequences and matrices preserving them
@@ -35,6 +37,8 @@ An `m × n` matrix `G` of polynomials maps `𝓕ₙ⁺ → 𝓕ₘ⁺` if and on
    `λ, μ > 0`, we have
    `(λt + μ) b(t) + d(t) ⊳ (λt + μ) a(t) + c(t)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

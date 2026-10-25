@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowInterlacingSign
-import RealRooted.BrandenVecchi.ReflectionInterlacing
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.PosCombo
+module
+
+public import RealRooted.BrandenVecchi.ChowInterlacingSign
+public import RealRooted.BrandenVecchi.ReflectionInterlacing
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.PosCombo
 
 /-!
 # The Chow quotient in a reflection-interlacing pair
@@ -12,6 +14,8 @@ difference to the right of the middle polynomial.  We then remove its exact
 factor `X - 1`, treating both possible degree cases, and recover
 nonnegative coefficients from the resulting root order.
 -/
+
+@[expose] public section
 
 open Polynomial
 

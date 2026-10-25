@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Rayleigh differences of multiaffine polynomials
@@ -11,6 +13,8 @@ This file provides the coefficient-ring algebra for the Rayleigh criterion.
 The stability implications belong in the multivariate-stability layer; the
 definitions and identities here require no root theory.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

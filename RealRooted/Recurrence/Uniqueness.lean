@@ -1,4 +1,6 @@
-import Mathlib.Tactic
+module
+
+public import Mathlib.Tactic
 
 /-!
 # Uniqueness for finite-order recurrences
@@ -7,6 +9,8 @@ The update receives the preceding `k` rows in increasing-lag order.  Since the
 row type is arbitrary, the statement covers polynomial recurrences with any
 mixture of derivatives as well as pure-lag recurrences.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

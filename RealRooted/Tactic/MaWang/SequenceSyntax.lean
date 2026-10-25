@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.StepSyntax
+module
+
+public import RealRooted.Tactic.MaWang.StepSyntax
 
 /-!
 # Ma--Wang tactic sequence syntax
 
 Parser declarations for ordinary derivative and derivative-plus-lag sequences.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

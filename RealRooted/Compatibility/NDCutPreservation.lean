@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.NDCutStateClosure
-import RealRooted.Compatibility.NDCutThresholdClosure
+module
+
+public import RealRooted.Compatibility.NDCutStateClosure
+public import RealRooted.Compatibility.NDCutThresholdClosure
 
 /-!
 # Preservation of the structural N/D cut invariant
@@ -8,6 +10,8 @@ This module combines the two independent successor closures: ordered P/Q
 compatibility controls the next N/D state order, while the old N/D state order
 controls the next P/Q cut package through the marker-one threshold matrix.
 -/
+
+@[expose] public section
 
 open Polynomial
 

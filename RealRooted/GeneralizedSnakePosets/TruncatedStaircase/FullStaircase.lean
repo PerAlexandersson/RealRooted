@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
-import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 
 /-!
 # Full truncated-staircase enumeration
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 This module identifies non-nesting placements in a full truncated staircase
 with componentwise ordered pairs of finite subsets.
 -/
+
+@[expose] public section
 
 open Polynomial
 

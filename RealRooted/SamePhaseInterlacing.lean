@@ -1,8 +1,10 @@
-import RealRooted.HermiteBiehler
-import RealRooted.LiebSokalPointwise
-import RealRooted.PosCombo
-import RealRooted.SamePhaseStability.Nonnegative
-import RealRooted.WagnerX
+module
+
+public import RealRooted.HermiteBiehler
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.PosCombo
+public import RealRooted.SamePhaseStability.Nonnegative
+public import RealRooted.WagnerX
 
 /-!
 # Weighted common-phase interleaving
@@ -10,6 +12,8 @@ import RealRooted.WagnerX
 This file provides reusable strict-interlacing consequences of multivariate
 real stability for positive weighted common-phase restrictions.
 -/
+
+@[expose] public section
 
 open Polynomial
 

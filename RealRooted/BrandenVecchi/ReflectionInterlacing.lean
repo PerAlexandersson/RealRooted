@@ -1,6 +1,8 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.PFPolynomial
 
 /-!
 # Reflection-interlacing sequences
@@ -9,6 +11,8 @@ This file formalizes the sequence notion from Bränden--Vecchi, Definition 4.9,
 in a zero-aware form. It also supplies the elementary scaling, deletion, and
 adjacent-sum closure operations from Lemma 4.10.
 -/
+
+@[expose] public section
 
 open Polynomial
 

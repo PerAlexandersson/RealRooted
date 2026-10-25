@@ -3076,6 +3076,8 @@
  ["docBlame", "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"],
  ["docBlame", "A108426Downstream.A108426_interlaces.fAuxInterlaces"],
  ["docBlame", "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"],
+ ["docBlame", "RealRooted.Tactic.instInhabitedClassKind.default"],
+ ["docBlame", "RealRooted.Tactic.instInhabitedDegreeClassKind.default"],
  ["docBlame", "A108426Downstream.A108426_interlaces.ratRevAux"],
  ["docBlame", "A186370Downstream.A186370_interlaces.fAuxInterlaces"],
  ["docBlame",

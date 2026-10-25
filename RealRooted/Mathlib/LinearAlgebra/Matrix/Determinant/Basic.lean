@@ -34,7 +34,7 @@ identity for bordered minors, which is the form needed for Whitney elimination.
 * `Matrix.det_border_plucker`: the three-term bordered-minor identity.
 -/
 
-public section
+@[expose] public section
 
 namespace Matrix
 variable {n R : Type*} [DecidableEq n] [Fintype n] [CommRing R]

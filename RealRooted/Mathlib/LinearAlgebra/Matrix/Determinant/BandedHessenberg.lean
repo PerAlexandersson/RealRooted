@@ -15,7 +15,7 @@ This file gives the determinant recurrence for a lower-Hessenberg matrix with
 a variable diagonal, a fixed first superdiagonal, and two varying lower bands.
 -/
 
-public section
+@[expose] public section
 
 open Finset
 
@@ -25,7 +25,6 @@ noncomputable section
 
 /-- A lower-Hessenberg matrix with a variable diagonal, a fixed first
 superdiagonal, and two varying lower bands. -/
-@[expose]
 def bandedLowerHessenberg {R : Type*} [CommRing R]
     (d a b : ℕ → R) (x : R) (n : ℕ) : Matrix (Fin n) (Fin n) R :=
   Matrix.of fun i j =>

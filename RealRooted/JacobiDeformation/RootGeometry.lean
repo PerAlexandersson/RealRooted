@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Real.Sqrt
-import Mathlib.Tactic
+module
+
+public import Mathlib.Analysis.Real.Sqrt
+public import Mathlib.Tactic
 
 /-!
 # Scalar geometry of the Jacobi image values
@@ -12,6 +14,8 @@ at the sharp threshold `(√U + √V) ^ 2`.  Below the negative sharp threshold
 differentiated coordinate equations force the two coordinate derivatives to
 have opposite signs.
 -/
+
+@[expose] public section
 
 noncomputable section
 

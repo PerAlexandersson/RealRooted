@@ -1,10 +1,14 @@
-import RealRooted.IteratedDerivativeShift
+module
+
+public import RealRooted.IteratedDerivativeShift
 
 /-!
 # Iterated derivative-shift tactic frontends
 
 Thin wrappers for `tDeriv` and `iterateTDeriv` preservation facts.
 -/
+
+@[expose] public section
 
 open Polynomial
 

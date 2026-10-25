@@ -1,7 +1,9 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
-import Mathlib.Combinatorics.Digraph.Orientation
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Basic.Real.Basic
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
+public import Mathlib.Combinatorics.Digraph.Orientation
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Acyclic orientations and sink polynomials
@@ -11,6 +13,8 @@ An orientation chooses exactly one direction on every edge.  We call it
 acyclic when its directed relation admits a strictly increasing rank function;
 for a finite relation this is the usual topological-order characterization.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

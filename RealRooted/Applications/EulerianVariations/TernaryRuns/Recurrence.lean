@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic
 
 /-!
 # Ternary increasing-run recurrence
@@ -10,6 +12,8 @@ recurrence form used for the ternary-word application in arXiv:2609.07325.
 Its algebraic degree, leading-coefficient, coefficient-positivity, and support
 properties do not depend on the combinatorial interpretation.
 -/
+
+@[expose] public section
 
 open Polynomial
 

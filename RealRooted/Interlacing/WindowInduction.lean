@@ -1,7 +1,9 @@
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.EulerOperator
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.EulerOperator
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Finite interlacing-window induction
@@ -13,6 +15,8 @@ An edge records its own relation, so a window may mix differ-by-one
 `Interlaces` edges with general directed `StrictInterl` edges.  The degree
 law is an explicit parameter; it is not reconstructed from interlacing.
 -/
+
+@[expose] public section
 
 open Polynomial
 

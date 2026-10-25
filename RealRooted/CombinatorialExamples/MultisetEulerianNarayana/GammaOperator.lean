@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import RealRooted.MaWang.Strong
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import RealRooted.MaWang.Strong
 
 /-!
 # The gamma operator for multiset Eulerian--Narayana polynomials
@@ -10,6 +12,8 @@ Zhang--Zhao (arXiv:2610.00966), Lemma 3.2: for `a > 0` the gamma operator
 even `d` the top coefficient of `z(1 - 4z)Γ' + 2dzΓ` cancels.  The sign/interlacing core
 (`strictInterl_gammaOperatorNumerator`) is stated separately from the coefficient bookkeeping.
 -/
+
+@[expose] public section
 
 open Polynomial
 

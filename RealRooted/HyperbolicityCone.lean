@@ -1,4 +1,6 @@
-import RealRooted.Hyperbolicity
+module
+
+public import RealRooted.Hyperbolicity
 
 /-!
 # Gårding: hyperbolicity cones are convex
@@ -16,6 +18,8 @@ segment from `x` to `y` stays in the nonvanishing locus.
 
 * L. Gårding, *An inequality for hyperbolic polynomials*, J. Math. Mech. 8 (1959), 957–965.
 -/
+
+@[expose] public section
 
 open MvPolynomial
 

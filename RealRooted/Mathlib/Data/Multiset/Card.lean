@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Card
+module
+
+public import Mathlib.Data.Finset.Card
 
 /-!
 # Multiset cardinality and deduplication
@@ -11,6 +13,8 @@ import Mathlib.Data.Finset.Card
 Small cardinality criteria for a multiset to have no duplicate elements.
 These statements are intended for upstreaming to Mathlib.
 -/
+
+@[expose] public section
 
 namespace Multiset
 

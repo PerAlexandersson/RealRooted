@@ -5,9 +5,13 @@ Boundary-pair orientation tools extracted from `RealRooted.CommonInterleaverTwo`
 They turn the no-common boundary right-pair orientation statement into the
 positive affine-family bridge used by the common-interleaver reductions.
 -/
-import RealRooted.AffineFamily
-import RealRooted.AllCombo
-import RealRooted.PosCombo
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.AllCombo
+public import RealRooted.PosCombo
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Compatibility.Basic
-import RealRooted.Derivative.ShiftSequence
-import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
-import RealRooted.Mathlib.Data.Multiset.Rel
+module
+
+public import RealRooted.Compatibility.Basic
+public import RealRooted.Derivative.ShiftSequence
+public import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
+public import RealRooted.Mathlib.Data.Multiset.Rel
 
 /-!
 # Finite derivative-shift regularization for Liu's opposite-sign theorem
@@ -16,6 +18,8 @@ Every parameter can additionally be bounded by an arbitrary `κ > 0`.  This
 quantitative bound is retained for the later limiting argument rather than
 merely producing one unrelated pair with simple roots.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LiuOppositeSigns

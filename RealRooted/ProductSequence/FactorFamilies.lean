@@ -1,4 +1,6 @@
-import RealRooted.ProductSequence.Core
+module
+
+public import RealRooted.ProductSequence.Core
 
 /-!
 # Specialized product-factor recurrence families
@@ -6,6 +8,8 @@ import RealRooted.ProductSequence.Core
 First-order affine, monomial-power, scalar-power, and powered-affine recurrence
 shells derived from the generic product-sequence core.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

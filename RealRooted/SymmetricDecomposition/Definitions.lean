@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import Mathlib.Algebra.Polynomial.Reverse
+module
+
+public import RealRooted.Basic
+public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Symmetric-decomposition definitions
@@ -7,6 +9,8 @@ import Mathlib.Algebra.Polynomial.Reverse
 Foundational `I_d` and `R_d` transforms, their formula components, and the
 predicates that specify the two Brändén--Solus symmetric decompositions.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

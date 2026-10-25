@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolProduct
-import RealRooted.BorceaBranden.FiniteSymbolReconstruction
-import RealRooted.BoundarySpecializationRight
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.BorceaBranden.FiniteSymbolProduct
+public import RealRooted.BorceaBranden.FiniteSymbolReconstruction
+public import RealRooted.BoundarySpecializationRight
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # Finite algebraic symbols preserve stability
@@ -13,6 +15,8 @@ the input in a third block, contract the paired source/input variables,
 specialize the remaining non-target variables at zero, and reconstruct the
 operator value.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

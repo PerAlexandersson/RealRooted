@@ -1,7 +1,9 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.QuadraticRoot
-import RealRooted.SameDegreeQuadraticRootCount
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.QuadraticRoot
+public import RealRooted.SameDegreeQuadraticRootCount
 
 /-!
 # Liu left-successor x-subtraction base cases
@@ -10,6 +12,8 @@ This module contains low-degree right-endpoint cases of the left-successor
 positive-split x-subtraction pencil used by the two-degree factor-return
 branch.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

@@ -1,3 +1,5 @@
+module
+
 /-!
 # Tactic target families
 
@@ -120,6 +122,8 @@ raw scalar recurrence.  The success criterion is a tactic proof once a refined
 vector recurrence, production matrix, or lower-order factorization has been
 made explicit.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

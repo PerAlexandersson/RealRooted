@@ -5,10 +5,14 @@ This file proves, by a direct complex-root-continuity ("escaping root")
 argument, that in a positive-combination family `f + μ g` with
 `deg g = deg f + 1`, the lower-degree member `f` splits.
 -/
-import RealRooted.Basic
-import RealRooted.PosCombo
-import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic
+public import RealRooted.PosCombo
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Tactic
+
+@[expose] public section
 
 open Polynomial Topology
 

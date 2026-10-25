@@ -1,9 +1,11 @@
-import RealRooted.HosterStump.Step
-import RealRooted.HosterStump.Permutation
-import RealRooted.GammaTransform.ProperPosition
-import RealRooted.PosCombo
-import RealRooted.PFPolynomial
-import RealRooted.ThresholdMatrix.Basic
+module
+
+public import RealRooted.HosterStump.Step
+public import RealRooted.HosterStump.Permutation
+public import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.PosCombo
+public import RealRooted.PFPolynomial
+public import RealRooted.ThresholdMatrix.Basic
 
 /-!
 # Hoster--Stump: Chow, dual Chow and augmented Chow polynomials (Theorems 1.1 and 1.2)
@@ -36,6 +38,8 @@ statistics (`refinedPerm_eq_refined`) and Petersen's `γ`-transform lemmas
 `strictInterl_gammaTransform_succ_iff`).  Example 1.3 (`n = 2`, `h = (1, 2, 3)`) is checked at
 the end of the file.
 -/
+
+@[expose] public section
 
 open Polynomial
 

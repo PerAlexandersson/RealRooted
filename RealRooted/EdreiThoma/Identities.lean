@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.PFSeries
-import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+module
+
+public import RealRooted.EdreiThoma.PFSeries
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
 
 /-!
 # Edrei's determinant identities and monotone Padé limits
@@ -11,6 +13,8 @@ linear factors.
 
 The strict positivity hypothesis on every contiguous Toeplitz minor is Edrei's property (P).
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology
 

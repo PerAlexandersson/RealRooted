@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A330798
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.Applications.OEIS.A330798
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # Remaining periodic-top-coefficient rows
@@ -8,6 +10,8 @@ This file records the normalized A114580 and A390883 recurrences and closes the 
 degree problem.  The A177040 proof uses its exact parity-split coefficient vectors as the
 two states of the multi-lag top-window law.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.DerivativeRecurrence.General
+module
+
+public import RealRooted.DerivativeRecurrence.General
 
 /-!
 # Invariant cones for scalar recurrences
@@ -9,6 +11,8 @@ that a cone cut out by finitely many linear forms is invariant when the companio
 step preserves it.  Both closed and open cones are covered.  This gives positivity of top
 coefficients of rows whose leading coefficients satisfy a scalar recurrence (issue #1322).
 -/
+
+@[expose] public section
 
 namespace RealRooted.ScalarRec
 

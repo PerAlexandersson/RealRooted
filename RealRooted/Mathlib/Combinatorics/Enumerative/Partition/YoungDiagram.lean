@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+module
+
+public import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 
 /-!
 # Further facts about conjugate partitions
@@ -11,6 +13,8 @@ import Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 This file supplies small connections between Mathlib's partition and Young
 diagram APIs.
 -/
+
+@[expose] public section
 
 namespace Nat.Partition
 

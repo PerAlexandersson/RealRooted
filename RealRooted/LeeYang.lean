@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The Lee–Yang circle theorem
@@ -18,6 +20,8 @@ The proof follows the Asano contraction method.
   ferromagnet*, Phys. Rev. Lett. 24 (1970), 1409–1411.
 * D. Ruelle, *Characterization of Lee–Yang polynomials*, Ann. of Math. 171 (2010), 589–603.
 -/
+
+@[expose] public section
 
 open Finset
 

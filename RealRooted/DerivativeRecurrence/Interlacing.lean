@@ -1,7 +1,9 @@
-import RealRooted.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.ThreeTermRecurrence.Interlacing
+module
+
+public import RealRooted.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Interlacing for first-order derivative recurrences
@@ -23,6 +25,8 @@ to grow by at most one, so
 `derivativeRecurrence_strictInterl_of_degree_pattern` also covers rows whose
 degree stays constant on some steps.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.SignEvaluation
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.SignEvaluation
+public import RealRooted.Tactic.SideGoals
 
 /-!
 The `rr_sign` tactic is a small arithmetic closer for coefficient-sign side
@@ -8,6 +10,8 @@ local: it does not apply an interlacing theorem, but it should close the
 recurring polynomial-evaluation inequalities once the root interval and scalar
 positivity hypotheses are in the context.
 -/
+
+@[expose] public section
 
 open Polynomial
 

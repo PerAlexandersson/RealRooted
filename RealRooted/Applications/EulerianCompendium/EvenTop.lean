@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
 
 /-!
 # Descents with even top
@@ -11,6 +13,8 @@ destroyed precisely when the maximum is inserted immediately after its top;
 the new maximum contributes a descent precisely when it is even and is not
 inserted at the final slot.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,11 +1,15 @@
-import RealRooted.Tactic.CommonInterleaver.FamilyRules
-import RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.FamilyRules
+public import RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax
 
 /-!
 # Low-degree common-interleaver tactic rules
 
 Macro expansions for degree-at-most-three pair and family endpoints.
 -/
+
+@[expose] public section
 
 open Polynomial
 

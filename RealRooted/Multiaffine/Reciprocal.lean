@@ -1,5 +1,7 @@
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Multiaffine reciprocal transforms
@@ -8,6 +10,8 @@ This file defines the signed complement of a multiaffine multivariate
 polynomial. On evaluation, it is the polynomial realization of
 `P(z) ↦ ∏ i, z i * P(-1 / z)`, which preserves upper-half-plane stability.
 -/
+
+@[expose] public section
 
 open BigOperators
 

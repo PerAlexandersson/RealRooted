@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Converse
+module
+
+public import RealRooted.HermiteBiehler.Converse
 
 /-!
 # Stable univariate pencils
@@ -6,6 +8,8 @@ import RealRooted.HermiteBiehler.Converse
 This module expresses the two-variable upper-half-plane nonvanishing condition
 for a real polynomial pencil and derives it from oriented interlacing.
 -/
+
+@[expose] public section
 
 open Polynomial
 

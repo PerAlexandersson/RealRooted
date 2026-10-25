@@ -1,4 +1,6 @@
-import RealRooted.PolyaFrequencyConvolution
+module
+
+public import RealRooted.PolyaFrequencyConvolution
 
 /-!
 # Geometric scaling of Pólya-frequency sequences
@@ -7,6 +9,8 @@ This file proves that multiplying the `n`th entry of a Pólya-frequency
 sequence by a nonnegative geometric weight preserves total nonnegativity of
 its Toeplitz matrix.
 -/
+
+@[expose] public section
 
 open Matrix
 

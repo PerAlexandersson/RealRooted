@@ -1,4 +1,6 @@
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.WagnerRightSum
 
 /-!
 # Wagner (2): Common-left addition theorems
@@ -6,6 +8,8 @@ import RealRooted.WagnerRightSum
 If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

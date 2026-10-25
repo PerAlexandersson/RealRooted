@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
-import RealRooted.Derivative.Interlacing
-import RealRooted.GeneralizedEulerian
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # The Eulerian transformation on the magic basis
@@ -17,6 +19,8 @@ We prove this with the Chow row transform of Brändén--Vecchi (Theorem 4.13): t
 `A°(X ^ k * (1 + X) ^ (n - k))` is reflection-interlacing with respect to `n + 1`, and the next
 row is the staircase transform of the previous one with reflection bound `n + 1`.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

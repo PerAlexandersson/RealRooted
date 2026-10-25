@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import RealRooted.ThresholdMatrix
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.ThresholdMatrix
 
 /-!
 # All-word descent polynomials
@@ -14,6 +16,8 @@ combinatorial work.
 This module is extracted from the checked all-word A333829 development in
 `sqrt-of-2/real-rooted-oeis-proofs` PR #123.
 -/
+
+@[expose] public section
 
 open Polynomial
 

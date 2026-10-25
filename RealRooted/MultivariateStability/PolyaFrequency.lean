@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.SamePhase
-import RealRooted.PFPolynomial
-import RealRooted.SamePhaseStability.Nonnegative
+module
+
+public import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.PFPolynomial
+public import RealRooted.SamePhaseStability.Nonnegative
 
 /-!
 # Pólya-frequency restrictions of multivariate stable polynomials
@@ -9,6 +11,8 @@ This file combines multivariate real stability with coefficientwise
 nonnegativity.  Every nonnegative common-phase restriction is then a
 Pólya-frequency polynomial and in particular has only nonpositive real roots.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

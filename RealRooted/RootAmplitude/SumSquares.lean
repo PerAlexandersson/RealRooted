@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
 
 /-!
 # Square-sum root-amplitude bounds
@@ -10,6 +12,8 @@ A scalar bound on the sum of squares of reciprocal amplitudes gives a uniform
 lower bound on every amplitude. The final lemma incorporates the elementary
 factor occurring at a negative root.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

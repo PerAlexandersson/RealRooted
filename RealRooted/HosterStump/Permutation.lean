@@ -1,6 +1,8 @@
-import RealRooted.HosterStump.Refined
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import Mathlib.GroupTheory.Perm.Fin
+module
+
+public import RealRooted.HosterStump.Refined
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import Mathlib.GroupTheory.Perm.Fin
 
 /-!
 # Hoster--Stump: the permutation definition of the refined family
@@ -12,6 +14,8 @@ Descent positions are the `0`-based canonical `Equiv.Perm.descentSet`, `refinedP
 `RealRooted.HosterStump.Refined`, by splitting off the first letter with
 `Equiv.Perm.decomposeFin'` (`descentSet_decomposeFin'Symm`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

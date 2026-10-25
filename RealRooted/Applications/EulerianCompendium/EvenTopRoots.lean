@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianCompendium.EvenTop
-import RealRooted.AffineDerivative
-import RealRooted.MaWang.StrictStep
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.Applications.EulerianCompendium.EvenTop
+public import RealRooted.AffineDerivative
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.SimpleRoots
 
 /-!
 # Negative roots and strict interlacing for even-top descents
@@ -9,6 +11,8 @@ import RealRooted.SimpleRoots
 This proves `thm:evenTopInterlacing` for the actual permutation enumerator,
 using its insertion recurrences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

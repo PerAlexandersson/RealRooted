@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Eigen-ODE examples
@@ -7,6 +9,8 @@ Regression tests for `rr_row_ode` and for `rr_row_interlaces` on second-order
 recurrences `P (n + 1) = A * (P n)'' + B * (P n)' + C n * P n` of Laguerre type, drawn
 from `real-rooted-oeis-proofs`.  `rr_find_ode` suggests the ODE statements used here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
-import RealRooted.Applications.OEIS.A144438.BottomTotal
+module
+
+public import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Bridge from Deco decompositions to the recurrence-defined total
@@ -12,6 +14,8 @@ dehomogenized recurrence-defined total.
 These are polynomial identities only.  They do not assert stability of the
 outer sum.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,7 +1,9 @@
-import RealRooted.SimpleRoots
-import RealRooted.Derivative
-import RealRooted.MaWang
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.SimpleRoots
+public import RealRooted.Derivative
+public import RealRooted.MaWang
+public import RealRooted.RootContinuity
 
 /-!
 # Iterated derivative shifts
@@ -10,6 +12,8 @@ This file studies the operator `T_ε p = p - ε p'` and its iterates, including
 real-rootedness preservation, interlacing, and continuity facts used in the
 Obreschkoff converse route.
 -/
+
+@[expose] public section
 
 open Polynomial
 

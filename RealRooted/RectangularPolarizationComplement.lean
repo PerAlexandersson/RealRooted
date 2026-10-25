@@ -1,5 +1,7 @@
-import RealRooted.Multiaffine.Reciprocal
-import RealRooted.RectangularPolarization
+module
+
+public import RealRooted.Multiaffine.Reciprocal
+public import RealRooted.RectangularPolarization
 
 /-!
 # Complementary rectangular polarization
@@ -7,6 +9,8 @@ import RealRooted.RectangularPolarization
 This file defines the signed reciprocal rectangular polarization used in the
 Gribinski--Marcus differential representation of rectangular convolution.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

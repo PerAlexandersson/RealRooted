@@ -1,5 +1,7 @@
-import RealRooted.EdreiThoma.Identities
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+module
+
+public import RealRooted.EdreiThoma.Identities
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 
 /-!
 # Edrei--Thoma continuation
@@ -8,6 +10,8 @@ Edrei’s coefficient-growth argument produces an entire numerator after multipl
 generating function by the limiting denominator product.  A separate quotient argument
 then factors the resulting zero-free quotient as an exponential.
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology Complex
 

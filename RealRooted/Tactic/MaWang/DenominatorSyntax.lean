@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.SequenceSyntax
+module
+
+public import RealRooted.Tactic.MaWang.SequenceSyntax
 
 /-!
 # Ma--Wang tactic scalar-denominator syntax
 
 Parser declarations for normalized scalar-denominator recurrence certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

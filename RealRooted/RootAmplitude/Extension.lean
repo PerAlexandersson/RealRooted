@@ -1,4 +1,6 @@
-import RealRooted.RootAmplitude.Minimum
+module
+
+public import RealRooted.RootAmplitude.Minimum
 
 /-!
 # Finite extension of root-amplitude sequences
@@ -7,6 +9,8 @@ An increasing convex sequence indexed by a finite range can be continued past
 its last index by repeating its final gap. This lets global root-amplitude
 criteria apply directly to finite root lists.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

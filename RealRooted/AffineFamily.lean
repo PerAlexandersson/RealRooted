@@ -5,22 +5,26 @@ Has2x2InterlacingProperty definition, affine-family criterion
 (Brändén Lemma 7.8.4), bridge from combo results to StrictInterl.
 The remaining live theorem here is `strictInterl_of_affine_family_nonneg`.
 -/
-import RealRooted.ProductFamily
-import RealRooted.AffineDerivative
-import RealRooted.AffineFamily.Basic
-import RealRooted.AffineFamily.PositiveFamily
-import RealRooted.AffineFamily.Boundary
-import RealRooted.AffineFamily.LowDegree
-import RealRooted.AffineFamily.RootCrossing
-import RealRooted.AffineFamily.Wronskian
-import RealRooted.PosCombo
-import RealRooted.SuccDegreeLeftEndpoint
-import RealRooted.ObreschkoffConverse
-import RealRooted.FolkloreLemma
-import Mathlib.Analysis.Calculus.Deriv.Inv
-import Mathlib.Analysis.Calculus.Deriv.Mul
-import Mathlib.Algebra.QuadraticDiscriminant
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+module
+
+public import RealRooted.ProductFamily
+public import RealRooted.AffineDerivative
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.AffineFamily.PositiveFamily
+public import RealRooted.AffineFamily.Boundary
+public import RealRooted.AffineFamily.LowDegree
+public import RealRooted.AffineFamily.RootCrossing
+public import RealRooted.AffineFamily.Wronskian
+public import RealRooted.PosCombo
+public import RealRooted.SuccDegreeLeftEndpoint
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.FolkloreLemma
+public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Calculus.Deriv.Mul
+public import Mathlib.Algebra.QuadraticDiscriminant
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+
+@[expose] public section
 
 open Polynomial
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Hermitian models for nonsingular totally nonnegative matrices
@@ -18,6 +20,8 @@ This matrix-only module does not import the RealRooted polynomial theorem
 library. The polynomial interlacing endpoint lives in
 `RealRooted.TotallyNonnegInterlacing`.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

@@ -1,4 +1,6 @@
-import RealRooted.ChudnovskySeymour.Core
+module
+
+public import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Three-polynomial compatibility assembly
@@ -7,6 +9,8 @@ This module packages the three-member Chudnovsky--Seymour argument used when
 one member of a pair is replaced by a nonnegative sum of two pairwise
 compatible polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial
 

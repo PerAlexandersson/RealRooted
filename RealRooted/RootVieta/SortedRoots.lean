@@ -1,6 +1,8 @@
-import RealRooted.RootVieta
-import RealRooted.CoefficientDominance.Symmetric.Polynomial
-import RealRooted.SortedRoots
+module
+
+public import RealRooted.RootVieta
+public import RealRooted.CoefficientDominance.Symmetric.Polynomial
+public import RealRooted.SortedRoots
 
 /-!
 # Vieta formulas in terms of sorted root sequences
@@ -8,6 +10,8 @@ import RealRooted.SortedRoots
 Coefficients and values of a polynomial with nonzero roots and constant coefficient one,
 expressed through the reciprocal sorted-root sequence `SortedRoots.rootSeq`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootVieta
 

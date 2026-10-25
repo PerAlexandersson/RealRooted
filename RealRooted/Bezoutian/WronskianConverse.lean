@@ -1,5 +1,7 @@
-import Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Bezoutian.ComplexRoots
+module
+
+public import Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Bezoutian.ComplexRoots
 
 /-!
 # Wronskian positivity and strict interlacing
@@ -8,6 +10,8 @@ Root-sign and gap arguments converting global Wronskian positivity to strict
 same-degree interlacing, together with the higher-degree converse from a
 positive Bezout matrix.
 -/
+
+@[expose] public section
 
 open Polynomial Matrix
 

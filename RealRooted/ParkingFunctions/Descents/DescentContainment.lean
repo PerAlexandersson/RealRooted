@@ -1,6 +1,8 @@
-import RealRooted.ParkingFunctions.Descents.CompositionBlocks
-import RealRooted.ParkingFunctions.Descents.DescentChains
-import Mathlib.Data.List.ChainOfFn
+module
+
+public import RealRooted.ParkingFunctions.Descents.CompositionBlocks
+public import RealRooted.ParkingFunctions.Descents.DescentChains
+public import Mathlib.Data.List.ChainOfFn
 
 /-!
 # Descent-containment content enumerators
@@ -8,6 +10,8 @@ import Mathlib.Data.List.ChainOfFn
 This module packages the contiguous runs determined by prescribed descent
 positions as a Mathlib `Composition`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

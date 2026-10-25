@@ -1,8 +1,12 @@
-import RealRooted.Tactic.WagnerX.TranslatedLag
+module
+
+public import RealRooted.Tactic.WagnerX.TranslatedLag
 
 /-!
 # Wagner `X`-shift tactic syntax
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import Mathlib.Tactic
-import RealRooted.LiebSokalOperator.Linearity
+module
+
+public import Mathlib.Tactic
+public import RealRooted.LiebSokalOperator.Linearity
 
 /-!
 # Elementary symmetric differential operators
@@ -7,6 +9,8 @@ import RealRooted.LiebSokalOperator.Linearity
 This file computes the action of an elementary symmetric polynomial in the
 partial derivatives on another elementary symmetric polynomial.
 -/
+
+@[expose] public section
 
 open BigOperators
 

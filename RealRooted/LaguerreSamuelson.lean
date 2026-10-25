@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The Laguerre–Samuelson inequality
@@ -27,6 +29,8 @@ Applied to the roots of a monic real-rooted polynomial
 * P. A. Samuelson, *How deviant can you be?*, J. Amer. Statist. Assoc. 63 (1968), 1522–1525.
 * J. M. Steele, *The Cauchy–Schwarz Master Class*, Exercise 5.5.
 -/
+
+@[expose] public section
 
 open Polynomial
 

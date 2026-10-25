@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Shift
-import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+module
+
+public import RealRooted.EulerOperator.Shift
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
 
 /-!
 # Diagonal collapse for the toric-contribution triangle
@@ -8,6 +10,8 @@ This file conjugates the horizontal insertion operators by powers of `1-X`.
 The resulting Euler operators act diagonally on coefficients, reducing the
 remaining identification with `R_d` to a finite coefficient identity.
 -/
+
+@[expose] public section
 
 open Polynomial
 

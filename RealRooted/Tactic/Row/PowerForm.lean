@@ -1,5 +1,9 @@
-import RealRooted.ProductSequence.Interlacing
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.ProductSequence.Interlacing
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.ProductSequence.Interlacing
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: rows `c m · F · q ^ (m + e)`
@@ -15,6 +19,8 @@ most three) exactly from the computed rows; `powerFormInterlaces` proves the int
 form may start after a few rows (A128540: `P 0 = 1`, then `P m = m (1 + X) X ^ (m - 1)`); the
 theorems then apply to `m ↦ P (m + s)` and the first `s` rows are split off.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

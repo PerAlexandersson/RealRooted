@@ -1,8 +1,10 @@
-import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
-import Mathlib.RingTheory.PowerSeries.Order
-import Mathlib.RingTheory.PowerSeries.PiTopology
+module
+
+public import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+public import Mathlib.RingTheory.PowerSeries.Order
+public import Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Locally finite Smirnov substitution series
@@ -11,6 +13,8 @@ This module substitutes positive-order formal series for the letter weights
 in the finite weighted Smirnov enumerator.  The total series is defined
 coefficientwise: in degree `n`, only skeleton lengths at most `n` occur.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 open scoped PowerSeries.WithPiTopology

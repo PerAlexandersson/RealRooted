@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 
 /-!
 # Closed limits of Hurwitz-stable polynomials
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 This file packages the closed-root transport theorem for fixed-degree monic
 polynomial sequences as a right-half-plane stability result.
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology
 

@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaverSeq
+module
+
+public import RealRooted.CommonInterleaverSeq
 
 /-!
 # Finite compatibility families
@@ -16,6 +18,8 @@ statement interfaces.
 This sequence-independent corollary family was first used in
 `ProofsOeis.CompatibilityFamilies`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

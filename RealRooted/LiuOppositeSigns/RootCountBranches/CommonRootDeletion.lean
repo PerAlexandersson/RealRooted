@@ -1,6 +1,8 @@
-import RealRooted.CommonInterleaver.RightPencil
-import RealRooted.LiuOppositeSigns
-import RealRooted.LiuOppositeSigns.NoCommonRoots
+module
+
+public import RealRooted.CommonInterleaver.RightPencil
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
 
 /-!
 # Common-root deletion for Liu's opposite-sign theorem
@@ -8,6 +10,8 @@ import RealRooted.LiuOppositeSigns.NoCommonRoots
 This module isolates the algebraic reduction that deletes a shared linear
 factor and restores the original compatible pair afterward.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

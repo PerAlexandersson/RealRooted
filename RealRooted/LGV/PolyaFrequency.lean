@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import RealRooted.LGV.Toeplitz
-import RealRooted.LGV.TotallyNonnegative
+public import RealRooted.LGV.Toeplitz
+public import RealRooted.LGV.TotallyNonnegative
 
 /-!
 # Ordered LGV certificates and Pólya-frequency sequences
@@ -15,6 +16,8 @@ Pólya-frequency interface in `RealRooted`. All path-cancellation arguments
 remain in LeanLGV; here we only apply their determinant nonnegativity theorem
 to every strict Toeplitz minor.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

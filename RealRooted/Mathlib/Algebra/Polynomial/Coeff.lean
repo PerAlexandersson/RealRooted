@@ -17,7 +17,7 @@ whose exponents descend through a finite degree box, and the coefficients of
 `(1 - X) * p`.
 -/
 
-public section
+@[expose] public section
 
 open BigOperators
 

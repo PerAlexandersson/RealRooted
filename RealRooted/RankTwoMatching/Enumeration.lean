@@ -1,4 +1,8 @@
-import RealRooted.RankTwoMatching.DisjointEquiv
+module
+
+public import RealRooted.RankTwoMatching.DisjointEquiv
+
+@[expose] public section
 
 open Polynomial
 

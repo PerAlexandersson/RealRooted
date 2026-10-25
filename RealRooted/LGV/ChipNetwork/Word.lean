@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import Mathlib.Data.List.Infix
-import RealRooted.LGV.ChipNetwork.Matrix
+public import Mathlib.Data.List.Infix
+public import RealRooted.LGV.ChipNetwork.Matrix
 
 /-!
 # Finite words of lower-bidiagonal chips
@@ -13,6 +14,8 @@ import RealRooted.LGV.ChipNetwork.Matrix
 This file packages stage weights as a literal finite word and identifies every
 interval transfer product with the matrix product of the corresponding slice.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LGV

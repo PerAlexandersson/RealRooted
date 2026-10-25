@@ -1,4 +1,6 @@
-import RealRooted.ThreeTermRecurrence.CoeffMoments
+module
+
+public import RealRooted.ThreeTermRecurrence.CoeffMoments
 
 /-!
 # Row CLTs from coefficient moments
@@ -6,6 +8,8 @@ import RealRooted.ThreeTermRecurrence.CoeffMoments
 This module connects the existing moment calculations for product and
 constant-coefficient three-term recurrences to Harper's coefficient-distribution CLT.
 -/
+
+@[expose] public section
 
 open Filter Topology ProbabilityTheory
 open scoped BigOperators Polynomial

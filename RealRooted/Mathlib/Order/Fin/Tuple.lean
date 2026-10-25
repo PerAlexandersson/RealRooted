@@ -13,7 +13,7 @@ public import Mathlib.Order.Fin.Tuple
 Upstream-shaped lemmas for inserting an entry into a strictly ordered finite tuple.
 -/
 
-public section
+@[expose] public section
 
 namespace StrictMono
 

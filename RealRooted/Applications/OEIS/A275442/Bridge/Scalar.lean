@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Certificates
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Certificates
 
 /-!
 # The structural induction for trajectories of the lag-four recurrence
@@ -21,6 +23,8 @@ The proof is a single strong induction which treats `S` and `-S` simultaneously;
 Farkas certificates from the preceding support module discharge the cases of a long run of
 positive values, and `Bridge.crux_of_prev`, `Bridge.crux_of_short_run` the short ones.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

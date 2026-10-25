@@ -1,4 +1,6 @@
-import RealRooted.Wronskian.Successor.Gap
+module
+
+public import RealRooted.Wronskian.Successor.Gap
 
 /-!
 # Successor-degree Wronskian interlacing
@@ -6,6 +8,8 @@ import RealRooted.Wronskian.Successor.Gap
 Strict Wronskian signs at the roots of the higher-degree polynomial force
 strict interlacing across a one-degree increase.
 -/
+
+@[expose] public section
 
 open Polynomial
 

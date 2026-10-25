@@ -1,5 +1,7 @@
-import Mathlib.Tactic
-import Mathlib.Data.Fintype.Pi
+module
+
+public import Mathlib.Tactic
+public import Mathlib.Data.Fintype.Pi
 
 /-!
 # Exceptional histories for the deco construction
@@ -9,6 +11,8 @@ as their finite set of starting heights.  This canonical representation makes
 the height bounds and nonconsecutivity condition explicit and avoids carrying
 redundant step-list data into the exact-layer polynomial recursion.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

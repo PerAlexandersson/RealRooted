@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.JensenHypergeometric
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.MultiplierSequence.JensenHypergeometric
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The A155495 coefficient model
@@ -9,13 +11,16 @@ The row has coefficient `C(n, k) C(2n, 2k)`. After a positive scalar
 normalization it is a two-sided Jensen polynomial with weight `4^k / (2k)!`.
 -/
 
+@[expose] public section
+
 open RealRooted Polynomial
 
 noncomputable section
 
 namespace RealRooted.Applications.OEIS.A155495
 
-private def scale (n : ℕ) : ℝ :=
+/-- The positive normalizing scalar `(2n)! / 4^n` of row `n`. -/
+def scale (n : ℕ) : ℝ :=
   (Nat.factorial (2 * n) : ℝ) / (4 : ℝ) ^ n
 
 /-- The coefficient model for row `n` of A155495. -/
@@ -76,7 +81,9 @@ theorem polynomial_interlaces (n : ℕ) :
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
   (polynomial_strictInterl_succ n).1.2
 
-private def denominator (n : ℕ) : ℝ :=
+/-- The common denominator `-17/3 - (5/3) n + (2/3) (4 + n)^2` in the lag-three update
+coefficients. -/
+def denominator (n : ℕ) : ℝ :=
   (-17 / 3) + (-5 / 3) * (n : ℝ) + (2 / 3) * (4 + (n : ℝ)) ^ 2
 
 /-- The downstream lag-three update for A155495. -/

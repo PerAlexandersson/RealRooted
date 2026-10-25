@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.Interlacing.NegativeRoots
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.Interlacing.NegativeRoots
 
 /-!
 # Endpoint root windows
@@ -9,6 +11,8 @@ The endpoint signs used here are the factorization argument in Ma and Wang,
 *q-Eulerian polynomials and polynomials with only real zeros*, Theorem 2
 ([arXiv:math/0611826](https://arxiv.org/abs/math/0611826)).
 -/
+
+@[expose] public section
 
 open Polynomial
 

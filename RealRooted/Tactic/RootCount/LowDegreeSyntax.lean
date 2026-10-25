@@ -1,11 +1,15 @@
-import RealRooted.Tactic.RootCount.CoreSyntax
-import RealRooted.Tactic.RootCount.LowDegree
+module
+
+public import RealRooted.Tactic.RootCount.CoreSyntax
+public import RealRooted.Tactic.RootCount.LowDegree
 
 /-!
 # Low-degree root-count tactic syntax
 
 Parser declarations for same-degree and low-degree root-count certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Tactic.Linarith
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Tactic.Linarith
 
 /-!
 # Derivatives at simple roots of split polynomials
@@ -12,6 +14,8 @@ import Mathlib.Tactic.Linarith
 An upstream-shaped formula for the derivative at a root of multiplicity one,
 without requiring the polynomial to be monic.
 -/
+
+@[expose] public section
 
 namespace Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.RootAmplitude.Convex
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import RealRooted.RootAmplitude.Convex
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Minimum root-amplitude bounds
@@ -7,6 +9,8 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 Two routes propagate a lower bound at the smallest finite-sequence amplitude:
 one through convexity and one through reciprocal-distance sums.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

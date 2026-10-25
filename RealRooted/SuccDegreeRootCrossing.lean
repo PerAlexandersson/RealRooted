@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.RootOrderBridge
-import Mathlib.Tactic
+module
+
+public import RealRooted.Basic
+public import RealRooted.RootOrderBridge
+public import Mathlib.Tactic
 
 /-!
 # Succ-degree root crossing
@@ -9,6 +11,8 @@ This module records a small checked base case for the succ-degree
 root-crossing target and a concrete warning example for the stronger fixed
 orientation route.
 -/
+
+@[expose] public section
 
 open Polynomial
 

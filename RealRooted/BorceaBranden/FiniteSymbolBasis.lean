@@ -1,6 +1,8 @@
-import Mathlib.Data.Finsupp.Weight
-import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+module
+
+public import Mathlib.Data.Finsupp.Weight
+public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 /-!
 # Degree-one exponent coordinates for finite symbols
@@ -9,6 +11,8 @@ This module identifies coordinate-wise degree-one exponent vectors with their
 supports. It supplies the basis normalization used in the coefficient
 calculation of Borcea--Branden, arXiv:0809.0401, Lemma 2.2.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

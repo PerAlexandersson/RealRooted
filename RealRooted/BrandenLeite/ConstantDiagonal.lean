@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.Theorem37
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BrandenLeite.Theorem37
+public import RealRooted.PFPolynomial
 
 /-!
 # Chain polynomials of positive constant-diagonal matrices
@@ -9,6 +11,8 @@ diagonal to a lower unitriangular matrix.  The associated chain polynomials
 are related by a positive rescaling of the polynomial variable, so the
 Brändén--Saud Leite Theorem 3.7 transfers to the unnormalized matrix.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial BigOperators
 

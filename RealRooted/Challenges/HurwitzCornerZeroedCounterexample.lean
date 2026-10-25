@@ -1,4 +1,6 @@
-import RealRooted.HurwitzMatrix
+module
+
+public import RealRooted.HurwitzMatrix
 
 /-!
 # A corner-zeroed Hurwitz-minor counterexample
@@ -21,6 +23,8 @@ sequence; it is a checked arithmetic diagnostic.  The two-matrix
 Schur-product statement for infinite Hurwitz matrices is refuted separately by
 `RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.HurwitzCornerZeroedCounterexample
 

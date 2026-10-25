@@ -1,10 +1,12 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
-import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
-import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
+public import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
+public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
+public import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
 # Generalized snake poset challenge entry point
@@ -154,6 +156,8 @@ See [@BraunJal2026x] and [@AlexanderssonJal2024x, Art. 59]. See also the
 This module is a catalog facade.  The proofs live in
 `RealRooted.GeneralizedSnakePosets`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

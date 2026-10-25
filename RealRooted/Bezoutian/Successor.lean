@@ -1,7 +1,9 @@
-import RealRooted.Bezoutian
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Wronskian.Forward
-import RealRooted.Wronskian.Successor.Interlacing
+module
+
+public import RealRooted.Bezoutian
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Wronskian.Forward
+public import RealRooted.Wronskian.Successor.Interlacing
 
 /-!
 # Successor-degree Bézout criterion
@@ -16,6 +18,8 @@ at the roots of `f`; the diagonal entries are the Wronskian values `f'(r) g(r)`.
 The converse uses the positivity of the Wronskian `f' g - f g'` forced by a
 positive definite Bézout matrix.
 -/
+
+@[expose] public section
 
 open Polynomial Matrix
 

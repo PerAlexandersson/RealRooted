@@ -1,4 +1,8 @@
-import RealRooted.MaWang.Weak
+module
+
+public import RealRooted.MaWang.Weak
+
+@[expose] public section
 
 open Polynomial Filter
 

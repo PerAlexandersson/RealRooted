@@ -1,4 +1,6 @@
-import RealRooted.LiebSokalPointwise
+module
+
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # The multiaffine Lieb--Sokal theorem
@@ -7,6 +9,8 @@ This file proves the multiaffine constant-coefficient differential-operator
 theorem used in Gribinski--Marcus, *A rectangular additive convolution for
 polynomials*, Theorem 2.4.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

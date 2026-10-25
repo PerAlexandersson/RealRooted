@@ -1,4 +1,6 @@
-import RealRooted.OperatorMatrix.LocalToGlobal
+module
+
+public import RealRooted.OperatorMatrix.LocalToGlobal
 
 /-!
 # Composition of ordered-PF operator matrices
@@ -7,6 +9,8 @@ Matrix multiplication composes matrices of polynomial endomorphisms in the
 same order as their actions on polynomial vectors.  Consequently, ordered-PF
 preservers are closed under multiplication and powers.
 -/
+
+@[expose] public section
 
 open Polynomial
 

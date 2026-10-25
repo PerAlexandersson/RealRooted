@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import LGV.Ordered
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import LGV.Ordered
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity from ordered LGV certificates
@@ -15,6 +16,8 @@ LeanLGV to the total-nonnegativity interface in `RealRooted`.  It is neutral
 about the shape of the path matrix: Toeplitz and Pólya-frequency consequences
 belong in downstream adapters.
 -/
+
+@[expose] public section
 
 namespace LGV.FinitePathNetwork
 

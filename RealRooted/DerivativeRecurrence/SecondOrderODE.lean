@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.FieldDivision
-import Mathlib.Basic.Real.Basic
-import Mathlib.Tactic.LinearCombination
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # Second-order recurrences with an eigen-ODE
@@ -34,6 +36,8 @@ can find `β`, `ev` and `W` from finitely many rows and check the identities wit
 * `derivRec₂_firstOrder`: the collapsed first-order recurrence.
 * `div_ofNat_eq_C_mul`: `p / n = C n⁻¹ * p`, to normalize generated coefficients.
 -/
+
+@[expose] public section
 
 open Polynomial
 

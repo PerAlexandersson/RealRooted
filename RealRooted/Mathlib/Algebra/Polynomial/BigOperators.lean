@@ -11,7 +11,7 @@ public import Mathlib.Algebra.Polynomial.BigOperators
 # Degree bounds for list sums of polynomials
 -/
 
-public section
+@[expose] public section
 
 namespace Polynomial
 

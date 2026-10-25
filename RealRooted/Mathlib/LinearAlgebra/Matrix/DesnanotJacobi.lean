@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Matrix.Adjugate
-import Mathlib.LinearAlgebra.Matrix.SchurComplement
-import Mathlib.Tactic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
+public import Mathlib.Tactic
 
 /-!
 # The Desnanot--Jacobi determinant identity
@@ -15,6 +17,8 @@ commutative ring.  Mathlib has the required block-determinant and generic-matrix
 statement of this identity.  Tau Ceti's `LinearAlgebra.Matrix.Condensation` contains Chiò's
 different, one-corner condensation identity, so it does not directly supply this result.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

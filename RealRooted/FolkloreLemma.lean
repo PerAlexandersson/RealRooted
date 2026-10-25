@@ -1,8 +1,13 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.ObreschkoffConverse
+
+@[expose] public section
+
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 /-!

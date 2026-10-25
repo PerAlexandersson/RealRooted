@@ -1,5 +1,7 @@
-import RealRooted.SymmetricDecomposition
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+module
+
+public import RealRooted.SymmetricDecomposition
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 /-!
 # Gamma transforms and real-rootedness
@@ -8,6 +10,8 @@ This file packages the univariate gamma transform used for symmetric
 decompositions and proves real-rootedness criteria for the transformed
 polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

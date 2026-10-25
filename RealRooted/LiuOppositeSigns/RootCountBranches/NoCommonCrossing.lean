@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
+module
+
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
 
 /-!
 # No-common-root crossing analysis for Liu's opposite-sign theorem
@@ -8,6 +10,8 @@ boundaries of the no-common-root argument: the left/right Theorem 2.1 branch
 predicate from the cross-owned-gap invariant, and strictly positive
 combinations from compatibility.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

@@ -1,7 +1,9 @@
-import RealRooted.EulerBidiagonal.PairStep
-import RealRooted.Interlacing.RootDeletionExpansion
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+module
+
+public import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.Interlacing.RootDeletionExpansion
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Theorem C′ (positive regime): `T` preserves strict interlacing
@@ -11,6 +13,8 @@ Let `T = generalStep κ a b u v`.  If `f` and `g` are negative-simple, `deg g = 
 `T f ≪ T g` strictly with no common roots.  The proof applies `T` to the root-deletion expansion
 of `g` and evaluates at the roots of `T f`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

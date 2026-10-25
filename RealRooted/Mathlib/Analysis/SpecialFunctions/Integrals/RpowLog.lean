@@ -3,9 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
-import Mathlib.Topology.Order.ExtendFrom
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+public import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
+public import Mathlib.Topology.Order.ExtendFrom
+public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
 /-!
 # Integrals of a real power times a logarithm
@@ -13,6 +16,8 @@ import Mathlib.Topology.Order.ExtendFrom
 This file supplies the improper integral at zero obtained by differentiating
 the elementary real-power integral with respect to its exponent.
 -/
+
+@[expose] public section
 
 open Filter MeasureTheory Set Topology
 

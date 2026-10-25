@@ -1,7 +1,9 @@
-import RealRooted.CommonInterleaver.RightPencil
-import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.PositiveParameterLocalLowerCount
-import RealRooted.RootCountLocalConstancy
+module
+
+public import RealRooted.CommonInterleaver.RightPencil
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.PositiveParameterLocalLowerCount
+public import RealRooted.RootCountLocalConstancy
 
 /-!
 # Same-Degree Count Equality from Analytic Inputs
@@ -12,6 +14,8 @@ used for the successor-degree case applies directly.  The upper root counts of
 a no-common positive-combination pair differ by at most one, which gives the
 same-degree case of the two-polynomial common-interleaver theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

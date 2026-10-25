@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal
+module
+
+public import RealRooted.EulerBidiagonal
 
 /-!
 # Central factorial and Legendre–Stirling rows interlace
@@ -8,6 +10,8 @@ The row polynomials of the central factorial numbers (OEIS A036969,
 the rows of the bidiagonal Euler step `X + (θ + a)(θ + b)` with `(a, b) = (1, 1)` and `(1, 2)`.
 Hence consecutive rows strictly interlace (`EulerBidiagonal.strictInterl_rows`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

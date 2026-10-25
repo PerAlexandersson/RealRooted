@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Analytic elementary-symmetric sandwich bounds
@@ -8,6 +10,8 @@ Positive finite families admit exponential upper bounds for their elementary
 symmetric values. Combined with the leading-product lower bound, these control
 consecutive logarithmic ratios.
 -/
+
+@[expose] public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

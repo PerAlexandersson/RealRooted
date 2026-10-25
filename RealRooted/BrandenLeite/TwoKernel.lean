@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.KernelClosure
-import RealRooted.BrandenLeite.TwoKernelAlgebra
-import RealRooted.BrandenLeite.ZeroConstant
+module
+
+public import RealRooted.BrandenLeite.KernelClosure
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
+public import RealRooted.BrandenLeite.ZeroConstant
 
 /-!
 # The two-kernel PF and interlacing theorem
@@ -9,6 +11,8 @@ We approximate the zero-constant PF kernel by the positive-initial PF
 sequences extracted in `ZeroConstant`, apply the finite kernel-limit theorem,
 and identify its rows with the literal two-kernel coefficient polynomials.
 -/
+
+@[expose] public section
 
 open Filter Matrix Polynomial Topology
 

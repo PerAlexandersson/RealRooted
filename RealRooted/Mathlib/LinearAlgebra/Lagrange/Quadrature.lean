@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Real.Sqrt
-import Mathlib.LinearAlgebra.Lagrange
-import Mathlib.LinearAlgebra.Matrix.Symmetric
-import Mathlib.Tactic
+module
+
+public import Mathlib.Analysis.Real.Sqrt
+public import Mathlib.LinearAlgebra.Lagrange
+public import Mathlib.LinearAlgebra.Matrix.Symmetric
+public import Mathlib.Tactic
 
 /-!
 # Finite exact quadrature and collocation in Lagrange coordinates
@@ -26,6 +28,8 @@ collocation matrix, and a positive diagonal similarity then gives an honest
 symmetric matrix.  We also record the first and second derivatives of a
 cardinal polynomial at the other nodes.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

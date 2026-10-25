@@ -1,5 +1,9 @@
-import RealRooted.NarayanaTransformation.Basis
-import Mathlib.Combinatorics.Enumerative.Stirling
+module
+
+public import RealRooted.NarayanaTransformation.Basis
+public import Mathlib.Combinatorics.Enumerative.Stirling
+
+@[expose] public section
 
 open Polynomial
 

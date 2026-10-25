@@ -1,7 +1,9 @@
-import RealRooted.LiuWang.General
-import RealRooted.LiuWang.Step
-import RealRooted.ScalarNormalization
-import RealRooted.SequenceClosure
+module
+
+public import RealRooted.LiuWang.General
+public import RealRooted.LiuWang.Step
+public import RealRooted.ScalarNormalization
+public import RealRooted.SequenceClosure
 
 /-!
 # Liu--Wang sequence core
@@ -12,6 +14,8 @@ The general form is `strictInterl_succ_of_recurrence_of_eval_nonpos`: it allows 
 keep or raise the degree by one, and it allows consecutive rows to share roots.  The older
 `*_lag_sequence` theorems require an exact degree increase and no common roots.
 -/
+
+@[expose] public section
 
 open Polynomial
 

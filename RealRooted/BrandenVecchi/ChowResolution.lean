@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.Resolvable
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+module
+
+public import RealRooted.BrandenLeite.Resolvable
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!
 # Chow transforms of resolving rows
@@ -10,6 +12,8 @@ applies the Chow-deranged basis transform to an explicit matrix resolution and
 identifies the resulting staircase recurrence. Interlacing and total
 nonnegativity enter only in later modules.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

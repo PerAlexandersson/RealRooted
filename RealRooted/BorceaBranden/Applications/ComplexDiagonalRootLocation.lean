@@ -1,11 +1,15 @@
-import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
+module
+
+public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
 
 /-!
 # Complex diagonal multipliers and upper-half-plane roots
 -/
+
+@[expose] public section
 
 open Polynomial
 

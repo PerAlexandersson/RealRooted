@@ -1,9 +1,11 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
-import RealRooted.DegreeDropDivXPrec
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.SimpleRoots
-import RealRooted.Wronskian.Forward
-import RealRooted.Wronskian.Successor.Interlacing
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
+public import RealRooted.DegreeDropDivXPrec
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.SimpleRoots
+public import RealRooted.Wronskian.Forward
+public import RealRooted.Wronskian.Successor.Interlacing
 
 /-!
 # Algebraic data for stable Routh reduction
@@ -12,6 +14,8 @@ This module records the exact rotated recurrence and the degree and leading-
 coefficient data used when transporting strict Hurwitz stability through one
 Routh step. The analytic preservation theorem is built on these identities.
 -/
+
+@[expose] public section
 
 open Polynomial
 

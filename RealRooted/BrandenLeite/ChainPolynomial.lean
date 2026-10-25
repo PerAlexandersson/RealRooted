@@ -1,10 +1,12 @@
-import RealRooted.BrandenLeite.ChainPolynomial.Algebra
-import RealRooted.BrandenLeite.ChainPolynomial.Resolution
-import RealRooted.Interlacing.ConeBounds
-import RealRooted.RowThresholdOne
-import RealRooted.SymmetricDecomposition.Theorem26
-import RealRooted.Mathlib.Algebra.BigOperators.Group.List
-import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+module
+
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+public import RealRooted.BrandenLeite.ChainPolynomial.Resolution
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.RowThresholdOne
+public import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+public import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 
 /-!
 # Chain polynomials of a resolvable matrix
@@ -17,6 +19,8 @@ total nonnegativity (`resolutionOfTotallyNonneg`), and
 `RealRooted.BrandenLeite.Theorem37` restates the results for every
 lower-unitriangular totally nonnegative matrix.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.NDCutInvariant
-import RealRooted.RowThresholdOne
+module
+
+public import RealRooted.Compatibility.NDCutInvariant
+public import RealRooted.RowThresholdOne
 
 /-!
 # Staircase representation of structural N/D cut outputs
@@ -10,6 +12,8 @@ the ordered state list `reverse N ++ D`.  The `P` outputs use the first `m`
 thresholds in reverse order, while the `Q` outputs use the last `m`
 thresholds in forward order; the middle threshold `m` is omitted.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

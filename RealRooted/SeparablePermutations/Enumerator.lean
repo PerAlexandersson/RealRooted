@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
-import RealRooted.SeparablePermutations.Gamma
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
+public import RealRooted.SeparablePermutations.Gamma
 
 /-!
 # The descent enumerator of the separable permutations
@@ -15,6 +17,8 @@ for `n + 1` letters, which keeps the empty permutation out of the picture.
 `RealRooted.SeparablePermutations.descentEnumerator_eq_descentPolynomial` identifies it with the
 algebraic family `descentPolynomial` of `RealRooted/SeparablePermutations/Gamma.lean`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

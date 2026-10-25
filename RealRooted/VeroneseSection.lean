@@ -1,8 +1,10 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.HermiteBiehler
-import RealRooted.WagnerX
-import Mathlib.RingTheory.PowerSeries.Basic
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.HermiteBiehler
+public import RealRooted.WagnerX
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Veronese sections
@@ -33,6 +35,9 @@ This file formalizes the Veronese-section results of Athanasiadis--Wagner.
 `RealRooted.VeroneseMatrix` gives a second, matrix-based proof of the
 real-rootedness consequence.
 -/
+
+@[expose] public section
+
 open Polynomial Matrix
 
 noncomputable section

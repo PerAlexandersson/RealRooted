@@ -1,4 +1,6 @@
-import RealRooted.LiebSokalOperator
+module
+
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Linearity of negative differential evaluation
@@ -7,6 +9,8 @@ This module packages `applyNegDifferential` as a linear map in either argument
 and exposes the resulting finite-sum identities. The API is independent of the
 applications that consume it.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

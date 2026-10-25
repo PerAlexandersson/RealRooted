@@ -1,4 +1,6 @@
-import RealRooted.ProductSequence.Core
+module
+
+public import RealRooted.ProductSequence.Core
 
 /-!
 # Row-wise product lifts
@@ -6,6 +8,8 @@ import RealRooted.ProductSequence.Core
 Real-rootedness transport from quotient or model sequences through scalar,
 monomial, affine, and powered affine row factors.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

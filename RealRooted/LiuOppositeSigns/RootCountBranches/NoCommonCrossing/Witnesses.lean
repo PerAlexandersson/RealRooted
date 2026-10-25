@@ -1,10 +1,12 @@
-import RealRooted.CommonInterleaver.RightPencil
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.LiuOppositeSigns
-import RealRooted.LiuOppositeSigns.NoCommonRoots
-import RealRooted.PositiveParameterLocalLowerCount
-import RealRooted.RootContinuity
-import RealRooted.RootCountLocalConstancy
+module
+
+public import RealRooted.CommonInterleaver.RightPencil
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.PositiveParameterLocalLowerCount
+public import RealRooted.RootContinuity
+public import RealRooted.RootCountLocalConstancy
 
 /-!
 # Crossing witnesses for Liu's no-common-root argument
@@ -12,6 +14,8 @@ import RealRooted.RootCountLocalConstancy
 This module contains the even-root x-subtraction witness and the
 right-pencil crossing criteria for the odd upper root-count difference.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

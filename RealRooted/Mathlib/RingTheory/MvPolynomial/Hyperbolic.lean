@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.RingTheory.MvPolynomial.Homogeneous
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Hyperbolic multivariate polynomials
@@ -12,6 +14,8 @@ import Mathlib.RingTheory.MvPolynomial.Homogeneous
 This file contains definitions intended for upstreaming to
 `Mathlib.RingTheory.MvPolynomial.Hyperbolic`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

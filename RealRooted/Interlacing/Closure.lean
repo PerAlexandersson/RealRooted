@@ -1,5 +1,7 @@
-import RealRooted.ObreschkoffConverse
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.RootContinuity
 
 /-!
 # Interlacing closure under coefficientwise limits
@@ -10,6 +12,8 @@ proof avoids choosing continuously ordered roots: interlacing makes every
 real linear combination split, and polynomial root continuity passes that
 property to the limit one combination at a time.
 -/
+
+@[expose] public section
 
 open Polynomial Filter Topology
 

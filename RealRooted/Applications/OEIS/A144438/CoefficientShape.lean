@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.PolyaFrequency
-import RealRooted.PFPolynomial.CoefficientShape
+module
+
+public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+public import RealRooted.PFPolynomial.CoefficientShape
 
 /-!
 # Coefficient shape of the A144438 recurrence family
@@ -8,6 +10,8 @@ This opt-in module derives coefficient-shape consequences from the
 Pólya-frequency certificates.  It uses only the algebraic recurrence family;
 no combinatorial interpretation of A144438 or of the weight is assumed.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

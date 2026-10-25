@@ -1,4 +1,6 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
 
 /-!
 # The constant-coefficient recurrence for ternary runs
@@ -8,15 +10,22 @@ three-step recurrence. We identify this recurrence with the imported
 normalized differential recurrence, independently of word enumeration.
 -/
 
+@[expose] public section
+
 open Polynomial
 
 noncomputable section
 
 namespace RealRooted.EulerianCompendium
 
-private abbrev runA : ℝ[X] := 3 * X
-private abbrev runB : ℝ[X] := 3 * X * (1 - X)
-private abbrev runC : ℝ[X] := X * (1 - X) ^ 2
+/-- The coefficient `3 X` of the previous term in the three-step ternary-run recurrence. -/
+abbrev runA : ℝ[X] := 3 * X
+/-- The coefficient `3 X (1 - X)` of the second previous term in the three-step ternary-run
+recurrence. -/
+abbrev runB : ℝ[X] := 3 * X * (1 - X)
+/-- The coefficient `X (1 - X)^2` of the third previous term in the three-step ternary-run
+recurrence. -/
+abbrev runC : ℝ[X] := X * (1 - X) ^ 2
 
 /-- The three-step recurrence from the denominator of the ternary-run generating function. -/
 def ternaryRunThreeStep : ℕ → ℝ[X]

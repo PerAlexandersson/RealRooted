@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
-import RealRooted.ReflectedRootCountLocalConstancy
+module
+
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+public import RealRooted.ReflectedRootCountLocalConstancy
 
 /-!
 # Liu's bounded-interval continuity argument
@@ -9,6 +11,8 @@ Theorem 2.1.  A same-owned combined-root gap is followed from the endpoint
 polynomial that is root-free on the closed gap.  Fixed-degree reflection lets
 the root count stay constant even when the original affine pencil drops degree.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.Resolvable
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+module
+
+public import RealRooted.BrandenLeite.Resolvable
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Whitney reduction for Brändén--Saud Leite resolutions
@@ -8,6 +10,8 @@ This file connects the finite Whitney elimination API to infinite lower
 unitriangular matrices and constructs the resolution attached to a totally
 nonnegative matrix.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial BigOperators
 

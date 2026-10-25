@@ -1,4 +1,6 @@
-import RealRooted.Tactic.CommonInterleaver.LowDegreeRules
+module
+
+public import RealRooted.Tactic.CommonInterleaver.LowDegreeRules
 
 /-!
 # Common-interleaver tactic compatibility facade
@@ -6,3 +8,5 @@ import RealRooted.Tactic.CommonInterleaver.LowDegreeRules
 Re-exports the theorem, syntax, routing-helper, and macro-rule layers of the
 common-interleaver tactic.
 -/
+
+@[expose] public section

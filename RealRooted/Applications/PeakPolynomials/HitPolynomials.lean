@@ -1,5 +1,7 @@
-import RealRooted.Applications.PeakPolynomials.PeakInduction
-import RealRooted.SymmetricDecomposition.FPolynomial
+module
+
+public import RealRooted.Applications.PeakPolynomials.PeakInduction
+public import RealRooted.SymmetricDecomposition.FPolynomial
 
 /-!
 # A conditional induction step for restricted hit polynomials
@@ -29,6 +31,8 @@ real-rootedness.
 * `splits_hit_of_cover_of_du`: the resulting real-rootedness of `H_μ`, under the
   same hypotheses.
 -/
+
+@[expose] public section
 
 open Polynomial
 

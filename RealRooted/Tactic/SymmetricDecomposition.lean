@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition
+module
+
+public import RealRooted.SymmetricDecomposition
 
 /-!
 # Symmetric-decomposition tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.SymmetricDecomposition
 Thin wrappers for the Branden--Solus `fPolynomial` transport API in
 `RealRooted.SymmetricDecomposition`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

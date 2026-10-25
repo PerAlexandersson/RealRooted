@@ -1,4 +1,7 @@
-import Batteries.Lean.TagAttribute
+module
+
+public import Batteries.Lean.TagAttribute
+public meta import Batteries.Lean.TagAttribute
 
 /-!
 # Row-model registry
@@ -7,6 +10,8 @@ The `rr_row_model` attribute marks transfer theorems that identify a recurrence 
 with a model whose splitting or adjacent interlacing is already known. The row tactics
 inspect these declarations without importing their application modules.
 -/
+
+public meta section
 
 /-- Model-transfer theorems available to the row tactics. -/
 initialize rrRowModelAttr : Lean.TagAttribute ←

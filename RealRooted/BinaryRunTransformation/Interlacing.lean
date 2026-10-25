@@ -1,6 +1,8 @@
-import RealRooted.BinaryRunTransformation.Continuation
-import RealRooted.BinaryRunTransformation.Sturm
-import RealRooted.OperatorInterlacingUpgrade
+module
+
+public import RealRooted.BinaryRunTransformation.Continuation
+public import RealRooted.BinaryRunTransformation.Sturm
+public import RealRooted.OperatorInterlacingUpgrade
 
 /-!
 # Interlacing preservation for the binary-run transformation
@@ -9,6 +11,8 @@ This file specializes the monomial-chain operator upgrade to the binary-run
 kernel `J_n`.  Its increasing-degree range is `deg ≤ (n + 1) / 2`, where the
 basis images `J_{n,0}, J_{n,1}, …` form a Sturm chain.
 -/
+
+@[expose] public section
 
 open Polynomial
 

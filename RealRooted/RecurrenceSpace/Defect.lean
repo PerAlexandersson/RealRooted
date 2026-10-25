@@ -1,7 +1,9 @@
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Ring
-import RealRooted.RecurrenceSpace.Filtered
+module
+
+public import Mathlib.Tactic.Abel
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Ring
+public import RealRooted.RecurrenceSpace.Filtered
 
 /-!
 # Universal source-and-lift defect identity
@@ -10,6 +12,8 @@ This module formalizes the universal defect identity and its two propagation cor
 from RealRooted issue #1978.  The identity is valid for arbitrary polynomial-valued
 sequences; recurrence and lift assumptions enter only in the corollaries.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

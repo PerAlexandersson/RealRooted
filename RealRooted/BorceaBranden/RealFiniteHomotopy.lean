@@ -1,5 +1,9 @@
-import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
-import Mathlib.Topology.Order.IntermediateValue
+module
+
+public import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
+public import Mathlib.Topology.Order.IntermediateValue
+
+@[expose] public section
 
 open Set
 
@@ -171,7 +175,8 @@ theorem allCombo_shiftedBox_outputs_of_preserves
     simpa [shiftedBoxOutputReal, shiftedBoxOutputImag, p, map_add,
       map_smul, MvPolynomial.smul_eq_C_mul] using hout
 
-private def upperBasePoint (σ : Type*) : σ → ℂ := fun _ => Complex.I
+/-- The base point of the upper half-plane with every coordinate equal to `i`. -/
+def upperBasePoint (σ : Type*) : σ → ℂ := fun _ => Complex.I
 
 /-- The real orientation invariant of a shifted-symbol fiber, evaluated at
 the all-`i` point in the output variables. -/

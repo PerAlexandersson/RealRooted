@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Hurwitz-type theorem for upper-half-plane-stable polynomials
@@ -24,6 +26,8 @@ through a point of the product of half-planes and applies the one-variable state
 * `MvPolynomial.eval_ne_zero_or_eq_zero_of_tendstoLocallyUniformlyOn`: the limit `q` of
   polynomials `p k` with no zeros in `upperHalfPlane τ` has no zeros there, or `q = 0`.
 -/
+
+@[expose] public section
 
 open Filter Topology Metric
 

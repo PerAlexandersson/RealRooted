@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Euler numerators of polynomial-value sequences
@@ -10,6 +12,8 @@ Gregory--Newton coefficients of a polynomial-value sequence. The ambient
 degree is always the polynomial's actual `natDegree`; using a larger degree
 would introduce artificial factors of `1 - X`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

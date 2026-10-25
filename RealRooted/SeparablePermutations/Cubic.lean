@@ -1,4 +1,8 @@
-import RealRooted.SeparablePermutations.Gamma
+module
+
+public import RealRooted.SeparablePermutations.Gamma
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

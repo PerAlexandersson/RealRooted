@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Degree-pattern regression examples for PR #1689
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RowInterlacing
 These exact downstream recurrence shapes have degree `n / 2`.  Their splitting proofs use
 the degree-pattern route while keeping the coefficient normalization needed by A263789.
 -/
+
+@[expose] public section
 
 open Polynomial
 

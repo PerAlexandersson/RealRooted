@@ -1,5 +1,7 @@
-import RealRooted.Kurtz
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
+module
+
+public import RealRooted.Kurtz
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
 
 /-!
 # Hutchinson's theorem
@@ -19,6 +21,8 @@ polynomials are real-rooted.
 * D. C. Kurtz, *A sufficient condition for all the roots of a polynomial to be real*, Amer.
   Math. Monthly 99 (1992), 259–263.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

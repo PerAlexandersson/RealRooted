@@ -3,11 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.LGV.ChipNetwork.Word
-import RealRooted.LGV.PolyaFrequency
-import RealRooted.PFPolynomial
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.LGV.ChipNetwork.Word
+public import RealRooted.LGV.PolyaFrequency
+public import RealRooted.PFPolynomial
 
 /-!
 # Pólya-frequency rows from repeated chip words
@@ -16,6 +17,8 @@ This is the concrete LeanLGV consumer for the repeated word
 `G, K, G, K, ...`.  The path network is finite and minor-local; all path-family
 cancellation remains in the standalone LeanLGV package.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

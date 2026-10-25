@@ -1,6 +1,8 @@
-import RealRooted.Hadamard.Grace
-import RealRooted.Hadamard.SchurSzegoMultiplicity
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+module
+
+public import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Sign counts for the finite Schur–Szegő composition
@@ -23,6 +25,8 @@ We do not follow their continuity argument.  Instead:
 The real-rootedness of `P *ₙ Q` (finite Schur–Szegő theorem) is taken as an explicit hypothesis
 in `schurSzegoComp_roots_sign_counts`; the zero-root statement needs no such hypothesis.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -171,8 +175,17 @@ theorem signVariations_eq_of_sign_coeff {p q : ℝ[X]}
   have hdeg : p.degree = q.degree := by
     simp only [degree, support_eq_of_sign_coeff h]
   have hfun : SignType.sign ∘ p.coeff = SignType.sign ∘ q.coeff := funext h
-  unfold Polynomial.signVariations coeffList List.signVariations
-  rw [hdeg, List.map_map, List.map_map, hfun]
+  have hzero : p = 0 ↔ q = 0 := by
+    constructor <;> intro h0 <;> ext k <;> have hk := h k <;>
+      simp only [h0, coeff_zero, sign_zero] at hk ⊢
+    · exact sign_eq_zero_iff.mp hk.symm
+    · exact sign_eq_zero_iff.mp hk
+  by_cases hp : p = 0
+  · simp [hp, hzero.mp hp]
+  have hq : q ≠ 0 := fun hq => hp (hzero.mpr hq)
+  unfold Polynomial.signVariations List.signVariations
+  rw [coeffList_of_ne_zero hp, coeffList_of_ne_zero hq, natDegree_eq_of_degree_eq hdeg,
+    List.map_map, List.map_map, hfun]
 
 theorem sign_coeff_C_mul_schurSzegoComp {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree ≤ n)
     (hQ : ∀ k ≤ n, 0 < Q.leadingCoeff * Q.coeff k) (k : ℕ) :

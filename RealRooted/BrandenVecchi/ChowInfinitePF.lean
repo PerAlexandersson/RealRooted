@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowContinuity
-import RealRooted.BrandenVecchi.ChowSupersymmetric
-import RealRooted.BrandenVecchi.SupersymmetricLimits
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+module
+
+public import RealRooted.BrandenVecchi.ChowContinuity
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+public import RealRooted.BrandenVecchi.SupersymmetricLimits
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
 # Chow polynomials of infinite Pólya-frequency symbols
@@ -14,6 +16,8 @@ coefficient convergence of their Chow polynomials.  Bounded-degree root
 closedness and zero-aware interlacing closedness then transfer the finite
 certificates from `ChowSupersymmetric` to the limit.
 -/
+
+@[expose] public section
 
 open Filter Matrix Polynomial Topology
 

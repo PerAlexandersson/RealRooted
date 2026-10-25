@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Nested power-series constants
@@ -11,6 +13,8 @@ import Mathlib.RingTheory.PowerSeries.Basic
 This Mathlib-shaped shim records the multiplication rule for the composite
 constant map from a coefficient ring to polynomials and then to power series.
 -/
+
+@[expose] public section
 
 namespace PowerSeries
 

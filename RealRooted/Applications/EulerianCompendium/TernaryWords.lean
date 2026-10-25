@@ -1,6 +1,8 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.Applications.EulerianCompendium.TernaryRecurrence
-import Mathlib.Data.Fin.Tuple.Basic
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.Applications.EulerianCompendium.TernaryRecurrence
+public import Mathlib.Data.Fin.Tuple.Basic
 
 /-!
 # Ternary words and increasing runs
@@ -11,6 +13,8 @@ maximal consecutive strictly increasing factors, including the empty word's
 zero factors.  This is the combinatorial identification cited in the proof
 of Paper `thm:ternaryRuns`.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

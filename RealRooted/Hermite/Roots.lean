@@ -3,11 +3,13 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Favard
-import RealRooted.Hermite.Favard
-import RealRooted.SimpleRoots
+module
 
-import Mathlib.Tactic.Positivity
+public import RealRooted.Favard
+public import RealRooted.Hermite.Favard
+public import RealRooted.SimpleRoots
+
+public import Mathlib.Tactic.Positivity
 
 /-!
 # Roots of probabilists' Hermite polynomials
@@ -19,6 +21,8 @@ The interlacing orientation is
 Thus the lower-degree polynomial is on the left, and its roots lie
 between consecutive roots of the polynomial on the right.
 -/
+
+@[expose] public section
 
 open Polynomial
 

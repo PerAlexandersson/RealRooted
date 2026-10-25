@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144696.Endpoints
-import RealRooted.BernsteinCone.Preserver
+module
+
+public import RealRooted.Applications.OEIS.A144696.Endpoints
+public import RealRooted.BernsteinCone.Preserver
 
 /-!
 # The A144696 interval-root preserver
@@ -8,6 +10,8 @@ The Bernstein images from `Endpoints` form a compatible nonnegative family.
 Consequently, the A144696 basis transform sends every positive-leading
 polynomial whose roots lie in `[-1, 0]` to a PF polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial
 

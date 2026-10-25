@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.Mathlib.Algebra.Polynomial.Chow
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
 
 /-!
 # Chow polynomials of lower-triangular matrices
@@ -10,6 +12,8 @@ posets* (2025), together with its finite reflection characterization under a
 unit-diagonal hypothesis.  Its total-nonnegative real-rootedness consequences
 are intentionally separate later layers.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

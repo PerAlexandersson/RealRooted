@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Peaks and valleys of words
@@ -11,33 +13,32 @@ import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 This module uses the zero-based position convention documented in `Descent`.
 -/
 
+@[expose] public section
+
 namespace List
 
 variable {α β : Type*} [LinearOrder α] [LinearOrder β]
 
-private theorem pred_lt_length {i n : ℕ} (hi : 0 < i) (h : i + 1 < n) : i - 1 < n := by
-  lia
-
-private theorem index_lt_length {i n : ℕ} (h : i + 1 < n) : i < n :=
-  Nat.lt_of_succ_lt (by simpa [Nat.succ_eq_add_one] using h)
-
-private def isPeak (l : List α) (i : ℕ) : Bool :=
+/-- Whether `i` is an interior peak of `l`, `l[i - 1] < l[i] > l[i + 1]`. -/
+def isPeak (l : List α) (i : ℕ) : Bool :=
   if hi : 0 < i then
     if h : i + 1 < l.length then
-      decide (l[i - 1]'(pred_lt_length hi h) < l[i]'(index_lt_length h) ∧
-        l[i + 1]'h < l[i]'(index_lt_length h))
+      decide (l[i - 1]'(by lia) < l[i]'(Nat.lt_of_succ_lt h) ∧
+        l[i + 1]'h < l[i]'(Nat.lt_of_succ_lt h))
     else false
   else false
 
-private def isValley (l : List α) (i : ℕ) : Bool :=
+/-- Whether `i` is an interior valley of `l`, `l[i - 1] > l[i] < l[i + 1]`. -/
+def isValley (l : List α) (i : ℕ) : Bool :=
   if hi : 0 < i then
     if h : i + 1 < l.length then
-      decide (l[i]'(index_lt_length h) < l[i - 1]'(pred_lt_length hi h) ∧
-        l[i]'(index_lt_length h) < l[i + 1]'h)
+      decide (l[i]'(Nat.lt_of_succ_lt h) < l[i - 1]'(by lia) ∧
+        l[i]'(Nat.lt_of_succ_lt h) < l[i + 1]'h)
     else false
   else false
 
-private def isLeftPeak (l : List α) : Bool :=
+/-- Whether `l` starts with a descent, `l[1] < l[0]`. -/
+def isLeftPeak (l : List α) : Bool :=
   if h : 1 < l.length then decide (l[1]'h < l[0]'(by lia)) else false
 
 /-- The interior peak positions of a word. -/
@@ -64,8 +65,8 @@ def leftPeakCount (l : List α) : ℕ := l.leftPeakSet.card
 /-- Membership in `peakSet`, in terms of the three neighboring entries. -/
 @[simp] theorem mem_peakSet {l : List α} {i : ℕ} :
     i ∈ l.peakSet ↔ ∃ hi : 0 < i, ∃ h : i + 1 < l.length,
-      l[i - 1]'(pred_lt_length hi h) < l[i]'(index_lt_length h) ∧
-        l[i + 1]'h < l[i]'(index_lt_length h) := by
+      l[i - 1]'(by lia) < l[i]'(Nat.lt_of_succ_lt h) ∧
+        l[i + 1]'h < l[i]'(Nat.lt_of_succ_lt h) := by
   change i ∈ (Finset.range l.length).filter (fun j => isPeak l j) ↔ _
   rw [Finset.mem_filter, Finset.mem_range]
   constructor
@@ -78,14 +79,14 @@ def leftPeakCount (l : List α) : ℕ := l.leftPeakSet.card
     · simp [isPeak, hi0] at hi
   · rintro ⟨hi, h, hlt⟩
     constructor
-    · exact index_lt_length h
+    · exact Nat.lt_of_succ_lt h
     · simpa [isPeak, hi, h] using hlt
 
 /-- Membership in `valleySet`, in terms of the three neighboring entries. -/
 @[simp] theorem mem_valleySet {l : List α} {i : ℕ} :
     i ∈ l.valleySet ↔ ∃ hi : 0 < i, ∃ h : i + 1 < l.length,
-      l[i]'(index_lt_length h) < l[i - 1]'(pred_lt_length hi h) ∧
-        l[i]'(index_lt_length h) < l[i + 1]'h := by
+      l[i]'(Nat.lt_of_succ_lt h) < l[i - 1]'(by lia) ∧
+        l[i]'(Nat.lt_of_succ_lt h) < l[i + 1]'h := by
   change i ∈ (Finset.range l.length).filter (fun j => isValley l j) ↔ _
   rw [Finset.mem_filter, Finset.mem_range]
   constructor
@@ -98,7 +99,7 @@ def leftPeakCount (l : List α) : ℕ := l.leftPeakSet.card
     · simp [isValley, hi0] at hi
   · rintro ⟨hi, h, hlt⟩
     constructor
-    · exact index_lt_length h
+    · exact Nat.lt_of_succ_lt h
     · simpa [isValley, hi, h] using hlt
 
 /-- Every interior peak is a descent position. -/

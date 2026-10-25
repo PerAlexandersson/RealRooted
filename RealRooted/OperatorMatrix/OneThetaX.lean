@@ -1,6 +1,8 @@
-import RealRooted.OperatorMatrix.MixedLemma
-import RealRooted.OperatorMatrix.LocalToGlobal
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.OperatorMatrix.MixedLemma
+public import RealRooted.OperatorMatrix.LocalToGlobal
+public import RealRooted.QuadraticRoot
 
 /-!
 # Two-by-two operator matrices over `{1, θ, X}`
@@ -12,6 +14,8 @@ classifies rectangular matrices (`preservesOrderedPF_letters_iff`).  Necessity u
 counterexamples; the block `(θ, 1) / (θ, θ)` uses the mixed differential lemma
 `p' + q' ≤ q + X p'`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

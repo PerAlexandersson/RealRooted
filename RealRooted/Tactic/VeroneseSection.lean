@@ -1,4 +1,6 @@
-import RealRooted.VeroneseSection
+module
+
+public import RealRooted.VeroneseSection
 
 /-!
 # Veronese-section tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.VeroneseSection
 Thin wrappers for the fixed-section Veronese APIs in
 `RealRooted.VeroneseSection`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

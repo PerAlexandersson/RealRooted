@@ -1,5 +1,7 @@
-import RealRooted.PosCombo
-import RealRooted.Wagner
+module
+
+public import RealRooted.PosCombo
+public import RealRooted.Wagner
 
 /-!
 # Nonpositive-root forms of Wagner's lemma
@@ -9,6 +11,8 @@ the standard hypothesis of nonpositive real roots and positive leading
 coefficient. Challenge and tactic frontends depend on this module rather than
 on one another.
 -/
+
+@[expose] public section
 
 open Polynomial
 

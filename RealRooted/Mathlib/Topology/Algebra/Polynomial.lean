@@ -14,7 +14,7 @@ public import Mathlib.Topology.Algebra.Polynomial
 the map `r ↦ (p.comp (X + C r)).coeff i` is continuous on `ℝ`.
 -/
 
-public section
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
 
 /-!
 # Consequences of minimal bad-contact time
@@ -6,6 +8,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstCont
 At an earliest bad expanding box, the time is positive, every root residue
 sign throughout that box is nonnegative, and the selected bad sign vanishes.
 -/
+
+@[expose] public section
 
 open Polynomial Set
 

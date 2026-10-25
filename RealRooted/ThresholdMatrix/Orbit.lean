@@ -1,5 +1,8 @@
-import RealRooted.ThresholdMatrix.HaglundZhang
-import RealRooted.ThresholdMatrix.GustafssonSolus
+module
+
+public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.ThresholdMatrix.GustafssonSolus
+public import RealRooted.ThresholdMatrix.Attr
 
 /-!
 # Orbits of threshold matrices
@@ -11,11 +14,9 @@ polynomials, so every orbit sum is real-rooted.  Sequences defined by a scalar r
 whose rows are such orbit sums (for instance OEIS A120987, A330509 and A304429) are real-rooted.
 -/
 
-open Polynomial
+@[expose] public section
 
-/-- Unfolding lemmas for explicit threshold-matrix orbits, used by the `rr_row_splits`
-threshold-orbit route. -/
-register_simp_attr rr_threshold_unfold
+open Polynomial
 
 namespace RealRooted.HaglundZhang
 

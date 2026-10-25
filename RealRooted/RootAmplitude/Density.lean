@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Convex
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import RealRooted.RootAmplitude.Convex
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Log-gap density criteria for root-amplitude convexity
@@ -9,6 +11,8 @@ A reciprocal bound on consecutive logarithmic gaps yields convexity of a
 positive root-magnitude sequence. The module also provides perturbative and
 outer-region forms of that criterion.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

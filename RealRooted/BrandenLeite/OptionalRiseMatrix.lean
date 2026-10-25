@@ -1,4 +1,6 @@
-import RealRooted.BrandenLeite.WeightedShift
+module
+
+public import RealRooted.BrandenLeite.WeightedShift
 
 /-!
 # Position-dependent optional-rise matrices
@@ -7,6 +9,8 @@ This file packages fixed-order products of matrices `I + D*S`, where each
 diagonal weight family may depend on the current level.  The ordering matters:
 choosing a lower-shift entry changes the level read by every later factor.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BrandenLeite
 

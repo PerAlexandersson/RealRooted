@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Rotation between strict left- and upper-half-plane stability
@@ -7,6 +9,8 @@ The substitution `X ↦ -iX` sends the closed upper half-plane to the closed
 right half-plane. This file records the exact root transport needed before the
 Hermite--Biehler analysis of a strict Routh step.
 -/
+
+@[expose] public section
 
 open Polynomial
 

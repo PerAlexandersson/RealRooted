@@ -1,9 +1,11 @@
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.HermiteBiehler.Forward
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
-import RealRooted.MaWang
-import RealRooted.QuadraticRoot
-import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+module
+
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.HermiteBiehler.Forward
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
+public import RealRooted.MaWang
+public import RealRooted.QuadraticRoot
+public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
 /-!
 # Low-degree converse Hermite--Biehler theorem
@@ -12,6 +14,8 @@ This file proves the converse Hermite--Biehler theorem through degree two. It
 contains the quadratic and Vieta reductions, degree-shape bounds, and explicit
 interlacing inequalities needed by the low-degree endpoint.
 -/
+
+@[expose] public section
 
 open Polynomial
 

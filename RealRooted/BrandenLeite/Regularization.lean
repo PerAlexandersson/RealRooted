@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.PFPolynomial
-import RealRooted.PolyaFrequencyConvolution.Basic
+module
+
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.PFPolynomial
+public import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
 # Finite binomial regularization of PF sequences
@@ -11,6 +13,8 @@ sequence of a shifted power preserves the PF property, has positive zeroth
 entry for a positive shift, and converges coefficientwise to insertion of a
 finite zero prefix as the shift tends to zero.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

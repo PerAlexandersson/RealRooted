@@ -1,5 +1,7 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import Mathlib.Data.Fin.Rev
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import Mathlib.Data.Fin.Rev
 
 /-!
 # Literal all-word descent polynomials
@@ -9,6 +11,8 @@ finite alphabet.  The separate threshold-matrix recurrence in `Words` is
 proved split, but identifying it with this literal finite sum is a subsequent
 combinatorial theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

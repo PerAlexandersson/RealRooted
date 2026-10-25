@@ -1,9 +1,11 @@
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.OEIS.A046802
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.Wronskian.Converse
+module
+
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.OEIS.A046802
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.Wronskian.Converse
 
 /-!
 # A recurrence bridge for OEIS A046802
@@ -13,6 +15,8 @@ Eulerian polynomials.  We realize that recurrence through the Eulerian
 transform.  The adjacent interlacing needed by the row-model registry follows
 from the first two entries of the transform's reflection-interlacing row.
 -/
+
+@[expose] public section
 
 open Polynomial
 

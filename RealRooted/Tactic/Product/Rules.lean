@@ -1,5 +1,9 @@
-import RealRooted.ProductSequence
-import RealRooted.Tactic.Product.Syntax
+module
+
+public import RealRooted.ProductSequence
+public import RealRooted.Tactic.Product.Syntax
+public meta import RealRooted.ProductSequence
+public meta import RealRooted.Tactic.Product.Syntax
 
 /-!
 # Product-tactic elaboration and rules
@@ -8,6 +12,8 @@ Checked expression inspection and the complete macro expansion table. These stay
 in one unit because the auto routers are heartbeat-sensitive when elaboration
 and their dispatch rules are compiled into separate imported environments.
 -/
+
+public meta section
 
 open Polynomial
 open scoped BigOperators

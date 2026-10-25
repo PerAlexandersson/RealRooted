@@ -1,6 +1,11 @@
-import RealRooted.Tactic.Recurrence.RowSide
-import RealRooted.Tactic.Recurrence.LinRecProbe
-import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+module
+
+public import RealRooted.Tactic.Recurrence.RowSide
+public import RealRooted.Tactic.Recurrence.LinRecProbe
+public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+public meta import RealRooted.Tactic.Recurrence.RowSide
+public meta import RealRooted.Tactic.Recurrence.LinRecProbe
+public meta import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 
 /-!
 # General linear recurrences: the `rr_linrec` tactic
@@ -33,6 +38,8 @@ division is `q + numeral` and the coefficient engine applies as for linear growt
 top coefficient `c` is the function with the closed forms of the residue classes
 (`Regime.closedRes`, `residueTerm`).
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 
@@ -264,7 +271,8 @@ private def linRecRun (what : String) (g : MVarId) (tac : TacticM Unit) : Tactic
   unless (← getGoals).isEmpty do throwError "rr_linrec: goals remain after the side goal {what}"
 
 /-- The numerals `m` such that the row `P m` occurs in `e`. -/
-private partial def linRecRowLits (P : Name) (e : Expr) (acc : Array Nat) : MetaM (Array Nat) := do
+private partial def linRecRowLits (P : Name) (e : Expr) (acc : Array Nat) :
+    MetaM (Array Nat) := do
   match e with
   | .app f a =>
       let acc ← linRecRowLits P a (← linRecRowLits P f acc)
@@ -431,7 +439,7 @@ private def coneStepTerm (k : Nat) (form : Array Rat) (Dfun terms : Term) : Tact
   let zero : Term := ⟨Syntax.mkNumLit "0"⟩
   return out.getD zero
 
-private lemma hyperParityProd_relation (q : ℕ) :
+lemma hyperParityProd_relation (q : ℕ) :
     (∏ i ∈ Finset.range q, (2 + 3 * (i : ℝ) + (i : ℝ) ^ 2)) =
       ((q : ℝ) + 1) * ∏ i ∈ Finset.range q, (1 + 2 * (i : ℝ) + (i : ℝ) ^ 2) := by
   induction q with
@@ -753,7 +761,8 @@ A numeric probe of the first rows chooses the drop, the degree law and the regim
 regime in turn (nonnegative multipliers, a closed form of the top coefficients, a growth-ratio
 invariant) one theorem of `RealRooted.LinRec` is applied to the shifted sequence
 `m ↦ P (m + s)` and its side goals are discharged. -/
-def linRecCore (kind : String) (via : Option Name := none) : TacticM Unit := withMainContext do
+def linRecCore (kind : String) (via : Option Name := none) : TacticM Unit :=
+    withMainContext do
   betaReduceGoal
   let tgt ← instantiateMVars (← getMainTarget)
   let some P ← findPolySeqConst? tgt

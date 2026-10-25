@@ -1,6 +1,8 @@
-import RealRooted.MultiplierSequence.JensenHypergeometric
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.MultiplierSequence.JensenHypergeometric
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The A367177 reciprocal double-Narayana model
@@ -8,6 +10,8 @@ import RealRooted.Recurrence.Uniqueness
 The coefficient of `X^k` in row `n` is `C(n,k)^2 C(2k,k)`. This is the
 degree-`n` reciprocal shift of the A318397 double-Narayana row.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

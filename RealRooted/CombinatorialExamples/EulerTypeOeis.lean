@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.GeneralRows
-import RealRooted.EulerBidiagonal.DepRows
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
+public import RealRooted.EulerBidiagonal.DepRows
 
 /-!
 # Euler-type OEIS rows strictly interlace
@@ -14,6 +16,8 @@ Scratch port: `A156289` is defined exactly as in
 `ProofsOeis/A156289.lean`; the bridge `A156289_eq_generalRows` identifies its rows with
 `generalRows 1 1 1 3 2`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

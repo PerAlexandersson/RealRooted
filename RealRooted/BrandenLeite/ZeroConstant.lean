@@ -1,7 +1,9 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.BrandenLeite.CompositionRowClosure
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.PFPolynomial.Closure
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.BrandenLeite.CompositionRowClosure
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.PFPolynomial.Closure
 
 /-!
 # Zero-constant PF composition rows
@@ -12,6 +14,8 @@ the finite coefficient sequence of `(X + ε)^r`, and recovered as `ε` tends to
 zero. The bounded composition-row limits preserve both the PF property and
 zero-aware interlacing.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

@@ -19,7 +19,7 @@ is totally nonnegative at every positive parameter, then `A 0` is totally nonneg
 from continuity of the determinant of a submatrix.
 -/
 
-public section
+@[expose] public section
 
 open Filter Topology
 

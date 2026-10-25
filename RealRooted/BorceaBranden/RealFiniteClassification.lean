@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.MultivariateHKO
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # Real finite stability preservers: the low-rank branch
@@ -12,6 +14,8 @@ The necessity direction and the two finite-symbol alternatives remain open.
 The missing HKO part is the converse orientation dichotomy for an arbitrary
 stable two-dimensional real span.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace BorceaBranden

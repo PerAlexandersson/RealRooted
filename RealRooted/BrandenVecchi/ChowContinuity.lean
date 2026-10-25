@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowToeplitz
-import RealRooted.PFPolynomial.Closure
+module
+
+public import RealRooted.BrandenVecchi.ChowToeplitz
+public import RealRooted.PFPolynomial.Closure
 
 /-!
 # Fixed-rank locality and continuity of Chow polynomials
@@ -8,6 +10,8 @@ The rank-`n` Chow data use only the lower-triangular block with row index at
 most `n`.  This file records that finite dependence and its coefficientwise
 continuity consequence, independently of positivity and infinite products.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

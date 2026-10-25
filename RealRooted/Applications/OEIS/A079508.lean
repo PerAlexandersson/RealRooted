@@ -1,13 +1,15 @@
-import RealRooted.DerivativeRecurrence.LagWeak
-import RealRooted.EulerOperator
-import RealRooted.FiniteFreeRootCount
-import RealRooted.Hadamard
-import RealRooted.Interlacing.ReversalCommonFactor
-import RealRooted.LinearPowerFamily
-import RealRooted.NarayanaTransformation
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.ReciprocalShift.ProperPosition
+module
+
+public import RealRooted.DerivativeRecurrence.LagWeak
+public import RealRooted.EulerOperator
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.Hadamard
+public import RealRooted.Interlacing.ReversalCommonFactor
+public import RealRooted.LinearPowerFamily
+public import RealRooted.NarayanaTransformation
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.ReciprocalShift.ProperPosition
 
 /-!
 # The A079508 reflected Schur--Szego model
@@ -15,6 +17,8 @@ import RealRooted.ReciprocalShift.ProperPosition
 The original rows carry parity-dependent powers of `X`; removing them gives a
 strictly interlacing reflected model.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 
@@ -198,7 +202,8 @@ private theorem A079508_key (n : ℕ) :
         refine ⟨by assumption, ?_⟩
         rw [leadingCoeff, hdeg, hcoeff_top]
   simp_all
-private def fibPolynomial : ℕ → ℝ[X]
+/-- The Fibonacci polynomials `F_0 = F_1 = 1`, `F_{n+2} = F_{n+1} + X F_n` (OEIS A011973). -/
+def fibPolynomial : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1
   | n + 2 => fibPolynomial (n + 1) + X * fibPolynomial n
@@ -321,7 +326,8 @@ private def A079508SchurRight (n : ℕ) : ℝ[X] :=
     monomial k
       ((Nat.choose n k : ℝ) * (Nat.choose (n + 2) (k + 2) : ℝ) / (k + 1))
 
-private def A079508Closed (n : ℕ) : ℝ[X] :=
+/-- The closed-form row `∑_k C(k+1, n+1-k) C(n+2, k+2) / (k+1) X^k` of the A079508 model. -/
+def A079508Closed (n : ℕ) : ℝ[X] :=
   ∑ k ∈ Finset.range (n + 1),
     monomial k
       ((Nat.choose (k + 1) (n + 1 - k) : ℝ) *

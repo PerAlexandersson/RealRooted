@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.JacobiOperator
+module
+
+public import RealRooted.JacobiDeformation.JacobiOperator
 
 /-!
 # The symmetric quasi-Jacobi collocation matrix
@@ -18,6 +20,8 @@ rank-one residual cancels by symmetry.  This is strictly positive when both
 nodes lie in `(0, 1)`; exterior nodes are handled in
 `RealRooted.JacobiDeformation.CollocationPositivity`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

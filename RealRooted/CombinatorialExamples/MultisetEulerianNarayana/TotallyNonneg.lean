@@ -1,7 +1,9 @@
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import Mathlib.Basic.Real.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Finite bidiagonal factors for multiset Eulerian--Narayana transitions
@@ -13,6 +15,8 @@ nonnegativity.  The identification with Zhang--Zhao's closed binomial formula
 is proved below from their Lemma 4.3 and Proposition 4.1.
 -/
 
+@[expose] public section
+
 open Polynomial
 
 namespace RealRooted
@@ -20,10 +24,14 @@ namespace MultisetEulerianNarayana
 
 noncomputable section
 
-private def factorDiagonal (d : ℕ) (a : ℝ) (i : ℕ) : ℝ :=
+/-- The diagonal entry of the coefficient matrix of `E_{d,a}`: `(i + a) / a` for `i ≤ d`,
+else `1`. -/
+def factorDiagonal (d : ℕ) (a : ℝ) (i : ℕ) : ℝ :=
   if i ≤ d then ((i : ℝ) + a) / a else 1
 
-private def factorSubdiagonal (d : ℕ) (a : ℝ) (j : ℕ) : ℝ :=
+/-- The subdiagonal entry of the coefficient matrix of `E_{d,a}`: `(d + a - j) / a` for `j ≤ d`,
+else `0`. -/
+def factorSubdiagonal (d : ℕ) (a : ℝ) (j : ℕ) : ℝ :=
   if j ≤ d then ((d : ℝ) + a - j) / a else 0
 
 /-- The square padded coefficient matrix of `E_{d,a}`.
@@ -129,10 +137,14 @@ theorem coefficientFactor_isTotallyNonneg {N d : ℕ} {a : ℝ} (ha : 0 < a) :
   Matrix.isTotallyNonneg_lowerBidiagonalFin N _ _
     (factorDiagonal_nonneg ha) (factorSubdiagonal_nonneg ha)
 
-private def factorParameter (r s : ℕ) : ℝ :=
+/-- The parameter `r - s + 1` of the `s`-th step in a block of `r` maximal labels (and `1` for
+`s = 0`). -/
+def factorParameter (r s : ℕ) : ℝ :=
   if s = 0 then 1 else (r - s + 1 : ℕ)
 
-private def paddedStepWord (p r : ℕ) (f : ℝ[X]) : ℕ → ℝ[X]
+/-- The polynomial obtained from `f` by applying the first `s` steps `E_{p+t-1, a_t}` in order,
+with `a_t = factorParameter r t`. -/
+def paddedStepWord (p r : ℕ) (f : ℝ[X]) : ℕ → ℝ[X]
   | 0 => f
   | s + 1 =>
       step (p + s - 1) (factorParameter r s) (paddedStepWord p r f s)
@@ -143,7 +155,9 @@ private theorem factorParameter_pos (r s : ℕ) : 0 < factorParameter r s := by
   · norm_num
   · exact_mod_cast Nat.succ_pos (r - s)
 
-private def paddedFactorWord (p r : ℕ) : ℕ → Matrix (Fin (p + r)) (Fin (p + r)) ℝ
+/-- The product of the first `s` padded coefficient factors, the matrix counterpart of
+`paddedStepWord`. -/
+def paddedFactorWord (p r : ℕ) : ℕ → Matrix (Fin (p + r)) (Fin (p + r)) ℝ
   | 0 => 1
   | s + 1 =>
       coefficientFactor (p + r) (p + s - 1) (factorParameter r s) *
@@ -160,7 +174,8 @@ private theorem paddedFactorWord_isTotallyNonneg {p r s : ℕ} (hs : s ≤ r) :
         exact factorParameter_pos r s
       · exact ih (Nat.le_of_succ_le hs)
 
-private def firstP (p r : ℕ) (j : Fin p) : Fin (p + r) :=
+/-- The inclusion `Fin p → Fin (p + r)` of the first `p` indices. -/
+def firstP (p r : ℕ) (j : Fin p) : Fin (p + r) :=
   ⟨j, by lia⟩
 
 private theorem firstP_injective {p r : ℕ} : Function.Injective (firstP p r) := by

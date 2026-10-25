@@ -1,8 +1,10 @@
-import RealRooted.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-import RealRooted.MultivariateStability
-import Mathlib.Algebra.MvPolynomial.Equiv
-import Mathlib.Basic.Complex.Basic
+module
+
+public import RealRooted.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.MultivariateStability
+public import Mathlib.Algebra.MvPolynomial.Equiv
+public import Mathlib.Basic.Complex.Basic
 
 /-!
 # Foundational Hermite--Biehler definitions
@@ -11,6 +13,8 @@ This module contains real-polynomial complexification, univariate half-plane
 stability, the Hermite--Biehler polynomial, and the splitness/stability lemmas.
 It is independent of the forward and converse interlacing arguments.
 -/
+
+@[expose] public section
 
 open Polynomial
 

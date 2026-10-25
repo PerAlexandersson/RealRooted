@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Trajectory
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Trajectory
 
 /-!
 Target support module: RealRooted.Applications.OEIS.A275442.Bridge.Certificates.
@@ -23,6 +25,8 @@ crux inequality `A (m-1) < t · A (m-3)` at the crossing `m`.
 The certificates were found by exact rational linear programming and are verified here by
 `linarith` from the expansions of `A (n+j)` in the four base values `A n, …, A (n+3)`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

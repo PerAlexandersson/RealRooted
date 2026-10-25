@@ -17,7 +17,7 @@ The finite weighted triangle-inequality argument applies over any normed field.
 It is the finite-dimensional step in a polynomial root-disk argument.
 -/
 
-public section
+@[expose] public section
 
 namespace Matrix
 

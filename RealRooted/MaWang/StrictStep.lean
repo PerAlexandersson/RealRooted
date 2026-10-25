@@ -1,12 +1,16 @@
-import RealRooted.MaWang
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.MaWang
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.SimpleRoots
 
 /-!
 # Strict Ma--Wang steps
 
 The strict root-sign version of the differ-by-one Ma--Wang recurrence step.
 -/
+
+@[expose] public section
 
 open Polynomial
 

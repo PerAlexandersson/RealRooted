@@ -1,7 +1,9 @@
-import Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.Derivative
-import RealRooted.EulerOperator.Darboux.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.Derivative
+public import RealRooted.EulerOperator.Darboux.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Algebra for the A390883 toric-contribution family
@@ -10,6 +12,8 @@ This file defines the terminating hypergeometric polynomials and differential
 operators used in the common-interlacer proof. All hypergeometric expressions
 are finite polynomial sums; no analytic hypergeometric function is introduced.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,8 @@
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.OperatorPreservesInterlacing
+
+@[expose] public section
 
 open Polynomial
 

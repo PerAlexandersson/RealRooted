@@ -1,4 +1,6 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
 
 /-!
 # The finite Brändén--Leite source border
@@ -6,6 +8,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
 This file assembles the two finite total-nonnegativity borders into the matrix
 used by the regularized two-kernel construction.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BrandenLeite
 

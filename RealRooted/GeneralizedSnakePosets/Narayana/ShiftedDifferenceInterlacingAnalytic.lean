@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
 
 /-!
 # Endpoint-safe shifted difference-interlacing bridge
@@ -7,6 +9,8 @@ This module supplies concrete pencil degrees and leading coefficients, derives
 auxiliary-pencil splitness and nonpositive roots, and packages the endpoint-safe
 root-sum orientation as the shifted difference interlacing claim.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

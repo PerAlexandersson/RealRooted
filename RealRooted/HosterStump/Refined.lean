@@ -1,4 +1,6 @@
-import RealRooted.Basic.Coefficients
+module
+
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Hoster--Stump refined polynomials
@@ -16,6 +18,8 @@ and `D_2(range 2)`
 (`Diagram.lean`, lemmas `e1_*`, `e2_*`) and of `D_3(range 2)` and `D_3(range 3)`
 (regression `example`s below) are verified in Lean.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import RealRooted.LGV.ChipNetwork.Paths
-import RealRooted.LGV.PathMatrix
+public import RealRooted.LGV.ChipNetwork.Paths
+public import RealRooted.LGV.PathMatrix
 
 /-!
 # Matrix entries of finite lower-bidiagonal chip networks
@@ -13,6 +14,8 @@ import RealRooted.LGV.PathMatrix
 This file identifies a single chip stage with its lower-bidiagonal transfer
 matrix.  Longer word and interval identities are built from this local bridge.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LGV

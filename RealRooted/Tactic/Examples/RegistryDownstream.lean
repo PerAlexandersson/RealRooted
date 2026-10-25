@@ -1,8 +1,10 @@
-import RealRooted.Applications.OEIS.A111910
-import RealRooted.Applications.OEIS.A155495
-import RealRooted.Applications.OEIS.A359363
-import RealRooted.Applications.OEIS.ReflectedEulerRows
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A111910
+public import RealRooted.Applications.OEIS.A155495
+public import RealRooted.Applications.OEIS.A359363
+public import RealRooted.Applications.OEIS.ReflectedEulerRows
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Downstream registry presentations
@@ -11,6 +13,8 @@ Regression examples for recurrence presentations that spell out the registered m
 literally. The final two families guard against expensive attempts by structurally similar but
 incorrect registered models.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

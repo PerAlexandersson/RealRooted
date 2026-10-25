@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.SmirnovInterlacing
-import RealRooted.ParkingFunctions.Descents.ContentOrbit
-import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
+module
+
+public import RealRooted.BrandenVecchi.SmirnovInterlacing
+public import RealRooted.ParkingFunctions.Descents.ContentOrbit
+public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
 
 /-!
 # Integral tieless parking-to-Smirnov transfer
@@ -11,6 +13,8 @@ and fixed-content Smirnov symmetry.  The cyclic action does not preserve
 descents pointwise; fixed-content symmetry supplies exactly the aggregate
 invariance needed for the integral factor.
 -/
+
+@[expose] public section
 
 open Polynomial
 

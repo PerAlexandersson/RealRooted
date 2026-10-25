@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.StationaryTiling
-import RealRooted.InterlacingSequence.NonnegativeShift
+module
+
+public import RealRooted.BrandenLeite.StationaryTiling
+public import RealRooted.InterlacingSequence.NonnegativeShift
 
 /-!
 # Positive translations of stationary tiling rows
@@ -8,6 +10,8 @@ This file transports the stationary rational rod rows through the common
 substitution `X ↦ X + γ`.  It keeps the affine root and interlacing layer
 separate from the later coefficient-sign arithmetic for two seed polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial
 

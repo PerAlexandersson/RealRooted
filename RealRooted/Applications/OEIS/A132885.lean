@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Parity
-import RealRooted.JacobiDeformation.Strict
+module
+
+public import RealRooted.JacobiDeformation.Parity
+public import RealRooted.JacobiDeformation.Strict
 
 /-!
 # OEIS A132885
@@ -26,6 +28,8 @@ so the strict Jacobi deformation theorem applies with `δ = 1 / 2`.
 * `roots_card`: such a row has exactly `n / 2` roots;
 * `isPFPolynomial_polynomial`: every row is a Pólya-frequency polynomial.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

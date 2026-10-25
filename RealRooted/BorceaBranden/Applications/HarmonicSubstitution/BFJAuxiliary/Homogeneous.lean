@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
 
 /-!
 # Scalar and homogeneous structure of the BFJ auxiliary product
@@ -7,6 +9,8 @@ This file records scalar-change compatibility and the homogeneous degrees of
 the translated factor, denominator-cleared harmonic factor, auxiliary
 product, and distinguished coefficient.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

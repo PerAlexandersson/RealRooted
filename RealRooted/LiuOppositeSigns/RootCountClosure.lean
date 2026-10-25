@@ -1,9 +1,11 @@
-import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.CommonInterleaver.RootCountCombinatorics
-import RealRooted.LiuOppositeSigns
-import RealRooted.LiuOppositeSigns.RootCountRelStability
-import RealRooted.LiuOppositeSigns.NoCommonRoots
-import RealRooted.RootMatchingSort
+module
+
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.CommonInterleaver.RootCountCombinatorics
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.LiuOppositeSigns.RootCountRelStability
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.RootMatchingSort
 
 /-!
 # Closure of Liu root-count compatibility
@@ -12,6 +14,8 @@ This file closes finite same-degree and successor-degree root inequalities
 under arbitrarily small pointwise perturbations.  It is the ordered-root limit
 step used after derivative-shift regularization.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LiuOppositeSigns

@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Basic
+public import RealRooted.MultivariateStability
 
 /-!
 # Real-univariate finite algebraic symbols
@@ -8,6 +10,8 @@ This module owns the application-facing real-univariate definitions for the
 Borcea--Branden finite-symbol theorem. The complex classification backend is
 independent in `RealRooted.BorceaBranden.FiniteSymbolClassification`.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

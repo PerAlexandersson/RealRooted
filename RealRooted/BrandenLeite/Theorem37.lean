@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.ChainPolynomial
-import RealRooted.BrandenLeite.WhitneyReduction
+module
+
+public import RealRooted.BrandenLeite.ChainPolynomial
+public import RealRooted.BrandenLeite.WhitneyReduction
 
 /-!
 # Brändén--Saud Leite Theorem 3.7
@@ -7,6 +9,8 @@ import RealRooted.BrandenLeite.WhitneyReduction
 This file discharges the total-nonnegativity hypothesis of the conditional
 chain-polynomial theorem by constructing its canonical Whitney resolution.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

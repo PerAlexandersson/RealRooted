@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import Mathlib.Algebra.Polynomial.HasseDeriv
-import Mathlib.Algebra.Polynomial.Taylor
+module
+
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import Mathlib.Algebra.Polynomial.HasseDeriv
+public import Mathlib.Algebra.Polynomial.Taylor
 
 /-!
 # General-factor consequences for the univariate Poisson product
@@ -11,6 +13,8 @@ univariate Poisson product.  It proves real-rootedness preservation from the
 root-sign condition and derives the PF-preserver classification for every real parameter
 (`preservesPF_iff`): PF left factors for `c ≥ 0`, nonnegative constants for `c < 0` (issue #1494).
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

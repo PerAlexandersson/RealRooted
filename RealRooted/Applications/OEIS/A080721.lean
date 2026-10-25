@@ -1,7 +1,9 @@
-import RealRooted.Legendre.Roots
-import RealRooted.MaWang.Weak.Endpoint
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Legendre.Roots
+public import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The row polynomials of OEIS A080721
@@ -10,6 +12,8 @@ The type-`D` cluster-complex rows are quasi-Legendre polynomials.  Rewriting two
 successive quasi-Legendre rows in the Legendre basis gives a Liu--Wang step
 whose coefficient of the interlacer is negative on the whole real line.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
-import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
-import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+public import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
+public import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
 
 /-!
 # Hadamard factorization for entire functions of exponential type
@@ -13,6 +15,8 @@ import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
 This file proves genus-one Hadamard factorization for an entire function of exponential type
 whose zeros are enumerated with multiplicity. It also gives the finite-zero factorization.
 -/
+
+@[expose] public section
 
 open Complex Filter Topology
 open MeromorphicOn

@@ -1,9 +1,11 @@
-import Mathlib.Algebra.MvPolynomial.Funext
-import Mathlib.Tactic.ComputeDegree
-import RealRooted.MultiplierSequence
-import RealRooted.MultivariateStability
-import RealRooted.Tactic.PFBidiagonal
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
+module
+
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Tactic.ComputeDegree
+public import RealRooted.MultiplierSequence
+public import RealRooted.MultivariateStability
+public import RealRooted.Tactic.PFBidiagonal
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
 
 /-!
 # Finite-symbol PF-bidiagonal interface
@@ -15,6 +17,8 @@ The deep analytic inputs are deliberately `Prop`-valued statements, not
 axioms.  The proved declarations in this file only assemble those interfaces
 with a residual factorization certificate.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 
@@ -297,7 +301,7 @@ theorem finiteSymbol_dehomog (alpha beta : ℕ → ℝ) (d : ℕ) :
     rw [pow_succ]
     ring_nf
 
-private lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
+lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
     y ^ n * (x / y) ^ k = x ^ k * y ^ (n - k) := by
   rw [div_pow, pow_sub₀ y hy hk]
   ring

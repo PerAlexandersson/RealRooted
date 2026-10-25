@@ -1,4 +1,7 @@
-import RealRooted.Tactic.Row.SideGoals
+module
+
+public import RealRooted.Tactic.Row.SideGoals
+public meta import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: shared support
@@ -12,6 +15,8 @@ Helpers shared by the routes that build auxiliary sequences or certificates
 * `elabAuxCommand`, `freshAuxName`: auxiliary recursive definitions elaborated in the middle of
   a proof, named under the current declaration.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

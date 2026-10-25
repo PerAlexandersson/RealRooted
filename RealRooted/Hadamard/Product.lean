@@ -1,4 +1,8 @@
-import RealRooted.MultiplierSequence
+module
+
+public import RealRooted.MultiplierSequence
+
+@[expose] public section
 
 open Polynomial
 

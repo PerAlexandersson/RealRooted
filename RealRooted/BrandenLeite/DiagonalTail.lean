@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.ConstantDiagonal
-import RealRooted.BrandenLeite.SourceBorderKernel
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
+module
+
+public import RealRooted.BrandenLeite.ConstantDiagonal
+public import RealRooted.BrandenLeite.SourceBorderKernel
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
 
 /-!
 # Finite chain polynomials through a positive diagonal tail
@@ -10,6 +12,8 @@ diagonal can be extended by an isolated constant diagonal tail.  Chain
 polynomials inside the original block are unchanged, so the Nat-indexed chain
 theorems apply to those finite rows.
 -/
+
+@[expose] public section
 
 open Matrix
 

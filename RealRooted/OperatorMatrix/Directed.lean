@@ -1,7 +1,9 @@
-import RealRooted.Derivative.SimpleRoots
-import RealRooted.EulerOperator.Pencil
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.QuadraticInterlacingClosure
+module
+
+public import RealRooted.Derivative.SimpleRoots
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Directed differential comparisons for PF polynomials
@@ -11,6 +13,8 @@ Directed (zero-aware) comparisons between a PF polynomial `p` and `p'`, `θ p = 
 interlacing inputs.  These are the differential facts behind the `{1, θ, X}` block
 classification of operator matrices (issue #1741).
 -/
+
+@[expose] public section
 
 open Polynomial
 

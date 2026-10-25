@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
-import Mathlib.Tactic
+module
+
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import Mathlib.Tactic
 
 /-!
 # Stirling-Permutation Descent Polynomials
@@ -8,6 +10,8 @@ import Mathlib.Tactic
 Real-rootedness and Sturm-sequence facts for Stirling-permutation descent
 polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial
 

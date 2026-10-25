@@ -1,5 +1,9 @@
-import Mathlib.Data.Multiset.Fintype
-import RealRooted.PFPolynomial
+module
+
+public import Mathlib.Data.Multiset.Fintype
+public import RealRooted.PFPolynomial
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

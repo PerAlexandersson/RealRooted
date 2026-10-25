@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.DeletionBranches
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+module
+
+public import RealRooted.LiuOppositeSigns.DeletionBranches
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
 
 /-!
 # Liu left factor return: two-degree case
@@ -9,6 +11,8 @@ sign-normalized deletion pair has left endpoint one degree higher.  After
 translating the deleted largest root to the origin, the positive right
 combinations of the restored pair are left-successor x-subtraction pencils.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

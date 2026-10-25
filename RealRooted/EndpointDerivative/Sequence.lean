@@ -1,4 +1,8 @@
-import RealRooted.EndpointDerivative.Basic
+module
+
+public import RealRooted.EndpointDerivative.Basic
+
+@[expose] public section
 
 open Polynomial Set
 

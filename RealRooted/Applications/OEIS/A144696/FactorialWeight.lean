@@ -1,5 +1,7 @@
-import RealRooted.Analysis.FactorialTail
-import RealRooted.Applications.OEIS.A144696.Basic
+module
+
+public import RealRooted.Analysis.FactorialTail
+public import RealRooted.Applications.OEIS.A144696.Basic
 
 /-!
 # A factorial-weight estimate for A144696 Bernstein images
@@ -9,6 +11,8 @@ successive-row comparison as a finite signed factorial sum. A strict
 binomial-factorial ratio and the reciprocal-factorial tail estimate then make
 that comparison positive.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

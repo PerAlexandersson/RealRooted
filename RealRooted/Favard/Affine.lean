@@ -1,6 +1,8 @@
-import RealRooted.Favard.Affine.Basic
-import RealRooted.Favard.Affine.Denominator
-import RealRooted.Favard.Affine.RowSign
+module
+
+public import RealRooted.Favard.Affine.Basic
+public import RealRooted.Favard.Affine.Denominator
+public import RealRooted.Favard.Affine.RowSign
 
 /-!
 # Affine Favard recurrences
@@ -8,3 +10,5 @@ import RealRooted.Favard.Affine.RowSign
 Compatibility entry point for the direct, scalar-normalized, and row-sign
 affine Favard theorem APIs.
 -/
+
+@[expose] public section

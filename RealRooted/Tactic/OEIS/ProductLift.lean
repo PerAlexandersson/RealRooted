@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.Tactic.Product
 
 /-!
 # OEIS product-lift certificate frontend
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product
 Parser declarations and dispatch rules for quotient-real-rooted product lifts,
 with explicit factorization and cutoff variants.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

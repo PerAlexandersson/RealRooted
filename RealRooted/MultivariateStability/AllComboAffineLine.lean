@@ -1,6 +1,8 @@
-import RealRooted.AllCombo
-import RealRooted.AffineLineRestriction
-import RealRooted.MultivariateStability.AllCombo
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineLineRestriction
+public import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Affine-line restrictions of weakly stable spans
@@ -8,6 +10,8 @@ import RealRooted.MultivariateStability.AllCombo
 This module transports zero-aware multivariate real stability and its
 all-real-combinations condition to split univariate affine-line restrictions.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

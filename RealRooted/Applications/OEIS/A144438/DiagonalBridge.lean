@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438
-import RealRooted.Applications.OEIS.A144438.TotalBridge
-import RealRooted.MultivariateStability.Diagonal
+module
+
+public import RealRooted.Applications.OEIS.A144438
+public import RealRooted.Applications.OEIS.A144438.TotalBridge
+public import RealRooted.MultivariateStability.Diagonal
 
 /-!
 # Diagonal bridge for the Deco total
@@ -14,6 +16,8 @@ simplicity from the recurrence family to both total models.
 
 This does not assert multivariate stability of the outer fiber sum.
 -/
+
+@[expose] public section
 
 open Polynomial
 

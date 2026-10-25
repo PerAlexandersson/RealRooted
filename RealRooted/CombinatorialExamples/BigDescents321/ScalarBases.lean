@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 
 /-!
 # Exact values of the scalar sequence for `25 ≤ n ≤ 70`
@@ -9,6 +11,8 @@ We define a computable rational sequence `betaQ` by the same recurrence from the
 `β_4 = -1/24`, `β_5 = -1/40`, prove `betaQ n = β_n`, and check the bounds
 `L(n) < z_n < U(n)` for `25 ≤ n ≤ 70` by kernel computation.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BigDescents321
 

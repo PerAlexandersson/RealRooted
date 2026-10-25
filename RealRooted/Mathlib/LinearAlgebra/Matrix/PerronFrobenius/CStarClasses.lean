@@ -3,11 +3,13 @@ Copyright (c) 2025 Matteo Cipollina. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Matteo Cipollina
 -/
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.EuclideanDomain.Basic
-import Mathlib.Algebra.EuclideanDomain.Field
-import Mathlib.Analysis.CStarAlgebra.Classes
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.EuclideanDomain.Basic
+public import Mathlib.Algebra.EuclideanDomain.Field
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 
 /-!
 # Equality in the triangle inequality for complex numbers
@@ -34,6 +36,8 @@ adaptations to the pinned Mathlib.
 Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Analysis/CstarAlgebra/Classes.lean
 -/
+
+@[expose] public section
 
 open Finset Real Complex Matrix
 

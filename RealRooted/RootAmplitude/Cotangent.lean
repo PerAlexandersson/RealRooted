@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Density
-import Mathlib.Analysis.Real.Pi.Bounds
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+module
+
+public import RealRooted.RootAmplitude.Density
+public import Mathlib.Analysis.Real.Pi.Bounds
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Cotangent model for logarithmic root gaps
@@ -9,6 +11,8 @@ For the model spectrum `-pi cot t`, the change in reciprocal consecutive gaps
 has a closed form.  Its uniform upper bound verifies the log-gap density
 criterion for the exponential of any equally spaced sample of the spectrum.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

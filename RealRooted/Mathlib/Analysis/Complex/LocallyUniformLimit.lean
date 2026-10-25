@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Analysis.Complex.LocallyUniformLimit
+module
+
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # Laguerre forms of locally uniform limits
@@ -11,6 +13,8 @@ import Mathlib.Analysis.Complex.LocallyUniformLimit
 This upstream-shaped shim transports nonnegativity of the real Laguerre form
 through locally uniform limits of entire functions.
 -/
+
+@[expose] public section
 
 open Filter Topology
 

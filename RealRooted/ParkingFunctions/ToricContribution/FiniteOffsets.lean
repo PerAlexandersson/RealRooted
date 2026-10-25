@@ -1,6 +1,8 @@
-import RealRooted.Jacobi.ParameterInterlacing
-import RealRooted.OrderedRoots
-import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+module
+
+public import RealRooted.Jacobi.ParameterInterlacing
+public import RealRooted.OrderedRoots
+public import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
 
 /-!
 # Root data for the finite toric-contribution offsets
@@ -9,6 +11,8 @@ This file transfers the open-interval root package for a triangle diagonal
 across its factor `1-X`.  The resulting polynomial has one additional simple
 root at the right endpoint and all other roots in the open unit interval.
 -/
+
+@[expose] public section
 
 open Polynomial
 

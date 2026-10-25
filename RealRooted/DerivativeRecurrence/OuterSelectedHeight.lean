@@ -1,5 +1,7 @@
-import Mathlib.Analysis.MeanInequalities
-import RealRooted.DerivativeRecurrence.RootWindow
+module
+
+public import Mathlib.Analysis.MeanInequalities
+public import RealRooted.DerivativeRecurrence.RootWindow
 
 /-!
 # The outer selected-height bound
@@ -11,6 +13,8 @@ to the left of every root of a normalized polynomial with negative roots: if
 selected slots of the A101280 orbit (issue #1342); the interior slots need an
 orbit-specific invariant, since the generic closures `f + 1 ≼ X Δ` and `Tail ≼ Δ` are false.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

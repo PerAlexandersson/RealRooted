@@ -1,6 +1,8 @@
-import RealRooted.Graph.AcyclicOrientation
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import Mathlib.Data.Fintype.Sort
+module
+
+public import RealRooted.Graph.AcyclicOrientation
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import Mathlib.Data.Fintype.Sort
 
 /-!
 # Acyclic sink polynomials of chordal claw-free graphs
@@ -10,6 +12,8 @@ claw-free graph with a reverse perfect elimination order is real-rooted.
 A reverse perfect elimination order is the chordality interface used here:
 the earlier neighbors of every vertex form a clique.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

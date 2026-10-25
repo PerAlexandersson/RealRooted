@@ -1,5 +1,9 @@
-import RealRooted.BorceaBranden.RealFiniteNecessity
-import RealRooted.BorceaBranden.FiniteSymbolClassification
+module
+
+public import RealRooted.BorceaBranden.RealFiniteNecessity
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
+
+@[expose] public section
 
 noncomputable section
 

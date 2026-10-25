@@ -1,4 +1,7 @@
-import RealRooted.Tactic.Recurrence.Shape
+module
+
+public import RealRooted.Tactic.Recurrence.Shape
+public meta import RealRooted.Tactic.Recurrence.Shape
 
 /-!
 # Exact row computation
@@ -15,6 +18,8 @@ division with remainder, gcd and extended gcd, evaluation, rational roots, Taylo
 root bounds, and the Sturm-sequence checks `QPoly.cauchyIndex`, `QPoly.realRooted` and
 `QPoly.interlaces`.
 -/
+
+public meta section
 
 open Lean Meta
 

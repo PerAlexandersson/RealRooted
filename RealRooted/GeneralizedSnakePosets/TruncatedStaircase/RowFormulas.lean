@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
 
 /-!
 # General row formulas for truncated staircases
@@ -6,6 +8,8 @@ import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
 This module derives the bottom-row coefficient recurrence, closed formulas for
 one through six rows, and the finite tail sums used in those inductions.
 -/
+
+@[expose] public section
 
 open Polynomial
 

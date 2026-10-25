@@ -1,10 +1,14 @@
-import RealRooted.LiuWang.SequencePositive
+module
+
+public import RealRooted.LiuWang.SequencePositive
 
 /-!
 # Interval-controlled Liu--Wang sequence theorems
 
 Sequence criteria whose lag sign is certified on a root interval.
 -/
+
+@[expose] public section
 
 open Polynomial
 

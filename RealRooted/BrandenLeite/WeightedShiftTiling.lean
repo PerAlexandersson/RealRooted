@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.MarkedShift
-import RealRooted.FiniteFreeRootCount
+module
+
+public import RealRooted.BrandenLeite.MarkedShift
+public import RealRooted.FiniteFreeRootCount
 
 /-!
 # Nonstationary weighted-shift tiling rows
@@ -8,6 +10,8 @@ This file turns the marked-shift kernel package into polynomial rows.  The
 shared finite transition kernel remains explicit throughout; the PF and proper-
 position conclusions are inherited from the checked kernel-limit theorem.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.CauchyInterlacing.Polynomial
+module
+
+public import RealRooted.CauchyInterlacing.Polynomial
 
 /-!
 # Weyl interlacing for rank-one perturbations
@@ -14,6 +16,8 @@ and it does not change them on the hyperplane orthogonal to `v`.
   Differentialgleichungen*, Math. Ann. 71 (1912).
 * R. A. Horn, C. R. Johnson, *Matrix Analysis*, Theorem 4.3.9.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 open scoped ComplexOrder

@@ -1,11 +1,15 @@
-import RealRooted.Applications.OEIS.A046802
-import RealRooted.Applications.OEIS.A132166
-import RealRooted.Applications.OEIS.A262226
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A046802
+public import RealRooted.Applications.OEIS.A132166
+public import RealRooted.Applications.OEIS.A262226
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Exact downstream presentations for three recurrence-model bridges
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

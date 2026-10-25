@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
 
 /-!
 # Iterated algebraic Routh reduction
@@ -6,6 +8,8 @@ import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
 This file packages repeated Routh steps and derives the product formula for
 the leading classical Hurwitz determinants.
 -/
+
+@[expose] public section
 
 open Polynomial
 

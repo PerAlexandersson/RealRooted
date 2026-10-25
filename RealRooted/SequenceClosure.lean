@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.DegreeDropReversal
+module
+
+public import RealRooted.Basic
+public import RealRooted.DegreeDropReversal
 
 /-!
 # Sequence closure theorems
@@ -7,6 +9,8 @@ import RealRooted.DegreeDropReversal
 Reusable induction and closure theorems for polynomial sequences carrying
 `StrictInterl`, real-rootedness, splitness, and product certificates.
 -/
+
+@[expose] public section
 
 open Polynomial
 

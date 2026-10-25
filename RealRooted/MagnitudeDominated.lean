@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedLiuWang
-import RealRooted.MaWang
+module
+
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.MaWang
 
 /-!
 # Magnitude-dominated lag certificates
@@ -8,6 +10,8 @@ Small wrappers for recurrence steps where a dominant negative term at the
 roots of the current row gives the sign condition needed by the Ma-Wang /
 generalized Liu-Wang interlacing criteria.
 -/
+
+@[expose] public section
 
 open Polynomial
 

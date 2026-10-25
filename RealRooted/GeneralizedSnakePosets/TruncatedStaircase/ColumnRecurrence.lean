@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
-import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # The column recurrence for truncated staircases
@@ -22,6 +24,8 @@ Two Braun–Jal source inputs follow for every `n`:
 Here `P_n = R(n,n)` is the modified Narayana polynomial and
 `G_n = sum_{i < n} R(n,i)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

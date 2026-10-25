@@ -1,6 +1,8 @@
-import RealRooted.JacobiDeformation.CollocationPositivity
-import RealRooted.JacobiDeformation.KernelSign
-import RealRooted.JacobiDeformation.NewtonIdentity
+module
+
+public import RealRooted.JacobiDeformation.CollocationPositivity
+public import RealRooted.JacobiDeformation.KernelSign
+public import RealRooted.JacobiDeformation.NewtonIdentity
 
 /-!
 # The spectral kernel of the quasi-Jacobi collocation matrix
@@ -19,6 +21,8 @@ combining with `RealRooted.JacobiDeformation.KernelSign`, the weighted kernel
 `∑_l w_l p_l(t_i) p_l(t_j) / h_l` divided by `p_{q-1}(t_i) p_{q-1}(t_j)` is
 strictly positive, even at a quasi-node outside `(0, 1)`.
 -/
+
+@[expose] public section
 
 open Finset Matrix Polynomial
 

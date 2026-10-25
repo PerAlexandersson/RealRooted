@@ -1,6 +1,8 @@
-import RealRooted.AffineFamily
-import RealRooted.EulerOperator
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.EulerOperator
+public import RealRooted.WagnerRightSum
 
 /-!
 # Euler-operator tactic frontends
@@ -8,6 +10,8 @@ import RealRooted.WagnerRightSum
 Thin wrappers for the proved `theta + 1`, polar-theta, and iterate APIs in
 `RealRooted.EulerOperator`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

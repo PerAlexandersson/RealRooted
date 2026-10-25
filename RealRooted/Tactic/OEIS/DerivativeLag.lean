@@ -1,7 +1,11 @@
+module
 
-import RealRooted.Tactic.LiuWangRecursion
-import RealRooted.Tactic.OEIS.Basic
-import RealRooted.Tactic.WagnerX
+public import RealRooted.Tactic.LiuWangRecursion
+public import RealRooted.Tactic.OEIS.Basic
+public import RealRooted.Tactic.WagnerX
+public meta import RealRooted.Tactic.LiuWangRecursion
+public meta import RealRooted.Tactic.OEIS.Basic
+public meta import RealRooted.Tactic.WagnerX
 
 /-!
 # OEIS derivative-lag certificate frontend
@@ -11,6 +15,8 @@ certificate family.  The wrapper deliberately rejects certificates requiring
 classical root-location or vector/PF bridges rather than disguising them as
 scalar recurrence proofs.
 -/
+
+public meta section
 
 open Lean.Elab.Tactic
 

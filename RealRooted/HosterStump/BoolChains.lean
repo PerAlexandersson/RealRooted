@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.PosetBasic
+module
+
+public import RealRooted.HosterStump.PosetBasic
 
 /-!
 # Counting chains of subsets of a finite set
@@ -7,6 +9,8 @@ import RealRooted.HosterStump.PosetBasic
 `r`-set having sizes `U + 1`.  The recursion on the top element is proved for an arbitrary finite
 poset with a rank function (`chainCount_succ`); it is reused for graded simplicial posets.
 -/
+
+@[expose] public section
 
 open Finset
 

@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import RealRooted.EulerOperator.Polar.ProperPosition
-import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.EulerOperator.Polar.ProperPosition
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Adjacent polar Euler operators
@@ -14,6 +15,8 @@ This file gives algebraic identities for changing the ambient degree of
 `polarTheta` and proves that adjacent polar operators preserve a tight strict
 interlacing pair in the PF cone.
 -/
+
+@[expose] public section
 
 open Polynomial
 

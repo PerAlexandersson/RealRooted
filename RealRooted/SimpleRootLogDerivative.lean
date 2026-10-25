@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+module
+
+public import Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 
 /-!
 # The logarithmic derivative of `p'` at a simple root
@@ -12,6 +14,8 @@ those of `p` with `r` removed once. The split logarithmic-derivative identity fo
 p''(r) / p'(r) = 2 · Σ_{z ∈ p.roots.erase r} 1 / (r - z).
 ```
 -/
+
+@[expose] public section
 
 open Polynomial
 

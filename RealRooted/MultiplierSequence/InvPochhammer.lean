@@ -1,5 +1,7 @@
-import RealRooted.Laguerre.Roots
-import RealRooted.MultiplierSequence.PolyaSchur
+module
+
+public import RealRooted.Laguerre.Roots
+public import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # The multiplier sequences `1 / (α)_k` and `1 / k!`
@@ -15,6 +17,8 @@ polynomial of `γ` is the sign-reversed generalized Laguerre polynomial
 
 which is PF for `α - 1 ≥ -1`.  The case `α = 1` is `γ_k = 1 / k!`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

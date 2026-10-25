@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator
-import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # Wronskian algebra and Laguerre inequalities
@@ -30,6 +32,8 @@ The general algebraic identities are provided by
 `RealRooted.Mathlib.RingTheory.Polynomial.Wronskian`; the order statements use
 the real-rootedness API and belong in this library.
 -/
+
+@[expose] public section
 
 open Polynomial
 

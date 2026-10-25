@@ -1,5 +1,7 @@
-import Mathlib.Tactic.ComputeDegree
-import RealRooted.ThreeTermRecurrence.Degree
+module
+
+public import Mathlib.Tactic.ComputeDegree
+public import RealRooted.ThreeTermRecurrence.Degree
 
 /-!
 # Degrees of derivative-lag recurrences
@@ -25,6 +27,8 @@ The interlacing backend for this shape is
 * `derivLag_step`: the degree bound and the top coefficient of one step.
 * `derivLag_natDegree`, `derivLag_ne_zero`, `derivLag_leadingCoeff_pos`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
-import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
+public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 
 /-!
 # Eventually polynomial Pólya-frequency sequences
@@ -17,6 +19,8 @@ The children `EventuallyPolynomial.CausalClosure` and
 total nonnegativity: the causal forward difference is again a Pólya-frequency
 sequence (`IsPolyaFreqSeq.causalFwdDiff_of_eventually_polynomial`).
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

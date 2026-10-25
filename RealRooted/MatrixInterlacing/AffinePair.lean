@@ -1,4 +1,8 @@
-import RealRooted.AffineFamily
+module
+
+public import RealRooted.AffineFamily
+
+@[expose] public section
 
 open Polynomial
 

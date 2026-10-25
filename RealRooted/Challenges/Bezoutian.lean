@@ -1,5 +1,7 @@
-import RealRooted.Bezoutian
-import RealRooted.Bezoutian.Successor
+module
+
+public import RealRooted.Bezoutian
+public import RealRooted.Bezoutian.Successor
 
 /-!
 # Bézout matrices and interlacing
@@ -103,6 +105,8 @@ criteria. The matrix algebra, root evaluation, complex-root, and low-degree
 layers live in `RealRooted.Bezoutian`; the successor-degree proof lives in
 `RealRooted.Bezoutian.Successor`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

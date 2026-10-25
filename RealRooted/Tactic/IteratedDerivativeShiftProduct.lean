@@ -1,5 +1,7 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Tactic.Product
 
 /-!
 # Iterated derivative-shift product tactic
@@ -7,6 +9,8 @@ import RealRooted.Tactic.Product
 Sequence adapters for recurrences that multiply an independently real-rooted
 factor by an iterate of `tDeriv` applied to the previous row.
 -/
+
+@[expose] public section
 
 open Polynomial
 

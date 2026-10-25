@@ -1,6 +1,8 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Derivative.FamilyClosure
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Laguerre's theorem on polar derivatives
@@ -22,6 +24,8 @@ splits by Rolle's theorem (`Polynomial.Splits.derivative`).
 * `RealRooted.polarDerivative`: the polar derivative.
 * `RealRooted.splits_polarDerivative_of_splits`: Laguerre's theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

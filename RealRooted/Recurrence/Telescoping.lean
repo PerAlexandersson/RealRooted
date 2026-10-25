@@ -1,5 +1,7 @@
-import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Tactic
 
 /-!
 # Checked finite-sum certificates
@@ -7,6 +9,8 @@ import Mathlib.Tactic
 This file isolates the finite telescoping step in a hypergeometric certificate proof.  The
 certificate identity and its two boundary values remain ordinary Lean proof obligations.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

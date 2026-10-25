@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Data.Nat.Factorial.Strict
-import Mathlib.Tactic
+module
+
+public import RealRooted.Mathlib.Data.Nat.Factorial.Strict
+public import Mathlib.Tactic
 
 /-!
 # Finite reciprocal-factorial tails
@@ -8,6 +10,8 @@ The summand `(l - 1) / l!` telescopes. This file records both range and closed
 interval forms, together with the strict binomial-factorial ratio obtained
 from descending-factorial monotonicity.
 -/
+
+@[expose] public section
 
 open Finset
 

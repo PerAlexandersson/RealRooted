@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.LiebSokalPointwise
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives through general degree-box polarization
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 This file uses block symmetry and the derivative chain rule for noninjective
 renamings to transport partial derivatives through blockwise polarization.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

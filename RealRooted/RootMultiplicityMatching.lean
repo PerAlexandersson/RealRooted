@@ -1,6 +1,8 @@
-import RealRooted.RootCountFinite
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.Order.BigOperators.Group.Finset
+module
+
+public import RealRooted.RootCountFinite
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
 # Multiplicity-Preserving Root Matching
@@ -10,6 +12,8 @@ small-positive-parameter route.  It turns local lower counts in disjoint
 neighborhoods of the roots of `f` into one global proximity matching
 submultiset.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

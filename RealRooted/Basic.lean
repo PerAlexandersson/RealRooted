@@ -1,10 +1,14 @@
-import RealRooted.Basic.PolynomialFacts
-import RealRooted.Basic.RootLists
-import RealRooted.Basic.ProperPosition
-import RealRooted.Basic.Coefficients
+module
+
+public import RealRooted.Basic.PolynomialFacts
+public import RealRooted.Basic.RootLists
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Real-rootedness and interlacing of polynomials
 
 This compatibility facade re-exports the foundational Basic API.
 -/
+
+@[expose] public section

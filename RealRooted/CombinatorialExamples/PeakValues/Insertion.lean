@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.PeakValues
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues
 
 /-!
 # Inserting the maximum into a permutation
@@ -7,6 +9,8 @@ This file begins the order-preserving insertion infrastructure used to derive
 the peak-value recurrence. The insertion slot is a position in the new
 permutation, and the old positions and values retain their relative order.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 
@@ -202,7 +206,7 @@ theorem insertMaximum_apply_eq_last_iff {n : ℕ}
   · rintro rfl
     simp
 
-private theorem insertMaximumPair_injective (n : ℕ) :
+theorem insertMaximumPair_injective (n : ℕ) :
     Function.Injective
       (fun p : Fin (n + 1) × Equiv.Perm (Fin n) =>
         insertMaximum p.1 p.2) := by

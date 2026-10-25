@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.LiebSokalOperator
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.LiebSokalOperator
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 /-!
 # The contraction calculation for finite algebraic symbols
@@ -10,6 +12,8 @@ Borcea--Branden, arXiv:0809.0401, Lemma 2.2.  The target variables are passive
 spectators: only the source/input pairs are contracted, and no finiteness or
 degree condition is imposed on the target variable type.
 -/
+
+@[expose] public section
 
 open BigOperators
 

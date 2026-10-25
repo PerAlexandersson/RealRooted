@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.DepRows
-import RealRooted.Interlacing.Euclid
+module
+
+public import RealRooted.EulerBidiagonal.DepRows
+public import RealRooted.Interlacing.Euclid
 
 /-!
 # The general Euler step with a zero parameter
@@ -10,6 +12,8 @@ is divisible by `X`, and so are all later rows: `P (n + 1) = u 0 · X · R n` fo
 of the Euler step with parameters `1`, `b + 1`, `u (n + 1) + v`, `v`.  Consecutive rows then
 interlace by `generalRowsDep_spec` (A269945 is `θ ^ 2 + X`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

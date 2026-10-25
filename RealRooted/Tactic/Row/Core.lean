@@ -1,5 +1,9 @@
-import RealRooted.EulerBidiagonal.ZeroParameter
-import RealRooted.Tactic.Row.SideGoals
+module
+
+public import RealRooted.EulerBidiagonal.ZeroParameter
+public import RealRooted.Tactic.Row.SideGoals
+public meta import RealRooted.EulerBidiagonal.ZeroParameter
+public meta import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: the interlacing core
@@ -10,6 +14,8 @@ theorem it runs exact probes on the computed rows (`rowsProbe`, `windowPlausible
 `plainPlausible`); second-order recurrences go through an eigen-ODE or the general Euler
 step (`eulerStepRoute`).
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

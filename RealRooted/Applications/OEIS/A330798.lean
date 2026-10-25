@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.MultiLagCancel
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Periodic top-coefficient rows
@@ -8,6 +10,8 @@ import RealRooted.Recurrence.Uniqueness
 This file applies the multi-lag top-window degree law to the remaining OEIS recurrences
 from issue 1343.  The definitions are normalized copies of the downstream recurrences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

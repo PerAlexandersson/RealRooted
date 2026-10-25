@@ -1,5 +1,7 @@
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.HermiteBiehler.Converse.RootGeometry
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
 
 /-!
 # Wronskian layer for the converse Hermite--Biehler theorem
@@ -8,6 +10,8 @@ This file converts upper-half-plane root geometry into Wronskian positivity and
 then into same-degree or successor-degree interlacing. The later common-root
 induction and ratio endpoints build on this layer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

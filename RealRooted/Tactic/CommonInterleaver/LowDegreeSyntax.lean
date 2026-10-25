@@ -1,10 +1,14 @@
-import RealRooted.Tactic.CommonInterleaver.FamilySyntax
+module
+
+public import RealRooted.Tactic.CommonInterleaver.FamilySyntax
 
 /-!
 # Low-degree common-interleaver tactic syntax
 
 Parser declarations for degree-at-most-three pair and family endpoints.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

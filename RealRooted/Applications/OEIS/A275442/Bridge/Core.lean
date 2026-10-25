@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # The A275442 lag-four bridge family
@@ -11,6 +13,8 @@ The complete proof was found in Aristotle project
 Lean 4.31 toolchain. The port keeps only the dependency chain needed by
 A275442.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

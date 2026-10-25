@@ -1,5 +1,7 @@
-import RealRooted.NarayanaTransformation
-import RealRooted.Tactic.PFPolynomial
+module
+
+public import RealRooted.NarayanaTransformation
+public import RealRooted.Tactic.PFPolynomial
 
 /-!
 # Narayana polynomial tactic frontends
@@ -8,6 +10,8 @@ Thin wrappers around the generalized Narayana polynomial PF and consecutive
 proper-position theorems.  Each tactic also has a field-free form that infers
 the parameter and degree from the goal.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

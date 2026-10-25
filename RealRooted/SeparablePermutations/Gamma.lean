@@ -1,6 +1,8 @@
-import RealRooted.SeparablePermutations.Basic
-import RealRooted.FactorialCompression.Basic
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.SeparablePermutations.Basic
+public import RealRooted.FactorialCompression.Basic
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma-polynomials and descent polynomials of separable permutations
@@ -19,6 +21,8 @@ Zhang's Proposition 3.3; it is not proved here (see
 the finite checks).  We prove degrees, nonnegativity, positivity of the relevant coefficients,
 and the first values.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.AffineFamily
+module
+
+public import RealRooted.AffineFamily
 
 /-!
 # Positive-combination tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.AffineFamily
 Thin wrappers for `PosComboRealRooted` and positive/nonnegative linear
 combination certificates.
 -/
+
+@[expose] public section
 
 open Polynomial
 

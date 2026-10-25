@@ -1,4 +1,8 @@
-import RealRooted.Compatibility.Basic
+module
+
+public import RealRooted.Compatibility.Basic
+
+@[expose] public section
 
 open Polynomial
 

@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Characteristic matrices of principal submatrices
@@ -11,6 +13,8 @@ import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 This file records that forming the characteristic matrix commutes with taking
 a principal submatrix along an injective index map.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

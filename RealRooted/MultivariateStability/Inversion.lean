@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Stability-preserving inversion
@@ -10,6 +12,8 @@ upper-half-plane stability. We prove this for univariate polynomials and for
 one distinguished variable `none` of a multivariate polynomial in the
 variables `Option τ`; another variable reduces to this case by `rename`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

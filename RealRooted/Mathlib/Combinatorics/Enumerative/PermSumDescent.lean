@@ -3,7 +3,9 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
 
 /-!
 # Descent counts of direct and skew sums
@@ -22,6 +24,8 @@ junction descent made explicit, and invariance under strictly monotone relabelli
 * `Equiv.Perm.descentCount_skewSum`: for `0 < m` and `0 < n`, the descent count of `skewSum σ τ`
   is `σ.descentCount + τ.descentCount + 1`.
 -/
+
+@[expose] public section
 
 noncomputable section
 

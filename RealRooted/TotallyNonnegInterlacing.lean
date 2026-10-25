@@ -1,7 +1,9 @@
-import RealRooted.CauchyInterlacing.Polynomial
-import RealRooted.MatrixInterlacing.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
+module
+
+public import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.MatrixInterlacing.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 
 /-!
 # Weak principal interlacing for totally nonnegative matrices
@@ -12,6 +14,8 @@ without irreducibility or positive-adjacent-entry hypotheses. Singular matrices
 are obtained by a constructive nonsingular-TN approximation and coefficientwise
 closure of weak interlacing.
 -/
+
+@[expose] public section
 
 open Filter Topology
 

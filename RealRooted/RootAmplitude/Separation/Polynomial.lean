@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootAmplitude.Separation.Euler
-import RealRooted.RootAmplitude.Separation.Roots
+module
+
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootAmplitude.Separation.Euler
+public import RealRooted.RootAmplitude.Separation.Roots
 
 /-!
 # Polynomial root amplitudes from multiplicative separation
@@ -9,6 +11,8 @@ This leaf identifies the canonical finite-sequence amplitude with the
 normalized derivative at a simple negative root, then applies the Euler
 separation bound.
 -/
+
+@[expose] public section
 
 open Polynomial
 

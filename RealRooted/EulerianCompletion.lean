@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
-import RealRooted.EulerianMixedCompatibility.Insertion
-import RealRooted.EulerOperator
+module
+
+public import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
+public import RealRooted.EulerianMixedCompatibility.Insertion
+public import RealRooted.EulerOperator
 
 /-!
 # Oriented Euler completion
@@ -13,6 +15,8 @@ algebraic symbol of the lowering operator
 
 The result is operator theory independent of any particular sequence.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

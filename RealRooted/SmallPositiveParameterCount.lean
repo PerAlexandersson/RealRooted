@@ -1,6 +1,8 @@
-import RealRooted.RootSumBounds
-import RealRooted.RootCountLocalConstancy
-import RealRooted.PositiveParameterLocalLowerCount
+module
+
+public import RealRooted.RootSumBounds
+public import RealRooted.RootCountLocalConstancy
+public import RealRooted.PositiveParameterLocalLowerCount
 
 /-!
 # Small-Positive-Parameter Root Count
@@ -9,6 +11,8 @@ This file assembles the issue #42 small-positive count route for
 `f + C μ * g`.  The analytic input is the per-root local lower count; this file
 combines it with finite matching, left escape, and escaped-root count lemmas.
 -/
+
+@[expose] public section
 
 open Polynomial
 

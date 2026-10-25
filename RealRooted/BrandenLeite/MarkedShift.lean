@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.KernelClosure
-import RealRooted.BrandenLeite.OptionalRiseMatrix
+module
+
+public import RealRooted.BrandenLeite.KernelClosure
+public import RealRooted.BrandenLeite.OptionalRiseMatrix
 
 /-!
 # Positive-diagonal regularization of marked lower shifts
@@ -9,6 +11,8 @@ product `L` and the lower shift `S`.  Replacing `S` by the lower-bidiagonal
 matrix with diagonal `ε` gives the positive-diagonal TN approximation required
 by the finite kernel-limit theorem.
 -/
+
+@[expose] public section
 
 open Filter Matrix Topology
 

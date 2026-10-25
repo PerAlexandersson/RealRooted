@@ -1,6 +1,8 @@
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.GustafssonSolus
-import Mathlib.Data.Fin.Rev
+module
+
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.GustafssonSolus
+public import Mathlib.Data.Fin.Rev
 
 /-!
 # Reversed-last-letter recurrence for finite Smirnov words
@@ -9,6 +11,8 @@ This file packages the literal last-letter refinement of finite Smirnov
 descent polynomials in reverse alphabet order.  Its successor step is exactly
 the Gustafsson--Solus threshold matrix with every equal-letter pivot deleted.
 -/
+
+@[expose] public section
 
 open Polynomial
 

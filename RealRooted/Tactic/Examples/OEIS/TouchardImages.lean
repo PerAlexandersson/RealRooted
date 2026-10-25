@@ -1,5 +1,9 @@
-import RealRooted.Applications.OEIS.TouchardImages
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.TouchardImages
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public section
 
 open RealRooted Polynomial
 

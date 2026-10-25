@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+module
+
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
 
 /-!
 # Compatibility facade for affine finite-symbol consequences
@@ -8,6 +10,8 @@ The generic real finite-symbol API now lives in
 The bidiagonal consequences live in `BidiagonalSymbol.RealConsequences`.
 This module preserves the older import path and declaration names.
 -/
+
+@[expose] public section
 
 open Polynomial
 

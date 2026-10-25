@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.GroupTheory.Perm.Fin
-import Mathlib.LinearAlgebra.Matrix.Permanent
+module
+
+public import Mathlib.GroupTheory.Perm.Fin
+public import Mathlib.LinearAlgebra.Matrix.Permanent
 
 /-!
 # Laplace expansion of the permanent
@@ -12,6 +14,8 @@ import Mathlib.LinearAlgebra.Matrix.Permanent
 This file supplies the permanent analogue of the first-column Laplace
 expansion for determinants.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

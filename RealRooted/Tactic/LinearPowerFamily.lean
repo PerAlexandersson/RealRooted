@@ -1,5 +1,7 @@
-import RealRooted.LinearPowerFamily
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.LinearPowerFamily
+public import RealRooted.Tactic.Finish
 
 /-!
 # Linear-power family tactic frontends
@@ -7,6 +9,8 @@ import RealRooted.Tactic.Finish
 Thin tactic wrappers for the fixed linear-power helpers in
 `RealRooted.LinearPowerFamily`.
 -/
+
+@[expose] public section
 
 open Lean.Elab.Tactic
 open Polynomial

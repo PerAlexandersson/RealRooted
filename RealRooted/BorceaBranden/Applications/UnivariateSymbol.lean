@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+module
+
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # Univariate compatibility for finite algebraic symbols
@@ -9,6 +11,8 @@ This file identifies the general coordinate-box algebraic symbol with the
 existing univariate finite-symbol challenge normalization. It remains outside
 the Mathlib-shaped core to avoid an application-layer import cycle.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

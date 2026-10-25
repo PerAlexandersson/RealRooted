@@ -1,13 +1,17 @@
-import RealRooted.LiuWangRecursion
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.RootBounds
-import RealRooted.SequenceClosure
+module
+
+public import RealRooted.LiuWangRecursion
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.RootBounds
+public import RealRooted.SequenceClosure
 
 /-!
 # Ma--Wang derivative sequences
 
 Sequence closure for weak derivative steps and derivative-plus-lag recurrences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator.Pencil
-import RealRooted.MultiplierSequence.Bidiagonal
-import RealRooted.WangYeh.Affine
+module
+
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.WangYeh.Affine
 
 /-!
 # The Wang--Yeh coefficient-bidiagonal PF criterion
@@ -10,6 +12,8 @@ the affine real-rootedness criterion. The affine determinant condition is
 paired with nonnegativity of the output coefficients; no global sign condition
 is imposed on the two coefficient-weight sequences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

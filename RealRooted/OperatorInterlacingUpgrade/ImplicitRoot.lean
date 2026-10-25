@@ -1,6 +1,8 @@
-import RealRooted.CriticalValueContinuation
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Implicit root motion under a linear operator
@@ -13,6 +15,8 @@ For a monomial-chain operator and nonpositive input roots the derivative is nonn
 (`finRootPolynomial_shift_deriv_nonneg_of_monomialChain`): `T(p_r / (X - r_i))` interlaces
 `T p_r`, so output roots move right when an input root moves right.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

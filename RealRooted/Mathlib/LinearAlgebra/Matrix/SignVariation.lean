@@ -21,7 +21,7 @@ This file extends the sign-variation convention used by
 discarded before adjacent equal signs are collapsed.
 -/
 
-public section
+@[expose] public section
 
 noncomputable section
 
@@ -1577,7 +1577,6 @@ theorem Fin.prefixSignVariations_le_signVariations
   exact List.signVariations_take_le _ _
 
 /-- The sign-block index of an entry, counted by prefix sign variation. -/
-@[expose]
 def Fin.signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
     Fin (Fin.signVariations c + 1) :=

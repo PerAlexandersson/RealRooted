@@ -1,5 +1,7 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.PFPolynomial
 
 /-!
 # Aissen--Schoenberg--Whitney tactic frontends
@@ -7,6 +9,8 @@ import RealRooted.PFPolynomial
 Thin certificate-driven wrappers around the proved forward ASW theorem and
 its standard projections.
 -/
+
+@[expose] public section
 
 open Polynomial
 

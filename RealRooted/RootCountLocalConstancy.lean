@@ -1,5 +1,11 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import RealRooted.RootMultiplicityMatching
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.RootMultiplicityMatching
+public import Mathlib.Topology.Defs.Filter
+public import Mathlib.Topology.Connected.TotallyDisconnected
+public import Mathlib.Topology.Order.IntermediateValue
+public import Mathlib.Topology.Instances.Real.Lemmas
 
 /-!
 # Local Constancy of Root Counts
@@ -9,6 +15,8 @@ issue #42 succ-degree route.  The main point is to reduce global equality of
 upper root counts on a compact positive parameter interval to a local
 root-continuity statement stated as per-root local lower counts.
 -/
+
+@[expose] public section
 
 open Polynomial
 

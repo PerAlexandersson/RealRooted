@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
-import RealRooted.GammaPencil.SymbolStability
+module
+
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+public import RealRooted.GammaPencil.SymbolStability
 
 /-!
 # The gamma operator preserves real-rootedness in its degree box
@@ -13,6 +15,8 @@ The stable finite symbol of `gammaOperator n` gives a real-rootedness
 preserver on polynomials of degree at most `n / 2`.  The pair form below is
 the induction interface for transporting both components of the gamma pencil.
 -/
+
+@[expose] public section
 
 open Polynomial
 

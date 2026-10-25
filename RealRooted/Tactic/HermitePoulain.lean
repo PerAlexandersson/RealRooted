@@ -1,4 +1,6 @@
-import RealRooted.Hermite.Poulain
+module
+
+public import RealRooted.Hermite.Poulain
 
 /-!
 # Hermite--Poulain tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.Hermite.Poulain
 Thin wrappers around the finite constant-coefficient differential-operator
 preservation theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

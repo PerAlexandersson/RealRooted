@@ -1,6 +1,8 @@
-import RealRooted.MultivariateStability.MorrisOperator
-import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
+module
+
+public import RealRooted.MultivariateStability.MorrisOperator
+public import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
 
 /-!
 # The flow of the Liu--Zhang Morris `B` operator
@@ -8,6 +10,8 @@ import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
 This file constructs the algebraic flow dictated by Liu--Zhang,
 `arXiv:2609.15201v2`, equations (4.20)--(4.22).
 -/
+
+@[expose] public section
 
 open MvPolynomial Polynomial
 
@@ -218,7 +222,10 @@ theorem exists_morrisBRootLift {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
       _ = (-1 : ℂ) ^ ((k : ℕ) + 1) *
           (morrisBScale q t k *
             (Finset.univ.val.map x).esymm ((k : ℕ) + 1)) := rfl
-private def morrisElementaryEquiv (q : ℕ) :
+
+/-- The algebra isomorphism from `MvPolynomial (Fin q) ℝ` onto the symmetric polynomials in `q`
+variables, given by the elementary symmetric polynomials. -/
+def morrisElementaryEquiv (q : ℕ) :
     MvPolynomial (Fin q) ℝ ≃ₐ[ℝ]
       symmetricSubalgebra (Fin q) ℝ :=
   esymmAlgEquiv (Fin q) ℝ (by simp)

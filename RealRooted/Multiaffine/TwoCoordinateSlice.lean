@@ -1,8 +1,10 @@
-import RealRooted.Multiaffine.Rayleigh
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-import Mathlib.Algebra.MvPolynomial.Funext
-import Mathlib.Algebra.MvPolynomial.Monad
+module
+
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.MvPolynomial.Monad
 
 /-!
 # Two-coordinate affine slices of multiaffine polynomials
@@ -11,6 +13,8 @@ This file packages the coefficient-ring algebra for restricting a polynomial
 to affine motion in two coordinates.  Stability consequences belong in the
 multivariate-stability layer.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

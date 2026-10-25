@@ -1,5 +1,7 @@
-import RealRooted.HosterStump.PosetBasic
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.HosterStump.PosetBasic
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # The `h`-vector determines the `f`-vector
@@ -8,6 +10,8 @@ For `h_k` the coefficients of `∑ i ≤ n, f_i X^i (1 - X)^(n - i)` we prove
 `f_i = ∑ k ≤ n, h_k * C(n - k, n - i)` for `i ≤ n` (Hoster--Stump, (F4) of the poset proof of
 identity (1.3)); `fVec_eq_sum_hVec` is the specialization to the `f`-vector of a poset.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

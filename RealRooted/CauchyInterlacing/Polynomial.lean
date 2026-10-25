@@ -1,5 +1,7 @@
-import RealRooted.Basic.ProperPosition
-import RealRooted.CauchyInterlacing
+module
+
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.CauchyInterlacing
 
 /-!
 # Polynomial Cauchy interlacing
@@ -8,6 +10,8 @@ This module transports Cauchy's ordered-eigenvalue theorem to the library's
 sorted-root `Interlaces` predicate for characteristic polynomials. Challenge
 entry points remain in `RealRooted.Challenges.CauchyInterlacing`.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

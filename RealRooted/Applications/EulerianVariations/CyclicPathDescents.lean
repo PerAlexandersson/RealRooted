@@ -1,6 +1,8 @@
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.SimpleRoots
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.SimpleRoots
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Cyclic descents of northeast lattice paths
@@ -20,6 +22,8 @@ definition; it is not the enumerator of the unique empty path. The paper's
 coefficient formula supplies the combinatorial identification, which is cited
 rather than formalized here. Every paper-facing theorem below assumes `n > 0`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

@@ -7,7 +7,11 @@ This file re-exports the split ConvexCombination modules:
 - `AllCombo`: AllComboRealRooted, iterateTDeriv infrastructure
 - `ObreschkoffConverse`: Wronskian, strictInterl_of_allComboRealRooted
 -/
-import RealRooted.WeightedSum
-import RealRooted.PosCombo
-import RealRooted.AllCombo
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.WeightedSum
+public import RealRooted.PosCombo
+public import RealRooted.AllCombo
+public import RealRooted.ObreschkoffConverse
+
+@[expose] public section

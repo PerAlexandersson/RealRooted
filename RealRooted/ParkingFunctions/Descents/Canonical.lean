@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
-import RealRooted.ParkingFunctions.Descents.Basic
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 
 /-!
 # Bridges for parking-function word statistics
@@ -11,6 +13,8 @@ The parking-function API indexes adjacent positions by `Fin`, whereas the
 canonical list API uses natural-number positions.  The theorems below record
 the conversion through `Fin.valEmbedding`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

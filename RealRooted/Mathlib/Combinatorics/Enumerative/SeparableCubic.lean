@@ -3,9 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
-import Mathlib.RingTheory.PowerSeries.Basic
-import Mathlib.Tactic.LinearCombination
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # The cubic recurrence for separable permutations
@@ -17,6 +19,8 @@ convention that all three vanish at `n = 0`, the generating-series identities
 `S = z + (1 + X) z S + X z S² + X S³`, that is, the cubic recurrence
 `S_n = (1 + X) S_{n-1} + X ∑_{i+j=n-1} S_i S_j + X ∑_{i+j+l=n} S_i S_j S_l` for `n ≥ 2`.
 -/
+
+@[expose] public section
 
 open scoped BigOperators Polynomial
 open Polynomial

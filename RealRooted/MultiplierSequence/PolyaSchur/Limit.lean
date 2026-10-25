@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.MultiplierSequence.PolyaSchur
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # Pointwise limits of PF multiplier sequences
@@ -9,6 +11,8 @@ pointwise limits.  For each fixed degree, the Jensen polynomials have bounded
 degree and converge coefficientwise, so closedness of real splitting passes
 to the limit.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

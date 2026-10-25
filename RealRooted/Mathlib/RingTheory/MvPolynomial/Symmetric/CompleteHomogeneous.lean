@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import Mathlib.Data.Finset.Sym
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+module
+
+public import Mathlib.Data.Finset.Sym
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Complete homogeneous symmetric polynomial evaluations
@@ -13,6 +15,8 @@ This file adds evaluation and finite variable-adjunction lemmas for Mathlib's
 `MvPolynomial.hsymm`.  The statements are shaped for eventual upstreaming and
 do not introduce a second complete homogeneous polynomial definition.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

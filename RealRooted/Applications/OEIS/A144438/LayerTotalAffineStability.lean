@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
-import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
-import RealRooted.MultivariateStability.AffineEulerCore
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+public import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Stability consequences for the affine Deco recurrence
@@ -11,6 +13,8 @@ stable, its two coordinate sections are Rayleigh, and its fresh-coordinate
 Wronskians are nonnegative. Thus the first-order obstruction for the full
 recurrence is isolated in the exceptional branch's cross term.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

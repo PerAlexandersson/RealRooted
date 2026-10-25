@@ -1,7 +1,9 @@
-import RealRooted.RowThreshold
-import RealRooted.AffineProperPosition
-import RealRooted.PFPolynomial
-import RealRooted.StaircaseSum
+module
+
+public import RealRooted.RowThreshold
+public import RealRooted.AffineProperPosition
+public import RealRooted.PFPolynomial
+public import RealRooted.StaircaseSum
 
 /-!
 # Generic threshold matrices
@@ -10,6 +12,8 @@ Reusable row-threshold entries, matrices, preservation theorems, and the
 small polynomial lemmas shared by the Haglund--Zhang and Gustafsson--Solus
 applications.
 -/
+
+@[expose] public section
 
 open Polynomial
 

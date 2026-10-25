@@ -1,12 +1,16 @@
-import RealRooted.Tactic.LiuWang.SequenceIntervals
-import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequencePositive
-import RealRooted.Tactic.LiuWang.SequenceProducts
-import RealRooted.Tactic.LiuWang.SequenceQuadratic
-import RealRooted.Tactic.LiuWang.Step
+module
+
+public import RealRooted.Tactic.LiuWang.SequenceIntervals
+public import RealRooted.Tactic.LiuWang.SequenceNonpositive
+public import RealRooted.Tactic.LiuWang.SequencePositive
+public import RealRooted.Tactic.LiuWang.SequenceProducts
+public import RealRooted.Tactic.LiuWang.SequenceQuadratic
+public import RealRooted.Tactic.LiuWang.Step
 
 /-!
 # Generalized Liu--Wang tactic package
 
 Compatibility umbrella for the family-scoped Liu--Wang tactic frontends.
 -/
+
+@[expose] public section

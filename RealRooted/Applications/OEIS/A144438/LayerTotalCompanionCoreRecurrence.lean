@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
 
 /-!
 # Successor recurrence for the Deco companion core
@@ -7,6 +9,8 @@ This file transports the successor normal core into the same unshifted
 coordinate system as the companion extensions.  It thereby reduces their
 coordinate Wronskians together under one injective rename.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,4 +1,6 @@
-import RealRooted.Multiaffine.CoordinateWronskian
+module
+
+public import RealRooted.Multiaffine.CoordinateWronskian
 
 /-!
 # Rayleigh criteria for affine coordinate extensions
@@ -8,6 +10,8 @@ This file isolates the algebra needed to prove that a polynomial of the form
 is a quadratic in the fresh variable. For a pair involving the fresh
 coordinate, the difference is the oriented Wronskian `Q * ∂ P - P * ∂ Q`.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

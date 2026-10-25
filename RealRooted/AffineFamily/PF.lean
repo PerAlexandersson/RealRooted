@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.PFPolynomial
 
 /-!
 # Affine pencils of PF pairs
@@ -8,6 +10,8 @@ For PF polynomials `f` and `g` (nonnegative coefficients, only real roots), dire
 `Interl f g` holds exactly when every positive affine pencil `(s X + t) f + g` is PF.  Zero inputs
 are allowed on both sides.
 -/
+
+@[expose] public section
 
 open Polynomial
 

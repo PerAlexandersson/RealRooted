@@ -38,7 +38,7 @@ here.
 * `Matrix.charpoly_toBlocks₂₂_fromBlocks_diagonal_conj`
 -/
 
-public section
+@[expose] public section
 
 open Quiver
 

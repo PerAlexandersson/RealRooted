@@ -3,10 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import RealRooted.EulerOperator
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.EulerOperator
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Corrections to Euler successors
@@ -14,6 +15,8 @@ import RealRooted.WagnerX.NonnegativeRoots
 This file packages common-interleaver arguments for adding a nonnegative
 correction below the Euler successor `thetaPlusOne p`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Applications.OEIS.A367177
-import RealRooted.MultiplierSequence.JensenHypergeometric
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Applications.OEIS.A367177
+public import RealRooted.MultiplierSequence.JensenHypergeometric
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The A318397 double-Narayana model
@@ -10,6 +12,8 @@ The coefficient of `X^k` in row `n` is
 `C(n,k)^2 C(2(n-k),n-k)`. The row is the composition of two order-zero
 Narayana transforms.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

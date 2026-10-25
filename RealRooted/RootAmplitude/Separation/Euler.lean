@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Separation.Finite
-import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-import Mathlib.NumberTheory.ZetaValues
+module
+
+public import RealRooted.RootAmplitude.Separation.Finite
+public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+public import Mathlib.NumberTheory.ZetaValues
 
 /-!
 # Euler-product bounds for separated amplitudes
@@ -10,6 +12,8 @@ geometric staircase product.  This file supplies the real-analytic uniform
 lower bound for that product using the Basel sum.  Keeping this dependency in
 one leaf prevents elementary separation clients from importing zeta theory.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

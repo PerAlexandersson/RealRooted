@@ -1,7 +1,9 @@
-import RealRooted.SymmetricDecomposition.DerangementTransform
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.Applications.BinderVecchi.UniformMatroid
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.Applications.BinderVecchi.UniformMatroid
+public import RealRooted.PFPolynomial
 
 /-!
 # Chow and augmented Chow polynomials of uniform matroids
@@ -29,6 +31,8 @@ flat-contraction formula `∑_{k<r} C(n,k) X^k H_{U_{r-k,n-k}} + X^r`), is not f
 checked by exact computation for `r ≤ 5`, `r ≤ n ≤ r + 3`.  The real-rootedness proofs do not
 assume it: they derive the conclusion from the explicit formulas.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

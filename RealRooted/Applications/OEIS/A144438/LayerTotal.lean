@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.ExactLayer
+module
+
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
 
 /-!
 # The recurrence-defined total of the exact Deco layers
@@ -9,6 +11,8 @@ combinatorial sum realizes the recurrence-defined total.  No stability claim
 is made for the total: multivariate real stability is not closed under
 arbitrary addition.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

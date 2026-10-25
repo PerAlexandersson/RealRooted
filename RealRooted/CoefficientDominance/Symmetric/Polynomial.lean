@@ -1,9 +1,13 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import Mathlib.Algebra.Polynomial.Roots
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Polynomial coefficients of elementary-symmetric generating products
 -/
+
+@[expose] public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

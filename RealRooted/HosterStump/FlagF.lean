@@ -1,4 +1,6 @@
-import RealRooted.HosterStump.BoolChains
+module
+
+public import RealRooted.HosterStump.BoolChains
 
 /-!
 # The flag `f`-vector of a graded simplicial poset
@@ -7,6 +9,8 @@ For a graded simplicial poset, `flagF rk T = fVec rk (max T + 1) * gapMultinomia
 (T.erase (max T))`: a chain with ranks `T + 1` is a top element `x` of rank `max T + 1`,
 together with a chain in the Boolean interval below `x`.
 -/
+
+@[expose] public section
 
 open Finset
 

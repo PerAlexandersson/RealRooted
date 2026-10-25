@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.Rayleigh
+module
+
+public import RealRooted.MultivariateStability.Rayleigh
 
 /-!
 # Strongly Rayleigh measures are negatively correlated
@@ -14,6 +16,8 @@ pairwise negative correlation: `μ(i, j ∈ S) μ(Ω) ≤ μ(i ∈ S) μ(j ∈ S
 * J. Borcea, P. Brändén, T. M. Liggett, *Negative dependence and the geometry of polynomials*,
   J. Amer. Math. Soc. 22 (2009), 521–567.
 -/
+
+@[expose] public section
 
 open MvPolynomial
 

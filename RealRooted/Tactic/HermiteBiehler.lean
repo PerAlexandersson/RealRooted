@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler
+module
+
+public import RealRooted.HermiteBiehler
 
 /-!
 # Hermite--Biehler tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.HermiteBiehler
 Thin wrappers around the checked Hermite--Biehler forward, converse, and
 odd/even Hurwitz bridges.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
+module
+
+public import Mathlib
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # OEIS A155112
@@ -11,6 +13,8 @@ row, while a recurrence sign invariant places every real root in `(-5, 0]`.
 The intended repository destination is
 `RealRooted/Applications/OEIS/A155112.lean`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

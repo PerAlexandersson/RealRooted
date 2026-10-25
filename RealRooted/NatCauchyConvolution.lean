@@ -1,6 +1,10 @@
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-import Mathlib.Basic.Real.Basic
-import Mathlib.Data.Finset.Range
+module
+
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Finset.Range
+
+@[expose] public section
 
 open scoped BigOperators
 

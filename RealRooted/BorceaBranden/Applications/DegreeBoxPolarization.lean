@@ -1,7 +1,9 @@
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.Polarization
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.Polarization
 
 /-!
 # Source polarization for degree-box operators
@@ -10,6 +12,8 @@ This file implements the source-side operator lift from Borcea--Brändén,
 equation (2.2), for a one-variable degree-`n` source box. The lift first
 diagonalizes a multiaffine input and then applies the original operator.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

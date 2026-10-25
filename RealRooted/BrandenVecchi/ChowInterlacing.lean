@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowInterlacingQuotient
-import RealRooted.CommonInterleaver.RootDesc
+module
+
+public import RealRooted.BrandenVecchi.ChowInterlacingQuotient
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # The four-term Chow reflection-interlacing extension
@@ -10,6 +12,8 @@ form.  The proof follows the source's seven-term chain.  The literal
 this harmless duplicate is retained so the result uses the canonical list
 predicate.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.Linear
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.Linear
 
 /-!
 # The auxiliary polynomials for separable permutations
@@ -13,6 +15,8 @@ interlace without common roots.  The interlacing step is an instance of the
 strict derivative-lag recurrence `derivLag_strictInterl_and_noCommonRoot` with
 multipliers `U n = X + (n + 3) / 2`, `V n = X`, `W n = 0`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

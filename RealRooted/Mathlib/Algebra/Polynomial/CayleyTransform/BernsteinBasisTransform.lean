@@ -3,8 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 
 /-!
 # Basis transforms of Bernstein expansions
@@ -12,6 +14,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 This file records the linearity bridge between a coefficient-basis transform
 and a finite Bernstein expansion.
 -/
+
+@[expose] public section
 
 open Finset
 

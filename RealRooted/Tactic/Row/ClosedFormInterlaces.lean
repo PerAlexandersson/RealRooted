@@ -1,7 +1,13 @@
-import RealRooted.Tactic.RowClosedForm
-import RealRooted.Interlacing.RemainderCertificate
-import RealRooted.Tactic.InterlacesExplicit
-import RealRooted.Tactic.Row.SideGoals
+module
+
+public import RealRooted.Tactic.RowClosedForm
+public import RealRooted.Interlacing.RemainderCertificate
+public import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.Row.SideGoals
+public meta import RealRooted.Tactic.RowClosedForm
+public meta import RealRooted.Interlacing.RemainderCertificate
+public meta import RealRooted.Tactic.InterlacesExplicit
+public meta import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: interlacing of closed-form rows `q ^ (D₀ + m) · R m`
@@ -22,6 +28,7 @@ finitely many earlier pairs by `rr_interlaces_explicit`.  This covers the order-
 with characteristic polynomial `(λ - q)³`, such as A106246, A124932, A125092, A141611 and A332496.
 -/
 
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

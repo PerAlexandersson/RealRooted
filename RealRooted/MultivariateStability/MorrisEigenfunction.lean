@@ -1,9 +1,11 @@
-import RealRooted.MultivariateStability.MorrisDFlow
-import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
-import Mathlib.Data.Finset.Sort
-import Mathlib.Order.Extension.Linear
-import Mathlib.LinearAlgebra.Basis.Basic
-import RealRooted.Polarization
+module
+
+public import RealRooted.MultivariateStability.MorrisDFlow
+public import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
+public import Mathlib.Data.Finset.Sort
+public import Mathlib.Order.Extension.Linear
+public import Mathlib.LinearAlgebra.Basis.Basic
+public import RealRooted.Polarization
 
 /-!
 # The Liu--Zhang stable eigenfunction flow
@@ -12,6 +14,8 @@ This file proves Liu--Zhang, arXiv:2609.15201v2, Theorem 4.12. It combines
 the stable elementary seed, the finite dominance-downset triangular flow,
 the strict spectral gap, and bounded-degree coefficient-limit closure.
 -/
+
+@[expose] public section
 
 open MvPolynomial Polynomial Filter Topology
 
@@ -59,7 +63,8 @@ theorem MvRealStable.morrisElementary {q N : ℕ}
           (ih fun l hl => hu l (by simp [hl]))
   exact hprod s hs
 
-private def morrisElementaryPoint {q N : ℕ}
+/-- The coordinates in `MorrisDegreeCoords q N` of the elementary product `E_lambda`. -/
+def morrisElementaryPoint {q N : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
     MorrisDegreeCoords q N :=
   morrisDegreeEquiv q N
@@ -125,7 +130,8 @@ noncomputable instance {N : ℕ} (q : ℕ) (lambda : N.Partition) :
     Fintype (MorrisDownsetIndex q lambda) :=
   Fintype.ofFinite _
 
-private def morrisDownsetMsymm {N : ℕ} (q : ℕ)
+/-- The monomial symmetric polynomial of the partition underlying a downset index `i`. -/
+def morrisDownsetMsymm {N : ℕ} (q : ℕ)
     (lambda : N.Partition) (i : MorrisDownsetIndex q lambda) :
     MvPolynomial (Fin q) ℝ :=
   msymm (Fin q) ℝ i.1
@@ -140,7 +146,7 @@ private theorem sum_partition_part_fin {N q : ℕ}
   rw [Fin.sum_univ_eq_sum_range, show ∑ i ∈ Finset.range q, mu.part i =
     mu.prefixSum q from rfl, hp, ← Multiset.sum_coe, Multiset.sort_eq, mu.parts_sum]
 
-private theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
+theorem morrisDownsetMsymm_linearIndependent {N q : ℕ}
     (lambda : N.Partition) :
     LinearIndependent ℝ (morrisDownsetMsymm q lambda) := by
   rw [Fintype.linearIndependent_iff]
@@ -181,7 +187,9 @@ abbrev MorrisDownsetSpace {N : ℕ} (q : ℕ)
     (lambda : N.Partition) :=
   morrisDownsetSubmodule q lambda
 
-private noncomputable def morrisDownsetBasis {N q : ℕ}
+/-- The basis of `MorrisDownsetSpace q lambda` given by the monomial symmetric polynomials
+`morrisDownsetMsymm q lambda`. -/
+noncomputable def morrisDownsetBasis {N q : ℕ}
     (lambda : N.Partition) :
     Module.Basis (MorrisDownsetIndex q lambda) ℝ
       (MorrisDownsetSpace q lambda) :=
@@ -220,7 +228,7 @@ private theorem lowerSpan_le_morrisDownset {N q : ℕ}
   exact Submodule.subset_span
     ⟨morrisDownsetIndexOfLt i mu hmu, rfl⟩
 
-private theorem morrisD_mem_morrisDownsetSubmodule {N q : ℕ}
+theorem morrisD_mem_morrisDownsetSubmodule {N q : ℕ}
     {lambda : N.Partition} {P : MvPolynomial (Fin q) ℝ}
     (hP : P ∈ morrisDownsetSubmodule q lambda) :
     morrisD q P ∈ morrisDownsetSubmodule q lambda := by
@@ -350,7 +358,9 @@ private theorem toMatrix_isUpperTriangular_of_isTriangularOn
     Finsupp.single_eq_of_ne (ne_of_gt hji)] using hremCoord
 
 
-private noncomputable def morrisDownsetFinOrderIso {N q : ℕ}
+/-- The order isomorphism from `Fin (card - 1 + 1)` onto a linear extension of the dominance order
+on `MorrisDownsetIndex q lambda`. -/
+noncomputable def morrisDownsetFinOrderIso {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
     Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) ≃o
       LinearExtension (MorrisDownsetIndex q lambda) := by
@@ -363,13 +373,17 @@ private noncomputable def morrisDownsetFinOrderIso {N q : ℕ}
       (Fintype.card_pos_iff.mpr ⟨⟨lambda, le_rfl, hlambda⟩⟩))).trans
     (Fintype.orderIsoFinOfCardEq _ (Fintype.card_congr (Equiv.refl _)))
 
-private noncomputable def morrisDownsetFinEquiv {N q : ℕ}
+/-- The underlying equivalence of `morrisDownsetFinOrderIso`, indexing `MorrisDownsetIndex q lambda`
+by `Fin (card - 1 + 1)`. -/
+noncomputable def morrisDownsetFinEquiv {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
     Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) ≃
       MorrisDownsetIndex q lambda :=
   (morrisDownsetFinOrderIso lambda hlambda).toEquiv
 
-private noncomputable def morrisDownsetFinBasis {N q : ℕ}
+/-- The basis `morrisDownsetBasis lambda` of `MorrisDownsetSpace q lambda` reindexed by
+`Fin (card - 1 + 1)` along `morrisDownsetFinEquiv`. -/
+noncomputable def morrisDownsetFinBasis {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q) :
     Module.Basis
       (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1))

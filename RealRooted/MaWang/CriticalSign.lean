@@ -1,5 +1,7 @@
-import RealRooted.MaWang.Strong
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.MaWang.Strong
+public import RealRooted.SimpleRoots
 
 /-!
 # Strict interlacing from critical signs
@@ -15,6 +17,8 @@ as `h` or the successor degree (Liu–Wang, *A unified approach to polynomial se
 real zeros*, Theorem 2.1; Ma–Wang, *q-Eulerian polynomials and polynomials with only real
 zeros*, Theorem 2).
 -/
+
+@[expose] public section
 
 open Polynomial
 

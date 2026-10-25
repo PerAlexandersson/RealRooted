@@ -1,4 +1,6 @@
-import RealRooted.Tactic.CommonInterleaver.Core
+module
+
+public import RealRooted.Tactic.CommonInterleaver.Core
 
 /-!
 # Basic common-interleaver tactic syntax
@@ -6,6 +8,8 @@ import RealRooted.Tactic.CommonInterleaver.Core
 Parser declarations for compatibility transports, finite-family upgrades, and
 their pointwise sequence forms.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

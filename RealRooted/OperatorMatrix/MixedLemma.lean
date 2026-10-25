@@ -1,5 +1,7 @@
-import RealRooted.OperatorMatrix.Directed
-import RealRooted.RootPolynomial
+module
+
+public import RealRooted.OperatorMatrix.Directed
+public import RealRooted.RootPolynomial
 
 /-!
 # The mixed differential lemma
@@ -11,6 +13,8 @@ case is `interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime`; th
 follows by separating the merged ordered root lists, applying the strict case, and passing to the
 coefficientwise limit with `interl_of_pf_coeff_tendsto_of_natDegree_le`.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

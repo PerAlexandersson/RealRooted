@@ -1,4 +1,8 @@
-import RealRooted.MaWang.Weak.Regularization
+module
+
+public import RealRooted.MaWang.Weak.Regularization
+
+@[expose] public section
 
 open Polynomial Filter
 

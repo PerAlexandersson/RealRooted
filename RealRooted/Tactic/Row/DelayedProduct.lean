@@ -1,5 +1,9 @@
-import RealRooted.CubicDiscriminant
-import RealRooted.Tactic.Row.Subseq
+module
+
+public import RealRooted.CubicDiscriminant
+public import RealRooted.Tactic.Row.Subseq
+public meta import RealRooted.CubicDiscriminant
+public meta import RealRooted.Tactic.Row.Subseq
 
 /-!
 # Row tactics: delayed product recurrences
@@ -8,6 +12,8 @@ This route recognizes a recurrence presented at an arbitrary offset whose only a
 is the immediately preceding row.  It splits the exceptional initial rows and sends the tail
 to `RealRooted.productSequence_splits`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

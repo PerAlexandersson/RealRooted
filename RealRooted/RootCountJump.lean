@@ -1,8 +1,10 @@
-import Mathlib.Algebra.Polynomial.Roots
-import Mathlib.Algebra.Order.BigOperators.Group.List
-import Mathlib.Algebra.Order.BigOperators.Group.Multiset
-import Mathlib.Basic.Real.Basic
-import RealRooted.RootContinuity
+module
+
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Order.BigOperators.Group.List
+public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.RootContinuity
 
 /-!
 # Local constancy of threshold root counts
@@ -13,6 +15,8 @@ The lower root count `(p.roots.filter (· ≤ x)).card` is locally constant when
 the threshold moves without crossing a root.  This lets us reduce a global
 count bound to the regime of thresholds that are roots of neither polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial
 

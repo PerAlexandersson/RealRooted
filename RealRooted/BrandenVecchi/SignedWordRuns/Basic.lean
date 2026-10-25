@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.SignedWords
-import RealRooted.Mathlib.Data.List.SplitBy
-import Mathlib.Data.List.ChainOfFn
-import Mathlib.Data.List.OfFn
+module
+
+public import RealRooted.BrandenVecchi.SignedWords
+public import RealRooted.Mathlib.Data.List.SplitBy
+public import Mathlib.Data.List.ChainOfFn
+public import Mathlib.Data.List.OfFn
 
 /-!
 # Run decompositions of finite signed words
@@ -11,6 +13,8 @@ positive run lengths.  It then restricts the generic run-length equivalence to
 the signed words in Brändén--Vecchi Theorem 8.11: a positive representative
 must have run length one, while a negative representative may repeat.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BrandenVecchi
 
@@ -96,7 +100,8 @@ private theorem head_eq_getLast_of_isChain_eq {α : Type*} {block : List α}
     List.getLast?_eq_some_getLast hblock] at hoptions
   exact Option.some.inj hoptions
 
-private def blocksToRuns {α : Type*} :
+/-- Replace each nonempty block of a list of blocks by its first entry and its length. -/
+def blocksToRuns {α : Type*} :
     (blocks : List (List α)) → [] ∉ blocks → List (α × ℕ)
   | [], _ => []
   | block :: blocks, hnil =>
@@ -104,7 +109,7 @@ private def blocksToRuns {α : Type*} :
       let hblocks : [] ∉ blocks := fun h => hnil (by simp [h])
       (block.head hblock, block.length) :: blocksToRuns blocks hblocks
 
-private theorem blocksToRuns_representatives_ne {α : Type*} :
+theorem blocksToRuns_representatives_ne {α : Type*} :
     ∀ (blocks : List (List α)) (hnil : [] ∉ blocks),
       (∀ block ∈ blocks, block.IsChain (· = ·)) →
       blocks.IsChain (fun left right =>
@@ -128,7 +133,7 @@ private theorem blocksToRuns_representatives_ne {α : Type*} :
         htailnil htailconstant hseparated.tail
       simpa [blocksToRuns] using List.IsChain.cons_cons hhead htail
 
-private theorem blocksToRuns_lengths_pos {α : Type*} :
+theorem blocksToRuns_lengths_pos {α : Type*} :
     ∀ (blocks : List (List α)) (hnil : [] ∉ blocks),
       ∀ run ∈ blocksToRuns blocks hnil, 0 < run.2
   | [], _, _, hrun => by simp [blocksToRuns] at hrun

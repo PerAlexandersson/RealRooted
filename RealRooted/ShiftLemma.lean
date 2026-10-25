@@ -9,11 +9,15 @@ If `f` and `h` have nonpositive real roots, positive leading coefficients,
 This module was promoted from the peak-polynomial project so that other
 real-rootedness projects can use the same `(X - 1)` shift step.
 -/
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Wagner
-import RealRooted.MaWang
-import RealRooted.ConvexCombination
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Wagner
+public import RealRooted.MaWang
+public import RealRooted.ConvexCombination
+
+@[expose] public section
 
 open Polynomial
 

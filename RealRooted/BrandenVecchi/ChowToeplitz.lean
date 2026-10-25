@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 
 /-!
 # Chow series of lower Toeplitz matrices
@@ -10,6 +12,8 @@ Chow-derangement polynomials of a lower Toeplitz matrix.  It is the finite,
 coefficientwise algebraic core of Brändén--Vecchi, Theorem 8.1; no positivity
 or convergence hypothesis is involved.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

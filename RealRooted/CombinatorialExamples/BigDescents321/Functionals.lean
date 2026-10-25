@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.Residual
-import Mathlib.Algebra.BigOperators.Field
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.Residual
+public import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # Linear functionals on Gegenbauer coordinates
@@ -14,6 +16,8 @@ Two linear functionals on the Gegenbauer coordinates turn the coordinate recurre
 
 Here `c φ` denotes the coordinates `xShift φ` of `c · ∑_j φ_j G_j`.
 -/
+
+@[expose] public section
 
 open Finset
 

@@ -1,7 +1,9 @@
-import RealRooted.GammaTransform.Basic
-import RealRooted.Hadamard.Grace
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.NarayanaTransformation.Coefficients
+module
+
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Continuous Narayana interpolation
@@ -21,6 +23,8 @@ Log-Convexity Preservation*, arXiv:2610.19548v2.
 The real-rootedness proof writes `P_n` as a positive multiple of the Schur–Szegő composition of
 the Jensen polynomial of `1 / (θ + 1)_k` with its reversal.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

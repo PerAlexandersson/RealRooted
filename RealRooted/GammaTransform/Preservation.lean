@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.RootMap
+module
+
+public import RealRooted.GammaTransform.RootMap
 
 /-!
 # Gamma-transform preservation
@@ -6,6 +8,8 @@ import RealRooted.GammaTransform.RootMap
 Real-rootedness, nonpositive-root, and minimal-degree transport for gamma
 transforms.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

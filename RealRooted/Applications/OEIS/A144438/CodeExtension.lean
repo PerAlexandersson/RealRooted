@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.AdmissibleCode
-import RealRooted.Applications.OEIS.A144438.InverseWord
+module
+
+public import RealRooted.Applications.OEIS.A144438.AdmissibleCode
+public import RealRooted.Applications.OEIS.A144438.InverseWord
 
 /-!
 # Extension of chronological Deco codes
@@ -10,6 +12,8 @@ construction appends the pair `(1, 0)`.  The definitions are independent of
 the polynomial recurrence and expose their exact behavior under the generic
 minimum-insertion decoder.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.DecoCode
 

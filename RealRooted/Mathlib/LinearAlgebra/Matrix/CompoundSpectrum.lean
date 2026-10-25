@@ -3,10 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
-import Mathlib.Data.Fin.Tuple.Sort
-import Mathlib.LinearAlgebra.Matrix.Permutation
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
+public import Mathlib.Data.Fin.Tuple.Sort
+public import Mathlib.LinearAlgebra.Matrix.Permutation
 
 /-!
 # The spectrum of a compound matrix
@@ -27,6 +29,8 @@ This is the spectral input for Gantmacher-Krein: a totally nonnegative matrix
 has entrywise nonnegative compounds, so Perron-Frobenius applied to each
 compound controls the products of eigenvalues.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Basic.Coefficients
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # The Bernstein cone of an interval-rooted polynomial
@@ -9,6 +11,8 @@ An exact-degree real polynomial with nonnegative leading coefficient and all
 roots in `[-1, 0]` has nonnegative coefficients in the Bernstein basis
 `X ^ k * (1 + X) ^ (n - k)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import RealRooted.Tactic.PFPolynomial
-import RealRooted.Tactic.Product
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.Tactic.PFPolynomial
+public import RealRooted.Tactic.Product
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Recurrence identification tactics
@@ -13,6 +15,8 @@ sequence. Explicit forms accept every certificate. The inferred forms keep the u
 function explicit and reuse matching certificates from the local context. Context
 inference does not discover a model family or prove its recurrence.
 -/
+
+@[expose] public section
 
 open Polynomial
 

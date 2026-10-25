@@ -1,8 +1,10 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.Mathlib.Algebra.Ring.Parity
-import RealRooted.ObreschkoffConverse
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.Mathlib.Algebra.Ring.Parity
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
+public import RealRooted.RootContinuity
 
 /-!
 # Exceptional-offset orientation and distinguished parameters
@@ -10,6 +12,8 @@ import RealRooted.RootContinuity
 This layer orients the real-rooted exceptional pencil and identifies its two
 distinguished parameters with the adjacent toric-contribution polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial
 open MeasureTheory Set

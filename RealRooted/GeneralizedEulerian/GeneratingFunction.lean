@@ -1,8 +1,10 @@
-import RealRooted.GeneralizedEulerian
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import Mathlib.Analysis.Calculus.SmoothSeries
-import Mathlib.Analysis.SpecificLimits.Normed
-import Mathlib.RingTheory.PowerSeries.Derivative
+module
+
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import Mathlib.Analysis.Calculus.SmoothSeries
+public import Mathlib.Analysis.SpecificLimits.Normed
+public import Mathlib.RingTheory.PowerSeries.Derivative
 
 /-!
 # The generating function of the Eulerian polynomials
@@ -28,6 +30,8 @@ exactly `q E_{k+1}(q) (1 - q)^(-(k+3))`.
 
 Ported from `real-rooted-oeis-proofs` (`EulerianPowerSeries`, `EulerianGenFun`).
 -/
+
+@[expose] public section
 
 open scoped Polynomial
 

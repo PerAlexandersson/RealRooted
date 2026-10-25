@@ -1,4 +1,6 @@
-import RealRooted.ChudnovskySeymour.Core
+module
+
+public import RealRooted.ChudnovskySeymour.Core
 
 /-!
 # Common-interleaver sequence transports
@@ -6,6 +8,8 @@ import RealRooted.ChudnovskySeymour.Core
 Pointwise sequence wrappers for compatibility, common-interleaver, and
 real-rooted sum theorems.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Ring.GrindInstances
-import Mathlib.Algebra.Order.Ring.Cast
+module
+
+public import Mathlib.Algebra.Ring.GrindInstances
+public import Mathlib.Algebra.Order.Ring.Cast
 
 /-!
 # A reflected checker for large polynomial identities
@@ -18,6 +20,8 @@ soundness theorem `Lean.Grind.CommRing.Expr.denote_toPoly` is proved in core Lea
 * `termsExpr` and `termsFn` turn a list of terms `(a, b, c, z)`, meaning `z R^a X^b k^c`,
   into an expression and into a function.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BigDescents321.Reflect
 

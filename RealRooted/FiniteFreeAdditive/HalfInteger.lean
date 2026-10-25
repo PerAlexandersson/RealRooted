@@ -1,6 +1,8 @@
-import RealRooted.FiniteFreeAdditive
-import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.RectangularConvolution
+module
+
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.RectangularConvolution
 
 /-!
 # Half-integer kernels for finite-free additive convolution
@@ -10,6 +12,8 @@ kernel built from descending Pochhammer ratios.  It proves only coefficient
 identities.  Polynomial convolution identities and root-preservation results
 are deliberately left to later layers.
 -/
+
+@[expose] public section
 
 open Polynomial
 

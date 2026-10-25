@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity under a Routh expansion
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 This file proves the finite-minor statement behind the row-finite `J(c)`
 action used in one algebraic Routh step.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

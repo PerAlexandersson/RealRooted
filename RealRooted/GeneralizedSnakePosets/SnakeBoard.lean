@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.SnakeReachability
-import RealRooted.GeneralizedSnakePosets.SquarecaseModel
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeReachability
+public import RealRooted.GeneralizedSnakePosets.SquarecaseModel
 
 /-!
 # Concrete generalized snake boards
@@ -8,6 +10,8 @@ This module contains the finite squarecase board attached to a Braun--Jal
 generalized snake word, its constant-word shape checks, and the concrete
 squarecase rook model built from that board.
 -/
+
+@[expose] public section
 
 noncomputable section
 

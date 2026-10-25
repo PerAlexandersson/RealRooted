@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic
 
 /-!
 # Order-numerator step
@@ -8,6 +10,8 @@ This coefficient operator is shared by OEIS order-numerator recurrences.  Its
 strict and tight degree behaviour is intentionally separated in the
 preservation layer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,10 +1,12 @@
-import RealRooted.ASWKarlinMatrix
-import RealRooted.ASWKarlinThreshold
-import RealRooted.ASWKarlinVariation
-import RealRooted.ASWKarlinVectors
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+module
+
+public import RealRooted.ASWKarlinMatrix
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinVariation
+public import RealRooted.ASWKarlinVectors
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 
 /-!
 # Complex-root kernel vectors for Karlin's matrix
@@ -13,6 +15,8 @@ For a complex root `z` of a real polynomial, the vector with entries
 `im (z ^ j)` lies in the kernel of every repeated Karlin coefficient-window
 matrix.  This is the algebraic input to the finite-order sector argument.
 -/
+
+@[expose] public section
 
 open Polynomial Matrix BigOperators
 

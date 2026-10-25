@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SignedWords
-import Mathlib.Algebra.BigOperators.Fin
+module
+
+public import RealRooted.BrandenVecchi.SignedWords
+public import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # Weighted finite signed-word enumerators
@@ -8,6 +10,8 @@ This file defines the literal finite sum in Brändén--Vecchi Theorem 8.11.
 The Chow-polynomial identification and the negative-run compression argument
 are separate later layers.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

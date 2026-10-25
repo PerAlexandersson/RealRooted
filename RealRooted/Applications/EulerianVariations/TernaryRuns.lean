@@ -1,7 +1,9 @@
-import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
-import RealRooted.Linear
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+public import RealRooted.Linear
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.PFPolynomial
 
 /-!
 # Ternary increasing runs
@@ -16,6 +18,8 @@ runs in ternary words. That counting identity is cited rather than formalized
 here; the interlacing and real-rootedness consequences are proved from the
 explicit recurrence.
 -/
+
+@[expose] public section
 
 open Polynomial
 

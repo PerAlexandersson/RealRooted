@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootDesc
+module
+
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common interleavers: root-slot basics
@@ -6,6 +8,8 @@ import RealRooted.CommonInterleaver.RootDesc
 The root-slot intervals attached to descending root sequences, their endpoints,
 and the order facts for points chosen from those intervals.
 -/
+
+@[expose] public section
 
 open Polynomial
 

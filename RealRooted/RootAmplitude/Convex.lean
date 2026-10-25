@@ -1,6 +1,8 @@
-import RealRooted.RootAmplitude.Finite
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Group.Finset.Interval
+module
+
+public import RealRooted.RootAmplitude.Finite
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Group.Finset.Interval
 
 /-!
 # Convex finite sequences and root amplitudes
@@ -8,6 +10,8 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Interval
 Convexity supplies the distance pairing that proves monotonicity of finite
 root-amplitude products.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

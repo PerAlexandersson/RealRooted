@@ -1,6 +1,10 @@
-import RealRooted.SymmetricDecomposition
-import RealRooted.CombinatorialExamples.DerangementStatistic
-import RealRooted.SymmetricDecomposition.DerangementTransform
+module
+
+public import RealRooted.SymmetricDecomposition
+public import RealRooted.CombinatorialExamples.DerangementStatistic
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+
+@[expose] public section
 
 open Polynomial
 

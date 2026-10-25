@@ -21,7 +21,7 @@ open scoped BigOperators
 
 namespace MvPolynomial
 
-public section
+@[expose] public section
 
 variable {sigma tau R : Type*} [CommSemiring R] [Fintype sigma]
 

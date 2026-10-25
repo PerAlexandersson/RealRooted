@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Tactic.Finish
 
 /-!
 # Endpoint-pair tactic syntax
 
 Syntax for paired endpoint recurrences and their quotient lifts.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

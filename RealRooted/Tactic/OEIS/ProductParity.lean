@@ -1,4 +1,6 @@
-import RealRooted.Tactic.Product
+module
+
+public import RealRooted.Tactic.Product
 
 /-!
 # OEIS product-parity certificate frontend
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Product
 Parser declarations and dispatch rules for alternating scalar/product steps and
 endpoint-pair certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

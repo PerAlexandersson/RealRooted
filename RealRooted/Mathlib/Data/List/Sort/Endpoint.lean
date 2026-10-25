@@ -3,8 +3,10 @@ Copyright (c) 2026 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Data.List.Sort
-import Mathlib.Data.Multiset.Basic
+module
+
+public import Mathlib.Data.List.Sort
+public import Mathlib.Data.Multiset.Basic
 
 /-!
 # Upper endpoints of sorted lists
@@ -12,6 +14,8 @@ import Mathlib.Data.Multiset.Basic
 This file records the endpoint decomposition of a sorted list bounded above by
 one of its values.
 -/
+
+@[expose] public section
 
 namespace List
 

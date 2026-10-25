@@ -1,5 +1,9 @@
-import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
-import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+module
+
+public import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
+public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+
+@[expose] public section
 
 open scoped BigOperators
 

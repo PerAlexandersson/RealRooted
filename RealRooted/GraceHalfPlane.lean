@@ -1,6 +1,10 @@
-import RealRooted.Apolarity
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Analysis.Complex.Convex
+module
+
+public import RealRooted.Apolarity
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Analysis.Complex.Convex
+
+@[expose] public section
 
 open Polynomial Complex
 

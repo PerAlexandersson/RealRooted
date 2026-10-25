@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
 
 /-!
 # Stability induction for the Deco layer recurrence
@@ -7,6 +9,8 @@ This file packages the all-rank induction supplied by the lower two-rank
 companion certificate.  It uses only the recurrence-defined layer totals and
 their exact one-step Rayleigh criterion; no combinatorial model is involved.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

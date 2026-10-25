@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
 
 /-!
 # The endpoint relation of the weighted magic cone
@@ -11,6 +13,8 @@ negative roots of `E_n`, and strict interlacing of consecutive `E_n`.  The endpo
 open part of issue #1263 (verified for `n ≤ 7`).  The all-`n` results were found by Aristotle
 (project eadb38f3).
 -/
+
+@[expose] public section
 
 open Polynomial
 

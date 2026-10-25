@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorResidues
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorResidues
 
 /-!
 # Direct weighted residue algebra
@@ -6,6 +8,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Successor
 This is the square-root-free form of the block calculation.  The positive
 diagonal weight is `(1-r) * V`, where `V = (-r) * ω`.
 -/
+
+@[expose] public section
 
 open BigOperators
 

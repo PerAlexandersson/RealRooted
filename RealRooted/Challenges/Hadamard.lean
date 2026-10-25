@@ -1,15 +1,17 @@
-import RealRooted.GarloffWagner.Hadamard
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.Hadamard
-import RealRooted.Hadamard.FiniteReflection
-import RealRooted.Hadamard.KostovMap
-import RealRooted.Hadamard.SchurSzegoMultiplicity
-import RealRooted.Hadamard.SchurSzegoSimple
-import RealRooted.Hadamard.SchurSzegoSigns
-import RealRooted.CoefficientShape.LiuMao
-import RealRooted.MultiplierSequence.PolyaSchur.Schur
-import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
-import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+module
+
+public import RealRooted.GarloffWagner.Hadamard
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.Hadamard
+public import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.Hadamard.KostovMap
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Hadamard.SchurSzegoSimple
+public import RealRooted.Hadamard.SchurSzegoSigns
+public import RealRooted.CoefficientShape.LiuMao
+public import RealRooted.MultiplierSequence.PolyaSchur.Schur
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+public import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 
 /-!
 # Hadamard challenge entry point
@@ -257,6 +259,8 @@ the form `n ↦ p(n)`; it is not a closure theorem for arbitrary PF sequences.
 Its PF convention includes the zero polynomial and permits nonpositive, rather
 than strictly negative, roots.
 -/
+
+@[expose] public section
 
 open Polynomial
 

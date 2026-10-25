@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Finite fibers of signed-word run compression
@@ -9,6 +11,8 @@ a fixed signed Smirnov skeleton.  The length variable is a formal power-series
 variable, while the descent/collision statistic remains the polynomial
 variable.  Thus every coefficient identity below is finite.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

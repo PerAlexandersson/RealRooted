@@ -1,7 +1,9 @@
-import RealRooted.Basic
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.MultivariateStability
+module
+
+public import RealRooted.Basic
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.MultivariateStability
 
 /-!
 # Borcea--Branden finite-symbol classification
@@ -19,6 +21,8 @@ alternative from Theorem 1.1; outside that alternative, preservation is
 equivalent to stability of the algebraic symbol. The real-univariate interface
 lives in `RealRooted.BorceaBranden.UnivariateFiniteSymbol`.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

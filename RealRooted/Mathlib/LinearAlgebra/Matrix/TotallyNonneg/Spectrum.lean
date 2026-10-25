@@ -3,12 +3,14 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Spectrum of totally nonnegative matrices
@@ -25,6 +27,8 @@ then gives positive nonzero eigenvalues and zero remaining eigenvalues.  The
 Gaussian matrices tend to the identity, so closedness of real nonnegative
 spectrum gives the result for the original matrix.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Finset
 open scoped Topology

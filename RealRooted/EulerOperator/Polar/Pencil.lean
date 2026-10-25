@@ -1,6 +1,8 @@
-import RealRooted.AffineFamily
-import RealRooted.EulerOperator.Pencil
-import RealRooted.EulerOperator.Polar.ProperPosition
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.EulerOperator.Polar.ProperPosition
 
 /-!
 # Interlacing polar Euler pencils
@@ -10,6 +12,8 @@ operator `polarTheta`, differentiation, and `thetaPlusOne`. The central
 derivative--polar comparison is proved once for the weak degree boundary; the
 strict-degree and boundary APIs differ only in how nonvanishing is supplied.
 -/
+
+@[expose] public section
 
 open Polynomial
 

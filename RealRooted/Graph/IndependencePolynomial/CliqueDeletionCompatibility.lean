@@ -1,5 +1,7 @@
-import RealRooted.Compatibility.Three
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
+module
+
+public import RealRooted.Compatibility.Three
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
 
 /-!
 # Clique-deletion compatibility for independence polynomials
@@ -9,6 +11,8 @@ Chudnovsky--Seymour assembly built from clique-deletion expansions.
 Support-level claw-free induction and matching-polynomial applications
 belong in higher modules.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

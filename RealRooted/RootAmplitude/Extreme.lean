@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Analysis.Complex.ExponentialBounds
+public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Extreme root-gap bounds
@@ -9,6 +11,8 @@ Power-sum data for a nonnegative finite family give a lower bound on the ratio
 of its two largest entries, and hence a logarithmic lower bound on the
 corresponding extreme root gap.
 -/
+
+@[expose] public section
 
 namespace RealRooted.RootAmplitude
 

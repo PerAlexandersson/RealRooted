@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.ChowTotallyNonneg
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+module
+
+public import RealRooted.BrandenVecchi.ChowTotallyNonneg
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
 
 /-!
 # Chow polynomials of finite supersymmetric products
@@ -7,6 +9,8 @@ import RealRooted.BrandenVecchi.SupersymmetricCoefficients
 This file proves the finite-product form of the Brändén--Vecchi Toeplitz
 Chow theorem. It does not make an infinite-alphabet or limiting claim.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

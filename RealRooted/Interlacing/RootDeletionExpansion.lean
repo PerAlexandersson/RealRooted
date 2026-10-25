@@ -1,4 +1,8 @@
-import RealRooted.Interlacing.ResidueCriterion
+module
+
+public import RealRooted.Interlacing.ResidueCriterion
+
+@[expose] public section
 
 open Polynomial BigOperators
 

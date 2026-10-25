@@ -4,7 +4,11 @@
 Small order/list helper lemmas used by same-degree and succ-degree root-slot
 combinatorics.
 -/
-import RealRooted.CommonInterleaverSeq
+module
+
+public import RealRooted.CommonInterleaverSeq
+
+@[expose] public section
 
 namespace RealRooted
 

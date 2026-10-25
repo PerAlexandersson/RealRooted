@@ -3,10 +3,11 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import LGV.Quiver.Path
-import Mathlib.Combinatorics.Quiver.Path.Weight
-import Mathlib.Data.Matrix.Basic
+public import LGV.Quiver.Path
+public import Mathlib.Combinatorics.Quiver.Path.Weight
+public import Mathlib.Data.Matrix.Basic
 
 /-!
 # Weighted exact-length paths and matrix powers
@@ -16,6 +17,8 @@ corresponding entry of a power of the weighted edge-sum matrix.  It is purely a
 finite quiver calculation, independent of networks, rank functions, and any
 positivity assumptions.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 open Quiver

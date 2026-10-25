@@ -1,6 +1,8 @@
-import RealRooted.LiuOppositeSigns.RootCount
-import RealRooted.Mathlib.Data.Multiset.Rel
-import RealRooted.RootMultiplicityMatching
+module
+
+public import RealRooted.LiuOppositeSigns.RootCount
+public import RealRooted.Mathlib.Data.Multiset.Rel
+public import RealRooted.RootMultiplicityMatching
 
 /-!
 # Root-count stability under close multiset matchings
@@ -9,6 +11,8 @@ These lemmas provide the local closedness input for the limiting step in Liu's
 opposite-leading-sign theorem.  They compare root counts only at thresholds
 separated from the original roots and compare the selected largest roots.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

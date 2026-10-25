@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Tactic.Finish
 
 /-!
 # Product-lift tactic syntax
 
 Syntax for specialized quotient and row-factor lifts.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

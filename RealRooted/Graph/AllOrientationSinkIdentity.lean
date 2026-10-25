@@ -1,4 +1,6 @@
-import RealRooted.Graph.AllOrientationSink
+module
+
+public import RealRooted.Graph.AllOrientationSink
 
 /-!
 # The all-orientation sink indicator identity
@@ -9,6 +11,8 @@ Proved with Aristotle (Harmonic).
 that is,
 `∑_O (X + 1) ^ sinkCount O = 2 ^ |E| * ∑_{S independent} ∏_{v ∈ S} (2⁻¹ ^ deg v) X`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

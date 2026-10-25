@@ -1,5 +1,7 @@
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.QuadraticInterlacingClosure
+module
+
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Oriented interlacing upgrades for linear maps
@@ -15,6 +17,8 @@ The remaining input for a concrete basis transform is therefore local: prove
 that the transform sends `q` before the transform of `(X + C a) * q` whenever
 `q` is PF and `a ≥ 0`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

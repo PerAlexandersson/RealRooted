@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.Interlacing
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+module
+
+public import RealRooted.BinaryRunTransformation.Interlacing
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!
 # The rank-three binary-run transform does not preserve stability
@@ -13,6 +15,8 @@ polynomial `(t + z)^3` it gives its Borcea--Brändén symbol
 So preservation of stable pencils lies strictly between real-rootedness preservation and
 stability preservation.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators
