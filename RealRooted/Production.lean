@@ -1248,7 +1248,6 @@ import RealRooted.NarayanaTransformation.RootGeometry
 import RealRooted.NarayanaTransformation.SimpleRoots
 import RealRooted.NatCauchyConvolution
 import RealRooted.NewtonAux
-import RealRooted.OEIS.A046802
 import RealRooted.ObreschkoffContinuity
 import RealRooted.ObreschkoffConverse
 import RealRooted.ObreschkoffConverse.Converse
