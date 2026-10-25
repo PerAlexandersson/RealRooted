@@ -58,7 +58,8 @@ module = "RealRooted.LiebSokalOperator"
 label = "Differential action F(−∂)G"
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.exists_isRoot_mem_closedBall_of_areApolar"
+name = "RealRooted.exists_isRoot_mem_closedBall_of_areApolar"
+module = "RealRooted.Apolarity"
 label = "Grace's apolarity theorem for closed disks"
 headline = true
 
@@ -120,7 +121,8 @@ mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral_iff"""
 label = "Blockwise polarization preserves and reflects stability"
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.exists_isRoot_le_im_of_areApolar"
+name = "RealRooted.exists_isRoot_le_im_of_areApolar"
+module = "RealRooted.GraceHalfPlane"
 label = "Grace's apolarity theorem for closed half-planes"
 
 [[theorems]]
@@ -246,27 +248,6 @@ open Polynomial
 namespace RealRooted
 namespace Challenges
 namespace GraceApolarity
-
-/-- **Grace's apolarity theorem**, closed-disk case: if `F` and `G` are apolar
-of degree `n` and all zeros of `F` lie in a closed disk, then `G` has a zero
-in that disk. -/
-theorem exists_isRoot_mem_closedBall_of_areApolar {n : ℕ} {c : ℂ} {r : ℝ}
-    (hr : 0 ≤ r) {f g : ℂ[X]} (hf : (binomialLift n f).natDegree = n)
-    (hg : (binomialLift n g).natDegree = n) (hap : AreApolar n f g)
-    (hroots : ∀ z, (binomialLift n f).IsRoot z → z ∈ Metric.closedBall c r) :
-    ∃ z ∈ Metric.closedBall c r, (binomialLift n g).IsRoot z := by
-  obtain ⟨z, hz, hmem⟩ := grace_apolarity_closedBall hr hf hg hap hroots
-  exact ⟨z, hmem, hz⟩
-
-/-- **Grace's apolarity theorem**, closed half-plane case: if `F` and `G` are
-apolar of degree `n` and all zeros of `F` satisfy `b ≤ Im z`, then so does
-some zero of `G`. -/
-theorem exists_isRoot_le_im_of_areApolar {n : ℕ} {b : ℝ} {f g : ℂ[X]}
-    (hf : (binomialLift n f).natDegree = n) (hg : (binomialLift n g).natDegree = n)
-    (hap : AreApolar n f g) (hroots : ∀ z, (binomialLift n f).IsRoot z → b ≤ z.im) :
-    ∃ z, b ≤ z.im ∧ (binomialLift n g).IsRoot z := by
-  obtain ⟨z, hz, hmem⟩ := grace_apolarity_upperHalf hf hg hap hroots
-  exact ⟨z, hmem, hz⟩
 
 /-- **Polarization preserves stability**: the degree-`n` polarization of a
 polynomial of degree at most `n` without zeros in the open upper half-plane

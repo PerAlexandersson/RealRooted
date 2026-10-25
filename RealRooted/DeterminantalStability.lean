@@ -253,4 +253,15 @@ theorem mvRealStable_realDetPencil
     MvRealStable (realDetPencil A B) :=
   (mvUpperHalfPlaneStableOrZero_complexify_realDetPencil A B hA hB).resolve_left hne
 
+/-- A nonzero real determinantal pencil with symmetric constant part and
+positive semidefinite coefficient matrices is real stable. -/
+theorem mvRealStable_realDetPencil_of_ne
+    (A : Matrix m m ℝ) (B : sigma → Matrix m m ℝ)
+    (hA : A.IsHermitian) (hB : ∀ k, (B k).PosSemidef)
+    (hne : realDetPencil A B ≠ 0) :
+    MvRealStable (realDetPencil A B) := by
+  refine mvRealStable_realDetPencil A B hA hB fun h ↦ hne ?_
+  apply MvPolynomial.map_injective Complex.ofRealHom Complex.ofReal_injective
+  simpa [complexifyMv] using h
+
 end RealRooted

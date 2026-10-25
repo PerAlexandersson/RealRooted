@@ -51,7 +51,8 @@ label = "Leading principal submatrices interlace"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isInterlacingSeq_filter_mulVec"
+name = "Matrix.IsTotallyNonnegRect.isInterlacingSeq_filter_mulVec"
+module = "RealRooted.MatrixInterlacing.TotallyNonnegative"
 label = "Totally nonnegative matrices mix interlacing sequences"
 headline = true
 
@@ -256,34 +257,6 @@ theorem leading_charpoly_strictInterlaces {N : ℕ}
         (A.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x)) ∧
       ∀ x ∈ A.charpoly.roots, 0 < x :=
   hA.leading_charpoly_strictInterlaces hdet hsuper hsub
-
-/-- **TNN mixing** (Fisk, Thm. 3.7): a totally nonnegative matrix maps an
-interlacing sequence of real-rooted polynomials with positive leading
-coefficients to a sequence whose nonzero entries are again real-rooted with
-positive leading coefficients and interlacing in row order. -/
-theorem isInterlacingSeq_filter_mulVec {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) (f : Fin n → ℝ[X])
-    (hf_real : ∀ j, HasPosLeadingCoeff (f j) ∧ (f j).Splits)
-    (hf : IsInterlacingSeq (List.ofFn f)) :
-    IsInterlacingSeq ((List.ofFn fun i => ∑ j, A i j • f j).filter (· ≠ 0)) ∧
-      ∀ i, ∑ j, A i j • f j ≠ 0 →
-        HasPosLeadingCoeff (∑ j, A i j • f j) ∧ (∑ j, A i j • f j).Splits := by
-  have hrow : tnnMatrixAction A (List.ofFn f) = List.ofFn fun i => ∑ j, A i j • f j := by
-    apply List.ext_get
-    · simp
-    · intro k _ hk
-      have hzip : ((List.ofFn fun j => C (A ⟨k, by simpa using hk⟩ j)).zipWith (· * ·)
-          (List.ofFn f)) = List.ofFn fun j => A ⟨k, by simpa using hk⟩ j • f j := by
-        apply List.ext_get
-        · simp
-        · intro l _ _
-          simp [Polynomial.smul_eq_C_mul]
-      simp [tnnMatrixAction, matPolyAction, constantPolynomialMatrix, hzip, List.sum_ofFn]
-  obtain ⟨hseq, hreal⟩ := hA.map_interlacingSeq_of_posLeadingCoeff (List.ofFn f) (by simp)
-    (by simpa using hf_real) hf
-  rw [hrow] at hseq hreal
-  exact ⟨hseq, fun i hi ↦ hreal _ (List.mem_filter.mpr ⟨List.mem_ofFn.mpr ⟨i, rfl⟩,
-    by simpa using hi⟩)⟩
 
 /-- **Variation diminishing** (Karlin): multiplication by a totally
 nonnegative matrix does not increase the number of sign changes. -/

@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.MaWang
 public import RealRooted.Touchard
 public import Mathlib.Combinatorics.Enumerative.Stirling
@@ -197,5 +198,15 @@ theorem isSturmSeq_touchardPrefix :
       | succ k =>
           simpa [touchardPrefix, IsSturmSeq] using
             And.intro (interlaces_touchard_succ (k + 1)) ih
+
+/-- The Touchard polynomials are the colored set-partition polynomials with
+parameters `c = 0` and `m = 1`. -/
+theorem touchard_eq_coloredSetPartitions_zero_one (n : ℕ) :
+    touchard n = coloredSetPartitions 0 1 n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [touchard_succ, coloredSetPartitions_succ, ih]
+    simp [coloredSetPartitionsCoeffA, coloredSetPartitionsCoeffB]
 
 end RealRooted

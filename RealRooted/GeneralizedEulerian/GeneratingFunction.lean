@@ -1,6 +1,8 @@
 module
 
+public import RealRooted.CombinatorialExamples.Eulerian
 public import RealRooted.GeneralizedEulerian
+public import RealRooted.MaWang.DerivativeStep
 public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import Mathlib.Analysis.Calculus.SmoothSeries
 public import Mathlib.Analysis.SpecificLimits.Normed
@@ -309,4 +311,40 @@ theorem eulerianPowerSum_mul_one_sub_pow (k : ℕ) : ∀ {q : ℂ}, ‖q‖ < 1 
 end Analytic
 
 end GeneralizedEulerian
+
+open Polynomial
+
+/-- The ordinary Eulerian polynomials are `X` times the generalized Eulerian
+polynomials at parameter one. -/
+theorem eulerianTilde_eq_X_mul_generalizedEulerian_one (n : ℕ) :
+    eulerianTilde n = X * generalizedEulerian 1 n := by
+  induction n with
+  | zero => simp [generalizedEulerian]
+  | succ n ih =>
+    rw [eulerianTilde_recurrence, generalizedEulerian_succ, ih, derivative_mul,
+      derivative_X]
+    simp only [one_mul, map_add, map_natCast, map_one, map_ofNat]
+    ring
+
+/-- For a positive parameter, consecutive generalized Eulerian polynomials
+interlace. -/
+theorem interlaces_generalizedEulerian_succ {c : ℝ} (hc : 0 < c) (n : ℕ) :
+    Interlaces (generalizedEulerian c n) (generalizedEulerian c (n + 1)) := by
+  obtain ⟨hdeg, hnonneg, hsplit⟩ := generalizedEulerian_invariants hc n
+  have hpos : ∀ k, HasPosLeadingCoeff (generalizedEulerian c k) := fun k ↦ by
+    simp [HasPosLeadingCoeff, (generalizedEulerian_monic c k).leadingCoeff]
+  have hdeg' := generalizedEulerian_natDegree c (n + 1)
+  have hstep : StrictInterl (generalizedEulerian c n) (generalizedEulerian c (n + 1)) := by
+    have hpos' := hpos (n + 1)
+    have hdeg'' := hdeg'
+    rw [generalizedEulerian_succ] at hpos' hdeg'' ⊢
+    refine MaWang.strictInterl_derivative_of_nonpos_of_splits hsplit (by lia) (by lia) hpos'
+      (hpos n) fun r hr ↦ ?_
+    have hr0 : r ≤ 0 :=
+      roots_nonpos_of_hasNonnegCoeffs hnonneg r ((mem_roots (hpos n).ne_zero).mpr hr)
+    simp only [eval_mul, eval_C, eval_X, eval_sub, eval_one]
+    exact mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos hc.le hr0)
+      (by linarith)
+  exact hstep.toInterlaces (by rw [hdeg, hdeg'])
+
 end RealRooted

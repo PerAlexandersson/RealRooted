@@ -24,7 +24,8 @@ authors = ["Fisk", "Brändén", "Saud Leite", "Hlavacek", "Solus"]
 years = [2006, 2015, 2021, 2024]
 
 [[theorems]]
-name = "RealRooted.Challenges.InterlacingClosure.strictInterl_of_forall_affine_mul_add_splits"
+name = "RealRooted.strictInterl_of_forall_affine_mul_add_splits"
+module = "RealRooted.AffineFamily"
 label = "Brändén: real-rooted affine combinations force interlacing"
 headline = true
 
@@ -39,7 +40,8 @@ name = "RealRooted.Challenges.InterlacingClosure.strictInterl_affine_derivative"
 label = "c f + (1 − x) f′ interlaces f"
 
 [[theorems]]
-name = "RealRooted.Challenges.InterlacingClosure.strictInterl_add_X_sub_one_mul"
+name = "RealRooted.strictInterl_add_X_sub_one_mul"
+module = "RealRooted.ShiftLemma"
 label = "Shift lemma: f is interlaced by f + (x − 1) h"
 
 [[theorems]]
@@ -116,21 +118,6 @@ namespace RealRooted
 namespace Challenges
 namespace InterlacingClosure
 
-/-- **Brändén, Lemma 7.8.4.** If `f, g` are nonzero with nonnegative
-coefficients and `(s X + t) f + g` is real-rooted for all `s, t > 0`, then
-`f ≪ g`. -/
-theorem strictInterl_of_forall_affine_mul_add_splits {f g : ℝ[X]}
-    (hf0 : f ≠ 0) (hg0 : g ≠ 0) (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (haff : ∀ s t : ℝ, 0 < s → 0 < t → ((C s * X + C t) * f + g).Splits) :
-    StrictInterl f g := by
-  refine strictInterl_of_affine_family_nonneg hf0 hg0 hf hg fun {s t} hs ht ↦ ⟨?_, haff s t hs ht⟩
-  intro h0
-  have hcoeff := congrArg (coeff · g.natDegree) h0
-  simp only [coeff_add, coeff_zero] at hcoeff
-  have hprod := (hasNonnegCoeffs_affine_linear hs.le ht.le).mul hf g.natDegree
-  have hlead : 0 < g.coeff g.natDegree := hg.pos_leadingCoeff hg0
-  linarith
-
 /-- **Affine derivative.** If `f` is real-rooted of degree `d ≠ 0` with
 positive leading coefficient and nonpositive roots, and `c > d`, then
 `c f + (1 - X) f'` interlaces `f`. -/
@@ -139,16 +126,6 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits) (hdeg : f.na
     {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
     StrictInterl (C c * f + (1 - X) * f.derivative) f :=
   strictInterl_affine_derivative' hf (Nat.one_le_iff_ne_zero.mpr hdeg) hf_pos hroots_nonpos hc
-
-/-- **Shift lemma.** If `h ≪ f`, both have positive leading coefficients and
-nonpositive roots, and `h(0) ≤ f(0)`, then `f ≪ f + (X - 1) h`. -/
-theorem strictInterl_add_X_sub_one_mul {f h : ℝ[X]} (hhf : StrictInterl h f)
-    (hf_pos : HasPosLeadingCoeff f) (hh_pos : HasPosLeadingCoeff h)
-    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
-    (heval : h.eval 0 ≤ f.eval 0) :
-    StrictInterl f (f + (X - 1) * h) := by
-  simpa using strictInterl_shift hhf.2.1.1 hhf.2.1.2 hhf.1.1 hhf.1.2 hf_nonpos hh_nonpos
-    hf_pos hh_pos hhf heval
 
 end InterlacingClosure
 end Challenges

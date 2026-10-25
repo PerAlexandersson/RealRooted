@@ -107,4 +107,14 @@ theorem maloToeplitzHadamard_isTotallyNonneg {p q : ℝ[X]}
   rw [hcoeff]
   exact polyaFrequencyHadamardCoeff hp hq
 
+/-- Maló's theorem for finite-support Pólya-frequency sequences: the
+termwise product of two polynomial coefficient sequences is again
+Pólya-frequency. -/
+theorem IsPolyaFreqSeq.mul_coeff {p q : ℝ[X]}
+    (hp : IsPolyaFreqSeq p.coeff) (hq : IsPolyaFreqSeq q.coeff) :
+    IsPolyaFreqSeq (fun n => p.coeff n * q.coeff n) := by
+  have h := maloToeplitzHadamard_isTotallyNonneg hp hq
+  rw [← toeplitz_pointwise_mul] at h
+  exact h
+
 end RealRooted

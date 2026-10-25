@@ -194,4 +194,18 @@ theorem polynomial_all_rank_nonneg_parameter
       exact polynomial_nonneg_parameter_splits_roots_neg
         (Nat.succ_le_succ (Nat.zero_le m)) hδ hc hd hU hV
 
+/-- For every nonnegative increment, the Jacobi deformation is a
+Pólya-frequency polynomial. -/
+theorem isPFPolynomial_polynomial (m : ℕ) {δ c d U V : ℝ} (hδ : 0 ≤ δ)
+    (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) :
+    IsPFPolynomial (polynomial m δ c d U V) := by
+  cases m with
+  | zero =>
+      rw [polynomial_zero]
+      exact IsPFPolynomial.one
+  | succ m =>
+      exact IsPFPolynomial.of_realRooted_nonneg
+        (hasNonnegCoeffs_polynomial_of_pos (by lia) hδ hc hd hU hV)
+        (polynomial_all_rank_nonneg_parameter (m + 1) hδ hc hd hU hV).1
+
 end RealRooted.JacobiDeformation

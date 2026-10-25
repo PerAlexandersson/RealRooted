@@ -23,6 +23,58 @@ noncomputable section
 
 namespace RealRooted
 
+/-- If `p` is real-rooted and `q` is real-rooted with nonnegative roots, then
+their degree-`d` finite-free multiplicative convolution is real-rooted. -/
+theorem splits_finiteFreeMultiplicativeConvolution {d : ℕ} {p q : ℝ[X]}
+    (hp : p.Splits) (hpdeg : p.natDegree ≤ d) (hq : q.Splits) (hqdeg : q.natDegree ≤ d)
+    (hq_roots : ∀ r ∈ q.roots, 0 ≤ r) :
+    (finiteFreeMultiplicativeConvolution d p q).Splits := by
+  set q' := q.comp (-X) with hq'
+  have hcoeff (k : ℕ) : q'.coeff k = q.coeff k * (-1 : ℝ) ^ k := by
+    simpa [q'] using Polynomial.comp_C_mul_X_coeff (p := q) (r := (-1 : ℝ)) (n := k)
+  have hconv : finiteFreeMultiplicativeConvolution d p q =
+      C ((-1 : ℝ) ^ d) * schurSzegoComp d q' p := by
+    rw [finiteFreeMultiplicativeConvolution]
+    congr 1
+    ext k
+    have h := Polynomial.comp_C_mul_X_coeff
+      (p := schurSzegoComp d p q) (r := (-1 : ℝ)) (n := k)
+    simp only [map_neg, map_one, neg_mul, one_mul] at h
+    rw [h, coeff_schurSzegoComp, coeff_schurSzegoComp, hcoeff]
+    split_ifs <;> ring
+  rw [hconv]
+  refine Splits.C_mul ?_ _
+  by_cases hq0 : q' = 0
+  · simp [hq0, schurSzegoComp]
+  have hlc : q'.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hq0
+  set f := C q'.leadingCoeff⁻¹ * q' with hf
+  have hq'f : q' = C q'.leadingCoeff * f := by
+    rw [hf, ← mul_assoc, ← C_mul, mul_inv_cancel₀ hlc, C_1, one_mul]
+  have hfsplit : f.Splits := hq.comp_neg_X.C_mul _
+  have hfpos : HasPosLeadingCoeff f := by
+    change 0 < f.leadingCoeff
+    rw [hf, leadingCoeff_C_mul_of_isUnit (isUnit_iff_ne_zero.mpr (inv_ne_zero hlc)),
+      inv_mul_cancel₀ hlc]
+    exact one_pos
+  have hfroots : ∀ r ∈ f.roots, r ≤ 0 := by
+    intro r hr
+    rw [hf, roots_C_mul _ (inv_ne_zero hlc), hq', roots_comp_neg_X] at hr
+    obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hr
+    linarith [hq_roots s hs]
+  have hfpf : IsPFPolynomial f :=
+    IsPFPolynomial.of_realRooted_nonneg
+      ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hfsplit).mpr
+        ⟨hfpos, hfroots⟩).1 hfsplit
+  have hfdeg : f.natDegree ≤ d := by
+    rw [hf, natDegree_C_mul (inv_ne_zero hlc), hq', natDegree_comp]
+    simpa using hqdeg
+  rw [hq'f, schurSzegoComp_C_mul_left]
+  refine Splits.C_mul ?_ _
+  rcases finiteSchurSzegoComposition hfpf hfdeg hpdeg hp with h | h
+  · rw [h]
+    exact Splits.zero
+  · exact h
+
 /-! ## Orienting the Schur--Szegő operator -/
 
 /-- Fixed-right-factor Schur--Szegő composition as a real linear map. -/

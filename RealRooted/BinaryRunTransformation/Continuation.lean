@@ -652,6 +652,52 @@ theorem IsPFPolynomial.binaryRunTransform
   · exact isPFPolynomial_binaryRunTransform_of_four_le hn hp hpdeg
   · exact isPFPolynomial_binaryRunTransform_of_le_three (by lia) hp hpdeg
 
+private theorem coeff_zero_binaryRunTransform {n : ℕ} {p : ℝ[X]}
+    (hpdeg : p.natDegree ≤ n) :
+    (binaryRunTransform n p).coeff 0 = p.coeff 0 := by
+  have hbasis (m : ℕ) :
+      (binaryRunPolynomial n m).coeff 0 = if m = 0 then 1 else 0 := by
+    by_cases hm : m = 0
+    · simp [hm]
+    · simp only [binaryRunPolynomial, hm, ite_false]
+      rw [Polynomial.finsetSum_coeff]
+      apply Finset.sum_eq_zero
+      intro k hk
+      rw [Polynomial.coeff_monomial]
+      have hk0 : k ≠ 0 := by
+        have : 1 ≤ k := (Finset.mem_Icc.mp hk).1
+        lia
+      simp [hk0]
+  rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
+  simp_rw [hbasis]
+  simp
+
+/-- A positive constant coefficient upgrades the nonpositive root bound for
+the binary-run transform to a strictly negative root bound. -/
+theorem binaryRunTransform_splits_and_roots_neg {n : ℕ} {p : ℝ[X]}
+    (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n)
+    (hconst : 0 < p.coeff 0) :
+    (binaryRunTransform n p).Splits ∧
+      ∀ r ∈ (binaryRunTransform n p).roots, r < 0 := by
+  have hq := hp.binaryRunTransform hpdeg
+  have hq0 : binaryRunTransform n p ≠ 0 := by
+    intro hzero
+    have hcoeff : (binaryRunTransform n p).coeff 0 = 0 := by simp [hzero]
+    rw [coeff_zero_binaryRunTransform hpdeg] at hcoeff
+    linarith
+  refine ⟨(hq.ne_zero_and_splits hq0).2, ?_⟩
+  intro r hr
+  have hrle : r ≤ 0 := hq.roots_nonpos r hr
+  have hrne : r ≠ 0 := by
+    intro hrzero
+    subst r
+    have hroot : (binaryRunTransform n p).IsRoot 0 :=
+      (Polynomial.mem_roots hq0).mp hr
+    have heval : (binaryRunTransform n p).eval 0 = 0 := hroot
+    rw [← Polynomial.coeff_zero_eq_eval_zero, coeff_zero_binaryRunTransform hpdeg] at heval
+    linarith
+  exact lt_of_le_of_ne hrle hrne
+
 end
 
 end RealRooted

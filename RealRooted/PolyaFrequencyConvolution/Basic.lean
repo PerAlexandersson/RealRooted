@@ -59,4 +59,12 @@ protected theorem IsPolyaFreqSeq.natCauchyConvolution
       (ha.submatrix Fin.val_strictMono Fin.val_strictMono)
       (hb.submatrix Fin.val_strictMono Fin.val_strictMono)
 
+/-- The product of two formal power series with Pólya-frequency coefficient
+sequences again has a Pólya-frequency coefficient sequence. -/
+theorem IsPolyaFreqSeq.coeff_mul {F G : PowerSeries ℝ}
+    (hF : IsPolyaFreqSeq fun k => PowerSeries.coeff k F)
+    (hG : IsPolyaFreqSeq fun k => PowerSeries.coeff k G) :
+    IsPolyaFreqSeq fun k => PowerSeries.coeff k (F * G) := by
+  simpa only [coeff_mul_eq_natCauchyConvolution] using hF.natCauchyConvolution hG
+
 end RealRooted

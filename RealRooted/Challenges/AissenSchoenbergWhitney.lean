@@ -53,7 +53,8 @@ name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.natCauchyCo
 label = "PF sequences are closed under convolution"
 
 [[theorems]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_mul"
+name = "RealRooted.IsPolyaFreqSeq.coeff_mul"
+module = "RealRooted.PolyaFrequencyConvolution.Basic"
 label = "Products of power series with PF coefficients have PF coefficients"
 
 [[theorems]]
@@ -139,14 +140,6 @@ theorem IsPolyaFreqSeq.natCauchyConvolution {a b : ℕ → ℝ} (ha : IsPolyaFre
     (hb : IsPolyaFreqSeq b) :
     IsPolyaFreqSeq (natCauchyConvolution a b) :=
   ha.natCauchyConvolution hb
-
-/-- If two formal power series have Pólya frequency coefficient sequences, then
-so does their product. -/
-theorem isPolyaFreqSeq_coeff_mul {F G : PowerSeries ℝ}
-    (hF : IsPolyaFreqSeq fun k => PowerSeries.coeff k F)
-    (hG : IsPolyaFreqSeq fun k => PowerSeries.coeff k G) :
-    IsPolyaFreqSeq fun k => PowerSeries.coeff k (F * G) := by
-  simpa only [coeff_mul_eq_natCauchyConvolution] using hF.natCauchyConvolution hG
 
 end AissenSchoenbergWhitney
 end Challenges
