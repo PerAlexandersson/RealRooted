@@ -225,14 +225,17 @@ private lemma summable_rpow_of_count {ι : Type*} (x : ι → ℝ) {δ A p : ℝ
       ≤ ∑ j ∈ s.image g, b j := Finset.sum_le_sum fun j _ => hshell s j
     _ ≤ ∑' j, b j := hbsum.sum_le_tsum _ (fun j _ => hbnn j)
 
-private lemma order_ne_top {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 ≠ 0)
+/-- An entire function that does not vanish at `0` has finite order at every point. -/
+theorem analyticOrderAt_ne_top_of_ne_zero {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 ≠ 0)
     (w : ℂ) :
     analyticOrderAt f w ≠ ⊤ := by
   have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
   exact ha.analyticOrderAt_ne_top_of_isPreconnected isPreconnected_univ trivial trivial
     (by rw [analyticOrderAt_eq_zero.2 (Or.inr h0)]; simp)
 
-private lemma fibre_card_le {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+/-- Points of a zero enumeration `z` (listing each zero with its multiplicity) that equal `u`
+are counted by the divisor at `u`. -/
+theorem card_filter_eq_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (h0 : f 0 ≠ 0) {z : ι → ℂ}
     (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w}) (s : Finset ι) {r : ℝ}
     {u : ℂ} (hu : ‖u‖ ≤ r) [DecidablePred (fun k => z k = u)] :
@@ -240,7 +243,7 @@ private lemma fibre_card_le {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable 
   have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
   rw [divisor_apply (ha.mono (Set.subset_univ _)).meromorphicOn (by simpa using hu),
     (hf.analyticAt u).meromorphicOrderAt_eq]
-  obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.1 (order_ne_top hf h0 u)
+  obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.1 (analyticOrderAt_ne_top_of_ne_zero hf h0 u)
   rw [← hn]
   simp only [ENat.map_natCast, WithTop.untop₀_coe]
   have : ((s.filter (fun k => z k = u)).card : ℕ∞) ≤ n := by
@@ -272,7 +275,7 @@ private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
         intro b hb
         obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hb
         have hkr : ‖z k‖ ≤ r := (Finset.mem_filter.1 hk).2
-        refine le_trans ?_ (fibre_card_le hf h0 hz s hkr)
+        refine le_trans ?_ (card_filter_eq_le_divisor hf h0 hz s hkr)
         exact_mod_cast Finset.card_le_card
           (Finset.filter_subset_filter _ (Finset.filter_subset _ _))
     _ ≤ ∑ b ∈ T ∪ hfin.toFinset, D b :=

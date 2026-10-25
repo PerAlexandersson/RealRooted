@@ -198,4 +198,10 @@ theorem IsPolyaFreqSeq.summable_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a)
     gcongr
     exact h.le_pow_one h0 n
 
+/-- The generating function series is absolutely summable on the disc `a 1 * ‖z‖ < 1`. -/
+theorem IsPolyaFreqSeq.summable_norm_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a)
+    (h0 : a 0 = 1) {z : ℂ} (hz : a 1 * ‖z‖ < 1) :
+    Summable fun n => ‖(a n : ℂ) * z ^ n‖ :=
+  (h.summable_genFun h0 hz).norm
+
 end RealRooted

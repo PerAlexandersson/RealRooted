@@ -7,6 +7,7 @@ module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
 public import Mathlib.Algebra.Polynomial.Expand
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Tactic
 
 /-!
@@ -23,10 +24,6 @@ noncomputable section
 open Polynomial
 
 namespace RealRooted.IntervalDifferential
-
-private theorem coeff_comp_neg_X (q : ℝ[X]) (n : ℕ) :
-    (q.comp (-X)).coeff n = q.coeff n * (-1) ^ n := by
-  simpa using comp_C_mul_X_coeff (p := q) (r := (-1 : ℝ)) (n := n)
 
 private theorem eq_expand_contract_of_even (q : ℝ[X])
     (hq : q.comp (-X) = q) :

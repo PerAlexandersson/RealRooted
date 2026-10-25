@@ -27,32 +27,6 @@ namespace Differentiable
 
 open Complex
 
-private lemma order_ne_top {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f 0 ≠ 0)
-    (w : ℂ) :
-    analyticOrderAt f w ≠ ⊤ := by
-  have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
-  exact ha.analyticOrderAt_ne_top_of_isPreconnected isPreconnected_univ trivial trivial
-    (by rw [analyticOrderAt_eq_zero.2 (Or.inr h0)]; simp)
-
-private lemma fibre_card_le {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
-    (h0 : f 0 ≠ 0) {z : ι → ℂ}
-    (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w}) (s : Finset ι) {r : ℝ}
-    {u : ℂ} (hu : ‖u‖ ≤ r) [DecidablePred (fun k => z k = u)] :
-    ((s.filter (fun k => z k = u)).card : ℤ) ≤ divisor f (Metric.closedBall 0 r) u := by
-  have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
-  rw [divisor_apply (ha.mono (Set.subset_univ _)).meromorphicOn (by simpa using hu),
-    (hf.analyticAt u).meromorphicOrderAt_eq]
-  obtain ⟨n, hn⟩ := ENat.ne_top_iff_exists.1 (order_ne_top hf h0 u)
-  rw [← hn]
-  simp only [ENat.map_natCast, WithTop.untop₀_coe]
-  have : ((s.filter (fun k => z k = u)).card : ℕ∞) ≤ n := by
-    rw [hn, hz u, ← Set.encard_coe_eq_coe_finsetCard]
-    apply Set.encard_le_encard
-    intro k hk
-    simp only [Finset.coe_filter, Set.mem_ofPred_eq] at hk ⊢
-    exact hk.2
-  exact_mod_cast this
-
 private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (h0 : f 0 ≠ 0)
     {z : ι → ℂ} (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w})
@@ -72,7 +46,7 @@ private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
       ≤ ∑ b ∈ T, D b := by
         refine Finset.sum_le_sum fun b hb => ?_
         obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hb
-        refine le_trans ?_ (fibre_card_le hf h0 hz s (Finset.mem_filter.1 hk).2)
+        refine le_trans ?_ (card_filter_eq_le_divisor hf h0 hz s (Finset.mem_filter.1 hk).2)
         exact_mod_cast Finset.card_le_card
           (Finset.filter_subset_filter _ (Finset.filter_subset _ _))
     _ ≤ ∑ b ∈ T ∪ hfin.toFinset, D b :=
@@ -89,7 +63,7 @@ private theorem exists_entire_quotient {f P : ℂ → ℂ} (hf : Differentiable 
       ∀ w, f w = G w * P w := by
   have hfa : ∀ w, AnalyticAt ℂ f w := fun w => hf.analyticAt w
   have hPa : ∀ w, AnalyticAt ℂ P w := fun w => hP.analyticAt w
-  have hfin : ∀ w, analyticOrderAt f w ≠ ⊤ := fun w => order_ne_top hf hf0 w
+  have hfin : ∀ w, analyticOrderAt f w ≠ ⊤ := fun w => analyticOrderAt_ne_top_of_ne_zero hf hf0 w
   set q : ℂ → ℂ := f * P⁻¹ with hqdef
   have hq : MeromorphicOn q Set.univ := fun w _ =>
     (hfa w).meromorphicAt.mul (hPa w).meromorphicAt.inv
