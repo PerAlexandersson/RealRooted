@@ -4,6 +4,7 @@ public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.MaWang
 public import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Simsun Descent Polynomials
@@ -197,15 +198,11 @@ lemma coeff_simsun_top_pos_and_above (n : Nat) :
 
 lemma natDegree_simsun (n : Nat) :
     (simsun n).natDegree = n / 2 := by
-  rcases coeff_simsun_top_pos_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    htop.ne'
+  rr_row_natDegree
 
 lemma simsun_nonzero (n : Nat) :
     simsun n ≠ 0 := by
-  rcases coeff_simsun_top_pos_and_above n with ⟨htop, _⟩
-  exact fun h0 => by simp [h0] at htop
+  rr_row_ne_zero
 
 lemma interlaces_derivative_simsun_three :
     Interlaces (simsun 3).derivative (simsun 3) := by
@@ -303,9 +300,8 @@ theorem strictInterl_simsun_succ : ∀ n : Nat, StrictInterl (simsun n) (simsun 
         (b := simsunCoeffB)
         hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
 
-theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits)
-  | 0 => by simp
-  | n + 1 => (strictInterl_simsun_succ n).2.1
+theorem isRealRooted_simsun : ∀ n : Nat, ((simsun n) ≠ 0 ∧ (simsun n).Splits) :=
+  fun n => ⟨by rr_row_ne_zero, by rr_row_splits⟩
 
 theorem interlaces_simsun_succ_of_odd {n : Nat} (hodd : n % 2 = 1) :
     Interlaces (simsun n) (simsun (n + 1)) :=

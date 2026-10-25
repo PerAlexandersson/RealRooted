@@ -2130,3 +2130,4 @@ import RealRooted.Combinatorics.SortingFixedPoints
 import RealRooted.ThresholdMatrix.Attr
 import RealRooted.LiebSokalGeneral
 import RealRooted.Tactic.Examples.RowReaderNormalization
+import RealRooted.Tactic.Examples.RowStrictInterl

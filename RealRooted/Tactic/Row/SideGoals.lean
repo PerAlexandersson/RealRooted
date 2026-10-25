@@ -20,7 +20,8 @@ public meta import RealRooted.Tactic.RowClosedForm
 /-!
 # Row tactics: syntax and side goals
 
-The syntax of `rr_row_interlaces`, `rr_row_interlaces?` and `rr_row_nonneg_coeffs`, the
+The syntax of `rr_row_interlaces`, `rr_row_strictInterl`, their `?` variants and
+`rr_row_nonneg_coeffs`, the
 `∀ n` term forms of the degree tactics, and the side-goal engine shared by the row tactics:
 sign conditions on the multipliers, nonnegative coefficients of explicit rows, and the
 `rr_row_side` closer for the side goals of the interlacing theorems.  The front ends are in
@@ -41,6 +42,15 @@ syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tact
 /-- `rr_row_interlaces?` runs `rr_row_interlaces` and prints the hinted call and the
 certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_strictInterl` closes `StrictInterl (P t) (P (t + 1))` for half-growth
+three-term and derivative-lag recurrences, and for first-order derivative recurrences whose
+degree grows by zero or one.  The hints `(via := halfGrowth)`, `(via := degreePattern)`,
+`(drop := k)` and `(half := e)` restrict the search. -/
+syntax (name := rrRowStrictInterl) "rr_row_strictInterl" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_strictInterl?` runs `rr_row_strictInterl` and prints the successful hinted call. -/
+syntax (name := rrRowStrictInterlQ) "rr_row_strictInterl?" (ppSpace rrRowHint)* : tactic
 
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
