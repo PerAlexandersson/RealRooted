@@ -48,23 +48,23 @@ label = "Common root with compatible cofactors"
 
 [[theorems]]
 name = "RealRooted.Challenges.LiuOppositeSigns.compatible_iff_rootCount"
-module = "RealRooted.Challenges.LiuOppositeSigns"
+module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
 label = "Compatibility with opposite leading signs (corrected)"
 headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.LiuOppositeSigns.compatible_iff_rootCount_of_noCommonRoots"
-module = "RealRooted.Challenges.LiuOppositeSigns"
+module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
 label = "Compatibility for pairs without common roots"
 
 [[theorems]]
 name = "RealRooted.Challenges.LiuOppositeSigns.rootCountBranches_forward_fails_with_commonRoots"
-module = "RealRooted.Challenges.LiuOppositeSigns"
+module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
 label = "Without the common-root branch the statement fails"
 
 [[theorems]]
 name = "RealRooted.Challenges.LiuOppositeSigns.natDegree_diff_le_two"
-module = "RealRooted.Challenges.LiuOppositeSigns"
+module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
 label = "Degrees of compatible pairs differ by at most two"
 -->
 
