@@ -2652,6 +2652,16 @@
       ],
       "note": "Real monic quadratic divisor, coefficient form and real/conjugate-pair factor shapes. Not yet proposed upstream.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Order/BigOperators/Ring/Skewness.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Order.BigOperators.Ring.Skewness"
+      ],
+      "note": "Speculative target module; sharp equal-weight skewness bound (#1919), no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
