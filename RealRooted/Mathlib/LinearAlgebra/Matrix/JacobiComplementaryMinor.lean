@@ -192,7 +192,8 @@ private lemma sign_sortEquiv {s t : Finset (Fin N)} {k : ℕ} (hs : s.card = k) 
   linear_combination ((-1 : ℤ) ^ ∑ z ∈ t, (z:ℕ)) * ((-1 : ℤ) ^ ∑ z ∈ s, (z:ℕ)) * this
 
 /-- The complement of a `k`-subset of `Fin N` has `N - k` elements. -/
-lemma card_compl_eq {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) : sᶜ.card = N - k := by
+lemma _root_.Finset.card_compl_of_card_eq {s : Finset (Fin N)} {k : ℕ}
+    (h : s.card = k) : sᶜ.card = N - k := by
   rw [Finset.card_compl, Fintype.card_fin, h]
 
 /-- Jacobi's complementary minor identity (with `A * B = 1`). -/
@@ -200,8 +201,8 @@ lemma jacobi_minor (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1) {s t : F
     {k : ℕ} (hs : s.card = k) (ht : t.card = k) :
     (-1 : ℝ) ^ (∑ z ∈ s, (z : ℕ) + ∑ z ∈ t, (z : ℕ)) * A.det *
       (B.submatrix (s.orderEmbOfFin hs) (t.orderEmbOfFin ht)).det =
-    (A.submatrix (tᶜ.orderEmbOfFin (card_compl_eq ht))
-      (sᶜ.orderEmbOfFin (card_compl_eq hs))).det := by
+    (A.submatrix (tᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq ht))
+      (sᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq hs))).det := by
   set es := sortEquiv s hs
   set et := sortEquiv t ht
   set Ap := A.submatrix et es with hAp
@@ -226,7 +227,8 @@ lemma jacobi_minor (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1) {s t : F
   have hB11 : Bp.toBlocks₁₁ = B.submatrix (s.orderEmbOfFin hs) (t.orderEmbOfFin ht) := by
     ext i j; simp [Bp, es, et, Matrix.toBlocks₁₁, sortEquiv, finSumEquivOfFinset_inl]
   have hA22 : Ap.toBlocks₂₂ =
-      A.submatrix (tᶜ.orderEmbOfFin (card_compl_eq ht)) (sᶜ.orderEmbOfFin (card_compl_eq hs)) := by
+      A.submatrix (tᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq ht))
+        (sᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq hs)) := by
     ext i j; simp [Ap, es, et, Matrix.toBlocks₂₂, sortEquiv, finSumEquivOfFinset_inr]
   have hApdet : Ap.det = (-1 : ℝ) ^ (∑ z ∈ s, (z : ℕ) + ∑ z ∈ t, (z : ℕ)) * A.det := by
     have : Ap = (A.submatrix es es).submatrix (et.trans es.symm) id := by

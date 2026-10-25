@@ -177,6 +177,8 @@ theorem-shape suggestions, or proof repairs:
 
 ## Workflow
 
+- New source files are Lean modules (`python3 scripts/modularize.py FILE`); README describes
+  the layout and its consequences for `private` declarations and metaprograms.
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
   conflicting with the intended API direction.
 - Prefer focused Lake builds for touched Lean modules when a local build owner
