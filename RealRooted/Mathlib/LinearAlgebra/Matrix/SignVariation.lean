@@ -74,9 +74,8 @@ lemma length_destutter'_replicate_signType (s : SignType) (n : ℕ) :
   induction n with
   | zero => simp [List.destutter'_nil]
   | succ n ih =>
-      change (destutter' (fun x y : SignType => x ≠ y) s
-        (s :: replicate n s)).length = 1
-      rw [List.destutter'_cons]
+      rw [show replicate (n + 1) s = s :: replicate n s by rfl,
+        List.destutter'_cons]
       simp [ih]
 
 lemma length_destutter_replicate_signType (s : SignType) (n : ℕ) :
@@ -98,17 +97,9 @@ lemma length_destutter'_replicate_le_two (a s : SignType) (n : ℕ) :
   cases n with
   | zero => simp [List.destutter'_nil]
   | succ n =>
-      change (destutter' (fun x y : SignType => x ≠ y) a
-        (s :: replicate n s)).length ≤ 2
-      rw [List.destutter'_cons]
-      by_cases has : a ≠ s
-      · rw [ite_eq_left has]
-        simp [length_destutter'_replicate_signType]
-      · have has_eq : a = s := of_not_not has
-        subst a
-        rw [ite_eq_right (by simp)]
-        rw [length_destutter'_replicate_signType s n]
-        norm_num
+      rw [show replicate (n + 1) s = s :: replicate n s by rfl,
+        List.destutter'_cons]
+      split <;> simp_all [length_destutter'_replicate_signType]
 
 lemma length_destutter'_append_replicate_le_succ (a s : SignType)
     (l : List SignType) (n : ℕ) :
@@ -118,14 +109,8 @@ lemma length_destutter'_append_replicate_le_succ (a s : SignType)
   | nil =>
       simpa [List.destutter'_nil] using length_destutter'_replicate_le_two a s n
   | cons b l ih =>
-      simp only [List.cons_append]
-      rw [List.destutter'_cons, List.destutter'_cons]
-      by_cases hab : a ≠ b
-      · rw [ite_eq_left hab, ite_eq_left hab]
-        have h := ih b
-        simpa [Nat.succ_eq_add_one, add_assoc] using Nat.succ_le_succ h
-      · rw [ite_eq_right hab, ite_eq_right hab]
-        exact ih a
+      simp only [List.cons_append, List.destutter'_cons]
+      split <;> simp_all [add_assoc]
 
 lemma length_destutter_append_replicate_le_succ (s : SignType)
     (l : List SignType) (n : ℕ) :
@@ -147,41 +132,23 @@ lemma length_destutter'_one_replicate_one_append_neg_one_le_two (m n : ℕ) :
       (replicate m (1 : SignType) ++ replicate (n + 1) (-1 : SignType))).length ≤ 2 := by
   induction m with
   | zero =>
-      change (destutter' (fun x y : SignType => x ≠ y) (1 : SignType)
-        ((-1 : SignType) :: replicate n (-1 : SignType))).length ≤ 2
-      rw [List.destutter'_cons]
+      rw [show replicate 0 (1 : SignType) ++ replicate (n + 1) (-1) =
+        (-1 : SignType) :: replicate n (-1) by rfl, List.destutter'_cons]
       simp [length_destutter'_replicate_signType]
   | succ m ih =>
-      change (destutter' (fun x y : SignType => x ≠ y) (1 : SignType)
-        ((1 : SignType) :: (replicate m (1 : SignType) ++
-          replicate (n + 1) (-1 : SignType)))).length ≤ 2
-      rw [List.destutter'_cons]
+      rw [show replicate (m + 1) (1 : SignType) ++ replicate (n + 1) (-1) =
+        (1 : SignType) :: (replicate m 1 ++ replicate (n + 1) (-1)) by rfl,
+        List.destutter'_cons]
       simp [ih]
 
 lemma length_destutter_replicate_one_append_neg_one_le_two (m n : ℕ) :
     ((replicate m (1 : SignType) ++ replicate n (-1 : SignType)).destutter
       (· ≠ ·)).length ≤ 2 := by
-  cases m with
-  | zero =>
-      cases n with
-      | zero => simp
-      | succ n =>
-          simpa using (by
-            rw [length_destutter_replicate_signType (-1 : SignType) n]
-            norm_num : ((replicate (n + 1) (-1 : SignType)).destutter
-              (· ≠ ·)).length ≤ 2)
-  | succ m =>
-      cases n with
-      | zero =>
-          simpa using (by
-            rw [length_destutter_replicate_signType (1 : SignType) m]
-            norm_num : ((replicate (m + 1) (1 : SignType)).destutter
-              (· ≠ ·)).length ≤ 2)
-      | succ n =>
-          change (destutter' (fun x y : SignType => x ≠ y) (1 : SignType)
-            (replicate m (1 : SignType) ++ replicate (n + 1) (-1 : SignType))).length ≤
-              2
-          exact length_destutter'_one_replicate_one_append_neg_one_le_two m n
+  cases m <;> cases n
+  · simp
+  · simp [length_destutter_replicate_signType]
+  · simp [length_destutter_replicate_signType]
+  · exact length_destutter'_one_replicate_one_append_neg_one_le_two _ _
 
 lemma filter_sign_eq_replicate_one_of_forall_nonneg (l : List ℝ)
     (h : ∀ x ∈ l, 0 ≤ x) :
@@ -721,8 +688,8 @@ theorem nodalInsertions_coreSigns_remove
       change ¬decide (SignType.sign (x p) ≠ 0)
       rw [show p = k.succ.castSucc from rfl, hk]
       simp)
-  have hxzero : x' 0 = x 0 := by simp only [x', p, Fin.succAbove_zero_of_interior]
-  have hyzero : y' 0 = y 0 := by simp only [y', p, Fin.succAbove_zero_of_interior]
+  have hxzero : x' 0 = x 0 := by simp [x', p]
+  have hyzero : y' 0 = y 0 := by simp [y', p]
   have hxlast :
       x' (Fin.last (n + 1)) = x (Fin.last (n + 2)) := by
     simp only [x', p, Fin.succAbove_last_of_interior]
@@ -751,9 +718,7 @@ theorem nodalInsertions_coreSigns_remove
   let full : List SignType := left ++ middle ++ right
   let reduced : List SignType :=
     left ++ middle.eraseIdx k ++ right
-  have hfull :
-      Fin.nodalPerturbationCoreSigns x y = full := by
-    rfl
+  have hfull : Fin.nodalPerturbationCoreSigns x y = full := rfl
   have hreduced :
       Fin.nodalPerturbationCoreSigns x' y' = reduced := by
     simp only [Fin.nodalPerturbationCoreSigns, reduced, left, middle,
@@ -825,23 +790,14 @@ theorem nodalInsertions_coreSigns_remove
               SignType.sign (y (Fin.last (n + 2))) =
                 SignType.sign (y (Fin.last n).succ.succ) := by
             congr 2
-          have haMiddle : middle[n - 1] ≠ 0 := by
-            rw [hleftMiddle]
-            exact hopposite.1
-          have hbEndpoint :
-              SignType.sign (y (Fin.last (n + 2))) ≠ 0 := by
-            rw [hrightEndpoint]
-            exact hopposite.2.1
-          have habMiddle :
-              middle[n - 1] ≠
-                SignType.sign (y (Fin.last (n + 2))) := by
-            rw [hleftMiddle, hrightEndpoint]
-            exact hopposite.2.2
           simpa [full, reduced, right, hxlast', hpred] using
             List.NodalInsertion.eraseIdx_last_append_singleton
               left middle
               (SignType.sign (y (Fin.last (n + 2))))
-              (n - 1) hlen haMiddle hbEndpoint habMiddle
+              (n - 1) hlen
+              (by simpa only [hleftMiddle] using hopposite.1)
+              (by simpa only [hrightEndpoint] using hopposite.2.1)
+              (by simpa only [hleftMiddle, hrightEndpoint] using hopposite.2.2)
         · have hkpos : 0 < (k : ℕ) := Nat.pos_of_ne_zero hkzero
           have hklt : (k : ℕ) < n := by lia
           have hpred :
@@ -871,17 +827,6 @@ theorem nodalInsertions_coreSigns_remove
             apply Fin.ext
             simp only [Fin.val_castSucc, Fin.val_succ]
             lia
-          have haMiddle : middle[(k : ℕ) - 1] ≠ 0 := by
-            rw [hleftMiddle]
-            exact hopposite.1
-          have hbMiddle : middle[(k : ℕ) - 1 + 2] ≠ 0 := by
-            rw [hrightMiddle]
-            exact hopposite.2.1
-          have habMiddle :
-              middle[(k : ℕ) - 1] ≠
-                middle[(k : ℕ) - 1 + 2] := by
-            rw [hleftMiddle, hrightMiddle]
-            exact hopposite.2.2
           have hlocal :
               List.NodalInsertion
                 ((left ++ middle ++ right).eraseIdx
@@ -889,26 +834,21 @@ theorem nodalInsertions_coreSigns_remove
                 (left ++ middle ++ right) :=
             List.NodalInsertion.eraseIdx_append_middle
               left middle right ((k : ℕ) - 1)
-              hrightBound haMiddle hbMiddle habMiddle
+              hrightBound
+              (by simpa only [hleftMiddle] using hopposite.1)
+              (by simpa only [hrightMiddle] using hopposite.2.1)
+              (by simpa only [hleftMiddle, hrightMiddle] using hopposite.2.2)
           have hkMiddle : (k : ℕ) < middle.length := by simpa [middle] using k.isLt
           rw [hpred] at hlocal
           rw [List.eraseIdx_append_middle
             left middle right (k : ℕ) hkMiddle] at hlocal
           simpa [full, reduced] using hlocal
-  have hstepCore :
-      List.NodalInsertion
-        (Fin.nodalPerturbationCoreSigns x' y')
-        (Fin.nodalPerturbationCoreSigns x y) := by
-    rw [hreduced, hfull]
-    exact hstep
-  have hsourceComp :
-      (List.ofFn (SignType.sign ∘ x')).filter (· ≠ 0) =
-        (List.ofFn (SignType.sign ∘ x)).filter (· ≠ 0) := by
-    change (List.ofFn (fun i => SignType.sign (x' i))).filter (· ≠ 0) =
-      (List.ofFn (fun i => SignType.sign (x i))).filter (· ≠ 0)
-    exact hsource
-  rw [hsourceComp] at hrec
-  exact hrec.tail hstepCore
+  rw [← hreduced, ← hfull] at hstep
+  have htail := hrec.tail hstep
+  change Relation.ReflTransGen List.NodalInsertion
+    ((List.ofFn (fun i => SignType.sign (x' i))).filter (· ≠ 0)) _ at htail
+  rw [hsource] at htail
+  exact htail
 
 /-- If there is no interior zero, filtering the original signs already gives
 the perturbed core signs. -/
@@ -1055,11 +995,8 @@ lemma signVariations_le_card_sub_two_of_zero_first {R : Type*}
 lemma signVariations_eq_zero_of_forall_nonneg {n : ℕ} (x : Fin n → ℝ)
     (h : ∀ i, 0 ≤ x i) : signVariations x = 0 := by
   rw [signVariations]
-  exact List.signVariations_eq_zero_of_forall_nonneg (List.ofFn x) (by
-    intro y hy
-    simp only [List.mem_ofFn] at hy
-    obtain ⟨i, rfl⟩ := hy
-    exact h i)
+  exact List.signVariations_eq_zero_of_forall_nonneg _
+    (List.forall_mem_ofFn_iff.mpr h)
 
 /-- A nonnegative finite block followed by a nonpositive finite block has at
 most one sign variation. -/
@@ -1068,16 +1005,7 @@ lemma signVariations_append_nonneg_nonpos_le_one {m n : ℕ} (x : Fin m → ℝ)
     signVariations (Fin.append x y) ≤ 1 := by
   rw [signVariations, List.ofFn_fin_append]
   exact List.signVariations_append_nonneg_nonpos_le_one (List.ofFn x) (List.ofFn y)
-    (by
-      intro a ha
-      simp only [List.mem_ofFn] at ha
-      obtain ⟨i, rfl⟩ := ha
-      exact hx i)
-    (by
-      intro a ha
-      simp only [List.mem_ofFn] at ha
-      obtain ⟨i, rfl⟩ := ha
-      exact hy i)
+    (List.forall_mem_ofFn_iff.mpr hx) (List.forall_mem_ofFn_iff.mpr hy)
 
 /-- A nonpositive finite block followed by a nonnegative finite block has at
 most one sign variation. -/
@@ -1086,16 +1014,7 @@ lemma signVariations_append_nonpos_nonneg_le_one {m n : ℕ} (x : Fin m → ℝ)
     signVariations (Fin.append x y) ≤ 1 := by
   rw [signVariations, List.ofFn_fin_append]
   exact List.signVariations_append_nonpos_nonneg_le_one (List.ofFn x) (List.ofFn y)
-    (by
-      intro a ha
-      simp only [List.mem_ofFn] at ha
-      obtain ⟨i, rfl⟩ := ha
-      exact hx i)
-    (by
-      intro a ha
-      simp only [List.mem_ofFn] at ha
-      obtain ⟨i, rfl⟩ := ha
-      exact hy i)
+    (List.forall_mem_ofFn_iff.mpr hx) (List.forall_mem_ofFn_iff.mpr hy)
 
 /-- Appending a nonnegative finite block increases sign variations by at most
 one. -/
@@ -1103,11 +1022,8 @@ lemma signVariations_append_nonneg_le_succ {m n : ℕ} (x : Fin m → ℝ)
     (y : Fin n → ℝ) (hy : ∀ i, 0 ≤ y i) :
     signVariations (Fin.append x y) ≤ signVariations x + 1 := by
   rw [signVariations, signVariations, List.ofFn_fin_append]
-  exact List.signVariations_append_nonneg_le_succ (List.ofFn x) (List.ofFn y) (by
-    intro a ha
-    simp only [List.mem_ofFn] at ha
-    obtain ⟨i, rfl⟩ := ha
-    exact hy i)
+  exact List.signVariations_append_nonneg_le_succ (List.ofFn x) (List.ofFn y)
+    (List.forall_mem_ofFn_iff.mpr hy)
 
 /-- Appending a nonpositive finite block increases sign variations by at most
 one. -/
@@ -1115,11 +1031,8 @@ lemma signVariations_append_nonpos_le_succ {m n : ℕ} (x : Fin m → ℝ)
     (y : Fin n → ℝ) (hy : ∀ i, y i ≤ 0) :
     signVariations (Fin.append x y) ≤ signVariations x + 1 := by
   rw [signVariations, signVariations, List.ofFn_fin_append]
-  exact List.signVariations_append_nonpos_le_succ (List.ofFn x) (List.ofFn y) (by
-    intro a ha
-    simp only [List.mem_ofFn] at ha
-    obtain ⟨i, rfl⟩ := ha
-    exact hy i)
+  exact List.signVariations_append_nonpos_le_succ (List.ofFn x) (List.ofFn y)
+    (List.forall_mem_ofFn_iff.mpr hy)
 
 /-- A finite vector split into a nonnegative initial block and a nonpositive
 final block has at most one sign variation. -/
@@ -1336,30 +1249,21 @@ lemma signVariations_congr_sign {R : Type*} [Zero R] [LinearOrder R]
   rw [signVariations, signVariations, List.signVariations,
     List.signVariations, List.map_ofFn, List.map_ofFn]
   congr 4
-  apply congrArg List.ofFn
-  funext i
-  exact h i
+  exact congrArg List.ofFn (funext h)
 
 lemma signVariations_neg {n : ℕ} (x : Fin n → ℝ) :
     signVariations (fun i => -x i) = signVariations x := by
   rw [signVariations, signVariations]
-  have hmap : List.ofFn (fun i : Fin n => -x i) = (List.ofFn x).map Neg.neg := by
-    rw [List.map_ofFn]
-    apply congrArg List.ofFn
-    funext i
-    rfl
-  rw [hmap]
-  exact List.signVariations_neg (List.ofFn x)
+  convert List.signVariations_neg (List.ofFn x) using 1
+  rw [List.map_ofFn]
+  congr 2
 
 /-- A finite real vector with no positive entries has no sign variations. -/
 lemma signVariations_eq_zero_of_forall_nonpos {n : ℕ} (x : Fin n → ℝ)
     (h : ∀ i, x i ≤ 0) : signVariations x = 0 := by
   rw [signVariations]
-  exact List.signVariations_eq_zero_of_forall_nonpos (List.ofFn x) (by
-    intro y hy
-    simp only [List.mem_ofFn] at hy
-    obtain ⟨i, rfl⟩ := hy
-    exact h i)
+  exact List.signVariations_eq_zero_of_forall_nonpos _
+    (List.forall_mem_ofFn_iff.mpr h)
 
 /-- A nonzero vector whose signs alternate at every adjacent pair has the
 largest possible number of sign variations. -/
