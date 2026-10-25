@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.CriticalValue
-import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+module
+
+public import RealRooted.BinaryRunTransformation.CriticalValue
+public import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 
 /-!
 # The binary-run pointing deformation
@@ -8,6 +10,8 @@ This file packages the scaled input, its pointed companion, and the remainder
 appearing in the stable pencil.  It also derives the critical-value sign from
 the abstract signed-parity theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped ContDiff

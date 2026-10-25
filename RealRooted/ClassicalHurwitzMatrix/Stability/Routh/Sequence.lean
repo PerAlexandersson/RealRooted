@@ -1,7 +1,9 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
-import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
-import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
+public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 
 /-!
 # Stable Routh sequences and leading Hurwitz determinants
@@ -9,6 +11,8 @@ import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 The one-step strict-stability theorem is iterated here by induction on the
 order of the requested leading principal determinant.
 -/
+
+@[expose] public section
 
 open Polynomial
 

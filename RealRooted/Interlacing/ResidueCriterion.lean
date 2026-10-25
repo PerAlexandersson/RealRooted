@@ -1,7 +1,9 @@
-import RealRooted.Interlacing.Residue
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.MaWang.StrictSigns
-import RealRooted.SimpleRoots
+module
+
+public import RealRooted.Interlacing.Residue
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.MaWang.StrictSigns
+public import RealRooted.SimpleRoots
 
 /-!
 # A positive-point residue criterion for strict interlacing
@@ -16,6 +18,8 @@ The final theorem applies this bound to
 cancellation and turns strict signs at the roots of `f` into an `Interlaces`
 certificate.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

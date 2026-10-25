@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
+module
+
+public import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
 
 /-!
 # Weak left peaks
@@ -6,6 +8,8 @@ import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
 Weak left peaks are encoded directly from descent sets, so the generic exact
 descent-set Pollak transfer applies without another orbit argument.
 -/
+
+@[expose] public section
 
 open Polynomial
 

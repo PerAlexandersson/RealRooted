@@ -1,10 +1,12 @@
-import RealRooted.MatrixInterlacing.Action
-import RealRooted.MatrixInterlacing.SparseTests
-import RealRooted.MatrixInterlacing.Converse
-import RealRooted.MatrixInterlacing.AffinePair
-import RealRooted.MatrixInterlacing.Preservation
-import RealRooted.MatrixInterlacing.TotallyNonnegative
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.Converse
+public import RealRooted.MatrixInterlacing.AffinePair
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
+public import RealRooted.QuadraticRoot
 
 /-!
 # Matrix preservation of interlacing sequences
@@ -14,6 +16,8 @@ matrix-preservation theorems (Brändén, Theorem 7.8.5).
 The totally-nonnegative leaf specializes the generic polynomial-matrix theorem
 to constant rectangular matrices and proves Fisk's positive-leading wrapper.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -62,7 +66,8 @@ structure Atomic2x2Matrix where
   d : AtomicMatrixEntry
   deriving DecidableEq, Repr
 
-private def atomic2x2MatrixEquiv :
+/-- The equivalence between `Atomic2x2Matrix` and the quadruple of its four entries. -/
+def atomic2x2MatrixEquiv :
     Atomic2x2Matrix ≃
       AtomicMatrixEntry × AtomicMatrixEntry × AtomicMatrixEntry × AtomicMatrixEntry where
   toFun M := (M.a, M.b, M.c, M.d)

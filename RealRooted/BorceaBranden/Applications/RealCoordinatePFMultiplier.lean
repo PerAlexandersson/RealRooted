@@ -1,4 +1,6 @@
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+module
+
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 
 /-!
 # Real coordinate PF multipliers
@@ -6,6 +8,8 @@ import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 This file supplies the real-coefficient companion to the complex coordinate
 multiplier used by the finite-symbol stability theorem.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

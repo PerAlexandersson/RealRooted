@@ -1,4 +1,8 @@
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.ObreschkoffConverse
+
+@[expose] public section
 
 open Polynomial
 

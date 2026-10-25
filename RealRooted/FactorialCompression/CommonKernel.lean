@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.EulerOperator
-import RealRooted.FactorialCompression.Basic
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.EulerOperator
+public import RealRooted.FactorialCompression.Basic
 
 /-!
 # The common factorial-compression kernel: recurrences and strict interlacing
@@ -12,6 +14,8 @@ recurrence `h_{r+2} = (1 + 2 (r + 1) x) h_{r+1} - 4 x² h_{r+1}'`, so that the s
 backend `derivLag_strictInterl_and_noCommonRoot` shows that `h_{r+1}` and `h_{r+2}` strictly
 interlace and have no common root.  Consequently all roots of `h_r` are negative and simple.
 -/
+
+@[expose] public section
 
 open Polynomial
 

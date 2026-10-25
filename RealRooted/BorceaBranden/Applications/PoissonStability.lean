@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.PoissonStar
-import RealRooted.Hyperbolicity
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStar
+public import RealRooted.Hyperbolicity
 
 /-!
 # Stability of Poisson left multiplication
@@ -13,6 +15,8 @@ applies (Borcea--Brändén, *The Lee--Yang and Pólya--Schur programs. I*, Inven
 Theorems 1.3--1.4).  The left symbol must not contain unscaled stable parameters:
 `not_stable_leftParameterBadSymbol` checks that `a + z(1 - w)` is not stable.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

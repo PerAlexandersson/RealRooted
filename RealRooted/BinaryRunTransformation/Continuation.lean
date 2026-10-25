@@ -1,12 +1,14 @@
-import RealRooted.BinaryRunTransformation.Anchor
-import RealRooted.BinaryRunTransformation.PointingPencil
-import RealRooted.CriticalValueContinuation
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Hadamard.Newton
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.QuadraticRoot
-import Mathlib.Topology.Order.ProjIcc
+module
+
+public import RealRooted.BinaryRunTransformation.Anchor
+public import RealRooted.BinaryRunTransformation.PointingPencil
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Hadamard.Newton
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.QuadraticRoot
+public import Mathlib.Topology.Order.ProjIcc
 
 /-!
 # Continuation for the binary-run deformation
@@ -15,6 +17,8 @@ This file connects the smooth binary-run family to the generic local root
 continuation API.  It is the analytic layer used to prevent collisions while
 the scaling parameter increases.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 open scoped ContDiff

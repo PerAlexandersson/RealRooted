@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
 
 /-!
 # Succ-degree root counts
@@ -6,3 +8,5 @@ import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
 Facade for the succ-degree closed-segment module.  The succ-degree
 common-interleaver theorem lives in `SuccDegree.SlotData`.
 -/
+
+@[expose] public section

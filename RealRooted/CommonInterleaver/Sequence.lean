@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.Finite
+module
+
+public import RealRooted.CommonInterleaver.Finite
 
 /-!
 # Common interleavers: sequence construction
@@ -6,6 +8,8 @@ import RealRooted.CommonInterleaver.Finite
 Root-sequence common interleaver predicates, their finite-Helly construction,
 and pairwise right and left upgrade lemmas.
 -/
+
+@[expose] public section
 
 open Polynomial
 

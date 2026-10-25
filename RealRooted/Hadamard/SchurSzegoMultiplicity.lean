@@ -1,4 +1,6 @@
-import RealRooted.Hadamard.Basic
+module
+
+public import RealRooted.Hadamard.Basic
 
 /-!
 # Exact root multiplicity for the finite Schur–Szegő composition
@@ -20,6 +22,8 @@ exactly `m + l - n`.
 * Splitting `q = c X^(d+1) + (X - a) q'` with `c = q(a) / a^(d+1)`, induction on `d` shows
   that `(X - a)ⁿ⁻ᵈ q *ₙ g = (X + a b)ˡ⁻ᵈ R` with `R(-(a * b)) ≠ 0` whenever `q(a) ≠ 0`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

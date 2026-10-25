@@ -1,9 +1,11 @@
-import Mathlib
-import RealRooted.AffineFamily
-import RealRooted.Linear
-import RealRooted.SequenceClosure
-import RealRooted.WagnerX
-import RealRooted.ThreeTermRecurrence.Interlacing
+module
+
+public import Mathlib
+public import RealRooted.AffineFamily
+public import RealRooted.Linear
+public import RealRooted.SequenceClosure
+public import RealRooted.WagnerX
+public import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Linear-power families
@@ -13,6 +15,8 @@ linear factor.  The main applications are first-order product recurrences
 whose tail is `C u + C v * X` or `C u * X`, together with the confluent
 interlacing of powers of a single linear factor.
 -/
+
+@[expose] public section
 
 open Polynomial
 

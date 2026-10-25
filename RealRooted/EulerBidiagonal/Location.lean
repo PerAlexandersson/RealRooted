@@ -1,4 +1,6 @@
-import RealRooted.EulerBidiagonal.ComparisonData
+module
+
+public import RealRooted.EulerBidiagonal.ComparisonData
 
 /-!
 # Root location for the general Euler step
@@ -8,6 +10,8 @@ comparison polynomial alternates in sign at them:
 `generalComparison_sign_at_generalStep_root` (the sign `(−1)^(number of roots of generalStep q
 to the right)`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

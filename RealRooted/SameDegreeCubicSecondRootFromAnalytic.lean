@@ -1,6 +1,8 @@
-import RealRooted.SameDegreeCubicRootCount
-import RealRooted.SameDegreeCountFromAnalytic
-import RealRooted.LiuOppositeSigns.RootDeletion
+module
+
+public import RealRooted.SameDegreeCubicRootCount
+public import RealRooted.SameDegreeCountFromAnalytic
+public import RealRooted.LiuOppositeSigns.RootDeletion
 
 /-!
 # The cubic second-root bound from analytic root counts
@@ -12,6 +14,8 @@ common root, a putative failure forces that root to be the only root on the
 opposite side of the gap; cancelling it reduces to the checked quadratic
 separation obstruction.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.ChainPolynomial
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
+module
+
+public import RealRooted.GeneralizedSnakePosets.ChainPolynomial
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
 
 /-!
 # Snake boards as monochromatic bands
@@ -15,6 +17,8 @@ So `(i, j)` is an incomparable cross pair exactly when the gaps between `i` and
 placements become chains that increase in both coordinates, so snake
 polynomial is the `incRel` chain polynomial of the band.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,10 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+
+@[expose] public section
 
 open Polynomial
 

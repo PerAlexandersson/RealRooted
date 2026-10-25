@@ -1,5 +1,7 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
-import RealRooted.HermiteBiehler.Converse
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
+public import RealRooted.HermiteBiehler.Converse
 
 /-!
 # Hermite--Biehler consequences of strict Hurwitz stability
@@ -9,6 +11,8 @@ Hermite--Biehler converse. Leading-coefficient sign choices stay explicit: the
 two useful normalizations are the original rotated pair and the pair obtained
 by multiplying its Hermite--Biehler polynomial by `i`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

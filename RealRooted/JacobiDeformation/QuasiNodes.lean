@@ -1,7 +1,9 @@
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.Jacobi
-import RealRooted.JacobiDeformation.Quadrature
-import RealRooted.ObreschkoffConverse
+module
+
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.Jacobi
+public import RealRooted.JacobiDeformation.Quadrature
+public import RealRooted.ObreschkoffConverse
 
 /-!
 # Nodes of quasi-Jacobi polynomials
@@ -9,6 +11,8 @@ import RealRooted.ObreschkoffConverse
 The quasi-Jacobi polynomial is a real linear combination of consecutive monic
 Favard polynomials.  Its nodes need not all be interior to the Jacobi interval.
 -/
+
+@[expose] public section
 
 open Polynomial
 

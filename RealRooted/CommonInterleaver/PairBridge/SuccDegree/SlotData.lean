@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+module
+
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree
 
 /-!
 # Succ-degree case of the two-polynomial common-interleaver theorem
@@ -8,6 +10,8 @@ lower-degree member splits, the pair is compatible, the upper root counts
 differ by at most one at every threshold, and the descending roots therefore
 weave into a common interleaver.
 -/
+
+@[expose] public section
 
 open Polynomial
 

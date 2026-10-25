@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
-import RealRooted.MultiplierSequence.Infinite
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Sign classification of multiplier sequences
@@ -7,6 +9,8 @@ import RealRooted.MultiplierSequence.Infinite
 This file proves the zero-safe parity sign constraint for an arbitrary
 multiplier sequence and derives the classical four-way PF normalization.
 -/
+
+@[expose] public section
 
 open Polynomial
 

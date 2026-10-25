@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 
 /-!
 # Multivariate Jensen multipliers
@@ -9,6 +11,8 @@ arXiv:0809.0401, Lemma 5.2.  The proof applies the descending-factorial PF
 multiplier in each coordinate and composes it with a positive geometric
 rescaling.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

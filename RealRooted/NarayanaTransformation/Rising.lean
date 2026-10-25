@@ -1,8 +1,12 @@
-import RealRooted.NarayanaTransformation.Falling
+module
+
+public import RealRooted.NarayanaTransformation.Falling
 
 /-!
 # Rising-factorial transform preservation.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

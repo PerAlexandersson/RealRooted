@@ -1,5 +1,7 @@
-import RealRooted.JensenPencilContraction
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen
+module
+
+public import RealRooted.JensenPencilContraction
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 
 /-!
 # Jensen-pencil contraction for bidiagonal operators
@@ -7,6 +9,8 @@ import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 This module turns the Schur--Szegő compatibility contraction into a
 coefficient-bidiagonal PF-preserver theorem, with rowwise variants.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.Multivariate
-import RealRooted.Graph.MatchingPolynomial
+module
+
+public import RealRooted.Graph.IndependencePolynomial.Multivariate
+public import RealRooted.Graph.MatchingPolynomial
 
 /-!
 # Multivariate matching-generating polynomials
@@ -8,6 +10,8 @@ The intrinsic edge-variable polynomial agrees with the multivariate
 independence polynomial of the line graph.  Consequently it is same-phase
 stable, as is every nonnegative edge-weighted coordinate scaling.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

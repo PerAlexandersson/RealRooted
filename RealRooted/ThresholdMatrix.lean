@@ -1,5 +1,7 @@
-import RealRooted.ThresholdMatrix.GustafssonSolus
-import RealRooted.ThresholdMatrix.HaglundZhang
+module
+
+public import RealRooted.ThresholdMatrix.GustafssonSolus
+public import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # Threshold matrices
@@ -7,3 +9,5 @@ import RealRooted.ThresholdMatrix.HaglundZhang
 Compatibility facade over the generic threshold-matrix infrastructure and the
 independent Gustafsson--Solus and Haglund--Zhang/A046802 application layers.
 -/
+
+@[expose] public section

@@ -1,4 +1,6 @@
-import RealRooted.ThresholdMatrix.HaglundZhang
+module
+
+public import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
 # OEIS A046802
@@ -7,6 +9,8 @@ The sequence-facing surface of A046802.  Row zero is `1`; the remaining rows
 are the terminal polynomials of the Haglund--Zhang binomial Eulerian
 refinement.  The refined vector supplies the interlacing certificate.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,10 @@
-import RealRooted.Hadamard.Basic
-import Mathlib.LinearAlgebra.Vandermonde
-import Mathlib.RingTheory.Polynomial.Vieta
+module
+
+public import RealRooted.Hadamard.Basic
+public import Mathlib.LinearAlgebra.Vandermonde
+public import Mathlib.RingTheory.Polynomial.Vieta
+
+@[expose] public section
 
 open Polynomial
 

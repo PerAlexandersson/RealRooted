@@ -1,9 +1,13 @@
-import RealRooted.MultiplierSequence.QuadraticExponential
-import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
+module
+
+public import RealRooted.MultiplierSequence.QuadraticExponential
+public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 /-!
 # Coordinatewise quadratic exponential multipliers
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorceaBranden
 

@@ -1,6 +1,8 @@
-import RealRooted.Graph.AcyclicOrientation
-import RealRooted.Graph.FiniteDegree
-import RealRooted.Graph.IndependencePolynomial.ClawFree
+module
+
+public import RealRooted.Graph.AcyclicOrientation
+public import RealRooted.Graph.FiniteDegree
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
 # All-orientation sink-polynomial model
@@ -23,6 +25,8 @@ theorem `allOrientationSinkPolynomial_splits_of_clawFree`.
 The natural scope is the full family of claw-free graphs.  Line graphs require
 no separate treatment here: they are merely one claw-free subfamily.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

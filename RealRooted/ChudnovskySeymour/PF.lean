@@ -1,5 +1,7 @@
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.PFPolynomial
 
 /-!
 # Chudnovsky--Seymour for PF families with zero members
@@ -8,6 +10,8 @@ The Chudnovsky--Seymour theorem `chudnovskySeymour_pairwiseCompatible_iff_family
 assumes every member is nonzero.  For polynomials with nonnegative coefficients and only real
 roots (PF polynomials), zero members are harmless: they contribute nothing to a weighted sum.
 -/
+
+@[expose] public section
 
 open Polynomial
 

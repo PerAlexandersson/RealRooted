@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
 
 /-!
 # Weak-left-peak interlacing and parking-function real-rootedness
@@ -8,6 +10,8 @@ P/Q projection gives the terminal interlacing family, while compatibility of
 the same finite family proves splitness of the aggregate word enumerator.  The
 checked integral Pollak transfer then gives the parking-function result.
 -/
+
+@[expose] public section
 
 open Polynomial
 

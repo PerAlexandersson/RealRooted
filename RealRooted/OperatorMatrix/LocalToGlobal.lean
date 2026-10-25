@@ -1,5 +1,7 @@
-import RealRooted.AffineFamily.PF
-import RealRooted.ChudnovskySeymour.PF
+module
+
+public import RealRooted.AffineFamily.PF
+public import RealRooted.ChudnovskySeymour.PF
 
 /-!
 # Local-to-global preservation for operator matrices
@@ -8,6 +10,8 @@ An operator matrix preserves ordered vectors of PF polynomials exactly when all 
 two-by-two blocks preserve ordered pairs.  Empty and singleton dimensions are treated by separate
 interfaces below.
 -/
+
+@[expose] public section
 
 open Polynomial
 

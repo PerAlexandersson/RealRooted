@@ -1,4 +1,6 @@
-import RealRooted.VeroneseSectionPair
+module
+
+public import RealRooted.VeroneseSectionPair
 
 /-!
 # Hermite--Biehler certificates from normalized Veronese residues
@@ -13,6 +15,8 @@ Hurwitz stable.
 The normalization hypotheses `j < k < r` are essential: this theorem does
 not cover a shifted coefficient tail represented by an index at least `r`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

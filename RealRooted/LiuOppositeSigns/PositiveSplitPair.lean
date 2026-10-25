@@ -1,6 +1,8 @@
-import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
-import RealRooted.SameDegreeCubicRootCount
-import RealRooted.SameDegreeCountFromAnalytic
+module
+
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+public import RealRooted.SameDegreeCubicRootCount
+public import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Liu positive-split root-count pairs
@@ -8,6 +10,8 @@ import RealRooted.SameDegreeCountFromAnalytic
 This module relates `PositiveSplitRootCountPair` to Liu's root-count
 conditions, common interleavers, and compatibility.
 -/
+
+@[expose] public section
 
 open Polynomial
 

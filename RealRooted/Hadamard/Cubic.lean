@@ -1,4 +1,8 @@
-import RealRooted.Hadamard.Newton
+module
+
+public import RealRooted.Hadamard.Newton
+
+@[expose] public section
 
 open Polynomial
 

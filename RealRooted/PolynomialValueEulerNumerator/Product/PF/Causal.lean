@@ -1,5 +1,7 @@
-import RealRooted.PolynomialValueEulerNumerator.PF.Causal
-import RealRooted.PolynomialValueEulerNumerator.Product.PF
+module
+
+public import RealRooted.PolynomialValueEulerNumerator.PF.Causal
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF
 
 /-!
 # Product closure from polynomial-value PF hypotheses
@@ -7,6 +9,8 @@ import RealRooted.PolynomialValueEulerNumerator.Product.PF
 This leaf applies the existing canonical-numerator product endpoint after
 deriving its two numerator certificates by causal iteration.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

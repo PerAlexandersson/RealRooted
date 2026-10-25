@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.Affine
-import RealRooted.Compatibility.CutTransform
-import RealRooted.SameDegreeQuadraticObstruction
+module
+
+public import RealRooted.Compatibility.Affine
+public import RealRooted.Compatibility.CutTransform
+public import RealRooted.SameDegreeQuadraticObstruction
 
 /-!
 # Obstruction to the ten-field cut invariant
@@ -10,6 +12,8 @@ but its first cut transform loses the all-index P/Q compatibility clause.  The
 example isolates the missing opposite-direction `XP/P` relation required by a
 preservation theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

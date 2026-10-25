@@ -1,7 +1,9 @@
-import RealRooted.GammaTransform.ProperPosition
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum.Sign
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum.Sign
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Strict adjacent-degree gamma lifting
@@ -20,6 +22,8 @@ Section 4).  It is ported from the lifting lemma of pull request `#1132`,
 restated for `StrictInterl`, `HasSimpleRoots` and an explicit no-common-root
 hypothesis.
 -/
+
+@[expose] public section
 
 open Polynomial
 

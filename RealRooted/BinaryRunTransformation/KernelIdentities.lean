@@ -1,6 +1,8 @@
-import RealRooted.BalancedRunTransformation
-import RealRooted.BinaryRunTransformation.Coefficients
-import RealRooted.EulerOperator
+module
+
+public import RealRooted.BalancedRunTransformation
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.EulerOperator
 
 /-!
 # Kernel identities between the binary-run and balanced run transforms
@@ -14,6 +16,8 @@ For the binary-run kernel `J_{n,m}` and the balanced kernel `U_{n,m}`, with
 
 They drive the cross-length comparison of `J_n` and `J_{n+1}`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

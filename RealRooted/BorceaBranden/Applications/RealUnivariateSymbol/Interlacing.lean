@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
-import RealRooted.HermiteBiehler
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.HermiteBiehler
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Interlacing consequences of real finite symbols
@@ -10,6 +12,8 @@ for a stable finite symbol to polynomial pencils and oriented interlacing.
 The statements concern arbitrary real linear maps; concrete operators belong in
 separate application modules.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
 
 /-!
 # Snake suffix blocks and truncated staircases
@@ -8,6 +10,8 @@ This module relates the final constant suffix blocks of concrete generalized
 snake boards to the truncated-staircase coordinate convention used by the
 combinatorial recurrence.
 -/
+
+@[expose] public section
 
 noncomputable section
 

@@ -1,7 +1,9 @@
-import RealRooted.LiuOppositeSigns.DeletionBranches
-import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
+module
+
+public import RealRooted.LiuOppositeSigns.DeletionBranches
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
 
 /-!
 # Liu left factor return: same- and successor-degree cases
@@ -12,6 +14,8 @@ restored pair follows once every positive right combination splits.  In the
 same-degree and successor-degree cases these combinations are the
 positive-split x-subtraction pencils.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

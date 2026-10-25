@@ -1,5 +1,9 @@
-import RealRooted.AffineFamily
-import RealRooted.MatrixInterlacing.Action
+module
+
+public import RealRooted.AffineFamily
+public import RealRooted.MatrixInterlacing.Action
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,8 +1,10 @@
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.PolyaFrequencyConvolution.GeometricScaling
-import RealRooted.QuadraticRoot
+module
+
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.BrandenVecchi.ChowInfinitePF
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+public import RealRooted.QuadraticRoot
 
 /-!
 # Scalar and zero-prefix Chow data
@@ -16,6 +18,8 @@ also shows that the zero-prefix endpoint cannot be the raw matrix-level Chow
 construction; a full theorem needs a separate normalized or projective
 definition matching the paper's formal-series convention.
 -/
+
+@[expose] public section
 
 open Filter Matrix Polynomial Topology
 

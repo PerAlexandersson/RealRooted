@@ -1,7 +1,9 @@
-import RealRooted.BrandenLeite.DiagonalTail
-import RealRooted.Hadamard.Grace
-import RealRooted.PFPolynomial.Closure
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.BrandenLeite.DiagonalTail
+public import RealRooted.Hadamard.Grace
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Coefficient limits of finite kernel rows
@@ -10,6 +12,8 @@ Finite matrix multiplication and powers are continuous in the entrywise
 topology.  We combine that fact with the finite source-border chain theorem to
 pass PF and interlacing certificates to strictly lower kernel rows.
 -/
+
+@[expose] public section
 
 open Filter Matrix Polynomial Topology
 

@@ -1,4 +1,8 @@
-import RealRooted.ThresholdMatrix
+module
+
+public import RealRooted.ThresholdMatrix
+
+@[expose] public section
 
 open Polynomial
 

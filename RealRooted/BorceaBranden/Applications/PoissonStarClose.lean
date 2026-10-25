@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-import RealRooted.Interlacing.OuterDifference
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+public import RealRooted.Interlacing.OuterDifference
 
 /-!
 # Closing consequences for the univariate Poisson product
@@ -9,6 +11,8 @@ classification.  The proof deletes all but one copy of a chosen root from the
 Euler pencil and uses the forced orientation of the resulting degree-growth-one
 pair.
 -/
+
+@[expose] public section
 
 open Polynomial
 

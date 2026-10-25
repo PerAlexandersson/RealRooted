@@ -1,5 +1,7 @@
-import RealRooted.HeilmannLieb
-import Mathlib.Combinatorics.SimpleGraph.Bipartite
+module
+
+public import RealRooted.HeilmannLieb
+public import Mathlib.Combinatorics.SimpleGraph.Bipartite
 
 /-!
 # Weighted rook polynomials
@@ -17,6 +19,8 @@ The positive-coefficient convention uses `X ^ k`; Nijenhuis's signed
 normalization uses `(-X) ^ k`.  Both are exposed explicitly below.
 -/
 
+@[expose] public section
+
 open Polynomial Finset
 
 noncomputable section
@@ -29,7 +33,7 @@ universe u v
 variable {Row : Type u} {Column : Type v}
 
 /-- The complete-bipartite edge associated with a matrix position. -/
-private def bipartiteEdge (x : Row × Column) :
+def bipartiteEdge (x : Row × Column) :
     (_root_.completeBipartiteGraph Row Column).edgeSet :=
   ⟨s(.inl x.1, .inr x.2), by
     simp [_root_.SimpleGraph.mem_edgeSet]⟩

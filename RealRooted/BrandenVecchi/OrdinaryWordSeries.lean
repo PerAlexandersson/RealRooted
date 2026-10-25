@@ -1,4 +1,6 @@
-import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+module
+
+public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
 
 /-!
 # Ordinary words from Smirnov skeletons
@@ -9,6 +11,8 @@ the geometric series `a z + a^2 z^2 + ...`. This module records the algebraic
 series and its finite-product symmetry before identifying its coefficients
 with literal words.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

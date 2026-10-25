@@ -1,5 +1,7 @@
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.ProductOrientation
+module
+
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.ProductOrientation
 
 /-!
 # Leading-sign certificates for the Chow operator
@@ -10,6 +12,8 @@ independent of the Chow construction: equality in the endpoint-product
 orientation forces normalized equality when neither polynomial has a zero
 root.
 -/
+
+@[expose] public section
 
 open Polynomial
 

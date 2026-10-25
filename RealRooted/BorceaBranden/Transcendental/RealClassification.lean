@@ -1,4 +1,8 @@
-import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+module
+
+public import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+
+@[expose] public section
 
 open Filter Topology
 

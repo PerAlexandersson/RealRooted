@@ -1,6 +1,8 @@
-import RealRooted.BrandenLeite.ChainPolynomial.Algebra
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.BrandenLeite.SourceBorder
+module
+
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.BrandenLeite.SourceBorder
 
 /-!
 # Kernel rows of finite source borders
@@ -9,6 +11,8 @@ We identify the chain polynomials of a finite source-border matrix with a
 regularized kernel construction.  The regularization removes the diagonal of
 the lower-right block entrywise, avoiding subtraction and division.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

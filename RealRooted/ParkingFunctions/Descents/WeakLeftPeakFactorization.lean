@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
 
 /-!
 # Real factorization of the weak-left-peak recurrence
@@ -7,6 +9,8 @@ This module casts the terminal-state recurrence to real polynomials and
 packages its pair-mix followed by prefix/strict-suffix factorization. It makes
 no interlacing-preservation claim.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import RealRooted.RootContinuity
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+module
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.RootContinuity
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 
 /-!
 # Products in the Laguerre–Pólya class
@@ -17,6 +19,8 @@ The approximants are
 
 The converse, that every function in the class has this form, is not formalized here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

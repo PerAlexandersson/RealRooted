@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.Substitution
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
-import RealRooted.LiebSokalOperator
-import RealRooted.MultivariateStability.Inversion
-import Mathlib.Algebra.MvPolynomial.Monad
+module
+
+public import RealRooted.MultivariateStability.Substitution
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability.Inversion
+public import Mathlib.Algebra.MvPolynomial.Monad
 
 /-!
 # Finite-order Weyl-symbol preservers
@@ -15,6 +17,8 @@ substitution `w ↦ -1 / (x_q + y_q)`, so the general finite-symbol theorem appl
 polynomial-symbol case of Borcea--Brändén, *The Lee--Yang and Pólya--Schur programs. I*,
 Invent. Math. 177 (2009), Theorems 1.3--1.4 (arXiv:0809.0401).
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

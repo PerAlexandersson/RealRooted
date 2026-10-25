@@ -1,5 +1,7 @@
-import RealRooted.BinaryRunTransformation.Coefficients
-import RealRooted.HermiteBiehler.StablePencil
+module
+
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.HermiteBiehler.StablePencil
 
 /-!
 # Critical values in the binary-run deformation
@@ -8,6 +10,8 @@ This file develops the signed parity lift `z^n p(-z⁻²)` and uses a stable
 polynomial pencil to control the sign of a critical value during a pointing
 deformation.
 -/
+
+@[expose] public section
 
 open Polynomial
 

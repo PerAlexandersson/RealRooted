@@ -1,7 +1,9 @@
-import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
 
 /-!
 # Converse weak Hurwitz criterion
@@ -10,6 +12,8 @@ This module proves that a nonzero real polynomial with a totally nonnegative
 corrected Hurwitz matrix is weakly Hurwitz stable. Together with the forward
 theorem, this gives the corrected nonzero equivalence.
 -/
+
+@[expose] public section
 
 open Polynomial
 

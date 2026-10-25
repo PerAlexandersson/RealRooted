@@ -1,4 +1,6 @@
-import RealRooted.Hadamard.SchurSzegoMultiplicity
+module
+
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
 
 /-!
 # Regression examples for the finite Schur–Szegő composition
@@ -9,6 +11,8 @@ import RealRooted.Hadamard.SchurSzegoMultiplicity
   of multiplicity `2`) and `g = (X + 1)(X + 2)` (root `-1` of multiplicity `1`), the composition
   is `X²`, so `0 = -(0 * (-1))` has multiplicity `2`, not `m + l - n = 1`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

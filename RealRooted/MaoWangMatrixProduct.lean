@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.NarayanaTransformation
 
 /-!
 # Mao--Wang matrix-product interfaces
@@ -10,6 +12,8 @@ The bridge is intentionally thin: a basis `P n` gives the coefficient matrix
 with entry `[X^j] P i`, and right multiplication by that matrix sends each row
 generating polynomial to `basisTransform P` of the original row.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

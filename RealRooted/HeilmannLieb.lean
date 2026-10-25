@@ -1,5 +1,7 @@
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.Graph.MatchingPolynomial
+module
+
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.MatchingPolynomial
 
 /-!
 # Heilmann--Lieb theorem
@@ -8,6 +10,8 @@ This file applies the claw-free independence-polynomial theorem to line graphs
 and derives real-rootedness and Pólya-frequency results for matching
 polynomials.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

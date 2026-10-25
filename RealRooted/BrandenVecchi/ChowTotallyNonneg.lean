@@ -1,5 +1,7 @@
-import RealRooted.BrandenLeite.WhitneyReduction
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+module
+
+public import RealRooted.BrandenLeite.WhitneyReduction
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 
 /-!
 # Chow polynomials of totally nonnegative matrices
@@ -8,6 +10,8 @@ This file derives the matrix endpoint of Bränden--Vecchi, Theorem 4.18 from
 the canonical resolution of a lower-unitriangular totally nonnegative matrix.
 All statements retain the zero-polynomial cases explicitly.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial BigOperators
 

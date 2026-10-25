@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 
 /-!
 # Auxiliary polynomials from truncated staircases
@@ -8,6 +10,8 @@ This module assembles the truncated-staircase row polynomials into the
 auxiliary family `G`, including the low-rank certificates and coefficient
 nonnegativity interface used by the Braun--Jal development.
 -/
+
+@[expose] public section
 
 open Polynomial
 

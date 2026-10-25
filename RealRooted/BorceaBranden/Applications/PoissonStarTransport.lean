@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.MaWang.CriticalSign
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.MaWang.CriticalSign
 
 /-!
 # Directed proper-position transport for the univariate Poisson product
@@ -10,6 +12,8 @@ formulas which orient the image of a proper-position pair under multiplication b
 Poisson factor (issue #1494): directed `StrictInterl` transport, the strict Ma–Wang affine step,
 and the positive affine recurrence (PF rows, simple negative roots, consecutive interlacing).
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

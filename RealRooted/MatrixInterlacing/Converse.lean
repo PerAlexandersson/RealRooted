@@ -1,5 +1,9 @@
-import RealRooted.MatrixInterlacing.Preservation
-import RealRooted.MatrixInterlacing.SparseTests
+module
+
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.SparseTests
+
+@[expose] public section
 
 open Polynomial
 

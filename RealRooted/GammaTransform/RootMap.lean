@@ -1,4 +1,6 @@
-import RealRooted.GammaTransform.Basic
+module
+
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma-transform root maps
@@ -6,6 +8,8 @@ import RealRooted.GammaTransform.Basic
 The Hoster--Stump root map and the multiplicity transport from a gamma
 polynomial to its transform.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 open scoped BigOperators

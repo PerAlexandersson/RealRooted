@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.MorrisBFlow
-import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
-import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
-import RealRooted.MultivariateStability.CoeffLimit
-import Mathlib.Analysis.Normed.Module.TransferInstance
+module
+
+public import RealRooted.MultivariateStability.MorrisBFlow
+public import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
+public import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
+public import RealRooted.MultivariateStability.CoeffLimit
+public import Mathlib.Analysis.Normed.Module.TransferInstance
 
 /-!
 # The Liu--Zhang Morris flow
@@ -13,6 +15,8 @@ finite-dimensional space of symmetric polynomials of total degree at most
 `t ≥ 0`. The proof identifies the two factor flows on the monomial and
 elementary bases and applies the Lie--Trotter product formula.
 -/
+
+@[expose] public section
 
 open MvPolynomial
 
@@ -274,7 +278,9 @@ def morrisDOnDegree (q N : ℕ) :
   rw [morrisDOnDegree, LinearMap.sub_apply, morrisD_apply]
   rfl
 
-private def realCoordinateDiagonalLinearMap {sigma : Type*}
+/-- The linear map multiplying the coefficient of `m` by `gamma (m i)`, as a linear endomorphism of
+`MvPolynomial sigma ℝ`; its underlying function is `realCoordinateDiagonalOperator gamma i`. -/
+def realCoordinateDiagonalLinearMap {sigma : Type*}
     (gamma : ℕ → ℝ) (i : sigma) :
     MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ where
   toFun := BorceaBranden.realCoordinateDiagonalOperator gamma i
@@ -286,7 +292,9 @@ private def realCoordinateDiagonalLinearMap {sigma : Type*}
     simp [BorceaBranden.coeff_realCoordinateDiagonalOperator]
     ring
 
-private def coordinateDiagonalList {sigma : Type*}
+/-- The composite of the coordinate diagonal operators `realCoordinateDiagonalLinearMap gamma i`
+over the entries `i` of `l`. -/
+def coordinateDiagonalList {sigma : Type*}
     (gamma : ℕ → ℝ) (l : List sigma) :
     MvPolynomial sigma ℝ →ₗ[ℝ] MvPolynomial sigma ℝ :=
   l.foldr (fun i T => realCoordinateDiagonalLinearMap gamma i * T) 1
@@ -475,7 +483,9 @@ private theorem continuous_conj_apply_of_apply_eq_smul (q N : ℕ)
     (T ((morrisDegreeEquiv q N).symm (morrisDegreeEquiv q N x))) = _
   rw [(morrisDegreeEquiv q N).symm_apply_apply, hx, map_smul]
 
-private def morrisMsymmDegree (q N : ℕ)
+/-- The monomial symmetric polynomial `morrisMsymm q N i`, as an element of
+`MorrisDegreeSpace q N`. -/
+def morrisMsymmDegree (q N : ℕ)
     (i : MorrisDegreeIndex q N) : MorrisDegreeSpace q N :=
   ⟨morrisMsymm q N i, morrisMsymm_mem q N i⟩
 
@@ -738,7 +748,9 @@ def morrisBFlowContinuous (q N : ℕ) (t : ℝ) :
     MorrisDegreeCoords q N →L[ℝ] MorrisDegreeCoords q N :=
   LinearMap.toContinuousLinearMap (morrisBFlowCoords q N t)
 
-private def morrisElementaryDegree (q N : ℕ)
+/-- The elementary product `morrisElementaryPoly q N i`, as an element of
+`MorrisDegreeSpace q N`. -/
+def morrisElementaryDegree (q N : ℕ)
     (i : MorrisDegreeIndex q N) : MorrisDegreeSpace q N :=
   ⟨morrisElementaryPoly q N i,
     morrisElementary_mem_morrisDegreeSubmodule i.2.1 i.2.2

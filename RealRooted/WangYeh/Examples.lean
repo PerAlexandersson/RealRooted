@@ -1,5 +1,7 @@
-import RealRooted.WangYeh.TriangularMatrix
-import Mathlib.Data.Nat.Choose.Basic
+module
+
+public import RealRooted.WangYeh.TriangularMatrix
+public import Mathlib.Data.Nat.Choose.Basic
 
 /-!
 # Wang--Yeh recurrence examples
@@ -7,6 +9,8 @@ import Mathlib.Data.Nat.Choose.Basic
 This module checks concrete coefficient recurrences against the generic
 Wang--Yeh triangular-array criterion.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

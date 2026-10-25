@@ -1,5 +1,7 @@
-import RealRooted.LowerTriangularMatrix
-import RealRooted.WangYeh.TriangularArray
+module
+
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.WangYeh.TriangularArray
 
 /-!
 # Wang--Yeh lower-triangular matrix rows
@@ -8,6 +10,8 @@ This module transfers the polynomial Wang--Yeh triangular-row criterion to
 infinite lower-triangular coefficient arrays. The conclusion is stated for the
 full coefficient sequence of each finite row.
 -/
+
+@[expose] public section
 
 open Polynomial
 

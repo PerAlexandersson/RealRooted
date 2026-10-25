@@ -1,8 +1,12 @@
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+module
+
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
 
 /-!
 # Liu x-subtraction same-degree endpoint.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

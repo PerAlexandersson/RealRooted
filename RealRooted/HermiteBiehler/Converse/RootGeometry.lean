@@ -1,6 +1,8 @@
-import RealRooted.HermiteBiehler.ConverseLowDegree
-import RealRooted.HermiteBiehler.Forward
-import Mathlib.Basic.Complex.Basic
+module
+
+public import RealRooted.HermiteBiehler.ConverseLowDegree
+public import RealRooted.HermiteBiehler.Forward
+public import Mathlib.Basic.Complex.Basic
 
 /-!
 # Root geometry for the converse Hermite--Biehler theorem
@@ -9,6 +11,8 @@ This file proves that stability of the Hermite--Biehler polynomial forces both
 real component polynomials to split. The proof compares conjugated root-product
 norms and excludes nonreal roots of either component.
 -/
+
+@[expose] public section
 
 open Polynomial
 

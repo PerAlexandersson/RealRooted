@@ -1,4 +1,6 @@
-import RealRooted.AffineFamily
+module
+
+public import RealRooted.AffineFamily
 
 /-!
 # Interlacing for affine polynomials
@@ -7,6 +9,8 @@ Elementary interlacing lemmas for constants and positive-slope affine
 polynomials.  These facts are shared by the Veronese and threshold-matrix
 developments, so they live below both application layers.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,8 +1,10 @@
-import RealRooted.ObreschkoffConverse.Converse
-import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.ObreschkoffConverse.Derivative
-import RealRooted.ObreschkoffConverse.Forward
-import RealRooted.ObreschkoffConverse.Regularization
+module
+
+public import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.ObreschkoffConverse.Derivative
+public import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.ObreschkoffConverse.Regularization
 
 /-!
 # Obreschkoff theorem
@@ -10,3 +12,5 @@ import RealRooted.ObreschkoffConverse.Regularization
 Compatibility facade for the converse, forward, degree-gap, and
 derivative-preservation layers of Obreschkoff's theorem.
 -/
+
+@[expose] public section

@@ -1,4 +1,8 @@
-import RealRooted.Hadamard.Kostov.BernsteinRoots
+module
+
+public import RealRooted.Hadamard.Kostov.BernsteinRoots
+
+@[expose] public section
 
 open Polynomial
 

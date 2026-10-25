@@ -1,4 +1,6 @@
-import RealRooted.WangYeh.PF
+module
+
+public import RealRooted.WangYeh.PF
 
 /-!
 # Wang--Yeh bilinear triangular recurrences
@@ -8,6 +10,8 @@ bilinear triangular-array corollary. Rows are represented by their generating
 polynomials, with separate equations at coefficient zero and at successors so
 that no truncated-subtraction boundary convention is hidden.
 -/
+
+@[expose] public section
 
 open Polynomial
 

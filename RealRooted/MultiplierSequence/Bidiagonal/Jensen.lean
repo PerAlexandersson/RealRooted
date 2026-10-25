@@ -1,6 +1,8 @@
-import RealRooted.Compatibility.Pair
-import RealRooted.Hadamard.Basic
-import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
+module
+
+public import RealRooted.Compatibility.Pair
+public import RealRooted.Hadamard.Basic
+public import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
 
 /-!
 # Bidiagonal Jensen pencils
@@ -9,6 +11,8 @@ This module owns the reusable finite Jensen-pencil interface for
 coefficient-bidiagonal operators: its quadratic residual factorization,
 small PF discriminant certificate, and certificate consequences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Derivative.FamilyClosure
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import Mathlib.Analysis.Analytic.Order
-import Mathlib.Analysis.Complex.LocallyUniformLimit
+module
+
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import Mathlib.Analysis.Analytic.Order
+public import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # Holomorphic Laguerre--Pólya limits
@@ -13,6 +15,8 @@ polynomials with Mathlib's locally uniform convergence theorems for complex
 holomorphic functions.  It does not prove analytic root closure of arbitrary
 locally uniform limits.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

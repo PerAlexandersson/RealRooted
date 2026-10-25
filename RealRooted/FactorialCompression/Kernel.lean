@@ -1,5 +1,7 @@
-import RealRooted.MaWang.Strong
-import RealRooted.FactorialCompression.CommonKernel
+module
+
+public import RealRooted.MaWang.Strong
+public import RealRooted.FactorialCompression.CommonKernel
 
 /-!
 # Geometry of the degree-changing kernel
@@ -10,6 +12,8 @@ its degree is `(N + ℓ + 1) / 2`, and (when `N + ℓ ≥ 2`) the common kernel 
 (Zhang, SSRN 7510941).  The case `N + ℓ = 1` is left to the constant/linear argument of the
 main theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

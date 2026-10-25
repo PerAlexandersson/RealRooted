@@ -1,4 +1,8 @@
-import RealRooted.BorceaBranden.RealFiniteHomotopy
+module
+
+public import RealRooted.BorceaBranden.RealFiniteHomotopy
+
+@[expose] public section
 
 open scoped BigOperators
 
@@ -7,7 +11,8 @@ noncomputable section
 namespace RealRooted
 namespace BorceaBranden
 
-private def negVariablesHom {σ R : Type*} [CommRing R] :
+/-- The ring endomorphism of `MvPolynomial σ R` negating every variable, `X i ↦ -X i`. -/
+def negVariablesHom {σ R : Type*} [CommRing R] :
     MvPolynomial σ R →+* MvPolynomial σ R :=
   MvPolynomial.eval₂Hom MvPolynomial.C fun i => -MvPolynomial.X i
 
@@ -163,10 +168,12 @@ theorem sourceNegation_involutive {σ : Type*} (p : MvPolynomial σ ℝ) :
       change negVariablesHom (negVariablesHom p) = p at hp
       rw [hp]
 
-private def globalBoxSign {σ : Type*} [Fintype σ] (κ : σ → ℕ) : ℝ :=
+/-- The sign `(-1) ^ ∑ i, κ i` of the top monomial of the global degree box `κ`. -/
+def globalBoxSign {σ : Type*} [Fintype σ] (κ : σ → ℕ) : ℝ :=
   ∏ i, (-1 : ℝ) ^ κ i
 
-private def monomialSign {σ : Type*} [Fintype σ] (m : σ →₀ ℕ) : ℝ :=
+/-- The sign `(-1) ^ |m|` of the monomial `m`, where `|m| = ∑ i, m i`. -/
+def monomialSign {σ : Type*} [Fintype σ] (m : σ →₀ ℕ) : ℝ :=
   ∏ i, (-1 : ℝ) ^ m i
 
 private theorem complement_sign_eq {σ : Type*} [Fintype σ]

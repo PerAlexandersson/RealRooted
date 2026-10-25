@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.Theorem26
+module
+
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Symmetric decompositions and real-rootedness
@@ -19,6 +21,8 @@ Reference:
 }
 
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

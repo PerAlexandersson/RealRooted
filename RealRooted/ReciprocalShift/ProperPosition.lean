@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Data.List.Interleave.Padding
-import RealRooted.Mathlib.Data.List.Sort.Endpoint
-import RealRooted.ReciprocalShift.Interlacing.Inversion
+module
+
+public import RealRooted.Mathlib.Data.List.Interleave.Padding
+public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+public import RealRooted.ReciprocalShift.Interlacing.Inversion
 
 /-!
 # Interlacing under reciprocal shifts
@@ -9,6 +11,8 @@ This module proves that a degree-padded reciprocal shift reverses a proper
 position pair of PF polynomials. The generic list endpoint and inverse-root
 transport facts live in lower layers.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+module
+
+public import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
 
 /-!
 # `I_d` and `R_d` symmetric decompositions
@@ -6,6 +8,8 @@ import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
 Formula, existence, uniqueness, and compatibility results for the two
 Brändén--Solus symmetric decompositions.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

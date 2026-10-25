@@ -1,4 +1,6 @@
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+module
+
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 
 /-!
 # Explicit finite truncated-staircase cases
@@ -7,6 +9,8 @@ This module records the small truncated-staircase rook polynomials used by
 the finite Braun--Jal recurrence checks, as instances of the row formulas in
 `RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

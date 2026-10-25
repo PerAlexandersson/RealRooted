@@ -1,13 +1,17 @@
-import RealRooted.AllCombo
-import RealRooted.AffineDerivative
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.ObreschkoffConverse.Converse
+module
+
+public import RealRooted.AllCombo
+public import RealRooted.AffineDerivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.ObreschkoffConverse.Converse
 
 /-!
 # Obreschkoff forward direction
 
 The interlacing to all-real-rooted pencil half of Obreschkoff's theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

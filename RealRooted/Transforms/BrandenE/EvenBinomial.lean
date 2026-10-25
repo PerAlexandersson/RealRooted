@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedEulerian
-import RealRooted.SymmetricDecomposition.FPolynomial
-import RealRooted.Transforms.BrandenE.WeightedSum
+module
+
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.Transforms.BrandenE.WeightedSum
 
 /-!
 # The even-binomial cone of Brändén's E transform
@@ -9,6 +11,8 @@ The even binomial sum of the ambient-degree basis images is real-rooted. We
 also identify it as the f-polynomial transform of the average of the type-B
 Eulerian polynomial and `(1 - X) ^ n`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

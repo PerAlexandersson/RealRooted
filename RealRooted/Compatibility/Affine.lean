@@ -1,5 +1,7 @@
-import RealRooted.AffineProperPosition
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+module
+
+public import RealRooted.AffineProperPosition
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 
 /-!
 # Compatibility of affine polynomials
@@ -8,6 +10,8 @@ This module converts the existing low-degree and coefficient-crossing proper-
 position results into pair-compatibility lemmas.  The second theorem records
 the directed `X`-marked relation used by ordered affine families.
 -/
+
+@[expose] public section
 
 open Polynomial
 

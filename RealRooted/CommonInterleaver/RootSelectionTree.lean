@@ -1,4 +1,6 @@
-import RealRooted.CommonInterleaver.RootSelection
+module
+
+public import RealRooted.CommonInterleaver.RootSelection
 
 /-!
 # Finite interlacing-family trees
@@ -7,6 +9,8 @@ This file packages the finite rooted-tree form of MSS root selection. Leaves
 are polynomial labels; every internal node is the sum of a nonempty list of
 children whose node polynomials have a common degree-gap left interlacer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

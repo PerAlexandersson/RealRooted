@@ -4,7 +4,11 @@
 This module records the public `RealRooted` interface for the row-threshold
 linear-form structure appearing in Branden's Corollary 8.7.
 -/
-import RealRooted.MatrixInterlacing
+module
+
+public import RealRooted.MatrixInterlacing
+
+@[expose] public section
 
 open Polynomial
 

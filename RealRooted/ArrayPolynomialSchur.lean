@@ -1,5 +1,9 @@
-import RealRooted.DegreeDropReversal
-import RealRooted.GarloffWagner
+module
+
+public import RealRooted.DegreeDropReversal
+public import RealRooted.GarloffWagner
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,8 @@
-import RealRooted.Hadamard.Finite
+module
+
+public import RealRooted.Hadamard.Finite
+
+@[expose] public section
 
 open Polynomial
 

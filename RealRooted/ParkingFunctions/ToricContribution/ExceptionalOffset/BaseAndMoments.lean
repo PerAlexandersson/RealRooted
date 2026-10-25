@@ -1,10 +1,12 @@
-import RealRooted.Jacobi.Orthogonality.Integral
-import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Ring.Parity
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+module
+
+public import RealRooted.Jacobi.Orthogonality.Integral
+public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+public import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Ring.Parity
+public import Mathlib.Analysis.SpecificLimits.Basic
+public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 
 /-!
 # Exceptional-offset base polynomials and moment identities
@@ -14,6 +16,8 @@ triangle drops degree. It proves its endpoint product formula, coefficient
 control, and the Jacobi and exterior moment identities used by the pencil
 argument.
 -/
+
+@[expose] public section
 
 open Polynomial
 open MeasureTheory Set

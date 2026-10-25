@@ -1,6 +1,8 @@
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
-import RealRooted.SamePhaseInterlacing
-import RealRooted.WagnerX.ProperPosition
+module
+
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+public import RealRooted.SamePhaseInterlacing
+public import RealRooted.WagnerX.ProperPosition
 
 /-!
 # Reverse stability across one Routh step
@@ -8,6 +10,8 @@ import RealRooted.WagnerX.ProperPosition
 This module reconstructs strict Hurwitz stability from a nonterminal stable
 Routh reduction with positive pivot and the natural parity shape.
 -/
+
+@[expose] public section
 
 open Polynomial
 

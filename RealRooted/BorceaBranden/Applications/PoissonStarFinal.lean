@@ -1,8 +1,10 @@
-import RealRooted.BorceaBranden.Applications.PoissonStarClose
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.HermiteBiehler.StablePencil
+module
+
+public import RealRooted.BorceaBranden.Applications.PoissonStarClose
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.HermiteBiehler.StablePencil
 
 /-!
 # Final stability and algebraic characterizations for the univariate Poisson product
@@ -10,6 +12,8 @@ import RealRooted.HermiteBiehler.StablePencil
 This file closes the stability equivalences and proves that the step-`c`
 falling-factorial transform conjugates `starC` to ordinary multiplication.
 -/
+
+@[expose] public section
 
 open Polynomial
 

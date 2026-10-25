@@ -1,7 +1,9 @@
-import RealRooted.BrandenVecchi.ChowResolution
-import RealRooted.BrandenVecchi.ChowRowTransform
-import RealRooted.Interlacing.ConeBounds
-import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+module
+
+public import RealRooted.BrandenVecchi.ChowResolution
+public import RealRooted.BrandenVecchi.ChowRowTransform
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # Reflection interlacing for resolved Chow rows
@@ -11,6 +13,8 @@ resolution supplies a triangular family of Chow-deranged polynomials.  Its
 rows are reflection-interlacing by induction from the generic Chow row
 transform and the exact transformed resolution recurrence.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

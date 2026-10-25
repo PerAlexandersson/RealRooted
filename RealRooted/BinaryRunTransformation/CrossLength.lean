@@ -1,11 +1,13 @@
-import RealRooted.BalancedRunTransformation.Interlacing
-import RealRooted.BinaryRunTransformation.Interlacing
-import RealRooted.BinaryRunTransformation.KernelIdentities
-import RealRooted.DegreeDropReversal
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.BalancedRunTransformation.Interlacing
+public import RealRooted.BinaryRunTransformation.Interlacing
+public import RealRooted.BinaryRunTransformation.KernelIdentities
+public import RealRooted.DegreeDropReversal
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Cross-length transport for the binary-run transformation
@@ -21,6 +23,8 @@ where `Θ = X d/dX`.  With `A = J_n(g)`, `P = J_n((N - Θ) g)`,
 Interlacing preservation for `J_n` and `K_n` yields `F ≪ A` and `E ≪ F + E`;
 the common-left cone then closes `F ≪ P + X E`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

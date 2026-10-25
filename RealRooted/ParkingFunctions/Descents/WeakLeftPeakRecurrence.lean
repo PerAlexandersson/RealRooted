@@ -1,4 +1,6 @@
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
+module
+
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
 
 /-!
 # Fixed-alphabet weak-left-peak refinements
@@ -7,6 +9,8 @@ This module records the two terminal states required by the word-side
 weak-left-peak recurrence.  The two states distinguish whether the last edge
 of a word is a descent.
 -/
+
+@[expose] public section
 
 open Polynomial
 

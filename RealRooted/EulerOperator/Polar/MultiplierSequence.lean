@@ -1,6 +1,8 @@
-import RealRooted.EulerOperator
-import RealRooted.Hadamard.Grace
-import RealRooted.MultiplierSequence.Infinite
+module
+
+public import RealRooted.EulerOperator
+public import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Finite multiplier sequences for polar Euler operators
@@ -10,6 +12,8 @@ with `thetaPlusOne`. Their Jensen polynomials have explicit PF factorizations,
 so the finite Pólya--Schur theorem gives reusable finite multiplier-sequence
 certificates.
 -/
+
+@[expose] public section
 
 open Polynomial
 
