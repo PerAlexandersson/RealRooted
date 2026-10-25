@@ -190,18 +190,6 @@ theorem degreeOf_sourceCoefficient_le {τ : Type*}
   rw [mem_support_iff, ← coeff_sourceCoefficient]
   exact mem_support_iff.mp hd
 
-private theorem degreeOf_rename_eq_zero_of_not_mem_range
-    {σ τ R : Type*} [CommSemiring R]
-    (f : σ → τ) (P : MvPolynomial σ R) (j : τ)
-    (hj : j ∉ Set.range f) :
-    (rename f P).degreeOf j = 0 := by
-  apply Nat.eq_zero_of_le_zero
-  rw [degreeOf_le_iff]
-  intro d hd
-  obtain ⟨u, hu, _hcoeff⟩ := coeff_rename_ne_zero
-    f P d (mem_support_iff.mp hd)
-  rw [← hu, Finsupp.mapDomain_of_notMem_range u j hj]
-
 /-- Polarize only the single source variable of a polynomial whose output
 variables are indexed by `τ`.
 
@@ -274,7 +262,7 @@ theorem degreeOf_sourceBlockPolarization_inl_le
   have hsourceZero :
       (rename (Sum.inr : Fin n → τ ⊕ Fin n)
         (esymm (Fin n) ℂ k)).degreeOf (Sum.inl j) = 0 := by
-    apply degreeOf_rename_eq_zero_of_not_mem_range
+    apply MvPolynomial.degreeOf_rename_eq_zero_of_notMem_range
     rintro ⟨i, hi⟩
     exact Sum.inr_ne_inl hi
   calc

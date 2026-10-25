@@ -56,12 +56,6 @@ private lemma summable_norm_expSeq (ε : ℝ) (z : ℂ) :
     Summable fun n => ‖(expSeq ε n : ℂ) * z ^ n‖ := by
   simpa [expSeq, norm_pow] using (hasSum_expSeq |ε| ‖z‖).summable.norm
 
-private lemma summable_norm_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) {z : ℂ}
-    (hz : a 1 * ‖z‖ < 1) : Summable fun n => ‖(a n : ℂ) * z ^ n‖ := by
-  have := (IsPolyaFreqSeq.summable_genFun h h0 (by simpa using hz)).norm
-  refine this.congr fun n => ?_
-  simp [norm_pow, abs_of_nonneg (IsPolyaFreqSeq.nonneg h n)]
-
 private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
   exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
     (by simp)
@@ -77,7 +71,7 @@ private lemma eventually_hasSum_conv_exp {a : ℕ → ℝ} (h : IsPolyaFreqSeq a
       HasSum (fun n => (natCauchyConvolution a (expSeq ε) n : ℂ) * z ^ n)
       ((∑' n, (a n : ℂ) * z ^ n) * Complex.exp (ε * z)) :=
   (eventually_disc (a 1)).mono fun z hz => by
-    have := hasSum_conv_mul (summable_norm_genFun h h0 hz) (summable_norm_expSeq ε z)
+    have := hasSum_conv_mul (h.summable_norm_genFun h0 hz) (summable_norm_expSeq ε z)
     rwa [(hasSum_expSeq ε z).tsum_eq] at this
 
 private lemma differentiable_tprod_one_add {c : ℕ → ℂ} (hc : Summable fun i => ‖c i‖) :
@@ -190,9 +184,9 @@ private lemma eventually_inverse_mul {a b : ℕ → ℝ} (ha : IsPolyaFreqSeq a)
   have e : ∀ n, (((-1) ^ n * b n : ℝ) : ℂ) * z ^ n = (b n : ℂ) * (-z) ^ n := by
     intro n; push_cast; rw [neg_pow]; ring
   have hb' : Summable fun n => ‖(((-1) ^ n * b n : ℝ) : ℂ) * z ^ n‖ := by
-    refine (summable_norm_genFun hb hb0 h2).congr fun n => ?_
+    refine (hb.summable_norm_genFun hb0 h2).congr fun n => ?_
     simp [norm_pow]
-  have := hasSum_conv_mul (b := fun n => (-1) ^ n * b n) (summable_norm_genFun ha ha0 h1) hb'
+  have := hasSum_conv_mul (b := fun n => (-1) ^ n * b n) (ha.summable_norm_genFun ha0 h1) hb'
   simp only [e] at this
   have hc : ∀ n, (natCauchyConvolution a (fun n => (-1) ^ n * b n) n : ℂ) * z ^ n =
       ((fun n : ℕ => if n = 0 then (1 : ℂ) else 0) n) * z ^ n := by

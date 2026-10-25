@@ -10,26 +10,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma mul_reflect_eq_left {a q : ℝ[X]} {k N : ℕ} (ha : a.natDegree ≤ k)
-    (hq : q.natDegree ≤ N) :
-    a * reflect N q = reflect (k + N) (reflect k a * q) := by
-  rw [reflect_mul _ _ (natDegree_reflect_le.trans (max_le le_rfl ha)) hq,
-    reflect_reflect]
-
-private lemma natDegree_le_of_X_pow_mul_le_left {f : ℝ[X]} {k M : ℕ}
-    (h : (X ^ k * f).natDegree ≤ M + k) : f.natDegree ≤ M := by
-  rcases eq_or_ne f 0 with rfl | hf
-  · simp
-  · rw [natDegree_X_pow_mul k hf] at h
-    lia
-
-private lemma reflect_mul_X_pow_mul_left {a u : ℝ[X]} {k M : ℕ}
-    (h : (a * (X ^ k * u)).natDegree ≤ M + k) :
-    reflect (M + k) (a * (X ^ k * u)) = reflect M (a * u) := by
-  have he : a * (X ^ k * u) = X ^ k * (a * u) := by ring
-  rw [he] at h ⊢
-  exact reflect_X_pow_mul _ k (natDegree_le_of_X_pow_mul_le_left h)
-
 /-- Reflection identification for a second-order derivative recurrence when
 the readily available degree bound is on the left-hand (model) rows. -/
 theorem eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree
@@ -77,10 +57,10 @@ theorem eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree
     have htwo : 2 + N = (N + 1) + 1 := by lia
     have hsucc : D₀ + (n + 1) = N + 1 := by lia
     rw [hP, ih, derivative_reflect r hr, derivative_reflect _ hθ,
-      mul_reflect_eq_left (hA₂ n) hθθ, mul_reflect_eq_left (hA₁ n) hθ,
-      mul_reflect_eq_left (hA₀ n) hr, e2, e1,
+      mul_reflect_eq_reflect_mul (hA₂ n) hθθ, mul_reflect_eq_reflect_mul (hA₁ n) hθ,
+      mul_reflect_eq_reflect_mul (hA₀ n) hr, e2, e1,
       hthree, htwo,
-      add_comm 1 N, reflect_mul_X_pow_mul_left, reflect_mul_X_pow_mul_left,
+      add_comm 1 N, reflect_add_mul_X_pow_mul, reflect_add_mul_X_pow_mul,
       ← reflect_add, ← reflect_add, hsucc, hR, hB₂, hB₁, hB₀]
     · congr 1
       simp only [C_mul, C_sub, C_ofNat, C_1]

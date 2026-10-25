@@ -55,6 +55,34 @@ theorem reflect_X_pow_mul (q : R[X]) {N : ℕ} (k : ℕ) (hq : q.natDegree ≤ N
   simpa [Nat.add_comm] using
     (reflect_mul (X ^ k : R[X]) q (F := k) (G := N) (natDegree_X_pow_le k) hq)
 
+/-- Multiplying by a reflected polynomial is a reflection of a product:
+`a * reflect N q = reflect (k + N) (reflect k a * q)` when `a` has degree at most `k` and `q`
+degree at most `N`. -/
+theorem mul_reflect_eq_reflect_mul {a q : R[X]} {k N : ℕ} (ha : a.natDegree ≤ k)
+    (hq : q.natDegree ≤ N) : a * reflect N q = reflect (k + N) (reflect k a * q) := by
+  rw [reflect_mul _ _ (natDegree_reflect_le.trans (max_le le_rfl ha)) hq, reflect_reflect]
+
+section CommSemiring
+
+variable {S : Type*} [CommSemiring S] [Nontrivial S]
+
+/-- A degree bound on `X ^ k * f` gives one on `f`. -/
+theorem natDegree_le_of_natDegree_X_pow_mul_le {f : S[X]} {k M : ℕ}
+    (h : (X ^ k * f).natDegree ≤ M + k) : f.natDegree ≤ M := by
+  rcases eq_or_ne f 0 with rfl | hf
+  · simp
+  · rw [natDegree_X_pow_mul k hf] at h
+    lia
+
+/-- A factor `X ^ k` inside a product drops out of a reflection of length `M + k`. -/
+theorem reflect_add_mul_X_pow_mul {a u : S[X]} {k M : ℕ}
+    (h : (a * (X ^ k * u)).natDegree ≤ M + k) :
+    reflect (M + k) (a * (X ^ k * u)) = reflect M (a * u) := by
+  rw [mul_left_comm] at h ⊢
+  exact reflect_X_pow_mul _ k (natDegree_le_of_natDegree_X_pow_mul_le h)
+
+end CommSemiring
+
 section CommRing
 
 variable {A : Type*} [CommRing A]
