@@ -72,6 +72,8 @@ jobs:
           python3 scripts/check_example_namespaces.py
       - name: Check file headers of the upstream targets
         run: python3 scripts/check_upstream_headers.py
+      - name: Check that source files are Lean modules
+        run: python3 scripts/check_module_system.py
       - name: Check import architecture
         run: |
           python3 scripts/check_import_architecture.py --self-test
