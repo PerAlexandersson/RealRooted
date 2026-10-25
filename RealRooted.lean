@@ -2131,3 +2131,4 @@ import RealRooted.ThresholdMatrix.Attr
 import RealRooted.LiebSokalGeneral
 import RealRooted.CombinatorialExamples.BigDescents132.Quartic
 import RealRooted.Challenges.HermitePoulain
+import RealRooted.Tactic.Examples.RowReaderNormalization

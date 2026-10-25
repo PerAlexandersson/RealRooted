@@ -175,7 +175,9 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
               | (norm_num; done)
               | (refine ne_of_gt ?_; positivity)
               | (refine ne_of_lt ?_; nlinarith [sq_nonneg ((k : ℝ) + 1)])
-              | (intro h; nlinarith [sq_nonneg ((k : ℝ) + 1), (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
+              | (intro h
+                 nlinarith [sq_nonneg ((k : ℝ) + 1),
+                   (Nat.cast_nonneg k : (0 : ℝ) ≤ k)])
               | (field_simp; intro h; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)])))]
     -- compute the coefficients once, then try the finishers on the normalized goal
     let fin ← (← coeffFinishers).foldrM (init := ← `(tactic| fail))
@@ -235,7 +237,10 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
             have h' := congrArg (fun p : ℝ[X] => p.coeff 0) h
             simp [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow] at h'
             done)),
-        ← `(tactic| (beta_reduce; simp only [Nat.zero_add, $P:ident]; exact Polynomial.Splits.one)),
+        ← `(tactic| (
+            beta_reduce
+            simp only [Nat.zero_add, $P:ident]
+            exact Polynomial.Splits.one)),
         -- explicit initial rows
         ← `(tactic| (simp [$P:ident]; done)),
         ← `(tactic| (norm_num [$P:ident]; compute_degree!; done)),
@@ -254,6 +259,8 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
 /-- Close the main goal, a side goal of the row degree theorems: a degree bound, a base
 row, a growth ratio or a top-coefficient multiplier. -/
 def rowSideGoal (P? : Option Ident) : TacticM Unit := do
+  unfoldRowCoeffDefs
+  if (← getGoals).isEmpty then return
   let ty ← instantiateMVars (← getMainTarget)
   for alt in ← sideAlternatives P? ty do
     if ← rowSucceeds (do
@@ -335,7 +342,9 @@ private def rowThmApply (r : RowRec) (k : Nat) (thm : Name) (ρ : Option Term) (
   let Q ← r.seq k
   let hrec ← r.hrecTerm k
   match ρ with
-  | none => `(tactic| apply $t:ident (P := $Q) (d := $(rowNumLit d)) (D₀ := $(rowNumLit D₀)) $hrec)
+  | none =>
+      `(tactic| apply $t:ident (P := $Q) (d := $(rowNumLit d))
+        (D₀ := $(rowNumLit D₀)) $hrec)
   | some ρ => `(tactic| apply $t:ident (P := $Q) (d := $(rowNumLit d))
         (D₀ := $(rowNumLit D₀)) (ρ := ($ρ : ℝ)) $hrec)
 
@@ -381,7 +390,8 @@ private def degreeFits (Q : Term) (apply : TSyntax `tactic) (nDeg : Nat) : Tacti
 main goal for the shifted sequence `Q`, with `Q t` of degree `deg`.  Returns the
 certificate and the hints that reproduce the search. -/
 def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
-    (finish : Term → Term → Term → TacticM (TSyntax `tactic)) : TacticM (Cert × RowHints) := do
+    (finish : Term → Term → Term → TacticM (TSyntax `tactic)) :
+    TacticM (Cert × RowHints) := do
   let P := mkIdent r.P
   let nDeg := if r.shape == .deriv₂ then 3 else 2
   let mut failures : Array (MessageData × MessageData) := #[]
@@ -449,8 +459,9 @@ def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
           match ← attempt k deg
               (← halfThmApply r k kind d D₀ e) with
           | .ok cert =>
-              return (cert,
-                { hints with drop := some k, degree := some D₀, growth := some d, half := some e })
+              let fittedHints :=
+                { hints with drop := some k, degree := some D₀, growth := some d }
+              return (cert, { fittedHints with half := some e })
           | .error e' =>
               failures := failures.push
                 (m!"{halfThm kind} with growth {d} and parity {e} after dropping {k} rows", e')

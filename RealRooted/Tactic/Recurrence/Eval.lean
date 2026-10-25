@@ -9,9 +9,10 @@ public meta import RealRooted.Tactic.Recurrence.Shape
 `QPoly` is a dense polynomial with rational coefficients, for meta code.  `evalQPoly?`
 evaluates the coefficient expressions that occur in generated recurrences: sums,
 differences, products, natural powers, quotients by constants, numerals, `C`, `X`, and
-casts of natural-number literals.  With `derivRec₂Data?` and `derivRec₂Rows?` a tactic
-can compute the rows `P 0, …, P k` of a second-order recurrence exactly and search for
-structure, such as an eigen-ODE, before proving anything.
+casts of natural-number literals.  Both it and the scalar evaluator unfold non-recursive
+definitions on demand when their bodies use this grammar.  With `derivRec₂Data?` and
+`derivRec₂Rows?` a tactic can compute the rows `P 0, …, P k` of a second-order recurrence
+exactly and search for structure, such as an eigen-ODE, before proving anything.
 
 The exact algebra used by the numeric probes of the row tactics lives here as well:
 division with remainder, gcd and extended gcd, evaluation, rational roots, Taylor shifts and
@@ -242,7 +243,9 @@ partial def evalRat? (e : Expr) : MetaM (Option Rat) := do
   | (``Nat.cast, #[_, _, m]) => return (← evalNat m).map fun k => (k : Rat)
   | (``Zero.zero, _) => return some 0
   | (``One.one, _) => return some 1
-  | _ => return none
+  | _ =>
+      let some e' ← unfoldRowCoeff? e | return none
+      evalRat? e'
 
 /-- Evaluate a polynomial-valued expression (see `evalRat?` for the scalars), with `X`,
 `C r` and quotients by nonzero constants. -/
@@ -270,7 +273,9 @@ partial def evalQPoly? (e : Expr) : MetaM (Option QPoly) := do
   | (``OfNat.ofNat, #[_, lit, _]) => return (← evalNat lit).map fun k => QPoly.const k
   | (``Zero.zero, _) => return some ⟨#[]⟩
   | (``One.one, _) => return some (QPoly.const 1)
-  | _ => return none
+  | _ =>
+      let some e' ← unfoldRowCoeff? e | return none
+      evalQPoly? e'
 
 /-- For `P (n + s + 1) = A * (P (n + s))'' + B * (P (n + s))' + C * P (n + s)`, the base row
 `P s` and the coefficients `A`, `B`, `C` as functions of `n`. -/
@@ -317,7 +322,8 @@ def derivRec₂Rows? (base A B C : Expr) (k : Nat) :
   let mut rows := #[p0]
   let mut cs := #[]
   for i in [0:k] do
-    let (some a, some b, some c) := (← evalCoeffAt? A i, ← evalCoeffAt? B i, ← evalCoeffAt? C i)
+    let values := (← evalCoeffAt? A i, ← evalCoeffAt? B i, ← evalCoeffAt? C i)
+    let (some a, some b, some c) := values
       | return none
     let p := rows.back!
     rows := rows.push (a * p.derivative.derivative + b * p.derivative + c * p)
