@@ -153,29 +153,12 @@ theorem polynomial_natDegree (n : ℕ) :
       natDegree_C_mul (ne_of_gt (even_coefficient_pos k)), natDegree_X_pow]
     lia
   · rw [(polynomial_closed_pair k).2]
-    have hlinear :
-        (C (((k : ℝ) + 1) ^ 2) +
-          C ((k : ℝ) ^ 2 + (k : ℝ) + 1) * X : ℝ[X]).natDegree = 1 := by
-      apply natDegree_eq_of_le_of_coeff_ne_zero
-      · compute_degree!
-      · simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X]
-        norm_num
-        exact (odd_coefficient_pos k).ne'
-    rw [show
+    have hdegree :
         (C ((k : ℝ) ^ 2 + (k : ℝ) + 1) * X ^ (k + 1) +
-            C (((k : ℝ) + 1) ^ 2) * X ^ k : ℝ[X]) =
-          X ^ k * (C (((k : ℝ) + 1) ^ 2) +
-            C ((k : ℝ) ^ 2 + (k : ℝ) + 1) * X) by ring]
-    have hlinear_ne :
-        (C (((k : ℝ) + 1) ^ 2) +
-          C ((k : ℝ) ^ 2 + (k : ℝ) + 1) * X : ℝ[X]) ≠ 0 := by
-      intro hz
-      have hc := congrArg (Polynomial.coeff · 1) hz
-      simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_zero] at hc
-      norm_num at hc
-      exact (odd_coefficient_pos k).ne' hc
-    rw [natDegree_mul (pow_ne_zero k X_ne_zero) hlinear_ne,
-      natDegree_X_pow, hlinear]
+          C (((k : ℝ) + 1) ^ 2) * X ^ k : ℝ[X]).natDegree = k + 1 := by
+      have := odd_coefficient_pos k
+      compute_degree!
+    rw [hdegree]
     lia
 
 private theorem polynomial_step (n : ℕ) :
@@ -284,9 +267,8 @@ private theorem closed_step (m : ℕ) (T : ℝ) :
         C (-448 / 3) * X ^ 2 + C (-64 / 3) * X ^ 3) *
         ((X + 1) ^ m * quadraticFactor T) =
       (X + 1) ^ (m + 3) * quadraticFactor (8 * T) := by
-  have hX1 : ((X : ℝ[X]) + 1) ≠ 0 := fun h => by
-    have hx := congrArg (Polynomial.eval (0 : ℝ)) h
-    simp at hx
+  have hX1 : ((X : ℝ[X]) + 1) ≠ 0 := by
+    simpa using X_add_C_ne_zero (R := ℝ) 1
   apply mul_left_cancel₀ hX1
   have d4 := derivative_pow_mul (m + 2) (quadraticFactor (4 * T))
   have d2 := derivative_pow_mul (m + 1) (quadraticFactor (2 * T))
@@ -376,8 +358,7 @@ theorem polynomial_natDegree (n : ℕ) : (polynomial n).natDegree = n := by
         pow_ne_zero _ (X_add_C_ne_zero _)
       have hQ_ne : quadraticFactor (2 ^ (m + 3)) ≠ 0 := by
         intro h
-        have hd := quadraticFactor_natDegree (2 ^ (m + 3)) ht
-        simp_all
+        simpa [h] using quadraticFactor_natDegree (2 ^ (m + 3)) ht
       have hXpow : ((X : ℝ[X]) + 1) ^ m = (X + C (1 : ℝ)) ^ m := by norm_num
       rw [hXpow, natDegree_mul hpow_ne hQ_ne,
         (monic_X_add_C (1 : ℝ)).natDegree_pow, natDegree_X_add_C, mul_one,
@@ -442,16 +423,14 @@ theorem polynomial_eq_typeB_average (n : ℕ) :
   induction n with
   | zero =>
       norm_num [polynomial, RealRooted.generalizedEulerian]
-      apply Polynomial.funext
-      intro x
-      simp
+      rw [show (2 : ℝ[X]) = C 2 from (map_ofNat C 2).symm, ← map_mul]
+      norm_num
   | succ n ih =>
       cases n with
       | zero =>
           norm_num [polynomial, RealRooted.generalizedEulerian]
-          apply Polynomial.funext
-          intro x
-          simp
+          rw [show (2 : ℝ[X]) = C 2 from (map_ofNat C 2).symm, ← map_mul]
+          norm_num
       | succ k =>
           rw [polynomial_succ, ih]
           rw [RealRooted.generalizedEulerian_succ 2 (k + 1)]

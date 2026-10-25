@@ -370,9 +370,7 @@ private lemma rowCoeff_transition (d k : ℕ) :
       rw [ite_eq_left (by lia : 1 ≤ d + 1)]
       unfold rowCoeff transitionScale
       norm_num [Nat.choose_eq_zero_of_lt]
-      have hden₁ : (d : ℝ) + 2 ≠ 0 := by positivity
-      have hden₂ : (d : ℝ) + 3 ≠ 0 := by positivity
-      field_simp [hden₁, hden₂]
+      field_simp (discharger := positivity)
       ring
     · have hgt : d + 1 < k := by lia
       have hprev : d < k - 1 := by lia
@@ -436,20 +434,15 @@ theorem rowPoly_succ (d : ℕ) :
   have hscale : transitionScale d ≠ 0 := by
     unfold transitionScale
     positivity
-  have hone : C ((transitionScale d)⁻¹) * C (transitionScale d) = (1 : ℝ[X]) := by
-    rw [← C_mul]
-    simp [hscale]
   calc
-    rowPoly (d + 1) = 1 * rowPoly (d + 1) := by rw [one_mul]
-    _ = (C ((transitionScale d)⁻¹) * C (transitionScale d)) *
-        rowPoly (d + 1) := by rw [hone]
-    _ = C ((transitionScale d)⁻¹) *
-        (C (transitionScale d) * rowPoly (d + 1)) := by ring
-    _ = C ((transitionScale d)⁻¹) *
-        (derivativeCoeff d * (rowPoly d).derivative + rowCoeffPoly d * rowPoly d) := by
-      rw [rowPoly_transition]
+    rowPoly (d + 1) = C ((transitionScale d)⁻¹) *
+        (C (transitionScale d) * rowPoly (d + 1)) := by
+      rw [← mul_assoc, ← C_mul]
+      simp [hscale]
     _ = C ((transitionScale d)⁻¹) * derivativeCoeff d * (rowPoly d).derivative +
-        C ((transitionScale d)⁻¹) * rowCoeffPoly d * rowPoly d := by ring
+        C ((transitionScale d)⁻¹) * rowCoeffPoly d * rowPoly d := by
+      rw [rowPoly_transition]
+      ring
 
 /-- A splitting row strictly interlaces the next row. -/
 theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) :

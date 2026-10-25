@@ -311,29 +311,21 @@ private structure A144696RowCertificate (d : ℕ) : Prop where
       ¬ (a144696BernsteinImage d (k + 1)).IsRoot r
 
 private theorem a144696RowCertificate_zero : A144696RowCertificate 0 := by
-  constructor
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     simp
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     simp [HasSimpleRoots]
-  · intro k hk
-    lia
-  · intro k hk
-    lia
-  · intro k hk
-    lia
-  · intro k hk
-    lia
-  · intro k hk
-    lia
-  · intro k hk
-    lia
+  · exact fun _ hk => by lia
+  · exact fun _ hk => by lia
+  · exact fun _ hk => by lia
+  · exact fun _ hk => by lia
+  · exact fun _ hk => by lia
+  · exact fun _ hk => by lia
 
 private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
   have hsplits : ∀ k, k ≤ 1 → (a144696BernsteinImage 1 k).Splits :=
@@ -349,40 +341,31 @@ private theorem a144696RowCertificate_one : A144696RowCertificate 1 := by
   · exact hsplits
   · exact hsimple
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     exact a144696BernsteinImage_one_horizontal
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     intro r hr0 hr1
     rw [a144696BernsteinImage_one_zero] at hr0
     rw [a144696BernsteinImage_one_one] at hr1
-    have heval0 : (2 : ℝ) + 2 * r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hr0
-    have heval1 : (1 : ℝ) + 2 * r = 0 := by
-      simpa [Polynomial.IsRoot.def] using hr1
+    simp [Polynomial.IsRoot.def] at hr0 hr1
     linarith
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     exact (interlaces_one_linear
       (natDegree_a144696BernsteinImage (show 0 ≤ 1 by lia))).toStrictInterl
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     simp
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     exact (interlaces_one_linear
       (natDegree_a144696BernsteinImage (show 1 ≤ 1 by lia))).toStrictInterl
   · intro k hk
-    have hk0 : k = 0 := by lia
-    subst k
+    obtain rfl : k = 0 := by lia
     rw [a144696BernsteinImage_zero_zero]
     simp
 
@@ -443,38 +426,20 @@ private theorem a144696RowCertificate_succ
         ¬ (a144696BernsteinImage (d + 1) k).IsRoot r := by
     intro k hk r hcur hnext
     rw [a144696BernsteinImage_pascal (show k < d + 1 by lia)] at hnext
-    simp only [Nat.add_sub_cancel] at hnext
-    have hcurEval : (a144696BernsteinImage d k).eval r = 0 := hcur
-    have hnextEval :
-        (a144696BernsteinImage d k).eval r +
-          (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := by
-      have hsumZero :
-          (a144696BernsteinImage d k +
-            a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := hnext
-      simpa only [eval_add] using hsumZero
-    have htargetRoot :
-        (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r :=
-      (show (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 by
-        linarith)
-    exact (hshift k hk).2.1 r hcur htargetRoot
+    change (a144696BernsteinImage d k).eval r = 0 at hcur
+    apply (hshift k hk).2.1 r hcur
+    simpa only [Nat.add_sub_cancel, Polynomial.IsRoot.def, eval_add, hcur,
+      zero_add] using hnext
   have hhorizontalNoCommon : ∀ k, k ≤ d → ∀ r,
       (a144696BernsteinImage (d + 1) k).IsRoot r →
         ¬ (a144696BernsteinImage (d + 1) (k + 1)).IsRoot r := by
     intro k hk r hleft hright
     rw [a144696BernsteinImage_pascal (show k < d + 1 by lia)] at hleft
-    simp only [Nat.add_sub_cancel] at hleft
-    have hrightEval :
-        (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := hright
-    have hleftEval :
-        (a144696BernsteinImage d k).eval r +
-          (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := by
-      have hsumZero :
-          (a144696BernsteinImage d k +
-            a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 := hleft
-      simpa only [eval_add] using hsumZero
-    have hcurRoot : (a144696BernsteinImage d k).IsRoot r :=
-      (show (a144696BernsteinImage d k).eval r = 0 by linarith)
-    exact (hshift k hk).2.1 r hcurRoot hright
+    change (a144696BernsteinImage (d + 1) (k + 1)).eval r = 0 at hright
+    apply (hshift k hk).2.1 r
+    · simpa only [Nat.add_sub_cancel, Polynomial.IsRoot.def, eval_add, hright,
+        add_zero] using hleft
+    · exact hright
   constructor
   · intro k hk
     by_cases htop : k = d + 1

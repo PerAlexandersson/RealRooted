@@ -192,9 +192,7 @@ theorem hasShiftedBoxPerturbations_of_uniformlyDominated
   have heq : MvPolynomial.eval z (shiftedBoxPolynomial κ W).1 =
       -(ε * MvPolynomial.eval z f.1) := by
     linear_combination hzero
-  have hnormeq := congrArg norm heq
-  rw [norm_neg] at hnormeq
-  exact (ne_of_lt hsmall) hnormeq.symm
+  exact (ne_of_lt hsmall) (by simpa only [norm_neg] using congrArg norm heq.symm)
 
 /-- A single upper-half-plane coordinate and its shifted factor admit a
 uniform majorant. The loose constant is also large enough to raise exponents
@@ -342,9 +340,8 @@ theorem hasShiftedBoxPerturbations
     {σ : Type*} [Fintype σ] (κ : σ → ℕ) (W : σ → ℂ)
     (hW : ∀ i, 0 < (W i).im) :
     HasShiftedBoxPerturbations κ W := by
-  apply hasShiftedBoxPerturbations_of_uniformlyDominated hW
-  intro f
-  exact uniformlyDominatedByShiftedBox κ W hW f
+  exact hasShiftedBoxPerturbations_of_uniformlyDominated hW
+    (uniformlyDominatedByShiftedBox κ W hW)
 
 /-- Specializing the right variables of the finite algebraic symbol gives the
 operator applied to the corresponding shifted-box polynomial. This is the
@@ -364,12 +361,8 @@ theorem specializeRight_algebraicSymbol
   unfold MvPolynomial.rightComplementMonomial
   simp only [map_mul]
   rw [MvPolynomial.aeval_rename]
-  have hleft :
-      Sum.elim MvPolynomial.X (MvPolynomial.C ∘ W) ∘ Sum.inl =
-        (MvPolynomial.X : τ → MvPolynomial τ ℂ) := by
-    funext i
-    rfl
-  rw [hleft]
+  rw [show Sum.elim MvPolynomial.X (MvPolynomial.C ∘ W) ∘ Sum.inl =
+    (MvPolynomial.X : τ → MvPolynomial τ ℂ) by rfl]
   simp [MvPolynomial.smul_eq_C_mul]
   ring
 
@@ -407,8 +400,7 @@ theorem algebraicSymbol_stable_of_preserves_of_shiftedBox_ne_zero
   rw [← specializeRight_algebraicSymbol κ W T,
     eval_specializeRight] at heval
   have hu_eq : Sum.elim z W = u := by
-    funext i
-    cases i <;> rfl
+    funext i; cases i <;> rfl
   simpa only [hu_eq] using heval
 
 /-- The exceptional branch in Borcea--Brändén Theorem 1.1: the operator has a
@@ -448,9 +440,7 @@ theorem hasStableRankOneRepresentation_of_range_stableOrZero
     let P := T f₀
     have hP : MvUpperHalfPlaneStable P := (hT f₀).resolve_left hf₀
     let z : σ → ℂ := fun _ => Complex.I
-    have hz : ∀ i, 0 < (z i).im := by
-      intro i
-      simp [z]
+    have hz : ∀ i, 0 < (z i).im := by simp [z]
     have hPz : MvPolynomial.eval z P ≠ 0 := hP z hz
     let α : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] ℂ :=
       { toFun := fun f => MvPolynomial.eval z (T f) / MvPolynomial.eval z P
@@ -553,9 +543,8 @@ theorem rankOne_or_algebraicSymbol_stable_of_preserves
     (hT : PreservesComplexStabilityOnDegreeBox κ T) :
     HasStableRankOneRepresentation κ T ∨
       MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T) := by
-  apply rankOne_or_algebraicSymbol_stable_of_preserves_of_perturbations hT
-  intro W hW
-  exact hasShiftedBoxPerturbations κ W hW
+  exact rankOne_or_algebraicSymbol_stable_of_preserves_of_perturbations hT
+    (fun W hW => hasShiftedBoxPerturbations κ W hW)
 
 /-- The stable rank-at-most-one alternative in Borcea--Brändén Theorem 1.1
 preserves stability, with the zero scalar giving the allowed zero output. -/
@@ -597,8 +586,7 @@ theorem finiteComplexSymbolIff :
         (PreservesComplexStabilityOnDegreeBox κ T ↔
           MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T)) := by
   intro σ _ κ T hrank
-  rw [finiteComplexSymbolClassification σ κ T]
-  simp only [hrank, false_or]
+  simpa only [hrank, false_or] using finiteComplexSymbolClassification σ κ T
 
 end
 

@@ -216,9 +216,7 @@ theorem weightedShiftTilingRow_succ_eq_orderedOptionalRiseCoefficient
             else 0) * weightedShiftTilingRow b as N r j := by
   rw [weightedShiftTilingRow_succ_eq b as s hr]
   congr 2
-  apply Finset.sum_congr rfl
-  intro j _
-  rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient]
+  simp_rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient]
 
 /-- The descending Green-path product is the ordinary product of the first
 `n` positive-index background weights. -/
@@ -358,9 +356,8 @@ theorem weightedShiftTilingRow_separated_isPFPolynomial
     IsPFPolynomial
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n) N r i) := by
   refine weightedShiftTilingRow_isPFPolynomial hb ?_ N hr i
-  intro f hf n
-  simp only [List.mem_map] at hf
-  obtain ⟨a, ha, rfl⟩ := hf
+  rintro f hf n
+  obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hf
   exact mul_nonneg (halphas a ha) (hw n)
 
 /-- Consecutive rows of nonnegative separated data remain in an interlacing relation. -/
@@ -375,9 +372,8 @@ theorem interl_weightedShiftTilingRow_separated_succ
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n)
         N r i.succ) := by
   refine interl_weightedShiftTilingRow_succ hb ?_ N hr i
-  intro f hf n
-  simp only [List.mem_map] at hf
-  obtain ⟨a, ha, rfl⟩ := hf
+  rintro f hf n
+  obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hf
   exact mul_nonneg (halphas a ha) (hw n)
 
 /-- With two optional-rise factors, the displacement-`r` marked entry has
@@ -398,8 +394,7 @@ theorem markedShiftKernel_pair_apply_first_lag
     markedShiftKernel [u, v] N r i j = u i.val + v i.val := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
     ite_eq_left (show j.val + r ≤ i.val by lia)]
-  have hlag : i.val - (j.val + r) = 1 := by lia
-  rw [hlag, orderedOptionalRiseCoefficient_pair_one,
+  rw [show i.val - (j.val + r) = 1 by lia, orderedOptionalRiseCoefficient_pair_one,
     ite_eq_left (show 0 < i.val by lia)]
 
 /-- With two optional-rise factors, the second extra lag has the ordered
@@ -410,8 +405,7 @@ theorem markedShiftKernel_pair_apply_second_lag
     markedShiftKernel [u, v] N r i j = u i.val * v (i.val - 1) := by
   rw [markedShiftKernel_apply_eq_orderedOptionalRiseCoefficient,
     ite_eq_left (show j.val + r ≤ i.val by lia)]
-  have hlag : i.val - (j.val + r) = 2 := by lia
-  rw [hlag]
+  rw [show i.val - (j.val + r) = 2 by lia]
   exact orderedOptionalRiseCoefficient_pair_two u v
     (show 1 < i.val by lia)
 
@@ -489,7 +483,6 @@ theorem sum_markedShiftKernel_pair
       by_cases hle : j.val + r ≤ i.val
       · have hlt : j.val + r + 2 < i.val := by
           by_contra hnot
-          have hbound : i.val ≤ j.val + r + 2 := by lia
           have hor : i.val = j.val + r ∨ i.val = j.val + r + 1 ∨
               i.val = j.val + r + 2 := by lia
           rcases hor with h | h | h
@@ -544,15 +537,11 @@ theorem weightedShiftTilingRow_zero
     (b : ℕ → ℝ) (as : List (ℕ → ℝ)) (N : ℕ)
     {r : ℕ} (hr : 0 < r) :
     weightedShiftTilingRow b as N r 0 = 1 := by
-  have hG : ∀ i j : Fin (N + 1), i < j →
-      weightedGreenKernel b N i j = 0 :=
-    fun _ _ hij => weightedGreenKernel_apply_eq_zero_of_lt b N hij
-  have hK : ∀ i j : Fin (N + 1), i.val ≤ j.val →
-      markedShiftKernel as N r i j = 0 :=
-    fun _ _ hij => markedShiftKernel_apply_eq_zero_of_le as N hr hij
   have hdegree : (weightedShiftTilingRow b as N r 0).natDegree ≤ 0 :=
     natDegree_kernelRow_le_row (weightedGreenKernel b N)
-      (markedShiftKernel as N r) hG hK 0
+      (markedShiftKernel as N r)
+      (fun _ _ hij => weightedGreenKernel_apply_eq_zero_of_lt b N hij)
+      (fun _ _ hij => markedShiftKernel_apply_eq_zero_of_le as N hr hij) 0
   rw [Polynomial.eq_C_of_natDegree_le_zero hdegree,
     coeff_zero_weightedShiftTilingRow]
   simp [descendingWeightProduct]

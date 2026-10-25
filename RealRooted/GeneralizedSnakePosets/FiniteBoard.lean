@@ -144,13 +144,9 @@ specified cell. -/
     P ∈ B.nonNestingPlacementsWithRow row ↔
       B.IsNonNestingPlacement P ∧ ∃ a ∈ B.rowCells row, a ∈ P := by
   classical
-  rw [nonNestingPlacementsWithRow, Finset.mem_biUnion]
-  constructor
-  · rintro ⟨a, ha, hP⟩
-    rw [mem_nonNestingPlacementsWithCell] at hP
-    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
-  · rintro ⟨hP, a, ha, haP⟩
-    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+  simp only [nonNestingPlacementsWithRow, Finset.mem_biUnion,
+    mem_nonNestingPlacementsWithCell, mem_rowCells]
+  constructor <;> grind
 
 /-- Membership in the column-free placement slice. -/
 @[simp] theorem mem_nonNestingPlacementsWithoutCol {B : FiniteSkewBoard}
@@ -166,13 +162,9 @@ specified cell. -/
     P ∈ B.nonNestingPlacementsWithCol col ↔
       B.IsNonNestingPlacement P ∧ ∃ a ∈ B.colCells col, a ∈ P := by
   classical
-  rw [nonNestingPlacementsWithCol, Finset.mem_biUnion]
-  constructor
-  · rintro ⟨a, ha, hP⟩
-    rw [mem_nonNestingPlacementsWithCell] at hP
-    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
-  · rintro ⟨hP, a, ha, haP⟩
-    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+  simp only [nonNestingPlacementsWithCol, Finset.mem_biUnion,
+    mem_nonNestingPlacementsWithCell, mem_colCells]
+  constructor <;> grind
 
 /-- Membership in the cell-set-free placement slice. -/
 @[simp] theorem mem_nonNestingPlacementsWithoutCells {B : FiniteSkewBoard}
@@ -188,13 +180,9 @@ specified cell. -/
     P ∈ B.nonNestingPlacementsWithCells S ↔
       B.IsNonNestingPlacement P ∧ ∃ a ∈ S, a ∈ P := by
   classical
-  rw [nonNestingPlacementsWithCells, Finset.mem_biUnion]
-  constructor
-  · rintro ⟨a, ha, hP⟩
-    rw [mem_nonNestingPlacementsWithCell] at hP
-    exact ⟨hP.1, ⟨a, ha, hP.2⟩⟩
-  · rintro ⟨hP, a, ha, haP⟩
-    exact ⟨a, ha, mem_nonNestingPlacementsWithCell.mpr ⟨hP, haP⟩⟩
+  simp only [nonNestingPlacementsWithCells, Finset.mem_biUnion,
+    mem_nonNestingPlacementsWithCell]
+  constructor <;> grind
 
 /-- Distinct cells in a valid placement have distinct rows. -/
 theorem IsNonNestingPlacement.row_ne {B : FiniteSkewBoard}
@@ -471,19 +459,7 @@ theorem rookPolynomial_coeff (B : FiniteSkewBoard) (k : ℕ) :
 theorem isNonNestingPlacement_singleton {B : FiniteSkewBoard} {a : ℕ × ℕ}
     (ha : a ∈ B.cells) :
     B.IsNonNestingPlacement ({a} : Finset (ℕ × ℕ)) := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro x hx
-    rw [Finset.mem_singleton] at hx
-    rw [hx]
-    exact ha
-  · intro x hx y hy hne
-    rw [Finset.mem_singleton] at hx hy
-    rw [hx, hy] at hne
-    exact (hne rfl).elim
-  · intro x hx y hy hlt
-    rw [Finset.mem_singleton] at hx hy
-    rw [hx, hy] at hlt
-    exact (Nat.lt_irrefl _ hlt).elim
+  grind [IsNonNestingPlacement]
 
 /-- A two-cell set is a non-nesting placement when the two cells lie in the
 board, are in different rows, and satisfy the decreasing-column condition. -/
@@ -492,30 +468,7 @@ theorem isNonNestingPlacement_pair {B : FiniteSkewBoard} (a b : ℕ × ℕ)
     (hcol_ab : a.1 < b.1 → b.2 < a.2)
     (hcol_ba : b.1 < a.1 → a.2 < b.2) :
     B.IsNonNestingPlacement ({a, b} : Finset (ℕ × ℕ)) := by
-  refine ⟨?_, ?_, ?_⟩
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl
-    · exact ha
-    · exact hb
-  · intro x hx y hy hne
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
-    rcases hx with rfl | rfl
-    · rcases hy with rfl | rfl
-      · exact (hne rfl).elim
-      · exact hrow
-    · rcases hy with rfl | rfl
-      · exact hrow.symm
-      · exact (hne rfl).elim
-  · intro x hx y hy hlt
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
-    rcases hx with rfl | rfl
-    · rcases hy with rfl | rfl
-      · exact (Nat.lt_irrefl _ hlt).elim
-      · exact hcol_ab hlt
-    · rcases hy with rfl | rfl
-      · exact hcol_ba hlt
-      · exact (Nat.lt_irrefl _ hlt).elim
+  grind [IsNonNestingPlacement]
 
 /-- The Boolean conjunction of `p a` over `a ∈ s`, computed by folding `&&`. -/
 def finsetAllBool {α : Type*} (s : Finset α) (p : α → Bool) : Bool :=
