@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.MaWang
-import RealRooted.RootCountJump
+module
+
+public import RealRooted.Basic
+public import RealRooted.MaWang
+public import RealRooted.RootCountJump
 
 /-!
 # Liu x-subtraction splitting tools
@@ -8,6 +10,8 @@ import RealRooted.RootCountJump
 This module contains reusable low-degree root-list splitting helpers used by
 the normalized x-subtraction endpoint leaves.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

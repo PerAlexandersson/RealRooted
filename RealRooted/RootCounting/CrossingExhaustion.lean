@@ -1,5 +1,7 @@
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Tactic
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Tactic
 
 /-!
 # Finite crossing exhaustion
@@ -11,6 +13,8 @@ most the total crossing multiplicity. When the reverse inequality is supplied
 by an external crossing budget, every crossing must be an exact downward jump
 of its full multiplicity.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

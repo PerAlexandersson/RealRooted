@@ -1,4 +1,6 @@
-import RealRooted.MultivariateStability.BarrierCross
+module
+
+public import RealRooted.MultivariateStability.BarrierCross
 
 /-!
 # The MSS barrier update lemma
@@ -9,6 +11,8 @@ above its roots, `δ > 0` and `Φ_j p z ≤ 1 − 1/δ`, then `z + δ e_j` is ab
 `Φ_i (p − ∂_j p) (z + δ e_j) ≤ Φ_i p z` (`barrier_sub_pderiv_le_of_barrier_le`).  The proof uses
 the monotonicity and convexity of the barriers along coordinate lines (`BarrierCross`).
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

@@ -1,7 +1,9 @@
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
-import Mathlib.Tactic.IntervalCases
-import RealRooted.Basic.Coefficients
-import RealRooted.DerivativeRecurrence.Degree
+module
+
+public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Tactic.IntervalCases
+public import RealRooted.Basic.Coefficients
+public import RealRooted.DerivativeRecurrence.Degree
 
 /-!
 # Degrees of general linear recurrences
@@ -27,6 +29,8 @@ This generalizes `RealRooted.derivativeRecurrence_leadingCoeff_pos` (first order
 `RealRooted.threeTermPos_leadingCoeff_pos` (three-term) to any order and any mixture of
 derivatives.
 -/
+
+@[expose] public section
 
 open Polynomial
 

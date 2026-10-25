@@ -1,5 +1,7 @@
-import RealRooted.MaWang.DerivativeSequence
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.MaWang.DerivativeSequence
+public import RealRooted.ScalarNormalization
 
 /-!
 # Ma--Wang scalar-denominator and factor variants
@@ -7,6 +9,8 @@ import RealRooted.ScalarNormalization
 These recurrence wrappers share the scalar-normalization identities used to
 pass from a denominator-fused recurrence to the derivative sequence backend.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,8 @@
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Basic.Real.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Degrees of derivative recurrences
@@ -31,6 +33,8 @@ every row has a positive leading coefficient.
   `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n`.
 * `derivativeRecurrence_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Analysis.Complex.OpenMapping
-import RealRooted.PartialSymmetrization
+module
+
+public import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+public import RealRooted.PartialSymmetrization
 
 /-!
 # Open mapping for bivariate multiaffine quotients
@@ -7,6 +9,8 @@ import RealRooted.PartialSymmetrization
 This file supplies the local nonconstancy input for the open-mapping step in
 Borcea--Brändén, Part II, Lemma 1.4.
 -/
+
+@[expose] public section
 
 open Filter Metric Set
 open scoped Topology

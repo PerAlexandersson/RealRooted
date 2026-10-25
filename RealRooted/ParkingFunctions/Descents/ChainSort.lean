@@ -1,6 +1,8 @@
-import RealRooted.Mathlib.Data.List.OfFn
-import Mathlib.Data.List.GetD
-import Mathlib.Data.List.Sort
+module
+
+public import RealRooted.Mathlib.Data.List.OfFn
+public import Mathlib.Data.List.GetD
+public import Mathlib.Data.List.Sort
 
 /-!
 # Sorting values along disjoint chains
@@ -9,6 +11,8 @@ This low combinatorial module sorts the values read along a specified chain of
 positions while preserving the word's full value multiset.  It is the
 reordering ingredient in the Diaconis--Hicks parking-word argument.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

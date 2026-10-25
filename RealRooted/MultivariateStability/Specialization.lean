@@ -1,4 +1,6 @@
-import RealRooted.BoundarySpecializationGeneral
+module
+
+public import RealRooted.BoundarySpecializationGeneral
 
 /-!
 # Real boundary specialization
@@ -7,6 +9,8 @@ This file transfers the general complex boundary-specialization theorem to
 multivariate polynomials with real coefficients.  Specializing real values may
 annihilate the polynomial, so the natural conclusion is stability or zero.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 
@@ -41,7 +45,7 @@ theorem MvRealStable.specializeAtList_zero_or_general
   rcases hcomplex with hzero | hstable
   · left
     exact MvPolynomial.map_injective Complex.ofRealHom
-      Complex.ofRealHom.injective hzero
+      Complex.ofRealHom.injective (by rw [map_zero]; exact hzero)
   · exact Or.inr hstable
 
 /-- Real stability is preserved, up to the zero polynomial, by specializing

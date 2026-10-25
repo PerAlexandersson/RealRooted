@@ -3,11 +3,12 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import LGV.Quiver.Path
-import Mathlib.Combinatorics.Quiver.Path.Vertices
-import RealRooted.LGV.ChipNetwork.Basic
-import RealRooted.Mathlib.Data.Fin.Basic
+public import LGV.Quiver.Path
+public import Mathlib.Combinatorics.Quiver.Path.Vertices
+public import RealRooted.LGV.ChipNetwork.Basic
+public import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
 # Paths in finite lower-bidiagonal chip networks
@@ -17,6 +18,8 @@ level. This file records the resulting path identities; later finite recursion
 can use the pinned `Quiver.Path.exactLengthSuccEquiv` without a new cutting
 construction here.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace LGV

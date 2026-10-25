@@ -1,5 +1,7 @@
-import RealRooted.Jacobi.Orthogonality
-import RealRooted.JacobiDeformation.Basic
+module
+
+public import RealRooted.Jacobi.Orthogonality
+public import RealRooted.JacobiDeformation.Basic
 
 /-!
 # Normalized shifted-Jacobi moments
@@ -18,6 +20,8 @@ proved by expanding `φ_j` in monomials and applying the terminating
 Chu--Vandermonde identity.  The last section relates `φ_j` to the monic
 normalization used by the Favard recurrence.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

@@ -1,1 +1,5 @@
-import RealRooted.MaWang.Weak.Endpoint
+module
+
+public import RealRooted.MaWang.Weak.Endpoint
+
+@[expose] public section

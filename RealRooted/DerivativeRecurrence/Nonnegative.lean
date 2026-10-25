@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.General
-import RealRooted.Derivative.Algebra
+module
+
+public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.Derivative.Algebra
 
 /-!
 # Nonnegative coefficients for general linear recurrences
@@ -7,6 +9,8 @@ import RealRooted.Derivative.Algebra
 This file supplies the coefficientwise induction used by row tactics for a
 finite linear recurrence with arbitrary lags and iterated derivatives.
 -/
+
+@[expose] public section
 
 open Polynomial
 

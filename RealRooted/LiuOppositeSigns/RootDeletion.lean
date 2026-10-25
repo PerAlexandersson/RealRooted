@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.RootCount
+module
+
+public import RealRooted.LiuOppositeSigns.RootCount
 
 /-!
 # Root deletion for Liu root-count arguments
@@ -7,6 +9,8 @@ This module contains the general cofactor, largest-root, and root-multiset
 deletion lemmas used by Liu-style root-count arguments. It is independent of
 positive-leading normalization and of the later left/right branch machinery.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape.LiuMao.PathKernel
-import RealRooted.PolynomialValueEulerNumerator.PF
+module
+
+public import RealRooted.CoefficientShape.LiuMao.PathKernel
+public import RealRooted.PolynomialValueEulerNumerator.PF
 
 /-!
 # The coefficient formula for Euler numerators of products
@@ -17,6 +19,8 @@ The proof rests on the characterization of `W(p)` by `p(t) = ∑ᵢ W(p)ᵢ C(t 
 (`coeff_polynomialValueEulerNumerator_eq_of_eval_eq`) and the binomial product identity of
 Brändén–Ferroni–Jochemko (`choose_mul_choose_eq_sum_kern`).
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

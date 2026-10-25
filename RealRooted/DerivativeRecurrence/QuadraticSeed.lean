@@ -1,10 +1,14 @@
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 
 /-!
 # Quadratic-seed derivative recurrences
 
 Degree and interlacing adapters for recurrences beginning with a quadratic seed.
 -/
+
+@[expose] public section
 
 open Polynomial
 

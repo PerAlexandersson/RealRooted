@@ -1,5 +1,7 @@
-import RealRooted.RootCountLocalConstancy
-import RealRooted.SameDegreeMultiplicityLowerCount
+module
+
+public import RealRooted.RootCountLocalConstancy
+public import RealRooted.SameDegreeMultiplicityLowerCount
 
 /-!
 # Positive-parameter per-root local lower counts
@@ -21,6 +23,8 @@ The local-constancy consumer lives in `RealRooted.RootCountLocalConstancy` as
 provides a direct positive-parameter count-equality wrapper for intervals
 starting at `0`.
 -/
+
+@[expose] public section
 
 open Polynomial Set
 

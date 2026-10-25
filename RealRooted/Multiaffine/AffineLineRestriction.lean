@@ -1,7 +1,9 @@
-import RealRooted.AffineLineRestriction
-import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
-import RealRooted.Multiaffine.CoordinateWronskian
-import RealRooted.Multiaffine.Rayleigh
+module
+
+public import RealRooted.AffineLineRestriction
+public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+public import RealRooted.Multiaffine.CoordinateWronskian
+public import RealRooted.Multiaffine.Rayleigh
 
 /-!
 # Rayleigh identities for affine-line restrictions
@@ -9,6 +11,8 @@ import RealRooted.Multiaffine.Rayleigh
 This file connects finite directional derivatives and univariate affine-line
 restrictions to multiaffine Rayleigh differences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

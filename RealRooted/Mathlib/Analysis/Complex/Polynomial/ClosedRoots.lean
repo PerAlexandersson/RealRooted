@@ -16,7 +16,7 @@ Pointwise limits of fixed-degree monic complex polynomials preserve any closed
 condition satisfied by all roots of the approximating polynomials.
 -/
 
-public section
+@[expose] public section
 
 open Filter Topology
 

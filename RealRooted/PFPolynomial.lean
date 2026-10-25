@@ -1,6 +1,10 @@
-import RealRooted.Derivative
-import RealRooted.PosCombo
-import RealRooted.WagnerX
+module
+
+public import RealRooted.Derivative
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX
+
+@[expose] public section
 
 open Polynomial
 

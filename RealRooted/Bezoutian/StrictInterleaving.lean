@@ -1,6 +1,8 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Mathlib.Data.List.Interleave
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Strict same-degree interlacing
@@ -9,6 +11,8 @@ Root-list reversal lemmas and the strict same-degree interlacing predicate,
 including its transport across nonzero scalar multiples.
 
 -/
+
+@[expose] public section
 
 open Polynomial Matrix
 

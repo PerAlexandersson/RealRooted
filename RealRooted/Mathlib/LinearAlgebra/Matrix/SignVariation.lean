@@ -21,7 +21,7 @@ This file extends the sign-variation convention used by
 discarded before adjacent equal signs are collapsed.
 -/
 
-public section
+@[expose] public section
 
 noncomputable section
 
@@ -560,7 +560,7 @@ namespace Fin
 
 /-- The number of sign changes in a finite vector, in index order and ignoring
 zero entries. -/
-@[expose] def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
+def signVariations {R : Type*} [Zero R] [LinearOrder R] {n : ℕ}
     (x : Fin n → R) : ℕ :=
   (List.ofFn x).signVariations
 
@@ -1166,7 +1166,7 @@ lemma signVariations_le_succ_of_natAdd_nonpos {m n : ℕ}
       (fun i : Fin n => x (Fin.natAdd m i)) hright
 
 /-- Every consecutive pair of entries has opposite strict signs. -/
-@[expose] def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
+def StrictlyAlternates {n : ℕ} (x : Fin (n + 1) → ℝ) : Prop :=
   ∀ i : Fin n, x i.castSucc * x i.succ < 0
 
 lemma strictlyAlternates_iff {n : ℕ} {x : Fin (n + 1) → ℝ} :
@@ -1577,7 +1577,6 @@ theorem Fin.prefixSignVariations_le_signVariations
   exact List.signVariations_take_le _ _
 
 /-- The sign-block index of an entry, counted by prefix sign variation. -/
-@[expose]
 def Fin.signBlockIndex
     {n : ℕ} (c : Fin n → ℝ) (j : Fin n) :
     Fin (Fin.signVariations c + 1) :=

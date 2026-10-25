@@ -1,12 +1,16 @@
-import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
-import RealRooted.Favard.Recurrence
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Tactic.FieldSimp
-import Mathlib.Tactic.GCongr
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.Ring
+module
+
+public import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
+public import RealRooted.Favard.Recurrence
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Tactic.FieldSimp
+public import Mathlib.Tactic.GCongr
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.Positivity
+public import Mathlib.Tactic.Ring
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.List
 
 /-!
 # The weighted-path envelope for symmetric Favard families
@@ -30,6 +34,8 @@ and a product-of-chords estimate closes a strong induction. Zero edges are allow
 * `SatisfiesFavardRecurrence.abs_eval_le_envelope` and
   `SatisfiesFavardRecurrence.abs_eval_le_of_odd`: the same bounds for a Favard family.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

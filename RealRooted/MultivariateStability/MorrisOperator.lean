@@ -1,14 +1,16 @@
-import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
-import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
-import Mathlib.Data.List.GetD
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
-import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
-import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
-import RealRooted.Multiaffine
-import Mathlib.Algebra.BigOperators.Module
-import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-import Mathlib.Tactic.LinearCombination
+module
+
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import Mathlib.Data.List.GetD
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+public import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
+public import RealRooted.Multiaffine
+public import Mathlib.Algebra.BigOperators.Module
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Tactic.LinearCombination
 
 /-!
 # The Morris differential operator on symmetric polynomials
@@ -21,6 +23,8 @@ For `q` variables, Liu--Zhang, arXiv:2609.15201v2, Section 1.2, define
 
 and `D_q = B_q - A_q`.  This file realizes those formulas as linear maps.
 -/
+
+@[expose] public section
 
 namespace RealRooted.LiuZhang
 

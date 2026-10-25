@@ -1,4 +1,6 @@
-import RealRooted.Permanent.Ferrers
+module
+
+public import RealRooted.Permanent.Ferrers
 
 /-!
 # Fractional substitution for the column permanent
@@ -6,6 +8,8 @@ import RealRooted.Permanent.Ferrers
 This file isolates the simultaneous substitution from Section 3 of
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

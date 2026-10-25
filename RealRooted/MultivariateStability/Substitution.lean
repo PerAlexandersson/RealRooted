@@ -1,5 +1,7 @@
-import Mathlib.Algebra.MvPolynomial.Monad
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib.Algebra.MvPolynomial.Monad
+public import RealRooted.MultivariateStability
 
 /-!
 # Positive upper-half-plane substitutions
@@ -8,6 +10,8 @@ This is the elementary substitution step used in the finite-order Weyl-symbol
 preserver.  It is the `bind₁` form of composition with polynomials whose
 values have positive imaginary part on the upper half-plane.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

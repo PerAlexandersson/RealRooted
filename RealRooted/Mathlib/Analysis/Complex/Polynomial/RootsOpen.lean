@@ -20,7 +20,7 @@ among complex polynomials of bounded degree. The proof was found by Aristotle
 (Harmonic).
 -/
 
-public section
+@[expose] public section
 
 namespace Polynomial
 

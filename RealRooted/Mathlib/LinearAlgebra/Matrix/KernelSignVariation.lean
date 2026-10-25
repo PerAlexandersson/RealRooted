@@ -16,7 +16,7 @@ arguments: every nonzero vector in the kernel of a finite matrix has at least a
 specified number of sign variations.
 -/
 
-public section
+@[expose] public section
 
 noncomputable section
 

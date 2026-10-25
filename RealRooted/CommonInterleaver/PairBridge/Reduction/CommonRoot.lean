@@ -1,5 +1,7 @@
-import RealRooted.PosCombo
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.PosCombo
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Pair bridge assembly: nonnegative common-root induction
@@ -7,6 +9,8 @@ import RealRooted.WagnerX.NonnegativeRoots
 Quotient nonnegativity and a reusable induction principle for eliminating
 shared roots from close-degree positive-combination pairs.
 -/
+
+@[expose] public section
 
 open Polynomial
 

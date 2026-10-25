@@ -1,7 +1,9 @@
-import Mathlib.Tactic
+module
 
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import Mathlib.Tactic
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Rectangular additive convolution
@@ -9,6 +11,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 This file defines the rectangular additive convolution of Gribinski--Marcus
 and records its basic coefficient and degree formulas.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

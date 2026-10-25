@@ -1,5 +1,7 @@
-import RealRooted.CoefficientShape.Hoggar
-import Mathlib.Data.Nat.Factorial.Basic
+module
+
+public import RealRooted.CoefficientShape.Hoggar
+public import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
 # Liggett's theorem
@@ -17,6 +19,8 @@ original argument.  It proceeds by induction on `n`: the order-`(n+1)` factor is
 log-concave sequence preserves this ordering (a `2 × 2` Cauchy–Binet argument, as for Hoggar),
 and a real-number inequality merges the two induction hypotheses.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

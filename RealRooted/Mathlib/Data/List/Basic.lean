@@ -15,7 +15,7 @@ This file contains compatibility lemmas intended for upstreaming to
 `Mathlib.Data.List.Basic`.
 -/
 
-public section
+@[expose] public section
 
 namespace List
 

@@ -3,9 +3,10 @@ Copyright (c) 2026 Per Alexandersson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Per Alexandersson
 -/
+module
 
-import LGV.Finite
-import RealRooted.AissenSchoenbergWhitneyBase
+public import LGV.Finite
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # LGV path matrices as Toeplitz minors
@@ -14,6 +15,8 @@ This file is the orientation bridge between standalone LeanLGV path networks
 and the Toeplitz matrices used by `RealRooted`. It deliberately contains no
 path-disjointness argument and no Pólya-frequency conclusion.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

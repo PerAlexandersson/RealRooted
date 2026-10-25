@@ -1,1 +1,5 @@
-import RealRooted.MaWang.DerivativeCore
+module
+
+public import RealRooted.MaWang.DerivativeCore
+
+@[expose] public section

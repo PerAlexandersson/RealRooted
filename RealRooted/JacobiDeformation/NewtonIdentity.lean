@@ -1,4 +1,6 @@
-import RealRooted.JacobiDeformation.Kernel
+module
+
+public import RealRooted.JacobiDeformation.Kernel
 
 /-!
 # The Newton expansion of the Jacobi kernel weights
@@ -15,6 +17,8 @@ balanced hypergeometric sum; it is evaluated by the Pfaff--Saalschütz
 identity `risingFactorial_pfaffSaalschutz`, after reflecting the negative
 rising factorials.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

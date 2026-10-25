@@ -1,6 +1,8 @@
-import RealRooted.PolyaFrequency.EventuallyPolynomial
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+module
+
+public import RealRooted.PolyaFrequency.EventuallyPolynomial
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 
 /-!
 # Causal forward differences with a positive initial value
@@ -8,6 +10,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 This opt-in leaf applies the nonsingular finite Cryer closure to finite
 Toeplitz truncations. The zero-prefix case remains separate.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Topology
 

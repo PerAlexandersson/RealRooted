@@ -1,4 +1,6 @@
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Logarithmic derivatives of split real polynomials
@@ -8,6 +10,8 @@ complexification and records the upper-half-plane sign of a single reciprocal
 root factor. It is independent of the Hermite--Biehler interlacing
 arguments.
 -/
+
+@[expose] public section
 
 open Polynomial
 

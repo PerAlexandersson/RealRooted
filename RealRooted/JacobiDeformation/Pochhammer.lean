@@ -1,5 +1,7 @@
-import Mathlib.RingTheory.Polynomial.Pochhammer
-import Mathlib.Tactic
+module
+
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import Mathlib.Tactic
 
 /-!
 # Real rising and falling factorials
@@ -21,6 +23,8 @@ terminating hypergeometric summations:
 * NIST Digital Library of Mathematical Functions, equations 15.4.24 and
   16.4.3.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

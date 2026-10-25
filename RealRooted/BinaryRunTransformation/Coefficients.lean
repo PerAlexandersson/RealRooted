@@ -1,5 +1,7 @@
-import RealRooted.BasisTransform
-import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+module
+
+public import RealRooted.BasisTransform
+public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
 
 /-!
 # Binary-run transformation: coefficient algebra
@@ -12,6 +14,8 @@ with `J n 0 = 1`, and the basis transform sending `X^m` to `J n m`.
 The shifted coefficient formula is the finite identity used by the stable
 pointing construction.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

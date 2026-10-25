@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+public import RealRooted.PFPolynomial
 
 /-!
 # Pólya-frequency consequences of second-order recurrence certificates
@@ -9,6 +11,8 @@ an affine-lag second-order recurrence certificate into a Pólya-frequency
 certificate.  It remains separate from the recurrence module so clients that
 only need root geometry do not inherit the Pólya-frequency dependency closure.
 -/
+
+@[expose] public section
 
 open Polynomial
 

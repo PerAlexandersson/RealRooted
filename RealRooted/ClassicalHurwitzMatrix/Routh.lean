@@ -1,4 +1,6 @@
-import RealRooted.ClassicalHurwitzMatrix
+module
+
+public import RealRooted.ClassicalHurwitzMatrix
 
 /-!
 # The algebraic Routh reduction
@@ -6,6 +8,8 @@ import RealRooted.ClassicalHurwitzMatrix
 This file formalizes the polynomial and row-operation algebra in one step of
 Holtz's Routh reduction. It deliberately makes no root-location claim.
 -/
+
+@[expose] public section
 
 open Polynomial
 

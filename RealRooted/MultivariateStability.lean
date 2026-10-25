@@ -1,14 +1,16 @@
-import Mathlib.Algebra.MvPolynomial.Eval
-import Mathlib.Algebra.MvPolynomial.CommRing
-import Mathlib.Algebra.MvPolynomial.Equiv
-import Mathlib.Algebra.MvPolynomial.Funext
-import Mathlib.Algebra.MvPolynomial.PDeriv
-import Mathlib.Algebra.MvPolynomial.Rename
-import Mathlib.Algebra.Polynomial.Eval.Coeff
-import Mathlib.Algebra.Polynomial.Eval.Degree
-import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.Basic.Complex.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+module
+
+public import Mathlib.Algebra.MvPolynomial.Eval
+public import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.Algebra.MvPolynomial.Equiv
+public import Mathlib.Algebra.MvPolynomial.Funext
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.MvPolynomial.Rename
+public import Mathlib.Algebra.Polynomial.Eval.Coeff
+public import Mathlib.Algebra.Polynomial.Eval.Degree
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 /-!
 # Multivariate stability
@@ -18,6 +20,8 @@ the Borcea--Branden finite-symbol and rectangular-convolution developments.
 It also defines the bivariate lift `p(x * y)` appearing in Gribinski--Marcus,
 Lemma 2.5.
 -/
+
+@[expose] public section
 
 open Polynomial
 
@@ -265,7 +269,7 @@ theorem mvRealStableOrZero_iff_complexifyMv {sigma : Type*}
   · rintro (hP | hP)
     · left
       exact MvPolynomial.map_injective Complex.ofRealHom
-        Complex.ofRealHom.injective hP
+        Complex.ofRealHom.injective (by rw [map_zero]; exact hP)
     · exact Or.inr hP
 
 /-- A nonzero multivariate polynomial has a nonzero evaluation in any

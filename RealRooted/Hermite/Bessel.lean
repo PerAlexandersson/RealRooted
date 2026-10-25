@@ -1,5 +1,7 @@
-import RealRooted.Hermite.Poulain
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+module
+
+public import RealRooted.Hermite.Poulain
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
 # The Bessel differential transform
@@ -9,6 +11,8 @@ real-rootedness.  The proof approximates the symbol by Laguerre polynomials,
 uses Hermite--Poulain for every approximant, and passes to the limit through
 the closedness of real-rooted polynomials of bounded degree.
 -/
+
+@[expose] public section
 
 open Finset Polynomial Filter Topology
 

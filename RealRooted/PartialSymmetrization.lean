@@ -1,6 +1,8 @@
-import Mathlib
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability
+module
+
+public import Mathlib
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Partial symmetrization
@@ -8,6 +10,8 @@ import RealRooted.MultivariateStability
 This file develops the bivariate coefficient identities used in the
 Borcea--Brändén proof that transposition averages preserve stability.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

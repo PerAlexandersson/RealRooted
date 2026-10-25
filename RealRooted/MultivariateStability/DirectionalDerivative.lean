@@ -1,5 +1,7 @@
-import RealRooted.LiebSokalPointwise
-import RealRooted.MultivariateStability.Specialization
+module
+
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Directional derivatives of stable polynomials
@@ -9,6 +11,8 @@ the stable directional-derivative pencil.  The proof differentiates the
 pencil only in its fresh affine coordinate, so it does not require general
 degree-box polarization.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

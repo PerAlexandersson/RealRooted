@@ -1,8 +1,10 @@
-import RealRooted.Jacobi.Favard
-import RealRooted.JacobiDeformation.Appell
-import RealRooted.JacobiDeformation.BoundaryProjection
-import RealRooted.JacobiDeformation.Moment
-import RealRooted.JacobiDeformation.SpectralKernel
+module
+
+public import RealRooted.Jacobi.Favard
+public import RealRooted.JacobiDeformation.Appell
+public import RealRooted.JacobiDeformation.BoundaryProjection
+public import RealRooted.JacobiDeformation.Moment
+public import RealRooted.JacobiDeformation.SpectralKernel
 
 /-!
 # The diagonal Jacobi kernel expansion
@@ -20,6 +22,8 @@ boundary projection identifies the diagonal coefficients with the weights
 normalizations and express the Jacobi deformation at an image value through
 the raw kernel; this is the scalar interface of every critical-point case.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 
@@ -80,7 +84,7 @@ kernel. -/
 def truncatedJacobiBernstein (m i j : ℕ) : ℝ[X] :=
   if i + j ≤ m then jacobiBernstein i j else 0
 
-private theorem natDegree_truncatedJacobiBernstein_le (m i j : ℕ) :
+theorem natDegree_truncatedJacobiBernstein_le (m i j : ℕ) :
     (truncatedJacobiBernstein m i j).natDegree ≤ m := by
   rw [truncatedJacobiBernstein]
   split_ifs with hij

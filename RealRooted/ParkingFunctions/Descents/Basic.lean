@@ -1,8 +1,12 @@
-import Mathlib.Algebra.Polynomial.Basic
-import Mathlib.Data.Finset.Card
-import Mathlib.Basic.Real.Basic
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+module
+
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+
+@[expose] public section
 
 open Polynomial
 

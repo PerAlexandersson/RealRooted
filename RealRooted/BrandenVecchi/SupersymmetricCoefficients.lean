@@ -1,6 +1,8 @@
-import RealRooted.PolyaFrequencyConvolution.Basic
-import RealRooted.PolyaFrequencyConvolution.GeometricScaling
-import Mathlib.RingTheory.PowerSeries.WellKnown
+module
+
+public import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+public import Mathlib.RingTheory.PowerSeries.WellKnown
 
 /-!
 # Finite supersymmetric product coefficients
@@ -12,6 +14,8 @@ This file defines the coefficient sequence of the finite product
 as a formal power series and proves that it is Pólya-frequency when all
 parameters are nonnegative. No infinite-product claim is made here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

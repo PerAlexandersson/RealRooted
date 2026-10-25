@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.RootDeletion
+module
+
+public import RealRooted.LiuOppositeSigns.RootDeletion
 
 /-!
 # Positive-split root-count pairs
@@ -7,6 +9,8 @@ This module packages positive-leading split polynomial pairs with Liu-compatible
 root counts. It also contains their degree estimates and the transport of this
 package across common-root deletion.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,12 +1,16 @@
-import RealRooted.SignEvaluation
-import RealRooted.Derivative
-import RealRooted.WagnerX
+module
+
+public import RealRooted.SignEvaluation
+public import RealRooted.Derivative
+public import RealRooted.WagnerX
 
 /-!
 # Root bounds from coefficient positivity
 
 Reusable root-bound consequences of splitness and nonnegative coefficients.
 -/
+
+@[expose] public section
 
 open Polynomial
 

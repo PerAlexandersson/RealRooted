@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.QuadraticDegree
-import RealRooted.MaWang
-import RealRooted.SignEvaluation
+module
+
+public import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.MaWang
+public import RealRooted.SignEvaluation
 
 /-!
 # Interlacing for quadratic-coefficient derivative recurrences
@@ -8,6 +10,8 @@ import RealRooted.SignEvaluation
 Nonnegative-coefficient and interlacing results for the general
 linear-multiplier recurrence, including degree offsets.
 -/
+
+@[expose] public section
 
 open Polynomial
 

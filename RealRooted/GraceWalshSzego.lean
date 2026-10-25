@@ -1,4 +1,6 @@
-import RealRooted.Polarization
+module
+
+public import RealRooted.Polarization
 
 /-!
 # The Grace–Walsh–Szegő coincidence theorem
@@ -34,6 +36,8 @@ Soc.* 24 (1922), 163–180; G. Szegő, “Bemerkungen zu einem Satz von J. H. Gr
 algebraischer Gleichungen,” *Math. Z.* 13 (1922), 28–55; Q. I. Rahman and G. Schmeisser,
 *Analytic Theory of Polynomials*, Oxford University Press, 2002, Theorem 3.4.1b.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

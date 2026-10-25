@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Capacity and the permanent
@@ -8,6 +10,8 @@ permanent as the coefficient of `∏ i, x i` in `prodLin A = ∏ i, ∑ j, A i j
 `1 ≤ capacity (prodLin A)` for doubly stochastic `A`, and the extraction of that coefficient
 one variable at a time (`step`: differentiate in `x₀`, then set `x₀ = 0`).
 -/
+
+@[expose] public section
 
 noncomputable section
 

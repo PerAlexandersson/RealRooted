@@ -1,4 +1,6 @@
-import RealRooted.Multiaffine.Reciprocal
+module
+
+public import RealRooted.Multiaffine.Reciprocal
 
 /-!
 # Signed multiaffine reciprocal in a right variable block
@@ -8,6 +10,8 @@ variables of a polynomial indexed by `Sum tau sigma`.  The variables indexed
 by `tau` are left unchanged and need not have bounded degree.  This is the
 reciprocal operation used in the proof of Borcea--Branden Lemma 2.2.
 -/
+
+@[expose] public section
 
 open BigOperators
 

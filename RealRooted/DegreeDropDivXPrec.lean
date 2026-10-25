@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.DegreeDropReversal
+module
+
+public import RealRooted.Basic
+public import RealRooted.DegreeDropReversal
 
 /-!
 # Degree-drop `divX` orientation for the right-zero branch
@@ -9,6 +11,8 @@ branch in issue #42.  If `g.coeff 0 = 0`, then `g = X * g.divX`; when the
 extra zero root is the rightmost root, a differ-by-one interlacing `StrictInterl f g`
 turns into a same-degree alternation `StrictInterl (g.divX) f`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

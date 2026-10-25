@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
-import Mathlib.Analysis.Complex.Basic
-import Mathlib.Analysis.Real.Cardinality
-import Mathlib.Analysis.SpecialFunctions.Complex.Arg
-import Mathlib.Data.Set.Countable
+module
+
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.Real.Cardinality
+public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+public import Mathlib.Data.Set.Countable
 
 /-!
 # Karlin root and sine vectors
@@ -12,6 +14,8 @@ root vector records imaginary parts of powers of a complex root; after
 normalizing by the positive powers of the norm, it has the same sign pattern
 as the corresponding sampled sine vector.
 -/
+
+@[expose] public section
 
 noncomputable section
 

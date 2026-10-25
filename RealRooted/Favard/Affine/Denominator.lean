@@ -1,5 +1,7 @@
-import RealRooted.Favard.Affine.Basic
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.Favard.Affine.Basic
+public import RealRooted.ScalarNormalization
 
 /-!
 # Scalar-normalized affine Favard recurrences
@@ -7,6 +9,8 @@ import RealRooted.ScalarNormalization
 This module owns affine Favard theorem APIs whose displayed recurrences have a
 nonzero scalar constant-polynomial denominator.
 -/
+
+@[expose] public section
 
 open Polynomial
 

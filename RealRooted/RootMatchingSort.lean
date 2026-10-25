@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.Mathlib.Data.Multiset.Rel
+module
+
+public import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.Mathlib.Data.Multiset.Rel
 
 /-!
 # Sorted root matching
@@ -8,6 +10,8 @@ An arbitrary close perfect matching of two real multisets can be uncrossed into
 a close pointwise matching of their ascending sorts.  This is the finite
 ordered-root input for limiting interlacing and root-count inequalities.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

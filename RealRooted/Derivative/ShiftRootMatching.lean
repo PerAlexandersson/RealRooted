@@ -1,6 +1,8 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.RootMultiplicityMatching
-import RealRooted.SameDegreeMultiplicityLowerCount
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.RootMultiplicityMatching
+public import RealRooted.SameDegreeMultiplicityLowerCount
 
 /-!
 # Root matching for derivative shifts
@@ -9,6 +11,8 @@ This module combines coefficient continuity of `tDeriv` with the
 multiplicity-aware finite matching API. It provides the root transport needed
 when derivative shifts are used to regularize a compatible polynomial pair.
 -/
+
+@[expose] public section
 
 open Polynomial
 

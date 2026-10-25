@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Probability.CoeffDistribution
-import RealRooted.ThreeTermRecurrence.Moments
+module
+
+public import RealRooted.Mathlib.Probability.CoeffDistribution
+public import RealRooted.ThreeTermRecurrence.Moments
 
 /-!
 # Row moments from polynomial recurrences
@@ -11,6 +13,8 @@ limits are restated using `Polynomial.coeffMean` and `Polynomial.coeffVariance`;
 variance slope then implies divergence of the variance, as required by Harper's central limit
 theorem.
 -/
+
+@[expose] public section
 
 open Filter Topology
 open scoped BigOperators Polynomial

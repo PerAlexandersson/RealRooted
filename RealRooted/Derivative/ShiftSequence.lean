@@ -1,4 +1,6 @@
-import RealRooted.IteratedDerivativeShift
+module
+
+public import RealRooted.IteratedDerivativeShift
 
 /-!
 # Finite sequences of derivative shifts
@@ -12,6 +14,8 @@ after at least `p.natDegree` positive shifts, a nonzero splitting polynomial has
 simple roots.  Its proof follows the multiplicity descent used for fixed
 iterations, tracing a hypothetical multiple root backward through the list.
 -/
+
+@[expose] public section
 
 open RealRooted
 

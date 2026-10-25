@@ -1,4 +1,6 @@
-import RealRooted.Bezoutian.LowDegree
+module
+
+public import RealRooted.Bezoutian.LowDegree
 
 /-!
 # Bezout matrices and interlacing
@@ -9,3 +11,5 @@ root-evaluation, complex-root, Wronskian-converse, and low-degree layers.
 With the current root orientation convention, `StrictInterlSameDegree p q`
 corresponds to positive definiteness of `bezoutMatrix n q p`.
 -/
+
+@[expose] public section

@@ -1,5 +1,7 @@
-import RealRooted.Jacobi
-import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
+module
+
+public import RealRooted.Jacobi
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
 
 /-!
 # Differential algebra for the toric-contribution triangle
@@ -8,6 +10,8 @@ The terminating coefficient formula for `J` satisfies its hypergeometric
 differential equation.  Differentiating that equation gives the vertical edge
 of every Darboux square in the finite-offset triangle.
 -/
+
+@[expose] public section
 
 open Polynomial
 

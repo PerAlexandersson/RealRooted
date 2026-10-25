@@ -1,9 +1,11 @@
-import Mathlib.Algebra.Module.LinearMap.End
-import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Tactic.Abel
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
+module
+
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Tactic.Abel
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 
 /-!
 # Differential operators on recurrence spaces
@@ -11,6 +13,8 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 This module proves the coefficient-derivative product rule and the elementary closure
 theorems underlying the finite recurrence certificates of RealRooted issue #1978.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

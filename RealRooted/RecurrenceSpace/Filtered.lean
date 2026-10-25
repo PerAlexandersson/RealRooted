@@ -1,5 +1,7 @@
-import Mathlib.Tactic.Linarith
-import RealRooted.RecurrenceSpace.Operators
+module
+
+public import Mathlib.Tactic.Linarith
+public import RealRooted.RecurrenceSpace.Operators
 
 /-!
 # Finite certificates for filtered recurrence operators
@@ -8,6 +10,8 @@ This module proves the filtered finite-check theorem proposed in RealRooted issu
 Operators are finite `K[X]`-linear combinations of words in the forward shift, sequence
 index multiplication, and coefficientwise differentiation.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.MultiplierSequence
+module
+
+public import RealRooted.MultiplierSequence
 
 /-!
 # Coefficient-bidiagonal polynomial operators
@@ -7,6 +9,8 @@ This module contains the elementary coefficient-bidiagonal operator shared by
 finite-symbol and Pólya-frequency arguments.  It is independent of tactic
 elaboration and of any particular real-rootedness preserver criterion.
 -/
+
+@[expose] public section
 
 open Polynomial
 

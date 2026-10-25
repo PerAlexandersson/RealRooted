@@ -1,7 +1,9 @@
-import RealRooted.PFPolynomial
-import RealRooted.PolynomialValueEulerNumerator
-import RealRooted.PolyaFrequencyConvolution.Basic
-import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
+module
+
+public import RealRooted.PFPolynomial
+public import RealRooted.PolynomialValueEulerNumerator
+public import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 
 /-!
 # Pólya-frequency consequence of an Euler-numerator certificate
@@ -9,6 +11,8 @@ import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 This file turns a PF certificate for the canonical Euler numerator of a
 polynomial-value sequence into a PF certificate for the sequence itself.
 -/
+
+@[expose] public section
 
 open Polynomial
 

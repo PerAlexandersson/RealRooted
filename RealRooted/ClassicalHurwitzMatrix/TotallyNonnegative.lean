@@ -1,7 +1,9 @@
-import RealRooted.ClassicalHurwitzMatrix
-import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Stability
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+module
+
+public import RealRooted.ClassicalHurwitzMatrix
+public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Total nonnegativity of the classical Hurwitz matrix
@@ -9,6 +11,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 This file extracts the coefficient-sign consequences that follow immediately
 from one-by-one minors of the corrected infinite matrix.
 -/
+
+@[expose] public section
 
 namespace Matrix
 

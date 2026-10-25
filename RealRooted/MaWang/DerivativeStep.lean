@@ -1,5 +1,7 @@
-import RealRooted.MaWang
-import RealRooted.SignEvaluation
+module
+
+public import RealRooted.MaWang
+public import RealRooted.SignEvaluation
 
 /-!
 # Ma--Wang derivative steps
@@ -7,6 +9,8 @@ import RealRooted.SignEvaluation
 The reusable one-step weak Ma--Wang criteria. Sequence closure and tactic
 elaboration live in separate modules.
 -/
+
+@[expose] public section
 
 open Polynomial
 

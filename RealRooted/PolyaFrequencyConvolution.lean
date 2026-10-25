@@ -1,5 +1,9 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+
+@[expose] public section
 
 open Matrix
 

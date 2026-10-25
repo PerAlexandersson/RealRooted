@@ -1,6 +1,8 @@
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import RealRooted.ObreschkoffContinuity
+module
+
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # All-real-combination real-rootedness
@@ -8,6 +10,8 @@ import RealRooted.ObreschkoffContinuity
 This file defines `AllComboRealRooted` and packages common-root reduction,
 derivative, and `iterateTDeriv` algebra used in the Obreschkoff converse proof.
 -/
+
+@[expose] public section
 
 open Polynomial
 

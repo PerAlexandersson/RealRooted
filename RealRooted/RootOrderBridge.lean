@@ -1,5 +1,7 @@
-import Mathlib
-import RealRooted.RootCountFinite
+module
+
+public import Mathlib
+public import RealRooted.RootCountFinite
 
 /-!
 # Root-order bridge
@@ -7,6 +9,8 @@ import RealRooted.RootCountFinite
 This file contains a purely order-theoretic bridge extracted from the
 same-degree Chudnovsky--Seymour root-crossing target.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 

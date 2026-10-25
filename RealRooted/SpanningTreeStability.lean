@@ -1,5 +1,7 @@
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
-import RealRooted.DeterminantalStability
+module
+
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
+public import RealRooted.DeterminantalStability
 
 /-!
 # Spanning-tree polynomials are real stable
@@ -18,6 +20,8 @@ oriented incidence vectors.  By the Borcea–Brändén determinantal theorem
 * J. Borcea, P. Brändén, *Applications of stable polynomials to mixed determinants*,
   Duke Math. J. 143 (2008).
 -/
+
+@[expose] public section
 
 open MvPolynomial Matrix
 

@@ -1,4 +1,6 @@
-import RealRooted.LiuWang.FiniteFamily
+module
+
+public import RealRooted.LiuWang.FiniteFamily
 
 /-!
 # Derivative--lag recurrences with common roots
@@ -7,6 +9,8 @@ This file packages the repeated-root-safe finite-family Liu--Wang step as a
 sequence induction.  Unlike the strict negative-root route, it allows a root
 at zero to persist through every row.
 -/
+
+@[expose] public section
 
 open Polynomial
 

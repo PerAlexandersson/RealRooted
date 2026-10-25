@@ -17,7 +17,7 @@ sign exactly when their product is nonnegative (respectively positive).
 
 @[expose] public section
 
-public section
+@[expose] public section
 
 namespace Matrix
 

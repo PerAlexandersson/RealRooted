@@ -28,7 +28,7 @@ ordered finite minors using Karlin.s exponential-kernel argument.
 
 @[expose] public section
 
-public section
+@[expose] public section
 
 open scoped Interval
 

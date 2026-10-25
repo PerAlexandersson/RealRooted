@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.Sequence
-import RealRooted.Mathlib.Algebra.Polynomial.Dominance
+module
+
+public import RealRooted.CoefficientDominance.Sequence
+public import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 
 /-!
 # Coefficient dominance from log-concavity
@@ -7,6 +9,8 @@ import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 Two adjacent small ratios force a coefficient term to dominate the rest of a
 finite positive log-concave sequence, yielding a root-exclusion certificate.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

@@ -27,7 +27,7 @@ for sign-regular matrices through the sign-block decomposition, strict
 approximation, and the rank-deficient reduction.
 -/
 
-public section
+@[expose] public section
 
 open scoped BigOperators
 

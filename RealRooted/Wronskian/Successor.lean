@@ -1,5 +1,7 @@
-import RealRooted.Wronskian.Successor.Interlacing
-import RealRooted.Wronskian.Successor.Splits
+module
+
+public import RealRooted.Wronskian.Successor.Interlacing
+public import RealRooted.Wronskian.Successor.Splits
 
 /-!
 # Successor-degree Wronskian criteria
@@ -7,3 +9,5 @@ import RealRooted.Wronskian.Successor.Splits
 This entry point collects root-gap, interlacing, and splitness-transfer results
 for strict Wronskian signs across a one-degree increase.
 -/
+
+@[expose] public section

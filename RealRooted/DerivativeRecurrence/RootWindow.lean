@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.Interlacing
-import RealRooted.SameDegreeDerivative
-import RealRooted.WagnerRightSum.Sign
+module
+
+public import RealRooted.DerivativeRecurrence.Interlacing
+public import RealRooted.SameDegreeDerivative
+public import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Root windows for derivative recurrences
@@ -28,6 +30,8 @@ interval.  For `P (n + 1) = A n * (P n)' + B n * P n` this propagates:
   `(-∞, U]`; `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono`: the windows
   `[L n, U]` with `L` nonincreasing.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,5 +1,7 @@
-import RealRooted.Jacobi.Orthogonality
-import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
+module
+
+public import RealRooted.Jacobi.Orthogonality
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
 
 /-!
 # Quasi-Jacobi quadrature
@@ -14,6 +16,8 @@ derivative-weight identity at each node, that `p_{q-1}` does not vanish at a
 node, and that the ratio `η_i = v'(t_i) / p_{q-1}(t_i)` (`quasiJacobiEta`) is
 strictly positive.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

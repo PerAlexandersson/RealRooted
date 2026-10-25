@@ -1,5 +1,7 @@
-import RealRooted.JacobiDeformation.Collocation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+module
+
+public import RealRooted.JacobiDeformation.Collocation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
 
 /-!
 # Entrywise positivity of the quasi-Jacobi collocation matrix
@@ -17,6 +19,8 @@ The finite Jacobi energy identity proves the diagonal entries positive, so
 every entry of `A` is strictly positive
 (`quasiJacobiCollocationMatrix_entry_pos`).
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

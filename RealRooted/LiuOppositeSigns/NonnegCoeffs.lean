@@ -1,5 +1,7 @@
-import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
-import RealRooted.WagnerX
+module
+
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+public import RealRooted.WagnerX
 
 /-!
 # Nonnegative coefficients for Liu root deletion
@@ -8,6 +10,8 @@ This leaf module keeps the heavier Wagner coefficient/root API out of the core
 Liu opposite-sign file while providing the cofactor nonnegativity transport
 needed by common-root deletion arguments.
 -/
+
+@[expose] public section
 
 open Polynomial
 

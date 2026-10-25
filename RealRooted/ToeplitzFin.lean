@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.RingTheory.PowerSeries.Basic
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!
 # Finite Toeplitz truncations
@@ -8,6 +10,8 @@ import Mathlib.RingTheory.PowerSeries.Basic
 This file gives the shared finite lower-Toeplitz truncation and its
 power-series multiplication formula.
 -/
+
+@[expose] public section
 
 open Matrix BigOperators
 

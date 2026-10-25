@@ -1,10 +1,15 @@
-import RealRooted.Basic
-import RealRooted.Linear
-import RealRooted.Derivative
-import RealRooted.Wagner
-import RealRooted.RootContinuity
-import Mathlib.Analysis.Normed.Field.Approximation
-import Mathlib.Analysis.Complex.Polynomial.Basic
+module
+
+public import RealRooted.Basic
+public import RealRooted.Linear
+public import RealRooted.Derivative
+public import RealRooted.Wagner
+public import RealRooted.RootContinuity
+public import Mathlib.Analysis.Normed.Field.Approximation
+public import Mathlib.Analysis.Complex.Polynomial.Basic
+
+@[expose] public section
+
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 
 open Polynomial Filter

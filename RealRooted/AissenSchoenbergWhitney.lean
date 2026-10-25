@@ -1,12 +1,16 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.ASWKarlinThreshold
-import RealRooted.ASWKarlinKernel
-import RealRooted.DegreeDropReversal
-import RealRooted.QuadraticRoot
-import RealRooted.WagnerX
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-import Mathlib.Analysis.SpecialFunctions.Complex.Arg
-import Mathlib.Topology.Algebra.Polynomial
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinKernel
+public import RealRooted.DegreeDropReversal
+public import RealRooted.QuadraticRoot
+public import RealRooted.WagnerX
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+public import Mathlib.Topology.Algebra.Polynomial
+
+@[expose] public section
 
 open Polynomial Matrix Filter
 

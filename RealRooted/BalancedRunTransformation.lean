@@ -1,10 +1,12 @@
-import RealRooted.BasisTransform
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.RootBounds
-import RealRooted.ScalarNormalization
+module
+
+public import RealRooted.BasisTransform
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.RootBounds
+public import RealRooted.ScalarNormalization
 
 /-!
 # Balanced run transformation
@@ -18,6 +20,8 @@ kernel transform used by the interlacing comparison for Motzkin ascent
 polynomials.  Its reflection symmetry gives the equal central pair when the
 rank is odd.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

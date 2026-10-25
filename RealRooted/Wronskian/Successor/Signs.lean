@@ -1,4 +1,6 @@
-import RealRooted.Wronskian.Successor.Gap
+module
+
+public import RealRooted.Wronskian.Successor.Gap
 
 /-!
 # Successor-degree Wronskian signs
@@ -6,6 +8,8 @@ import RealRooted.Wronskian.Successor.Gap
 These sign and root-location lemmas supply the lower-to-higher splitness
 transfer for a strict successor-degree Wronskian sign.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -16,7 +16,7 @@ Small path facts stated in the forward order of `Path.vertices`.  Mathlib's
 lemma below explicitly reverses it before extracting a forward arrow.
 -/
 
-public section
+@[expose] public section
 
 namespace Quiver.Path
 

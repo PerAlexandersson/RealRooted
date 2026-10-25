@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+module
+
+public import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 
 /-!
 # No-common-root API for Liu's opposite-sign theorem
@@ -6,6 +8,8 @@ import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 This module isolates the reusable no-common-root predicate and its elementary
 endpoint consequences from the analytic crossing argument.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

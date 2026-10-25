@@ -1,5 +1,7 @@
-import RealRooted.Basic
-import RealRooted.JacobiDeformation.Pochhammer
+module
+
+public import RealRooted.Basic
+public import RealRooted.JacobiDeformation.Pochhammer
 
 /-!
 # The finite Jacobi deformation polynomial
@@ -14,6 +16,8 @@ where `(a)_n` is the rising factorial.  The Lean argument order of
 this definition: coefficients, monicity, degree, coefficient positivity, and
 the ranks zero and one.  No kernel or spectral input is used here.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

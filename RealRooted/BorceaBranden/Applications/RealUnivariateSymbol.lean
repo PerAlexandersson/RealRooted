@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Real univariate finite-symbol sufficiency
@@ -11,13 +13,16 @@ complex-linear extension of a real polynomial operator, identifies its
 algebraic symbol, and transports stable-or-zero output back to real splitting.
 -/
 
+@[expose] public section
+
 open Polynomial BigOperators
 
 namespace RealRooted.BorceaBranden
 
 noncomputable section
 
-private def complexScalarMultiple (q : ℂ[X]) : ℂ →ₗ[ℂ] ℂ[X] where
+/-- The complex-linear map `a ↦ C a * q` from scalars to polynomials. -/
+def complexScalarMultiple (q : ℂ[X]) : ℂ →ₗ[ℂ] ℂ[X] where
   toFun a := C a * q
   map_add' a b := by simp [add_mul]
   map_smul' a b := by simp [smul_eq_C_mul, mul_assoc]

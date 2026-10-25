@@ -6,6 +6,10 @@ This file re-exports the split Wagner modules:
 - `WagnerRightSum`: Wagner (1) — common-right addition theorems
 - `WagnerLeftSum`: Wagner (2) — common-left addition theorems, `SumCompatibleLeft`
 -/
-import RealRooted.WagnerX
-import RealRooted.WagnerRightSum
-import RealRooted.Wagner.LeftSum
+module
+
+public import RealRooted.WagnerX
+public import RealRooted.WagnerRightSum
+public import RealRooted.Wagner.LeftSum
+
+@[expose] public section

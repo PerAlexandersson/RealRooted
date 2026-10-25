@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
+public import RealRooted.PFPolynomial
 
 /-!
 # PF certificates for the BFJ output
@@ -7,6 +9,8 @@ import RealRooted.PFPolynomial
 This file combines the coefficient-sign and stability interfaces for the
 dehomogenized BFJ coefficient into a polynomial PF certificate.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -15,7 +15,7 @@ This file contains a fundamental-theorem-of-calculus identity for exponential
 differences.
 -/
 
-public section
+@[expose] public section
 
 open scoped Interval
 

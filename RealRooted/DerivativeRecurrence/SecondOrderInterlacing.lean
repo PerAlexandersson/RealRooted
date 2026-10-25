@@ -1,8 +1,10 @@
-import RealRooted.Derivative.Interlacing
-import RealRooted.DerivativeRecurrence.SecondOrderDegree
-import RealRooted.GeneralizedLiuWang
-import RealRooted.SimpleRoots
-import RealRooted.WagnerRightSum
+module
+
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.DerivativeRecurrence.SecondOrderDegree
+public import RealRooted.GeneralizedLiuWang
+public import RealRooted.SimpleRoots
+public import RealRooted.WagnerRightSum
 
 /-!
 # Interlacing for affine-lagged second-order derivative recurrences
@@ -10,6 +12,8 @@ import RealRooted.WagnerRightSum
 Coefficient positivity, strict root negativity, and interlacing for the
 second-order recurrence shared by several OEIS polynomial families.
 -/
+
+@[expose] public section
 
 open Polynomial
 

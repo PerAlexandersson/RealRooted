@@ -1,5 +1,7 @@
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+module
+
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolReciprocal
 
 /-!
 # The three-block product in the finite-symbol argument
@@ -9,6 +11,8 @@ arXiv:0809.0401, Lemma 2.2, with the three-block contraction sum and proves
 the source/input degree bounds needed for the repeated Lieb--Sokal step.
 Target variables remain unrestricted.
 -/
+
+@[expose] public section
 
 open BigOperators
 

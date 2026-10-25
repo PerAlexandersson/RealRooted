@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.HermiteBiehler.OddEven
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+module
+
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.HermiteBiehler.OddEven
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
 
 /-!
 # Classical and Lace-oriented Hurwitz matrices
@@ -10,6 +12,8 @@ matrix, to the odd/even polynomial API. The historical
 `RealRooted.hurwitz` matrix instead packages a two-row Lace matrix. Both
 conventions remain available under distinct namespace-qualified names.
 -/
+
+@[expose] public section
 
 open Polynomial
 

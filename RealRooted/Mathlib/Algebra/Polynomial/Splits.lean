@@ -32,7 +32,7 @@ point from their root counts, for instance when proving interlacing.
   same sign at a common non-root `x` iff the difference of their root counts above `x` is even.
 -/
 
-public section
+@[expose] public section
 
 noncomputable section
 

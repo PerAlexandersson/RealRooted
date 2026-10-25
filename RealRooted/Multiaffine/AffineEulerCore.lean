@@ -1,4 +1,7 @@
-import RealRooted.Multiaffine.CoordinateWronskian
+module
+
+public import RealRooted.Multiaffine.CoordinateWronskian
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Finite-index affine Euler cores
@@ -8,6 +11,8 @@ coordinates.  The construction is independent of any particular
 combinatorial indexing convention and commutes with injective variable
 renaming.
 -/
+
+@[expose] public section
 
 namespace MvPolynomial
 

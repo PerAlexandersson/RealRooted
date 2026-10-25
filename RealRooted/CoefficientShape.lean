@@ -1,9 +1,11 @@
-import RealRooted.Basic
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.NewtonAux
-import Mathlib.Order.Preorder.Finite
-import Mathlib.RingTheory.Polynomial.Vieta
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+module
+
+public import RealRooted.Basic
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.NewtonAux
+public import Mathlib.Order.Preorder.Finite
+public import Mathlib.RingTheory.Polynomial.Vieta
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Coefficient shape consequences of real-rootedness
@@ -22,6 +24,8 @@ The Newton-inequality and no-internal-zero polynomial steps, elementary
 sequence implications, and Pólya-frequency route to log-concavity are all
 formalized here.
 -/
+
+@[expose] public section
 
 open Polynomial Matrix
 

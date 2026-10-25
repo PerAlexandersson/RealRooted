@@ -1,8 +1,10 @@
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.LiebSokalPointwise
-import RealRooted.AffineLineRestriction
-import RealRooted.HermiteBiehler.Basic
+module
+
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.Multiaffine.TwoCoordinateSlice
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.AffineLineRestriction
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Barrier functions of real stable polynomials
@@ -15,6 +17,8 @@ barrier in its own coordinate is `Σ_k 1 / (z_i - λ_k) ≥ 0` and nonincreasing
 and `Φ < 1` gives positivity of `q - q'` in one variable.  Two-coordinate restrictions stay real
 stable or zero.  The cross-coordinate monotonicity/convexity (MSS's bivariate lemma) is not here.
 -/
+
+@[expose] public section
 
 open Polynomial
 

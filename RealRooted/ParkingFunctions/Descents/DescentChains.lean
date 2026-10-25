@@ -1,7 +1,9 @@
-import RealRooted.ParkingFunctions.Descents.Basic
-import RealRooted.ParkingFunctions.Descents.ChainSort
-import Mathlib.Data.List.FinRange
-import RealRooted.Mathlib.Data.List.SplitBy
+module
+
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.ParkingFunctions.Descents.ChainSort
+public import Mathlib.Data.List.FinRange
+public import RealRooted.Mathlib.Data.List.SplitBy
 
 /-!
 # Chains associated to a descent subset
@@ -10,6 +12,8 @@ This module partitions the ordered positions of a word into contiguous runs
 whose adjacent edges are prescribed descents.  Reversing those runs produces
 the strict increasing chains used in the parking-word transfer.
 -/
+
+@[expose] public section
 
 namespace RealRooted.ParkingFunctions
 

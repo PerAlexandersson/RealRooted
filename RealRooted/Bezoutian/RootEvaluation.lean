@@ -1,6 +1,10 @@
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.LinearAlgebra.Lagrange
-import RealRooted.Bezoutian.MatrixBasics
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.LinearAlgebra.Lagrange
+public import RealRooted.Bezoutian.MatrixBasics
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.Analysis.Calculus.Deriv.Mul
 
 /-!
 # Bezout-matrix root evaluation
@@ -8,6 +12,8 @@ import RealRooted.Bezoutian.MatrixBasics
 Common-root obstructions, Vandermonde congruence, root-product identities, and
 the forward strict-interlacing-to-positive-definiteness direction.
 -/
+
+@[expose] public section
 
 open Polynomial Matrix
 

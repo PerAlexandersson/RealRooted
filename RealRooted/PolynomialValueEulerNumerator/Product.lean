@@ -1,6 +1,8 @@
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
-import RealRooted.PolynomialValueEulerNumerator.PF
+module
+
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
+public import RealRooted.PolynomialValueEulerNumerator.PF
 
 /-!
 # Products of polynomial-value Euler numerators
@@ -8,6 +10,8 @@ import RealRooted.PolynomialValueEulerNumerator.PF
 This file identifies the BFJ product construction with the canonical Euler
 numerator of a pointwise product of polynomial-value sequences.
 -/
+
+@[expose] public section
 
 open Polynomial
 

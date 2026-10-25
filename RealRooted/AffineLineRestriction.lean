@@ -1,7 +1,9 @@
-import RealRooted.MultivariateStability
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.RootContinuity
+module
+
+public import RealRooted.MultivariateStability
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.RootContinuity
 
 /-!
 # Affine-line restrictions of multivariate stable polynomials
@@ -10,6 +12,8 @@ This file characterizes multivariate real stability by the splitness and
 non-vanishing of real affine-line restrictions in strictly positive
 directions.
 -/
+
+@[expose] public section
 
 open Polynomial
 

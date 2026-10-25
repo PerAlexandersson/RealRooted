@@ -1,8 +1,10 @@
-import Mathlib.Basic.Real.Basic
-import Mathlib.LinearAlgebra.Matrix.Transvection
-import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+module
+
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.LinearAlgebra.Matrix.Transvection
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Finite weighted lower shifts
@@ -11,6 +13,8 @@ This file defines the finite weighted lower shift used by position-dependent
 tiling kernels.  Its strict-lower support makes the finite geometric sum an
 exact two-sided resolvent, without an infinite matrix inverse.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BrandenLeite
 
