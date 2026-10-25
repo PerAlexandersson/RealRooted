@@ -197,8 +197,7 @@ private theorem eval_one_C_mul_prod_ne_zero {c : ℝ} (hc : c ≠ 0) {s : Multis
   linarith [hs a ha]
 
 private theorem eval_one_X_sub_C_ne_zero {a : ℝ} (ha : a ≤ 0) : (X - C a).eval 1 ≠ 0 := by
-  rw [eval_sub, eval_X, eval_C]
-  exact sub_ne_zero.mpr (show a < 1 by linarith).ne'
+  simpa using sub_pos.mpr (show a < 1 by linarith) |>.ne'
 
 theorem coeffMean_C_mul_prod {c : ℝ} (hc : c ≠ 0) {s : Multiset ℝ} (hs : ∀ a ∈ s, a ≤ 0) :
     (C c * (s.map fun a => X - C a).prod).coeffMean = (s.map fun a => (1 - a)⁻¹).sum := by
@@ -270,11 +269,9 @@ theorem norm_bernoulli_charFun_sub_le {q s : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1
   have h1q : 0 ≤ 1 - q := by linarith
   have hsa := abs_nonneg s
   have hsq : |-s * q| ≤ 1 := by
-    rw [abs_mul, abs_neg, abs_of_nonneg hq0]
-    nlinarith
+    rw [abs_mul, abs_neg, abs_of_nonneg hq0]; nlinarith
   have hsq' : |s * (1 - q)| ≤ 1 := by
-    rw [abs_mul, abs_of_nonneg h1q]
-    nlinarith
+    rw [abs_mul, abs_of_nonneg h1q]; nlinarith
   have e1 := norm_cexp_mul_I_sub_le hsq
   have e2 := norm_cexp_mul_I_sub_le hsq'
   have hs2 : s ^ 2 = |s| ^ 2 := (sq_abs s).symm
@@ -287,9 +284,7 @@ theorem norm_bernoulli_charFun_sub_le {q s : ℝ} (hq0 : 0 ≤ q) (hq1 : q ≤ 1
   have hB : cexp ((s : ℂ) * I) * cexp (((-s * q : ℝ) : ℂ) * I) =
       cexp (((s * (1 - q) : ℝ) : ℂ) * I) := by
     rw [← Complex.exp_add]
-    congr 1
-    push_cast
-    ring
+    congr 1; push_cast; ring
   have hsplit : (((1 - q : ℝ) : ℂ) + (q : ℂ) * cexp ((s : ℂ) * I)) *
         cexp (((-s * q : ℝ) : ℂ) * I) - cexp ((-(q * (1 - q) * s ^ 2 / 2) : ℝ)) =
       ((1 - q : ℝ) : ℂ) * (cexp (((-s * q : ℝ) : ℂ) * I) -
@@ -354,9 +349,7 @@ private theorem cexp_multiset_sum_mul {ι : Type*} (s : Multiset ι) (g : ι →
     cexp (((s.map g).sum : ℝ) * c) = (s.map fun i => cexp (g i * c)).prod := by
   induction s using Multiset.induction_on with
   | empty => simp
-  | cons a s ih =>
-    rw [Multiset.map_cons, Multiset.sum_cons, Multiset.map_cons, Multiset.prod_cons, ofReal_add,
-      add_mul, Complex.exp_add, ih]
+  | cons a s ih => simp [add_mul, Complex.exp_add, ih]
 
 /-- The characteristic function of the standardized coefficient distribution of a real-rooted
 polynomial with nonnegative coefficients is a product of characteristic functions of centred
@@ -407,8 +400,7 @@ theorem norm_charFun_standardizedCoeffDistribution_sub_le {p : ℝ[X]} (hs : p.S
       cexp ((-((1 - a)⁻¹ * (1 - (1 - a)⁻¹) * (t / p.coeffStdDev) ^ 2 / 2) : ℝ))).prod := by
     have h := cexp_multiset_sum_mul p.roots
       (fun a => -((1 - a)⁻¹ * (1 - (1 - a)⁻¹) * (t / p.coeffStdDev) ^ 2 / 2)) 1
-    simp only [mul_one, hsum] at h
-    exact h
+    simpa only [mul_one, hsum] using h
   rw [charFun_standardizedCoeffDistribution_eq_prod hs hnn hp, hgauss]
   refine (norm_multiset_prod_sub_prod_le _ _ _ (fun a ha => ?_) (fun a ha => ?_)).trans ?_
   · obtain ⟨h0, h1⟩ := hq a ha
@@ -446,9 +438,7 @@ theorem tendsto_standardizedCoeffDistribution {P : ℕ → ℝ[X]} (hs : ∀ n, 
     Real.tendsto_sqrt_atTop.comp hvar
   have hg : charFun (gaussianReal 0 1) t = cexp ((-(t ^ 2 / 2) : ℝ)) := by
     rw [charFun_gaussianReal]
-    congr 1
-    push_cast
-    ring
+    congr 1; push_cast; ring
   change Tendsto _ atTop (𝓝 (charFun (gaussianReal 0 1) t))
   rw [hg, ← tendsto_sub_nhds_zero_iff]
   refine squeeze_zero_norm' ?_ ((tendsto_const_nhds (x := 2 * |t| ^ 3)).div_atTop hσ)
@@ -541,9 +531,7 @@ theorem coeffMean_prod_X_add_natCast (s : Finset ℕ) :
       ∑ i ∈ s, 1 / ((i : ℝ) + 1) := by
   rw [coeffMean_prod]
   · exact Finset.sum_congr rfl fun i hi => coeffMean_X_add_C_natCast i
-  · intro i hi
-    rw [eval_add, eval_X, eval_C]
-    positivity
+  · intro i hi; simp only [eval_add, eval_X, eval_C]; positivity
 
 /-- The variance of a finite Stirling-type product is the sum of factor variances. -/
 theorem coeffVariance_prod_X_add_natCast (s : Finset ℕ) :
@@ -551,9 +539,7 @@ theorem coeffVariance_prod_X_add_natCast (s : Finset ℕ) :
       ∑ i ∈ s, ((i : ℝ) / ((i : ℝ) + 1) ^ 2) := by
   rw [coeffVariance_prod]
   · exact Finset.sum_congr rfl fun i hi => coeffVariance_X_add_C_natCast i
-  · intro i hi
-    rw [eval_add, eval_X, eval_C]
-    positivity
+  · intro i hi; simp only [eval_add, eval_X, eval_C]; positivity
 
 /-- **Goncharov's theorem**: the unsigned Stirling numbers of the first kind, the coefficients of
 `X (X + 1) ⋯ (X + n - 1)` (cycle counts of random permutations), are asymptotically normal. -/

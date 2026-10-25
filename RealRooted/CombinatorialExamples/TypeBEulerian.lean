@@ -4,6 +4,7 @@ public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 public import RealRooted.GeneralizedEulerian
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Type B Eulerian Polynomials
@@ -41,14 +42,6 @@ lemma typeBEulerian_succ (n : Nat) :
     typeBEulerian (n + 1) =
       typeBEulerianCoeffA n * typeBEulerian n +
         typeBEulerianCoeffB * (typeBEulerian n).derivative := rfl
-
-private lemma typeBEulerian_quadratic_derivative_linear (n : Nat) :
-    typeBEulerian (n + 1) =
-      (C (2 : ℝ) * X + C (-2 : ℝ) * X ^ 2) * (typeBEulerian n).derivative +
-        (C (1 : ℝ) + C (1 + 2 * (n : ℝ)) * X) * typeBEulerian n := by
-  rw [typeBEulerian_succ]
-  simp [typeBEulerianCoeffA, typeBEulerianCoeffB]
-  ring
 
 lemma typeBEulerian_one : typeBEulerian 1 = 1 + X := by
   simp [typeBEulerian, typeBEulerianCoeffA, typeBEulerianCoeffB]
@@ -101,9 +94,7 @@ lemma coeff_typeBEulerian_top_and_above :
 
 lemma natDegree_typeBEulerian (n : Nat) :
     (typeBEulerian n).natDegree = n := by
-  exact natDegree_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+  rr_row_natDegree
 
 lemma monic_typeBEulerian (n : Nat) :
     (typeBEulerian n).Monic := by
@@ -113,20 +104,14 @@ lemma monic_typeBEulerian (n : Nat) :
 
 lemma typeBEulerian_ne_zero (n : Nat) :
     typeBEulerian n ≠ 0 := by
-  exact ne_zero_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+  rr_row_ne_zero
 
 lemma typeBEulerian_posLeadingCoeff (n : Nat) :
-    HasPosLeadingCoeff (typeBEulerian n) := by
-  exact hasPosLeadingCoeff_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) n
+    HasPosLeadingCoeff (typeBEulerian n) :=
+  hasPosLeadingCoeff_of_monic (monic_typeBEulerian n)
 
 lemma typeBEulerian_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (typeBEulerian n) := by
-  exact hasNonnegCoeffs_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  rr_row_nonneg_coeffs
 
 lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} :
     ∀ r ∈ (typeBEulerian n).roots, r ≤ 0 :=
@@ -157,13 +142,13 @@ lemma eval_typeBEulerianCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
 
 theorem strictInterl_typeBEulerian_succ :
     ∀ n : Nat, StrictInterl (typeBEulerian n) (typeBEulerian (n + 1)) := by
-  exact strictInterl_of_quadratic_derivative_linear typeBEulerian 2 2 1 1 2
-    typeBEulerian_zero typeBEulerian_quadratic_derivative_linear (by norm_num)
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  intro n
+  exact (show Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) by
+    rr_row_interlaces).toStrictInterl
 
 theorem interlaces_typeBEulerian_succ (n : Nat) :
-    Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
-  (strictInterl_typeBEulerian_succ n).toInterlaces (by simp [natDegree_typeBEulerian])
+    Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) := by
+  rr_row_interlaces
 
 theorem isRealRooted_typeBEulerian :
     ∀ n : Nat, ((typeBEulerian n) ≠ 0 ∧ (typeBEulerian n).Splits)

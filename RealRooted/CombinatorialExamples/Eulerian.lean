@@ -8,6 +8,7 @@ public import RealRooted.Tactic.WagnerX
 public import RealRooted.Wagner
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Eulerian Tilde Polynomials
@@ -86,10 +87,7 @@ lemma coeff_eulerianTilde_top_and_above :
 
 lemma natDegree_eulerianTilde (n : Nat) :
     (eulerianTilde n).natDegree = n + 1 := by
-  rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm ↦ habove m hm))
-    (by simp_all)
+  rr_row_natDegree
 
 lemma monic_eulerianTilde (n : Nat) :
     (eulerianTilde n).Monic := by
@@ -98,41 +96,15 @@ lemma monic_eulerianTilde (n : Nat) :
   lia
 
 lemma eulerianTilde_ne_zero (n : Nat) :
-    eulerianTilde n ≠ 0 :=
-  (monic_eulerianTilde n).ne_zero
+    eulerianTilde n ≠ 0 := by
+  rr_row_ne_zero
 
 lemma eulerianTilde_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (eulerianTilde n) :=
   hasPosLeadingCoeff_of_monic (monic_eulerianTilde n)
 
-lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n)
-  | 0 => by
-      intro m
-      by_cases hm : m = 1
-      · simp_all
-      · have hm' : 1 ≠ m := by lia
-        simp [eulerianTilde_zero, coeff_X, hm']
-  | n + 1 => by
-      rintro (_ | m)
-      · rw [eulerianTilde_recurrence]
-        simp
-      · rw [coeff_eulerianTilde_succ n m]
-        by_cases hm : m ≤ n + 1
-        · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=
-            eulerianTilde_nonnegCoeffs n m
-          have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
-            eulerianTilde_nonnegCoeffs n (m + 1)
-          have hnm : 0 ≤ (n + 2 : ℝ) - m := by
-            have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) :=
-              Nat.cast_le.mpr (by lia)
-            simp_all
-          exact add_nonneg (mul_nonneg hnm hcoeff_m) (mul_nonneg (by positivity) hcoeff_succ)
-        · have hm' : n + 1 < m := lt_of_not_ge hm
-          rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
-          have hcoeff_m : coeff (eulerianTilde n) m = 0 := habove m hm'
-          have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 :=
-            habove (m + 1) (by lia)
-          simp [hcoeff_m, hcoeff_succ]
+lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n) := by
+  rr_row_nonneg_coeffs
 
 lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} :
     ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
@@ -174,14 +146,9 @@ lemma strictInterl_eulerianTilde_succ_of_strictInterl_affine {n : Nat}
 the oriented `StrictInterl` sense. The induction hypothesis supplies real-rootedness of
 `P_n` as the right-hand half of `StrictInterl P_{n-1} P_n`. -/
 theorem strictInterl_eulerianTilde_succ : ∀ n : Nat,
-    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1))
-  | 0 =>
-      strictInterl_eulerianTilde_succ_of_strictInterl_affine <|
-        strictInterl_affineEulerianTilde <| by simp
-  | n + 1 =>
-      strictInterl_eulerianTilde_succ_of_strictInterl_affine <|
-        strictInterl_affineEulerianTilde
-          (strictInterl_eulerianTilde_succ n).2.1.2
+    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) :=
+  fun n => (show Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) by
+    rr_row_interlaces).toStrictInterl
 
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
@@ -190,9 +157,8 @@ theorem isRealRooted_eulerianTilde : ∀ n : Nat,
   fun n => (strictInterl_eulerianTilde_succ n).1
 
 theorem interlaces_eulerianTilde_succ (n : Nat) :
-    Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
-  (strictInterl_eulerianTilde_succ n).toInterlaces
-    (by simp [natDegree_eulerianTilde])
+    Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) := by
+  rr_row_interlaces
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Eulerian tilde
 sequence. -/

@@ -119,31 +119,21 @@ lemma antitone_of_succ_lt {f : ℕ → ℝ} {n j : ℕ}
     (hstep : ∀ i, j ≤ i → i < n → f (i + 1) < f i)
     (s t : ℕ) (hjs : j ≤ s) (hst : s ≤ t) (htn : t ≤ n) : f t ≤ f s := by
   induction t with
-  | zero =>
-    have : s = 0 := by lia
-    rw [this]
+  | zero => grind
   | succ t iht =>
-    rcases Nat.lt_or_ge s (t + 1) with hlt | hge
-    · have hstep_t : f (t + 1) < f t := hstep t (by lia) (by lia)
-      have : f t ≤ f s := iht (by lia) (by lia)
-      exact hstep_t.le.trans this
-    · have : s = t + 1 := by lia
-      rw [this]
+    by_cases hst' : s ≤ t
+    · exact (hstep t (by lia) (by lia)).le.trans (iht hst' (by lia))
+    · grind
 
 lemma monotone_of_succ_gt {f : ℕ → ℝ} {j : ℕ}
     (hstep : ∀ i, 1 ≤ i → i ≤ j → f (i - 1) < f i)
     (s t : ℕ) (hst : s ≤ t) (htj : t ≤ j) : f s ≤ f t := by
   induction t with
-  | zero =>
-    have : s = 0 := by lia
-    rw [this]
+  | zero => grind
   | succ t iht =>
-    rcases Nat.lt_or_ge s (t + 1) with hlt | hge
-    · have hstep_t : f t < f (t + 1) := hstep (t + 1) (by lia) (by lia)
-      have : f s ≤ f t := iht (by lia) (by lia)
-      exact this.trans hstep_t.le
-    · have : s = t + 1 := by lia
-      rw [this]
+    by_cases hst' : s ≤ t
+    · exact (iht hst' (by lia)).trans (hstep (t + 1) (by lia) (by lia)).le
+    · grind
 
 lemma antitone_capped_of_antitone {m : ℕ → ℝ} {n j : ℕ} (hjn : j ≤ n)
     (hdec : ∀ s t, j ≤ s → s ≤ t → t ≤ n → m t ≤ m s) :
@@ -230,36 +220,28 @@ private lemma sign_alternating_of_unimodal {m : ℕ → ℝ} {n j : ℕ}
 
 lemma lt_sqrt_mul_and_lt_of_lt {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
     x < Real.sqrt (x * y) ∧ Real.sqrt (x * y) < y := by
-  have hxy_pos : 0 < x * y := mul_pos hx (hx.trans hxy)
-  have hlt_left : x < Real.sqrt (x * y) := by
-    rw [Real.lt_sqrt hx.le]
+  constructor
+  · rw [Real.lt_sqrt hx.le]
     nlinarith
-  have hlt_right : Real.sqrt (x * y) < y := by
-    rw [Real.sqrt_lt hxy_pos.le (hx.trans hxy).le]
+  · rw [Real.sqrt_lt (mul_pos hx (hx.trans hxy)).le (hx.trans hxy).le]
     nlinarith
-  exact ⟨hlt_left, hlt_right⟩
 
 lemma monotone_of_lt_succ {f : ℕ → ℝ} {n : ℕ}
     (hstep : ∀ k, 1 ≤ k → k + 1 ≤ n → f k < f (k + 1))
     (s t : ℕ) (hs : 1 ≤ s) (hst : s ≤ t) (htn : t ≤ n) : f s ≤ f t := by
   induction t with
-  | zero => lia
+  | zero => grind
   | succ t iht =>
-    rcases Nat.lt_or_ge s (t + 1) with hlt | hge
-    · have : f s ≤ f t := iht (by lia) (by lia)
-      have : f t < f (t + 1) := hstep t (by lia) htn
-      linarith
-    · have : s = t + 1 := by lia
-      rw [this]
+    by_cases hst' : s ≤ t
+    · exact (iht hst' (by lia)).trans (hstep t (by lia) htn).le
+    · grind
 
 lemma strictMono_of_lt_succ {f : ℕ → ℝ} {n : ℕ}
     (hstep : ∀ k, 1 ≤ k → k < n → f k < f (k + 1))
     (s t : ℕ) (hs : 1 ≤ s) (hst : s < t) (htn : t ≤ n) : f s < f t := by
   induction t, hst using Nat.le_induction with
   | base => exact hstep s hs (by lia)
-  | succ t' hst' ih =>
-    have : f t' < f (t' + 1) := hstep t' (by lia) (by lia)
-    linarith [ih (by lia)]
+  | succ t' hst' ih => exact (ih (by lia)).trans (hstep t' (by lia) (by lia))
 
 lemma add_mul_sq_sqrt_div_lt_mul {u v w : ℝ} (hu : 0 < u) (hw : 0 < w) (hv : 0 < v)
     (h : 4 * u * w < v ^ 2) :
@@ -270,9 +252,7 @@ lemma add_mul_sq_sqrt_div_lt_mul {u v w : ℝ} (hu : 0 < u) (hw : 0 < w) (hv : 0
     rw [← mul_div_assoc, lt_div_iff₀ hw]
     nlinarith
   have : 2 * u < v * Real.sqrt (u / w) := (sq_lt_sq₀ (by linarith) (by positivity)).mp this
-  have : u + w * (Real.sqrt (u / w)) ^ 2 = 2 * u := by
-    rw [hsq, mul_comm, div_mul_cancel₀ u hw.ne']
-    ring
+  rw [hsq, mul_comm, div_mul_cancel₀ u hw.ne']
   linarith
 
 lemma add_mul_self_lt_mul_self_of_add_mul_sq_lt {u v w x : ℝ} {k : ℕ} (hk₁ : 1 ≤ k)
@@ -297,11 +277,9 @@ lemma div_lt_div_of_mul_lt_sq {u v w : ℝ} (hv : 0 < v) (hw : 0 < w) (h : u * w
 lemma mul_neg_of_neg_mul_pos_of_mul_pos {a x y : ℝ} (ha : a * a = 1) (hx : 0 < -a * x)
     (hy : 0 < a * y) :
     x * y < 0 := by
-  have hax : a * x < 0 := by linarith
-  have heq : (a * x) * (a * y) = x * y := by
-    rw [show (a * x) * (a * y) = (a * a) * (x * y) by ring, ha, one_mul]
-  rw [← heq]
-  nlinarith
+  rw [← show (a * x) * (a * y) = x * y by
+    rw [show (a * x) * (a * y) = (a * a) * (x * y) by ring, ha, one_mul]]
+  exact mul_neg_of_neg_of_pos (by linarith) hy
 
 lemma eval_neg_eq_sum_range (p : ℝ[X]) (x : ℝ) :
     p.eval (-x) =

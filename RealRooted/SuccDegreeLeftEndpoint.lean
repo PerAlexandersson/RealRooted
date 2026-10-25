@@ -53,28 +53,12 @@ lemma leadingCoeff_mul_pow_im_mul_norm_sub_le_norm_aeval
   have h_prod_bound :
       |z.im| ^ ((p.roots.erase r).card) ≤
         ((p.roots.erase r).map (fun s : ℝ => ‖z - (s : ℂ)‖)).prod := by
-    have h_prod_bound :
-        ∀ (m : Multiset ℝ),
-          (∀ s ∈ m, ‖z - (s : ℂ)‖ ≥ |z.im|) →
-            |z.im| ^ m.card ≤ (m.map (fun s : ℝ => ‖z - (s : ℂ)‖)).prod := by
-      intro m hm
-      induction m using Multiset.induction with
-      | empty =>
-        simp only [Multiset.card_zero, pow_zero, Multiset.map_zero,
-          Multiset.prod_zero, le_refl]
-      | cons a m ih =>
-          have h_ih : |z.im| ^ m.card ≤ (m.map (fun s : ℝ => ‖z - (s : ℂ)‖)).prod := by
-            apply ih
-            intro s hs
-            apply hm
-            exact Multiset.mem_cons_of_mem hs
-          have ha : ‖z - (a : ℂ)‖ ≥ |z.im| := by
-            apply hm
-            exact Multiset.mem_cons_self a m
-          rw [Multiset.card_cons, pow_succ', Multiset.map_cons, Multiset.prod_cons]
-          exact mul_le_mul ha h_ih (by positivity) (by positivity)
-    exact h_prod_bound _ fun s hs => by
-      simpa using Complex.abs_im_le_norm (z - s)
+    induction p.roots.erase r using Multiset.induction with
+    | empty => simp
+    | cons a m ih =>
+        rw [Multiset.card_cons, pow_succ', Multiset.map_cons, Multiset.prod_cons]
+        exact mul_le_mul (by simpa using Complex.abs_im_le_norm (z - a)) ih
+          (by positivity) (by positivity)
   rw [← Multiset.cons_erase hr, Multiset.map_cons, Multiset.prod_cons]
   simpa [mul_assoc, mul_comm, mul_left_comm] using
     mul_le_mul_of_nonneg_left h_prod_bound
@@ -115,20 +99,14 @@ lemma abs_nextCoeff_le_of_splits
         p.roots.card *
           (‖z‖ + ‖(Polynomial.aeval z) p‖ /
             (p.leadingCoeff * |z.im| ^ (p.roots.card - 1))) := by
-    have h_sum_escape_bound :
-        ∀ {s : Multiset ℝ},
-          (∀ r ∈ s,
-            ‖(r : ℂ)‖ ≤
-              ‖z‖ + ‖(Polynomial.aeval z) p‖ /
-                (p.leadingCoeff * |z.im| ^ (p.roots.card - 1))) →
-          ‖s.sum‖ ≤
-            s.card *
-              (‖z‖ + ‖(Polynomial.aeval z) p‖ /
-                (p.leadingCoeff * |z.im| ^ (p.roots.card - 1))) := by
-      intro s hs
-      induction s using Multiset.induction <;> norm_num at *
-      grind
-    exact h_sum_escape_bound h_escape_bound
+    calc
+      _ ≤ (p.roots.map fun r : ℝ => ‖r‖).sum := norm_multiset_sum_le _
+      _ ≤ _ := by
+        simpa only [Multiset.card_map, nsmul_eq_mul] using
+          Multiset.sum_le_card_nsmul (p.roots.map fun r : ℝ => ‖r‖) _
+            (fun _ hx => by
+              obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
+              simpa using h_escape_bound r hr)
   simp_all [mul_assoc, abs_mul, abs_neg, abs_of_pos hlc]
 
 /-- Single-member escaping-root inequality.  Given a *single* real-rooted

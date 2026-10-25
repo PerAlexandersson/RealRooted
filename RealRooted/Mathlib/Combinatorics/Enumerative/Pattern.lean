@@ -58,18 +58,12 @@ theorem sameOrderType_length [LT α] [LT β]
     {l : List α} {m : List β}
     (h : l.SameOrderType m) : l.length = m.length := by
   unfold SameOrderType sameOrderTypeBool at h
-  split at h
-  · assumption
-  · simp at h
+  split at h <;> simp_all
 
 /-- A list has the same order type as itself. -/
 theorem sameOrderType_refl [LT α] [DecidableRel (· < · : α → α → Prop)]
     (l : List α) : l.SameOrderType l := by
-  unfold SameOrderType sameOrderTypeBool
-  simp only [↓reduceDIte]
-  apply decide_eq_true
-  intro i j
-  rfl
+  simp [SameOrderType, sameOrderTypeBool]
 
 /-- Same order type is symmetric. -/
 theorem sameOrderType_symm [LT α] [LT β]
@@ -107,18 +101,12 @@ theorem sameOrderType_map_of_strictMono [LT α] [LT β]
     [DecidableRel (· < · : α → α → Prop)] [DecidableRel (· < · : β → β → Prop)]
     {f : α → β} (hf : ∀ ⦃a b : α⦄, a < b ↔ f a < f b) {l : List α} :
     (l.map f).SameOrderType l := by
-  unfold SameOrderType sameOrderTypeBool
-  simp only [List.length_map, ↓reduceDIte]
+  simp only [SameOrderType, sameOrderTypeBool, List.length_map, ↓reduceDIte]
   apply decide_eq_true
   intro i j
-  have hi : (i : ℕ) < l.length := by simpa using i.isLt
-  have hj : (j : ℕ) < l.length := by simpa using j.isLt
-  let i' : Fin l.length := ⟨i, hi⟩
-  let j' : Fin l.length := ⟨j, hj⟩
-  have hgi : (l.map f).get i = f (l.get i') := by simp [i']
-  have hgj : (l.map f).get j = f (l.get j') := by simp [j']
-  rw [hgi, hgj]
-  simpa [i', j'] using (hf (a := l.get i') (b := l.get j')).symm
+  simpa using
+    (hf (a := l.get (Fin.cast (List.length_map (as := l) f) i))
+      (b := l.get (Fin.cast (List.length_map (as := l) f) j))).symm
 
 /-- Strictly antitone relabellings preserve the order type after reversing both
 order relations. -/
@@ -267,19 +255,12 @@ theorem containsPattern_iff [LT α] [LT β]
     [DecidableRel (· < · : α → α → Prop)] [DecidableRel (· < · : β → β → Prop)]
     {l : List α} {p : List β} : l.ContainsPattern p ↔
     ∃ s, s <+ l ∧ s.SameOrderType p := by
-  unfold ContainsPattern
-  rw [List.any_eq_true]
-  constructor
-  · rintro ⟨s, hs, hdec⟩
-    exact ⟨s, (List.mem_sublists.mp hs), of_decide_eq_true hdec⟩
-  · rintro ⟨s, hs, hst⟩
-    exact ⟨s, List.mem_sublists.mpr hs, of_decide_eq_true (by simpa using hst)⟩
+  simp [ContainsPattern, List.any_eq_true, List.mem_sublists]
 
 /-- Containment is reflexive. -/
 theorem containsPattern_refl [LT α] [DecidableRel (· < · : α → α → Prop)]
-    (l : List α) : l.ContainsPattern l := by
-  rw [containsPattern_iff]
-  exact ⟨l, List.Sublist.refl _, sameOrderType_refl _⟩
+    (l : List α) : l.ContainsPattern l :=
+  containsPattern_iff.mpr ⟨l, .refl _, sameOrderType_refl _⟩
 
 /-- Strictly antitone relabellings preserve pattern containment. -/
 theorem containsPattern_map_of_strictAnti_iff [LinearOrder α] [LinearOrder β]
@@ -373,7 +354,7 @@ theorem containsPattern_of_sublist [LT α] [LT β]
     {l₁ l₂ : List α} {p : List β} (hl : l₁ <+ l₂) (h : l₁.ContainsPattern p) :
     l₂.ContainsPattern p := by
   rw [containsPattern_iff] at h ⊢
-  rcases h with ⟨s, hs, hp⟩
+  obtain ⟨s, hs, hp⟩ := h
   exact ⟨s, hs.trans hl, hp⟩
 
 end List
@@ -454,18 +435,18 @@ def avoiders (n : ℕ) (ps : List (Σ k, Perm (Fin k))) : Finset (Perm (Fin n)) 
 /-- The list characterization of permutation pattern containment. -/
 theorem containsPattern_iff {n k : ℕ} (σ : Perm (Fin n)) (τ : Perm (Fin k)) :
     σ.ContainsPattern τ ↔ ∃ s, List.Sublist s (List.ofFn σ) ∧
-      s.SameOrderType (List.ofFn τ) := by
-  exact List.containsPattern_iff
+      s.SameOrderType (List.ofFn τ) :=
+  List.containsPattern_iff
 
 /-- Every permutation contains itself as a pattern. -/
-theorem containsPattern_refl {n : ℕ} (σ : Perm (Fin n)) : σ.ContainsPattern σ := by
-  exact List.containsPattern_refl (List.ofFn σ)
+theorem containsPattern_refl {n : ℕ} (σ : Perm (Fin n)) : σ.ContainsPattern σ :=
+  List.containsPattern_refl _
 
 /-- Permutation pattern containment is transitive. -/
 theorem containsPattern_trans {n k r : ℕ} (σ : Perm (Fin n))
     (τ : Perm (Fin k)) (υ : Perm (Fin r)) :
-    σ.ContainsPattern τ → τ.ContainsPattern υ → σ.ContainsPattern υ := by
-  exact List.containsPattern_trans
+    σ.ContainsPattern τ → τ.ContainsPattern υ → σ.ContainsPattern υ :=
+  List.containsPattern_trans
 
 /-- Reversing a permutation twice gives the original permutation. -/
 theorem reverse_reverse {n : ℕ} (σ : Perm (Fin n)) : reverse (reverse σ) = σ := by

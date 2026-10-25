@@ -103,24 +103,25 @@ theorem derivativeRecurrence_interlaces
 needed. -/
 theorem derivativeRecurrence_interlaces_of_splits
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
-    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (P n).IsRoot r → (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
-    Interlaces (P n) (P (n + 1)) := by
-  induction n with
-  | zero => exact derivativeRecurrence_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by lia)
-  | succ n ih =>
-      exact derivativeRecurrence_interlaces_step hrec hdeg hpos (n + 1) (hA (n + 1)) ih.1.2 (by lia)
+    Interlaces (P n) (P (n + 1)) :=
+  derivativeRecurrence_interlaces hrec hdeg hpos hA
+    (derivativeRecurrence_interlaces_step hrec hdeg hpos 0 (hA 0) h0 (by lia)) n
 
 theorem derivativeRecurrence_interlaces_of_splits_of_eval_nonpos
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
-    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hA : ∀ n r, (A n).eval r ≤ 0) (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) :=
   derivativeRecurrence_interlaces_of_splits hrec hdeg hD hpos (fun n r _ => hA n r) h0 n
 
 theorem derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
-    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀) (hpos : ∀ n, 0 < (P n).leadingCoeff)
+    (hdeg : ∀ n, (P n).natDegree = D₀ + n) (hD : 1 ≤ D₀)
+    (hpos : ∀ n, 0 < (P n).leadingCoeff)
     (hnn : ∀ n, HasNonnegCoeffs (P n)) (hA : ∀ n r, r ≤ 0 → (A n).eval r ≤ 0)
     (h0 : (P 0).Splits) (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
@@ -153,8 +154,7 @@ theorem derivativeRecurrence_hasNonnegCoeffs
   | 0 => h0
   | n + 1 => by
       have ih := derivativeRecurrence_hasNonnegCoeffs hrec hA hB h0 n
-      rw [hrec n]
-      exact ((hA n).mul ih.derivative).add ((hB n).mul ih)
+      simpa only [hrec n] using ((hA n).mul ih.derivative).add ((hB n).mul ih)
 
 /-- Rows of a second-order derivative recurrence with nonnegative coefficients. -/
 theorem derivRec₂_hasNonnegCoeffs {E : ℕ → ℝ[X]}
@@ -166,9 +166,31 @@ theorem derivRec₂_hasNonnegCoeffs {E : ℕ → ℝ[X]}
   | 0 => h0
   | n + 1 => by
       have ih := derivRec₂_hasNonnegCoeffs hrec hA hB hE h0 n
-      rw [hrec n]
-      exact (((hA n).mul ih.derivative.derivative).add ((hB n).mul ih.derivative)).add
-        ((hE n).mul ih)
+      simpa only [hrec n] using
+        (((hA n).mul ih.derivative.derivative).add ((hB n).mul ih.derivative)).add ((hE n).mul ih)
+
+private theorem hasNonnegCoeffs_mul_add_mul_derivative_aux {U V Q : ℝ[X]} {N : ℕ}
+    (hdeg : Q.natDegree ≤ N) (hV0 : 0 ≤ V.coeff 0)
+    (hmult : ∀ i (j : ℕ), j ≤ N → 0 ≤ V.coeff (i + 1) * j + U.coeff i)
+    (hQ : HasNonnegCoeffs Q) : HasNonnegCoeffs (U * Q + V * Q.derivative) := by
+  intro k
+  have hX : X * (U * Q + V * Q.derivative) = V * (X * Q.derivative) + (X * U) * Q := by
+    ring
+  rw [show (U * Q + V * Q.derivative).coeff k =
+      (X * (U * Q + V * Q.derivative)).coeff (k + 1) by rw [coeff_X_mul],
+    hX, coeff_add, coeff_mul, coeff_mul, ← Finset.sum_add_distrib]
+  refine Finset.sum_nonneg fun x _ => ?_
+  rw [coeff_X_mul_derivative]
+  rcases x with ⟨i, j⟩
+  rcases i with _ | i
+  · rw [coeff_X_mul_zero, zero_mul, add_zero]
+    exact mul_nonneg hV0 (mul_nonneg (Nat.cast_nonneg j) (hQ j))
+  · rw [coeff_X_mul]
+    by_cases hj : j ≤ N
+    · nlinarith [mul_nonneg (hmult i j hj) (hQ j)]
+    · rw [coeff_eq_zero_of_natDegree_lt (hdeg.trans_lt (by lia))]
+      ring_nf
+      rfl
 
 /-- Rows of a derivative recurrence with nonnegative coefficients, from
 nonnegative multipliers: since
@@ -182,30 +204,16 @@ theorem derivativeRecurrence_hasNonnegCoeffs_of_mult_le {D : ℕ → ℕ}
   | 0 => h0
   | n + 1 => by
       have ih := derivativeRecurrence_hasNonnegCoeffs_of_mult_le hrec hdeg hA0 hmult h0 n
-      intro k
-      have hX : X * P (n + 1) = A n * (X * (P n).derivative) + (X * B n) * P n := by
-        rw [hrec n]; ring
-      have hk : (P (n + 1)).coeff k = (X * P (n + 1)).coeff (k + 1) := by
-        rw [coeff_X_mul]
-      rw [hk, hX, coeff_add, coeff_mul, coeff_mul, ← Finset.sum_add_distrib]
-      refine Finset.sum_nonneg fun x _ => ?_
-      rw [coeff_X_mul_derivative]
-      rcases x with ⟨i, j⟩
-      rcases i with _ | i
-      · rw [coeff_X_mul_zero, zero_mul, add_zero]
-        exact mul_nonneg (hA0 n) (mul_nonneg (Nat.cast_nonneg j) (ih j))
-      · rw [coeff_X_mul]
-        by_cases hj : j ≤ D n
-        · nlinarith [mul_nonneg (hmult n i j hj) (ih j)]
-        · rw [coeff_eq_zero_of_natDegree_lt ((hdeg n).trans_lt (by lia))]
-          ring_nf
-          rfl
+      rw [hrec n, add_comm]
+      exact hasNonnegCoeffs_mul_add_mul_derivative_aux
+        (hdeg n) (hA0 n) (hmult n) ih
 
 /-- `derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the degree bound `D₀ + d * n`. -/
 theorem derivativeRecurrence_hasNonnegCoeffs_of_mult {d : ℕ}
     (hrec : ∀ n, P (n + 1) = A n * (P n).derivative + B n * P n)
     (hdeg : ∀ n, (P n).natDegree ≤ D₀ + d * n) (hA0 : ∀ n, 0 ≤ (A n).coeff 0)
-    (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * n → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
+    (hmult : ∀ n i (j : ℕ), j ≤ D₀ + d * n →
+      0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i)
     (h0 : HasNonnegCoeffs (P 0)) : ∀ n, HasNonnegCoeffs (P n) :=
   derivativeRecurrence_hasNonnegCoeffs_of_mult_le
     (D := fun n => D₀ + d * n) hrec hdeg hA0 hmult h0
@@ -289,26 +297,8 @@ for every `j` up to a degree bound for `Q`. -/
 theorem hasNonnegCoeffs_mul_add_mul_derivative {U V Q : ℝ[X]} {N : ℕ}
     (hdeg : Q.natDegree ≤ N) (hV0 : 0 ≤ V.coeff 0)
     (hmult : ∀ i (j : ℕ), j ≤ N → 0 ≤ V.coeff (i + 1) * j + U.coeff i)
-    (hQ : HasNonnegCoeffs Q) : HasNonnegCoeffs (U * Q + V * Q.derivative) := by
-  intro k
-  have hX : X * (U * Q + V * Q.derivative) = V * (X * Q.derivative) + (X * U) * Q := by
-    ring
-  have hk : (U * Q + V * Q.derivative).coeff k
-      = (X * (U * Q + V * Q.derivative)).coeff (k + 1) := by
-    rw [coeff_X_mul]
-  rw [hk, hX, coeff_add, coeff_mul, coeff_mul, ← Finset.sum_add_distrib]
-  refine Finset.sum_nonneg fun x _ => ?_
-  rw [coeff_X_mul_derivative]
-  rcases x with ⟨i, j⟩
-  rcases i with _ | i
-  · rw [coeff_X_mul_zero, zero_mul, add_zero]
-    exact mul_nonneg hV0 (mul_nonneg (Nat.cast_nonneg j) (hQ j))
-  · rw [coeff_X_mul]
-    by_cases hj : j ≤ N
-    · nlinarith [mul_nonneg (hmult i j hj) (hQ j)]
-    · rw [coeff_eq_zero_of_natDegree_lt (hdeg.trans_lt (by lia))]
-      ring_nf
-      rfl
+    (hQ : HasNonnegCoeffs Q) : HasNonnegCoeffs (U * Q + V * Q.derivative) :=
+  hasNonnegCoeffs_mul_add_mul_derivative_aux hdeg hV0 hmult hQ
 
 /-- Rows of a derivative-lag recurrence with nonnegative coefficients, from nonnegative
 multipliers.  The multiplier condition `hmult` only involves `j ≤ D₀ + d * (n + 1)`, the
@@ -338,9 +328,7 @@ theorem derivProduct_splits {P A : ℕ → ℝ[X]}
     (h0 : (P 0).Splits) (n : ℕ) : (P n).Splits := by
   induction n with
   | zero => exact h0
-  | succ n ih =>
-    rw [hrec]
-    exact (hA n).mul ih.derivative
+  | succ n ih => simpa only [hrec n] using (hA n).mul ih.derivative
 
 /-!
 ## Degrees when the top terms cancel
@@ -470,11 +458,8 @@ theorem derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel
       rw [hrec n, add_comm]
       exact hasNonnegCoeffs_mul_add_mul_derivative hd.le (hA0 n) (hmult n) hnn
     rw [hrec n] at hnn' ⊢
-    exact
-      ⟨(derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
-          hm (hA n) (hB n) hnn hd hl (hstep n)).1,
-        (derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
-          hm (hA n) (hB n) hnn hd hl (hstep n)).2,
-        hnn'⟩
+    obtain ⟨hd', hl'⟩ := derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel
+      hm (hA n) (hB n) hnn hd hl (hstep n)
+    exact ⟨hd', hl', hnn'⟩
 
 end RealRooted
