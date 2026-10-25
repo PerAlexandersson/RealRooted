@@ -153,23 +153,9 @@ lemma strictInterl_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits
 lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (affineEulerianTilde n) := by
   intro m
-  rw [affineEulerianTilde, coeff_add, coeff_C_mul]
-  rw [coeff_one_sub_X_mul_derivative]
-  by_cases hm : m ≤ n + 1
-  · have hcoeff_m : 0 ≤ coeff (eulerianTilde n) m :=
-      eulerianTilde_nonnegCoeffs n m
-    have hcoeff_succ : 0 ≤ coeff (eulerianTilde n) (m + 1) :=
-      eulerianTilde_nonnegCoeffs n (m + 1)
-    have hnm : 0 ≤ (n + 2 : ℝ) - m := by
-      have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) :=
-        Nat.cast_le.mpr (by lia)
-      simp_all
-    nlinarith
-  · have hm' : n + 1 < m := lt_of_not_ge hm
-    rcases coeff_eulerianTilde_top_and_above n with ⟨_, habove⟩
-    have hcoeff_m : coeff (eulerianTilde n) m = 0 := habove m hm'
-    have hcoeff_succ : coeff (eulerianTilde n) (m + 1) = 0 := habove (m + 1) (by lia)
-    simp [hcoeff_m, hcoeff_succ]
+  have h := eulerianTilde_nonnegCoeffs (n + 1) (m + 1)
+  rw [eulerianTilde_succ_eq_X_mul_affineEulerianTilde, coeff_X_mul] at h
+  exact h
 
 /-- Once the affine block is known to precede `P_n`, the outer `X` factor in the
 recurrence gives `P_n ≪ P_{n+1}`. -/
@@ -200,10 +186,8 @@ theorem strictInterl_eulerianTilde_succ : ∀ n : Nat,
 /-- Every Eulerian tilde polynomial is real-rooted, obtained as the
 right-hand component of the interlacing induction. -/
 theorem isRealRooted_eulerianTilde : ∀ n : Nat,
-    ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits)
-  | 0 => by
-      simp
-  | n + 1 => (strictInterl_eulerianTilde_succ n).2.1
+    ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits) :=
+  fun n => (strictInterl_eulerianTilde_succ n).1
 
 theorem interlaces_eulerianTilde_succ (n : Nat) :
     Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
