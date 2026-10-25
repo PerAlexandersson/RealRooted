@@ -333,6 +333,24 @@ lemma strictInterl_shiftedBridge_of_prev
     have hproduct := mul_neg_of_pos_of_neg hresidue hpair
     nlinarith [sq_nonneg ((shiftedRow (n + 2)).eval r)]
 
+private lemma shiftedRow_four : shiftedRow 4 = 3 + X := by
+  rw [show 4 = 0 + 4 by lia, shiftedRow_succ, shiftedRow_zero,
+    shiftedRow_two, shiftedRow_three]
+  ring
+
+private lemma shiftedRow_five : shiftedRow 5 = 5 + 2 * X := by
+  rw [show 5 = 1 + 4 by lia, shiftedRow_succ, shiftedRow_one,
+    shiftedRow_three, shiftedRow_four]
+  ring
+
+private lemma shiftedRow_six : shiftedRow 6 = 8 + 4 * X := by
+  calc
+    shiftedRow 6 = shiftedRow 5 + shiftedRow 4 + X * shiftedRow 2 := by
+      simpa only using shiftedRow_succ 2
+    _ = 8 + 4 * X := by
+      rw [shiftedRow_two, shiftedRow_four, shiftedRow_five]
+      ring
+
 /-- The bridge orientation at the five initial ranks is explicit. -/
 lemma strictInterl_shiftedBridge_small (n : ℕ) (hn : n < 5) :
     StrictInterl (shiftedRow (n + 3))
@@ -346,74 +364,32 @@ lemma strictInterl_shiftedBridge_small (n : ℕ) (hn : n < 5) :
     convert h using 1
     · norm_num [map_ofNat]
     · grind
-  · have h4 : shiftedRow 4 = 3 + X := by
-      rw [show 4 = 0 + 4 by lia, shiftedRow_succ, shiftedRow_zero,
-        shiftedRow_two, shiftedRow_three]
-      ring
-    rw [shiftedRow_one, shiftedRow_three, h4]
+  · rw [shiftedRow_one, shiftedRow_three, shiftedRow_four]
     convert
       (strictInterl_affine_linear_affine_linear_of_cross
         (u := (1 : ℝ)) (v := 3) (U := 1) (V := 2)
         (by norm_num) (by norm_num) (by norm_num)) using 1 <;>
       norm_num [map_ofNat] <;> ring
-  · have h4 : shiftedRow 4 = 3 + X := by
-      rw [show 4 = 0 + 4 by lia, shiftedRow_succ, shiftedRow_zero,
-        shiftedRow_two, shiftedRow_three]
-      ring
-    have h5 : shiftedRow 5 = 5 + 2 * X := by
-      rw [show 5 = 1 + 4 by lia, shiftedRow_succ, shiftedRow_one,
-        shiftedRow_three, h4]
-      ring
-    rw [shiftedRow_two, h4, h5]
+  · rw [shiftedRow_two, shiftedRow_four, shiftedRow_five]
     convert
       (strictInterl_affine_linear_affine_linear_of_cross
         (u := (2 : ℝ)) (v := 5) (U := 2) (V := 3)
         (by norm_num) (by norm_num) (by norm_num)) using 1 <;>
       norm_num [map_ofNat] <;> ring
-  · have h4 : shiftedRow 4 = 3 + X := by
-      rw [show 4 = 0 + 4 by lia, shiftedRow_succ, shiftedRow_zero,
-        shiftedRow_two, shiftedRow_three]
-      ring
-    have h5 : shiftedRow 5 = 5 + 2 * X := by
-      rw [show 5 = 1 + 4 by lia, shiftedRow_succ, shiftedRow_one,
-        shiftedRow_three, h4]
-      ring
-    have h6 : shiftedRow 6 = 8 + 4 * X := by
-      calc
-        shiftedRow 6 = shiftedRow 5 + shiftedRow 4 + X * shiftedRow 2 := by
-          simpa only using shiftedRow_succ 2
-        _ = 8 + 4 * X := by
-          rw [shiftedRow_two, h4, h5]
-          ring
-    rw [shiftedRow_three, h5, h6]
+  · rw [shiftedRow_three, shiftedRow_five, shiftedRow_six]
     convert
       (strictInterl_affine_linear_affine_linear_of_cross
         (u := (4 : ℝ)) (v := 8) (U := 4) (V := 5)
         (by norm_num) (by norm_num) (by norm_num)) using 1 <;>
       norm_num [map_ofNat] <;> ring
-  · have h4 : shiftedRow 4 = 3 + X := by
-      rw [show 4 = 0 + 4 by lia, shiftedRow_succ, shiftedRow_zero,
-        shiftedRow_two, shiftedRow_three]
-      ring
-    have h5 : shiftedRow 5 = 5 + 2 * X := by
-      rw [show 5 = 1 + 4 by lia, shiftedRow_succ, shiftedRow_one,
-        shiftedRow_three, h4]
-      ring
-    have h6 : shiftedRow 6 = 8 + 4 * X := by
-      calc
-        shiftedRow 6 = shiftedRow 5 + shiftedRow 4 + X * shiftedRow 2 := by
-          simpa only using shiftedRow_succ 2
-        _ = 8 + 4 * X := by
-          rw [shiftedRow_two, h4, h5]
-          ring
-    have h7 : shiftedRow 7 = 13 + 8 * X := by
+  · have h7 : shiftedRow 7 = 13 + 8 * X := by
       calc
         shiftedRow 7 = shiftedRow 6 + shiftedRow 5 + X * shiftedRow 3 := by
           simpa only using shiftedRow_succ 3
         _ = 13 + 8 * X := by
-          rw [shiftedRow_three, h5, h6]
+          rw [shiftedRow_three, shiftedRow_five, shiftedRow_six]
           ring
-    rw [h7, h6, h4]
+    rw [h7, shiftedRow_six, shiftedRow_four]
     have hsqrt : (0 : ℝ) ≤ Real.sqrt 17 := Real.sqrt_nonneg _
     have hsqrt_sq : (Real.sqrt 17 : ℝ) ^ 2 = 17 := by norm_num
     have hsqrt_lb : (15 / 4 : ℝ) ≤ Real.sqrt 17 := by nlinarith
@@ -516,25 +492,9 @@ private lemma cliqueEdges_base_edge :
     ∀ e ∈ cliqueEdges, e.Holds shiftedRow 0 := by
   intro e he
   simp only [cliqueEdges, Finset.mem_insert, Finset.mem_singleton] at he
-  rcases he with rfl | rfl | rfl | rfl | rfl | rfl
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_zero,
-      shiftedRow_one] using
-      strictInterl_one_one
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_zero,
-      shiftedRow_two] using
-      strictInterl_one_one
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_zero,
-      shiftedRow_three] using
-      strictInterl_one_two
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_one,
-      shiftedRow_two] using
-      strictInterl_one_one
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_one,
-      shiftedRow_three] using
-      strictInterl_one_two
-  · simpa only [WindowEdge.Holds, Nat.zero_add, shiftedRow_two,
-      shiftedRow_three] using
-      strictInterl_one_two
+  rcases he with rfl | rfl | rfl | rfl | rfl | rfl <;>
+    simp only [WindowEdge.Holds, Nat.zero_add, shiftedRow_zero, shiftedRow_one,
+      shiftedRow_two, shiftedRow_three, strictInterl_one_one, strictInterl_one_two]
 
 private lemma cliqueEdges_base :
     WindowInvariant shiftedRow (fun n ↦ n / 4) cliqueEdges 0 4 := by
@@ -586,13 +546,8 @@ private lemma cliqueEdges_step (n : ℕ)
     exact shiftedRow_hasPosLeadingCoeff (n + 1 + i)
   · intro e he
     simp only [cliqueEdges, Finset.mem_insert, Finset.mem_singleton] at he
-    rcases he with rfl | rfl | rfl | rfl | rfl | rfl
-    · simpa only [WindowEdge.Holds, Nat.add_zero, Nat.add_assoc] using h12
-    · simpa only [WindowEdge.Holds, Nat.add_zero, Nat.add_assoc] using h13
-    · simpa only [WindowEdge.Holds, Nat.add_assoc] using hnew.1
-    · simpa only [WindowEdge.Holds, Nat.add_assoc] using h23
-    · simpa only [WindowEdge.Holds, Nat.add_assoc] using hnew.2
-    · simpa only [WindowEdge.Holds, Nat.add_assoc] using h34
+    rcases he with rfl | rfl | rfl | rfl | rfl | rfl <;>
+      simp_all only [WindowEdge.Holds, Nat.add_zero, Nat.add_assoc]
 
 /-- Every four-row shifted window satisfies the complete six-edge invariant. -/
 theorem shiftedRow_windowInvariant (n : ℕ) :

@@ -29,12 +29,8 @@ theorem sequence_of_base_interval_and_step_from {Q : Nat → Prop}
   Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N
     · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (Nat.zero_le N))
-      | succ m =>
-          have hNm : N ≤ m := by lia
-          exact hstep m hNm (ih m (Nat.lt_succ_self m))
+    · obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by lia : n ≠ 0)
+      exact hstep m (by lia) (ih m (by lia))
 
 /-- Generic period-two sequence induction from the two base parities and a
 step advancing by two. -/
@@ -42,17 +38,12 @@ theorem sequence_of_base_pair_and_step_two {Q : Nat → Prop}
     (hzero : Q 0)
     (hone : Q 1)
     (hstep : ∀ n : Nat, Q n → Q (n + 2)) :
-    ∀ n : Nat, Q n := fun n =>
-  Nat.strong_induction_on n fun n ih => by
-    cases n with
-    | zero =>
-        exact hzero
-    | succ n =>
-        cases n with
-        | zero =>
-            exact hone
-        | succ n =>
-            exact hstep n (ih n (Nat.lt_succ_of_lt (Nat.lt_succ_self n)))
+    ∀ n : Nat, Q n := by
+  intro n
+  induction n using Nat.twoStepInduction with
+  | zero => exact hzero
+  | one => exact hone
+  | more n ih _ => exact hstep n ih
 
 /-- Generic period-two sequence induction from a finite base interval and a
 step advancing by two that starts at the cutoff row. -/
@@ -64,16 +55,9 @@ theorem sequence_of_base_interval_and_step_two_from {Q : Nat → Prop}
   Nat.strong_induction_on n fun n ih => by
     by_cases hn : n ≤ N + 1
     · exact hbase n hn
-    · cases n with
-      | zero =>
-          exact False.elim (hn (by lia))
-      | succ m =>
-          cases m with
-          | zero =>
-              exact False.elim (hn (by lia))
-          | succ k =>
-              have hNk : N ≤ k := by lia
-              exact hstep k hNk (ih k (Nat.lt_succ_of_lt (Nat.lt_succ_self k)))
+    · obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by lia : n ≠ 0)
+      obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by lia : m ≠ 0)
+      exact hstep k (by lia) (ih k (by lia))
 
 /-- Generic `StrictInterl`-chain induction from one base case and a successor step.
 
@@ -134,12 +118,11 @@ theorem strictInterl_sequence_of_base_and_degree_branches {P : Nat → ℝ[X]}
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2)))
     (hsucc : ∀ n : Nat, (P (n + 2)).natDegree = (P (n + 1)).natDegree + 1 →
       StrictInterl (P n) (P (n + 1)) → StrictInterl (P (n + 1)) (P (n + 2))) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine strictInterl_sequence_of_base_and_step hbase ?_
-  intro n hprev
-  rcases hbranch n with hsame_degree | hsucc_degree
-  · exact hsame n hsame_degree hprev
-  · exact hsucc n hsucc_degree hprev
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
+  strictInterl_sequence_of_base_and_step hbase fun n hprev => by
+    rcases hbranch n with h | h
+    · exact hsame n h hprev
+    · exact hsucc n h hprev
 
 /-- Real-rootedness corollary of a branched generic `StrictInterl`-chain induction. -/
 theorem isRealRooted_of_strictInterl_sequence_degree_branches {P : Nat → ℝ[X]}
@@ -207,45 +190,39 @@ theorem right_eq_zero_or_splits_of_eq_zero_or_splits_pair {p q : ℝ[X]}
 /-- Reverse transport for zero-aware real-rootedness certificates. -/
 theorem reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) :
     p.reverse = 0 ∨ p.reverse.Splits := by
-  rcases hp with hp | hp
-  · left
-    simp [hp]
-  · exact Or.inr (Polynomial.Splits.reverse hp)
+  obtain rfl | hp := hp
+  · simp
+  · exact Or.inr hp.reverse
 
 /-- Consume a reverse zero-aware real-rootedness certificate. -/
 theorem eq_zero_or_splits_of_reverse {p : ℝ[X]}
     (hp : p.reverse = 0 ∨ p.reverse.Splits) :
-    p = 0 ∨ p.Splits := by
-  rcases hp with hp | hp
-  · exact Or.inl (Polynomial.reverse_eq_zero.mp hp)
-  · exact Or.inr (Polynomial.Splits.of_reverse hp)
+    p = 0 ∨ p.Splits :=
+  hp.imp Polynomial.reverse_eq_zero.mp Polynomial.Splits.of_reverse
 
 /-- Reflect transport for zero-aware real-rootedness certificates. -/
 theorem reflect_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits) {N : ℕ}
     (hN : p.natDegree ≤ N) :
     reflect N p = 0 ∨ (reflect N p).Splits := by
-  rcases hp with hp | hp
-  · left
-    simp [hp]
-  · exact Or.inr (Polynomial.Splits.reflect hp hN)
+  obtain rfl | hp := hp
+  · simp
+  · exact Or.inr (hp.reflect hN)
 
 /-- Degree-padded reverse transport for zero-aware real-rootedness certificates. -/
 theorem X_pow_mul_reverse_eq_zero_or_splits {p : ℝ[X]} (hp : p = 0 ∨ p.Splits)
     (N : ℕ) :
     X ^ (N - p.natDegree) * p.reverse = 0 ∨
       (X ^ (N - p.natDegree) * p.reverse).Splits := by
-  rcases hp with hp | hp
-  · left
-    simp [hp]
-  · exact Or.inr (Polynomial.Splits.X_pow_mul_reverse hp N)
+  obtain rfl | hp := hp
+  · simp
+  · exact Or.inr (hp.X_pow_mul_reverse N)
 
 /-- Divide out a zero root in a zero-aware real-rootedness certificate. -/
 theorem divX_eq_zero_or_splits_of_coeff_zero {p : ℝ[X]} (h0 : p.coeff 0 = 0)
     (hp : p = 0 ∨ p.Splits) :
     p.divX = 0 ∨ p.divX.Splits := by
-  rcases hp with hp | hp
-  · left
-    simp [hp]
+  obtain rfl | hp := hp
+  · simp
   · exact Or.inr ((DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero h0).1 hp)
 
 /-- Lift a zero-aware real-rootedness certificate after dividing out a zero root. -/
@@ -253,8 +230,7 @@ theorem eq_zero_or_splits_of_divX {p : ℝ[X]} (h0 : p.coeff 0 = 0)
     (hp : p.divX = 0 ∨ p.divX.Splits) :
     p = 0 ∨ p.Splits := by
   rcases hp with hp | hp
-  · left
-    rw [DegreeDropReversal.eq_X_mul_divX_of_coeff_zero h0, hp, mul_zero]
+  · exact Or.inl (by rw [DegreeDropReversal.eq_X_mul_divX_of_coeff_zero h0, hp, mul_zero])
   · exact Or.inr (DegreeDropReversal.splits_of_divX_splits_of_coeff_zero h0 hp)
 
 /-- Reverse transport for nonzero real-rootedness certificates. -/

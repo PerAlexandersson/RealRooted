@@ -53,9 +53,8 @@ abbrev PreservesRealRootedOnPencilsAlong
 
 /-- The identity map preserves real-rootedness on any pencil. -/
 theorem preservesRealRootedOnPencil_id (f g : ℝ[X]) :
-    PreservesRealRootedOnPencil LinearMap.id f g := by
-  intro α β hrr
-  exact Or.inr (by simpa using hrr.2)
+    PreservesRealRootedOnPencil LinearMap.id f g :=
+  fun _ _ hrr => Or.inr hrr.2
 
 /-- The identity map preserves real-rootedness along any sequence of pencils. -/
 theorem preservesRealRootedOnPencilsAlong_id (P Q : ℕ → ℝ[X]) :
@@ -262,10 +261,8 @@ theorem allComboRealRooted_sequence_of_pencil
     ∀ j : ℕ, AllComboRealRooted (P j) (Q j) := by
   intro j
   induction j with
-  | zero =>
-      exact hbase
-  | succ j ih =>
-      exact allComboRealRooted_step_of_pencil ih (hT j ih) (hP j) (hQ j)
+  | zero => exact hbase
+  | succ j ih => exact allComboRealRooted_step_of_pencil ih (hT j ih) (hP j) (hQ j)
 
 /-- Transport `AllComboRealRooted` along a sequence of pencil-local preserving
 linear maps, allowing a real two-coordinate change after each map. -/
@@ -281,11 +278,9 @@ theorem allComboRealRooted_sequence_linear_change_of_pencil
     ∀ j : ℕ, AllComboRealRooted (P j) (Q j) := by
   intro j
   induction j with
-  | zero =>
-      exact hbase
+  | zero => exact hbase
   | succ j ih =>
-      exact allComboRealRooted_step_linear_change_of_pencil ih (hT j ih)
-        (hP j) (hQ j)
+      exact allComboRealRooted_step_linear_change_of_pencil ih (hT j ih) (hP j) (hQ j)
 
 /-- Transport `AllComboRealRooted` along triangular Ore-shaped state rows.
 
@@ -308,19 +303,11 @@ theorem allComboRealRooted_triangular_sequence_of_pencil
     ∀ j : ℕ, AllComboRealRooted (P j) (Q j) := by
   intro j
   induction j with
-  | zero =>
-      exact hbase
+  | zero => exact hbase
   | succ j ih =>
-      have hPstep :
-          P (j + 1) =
-            C (a j) * T j (P j) + C (b j) * T j (Q j) := by
-        rw [hP j, hPimage j]
-      have hQstep :
-          Q (j + 1) =
-            C (c j) * T j (P j) + C (d j) * T j (Q j) := by
-        rw [hQ j, hQimage j]
-      exact allComboRealRooted_step_linear_change_of_pencil ih (hT j ih)
-        hPstep hQstep
+      apply allComboRealRooted_step_linear_change_of_pencil ih (hT j ih)
+      · rw [hP j, hPimage j]
+      · rw [hQ j, hQimage j]
 
 /-- Transport `AllComboRealRooted` along triangular state rows supplied by
 row certificates. -/
@@ -333,14 +320,10 @@ theorem allComboRealRooted_triangular_sequence_of_certificates
     ∀ j : ℕ, AllComboRealRooted (P j) (Q j) := by
   intro j
   induction j with
-  | zero =>
-      exact hbase
+  | zero => exact hbase
   | succ j ih =>
-      have row := hrow j ih
-      have hstep :
-          AllComboRealRooted (A j (P j) + Q j) (K j (Q j)) :=
-        allComboRealRooted_triangular_step_of_certificate (T := T j) ih row
-      simpa [hP j, hQ j] using hstep
+      simpa [hP j, hQ j] using
+        allComboRealRooted_triangular_step_of_certificate (T := T j) ih (hrow j ih)
 
 /-- Transport `AllComboRealRooted` along triangular rows whose full
 all-combinations step is supplied directly.
@@ -357,8 +340,7 @@ theorem allComboRealRooted_triangular_sequence_of_step_preservers
     ∀ j : ℕ, AllComboRealRooted (P j) (Q j) := by
   intro j
   induction j with
-  | zero =>
-      exact hbase
+  | zero => exact hbase
   | succ j ih =>
       simpa [hP j, hQ j] using hstep j ih
 

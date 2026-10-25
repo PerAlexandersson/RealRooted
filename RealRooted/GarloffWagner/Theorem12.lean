@@ -64,24 +64,16 @@ end IsKreinSummand
 private theorem factorialHadamardProduct_interl_of_right_natDegree_eq_zero
     (f g p : ℝ[X]) (hpdeg : p.natDegree = 0) :
     Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
-  have hfdeg : (factorialHadamardProduct f p).natDegree = 0 :=
-    le_antisymm
-      ((natDegree_factorialHadamardProduct_le_right f p).trans (le_of_eq hpdeg))
-      (Nat.zero_le _)
-  have hgdeg : (factorialHadamardProduct g p).natDegree = 0 :=
-    le_antisymm
-      ((natDegree_factorialHadamardProduct_le_right g p).trans (le_of_eq hpdeg))
-      (Nat.zero_le _)
-  exact interl_of_natDegree_eq_zero hfdeg hgdeg
+  apply interl_of_natDegree_eq_zero <;>
+    exact Nat.le_zero.mp
+      ((natDegree_factorialHadamardProduct_le_right _ p).trans hpdeg.le)
 
 /-- Constant right input base case for Theorem 12(a). -/
 private theorem factorialHadamardProduct_pf_of_right_natDegree_eq_zero {f p : ℝ[X]}
     (hf : IsPFPolynomial f) (hp : IsPFPolynomial p) (hpdeg : p.natDegree = 0) :
     IsPFPolynomial (factorialHadamardProduct f p) := by
-  have hdeg : (factorialHadamardProduct f p).natDegree = 0 :=
-    le_antisymm
-      ((natDegree_factorialHadamardProduct_le_right f p).trans (le_of_eq hpdeg))
-      (Nat.zero_le _)
+  have hdeg := Nat.le_zero.mp
+    ((natDegree_factorialHadamardProduct_le_right f p).trans hpdeg.le)
   exact IsPFPolynomial.of_realRooted_nonneg
     (hf.hasNonnegCoeffs.factorialHadamardProduct hp.hasNonnegCoeffs)
     (Polynomial.Splits.of_natDegree_eq_zero hdeg)
@@ -156,15 +148,11 @@ theorem HasNonnegCoeffs.weightedSum :
       intro n
       simp
   | (a, p) :: l, hnonneg, hnn => by
-      have ha : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp : HasNonnegCoeffs p := hnn (a, p) (by simp)
-      have htail_nonneg : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        fun ap hap => hnonneg ap (by simp [hap])
-      have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
-        fun ap hap => hnn ap (by simp [hap])
       simpa [weightedSum_cons] using
-        (hasNonnegCoeffs_C_mul ha hp).add
-          (HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn)
+        (hasNonnegCoeffs_C_mul (hnonneg (a, p) (by simp)) (hnn (a, p) (by simp))).add
+          (HasNonnegCoeffs.weightedSum l
+            (fun ap hap => hnonneg ap (by simp [hap]))
+            (fun ap hap => hnn ap (by simp [hap])))
 
 /-- Zero-aware weighted common-right cone closure. -/
 theorem interl_weightedSum_right_of_nonneg :
@@ -176,26 +164,18 @@ theorem interl_weightedSum_right_of_nonneg :
   | [], h, _, _, _ => by
       simp [interl_zero_left]
   | (a, p) :: l, h, hnonneg, hinterl, hnn => by
-      have ha : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hp_strictInterl : Interl p h := hinterl (a, p) (by simp)
-      have hp_nn : HasNonnegCoeffs p := hnn (a, p) (by simp)
       have htail_nonneg : ∀ ap ∈ l, 0 ≤ ap.1 :=
         fun ap hap => hnonneg ap (by simp [hap])
-      have htail_strictInterl : ∀ ap ∈ l, Interl ap.2 h :=
-        fun ap hap => hinterl ap (by simp [hap])
       have htail_nn : ∀ ap ∈ l, HasNonnegCoeffs ap.2 :=
         fun ap hap => hnn ap (by simp [hap])
-      have hhead_strictInterl : Interl (C a * p) h :=
-        Interl.C_mul_left_of_nonneg hp_strictInterl ha
-      have htail_strictInterl_sum : Interl (weightedSum l) h :=
-        interl_weightedSum_right_of_nonneg l h htail_nonneg htail_strictInterl htail_nn
-      have hhead_nn : HasNonnegCoeffs (C a * p) :=
-        hasNonnegCoeffs_C_mul ha hp_nn
-      have htail_sum_nn : HasNonnegCoeffs (weightedSum l) :=
-        HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn
       simpa [weightedSum_cons] using
-        interl_add_left_of_common_right_of_nonneg hhead_strictInterl htail_strictInterl_sum
-          hhead_nn htail_sum_nn
+        interl_add_left_of_common_right_of_nonneg
+          (Interl.C_mul_left_of_nonneg (hinterl (a, p) (by simp))
+            (hnonneg (a, p) (by simp)))
+          (interl_weightedSum_right_of_nonneg l h htail_nonneg
+            (fun ap hap => hinterl ap (by simp [hap])) htail_nn)
+          (hasNonnegCoeffs_C_mul (hnonneg (a, p) (by simp)) (hnn (a, p) (by simp)))
+          (HasNonnegCoeffs.weightedSum l htail_nonneg htail_nn)
 
 theorem factorialHadamardProduct_weightedSum_left :
     ∀ (l : List (ℝ × ℝ[X])) (p : ℝ[X]),
@@ -221,13 +201,13 @@ private theorem factorialHadamardProduct_interl_of_weightedSum_right {f g p : �
   rw [hf, factorialHadamardProduct_weightedSum_left]
   apply interl_weightedSum_right_of_nonneg
   · intro ap hap
-    rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
+    obtain ⟨ap0, hap0, rfl⟩ := List.mem_map.mp hap
     exact hnonneg ap0 hap0
   · intro ap hap
-    rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
+    obtain ⟨ap0, hap0, rfl⟩ := List.mem_map.mp hap
     exact hinterl ap0 hap0
   · intro ap hap
-    rcases List.mem_map.mp hap with ⟨ap0, hap0, rfl⟩
+    obtain ⟨ap0, hap0, rfl⟩ := List.mem_map.mp hap
     exact hnn ap0 hap0
 
 /-- Theorem 12(b) reducer after Lemma 7 has expanded the left input into
@@ -425,7 +405,8 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
     (∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
       IsPFPolynomial (factorialHadamardProduct f p)) ∧
     (∀ {f g p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
-      StrictInterl f g → Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p)) := by
+      StrictInterl f g →
+        Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p)) := by
   classical
   let P : ℕ → Prop := fun n =>
     (∀ {f p : ℝ[X]},
@@ -475,8 +456,8 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
             apply hA_lt hf hq
             rw [← hmeasure]
             lia
+          have hfD : IsPFPolynomial (derivative f) := hf.derivative
           have hD : IsPFPolynomial (factorialHadamardProduct (derivative f) q) := by
-            have hfD : IsPFPolynomial (derivative f) := hf.derivative
             apply hA_lt hfD hq
             have hDdeg : (derivative f).natDegree ≤ f.natDegree := by simp
             rw [← hmeasure]
@@ -484,9 +465,7 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
           have hder :
               Interl (factorialHadamardProduct (derivative f) q)
                 (factorialHadamardProduct f q) := by
-            have hfD : IsPFPolynomial (derivative f) := hf.derivative
-            have hinterlD : Interl (derivative f) f := hf.derivative_interl_self
-            apply hB_lt hfD hf hq hinterlD
+            apply hB_lt hfD hf hq hf.derivative_interl_self
             rw [← hmeasure]
             lia
           rw [hfactor]
@@ -509,16 +488,10 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
           · have hfdeg0 : f.natDegree = 0 := by
               have hstrict_le := hstrict.natDegree_le
               lia
-            have hleftdeg : (factorialHadamardProduct f p).natDegree = 0 :=
-              le_antisymm
-                ((natDegree_factorialHadamardProduct_le_left f p).trans
-                  (le_of_eq hfdeg0))
-                (Nat.zero_le _)
-            have hrightdeg : (factorialHadamardProduct g p).natDegree = 0 :=
-              le_antisymm
-                ((natDegree_factorialHadamardProduct_le_left g p).trans
-                  (le_of_eq hgdeg0))
-                (Nat.zero_le _)
+            have hleftdeg := Nat.le_zero.mp
+              ((natDegree_factorialHadamardProduct_le_left f p).trans hfdeg0.le)
+            have hrightdeg := Nat.le_zero.mp
+              ((natDegree_factorialHadamardProduct_le_left g p).trans hgdeg0.le)
             exact interl_of_natDegree_eq_zero hleftdeg hrightdeg
           have hgp : IsPFPolynomial (factorialHadamardProduct g p) :=
             hA hg hp hmeasure
@@ -545,22 +518,18 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
           exact factorialHadamardProduct_interl_of_kreinSummandExpansion_of_derivative
             hfexp hnonneg hsummand hg hgp
             (fun q u hfactor => by
-              have hq := (hdeleted q u hfactor).1
-              have hqdeg := (hdeleted q u hfactor).2
+              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
               have hpD : IsPFPolynomial (derivative p) := hp.derivative
-              have hinterlD : Interl (derivative p) p := hp.derivative_interl_self
-              apply hB_lt hpD hp hq hinterlD
+              apply hB_lt hpD hp hq hp.derivative_interl_self
               rw [← hmeasure]
               lia)
             (fun q u hfactor => by
-              have hq := (hdeleted q u hfactor).1
-              have hqdeg := (hdeleted q u hfactor).2
+              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
               apply hA_lt hp hq
               rw [← hmeasure]
               lia)
             (fun q u hfactor => by
-              have hq := (hdeleted q u hfactor).1
-              have hqdeg := (hdeleted q u hfactor).2
+              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
               have hpD : IsPFPolynomial (derivative p) := hp.derivative
               apply hA_lt hpD hq
               have hDdeg : (derivative p).natDegree ≤ p.natDegree := by simp
