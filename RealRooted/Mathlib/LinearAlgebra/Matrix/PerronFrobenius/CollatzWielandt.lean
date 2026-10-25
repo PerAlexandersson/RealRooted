@@ -172,7 +172,7 @@ theorem upperSemicontinuousOn
       ((isOpen_posSupportNeighborhood x₀).mem_nhds (self_mem_posSupportNeighborhood x₀))
   have lt_eventually : ∀ᶠ y in 𝓝 x₀, f y < c :=
     Filter.Tendsto.eventually_lt_const hc cont_at
-  rcases eventually_to_open lt_eventually with ⟨V, V_open, x₀_in_V, hV⟩
+  rcases eventually_nhds_iff.1 lt_eventually with ⟨V, hV, V_open, x₀_in_V⟩
   let W := V ∩ posSupportNeighborhood x₀ ∩ RealRooted.standardSimplex ℝ n
   have VU_open : IsOpen (V ∩ posSupportNeighborhood x₀) :=
     IsOpen.inter V_open (isOpen_posSupportNeighborhood x₀)
