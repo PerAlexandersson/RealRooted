@@ -56,10 +56,7 @@ theorem evenTopDescentCount_one (n : ℕ) :
   intro j _
   rintro ⟨_, k, hk, hlt⟩
   simp only [Equiv.Perm.coe_one, id_eq] at hlt
-  have hjk : j < k := by
-    apply Fin.lt_def.mpr
-    lia
-  exact (lt_asymm hjk hlt)
+  exact lt_asymm (Fin.lt_def.mpr (by lia)) hlt
 
 /-- Every row has strictly positive constant term. -/
 theorem evenTopDescentPolynomial_eval_zero_pos (n : ℕ) :
@@ -98,22 +95,19 @@ theorem evenTopDescentCount_lt (n : ℕ) (π : Equiv.Perm (Fin (n + 1))) :
     have hklt := k.isLt
     simp only [Fin.val_last] at hk
     lia
-  have hsub : s ⊆ Finset.univ := Finset.subset_univ _
-  have hss : s ⊂ Finset.univ :=
-    (Finset.ssubset_iff_of_subset hsub).2
-      ⟨Fin.last n, Finset.mem_univ _, hlast⟩
-  simpa [evenTopDescentCount, s] using Finset.card_lt_card hss
+  simpa [evenTopDescentCount, s] using Finset.card_lt_card
+    ((Finset.ssubset_iff_of_subset (Finset.subset_univ _)).2
+      ⟨Fin.last n, Finset.mem_univ _, hlast⟩)
 
 /-- Every nonempty row has degree strictly below its number of letters. -/
 theorem evenTopDescentPolynomial_natDegree_lt (n : ℕ) :
     (evenTopDescentPolynomial (n + 1)).natDegree < n + 1 := by
-  have hle : (evenTopDescentPolynomial (n + 1)).natDegree ≤ n := by
-    unfold evenTopDescentPolynomial
-    apply natDegree_sum_le_of_forall_le
-    intro π _
-    rw [natDegree_X_pow]
-    exact Nat.lt_succ_iff.mp (evenTopDescentCount_lt n π)
-  lia
+  apply Nat.lt_succ_of_le
+  unfold evenTopDescentPolynomial
+  apply natDegree_sum_le_of_forall_le
+  intro π _
+  rw [natDegree_X_pow]
+  exact Nat.lt_succ_iff.mp (evenTopDescentCount_lt n π)
 
 /-- After inserting a maximum, its position is a descent top exactly when
 the insertion slot is not the final position. -/
@@ -128,9 +122,7 @@ private theorem insertMaximum_has_smaller_successor {n : ℕ}
     have hklt := k.isLt
     lia
   · intro hlast
-    have hslot : slot.val < n := by
-      have h : slot < Fin.last n := Fin.lt_last_iff_ne_last.mpr hlast
-      exact h
+    have hslot : slot.val < n := Fin.lt_last_iff_ne_last.mpr hlast
     let k : Fin (n + 1) := ⟨slot.val + 1, by lia⟩
     refine ⟨k, rfl, ?_⟩
     have hk_ne : k ≠ slot := by
@@ -258,19 +250,7 @@ private theorem surviving_evenTop_positions_eq_filter {n : ℕ}
   classical
   ext j
   simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-  constructor
-  · rintro ⟨hpar, k, hjk, hlt, hneq⟩
-    refine ⟨⟨hpar, k, hjk, hlt⟩, ?_⟩
-    intro h
-    have hv := congrArg Fin.val h
-    exact hneq (by simpa using hv.trans hjk)
-  · rintro ⟨⟨hpar, k, hjk, hlt⟩, hneq⟩
-    refine ⟨hpar, k, hjk, hlt, ?_⟩
-    intro h
-    apply hneq
-    apply Fin.ext
-    simp only [Fin.val_succ]
-    lia
+  grind
 
 /-- Choosing a destroying slot removes exactly one old descent; every other
 slot leaves the old count unchanged. -/
@@ -301,22 +281,13 @@ theorem surviving_evenTop_positions_card {n : ℕ}
       ext j
       simp only [Finset.mem_filter, Finset.mem_erase]
       constructor
-      · rintro ⟨hj, hneq⟩
-        exact ⟨fun heq => hneq ((hiff j).mpr heq), hj⟩
-      · rintro ⟨hneq, hj⟩
-        exact ⟨hj, fun hs => hneq ((hiff j).mp hs)⟩
+      · rintro ⟨hj, hne⟩; exact ⟨fun h => hne ((hiff j).2 h), hj⟩
+      · rintro ⟨hne, hj⟩; exact ⟨hj, fun h => hne ((hiff j).1 h)⟩
     rw [hfilter, Finset.card_erase_of_mem hj₀S, hS]
     simp [hD]
-  · have hfilter : S.filter (fun j => slot ≠ j.succ) = S := by
-      ext j
-      simp only [Finset.mem_filter]
-      constructor
-      · exact And.left
-      · intro hj
-        refine ⟨hj, ?_⟩
-        intro hs
-        exact hD ((mem_evenTopDestroySlots_iff π slot).mpr
-          ⟨j, by simpa [S] using hj, hs⟩)
+  · have hfilter : S.filter (fun j => slot ≠ j.succ) = S :=
+      Finset.filter_eq_self.2 fun j hj hs => hD ((mem_evenTopDestroySlots_iff π slot).2
+        ⟨j, by simpa [S] using hj, hs⟩)
     rw [hfilter, hS]
     simp [hD]
 
@@ -336,13 +307,10 @@ private theorem sum_if_mem_finset {α : Type*} [Fintype α] [DecidableEq α]
       D.card • a + (Fintype.card α - D.card) • b := by
   classical
   rw [Finset.sum_ite]
-  have hD : (Finset.univ.filter fun i : α => i ∈ D) = D := by
-    ext i
-    simp
   have hnotD : (Finset.univ.filter fun i : α => i ∉ D) = Finset.univ \ D := by
     ext i
     simp
-  rw [hD, hnotD]
+  rw [hnotD]
   simp [Finset.card_sdiff]
 
 /-- Fixed-permutation slot sum when the inserted maximum is odd. -/
@@ -377,10 +345,8 @@ theorem evenTop_even_insertion_slot_sum {n : ℕ} (heven : (n + 1) % 2 = 0)
       simp [heven, last_not_mem_evenTopDestroySlots π]
     · by_cases hD : slot ∈ evenTopDestroySlots π
       · have hkpos : 1 ≤ evenTopDescentCount π := by
-          have hcard := evenTopDestroySlots_card π
-          have hpositive : 0 < (evenTopDestroySlots π).card :=
-            Finset.card_pos.mpr ⟨slot, hD⟩
-          lia
+          rw [← evenTopDestroySlots_card]
+          exact Finset.card_pos.mpr ⟨slot, hD⟩
         simp [heven, hlast, hD]
         lia
       · simp [heven, hlast, hD]
@@ -403,8 +369,7 @@ private theorem odd_monomial_recurrence (n k : ℕ) (hk : k ≤ n) :
       (1 - X) * (X ^ k).derivative + C ((n + 1 : ℕ) : ℝ) * X ^ k := by
   simp only [nsmul_eq_mul, derivative_X_pow, C_eq_natCast]
   have hsub : ((n + 1 - k : ℕ) : ℝ[X]) =
-      ((n + 1 : ℕ) : ℝ[X]) - (k : ℝ[X]) := by
-    exact Nat.cast_sub (by lia : k ≤ n + 1)
+      ((n + 1 : ℕ) : ℝ[X]) - (k : ℝ[X]) := Nat.cast_sub (by lia)
   by_cases hkzero : k = 0
   · subst k
     simp

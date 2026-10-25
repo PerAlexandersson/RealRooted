@@ -170,7 +170,6 @@ its own. -/
 theorem exists_submodule_le_finrank_eq {N : ℕ}
     (S : Submodule 𝕜 (Fin N → 𝕜)) (m : ℕ) (hm : m ≤ Module.finrank 𝕜 S) :
     ∃ T : Submodule 𝕜 (Fin N → 𝕜), T ≤ S ∧ Module.finrank 𝕜 T = m := by
-  by_contra h_contra
   obtain ⟨T, hT⟩ : ∃ T : Submodule 𝕜 S, Module.finrank 𝕜 T = m := by
     have := Module.finBasis 𝕜 S
     refine
@@ -178,7 +177,7 @@ theorem exists_submodule_le_finrank_eq {N : ℕ}
     rw [@finrank_span_eq_card]
     · simp
     · exact this.linearIndependent.comp _ (Fin.castLE_injective _)
-  refine h_contra ⟨Submodule.map (Submodule.subtype S) T, Submodule.map_subtype_le _ _, ?_⟩
+  refine ⟨Submodule.map (Submodule.subtype S) T, Submodule.map_subtype_le _ _, ?_⟩
   simp_all
 
 /-- Interlacing relation: a decreasing length-`n` family `μ` interlaces a
@@ -312,9 +311,7 @@ theorem rayleigh_ge_of_support {N : ℕ}
   rw [rayleigh, le_div_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
     denom_eq_sum_sq b x, Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ ↦ ?_
-  rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
-  · simp [hi]
-  · simp_all
+  by_cases hi : (inner 𝕜 (b i) x : 𝕜) = 0 <;> simp_all
 
 /--
 Upper Rayleigh bound from the support of the Fourier coefficients: if every
@@ -331,9 +328,7 @@ theorem rayleigh_le_of_support {N : ℕ}
   rw [rayleigh, div_le_iff₀ (denom_pos x hx), num_eq_sum_sq A b μ hb x,
     denom_eq_sum_sq b x, Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ ↦ ?_
-  rcases eq_or_ne (inner 𝕜 (b i) x : 𝕜) 0 with hi | hi
-  · simp [hi]
-  · simp_all
+  by_cases hi : (inner 𝕜 (b i) x : 𝕜) = 0 <;> simp_all
 
 /--
 **Courant-Fischer min-max principle from an orthonormal eigenbasis.**
@@ -398,17 +393,8 @@ theorem courantFischer_of_eigenbasis {N : ℕ}
         have hk_sum : (k : ℕ) + 1 + (N - (k : ℕ)) = N + 1 := by
           rw [Nat.add_comm (k : ℕ) 1, Nat.add_assoc, Nat.add_sub_of_le hk_le,
             Nat.add_comm 1 N]
-        have htotal : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
-            Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) = N + 1 := by
-          rw [hadd, hk_sum]
-        by_contra hnonpos
-        have hinf_zero : Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) = 0 :=
-          Nat.eq_zero_of_le_zero (Nat.le_of_not_gt hnonpos)
-        have hle : Module.finrank 𝕜 (W ⊔ U : Submodule 𝕜 _) +
-            Module.finrank 𝕜 (W ⊓ U : Submodule 𝕜 _) ≤ N := by
-          simpa [hinf_zero] using hsum
-        have hbad : N + 1 ≤ N := htotal ▸ hle
-        exact (Nat.not_succ_le_self N) hbad
+        rw [hk_sum] at hadd
+        lia
       have hne : (W ⊓ U : Submodule 𝕜 _) ≠ ⊥ := fun h => by
         rw [h] at hpos; simp at hpos
       obtain ⟨x, hxmem, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne

@@ -78,7 +78,7 @@ def point {m : ℕ} (t δ : ℝ) (k : ℕ) (_hk : k ≤ m) : Fin m → ℝ :=
 private theorem point_zero {m : ℕ} (t δ : ℝ) (hm : 0 ≤ m) :
     point t δ 0 hm = fun _ : Fin m => t := by
   funext i
-  simp only [point, Nat.not_lt_zero, ↓reduceIte, add_zero]
+  simp [point]
 
 private theorem point_succ {m k : ℕ} (t δ : ℝ) (hk : k + 1 ≤ m) :
     point t δ (k + 1) hk =
@@ -90,29 +90,22 @@ private theorem point_succ {m k : ℕ} (t δ : ℝ) (hk : k + 1 ≤ m) :
   · have hieq : i = ⟨k, Nat.lt_of_succ_le hk⟩ := Fin.ext hi
     rw [hieq, Function.update_apply]
     simp only [Nat.lt_irrefl, Nat.lt_succ_self, ↓reduceIte, mul_one, add_zero]
-  · by_cases hlt : i.1 < k
+  · have hij : i ≠ (⟨k, Nat.lt_of_succ_le hk⟩ : Fin m) := by
+      intro h
+      exact hi (Fin.ext_iff.mp h)
+    rw [Function.update_apply]
+    by_cases hlt : i.1 < k
     · have hlt' : i.1 < k + 1 := Nat.lt_trans hlt (Nat.lt_succ_self k)
-      have hji : (⟨k, Nat.lt_of_succ_le hk⟩ : Fin m) ≠ i := by
-        intro h
-        exact hi (Fin.ext_iff.mp h.symm)
-      rw [Function.update_apply]
-      have hij : i ≠ (⟨k, Nat.lt_of_succ_le hk⟩ : Fin m) := Ne.symm hji
       simp only [hlt, hlt', ↓reduceIte, hij, Pi.zero_apply, mul_zero, add_zero]
     · have hlt' : ¬i.1 < k + 1 := by
         intro h
         exact hi (Nat.eq_of_lt_succ_of_not_lt h hlt)
-      have hji : (⟨k, Nat.lt_of_succ_le hk⟩ : Fin m) ≠ i := by
-        intro h
-        exact hi (Fin.ext_iff.mp h.symm)
-      rw [Function.update_apply]
-      have hij : i ≠ (⟨k, Nat.lt_of_succ_le hk⟩ : Fin m) := Ne.symm hji
       simp only [hlt, hlt', ↓reduceIte, hij, Pi.zero_apply, mul_zero, add_zero]
 
 private theorem point_full {m : ℕ} (t δ : ℝ) :
     point t δ m (le_refl m) = fun _ : Fin m => t + δ := by
   funext i
-  have hi : i.1 < m := i.isLt
-  simp only [point, hi, ↓reduceIte]
+  simp [point, i.isLt]
 
 private theorem diagonal_ne_zero_of_aboveRoots {m : ℕ}
     {P : MvPolynomial (Fin m) ℝ} {c : ℝ}
@@ -187,19 +180,14 @@ theorem diagonal_roots_le_of_mss_induction {m : ℕ}
     ∀ r ∈ (MvPolynomial.diagonal (stage P m (le_refl m))).roots, r ≤ t + δ := by
   obtain ⟨_, habove_m, _⟩ :=
     induction_step hδ hthreshold hstable habove hbarrier m (le_refl m)
-  have hpoint : point t δ m (le_refl m) = fun _ : Fin m => t + δ := point_full t δ
   have habove_const : AboveRoots (stage P m (le_refl m)) (fun _ => t + δ) := by
-    rw [← hpoint]
-    exact habove_m
+    simpa only [point_full] using habove_m
   have hdiag_ne : MvPolynomial.diagonal (stage P m (le_refl m)) ≠ 0 :=
     diagonal_ne_zero_of_aboveRoots habove_const
   intro r hr
-  have hroot : (MvPolynomial.diagonal (stage P m (le_refl m))).IsRoot r :=
-    (Polynomial.mem_roots hdiag_ne).mp hr
   by_contra hnot
-  have hlt : t + δ < r := lt_of_not_ge hnot
-  exact diagonal_eval_ne_zero_of_aboveRoots habove_const hlt
-    (Polynomial.IsRoot.def.mp hroot)
+  exact diagonal_eval_ne_zero_of_aboveRoots habove_const (lt_of_not_ge hnot)
+    (Polynomial.IsRoot.def.mp ((Polynomial.mem_roots hdiag_ne).mp hr))
 
 /-- The determinant-pencil instance of the ordered MSS root endpoint. -/
 theorem determinant_diagonal_roots_le {n m : ℕ}
@@ -273,10 +261,7 @@ private theorem update_parameter {ε t : ℝ} (hε : 0 ≤ ε) (hεt : ε < t) :
   have hden : 0 < 1 - ε / t := sub_pos.mpr hratio
   constructor
   · exact one_div_pos.mpr hden
-  · have hinv : 1 / (1 / (1 - ε / t)) = 1 - ε / t := by
-      rw [one_div_div]
-      norm_num
-    rw [hinv]
+  · rw [one_div_div]
     linarith
 
 private def shift {m : ℕ} :
@@ -387,25 +372,14 @@ private theorem shift_realDetPencil {n m : ℕ}
   intro i j
   change φ (M i j) = N i j
   have hsum_entry := congr_fun (congr_fun hsum i) j
-  by_cases hij : i = j
-  · subst j
+  rcases eq_or_ne i j with rfl | hij <;>
     simp only [M, N, φ, MvPolynomial.eval₂Hom_C, MvPolynomial.eval₂Hom_X',
-      map_add, map_sum, map_mul, MvPolynomial.eval₂Hom_C]
-    rw [Fintype.sum_sum_type]
-    simp only [Fin.isValue, Fin.sum_univ_one]
-    rw [← hsum_entry]
-    rw [Matrix.sum_apply, map_sum]
-    simp_rw [add_mul]
-    rw [Finset.sum_add_distrib, Finset.mul_sum]
-    ring
-  · simp only [M, N, φ, MvPolynomial.eval₂Hom_C, MvPolynomial.eval₂Hom_X',
-      map_add, map_sum, map_mul, MvPolynomial.eval₂Hom_C]
-    rw [Fintype.sum_sum_type]
-    simp only [Fin.isValue, Fin.sum_univ_one]
-    rw [← hsum_entry]
-    rw [Matrix.sum_apply, map_sum]
-    simp_rw [add_mul]
-    rw [Finset.sum_add_distrib, Finset.mul_sum]
+      map_add, map_sum, map_mul, MvPolynomial.eval₂Hom_C] <;>
+    rw [Fintype.sum_sum_type] <;>
+    simp only [Fin.isValue, Fin.sum_univ_one] <;>
+    rw [← hsum_entry, Matrix.sum_apply, map_sum] <;>
+    simp_rw [add_mul] <;>
+    rw [Finset.sum_add_distrib, Finset.mul_sum] <;>
     ring
 
 /-- Pointwise MSS Lemma 5.2 bridge between the mixed characteristic polynomial
@@ -416,29 +390,24 @@ theorem mixedCharacteristic_eval_bridge {n m : ℕ}
       (MvPolynomial.diagonal (stage (realDetPencil 0 As) m (le_refl m))).eval x := by
   have hpoly : MixedCharacteristic.mixedCharacteristicMv As =
       shift (stage (realDetPencil 0 As) m (le_refl m)) := by
-    have hmv : MixedCharacteristic.mixedCharacteristicMv As =
+    rw [show MixedCharacteristic.mixedCharacteristicMv As =
         oneSubPderivList (List.ofFn (fun i : Fin m => Sum.inr i))
           (realDetPencil 0 (fun k => match k with
             | Sum.inl _ => 1
-            | Sum.inr i => As i)) := by
-      rfl
-    rw [hmv]
-    rw [← shift_realDetPencil As hsum]
+            | Sum.inr i => As i)) from rfl, ← shift_realDetPencil As hsum]
     have hlist : List.ofFn (fun i : Fin m => Sum.inr i) =
         (List.ofFn (fun i : Fin m => i)).map
           (Sum.inr : Fin m → Sum (Fin 1) (Fin m)) := by
       rw [List.map_ofFn]
       rfl
-    rw [hlist]
-    rw [oneSubPderivList_shift]
+    rw [hlist, oneSubPderivList_shift]
     rfl
-  have hweight : mixedCharacteristic As =
+  rw [show mixedCharacteristic As =
       commonPhaseRestriction (fun k : Sum (Fin 1) (Fin m) =>
         match k with
         | Sum.inl _ => 1
-        | Sum.inr _ => 0) (MixedCharacteristic.mixedCharacteristicMv As) := by
-    rfl
-  rw [hweight, commonPhaseRestriction_eval, hpoly]
+        | Sum.inr _ => 0) (MixedCharacteristic.mixedCharacteristicMv As) from rfl,
+    commonPhaseRestriction_eval, hpoly]
   calc
     _ = MvPolynomial.eval (fun k : Sum (Fin 1) (Fin m) =>
         match k with
@@ -492,12 +461,10 @@ theorem mixedCharacteristic_roots_le_one_add_sqrt_sq {n m : ℕ}
     linarith
   have hparam : 0 < δ ∧ ε / t ≤ 1 - 1 / δ := by
     simpa only [δ] using update_parameter hε.le hεt
-  have hroots := mixedCharacteristic_roots_le As hAs hsum ht
-    hparam.1 hparam.2 htrace
   intro r hr
-  have hroot := hroots r hr
   calc
-    r ≤ t + δ := hroot
+    r ≤ t + δ := mixedCharacteristic_roots_le As hAs hsum ht
+      hparam.1 hparam.2 htrace r hr
     _ = (1 + Real.sqrt ε) ^ 2 := by
       dsimp [t, δ]
       exact optimized_endpoint hε
