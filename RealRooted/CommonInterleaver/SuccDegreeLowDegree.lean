@@ -653,36 +653,15 @@ theorem posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
         (fun k hk1 hk2 => hc2 k hk1 (by rw [hlenf] at hk2; exact hk2))
         j (by rw [hlenf]; exact hj) (by rw [hleng, hdeg]; exact hj)
 
-/-- Low-degree case of the same-degree common-interleaver theorem in the
-positive-combination / no-common-root setting. -/
-theorem posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
+/-- Low-degree positive-combination endpoint for degrees `deg f ≤ deg g ≤ deg f + 1 ≤ 3`.
+The same-degree branch uses the degree-`≤ 2` root-crossing route, while the succ-degree
+branch reduces to the degree-`≤ 1` endpoint for the smaller polynomial. -/
+theorem posComboPairHasCommonInterleaver_of_adjacent_natDegree_le_two
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hfg : PosComboRealRooted f g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hfdeg : f.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
-  have _hfnn := hfnn
-  have _hgnn := hgnn
-  have _hno := hno
-  exact
-    posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
-      hf_pos hg_pos hfg hdeg hfdeg
-
-/-- Low-degree no-common degree-split endpoint in the positive-combination /
-nonnegative-coefficient setting.  The same-degree branch uses the checked
-degree-`≤ 2` root-crossing route, while the succ-degree branch reduces to the
-checked degree-`≤ 1` endpoint for the smaller polynomial. -/
-theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     (hfg : PosComboRealRooted f g)
     (hdeg_lo : f.natDegree ≤ g.natDegree)
     (hdeg_hi : g.natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hgdeg : g.natDegree ≤ 2) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h := by
   rcases Nat.lt_or_ge f.natDegree g.natDegree with hlt | hge
@@ -694,7 +673,7 @@ theorem posComboNoCommonPairHasCommonInterleaver_of_natDegree_le_two
   · have hsame : g.natDegree = f.natDegree := by lia
     have hfdeg : f.natDegree ≤ 2 := by lia
     exact
-      posComboNoCommonSameDegreePairHasCommonInterleaver_of_natDegree_le_two
-        hf_pos hg_pos hfnn hgnn hfg hsame hno hfdeg
+      posComboSameDegreePairHasCommonInterleaver_of_natDegree_le_two
+        hf_pos hg_pos hfg hsame hfdeg
 
 end RealRooted
