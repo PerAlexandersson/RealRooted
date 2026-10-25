@@ -262,7 +262,7 @@ theorem degreeOf_sourceBlockPolarization_inl_le
   have hsourceZero :
       (rename (Sum.inr : Fin n → τ ⊕ Fin n)
         (esymm (Fin n) ℂ k)).degreeOf (Sum.inl j) = 0 := by
-    apply degreeOf_rename_eq_zero_of_not_mem_range
+    apply MvPolynomial.degreeOf_rename_eq_zero_of_notMem_range
     rintro ⟨i, hi⟩
     exact Sum.inr_ne_inl hi
   calc
