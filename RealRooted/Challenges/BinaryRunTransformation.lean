@@ -44,7 +44,7 @@ label = "The transformation preserves PF polynomials"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.BinaryRunTransformation.preservesStrictlyNegativeRoots"
+name = "RealRooted.Challenges.BinaryRunTransformation.binaryRunTransform_splits_and_roots_neg"
 label = "Positive constant term gives strictly negative zeros"
 
 [[theorems]]
@@ -201,7 +201,7 @@ private theorem constantCoeff {n : ℕ} {p : ℝ[X]}
 
 /-- A positive constant coefficient upgrades the output root bound from
 nonpositive to strictly negative. -/
-theorem preservesStrictlyNegativeRoots {n : ℕ} {p : ℝ[X]}
+theorem binaryRunTransform_splits_and_roots_neg {n : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ n)
     (hconst : 0 < p.coeff 0) :
     (binaryRunTransform n p).Splits ∧

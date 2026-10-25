@@ -43,6 +43,16 @@ ID_START = f"[{_LEAN_LETTER}]"
 ID_REST = f"[{_LEAN_LETTER}0-9'!?{_LEAN_SUBSCRIPT}]"
 ID_REST_DOT = f"[{_LEAN_LETTER}0-9'!?.{_LEAN_SUBSCRIPT}]"
 SECTIONS = ("concepts", "families", "theorems")
+PROVENANCE_TAGS = {
+    "coauthored-paper": (
+        "Coauthored paper",
+        "Result from a paper coauthored by Per Alexandersson",
+    ),
+    "realrooted-original": (
+        "RealRooted original",
+        "Result first developed in RealRooted and not currently attached to a paper",
+    ),
+}
 ALLOWED_AXIOMS = frozenset({"propext", "Classical.choice", "Quot.sound"})
 NAME_RE = re.compile(f"{ID_START}{ID_REST_DOT}*(?:\\.{ID_START}{ID_REST_DOT}*)+")
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
@@ -94,6 +104,7 @@ class CatalogItem:
     label: str | None = None
     headline: bool = False
     symcat: str | None = None
+    tags: tuple[str, ...] | None = None
 
     @property
     def anchor(self) -> str:
@@ -109,6 +120,7 @@ class CatalogPage:
     authors: tuple[str, ...]
     years: tuple[int, ...]
     formalized: str
+    tags: tuple[str, ...]
     references: tuple[Citation, ...]
     definitions: tuple[CatalogItem, ...]
     theorems: tuple[CatalogItem, ...]
@@ -265,7 +277,7 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
     seen: set[str] = set()
     for index, record in enumerate(raw, start=1):
         if not isinstance(record, dict) or set(record) - {
-            "name", "module", "label", "headline", "symcat"
+            "name", "module", "label", "headline", "symcat", "tags"
         }:
             raise _source_error(path, f"invalid {expected_kind} record {index}")
         name = record.get("name")
@@ -273,6 +285,11 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         label = record.get("label")
         headline = record.get("headline", False)
         symcat = record.get("symcat")
+        tags = (
+            _read_tags(path, record["tags"], f"{expected_kind} record {index}")
+            if "tags" in record
+            else None
+        )
         if label is not None and (
             not isinstance(label, str) or not label.strip() or label.strip() != label or "\n" in label
         ):
@@ -308,8 +325,21 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         if name in seen:
             raise _source_error(path, f"duplicate {expected_kind} declaration {name}")
         seen.add(name)
-        result.append(CatalogItem(name, expected_kind, module, label, headline, symcat))
+        result.append(CatalogItem(name, expected_kind, module, label, headline, symcat, tags))
     return tuple(result)
+
+
+def _read_tags(path: str, raw: Any, context: str = "metadata") -> tuple[str, ...]:
+    if raw is None:
+        return ()
+    if not isinstance(raw, list) or not all(isinstance(tag, str) for tag in raw):
+        raise _source_error(path, f"{context}: tags must be an array of strings")
+    if len(set(raw)) != len(raw):
+        raise _source_error(path, f"{context}: tags must not contain duplicates")
+    unknown = set(raw) - set(PROVENANCE_TAGS)
+    if unknown:
+        raise _source_error(path, f"{context}: unknown tags: {', '.join(sorted(unknown))}")
+    return tuple(raw)
 
 
 def extract_citations(content: str) -> tuple[Citation, ...]:
@@ -461,6 +491,7 @@ def parse_challenge_source(
         "authors",
         "years",
         "formalized",
+        "tags",
         "references",
         "definitions",
         "theorems",
@@ -478,6 +509,7 @@ def parse_challenge_source(
         raise _source_error(source_path, "slug must be lowercase hyphenated text")
     authors, years = _read_attribution(source_path, metadata)
     formalized = _read_formalized(source_path, metadata, commit_date)
+    tags = _read_tags(source_path, metadata.get("tags"))
     references = _read_references(source_path, metadata.get("references"))
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
@@ -491,6 +523,7 @@ def parse_challenge_source(
         authors=authors,
         years=years,
         formalized=formalized,
+        tags=tags,
         references=references,
         definitions=definitions,
         theorems=theorems,
@@ -1443,6 +1476,39 @@ def _formalized_label(page: CatalogPage) -> str:
     return f"formalized {page.formalized}"
 
 
+def _effective_tags(page: CatalogPage, item: CatalogItem | None = None) -> tuple[str, ...]:
+    if item is None:
+        return page.tags
+    if item.tags is not None:
+        return item.tags
+    return page.tags if item.expected_kind == "theorem" else ()
+
+
+def _tag_badges(tags: Iterable[str]) -> str:
+    badges = []
+    for tag in tags:
+        label, description = PROVENANCE_TAGS[tag]
+        badges.append(
+            f'<span class="provenance-tag provenance-tag--{tag}" '
+            f'title="{html.escape(description, quote=True)}">{html.escape(label)}</span>'
+        )
+    return '<span class="provenance-tags">' + "".join(badges) + "</span>" if badges else ""
+
+
+def _tag_legend() -> str:
+    entries = []
+    for tag, (label, description) in PROVENANCE_TAGS.items():
+        entries.append(
+            f'<li>{_tag_badges((tag,))}<span>{html.escape(description)}.</span></li>'
+        )
+    return (
+        '<aside class="provenance-legend" aria-labelledby="provenance-heading">'
+        '<h2 id="provenance-heading">Provenance tags</h2><ul>'
+        + "".join(entries)
+        + "</ul></aside>"
+    )
+
+
 def _count(count: int, word: str, symbol: str, kind: str) -> str:
     words = _plural(count, word)
     return (
@@ -1482,12 +1548,13 @@ def _page_card(page: CatalogPage, href: str) -> str:
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
         f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}" '
-        f'data-formalized="{page.formalized}">'
+        f'data-formalized="{page.formalized}" data-tags="{html.escape(" ".join(page.tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
         f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
         + _counts(page)
         + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
         + headline_html
+        + _tag_badges(page.tags)
         + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
         + f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
@@ -1498,16 +1565,18 @@ def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
     """A headline theorem stated on a concept or family page."""
     year = page.years[0] if page.years else ""
     title = item.label or item.name
+    tags = _effective_tags(page, item)
     return (
         '<li class="catalog-card catalog-card--theorem catalog-card--headline" '
         f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}" '
-        f'data-formalized="{page.formalized}">'
+        f'data-formalized="{page.formalized}" data-tags="{html.escape(" ".join(tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
         '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
         '<span aria-hidden="true">⊢</span> Theorem</span></span>'
         f'<strong class="card-title">{html.escape(title)}</strong>'
         f'<span class="card-context">from <em>{html.escape(page.title)}</em></span>'
-        f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
+        + _tag_badges(tags)
+        + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
         f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
@@ -1536,6 +1605,7 @@ def _catalog_group(identifier: str, title: str, intro: str, rows: str) -> str:
 
 
 def _item_list(
+    page: CatalogPage,
     items: Iterable[CatalogItem],
     resolved: dict[str, SourceDeclaration],
     revision: str,
@@ -1544,14 +1614,18 @@ def _item_list(
     rows: list[str] = []
     for item in items:
         source = resolved[item.name]
+        tags = _effective_tags(page, item)
         label = ""
         if item.label:
             label = (
                 "<p class=\"declaration-label\">"
                 + html.escape(item.label)
                 + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
+                + _tag_badges(tags)
                 + "</p>"
             )
+        elif tags:
+            label = _tag_badges(tags)
         symcat_link = ""
         if item.symcat:
             symcat_url = SYMCAT_ORIGIN + symcat_labels[item.symcat]
@@ -1632,8 +1706,10 @@ def _results_page(
         kind = item.expected_kind
         symbol = "⊢" if kind == "theorem" else "≔"
         title = item.label or ""
+        tags = _effective_tags(page, item)
+        tag_labels = " ".join(PROVENANCE_TAGS[tag][0] for tag in tags)
         search = " ".join(
-            part for part in (title, item.name, page.title, _attribution(page)) if part
+            part for part in (title, item.name, page.title, _attribution(page), tag_labels) if part
         ).casefold()
         href = f"../{page.section}/{page.slug}/#{item.anchor}"
         rows.append(
@@ -1644,6 +1720,7 @@ def _results_page(
             "<td class=\"result-name\">"
             + (f"<span class=\"result-label\">{html.escape(title)}</span>" if title else "")
             + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
+            + _tag_badges(tags)
             + f"<a href=\"{html.escape(href, quote=True)}\"><code>{html.escape(item.name)}</code></a></td>"
             + f"<td class=\"result-page\"><a href=\"../{page.section}/{page.slug}/\">"
             + html.escape(page.title)
@@ -1659,9 +1736,10 @@ def _results_page(
         "<h1>All results</h1>"
         f"<p class=\"lede\">All {_plural(definitions, 'definition')} and "
         f"{_plural(theorems, 'theorem')} in the catalog.</p>"
-        '<div class="results-toolbar" data-results-filter>'
+        + _tag_legend()
+        + '<div class="results-toolbar" data-results-filter>'
         '<label class="results-search"><span class="visually-hidden">Filter results</span>'
-        '<input type="search" placeholder="Filter by name, page or author" data-results-query></label>'
+        '<input type="search" placeholder="Filter by name, page, author or tag" data-results-query></label>'
         '<div class="catalog-toolbar" role="group" aria-label="Kind">'
         + "".join(
             '<label class="catalog-sort-option"><input type="radio" name="results-kind" '
@@ -1789,6 +1867,7 @@ def render_site(
             else ""
         )
         + ".</p></section>"
+        + _tag_legend()
         + _sort_controls()
         + '<div class="catalog-groups">'
         + _catalog_group(
@@ -1824,12 +1903,12 @@ def render_site(
         )
     for page in pages:
         definition_html = (
-            _item_list(page.definitions, resolved, revision, symcat_labels)
+            _item_list(page, page.definitions, resolved, revision, symcat_labels)
             if page.definitions
             else ""
         )
         theorem_html = (
-            _item_list(page.theorems, resolved, revision, symcat_labels)
+            _item_list(page, page.theorems, resolved, revision, symcat_labels)
             if page.theorems
             else ""
         )
@@ -1849,20 +1928,25 @@ def render_site(
                 + "</section>"
             )
         source = html.escape(_source_link(revision, SourceDeclaration("", "", page.source_path, 1)), quote=True)
+        rendered_content = render_markdown(
+            page.content,
+            symcat_labels=symcat_labels,
+            bibliography=bibliography,
+            base_path=base_path,
+            generated_references=_reference_list(page.citations, bibliography)
+            if page.citations
+            else "",
+        )
+        if page.tags:
+            rendered_content = rendered_content.replace(
+                "</h1>", "</h1>" + _tag_badges(page.tags), 1
+            )
         body = (
             "<main class=\"catalog-page\"><p class=\"breadcrumb\"><a href=\"../\">"
             + html.escape(page.section.title())
             + "</a></p>"
             + "<article class=\"prose\">"
-            + render_markdown(
-                page.content,
-                symcat_labels=symcat_labels,
-                bibliography=bibliography,
-                base_path=base_path,
-                generated_references=_reference_list(page.citations, bibliography)
-                if page.citations
-                else "",
-            )
+            + rendered_content
             + "</article><div class=\"lean-results\">"
             + selected
             + "</div>"
@@ -1900,6 +1984,7 @@ def render_site(
                 "authors": list(page.authors),
                 "years": list(page.years),
                 "formalized": page.formalized,
+                "tags": list(page.tags),
                 "definitions": [item.name for item in page.definitions],
                 "theorems": [item.name for item in page.theorems],
                 "headlines": [item.name for item in page.theorems if item.headline],
@@ -1909,6 +1994,7 @@ def render_site(
                         "name": item.name,
                         "kind": item.expected_kind,
                         "url": site_origin + _page_url(page, base_path) + f"#{item.anchor}",
+                        "tags": list(_effective_tags(page, item)),
                         **({"symcat": item.symcat} if item.symcat else {}),
                     }
                     for item in page.items

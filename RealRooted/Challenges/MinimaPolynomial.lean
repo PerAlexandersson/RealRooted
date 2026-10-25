@@ -8,6 +8,7 @@ version = 1
 section = "families"
 slug = "minima-polynomial"
 formalized = "2026-10-02"
+tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 

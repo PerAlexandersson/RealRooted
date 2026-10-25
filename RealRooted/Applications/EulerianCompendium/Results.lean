@@ -52,7 +52,7 @@ theorem cyclicPathDescent_roots (n : ℕ) (hn : 0 < n) :
       (cyclicPathDescentPolynomial n).IsRoot 0 ∧
       (∀ r ∈ (cyclicPathDescentPolynomial n).roots.erase 0, r < 0) ∧
       ((cyclicPathDescentPolynomial n).roots.erase 0).card = n - 1 := by
-  have h := Applications.EulerianVariations.cyclicPathDescentPolynomial_simple_root_description n hn
+  have h := Applications.EulerianVariations.cyclicPathDescentPolynomial_roots n hn
   have hpf := Applications.EulerianVariations.cyclicPathDescentPolynomial_isPF n hn
   exact ⟨(hpf.ne_zero_and_splits h.1.ne_zero).2, h⟩
 

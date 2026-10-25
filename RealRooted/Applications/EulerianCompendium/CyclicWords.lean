@@ -397,6 +397,6 @@ theorem balancedWordSum_simple_root_description (n : ℕ) (hn : 1 ≤ n) :
       (∀ r ∈ (BalancedCyclic.balancedWordSum n).roots.erase 0, r < 0) ∧
       ((BalancedCyclic.balancedWordSum n).roots.erase 0).card = n - 1 := by
   rw [balancedWordSum_eq_cyclicPathDescentPolynomial n hn]
-  exact cyclicPathDescentPolynomial_simple_root_description n hn
+  exact cyclicPathDescentPolynomial_roots n hn
 
 end RealRooted.EulerianCompendium

@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "euler-bidiagonal-interlacing"
 formalized = "2026-10-09"
+tags = ["realrooted-original"]
 references = [
   "AndrewsGawronskiLittlejohn2011",
   "AndrewsEggeGawronskiLittlejohn2013",
@@ -132,9 +133,9 @@ $P_n \ll P_{n+1}$ for all $n$.
 
 Real-rootedness of these rows is classical
 [@AndrewsGawronskiLittlejohn2011; @AndrewsEggeGawronskiLittlejohn2013;
-@Mongelli2012]. Interlacing of consecutive rows, and the
-preservation of interlacing pairs, appear to be new. They were found and formalized in this
-project; see issue #1324. The usual first-order step theorems (Liu–Wang, Wang–Yeh) do not
+@Mongelli2012]. The pair-preservation argument and the proofs that consecutive
+rows interlace were developed in RealRooted. The usual first-order step
+theorems (Liu–Wang, Wang–Yeh) do not
 apply, because the step is second order in $\theta$. Nor does $T$ preserve real-rootedness on
 all of $\mathbb{R}[x]$: its Borcea–Brändén symbol is not stable. The argument has to use the
 negative real axis.

@@ -8,6 +8,7 @@ version = 1
 section = "families"
 slug = "claw-free-orientation-sinks"
 formalized = "2026-09-12"
+tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 

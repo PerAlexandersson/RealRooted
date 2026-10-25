@@ -11,8 +11,10 @@ version = 1
 section = "theorems"
 slug = "deco-eulerian-transform"
 formalized = "2026-10-05"
+tags = ["coauthored-paper"]
 references = [
   "BarcucciLungoPinzani1996",
+  "Athanasiadis2025EulerianTransformation",
 ]
 authors = ["Alexandersson"]
 years = [2026]
@@ -29,7 +31,7 @@ label = "Weighted deco Eulerian transform"
 
 [[theorems]]
 name = "RealRooted.Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg"
-label = "The weighted deco transform preserves interval-rooted polynomials"
+label = "Inputs rooted in [-1, 0] map to simple negative roots"
 headline = true
 
 [[theorems]]
@@ -75,7 +77,8 @@ interpretations are cited, not formalized.
 At $w=0$ the transform is real-rooted on the larger cone of nonnegative combinations of
 $u^k(1+u)^{d-k}$: since $\mathcal A(uf)=x\,\mathcal T_0(f)$ for the Eulerian transformation
 $\mathcal A\colon 1\mapsto 1,\ u^n\mapsto xA_n(x)$, this follows from Athanasiadis's cone
-theorem. Whether the cone version holds for $0<w\leq 1$ is open.
+theorem [@Athanasiadis2025EulerianTransformation]. Whether the cone version
+holds for $0<w\leq 1$ is open.
 
 ## Proof idea
 

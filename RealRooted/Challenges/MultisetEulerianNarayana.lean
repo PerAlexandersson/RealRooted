@@ -120,8 +120,7 @@ $a_d(\alpha)$ are positive.
 ## References
 
 For the tree model, see [@LinMaMaZhou2021]. For the interlacing result, see
-[@ZhangZhao2026x]. The real-rootedness theorem was formalized in RealRooted
-issue #1076.
+[@ZhangZhao2026x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
