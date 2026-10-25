@@ -176,9 +176,19 @@ python3 scripts/check_import_architecture.py       # import graph, layers, budge
 python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
 python3 scripts/check_upstream_headers.py          # Mathlib file headers in RealRooted/Mathlib
+python3 scripts/check_module_system.py             # every file is a Lean module (allowlist shrinks)
 lake exe lint-style                                # Mathlib text style: whitespace, `;`, unicode
 lake exe runLinter RealRooted                      # Mathlib environment linters (after `lake build`)
 ```
+
+Source files use the Lean module system: after the copyright comment comes `module`, then
+`public import`s, the module docstring and `@[expose] public section`.  `python3
+scripts/modularize.py FILE` converts a new file to this layout.  Theorem bodies are not exported,
+so editing a proof no longer rebuilds the files that import it.  Consequences: a `private`
+declaration is invisible to other files, including tactic expansions there; elaborators,
+`initialize` and simp-set registrations go in a `public meta section`; and a module can only
+import modules.  Files that cannot be modules yet are listed in `scripts/non_module_files.txt`
+(#2016), and that list may only shrink.
 
 Files under `RealRooted/Mathlib/`, the upstream targets, carry Mathlib's file header: the
 copyright block (`Copyright (c) YYYY Names. All rights reserved.`, the Apache 2.0 line and
