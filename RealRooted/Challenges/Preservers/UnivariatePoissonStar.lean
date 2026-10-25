@@ -34,11 +34,6 @@ module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Nonnegative inputs give nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.Poisson.starC_root_obstruction_not_splits"
-module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
-label = "Forbidden root signs give a nonsplit quadratic"
-
-[[theorems]]
 name = "RealRooted.Poisson.preservesAffineRealRooted_linear_iff"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Affine test for a single linear factor"
