@@ -21,21 +21,6 @@ namespace RealRooted
 namespace GeneralizedSnakePosets
 namespace FiniteSkewBoard
 
-/-- A finite list sum of nonnegative-coefficient polynomials has nonnegative
-coefficients. -/
-private lemma listSum_hasNonnegCoeffs {ps : List ℝ[X]}
-    (hps : ∀ p ∈ ps, HasNonnegCoeffs p) :
-    HasNonnegCoeffs ps.sum := by
-  induction ps with
-  | nil =>
-      simp [HasNonnegCoeffs]
-  | cons p ps ih =>
-      intro k
-      have hp : HasNonnegCoeffs p := hps p (by simp)
-      have htail : ∀ q ∈ ps, HasNonnegCoeffs q :=
-        fun q hq => hps q (by simp [hq])
-      simpa using add_nonneg (hp k) (ih htail k)
-
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
 def auxiliaryG : ℕ → ℝ[X] :=
@@ -131,20 +116,13 @@ theorem auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
     truncatedStaircaseRookPolynomial_five_two, h53, h54]
   have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
   have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
-    Polynomial.C_eq_natCast (R := ℝ) 12
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
-  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
-    Polynomial.C_eq_natCast (R := ℝ) 25
-  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
-    Polynomial.C_eq_natCast (R := ℝ) 30
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
-  have hC75 : (C (75 : ℝ) : ℝ[X]) = 75 :=
-    Polynomial.C_eq_natCast (R := ℝ) 75
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 := Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 := Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 := Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 := Polynomial.C_eq_natCast (R := ℝ) 30
+  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 := Polynomial.C_eq_natCast (R := ℝ) 40
+  have hC75 : (C (75 : ℝ) : ℝ[X]) = 75 := Polynomial.C_eq_natCast (R := ℝ) 75
   rw [hC5, hC9, hC10, hC12, hC14, hC25, hC30, hC40, hC75]
   ring_nf
 
@@ -167,12 +145,9 @@ theorem truncatedStaircaseRookPolynomial_five_three_of_bottom_row_expansion
   have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
   have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
   have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
-    Polynomial.C_eq_natCast (R := ℝ) 12
-  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
-    Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 := Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 := Polynomial.C_eq_natCast (R := ℝ) 25
   rw [hC3, hC5, hC6, hC7, hC9, hC10, hC12, hC25]
   ring_nf
 
@@ -208,8 +183,7 @@ theorem truncatedStaircaseBottomRowExpansion_four_two :
   have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
   have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
   have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 := Polynomial.C_eq_natCast (R := ℝ) 14
   rw [hC3, hC4, hC5, hC6, hC7, hC9, hC14]
   ring_nf
 
@@ -244,18 +218,12 @@ theorem truncatedStaircaseRookPolynomial_five_four_of_bottom_row_expansion
   have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
   have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
   have hC9 : (C (9 : ℝ) : ℝ[X]) = 9 := Polynomial.C_eq_natCast (R := ℝ) 9
-  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 :=
-    Polynomial.C_eq_natCast (R := ℝ) 10
-  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 :=
-    Polynomial.C_eq_natCast (R := ℝ) 12
-  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 :=
-    Polynomial.C_eq_natCast (R := ℝ) 14
-  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
-    Polynomial.C_eq_natCast (R := ℝ) 25
-  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 :=
-    Polynomial.C_eq_natCast (R := ℝ) 30
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
+  have hC10 : (C (10 : ℝ) : ℝ[X]) = 10 := Polynomial.C_eq_natCast (R := ℝ) 10
+  have hC12 : (C (12 : ℝ) : ℝ[X]) = 12 := Polynomial.C_eq_natCast (R := ℝ) 12
+  have hC14 : (C (14 : ℝ) : ℝ[X]) = 14 := Polynomial.C_eq_natCast (R := ℝ) 14
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 := Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC30 : (C (30 : ℝ) : ℝ[X]) = 30 := Polynomial.C_eq_natCast (R := ℝ) 30
+  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 := Polynomial.C_eq_natCast (R := ℝ) 40
   rw [hC4, hC5, hC6, hC9, hC10, hC12, hC14, hC25, hC30, hC40]
   ring_nf
 
@@ -362,8 +330,7 @@ theorem truncatedStaircaseRookPolynomial_six_two :
     truncatedStaircaseRookPolynomial 6 2 =
       1 + C (11 : ℝ) * X + C (15 : ℝ) * X ^ 2 := by
   rw [truncatedStaircaseRookPolynomial_two_rows]
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 := Polynomial.C_eq_natCast (R := ℝ) 15
   rw [hC15]
   norm_num [Nat.choose]
   exact hC15
@@ -432,32 +399,20 @@ and one has rook polynomial
     truncatedStaircaseRookPolynomial_six_four,
     truncatedStaircaseRookPolynomial_six_five]
   have hC6 : (C (6 : ℝ) : ℝ[X]) = 6 := Polynomial.C_eq_natCast (R := ℝ) 6
-  have hC11 : (C (11 : ℝ) : ℝ[X]) = 11 :=
-    Polynomial.C_eq_natCast (R := ℝ) 11
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
-    Polynomial.C_eq_natCast (R := ℝ) 18
-  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 :=
-    Polynomial.C_eq_natCast (R := ℝ) 20
-  have hC39 : (C (39 : ℝ) : ℝ[X]) = 39 :=
-    Polynomial.C_eq_natCast (R := ℝ) 39
-  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 :=
-    Polynomial.C_eq_natCast (R := ℝ) 55
-  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 :=
-    Polynomial.C_eq_natCast (R := ℝ) 65
-  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 :=
-    Polynomial.C_eq_natCast (R := ℝ) 66
-  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 :=
-    Polynomial.C_eq_natCast (R := ℝ) 70
-  have hC90 : (C (90 : ℝ) : ℝ[X]) = 90 :=
-    Polynomial.C_eq_natCast (R := ℝ) 90
-  have hC125 : (C (125 : ℝ) : ℝ[X]) = 125 :=
-    Polynomial.C_eq_natCast (R := ℝ) 125
-  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 :=
-    Polynomial.C_eq_natCast (R := ℝ) 210
-  rw [hC6, hC11, hC15, hC18, hC20, hC39, hC55, hC65, hC66, hC70,
-    hC90, hC125, hC210]
+  have hC11 : (C (11 : ℝ) : ℝ[X]) = 11 := Polynomial.C_eq_natCast (R := ℝ) 11
+  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 := Polynomial.C_eq_natCast (R := ℝ) 15
+  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 := Polynomial.C_eq_natCast (R := ℝ) 18
+  have hC20 : (C (20 : ℝ) : ℝ[X]) = 20 := Polynomial.C_eq_natCast (R := ℝ) 20
+  have hC39 : (C (39 : ℝ) : ℝ[X]) = 39 := Polynomial.C_eq_natCast (R := ℝ) 39
+  have hC55 : (C (55 : ℝ) : ℝ[X]) = 55 := Polynomial.C_eq_natCast (R := ℝ) 55
+  have hC65 : (C (65 : ℝ) : ℝ[X]) = 65 := Polynomial.C_eq_natCast (R := ℝ) 65
+  have hC66 : (C (66 : ℝ) : ℝ[X]) = 66 := Polynomial.C_eq_natCast (R := ℝ) 66
+  have hC70 : (C (70 : ℝ) : ℝ[X]) = 70 := Polynomial.C_eq_natCast (R := ℝ) 70
+  have hC90 : (C (90 : ℝ) : ℝ[X]) = 90 := Polynomial.C_eq_natCast (R := ℝ) 90
+  have hC125 : (C (125 : ℝ) : ℝ[X]) = 125 := Polynomial.C_eq_natCast (R := ℝ) 125
+  have hC210 : (C (210 : ℝ) : ℝ[X]) = 210 := Polynomial.C_eq_natCast (R := ℝ) 210
+  rw [hC6, hC11, hC15, hC18, hC20, hC39, hC55, hC65, hC66, hC70, hC90,
+    hC125, hC210]
   ring_nf
 
 /-- The one-row truncated staircase with seven cells has rook polynomial
@@ -472,8 +427,7 @@ theorem truncatedStaircaseRookPolynomial_seven_two :
     truncatedStaircaseRookPolynomial 7 2 =
       1 + C (13 : ℝ) * X + C (21 : ℝ) * X ^ 2 := by
   rw [truncatedStaircaseRookPolynomial_two_rows]
-  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
-    Polynomial.C_eq_natCast (R := ℝ) 21
+  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 := Polynomial.C_eq_natCast (R := ℝ) 21
   rw [hC21]
   norm_num [Nat.choose]
   exact hC21
@@ -535,53 +489,33 @@ three, and two has rook polynomial
     truncatedStaircaseRookPolynomial_seven_five,
     truncatedStaircaseRookPolynomial_seven_six]
   have hC7 : (C (7 : ℝ) : ℝ[X]) = 7 := Polynomial.C_eq_natCast (R := ℝ) 7
-  have hC13 : (C (13 : ℝ) : ℝ[X]) = 13 :=
-    Polynomial.C_eq_natCast (R := ℝ) 13
-  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 :=
-    Polynomial.C_eq_natCast (R := ℝ) 18
-  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
-    Polynomial.C_eq_natCast (R := ℝ) 21
-  have hC22 : (C (22 : ℝ) : ℝ[X]) = 22 :=
-    Polynomial.C_eq_natCast (R := ℝ) 22
-  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 :=
-    Polynomial.C_eq_natCast (R := ℝ) 25
-  have hC27 : (C (27 : ℝ) : ℝ[X]) = 27 :=
-    Polynomial.C_eq_natCast (R := ℝ) 27
-  have hC35 : (C (35 : ℝ) : ℝ[X]) = 35 :=
-    Polynomial.C_eq_natCast (R := ℝ) 35
-  have hC56 : (C (56 : ℝ) : ℝ[X]) = 56 :=
-    Polynomial.C_eq_natCast (R := ℝ) 56
-  have hC91 : (C (91 : ℝ) : ℝ[X]) = 91 :=
-    Polynomial.C_eq_natCast (R := ℝ) 91
-  have hC98 : (C (98 : ℝ) : ℝ[X]) = 98 :=
-    Polynomial.C_eq_natCast (R := ℝ) 98
-  have hC112 : (C (112 : ℝ) : ℝ[X]) = 112 :=
-    Polynomial.C_eq_natCast (R := ℝ) 112
-  have hC119 : (C (119 : ℝ) : ℝ[X]) = 119 :=
-    Polynomial.C_eq_natCast (R := ℝ) 119
-  have hC140 : (C (140 : ℝ) : ℝ[X]) = 140 :=
-    Polynomial.C_eq_natCast (R := ℝ) 140
-  have hC175 : (C (175 : ℝ) : ℝ[X]) = 175 :=
-    Polynomial.C_eq_natCast (R := ℝ) 175
-  have hC245 : (C (245 : ℝ) : ℝ[X]) = 245 :=
-    Polynomial.C_eq_natCast (R := ℝ) 245
-  have hC315 : (C (315 : ℝ) : ℝ[X]) = 315 :=
-    Polynomial.C_eq_natCast (R := ℝ) 315
-  have hC385 : (C (385 : ℝ) : ℝ[X]) = 385 :=
-    Polynomial.C_eq_natCast (R := ℝ) 385
-  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 :=
-    Polynomial.C_eq_natCast (R := ℝ) 490
-  have hC784 : (C (784 : ℝ) : ℝ[X]) = 784 :=
-    Polynomial.C_eq_natCast (R := ℝ) 784
-  rw [hC7, hC13, hC18, hC21, hC22, hC25, hC27, hC35, hC56, hC91,
-    hC98, hC112, hC119, hC140, hC175, hC245, hC315, hC385, hC490,
-    hC784]
+  have hC13 : (C (13 : ℝ) : ℝ[X]) = 13 := Polynomial.C_eq_natCast (R := ℝ) 13
+  have hC18 : (C (18 : ℝ) : ℝ[X]) = 18 := Polynomial.C_eq_natCast (R := ℝ) 18
+  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 := Polynomial.C_eq_natCast (R := ℝ) 21
+  have hC22 : (C (22 : ℝ) : ℝ[X]) = 22 := Polynomial.C_eq_natCast (R := ℝ) 22
+  have hC25 : (C (25 : ℝ) : ℝ[X]) = 25 := Polynomial.C_eq_natCast (R := ℝ) 25
+  have hC27 : (C (27 : ℝ) : ℝ[X]) = 27 := Polynomial.C_eq_natCast (R := ℝ) 27
+  have hC35 : (C (35 : ℝ) : ℝ[X]) = 35 := Polynomial.C_eq_natCast (R := ℝ) 35
+  have hC56 : (C (56 : ℝ) : ℝ[X]) = 56 := Polynomial.C_eq_natCast (R := ℝ) 56
+  have hC91 : (C (91 : ℝ) : ℝ[X]) = 91 := Polynomial.C_eq_natCast (R := ℝ) 91
+  have hC98 : (C (98 : ℝ) : ℝ[X]) = 98 := Polynomial.C_eq_natCast (R := ℝ) 98
+  have hC112 : (C (112 : ℝ) : ℝ[X]) = 112 := Polynomial.C_eq_natCast (R := ℝ) 112
+  have hC119 : (C (119 : ℝ) : ℝ[X]) = 119 := Polynomial.C_eq_natCast (R := ℝ) 119
+  have hC140 : (C (140 : ℝ) : ℝ[X]) = 140 := Polynomial.C_eq_natCast (R := ℝ) 140
+  have hC175 : (C (175 : ℝ) : ℝ[X]) = 175 := Polynomial.C_eq_natCast (R := ℝ) 175
+  have hC245 : (C (245 : ℝ) : ℝ[X]) = 245 := Polynomial.C_eq_natCast (R := ℝ) 245
+  have hC315 : (C (315 : ℝ) : ℝ[X]) = 315 := Polynomial.C_eq_natCast (R := ℝ) 315
+  have hC385 : (C (385 : ℝ) : ℝ[X]) = 385 := Polynomial.C_eq_natCast (R := ℝ) 385
+  have hC490 : (C (490 : ℝ) : ℝ[X]) = 490 := Polynomial.C_eq_natCast (R := ℝ) 490
+  have hC784 : (C (784 : ℝ) : ℝ[X]) = 784 := Polynomial.C_eq_natCast (R := ℝ) 784
+  rw [hC7, hC13, hC18, hC21, hC22, hC25, hC27, hC35, hC56, hC91, hC98,
+    hC112, hC119, hC140, hC175, hC245, hC315, hC385, hC490, hC784]
   ring_nf
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (auxiliaryG n) := by
-  refine listSum_hasNonnegCoeffs ?_
+  refine hasNonnegCoeffs_sum _ ?_
   intro p hp
   rcases List.mem_map.mp hp with ⟨i, _hi, rfl⟩
   exact rookPolynomial_hasNonnegCoeffs _

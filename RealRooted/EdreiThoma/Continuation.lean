@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.EdreiThoma.Identities
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 
 /-!
@@ -18,12 +19,6 @@ open Polynomial Filter Topology Complex
 noncomputable section
 
 namespace RealRooted.EdreiThoma
-
-private lemma summable_norm_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) {z : ℂ}
-    (hz : a 1 * ‖z‖ < 1) : Summable fun n => ‖(a n : ℂ) * z ^ n‖ := by
-  have := (IsPolyaFreqSeq.summable_genFun h h0 (by simpa using hz)).norm
-  refine this.congr fun n => ?_
-  simp [norm_pow, abs_of_nonneg (IsPolyaFreqSeq.nonneg h n)]
 
 private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
   exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
@@ -165,18 +160,6 @@ private lemma pc_succ_eq_zero (a : ℕ → ℝ) (m n : ℕ) : pc a m (n + 1) (m 
 
 private lemma Q_eq_S_comp (a : ℕ → ℝ) (m n : ℕ) : Q a m n = (S a m n).comp (-X) := by
   rw [S, comp_neg_X_comp_neg_X]
-
-private lemma coeff_comp_neg_X (P : ℝ[X]) (l : ℕ) :
-    (P.comp (-X)).coeff l = (-1) ^ l * P.coeff l := by
-  induction P using Polynomial.induction_on' with
-  | add p q hp hq => rw [add_comp, coeff_add, coeff_add, hp, hq]; ring
-  | monomial i c =>
-    rw [← C_mul_X_pow_eq_monomial, mul_comp, C_comp, X_pow_comp, neg_pow, ← mul_assoc,
-      show ((-1 : ℝ[X]) ^ i) = C ((-1) ^ i) by simp, ← C_mul, coeff_C_mul_X_pow,
-      coeff_C_mul_X_pow]
-    split_ifs with h
-    · subst h; ring
-    · simp
 
 private lemma Q_succ_sub (a : ℕ → ℝ) (hA : ∀ n m, A a n m ≠ 0) (m n : ℕ) :
     Q a (m + 1) (n + 1) - Q a m (n + 1) = C (gam a m n) * X * Q a m n := by
@@ -391,7 +374,7 @@ private lemma pc_tendsto (n k : ℕ) :
   refine tendsto_finsetSum _ fun l _ => ?_
   refine Tendsto.mul_const _ ?_
   simp only [Q_eq_S_comp, coeff_comp_neg_X]
-  exact (hSlim n l).const_mul _
+  exact (hSlim n l).mul_const _
 
 include hS0 in
 private lemma pn_zero (k : ℕ) : cp a ((Sinf 0).comp (-X)) k = a k := by
@@ -610,7 +593,7 @@ theorem exists_entire_series_mul_tprod {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a
       intro n
       have := E7.hasSum_cp a hf ((Sinf n).comp (-X))
       rwa [E7.aeval_Qinf hSrec z n, hS0, one_comp, map_one, one_mul] at this
-    have hdom := summable_norm_genFun hpf h0 hz
+    have hdom := hpf.summable_norm_genFun h0 hz
     have h1 : Tendsto (fun n => ∑' k, (pn n k : ℂ) * z ^ k) atTop
         (𝓝 (∑' k, (p k : ℂ) * z ^ k)) := by
       refine tendsto_tsum_of_dominated_convergence hdom (fun k => ?_)

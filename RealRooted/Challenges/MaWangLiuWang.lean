@@ -4,6 +4,7 @@ public import RealRooted.LiuWang.SequenceCore
 public import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.MaWang.CriticalSign
 public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MaWang.DerivativeSequence
 public import RealRooted.MaWang.StrictStep
 
 /-!
@@ -63,7 +64,8 @@ module = "RealRooted.LiuWang.SequenceCore"
 label = "Liu–Wang criterion for three-term recurrences"
 
 [[theorems]]
-name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_succ_of_derivative_recurrence"
+name = "RealRooted.MaWang.strictInterl_derivative_nonpos_sequence"
+module = "RealRooted.MaWang.DerivativeSequence"
 label = "Ma–Wang criterion for derivative recurrences"
 -->
 
@@ -174,22 +176,6 @@ theorem strictInterl_and_hasSimpleRoots_of_eval_neg {f F u v : ℝ[X]} (hf : f.S
     StrictInterl f F ∧ HasSimpleRoots F :=
   strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ hf hf_pos hF_pos
     (Nat.one_le_iff_ne_zero.mpr hdegf) hdeg hsimple hrec hv
-
-/-- **Ma–Wang criterion for derivative recurrences.**  Let
-`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))'`, where every `P n` has positive leading
-coefficient and each step keeps or raises the degree by one.  If `P 0 ≪ P 1` and `V n` is
-nonpositive at the roots of `P (n + 1)`, then `P n ≪ P (n + 1)` for all `n`. -/
-theorem strictInterl_succ_of_derivative_recurrence {P U V : ℕ → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1)) (hpos : ∀ n, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n, P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1)
-    (hV : ∀ n r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0) :
-    ∀ n, StrictInterl (P n) (P (n + 1)) := by
-  refine strictInterl_sequence_of_base_and_step hbase fun n hprev ↦ ?_
-  have hstep := strictInterl_mul_add_mul_derivative_of_eval_nonpos hprev.2.1.2 (hpos (n + 1))
-    (hrec n ▸ hpos (n + 2)) (hrec n ▸ hdeg_lo n) (hrec n ▸ hdeg_hi n) (hV n)
-  rwa [← hrec n] at hstep
 
 end MaWangLiuWang
 end Challenges

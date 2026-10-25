@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 public import RealRooted.RootContinuity
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
@@ -16,6 +17,10 @@ so functions with finitely many zeros are included.
 
 The approximants are
 `c X ^ m (1 - a X² / n) ^ n (1 + b X / n) ^ n ∏_{k < n} (1 - yₖ X) (1 + yₖ X / n) ^ n`.
+
+The Type-I subclass `c z ^ m e^(σ z) ∏ₖ (1 + yₖ z)` with `c, σ, yₖ ≥ 0` and `∑ yₖ < ∞` is the
+limit of the Pólya-frequency polynomials `c X ^ m (1 + σ X / n) ^ n ∏_{k < n} (1 + yₖ X)`
+(`isLaguerrePolyaTypeI_product`).
 
 The converse, that every function in the class has this form, is not formalized here.
 -/
@@ -314,6 +319,83 @@ private lemma realRootedOrZero_approx (c : ℝ) (m : ℕ) {a : ℝ} (ha : 0 ≤ 
   · apply im_eq_zero_of_linear (r := y k / n)
     push_cast; linear_combination eq_zero_of_pow_eq_zero h
 
+/-! ### The Type-I approximants -/
+
+/-- Uniform convergence on every closed ball centred at `0` gives local uniform convergence. -/
+private lemma tendstoLocallyUniformly_of_closedBall {F : ℕ → ℂ → ℂ} {f : ℂ → ℂ}
+    (h : ∀ R : ℝ, TendstoUniformlyOn F f atTop (Metric.closedBall 0 R)) :
+    TendstoLocallyUniformly F f atTop := by
+  intro u hu x
+  refine ⟨Metric.closedBall 0 (‖x‖ + 1), ?_, h (‖x‖ + 1) u hu⟩
+  apply Metric.closedBall_mem_nhds_of_mem
+  simp
+
+/-- `(1 + σ z / n) ^ n → exp (σ z)` uniformly on closed balls. -/
+private lemma tendstoUniformlyOn_one_add_div_pow (σ R : ℝ) :
+    TendstoUniformlyOn (fun (n : ℕ) (z : ℂ) => (1 + (σ : ℂ) * z / n) ^ n)
+      (fun z => cexp ((σ : ℂ) * z)) atTop (Metric.closedBall 0 R) := by
+  set K : ℝ := |σ| * |R|
+  have hbd : ∀ z ∈ Metric.closedBall (0 : ℂ) R, ‖(σ : ℂ) * z‖ ≤ K := by
+    intro z hz
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left ((by simpa using hz : ‖z‖ ≤ R).trans (le_abs_self R))
+      (abs_nonneg σ)
+  have hlarge : ∀ᶠ n : ℕ in atTop, 0 < n ∧ 2 * K ≤ n :=
+    (eventually_gt_atTop 0).and (tendsto_natCast_atTop_atTop.eventually_ge_atTop (2 * K))
+  have hL : TendstoUniformlyOn (fun (n : ℕ) (z : ℂ) => (σ : ℂ) * z + lpErr n ((σ : ℂ) * z))
+      (fun z => (σ : ℂ) * z) atTop (Metric.closedBall 0 R) := by
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    filter_upwards [hlarge, tendsto_natCast_atTop_atTop.eventually_gt_atTop (K ^ 2 / ε)]
+      with n ⟨hn, hn2⟩ hnε z hz
+    have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+    have hw := hbd z hz
+    rw [dist_comm, dist_eq_norm, add_sub_cancel_left]
+    refine (norm_lpErr_le hn (by linarith)).trans_lt ?_
+    rw [div_lt_iff₀ hnR]
+    rw [div_lt_iff₀ hε] at hnε
+    nlinarith [norm_nonneg ((σ : ℂ) * z)]
+  refine (hL.comp_cexp ⟨K, by
+    rintro _ ⟨z, hz, rfl⟩
+    exact (Complex.re_le_norm _).trans (hbd z hz)⟩).congr ?_
+  filter_upwards [hlarge] with n ⟨hn, hn2⟩ z hz
+  exact (one_add_div_pow_eq_exp hn (by linarith [hbd z hz])).symm
+
+/-- The partial products of `∏ₖ (1 + yₖ z)` converge locally uniformly when `∑ |yₖ| < ∞`. -/
+private lemma tendstoLocallyUniformly_prod_one_add (y : ℕ → ℝ) (hy : Summable y) :
+    TendstoLocallyUniformly (fun n (z : ℂ) => ∏ k ∈ Finset.range n, (1 + (y k : ℂ) * z))
+      (fun z => ∏' k, (1 + (y k : ℂ) * z)) atTop := by
+  refine tendstoLocallyUniformly_of_closedBall fun R => ?_
+  refine (Summable.hasProdUniformlyOn_nat_one_add (f := fun k (z : ℂ) => (y k : ℂ) * z)
+    (isCompact_closedBall 0 R) (hy.norm.mul_right R) ?_
+    (fun n => by fun_prop)).tendstoUniformlyOn_finsetRange
+  refine Eventually.of_forall fun n z hz => ?_
+  rw [norm_mul, Complex.norm_real]
+  exact mul_le_mul_of_nonneg_left (by simpa using hz) (norm_nonneg _)
+
+/-- The Type-I approximants `c z ^ m (1 + σ z / n) ^ n ∏_{k < n} (1 + yₖ z)` converge locally
+uniformly to `c z ^ m e^(σ z) ∏ₖ (1 + yₖ z)`. -/
+private lemma tendstoLocallyUniformly_typeIApprox (c : ℝ) (m : ℕ) (σ : ℝ) (y : ℕ → ℝ)
+    (hy : Summable y) :
+    TendstoLocallyUniformly
+      (fun n (z : ℂ) => (c : ℂ) * z ^ m * (1 + (σ : ℂ) * z / n) ^ n *
+        ∏ k ∈ Finset.range n, (1 + (y k : ℂ) * z))
+      (fun z => (c : ℂ) * z ^ m * cexp ((σ : ℂ) * z) * ∏' k, (1 + (y k : ℂ) * z)) atTop := by
+  have hP := tendstoLocallyUniformly_prod_one_add y hy
+  have hC : TendstoLocallyUniformly (fun (_ : ℕ) (z : ℂ) => (c : ℂ) * z ^ m)
+      (fun z => (c : ℂ) * z ^ m) atTop := fun u hu x =>
+    ⟨Set.univ, univ_mem, Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu⟩
+  exact (hC.mul₀ (tendstoLocallyUniformly_of_closedBall (tendstoUniformlyOn_one_add_div_pow σ))
+    (by fun_prop) (by fun_prop)).mul₀ hP (by fun_prop)
+    (hP.continuous (Frequently.of_forall fun n => by fun_prop))
+
+/-- `1 + a X` with `a ≥ 0` is a Pólya-frequency polynomial. -/
+private lemma isPFPolynomial_one_add_C_mul_X {a : ℝ} (ha : 0 ≤ a) :
+    IsPFPolynomial (1 + C a * X) :=
+  IsPFPolynomial.of_realRooted_nonneg
+    (hasNonnegCoeffs_one.add ((hasNonnegCoeffs_C ha).mul hasNonnegCoeffs_X))
+    (Splits.of_natDegree_le_one (by compute_degree!))
+
 end LaguerrePolya
 
 private theorem exists_tendstoLocallyUniformly_canonicalProduct
@@ -374,5 +456,26 @@ theorem isLaguerrePolya_canonicalProduct (c : ℝ) (m : ℕ) {a : ℝ} (ha : 0 �
   refine ⟨p, fun n => (hp n).imp id fun h => splits_of_forall_aeval_im_eq_zero fun z hz => ?_,
     hlim⟩
   exact h z (by rw [Polynomial.eval_map]; exact hz)
+
+
+/-- **Type-I Laguerre–Pólya class, product form.** Every function
+`c z ^ m e^(σ z) ∏ₖ (1 + yₖ z)` with `c, σ ≥ 0`, `yₖ ≥ 0` and `∑ yₖ < ∞` is a locally uniform
+limit of Pólya-frequency polynomials. -/
+theorem isLaguerrePolyaTypeI_product {c : ℝ} (hc : 0 ≤ c) (m : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
+    {y : ℕ → ℝ} (hy0 : ∀ k, 0 ≤ y k) (hy : Summable y) :
+    IsLaguerrePolyaTypeI fun z => (c : ℂ) * z ^ m * Complex.exp (σ * z) *
+      ∏' k, (1 + (y k : ℂ) * z) := by
+  refine ⟨fun n => C c * X ^ m * (1 + C (σ / n) * X) ^ n *
+      ∏ k ∈ Finset.range n, (1 + C (y k) * X), fun n => ?_, ?_⟩
+  · refine (((IsPFPolynomial.of_C_nonneg hc).mul (isPFPolynomial_X_pow m)).mul
+      ((LaguerrePolya.isPFPolynomial_one_add_C_mul_X (by positivity)).pow n)).mul ?_
+    exact Finset.prod_induction _ IsPFPolynomial (fun _ _ => IsPFPolynomial.mul)
+      IsPFPolynomial.one fun k _ => LaguerrePolya.isPFPolynomial_one_add_C_mul_X (hy0 k)
+  · refine (LaguerrePolya.tendstoLocallyUniformly_typeIApprox c m σ y hy).congr fun n => ?_
+    intro z
+    simp only [Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_prod, Polynomial.map_add,
+      Polynomial.map_one, map_C, map_X, eval_mul, eval_pow, eval_prod, eval_add, eval_one,
+      eval_C, eval_X, Complex.ofRealHom_eq_coe, Complex.ofReal_div, Complex.ofReal_natCast]
+    ring
 
 end RealRooted

@@ -109,7 +109,8 @@ label = "Garloff–Wagner: Hadamard products preserve interlacing"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_mul_coeff"
+name = "RealRooted.IsPolyaFreqSeq.mul_coeff"
+module = "RealRooted.Hadamard.Consequences"
 label = "Maló: termwise products of finite PF sequences are PF"
 headline = true
 
@@ -305,17 +306,6 @@ theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
     (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
     Interl (hadamardProduct f p) (hadamardProduct g q) :=
   RealRooted.StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
-
-/-- Maló's theorem for finite-support Pólya-frequency sequences: their termwise
-product is again a Pólya-frequency sequence.  Equivalently, the entrywise
-product of their lower-triangular Toeplitz matrices is totally nonnegative.
-Polynomial coefficients encode the finite-support condition. -/
-theorem isPolyaFreqSeq_mul_coeff {p q : ℝ[X]}
-    (hp : IsPolyaFreqSeq p.coeff) (hq : IsPolyaFreqSeq q.coeff) :
-    IsPolyaFreqSeq (fun n => p.coeff n * q.coeff n) := by
-  have h := RealRooted.maloToeplitzHadamard_isTotallyNonneg hp hq
-  rw [← RealRooted.toeplitz_pointwise_mul] at h
-  exact h
 
 /-- Polynomial-value PF sequences are closed under polynomial multiplication.
 This includes zero inputs; for nonzero inputs the proof derives the canonical

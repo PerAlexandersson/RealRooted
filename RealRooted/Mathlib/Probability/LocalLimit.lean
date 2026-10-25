@@ -83,8 +83,7 @@ private lemma gpdf_neg (t : ℝ) : φ (-t) = φ t := by
   rw [gpdf_eq, gpdf_eq]; ring_nf
 
 private lemma gpdf_le_of_sq_le {s t : ℝ} (h : s ^ 2 ≤ t ^ 2) : φ t ≤ φ s := by
-  rw [gpdf_eq, gpdf_eq]
-  gcongr
+  rw [gpdf_eq, gpdf_eq]; gcongr
 
 private lemma gpdf_lt_of_sq_lt {s t : ℝ} (h : s ^ 2 < t ^ 2) : φ t < φ s := by
   rw [gpdf_eq, gpdf_eq]
@@ -154,9 +153,7 @@ private lemma gpdf_tail {ε : ℝ} (hε : 0 < ε) :
     have : 1 ≤ ε * t := by rwa [div_le_iff₀ hε, mul_comm] at hε'
     nlinarith
   have hE : Real.exp (-t ^ 2 / 2) < ε := by
-    by_contra hc
-    push Not at hc
-    nlinarith
+    exact lt_of_not_ge fun hc => by nlinarith
   calc (√(2 * Real.pi))⁻¹ * Real.exp (-t ^ 2 / 2) ≤ 1 / 2 * Real.exp (-t ^ 2 / 2) := by
         gcongr
     _ < ε := by nlinarith [Real.exp_pos (-t ^ 2 / 2)]
@@ -201,8 +198,7 @@ private lemma int_gpdf_lower_anti {u v : ℝ} (hu : 0 ≤ u) (h : u ≤ v) :
   simp at this; linarith
 
 private lemma int_gpdf_neg (u v : ℝ) : ∫ t in -v..-u, φ t = ∫ t in u..v, φ t := by
-  rw [← intervalIntegral.integral_comp_neg]
-  simp only [gpdf_neg]
+  rw [← intervalIntegral.integral_comp_neg]; simp only [gpdf_neg]
 
 /-! ### The Gaussian distribution function -/
 
@@ -220,16 +216,12 @@ private lemma Phi_eq_cdf (x : ℝ) : Phi x = cdf (gaussianReal 0 1) x := by
   · exact setIntegral_nonneg measurableSet_Iic fun t _ => (gpdf_pos t).le
 
 private lemma Phi_tendsto_atTop : Tendsto Phi atTop (𝓝 1) := by
-  have : Phi = cdf (gaussianReal 0 1) := by
-    funext x
-    exact Phi_eq_cdf x
-  rw [this]; exact tendsto_cdf_atTop _
+  rw [show Phi = cdf (gaussianReal 0 1) by ext x; exact Phi_eq_cdf x]
+  exact tendsto_cdf_atTop _
 
 private lemma Phi_tendsto_atBot : Tendsto Phi atBot (𝓝 0) := by
-  have : Phi = cdf (gaussianReal 0 1) := by
-    funext x
-    exact Phi_eq_cdf x
-  rw [this]; exact tendsto_cdf_atBot _
+  rw [show Phi = cdf (gaussianReal 0 1) by ext x; exact Phi_eq_cdf x]
+  exact tendsto_cdf_atBot _
 
 private lemma Phi_mono {u v : ℝ} (h : u ≤ v) : Phi u ≤ Phi v := by
   linarith [Phi_sub u v, int_gpdf_nonneg h]
@@ -269,8 +261,7 @@ private lemma concave_seq_chord (u : ℕ → ℝ) (L : ℕ)
       have h2 := h i (by lia)
       push_cast
       have h3 : u (i + 1 + 1) - u (i + 1) ≤ u (i + 1) - u i := by
-        have : i + 1 + 1 = i + 2 := by ring
-        rw [this]; linarith
+        rw [show i + 1 + 1 = i + 2 by ring]; linarith
       have hi0 : (0 : ℝ) ≤ i := by positivity
       nlinarith
   -- (b) upper bound on the increment from i to L
@@ -283,12 +274,8 @@ private lemma concave_seq_chord (u : ℕ → ℝ) (L : ℕ)
       intro hm
       have h1 := ih (by lia)
       have h2 := hanti i (m + 1) hm
-      have e : i + (m + 1) = i + m + 1 := by ring
-      rw [e] at h2
-      push_cast
-      have e2 : i + (m + 1) + 1 = i + m + 1 + 1 := by ring
-      rw [e2]
-      linarith
+      rw [show i + (m + 1) = i + m + 1 by ring] at h2 ⊢
+      push_cast; linarith
   have h1 := ha i (by lia)
   obtain ⟨m, rfl⟩ : ∃ m, L = i + m + 1 := ⟨L - i - 1, by lia⟩
   have h2 := hb m le_rfl
@@ -329,9 +316,7 @@ private lemma log_chord (hnn : ∀ j, 0 ≤ b j) (hlc : ∀ j, b (j - 1) * b (j 
     rw [← Real.log_mul h0.ne' h2.ne', two_mul, ← Real.log_mul h1.ne' h1.ne']
     exact Real.log_le_log (mul_pos h0 h2) (by nlinarith)) i (by exact_mod_cast hi)
   simp only [Nat.cast_zero, add_zero] at key
-  rw [hq']
-  push_cast
-  exact key
+  rw [hq']; push_cast; exact key
 
 private lemma quasi_concave (hnn : ∀ j, 0 ≤ b j)
     (hlc : ∀ j, b (j - 1) * b (j + 1) ≤ b j ^ 2)
@@ -374,9 +359,7 @@ private lemma mono_left_of_lt (hQ : ∀ i k j, i ≤ k → k ≤ j → min (b i)
     rcases eq_or_lt_of_le (hii'.trans hi') with h | h
     · rw [h]
     · have := hQ i j (j + 1) (by lia) (by lia)
-      rcases min_choice (b i) (b (j + 1)) with hm | hm <;> rw [hm] at this
-      · linarith
-      · linarith
+      rcases min_choice (b i) (b (j + 1)) with hm | hm <;> rw [hm] at this <;> linarith
   have := hQ i i' (j + 1) hii' hi'
   rwa [min_eq_left hi_le] at this
 
@@ -417,8 +400,7 @@ private lemma pow_interp (hnn : ∀ j, 0 ≤ b j) (hlc : ∀ j, b (j - 1) * b (j
   have hApos : 0 < σ * b k := mul_pos hσ hk
   rw [← Real.log_le_log_iff (by positivity) (by positivity), Real.log_mul (by positivity) hc.ne',
     Real.log_pow, Real.log_pow, Nat.cast_sub hK]
-  push_cast
-  exact h3
+  push_cast; exact h3
 
 end LogConcave
 
@@ -740,16 +722,16 @@ private lemma rtail_det {b : ℤ → ℝ} {μ σ η y : ℝ}
   have hη := hH.nonneg
   have hL1 : (0 : ℝ) < L + 1 := by positivity
   have h1 : (L + 1) * b k ≤ L / σ * φ y + η := by linarith
-  have h2 : σ * b k ≤ σ / (L + 1) * (L / σ * φ y + η) := by
-    have := mul_le_mul_of_nonneg_left h1 (le_of_lt (div_pos hσ0 hL1))
-    calc σ * b k = σ / (L + 1) * ((L + 1) * b k) := by field_simp
-      _ ≤ _ := this
-  have h3 : σ / (L + 1) * (L / σ * φ y + η) = L / (L + 1) * φ y + σ / (L + 1) * η := by
-    field_simp
-  have h4 : (L : ℝ) / (L + 1) ≤ 1 := by rw [div_le_one hL1]; linarith
-  have h5 : σ / (L + 1) ≤ 1 := by rw [div_le_one hL1]; linarith
-  have := gpdf_pos y
-  nlinarith
+  calc
+    σ * b k ≤ σ / (L + 1) * (L / σ * φ y + η) := by
+      have := mul_le_mul_of_nonneg_left h1 (le_of_lt (div_pos hσ0 hL1))
+      calc σ * b k = σ / (L + 1) * ((L + 1) * b k) := by field_simp
+        _ ≤ _ := this
+    _ = L / (L + 1) * φ y + σ / (L + 1) * η := by field_simp
+    _ ≤ φ y + η := by
+      have hL : (L : ℝ) / (L + 1) ≤ 1 := by rw [div_le_one hL1]; linarith
+      have hσ : σ / (L + 1) ≤ 1 := by rw [div_le_one hL1]; linarith
+      nlinarith [gpdf_pos y]
 
 /-- Hypotheses of the abstract local limit theorem for a family of sequences on `ℤ`. -/
 private structure LLTData (b : ℕ → ℤ → ℝ) (μ σ : ℕ → ℝ) : Prop where
@@ -808,8 +790,7 @@ private lemma LLTData.upper (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε)
     have : 1 ≤ (⌈2 / (c * ε)⌉₊ : ℝ) * (ε / 2) * c := by
       calc (1 : ℝ) = 2 / (c * ε) * (ε / 2) * c := by field_simp
         _ ≤ _ := by gcongr
-    simp only [K]
-    push_cast
+    simp only [K]; push_cast
     nlinarith
   have hKpos : (0 : ℝ) < K := by exact_mod_cast hK1
   set δ := min (ε / 8) (1 / (K : ℝ))
@@ -824,12 +805,8 @@ private lemma LLTData.upper (h : LLTData b μ σ) {ε : ℝ} (hε : 0 < ε)
   have hMa : (M : ℝ) ≤ δ * σ n := Nat.floor_le (by positivity)
   have hMb : δ * σ n < M + 1 := Nat.lt_floor_add_one _
   have hM1 : 1 ≤ M := by
-    have : (1 : ℝ) < M + 1 := by linarith
-    have : (0 : ℝ) < M := by
-      by_contra hc'; push Not at hc'
-      have : (M : ℝ) = 0 := le_antisymm hc' (Nat.cast_nonneg _)
-      rw [this] at hMb; linarith
-    exact_mod_cast this
+    have : (1 : ℕ) < M + 1 := by exact_mod_cast (show (1 : ℝ) < M + 1 by linarith)
+    lia
   have hjc : c ≤ φ (xs (μ n) (σ n) j) := by
     have : φ (T + 1) ≤ φ (xs (μ n) (σ n) j) := gpdf_le_of_sq_le (by
       have := sq_abs (xs (μ n) (σ n) j)
@@ -1208,9 +1185,7 @@ private theorem tendsto_cdf_of_tendsto_standardized {P : ℕ → ℝ[X]}
     fun_prop
   rw [standardizedCoeffDistribution, ProbabilityMeasure.toMeasure_map,
     Measure.map_apply hmeas measurableSet_Iic]
-  have hcd : (coeffDistribution (P n) : Measure ℝ) = coeffMeasure (P n) := by
-    simp [coeffDistribution, hnn n, hne n]
-  rw [hcd, coeffMeasure]
+  rw [coeffDistribution_toMeasure (hnn n) (hne n), coeffMeasure]
   simp only [Measure.coe_finsetSum, Finset.sum_apply, Measure.smul_apply, smul_eq_mul]
   rw [ENNReal.toReal_sum (fun k _ => by
     rw [Measure.dirac_apply' _ (hmeas measurableSet_Iic)]

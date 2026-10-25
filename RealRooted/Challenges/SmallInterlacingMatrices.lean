@@ -43,20 +43,24 @@ label = "A nondegenerate matrix preserves interlacing exactly when it is one of 
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.SmallInterlacingMatrices.ncard_nondegenerate_preservesInterlacing"
+name = "RealRooted.Atomic2x2Matrix.ncard_isNondegenerate_and_preservesInterlacing"
+module = "RealRooted.MatrixInterlacing"
 label = "Exactly 18 nondegenerate matrices preserve interlacing"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.SmallInterlacingMatrices.card_atomic2x2Matrix"
+name = "RealRooted.Atomic2x2Matrix.card"
+module = "RealRooted.MatrixInterlacing"
 label = "There are 81 matrices"
 
 [[theorems]]
-name = "RealRooted.Challenges.SmallInterlacingMatrices.ncard_nondegenerate"
+name = "RealRooted.Atomic2x2Matrix.ncard_isNondegenerate"
+module = "RealRooted.MatrixInterlacing"
 label = "56 of them are nondegenerate"
 
 [[theorems]]
-name = "RealRooted.Challenges.SmallInterlacingMatrices.ncard_preservesInterlacing"
+name = "RealRooted.Atomic2x2Matrix.ncard_preservesInterlacing"
+module = "RealRooted.MatrixInterlacing"
 label = "40 of them preserve interlacing"
 -->
 
@@ -123,42 +127,12 @@ namespace SmallInterlacingMatrices
 
 open Atomic2x2Matrix
 
-/-- There are `3 ^ 4 = 81` matrices with entries in `{0, 1, x}`. -/
-theorem card_atomic2x2Matrix : Fintype.card Atomic2x2Matrix = 81 := by
-  rw [← Finset.card_univ]
-  exact card_all
-
-/-- Exactly 56 of the 81 matrices have no zero row and two distinct rows. -/
-theorem ncard_nondegenerate : {M : Atomic2x2Matrix | M.IsNondegenerate}.ncard = 56 := by
-  rw [← card_nondegenerate, ← Set.ncard_coe_finset]
-  congr 1
-  ext M
-  simp [nondegenerate, all, IsNondegenerate]
-
-/-- Exactly 40 of the 81 matrices preserve interlacing. -/
-theorem ncard_preservesInterlacing :
-    {M : Atomic2x2Matrix | M.PreservesInterlacing}.ncard = 40 := by
-  rw [← card_preserving, ← Set.ncard_coe_finset]
-  congr 1
-  ext M
-  simp [preservesInterlacing_iff_mem_preserving]
-
 /-- **The 18 small preservers.** A nondegenerate matrix with entries in
 `{0, 1, x}` preserves interlacing if and only if it is one of the 18 matrices
 of `nondegeneratePreservingMatrices`. -/
 theorem nondegenerate_preservesInterlacing_iff (M : Atomic2x2Matrix) :
     M.IsNondegenerate ∧ M.PreservesInterlacing ↔ M ∈ nondegeneratePreservingMatrices :=
   (mem_nondegeneratePreservingMatrices_iff M).symm
-
-/-- Exactly 18 nondegenerate matrices with entries in `{0, 1, x}` preserve
-interlacing. -/
-theorem ncard_nondegenerate_preservesInterlacing :
-    {M : Atomic2x2Matrix | M.IsNondegenerate ∧ M.PreservesInterlacing}.ncard = 18 := by
-  rw [← card_nondegeneratePreserving, nondegeneratePreserving_eq_nondegeneratePreservingMatrices,
-    ← Set.ncard_coe_finset]
-  congr 1
-  ext M
-  simp [nondegenerate_preservesInterlacing_iff]
 
 end SmallInterlacingMatrices
 end Challenges

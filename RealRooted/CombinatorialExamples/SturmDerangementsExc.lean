@@ -6,6 +6,7 @@ public import RealRooted.Wagner
 public import RealRooted.AffineDerivative
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Tactic.Finish
 public import Mathlib.Tactic
 public import RealRooted.Mathlib.Algebra.Polynomial.Basic
 
@@ -159,7 +160,8 @@ lemma coeff_sturmDerangementsExc_top_and_above :
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
 lemma coeff_sturmDerangementsExc_symm :
-    ∀ n : Nat, ∀ m ≤ n, coeff (sturmDerangementsExc n) m = coeff (sturmDerangementsExc n) (n - m)
+    ∀ n : Nat, ∀ m ≤ n,
+      coeff (sturmDerangementsExc n) m = coeff (sturmDerangementsExc n) (n - m)
   | 0, m, hm => by
       lia
   | 1, m, hm => by
@@ -203,7 +205,8 @@ lemma coeff_sturmDerangementsExc_symm :
             coeff (sturmDerangementsExc (n + 3)) (n + 2 - m) =
               (n + 2 : ℝ) * coeff (sturmDerangementsExc (n + 1)) (n + 1 - m) +
               ((n + 2 : ℝ) - ↑(n + 1 - m)) * coeff (sturmDerangementsExc (n + 2)) (n + 1 - m) +
-              (((n + 1 - m : Nat) : ℝ) + 1) * coeff (sturmDerangementsExc (n + 2)) (n + 2 - m) := by
+              (((n + 1 - m : Nat) : ℝ) + 1) *
+                coeff (sturmDerangementsExc (n + 2)) (n + 2 - m) := by
           simpa [hidx] using coeff_sturmDerangementsExc_succ n (n + 1 - m)
         rw [hgoal, hrec1, hrec2, hs1, hs2m, hs2m1]
         have hcast1 : (((n + 1 - m : Nat) : ℝ)) = (n + 1 : ℝ) - m := by simp_all
@@ -267,59 +270,34 @@ lemma X_add_one_dvd_sturmDerangementsExc_of_odd {n : Nat} (hn : Odd n) :
     (dvd_iff_isRoot).2 (sturmDerangementsExc_isRoot_neg_one_of_odd hn)
 
 lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDerangementsExc n)
-  | 0 => by
-      intro m
-      simp [sturmDerangementsExc]
-  | 1 => by
-      intro m
-      simp [sturmDerangementsExc]
-  | 2 => by
-      intro m
-      by_cases hm : m = 1
-      · simp_all
-      · simp [sturmDerangementsExc_two, coeff_X, show 1 ≠ m by lia]
+  | 0 => hasNonnegCoeffs_zero
+  | 1 => hasNonnegCoeffs_zero
+  | 2 => by simpa [sturmDerangementsExc_two] using hasNonnegCoeffs_X
   | 3 => by
-      intro m
-      by_cases hm2 : m = 2
-      · subst hm2
-        norm_num [sturmDerangementsExc_three, coeff_X_pow, coeff_X]
-      · by_cases hm1 : m = 1
-        · subst hm1
-          norm_num [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2]
-        · simp [sturmDerangementsExc_three, coeff_X_pow, coeff_X, hm2, show 1 ≠ m by lia]
+      rw [sturmDerangementsExc_three]
+      exact (hasNonnegCoeffs_X.pow 2).add hasNonnegCoeffs_X
   | n + 4 => by
       rintro (_ | m)
       · rw [sturmDerangementsExc_recurrence (n + 1)]
         simp
-      · have hcoeff :
-            coeff (sturmDerangementsExc (n + 4)) (m + 1) =
-              (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) m +
-              (n + 1 : ℝ) * coeff (sturmDerangementsExc (n + 3)) m +
-              (coeff (sturmDerangementsExc (n + 2)) m * 2 -
-                (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) m) +
-              (m : ℝ) * coeff (sturmDerangementsExc (n + 3)) (m + 1) +
-              coeff (sturmDerangementsExc (n + 3)) m * 2 +
-              coeff (sturmDerangementsExc (n + 3)) (m + 1) := by
-          have h := coeff_sturmDerangementsExc_succ (n + 1) m
-          grind
-        rw [hcoeff]
+      · rw [coeff_sturmDerangementsExc_succ (n + 1) m]
         by_cases hm : m ≤ n + 2
-        · have h₁ : 0 ≤ coeff (sturmDerangementsExc (n + 2)) m :=
-            sturmDerangementsExc_nonnegCoeffs (n + 2) m
-          have h₂ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) m :=
-            sturmDerangementsExc_nonnegCoeffs (n + 3) m
-          have h₃ : 0 ≤ coeff (sturmDerangementsExc (n + 3)) (m + 1) :=
-            sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
-          have hm' : (m : ℝ) ≤ n + 3 := by
-            have hmNat : m ≤ n + 3 := le_trans hm (Nat.le_succ _)
-            have hmReal : (m : ℝ) ≤ ((n + 3 : Nat) : ℝ) := Nat.cast_le.mpr hmNat
-            simp_all
-          have hcoef : 0 ≤ ((n + 3 : ℝ) - m) := by linarith
-          nlinarith
+        · have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) := Nat.cast_le.mpr hm
+          push_cast at hm'
+          have h₁ := sturmDerangementsExc_nonnegCoeffs (n + 2) m
+          have h₂ := sturmDerangementsExc_nonnegCoeffs (n + 3) m
+          have h₃ := sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
+          have hscale : 0 ≤ ((n + 1 : Nat) : ℝ) + 2 - m := by
+            push_cast
+            linarith
+          exact add_nonneg
+            (add_nonneg (mul_nonneg (by positivity) h₁) (mul_nonneg hscale h₂))
+            (mul_nonneg (by positivity) h₃)
         · have hm' : n + 2 < m := lt_of_not_ge hm
           rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
-          grind
+          rw [hsmall_hi m (by lia), hbig_hi m (by lia), hbig_hi (m + 1) (by lia)]
+          norm_num
 
 lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
@@ -530,12 +508,9 @@ theorem strictInterl_sturmDerangementsExc_succ : ∀ n : Nat, 2 ≤ n →
 
 /-- In particular, every nontrivial derangement excedance polynomial is real-rooted. -/
 theorem isRealRooted_sturmDerangementsExc : ∀ n : Nat, 2 ≤ n →
-    ((sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).Splits)
-  | 0, hn => by lia
-  | 1, hn => by lia
-  | 2, _ => by
-      simp
-  | n + 3, _ => (strictInterl_sturmDerangementsExc_succ (n + 2) (by lia)).2.1
+    ((sturmDerangementsExc n) ≠ 0 ∧ (sturmDerangementsExc n).Splits) := by
+  intro n hn
+  rr_finish using strictInterl_sturmDerangementsExc_succ n hn
 
 /-- Consecutive derangement excedance polynomials form a genuine differ-by-1
 interlacing pair, not just an abstract `StrictInterl` pair. -/

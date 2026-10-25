@@ -268,7 +268,8 @@ theorem degreeOf_sourcePolarizationStageStep_raw_le
   let Q := MvPolynomial.rename isolate P
   let R := MvPolynomial.sourceBlockPolarization (κ i) Q
   have hinstallMap : install.symm (Sum.inl (Sum.inr rj)) = Sum.inr newj := by
-    dsimp [install, sourcePolarizationStageInstallEquiv]
+    simpa only [install, rj, newj] using
+      sourcePolarizationStageInstallEquiv_symm_raw κ S i j hi hjS hji
   have hinstall :
       (MvPolynomial.rename install.symm R).degreeOf (Sum.inr newj) =
         R.degreeOf (Sum.inl (Sum.inr rj)) := by
@@ -276,10 +277,8 @@ theorem degreeOf_sourcePolarizationStageStep_raw_le
     exact MvPolynomial.degreeOf_rename_of_injective install.symm.injective
       (Sum.inl (Sum.inr rj))
   have hisolateMap : isolate (Sum.inr oldj) = Sum.inl (Sum.inr rj) := by
-    dsimp [isolate, sourcePolarizationStageIsolateEquiv]
-    rw [dite_eq_right hji]
-    apply congrArg (fun x => Sum.inl (Sum.inr x))
-    exact Subtype.ext rfl
+    simpa only [isolate, oldj, rj] using
+      sourcePolarizationStageIsolateEquiv_raw κ S i j hi hjS hji
   have hisolate :
       Q.degreeOf (Sum.inl (Sum.inr rj)) = P.degreeOf (Sum.inr oldj) := by
     rw [← hisolateMap]
@@ -433,13 +432,7 @@ private theorem rename_inl_monomial_mul_rename_inr_monomial
       MvPolynomial.monomial (u.sumElim a) c := by
   classical
   rw [MvPolynomial.rename_monomial, MvPolynomial.rename_monomial,
-    MvPolynomial.monomial_mul_monomial]
-  have hsum :
-      Finsupp.mapDomain (Sum.inl : τ → τ ⊕ σ) u +
-          Finsupp.mapDomain (Sum.inr : σ → τ ⊕ σ) a =
-        u.sumElim a :=
-    (Finsupp.sumElim_eq_add u a).symm
-  rw [hsum, mul_one]
+    MvPolynomial.monomial_mul_monomial, ← Finsupp.sumElim_eq_add, mul_one]
 
 private theorem sourceCoefficientGeneral_rename_mul_monomial
     {σ τ : Type*} [DecidableEq σ]
@@ -466,13 +459,13 @@ private theorem sourceCoefficientGeneral_symbolTerm
       if r = (boxComplementIndex κ m).1 then MvPolynomial.C c * q else 0 := by
   classical
   rw [rightComplementMonomial_eq_rename_boxComplement]
-  have hleft :
+  rw [show
       (MvPolynomial.C c : MvPolynomial (τ ⊕ σ) ℂ) *
           MvPolynomial.rename (Sum.inl : τ → τ ⊕ σ) q =
         MvPolynomial.rename (Sum.inl : τ → τ ⊕ σ)
-          ((MvPolynomial.C c : MvPolynomial τ ℂ) * q) := by
-    rw [map_mul, MvPolynomial.rename_C]
-  rw [hleft, sourceCoefficientGeneral_rename_mul_monomial]
+          ((MvPolynomial.C c : MvPolynomial τ ℂ) * q) by
+    rw [map_mul, MvPolynomial.rename_C],
+    sourceCoefficientGeneral_rename_mul_monomial]
   by_cases h : r = (boxComplementIndex κ m).1 <;> simp [h]
 
 /-- Extracting a source coefficient commutes with a finite sum. -/
@@ -481,7 +474,7 @@ theorem sourceCoefficientGeneral_sum {σ τ ι : Type*} (s : Finset ι)
     sourceCoefficientGeneral (∑ i ∈ s, f i) r =
       ∑ i ∈ s, sourceCoefficientGeneral (f i) r := by
   classical
-  induction s using Finset.induction_on <;> simp_all [sourceCoefficientGeneral]
+  simp [sourceCoefficientGeneral, map_sum]
 
 /-- The unpolarized source coefficient of a finite algebraic symbol is the operator
 image at the complementary exponent, with the expected binomial factor. -/
@@ -559,8 +552,7 @@ theorem sourceBlockwisePolarizationGeneral_algebraicSymbol_eq_sum
   rw [sourceCoefficientGeneral_algebraicSymbol]
   have hchoose : MvPolynomial.boxChoose κ r.1 ≠ 0 := by
     unfold MvPolynomial.boxChoose
-    exact Finset.prod_ne_zero_iff.mpr fun i _hi =>
-      (Nat.choose_pos (r.2 i)).ne'
+    exact Finset.prod_ne_zero_iff.mpr fun i _ => (Nat.choose_pos (r.2 i)).ne'
   rw [map_mul]
   simp only [MvPolynomial.rename_C]
   rw [← mul_assoc, ← MvPolynomial.C_mul]
@@ -746,11 +738,8 @@ noncomputable def exponentOfBlockSupports {σ : Type*} [Fintype σ]
   intro x
   simp only [exponentOfBlockSupports, exponentBlockSupports,
     Finset.mem_filter, Finset.mem_univ, true_and]
-  by_cases hx : b.1 x = 1
-  · simp [hx]
-  · have hle := b.2 x
-    have hx0 : b.1 x = 0 := by lia
-    simp [hx0]
+  have hle := b.2 x
+  interval_cases h : b.1 x <;> simp [h]
 
 /-- Zero-one exponents are equivalently independent choices of a support in
 each source block. -/
@@ -778,11 +767,8 @@ theorem diagonalDegreeBoxIndexGeneral_apply_eq_card_blockSupport
     rw [Finset.card_filter]
     apply Finset.sum_congr rfl
     intro j _hj
-    by_cases hbj : b.1 ⟨i, j⟩ = 1
-    · simp [hbj]
-    · have hle := b.2 ⟨i, j⟩
-      have hb0 : b.1 ⟨i, j⟩ = 0 := by lia
-      simp [hb0]
+    have hle := b.2 ⟨i, j⟩
+    interval_cases h : b.1 ⟨i, j⟩ <;> simp
   · intro j _hj hji
     simp [hji]
   · simp
@@ -887,12 +873,8 @@ private theorem prod_blockSupport_compl_eq
     Finset.prod_filter]
   apply Finset.prod_congr rfl
   intro j _hj
-  by_cases hbj : b.1 ⟨i, j⟩ = 1
-  · simp [exponentBlockSupports, hbj]
-  · have hle := b.2 ⟨i, j⟩
-    have hb0 : b.1 ⟨i, j⟩ = 0 := by lia
-    simp only [exponentBlockSupports, Finset.mem_filter, Finset.mem_univ,
-      true_and, hb0, zero_ne_one, not_false_eq_true, ite_true]
+  have hle := b.2 ⟨i, j⟩
+  interval_cases h : b.1 ⟨i, j⟩ <;> simp [exponentBlockSupports, h]
 
 /-- The blockwise complement monomial is the product of a variable exactly at
 the zero entries of the exponent. -/
@@ -1120,8 +1102,8 @@ theorem sourcePolarizationStageStep_partialBlockwisePolarizationBasis
         (partialBlockwisePolarizationBasis κ S m) =
       partialBlockwisePolarizationBasis κ (insert i S) m := by
   unfold sourcePolarizationStageStep
-  rw [rename_stageIsolate_partialBlockwisePolarizationBasis]
-  rw [MvPolynomial.sourceBlockPolarization_rename_mul_X_pow
+  rw [rename_stageIsolate_partialBlockwisePolarizationBasis,
+    MvPolynomial.sourceBlockPolarization_rename_mul_X_pow
     (κ i) (m.1 i) (sourcePolarizationStageRestBasis κ S i m) (m.2 i)]
   exact rename_stageInstall_sourcePolarizationStageRestBasis κ S i hi m
 
@@ -1187,17 +1169,13 @@ theorem rename_partialBlockwisePolarizationDegreeBox_empty
     (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
     MvPolynomial.rename (sourcePolarizationStageEmptyEquiv κ)
         (partialBlockwisePolarizationDegreeBox κ ∅ p) = p.1 := by
-  have hmaps :
-      (MvPolynomial.renameEquiv ℂ
-          (sourcePolarizationStageEmptyEquiv κ)).toLinearMap.comp
-          (partialBlockwisePolarizationDegreeBox κ ∅) =
-        Submodule.subtype (MvPolynomial.degreeOfLE σ ℂ κ) := by
-    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
-    intro m
-    simp only [LinearMap.comp_apply,
-      partialBlockwisePolarizationDegreeBox_basis]
-    simpa using rename_partialBlockwisePolarizationBasis_empty κ m
-  exact LinearMap.congr_fun hmaps p
+  change ((MvPolynomial.renameEquiv ℂ _).toLinearMap.comp
+    (partialBlockwisePolarizationDegreeBox κ ∅)) p = (Submodule.subtype _) p
+  refine LinearMap.congr_fun ?_ p
+  apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+  intro m
+  simp only [LinearMap.comp_apply, partialBlockwisePolarizationDegreeBox_basis]
+  simpa using rename_partialBlockwisePolarizationBasis_empty κ m
 
 /-- Every unprocessed coordinate of a direct partial polarization retains its
 original degree cap. -/
@@ -1219,11 +1197,9 @@ theorem degreeOf_partialBlockwisePolarizationDegreeBox_raw_le
         ((MvPolynomial.mem_degreeOfLE_iff_degreeOf p.1).mp p.2 j)
   | @insert i S hi ih =>
       have hjS : j ∉ S := fun h => hj (Finset.mem_insert_of_mem h)
-      have hstep := LinearMap.congr_fun
+      rw [← LinearMap.congr_fun
         (sourcePolarizationStageStep_partialBlockwisePolarizationDegreeBox
-          κ S i hi) p
-      rw [LinearMap.comp_apply] at hstep
-      rw [← hstep]
+          κ S i hi) p, LinearMap.comp_apply]
       exact (degreeOf_sourcePolarizationStageStep_raw_le κ S i hi
         (partialBlockwisePolarizationDegreeBox κ S p) j hj).trans
           (ih hjS)
@@ -1247,11 +1223,9 @@ theorem mvUpperHalfPlaneStable_partialBlockwisePolarizationDegreeBox
       rw [← heq]
       exact hp.rename
   | @insert i S hi ih =>
-      have hstep := LinearMap.congr_fun
+      rw [← LinearMap.congr_fun
         (sourcePolarizationStageStep_partialBlockwisePolarizationDegreeBox
-          κ S i hi) p
-      rw [LinearMap.comp_apply] at hstep
-      rw [← hstep]
+          κ S i hi) p, LinearMap.comp_apply]
       exact mvUpperHalfPlaneStable_sourcePolarizationStageStep κ S i hi
         (partialBlockwisePolarizationDegreeBox κ S p)
         (degreeOf_partialBlockwisePolarizationDegreeBox_raw_le κ p S i hi) ih
@@ -1302,14 +1276,11 @@ theorem isMultiaffine_blockwisePolarizationBasis
       · rw [Finset.disjoint_left]
         intro a ha_i ha_s
         have hai := fst_eq_of_mem_vars_blockwisePolarizationFactor κ m i ha_i
-        have ha_union := MvPolynomial.vars_prod
+        obtain ⟨j, hjs, haj⟩ := Finset.mem_biUnion.mp <| MvPolynomial.vars_prod
           (fun j => MvPolynomial.rename (blockEmbedding κ j)
             (_root_.RealRooted.polarization (κ j) (Polynomial.X ^ m.1 j))) ha_s
-        simp only [Finset.mem_biUnion] at ha_union
-        obtain ⟨j, hjs, haj⟩ := ha_union
         have haj' := fst_eq_of_mem_vars_blockwisePolarizationFactor κ m j haj
-        have hji : j = i := haj'.symm.trans hai
-        exact hi (hji ▸ hjs)
+        exact hi (haj'.symm.trans hai ▸ hjs)
 
 /-- General source polarization from degree box `κ` to the all-ones box on
 the blocks `Σ i, Fin (κ i)`. -/
@@ -1362,21 +1333,14 @@ theorem rename_blockwisePolarizationDegreeBoxGeneral_sigmaCongrRight
     MvPolynomial.rename (Equiv.Perm.sigmaCongrRight e)
         (blockwisePolarizationDegreeBoxGeneral κ p).1 =
       (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
-  have hmaps :
-      (MvPolynomial.renameEquiv ℂ
-          (Equiv.Perm.sigmaCongrRight e)).toLinearMap.comp
-          ((Submodule.subtype
-            (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
-              (blockwisePolarizationDegreeBoxGeneral κ)) =
-        (Submodule.subtype
-          (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
-            (blockwisePolarizationDegreeBoxGeneral κ) := by
-    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
-    intro m
-    simp only [LinearMap.comp_apply,
-      blockwisePolarizationDegreeBoxGeneral_basis]
-    exact rename_blockwisePolarizationBasis_sigmaCongrRight κ m e
-  exact LinearMap.congr_fun hmaps p
+  change ((MvPolynomial.renameEquiv ℂ _).toLinearMap.comp
+    ((Submodule.subtype _).comp (blockwisePolarizationDegreeBoxGeneral κ))) p =
+      ((Submodule.subtype _).comp (blockwisePolarizationDegreeBoxGeneral κ)) p
+  refine LinearMap.congr_fun ?_ p
+  apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+  intro m
+  simp only [LinearMap.comp_apply, blockwisePolarizationDegreeBoxGeneral_basis]
+  exact rename_blockwisePolarizationBasis_sigmaCongrRight κ m e
 
 /-- For a polynomial invariant under permutations within every source block,
 all clone derivatives in one block agree after diagonal renaming. -/
@@ -1413,20 +1377,15 @@ theorem rename_partialBlockwisePolarizationDegreeBox_univ
     MvPolynomial.rename (sourcePolarizationStageUnivEquiv κ)
         (partialBlockwisePolarizationDegreeBox κ Finset.univ p) =
       (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
-  have hmaps :
-      (MvPolynomial.renameEquiv ℂ
-          (sourcePolarizationStageUnivEquiv κ)).toLinearMap.comp
-          (partialBlockwisePolarizationDegreeBox κ Finset.univ) =
-        (Submodule.subtype
-          (MvPolynomial.degreeOfLE (PolarizedSource κ) ℂ (fun _ => 1))).comp
-            (blockwisePolarizationDegreeBoxGeneral κ) := by
-    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
-    intro m
-    simp only [LinearMap.comp_apply,
-      partialBlockwisePolarizationDegreeBox_basis,
-      blockwisePolarizationDegreeBoxGeneral_basis]
-    exact rename_partialBlockwisePolarizationBasis_univ κ m
-  exact LinearMap.congr_fun hmaps p
+  change ((MvPolynomial.renameEquiv ℂ _).toLinearMap.comp
+    (partialBlockwisePolarizationDegreeBox κ Finset.univ)) p =
+      ((Submodule.subtype _).comp (blockwisePolarizationDegreeBoxGeneral κ)) p
+  refine LinearMap.congr_fun ?_ p
+  apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+  intro m
+  simp only [LinearMap.comp_apply, partialBlockwisePolarizationDegreeBox_basis,
+    blockwisePolarizationDegreeBoxGeneral_basis]
+  exact rename_partialBlockwisePolarizationBasis_univ κ m
 
 /-- General blockwise polarization preserves upper-half-plane stability. -/
 theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral
@@ -1435,13 +1394,9 @@ theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral
     (hp : MvUpperHalfPlaneStable p.1) :
     MvUpperHalfPlaneStable (blockwisePolarizationDegreeBoxGeneral κ p).1 := by
   classical
-  have hpartial :=
-    mvUpperHalfPlaneStable_partialBlockwisePolarizationDegreeBox
-      κ p hp Finset.univ
-  have hrename := hpartial.rename
-    (f := sourcePolarizationStageUnivEquiv κ)
-  rw [rename_partialBlockwisePolarizationDegreeBox_univ] at hrename
-  exact hrename
+  rw [← rename_partialBlockwisePolarizationDegreeBox_univ]
+  exact (mvUpperHalfPlaneStable_partialBlockwisePolarizationDegreeBox
+    κ p hp Finset.univ).rename
 
 private theorem blockwisePolarizationBasis_eq_normalized
     {σ : Type*} [Fintype σ] (κ : σ → ℕ)
@@ -1561,23 +1516,17 @@ theorem specializeLeft_sourceBlockwisePolarizationGeneral
   apply Fintype.sum_congr
   intro r
   rw [map_mul, map_mul, MvPolynomial.aeval_C,
-    MvPolynomial.algebraMap_eq]
-  have houtput (Q : MvPolynomial τ ℂ) :
-      MvPolynomial.aeval
-          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
-          (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ) Q) =
-        MvPolynomial.C (MvPolynomial.eval x Q) := by
-    rw [MvPolynomial.aeval_rename]
-    exact MvPolynomial.aeval_C_comp_left x Q
-  have hsource (Q : MvPolynomial (PolarizedSource κ) ℂ) :
-      MvPolynomial.aeval
-          (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X)
-          (MvPolynomial.rename
-            (Sum.inr : PolarizedSource κ → τ ⊕ PolarizedSource κ) Q) = Q := by
-    rw [MvPolynomial.aeval_rename]
-    change MvPolynomial.aeval MvPolynomial.X Q = Q
-    exact MvPolynomial.aeval_X_left_apply Q
-  rw [houtput, hsource,
+    MvPolynomial.algebraMap_eq, MvPolynomial.aeval_rename,
+    show MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X ∘ Sum.inl)
+        (sourceCoefficientGeneral P r.1) =
+      MvPolynomial.C (MvPolynomial.eval x (sourceCoefficientGeneral P r.1)) by
+        exact MvPolynomial.aeval_C_comp_left x _,
+    MvPolynomial.aeval_rename,
+    show MvPolynomial.aeval
+        (Sum.elim (MvPolynomial.C ∘ x) MvPolynomial.X ∘ Sum.inr)
+        (blockElementarySymmetric κ r.1) = blockElementarySymmetric κ r.1 by
+      exact MvPolynomial.aeval_X_left_apply _,
     coeff_specializeLeft_eq_eval_sourceCoefficientGeneral]
 
 /-- Blockwise polarization of the source variables preserves stability while
@@ -1595,21 +1544,14 @@ theorem mvUpperHalfPlaneStable_sourceBlockwisePolarizationGeneral
   let q : MvPolynomial.degreeOfLE σ ℂ κ :=
     ⟨_root_.RealRooted.specializeLeft x P,
       specializeLeft_mem_sourceDegreeBox κ P hdeg x⟩
-  have hx : ∀ i, 0 < (x i).im := fun i => hz (Sum.inl i)
-  have hy : ∀ i, 0 < (y i).im := fun i => hz (Sum.inr i)
-  have hqstable : _root_.RealRooted.MvUpperHalfPlaneStable q.1 :=
-    hstable.specializeLeft hx
-  have hpolar :
-      _root_.RealRooted.MvUpperHalfPlaneStable
-        (blockwisePolarizationDegreeBoxGeneral κ q).1 :=
-    mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ q hqstable
   have hfiber :
       _root_.RealRooted.MvUpperHalfPlaneStable
         (_root_.RealRooted.specializeLeft x
           (sourceBlockwisePolarizationGeneral κ P)) := by
     rw [specializeLeft_sourceBlockwisePolarizationGeneral κ P hdeg x]
-    exact hpolar
-  have hnonzero := hfiber y hy
+    exact mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ q
+      (hstable.specializeLeft fun i => hz (Sum.inl i))
+  have hnonzero := hfiber y fun i => hz (Sum.inr i)
   rw [_root_.RealRooted.eval_specializeLeft] at hnonzero
   have hxy : Sum.elim x y = z := by
     funext i
@@ -1624,12 +1566,9 @@ private theorem rename_blockwisePolarizationFactor
           (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i))) =
       MvPolynomial.X i ^ m.1 i := by
   rw [MvPolynomial.rename_rename]
-  have hcomp : Sigma.fst ∘ blockEmbedding κ i = fun _ : Fin (κ i) => i := by
-    funext j
-    rfl
-  rw [hcomp]
-  have hdegree :
-      (Polynomial.X ^ m.1 i : Polynomial ℂ).natDegree ≤ κ i := by
+  change MvPolynomial.rename (fun _ : Fin (κ i) => i)
+    (_root_.RealRooted.polarization (κ i) (Polynomial.X ^ m.1 i)) = _
+  have hdegree : (Polynomial.X ^ m.1 i : Polynomial ℂ).natDegree ≤ κ i := by
     simpa using m.2 i
   calc
     MvPolynomial.rename (fun _ : Fin (κ i) => i)
@@ -1671,14 +1610,14 @@ theorem diagonalProjectionDegreeBoxGeneral_blockwisePolarization
     (p : MvPolynomial.degreeOfLE σ ℂ κ) :
     diagonalProjectionDegreeBoxGeneral κ
         (blockwisePolarizationDegreeBoxGeneral κ p) = p := by
-  have hmaps :
-      (diagonalProjectionDegreeBoxGeneral κ).comp
-          (blockwisePolarizationDegreeBoxGeneral κ) = LinearMap.id := by
-    apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
-    intro m
-    rw [LinearMap.comp_apply, LinearMap.id_apply]
-    exact diagonalProjectionDegreeBoxGeneral_blockwisePolarization_basis κ m
-  exact LinearMap.congr_fun hmaps p
+  change ((diagonalProjectionDegreeBoxGeneral κ).comp
+    (blockwisePolarizationDegreeBoxGeneral κ)) p =
+      (LinearMap.id : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] _) p
+  refine LinearMap.congr_fun ?_ p
+  apply (MvPolynomial.basisDegreeOfLE (R := ℂ) κ).ext
+  intro m
+  rw [LinearMap.comp_apply, LinearMap.id_apply]
+  exact diagonalProjectionDegreeBoxGeneral_blockwisePolarization_basis κ m
 
 /-- Lift an operator on degree box `κ` to its multiaffine polarized source by
 precomposing with diagonal projection. -/
@@ -1736,11 +1675,8 @@ private theorem
   simp only [map_prod]
   apply Finset.prod_congr rfl
   intro x _hx
-  by_cases hbx : b.1 x = 1
-  · simp [hbx]
-  · have hle := b.2 x
-    have hb0 : b.1 x = 0 := by lia
-    simp [hb0]
+  have hle := b.2 x
+  interval_cases h : b.1 x <;> simp
 
 /-- The lifted multiaffine symbol in the common normal form indexed by the
 aggregated original source exponent. -/
@@ -1779,19 +1715,11 @@ theorem algebraicSymbol_sourcePolarizedOperatorGeneral_normalForm
               MvPolynomial.rename Sum.inr
                 (complementSupportMonomial κ b.1) := by
       rw [Fintype.sum_sigma]
-    _ = ∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
-          MvPolynomial.rename Sum.inl
-              (T (MvPolynomial.basisDegreeOfLE κ m)) *
-            MvPolynomial.rename Sum.inr
-              (∑ b : DiagonalAggregateFiber κ m,
-                complementSupportMonomial κ b.1) := by
-      apply Fintype.sum_congr
-      intro m
-      rw [map_sum, Finset.mul_sum]
     _ = _ := by
       apply Fintype.sum_congr
       intro m
-      rw [sum_complementSupportMonomial_diagonalAggregateFiber]
+      rw [← Finset.mul_sum, ← map_sum,
+        sum_complementSupportMonomial_diagonalAggregateFiber]
 
 /-- Borcea--Brändén Lemma 2.5 for an arbitrary finite degree box: the
 multiaffine symbol of the source-polarized operator is the source-block
@@ -1829,23 +1757,13 @@ theorem finiteSymbol_preserves_stability_general
     (p : MvPolynomial.degreeOfLE σ ℂ κ)
     (hp : MvUpperHalfPlaneStable p.1) :
     MvUpperHalfPlaneStableOrZero (T p) := by
-  let Tpolar := sourcePolarizedOperatorGeneral κ T
-  have hSymbolDegree (i : σ) :
-      (MvPolynomial.algebraicSymbol κ T).degreeOf (Sum.inr i) ≤ κ i :=
-    MvPolynomial.degreeOf_algebraicSymbol_inr_le κ T i
-  have hPolarSymbol : MvUpperHalfPlaneStable
-      (MvPolynomial.algebraicSymbol
-        (fun _ : PolarizedSource κ => 1) Tpolar) := by
-    rw [algebraicSymbol_sourcePolarizedOperatorGeneral]
+  rw [← sourcePolarizedOperatorGeneral_blockwisePolarization κ T p]
+  apply finiteSymbol_preserves_stability
+  · rw [algebraicSymbol_sourcePolarizedOperatorGeneral]
     exact mvUpperHalfPlaneStable_sourceBlockwisePolarizationGeneral
-      κ (MvPolynomial.algebraicSymbol κ T) hSymbolDegree hSymbol
-  have hPolarInput : MvUpperHalfPlaneStable
-      (blockwisePolarizationDegreeBoxGeneral κ p).1 :=
-    mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ p hp
-  have hresult := finiteSymbol_preserves_stability Tpolar hPolarSymbol
-    (blockwisePolarizationDegreeBoxGeneral κ p) hPolarInput
-  rw [sourcePolarizedOperatorGeneral_blockwisePolarization] at hresult
-  exact hresult
+      κ (MvPolynomial.algebraicSymbol κ T)
+      (MvPolynomial.degreeOf_algebraicSymbol_inr_le κ T) hSymbol
+  · exact mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral κ p hp
 
 end
 

@@ -84,22 +84,18 @@ theorem dividedDifference_adjugate_charmatrix_apply_nonneg_of_principal :
         simpa [Function.comp_def] using
           hprincipal (fun x => x) Function.injective_id i
       · obtain ⟨j', hj'⟩ := Fin.exists_succAbove_eq (Ne.symm hij)
-        rw [← hj']
-        rw [adjugate_charmatrix_apply_succAbove]
-        rw [Polynomial.dividedDifference_finset_sum]
+        rw [← hj', adjugate_charmatrix_apply_succAbove,
+          Polynomial.dividedDifference_finset_sum]
         apply Finset.sum_nonneg
         intro k _
         rw [← Polynomial.smul_eq_C_mul,
           Polynomial.dividedDifference_smul]
         apply mul_nonneg (hA i (i.succAbove k))
         apply ih v (A.submatrix i.succAbove i.succAbove)
-        · intro a b
-          exact hA _ _
+        · exact fun _ _ => hA _ _
         · intro d f hf a
-          let g : Fin (d + 1) → Fin (N + 2) := i.succAbove ∘ f
-          have hg : Function.Injective g := i.succAbove_right_injective.comp hf
-          have hleaf := hprincipal g hg a
-          simpa only [g, Matrix.submatrix_submatrix, Function.comp_assoc] using hleaf
+          simpa only [Matrix.submatrix_submatrix, Function.comp_assoc] using
+            hprincipal (i.succAbove ∘ f) (i.succAbove_right_injective.comp hf) a
 
 /-- Take a scalar divided difference entrywise in a matrix of polynomials. -/
 noncomputable def polynomialDividedDifference {m n : Type*}
@@ -170,21 +166,11 @@ theorem evalQuotientMatrix_cons {n : Type*} [Fintype n] [DecidableEq n]
     map_mul, matPolyEquiv_map_C, matPolyEquiv_smul_one]
   simp [Algebra.algebraMap_eq_smul_one]
 
-private theorem rootsProduct_eq_fin_prod (roots : List ℝ) :
-    rootsProduct roots = ∏ i : Fin roots.length, (X - C (roots.get i)) := by
-  calc
-    rootsProduct roots = (roots.map fun r => X - C r).prod := rootsProduct_eq_map_prod roots
-    _ = ((List.ofFn roots.get).map fun r => X - C r).prod := by rw [List.ofFn_get]
-    _ = (List.ofFn fun i : Fin roots.length => X - C (roots.get i)).prod := by
-      rw [List.map_ofFn]
-      rfl
-    _ = ∏ i : Fin roots.length, (X - C (roots.get i)) := List.prod_ofFn
-
 private theorem dividedDifference_rootsProduct_eq_zero_of_length_lt
     (k : ℕ) (v : Fin (k + 1) → ℝ) (hv : Function.Injective v)
     (roots : List ℝ) (hroots : roots.length < k) :
     Polynomial.dividedDifference k v (rootsProduct roots) = 0 := by
-  rw [rootsProduct_eq_fin_prod]
+  rw [rootsProduct_eq_map_prod, ← List.ofFn_get roots, List.map_ofFn, List.prod_ofFn]
   exact Polynomial.dividedDifference_prod_X_sub_C_eq_zero_of_lt
     (fun i : Fin roots.length => roots.get i) v hv hroots
 
@@ -193,7 +179,18 @@ private theorem dividedDifference_rootsProduct_eq_one_of_length_eq
     (roots : List ℝ) (hroots : roots.length = k) :
     Polynomial.dividedDifference k v (rootsProduct roots) = 1 := by
   subst k
-  rw [rootsProduct_eq_fin_prod]
+  have hprod : rootsProduct roots =
+      ∏ i : Fin roots.length, (X - C (roots.get i)) := by
+    calc
+      rootsProduct roots = (roots.map fun r => X - C r).prod :=
+        rootsProduct_eq_map_prod roots
+      _ = ((List.ofFn roots.get).map fun r => X - C r).prod := by
+        rw [List.ofFn_get]
+      _ = (List.ofFn fun i : Fin roots.length => X - C (roots.get i)).prod := by
+        rw [List.map_ofFn]
+        rfl
+      _ = ∏ i : Fin roots.length, (X - C (roots.get i)) := List.prod_ofFn
+  rw [hprod]
   exact Polynomial.dividedDifference_prod_X_sub_C_eq_one _ _ hv
 
 private theorem eval_rootsProduct_eq_zero_of_mem (x : ℝ) :
@@ -231,9 +228,10 @@ theorem polynomialDividedDifference_evalQuotientMatrix_eq_zero_of_length_le
   | cons r roots ih =>
       rw [evalQuotientMatrix_cons, polynomialDividedDifference_add,
         polynomialDividedDifference_rootsProduct_smul_one,
-        polynomialDividedDifference_map_mul]
-      rw [dividedDifference_rootsProduct_eq_zero_of_length_lt k v hv roots (by simpa using hroots)]
-      rw [ih (Nat.le_trans (Nat.le_succ roots.length) hroots)]
+        polynomialDividedDifference_map_mul,
+        dividedDifference_rootsProduct_eq_zero_of_length_lt k v hv roots
+          (by simpa using hroots),
+        ih (Nat.le_trans (Nat.le_succ roots.length) hroots)]
       simp
 
 /-- The top divided difference of the Newton quotient at the same ordered
@@ -246,10 +244,10 @@ theorem polynomialDividedDifference_evalQuotientMatrix_ofFn
         (evalQuotientMatrix A (List.ofFn v)) = 1 := by
   rw [List.ofFn_succ, evalQuotientMatrix_cons, polynomialDividedDifference_add,
     polynomialDividedDifference_rootsProduct_smul_one,
-    polynomialDividedDifference_map_mul]
-  rw [dividedDifference_rootsProduct_eq_one_of_length_eq k v hv _ (by simp)]
-  rw [polynomialDividedDifference_evalQuotientMatrix_eq_zero_of_length_le
-    k v hv A _ (by simp)]
+    polynomialDividedDifference_map_mul,
+    dividedDifference_rootsProduct_eq_one_of_length_eq k v hv _ (by simp),
+    polynomialDividedDifference_evalQuotientMatrix_eq_zero_of_length_le
+      k v hv A _ (by simp)]
   simp
 
 /-- Dividing the Newton quotient at a terminal block of nodes returns the
@@ -285,11 +283,7 @@ theorem aeval_rootsProduct {n : Type*} [Fintype n] [DecidableEq n]
     (A : Matrix n n ℝ) (roots : List ℝ) :
     aeval A (rootsProduct roots) =
       (roots.map fun r => A - r • 1).prod := by
-  induction roots with
-  | nil => simp [rootsProduct]
-  | cons r roots ih =>
-      rw [rootsProduct, aeval_mul, ih]
-      simp [Algebra.algebraMap_eq_smul_one]
+  induction roots <;> simp_all [rootsProduct, Algebra.algebraMap_eq_smul_one]
 
 /-- Algebraic identification of the adjugate tail divided difference with the
 preceding ordered spectral product. -/
@@ -318,18 +312,16 @@ noncomputable def increasingEigenvalues {N : ℕ}
 
 theorem increasingEigenvalues_monotone {N : ℕ}
     (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) :
-    Monotone (increasingEigenvalues A hA) := by
-  intro i j hij
-  exact sortedEigenvalues_antitone A hA (Fin.rev_le_rev.2 hij)
+    Monotone (increasingEigenvalues A hA) :=
+  fun _ _ hij => sortedEigenvalues_antitone A hA (Fin.rev_le_rev.2 hij)
 
 /-- A simple spectrum, expressed as strict decrease of the existing sorted
 eigenvalues, gives strict increase in the reversed indexing. -/
 theorem increasingEigenvalues_strictMono {N : ℕ}
     (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian)
     (hsimple : StrictAnti (sortedEigenvalues A hA)) :
-    StrictMono (increasingEigenvalues A hA) := by
-  intro i j hij
-  exact hsimple (Fin.rev_strictAnti hij)
+    StrictMono (increasingEigenvalues A hA) :=
+  fun _ _ hij => hsimple (Fin.rev_strictAnti hij)
 
 /-- Increasing-order form of the arbitrary principal-submatrix eigenvalue
 bound: deleting `N - d` coordinates shifts the comparison by that amount. -/
@@ -392,9 +384,7 @@ theorem spectralTailNodes_strictMono {N : ℕ} {μ : Fin (N + 1) → ℝ}
     (hμ : StrictMono μ) (k : Fin (N + 1)) :
     StrictMono (spectralTailNodes μ k) := by
   intro i j hij
-  apply hμ
-  change (k : ℕ) + (i : ℕ) < (k : ℕ) + (j : ℕ)
-  lia
+  exact hμ (by simpa [spectralTailNodes] using Nat.add_lt_add_left hij k)
 
 /-- The characteristic polynomial factored using increasing eigenvalue order. -/
 theorem charpoly_eq_rootsProduct_increasingEigenvalues {N : ℕ}
@@ -483,11 +473,9 @@ theorem polynomialDividedDifference_adjugate_charmatrix_nonneg {N : ℕ}
   apply Matrix.dividedDifference_adjugate_charmatrix_apply_nonneg_of_principal
     (A := A) _ hentry
   intro d f hf a
-  let g : Fin d → Fin (N + 1) := f ∘ a.succAbove
-  have hg : Function.Injective g := hf.comp a.succAbove_right_injective
-  have hleaf := dividedDifference_principalSubmatrix_charpoly_nonneg
-    A hA hsimple k g hg
-  simpa only [g, Matrix.submatrix_submatrix, Function.comp_assoc] using hleaf
+  simpa only [Matrix.submatrix_submatrix, Function.comp_assoc] using
+    dividedDifference_principalSubmatrix_charpoly_nonneg A hA hsimple k
+      (f ∘ a.succAbove) (hf.comp a.succAbove_right_injective)
 
 /-- The terminal adjugate divided difference is exactly the product of the
 preceding increasing-eigenvalue factors. -/
@@ -523,6 +511,20 @@ theorem spectralProduct_entrywise_nonneg {N : ℕ}
     A hA hsimple k]
   exact polynomialDividedDifference_adjugate_charmatrix_nonneg
     A hA hentry hsimple k i j
+
+/-- Initial products of the linear factors determined by the increasing
+eigenvalues of a symmetric entrywise nonnegative matrix are entrywise
+nonnegative. -/
+theorem aeval_prod_sub_increasingEigenvalues_nonneg {N : ℕ}
+    (A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ) (hA : A.IsHermitian)
+    (hentry : ∀ i j, 0 ≤ A i j) (hsimple : StrictAnti (sortedEigenvalues A hA))
+    (k : Fin (N + 1)) (i j : Fin (N + 1)) :
+    0 ≤ aeval A (∏ l : Fin k,
+      (X - C (increasingEigenvalues A hA ⟨l, l.isLt.trans k.isLt⟩))) i j := by
+  have h := spectralProduct_entrywise_nonneg A hA hentry hsimple k i j
+  rw [spectralInitialRoots, List.map_ofFn] at h
+  rw [← List.prod_ofFn, map_list_prod, List.map_ofFn]
+  simpa [Function.comp_def, Algebra.algebraMap_eq_smul_one] using h
 
 /-- The characteristic polynomial of a real symmetric matrix is the ordered
 product of its decreasing eigenvalues. -/

@@ -25,6 +25,14 @@ theorem exists_root_derivative_between {p : ℝ[X]} {a b : ℝ} (hab : a < b)
     (by simp_all) fun x _ => p.hasDerivAt x
   exact ⟨c, hc_mem.1, hc_mem.2, hc_eq⟩
 
+/-- Between two distinct real roots of a polynomial lies a root of its
+derivative. -/
+theorem exists_mem_Ioo_isRoot_derivative {p : ℝ[X]} {a b : ℝ} (hab : a < b)
+    (ha : p.IsRoot a) (hb : p.IsRoot b) :
+    ∃ c ∈ Set.Ioo a b, p.derivative.IsRoot c := by
+  obtain ⟨c, hac, hcb, hc⟩ := exists_root_derivative_between hab ha hb
+  exact ⟨c, ⟨hac, hcb⟩, hc⟩
+
 theorem isRoot_derivative_of_rootMultiplicity_ge_two {p : ℝ[X]} {r : ℝ}
     (hm : 2 ≤ p.rootMultiplicity r) :
     p.derivative.IsRoot r := by

@@ -468,11 +468,8 @@ theorem natDegree_lt_of_kreinDeleted_factor {g q : ℝ[X]} {u : ℝ}
     intro hq0
     rw [hq0, mul_zero] at hfactor
     exact hg0 hfactor
-  have hdeg : g.natDegree = q.natDegree + 1 := by
-    rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
-    exact Nat.add_comm 1 q.natDegree
-  rw [hdeg]
-  exact Nat.lt_succ_self _
+  rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+  lia
 
 /-- A weighted sum of one-root-deleted factors of `g` has degree strictly
 smaller than `g`, provided `g` has positive degree. -/
@@ -511,6 +508,23 @@ theorem natDegree_lt_of_le_of_coeff_eq_zero {p : ℝ[X]} {n : ℕ}
       exact leadingCoeff_ne_zero.mpr hp0
     exact hcoeff_ne hcoeff
 
+private theorem natDegree_sub_leadingCoeff_ratio_lt {f g : ℝ[X]}
+    (hg0 : g ≠ 0) (hgdeg : 0 < g.natDegree)
+    (hdeg : f.natDegree = g.natDegree) :
+    (f - C (f.leadingCoeff / g.leadingCoeff) * g).natDegree < g.natDegree := by
+  have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hg0
+  apply natDegree_lt_of_le_of_coeff_eq_zero hgdeg
+  · simpa using natDegree_sub_le_of_le hdeg.le
+      (natDegree_C_mul_le (f.leadingCoeff / g.leadingCoeff) g)
+  · have hfcoeff : f.coeff g.natDegree = f.leadingCoeff := by
+      rw [← hdeg]
+      rfl
+    rw [coeff_sub, coeff_C_mul, hfcoeff]
+    change f.leadingCoeff -
+      (f.leadingCoeff / g.leadingCoeff) * g.leadingCoeff = 0
+    field_simp
+    ring
+
 /-- Choose the scalar multiple of `g` that cancels the leading term of `f`,
 when `f` has degree at most the positive degree of `g`. -/
 theorem exists_C_mul_sub_natDegree_lt_of_le {f g : ℝ[X]}
@@ -520,21 +534,8 @@ theorem exists_C_mul_sub_natDegree_lt_of_le {f g : ℝ[X]}
   · refine ⟨0, ?_⟩
     simpa using hlt
   · have hdeg_eq : f.natDegree = g.natDegree := le_antisymm hdeg (le_of_not_gt hlt)
-    let c : ℝ := f.leadingCoeff / g.leadingCoeff
-    refine ⟨c, ?_⟩
-    have hc_top : (f - C c * g).coeff g.natDegree = 0 := by
-      have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hg0
-      have hfcoeff : f.coeff g.natDegree = f.leadingCoeff := by
-        rw [← hdeg_eq]
-        rfl
-      rw [coeff_sub, coeff_C_mul, hfcoeff]
-      change f.leadingCoeff -
-        (f.leadingCoeff / g.leadingCoeff) * g.leadingCoeff = 0
-      field_simp [hg_lc_ne]
-      ring
-    have hle : (f - C c * g).natDegree ≤ g.natDegree := by
-      simpa using natDegree_sub_le_of_le hdeg (natDegree_C_mul_le c g)
-    exact natDegree_lt_of_le_of_coeff_eq_zero hgdeg hle hc_top
+    exact ⟨f.leadingCoeff / g.leadingCoeff,
+      natDegree_sub_leadingCoeff_ratio_lt hg0 hgdeg hdeg_eq⟩
 
 /-- Choose a nonnegative scalar multiple of `g` that cancels the leading term
 of `f`, when both polynomials have positive leading coefficient and
@@ -547,22 +548,7 @@ theorem exists_nonneg_C_mul_sub_natDegree_lt_of_le {f g : ℝ[X]}
   · refine ⟨0, by norm_num, ?_⟩
     simpa using hlt
   · have hdeg_eq : f.natDegree = g.natDegree := le_antisymm hdeg (le_of_not_gt hlt)
-    let c : ℝ := f.leadingCoeff / g.leadingCoeff
-    refine ⟨c, ?_, ?_⟩
-    · dsimp [c]
-      exact div_nonneg hfpos.le hgpos.le
-    · have hg_lc_ne : g.leadingCoeff ≠ 0 := ne_of_gt hgpos
-      have hc_top : (f - C c * g).coeff g.natDegree = 0 := by
-        have hfcoeff : f.coeff g.natDegree = f.leadingCoeff := by
-          rw [← hdeg_eq]
-          rfl
-        rw [coeff_sub, coeff_C_mul, hfcoeff]
-        change f.leadingCoeff -
-          (f.leadingCoeff / g.leadingCoeff) * g.leadingCoeff = 0
-        field_simp [hg_lc_ne]
-        ring
-      have hle : (f - C c * g).natDegree ≤ g.natDegree := by
-        simpa using natDegree_sub_le_of_le hdeg (natDegree_C_mul_le c g)
-      exact natDegree_lt_of_le_of_coeff_eq_zero hgdeg hle hc_top
+    exact ⟨f.leadingCoeff / g.leadingCoeff, div_nonneg hfpos.le hgpos.le,
+      natDegree_sub_leadingCoeff_ratio_lt hgpos.ne_zero hgdeg hdeg_eq⟩
 
 end RealRooted

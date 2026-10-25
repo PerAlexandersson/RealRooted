@@ -79,6 +79,25 @@ theorem interl_or_reverse_of_allComboRealRooted {f g : ℝ[X]}
       (hall.comm) (Or.inl hrevsucc)).imp
         (·.toInterl) (·.toInterl)).symm
 
+private theorem allComboRealRooted_of_interl {f g : ℝ[X]} (hf : f.Splits)
+    (hg : g.Splits) (hfg : Interl f g) : AllComboRealRooted f g := by
+  rcases hfg with rfl | rfl | hfg
+  · intro α β
+    simpa using hg.C_mul β
+  · intro α β
+    simpa using hf.C_mul α
+  · exact allComboRealRooted_of_strictInterl hfg
+
+/-- Two splitting polynomials generate an all-real-rooted pencil exactly
+when they interlace in one of the two orientations. -/
+theorem allComboRealRooted_iff_interl_or_reverse {f g : ℝ[X]}
+    (hf : f.Splits) (hg : g.Splits) :
+    AllComboRealRooted f g ↔ Interl f g ∨ Interl g f := by
+  refine ⟨interl_or_reverse_of_allComboRealRooted, ?_⟩
+  rintro (hfg | hgf)
+  · exact allComboRealRooted_of_interl hf hg hfg
+  · exact (allComboRealRooted_of_interl hg hf hgf).comm
+
 /-- Pencil-local version of the operator-preserver consequence.  If a linear
 map preserves real-rootedness on the pencil spanned by an all-combinations
 real-rooted pair, then the images interlace up to the orientation ambiguity

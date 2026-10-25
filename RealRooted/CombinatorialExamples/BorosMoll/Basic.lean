@@ -90,10 +90,7 @@ private lemma lt_of_succ_lt {s : ℕ → ℝ} {n : ℕ} (h : ∀ j, j + 1 < n �
   intro i j hij hjn
   induction j with
   | zero => lia
-  | succ k ih =>
-    rcases Nat.lt_succ_iff_lt_or_eq.mp hij with h1 | h1
-    · exact (ih h1 (by lia)).trans (h k hjn)
-    · subst h1; exact h i hjn
+  | succ k ih => grind
 
 /-- If a polynomial of degree `n` alternates in sign along `t 0 < t 1 < ⋯ < t n`, then its
 roots are exactly `n` reals `s 0 < ⋯ < s (n-1)` with `t j < s j < t (j+1)`. -/
@@ -637,12 +634,8 @@ private lemma mono_of_succ {t : ℕ → ℝ} {m : ℕ} (ht : ∀ i < m, t i < t 
     ∀ i j, i ≤ j → j ≤ m → t i ≤ t j := by
   intro i j hij hjm
   induction j with
-  | zero => have : i = 0 := by lia
-            subst this; exact le_rfl
-  | succ k ih =>
-    rcases Nat.lt_succ_iff_lt_or_eq.mp (Nat.lt_succ_of_le hij) with h | h
-    · exact (ih (by lia) (by lia)).trans (ht k (by lia)).le
-    · rw [h]
+  | zero => grind
+  | succ k ih => grind
 
 /-- Interlacing from explicit sign changes at increasing points. -/
 private lemma bmInterlace_of_points (n : ℕ) (hn : 1 ≤ n) (t : ℕ → ℝ)
@@ -743,9 +736,6 @@ private lemma narC_eq_NintF (n i : ℕ) : narC n i = (NintF n i : ℝ) := by
             ((n:ℝ) + 1) * (n.choose (j+1)) * ((j:ℝ)+1) := by
           linear_combination ((n:ℝ)-j) * c2 - ((n:ℝ)+1) * c1
         exact mul_right_cancel₀ hj.ne' this
-      have c1 : ((n.choose (j+1) : ℕ) : ℝ) * ((j:ℝ)+1) = (n.choose j) * ((n:ℝ) - j) := by
-        have := congrArg (fun m : ℕ => (m:ℝ)) h1
-        push_cast [Nat.cast_sub (show j ≤ n by lia)] at this; linarith
       have c3 : ((n.choose (j+2) : ℕ) : ℝ) * ((j:ℝ)+2) = (n.choose (j+1)) * ((n:ℝ) - j - 1) := by
         have := congrArg (fun m : ℕ => (m:ℝ)) h2
         push_cast [Nat.cast_sub (show j + 1 ≤ n by lia)] at this; linarith
@@ -855,45 +845,40 @@ private def cmT1 : List ℤ := [36, 16]
 private def cnT1 : List ℤ := [1, 1]
 private def ptT1 : List ℤ := [-4096, -2048, 0]
 
-private theorem bmInterlace_1 : BMInterlace 1 :=
-  bmInterlace_of_check 1 (by norm_num) cmT1 cnT1 ptT1 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_1 : BMInterlace 1 := by
+  apply bmInterlace_of_check 1 (by norm_num) cmT1 cnT1 ptT1 <;> decide +kernel
 
 /-- `16^n L(d(2))_i`. -/
 private def cmT2 : List ℤ := [1764, 2592, 576]
 private def cnT2 : List ℤ := [1, 3, 1]
 private def ptT2 : List ℤ := [-6144, -3072, -2048, -512, 0]
 
-private theorem bmInterlace_2 : BMInterlace 2 :=
-  bmInterlace_of_check 2 (by norm_num) cmT2 cnT2 ptT2 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_2 : BMInterlace 2 := by
+  apply bmInterlace_of_check 2 (by norm_num) cmT2 cnT2 ptT2 <;> decide +kernel
 
 /-- `16^n L(d(3))_i`. -/
 private def cmT3 : List ℤ := [94864, 300864, 203520, 25600]
 private def cnT3 : List ℤ := [1, 6, 6, 1]
 private def ptT3 : List ℤ := [-10240, -5120, -3072, -1280, -512, -256, 0]
 
-private theorem bmInterlace_3 : BMInterlace 3 :=
-  bmInterlace_of_check 3 (by norm_num) cmT3 cnT3 ptT3 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_3 : BMInterlace 3 := by
+  apply bmInterlace_of_check 3 (by norm_num) cmT3 cnT3 ptT3 <;> decide +kernel
 
 /-- `16^n L(d(4))_i`. -/
 private def cmT4 : List ℤ := [5336100, 29890800, 41054400, 15590400, 1254400]
 private def cnT4 : List ℤ := [1, 10, 20, 10, 1]
 private def ptT4 : List ℤ := [-14336, -8192, -5120, -2048, -1024, -768, -512, -256, 0]
 
-private theorem bmInterlace_4 : BMInterlace 4 :=
-  bmInterlace_of_check 4 (by norm_num) cmT4 cnT4 ptT4 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_4 : BMInterlace 4 := by
+  apply bmInterlace_of_check 4 (by norm_num) cmT4 cnT4 ptT4 <;> decide +kernel
 
 /-- `16^n L(d(5))_i`. -/
 private def cmT5 : List ℤ := [308213136, 2709842688, 6293839104, 4809821184, 1165086720, 65028096]
 private def cnT5 : List ℤ := [1, 15, 50, 50, 15, 1]
 private def ptT5 : List ℤ := [-19456, -12288, -7168, -3072, -2048, -1280, -768, -512, -256, -128, 0]
 
-private theorem bmInterlace_5 : BMInterlace 5 :=
-  bmInterlace_of_check 5 (by norm_num) cmT5 cnT5 ptT5 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_5 : BMInterlace 5 := by
+  apply bmInterlace_of_check 5 (by norm_num) cmT5 cnT5 ptT5 <;> decide +kernel
 
 /-- `16^n L(d(6))_i`. -/
 private def cmT6 : List ℤ := [18116083216, 231270438336, 816643502080, 1046448076800, 508673249280,
@@ -902,9 +887,8 @@ private def cnT6 : List ℤ := [1, 21, 105, 175, 105, 21, 1]
 private def ptT6 : List ℤ := [-26624, -16384, -10240, -4096, -3072, -1792, -1024, -768, -512, -320,
     -256, -128, 0]
 
-private theorem bmInterlace_6 : BMInterlace 6 :=
-  bmInterlace_of_check 6 (by norm_num) cmT6 cnT6 ptT6 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_6 : BMInterlace 6 := by
+  apply bmInterlace_of_check 6 (by norm_num) cmT6 cnT6 ptT6 <;> decide +kernel
 
 /-- `16^n L(d(7))_i`. -/
 private def cmT7 : List ℤ := [1078091809344, 18910627333632, 94646238621696, 182983593369600,
@@ -913,9 +897,8 @@ private def cnT7 : List ℤ := [1, 28, 196, 490, 490, 196, 28, 1]
 private def ptT7 : List ℤ := [-33792, -20480, -12288, -5632, -4096, -2304, -2048, -1152, -768, -512,
     -384, -256, -128, -64, 0]
 
-private theorem bmInterlace_7 : BMInterlace 7 :=
-  bmInterlace_of_check 7 (by norm_num) cmT7 cnT7 ptT7 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_7 : BMInterlace 7 := by
+  apply bmInterlace_of_check 7 (by norm_num) cmT7 cnT7 ptT7 <;> decide +kernel
 
 /-- `16^n L(d(8))_i`. -/
 private def cmT8 : List ℤ := [64752889298724, 1497755160072864, 10107936521337600,
@@ -925,9 +908,8 @@ private def cnT8 : List ℤ := [1, 36, 336, 1176, 1764, 1176, 336, 36, 1]
 private def ptT8 : List ℤ := [-40960, -25600, -16384, -7168, -5120, -3072, -2048, -1536, -1024,
     -768, -512, -384, -256, -192, -128, -64, 0]
 
-private theorem bmInterlace_8 : BMInterlace 8 :=
-  bmInterlace_of_check 8 (by norm_num) cmT8 cnT8 ptT8 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_8 : BMInterlace 8 := by
+  apply bmInterlace_of_check 8 (by norm_num) cmT8 cnT8 ptT8 <;> decide +kernel
 
 /-- `16^n L(d(9))_i`. -/
 private def cmT9 : List ℤ := [3917150093379600, 115735238749240000, 1014584615693158400,
@@ -937,9 +919,8 @@ private def cnT9 : List ℤ := [1, 45, 540, 2520, 5292, 5292, 2520, 540, 45, 1]
 private def ptT9 : List ℤ := [-50176, -31744, -19456, -9216, -6144, -4096, -3072, -2048, -1536,
     -1152, -768, -640, -512, -320, -256, -128, -64, -48, 0]
 
-private theorem bmInterlace_9 : BMInterlace 9 :=
-  bmInterlace_of_check 9 (by norm_num) cmT9 cnT9 ptT9 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_9 : BMInterlace 9 := by
+  apply bmInterlace_of_check 9 (by norm_num) cmT9 cnT9 ptT9 <;> decide +kernel
 
 /-- `16^n L(d(10))_i`. -/
 private def cmT10 : List ℤ := [238319411681214864, 8769352111513776640, 97000615233878543616,
@@ -949,9 +930,8 @@ private def cnT10 : List ℤ := [1, 55, 825, 4950, 13860, 19404, 13860, 4950, 82
 private def ptT10 : List ℤ := [-59392, -37888, -23552, -11264, -7168, -4608, -4096, -2560, -2048,
     -1408, -1024, -896, -768, -512, -384, -256, -192, -128, -64, -32, 0]
 
-private theorem bmInterlace_10 : BMInterlace 10 :=
-  bmInterlace_of_check 10 (by norm_num) cmT10 cnT10 ptT10 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_10 : BMInterlace 10 := by
+  apply bmInterlace_of_check 10 (by norm_num) cmT10 cnT10 ptT10 <;> decide +kernel
 
 /-- `16^n L(d(11))_i`. -/
 private def cmT11 : List ℤ := [14567027841274918464, 653927673297021537024, 8917096769669512719360,
@@ -962,9 +942,8 @@ private def cnT11 : List ℤ := [1, 66, 1210, 9075, 32670, 60984, 60984, 32670, 
 private def ptT11 : List ℤ := [-69632, -45056, -27648, -13312, -9216, -5632, -4096, -3072, -2048,
     -1792, -1536, -1152, -768, -640, -512, -384, -256, -192, -128, -96, -64, -32, 0]
 
-private theorem bmInterlace_11 : BMInterlace 11 :=
-  bmInterlace_of_check 11 (by norm_num) cmT11 cnT11 ptT11 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_11 : BMInterlace 11 := by
+  apply bmInterlace_of_check 11 (by norm_num) cmT11 cnT11 ptT11 <;> decide +kernel
 
 /-- `16^n L(d(12))_i`. -/
 private def cmT12 : List ℤ := [893849013927119302416, 48120977670361108688448,
@@ -977,9 +956,8 @@ private def cnT12 : List ℤ := [1, 78, 1716, 15730, 70785, 169884, 226512, 1698
 private def ptT12 : List ℤ := [-81920, -52224, -32768, -15360, -11264, -6656, -5120, -3584, -3072,
     -2176, -2048, -1408, -1024, -896, -768, -512, -384, -320, -256, -192, -128, -96, -64, -32, 0]
 
-private theorem bmInterlace_12 : BMInterlace 12 :=
-  bmInterlace_of_check 12 (by norm_num) cmT12 cnT12 ptT12 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_12 : BMInterlace 12 := by
+  apply bmInterlace_of_check 12 (by norm_num) cmT12 cnT12 ptT12 <;> decide +kernel
 
 /-- `16^n L(d(13))_i`. -/
 private def cmT13 : List ℤ := [55027249354424551611456, 3501767840430639530128896,
@@ -993,9 +971,8 @@ private def ptT13 : List ℤ := [-93184, -60416, -37888, -17408, -12288, -8192, 
     -2560, -2048, -1664, -1536, -1088, -768, -704, -512, -448, -384, -256, -192, -160, -128, -64,
     -32, -24, 0]
 
-private theorem bmInterlace_13 : BMInterlace 13 :=
-  bmInterlace_of_check 13 (by norm_num) cmT13 cnT13 ptT13 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_13 : BMInterlace 13 := by
+  apply bmInterlace_of_check 13 (by norm_num) cmT13 cnT13 ptT13 <;> decide +kernel
 
 /-- `16^n L(d(14))_i`. -/
 private def cmT14 : List ℤ := [3397090393819066706625600, 252404615358230695506720000,
@@ -1010,9 +987,8 @@ private def ptT14 : List ℤ := [-106496, -68608, -43008, -19456, -14336, -9216,
     -3072, -2560, -2048, -1536, -1280, -1024, -896, -768, -576, -512, -384, -320, -256, -192, -128,
     -96, -64, -32, -16, 0]
 
-private theorem bmInterlace_14 : BMInterlace 14 :=
-  bmInterlace_of_check 14 (by norm_num) cmT14 cnT14 ptT14 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_14 : BMInterlace 14 := by
+  apply bmInterlace_of_check 14 (by norm_num) cmT14 cnT14 ptT14 <;> decide +kernel
 
 /-- `16^n L(d(15))_i`. -/
 private def cmT15 : List ℤ := [210227051749051932546910464, 18043853486756556744688988160,
@@ -1029,9 +1005,8 @@ private def ptT15 : List ℤ := [-120832, -77824, -49152, -22528, -16384, -10240
     -3584, -3072, -2304, -2048, -1536, -1280, -1088, -896, -768, -640, -512, -384, -320, -256, -192,
     -160, -128, -96, -64, -32, -16, 0]
 
-private theorem bmInterlace_15 : BMInterlace 15 :=
-  bmInterlace_of_check 15 (by norm_num) cmT15 cnT15 ptT15 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_15 : BMInterlace 15 := by
+  apply bmInterlace_of_check 15 (by norm_num) cmT15 cnT15 ptT15 <;> decide +kernel
 
 /-- `16^n L(d(16))_i`. -/
 private def cmT16 : List ℤ := [13037362006124798754354494244, 1280680681949152712014517688384,
@@ -1048,9 +1023,8 @@ private def ptT16 : List ℤ := [-135168, -87040, -55296, -25600, -18432, -11776
     -4096, -3072, -2688, -2048, -1792, -1536, -1280, -1024, -896, -768, -640, -512, -448, -384,
     -288, -256, -192, -128, -96, -64, -48, -32, -16, 0]
 
-private theorem bmInterlace_16 : BMInterlace 16 :=
-  bmInterlace_of_check 16 (by norm_num) cmT16 cnT16 ptT16 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_16 : BMInterlace 16 := by
+  apply bmInterlace_of_check 16 (by norm_num) cmT16 cnT16 ptT16 <;> decide +kernel
 
 /-- `16^n L(d(17))_i`. -/
 private def cmT17 : List ℤ := [810030699591615523990274389776, 90324911009427343240363457617728,
@@ -1068,9 +1042,8 @@ private def ptT17 : List ℤ := [-150528, -97280, -62464, -28672, -20480, -13312
     -6144, -4608, -4096, -3072, -2560, -2176, -2048, -1536, -1280, -1088, -896, -768, -640, -512,
     -448, -384, -320, -256, -192, -160, -128, -96, -64, -48, -32, -16, 0]
 
-private theorem bmInterlace_17 : BMInterlace 17 :=
-  bmInterlace_of_check 17 (by norm_num) cmT17 cnT17 ptT17 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_17 : BMInterlace 17 := by
+  apply bmInterlace_of_check 17 (by norm_num) cmT17 cnT17 ptT17 <;> decide +kernel
 
 /-- `16^n L(d(18))_i`. -/
 private def cmT18 : List ℤ := [50411910575818936499197199985936, 6334923023871467248576646055312256,
@@ -1089,9 +1062,8 @@ private def ptT18 : List ℤ := [-166912, -108544, -68608, -31744, -23552, -1484
     -7168, -5120, -4096, -3584, -3072, -2432, -2048, -1728, -1536, -1280, -1024, -896, -768, -640,
     -512, -448, -384, -320, -256, -224, -192, -144, -128, -80, -64, -40, -32, -12, 0]
 
-private theorem bmInterlace_18 : BMInterlace 18 :=
-  bmInterlace_of_check 18 (by norm_num) cmT18 cnT18 ptT18 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_18 : BMInterlace 18 := by
+  apply bmInterlace_of_check 18 (by norm_num) cmT18 cnT18 ptT18 <;> decide +kernel
 
 /-- `16^n L(d(19))_i`. -/
 private def cmT19 : List ℤ := [3142016587135529283190961217960000,
@@ -1112,9 +1084,8 @@ private def ptT19 : List ℤ := [-184320, -119808, -75776, -34816, -25600, -1638
     -7168, -5888, -5120, -3840, -3072, -2816, -2048, -1920, -1536, -1408, -1280, -1088, -896, -768,
     -640, -576, -512, -416, -384, -288, -256, -192, -160, -128, -96, -80, -64, -32, -16, -12, 0]
 
-private theorem bmInterlace_19 : BMInterlace 19 :=
-  bmInterlace_of_check 19 (by norm_num) cmT19 cnT19 ptT19 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_19 : BMInterlace 19 := by
+  apply bmInterlace_of_check 19 (by norm_num) cmT19 cnT19 ptT19 <;> decide +kernel
 
 /-- `16^n L(d(20))_i`. -/
 private def cmT20 : List ℤ := [196093255203128382563947889612883600,
@@ -1136,9 +1107,8 @@ private def ptT20 : List ℤ := [-201728, -131072, -83968, -38912, -27648, -1843
     -768, -704, -640, -512, -448, -384, -320, -256, -224, -192, -128, -112, -96, -64, -48, -32, -16,
     -10, 0]
 
-private theorem bmInterlace_20 : BMInterlace 20 :=
-  bmInterlace_of_check 20 (by norm_num) cmT20 cnT20 ptT20 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_20 : BMInterlace 20 := by
+  apply bmInterlace_of_check 20 (by norm_num) cmT20 cnT20 ptT20 <;> decide +kernel
 
 /-- `16^n L(d(21))_i`. -/
 private def cmT21 : List ℤ := [12252938186796838344517342508327937600,
@@ -1163,9 +1133,8 @@ private def ptT21 : List ℤ := [-221184, -143360, -92160, -41984, -30720, -1945
     -1088, -896, -832, -768, -608, -512, -448, -384, -320, -256, -224, -192, -160, -128, -96, -80,
     -64, -48, -32, -16, -8, 0]
 
-private theorem bmInterlace_21 : BMInterlace 21 :=
-  bmInterlace_of_check 21 (by norm_num) cmT21 cnT21 ptT21 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_21 : BMInterlace 21 := by
+  apply bmInterlace_of_check 21 (by norm_num) cmT21 cnT21 ptT21 <;> decide +kernel
 
 /-- `16^n L(d(22))_i`. -/
 private def cmT22 : List ℤ := [766466852362522887848361697896976526400,
@@ -1194,9 +1163,8 @@ private def ptT22 : List ℤ := [-240640, -156672, -100352, -46080, -33792, -215
     -1216, -1024, -896, -768, -704, -640, -544, -512, -416, -384, -288, -256, -224, -192, -144,
     -128, -96, -64, -56, -32, -24, -16, -8, 0]
 
-private theorem bmInterlace_22 : BMInterlace 22 :=
-  bmInterlace_of_check 22 (by norm_num) cmT22 cnT22 ptT22 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_22 : BMInterlace 22 := by
+  apply bmInterlace_of_check 22 (by norm_num) cmT22 cnT22 ptT22 <;> decide +kernel
 
 /-- `16^n L(d(23))_i`. -/
 private def cmT23 : List ℤ := [47993285477610979465196848546577411078400,
@@ -1228,9 +1196,8 @@ private def ptT23 : List ℤ := [-261120, -169984, -108544, -50176, -36864, -235
     -1344, -1280, -1088, -896, -832, -768, -640, -512, -480, -448, -384, -320, -272, -256, -192,
     -160, -128, -112, -96, -64, -48, -32, -24, -16, -8, 0]
 
-private theorem bmInterlace_23 : BMInterlace 23 :=
-  bmInterlace_of_check 23 (by norm_num) cmT23 cnT23 ptT23 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_23 : BMInterlace 23 := by
+  apply bmInterlace_of_check 23 (by norm_num) cmT23 cnT23 ptT23 <;> decide +kernel
 
 /-- `16^n L(d(24))_i`. -/
 private def cmT24 : List ℤ := [3007912509968327011620844153700424548490000,
@@ -1265,9 +1232,8 @@ private def ptT24 : List ℤ := [-282624, -184320, -117760, -54272, -39936, -256
     -1536, -1280, -1216, -1024, -960, -768, -736, -640, -576, -512, -448, -384, -320, -288, -256,
     -192, -176, -160, -128, -96, -80, -64, -48, -32, -24, -16, -6, 0]
 
-private theorem bmInterlace_24 : BMInterlace 24 :=
-  bmInterlace_of_check 24 (by norm_num) cmT24 cnT24 ptT24 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_24 : BMInterlace 24 := by
+  apply bmInterlace_of_check 24 (by norm_num) cmT24 cnT24 ptT24 <;> decide +kernel
 
 /-- `16^n L(d(25))_i`. -/
 private def cmT25 : List ℤ := [188675523265277267461733718722674310398403136,
@@ -1304,9 +1270,8 @@ private def ptT25 : List ℤ := [-304128, -198656, -128000, -58368, -43008, -276
     -1664, -1536, -1344, -1280, -1056, -896, -832, -768, -640, -576, -512, -448, -384, -320, -304,
     -256, -224, -192, -160, -128, -112, -96, -80, -64, -48, -32, -20, -16, -6, 0]
 
-private theorem bmInterlace_25 : BMInterlace 25 :=
-  bmInterlace_of_check 25 (by norm_num) cmT25 cnT25 ptT25 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_25 : BMInterlace 25 := by
+  apply bmInterlace_of_check 25 (by norm_num) cmT25 cnT25 ptT25 <;> decide +kernel
 
 /-- `16^n L(d(26))_i`. -/
 private def cmT26 : List ℤ := [11844133883558145150896645100170720467554194496,
@@ -1345,9 +1310,8 @@ private def ptT26 : List ℤ := [-327680, -214016, -137216, -63488, -46080, -296
     -1856, -1536, -1472, -1280, -1152, -1024, -960, -896, -768, -640, -576, -512, -480, -384, -352,
     -320, -288, -256, -208, -192, -160, -128, -112, -96, -64, -48, -40, -32, -20, -16, -6, 0]
 
-private theorem bmInterlace_26 : BMInterlace 26 :=
-  bmInterlace_of_check 26 (by norm_num) cmT26 cnT26 ptT26 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_26 : BMInterlace 26 := by
+  apply bmInterlace_of_check 26 (by norm_num) cmT26 cnT26 ptT26 <;> decide +kernel
 
 /-- `16^n L(d(27))_i`. -/
 private def cmT27 : List ℤ := [744052064926514149973199943768749402650359247104,
@@ -1388,9 +1352,8 @@ private def ptT27 : List ℤ := [-351232, -229376, -147456, -67584, -50176, -317
     -384, -320, -288, -256, -224, -192, -160, -144, -128, -96, -80, -64, -48, -40, -32, -16, -8, -6,
     0]
 
-private theorem bmInterlace_27 : BMInterlace 27 :=
-  bmInterlace_of_check 27 (by norm_num) cmT27 cnT27 ptT27 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_27 : BMInterlace 27 := by
+  apply bmInterlace_of_check 27 (by norm_num) cmT27 cnT27 ptT27 <;> decide +kernel
 
 /-- `16^n L(d(28))_i`. -/
 private def cmT28 : List ℤ := [46772783122242759397039778097830415255383042263104,
@@ -1433,9 +1396,8 @@ private def ptT28 : List ℤ := [-375808, -245760, -157696, -72704, -53248, -348
     -480, -448, -384, -352, -320, -256, -240, -192, -176, -160, -128, -112, -96, -80, -64, -48, -32,
     -24, -16, -8, -5, 0]
 
-private theorem bmInterlace_28 : BMInterlace 28 :=
-  bmInterlace_of_check 28 (by norm_num) cmT28 cnT28 ptT28 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_28 : BMInterlace 28 := by
+  apply bmInterlace_of_check 28 (by norm_num) cmT28 cnT28 ptT28 <;> decide +kernel
 
 /-- `16^n L(d(29))_i`. -/
 private def cmT29 : List ℤ := [2942069235632154544712728015903958343650134287417600,
@@ -1479,9 +1441,8 @@ private def ptT29 : List ℤ := [-401408, -263168, -168960, -77824, -57344, -368
     -576, -512, -448, -384, -352, -320, -288, -256, -224, -192, -160, -144, -128, -96, -80, -64,
     -56, -48, -32, -24, -16, -8, -5, 0]
 
-private theorem bmInterlace_29 : BMInterlace 29 :=
-  bmInterlace_of_check 29 (by norm_num) cmT29 cnT29 ptT29 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_29 : BMInterlace 29 := by
+  apply bmInterlace_of_check 29 (by norm_num) cmT29 cnT29 ptT29 <;> decide +kernel
 
 /-- `16^n L(d(30))_i`. -/
 private def cmT30 : List ℤ := [185167299759053068923008628592070907130798007307202816,
@@ -1526,9 +1487,8 @@ private def ptT30 : List ℤ := [-428032, -280576, -180224, -82944, -60416, -389
     -640, -576, -512, -448, -416, -384, -336, -320, -256, -224, -208, -192, -160, -128, -112, -96,
     -80, -64, -48, -40, -32, -24, -16, -8, -4, 0]
 
-private theorem bmInterlace_30 : BMInterlace 30 :=
-  bmInterlace_of_check 30 (by norm_num) cmT30 cnT30 ptT30 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_30 : BMInterlace 30 := by
+  apply bmInterlace_of_check 30 (by norm_num) cmT30 cnT30 ptT30 <;> decide +kernel
 
 /-- `16^n L(d(31))_i`. -/
 private def cmT31 : List ℤ := [11660337473692877751243278010278629569123176077214032896,
@@ -1575,9 +1535,8 @@ private def ptT31 : List ℤ := [-454656, -297984, -191488, -88064, -64512, -419
     -704, -640, -576, -512, -480, -448, -384, -352, -320, -288, -256, -224, -192, -160, -144, -128,
     -112, -96, -80, -64, -48, -32, -28, -16, -14, -8, -4, 0]
 
-private theorem bmInterlace_31 : BMInterlace 31 :=
-  bmInterlace_of_check 31 (by norm_num) cmT31 cnT31 ptT31 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_31 : BMInterlace 31 := by
+  apply bmInterlace_of_check 31 (by norm_num) cmT31 cnT31 ptT31 <;> decide +kernel
 
 /-- `16^n L(d(32))_i`. -/
 private def cmT32 : List ℤ := [734646809035907911132042308702281313751514480271035689764,
@@ -1625,9 +1584,8 @@ private def ptT32 : List ℤ := [-483328, -317440, -203776, -94208, -68608, -440
     -800, -768, -640, -576, -544, -512, -448, -384, -352, -320, -288, -256, -224, -192, -176, -160,
     -128, -112, -96, -80, -72, -64, -48, -32, -24, -16, -12, -8, -4, 0]
 
-private theorem bmInterlace_32 : BMInterlace 32 :=
-  bmInterlace_of_check 32 (by norm_num) cmT32 cnT32 ptT32 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_32 : BMInterlace 32 := by
+  apply bmInterlace_of_check 32 (by norm_num) cmT32 cnT32 ptT32 <;> decide +kernel
 
 /-- `16^n L(d(33))_i`. -/
 private def cmT33 : List ℤ := [46307709420992527687555474966537556015756620738039461788944,
@@ -1676,9 +1634,8 @@ private def ptT33 : List ℤ := [-512000, -335872, -216064, -99328, -72704, -471
     -864, -768, -736, -640, -608, -576, -512, -448, -416, -384, -336, -320, -272, -256, -208, -192,
     -160, -144, -128, -112, -96, -80, -64, -48, -40, -32, -24, -16, -12, -8, -4, 0]
 
-private theorem bmInterlace_33 : BMInterlace 33 :=
-  bmInterlace_of_check 33 (by norm_num) cmT33 cnT33 ptT33 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_33 : BMInterlace 33 := by
+  apply bmInterlace_of_check 33 (by norm_num) cmT33 cnT33 ptT33 <;> decide +kernel
 
 /-- `16^n L(d(34))_i`. -/
 private def cmT34 : List ℤ := [2920269910718300405210029519948605392343129456577056024579600,
@@ -1729,9 +1686,8 @@ private def ptT34 : List ℤ := [-541696, -355328, -229376, -105472, -77824, -50
     -1024, -960, -896, -800, -768, -672, -640, -576, -512, -464, -448, -384, -352, -320, -288, -256,
     -224, -208, -192, -160, -128, -120, -96, -88, -80, -64, -48, -40, -32, -24, -16, -12, -8, -3, 0]
 
-private theorem bmInterlace_34 : BMInterlace 34 :=
-  bmInterlace_of_check 34 (by norm_num) cmT34 cnT34 ptT34 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_34 : BMInterlace 34 := by
+  apply bmInterlace_of_check 34 (by norm_num) cmT34 cnT34 ptT34 <;> decide +kernel
 
 /-- `16^n L(d(35))_i`. -/
 private def cmT35 : List ℤ := [184236848799961737564287282791598382972935850548654039023354944,
@@ -1784,49 +1740,20 @@ private def ptT35 : List ℤ := [-572416, -375808, -241664, -111616, -81920, -53
     -288, -256, -240, -224, -192, -160, -144, -128, -112, -96, -80, -64, -56, -48, -40, -32, -24,
     -16, -12, -8, -3, 0]
 
-private theorem bmInterlace_35 : BMInterlace 35 :=
-  bmInterlace_of_check 35 (by norm_num) cmT35 cnT35 ptT35 (by decide +kernel) (by decide +kernel)
-    (by decide +kernel)
+private theorem bmInterlace_35 : BMInterlace 35 := by
+  apply bmInterlace_of_check 35 (by norm_num) cmT35 cnT35 ptT35 <;> decide +kernel
 
 /-- The interlacing data `BMInterlace n` holds for `1 ≤ n ≤ 35`, by kernel-checked
 certificates. -/
 theorem bmInterlace_small (n : ℕ) (hn : 1 ≤ n) (h35 : n ≤ 35) : BMInterlace n := by
-  interval_cases n
-  · exact bmInterlace_1
-  · exact bmInterlace_2
-  · exact bmInterlace_3
-  · exact bmInterlace_4
-  · exact bmInterlace_5
-  · exact bmInterlace_6
-  · exact bmInterlace_7
-  · exact bmInterlace_8
-  · exact bmInterlace_9
-  · exact bmInterlace_10
-  · exact bmInterlace_11
-  · exact bmInterlace_12
-  · exact bmInterlace_13
-  · exact bmInterlace_14
-  · exact bmInterlace_15
-  · exact bmInterlace_16
-  · exact bmInterlace_17
-  · exact bmInterlace_18
-  · exact bmInterlace_19
-  · exact bmInterlace_20
-  · exact bmInterlace_21
-  · exact bmInterlace_22
-  · exact bmInterlace_23
-  · exact bmInterlace_24
-  · exact bmInterlace_25
-  · exact bmInterlace_26
-  · exact bmInterlace_27
-  · exact bmInterlace_28
-  · exact bmInterlace_29
-  · exact bmInterlace_30
-  · exact bmInterlace_31
-  · exact bmInterlace_32
-  · exact bmInterlace_33
-  · exact bmInterlace_34
-  · exact bmInterlace_35
+  interval_cases n <;>
+    simp_all only [bmInterlace_1, bmInterlace_2, bmInterlace_3, bmInterlace_4, bmInterlace_5,
+      bmInterlace_6, bmInterlace_7, bmInterlace_8, bmInterlace_9, bmInterlace_10, bmInterlace_11,
+      bmInterlace_12, bmInterlace_13, bmInterlace_14, bmInterlace_15, bmInterlace_16,
+      bmInterlace_17, bmInterlace_18, bmInterlace_19, bmInterlace_20, bmInterlace_21,
+      bmInterlace_22, bmInterlace_23, bmInterlace_24, bmInterlace_25, bmInterlace_26,
+      bmInterlace_27, bmInterlace_28, bmInterlace_29, bmInterlace_30, bmInterlace_31,
+      bmInterlace_32, bmInterlace_33, bmInterlace_34, bmInterlace_35]
 
 end SmallCases
 

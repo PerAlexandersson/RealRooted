@@ -164,9 +164,9 @@ theorem imageProduct_derivative_package {m : ℕ} {U V : ℝ} (hm : 1 ≤ m)
         (imageProduct U V x).rootMultiplicity
           (-(Real.sqrt U + Real.sqrt V) ^ 2) = 1 := by
     intro hroot
-    apply Nat.le_antisymm
-    · exact imageProduct_threshold_rootMultiplicity_le_one hU hV x hx hinterior
-    · exact (rootMultiplicity_pos (imageProduct_ne_zero U V x)).mpr hroot
+    exact Nat.le_antisymm
+      (imageProduct_threshold_rootMultiplicity_le_one hU hV x hx hinterior)
+      ((rootMultiplicity_pos (imageProduct_ne_zero U V x)).mpr hroot)
   exact ⟨hder0, hdersplits, hdersimple,
     roots_derivative_lt_of_roots_le_of_rootMultiplicity_eq_one
       (imageProduct_splits U V x) hdegree
@@ -182,19 +182,26 @@ theorem prod_node_mul_one_sub_pos {m : ℕ} (t : Fin m → ℝ)
   refine Finset.prod_pos fun i _ => ?_
   exact mul_pos (ht i).1 (sub_pos.mpr (ht i).2)
 
+private theorem imageProduct_eq_prod_imageValue {m : ℕ} (U V : ℝ) (t : Fin m → ℝ) :
+    imageProduct U V t = Finset.univ.prod
+      (fun i : Fin m => (X : ℝ[X]) + C (imageValue U V (t i))) := by
+  unfold imageProduct
+  simp only [Multiset.map_map, Function.comp_apply]
+  rw [show ((Finset.univ : Finset (Fin m)).1.map (fun i =>
+      X - C (-(imageValue U V (t i))))).prod =
+        Finset.univ.prod (fun i : Fin m => X - C (-(imageValue U V (t i)))) by rfl]
+  apply Finset.prod_congr rfl
+  intro i _
+  rw [map_neg]
+  ring
+
 private theorem eval_imageProduct_eq_prod {m : ℕ} (U V xi : ℝ) (t : Fin m → ℝ) :
     (imageProduct U V t).eval xi =
       Finset.univ.prod (fun i : Fin m => xi + U / t i + V / (1 - t i)) := by
-  unfold imageProduct
-  rw [eval_multiset_prod]
-  simp only [Multiset.map_map, Function.comp_apply, eval_sub, eval_X, eval_C]
-  rw [show ((Finset.univ : Finset (Fin m)).1.map (fun i =>
-      xi - -(imageValue U V (t i)))).prod =
-        Finset.univ.prod (fun i : Fin m => xi - -(imageValue U V (t i))) by rfl]
-  apply Finset.prod_congr rfl
-  intro i _
-  unfold imageValue
-  ring
+  rw [imageProduct_eq_prod_imageValue, eval_prod]
+  exact Finset.prod_congr rfl fun i _ => by
+    simp only [eval_add, eval_X, eval_C, imageValue]
+    ring
 
 /-- Multiplying the cleared root-image identities at a finite family of
 interior nodes yields the exact `imageProduct` coordinate formula. -/
@@ -225,28 +232,18 @@ theorem imageProduct_coordinate_identity
     xi ^ m * Finset.univ.prod (fun i : Fin m => r - t i) *
         Finset.univ.prod (fun i : Fin m => z - t i) =
         Finset.univ.prod (fun i : Fin m => xi * (r - t i) * (z - t i)) := by
-          simp [Finset.prod_mul_distrib, mul_assoc]
+      simp [Finset.prod_mul_distrib, mul_assoc]
     _ = Finset.univ.prod (fun i : Fin m =>
-          -(t i * (1 - t i)) * (xi + U / t i + V / (1 - t i))) := hterms
+        -(t i * (1 - t i)) * (xi + U / t i + V / (1 - t i))) := hterms
     _ = Finset.univ.prod (fun i : Fin m =>
-          ((-1 : ℝ) * (t i * (1 - t i))) *
-            (xi + U / t i + V / (1 - t i))) := by
-          apply Finset.prod_congr rfl
-          intro i _
-          ring
-    _ = Finset.univ.prod (fun i : Fin m => (-1 : ℝ) * (t i * (1 - t i))) *
-          Finset.univ.prod (fun i : Fin m =>
-            xi + U / t i + V / (1 - t i)) := by
-          rw [Finset.prod_mul_distrib]
-    _ = (Finset.univ.prod (fun _i : Fin m => (-1 : ℝ)) *
-          Finset.univ.prod (fun i : Fin m => t i * (1 - t i))) *
-          Finset.univ.prod (fun i : Fin m =>
-            xi + U / t i + V / (1 - t i)) := by
-          rw [Finset.prod_mul_distrib]
-    _ = (-1 : ℝ) ^ m * Finset.univ.prod (fun i : Fin m => t i * (1 - t i)) *
-          (imageProduct U V t).eval xi := by
-          rw [himage]
-          simp
+        ((-1 : ℝ) * (t i * (1 - t i))) *
+          (xi + U / t i + V / (1 - t i))) := by
+      apply Finset.prod_congr rfl
+      intro i _
+      ring
+    _ = _ := by
+      rw [Finset.prod_mul_distrib, Finset.prod_mul_distrib, himage]
+      simp
 
 /-! ## Fixed-coordinate derivative identity for the image product -/
 
@@ -283,19 +280,6 @@ private theorem image_node_log_derivative
   field_simp [ht0, ht1, hr, hz]
   ring
 
-private theorem imageProduct_eq_prod_imageValue {m : ℕ} (U V : ℝ) (t : Fin m → ℝ) :
-    imageProduct U V t = Finset.univ.prod
-      (fun i : Fin m => (X : ℝ[X]) + C (imageValue U V (t i))) := by
-  unfold imageProduct
-  simp only [Multiset.map_map, Function.comp_apply]
-  rw [show ((Finset.univ : Finset (Fin m)).1.map (fun i =>
-      X - C (-(imageValue U V (t i))))).prod =
-        Finset.univ.prod (fun i : Fin m => X - C (-(imageValue U V (t i)))) by rfl]
-  apply Finset.prod_congr rfl
-  intro i _
-  rw [map_neg]
-  ring
-
 /-- The fixed-coordinate logarithmic derivative identity for the
 image product.  The hypotheses allow the empty family `Fin 0`. -/
 theorem imageProduct_derivative_identity
@@ -320,20 +304,11 @@ theorem imageProduct_derivative_identity
   have ht0 : ∀ i : Fin m, t i ≠ 0 := fun i => (ht i).1.ne'
   have ht1 : ∀ i : Fin m, 1 - t i ≠ 0 := fun i =>
     (sub_pos.mpr (ht i).2).ne'
-  have hfacr : ∀ i ∈ (Finset.univ : Finset (Fin m)),
-      (X - C (t i)).eval r ≠ 0 := by
-    intro i hi
-    rw [Polynomial.eval_prod] at hqr
-    exact Finset.prod_ne_zero_iff.mp hqr i hi
-  have hfacz : ∀ i ∈ (Finset.univ : Finset (Fin m)),
-      (X - C (t i)).eval z ≠ 0 := by
-    intro i hi
-    rw [Polynomial.eval_prod] at hqz
-    exact Finset.prod_ne_zero_iff.mp hqz i hi
-  have hfacxi : ∀ i ∈ (Finset.univ : Finset (Fin m)), (g i).eval xi ≠ 0 := by
-    intro i hi
-    rw [himageProduct, Polynomial.eval_prod] at himage
-    exact Finset.prod_ne_zero_iff.mp himage i hi
+  rw [Polynomial.eval_prod] at hqr hqz
+  have hfacr := Finset.prod_ne_zero_iff.mp hqr
+  have hfacz := Finset.prod_ne_zero_iff.mp hqz
+  rw [himageProduct, Polynomial.eval_prod] at himage
+  have hfacxi := Finset.prod_ne_zero_iff.mp himage
   have hqderr :
       (derivative (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i))).eval r /
           (Finset.univ.prod fun i : Fin m => (X : ℝ[X]) - C (t i)).eval r =
@@ -502,20 +477,6 @@ private theorem image_coordinate_identity {r z s U V xi : ℝ}
   field_simp
   ring
 
-/-- Rewrite the image product as its finite product of image factors. -/
-private theorem imageProduct_eq_prod_X_add_C {m : ℕ} (U V : ℝ) (t : Fin m → ℝ) :
-    imageProduct U V t = ∏ i : Fin m, (X + C (U / t i + V / (1 - t i))) := by
-  unfold imageProduct
-  simp only [Multiset.map_map, Function.comp_apply]
-  rw [show ((Finset.univ : Finset (Fin m)).1.map (fun i =>
-      X - C (-(imageValue U V (t i))))).prod =
-        Finset.univ.prod (fun i : Fin m => X - C (-(imageValue U V (t i)))) by rfl]
-  apply Finset.prod_congr rfl
-  intro i _
-  unfold imageValue
-  rw [map_neg]
-  ring
-
 /-- At a double image root, the second derivative of `imageProduct` has the
 strict sign obtained from the two distinguished node derivatives. -/
 theorem imageProduct_double_root_sign {m : ℕ} (t : Fin m → ℝ) (U V xi : ℝ)
@@ -549,7 +510,7 @@ theorem imageProduct_double_root_sign {m : ℕ} (t : Fin m → ℝ) (U V xi : �
   have hamem : a ∈ (univ : Finset (Fin m)).erase b :=
     Finset.mem_erase.mpr ⟨hab, mem_univ a⟩
   have himage : imageProduct U V t = ∏ i : Fin m, (X + C (c i)) := by
-    rw [imageProduct_eq_prod_X_add_C]
+    simpa [c, imageValue] using imageProduct_eq_prod_imageValue U V t
   have hf : (∏ i : Fin m, (X + C (c i))) =
       (X - C xi) ^ 2 * ∏ i ∈ I, (X + C (c i)) := by
     rw [← Finset.mul_prod_erase (univ : Finset (Fin m)) (fun i => X + C (c i))

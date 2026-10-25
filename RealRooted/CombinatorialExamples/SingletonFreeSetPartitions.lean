@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
+import RealRooted.Tactic.RowInterlacing
 public import Mathlib.Tactic
 
 /-!
@@ -49,6 +50,63 @@ lemma singletonFreeSetPartitions_three :
     singletonFreeSetPartitions 3 = X := by
   simp [singletonFreeSetPartitions]
 
+private def singletonFreeSetPartitionsTail : Nat → ℝ[X]
+  | 0 => X
+  | 1 => X
+  | n + 2 =>
+      (X * C ((n : ℝ) + 3)) * singletonFreeSetPartitionsTail n +
+        X * (singletonFreeSetPartitionsTail (n + 1)).derivative
+
+private lemma singletonFreeSetPartitionsTail_eq (n : Nat) :
+    singletonFreeSetPartitionsTail n = singletonFreeSetPartitions (n + 2) := by
+  induction n using Nat.twoStepInduction with
+  | zero => simp [singletonFreeSetPartitionsTail, singletonFreeSetPartitions_two]
+  | one => simp [singletonFreeSetPartitionsTail, singletonFreeSetPartitions_three]
+  | more n ih₀ ih₁ =>
+      rw [singletonFreeSetPartitionsTail, ih₀, ih₁,
+        singletonFreeSetPartitions_succ_succ (n + 2)]
+      push_cast
+      ring_nf
+
+private lemma singletonFreeSetPartitionsTail_natDegree (n : Nat) :
+    (singletonFreeSetPartitionsTail n).natDegree = n / 2 + 1 := by
+  rr_row_natDegree
+
+private lemma singletonFreeSetPartitionsTail_posLeadingCoeff (n : Nat) :
+    HasPosLeadingCoeff (singletonFreeSetPartitionsTail n) := by
+  rr_row_leadingCoeff_pos
+
+private lemma singletonFreeSetPartitionsTail_nonnegCoeffs :
+    ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitionsTail n) := by
+  rr_row_nonneg_coeffs
+
+private lemma singletonFreeSetPartitionsTail_splits (n : Nat) :
+    (singletonFreeSetPartitionsTail n).Splits := by
+  rr_row_splits
+
+private lemma singletonFreeSetPartitionsTail_strictInterl (n : Nat) :
+    StrictInterl (singletonFreeSetPartitionsTail n)
+      (singletonFreeSetPartitionsTail (n + 1)) := by
+  apply derivativeLag_strictInterl_of_nonnegCoeffs_of_step
+    (P := singletonFreeSetPartitionsTail) (U := fun _ => 0) (V := fun _ => X)
+    (W := fun m => X * C ((m : ℝ) + 3))
+  · intro m
+    rw [singletonFreeSetPartitionsTail]
+    ring_nf
+  · intro m
+    rw [singletonFreeSetPartitionsTail_natDegree,
+      singletonFreeSetPartitionsTail_natDegree]
+    lia
+  · exact singletonFreeSetPartitionsTail_posLeadingCoeff
+  · exact singletonFreeSetPartitionsTail_nonnegCoeffs
+  · intro m x hx
+    simp only [eval_X]
+    exact hx
+  · intro m x hx
+    rw [eval_mul, eval_X, eval_C]
+    exact mul_nonpos_of_nonpos_of_nonneg hx (by positivity)
+  · simpa [singletonFreeSetPartitionsTail] using StrictInterl.refl (f := X) (by simp)
+
 lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
     coeff (singletonFreeSetPartitions (n + 2)) (m + 1) =
       (n + 1 : ℝ) * coeff (singletonFreeSetPartitions n) m +
@@ -58,82 +116,33 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
   ring
 
 lemma singletonFreeSetPartitions_nonnegCoeffs :
-    ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitions n)
-  | 0 => by
-      intro m
-      cases m <;> simp [singletonFreeSetPartitions_zero, coeff_one]
-  | 1 => by
-      intro m
-      simp [singletonFreeSetPartitions_one]
-  | n + 2 => by
-      rintro (_ | m)
-      · simp [singletonFreeSetPartitions_succ_succ]
-      · rw [coeff_singletonFreeSetPartitions_succ_succ]
-        exact add_nonneg
-          (mul_nonneg (by positivity) (singletonFreeSetPartitions_nonnegCoeffs n m))
-          (mul_nonneg (by positivity)
-            (singletonFreeSetPartitions_nonnegCoeffs (n + 1) (m + 1)))
+    ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitions n) := by
+  rintro (_ | _ | n)
+  · exact hasNonnegCoeffs_one
+  · exact hasNonnegCoeffs_zero
+  · rw [← singletonFreeSetPartitionsTail_eq]
+    exact singletonFreeSetPartitionsTail_nonnegCoeffs n
 
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
     ∀ n : Nat, 2 ≤ n →
       0 < coeff (singletonFreeSetPartitions n) (n / 2) ∧
-      ∀ m > n / 2, coeff (singletonFreeSetPartitions n) m = 0
-  | 0, h => by
-      lia
-  | 1, h => by
-      lia
-  | 2, _ => by
-      grind [singletonFreeSetPartitions_two, coeff_X]
-  | 3, _ => by
-      grind [singletonFreeSetPartitions_three, coeff_X]
-  | n + 4, _ => by
-      rcases coeff_singletonFreeSetPartitions_top_pos_and_above (n + 2) (by lia) with
-        ⟨hsmall_top, hsmall_hi⟩
-      rcases coeff_singletonFreeSetPartitions_top_pos_and_above (n + 3) (by lia) with
-        ⟨hbig_top, hbig_hi⟩
-      constructor
-      · rw [show (n + 4) / 2 = ((n + 4) / 2 - 1) + 1 by lia,
-          coeff_singletonFreeSetPartitions_succ_succ]
-        rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hsmall_pos :
-              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
-            grind
-          have hbig_zero : coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) = 0 := by grind
-          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
-          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by grind
-          have hcoeff_eq :
-              ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
-            simp
-          rw [hidx, hscale_eq, hcoeff_eq, hbig_zero]
-          have hscale : 0 < (n + 3 : ℝ) := by positivity
-          nlinarith
-        · have hsmall_pos :
-              0 < coeff (singletonFreeSetPartitions (n + 2)) ((n + 4) / 2 - 1) := by
-            grind
-          have hbig_pos : 0 < coeff (singletonFreeSetPartitions (n + 3)) ((n + 4) / 2) := by grind
-          have hidx : ((n + 4) / 2 - 1) + 1 = (n + 4) / 2 := by lia
-          have hscale_eq : (((n + 2 : Nat) : ℝ) + 1) = (n + 3 : ℝ) := by grind
-          have hcoeff_eq :
-              ((((n + 4) / 2 - 1 : Nat) : ℝ) + 1) = (((n + 4) / 2 : Nat) : ℝ) := by
-            simp
-          rw [hidx, hscale_eq, hcoeff_eq]
-          have hscale₁ : 0 < (n + 3 : ℝ) := by positivity
-          have hscale₂ : 0 < (((n + 4) / 2 : Nat) : ℝ) := by simp
-          nlinarith
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
-        | succ k =>
-            rw [coeff_singletonFreeSetPartitions_succ_succ]
-            grind
+      ∀ m > n / 2, coeff (singletonFreeSetPartitions n) m = 0 := by
+  intro n hn
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
+  rw [show 2 + k = k + 2 by lia, ← singletonFreeSetPartitionsTail_eq]
+  have hdeg := singletonFreeSetPartitionsTail_natDegree k
+  have hpos := singletonFreeSetPartitionsTail_posLeadingCoeff k
+  constructor
+  · simpa [HasPosLeadingCoeff, leadingCoeff, hdeg] using hpos
+  · intro m hm
+    exact coeff_eq_zero_of_natDegree_lt (by lia)
 
 lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
     (singletonFreeSetPartitions n).natDegree = n / 2 := by
-  rcases coeff_singletonFreeSetPartitions_top_pos_and_above n hn with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    htop.ne'
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
+  rw [show 2 + k = k + 2 by lia, ← singletonFreeSetPartitionsTail_eq,
+    singletonFreeSetPartitionsTail_natDegree]
+  lia
 
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by
@@ -142,8 +151,9 @@ lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
 
 lemma singletonFreeSetPartitions_posLeadingCoeff (n : Nat) (hn : 2 ≤ n) :
     HasPosLeadingCoeff (singletonFreeSetPartitions n) := by
-  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_singletonFreeSetPartitions n hn] using
-    (coeff_singletonFreeSetPartitions_top_pos_and_above n hn).1
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
+  rw [show 2 + k = k + 2 by lia, ← singletonFreeSetPartitionsTail_eq]
+  exact singletonFreeSetPartitionsTail_posLeadingCoeff k
 
 /-- The inner recurrence core
 `(n+1) D_n(X) + D'_{n+1}(X)` for singleton-free set partitions. -/
@@ -200,40 +210,13 @@ lemma strictInterl_singletonFreeSetPartitionsCore_of_strictInterl {n : Nat} (hn 
 
 lemma strictInterl_singletonFreeSetPartitions_two_three :
     StrictInterl (singletonFreeSetPartitions 2) (singletonFreeSetPartitions 3) :=
-  by simpa [singletonFreeSetPartitions_two, singletonFreeSetPartitions_three] using
-    StrictInterl.refl (f := X) (by simp)
+  by simpa [singletonFreeSetPartitionsTail_eq] using
+    singletonFreeSetPartitionsTail_strictInterl 0
 
 lemma strictInterl_singletonFreeSetPartitions_three_four :
-    StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) := by
-  have hlin : Interlaces (1 : ℝ[X]) (1 + C (3 : ℝ) * X) :=
-    interlaces_one_linear (by simp)
-  have hstrictInterl : StrictInterl (1 : ℝ[X]) (1 + C (3 : ℝ) * X) := hlin.toStrictInterl
-  have hlin_nonneg : HasNonnegCoeffs (1 + C (3 : ℝ) * X) := by
-    have hX_nonneg : HasNonnegCoeffs (X : ℝ[X]) := by rintro (_ | _ | m) <;> simp [coeff_X]
-    have hCX_nonneg : HasNonnegCoeffs (C (3 : ℝ) * X) :=
-      hasNonnegCoeffs_C_mul (by simp) hX_nonneg
-    exact fun m => by rw [coeff_add]; exact add_nonneg (hasNonnegCoeffs_one m) (hCX_nonneg m)
-  have hmul :
-      StrictInterl (X * (1 : ℝ[X])) (X * (1 + C (3 : ℝ) * X)) := by
-    rr_strict_interl_mul_X_both using
-      proper := hstrictInterl,
-      left_nonneg := hasNonnegCoeffs_one,
-      right_nonneg := hlin_nonneg
-  have hfour : singletonFreeSetPartitions 4 = X * (1 + C (3 : ℝ) * X) := by
-    rw [singletonFreeSetPartitions_succ_succ_eq_X_mul_core, singletonFreeSetPartitionsCore,
-      singletonFreeSetPartitions_two, singletonFreeSetPartitions_three]
-    simp only [Nat.cast_ofNat, map_add, map_one, derivative_X, mul_eq_mul_left_iff,
-      X_ne_zero, or_false]
-    have hC : (C (2 : ℝ) + 1 : ℝ[X]) = C (3 : ℝ) := by
-      ext m
-      cases m with
-      | zero =>
-          norm_num
-      | succ m =>
-          rw [coeff_add, coeff_C, coeff_one]
-          simp
-    grind
-  simpa [singletonFreeSetPartitions_three, hfour] using hmul
+    StrictInterl (singletonFreeSetPartitions 3) (singletonFreeSetPartitions 4) :=
+  by simpa [singletonFreeSetPartitionsTail_eq] using
+    singletonFreeSetPartitionsTail_strictInterl 1
 
 lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat}
     (hcore :
@@ -251,31 +234,22 @@ lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat
 /-- Consecutive singleton-free set partition polynomials satisfy `StrictInterl`. -/
 theorem strictInterl_singletonFreeSetPartitions_succ :
     ∀ n : Nat, 2 ≤ n →
-      StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1))
-  | 0, hn => by
-      lia
-  | 1, hn => by
-      lia
-  | 2, _ => strictInterl_singletonFreeSetPartitions_two_three
-  | 3, _ => strictInterl_singletonFreeSetPartitions_three_four
-  | n + 4, _ => by
-      have hprev :
-          StrictInterl (singletonFreeSetPartitions (n + 3))
-            (singletonFreeSetPartitions (n + 4)) :=
-        strictInterl_singletonFreeSetPartitions_succ (n + 3) (by lia)
-      have hcore :
-          StrictInterl (singletonFreeSetPartitionsCore (n + 3))
-            (singletonFreeSetPartitions (n + 4)) :=
-        strictInterl_singletonFreeSetPartitionsCore_of_strictInterl (n := n + 3) (by lia) hprev
-      exact
-        strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core
-          (n := n + 3) hcore
+      StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) := by
+  intro n hn
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
+  have h := singletonFreeSetPartitionsTail_strictInterl k
+  rw [singletonFreeSetPartitionsTail_eq k,
+    singletonFreeSetPartitionsTail_eq (k + 1)] at h
+  convert h using 1 <;> lia
 
 theorem isRealRooted_singletonFreeSetPartitions :
-    ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits
-  | 2, _ => by simp [singletonFreeSetPartitions_two]
-  | n + 3, _ =>
-      (strictInterl_singletonFreeSetPartitions_succ (n + 2) (by lia)).2.1.2
+    ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits := by
+  intro n hn
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
+  have h := singletonFreeSetPartitionsTail_splits k
+  rw [singletonFreeSetPartitionsTail_eq] at h
+  convert h using 1
+  lia
 
 theorem interlaces_singletonFreeSetPartitions_succ_of_odd {n : Nat}
     (hn : 3 ≤ n) (hodd : n % 2 = 1) :

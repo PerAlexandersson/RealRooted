@@ -96,28 +96,6 @@ lemma interlaces_reverse_of_roots_neg {g f : ℝ[X]} (h : Interlaces g f)
     · exact hg t (by rw [← hgsr]; exact ht)
     · exact hf t (by rw [← hfr]; exact ht)
 
-/-- `a * reflect N q = reflect (k + N) (reflect k a * q)` for `a` of degree at most `k`. -/
-private lemma mul_reflect_eq {a q : ℝ[X]} {k N : ℕ} (ha : a.natDegree ≤ k)
-    (hq : q.natDegree ≤ N) : a * reflect N q = reflect (k + N) (reflect k a * q) := by
-  rw [reflect_mul _ _ (natDegree_reflect_le.trans (max_le le_rfl ha)) hq, reflect_reflect]
-
-/-- A bound on `X ^ k * f` bounds `f`. -/
-private lemma natDegree_le_of_X_pow_mul_le {f : ℝ[X]} {k M : ℕ}
-    (h : (X ^ k * f).natDegree ≤ M + k) : f.natDegree ≤ M := by
-  rcases eq_or_ne f 0 with rfl | hf
-  · simp
-  · rw [natDegree_X_pow_mul k hf] at h
-    lia
-
-/-- `reflect (M + k) (a * (X ^ k * u)) = reflect M (a * u)` when `a * (X ^ k * u)` has degree
-at most `M + k`. -/
-private lemma reflect_mul_X_pow_mul {a u : ℝ[X]} {k M : ℕ}
-    (h : (a * (X ^ k * u)).natDegree ≤ M + k) :
-    reflect (M + k) (a * (X ^ k * u)) = reflect M (a * u) := by
-  have he : a * (X ^ k * u) = X ^ k * (a * u) := by ring
-  rw [he] at h ⊢
-  exact reflect_X_pow_mul _ k (natDegree_le_of_X_pow_mul_le h)
-
 /-- Reversed rows of a second-order derivative recurrence.  If `P (n + 1) = A₂ P'' + A₁ P' + A₀ P`
 with `A i` of degree at most `i + 1`, and `R` satisfies the reflected recurrence (with
 `N = D₀ + n`), then `P n = reflect (D₀ + n) (R n)` for all `n`. -/
@@ -156,10 +134,11 @@ theorem eq_reflect_of_secondOrderDerivativeRecurrence
         C_ofNat, C_1]
       ring
     rw [hP, ih, derivative_reflect r hr, derivative_reflect _ hθ,
-      mul_reflect_eq (k := 3) (hA₂ n) hθθ, mul_reflect_eq (k := 2) (hA₁ n) hθ,
-      mul_reflect_eq (k := 1) (hA₀ n) hr, e2, e1,
+      mul_reflect_eq_reflect_mul (k := 3) (hA₂ n) hθθ,
+      mul_reflect_eq_reflect_mul (k := 2) (hA₁ n) hθ,
+      mul_reflect_eq_reflect_mul (k := 1) (hA₀ n) hr, e2, e1,
       show 3 + N = (N + 1) + 2 by lia, show 2 + N = (N + 1) + 1 by lia, add_comm 1 N,
-      reflect_mul_X_pow_mul, reflect_mul_X_pow_mul, ← reflect_add, ← reflect_add,
+      reflect_add_mul_X_pow_mul, reflect_add_mul_X_pow_mul, ← reflect_add, ← reflect_add,
       show D₀ + (n + 1) = N + 1 by lia, hR, hB₂, hB₁, hB₀]
     · congr 1
       simp only [C_mul, C_sub, C_ofNat, C_1]
@@ -189,8 +168,8 @@ theorem eq_reflect_of_threeTerm {P R a b a' b' : ℕ → ℝ[X]} {D₀ : ℕ}
     | zero => exact ⟨by simpa using h0, h1⟩
     | succ n ih =>
       refine ⟨ih.2, ?_⟩
-      rw [hP, ih.1, ih.2, mul_reflect_eq (k := 1) (ha n) (hRdeg (n + 1)),
-        mul_reflect_eq (k := 2) (hb n) (hRdeg n),
+      rw [hP, ih.1, ih.2, mul_reflect_eq_reflect_mul (k := 1) (ha n) (hRdeg (n + 1)),
+        mul_reflect_eq_reflect_mul (k := 2) (hb n) (hRdeg n),
         show 1 + (D₀ + (n + 1)) = D₀ + (n + 1 + 1) by lia,
         show 2 + (D₀ + n) = D₀ + (n + 1 + 1) by lia, ← reflect_add, hR, ha', hb']
   exact fun n => (key n).1

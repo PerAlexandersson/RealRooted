@@ -37,8 +37,8 @@ theorem roots_eq_zero_cons_divX_of_coeff_zero {f : ℝ[X]}
 lemma card_divX_roots_succ_eq_card_roots_of_coeff_zero {g : ℝ[X]}
     (hg : g ≠ 0) (hg0 : g.coeff 0 = 0) :
     Multiset.card g.divX.roots + 1 = Multiset.card g.roots := by
-  rw [roots_eq_zero_cons_divX_of_coeff_zero hg hg0]
-  simp
+  simpa using congrArg Multiset.card
+    (roots_eq_zero_cons_divX_of_coeff_zero hg hg0).symm
 
 /-- Degree-keyed form of `card_divX_roots_succ_eq_card_roots_of_coeff_zero`. -/
 lemma card_divX_roots_succ_eq_natDegree_of_coeff_zero {g : ℝ[X]}
@@ -67,16 +67,13 @@ lemma divX_roots_eq_dropLast_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
     (hrs_ne : rs ≠ [])
     (hlast : rs.getLast hrs_ne = 0) :
     (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots := by
-  have hsplit : rs.dropLast ++ [rs.getLast hrs_ne] = rs :=
-    List.dropLast_append_getLast hrs_ne
-  have e1 : (↑rs : Multiset ℝ) = (0 : ℝ) ::ₘ ↑(rs.dropLast) := by
-    conv_lhs => rw [← hsplit]
-    rw [hlast]
-    simp
-  have e2 : (↑rs : Multiset ℝ) = (0 : ℝ) ::ₘ g.divX.roots := by
-    rw [hrs_eq, roots_eq_zero_cons_divX_of_coeff_zero hg hg0]
-  rw [e1] at e2
-  exact (Multiset.cons_inj_right (0 : ℝ)).mp e2
+  apply (Multiset.cons_inj_right (0 : ℝ)).mp
+  rw [← roots_eq_zero_cons_divX_of_coeff_zero hg hg0, ← hrs_eq]
+  conv_rhs => rw [← List.dropLast_append_getLast hrs_ne]
+  rw [hlast]
+  apply Multiset.coe_eq_coe.mpr
+  exact (List.perm_append_comm : ([(0 : ℝ)] ++ rs.dropLast).Perm
+    (rs.dropLast ++ [(0 : ℝ)]))
 
 /-- Root-count form of `divX_roots_eq_dropLast_of_coeff_zero`. -/
 lemma divX_rootCount_eq_length_pred_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
@@ -216,12 +213,12 @@ lemma listAlternates_dropLast_of_listInterlaces {ss rs : List ℝ}
     (hlen : ss.length + 1 = rs.length) (h : ListInterlaces ss rs) :
     ListAlternates rs.dropLast ss := by
   have hrs_ne : rs ≠ [] := by grind
-  have hsplit : rs.dropLast ++ [rs.getLast hrs_ne] = rs :=
-    List.dropLast_append_getLast hrs_ne
-  have hlen' : ss.length = rs.dropLast.length := by grind
-  apply listAlternates_of_listInterlaces_append_singleton hlen'
-  rw [hsplit]
-  grind
+  apply listAlternates_of_listInterlaces_append_singleton
+      (m := rs.getLast hrs_ne) (by
+    rw [List.length_dropLast]
+    grind)
+  rw [List.dropLast_append_getLast hrs_ne]
+  exact h
 
 /-- Dropping the rightmost entry from the right row of an equal-length
 alternation leaves a differ-by-one interlacing into the left row. -/
@@ -248,6 +245,21 @@ lemma listInterlaces_dropLast_right_of_listAlternates :
   | [], _ :: _, halt => by simp [ListAlternates] at halt
   | _ :: _, [], halt => by simp [ListAlternates] at halt
 
+private lemma getLast_eq_zero_of_roots_nonpos_coeff_zero {g : ℝ[X]} {rs : List ℝ}
+    (hg : g ≠ 0) (hroots : ∀ r ∈ g.roots, r ≤ 0) (hg0 : g.coeff 0 = 0)
+    (hrs_sorted : rs.Pairwise (· ≤ ·)) (hrs_eq : (↑rs : Multiset ℝ) = g.roots) :
+    ∃ hrs_ne : rs ≠ [], rs.getLast hrs_ne = 0 := by
+  have h0_root : (0 : ℝ) ∈ g.roots := by
+    rw [Polynomial.mem_roots']
+    refine ⟨hg, ?_⟩
+    rwa [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
+  have h0_mem : (0 : ℝ) ∈ rs := Multiset.mem_coe.mp (by simpa [hrs_eq] using h0_root)
+  have hrs_ne : rs ≠ [] := by grind
+  refine ⟨hrs_ne, le_antisymm ?_ (hrs_sorted.rel_getLast h0_mem)⟩
+  apply hroots
+  rw [← hrs_eq]
+  exact Multiset.mem_coe.mpr (List.getLast_mem hrs_ne)
+
 /-- Same-degree right-zero reduction at the `StrictInterl` level.
 
 If `f` and `g` have the same degree, `g` has nonnegative coefficients and
@@ -271,30 +283,10 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
     rcases hshape with ⟨hlen, _⟩ | ⟨_, halt⟩
     · lia
     · exact halt
-  have h0_root : (0 : ℝ) ∈ g.roots := by
-    rw [Polynomial.mem_roots']
-    refine ⟨hg.1, ?_⟩
-    rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
-    exact hg0
-  have h0_mem : (0 : ℝ) ∈ rs := by
-    apply Multiset.mem_coe.mp
-    simpa [hrs_eq] using h0_root
-  have hrs_ne : rs ≠ [] := by
-    intro hrs0
-    subst rs
-    simp at h0_mem
-  set m := rs.getLast hrs_ne with hm
-  have hm_mem : m ∈ rs := List.getLast_mem hrs_ne
-  have hm_root : m ∈ g.roots := by
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr hm_mem
-  have hm_nonpos : m ≤ 0 := hroots m hm_root
-  have h0_le_m : (0 : ℝ) ≤ m :=
-    List.Pairwise.rel_getLast hrs_sorted h0_mem
-  have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
+  obtain ⟨hrs_ne, hlast⟩ :=
+    getLast_eq_zero_of_roots_nonpos_coeff_zero hg.1 hroots hg0 hrs_sorted hrs_eq
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
-    divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne
-      (hm.symm.trans hm0)
+    divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne hlast
   have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
     List.Pairwise.sublist (List.dropLast_sublist rs) hrs_sorted
   have hdivX_ne : g.divX ≠ 0 := by
@@ -343,27 +335,10 @@ theorem strictInterl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
     rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hg.2]
   have hlen1 : ss.length + 1 = rs.length := by simp_all
   have hInter : ListInterlaces ss rs := by simp_all
-  have hrs_ne : rs ≠ [] := by grind
-  set m := rs.getLast hrs_ne with hm
-  have hm_mem : m ∈ rs := List.getLast_mem hrs_ne
-  have hm_root : m ∈ g.roots := by
-    rw [← hrs_eq]
-    exact Multiset.mem_coe.mpr hm_mem
-  have hm_nonpos : m ≤ 0 := roots_nonpos_of_hasNonnegCoeffs hgnn m hm_root
-  have h0_root : (0 : ℝ) ∈ g.roots := by
-    rw [Polynomial.mem_roots']
-    refine ⟨hg.1, ?_⟩
-    rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
-    simp_all
-  have h0_mem : (0 : ℝ) ∈ rs := by
-    have : (0 : ℝ) ∈ (↑rs : Multiset ℝ) := by simp_all
-    exact Multiset.mem_coe.mp this
-  have h0_le_m : (0 : ℝ) ≤ m := by
-    have := List.Pairwise.rel_getLast hrs_sorted h0_mem
-    simp_all
-  have hm0 : m = 0 := le_antisymm hm_nonpos h0_le_m
+  obtain ⟨hrs_ne, hlast⟩ := getLast_eq_zero_of_roots_nonpos_coeff_zero hg.1
+    (fun r hr => roots_nonpos_of_hasNonnegCoeffs hgnn r hr) hg0 hrs_sorted hrs_eq
   have hdivX_roots : (↑(rs.dropLast) : Multiset ℝ) = g.divX.roots :=
-    divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne (hm.symm.trans hm0)
+    divX_roots_eq_dropLast_of_coeff_zero hg.1 hg0 hrs_eq hrs_ne hlast
   have hdrop_sorted : (rs.dropLast).Pairwise (· ≤ ·) :=
     List.Pairwise.sublist (List.dropLast_sublist rs) hrs_sorted
   have hlen_eq : (rs.dropLast).length = ss.length := by simp_all

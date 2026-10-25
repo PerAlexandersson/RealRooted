@@ -96,7 +96,8 @@ module = "RealRooted.CombinatorialExamples.ColoredSetPartitions"
 label = "Consecutive colored set-partition polynomials interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.SturmSequenceFamilies.touchard_eq_coloredSetPartitions_zero_one"
+name = "RealRooted.touchard_eq_coloredSetPartitions_zero_one"
+module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Touchard polynomials are colored set-partition polynomials with c = 0, m = 1"
 
 [[theorems]]
@@ -208,16 +209,6 @@ namespace SturmSequenceFamilies
 theorem strictInterl_singletonFreeSetPartitions_succ {n : ℕ} (hn : 2 ≤ n) :
     StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) :=
   RealRooted.strictInterl_singletonFreeSetPartitions_succ n hn
-
-/-- The Touchard polynomials are the colored set-partition polynomials with `c = 0` and
-`m = 1`. -/
-theorem touchard_eq_coloredSetPartitions_zero_one (n : ℕ) :
-    touchard n = coloredSetPartitions 0 1 n := by
-  induction n with
-  | zero => rfl
-  | succ n ih =>
-    rw [touchard_succ, coloredSetPartitions_succ, ih]
-    simp [coloredSetPartitionsCoeffA, coloredSetPartitionsCoeffB]
 
 end SturmSequenceFamilies
 end Challenges

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Tactic.Recurrence.RowSide
 public import Mathlib.Tactic
 
 /-!
@@ -69,47 +70,22 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
 lemma coeff_motzkin_top_pos_and_above :
     ∀ n : Nat,
       0 < coeff (motzkin n) ((n + 1) / 2) ∧
-      ∀ m > (n + 1) / 2, coeff (motzkin n) m = 0
-  | 0 => by
-      grind [motzkin_zero, coeff_one]
-  | 1 => by
-      constructor
-      · rw [motzkin_one, coeff_add, coeff_one, coeff_X]
-        norm_num
-      · rintro (_ | _ | k) hm
-        · lia
-        · lia
-        · rw [motzkin_one, coeff_add, coeff_one, coeff_X]
-          simp
-  | n + 2 => by
-      rcases coeff_motzkin_top_pos_and_above n with ⟨hlow_top, hlow_above⟩
-      rcases coeff_motzkin_top_pos_and_above (n + 1) with ⟨hprev_top, hprev_above⟩
-      constructor
-      · rw [show (n + 3) / 2 = ((n + 3) / 2 - 1) + 1 by lia, coeff_motzkin_succ_succ]
-        rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hprev_pos : 0 < coeff (motzkin (n + 1)) ((n + 3) / 2) := by grind
-          have hlow_pos : 0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by grind
-          have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
-          have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
-          rw [hcoeff_eq, hlow_zero]
-          have hA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
-          have hB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
-          have hshift_nonneg : 0 ≤ motzkinShift := by rw [motzkinShift]; positivity
-          nlinarith
-        · have hprev_zero : coeff (motzkin (n + 1)) ((n + 3) / 2) = 0 := by grind
-          have hlow_pos : 0 < coeff (motzkin n) ((n + 3) / 2 - 1) := by grind
-          have hlow_zero : coeff (motzkin n) ((n + 3) / 2) = 0 := by grind
-          have hcoeff_eq : ((n + 3) / 2 - 1 + 1 : ℕ) = (n + 3) / 2 := by lia
-          rw [hcoeff_eq, hprev_zero, hlow_zero]
-          have hB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
-          simp_all
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
-        | succ k =>
-            rw [show k + 1 = k + 0 + 1 by lia, coeff_motzkin_succ_succ]
-            grind
+      ∀ m > (n + 1) / 2, coeff (motzkin n) m = 0 := by
+  intro n
+  obtain ⟨hdeg, _, htop, _⟩ := threeTermHalf_top
+    (P := motzkin) (a := fun n => C (motzkinCoeffA n))
+    (b := fun n => C (motzkinCoeffB n) * (X - C motzkinShift))
+    (d := 1) (D₀ := 0) (e := 1) motzkin_succ_succ
+    (fun _ => by simp) (fun _ => by compute_degree!) (by simp)
+    (by norm_num [motzkin, coeff_one]) (by norm_num [motzkin, coeff_one, coeff_X])
+    (by norm_num [motzkin, coeff_one]) (by norm_num [motzkin, coeff_one, coeff_X])
+    (fun n => by rw [motzkinCoeffA]; simp only [coeff_C_zero]; positivity)
+    (fun n => by
+      rw [motzkinCoeffB, motzkinShift]
+      simp only [coeff_C_mul, coeff_sub, coeff_X_one, coeff_C_succ, sub_zero, mul_one]
+      positivity) n
+  refine ⟨by simpa using htop, fun m hm => ?_⟩
+  exact coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg (by simpa using hm))
 
 lemma natDegree_motzkin (n : Nat) :
     (motzkin n).natDegree = (n + 1) / 2 := by

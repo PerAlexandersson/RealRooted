@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import RealRooted.GeneralizedEulerian
 public import Mathlib.Tactic
 
 /-!
@@ -60,34 +61,13 @@ lemma coeff_typeBEulerianCoeffA_mul (n m : Nat) (p : ℝ[X]) :
 lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
     coeff (typeBEulerianCoeffB * p.derivative) (m + 1) =
       (2 * (m + 1) : ℝ) * coeff p (m + 1) - (2 * m : ℝ) * coeff p m := by
-  have hB :
-      typeBEulerianCoeffB * p.derivative =
-        C (2 : ℝ) * X * p.derivative - C (2 : ℝ) * X * X * p.derivative := by
-    rw [typeBEulerianCoeffB]
+  rw [show typeBEulerianCoeffB * p.derivative =
+    C (2 : ℝ) * X * p.derivative - C (2 : ℝ) * X * X * p.derivative by
+      rw [typeBEulerianCoeffB]; ring, coeff_sub]
+  rcases m with _ | m
+  · simp [coeff_derivative, mul_assoc]
+  · simp [coeff_derivative, mul_assoc]
     ring
-  cases m with
-  | zero =>
-      rw [hB, coeff_sub]
-      have h₁ : coeff (C (2 : ℝ) * X * p.derivative) 1 = (2 : ℝ) * coeff p 1 := by
-        rw [mul_assoc, coeff_C_mul]
-        simp [coeff_derivative]
-      have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) 1 = 0 := by
-        rw [mul_assoc, mul_assoc, coeff_C_mul]
-        simp
-      simp_all
-  | succ m =>
-      rw [hB, coeff_sub]
-      have h₁ : coeff (C (2 : ℝ) * X * p.derivative) (m + 2) =
-          (2 * (m + 2) : ℝ) * coeff p (m + 2) := by
-        rw [mul_assoc, coeff_C_mul]
-        simp [coeff_derivative]
-        ring
-      have h₂ : coeff (C (2 : ℝ) * X * X * p.derivative) (m + 2) =
-          (2 * (m + 1) : ℝ) * coeff p (m + 1) := by
-        rw [mul_assoc, mul_assoc, coeff_C_mul]
-        simp [coeff_derivative]
-        ring
-      grind
 
 lemma coeff_typeBEulerian_succ (n m : Nat) :
     coeff (typeBEulerian (n + 1)) (m + 1) =
@@ -208,5 +188,15 @@ theorem isSturmSeq_typeBEulerianPrefix :
       | succ k =>
           simpa [typeBEulerianPrefix, IsSturmSeq] using
             And.intro (interlaces_typeBEulerian_succ (k + 1)) ih
+
+/-- The type `B` Eulerian polynomials are the generalized Eulerian
+polynomials at parameter two. -/
+theorem typeBEulerian_eq_generalizedEulerian_two (n : ℕ) :
+    typeBEulerian n = generalizedEulerian 2 n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [typeBEulerian_succ, generalizedEulerian_succ, ih, typeBEulerianCoeffA,
+      typeBEulerianCoeffB]
 
 end RealRooted

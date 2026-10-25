@@ -101,24 +101,12 @@ private lemma deg_facts (n : ℕ) :
   | zero => simp [pS_zero, pA_zero, pE_zero, pC_zero]
   | succ n ih =>
     obtain ⟨hS, hA, hE, hC, cS, cA, cE, cC⟩ := ih
-    have h1 : (1 + X : ℝ[X]).natDegree ≤ 1 := by compute_degree
-    have hX : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-    have m1 : ∀ p : ℝ[X], p.natDegree ≤ n → (X * p).natDegree ≤ n + 1 := fun p hp => by
-      have := natDegree_mul_le_of_le hX hp; lia
-    have m2 : ∀ p : ℝ[X], p.natDegree ≤ n →
-        ((1 + X) * p).natDegree ≤ n + 1 := fun p hp => by
-      have := natDegree_mul_le_of_le h1 hp
-      lia
-    have m0 : ∀ p : ℝ[X], p.natDegree ≤ n → p.natDegree ≤ n + 1 := fun p hp => by lia
     have z : ∀ p : ℝ[X], p.natDegree ≤ n → p.coeff (n + 1) = 0 := fun p hp =>
       coeff_eq_zero_of_natDegree_lt (by lia)
     rw [pS_succ, pA_succ, pE_succ, pC_succ]
-    refine ⟨natDegree_add_le_of_degree_le (natDegree_add_le_of_degree_le (m2 _ hS) (m1 _ hA))
-        (m1 _ hE),
-      natDegree_add_le_of_degree_le (natDegree_add_le_of_degree_le (m0 _ hS) (m1 _ hA))
-        (m1 _ hE),
-      natDegree_add_le_of_degree_le (m2 _ hA) (m1 _ hC),
-      natDegree_add_le_of_degree_le (m0 _ hA) (m1 _ hC), ?_, ?_, ?_, ?_⟩ <;>
+    refine ⟨by compute_degree; lia, by compute_degree; lia,
+      by compute_degree; lia, by compute_degree; lia,
+      ?_, ?_, ?_, ?_⟩ <;>
     simp only [add_mul, one_mul, coeff_add, coeff_X_mul, z _ hS, z _ hA] <;>
     linarith
 
@@ -142,8 +130,8 @@ private lemma pS_natDegree (n : ℕ) : (pS n).natDegree = n :=
 private lemma pS_leadingCoeff_pos (n : ℕ) : 0 < (pS n).leadingCoeff := by
   rw [leadingCoeff, pS_natDegree]; linarith [(deg_facts n).2.2.2.2.1]
 
-private lemma pS_ne_zero (n : ℕ) : pS n ≠ 0 := fun h => by
-  have := pS_leadingCoeff_pos n; rw [h] at this; simp at this
+private lemma pS_ne_zero (n : ℕ) : pS n ≠ 0 :=
+  leadingCoeff_ne_zero.mp (pS_leadingCoeff_pos n).ne'
 
 private lemma pS_eval_zero (n : ℕ) : (pS n).eval 0 = 1 := by
   induction n with
@@ -236,7 +224,7 @@ private lemma sign_eval (p : ℝ[X]) (m : ℕ) (v : ℕ → ℝ) (hdeg : p.natDe
     (hdec : ∀ i, i + 1 < m → v (i + 1) < v i) (i : ℕ) (hi : i ≤ m) (y : ℝ)
     (hy1 : ∀ j < i, y < v j) (hy2 : ∀ j, i ≤ j → j < m → v j < y) :
     0 < (-1) ^ i * p.eval y := by
-  have hp : p ≠ 0 := fun h => by rw [h] at hlc; simp at hlc
+  have hp : p ≠ 0 := leadingCoeff_ne_zero.mp hlc.ne'
   have hr := roots_eq p m v hp hdeg hroot hdec
   have hcard : p.roots.card = p.natDegree := by rw [hr, hdeg]; simp
   have hfac := C_leadingCoeff_mul_prod_multiset_X_sub_C hcard
@@ -420,13 +408,11 @@ theorem row_strictInterl_succ (n : ℕ) : StrictInterl (row n) (row (n + 1)) := 
 
 /-- The A259454 row indexed by `n` has degree `n`. -/
 theorem row_natDegree (n : ℕ) : (row n).natDegree = n := by
-  rw [← pS_eq_row]
-  exact pS_natDegree n
+  simpa only [← pS_eq_row] using pS_natDegree n
 
 /-- Consecutive A259454 rows interlace. -/
 theorem row_interlaces_succ (n : ℕ) : Interlaces (row n) (row (n + 1)) :=
-  (row_strictInterl_succ n).toInterlaces (by
-    rw [row_natDegree, row_natDegree])
+  (row_strictInterl_succ n).toInterlaces (by simp only [row_natDegree])
 
 /-! ## Bridge from the generated differential recurrence -/
 
@@ -494,12 +480,7 @@ private lemma literalRows_compact_recurrence (n : ℕ) :
         intro x
         simp [nextRow, compactRHS, literalRows]
         ring
-      | 1 =>
-        apply Polynomial.funext
-        intro x
-        simp [nextRow, compactRHS, literalRows]
-        grind
-      | 2 =>
+      | 1 | 2 =>
         apply Polynomial.funext
         intro x
         simp [nextRow, compactRHS, literalRows]
@@ -508,21 +489,17 @@ private lemma literalRows_compact_recurrence (n : ℕ) :
         have hcc := ih (k + 2) (by lia)
         have hc := ih (k + 1) (by lia)
         have hp := ih k (by lia)
-        have hccN : clearedRHS (k + 2) =
-            C (7 * (((k + 2 : ℕ) : ℝ) + 3)) * compactRHS (k + 2) := by
-          rw [clearedRHS_eq_scale_nextRow, hcc]
-        have hcN : clearedRHS (k + 1) =
-            C (7 * (((k + 1 : ℕ) : ℝ) + 3)) * compactRHS (k + 1) := by
-          rw [clearedRHS_eq_scale_nextRow, hc]
-        have hpN : clearedRHS k =
-            C (7 * ((k : ℝ) + 3)) * compactRHS k := by
-          rw [clearedRHS_eq_scale_nextRow, hp]
-        have hrr : literalRows (k + 5) = compactRHS (k + 2) :=
-          (literalRows_step (k + 2)).trans hcc
-        have hr : literalRows (k + 4) = compactRHS (k + 1) :=
-          (literalRows_step (k + 1)).trans hc
-        have hrp : literalRows (k + 3) = compactRHS k :=
-          (literalRows_step k).trans hp
+        have scaled (i : ℕ)
+            (hi : nextRow i (literalRows (i + 2)) (literalRows (i + 1))
+              (literalRows i) = compactRHS i) :
+            clearedRHS i = C (7 * ((i : ℝ) + 3)) * compactRHS i := by
+          rw [clearedRHS_eq_scale_nextRow, hi]
+        have hccN := scaled (k + 2) hcc
+        have hcN := scaled (k + 1) hc
+        have hpN := scaled k hp
+        have hrr := (literalRows_step (k + 2)).trans hcc
+        have hr := (literalRows_step (k + 1)).trans hc
+        have hrp := (literalRows_step k).trans hp
         unfold compactRHS at hrr hr hrp
         have hscale : C (7 * (((k + 3 : ℕ) : ℝ) + 3)) ≠ (0 : ℝ[X]) := by
           rw [C_ne_zero]
@@ -553,9 +530,7 @@ private lemma literalRows_eq_row : ∀ n : ℕ, literalRows n = row n := by
   induction n using Nat.strong_induction_on with
   | h n ih =>
     match n with
-    | 0 => rfl
-    | 1 => rfl
-    | 2 => rfl
+    | 0 | 1 | 2 => rfl
     | k + 3 =>
       rw [literalRows_compact_recurrence, row,
         ih k (by lia), ih (k + 1) (by lia), ih (k + 2) (by lia)]

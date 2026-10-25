@@ -191,9 +191,9 @@ theorem weightedIndepPolyOn_iso
     [DecidableRel G.Adj] [DecidableRel H.Adj]
     (e : G ≃g H) (S : Finset V) (wt : W → ℝ) :
     weightedIndepPolyOn H (S.map e.toEquiv.toEmbedding) wt =
-      weightedIndepPolyOn G S (wt ∘ e) := by
-  exact weightedIndepPolyOn_map_embedding e.toEquiv.toEmbedding
-    (fun x y ↦ e.map_adj_iff) S wt
+      weightedIndepPolyOn G S (wt ∘ e) :=
+  weightedIndepPolyOn_map_embedding e.toEquiv.toEmbedding
+    (fun _ _ ↦ e.map_adj_iff) S wt
 
 /-- Scale weights on a specified vertex set. -/
 def scaleWeightsOn {W : Type*} [DecidableEq W]
@@ -212,13 +212,10 @@ theorem weightedIndepPolyOn_scaleWeightsOn_clique
         C (1 - c) * weightedIndepPolyOn G (T \ K) wt := by
   classical
   let L := K ∩ T
-  have hL : G.IsClique (L : Set W) := by
-    exact fun x hx y hy hxy ↦
-      hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
+  have hL : G.IsClique (L : Set W) := fun x hx y hy hxy ↦
+    hK (Finset.mem_inter.mp hx).1 (Finset.mem_inter.mp hy).1 hxy
   have hLT : L ⊆ T := fun x hx ↦ (Finset.mem_inter.mp hx).2
-  have hsdiff : T \ L = T \ K := by
-    ext x
-    simp [L]
+  have hsdiff : T \ L = T \ K := by ext x; simp [L]
   have hbase :
       weightedIndepPolyOn G (T \ L) (scaleWeightsOn K c wt) =
         weightedIndepPolyOn G (T \ K) wt := by
@@ -330,8 +327,8 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
 
 theorem prefixEmbedding_succ_apply {m : ℕ}
     (P : FinReversePerfectEliminationOrder (m + 1)) (i : Fin m) :
-    P.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
-  exact Fin.ext rfl
+    P.prefixEmbedding (Nat.le_succ m) i = i.castSucc :=
+  Fin.ext rfl
 
 /-- Restriction to an initial interval of the elimination order. -/
 def take (k : ℕ) (hk : k ≤ n) : FinReversePerfectEliminationOrder k where
@@ -1110,19 +1107,12 @@ theorem card_map_castSucc_inter {m : ℕ}
     ((A.map Fin.castSuccEmb) ∩ S).card =
       (A ∩ P.prefixSupport S).card := by
   classical
-  symm
-  apply Finset.card_bij (fun x _ ↦ x.castSucc)
-  · intro x hx
-    simp only [Finset.mem_inter] at hx ⊢
-    exact ⟨Finset.mem_map.mpr ⟨x, hx.1, rfl⟩,
-      (P.mem_prefixSupport S x).mp hx.2⟩
-  · intro x hx y hy hxy
-    exact Fin.castSucc_inj.mp hxy
-  · intro y hy
-    rcases Finset.mem_inter.mp hy with ⟨hyA, hyS⟩
-    rcases Finset.mem_map.mp hyA with ⟨x, hxA, rfl⟩
-    exact ⟨x, Finset.mem_inter.mpr
-      ⟨hxA, (P.mem_prefixSupport S x).mpr hyS⟩, rfl⟩
+  rw [show A.map Fin.castSuccEmb ∩ S =
+      (A ∩ P.prefixSupport S).map Fin.castSuccEmb by
+    ext v
+    refine Fin.lastCases ?_ (fun x ↦ ?_) v
+    · simp
+    · simp [P.mem_prefixSupport, Fin.castSucc_inj], Finset.card_map]
 
 /-- Mark only sinks in `S`, and translate the sink variable by one. -/
 def markedAcyclicSinkShift {n : ℕ}
@@ -1152,31 +1142,20 @@ theorem card_fullCut_sinks_inter {m : ℕ}
       (O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).card +
         if Fin.last m ∈ S then 1 else 0 := by
   classical
-  by_cases hlast : Fin.last m ∈ S
-  · have hset :
-        ((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
-            Fin.castSuccEmb ∪ {Fin.last m}) ∩ S =
-          ((O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).map
-            Fin.castSuccEmb) ∪ {Fin.last m} := by
-      ext v
-      refine Fin.lastCases ?_ (fun x ↦ ?_) v
-      · simp [hlast]
-      · simp [P.mem_prefixSupport, Fin.castSucc_inj, and_assoc, and_comm]
-    rw [hset, Finset.card_union_of_disjoint]
-    · simp [hlast]
-    · rw [Finset.disjoint_singleton_right]
-      simp
-  · have hset :
-        ((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
-            Fin.castSuccEmb ∪ {Fin.last m}) ∩ S =
-          (O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).map
-            Fin.castSuccEmb := by
-      ext v
-      refine Fin.lastCases ?_ (fun x ↦ ?_) v
-      · simp [hlast]
-      · simp [P.mem_prefixSupport, Fin.castSucc_inj, and_assoc, and_comm]
-    rw [hset]
-    simp [hlast]
+  have hset :
+      ((O.sinks.filter fun x ↦ x ∉ P.lastEarlierNeighbors).map
+          Fin.castSuccEmb ∪ {Fin.last m}) ∩ S =
+        (O.sinks ∩ (P.prefixSupport S \ P.lastEarlierNeighbors)).map
+            Fin.castSuccEmb ∪
+          if Fin.last m ∈ S then {Fin.last m} else ∅ := by
+    ext v
+    refine Fin.lastCases ?_ (fun x ↦ ?_) v
+    · split <;> simp_all
+    · split <;>
+        simp_all [P.mem_prefixSupport, Fin.castSucc_inj, and_assoc, and_comm]
+  rw [hset, Finset.card_union_of_disjoint]
+  · split <;> simp_all
+  · split <;> simp_all
 
 /-- The marked contribution of all insertion cuts above one prefix
 orientation. -/
@@ -1288,9 +1267,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         rw [P.markedAcyclicSinkShift_univ,
           ← acyclicSinkPolynomial_one_eq_ordinary,
           acyclicSinkPolynomial_fin_zero]
-        have huniv : (Finset.univ : Finset (Fin 0)) = ∅ := by simp
-        rw [huniv, weightedIndepPolyOn_empty]
-        simp
+        simp [weightedIndepPolyOn_empty]
   | succ m ih =>
       obtain ⟨D, wt, hD, hwt, hmodel⟩ := ih P.init
       let K := P.lastEarlierNeighbors
@@ -1316,16 +1293,13 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         let A := weightedIndepPolyOn P.init.graph T wt
         let B := weightedIndepPolyOn P.init.graph (T \ K) wt
         let E := weightedIndepPolyOn P.init.graph T a
-        have hcomp : wt' ∘ Fin.castSucc = a := by
-          funext i
-          simp [wt']
+        have hcomp : wt' ∘ Fin.castSucc = a := by funext i; simp [wt']
         have houtside :
             weightedIndepPolyOn P.init.graph (T \ K) a = B := by
           dsimp [B]
           exact weightedIndepPolyOn_congr P.init.graph fun i hi ↦ by
             simp [a, scaleWeightsOn, (Finset.mem_sdiff.mp hi).2]
-        have hcd : c * (d / c) = d := by
-          field_simp
+        have hcd : c * (d / c) = d := by field_simp
         have hcsub : c * (1 - d / c) = 1 := by
           field_simp
           ring
@@ -1350,8 +1324,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         have hI := P.weightedIndepPolyOn_last S wt'
         rw [hcomp] at hI
         rw [houtside] at hI
-        have hlastWeight : wt' (Fin.last m) = 1 / c := by
-          simp [wt']
+        have hlastWeight : wt' (Fin.last m) = 1 / c := by simp [wt']
         rw [hlastWeight] at hI
         rw [P.markedAcyclicSinkShift_succ S,
           hmodel (P.prefixSupport S),
@@ -1364,10 +1337,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
         change _ = C (c * D) *
           (E + (if Fin.last m ∈ S then C (1 / c) * X else 0) * B)
         by_cases hlast : Fin.last m ∈ S
-        · simp only [hlast, ite_true]
-          rw [map_mul]
-          have hC1 : C (1 : ℝ) = (1 : ℝ[X]) := by simp
-          rw [hC1]
+        · simp only [hlast, ite_true, map_mul, map_one]
           calc
             C d * (C D * A) + (X + 1) * (C D * B) =
                 C D * (C d * A + B) + C D * X * B := by ring
@@ -1377,8 +1347,7 @@ theorem exists_markedAcyclicSinkShift_eq_weightedIndepPolyOn
               rw [hcoef]
               ring
             _ = (C c * C D) * (E + C (1 / c) * X * B) := by ring
-        · simp only [hlast, ite_false, zero_mul, add_zero]
-          rw [map_mul]
+        · simp only [hlast, ite_false, zero_mul, add_zero, map_mul]
           calc
             C d * (C D * A) + 1 * (C D * B) =
                 C D * (C d * A + B) := by ring
@@ -1468,10 +1437,9 @@ a reverse perfect elimination order splits over the reals. -/
 theorem ordinaryAcyclicSinkPolynomial_splits_of_clawFree
     (P : ReversePerfectEliminationOrder G) (hG : ClawFree G) :
     (ordinaryAcyclicSinkPolynomial G).Splits := by
-  have hsplits := P.finModel.ordinaryAcyclicSinkPolynomial_splits_of_clawFree
-    (ClawFree.comap_equiv (V := V) hG P.equivFin)
-  rw [ordinaryAcyclicSinkPolynomial_iso P.finModelIso] at hsplits
-  exact hsplits
+  simpa only [ordinaryAcyclicSinkPolynomial_iso P.finModelIso] using
+    P.finModel.ordinaryAcyclicSinkPolynomial_splits_of_clawFree
+      (ClawFree.comap_equiv (V := V) hG P.equivFin)
 
 /-- At `q = 1`, the ascent-refined acyclic sink polynomial of every finite
 claw-free graph with a reverse perfect elimination order splits over the

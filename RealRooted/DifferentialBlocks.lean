@@ -18,7 +18,8 @@ namespace RealRooted
 
 noncomputable section
 
-private theorem pderiv_iteratedPDerivAt_comm
+/-- A partial derivative commutes with an iterated partial derivative. -/
+theorem pderiv_iteratedPDerivAt_comm
     {R sigma : Type*} [CommSemiring R] (i j : sigma) (n : ℕ)
     (P : MvPolynomial sigma R) :
     MvPolynomial.pderiv i (iteratedPDerivAt j n P) =
@@ -29,7 +30,8 @@ private theorem pderiv_iteratedPDerivAt_comm
       simp only [iteratedPDerivAt]
       rw [MvPolynomial.pderiv_comm, ih]
 
-private theorem iteratedPDerivAt_comm
+/-- Iterated partial derivatives in two variables commute. -/
+theorem iteratedPDerivAt_comm
     {R sigma : Type*} [CommSemiring R] (i j : sigma) (m n : ℕ)
     (P : MvPolynomial sigma R) :
     iteratedPDerivAt i m (iteratedPDerivAt j n P) =
@@ -147,7 +149,8 @@ theorem applyNegDifferential_mul
       rw [add_mul, applyNegDifferential_add_left,
         applyNegDifferential_add_left, hF, hK]
 
-private theorem applyMonomialDifferential_single_nat
+/-- The monomial differential `∂ᵢⁿ` is the `n`-fold partial derivative in `i`. -/
+theorem applyMonomialDifferential_single_nat
     {R sigma : Type*} [CommSemiring R] [Fintype sigma]
     (i : sigma) (n : ℕ) (P : MvPolynomial sigma R) :
     applyMonomialDifferential (Finsupp.single i n) P =

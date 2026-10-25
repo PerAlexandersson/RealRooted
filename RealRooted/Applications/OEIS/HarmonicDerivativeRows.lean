@@ -69,18 +69,6 @@ theorem harmonicFactorProduct_splits (n : ℕ) :
         exact (natDegree_C_mul_le _ X).trans natDegree_X_le
       exact (Polynomial.Splits.of_natDegree_le_one hdeg).mul ih
 
-/-- Harmonic-factor partial products are nonzero. -/
-theorem harmonicFactorProduct_ne_zero (n : ℕ) :
-    harmonicFactorProduct n ≠ 0 := by
-  have hconst : (harmonicFactorProduct n).coeff 0 = 1 := by
-    induction n with
-    | zero => simp [harmonicFactorProduct]
-    | succ n ih =>
-        rw [harmonicFactorProduct_succ, coeff_mul]
-        simp [ih]
-  intro h
-  simp_all
-
 private theorem harmonicFactorProduct_coeff_zero (n : ℕ) :
     (harmonicFactorProduct n).coeff 0 = 1 := by
   induction n with
@@ -88,6 +76,13 @@ private theorem harmonicFactorProduct_coeff_zero (n : ℕ) :
   | succ n ih =>
       rw [harmonicFactorProduct_succ, coeff_mul]
       simp [ih]
+
+/-- Harmonic-factor partial products are nonzero. -/
+theorem harmonicFactorProduct_ne_zero (n : ℕ) :
+    harmonicFactorProduct n ≠ 0 := by
+  intro h
+  have hconst := harmonicFactorProduct_coeff_zero n
+  simp [h] at hconst
 
 /-- The degree of the `n`-th harmonic-factor partial product is `n - 1`. -/
 theorem harmonicFactorProduct_natDegree (n : ℕ) :
@@ -250,8 +245,7 @@ theorem harmonicDerivativeRow_natDegree (n : ℕ) :
     (harmonicDerivativeRow n).natDegree = n + 2 := by
   rw [harmonicDerivativeRow_eq]
   have hGdeg : (harmonicFactorProduct (n + 2)).natDegree = n + 1 := by
-    rw [harmonicFactorProduct_natDegree]
-    lia
+    rw [harmonicFactorProduct_natDegree]; lia
   have hG0 : harmonicFactorProduct (n + 2) ≠ 0 :=
     harmonicFactorProduct_ne_zero (n + 2)
   have hGlc : 0 < (harmonicFactorProduct (n + 2)).leadingCoeff :=
@@ -268,8 +262,7 @@ theorem harmonicDerivativeRow_hasPosLeadingCoeff (n : ℕ) :
   rw [HasPosLeadingCoeff, leadingCoeff, harmonicDerivativeRow_natDegree]
   rw [harmonicDerivativeRow_eq]
   have hGdeg : (harmonicFactorProduct (n + 2)).natDegree = n + 1 := by
-    rw [harmonicFactorProduct_natDegree]
-    lia
+    rw [harmonicFactorProduct_natDegree]; lia
   have hG0 : harmonicFactorProduct (n + 2) ≠ 0 :=
     harmonicFactorProduct_ne_zero (n + 2)
   have hGlc : 0 < (harmonicFactorProduct (n + 2)).leadingCoeff :=
@@ -370,9 +363,7 @@ theorem harmonicFactorProduct_strictInterl_harmonicDerivativeRow (n : ℕ) :
   let u := C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X
   let v := -X * (1 + C ((n : ℝ) + 2) * X)
   have hfdeg : f.natDegree = n + 1 := by
-    dsimp only [f]
-    rw [harmonicFactorProduct_natDegree]
-    lia
+    dsimp only [f]; rw [harmonicFactorProduct_natDegree]; lia
   have hfpos : HasPosLeadingCoeff f :=
     (harmonicFactorProduct_hasNonnegCoeffs (n + 2)).pos_leadingCoeff
       (harmonicFactorProduct_ne_zero (n + 2))
@@ -430,9 +421,7 @@ theorem harmonicDerivativeRow_root_lt (n : ℕ) {r : ℝ}
   have hbarrier : 0 ≤ 1 + ((n : ℝ) + 4) * r := by linarith
   let f := harmonicFactorProduct (n + 2)
   have hfdeg : f.natDegree = n + 1 := by
-    dsimp only [f]
-    rw [harmonicFactorProduct_natDegree]
-    lia
+    dsimp only [f]; rw [harmonicFactorProduct_natDegree]; lia
   have hfpos : HasPosLeadingCoeff f :=
     (harmonicFactorProduct_hasNonnegCoeffs (n + 2)).pos_leadingCoeff
       (harmonicFactorProduct_ne_zero (n + 2))
@@ -572,9 +561,8 @@ private theorem harmonicDerivativeRow_recurrence (n : ℕ) :
   have hthree : n + 3 + 2 = ((n + 2) + 2) + 1 := by lia
   have htwo : n + 2 + 2 = ((n + 1) + 2) + 1 := by lia
   have hone : n + 1 + 2 = (n + 2) + 1 := by lia
-  rw [hthree, harmonicFactorProduct_succ]
-  rw [htwo, harmonicFactorProduct_succ]
-  rw [hone, harmonicFactorProduct_succ]
+  rw [hthree, harmonicFactorProduct_succ, htwo, harmonicFactorProduct_succ,
+    hone, harmonicFactorProduct_succ]
   simp only [derivative_mul, derivative_add, derivative_C, derivative_X,
     derivative_one]
   push_cast

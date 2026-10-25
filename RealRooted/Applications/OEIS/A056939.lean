@@ -182,24 +182,12 @@ private lemma modelCoeff_pred_pred_factor {n k : ℕ} (hk : 2 ≤ k) :
     modelCoeff n (k - 2) =
       (k : ℝ) ^ 2 * ((k : ℝ) - 1) * ((k : ℝ) + 1) ^ 2 *
         ((k : ℝ) + 2) * commonFactor n k := by
-  have hkm₁ : ((k - 1).factorial : ℝ) =
-      ((k : ℝ) - 1) * (Nat.factorial (k - 2) : ℝ) := by
-    rw [show k - 1 = (k - 2) + 1 by lia, factorial_succ_cast]
-    rw [Nat.cast_sub hk]
-    ring
-  have hkfac : (k.factorial : ℝ) =
-      (k : ℝ) * ((k : ℝ) - 1) * (Nat.factorial (k - 2) : ℝ) := by
-    calc
-      (k.factorial : ℝ) = (k : ℝ) * ((k - 1).factorial : ℝ) := by
-        have hfac := factorial_succ_cast (k - 1)
-        rw [show k - 1 + 1 = k by lia] at hfac
-        calc
-          (k.factorial : ℝ) =
-              (((k - 1 : ℕ) : ℝ) + 1) * ((k - 1).factorial : ℝ) := hfac
-          _ = _ := by
-            rw [Nat.cast_sub (by lia : 1 ≤ k)]
-            ring
-      _ = _ := by grind
+  have hkm₁ := factorial_cast_pred (by lia : k - 1 ≠ 0)
+  rw [show k - 1 - 1 = k - 2 by lia,
+    Nat.cast_sub (by lia : 1 ≤ k)] at hkm₁
+  norm_num at hkm₁
+  have hkfac := factorial_cast_pred (by lia : k ≠ 0)
+  rw [hkm₁] at hkfac
   have hkfac₁ := factorial_succ_cast k
   have hkfac₂ := factorial_succ_cast (k + 1)
   rw [modelCoeff, commonFactor]
@@ -333,32 +321,7 @@ private lemma schurModel_succ (n : ℕ) :
         + C (2 * ((n : ℝ) + 1) * ((n : ℝ) + 2) /
               (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
             ((1 + 2 * X + X ^ 2) * schurModel n) := by
-  rw [show
-      C (3 * (3 * (n : ℝ) + 10) / (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-          ((X - X ^ 2) * (schurModel (n + 1)).derivative) =
-        C (3 * (3 * (n : ℝ) + 10) / (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-            (X * (schurModel (n + 1)).derivative) -
-          C (3 * (3 * (n : ℝ) + 10) / (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-            (X * (X * (schurModel (n + 1)).derivative)) by ring,
-    show
-      (C ((-(n : ℝ) ^ 2 + 5 * (n : ℝ) + 26) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6)))
-            + C (4 * ((n : ℝ) + 2) * (2 * (n : ℝ) + 7) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6))) * X) *
-          schurModel (n + 1) =
-        C ((-(n : ℝ) ^ 2 + 5 * (n : ℝ) + 26) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6))) * schurModel (n + 1) +
-          C (4 * ((n : ℝ) + 2) * (2 * (n : ℝ) + 7) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-            (X * schurModel (n + 1)) by ring,
-    show
-      C (2 * ((n : ℝ) + 1) * ((n : ℝ) + 2) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-            ((1 + 2 * X + X ^ 2) * schurModel n) =
-        C (2 * ((n : ℝ) + 1) * ((n : ℝ) + 2) /
-              (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
-          (schurModel n + 2 * (X * schurModel n) +
-            X * (X * schurModel n)) by ring]
+  simp only [sub_mul, add_mul, mul_add, pow_two, one_mul, mul_assoc]
   ext k
   rcases k with _ | _ | k
   · simp

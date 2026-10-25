@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.MaWang
 public import RealRooted.Touchard
 public import Mathlib.Combinatorics.Enumerative.Stirling
@@ -95,75 +96,37 @@ lemma interlaces_touchard_zero_one :
     Interlaces (touchard 0) (touchard 1) :=
   by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
 
-lemma strictInterl_touchard_one_two :
-    StrictInterl (touchard 1) (touchard 2) := by
-  have hInter : Interlaces (touchard 0) (touchard 1) := interlaces_touchard_zero_one
-  have h0_pos : HasPosLeadingCoeff (touchard 0) := touchard_posLeadingCoeff 0
-  have hF_eq : X * touchard 1 + X * touchard 0 = touchard 2 := by
-    rw [touchard_two, touchard_one, touchard_zero]
-    ring
+private lemma strictInterl_touchard_step (n : Nat) (hn : 1 ≤ n) (hsplit : (touchard n).Splits) :
+    StrictInterl (touchard n) (touchard (n + 1)) := by
+  have hInter : Interlaces (touchard n).derivative (touchard n) :=
+    derivative_interlaces_of_natDegree_ne_zero hsplit (by rw [natDegree_touchard]; lia)
+  have hderiv_pos : HasPosLeadingCoeff (touchard n).derivative :=
+    (touchard_posLeadingCoeff n).derivative (by rw [natDegree_touchard]; lia)
+  have hnext_pos : HasPosLeadingCoeff (X * touchard n + X * (touchard n).derivative) := by
+    simpa [touchard_succ, add_comm] using touchard_posLeadingCoeff (n + 1)
   have hdeg_lo :
-      (touchard 1).natDegree ≤
-        (X * touchard 1 + X * touchard 0).natDegree := by
-    rw [hF_eq, natDegree_touchard, natDegree_touchard]
+      (touchard n).natDegree ≤ (X * touchard n + X * (touchard n).derivative).natDegree := by
+    rw [← touchard_succ, natDegree_touchard, natDegree_touchard]
     lia
   have hdeg_hi :
-      (X * touchard 1 + X * touchard 0).natDegree ≤
-        (touchard 1).natDegree + 1 := by
-    rw [hF_eq, natDegree_touchard, natDegree_touchard]
-  have hb_nonpos : ∀ r, (touchard 1).IsRoot r → X.eval r ≤ 0 := by
-    intro r hr
-    simpa [touchard_one, Polynomial.IsRoot.def] using le_of_eq hr
-  rw [← hF_eq]
-  exact
-    strictInterl_of_interlaces_evalCoeff_nonpos
-      (f := touchard 1)
-      (g := touchard 0)
-      (a := X)
-      (b := X)
-      hInter h0_pos (by simpa [← hF_eq] using touchard_posLeadingCoeff 2)
-      hdeg_lo hdeg_hi hb_nonpos
+      (X * touchard n + X * (touchard n).derivative).natDegree ≤
+        (touchard n).natDegree + 1 := by
+    rw [← touchard_succ, natDegree_touchard, natDegree_touchard]
+  exact strictInterl_of_interlaces_evalCoeff_nonpos hInter hderiv_pos hnext_pos
+    hdeg_lo hdeg_hi (fun r hr => by
+      simpa using roots_nonpos_touchard_of_isRealRooted r
+        ((mem_roots (touchard_ne_zero n)).mpr hr))
+
+lemma strictInterl_touchard_one_two :
+    StrictInterl (touchard 1) (touchard 2) := by
+  exact strictInterl_touchard_step 1 (by simp)
+    interlaces_touchard_zero_one.toStrictInterl.2.1.2
 
 /-- Consecutive Touchard polynomials satisfy `StrictInterl`, hence are real-rooted. -/
 theorem strictInterl_touchard_succ : ∀ n : Nat, StrictInterl (touchard n) (touchard (n + 1))
   | 0 => interlaces_touchard_zero_one.toStrictInterl
-  | 1 => strictInterl_touchard_one_two
-  | n + 2 => by
-      have hprev : StrictInterl (touchard (n + 1)) (touchard (n + 2)) :=
-        strictInterl_touchard_succ (n + 1)
-      have hInter :
-          Interlaces (touchard (n + 2)).derivative (touchard (n + 2)) :=
-        derivative_interlaces_of_natDegree_ne_zero hprev.2.1.2 (by simp [natDegree_touchard])
-      have hg_pos : HasPosLeadingCoeff (touchard (n + 2)).derivative :=
-        (touchard_posLeadingCoeff (n + 2)).derivative (by simp [natDegree_touchard])
-      have hNext_eq :
-          X * touchard (n + 2) + X * (touchard (n + 2)).derivative = touchard (n + 3) :=
-        (touchard_succ (n + 2)).symm
-      have hF_pos :
-          HasPosLeadingCoeff
-            (X * touchard (n + 2) + X * (touchard (n + 2)).derivative) := by
-        simpa [hNext_eq] using touchard_posLeadingCoeff (n + 3)
-      have hdeg_lo :
-          (touchard (n + 2)).natDegree ≤
-            (X * touchard (n + 2) + X * (touchard (n + 2)).derivative).natDegree := by
-        rw [hNext_eq, natDegree_touchard, natDegree_touchard]
-        lia
-      have hdeg_hi :
-          (X * touchard (n + 2) + X * (touchard (n + 2)).derivative).natDegree ≤
-            (touchard (n + 2)).natDegree + 1 := by
-        rw [hNext_eq, natDegree_touchard, natDegree_touchard]
-      have hb_nonpos : ∀ r, (touchard (n + 2)).IsRoot r → X.eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_touchard_of_isRealRooted r ((mem_roots hprev.2.1.1).mpr hr)
-        simpa using hr_nonpos
-      simpa [hNext_eq] using
-        strictInterl_of_interlaces_evalCoeff_nonpos
-          (f := touchard (n + 2))
-          (g := (touchard (n + 2)).derivative)
-          (a := X)
-          (b := X)
-          hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+  | n + 1 => strictInterl_touchard_step (n + 1) (by simp)
+      (strictInterl_touchard_succ n).2.1.2
 
 theorem interlaces_touchard_succ (n : Nat) :
     Interlaces (touchard n) (touchard (n + 1)) :=
@@ -197,5 +160,15 @@ theorem isSturmSeq_touchardPrefix :
       | succ k =>
           simpa [touchardPrefix, IsSturmSeq] using
             And.intro (interlaces_touchard_succ (k + 1)) ih
+
+/-- The Touchard polynomials are the colored set-partition polynomials with
+parameters `c = 0` and `m = 1`. -/
+theorem touchard_eq_coloredSetPartitions_zero_one (n : ℕ) :
+    touchard n = coloredSetPartitions 0 1 n := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+    rw [touchard_succ, coloredSetPartitions_succ, ih]
+    simp [coloredSetPartitionsCoeffA, coloredSetPartitionsCoeffB]
 
 end RealRooted

@@ -191,4 +191,14 @@ theorem strictInterl_shift
         hss_eq, hrs_eq, Or.inr ⟨hsamedeg, halt⟩⟩
       hdeg hf_pos hh_pos hf_nonpos hh_nonpos heval
 
+/-- If `h ≪ f`, both polynomials have positive leading coefficients and
+nonpositive roots, and `h(0) ≤ f(0)`, then `f ≪ f + (X - 1)h`. -/
+theorem strictInterl_add_X_sub_one_mul {f h : ℝ[X]} (hhf : StrictInterl h f)
+    (hf_pos : HasPosLeadingCoeff f) (hh_pos : HasPosLeadingCoeff h)
+    (hf_nonpos : ∀ r ∈ f.roots, r ≤ 0) (hh_nonpos : ∀ r ∈ h.roots, r ≤ 0)
+    (heval : h.eval 0 ≤ f.eval 0) :
+    StrictInterl f (f + (X - 1) * h) := by
+  simpa using strictInterl_shift hhf.2.1.1 hhf.2.1.2 hhf.1.1 hhf.1.2 hf_nonpos hh_nonpos
+    hf_pos hh_pos hhf heval
+
 end RealRooted

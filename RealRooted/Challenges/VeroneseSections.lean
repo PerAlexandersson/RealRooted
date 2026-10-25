@@ -20,7 +20,8 @@ module = "RealRooted.VeroneseSection"
 label = "Veronese section"
 
 [[theorems]]
-name = "RealRooted.Challenges.VeroneseSections.veroneseSectionPolynomial_eq_zero_or_splits"
+name = "RealRooted.veroneseSectionPolynomial_eq_zero_or_splits"
+module = "RealRooted.VeroneseMatrix"
 label = "Veronese sections preserve real-rootedness"
 headline = true
 -->
@@ -59,19 +60,6 @@ open Polynomial
 namespace RealRooted
 namespace Challenges
 namespace VeroneseSections
-
-/-- Veronese sections preserve real-rootedness for polynomials with
-nonnegative coefficients, allowing the selected section to vanish. -/
-theorem veroneseSectionPolynomial_eq_zero_or_splits {r k : ℕ} (hk : k < r) {p : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hsplits : p.Splits) :
-    veroneseSectionPolynomial r k p = 0 ∨ (veroneseSectionPolynomial r k p).Splits := by
-  have hr : 0 < r := by lia
-  rcases eq_or_ne p 0 with rfl | hp0
-  · left
-    ext n
-    simp [RealRooted.coeff_veroneseSectionPolynomial hr]
-  · exact RealRooted.isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
-      hr hk hp hp0 hsplits
 
 end VeroneseSections
 end Challenges

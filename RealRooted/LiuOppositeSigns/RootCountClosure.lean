@@ -31,6 +31,24 @@ private theorem abs_getD_sub_getD_lt_of_forall₂
     list_getD_eq_getElem_of_lt xs i 0 hxs]
   exact h.get hxs hys
 
+private theorem getD_le_of_forall_pos_exists_close
+    {xs ys : List ℝ} {i j : ℕ}
+    (hi : i < xs.length) (hj : j < ys.length)
+    (hclose : ∀ ρ : ℝ, 0 < ρ →
+      ∃ xs' ys' : List ℝ,
+        List.Forall₂ (fun x x' : ℝ => |x' - x| < ρ) xs xs' ∧
+        List.Forall₂ (fun y y' : ℝ => |y' - y| < ρ) ys ys' ∧
+        xs'.getD i 0 ≤ ys'.getD j 0) :
+    xs.getD i 0 ≤ ys.getD j 0 := by
+  apply le_of_forall_pos_exists_close_le
+  intro ρ hρ
+  obtain ⟨xs', ys', hxx', hyy', hle⟩ := hclose ρ hρ
+  have hi' : i < xs'.length := by simpa only [hxx'.length_eq] using hi
+  have hj' : j < ys'.length := by simpa only [hyy'.length_eq] using hj
+  exact ⟨xs'.getD i 0, ys'.getD j 0,
+    abs_getD_sub_getD_lt_of_forall₂ hxx' hi hi',
+    abs_getD_sub_getD_lt_of_forall₂ hyy' hj hj', hle⟩
+
 /-- Same-degree root-count compatibility is closed under close finite crossings. -/
 theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
     {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
@@ -53,33 +71,21 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCrossing
           (rootSeqDesc g).getD (j - 1) 0) := by
     constructor
     · intro j hj1 hj
-      apply le_of_forall_pos_exists_close_le
-      intro ρ hρ
-      obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjg : j < (rootSeqDesc g).length := by simpa only [rootSeqDesc_length hg, hdeg] using hj
-      have hjf : j - 1 < (rootSeqDesc f).length := by
-        rw [rootSeqDesc_length hf]
+      apply getD_le_of_forall_pos_exists_close
+      · simpa only [rootSeqDesc_length hg, hdeg] using hj
+      · rw [rootSeqDesc_length hf]
         lia
-      have hjrg : j < rg.length := by simpa only [hgg.length_eq] using hjg
-      have hjrf : j - 1 < rf.length := by simpa only [hff.length_eq] using hjf
-      exact ⟨rg.getD j 0, rf.getD (j - 1) 0,
-        abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
-        abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
-        hfg.1 j hj1 hj⟩
+      · intro ρ hρ
+        obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
+        exact ⟨rg, rf, hgg, hff, hfg.1 j hj1 hj⟩
     · intro j hj1 hj
-      apply le_of_forall_pos_exists_close_le
-      intro ρ hρ
-      obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjf : j < (rootSeqDesc f).length := by simpa only [rootSeqDesc_length hf] using hj
-      have hjg : j - 1 < (rootSeqDesc g).length := by
-        rw [rootSeqDesc_length hg, hdeg]
+      apply getD_le_of_forall_pos_exists_close
+      · simpa only [rootSeqDesc_length hf] using hj
+      · rw [rootSeqDesc_length hg, hdeg]
         lia
-      have hjrf : j < rf.length := by simpa only [hff.length_eq] using hjf
-      have hjrg : j - 1 < rg.length := by simpa only [hgg.length_eq] using hjg
-      exact ⟨rf.getD j 0, rg.getD (j - 1) 0,
-        abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
-        abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
-        hfg.2 j hj1 hj⟩
+      · intro ρ hρ
+        obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
+        exact ⟨rf, rg, hff, hgg, hfg.2 j hj1 hj⟩
   have hlower := sameDegreeRootCount_of_rootCrossing hf hg hdeg hcross
   have hupper := sameDegreeRootCountAbove_of_rootCount hf hg hdeg hlower
   exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
@@ -108,35 +114,22 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCrossing
           (rootSeqDesc g).getD (j - 1) 0) := by
     constructor
     · intro j hj1 hj
-      apply le_of_forall_pos_exists_close_le
-      intro ρ hρ
-      obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjg : j < (rootSeqDesc g).length := by
-        rw [rootSeqDesc_length hg, hdeg]
+      apply getD_le_of_forall_pos_exists_close
+      · rw [rootSeqDesc_length hg, hdeg]
         lia
-      have hjf : j - 1 < (rootSeqDesc f).length := by
-        rw [rootSeqDesc_length hf]
+      · rw [rootSeqDesc_length hf]
         lia
-      have hjrg : j < rg.length := by simpa only [hgg.length_eq] using hjg
-      have hjrf : j - 1 < rf.length := by simpa only [hff.length_eq] using hjf
-      exact ⟨rg.getD j 0, rf.getD (j - 1) 0,
-        abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
-        abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
-        hfg.1 j hj1 hj⟩
+      · intro ρ hρ
+        obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
+        exact ⟨rg, rf, hgg, hff, hfg.1 j hj1 hj⟩
     · intro j hj1 hj
-      apply le_of_forall_pos_exists_close_le
-      intro ρ hρ
-      obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
-      have hjf : j < (rootSeqDesc f).length := by simpa only [rootSeqDesc_length hf] using hj
-      have hjg : j - 1 < (rootSeqDesc g).length := by
-        rw [rootSeqDesc_length hg, hdeg]
+      apply getD_le_of_forall_pos_exists_close
+      · simpa only [rootSeqDesc_length hf] using hj
+      · rw [rootSeqDesc_length hg, hdeg]
         lia
-      have hjrf : j < rf.length := by simpa only [hff.length_eq] using hjf
-      have hjrg : j - 1 < rg.length := by simpa only [hgg.length_eq] using hjg
-      exact ⟨rf.getD j 0, rg.getD (j - 1) 0,
-        abs_getD_sub_getD_lt_of_forall₂ hff hjf hjrf,
-        abs_getD_sub_getD_lt_of_forall₂ hgg hjg hjrg,
-        hfg.2 j hj1 hj⟩
+      · intro ρ hρ
+        obtain ⟨rf, rg, hff, hgg, hfg⟩ := hclose ρ hρ
+        exact ⟨rf, rg, hff, hgg, hfg.2 j hj1 hj⟩
   have hlower := succDegreeRootCount_of_rootCrossing hf hg hdeg hcross
   have hupper := succDegreeRootCountAbove_of_rootCount hf hg hdeg hlower
   exact RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot
@@ -168,11 +161,9 @@ theorem RootCountCompatible.of_forall_pos_exists_close_sameDegreeCompatible
       hpp', hqq', hcompat'⟩ :=
     hclose ρ hρ
   have hpdeg : p'.natDegree = p.natDegree := by
-    rw [← rootSeqDesc_length hp'_split, ← rootSeqDesc_length hp]
-    exact hpp'.length_eq.symm
+    simpa only [rootSeqDesc_length hp'_split, rootSeqDesc_length hp] using hpp'.length_eq.symm
   have hqdeg : q'.natDegree = q.natDegree := by
-    rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
-    exact hqq'.length_eq.symm
+    simpa only [rootSeqDesc_length hq'_split, rootSeqDesc_length hq] using hqq'.length_eq.symm
   have hdeg' : q'.natDegree = p'.natDegree := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     rootCountAbove_diff_le_one_of_nonRoot_isRoot hp'_ne hq'_ne
@@ -209,11 +200,9 @@ theorem RootCountCompatible.of_forall_pos_exists_close_succDegreeCompatible
       hpp', hqq', hcompat'⟩ :=
     hclose ρ hρ
   have hpdeg : p'.natDegree = p.natDegree := by
-    rw [← rootSeqDesc_length hp'_split, ← rootSeqDesc_length hp]
-    exact hpp'.length_eq.symm
+    simpa only [rootSeqDesc_length hp'_split, rootSeqDesc_length hp] using hpp'.length_eq.symm
   have hqdeg : q'.natDegree = q.natDegree := by
-    rw [← rootSeqDesc_length hq'_split, ← rootSeqDesc_length hq]
-    exact hqq'.length_eq.symm
+    simpa only [rootSeqDesc_length hq'_split, rootSeqDesc_length hq] using hqq'.length_eq.symm
   have hdeg' : q'.natDegree = p'.natDegree + 1 := by rw [hqdeg, hpdeg, hdeg]
   have hcount' :=
     rootCountAbove_diff_le_one_of_nonRoot_isRoot hp'_ne hq'_ne
@@ -418,15 +407,13 @@ theorem LeftRootCountBranch.of_forall_pos_exists_close
   obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
       hff', hgg', hbranch'⟩ := hclose 1 zero_lt_one
   have hf_degree : f'.natDegree = f.natDegree := by
-    calc
-      f'.natDegree = f'.roots.card := (Polynomial.splits_iff_card_roots.mp hf'_split).symm
-      _ = f.roots.card := (Multiset.card_eq_card_of_rel hff').symm
-      _ = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
+    simpa only [Polynomial.splits_iff_card_roots.mp hf'_split,
+      Polynomial.splits_iff_card_roots.mp hf] using
+      (Multiset.card_eq_card_of_rel hff').symm
   have hg_degree : g'.natDegree = g.natDegree := by
-    calc
-      g'.natDegree = g'.roots.card := (Polynomial.splits_iff_card_roots.mp hg'_split).symm
-      _ = g.roots.card := (Multiset.card_eq_card_of_rel hgg').symm
-      _ = g.natDegree := Polynomial.splits_iff_card_roots.mp hg
+    simpa only [Polynomial.splits_iff_card_roots.mp hg'_split,
+      Polynomial.splits_iff_card_roots.mp hg] using
+      (Multiset.card_eq_card_of_rel hgg').symm
   have hdegrees :=
     hbranch'.natDegree_eq_or_eq_succ_or_eq_succ_succ
       hf'_ne hf'_split hg'_split
@@ -467,12 +454,8 @@ theorem RightRootCountBranch.of_forall_pos_exists_close
     intro ρ hρ
     obtain ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
         hff', hgg', hbranch'⟩ := hclose ρ hρ
-    exact
-      ⟨g', f', s', r',
-        hg'_ne, hf'_ne,
-        hg'_split, hf'_split,
-        hgg', hff',
-        hbranch'.toLeftBranch_symm⟩
+    exact ⟨g', f', s', r', hg'_ne, hf'_ne, hg'_split, hf'_split,
+      hgg', hff', hbranch'.toLeftBranch_symm⟩
   exact hleft.toRightBranch_symm_of_lt hrlt
 
 /-- Liu's disjunctive root-count branch is closed under close splitting approximations. -/
@@ -513,8 +496,7 @@ theorem RootCountBranches.of_forall_pos_exists_roots_rel
       hf_ne hg_ne hf hg hr hs hrs
     intro ρ hρ
     let δ : ℝ := min ρ ((s - r) / 2)
-    have hδ : 0 < δ :=
-      lt_min hρ (half_pos (sub_pos.mpr hrs))
+    have hδ : 0 < δ := lt_min hρ (half_pos (sub_pos.mpr hrs))
     have hδ_le_ρ : δ ≤ ρ := min_le_left _ _
     have hδ_le_gap : δ ≤ (s - r) / 2 := min_le_right _ _
     obtain ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split,
@@ -530,29 +512,22 @@ theorem RootCountBranches.of_forall_pos_exists_roots_rel
           hg_ne hg'_ne hs hleft'.g_largest hgg'
       rw [abs_lt] at hr_close hs_close
       linarith [hleft'.largest_ge, hδ_le_gap]
-    · exact
-        ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
-          widenRootsRel hδ_le_ρ hff',
-          widenRootsRel hδ_le_ρ hgg',
-          hright'⟩
+    · exact ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        widenRootsRel hδ_le_ρ hff', widenRootsRel hδ_le_ρ hgg', hright'⟩
   · apply RootCountBranches.of_left
     apply LeftRootCountBranch.of_forall_pos_exists_close
       hf_ne hg_ne hf hg hr hs
     intro ρ hρ
     let δ : ℝ := min ρ ((r - s) / 2)
-    have hδ : 0 < δ :=
-      lt_min hρ (half_pos (sub_pos.mpr hsr))
+    have hδ : 0 < δ := lt_min hρ (half_pos (sub_pos.mpr hsr))
     have hδ_le_ρ : δ ≤ ρ := min_le_left _ _
     have hδ_le_gap : δ ≤ (r - s) / 2 := min_le_right _ _
     obtain ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split,
         hff', hgg', hbranches⟩ := hclose δ hδ
     obtain ⟨r', s', hbranch'⟩ := hbranches
     rcases hbranch' with hleft' | hright'
-    · exact
-        ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
-          widenRootsRel hδ_le_ρ hff',
-          widenRootsRel hδ_le_ρ hgg',
-          hleft'⟩
+    · exact ⟨f', g', r', s', hf'_ne, hg'_ne, hf'_split, hg'_split,
+        widenRootsRel hδ_le_ρ hff', widenRootsRel hδ_le_ρ hgg', hleft'⟩
     · exfalso
       have hr_close :=
         _root_.RealRooted.IsLargestRoot.abs_sub_lt_of_roots_rel
