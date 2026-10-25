@@ -206,9 +206,8 @@ theorem OppositeLeadingSigns.symm {p q : ℝ[X]} (h : OppositeLeadingSigns p q) 
 
 theorem OppositeLeadingSigns.left_ne_zero {p q : ℝ[X]}
     (h : OppositeLeadingSigns p q) :
-    p ≠ 0 := by
-  have hmul : p.leadingCoeff * q.leadingCoeff ≠ 0 := ne_of_lt h
-  exact leadingCoeff_ne_zero.mp (mul_ne_zero_iff.mp hmul).1
+    p ≠ 0 :=
+  leadingCoeff_ne_zero.mp (mul_ne_zero_iff.mp (ne_of_lt h)).1
 
 theorem OppositeLeadingSigns.right_ne_zero {p q : ℝ[X]}
     (h : OppositeLeadingSigns p q) :
@@ -219,23 +218,9 @@ theorem OppositeLeadingSigns.pos_neg_or_neg_pos {p q : ℝ[X]}
     (h : OppositeLeadingSigns p q) :
     (HasPosLeadingCoeff p ∧ HasPosLeadingCoeff (-q)) ∨
       (HasPosLeadingCoeff (-p) ∧ HasPosLeadingCoeff q) := by
-  have hmul : p.leadingCoeff * q.leadingCoeff < 0 := h
-  have hp_lc_ne : p.leadingCoeff ≠ 0 := (mul_ne_zero_iff.mp (ne_of_lt hmul)).1
-  rcases lt_or_gt_of_ne hp_lc_ne with hp_neg | hp_pos
-  · have hq_pos : 0 < q.leadingCoeff := by
-      by_contra hq_not
-      have hq_nonpos : q.leadingCoeff ≤ 0 := le_of_not_gt hq_not
-      have hprod_nonneg : 0 ≤ p.leadingCoeff * q.leadingCoeff :=
-        mul_nonneg_of_nonpos_of_nonpos (le_of_lt hp_neg) hq_nonpos
-      linarith
-    exact Or.inr ⟨hasPosLeadingCoeff_neg hp_neg, hq_pos⟩
-  · have hq_neg : q.leadingCoeff < 0 := by
-      by_contra hq_not
-      have hq_nonneg : 0 ≤ q.leadingCoeff := le_of_not_gt hq_not
-      have hprod_nonneg : 0 ≤ p.leadingCoeff * q.leadingCoeff :=
-        mul_nonneg (le_of_lt hp_pos) hq_nonneg
-      linarith
-    exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
+  rcases mul_neg_iff.mp h with ⟨hp_pos, hq_neg⟩ | ⟨hp_neg, hq_pos⟩
+  · exact Or.inl ⟨hp_pos, hasPosLeadingCoeff_neg hq_neg⟩
+  · exact Or.inr ⟨hasPosLeadingCoeff_neg hp_neg, hq_pos⟩
 
 /-- For two splitting polynomials with opposite leading signs, the signed
 difference of the numbers of roots strictly above a common non-root is odd
@@ -299,7 +284,7 @@ theorem exists_isLargestRoot {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Split
     ∃ r, IsLargestRoot p r := by
   rcases exists_rightmost_root_of_isRealRooted hp_ne hp_splits hdeg with
     ⟨r, hr, hle⟩
-  exact ⟨r, ⟨hr, hle⟩⟩
+  exact ⟨r, hr, hle⟩
 
 theorem exists_largestRoots {f g : ℝ[X]}
     (hf_splits : f.Splits) (hg_splits : g.Splits)
@@ -335,9 +320,7 @@ theorem comp_X_add_C_eq_X_mul_deleteRootFactor_comp_of_isRoot
 
 theorem deleteRootFactor_ne_zero_of_isRoot {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
-    deleteRootFactor p r ≠ 0 := by
-  intro hzero
-  apply hp_ne
+    deleteRootFactor p r ≠ 0 := fun hzero => hp_ne <| by
   rw [← factor_deleteRootFactor_of_isRoot hr, hzero, mul_zero]
 
 theorem not_isRoot_of_not_deleteRootFactor_isRoot_of_lt
@@ -356,9 +339,8 @@ theorem roots_eq_singleton_add_roots_deleteRootFactor_of_isRoot
     {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0) (hr : p.IsRoot r) :
     p.roots = {r} + (deleteRootFactor p r).roots := by
   have hfactor := factor_deleteRootFactor_of_isRoot hr
-  have hprod_ne : (X - C r) * deleteRootFactor p r ≠ 0 := by
-    intro hzero
-    exact hp_ne (by rw [← hfactor, hzero])
+  have hprod_ne : (X - C r) * deleteRootFactor p r ≠ 0 :=
+    ne_of_eq_of_ne hfactor hp_ne
   calc
     p.roots = ((X - C r) * deleteRootFactor p r).roots := by rw [hfactor]
     _ = (X - C r).roots + (deleteRootFactor p r).roots :=
@@ -410,17 +392,14 @@ theorem rootCountAtOrAbove_eq_zero_of_forall_roots_lt {p : ℝ[X]} {x : ℝ}
     (h : ∀ r ∈ p.roots, r < x) :
     rootCountAtOrAbove p x = 0 := by
   have hfilter : p.roots.filter (fun r => x ≤ r) = 0 := by
-    apply Multiset.filter_eq_nil.mpr
-    intro r hr
-    exact not_le.mpr (h r hr)
+    exact Multiset.filter_eq_nil.mpr fun r hr => not_le.mpr (h r hr)
   simp [rootCountAtOrAbove, hfilter]
 
 theorem rootCountAtOrAbove_eq_rootCountAbove_of_not_isRoot
     {p : ℝ[X]} (hp_ne : p ≠ 0) {x : ℝ} (hx : ¬ p.IsRoot x) :
     rootCountAtOrAbove p x = (p.roots.filter (x < ·)).card := by
-  have hx_not_mem : x ∉ p.roots := by
-    intro hx_mem
-    exact hx ((Polynomial.mem_roots hp_ne).mp hx_mem)
+  have hx_not_mem : x ∉ p.roots := fun hx_mem =>
+    hx ((Polynomial.mem_roots hp_ne).mp hx_mem)
   have hfilter := Multiset.filter_ge_eq_filter_gt_of_not_mem p.roots hx_not_mem
   simp [rootCountAtOrAbove, hfilter]
 
@@ -552,17 +531,11 @@ theorem exists_threshold_no_mem_Ico_left (s : Multiset ℝ) (x : ℝ) :
     · right
       exact le_of_not_gt hrx
   · rw [Finset.not_nonempty_iff_eq_empty] at hSne
-    have hall : ∀ r ∈ s, ¬ r < x := by
-      intro r hr hrx
-      have : r ∈ S := by
-        rw [hS, Finset.mem_filter]
-        exact ⟨Multiset.mem_toFinset.mpr hr, hrx⟩
-      rw [hSne] at this
-      exact absurd this (Finset.notMem_empty r)
     refine ⟨x - 1, by linarith, ?_⟩
     intro r hr
-    right
-    exact le_of_not_gt (hall r hr)
+    refine Or.inr (le_of_not_gt fun hrx => ?_)
+    have : r ∈ S := by simp [hS, hr, hrx]
+    simp [hSne] at this
 
 /-- Push a threshold down to a common non-root so that strict-upper root counts
 there equal Liu's closed-at-or-above counts at the original threshold. -/
@@ -573,42 +546,28 @@ theorem exists_nonRoot_threshold_count_gt_eq_rootCountAtOrAbove
       (q.roots.filter (x' < ·)).card = rootCountAtOrAbove q x := by
   classical
   set combined : Multiset ℝ := p.roots + q.roots with hcombined
-  have hmem_combined : ∀ {r : ℝ}, r ∈ p.roots ∨ r ∈ q.roots → r ∈ combined := by
-    intro r hr
-    rw [hcombined, Multiset.mem_add]
-    exact hr
+  have hmem_combined {r : ℝ} : r ∈ p.roots ∨ r ∈ q.roots → r ∈ combined := by
+    simp [hcombined]
   obtain ⟨x', hx'_lt, hgap⟩ := exists_threshold_no_mem_Ico_left combined x
+  have hfilter (s : Multiset ℝ) (hs : ∀ r ∈ s, r ∈ combined) :
+      s.filter (x' < ·) = s.filter (fun r => x ≤ r) := by
+    apply Multiset.filter_congr
+    intro r hr
+    constructor
+    · intro hx'r
+      rcases hgap r (hs r hr) with hrx' | hxr
+      · linarith
+      · exact hxr
+    · exact fun hxr => lt_of_lt_of_le hx'_lt hxr
   refine ⟨x', hx'_lt, ?_, ?_, ?_, ?_⟩
   · intro hxroot
-    have hxmem : x' ∈ p.roots := (Polynomial.mem_roots hp_ne).mpr hxroot
-    rcases hgap x' (hmem_combined (Or.inl hxmem)) with hx' | hx' <;> linarith
+    rcases hgap x' (hmem_combined <| Or.inl <| (Polynomial.mem_roots hp_ne).mpr hxroot)
+      with hx' | hx' <;> linarith
   · intro hxroot
-    have hxmem : x' ∈ q.roots := (Polynomial.mem_roots hq_ne).mpr hxroot
-    rcases hgap x' (hmem_combined (Or.inr hxmem)) with hx' | hx' <;> linarith
-  · have hfilter :
-        p.roots.filter (x' < ·) = p.roots.filter (fun r => x ≤ r) := by
-      apply Multiset.filter_congr
-      intro r hr
-      constructor
-      · intro hx'r
-        rcases hgap r (hmem_combined (Or.inl hr)) with hrx' | hxr
-        · linarith
-        · exact hxr
-      · intro hxr
-        exact lt_of_lt_of_le hx'_lt hxr
-    simp [rootCountAtOrAbove, hfilter]
-  · have hfilter :
-        q.roots.filter (x' < ·) = q.roots.filter (fun r => x ≤ r) := by
-      apply Multiset.filter_congr
-      intro r hr
-      constructor
-      · intro hx'r
-        rcases hgap r (hmem_combined (Or.inr hr)) with hrx' | hxr
-        · linarith
-        · exact hxr
-      · intro hxr
-        exact lt_of_lt_of_le hx'_lt hxr
-    simp [rootCountAtOrAbove, hfilter]
+    rcases hgap x' (hmem_combined <| Or.inr <| (Polynomial.mem_roots hq_ne).mpr hxroot)
+      with hx' | hx' <;> linarith
+  · simp [rootCountAtOrAbove, hfilter p.roots fun r hr => hmem_combined (Or.inl hr)]
+  · simp [rootCountAtOrAbove, hfilter q.roots fun r hr => hmem_combined (Or.inr hr)]
 
 /-- To prove Liu root-count compatibility, it is enough to prove the
 corresponding strict-upper count bound at common non-root thresholds. -/

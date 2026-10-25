@@ -62,9 +62,8 @@ private lemma ldes_le_length (l : List ℕ) : ldes l ≤ l.length := by
   induction l with
   | nil => simp [ldes]
   | cons a t ih =>
-    cases t with
-    | nil => simp [ldes]
-    | cons b t => rw [ldes_cons_cons]; simp only [List.length_cons] at *; split_ifs <;> lia
+    cases t <;> simp_all [ldes]
+    split_ifs <;> lia
 
 private lemma ldes_append_cons {s t : List ℕ} {b : ℕ} (hs : ∀ x ∈ s, x < b) :
     ldes (s ++ b :: t) = ldes s + ldes (b :: t) := by
@@ -72,11 +71,7 @@ private lemma ldes_append_cons {s t : List ℕ} {b : ℕ} (hs : ∀ x ∈ s, x <
   | nil => simp [ldes]
   | cons x s ih =>
     cases s with
-    | nil =>
-      simp only [List.nil_append, List.cons_append]
-      have hxb := hs x (by simp)
-      simp only [ldes_cons_cons, not_lt.2 hxb.le, ↓reduceIte]
-      simp [ldes]
+    | nil => simp_all [ldes]; lia
     | cons y s =>
       simp only [List.cons_append] at *
       rw [ldes_cons_cons, ih (fun z hz => hs z (List.mem_cons_of_mem _ hz)), ldes_cons_cons]
@@ -84,22 +79,14 @@ private lemma ldes_append_cons {s t : List ℕ} {b : ℕ} (hs : ∀ x ∈ s, x <
 
 private lemma ldes_cons_top {t : List ℕ} {b : ℕ} (ht : ∀ x ∈ t, x < b) :
     ldes (b :: t) = ldes t + (if t = [] then 0 else 1) := by
-  cases t with
-  | nil => simp [ldes]
-  | cons y t =>
-    simp only [ldes_cons_cons, ht y (by simp), ↓reduceIte, reduceCtorEq]
-    lia
+  cases t <;> simp_all [ldes]
+  lia
 
 private lemma ldes_map_add (c : ℕ) (s : List ℕ) : ldes (s.map (· + c)) = ldes s := by
   induction s with
   | nil => simp [ldes]
   | cons x s ih =>
-    cases s with
-    | nil => simp [ldes]
-    | cons y s =>
-      simp only [List.map_cons] at *
-      rw [ldes_cons_cons, ih, ldes_cons_cons]
-      simp
+    cases s <;> simp_all [ldes]
 
 private lemma lavoid_map_add (c : ℕ) (s : List ℕ) : lavoid (s.map (· + c)) ↔ lavoid s := by
   induction s with
@@ -227,9 +214,8 @@ private lemma A_eq_card_Xs (n k : ℕ) : A n k = (Xs n k).card := by
         exact hσ.1 i j k hij hjk
     · rw [ldes_ofFn, ← hσ.2]; rfl
   · intro σ _ τ _ h
-    have := List.ofFn_injective h
     ext i
-    exact congrFun this i
+    exact congrFun (List.ofFn_injective h) i
   · intro L hL
     simp only [Finset.mem_filter, mem_S] at hL
     obtain ⟨hp, hav, hdes⟩ := hL
@@ -293,8 +279,8 @@ private lemma decomp (m k : ℕ) :
     simp only [Xs, Finset.mem_filter, mem_S]
     refine ⟨?_, ?_, ?_⟩
     · have hlen : (L1.map (· + l) ++ m :: L2).length = m + 1 := by
-        rw [List.length_append, List.length_map, List.length_cons, length_of_mem_S hL1,
-          length_of_mem_S hL2]
+        simp only [List.length_append, List.length_map, List.length_cons,
+          length_of_mem_S hL1, length_of_mem_S hL2]
         lia
       rw [← hlen]
       apply perm_range_of_lt
@@ -435,8 +421,8 @@ private lemma choose_rel (n k : ℕ) :
     (n.choose k : ℚ) * (n+1) = (n.choose k + n.choose (k+1)) * (k+1) := by
   have := Nat.add_one_mul_choose_eq n k
   rw [Nat.choose_succ_succ] at this
-  have h : (n.choose k) * (n+1) = (n.choose k + n.choose (k+1)) * (k+1) := by linarith [this]
-  exact_mod_cast h
+  exact_mod_cast (show n.choose k * (n + 1) =
+    (n.choose k + n.choose (k + 1)) * (k + 1) by lia)
 
 private lemma g_rec_succ (n s k : ℕ) (hn : 1 ≤ n) :
     g (n+1) (s+1) (k+1) = g n s (k+1) + g n (s+1) (k+1) + g n (s+1) k + g n (s+2) k := by
@@ -521,7 +507,7 @@ private lemma card_Xs_eq_zero {n k : ℕ} (h : n < k) : (Xs n k).card = 0 := by
   rw [length_of_mem_S hL] at this; lia
 
 private lemma card_Xs'_zero (i : ℕ) : (Xs' 0 i).card = (Xs 0 i).card := by
-  unfold Xs' Xs; simp
+  simp [Xs', Xs]
 
 private lemma card_Xs'_succ (l i : ℕ) :
     (Xs' (l+1) i).card = if i = 0 then 0 else (Xs (l+1) (i-1)).card := by
@@ -566,12 +552,7 @@ private lemma P_succ (m : ℕ) : P (m+1) = ∑ p ∈ antidiagonal m, P p.1 * Q p
   ext k
   rw [coeff_P, decomp, finsetSum_coeff]
   push_cast
-  apply Finset.sum_congr rfl
-  intro p _
-  rw [coeff_mul]
-  apply Finset.sum_congr rfl
-  intro q _
-  rw [coeff_P, coeff_Q]
+  simp_rw [coeff_mul, coeff_P, coeff_Q]
 
 /-- The generating function `U = Σ_{n ≥ 1} P n x^n`. -/
 private noncomputable def U : PowerSeries ℚ[X] := PowerSeries.mk P - 1
@@ -669,8 +650,7 @@ theorem succ_mul_card_avoiders_descentCount_eq (n k : ℕ) :
     (n + 1) * ((Equiv.Perm.avoiders (n + 1) [⟨3, SimionSchmidt.p132⟩]).filter
       (fun σ => σ.descentCount = k)).card =
         Nat.choose (n + 1) (k + 1) * Nat.choose (n + 1) k := by
-  rw [card_filter_avoiders_eq]
-  exact narayana_A n k
+  simpa only [card_filter_avoiders_eq] using narayana_A n k
 
 /-- The descent distribution of `132`-avoiding permutations is given by the Narayana
 numbers `Nat.narayana (n + 1) (k + 1)`. -/
@@ -738,9 +718,8 @@ theorem strictInterl_descentGeneratingPolynomial_succ (n : ℕ) :
         Equiv.Perm.descentCount)
       (Finset.genPoly (R := ℝ) (Equiv.Perm.avoiders (n + 3) [⟨3, SimionSchmidt.p132⟩])
         Equiv.Perm.descentCount) := by
-  rw [descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n + 1),
-    descentGeneratingPolynomial_succ_eq_narayanaPolynomial (n + 2)]
-  exact strictInterl_narayanaPolynomial_succ 1 n
+  simpa only [descentGeneratingPolynomial_succ_eq_narayanaPolynomial] using
+    strictInterl_narayanaPolynomial_succ 1 n
 
 end Avoid132
 end RealRooted

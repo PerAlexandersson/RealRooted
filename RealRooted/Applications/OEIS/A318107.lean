@@ -73,11 +73,8 @@ private lemma card_roots_one_add_X_pow (k : ℕ) :
   have : (1 + X : ℝ[X]) = X - C (-1) := by simp [add_comm]
   rw [this, roots_pow, roots_X_sub_C]; simp
 
-private lemma one_add_X_pow_ne_zero (k : ℕ) : ((1 + X : ℝ[X]) ^ k) ≠ 0 := by
-  apply pow_ne_zero
-  intro h
-  have := congrArg (fun p : ℝ[X] => p.eval (0 : ℝ)) h
-  simp at this
+private lemma one_add_X_pow_ne_zero (k : ℕ) : ((1 + X : ℝ[X]) ^ k) ≠ 0 :=
+  pow_ne_zero _ (by simpa [add_comm] using X_add_C_ne_zero (1 : ℝ))
 
 /-- Each application of `Op c` to a polynomial divisible by `(1+X)^c` creates a new real root. -/
 private lemma Op_roots_step (k : ℕ) (p : ℝ[X]) (hp : p ≠ 0) (hdvd : (1 + X) ^ (k + 1) ∣ p) :
@@ -263,12 +260,12 @@ private lemma splits_reflect_prod (s : Multiset ℝ) :
 
 private lemma splits_reflect {f : ℝ[X]} (hf : f.Splits) {N : ℕ} (hN : f.natDegree ≤ N) :
     (reflect N f).Splits := by
-  by_cases h0 : f = 0
-  · subst h0; simp
+  rcases eq_or_ne f 0 with rfl | h0
+  · simp
   rw [hf.eq_prod_roots, reflect_C_mul]
   refine Splits.mul (Splits.C _) (splits_reflect_prod _ N ?_)
-  have := hf.natDegree_eq_card_roots
-  lia
+  rw [← hf.natDegree_eq_card_roots]
+  exact hN
 
 private lemma card_roots_add_two_le {f : ℝ[X]} (hns : ¬ f.Splits) :
     Multiset.card f.roots + 2 ≤ f.natDegree := by
@@ -431,16 +428,14 @@ private lemma primitivePolynomial_coeff_pos {n j : ℕ} (hj : j ≤ n + 1) :
 
 private lemma primitivePolynomial_natDegree (n : ℕ) :
     (primitivePolynomial n).natDegree = n + 1 := by
-  apply le_antisymm (natDegree_primitivePolynomial_le n)
-  exact le_natDegree_of_ne_zero (ne_of_gt (primitivePolynomial_coeff_pos le_rfl))
+  exact le_antisymm (natDegree_primitivePolynomial_le n)
+    (le_natDegree_of_ne_zero (ne_of_gt (primitivePolynomial_coeff_pos le_rfl)))
 
 private lemma primitivePolynomial_nonneg (n : ℕ) :
     HasNonnegCoeffs (primitivePolynomial n) := by
   intro j
   rw [coeff_primitivePolynomial]
-  split_ifs
-  · positivity
-  · exact le_rfl
+  split_ifs <;> positivity
 
 private lemma primitivePolynomial_pf (n : ℕ) :
     IsPFPolynomial (primitivePolynomial n) :=
@@ -475,12 +470,7 @@ private lemma coeff_polynomial_eq_rowCoeff (n j : ℕ) :
   rfl
 
 private lemma rowCoeff_zero_left (k : ℕ) : rowCoeff 0 k = 1 := by
-  have hk : (0 : ℝ) < (Nat.factorial k : ℝ) := by
-    exact_mod_cast Nat.factorial_pos _
-  unfold rowCoeff
-  simp only [Nat.mul_zero, Nat.zero_add, Nat.factorial_zero, Nat.cast_one, one_pow,
-    one_mul]
-  exact div_self hk.ne'
+  simp [rowCoeff, Nat.factorial_ne_zero]
 
 private lemma rowCoeff_succ_k (m k : ℕ) :
     ((k : ℝ) + 1) * rowCoeff m (k + 1) =
@@ -813,6 +803,22 @@ theorem polynomial_recurrence (n : ℕ) :
   field_simp
   ring
 
+private theorem polynomial_zero : polynomial 0 = 1 := by
+  ext k
+  rw [coeff_polynomial_eq_rowCoeff]
+  rcases k with _ | k <;> norm_num [rowCoeff, coeff_one]
+
+private theorem polynomial_one : polynomial 1 = 6 + X := by
+  ext k
+  rw [coeff_polynomial_eq_rowCoeff]
+  rcases k with _ | _ | k <;> norm_num [rowCoeff, coeff_add, coeff_X]
+
+private theorem polynomial_two : polynomial 2 = 90 + 24 * X + X ^ 2 := by
+  ext k
+  rw [coeff_polynomial_eq_rowCoeff]
+  rcases k with _ | _ | _ | k <;>
+    norm_num [rowCoeff, coeff_add, coeff_X, coeff_X_pow]
+
 private lemma primitivePolynomial_shift_degree (n : ℕ) :
     2 ≤ (reciprocalShift (n + 2) (primitivePolynomial n)).natDegree := by
   have hcoeff :
@@ -827,21 +833,8 @@ theorem polynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (polynomial n) (polynomial (n + 1)) := by
   by_cases hn0 : n = 0
   · subst n
-    have hbase : StrictInterl (1 : ℝ[X]) (C 6 + X) :=
-      (interlaces_one_linear (p := C 6 + X) (by compute_degree!)).toStrictInterl
-    have hrow0 : polynomial 0 = 1 := by
-      ext k
-      simp [polynomial, primitivePolynomial, Finset.sum_range_succ]
-    have hrow1 : polynomial 1 = C 6 + X := by
-      ext k
-      rcases k with _ | k
-      · norm_num [polynomial, primitivePolynomial, Finset.sum_range_succ]
-      · rcases k with _ | k
-        · norm_num [polynomial, primitivePolynomial, Finset.sum_range_succ]
-        · simp [polynomial, primitivePolynomial, Finset.sum_range_succ, coeff_one,
-            coeff_X]
-    rw [hrow0, hrow1]
-    exact hbase
+    rw [polynomial_zero, polynomial_one]
+    exact (interlaces_one_linear (p := 6 + X) (by compute_degree!)).toStrictInterl
   let p := primitivePolynomial n
   have hpf : IsPFPolynomial p := primitivePolynomial_pf n
   have hdeg : p.natDegree = n + 1 := primitivePolynomial_natDegree n
@@ -901,30 +894,6 @@ theorem polynomial_interlaces (n : ℕ) :
     Interlaces (polynomial n) (polynomial (n + 1)) :=
   (polynomial_strictInterl_succ n).toInterlaces (by
     rw [polynomial_natDegree, polynomial_natDegree])
-
-private theorem polynomial_zero : polynomial 0 = 1 := by
-  ext k
-  rw [coeff_polynomial_eq_rowCoeff]
-  rcases k with _ | k
-  · norm_num [rowCoeff, coeff_one]
-  · simp [coeff_one]
-
-private theorem polynomial_one : polynomial 1 = 6 + X := by
-  ext k
-  rw [coeff_polynomial_eq_rowCoeff]
-  rcases k with _ | _ | k
-  · norm_num [rowCoeff, coeff_add, coeff_X]
-  · norm_num [rowCoeff, coeff_add, coeff_X]
-  · simp [coeff_add, coeff_X]
-
-private theorem polynomial_two : polynomial 2 = 90 + 24 * X + X ^ 2 := by
-  ext k
-  rw [coeff_polynomial_eq_rowCoeff]
-  rcases k with _ | _ | _ | k
-  · norm_num [rowCoeff, coeff_add, coeff_X, coeff_X_pow]
-  · norm_num [rowCoeff, coeff_add, coeff_X, coeff_X_pow]
-  · norm_num [rowCoeff, coeff_add, coeff_X, coeff_X_pow]
-  · simp [coeff_add, coeff_X, coeff_X_pow]
 
 /-- A sequence with the A318107 initial rows and update has split rows. -/
 @[rr_row_model]

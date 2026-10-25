@@ -32,25 +32,13 @@ def bottomRowCells (n i : ℕ) : Finset (ℕ × ℕ) :=
 theorem bottomRowCell_mem_bottomRowCells {n i c : ℕ} :
     (i, c) ∈ bottomRowCells n i ↔ c < n - i := by
   classical
-  rw [bottomRowCells, Finset.mem_image]
-  constructor
-  · rintro ⟨d, hd, hdc⟩
-    have hc : d = c := by simpa using congrArg (fun x : ℕ × ℕ => x.2) hdc
-    simpa [hc] using hd
-  · intro hc
-    exact ⟨c, by simpa using hc, rfl⟩
+  simp [bottomRowCells]
 
 /-- Membership in the bottom-row cell set, for arbitrary cells. -/
 @[simp] theorem mem_bottomRowCells {n i : ℕ} {a : ℕ × ℕ} :
     a ∈ bottomRowCells n i ↔ a.1 = i ∧ a.2 < n - i := by
   classical
-  rw [bottomRowCells, Finset.mem_image]
-  constructor
-  · rintro ⟨c, hc, rfl⟩
-    exact ⟨rfl, by simpa using hc⟩
-  · rintro ⟨hrow, hcol⟩
-    refine ⟨a.2, by simpa using hcol, ?_⟩
-    ext <;> simp [hrow]
+  simp [bottomRowCells, Prod.ext_iff, eq_comm, and_comm]
 
 /-- The non-nesting rook polynomial of the truncated staircase `mu_{n,i}`. -/
 def truncatedStaircaseRookPolynomial (n i : ℕ) : ℝ[X] :=
@@ -63,17 +51,11 @@ theorem card_le_rows_of_truncatedStaircase_isNonNestingPlacement
     (hP : (truncatedStaircase n i).IsNonNestingPlacement P) :
     P.card ≤ i := by
   classical
-  have hcard : (P.image fun a => a.1).card = P.card := hP.card_image_fst
-  have hsub : (P.image fun a => a.1) ⊆ Finset.range i := by
-    intro row hrow
-    rcases Finset.mem_image.mp hrow with ⟨a, haP, hrow_eq⟩
-    have ha_cell := hP.1 haP
-    rw [mem_truncatedStaircase_cells] at ha_cell
-    rw [← hrow_eq]
-    exact Finset.mem_range.mpr ha_cell.1
-  have hle := Finset.card_le_card hsub
-  rw [hcard, Finset.card_range] at hle
-  exact hle
+  rw [← hP.card_image_fst, ← Finset.card_range i]
+  apply Finset.card_le_card
+  intro row hrow
+  rcases Finset.mem_image.mp hrow with ⟨a, ha, rfl⟩
+  exact Finset.mem_range.mpr (mem_truncatedStaircase_cells.mp (hP.1 ha)).1
 
 /-- Shift every column of a finite cell set down by `c + 1`. -/
 def shiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)) :
@@ -373,30 +355,16 @@ theorem sum_nonNestingPlacements_succ_eq_withoutBottomRow_add_bottomRow
           ((truncatedStaircase n (i + 1)).nonNestingPlacementsWithCell a).sum
             (fun P => (X : ℝ[X]) ^ P.card)) := by
   classical
-  rw [← union_nonNestingPlacementsWithoutBottomRow_withBottomRow n i]
-  rw [Finset.sum_union
-    (disjoint_nonNestingPlacementsWithoutBottomRow_withBottomRow n i)]
-  rw [sum_nonNestingPlacementsWithBottomRow]
+  rw [← union_nonNestingPlacementsWithoutBottomRow_withBottomRow n i,
+    Finset.sum_union (disjoint_nonNestingPlacementsWithoutBottomRow_withBottomRow n i),
+    sum_nonNestingPlacementsWithBottomRow]
 
 /-- Shifting columns right and then left by the same amount returns the
 original finite cell set. -/
 theorem shiftColumnsAfter_unshiftColumnsAfter (c : ℕ) (P : Finset (ℕ × ℕ)) :
     shiftColumnsAfter c (unshiftColumnsAfter c P) = P := by
   classical
-  ext x
-  constructor
-  · intro hx
-    rw [shiftColumnsAfter, unshiftColumnsAfter] at hx
-    rcases Finset.mem_image.mp hx with ⟨y, hy, hxy⟩
-    rcases Finset.mem_image.mp hy with ⟨a, ha, hay⟩
-    subst y
-    have hxa : x = a := by simpa using hxy.symm
-    simpa [hxa] using ha
-  · intro hx
-    rw [shiftColumnsAfter, unshiftColumnsAfter]
-    refine Finset.mem_image.mpr ⟨(x.1, x.2 + (c + 1)), ?_, ?_⟩
-    · exact Finset.mem_image.mpr ⟨x, hx, rfl⟩
-    · simp
+  simp [shiftColumnsAfter, unshiftColumnsAfter, Finset.image_image, Function.comp_def]
 
 /-- Shifting columns left and then right by the same amount returns the
 original finite cell set when all columns are strictly after the cut. -/
@@ -531,8 +499,8 @@ theorem bottomRookRemainder_bottomRookExtension
     {n i c : ℕ} {Q : Finset (ℕ × ℕ)}
     (hQ : (truncatedStaircase (n - c - 1) i).IsNonNestingPlacement Q) :
     bottomRookRemainder i c (bottomRookExtension i c Q) = Q := by
-  rw [bottomRookRemainder, bottomRookExtension]
-  rw [Finset.erase_insert (bottomRook_not_mem_unshiftColumnsAfter hQ)]
+  rw [bottomRookRemainder, bottomRookExtension,
+    Finset.erase_insert (bottomRook_not_mem_unshiftColumnsAfter hQ)]
   exact shiftColumnsAfter_unshiftColumnsAfter c Q
 
 /-- Extending the remainder of a valid placement containing a bottom-row rook
@@ -698,16 +666,11 @@ theorem coeff_truncatedStaircaseRookPolynomial_eq_zero_of_rows_lt
   have hfilter_empty :
       ((truncatedStaircase n i).nonNestingPlacements.filter fun P => P.card = k) =
         ∅ := by
-    ext P
-    constructor
-    · intro hPmem
-      rw [Finset.mem_filter, mem_nonNestingPlacements] at hPmem
-      have hcard_le :=
-        card_le_rows_of_truncatedStaircase_isNonNestingPlacement hPmem.1
-      have hcard_eq : P.card = k := hPmem.2
-      exact False.elim ((not_le_of_gt hik) (hcard_eq ▸ hcard_le))
-    · intro hPempty
-      simp at hPempty
+    rw [Finset.filter_eq_empty_iff]
+    intro P hP hcard
+    exact (not_le_of_gt hik) <| hcard ▸
+      card_le_rows_of_truncatedStaircase_isNonNestingPlacement
+        (mem_nonNestingPlacements.mp hP)
   simp [hfilter_empty]
 
 /-- The zero-row truncated-staircase rook polynomial is one. -/

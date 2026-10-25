@@ -52,11 +52,7 @@ theorem mk_shiftedFiniteSupersymmetricCoeff
     (xs ys : List ℝ) :
     PowerSeries.mk (shiftedFiniteSupersymmetricCoeff xs ys) =
       PowerSeries.X * finiteSupersymmetricSeries xs ys := by
-  ext n
-  cases n with
-  | zero => simp
-  | succ n =>
-      simp [finiteSupersymmetricCoeff]
+  ext (_ | n) <;> simp [finiteSupersymmetricCoeff]
 
 /-- A positive-order finite supersymmetric product has a PF coefficient
 sequence whenever all numerator and denominator parameters are nonnegative. -/
@@ -152,15 +148,13 @@ theorem coeff_binomialCompositionKernel_pow
     PowerSeries.coeff n
         ((PowerSeries.mk (binomialCompositionKernel d)) ^ k) =
       (Nat.choose (d * k) (n - k) : ℝ) := by
-  rw [mk_binomialCompositionKernel, mul_pow, ← pow_mul]
-  rw [PowerSeries.coeff_X_pow_mul']
-  rw [ite_eq_left hkn]
+  rw [mk_binomialCompositionKernel, mul_pow, ← pow_mul,
+    PowerSeries.coeff_X_pow_mul', ite_eq_left hkn]
   have hcoe :
       ((1 + PowerSeries.X : PowerSeries ℝ) ^ (d * k)) =
         (((1 + X : ℝ[X]) ^ (d * k) : ℝ[X]) : PowerSeries ℝ) := by
     simp
-  rw [hcoe, Polynomial.coeff_coe,
-    Polynomial.coeff_one_add_X_pow]
+  rw [hcoe, Polynomial.coeff_coe, Polynomial.coeff_one_add_X_pow]
 
 /-- The finite binomial row formula
 `sum_k choose (d*k) (n-k) X^k`. -/
@@ -293,8 +287,7 @@ theorem coeff_inversePowerCompositionKernel_pow
   rw [mk_inversePowerCompositionKernel, mul_pow, ← pow_mul]
   rw [PowerSeries.coeff_X_pow_mul', ite_eq_left hkn]
   have hek : e * k = (e * k - 1) + 1 :=
-    (Nat.sub_add_cancel
-      (Nat.succ_le_iff.mpr (Nat.mul_pos (by lia) (by lia)))).symm
+    (Nat.sub_add_cancel (Nat.succ_le_iff.mpr (Nat.mul_pos (by lia) (by lia)))).symm
   rw [hek, PowerSeries.mk_one_pow_eq_mk_choose_add]
   simp
 
@@ -411,14 +404,12 @@ theorem mk_a207327Kernel_mul_one_sub :
           (finiteSupersymmetricSeries [1, 1] [1] *
             (1 - PowerSeries.X)) := by ring
     _ = PowerSeries.X * (1 + PowerSeries.X) ^ 2 := by
-      have hs := finiteSupersymmetricSeries_mul_denominators
-        ([1, 1] : List ℝ) ([1] : List ℝ)
-      have hs' :
+      rw [show
           finiteSupersymmetricSeries [1, 1] [1] *
               (1 - PowerSeries.X) =
-            (1 + PowerSeries.X) ^ 2 := by
-        simpa [pow_two, supersymmetricNumeratorFactor] using hs
-      rw [hs']
+            (1 + PowerSeries.X) ^ 2 by
+        simpa [pow_two, supersymmetricNumeratorFactor] using
+          finiteSupersymmetricSeries_mul_denominators ([1, 1] : List ℝ) ([1] : List ℝ)]
 
 /-- The A207327 row polynomial. -/
 def a207327Row (n : ℕ) : ℝ[X] :=
@@ -450,21 +441,10 @@ def a207327DenominatorSeries : PowerSeries ℝ[X] :=
 @[simp]
 theorem constantCoeff_a207327DenominatorSeries :
     PowerSeries.constantCoeff a207327DenominatorSeries = 1 := by
-  have hQ :
-      PowerSeries.constantCoeff
-        (polynomialLift
-          (1 - PowerSeries.X : PowerSeries ℝ)) = 1 := by
-    change C (PowerSeries.coeff 0
-      (1 - PowerSeries.X : PowerSeries ℝ)) = 1
-    simp
-  have hA :
-      PowerSeries.constantCoeff
-        (polynomialLift
-          (PowerSeries.X * (1 + PowerSeries.X) ^ 2 : PowerSeries ℝ)) = 0 := by
-    change C (PowerSeries.coeff 0
-      (PowerSeries.X * (1 + PowerSeries.X) ^ 2 : PowerSeries ℝ)) = 0
-    simp
-  rw [a207327DenominatorSeries, map_sub, map_mul, hQ, hA]
+  rw [a207327DenominatorSeries, map_sub, map_mul]
+  change C (PowerSeries.coeff 0 (1 - PowerSeries.X : PowerSeries ℝ)) -
+    X * C (PowerSeries.coeff 0
+      (PowerSeries.X * (1 + PowerSeries.X) ^ 2 : PowerSeries ℝ)) = 1
   simp
 
 /-- Exact four-term support of the A207327 denominator. -/
@@ -473,20 +453,7 @@ theorem coeff_a207327DenominatorSeries (n : ℕ) :
       if n = 0 then 1 else if n = 1 then -(1 + X)
       else if n = 2 then -(2 * X) else if n = 3 then -X else 0 := by
   rw [a207327DenominatorSeries]
-  rw [show PowerSeries.coeff n
-      (polynomialLift ((1 - PowerSeries.X) : PowerSeries ℝ) -
-        PowerSeries.C X *
-          polynomialLift
-            ((PowerSeries.X * (1 + PowerSeries.X) ^ 2) : PowerSeries ℝ)) =
-      PowerSeries.coeff n
-          (polynomialLift ((1 - PowerSeries.X) : PowerSeries ℝ)) -
-        PowerSeries.coeff n
-          (PowerSeries.C X *
-            polynomialLift
-              ((PowerSeries.X * (1 + PowerSeries.X) ^ 2) :
-                PowerSeries ℝ)) by
-      exact (PowerSeries.coeff n :
-        PowerSeries ℝ[X] →ₗ[ℝ[X]] ℝ[X]).map_sub _ _]
+  rw [(PowerSeries.coeff n : PowerSeries ℝ[X] →ₗ[ℝ[X]] ℝ[X]).map_sub]
   rw [coeff_polynomialLift, PowerSeries.coeff_C_mul,
     coeff_polynomialLift]
   have hQ :
@@ -499,23 +466,12 @@ theorem coeff_a207327DenominatorSeries (n : ℕ) :
     norm_num
     ring
   rw [hQ, hA, Polynomial.coeff_coe, Polynomial.coeff_coe]
-  by_cases hn0 : n = 0
-  · subst n
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-  by_cases hn1 : n = 1
-  · subst n
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-    ring
-  by_cases hn2 : n = 2
-  · subst n
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X,
-      Polynomial.C_ofNat]
-    ring
-  by_cases hn3 : n = 3
-  · subst n
-    norm_num [Polynomial.coeff_one, Polynomial.coeff_X]
-  simp [hn0, hn1, hn2, hn3, Polynomial.coeff_X_pow,
-    Polynomial.coeff_one, Polynomial.coeff_X, Ne.symm hn1]
+  by_cases hn : n ≤ 3
+  · interval_cases n <;>
+      norm_num [Polynomial.coeff_one, Polynomial.coeff_X, Polynomial.C_ofNat] <;> ring
+  · simp [show n ≠ 0 by lia, show n ≠ 1 by lia, show n ≠ 2 by lia,
+      show n ≠ 3 by lia, show 1 ≠ n by lia, Polynomial.coeff_X_pow,
+      Polynomial.coeff_one, Polynomial.coeff_X]
 
 /-- The A207327 row generating series has numerator exactly `1-z`. -/
 theorem a207327Denominator_mul_rowGeneratingSeries :
@@ -595,9 +551,6 @@ theorem a207327Row_recurrence (n : ℕ) :
       (1 + X) * a207327Row (n + 2) +
         (2 * X) * a207327Row (n + 1) + X * a207327Row n := by
   have h := a207327Row_finite_denominator (n + 3)
-  have hsubset :
-      Finset.range 4 ⊆ Finset.range (n + 3 + 1) :=
-    Finset.range_mono (by lia)
   have hsum :
       (∑ j ∈ Finset.range 4,
           PowerSeries.coeff j a207327DenominatorSeries *
@@ -605,7 +558,7 @@ theorem a207327Row_recurrence (n : ℕ) :
         ∑ j ∈ Finset.range (n + 3 + 1),
           PowerSeries.coeff j a207327DenominatorSeries *
             a207327Row (n + 3 - j) := by
-    apply Finset.sum_subset hsubset
+    apply Finset.sum_subset (Finset.range_mono (by lia))
     intro j hj hnot
     have hj4 : 4 ≤ j := by
       simpa using hnot

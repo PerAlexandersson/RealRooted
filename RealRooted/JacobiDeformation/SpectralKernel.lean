@@ -245,13 +245,7 @@ private theorem matrix_pow_mul_of_mul_eq_mul
     A ^ k * Q = Q * B ^ k := by
   induction k with
   | zero => simp
-  | succ k ih =>
-      calc
-        A ^ (k + 1) * Q = A ^ k * (A * Q) := by rw [pow_succ, mul_assoc]
-        _ = A ^ k * (Q * B) := by rw [hAQ]
-        _ = (A ^ k * Q) * B := by rw [mul_assoc]
-        _ = (Q * B ^ k) * B := by rw [ih]
-        _ = Q * B ^ (k + 1) := by rw [pow_succ, mul_assoc]
+  | succ k ih => rw [pow_succ, pow_succ, mul_assoc, hAQ, ← mul_assoc, ih, mul_assoc]
 
 /-- Polynomial functional calculus preserves an intertwining relation. -/
 theorem aeval_mul_of_mul_eq_mul
@@ -264,17 +258,7 @@ theorem aeval_mul_of_mul_eq_mul
   | monomial k a =>
       rw [aeval_monomial, aeval_monomial]
       have hpow := matrix_pow_mul_of_mul_eq_mul A B Q hAQ k
-      have hscalar :
-          algebraMap ℝ (Matrix n n ℝ) a * Q =
-            Q * algebraMap ℝ (Matrix n n ℝ) a :=
-        Algebra.commutes a Q
-      calc
-        (algebraMap ℝ (Matrix n n ℝ) a * A ^ k) * Q =
-            algebraMap ℝ (Matrix n n ℝ) a * (A ^ k * Q) := by rw [mul_assoc]
-        _ = algebraMap ℝ (Matrix n n ℝ) a * (Q * B ^ k) := by rw [hpow]
-        _ = (algebraMap ℝ (Matrix n n ℝ) a * Q) * B ^ k := by rw [mul_assoc]
-        _ = (Q * algebraMap ℝ (Matrix n n ℝ) a) * B ^ k := by rw [hscalar]
-        _ = Q * (algebraMap ℝ (Matrix n n ℝ) a * B ^ k) := by rw [mul_assoc]
+      rw [mul_assoc, hpow, ← mul_assoc, Algebra.commutes a Q, mul_assoc]
 
 private theorem aeval_diagonal
     {n : Type*} [Fintype n] [DecidableEq n]
@@ -284,17 +268,13 @@ private theorem aeval_diagonal
   | add p r hp hr =>
       rw [map_add, hp, hr]
       ext i j
-      simp only [Matrix.add_apply, diagonal_apply, eval_add]
       by_cases hij : i = j <;> simp [hij]
   | monomial k a =>
       ext i j
       simp only [aeval_monomial, Matrix.mul_apply,
         Matrix.algebraMap_matrix_apply]
       rw [Matrix.diagonal_pow]
-      by_cases hij : i = j
-      · subst j
-        simp [Matrix.diagonal_apply]
-      · simp [Matrix.diagonal_apply, hij]
+      by_cases hij : i = j <;> simp [Matrix.diagonal_apply, hij]
 
 /-- Functional calculus of the signed collocation matrix in its explicit
 Jacobi evaluation eigenbasis. -/
@@ -335,9 +315,8 @@ theorem aeval_quasiJacobiCollocationMatrix_apply
         quasiJacobiEigenvectorMatrix q α β τ x i n *
           p.eval (eigenvalue (α + β + 2) n) *
           quasiJacobiEigenvectorMatrixInv q α β τ x n j := by
-  rw [aeval_quasiJacobiCollocationMatrix_eq hq hα hβ x hx hroot]
-  rw [mul_assoc]
-  rw [Matrix.mul_apply]
+  rw [aeval_quasiJacobiCollocationMatrix_eq hq hα hβ x hx hroot,
+    mul_assoc, Matrix.mul_apply]
   apply Finset.sum_congr rfl
   intro n _
   rw [Matrix.diagonal_mul]

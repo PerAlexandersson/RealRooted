@@ -85,35 +85,9 @@ private lemma A119308_coeff_succ_succ_succ (n k : ℕ) :
           Polynomial.coeff (recurrencePolynomial n) (k + 2))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ))) *
           Polynomial.coeff (recurrencePolynomial n) (k + 1)) := by
-  let a0 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * ((13 / 2) + (3 / 2) * (n : ℝ)))
-  let a1 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * ((9 / 2) + (n : ℝ)))
-  let b0 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * (-4 + (-3 / 2) * (n : ℝ)))
-  let b1 : ℝ := ((1 / 2) * (1 / (3 + (1 / 2) * (n : ℝ))))
-  let b2 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * ((-3 / 2) + (-1 / 2) * (n : ℝ)))
-  let c0 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ)))
-  let c1 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * (-1 + -1 * (n : ℝ)))
-  let c2 : ℝ := ((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ)))
   rw [recurrencePolynomial, nextRow]
-  change Polynomial.coeff ((C a0 + C a1 * X) * recurrencePolynomial (n + 2) +
-      (C b0 + C b1 * X + C b2 * X ^ 2) * recurrencePolynomial (n + 1) +
-      (C c0 + C c1 * X + C c2 * X ^ 2) * recurrencePolynomial n) (k + 3) =
-    a0 * Polynomial.coeff (recurrencePolynomial (n + 2)) (k + 3) +
-      a1 * Polynomial.coeff (recurrencePolynomial (n + 2)) (k + 2) +
-      b0 * Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 3) +
-      b1 * Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 2) +
-      b2 * Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 1) +
-      c0 * Polynomial.coeff (recurrencePolynomial n) (k + 3) +
-      c1 * Polynomial.coeff (recurrencePolynomial n) (k + 2) +
-      c2 * Polynomial.coeff (recurrencePolynomial n) (k + 1)
-  rw [show (C a0 + C a1 * X) * recurrencePolynomial (n + 2) =
-      C a0 * recurrencePolynomial (n + 2) + C a1 * (X * recurrencePolynomial (n + 2)) by ring]
-  rw [show (C b0 + C b1 * X + C b2 * X ^ 2) * recurrencePolynomial (n + 1) =
-      C b0 * recurrencePolynomial (n + 1) + C b1 * (X * recurrencePolynomial (n + 1)) +
-        C b2 * (X ^ 2 * recurrencePolynomial (n + 1)) by ring]
-  rw [show (C c0 + C c1 * X + C c2 * X ^ 2) * recurrencePolynomial n =
-      C c0 * recurrencePolynomial n + C c1 * (X * recurrencePolynomial n) +
-        C c2 * (X ^ 2 * recurrencePolynomial n) by ring]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_X_pow_mul']
+  simp only [add_mul, coeff_add, mul_assoc, coeff_C_mul, coeff_X_mul,
+    coeff_X_pow_mul']
   grind
 
 private lemma A119308_top_and_above :
@@ -155,13 +129,7 @@ private lemma A119308_top_and_above :
 
 private lemma A119308_ne_zero' (n : ℕ) : recurrencePolynomial n ≠ 0 := by
   intro hzero
-  have htop := (A119308_top_and_above n).1
-  simp_all
-private theorem A119308_natDegree (n : ℕ) : (recurrencePolynomial n).natDegree = n := by
-  rcases A119308_top_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)) (by simp [htop])
-
+  simpa [hzero] using (A119308_top_and_above n).1
 private def A119308_model (n : ℕ) : ℝ[X] :=
   polarTheta (2 * n + 2)
     (C ((2 * ((n : ℝ) + 2))⁻¹) *
@@ -212,16 +180,11 @@ private lemma A119308_model_splits (n : ℕ) :
             (max_le le_rfl hdegThetaTwo)
       _ ≤ 2 * n + 2 := by lia
   rcases (polarTheta_preserves_pf hscaled hdegScaled).eq_zero_or_splits with
-    hzero | hsplits
-  · change
+    hzero | hsplits <;>
+    change
       (polarTheta (2 * n + 2)
         (C ((2 * ((n : ℝ) + 2))⁻¹) *
-          reciprocalShift n (theta G + C 2 * G))).Splits
-    simp_all
-  · change
-      (polarTheta (2 * n + 2)
-        (C ((2 * ((n : ℝ) + 2))⁻¹) *
-          reciprocalShift n (theta G + C 2 * G))).Splits
+          reciprocalShift n (theta G + C 2 * G))).Splits <;>
     simp_all
 
 private lemma A119308_model_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
@@ -427,30 +390,40 @@ private lemma A119308Coeff_vertical_eq (n k : ℕ) (hk : k < n) :
   apply (eq_div_iff hden).2
   linear_combination A119308Coeff_vertical n k hk
 
-private lemma A119308Coeff_shift_base (d k : ℕ) :
-    A119308Coeff (k + d + 4) (k + 2) *
-        ((k : ℝ) + 2) * ((k : ℝ) + 4) *
-          (2 * (d : ℝ) + (k : ℝ) + 9) =
-      A119308Coeff (k + d + 4) (k + 1) *
-        ((d : ℝ) + 3) * ((d : ℝ) + 4) *
-          (2 * (d : ℝ) + (k : ℝ) + 8) := by
-  rw [A119308Coeff_eq_factorial (k + d + 4) (k + 2) (by lia),
-    A119308Coeff_eq_factorial (k + d + 4) (k + 1) (by lia)]
-  have hsub1 : k + d + 4 + 1 - (k + 2) = d + 3 := by lia
-  have hsub2 : k + d + 4 - (k + 2) = d + 2 := by lia
-  have hsub3 : k + d + 4 + 1 - (k + 1) = d + 4 := by lia
-  have hsub4 : k + d + 4 - (k + 1) = d + 3 := by lia
-  rw [hsub1, hsub2, hsub3, hsub4,
-    factorial_succ_cast (k + 3), factorial_succ_cast (k + 2),
-    factorial_succ_cast (k + 1), factorial_succ_cast k,
-    factorial_succ_cast (d + 3), factorial_succ_cast (d + 2),
-    factorial_succ_cast (d + 1), factorial_succ_cast d]
-  have hfac : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 :=
-    fun m => Nat.cast_ne_zero.mpr (Nat.factorial_pos m).ne'
-  field_simp [hfac]
-  rw [Nat.cast_sub (by lia : k + 2 ≤ 2 * (k + d + 4) + 2),
-    Nat.cast_sub (by lia : k + 1 ≤ 2 * (k + d + 4) + 2)]
+private lemma A119308_choose_two_cast (m : ℕ) (hm : 1 ≤ m) :
+    (Nat.choose m 2 : ℝ) =
+      (m : ℝ) * ((m : ℝ) - 1) / 2 := by
+  have hc := Nat.choose_succ_right_eq m 1
+  norm_num [Nat.choose_one_right] at hc
+  have hcr := congrArg (fun z : ℕ ↦ (z : ℝ)) hc
+  norm_num at hcr
+  rw [Nat.cast_sub hm] at hcr
   grind
+
+private lemma A119308_choose_three_cast (m : ℕ) (hm : 2 ≤ m) :
+    (Nat.choose m 3 : ℝ) =
+      (m : ℝ) * ((m : ℝ) - 1) * ((m : ℝ) - 2) / 6 := by
+  have hc := Nat.choose_succ_right_eq m 2
+  norm_num at hc
+  have hcr := congrArg (fun z : ℕ => (z : ℝ)) hc
+  norm_num at hcr
+  rw [Nat.cast_sub hm] at hcr
+  norm_num at hcr
+  rw [A119308_choose_two_cast m (by lia)] at hcr
+  linarith
+
+private lemma A119308_choose_four_cast (m : ℕ) (hm : 3 ≤ m) :
+    (Nat.choose m 4 : ℝ) =
+      (m : ℝ) * ((m : ℝ) - 1) * ((m : ℝ) - 2) *
+        ((m : ℝ) - 3) / 24 := by
+  have hc := Nat.choose_succ_right_eq m 3
+  norm_num at hc
+  have hcr := congrArg (fun z : ℕ => (z : ℝ)) hc
+  norm_num at hcr
+  rw [Nat.cast_sub hm] at hcr
+  norm_num at hcr
+  rw [A119308_choose_three_cast m (by lia)] at hcr
+  linarith
 
 private lemma A119308Coeff_rec_high_of_le (n k : ℕ) (hnk : n ≤ k + 2) :
     A119308Coeff (n + 3) (k + 3) = A119308CoeffRecRhs n k := by
@@ -488,13 +461,7 @@ private lemma A119308Coeff_rec_high_of_le (n k : ℕ) (hnk : n ≤ k + 2) :
       by_cases hk : k = 0
       · subst k
         norm_num
-      · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk
-        have hc2n := Nat.choose_succ_right_eq k 1
-        have hc2 : (↑(k.choose 2) : ℝ) * 2 = (k : ℝ) * ((k : ℝ) - 1) := by
-          norm_num [Nat.choose_one_right] at hc2n
-          have hc2r := congrArg (fun z : ℕ ↦ (z : ℝ)) hc2n
-          norm_num at hc2r
-          simp_all
+      · rw [A119308_choose_two_cast k (Nat.one_le_iff_ne_zero.mpr hk)]
         grind
     · rcases eq_or_lt_of_le (by lia : k + 2 ≤ n) with h | h
       · subst n
@@ -527,22 +494,9 @@ private lemma A119308Coeff_rec_high_of_le (n k : ℕ) (hnk : n ≤ k + 2) :
         · by_cases hk1 : k = 1
           · subst k
             norm_num [Nat.choose]
-          · have hkone : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
-            have hktwo : 2 ≤ k := by lia
-            have hc2n := Nat.choose_succ_right_eq k 1
-            have hc3n := Nat.choose_succ_right_eq k 2
-            have hc2 : (↑(k.choose 2) : ℝ) * 2 =
-                (k : ℝ) * ((k : ℝ) - 1) := by
-              norm_num [Nat.choose_one_right] at hc2n
-              have hc2r := congrArg (fun z : ℕ ↦ (z : ℝ)) hc2n
-              norm_num at hc2r
-              simp_all
-            have hc3 : (↑(k.choose 3) : ℝ) * 3 =
-                (↑(k.choose 2) : ℝ) * ((k : ℝ) - 2) := by
-              norm_num at hc3n
-              have hc3r := congrArg (fun z : ℕ ↦ (z : ℝ)) hc3n
-              norm_num at hc3r
-              simp_all
+          · have hktwo : 2 ≤ k := by lia
+            rw [A119308_choose_two_cast k (by lia),
+              A119308_choose_three_cast k hktwo]
             grind
       · lia
 
@@ -644,19 +598,6 @@ private lemma A119308_pair25 (n k : ℕ) (hnk : k + 3 < n) :
           (3 + (1 / 2) * (n : ℝ)))) by ring]
   rw [A119308_bracket25 n k hnk]
 
-private lemma A119308_opaque14_eq (n k : ℕ) :
-    (-(k : ℝ) * 6 - (k : ℝ) * (n : ℝ) * 27 -
-        (k : ℝ) * (n : ℝ) ^ 2 * 33 - (k : ℝ) * (n : ℝ) ^ 3 * 12 +
-        (k : ℝ) ^ 2 * 11 + (k : ℝ) ^ 2 * (n : ℝ) * 25 +
-        (k : ℝ) ^ 2 * (n : ℝ) ^ 2 * 13 - (k : ℝ) ^ 3 * 6 -
-        (k : ℝ) ^ 3 * (n : ℝ) * 6 + (k : ℝ) ^ 4 +
-        (n : ℝ) * 6 + (n : ℝ) ^ 2 * 16 + (n : ℝ) ^ 3 * 14 +
-        (n : ℝ) ^ 4 * 4) =
-      ((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 3) *
-        ((k : ℝ) - 2 * (n : ℝ) - 2) *
-          ((k : ℝ) - (n : ℝ) - 1) := by
-  ring
-
 private lemma A119308_opaque14_normal_eq (n k : ℕ) :
     ((n : ℝ) * 6 - (n : ℝ) * (k : ℝ) * 27 +
         (n : ℝ) * (k : ℝ) ^ 2 * 25 - (n : ℝ) * (k : ℝ) ^ 3 * 6 +
@@ -669,21 +610,6 @@ private lemma A119308_opaque14_normal_eq (n k : ℕ) :
         ((k : ℝ) - 2 * (n : ℝ) - 2) *
           ((k : ℝ) - (n : ℝ) - 1) := by
   ring
-
-private lemma A119308_opaque14_ne (n k : ℕ) (hnk : k + 3 < n) :
-    (-(k : ℝ) * 6 - (k : ℝ) * (n : ℝ) * 27 -
-        (k : ℝ) * (n : ℝ) ^ 2 * 33 - (k : ℝ) * (n : ℝ) ^ 3 * 12 +
-        (k : ℝ) ^ 2 * 11 + (k : ℝ) ^ 2 * (n : ℝ) * 25 +
-        (k : ℝ) ^ 2 * (n : ℝ) ^ 2 * 13 - (k : ℝ) ^ 3 * 6 -
-        (k : ℝ) ^ 3 * (n : ℝ) * 6 + (k : ℝ) ^ 4 +
-        (n : ℝ) * 6 + (n : ℝ) ^ 2 * 16 + (n : ℝ) ^ 3 * 14 +
-        (n : ℝ) ^ 4 * 4) ≠ 0 := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have ht3' : (k : ℝ) - 2 * (n : ℝ) - 3 ≠ 0 := by linarith
-  have h₁ : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have h₂ : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-  have h₃ : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  grind
 
 private def A119308HV14 (n k : ℕ) : ℝ :=
   (((n : ℝ) + 2) * ((n : ℝ) + 3) *
@@ -1272,41 +1198,6 @@ private lemma A119308Coeff_rec_low (n k : ℕ) (hnk : k + 3 < n) :
         ← A119308_pair25 n k hnk, ← A119308_pair67 n k hnk]
       ring
 
-private lemma A119308_choose_two_cast (m : ℕ) (hm : 1 ≤ m) :
-    (Nat.choose m 2 : ℝ) =
-      (m : ℝ) * ((m : ℝ) - 1) / 2 := by
-  have hc := Nat.choose_succ_right_eq m 1
-  norm_num [Nat.choose_one_right] at hc
-  have hcr := congrArg (fun z : ℕ ↦ (z : ℝ)) hc
-  norm_num at hcr
-  rw [Nat.cast_sub hm] at hcr
-  grind
-
-private lemma A119308_choose_three_cast (m : ℕ) (hm : 2 ≤ m) :
-    (Nat.choose m 3 : ℝ) =
-      (m : ℝ) * ((m : ℝ) - 1) * ((m : ℝ) - 2) / 6 := by
-  have hc := Nat.choose_succ_right_eq m 2
-  norm_num at hc
-  have hcr := congrArg (fun z : ℕ => (z : ℝ)) hc
-  norm_num at hcr
-  rw [Nat.cast_sub hm] at hcr
-  norm_num at hcr
-  rw [A119308_choose_two_cast m (by lia)] at hcr
-  linarith
-
-private lemma A119308_choose_four_cast (m : ℕ) (hm : 3 ≤ m) :
-    (Nat.choose m 4 : ℝ) =
-      (m : ℝ) * ((m : ℝ) - 1) * ((m : ℝ) - 2) *
-        ((m : ℝ) - 3) / 24 := by
-  have hc := Nat.choose_succ_right_eq m 3
-  norm_num at hc
-  have hcr := congrArg (fun z : ℕ => (z : ℝ)) hc
-  norm_num at hcr
-  rw [Nat.cast_sub hm] at hcr
-  norm_num at hcr
-  rw [A119308_choose_three_cast m (by lia)] at hcr
-  linarith
-
 private lemma A119308Coeff_rec_boundary (k : ℕ) :
     A119308Coeff (k + 6) (k + 3) =
       A119308CoeffRecRhs (k + 3) k := by
@@ -1482,44 +1373,7 @@ private lemma A119308_coeff_recurrence_raw (n m : ℕ) :
           (3 + (1 / 2) * (n : ℝ))) *
         (X ^ 2 * recurrencePolynomial n).coeff m := by
   rw [recurrencePolynomial, nextRow]
-  rw [show
-      (C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((13 / 2 : ℝ) + (3 / 2) * (n : ℝ))) +
-          C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((9 / 2 : ℝ) + (n : ℝ))) * X) * recurrencePolynomial (n + 2) =
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((13 / 2 : ℝ) + (3 / 2) * (n : ℝ))) * recurrencePolynomial (n + 2) +
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((9 / 2 : ℝ) + (n : ℝ))) * (X * recurrencePolynomial (n + 2)) by ring]
-  rw [show
-      (C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            (-4 + (-3 / 2) * (n : ℝ))) +
-          C ((1 / 2 : ℝ) * (1 / (3 + (1 / 2) * (n : ℝ)))) * X +
-          C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ))) * X ^ 2) * recurrencePolynomial (n + 1) =
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            (-4 + (-3 / 2) * (n : ℝ))) * recurrencePolynomial (n + 1) +
-        C ((1 / 2 : ℝ) * (1 / (3 + (1 / 2) * (n : ℝ)))) *
-          (X * recurrencePolynomial (n + 1)) +
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ))) *
-          (X ^ 2 * recurrencePolynomial (n + 1)) by ring]
-  rw [show
-      (C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((1 / 2 : ℝ) + (1 / 2) * (n : ℝ))) +
-          C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            (-1 + -1 * (n : ℝ))) * X +
-          C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((1 / 2 : ℝ) + (1 / 2) * (n : ℝ))) * X ^ 2) * recurrencePolynomial n =
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((1 / 2 : ℝ) + (1 / 2) * (n : ℝ))) * recurrencePolynomial n +
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            (-1 + -1 * (n : ℝ))) *
-          (X * recurrencePolynomial n) +
-        C ((1 / (3 + (1 / 2) * (n : ℝ))) *
-            ((1 / 2 : ℝ) + (1 / 2) * (n : ℝ))) *
-          (X ^ 2 * recurrencePolynomial n) by ring]
-  simp only [coeff_add, coeff_C_mul]
+  simp only [add_mul, coeff_add, mul_assoc, coeff_C_mul]
   ring
 
 private lemma A119308_coeff_closed (n k : ℕ) :
@@ -1749,11 +1603,6 @@ theorem interlaces_of_recurrence
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
 
-private lemma A119308_splits_of_model_eq
-    (hmodel : ∀ n : ℕ, recurrencePolynomial n = A119308_model n) (n : ℕ) :
-    (recurrencePolynomial n).Splits := by
-  rw [hmodel n]
-  exact A119308_model_splits n
 /-- The downstream A119308 recurrence rows interlace. -/
 theorem A119308_interlaces (n : ℕ) :
     RealRooted.Interlaces (recurrencePolynomial n) (recurrencePolynomial (n + 1)) := by
@@ -1761,8 +1610,9 @@ theorem A119308_interlaces (n : ℕ) :
   exact polynomial_interlaces n
 
 /-- Every downstream A119308 recurrence row splits over the reals. -/
-theorem A119308_splits (n : ℕ) : (recurrencePolynomial n).Splits :=
-  A119308_splits_of_model_eq A119308_eq_model n
+theorem A119308_splits (n : ℕ) : (recurrencePolynomial n).Splits := by
+  rw [A119308_eq_model]
+  exact A119308_model_splits n
 
 /-- Every downstream A119308 recurrence row is nonzero. -/
 theorem A119308_ne_zero (n : ℕ) : (recurrencePolynomial n) ≠ 0 :=

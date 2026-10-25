@@ -259,20 +259,11 @@ private theorem eigenKernelActionLeft_appellKernelCoefficientMatrix
       C (appellKernelCoefficientMatrix m b c d hc hd a e *
         (shiftedJacobiMonic e (c - 1) (d - 1)).eval z) *
         shiftedJacobiMonic a (c - 1) (d - 1))).eval r
-  rw [map_sum, eval_finsetSum]
+  simp_rw [← smul_eq_C_mul, map_sum, eval_finsetSum, map_smul, eval_smul]
   apply Finset.sum_congr rfl
   intro a _
-  rw [map_sum, eval_finsetSum]
   apply Finset.sum_congr rfl
   intro e _
-  rw [show C (appellKernelCoefficientMatrix m b c d hc hd a e *
-      (shiftedJacobiMonic e (c - 1) (d - 1)).eval z) *
-        shiftedJacobiMonic a (c - 1) (d - 1) =
-      (appellKernelCoefficientMatrix m b c d hc hd a e *
-        (shiftedJacobiMonic e (c - 1) (d - 1)).eval z) •
-          shiftedJacobiMonic a (c - 1) (d - 1) by
-    rw [smul_eq_C_mul]]
-  rw [map_smul, eval_smul]
   ring
 
 private theorem eigenKernelActionRight_appellKernelCoefficientMatrix
@@ -289,20 +280,11 @@ private theorem eigenKernelActionRight_appellKernelCoefficientMatrix
       C (appellKernelCoefficientMatrix m b c d hc hd a e *
         (shiftedJacobiMonic a (c - 1) (d - 1)).eval r) *
         shiftedJacobiMonic e (c - 1) (d - 1))).eval z
-  rw [map_sum, eval_finsetSum]
+  simp_rw [← smul_eq_C_mul, map_sum, eval_finsetSum, map_smul, eval_smul]
   apply Finset.sum_congr rfl
   intro a _
-  rw [map_sum, eval_finsetSum]
   apply Finset.sum_congr rfl
   intro e _
-  rw [show C (appellKernelCoefficientMatrix m b c d hc hd a e *
-      (shiftedJacobiMonic a (c - 1) (d - 1)).eval r) *
-        shiftedJacobiMonic e (c - 1) (d - 1) =
-      (appellKernelCoefficientMatrix m b c d hc hd a e *
-        (shiftedJacobiMonic a (c - 1) (d - 1)).eval r) •
-          shiftedJacobiMonic e (c - 1) (d - 1) by
-    rw [smul_eq_C_mul]]
-  rw [map_smul, eval_smul]
   ring
 
 private theorem jacobiDifferentialOperatorLinearMap_shiftedJacobiMonic
@@ -469,14 +451,7 @@ private theorem diagonal_monic_term_eq_normalized
     kernelWeight m δ (c + d) a / H * (normalizedShiftedJacobi a c d).eval z
   rw [div_mul_eq_mul_div]
   apply (eq_div_iff hH).2
-  calc
-    appellKernelCoefficientMatrix m ((m : ℝ) + c + d - 1 + δ)
-          c d hc hd a a * (p0 * (normalizedShiftedJacobi a c d).eval z) * p0 * H =
-        (appellKernelCoefficientMatrix m ((m : ℝ) + c + d - 1 + δ)
-          c d hc hd a a * p0 ^ 2 * H) *
-            (normalizedShiftedJacobi a c d).eval z := by ring
-    _ = kernelWeight m δ (c + d) a *
-          (normalizedShiftedJacobi a c d).eval z := by rw [hweight]
+  linear_combination (normalizedShiftedJacobi a c d).eval z * hweight
 
 /-- The diagonal spectral expansion of the finite Appell
 kernel in value-one shifted-Jacobi polynomials. -/
@@ -517,9 +492,8 @@ theorem shiftedJacobiMonicNorm_eq_moment_zero_mul_eval_zero_sq_mul_normalized
   have hp : C p0 * φ = p := by
     simpa only [p0, φ, p] using
       C_eval_zero_mul_normalizedShiftedJacobi (d := d) hc j
-  have hH0 : H0 ≠ 0 := by
-    dsimp only [H0]
-    exact (shiftedJacobiMoment_zero_pos (by linarith) (by linarith)).ne'
+  have hH0 : H0 ≠ 0 :=
+    (shiftedJacobiMoment_zero_pos (by linarith) (by linarith)).ne'
   change shiftedJacobiInner (c - 1) (d - 1) p p =
     H0 * p0 ^ 2 * normalizedJacobiNorm c d j
   calc
@@ -553,12 +527,9 @@ theorem normalizedJacobi_kernel_term_eq_moment_zero_mul_raw
   have hp : C p0 * φ = p := by
     simpa only [p0, φ, p] using
       C_eval_zero_mul_normalizedShiftedJacobi (d := d) hc j
-  have hp0 : p0 ≠ 0 := by
-    dsimp only [p0, p]
-    exact shiftedJacobiMonic_eval_zero_ne_zero hc hd j
-  have hH0 : H0 ≠ 0 := by
-    dsimp only [H0]
-    exact (shiftedJacobiMoment_zero_pos (by linarith) (by linarith)).ne'
+  have hp0 : p0 ≠ 0 := shiftedJacobiMonic_eval_zero_ne_zero hc hd j
+  have hH0 : H0 ≠ 0 :=
+    (shiftedJacobiMoment_zero_pos (by linarith) (by linarith)).ne'
   have hnorm : normalizedJacobiNorm c d j ≠ 0 :=
     (normalizedJacobiNorm_pos hc hd j).ne'
   have hraw :=

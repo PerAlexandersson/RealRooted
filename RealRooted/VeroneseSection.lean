@@ -231,58 +231,38 @@ theorem fullyInterlacingPair_veronesePair {a b : ℕ → ℝ}
     fun _ _ hij => by simp_all
   exact h.submatrix strictMono_id hcol
 
+private theorem toeplitz_veroneseSectionSeq (a : ℕ → ℝ) {r k n c : ℕ}
+    (hk : k < r) :
+    toeplitz a (k + r * n) (r * c) =
+      toeplitz (veroneseSectionSeq r k a) n c := by
+  dsimp [toeplitz, veroneseSectionSeq]
+  by_cases hc : c ≤ n
+  · rw [ite_eq_left hc, ite_eq_left (by
+      exact Nat.le_trans (Nat.mul_le_mul_left r hc) (Nat.le_add_left _ _))]
+    congr 1
+    rw [Nat.add_sub_assoc (Nat.mul_le_mul_left r hc), ← Nat.mul_sub_left_distrib]
+  · rw [ite_eq_right hc, ite_eq_right]
+    intro h
+    have := Nat.mul_le_mul_left r (Nat.succ_le_of_lt (Nat.lt_of_not_ge hc))
+    lia
+
 /-- Even rows of `veronesePairLace` are Toeplitz rows for the sections of
 the first sequence. -/
 theorem veronesePairLace_even {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     veronesePairLace r a b (2 * (k + r * n)) c =
       toeplitz (veroneseSectionSeq r k a) n c := by
-  have hmod : 2 * (k + r * n) % 2 = 0 := Nat.mul_mod_right 2 (k + r * n)
-  have hdiv : 2 * (k + r * n) / 2 = k + r * n :=
-    Nat.mul_div_right (k + r * n) (by lia)
   dsimp [veronesePairLace, lacePair]
-  rw [ite_eq_left hmod, hdiv]
-  dsimp [toeplitz, veroneseSectionSeq]
-  by_cases hc : c ≤ n
-  · have hc' : r * c ≤ k + r * n :=
-      Nat.le_trans (Nat.mul_le_mul_left r hc) (Nat.le_add_left (r * n) k)
-    rw [ite_eq_left hc, ite_eq_left hc']
-    congr 1
-    calc
-      k + r * n - r * c = k + (r * n - r * c) :=
-        Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
-      _ = k + r * (n - c) := by rw [← Nat.mul_sub_left_distrib]
-  · have hlt : n < c := Nat.lt_of_not_ge hc
-    have hc' : ¬ r * c ≤ k + r * n := by
-      have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
-      have hmul : r * (n + 1) ≤ r * c := Nat.mul_le_mul_left r hsucc
-      lia
-    lia
+  rw [ite_eq_left (by lia), show 2 * (k + r * n) / 2 = k + r * n by lia]
+  exact toeplitz_veroneseSectionSeq a hk
 
 /-- Odd rows of `veronesePairLace` are Toeplitz rows for the sections of
 the second sequence. -/
 theorem veronesePairLace_odd {a b : ℕ → ℝ} {r k n c : ℕ} (hk : k < r) :
     veronesePairLace r a b (2 * (k + r * n) + 1) c =
       toeplitz (veroneseSectionSeq r k b) n c := by
-  have hmod_ne : ¬ (2 * (k + r * n) + 1) % 2 = 0 := by lia
-  have hdiv : (2 * (k + r * n) + 1) / 2 = k + r * n := by lia
   dsimp [veronesePairLace, lacePair]
-  rw [ite_eq_right hmod_ne, hdiv]
-  dsimp [toeplitz, veroneseSectionSeq]
-  by_cases hc : c ≤ n
-  · have hc' : r * c ≤ k + r * n :=
-      Nat.le_trans (Nat.mul_le_mul_left r hc) (Nat.le_add_left (r * n) k)
-    rw [ite_eq_left hc, ite_eq_left hc']
-    congr 1
-    calc
-      k + r * n - r * c = k + (r * n - r * c) :=
-        Nat.add_sub_assoc (Nat.mul_le_mul_left r hc) k
-      _ = k + r * (n - c) := by rw [← Nat.mul_sub_left_distrib]
-  · have hlt : n < c := Nat.lt_of_not_ge hc
-    have hc' : ¬ r * c ≤ k + r * n := by
-      have hsucc : n + 1 ≤ c := Nat.succ_le_of_lt hlt
-      have hmul : r * (n + 1) ≤ r * c := Nat.mul_le_mul_left r hsucc
-      lia
-    lia
+  rw [ite_eq_right (by lia), show (2 * (k + r * n) + 1) / 2 = k + r * n by lia]
+  exact toeplitz_veroneseSectionSeq b hk
 
 /-- The first row family of a fully interlacing pair is a Pólya-frequency
 sequence. -/
@@ -415,52 +395,34 @@ theorem strictMono_veronesePairSelectRowMap {r i j : ℕ}
         lia
       · simp_all
 
+private theorem veronesePairLace_index {a b : ℕ → ℝ} {r i n c : ℕ}
+    (hi : i < 2 * r) :
+    veronesePairLace r a b (i + 2 * r * n) c =
+      toeplitz (veronesePairSectionSeq r a b i) n c := by
+  unfold veronesePairSectionSeq
+  have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
+  by_cases hi_even : i % 2 = 0
+  · rw [ite_eq_left hi_even]
+    have hmap : i + 2 * r * n = 2 * (i / 2 + r * n) := by lia
+    simpa [hmap] using
+      veronesePairLace_even (a := a) (b := b) (k := i / 2) (c := c) hik
+  · rw [ite_eq_right hi_even]
+    have hmap : i + 2 * r * n = 2 * (i / 2 + r * n) + 1 := by lia
+    simpa [hmap] using
+      veronesePairLace_odd (a := a) (b := b) (k := i / 2) (c := c) hik
+
 theorem lacePair_veronesePairSectionSeq {a b : ℕ → ℝ} {r i j row col : ℕ}
     (hi : i < 2 * r) (hj : j < 2 * r) :
     lacePair (veronesePairSectionSeq r a b i)
         (veronesePairSectionSeq r a b j) row col =
       veronesePairLace r a b (veronesePairSelectRowMap r i j row) col := by
-  unfold lacePair veronesePairSectionSeq veronesePairSelectRowMap
+  unfold lacePair veronesePairSelectRowMap
   dsimp
   by_cases hrow : row % 2 = 0
-  · rw [ite_eq_left hrow]
-    have hik : i / 2 < r := div_two_lt_of_lt_two_mul hi
-    by_cases hi_even : i % 2 = 0
-    · rw [ite_eq_left hi_even]
-      have hmap :
-          i + (2 * r) * (row / 2) =
-            2 * (i / 2 + r * (row / 2)) := by
-        lia
-      simpa [hrow, hmap] using
-        (veronesePairLace_even (a := a) (b := b) (r := r)
-        (k := i / 2) (n := row / 2) (c := col) hik).symm
-    · rw [ite_eq_right hi_even]
-      have hmap :
-          i + (2 * r) * (row / 2) =
-            2 * (i / 2 + r * (row / 2)) + 1 := by
-        lia
-      simpa [hrow, hmap] using
-        (veronesePairLace_odd (a := a) (b := b) (r := r)
-        (k := i / 2) (n := row / 2) (c := col) hik).symm
-  · rw [ite_eq_right hrow]
-    have hjk : j / 2 < r := div_two_lt_of_lt_two_mul hj
-    by_cases hj_even : j % 2 = 0
-    · rw [ite_eq_left hj_even]
-      have hmap :
-          j + (2 * r) * (row / 2) =
-            2 * (j / 2 + r * (row / 2)) := by
-        lia
-      simpa [hrow, hmap] using
-        (veronesePairLace_even (a := a) (b := b) (r := r)
-        (k := j / 2) (n := row / 2) (c := col) hjk).symm
-    · rw [ite_eq_right hj_even]
-      have hmap :
-          j + (2 * r) * (row / 2) =
-            2 * (j / 2 + r * (row / 2)) + 1 := by
-        lia
-      simpa [hrow, hmap] using
-        (veronesePairLace_odd (a := a) (b := b) (r := r)
-        (k := j / 2) (n := row / 2) (c := col) hjk).symm
+  · rw [ite_eq_left hrow, ite_eq_left hrow]
+    exact (veronesePairLace_index (a := a) (b := b) (n := row / 2) (c := col) hi).symm
+  · rw [ite_eq_right hrow, ite_eq_right hrow]
+    exact (veronesePairLace_index (a := a) (b := b) (n := row / 2) (c := col) hj).symm
 
 /-- Any ordered pair of entries in the interleaved Veronese sequence is a
 fully interlacing pair.  This is the coefficient-level pairwise form of
@@ -585,7 +547,8 @@ private theorem not_fullyInterlacingPair_X_add_C_two_one :
     Polynomial.coeff_add, Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
     at hminor
 
-private theorem strictInterl_X_add_C_two_one : StrictInterl (X + C (2 : ℝ)) (X + C (1 : ℝ)) := by
+private theorem strictInterl_X_add_C_two_one :
+    StrictInterl (X + C (2 : ℝ)) (X + C (1 : ℝ)) := by
   rw [StrictInterl.X_add_C_iff]
   norm_num
 
@@ -598,12 +561,9 @@ theorem not_nonnegStrictInterl_fullyInterlacingPair :
       StrictInterl p q →
       FullyInterlacingPair p.coeff q.coeff := by
   intro h
-  have hpnn : HasNonnegCoeffs (X + C (2 : ℝ)) :=
-    hasNonnegCoeffs_X_add_C (by norm_num)
-  have hqnn : HasNonnegCoeffs (X + C (1 : ℝ)) :=
-    hasNonnegCoeffs_X_add_C (by norm_num)
   exact not_fullyInterlacingPair_X_add_C_two_one
-    (h (p := X + C (2 : ℝ)) (q := X + C (1 : ℝ)) hpnn hqnn
+    (h (p := X + C (2 : ℝ)) (q := X + C (1 : ℝ))
+      (hasNonnegCoeffs_X_add_C (by norm_num)) (hasNonnegCoeffs_X_add_C (by norm_num))
       strictInterl_X_add_C_two_one)
 
 /-- The odd/even polynomial `q(x^2) + x p(x^2)` of a strictly interlacing pair
@@ -731,25 +691,7 @@ protected theorem IsPolyaFreqSeq.veroneseSectionSeq {a : ℕ → ℝ}
   have hminor : (toeplitz (veroneseSectionSeq r k a)).submatrix rows cols =
       (toeplitz a).submatrix rows' cols' := by
     ext i j
-    dsimp [toeplitz, veroneseSectionSeq, rows', cols']
-    by_cases hle : cols j ≤ rows i
-    · have hle' : r * cols j ≤ k + r * rows i :=
-        Nat.le_trans (Nat.mul_le_mul_left r hle) (Nat.le_add_left (r * rows i) k)
-      rw [ite_eq_left hle, ite_eq_left hle']
-      congr 1
-      calc
-        k + r * (rows i - cols j) =
-            k + (r * rows i - r * cols j) := by
-          rw [Nat.mul_sub_left_distrib]
-        _ = k + r * rows i - r * cols j :=
-          (Nat.add_sub_assoc (Nat.mul_le_mul_left r hle) k).symm
-    · have hlt : rows i < cols j := Nat.lt_of_not_ge hle
-      have hnot : ¬ r * cols j ≤ k + r * rows i := by
-        have hsucc : rows i + 1 ≤ cols j := Nat.succ_le_of_lt hlt
-        have hmul : r * (rows i + 1) ≤ r * cols j :=
-          Nat.mul_le_mul_left r hsucc
-        lia
-      lia
+    exact (toeplitz_veroneseSectionSeq a hk).symm
   simpa [hminor] using ha hrows' hcols'
 
 theorem isPolyaFreqSeq_veroneseSectionPolynomial_coeff {p : ℝ[X]}

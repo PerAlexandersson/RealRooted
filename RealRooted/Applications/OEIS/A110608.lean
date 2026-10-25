@@ -51,6 +51,11 @@ theorem coeff_polynomial (N k : ℕ) : (polynomial N).coeff k = coefficient N k 
   · rw [coefficient_eq_zero N k]
     simpa using hk
 
+private lemma polynomial_zero : polynomial 0 = 1 := by
+  apply Polynomial.funext
+  intro x
+  norm_num [polynomial, coefficient, Finset.sum_range_succ]
+
 /-- The model row indexed by `N` has degree exactly `N`. -/
 theorem polynomial_natDegree (N : ℕ) : (polynomial N).natDegree = N := by
   have hupper : (polynomial N).natDegree ≤ N := by
@@ -174,10 +179,9 @@ private lemma discriminant_pos (N : ℕ) (hN : 0 < N) {x : ℝ}
   let A : ℝ := 1 - 4 * n
   let B : ℝ := 8 * n ^ 2 + 2 * n - 2
   let D : ℝ → ℝ := fun y ↦ (n + 1) ^ 2 + B * y + A * y ^ 2
-  have hnNat : 1 ≤ N := hN
   have hn : 1 ≤ n := by
     dsimp [n]
-    exact_mod_cast hnNat
+    exact_mod_cast (show 1 ≤ N by lia)
   have hden : 0 < 8 * n + 5 := by positivity
   have hLneg : L < 0 := by
     dsimp [L]
@@ -211,9 +215,8 @@ private lemma discriminant_pos (N : ℕ) (hN : 0 < N) {x : ℝ}
     dsimp [D]
     ring
   have hDle : D L ≤ D x := by
-    have hmul : 0 ≤ (x - L) * (B + A * (x + L)) :=
-      mul_nonneg (sub_nonneg.mpr hxL) hsecond
-    nlinarith [hdiff]
+    rw [← sub_nonneg, hdiff]
+    exact mul_nonneg (sub_nonneg.mpr hxL) hsecond
   rw [← hD_formula]
   exact hDLpos.trans_le hDle
 
@@ -224,16 +227,7 @@ theorem isRoot_lt_barrier_of_splits (N : ℕ) (hs : (polynomial N).Splits)
     r < -((N : ℝ) + 1) / (8 * N + 5) := by
   by_cases hNzero : N = 0
   · subst N
-    have hpoly_ne : polynomial 0 ≠ 0 := by
-      intro hzero
-      have hpos := polynomial_leadingCoeff_pos 0
-      rw [hzero] at hpos
-      simp at hpos
-    have hdegree_pos : 0 < (polynomial 0).degree := degree_pos_of_root hpoly_ne hr
-    have hnatDegree_pos : 0 < (polynomial 0).natDegree :=
-      natDegree_pos_iff_degree_pos.mpr hdegree_pos
-    rw [polynomial_natDegree] at hnatDegree_pos
-    simp at hnatDegree_pos
+    simp [polynomial_zero, Polynomial.IsRoot.def] at hr
   · have hN : 0 < N := Nat.pos_of_ne_zero hNzero
     let a : ℝ[X] := X * (1 - X)
     let b : ℝ[X] := C ((N : ℝ) + 1) + C (2 * (N : ℝ) - 1) * X
@@ -351,11 +345,10 @@ private lemma coefficient_step (N k : ℕ) (hN : 0 < N) :
         else 0) := by
   by_cases hk : k ≤ N
   · rw [coefficient_succ N k hk]
-    by_cases hkz : k = 0
-    · subst k
-      rw [ite_eq_right (by lia : ¬1 ≤ 0), coefficient_right N 0 hN]
+    rcases eq_or_ne k 0 with rfl | hkz
+    · rw [ite_eq_right (by lia : ¬1 ≤ 0), coefficient_right N 0 hN]
       unfold coefficient
-      simp
+      simp_all
       field_simp
       ring
     · by_cases hkd : k < N
@@ -376,29 +369,23 @@ private lemma coefficient_step (N k : ℕ) (hN : 0 < N) :
         ring
       · have hkeq : k = N := by lia
         subst k
-        rw [ite_eq_left (by lia : 1 ≤ N), coefficient_left N N hN le_rfl]
-        have hright : coefficient N (N + 1) = 0 :=
-          coefficient_eq_zero N (N + 1) (by lia)
-        rw [hright]
-        have hone : (((N - N + 1 : ℕ) : ℝ)) = 1 := by norm_num
-        have honeMain : (((N + 1 - N : ℕ) : ℝ)) = 1 := by norm_num
+        rw [ite_eq_left (by lia : 1 ≤ N), coefficient_left N N hN le_rfl,
+          coefficient_eq_zero N (N + 1) (by lia),
+          show (((N - N + 1 : ℕ) : ℝ)) = 1 by norm_num,
+          show (((N + 1 - N : ℕ) : ℝ)) = 1 by norm_num]
         grind
-  · by_cases hkeq : k = N + 1
-    · subst k
-      rw [ite_eq_left (by lia : 1 ≤ N + 1)]
+  · rcases eq_or_ne k (N + 1) with rfl | hkeq
+    · rw [ite_eq_left (by lia : 1 ≤ N + 1)]
       unfold coefficient
-      simp [Nat.choose_eq_zero_of_lt]
+      simp_all [Nat.choose_eq_zero_of_lt]
       field_simp
       ring
     · have hgt : N + 1 < k := by lia
       have hprev : N < k - 1 := by lia
-      rw [ite_eq_left (by lia : 1 ≤ k)]
-      unfold coefficient
-      have hz₁ : N.choose (k + 1) = 0 := Nat.choose_eq_zero_of_lt (by lia)
-      have hz₂ : N.choose k = 0 := Nat.choose_eq_zero_of_lt (by lia)
-      have hz₃ : N.choose (k - 1) = 0 := Nat.choose_eq_zero_of_lt hprev
-      have hz₀ : (N + 1).choose k = 0 := Nat.choose_eq_zero_of_lt hgt
-      simp_all
+      rw [ite_eq_left (by lia : 1 ≤ k), coefficient_eq_zero (N + 1) k hgt,
+        coefficient_eq_zero N (k + 1) (by lia), coefficient_eq_zero N k (by lia),
+        coefficient_eq_zero N (k - 1) hprev]
+      simp
 
 private lemma polynomial_succ_normalized_of_pos (N : ℕ) (hN : 0 < N) :
     polynomial (N + 1) =
@@ -418,7 +405,6 @@ private lemma polynomial_succ_normalized_of_pos (N : ℕ) (hN : 0 < N) :
   simp only [coeff_add, coeff_C_mul, coeff_derivative, coeff_X_pow_mul']
   cases k with
   | zero =>
-      simp
       simpa [coeff_polynomial, add_comm, add_left_comm, add_assoc] using
         coefficient_step N 0 hN
   | succ k =>
@@ -439,20 +425,10 @@ private lemma polynomial_succ_normalized_of_pos (N : ℕ) (hN : 0 < N) :
         have hstep := coefficient_step N (k + 1) hN
         grind
 
-private lemma polynomial_zero : polynomial 0 = 1 := by
-  ext k
-  rw [coeff_polynomial]
-  cases k with
-  | zero => norm_num [coefficient]
-  | succ k => simp [coefficient, coeff_one]
-
 private lemma polynomial_one : polynomial 1 = 2 + X := by
-  ext k
-  rw [coeff_polynomial]
-  rcases k with _ | _ | k
-  · norm_num [coefficient]
-  · norm_num [coefficient]
-  · simp [coefficient, Nat.choose_eq_zero_of_lt, coeff_X]
+  apply Polynomial.funext
+  intro x
+  norm_num [polynomial, coefficient, Nat.choose, Finset.sum_range_succ]
 
 /-- The corrected normalized derivative recurrence for the model rows. -/
 theorem polynomial_succ_normalized (N : ℕ) :
@@ -526,21 +502,16 @@ theorem polynomial_strictInterl_succ_of_splits (N : ℕ) (hs : (polynomial N).Sp
       have hden_pos : 0 < 8 * (N : ℝ) + 5 := by positivity
       have hmul := (lt_div_iff₀ hden_pos).mp hr_bound
       nlinarith
-    have hvalue :
-        v.eval r = (transitionScale N)⁻¹ *
-          ((1 - r) * ((8 * (N : ℝ) + 5) * r + ((N : ℝ) + 1))) := by
-      simp only [v, derivativeCoeff, eval_mul, eval_add, eval_C, eval_sub, eval_one, eval_X]
-    rw [hvalue]
+    simp only [v, derivativeCoeff, eval_mul, eval_add, eval_C, eval_sub, eval_one, eval_X]
     exact mul_nonpos_of_nonneg_of_nonpos (inv_nonneg.mpr hscale_pos.le)
       (mul_nonpos_of_nonneg_of_nonpos hleft.le hright.le)
-  have hstrict := MaWang.strictInterl_derivative_of_nonpos_of_splits hs
+  rw [hrec]
+  exact MaWang.strictInterl_derivative_of_nonpos_of_splits hs
     (u := u) (v := v)
     (by rw [← hrec, polynomial_natDegree, polynomial_natDegree]; lia)
     (by rw [← hrec, polynomial_natDegree, polynomial_natDegree])
     (by rw [← hrec]; exact polynomial_leadingCoeff_pos (N + 1))
     (polynomial_leadingCoeff_pos N) hv
-  rw [← hrec] at hstrict
-  exact hstrict
 
 /-- Every A110608 model row splits over the reals. -/
 theorem polynomial_splits : ∀ N : ℕ, (polynomial N).Splits
@@ -591,13 +562,9 @@ theorem nextRow_eq_factored (n : ℕ) (p : ℝ[X]) :
   ring
 
 private lemma polynomial_two : polynomial 2 = 6 + 8 * X + X ^ 2 := by
-  ext k
-  rw [coeff_polynomial]
-  rcases k with _ | _ | _ | k
-  · norm_num [coefficient, Nat.choose]
-  · norm_num [coefficient, Nat.choose]
-  · norm_num [coefficient, Nat.choose, coeff_X_pow, coeff_X]
-  · simp [coefficient, Nat.choose_eq_zero_of_lt, coeff_X_pow, coeff_X]
+  apply Polynomial.funext
+  intro x
+  norm_num [polynomial, coefficient, Nat.choose, Finset.sum_range_succ]
 
 private lemma shifted_polynomial_succ (n : ℕ) :
     polynomial (n + 1 + 2) = nextRow n (polynomial (n + 2)) := by

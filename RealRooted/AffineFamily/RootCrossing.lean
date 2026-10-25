@@ -82,9 +82,6 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
   have hcombo_der2_ne :
       (p.derivative.derivative.eval x + β * q.derivative.derivative.eval x) ≠ 0 := by
     grind
-  have hcombo_nonzero :
-      p + C β * q ≠ 0 := by
-    grind
   have hcombo_rr : ((p + C β * q) ≠ 0 ∧ (p + C β * q).Splits) := hfamily hβ_pos hβ_le_max
   have hcombo_eval_ne :
       (p + C β * q).eval x ≠ 0 := by
@@ -154,7 +151,6 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
   have hr_neg : r < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
       hg_rr.1 hgnn hno_right r hr_mem
-  have hf_not_root : ¬ f.IsRoot r := hno r hgr
   have hf_eval_ne : f.eval r ≠ 0 := by simp_all
   let m : ℕ := g.rootMultiplicity r
   let k : ℕ := m - 2
@@ -196,10 +192,7 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
         dsimp [pη]
         exact rootMultiplicity_iterateTDeriv_eq_tsub hη_pos hg_rr.1 hg_rr.2 hk_le
       _ = 2 := by lia
-  have hpη_rr : (pη ≠ 0 ∧ pη.Splits) := by
-    dsimp [pη]
-    exact ⟨iterateTDeriv_ne_zero hg_rr.1, splits_iterateTDeriv hη_pos hg_rr.2⟩
-  have hpη_ne : pη ≠ 0 := hpη_rr.1
+  have hpη_ne : pη ≠ 0 := iterateTDeriv_ne_zero hg_rr.1
   have hpp_ne : pη.derivative.derivative.eval r ≠ 0 :=
     eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
       hpη_ne hpη_mult
@@ -213,23 +206,24 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
     intro h
     rw [h, zero_mul] at hqNegη_keep
     linarith
-  have hqOpp :
-      qPosη.eval r * qNegη.eval r < 0 := by
-    by_cases hqPos_pos : 0 < qPos.eval r
-    · have hqPosη_pos : 0 < qPosη.eval r := by simp_all
-      have hqNeg_neg : qNeg.eval r < 0 := by
-        rw [hqNeg_eval, hqPos_eval] at *
-        nlinarith [hr_neg, hqPos_pos]
-      have hqNegη_neg : qNegη.eval r < 0 := by nlinarith [hqNegη_keep, hqNeg_neg]
-      exact mul_neg_of_pos_of_neg hqPosη_pos hqNegη_neg
-    · have hqPos_neg : qPos.eval r < 0 :=
-        lt_of_le_of_ne (le_of_not_gt hqPos_pos) hqPos_eval_ne
-      have hqPosη_neg : qPosη.eval r < 0 := by nlinarith [hqPosη_keep, hqPos_neg]
-      have hqNeg_pos : 0 < qNeg.eval r := by
-        rw [hqNeg_eval, hqPos_eval] at *
-        nlinarith [hr_neg, hqPos_neg]
-      have hqNegη_pos : 0 < qNegη.eval r := by simp_all
+  have hqOpp : qPosη.eval r * qNegη.eval r < 0 := by
+    rw [hqPos_eval] at hqPosη_keep
+    rw [hqNeg_eval] at hqNegη_keep
+    rcases lt_or_gt_of_ne hf_eval_ne with hf_neg | hf_pos
+    · have hqPosη_neg : qPosη.eval r < 0 := by
+        rcases (mul_pos_iff.mp hqPosη_keep) with h | h <;> linarith
+      have hqNeg_pos : 0 < r / 2 * f.eval r :=
+        mul_pos_of_neg_of_neg (by linarith) hf_neg
+      have hqNegη_pos : 0 < qNegη.eval r := by
+        rcases (mul_pos_iff.mp hqNegη_keep) with h | h <;> linarith
       exact mul_neg_of_neg_of_pos hqPosη_neg hqNegη_pos
+    · have hqPosη_pos : 0 < qPosη.eval r := by
+        rcases (mul_pos_iff.mp hqPosη_keep) with h | h <;> linarith
+      have hqNeg_neg : r / 2 * f.eval r < 0 :=
+        mul_neg_of_neg_of_pos (by linarith) hf_pos
+      have hqNegη_neg : qNegη.eval r < 0 := by
+        rcases (mul_pos_iff.mp hqNegη_keep) with h | h <;> linarith
+      exact mul_neg_of_pos_of_neg hqPosη_pos hqNegη_neg
   have hfamilyPos :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := by
@@ -275,11 +269,7 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
         ((iterateTDeriv η k (g + C β * qPos)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qPos)).Splits) :=
       ⟨iterateTDeriv_ne_zero hrr.1, splits_iterateTDeriv hη_pos hrr.2⟩
-    have hEq :
-        pη + C β * qPosη = iterateTDeriv η k (g + C β * qPos) := by
-      dsimp [pη, qPosη]
-      rw [iterateTDeriv_add, iterateTDeriv_C_mul]
-    lia
+    simpa only [pη, qPosη, iterateTDeriv_add, iterateTDeriv_C_mul] using hiter
   have hfamilyNegη :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((pη + C β * qNegη) ≠ 0 ∧ (pη + C β * qNegη).Splits) := by
@@ -289,56 +279,27 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
         ((iterateTDeriv η k (g + C β * qNeg)) ≠ 0 ∧
           (iterateTDeriv η k (g + C β * qNeg)).Splits) :=
       ⟨iterateTDeriv_ne_zero hrr.1, splits_iterateTDeriv hη_pos hrr.2⟩
-    have hEq :
-        pη + C β * qNegη = iterateTDeriv η k (g + C β * qNeg) := by
-      dsimp [pη, qNegη]
-      rw [iterateTDeriv_add, iterateTDeriv_C_mul]
-    lia
+    simpa only [pη, qNegη, iterateTDeriv_add, iterateTDeriv_C_mul] using hiter
   by_cases hprodPos :
       0 < pη.derivative.derivative.eval r * qPosη.eval r
   · exact
       false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
         (p := pη) (q := qPosη) (x := r) (βmax := 1)
         hfamilyPosη zero_lt_one hpη_mult hqPosη_eval_ne hprodPos
-  · have hprodPos_ne :
-      pη.derivative.derivative.eval r * qPosη.eval r ≠ 0 :=
-      mul_ne_zero hpp_ne hqPosη_eval_ne
-    have hprodPos_neg :
-        pη.derivative.derivative.eval r * qPosη.eval r < 0 :=
-      lt_of_le_of_ne (le_of_not_gt hprodPos) hprodPos_ne
-    by_cases hqPosη_pos : 0 < qPosη.eval r
-    · have hqNegη_neg : qNegη.eval r < 0 := by
-        have hqNegη_ne : qNegη.eval r ≠ 0 := hqNegη_eval_ne
-        have hqNegη_not_pos : ¬ 0 < qNegη.eval r :=
-          fun hqNegη_pos =>
-            (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos hqPosη_pos hqNegη_pos)
-        exact lt_of_le_of_ne (le_of_not_gt hqNegη_not_pos) hqNegη_ne
-      have hpp_neg : pη.derivative.derivative.eval r < 0 :=
-        (neg_iff_pos_of_mul_neg hprodPos_neg).mpr hqPosη_pos
-      have hprodNeg_pos :
-          0 < pη.derivative.derivative.eval r * qNegη.eval r :=
-        mul_pos_of_neg_of_neg hpp_neg hqNegη_neg
-      exact
-        false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-          (p := pη) (q := qNegη) (x := r) (βmax := 1)
-          hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg_pos
-    · have hqPosη_neg : qPosη.eval r < 0 :=
-        lt_of_le_of_ne (le_of_not_gt hqPosη_pos) hqPosη_eval_ne
-      have hqNegη_pos : 0 < qNegη.eval r := by
-        have hqNegη_ne : qNegη.eval r ≠ 0 := hqNegη_eval_ne
-        have hqNegη_not_neg : ¬ qNegη.eval r < 0 :=
-          fun hqNegη_neg =>
-            (not_lt_of_ge (le_of_lt hqOpp)) (mul_pos_of_neg_of_neg hqPosη_neg hqNegη_neg)
-        exact lt_of_le_of_ne (le_of_not_gt hqNegη_not_neg) hqNegη_ne.symm
-      have hpp_pos : 0 < pη.derivative.derivative.eval r :=
-        (pos_iff_neg_of_mul_neg hprodPos_neg).mpr hqPosη_neg
-      have hprodNeg_pos :
-          0 < pη.derivative.derivative.eval r * qNegη.eval r := by
-        simp_all
-      exact
-        false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-          (p := pη) (q := qNegη) (x := r) (βmax := 1)
-          hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg_pos
+  · have hprodNeg : 0 < pη.derivative.derivative.eval r * qNegη.eval r := by
+      have hprodPos_neg : pη.derivative.derivative.eval r * qPosη.eval r < 0 :=
+        lt_of_le_of_ne (le_of_not_gt hprodPos) (mul_ne_zero hpp_ne hqPosη_eval_ne)
+      rcases (mul_neg_iff.mp hprodPos_neg) with ⟨hpp_pos, hqPos_neg⟩ |
+        ⟨hpp_neg, hqPos_pos⟩
+      · have hqNeg_pos : 0 < qNegη.eval r := by
+          rcases (mul_neg_iff.mp hqOpp) with h | h <;> linarith
+        exact mul_pos hpp_pos hqNeg_pos
+      · have hqNeg_neg : qNegη.eval r < 0 := by
+          rcases (mul_neg_iff.mp hqOpp) with h | h <;> linarith
+        exact mul_pos_of_neg_of_neg hpp_neg hqNeg_neg
+    exact false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
+      (p := pη) (q := qNegη) (x := r) (βmax := 1)
+      hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg
 
 /-- Every interior positive combination of a no-common positive-combination
 family has simple roots.
@@ -614,11 +575,8 @@ theorem pencil_parameter_unique_of_isRoot_of_no_common
     mu1 = mu2 := by
   have hgx : g.eval x ≠ 0 :=
     eval_right_ne_zero_of_isRoot_add_right_of_no_common hno h1
-  have hmu1 : mu1 = -f.eval x / g.eval x :=
-    (isRoot_add_right_iff_parameter_eq hgx).mp h1
-  have hmu2 : mu2 = -f.eval x / g.eval x :=
-    (isRoot_add_right_iff_parameter_eq hgx).mp h2
-  exact hmu1.trans hmu2.symm
+  rw [(isRoot_add_right_iff_parameter_eq hgx).mp h1,
+    (isRoot_add_right_iff_parameter_eq hgx).mp h2]
 
 /-- At a root of an interior right positive combination, the derivative does
 not vanish. -/

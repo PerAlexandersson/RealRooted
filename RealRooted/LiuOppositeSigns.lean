@@ -36,10 +36,7 @@ theorem CrossOwnedNotOddGaps.symm {f g : ℝ[X]} (h : CrossOwnedNotOddGaps f g) 
   intro a b x hax hxb ha_root hb_root hgap hnot_odd
   refine (h a b x hax hxb ha_root.symm hb_root.symm
     (fun z haz hzb => (hgap z haz hzb).symm) ?_).symm
-  intro hodd
-  have hneg := hodd.neg
-  rw [neg_sub] at hneg
-  exact hnot_odd hneg
+  exact fun hodd => hnot_odd (by simpa [neg_sub] using hodd.neg)
 
 /-- The `r_1 >= s_1` branch of Liu Theorem 2.1: delete the largest root of
 `f`, then compare the closed-at-or-above root counts of `f / (X - r)` and
@@ -116,14 +113,7 @@ private theorem nat_succ_eq_or_eq_succ_or_eq_succ_succ_of_abs_sub_le_one
   have hkn_high : k ≤ n + 2 := by exact_mod_cast hkn_high_int
   rcases Nat.exists_eq_add_of_le hkn_low with ⟨d, rfl⟩
   have hd : d ≤ 2 := by linarith
-  rcases d with _ | d
-  · simp
-  rcases d with _ | d
-  · simp
-  rcases d with _ | d
-  · simp
-  · exfalso
-    linarith
+  interval_cases d <;> simp_all
 
 namespace LeftRootCountBranch
 
@@ -216,20 +206,14 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
               ((f.roots.filter (x < ·)).card : ℤ) -
                 (g.roots.filter (x < ·)).card ≤ 1)) := by
   let μ : ℝ → ℕ := fun x => ((f.roots + g.roots).filter (x < ·)).card
+  let D : ℝ → ℤ := fun x =>
+    (f.roots.filter (x < ·)).card - (g.roots.filter (x < ·)).card
   let P : ℝ → Prop := fun x =>
     x < r → ¬ f.IsRoot x → ¬ g.IsRoot x →
       ∃ c : ℝ, x < c ∧ (f.IsRoot c ∨ g.IsRoot c) ∧
         (∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z) ∧
-          ((f.IsRoot c ∧
-              1 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
-                (g.roots.filter (x < ·)).card ∧
-              ((f.roots.filter (x < ·)).card : ℤ) -
-                (g.roots.filter (x < ·)).card ≤ 2) ∨
-            (g.IsRoot c ∧
-              0 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
-                (g.roots.filter (x < ·)).card ∧
-              ((f.roots.filter (x < ·)).card : ℤ) -
-                (g.roots.filter (x < ·)).card ≤ 1))
+          ((f.IsRoot c ∧ 1 ≤ D x ∧ D x ≤ 2) ∨
+            (g.IsRoot c ∧ 0 ≤ D x ∧ D x ≤ 1))
   change ∀ x : ℝ, P x
   refine WellFounded.fix (measure μ).wf ?_
   intro x ih hx hfx hgx
@@ -244,27 +228,16 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     dsimp [μ]
     exact card_filter_gt_lt_of_mem_Ioc (f.roots + g.roots)
       (le_of_lt hxb) hc_mem hxc (le_of_lt hcb)
-  have hstep_f : f.IsRoot c →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card =
-        ((f.roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card + 1 := by
+  have hstep_f : f.IsRoot c → D x = D b + 1 := by
     intro hfc
-    exact card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+    simpa [D] using card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
       hf_ne hg_ne hxc (le_of_lt hcb) (hdisj c hfc) (hsimple_f c hfc)
       hleast hgap_f hgap_g rfl
-  have hstep_g : g.IsRoot c →
-      ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card =
-        ((f.roots.filter (b < ·)).card : ℤ) -
-          (g.roots.filter (b < ·)).card - 1 := by
+  have hstep_g : g.IsRoot c → D x = D b - 1 := by
     intro hgc
-    have hfc_not : ¬ f.IsRoot c := by
-      intro hfc
-      exact hdisj c hfc hgc
-    exact card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
-      hf_ne hg_ne hxc (le_of_lt hcb) hfc_not (hsimple_g c hgc)
-      hleast hgap_f hgap_g rfl
+    simpa [D] using card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
+      hf_ne hg_ne hxc (le_of_lt hcb) (fun hfc => hdisj c hfc hgc)
+      (hsimple_g c hgc) hleast hgap_f hgap_g rfl
   refine ⟨c, hxc, hcroot, hleast, ?_⟩
   by_cases hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)
   · have hbr : b < r := by
@@ -292,21 +265,16 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     rcases howner_d with ⟨hdf, hdiff_b_low, hdiff_b_high⟩ |
         ⟨hdg, hdiff_b_low, hdiff_b_high⟩
     · rcases hcroot with hfc | hgc
-      · have hdiff_b_ne_two :
-            ((f.roots.filter (b < ·)).card : ℤ) -
-                (g.roots.filter (b < ·)).card ≠ 2 := by
+      · have hdiff_b_ne_two : D b ≠ 2 := by
           intro hdiff_b_eq
-          have hnot_odd_b : ¬ Odd (((f.roots.filter (b < ·)).card : ℤ) -
-              (g.roots.filter (b < ·)).card) := by
-            simp [hdiff_b_eq]
+          have hnot_odd_b : ¬ Odd (D b) := by simp [hdiff_b_eq]
           have hcross_cd :=
-            hcross c d b hcb hbd (Or.inl hfc) hdroot hbetween hnot_odd_b
+            hcross c d b hcb hbd (Or.inl hfc) hdroot hbetween
+              (by simpa [D] using hnot_odd_b)
           rcases hcross_cd with ⟨_hfc, hgd⟩ | ⟨hgc, _hfd⟩
           · exact hdisj d hdf hgd
           · exact hdisj c hfc hgc
-        have hdiff_b_lt_two :
-            ((f.roots.filter (b < ·)).card : ℤ) -
-                (g.roots.filter (b < ·)).card < 2 :=
+        have hdiff_b_lt_two : D b < 2 :=
           lt_of_le_of_ne hdiff_b_high hdiff_b_ne_two
         have hdiff := hstep_f hfc
         exact Or.inl ⟨hfc, by linarith, by linarith⟩
@@ -315,34 +283,24 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     · rcases hcroot with hfc | hgc
       · have hdiff := hstep_f hfc
         exact Or.inl ⟨hfc, by linarith, by linarith⟩
-      · have hdiff_b_ne_zero :
-            ((f.roots.filter (b < ·)).card : ℤ) -
-                (g.roots.filter (b < ·)).card ≠ 0 := by
+      · have hdiff_b_ne_zero : D b ≠ 0 := by
           intro hdiff_b_eq
-          have hnot_odd_b : ¬ Odd (((f.roots.filter (b < ·)).card : ℤ) -
-              (g.roots.filter (b < ·)).card) := by
-            simp [hdiff_b_eq]
+          have hnot_odd_b : ¬ Odd (D b) := by simp [hdiff_b_eq]
           have hcross_cd :=
-            hcross c d b hcb hbd (Or.inr hgc) hdroot hbetween hnot_odd_b
+            hcross c d b hcb hbd (Or.inr hgc) hdroot hbetween
+              (by simpa [D] using hnot_odd_b)
           rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
           · exact hdisj c hfc hgc
           · exact hdisj d hfd hdg
-        have hdiff_b_pos :
-            0 < ((f.roots.filter (b < ·)).card : ℤ) -
-                (g.roots.filter (b < ·)).card :=
+        have hdiff_b_pos : 0 < D b :=
           lt_of_le_of_ne hdiff_b_low (Ne.symm hdiff_b_ne_zero)
         have hdiff := hstep_g hgc
         exact Or.inr ⟨hgc, by linarith, by linarith⟩
-  · have hno_above :
-        ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
-      intro z hbz
-      constructor
-      · intro hfz
-        exact hnext ⟨z, hbz, Or.inl hfz⟩
-      · intro hgz
-        exact hnext ⟨z, hbz, Or.inr hgz⟩
-    have hdiff_b :=
-      card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
+  · have hno_above : ∀ z : ℝ, b < z → ¬ f.IsRoot z ∧ ¬ g.IsRoot z :=
+      fun z hbz => ⟨fun hfz => hnext ⟨z, hbz, Or.inl hfz⟩,
+        fun hgz => hnext ⟨z, hbz, Or.inr hgz⟩⟩
+    have hdiff_b : D b = 0 := by
+      simpa [D] using card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
         hf_ne hg_ne hno_above
     have hcr : c ≤ r := hleast r hx (Or.inl hr.isRoot)
     have hrc : r ≤ c := by

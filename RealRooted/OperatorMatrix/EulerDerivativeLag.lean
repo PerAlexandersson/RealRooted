@@ -201,12 +201,9 @@ theorem twoStep_eq_mul : twoStep = identityTop * thetaTop := by
     rfl
   apply Matrix.ext
   intro i j
-  fin_cases i <;> fin_cases j
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two, hone]
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two, hone]
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two,
+  fin_cases i <;> fin_cases j <;>
+    simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two, hone,
       ← mul_assoc, theta_mul_x, add_mul, mul_add]
-  · simp [twoStep, identityTop, thetaTop, Matrix.mul_apply, Fin.sum_univ_two]
 
 /-- The identity-top factor sends `(p,q)` to `(q, theta q + Xp)`. -/
 theorem apply_identityTop_pair (p q : ℝ[X]) :
@@ -341,20 +338,18 @@ theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
   simpa [thetaTop] using preservesOrderedPFPair_thetaTop
 
 /-- The phase-shifted two-step product preserves ordered PF vectors. -/
-theorem preservesOrderedPF_shiftedTwoStep : PreservesOrderedPF shiftedTwoStep := by
-  exact preservesOrderedPF_thetaTop.mul preservesOrderedPF_identityTop
+theorem preservesOrderedPF_shiftedTwoStep : PreservesOrderedPF shiftedTwoStep :=
+  preservesOrderedPF_thetaTop.mul preservesOrderedPF_identityTop
 
 /-- The mixed edge from the Euler label to the identity label preserves ordered PF vectors. -/
 theorem preservesOrderedPF_transition_euler_identity :
-    PreservesOrderedPF (transition .euler .identity) := by
-  rw [transition_euler_identity]
-  exact preservesOrderedPF_identityTop
+    PreservesOrderedPF (transition .euler .identity) :=
+  transition_euler_identity ▸ preservesOrderedPF_identityTop
 
 /-- The mixed edge from the identity label to the Euler label preserves ordered PF vectors. -/
 theorem preservesOrderedPF_transition_identity_euler :
-    PreservesOrderedPF (transition .identity .euler) := by
-  rw [transition_identity_euler]
-  exact preservesOrderedPF_thetaTop
+    PreservesOrderedPF (transition .identity .euler) :=
+  transition_identity_euler ▸ preservesOrderedPF_thetaTop
 
 private theorem not_interl_X_mul_X_add_one_X :
     ¬ Interl (X * (X + 1) : ℝ[X]) X := by
@@ -440,14 +435,10 @@ theorem not_preservesOrderedPF_transition_identity_identity :
       0 < (5 * X + 3 * X ^ 2 : ℝ[X]).eval (-2) *
         (6 + 5 * X + X ^ 2 : ℝ[X]).derivative.eval (-2) := by
     norm_num
-  have hf0 : (6 + 5 * X + X ^ 2 : ℝ[X]) ≠ 0 := by
-    intro hzero
-    rw [hzero] at hsign
-    norm_num at hsign
-  have hg0 : (5 * X + 3 * X ^ 2 : ℝ[X]) ≠ 0 := by
-    intro hzero
-    rw [hzero] at hsign
-    norm_num at hsign
+  have hf0 : (6 + 5 * X + X ^ 2 : ℝ[X]) ≠ 0 := fun hzero => by
+    simp [hzero] at hsign
+  have hg0 : (5 * X + 3 * X ^ 2 : ℝ[X]) ≠ 0 := fun hzero => by
+    simp [hzero] at hsign
   apply not_interl_of_left_root_sign_pos hf hg hf0 hg0 (r := -2)
   · norm_num [Polynomial.IsRoot.def]
   · exact hsign
@@ -495,14 +486,10 @@ theorem not_preservesOrderedPF_transition_euler_euler :
       0 < (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]).eval (-1) *
         (2 * X + 2 * X ^ 2 : ℝ[X]).derivative.eval (-1) := by
     norm_num
-  have hf0 : (2 * X + 2 * X ^ 2 : ℝ[X]) ≠ 0 := by
-    intro hzero
-    rw [hzero] at hsign
-    norm_num at hsign
-  have hg0 : (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) ≠ 0 := by
-    intro hzero
-    rw [hzero] at hsign
-    norm_num at hsign
+  have hf0 : (2 * X + 2 * X ^ 2 : ℝ[X]) ≠ 0 := fun hzero => by
+    simp [hzero] at hsign
+  have hg0 : (8 * X + 7 * X ^ 2 + X ^ 3 : ℝ[X]) ≠ 0 := fun hzero => by
+    simp [hzero] at hsign
   apply not_interl_of_left_root_sign_pos hf hg hf0 hg0 (r := -1)
   · norm_num [Polynomial.IsRoot.def]
   · exact hsign
@@ -536,9 +523,8 @@ theorem preservesOrderedPF_transition_iff (source target : FactorLabel) :
     · exact preservesOrderedPF_transition_identity_euler
 
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
-theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep := by
-  rw [twoStep_eq_mul]
-  exact preservesOrderedPF_identityTop.mul preservesOrderedPF_thetaTop
+theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep :=
+  twoStep_eq_mul ▸ preservesOrderedPF_identityTop.mul preservesOrderedPF_thetaTop
 
 /-- The initial pair `(1,X)` is an ordered PF vector. -/
 theorem isOrderedPF_one_X : IsOrderedPF ![(1 : ℝ[X]), X] := by
@@ -567,8 +553,7 @@ theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF ![P 0, P 1]) (m : ℕ) :
     IsOrderedPF ![P (2 * m), P (2 * m + 1)] := by
-  have hpres : IsOrderedPF (apply (twoStep ^ m) ![P 0, P 1]) :=
-    (preservesOrderedPF_twoStep.pow m) _ hseed
+  have hpres := (preservesOrderedPF_twoStep.pow m) ![P 0, P 1] hseed
   rw [apply_twoStep_pow_pair_of_recurrence P hrec m 0] at hpres
   simpa using hpres
 
@@ -578,9 +563,8 @@ theorem isOrderedPF_euler_even_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF (decoratedState P 0 .euler)) (m : ℕ) :
     IsOrderedPF (decoratedState P (2 * m) .euler) := by
-  have hpres : IsOrderedPF
-      (apply (shiftedTwoStep ^ m) (decoratedState P 0 .euler)) :=
-    (preservesOrderedPF_shiftedTwoStep.pow m) _ hseed
+  have hpres :=
+    (preservesOrderedPF_shiftedTwoStep.pow m) (decoratedState P 0 .euler) hseed
   rw [apply_shiftedTwoStep_pow_decoratedState_of_recurrence P hrec m 0] at hpres
   simpa using hpres
 
@@ -589,10 +573,10 @@ theorem isOrderedPF_odd_even_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF (decoratedState P 0 .euler)) (m : ℕ) :
     IsOrderedPF ![P (2 * m + 1), P (2 * m + 2)] := by
-  have heuler := isOrderedPF_euler_even_of_recurrence P hrec hseed m
   have hnext : IsOrderedPF
       (apply (transition .euler .identity) (decoratedState P (2 * m) .euler)) :=
-    preservesOrderedPF_transition_euler_identity _ heuler
+    preservesOrderedPF_transition_euler_identity _
+      (isOrderedPF_euler_even_of_recurrence P hrec hseed m)
   rw [apply_transition_decoratedState_of_recurrence P hrec (2 * m) .euler .identity]
     at hnext
   simpa [Nat.add_assoc] using hnext

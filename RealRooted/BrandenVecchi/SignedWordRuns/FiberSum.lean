@@ -109,8 +109,7 @@ theorem coeff_signedRunSeries_of_isPositive
       if n = 1 then C (weight letter) else 0 := by
   classical
   have hnotnegative : ¬letter.IsNegative := by
-    intro hnegative
-    exact letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
+    exact fun hnegative => letter.not_isNegative_and_isPositive ⟨hnegative, hpositive⟩
   simp [signedRunSeries, hnotnegative]
 
 @[simp]
@@ -215,6 +214,26 @@ theorem exists_coeff_signedRunSeries_eq_zero_of_not_assignment
     rw [coeff_signedRunSeries_of_isPositive weight hpositive]
     simp [hne]
 
+private lemma coeff_prod_eq_sum_filter
+    {R : Type*} [CommSemiring R] {I : Type*} [Fintype I] [DecidableEq I]
+    (series : I → PowerSeries R[X]) (admissible : (I →₀ ℕ) → Prop)
+    [DecidablePred admissible] (summand : (I →₀ ℕ) → R[X])
+    (hvalid : ∀ lengths, admissible lengths →
+      ∏ i, PowerSeries.coeff (lengths i) (series i) = summand lengths)
+    (hinvalid : ∀ lengths, ¬admissible lengths →
+      ∏ i, PowerSeries.coeff (lengths i) (series i) = 0) (n : ℕ) :
+    PowerSeries.coeff n (∏ i, series i) =
+      ∑ lengths ∈ (Finset.univ.finsuppAntidiag n).filter admissible, summand lengths := by
+  rw [PowerSeries.coeff_prod]
+  change (∑ lengths ∈ Finset.univ.finsuppAntidiag n,
+    ∏ i, PowerSeries.coeff (lengths i) (series i)) = _
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro lengths _
+  by_cases h : admissible lengths
+  · simp [h, hvalid lengths h]
+  · simp [h, hinvalid lengths h]
+
 /-- A fixed skeleton's length-`n` coefficient is the finite sum over its
 admissible run-length fiber. -/
 theorem coeff_signedSkeletonRunSeries
@@ -225,43 +244,15 @@ theorem coeff_signedSkeletonRunSeries
       ∑ lengths ∈ signedRunLengthFiber skeleton n,
         signedRunLengthSummand weight skeleton lengths := by
   classical
-  rw [signedSkeletonRunSeries, PowerSeries.coeff_prod]
-  change (∑ lengths ∈ Finset.univ.finsuppAntidiag n,
-      ∏ i : Fin skeleton.length,
-        PowerSeries.coeff (lengths i)
-          (signedRunSeries weight (skeleton.get i))) = _
-  rw [signedRunLengthFiber]
-  symm
-  calc
-    (∑ lengths ∈ (Finset.univ.finsuppAntidiag n).filter
-          (IsSignedRunLengthAssignment skeleton),
-        signedRunLengthSummand weight skeleton lengths) =
-        ∑ lengths ∈ (Finset.univ.finsuppAntidiag n).filter
-            (IsSignedRunLengthAssignment skeleton),
-          ∏ i : Fin skeleton.length,
-            PowerSeries.coeff (lengths i)
-              (signedRunSeries weight (skeleton.get i)) := by
-      apply Finset.sum_congr rfl
-      intro lengths hlengths
-      have hvalid := (Finset.mem_filter.mp hlengths).2
-      rw [signedRunLengthSummand]
-      apply Finset.prod_congr rfl
-      intro i _
-      exact (coeff_signedRunSeries_of_assignment weight hvalid i).symm
-    _ = ∑ lengths ∈ Finset.univ.finsuppAntidiag n,
-          ∏ i : Fin skeleton.length,
-            PowerSeries.coeff (lengths i)
-              (signedRunSeries weight (skeleton.get i)) := by
-      apply Finset.sum_subset (Finset.filter_subset _ _)
-      intro lengths hlengths hnotmem
-      have hnotvalid :
-          ¬IsSignedRunLengthAssignment skeleton lengths := by
-        intro hvalid
-        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
-      obtain ⟨i, hi⟩ :=
-        exists_coeff_signedRunSeries_eq_zero_of_not_assignment
-          weight hnotvalid
-      exact Finset.prod_eq_zero (Finset.mem_univ i) hi
+  rw [signedSkeletonRunSeries, signedRunLengthFiber]
+  apply coeff_prod_eq_sum_filter
+  · intro lengths hvalid
+    rw [signedRunLengthSummand]
+    exact Finset.prod_congr rfl fun i _ =>
+      coeff_signedRunSeries_of_assignment weight hvalid i
+  · intro lengths hinvalid
+    obtain ⟨i, hi⟩ := exists_coeff_signedRunSeries_eq_zero_of_not_assignment weight hinvalid
+    exact Finset.prod_eq_zero (Finset.mem_univ i) hi
 
 /-! ## Realizing a fiber as canonical run data -/
 
@@ -479,44 +470,16 @@ theorem coeff_signedTupleSkeletonRunSeries
       ∑ lengths ∈ signedTupleRunLengthFiber skeleton n,
         signedTupleRunLengthSummand weight skeleton lengths := by
   classical
-  rw [signedTupleSkeletonRunSeries, PowerSeries.coeff_prod]
-  change (∑ lengths ∈ Finset.univ.finsuppAntidiag n,
-      ∏ i : Fin k,
-        PowerSeries.coeff (lengths i)
-          (signedRunSeries weight (skeleton i))) = _
-  rw [signedTupleRunLengthFiber]
-  symm
-  calc
-    (∑ lengths ∈ (Finset.univ.finsuppAntidiag n).filter
-          (IsSignedTupleRunLengthAssignment skeleton),
-        signedTupleRunLengthSummand weight skeleton lengths) =
-        ∑ lengths ∈ (Finset.univ.finsuppAntidiag n).filter
-            (IsSignedTupleRunLengthAssignment skeleton),
-          ∏ i : Fin k,
-            PowerSeries.coeff (lengths i)
-              (signedRunSeries weight (skeleton i)) := by
-      apply Finset.sum_congr rfl
-      intro lengths hlengths
-      have hvalid := (Finset.mem_filter.mp hlengths).2
-      rw [signedTupleRunLengthSummand]
-      apply Finset.prod_congr rfl
-      intro i _
-      exact (coeff_signedRunSeries_of_tupleAssignment
-        weight hvalid i).symm
-    _ = ∑ lengths ∈ Finset.univ.finsuppAntidiag n,
-          ∏ i : Fin k,
-            PowerSeries.coeff (lengths i)
-              (signedRunSeries weight (skeleton i)) := by
-      apply Finset.sum_subset (Finset.filter_subset _ _)
-      intro lengths hlengths hnotmem
-      have hnotvalid :
-          ¬IsSignedTupleRunLengthAssignment skeleton lengths := by
-        intro hvalid
-        exact hnotmem (Finset.mem_filter.mpr ⟨hlengths, hvalid⟩)
-      obtain ⟨i, hi⟩ :=
-        exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment
-          weight hnotvalid
-      exact Finset.prod_eq_zero (Finset.mem_univ i) hi
+  rw [signedTupleSkeletonRunSeries, signedTupleRunLengthFiber]
+  apply coeff_prod_eq_sum_filter
+  · intro lengths hvalid
+    rw [signedTupleRunLengthSummand]
+    exact Finset.prod_congr rfl fun i _ =>
+      coeff_signedRunSeries_of_tupleAssignment weight hvalid i
+  · intro lengths hinvalid
+    obtain ⟨i, hi⟩ :=
+      exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment weight hinvalid
+    exact Finset.prod_eq_zero (Finset.mem_univ i) hi
 
 /-- The finite disjoint union of all Smirnov skeleton/run-length pairs that
 expand to total length `n`. -/
@@ -554,10 +517,7 @@ theorem RunLengthData.ofFn_representativeTuple {q p : ℕ}
     List.ofFn data.representativeTuple = data.representatives := by
   change List.ofFn (fun i => (data.runs.get i).1) =
     data.runs.map Prod.fst
-  calc
-    _ = (List.ofFn data.runs.get).map Prod.fst :=
-      List.ofFn_comp' data.runs.get Prod.fst
-    _ = _ := by rw [List.ofFn_get]
+  rw [List.ofFn_comp', List.ofFn_get]
 
 /-- The skeleton/length index obtained by compressing a finite word. -/
 def compressedRunIndex {q p n : ℕ}
@@ -623,11 +583,7 @@ theorem compressedRunIndex_injective {q p n : ℕ} :
         compressRunLengthData (List.ofFn right) :=
     RunLengthData.ext hruns
   apply List.ofFn_injective
-  calc
-    List.ofFn left =
-        (compressRunLengthData (List.ofFn left)).expand := by simp
-    _ = (compressRunLengthData (List.ofFn right)).expand := by rw [hdata]
-    _ = List.ofFn right := by simp
+  simpa only [expand_compressRunLengthData] using congrArg RunLengthData.expand hdata
 
 theorem RunLengthData.sum_lengthTuple {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) :
@@ -656,9 +612,7 @@ theorem RunLengthData.runCount_le_sum_lengthTuple {q p : ℕ}
   calc
     data.runs.length = ∑ _i : Fin data.runs.length, 1 := by simp
     _ ≤ ∑ i : Fin data.runs.length, data.lengthTuple i := by
-      apply Finset.sum_le_sum
-      intro i _
-      exact data.lengths_pos _ (List.get_mem data.runs i)
+      exact Finset.sum_le_sum fun i _ => data.lengths_pos _ (List.get_mem data.runs i)
 
 /-- Compression sends every admissible length-`n` word into the finite global
 Smirnov expansion fiber. -/
@@ -824,12 +778,9 @@ theorem compressedRunIndex_surjOn_signedSmirnovExpansionFiber
   let data := runLengthDataOfTupleAssignment skeleton hskeleton lengths
     hlengths.2
   have hexpandLength : data.expand.length = n := by
-    calc
-      data.expand.length = ∑ i : Fin k, lengths i := by
-        simpa [data] using
-          (length_expand_runLengthDataOfTupleAssignment skeleton hskeleton
-            lengths hlengths.2)
-      _ = n := hlengths.1
+    rw [show data.expand.length = ∑ i : Fin k, lengths i by simpa [data] using
+      (length_expand_runLengthDataOfTupleAssignment skeleton hskeleton lengths hlengths.2),
+      hlengths.1]
   let word := listAsTuple data.expand hexpandLength
   have hwordList : List.ofFn word = data.expand :=
     ofFn_listAsTuple data.expand hexpandLength
@@ -840,7 +791,7 @@ theorem compressedRunIndex_surjOn_signedSmirnovExpansionFiber
     rw [← isSignedList_ofFn_iff, hwordList,
       data.isSignedList_expand_iff]
     exact hsigned
-  refine ⟨word, (mem_signedWords_iff.mpr hword), ?_⟩
+  refine ⟨word, mem_signedWords_iff.mpr hword, ?_⟩
   apply runIndexRuns_injective
   rw [runIndexRuns_compressedRunIndex, hwordList,
     data.compress_expand]

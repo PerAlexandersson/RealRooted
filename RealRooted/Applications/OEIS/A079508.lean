@@ -48,9 +48,6 @@ def recurrencePolynomial : ℕ → ℝ[X]
 private theorem A079508_denom_pos (n : ℕ) : (0 : ℝ) < 3 + (1 / 2) * (n : ℝ) := by
   positivity
 
-private theorem A079508_denom_ne (n : ℕ) : (3 + (1 / 2) * (n : ℝ)) ≠ 0 :=
-  ne_of_gt (A079508_denom_pos n)
-
 private def recurrencePolynomialα (n : ℕ) : ℝ :=
   (1 / (3 + (1 / 2) * (n : ℝ))) * ((9 / 2) + (n : ℝ))
 
@@ -58,17 +55,11 @@ private def recurrencePolynomialβ (n : ℕ) : ℝ :=
   (1 / (3 + (1 / 2) * (n : ℝ))) * ((-3 / 2) + (-1 / 2) * (n : ℝ))
 
 private theorem recurrencePolynomialα_pos (n : ℕ) : 0 < recurrencePolynomialα n := by
-  unfold recurrencePolynomialα
-  have := A079508_denom_pos n
-  positivity
+  unfold recurrencePolynomialα; have := A079508_denom_pos n; positivity
 
 private theorem recurrencePolynomialβ_neg (n : ℕ) : recurrencePolynomialβ n < 0 := by
   unfold recurrencePolynomialβ
-  have hd := A079508_denom_pos n
-  have h2 : ((-3 / 2) + ((-1 / 2) * (n : ℝ))) < 0 := by grind
-  have hd' : 0 < 1 / (3 + (1 / 2) * (n : ℝ)) := by
-    positivity
-  exact mul_neg_of_pos_of_neg hd' h2
+  exact mul_neg_of_pos_of_neg (by have := A079508_denom_pos n; positivity) (by grind)
 
 private theorem recurrencePolynomialαβ (n : ℕ) :
     recurrencePolynomialα n + recurrencePolynomialβ n = 1 := by
@@ -156,15 +147,8 @@ private theorem A079508_key (n : ℕ) :
     intro m
     induction m with
     | zero =>
-        refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩
-        · change (1 : ℝ[X]).natDegree = 0
-          simp
-        · change (1 : ℝ[X]).leadingCoeff = 1
-          simp
-        · change (X : ℝ[X]).natDegree = 1
-          simp
-        · change (X : ℝ[X]).leadingCoeff = 1
-          simp
+        refine ⟨⟨by simp [recurrencePolynomial], by simp [recurrencePolynomial]⟩,
+          ⟨by simp [recurrencePolynomial], by simp [recurrencePolynomial]⟩, ⟨?_, ?_⟩⟩
         · change (2 * X + X ^ 2 : ℝ[X]).natDegree = 2
           compute_degree!
         · change (2 * X + X ^ 2 : ℝ[X]).leadingCoeff = 1
@@ -174,12 +158,9 @@ private theorem A079508_key (n : ℕ) :
     | succ k ih =>
         obtain ⟨hk, hk1, hk2⟩ := ih
         refine ⟨hk1, hk2, ?_⟩
-        have hk_ne : recurrencePolynomial k ≠ 0 :=
-          leadingCoeff_ne_zero.mp (by simp_all)
-        have hk1_ne : recurrencePolynomial (k + 1) ≠ 0 :=
-          leadingCoeff_ne_zero.mp (by simp_all)
-        have hk2_ne : recurrencePolynomial (k + 2) ≠ 0 :=
-          leadingCoeff_ne_zero.mp (by simp_all)
+        have hk_ne : recurrencePolynomial k ≠ 0 := leadingCoeff_ne_zero.mp (by simp_all)
+        have hk1_ne : recurrencePolynomial (k + 1) ≠ 0 := leadingCoeff_ne_zero.mp (by simp_all)
+        have hk2_ne : recurrencePolynomial (k + 2) ≠ 0 := leadingCoeff_ne_zero.mp (by simp_all)
         have hd1 : (A079508c1 k * recurrencePolynomial (k + 2)).natDegree = k + 3 := by
           rw [natDegree_mul (A079508_c1_ne k) hk2_ne, A079508_c1_natDegree, hk2.1]
           lia
@@ -221,9 +202,6 @@ private theorem A079508_key (n : ℕ) :
         refine ⟨by assumption, ?_⟩
         rw [leadingCoeff, hdeg, hcoeff_top]
   simp_all
-private theorem A079508_natDegree (n : ℕ) : (recurrencePolynomial n).natDegree = n := by
-  exact (A079508_key n).1
-
 /-- The Fibonacci polynomials `F_0 = F_1 = 1`, `F_{n+2} = F_{n+1} + X F_n` (OEIS A011973). -/
 def fibPolynomial : ℕ → ℝ[X]
   | 0 => 1
@@ -391,40 +369,6 @@ private lemma A079508ReflectedModel_eq_reflect_closed (n : ℕ) :
       A079508ReflectedModel_coeff_eq_zero_of_lt n k hkn,
       A079508Closed_coeff, ite_eq_right hk]
 
-private lemma A079508Closed_eq_schurSzegoComp (n : ℕ) :
-    A079508Closed n =
-      schurSzegoComp n (A079508SchurLeft n) (A079508SchurRight n) := by
-  ext k
-  rw [A079508Closed_coeff, coeff_schurSzegoComp]
-  by_cases hk : k ≤ n
-  · rw [ite_eq_left hk, ite_eq_left hk, A079508SchurLeft_coeff,
-      A079508SchurRight_coeff, ite_eq_left hk, ite_eq_left hk]
-    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := by
-      exact_mod_cast (Nat.choose_pos hk).ne'
-    grind
-  · grind
-
-private lemma A079508_splits_of_closed_model
-    (hmodel : ∀ n : ℕ, recurrencePolynomial n = A079508Closed n)
-    (hleft : ∀ n : ℕ, IsPFPolynomial (A079508SchurLeft n))
-    (hleft0 : ∀ n : ℕ, A079508SchurLeft n ≠ 0)
-    (hright : ∀ n : ℕ, (A079508SchurRight n).Splits)
-    (hright0 : ∀ n : ℕ, A079508SchurRight n ≠ 0)
-    (n : ℕ) :
-    (recurrencePolynomial n).Splits := by
-  rw [hmodel, A079508Closed_eq_schurSzegoComp]
-  exact splits_schurSzegoComp_of_isPF n
-    (A079508SchurLeft n) (A079508SchurRight n)
-    (hleft n) (hleft0 n)
-    (by
-      rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-      simp_all)
-    (hright0 n)
-    (by
-      rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-      simp_all)
-    (hright n)
-
 private def A079508CR (n k : ℕ) : ℝ :=
   (Nat.choose (n - k) k : ℝ) * (Nat.choose (n + 2) k : ℝ) / (k + 1 : ℝ)
 
@@ -462,28 +406,24 @@ private lemma A079508_factorial_add_one_cast (m : ℕ) :
 private lemma A079508_factorial_add_two_cast (m : ℕ) :
     (Nat.factorial (m + 2) : ℝ) =
       (m + 2 : ℝ) * (m + 1 : ℝ) * (Nat.factorial m : ℝ) := by
-  norm_num [Nat.factorial_succ]
-  ring
+  norm_num [Nat.factorial_succ]; ring
 
 private lemma A079508_factorial_add_three_cast (m : ℕ) :
     (Nat.factorial (m + 3) : ℝ) =
       (m + 3 : ℝ) * (m + 2 : ℝ) * (m + 1 : ℝ) * (Nat.factorial m : ℝ) := by
-  norm_num [Nat.factorial_succ]
-  ring
+  norm_num [Nat.factorial_succ]; ring
 
 private lemma A079508_factorial_add_four_cast (m : ℕ) :
     (Nat.factorial (m + 4) : ℝ) =
       (m + 4 : ℝ) * (m + 3 : ℝ) * (m + 2 : ℝ) * (m + 1 : ℝ) *
         (Nat.factorial m : ℝ) := by
-  norm_num [Nat.factorial_succ]
-  ring
+  norm_num [Nat.factorial_succ]; ring
 
 private lemma A079508_factorial_add_five_cast (m : ℕ) :
     (Nat.factorial (m + 5) : ℝ) =
       (m + 5 : ℝ) * (m + 4 : ℝ) * (m + 3 : ℝ) * (m + 2 : ℝ) *
         (m + 1 : ℝ) * (Nat.factorial m : ℝ) := by
-  norm_num [Nat.factorial_succ]
-  ring
+  norm_num [Nat.factorial_succ]; ring
 
 private lemma A079508_CR_rec_interior (n k : ℕ) (hk : 2 ≤ k) (hs : 2 * k ≤ n) :
     A079508CR (n + 3) k =

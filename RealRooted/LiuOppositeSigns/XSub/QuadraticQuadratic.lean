@@ -40,16 +40,14 @@ lemma roots_overlap_of_positiveSplitRootCountPair_two_two
     have hf_count : rootCountAtOrAbove f x = 2 := by
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons]
-      rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa]
-      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxb]
+      rw [Multiset.filter_cons_of_pos ({b} : Multiset ℝ) hxa,
+        Multiset.filter_singleton, ite_eq_left hxb]
       simp
     have hg_count : rootCountAtOrAbove g x = 0 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      have hnot_xc : ¬ x ≤ c := not_le.mpr hcx
-      have hnot_xd : ¬ x ≤ d := not_le.mpr hdx
-      simp [hnot_xc, hnot_xd]
+      simp [not_le.mpr hcx, not_le.mpr hdx]
     rw [hf_count, hg_count] at hcount
     norm_num at hcount
   · by_contra hcb
@@ -68,14 +66,12 @@ lemma roots_overlap_of_positiveSplitRootCountPair_two_two
       rw [rootCountAtOrAbove, hfroots]
       simp only [Multiset.insert_eq_cons, Multiset.filter_cons,
         Multiset.filter_singleton]
-      have hnot_xa : ¬ x ≤ a := not_le.mpr hax
-      have hnot_xb : ¬ x ≤ b := not_le.mpr hbx
-      simp [hnot_xa, hnot_xb]
+      simp [not_le.mpr hax, not_le.mpr hbx]
     have hg_count : rootCountAtOrAbove g x = 2 := by
       rw [rootCountAtOrAbove, hgroots]
       simp only [Multiset.insert_eq_cons]
-      rw [Multiset.filter_cons_of_pos ({d} : Multiset ℝ) hxc]
-      rw [Multiset.filter_singleton (fun r : ℝ => x ≤ r), ite_eq_left hxd]
+      rw [Multiset.filter_cons_of_pos ({d} : Multiset ℝ) hxc,
+        Multiset.filter_singleton, ite_eq_left hxd]
       simp
     rw [hf_count, hg_count] at hcount
     norm_num at hcount
@@ -94,12 +90,8 @@ lemma quadraticSubLinear_splits_of_right_root_le_upper
     by_cases hac : a ≤ c
     · let u : ℝ := c - a
       let v : ℝ := b - c
-      have hu : 0 ≤ u := by
-        dsimp [u]
-        linarith
-      have hv : 0 ≤ v := by
-        dsimp [v]
-        linarith
+      have hu : 0 ≤ u := by dsimp [u]; linarith
+      have hv : 0 ≤ v := by dsimp [v]; linarith
       have hdisc_eq :
           discrim 1 (-(a + b + μ)) (a * b + μ * c) =
             (μ + v - u) ^ 2 + 4 * u * v := by
@@ -111,12 +103,8 @@ lemma quadraticSubLinear_splits_of_right_root_le_upper
     · have hca : c ≤ a := le_of_not_ge hac
       let u : ℝ := a - c
       let v : ℝ := b - a
-      have hu : 0 ≤ u := by
-        dsimp [u]
-        linarith
-      have hv : 0 ≤ v := by
-        dsimp [v]
-        linarith
+      have hu : 0 ≤ u := by dsimp [u]; linarith
+      have hv : 0 ≤ v := by dsimp [v]; linarith
       have hdisc_eq :
           discrim 1 (-(a + b + μ)) (a * b + μ * c) =
             μ ^ 2 + 4 * μ * u + 2 * μ * v + v ^ 2 := by
@@ -173,8 +161,7 @@ lemma natDegree_xSubQuadraticQuadratic (a b c d μ : ℝ) :
 /-- The normalized quadratic/quadratic x-subtraction polynomial is nonzero. -/
 lemma xSubQuadraticQuadratic_ne_zero (a b c d μ : ℝ) :
     X * ((X - C a) * (X - C b)) -
-      C μ * ((X - C c) * (X - C d)) ≠ 0 := by
-  intro hzero
+      C μ * ((X - C c) * (X - C d)) ≠ 0 := fun hzero => by
   have hdeg := natDegree_xSubQuadraticQuadratic a b c d μ
   rw [hzero] at hdeg
   norm_num at hdeg
@@ -220,18 +207,25 @@ lemma tendsto_eval_xSubQuadraticQuadratic_atTop_atTop (a b c d μ : ℝ) :
   let P : ℝ[X] :=
     X * ((X - C a) * (X - C b)) -
       C μ * ((X - C c) * (X - C d))
-  have hP_pos : HasPosLeadingCoeff P := by
-    dsimp [P]
-    exact hasPosLeadingCoeff_xSubQuadraticQuadratic a b c d μ
-  have hP_deg : P.natDegree = 3 := by
-    dsimp [P]
-    exact natDegree_xSubQuadraticQuadratic a b c d μ
-  have hP_deg_pos : 0 < P.degree := by
-    have hnat : 0 < P.natDegree := by
-      rw [hP_deg]
-      norm_num
-    exact natDegree_pos_iff_degree_pos.mp hnat
-  exact P.tendsto_atTop_of_leadingCoeff_nonneg hP_deg_pos hP_pos.le
+  apply P.tendsto_atTop_of_leadingCoeff_nonneg
+  · apply natDegree_pos_iff_degree_pos.mp
+    simp [P, natDegree_xSubQuadraticQuadratic]
+  · have h := (hasPosLeadingCoeff_xSubQuadraticQuadratic a b c d μ).le
+    simpa [P] using h
+
+private lemma splits_of_two_sign_changes_of_cubic {p : ℝ[X]} {a b c d : ℝ}
+    (hp_ne : p ≠ 0) (hdeg : p.natDegree ≤ 3)
+    (hab : a < b) (hbc : b ≤ c) (hcd : c < d) (hd0 : d ≤ 0)
+    (hab_sign : p.eval a * p.eval b < 0) (hcd_sign : p.eval c * p.eval d < 0)
+    (hzero : p.eval 0 ≤ 0) (htop : Tendsto (fun x => p.eval x) atTop atTop) :
+    p.Splits := by
+  obtain ⟨r₁, _, hr₁b, hr₁_root⟩ := exists_isRoot_between_of_eval_mul_neg hab hab_sign
+  obtain ⟨r₂, cr₂, hr₂d, hr₂_root⟩ := exists_isRoot_between_of_eval_mul_neg hcd hcd_sign
+  obtain ⟨rR, hrR_ge, hrR_root⟩ :=
+    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop hzero htop
+  exact splits_of_three_ordered_roots_of_natDegree_le hp_ne hdeg
+    (lt_trans hr₁b (hbc.trans_lt cr₂))
+    (lt_of_lt_of_le (hr₂d.trans_le hd0) hrR_ge) hr₁_root hr₂_root hrR_root
 
 /-- Strict order case `a < c < b < d < 0` for the normalized
 quadratic/quadratic leaf. -/
@@ -248,66 +242,34 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_b_d
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (a - c) * (a - d) :=
-      mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)
-    linarith [mul_pos hμ hG]
+    linarith [mul_pos hμ <|
+      mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hca_pos : 0 < c - a := sub_pos.mpr hac
-    have hcb_neg : c - b < 0 := sub_neg.mpr hcb
-    have hprod_neg : (c - a) * (c - b) < 0 :=
-      mul_neg_of_pos_of_neg hca_pos hcb_neg
-    have hleft_pos : 0 < c * ((c - a) * (c - b)) :=
-      mul_pos_of_neg_of_neg hc0 hprod_neg
-    linarith
+    linarith [mul_pos_of_neg_of_neg hc0 <|
+      mul_neg_of_pos_of_neg (sub_pos.mpr hac) (sub_neg.mpr hcb)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hbc_pos : 0 < b - c := sub_pos.mpr hcb
-    have hbd_neg : b - d < 0 := sub_neg.mpr hbd
-    have hG_neg : (b - c) * (b - d) < 0 :=
-      mul_neg_of_pos_of_neg hbc_pos hbd_neg
-    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ <| neg_pos.mpr <|
+      mul_neg_of_pos_of_neg (sub_pos.mpr hcb) (sub_neg.mpr hbd)]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hda_pos : 0 < d - a := sub_pos.mpr had
-    have hdb_pos : 0 < d - b := sub_pos.mpr hbd
-    have hprod_pos : 0 < (d - a) * (d - b) := mul_pos hda_pos hdb_pos
-    have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
-      mul_neg_of_neg_of_pos hd0 hprod_pos
-    linarith
+    linarith [mul_neg_of_neg_of_pos hd0 <|
+      mul_pos (sub_pos.mpr had) (sub_pos.mpr hbd)]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (0 - c) * (0 - d) :=
-      mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    linarith [mul_pos hμ hG]
-  have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
-    dsimp [P]
-    exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
-  obtain ⟨r₁, ha_r₁, hr₁_c, hr₁_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hac
-      (mul_neg_of_neg_of_pos hP_a_neg hP_c_pos)
-  obtain ⟨r₂, hb_r₂, hr₂_d, hr₂_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hbd
-      (mul_neg_of_pos_of_neg hP_b_pos hP_d_neg)
-  obtain ⟨rR, hrR_ge, hrR_root⟩ :=
-    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
-      (le_of_lt hP_zero_neg) ht_top
-  have h12 : r₁ < r₂ := lt_trans hr₁_c (lt_trans hcb hb_r₂)
-  have h2R : r₂ < rR :=
-    lt_of_lt_of_le (lt_trans hr₂_d hd0) hrR_ge
-  have hP_ne : P ≠ 0 := by
-    dsimp [P]
-    exact xSubQuadraticQuadratic_ne_zero a b c d μ
-  have hdeg_le : P.natDegree ≤ 3 := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticQuadratic]
-  have hsplits := splits_of_three_ordered_roots_of_natDegree_le
-    hP_ne hdeg_le h12 h2R hr₁_root hr₂_root hrR_root
-  simpa [P] using hsplits
+    linarith [mul_pos hμ <| mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)]
+  apply splits_of_two_sign_changes_of_cubic
+      (by simpa [P] using xSubQuadraticQuadratic_ne_zero a b c d μ)
+      (by simp [natDegree_xSubQuadraticQuadratic]) hac hcb.le hbd hd0.le
+  · exact mul_neg_of_neg_of_pos hP_a_neg hP_c_pos
+  · exact mul_neg_of_pos_of_neg hP_b_pos hP_d_neg
+  · exact hP_zero_neg.le
+  · simpa [P] using tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
 
 /-- Strict order case `a < c ≤ d < b ≤ 0` for the normalized
 quadratic/quadratic leaf. -/
@@ -325,67 +287,34 @@ lemma xSubQuadraticQuadraticSplits_of_order_a_c_d_b
   have hP_a_neg : P.eval a < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (a - c) * (a - d) :=
-      mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)
-    linarith [mul_pos hμ hG]
+    linarith [mul_pos hμ <|
+      mul_pos_of_neg_of_neg (sub_neg.mpr hac) (sub_neg.mpr had)]
   have hP_c_pos : 0 < P.eval c := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hca_pos : 0 < c - a := sub_pos.mpr hac
-    have hcb_neg : c - b < 0 :=
-      sub_neg.mpr (lt_of_le_of_lt hcd hdb)
-    have hprod_neg : (c - a) * (c - b) < 0 :=
-      mul_neg_of_pos_of_neg hca_pos hcb_neg
-    have hleft_pos : 0 < c * ((c - a) * (c - b)) :=
-      mul_pos_of_neg_of_neg hc0 hprod_neg
-    linarith
+    linarith [mul_pos_of_neg_of_neg hc0 <| mul_neg_of_pos_of_neg
+      (sub_pos.mpr hac) (sub_neg.mpr <| lt_of_le_of_lt hcd hdb)]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hda_pos : 0 < d - a := sub_pos.mpr had
-    have hdb_neg : d - b < 0 := sub_neg.mpr hdb
-    have hprod_neg : (d - a) * (d - b) < 0 :=
-      mul_neg_of_pos_of_neg hda_pos hdb_neg
-    have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
-      mul_pos_of_neg_of_neg hd0 hprod_neg
-    linarith
+    linarith [mul_pos_of_neg_of_neg hd0 <|
+      mul_neg_of_pos_of_neg (sub_pos.mpr had) (sub_neg.mpr hdb)]
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hbc_pos : 0 < b - c := sub_pos.mpr (lt_of_le_of_lt hcd hdb)
-    have hbd_pos : 0 < b - d := sub_pos.mpr hdb
-    have hG : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
-    linarith [mul_pos hμ hG]
+    linarith [mul_pos hμ <| mul_pos
+      (sub_pos.mpr <| lt_of_le_of_lt hcd hdb) (sub_pos.mpr hdb)]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (0 - c) * (0 - d) :=
-      mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    linarith [mul_pos hμ hG]
-  have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
-    dsimp [P]
-    exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
-  obtain ⟨r₁, ha_r₁, hr₁_c, hr₁_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hac
-      (mul_neg_of_neg_of_pos hP_a_neg hP_c_pos)
-  obtain ⟨r₂, hd_r₂, hr₂_b, hr₂_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hdb
-      (mul_neg_of_pos_of_neg hP_d_pos hP_b_neg)
-  obtain ⟨rR, hrR_ge, hrR_root⟩ :=
-    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
-      (le_of_lt hP_zero_neg) ht_top
-  have h12 : r₁ < r₂ := lt_trans hr₁_c (lt_of_le_of_lt hcd hd_r₂)
-  have h2R : r₂ < rR :=
-    lt_of_lt_of_le (lt_of_lt_of_le hr₂_b hb0) hrR_ge
-  have hP_ne : P ≠ 0 := by
-    dsimp [P]
-    exact xSubQuadraticQuadratic_ne_zero a b c d μ
-  have hdeg_le : P.natDegree ≤ 3 := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticQuadratic]
-  have hsplits := splits_of_three_ordered_roots_of_natDegree_le
-    hP_ne hdeg_le h12 h2R hr₁_root hr₂_root hrR_root
-  simpa [P] using hsplits
+    linarith [mul_pos hμ <| mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)]
+  apply splits_of_two_sign_changes_of_cubic
+      (by simpa [P] using xSubQuadraticQuadratic_ne_zero a b c d μ)
+      (by simp [natDegree_xSubQuadraticQuadratic]) hac hcd hdb hb0
+  · exact mul_neg_of_neg_of_pos hP_a_neg hP_c_pos
+  · exact mul_neg_of_pos_of_neg hP_d_pos hP_b_neg
+  · exact hP_zero_neg.le
+  · simpa [P] using tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
 
 /-- Strict order case `c < a ≤ b < d < 0` for the normalized
 quadratic/quadratic leaf. -/
@@ -403,68 +332,34 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_b_d
   have hP_c_neg : P.eval c < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hca_neg : c - a < 0 := sub_neg.mpr hca
-    have hcb_neg : c - b < 0 := sub_neg.mpr (lt_of_lt_of_le hca hab)
-    have hprod_pos : 0 < (c - a) * (c - b) :=
-      mul_pos_of_neg_of_neg hca_neg hcb_neg
-    have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
-      mul_neg_of_neg_of_pos hc0 hprod_pos
-    linarith
+    linarith [mul_neg_of_neg_of_pos hc0 <| mul_pos_of_neg_of_neg
+      (sub_neg.mpr hca) (sub_neg.mpr <| lt_of_lt_of_le hca hab)]
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hac_pos : 0 < a - c := sub_pos.mpr hca
-    have had_neg : a - d < 0 := sub_neg.mpr (lt_of_le_of_lt hab hbd)
-    have hG_neg : (a - c) * (a - d) < 0 :=
-      mul_neg_of_pos_of_neg hac_pos had_neg
-    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ <| neg_pos.mpr <| mul_neg_of_pos_of_neg
+      (sub_pos.mpr hca) (sub_neg.mpr <| lt_of_le_of_lt hab hbd)]
   have hP_b_pos : 0 < P.eval b := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hbc_pos : 0 < b - c := sub_pos.mpr (lt_of_lt_of_le hca hab)
-    have hbd_neg : b - d < 0 := sub_neg.mpr hbd
-    have hG_neg : (b - c) * (b - d) < 0 :=
-      mul_neg_of_pos_of_neg hbc_pos hbd_neg
-    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ <| neg_pos.mpr <| mul_neg_of_pos_of_neg
+      (sub_pos.mpr <| lt_of_lt_of_le hca hab) (sub_neg.mpr hbd)]
   have hP_d_neg : P.eval d < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hda_pos : 0 < d - a := sub_pos.mpr (lt_of_le_of_lt hab hbd)
-    have hdb_pos : 0 < d - b := sub_pos.mpr hbd
-    have hprod_pos : 0 < (d - a) * (d - b) := mul_pos hda_pos hdb_pos
-    have hleft_neg : d * ((d - a) * (d - b)) < 0 :=
-      mul_neg_of_neg_of_pos hd0 hprod_pos
-    linarith
+    linarith [mul_neg_of_neg_of_pos hd0 <| mul_pos
+      (sub_pos.mpr <| lt_of_le_of_lt hab hbd) (sub_pos.mpr hbd)]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (0 - c) * (0 - d) :=
-      mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    linarith [mul_pos hμ hG]
-  have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
-    dsimp [P]
-    exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
-  obtain ⟨r₁, hc_r₁, hr₁_a, hr₁_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hca
-      (mul_neg_of_neg_of_pos hP_c_neg hP_a_pos)
-  obtain ⟨r₂, hb_r₂, hr₂_d, hr₂_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hbd
-      (mul_neg_of_pos_of_neg hP_b_pos hP_d_neg)
-  obtain ⟨rR, hrR_ge, hrR_root⟩ :=
-    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
-      (le_of_lt hP_zero_neg) ht_top
-  have h12 : r₁ < r₂ := lt_trans hr₁_a (lt_of_le_of_lt hab hb_r₂)
-  have h2R : r₂ < rR :=
-    lt_of_lt_of_le (lt_trans hr₂_d hd0) hrR_ge
-  have hP_ne : P ≠ 0 := by
-    dsimp [P]
-    exact xSubQuadraticQuadratic_ne_zero a b c d μ
-  have hdeg_le : P.natDegree ≤ 3 := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticQuadratic]
-  have hsplits := splits_of_three_ordered_roots_of_natDegree_le
-    hP_ne hdeg_le h12 h2R hr₁_root hr₂_root hrR_root
-  simpa [P] using hsplits
+    linarith [mul_pos hμ <| mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)]
+  apply splits_of_two_sign_changes_of_cubic
+      (by simpa [P] using xSubQuadraticQuadratic_ne_zero a b c d μ)
+      (by simp [natDegree_xSubQuadraticQuadratic]) hca hab hbd hd0.le
+  · exact mul_neg_of_neg_of_pos hP_c_neg hP_a_pos
+  · exact mul_neg_of_pos_of_neg hP_b_pos hP_d_neg
+  · exact hP_zero_neg.le
+  · simpa [P] using tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
 
 /-- Strict order case `c < a < d < b ≤ 0` for the normalized
 quadratic/quadratic leaf. -/
@@ -482,71 +377,38 @@ lemma xSubQuadraticQuadraticSplits_of_order_c_a_d_b
   have hP_c_neg : P.eval c < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hca_neg : c - a < 0 := sub_neg.mpr hca
-    have hcb_neg : c - b < 0 := sub_neg.mpr (lt_trans hca (lt_trans had hdb))
-    have hprod_pos : 0 < (c - a) * (c - b) :=
-      mul_pos_of_neg_of_neg hca_neg hcb_neg
-    have hleft_neg : c * ((c - a) * (c - b)) < 0 :=
-      mul_neg_of_neg_of_pos hc0 hprod_pos
-    linarith
+    linarith [mul_neg_of_neg_of_pos hc0 <| mul_pos_of_neg_of_neg
+      (sub_neg.mpr hca) (sub_neg.mpr <| lt_trans hca <| lt_trans had hdb)]
   have hP_a_pos : 0 < P.eval a := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hac_pos : 0 < a - c := sub_pos.mpr hca
-    have had_neg : a - d < 0 := sub_neg.mpr had
-    have hG_neg : (a - c) * (a - d) < 0 :=
-      mul_neg_of_pos_of_neg hac_pos had_neg
-    linarith [mul_pos hμ (neg_pos.mpr hG_neg)]
+    linarith [mul_pos hμ <| neg_pos.mpr <|
+      mul_neg_of_pos_of_neg (sub_pos.mpr hca) (sub_neg.mpr had)]
   have hP_d_pos : 0 < P.eval d := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hda_pos : 0 < d - a := sub_pos.mpr had
-    have hdb_neg : d - b < 0 := sub_neg.mpr hdb
-    have hprod_neg : (d - a) * (d - b) < 0 :=
-      mul_neg_of_pos_of_neg hda_pos hdb_neg
-    have hleft_pos : 0 < d * ((d - a) * (d - b)) :=
-      mul_pos_of_neg_of_neg hd0 hprod_neg
-    linarith
+    linarith [mul_pos_of_neg_of_neg hd0 <|
+      mul_neg_of_pos_of_neg (sub_pos.mpr had) (sub_neg.mpr hdb)]
   have hP_b_neg : P.eval b < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hbc_pos : 0 < b - c := sub_pos.mpr (lt_trans hca (lt_trans had hdb))
-    have hbd_pos : 0 < b - d := sub_pos.mpr hdb
-    have hG : 0 < (b - c) * (b - d) := mul_pos hbc_pos hbd_pos
-    linarith [mul_pos hμ hG]
+    linarith [mul_pos hμ <| mul_pos
+      (sub_pos.mpr <| lt_trans hca <| lt_trans had hdb) (sub_pos.mpr hdb)]
   have hP_zero_neg : P.eval 0 < 0 := by
     dsimp [P]
     rw [eval_xSubQuadraticQuadratic]
-    have hG : 0 < (0 - c) * (0 - d) :=
-      mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)
-    linarith [mul_pos hμ hG]
-  have ht_top : Tendsto (fun x => P.eval x) atTop atTop := by
-    dsimp [P]
-    exact tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
-  obtain ⟨r₁, hc_r₁, hr₁_a, hr₁_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hca
-      (mul_neg_of_neg_of_pos hP_c_neg hP_a_pos)
-  obtain ⟨r₂, hd_r₂, hr₂_b, hr₂_root⟩ :=
-    exists_isRoot_between_of_eval_mul_neg hdb
-      (mul_neg_of_pos_of_neg hP_d_pos hP_b_neg)
-  obtain ⟨rR, hrR_ge, hrR_root⟩ :=
-    exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop
-      (le_of_lt hP_zero_neg) ht_top
-  have h12 : r₁ < r₂ := lt_trans hr₁_a (lt_trans had hd_r₂)
-  have h2R : r₂ < rR :=
-    lt_of_lt_of_le (lt_of_lt_of_le hr₂_b hb0) hrR_ge
-  have hP_ne : P ≠ 0 := by
-    dsimp [P]
-    exact xSubQuadraticQuadratic_ne_zero a b c d μ
-  have hdeg_le : P.natDegree ≤ 3 := by
-    dsimp [P]
-    rw [natDegree_xSubQuadraticQuadratic]
-  have hsplits := splits_of_three_ordered_roots_of_natDegree_le
-    hP_ne hdeg_le h12 h2R hr₁_root hr₂_root hrR_root
-  simpa [P] using hsplits
+    linarith [mul_pos hμ <| mul_pos (sub_pos.mpr hc0) (sub_pos.mpr hd0)]
+  apply splits_of_two_sign_changes_of_cubic
+      (by simpa [P] using xSubQuadraticQuadratic_ne_zero a b c d μ)
+      (by simp [natDegree_xSubQuadraticQuadratic]) hca had.le hdb hb0
+  · exact mul_neg_of_neg_of_pos hP_c_neg hP_a_pos
+  · exact mul_neg_of_pos_of_neg hP_d_pos hP_b_neg
+  · exact hP_zero_neg.le
+  · simpa [P] using tendsto_eval_xSubQuadraticQuadratic_atTop_atTop a b c d μ
 
 /-- The normalized monic quadratic/quadratic x-subtraction pencil splits. -/
-theorem xSubQuadraticQuadraticSplits {a b c d μ : ℝ} (hab : a ≤ b) (hcd : c ≤ d) (had : a ≤ d)
+theorem xSubQuadraticQuadraticSplits {a b c d μ : ℝ}
+    (hab : a ≤ b) (hcd : c ≤ d) (had : a ≤ d)
     (hcb : c ≤ b) (hb0 : b ≤ 0) (hd0 : d ≤ 0) (hμ : 0 < μ) :
     (X * ((X - C a) * (X - C b)) - C μ * ((X - C c) * (X - C d))).Splits := by
   by_cases hd_zero : d = 0

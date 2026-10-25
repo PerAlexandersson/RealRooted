@@ -86,10 +86,8 @@ theorem hasNonnegCoeffs_of_splits_of_roots_nonpos_of_coeff_zero_pos {p : ℝ[X]}
   have hc := congrArg (fun q => q.coeff 0) hp
   simp only [coeff_C_mul] at hc
   have hlc : 0 < p.leadingCoeff := by
-    by_contra hneg
-    push Not at hneg
-    have := mul_nonpos_of_nonpos_of_nonneg hneg (hP 0)
-    linarith
+    by_contra! hneg
+    nlinarith [mul_nonpos_of_nonpos_of_nonneg hneg (hP 0)]
   rw [hp]
   exact hasNonnegCoeffs_C_mul hlc.le hP
 
@@ -126,9 +124,8 @@ theorem exists_isGammaExpansion_of_idTransform_eq :
   intro p hdeg hfix
   rcases d with _ | d
   · refine ⟨p, by simpa using hdeg, rfl, ?_⟩
-    have h0 : gammaTransform 0 p = C (p.coeff 0) := by
-      simp [gammaTransform, gammaBasisTerm]
-    rw [IsGammaExpansion, h0]
+    rw [IsGammaExpansion, show gammaTransform 0 p = C (p.coeff 0) by
+      simp [gammaTransform, gammaBasisTerm]]
     exact eq_C_of_natDegree_le_zero hdeg
   obtain ⟨hlt, hfix'⟩ := gamma_expansion_remainder hdeg hfix (Nat.succ_pos d)
   set p' : ℝ[X] := p - C (p.coeff 0) * (X + 1) ^ (d + 1) with hp'
@@ -196,30 +193,6 @@ theorem exists_orderedRoot_eq {p : ℝ[X]} {n : ℕ} (hcard : p.roots.card = n) 
   rw [orderedRoot, List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hi, Option.getD_some]
   exact hix
 
-/-- `(θ + 1)` keeps the degree of a polynomial with positive coefficients. -/
-private lemma natDegree_thetaPlusOne_of_nonneg {g : ℝ[X]} {d : ℕ} (hg : g.natDegree = d)
-    (hg0 : g ≠ 0) : (thetaPlusOne g).natDegree = d := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    simp [coeff_eq_zero_of_natDegree_lt (hg ▸ hk)]
-  · have : g.coeff d ≠ 0 := hg ▸ (leadingCoeff_ne_zero.mpr hg0)
-    rw [coeff_thetaPlusOne]
-    exact mul_ne_zero (by positivity) this
-
-/-- `N - θ` keeps the degree of a polynomial of smaller degree. -/
-private lemma natDegree_polarTheta_of_lt {g : ℝ[X]} {d N : ℕ} (hg : g.natDegree = d)
-    (hg0 : g ≠ 0) (hN : d < N) : (polarTheta N g).natDegree = d := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    simp [coeff_eq_zero_of_natDegree_lt (hg ▸ hk)]
-  · have : g.coeff d ≠ 0 := hg ▸ (leadingCoeff_ne_zero.mpr hg0)
-    have hNd : (N : ℝ) - d ≠ 0 := by
-      have : (d : ℝ) < N := by exact_mod_cast hN
-      linarith
-    simpa [coeff_polarTheta, hNd] using this
-
 /-- **Root movement for `θ + 1`.**  If `g` has simple negative zeros, so does `(θ + 1) g`, and
 each of its ordered zeros lies strictly to the right of the corresponding zero of `g`. -/
 theorem SimpleNegRooted.thetaPlusOne {g : ℝ[X]} {d : ℕ} (hg : SimpleNegRooted g d) :
@@ -245,7 +218,11 @@ theorem SimpleNegRooted.thetaPlusOne {g : ℝ[X]} {d : ℕ} (hg : SimpleNegRoote
       simp [RealRooted.thetaPlusOne, theta, hr.eq_zero]
     rw [IsRoot, heval] at hΘ
     exact hg.simple.eval_derivative_ne_zero hr ((mul_eq_zero.mp hΘ).resolve_left hrneg.ne)
-  have hdeg := natDegree_thetaPlusOne_of_nonneg hg.natDegree_eq hg0
+  have hdeg : (RealRooted.thetaPlusOne g).natDegree = d := by
+    apply natDegree_eq_of_le_of_coeff_ne_zero
+    · exact (natDegree_thetaPlusOne_le g).trans_eq hg.natDegree_eq
+    · rw [coeff_thetaPlusOne]
+      exact mul_ne_zero (by positivity) (hg.natDegree_eq ▸ leadingCoeff_ne_zero.mpr hg0)
   have hΘ0 : (RealRooted.thetaPlusOne g).coeff 0 ≠ 0 := by
     simpa [coeff_thetaPlusOne] using hg.coeff_zero_pos.ne'
   refine ⟨⟨hdeg, hpfΘ.hasNonnegCoeffs.pos_leadingCoeff fun h => hΘ0 (by simp [h]),
@@ -278,7 +255,16 @@ theorem SimpleNegRooted.polarTheta {g : ℝ[X]} {d N : ℕ} (hd : 0 < d) (hN : d
       simp [RealRooted.polarTheta, theta, hr.eq_zero]
     rw [IsRoot, heval, neg_eq_zero] at hΘ
     exact hg.simple.eval_derivative_ne_zero hr ((mul_eq_zero.mp hΘ).resolve_left hrneg.ne)
-  have hdeg := natDegree_polarTheta_of_lt hg.natDegree_eq hg0 hN
+  have hdeg : (RealRooted.polarTheta N g).natDegree = d := by
+    apply natDegree_eq_of_le_of_coeff_ne_zero
+    · rw [natDegree_le_iff_coeff_eq_zero]
+      intro k hk
+      simp [coeff_eq_zero_of_natDegree_lt (hg.natDegree_eq ▸ hk)]
+    · rw [coeff_polarTheta]
+      have hNd : (N : ℝ) - d ≠ 0 := by
+        exact ne_of_gt (sub_pos.mpr (by exact_mod_cast hN))
+      exact mul_ne_zero hNd
+        (hg.natDegree_eq ▸ leadingCoeff_ne_zero.mpr hg0)
   have hP0 : (RealRooted.polarTheta N g).coeff 0 ≠ 0 := by
     have hNpos : (0 : ℝ) < N := by exact_mod_cast (by lia : 0 < N)
     simpa [coeff_polarTheta] using (mul_pos hNpos hg.coeff_zero_pos).ne'
@@ -300,8 +286,7 @@ theorem SimpleNegRooted.iterateThetaPlusOne {E : ℝ[X]} {d : ℕ} (hE : SimpleN
   | succ k ih =>
       rw [iterateThetaPlusOne_succ]
       obtain ⟨h1, h2⟩ := ih
-      obtain ⟨h3, h4⟩ := h1.thetaPlusOne
-      exact ⟨h3, fun i => (h2 i).trans (h4 i).le⟩
+      exact ⟨h1.thetaPlusOne.1, fun i => (h2 i).trans (h1.thetaPlusOne.2 i).le⟩
 
 /-- The `(k+1)`-fold iterate of `θ + 1` moves every ordered zero strictly to the right. -/
 theorem SimpleNegRooted.orderedRoot_lt_iterateThetaPlusOne {E : ℝ[X]} {d : ℕ}
@@ -322,8 +307,7 @@ theorem SimpleNegRooted.iteratePolarTheta {E : ℝ[X]} {d N : ℕ} (hd : 0 < d) 
   | succ k ih =>
       rw [Function.iterate_succ_apply']
       obtain ⟨h1, h2⟩ := ih
-      obtain ⟨h3, h4⟩ := h1.polarTheta hd hN
-      exact ⟨h3, fun i => (h4 i).le.trans (h2 i)⟩
+      exact ⟨(h1.polarTheta hd hN).1, fun i => ((h1.polarTheta hd hN).2 i).le.trans (h2 i)⟩
 
 /-- The `(k+1)`-fold iterate of `N - θ` moves every ordered zero strictly to the left. -/
 theorem SimpleNegRooted.orderedRoot_iteratePolarTheta_lt {E : ℝ[X]} {d N : ℕ} (hd : 0 < d)
@@ -346,15 +330,10 @@ theorem not_isRoot_of_orderedRoot_chain {E U V : ℝ[X]} {d : ℕ} (hE0 : E ≠ 
   obtain ⟨i, hi⟩ := exists_orderedRoot_eq hE ((mem_roots hE0).mpr hr)
   obtain ⟨j, hj⟩ := exists_orderedRoot_eq hU ((mem_roots hU0).mpr hr')
   rcases le_or_gt i j with hij | hji
-  · have h4 := orderedRoot_mono hU hij
-    have h5 := h1 i
-    linarith
+  · linarith [orderedRoot_mono hU hij, h1 i]
   · have hj1 : j.val + 1 < d := by have := i.2; lia
     have hle : (⟨j.val + 1, hj1⟩ : Fin d) ≤ i := hji
-    have h4 := h3 j hj1
-    have h5 := h2 ⟨j.val + 1, hj1⟩
-    have h6 := orderedRoot_mono hE hle
-    linarith
+    linarith [h3 j hj1, h2 ⟨j.val + 1, hj1⟩, orderedRoot_mono hE hle]
 
 namespace SuperEulerian
 
@@ -418,7 +397,7 @@ example : (List.range 3).map (superEulerianNumber 3 3) = [1, 16, 1] := by decide
 theorem superEulerianNumber_succ_zero (l n : ℕ) : superEulerianNumber l (n + 1) 0 = 1 := by
   induction n with
   | zero => rfl
-  | succ n ih => rw [superEulerianNumber_succ_succ_zero, ih]
+  | succ n ih => simpa only [superEulerianNumber_succ_succ_zero] using ih
 
 /-- The last column is `1`: `E_{n+1,n} = 1`. -/
 theorem superEulerianNumber_succ_self (l n : ℕ) : superEulerianNumber l (n + 1) n = 1 := by
@@ -458,8 +437,7 @@ theorem superEulerianNumber_symm (l : ℕ) :
 
 /-- Super-Eulerian polynomials have nonnegative coefficients. -/
 theorem hasNonnegCoeffs_superEulerian (l n : ℕ) : HasNonnegCoeffs (superEulerian l n) := by
-  intro k
-  simp
+  intro k; simp
 
 /-- The row `E_{n+1}^{(l)}` has degree `n`. -/
 theorem natDegree_superEulerian (l n : ℕ) : (superEulerian l (n + 1)).natDegree = n := by
@@ -472,9 +450,8 @@ theorem natDegree_superEulerian (l n : ℕ) : (superEulerian l (n + 1)).natDegre
 /-- The rows `E_{n+1}^{(l)}` are nonzero. -/
 theorem superEulerian_succ_ne_zero (l n : ℕ) : superEulerian l (n + 1) ≠ 0 := by
   intro h
-  have := natDegree_superEulerian l n
-  have hc := congrArg (fun p => p.coeff 0) h
-  simp [superEulerianNumber_succ_zero] at hc
+  have := congrArg (fun p => p.coeff 0) h
+  simp [superEulerianNumber_succ_zero] at this
 
 /-- The coefficient reflection of a super-Eulerian polynomial fixes it: palindromicity. -/
 theorem reflect_superEulerian (l n : ℕ) :
@@ -504,11 +481,8 @@ private lemma coeff_eulerianTilde_succ_eq (n k : ℕ) :
         by_cases hk : k ≤ n + 1
         · push_cast [Nat.cast_sub hk]
           ring
-        · have h0 : superEulerianNumber 1 (n + 1) k = 0 :=
-            superEulerianNumber_eq_zero_of_le 1 (n + 1) k (by lia)
-          have h1 : superEulerianNumber 1 (n + 1) (k + 1) = 0 :=
-            superEulerianNumber_eq_zero_of_le 1 (n + 1) (k + 1) (by lia)
-          simp [h0, h1]
+        · simp [superEulerianNumber_eq_zero_of_le 1 (n + 1) k (by lia),
+            superEulerianNumber_eq_zero_of_le 1 (n + 1) (k + 1) (by lia)]
 
 /-- For `l = 1` the super-Eulerian polynomials are the classical Eulerian polynomials:
 `eulerianTilde n = X * E_{n+1}^{(1)}`. -/
@@ -563,9 +537,7 @@ private lemma interl_X_add_one_pow_thetaPlusOne (m : ℕ) :
   · rw [thetaPlusOne_X_add_one_pow_one]
     refine Interl.C_mul_right_of_nonneg ?_ (by norm_num)
     simpa using (Interl.X_add_C_iff (a := 1 / 2) (b := 1)).mpr (by norm_num)
-  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by
-      rw [natDegree_pow]
-      simp
+  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by simp [natDegree_pow]
     have := strictInterl_self_thetac hpf hdeg one_pos
     simpa [thetaPlusOne, theta] using this.toInterl
 
@@ -583,9 +555,7 @@ private lemma interl_polarTheta_thetaPlusOne_X_add_one_pow (m : ℕ) :
     rw [h1, thetaPlusOne_X_add_one_pow_one]
     exact Interl.C_mul_right_of_nonneg
       ((Interl.X_add_C_iff (a := 1 / 2) (b := 2)).mpr (by norm_num)) (by norm_num)
-  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by
-      rw [natDegree_pow]
-      simp
+  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by simp [natDegree_pow]
     exact (strictInterl_polarTheta_thetaPlusOne hpf hdeg (by rw [natDegree_pow]; simp)
       (by simp [coeff_X_add_one_pow])).toInterl
 
@@ -595,15 +565,12 @@ private lemma interl_polarTheta_thetaPlusOne_X_add_one_pow (m : ℕ) :
 private def eulerStep (N : ℕ) (p : ℝ[X]) : ℝ[X] :=
   thetaPlusOne (polarTheta N p)
 
-private lemma coeff_eulerStep (N : ℕ) (p : ℝ[X]) (k : ℕ) :
-    (eulerStep N p).coeff k = ((k : ℝ) + 1) * (((N : ℝ) - k) * p.coeff k) := by
-  simp [eulerStep]
-
 private lemma coeff_eulerStep_iterate (N l : ℕ) (p : ℝ[X]) (k : ℕ) :
     ((eulerStep N)^[l] p).coeff k = (((k : ℝ) + 1) * ((N : ℝ) - k)) ^ l * p.coeff k := by
   induction l with
   | zero => simp
-  | succ l ih => rw [Function.iterate_succ_apply', coeff_eulerStep, ih]; ring
+  | succ l ih => rw [Function.iterate_succ_apply', eulerStep, coeff_thetaPlusOne,
+      coeff_polarTheta, ih]; ring
 
 private lemma natDegree_eulerStep_iterate_le (N l : ℕ) (p : ℝ[X]) :
     ((eulerStep N)^[l] p).natDegree ≤ p.natDegree := by
@@ -713,13 +680,9 @@ private lemma normRow_succ (l m : ℕ) :
       simp [superEulerianNumber_succ_self, superEulerianNumber_eq_zero_of_le l (j + 1) (j + 1)
         le_rfl]
       field_simp
-    · have h1 : superEulerianNumber l (m + 2) (j + 1) = 0 :=
-        superEulerianNumber_eq_zero_of_le l (m + 2) (j + 1) (by lia)
-      have h2 : superEulerianNumber l (m + 1) (j + 1) = 0 :=
-        superEulerianNumber_eq_zero_of_le l (m + 1) (j + 1) (by lia)
-      have h3 : superEulerianNumber l (m + 1) j = 0 :=
-        superEulerianNumber_eq_zero_of_le l (m + 1) j (by lia)
-      simp [h1, h2, h3]
+    · simp [superEulerianNumber_eq_zero_of_le l (m + 2) (j + 1) (by lia),
+        superEulerianNumber_eq_zero_of_le l (m + 1) (j + 1) (by lia),
+        superEulerianNumber_eq_zero_of_le l (m + 1) j (by lia)]
 
 private lemma isPFPolynomial_normRow (l m : ℕ) : IsPFPolynomial (normRow l m) := by
   induction m with

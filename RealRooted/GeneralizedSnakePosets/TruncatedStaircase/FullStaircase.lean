@@ -318,37 +318,14 @@ theorem IsNonNestingPlacement.fullStaircaseReflectedColumnList_sortedLE
     {n : ℕ} {P : Finset (ℕ × ℕ)}
     (hP : (truncatedStaircase n n).IsNonNestingPlacement P) :
     (fullStaircaseReflectedColumnList n P).SortedLE := by
-  rw [fullStaircaseReflectedColumnList]
-  rw [List.sortedLE_iff_getElem_le_getElem_of_le]
-  intro i j hi hj hij
-  by_cases heq : i = j
-  · subst j
-    rfl
-  have hlt : i < j := lt_of_le_of_ne hij heq
-  let L := fullStaircaseReflectedPairLexList n P
-  have hiL : i < L.length := by simpa [L] using hi
-  have hjL : j < L.length := by simpa [L] using hj
-  set x := L[i] with hx
-  set y := L[j] with hy
-  have hlex : Prod.Lex (· < ·) (· ≤ ·) x y := by
-    simpa [x, y] using
-      (List.pairwise_iff_getElem.mp
-        (fullStaircaseReflectedPairLexList_pairwise n P)) i j hiL hjL hlt
-  have hxi : x ∈ fullStaircaseReflectedPairs n P :=
-    mem_fullStaircaseReflectedPairLexList.mp (by
-      simp [x, L])
-  have hxj : y ∈ fullStaircaseReflectedPairs n P :=
-    mem_fullStaircaseReflectedPairLexList.mp (by
-      simp [y, L])
-  have hcol : x.2 ≤ y.2 := by
-    rcases x with ⟨xr, xc⟩
-    rcases y with ⟨yr, yc⟩
-    cases hlex with
-    | left b1 b2 hrow =>
-        exact le_of_lt
-          (hP.fullStaircaseReflectedPairs_snd_lt_of_fst_lt hxi hxj hrow)
-    | right a hcol => exact hcol
-  simpa [x, y, hx, hy, L] using hcol
+  rw [fullStaircaseReflectedColumnList, List.sortedLE_iff_pairwise, List.pairwise_map]
+  exact (fullStaircaseReflectedPairLexList_pairwise n P).imp_of_mem
+    fun hx hy hlex => by
+      cases hlex with
+      | left _ _ hrow => exact (hP.fullStaircaseReflectedPairs_snd_lt_of_fst_lt
+          (mem_fullStaircaseReflectedPairLexList.mp hx)
+          (mem_fullStaircaseReflectedPairLexList.mp hy) hrow).le
+      | right _ hcol => exact hcol
 
 /-- Sorting the reflected row projection recovers the reflected row list. -/
 theorem IsNonNestingPlacement.fullStaircaseReflectedPairRows_sort
@@ -395,10 +372,7 @@ private theorem orderedSubsetPairFullStaircasePlacement_list_nodup
     (n : ℕ) {A B : Finset ℕ} (hcard : A.card = B.card) :
     ((A.sort (· ≤ ·)).zip ((B.sort (· ≤ ·)).map fun b => n - 1 - b)).Nodup := by
   apply List.Nodup.of_map Prod.fst
-  have hlen :
-      (A.sort (· ≤ ·)).length ≤ ((B.sort (· ≤ ·)).map fun b => n - 1 - b).length := by
-    rw [List.length_map, Finset.length_sort, Finset.length_sort, hcard]
-  rw [List.map_fst_zip hlen]
+  rw [List.map_fst_zip (by simp [hcard])]
   exact A.sort_nodup (· ≤ ·)
 
 /-- The placement constructed from an ordered `k`-subset pair has cardinality
@@ -516,32 +490,11 @@ theorem fullStaircaseReflectedPairRows_orderedSubsetPairFullStaircasePlacement
   classical
   rw [Finset.mem_orderedKSubsetPairs] at hAB
   rcases hAB with ⟨_hA, hAcard, _hB, hBcard, _hle⟩
-  rw [fullStaircaseReflectedPairRows_eq_image_fst]
+  rw [fullStaircaseReflectedPairRows_eq_image_fst,
+    orderedSubsetPairFullStaircasePlacement]
   ext a
-  have hlen :
-      (A.sort (· ≤ ·)).length ≤ ((B.sort (· ≤ ·)).map fun b => n - 1 - b).length := by
-    rw [List.length_map, Finset.length_sort, Finset.length_sort, hAcard, hBcard]
-  have hmap :
-      List.map Prod.fst ((A.sort (· ≤ ·)).zip
-        ((B.sort (· ≤ ·)).map fun b => n - 1 - b)) = A.sort (· ≤ ·) :=
-    List.map_fst_zip hlen
-  constructor
-  · rw [Finset.mem_image]
-    rintro ⟨x, hx, rfl⟩
-    rw [orderedSubsetPairFullStaircasePlacement, List.mem_toFinset] at hx
-    have hxmap : x.1 ∈ List.map Prod.fst
-        ((A.sort (· ≤ ·)).zip ((B.sort (· ≤ ·)).map fun b => n - 1 - b)) :=
-      List.mem_map.mpr ⟨x, hx, rfl⟩
-    rw [hmap, Finset.mem_sort] at hxmap
-    exact hxmap
-  · intro ha
-    rw [Finset.mem_image]
-    have hasort : a ∈ A.sort (· ≤ ·) := by rwa [Finset.mem_sort]
-    rw [← hmap] at hasort
-    rcases List.mem_map.mp hasort with ⟨x, hx, hx_fst⟩
-    refine ⟨x, ?_, hx_fst⟩
-    rw [orderedSubsetPairFullStaircasePlacement, List.mem_toFinset]
-    exact hx
+  simp only [Finset.mem_image, List.mem_toFinset]
+  rw [← List.mem_map, List.map_fst_zip (by simp [hAcard, hBcard]), Finset.mem_sort]
 
 /-- The reflected-column projection of the placement constructed from an
 ordered subset pair recovers the second subset. -/
@@ -554,51 +507,35 @@ theorem fullStaircaseReflectedPairColumns_orderedSubsetPairFullStaircasePlacemen
   rw [Finset.mem_orderedKSubsetPairs] at hAB
   rcases hAB with ⟨_hA, hAcard, hB, hBcard, _hle⟩
   rw [fullStaircaseReflectedPairColumns_eq_image_reflectedColumn]
-  ext b
   let rows := A.sort (· ≤ ·)
   let cols := B.sort (· ≤ ·)
   let cols' := cols.map fun b => n - 1 - b
   let L := rows.zip cols'
-  have hlen : rows.length = cols.length := by simp [rows, cols, Finset.length_sort, hAcard, hBcard]
-  constructor
-  · rw [Finset.mem_image]
-    rintro ⟨x, hx, hx_reflect⟩
-    have hxL : x ∈ L := by
-      simpa [orderedSubsetPairFullStaircasePlacement, L, rows, cols, cols'] using hx
-    rcases List.getElem_of_mem hxL with ⟨i, hi, hix⟩
-    have hi_cols' : i < cols'.length := List.lt_length_right_of_zip hi
-    have hi_cols : i < cols.length := by simpa [cols'] using hi_cols'
-    have hx_eq : x = (rows[i], n - 1 - cols[i]) := by
-      rw [← hix, List.getElem_zip]
-      simp [cols']
-    have hcol_mem : cols[i] ∈ B := by
-      rw [← Finset.mem_sort (s := B) (r := (· ≤ ·))]
-      exact List.getElem_mem hi_cols
-    have hcol_lt : cols[i] < n := Finset.mem_range.mp (hB hcol_mem)
-    have hb_eq : b = cols[i] := by
-      rw [← hx_reflect, hx_eq]
-      dsimp
-      lia
-    rwa [hb_eq]
-  · intro hb
-    rw [Finset.mem_image]
-    have hbsort : b ∈ cols := by
-      change b ∈ B.sort (· ≤ ·)
-      rwa [Finset.mem_sort]
-    rcases List.getElem_of_mem hbsort with ⟨i, hi_cols, hib⟩
-    have hi_rows : i < rows.length := by
-      rw [hlen]
-      exact hi_cols
-    have hi_cols' : i < cols'.length := by simpa [cols'] using hi_cols
-    have hiL : i < L.length := by simp [L, cols', List.length_zip, hlen, hi_cols]
-    refine ⟨(rows[i], n - 1 - b), ?_, ?_⟩
-    · rw [orderedSubsetPairFullStaircasePlacement, List.mem_toFinset]
-      have hmemL : L[i] ∈ L := List.getElem_mem hiL
-      have hmem : (rows[i], cols'[i]) ∈ L := by simpa [L, List.getElem_zip (h := hiL)] using hmemL
-      simpa [L, rows, cols, cols', hib] using hmem
-    · have hb_lt : b < n := Finset.mem_range.mp (hB hb)
-      dsimp
-      lia
+  have hsnd : L.map Prod.snd = cols' := by
+    simpa [L] using List.map_snd_zip
+      (l₁ := rows) (l₂ := cols') (by simp [rows, cols, cols', hAcard, hBcard])
+  have hreflect : cols'.map (fun b => n - 1 - b) = cols := by
+    simp only [cols', List.map_map]
+    calc
+      cols.map ((fun b => n - 1 - b) ∘ fun b => n - 1 - b) = cols.map id := by
+        apply List.map_congr_left
+        intro b hb
+        simp only [Function.comp_apply, id_eq]
+        have hbB : b ∈ B := by simpa [cols] using hb
+        have hb_lt : b < n := Finset.mem_range.mp (hB hbB)
+        lia
+      _ = cols := by simp
+  have hmap : L.map (fun x => n - 1 - x.2) = cols := by
+    calc
+      L.map (fun x => n - 1 - x.2) = (L.map Prod.snd).map (fun b => n - 1 - b) := by
+        simp [List.map_map, Function.comp_def]
+      _ = cols'.map (fun b => n - 1 - b) := by rw [hsnd]
+      _ = cols := hreflect
+  rw [orderedSubsetPairFullStaircasePlacement]
+  change (L.toFinset.image fun x => n - 1 - x.2) = B
+  ext b
+  simp only [Finset.mem_image, List.mem_toFinset]
+  rw [← List.mem_map, hmap, Finset.mem_sort]
 
 /-- Projecting the placement constructed from an ordered subset pair recovers
 that ordered subset pair. -/
