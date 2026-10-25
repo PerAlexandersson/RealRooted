@@ -20,9 +20,7 @@ namespace RealRooted
 
 /-- An integer bounded above by two but not equal to two is bounded above by one. -/
 theorem int_le_one_of_le_two_ne_two {z : ℤ} (hzle : z ≤ 2) (hzne : z ≠ 2) :
-    z ≤ 1 := by
-  have hzlt : z < 2 := lt_of_le_of_ne hzle hzne
-  exact Int.lt_add_one_iff.mp (by simpa using hzlt)
+    z ≤ 1 := by lia
 
 /-- Differentiating a succ-degree pair preserves the succ-degree relation,
 provided the lower-degree endpoint has positive degree. -/
@@ -245,15 +243,6 @@ theorem succDegreeRootCountAbove_of_rootCount
     rw [Polynomial.splits_iff_card_roots.mp hg, hdeg]
   exact count_gt_diff_le_one_of_count_le_two hMcard hNcard hcount
 
-/-- If every entry of a list lies strictly above `x`, then filtering by
-`x < ·` keeps all entries. -/
-private lemma filter_gt_length_eq_of_all (l : List ℝ) (x : ℝ)
-    (h : ∀ a ∈ l, x < a) :
-    (l.filter (fun y => decide (x < y))).length = l.length := by
-  rw [List.filter_eq_self.mpr]
-  intro a ha
-  exact decide_eq_true (h a ha)
-
 /-- In a sorted increasing cons list whose head lies strictly above `x`, every
 entry lies strictly above `x`. -/
 private lemma all_gt_of_sorted_head {a : ℝ} {l : List ℝ} {x : ℝ}
@@ -265,129 +254,24 @@ private lemma all_gt_of_sorted_head {a : ℝ} {l : List ℝ} {x : ℝ}
   · exact hx
   · exact lt_of_lt_of_le hx ((List.pairwise_cons.mp hsorted).1 b hb)
 
-/-- Core combinatorial count bound for differ-by-one list interlacing.
-
-If sorted lists `ss` and `rs` interlace in the differ-by-one pattern, then the
-numbers of entries strictly above a threshold differ by at most one, with `rs`
-never below `ss`. -/
-private lemma interlaces_filter_gt_length_bounds :
-    ∀ (ss rs : List ℝ) (x : ℝ),
-      ss.Pairwise (· ≤ ·) → rs.Pairwise (· ≤ ·) →
-      ss.length + 1 = rs.length → ListInterlaces ss rs →
-      (ss.filter (fun y => decide (x < y))).length
-          ≤ (rs.filter (fun y => decide (x < y))).length ∧
-      (rs.filter (fun y => decide (x < y))).length
-          ≤ (ss.filter (fun y => decide (x < y))).length + 1
-  | [], [], _, _, _, hlen, _ => by simp at hlen
-  | [], [r], x, _, _, _, _ => by
-      simp only [List.filter_nil, List.length_nil]
-      refine ⟨Nat.zero_le _, ?_⟩
-      exact List.length_filter_le (fun y => decide (x < y)) [r]
-  | [], _ :: _ :: _, _, _, _, _, hint => by simp [ListInterlaces] at hint
-  | _ :: _, [], _, _, _, _, hint => by simp [ListInterlaces] at hint
-  | _ :: _, [_], _, _, _, hlen, _ => by simp at hlen
-  | s :: sst, r₁ :: r₂ :: rs, x, hss, hrs, hlen, hint => by
-      obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
-      have hrs_tl : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
-      have hlen' : sst.length + 1 = (r₂ :: rs).length := by
-        simp only [List.length_cons] at hlen ⊢
-        lia
-      obtain ⟨IH1, IH2⟩ :=
-        interlaces_filter_gt_length_bounds sst (r₂ :: rs) x hss_tl hrs_tl hlen' htail
-      set p : ℝ → Bool := fun y => decide (x < y) with hp
-      by_cases hr₁ : x < r₁
-      · have hs : x < s := lt_of_lt_of_le hr₁ hr₁s
-        rw [List.filter_cons_of_pos (by simp [hp, hs]),
-          List.filter_cons_of_pos (by simp [hp, hr₁]), List.length_cons, List.length_cons]
-        lia
-      · by_cases hs : x < s
-        · have hs_all : ∀ b ∈ (s :: sst), x < b := all_gt_of_sorted_head hss hs
-          have hr₂ : x < r₂ := lt_of_lt_of_le hs hsr₂
-          have hr_all : ∀ b ∈ (r₂ :: rs), x < b := all_gt_of_sorted_head hrs_tl hr₂
-          have hsfull : ((s :: sst).filter p).length = (s :: sst).length :=
-            filter_gt_length_eq_of_all _ x hs_all
-          have hrfull : ((r₂ :: rs).filter p).length = (r₂ :: rs).length :=
-            filter_gt_length_eq_of_all _ x hr_all
-          have hRHS : ((r₁ :: r₂ :: rs).filter p).length =
-              ((r₂ :: rs).filter p).length := by
-            rw [List.filter_cons_of_neg (by
-              rw [hp]
-              simp only [decide_eq_true_eq]
-              exact hr₁)]
-          rw [hRHS, hsfull, hrfull, List.length_cons, List.length_cons]
-          rw [List.length_cons] at hlen'
-          lia
-        · rw [List.filter_cons_of_neg (by
-              rw [hp]
-              simp only [decide_eq_true_eq]
-              exact hs),
-            List.filter_cons_of_neg (by
-              rw [hp]
-              simp only [decide_eq_true_eq]
-              exact hr₁)]
-          exact ⟨IH1, IH2⟩
-
-/-- Lower-threshold companion of `interlaces_filter_gt_length_bounds`.
+/-- Lower-threshold companion of the upper-threshold list-interlacing bounds.
 
 If sorted lists `ss` and `rs` interlace in the differ-by-one pattern, then the
 numbers of entries at or below a threshold differ by at most one, with `rs`
 never below `ss`. -/
 private lemma interlaces_filter_le_length_bounds :
     ∀ (ss rs : List ℝ) (x : ℝ),
-      ss.Pairwise (· ≤ ·) → rs.Pairwise (· ≤ ·) →
       ss.length + 1 = rs.length → ListInterlaces ss rs →
       (ss.filter (fun y => decide (y ≤ x))).length
           ≤ (rs.filter (fun y => decide (y ≤ x))).length ∧
       (rs.filter (fun y => decide (y ≤ x))).length
-          ≤ (ss.filter (fun y => decide (y ≤ x))).length + 1
-  | [], [], _, _, _, hlen, _ => by simp at hlen
-  | [], [r], x, _, _, _, _ => by
-      simp only [List.filter_nil, List.length_nil]
-      refine ⟨Nat.zero_le _, ?_⟩
-      exact List.length_filter_le (fun y => decide (y ≤ x)) [r]
-  | [], _ :: _ :: _, _, _, _, _, hint => by simp [ListInterlaces] at hint
-  | _ :: _, [], _, _, _, _, hint => by simp [ListInterlaces] at hint
-  | _ :: _, [_], _, _, _, hlen, _ => by simp at hlen
-  | s :: sst, r₁ :: r₂ :: rs, x, hss, hrs, hlen, hint => by
-      obtain ⟨hr₁s, hsr₂, htail⟩ := hint
-      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
-      have hrs_tl : (r₂ :: rs).Pairwise (· ≤ ·) := (List.pairwise_cons.mp hrs).2
-      have hlen' : sst.length + 1 = (r₂ :: rs).length := by
-        simp only [List.length_cons] at hlen ⊢
-        lia
-      obtain ⟨IH1, IH2⟩ :=
-        interlaces_filter_le_length_bounds sst (r₂ :: rs) x hss_tl hrs_tl hlen' htail
-      set p : ℝ → Bool := fun y => decide (y ≤ x) with hp
-      by_cases hs : s ≤ x
-      · have hr₁ : r₁ ≤ x := le_trans hr₁s hs
-        rw [List.filter_cons_of_pos (by simpa [hp] using hs),
-          List.filter_cons_of_pos (by simpa [hp] using hr₁)]
-        simp only [List.length_cons]
-        exact ⟨by lia, by lia⟩
-      · have hxs : x < s := lt_of_not_ge hs
-        have hsst_all : ∀ b ∈ sst, x < b := fun b hb =>
-          lt_of_lt_of_le hxs ((List.pairwise_cons.mp hss).1 b hb)
-        have hr₂ : x < r₂ := lt_of_lt_of_le hxs hsr₂
-        have hr_all : ∀ b ∈ (r₂ :: rs), x < b := all_gt_of_sorted_head hrs_tl hr₂
-        have hsst0 : (sst.filter p).length = 0 := by
-          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
-          intro a ha
-          simp only [hp, decide_eq_true_eq]
-          exact not_le.mpr (hsst_all a ha)
-        have hr0 : ((r₂ :: rs).filter p).length = 0 := by
-          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
-          intro a ha
-          simp only [hp, decide_eq_true_eq]
-          exact not_le.mpr (hr_all a ha)
-        rw [List.filter_cons_of_neg (by simpa [hp] using hs)]
-        by_cases hr₁ : r₁ ≤ x
-        · rw [List.filter_cons_of_pos (by simpa [hp] using hr₁)]
-          simp only [List.length_cons, hsst0, hr0]
-          exact ⟨by lia, by lia⟩
-        · rw [List.filter_cons_of_neg (by simpa [hp] using hr₁)]
-          simp only [hsst0, hr0]
-          exact ⟨by lia, by lia⟩
+          ≤ (ss.filter (fun y => decide (y ≤ x))).length + 1 := by
+  intro ss rs x hlen hint
+  have hsspart := filter_le_add_filter_lt_length (x := x) ss
+  have hrspart := filter_le_add_filter_lt_length (x := x) rs
+  have B1 := listInterlaces_filter_lt_le (x := x) hint hlen
+  have B2 := listInterlaces_filter_lt_le_succ (x := x) hint hlen
+  constructor <;> lia
 
 /-- Core combinatorial oriented count bound for same-degree list alternation.
 
@@ -407,42 +291,26 @@ private lemma alternates_filter_le_length_bounds :
   | _ :: _, [], _, _, _, hlen, _ => by simp at hlen
   | s :: sst, r :: rs, x, hss, hrs, hlen, halt => by
       obtain ⟨hsr, htail⟩ := halt
-      have hss_tl : sst.Pairwise (· ≤ ·) := (List.pairwise_cons.mp hss).2
       have hlen' : sst.length + 1 = (r :: rs).length := by
         simp only [List.length_cons] at hlen ⊢
         lia
       obtain ⟨IH1, IH2⟩ :=
-        interlaces_filter_le_length_bounds sst (r :: rs) x hss_tl hrs hlen' htail
-      set p : ℝ → Bool := fun y => decide (y ≤ x) with hp
+        interlaces_filter_le_length_bounds sst (r :: rs) x hlen' htail
       by_cases hs : s ≤ x
-      · have hs_len :
-            ((s :: sst).filter p).length = (sst.filter p).length + 1 := by
-          rw [List.filter_cons_of_pos (l := sst) (a := s) (p := p)
-            (by simpa [hp] using hs)]
-          rfl
-        rw [hs_len]
-        exact ⟨IH2, by simpa using Nat.succ_le_succ IH1⟩
-      · have hxs : x < s := lt_of_not_ge hs
-        have hsst_all : ∀ b ∈ sst, x < b := fun b hb =>
-          lt_of_lt_of_le hxs ((List.pairwise_cons.mp hss).1 b hb)
-        have hr : x < r := lt_of_lt_of_le hxs hsr
-        have hr_all : ∀ b ∈ (r :: rs), x < b := all_gt_of_sorted_head hrs hr
-        have hsst0 : (sst.filter p).length = 0 := by
-          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+      · simpa [hs] using And.intro IH2 (Nat.succ_le_succ IH1)
+      · have hsst0 : sst.filter (fun y => decide (y ≤ x)) = [] := by
+          rw [List.filter_eq_nil_iff]
           intro a ha
-          simp only [hp, decide_eq_true_eq]
-          exact not_le.mpr (hsst_all a ha)
-        have hr0 : ((r :: rs).filter p).length = 0 := by
-          rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+          simp only [decide_eq_true_eq]
+          exact not_le.mpr <| lt_of_lt_of_le (lt_of_not_ge hs)
+            ((List.pairwise_cons.mp hss).1 a ha)
+        have hrs0 : (r :: rs).filter (fun y => decide (y ≤ x)) = [] := by
+          rw [List.filter_eq_nil_iff]
           intro a ha
-          simp only [hp, decide_eq_true_eq]
-          exact not_le.mpr (hr_all a ha)
-        have hs_len :
-            ((s :: sst).filter p).length = (sst.filter p).length := by
-          rw [List.filter_cons_of_neg (l := sst) (a := s) (p := p)
-            (by simpa [hp] using hs)]
-        rw [hs_len, hsst0, hr0]
-        exact ⟨by lia, by lia⟩
+          simp only [decide_eq_true_eq]
+          exact not_le.mpr <| all_gt_of_sorted_head hrs
+            (lt_of_lt_of_le (lt_of_not_ge hs) hsr) a ha
+        simp [hs, hsst0, hrs0]
 
 /-- `StrictInterl`-to-root-count bridge in upper-threshold form.
 
@@ -456,12 +324,13 @@ theorem succDegreeRootCountAbove_of_strictInterl
     ∀ x : ℝ,
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
       ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, _, _, hss_eq, hrs_eq, hinter⟩ :=
     hstrictInterl.exists_interleaves_of_succDegree hdeg
   have hint : ListInterlaces ss rs :=
     listInterlaces_of_interleaves_of_length hlen hinter
   intro x
-  obtain ⟨B1, B2⟩ := interlaces_filter_gt_length_bounds ss rs x hss hrs hlen hint
+  have B1 := listInterlaces_filter_lt_le (x := x) hint hlen
+  have B2 := listInterlaces_filter_lt_le_succ (x := x) hint hlen
   have hfcard : (f.roots.filter (x < ·)).card =
       (ss.filter (fun y => decide (x < y))).length := by
     rw [← hss_eq, Multiset.filter_coe, Multiset.coe_card]
@@ -530,12 +399,12 @@ theorem succDegreeRootCountLowerOriented_of_strictInterl
       ((p.roots.filter (· ≤ x)).card : ℤ) ≤ (q.roots.filter (· ≤ x)).card ∧
       ((q.roots.filter (· ≤ x)).card : ℤ) ≤
         (p.roots.filter (· ≤ x)).card + 1 := by
-  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, hss, hrs, hss_eq, hrs_eq, hinter⟩ :=
+  obtain ⟨ss, rs, _hss_len, _hrs_len, hlen, _, _, hss_eq, hrs_eq, hinter⟩ :=
     hstrictInterl.exists_interleaves_of_succDegree hdeg
   have hint : ListInterlaces ss rs :=
     listInterlaces_of_interleaves_of_length hlen hinter
   intro x
-  obtain ⟨B1, B2⟩ := interlaces_filter_le_length_bounds ss rs x hss hrs hlen hint
+  obtain ⟨B1, B2⟩ := interlaces_filter_le_length_bounds ss rs x hlen hint
   have hpcard : (p.roots.filter (· ≤ x)).card =
       (ss.filter (fun y => decide (y ≤ x))).length := by
     rw [← hss_eq, Multiset.filter_coe, Multiset.coe_card]
@@ -634,23 +503,13 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
   intro x
   constructor
   · by_contra hle
-    have hgap :
-        3 ≤ ((f.roots.filter (x < ·)).card : ℤ) -
-          (g.roots.filter (x < ·)).card := by
-      lia
-    have hder_gap :=
-      rootCountAbove_derivative_sub_ge_two_of_sub_ge_three
-        hf_split hg_split hfdeg hgdeg hgap
+    have hder_gap := rootCountAbove_derivative_sub_ge_two_of_sub_ge_three (x := x)
+      hf_split hg_split hfdeg hgdeg (by lia)
     have hder_le := (hder_full x).1
     lia
   · by_contra hle
-    have hgap :
-        3 ≤ ((g.roots.filter (x < ·)).card : ℤ) -
-          (f.roots.filter (x < ·)).card := by
-      lia
-    have hder_gap :=
-      rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three
-        hf_split hg_split hfdeg hgdeg hgap
+    have hder_gap := rootCountAbove_derivative_rev_sub_ge_two_of_sub_ge_three (x := x)
+      hf_split hg_split hfdeg hgdeg (by lia)
     have hder_le := (hder_full x).2
     lia
 

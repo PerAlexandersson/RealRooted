@@ -245,43 +245,6 @@ private lemma modelCoeff_symm {n k : ℕ} (hk : k ≤ n) :
     show 2 * n + 1 - 2 * (n - k) = 2 * k + 1 by lia]
   ring
 
-private lemma oddBinom_nonneg (n : ℕ) :
-    HasNonnegCoeffs (BigDescents.oddBinomPolyReal (2 * n + 2)) := by
-  intro k
-  rw [BigDescents.coeff_oddBinomPolyReal]
-  positivity
-
-private lemma oddBinom_pf (n : ℕ) :
-    IsPFPolynomial (BigDescents.oddBinomPolyReal (2 * n + 2)) := by
-  apply IsPFPolynomial.of_realRooted_nonneg (oddBinom_nonneg n)
-  exact (BigDescents.oddBinomPolyReal_isRealRooted (2 * n + 2) (by lia)).2
-
-private lemma schurModel_splits (n : ℕ) : (schurModel n).Splits := by
-  have hcomp :
-      (schurSzegoComp n
-        (BigDescents.oddBinomPolyReal (2 * n + 2))
-        (narayanaPolynomial 1 n)).Splits := by
-    apply splits_schurSzegoComp_of_isPF n
-      (BigDescents.oddBinomPolyReal (2 * n + 2))
-      (narayanaPolynomial 1 n)
-      (oddBinom_pf n)
-    · exact BigDescents.oddBinomPolyReal_ne_zero (2 * n + 2) (by lia)
-    · rw [BigDescents.oddBinomPolyReal_natDegree (2 * n + 2) (by lia)]
-      lia
-    · exact (narayanaPolynomialRootLocation 1 n).ne_zero_and_splits
-        (by
-          intro hzero
-          have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
-          simp at hcoeff)
-        |>.1
-    · exact natDegree_narayanaPolynomial_le 1 n
-    · exact (narayanaPolynomialRootLocation 1 n).eq_zero_or_splits.resolve_left
-        (by
-          intro hzero
-          have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
-          simp at hcoeff)
-  exact (Polynomial.Splits.C ((2 * (n : ℝ) + 2)⁻¹)).mul hcomp
-
 private lemma coeff_schurModel_of_le {n k : ℕ} (hk : k ≤ n) :
     (schurModel n).coeff k =
       (Nat.choose (n + 1) k : ℝ) * (Nat.choose (2 * n + 1) (2 * k) : ℝ) /
@@ -319,16 +282,6 @@ private lemma coeff_schurModel_eq_zero_of_lt {n k : ℕ} (hk : n < k) :
   rw [coeff_schurModel_of_le (Nat.zero_le n)]
   simp
 
-@[simp] private lemma coeff_self_schurModel (n : ℕ) :
-    (schurModel n).coeff n = 1 := by
-  rw [coeff_schurModel_of_le le_rfl,
-    show n + 1 = n + 1 by simp, Nat.choose_succ_self_right,
-    show 2 * n + 1 = 2 * n + 1 by simp, Nat.choose_succ_self_right]
-  have h₁ : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  have h₂ : (0 : ℝ) < (2 * n : ℕ) + 1 := by positivity
-  field_simp
-  simp
-
 private lemma coeff_one_schurModel (n : ℕ) (hn : 1 ≤ n) :
     (schurModel n).coeff 1 =
       (n : ℝ) * ((n : ℝ) + 1) * (2 * (n : ℝ) + 1) / 6 := by
@@ -340,6 +293,10 @@ private lemma coeff_schurModel_symm {n k : ℕ} (hk : k ≤ n) :
     (schurModel n).coeff (n - k) = (schurModel n).coeff k := by
   rw [coeff_schurModel_eq_coeff (Nat.sub_le n k),
     coeff_schurModel_eq_coeff hk, modelCoeff_symm hk]
+
+@[simp] private lemma coeff_self_schurModel (n : ℕ) :
+    (schurModel n).coeff n = 1 := by
+  simpa using coeff_schurModel_symm (n := n) (k := 0) (Nat.zero_le n)
 
 private lemma coeff_pred_schurModel (n : ℕ) (hn : 1 ≤ n) :
     (schurModel n).coeff (n - 1) =
@@ -408,8 +365,7 @@ private lemma schurModel_succ (n : ℕ) :
   · simp only [coeff_zero_schurModel, neg_mul, coeff_add, coeff_sub,
       mul_coeff_zero, coeff_C_zero, coeff_X_zero, zero_mul, mul_zero,
       sub_self, mul_one, add_zero, zero_add, coeff_ofNat_mul]
-    have h₁ : (n : ℝ) + 4 ≠ 0 := by positivity
-    have h₂ : 2 * (n : ℝ) + 7 ≠ 0 := by positivity
+    have hden : ((n : ℝ) + 4) * (2 * (n : ℝ) + 7) ≠ 0 := by positivity
     grind
   · simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul,
       coeff_X_mul_zero, coeff_derivative, coeff_ofNat_mul]
@@ -422,8 +378,8 @@ private lemma schurModel_succ (n : ℕ) :
           coeff_one_schurModel (n + 2) (by lia),
           coeff_one_schurModel (n + 1) (by lia)]
         simp only [coeff_zero_schurModel]
-        have h₁ : ((n : ℝ) + 1) + 4 ≠ 0 := by positivity
-        have h₂ : 2 * ((n : ℝ) + 1) + 7 ≠ 0 := by positivity
+        have hden : (((n : ℝ) + 1) + 4) * (2 * ((n : ℝ) + 1) + 7) ≠ 0 := by
+          positivity
         grind
   · simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul,
       coeff_derivative, coeff_ofNat_mul]
@@ -436,9 +392,8 @@ private lemma schurModel_succ (n : ℕ) :
         coeff_schurModel_eq_coeff (by lia : k ≤ n)]
       have hrec := modelCoeff_rec_interior
         (n := n) (k := k + 2) (by lia) hk
-      have h₁ : (n : ℝ) + 4 ≠ 0 := by positivity
-      have h₂ : 2 * (n : ℝ) + 7 ≠ 0 := by positivity
-      field_simp [h₁, h₂]
+      have hden : ((n : ℝ) + 4) * (2 * (n : ℝ) + 7) ≠ 0 := by positivity
+      field_simp [hden]
       grind
     · have hcases :
           k + 2 = n + 1 ∨ k + 2 = n + 2 ∨ n + 2 < k + 2 := by lia
@@ -466,8 +421,8 @@ private lemma schurModel_succ (n : ℕ) :
         rw [ht, coeff_self_schurModel, hq,
           coeff_schurModel_eq_zero_of_lt (by lia : k + 1 < k + 2),
           coeff_self_schurModel, hr]
-        have h₁ : ((k : ℝ) + 1) + 4 ≠ 0 := by positivity
-        have h₂ : 2 * ((k : ℝ) + 1) + 7 ≠ 0 := by positivity
+        have hden : (((k : ℝ) + 1) + 4) * (2 * ((k : ℝ) + 1) + 7) ≠ 0 := by
+          positivity
         grind
       · have hn : n = k := by lia
         subst n
@@ -477,8 +432,7 @@ private lemma schurModel_succ (n : ℕ) :
           coeff_schurModel_eq_zero_of_lt (by lia : k < k + 2),
           coeff_schurModel_eq_zero_of_lt (by lia : k < k + 1),
           coeff_self_schurModel]
-        have h₁ : (k : ℝ) + 4 ≠ 0 := by positivity
-        have h₂ : 2 * (k : ℝ) + 7 ≠ 0 := by positivity
+        have hden : ((k : ℝ) + 4) * (2 * (k : ℝ) + 7) ≠ 0 := by positivity
         grind
       · rw [coeff_schurModel_eq_zero_of_lt (by assumption : n + 2 < k + 2),
           coeff_schurModel_eq_zero_of_lt (by lia : n + 1 < k + 2),
@@ -489,16 +443,14 @@ private lemma schurModel_succ (n : ℕ) :
         ring
 
 private lemma schurModel_zero : schurModel 0 = 1 := by
-  apply Polynomial.ext
-  intro k
+  ext k
   rcases k with _ | k
   · simp
   · rw [coeff_schurModel_eq_zero_of_lt (by lia : 0 < k + 1), coeff_one]
     simp
 
 private lemma schurModel_one : schurModel 1 = 1 + X := by
-  apply Polynomial.ext
-  intro k
+  ext k
   rcases k with _ | _ | k
   · simp
   · rw [coeff_self_schurModel, coeff_add, coeff_one, coeff_X]
@@ -600,10 +552,9 @@ theorem polynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (polynomial n) (polynomial (n + 1)) := by
   rw [polynomial_eq_schur, polynomial_eq_schur, schurModel_eq_jensenModel,
     schurModel_eq_jensenModel]
-  have hinter := strictInterl_twoSidedJensenPolynomial_succ
-    jensenWeight_multiplier jensenWeight_multiplier jensenWeight_pos jensenWeight_pos n
-  exact (hinter.C_mul_left (by rw [jensenScale]; positivity)).C_mul_right
-    (by rw [jensenScale]; positivity)
+  exact ((strictInterl_twoSidedJensenPolynomial_succ jensenWeight_multiplier
+    jensenWeight_multiplier jensenWeight_pos jensenWeight_pos n).C_mul_left
+      (by rw [jensenScale]; positivity)).C_mul_right (by rw [jensenScale]; positivity)
 
 /-- Consecutive A111910 model rows interlace. -/
 theorem polynomial_interlaces (n : ℕ) :
@@ -617,9 +568,8 @@ theorem polynomial_interlaces (n : ℕ) :
       natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos])
 
 /-- Every A111910 model row splits over the reals. -/
-theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
-  rw [polynomial_eq_schur]
-  exact schurModel_splits n
+theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
+  (polynomial_strictInterl_succ n).1.2
 
 /-- A sequence with the A111910 initial rows and update has split rows. -/
 @[rr_row_model]

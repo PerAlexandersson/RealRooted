@@ -32,39 +32,6 @@ def A177040 : ℕ → ℝ[X]
         + (C (2 / 5 + 1 / 5 * r) + C (-7 / 5 - 1 / 5 * r) * X) * A177040 (n + 1)
         + (C (-13 / 5 - 2 / 5 * r) + C (8 / 5 + 2 / 5 * r) * X) * A177040 n
 
-private def d3 (_ : ℕ) : ℝ[X] := C (2 / 5) * X + C (-2 / 5) * X ^ 2
-
-private def d2 (_ : ℕ) : ℝ[X] := C (-4 / 5) * X + C (4 / 5) * X ^ 2
-
-private def d1 (_ : ℕ) : ℝ[X] := C (2 / 5) * X + C (-2 / 5) * X ^ 2
-
-private def d0 (_ : ℕ) : ℝ[X] := C (-4 / 5) * X + C (4 / 5) * X ^ 2
-
-private def a3 (n : ℕ) : ℝ[X] :=
-  C (2 / 5 - 1 / 5 * (n : ℝ)) + C (3 / 5 + 1 / 5 * (n : ℝ)) * X
-
-private def a2 (n : ℕ) : ℝ[X] :=
-  C (2 + 2 / 5 * (n : ℝ)) + C (-2 / 5 * (n : ℝ)) * X
-
-private def a1 (n : ℕ) : ℝ[X] :=
-  C (2 / 5 + 1 / 5 * (n : ℝ)) + C (-7 / 5 - 1 / 5 * (n : ℝ)) * X
-
-private def a0 (n : ℕ) : ℝ[X] :=
-  C (-13 / 5 - 2 / 5 * (n : ℝ)) + C (8 / 5 + 2 / 5 * (n : ℝ)) * X
-
-private def terms177 : List (ℕ × ℕ × (ℕ → ℝ[X])) :=
-  [(3, 1, d3), (2, 1, d2), (1, 1, d1), (0, 1, d0),
-    (3, 0, a3), (2, 0, a2), (1, 0, a1), (0, 0, a0)]
-
-private lemma A177040_rhs (n : ℕ) :
-    A177040 (n + 4) = RealRooted.LinRec.rhs terms177 A177040 n := by
-  simp only [terms177, RealRooted.LinRec.rhs, List.map_cons, List.map_nil,
-    List.sum_cons, List.sum_nil, Function.iterate_one, Function.iterate_zero,
-    id_eq, add_zero]
-  rw [A177040]
-  simp only [d3, d2, d1, d0, a3, a2, a1, a0]
-  ring
-
 private lemma natDegree_quadratic_le (a b : ℝ) :
     (C a * X + C b * X ^ 2).natDegree ≤ 2 := by
   compute_degree!
@@ -72,61 +39,6 @@ private lemma natDegree_quadratic_le (a b : ℝ) :
 private lemma natDegree_linear_le (a b : ℝ) :
     (C a + C b * X).natDegree ≤ 1 := by
   compute_degree!
-
-private lemma A177040_coeff_succ (n k : ℕ) :
-    (A177040 (n + 4)).coeff (k + 2) =
-      ((2 / 5) * ((k : ℝ) + 2) * (A177040 (n + 3)).coeff (k + 2)
-        + (-2 / 5) * ((k : ℝ) + 1) * (A177040 (n + 3)).coeff (k + 1))
-      + ((-4 / 5) * ((k : ℝ) + 2) * (A177040 (n + 2)).coeff (k + 2)
-        + (4 / 5) * ((k : ℝ) + 1) * (A177040 (n + 2)).coeff (k + 1))
-      + ((2 / 5) * ((k : ℝ) + 2) * (A177040 (n + 1)).coeff (k + 2)
-        + (-2 / 5) * ((k : ℝ) + 1) * (A177040 (n + 1)).coeff (k + 1))
-      + ((-4 / 5) * ((k : ℝ) + 2) * (A177040 n).coeff (k + 2)
-        + (4 / 5) * ((k : ℝ) + 1) * (A177040 n).coeff (k + 1))
-      + ((2 / 5 - 1 / 5 * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 2)
-        + (3 / 5 + 1 / 5 * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 1))
-      + ((2 + 2 / 5 * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 2)
-        + (-2 / 5 * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 1))
-      + ((2 / 5 + 1 / 5 * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 2)
-        + (-7 / 5 - 1 / 5 * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 1))
-      + ((-13 / 5 - 2 / 5 * (n : ℝ)) * (A177040 n).coeff (k + 2)
-        + (8 / 5 + 2 / 5 * (n : ℝ)) * (A177040 n).coeff (k + 1)) := by
-  conv_lhs => rw [A177040]
-  change
-    (d3 n * (A177040 (n + 3)).derivative
-          + d2 n * (A177040 (n + 2)).derivative
-          + d1 n * (A177040 (n + 1)).derivative
-          + d0 n * (A177040 n).derivative
-          + a3 n * A177040 (n + 3) + a2 n * A177040 (n + 2)
-          + a1 n * A177040 (n + 1) + a0 n * A177040 n).coeff (k + 2) = _
-  rw [show
-      (d3 n * (A177040 (n + 3)).derivative
-          + d2 n * (A177040 (n + 2)).derivative
-          + d1 n * (A177040 (n + 1)).derivative
-          + d0 n * (A177040 n).derivative
-          + a3 n * A177040 (n + 3) + a2 n * A177040 (n + 2)
-          + a1 n * A177040 (n + 1) + a0 n * A177040 n) =
-        C (2 / 5) * (X * (A177040 (n + 3)).derivative)
-          + C (-2 / 5) * (X ^ 2 * (A177040 (n + 3)).derivative)
-          + C (-4 / 5) * (X * (A177040 (n + 2)).derivative)
-          + C (4 / 5) * (X ^ 2 * (A177040 (n + 2)).derivative)
-          + C (2 / 5) * (X * (A177040 (n + 1)).derivative)
-          + C (-2 / 5) * (X ^ 2 * (A177040 (n + 1)).derivative)
-          + C (-4 / 5) * (X * (A177040 n).derivative)
-          + C (4 / 5) * (X ^ 2 * (A177040 n).derivative)
-          + C (2 / 5 - 1 / 5 * (n : ℝ)) * A177040 (n + 3)
-          + C (3 / 5 + 1 / 5 * (n : ℝ)) * (X * A177040 (n + 3))
-          + C (2 + 2 / 5 * (n : ℝ)) * A177040 (n + 2)
-          + C (-2 / 5 * (n : ℝ)) * (X * A177040 (n + 2))
-          + C (2 / 5 + 1 / 5 * (n : ℝ)) * A177040 (n + 1)
-          + C (-7 / 5 - 1 / 5 * (n : ℝ)) * (X * A177040 (n + 1))
-          + C (-13 / 5 - 2 / 5 * (n : ℝ)) * A177040 n
-          + C (8 / 5 + 2 / 5 * (n : ℝ)) * (X * A177040 n) by
-      simp only [d3, d2, d1, d0, a3, a2, a1, a0]
-      ring]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_X_pow_mul', coeff_derivative,
-    show (2 ≤ k + 2) = True by simp, ite_true, show k + 2 - 2 = k by lia]
-  grind
 
 /-- The normalized A330798 lag-two update. -/
 def A330798Next (n : ℕ) (u v : ℝ[X]) : ℝ[X] :=
@@ -326,7 +238,7 @@ private theorem A330798_simple_and_ode : ∀ n : ℕ,
         ring
       · norm_num [A330798ODE, A330798]
   | succ n ih =>
-      rcases ih with ⟨hsimple, hode⟩
+      obtain ⟨hsimple, hode⟩ := ih
       have hd : A330798d n ≠ 0 := by
         dsimp [A330798d]
         positivity
@@ -515,10 +427,7 @@ private lemma A330798_coeff_pos_of_le (n k : ℕ) (hk : k ≤ n) :
 private lemma A330798_degree_and_leadingCoeff_pos (n : ℕ) :
     (A330798 n).natDegree = n ∧ 0 < (A330798 n).leadingCoeff := by
   have hzero := A330798_const_coeff_pos n
-  have hne : A330798 n ≠ 0 := by
-    intro h
-    have := congrArg (fun p : ℝ[X] => p.coeff 0) h
-    simp_all
+  have hne : A330798 n ≠ 0 := fun h ↦ by simp_all
   have hle := A330798_ode_natDegree_le n hne (A330798_ode n)
   have htop := A330798_coeff_pos_of_le n n (le_refl n)
   have hdeg : (A330798 n).natDegree = n :=
@@ -586,23 +495,23 @@ private lemma natDegree_quadratic_full_le (a b c : ℝ) :
     (C a + C b * X + C c * X ^ 2).natDegree ≤ 2 := by
   compute_degree!
 
-private lemma b1dd_natDegree_le (n : ℕ) : (b1dd n).natDegree ≤ 2 := by
-  exact natDegree_quadratic_le _ _
+private lemma b1dd_natDegree_le (n : ℕ) : (b1dd n).natDegree ≤ 2 :=
+  natDegree_quadratic_le _ _
 
-private lemma b0dd_natDegree_le (n : ℕ) : (b0dd n).natDegree ≤ 1 := by
-  exact natDegree_linear_le _ _
+private lemma b0dd_natDegree_le (n : ℕ) : (b0dd n).natDegree ≤ 1 :=
+  natDegree_linear_le _ _
 
-private lemma b1d_natDegree_le (n : ℕ) : (b1d n).natDegree ≤ 3 := by
-  exact natDegree_cubic_le _ _ _ _
+private lemma b1d_natDegree_le (n : ℕ) : (b1d n).natDegree ≤ 3 :=
+  natDegree_cubic_le _ _ _ _
 
-private lemma b0d_natDegree_le (n : ℕ) : (b0d n).natDegree ≤ 3 := by
-  exact natDegree_cubic_le _ _ _ _
+private lemma b0d_natDegree_le (n : ℕ) : (b0d n).natDegree ≤ 3 :=
+  natDegree_cubic_le _ _ _ _
 
-private lemma b1_natDegree_le (n : ℕ) : (b1 n).natDegree ≤ 2 := by
-  exact natDegree_quadratic_full_le _ _ _
+private lemma b1_natDegree_le (n : ℕ) : (b1 n).natDegree ≤ 2 :=
+  natDegree_quadratic_full_le _ _ _
 
-private lemma b0_natDegree_le (n : ℕ) : (b0 n).natDegree ≤ 2 := by
-  exact natDegree_quadratic_full_le _ _ _
+private lemma b0_natDegree_le (n : ℕ) : (b0 n).natDegree ≤ 2 :=
+  natDegree_quadratic_full_le _ _ _
 
 private lemma terms330_natDegree_le (t : ℕ × ℕ × (ℕ → ℝ[X]))
     (ht : t ∈ terms330) (n : ℕ) :
