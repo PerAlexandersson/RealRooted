@@ -51,8 +51,11 @@ replace it.
   is the mandatory tactic regression umbrella.
 - `RealRooted/Mathlib/` holds upstream-shaped lemmas. `RealRooted.Mathlib.X`
   is meant for Mathlib's `Mathlib.X`.
-- `RealRooted/Challenges/` holds short entry points, one per completed result.
-  They feed the public catalog (see [Documentation](#documentation)).
+- `RealRooted/Challenges/` holds short entry points, one per completed result,
+  in topical subfolders (`Interlacing`, `Roots`, `Preservers`, `Stability`,
+  `PolyaFrequency`, `Matrices`, `Orthogonal`, `Graphs`, `Combinatorial`). The Lean
+  namespace stays `RealRooted.Challenges.<Name>`. They feed the public catalog (see
+  [Documentation](#documentation)).
 - `RealRooted/Tactic/` holds the real-rootedness and interlacing tactics.
   [`RealRooted/Tactic/OEIS_COVERAGE.md`](RealRooted/Tactic/OEIS_COVERAGE.md)
   is the generated ledger of OEIS certificate coverage.

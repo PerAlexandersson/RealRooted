@@ -82,7 +82,7 @@ label = "Pairwise common interleavers give pairwise compatibility"
 
 [[theorems]]
 name = "RealRooted.Challenges.CommonInterleaver.compatiblePair_hasCommonInterleaver"
-module = "RealRooted.Challenges.CommonInterleaver"
+module = "RealRooted.Challenges.Interlacing.CommonInterleaver"
 label = "Chudnovsky–Seymour: a compatible pair has a common interleaver"
 
 [[theorems]]

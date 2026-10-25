@@ -183,7 +183,7 @@
     "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal": {
       "max_modules": 167
     },
-    "RealRooted.Challenges.Hadamard": {
+    "RealRooted.Challenges.PolyaFrequency.Hadamard": {
       "max_modules": 273
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
@@ -639,7 +639,7 @@
     "RealRooted.BorceaBranden.Applications.ComplexClassification": {
       "max_modules": 45
     },
-    "RealRooted.Challenges.BorceaBranden": {
+    "RealRooted.Challenges.Stability.BorceaBranden": {
       "max_modules": 173
     },
     "RealRooted.Derivative": {
@@ -876,7 +876,7 @@
     "RealRooted.Hermite.Poulain": {
       "max_modules": 92
     },
-    "RealRooted.Challenges.HermitePoulain": {
+    "RealRooted.Challenges.Roots.HermitePoulain": {
       "max_modules": 105
     },
     "RealRooted.Tactic.HermitePoulain": {
@@ -885,19 +885,19 @@
     "RealRooted.Tactic.SecondDerivative": {
       "max_modules": 121
     },
-    "RealRooted.Challenges.Kurtz": {
+    "RealRooted.Challenges.Roots.Kurtz": {
       "max_modules": 49
     },
     "RealRooted.Tactic.Kurtz": {
       "max_modules": 93
     },
-    "RealRooted.Challenges.Wagner": {
+    "RealRooted.Challenges.Interlacing.Wagner": {
       "max_modules": 90
     },
-    "RealRooted.Challenges.Interlacing": {
+    "RealRooted.Challenges.Interlacing.Interlacing": {
       "max_modules": 9
     },
-    "RealRooted.Challenges.Narayana": {
+    "RealRooted.Challenges.Combinatorial.Narayana": {
       "max_modules": 215
     },
     "RealRooted.Tactic.Wagner": {
@@ -1923,7 +1923,7 @@
     "RealRooted.BorceaBranden.FiniteSymbolClassification",
     "RealRooted.BorceaBranden.Applications.UnivariateSymbol",
     "RealRooted.BorceaBranden.Applications.ComplexClassification",
-    "RealRooted.Challenges.BorceaBranden",
+    "RealRooted.Challenges.Stability.BorceaBranden",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol",
     "RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences",
     "RealRooted.BorceaBranden.Applications.EulerFiniteSymbol",
@@ -1985,7 +1985,7 @@
     "RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix",
     "RealRooted.PolynomialValueEulerNumerator.PF.Causal",
     "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal",
-    "RealRooted.Challenges.Hadamard",
+    "RealRooted.Challenges.PolyaFrequency.Hadamard",
     "RealRooted.RankTwoMatching.Basic",
     "RealRooted.RankTwoMatching.Orientation",
     "RealRooted.RankTwoMatching.DisjointEquiv",
@@ -2137,7 +2137,7 @@
     "RealRooted.Tactic.OEIS",
     "RealRooted.Derivative.LinearCombination",
     "RealRooted.Hermite.Poulain",
-    "RealRooted.Challenges.HermitePoulain",
+    "RealRooted.Challenges.Roots.HermitePoulain",
     "RealRooted.Tactic.HermitePoulain",
     "RealRooted.Tactic.SecondDerivative",
     "RealRooted.Tactic.WagnerX.Core",
@@ -2188,12 +2188,12 @@
     "RealRooted.RowThresholdOne",
     "RealRooted.GustafssonSolus",
     "RealRooted.Kurtz",
-    "RealRooted.Challenges.Kurtz",
+    "RealRooted.Challenges.Roots.Kurtz",
     "RealRooted.Tactic.Kurtz",
     "RealRooted.Wagner.NonpositiveRoots",
-    "RealRooted.Challenges.Wagner",
-    "RealRooted.Challenges.Interlacing",
-    "RealRooted.Challenges.Narayana",
+    "RealRooted.Challenges.Interlacing.Wagner",
+    "RealRooted.Challenges.Interlacing.Interlacing",
+    "RealRooted.Challenges.Combinatorial.Narayana",
     "RealRooted.Tactic.Wagner",
     "RealRooted.WagnerX.ListInterlacing",
     "RealRooted.WagnerX.NonnegativeRoots",

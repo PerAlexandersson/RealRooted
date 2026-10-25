@@ -21,7 +21,7 @@ second proof.
   the general disk-to-interval transfer.
 - [`RecurrencePolynomial.lean`](../../RealRooted/CombinatorialExamples/ZigzagEulerian/RecurrencePolynomial.lean)
   identifies the recurrence-defined family with the permutation enumerator.
-- [`Challenges/ZigzagEulerian.lean`](../../RealRooted/Challenges/ZigzagEulerian.lean)
+- [`Challenges/ZigzagEulerian.lean`](../../RealRooted/Challenges/Combinatorial/ZigzagEulerian.lean)
   is the public theorem-catalog entry point, with the statements and references.
 
 The source headers retain proof provenance, including the initial Aristotle
