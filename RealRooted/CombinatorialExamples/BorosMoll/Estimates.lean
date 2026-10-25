@@ -149,9 +149,8 @@ private lemma mem_support_le (p : P2) (s : Fin 2 →₀ ℕ) (hs : s ∈ p.suppo
 private lemma Lm_Dop (n : ℕ) (i : Fin 2) (p : P2) (hp : p.totalDegree < 2 * n) :
     Lm n (Dop n i p) = 0 := by
   rw [p.as_sum, map_sum, map_sum]
-  apply Finset.sum_eq_zero
-  intro s hs
-  exact Lm_Dop_monomial n i s _ (lt_of_le_of_lt (mem_support_le p s hs i) hp)
+  exact Finset.sum_eq_zero fun s hs ↦
+    Lm_Dop_monomial n i s _ (lt_of_le_of_lt (mem_support_le p s hs i) hp)
 
 /-! ### Positivity -/
 
@@ -173,9 +172,8 @@ private lemma NN_X (i : Fin 2) : NN (X i) := fun s => by
   rw [coeff_X]; split_ifs <;> norm_num
 
 private lemma NN_C {c : ℝ} (hc : 0 ≤ c) : NN (C c) := fun s => by
-  rw [coeff_C]; split_ifs
-  · exact hc
-  · exact le_rfl
+  rw [coeff_C]
+  split_ifs <;> positivity
 
 private lemma Lm_nonneg (n : ℕ) (p : P2) (hp : NN p)
     (hd : p.totalDegree ≤ 2 * n) : 0 ≤ Lm n p := by
@@ -370,11 +368,8 @@ private lemma small_step (m lam u r d : ℝ) (hm : 1 ≤ m) (hlam : 0 < lam) (hl
     have e : u * ((m + 1 - lam) / lam) * (lam * m) = u * (m * (m + 1 - lam)) := by
       field_simp
     rw [e]; nlinarith
-  have hr := sq_nonneg r
-  have hd := sq_nonneg d
-  have := mul_le_mul_of_nonneg_right hc1 hr
-  have := mul_le_mul_of_nonneg_right hc2 hd
-  nlinarith
+  nlinarith [mul_le_mul_of_nonneg_right hc1 (sq_nonneg r),
+    mul_le_mul_of_nonneg_right hc2 (sq_nonneg d)]
 
 private lemma antitone_to_one (E : ℕ → ℝ) {k : ℕ}
     (hstep : ∀ j, 1 ≤ j → j < k → E (j + 1) ≤ E j) :
@@ -382,10 +377,7 @@ private lemma antitone_to_one (E : ℕ → ℝ) {k : ℕ}
   intro j hj1 hjk
   induction j with
   | zero => lia
-  | succ i ih =>
-    rcases Nat.eq_zero_or_pos i with rfl | hi
-    · exact le_rfl
-    · exact (hstep i hi (by lia)).trans (ih hi (by lia))
+  | succ i ih => grind
 
 /-- Small `λ = (n+3)(1-u) ≤ 1`. -/
 private lemma energy_small {n : ℕ} {u : ℝ} {R : ℕ → ℝ} (h : RRec n u R)
@@ -504,9 +496,7 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
     unfold Ef
     rw [← hq_def, ← hlam_def, hA, hB, hC, hdj, ha]
     field_simp; ring
-  have : 0 ≤ m * lam * (Ef nn m u r d - r ^ 2) := by rw [hE]; exact hQ
-  have hml : 0 < m * lam := mul_pos hm0 hlam0
-  have := (mul_nonneg_iff_of_pos_left hml).1 this
+  have := (mul_nonneg_iff_of_pos_left (mul_pos hm0 hlam0)).1 (by rw [hE]; exact hQ)
   linarith
 
 private lemma large_step (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1) (hnn : 0 ≤ nn)
@@ -525,7 +515,6 @@ private lemma large_step (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1) (hnn : 0
     field_simp
     ring
   rw [hid]
-  have hsq : 0 ≤ (2 * u * d + (1 - u) * r) ^ 2 := sq_nonneg _
   have hdq : -( (1 - u) ^ 2 * r ^ 2 / (4 * u)) ≤ d * ((1 - u) * r + u * d) := by
     have e : d * ((1 - u) * r + u * d) - (-( (1 - u) ^ 2 * r ^ 2 / (4 * u))) =
         (2 * u * d + (1 - u) * r) ^ 2 / (4 * u) := by
@@ -1296,9 +1285,8 @@ private lemma bw_decr (n j : ℕ) (hn : 36 ≤ n) (hj3 : 3 ≤ j) (hjn : j < n) 
   rw [div_lt_div_iff₀ (by positivity) hf]
   have : ((n:ℝ) - (k + 2) + 2) * eta n (k + 2) < ((k:ℝ) + 2) * eta n (k + 1) := hr
   have e : ((n:ℝ) - (k + 2) + 2) = (n:ℝ) - k := by ring
-  rw [e] at this
-  have := mul_lt_mul_of_pos_right this (mul_pos hd hf)
-  nlinarith
+  rw [e] at hr
+  nlinarith [mul_lt_mul_of_pos_right hr (mul_pos hd hf)]
 
 end Shape
 
@@ -1496,9 +1484,8 @@ private lemma Rpoly_rec (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
         - C ((n : ℝ) - k) * X * Rpoly n (k-1) := by
   apply Polynomial.funext
   intro x
-  have := Rpoly_rec_eval n k hk1 hkn x
   simp only [eval_mul, eval_C, eval_sub, eval_X]
-  linear_combination this
+  linear_combination Rpoly_rec_eval n k hk1 hkn x
 
 private lemma Rpoly_coeff_succ (n k : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
     (Rpoly n (k + 1)).coeff (k + 1) =
@@ -1605,9 +1592,7 @@ private lemma gc_rec (n k s : ℕ) (hk1 : 1 ≤ k) (hkn : k < n) :
   have : (((m:ℝ) + 1) * (p * z - p' * y)) -
       ((2 * (m:ℝ) + 1) * (p * (y + z)) + (((n:ℝ) + 3 - ((m:ℝ) + 1)) * (p' * (x + y)))
         - (m:ℝ) * (p * (x + y + (y + z)))) = 0 := by
-    rcases mul_eq_zero.1 key with h | h
-    · linarith
-    · exact h
+    rcases mul_eq_zero.1 key with h | h <;> linarith
   have hk : (k:ℝ) = (n:ℝ) - m := by rw [hmr]; ring
   rw [hk]
   linear_combination this
@@ -1860,7 +1845,7 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
       rw [show r n = 0 from hR, hyn]; ring
     | succ t ih =>
       obtain ⟨h1, h2⟩ := ih (by lia)
-      refine ⟨?_, by rw [show n - (t+1) = n - 1 - t by lia]; exact h1⟩
+      refine ⟨?_, by simpa [show n - (t + 1) = n - 1 - t by lia] using h1⟩
       -- recurrence at `k = n - 1 - t`
       set k := n - 1 - t with hk
       have hk1 : 1 ≤ k := by lia
@@ -1874,8 +1859,8 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
         linear_combination (Polynomial.eval u (Ypoly n (n-1))) * er
           - (Polynomial.eval u (Rpoly n (n-1))) * ey
       rw [h1, hD1] at hrec
-      have hnk : ((n:ℝ) - k) * u ≠ 0 := by
-        exact mul_ne_zero (sub_ne_zero.mpr (by exact_mod_cast hkn.ne')) hu
+      have hnk : ((n : ℝ) - k) * u ≠ 0 :=
+        mul_ne_zero (sub_ne_zero.mpr (by exact_mod_cast hkn.ne')) hu
       rw [show n - 1 - (t + 1) = k - 1 by lia]
       have : ((n:ℝ) - k) * u * D (k-1) = 0 := by rw [hrec]; ring
       exact (mul_eq_zero.1 this).resolve_left hnk
@@ -1886,7 +1871,7 @@ private lemma Rpoly_eq_Y_ratio (n : ℕ) (hn : 2 ≤ n) (u : ℝ) (hu : u ≠ 0)
   have hy0 : y 0 ≠ 0 := by
     intro h0
     simp only [D, hr0, h0] at hD0
-    apply hyl0; linarith
+    exact hyl0 (by linarith)
   refine ⟨hy0, fun k hk => ?_⟩
   have hDk : D k = 0 := by
     rcases Nat.eq_or_lt_of_le hk with rfl | hk'
@@ -1984,23 +1969,20 @@ private theorem gauss_bound (n : ℕ) (hn : 2 ≤ n) (U : Finset ℝ) (hcard : U
   have hc0 : 0 < c := by positivity
   -- factorization of `J`
   have hJ0 : Jpoly n ≠ 0 := by
-    intro h; have := Jpoly_eval_one n; rw [h] at this; simp at this
+    intro h
+    simpa [h] using Jpoly_eval_one n
   have hle : U.val ≤ (Jpoly n).roots := by
     rw [Multiset.le_iff_subset U.nodup]
     intro v hv
     exact (mem_roots hJ0).2 (hU v hv).2.2.1
   have hcardr : (Jpoly n).roots.card = (Jpoly n).natDegree := by
-    have h1 := Multiset.card_le_card hle
-    have h2 := card_roots' (Jpoly n)
-    have h3 := Jpoly_natDegree n
-    simp only [Finset.card_val, hcard] at h1
-    lia
+    refine le_antisymm (card_roots' _) ?_
+    have h := Multiset.card_le_card hle
+    simp only [Finset.card_val, hcard] at h
+    linarith [Jpoly_natDegree n]
   have hroots : (Jpoly n).roots = U.val := by
-    symm
-    apply Multiset.eq_of_le_of_card_le hle
-    rw [hcardr]
-    have := Jpoly_natDegree n
-    simp [hcard, this]
+    refine (Multiset.eq_of_le_of_card_le hle ?_).symm
+    simpa only [hcardr, Finset.card_val, hcard] using Jpoly_natDegree n
   set lc := (Jpoly n).leadingCoeff with hlc
   have hlc0 : lc ≠ 0 := leadingCoeff_ne_zero.2 hJ0
   have hfac : Jpoly n = C lc * Lagrange.nodal U id := by
@@ -2022,23 +2004,15 @@ private theorem gauss_bound (n : ℕ) (hn : 2 ≤ n) (U : Finset ℝ) (hcard : U
         · simp [(hU v hv).2.2.1, (hU v hv).2.2.2])
       (by
         rw [Finset.card_insert_of_notMem h1U, hcard]
-        have := natDegree_sub_le (Rpoly n n) (Jpoly n)
-        have := Rpoly_natDegree n n
-        have := Jpoly_natDegree n
-        lia)
+        exact lt_of_le_of_lt
+          ((natDegree_sub_le _ _).trans (max_le (Rpoly_natDegree n n) (Jpoly_natDegree n)))
+          (by lia))
     exact sub_eq_zero.1 this
+  have hJn : (Jpoly n).natDegree = n := by
+    rw [← hcardr, hroots]
+    simp [hcard]
   have hlcR : lc = (Rpoly n n).coeff n := by
-    rw [hlc, ← hRJ, leadingCoeff]
-    congr 1
-    have h := Rpoly_natDegree n n
-    have : (Rpoly n n).natDegree = n := by
-      rw [hRJ]
-      have := Jpoly_natDegree n
-      have := Multiset.card_le_card hle
-      have := card_roots' (Jpoly n)
-      simp only [Finset.card_val, hcard] at *
-      lia
-    exact this
+    rw [hlc, ← hRJ, leadingCoeff, hRJ, hJn]
   -- values at the nodes
   have hval : ∀ v ∈ U, (Rpoly n k).eval v ^ 2 / v ^ k =
       (c / lc) * ((Rpoly n k * Qpoly n k).eval v / ∏ w ∈ U.erase v, (v - w)) := by
@@ -2052,11 +2026,9 @@ private theorem gauss_bound (n : ℕ) (hn : 2 ≤ n) (U : Finset ℝ) (hcard : U
     rw [hprod, eval_mul, hR k hkn.le]
     unfold Ypoly
     simp only [eval_mul, eval_pow, eval_X]
-    have hv0' : v ≠ 0 := hv0.ne'
-    have hY0' : (Ypoly n 0).eval v ≠ 0 := hY0
-    unfold Ypoly at hY0'
-    simp only [pow_zero, one_mul] at hY0' ⊢
-    field_simp
+    unfold Ypoly at hY0
+    simp only [pow_zero, one_mul] at hY0 ⊢
+    field_simp [hv0.ne', hY0]
   -- the Lagrange identity
   have hdeg : (Rpoly n k * Qpoly n k).degree < U.card := by
     rw [hcard]
@@ -2207,7 +2179,6 @@ private lemma R_lt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
   -- `3 ≤ k < n`
   have hsq : ∀ v : ℝ, v ^ 2 < ((1 + u) / 2) ^ 2 → v < (1 + u) / 2 := by
     intro v hv
-    have : 0 < (1 + u) / 2 := by linarith
     nlinarith [sq_nonneg (v - (1 + u) / 2)]
   apply hsq
   rcases le_or_gt (k:ℝ) (((n:ℝ) + 3) * u - 2) with hc | hc
@@ -2224,9 +2195,8 @@ private lemma V_gt (n : ℕ) (hn : 36 ≤ n) (U : Finset ℝ) (hU : ZeroSet n U)
   obtain ⟨hu0, hu1, -, -⟩ := hU.2 u hu
   have hR := R_lt n hn U hU u hu k hk1 hkn
   have hV := Vpoly_eval n k hkn u
-  have h3 : (0:ℝ) < ((n:ℝ) + 3) * (1 - u) := by
-    have : (0:ℝ) < 1 - u := by linarith
-    positivity
+  have h3 : (0:ℝ) < ((n:ℝ) + 3) * (1 - u) :=
+    mul_pos (by positivity) (sub_pos.mpr hu1)
   rw [div_lt_iff₀ (by positivity)]
   have hn1 : (0:ℝ) < (n:ℝ) + 1 := by positivity
   nlinarith [mul_lt_mul_of_pos_left hR hn1]

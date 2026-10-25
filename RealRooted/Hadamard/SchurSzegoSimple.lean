@@ -45,12 +45,6 @@ private theorem eval_compC (n : ℕ) (P : ℂ[X]) (Q : ℝ[X]) (x : ℂ) :
 private noncomputable def polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) : ℂ[X] :=
   C (N : ℂ) * P + (C ζ - X) * derivative P
 
-private theorem coeff_X_mul_derivative (P : ℂ[X]) (k : ℕ) :
-    (X * derivative P).coeff k = (k : ℂ) * P.coeff k := by
-  rcases k with _ | k
-  · simp
-  · rw [coeff_X_mul, coeff_derivative]; push_cast; ring
-
 private theorem coeff_polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) (k : ℕ) :
     (polarDeriv N ζ P).coeff k =
       ((N : ℂ) - k) * P.coeff k + ζ * ((k : ℂ) + 1) * P.coeff (k + 1) := by
@@ -58,7 +52,8 @@ private theorem coeff_polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) (k : ℕ) :
     coeff_X_mul_derivative, coeff_derivative]
   ring
 
-private theorem natDegree_polarDeriv_le {n : ℕ} (ζ : ℂ) {P : ℂ[X]} (hP : P.natDegree ≤ n + 1) :
+private theorem natDegree_polarDeriv_le {n : ℕ} (ζ : ℂ) {P : ℂ[X]}
+    (hP : P.natDegree ≤ n + 1) :
     (polarDeriv (n + 1) ζ P).natDegree ≤ n := by
   rw [natDegree_le_iff_coeff_eq_zero]
   intro k hk
@@ -80,7 +75,8 @@ private theorem term_ineq {z τ : ℂ} (hτ : τ.im ≤ 0) :
   exact div_le_div_of_nonneg_right (by linarith) hpos.le
 
 /-- The key inequality for the logarithmic derivative. -/
-private theorem logDeriv_ineq (s : Multiset ℂ) {z : ℂ} (hz : 0 < z.im) (hs : ∀ τ ∈ s, τ.im ≤ 0) :
+private theorem logDeriv_ineq (s : Multiset ℂ) {z : ℂ} (hz : 0 < z.im)
+    (hs : ∀ τ ∈ s, τ.im ≤ 0) :
     z.im * Complex.normSq (s.map fun τ => 1 / (z - τ)).sum ≤
       -(Multiset.card s : ℝ) * ((s.map fun τ => 1 / (z - τ)).sum).im := by
   induction s using Multiset.induction_on with
@@ -115,7 +111,8 @@ private theorem logDeriv_ineq (s : Multiset ℂ) {z : ℂ} (hz : 0 < z.im) (hs :
 
 /-- Laguerre's theorem on polar derivatives for the upper half-plane. -/
 private theorem polarDeriv_ne_zero {N : ℕ} (hN : 1 ≤ N) {P : ℂ[X]} (hPdeg : P.natDegree ≤ N)
-    (hP : ∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) {ζ : ℂ} (hζ : 0 < ζ.im) {z : ℂ} (hz : 0 < z.im) :
+    (hP : ∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) {ζ : ℂ} (hζ : 0 < ζ.im) {z : ℂ}
+    (hz : 0 < z.im) :
     (polarDeriv N ζ P).eval z ≠ 0 := by
   have hP0 : P ≠ 0 := by
     rintro rfl; exact hP Complex.I (by simp) (by simp)
@@ -143,17 +140,12 @@ private theorem polarDeriv_ne_zero {N : ℕ} (hN : 1 ≤ N) {P : ℂ[X]} (hPdeg 
   rw [Complex.normSq_apply] at hineq
   have key : (ζ.im - z.im) * (S.re * S.re + S.im * S.im) = N * S.im := by
     linear_combination S.re * him - S.im * hre
+  have hSne : S ≠ 0 := fun hS => by simp [hS] at hre; linarith
   have hS0 : 0 < S.re * S.re + S.im * S.im := by
-    rcases (add_nonneg (mul_self_nonneg S.re) (mul_self_nonneg S.im)).lt_or_eq with h3 | h3
-    · exact h3
-    · exfalso
-      have e1 : S.re = 0 := by nlinarith [mul_self_nonneg S.re, mul_self_nonneg S.im]
-      have e2 : S.im = 0 := by nlinarith [mul_self_nonneg S.re, mul_self_nonneg S.im]
-      rw [e1, e2] at hre; linarith
+    simpa [Complex.normSq_apply] using Complex.normSq_pos.mpr hSne
   have hcard0 : (0 : ℝ) ≤ Multiset.card P.roots := Nat.cast_nonneg _
   have hSim : S.im ≤ 0 := by
-    by_contra h4; push Not at h4
-    nlinarith [mul_pos hz hS0]
+    by_contra h4; push Not at h4; nlinarith [mul_pos hz hS0]
   have h5 : (N : ℝ) * S.im ≤ (Multiset.card P.roots : ℝ) * S.im :=
     mul_le_mul_of_nonpos_right hcard hSim
   nlinarith [mul_pos hζ hS0]
@@ -172,7 +164,8 @@ private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
       (((n : ℂ) + 1) - k) * (((n + 1).choose k : ℕ) : ℂ) := by
     intro k hk
     have h := Nat.choose_mul_succ_eq n k
-    have h' : ((n.choose k * (n + 1) : ℕ) : ℂ) = (((n + 1).choose k * (n + 1 - k) : ℕ) : ℂ) := by
+    have h' : ((n.choose k * (n + 1) : ℕ) : ℂ) =
+        (((n + 1).choose k * (n + 1 - k) : ℕ) : ℂ) := by
       rw [h]
     push_cast [Nat.cast_sub (show k ≤ n + 1 by lia)] at h'
     linear_combination h'
@@ -180,7 +173,8 @@ private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
       ((k : ℂ) + 1) * (((n + 1).choose (k + 1) : ℕ) : ℂ) := by
     intro k hk
     have h := Nat.add_one_mul_choose_eq n k
-    have h' : (((n + 1) * n.choose k : ℕ) : ℂ) = (((n + 1).choose (k + 1) * (k + 1) : ℕ) : ℂ) := by
+    have h' : (((n + 1) * n.choose k : ℕ) : ℂ) =
+        (((n + 1).choose (k + 1) * (k + 1) : ℕ) : ℂ) := by
       rw [h]
     push_cast at h'
     linear_combination h'
@@ -197,7 +191,8 @@ private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
     rw [← sum_add_distrib]; refine sum_congr rfl fun k _ => ?_; rw [hQ]; ring
   have hR : (β : ℂ) * ∑ k ∈ range (n + 1), (polarDeriv (n + 1) (x / β) P).coeff k *
       ((Q1.coeff k : ℝ) : ℂ) / ((n.choose k : ℕ) : ℂ) * x ^ k =
-      ∑ k ∈ range (n + 1), (β : ℂ) * (((n : ℂ) + 1) - k) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) /
+      ∑ k ∈ range (n + 1),
+        (β : ℂ) * (((n : ℂ) + 1) - k) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) /
         ((n.choose k : ℕ) : ℂ) * x ^ k +
       ∑ k ∈ range (n + 1), x * ((k : ℂ) + 1) * P.coeff (k + 1) * ((Q1.coeff k : ℝ) : ℂ) /
         ((n.choose k : ℕ) : ℂ) * x ^ k := by
@@ -234,16 +229,17 @@ private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
       _ = _ := by rw [e]; ring
 
 /-- Stability of the Schur–Szegő composition. -/
-private theorem compC_ne_zero : ∀ (n : ℕ) (Q : ℝ[X]), Q ≠ 0 → Q.natDegree = n → Q.Splits →
+private theorem compC_ne_zero : ∀ (n : ℕ) (Q : ℝ[X]),
+    Q ≠ 0 → Q.natDegree = n → Q.Splits →
     (∀ b ∈ Q.roots, b < 0) → ∀ P : ℂ[X], P.natDegree ≤ n →
-    (∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) → ∀ x : ℂ, 0 < x.im → (compC n P Q).eval x ≠ 0 := by
+    (∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) → ∀ x : ℂ,
+    0 < x.im → (compC n P Q).eval x ≠ 0 := by
   intro n
   induction n with
   | zero =>
     intro Q hQ0 hQn _ _ P hP hPH x hx
     have hP0 : P.coeff 0 ≠ 0 := by
-      have := hPH Complex.I (by simp)
-      rwa [eq_C_of_natDegree_le_zero hP, eval_C] at this
+      have := hPH Complex.I (by simp); rwa [eq_C_of_natDegree_le_zero hP, eval_C] at this
     have hQc : Q.coeff 0 ≠ 0 := by
       intro h; apply hQ0; rw [eq_C_of_natDegree_eq_zero hQn, h, C_0]
     rw [eval_compC]; simp [hP0, hQc]
@@ -254,8 +250,7 @@ private theorem compC_ne_zero : ∀ (n : ℕ) (Q : ℝ[X]), Q ≠ 0 → Q.natDeg
     have hbneg := hneg b hb
     set Q1 := Q /ₘ (X - C b) with hQ1def
     have hQeq : (X - C b) * Q1 = Q := mul_divByMonic_eq_iff_isRoot.mpr (isRoot_of_mem_roots hb)
-    have hQ10 : Q1 ≠ 0 := by
-      intro h; rw [h, mul_zero] at hQeq; exact hQ0 hQeq.symm
+    have hQ10 : Q1 ≠ 0 := fun h => by rw [h, mul_zero] at hQeq; exact hQ0 hQeq.symm
     have hQ1n : Q1.natDegree = n := by
       have := natDegree_mul (X_sub_C_ne_zero b) hQ10
       rw [hQeq, natDegree_X_sub_C, hQn] at this; lia
@@ -268,17 +263,16 @@ private theorem compC_ne_zero : ∀ (n : ℕ) (Q : ℝ[X]), Q ≠ 0 → Q.natDeg
     have hXb : X + C (-b) = X - C b := by rw [C_neg, ← sub_eq_add_neg]
     have hrec := compC_recursion n P Q1 hQ1n.le hβ.ne' x
     rw [hXb, hQeq] at hrec
-    have hζ : 0 < (x / ((-b : ℝ) : ℂ)).im := by
-      rw [Complex.div_ofReal_im]; positivity
-    have hpd : ∀ z : ℂ, 0 < z.im → (polarDeriv (n + 1) (x / ((-b : ℝ) : ℂ)) P).eval z ≠ 0 :=
+    have hζ : 0 < (x / ((-b : ℝ) : ℂ)).im := by rw [Complex.div_ofReal_im]; positivity
+    have hpd : ∀ z : ℂ,
+        0 < z.im → (polarDeriv (n + 1) (x / ((-b : ℝ) : ℂ)) P).eval z ≠ 0 :=
       fun z hz => polarDeriv_ne_zero (N := n + 1) (by lia) hP hPH hζ hz
     have hne := ih Q1 hQ10 hQ1n hQ1s hQ1neg (polarDeriv (n + 1) (x / ((-b : ℝ) : ℂ)) P)
       (natDegree_polarDeriv_le _ hP) hpd x hx
     intro h0
     push_cast at hrec
     rw [h0, mul_zero] at hrec
-    have hb' : (-(b : ℂ)) ≠ 0 := by
-      rw [neg_ne_zero]; exact_mod_cast hbneg.ne
+    have hb' : (-(b : ℂ)) ≠ 0 := by rw [neg_ne_zero]; exact_mod_cast hbneg.ne
     push_cast at hne
     exact hne ((mul_eq_zero.mp hrec.symm).resolve_left hb')
 
@@ -342,10 +336,6 @@ open Polynomial
 
 namespace SchurSzegoAristotle
 
-private theorem splits_iterate_derivative_real {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
-    (derivative^[k] p).Splits := by
-  induction k <;> simp_all [Function.iterate_succ_apply', Polynomial.Splits.derivative]
-
 /-- Laguerre's inequality for products of linear factors. -/
 private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
     0 ≤ ((s.map fun a => X - C a).prod.derivative.eval x) ^ 2 -
@@ -371,13 +361,12 @@ private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
       ring
     rw [key]
     refine ⟨by positivity, fun _ hx => ?_⟩
-    have hGx : G.eval x ≠ 0 := by
-      intro h; apply hx; simp [h]
-    have : 0 < (G.eval x) ^ 2 := by positivity
-    nlinarith [sq_nonneg (x - a)]
+    have hGx : G.eval x ≠ 0 := fun h => hx (by simp [h])
+    nlinarith [sq_pos_of_ne_zero hGx, sq_nonneg (x - a)]
 
 /-- If a split real polynomial of positive degree has `p'(x) = p''(x) = 0`, then `p(x) = 0`. -/
-private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits) (hdeg : 0 < p.natDegree) {x : ℝ}
+private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits)
+    (hdeg : 0 < p.natDegree) {x : ℝ}
     (h1 : p.derivative.eval x = 0) (h2 : p.derivative.derivative.eval x = 0) :
     p.eval x = 0 := by
   by_contra hx
@@ -385,10 +374,10 @@ private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits) (hdeg : 0 < 
     intro h
     have := hp.natDegree_eq_card_roots
     rw [h] at this; simp at this; lia
-  obtain ⟨c, F, hpF, hFdef⟩ : ∃ c F, p = C c * F ∧ F = (p.roots.map fun a => X - C a).prod :=
+  obtain ⟨c, F, hpF, hFdef⟩ :
+      ∃ c F, p = C c * F ∧ F = (p.roots.map fun a => X - C a).prod :=
     ⟨_, _, hp.eq_prod_roots, rfl⟩
-  have hFx : F.eval x ≠ 0 := by
-    intro h; apply hx; rw [hpF]; simp [h]
+  have hFx : F.eval x ≠ 0 := fun h => hx (by rw [hpF]; simp [h])
   have hstrict := (laguerre_prod p.roots x).2 hroots (hFdef ▸ hFx)
   rw [← hFdef] at hstrict
   have hc : c ≠ 0 := by rintro rfl; apply hx; rw [hpF]; simp
@@ -399,14 +388,12 @@ private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits) (hdeg : 0 < 
     simp only [derivative_mul, derivative_C, zero_mul, zero_add, eval_mul, eval_C]
     ring
   rw [h1, h2] at e
-  have : 0 < c ^ 2 * ((F.derivative.eval x) ^ 2 - F.eval x *
-        F.derivative.derivative.eval x) := by positivity
-  linarith
+  nlinarith [mul_pos (sq_pos_of_ne_zero hc) hstrict]
 
 /-- Coefficients of iterated derivatives. -/
 private theorem coeff_iterate_derivative_real (p : ℝ[X]) (k m : ℕ) :
     (derivative^[k] p).coeff m = ((m + k).descFactorial k : ℝ) * p.coeff (m + k) := by
-  rw [coeff_iterate_derivative]; simp [nsmul_eq_mul]
+  simp [coeff_iterate_derivative, nsmul_eq_mul]
 
 /-- Gap lemma: if a real-rooted polynomial has two consecutive vanishing coefficients
 below its degree, then all lower coefficients vanish. -/
@@ -422,7 +409,7 @@ private theorem gap_lemma {p : ℝ[X]} (hp : p.Splits) :
     intro hk h0 h1 j hj
     have hck : p.coeff k = 0 := by
       set h := derivative^[k] p with hh
-      have hs : h.Splits := splits_iterate_derivative_real hp k
+      have hs : h.Splits := hp.iterate_derivative k
       have hdeg : 0 < h.natDegree := by
         have hc : h.coeff (p.natDegree - k) ≠ 0 := by
           rw [hh, coeff_iterate_derivative_real, Nat.sub_add_cancel (by lia)]
@@ -451,11 +438,6 @@ private theorem gap_lemma {p : ℝ[X]} (hp : p.Splits) :
     · have : j = k + 2 := by lia
       subst this; exact h1
 
-/-- `reflect` preserves splitting. -/
-private theorem splits_reflect {p : ℝ[X]} (hp : p.Splits) {N : ℕ} (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits :=
-  Polynomial.Splits.reflect hp hN
-
 end SchurSzegoAristotle
 
 /-!
@@ -480,20 +462,18 @@ private noncomputable def apo (n : ℕ) (R W : ℝ[X]) : ℝ :=
 
 private theorem apo_add_left (n : ℕ) (R R' W : ℝ[X]) :
     apo n (R + R') W = apo n R W + apo n R' W := by
-  simp only [apo, coeff_add, ← sum_add_distrib]
-  exact sum_congr rfl fun k _ => by ring
+  simp only [apo, coeff_add, ← sum_add_distrib]; exact sum_congr rfl fun k _ => by ring
 
 private theorem apo_C_mul_left (n : ℕ) (c : ℝ) (R W : ℝ[X]) :
     apo n (C c * R) W = c * apo n R W := by
-  simp only [apo, coeff_C_mul, mul_sum]
-  exact sum_congr rfl fun k _ => by ring
+  simp only [apo, coeff_C_mul, mul_sum]; exact sum_congr rfl fun k _ => by ring
 
 private theorem apo_C_mul_right (n : ℕ) (c : ℝ) (R W : ℝ[X]) :
     apo n R (C c * W) = c * apo n R W := by
-  simp only [apo, coeff_C_mul, mul_sum]
-  exact sum_congr rfl fun k _ => by ring
+  simp only [apo, coeff_C_mul, mul_sum]; exact sum_congr rfl fun k _ => by ring
 
-private theorem apo_sum_left {ι : Type*} (n : ℕ) (s : Finset ι) (R : ι → ℝ[X]) (W : ℝ[X]) :
+private theorem apo_sum_left {ι : Type*} (n : ℕ) (s : Finset ι)
+    (R : ι → ℝ[X]) (W : ℝ[X]) :
     apo n (∑ i ∈ s, R i) W = ∑ i ∈ s, apo n (R i) W := by
   classical
   induction s using Finset.induction_on with
@@ -522,8 +502,7 @@ private noncomputable def apoPoly (n : ℕ) (R W : ℝ[X]) : ℝ[X] :=
 
 private theorem coeff_taylor_eq (a : ℝ) (R : ℝ[X]) (k : ℕ) :
     (k.factorial : ℝ) * (taylor a R).coeff k = (derivative^[k] R).eval a := by
-  rw [taylor_coeff, ← factorial_smul_hasseDeriv]
-  simp [nsmul_eq_mul]
+  rw [taylor_coeff, ← factorial_smul_hasseDeriv]; simp [nsmul_eq_mul]
 
 private theorem apo_taylor_eq_eval (n : ℕ) (a : ℝ) (R W : ℝ[X]) :
     apo n (taylor a R) (taylor a W) = (apoPoly n R W).eval a := by
@@ -555,12 +534,12 @@ private theorem derivative_apoPoly {n : ℕ} {R W : ℝ[X]} (hR : R.natDegree �
   simp
 
 /-- Translation invariance of the apolar form. -/
-private theorem apo_taylor {n : ℕ} {R W : ℝ[X]} (hR : R.natDegree ≤ n) (hW : W.natDegree ≤ n)
-    (a : ℝ) :
+private theorem apo_taylor {n : ℕ} {R W : ℝ[X]} (hR : R.natDegree ≤ n)
+    (hW : W.natDegree ≤ n) (a : ℝ) :
     apo n (taylor a R) (taylor a W) = apo n R W := by
   have h0 : apo n R W = apo n (taylor 0 R) (taylor 0 W) := by simp
-  rw [h0, apo_taylor_eq_eval, apo_taylor_eq_eval]
-  rw [eq_C_of_derivative_eq_zero (derivative_apoPoly hR hW)]
+  rw [h0, apo_taylor_eq_eval, apo_taylor_eq_eval,
+    eq_C_of_derivative_eq_zero (derivative_apoPoly hR hW)]
   simp
 
 /-- Frame change: translate by `a` and reflect. -/
@@ -601,7 +580,8 @@ private theorem apo_X_pow_left {n α : ℕ} (hα : α ≤ n) (W : ℝ[X]) :
   · intro h; simp at h; lia
 
 /-- `apo` vanishes when the degrees are too small. -/
-private theorem apo_eq_zero_of_natDegree {n : ℕ} {R W : ℝ[X]} (h : R.natDegree + W.natDegree < n) :
+private theorem apo_eq_zero_of_natDegree {n : ℕ} {R W : ℝ[X]}
+    (h : R.natDegree + W.natDegree < n) :
     apo n R W = 0 := by
   unfold apo
   refine sum_eq_zero fun k hk => ?_
@@ -630,7 +610,8 @@ private theorem apo_eq_zero_of_dvd {n m l : ℕ} {R W : ℝ[X]} {z : ℝ} (hR : 
   · rw [coeff_X_pow_mul' (n := l), ite_eq_right (by lia)]; ring
 
 /-- Duality at a single point. -/
-private theorem dvd_of_apo_eq_zero {n k : ℕ} {W : ℝ[X]} {a : ℝ} (hk : k ≤ n) (hW : W.natDegree ≤ n)
+private theorem dvd_of_apo_eq_zero {n k : ℕ} {W : ℝ[X]} {a : ℝ} (hk : k ≤ n)
+    (hW : W.natDegree ≤ n)
     (h : ∀ U : ℝ[X], U.natDegree ≤ n - k → apo n ((X - C a) ^ k * U) W = 0) :
     (X - C a) ^ (n - k + 1) ∣ W := by
   set V := taylor a W with hV
@@ -708,7 +689,8 @@ private theorem reflect_taylor_X_sub_C_pow_mul {N k : ℕ} (hk : k ≤ N) (a : �
     reflect_monomial, revAt_le le_rfl, Nat.sub_self, pow_zero, one_mul]
 
 /-- A factor `(X - c)^k` with `c ≠ a` in the frame at `a`. -/
-private theorem reflect_taylor_X_sub_C_pow_mul' {N k : ℕ} (hk : k ≤ N) {a c : ℝ} (hac : c ≠ a)
+private theorem reflect_taylor_X_sub_C_pow_mul' {N k : ℕ} (hk : k ≤ N)
+    {a c : ℝ} (hac : c ≠ a)
     {Y : ℝ[X]} (hY : Y.natDegree ≤ N - k) :
     reflect N (taylor a ((X - C c) ^ k * Y)) =
       C ((a - c) ^ k) * ((X - C (1 / (c - a))) ^ k * reflect (N - k) (taylor a Y)) := by
@@ -720,19 +702,9 @@ private theorem reflect_taylor_X_sub_C_pow_mul' {N k : ℕ} (hk : k ≤ N) {a c 
     reflect_X_sub_C_pow, one_sub_C_mul_X (sub_ne_zero.mpr hac), mul_pow, ← C_pow, mul_assoc]
   congr 2; ring
 
-private theorem iterate_derivative_eq_zero_imp {p : ℝ[X]} {k : ℕ} (hk : 1 ≤ k)
-    (h : derivative^[k] p = 0) : p.natDegree < k := by
-  by_contra hlt
-  push Not at hlt
-  have hp : p ≠ 0 := by rintro rfl; simp at hlt; lia
-  have := congrArg (fun q => q.coeff (p.natDegree - k)) h
-  simp only [coeff_iterate_derivative_real, coeff_zero, Nat.sub_add_cancel hlt] at this
-  rcases mul_eq_zero.mp this with h1 | h1
-  · exact absurd h1 (by exact_mod_cast (Nat.descFactorial_pos.mpr hlt).ne')
-  · exact hp (leadingCoeff_eq_zero.mp h1)
-
 /-- Transport of the apolar form when killing the point `a`. -/
-private theorem apo_kill {n k : ℕ} (hk : k ≤ n) (a : ℝ) {Y W : ℝ[X]} (hY : Y.natDegree ≤ n - k)
+private theorem apo_kill {n k : ℕ} (hk : k ≤ n) (a : ℝ) {Y W : ℝ[X]}
+    (hY : Y.natDegree ≤ n - k)
     (hW : W.natDegree ≤ n) :
     apo n ((X - C a) ^ k * Y) W = (-1) ^ n * apo (n - k) (reflect (n - k) (taylor a Y))
       (derivative^[k] (reflect n (taylor a W))) := by
@@ -751,7 +723,8 @@ private theorem apo_frame' {n : ℕ} (b : ℝ) {R W : ℝ[X]} (hR : R.natDegree 
     (natDegree_reflect_le' (by rw [natDegree_taylor]; exact hW))]
 
 /-- The two-point case: a gap argument in the frame sending `b` to infinity and `a` to `0`. -/
-private theorem p2_lemma {n k k' : ℕ} {a b : ℝ} (hab : a ≠ b) (hn : k + k' + 1 ≤ n) {W : ℝ[X]}
+private theorem p2_lemma {n k k' : ℕ} {a b : ℝ} (hab : a ≠ b)
+    (hn : k + k' + 1 ≤ n) {W : ℝ[X]}
     (hW0 : W ≠ 0) (hWs : W.Splits) (hWn : W.natDegree ≤ n)
     (h : ∀ U : ℝ[X], U.natDegree ≤ n - k - k' →
       apo n ((X - C a) ^ k * ((X - C b) ^ k' * U)) W = 0) :
@@ -759,7 +732,8 @@ private theorem p2_lemma {n k k' : ℕ} {a b : ℝ} (hab : a ≠ b) (hn : k + k'
   set a' : ℝ := 1 / (a - b) with ha'
   set Z := taylor a' (reflect n (taylor b W)) with hZ
   have hZs : Z.Splits :=
-    (splits_reflect (hWs.taylor b) (by rw [natDegree_taylor]; exact hWn)).taylor a'
+    (Polynomial.Splits.reflect (hWs.taylor b)
+      (by rw [natDegree_taylor]; exact hWn)).taylor a'
   have hZ0 : Z ≠ 0 := by
     rw [hZ]; intro h0
     rw [taylor_eq_zero, reflect_eq_zero_iff, taylor_eq_zero] at h0; exact hW0 h0
@@ -848,7 +822,8 @@ private theorem natDegree_listProd_le (l : List (ℝ × ℕ)) (f : ℝ × ℕ �
   | cons p l ih => simpa using
       natDegree_mul_le.trans (add_le_add (natDegree_X_sub_C_pow_le (f p) p.2) ih)
 
-private theorem reflect_taylor_listProd (a1 : ℝ) (l : List (ℝ × ℕ)) (hl : ∀ p ∈ l, p.1 ≠ a1) :
+private theorem reflect_taylor_listProd (a1 : ℝ) (l : List (ℝ × ℕ))
+    (hl : ∀ p ∈ l, p.1 ≠ a1) :
     reflect (l.map Prod.snd).sum (taylor a1 (l.map fun p => (X - C p.1) ^ p.2).prod) =
       C (l.map fun p => (a1 - p.1) ^ p.2).prod *
         (l.map fun p => (X - C (1 / (p.1 - a1))) ^ p.2).prod := by
@@ -880,7 +855,8 @@ private theorem not_apo_all_zero {n : ℕ} {W : ℝ[X]} (hW0 : W ≠ 0) (hWn : W
   lia
 
 /-- Statement of the lemma for lists of length at most `N`, by induction on `N`. -/
-private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ N → ∀ (n : ℕ) (W : ℝ[X]),
+private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)),
+    l.length ≤ N → ∀ (n : ℕ) (W : ℝ[X]),
     (l.map Prod.fst).Nodup →
     (l.map fun p => p.2 + 1).sum ≤ n →
     W ≠ 0 → W.Splits → W.natDegree ≤ n →
@@ -912,7 +888,8 @@ private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ 
     set V := reflect n (taylor a1 W) with hV
     set W1 := derivative^[k1] V with hW1
     set n1 := n - k1 with hn1
-    have hVs : V.Splits := splits_reflect (hWs.taylor a1) (by rw [natDegree_taylor]; exact hWn)
+    have hVs : V.Splits := Polynomial.Splits.reflect (hWs.taylor a1)
+      (by rw [natDegree_taylor]; exact hWn)
     have hVn : V.natDegree ≤ n := natDegree_reflect_le' (by rw [natDegree_taylor]; exact hWn)
     by_cases hW10 : W1 = 0
     · refine ⟨(a1, k1), List.mem_cons_self, dvd_of_apo_eq_zero (by lia) hWn fun U hU => ?_⟩
@@ -940,7 +917,7 @@ private theorem lstar_aux : ∀ (N : ℕ) (l : List (ℝ × ℕ)), l.length ≤ 
         have h2 := sub_ne_zero.mpr (hnotin qy hqy)
         field_simp at hxy
         linarith)
-      (by rw [hLsum]; lia) hW10 (splits_iterate_derivative_real hVs k1) hW1n
+      (by rw [hLsum]; lia) hW10 (hVs.iterate_derivative k1) hW1n
       (by
         intro U'' hU''
         rw [hLsnd] at hU''
@@ -1013,17 +990,11 @@ namespace SchurSzegoAristotle
 
 local notation "ssc" => RealRooted.schurSzegoComp
 
-private theorem coeff_ssc (n : ℕ) (f g : ℝ[X]) (k : ℕ) :
-    (ssc n f g).coeff k = f.coeff k * g.coeff k / (Nat.choose n k : ℝ) :=
-  RealRooted.coeff_schurSzegoComp_eq_div n f g k
-
-private theorem natDegree_ssc_le (n : ℕ) (f g : ℝ[X]) : (ssc n f g).natDegree ≤ n :=
-  RealRooted.natDegree_schurSzegoComp_le n f g
-
 private theorem ssc_ne_zero {n : ℕ} {f g : ℝ[X]} (hf : f.natDegree = n) (hg : g.natDegree = n)
     (hf0 : f ≠ 0) (hg0 : g ≠ 0) : ssc n f g ≠ 0 := by
   have hc : (ssc n f g).coeff n = f.leadingCoeff * g.leadingCoeff := by
-    rw [coeff_ssc, Nat.choose_self, Nat.cast_one, div_one, leadingCoeff, leadingCoeff, hf, hg]
+    rw [RealRooted.coeff_schurSzegoComp_eq_div, Nat.choose_self, Nat.cast_one, div_one,
+      leadingCoeff, leadingCoeff, hf, hg]
   intro h
   rw [h, coeff_zero] at hc
   exact mul_ne_zero (leadingCoeff_ne_zero.mpr hf0) (leadingCoeff_ne_zero.mpr hg0) hc.symm
@@ -1032,14 +1003,16 @@ private theorem derivative_ssc (N : ℕ) (f g : ℝ[X]) :
     derivative (ssc (N + 1) f g) =
       C (1 / ((N : ℝ) + 1)) * ssc N (derivative f) (derivative g) := by
   ext j
-  rw [coeff_derivative, coeff_C_mul, coeff_ssc, coeff_ssc, coeff_derivative, coeff_derivative]
+  rw [coeff_derivative, coeff_C_mul, RealRooted.coeff_schurSzegoComp_eq_div,
+    RealRooted.coeff_schurSzegoComp_eq_div, coeff_derivative, coeff_derivative]
   have key := Nat.add_one_mul_choose_eq N j
   rcases Nat.lt_or_ge N j with h | h
   · rw [Nat.choose_eq_zero_of_lt h, Nat.choose_eq_zero_of_lt (by lia)]; simp
   · have h1 : (N.choose j : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos h).ne'
     have h2 : ((N + 1).choose (j + 1) : ℝ) ≠ 0 := by
       exact_mod_cast (Nat.choose_pos (by lia)).ne'
-    have key' : ((N : ℝ) + 1) * N.choose j = ((N + 1).choose (j + 1) : ℝ) * ((j : ℝ) + 1) := by
+    have key' : ((N : ℝ) + 1) * N.choose j =
+        ((N + 1).choose (j + 1) : ℝ) * ((j : ℝ) + 1) := by
       exact_mod_cast key
     field_simp
     linear_combination (f.coeff (j + 1) * g.coeff (j + 1)) * key'
@@ -1051,7 +1024,8 @@ private theorem natDegree_comp_C_mul_X_le (Q : ℝ[X]) (a : ℝ) : (Q.comp
     nlinarith [Nat.zero_le Q.natDegree])
 
 /-- The transform `Q ↦ X^n Q(-r/X)`. -/
-private noncomputable def Tr (n : ℕ) (r : ℝ) (Q : ℝ[X]) : ℝ[X] := reflect n (Q.comp (C (-r) * X))
+private noncomputable def Tr (n : ℕ) (r : ℝ) (Q : ℝ[X]) : ℝ[X] :=
+  reflect n (Q.comp (C (-r) * X))
 
 private theorem natDegree_Tr_le {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ n) :
     (Tr n r Q).natDegree ≤ n :=
@@ -1076,7 +1050,8 @@ private theorem Tr_Tr {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ n) 
   ext j
   rw [coeff_Tr r (natDegree_Tr_le r hQ), coeff_C_mul]
   split_ifs with h
-  · rw [coeff_Tr r hQ, ite_eq_left (by lia), show n - (n - j) = j by lia, ← mul_assoc, ← pow_add,
+  · rw [coeff_Tr r hQ, ite_eq_left (by lia), show n - (n - j) = j by lia,
+      ← mul_assoc, ← pow_add,
       show n - j + j = n by lia]
   · rw [coeff_eq_zero_of_natDegree_lt (by lia)]; ring
 
@@ -1137,9 +1112,11 @@ private theorem Tr_ne_zero {n : ℕ} {r : ℝ} (hr : r ≠ 0) {Q : ℝ[X]} (hQ :
   · exact pow_ne_zero n (neg_ne_zero.mpr hr) (C_eq_zero.mp h1)
   · exact hQ0 h1
 
-private theorem splits_Tr {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ n) (hs : Q.Splits) :
+private theorem splits_Tr {n : ℕ} (r : ℝ) {Q : ℝ[X]} (hQ : Q.natDegree ≤ n)
+    (hs : Q.Splits) :
     (Tr n r Q).Splits :=
-  splits_reflect (hs.comp_of_natDegree_le_one ((natDegree_C_mul_le _ X).trans natDegree_X_le))
+  Polynomial.Splits.reflect
+    (hs.comp_of_natDegree_le_one ((natDegree_C_mul_le _ X).trans natDegree_X_le))
     ((natDegree_comp_C_mul_X_le Q _).trans hQ)
 
 /-- Evaluation of the composition as an apolar pairing. -/
@@ -1172,10 +1149,6 @@ namespace SchurSzegoAristotle
 
 local notation "ssc" => RealRooted.schurSzegoComp
 
-private theorem rootMultiplicity_le_natDegree' (p : ℝ[X])
-    (a : ℝ) : p.rootMultiplicity a ≤ p.natDegree :=
-  Polynomial.rootMultiplicity_le_natDegree p a
-
 private theorem rootMultiplicity_C_mul' {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) (a : ℝ) :
     (C c * p).rootMultiplicity a = p.rootMultiplicity a := by
   obtain rfl | hp := eq_or_ne p 0
@@ -1183,12 +1156,11 @@ private theorem rootMultiplicity_C_mul' {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) (a
   rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp), rootMultiplicity_C, zero_add]
 
 private theorem natDegree_derivative_eq' {p : ℝ[X]} {N : ℕ} (hp : p.natDegree = N + 1) :
-    p.derivative.natDegree = N := by
-  rw [Polynomial.natDegree_derivative, hp]; lia
+    p.derivative.natDegree = N := by rw [Polynomial.natDegree_derivative, hp]; lia
 
 private theorem derivative_ne_zero' {p : ℝ[X]} {N : ℕ}
-    (hp : p.natDegree = N + 1) : p.derivative ≠ 0 := by
-  exact Polynomial.derivative_ne_zero.mpr (by rw [hp]; lia)
+    (hp : p.natDegree = N + 1) : p.derivative ≠ 0 :=
+  Polynomial.derivative_ne_zero.mpr (by rw [hp]; lia)
 
 /-- Root multiplicities drop by one under differentiation of the composition. -/
 private theorem rootMultiplicity_ssc_derivative (N : ℕ) (P Q : ℝ[X]) {r : ℝ}
@@ -1211,23 +1183,25 @@ private theorem ssc_isRoot_of_forced {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree 
     exact this.mul_left _
 
 /-- Kostov–Shapiro, Proposition 4 (lower bound). -/
-private theorem forced_lower : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → Q.natDegree = n → P ≠ 0 →
+private theorem forced_lower : ∀ (n : ℕ) (P Q : ℝ[X]),
+    P.natDegree = n → Q.natDegree = n → P ≠ 0 →
     Q ≠ 0 → ∀ a b : ℝ, b ≠ 0 → n < P.rootMultiplicity a + Q.rootMultiplicity b →
-    P.rootMultiplicity a + Q.rootMultiplicity b - n ≤ (ssc n P Q).rootMultiplicity (-(a * b)) := by
+    P.rootMultiplicity a + Q.rootMultiplicity b - n ≤
+      (ssc n P Q).rootMultiplicity (-(a * b)) := by
   intro n
   induction n with
   | zero =>
     intro P Q hP hQ _ _ a b _ h
-    have h1 := rootMultiplicity_le_natDegree' P a
-    have h2 := rootMultiplicity_le_natDegree' Q b
+    have h1 := Polynomial.rootMultiplicity_le_natDegree P a
+    have h2 := Polynomial.rootMultiplicity_le_natDegree Q b
     lia
   | succ N ih =>
     intro P Q hP hQ hP0 hQ0 a b hb h
     have hS0 := ssc_ne_zero hP hQ hP0 hQ0
     have hroot := ssc_isRoot_of_forced hP.le hQ.le hb h
     have hpos := (rootMultiplicity_pos hS0).mpr hroot
-    have h1 := rootMultiplicity_le_natDegree' P a
-    have h2 := rootMultiplicity_le_natDegree' Q b
+    have h1 := Polynomial.rootMultiplicity_le_natDegree P a
+    have h2 := Polynomial.rootMultiplicity_le_natDegree Q b
     by_cases hk : P.rootMultiplicity a + Q.rootMultiplicity b - (N + 1) ≤ 1
     · lia
     have hPa : P.IsRoot a := (rootMultiplicity_pos hP0).mp (by lia)
@@ -1240,7 +1214,8 @@ private theorem forced_lower : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n →
     lia
 
 /-- The derivative of a polynomial with only negative roots has only negative roots. -/
-private theorem derivative_roots_neg {Q : ℝ[X]} {N : ℕ} (hQ : Q.natDegree = N + 1) (hQs : Q.Splits)
+private theorem derivative_roots_neg {Q : ℝ[X]} {N : ℕ} (hQ : Q.natDegree = N + 1)
+    (hQs : Q.Splits)
     (hneg : ∀ b ∈ Q.roots, b < 0) : ∀ b ∈ Q.derivative.roots, b < 0 := by
   intro x hx
   by_contra hx0
@@ -1288,37 +1263,34 @@ private theorem eval_map_ofReal (p : ℝ[X]) (x : ℝ) :
 
 private theorem coeff_compC (n : ℕ) (P : ℂ[X]) (Q : ℝ[X]) (k : ℕ) :
     (compC n P Q).coeff k = P.coeff k * (Q.coeff k : ℂ) / (n.choose k : ℂ) := by
-  unfold compC
-  rw [finsetSum_coeff]
-  simp only [coeff_monomial]
-  rw [Finset.sum_eq_single k]
-  · simp
-  · intro b _ hb; simp [hb]
-  · intro hk
-    simp only [mem_range, not_lt] at hk
-    rw [Nat.choose_eq_zero_of_lt (by lia)]; simp
+  rw [compC, Polynomial.coeff_sum_range_monomial]
+  split_ifs with hk
+  · rfl
+  · rw [Nat.choose_eq_zero_of_lt (by lia)]; simp
 
 private theorem compC_split (n : ℕ) (P T Q : ℝ[X]) :
     compC n (P.map Complex.ofRealHom + C Complex.I * T.map Complex.ofRealHom) Q =
       (ssc n P Q).map Complex.ofRealHom + C Complex.I * (ssc n T Q).map Complex.ofRealHom := by
   ext k
-  simp only [coeff_compC, coeff_add, coeff_map, coeff_C_mul, coeff_ssc]
+  simp only [coeff_compC, coeff_add, coeff_map, coeff_C_mul,
+    RealRooted.coeff_schurSzegoComp_eq_div]
   simp only [Complex.ofRealHom_eq_coe]
-  push_cast
-  ring
+  push_cast; ring
 
 /-- If `P + i T` has no zeros in the upper half-plane and `r` is a root of multiplicity exactly
 two of `P ∘ Q`, then `r` is a root of `T ∘ Q`. -/
 private theorem eval_ssc_eq_zero_of_stable {n : ℕ} {P Q T : ℝ[X]} (hQ0 : Q ≠ 0)
     (hQ : Q.natDegree = n)
-    (hQs : Q.Splits) (hneg : ∀ b ∈ Q.roots, b < 0) (hP : P.natDegree ≤ n) (hT : T.natDegree ≤ n)
+    (hQs : Q.Splits) (hneg : ∀ b ∈ Q.roots, b < 0) (hP : P.natDegree ≤ n)
+    (hT : T.natDegree ≤ n)
     (hstab : ∀ z : ℂ, 0 < z.im →
       (P.map Complex.ofRealHom + C Complex.I * T.map Complex.ofRealHom).eval z ≠ 0)
     {r : ℝ} (h0 : (ssc n P Q).eval r = 0) (h1 : (ssc n P Q).derivative.eval r = 0)
     (h2 : (ssc n P Q).derivative.derivative.eval r ≠ 0) : (ssc n T Q).eval r = 0 := by
   set S := ssc n P Q with hS
   set D := ssc n T Q with hD
-  have hdeg : (P.map Complex.ofRealHom + C Complex.I * T.map Complex.ofRealHom).natDegree ≤ n := by
+  have hdeg :
+      (P.map Complex.ofRealHom + C Complex.I * T.map Complex.ofRealHom).natDegree ≤ n := by
     refine (natDegree_add_le _ _).trans (max_le ?_ ?_)
     · rw [natDegree_map]; exact hP
     · exact (natDegree_C_mul_le _ _).trans (by rw [natDegree_map]; exact hT)
@@ -1352,8 +1324,7 @@ private theorem eval_map_ne_zero_of_splits {R : ℝ[X]} (hR0 : R ≠ 0) (hRs : R
   obtain ⟨b, _, hb⟩ := Multiset.mem_map.mp h
   simp only [Function.comp, Polynomial.map_sub, map_X, map_C, eval_sub, eval_X, eval_C] at hb
   have := congrArg Complex.im hb
-  simp at this
-  linarith
+  simp at this; linarith
 
 private theorem stable_of_factor {P R : ℝ[X]} {a : ℝ} (hPR : P = (X - C a) * R) (hR0 : R ≠ 0)
     (hRs : R.Splits) (z : ℂ) (hz : 0 < z.im) :
@@ -1366,8 +1337,7 @@ private theorem stable_of_factor {P R : ℝ[X]} {a : ℝ} (hPR : P = (X - C a) *
   simp only [eval_add, eval_sub, eval_X, eval_C]
   intro h
   have := congrArg Complex.im h
-  simp at this
-  linarith
+  simp at this; linarith
 
 /-- Lagrange spanning: a linear form killing `G * N` and all `G * N / (X - i)` kills
 `G * U` for every `U` of degree at most `#s`. -/
@@ -1394,7 +1364,8 @@ private theorem apo_G_mul_eq_zero {n : ℕ} {W : ℝ[X]} (s : Finset ℝ) (G : �
     rw [Lagrange.basis, map_prod, ← prod_mul_distrib]
     rfl
   rw [hb, show G * (C (eval (id i) (U %ₘ N)) * (C (∏ j ∈ s.erase i, (i - j)⁻¹) *
-      ∏ j ∈ s.erase i, (X - C j))) = C (eval (id i) (U %ₘ N) * ∏ j ∈ s.erase i, (i - j)⁻¹) *
+      ∏ j ∈ s.erase i, (X - C j))) =
+      C (eval (id i) (U %ₘ N) * ∏ j ∈ s.erase i, (i - j)⁻¹) *
       (G * ∏ j ∈ s.erase i, (X - C j)) by rw [C_mul]; ring,
     apo_C_mul_left, hE i hi, mul_zero]
 
@@ -1475,7 +1446,8 @@ private theorem double_root_forced {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree = 
   simp only at hdvd
   have hdvd' : (X - C a) ^ (n - (P.rootMultiplicity a - 1) + 1) ∣ Tr n r Q :=
     ((isUnit_C.mpr (IsUnit.mk0 _ hfac)).dvd_mul_left).mp hdvd
-  have hmle : P.rootMultiplicity a ≤ n := hP ▸ rootMultiplicity_le_natDegree' P a
+  have hmle : P.rootMultiplicity a ≤ n :=
+    hP ▸ Polynomial.rootMultiplicity_le_natDegree P a
   have ha0 : a ≠ 0 := by
     rintro rfl
     have h3 : X - C 0 ∣ Tr n r Q := (dvd_pow_self _ (by lia)).trans hdvd'
@@ -1507,7 +1479,8 @@ namespace SchurSzegoAristotle
 local notation "ssc" => RealRooted.schurSzegoComp
 
 /-- A root of multiplicity at least two of `P'` is a root of `P` (for split `P`). -/
-private theorem lift_root {P : ℝ[X]} {N : ℕ} (hP : P.natDegree = N + 1) (hPs : P.Splits) {a : ℝ}
+private theorem lift_root {P : ℝ[X]} {N : ℕ} (hP : P.natDegree = N + 1)
+    (hPs : P.Splits) {a : ℝ}
     (h2 : 2 ≤ P.derivative.rootMultiplicity a) :
     P.IsRoot a ∧ P.rootMultiplicity a = P.derivative.rootMultiplicity a + 1 := by
   have hP0 : P ≠ 0 := by rintro rfl; simp at hP
@@ -1520,7 +1493,8 @@ private theorem lift_root {P : ℝ[X]} {N : ℕ} (hP : P.natDegree = N + 1) (hPs
   have := (rootMultiplicity_pos hP0).mpr hPa
   exact ⟨hPa, by lia⟩
 
-private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.Splits → Q.natDegree = n →
+private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]),
+    P.natDegree = n → P.Splits → Q.natDegree = n →
     Q.Splits → (∀ b ∈ Q.roots, b < 0) →
     ∀ r, r ≠ 0 → 1 < (ssc n P Q).rootMultiplicity r →
       ∃ a b : ℝ, a ≠ 0 ∧ b ≠ 0 ∧ P.IsRoot a ∧ Q.IsRoot b ∧
@@ -1530,8 +1504,8 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
   induction n with
   | zero =>
     intro P Q _ _ _ _ _ r _ hK
-    have h1 := rootMultiplicity_le_natDegree' (ssc 0 P Q) r
-    have h2 := natDegree_ssc_le 0 P Q
+    have h1 := Polynomial.rootMultiplicity_le_natDegree (ssc 0 P Q) r
+    have h2 := RealRooted.natDegree_schurSzegoComp_le 0 P Q
     lia
   | succ N ih =>
     intro P Q hP hPs hQ hQs hneg r hr hK
@@ -1549,8 +1523,8 @@ private theorem main_ssc : ∀ (n : ℕ) (P Q : ℝ[X]), P.natDegree = n → P.S
           (Polynomial.Splits.derivative hPs) (natDegree_derivative_eq' hQ)
           (Polynomial.Splits.derivative hQs)
           (derivative_roots_neg hQ hQs hneg) r hr (by lia)
-      have hm := rootMultiplicity_le_natDegree' P.derivative a
-      have hl := rootMultiplicity_le_natDegree' Q.derivative b
+      have hm := Polynomial.rootMultiplicity_le_natDegree P.derivative a
+      have hl := Polynomial.rootMultiplicity_le_natDegree Q.derivative b
       rw [natDegree_derivative_eq' hP] at hm
       rw [natDegree_derivative_eq' hQ] at hl
       obtain ⟨hPa, hma⟩ := lift_root hP hPs (a := a) (by lia)
@@ -1652,9 +1626,8 @@ theorem rootMultiplicity_le_one_of_not_forced_schurSzegoComp
       n < P.rootMultiplicity a + Q.rootMultiplicity b → r ≠ -(a * b)) :
     (schurSzegoComp n P Q).rootMultiplicity r ≤ 1 := by
   by_contra hle
-  have hmult : 1 < (schurSzegoComp n P Q).rootMultiplicity r := by lia
   obtain ⟨a, b, ha, hb, hPa, hQb, hsum, hrab, _⟩ :=
-    exists_forced_factors_of_rootMultiplicity_schurSzegoComp hP hPs hQ hQs hneg r hr hmult
+    exists_forced_factors_of_rootMultiplicity_schurSzegoComp hP hPs hQ hQs hneg r hr (by lia)
   exact hnot a b ha hb hPa hQb hsum hrab
 
 end RealRooted
