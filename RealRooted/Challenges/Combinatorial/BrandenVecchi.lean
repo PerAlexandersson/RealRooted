@@ -97,11 +97,6 @@ module = "RealRooted.BrandenVecchi.SmirnovSpecialization"
 label = "Specialization to Smirnov word polynomials"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.chowPolynomial_three_zero_prefix_six_not_splits"
-module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
-label = "A zero prefix of length three breaks real-rootedness"
-
-[[theorems]]
 name = "RealRooted.BrandenVecchi.three_zero_prefix_constant_isPolyaFreqSeq"
 module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
 label = "The zero-prefix symbol is still a Pólya frequency sequence"

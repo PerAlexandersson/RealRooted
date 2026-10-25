@@ -5,29 +5,6 @@ public import RealRooted.HurwitzMatrix
 /-!
 # Totally nonnegative windows do not give the Hurwitz Schur product
 
-<!-- realrooted-catalog
-version = 1
-section = "theorems"
-slug = "totally-nonnegative-hadamard-obstruction"
-formalized = "2026-09-30"
-references = [
-  "Wagner1992",
-]
-
-[[theorems]]
-name = "RealRooted.TotallyNonnegativeHadamardObstruction.exists_totallyNonneg_hadamard_det_neg"
-label = "The Hadamard product of two 3 × 3 TNN matrices can have negative determinant"
-headline = true
-
-[[theorems]]
-name = """RealRooted.TotallyNonnegativeHadamardObstruction.\
-exists_totallyNonneg_hadamardCornerZeroed_neg"""
-label = "A corner-zeroed Hadamard determinant can be negative"
--->
-
-<!-- realrooted-catalog-content -->
-# Hadamard products of totally nonnegative matrices
-
 The Hadamard product multiplies two matrices entry by entry. We give two
 totally nonnegative $3 \times 3$ matrices whose Hadamard product has determinant
 $-2$. Thus entrywise multiplication does not preserve total nonnegativity,
@@ -39,9 +16,7 @@ fails; see `RealRooted.not_hurwitz_schurProduct_det_fin_three_nonneg`.
 
 ## References
 
-See [@Wagner1992] and the
-[Hadamard product on symmetricfunctions.com](sf:hadamardProductDefinition).
-<!-- /realrooted-catalog-content -->
+See D. G. Wagner, "Total positivity of Hadamard products", J. Math. Anal. Appl. 163 (1992), 459–483.
 -/
 
 @[expose] public section

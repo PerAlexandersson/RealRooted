@@ -301,7 +301,6 @@ import RealRooted.Challenges.Orthogonal.HermitePolynomials
 import RealRooted.Challenges.Roots.HermitePoulain
 import RealRooted.Challenges.Roots.Hoggar
 import RealRooted.Challenges.Combinatorial.HosterStump
-import RealRooted.Challenges.Roots.HurwitzCornerZeroedCounterexample
 import RealRooted.Challenges.Roots.Hutchinson
 import RealRooted.Challenges.Interlacing.Interlacing
 import RealRooted.Challenges.Interlacing.InterlacingClosure
@@ -343,7 +342,6 @@ import RealRooted.Challenges.Roots.Sturm
 import RealRooted.Challenges.Roots.SturmSequenceFamilies
 import RealRooted.Challenges.Matrices.ThresholdMatrices
 import RealRooted.Challenges.Combinatorial.ToricContribution
-import RealRooted.Challenges.Matrices.TotallyNonnegativeHadamardObstruction
 import RealRooted.Challenges.Matrices.TotallyNonnegativeMatrices
 import RealRooted.Challenges.Combinatorial.UniformMatroidHodgePoincare
 import RealRooted.Challenges.Graphs.UnitIntervalAcyclicSinks
@@ -2130,3 +2128,6 @@ import RealRooted.Combinatorics.SortingFixedPoints
 import RealRooted.ThresholdMatrix.Attr
 import RealRooted.LiebSokalGeneral
 import RealRooted.Challenges.HermitePoulain
+import RealRooted.ClassicalHurwitzMatrix.Examples
+import RealRooted.HurwitzMatrix.CornerZeroedCounterexample
+import RealRooted.HurwitzMatrix.HadamardObstruction
