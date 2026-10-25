@@ -200,7 +200,7 @@ def unfoldRowCoeffDefs : TacticM Unit := withMainContext do
   evalTactic (← `(tactic| simp only [$args,*]))
 
 /-- Unfold non-recursive scalar and polynomial definitions used as recurrence coefficients. -/
-elab "rr_row_unfold" : tactic => unfoldRowCoeffDefs
+elab (name := rrRowUnfold) "rr_row_unfold" : tactic => unfoldRowCoeffDefs
 
 private def isSumLike (e : Expr) : Bool :=
   e.isAppOfArity ``HAdd.hAdd 6 || e.isAppOfArity ``HSub.hSub 6 || e.isAppOfArity ``Neg.neg 3
