@@ -1,4 +1,6 @@
-import RealRooted.Hermite.PoulainInterlacing
+module
+
+public import RealRooted.Hermite.PoulainInterlacing
 
 /-!
 # Hermite--Poulain challenge entry point
@@ -55,6 +57,8 @@ and B. Ya. Levin's account of entire functions.
 The proof is in `RealRooted.Hermite.Poulain`; the interlacing consequence is in
 `RealRooted.Hermite.PoulainInterlacing`.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Challenges

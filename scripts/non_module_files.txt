@@ -24,7 +24,6 @@ RealRooted/Challenges/Roots/FiniteMemoryDefect.lean
 RealRooted/Challenges/Roots/GarloffWagnerHurwitz.lean
 RealRooted/Challenges/Combinatorial/HarperCLT.lean
 RealRooted/Challenges/Orthogonal/HermitePolynomials.lean
-RealRooted/Challenges/Roots/HermitePoulain.lean
 RealRooted/Challenges/Roots/Hoggar.lean
 RealRooted/Challenges/Combinatorial/HosterStump.lean
 RealRooted/Challenges/Roots/Hutchinson.lean
