@@ -1948,6 +1948,7 @@ import RealRooted.Combinatorics.SortingFixedPoints
 import RealRooted.ThresholdMatrix.Attr
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Skewness
 import RealRooted.LiebSokalGeneral
+import RealRooted.CombinatorialExamples.BigDescents132.Quartic
 
 /-!
 # RealRooted production umbrella
