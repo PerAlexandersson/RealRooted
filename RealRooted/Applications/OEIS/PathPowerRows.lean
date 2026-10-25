@@ -118,11 +118,7 @@ theorem pathPowerCliquePolynomial_four_gap_four (m : ℕ) :
 
 private theorem Q_zero : Q 3 0 = 1 := by
   ext i
-  rw [RealRooted.coeff_pathPowerCliquePolynomial, coeff_one]
-  rcases i with _ | i
-  · simp
-  · norm_cast
-    simp
+  rcases i with _ | i <;> simp [coeff_one]
 
 private theorem Q_two : Q 3 2 = 1 := by
   ext i
@@ -136,11 +132,21 @@ private theorem Q_two : Q 3 2 = 1 := by
 
 private theorem Q_four_zero : Q 4 0 = 1 := by
   ext i
-  rw [RealRooted.coeff_pathPowerCliquePolynomial, coeff_one]
-  rcases i with _ | i
-  · simp
-  · norm_cast
-    simp
+  rcases i with _ | i <;> simp [coeff_one]
+
+private theorem splits_subsequence (k p c n : ℕ) (hk : 2 ≤ k) (hp : 1 ≤ p) (hpk : p ≤ k)
+    (hbase : Q k c = 1) :
+    (RealRooted.reciprocalShift n (Q k (p * n + c))).Splits := by
+  simpa [hbase] using RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
+    k p c n hk hp hpk
+
+private theorem strictInterl_subsequence (k p c n : ℕ) (hk : 2 ≤ k) (hp : 1 ≤ p)
+    (hpk : p ≤ k) (hbase : Q k c = 1) :
+    RealRooted.StrictInterl
+      (RealRooted.reciprocalShift n (Q k (p * n + c)))
+      (RealRooted.reciprocalShift (n + 1) (Q k (p * (n + 1) + c))) := by
+  simpa [hbase] using RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
+    k p c n hk hp hpk
 
 private theorem degree_Q_three_three_le (c n : ℕ) (hc : c = 0 ∨ c = 2) :
     (Q 3 (3 * n + c)).natDegree ≤ n := by
@@ -251,11 +257,6 @@ private theorem reflect_two_X_six : reflect 2 (6 * X : ℝ[X]) = 6 * X := by
   ext i
   rcases i with _ | _ | _ | i <;>
     simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
-
-private theorem reflect_two_X_sq_six : reflect 2 (6 * X ^ 2 : ℝ[X]) = 6 := by
-  rw [show (6 : ℝ[X]) = C 6 from (map_ofNat C 6).symm,
-    reflect_C_mul_X_pow]
-  simp
 
 private theorem reflect_two_X_five : reflect 2 (5 * X : ℝ[X]) = 5 * X := by
   ext i
@@ -475,7 +476,7 @@ theorem a127893_eq_reciprocalShift (n : ℕ) :
           RealRooted.reciprocalShift, Finset.sum_range_succ]
         rw [reflect_two_X_six,
           show ((Nat.choose 4 2 : ℕ) : ℝ[X]) = 6 by norm_num [Nat.choose],
-          reflect_two_X_sq_six]
+          reflect_six_X_sq]
         ring
       · rw [a127893, ih (n + 2) (by lia), ih (n + 1) (by lia), ih n (by lia)]
         exact (reflected_three_gap_three 2 n (Or.inr rfl)).symm
@@ -604,32 +605,24 @@ theorem a277627_eq_reciprocalShift (n : ℕ) :
 /-- Every A109955 row is real-rooted. -/
 theorem splits_a109955 (n : ℕ) : (a109955 n).Splits := by
   rw [a109955_eq_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    3 3 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_zero] using h
+  exact splits_subsequence 3 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
 
 /-- Consecutive A109955 rows are in strict interlacing position. -/
 theorem strictInterl_a109955 (n : ℕ) :
     RealRooted.StrictInterl (a109955 n) (a109955 (n + 1)) := by
   rw [a109955_eq_reciprocalShift, a109955_eq_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    3 3 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_zero] using h
+  exact strictInterl_subsequence 3 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
 
 /-- Every A127893 row is real-rooted. -/
 theorem splits_a127893 (n : ℕ) : (a127893 n).Splits := by
   rw [a127893_eq_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    3 3 2 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_two] using h
+  exact splits_subsequence 3 3 2 n (by norm_num) (by norm_num) (by norm_num) Q_two
 
 /-- Consecutive A127893 rows are in strict interlacing position. -/
 theorem strictInterl_a127893 (n : ℕ) :
     RealRooted.StrictInterl (a127893 n) (a127893 (n + 1)) := by
   rw [a127893_eq_reciprocalShift, a127893_eq_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    3 3 2 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_two] using h
+  exact strictInterl_subsequence 3 3 2 n (by norm_num) (by norm_num) (by norm_num) Q_two
 
 /-- Every A206294 row is real-rooted. -/
 theorem splits_a206294 (n : ℕ) : (a206294 n).Splits := by
@@ -651,47 +644,35 @@ theorem strictInterl_a206294 (n : ℕ) :
 /-- Every A109960 row is real-rooted. -/
 theorem splits_a109960 (n : ℕ) : (a109960 n).Splits := by
   rw [a109960_eq_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    4 4 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_four_zero] using h
+  exact splits_subsequence 4 4 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
 
 /-- Consecutive A109960 rows are in strict interlacing position. -/
 theorem strictInterl_a109960 (n : ℕ) :
     RealRooted.StrictInterl (a109960 n) (a109960 (n + 1)) := by
   rw [a109960_eq_reciprocalShift, a109960_eq_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    4 4 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_four_zero] using h
+  exact strictInterl_subsequence 4 4 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
 
 /-- Every A116088 row is real-rooted. -/
 theorem splits_a116088 (n : ℕ) : (a116088 n).Splits := by
   rw [a116088_eq_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    3 2 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_zero] using h
+  exact splits_subsequence 3 2 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
 
 /-- Consecutive A116088 rows are in strict interlacing position. -/
 theorem strictInterl_a116088 (n : ℕ) :
     RealRooted.StrictInterl (a116088 n) (a116088 (n + 1)) := by
   rw [a116088_eq_reciprocalShift, a116088_eq_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    3 2 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_zero] using h
+  exact strictInterl_subsequence 3 2 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
 
 /-- Every A116089 row is real-rooted. -/
 theorem splits_a116089 (n : ℕ) : (a116089 n).Splits := by
   rw [a116089_eq_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    4 3 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_four_zero] using h
+  exact splits_subsequence 4 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
 
 /-- Consecutive A116089 rows are in strict interlacing position. -/
 theorem strictInterl_a116089 (n : ℕ) :
     RealRooted.StrictInterl (a116089 n) (a116089 (n + 1)) := by
   rw [a116089_eq_reciprocalShift, a116089_eq_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    4 3 0 n (by norm_num) (by norm_num) (by norm_num)
-  simpa [Q_four_zero] using h
+  exact strictInterl_subsequence 4 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
 
 private theorem a277627_eq_X_mul_reciprocalShift (n : ℕ) :
     a277627 n = X * RealRooted.reciprocalShift n (Q 3 n) := by

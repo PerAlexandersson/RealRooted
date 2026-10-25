@@ -32,22 +32,19 @@ theorem strictInterl_or_reverse_of_natDegree_le_one
     StrictInterl f g ∨ StrictInterl g f := by
   have hf0 : f ≠ 0 := hf_pos.ne_zero
   have hg0 : g ≠ 0 := hg_pos.ne_zero
+  have hf_rr := isRealRooted_of_natDegree_le_one hf0 hf_deg_le_one
+  have hg_rr := isRealRooted_of_natDegree_le_one hg0 hg_deg_le_one
   by_cases hf_deg0 : f.natDegree = 0
-  · have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_deg_zero hf0 hf_deg0
-    by_cases hg_deg0 : g.natDegree = 0
-    · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
-      exact Or.inl (StrictInterl.of_degree_zero_degree_zero
+  · by_cases hg_deg0 : g.natDegree = 0
+    · exact Or.inl (StrictInterl.of_degree_zero_degree_zero
         hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2 hf_deg0 hg_deg0)
     · have hg_deg1 : g.natDegree = 1 := by lia
-      have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg1
       exact Or.inl (StrictInterl.of_degree_zero_right_of_degree_one
         hf_rr.1 hf_rr.2 hg_rr.1 hg_rr.2
         hf_deg0 hg_deg1)
   · have hf_deg1 : f.natDegree = 1 := by lia
     by_cases hg_deg0 : g.natDegree = 0
-    · have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_deg_zero hg0 hg_deg0
-      have hf_rr : (f ≠ 0 ∧ f.Splits) := isRealRooted_of_degree_one hf_deg1
-      exact Or.inr (StrictInterl.of_degree_zero_right_of_degree_one
+    · exact Or.inr (StrictInterl.of_degree_zero_right_of_degree_one
         hg_rr.1 hg_rr.2 hf_rr.1 hf_rr.2
         hg_deg0 hf_deg1)
     · have hg_deg1 : g.natDegree = 1 := by lia
@@ -71,9 +68,7 @@ lemma of_allComboRealRooted {f g : ℝ[X]}
     (h : AllComboRealRooted f g) :
     Compatible f g := by
   intro α β _hα _hβ
-  by_cases hzero : C α * f + C β * g = 0
-  · exact Or.inl hzero
-  · exact Or.inr ⟨hzero, h α β⟩
+  exact (eq_or_ne (C α * f + C β * g) 0).elim Or.inl fun hn => Or.inr ⟨hn, h α β⟩
 
 /-- A `StrictInterl` relation implies Chudnovsky--Seymour nonnegative compatibility. -/
 lemma of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
@@ -205,20 +200,16 @@ theorem succDegreeRootCount_of_natDegree_eq_zero
       ((f.roots.filter (· ≤ x)).card : ℤ) - (g.roots.filter (· ≤ x)).card ≤ 0 ∧
       ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card ≤ 2 := by
   have hfcard_nat : (f.roots.filter (· ≤ x)).card = 0 := by
-    have hle : (f.roots.filter (· ≤ x)).card ≤ 0 := by
-      calc
-        (f.roots.filter (· ≤ x)).card ≤ f.roots.card :=
-          Multiset.card_le_card (Multiset.filter_le _ _)
-        _ = f.natDegree := Polynomial.splits_iff_card_roots.mp hf
-        _ = 0 := hfdeg
-    exact Nat.eq_zero_of_le_zero hle
+    apply Nat.eq_zero_of_le_zero
+    calc
+      (f.roots.filter (· ≤ x)).card ≤ f.roots.card :=
+        Multiset.card_le_card (Multiset.filter_le _ _)
+      _ = 0 := by rw [Polynomial.splits_iff_card_roots.mp hf, hfdeg]
   have hgcard_nat : (g.roots.filter (· ≤ x)).card ≤ 1 := by
     calc
       (g.roots.filter (· ≤ x)).card ≤ g.roots.card :=
         Multiset.card_le_card (Multiset.filter_le _ _)
-      _ = g.natDegree := Polynomial.splits_iff_card_roots.mp hg
-      _ = f.natDegree + 1 := hdeg
-      _ = 1 := by rw [hfdeg]
+      _ = 1 := by rw [Polynomial.splits_iff_card_roots.mp hg, hdeg, hfdeg]
   have hfcard : ((f.roots.filter (· ≤ x)).card : ℤ) = 0 := by exact_mod_cast hfcard_nat
   have hgcard : ((g.roots.filter (· ≤ x)).card : ℤ) ≤ 1 := by exact_mod_cast hgcard_nat
   have hgnonneg : (0 : ℤ) ≤ (g.roots.filter (· ≤ x)).card := by
@@ -258,9 +249,7 @@ private lemma exists_linear_factor_of_natDegree_one
   obtain ⟨α, hα⟩ : ∃ α, f.roots = {α} :=
     Multiset.card_eq_one.mp (by rw [Polynomial.splits_iff_card_roots.mp hf_split, hfdeg])
   refine ⟨f.leadingCoeff, α, hf_pos, hα, ?_⟩
-  have hprod := hf_split.eq_prod_roots
-  rw [hα] at hprod
-  simpa using hprod
+  simpa [hα] using hf_split.eq_prod_roots
 
 /-- A positive-leading, splitting, degree-two polynomial factors as
 `C b * ((X - C β) * (X - C γ))` with `0 < b` and `γ ≤ β`. -/
@@ -271,16 +260,13 @@ private lemma exists_quadratic_factor_of_natDegree_two
       g = C b * ((X - C β) * (X - C γ)) := by
   obtain ⟨r, s, hrs⟩ : ∃ r s, g.roots = {r, s} :=
     Multiset.card_eq_two.mp (by rw [Polynomial.splits_iff_card_roots.mp hg_split, hgdeg])
-  have hprod := hg_split.eq_prod_roots
   rcases le_total s r with hle | hle
   · refine ⟨g.leadingCoeff, r, s, hg_pos, hle, hrs, ?_⟩
-    rw [hrs] at hprod
-    simpa [Multiset.insert_eq_cons, mul_comm] using hprod
+    simpa [hrs, Multiset.insert_eq_cons, mul_comm] using hg_split.eq_prod_roots
   · refine ⟨g.leadingCoeff, s, r, hg_pos, hle, ?_, ?_⟩
     · rw [hrs]
       exact Multiset.pair_comm r s
-    · rw [hrs] at hprod
-      simpa [Multiset.insert_eq_cons, mul_comm] using hprod
+    · simpa [hrs, Multiset.insert_eq_cons, mul_comm] using hg_split.eq_prod_roots
 
 /-- Normal-form core of the degree-one succ-degree base case: for a degree-one
 `f` and degree-two `g` in a positive-combination family, the smaller root `γ`
@@ -307,11 +293,7 @@ theorem smallRoot_le_of_posCombo_natDegree_eq_one
     rw [hfeq, ← mul_assoc, ← C_mul, div_mul_cancel₀ _ ha.ne']
   have hR : C (mu / b) * g = C mu * ((X - C β) * (X - C γ)) := by
     rw [hgeq, ← mul_assoc, ← C_mul, div_mul_cancel₀ _ hb.ne']
-  have hcombo :
-      C lam * (X - C α) + C mu * ((X - C β) * (X - C γ)) =
-        C (lam / a) * f + C (mu / b) * g := by
-    rw [hL, hR]
-  rw [hcombo]
+  rw [← hL, ← hR]
   exact (hfg (div_pos hlam ha) (div_pos hmu hb)).2
 
 /-- Counting core (upper threshold): for a singleton `{α}` and an ordered pair
@@ -368,10 +350,7 @@ theorem succDegreeRootCrossing_of_posCombo_natDegree_eq_one
 /-- A natural number bounded by one is zero or one. -/
 private lemma nat_eq_zero_or_eq_one_of_le_one {n : ℕ} (hn : n ≤ 1) :
     n = 0 ∨ n = 1 := by
-  rcases n with _ | n
-  · exact Or.inl rfl
-  · have hn0 : n = 0 := Nat.eq_zero_of_le_zero (Nat.succ_le_succ_iff.mp hn)
-    exact Or.inr (by rw [hn0])
+  interval_cases n <;> simp_all
 
 /-- Degree-zero compatible-pair base case for the upper-threshold succ-degree
 root-count formulation. -/
@@ -439,20 +418,13 @@ theorem compatibleSuccDegreeRootCountAbove_le_two_of_natDegree_le_two
             ((g.derivative.roots.filter (y < ·)).card : ℤ) -
                 (f.derivative.roots.filter (y < ·)).card ≤ 1 := by
       intro y _hyf _hyg
-      have hf'_pos : HasPosLeadingCoeff f.derivative :=
-        hf_pos.derivative (by lia)
-      have hg'_pos : HasPosLeadingCoeff g.derivative :=
-        hg_pos.derivative (by rw [hdeg]; lia)
-      have hdeg' : g.derivative.natDegree = f.derivative.natDegree + 1 :=
-        succDegree_derivative_natDegree_eq hdeg (by lia)
-      have hf'_split : f.derivative.Splits :=
-        (derivative_interlaces_of_natDegree_ne_zero hf_split (by lia)).2.1.2
-      have hf'_deg : f.derivative.natDegree ≤ 1 := by
-        rw [f.natDegree_derivative]
-        lia
       exact
         compatibleSuccDegreeRootCountAbove_of_natDegree_le_one
-          hcomp.derivative hf'_pos hg'_pos hdeg' hf'_split hf'_deg y
+          hcomp.derivative (hf_pos.derivative (by lia))
+          (hg_pos.derivative (by rw [hdeg]; lia))
+          (succDegree_derivative_natDegree_eq hdeg (by lia))
+          (derivative_interlaces_of_natDegree_ne_zero hf_split (by lia)).2.1.2
+          (by rw [f.natDegree_derivative]; lia) y
     exact
       compatibleSuccDegreeRootCountAbove_le_two_of_derivative_bound
         hcomp hg_pos hdeg hf_split hfdeg_two hder_bound x
@@ -468,11 +440,8 @@ private lemma int_eq_zero_of_even_of_le_one_of_neg_le_one {z : ℤ}
     (hz_even : Even z) (hz_le : z ≤ 1) (hneg_le : -z ≤ 1) :
     z = 0 := by
   rcases hz_even with ⟨k, hk⟩
-  have hk_le : k ≤ 0 := by linarith
-  have hk_nonneg : 0 ≤ k := by linarith
-  have hk_zero : k = 0 := le_antisymm hk_le hk_nonneg
-  rw [hk, hk_zero]
-  norm_num
+  have : k = 0 := by lia
+  simp_all
 
 /-- A local count-bounds package for the closed-segment count-stability
 target.  If the two endpoint upper-count differences are already bounded by
@@ -494,9 +463,8 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_rootCountAbove_bounds
       ((g.roots.filter (x < ·)).card : ℤ) -
         (f.roots.filter (x < ·)).card ≤ 1) :
     (f.roots.filter (x < ·)).card = (g.roots.filter (x < ·)).card := by
-  have hno : ∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x := by
-    intro μ hμ
-    exact closedSegment_not_isRoot_add_right_of_nonneg hμ hseg
+  have hno : ∀ {μ : ℝ}, 0 ≤ μ → ¬ (f + C μ * g).IsRoot x :=
+    fun {_} hμ => closedSegment_not_isRoot_add_right_of_nonneg hμ hseg
   have heven :
       Even (((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card) :=
@@ -506,11 +474,7 @@ theorem compatibleSuccDegreeClosedSegmentCountEq_of_rootCountAbove_bounds
       ((f.roots.filter (x < ·)).card : ℤ) -
         (g.roots.filter (x < ·)).card = 0 :=
     int_eq_zero_of_even_of_le_one_of_neg_le_one heven hfg_le (by linarith)
-  have hcard_int :
-      ((f.roots.filter (x < ·)).card : ℤ) =
-        (g.roots.filter (x < ·)).card := by
-    linarith
-  exact_mod_cast hcard_int
+  exact_mod_cast sub_eq_zero.mp hdiff_zero
 
 /-- Low-degree base case for closed-segment endpoint count equality.  When
 `f.natDegree ≤ 1`, the explicit compatible-pair root-count bound gives
@@ -549,9 +513,8 @@ theorem compatibleSuccDegreeEndpointSignLowerCountEq_of_natDegree_le_one
     (hprod : 0 < f.eval x * g.eval x) :
     ((g.roots.filter (· ≤ x)).card : ℤ) - (f.roots.filter (· ≤ x)).card = 1 := by
   have hseg : ∀ {β : ℝ}, 0 ≤ β → β ≤ 1 →
-      ¬ (C (1 - β) * f + C β * g).IsRoot x := by
-    intro β hβ0 hβ1
-    exact closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 hprod
+      ¬ (C (1 - β) * f + C β * g).IsRoot x :=
+    fun {_} hβ0 hβ1 => closedSegment_not_isRoot_of_eval_mul_pos hβ0 hβ1 hprod
   have hgt :=
     compatibleSuccDegreeClosedSegmentCountEq_of_natDegree_le_one
       hcomp hf_pos hg_pos hdeg hf_split hfdeg hxf hxg hseg
