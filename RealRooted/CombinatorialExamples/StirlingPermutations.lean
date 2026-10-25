@@ -132,10 +132,8 @@ lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
     (by norm_num) (by norm_num) n
 
 lemma stirlingPermutations_ne_zero (n : Nat) :
-    stirlingPermutations n ≠ 0 := by
-  exact ne_zero_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
-    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
-    (by norm_num) (by norm_num) n
+    stirlingPermutations n ≠ 0 :=
+  (stirlingPermutations_posLeadingCoeff n).ne_zero
 
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n) := by
@@ -177,9 +175,8 @@ theorem interlaces_stirlingPermutations_succ (n : Nat) :
     (by simp [natDegree_stirlingPermutations])
 
 theorem isRealRooted_stirlingPermutations :
-    ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits)
-  | 0 => by simp
-  | n + 1 => (strictInterl_stirlingPermutations_succ n).2.1
+    ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits) :=
+  fun n => (strictInterl_stirlingPermutations_succ n).1
 
 /-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Stirling-permutation
 sequence. -/

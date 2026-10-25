@@ -124,8 +124,7 @@ theorem prefixEmbedding_apply {k : ℕ} (hk : k ≤ n) (i : Fin k) :
   rfl
 
 theorem prefixEmbedding_succ_apply {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
-    a.prefixEmbedding (Nat.le_succ m) i = i.castSucc := by
-  rfl
+    a.prefixEmbedding (Nat.le_succ m) i = i.castSucc := rfl
 
 /-- Restriction of left-endpoint data to its first k vertices. -/
 def take (k : ℕ) (hk : k ≤ n) : Data k where
@@ -136,14 +135,10 @@ def take (k : ℕ) (hk : k ≤ n) : Data k where
     exact a.monotone_left ((a.prefixEmbedding hk).monotone hij)
 
 @[simp]
-theorem take_self : a.take n le_rfl = a := by
-  apply Data.ext
-  rfl
+theorem take_self : a.take n le_rfl = a := Data.ext rfl
 
 theorem take_take {k l : ℕ} (hk : k ≤ n) (hl : l ≤ k) :
-    (a.take k hk).take l hl = a.take l (hl.trans hk) := by
-  apply Data.ext
-  rfl
+    (a.take k hk).take l hl = a.take l (hl.trans hk) := Data.ext rfl
 
 @[simp]
 theorem take_width {k : ℕ} (hk : k ≤ n) (i : Fin k) :
@@ -188,9 +183,8 @@ def init {m : ℕ} (a : Data (m + 1)) : Data m :=
 theorem init_toFinRPEO {m : ℕ} (a : Data (m + 1)) : a.init.toFinRPEO = a.toFinRPEO.init := rfl
 
 theorem take_succ_init {k : ℕ} (hk : k + 1 ≤ n) :
-    (a.take (k + 1) hk).init = a.take k (Nat.le_trans (Nat.le_succ k) hk) := by
-  apply Data.ext
-  rfl
+    (a.take (k + 1) hk).init = a.take k (Nat.le_trans (Nat.le_succ k) hk) :=
+  Data.ext rfl
 
 @[simp]
 theorem init_width {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
@@ -198,9 +192,7 @@ theorem init_width {m : ℕ} (a : Data (m + 1)) (i : Fin m) :
   rfl
 
 theorem init_take {m k : ℕ} (a : Data (m + 1)) (hk : k ≤ m) :
-    a.init.take k hk = a.take k (hk.trans (Nat.le_succ m)) := by
-  apply Data.ext
-  rfl
+    a.init.take k hk = a.take k (hk.trans (Nat.le_succ m)) := Data.ext rfl
 
 @[simp]
 theorem insertionNumerator_last {m : ℕ} (a : Data (m + 1)) (q : ℝ) :
@@ -218,8 +210,7 @@ def restrictInit {m : ℕ} (a : Data (m + 1))
 theorem restrictInit_directed {m : ℕ} (a : Data (m + 1))
     (O : Graph.Orientation a.graph) (x y : Fin m) :
     (a.restrictInit O).Directed x y ↔
-      O.Directed x.castSucc y.castSucc := by
-  rfl
+      O.Directed x.castSucc y.castSucc := by rfl
 
 theorem restrictInit_isAcyclic {m : ℕ} (a : Data (m + 1))
     {O : Graph.Orientation a.graph} (hO : O.IsAcyclic) :
@@ -437,25 +428,11 @@ theorem extendOrientation_sinkCount_of_properCut {m : ℕ}
     (hproper : cut.lower ≠ a.lastEarlierNeighbors) :
     (a.extendOrientation O cut).sinkCount = O.sinkCount := by
   classical
-  simp only [Graph.Orientation.sinkCount]
-  symm
-  apply Finset.card_bij (fun x _ ↦ x.castSucc)
-  · intro x hx
-    rw [Graph.Orientation.mem_sinks] at hx ⊢
-    exact (a.extendOrientation_isSink_prefix O cut x).2
-      ⟨hx, fun hxLower ↦ a.not_isSink_of_mem_properCut O cut hproper hxLower hx⟩
-  · intro x₁ hx₁ x₂ hx₂ heq
-    exact Fin.castSucc_inj.mp heq
-  · intro v hv
-    rw [Graph.Orientation.mem_sinks] at hv
-    revert hv
-    refine Fin.lastCases ?_ (fun x ↦ ?_) v
-    · intro hv
-      exact False.elim (hproper ((a.extendOrientation_isSink_last O cut).1 hv))
-    · intro hv
-      obtain ⟨hxSink, hxLower⟩ :=
-        (a.extendOrientation_isSink_prefix O cut x).1 hv
-      exact ⟨x, by simpa using hxSink, rfl⟩
+  change (a.toFinRPEO.extendOrientation O cut).sinks.card = O.sinks.card
+  rw [
+    a.toFinRPEO.extendOrientation_sinks_of_properCut O cut hproper,
+    Finset.card_map]
+  rfl
 
 /-- For the full cut, the new sinks are the old sinks outside the final
 neighbor clique, together with the final vertex. -/
@@ -476,15 +453,8 @@ theorem extendOrientation_sinkCount_of_fullCut {m : ℕ}
       (O.sinks.filter fun x ↦ x ∉ a.lastEarlierNeighbors).card + 1 := by
   classical
   rw [Graph.Orientation.sinkCount,
-    a.extendOrientation_sinks_of_fullCut O cut hfull,
-    Finset.card_union_of_disjoint]
-  · simp
-  · rw [Finset.disjoint_left]
-    intro v hv hlast
-    rw [Finset.mem_singleton] at hlast
-    subst v
-    obtain ⟨x, -, h⟩ := Finset.mem_map.mp hv
-    exact (Nat.ne_of_lt x.isLt) (congrArg Fin.val h)
+    a.extendOrientation_sinks_of_fullCut O cut hfull]
+  simp
 
 /-- If the prefix orientation has no sink in the final-neighbor clique, the
 full cut adds exactly one sink. -/
@@ -529,35 +499,20 @@ theorem extendOrientation_sinkCount_of_fullCut_of_hasSink {m : ℕ}
   obtain ⟨x, hxK, hxSink⟩ := hhasSink
   rw [a.extendOrientation_sinkCount_of_fullCut O cut hfull,
     Graph.Orientation.sinkCount]
-  have hsinks :
-      O.sinks =
-        (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x} := by
+  have hxmem : x ∈ O.sinks := by
+    simpa only [Graph.Orientation.mem_sinks] using hxSink
+  rw [show O.sinks.filter (fun y ↦ y ∉ a.lastEarlierNeighbors) =
+      O.sinks.erase x by
     ext y
-    rw [Graph.Orientation.mem_sinks]
-    simp only [Finset.mem_union, Finset.mem_filter,
-      Graph.Orientation.mem_sinks, Finset.mem_singleton]
+    simp only [Finset.mem_filter, Graph.Orientation.mem_sinks, Finset.mem_erase]
     constructor
-    · intro hySink
-      by_cases hyK : y ∈ a.lastEarlierNeighbors
-      · exact Or.inr (a.isSink_eq_of_mem_lastEarlierNeighbors O
-          hyK hxK hySink hxSink)
-      · exact Or.inl ⟨hySink, hyK⟩
-    · rintro (⟨hySink, hyK⟩ | rfl)
-      · exact hySink
-      · exact hxSink
-  have hdisjoint :
-      Disjoint (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) {x} := by
-    rw [Finset.disjoint_singleton_right]
-    simp [hxK]
-  have hcardSinks :
-      O.sinks.card =
-        (O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors).card + 1 := by
-    calc
-      O.sinks.card =
-          ((O.sinks.filter fun y ↦ y ∉ a.lastEarlierNeighbors) ∪ {x}).card :=
-        congrArg Finset.card hsinks
-      _ = _ := by rw [Finset.card_union_of_disjoint hdisjoint]; simp
-  exact hcardSinks.symm
+    · rintro ⟨hySink, hyK⟩
+      exact ⟨fun hyx ↦ hyK (hyx.symm ▸ hxK), hySink⟩
+    · rintro ⟨hyx, hySink⟩
+      refine ⟨hySink, fun hyK ↦ hyx ?_⟩
+      exact a.isSink_eq_of_mem_lastEarlierNeighbors O
+        hyK hxK hySink hxSink]
+  exact Finset.card_erase_add_one hxmem
 
 /-- The full-cut correction above one prefix orientation. -/
 def insertionCorrection {m : ℕ} (a : Data (m + 1))
@@ -812,20 +767,14 @@ theorem noSinkFromPolynomial_eq_suffixFactor_mul {n k : ℕ}
       have hk0 : k = 0 := Nat.eq_zero_of_le_zero hk
       subst k
       rw [a.noSinkFromPolynomial_card]
-      have htake : a.take 0 hk = a := by
-        apply Data.ext
-        funext i
-        exact Fin.elim0 i
+      have htake : a.take 0 hk = a := Data.ext (funext fun i ↦ Fin.elim0 i)
       rw [htake]
       simp [suffixFactor]
   | succ m ih =>
       by_cases htop : k = m + 1
       · subst k
         rw [a.noSinkFromPolynomial_card]
-        have htake : a.take (m + 1) hk = a := by
-          apply Data.ext
-          funext i
-          rfl
+        have htake : a.take (m + 1) hk = a := Data.ext rfl
         have hfactor : a.suffixFactor (m + 1) q = 1 := by
           apply Finset.prod_eq_one
           intro i hi
@@ -907,15 +856,8 @@ theorem graph_clawFree : Graph.ClawFree a.graph := by
   have hnyz : ¬a.graph.Adj y z := fun h ↦ hind.isIndepSet (by simp) (by simp) hyz h
   rcases sx with hxv | hvx' <;>
     rcases sy with hyv | hvy' <;>
-      rcases sz with hzv | hvz'
-  · exact hnxy (a.adj_same_left hvx hvy hxv hyv hxy)
-  · exact hnxy (a.adj_same_left hvx hvy hxv hyv hxy)
-  · exact hnxz (a.adj_same_left hvx hvz hxv hzv hxz)
-  · exact hnyz (a.adj_same_right hvy hvz hvy' hvz' hyz)
-  · exact hnyz (a.adj_same_left hvy hvz hyv hzv hyz)
-  · exact hnxz (a.adj_same_right hvx hvz hvx' hvz' hxz)
-  · exact hnxy (a.adj_same_right hvx hvy hvx' hvy' hxy)
-  · exact hnxy (a.adj_same_right hvx hvy hvx' hvy' hxy)
+      rcases sz with hzv | hvz' <;>
+        grind [a.adj_same_left, a.adj_same_right]
 
 @[simp]
 theorem prefixSupport_zero : a.prefixSupport 0 = ∅ := by
@@ -928,15 +870,8 @@ theorem prefixSupport_succ {k : ℕ} (hk : k < n) :
   ext i
   simp only [prefixSupport, Finset.mem_filter, Finset.mem_univ, true_and,
     Finset.mem_insert]
-  constructor
-  · intro hi
-    have hik : i.val ≤ k := Nat.lt_succ_iff.mp hi
-    rcases lt_or_eq_of_le hik with hlt | heq
-    · exact Or.inr hlt
-    · exact Or.inl (Fin.ext heq)
-  · rintro (rfl | hi)
-    · exact Nat.lt_succ_self k
-    · exact lt_trans hi (Nat.lt_succ_self k)
+  rw [Fin.ext_iff]
+  lia
 
 @[simp]
 theorem prefixSupport_card : a.prefixSupport n = Finset.univ := by
@@ -949,21 +884,12 @@ theorem prefixSupport_filter_not_adj {k : ℕ} (hk : k < n) :
       a.prefixSupport (a.left ⟨k, hk⟩) := by
   ext w
   simp only [prefixSupport, Finset.mem_filter, Finset.mem_univ, true_and]
-  have hwv : w < (⟨k, hk⟩ : Fin n) ↔ w.val < k := Iff.rfl
   by_cases hwk : w.val < k
-  · have hadj :
-        a.graph.Adj (⟨k, hk⟩ : Fin n) w ↔
-          a.left ⟨k, hk⟩ ≤ w.val := by
-      rw [SimpleGraph.adj_comm]
-      exact a.graph_adj_of_lt (hwv.2 hwk)
-    rw [hadj]
-    have hleft := a.left_le (⟨k, hk⟩ : Fin n)
+  · rw [SimpleGraph.adj_comm, a.graph_adj_of_lt hwk]
+    have := a.left_le (⟨k, hk⟩ : Fin n)
     lia
-  · have hleft := a.left_le (⟨k, hk⟩ : Fin n)
-    constructor
-    · exact fun h ↦ False.elim (hwk h.1)
-    · intro hwleft
-      exact False.elim (hwk (lt_of_lt_of_le hwleft hleft))
+  · have := a.left_le (⟨k, hk⟩ : Fin n)
+    grind
 
 /-- Weighted independence-polynomial deletion recurrence along the natural
 prefix path. -/
@@ -992,11 +918,9 @@ theorem qNat_nonneg {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
 
 theorem qNat_succ_pos {q : ℝ} (hq : 0 ≤ q) (m : ℕ) :
     0 < qNat q (m + 1) := by
-  have hmem : 0 ∈ Finset.range (m + 1) := by simp
-  have hle : q ^ 0 ≤ qNat q (m + 1) :=
-    Finset.single_le_sum
-      (fun k hk ↦ by positivity) hmem
-  simpa using lt_of_lt_of_le zero_lt_one hle
+  induction m with
+  | zero => simp
+  | succ m ih => rw [qNat_succ]; positivity
 
 variable {n : ℕ}
 

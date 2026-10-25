@@ -423,16 +423,9 @@ theorem shiftedJacobi_alpha_add_two (n : ℕ) (α β : ℝ) (hα : -1 < α) :
       have hright := succ_mul_choose_add (α + 1) n
       rw [show (n : ℝ) + α + 1 - 1 = n + α by ring] at hleft
       rw [show α + 1 + n = n + α + 1 by ring] at hright
-      simp only [coeff_C_mul, coeff_sub, coeff_add]
+      simp only [coeff_C_mul, coeff_sub, coeff_add, coeff_X_mul_zero]
       simp only [coeff_shiftedJacobi, ite_eq_left (Nat.zero_le n), pow_zero,
         Ring.choose_zero_right, Nat.sub_zero, one_mul]
-      have hx2 : (X * shiftedJacobi n (α + 2) β).coeff 0 = 0 := by
-        rw [coeff_zero_eq_eval_zero]
-        simp
-      have hx1 : (X * shiftedJacobi n (α + 1) β).coeff 0 = 0 := by
-        rw [coeff_zero_eq_eval_zero]
-        simp
-      rw [hx2, hx1]
       have hchoose :
           (n + α + 1) * Ring.choose (n + α) n =
             (α + 1) * Ring.choose (n + α + 1) n := hleft.symm.trans hright
@@ -1175,80 +1168,43 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
     have hdown := coeff_shiftedJacobi_pred_degree n 0 α β (by lia) (by lia)
     norm_num at hup hdown
     have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-    have hn1 : (n + 1 : ℝ) ≠ 0 := by positivity
-    have hna : (n + α : ℝ) ≠ 0 := by linarith
-    have hcommonUp : (n + α + β + 1 : ℝ) ≠ 0 := by linarith
     have hcommonDown : (n + α + β : ℝ) ≠ 0 := by linarith
-    have hupCancel :
-        (n + 1 : ℝ) * (shiftedJacobi (n + 1) α β).coeff 0 =
-          (n + α + 1) * (shiftedJacobi n α β).coeff 0 := by
-      apply mul_right_cancel₀ hcommonUp
-      calc
-        _ = (n + 1) * (n + α + β + 1) *
-            (shiftedJacobi (n + 1) α β).coeff 0 := by ring
-        _ = _ := hup
-        _ = ((n + α + 1) * (shiftedJacobi n α β).coeff 0) *
-            (n + α + β + 1) := by ring
-    have hdownCancel :
+    have hdown' :
         (n + α) * (shiftedJacobi (n - 1) α β).coeff 0 =
           n * (shiftedJacobi n α β).coeff 0 := by
       apply mul_right_cancel₀ hcommonDown
-      calc
-        _ = (n + α) * (n + α + β) *
-            (shiftedJacobi (n - 1) α β).coeff 0 := by ring
-        _ = _ := hdown
-        _ = (n * (shiftedJacobi n α β).coeff 0) *
-            (n + α + β) := by ring
-    have hup' :
-        (shiftedJacobi (n + 1) α β).coeff 0 =
-          ((n + α + 1) * (shiftedJacobi n α β).coeff 0) / (n + 1) :=
-      (eq_div_iff hn1).2 (by simpa [mul_comm] using hupCancel)
-    have hdown' :
-        (shiftedJacobi (n - 1) α β).coeff 0 =
-          (n * (shiftedJacobi n α β).coeff 0) / (n + α) :=
-      (eq_div_iff hna).2 (by simpa [mul_comm] using hdownCancel)
-    rw [hup', hdown']
-    field_simp [hn1, hna]
-    ring
+      linear_combination hdown
+    ring_nf at hup hdown' ⊢
+    linear_combination
+      (2 * (2 * (n : ℝ) + α + β)) * hup +
+        (2 * (2 * (n : ℝ) + α + β + 2) * (n + β)) * hdown'
   · have hkpos : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
     have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
     have hkR : (1 : ℝ) ≤ k := by exact_mod_cast hkpos
     by_cases hkle : k ≤ n
     · have hup := coeff_shiftedJacobi_succ_degree n k α β hkle
       have hwithin := coeff_succ_relation n (k - 1) α β (by lia)
-      have hdu : ((n + 1 - k : ℕ) : ℝ) * (n + α + β + 1) ≠ 0 := by
-        exact mul_ne_zero
-          (by exact_mod_cast (Nat.ne_of_gt (Nat.sub_pos_of_lt (by lia : k < n + 1))))
-          (by linarith)
-      have hdw : ((n - k + 1 : ℕ) : ℝ) * (n + α + β + k) ≠ 0 := by
-        exact mul_ne_zero (by positivity) (by linarith)
-      have hup' :
-          (shiftedJacobi (n + 1) α β).coeff k =
-            ((n + α + 1) * (n + α + β + k + 1) *
-              (shiftedJacobi n α β).coeff k) /
-                (((n + 1 - k : ℕ) : ℝ) * (n + α + β + 1)) := by
-        apply (eq_div_iff hdu).2
-        calc
-          _ = (((n + 1 - k : ℕ) : ℝ) * (n + α + β + 1)) *
-              (shiftedJacobi (n + 1) α β).coeff k := by ring
-          _ = _ := hup
-      have hwithin' :
-          (shiftedJacobi n α β).coeff (k - 1) =
-            (-(k * (k + α)) * (shiftedJacobi n α β).coeff k) /
-              (((n - k + 1 : ℕ) : ℝ) * (n + α + β + k)) := by
-        apply (eq_div_iff hdw).2
-        rw [Nat.sub_add_cancel hkpos] at hwithin
-        norm_num only [Nat.cast_sub hkpos] at hwithin ⊢
-        have hkpred : (k : ℝ) - 1 + α + 1 = k + α := by ring
-        have hnsub : n - (k - 1) = n - k + 1 := by lia
-        rw [hkpred, hnsub] at hwithin
-        nlinarith [hwithin]
       have hcoeffX :
           (X * shiftedJacobi n α β).coeff k =
             (shiftedJacobi n α β).coeff (k - 1) := by
         rw [show k = k - 1 + 1 by lia, coeff_X_mul]
         rw [Nat.add_sub_cancel]
-      rw [hcoeffX, hup', hwithin']
+      rw [hcoeffX]
+      rw [Nat.sub_add_cancel hkpos] at hwithin
+      norm_num only [Nat.cast_sub hkpos] at hwithin
+      rw [show (k : ℝ) - 1 + α + 1 = k + α by ring,
+        show n - (k - 1) = n - k + 1 by lia] at hwithin
+      have hdown :
+          (n + α) * (n + α + β + k) *
+              (shiftedJacobi (n - 1) α β).coeff k =
+            ((n - k : ℕ) : ℝ) * (n + α + β) *
+              (shiftedJacobi n α β).coeff k := by
+        rcases eq_or_lt_of_le hkle with rfl | hklt
+        · have hz : (shiftedJacobi (k - 1) α β).coeff k = 0 := by
+            rw [coeff_shiftedJacobi, ite_eq_right (by lia)]
+          rw [hz]
+          simp
+        · exact coeff_shiftedJacobi_pred_degree n k α β (by lia) hklt
       have hcastUp : ((n + 1 - k : ℕ) : ℝ) = n + 1 - k := by
         rw [Nat.cast_sub (by lia)]
         push_cast
@@ -1257,46 +1213,21 @@ theorem shiftedJacobi_recurrence_raw (n : ℕ) (α β : ℝ)
         rw [Nat.cast_add, Nat.cast_sub hkle]
         push_cast
         rfl
-      rw [hcastUp, hcastWithin]
-      by_cases hklt : k < n
-      · have hdown := coeff_shiftedJacobi_pred_degree n k α β (by lia) hklt
-        have hdd : (n + α) * (n + α + β + k) ≠ 0 := by
-          exact mul_ne_zero (by linarith) (by linarith)
-        have hdown' :
-            (shiftedJacobi (n - 1) α β).coeff k =
-              (((n - k : ℕ) : ℝ) * (n + α + β) *
-                (shiftedJacobi n α β).coeff k) /
-                  ((n + α) * (n + α + β + k)) := by
-          apply (eq_div_iff hdd).2
-          calc
-            _ = ((n + α) * (n + α + β + k)) *
-                (shiftedJacobi (n - 1) α β).coeff k := by ring
-            _ = _ := hdown
-        rw [hdown']
-        have hcastDown : ((n - k : ℕ) : ℝ) = n - k := by
-          rw [Nat.cast_sub hkle]
-        rw [hcastDown]
-        have hnkR : (k : ℝ) < n := by exact_mod_cast hklt
-        field_simp [show (n + 1 - k : ℝ) ≠ 0 by linarith,
-          show (n + α + β + 1 : ℝ) ≠ 0 by linarith,
-          show (n - k + 1 : ℝ) ≠ 0 by linarith,
-          show (n + α + β + k : ℝ) ≠ 0 by linarith,
-          show (n + α : ℝ) ≠ 0 by linarith]
-        ring
-      · have hkn : k = n := by lia
-        subst k
-        have hpredzero : (shiftedJacobi (n - 1) α β).coeff n = 0 := by
-          rw [coeff_shiftedJacobi, ite_eq_right (by lia)]
-        rw [hpredzero]
-        simp only [mul_zero, sub_zero]
-        have hupDen : (n + 1 - n : ℝ) = 1 := by ring
-        have hwithinDen : (n - n + 1 : ℝ) = 1 := by ring
-        have hwithinParam : (n + α + β + n : ℝ) = 2 * n + α + β := by ring
-        rw [hupDen, hwithinDen, hwithinParam]
-        simp only [one_mul]
-        field_simp [show (n + α + β + 1 : ℝ) ≠ 0 by linarith,
-          show (2 * n + α + β : ℝ) ≠ 0 by linarith]
-        ring
+      have hcastDown : ((n - k : ℕ) : ℝ) = n - k := by rw [Nat.cast_sub hkle]
+      rw [hcastUp] at hup
+      rw [hcastWithin] at hwithin
+      rw [hcastDown] at hdown
+      have hA : (0 : ℝ) < n + 1 - k := by
+        rw [← hcastUp]
+        exact_mod_cast Nat.sub_pos_of_lt (show k < n + 1 by lia)
+      have hD : (0 : ℝ) < n + α + β + k := by linarith
+      have hF : (0 : ℝ) < n + α := by linarith
+      apply mul_left_cancel₀ (mul_ne_zero (mul_ne_zero hA.ne' hD.ne') hF.ne')
+      linear_combination
+        (2 * (n + 1) * (2 * n + α + β) * (n + α + β + k) * (n + α)) * hup +
+        (2 * (2 * n + α + β + 2) * (2 * n + α + β + 1) *
+          (2 * n + α + β) * (n + α)) * hwithin +
+        ((n + 1 - k) * 2 * (2 * n + α + β + 2) * (n + α) * (n + β)) * hdown
     · by_cases hksucc : k = n + 1
       · subst k
         have hcoeffX :

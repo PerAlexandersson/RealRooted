@@ -47,16 +47,14 @@ def Stable (p : MvPolynomial (Fin n) ℝ) : Prop :=
 lemma eval_map_eq_sum (z : Fin n → ℂ) (p : MvPolynomial (Fin n) ℝ) :
     eval z (map (algebraMap ℝ ℂ) p) =
       ∑ d ∈ p.support, ((p.coeff d : ℝ) : ℂ) * ∏ i, z i ^ d i := by
-  rw [eval_map, eval₂_eq']
-  rfl
+  rw [eval_map, eval₂_eq']; rfl
 
 lemma eval_map_eq_sum_of_subset (z : Fin n → ℂ) {q : MvPolynomial (Fin n) ℝ}
     {S : Finset (Fin n →₀ ℕ)} (hS : q.support ⊆ S) :
     eval z (map (algebraMap ℝ ℂ) q) =
       ∑ d ∈ S, ((q.coeff d : ℝ) : ℂ) * ∏ i, z i ^ d i := by
   rw [eval_map_eq_sum]; refine Finset.sum_subset hS fun d _ hd => ?_
-  rw [notMem_support_iff.mp hd]
-  simp
+  rw [notMem_support_iff.mp hd]; simp
 
 lemma Stable.ne_zero {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) : p ≠ 0 := by
   rintro rfl; exact hp (fun _ => Complex.I) (fun _ => by simp) (by simp)
@@ -83,8 +81,7 @@ lemma exists_upper_root (N : ℕ) (hN : 3 ≤ N) (w : ℝ) (hw : w ≠ 0) :
         = (r : ℂ) * Complex.exp ((N * θ : ℝ) * Complex.I)) := by
     intro r θ hr; rw [mul_pow, ← Complex.ofReal_pow, Real.rpow_inv_natCast_pow hr (by lia),
       ← Complex.exp_nat_mul]
-    congr 2
-    push_cast; ring
+    congr 2; push_cast; ring
   have hN3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
   rcases lt_or_gt_of_ne hw with hneg | hpos
   · refine ⟨_, key (-w) (Real.pi / N) (by linarith) (by positivity) ?_, ?_⟩
@@ -119,8 +116,7 @@ lemma prod_zpow_eq_zpow_sum {t : ℂ} (ht : t ≠ 0) {ι : Type*} (s : Finset ι
 
 lemma weight_eq_sum (w : Fin n → ℤ) (d : Fin n →₀ ℕ) :
     Finsupp.weight w d = ∑ j, (d j : ℤ) * w j := by
-  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]
-  simp
+  rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]; simp
 
 /-- The lowest weighted-homogeneous part (initial form) of a stable polynomial with respect to an
 integer weight vector is stable. -/
@@ -135,9 +131,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
     intro d; rw [hFdef, coeff_weightedHomogeneousComponent]
   have hsubF : F.support ⊆ p.support := by
     intro d hd; rw [mem_support_iff, hcoeffF] at hd
-    split_ifs at hd
-    · exact mem_support_iff.mpr hd
-    · exact absurd rfl hd
+    split_ifs at hd <;> simp_all [mem_support_iff]
   obtain ⟨d0, hd0, hd0w⟩ := hex
   have hF0 : map (algebraMap ℝ ℂ) F ≠ 0 := by
     intro h; have := congrArg (fun q => q.coeff d0) h
@@ -145,8 +139,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
       Finsupp.zero_apply] at this
     exact mem_support_iff.mp hd0 (by simpa using this)
   obtain ⟨y, hy⟩ : ∃ y : Fin n → ℂ, eval y (map (algebraMap ℝ ℂ) F) ≠ 0 := by
-    by_contra h
-    push Not at h
+    by_contra h; push Not at h
     exact hF0 (MvPolynomial.funext fun x => by simp [h x])
   set v : Fin n → ℂ := y - z0 with hv
   -- the deformation `H t u = t ^ (-m) * p (t ^ w * (z0 + u v))`
@@ -160,8 +153,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
     refine Finset.sum_congr rfl fun d hd => ?_
     rw [hcoeffF]
     have hmd := hmin d hd; by_cases hdw : Finsupp.weight w d = m
-    · have : e d = 0 := by simp [he, hdw]
-      rw [ite_eq_left hdw, this]; simp
+    · rw [ite_eq_left hdw, show e d = 0 by simp [he, hdw]]; simp
     · have : e d ≠ 0 := by simp only [he]; lia
       rw [ite_eq_right hdw]; simp [zero_pow this]
   have hHpos : ∀ t : ℝ, 0 < t → ∀ u, ((t : ℂ) ^ m) * H t u =
@@ -185,15 +177,14 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
   have hcont : Continuous fun q : ℝ × ℂ => H q.1 q.2 := by
     simp only [hH]; fun_prop
   have hdiff : ∀ t, Differentiable ℂ (H t) := by
-    intro t; simp only [hH]
-    fun_prop
+    intro t; simp only [hH]; fun_prop
   -- isolated zeros of `g`
   have hg0 : g 0 = 0 := by simpa [hg] using hzero
   have hg1 : g 1 ≠ 0 := by
     simpa only [hg, one_mul, hv, Pi.sub_apply, add_sub_cancel] using hy
   have hgan : AnalyticAt ℂ g 0 := by
     have : g = H 0 := by funext u; exact (hH0 u).symm
-    rw [this]; exact (hdiff 0).analyticAt 0
+    simpa only [this] using (hdiff 0).analyticAt 0
   obtain ⟨r0, hr0, hr0g⟩ : ∃ r0 > 0, ∀ u : ℂ, u ≠ 0 → ‖u‖ < r0 → g u ≠ 0 := by
     rcases hgan.eventually_eq_zero_or_eventually_ne_zero with h | h
     · exfalso
@@ -211,8 +202,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
       ∃ r1 > 0, ∀ u : ℂ, ‖u‖ < r1 → ∀ j, 0 < (z0 j + u * v j).im := by
     have hopen : IsOpen {u : ℂ | ∀ j, 0 < (z0 j + u * v j).im} := by
       rw [Set.ofPred_forall]
-      exact isOpen_iInter_of_finite fun j =>
-        isOpen_lt continuous_const (by fun_prop)
+      exact isOpen_iInter_of_finite fun _ => isOpen_lt continuous_const (by fun_prop)
     have hmem : (0 : ℂ) ∈ {u : ℂ | ∀ j, 0 < (z0 j + u * v j).im} := by simpa using hz0
     obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hopen 0 hmem
     exact ⟨ε, hε, fun u hu => hball (by simpa using hu)⟩
@@ -239,9 +229,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
   -- `H t` has no zeros on the closed ball
   have hHne : ∀ u ∈ Metric.closedBall (0 : ℂ) r, H t u ≠ 0 := by
     intro u hu h
-    have hu' : ‖u‖ < r1 := by
-      have : ‖u‖ ≤ r := by simpa using hu
-      linarith
+    have hu' : ‖u‖ < r1 := lt_of_le_of_lt (by simpa using hu) hrr1
     have := hHpos t htpos u
     rw [h, mul_zero] at this
     refine hp _ (fun j => ?_) this.symm
@@ -250,8 +238,7 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
   have hH0ne : H t 0 ≠ 0 := hHne 0 (Metric.mem_closedBall_self hrpos.le)
   -- maximum modulus principle for `1 / H t`
   have hdcc : DiffContOnCl ℂ (fun u => (H t u)⁻¹) (Metric.ball (0 : ℂ) r) := by
-    apply DifferentiableOn.diffContOnCl
-    rw [closure_ball _ hrpos.ne']
+    apply DifferentiableOn.diffContOnCl; rw [closure_ball _ hrpos.ne']
     exact ((hdiff t).differentiableOn).inv hHne
   have hmax := Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hdcc
     (C := (2 * ‖H t 0‖)⁻¹) (fun u hu => by
@@ -302,8 +289,7 @@ lemma coeff_pderiv' (j : Fin n) (p : MvPolynomial (Fin n) ℝ) (e : Fin n →₀
 lemma mem_support_pderiv (j : Fin n) (p : MvPolynomial (Fin n) ℝ) (e : Fin n →₀ ℕ) :
     e ∈ (pderiv j p).support ↔ e + Finsupp.single j 1 ∈ p.support := by
   rw [mem_support_iff, mem_support_iff, coeff_pderiv']
-  have : ((e j : ℝ) + 1) ≠ 0 := by positivity
-  simp [this]
+  simp [show ((e j : ℝ) + 1) ≠ 0 by positivity]
 
 lemma prod_ite_factor (j : Fin n) (x : ℂ) (y : Fin n → ℂ) :
     ∏ l, (if l = j then x else y l) = x * ∏ l, (if l = j then 1 else y l) := by
@@ -372,8 +358,7 @@ theorem Stable.pderiv {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (j : Fin n)
   -- the top part in `z_j` is stable
   set w : Fin n → ℤ := fun l => if l = j then -1 else 0 with hw
   have hweight : ∀ d : Fin n →₀ ℕ, Finsupp.weight w d = -(d j : ℤ) := by
-    intro d; rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]
-    simp [hw]
+    intro d; rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]; simp [hw]
   have hPtop := hp.weightedHomogeneousComponent w (-(D : ℤ))
     (fun d hd => by rw [hweight]; have := hDle d hd; lia)
     ⟨dmax, hdmax, by rw [hweight, hD, hdmaxD]⟩
@@ -405,13 +390,11 @@ theorem Stable.pderiv {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (j : Fin n)
   have hdeg : D ≤ f.natDegree := Polynomial.le_natDegree_of_ne_zero hcoeffD
   have hdegpos : 0 < f.degree := by rw [← Polynomial.natDegree_pos_iff_degree_pos]; lia
   -- Gauss–Lucas
-  have hderiv0 : Polynomial.derivative f ≠ 0 := by
-    intro h; have := Polynomial.derivative_eq_zero.mp h
-    lia
+  have hderiv0 : Polynomial.derivative f ≠ 0 :=
+    (f.derivative_ne_zero).mpr (by lia)
   have hroot : z j ∈ (Polynomial.derivative f).rootSet ℂ := by
     rw [Polynomial.mem_rootSet]; refine ⟨hderiv0, ?_⟩
-    rw [Polynomial.coe_aeval_eq_eval, hf, eval_derivative_univPoly]
-    exact hzero
+    simpa only [Polynomial.coe_aeval_eq_eval, hf, eval_derivative_univPoly] using hzero
   have hGL := Polynomial.rootSet_derivative_subset_convexHull_rootSet hdegpos hroot
   have hroots : f.rootSet ℂ ⊆ {w : ℂ | w.im ≤ 0} := by
     intro r hr; rw [Polynomial.mem_rootSet, Polynomial.coe_aeval_eq_eval, hf, eval_univPoly] at hr
@@ -643,8 +626,7 @@ theorem exists_localize_aux {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (l h 
             h j - (e + Finsupp.single a (l a)) j) else (e + Finsupp.single a (l a)) j)) =
           Finsupp.equivFunOnFinite.symm (fun j => if j ∈ insert a S then
           (if σ j then e j + l j else h j - e j) else e j) := by
-        ext j
-        by_cases hja : j = a <;> simp [hja, haS, hσa]
+        ext j; by_cases hja : j = a <;> simp [hja, haS, hσa]
       rw [hpt]
       constructor
       · rintro ⟨h1, h2, h3⟩
@@ -673,8 +655,7 @@ theorem exists_localize_aux {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (l h 
             have hja : j ≠ a := fun h => haS (h ▸ hj)
             simpa [Finsupp.single_eq_of_ne hja, Finsupp.update_apply, hja] using this
         · convert h3 using 1
-          ext j
-          by_cases hja : j = a
+          ext j; by_cases hja : j = a
           · simp [hja, haS, hσa]; lia
           · simp [hja]
       · rintro ⟨h1, h3⟩
@@ -684,8 +665,7 @@ theorem exists_localize_aux {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (l h 
           simpa [Finsupp.single_eq_of_ne hja, Finsupp.update_apply, hja] using
             h1 j (Finset.mem_insert_of_mem hj)
         · convert h3 using 1
-          ext j
-          by_cases hja : j = a
+          ext j; by_cases hja : j = a
           · simp [hja, haS, hσa]; lia
           · simp [hja]
 
@@ -727,9 +707,7 @@ theorem not_stable_two_term {F : MvPolynomial (Fin n) ℝ} (hF : Stable F) (h0 :
     · simp
   have hsuppG : ∀ γ ∈ G.support, γ ≠ 0 ∧ γ ∈ F.support := by
     intro γ hγ; rw [mem_support_iff, hcoeffG] at hγ
-    split_ifs at hγ with h
-    · exact absurd rfl hγ
-    · exact ⟨h, mem_support_iff.mpr hγ⟩
+    split_ifs at hγ <;> simp_all [mem_support_iff]
   have hG0 : G ≠ 0 := by
     obtain ⟨γ, hγ, hγ0⟩ := hex
     intro h; have := congrArg (fun q => q.coeff γ) h
@@ -741,8 +719,8 @@ theorem not_stable_two_term {F : MvPolynomial (Fin n) ℝ} (hF : Stable F) (h0 :
     exists_upper_root N hN (-c / κ) (div_ne_zero (neg_ne_zero.mpr h0) hκ)
   set z : Fin n → ℂ := fun j => ζ * (x j : ℂ) with hz
   have hzim : ∀ j, 0 < (z j).im := by
-    intro j
-    simp only [hz, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add]
+    intro j; simp only [hz, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+      zero_add]
     exact mul_pos hζim (hxpos j)
   apply hF z hzim
   have hFG : F = C c + G := by rw [hG]; ring
@@ -756,9 +734,7 @@ theorem not_stable_two_term {F : MvPolynomial (Fin n) ℝ} (hF : Stable F) (h0 :
     ring
   rw [hFG, map_add, map_C, eval_add, eval_C, hevalG, hζN]
   have hκ' : (κ : ℂ) ≠ 0 := by exact_mod_cast hκ
-  push_cast
-  field_simp
-  simp
+  push_cast; field_simp; simp
 
 theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
     (h0 : (0 : Fin n →₀ ℕ) ∈ q.support) (hγ : ∃ γ ∈ q.support, 1 ≤ γ i) :
@@ -776,8 +752,7 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
       (Finset.mem_erase.mpr ⟨hj, Finset.mem_univ j⟩)
   set Cset := q.support.filter (fun γ => 1 ≤ γ i) with hCset
   have hCne : Cset.Nonempty := by
-    obtain ⟨γ, hγ, hγi⟩ := hγ
-    exact ⟨γ, Finset.mem_filter.mpr ⟨hγ, hγi⟩⟩
+    obtain ⟨γ, hγ, hγi⟩ := hγ; exact ⟨γ, Finset.mem_filter.mpr ⟨hγ, hγi⟩⟩
   obtain ⟨f, hf⟩ : ∃ f : (Fin n →₀ ℕ) → ℚ,
       ∀ γ, f γ = (b γ : ℚ) / γ i := ⟨_, fun _ => rfl⟩
   obtain ⟨γ1, hγ1C, hγ1min⟩ := Finset.exists_min_image Cset f hCne
@@ -803,9 +778,9 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
   obtain ⟨q2, hq2, hq2s⟩ := exists_trunc hq i (γs i) ⟨0, h0, Nat.zero_le _⟩
   set w : Fin n → ℤ := fun j => if j = i then -(b γs : ℤ) else (γs i : ℤ) with hw
   have hweight : ∀ γ : Fin n →₀ ℕ, Finsupp.weight w γ = γs i * b γ - b γs * γ i := by
-    intro γ; rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]
+    intro γ; rw [weight_eq_sum]
     rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i), hb γ]
-    simp only [hw, ite_eq_left, nsmul_eq_mul]
+    simp only [hw, ite_eq_left]
     rw [Finset.sum_congr rfl (fun j hj => by rw [ite_eq_right (Finset.ne_of_mem_erase hj)]),
       ← Finset.sum_mul]
     push_cast
@@ -854,28 +829,23 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
   have hcoeffF : ∀ γ, F.coeff γ = if Finsupp.weight w γ = 0 then q2.coeff γ else 0 := by
     intro γ; rw [hF, coeff_weightedHomogeneousComponent]
   have hγsne : γs ≠ 0 := by
-    intro h; have : γs i = 0 := by rw [h]; rfl
-    lia
+    intro h; have := hγsi; simp [h] at this
   by_contra hcon
   have hsmall : γs i + b γs ≥ 3 := by
-    by_contra hlt
-    push Not at hlt
+    by_contra hlt; push Not at hlt
     apply hcon
     refine ⟨γs, hγsq, ?_⟩
     rcases Nat.lt_or_ge (b γs) 1 with hb0' | hb0'
     · have hz : ∀ j, j ≠ i → γs j = 0 := fun j hj => by have := hle_b γs j hj; lia
       have ha : γs i = 1 ∨ γs i = 2 := by lia
+      have heq : γs = Finsupp.single i (γs i) := by
+        ext j
+        by_cases hj : j = i
+        · subst hj; simp
+        · simp [Finsupp.single_eq_of_ne hj, hz j hj]
       rcases ha with ha | ha
-      · left
-        ext j
-        by_cases hj : j = i
-        · subst hj; simp [ha]
-        · simp [Finsupp.single_eq_of_ne hj, hz j hj]
-      · right; left
-        ext j
-        by_cases hj : j = i
-        · subst hj; simp [ha]
-        · simp [Finsupp.single_eq_of_ne hj, hz j hj]
+      · left; simpa only [ha] using heq
+      · right; left; simpa only [ha] using heq
     · have ha : γs i = 1 := by lia
       have hb1 : b γs = 1 := by lia
       right; right
@@ -901,8 +871,7 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
         · subst hkj; simp [Finsupp.single_eq_of_ne hk, hγj1]
         · simp [Finsupp.single_eq_of_ne hk, Finsupp.single_eq_of_ne hkj, hothers k hk hkj]
   refine not_stable_two_term hFst ?_ (γs i + b γs) hsmall ?_ ⟨γs, ?_, hγsne⟩
-  · rw [hcoeffF, ite_eq_left (by simp)]
-    exact mem_support_iff.mp h0q2
+  · rw [hcoeffF, ite_eq_left (by simp)]; exact mem_support_iff.mp h0q2
   · intro γ hγ hγ0
     rw [mem_support_iff, hcoeffF] at hγ
     split_ifs at hγ with hwt
@@ -994,29 +963,24 @@ theorem MvRealStable.isJumpSystem_supportInt {p : MvPolynomial (Fin n) ℝ}
     simp only [hψ, hsg, hσ, hl, hh, Finsupp.equivFunOnFinite_symm_apply_apply] at hek ⊢
     by_cases hk : mα k ≤ mβ k
     · simp only [hk, decide_true, ite_true] at hek ⊢
-      push_cast
-      lia
+      push_cast; lia
     · simp only [hk, decide_false, Bool.false_eq_true, ite_false] at hek ⊢
       lia
   -- the step `s` points in direction `sg i`
   have hsdir : s = Pi.single i (sg i) ∧ mα i ≠ mβ i := by
     rcases hsi with rfl | rfl
-    · have := hdist
-      rw [dist1_add_single] at this
+    · have := hdist; rw [dist1_add_single] at this
       have hlt : mα i < mβ i := by
         by_contra hc
-        push Not at hc
-        have h1 : (mβ i : ℤ) ≤ mα i := by exact_mod_cast hc
+        have h1 : (mβ i : ℤ) ≤ mα i := by exact_mod_cast Nat.le_of_not_gt hc
         rw [abs_of_nonneg (by linarith), abs_of_nonneg (by linarith)] at this
         linarith
       refine ⟨?_, hlt.ne⟩
       simp [hsg, hσ, hlt.le]
-    · have := hdist
-      rw [dist1_add_single] at this
+    · have := hdist; rw [dist1_add_single] at this
       have hlt : mβ i < mα i := by
         by_contra hc
-        push Not at hc
-        have h1 : (mα i : ℤ) ≤ mβ i := by exact_mod_cast hc
+        have h1 : (mα i : ℤ) ≤ mβ i := by exact_mod_cast Nat.le_of_not_gt hc
         rw [abs_of_nonpos (by linarith), abs_of_nonpos (by linarith)] at this
         linarith
       refine ⟨?_, hlt.ne'⟩
@@ -1031,8 +995,7 @@ theorem MvRealStable.isJumpSystem_supportInt {p : MvPolynomial (Fin n) ℝ}
       hσ, hl, hh]
     by_cases hk : mα k ≤ mβ k
     · simp [hk]
-    · simp only [hk, decide_false, Bool.false_eq_true, ite_false]
-      lia
+    · simp only [hk, decide_false, Bool.false_eq_true, ite_false]; lia
   have hγβ : ∃ γ ∈ q.support, 1 ≤ γ i := by
     refine ⟨Finsupp.equivFunOnFinite.symm (fun j => h j - l j), ?_, ?_⟩
     · rw [hqsupp]
@@ -1041,14 +1004,11 @@ theorem MvRealStable.isJumpSystem_supportInt {p : MvPolynomial (Fin n) ℝ}
       ext k
       simp only [Finsupp.equivFunOnFinite_symm_apply_apply, hσ, hl, hh]
       by_cases hk : mα k ≤ mβ k
-      · simp only [hk, decide_true, ite_true]
-        lia
-      · simp only [hk, decide_false, Bool.false_eq_true, ite_false]
-        lia
+      · simp only [hk, decide_true, ite_true]; lia
+      · simp only [hk, decide_false, Bool.false_eq_true, ite_false]; lia
     · simp only [Finsupp.equivFunOnFinite_symm_apply_apply, hl, hh]
       lia
-  have hsgi : sg i = 1 ∨ sg i = -1 := by
-    simp only [hsg]; split_ifs <;> simp
+  have hsgi : sg i = 1 ∨ sg i = -1 := by simp only [hsg]; split_ifs <;> simp
   obtain ⟨γ, hγ, hγcases⟩ := base_case hq i h0 hγβ
   have hγ' := (hqsupp γ).1 hγ
   have hdec := decode γ hγ'.1
@@ -1082,8 +1042,7 @@ theorem MvRealStable.isJumpSystem_supportInt {p : MvPolynomial (Fin n) ℝ}
     have hbd := hγ'.1 j
     simp only [Finsupp.add_apply, Finsupp.single_eq_same, Finsupp.single_eq_of_ne hji, hl, hh]
       at hbd
-    have hsgj : sg j = 1 ∨ sg j = -1 := by
-      simp only [hsg]; split_ifs <;> simp
+    have hsgj : sg j = 1 ∨ sg j = -1 := by simp only [hsg]; split_ifs <;> simp
     refine ⟨Pi.single j (sg j), isStep_single _ _ _ _ hsgj ?_, hmem _ fun k => ?_⟩
     · simp only [Pi.add_apply, Pi.single_eq_of_ne hji, add_zero]
       simp only [hsg, hσ]

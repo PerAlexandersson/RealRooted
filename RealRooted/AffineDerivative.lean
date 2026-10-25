@@ -65,21 +65,17 @@ leading coefficient `(c - d) * lc(f)`, since:
 lemma coeff_affineDeriv {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) (c : ℝ) :
     (C c * f + (1 - X) * f.derivative).coeff f.natDegree =
       (c - f.natDegree) * f.leadingCoeff := by
-  set d := f.natDegree with hd_def
+  set d := f.natDegree
   have hd1 : d - 1 + 1 = d := Nat.sub_add_cancel hdeg
-  -- Rewrite (1-X)*f' = f' - X*f'
   have hrw : (1 - X : ℝ[X]) * f.derivative = f.derivative - X * f.derivative := by ring
   rw [hrw, coeff_add, coeff_sub, coeff_C_mul]
-  -- coeff f' d = 0 (degree d-1 < d)
   have hf'd : f.derivative.coeff d = 0 :=
     coeff_eq_zero_of_natDegree_lt (by rw [f.natDegree_derivative]; lia)
-  -- coeff (X*f') d = coeff f' (d-1) (X shifts by 1)
   have hXf'd : (X * f.derivative).coeff d = f.derivative.coeff (d - 1) := by
-    conv_lhs => rw [← hd1]; rw [coeff_X_mul]
-  -- coeff f' (d-1) = (↑(d-1)+1) * f.coeff d
+    conv_lhs => rw [← hd1]
+    rw [coeff_X_mul]
   have hcoeff_deriv : f.derivative.coeff (d - 1) = (↑(d - 1) + 1) * f.coeff d := by
     rw [coeff_derivative, hd1, mul_comm]
-  -- ↑(d-1) + 1 = ↑d
   have hcast : (↑(d - 1) : ℝ) + 1 = (↑d : ℝ) := by simp_all
   rw [hf'd, hXf'd, hcoeff_deriv, hcast, show f.leadingCoeff = f.coeff d from rfl]
   ring
@@ -226,14 +222,14 @@ lemma exists_affineDeriv_root_between {f : ℝ[X]}
   set g := C c * f + (1 - X) * f.derivative
   rcases eq_or_lt_of_le hle with rfl | hlt
   · have hcount : 2 ≤ Multiset.count r₁ f.roots := by
-      exact le_trans (by simp) (Multiset.count_le_of_le r₁ hsub)
+      exact (by simpa using Multiset.count_le_of_le r₁ hsub)
     rw [count_roots] at hcount
     have hf'_root : f.derivative.IsRoot r₁ :=
       isRoot_derivative_of_rootMultiplicity_ge_two hcount
-    have : g.IsRoot r₁ := by
+    have hg_root : g.IsRoot r₁ := by
       change (C c * f + (1 - X) * f.derivative).eval r₁ = 0
       rw [eval_affineDeriv_at_root hr₁ c, hf'_root, mul_zero]
-    grind
+    exact ⟨r₁, le_rfl, le_rfl, hg_root⟩
   · have hsign : g.eval r₁ * g.eval r₂ ≤ 0 := by
       rw [eval_affineDeriv_at_root hr₁ c, eval_affineDeriv_at_root hr₂ c]
       have h1 : 0 < 1 - r₁ := by linarith
@@ -309,10 +305,9 @@ lemma exists_affineDeriv_root_between_strict {f : ℝ[X]}
               f.eval x * (c * (1 - x) ^ (-c - 1)) := by ring
     lia
   obtain ⟨s, hs, hs0⟩ := exists_hasDerivAt_eq_zero' hlt hfa hfb hderiv
-  have hs_factor_ne : (1 - s) ^ (-c - 1) ≠ 0 := by
-    exact (Real.rpow_ne_zero (by grind) (by linarith)).2 (by grind)
-  have hs_root_eval : (C c * f + (1 - X) * f.derivative).eval s = 0 := by simp_all
-  exact ⟨s, hs.1, hs.2, hs_root_eval⟩
+  have hs_factor_ne : (1 - s) ^ (-c - 1) ≠ 0 :=
+    (Real.rpow_ne_zero (by grind) (by linarith)).2 (by grind)
+  exact ⟨s, hs.1, hs.2, by simp_all⟩
 
 /-! ## Inner interleaving construction
 
@@ -399,14 +394,11 @@ lemma mkAffineInterleaving_length (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.natDegr
   | [], _, _, _, _ | [_], _, _, _, _ => by simp [mkAffineInterleaving]
   | _ :: r₂ :: rest, hrs, hsorted, hsub, hgap => by
     simp only [mkAffineInterleaving, List.length_cons]
-    have hrest : ∀ r ∈ r₂ :: rest, f.IsRoot r :=
-      List.forall_mem_of_forall_mem_cons hrs
-    have hsorted_tail := (List.pairwise_cons.mp hsorted).2
-    have hsub_tail : (↑(r₂ :: rest) : Multiset ℝ) ≤ f.roots := by
-      apply le_trans _ hsub
-      simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]
     rw [mkAffineInterleaving_length f c hdeg hc hroots_nonpos
-      (r₂ :: rest) hrest hsorted_tail hsub_tail hgap.2]
+      (r₂ :: rest) (List.forall_mem_of_forall_mem_cons hrs)
+      (List.pairwise_cons.mp hsorted).2 (by
+        apply le_trans _ hsub
+        simp [Multiset.le_iff_count, Multiset.coe_count, List.count_cons]) hgap.2]
     simp
 
 /-- Each element of the affine interleaving is a root of `g` and satisfies
@@ -488,10 +480,8 @@ private lemma mkAffineInterleaving_ge (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.nat
     simp only [mkAffineInterleaving, List.mem_cons] at hx
     have hr₁r₂ : r₁ ≤ r₂ := List.rel_of_pairwise_cons hsorted (.head _)
     rcases hx with rfl | hx
-    · -- x is the head element
-      grind
-    · -- x is in the recursive tail
-      have hrest : ∀ r ∈ r₂ :: rest', f.IsRoot r :=
+    · grind
+    · have hrest : ∀ r ∈ r₂ :: rest', f.IsRoot r :=
         List.forall_mem_of_forall_mem_cons hrs
       have hsorted_tail := (List.pairwise_cons.mp hsorted).2
       have hsub_tail : (↑(r₂ :: rest') : Multiset ℝ) ≤ f.roots := by lia
@@ -610,11 +600,6 @@ lemma mkAffineInterleaving_sub_multiset (f : ℝ[X]) (c : ℝ) (hdeg : 2 ≤ f.n
                     (↑(r₂ :: rest) : Multiset ℝ).count a + 1 := by
                   simp_all
                 rw [this] at hcount_full
-                have hc_pos : 0 < c := lt_trans (by positivity) hc
-                have ha_nonpos : a ≤ 0 := by
-                  rw [heq, hs]
-                  exact hroots_nonpos r₁ (Multiset.subset_of_le hsub
-                    (Multiset.mem_coe.mpr (.head _)))
                 have hmult := rootMultiplicity_sub_one_le_affineDeriv a hg_ne
                 simp only [count_roots] at *
                 lia
@@ -687,26 +672,19 @@ lemma roots_card_of_sub_pred {p : ℝ[X]} (hp : p ≠ 0)
   have h2 : S.card ≤ p.roots.card := Multiset.card_le_card hle
   have hne_card : p.roots.card ≠ p.natDegree :=
     fun h => hne (Polynomial.splits_iff_card_roots.mpr h)
-  -- p.roots.card = natDegree - 1
   have hrc : p.roots.card = p.natDegree - 1 := by lia
-  -- Factor p = rprod * q where rprod = ∏(X - C r) for r ∈ p.roots
   set rprod := (p.roots.map (X - C ·)).prod with hrprod_def
   obtain ⟨q, hpq⟩ := prod_multiset_X_sub_C_dvd p
   have hrprod_ne : rprod ≠ 0 := Polynomial.multiset_prod_X_sub_C_ne_zero p.roots
   have hq_ne : q ≠ 0 := right_ne_zero_of_mul (hpq ▸ hp)
-  -- rprod.roots = p.roots (product of linear factors)
   have hrprod_roots : rprod.roots = p.roots := roots_multiset_prod_X_sub_C p.roots
-  -- p.roots = rprod.roots + q.roots (from roots_mul)
   have hroots : p.roots = rprod.roots + q.roots := by
     conv_lhs => rw [hpq]; exact roots_mul (hpq ▸ hp)
-  -- So q.roots = 0 (empty)
   have hq_empty : q.roots = 0 := by
     rw [hrprod_roots] at hroots
-    -- hroots : p.roots = p.roots + q.roots
     have hcard_eq := congr_arg Multiset.card hroots
     rw [Multiset.card_add] at hcard_eq
     exact Multiset.card_eq_zero.mp (by lia)
-  -- But q has degree 1, so q.roots.card = 1 — contradiction
   have hq_deg : q.natDegree = 1 := by
     have h3 := natDegree_mul hrprod_ne hq_ne
     rw [natDegree_multiset_prod_X_sub_C_eq_card, hrc, ← hpq] at h3
@@ -757,11 +735,10 @@ private lemma strictInterl_of_extra_root_left {f g : ℝ[X]} (hf₀ : f ≠ 0) (
     (hint : ListInterlaces ss (r₁ :: rest))
     (hu : u ≤ r₁) :
     StrictInterl g f := by
-  have hss_sorted : ss.Pairwise (· ≤ ·) :=
-    pairwise_le_of_listInterlaces ss (r₁ :: rest) hint
-  have hu_le_all : ∀ s ∈ ss, u ≤ s :=
-    fun s hs => le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs)
-  have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by simp_all
+  have hug_sorted : (u :: ss).Pairwise (· ≤ ·) := by
+    exact List.pairwise_cons.mpr ⟨fun s hs ↦
+      le_trans hu (listInterlaces_all_ge ss rest r₁ hint s hs),
+      pairwise_le_of_listInterlaces ss (r₁ :: rest) hint⟩
   have hlen : ss.length = rest.length := listInterlaces_cons_length_eq hint
   exact ⟨⟨hg₀, hg⟩, ⟨hf₀, hf⟩, u :: ss, r₁ :: rest, hug_sorted, hrs_sorted,
     hss_eq, hrs_eq, Or.inr ⟨by simp [hlen], ⟨hu, hint⟩⟩⟩
@@ -796,7 +773,6 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
   have hss_length : ss.length = d - 1 := by rw [mkAffineInterleaving_length]; lia
   have hspec := mkAffineInterleaving_spec f c hdeg hc hroots_nonpos
     rs hrs_root hrs_sorted hsub_rs hgap_rs
-  have hss_roots : ∀ s ∈ ss, g.IsRoot s := hspec.1
   have hss_interlaces : ListInterlaces ss rs := hspec.2
   -- Inner roots are a submultiset of g.roots
   have hsub_info := mkAffineInterleaving_sub_multiset f c hdeg hc hroots_nonpos
@@ -809,10 +785,8 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     hsub_info.2
   -- g is real-rooted: degree d with d-1 inner roots → d total roots
   have hg₀ : HasPosLeadingCoeff g := by
-    unfold HasPosLeadingCoeff at ⊢
-    have hc' : (f.natDegree : ℝ) < c := by lia
-    rw [hg_def, leadingCoeff_affineDeriv hf₀.ne_zero (by lia) hc_ne]
-    simp_all [HasPosLeadingCoeff]
+    rw [HasPosLeadingCoeff, hg_def, leadingCoeff_affineDeriv hf₀.ne_zero (by lia) hc_ne]
+    exact mul_pos (sub_pos.mpr hc) hf₀
   have hg_rr : g.Splits :=
     roots_card_of_sub_pred hg₀.ne_zero hss_sub (by
       rw [Multiset.coe_card, hss_length, hg_deg]; lia)
@@ -829,11 +803,9 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
     exists_cons_of_card_succ hss_sub hss_eq_card
   have hu_roots_eq' : (↑(u :: ss) : Multiset ℝ) = g.roots := by simp_all
   rw [hrs_cons] at hrs_sorted hrs_eq hss_interlaces
-  have hr₁_root : f.IsRoot r₁ :=
-    hrs_root r₁ (by simp [hrs_cons])
+  have hr₁_root : f.IsRoot r₁ := hrs_root r₁ (by simp [hrs_cons])
   have hr₁_mem_f : r₁ ∈ f.roots := (mem_roots hf₀.ne_zero).mpr hr₁_root
   have hr₁_nonpos : r₁ ≤ 0 := hroots_nonpos r₁ hr₁_mem_f
-  have hc_pos : 0 < c := by grind
   by_cases hu : u ≤ r₁
   · exact strictInterl_of_extra_root_left hf₀.ne_zero hg₀.ne_zero hf hg_rr hrs_sorted
       hrs_eq hu_roots_eq' hss_interlaces hu
@@ -984,15 +956,9 @@ theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits)
       nlinarith
     have hq_eval_ne : q.eval r₁ ≠ 0 := eval_ne_zero_of_not_dvd_X_sub_C hq_nodvd
     have hEval_pos : 0 < qg.eval r₁ * q.eval r₁ := by
-      have hfactor_pos : 0 < ((1 - r₁) * (m : ℝ)) :=
-        mul_pos (by linarith) (Nat.cast_pos.mpr hm_pos)
-      have hsq_pos : 0 < (q.eval r₁) ^ 2 := sq_pos_iff.mpr hq_eval_ne
-      have hrewrite :
-          qg.eval r₁ * q.eval r₁ = ((1 - r₁) * (m : ℝ)) * (q.eval r₁) ^ 2 := by
-        rw [hqg_eval]
-        ring
-      rw [hrewrite]
-      exact mul_pos hfactor_pos hsq_pos
+      rw [hqg_eval]
+      nlinarith [sq_pos_iff.mpr hq_eval_ne,
+        mul_pos (show 0 < 1 - r₁ by linarith) (Nat.cast_pos.mpr hm_pos)]
     linarith
 
 /-- Degree 1 version: both `g` and `f` have degree 1, and `g`'s root is left of `f`'s. -/
@@ -1005,13 +971,11 @@ theorem strictInterl_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
   set g := C c * f + (1 - X) * f.derivative with hg_def
   have hc1 : (1 : ℝ) < c := by simp_all
   have hc_ne : c ≠ (f.natDegree : ℝ) := ne_of_gt hc
-  have hg_ne : g ≠ 0 := affineDeriv_ne_zero hf₀.ne_zero (by lia) hc_ne
   have hg_deg : g.natDegree = 1 := by rw [natDegree_affineDeriv hf₀.ne_zero (by lia) hc_ne, hdeg]
   have hg_rr : (g ≠ 0 ∧ g.Splits) := isRealRooted_of_degree_one hg_deg
   have hg_lc_pos : 0 < g.leadingCoeff := by
     rw [leadingCoeff_affineDeriv hf₀.ne_zero (by lia) hc_ne, hdeg]
     exact mul_pos (by simp_all) hf₀
-  -- f and g each have exactly one root
   obtain ⟨r, hr_eq⟩ :=
     Multiset.card_eq_one.mp (show f.roots.card = 1 by
       rw [Polynomial.splits_iff_card_roots.mp hf, hdeg])
@@ -1021,24 +985,17 @@ theorem strictInterl_affine_derivative_deg_one {f : ℝ[X]} (hf : f.Splits)
   have hr_root : f.IsRoot r :=
     (mem_roots hf₀.ne_zero).mp (hr_eq ▸ Multiset.mem_singleton_self r)
   have hr_nonpos : r ≤ 0 := hroots_nonpos r (hr_eq ▸ Multiset.mem_singleton_self r)
-  -- g(r) = (1-r)*f'(r) > 0
   have hgr_pos : 0 < g.eval r := by
     rw [eval_affineDeriv_at_root hr_root c]
     apply mul_pos (by linarith)
-    -- f has degree 1, so f' is a positive constant
     have hdeg0 : f.derivative.natDegree = 0 := by rw [f.natDegree_derivative, hdeg]
     have hc0 : f.derivative.coeff 0 = f.leadingCoeff := by
       rw [coeff_derivative]; simp [Polynomial.leadingCoeff, hdeg]
     rw [eq_C_of_natDegree_eq_zero hdeg0, eval_C, hc0]
     exact hf₀
-  -- g(r) = lc(g) * (r - s)
   have hgr_eq : g.eval r = g.leadingCoeff * (r - s) := by
     rw [Polynomial.Splits.eval_eq_prod_roots hg_rr.2 r, hs_eq]; simp
-  -- s ≤ r
-  have hsr : s ≤ r := by
-    have : 0 < r - s := by simp_all
-    linarith
-  -- StrictInterl with ListAlternates [s] [r]
+  have hsr : s ≤ r := by nlinarith
   exact ⟨hg_rr, ⟨hf₀.ne_zero, hf⟩, [s], [r], List.pairwise_singleton _ _,
     List.pairwise_singleton _ _, by simp [hs_eq], by simp [hr_eq],
     Or.inr ⟨rfl, hsr, trivial⟩⟩
