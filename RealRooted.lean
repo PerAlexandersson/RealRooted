@@ -512,7 +512,7 @@ import RealRooted.CommonInterleaver.SameDegreeRootCount
 import RealRooted.CommonInterleaver.Sequence
 import RealRooted.CommonInterleaver.SuccDegreeEndpoint
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.CommonInterleaverExamples
+import RealRooted.CommonInterleaver.Counterexamples
 import RealRooted.CommonInterleaverSeq
 import RealRooted.CommonInterleaverTwo
 import RealRooted.Compatibility.Affine
@@ -754,7 +754,7 @@ import RealRooted.HermiteBiehler.StablePencil
 import RealRooted.HlavacekSolus.Shelling
 import RealRooted.HomogeneousComponentStability
 import RealRooted.HomogeneousOre
-import RealRooted.HomogeneousOreExamples
+import RealRooted.HomogeneousOre.Examples
 import RealRooted.HomogeneousStability
 import RealRooted.HosterStump.BoolChains
 import RealRooted.HosterStump.Chow
