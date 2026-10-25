@@ -26,19 +26,20 @@ def affineThetaRightWeight (k : ℕ) : ℝ :=
 
 /-- The affine theta source row: `2` at `0`, and
 `(1 + X) ^ n * ((n + 3) + (2 * n + 4) * X)` at `n + 1`. -/
-def source : ℕ → ℝ[X]
+def affineThetaSource : ℕ → ℝ[X]
   | 0 => 2
   | n + 1 =>
       (1 + X) ^ n * (C (n + 3 : ℝ) + C (2 * n + 4 : ℝ) * X)
 
-/-- The image of `source n` under the diagonal operator with weights `affineThetaRightWeight`. -/
-def middle (n : ℕ) : ℝ[X] :=
-  diagonalOperator affineThetaRightWeight (source n)
+/-- The image of `affineThetaSource n` under the diagonal operator with weights
+`affineThetaRightWeight`. -/
+def affineThetaMiddle (n : ℕ) : ℝ[X] :=
+  diagonalOperator affineThetaRightWeight (affineThetaSource n)
 
 /-- The reversed double reciprocal-Pochhammer image of an affine theta row. -/
 def affineThetaJensenPolynomial (n : ℕ) : ℝ[X] :=
   C ((n + 1).factorial / 2 : ℝ) *
-    diagonalOperator affineThetaLeftWeight (middle n).reverse
+    diagonalOperator affineThetaLeftWeight (affineThetaMiddle n).reverse
 
 private theorem leftWeight_pos (k : ℕ) : 0 < affineThetaLeftWeight k := by
   exact inv_pos.mpr (ascPochhammer_pos k 3 (by norm_num))
@@ -54,19 +55,19 @@ private theorem rightWeight_multiplier : IsMultiplierSequence affineThetaRightWe
   exact (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp
     (isPFMultiplierSequence_inv_ascPochhammer (by norm_num : (0 : ℝ) < 2))).1
 
-private theorem source_zero : source 0 = 2 := by
+private theorem source_zero : affineThetaSource 0 = 2 := by
   rfl
 
 private theorem source_succ_factor (n : ℕ) :
-    source (n + 1) =
+    affineThetaSource (n + 1) =
       (1 + X) ^ n * (C (n + 3 : ℝ) + C (2 * n + 4 : ℝ) * X) := by
   rfl
 
 private theorem source_eq_theta (n : ℕ) :
-    source n = C (n + 2 : ℝ) * (1 + X) ^ n + theta ((1 + X) ^ n) := by
+    affineThetaSource n = C (n + 2 : ℝ) * (1 + X) ^ n + theta ((1 + X) ^ n) := by
   cases n with
   | zero =>
-      simp only [source, pow_zero, theta, derivative_one, mul_zero, add_zero,
+      simp only [affineThetaSource, pow_zero, theta, derivative_one, mul_zero, add_zero,
         Nat.cast_zero, zero_add]
       rw [mul_one]
       exact (map_ofNat (Polynomial.C : ℝ →+* ℝ[X]) 2).symm
@@ -83,13 +84,13 @@ private theorem source_eq_theta (n : ℕ) :
       ring_nf
 
 private theorem coeff_source (n j : ℕ) :
-    (source n).coeff j = (n.choose j : ℝ) * (n + 2 + j : ℝ) := by
+    (affineThetaSource n).coeff j = (n.choose j : ℝ) * (n + 2 + j : ℝ) := by
   rw [source_eq_theta, coeff_add, coeff_C_mul, coeff_theta,
     show (1 + X : ℝ[X]) = X + 1 by ring_nf, coeff_X_add_one_pow]
   ring_nf
 
 private theorem source_interlaces_succ (n : ℕ) :
-    Interlaces (source n) (source (n + 1)) := by
+    Interlaces (affineThetaSource n) (affineThetaSource (n + 1)) := by
   cases n with
   | zero =>
       rw [source_zero, source_succ_factor]
@@ -135,7 +136,7 @@ private theorem source_interlaces_succ (n : ℕ) :
       · norm_num only [Nat.cast_add, Nat.cast_one, Nat.cast_ofNat]
         ring_nf
 
-private theorem source_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (source n) := by
+private theorem source_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (affineThetaSource n) := by
   cases n with
   | zero =>
       intro k
@@ -147,21 +148,21 @@ private theorem source_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (source n) :=
         ((hasNonnegCoeffs_C (by positivity)).add
           ((hasNonnegCoeffs_C (by positivity)).mul hasNonnegCoeffs_X))
 
-private theorem middle_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (middle n) := by
+private theorem middle_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (affineThetaMiddle n) := by
   exact (source_hasNonnegCoeffs n).diagonalOperator
     (fun k => (rightWeight_pos k).le)
 
-private theorem middle_coeff_zero (n : ℕ) : (middle n).coeff 0 = n + 2 := by
-  rw [middle, coeff_diagonalOperator, affineThetaRightWeight]
+private theorem middle_coeff_zero (n : ℕ) : (affineThetaMiddle n).coeff 0 = n + 2 := by
+  rw [affineThetaMiddle, coeff_diagonalOperator, affineThetaRightWeight]
   simp only [ascPochhammer_zero, eval_one, inv_one, one_mul]
   cases n with
-  | zero => norm_num [source, coeff_zero_eq_eval_zero]
+  | zero => norm_num [affineThetaSource, coeff_zero_eq_eval_zero]
   | succ n =>
       rw [source_succ_factor]
       simp [coeff_zero_eq_eval_zero]
       ring_nf
 
-private theorem source_natDegree (n : ℕ) : (source n).natDegree = n := by
+private theorem source_natDegree (n : ℕ) : (affineThetaSource n).natDegree = n := by
   apply Nat.le_antisymm
   · rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
     intro k hk
@@ -171,13 +172,13 @@ private theorem source_natDegree (n : ℕ) : (source n).natDegree = n := by
     simp only [Nat.choose_self, Nat.cast_one, one_mul]
     positivity
 
-private theorem middle_natDegree (n : ℕ) : (middle n).natDegree = n := by
+private theorem middle_natDegree (n : ℕ) : (affineThetaMiddle n).natDegree = n := by
   apply Nat.le_antisymm
   · exact (natDegree_diagonalOperator_le _ _).trans_eq (source_natDegree n)
   · apply le_natDegree_of_ne_zero
-    rw [middle, coeff_diagonalOperator]
-    change affineThetaRightWeight n * (source n).coeff n ≠ 0
-    have hcoeff : (source n).coeff n ≠ 0 := by
+    rw [affineThetaMiddle, coeff_diagonalOperator]
+    change affineThetaRightWeight n * (affineThetaSource n).coeff n ≠ 0
+    have hcoeff : (affineThetaSource n).coeff n ≠ 0 := by
       simpa only [leadingCoeff, source_natDegree] using
         (leadingCoeff_ne_zero.mpr (source_interlaces_succ n).2.1.1)
     exact mul_ne_zero (rightWeight_pos _).ne' hcoeff
@@ -206,7 +207,7 @@ theorem coeff_affineThetaJensenPolynomial_of_le (n k : ℕ) (hk : k ≤ n) :
       (n + 1).factorial / 2 * affineThetaLeftWeight k * affineThetaRightWeight (n - k) *
         (n.choose (n - k) : ℝ) * (2 * n + 2 - k : ℝ) := by
   rw [affineThetaJensenPolynomial, coeff_C_mul, coeff_diagonalOperator, Polynomial.coeff_reverse,
-    middle_natDegree, Polynomial.revAt_le hk, middle, coeff_diagonalOperator,
+    middle_natDegree, Polynomial.revAt_le hk, affineThetaMiddle, coeff_diagonalOperator,
     coeff_source]
   rw [Nat.cast_sub hk]
   ring_nf
@@ -227,29 +228,30 @@ theorem natDegree_affineThetaJensenPolynomial (n : ℕ) :
     have hlast : (0 : ℝ) < 2 * n + 2 - n := by nlinarith
     positivity
 
-private theorem middle_isPF (n : ℕ) : IsPFPolynomial (middle n) := by
+private theorem middle_isPF (n : ℕ) : IsPFPolynomial (affineThetaMiddle n) := by
   have hsplits := (source_interlaces_succ n).2.1.2
-  have hsource : IsPFPolynomial (source n) :=
+  have hsource : IsPFPolynomial (affineThetaSource n) :=
     IsPFPolynomial.of_realRooted_nonneg (source_hasNonnegCoeffs n) hsplits
   exact (isPFMultiplierSequence_inv_ascPochhammer
     (by norm_num : (0 : ℝ) < 2)).diagonalOperator_isPF hsource
 
 private theorem middle_interlaces_succ (n : ℕ) :
-    StrictInterl (middle n) (middle (n + 1)) := by
+    StrictInterl (affineThetaMiddle n) (affineThetaMiddle (n + 1)) := by
   exact rightWeight_multiplier.strictInterl_diagonalOperator_of_pos rightWeight_pos
     (source_interlaces_succ n).toStrictInterl
 
 /-- Consecutive affine-theta Jensen rows are in directed proper position. -/
 theorem affineThetaJensenPolynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (affineThetaJensenPolynomial n) (affineThetaJensenPolynomial (n + 1)) := by
-  have hmiddleDegree (m : ℕ) : (middle m).natDegree = (source m).natDegree := by
+  have hmiddleDegree (m : ℕ) :
+      (affineThetaMiddle m).natDegree = (affineThetaSource m).natDegree := by
     apply Nat.le_antisymm
     · exact natDegree_diagonalOperator_le _ _
     · apply le_natDegree_of_ne_zero
-      rw [middle, coeff_diagonalOperator]
+      rw [affineThetaMiddle, coeff_diagonalOperator]
       exact mul_ne_zero (rightWeight_pos _).ne'
         (leadingCoeff_ne_zero.mpr (source_interlaces_succ m).2.1.1)
-  have hreverse : Interlaces (middle n).reverse (middle (n + 1)).reverse :=
+  have hreverse : Interlaces (affineThetaMiddle n).reverse (affineThetaMiddle (n + 1)).reverse :=
     interlaces_reverse_of_roots_neg
       ((middle_interlaces_succ n).toInterlaces (by
         rw [hmiddleDegree, hmiddleDegree]

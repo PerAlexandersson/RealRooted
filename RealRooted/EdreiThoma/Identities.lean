@@ -254,10 +254,6 @@ theorem S_succ_shift_sub_eq {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0) (m n
   simp only [mul_comp, C_comp, X_comp]
   ring
 
-private lemma card_compl_eq {N k : ℕ} {s : Finset (Fin N)} (h : s.card = k) :
-    sᶜ.card = N - k := by
-  rw [Finset.card_compl, Fintype.card_fin, h]
-
 /-- The leading `N × N` block of the Toeplitz matrix. -/
 private def toepMat (a : ℕ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   Matrix.of fun i j => toeplitz a i j
@@ -362,13 +358,13 @@ theorem A_eq_swap_of_inverse {a b : ℕ → ℝ} (h0 : a 0 = 1)
     (Finset.orderEmbOfFin_unique ht (fun i => by simp [htdef])
       (by intro i j h; simp only [Fin.lt_def] at h ⊢; lia)).symm
   have hnm : N - m = n := by lia
-  have esc : ⇑(sᶜ.orderEmbOfFin (card_compl_eq hs)) =
+  have esc : ⇑(sᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq hs)) =
       fun k : Fin (N - m) => (⟨k, by lia⟩ : Fin N) := by
     refine (Finset.orderEmbOfFin_unique _ (fun k => ?_)
       (by intro i j h; simp only [Fin.lt_def] at h ⊢; lia)).symm
     simp only [hsdef, Finset.mem_compl, Finset.mem_image, Finset.mem_univ, true_and, not_exists]
     intro i hi; simp [Fin.ext_iff] at hi; lia
-  have etc : ⇑(tᶜ.orderEmbOfFin (card_compl_eq ht)) =
+  have etc : ⇑(tᶜ.orderEmbOfFin (Finset.card_compl_of_card_eq ht)) =
       fun k : Fin (N - m) => (⟨m + k, by lia⟩ : Fin N) := by
     refine (Finset.orderEmbOfFin_unique _ (fun k => ?_)
       (by intro i j h; simp only [Fin.lt_def] at h ⊢; lia)).symm
