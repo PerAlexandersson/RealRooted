@@ -1,6 +1,7 @@
 module
 
 public import Batteries.Lean.TagAttribute
+public meta import Batteries.Lean.TagAttribute
 
 /-!
 # Row-model registry
@@ -10,7 +11,7 @@ with a model whose splitting or adjacent interlacing is already known. The row t
 inspect these declarations without importing their application modules.
 -/
 
-@[expose] public section
+public meta section
 
 /-- Model-transfer theorems available to the row tactics. -/
 initialize rrRowModelAttr : Lean.TagAttribute ←

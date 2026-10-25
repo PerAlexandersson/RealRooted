@@ -1,6 +1,8 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Applications.OEIS.PeriodicTopRows
-import RealRooted.Applications.OEIS.HigherOrderDegreeModels
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Applications.OEIS.PeriodicTopRows
+public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 
 /-!
 # Remaining row-degree regressions for issue 1628
@@ -8,6 +10,8 @@ import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 These definitions are local copies of the downstream OEIS recurrences.  They exercise the
 cancellation and scalar invariant-cone routes on every row left open by the issue.
 -/
+
+@[expose] public section
 
 open Polynomial
 

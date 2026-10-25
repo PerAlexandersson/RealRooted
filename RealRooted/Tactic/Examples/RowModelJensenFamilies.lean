@@ -1,9 +1,13 @@
-import RealRooted.Applications.OEIS.A079508
-import RealRooted.Applications.OEIS.A119308
-import RealRooted.Applications.OEIS.A155495
-import RealRooted.Applications.OEIS.A318397
-import RealRooted.Applications.OEIS.A367177
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A079508
+public import RealRooted.Applications.OEIS.A119308
+public import RealRooted.Applications.OEIS.A155495
+public import RealRooted.Applications.OEIS.A318397
+public import RealRooted.Applications.OEIS.A367177
+public import RealRooted.Tactic.RowInterlacing
+
+@[expose] public section
 
 open RealRooted Polynomial
 

@@ -2128,3 +2128,4 @@ import RealRooted.Applications.EulerianCompendium.TernaryWords
 import RealRooted.Challenges.EulerianCompendium
 import RealRooted.Combinatorics.ForcedSteps
 import RealRooted.Combinatorics.SortingFixedPoints
+import RealRooted.ThresholdMatrix.Attr

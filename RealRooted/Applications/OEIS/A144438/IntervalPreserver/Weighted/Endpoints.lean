@@ -1,7 +1,11 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
-import RealRooted.BasisTransform
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+public import RealRooted.BasisTransform
 
 /-! # Endpoint estimates for the weighted diagonal family -/
+
+@[expose] public section
 
 open Polynomial
 

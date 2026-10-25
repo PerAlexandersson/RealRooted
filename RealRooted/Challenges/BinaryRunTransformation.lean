@@ -1,8 +1,10 @@
-import RealRooted.BalancedRunTransformation.Interlacing
-import RealRooted.BalancedRunTransformation.Preservation
-import RealRooted.BinaryRunTransformation.Continuation
-import RealRooted.BinaryRunTransformation.MultiplierMotzkin
-import RealRooted.BinaryRunTransformation.SymbolCounterexample
+module
+
+public import RealRooted.BalancedRunTransformation.Interlacing
+public import RealRooted.BalancedRunTransformation.Preservation
+public import RealRooted.BinaryRunTransformation.Continuation
+public import RealRooted.BinaryRunTransformation.MultiplierMotzkin
+public import RealRooted.BinaryRunTransformation.SymbolCounterexample
 
 /-!
 # Binary-run transformation challenge entry point
@@ -172,6 +174,8 @@ preservation theorem `RealRooted.IsPFPolynomial.binaryRunTransform`. The
 stability, contraction, anchor, and continuation arguments remain in
 `RealRooted.BinaryRunTransformation`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

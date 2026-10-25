@@ -1,5 +1,7 @@
-import RealRooted.CauchyInterlacing.Polynomial
-import RealRooted.CauchyInterlacing.RankOne
+module
+
+public import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.CauchyInterlacing.RankOne
 
 /-!
 # Cauchy interlacing challenge entry point
@@ -69,6 +71,8 @@ References used by the catalog:
 This module records the eigenvalue and characteristic-polynomial forms; Weyl's
 rank-one interlacing is in `RealRooted.CauchyInterlacing.RankOne`.
 -/
+
+@[expose] public section
 
 open Matrix Polynomial
 

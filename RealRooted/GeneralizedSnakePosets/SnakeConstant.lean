@@ -1,5 +1,7 @@
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+module
+
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
 # Constant snake words
@@ -11,6 +13,8 @@ non-nesting placements.  Hence the snake polynomial of a constant word is the
 modified Narayana polynomial `P_{n+1}`, which is the constant-word input of
 snake interlacing theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

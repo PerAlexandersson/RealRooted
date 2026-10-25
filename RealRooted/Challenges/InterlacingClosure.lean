@@ -1,9 +1,11 @@
-import RealRooted.AffineDerivative
-import RealRooted.AffineFamily
-import RealRooted.FolkloreLemma
-import RealRooted.HlavacekSolus.Shelling
-import RealRooted.Interlacing.ConeBounds
-import RealRooted.ShiftLemma
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.AffineFamily
+public import RealRooted.FolkloreLemma
+public import RealRooted.HlavacekSolus.Shelling
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.ShiftLemma
 
 /-!
 # Interlacing closure challenge entry point
@@ -105,6 +107,8 @@ This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,
 `RealRooted.Interlacing.ConeBounds`, `RealRooted.AffineDerivative`,
 `RealRooted.ShiftLemma` and `RealRooted.FolkloreLemma`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

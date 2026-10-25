@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.TotalBridge
-import RealRooted.Multiaffine
-import RealRooted.MultivariateStability.AffineEulerCore
+module
+
+public import RealRooted.Applications.OEIS.A144438.TotalBridge
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability.AffineEulerCore
 
 /-!
 # Multiaffine structure of the Deco layer total
@@ -13,6 +15,8 @@ finite-set monomials.
 This structural result is a prerequisite for multiaffine stability criteria.
 It does not assert stability of the outer sum.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -1,5 +1,7 @@
-import Mathlib.Tactic.NormNum
-import RealRooted.RecurrenceSpace.Defect
+module
+
+public import Mathlib.Tactic.NormNum
+public import RealRooted.RecurrenceSpace.Defect
 
 /-!
 # A049325 recurrence-space certificate
@@ -7,6 +9,8 @@ import RealRooted.RecurrenceSpace.Defect
 This regression module instantiates the universal defect certificate from RealRooted
 issue #1978 for the pure-lag recurrence and first-order lift associated with A049325.
 -/
+
+@[expose] public section
 
 open Polynomial
 

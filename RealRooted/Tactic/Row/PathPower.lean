@@ -1,8 +1,15 @@
-import RealRooted.Applications.OEIS.PathPowerRows
-import RealRooted.Applications.OEIS.CubicParentRows
-import RealRooted.EulerOperator.Polar
-import RealRooted.Tactic.Row.Support
-import RealRooted.CombinatorialExamples.PathPowerGap
+module
+
+public import RealRooted.Applications.OEIS.PathPowerRows
+public import RealRooted.Applications.OEIS.CubicParentRows
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.Tactic.Row.Support
+public import RealRooted.CombinatorialExamples.PathPowerGap
+public meta import RealRooted.Applications.OEIS.PathPowerRows
+public meta import RealRooted.Applications.OEIS.CubicParentRows
+public meta import RealRooted.EulerOperator.Polar
+public meta import RealRooted.Tactic.Row.Support
+public meta import RealRooted.CombinatorialExamples.PathPowerGap
 
 /-!
 # Bounded path-power route for row tactics
@@ -13,16 +20,18 @@ subsequences by an exact search over `2 ≤ k ≤ 5`, `1 ≤ p ≤ k`, and
 characteristic polynomial of the powered companion matrix.
 -/
 
+public section
+
 open Lean Elab Tactic Meta Polynomial Finset
 
-noncomputable section
 
 namespace RealRooted.Tactic
 
-private def intPolynomialToReal : ℤ[X] →+* ℝ[X] :=
+/-- The ring homomorphism `ℤ[X] →+* ℝ[X]` that casts coefficients to the reals. -/
+noncomputable def intPolynomialToReal : ℤ[X] →+* ℝ[X] :=
   Polynomial.mapRingHom (Int.castRingHom ℝ)
 
-private theorem companion_map_intPolynomialToReal (k : ℕ) :
+theorem companion_map_intPolynomialToReal (k : ℕ) :
     (RealRooted.PathPowerGap.companion k (X : ℤ[X])).map intPolynomialToReal =
       RealRooted.PathPowerGap.companion k (X : ℝ[X]) := by
   apply Matrix.ext
@@ -30,11 +39,13 @@ private theorem companion_map_intPolynomialToReal (k : ℕ) :
   simp only [Matrix.map_apply, RealRooted.PathPowerGap.companion]
   split_ifs <;> simp [intPolynomialToReal]
 
-private def evaluatedRecurrence (k p : ℕ) : LinearRecurrence ℝ[X] :=
+/-- The order-`k` recurrence over `ℝ[X]` whose coefficients are the entries of
+`coefficientList k p`, cast to the reals. -/
+noncomputable def evaluatedRecurrence (k p : ℕ) : LinearRecurrence ℝ[X] :=
   ⟨k, fun i ↦ intPolynomialToReal
     ((RealRooted.PathPowerGap.coefficientList k p).getD i 0)⟩
 
-private theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
+theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
     LinearRecurrence.ofMatrix
       (RealRooted.PathPowerGap.companion k (X : ℝ[X]) ^ p) =
         evaluatedRecurrence k p := by
@@ -54,10 +65,13 @@ private theorem ofMatrix_companion_eq_evaluatedRecurrence (k p : ℕ) :
   rw [List.getD_eq_getElem _ _ hi]
   simp
 
-private abbrev reflectedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
+/-- The recurrence with coefficients `reflect (order - i) (E.coeffs i)`, satisfied by the
+reflections of solutions of `E`. -/
+noncomputable abbrev reflectedRecurrence (E : LinearRecurrence ℝ[X]) :
+    LinearRecurrence ℝ[X] :=
   ⟨E.order, fun i ↦ reflect (E.order - i) (E.coeffs i)⟩
 
-private theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
+theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
     {u : ℕ → ℝ[X]} (hu : E.IsSolution u) (D : ℕ)
     (hcoeff : ∀ i, (E.coeffs i).natDegree ≤ E.order - i)
     (hdegree : ∀ n, (u n).natDegree ≤ D + n) :
@@ -76,14 +90,18 @@ private theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
         lia
       rw [hindex, reflect_mul _ _ (hcoeff i) (hdegree (n + i))]
 
-private def prepend (a : ℝ[X]) (u : ℕ → ℝ[X]) : ℕ → ℝ[X]
+/-- The sequence `u` with the term `a` prepended at index `0`. -/
+def prepend (a : ℝ[X]) (u : ℕ → ℝ[X]) : ℕ → ℝ[X]
   | 0 => a
   | n + 1 => u n
 
-private abbrev prependedRecurrence (E : LinearRecurrence ℝ[X]) : LinearRecurrence ℝ[X] :=
+/-- The recurrence of order one higher than `E` with a zero leading coefficient, satisfied by
+sequences obtained by prepending a term to a solution of `E`. -/
+noncomputable abbrev prependedRecurrence (E : LinearRecurrence ℝ[X]) :
+    LinearRecurrence ℝ[X] :=
   ⟨E.order + 1, fun i ↦ Fin.cases 0 E.coeffs i⟩
 
-private theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
+theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
     {u : ℕ → ℝ[X]} (hu : E.IsSolution u) (a : ℝ[X]) :
     (prependedRecurrence E).IsSolution (prepend a u) := by
   intro n
@@ -94,27 +112,27 @@ private theorem prependedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
   change u (n + E.order) = ∑ i, E.coeffs i * u (n + i)
   exact hu n
 
-private theorem reflect_X_pow_mul_natCast (D n m : ℕ) :
+theorem reflect_X_pow_mul_natCast (D n m : ℕ) :
     reflect D (X ^ n * (m : ℝ[X])) = C (m : ℝ) * X ^ Polynomial.revAt D n := by
   rw [mul_comm]
   rw [show (m : ℝ[X]) = C (m : ℝ) by norm_num, reflect_C_mul_X_pow]
 
-private theorem reflect_X_mul_natCast (D m : ℕ) :
+theorem reflect_X_mul_natCast (D m : ℕ) :
     reflect D (X * (m : ℝ[X])) = C (m : ℝ) * X ^ Polynomial.revAt D 1 := by
   simpa only [pow_one] using reflect_X_pow_mul_natCast D 1 m
 
-private theorem reflect_X_pow_mul_C (D n : ℕ) (a : ℝ) :
+theorem reflect_X_pow_mul_C (D n : ℕ) (a : ℝ) :
     reflect D (X ^ n * C a) = C a * X ^ Polynomial.revAt D n := by
   rw [mul_comm, Polynomial.reflect_C_mul_X_pow]
 
-private theorem reflect_X_mul_C (D : ℕ) (a : ℝ) :
+theorem reflect_X_mul_C (D : ℕ) (a : ℝ) :
     reflect D (X * C a) = C a * X ^ Polynomial.revAt D 1 := by
   simpa only [pow_one] using reflect_X_pow_mul_C D 1 a
 
-private theorem C_natCast_eq (m : ℕ) : C (m : ℝ) = (m : ℝ[X]) := by
+theorem C_natCast_eq (m : ℕ) : C (m : ℝ) = (m : ℝ[X]) := by
   norm_num
 
-private theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
+theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
     (hcoeff : ∀ n ≤ D, f.coeff (D - n) = g.coeff n)
     (hf : f.natDegree ≤ D) (hg : g.natDegree ≤ D) : reflect D f = g := by
   ext n
@@ -124,6 +142,8 @@ private theorem reflect_eq_of_coeff_eq {f g : ℝ[X]} (D : ℕ)
     rw [Polynomial.coeff_reflect, Polynomial.revAt_eq_self_of_lt hn']
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hf hn')]
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hg hn')]
+
+meta section
 
 private inductive PathPowerKind where
   | direct
@@ -951,5 +971,7 @@ elab "rr_row_path_power_splits" : tactic => pathPowerGoal true
 
 /-- Run only the bounded path-power consecutive-interlacing route. -/
 elab "rr_row_path_power_interlaces" : tactic => pathPowerGoal false
+
+end
 
 end RealRooted.Tactic

@@ -1,9 +1,13 @@
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.Recurrence.RowModel
-import RealRooted.LinearPowerFamily
-import RealRooted.Hadamard.GarloffWagner
-import RealRooted.Hadamard
-import RealRooted.NarayanaTransformation
+module
+
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.LinearPowerFamily
+public import RealRooted.Hadamard.GarloffWagner
+public import RealRooted.Hadamard
+public import RealRooted.NarayanaTransformation
+
+@[expose] public section
 
 open RealRooted
 open Polynomial

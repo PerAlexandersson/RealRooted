@@ -301,7 +301,7 @@ theorem finiteSymbol_dehomog (alpha beta : ℕ → ℝ) (d : ℕ) :
     rw [pow_succ]
     ring_nf
 
-private lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
+lemma scale_pow_div (x y : ℝ) (n k : ℕ) (hy : y ≠ 0) (hk : k ≤ n) :
     y ^ n * (x / y) ^ k = x ^ k * y ^ (n - k) := by
   rw [div_pow, pow_sub₀ y hy hk]
   ring

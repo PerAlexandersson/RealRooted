@@ -1,12 +1,14 @@
-import Mathlib.Algebra.BigOperators.Field
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Ring.IsFormallyReal
-import Mathlib.Analysis.Polynomial.Basic
-import Mathlib.Tactic.IntervalCases
-import Mathlib.Topology.Algebra.Polynomial
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+module
+
+public import Mathlib.Algebra.BigOperators.Field
+public import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Algebra.Order.Star.Real
+public import Mathlib.Algebra.Ring.IsFormallyReal
+public import Mathlib.Analysis.Polynomial.Basic
+public import Mathlib.Tactic.IntervalCases
+public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Boros–Moll log-concavity transform: definitions and small cases
@@ -24,6 +26,8 @@ for `1 ≤ n ≤ 35`, certified by kernel-checked tables of dyadic sample points
 for `n ≥ 36` are in `RealRooted.CombinatorialExamples.BorosMoll.Estimates`, and the final
 theorems in `RealRooted.CombinatorialExamples.BorosMoll`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.BorosMoll
 

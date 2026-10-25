@@ -1,5 +1,7 @@
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+module
+
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
 
 /-!
 # Jacobi--Stirling numbers of the first kind
@@ -8,6 +10,8 @@ This file defines the first-kind Jacobi--Stirling triangle over a commutative
 semiring and identifies it with the elementary symmetric functions evaluated
 at `i * (i + z)` for `1 ≤ i < n`.
 -/
+
+@[expose] public section
 
 namespace RealRooted.JacobiStirling
 

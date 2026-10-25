@@ -1,11 +1,13 @@
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
-import RealRooted.Applications.EulerianCompendium.Peaks
-import RealRooted.Applications.EulerianCompendium.CyclicWords
-import RealRooted.Applications.EulerianCompendium.EvenTopRoots
-import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
-import RealRooted.Applications.EulerianCompendium.DeletionRoots
-import RealRooted.Applications.EulerianCompendium.TernaryWords
+module
+
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+public import RealRooted.Applications.EulerianCompendium.Peaks
+public import RealRooted.Applications.EulerianCompendium.CyclicWords
+public import RealRooted.Applications.EulerianCompendium.EvenTopRoots
+public import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
+public import RealRooted.Applications.EulerianCompendium.DeletionRoots
+public import RealRooted.Applications.EulerianCompendium.TernaryWords
 
 /-!
 # Eulerian enumeration root theorems
@@ -14,6 +16,8 @@ Public extraction of the checked compendium endpoints. Definitions and proofs
 come from the author's AlexanderssonFormalizations development; generic theory
 is imported from its existing RealRooted owners.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted
 

@@ -1,6 +1,8 @@
-import RealRooted.Applications.EulerianCompendium.DeletionFamily
-import RealRooted.Compatibility.Three
-import RealRooted.EulerianMixedCompatibility
+module
+
+public import RealRooted.Applications.EulerianCompendium.DeletionFamily
+public import RealRooted.Compatibility.Three
+public import RealRooted.EulerianMixedCompatibility
 
 /-!
 # Real-rootedness of the deletion-stable family
@@ -9,16 +11,21 @@ The two-summand decomposition of `Q_r^(a)` is treated by compatibility,
 following the three-component induction in paper `thm:largerFamily`.
 -/
 
+@[expose] public section
+
 open Polynomial RealRooted
 
 noncomputable section
 
 namespace RealRooted.EulerianCompendium
 
-private def deletionFirst (a k : ℕ) : ℝ[X] :=
+/-- The first summand `E_{1, a+k} Q_k^(a)` in the two-summand decomposition of `Q_{k+2}^(a)`. -/
+def deletionFirst (a k : ℕ) : ℝ[X] :=
   eulerInsertionStep 1 (a + k) (deletionPolynomial a k)
 
-private def deletionSecond (a k : ℕ) : ℝ[X] :=
+/-- The second summand `E_{0, a+k+1} Q_{k+1}^(a)` in the two-summand decomposition of
+`Q_{k+2}^(a)`. -/
+def deletionSecond (a k : ℕ) : ℝ[X] :=
   eulerInsertionStep 0 (a + k + 1) (deletionPolynomial a (k + 1))
 
 private theorem deletionFirst_add_second (a k : ℕ) :

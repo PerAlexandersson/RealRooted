@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Interlacing-search regression examples for PR #1689
@@ -6,6 +8,8 @@ import RealRooted.Tactic.RowInterlacing
 These exact downstream recurrence shapes exercise the direct, Euler-step, and reversal
 routes that must finish before the nonlinear fallback of `rr_row_eval_sign` is considered.
 -/
+
+@[expose] public section
 
 open Polynomial
 

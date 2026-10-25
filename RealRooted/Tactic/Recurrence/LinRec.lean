@@ -439,7 +439,7 @@ private def coneStepTerm (k : Nat) (form : Array Rat) (Dfun terms : Term) : Tact
   let zero : Term := ⟨Syntax.mkNumLit "0"⟩
   return out.getD zero
 
-private lemma hyperParityProd_relation (q : ℕ) :
+lemma hyperParityProd_relation (q : ℕ) :
     (∏ i ∈ Finset.range q, (2 + 3 * (i : ℝ) + (i : ℝ) ^ 2)) =
       ((q : ℝ) + 1) * ∏ i ∈ Finset.range q, (1 + 2 * (i : ℝ) + (i : ℝ) ^ 2) := by
   induction q with

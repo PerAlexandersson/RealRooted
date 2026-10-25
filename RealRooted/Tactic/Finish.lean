@@ -32,7 +32,7 @@ open Lean
 open Lean.Meta
 open Lean.Elab.Tactic
 
-private theorem splits_of_eq_zero_or_splits {p : ℝ[X]} (h : p = 0 ∨ p.Splits) :
+theorem splits_of_eq_zero_or_splits {p : ℝ[X]} (h : p = 0 ∨ p.Splits) :
     p.Splits :=
   h.elim (fun hp => hp ▸ Polynomial.Splits.zero) id
 

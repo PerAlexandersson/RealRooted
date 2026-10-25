@@ -1,11 +1,15 @@
-import RealRooted.Applications.OEIS.HarmonicDerivativeRows
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.HarmonicDerivativeRows
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Harmonic derivative-row model regression
 
 The definition and goals below are the literal downstream A199221 recurrence.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

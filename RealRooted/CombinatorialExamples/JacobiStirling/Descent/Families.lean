@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
 
 /-!
 # Comparison inductions for Jacobi–Stirling descent polynomials
@@ -16,6 +18,8 @@ polynomials.  We prove
 Each step is one or two applications of Lemma 2 (`IsGood.strictInterleave_insertion`) or
 Lemma 3 (`StrictInterleave.insertion_succ`, `StrictInterleave.insertion_same`).
 -/
+
+@[expose] public section
 
 open Polynomial
 

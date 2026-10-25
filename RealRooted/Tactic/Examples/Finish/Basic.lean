@@ -1,11 +1,15 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.Tactic.Finish
 
 /-!
 # Finish tactic examples
 
 Abstract smoke tests for tactics that consume `StrictInterl` certificates.
 -/
+
+@[expose] public section
 
 open Polynomial
 

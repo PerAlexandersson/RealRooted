@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
 
 /-!
 # The original-variable weighted residue sum
@@ -6,6 +8,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
 Subtracting the Lagrange expansions at zero and one produces exactly the
 weight `1 / ((-r)(1-r))` used by the residue-energy contraction.
 -/
+
+@[expose] public section
 
 open Polynomial BigOperators
 

@@ -1,8 +1,10 @@
-import RealRooted.Applications.OEIS.A046802
-import RealRooted.Applications.OEIS.A056939
-import RealRooted.Applications.OEIS.A111910
-import RealRooted.Applications.OEIS.A181543
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Applications.OEIS.A046802
+public import RealRooted.Applications.OEIS.A056939
+public import RealRooted.Applications.OEIS.A111910
+public import RealRooted.Applications.OEIS.A181543
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Per-model registry budget regressions
@@ -10,6 +12,8 @@ import RealRooted.Tactic.RowInterlacing
 These exact downstream presentations share the first rows `1, 1 + X` with several registered
 models.  A mismatched model must be rejected without exhausting the declaration budget.
 -/
+
+@[expose] public section
 
 open RealRooted Polynomial
 

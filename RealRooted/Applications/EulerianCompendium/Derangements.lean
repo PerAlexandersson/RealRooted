@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import Mathlib.Logic.Equiv.Fin.Rotate
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import Mathlib.Logic.Equiv.Fin.Rotate
 
 /-!
 # Descent polynomials of derangements
@@ -9,6 +11,8 @@ These lemmas concern the actual fixed-point-free permutation sum of
 They separate nonvanishing and the sign of real roots from the remaining
 splitting assertion.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted
 

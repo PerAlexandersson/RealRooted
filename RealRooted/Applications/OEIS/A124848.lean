@@ -1,4 +1,9 @@
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
+module
+
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Topology.Order.IntermediateValue
+public import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Tactic.ComputeDegree
 
 /-!
 # OEIS A124848
@@ -11,6 +16,8 @@ points locate all three cubic roots in `(-1, 0)`.
 The intended repository destination is
 `RealRooted/Applications/OEIS/A124848.lean`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

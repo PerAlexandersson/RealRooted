@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+module
+
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # The fixed-permutation peak-value insertion sum
@@ -8,6 +10,8 @@ This file evaluates the sum obtained by inserting the new maximum into every
 slot of one fixed permutation.  It is the combinatorial core of the
 peak-value recurrence.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 

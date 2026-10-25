@@ -1,5 +1,7 @@
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Examples.RowFixtures
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!
 # Three-term recurrence examples
@@ -11,6 +13,8 @@ Regression tests for `rr_row_natDegree`, `rr_row_ne_zero`,
 drawn from `real-rooted-oeis-proofs`: the pilot rows, three-term recurrences with offset
 three, summands in other orders, and the certificates and hints of `rr_row_interlaces?`.
 -/
+
+@[expose] public section
 
 open Polynomial
 open RealRooted.Tactic.RowFixtures

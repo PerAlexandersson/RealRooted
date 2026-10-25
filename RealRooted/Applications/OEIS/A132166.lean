@@ -1,11 +1,13 @@
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.QuadraticRoot
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.ScalarNormalization
-import RealRooted.WagnerX.NonnegativeRoots
+module
+
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.QuadraticRoot
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.ScalarNormalization
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # OEIS A132166
@@ -17,6 +19,8 @@ root `-36` and the two recurrences for the residual quotients.
 The intended repository destination is
 `RealRooted/Applications/OEIS/A132166.lean`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

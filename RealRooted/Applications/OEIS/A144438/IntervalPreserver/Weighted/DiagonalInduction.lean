@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DirectResidueAlgebra
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DirectResidueAlgebra
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.WeightedResidueSum
 
 /-!
 # Weighted diagonal induction for the A144438 interval transform
@@ -8,6 +10,8 @@ This file packages the simultaneous induction on splitting, simplicity,
 negative root location, positive companion residues, and scaled residue
 energy.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,6 +1,10 @@
-import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.SymmetricDecomposition.DerangementTransform
+module
+
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+
+@[expose] public section
 
 open Finset Polynomial
 open scoped BigOperators Polynomial

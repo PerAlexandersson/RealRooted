@@ -1,8 +1,10 @@
-import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
-import Mathlib.Algebra.Polynomial.Eval.Defs
-import Mathlib.Tactic.IrreducibleDef
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Positivity
+module
+
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Tactic.IrreducibleDef
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Positivity
 
 /-!
 # Gegenbauer polynomials and the square root `√(1 - 2cz + z²)`
@@ -16,6 +18,8 @@ The Gegenbauer polynomials `G_j = C_j^(3/2)` over `ℚ`, defined by `G_0 = 1`, `
 read off from the differential equation of the square root.
 -/
 
+@[expose] public section
+
 open Polynomial
 
 noncomputable section
@@ -23,7 +27,7 @@ noncomputable section
 namespace RealRooted.BigDescents321
 
 /-- The recursion `G_0 = 1`, `G_1 = 3c`, `G_(j+2) = ((2j+5) c G_(j+1) - (j+3) G_j) / (j+2)`. -/
-private def gegenAux : ℕ → ℚ[X]
+def gegenAux : ℕ → ℚ[X]
   | 0 => 1
   | 1 => 3 * X
   | j + 2 => C ((j + 2 : ℚ)⁻¹) * ((2 * j + 5 : ℚ[X]) * X * gegenAux (j + 1) -

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.ThresholdMatrix.HaglundZhang
 public import RealRooted.ThresholdMatrix.GustafssonSolus
+public import RealRooted.ThresholdMatrix.Attr
 
 /-!
 # Orbits of threshold matrices
@@ -16,10 +17,6 @@ whose rows are such orbit sums (for instance OEIS A120987, A330509 and A304429) 
 @[expose] public section
 
 open Polynomial
-
-/-- Unfolding lemmas for explicit threshold-matrix orbits, used by the `rr_row_splits`
-threshold-orbit route. -/
-register_simp_attr rr_threshold_unfold
 
 namespace RealRooted.HaglundZhang
 

@@ -1,6 +1,8 @@
-import RealRooted.DerivativeRecurrence.MultiLagCancel
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # The degree pattern of A219836
@@ -10,6 +12,8 @@ tracks adjacent pairs: every odd-indexed row is monic, and every even-indexed
 row has a positive top coefficient.  One additional nonnegative coefficient
 of the odd row is enough to propagate the pair.
 -/
+
+@[expose] public section
 
 open Polynomial
 

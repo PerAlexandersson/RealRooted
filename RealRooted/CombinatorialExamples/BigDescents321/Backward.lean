@@ -1,5 +1,7 @@
-import RealRooted.Favard.PathEnvelope
-import RealRooted.CombinatorialExamples.BigDescents321.Reference
+module
+
+public import RealRooted.Favard.PathEnvelope
+public import RealRooted.CombinatorialExamples.BigDescents321.Reference
 
 /-!
 # The backward recurrence at the zeros of `G_k`
@@ -17,6 +19,8 @@ family, so that the weighted-path envelope applies to them.
 * `aeval_gegen_eq_backH`: `G_(k-1-j)(a) = H_j(a) G_(k-1)(a)` at a zero `a` of `G_k`.
 * `abs_backH_le`: `|H_(2l)(c)| ≤ (1 - c²) + H_(2l)(1) c²` for `|c| ≤ 1` and `2l ≤ k - 1`.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

@@ -34,11 +34,11 @@ theorem cancel_lin_nonneg {a b D j : ℝ} (hj : 0 ≤ j) (hjD : j ≤ D) (hb : 0
   · nlinarith [mul_nonneg ha hj]
   · nlinarith [mul_nonneg (neg_nonneg.2 ha) (sub_nonneg.2 hjD)]
 
-private theorem cancel_coeff_zero {A B f : ℝ[X]} (hA0 : A.coeff 0 = 0) :
+theorem cancel_coeff_zero {A B f : ℝ[X]} (hA0 : A.coeff 0 = 0) :
     (A * f.derivative + B * f).coeff 0 = B.coeff 0 * f.coeff 0 := by
   simp [Polynomial.coeff_add, Polynomial.coeff_mul, hA0]
 
-private theorem cancel_coeff_succ {A B f : ℝ[X]}
+theorem cancel_coeff_succ {A B f : ℝ[X]}
     (hA : A.natDegree ≤ 2) (hB : B.natDegree ≤ 1) (hA0 : A.coeff 0 = 0)
     (k : ℕ) :
     (A * f.derivative + B * f).coeff (k + 1) =
@@ -65,7 +65,7 @@ private theorem cancel_coeff_succ {A B f : ℝ[X]}
     Polynomial.coeff_C_mul, Polynomial.coeff_X, Polynomial.coeff_X_pow]
   norm_num
 
-private theorem cancel_coeff {A B f : ℝ[X]}
+theorem cancel_coeff {A B f : ℝ[X]}
     (hA : A.natDegree ≤ 2) (hB : B.natDegree ≤ 1) (hA0 : A.coeff 0 = 0)
     (k : ℕ) :
     (A * f.derivative + B * f).coeff k = match k with

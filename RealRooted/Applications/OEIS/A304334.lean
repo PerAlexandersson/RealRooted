@@ -1,5 +1,7 @@
-import RealRooted.EulerBidiagonal.GeneralRows
-import RealRooted.Recurrence.RowModel
+module
+
+public import RealRooted.EulerBidiagonal.GeneralRows
+public import RealRooted.Recurrence.RowModel
 
 /-!
 # The A304334 Euler-bidiagonal model
@@ -9,6 +11,8 @@ Euler-bidiagonal step with parameters `(κ, a, b, u, v) = (1, 1, 1, 6, 4)`.
 Its comparison defect is strictly negative on the nonpositive half-line, so
 the general row theorem gives adjacent strict interlacing.
 -/
+
+@[expose] public section
 
 open Polynomial
 

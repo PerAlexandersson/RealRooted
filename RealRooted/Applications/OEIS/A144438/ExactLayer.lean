@@ -1,6 +1,8 @@
-import RealRooted.HomogeneousStability
-import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
-import RealRooted.Multiaffine.AffineEulerCore
+module
+
+public import RealRooted.HomogeneousStability
+public import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
+public import RealRooted.Multiaffine.AffineEulerCore
 
 /-!
 # Exact stable layers for the deco construction
@@ -14,6 +16,8 @@ Every operator-defined layer is homogeneous and multivariate real stable, as
 is its specialization at `s = 1`.  No conclusion is drawn about the sum of
 different exceptional layers.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

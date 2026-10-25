@@ -1,8 +1,10 @@
-import RealRooted.Applications.OEIS.A144696.StrictInterlacing
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.EulerianCompletion.ProperPosition
-import RealRooted.GeneralizedEulerian
-import RealRooted.SymmetricDecomposition.Theorem26
+module
+
+public import RealRooted.Applications.OEIS.A144696.StrictInterlacing
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.EulerianCompletion.ProperPosition
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Reciprocal endpoint for the A144696 Bernstein-image triangle
@@ -12,6 +14,8 @@ Eulerian polynomials. Its resulting symmetric decomposition has a tight
 lowering-Euler component, so Brändén--Solus Theorem 2.6 supplies the reciprocal
 interlacing endpoint needed by the Bernstein-row chain.
 -/
+
+@[expose] public section
 
 open Polynomial
 

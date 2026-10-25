@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A275442.Bridge.Core
+module
+
+public import RealRooted.Applications.OEIS.A275442.Bridge.Core
 
 /-!
 # The trajectory at a zero: a compatibility-free scalar reduction of the bridge
@@ -54,6 +56,8 @@ and the bridge orientation at the zero is the inequality `a₁ < t·a₃`.
 Only one case of the induction over crossings is left open, namely a crossing preceded by a
 run of length `≥ 7`; see `PROOF_NOTES.md`, §13.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

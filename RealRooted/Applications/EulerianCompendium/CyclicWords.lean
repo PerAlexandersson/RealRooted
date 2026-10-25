@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianCompendium.Definitions
-import Mathlib
+module
+
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import Mathlib
 
 /-!
 # Balanced cyclic binary words counted by cyclic descents
@@ -17,6 +19,8 @@ The proof transfers words to lists, counts linear descents (`10` factors) via a 
 enumeration of lists with prescribed numbers of `true`s and `false`s (giving the coefficient
 `choose a j * choose b j`), and then corrects for the wrap-around position.
 -/
+
+@[expose] public section
 
 open Polynomial Finset
 

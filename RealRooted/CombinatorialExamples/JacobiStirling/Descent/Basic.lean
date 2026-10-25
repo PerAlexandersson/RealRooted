@@ -1,5 +1,7 @@
-import RealRooted.EulerOperator.Darboux.NegativeRoots
-import RealRooted.CombinatorialExamples.StirlingPermutations
+module
+
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
+public import RealRooted.CombinatorialExamples.StirlingPermutations
 
 /-!
 # Jacobi–Stirling descent polynomials
@@ -30,6 +32,8 @@ The main results of this file are:
   (Ma–Wang, eq. (11)).
 * `X_mul_descentPoly_Icc`: `x A_{k,[k]}` is the second-order Eulerian polynomial.
 -/
+
+@[expose] public section
 
 open Polynomial
 

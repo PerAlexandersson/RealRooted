@@ -1,4 +1,6 @@
-import RealRooted.EulerianCompletion
+module
+
+public import RealRooted.EulerianCompletion
 
 /-!
 # The deletion-stable family
@@ -7,6 +9,8 @@ The positive two-step definition below is equation `eq:largerDecomposition`.
 It avoids subtraction in coefficient and degree inductions. The signed
 one-step identity `eq:largerRecurrence` is proved from it.
 -/
+
+@[expose] public section
 
 open Polynomial RealRooted
 

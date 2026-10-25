@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
 
 /-!
 # The sign of `J*_n`
@@ -8,6 +10,8 @@ import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
 of the bottom coordinate give Lucas closed forms for `σ_n` (issue #1143, §12), from which
 `σ_n < 0` for `n ≥ 25`.
 -/
+
+@[expose] public section
 
 open Finset
 

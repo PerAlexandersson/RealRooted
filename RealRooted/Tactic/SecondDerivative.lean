@@ -72,7 +72,7 @@ theorem splits_derivative_of_nonneg_neg_inner {f u v : ℝ[X]}
     simp
   simpa [hscale_eq, add_comm, add_left_comm, add_assoc] using hscaled
 
-private theorem isRealRooted_of_tail_splits_step {P : Nat → ℝ[X]}
+theorem isRealRooted_of_tail_splits_step {P : Nat → ℝ[X]}
     (hbase_zero : P 0 ≠ 0 ∧ (P 0).Splits)
     (hbase_one : P 1 ≠ 0 ∧ (P 1).Splits)
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -257,10 +257,10 @@ theorem ls4_C_ofNat_real (m : Nat) [m.AtLeastTwo] :
   change (C (m : ℝ) : ℝ[X]) = (m : ℝ[X])
   exact Polynomial.C_eq_natCast m
 
-private theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
+theorem ls4_C_two_real_compat : (C (2 : ℝ) : ℝ[X]) = 2 :=
   ls4_C_ofNat_real 2
 
-private theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
+theorem ls4_C_four_real_compat : (C (4 : ℝ) : ℝ[X]) = 4 :=
   ls4_C_ofNat_real 4
 
 theorem ls4_natCast_eq_C_real (m : Nat) :

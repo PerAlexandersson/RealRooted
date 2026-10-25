@@ -1,4 +1,6 @@
-import RealRooted.Graph.IndependencePolynomial.CubicParent
+module
+
+public import RealRooted.Graph.IndependencePolynomial.CubicParent
 
 /-!
 # Three rows from the cubic parent
@@ -13,6 +15,8 @@ polynomial.  A216182 reverses the sign-corrected odd coefficient polynomial.
 The real-rootedness statements follow from `CubicParent.polynomial_splits`
 and preservation of splitting under coefficient reversal.
 -/
+
+@[expose] public section
 
 open Polynomial
 

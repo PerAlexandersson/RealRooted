@@ -1,6 +1,8 @@
-import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Multiaffine.AffineLineRestriction
+module
+
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Multiaffine.AffineLineRestriction
 
 /-!
 # Fresh-coordinate quadratic for the Deco companion core rows
@@ -9,6 +11,8 @@ This file decomposes the finite successor core rows along their remaining
 fresh coordinate.  The three resulting endpoint Wronskian coefficients and
 their discriminant are exact algebraic data; no sign claim is made here.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

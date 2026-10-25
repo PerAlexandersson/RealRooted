@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
 
 /-!
 # Boundary calculus at a weighted first contact
@@ -6,6 +8,8 @@ import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstCont
 We turn local nonnegativity on a coordinate interval into the one-sided
 derivative conditions required by the scalar first-contact lemma.
 -/
+
+@[expose] public section
 
 open Filter Polynomial Set Topology
 

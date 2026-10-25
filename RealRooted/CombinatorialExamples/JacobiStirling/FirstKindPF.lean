@@ -1,6 +1,8 @@
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.PFPolynomial
-import Mathlib.RingTheory.Polynomial.Vieta
+module
+
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.PFPolynomial
+public import Mathlib.RingTheory.Polynomial.Vieta
 
 /-!
 # First-kind Jacobi--Stirling row polynomials
@@ -9,6 +11,8 @@ The literal first-kind rows factor into linear terms. Over the reals, the
 factorization supplies their polynomial and Toeplitz Pólya-frequency
 certificates when `z ≥ -1`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

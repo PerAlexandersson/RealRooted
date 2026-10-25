@@ -1,4 +1,6 @@
-import RealRooted.Tactic.RowInterlacing
+module
+
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Explicit interlacing examples
@@ -7,6 +9,8 @@ Regression tests for `rr_interlaces_explicit` (Euclidean certificates, including
 common factors) and for `rr_row_interlaces` on two-step products
 `P (n + 2) = q * P n`, drawn from `real-rooted-oeis-proofs`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

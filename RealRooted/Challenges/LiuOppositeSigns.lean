@@ -1,4 +1,6 @@
-import RealRooted.LiuOppositeSigns.CompatibilityCriterion
+module
+
+public import RealRooted.LiuOppositeSigns.CompatibilityCriterion
 
 /-!
 # Liu's opposite-sign compatibility theorem
@@ -114,6 +116,8 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.LiuOppositeSigns.CompatibilityCriterion` and
 `RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

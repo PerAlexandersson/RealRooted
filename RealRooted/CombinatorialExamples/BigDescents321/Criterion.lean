@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
-import RealRooted.CombinatorialExamples.BigDescents321.Backward
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
+public import RealRooted.CombinatorialExamples.BigDescents321.Backward
 
 /-!
 # Positivity of `F_n` at the zeros of `G_(n-2)`
@@ -15,6 +17,8 @@ Let `n = k + 2 ≥ 25` and let `a` be a real zero of `G_k` with `|a| ≤ 1`. Wit
 * `eval_transformed_eq_neg_mul`: `Q_n(a) = -a G_(k-1)(a) F_n(a)`.
 * `zetaF_pos`: `F_n(a) > 0`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

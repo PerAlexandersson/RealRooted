@@ -1,8 +1,10 @@
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.MaWang.StrictStep
-import RealRooted.Recurrence.RowModel
-import RealRooted.Recurrence.Uniqueness
+module
+
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Harmonic-factor derivative rows
@@ -10,6 +12,8 @@ import RealRooted.Recurrence.Uniqueness
 Interlacing for a derivative image of the partial products
 `∏ j, (1 + j X)`, together with its lag-three recurrence transfer.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
 
 /-!
 # Weighted first-contact theorem
@@ -7,6 +9,8 @@ Assuming the rank-`n` transformed family already has simple negative roots
 and the deletion-to-full residues are positive, every companion residue is
 positive throughout the parameter cube.
 -/
+
+@[expose] public section
 
 open Polynomial Set
 

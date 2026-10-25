@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
-import RealRooted.CombinatorialExamples.BigDescents321.Kernel
+module
+
+public import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
+public import RealRooted.CombinatorialExamples.BigDescents321.Kernel
 
 /-!
 # Gegenbauer coordinates of the transformed polynomials
@@ -13,6 +15,8 @@ for `r ≤ 2`. The proof checks the recurrence (1.9) coordinatewise: multiplicat
 acts on coordinates by `G_j ↦ ((j+1) G_(j+1) + (j+2) G_(j-1))/(2j + 3)`, and the kernel
 moment identity reduces each coordinate equation to a finite identity.
 -/
+
+@[expose] public section
 
 open Polynomial
 

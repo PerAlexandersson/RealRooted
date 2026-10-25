@@ -1,4 +1,6 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
 
 /-!
 # Algebra at an unequal-parameter first contact
@@ -8,6 +10,8 @@ vanishes.  The first identifies its parameter derivative.  The second shows
 that the one-sided minimum conditions on a box force every input-root
 parameter to coincide.
 -/
+
+@[expose] public section
 
 noncomputable section
 

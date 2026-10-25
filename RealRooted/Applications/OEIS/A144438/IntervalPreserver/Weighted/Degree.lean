@@ -1,7 +1,11 @@
-import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
-import RealRooted.Interlacing.ResidueCriterion
+module
+
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
+public import RealRooted.Interlacing.ResidueCriterion
 
 /-! # Degree bookkeeping for the weighted deco transform -/
+
+@[expose] public section
 
 open Polynomial
 

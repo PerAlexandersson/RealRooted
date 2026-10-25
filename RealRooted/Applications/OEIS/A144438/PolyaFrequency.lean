@@ -1,5 +1,7 @@
-import RealRooted.Applications.OEIS.A144438.Weighted
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
+module
+
+public import RealRooted.Applications.OEIS.A144438.Weighted
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 
 /-!
 # Pólya-frequency packaging for the A144438 recurrence
@@ -8,6 +10,8 @@ This file combines the independently proved coefficient nonnegativity and
 real-rootedness of the recurrence-defined Deco Eulerian polynomials.  The base
 recurrence module remains independent of the Pólya-frequency API.
 -/
+
+@[expose] public section
 
 namespace RealRooted.Applications.OEIS
 

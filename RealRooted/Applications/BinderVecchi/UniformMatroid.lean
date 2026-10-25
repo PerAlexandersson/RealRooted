@@ -1,6 +1,8 @@
-import RealRooted.SymmetricDecomposition.DerangementTransform
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.PFPolynomial
 
 /-!
 # Binder--Vecchi: refined Hodge--Poincar\'e polynomials of uniform matroids
@@ -24,6 +26,8 @@ it.
 The weight `W_{1,i}(r,n)` is the displayed coefficient formula, not the cardinality of the set
 `W_1(U_{r,n})`, which equals that of `W_0`; since `d_1 = 0` this does not affect `\underline H`.
 -/
+
+@[expose] public section
 
 open Finset Polynomial
 

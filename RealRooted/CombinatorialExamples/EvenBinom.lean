@@ -1,5 +1,7 @@
-import RealRooted.CombinatorialExamples.BigDescentsOddBinom
-import RealRooted.ThreeTermRecurrence.HalfGrowth
+module
+
+public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+public import RealRooted.ThreeTermRecurrence.HalfGrowth
 
 /-!
 # Even binomial polynomials
@@ -14,6 +16,8 @@ evenBinomPolyReal n (-tan^2 θ) · cos^n θ = cos (n θ).
 
 Ported from `real-rooted-oeis-proofs` (`EvenBinomial`).
 -/
+
+@[expose] public section
 
 open Polynomial
 open scoped BigOperators

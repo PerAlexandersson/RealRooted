@@ -239,7 +239,7 @@ elab_rules : tactic
 
 /-- Consecutive strict interlacing for a nonnegative derivative-recurrence sequence whose
 degree is `(n + 1) / 2`, including the degree-zero initial row. -/
-private theorem derivativeRecurrence_strictInterl_of_half_degree
+theorem derivativeRecurrence_strictInterl_of_half_degree
     {Q A B : ℕ → ℝ[X]}
     (hrec : ∀ n, Q (n + 1) = A n * (Q n).derivative + B n * Q n)
     (hdeg : ∀ n, (Q n).natDegree = (n + 1) / 2)
@@ -264,7 +264,7 @@ private theorem derivativeRecurrence_strictInterl_of_half_degree
 /-- Consecutive strict interlacing for a nonnegative derivative recurrence of
 degree `n / 2`.  The Ma--Wang constant-row branch handles the initial
 constant-to-constant step. -/
-private theorem derivativeRecurrence_strictInterl_of_floor_half_degree
+theorem derivativeRecurrence_strictInterl_of_floor_half_degree
     {Q A B : ℕ → ℝ[X]}
     (hrec : ∀ n, Q (n + 1) = A n * (Q n).derivative + B n * Q n)
     (hdeg : ∀ n, (Q n).natDegree = n / 2)
@@ -294,7 +294,7 @@ private theorem derivativeRecurrence_strictInterl_of_floor_half_degree
 
 /-- The weak consecutive relation obtained from the strict half-growth
 `f`-polynomial transfer, including its constant-to-linear initial step. -/
-private theorem interlaces_fPolynomial_sequence
+theorem interlaces_fPolynomial_sequence
     (q : ℕ → ℝ[X])
     (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
     (hq_ne : ∀ j, q j ≠ 0)
@@ -324,7 +324,7 @@ private theorem interlaces_fPolynomial_sequence
 
 /-- Floor-half companion to `interlaces_fPolynomial_sequence`, with the same
 constant-to-linear transformed base step. -/
-private theorem interlaces_fPolynomial_sequence_floor
+theorem interlaces_fPolynomial_sequence_floor
     (q : ℕ → ℝ[X])
     (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
     (hq_ne : ∀ j, q j ≠ 0)
@@ -356,7 +356,7 @@ private theorem interlaces_fPolynomial_sequence_floor
         hqnext (hq_nonneg (n + 1 + 1)) (hq_ne (n + 1 + 1))]
 
 /-- Predecessor-degree companion to `interlaces_fPolynomial_sequence`. -/
-private theorem interlaces_fPolynomial_sequence_pred
+theorem interlaces_fPolynomial_sequence_pred
     (q : ℕ → ℝ[X])
     (hq_nonneg : ∀ j, HasNonnegCoeffs (q j))
     (hq_ne : ∀ j, q j ≠ 0)
@@ -375,7 +375,7 @@ private theorem interlaces_fPolynomial_sequence_pred
     fPolynomial_natDegree_eq_of_hasNonnegCoeffs_of_ne_zero
       hqnext (hq_nonneg (n + 1)) (hq_ne (n + 1))]
 
-private theorem strictInterl_of_natDegree_eq_zero {f g : ℝ[X]}
+theorem strictInterl_of_natDegree_eq_zero {f g : ℝ[X]}
     (hfdeg : f.natDegree = 0) (hgdeg : g.natDegree = 0)
     (hfpos : 0 < f.leadingCoeff) (hgpos : 0 < g.leadingCoeff) :
     StrictInterl f g := by

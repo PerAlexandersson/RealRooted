@@ -1,5 +1,9 @@
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.Tactic.Finish
+
+@[expose] public section
 
 open Polynomial
 

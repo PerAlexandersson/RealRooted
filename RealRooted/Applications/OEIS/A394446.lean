@@ -1,7 +1,9 @@
-import RealRooted.GammaTransform.Derivative
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.GammaTransform.Preservation
-import RealRooted.NarayanaTransformation.Endpoints
+module
+
+public import RealRooted.GammaTransform.Derivative
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.NarayanaTransformation.Endpoints
 
 /-!
 # OEIS A394446
@@ -11,6 +13,8 @@ The rows of A394446 grow in degree by two.  We identify them with the gamma tran
 lowering identity for `narayanaPolynomial 1` and the Euler-derivative formula for gamma
 transforms, and deduce that every row splits.
 -/
+
+@[expose] public section
 
 open Polynomial
 
