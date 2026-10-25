@@ -1,4 +1,6 @@
-import RealRooted.Tactic.MaWang
+module
+
+public import RealRooted.Tactic.MaWang
 
 /-!
 # Liu--Wang recursion tactics
@@ -10,6 +12,8 @@ The older `rr_mw_lw_derivative_lag_*` commands remain available for existing
 proofs.  These wrappers expose the same route under names that match the
 backend theorem family.
 -/
+
+@[expose] public section
 
 open Polynomial
 

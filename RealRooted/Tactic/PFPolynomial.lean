@@ -1,4 +1,6 @@
-import RealRooted.PFPolynomial
+module
+
+public import RealRooted.PFPolynomial
 
 /-!
 # PF-polynomial tactic frontends and model transport
@@ -7,6 +9,8 @@ The model transport theorem preserves PF rows and consecutive `Interl` through
 pointwise sequence identification. The remaining declarations are thin tactic
 wrappers for standard closure operations on `IsPFPolynomial`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,13 @@
-import RealRooted.SymmetricDecomposition.FPolynomialSequence
-import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.SymmetricDecomposition.FPolynomialSequence
+public import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.SymmetricDecomposition.FPolynomialSequence
+public meta import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+public meta import RealRooted.MaWang.DerivativeStep
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: the `f`-polynomial transform
@@ -19,6 +25,8 @@ transfers splitting from `Q` (`RealRooted.splits_of_eq_fPolynomial`).  The alter
 A008970, A059427 and A186370 have this shape: their `Q` grows by half a degree per step, so
 `rr_row_splits` proves it where it cannot prove `P` directly.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

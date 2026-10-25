@@ -1,6 +1,11 @@
-import RealRooted.Derivative.XMulSequence
-import RealRooted.Tactic.Row.Support
-import RealRooted.Tactic.Row.Subseq
+module
+
+public import RealRooted.Derivative.XMulSequence
+public import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.Subseq
+public meta import RealRooted.Derivative.XMulSequence
+public meta import RealRooted.Tactic.Row.Support
+public meta import RealRooted.Tactic.Row.Subseq
 
 /-!
 # Row route for a differentiated `X`-multiple
@@ -8,6 +13,8 @@ import RealRooted.Tactic.Row.Subseq
 This route recognizes only recurrences
 `P (n + 1) = q * (X * P n)'` with one fixed, split rational polynomial `q`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

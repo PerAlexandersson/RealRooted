@@ -1,10 +1,14 @@
-import RealRooted.Tactic.LiuWang.SequencePositive
+module
+
+public import RealRooted.Tactic.LiuWang.SequencePositive
 
 /-!
 # Interval-lag Liu--Wang sequence tactics
 
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

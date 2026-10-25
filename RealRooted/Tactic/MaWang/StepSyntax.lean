@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.Basic
+module
+
+public import RealRooted.Tactic.MaWang.Basic
 
 /-!
 # Ma--Wang tactic step syntax
 
 Parser declarations for one-step Ma--Wang and weak derivative certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

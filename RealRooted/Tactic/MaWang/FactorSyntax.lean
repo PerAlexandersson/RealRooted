@@ -1,10 +1,14 @@
-import RealRooted.Tactic.MaWang.DenominatorSyntax
+module
+
+public import RealRooted.Tactic.MaWang.DenominatorSyntax
 
 /-!
 # Ma--Wang tactic factor syntax
 
 Parser declarations for specialized derivative-factor sequence certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

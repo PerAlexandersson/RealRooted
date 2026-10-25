@@ -1,4 +1,6 @@
-import RealRooted.OperatorPreservesInterlacing
+module
+
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Operator-preservation tactic frontends
@@ -6,6 +8,8 @@ import RealRooted.OperatorPreservesInterlacing
 Thin wrappers for the Obreschkoff consequence that a linear operator preserving
 real-rootedness up to zero preserves interlacing pairs up to order.
 -/
+
+@[expose] public section
 
 open Polynomial
 

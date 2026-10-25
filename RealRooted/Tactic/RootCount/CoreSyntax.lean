@@ -1,10 +1,14 @@
-import RealRooted.Tactic.RootCount.SequenceCore
+module
+
+public import RealRooted.Tactic.RootCount.SequenceCore
 
 /-!
 # Core root-count tactic syntax
 
 Parser declarations for general root-count and local-continuity certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

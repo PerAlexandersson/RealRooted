@@ -1,4 +1,6 @@
-import RealRooted.MaWang
+module
+
+public import RealRooted.MaWang
 
 /-!
 # Sign-based root assembly tactics
@@ -9,6 +11,8 @@ is two larger than a split source polynomial: consecutive sign changes give
 the interior roots, while a left witness and the two end signs give three
 additional roots.
 -/
+
+@[expose] public section
 
 open Polynomial Filter
 

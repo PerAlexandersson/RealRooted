@@ -1,5 +1,9 @@
-import RealRooted.ThreeTermRecurrence.LagFeedback
-import RealRooted.Tactic.Row.Support
+module
+
+public import RealRooted.ThreeTermRecurrence.LagFeedback
+public import RealRooted.Tactic.Row.Support
+public meta import RealRooted.ThreeTermRecurrence.LagFeedback
+public meta import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: lag recurrences with a feedback term
@@ -11,6 +15,8 @@ pairwise interlacing (`RealRooted.strictInterl_of_lagFeedback`), so every row sp
 `lagFeedback?` reads `α` and `r`, fits `c n` as a polynomial in `n` and checks the first rows
 exactly.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

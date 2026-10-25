@@ -1,7 +1,13 @@
-import RealRooted.Recurrence.FactorPower
-import RealRooted.Tactic.Row.Core
-import RealRooted.Tactic.Row.PowerForm
-import RealRooted.Tactic.Row.Subseq
+module
+
+public import RealRooted.Recurrence.FactorPower
+public import RealRooted.Tactic.Row.Core
+public import RealRooted.Tactic.Row.PowerForm
+public import RealRooted.Tactic.Row.Subseq
+public meta import RealRooted.Recurrence.FactorPower
+public meta import RealRooted.Tactic.Row.Core
+public meta import RealRooted.Tactic.Row.PowerForm
+public meta import RealRooted.Tactic.Row.Subseq
 
 /-!
 # Row tactics: deflating a fixed linear factor
@@ -12,14 +18,19 @@ for one fixed linear polynomial `q`.  It defines the quotient rows, certifies th
 row-interlacing core.
 -/
 
+public meta section
+
 open Lean Elab Tactic Meta Polynomial
 
 noncomputable section
 
 namespace RealRooted.Tactic
 
-private structure RatFit where
+/-- A rational function fit, given by numerator and denominator coefficient arrays. -/
+structure RatFit where
+  /-- Numerator coefficients. -/
   num : Array Rat
+  /-- Denominator coefficients. -/
   den : Array Rat
 
 /-- Exact probe data and the polynomial certificate parameters for fixed-factor deflation. -/

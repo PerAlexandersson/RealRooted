@@ -1,8 +1,10 @@
-import RealRooted.LiuWang
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.ScalarDen
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.LiuWang
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.RootBounds
+public import RealRooted.Tactic.ScalarDen
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Generalized Liu--Wang tactic
@@ -10,6 +12,8 @@ import RealRooted.Tactic.SideGoals
 Dispatcher tactics and certificate plumbing for the theorem API in
 RealRooted.LiuWang.
 -/
+
+@[expose] public section
 
 open Polynomial
 

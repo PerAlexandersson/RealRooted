@@ -1,5 +1,9 @@
-import RealRooted.Tactic.Recurrence.Degree
-import RealRooted.DerivativeRecurrence.Interlacing
+module
+
+public import RealRooted.Tactic.Recurrence.Degree
+public import RealRooted.DerivativeRecurrence.Interlacing
+public meta import RealRooted.Tactic.Recurrence.Degree
+public meta import RealRooted.DerivativeRecurrence.Interlacing
 
 /-!
 # Degrees of derivative recurrences whose top terms cancel
@@ -16,6 +20,8 @@ or cancel.  When cancellation positivity needs coefficient information, rows zer
 fit a nonzero rational lower bound for `c (D - 1) / c D`, which the general theorem propagates.
 The side goals are discharged after a residue decomposition of `n`.
 -/
+
+public meta section
 
 open Lean Elab Tactic Meta Polynomial
 

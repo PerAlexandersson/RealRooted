@@ -1,11 +1,15 @@
-import RealRooted.Tactic.Favard.RowSignSyntax
-import RealRooted.Tactic.Favard.Denominator
+module
+
+public import RealRooted.Tactic.Favard.RowSignSyntax
+public import RealRooted.Tactic.Favard.Denominator
 
 /-!
 # Favard tactic row-sign rules
 
 Macro rules for row-sign-normalized affine Favard certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

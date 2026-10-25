@@ -1,7 +1,13 @@
-import RealRooted.ThresholdMatrix.Orbit
-import RealRooted.Tactic.Row.Core
-import RealRooted.Tactic.Recurrence.RowSide
-import RealRooted.Tactic.InterlacesExplicit
+module
+
+public import RealRooted.ThresholdMatrix.Orbit
+public import RealRooted.Tactic.Row.Core
+public import RealRooted.Tactic.Recurrence.RowSide
+public import RealRooted.Tactic.InterlacesExplicit
+public meta import RealRooted.ThresholdMatrix.Orbit
+public meta import RealRooted.Tactic.Row.Core
+public meta import RealRooted.Tactic.Recurrence.RowSide
+public meta import RealRooted.Tactic.InterlacesExplicit
 
 /-!
 # Row tactics: order-three recurrences as threshold-matrix orbits
@@ -20,16 +26,17 @@ consecutive rows (each step unfolds three matrix steps on `S m = [a, b, c]` and 
 covers A120987, A330509, A340620 (Haglund–Zhang) and A304429 (Gustafsson–Solus).
 -/
 
-open Lean Elab Tactic Meta Polynomial
-
 attribute [rr_threshold_unfold] RealRooted.HaglundZhang.orbit_succ
   RealRooted.GustafssonSolus.orbit_succ RealRooted.HaglundZhang.orbit
   RealRooted.GustafssonSolus.orbit RealRooted.matPolyAction RealRooted.HaglundZhang.matrix
   RealRooted.thresholdMatrix RealRooted.thresholdRow RealRooted.thresholdEntry List.range_succ
   List.range_zero List.map
   List.zipWith List.sum_cons List.sum_nil List.nil_append List.cons_append
-  List.singleton_append Nat.zero_add ite_true ite_false RealRooted.Interl Nat.reduceLT
-  Nat.reduceEqDiff reduceIte
+  List.singleton_append Nat.zero_add ite_true ite_false RealRooted.Interl
+
+public meta section
+
+open Lean Elab Tactic Meta Polynomial
 
 namespace RealRooted.Tactic
 
@@ -161,7 +168,7 @@ def thresholdOrbitSplits : TacticM Unit := do
   -- the index `m + c`, written `m` when `c = 0`
   let idx (c : Nat) : TacticM Term :=
     if c == 0 then `($m) else `($m + $(rowNumLit c))
-  let unfold ← `(tactic| simp only [rr_threshold_unfold])
+  let unfold ← `(tactic| simp only [rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte])
   let normIdx ← `(tactic| try simp only [Nat.add_assoc, Nat.reduceAdd])
   let orb (k : Term) : TacticM Term := `(($orbitI:ident 3 $rowsT $S₀T $k).sum)
   let (i₀, i₁, i₂) := (← idx t, ← idx (t + 1), ← idx (t + 2))
@@ -195,7 +202,8 @@ def thresholdOrbitSplits : TacticM Unit := do
     have rr_hS₀ : RealRooted.IsInterlacingSeq0Nonneg $S₀T := by
       constructor
       · intro i j hij
-        fin_cases i <;> fin_cases j <;> simp_all [rr_threshold_unfold]
+        fin_cases i <;> fin_cases j <;> simp_all
+            [rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte]
         all_goals exact RealRooted.StrictInterl.refl (by simp) (by simp)
       · intro f hf
         simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
@@ -215,7 +223,8 @@ def thresholdOrbitSplits : TacticM Unit := do
       intro $m:ident
       induction $m:ident
       · refine ⟨?_, ?_, ?_⟩ <;>
-          (simp only [$P:ident, rr_threshold_unfold]; first | rfl | ring | simp)
+          (simp only [$P:ident, rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte];
+           first | rfl | ring | simp)
       · rename_i $m:ident ih
         obtain ⟨h₀, h₁, h₂⟩ := ih
         obtain ⟨a, b, c, h⟩ := rr_hstate $m
@@ -228,7 +237,7 @@ def thresholdOrbitSplits : TacticM Unit := do
           rw [$eqn:ident]
           $normIdx:tactic
           rw [h₀, h₁, h₂]
-          simp only [rr_threshold_unfold]
+          simp only [rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte]
           rw [h]
           $unfold:tactic
           ring

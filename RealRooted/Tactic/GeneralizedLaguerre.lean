@@ -1,5 +1,7 @@
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+public import RealRooted.Tactic.Finish
 
 /-!
 # Generalized-Laguerre second-derivative sequence tactic
@@ -7,6 +9,8 @@ import RealRooted.Tactic.Finish
 A shallow frontend for the checked generalized-Laguerre reduction and its
 adjacent proper-position theorem.
 -/
+
+@[expose] public section
 
 open Polynomial
 

@@ -1,7 +1,9 @@
-import RealRooted.Tactic.Recurrence.Shape
-import RealRooted.Tactic.Recurrence.Eval
-import RealRooted.Tactic.Recurrence.Degree
-import RealRooted.Tactic.Recurrence.ODE
+module
+
+public import RealRooted.Tactic.Recurrence.Shape
+public import RealRooted.Tactic.Recurrence.Eval
+public import RealRooted.Tactic.Recurrence.Degree
+public import RealRooted.Tactic.Recurrence.ODE
 
 /-!
 # Recurrence tactics
@@ -19,3 +21,5 @@ real-rootedness:
 The real-rootedness and interlacing tactics (`rr_row_interlaces`, `rr_product_*`) build
 on these.
 -/
+
+@[expose] public section

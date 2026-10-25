@@ -1,5 +1,9 @@
-import RealRooted.Basic
-import RealRooted.Tactic.Named
+module
+
+public import RealRooted.Basic
+public import RealRooted.Tactic.Named
+public meta import RealRooted.Basic
+public meta import RealRooted.Tactic.Named
 
 /-!
 # Recurrence base-case evaluation tactic
@@ -7,6 +11,8 @@ import RealRooted.Tactic.Named
 Generated proof rows use `recurrence_eval` for small polynomial equalities
 obtained by unfolding a sequence recurrence and normalizing coefficients.
 -/
+
+public meta section
 
 open Polynomial
 

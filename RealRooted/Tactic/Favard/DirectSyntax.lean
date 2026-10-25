@@ -1,10 +1,14 @@
-import RealRooted.Tactic.Favard.Basic
+module
+
+public import RealRooted.Tactic.Favard.Basic
 
 /-!
 # Favard tactic direct syntax
 
 Parser declarations for direct monic and positive-slope affine Favard certificates.
 -/
+
+@[expose] public section
 
 namespace RealRooted
 namespace Tactic

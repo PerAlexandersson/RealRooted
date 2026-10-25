@@ -1,11 +1,15 @@
-import RealRooted.Kurtz
-import RealRooted.Tactic.PFPolynomial
+module
+
+public import RealRooted.Kurtz
+public import RealRooted.Tactic.PFPolynomial
 
 /-!
 # Kurtz coefficient-criterion tactic frontend
 
 Thin wrappers around the Hutchinson--Kurtz coefficient criterion.
 -/
+
+@[expose] public section
 
 open Polynomial
 

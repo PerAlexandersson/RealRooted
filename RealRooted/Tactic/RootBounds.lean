@@ -1,5 +1,7 @@
-import RealRooted.RootBounds
-import RealRooted.Tactic.Sign
+module
+
+public import RealRooted.RootBounds
+public import RealRooted.Tactic.Sign
 
 /-!
 # Root-bound certificate tactics
@@ -9,6 +11,8 @@ the root interval `(-∞, 0]`.  This file packages the repeated step from
 `p ≠ 0 ∧ p.Splits` and `HasNonnegCoeffs p` to nonpositive roots, and combines
 it with `rr_sign` for coefficient-sign goals at roots.
 -/
+
+@[expose] public section
 
 open Polynomial
 

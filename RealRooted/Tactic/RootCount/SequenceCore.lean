@@ -1,9 +1,11 @@
-import RealRooted.DegreeIncreasingLocalLowerCount
-import RealRooted.PositiveParameterLocalLowerCount
-import RealRooted.RootContinuity
-import RealRooted.RootCountJump
-import RealRooted.SmallPositiveParameterCount
-import RealRooted.SuccDegreeLeftEndpoint
+module
+
+public import RealRooted.DegreeIncreasingLocalLowerCount
+public import RealRooted.PositiveParameterLocalLowerCount
+public import RealRooted.RootContinuity
+public import RealRooted.RootCountJump
+public import RealRooted.SmallPositiveParameterCount
+public import RealRooted.SuccDegreeLeftEndpoint
 
 /-!
 # Pointwise root-count sequence transports
@@ -17,6 +19,8 @@ pointwise. The target orientation is the upper-endpoint count equal to the
 normalized zero-endpoint count:
 `card (roots (f + C μ * g) above x) = card (roots f above x)`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

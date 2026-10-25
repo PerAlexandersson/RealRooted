@@ -1,11 +1,15 @@
-import RealRooted.ScalarNormalization
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.ScalarNormalization
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Scalar denominator tactic
 
 Tactic syntax for normalizing recurrences with scalar constant denominators.
 -/
+
+@[expose] public section
 
 open Polynomial
 

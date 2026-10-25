@@ -1,7 +1,9 @@
-import RealRooted.Derivative.LinearCombination
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.Derivative.LinearCombination
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.MaWang
+public import RealRooted.Tactic.SideGoals
 
 /-!
 # Second-derivative tactic shells
@@ -9,6 +11,8 @@ import RealRooted.Tactic.SideGoals
 This file contains small tactic-facing wrappers for second-derivative
 recurrences that factor as a Ma--Wang step followed by `a + D`.
 -/
+
+@[expose] public section
 
 open Polynomial
 

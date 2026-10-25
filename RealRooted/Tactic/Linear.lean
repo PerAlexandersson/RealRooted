@@ -1,11 +1,15 @@
-import RealRooted.Linear
-import RealRooted.Tactic.Finish
+module
+
+public import RealRooted.Linear
+public import RealRooted.Tactic.Finish
 
 /-!
 # Linear-polynomial tactic frontends
 
 Thin wrappers for the degree-one real-rootedness and interlacing endpoints.
 -/
+
+@[expose] public section
 
 open Lean.Elab.Tactic
 open Polynomial

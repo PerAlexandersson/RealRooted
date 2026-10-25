@@ -1,9 +1,17 @@
-import RealRooted.SequenceClosure
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.Named
-import RealRooted.Tactic.RecurrenceEval
-import RealRooted.Tactic.Sign
-import RealRooted.Tactic.SideGoals
+module
+
+public import RealRooted.SequenceClosure
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.Named
+public import RealRooted.Tactic.RecurrenceEval
+public import RealRooted.Tactic.Sign
+public import RealRooted.Tactic.SideGoals
+public meta import RealRooted.SequenceClosure
+public meta import RealRooted.Tactic.Lookup
+public meta import RealRooted.Tactic.Named
+public meta import RealRooted.Tactic.RecurrenceEval
+public meta import RealRooted.Tactic.Sign
+public meta import RealRooted.Tactic.SideGoals
 
 /-!
 # Finish tactic frontend
@@ -11,6 +19,8 @@ import RealRooted.Tactic.SideGoals
 Syntax and elaboration for proof tails that consume the theorem backend in
 `RealRooted.SequenceClosure`.
 -/
+
+public meta section
 
 open Polynomial
 
