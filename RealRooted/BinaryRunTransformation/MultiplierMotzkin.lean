@@ -69,9 +69,7 @@ theorem natDegree_reverseHermiteBasis_le (n : ℕ) :
 
 private theorem reflect_succ_of_natDegree_le {p : ℝ[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
     p.reflect (n + 1) = X * p.reflect n := by
-  have h := reflect_mul (1 : ℝ[X]) p (F := 1) (G := n) (by simp) hp
-  rw [one_mul, reflect_one, pow_one, add_comm] at h
-  exact h
+  simpa [add_comm] using reflect_mul (1 : ℝ[X]) p (F := 1) (G := n) (by simp) hp
 
 theorem completeMatchingPolynomial_zero : completeMatchingPolynomial 0 = 1 := by
   simp [completeMatchingPolynomial]
@@ -115,15 +113,12 @@ theorem completeMatchingCount_pos {n m : ℕ} (h : 2 * m ≤ n) :
 
 private theorem cast_factorial_succ_succ (n : ℕ) :
     ((n + 2).factorial : ℝ) = ((n : ℝ) + 2) * ((n : ℝ) + 1) * (n.factorial : ℝ) := by
-  rw [Nat.factorial_succ, Nat.factorial_succ]
-  push_cast
+  norm_num [Nat.factorial_succ]
   ring
 
 private theorem cast_factorial_succ' (n : ℕ) :
     ((n + 1).factorial : ℝ) = ((n : ℝ) + 1) * (n.factorial : ℝ) := by
-  rw [Nat.factorial_succ]
-  push_cast
-  ring
+  norm_num [Nat.factorial_succ]
 
 /-- The matching recurrence on counts: the last vertex of `K_{n+2}` is either
 unmatched or matched to one of the other `n + 1` vertices. -/
@@ -187,9 +182,9 @@ theorem coeff_completeMatchingPolynomial (n m : ℕ) :
 
 theorem completeMatchingPolynomial_isPFPolynomial (n : ℕ) :
     IsPFPolynomial (completeMatchingPolynomial n) := by
-  have hB : IsPFPolynomial (reverseHermiteBasis (R := ℝ) n) := by
-    simpa using reverseHermiteTransform_preserves_pf (isPFPolynomial_X_pow n)
-  exact reciprocalShift_preserves_pf hB (natDegree_reverseHermiteBasis_le n)
+  exact reciprocalShift_preserves_pf
+    (by simpa using reverseHermiteTransform_preserves_pf (isPFPolynomial_X_pow n))
+    (natDegree_reverseHermiteBasis_le n)
 
 /-- The polar relation `(N - 2m) · #M_m(K_N) = N · #M_m(K_n)` with `N = n + 1`. -/
 theorem completeMatchingCount_polar (n m : ℕ) :
@@ -317,9 +312,9 @@ theorem motzkinWeightedRow_strictInterl_succ {γ : ℕ → ℝ}
   · have h0 := hpos 0
     have h1 := hpos 1
     have hc2 : completeMatchingCount 2 1 = 1 := by
-      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+      norm_num [completeMatchingCount, Nat.factorial]
     have hc3 : completeMatchingCount 3 1 = 3 := by
-      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+      norm_num [completeMatchingCount, Nat.factorial]
     have hc1 : completeMatchingCount 1 1 = 0 := completeMatchingCount_eq_zero (by norm_num)
     have hR0 : motzkinWeightedRow γ 0 = C (γ 0) := by
       rw [motzkinWeightedRow, motzkinWeightedInput_of_le_three γ (by norm_num),
@@ -409,9 +404,9 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
   rcases lt_or_ge n 4 with hn | hn
   · have hc1 : completeMatchingCount 1 1 = 0 := completeMatchingCount_eq_zero (by norm_num)
     have hc2 : completeMatchingCount 2 1 = 1 := by
-      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+      norm_num [completeMatchingCount, Nat.factorial]
     have hc3 : completeMatchingCount 3 1 = 3 := by
-      rw [completeMatchingCount_of_le (by norm_num)]; norm_num [Nat.factorial]
+      norm_num [completeMatchingCount, Nat.factorial]
     have hγ0 : γ 0 = 1 := by simp [hγ]
     have hδ0 : δ 0 = 1 := by simp [hδ]
     have hγ1 : γ 1 = α⁻¹ := by simp [hγ]
@@ -422,6 +417,7 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
         completeMatchingCount_eq_zero (by norm_num), hε]
       simp
     have hone := StrictInterl.refl (one_ne_zero : (1 : ℝ[X]) ≠ 0) (Splits.C 1)
+    have hinv : (α + 1)⁻¹ < α⁻¹ := (inv_lt_inv₀ hα1 hα).mpr (lt_add_one α)
     -- Linear rows: `1 + c X` with root `-1/c`.
     have hlin : ∀ {a b : ℝ}, 0 < a → a < b →
         StrictInterl (C 1 + C a * X) (C 1 + C b * X) := by
@@ -453,14 +449,10 @@ theorem motzkinWeightedRow_inv_ascPochhammer_succ_strictInterl {α : ℝ} (hα :
       simpa [hγ0, hδ0] using hone
     · rw [motzkinWeightedRow_of_le_three δ (by norm_num) (by norm_num),
         motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc2, hγ0, hδ0, hγ1, hδ1]
-      exact hlin (by positivity) (by
-        have := (inv_lt_inv₀ hα1 hα).mpr (lt_add_one α)
-        linarith)
+      exact hlin (by positivity) (by nlinarith)
     · rw [motzkinWeightedRow_of_le_three δ (by norm_num) (by norm_num),
         motzkinWeightedRow_of_le_three γ (by norm_num) (by norm_num), hc3, hγ0, hδ0, hγ1, hδ1]
-      exact hlin (by positivity) (by
-        have := (inv_lt_inv₀ hα1 hα).mpr (lt_add_one α)
-        linarith)
+      exact hlin (by positivity) (by nlinarith)
   · have hδPF := isPFMultiplierSequence_inv_ascPochhammer hα1
     have hγPF := isPFMultiplierSequence_inv_ascPochhammer hα
     have hg := motzkinWeightedInput_isPFPolynomial hδPF n

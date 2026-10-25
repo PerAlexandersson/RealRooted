@@ -49,9 +49,7 @@ lemma orient_zero (up : Bool) : orient up 0 = up := by simp [orient]
 /-- Advancing one position reverses the initial orientation. -/
 lemma orient_succ (up : Bool) (L : ℕ) : orient up (L + 1) = orient (!up) L := by
   unfold orient
-  by_cases h : Even L
-  · simp [h, Nat.even_add_one]
-  · simp [h, Nat.even_add_one]
+  by_cases h : Even L <;> simp [h, Nat.even_add_one]
 
 /-- Split weak alternation at a shared boundary letter. -/
 lemma altB_append_cons (pre : List ℕ) : ∀ (up : Bool) (m : ℕ) (suf : List ℕ),
@@ -136,9 +134,7 @@ lemma mem_wordsF {n k : ℕ} {l : List ℕ} :
   induction n generalizing l with
   | zero =>
     simp only [wordsF, Finset.mem_singleton, List.length_eq_zero_iff]
-    constructor
-    · rintro rfl; simp
-    · exact fun h => h.1
+    grind
   | succ n ih =>
     simp only [wordsF, Finset.mem_image, Finset.mem_product, Finset.mem_range, Prod.exists]
     constructor
@@ -211,15 +207,7 @@ lemma card_filter_not_max (up : Bool) (n k : ℕ) :
   congr 1
   ext l
   simp only [Finset.mem_filter, mem_wordsF]
-  constructor
-  · rintro ⟨⟨h1, h2⟩, h3, h4⟩
-    refine ⟨⟨h1, fun x hx => ?_⟩, h3⟩
-    have := h2 x hx
-    have : x ≠ k := fun h => h4 (h ▸ hx)
-    lia
-  · rintro ⟨⟨h1, h2⟩, h3⟩
-    exact ⟨⟨h1, fun x hx => by have := h2 x hx; lia⟩, h3, fun hk => by
-      have := h2 k hk; lia⟩
+  grind
 
 /-- Split words containing the largest letter at its first occurrence. -/
 lemma card_filter_max (P : List ℕ → Prop) [DecidablePred P] (n k : ℕ) :
@@ -432,13 +420,7 @@ theorem wordCount_rec (n k : ℕ) :
   have hlast : (if 0 ∈ Finset.range n then
       (if n - 1 = 0 then 1 else wordCount true (n - 1 - 1) (k + 1)) else 0) =
       (if n = 1 then 1 else 0) + (if 2 ≤ n then wordCount true (n - 2) (k + 1) else 0) := by
-    rcases n with _ | _ | n
-    · simp
-    · simp
-    · simp only [Finset.mem_range, show 0 < n + 1 + 1 by lia, ite_true,
-        show n + 1 + 1 - 1 ≠ 0 by lia, ite_false, show n + 1 + 1 ≠ 1 by lia,
-        show 2 ≤ n + 1 + 1 by lia, zero_add]
-      rfl
+    rcases n with _ | _ | n <;> simp
   rw [hlast] at hsum
   lia
 

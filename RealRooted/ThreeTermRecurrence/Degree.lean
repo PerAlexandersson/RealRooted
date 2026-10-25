@@ -477,21 +477,17 @@ theorem twoStepProduct_natDegree {P : ℕ → ℝ[X]} {q : ℝ[X]} (hrec : ∀ n
     (hq : q ≠ 0) (n : ℕ) :
     (P n).natDegree =
       if P (n % 2) = 0 then 0 else n / 2 * q.natDegree + (P (n % 2)).natDegree := by
-  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
-  · obtain ⟨h0, -⟩ := twoStepProduct_rows hrec m
-    have hm : 2 * m / 2 = m := by lia
-    rw [h0, Nat.mul_mod_right, hm]
-    by_cases hP : P 0 = 0
-    · simp [hP]
-    · simp only [hP, ↓reduceIte]
-      rw [natDegree_mul (pow_ne_zero _ hq) hP, natDegree_pow]
-  · obtain ⟨-, h1⟩ := twoStepProduct_rows hrec m
-    have hm : (2 * m + 1) / 2 = m := by lia
-    have hr : (2 * m + 1) % 2 = 1 := by lia
-    rw [h1, hr, hm]
-    by_cases hP : P 1 = 0
-    · simp [hP]
-    · simp only [hP, ↓reduceIte]
-      rw [natDegree_mul (pow_ne_zero _ hq) hP, natDegree_pow]
+  have hrow : P n = q ^ (n / 2) * P (n % 2) := by
+    obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
+    · obtain ⟨h, -⟩ := twoStepProduct_rows hrec m
+      simpa only [show 2 * m / 2 = m by lia, show 2 * m % 2 = 0 by lia] using h
+    · obtain ⟨-, h⟩ := twoStepProduct_rows hrec m
+      simpa only [show (2 * m + 1) / 2 = m by lia,
+        show (2 * m + 1) % 2 = 1 by lia] using h
+  rw [hrow]
+  by_cases hP : P (n % 2) = 0
+  · simp [hP]
+  · simp only [hP, ↓reduceIte]
+    rw [natDegree_mul (pow_ne_zero _ hq) hP, natDegree_pow]
 
 end RealRooted

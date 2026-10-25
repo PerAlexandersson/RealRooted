@@ -106,9 +106,7 @@ theorem isMultiaffine_multiaffineMobius [CommRing K] (a b c d : K) (P : MvPolyno
   calc ∑ j, degreeOf i (if m j = 0 then C c * X j + C d else C a * X j + C b :
           MvPolynomial σ K)
       ≤ ∑ j : σ, if j = i then 1 else 0 := Finset.sum_le_sum fun j _ => by
-        by_cases h : m j = 0
-        · simp only [h, ↓reduceIte]; exact degreeOf_C_mul_X_add_C_le _ _ _ _
-        · simp only [h, ↓reduceIte]; exact degreeOf_C_mul_X_add_C_le _ _ _ _
+        split <;> exact degreeOf_C_mul_X_add_C_le _ _ _ _
     _ = 1 := by simp
 
 private theorem rename_mobiusFactor [CommRing K] (a b c d : K) (e : Equiv.Perm σ)
@@ -183,7 +181,9 @@ end Mobius
 
 open Polynomial Complex
 
-private theorem normSq_sub_I_lt {u : ℂ} (hu : 0 < u.im) : normSq (u - I) < normSq (u + I) := by
+private theorem norm_sub_I_lt_norm_add_I {u : ℂ} (hu : 0 < u.im) :
+    ‖u - I‖ < ‖u + I‖ := by
+  rw [← sq_lt_sq₀ (norm_nonneg _) (norm_nonneg _), ← normSq_eq_norm_sq, ← normSq_eq_norm_sq]
   simp only [normSq_apply, sub_re, I_re, sub_im, I_im, add_re, add_im]
   nlinarith
 
@@ -198,9 +198,7 @@ private theorem cayley_mem_ball {c : ℂ} {r : ℝ} (hr : 0 < r) {u : ℂ} (hu :
     c + r * ((u - I) / (u + I)) ∈ Metric.ball c r := by
   rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_mul, norm_div, Complex.norm_real,
     Real.norm_of_nonneg hr.le]
-  have h1 : ‖u - I‖ < ‖u + I‖ := by
-    rw [← sq_lt_sq₀ (norm_nonneg _) (norm_nonneg _), ← normSq_eq_norm_sq, ← normSq_eq_norm_sq]
-    exact normSq_sub_I_lt hu
+  have h1 := norm_sub_I_lt_norm_add_I hu
   have h2 : 0 < ‖u + I‖ := norm_pos_iff.2 (add_I_ne_zero hu)
   calc r * (‖u - I‖ / ‖u + I‖) < r * 1 := by
         gcongr; exact (div_lt_one h2).2 h1
@@ -234,8 +232,7 @@ theorem exists_eval_const_eq_zero_of_im_pos {n : ℕ} {Q : MvPolynomial (Fin n) 
   have hQ : ¬ MvUpperHalfPlaneStable Q := fun h => h ζ hζ h0
   rw [mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero hsym hma] at hQ
   push Not at hQ
-  obtain ⟨w, hw, h⟩ := hQ
-  exact ⟨w, hw, by rwa [eval_diagonalProjection] at h⟩
+  simpa only [eval_diagonalProjection] using hQ
 
 /-- Möbius step: pull a point of the image region back to the upper half-plane. -/
 private theorem exists_eval_multiaffineMobius_eq_zero {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
@@ -346,8 +343,7 @@ theorem exists_eval_const_eq_of_mem_closedBall {n : ℕ} {P : MvPolynomial (Fin 
   rw [Metric.mem_closedBall]
   refine le_of_forall_pos_lt_add fun ε hε => ?_
   obtain ⟨k, hk⟩ := exists_nat_one_div_lt hε
-  have := Metric.mem_ball.1 (hS k)
-  linarith
+  linarith [Metric.mem_ball.1 (hS k)]
 
 /-- **Grace–Walsh–Szegő coincidence theorem**, closed half-planes
 `{z | 0 ≤ ((z - b) / a).im}`. -/
@@ -481,10 +477,7 @@ theorem exists_eval_const_eq_of_lt_dist {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
   refine ⟨c + r * ((u + I) / (u - I)), ?_, ?_⟩
   · rw [dist_eq_norm, add_sub_cancel_left, norm_mul, norm_div, Complex.norm_real,
       Real.norm_of_nonneg hr.le]
-    have h1 : ‖u - I‖ < ‖u + I‖ := by
-      rw [← sq_lt_sq₀ (norm_nonneg _) (norm_nonneg _), ← normSq_eq_norm_sq,
-        ← normSq_eq_norm_sq]
-      exact normSq_sub_I_lt hu
+    have h1 := norm_sub_I_lt_norm_add_I hu
     have h2 : 0 < ‖u - I‖ := norm_pos_iff.2 (sub_ne_zero.2 huI)
     calc r = r * 1 := (mul_one r).symm
       _ < r * (‖u + I‖ / ‖u - I‖) := by gcongr; exact (one_lt_div h2).2 h1
@@ -523,9 +516,8 @@ theorem exists_eval_const_eq_of_le_dist {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
   have := hS k
   simp only [Set.mem_ofPred_eq] at this
   have h2 : r / ((k : ℝ) + 2) < r - dist z c := by
-    have h3 : r / ((k : ℝ) + 2) ≤ r * (1 / ((k : ℝ) + 1)) := by
-      rw [mul_one_div]; gcongr; linarith
-    calc r / ((k : ℝ) + 2) ≤ r * (1 / ((k : ℝ) + 1)) := h3
+    calc r / ((k : ℝ) + 2) ≤ r * (1 / ((k : ℝ) + 1)) := by
+          rw [mul_one_div]; gcongr; linarith
       _ < r * ((r - dist z c) / r) := by gcongr
       _ = r - dist z c := by field_simp
   generalize r / ((k : ℝ) + 2) = δ at this h2

@@ -170,23 +170,12 @@ private lemma coeff_ev (f : Q⟦X⟧) (n k : ℕ) :
     · rintro ⟨a, b⟩ hab hne
       rw [HasAntidiagonal.mem_antidiagonal] at hab
       rw [ite_eq_right]
-      intro hb
-      apply hne
-      simp only at hb
-      subst hb
-      ext <;> simp only
-      lia
-    · intro hn
-      exfalso
-      apply hn
-      rw [HasAntidiagonal.mem_antidiagonal]
-      lia
+      exact fun hb => hne (Prod.ext (by lia) hb)
+    · exact fun hn => (hn (HasAntidiagonal.mem_antidiagonal.mpr (by lia))).elim
   · apply sum_eq_zero
     rintro ⟨a, b⟩ hab
     rw [HasAntidiagonal.mem_antidiagonal] at hab
-    rw [ite_eq_right]
-    simp only
-    lia
+    rw [ite_eq_right (by lia)]
 
 private lemma ev_add (f g : Q⟦X⟧) : ev (f + g) = ev f + ev g := by
   ext n k

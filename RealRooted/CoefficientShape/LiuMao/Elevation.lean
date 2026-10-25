@@ -69,13 +69,12 @@ theorem trunc_eq_of_le {d : ℕ} (a : ℕ → ℝ) {k : ℕ} (hk : k ≤ d) : tr
 
 /-- An `LCNIZ` sequence that vanishes beyond `d` is `GLC`. -/
 theorem LCNIZ.glc {d : ℕ} {a : ℕ → ℝ} (h : LCNIZ d a) (hz : ∀ k, d < k → a k = 0) : GLC a := by
-  have : trunc d a = a := by
+  rw [← show trunc d a = a by
     funext k
     unfold trunc
     split_ifs with hk
     · rfl
-    · rw [hz k (by lia)]
-  rw [← this]
+    · rw [hz k (by lia)]]
   exact h.glc_trunc
 
 /-- A `GLC` sequence is `LCNIZ` through every index. -/
@@ -237,8 +236,7 @@ theorem conv_eq_sum_toep_of_support (a g : ℕ → ℝ) (D r : ℕ) (hg : ∀ i,
     lia
   · intro i hi hi2
     simp only [mem_range] at hi hi2
-    rw [hg i (by lia)]
-    simp
+    simp [hg i (by lia)]
 
 /-! ### Congruence, reversal and windows -/
 
@@ -480,12 +478,8 @@ theorem GLCN.reduce {n : ℕ} {u : ℕ → ℝ} (h : GLCN (n + 1) u) : GLCN n (D
       intro q hne
       by_cases h1 : u (q + 1) ≠ 0
       · exact ⟨q + 1, by lia, le_refl _, h1⟩
-      · refine ⟨q, le_refl _, by lia, ?_⟩
-        intro h2
-        apply hne
-        unfold Dop
-        push Not at h1
-        rw [h1, h2]; simp
+      · push Not at h1
+        exact ⟨q, le_refl _, by lia, fun h2 => hne (by simp [Dop, h1, h2])⟩
     obtain ⟨α, hα1, hα2, hα4⟩ := wit i hi
     obtain ⟨β, hβ1, hβ2, hβ4⟩ := wit k hk
     have hv : u (j + 1) ≠ 0 := hg.ne_zero_between hα4 hβ4 (by lia) (by lia)
