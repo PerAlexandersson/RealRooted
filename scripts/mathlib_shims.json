@@ -1725,16 +1725,6 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/DataList.lean"
-      ],
-      "modules": [
-        "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList"
-      ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
-      "speculative": true
-    },
-    {
-      "sources": [
         "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean"
       ],
       "modules": [

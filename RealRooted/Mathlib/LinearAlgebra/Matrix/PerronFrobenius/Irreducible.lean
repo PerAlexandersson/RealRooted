@@ -127,7 +127,7 @@ lemma Irreducible.exists_pos_entry [Nonempty n] (hA_irred : A.IsIrreducible) :
   let : Quiver n := toQuiver A
   obtain ⟨i₀⟩ := ‹Nonempty n›
   obtain ⟨p, hp_pos⟩ := hA_irred.connected i₀ i₀
-  rcases Quiver.Path.path_decomposition_first_edge p hp_pos with
+  rcases (Quiver.Path.length_ne_zero_iff_eq_comp p).1 hp_pos.ne' with
     ⟨j, e, -, -, -⟩
   exact ⟨i₀, j, e.down⟩
 

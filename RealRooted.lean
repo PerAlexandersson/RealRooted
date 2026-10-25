@@ -1080,7 +1080,6 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
