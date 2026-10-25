@@ -5,7 +5,7 @@ Authors: Matteo Cipollina
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.DataList
+public import Mathlib.Tactic
 public import Mathlib.Combinatorics.Quiver.Path.Vertices
 public import Mathlib.Combinatorics.Quiver.Path.Weight
 
@@ -13,27 +13,18 @@ public import Mathlib.Combinatorics.Quiver.Path.Weight
 # Paths in quivers
 
 Lemmas about paths in a `Quiver`, extending the API in `Mathlib.Combinatorics.Quiver.Path`:
-decomposition of a nonempty path at its first or last edge, existence of a boundary edge for a path
-leaving or entering a set of vertices, the vertex set of a path, repeated paths (loops), induced
-subquivers, and strictly simple paths. In a finite quiver, any two vertices joined by a path are
-joined by a strictly simple path of length at most `Fintype.card V - 1`; this is used for
-reachability arguments for irreducible matrices.
+strictly simple paths and the vertex finset of a path. In a finite quiver, any two vertices joined
+by a path are joined by a strictly simple path of length at most `Fintype.card V - 1`; this is used
+for reachability arguments for irreducible matrices.
 
 ## Main definitions
 
-* `Quiver.Path.activeVertices`, `Quiver.Path.activeFinset`, `Quiver.Path.vertexFinset`: the
-  vertices of a path as a `Set`, as a `Finset` without the final vertex, and as a `Finset`.
+* `Quiver.Path.vertexFinset`: the vertices of a path as a `Finset`.
 * `Quiver.Path.replicate`: the loop `p` repeated `n` times.
 * `Quiver.Path.IsStrictlySimple`: a path whose list of vertices has no duplicates.
-* `Quiver.inducedQuiver`, `Quiver.Subquiver.embedding`: the quiver induced on a set of vertices and
-  its embedding into the ambient quiver.
 
 ## Main statements
 
-* `Quiver.Path.path_decomposition_last_edge`, `Quiver.Path.path_decomposition_first_edge`:
-  decompose a nonempty path at its last, respectively first, edge.
-* `Quiver.Path.exists_boundary_edge`, `Quiver.Path.exists_boundary_edge_from_set`: a path between
-  a vertex inside a set and one outside it contains an edge crossing the boundary.
 * `Quiver.Path.isStrictlySimple_of_shortest`: a shortest path between two vertices is strictly
   simple.
 * `Quiver.Path.exists_path_length_le_card_sub_one`: if `a` reaches `b` in a finite quiver, there is
@@ -42,7 +33,7 @@ reachability arguments for irreducible matrices.
 Ported into RealRooted from https://github.com/or4nge19/MCMC
 (commit dba8102fe7a333cb11966484e324d11e375f6624, Apache-2.0), with
 adaptations to the pinned Mathlib.
-Declarations that RealRooted does not use were removed (2026-10-07).
+Declarations that RealRooted does not use, or that Mathlib now provides, were removed.
 Original path: MCMC/PF/Combinatorics/Quiver/Path.lean
 -/
 
@@ -50,230 +41,13 @@ Original path: MCMC/PF/Combinatorics/Quiver/Path.lean
 
 open List
 
-/-!
-# Quiver.Path
-
-This module provides definitions, theorems, and lemmas for manipulating and
-reasoning about paths in a `Quiver` (directed graph). The key concepts and results include:
-
-## 1. Weights on Paths
-  - **Definitions:** `weight`, `weightOfEPs` assign values in a monoid/semiring to edges
-  and extend multiplicatively to paths.
-  - **Lemmas:** `weightOfEPs_pos`, `weightOfEPs_nonneg` (positivity and
-    nonnegativity).
-
-## 2. Path Decomposition and Splitting
-  - **Theorems/Lemmas:**
-    - `path_decomposition_first_edge`, `path_decomposition_last_edge`: decompose a path at the first
-      or last edge.
-    - `exists_decomp_at_length`: split a path so the first component has a specified length.
-    - `exists_eq_comp_of_mem_vertices`, `exists_decomp_of_mem_vertices_prop`: split at an
-      arbitrary visited vertex, with a proposition version.
-    - `split_at_vertex`: decompose a path precisely at the position of a chosen vertex.
-
-## 3. Boundary and Crossing Edges
-  - **Theorems:**
-    - `exists_boundary_edge`: existence of a boundary arrow for paths entering a set.
-
-## 4. Vertices of a Path
-  - **Definitions:** `«end»`, `activeVertices`, `vertices`, `activeFinset`.
-  - **Lemmas:**
-    - `vertices_length`, `vertices_head?`, `vertices_ne_nil`, `vertices_comp`,
-      `start_mem_vertices`.
-    - Extraction lemmas for head/last and vertex membership.
-
-## 5. Path Properties and Simplicity
-  - **Definitions:**
-    - `isStrictlySimple`: predicate for strictly simple (no repeated vertices except possibly
-      endpoints) paths.
-  - **Theorems/Lemmas:**
-    - `isStrictlySimple_of_shortest`: shortest path between two vertices is strictly simple.
-    - `exists_path_length_le_card_sub_one`: any reachable pair of vertices admits a path of length
-      at most `Fintype.card V - 1`.
-    - Related characterizations and implications for path minimality and structure.
-
-## 6. Induced Subquivers and Embeddings
-  - **Definitions:** `Quiver.inducedQuiver`, `Subquiver.embedding`.
-  - **Lemma:** `mapPath_embedding_vertices_in_set` (embedded paths remain in the subset).
-
-## 7. Prefunctor Interaction
-  - **Lemma:** `Prefunctor.end_map` (compatibility of path endpoint with functorial mapping).
-
-## 8. Path Replication
-  - **Definitions:** `replicate`.
-  - **Lemma:** `length_replicate` (length scales with replication).
--/
-
-namespace Quiver.Path
-
-section PathDecomposition
-
-variable {V : Type*} [Quiver V]
-
-/-- Every non-empty path can be decomposed as an initial path plus a final edge. -/
-lemma path_decomposition_last_edge {a b : V} (p : Path a b) (h : p.length > 0) :
-    ∃ (c : V) (p' : Path a c) (e : c ⟶ b), p = p'.cons e := by
-  cases p with | nil => simp at h | cons p' e => exact ⟨_, p', e, rfl⟩
-
-/-- Every non-empty path can be decomposed as a first edge plus a remaining path. -/
-lemma path_decomposition_first_edge {a b : V} (p : Path a b) (h : p.length > 0) :
-    ∃ (c : V) (e : a ⟶ c) (p' : Path c b), p = e.toPath.comp p' ∧ p.length = p'.length + 1 := by
-  have h_len : p.length = (p.length - 1) + 1 := by lia
-  obtain ⟨c, e, p', hp', rfl⟩ := Path.eq_toPath_comp_of_length_eq_succ p h_len
-  use c, e, p'; exact ⟨rfl, by lia⟩
-
-end PathDecomposition
-
-section BoundaryEdges
-
-variable {V : Type*} [Quiver V]
-
-lemma cons_eq_comp_toPath {a b c : V} (p : Path a b) (e : b ⟶ c) :
-    p.cons e = p.comp e.toPath := by
-  rfl
-
-/-- A path from a vertex not in `S` to a vertex in `S` must cross the boundary. -/
-theorem exists_boundary_edge {a b : V} (p : Path a b) (S : Set V)
-    (ha_not_in_S : a ∉ S) (hb_in_S : b ∈ S) :
-    ∃ (u v : V) (e : u ⟶ v) (p₁ : Path a u) (p₂ : Path v b),
-      u ∉ S ∧ v ∈ S ∧ p = p₁.comp (e.toPath.comp p₂) := by
-  induction h_len : p.length generalizing a b S ha_not_in_S hb_in_S with
-  | zero =>
-    -- Base case n = 0: Path must be nil, so a = b. Contradiction.
-    have hab : a = b := eq_of_length_zero p h_len
-    subst hab
-    exact (ha_not_in_S hb_in_S).elim
-  | succ n ih =>
-    -- Inductive step: Assume true for all paths of length < n+1.
-    have h_pos : 0 < p.length := by rw [h_len]; simp only [lt_add_iff_pos_left, add_pos_iff,
-      Nat.lt_one_iff, pos_of_gt, or_true]
-    obtain ⟨c, p', e, rfl⟩ := path_decomposition_last_edge p h_pos
-    by_cases hc_in_S : c ∈ S
-    · -- Case 1: The endpoint of `p'` is already in `S`.
-      have p'_len : p'.length = n := by exact Nat.succ_inj.mp h_len
-      obtain ⟨u, v, e_uv, p₁, p₂, hu_not_S, hv_S, hp'⟩ :=
-        ih p' S ha_not_in_S hc_in_S p'_len
-      refine ⟨u, v, e_uv, p₁, p₂.comp e.toPath, hu_not_S, hv_S, ?_⟩
-      rw [cons_eq_comp_toPath, hp', Path.comp_assoc, Path.comp_assoc]
-    · -- Case 2: The endpoint of `p'` is not in `S`.
-      refine ⟨c, b, e, p', Path.nil, hc_in_S, hb_in_S, ?_⟩
-      simp only [comp_nil]
-      simp_all only [exists_and_left, length_cons, Nat.add_right_cancel_iff, lt_add_iff_pos_left,
-        add_pos_iff, Nat.lt_one_iff, pos_of_gt, or_true]
-      subst h_len
-      rfl
-
-/-- A path from a vertex in `S` to a vertex not in `S` must cross the boundary. -/
-theorem exists_boundary_edge_from_set {a b : V} (p : Path a b) (S : Set V)
-    (ha_in_S : a ∈ S) (hb_not_in_S : b ∉ S) :
-    ∃ (u v : V) (e : u ⟶ v) (p₁ : Path a u) (p₂ : Path v b),
-      u ∈ S ∧ v ∉ S ∧ p = p₁.comp (e.toPath.comp p₂) := by
-  classical
-  have ha_not_in_compl : a ∉ Sᶜ := by simpa
-  have hb_in_compl : b ∈ Sᶜ := by simpa
-  obtain ⟨u, v, e, p₁, p₂, hu_not_in_compl, hv_in_compl, hp⟩ :=
-    exists_boundary_edge p Sᶜ ha_not_in_compl hb_in_compl
-  refine ⟨u, v, e, p₁, p₂, ?_, ?_, hp⟩
-  · simpa using hu_not_in_compl
-  · simpa using hv_in_compl
-
-end BoundaryEdges
-
-end Quiver.Path
-
 namespace Quiver.Path
 
 variable {V : Type*} [Quiver V]
-
-/-- The set of vertices in a path. -/
-def activeVertices {a : V} : ∀ {b : V}, Path a b → Set V
-  | _, nil => {a}
-  | _, cons p e => activeVertices p ∪ {«end» (cons p e)}
-
-@[simp] lemma activeVertices_nil {a : V} : activeVertices (nil : Path a a) = {a} := rfl
-@[simp] lemma activeVertices_cons {a b c : V} (p : Path a b) (e : b ⟶ c) :
-  activeVertices (p.cons e) = activeVertices p ∪ {c} := by simp [activeVertices]
-
-/-- The set of vertices in a path, excluding the final vertex. -/
-def activeFinset [DecidableEq V] {a b : V} (p : Path a b) : Finset V :=
-  p.vertices.dropLast.toFinset
 
 /-- The finset of vertices in a path. -/
 def vertexFinset [DecidableEq V] {a b : V} (p : Path a b) : Finset V :=
   p.vertices.toFinset
-
-/--
-A vertex `x` is in the `activeFinset` of a path `p` if and only if it is in the `dropLast` of the
-`vertices` list of `p`.
--/
-@[simp]
-lemma mem_activeFinset_iff [DecidableEq V] {a b : V} (p : Path a b) {x : V} :
-    x ∈ activeFinset p ↔ x ∈ p.vertices.dropLast := by
-  simp only [activeFinset, List.mem_toFinset]
-
-end Quiver.Path
-
-namespace Prefunctor
-
-open Quiver
-
-variable {V W : Type*} [Quiver V] [Quiver W] (F : V ⥤q W)
-
-@[simp]
-lemma end_map {a b : V} (p : Path a b) : F.obj (p.end) = (F.mapPath p).end := by
-  induction p with
-  | nil => rfl
-  | cons p' e ih => simp
-
-end Prefunctor
-
-open Quiver
-
-namespace Quiver
-
-/-- The quiver structure on a subtype is induced by the quiver structure on the original type.
-    An arrow from `a : S` to `b : S` exists if an arrow from `a.val` to `b.val` exists. -/
-@[instance_reducible]
-def inducedQuiver {V : Type*} [Quiver V] (S : Set V) : Quiver S :=
-  ⟨fun a b => a.val ⟶ b.val⟩
-
-end Quiver
-namespace Quiver.Subquiver
-
-variable {V : Type*} [Quiver V] (S : Set V)
-
-attribute [local instance] inducedQuiver
-
-/-- The embedding of an induced subquiver on a set `S` into the original quiver. -/
-@[simps]
-def embedding : Prefunctor S V where
-  obj := Subtype.val
-  map := id
-
-/-- The vertices in a path mapped by the embedding are all in the original set S. -/
-lemma mapPath_embedding_vertices_in_set {i j : S} (p : Path i j) :
-  ∀ v, v ∈ ((embedding S).mapPath p).activeVertices → v ∈ S := by
-  induction p with
-  | nil =>
-    intro v hv
-    simp only [Prefunctor.mapPath_nil, Path.activeVertices_nil, Set.mem_singleton_iff] at hv
-    subst hv
-    exact i.property
-  | cons p' e ih =>
-    intro v hv
-    simp only [Prefunctor.mapPath_cons, Path.activeVertices_cons, Set.mem_union,
-               Set.mem_singleton_iff] at hv
-    cases hv with
-    | inl h => exact ih v h
-    | inr h => subst h; simp_all only [embedding_obj, Subtype.coe_prop]
-
-open Quiver.Path
-
-end Quiver.Subquiver
-
-namespace Quiver.Path
-open Quiver
-variable {V : Type*} [Quiver V]
 
 /--
 Construct a path by repeating a loop `n` times.
@@ -287,28 +61,16 @@ def replicate (n : ℕ) {a : V} (p : Path a a) : Path a a :=
 
 @[simp]
 lemma length_replicate (n : ℕ) {a : V} (p : Path a a) :
-  (replicate n p).length = n * p.length := by
+    (replicate n p).length = n * p.length := by
   induction n with
   | zero => simp only [replicate, length_nil, zero_mul]
   | succ k ih =>
     simp only [replicate, length_comp, ih, add_comm, Nat.succ_mul]
 
-end Quiver.Path
-
-namespace Quiver.Path
-open Quiver
-variable {V : Type*} [Quiver V]
-
 /-- A path is simple if it does not contain any vertex more than once.
 This is a strict definition; a cycle `a ⟶ ... ⟶ a` of non-zero length is not simple. -/
 @[simp]
 def IsStrictlySimple {a b : V} (p : Path a b) : Prop := p.vertices.Nodup
-
-lemma isStrictlySimple_cons {a b c : V} (p : Path a b) (e : b ⟶ c) :
-  IsStrictlySimple (p.cons e) ↔ IsStrictlySimple p ∧ c ∉ p.vertices := by
-  classical
-  simp only [IsStrictlySimple, vertices_cons]
-  rw [List.nodup_concat]; aesop
 
 /-- The set of vertices of a simple path has cardinality `p.length + 1`. -/
 lemma card_vertexFinset_of_isStrictlySimple [DecidableEq V] {a b : V} {p : Path a b}
@@ -326,7 +88,6 @@ lemma not_strictly_simple_iff_exists_repeated_vertex [DecidableEq V] {a b : V} {
     exact ⟨v, List.count_pos_iff.mp (by lia), by lia⟩
   · rintro ⟨v, _, hv⟩
     exact ⟨v, by lia⟩
-
 
 theorem isStrictlySimple_of_shortest
     {a b : V} (p : Path a b)
