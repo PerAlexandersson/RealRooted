@@ -8,6 +8,7 @@ module
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
+public import Mathlib.Combinatorics.Quiver.Path.Decomposition
 
 /-!
 # Perron-Frobenius support lemmas
@@ -200,8 +201,8 @@ lemma Irreducible.exists_edge_out {A : Matrix n n ℝ}
   obtain ⟨j, hj_compl⟩ := Set.nonempty_compl.mpr hS_ne_univ
   obtain ⟨p, _hp_pos⟩ := hA_irred.connected i j
   have hj : j ∉ S := by simpa using hj_compl
-  obtain ⟨u, v, e, _p₁, _p₂, hu_in_S, hv_not_in_S, _hp⟩ :=
-    Quiver.Path.exists_boundary_edge_from_set p S hi hj
+  obtain ⟨u, hu_in_S, v, hv_not_in_S, e, -, -, -⟩ :=
+    Quiver.Path.exists_mem_notMem_hom_path_path_of_notMem_mem p S hi hj
   exact ⟨u, hu_in_S, v, hv_not_in_S, e.down⟩
 
 /-- If the `i`th entry of `A *ᵥ v` is zero and `v j` is positive, then `A i j = 0`. -/
@@ -220,7 +221,7 @@ lemma irreducible_one_element_implies_diagonal_pos [Fintype n]
     0 < A i i := by
   let : Quiver n := toQuiver A
   obtain ⟨p, hp_pos⟩ := hA_irred.connected i i
-  obtain ⟨j, p', e, rfl⟩ := Quiver.Path.path_decomposition_last_edge p hp_pos
+  obtain ⟨j, p', e, rfl⟩ := (Quiver.Path.length_ne_zero_iff_eq_cons (p := p)).1 hp_pos.ne'
   have h_sub : Subsingleton n := by
     rcases (Fintype.card_eq_one_iff).1 h_card_one with ⟨a, ha⟩
     exact ⟨fun x y => by simp [ha x, ha y]⟩
