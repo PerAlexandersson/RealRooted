@@ -239,7 +239,7 @@ lemma dotProduct_left_perron_sub_eq_zero
     {A : Matrix n n ℝ} {u y : n → ℝ}
     (hu_left_eig : u ᵥ* A = perronRoot A • u) :
     u ⬝ᵥ (A *ᵥ y - perronRoot A • y) = 0 := by
-  rw [dotProduct_sub, dotProduct_mulVec, hu_left_eig, dotProduct_smul_left,
+  rw [dotProduct_sub, dotProduct_mulVec, hu_left_eig, smul_dotProduct,
     dotProduct_smul, smul_eq_mul, sub_self]
 
 omit [DecidableEq n] in
