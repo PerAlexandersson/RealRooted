@@ -1,13 +1,14 @@
 import RealRooted.Applications.EulerianCompendium.Results
 
 /-!
-# Eulerian compendium: eight main theorems in paper order
+# Eulerian compendium: paper theorems and the zig-zag theorem
 
 <!-- realrooted-catalog
 version = 1
 section = "theorems"
 slug = "eulerian-compendium"
 formalized = "2026-10-24"
+tags = ["coauthored-paper", "realrooted-original"]
 references = ["Alexandersson2026Eulerian"]
 authors = ["Alexandersson"]
 years = [2026]
@@ -46,64 +47,70 @@ label = "Strict root alternation"
 name = "RealRooted.EulerianCompendium.PaperChallenges.derangementDescent_realRooted"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Derangement descent real-rootedness"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.cyclicWordDescent_roots"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Balanced cyclic-word roots"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.evenTopDescent_strictAlternation"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Even-top descents strictly alternate"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.superEulerian_roots_interlacing_gamma"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Super-Eulerian roots, interlacing and gamma-polynomials"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.ternaryWordRun_realRooted_interlaces"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Ternary-word runs are real-rooted and interlace"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.peakPolynomial_roots"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Permutation peaks have simple negative roots and strict alternation"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.peakValue_stability_and_weightedInterlacing"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Peak-value stability and weighted interlacing"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.zigzagEulerian_roots"
 module = "RealRooted.Challenges.EulerianCompendium"
 label = "Zig-zag Eulerian simple negative roots"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
 # Eight Eulerian enumeration theorems
 
-The eight checked statements below follow the order of the seven-family paper
-*Real-rooted Eulerian polynomials from permutations, words, and paths*
+The first seven checked statements below follow the order of the six-family
+paper *Real-rooted Eulerian polynomials from permutations, words, and paths*
 [@Alexandersson2026Eulerian]. The permutation-peak family contributes both its
-univariate root theorem and its multivariate stability theorem.
+univariate root theorem and its multivariate stability theorem. The final
+zig-zag theorem is a separate result first proved in this library.
 
-All enumeration definitions and their identifications are public RealRooted
-source. In particular, derangements are counted by descents, cyclic paths by
-balanced binary words, and ternary runs by actual words. Even-top descents and
-zig-zag swaps are actual permutation sums; peak polynomials specialize the
-permutation peak-value enumerator. The super-Eulerian family is recurrence-defined.
+The formalized models are the intended enumerators: derangements by descents,
+cyclic paths by balanced binary words, ternary runs by words, even-top descents
+and zig-zag swaps by permutation sums, and peak polynomials by specialization
+of the peak-value enumerator. The super-Eulerian family is recurrence-defined.
 
 The even-top and univariate peak statements require simple roots and exclude
 common roots. The ternary and positive-weighted peak statements assert weak
 interlacing: the library predicate `StrictInterl` permits equal roots.
 The zig-zag theorem asserts simple negative roots, without consecutive interlacing.
 
-These are library-backed challenge statements with checked proofs and fixed
-imported definitions, not isolated Mathlib-only proof-discovery benchmarks.
 ## References
 
 - [@Alexandersson2026Eulerian]
@@ -174,7 +181,7 @@ theorem peakValue_stability_and_weightedInterlacing :
         (weightedPeakPolynomial wt)) := by
   exact ⟨Challenges.peakValue_realStable, Challenges.weightedPeak_interlaces⟩
 
-/-- Paper `thm:zigzagEulerian`: exact degree and distinct negative roots of the swap sum. -/
+/-- Exact degree and distinct negative roots of the zig-zag swap enumerator. -/
 theorem zigzagEulerian_roots (n : ℕ) (hn : 1 ≤ n) :
     zigzagEulerianPolynomial n ≠ 0 ∧
       (zigzagEulerianPolynomial n).natDegree = n - 2 ∧

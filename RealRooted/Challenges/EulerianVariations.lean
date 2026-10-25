@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "eulerian-variations"
 formalized = "2026-09-09"
+tags = ["coauthored-paper"]
 references = [
   "Alexandersson2026Eulerian",
 ]
@@ -39,7 +40,7 @@ label = "Super-Eulerian polynomial"
 
 [[theorems]]
 name = """RealRooted.Applications.EulerianVariations.\
-cyclicPathDescentPolynomial_simple_root_description"""
+cyclicPathDescentPolynomial_roots"""
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
 label = "Zeros of the cyclic path descent polynomial"
 
@@ -106,9 +107,9 @@ real-rooted.
 - **Super-Eulerian polynomials:** consecutive rows interlace, and their
   gamma-polynomials are real-rooted with nonnegative coefficients.
 
-This page states the polynomial results. `Challenges.EulerianCompendium`
-collects the full paper statements, including the public proofs identifying
-the cyclic and ternary models with their actual word enumerators.
+The [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) records
+the corresponding enumerative statements and the identifications of the
+cyclic and ternary polynomials with their word models.
 
 ## References
 

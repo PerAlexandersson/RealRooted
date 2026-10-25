@@ -40,6 +40,7 @@ def catalog_block(
     years: str = "",
     references: str = "",
     formalized: str = 'formalized = "2026-01-02"',
+    tags: str = "",
     definitions: str = "",
     theorems: str = '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"',
     content: str | None = None,
@@ -51,6 +52,7 @@ version = 1
 section = "{section}"
 slug = "{slug}"
 {formalized}
+{tags}
 {authors}
 {years}
 {references}
@@ -691,6 +693,105 @@ end RealRooted.Challenges.Sample
                     'label = "Proven"\nheadline = true'
                 )
             ),
+        )
+        self.assertEqual(catalog_digest(load_catalog(self.root)), plain)
+
+    def test_provenance_tags_render_and_item_tags_override_page_tags(self) -> None:
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                tags='tags = ["coauthored-paper"]',
+                definitions=(
+                    '[[definitions]]\nname = "RealRooted.Challenges.Sample.family"\n'
+                    "tags = []\n\n"
+                    '[[definitions]]\nname = "RealRooted.Challenges.Sample.cited"\n'
+                    'tags = ["coauthored-paper"]'
+                ),
+                theorems=(
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.proven"\n'
+                    'label = "A library theorem"\ntags = ["realrooted-original"]\n\n'
+                    '[[theorems]]\nname = "RealRooted.Challenges.Sample.inherited"\n'
+                    'label = "A paper theorem"\nheadline = true'
+                ),
+            )
+            + "namespace RealRooted.Challenges.Sample\n"
+            + "def family : Nat := 1\n"
+            + "def cited : Nat := 2\n"
+            + "theorem proven : True := by trivial\n"
+            + "theorem inherited : True := by trivial\n"
+            + "end RealRooted.Challenges.Sample\n",
+        )
+        pages = load_catalog(self.root)
+        self.assertEqual(pages[0].tags, ("coauthored-paper",))
+        self.assertEqual(pages[0].definitions[0].tags, ())
+        self.assertEqual(pages[0].definitions[1].tags, ("coauthored-paper",))
+        self.assertEqual(pages[0].theorems[0].tags, ("realrooted-original",))
+        self.assertIsNone(pages[0].theorems[1].tags)
+        output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
+        page = output["families/sample/index.html"]
+        results = output["results/index.html"]
+        self.assertIn("Coauthored paper", page)
+        self.assertIn("RealRooted original", page)
+        def row_for(name: str) -> str:
+            marker = f"<code>{name}</code>"
+            declaration = results.index(marker)
+            start = results.rfind("<tr ", 0, declaration)
+            end = results.index("</tr>", declaration) + len("</tr>")
+            return results[start:end]
+
+        definition_row = row_for("RealRooted.Challenges.Sample.family")
+        cited_row = row_for("RealRooted.Challenges.Sample.cited")
+        theorem_row = row_for("RealRooted.Challenges.Sample.proven")
+        inherited_row = row_for("RealRooted.Challenges.Sample.inherited")
+        self.assertNotIn("Coauthored paper", definition_row)
+        self.assertIn("Coauthored paper", cited_row)
+        self.assertIn("RealRooted original", theorem_row)
+        self.assertIn("Coauthored paper", inherited_row)
+        manifest = json.loads(output["catalog-manifest.json"])["pages"][0]
+        self.assertEqual(manifest["tags"], ["coauthored-paper"])
+        declarations = {item["name"]: item for item in manifest["declarations"]}
+        self.assertEqual(declarations["RealRooted.Challenges.Sample.family"]["tags"], [])
+        self.assertEqual(
+            declarations["RealRooted.Challenges.Sample.cited"]["tags"],
+            ["coauthored-paper"],
+        )
+        self.assertEqual(
+            declarations["RealRooted.Challenges.Sample.proven"]["tags"],
+            ["realrooted-original"],
+        )
+        self.assertEqual(
+            declarations["RealRooted.Challenges.Sample.inherited"]["tags"],
+            ["coauthored-paper"],
+        )
+
+    def test_invalid_provenance_tags_fail(self) -> None:
+        for tags in ('tags = "coauthored-paper"', 'tags = ["unknown"]',
+                     'tags = ["coauthored-paper", "coauthored-paper"]'):
+            with self.subTest(tags=tags):
+                self.write(
+                    "RealRooted/Challenges/Sample.lean",
+                    catalog_block(tags=tags),
+                )
+                with self.assertRaises(CatalogError):
+                    load_catalog(self.root)
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(
+                definitions=(
+                    '[[definitions]]\nname = "RealRooted.Challenges.Sample.family"\n'
+                    'tags = ["unknown"]'
+                )
+            ),
+        )
+        with self.assertRaises(CatalogError):
+            load_catalog(self.root)
+
+    def test_provenance_tags_do_not_change_the_catalog_digest(self) -> None:
+        self.write("RealRooted/Challenges/Sample.lean", catalog_block())
+        plain = catalog_digest(load_catalog(self.root))
+        self.write(
+            "RealRooted/Challenges/Sample.lean",
+            catalog_block(tags='tags = ["realrooted-original"]'),
         )
         self.assertEqual(catalog_digest(load_catalog(self.root)), plain)
 

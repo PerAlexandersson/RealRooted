@@ -136,7 +136,7 @@ theorem cyclicPathDescentPolynomial_hasSimpleRoots (n : ℕ) (hn : 0 < n) :
 
 /-- Paper theorem `thm:cyclicDescents`: after removing its simple zero at the
 origin, the cyclic-path polynomial has exactly `n - 1` roots, all negative. -/
-theorem cyclicPathDescentPolynomial_simple_root_description
+theorem cyclicPathDescentPolynomial_roots
     (n : ℕ) (hn : 0 < n) :
     HasSimpleRoots (cyclicPathDescentPolynomial n) ∧
       (cyclicPathDescentPolynomial n).IsRoot 0 ∧
@@ -163,5 +163,6 @@ theorem cyclicPathDescentPolynomial_simple_root_description
       Polynomial.splits_iff_card_roots.mp hsplits,
       natDegree_cyclicPathDescentPolynomial n hn]
     rfl
+
 
 end RealRooted.Applications.EulerianVariations
