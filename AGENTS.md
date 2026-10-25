@@ -23,7 +23,7 @@ This guide applies to the `RealRooted` Lean project.
 
 - Before proving a lemma, search for it.  `python3 scripts/lemma_index.py` writes
   `docs/LEMMA_INDEX.tsv` (one line per public theorem: name, module, conclusion key, number
-  of using files, docstring, statement) in a few seconds; `grep` it by name, key or statement
+  of using files, docstring, statement) in a few seconds; `rg` it by name, key or statement
   text.  `docs/WORKHORSES.md` lists the most used theorems for each kind of conclusion.
 - For goals about the rows of a recurrence, try the row tactics first (`rr_row_interlaces`,
   `rr_row_splits`, `rr_row_natDegree` and their `?` variants).
@@ -47,7 +47,7 @@ This guide applies to the `RealRooted` Lean project.
 - Import the shim and use the upstream-shaped theorem instead of re-proving a
   local `RealRooted` copy.
 - Prefer the owning namespace and receiver-style use, for example
-  `p.natDegree_derivative h`, over bare project-local helper names.
+  `p.natDegree_derivative`, over bare project-local helper names.
 - Prefer canonical `↔` and `[simp]` lemmas when both directions are useful, and
   derive negated forms such as `_ne_zero` from them when possible.
 - Prefer weaker natural hypotheses, such as `p.natDegree ≠ 0`, over stronger
@@ -65,7 +65,7 @@ This guide applies to the `RealRooted` Lean project.
   constants, with hypotheses after `_of_`.  Put closure and preservation lemmas
   in the predicate's namespace for dot notation (`IsPFPolynomial.thetaPlusOne`,
   `Interl.derivative`) rather than `fooPreservesPF` or `foo_preserves_pf`.
-- Spell predicates as they are defined (`hasNonnegCoeffs`,
+- Use the existing predicate spelling in theorem names (`hasNonnegCoeffs`,
   `hasPosLeadingCoeff`, `isPolyaFreqSeq`, `strictInterl`); in names,
   `isRealRooted` means `p ≠ 0 ∧ p.Splits`.  Prop-valued definitions are
   UpperCamelCase and data-valued definitions lowerCamelCase (`tDeriv`,
@@ -130,10 +130,10 @@ This guide applies to the `RealRooted` Lean project.
 
 Follow the `Polynomial.natDegree_derivative` extraction pattern.
 
-- Prefer using `p.natDegree_derivative` from
-  `RealRooted.Mathlib.Algebra.Polynomial.Derivative` (which has the signature
-  `p.derivative.natDegree = p.natDegree - 1` and does not require a degree
-  non-zero hypothesis).
+- Prefer Mathlib's `p.natDegree_derivative`, also available through
+  `RealRooted.Mathlib.Algebra.Polynomial.Derivative`. Its conclusion is
+  `p.derivative.natDegree = p.natDegree - 1`; it does not take a degree-nonzero
+  hypothesis.
 - Prefer using `(p.derivative_ne_zero).mpr h` (or
   `Polynomial.derivative_ne_zero.mpr h`), where `h : p.natDegree ≠ 0`; derive
   `h` with `by lia` from stronger degree assumptions when needed.

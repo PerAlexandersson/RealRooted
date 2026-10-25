@@ -10,7 +10,7 @@ block inside a `/-! ... -/` module comment:
 version = 1
 section = "families"
 slug = "example"
-formalized = "2026-01-02"
+formalized = "2026-10-23"
 authors = ["Example", "Author"]
 years = [1952]
 tags = ["coauthored-paper"]
@@ -52,7 +52,10 @@ python3 scripts/symcat_sync.py
 python3 scripts/symcat_sync.py /path/to/exports --keep ExtraBibliographyKey
 ```
 
-`version`, `section`, and `slug` are required.  Sections are `concepts`,
+`version`, `section`, `slug`, and `formalized` are required. Use
+`formalized = "YYYY-MM-DD"` for the date the selected headline result (or
+first theorem) was first formalized, not the date of an editorial update.
+Sections are `concepts`,
 `families`, and `theorems`; slugs are lowercase hyphenated text.  Optional
 `authors` and `years` arrays record compact attribution already supported by
 the page's references.  Years must be strictly increasing; the first year is

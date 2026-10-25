@@ -6,8 +6,9 @@ no `set_option`, `simp +decide`, or `simp_all +decide`, no `omega` outside the
 declarations listed in `ALLOWED_OMEGA` (goals `lia` cannot close), and no `try`,
 `all_goals`, or `any_goals` outside tactic implementations (`macro`,
 `macro_rules`, `elab`, and `elab_rules` commands).
-Statement-like declarations referenced only by their own
-definition are reported for review unless `PROOF_STATUS.md` classifies them.
+Statement-like declarations referenced only by their own definition are
+reported for review. Assumptions belong in source docstrings, and missing
+proofs belong in GitHub issues; this guard needs no Markdown status ledger.
 """
 
 from __future__ import annotations
@@ -15,7 +16,9 @@ from __future__ import annotations
 import argparse
 import pathlib
 import re
+import subprocess
 import sys
+import tempfile
 from collections import Counter
 from dataclasses import dataclass
 
@@ -239,14 +242,13 @@ def admission_errors(
     return errors
 
 
-def unclassified_low_use_statements(
-    statements: list[StatementDeclaration], occurrences: Counter[str], proof_status: str
+def low_use_statements(
+    statements: list[StatementDeclaration], occurrences: Counter[str]
 ) -> list[StatementDeclaration]:
     return [
         statement
         for statement in statements
         if occurrences[statement.declaration] == 1
-        and f"`{statement.declaration}`" not in proof_status
     ]
 
 
@@ -305,10 +307,30 @@ def run_self_test() -> int:
     assert [item.declaration for item in statements] == ["ExampleStatement"]
     assert [
         item.declaration
-        for item in unclassified_low_use_statements(
-            statements, Counter(IDENTIFIER_RE.findall(clean)), ""
+        for item in low_use_statements(
+            statements, Counter(IDENTIFIER_RE.findall(clean))
         )
     ] == ["ExampleStatement"]
+    assert not low_use_statements(statements, Counter({"ExampleStatement": 2}))
+
+    # Exercise the CLI without a Markdown ledger, including its hard-fail path.
+    with tempfile.TemporaryDirectory(prefix="realrooted-proof-guard-") as directory:
+        root = pathlib.Path(directory)
+        lean_dir = root / "RealRooted"
+        lean_dir.mkdir()
+        source = lean_dir / "Test.lean"
+        source.write_text("def ExampleStatement : Prop := True\n", encoding="utf-8")
+        command = [
+            sys.executable, str(pathlib.Path(__file__).resolve()),
+            "--repo-root", str(root),
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        assert result.returncode == 0, result.stderr
+        assert "review:" in result.stdout and "ExampleStatement" in result.stdout
+        source.write_text("theorem bad : True := by\n  sorry\n", encoding="utf-8")
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        assert result.returncode == 1
+        assert "unexpected sorry" in result.stderr
     print("ok: proof-status guard self-test passed")
     return 0
 
@@ -320,9 +342,8 @@ def main() -> int:
 
     repo_root = args.repo_root.resolve()
     lean_root = repo_root / "RealRooted"
-    proof_status_path = repo_root / "PROOF_STATUS.md"
-    if not lean_root.is_dir() or not proof_status_path.is_file():
-        print("error: expected RealRooted/ and PROOF_STATUS.md", file=sys.stderr)
+    if not lean_root.is_dir():
+        print("error: expected RealRooted/", file=sys.stderr)
         return 1
 
     findings: list[Finding] = []
@@ -343,23 +364,20 @@ def main() -> int:
             print(f"error: {error}", file=sys.stderr)
         return 1
 
-    proof_status = proof_status_path.read_text(encoding="utf-8")
     occurrences: Counter[str] = Counter()
     for text in clean_texts:
         occurrences.update(IDENTIFIER_RE.findall(text))
-    unclassified = unclassified_low_use_statements(
-        statements, occurrences, proof_status
-    )
-    for statement in unclassified:
+    low_use = low_use_statements(statements, occurrences)
+    for statement in low_use:
         print(
             f"review: {statement.path}:{statement.line}: "
             f"{statement.declaration} is referenced only by its declaration "
-            "and is not classified in PROOF_STATUS.md"
+            "(review its source documentation and tracking issue)"
         )
 
     print(
         "ok: no sorry, admit, source axiom, or forbidden tactic commands; "
-        f"{len(unclassified)} unclassified low-use statement(s)"
+        f"{len(low_use)} low-use statement(s) for review"
     )
     return 0
 

@@ -13,14 +13,21 @@ It is a research formalization workspace rather than a polished Mathlib
 contribution. Every named theorem is checked by Lean. We aim to upstream stable,
 reusable pieces to Mathlib over time.
 
-- [`PROOF_STATUS.md`](PROOF_STATUS.md) lists proof assumptions, open statement
-  targets, and refuted legacy interfaces.
 - [`ARCHITECTURE.md`](ARCHITECTURE.md) describes the module layers, import
   budgets, and module-splitting rules.
+- [`AGENTS.md`](AGENTS.md) and [`LEAN_GOLF.md`](LEAN_GOLF.md) give development
+  and proof-cleanup conventions.
+- [`docs/WORKHORSES.md`](docs/WORKHORSES.md) is a generated lemma-search aid;
+  regenerate it with `python3 scripts/lemma_index.py` when needed.
+- [`website/README.md`](website/README.md) documents catalog maintenance.
 
 ## Build
 
-The project uses Lean 4.35.0 and Mathlib v4.35.0.
+The toolchain and dependency versions are pinned in
+[`lean-toolchain`](lean-toolchain), [`lakefile.toml`](lakefile.toml), and
+[`lake-manifest.json`](lake-manifest.json). The commands below apply to a
+standalone checkout; managed workspaces should use their prescribed build
+wrapper and shared-cache policy.
 
 ```bash
 lake exe cache get
@@ -47,8 +54,8 @@ replace it.
 - `RealRooted/Challenges/` holds short entry points, one per completed result.
   They feed the public catalog (see [Documentation](#documentation)).
 - `RealRooted/Tactic/` holds the real-rootedness and interlacing tactics.
-  `Tactic/OEIS_COVERAGE.md` is the generated ledger of OEIS certificate
-  coverage.
+  [`RealRooted/Tactic/OEIS_COVERAGE.md`](RealRooted/Tactic/OEIS_COVERAGE.md)
+  is the generated ledger of OEIS certificate coverage.
 - Theory lives in topic directories such as `CommonInterleaver/`,
   `Hadamard/`, `BorceaBranden/`, `MultiplierSequence/`, `LGV/`, and
   `Wronskian/`. Concrete families live in `CombinatorialExamples/` and
@@ -56,8 +63,12 @@ replace it.
 
 ## Main concepts
 
-- `Interlaces f g`, `StrictInterl f g`, `Interl f g`: interlacing in the
-  strict, oriented, and zero-aware forms.
+- `Interlaces f g`: nonzero real-rooted polynomials with degree gap one and
+  weakly interleaving roots.
+- `StrictInterl f g`: oriented interlacing for nonzero real-rooted polynomials,
+  allowing equal degrees or a degree gap of one. Despite the name, repeated
+  and shared roots are allowed.
+- `Interl f g`: the zero-aware extension of `StrictInterl`.
 - `p = 0 ∨ p.Splits`: the zero-aware real-rootedness convention for closure
   statements.
 - `IsGeneralizedSturmSeq`, `IsInterlacingSeq`, `IsInterlacingSeq0`:
@@ -130,8 +141,8 @@ this file.
 - `sorry`, `admit`, and source `axiom` commands are not accepted as proofs.
   Track an unproved result in a GitHub issue.
 - A temporary `...Statement : Prop` interface is allowed only when it is
-  genuinely useful. List it in `PROOF_STATUS.md`, document that it is an
-  unproved target, and keep it out of production theorem dependencies.
+  genuinely useful. Its docstring must identify it as an unproved target and
+  link the tracking GitHub issue. Keep it out of production theorem dependencies.
 - Keep a known-false candidate interface only when it helps diagnosis, and
   then only next to its checked negation. Any reduction through such an
   interface must take it as an explicit hypothesis and document that the route
@@ -182,16 +193,19 @@ RealRooted` rewrites the file; check that the diff only removes lines).
 
 The import guards check the broad, production, and regression umbrellas
 separately, and reject production closures that contain tactic examples. The
-proof-status guard also reports low-use theorem-shaped propositions that still
-need an explicit entry in `PROOF_STATUS.md`.
+proof-status guard also reports theorem-shaped propositions referenced only by
+their definition for review. Document assumptions and checked counterexamples
+beside their declarations; track missing proofs in GitHub issues.
 
 ### CI and pull requests
 
 - A small, independently owned change may use a **CI-first draft PR**: run the
-  applicable source checks, push the branch, and open a draft PR so GitHub
-  compiles it. A local full build is not required for that draft. State which
-  checks have and have not run. A draft commit is not a verified theorem
-  milestone.
+  applicable source checks, push the branch, and open a draft PR. Drafts run
+  the catalog job, but the main workflow skips the full build until the PR is
+  ready for review or the workflow is explicitly dispatched. A local full
+  build is not required for a draft checkpoint. State which checks have and
+  have not run; opening a draft is not proof validation. The current triggers
+  are in [the CI workflow](.github/workflows/lean_action_ci.yml).
 - Parallel workers use isolated branches or worktrees with disjoint file
   ownership. Builds against a shared local Lake cache must be serialized.
   GitHub runners can validate PRs independently. One integrator reviews the
@@ -236,10 +250,16 @@ curated in the `RealRooted/Challenges/` entry points and rendered by
 - Do not commit build logs (`*.log`), patch files (`*.patch`), backups (`*~`),
   or scratch files. Keep new kinds of temporary files local, or add them to
   `.gitignore`.
-- Keep issue-specific notes local. `.gitignore` ignores new Markdown files by
-  default. It allows only the maintained top-level guides, the
-  architecture and status ledgers, the generated tactic coverage, and the public
-  `SuperEulerian/` subtree.
+- `.gitignore` ignores new Markdown files by default, but ignored files can
+  still become stale. Keep durable research progress, failed approaches, and
+  open questions in the relevant GitHub issue, rather than maintaining a
+  second research ledger in Markdown. Remove local scratch notes after their
+  useful content is recorded there.
+- Keep any local handoff short: active ownership, blockers, verification, and
+  issue/PR links. It is not a proof-status ledger or a transcript archive.
+- Maintained Markdown consists of development guides, topic navigation, and
+  generated indexes. Update generated files through their generators, not by
+  hand; use Git history for superseded documentation.
 
 ## License
 
