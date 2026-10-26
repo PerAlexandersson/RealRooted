@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.PathPowerClique
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Weighted renewal polynomials
@@ -187,23 +188,30 @@ private theorem coeff_zero_renewalFactorPolynomial_pow {d : ℕ}
   rw [coeff_zero_eq_eval_zero, eval_pow, ← coeff_zero_eq_eval_zero,
     coeff_zero_renewalFactorPolynomial, one_pow]
 
-/-- The coefficient polynomial extracted from
-`1 / (1 - x * R (t * x ^ ℓ))`, where `R = ∏ r, (1 + a r X)`.
+/-- The coefficient polynomial extracted from `1 / (1 - x * R (t * x ^ ℓ))`.
 
 The coefficient of `X ^ j` is `[z ^ j] R(z) ^ (n - ℓ * j)`.  The theorem
 `weightedRenewalPolynomial_eq_weightedGapPolynomial` below proves that this
 explicit formula is exactly the sampled periodic fixed-delay recurrence. -/
-def weightedRenewalPolynomial {d : ℕ} (a : Fin d → ℝ) (ℓ n : ℕ) : ℝ[X] :=
+def renewalPolynomial (R : ℝ[X]) (ℓ n : ℕ) : ℝ[X] :=
   ∑ j ∈ range (n + 1),
-    C ((renewalFactorPolynomial a ^ (n - ℓ * j)).coeff j) * X ^ j
+    C ((R ^ (n - ℓ * j)).coeff j) * X ^ j
 
-/-- Coefficients of the weighted renewal polynomial.  Terms whose apparent
-factor exponent would be negative vanish after truncated subtraction. -/
-theorem coeff_weightedRenewalPolynomial {d : ℕ} (a : Fin d → ℝ)
-    (ℓ n j : ℕ) (hℓ : ℓ ≠ 0) :
-    (weightedRenewalPolynomial a ℓ n).coeff j =
-      (renewalFactorPolynomial a ^ (n - ℓ * j)).coeff j := by
-  simp only [weightedRenewalPolynomial, finsetSum_coeff, coeff_C_mul_X_pow,
+/-- The renewal polynomial driven by `∏ r, (1 + a r X)`. -/
+def weightedRenewalPolynomial {d : ℕ} (a : Fin d → ℝ) (ℓ n : ℕ) : ℝ[X] :=
+  renewalPolynomial (renewalFactorPolynomial a) ℓ n
+
+/-- Expanding the definition of a weighted renewal polynomial exposes its driver. -/
+theorem weightedRenewalPolynomial_eq_renewalPolynomial {d : ℕ}
+    (a : Fin d → ℝ) (ℓ n : ℕ) :
+    weightedRenewalPolynomial a ℓ n =
+      renewalPolynomial (renewalFactorPolynomial a) ℓ n := rfl
+
+/-- Coefficients of a renewal polynomial. Terms whose apparent factor exponent
+would be negative vanish after truncated subtraction. -/
+theorem coeff_renewalPolynomial (R : ℝ[X]) (ℓ n j : ℕ) (hℓ : ℓ ≠ 0) :
+    (renewalPolynomial R ℓ n).coeff j = (R ^ (n - ℓ * j)).coeff j := by
+  simp only [renewalPolynomial, finsetSum_coeff, coeff_C_mul_X_pow,
     Finset.sum_ite_eq, mem_range]
   split_ifs with hj
   · rfl
@@ -214,6 +222,14 @@ theorem coeff_weightedRenewalPolynomial {d : ℕ} (a : Fin d → ℝ)
     rw [hsub, pow_zero, coeff_one]
     have hj0 : j ≠ 0 := by lia
     simp only [hj0, ite_false]
+
+/-- Coefficients of the weighted renewal polynomial.  Terms whose apparent
+factor exponent would be negative vanish after truncated subtraction. -/
+theorem coeff_weightedRenewalPolynomial {d : ℕ} (a : Fin d → ℝ)
+    (ℓ n j : ℕ) (hℓ : ℓ ≠ 0) :
+    (weightedRenewalPolynomial a ℓ n).coeff j =
+      (renewalFactorPolynomial a ^ (n - ℓ * j)).coeff j := by
+  exact coeff_renewalPolynomial (renewalFactorPolynomial a) ℓ n j hℓ
 
 private theorem weightedRenewalPolynomial_eq_one_of_lt {d : ℕ}
     (a : Fin d → ℝ) {ℓ n : ℕ} (hℓ : ℓ ≠ 0) (hn : n < ℓ) :
@@ -287,6 +303,31 @@ theorem strictInterl_weightedRenewalPolynomial_add {d : ℕ} [NeZero d]
     weightedRenewalPolynomial_eq_weightedGapPolynomial a ℓ (n + s) hℓ]
   exact strictInterl_of_fixedDelay_recurrence Q w (d * ℓ + 1) (by lia)
     hw hQ0 hrec hAB hgap
+
+/-- The renewal polynomial driven by the constant polynomial one is constant. -/
+@[simp]
+theorem renewalPolynomial_one (ℓ n : ℕ) : renewalPolynomial 1 ℓ n = 1 := by
+  ext j
+  rcases j with _ | j <;> simp [renewalPolynomial, coeff_one]
+
+/-- **Renewal interlacing window** (RealRooted issue #2037).  Let `R` have nonnegative
+coefficients, constant coefficient one, and only real roots, and let `d = R.natDegree`.  If
+`ℓ ≠ 0` and `d * s ≤ d * ℓ + 1`, then the coefficient of `x ^ n` in
+`1 / (1 - x * R (t * x ^ ℓ))` interlaces the coefficient of `x ^ (n + s)`.  For `d = 0` the
+rows are constant. -/
+theorem strictInterl_renewalPolynomial_add (R : ℝ[X]) (ℓ n s : ℕ)
+    (hRnn : HasNonnegCoeffs R) (hR0 : R.coeff 0 = 1) (hRsplits : R.Splits) (hℓ : ℓ ≠ 0)
+    (hs : R.natDegree * s ≤ R.natDegree * ℓ + 1) :
+    StrictInterl (renewalPolynomial R ℓ n) (renewalPolynomial R ℓ (n + s)) := by
+  by_cases hd : R.natDegree = 0
+  · rw [eq_C_of_natDegree_eq_zero hd, hR0, map_one, renewalPolynomial_one,
+      renewalPolynomial_one]
+    exact StrictInterl.refl one_ne_zero Polynomial.Splits.one
+  have : NeZero R.natDegree := ⟨hd⟩
+  obtain ⟨a, ha, hR⟩ := exists_eq_prod_one_add_C_mul_X_of_splits hRnn hR0 hRsplits
+  have hR' : R = renewalFactorPolynomial a := hR
+  rw [hR']
+  exact strictInterl_weightedRenewalPolynomial_add a ℓ n s hℓ ha hs
 
 /-- The coefficient polynomial extracted from
 `1 / (1 - x * (1 + t * x ^ ℓ) ^ d)`.
