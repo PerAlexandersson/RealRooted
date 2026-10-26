@@ -975,3 +975,282 @@ elab "rr_row_path_power_interlaces" : tactic => pathPowerGoal false
 end
 
 end RealRooted.Tactic
+
+/-!
+## Fixed-delay recurrences
+
+The general route below recognizes
+`P (n + 1) = C (a (n + 1)) * P n + C (b (n + 1)) * X * P (n + 1 - L)`.
+It lives with the path-power route because path-power polynomials are the canonical
+fixed-delay model and also supply the fallback for transformed families.  The theorems it
+applies are in `RealRooted.Interlacing.VariableDelay`.
+-/
+
+public meta section
+
+open Lean Elab Tactic Meta Polynomial
+
+namespace RealRooted.Tactic
+
+/-- Parsed data for a canonical fixed-delay recurrence. -/
+structure VariableDelayData where
+  /-- The row family. -/
+  P : Name
+  /-- Fixed parameters before the row index. -/
+  params : Array Expr
+  /-- The defining recurrence equation. -/
+  eqn : Name
+  /-- The positive delay. -/
+  delay : Nat
+  /-- The scalar multiplying the preceding row. -/
+  a : Expr
+  /-- The scalar multiplying the delayed `X`-term. -/
+  b : Expr
+  /-- Whether the preceding-row coefficient was written explicitly. -/
+  scaled : Bool
+
+/-- The index of an application of `P params`, if any. -/
+def variableDelayRowIndex? (P : Name) (params : Array Expr) (e : Expr) : Option Expr :=
+  let e := e.consumeMData
+  let args := e.getAppArgs
+  if e.isApp && e.getAppFn.isConstOf P && args.size == params.size + 1 &&
+      (List.range params.size).all (fun i ↦ args[i]! == params[i]!) then
+    some args.back!
+  else
+    none
+
+/-- Multiplicative factors of an expression. -/
+partial def variableDelayFactors (e : Expr) : Array Expr :=
+  let e := e.consumeMData
+  if e.isAppOfArity ``HMul.hMul 6 then
+    variableDelayFactors e.appFn!.appArg! ++ variableDelayFactors e.appArg!
+  else
+    #[e]
+
+/-- Additive summands of an expression. -/
+partial def variableDelaySummands (e : Expr) : Array Expr :=
+  let e := e.consumeMData
+  if e.isAppOfArity ``HAdd.hAdd 6 then
+    variableDelaySummands e.appFn!.appArg! ++ variableDelaySummands e.appArg!
+  else
+    #[e]
+
+/-- The scalar inside `Polynomial.C`. -/
+def scalarOfC? (e : Expr) : Option Expr :=
+  let e := e.consumeMData
+  if e.getAppFn.isConstOf ``Polynomial.C then e.getAppArgs.back?
+  else if e.isAppOfArity ``DFunLike.coe 6 &&
+      e.appFn!.appArg!.getAppFn.isConstOf ``Polynomial.C then
+    some e.appArg!
+  else
+    none
+
+/-- Replace the recurrence index `n + 1` by a fresh function argument and abstract it. -/
+def abstractSuccessorCoeff (n e : Expr) : MetaM (Option Expr) := do
+  withLocalDeclD `m (mkConst ``Nat) fun m => do
+    let n1 := mkNatAdd n (mkNatLit 1)
+    let e' := e.replace fun x => if x == n1 then some m else none
+    if e'.containsFVar n.fvarId! then return none
+    return some (← mkLambdaFVars #[m] e')
+
+/-- The numeral `L` in `n + 1 - L`. -/
+def fixedDelayOfIndex? (n e : Expr) : MetaM (Option Nat) := do
+  let e := e.consumeMData
+  if e == n then return some 1
+  if e.isAppOfArity ``HSub.hSub 6 then
+    unless (← natOffsetOf? n e.appFn!.appArg!) == some 1 do return none
+    return ← evalNat e.appArg!
+  if e.isAppOfArity ``Nat.sub 2 then
+    let args := e.getAppArgs
+    unless (← natOffsetOf? n args[0]!) == some 1 do return none
+    return ← evalNat args[1]!
+  return none
+
+/-- Read one summand as a preceding-row term or a delayed `X`-term. -/
+def readVariableDelaySummand (P : Name) (params : Array Expr) (n term : Expr) :
+    MetaM (Option (Bool × Nat × Expr × Bool)) := do
+  let factors := variableDelayFactors term
+  let mut row? : Option Expr := none
+  let mut scalar? : Option Expr := none
+  let mut hasX := false
+  for factor in factors do
+    if let some idx := variableDelayRowIndex? P params factor then
+      if row?.isSome then return none
+      row? := some idx
+    else if factor.getAppFn.isConstOf ``Polynomial.X then
+      if hasX then return none
+      hasX := true
+    else if let some c := scalarOfC? factor then
+      if scalar?.isSome then return none
+      scalar? := some c
+    else
+      return none
+  let some row := row? | return none
+  let scalar ← scalar?.getDM (mkNumeral (mkConst ``Real) 1)
+  if hasX then
+    let some L ← fixedDelayOfIndex? n row | return none
+    return some (true, L, scalar, scalar?.isSome)
+  unless row == n do return none
+  return some (false, 0, scalar, scalar?.isSome)
+
+/-- Recognize a canonical fixed-delay recurrence from the equation lemmas of `P`. -/
+def variableDelay? (P : Name) (params : Array Expr := #[]) : MetaM (Option VariableDelayData) := do
+  let some eqns ← getEqnsFor? P | return none
+  for eqn in eqns do
+    let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
+    let result ← forallTelescopeReducing ty fun xs body => do
+      if xs.size != params.size + 1 then return none
+      let body := specializeRowEqn xs params body
+      let n := xs.back!
+      let some (_, lhs, rhs) := body.eq? | return none
+      let some lhsIndex := variableDelayRowIndex? P params lhs | return none
+      unless (← natOffsetOf? n lhsIndex) == some 1 do return none
+      let summands := variableDelaySummands rhs
+      unless summands.size == 2 do return none
+      let mut current? : Option (Expr × Bool) := none
+      let mut delayed? : Option (Nat × Expr) := none
+      for summand in summands do
+        let some (delayed, L, coeff, explicit) ←
+            readVariableDelaySummand P params n summand
+          | return none
+        if delayed then
+          if delayed?.isSome then return none
+          delayed? := some (L, coeff)
+        else
+          if current?.isSome then return none
+          current? := some (coeff, explicit)
+      let some (a, scaled) := current? | return none
+      let some (L, b) := delayed? | return none
+      if L == 0 then return none
+      let some a ← abstractSuccessorCoeff n a | return none
+      let some b ← abstractSuccessorCoeff n b | return none
+      return some { P, params, eqn, delay := L, a, b, scaled }
+    if let some data := result then return some data
+  return none
+
+/-- The kinds of conclusions served by the fixed-delay route. -/
+inductive VariableDelayGoalKind where
+  | nonneg
+  | splits
+  | strict
+  | interlaces
+
+/-- Apply the fixed-delay recurrence theorems to the current row goal. -/
+def variableDelayGoal (kind : VariableDelayGoalKind) : TacticM Unit := do
+  discard introIfForall
+  withMainContext do
+    let target ← instantiateMVars (← getMainTarget)
+    let some seq ← findPolySeqApp? target
+      | throwError "rr_row: no polynomial sequence occurs in the goal"
+    let some data ← variableDelay? seq.name seq.params
+      | throwError "rr_row: no canonical fixed-delay recurrence"
+    let P := mkIdent data.P
+    let Q ← certTerm (mkAppN (← mkConstWithFreshMVarLevels data.P) data.params)
+    let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels data.eqn) data.params)
+    let a ← certTerm data.a
+    let b ← certTerm data.b
+    let L := rowNumLit data.delay
+    let hL ← `(by norm_num)
+    let haPos ← `(by
+      intro n
+      beta_reduce
+      first | solve_by_elim [le_of_lt] | positivity | nlinarith)
+    let haNonneg ← `(by
+      intro n
+      beta_reduce
+      first | solve_by_elim [le_of_lt] | positivity | nlinarith)
+    let hb ← `(by
+      intro n
+      beta_reduce
+      first | solve_by_elim [le_of_lt] | positivity | nlinarith)
+    let hP0 ← `(by simp only [$P:ident])
+    let hrec ← `(fun n => by
+      beta_reduce
+      rw [$eqn n] <;> simp only [map_one, mul_one] <;> ring)
+    let strictMain : TacticM (TSyntax `tactic) := do
+      if data.scaled then
+        `(tactic|
+          apply RealRooted.strictInterl_of_scaled_fixedDelay_recurrence
+            (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haPos $hb $hP0 $hrec <;>
+            first | assumption | solve_by_elim | lia | rr_row_side)
+      else
+        `(tactic|
+          apply RealRooted.strictInterl_of_fixedDelay_recurrence
+            (Q := $Q) (w := $b) (L := $L) $hL $hb $hP0 $hrec <;>
+            first | assumption | solve_by_elim | lia | rr_row_side)
+    match kind with
+    | .nonneg =>
+        evalTactic (← `(tactic|
+          apply RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
+            (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haNonneg $hb $hP0 $hrec))
+    | .strict => evalTactic (← strictMain)
+    | .interlaces =>
+        evalTactic (← `(tactic| refine RealRooted.StrictInterl.toInterlaces ?_ ?_))
+        let [strictGoal, degreeGoal] ← getGoals
+          | throwError "rr_row: unexpected interlacing goals"
+        setGoals [strictGoal]
+        evalTactic (← strictMain)
+        setGoals [degreeGoal]
+        rowSideGoal (some P)
+        setGoals []
+    | .splits =>
+        let idx ← certTerm (← mainRowIndex P)
+        if data.scaled then
+          evalTactic (← `(tactic|
+            exact (RealRooted.strictInterl_of_scaled_fixedDelay_recurrence
+              (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haPos $hb $hP0 $hrec
+              (A := $idx) (B := $idx) (by lia) (by lia)).2.1.2))
+        else
+          evalTactic (← `(tactic|
+            exact (RealRooted.strictInterl_of_fixedDelay_recurrence
+              (Q := $Q) (w := $b) (L := $L) $hL $hb $hP0 $hrec
+              (A := $idx) (B := $idx) (by lia) (by lia)).2.1.2))
+    unless (← getGoals).isEmpty do throwError "rr_row: fixed-delay route left goals"
+
+/-- Apply the path-power window theorem when the target has an explicit additive step. -/
+def pathPowerWindowGoal : TacticM Unit := do
+  discard introIfForall
+  withMainContext do
+    let target ← instantiateMVars (← getMainTarget)
+    unless target.isAppOfArity ``RealRooted.StrictInterl 2 do
+      throwError "rr_row_window: the goal is not a `StrictInterl` statement"
+    let left := target.appFn!.appArg!
+    let right := target.appArg!
+    unless left.getAppFn.isConstOf ``RealRooted.pathPowerCliquePolynomial &&
+        right.getAppFn.isConstOf ``RealRooted.pathPowerCliquePolynomial do
+      throwError "rr_row_window: the rows are not path-power polynomials"
+    let leftArgs := left.getAppArgs
+    let rightArgs := right.getAppArgs
+    unless leftArgs.size == 2 && rightArgs.size == 2 && leftArgs[0]! == rightArgs[0]! do
+      throwError "rr_row_window: incompatible path-power rows"
+    let k ← certTerm leftArgs[0]!
+    let AExpr := leftArgs[1]!
+    let BExpr := rightArgs[1]!
+    let A ← certTerm AExpr
+    if AExpr == BExpr then
+      evalTactic (← `(tactic|
+        exact RealRooted.StrictInterl.refl
+          (RealRooted.pathPowerCliquePolynomial_ne_zero $k $A)
+          (RealRooted.splits_pathPowerCliquePolynomial $k $A)))
+      return
+    unless BExpr.isAppOfArity ``HAdd.hAdd 6 && BExpr.appFn!.appArg! == AExpr do
+      throwError "rr_row_window: the right path-power index is not the left index plus a step"
+    let step ← certTerm BExpr.appArg!
+    evalTactic (← `(tactic|
+      apply RealRooted.strictInterl_pathPowerCliquePolynomial_add $k $A $step <;>
+        first | assumption | positivity | lia | rr_row_side))
+    unless (← getGoals).isEmpty do throwError "rr_row_window: path-power route left goals"
+
+/-- Prove a fixed-delay interlacing window. -/
+def rowWindowGoal : TacticM Unit := do
+  match ← rowAttempt (variableDelayGoal .strict) with
+  | .ok _ => return
+  | .error variableError =>
+      match ← rowAttempt pathPowerWindowGoal with
+      | .ok _ => return
+      | .error pathError =>
+          throwRowFailures m!"rr_row_window: no fixed-delay route proves the goal"
+            #[(m!"variable-delay recurrence", variableError),
+              (m!"path-power model", pathError)]
+
+end RealRooted.Tactic

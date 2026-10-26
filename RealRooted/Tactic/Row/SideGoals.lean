@@ -52,10 +52,15 @@ syntax (name := rrRowStrictInterl) "rr_row_strictInterl" (ppSpace rrRowHint)* : 
 /-- `rr_row_strictInterl?` runs `rr_row_strictInterl` and prints the successful hinted call. -/
 syntax (name := rrRowStrictInterlQ) "rr_row_strictInterl?" (ppSpace rrRowHint)* : tactic
 
+/-- `rr_row_window` closes `StrictInterl (P A) (P B)` from a fixed-delay recurrence when
+`A ≤ B ≤ A + L`.  It also accepts an explicit path-power model with an additive step. -/
+syntax (name := rrRowWindow) "rr_row_window" : tactic
+
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
 number of rows split off; the routes are `closedForm`, `pathPower`, `lowerOrder`, `subseq`,
-`linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and `prevRow` (the
+`variableDelay`, `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and
+`prevRow` (the
 interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
 derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,
 `Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`), `lagFeedback`

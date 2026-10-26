@@ -56,24 +56,27 @@ left row's splitting statement. Unrelated models are never elaborated.
 
 ## Routes of `rr_row_interlaces`, in order
 
-1. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
+1. Fixed-delay recurrences
+   `P (n + 1) = a (n + 1) P n + b (n + 1) X P (n + 1 - L)`, via
+   `strictInterl_of_fixedDelay_recurrence` or its scaled variable-delay specialization.
+2. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
    step (`Row.DerivLag`).
-2. Order three, factoring through a three-term recurrence: the reduction certified by
+3. Order three, factoring through a three-term recurrence: the reduction certified by
    `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
    two three-term sequences: `eq_parityProduct_of_thirdOrderRecurrence` (`Row.ParityProduct`).
-3. Direct or reflected path-power subsequences, selected by an exact fit of rows zero through
+4. Direct or reflected path-power subsequences, selected by an exact fit of rows zero through
    eight (`Row.PathPower`).
-4. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
+5. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
    `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
    or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
    remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
-5. Inverse rational reflection, rejected by coefficient shape before exact row computation
+6. Inverse rational reflection, rejected by coefficient shape before exact row computation
    (`Row.RationalReverse`).
-6. Moving rational endpoint windows, guessed from exact rows and certified by endpoint
+7. Moving rational endpoint windows, guessed from exact rows and certified by endpoint
    evaluations (`Row.EndpointWindow`).
-7. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence,
+8. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence,
    including common rational denominators (`Row.FTransform`).
-8. The interlacing core (`Row.Core`):
+9. The interlacing core (`Row.Core`):
    * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
    * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
    * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
@@ -87,13 +90,17 @@ left row's splitting statement. Unrelated models are never elaborated.
      (`derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`) and a moving
      upper bound split at a
      common root of the `A n` (`derivativeRecurrence_interlaces_of_roots_le_mono_div`).
-9. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
+10. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
    whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
    sequence, the link `eq_reflect_of_secondOrderDerivativeRecurrence` /
    `eq_reflect_of_threeTerm`, and the transfer
    `interlaces_of_eq_reflect` (`Row.Reverse`).
 
 ## Routes of `rr_row_strictInterl`
+
+Fixed-delay recurrences use the same variable-delay theorem as the window front end
+`rr_row_window`; the latter accepts all goals `StrictInterl (P A) (P B)` with
+`A ≤ B ≤ A + L`.  Explicit path-power models are also accepted.
 
 Half-growth three-term and derivative-lag recurrences use the repeated-root-safe Liu–Wang
 induction in `Row.DerivLag`; a missing derivative term is read as coefficient zero.
@@ -111,8 +118,8 @@ prints the successful strict-interlacing call.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
-`factorPower` (deflate `q ^ n` from two-lag rows), `delayedProduct` (an arbitrary-offset
-product tail), `closedForm` (rows
+`variableDelay`, `factorPower` (deflate `q ^ n` from two-lag rows), `delayedProduct`
+(an arbitrary-offset product tail), `closedForm` (rows
 `residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`, `thresholdOrbit`
 (order-three rows that are orbit sums of a threshold matrix, `Row.ThresholdOrbit`),
 `subseq`
@@ -571,6 +578,8 @@ private def rowModelGoal (P : Ident) (candidates : Array RowModelCandidate) : Ta
 routes, which have no printable steps) and the hints of the hinted call. -/
 private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := do
   if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
+    if ← rowSucceeds (variableDelayGoal .interlaces) then return (#[], hints)
+  if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
     if let some why ← topInterlacesProbe hints then
       -- An exactly matching registered model may prove rows that the generic probe rejects.
       if let some (P, candidates) ← rowModelCandidates? .direct then
@@ -705,6 +714,7 @@ private def linRecNonneg : TacticM Unit := withMainContext do
     setGoals []
 
 private def rowNonnegCore : TacticM Unit := withMainContext do
+  if ← rowSucceeds (variableDelayGoal .nonneg) then return
   if ← rowSucceeds linRecNonneg then return
   discard introIfForall
   withMainContext do
@@ -850,8 +860,8 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
-  [`derivativeXMul, `factorPower, `delayedProduct, `closedForm, `pathPower, `lowerOrder,
-    `thresholdOrbit, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
+  [`variableDelay, `derivativeXMul, `factorPower, `delayedProduct, `closedForm, `pathPower,
+    `lowerOrder, `thresholdOrbit, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
     `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
     `fTransform]
 
@@ -1002,6 +1012,10 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
       throwError "rr_row_splits: unknown route {v}; the routes are \
         {", ".intercalate (splitsRoutes.map toString)}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
+  if use `variableDelay then
+    match ← rowAttempt (variableDelayGoal .splits) with
+    | .ok _ => return { via := some `variableDelay }
+    | .error e => if hints.via == some `variableDelay then throwError e
   if hints.via == some `derivativeXMul then
     derivativeXMulSplits
     return { via := some `derivativeXMul }
@@ -1384,10 +1398,14 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := do
 first-order degree-pattern route second. -/
 private def rowStrictInterlCore (hints : RowHints) : TacticM RowHints := do
   if let some v := hints.via then
-    unless v == `halfGrowth || v == `degreePattern do
-      throwError "rr_row_strictInterl: unknown route {v}; the routes are halfGrowth and \
-        degreePattern"
+    unless v == `variableDelay || v == `halfGrowth || v == `degreePattern do
+      throwError "rr_row_strictInterl: unknown route {v}; the routes are variableDelay, \
+        halfGrowth and degreePattern"
   let mut failures : Array (MessageData × MessageData) := #[]
+  if hints.via.isNone || hints.via == some `variableDelay then
+    match ← rowAttempt (variableDelayGoal .strict) with
+    | .ok _ => return { via := some `variableDelay }
+    | .error e => failures := failures.push (m!"fixed-delay recurrence", e)
   if hints.via.isNone || hints.via == some `halfGrowth then
     match ← rowAttempt (derivLagCore false true hints) with
     | .ok result => return { result with via := some `halfGrowth }
@@ -1399,6 +1417,7 @@ private def rowStrictInterlCore (hints : RowHints) : TacticM RowHints := do
   throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
 
 elab_rules : tactic
+  | `(tactic| rr_row_window) => withMainContext rowWindowGoal
   | `(tactic| rr_row_strictInterl $hs*) => withMainContext do
     discard <| rowStrictInterlCore (← parseRowHints hs)
   | `(tactic| rr_row_strictInterl?%$tk $hs*) => withMainContext do
