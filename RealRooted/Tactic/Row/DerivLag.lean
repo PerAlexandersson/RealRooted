@@ -208,6 +208,28 @@ private def translatedLagRoot? (d : DerivLagRec) (s : Nat) : MetaM (Option Rat) 
         0 < w.coeff 1 && w.eval r == 0 do return none
   return some r
 
+/-- Whether exact samples leave open the nonpositive-multiplier Liu--Wang route after
+dropping `s` rows.  A sampled positive value rules the route out; unavailable exact data
+does not. -/
+private def nonposLagSamples? (d : DerivLagRec) (s : Nat) : MetaM (Option Bool) := do
+  let xs : List Rat := [-20, -5, -2, -1, -1 / 2, -1 / 8]
+  for n in [0:9] do
+    let (some v, some w) :=
+      (← evalCoeffAt? d.v (n + s), ← evalCoeffAt? d.w (n + s)) | return none
+    unless xs.all fun x => v.eval x ≤ 0 && w.eval x ≤ 0 do return some false
+  return some true
+
+/-- Cheap necessary-condition probe for the strict derivative-lag routes.  The translated
+affine-lag theorem is allowed independently of the usual multiplier signs. -/
+private def derivLagStrictPlausible (d : DerivLagRec) (hints : RowHints) : MetaM Bool := do
+  for s in (hints.drop.map ([·])).getD [0, 1, 2] do
+    if (← translatedLagRoot? d s).isSome then return true
+    match ← nonposLagSamples? d s with
+    | none => return true
+    | some true => return true
+    | some false => pure ()
+  return false
+
 /-- Recover `r` syntactically when the lag contains the factor `X - C r`. -/
 private def affineLagRootExpr? (w : Expr) : Option Expr := do
   let sub ← w.find? fun e =>
@@ -627,6 +649,9 @@ def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints) : TacticM Row
     | .ok d => pure d
     | .error e => throwError "rr_row_deriv_lag: the recurrence of {P} is not of the \
         derivative-lag form: {e}"
+  if wantStrict && !(← derivLagStrictPlausible d hints) then
+    throwError "rr_row_deriv_lag: exact samples rule out the nonpositive lag-multiplier \
+      conditions for every permitted row shift"
   let mut failures : Array (MessageData × MessageData) := #[]
   let mut degreeFailures : Array (MessageData × MessageData) := #[]
   for s in (hints.drop.map ([·])).getD [0, 1, 2] do

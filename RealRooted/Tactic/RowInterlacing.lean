@@ -107,6 +107,8 @@ induction in `Row.DerivLag`; a missing derivative term is read as coefficient ze
 First-order derivative recurrences with degree law `c + (n + e) / 2` use
 `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`.  When `c = 0`, the
 constant initial rows use the floor-half and half-degree variants from `Row.FTransform`.
+If these specialized routes fail, the tactic proves `Interlaces` with the general row machinery
+and projects it to `StrictInterl`; select this fallback with `(via := interlaces)`.
 
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
 `rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
@@ -1394,13 +1396,14 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := do
           if ← rowSucceeds (rowModelGoal P candidates) then return {}
       throwError directError
 
-/-- `rr_row_strictInterl`, using the half-growth derivative-lag induction first and the
-first-order degree-pattern route second. -/
+/-- `rr_row_strictInterl`, using specialized strict routes before falling back to the general
+interlacing machinery. -/
 private def rowStrictInterlCore (hints : RowHints) : TacticM RowHints := do
   if let some v := hints.via then
-    unless v == `variableDelay || v == `halfGrowth || v == `degreePattern do
+    unless v == `variableDelay || v == `halfGrowth || v == `degreePattern ||
+        v == `interlaces do
       throwError "rr_row_strictInterl: unknown route {v}; the routes are variableDelay, \
-        halfGrowth and degreePattern"
+        halfGrowth, degreePattern and interlaces"
   let mut failures : Array (MessageData × MessageData) := #[]
   if hints.via.isNone || hints.via == some `variableDelay then
     match ← rowAttempt (variableDelayGoal .strict) with
@@ -1414,6 +1417,13 @@ private def rowStrictInterlCore (hints : RowHints) : TacticM RowHints := do
     match ← rowAttempt degreePatternStrictGoal with
     | .ok result => return result
     | .error e => failures := failures.push (m!"first-order degree pattern", e)
+  if hints.via.isNone || hints.via == some `interlaces then
+    match ← rowAttempt do
+        evalTactic (← `(tactic| refine RealRooted.Interlaces.toStrictInterl ?_))
+        discard <| rowInterlacesTop { hints with via := none }
+      with
+    | .ok _ => return { hints with via := some `interlaces }
+    | .error e => failures := failures.push (m!"general interlacing fallback", e)
   throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
 
 elab_rules : tactic
