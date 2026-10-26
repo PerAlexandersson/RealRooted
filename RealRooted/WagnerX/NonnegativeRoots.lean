@@ -61,6 +61,87 @@ lemma hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos {p : ℝ[X]} (hp : p
     exact (hasNonnegCoeffs_C hp₀.le).mul
       (hasNonnegCoeffs_multiset_prod_X_sub_C p.roots hroots_nonpos)
 
+/-- A split real polynomial with nonnegative coefficients and constant coefficient one
+is a product of linear factors `1 + a X` with positive `a`. -/
+theorem exists_eq_prod_one_add_C_mul_X_of_splits {p : ℝ[X]}
+    (hpnn : HasNonnegCoeffs p) (hp0 : p.coeff 0 = 1) (hps : p.Splits) :
+    ∃ a : Fin p.natDegree → ℝ, (∀ i, 0 < a i) ∧
+      p = ∏ i, (1 + C (a i) * X) := by
+  have hp_ne : p ≠ 0 := by
+    intro hp
+    rw [hp] at hp0
+    simp at hp0
+  have hroot_neg : ∀ r ∈ p.roots, r < 0 := by
+    intro r hr
+    have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs hpnn r hr
+    have hr_ne : r ≠ 0 := by
+      intro hr_zero
+      subst r
+      have hroot : p.IsRoot 0 := (mem_roots hp_ne).mp hr
+      rw [Polynomial.IsRoot.def, ← coeff_zero_eq_eval_zero, hp0] at hroot
+      norm_num at hroot
+    exact lt_of_le_of_ne hr_nonpos hr_ne
+  let e : p.roots ≃ Fin p.natDegree :=
+    Fintype.equivFinOfCardEq (by simpa using hps.natDegree_eq_card_roots.symm)
+  let a : Fin p.natDegree → ℝ := fun i ↦ -1 / (e.symm i : ℝ)
+  have ha : ∀ i, 0 < a i := by
+    intro i
+    exact div_pos_of_neg_of_neg (by norm_num) (hroot_neg _ (by simp))
+  refine ⟨a, ha, ?_⟩
+  have hfactor : ∀ r : p.roots,
+      1 + C (-1 / (r : ℝ)) * X =
+        C (-1 / (r : ℝ)) * (X - C (r : ℝ)) := by
+    intro r
+    have hr_ne : (r : ℝ) ≠ 0 := ne_of_lt (hroot_neg r (by simp))
+    have hscalar : (-1 / (r : ℝ)) * (r : ℝ) = -1 := by
+      field_simp
+    rw [mul_sub, ← C_mul, hscalar]
+    simp [add_comm]
+  have hprod_eval :
+      (p.roots.map fun r ↦ (0 : ℝ) - r).prod = ∏ r : p.roots, -(r : ℝ) := by
+    calc
+      (p.roots.map fun r ↦ (0 : ℝ) - r).prod =
+          ∏ i ∈ p.roots.toEnumFinset, -i.1 := by
+        rw [Multiset.prod_map_eq_prod_toEnumFinset]
+        simp
+      _ = ∏ r : p.roots, -(r : ℝ) :=
+        Multiset.prod_toEnumFinset p.roots (fun r _ ↦ -r)
+  have heval : 1 = p.leadingCoeff * ∏ r : p.roots, -(r : ℝ) := by
+    calc
+      1 = p.coeff 0 := hp0.symm
+      _ = p.eval 0 := coeff_zero_eq_eval_zero p
+      _ = p.leadingCoeff * (p.roots.map fun r ↦ (0 : ℝ) - r).prod :=
+        hps.eval_eq_prod_roots 0
+      _ = p.leadingCoeff * ∏ r : p.roots, -(r : ℝ) := by rw [hprod_eval]
+  have hlead : p.leadingCoeff = ∏ r : p.roots, (-1 / (r : ℝ)) := by
+    calc
+      p.leadingCoeff = (∏ r : p.roots, -(r : ℝ))⁻¹ := by
+        apply (mul_eq_one_iff_eq_inv₀ ?_).mp heval.symm
+        exact Finset.prod_ne_zero_iff.mpr fun r _ ↦
+          neg_ne_zero.mpr (ne_of_lt (hroot_neg r (by simp)))
+      _ = ∏ r : p.roots, (-1 / (r : ℝ)) := by
+        rw [← Finset.prod_inv_distrib]
+        apply Finset.prod_congr rfl
+        intro r _
+        have hr_ne : (r : ℝ) ≠ 0 := ne_of_lt (hroot_neg r (by simp))
+        field_simp
+  have hprod_poly :
+      (p.roots.map (X - C ·)).prod = ∏ r : p.roots, (X - C (r : ℝ)) := by
+    calc
+      (p.roots.map (X - C ·)).prod =
+          ∏ i ∈ p.roots.toEnumFinset, (X - C i.1) := by
+        rw [Multiset.prod_map_eq_prod_toEnumFinset]
+      _ = ∏ r : p.roots, (X - C (r : ℝ)) :=
+        Multiset.prod_toEnumFinset p.roots (fun r _ ↦ X - C r)
+  calc
+    p = C p.leadingCoeff * (p.roots.map (X - C ·)).prod := hps.eq_prod_roots
+    _ = C p.leadingCoeff * ∏ r : p.roots, (X - C (r : ℝ)) := by rw [hprod_poly]
+    _ = ∏ r : p.roots, (1 + C (-1 / (r : ℝ)) * X) := by
+      rw [hlead, map_prod, ← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun r _ ↦ hfactor r |>.symm
+    _ = ∏ i, (1 + C (a i) * X) := by
+      simpa [a] using (e.prod_comp fun i ↦ 1 + C (a i) * X)
+
 /-- If all roots of a real-rooted positive-leading polynomial are at most `r`,
 then translating by `X + r` gives a polynomial with nonnegative
 coefficients. -/
