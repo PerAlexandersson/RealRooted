@@ -40,10 +40,12 @@ def rowDegreeTac (P : Ident) : TacticM (TSyntax `tactic) :=
 /-- The degree of the row `P k`, if it is at most `8`.  When the rows can be computed exactly,
 only the computed degree is tried: no other degree can be proved, and each failed attempt
 costs an elaboration of the row. -/
-def findRowDegree (P : Ident) (k : Nat) : TacticM (Option Nat) := do
+def findRowDegree (P : Ident) (k : Nat) (params : Array Expr := #[]) :
+    TacticM (Option Nat) := do
   let tac ← rowDegreeTac P
+  let Q ← certTerm (mkAppN (← mkConstWithFreshMVarLevels P.getId) params)
   let computed? : Option Nat ← do
-    let some L ← linRec? P.getId | pure none
+    let some L ← linRec? P.getId params | pure none
     let some rows ← linRecRows? L k | pure none
     pure (rows[k]?.map (·.natDegree))
   let Ds := match computed? with
@@ -53,7 +55,7 @@ def findRowDegree (P : Ident) (k : Nat) : TacticM (Option Nat) := do
     let s ← saveState
     let ok ← rowSucceeds do
       evalTactic (← `(tactic|
-        have _hbase : ($P $(rowNumLit k)).natDegree = $(rowNumLit D) := (by $tac:tactic)))
+        have _hbase : ($Q $(rowNumLit k)).natDegree = $(rowNumLit D) := (by $tac:tactic)))
     s.restore
     if ok then return some D
   return none
@@ -427,7 +429,7 @@ def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
   for k in ks do
     let D₀? ← match hints.degree with
       | some D => pure (some D)
-      | none => findRowDegree P (r.shift + k)
+      | none => findRowDegree P (r.shift + k) r.params
     let some D₀ := D₀?
       | failures := failures.push (m!"dropping {k} rows",
           m!"the degree of the row {P} {r.shift + k} is not a numeral below 9")
@@ -568,7 +570,7 @@ def productRow (r : RowRec) (kind : String) : TacticM Cert := do
         refine (RealRooted.productSequence_ne_zero_and_splits (P := $Q) ?_ ?_ ?_ $hrec $t).1)
       return split.push (← applyThenSide (some P) main)
   | "natDegree" =>
-      let some D₀ ← findRowDegree P r.shift
+      let some D₀ ← findRowDegree P r.shift r.params
         | throwError "rr_row_natDegree: the degree of {P} {r.shift} is not a numeral below 9"
       let pre ← `(tactic| refine (?_ : ($Q $t).natDegree = $(rowNumLit D₀) + $t).trans (by lia))
       evalTactic pre

@@ -39,8 +39,9 @@ initialize rowSharedDegreeFailures : IO.Ref (Array (Name × UInt64 × Nat × Nat
 rows must interlace (`QPoly.interlaces`).  Every theorem of the core concludes this for all
 `m`, so a failure rules them all out before any elaboration.  Returns the reason, or `none`
 when the probe passes or the rows cannot be computed. -/
-private def rowsProbe (P : Name) (s D₀ : Nat) : MetaM (Option MessageData) := do
-  let some L ← linRec? P | return none
+private def rowsProbe (P : Name) (params : Array Expr) (s D₀ : Nat) :
+    MetaM (Option MessageData) := do
+  let some L ← linRec? P params | return none
   let some rows ← linRecRows? L (s + 8) | return none
   for m in [0:9] do
     let some p := rows[s + m]? | return none
@@ -70,7 +71,7 @@ points for `n ≤ 8`.  When it fails, the theorem cannot apply and is not elabor
 rows cannot be computed, nothing is vetoed. -/
 private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : Rat)
     (kind : WindowKind) : MetaM Bool := do
-  let some L ← linRec? r.P | return true
+  let some L ← linRec? r.P r.params | return true
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 9) | return true
   for m in [0:9] do
@@ -84,7 +85,8 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
   let offs : List Rat := [1 / 8, 1 / 2, 1, 2, 5, 20]
   for i in [0:9] do
     let n := i + k
-    let (some a, some b) := (← evalCoeffAt? Af n, ← evalCoeffAt? Bf n) | return true
+    let (some a, some b) :=
+      (← r.evalSampleCoeffAt? Af n, ← r.evalSampleCoeffAt? Bf n) | return true
     let inside : List Rat := match lo with
       | some l => [0, 1 / 4, 1 / 2, 3 / 4, 1].map fun t => l + (u - l) * t
       | none => offs.map (u - ·) ++ [u]
@@ -121,7 +123,7 @@ private def windowPlausible (r : RowRec) (k D₀ : Nat) (lo : Option Rat) (u : R
 `u`, the lag is nonpositive below `u`, `ρ` bounds consecutive leading-coefficient ratios,
 and the two conditions above `u` hold at the standard rational sample points. -/
 private def ratioWindowPlausible (r : RowRec) (k : Nat) (u ρ : Rat) : MetaM Bool := do
-  let some L ← linRec? r.P | return true
+  let some L ← linRec? r.P r.params | return true
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 9) | return true
   let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return true
@@ -130,7 +132,8 @@ private def ratioWindowPlausible (r : RowRec) (k : Nat) (u ρ : Rat) : MetaM Boo
   for i in [0:9] do
     let (some p, some q) := (rows[base + i]?, rows[base + i + 1]?) | return true
     unless p.rootsLe u && ρ * p.lead ≤ q.lead do return false
-    let (some a, some b) := (← evalCoeffAt? af (i + k), ← evalCoeffAt? bf (i + k))
+    let (some a, some b) :=
+      (← r.evalSampleCoeffAt? af (i + k), ← r.evalSampleCoeffAt? bf (i + k))
       | return true
     unless below.all (b.eval · ≤ 0) do return false
     unless offs.all (fun d =>
@@ -150,13 +153,14 @@ private def ratHint? (t : Term) : TacticM (Option Rat) := do
 (`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`), at the standard rational
 sample points. -/
 private def barrierWindowPlausible (r : RowRec) (k : Nat) (l u ρ : Rat) : MetaM Bool := do
-  let some L ← linRec? r.P | return false
+  let some L ← linRec? r.P r.params | return false
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 9) | return false
   let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return false
   let mut abs : Array (QPoly × QPoly) := #[]
   for i in [0:9] do
-    let (some a, some b) := (← evalCoeffAt? af (i + k), ← evalCoeffAt? bf (i + k))
+    let (some a, some b) :=
+      (← r.evalSampleCoeffAt? af (i + k), ← r.evalSampleCoeffAt? bf (i + k))
       | return false
     abs := abs.push (a, b)
   let (some p0, some p1) := (rows[base]?, rows[base + 1]?) | return false
@@ -190,10 +194,10 @@ private def plainPlausible (r : RowRec) (k : Nat) (nonpos : Bool) : MetaM Bool :
   let xs : List Rat := [-20, -5, -2, -1, -1 / 2, -1 / 8, 0, 1 / 8, 1 / 2, 1, 2, 5, 20]
   let xs := if nonpos then xs.filter (· ≤ 0) else xs
   for i in [0:9] do
-    let some m ← evalCoeffAt? f (i + k) | return true
+    let some m ← r.evalSampleCoeffAt? f (i + k) | return true
     unless xs.all (m.eval · ≤ 0) do return false
   if nonpos then
-    let some L ← linRec? r.P | return true
+    let some L ← linRec? r.P r.params | return true
     let base := r.shift + k
     let some rows ← linRecRows? L (base + 9) | return true
     for j in [0:9] do
@@ -233,9 +237,9 @@ private def eulerFit? (r : RowRec) : MetaM (Except MessageData EulerFit) := do
   let mut us : Array Rat := #[]
   let mut fit? : Option (Rat × Rat × Rat × Rat) := none
   for n in [0:9] do
-    let p₂? ← evalCoeffAt? A₂ n
-    let p₁? ← evalCoeffAt? A₁ n
-    let p₀? ← evalCoeffAt? A₀ n
+    let p₂? ← r.evalSampleCoeffAt? A₂ n
+    let p₁? ← r.evalSampleCoeffAt? A₁ n
+    let p₀? ← r.evalSampleCoeffAt? A₀ n
     let (some p₂, some p₁, some p₀) := (p₂?, p₁?, p₀?)
       | return .error m!"the coefficients are not rational polynomials"
     unless p₂.coeffs.size == 3 && p₂.coeff 0 == 0 && p₂.coeff 1 == 0 do
@@ -256,7 +260,7 @@ private def eulerFit? (r : RowRec) : MetaM (Except MessageData EulerFit) := do
   unless 0 < κ do return .error m!"`κ ≤ 0`"
   let σ := B / κ - 1
   let π := c / κ
-  let some L ← linRec? r.P | return .error m!"the first row cannot be computed"
+  let some L ← linRec? r.P r.params | return .error m!"the first row cannot be computed"
   let some rows ← linRecRows? L 0 | return .error m!"the first row cannot be computed"
   unless rows[0]? == some (QPoly.const 1) do return .error m!"the first row is not `1`"
   -- `a = 0`: the Euler step with parameters `1`, `b + 1`, `u (n + 1) + v` on `P (n + 1) / X`
@@ -355,12 +359,12 @@ private structure MovingWindow where
 nonincreasing. -/
 private def movingWindow? (r : RowRec) (k : Nat) : MetaM (Option MovingWindow) := do
   let some Af := r.coeffs[0]? | return none
-  let some L ← linRec? r.P | return none
+  let some L ← linRec? r.P r.params | return none
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 10) | return none
   let mut As : Array QPoly := #[]
   for m in [0:10] do
-    let some a ← evalCoeffAt? Af (m + k) | return none
+    let some a ← r.evalSampleCoeffAt? Af (m + k) | return none
     As := As.push a
   let roots := As.map fun a => a.rationalRoots.eraseDups
   let some r0 := roots[0]? | return none
@@ -400,13 +404,14 @@ and checked on the rest; `U` nondecreasing; the rows at most `U m`; and at sampl
 `A m ≤ 0` with the degree-bounded condition. -/
 private def movingUpper? (r : RowRec) (k D₀ : Nat) : MetaM (Option MovingUpper) := do
   let (some Af, some Bf) := (r.coeffs[0]?, r.coeffs[1]?) | return none
-  let some L ← linRec? r.P | return none
+  let some L ← linRec? r.P r.params | return none
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 10) | return none
   let mut As : Array QPoly := #[]
   let mut Bs : Array QPoly := #[]
   for m in [0:11] do
-    let (some a, some b) := (← evalCoeffAt? Af (m + k), ← evalCoeffAt? Bf (m + k))
+    let (some a, some b) :=
+      (← r.evalSampleCoeffAt? Af (m + k), ← r.evalSampleCoeffAt? Bf (m + k))
       | return none
     As := As.push a
     Bs := Bs.push b
@@ -445,12 +450,12 @@ vetoes a proof. -/
 def rowInterlacesPlausibleAt (r : RowRec) (k : Nat) : MetaM Bool := do
   if r.shape == .product || r.shape == .lagRight then return true
   if r.shape == .lagLeft then return false
-  let some L ← linRec? r.P | return true
+  let some L ← linRec? r.P r.params | return true
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 9) | return true
   let some p := rows[base]? | return true
   let D₀ := p.natDegree
-  if (← rowsProbe r.P base D₀).isSome then return false
+  if (← rowsProbe r.P r.params base D₀).isSome then return false
   if r.shape == .deriv₂ then
     if k != 0 then return false
     if (← eigenODE? r.P (shift := r.shift)).isSome then return true
@@ -565,7 +570,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   pre := pre ++ split
   let D₀? ← match hints.degree with
     | some D => pure (some D)
-    | none => findRowDegree P (r.shift + k)
+    | none => findRowDegree P (r.shift + k) r.params
   let some D₀ := D₀?
     | throwError "rr_row_interlaces: could not compute the degree of the base row \
         {P} {r.shift + k}"
@@ -589,7 +594,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   if (← rowDegreeFailures.get).contains key then
     throwError "rr_row_interlaces: the degrees `{D₀} + n` or the positive leading coefficients \
       of {P} could not be proved (an earlier search failed)"
-  if let some why ← rowsProbe r.P (r.shift + k) D₀ then
+  if let some why ← rowsProbe r.P r.params (r.shift + k) D₀ then
     throwError "rr_row_interlaces: no interlacing theorem applies to {P} (base degree {D₀}, \
       dropping {k} rows): {why}"
   let mut hoisted ← if (← rowSharedDegreeFailures.get).contains key then pure false

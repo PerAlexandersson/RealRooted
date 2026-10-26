@@ -218,19 +218,22 @@ def ratNullspace (rows : Array (Array Rat)) (ncols : Nat) : Array (Array Rat) :=
 
 /-! ### Rows -/
 
-/-- The explicit rows of `P`, from the equations `P i = …` without a binder, if they are
+/-- The explicit rows of `P params`, from the equations `P params i = …` without a row-index
+binder, if they are
 `P 0, …, P (m - 1)` for some `m` and all read by `evalQPoly?`. -/
-def linRecBaseRows? (P : Name) : MetaM (Option (Array QPoly)) := do
-  let some eqns ← getEqnsFor? P | return none
+def linRecBaseRowsOf? (L : LinRecData) : MetaM (Option (Array QPoly)) := do
+  let some eqns ← getEqnsFor? L.P | return none
   let mut found : Array (Nat × QPoly) := #[]
   for eqn in eqns do
     let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
     -- outer `none`: a base equation that cannot be read; `some none`: not a base equation
     let r : Option (Option (Nat × QPoly)) ← forallTelescopeReducing ty fun xs body => do
-      unless xs.isEmpty do return some none
+      unless xs.size == L.params.size do return some none
+      let body := specializeRowEqn xs L.params body
+      let body := specializeRowParams L.params L.samples body
       let some (_, lhs, rhs) := body.eq? | return none
-      unless lhs.isApp && lhs.getAppFn.isConstOf P do return some none
-      let some i ← evalNat lhs.appArg! | return none
+      unless lhs.isApp && lhs.getAppFn.isConstOf L.P do return some none
+      let some i ← evalNat lhs.getAppArgs.back! | return none
       let some q ← evalQPoly? rhs | return none
       return some (some (i, q))
     match r with
@@ -243,16 +246,21 @@ def linRecBaseRows? (P : Name) : MetaM (Option (Array QPoly)) := do
     rows := rows.push q
   return some rows
 
+/-- The explicit rows of a nonparametric sequence. -/
+def linRecBaseRows? (P : Name) : MetaM (Option (Array QPoly)) := do
+  let some L ← linRec? P | return none
+  linRecBaseRowsOf? L
+
 /-- The rows `P 0, …, P N`, computed exactly from the base rows and the recurrence.  The
 coefficient `A n` of each summand is evaluated at the numeral `n`. -/
 def linRecRows? (L : LinRecData) (N : Nat) : MetaM (Option (Array QPoly)) := do
-  let some base ← linRecBaseRows? L.P | return none
+  let some base ← linRecBaseRowsOf? L | return none
   if base.size < L.offset then return none
   let mut rows := base
   for m in [base.size:N + 1] do
     let n := m - L.offset
     let mut acc : QPoly := ⟨#[]⟩
-    for (j, i, A) in L.terms do
+    for (j, i, A) in L.sampleTerms do
       let some a ← evalCoeffAt? A n | return none
       acc := acc + a * (rows[n + j]!).iterDeriv i
     rows := rows.push acc
@@ -316,7 +324,7 @@ def lagMultsNum (L : LinRecData) (law : DegreeLaw) (rows : Array QPoly) :
   let mut mults : Array (Array Rat) := #[]
   for m in [0:tops.size - k] do
     let mut row := Array.replicate k (0 : Rat)
-    for (j, i, A) in L.terms do
+    for (j, i, A) in L.sampleTerms do
       let some a ← evalCoeffAt? A (m + law.drop) | return none
       let dj := law.deg (m + j)
       let gap := law.deg (m + k) - dj + i

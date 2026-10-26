@@ -123,12 +123,15 @@ def isDerivApp (e : Expr) : Bool :=
     e.appFn!.appArg!.getAppFn.isConstOf ``Polynomial.derivative
 
 /-- `(j, d)` if `e` is the `d`-th derivative of `P (n + j)`. -/
-partial def rowOf? (P : Name) (n e : Expr) : MetaM (Option (Nat × Nat)) := do
+partial def rowOf? (P : Name) (params : Array Expr) (n e : Expr) :
+    MetaM (Option (Nat × Nat)) := do
   let e := e.consumeMData
   if isDerivApp e then
-    return (← rowOf? P n e.appArg!).map fun (j, d) => (j, d + 1)
-  if e.isApp && e.getAppNumArgs == 1 && e.getAppFn.isConstOf P then
-    return (← natOffsetOf? n e.appArg!).map fun j => (j, 0)
+    return (← rowOf? P params n e.appArg!).map fun (j, d) => (j, d + 1)
+  let args := e.getAppArgs
+  if e.isApp && e.getAppFn.isConstOf P && args.size == params.size + 1 &&
+      (List.range params.size).all (fun i => args[i]! == params[i]!) then
+    return (← natOffsetOf? n args.back!).map fun j => (j, 0)
   return none
 
 /-- A summand `c * D^d (P (n + j))` of the right side of a recurrence. -/
@@ -235,22 +238,22 @@ private partial def signedSummands (P : Name) (e : Expr) (pos : Bool) :
   | _ => return [(pos, e)]
 
 /-- Split a summand into its coefficient and its row. -/
-private partial def factorRow? (P : Name) (n e : Expr) :
+private partial def factorRow? (P : Name) (params : Array Expr) (n e : Expr) :
     MetaM (Option (Option Expr × Expr × Bool)) := do
   let e := e.consumeMData
-  if (← rowOf? P n e).isSome then return some (none, e, false)
+  if (← rowOf? P params n e).isSome then return some (none, e, false)
   let some (a, b) := (if e.isAppOfArity ``HMul.hMul 6 then some (e.appFn!.appArg!, e.appArg!)
     else none) | return none
   if !mentions P a then
-    if (← rowOf? P n b).isSome then return some (some a, b, true)
-    if let some (c, r, _) ← factorRow? P n b then
+    if (← rowOf? P params n b).isSome then return some (some a, b, true)
+    if let some (c, r, _) ← factorRow? P params n b then
       let c' ← match c with
         | some c => mkAppM ``HMul.hMul #[a, c]
         | none => pure a
       return some (some c', r, false)
   if !mentions P b then
-    if (← rowOf? P n a).isSome then return some (some b, a, false)
-    if let some (c, r, _) ← factorRow? P n a then
+    if (← rowOf? P params n a).isSome then return some (some b, a, false)
+    if let some (c, r, _) ← factorRow? P params n a then
       let c' ← match c with
         | some c => mkAppM ``HMul.hMul #[c, b]
         | none => pure b
@@ -261,6 +264,8 @@ private partial def factorRow? (P : Name) (n e : Expr) :
 structure RowRec where
   /-- the sequence -/
   P : Name
+  /-- the fixed arguments before the row index -/
+  params : Array Expr := #[]
   /-- the shape of the recurrence -/
   shape : RecShape
   /-- the offset `k` of the left side `P (n + k)` -/
@@ -287,16 +292,17 @@ def RowRec.asLagLeft (r : RowRec) : RowRec :=
   if r.shape == .product then { r with shape := .lagLeft, offset := r.offset + 1 } else r
 
 /-- Read the shape of `rhs` in `P (n + k) = rhs`; on failure, explain why. -/
-private def readRec (P : Name) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
+private def readRec (P : Name) (params : Array Expr) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
     MetaM (Except MessageData RowRec) := do
+  let rhs ← whnfR ((← unfoldRowCoeff? rhs).getD rhs)
   let (terms, nested) ← (signedSummands P rhs true).run true
   let mut summands : Array RowSummand := #[]
   let mut plain := nested
   for (pos, t) in terms do
-    let some (c, r, pl) ← factorRow? P n t
+    let some (c, r, pl) ← factorRow? P params n t
       | return .error (← addMessageContext m!"the summand{indentExpr t}\nis not a coefficient \
           times a row `P (n + j)` or a derivative of one")
-    let some (j, d) ← rowOf? P n r | return .error m!"unexpected row{indentExpr r}"
+    let some (j, d) ← rowOf? P params n r | return .error m!"unexpected row{indentExpr r}"
     if j ≥ k then
       return .error (← addMessageContext
         m!"the row{indentExpr r}\nis not below the left side `{P} (n + {k})`")
@@ -354,7 +360,8 @@ private def readRec (P : Name) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
       | none =>
           plain := false
           let row ← match d with
-            | 0 => pure (mkApp lhs.getAppFn (if j == 0 then n else mkNatAdd n (mkNatLit j)))
+            | 0 => pure (mkAppN lhs.getAppFn
+                (params.push (if j == 0 then n else mkNatAdd n (mkNatLit j))))
             | _ => match deriv1? with
               | some r => pure r
               | none => throwError "rr_row: missing derivative row"
@@ -365,23 +372,30 @@ private def readRec (P : Name) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
       | some acc => mkAppM ``HAdd.hAdd #[acc, term]
       | none => pure term)
   unless order == List.range summands.size do plain := false
-  let lhs' := mkApp lhs.getAppFn (mkNatAdd n (mkNatLit k))
+  let lhs' := mkAppN lhs.getAppFn (params.push (mkNatAdd n (mkNatLit k)))
   let stmt ← mkForallFVars #[n] (← mkEq lhs' rhs'.get!)
-  return .ok { P, shape, offset := k, stmtOffset := k, eqn, canonical := plain, stmt, coeffs }
+  return .ok ⟨P, params, shape, k, k, eqn, plain, stmt, coeffs⟩
 
 /-- Read the recurrence of `P` off its equation lemmas. -/
-def rowRec? (P : Name) : MetaM (Except MessageData RowRec) := do
+def specializeRowEqn (xs params : Array Expr) (body : Expr) : Expr :=
+  (List.range params.size).foldl
+    (fun out i => out.replace fun e => if e == xs[i]! then some params[i]! else none) body
+
+/-- Read the recurrence of `P params` off its equation lemmas. -/
+def rowRec? (P : Name) (params : Array Expr := #[]) : MetaM (Except MessageData RowRec) := do
   let some eqns ← getEqnsFor? P | return .error m!"{P} has no equation lemmas"
   let mut err : MessageData := m!"{P} has no equation `{P} (n + k) = …` with a variable `n`"
   for eqn in eqns do
     let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
     let r ← forallTelescopeReducing ty fun xs body => do
-      if xs.size != 1 then return none
+      if xs.size != params.size + 1 then return none
+      let body := specializeRowEqn xs params body
+      let n := xs.back!
       let some (_, lhs, rhs) := body.eq? | return none
       unless lhs.isApp && lhs.getAppFn.isConstOf P do return none
-      let some k ← natOffsetOf? xs[0]! lhs.appArg! | return none
+      let some k ← natOffsetOf? n lhs.getAppArgs.back! | return none
       if k == 0 then return none
-      return some (← readRec P eqn xs[0]! lhs rhs k)
+      return some (← readRec P params eqn n lhs rhs k)
     match r with
     | some (.ok r) => return .ok r
     | some (.error e) => err := e
@@ -393,47 +407,95 @@ the definition of `P` for the theorems of `RealRooted.LinRec`. -/
 structure LinRecData where
   /-- the sequence -/
   P : Name
+  /-- the fixed arguments before the row index -/
+  params : Array Expr := #[]
+  /-- rational sample values used only by the numeric route-selection probe -/
+  samples : Array Expr := #[]
   /-- the offset `k` of the left side `P (n + k)` -/
   offset : Nat
   /-- the equation lemma of the recurrence -/
   eqn : Name
   /-- the summands `(jₜ, iₜ, fun n => Aₜ n)`, in the order of the definition -/
   terms : Array (Nat × Nat × Expr)
+  /-- the recurrence terms specialized at `samples`, used only by numeric probes -/
+  sampleTerms : Array (Nat × Nat × Expr) := #[]
+
+/-- Replace fixed family arguments by their probe values. -/
+def specializeRowParams (params samples : Array Expr) (e : Expr) : Expr :=
+  (List.range params.size).foldl
+    (fun out i => out.replace fun x => if x == params[i]! then some samples[i]! else none) e
+
+/-- Whether an expression is a typed zero literal. -/
+private def isZeroLiteral (e : Expr) : MetaM Bool := do
+  if e.getAppFn.isConstOf ``Zero.zero then return true
+  return (← evalNat e) == some 0
+
+/-- A rational probe point for each fixed parameter.  Real parameters use `1` by default,
+or `-1`/`0` when a direct local sign/equality hypothesis requires it; natural parameters use
+`2`.  These values select routes only, and never occur in generated proof terms. -/
+def rowProbeSamples (params : Array Expr) : MetaM (Array Expr) :=
+  params.mapM fun p => do
+    let ty ← whnfR (← inferType p)
+    if ty.isConstOf ``Real then
+      let mut value : Int := 1
+      for d in ← getLCtx do
+        if d.isImplementationDetail then continue
+        let h ← instantiateMVars d.type
+        match h.getAppFnArgs with
+        | (``LT.lt, #[_, _, a, b]) | (``LE.le, #[_, _, a, b]) =>
+            if a == p && (← isZeroLiteral b) then value := -1
+            else if (← isZeroLiteral a) && b == p then value := 1
+        | (``Eq, #[_, a, b]) =>
+            if (a == p && (← isZeroLiteral b)) || ((← isZeroLiteral a) && b == p) then
+              value := 0
+        | _ => pure ()
+      if value < 0 then return ← mkAppM ``Neg.neg #[← mkNumeral ty value.natAbs]
+      else return ← mkNumeral ty value.toNat
+    else if ty.isConstOf ``Nat then return mkNatLit 2
+    else return p
 
 /-- Read the summands of `rhs` in `P (n + k) = rhs` as a general linear recurrence. -/
-private def readLinRec (P eqn : Name) (n rhs : Expr) (k : Nat) :
+private def readLinRec (P : Name) (params samples : Array Expr) (eqn : Name) (n rhs : Expr)
+    (k : Nat) :
     MetaM (Option LinRecData) := do
+  let rhs ← whnfR ((← unfoldRowCoeff? rhs).getD rhs)
   let (terms, _) ← (signedSummands P rhs true).run true
   let mut out : Array (Nat × Nat × Expr) := #[]
+  let mut sampleOut : Array (Nat × Nat × Expr) := #[]
   for (pos, t) in terms do
-    let some (c, r, _) ← factorRow? P n t | return none
-    let some (j, i) ← rowOf? P n r | return none
+    let some (c, r, _) ← factorRow? P params n t | return none
+    let some (j, i) ← rowOf? P params n r | return none
     if j ≥ k then return none
     let c ← c.getDM (mkNumeral (← inferType r) 1)
     let c := (← unfoldRowCoeff? c).getD c
     let c ← if pos then pure c else mkAppM ``Neg.neg #[c]
     out := out.push (j, i, ← mkLambdaFVars #[n] c)
-  return some { P, offset := k, eqn, terms := out }
+    sampleOut := sampleOut.push
+      (j, i, ← mkLambdaFVars #[n] (specializeRowParams params samples c))
+  return some ⟨P, params, samples, k, eqn, out, sampleOut⟩
 
 /-- Read the recurrence of `P` off its equation lemmas as a general linear recurrence. -/
-def linRec? (P : Name) : MetaM (Option LinRecData) := do
+def linRec? (P : Name) (params : Array Expr := #[]) : MetaM (Option LinRecData) := do
   let some eqns ← getEqnsFor? P | return none
+  let samples ← rowProbeSamples params
   for eqn in eqns do
     let ty ← inferType (← mkConstWithFreshMVarLevels eqn)
     let r ← forallTelescopeReducing ty fun xs body => do
-      if xs.size != 1 then return none
+      if xs.size != params.size + 1 then return none
+      let body := specializeRowEqn xs params body
+      let n := xs.back!
       let some (_, lhs, rhs) := body.eq? | return none
       unless lhs.isApp && lhs.getAppFn.isConstOf P do return none
-      let some k ← natOffsetOf? xs[0]! lhs.appArg! | return none
+      let some k ← natOffsetOf? n lhs.getAppArgs.back! | return none
       if k == 0 then return none
-      readLinRec P eqn xs[0]! rhs k
+      readLinRec P params samples eqn n rhs k
     if let some r := r then return some r
   return none
 
 /-- The shape of the recurrence of `P`, if it is read with offset `RecShape.base` and in
 the summand order of the theorems. -/
-def recShape? (P : Name) : MetaM (Option RecShape) := do
-  match ← rowRec? P with
+def recShape? (P : Name) (params : Array Expr := #[]) : MetaM (Option RecShape) := do
+  match ← rowRec? P params with
   | .ok r => return if r.canonical && r.shift == 0 then some r.shape else none
   | .error _ => return none
 
@@ -492,14 +554,19 @@ def certTerm (e : Expr) : TacticM Term := do
   let stx ← withOptions (fun o => o.setBool `pp.coercions.types true) <| PrettyPrinter.delab e
   return ⟨← cleanSyntax stx⟩
 
+/-- The fixed-parameter sequence represented by a recurrence. -/
+def RowRec.seqTerm (r : RowRec) : TacticM Term := do
+  let e := mkAppN (← mkConstWithFreshMVarLevels r.P) r.params
+  certTerm e
+
 /-- The shifted sequence `m ↦ P (m + k)`. -/
-def shiftedSeq (P : Ident) (k : Nat) : TacticM Term :=
+def shiftedSeq (P : Term) (k : Nat) : TacticM Term :=
   if k == 0 then return P else `(fun m => $P (m + $(rowNumLit k)))
 
 /-- The sequence `m ↦ P (m + s + k)` the theorems apply to, after `k` further rows have
 been split off. -/
-def RowRec.seq (r : RowRec) (k : Nat) : TacticM Term :=
-  shiftedSeq (mkIdent r.P) (r.shift + k)
+def RowRec.seq (r : RowRec) (k : Nat) : TacticM Term := do
+  shiftedSeq (← r.seqTerm) (r.shift + k)
 
 /-- The recurrence hypothesis of the theorems for `RowRec.seq r k`. -/
 def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
@@ -511,8 +578,9 @@ def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
     | _ => `(fun _ => rfl)
   else
     let n := mkIdent `n
+    let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels r.eqn) r.params)
     let h₀ ← `((show $(← certTerm r.stmt) from
-      fun $n:ident => ($(mkIdent r.eqn) $n).trans (by rr_row_unfold; ring)))
+      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; ring)))
     let extra := r.offset - r.stmtOffset + k
     let h ← if extra == 0 then pure h₀ else `(fun $n:ident => $h₀ ($n + $(rowNumLit extra)))
     match r.shape with
@@ -529,6 +597,29 @@ def findSeqConstDeep? (e : Expr) : MetaM (Option Name) := do
     if ← isPolySeqConst c [] then return some c
   return none
 
+/-- A constant family applied to fixed arguments, leaving type `ℕ → ℝ[X]`. -/
+structure PolySeqApp where
+  /-- the family constant -/
+  name : Name
+  /-- the fixed arguments before the row index -/
+  params : Array Expr
+
+/-- The first application `F c₁ … cₖ n` in `e` whose prefix `F c₁ … cₖ` has type
+`ℕ → ℝ[X]`. -/
+partial def findPolySeqApp? (e : Expr) : MetaM (Option PolySeqApp) := do
+  let e := e.consumeMData
+  if e.isApp then
+    let f := e.appFn!
+    let ty ← whnfR (← inferType f)
+    if let .forallE _ dom body _ := ty then
+      if dom.isConstOf ``Nat && !body.hasLooseBVars &&
+          (← whnfR body).getAppFn.isConstOf ``Polynomial then
+        if let .const name _ := f.getAppFn then
+          return some { name, params := f.getAppArgs }
+    if let some r ← findPolySeqApp? f then return some r
+    return ← findPolySeqApp? e.appArg!
+  return none
+
 /-- Replace the goal by its beta-normal form. -/
 def betaReduceGoal : TacticM Unit := withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
@@ -541,14 +632,14 @@ supported. -/
 def rowRecSetup (who : String) : TacticM RowRec := do
   betaReduceGoal
   let tgt ← instantiateMVars (← getMainTarget)
-  let some P ← findPolySeqConst? tgt
+  let some seq ← findPolySeqApp? tgt
     | throwError "{who}: no sequence `P : ℕ → ℝ[X]` found in the goal"
-  match ← rowRec? P with
+  match ← rowRec? seq.name seq.params with
   | .ok r =>
-      trace[rr.row] "{who}: {P} is a {r.shape.describe} recurrence with offset {r.offset}\
+      trace[rr.row] "{who}: {seq.name} is a {r.shape.describe} recurrence with offset {r.offset}\
         {if r.canonical then "" else " (normalized by `ring`)"}"
       return r
-  | .error e => throwError "{who}: the recurrence of {P} is not supported: {e}"
+  | .error e => throwError "{who}: the recurrence of {seq.name} is not supported: {e}"
 
 /-- The sequence in the goal and the shape of its recurrence, which must have the summand
 order and the offset of the theorems. -/
@@ -563,7 +654,7 @@ def rowSetup (who : String) : TacticM (Ident × RecShape) := do
 private partial def rowIndex? (P : Name) (e : Expr) : Option Expr :=
   match e with
   | .app f a =>
-      if f.isConstOf P then some a
+      if e.getAppFn.isConstOf P then some e.getAppArgs.back!
       else (rowIndex? P f).orElse fun _ => rowIndex? P a
   | .mdata _ b => rowIndex? P b
   | _ => none

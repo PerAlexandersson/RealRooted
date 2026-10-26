@@ -314,6 +314,13 @@ def derivRec₂Data? (P : Name) (shift : Nat := 0) :
 def evalCoeffAt? (f : Expr) (k : Nat) : MetaM (Option QPoly) :=
   evalQPoly? (f.beta #[mkNatLit k])
 
+/-- Evaluate a recurrence coefficient at the rational parameter sample used for route
+selection.  The symbolic coefficient in `r` remains unchanged for the proof phase. -/
+def RowRec.evalSampleCoeffAt? (r : RowRec) (f : Expr) (k : Nat) :
+    MetaM (Option QPoly) := do
+  let samples ← rowProbeSamples r.params
+  evalCoeffAt? (specializeRowParams r.params samples f) k
+
 /-- The rows `P 0, …, P k` of a second-order recurrence, with the coefficients
 `A k, B k, C k` used at each step. -/
 def derivRec₂Rows? (base A B C : Expr) (k : Nat) :

@@ -121,6 +121,7 @@ import RealRooted.Tactic.Examples.OEISTestbedLS4
 import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PFPolynomial
+import RealRooted.Tactic.Examples.ParametricRows
 import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
