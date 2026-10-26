@@ -1794,7 +1794,9 @@
       "target_prefix": "RealRooted.Tactic.",
       "allowed_sources": [
         "RealRooted",
-        "RealRooted.Production"
+        "RealRooted.Production",
+        "RealRooted.Applications.OEIS.ClosedFormRows",
+        "RealRooted.Applications.OEIS.HarmonicDerivativeRows"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges.",
