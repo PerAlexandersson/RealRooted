@@ -1954,6 +1954,9 @@ import RealRooted.HurwitzMatrix.HadamardObstruction
 import RealRooted.Mathlib.Analysis.Complex.RealPart
 import RealRooted.Mathlib.Analysis.Matrix.Spectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
+import RealRooted.CombinatorialExamples.BigDescents132.Basic
+import RealRooted.CombinatorialExamples.BigDescents132.GeneratingFunction
+import RealRooted.Interlacing.VariableDelay
 
 /-!
 # RealRooted production umbrella
