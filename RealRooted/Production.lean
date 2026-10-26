@@ -1493,7 +1493,6 @@ import RealRooted.Tactic.LinearPowerFamily
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.LiuWang.SequenceIntervals
 import RealRooted.Tactic.LiuWang.SequenceNonpositive
-import RealRooted.Tactic.LiuWang.SequencePositive
 import RealRooted.Tactic.LiuWang.SequenceProducts
 import RealRooted.Tactic.LiuWang.SequenceQuadratic
 import RealRooted.Tactic.LiuWang.Step
@@ -1960,6 +1959,9 @@ import RealRooted.Interlacing.VariableDelay
 import RealRooted.CombinatorialExamples.WeightedRenewal
 import RealRooted.Mathlib.Data.Nat.Choose.Sum
 import RealRooted.Tactic.Row.Routes
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
+import RealRooted.Mathlib.Data.Fintype.Pigeonhole
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
 
 /-!
 # RealRooted production umbrella
