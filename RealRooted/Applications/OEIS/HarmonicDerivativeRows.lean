@@ -5,6 +5,7 @@ public import RealRooted.Interlacing.OuterDifference
 public import RealRooted.MaWang.StrictStep
 public import RealRooted.Recurrence.RowModel
 public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Harmonic-factor derivative rows
@@ -50,24 +51,12 @@ theorem harmonicDerivativeRow_eq (n : ℕ) :
 /-- Harmonic-factor partial products have nonnegative coefficients. -/
 theorem harmonicFactorProduct_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (harmonicFactorProduct n) := by
-  induction n with
-  | zero => simpa [harmonicFactorProduct] using hasNonnegCoeffs_one
-  | succ n ih =>
-      rw [harmonicFactorProduct_succ]
-      exact (hasNonnegCoeffs_one.add
-        ((hasNonnegCoeffs_C (by positivity)).mul hasNonnegCoeffs_X)).mul ih
+  rr_row_nonneg_coeffs
 
 /-- Harmonic-factor partial products split over the reals. -/
 theorem harmonicFactorProduct_splits (n : ℕ) :
     (harmonicFactorProduct n).Splits := by
-  induction n with
-  | zero => simp [harmonicFactorProduct]
-  | succ n ih =>
-      rw [harmonicFactorProduct_succ]
-      have hdeg : (1 + C (n : ℝ) * X : ℝ[X]).natDegree ≤ 1 := by
-        refine (natDegree_add_le _ _).trans (max_le (by simp) ?_)
-        exact (natDegree_C_mul_le _ X).trans natDegree_X_le
-      exact (Polynomial.Splits.of_natDegree_le_one hdeg).mul ih
+  rr_row_splits
 
 private theorem harmonicFactorProduct_coeff_zero (n : ℕ) :
     (harmonicFactorProduct n).coeff 0 = 1 := by
@@ -80,38 +69,12 @@ private theorem harmonicFactorProduct_coeff_zero (n : ℕ) :
 /-- Harmonic-factor partial products are nonzero. -/
 theorem harmonicFactorProduct_ne_zero (n : ℕ) :
     harmonicFactorProduct n ≠ 0 := by
-  intro h
-  have hconst := harmonicFactorProduct_coeff_zero n
-  simp [h] at hconst
+  rr_row_ne_zero
 
 /-- The degree of the `n`-th harmonic-factor partial product is `n - 1`. -/
 theorem harmonicFactorProduct_natDegree (n : ℕ) :
     (harmonicFactorProduct n).natDegree = n - 1 := by
-  induction n with
-  | zero => simp [harmonicFactorProduct]
-  | succ n ih =>
-      rw [harmonicFactorProduct_succ]
-      by_cases hn : n = 0
-      · simp_all
-      · have hnR : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hn
-        have hlinear :
-            (1 + C (n : ℝ) * X : ℝ[X]).natDegree = 1 := by
-          have heq :
-              (1 + C (n : ℝ) * X : ℝ[X]) =
-                C (n : ℝ) * (X + C ((n : ℝ)⁻¹)) := by
-            apply Polynomial.funext
-            intro x
-            simp only [eval_add, eval_one, eval_mul, eval_C, eval_X]
-            grind
-          rw [heq, natDegree_C_mul hnR, natDegree_X_add_C]
-        have hfactor : (1 + C (n : ℝ) * X : ℝ[X]) ≠ 0 := by
-          intro h
-          have h0 : (1 + C (n : ℝ) * X : ℝ[X]).eval 0 = 0 := by
-            rw [h]
-            simp
-          simp at h0
-        rw [natDegree_mul hfactor (harmonicFactorProduct_ne_zero n), hlinear, ih]
-        lia
+  rr_row_natDegree
 
 /-- Every root lies strictly left of the next unused harmonic node. -/
 theorem harmonicFactorProduct_root_lt : ∀ {n : ℕ} {r : ℝ},
