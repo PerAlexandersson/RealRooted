@@ -35,17 +35,35 @@ def delayRows : ℕ → ℝ[X]
   | 0 => 1
   | n + 1 => delayRows n + X * delayRows (n + 1 - 2)
 
+/-- A failed route with a blank first message line must not indent later entries. -/
+syntax (name := rrRowDepthRegression) "rr_row_depth_regression" : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_row_depth_regression) => do
+      let log ← IO.mkRef #[]
+      let result ← rowRoute `variableDelay
+        (throwError "\nempty first line" : TacticM Unit) (some log)
+      unless result matches .error _ do
+        throwError "expected the first route to fail"
+      rowSkip `probe m!"" (some log)
+      let entries ← log.get
+      match entries.toList with
+      | [first, second] =>
+          unless first.reason == "" && first.depth == 0 && !first.running &&
+              second.depth == 0 do
+            throwError "completed route with an empty reason changed the later depth"
+      | _ => throwError "expected two row attempt entries"
+      Lean.Elab.Tactic.evalTactic (← `(tactic| trivial))
+
+example : True := by
+  rr_row_depth_regression
+
 /--
 info: rr.row explain:
 route           outcome  reason
-variableDelay   skipped  not selected by the via hint
-derivativeXMul  skipped  not selected by the via hint
-factorPower     skipped  not selected by the via hint
-delayedProduct  skipped  not selected by the via hint
+(other routes)  skipped  not selected by the via hint
 probe           skipped  disabled by the via hint
 rowModel        skipped  disabled by hints
-closedForm      skipped  not selected by the via hint
-pathPower       skipped  not selected by the via hint
 linearFactors   ok       -
 -/
 #guard_msgs in
@@ -65,21 +83,13 @@ example : (X ^ 2 + 1 : ℝ[X]).Splits := by
 
 /--
 info: rr.row explain:
-route            outcome  reason
-variableDelay    skipped  disabled by hints
-probe            skipped  disabled by the via hint
-rowModel         skipped  disabled by hints
-halfGrowth       skipped  not selected by the via hint
-pathPower        skipped  not selected by the via hint
-lowerOrder       skipped  not selected by the via hint
-parityProduct    skipped  not selected by the via hint
-rationalReverse  skipped  not selected by the via hint
-endpointWindow   skipped  not selected by the via hint
-fTransform       skipped  not selected by the via hint
-powerForm        skipped  not selected by the via hint
-closedForm       skipped  not selected by the via hint
-core             ok       -
-product          ok       -
+route           outcome  reason
+variableDelay   skipped  disabled by hints
+probe           skipped  disabled by the via hint
+rowModel        skipped  disabled by hints
+(other routes)  skipped  not selected by the via hint
+core            ok       -
+  product       ok       -
 -/
 #guard_msgs in
 example (n : ℕ) : Interlaces (productRows n) (productRows (n + 1)) := by
@@ -107,11 +117,9 @@ example (n : ℕ) : StrictInterl (delayRows n) (delayRows (n + 1)) := by
 
 /--
 info: rr.row explain:
-route          outcome  reason
-variableDelay  failed   rr_row: no canonical fixed-delay recurrence
-halfGrowth     skipped  not selected by the via hint
-degreePattern  skipped  not selected by the via hint
-interlaces     skipped  not selected by the via hint
+route           outcome  reason
+variableDelay   failed   rr_row: no canonical fixed-delay recurrence
+(other routes)  skipped  not selected by the via hint
 ---
 error: rr_row_strictInterl: no strategy proves the goal
 • fixed-delay recurrence: rr_row: no canonical fixed-delay recurrence

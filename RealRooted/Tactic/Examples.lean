@@ -164,6 +164,7 @@ import RealRooted.Tactic.Examples.RowPathPowerK5
 import RealRooted.Tactic.Examples.RowReaderNormalization
 import RealRooted.Tactic.Examples.RowRegression1689Degree
 import RealRooted.Tactic.Examples.RowRegression1689Interlacing
+import RealRooted.Tactic.Examples.RowRoutes
 import RealRooted.Tactic.Examples.RowStrictInterl
 import RealRooted.Tactic.Examples.RowSubseqDegree
 import RealRooted.Tactic.Examples.RowVariableDelay

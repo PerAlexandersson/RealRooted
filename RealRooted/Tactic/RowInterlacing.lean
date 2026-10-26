@@ -54,61 +54,10 @@ advertising the most exact rows take precedence, so an underdetermined prefix ca
 more specific model. For a splitting goal, a matching interlacing transfer is projected to the
 left row's splitting statement. Unrelated models are never elaborated.
 
-## Routes of `rr_row_interlaces`, in order
+## Routes
 
-1. Fixed-delay recurrences
-   `P (n + 1) = a (n + 1) P n + b (n + 1) X P (n + 1 - L)`, via
-   `strictInterl_of_fixedDelay_recurrence` or its scaled variable-delay specialization.
-2. Derivative-lag recurrences `P (n + 2) = U P (n + 1) + V P (n + 1)' + W P n`: the Liu–Wang
-   step (`Row.DerivLag`).
-3. Order three, factoring through a three-term recurrence: the reduction certified by
-   `threeTerm_rec_of_remainder` (`Row.LowerOrder`); or rows `s m * t m`, `s (m + 1) * t m` of
-   two three-term sequences: `eq_parityProduct_of_thirdOrderRecurrence` (`Row.ParityProduct`).
-4. Direct or reflected path-power subsequences, selected by an exact fit of rows zero through
-   eight (`Row.PathPower`).
-5. Multipliers `α j n · q ^ (k - j)` for one linear `q`, `k ≤ 3`: the power form,
-   `interlaces_of_forall_eq_C_mul_pow`, possibly after the first two rows (`Row.PowerForm`);
-   or closed-form rows `q ^ (D₀ + m) · R m` with `deg R m ≤ 2`, certified by a division
-   remainder (`Interlaces.pow_mul_of_quadratic_remainder`, `Row.ClosedFormInterlaces`).
-6. Inverse rational reflection, rejected by coefficient shape before exact row computation
-   (`Row.RationalReverse`).
-7. Moving rational endpoint windows, guessed from exact rows and certified by endpoint
-   evaluations (`Row.EndpointWindow`).
-8. The `f`-polynomial transform of a half-growth auxiliary derivative recurrence,
-   including common rational denominators (`Row.FTransform`).
-9. The interlacing core (`Row.Core`):
-   * products `P (n + 1) = L n * P n`: `productSequence_interlaces`;
-   * two-step products `P (n + 2) = q * P n`: `twoStepProduct_interlaces`;
-   * second order with an eigen-ODE, collapsed to first order (`derivRec₂_firstOrder`), or a
-     general Euler step (`EulerBidiagonal.interlaces_of_generalStep_rec`);
-   * three-term and first-order derivative recurrences: the sign conditions
-     (`threeTerm_interlaces_of_eval_nonpos`, `…_of_nonnegCoeffs`,
-     `derivativeRecurrence_interlaces_*`),
-     then fixed root windows (`*_of_roots_mem_Icc`, `*_of_roots_le`, `…_of_degree`,
-     `…_of_ratio`, and the ratio barrier `threeTerm_interlaces_of_roots_mem_Icc_of_barrier`
-     for `b n < 0` beyond the window), then a moving lower window
-     (`derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`) and a moving
-     upper bound split at a
-     common root of the `A n` (`derivativeRecurrence_interlaces_of_roots_le_mono_div`).
-10. The reversed rows `X ^ (D₀ + n) P n (1 / X)`, for derivative and three-term recurrences
-   whose rows have nonzero constant terms: an auxiliary recursive definition of the reversed
-   sequence, the link `eq_reflect_of_secondOrderDerivativeRecurrence` /
-   `eq_reflect_of_threeTerm`, and the transfer
-   `interlaces_of_eq_reflect` (`Row.Reverse`).
-
-## Routes of `rr_row_strictInterl`
-
-Fixed-delay recurrences use the same variable-delay theorem as the window front end
-`rr_row_window`; the latter accepts all goals `StrictInterl (P A) (P B)` with
-`A ≤ B ≤ A + L`.  Explicit path-power models are also accepted.
-
-Half-growth three-term and derivative-lag recurrences use the repeated-root-safe Liu–Wang
-induction in `Row.DerivLag`; a missing derivative term is read as coefficient zero.
-First-order derivative recurrences with degree law `c + (n + e) / 2` use
-`derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`.  When `c = 0`, the
-constant initial rows use the floor-half and half-degree variants from `Row.FTransform`.
-If these specialized routes fail, the tactic proves `Interlaces` with the general row machinery
-and projects it to `StrictInterl`; select this fallback with `(via := interlaces)`.
+The generated route order, conclusions, main theorems, side conditions, and regressions are in
+[`RealRooted/Tactic/ROUTES.md`](ROUTES.md).
 
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
 `rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
@@ -117,20 +66,6 @@ Hints `(thm := name)`, `(degree := D₀)`, `(drop := k)`, `(window := [L, U])` a
 `(upper := U)` restrict the search; `rr_row_interlaces?` prints the hinted call, which replays
 only the successful attempt, and the certificate.  The `rr_row_strictInterl?` variant likewise
 prints the successful strict-interlacing call.
-
-## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
-
-`variableDelay`, `factorPower` (deflate `q ^ n` from two-lag rows), `delayedProduct`
-(an arbitrary-offset product tail), `closedForm` (rows
-`residual · ∏ qᵢ ^ eᵢ n`, `RowClosedForm`), `pathPower`, `lowerOrder`, `thresholdOrbit`
-(order-three rows that are orbit sums of a threshold matrix, `Row.ThresholdOrbit`),
-`subseq`
-(residue classes, `Row.Subseq`), `linearFactors` and `splitFactors` (products), `twoStep`,
-`shiftedProduct`, `nextRow` and `prevRow` (the interlacing core with `P (t ± 1)`),
-`halfGrowth` (three-term rows of degree `D₀ + (n + e) / 2`), `degreePattern` (first-order
-derivative rows whose degree grows by zero or one,
-`derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`); derivative-lag recurrences go to
-`Row.DerivLag`.  `rr_row_splits?` prints the hinted call.
 
 ## Other front ends
 
@@ -582,14 +517,21 @@ private def rowModelGoal (log : RowAttemptLog) (P : Ident)
 
 /-- The named routes selectable by `rr_row_interlaces (via := ...)`. -/
 private def interlacesRoutes : List Name :=
-  [`variableDelay, `rowModel, `halfGrowth, `pathPower, `lowerOrder, `parityProduct,
-    `rationalReverse, `endpointWindow, `fTransform, `powerForm, `closedForm, `product,
-    `eulerStep, `twoStep, `sign, `window, `degreeWindow, `ratioWindow, `barrierWindow,
-    `movingWindow, `movingUpper, `reversed]
+  rowRoutesOf "rr_row_interlaces"
 
 private def interlacesCoreRoutes : List Name :=
-  [`product, `eulerStep, `twoStep, `sign, `window, `degreeWindow, `ratioWindow,
-    `barrierWindow, `movingWindow, `movingUpper]
+  rowRoutesOf "rowInterlacesCoreAt"
+
+/-- Format route names on bounded lines for unknown-`via` errors. -/
+private def routeNamesForError (routes : List Name) : String :=
+  (routes.foldl (init := (0, "")) fun (column, output) route =>
+    let name := route.toString
+    if column == 0 then
+      (name.length, name)
+    else if column + name.length + 2 > 88 then
+      (name.length, output ++ ",\n" ++ name)
+    else
+      (column + name.length + 2, output ++ ", " ++ name)).2
 
 /-- `rr_row_interlaces`, returning a certificate (empty for the derivative-lag and order-three
 routes, which have no printable steps) and the hints of the hinted call. -/
@@ -597,8 +539,8 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
     TacticM (Cert × RowHints) := do
   if let some via := hints.via then
     unless interlacesRoutes.contains via do
-      throwError "rr_row_interlaces: unknown route {via}; the routes are \
-        {", ".intercalate (interlacesRoutes.map toString)}"
+      throwError "rr_row_interlaces: unknown route {via}; the routes are\n\
+        {routeNamesForError interlacesRoutes}"
   let use (route : Name) := hints.via.isNone || hints.via == some route
   let unrestricted := hints.thm.isNone && hints.window.isNone && hints.upper.isNone
   if use `variableDelay && unrestricted then
@@ -956,10 +898,7 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
-  [`variableDelay, `derivativeXMul, `factorPower, `delayedProduct, `closedForm, `pathPower,
-    `lowerOrder, `thresholdOrbit, `subseq, `linearFactors, `splitFactors, `twoStep, `shiftedProduct,
-    `nextRow, `prevRow, `halfGrowth, `degreePattern, `reversed, `parityProduct, `lagFeedback,
-    `fTransform]
+  rowRoutesOf "rr_row_splits"
 
 /-- Whether the exact rows and sampled multiplier signs confirm the half-growth route after
 dropping `k` rows.  The rows must have degree `D₀ + (n + e) / 2`, positive leading
@@ -1106,8 +1045,8 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     TacticM RowHints := withMainContext do
   if let some v := hints.via then
     unless splitsRoutes.contains v do
-      throwError "rr_row_splits: unknown route {v}; the routes are \
-        {", ".intercalate (splitsRoutes.map toString)}"
+      throwError "rr_row_splits: unknown route {v}; the routes are\n\
+        {routeNamesForError splitsRoutes}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
   if use `variableDelay then
     match ← rowRoute `variableDelay (variableDelayGoal .splits) (some log) with
@@ -1540,10 +1479,10 @@ private def rowSplitsCore (log : RowAttemptLog) (hints : RowHints) : TacticM Row
 interlacing machinery. -/
 private def rowStrictInterlCore (log : RowAttemptLog) (hints : RowHints) : TacticM RowHints := do
   if let some v := hints.via then
-    unless v == `variableDelay || v == `halfGrowth || v == `degreePattern ||
-        v == `interlaces do
-      throwError "rr_row_strictInterl: unknown route {v}; the routes are variableDelay, \
-        halfGrowth, degreePattern and interlaces"
+    let routes := rowRoutesOf "rr_row_strictInterl"
+    unless routes.contains v do
+      throwError "rr_row_strictInterl: unknown route {v}; the routes are\n\
+        {routeNamesForError routes}"
   let mut failures : Array (MessageData × MessageData) := #[]
   if hints.via.isNone || hints.via == some `variableDelay then
     match ← rowRoute `variableDelay (variableDelayGoal .strict) (some log) with
