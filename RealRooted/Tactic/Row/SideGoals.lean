@@ -20,8 +20,8 @@ public meta import RealRooted.Tactic.RowClosedForm
 /-!
 # Row tactics: syntax and side goals
 
-The syntax of `rr_row_interlaces`, `rr_row_strictInterl`, their `?` variants and
-`rr_row_nonneg_coeffs`, the
+The syntax of `rr_row_interlaces`, `rr_row_strictInterl`, `rr_row_nonneg_coeffs`, their `?`
+variants, the
 `∀ n` term forms of the degree tactics, and the side-goal engine shared by the row tactics:
 sign conditions on the multipliers, nonnegative coefficients of explicit rows, and the
 `rr_row_side` closer for the side goals of the interlacing theorems.  The front ends are in
@@ -71,6 +71,9 @@ syntax (name := rrRowSplitsQ) "rr_row_splits?" (ppSpace rrRowHint)* : tactic
 /-- `rr_row_nonneg_coeffs` closes `HasNonnegCoeffs (P t)` (or `∀ n, HasNonnegCoeffs (P n)`)
 for a product, first-order derivative or three-term recurrence. -/
 syntax (name := rrRowNonnegCoeffs) "rr_row_nonneg_coeffs" : tactic
+
+/-- `rr_row_nonneg_coeffs?` runs `rr_row_nonneg_coeffs` and prints the replaying call. -/
+syntax (name := rrRowNonnegCoeffsQ) "rr_row_nonneg_coeffs?" : tactic
 
 /-- `rr_row_natDegree` under the `∀ n` binder of a goal `∀ n, (P n).natDegree = …`, as a
 term, for the shared hypotheses of `rr_row_interlaces` certificates. -/

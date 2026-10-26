@@ -49,6 +49,20 @@ theorem a049325_first_order_of_recurrence (P : ℕ → ℚ[X])
   simp only [liftDefect, affineIndex] at hn
   linear_combination hn
 
+/-- The `runC, runB, runA` coefficients of `ternaryRunThreeStep`. -/
+@[simp] def ternaryRunReplayCoeffs : Fin 3 → ℝ[X] :=
+  ![X * (1 - X) ^ 2, 3 * X * (1 - X), 3 * X]
+
+/-- The ternary-run source coefficients have automatic correction factor `3 * X`. -/
+example (P : ℕ → ℝ[X])
+    (hsource : ∀ n, lagDefect ternaryRunReplayCoeffs P n = 0)
+    (hseed : ∀ n < 3,
+      liftDefect 1 1 (4 * X - 1) (3 * X) (3 * X * (1 - X)) P n = 0) :
+    ∀ n, liftDefect 1 1 (4 * X - 1) (3 * X) (3 * X * (1 - X)) P n = 0 := by
+  fail_if_success
+    rr_replay_lift (hsource) (3 * X + 1) (hseed)
+  rr_replay_lift (hsource) (3 * X) (hseed)
+
 /-- The monic physicists' Hermite recurrence, used to regress the lift-to-row adapter. -/
 def hermiteReplay : ℕ → ℚ[X]
   | 0 => 1

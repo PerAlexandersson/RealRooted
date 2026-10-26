@@ -472,9 +472,8 @@ def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
   throwRowFailures m!"rr_row_{kind}: no strategy proves the goal for the \
     {r.shape.describe} recurrence of {P}" failures
 
-/-- Replay a printed tactic, parsed back, on a copy of `goal` with a fresh heartbeat budget;
-warn if it does not close the goal. -/
-def verifyText (goal : MVarId) (text : String) : TacticM Unit := do
+/-- Replay a printed tactic, parsed back, on a copy of `goal` with a fresh heartbeat budget. -/
+def verifyText (goal : MVarId) (text : String) : TacticM Bool := do
   let s ← saveState
   let res ← rowAttempt do
     let stx ← match Parser.runParserCategory (← getEnv) `tactic text with
@@ -486,8 +485,7 @@ def verifyText (goal : MVarId) (text : String) : TacticM Unit := do
     evalTactic stx
     unless (← getGoals).isEmpty do throwError "goals remain"
   s.restore
-  if let .error e := res then
-    logWarning m!"rr_row: the printed certificate did not replay: {e}"
+  return res matches .ok _
 
 /-- The call `name hs*` in lines of at most 100 characters, the first starting at column
 `col` and the others indented by `indent`; a hint is never broken. -/
@@ -527,10 +525,11 @@ def suggestCert (goal : MVarId) (tk : Syntax) (cert : Cert) (name : String)
   let hintedText ← layoutHinted name hs col (if atStart then col + 4 else lead + 4)
   let hintedSuggestion : Meta.Tactic.TryThis.Suggestion := { suggestion := .string hintedText }
   if cert.isEmpty then
-    verifyText goal hintedText
+    unless ← verifyText goal hintedText do
+      logWarning "rr_row: the printed hinted call did not replay"
     Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion]
     return
-  verifyText goal (← PrettyPrinter.ppTactic (← `(tactic| ($(← cert.toSeq))))).pretty
+  let certText := (← PrettyPrinter.ppTactic (← `(tactic| ($(← cert.toSeq))))).pretty
   -- the lines of a tactic sequence must start at the same column
   let indent := if atStart then col else lead + 2
   let lines ← cert.mapM fun t => do
@@ -538,7 +537,12 @@ def suggestCert (goal : MVarId) (tk : Syntax) (cert : Cert) (name : String)
     return "\n".intercalate ((text.splitOn "\n").map fun l => "".pushn ' ' indent ++ l)
   let text := "\n".intercalate lines.toList
   let text := if atStart then (text.drop col).toString else "\n" ++ text
-  Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion, { suggestion := .string text }]
+  if ← verifyText goal certText then
+    Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion, { suggestion := .string text }]
+  else
+    unless ← verifyText goal hintedText do
+      logWarning "rr_row: neither printed certificate nor hinted call replayed"
+    Meta.Tactic.TryThis.addSuggestions tk #[hintedSuggestion]
 
 /-- Run `main`, then close every remaining goal with `rr_row_side`. -/
 def applyThenSide (P? : Option Ident) (main : TSyntax `tactic) : TacticM (TSyntax `tactic) := do

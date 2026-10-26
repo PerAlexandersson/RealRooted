@@ -35,8 +35,14 @@ macro (name := rrReplayFactor) "rr_replay_factor" : tactic => `(tactic| (
   | decide
   | (norm_num [RealRooted.defectCorrection, RealRooted.lagCharacteristic,
       LinearRecurrence.charPoly, Fin.sum_univ_succ]
-     simp only [← Polynomial.C_mul_X_pow_eq_monomial, map_add, map_mul, map_one,
-       map_ofNat]
+     simp only [← Polynomial.C_mul_X_pow_eq_monomial, map_add, map_sub, map_neg,
+       map_mul, map_pow, map_one, map_ofNat, Polynomial.C_add, Polynomial.C_sub,
+       Polynomial.C_neg, Polynomial.C_mul, Polynomial.C_pow, Polynomial.C_0,
+       Polynomial.C_1, Polynomial.C_ofNat, Polynomial.C_eq_natCast,
+       Polynomial.derivative_add,
+       Polynomial.derivative_sub,
+       Polynomial.derivative_mul, Polynomial.derivative_pow, Polynomial.derivative_X,
+       Polynomial.derivative_one, Polynomial.derivative_ofNat]
      ring)
   done))
 
