@@ -29,6 +29,10 @@ def nonnegativeLinRecRows : ℕ → ℝ[X]
 example : ∀ n, HasNonnegCoeffs (nonnegativeLinRecRows n) := by
   rr_row_nonneg_coeffs
 
+#guard_msgs (drop info) in
+example : ∀ n, HasNonnegCoeffs (nonnegativeLinRecRows n) := by
+  rr_row_nonneg_coeffs?
+
 /-- Example sequence with an order-three recurrence and nonnegative coefficients. -/
 def orderThreeNonnegativeRows : ℕ → ℝ[X]
   | 0 => 1
@@ -52,5 +56,17 @@ def nonnegativeRowsAfterDrop : ℕ → ℝ[X]
 
 example : ∀ n, HasNonnegCoeffs (nonnegativeRowsAfterDrop (n + 1)) := by
   rr_row_nonneg_coeffs
+
+
+/-- A genuinely negative row is rejected by both nonnegativity frontends. -/
+def negativeCoefficientRows : ℕ → ℝ[X]
+  | 0 => 1
+  | _ + 1 => -X
+
+example : True := by
+  fail_if_success
+    have : ∀ n, HasNonnegCoeffs (negativeCoefficientRows n) := by
+      rr_row_nonneg_coeffs?
+  trivial
 
 end RealRooted.Tactic.Examples

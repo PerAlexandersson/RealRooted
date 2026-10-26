@@ -2134,3 +2134,6 @@ import RealRooted.ClassicalHurwitzMatrix.Examples
 import RealRooted.HurwitzMatrix.CornerZeroedCounterexample
 import RealRooted.HurwitzMatrix.HadamardObstruction
 import RealRooted.Tactic.Examples.RowStrictInterl
+import RealRooted.Mathlib.Analysis.Complex.RealPart
+import RealRooted.Mathlib.Analysis.Matrix.Spectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
