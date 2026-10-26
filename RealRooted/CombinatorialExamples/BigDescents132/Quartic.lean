@@ -23,7 +23,7 @@ value theorem and Vieta's relations).
   `W_s = (X - a)(X - b)((X - U)² + V²)` with the root bounds and the modulus dominance.
 * `RealRooted.BigDescents132.Quartic.eval_eq_zero_iff`, `derivative_signs`, `vieta`,
   `separable_polynomial`, and `quarter_lt_of_eval_eq_zero` (the small zero exceeds `1/4`).
-* Over `ℂ`: `map_eq_prod` (the factorization `(X - a)(X - b)(X - λ)(X - λ̄)`),
+* Over `ℂ`: `map_eq_prod` (the factorization `(X - a)(X - b)(X - λ)(X - conj λ)`),
   `eq_of_isRoot_of_im_pos` (`λ = U + Vi` is the unique zero in the upper half-plane) and
   `separable_map`.
 
