@@ -3,6 +3,7 @@ module
 public import RealRooted.CombinatorialExamples.Eulerian
 public import RealRooted.CombinatorialExamples.Narayana
 public import RealRooted.CombinatorialExamples.Simsun
+public import RealRooted.CombinatorialExamples.StirlingPermutations
 public import RealRooted.CombinatorialExamples.TypeBEulerian
 public import RealRooted.Tactic.RowInterlacing
 
@@ -21,6 +22,14 @@ open Polynomial
 namespace RealRooted.Tactic.RowReaderNormalizationExamples
 
 noncomputable section
+
+private def privateNormalizedRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X * privateNormalizedRows n
+
+/- The private equation name cannot be pasted, so `?` prints only the replaying hinted call. -/
+#guard_msgs (drop info) in
+example (n : ℕ) : (privateNormalizedRows n).natDegree = n := by rr_row_natDegree?
 
 /-! ## An outer polynomial factor -/
 
@@ -62,6 +71,9 @@ example (n : ℕ) : (typeBEulerian n).natDegree = n := by
   rr_row_natDegree
 
 example (n : ℕ) : 0 < (typeBEulerian n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : 0 < (stirlingPermutations n).leadingCoeff := by
   rr_row_leadingCoeff_pos
 
 example (n : ℕ) : HasNonnegCoeffs (typeBEulerian n) := by

@@ -125,12 +125,15 @@ derivative rows whose degree grows by zero or one,
 
 ## Other front ends
 
-* `rr_row_nonneg_coeffs`: `HasNonnegCoeffs (P t)`, first by the general
+* `rr_row_nonneg_coeffs` and `rr_row_nonneg_coeffs?`: `HasNonnegCoeffs (P t)`, first by the
+  general
   `RealRooted.LinRec.hasNonnegCoeffs`, including derivative summands and shifted tails, then by
   the specialized three-term and derivative-recurrence theorems;
 * `rr_row_eval_zero_pos`: `0 < (P t).eval 0`, by induction on the recurrence evaluated at
   `0` (positive coefficients at `0`; for derivative recurrences with `A n` not vanishing at
   `0` also nonnegative coefficients of the rows).
+
+  The `?` variant prints the replaying call.
 
 The degree tactics (`rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_leadingCoeff_pos`) live in
 `RealRooted.Tactic.Recurrence.Degree`: degree laws of the recurrence shapes, general linear
@@ -698,8 +701,7 @@ private def linRecNonneg : TacticM Unit := withMainContext do
       discard <| smallRow P
     setGoals []
 
-elab_rules : tactic
-  | `(tactic| rr_row_nonneg_coeffs) => withMainContext do
+private def rowNonnegCore : TacticM Unit := withMainContext do
   if ← rowSucceeds linRecNonneg then return
   discard introIfForall
   withMainContext do
@@ -747,6 +749,13 @@ elab_rules : tactic
     | .ok _ => return
     | .error e => failures := failures.push (m!"{main}", e)
   throwRowFailures m!"rr_row_nonneg_coeffs: no strategy proves the goal for {P}" failures
+
+elab_rules : tactic
+  | `(tactic| rr_row_nonneg_coeffs) => rowNonnegCore
+  | `(tactic| rr_row_nonneg_coeffs?%$tk) => withMainContext do
+    let goal ← getMainGoal
+    rowNonnegCore
+    suggestCert goal tk #[] "rr_row_nonneg_coeffs" #[]
 
 /-- The recurrence of `r` as a hypothesis `hrec`, proved by the equation lemma (and `ring`
 if the summands are not in the order of the theorems). -/
