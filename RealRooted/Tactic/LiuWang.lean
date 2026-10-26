@@ -2,7 +2,6 @@ module
 
 public import RealRooted.Tactic.LiuWang.SequenceIntervals
 public import RealRooted.Tactic.LiuWang.SequenceNonpositive
-public import RealRooted.Tactic.LiuWang.SequencePositive
 public import RealRooted.Tactic.LiuWang.SequenceProducts
 public import RealRooted.Tactic.LiuWang.SequenceQuadratic
 public import RealRooted.Tactic.LiuWang.Step

@@ -15,50 +15,6 @@ namespace Tactic
 
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
 polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`lag_nonpos : ∀ n r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_named)
-  "rr_lw_nonpos_lag_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` from
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n`, leaving the other certificates of
-`rr_lw_nonpos_lag_sequence` to be found by `rr_lookup`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_inferred_of_recurrence)
-  "rr_lw_nonpos_lag_sequence" " using " "recurrence" ":=" term : tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`lag_nonpos : ∀ n r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_realrooted_named)
-  "rr_lw_nonpos_lag_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n`, leaving the other certificates of
-`rr_lw_nonpos_lag_sequence_realrooted` to be found by `rr_lookup`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence)
-  "rr_lw_nonpos_lag_sequence_realrooted" " using " "recurrence" ":=" term : tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
 `lag : B`, the lag coefficient sequence `B : ℕ → ℝ[X]`;
 `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + B n * P n`;
 `degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
@@ -129,175 +85,6 @@ syntax (name := rr_lw_global_nonpos_sequence_den_realrooted_auto_named)
 
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
 polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`lag_nonpos : ∀ n r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0`; `den_nonzero : ∀ n, d n ≠ 0`;
-`raw_recurrence : ∀ n, C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1) + B n * P n)`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_den_named)
-  "rr_lw_nonpos_lag_sequence_den" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`lag_nonpos : ∀ n r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0`; `den_nonzero : ∀ n, d n ≠ 0`;
-`raw_recurrence : ∀ n, C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1) + B n * P n)`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_nonpos_lag_sequence_den_realrooted_named)
-  "rr_lw_nonpos_lag_sequence_den_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "den_nonzero" ":=" term ","
-    "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_const_sequence_named)
-  "rr_lw_negative_const_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_const_sequence_auto_named)
-  "rr_lw_negative_const_sequence_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_const_sequence_realrooted_named)
-  "rr_lw_negative_const_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_const_sequence_realrooted_auto_named)
-  "rr_lw_negative_const_sequence_realrooted_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_const_C_neg_sequence_named)
-  "rr_lw_negative_const_C_neg_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_const_C_neg_sequence_auto_named)
-  "rr_lw_negative_const_C_neg_sequence_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_const_C_neg_sequence_realrooted_named)
-  "rr_lw_negative_const_C_neg_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_const_C_neg_sequence_realrooted_auto_named)
-  "rr_lw_negative_const_C_neg_sequence_realrooted_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q
-n) ^ 2) * P n`; `degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_square_sequence_named)
-  "rr_lw_negative_square_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
 `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n`;
 `degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
 `no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
@@ -312,21 +99,6 @@ syntax (name := rr_lw_negative_square_sequence_auto_named)
   tactic
 
 /-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`coeff_nonneg : ∀ n, 0 ≤ c n`; `recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q
-n) ^ 2) * P n`; `degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_square_sequence_realrooted_named)
-  "rr_lw_negative_square_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
 `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`; `recurrence
 : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n`;
 `degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
@@ -334,34 +106,6 @@ syntax (name := rr_lw_negative_square_sequence_realrooted_named)
 supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
 syntax (name := rr_lw_negative_square_sequence_realrooted_auto_named)
   "rr_lw_negative_square_sequence_realrooted_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_square_sequence_unit_named)
-  "rr_lw_negative_square_sequence_unit" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-((q n) ^ 2)) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. -/
-syntax (name := rr_lw_negative_square_sequence_realrooted_unit_named)
-  "rr_lw_negative_square_sequence_realrooted_unit" " using "
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "recurrence" ":=" term ","
@@ -727,54 +471,6 @@ syntax (name := rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_a
 
 macro_rules
   | `(tactic|
-      rr_lw_nonpos_lag_step using
-        interlaces := $hInter:term,
-        interlacer_pos_lc := $hg_pos:term,
-        target_pos_lc := $hF_pos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term,
-        lag_nonpos := $hB:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_two_of_nonpos_of_recurrence
-          $hInter $hg_pos $hrec $hF_pos $hdeg_succ $hno $hB)
-  | `(tactic|
-      rr_lw_nonpos_lag_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        lag_nonpos := $hB:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_nonpos_lag_sequence
-          $hbase $hpos $hB $hrec $hdeg_succ $hno)
-  | `(tactic| rr_lw_nonpos_lag_sequence using recurrence := $hrec:term) =>
-      `(tactic|
-        rr_refine_then
-          (RealRooted.LiuWang.strictInterl_nonpos_lag_sequence
-            ?_ ?_ ?_ $hrec ?_ ?_)
-          with rr_lookup)
-  | `(tactic|
-      rr_lw_nonpos_lag_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        lag_nonpos := $hB:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_nonpos_lag_sequence
-            $hbase $hpos $hB $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_nonpos_lag_sequence_realrooted using recurrence := $hrec:term) =>
-      `(tactic|
-        rr_exact_realrooted_refine_then
-          (RealRooted.LiuWang.isRealRooted_of_nonpos_lag_sequence
-            ?_ ?_ ?_ $hrec ?_ ?_)
-          with rr_lookup)
-  | `(tactic|
       rr_lw_global_nonpos_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -866,130 +562,6 @@ macro_rules
               rr_sign) $hden $hraw $hdeg_succ $hno);
         rr_exact_realrooted_sequence_or_projection hrr)
   | `(tactic|
-      rr_lw_nonpos_lag_sequence_den using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        lag_nonpos := $hB:term,
-        den_nonzero := $hden:term,
-        raw_recurrence := $hraw:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_nonpos_lag_sequence_den
-          $hbase $hpos $hB $hden $hraw $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_nonpos_lag_sequence_den_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        lag_nonpos := $hB:term,
-        den_nonzero := $hden:term,
-        raw_recurrence := $hraw:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_nonpos_lag_sequence_den
-            $hbase $hpos $hB $hden $hraw $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_const_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_const_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_const_sequence_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_const_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_const_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_const_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_const_sequence_realrooted_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_const_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_const_C_neg_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_const_C_neg_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_const_C_neg_sequence_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_const_C_neg_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_const_C_neg_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_const_C_neg_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_const_C_neg_sequence_realrooted_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_const_C_neg_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_square_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_square_lag_sequence
-          $hbase $hpos $hc $hrec $hdeg_succ $hno)
-  | `(tactic|
       rr_lw_negative_square_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -999,18 +571,6 @@ macro_rules
       `(tactic|
         exact RealRooted.LiuWang.strictInterl_negative_square_lag_sequence
           $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_square_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_square_lag_sequence
-            $hbase $hpos $hc $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_realrooted_auto using
         base := $hbase:term,
@@ -1022,27 +582,6 @@ macro_rules
         rr_exact_realrooted_sequence_or_projection
           (RealRooted.LiuWang.isRealRooted_of_negative_square_lag_sequence
             $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_square_sequence_unit using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_square_lag_sequence_unit
-          $hbase $hpos $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_square_sequence_realrooted_unit using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_square_lag_sequence_unit
-            $hbase $hpos $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff using
         base := $hbase:term,

@@ -20,57 +20,9 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` by the Liu--Wang induction for the
-derivative-plus-lag recurrence
-`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n`. The arguments are
-`base : StrictInterl (P 0) (P 1)`, `pos_lc`, `recurrence`, `derivative_nonpos` and `lag_nonpos`,
-which say that `(V n).eval r ≤ 0` and `(W n).eval r ≤ 0` at every root `r` of `P (n + 1)`,
-`degree_succ : (P n).natDegree + 1 = (P (n + 1)).natDegree`, and `no_common_roots`, which says that
-`P n` and `P (n + 1)` share no root. -/
-syntax (name := rr_lw_derivative_lag_sequence_named)
-  "rr_lw_derivative_lag_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "derivative_nonpos" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` by the Liu--Wang induction for the derivative-plus-lag
-recurrence `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n`. The arguments
-are as for `rr_lw_derivative_lag_sequence`. -/
-syntax (name := rr_lw_derivative_lag_sequence_realrooted_named)
-  "rr_lw_derivative_lag_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "derivative_nonpos" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, Interlaces (P n) (P (n + 1))` by the Liu--Wang induction for the
-derivative-plus-lag recurrence
-`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n`. The arguments are as for
-`rr_lw_derivative_lag_sequence`; `degree_succ` also supplies the degree condition for
-interlacing. -/
-syntax (name := rr_lw_derivative_lag_sequence_interlaces_named)
-  "rr_lw_derivative_lag_sequence_interlaces" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "derivative_nonpos" ":=" term ","
-    "lag_nonpos" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Variant of `rr_lw_derivative_lag_sequence` that replaces `derivative_nonpos` and `lag_nonpos` by
-`nonneg_coeffs` (every `P n` has nonnegative coefficients); the sign conditions on `V` and `W` are
-proved automatically at the roots of `P (n + 1)`. -/
+/-- Closes the derivative-plus-lag strict-interlacing sequence theorem from `nonneg_coeffs`
+(every `P n` has nonnegative coefficients); the sign conditions on `V` and `W` are proved
+automatically at the roots of `P (n + 1)`. -/
 syntax (name := rr_lw_derivative_lag_sequence_sign_auto_named)
   "rr_lw_derivative_lag_sequence_sign_auto" " using "
     "base" ":=" term ","
@@ -81,9 +33,9 @@ syntax (name := rr_lw_derivative_lag_sequence_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
-/-- Variant of `rr_lw_derivative_lag_sequence_realrooted` that replaces `derivative_nonpos` and
-`lag_nonpos` by `nonneg_coeffs` (every `P n` has nonnegative coefficients); the sign conditions on
-`V` and `W` are proved automatically at the roots of `P (n + 1)`. -/
+/-- Closes the derivative-plus-lag real-rootedness sequence theorem from `nonneg_coeffs`
+(every `P n` has nonnegative coefficients); the sign conditions on `V` and `W` are proved
+automatically at the roots of `P (n + 1)`. -/
 syntax (name := rr_lw_derivative_lag_sequence_realrooted_sign_auto_named)
   "rr_lw_derivative_lag_sequence_realrooted_sign_auto" " using "
     "base" ":=" term ","
@@ -94,9 +46,9 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
-/-- Variant of `rr_lw_derivative_lag_sequence_interlaces` that replaces `derivative_nonpos` and
-`lag_nonpos` by `nonneg_coeffs` (every `P n` has nonnegative coefficients); the sign conditions on
-`V` and `W` are proved automatically at the roots of `P (n + 1)`. -/
+/-- Closes the derivative-plus-lag interlacing sequence theorem from `nonneg_coeffs`
+(every `P n` has nonnegative coefficients); the sign conditions on `V` and `W` are proved
+automatically at the roots of `P (n + 1)`. -/
 syntax (name := rr_lw_derivative_lag_sequence_interlaces_sign_auto_named)
   "rr_lw_derivative_lag_sequence_interlaces_sign_auto" " using "
     "base" ":=" term ","
@@ -107,9 +59,9 @@ syntax (name := rr_lw_derivative_lag_sequence_interlaces_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
-/-- Variant of `rr_lw_derivative_lag_sequence` that replaces `derivative_nonpos` and `lag_nonpos` by
-`root_lower` and `root_upper`, bounds that confine the roots of `P (n + 1)` to a window; the sign
-conditions on `V` and `W` are proved on that window by `rr_sign`. -/
+/-- Closes the derivative-plus-lag strict-interlacing sequence theorem from `root_lower` and
+`root_upper`, bounds that confine the roots of `P (n + 1)` to a window; the sign conditions on `V`
+and `W` are proved on that window by `rr_sign`. -/
 syntax (name := rr_lw_derivative_lag_sequence_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_window_sign_auto" " using "
     "base" ":=" term ","
@@ -121,9 +73,9 @@ syntax (name := rr_lw_derivative_lag_sequence_window_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
-/-- Variant of `rr_lw_derivative_lag_sequence_realrooted` that replaces `derivative_nonpos` and
-`lag_nonpos` by `root_lower` and `root_upper`, bounds that confine the roots of `P (n + 1)` to a
-window; the sign conditions on `V` and `W` are proved on that window by `rr_sign`. -/
+/-- Closes the derivative-plus-lag real-rootedness sequence theorem from `root_lower` and
+`root_upper`, bounds that confine the roots of `P (n + 1)` to a window; the sign conditions on `V`
+and `W` are proved on that window by `rr_sign`. -/
 syntax (name := rr_lw_derivative_lag_sequence_realrooted_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_realrooted_window_sign_auto" " using "
     "base" ":=" term ","
@@ -135,9 +87,9 @@ syntax (name := rr_lw_derivative_lag_sequence_realrooted_window_sign_auto_named)
     "no_common_roots" ":=" term :
   tactic
 
-/-- Variant of `rr_lw_derivative_lag_sequence_interlaces` that replaces `derivative_nonpos` and
-`lag_nonpos` by `root_lower` and `root_upper`, bounds that confine the roots of `P (n + 1)` to a
-window; the sign conditions on `V` and `W` are proved on that window by `rr_sign`. -/
+/-- Closes the derivative-plus-lag interlacing sequence theorem from `root_lower` and
+`root_upper`, bounds that confine the roots of `P (n + 1)` to a window; the sign conditions on `V`
+and `W` are proved on that window by `rr_sign`. -/
 syntax (name := rr_lw_derivative_lag_sequence_interlaces_window_sign_auto_named)
   "rr_lw_derivative_lag_sequence_interlaces_window_sign_auto" " using "
     "base" ":=" term ","
@@ -505,48 +457,6 @@ macro_rules
       `(by rr_lw_derivative_lag_coeff_at $n)
   | `(rr_lw_derivative_lag_coeff_all_term) =>
       `(by rr_lw_derivative_lag_coeff_all)
-  | `(tactic|
-      rr_lw_derivative_lag_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        derivative_nonpos := $hderivative_nonpos:term,
-        lag_nonpos := $hlag_nonpos:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_derivative_lag_sequence
-          $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
-          $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_derivative_lag_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        derivative_nonpos := $hderivative_nonpos:term,
-        lag_nonpos := $hlag_nonpos:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_derivative_lag_sequence
-            $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
-            $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_derivative_lag_sequence_interlaces using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        derivative_nonpos := $hderivative_nonpos:term,
-        lag_nonpos := $hlag_nonpos:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.interlaces_of_strictInterl_chain
-          (RealRooted.LiuWang.strictInterl_derivative_lag_sequence
-            $hbase $hpos $hrec $hderivative_nonpos $hlag_nonpos
-            $hdeg_succ $hno)
-          $hdeg_succ)
   | `(tactic|
       rr_lw_derivative_lag_sequence_sign_auto using
         base := $hbase:term,
