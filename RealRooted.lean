@@ -2142,3 +2142,4 @@ import RealRooted.CombinatorialExamples.BigDescents132.GeneratingFunction
 import RealRooted.Interlacing.VariableDelay
 import RealRooted.CombinatorialExamples.WeightedRenewal
 import RealRooted.Tactic.Examples.ParametricRows
+import RealRooted.Mathlib.Data.Nat.Choose.Sum
