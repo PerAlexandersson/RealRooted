@@ -2652,6 +2652,36 @@
       ],
       "note": "Speculative target module; sharp equal-weight skewness bound (#1919), no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealPart.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealPart"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Proofs found by Aristotle (#1697).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Matrix/Spectrum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Matrix.Spectrum"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Proofs found by Aristotle (#954).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Charpoly/TraceSq.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Proofs found by Aristotle (#954).",
+      "speculative": true
     }
   ]
 }
