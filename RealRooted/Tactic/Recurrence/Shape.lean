@@ -1,7 +1,9 @@
 module
 
+public import RealRooted.Tactic.Row.Routes
 public import RealRooted.Tactic.Product.Interlacing
 public import RealRooted.ThreeTermRecurrence.Degree
+public meta import RealRooted.Tactic.Row.Routes
 public meta import RealRooted.Tactic.Product.Interlacing
 public meta import RealRooted.ThreeTermRecurrence.Degree
 
@@ -77,6 +79,10 @@ inductive RowRouteOutcome where
 structure RowAttemptEntry where
   /-- The stable route name. -/
   route : Name
+  /-- The number of enclosing routes using the same attempt log. -/
+  depth : Nat
+  /-- Whether this route is still running inside this attempt log. -/
+  running : Bool
   /-- How the route finished. -/
   outcome : RowRouteOutcome
   /-- The internal heartbeat-counter delta. -/
@@ -581,9 +587,14 @@ def rowSucceeds (tac : TacticM Unit) : TacticM Bool := do
 private def firstMessageLine (message : MessageData) : TacticM String := do
   return (← message.toString).splitOn "\n" |>.headD ""
 
-private def reserveRowAttempt (log : RowAttemptLog) (name : Name) : IO Nat :=
+private def activeRowAttemptDepth (entries : Array RowAttemptEntry) : Nat :=
+  entries.foldl (init := 0) fun depth entry =>
+    if entry.running then depth + 1 else depth
+
+private def reserveRowAttempt (log : RowAttemptLog) (name : Name) : IO (Nat × Nat) :=
   log.modifyGet fun entries =>
-    (entries.size, entries.push ⟨name, .failed, 0, ""⟩)
+    let depth := activeRowAttemptDepth entries
+    ((entries.size, depth), entries.push ⟨name, depth, true, .failed, 0, ""⟩)
 
 private def finishRowAttempt (log : RowAttemptLog) (index : Nat)
     (entry : RowAttemptEntry) : IO Unit :=
@@ -594,32 +605,38 @@ attempt log.  With no log this is exactly `rowAttempt`. -/
 def rowRoute (name : Name) (tac : TacticM α) (log? : Option RowAttemptLog := none) :
     TacticM (Except MessageData α) := do
   let some log := log? | return ← rowAttempt tac
-  let index ← reserveRowAttempt log name
+  let (index, depth) ← reserveRowAttempt log name
   let start ← IO.getNumHeartbeats
   let result ← rowAttemptClassified tac
   let heartbeats := (← IO.getNumHeartbeats) - start
   match result with
   | .ok a =>
-      finishRowAttempt log index ⟨name, .ok, heartbeats, "-"⟩
+      finishRowAttempt log index ⟨name, depth, false, .ok, heartbeats, "-"⟩
       return .ok a
   | .error (.failed message) =>
-      finishRowAttempt log index ⟨name, .failed, heartbeats, ← firstMessageLine message⟩
+      finishRowAttempt log index
+        ⟨name, depth, false, .failed, heartbeats, ← firstMessageLine message⟩
       return .error message
   | .error (.timedOut message) =>
-      finishRowAttempt log index ⟨name, .timedOut, heartbeats, ← firstMessageLine message⟩
+      finishRowAttempt log index
+        ⟨name, depth, false, .timedOut, heartbeats, ← firstMessageLine message⟩
       return .error message
 
 /-- Record that a cheap probe vetoed a named route without running it. -/
 def rowVeto (name : Name) (reason : MessageData) (log? : Option RowAttemptLog := none) :
     TacticM Unit := do
   if let some log := log? then
-    log.modify (·.push ⟨name, .vetoed, 0, ← firstMessageLine reason⟩)
+    let reason ← firstMessageLine reason
+    log.modify fun entries =>
+      entries.push ⟨name, activeRowAttemptDepth entries, false, .vetoed, 0, reason⟩
 
 /-- Record that hints skipped a named route without running it. -/
 def rowSkip (name : Name) (reason : MessageData) (log? : Option RowAttemptLog := none) :
     TacticM Unit := do
   if let some log := log? then
-    log.modify (·.push ⟨name, .skipped, 0, ← firstMessageLine reason⟩)
+    let reason ← firstMessageLine reason
+    log.modify fun entries =>
+      entries.push ⟨name, activeRowAttemptDepth entries, false, .skipped, 0, reason⟩
 
 private def RowRouteOutcome.toString : RowRouteOutcome → String
   | .ok => "ok"
@@ -631,13 +648,29 @@ private def RowRouteOutcome.toString : RowRouteOutcome → String
 private def padRowExplain (width : Nat) (value : String) : String :=
   value ++ String.ofList (List.replicate (width - value.length) ' ')
 
+private def rowAttemptRouteString (entry : RowAttemptEntry) : String :=
+  if entry.route == `otherRoutes then "(other routes)" else entry.route.toString
+
 /-- Print a row-tactic attempt log as an aligned table when `rr.row.explain` is enabled. -/
 def explainRowAttempts (log : RowAttemptLog) : TacticM Unit := do
   unless (← getOptions).getBool `rr.row.explain false do return
   let entries ← log.get
-  let routeWidth := entries.foldl (init := "route".length) fun width entry =>
-    max width entry.route.toString.length
-  let outcomeWidth := entries.foldl (init := "outcome".length) fun width entry =>
+  let mut shown : Array RowAttemptEntry := #[]
+  let mut collapsedViaSkips := false
+  for entry in entries do
+    if entry.outcome matches .skipped && entry.reason == "not selected by the via hint" then
+      unless collapsedViaSkips do
+        shown := shown.push {
+          entry with
+          route := `otherRoutes
+          depth := 0
+        }
+        collapsedViaSkips := true
+    else
+      shown := shown.push entry
+  let routeWidth := shown.foldl (init := "route".length) fun width entry =>
+    max width ((rowAttemptRouteString entry).length + 2 * entry.depth)
+  let outcomeWidth := shown.foldl (init := "outcome".length) fun width entry =>
     max width entry.outcome.toString.length
   let showHeartbeats := (← getOptions).getBool `rr.row.explain.heartbeats true
   let mut lines :=
@@ -646,8 +679,9 @@ def explainRowAttempts (log : RowAttemptLog) : TacticM Unit := do
           {padRowExplain outcomeWidth "outcome"}  heartbeats(k)  reason"]
     else
       [s!"{padRowExplain routeWidth "route"}  {padRowExplain outcomeWidth "outcome"}  reason"]
-  for entry in entries do
-    let route := padRowExplain routeWidth entry.route.toString
+  for entry in shown do
+    let indentation := String.ofList (List.replicate (2 * entry.depth) ' ')
+    let route := padRowExplain routeWidth (indentation ++ rowAttemptRouteString entry)
     let outcome := padRowExplain outcomeWidth entry.outcome.toString
     let heartbeats := padRowExplain "heartbeats(k)".length
       (toString (entry.heartbeats / 1000000))

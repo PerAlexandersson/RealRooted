@@ -57,6 +57,9 @@ replace it.
   namespace stays `RealRooted.Challenges.<Name>`. They feed the public catalog (see
   [Documentation](#documentation)).
 - `RealRooted/Tactic/` holds the real-rootedness and interlacing tactics.
+  [`RealRooted/Tactic/ROUTES.md`](RealRooted/Tactic/ROUTES.md) lists the row-tactic routes,
+  their theorems, and side conditions.  Use `set_option rr.row.explain true` to print the
+  attempted routes and `rr.row.explain.heartbeats false` to hide heartbeat counts.
   [`RealRooted/Tactic/OEIS_COVERAGE.md`](RealRooted/Tactic/OEIS_COVERAGE.md)
   is the generated ledger of OEIS certificate coverage.
 - Theory lives in topic directories such as `CommonInterleaver/`,

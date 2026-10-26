@@ -16,13 +16,13 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2138
+      "max_modules": 2140
     },
     "RealRooted.Production": {
-      "max_modules": 1954
+      "max_modules": 1955
     },
     "RealRooted.Tactic.Examples": {
-      "max_modules": 949
+      "max_modules": 951
     },
     "RealRooted.ParkingFunctions.Descents.Words": {
       "max_modules": 137
@@ -1483,7 +1483,7 @@
       "max_modules": 112
     },
     "RealRooted.Tactic.OEIS": {
-      "max_modules": 564
+      "max_modules": 565
    },
     "RealRooted.SequenceClosure": {
       "max_modules": 16
@@ -1573,7 +1573,7 @@
       "max_modules": 104
     },
     "RealRooted.Tactic": {
-      "max_modules": 594
+      "max_modules": 595
    },
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182

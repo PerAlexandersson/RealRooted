@@ -35,17 +35,16 @@ open Lean Elab Tactic Meta Polynomial
 namespace RealRooted.Tactic
 
 /-- `rr_row_interlaces` closes `Interlaces (P t) (P (t + 1))` for a sequence `P` defined by
-a recurrence; see the module documentation.  The hints `(thm := name)`, `(degree := D₀)`,
-`(window := [L, U])` and `(upper := U)` restrict the search. -/
+a recurrence.  See `RealRooted/Tactic/ROUTES.md` for the routes.  The hints `(thm := name)`,
+`(degree := D₀)`, `(window := [L, U])` and `(upper := U)` restrict the search. -/
 syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tactic
 
 /-- `rr_row_interlaces?` runs `rr_row_interlaces` and prints the hinted call and the
 certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
 
-/-- `rr_row_strictInterl` closes `StrictInterl (P t) (P (t + 1))` for half-growth
-three-term and derivative-lag recurrences, and for first-order derivative recurrences whose
-degree grows by zero or one.  The hints `(via := halfGrowth)`, `(via := degreePattern)`,
+/-- `rr_row_strictInterl` closes `StrictInterl (P t) (P (t + 1))` for supported row
+recurrences.  See `RealRooted/Tactic/ROUTES.md` for the routes.  The hints `(via := route)`,
 `(drop := k)` and `(half := e)` restrict the search. -/
 syntax (name := rrRowStrictInterl) "rr_row_strictInterl" (ppSpace rrRowHint)* : tactic
 
@@ -56,17 +55,9 @@ syntax (name := rrRowStrictInterlQ) "rr_row_strictInterl?" (ppSpace rrRowHint)* 
 `A ≤ B ≤ A + L`.  It also accepts an explicit path-power model with an additive step. -/
 syntax (name := rrRowWindow) "rr_row_window" : tactic
 
-/-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
-`rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
-number of rows split off; the routes are `closedForm`, `pathPower`, `lowerOrder`, `subseq`,
-`variableDelay`, `linearFactors`, `splitFactors`, `twoStep`, `shiftedProduct`, `nextRow` and
-`prevRow` (the
-interlacing of `P t` with `P (t + 1)` or `P (t - 1)`), `halfGrowth`, `degreePattern` (first-order
-derivative recurrences whose degree grows by zero or one), `reversed` (the reversed rows,
-`Row.Reverse`), `parityProduct` (order three, `Row.ParityProduct`), `lagFeedback`
-(`P (n + p) = α P (n + p - 1) + c n X P n`, `Row.LagFeedback`) and `fTransform` (rows
-`fPolynomial n (Q n)` of a simpler derivative recurrence, `Row.FTransform`).  The hints of
-`rr_row_interlaces` are passed on to the interlacing routes. -/
+/-- `rr_row_splits` closes `(P t).Splits` for a supported row recurrence.  See
+`RealRooted/Tactic/ROUTES.md` for the routes.  The hint `(via := route)` selects one route and
+`(drop := k)` the number of rows split off; interlacing hints pass to interlacing routes. -/
 syntax (name := rrRowSplits) "rr_row_splits" (ppSpace rrRowHint)* : tactic
 
 /-- `rr_row_splits?` runs `rr_row_splits` and prints the hinted call, which replays only the
