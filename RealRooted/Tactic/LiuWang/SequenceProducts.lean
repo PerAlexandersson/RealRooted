@@ -254,23 +254,6 @@ syntax (name := rr_lw_X_one_sub_X_lag_sequence_realrooted_named)
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
 `P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
 certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
-(as for `rr_lw_positive_X_mul_sequence`), together with `left_coeff_nonneg : 0 ≤ a n`; and
-`right_coeff_nonneg : 0 ≤ b n`. -/
-syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_named)
-  "rr_lw_X_C_sub_C_mul_X_lag_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "left_coeff_nonneg" ":=" term ","
-    "right_coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
-`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
-certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
 (as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
 automatically. -/
 syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_auto_named)
@@ -278,23 +261,6 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
-`P (n + 2) = A n * P (n + 1) + (X * (C (a n) - C (b n) * X)) * P n`. The arguments are the standard
-certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
-(as for `rr_lw_positive_X_mul_sequence`), together with `left_coeff_nonneg : 0 ≤ a n`; and
-`right_coeff_nonneg : 0 ≤ b n`. -/
-syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
-  "rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "left_coeff_nonneg" ":=" term ","
-    "right_coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -318,24 +284,6 @@ syntax (name := rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
 `P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
 standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
-`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`), together with `scalar_nonneg : 0 ≤ c n`;
-`left_coeff_nonneg : 0 ≤ a n`; and `right_coeff_nonneg : 0 ≤ b n`. -/
-syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_named)
-  "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "scalar_nonneg" ":=" term ","
-    "left_coeff_nonneg" ":=" term ","
-    "right_coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
-`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
-standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
 `no_common_roots` (as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar
 coefficients is proved automatically. -/
 syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto_named)
@@ -343,24 +291,6 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
-`P (n + 2) = A n * P (n + 1) + (C (c n) * X * (C (a n) - C (b n) * X)) * P n`. The arguments are the
-standard certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and
-`no_common_roots` (as for `rr_lw_positive_X_mul_sequence`), together with `scalar_nonneg : 0 ≤ c n`;
-`left_coeff_nonneg : 0 ≤ a n`; and `right_coeff_nonneg : 0 ≤ b n`. -/
-syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_named)
-  "rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "scalar_nonneg" ":=" term ","
-    "left_coeff_nonneg" ":=" term ","
-    "right_coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -384,21 +314,6 @@ syntax (name := rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto_named)
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
 `P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
 certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
-(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_CX_sequence_named)
-  "rr_lw_current_CX_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
-`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
-certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
 (as for `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
 automatically. -/
 syntax (name := rr_lw_current_CX_sequence_auto_named)
@@ -406,21 +321,6 @@ syntax (name := rr_lw_current_CX_sequence_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
-`P (n + 2) = (C (a n) * X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard
-certificates `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots`
-(as for `rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_CX_sequence_realrooted_named)
-  "rr_lw_current_CX_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -444,21 +344,6 @@ syntax (name := rr_lw_current_CX_sequence_realrooted_auto_named)
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
 `P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
 `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_X_sequence_named)
-  "rr_lw_current_X_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
-`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
-`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
 `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
 automatically. -/
 syntax (name := rr_lw_current_X_sequence_auto_named)
@@ -466,21 +351,6 @@ syntax (name := rr_lw_current_X_sequence_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
-`P (n + 2) = X * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
-`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_X_sequence_realrooted_named)
-  "rr_lw_current_X_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -504,21 +374,6 @@ syntax (name := rr_lw_current_X_sequence_realrooted_auto_named)
 /-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
 `P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
 `base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_one_add_X_sequence_named)
-  "rr_lw_current_one_add_X_sequence" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for the lag recurrence
-`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
-`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
 `rr_lw_positive_X_mul_sequence`). The nonnegativity of the scalar coefficients is proved
 automatically. -/
 syntax (name := rr_lw_current_one_add_X_sequence_auto_named)
@@ -526,21 +381,6 @@ syntax (name := rr_lw_current_one_add_X_sequence_auto_named)
     "base" ":=" term ","
     "pos_lc" ":=" term ","
     "nonneg_coeffs" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes the real-rootedness statement `∀ n, P n ≠ 0 ∧ (P n).Splits` for the lag recurrence
-`P (n + 2) = (1 + X) * P (n + 1) + (C (c n) * X) * P n`. The arguments are the standard certificates
-`base`, `pos_lc`, `nonneg_coeffs`, `recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff_nonneg : 0 ≤ c n`. -/
-syntax (name := rr_lw_current_one_add_X_sequence_realrooted_named)
-  "rr_lw_current_one_add_X_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "nonneg_coeffs" ":=" term ","
-    "coeff_nonneg" ":=" term ","
     "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
@@ -807,19 +647,6 @@ macro_rules
           (RealRooted.LiuWang.isRealRooted_of_X_mul_one_sub_X_lag_sequence
             $hbase $hpos $hnonneg $hrec $hdeg_succ $hno))
   | `(tactic|
-      rr_lw_X_C_sub_C_mul_X_lag_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        left_coeff_nonneg := $ha:term,
-        right_coeff_nonneg := $hb:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno)
-  | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -831,20 +658,6 @@ macro_rules
         rr_lw_refine_active_nonneg_seq
           (RealRooted.LiuWang.strictInterl_X_mul_C_sub_C_mul_X_lag_sequence
             $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        left_coeff_nonneg := $ha:term,
-        right_coeff_nonneg := $hb:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg $ha $hb $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -858,20 +671,6 @@ macro_rules
           (RealRooted.LiuWang.isRealRooted_of_X_mul_C_sub_C_mul_X_lag_sequence
             $hbase $hpos $hnonneg ?_ ?_ $hrec $hdeg_succ $hno))
   | `(tactic|
-      rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        scalar_nonneg := $hc:term,
-        left_coeff_nonneg := $ha:term,
-        right_coeff_nonneg := $hb:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-          $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ $hno)
-  | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -883,21 +682,6 @@ macro_rules
         rr_lw_refine_active_nonneg_seq
           (RealRooted.LiuWang.strictInterl_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
             $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        scalar_nonneg := $hc:term,
-        left_coeff_nonneg := $ha:term,
-        right_coeff_nonneg := $hb:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
-            $hbase $hpos $hnonneg $hc $ha $hb $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_auto using
         base := $hbase:term,
@@ -911,18 +695,6 @@ macro_rules
           (RealRooted.LiuWang.isRealRooted_of_C_mul_X_mul_C_sub_C_mul_X_lag_sequence
             $hbase $hpos $hnonneg ?_ ?_ ?_ $hrec $hdeg_succ $hno))
   | `(tactic|
-      rr_lw_current_CX_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_current_CX_positive_t_lag_sequence
-          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
-  | `(tactic|
       rr_lw_current_CX_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -934,19 +706,6 @@ macro_rules
         exact RealRooted.LiuWang.strictInterl_current_CX_positive_t_lag_sequence
           $hbase $hpos $hnonneg
           rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_current_CX_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_current_CX_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_CX_sequence_realrooted_auto using
         base := $hbase:term,
@@ -960,22 +719,6 @@ macro_rules
           (RealRooted.LiuWang.isRealRooted_of_current_CX_positive_t_lag_sequence
             $hbase $hpos $hnonneg
             rr_lw_active_nonneg $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_current_X_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_first_exact
-          (RealRooted.LiuWang.strictInterl_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
-          (RealRooted.LiuWang.strictInterl_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc
-            (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_auto using
         base := $hbase:term,
@@ -993,22 +736,6 @@ macro_rules
               (RealRooted.LiuWang.strictInterl_current_X_positive_t_lag_sequence
                 $hbase $hpos $hnonneg ?_
                 (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_current_X_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_first_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno),
-          (RealRooted.LiuWang.isRealRooted_of_current_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc
-            (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -1028,18 +755,6 @@ macro_rules
                 $hbase $hpos $hnonneg ?_
                 (rr_lw_recurrence_seq $hrec) $hdeg_succ $hno)))
   | `(tactic|
-      rr_lw_current_one_add_X_sequence using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_current_one_add_X_positive_t_lag_sequence
-          $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno)
-  | `(tactic|
       rr_lw_current_one_add_X_sequence_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -1051,19 +766,6 @@ macro_rules
         exact RealRooted.LiuWang.strictInterl_current_one_add_X_positive_t_lag_sequence
           $hbase $hpos $hnonneg
           rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_current_one_add_X_sequence_realrooted using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff_nonneg := $hc:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_current_one_add_X_positive_t_lag_sequence
-            $hbase $hpos $hnonneg $hc $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_current_one_add_X_sequence_realrooted_auto using
         base := $hbase:term,
@@ -1077,7 +779,6 @@ macro_rules
           (RealRooted.LiuWang.isRealRooted_of_current_one_add_X_positive_t_lag_sequence
             $hbase $hpos $hnonneg
             rr_lw_active_nonneg $hrec $hdeg_succ $hno))
-
 
 end Tactic
 end RealRooted

@@ -36,26 +36,6 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- `A049403`: explicit exact-`X` current shell, real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ) + 1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = X * P (n + 1) + (C ((n : ℝ) + 1) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_current_X_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- `A061896`: plateau-safe `P_{n+2}=P_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -99,28 +79,6 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- `A079510`: explicit coefficient certificate for scalar-`X` current. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ) + 2)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        (C ((n : ℝ) + 2) * X) * P (n + 1) +
-          (C ((n : ℝ) + 2) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_current_CX_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- `A079510`: scalar-`X` current shell, real-rootedness auto endpoint. -/
 example {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -137,28 +95,6 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- `A079510`: explicit scalar-`X` real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ) + 2)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        (C ((n : ℝ) + 2) * X) * P (n + 1) +
-          (C ((n : ℝ) + 2) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_current_CX_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno
@@ -304,26 +240,6 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- `A100862`: explicit coefficient certificate for current factor `1+t`. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C (n : ℝ) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_current_one_add_X_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- `A113214`: `P_{n+2}=tP_{n+1}+tP_n`. -/
 example {P : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -414,26 +330,6 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- `A122848`: explicit coefficient certificate for exact-`X` current. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = X * P (n + 1) + (C (n : ℝ) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_current_X_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- `A154227`: after reindexing,
 `P_{n+2}=(1+t)P_{n+1}+((n+2)(n+3)/2)tP_n`. -/
 example {P : Nat → ℝ[X]}
@@ -509,26 +405,6 @@ example {P : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- `A249248`: explicit current-factor real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ) + 4)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = (1 + X : ℝ[X]) * P (n + 1) + (C ((n : ℝ) + 4) * X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_current_one_add_X_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    nonneg_coeffs := hnonneg,
-    coeff_nonneg := hc,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno

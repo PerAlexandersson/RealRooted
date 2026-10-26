@@ -127,159 +127,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Favard-like sequence shell: negative constant lag with automatic
-nonnegativity of `c_n`. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-(C ((n : ℝ) + 1))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_const_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Favard-like sequence shell with an explicit coefficient certificate. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_const_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Favard-like negative-constant shell, real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + (-(C (c n))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_const_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Favard-like negative-constant shell, automatic real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-(C ((n : ℝ) + 1))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_const_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Normalized `C (-c_n)` negative-constant lag, real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_const_C_neg_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Normalized `C (-c_n)` negative-constant lag, automatic real-rootedness
-endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + C (-((n : ℝ) + 1)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_const_C_neg_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Normalized `C (-c_n)` lag with an explicit coefficient certificate. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + C (-(c n)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_const_C_neg_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Normalized `C (-c_n)` lag with automatic coefficient positivity. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + C (-((n : ℝ) + 1)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_const_C_neg_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- `A008459`: scaled negative-square lag after recurrence normalization. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {c : Nat → ℝ} {α : ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ c n)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(C (c n)) * (X - C α) ^ 2) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_square_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- Family G sequence shell: Narayana/Jacobi-style negative-square lag with
 automatic coefficient side-goals. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
@@ -299,25 +146,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Family G sequence shell: shifted-square lag, real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hc : ∀ n : Nat, 0 ≤ (n : ℝ) + 1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(C ((n : ℝ) + 1)) * (X - C α) ^ 2) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_square_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    coeff_nonneg := hc,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- Family G negative-square lag, automatic real-rootedness endpoint. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -330,38 +158,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_lw_negative_square_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Family G shifted-square lag with unit scalar coefficient. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-((X - C α : ℝ[X]) ^ 2)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_square_sequence_unit using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- `A091042`/`A122076`: unit shifted-square lag, with centers `1` and `-1`. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]} {α : ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) = A n * P (n + 1) + (-((X - C α : ℝ[X]) ^ 2)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_square_sequence_realrooted_unit using
     base := hbase,
     pos_lc := hpos,
     recurrence := hrec,
@@ -542,7 +338,6 @@ example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}
     raw_recurrence := hraw,
     degree_succ := hdeg_succ,
     no_common_roots := hno
-
 
 end Tactic
 end RealRooted
