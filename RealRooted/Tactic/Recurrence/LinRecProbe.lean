@@ -20,8 +20,10 @@ theorems of `RealRooted.LinRec` need:
   `TopForm.toTerm` prints it as a real-valued term;
 * `chooseRegime` decides which theorem family applies (`Regime`).
 
-`linRecProbe?` runs all of this for a sequence.  The probe only samples finitely many rows, so
-everything it reports is a *guess* that the proof phase must still justify.
+`linRecProbe?` runs all of this for a sequence.  Coefficient normalization unfolds
+non-recursive definitions on demand when their bodies belong to the supported rational
+polynomial grammar.  The probe only samples finitely many rows, so everything it reports is
+a *guess* that the proof phase must still justify.
 -/
 
 public meta section
@@ -85,7 +87,9 @@ private partial def coeffRatFun? (n : Expr) (e : Expr) : MetaM (Option CoeffRatF
       return (← coeffRatFun? n a).map fun x => x.pow k
   | (``Nat.cast, #[_, _, m]) =>
       return if m == n then some ⟨QPoly.X, QPoly.const 1⟩ else none
-  | _ => return none
+  | _ =>
+      let some e' ← unfoldRowCoeff? e | return none
+      coeffRatFun? n e'
 
 private def coeffRatArrayAdd (a b : Array CoeffRatFun) : Array CoeffRatFun :=
   let z := CoeffRatFun.const 0
@@ -132,7 +136,9 @@ private partial def coeffRatPolynomial? (n : Expr) (e : Expr) :
       if f.isAppOf ``Polynomial.C then
         return (← coeffRatFun? n r).map fun x => #[x]
       return none
-  | _ => return none
+  | _ =>
+      let some e' ← unfoldRowCoeff? e | return none
+      coeffRatPolynomial? n e'
 
 private def qpolyAtIndexTerm (p : QPoly) (x : Term) : TacticM Term := do
   let mut out : Option Term := none

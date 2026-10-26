@@ -36,10 +36,11 @@ public meta import RealRooted.DerivativeRecurrence.Nonnegative
 public meta import RealRooted.Recurrence.RowModel
 
 /-!
-# Row tactics: `rr_row_interlaces`, `rr_row_splits` and friends
+# Row tactics: `rr_row_interlaces`, `rr_row_strictInterl`, `rr_row_splits` and friends
 
 For a sequence `P : ℕ → ℝ[X]` defined by a recurrence, `rr_row_interlaces` closes
-`Interlaces (P t) (P (t + 1))` and `rr_row_splits` closes `(P t).Splits`.  Summands may come
+`Interlaces (P t) (P (t + 1))`, `rr_row_strictInterl` closes the equal-or-successor-degree
+goal `StrictInterl (P t) (P (t + 1))`, and `rr_row_splits` closes `(P t).Splits`. Summands may come
 in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
 shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
 every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), and a
@@ -92,12 +93,21 @@ left row's splitting statement. Unrelated models are never elaborated.
    `eq_reflect_of_threeTerm`, and the transfer
    `interlaces_of_eq_reflect` (`Row.Reverse`).
 
+## Routes of `rr_row_strictInterl`
+
+Half-growth three-term and derivative-lag recurrences use the repeated-root-safe Liu–Wang
+induction in `Row.DerivLag`; a missing derivative term is read as coefficient zero.
+First-order derivative recurrences with degree law `c + (n + e) / 2` use
+`derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`.  When `c = 0`, the
+constant initial rows use the floor-half and half-degree variants from `Row.FTransform`.
+
 The degree and leading-coefficient hypotheses go to `rr_row_natDegree` and
 `rr_row_leadingCoeff_pos`, nonnegativity of coefficients to `rr_row_nonneg_coeffs`, and the
 sign conditions to `rr_row_eval_sign` / `rr_row_field` (rational functions of `n`).
 Hints `(thm := name)`, `(degree := D₀)`, `(drop := k)`, `(window := [L, U])` and
 `(upper := U)` restrict the search; `rr_row_interlaces?` prints the hinted call, which replays
-only the successful attempt, and the certificate.
+only the successful attempt, and the certificate.  The `rr_row_strictInterl?` variant likewise
+prints the successful strict-interlacing call.
 
 ## Routes of `rr_row_splits`, in order (`(via := route)` selects one)
 
@@ -567,7 +577,7 @@ private def rowInterlacesTop (hints : RowHints) : TacticM (Cert × RowHints) := 
     if let some (P, candidates) ← rowModelCandidates? .direct then
       if ← rowSucceeds (rowModelGoal P candidates) then return (#[], hints)
   if ← isDerivLagGoal then
-    return (#[], ← derivLagCore false hints)
+    return (#[], ← derivLagCore false false hints)
   -- order-three recurrences through a three-term recurrence
   if (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .error _ then
     if hints.thm.isNone && hints.window.isNone && hints.upper.isNone then
@@ -645,6 +655,7 @@ private def linRecNonneg : TacticM Unit := withMainContext do
       evalTactic (← `(tactic| (
         intro n
         $recStep:tactic <;>
+        rr_row_unfold <;>
         simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil,
           List.sum_cons, List.sum_nil, Function.iterate_zero_apply,
           Function.iterate_succ_apply', add_zero] <;>
@@ -862,6 +873,116 @@ def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
     unless xs.all (fun x => 0 ≤ b₁.eval x * b₀.eval x) do return false
   return true
 
+/-- Prove consecutive `StrictInterl` for a first-order derivative recurrence whose exact
+rows reveal a half-growth degree pattern.  Positive base degree uses the general
+degree-pattern backend; degree-zero bases use its constant-row half-degree companions. -/
+private def degreePatternStrictGoal : TacticM RowHints := do
+  discard introIfForall
+  withMainContext do
+  let r ← rowRecSetup "rr_row_strictInterl"
+  unless r.shape == .deriv₁ do
+    throwError "rr_row_strictInterl: not a first-order derivative recurrence"
+  let P := mkIdent r.P
+  let some L ← linRec? r.P | throwError "rr_row_strictInterl: no linear recurrence"
+  let some rows ← linRecRows? L (r.shift + 22)
+    | throwError "rr_row_strictInterl: rows not computable"
+  let c := (rows[r.shift]!).natDegree
+  let fits (e : Nat) := (List.range 20).all fun m =>
+    !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
+  let some e := [0, 1].find? fits
+    | throwError "rr_row_strictInterl: the degrees do not follow `c + (n + e) / 2`"
+  unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
+    throwError "rr_row_strictInterl: the rows do not have nonnegative coefficients"
+  let c' := (rows[0]!).natDegree
+  let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
+      !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
+    | throwError "rr_row_strictInterl: the initial rows do not follow the degree law"
+  let law (c e : Nat) (x : Term) : TacticM Term := do
+    let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
+    if c == 0 then pure half else `($(rowNumLit c) + $half)
+  let hdegPosAll := mkIdent `hdeg_pos_all
+  let nI := mkIdent `n
+  evalTactic (← `(tactic|
+    have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
+        ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
+      intro $nI:ident
+      rr_row_natDegree_leadingCoeff_pos))
+  let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
+  let Q ← r.seq 0
+  let hrecRaw ← r.hrecTerm 0
+  let rawA ← certTerm r.coeffs[0]!
+  let rawB ← certTerm r.coeffs[1]!
+  let normalizedA? ← normalizedCoeffTerm? r.coeffs[0]! 0
+  let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
+  let A := normalizedA?.getD rawA
+  let B := normalizedB?.getD rawB
+  let hrecName := mkIdent `h_strictDegreePatternRec
+  let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
+    evalTactic (← `(tactic|
+      have $hrecName:ident : ∀ n : ℕ,
+          $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
+        intro n
+        have hraw : $Q (n + 1) =
+            $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
+        rw [hraw] <;> rr_cf_identity))
+    pure hrecName
+  let m := mkIdent `m
+  let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+  if c == 0 then
+    let strictThm := if e == 0 then
+        mkIdent ``derivativeRecurrence_strictInterl_of_floor_half_degree
+      else mkIdent ``derivativeRecurrence_strictInterl_of_half_degree
+    evalTactic (← `(tactic|
+      refine $strictThm:ident (Q := $Q) (A := $A) (B := $B)
+        $hrec ?_ ?_ ?_ ?_ $t))
+  else
+    let strictThm :=
+      mkIdent ``RealRooted.derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs
+    evalTactic (← `(tactic|
+      refine $strictThm:ident (P := $Q) (A := $A) (B := $B) (D := $Dt)
+        $hrec ?_ ?_ ?_ ?_ ?_ ?_ ?_ $t))
+  let gs ← getGoals
+  let (hdeg, hpos, hnn, hA, hD?, hstep?, h0?) ←
+    if c == 0 then
+      let [hdeg, hpos, hnn, hA] := gs
+        | throwError "rr_row_strictInterl: unexpected side goals"
+      pure (hdeg, hpos, hnn, hA, none, none, none)
+    else
+      let [hdeg, hD, hstep, hpos, hnn, hA, h0] := gs
+        | throwError "rr_row_strictInterl: unexpected side goals"
+      pure (hdeg, hpos, hnn, hA, some hD, some hstep, some h0)
+  setGoals [hdeg]
+  evalTactic (← `(tactic| (intro m; beta_reduce; rw [($hdegPosAll:ident _).1] <;> lia)))
+  if let some hD := hD? then
+    setGoals [hD]
+    evalTactic (← `(tactic| (intro m; beta_reduce; lia)))
+  if let some hstep := hstep? then
+    setGoals [hstep]
+    evalTactic (← `(tactic| (intro m; beta_reduce; lia)))
+  setGoals [hpos]
+  evalTactic (← `(tactic| (intro m; exact ($hdegPosAll:ident _).2)))
+  setGoals [hnn]
+  let nonnegThm := mkIdent ``RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le
+  evalTactic (← `(tactic|
+    refine $nonnegThm:ident (P := $Q) (A := $A) (B := $B) (D := $Dt) $hrec
+      (fun m => by beta_reduce; rw [($hdegPosAll:ident _).1] <;> lia) ?_ ?_ ?_))
+  let [hA0, hmult, hnn0] ← getGoals
+    | throwError "rr_row_strictInterl: unexpected nonnegativity side goals"
+  setGoals [hA0]
+  evalTactic (← `(tactic| (intro n; beta_reduce; simp; first | done | positivity | norm_num)))
+  setGoals [hmult]
+  halfMultiplierGoal c e
+  setGoals [hnn0]
+  evalTactic (← `(tactic| (beta_reduce; simp only [Nat.zero_add, $P:ident])))
+  explicitNonnegCoeffs
+  setGoals [hA]
+  evalTactic (← `(tactic| rr_row_eval_sign))
+  if let some h0 := h0? then
+    setGoals [h0]
+    explicitRowSplits P
+  unless (← getGoals).isEmpty do throwError "rr_row_strictInterl: goals remain"
+  return { via := some `degreePattern }
+
 /-- `rr_row_splits`, returning the hints of the successful route. -/
 private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMainContext do
   if let some v := hints.via then
@@ -905,7 +1026,7 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
     if let some (P, candidates) ← rowModelCandidates? .direct then
       if ← rowSucceeds (rowModelGoal P candidates) then return {}
   if ← isDerivLagGoal then
-    return ← derivLagCore true hints
+    return ← derivLagCore true false hints
   discard introIfForall
   withMainContext do
   -- closed forms `residual * ∏ qᵢ ^ eᵢ n`, found by a numeric probe before any elaboration
@@ -1245,7 +1366,31 @@ private def rowSplitsCore (hints : RowHints) : TacticM RowHints := do
           if ← rowSucceeds (rowModelGoal P candidates) then return {}
       throwError directError
 
+/-- `rr_row_strictInterl`, using the half-growth derivative-lag induction first and the
+first-order degree-pattern route second. -/
+private def rowStrictInterlCore (hints : RowHints) : TacticM RowHints := do
+  if let some v := hints.via then
+    unless v == `halfGrowth || v == `degreePattern do
+      throwError "rr_row_strictInterl: unknown route {v}; the routes are halfGrowth and \
+        degreePattern"
+  let mut failures : Array (MessageData × MessageData) := #[]
+  if hints.via.isNone || hints.via == some `halfGrowth then
+    match ← rowAttempt (derivLagCore false true hints) with
+    | .ok result => return { result with via := some `halfGrowth }
+    | .error e => failures := failures.push (m!"half-growth derivative-lag induction", e)
+  if hints.via.isNone || hints.via == some `degreePattern then
+    match ← rowAttempt degreePatternStrictGoal with
+    | .ok result => return result
+    | .error e => failures := failures.push (m!"first-order degree pattern", e)
+  throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
+
 elab_rules : tactic
+  | `(tactic| rr_row_strictInterl $hs*) => withMainContext do
+    discard <| rowStrictInterlCore (← parseRowHints hs)
+  | `(tactic| rr_row_strictInterl?%$tk $hs*) => withMainContext do
+    let hints ← parseRowHints hs
+    rowElabWithHints tk (do return (#[], ← rowStrictInterlCore hints))
+      "rr_row_strictInterl"
   | `(tactic| rr_row_splits $hs*) => withMainContext do
     discard <| rowSplitsCore (← parseRowHints hs)
   | `(tactic| rr_row_splits?%$tk $hs*) => withMainContext do

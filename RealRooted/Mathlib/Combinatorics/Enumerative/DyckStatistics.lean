@@ -74,80 +74,19 @@ private lemma mem_S {l : List DyckStep} {a b : ℕ} :
     l ∈ S a b ↔ l.count U = a ∧ l.count D = b ∧ Good l := by
   induction l generalizing a b with
   | nil =>
-    cases a with
-    | zero =>
-      cases b with
-      | zero =>
-        simp only [S, good_nil, Finset.mem_singleton, count_nil, true_and]
-      | succ b =>
-        simp only [S, Finset.mem_image, reduceCtorEq, false_and, exists_const,
-          count_nil, Nat.right_eq_add, Nat.add_eq_zero_iff, one_ne_zero, and_false,
-]
-    | succ a =>
-      cases b with
-      | zero =>
-        simp only [S, Finset.notMem_empty, count_nil, Nat.right_eq_add,
-          Nat.add_eq_zero_iff, one_ne_zero, and_false, true_and, false_and]
-      | succ b =>
-        simp only [S, Finset.mem_union, Finset.mem_image, reduceCtorEq,
-          false_and, exists_const, count_nil, Nat.right_eq_add, Nat.add_eq_zero_iff,
-          one_ne_zero, and_false, and_self, iff_false]
-        split_ifs with h
-        · simp only [Finset.mem_image, reduceCtorEq,
-            false_or]
-          exact fun ⟨_, _, hfalse⟩ => hfalse
-        · simp only [Finset.notMem_empty, false_or]
-          exact fun hfalse => hfalse
+    cases a <;> cases b <;> simp [S, good_nil]
+    split_ifs <;> simp
   | cons x l ih =>
     cases x with
-    | U =>
-      cases a with
-      | zero =>
-        cases b with
-        | zero =>
-          simp only [S, Finset.mem_singleton, reduceCtorEq, count_cons_self,
-            Nat.add_eq_zero_iff, one_ne_zero, and_false, ne_eq, not_false_eq_true,
-            count_cons_of_ne, good_cons, false_and]
-        | succ b =>
-          simp only [S, Finset.mem_image, cons.injEq, reduceCtorEq, false_and,
-            and_false, exists_const, count_cons_self, Nat.add_eq_zero_iff,
-            one_ne_zero, ne_eq, not_false_eq_true, count_cons_of_ne, good_cons]
-      | succ a =>
-        cases b with
-        | zero =>
-          simp only [S, Finset.notMem_empty, count_cons_self, Nat.add_right_cancel_iff,
-            ne_eq, reduceCtorEq, not_false_eq_true, count_cons_of_ne, good_cons,
-            false_iff, not_and, not_le]
-          lia
-        | succ b =>
-          simp only [S, add_le_add_iff_right, Finset.mem_union, Finset.mem_image,
-            cons.injEq, reduceCtorEq, false_and, and_false, exists_const,
-            false_or, count_cons_self, Nat.add_right_cancel_iff, ne_eq,
-            not_false_eq_true, count_cons_of_ne, good_cons,
-]
-          split_ifs <;> grind
+    | U => cases a <;> cases b <;> simp [S, good_cons] <;> grind
     | D =>
       cases a with
       | zero =>
-        cases b with
-        | zero =>
-          simp only [S, Finset.mem_singleton, reduceCtorEq, ne_eq, not_false_eq_true,
-            count_cons_of_ne, count_cons_self, Nat.add_eq_zero_iff, one_ne_zero,
-            and_false, good_cons, false_and]
-        | succ b =>
-          simp only [S, Finset.mem_image, cons.injEq, true_and, exists_eq_right,
-            ih, ne_eq, reduceCtorEq, not_false_eq_true, count_cons_of_ne,
-            count_cons_self, Nat.add_right_cancel_iff, good_cons,
-            and_congr_right_iff, iff_self_and]
-          lia
+        cases b <;> simp [S, good_cons]
+        grind
       | succ a =>
         cases b with
-        | zero =>
-          simp only [S,
-            ne_eq, reduceCtorEq,
-            Finset.notMem_empty, not_false_eq_true, count_cons_of_ne, count_cons_self,
-            good_cons]
-          lia
+        | zero => simp [S, good_cons]
         | succ b =>
           simp only [S, add_le_add_iff_right, Finset.mem_union, Finset.mem_image,
             cons.injEq, true_and, exists_eq_right, ih, ne_eq, reduceCtorEq,
@@ -272,17 +211,7 @@ private lemma cU_succ_aux {a b : ℕ} (hab : a + 1 ≤ b) (k : ℕ) :
       simp only [mem_S, count_nil] at hl
       lia
     rw [h0, add_zero]
-    congr 2
-    · apply Finset.filter_congr
-      intro l _
-      constructor
-      · rintro ⟨h1, h2⟩; simp_all
-      · rintro ⟨h1, h2⟩; simp_all
-    · apply Finset.filter_congr
-      intro l _
-      constructor
-      · rintro ⟨h1, h2⟩; simp_all
-      · rintro ⟨h1, h2⟩; simp_all
+    congr 2 <;> apply Finset.filter_congr <;> intro l _ <;> simp_all
   ext l
   rcases l with _ | ⟨_ | _, l⟩
   · simp only [Finset.mem_filter, mem_S, count_nil, Nat.right_eq_add,

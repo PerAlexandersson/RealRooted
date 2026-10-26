@@ -20,7 +20,8 @@ public meta import RealRooted.Tactic.RowClosedForm
 /-!
 # Row tactics: syntax and side goals
 
-The syntax of `rr_row_interlaces`, `rr_row_interlaces?` and `rr_row_nonneg_coeffs`, the
+The syntax of `rr_row_interlaces`, `rr_row_strictInterl`, their `?` variants and
+`rr_row_nonneg_coeffs`, the
 `∀ n` term forms of the degree tactics, and the side-goal engine shared by the row tactics:
 sign conditions on the multipliers, nonnegative coefficients of explicit rows, and the
 `rr_row_side` closer for the side goals of the interlacing theorems.  The front ends are in
@@ -41,6 +42,15 @@ syntax (name := rrRowInterlaces) "rr_row_interlaces" (ppSpace rrRowHint)* : tact
 /-- `rr_row_interlaces?` runs `rr_row_interlaces` and prints the hinted call and the
 certificate `apply thm (P := …) … <;> rr_row_side`. -/
 syntax (name := rrRowInterlacesQ) "rr_row_interlaces?" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_strictInterl` closes `StrictInterl (P t) (P (t + 1))` for half-growth
+three-term and derivative-lag recurrences, and for first-order derivative recurrences whose
+degree grows by zero or one.  The hints `(via := halfGrowth)`, `(via := degreePattern)`,
+`(drop := k)` and `(half := e)` restrict the search. -/
+syntax (name := rrRowStrictInterl) "rr_row_strictInterl" (ppSpace rrRowHint)* : tactic
+
+/-- `rr_row_strictInterl?` runs `rr_row_strictInterl` and prints the successful hinted call. -/
+syntax (name := rrRowStrictInterlQ) "rr_row_strictInterl?" (ppSpace rrRowHint)* : tactic
 
 /-- `rr_row_splits` closes `(P t).Splits` for a sequence `P` handled by
 `rr_row_interlaces`.  The hint `(via := route)` selects one route and `(drop := k)` the
@@ -125,6 +135,7 @@ private def multiplierGoal : TacticM Unit := do
     intro n i j hj
     have hj' : ((j : ℕ) : ℝ) ≤ _ := Nat.cast_le.mpr hj
     push_cast at hj'
+    ring_nf
     rcases i with _ | _ | _ | i <;> (
       simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
         Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
@@ -134,6 +145,20 @@ private def multiplierGoal : TacticM Unit := do
       push_cast
       try norm_num
       first | done | positivity | nlinarith | rr_row_field))))
+
+/-- Close `A.coeff 0 ≥ 0` after a product in the coefficient has been normalized. -/
+private def constantCoeffGoal : TacticM Unit := do
+  evalTactic (← `(tactic| (
+    intro n
+    ring_nf
+    simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+      Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+      Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
+      Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
+    push_cast
+    try norm_num
+    first | done | positivity | nlinarith | rr_row_field)))
 
 /-- The multiplier goal of
 `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the half-growth
@@ -204,6 +229,7 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : Bool :=
   has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
     has ``RealRooted.HasNonnegCoeffs || (!ty.isForall && mentionsP && has ``Polynomial.Splits) ||
     (ty.isForall && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
+    (ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff) ||
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
       has ``Polynomial.coeff)
 
@@ -346,6 +372,8 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
          explicitNonnegCoeffs]
     else if ty.isForall && ty.bindingBody!.isForall then
       [multiplierGoal]
+    else if ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff then
+      [constantCoeffGoal]
     else [rowSideGoal P?]
   for strategy in strategies do
     if ← rowSucceeds (do

@@ -102,19 +102,18 @@ private lemma complexificationLinearMapDegreeBox_hermiteBiehler_value
     AddHom.coe_mk, AlgEquiv.apply_symm_apply]
   exact complexificationLinearMap_hermiteBiehler T p q
 
-/-- A stable finite symbol preserves an oriented interlacing pair when the
-nonzero outputs retain positive leading coefficients. -/
-theorem linearMap_strictInterl_of_finiteSymbol_stable
+/-- Under a stable finite symbol, the Hermite--Biehler polynomial of the images of a
+directed pair is stable as soon as the image of `p` has positive leading
+coefficient. -/
+private lemma hermiteBiehlerPolynomial_stable_of_finiteSymbol_stable
     {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
     (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
     (hpq : StrictInterl q p)
     (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
-    (hpout : HasPosLeadingCoeff (T p))
-    (hqout : HasPosLeadingCoeff (T q))
-    (hpoutdeg : 1 ≤ (T p).natDegree) :
-    StrictInterl (T q) (T p) := by
+    (hpout : HasPosLeadingCoeff (T p)) :
+    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial (T p) (T q)) := by
   let f : MvPolynomial.degreeOfLE (Fin 1) ℂ (fun _ => d) :=
     ⟨(MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)).symm
         (hermiteBiehlerPolynomial p q), by
@@ -141,14 +140,58 @@ theorem linearMap_strictInterl_of_finiteSymbol_stable
     have hz' := congrArg (fun r : ℂ[X] => r.coeff k) hz
     have hre := congrArg Complex.re hz'
     simpa [hermiteBiehlerPolynomial, complexify] using hre
-  · apply strictInterl_of_stable_general hpout hqout
-    · have hu : IsUpperHalfPlaneStable
-          (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
-            (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T) f)) := by
-        apply (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable _).mpr
-        rw [AlgEquiv.symm_apply_apply]
-        simp_all
-      grind
-    · grind
+  · have hu : IsUpperHalfPlaneStable
+        (MvPolynomial.uniqueAlgEquiv ℂ (Fin 1)
+          (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T) f)) := by
+      apply (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable _).mpr
+      rw [AlgEquiv.symm_apply_apply]
+      simp_all
+    grind
+
+/-- A stable finite symbol preserves an oriented interlacing pair when the
+nonzero outputs retain positive leading coefficients. -/
+theorem linearMap_strictInterl_of_finiteSymbol_stable
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
+    (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
+    (hpq : StrictInterl q p)
+    (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
+    (hpout : HasPosLeadingCoeff (T p))
+    (hqout : HasPosLeadingCoeff (T q))
+    (hpoutdeg : 1 ≤ (T p).natDegree) :
+    StrictInterl (T q) (T p) :=
+  strictInterl_of_stable_general hpout hqout
+    (hermiteBiehlerPolynomial_stable_of_finiteSymbol_stable
+      hSymbol hpdeg hqdeg hpq hp hq hpout) hpoutdeg
+
+/-- A stable finite symbol preserves a directed interlacing pair in the zero-aware sense
+of `Interl`, including constant outputs: each image is zero or has positive leading
+coefficient. -/
+theorem linearMap_interl_of_finiteSymbol_stable
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {d : ℕ} {p q : ℝ[X]}
+    (hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv (RealRooted.BorceaBranden.finiteAlgebraicSymbol d T)))
+    (hpdeg : p.natDegree ≤ d) (hqdeg : q.natDegree ≤ d)
+    (hpq : StrictInterl q p)
+    (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
+    (hpout : T p = 0 ∨ HasPosLeadingCoeff (T p))
+    (hqout : T q = 0 ∨ HasPosLeadingCoeff (T q)) :
+    Interl (T q) (T p) := by
+  rcases hqout with hq0 | hqout
+  · exact Or.inl hq0
+  rcases hpout with hp0 | hpout
+  · exact Or.inr (Or.inl hp0)
+  have hstab := hermiteBiehlerPolynomial_stable_of_finiteSymbol_stable
+    hSymbol hpdeg hqdeg hpq hp hq hpout
+  by_cases hdeg : 1 ≤ (T p).natDegree
+  · exact (strictInterl_of_stable_general hpout hqout hstab hdeg).toInterl
+  · have hp0 : (T p).natDegree = 0 := by lia
+    have hq0 : (T q).natDegree = 0 := by
+      have := (natDegree_shape_of_stable hpout hqout hstab).1
+      lia
+    obtain ⟨hpne, hpsp⟩ := isRealRooted_of_deg_zero hpout.ne_zero hp0
+    obtain ⟨hqne, hqsp⟩ := isRealRooted_of_deg_zero hqout.ne_zero hq0
+    exact (StrictInterl.of_degree_zero_degree_zero hqne hqsp hpne hpsp hq0 hp0).toInterl
 
 end RealRooted.BorceaBranden

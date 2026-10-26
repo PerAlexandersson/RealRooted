@@ -8,7 +8,8 @@ public meta import RealRooted.DerivativeRecurrence.LagWeak
 /-!
 # Row tactics: derivative-lag recurrences
 
-`rr_row_deriv_lag_splits` and `rr_row_deriv_lag_interlaces`, by the Liu–Wang step for
+`rr_row_deriv_lag_splits`, `rr_row_deriv_lag_interlaces` and the strict row front end, by the
+Liu–Wang step for
 recurrences `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n`.
 -/
 
@@ -34,7 +35,7 @@ to these tactics for derivative-lag recurrences.
 -/
 /-- A derivative-lag recurrence `P (n + k) = u n * P (n + k - 1) + v n * (P (n + k - 1))' +
 w n * P (n + k - 2)` read off the definition of `P`; the multipliers are lambdas `fun n => …`
-(`0` for an absent summand). -/
+(`0` for an absent summand); `hasDerivative` records whether that summand was present. -/
 structure DerivLagRec where
   /-- the sequence -/
   P : Name
@@ -46,12 +47,14 @@ structure DerivLagRec where
   u : Expr
   /-- the multiplier of `(P (n + k - 1))'` -/
   v : Expr
+  /-- whether the defining recurrence contains a derivative summand -/
+  hasDerivative : Bool
   /-- the multiplier of `P (n + k - 2)` -/
   w : Expr
 
 /-- Read the recurrence of `P` as a derivative-lag recurrence: the summands of `linRec?` must
 be `u n * P (n + k - 1)`, `v n * (P (n + k - 1))'` and `w n * P (n + k - 2)`, with the
-derivative summand present. -/
+derivative summand optional. -/
 def derivLagRec? (P : Name) : MetaM (Except MessageData DerivLagRec) := do
   let some d ← linRec? P
     | return .error m!"{P} has no linear recurrence `{P} (n + k) = …`"
@@ -75,11 +78,11 @@ def derivLagRec? (P : Name) : MetaM (Except MessageData DerivLagRec) := do
       | some c₀ => withLocalDeclD `n (mkConst ``Nat) fun n => do
           mkLambdaFVars #[n] (← mkAppM ``HAdd.hAdd #[c₀.beta #[n], c.beta #[n]])
     slots := slots.set! slot (some c')
-  let some v := slots[1]!
-    | return .error m!"the recurrence of {P} has no derivative summand"
+  let hasDerivative := slots[1]!.isSome
+  let v := slots[1]!.getD zero
   let u := slots[0]!.getD zero
   let w := slots[2]!.getD zero
-  return .ok { P := P, k := d.offset, eqn := d.eqn, u := u, v := v, w := w }
+  return .ok ⟨P, d.offset, d.eqn, u, v, hasDerivative, w⟩
 
 /-- The multiplier `fun n => c (n + s)`. -/
 private def shiftLambda (c : Expr) (s : Nat) : MetaM Expr :=
@@ -116,6 +119,8 @@ private def nonposSignGoal : TacticM Unit := do
       Polynomial.eval_natCast]
     push_cast
     first
+      | (simp_all; done)
+      | (norm_num; done)
       | nlinarith [hx, hn, sq_nonneg x, mul_nonneg hn (neg_nonneg.mpr hx),
           mul_nonneg hn (sq_nonneg x)]
       | (rr_row_field; done))))
@@ -189,6 +194,28 @@ private def qpolyReal (p : QPoly) (x : Term) : TacticM Term := do
     acc ← `($(← ratTerm (p.coeff i)) + $x * $acc)
   return acc
 
+/-- Detect a fixed affine root of the lag coefficient from exact samples. -/
+private def translatedLagRoot? (d : DerivLagRec) (s : Nat) : MetaM (Option Rat) := do
+  let some v ← evalCoeffAt? d.v s | return none
+  unless v.isZero do return none
+  let some w₀ ← evalCoeffAt? d.w s | return none
+  unless w₀.natDegree == 1 && 0 < w₀.coeff 1 do return none
+  let r := -w₀.coeff 0 / w₀.coeff 1
+  for n in [0:8] do
+    let (some u, some w) := (← evalCoeffAt? d.u (n + s), ← evalCoeffAt? d.w (n + s))
+      | return none
+    unless u.natDegree ≤ 0 && 0 < u.coeff 0 && w.natDegree == 1 &&
+        0 < w.coeff 1 && w.eval r == 0 do return none
+  return some r
+
+/-- Recover `r` syntactically when the lag contains the factor `X - C r`. -/
+private def affineLagRootExpr? (w : Expr) : Option Expr := do
+  let sub ← w.find? fun e =>
+    e.isAppOfArity ``HSub.hSub 6 &&
+      (e.getAppArgs[4]!).getAppFn.isConstOf ``Polynomial.X &&
+      ((e.getAppArgs[5]!).find? fun f => f.isConstOf ``Polynomial.C).isSome
+  return sub.getAppArgs[5]!.appArg!
+
 /-- Close `StrictInterl (P S) (P (S + 1))` (stated through the shifted sequence) for explicit
 rows, and `∀ r, (P (S + 1)).IsRoot r → ¬ (P S).IsRoot r` by a Bezout certificate. -/
 private def baseGoals (d : DerivLagRec) (S : Nat) (hbase hbaseNo : MVarId) : TacticM Unit := do
@@ -260,8 +287,10 @@ private def baseGoals (d : DerivLagRec) (S : Nat) (hbase hbaseNo : MVarId) : Tac
       linear_combination ($(← qpolyReal a rT)) * h0 + ($(← qpolyReal b rT)) * h1
     norm_num at hc)))
 
-/-- Close only the explicit base interlacing goal; common roots are allowed. -/
-private def baseInterlGoal (d : DerivLagRec) (S : Nat) (hbase : MVarId) : TacticM Unit := do
+/-- Close only the explicit base interlacing goal; common roots are allowed.  Equal rows are
+accepted when `allowEqual` is true. -/
+private def baseInterlGoal (d : DerivLagRec) (S : Nat) (allowEqual : Bool)
+    (hbase : MVarId) : TacticM Unit := do
   let P := mkIdent d.P
   let some rows ← derivLagRows d (S + 1) | throwError "rr_row_deriv_lag: the first rows of \
     {d.P} are not explicit rational polynomials"
@@ -285,10 +314,18 @@ private def baseInterlGoal (d : DerivLagRec) (S : Nat) (hbase : MVarId) : Tactic
           | (simp only [$P:ident]; ring)))
   setGoals [hbase]
   withMainContext do
+    if allowEqual && f == g then
+      evalTactic (← `(tactic| (
+        try simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero]
+        $(← rowIds):tactic
+        rw [$eF:ident, $eG:ident]
+        exact RealRooted.StrictInterl.refl (by rr_ne_zero_explicit)
+          (by rr_splits_explicit))))
+      return
     evalTactic (← `(tactic| refine RealRooted.Interlaces.toStrictInterl ?_))
     betaReduceGoal
     evalTactic (← `(tactic| (
-      simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero]
+      try simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero]
       $(← rowIds):tactic
       exact (congrArg₂ RealRooted.Interlaces $eF $eG).mpr
         (by rr_interlaces_explicit : RealRooted.Interlaces $fT $gT))))
@@ -328,8 +365,8 @@ private def closeEach (gs : List MVarId) (closers : List (TacticM Unit)) : Tacti
 
 /-- One attempt of the derivative-lag Liu–Wang argument: `s` rows are dropped after the
 `k - 2` explicit ones, `e?` is the parity of half growth (`none` for growth one). -/
-private def derivLagAttempt (d : DerivLagRec) (splits : Bool) (hints : RowHints) (s : Nat)
-    (e? : Option Nat) : TacticM Unit := do
+private def derivLagAttempt (d : DerivLagRec) (wantSplits wantStrict : Bool) (hints : RowHints)
+    (s : Nat) (e? : Option Nat) : TacticM Unit := do
   let P := mkIdent d.P
   let S := d.k - 2 + s
   let small : TacticM (TSyntax `tactic) := do
@@ -408,8 +445,83 @@ private def derivLagAttempt (d : DerivLagRec) (splits : Bool) (hints : RowHints)
         obtain ⟨$hdeg:ident, $hpos:ident⟩ : (∀ $n:ident, ($Q $n).natDegree =
               $Dq + ($n + $(rowNumLit e)) / 2) ∧
             ∀ $n:ident, 0 < ($Q $n).leadingCoeff :=
-          forall_and.mp rr_row_natDegree_leadingCoeff_pos_all)
+          ⟨fun $n:ident => by rr_row_natDegree,
+            fun $n:ident => by rr_row_leadingCoeff_pos⟩)
   stage "degrees" <| evalTactic degTac
+  -- A fixed positive affine lag may become a nonnegative `X`-lag after translation.
+  -- This route covers plateau families such as Motzkin without requiring the original
+  -- lag polynomial to have nonnegative coefficients.
+  if wantStrict then
+    if let some r ← translatedLagRoot? d s then
+      let translated ← rowAttempt do
+        let rT ← match affineLagRootExpr? d.w with
+          | some e => Term.exprToSyntax e
+          | none => ratTerm r
+        let rRat ← ratTerm r
+        let hrShift := mkIdent `hrShift
+        let hrecAffine := mkIdent `hrecAffine
+        evalTactic (← `(tactic| (
+          have $hrShift:ident : $rT = $rRat := by rfl
+          have $hrecAffine:ident : ∀ n : ℕ,
+              $Q (n + 2) = C ((($uQ) n).coeff 0) * $Q (n + 1) +
+                (C ((($wQ) n).coeff 1) * (X - C $rT)) * $Q n := by
+            intro n
+            rw [$hrecQ n]
+            beta_reduce
+            try dsimp
+            simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+              Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X,
+              Polynomial.coeff_C, Polynomial.coeff_one, Polynomial.coeff_zero,
+              Polynomial.coeff_ofNat_zero, Polynomial.coeff_ofNat_succ, map_one, map_zero,
+              one_mul, zero_mul, zero_add, mul_one, sub_zero]
+            push_cast
+            first | (ring_nf; done) | rr_cf_identity)))
+        evalTactic (← `(tactic|
+          refine RealRooted.derivativeLag_strictInterl_of_affine_lag_of_base_nonneg
+            (P := $Q) (a := fun n => ((($uQ) n).coeff 0))
+            (c := fun n => ((($wQ) n).coeff 1)) (r := $rT)
+            ?_ ?_ ?_ ?_ ?_ ?_ ?_ $hrecAffine $(idx)))
+        let [gbase, gzero, gone, gstep, gpos, ga, gc] ← getGoals
+          | throwError "rr_row_strictInterl: unexpected translated-lag side goals"
+        stage "translated base" <| baseInterlGoal d S true gbase
+        for g in [gzero, gone] do
+          setGoals [g]
+          withMainContext do
+            betaReduceGoal
+            normalizeRows d (S + 1)
+            evalTactic (← `(tactic| rw [$hrShift:ident]))
+            evalTactic (← `(tactic| try simp only [Nat.reduceAdd, Nat.zero_add, Nat.add_zero,
+              $P:ident, Polynomial.add_comp, Polynomial.mul_comp, Polynomial.sub_comp,
+              Polynomial.X_comp, Polynomial.C_comp, Polynomial.one_comp]))
+            explicitNonnegCoeffs
+        setGoals [gstep]
+        evalTactic (← `(tactic| (intro n; rw [$hdeg:ident, $hdeg:ident]; lia)))
+        setGoals [gpos]
+        evalTactic (← `(tactic| exact fun n => $hpos n))
+        for g in [ga, gc] do
+          setGoals [g]
+          withMainContext do
+            evalTactic (← `(tactic| (
+              intro n
+              have hn : (0 : ℝ) ≤ (n : ℝ) := Nat.cast_nonneg n
+              beta_reduce
+              try rr_row_unfold
+              try dsimp
+              simp only [Polynomial.coeff_add, Polynomial.coeff_sub,
+                Polynomial.coeff_C_mul, Polynomial.coeff_C, Polynomial.coeff_X,
+                Polynomial.coeff_one]
+              push_cast
+              first
+                | (norm_num; done)
+                | (norm_num; positivity)
+                | positivity
+                | nlinarith
+                | rr_row_field)))
+        unless (← getGoals).isEmpty do
+          throwError "rr_row_strictInterl: translated-lag goals remain"
+      match translated with
+      | .ok _ => return
+      | .error _ => pure ()
   -- nonnegative coefficients
   let hnn := mkIdent `hnn
   haveBy hnn (← `(∀ $n:ident : ℕ, RealRooted.HasNonnegCoeffs ($Q $n))) <| stage "nonneg" do
@@ -434,16 +546,18 @@ private def derivLagAttempt (d : DerivLagRec) (splits : Bool) (hints : RowHints)
       let gs ← getGoals
       let [gstep, gpos, gV, gW, gbase] := gs
         | throwError "rr_row_deriv_lag: unexpected weak-route side goals"
-      let step : TacticM Unit := do
+      let stepTac : TacticM Unit := do
         evalTactic (← `(tactic| intro n; rw [$hdeg:ident, $hdeg:ident]; lia))
-      let pos : TacticM Unit := do
+      let posTac : TacticM Unit := do
         evalTactic (← `(tactic| exact fun n => $hpos n))
       stage "weak signs" <| closeEach [gstep, gpos, gV, gW]
-        [step, pos, nonposSignGoal, nonposSignGoal]
-      stage "weak base" <| baseInterlGoal d S gbase
+        [stepTac, posTac, nonposSignGoal, nonposSignGoal]
+      stage "weak base" <| baseInterlGoal d S wantStrict gbase
       setGoals []
-    if splits then
+    if wantSplits then
       evalTactic (← `(tactic| exact ($hmain $(idx)).1.2))
+    else if wantStrict then
+      evalTactic (← `(tactic| exact $hmain $(idx)))
     else
       evalTactic (← `(tactic| exact ($hmain $(idx)).toInterlaces (by
         have h1 := $hdeg $(idx)
@@ -481,8 +595,10 @@ private def derivLagAttempt (d : DerivLagRec) (splits : Bool) (hints : RowHints)
     stage "signs" <| closeEach [g1, g2] [negSignGoal, negSignGoal]
     stage "base" <| baseGoals d S g3 g4
     setGoals []
-  if splits then
+  if wantSplits then
     evalTactic (← `(tactic| exact ($hmain $(idx)).1.2))
+  else if wantStrict then
+    evalTactic (← `(tactic| exact $hmain $(idx)))
   else
     evalTactic (← `(tactic| exact ($hmain $(idx)).toInterlaces (by
       have h1 := $hdeg $(idx)
@@ -498,7 +614,8 @@ private def degreeLaws (hints : RowHints) : List (Option Nat) :=
 
 /-- The derivative-lag Liu–Wang argument for the goal `(P t).Splits` (`splits := true`) or
 `Interlaces (P t) (P (t + 1))`.  Returns the hints of the successful attempt. -/
-def derivLagCore (splits : Bool) (hints : RowHints) : TacticM RowHints := withMainContext do
+def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints) : TacticM RowHints :=
+    withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   if let .forallE n _ _ _ := tgt then evalTactic (← `(tactic| intro $(mkIdent n):ident))
   withMainContext do
@@ -514,8 +631,8 @@ def derivLagCore (splits : Bool) (hints : RowHints) : TacticM RowHints := withMa
   let mut degreeFailures : Array (MessageData × MessageData) := #[]
   for s in (hints.drop.map ([·])).getD [0, 1, 2] do
     for law in degreeLaws hints do
-      if law.isSome && !splits then continue
-      match ← rowAttempt (derivLagAttempt d splits hints s law) with
+      if law.isSome && !wantSplits && !wantStrict then continue
+      match ← rowAttempt (derivLagAttempt d wantSplits wantStrict hints s law) with
       | .ok _ => return { hints with drop := some s, half := law }
       | .error e =>
           let what : MessageData := match law with
@@ -543,9 +660,9 @@ syntax (name := rrRowDerivLagInterlaces) "rr_row_deriv_lag_interlaces" (ppSpace 
 
 elab_rules : tactic
   | `(tactic| rr_row_deriv_lag_splits $hs*) => withMainContext do
-    discard <| derivLagCore true (← parseRowHints hs)
+    discard <| derivLagCore true false (← parseRowHints hs)
   | `(tactic| rr_row_deriv_lag_interlaces $hs*) => withMainContext do
-    discard <| derivLagCore false (← parseRowHints hs)
+    discard <| derivLagCore false false (← parseRowHints hs)
 
 /-- Is the sequence of the main goal one of a derivative-lag recurrence that `rr_row_splits`
 and `rr_row_interlaces` do not read themselves? -/
@@ -554,6 +671,8 @@ def isDerivLagGoal : TacticM Bool := do
   let tgt := if let .forallE _ _ b _ := tgt then b else tgt
   let some P ← findPolySeqConst? tgt | return false
   unless (← rowRec? P) matches .error _ do return false
-  return (← derivLagRec? P) matches .ok _
+  match ← derivLagRec? P with
+  | .ok d => return d.hasDerivative
+  | .error _ => return false
 
 end RealRooted.Tactic

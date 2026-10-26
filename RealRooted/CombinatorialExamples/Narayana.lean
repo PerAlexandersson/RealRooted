@@ -6,6 +6,7 @@ public import RealRooted.NarayanaTransformation.Recurrences.Identities
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Narayana Polynomials
@@ -228,20 +229,17 @@ private lemma natDegree_leadingCoeff_narayanaQuot :
       lia
 
 lemma natDegree_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
-    (narayanaQuot n).natDegree = n - 1 :=
-  (natDegree_leadingCoeff_narayanaQuot n hn).1
+    (narayanaQuot n).natDegree = n - 1 := by rr_row_natDegree
 
 lemma leadingCoeff_narayanaQuot (n : Nat) (hn : 1 ≤ n) :
     (narayanaQuot n).leadingCoeff = 1 :=
   (natDegree_leadingCoeff_narayanaQuot n hn).2
 
 lemma narayanaQuot_posLeadingCoeff (n : Nat) (hn : 1 ≤ n) :
-    HasPosLeadingCoeff (narayanaQuot n) := by
-  simp [HasPosLeadingCoeff, leadingCoeff_narayanaQuot n hn]
+    HasPosLeadingCoeff (narayanaQuot n) := by rr_row_leadingCoeff_pos
 
 lemma narayanaQuot_ne_zero (n : Nat) (hn : 1 ≤ n) :
-    narayanaQuot n ≠ 0 :=
-  (narayanaQuot_posLeadingCoeff n hn).ne_zero
+    narayanaQuot n ≠ 0 := by rr_row_ne_zero
 
 lemma natDegree_narayana (n : Nat) (hn : 1 ≤ n) :
     (narayana n).natDegree = n := by

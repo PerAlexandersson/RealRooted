@@ -70,7 +70,7 @@ label = "Consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.Challenges.GeneralizedSnakePosets.modifiedNarayana_affine_strictInterl"
-module = "RealRooted.Challenges.GeneralizedSnakePosets"
+module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "Affine combinations of consecutive modified Narayana polynomials interlace"
 
 [[theorems]]
@@ -81,7 +81,7 @@ label = "Full truncated staircases have rook polynomial Pₙ"
 
 [[theorems]]
 name = "RealRooted.Challenges.GeneralizedSnakePosets.auxiliaryG_recurrence"
-module = "RealRooted.Challenges.GeneralizedSnakePosets"
+module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "The auxiliary polynomials Gₙ in terms of Pₙ"
 
 [[theorems]]
@@ -92,20 +92,20 @@ label = "The auxiliary polynomial Gₙ interlaces Pₙ"
 [[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
 rookPolynomial_generalizedSnakeBoard_of_isConstant"""
-module = "RealRooted.Challenges.GeneralizedSnakePosets"
+module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "Constant words give modified Narayana polynomials"
 
 [[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
 rookPolynomial_generalizedSnakeBoard_recurrence"""
-module = "RealRooted.Challenges.GeneralizedSnakePosets"
+module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "Recurrence for the snake polynomials"
 headline = true
 
 [[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
 rookPolynomial_generalizedSnakeBoard_splits_and_interlaces"""
-module = "RealRooted.Challenges.GeneralizedSnakePosets"
+module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "Snake polynomials are real-rooted and interlace"
 headline = true
 -->

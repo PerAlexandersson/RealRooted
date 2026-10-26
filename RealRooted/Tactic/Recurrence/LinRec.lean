@@ -295,9 +295,9 @@ private def linRecRowGoal (P : Ident) (rows : Array QPoly) : TacticM Unit := do
     let poly ← qpolyTerm q
     let prove ← `(tactic|
       first
-        | (simp [$P:ident] <;> ring1)
-        | (simp [$P:ident, map_ofNat] <;> ring1)
-        | (simp only [$P:ident]; simp; ring1))
+        | (simp [$P:ident] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
+        | (simp [$P:ident, map_ofNat] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
+        | (simp only [$P:ident]; simp; rr_row_unfold; try norm_num; ring1))
     evalTactic (← `(tactic| rw [(show $P $(rowNumLit m) = $poly by $prove:tactic)]))
   rowSideGoal (some P)
 
@@ -624,6 +624,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   -- The symbolic `rhs` unfolding handles derivative summands; the pointwise route handles
   -- rational coefficients that `ring` cannot normalize.  Try them in this order.
   let hrec ← `(fun $n:ident => ($eqnApp).trans (by
+    rr_row_unfold
     first
       | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
             List.sum_nil, Function.iterate_zero, Function.iterate_one,

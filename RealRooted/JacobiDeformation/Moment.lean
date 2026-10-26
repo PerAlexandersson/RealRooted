@@ -46,18 +46,11 @@ theorem shiftedJacobiFunctional_X_pow_mul (α β : ℝ) (i : ℕ) (p : ℝ[X]) :
   induction i generalizing α with
   | zero => simp
   | succ i ih =>
-      calc
-        shiftedJacobiFunctional α β (X ^ i.succ * p) =
-            shiftedJacobiFunctional α β (X * (X ^ i * p)) := by
-              rw [pow_succ]
-              ring_nf
-        _ = shiftedJacobiFunctional (α + 1) β (X ^ i * p) :=
-              shiftedJacobiFunctional_X_mul α β _
-        _ = shiftedJacobiFunctional (α + 1 + i) β p := ih (α + 1)
-        _ = shiftedJacobiFunctional (α + i.succ) β p := by
-              congr 1
-              push_cast
-              ring
+      rw [show X ^ i.succ * p = X * (X ^ i * p) by rw [pow_succ]; ring_nf,
+        shiftedJacobiFunctional_X_mul, ih]
+      congr 1
+      push_cast
+      ring
 
 /-- Iterating the existing second-parameter shift of the Jacobi functional. -/
 theorem shiftedJacobiFunctional_one_sub_X_pow_mul
@@ -67,19 +60,12 @@ theorem shiftedJacobiFunctional_one_sub_X_pow_mul
   induction k generalizing β with
   | zero => simp
   | succ k ih =>
-      calc
-        shiftedJacobiFunctional α β ((1 - X) ^ k.succ * p) =
-            shiftedJacobiFunctional α β ((1 - X) * ((1 - X) ^ k * p)) := by
-              rw [pow_succ]
-              ring_nf
-        _ = shiftedJacobiFunctional α (β + 1) ((1 - X) ^ k * p) :=
-              shiftedJacobiFunctional_one_sub_X_mul hα hβ _
-        _ = shiftedJacobiFunctional α (β + 1 + k) p :=
-              ih (by linarith)
-        _ = shiftedJacobiFunctional α (β + k.succ) p := by
-              congr 1
-              push_cast
-              ring
+      rw [show (1 - X) ^ k.succ * p = (1 - X) * ((1 - X) ^ k * p) by
+          rw [pow_succ]; ring_nf,
+        shiftedJacobiFunctional_one_sub_X_mul hα hβ, ih (by linarith)]
+      congr 1
+      push_cast
+      ring
 
 /-- A gamma value with a rising-factorial shift. -/
 theorem gamma_mul_risingFactorial (a : ℝ) (n : ℕ) (ha : 0 < a) :
@@ -87,16 +73,10 @@ theorem gamma_mul_risingFactorial (a : ℝ) (n : ℕ) (ha : 0 < a) :
   induction n with
   | zero => simp
   | succ n ih =>
-      calc
-        Real.Gamma a * risingFactorial a n.succ =
-            (Real.Gamma a * risingFactorial a n) * (a + n) := by
-              rw [risingFactorial_succ]
-              ring
-        _ = Real.Gamma (a + n) * (a + n) := by rw [ih]
-        _ = Real.Gamma (a + n.succ) := by
-              rw [show a + (n.succ : ℕ) = (a + n) + 1 by push_cast; ring,
-                Real.Gamma_add_one (by positivity : a + n ≠ 0)]
-              ring
+      rw [risingFactorial_succ, ← mul_assoc, ih,
+        show a + (n.succ : ℕ) = (a + n) + 1 by push_cast; ring,
+        Real.Gamma_add_one (by positivity : a + n ≠ 0)]
+      ring
 
 /-- The value of the shifted-Jacobi functional at the constant polynomial. -/
 theorem shiftedJacobiFunctional_one_eq_gamma (α β : ℝ) :
@@ -175,8 +155,7 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_zero
     apply shiftedJacobiInner_eq_zero
     · linarith
     · linarith
-    · rw [natDegree_pow]
-      rw [show (1 - X : ℝ[X]).natDegree = 1 by
+    · rw [natDegree_pow, show (1 - X : ℝ[X]).natDegree = 1 by
         simp [sub_eq_add_neg]]
       simpa only [Nat.mul_one] using hkj
   unfold normalizedJacobiFunctional normalizedShiftedJacobi
@@ -402,15 +381,9 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_sum
           ((risingFactorial ((j : ℝ) + c + d - 1) i / risingFactorial c i) *
             (risingFactorial c i * risingFactorial d k /
               risingFactorial (c + d) (i + k))) := by ring
-    _ = ((-1 : ℝ) ^ i * (j.choose i : ℝ)) *
-          ((risingFactorial d k / risingFactorial (c + d) k) *
-            (risingFactorial ((j : ℝ) + c + d - 1) i /
-              risingFactorial (c + d + k) i)) := by
-        rw [risingFactorial_mixed_moment_cancel hc hd i k]
-    _ = (risingFactorial d k / risingFactorial (c + d) k) *
-          ((-1 : ℝ) ^ i * (j.choose i : ℝ) *
-            risingFactorial ((j : ℝ) + c + d - 1) i /
-              risingFactorial (c + d + k) i) := by ring
+    _ = _ := by
+      rw [risingFactorial_mixed_moment_cancel hc hd i k]
+      ring
 
 /-! ## Evaluation by Chu--Vandermonde -/
 

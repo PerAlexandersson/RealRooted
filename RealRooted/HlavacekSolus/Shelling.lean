@@ -207,15 +207,7 @@ lemma relativeHPolynomial_eq_sub {R : RelativeComplex U} (d : ℕ) :
   have hunion : R.faces ∪ R.removed = R.ambient := by
     ext F
     simp only [Finset.mem_union, RelativeComplex.faces, Finset.mem_sdiff]
-    constructor
-    · intro hF
-      rcases hF with ⟨hF, _⟩ | hF
-      · exact hF
-      · exact R.removed_subset hF
-    · intro hF
-      by_cases hFr : F ∈ R.removed
-      · exact Or.inr hFr
-      · exact Or.inl ⟨hF, hFr⟩
+    grind [R.removed_subset]
   have hadd := hPolynomial_union_disjoint hdisj d
   rw [hunion] at hadd
   exact eq_sub_of_add_eq hadd.symm
@@ -255,18 +247,7 @@ private lemma mem_unionList_iff {Ss : List (Finset α)} {a : α} :
     a ∈ unionList Ss ↔ ∃ S ∈ Ss, a ∈ S := by
   induction Ss with
   | nil => simp [unionList]
-  | cons S Ss ih =>
-      simp only [unionList, Finset.mem_union]
-      rw [ih]
-      constructor
-      · rintro (hS | ⟨T, hT, haT⟩)
-        · exact ⟨S, by simp, hS⟩
-        · exact ⟨T, by simp [hT], haT⟩
-      · rintro ⟨T, hT, haT⟩
-        have hT' : T = S ∨ T ∈ Ss := by simpa using hT
-        rcases hT' with hTS | hT
-        · exact Or.inl (hTS ▸ haT)
-        · exact Or.inr ⟨T, hT, haT⟩
+  | cons S Ss ih => simp [unionList, ih]
 
 /-- The successive differences `S \ prior`, where `prior` accumulates the earlier sets
 of the list. -/
@@ -454,11 +435,6 @@ theorem isRealRooted_hPolynomial_of_perm_isInterlacingSeqNonneg
     hPolynomial d Subdivided.faces ≠ 0 ∧
       (hPolynomial d Subdivided.faces).Splits := by
   rw [hPolynomial_eq_sum_relativePieces sub sh] at hpoly_ne ⊢
-  have hpieces_ne : relativePieceHPolynomials d sub sh ≠ [] := by
-    intro hnil
-    apply hpoly_ne
-    rw [hnil]
-    simp
   have hordered_ne : (ordered.sum : ℝ[X]) ≠ 0 := by
     intro hzero
     apply hpoly_ne

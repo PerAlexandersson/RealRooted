@@ -47,49 +47,49 @@ label = "Strict root alternation"
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.derangementDescent_realRooted"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Derangement descent real-rootedness"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.cyclicWordDescent_roots"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Balanced cyclic-word roots"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.evenTopDescent_strictAlternation"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Even-top descents strictly alternate"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.superEulerian_roots_interlacing_gamma"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Super-Eulerian roots, interlacing and gamma-polynomials"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.ternaryWordRun_realRooted_interlaces"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Ternary-word runs are real-rooted and interlace"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.peakPolynomial_roots"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Permutation peaks have simple negative roots and strict alternation"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.peakValue_stability_and_weightedInterlacing"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Peak-value stability and weighted interlacing"
 tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.zigzagEulerian_roots"
-module = "RealRooted.Challenges.EulerianCompendium"
+module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Zig-zag Eulerian simple negative roots"
 tags = ["realrooted-original"]
 -->

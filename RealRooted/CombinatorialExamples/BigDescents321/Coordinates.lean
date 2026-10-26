@@ -357,27 +357,11 @@ theorem kernelCoord_rec_zero (s : ℕ) :
   rw [show (s : ℤ) + 2 - 1 = s + 1 by ring, show (s : ℤ) + 2 - 2 = s by ring,
     show (s : ℤ) + 2 - 3 = s - 1 by ring] at hid
   rw [show (s : ℤ) + 1 - 1 = s by ring]
-  rcases s with _ | _ | _ | s
-  · simp only [corrCoordZ, extraCoord, corrCoord] at hid ⊢
-    norm_num at hid ⊢
-    linear_combination (norm := skip) (-1 / 16 : ℚ) * hid
-    norm_num
-    ring
-  · simp only [corrCoordZ, extraCoord, corrCoord] at hid ⊢
-    norm_num at hid ⊢
-    linear_combination (norm := skip) (-1 / 16 : ℚ) * hid
-    norm_num
-    ring
-  · simp only [corrCoordZ, extraCoord, corrCoord] at hid ⊢
-    norm_num at hid ⊢
-    linear_combination (norm := skip) (-1 / 16 : ℚ) * hid
-    norm_num
-    ring
-  · simp (disch := lia) only [corrCoordZ_of_three_le]
-    simp only [extraCoord] at hid ⊢
-    norm_num at hid ⊢
-    ring_nf at hid ⊢
-    linear_combination (norm := skip) (-1 / 16 : ℚ) * hid
+  rcases s with _ | _ | _ | s <;>
+    simp (disch := lia) only [corrCoordZ, extraCoord, corrCoord] at hid ⊢ <;>
+    norm_num at hid ⊢ <;>
+    ring_nf at hid ⊢ <;>
+    linear_combination (norm := skip) (-1 / 16 : ℚ) * hid <;>
     ring
 
 theorem transformedCoord_eq {n j : ℕ} {r : ℤ} (h : (n : ℤ) = j + 2 * r) :

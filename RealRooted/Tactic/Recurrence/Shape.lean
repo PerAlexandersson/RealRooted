@@ -25,11 +25,12 @@ def P : ℕ → ℝ[X]
 in the goal, and `RowRec.hrecTerm` is the recurrence argument for the theorems.
 
 The right side is read up to the order of the summands and of the factors, signs
-(`a * P (n + 1) - b * P n`), bare rows (`P (n + 1) + X * P n`) and repeated rows.  The left
-side may be `P (n + k)` with explicit base rows `P 0, …, P (k - 1)`: the theorems are
-then applied to the shifted sequence `m ↦ P (m + k - 1)` (or `m ↦ P (m + k - 2)` for
-three-term recurrences).  If the definition already has the shape of the theorems, the
-recurrence argument is `fun _ => rfl`; otherwise it is
+(`a * P (n + 1) - b * P n`), bare rows (`P (n + 1) + X * P n`), repeated rows, and
+distribution of row-independent factors over sums (`c * (s + t)` and `(s + t) * c`, also
+nested).  The left side may be `P (n + k)` with explicit base rows `P 0, …, P (k - 1)`:
+the theorems are then applied to the shifted sequence `m ↦ P (m + k - 1)` (or
+`m ↦ P (m + k - 2)` for three-term recurrences).  If the definition already has the
+shape of the theorems, the recurrence argument is `fun _ => rfl`; otherwise it is
 `show ∀ n, P (n + k) = … from fun n => (P.eq_i n).trans (by ring)`.
 
 Unrecognized recurrences are reported with the summands that were read, and the
@@ -146,24 +147,91 @@ structure RowSummand where
 
 private def mentions (P : Name) (e : Expr) : Bool := (e.find? (·.isConstOf P)).isSome
 
+/-- Whether a definition body is recursive.  Structural recursion on `Nat` is compiled
+through `Nat.brecOn`, so the source definition need not occur literally in its body. -/
+private def isRecursiveDef (name : Name) (value : Expr) : Bool :=
+  (value.find? fun e => e.isConstOf name || e.isConstOf ``Nat.brecOn).isSome
+
+/-- Internal recurrence encodings are proof infrastructure, not coefficient blocks. -/
+private def isInternalRowDef (name : Name) : Bool :=
+  name.toString == "RealRooted.LinRec.rhs"
+
+/-- Whether `name` comes from the core libraries or Mathlib, whose definitions (`Real.sqrt`,
+`Real.exp`, …) are never coefficient blocks of a row family. -/
+private def isLibraryDef (name : Name) : MetaM Bool := do
+  let env ← getEnv
+  let some idx := env.getModuleIdxFor? name | return false
+  let mod := env.header.moduleNames[idx.toNat]!
+  return [`Init, `Std, `Lean, `Mathlib, `Batteries, `Aesop, `Qq, `Plausible].any
+    (·.isPrefixOf mod)
+
+/-- Whether `name` is a non-recursive, universe-monomorphic definition outside the libraries
+with values in `ℝ` or `ℝ[X]`: a named coefficient block of a row recurrence. -/
+private def isRowCoeffDef (name : Name) : MetaM Bool := do
+  let some (.defnInfo info) := (← getEnv).find? name | return false
+  if !info.levelParams.isEmpty || isInternalRowDef name || isRecursiveDef name info.value then
+    return false
+  if ← isLibraryDef name then return false
+  forallTelescopeReducing info.type fun _ result => do
+    let result ← whnf result
+    return result.isConstOf ``Real || result.getAppFn.isConstOf ``Polynomial
+
+/-- Unfold one non-recursive definition at the head of `e`.  Row-coefficient evaluators use
+this only after their explicit arithmetic grammar fails, and validate the unfolded body by
+recursing through that grammar. -/
+def unfoldRowCoeff? (e : Expr) : MetaM (Option Expr) := do
+  let .const name _ := e.getAppFn | return none
+  unless ← isRowCoeffDef name do return none
+  unfoldDefinition? e (ignoreTransparency := true)
+
+/-- The coefficient blocks (see `isRowCoeffDef`) occurring in a side goal or recurrence
+identity. -/
+def rowCoeffDefs (ty : Expr) : MetaM (Array Name) :=
+  ty.getUsedConstants.filterM isRowCoeffDef
+
+/-- Expose small named scalar and polynomial coefficient blocks in the main goal. -/
+def unfoldRowCoeffDefs : TacticM Unit := withMainContext do
+  let defs ← rowCoeffDefs (← instantiateMVars (← getMainTarget))
+  if defs.isEmpty then return
+  let args : Array (TSyntax ``Lean.Parser.Tactic.simpLemma) ←
+    defs.mapM fun name => do
+      let id := mkIdent name
+      `(Lean.Parser.Tactic.simpLemma| $id:ident)
+  evalTactic (← `(tactic| simp only [$args,*]))
+
+/-- Unfold non-recursive scalar and polynomial definitions used as recurrence coefficients. -/
+elab (name := rrRowUnfold) "rr_row_unfold" : tactic => unfoldRowCoeffDefs
+
 private def isSumLike (e : Expr) : Bool :=
   e.isAppOfArity ``HAdd.hAdd 6 || e.isAppOfArity ``HSub.hSub 6 || e.isAppOfArity ``Neg.neg 3
 
-/-- Signed summands of `e`; the flag records that `e` is a left-nested sum without
-subtraction or negation. -/
-private partial def signedSummands (e : Expr) (pos : Bool) :
+/-- Signed summands of `e`; row-independent factors are distributed over sums.  The flag
+records that `e` is a left-nested sum without subtraction, negation or distribution. -/
+private partial def signedSummands (P : Name) (e : Expr) (pos : Bool) :
     StateT Bool MetaM (List (Bool × Expr)) := do
   let e := e.consumeMData
   match e.getAppFnArgs with
   | (``HAdd.hAdd, #[_, _, _, _, a, b]) =>
       if isSumLike b.consumeMData then set false
-      return (← signedSummands a pos) ++ (← signedSummands b pos)
+      return (← signedSummands P a pos) ++ (← signedSummands P b pos)
   | (``HSub.hSub, #[_, _, _, _, a, b]) =>
       set false
-      return (← signedSummands a pos) ++ (← signedSummands b !pos)
+      return (← signedSummands P a pos) ++ (← signedSummands P b !pos)
   | (``Neg.neg, #[_, _, a]) =>
       set false
-      signedSummands a !pos
+      signedSummands P a !pos
+  | (``HMul.hMul, #[_, _, _, _, a, b]) =>
+      if !mentions P a && mentions P b then
+        let terms ← signedSummands P b pos
+        if terms.length > 1 then
+          set false
+          return ← terms.mapM fun (sgn, t) => return (sgn, ← mkAppM ``HMul.hMul #[a, t])
+      if mentions P a && !mentions P b then
+        let terms ← signedSummands P a pos
+        if terms.length > 1 then
+          set false
+          return ← terms.mapM fun (sgn, t) => return (sgn, ← mkAppM ``HMul.hMul #[t, b])
+      return [(pos, e)]
   | _ => return [(pos, e)]
 
 /-- Split a summand into its coefficient and its row. -/
@@ -221,7 +289,7 @@ def RowRec.asLagLeft (r : RowRec) : RowRec :=
 /-- Read the shape of `rhs` in `P (n + k) = rhs`; on failure, explain why. -/
 private def readRec (P : Name) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
     MetaM (Except MessageData RowRec) := do
-  let (terms, nested) ← (signedSummands rhs true).run true
+  let (terms, nested) ← (signedSummands P rhs true).run true
   let mut summands : Array RowSummand := #[]
   let mut plain := nested
   for (pos, t) in terms do
@@ -236,6 +304,9 @@ private def readRec (P : Name) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
       match c with
       | some c => pure (some (← mkAppM ``Neg.neg #[c]))
       | none => pure (some (← mkAppM ``Neg.neg #[← mkNumeral (← inferType r) 1]))
+    let c ← c.mapM fun c => do
+      let some c' ← unfoldRowCoeff? c | return c
+      return c'
     match summands.findIdx? (fun s => s.index == j && s.derivs == d) with
     | some i =>
         let s := summands[i]!
@@ -332,13 +403,14 @@ structure LinRecData where
 /-- Read the summands of `rhs` in `P (n + k) = rhs` as a general linear recurrence. -/
 private def readLinRec (P eqn : Name) (n rhs : Expr) (k : Nat) :
     MetaM (Option LinRecData) := do
-  let (terms, _) ← (signedSummands rhs true).run true
+  let (terms, _) ← (signedSummands P rhs true).run true
   let mut out : Array (Nat × Nat × Expr) := #[]
   for (pos, t) in terms do
     let some (c, r, _) ← factorRow? P n t | return none
     let some (j, i) ← rowOf? P n r | return none
     if j ≥ k then return none
     let c ← c.getDM (mkNumeral (← inferType r) 1)
+    let c := (← unfoldRowCoeff? c).getD c
     let c ← if pos then pure c else mkAppM ``Neg.neg #[c]
     out := out.push (j, i, ← mkLambdaFVars #[n] c)
   return some { P, offset := k, eqn, terms := out }
@@ -440,7 +512,7 @@ def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
   else
     let n := mkIdent `n
     let h₀ ← `((show $(← certTerm r.stmt) from
-      fun $n:ident => ($(mkIdent r.eqn) $n).trans (by ring)))
+      fun $n:ident => ($(mkIdent r.eqn) $n).trans (by rr_row_unfold; ring)))
     let extra := r.offset - r.stmtOffset + k
     let h ← if extra == 0 then pure h₀ else `(fun $n:ident => $h₀ ($n + $(rowNumLit extra)))
     match r.shape with

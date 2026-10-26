@@ -448,6 +448,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
   let eqnApp ← if plan.extra == 0 then `($(mkIdent r.eqn) $n)
     else `($(mkIdent r.eqn) ($n + $(rowNumLit plan.extra)))
   let hderiv ← `(fun $n:ident => ($eqnApp).trans (by
+    rr_row_unfold
     first
       | with_reducible rfl
       | (apply Polynomial.funext

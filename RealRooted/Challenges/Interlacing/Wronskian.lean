@@ -36,11 +36,6 @@ module = "RealRooted.Wronskian.Converse"
 label = "A nonnegative Wronskian gives interlacing when f has simple zeros"
 
 [[theorems]]
-name = "RealRooted.exists_wronskian_eval_nonneg_not_strictInterl"
-module = "RealRooted.Wronskian.Converse"
-label = "The multiplicity bound cannot be dropped"
-
-[[theorems]]
 name = "RealRooted.StrictInterlSameDegree.of_wronskian_pos"
 module = "RealRooted.Bezoutian.WronskianConverse"
 label = "A positive Wronskian gives strict interlacing in equal degree"

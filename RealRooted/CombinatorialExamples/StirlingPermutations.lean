@@ -3,6 +3,7 @@ module
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Stirling-Permutation Descent Polynomials
@@ -42,15 +43,6 @@ lemma stirlingPermutations_succ (n : Nat) :
     stirlingPermutations (n + 1) =
       stirlingPermutationsCoeffA n * stirlingPermutations n +
         stirlingPermutationsCoeffB * (stirlingPermutations n).derivative := rfl
-
-private lemma stirlingPermutations_quadratic_derivative_linear (n : Nat) :
-    stirlingPermutations (n + 1) =
-      (C (1 : ℝ) * X + C (-1 : ℝ) * X ^ 2) *
-          (stirlingPermutations n).derivative +
-        (C (0 : ℝ) + C (1 + 2 * (n : ℝ)) * X) * stirlingPermutations n := by
-  rw [stirlingPermutations_succ]
-  simp [stirlingPermutationsCoeffA, stirlingPermutationsCoeffB]
-  ring
 
 lemma stirlingPermutations_one :
     stirlingPermutations 1 = X := by
@@ -121,25 +113,20 @@ lemma coeff_stirlingPermutations_top_pos_and_above :
 
 lemma natDegree_stirlingPermutations (n : Nat) :
     (stirlingPermutations n).natDegree = n := by
-  exact natDegree_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
-    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
-    (by norm_num) (by norm_num) n
+  rr_row_natDegree
 
 lemma stirlingPermutations_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (stirlingPermutations n) := by
-  exact hasPosLeadingCoeff_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
-    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
-    (by norm_num) (by norm_num) n
+  simpa [HasPosLeadingCoeff, leadingCoeff, natDegree_stirlingPermutations] using
+    (coeff_stirlingPermutations_top_pos_and_above n).1
 
 lemma stirlingPermutations_ne_zero (n : Nat) :
-    stirlingPermutations n ≠ 0 :=
-  (stirlingPermutations_posLeadingCoeff n).ne_zero
+    stirlingPermutations n ≠ 0 := by
+  rr_row_ne_zero
 
 lemma stirlingPermutations_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (stirlingPermutations n) := by
-  exact hasNonnegCoeffs_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
-    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  rr_row_nonneg_coeffs
 
 lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat} :
     ∀ r ∈ (stirlingPermutations n).roots, r ≤ 0 :=
@@ -155,24 +142,20 @@ lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) 
   simp [stirlingPermutationsCoeffB]
   nlinarith
 
-private theorem strictInterl_stirlingPermutations_quadratic :
-    ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
-  exact strictInterl_of_quadratic_derivative_linear stirlingPermutations 1 1 0 1 2
-    stirlingPermutations_zero stirlingPermutations_quadratic_derivative_linear
-    (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-
 lemma strictInterl_stirlingPermutations_one_two :
     StrictInterl (stirlingPermutations 1) (stirlingPermutations 2) := by
-  simpa using strictInterl_stirlingPermutations_quadratic 1
+  exact (show Interlaces (stirlingPermutations 1) (stirlingPermutations 2) by
+    rr_row_interlaces).toStrictInterl
 
 theorem strictInterl_stirlingPermutations_succ :
     ∀ n : Nat, StrictInterl (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
-  exact strictInterl_stirlingPermutations_quadratic
+  intro n
+  exact (show Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) by
+    rr_row_interlaces).toStrictInterl
 
 theorem interlaces_stirlingPermutations_succ (n : Nat) :
-    Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) :=
-  (strictInterl_stirlingPermutations_succ n).toInterlaces
-    (by simp [natDegree_stirlingPermutations])
+    Interlaces (stirlingPermutations n) (stirlingPermutations (n + 1)) := by
+  rr_row_interlaces
 
 theorem isRealRooted_stirlingPermutations :
     ∀ n : Nat, ((stirlingPermutations n) ≠ 0 ∧ (stirlingPermutations n).Splits) :=
