@@ -1,0 +1,675 @@
+module
+
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Examples.RowFixtures
+
+set_option rr.row.explain true
+set_option linter.style.longLine false
+
+/-!
+# Three-term recurrence examples
+
+Regression tests for `rr_row_natDegree`, `rr_row_ne_zero`,
+`rr_row_leadingCoeff_pos`, `rr_row_interlaces`, `rr_row_nonneg_coeffs`,
+`rr_row_eval_zero_pos` and `rr_row_splits` on OEIS rows defined by
+`P (n + 2) = a n * P (n + 1) + b n * P n` or `P (n + 1) = A n * (P n)' + B n * P n`,
+drawn from `real-rooted-oeis-proofs`: the pilot rows, three-term recurrences with offset
+three, summands in other orders, and the certificates and hints of `rr_row_interlaces?`.
+-/
+
+@[expose] public section
+
+open Polynomial
+open RealRooted.Tactic.RowFixtures
+
+namespace RealRooted.Tactic.RowInterlacingExamples
+
+noncomputable section
+
+/-- `b ≤ 0` everywhere, leading coefficients constant (`ρ = 1`) (A056241). -/
+def A056241 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (2 + 2 * X) * A056241 (n + 1) + (-1 + -1 * X + -1 * X ^ 2) * A056241 n
+
+theorem A056241_natDegree (n : ℕ) : (A056241 n).natDegree = n := by rr_row_natDegree
+theorem A056241_ne_zero (n : ℕ) : A056241 n ≠ 0 := by rr_row_ne_zero
+theorem A056241_leadingCoeff_pos (n : ℕ) : 0 < (A056241 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+theorem A056241_interlaces (n : ℕ) : Interlaces (A056241 n) (A056241 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Delannoy rows: `b = X ≤ 0` only on `(-∞, 0]`, rows with nonnegative
+coefficients (A008288). -/
+def A008288 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (1 + X) * A008288 (n + 1) + X * A008288 n
+
+theorem A008288_natDegree (n : ℕ) : (A008288 n).natDegree = n := by rr_row_natDegree
+theorem A008288_interlaces (n : ℕ) : Interlaces (A008288 n) (A008288 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Narayana rows: rational `n`-dependent coefficients (A001263). -/
+def A001263 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 =>
+      (C (1 / (4 + (n : ℝ)) * (5 + 2 * (n : ℝ))) + C (1 / (4 + (n : ℝ)) * (5 + 2 * (n : ℝ))) * X) *
+          A001263 (n + 1) +
+        (C (1 / (4 + (n : ℝ)) * (-1 + -1 * (n : ℝ))) +
+          C (1 / (4 + (n : ℝ)) * (2 + 2 * (n : ℝ))) * X +
+          C (1 / (4 + (n : ℝ)) * (-1 + -1 * (n : ℝ))) * X ^ 2) * A001263 n
+
+theorem A001263_natDegree (n : ℕ) : (A001263 n).natDegree = n := by rr_row_natDegree
+theorem A001263_interlaces (n : ℕ) : Interlaces (A001263 n) (A001263 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Negative denominators `-2 - n` (A008459). -/
+def A008459 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 =>
+      (C (1 / (-2 + -1 * (n : ℝ)) * (-3 + -2 * (n : ℝ))) +
+          C (1 / (-2 + -1 * (n : ℝ)) * (-3 + -2 * (n : ℝ))) * X) * A008459 (n + 1) +
+        (C (1 / (-2 + -1 * (n : ℝ)) * (1 + (n : ℝ))) +
+          C (1 / (-2 + -1 * (n : ℝ)) * (-2 + -2 * (n : ℝ))) * X +
+          C (1 / (-2 + -1 * (n : ℝ)) * (1 + (n : ℝ))) * X ^ 2) * A008459 n
+
+theorem A008459_natDegree (n : ℕ) : (A008459 n).natDegree = n := by rr_row_natDegree
+theorem A008459_ne_zero (n : ℕ) : A008459 n ≠ 0 := by rr_row_ne_zero
+
+theorem A008277_interlaces (n : ℕ) : Interlaces (A008277 n) (A008277 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Eulerian numbers: `A = X (1 - X)` has a negative coefficient, so nonnegativity of
+the rows comes from the multiplier bound `n + 1 - j ≥ 0` (A008292). -/
+def A008292 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 1 * X + C (-1) * X ^ 2) * (A008292 n).derivative +
+      (C 1 + C (1 + (n : ℝ)) * X) * A008292 n
+
+theorem A008292_interlaces (n : ℕ) : Interlaces (A008292 n) (A008292 (n + 1)) := by
+  rr_row_interlaces
+
+/-- A real-rooted quadratic base row: no base interlacing is needed (A075499). -/
+def A075499 : ℕ → ℝ[X]
+  | 0 => 16 + 12 * X + X ^ 2
+  | n + 1 => (4 * X) * (A075499 n).derivative + (4 + X) * A075499 n
+
+theorem A075499_natDegree (n : ℕ) : (A075499 n).natDegree = n + 2 := by rr_row_natDegree
+theorem A075499_interlaces (n : ℕ) : Interlaces (A075499 n) (A075499 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Root window `[-1, 0]`: `A = X (X + 1)` is nonpositive only there (A019538). -/
+def A019538 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X + X ^ 2) * (A019538 n).derivative + (1 + 2 * X) * A019538 n
+
+theorem A019538_interlaces (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Root window `(-∞, -1]`: `A = X + 1` (A137597). -/
+def A137597 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X) * (A137597 n).derivative + (2 + X) * A137597 n
+
+theorem A137597_interlaces (n : ℕ) : Interlaces (A137597 n) (A137597 (n + 1)) := by
+  rr_row_interlaces
+
+/-- A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` (A111006). -/
+def A111006 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => X * A111006 (n + 1) + (X + X ^ 2) * A111006 n
+
+theorem A111006_interlaces (n : ℕ) : Interlaces (A111006 n) (A111006 (n + 1)) := by
+  rr_row_interlaces
+
+/-! ### Nonnegative coefficients, constant terms and splitting of the pilot rows -/
+
+theorem A056241_splits (n : ℕ) : (A056241 n).Splits := by rr_row_splits
+
+theorem A008288_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A008288 n) := by
+  rr_row_nonneg_coeffs
+theorem A008288_eval_zero_pos (n : ℕ) : 0 < (A008288 n).eval 0 := by rr_row_eval_zero_pos
+theorem A008288_splits (n : ℕ) : (A008288 n).Splits := by rr_row_splits
+
+theorem A001263_splits (n : ℕ) : (A001263 n).Splits := by rr_row_splits
+
+theorem A008459_interlaces (n : ℕ) : Interlaces (A008459 n) (A008459 (n + 1)) := by
+  rr_row_interlaces
+theorem A008459_splits (n : ℕ) : (A008459 n).Splits := by rr_row_splits
+
+theorem A008277_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A008277 n) := by
+  rr_row_nonneg_coeffs
+theorem A008277_eval_zero_pos (n : ℕ) : 0 < (A008277 n).eval 0 := by rr_row_eval_zero_pos
+theorem A008277_splits (n : ℕ) : (A008277 n).Splits := by rr_row_splits
+
+/-- Nonnegativity from the multiplier bound
+(`RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`). -/
+theorem A008292_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A008292 n) := by
+  rr_row_nonneg_coeffs
+theorem A008292_eval_zero_pos (n : ℕ) : 0 < (A008292 n).eval 0 := by rr_row_eval_zero_pos
+theorem A008292_splits (n : ℕ) : (A008292 n).Splits := by rr_row_splits
+
+/-- `A n = 1 + X` does not vanish at `0`: the constant terms need the nonnegative
+coefficients of the derivatives. -/
+theorem A137597_eval_zero_pos (n : ℕ) : 0 < (A137597 n).eval 0 := by rr_row_eval_zero_pos
+theorem A137597_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A137597 n) := by
+  rr_row_nonneg_coeffs
+
+theorem A111006_splits (n : ℕ) : (A111006 n).Splits := by rr_row_splits
+
+/-! ### Certificates and hints -/
+
+/-- The certificate printed by `rr_row_interlaces?` for `A019538_interlaces`. -/
+example (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
+  apply RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc (P := A019538) (D₀ := 0)
+    (L := (-1 : ℝ)) (U := (0 : ℝ)) fun _ => rfl <;> rr_row_side
+
+example (n : ℕ) : Interlaces (A019538 n) (A019538 (n + 1)) := by
+  rr_row_interlaces (window := [-1, 0])
+
+example (n : ℕ) : Interlaces (A137597 n) (A137597 (n + 1)) := by
+  rr_row_interlaces (upper := -1)
+
+example (n : ℕ) : Interlaces (A008292 n) (A008292 (n + 1)) := by
+  rr_row_interlaces
+    (thm := RealRooted.derivativeRecurrence_interlaces_of_nonnegCoeffs) (degree := 0)
+
+example (n : ℕ) : Interlaces (A111006 n) (A111006 (n + 1)) := by rr_row_interlaces?
+
+/-! ### Offset three: explicit rows `0, 1, 2` -/
+
+theorem A084534_interlaces (n : ℕ) : Interlaces (A084534 n) (A084534 (n + 1)) := by
+  rr_row_interlaces
+theorem A084534_eval_zero_pos (n : ℕ) : 0 < (A084534 n).eval 0 := by rr_row_eval_zero_pos
+theorem A084534_splits (n : ℕ) : (A084534 n).Splits := by rr_row_splits
+
+theorem A102413_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (A102413 n) := by
+  rr_row_nonneg_coeffs
+theorem A102413_interlaces (n : ℕ) : Interlaces (A102413 n) (A102413 (n + 1)) := by
+  rr_row_interlaces
+theorem A102413_eval_zero_pos (n : ℕ) : 0 < (A102413 n).eval 0 := by rr_row_eval_zero_pos
+theorem A102413_splits (n : ℕ) : (A102413 n).Splits := by rr_row_splits
+
+theorem A103450_interlaces (n : ℕ) : Interlaces (A103450 n) (A103450 (n + 1)) := by
+  rr_row_interlaces
+
+/-- The certificate printed by `rr_row_interlaces?` for `A103450_interlaces`. -/
+example (n : ℕ) : Interlaces (A103450 n) (A103450 (n + 1)) := by
+  rcases n with _ | n
+  · rr_row_side
+  apply RealRooted.threeTerm_interlaces_of_eval_nonpos (P := fun m => A103450 (m + 1)) (D₀ := 1)
+    fun _ => rfl <;> rr_row_side
+
+example (n : ℕ) : Interlaces (A103450 n) (A103450 (n + 1)) := by rr_row_interlaces?
+
+/-! ### Summands in other orders -/
+
+theorem swappedLag_interlaces (n : ℕ) : Interlaces (swappedLag n) (swappedLag (n + 1)) := by
+  rr_row_interlaces
+theorem swappedLag_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedLag n) := by
+  rr_row_nonneg_coeffs
+
+theorem subtractedLag_interlaces (n : ℕ) :
+    Interlaces (subtractedLag n) (subtractedLag (n + 1)) := by
+  rr_row_interlaces
+
+theorem swappedDeriv_interlaces (n : ℕ) :
+    Interlaces (swappedDeriv n) (swappedDeriv (n + 1)) := by
+  rr_row_interlaces
+theorem swappedDeriv_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedDeriv n) := by
+  rr_row_nonneg_coeffs
+theorem swappedDeriv_eval_zero_pos (n : ℕ) : 0 < (swappedDeriv n).eval 0 := by
+  rr_row_eval_zero_pos
+theorem swappedDeriv_splits (n : ℕ) : (swappedDeriv n).Splits := by rr_row_splits
+
+theorem swappedProduct_interlaces (n : ℕ) :
+    Interlaces (swappedProduct n) (swappedProduct (n + 1)) := by
+  rr_row_interlaces
+theorem swappedProduct_splits (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits
+theorem swappedProduct_hasNonnegCoeffs (n : ℕ) : HasNonnegCoeffs (swappedProduct n) := by
+  rr_row_nonneg_coeffs
+theorem swappedProduct_eval_zero_pos (n : ℕ) : 0 < (swappedProduct n).eval 0 := by
+  rr_row_eval_zero_pos
+
+/-- Roots in `(-∞, 0]` while the lag `X - X ^ 2` is positive beyond `1`: the leading
+coefficients control the window (`RealRooted.threeTerm_interlaces_of_roots_le_of_ratio`)
+(A098158). -/
+def A098158 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => 2 * X * A098158 (n + 1) + (X + -1 * X ^ 2) * A098158 n
+
+theorem A098158_interlaces (n : ℕ) : Interlaces (A098158 n) (A098158 (n + 1)) := by
+  rr_row_interlaces
+
+/-! ### Products, half growth with a common lag root, derivative lags -/
+
+/-- A derivative-lag recurrence `P (n + 2) = U P (n + 1) + V P' (n + 1) + W P n` with
+`V ≤ 0`, `W < 0` on the negative axis (A144436). -/
+def A144436 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => (C 1 * X + C (-1) * X ^ 2) * (A144436 (n + 1)).derivative +
+      (C 1 + C (2 + (n : ℝ)) * X) * A144436 (n + 1) + (C 4 * X) * A144436 n
+
+theorem A144436_splits (n : ℕ) : (A144436 n).Splits := by rr_row_splits
+
+/-- A derivative-lag recurrence with half growth (A008299). -/
+def A008299 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (C 1 * X) * (A008299 (n + 1)).derivative + C 1 * A008299 (n + 1) +
+      (C (3 + (n : ℝ)) * X) * A008299 n
+
+theorem A008299_splits (n : ℕ) : (A008299 n).Splits := by rr_row_splits
+
+/-- Half growth whose lags `(n + 1) (X - 1)` share the root `1`
+(`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) (A136394). -/
+def A136394 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => C (2 + (n : ℝ)) * A136394 (n + 1) + (C (-1 + -1 * (n : ℝ)) + C (1 + (n : ℝ)) * X) *
+      A136394 n
+
+theorem A136394_splits (n : ℕ) : (A136394 n).Splits := by rr_row_splits
+
+/-- A product with a real-rooted quadratic factor (A272866). -/
+def A272866 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X ^ 2 + 3 * X) * A272866 n
+
+theorem A272866_splits (n : ℕ) : (A272866 n).Splits := by rr_row_splits
+
+/-- A product with a cubic first row. -/
+def cubicShiftRows : ℕ → ℝ[X]
+  | 0 => 1 + 3 * X + 3 * X ^ 2 + X ^ 3
+  | n + 1 => X * cubicShiftRows n
+
+theorem cubicShiftRows_splits (n : ℕ) : (cubicShiftRows n).Splits := by rr_row_splits
+theorem cubicShiftRows_interlaces (n : ℕ) :
+    Interlaces (cubicShiftRows n) (cubicShiftRows (n + 1)) := by
+  rr_row_interlaces
+
+/-- Half growth whose lag coefficients are quadratic in `n` (A306364). -/
+def A306364 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3
+  | n + 2 => C (5 + 2 * (n : ℝ)) * A306364 (n + 1) +
+      (C (6 + -1 * (3 + (n : ℝ)) ^ 2 + 2 * (n : ℝ)) +
+        C (-6 + (3 + (n : ℝ)) ^ 2 + -2 * (n : ℝ)) * X) * A306364 n
+
+theorem A306364_splits (n : ℕ) : (A306364 n).Splits := by rr_row_splits
+
+/-- A two-step product `P (n + 2) = (1 + 2 X) P n` (A188440). -/
+def A188440 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | n + 2 => (1 + 2 * X) * A188440 n
+
+theorem A188440_splits (n : ℕ) : (A188440 n).Splits := by rr_row_splits
+
+/-- A two-step product with a double root `q = X ^ 2` (A133080). -/
+def A133080 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => X ^ 2 * A133080 n
+
+theorem A133080_splits (n : ℕ) : (A133080 n).Splits := by rr_row_splits
+
+/-- A product read off `P (n + 3) = X * P (n + 2)` (A167194). -/
+def A167194 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + X
+  | 2 => 1 + 2 * X + X ^ 2
+  | n + 3 => X * A167194 (n + 2)
+
+theorem A167194_splits (n : ℕ) : (A167194 n).Splits := by rr_row_splits
+
+/-- Half growth after the zero row `P 0 = 0` (A180047). -/
+def A180047 : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => X
+  | n + 2 => C (2 + (n : ℝ)) * A180047 (n + 1) + (C 1 * X) * A180047 n
+
+theorem A180047_splits (n : ℕ) : (A180047 n).Splits := by rr_row_splits
+
+/-! ### General Euler steps
+
+Second-order recurrences `P (n + 1) = κX² (P n)'' + (κ(a + b + 1)X + vX²) (P n)' +
+(κab + (u₀ + s n) X) P n` with no eigen-ODE, through
+`RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec`. -/
+
+/-- Central factorial numbers: `κ = a = b = 1`, `v = 0` (A036969). -/
+def A036969 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X ^ 2 * (A036969 n).derivative.derivative + (3 * X) * (A036969 n).derivative +
+      (1 + X) * A036969 n
+
+theorem A036969_interlaces (n : ℕ) : Interlaces (A036969 n) (A036969 (n + 1)) := by
+  rr_row_interlaces
+theorem A036969_splits (n : ℕ) : (A036969 n).Splits := by rr_row_splits
+
+theorem A160562_splits (n : ℕ) : (A160562 n).Splits := by rr_row_splits
+
+/-- `κ = 2`, `a = 1 / 2`, `b = 1`, `v = -2` and `u n = 1 + 2n` (A166961). -/
+def A166961 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (C 2 * X ^ 2) * (A166961 n).derivative.derivative +
+      (C 5 * X + C (-2) * X ^ 2) * (A166961 n).derivative +
+      (C 1 + C (1 + 2 * (n : ℝ)) * X) * A166961 n
+
+theorem A166961_interlaces (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
+  rr_row_interlaces
+
+/-- `θ ^ 2 + X`, the Euler step with `a = b = 0`: from `P 1` on the rows carry the factor `X`
+(A269945, `RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero`). -/
+def A269945 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => X ^ 2 * (A269945 n).derivative.derivative + X * (A269945 n).derivative +
+      X * A269945 n
+
+theorem A269945_interlaces (n : ℕ) : Interlaces (A269945 n) (A269945 (n + 1)) := by
+  rr_row_interlaces
+
+example (n : ℕ) : Interlaces (A166961 n) (A166961 (n + 1)) := by
+  rr_row_interlaces?
+
+/-! ### Moving root windows -/
+
+/-- The roots stay in `[L n, 0]`, where `L n = -(8n + 21) / (9n + 24)` is the other root of
+`A n` and decreases with `n` (A370258,
+`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`). -/
+def A370258 : ℕ → ℝ[X]
+  | 0 => 1 + 10 * X + 15 * X ^ 2
+  | n + 1 =>
+      (C ((21 / 2 + 4 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X +
+          C ((12 + 9 / 2 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X ^ 2) *
+        (A370258 n).derivative +
+      (C 1 + C ((24 + 9 * (2 + (n : ℝ)) ^ 2 + 21 / 2 * n) /
+          (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X) * A370258 n
+
+theorem A370258_interlaces (n : ℕ) : Interlaces (A370258 n) (A370258 (n + 1)) := by
+  rr_row_interlaces
+
+/-- The roots stay at most `U n = -(n + 3) / (8n + 21)`, the smaller root of `A n`, which
+increases with `n`; the other root `1` of `A n` splits the conditions beyond `U (n + 1)`
+(A110608, `RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`). -/
+def A110608 : ℕ → ℝ[X]
+  | 0 => 6 + 8 * X + X ^ 2
+  | n + 1 =>
+      (C ((3 / 2 + (n : ℝ) / 2) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) +
+          C ((9 + 7 / 2 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X +
+          C ((-21 / 2 - 4 * (n : ℝ)) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) * X ^ 2) *
+        (A110608 n).derivative +
+      (C ((18 + 8 * (n : ℝ) + 15 / 2 * (2 + (n : ℝ)) ^ 2) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) +
+          C ((12 + 6 * (2 + (n : ℝ)) ^ 2 + 11 / 2 * n) / (7 + 2 * (2 + (n : ℝ)) ^ 2 + 3 * n)) *
+            X) * A110608 n
+
+theorem A110608_interlaces (n : ℕ) : Interlaces (A110608 n) (A110608 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A110608_splits (n : ℕ) : (A110608 n).Splits := by rr_row_splits
+
+/-! ### Rows `c m · q ^ m`
+
+Recurrences whose multipliers are powers of one linear `q`
+(`RealRooted.interlaces_of_forall_eq_C_mul_pow`). -/
+
+/-- `P (n + 2) = X P (n + 1) + X ^ 2 P n` (A127647). -/
+def A127647 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => X * A127647 (n + 1) + X ^ 2 * A127647 n
+
+theorem A127647_interlaces (n : ℕ) : Interlaces (A127647 n) (A127647 (n + 1)) := by
+  rr_row_interlaces
+
+/-- The order-three recurrence with characteristic polynomial `(t - (1 + X)) ^ 3` (A094305). -/
+def A094305 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3 + 3 * X
+  | 2 => 6 + 12 * X + 6 * X ^ 2
+  | n + 3 => (3 + 3 * X) * A094305 (n + 2) + (-3 + -6 * X + -3 * X ^ 2) * A094305 (n + 1) +
+      (1 + X ^ 3 + 3 * X + 3 * X ^ 2) * A094305 n
+
+theorem A094305_interlaces (n : ℕ) : Interlaces (A094305 n) (A094305 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Multipliers `(2n + 3) / (n + 2) · (1 + X)` and `3 (n + 1) / (n + 2) · (1 + X) ^ 2`, rational in
+`n` and nonnegative, so that the rows never vanish (A376827). -/
+def A376827 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | n + 2 => C ((2 * (n : ℝ) + 3) / (n + 2)) * (1 + X) * A376827 (n + 1) +
+      C (3 * ((n : ℝ) + 1) / (n + 2)) * (1 + X) ^ 2 * A376827 n
+
+theorem A376827_interlaces (n : ℕ) : Interlaces (A376827 n) (A376827 (n + 1)) := by
+  rr_row_interlaces
+
+/-- The reversed rows of `X ^ 3 P'' - (2n + 1) X ^ 2 P' + (1 + (n + 1) ^ 2 X) P` satisfy
+`R (n + 1) = X ^ 2 R'' + 3 X R' + (1 + X) R`, an Euler step: the route through the reversed
+rows (A008957, central factorial numbers). -/
+def A008957 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A008957 n).derivative.derivative +
+      C (-1 - 2 * (n : ℝ)) * X ^ 2 * (A008957 n).derivative +
+      (C 1 + C (((n : ℝ) + 1) ^ 2) * X) * A008957 n
+
+theorem A008957_interlaces (n : ℕ) : Interlaces (A008957 n) (A008957 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A008957_splits (n : ℕ) : (A008957 n).Splits := by
+  rr_row_splits
+
+/-- Reversed rows again (A191935). -/
+def A191935 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => C 1 * X ^ 3 * (A191935 n).derivative.derivative +
+      C (-2 - 2 * (n : ℝ)) * X ^ 2 * (A191935 n).derivative +
+      (C 1 + C (-2 + (2 + (n : ℝ)) ^ 2 - (n : ℝ)) * X) * A191935 n
+
+theorem A191935_interlaces (n : ℕ) : Interlaces (A191935 n) (A191935 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Order three with characteristic polynomial `(z + 1) (z ^ 2 - (X + 2) z + 1)`: the rows are
+`s m * t m` and `s (m + 1) * t m` for two solutions of `x (m + 2) = (X + 2) x (m + 1) - x m`
+(A158909). -/
+def A158909 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => X ^ 2 + 3 * X + 2
+  | n + 3 => (X + 1) * A158909 (n + 2) + (X + 1) * A158909 (n + 1) - A158909 n
+
+theorem A158909_interlaces (n : ℕ) : Interlaces (A158909 n) (A158909 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A158909_splits (n : ℕ) : (A158909 n).Splits := by
+  rr_row_splits
+
+/-- A parity product with `μ = -X` and `β = 2 X + 1` (A092879). -/
+def A092879 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X + 1
+  | 2 => 2 * X ^ 2 + 3 * X + 1
+  | n + 3 => (X + 1) * A092879 (n + 2) + (X + X ^ 2) * A092879 (n + 1) - X ^ 3 * A092879 n
+
+theorem A092879_interlaces (n : ℕ) : Interlaces (A092879 n) (A092879 (n + 1)) := by
+  rr_row_interlaces
+
+/-- `P (n + 3) = P (n + 2) + 3 X P n`: windows of three rows stay interlacing (A317496). -/
+def A317496 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => (1) * A317496 (n + 2) + 3 * X * A317496 n
+
+theorem A317496_splits (n : ℕ) : (A317496 n).Splits := by
+  rr_row_splits
+
+/-- A feedback coefficient depending on `n` (A118931). -/
+def A118931 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1
+  | n + 3 => C 1 * A118931 (n + 2) + C (-14 + (4 + (n : ℝ)) ^ 2 - 5 * (n : ℝ)) * X * A118931 n
+
+theorem A118931_splits (n : ℕ) : (A118931 n).Splits := by
+  rr_row_splits
+
+theorem A118884_splits (n : ℕ) : (A118884 n).Splits := by
+  rr_row_splits
+
+/-- The rows `P m = m (1 + X) X ^ (m - 1)` start the power form after the row `P 0 = 1`
+(A128540). -/
+def A128540 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 * X + 2 * X ^ 2
+  | n + 3 => X * A128540 (n + 2) + X ^ 2 * A128540 (n + 1)
+
+theorem A128540_interlaces (n : ℕ) : Interlaces (A128540 n) (A128540 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Chebyshev-like rows: `b n = -(1 + X)` is negative beyond the window `[-1, 0]`, and the
+ratio barrier `ρ = 1` keeps the rows positive there (A056242). -/
+def A056242 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + 2 * X
+  | n + 2 => (2 + 2 * X) * A056242 (n + 1) + (-1 - X) * A056242 n
+
+theorem A056242_interlaces (n : ℕ) : Interlaces (A056242 n) (A056242 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A056242_splits (n : ℕ) : (A056242 n).Splits := by
+  rr_row_splits
+
+/-- The ratio barrier `ρ = 2` beyond the window `[-4, 0]`, after the first row (A236471). -/
+def A236471 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 2 + 4 * X + X ^ 2
+  | n + 3 => (4 + X) * A236471 (n + 2) + (-4 - X) * A236471 (n + 1)
+
+theorem A236471_interlaces (n : ℕ) : Interlaces (A236471 n) (A236471 (n + 1)) := by
+  rr_row_interlaces
+
+theorem A142071_interlaces (n : ℕ) : Interlaces (A142071 n) (A142071 (n + 1)) := by
+  rr_row_interlaces
+
+/-! ### The `f`-polynomial transform
+
+The alternating-runs rows (A186370) are `fPolynomial n (Q n)` for the peak-type rows
+`Q (n + 1) = (t - 2t²) Q n' + (1 + n t) Q n`, whose degree grows by half a step
+(`Row.FTransform`). -/
+
+/-- Alternating runs (A186370). -/
+def A186370 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X - X ^ 3) * (A186370 n).derivative + (1 + X + C (n : ℝ) * X ^ 2) * A186370 n
+
+theorem A186370_splits (n : ℕ) : (A186370 n).Splits := by rr_row_splits
+
+/-- Rows `X ^ n * R n` with `R n` quadratic, from an order-three recurrence with characteristic
+polynomial `(λ - X)³` (A106246): consecutive rows interlace by a division-remainder certificate. -/
+def A106246 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + X
+  | 2 => 1 + 4 * X + X ^ 2
+  | n + 3 => 3 * X * A106246 (n + 2) + (-3 * X ^ 2) * A106246 (n + 1) + X ^ 3 * A106246 n
+
+theorem A106246_interlaces (n : ℕ) : Interlaces (A106246 n) (A106246 (n + 1)) := by
+  rr_row_interlaces
+
+/-- Order three, rows are orbit sums of the Haglund–Zhang threshold matrix with rows
+`(1, 1), (2, 1), (3, 1)` on the input `[1, 0, 0]` (A120987). -/
+def A120987 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 3 * X
+  | 2 => 3 * X + 6 * X ^ 2
+  | n + 3 => ((3 * X)) * A120987 (n + 2) + (((-3 * (X) ^ (2)) + (3 * X))) * A120987 (n + 1)
+      + ((X + (X) ^ (3) + (-2 * (X) ^ (2)))) * A120987 n
+
+theorem A120987_splits (n : ℕ) : (A120987 n).Splits := by
+  rr_row_splits
+
+/-- Order three, rows shifted by one are orbit sums of a Gustafsson–Solus threshold matrix
+(A304429). -/
+def A304429 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1 + X
+  | n + 3 => (3) * A304429 (n + 2) + ((-3 + (2 * X))) * A304429 (n + 1) + ((1
+      + (-1 * X))) * A304429 n
+
+theorem A304429_splits (n : ℕ) : (A304429 n).Splits := by
+  rr_row_splits
+
+/-- Order three with characteristic polynomial `(λ - (1 + X))³` and a palindromic quartic
+residual (A124376): the rows are `(1 + X) ^ m` times `X⁴ + b X³ + c X² + b X + 1`. -/
+def A124376 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 1 + 4 * X + X ^ 2
+  | 3 => 1 + 7 * X + 7 * X ^ 2 + X ^ 3
+  | 4 => 1 + 10 * X + 19 * X ^ 2 + 10 * X ^ 3 + X ^ 4
+  | n + 5 => ((3 + (3 * X))) * A124376 (n + 4) + ((-3 + (-6 * X)
+      + (-3 * (X) ^ (2)))) * A124376 (n + 3) + ((1 + (X) ^ (3) + (3 * X)
+      + (3 * (X) ^ (2)))) * A124376 (n + 2)
+
+theorem A124376_splits (n : ℕ) : (A124376 n).Splits := by
+  rr_row_splits
+
+/-- An order-three recurrence with characteristic polynomial `(λ - (1 + X))³` and linear
+residuals (A124932). -/
+def A124932 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + 3 * X
+  | 2 => 3 + 9 * X + 6 * X ^ 2
+  | n + 3 => (3 + 3 * X) * A124932 (n + 2) + (-3 - 6 * X - 3 * X ^ 2) * A124932 (n + 1) +
+      (1 + 3 * X + 3 * X ^ 2 + X ^ 3) * A124932 n
+
+theorem A124932_interlaces (n : ℕ) : Interlaces (A124932 n) (A124932 (n + 1)) := by
+  rr_row_interlaces
+
+/-! ### Hinted calls of `rr_row_splits` -/
+
+/--
+info: Try these:
+  [apply] rr_row_splits (via := nextRow)
+        (thm := RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc) (degree := 0) (drop := 0)
+        (window := [-1, 0])
+-/
+example (n : ℕ) : (A019538 n).Splits := by
+  rr_row_splits?
+
+/--
+info: Try these:
+  [apply] rr_row_splits (drop := 1) (half := 1)
+-/
+example (n : ℕ) : (A008299 n).Splits := by
+  rr_row_splits?
+
+example (n : ℕ) : (A008299 n).Splits := by rr_row_splits (drop := 1) (half := 1)
+example (n : ℕ) : (A180047 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 1)
+example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := prevRow)
+example (n : ℕ) : (A133080 n).Splits := by rr_row_splits (via := twoStep)
+example (n : ℕ) : (A167194 n).Splits := by rr_row_splits (via := shiftedProduct)
+example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := linearFactors)
+example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitFactors)
+
+/--
+error: rr_row_splits: unknown route foo; the routes are
+variableDelay, derivativeXMul, factorPower, delayedProduct, closedForm, halfGrowth,
+pathPower, lowerOrder, thresholdOrbit, parityProduct, lagFeedback, subseq, linearFactors,
+splitFactors, twoStep, shiftedProduct, nextRow, prevRow, degreePattern, reversed,
+fTransform
+-/
+example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)
+
+end
+
+end RealRooted.Tactic.RowInterlacingExamples

@@ -1,0 +1,193 @@
+module
+
+public import RealRooted.AffineDerivative
+public import RealRooted.Basic
+public import RealRooted.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.Tactic.WagnerX
+public import RealRooted.Wagner
+public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Tactic
+import RealRooted.Tactic.RowInterlacing
+
+set_option rr.row.explain true
+set_option linter.style.longLine false
+
+/-!
+# Eulerian Tilde Polynomials
+
+Real-rootedness and Sturm-sequence facts for the shifted Eulerian recurrence,
+using the affine derivative block before the outer `X` factor.
+-/
+
+@[expose] public section
+
+open Polynomial
+
+noncomputable section
+
+namespace RealRooted
+
+/-- The shifted Eulerian polynomials, defined by the recurrence `P_0 = X` and
+`P_{n+1} = X ((n + 2) P_n + (1 - X) P_n')`.  The classical identification with
+`X` times the descent polynomial of the symmetric group is not formalized. -/
+def eulerianTilde : Nat → ℝ[X]
+  | 0 => X
+  | n + 1 =>
+      X * (C (n + 2 : ℝ) * eulerianTilde n +
+        (1 - X) * (eulerianTilde n).derivative)
+
+@[simp] lemma eulerianTilde_zero : eulerianTilde 0 = X := rfl
+
+lemma eulerianTilde_recurrence (n : Nat) :
+    eulerianTilde (n + 1) =
+      X * (C (n + 2 : ℝ) * eulerianTilde n +
+        (1 - X) * (eulerianTilde n).derivative) := rfl
+
+lemma eulerianTilde_one : eulerianTilde 1 = X + X ^ 2 := by
+  rw [eulerianTilde_recurrence 0]
+  have htwo : (C (2 : ℝ) : ℝ[X]) = (2 : ℝ[X]) := (ofNat_def 2).symm
+  simp only [CharP.cast_eq_zero, zero_add, eulerianTilde_zero, derivative_X, mul_one]
+  grind
+
+/-- The affine derivative block appearing in the Eulerian recurrence. -/
+def affineEulerianTilde (n : Nat) : ℝ[X] :=
+  C (n + 2 : ℝ) * eulerianTilde n + (1 - X) * (eulerianTilde n).derivative
+
+lemma eulerianTilde_succ_eq_X_mul_affineEulerianTilde (n : Nat) :
+    eulerianTilde (n + 1) = X * affineEulerianTilde n :=
+  rfl
+
+lemma coeff_eulerianTilde_succ (n m : Nat) :
+    coeff (eulerianTilde (n + 1)) (m + 1) =
+      ((n + 2 : ℝ) - m) * coeff (eulerianTilde n) m +
+      (m + 1 : ℝ) * coeff (eulerianTilde n) (m + 1) := by
+  rw [eulerianTilde_recurrence, coeff_X_mul]
+  simp only [map_add, map_natCast, coeff_add, coeff_one_sub_X_mul_derivative]
+  rw [show ((n : ℝ[X]) + C 2) = C (n + 2 : ℝ) by simp, coeff_C_mul]
+  ring
+
+lemma coeff_eulerianTilde_top_and_above :
+  ∀ n : Nat,
+      coeff (eulerianTilde n) (n + 1) = 1 ∧
+      ∀ m > n + 1, coeff (eulerianTilde n) m = 0
+  | 0 => by
+      grind [eulerianTilde_zero, coeff_X]
+  | n + 1 => by
+      rcases coeff_eulerianTilde_top_and_above n with ⟨htop, habove⟩
+      constructor
+      · rw [coeff_eulerianTilde_succ n (n + 1)]
+        grind
+      · intro m hm
+        cases m with
+        | zero =>
+            lia
+        | succ m =>
+            have hzero₁ : coeff (eulerianTilde n) m = 0 := habove m (by lia)
+            have hzero₂ : coeff (eulerianTilde n) (m + 1) = 0 := habove (m + 1) (by lia)
+            rw [coeff_eulerianTilde_succ n m]
+            simp [hzero₁, hzero₂]
+
+lemma natDegree_eulerianTilde (n : Nat) :
+    (eulerianTilde n).natDegree = n + 1 := by
+  rr_row_natDegree
+
+lemma monic_eulerianTilde (n : Nat) :
+    (eulerianTilde n).Monic := by
+  rcases coeff_eulerianTilde_top_and_above n with ⟨htop, _⟩
+  rw [Monic.def, leadingCoeff, natDegree_eulerianTilde]
+  lia
+
+lemma eulerianTilde_ne_zero (n : Nat) :
+    eulerianTilde n ≠ 0 := by
+  rr_row_ne_zero
+
+lemma eulerianTilde_posLeadingCoeff (n : Nat) :
+    HasPosLeadingCoeff (eulerianTilde n) :=
+  hasPosLeadingCoeff_of_monic (monic_eulerianTilde n)
+
+lemma eulerianTilde_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (eulerianTilde n) := by
+  rr_row_nonneg_coeffs
+
+lemma roots_nonpos_eulerianTilde_of_isRealRooted {n : Nat} :
+    ∀ r ∈ (eulerianTilde n).roots, r ≤ 0 :=
+  roots_nonpos_of_hasNonnegCoeffs (eulerianTilde_nonnegCoeffs n)
+
+lemma strictInterl_affineEulerianTilde {n : Nat} (hrr : (eulerianTilde n).Splits) :
+    StrictInterl (affineEulerianTilde n) (eulerianTilde n) := by
+  rw [affineEulerianTilde]
+  exact strictInterl_affine_derivative' hrr (by simp [natDegree_eulerianTilde])
+    (eulerianTilde_posLeadingCoeff n)
+    roots_nonpos_eulerianTilde_of_isRealRooted
+    (by
+      have hlt : (((eulerianTilde n).natDegree : ℝ)) < n + 2 := by
+        rw [natDegree_eulerianTilde]
+        simp
+      lia)
+
+lemma affineEulerianTilde_nonnegCoeffs (n : Nat) :
+    HasNonnegCoeffs (affineEulerianTilde n) := by
+  intro m
+  have h := eulerianTilde_nonnegCoeffs (n + 1) (m + 1)
+  rw [eulerianTilde_succ_eq_X_mul_affineEulerianTilde, coeff_X_mul] at h
+  exact h
+
+/-- Once the affine block is known to precede `P_n`, the outer `X` factor in the
+recurrence gives `P_n ≪ P_{n+1}`. -/
+lemma strictInterl_eulerianTilde_succ_of_strictInterl_affine {n : Nat}
+    (haff : StrictInterl (affineEulerianTilde n) (eulerianTilde n)) :
+    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) := by
+  have hmain :
+      StrictInterl (eulerianTilde n) (X * affineEulerianTilde n) := by
+    rr_strict_interl_mul_X using
+      proper := haff,
+      left_nonneg := affineEulerianTilde_nonnegCoeffs n,
+      right_nonneg := eulerianTilde_nonnegCoeffs n
+  simpa [eulerianTilde_succ_eq_X_mul_affineEulerianTilde n] using hmain
+
+/-- Main induction theorem: consecutive Eulerian tilde polynomials interlace in
+the oriented `StrictInterl` sense. The induction hypothesis supplies real-rootedness of
+`P_n` as the right-hand half of `StrictInterl P_{n-1} P_n`. -/
+theorem strictInterl_eulerianTilde_succ : ∀ n : Nat,
+    StrictInterl (eulerianTilde n) (eulerianTilde (n + 1)) :=
+  fun n => (show Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) by
+    rr_row_interlaces).toStrictInterl
+
+/-- Every Eulerian tilde polynomial is real-rooted, obtained as the
+right-hand component of the interlacing induction. -/
+theorem isRealRooted_eulerianTilde : ∀ n : Nat,
+    ((eulerianTilde n) ≠ 0 ∧ (eulerianTilde n).Splits) :=
+  fun n => (strictInterl_eulerianTilde_succ n).1
+
+theorem interlaces_eulerianTilde_succ (n : Nat) :
+    Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) := by
+  rr_row_interlaces
+
+/-- The descending prefix `[P_n, P_{n-1}, ..., P_0]` of the Eulerian tilde
+sequence. -/
+def eulerianTildePrefix : Nat → List ℝ[X]
+  | 0 => [eulerianTilde 0]
+  | n + 1 => eulerianTilde (n + 1) :: eulerianTildePrefix n
+
+@[simp] lemma eulerianTildePrefix_zero : eulerianTildePrefix 0 = [eulerianTilde 0] := rfl
+
+@[simp] lemma eulerianTildePrefix_succ (n : Nat) :
+    eulerianTildePrefix (n + 1) =
+      eulerianTilde (n + 1) :: eulerianTildePrefix n := rfl
+
+theorem isSturmSeq_eulerianTildePrefix :
+    ∀ n : Nat, IsSturmSeq (eulerianTildePrefix n) := by
+  intro n
+  induction n with
+  | zero =>
+      simp [eulerianTildePrefix, IsSturmSeq]
+  | succ n ih =>
+      cases n with
+      | zero =>
+          simpa [eulerianTildePrefix, IsSturmSeq] using
+            interlaces_eulerianTilde_succ 0
+      | succ n =>
+          simpa [eulerianTildePrefix, IsSturmSeq] using
+            And.intro (interlaces_eulerianTilde_succ (n + 1)) ih
+
+end RealRooted
