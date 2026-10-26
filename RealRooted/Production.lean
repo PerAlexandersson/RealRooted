@@ -1960,6 +1960,7 @@ import RealRooted.Interlacing.VariableDelay
 import RealRooted.CombinatorialExamples.WeightedRenewal
 import RealRooted.Mathlib.Data.Nat.Choose.Sum
 import RealRooted.Tactic.Row.Routes
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 
 /-!
 # RealRooted production umbrella

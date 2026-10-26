@@ -2692,6 +2692,15 @@
       ],
       "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Proofs found by Aristotle (#954).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Derivative/Prod.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Derivative"
+      ],
+      "note": "Multinomial Leibniz rule for iterated derivatives of products of powers of linear factors (issue #1917); would sit next to Polynomial.iterate_derivative_X_add_pow. Proof found by Aristotle."
     }
   ]
 }
