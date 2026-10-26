@@ -16,17 +16,24 @@ Known unsupported application goals fail with their route error under a tight he
 
 open Lean Elab Tactic RealRooted
 
-set_option linter.unusedTactic false
+/-- Run a row tactic with every route capped at `budget` thousand heartbeats, reject timeouts,
+and require the selected stable route-error prefix. -/
+syntax (name := rrRowFastFail)
+  "rr_row_fast_fail " ident " (" &"budget" " := " num ")" " in " tactic : tactic
 
-/-- Run a row tactic, reject timeouts, and require the selected stable route-error prefix. -/
-syntax (name := rrRowFastFail) "rr_row_fast_fail " ident " in " tactic : tactic
+-- The helper and the row tactics it runs fail by design here, leaving the goal unchanged.
+#allow_unused_tactic rrRowFastFail RealRooted.Tactic.rrRowStrictInterl
+  RealRooted.Tactic.rrRowNonnegCoeffs
 
 elab_rules : tactic
-  | `(tactic| rr_row_fast_fail $kind:ident in $tac:tactic) => do
+  | `(tactic| rr_row_fast_fail $kind:ident (budget := $budget:num) in $tac:tactic) => do
+      -- `Core.Context.maxHeartbeats` counts raw heartbeats, 1000 per user-facing heartbeat
+      let raw := budget.getNat * 1000 * 1000
       let result ← tryCatchRuntimeEx
-        (do
-          withoutRecover (Term.withoutErrToSorry (evalTactic tac))
-          pure none)
+        (Core.withCurrHeartbeats <|
+          withTheReader Core.Context (fun ctx => { ctx with maxHeartbeats := raw }) do
+            withoutRecover (Term.withoutErrToSorry (evalTactic tac))
+            pure none)
         (fun error => pure (some error))
       let some error := result | throwError "row tactic unexpectedly succeeded"
       if Exception.isMaxHeartbeat error then throw error
@@ -43,66 +50,61 @@ elab_rules : tactic
       logInfo "row tactic failed before timeout with the expected route error"
 
 /-!
-Each cap is approximately three times the measured post-gate route cost, with a 10k minimum.
+Each budget (thousands of heartbeats, per route) is approximately three times the measured
+post-gate route cost, with a 10k minimum.
 The helper rejects both outer and nested timeouts and checks a stable route-error prefix.
 -/
 
-set_option maxHeartbeats 180000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @Applications.EulerianVariations.ternaryRunPolynomial_strictInterl := by
   intro n
-  rr_row_fast_fail strictNoStrategy in rr_row_strictInterl
+  rr_row_fast_fail strictNoStrategy (budget := 180) in rr_row_strictInterl
   exact Applications.EulerianVariations.ternaryRunPolynomial_strictInterl n
 
-set_option maxHeartbeats 500000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @hasNonnegCoeffs_a144696Polynomial := by
   intro n
-  rr_row_fast_fail nonnegNoStrategy in rr_row_nonneg_coeffs
+  rr_row_fast_fail nonnegNoStrategy (budget := 500) in rr_row_nonneg_coeffs
   exact hasNonnegCoeffs_a144696Polynomial n
 
-set_option maxHeartbeats 50000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @Applications.EulerianVariations.ternaryRunPolynomial_hasNonnegCoeffs := by
   intro n
-  rr_row_fast_fail nonnegNoStrategy in rr_row_nonneg_coeffs
+  rr_row_fast_fail nonnegNoStrategy (budget := 50) in rr_row_nonneg_coeffs
   exact Applications.EulerianVariations.ternaryRunPolynomial_hasNonnegCoeffs n
 
-set_option maxHeartbeats 10000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @a144696Polynomial_reciprocal_strictInterl := by
   intro n
-  rr_row_fast_fail strictNoStrategy in rr_row_strictInterl
+  rr_row_fast_fail strictNoStrategy (budget := 10) in rr_row_strictInterl
   exact a144696Polynomial_reciprocal_strictInterl n
 
-set_option maxHeartbeats 10000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @Applications.OEIS.A080721.legendre_strictInterl_polynomial := by
   intro n
-  rr_row_fast_fail strictNoStrategy in rr_row_strictInterl
+  rr_row_fast_fail strictNoStrategy (budget := 10) in rr_row_strictInterl
   exact Applications.OEIS.A080721.legendre_strictInterl_polynomial n
 
-set_option maxHeartbeats 10000 in
 /--
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
 example : type_of% @Applications.OEIS.lowerReentrantCorner_strictInterl := by
   intro n
-  rr_row_fast_fail strictNoStrategy in rr_row_strictInterl
+  rr_row_fast_fail strictNoStrategy (budget := 10) in rr_row_strictInterl
   exact Applications.OEIS.lowerReentrantCorner_strictInterl n
