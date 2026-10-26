@@ -1960,6 +1960,8 @@ import RealRooted.CombinatorialExamples.WeightedRenewal
 import RealRooted.Mathlib.Data.Nat.Choose.Sum
 import RealRooted.Tactic.Row.Routes
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
+import RealRooted.Mathlib.Data.Fintype.Pigeonhole
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
 
 /-!
 # RealRooted production umbrella

@@ -106,10 +106,8 @@ private lemma leadingCoeff_iterate_comp_X_add_one_sub (q : ℝ[X]) (hq : q ≠ 0
     have h0 := Polynomial.fwdDiff_iter_eq_zero_of_degree_lt
       (show q.natDegree < p.natDegree + j by lia)
     rw [← key, hp] at h0
-    have := congr_fun h0 0
-    simp [Nat.factorial_ne_zero] at this
-    rw [this] at h
-    simp at h
+    have hp0 : p = 0 := by simpa [Nat.factorial_ne_zero] using congr_fun h0 0
+    simp [hp0] at h
 
 /-- Newton's forward-difference test: a real polynomial is nonnegative at every natural number
 iff it is nonnegative below some `K` and its forward differences of order at most its degree are

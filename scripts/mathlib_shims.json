@@ -2701,6 +2701,26 @@
         "Mathlib.Algebra.Polynomial.Derivative"
       ],
       "note": "Multinomial Leibniz rule for iterated derivatives of products of powers of linear factors (issue #1917); would sit next to Polynomial.iterate_derivative_X_add_pow. Proof found by Aristotle."
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencil.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PosDef"
+      ],
+      "note": "Exact test for positive semidefinite pencils C + t D, t > 0 (issue #1984). Proof found by Aristotle.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Fintype/Pigeonhole.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Fintype.Pigeonhole"
+      ],
+      "note": "Lasso for paths through an ultimately periodic edge relation (issue #1895). Proof found by Aristotle.",
+      "speculative": true
     }
   ]
 }
