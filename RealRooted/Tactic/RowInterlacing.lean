@@ -626,14 +626,16 @@ private def linRecNonneg : TacticM Unit := withMainContext do
   discard introIfForall
   withMainContext do
     let target ← instantiateMVars (← getMainTarget)
-    let some PName ← findPolySeqConst? target
+    let some seq ← findPolySeqApp? target
       | throwError "rr_row_nonneg_coeffs: no polynomial sequence occurs in the goal"
-    let some rec ← linRec? PName
+    let some rec ← linRec? seq.name seq.params
       | throwError "rr_row_nonneg_coeffs: the sequence is not a linear recurrence"
+    let PName := seq.name
     let P := mkIdent PName
     let (_, shift) ← rowIndexParts PName
     let (_, t) ← alignRow PName shift (smallRow P)
-    let Q ← shiftedSeq P shift
+    let base ← certTerm (mkAppN (← mkConstWithFreshMVarLevels PName) seq.params)
+    let Q ← shiftedSeq base shift
     let mut terms : Term ← `([])
     for (lag, order, multiplier) in rec.terms.reverse do
       let multiplier ← certTerm multiplier
@@ -647,11 +649,12 @@ private def linRecNonneg : TacticM Unit := withMainContext do
     let [hrec, hlag, hmult, hbase] := ← getGoals
       | throwError "rr_row_nonneg_coeffs: unexpected linear-recurrence side goals"
     setGoals [hrec]
+    let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels rec.eqn) seq.params)
     let recStep ← if shift == 0 then
-        `(tactic| rw [$(mkIdent rec.eqn) n])
+        `(tactic| rw [$eqn n])
       else
         `(tactic| (
-          have h := $(mkIdent rec.eqn) (n + $(rowNumLit shift))
+          have h := $eqn (n + $(rowNumLit shift))
           simp only [Nat.add_assoc, Nat.reduceAdd] at h ⊢
           rw [h]))
     let hrecResult ← rowAttempt do
@@ -731,7 +734,7 @@ private def rowNonnegCore : TacticM Unit := withMainContext do
     if r.shape == .deriv₂ then
       mains := mains.push (← `(tactic|
         refine RealRooted.derivRec₂_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
-    let D₀? ← findRowDegree P r.shift
+    let D₀? ← findRowDegree P r.shift r.params
     for h in recs do
       mains := mains.push (← `(tactic|
         refine RealRooted.derivativeRecurrence_hasNonnegCoeffs (P := $Q) $h ?_ ?_ ?_ $t))
@@ -859,7 +862,7 @@ the numeric counterparts of the three hypotheses of `threeTermHalf_ne_zero_and_s
 Unavailable exact data does not veto the route. -/
 def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
   unless r.shape == .lag do return false
-  let some L ← linRec? r.P | return true
+  let some L ← linRec? r.P r.params | return true
   let base := r.shift + k
   let some rows ← linRecRows? L (base + 9) | return true
   let (some p₀, some p₁) := (rows[base]?, rows[base + 1]?) | return true
@@ -876,8 +879,8 @@ def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
   let xs : List Rat := [-20, -5, -2, -1, -1 / 2, -1 / 8, 0, 1 / 8, 1 / 2, 1, 2, 5, 20]
   for n in [0:9] do
     let (some a, some b₀, some b₁) :=
-      (← evalCoeffAt? af (n + k), ← evalCoeffAt? bf (n + k),
-        ← evalCoeffAt? bf (n + k + 1)) | return true
+      (← r.evalSampleCoeffAt? af (n + k), ← r.evalSampleCoeffAt? bf (n + k),
+        ← r.evalSampleCoeffAt? bf (n + k + 1)) | return true
     unless a.natDegree ≤ 0 && 0 < a.coeff 0 do return false
     unless xs.all (fun x => 0 ≤ b₁.eval x * b₀.eval x) do return false
   return true
@@ -892,7 +895,7 @@ private def degreePatternStrictGoal : TacticM RowHints := do
   unless r.shape == .deriv₁ do
     throwError "rr_row_strictInterl: not a first-order derivative recurrence"
   let P := mkIdent r.P
-  let some L ← linRec? r.P | throwError "rr_row_strictInterl: no linear recurrence"
+  let some L ← linRec? r.P r.params | throwError "rr_row_strictInterl: no linear recurrence"
   let some rows ← linRecRows? L (r.shift + 22)
     | throwError "rr_row_strictInterl: rows not computable"
   let c := (rows[r.shift]!).natDegree
@@ -1150,8 +1153,10 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
   -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
   let viaHalf (k : Nat) := do
     unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
-    let some D₀ ← findRowDegree P (r.shift + k) | throwError "rr_row_splits: no base degree"
-    let some D₁ ← findRowDegree P (r.shift + k + 1) | throwError "rr_row_splits: no degree"
+    let some D₀ ← findRowDegree P (r.shift + k) r.params
+      | throwError "rr_row_splits: no base degree"
+    let some D₁ ← findRowDegree P (r.shift + k + 1) r.params
+      | throwError "rr_row_splits: no degree"
     unless D₁ == D₀ || D₁ == D₀ + 1 do throwError "rr_row_splits: not half growth"
     let (_, t) ← alignRow r.P (r.shift + k) (smallRowSplits P)
     evalTactic (← `(tactic|
@@ -1223,7 +1228,7 @@ private def rowSplitsCoreDirect (hints : RowHints) : TacticM RowHints := withMai
   let viaDegreePattern := do
     unless r.shape == .deriv₁ do
       throwError "rr_row_splits: not a first-order derivative recurrence"
-    let some L ← linRec? r.P | throwError "rr_row_splits: no linear recurrence"
+    let some L ← linRec? r.P r.params | throwError "rr_row_splits: no linear recurrence"
     let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
     let c := (rows[r.shift]!).natDegree
     let fits (e : Nat) := (List.range 20).all fun m =>

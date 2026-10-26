@@ -1957,6 +1957,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
 import RealRooted.CombinatorialExamples.BigDescents132.Basic
 import RealRooted.CombinatorialExamples.BigDescents132.GeneratingFunction
 import RealRooted.Interlacing.VariableDelay
+import RealRooted.CombinatorialExamples.WeightedRenewal
 
 /-!
 # RealRooted production umbrella
