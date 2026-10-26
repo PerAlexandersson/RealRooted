@@ -261,7 +261,7 @@ private def applyDegreeModel (P : Ident) (t : Term) (decl : Name) : TacticM Unit
 
 /-- Try registered natural-degree models.  The initial-window check is the fail-fast probe:
 models with different exact base rows are rejected before their recurrence is normalized. -/
-private def degreeModelGoal : TacticM Unit := withMainContext do
+private def degreeModelGoal (log : RowAttemptLog) : TacticM Unit := withMainContext do
   let target ← instantiateMVars (← getMainTarget)
   let some PName ← findPolySeqConst? target
     | throwError "degree-model route found no polynomial sequence"
@@ -271,59 +271,70 @@ private def degreeModelGoal : TacticM Unit := withMainContext do
   let mut failures : Array (MessageData × MessageData) := #[]
   for decl in decls.qsort Name.quickLt do
     unless ← isNatDegreeModel decl do continue
-    match ← rowAttempt (applyDegreeModel P t decl) with
+    match ← rowRoute decl (applyDegreeModel P t decl) (some log) with
     | .ok _ => return
     | .error err => failures := failures.push (m!"{decl}", err)
   throwRowFailures m!"no structurally matching degree model proves the goal" failures
 
 /-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
-private def rowDegreeCore (kind : String) (hints : RowHints) : TacticM (Cert × RowHints) := do
+private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHints) :
+    TacticM (Cert × RowHints) := do
   if hints.via == some `cancel then
     let cancel ← `(tactic| rr_row_cancel)
-    evalTactic cancel
-    return (#[cancel], { via := some `cancel })
+    match ← rowRoute `cancel (evalTactic cancel) (some log) with
+    | .ok _ => return (#[cancel], { via := some `cancel })
+    | .error error => throwError error
   if hints.via == some `cone then
-    let cert ← linRecRow kind (some `cone)
-    return (cert, { via := some `cone })
-  match ← rowAttempt (rowDegreeShapeCore kind hints) with
+    match ← rowRoute `cone (linRecRow kind (some `cone)) (some log) with
+    | .ok cert => return (cert, { via := some `cone })
+    | .error error => throwError error
+  match ← rowRoute `recurrence (rowDegreeShapeCore kind hints) (some log) with
   | .ok r => return r
   | .error e =>
       let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
         hints.drop.isNone && hints.ratio.isNone && hints.half.isNone && hints.via.isNone
-      unless noHints && kind != "leadingCoeff_ratio" do throwError e
+      unless noHints && kind != "leadingCoeff_ratio" do
+        for route in [`twoStep, `cone, `cancel, `subseq, `rowModel] do
+          rowSkip route m!"disabled by hints" (some log)
+        throwError e
       if kind == "natDegree" then
-        if let .ok tac ← rowAttempt twoStepDegree then return (#[tac], {})
-      match ← rowAttempt (linRecRow kind) with
+        if let .ok tac ← rowRoute `twoStep twoStepDegree (some log) then return (#[tac], {})
+      else
+        rowSkip `twoStep m!"only available for natural-degree goals" (some log)
+      match ← rowRoute `cone (linRecRow kind) (some log) with
       | .ok cert => return (cert, {})
       | .error e' =>
         -- first-order derivative recurrences whose top terms cancel
         let cancel ← `(tactic| rr_row_cancel)
-        match ← rowAttempt (evalTactic cancel) with
+        match ← rowRoute `cancel (evalTactic cancel) (some log) with
         | .ok _ => return (#[cancel], {})
         | .error e'' =>
             if kind == "natDegree" then
               let subseq ← `(tactic| rr_row_subseq_natDegree)
-              match ← rowAttempt (evalTactic subseq) with
+              match ← rowRoute `subseq (evalTactic subseq) (some log) with
               | .ok _ => return (#[subseq], {})
               | .error e''' =>
-                match ← rowAttempt degreeModelGoal with
+                match ← rowRoute `rowModel (degreeModelGoal log) (some log) with
                 | .ok _ => return (#[], {})
                 | .error e'''' =>
                   throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
                     With cancelling top terms: {e''}\n\nAs residue subsequences: {e'''}\n\n\
                     As a registered degree model: {e''''}"
             else
+              rowSkip `subseq m!"only available for natural-degree goals" (some log)
+              rowSkip `rowModel m!"only available for natural-degree goals" (some log)
               throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
                 With cancelling top terms: {e''}"
 
 /-- Run a degree tactic; with `?`, print the hinted call and the certificate. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
     (hs : Array (TSyntax ``rrRowHint)) : TacticM Unit := withMainContext do
-  let goal ← getMainGoal
-  let (cert, hints) ← rowDegreeCore kind (← parseRowHints hs)
-  if let some tk := tk then
-    suggestCert goal tk cert s!"rr_row_{kind}" (← hints.toSyntax)
+  withRowAttemptLog fun log => do
+    let goal ← getMainGoal
+    let (cert, hints) ← rowDegreeCore log kind (← parseRowHints hs)
+    if let some tk := tk then
+      suggestCert goal tk cert s!"rr_row_{kind}" (← hints.toSyntax)
 
 elab_rules : tactic
   | `(tactic| rr_row_natDegree $hs*) => rowDegreeElab "natDegree" none hs

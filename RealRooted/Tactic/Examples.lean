@@ -146,6 +146,7 @@ import RealRooted.Tactic.Examples.RowCubicParent
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowDegreeRest
 import RealRooted.Tactic.Examples.RowDegreeRoutes
+import RealRooted.Tactic.Examples.RowExplain
 import RealRooted.Tactic.Examples.RowFactorPower
 import RealRooted.Tactic.Examples.RowFixtures
 import RealRooted.Tactic.Examples.RowGeneral

@@ -226,8 +226,9 @@ private def ratSqrt? (q : Rat) : Option Rat :=
     if n.sqrt * n.sqrt == n && d.sqrt * d.sqrt == d then some ((n.sqrt : Rat) / d.sqrt)
     else none
 
-/-- Fit the second-order recurrence `P (n + 1) = A₂ (P n)'' + A₁ (P n)' + A₀ n (P n)` with
-`P 0 = 1` to a general Euler step, exactly on `n ≤ 8`: `A₂ = κX²`, `A₁ = κ(a + b + 1)X + vX²`,
+/-- Fit the second-order recurrence `P (n + 1) = A₂ (P n)'' + A₁ (P n)' + A₀ n (P n)`
+with `P 0 = 1` to a general Euler step, exactly on `n ≤ 8`: `A₂ = κX²`,
+`A₁ = κ(a + b + 1)X + vX²`,
 `A₀ n = κab + u n X` with `u` affine and rational `a, b > 0`.  It also checks the sufficient
 conditions that the route discharges: `u₀ > 0`, `s ≥ 0`, `s + v ≥ 0` (so `u n + vk > 0` for
 `k ≤ n`) and `2u₀ ≥ (a + b + 1)v` (`comparisonDefect_neg_of_two_mul_u_ge`). -/
@@ -290,7 +291,8 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
   let hk := mkIdent `hk
   if e.zero then
     let main ← `(tactic| (
-      apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero (κ := $(← ratTerm e.κ))
+      apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec_zero
+        (κ := $(← ratTerm e.κ))
         (b := $(← ratTerm e.b)) (v := $(← ratTerm e.v)) (s := $(← ratTerm e.s))
         (u := fun $n:ident : ℕ => $(← ratTerm e.u₀) + $(← ratTerm e.s) * $n)
       case h0 => first | rfl | simp [$P:ident]
@@ -320,7 +322,8 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
   let main ← `(tactic| (
     apply RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec (κ := $(← ratTerm e.κ))
       (a := $(← ratTerm e.a)) (b := $(← ratTerm e.b)) (v := $(← ratTerm e.v))
-      (s := $(← ratTerm e.s)) (u := fun $n:ident : ℕ => $(← ratTerm e.u₀) + $(← ratTerm e.s) * $n)
+      (s := $(← ratTerm e.s))
+      (u := fun $n:ident : ℕ => $(← ratTerm e.u₀) + $(← ratTerm e.s) * $n)
     case h0 => first | rfl | simp [$P:ident]
     case hrec =>
       intro $n:ident
@@ -485,26 +488,37 @@ def rowInterlacesPlausibleAt (r : RowRec) (k : Nat) : MetaM Bool := do
 a certificate and the hinted call.  `known` supplies the recurrence and a proof of it when it
 is not read off the definition. -/
 def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
-    (known : Option (RowRec × Ident) := none) : TacticM (Cert × RowHints) := do
+    (known : Option (RowRec × Ident) := none) (log? : Option RowAttemptLog := none) :
+    TacticM (Cert × RowHints) := do
+  let log ← match log? with
+    | some log => pure log
+    | none => IO.mkRef #[]
   let intro ← introIfForall
   withMainContext do
   let r ← match known with
     | some (r, _) => pure r
     | none => rowRecSetup "rr_row_interlaces"
   let P := mkIdent r.P
+  let use (route : Name) := hints.via.isNone || hints.via == some route
   if k > 0 && (r.shape == .product || r.shape == .deriv₂ || r.shape == .lagRight) then
     throwError "rr_row_interlaces: dropping rows is not supported for the {r.shape.describe} \
       recurrence of {P}"
   if r.shape == .product then
+    unless use `product do
+      rowSkip `product m!"not selected by the via hint" (some log)
+      throwError "rr_row_interlaces: the selected route does not handle a product recurrence"
     -- `rr_product_interlaces` closes base rows of degree at most two; otherwise the general
     -- side-goal engine below (explicit Euclidean certificates) takes over
-    if r.canonical && r.shift == 0 then
-      if ← rowSucceeds (evalTactic (← `(tactic| rr_product_interlaces))) then
-        return (intro.push (← `(tactic| rr_product_interlaces)), {})
-    let (split, t) ← alignRow r.P r.shift (smallRow P)
-    let main ← `(tactic| refine RealRooted.productSequence_interlaces (P := $(← r.seq 0))
-      ?_ ?_ ?_ $(← r.hrecTerm 0) $t)
-    return (intro ++ split.push (← applyThenSideFull P main), {})
+    match ← rowRoute `product (do
+        if r.canonical && r.shift == 0 then
+          if ← rowSucceeds (evalTactic (← `(tactic| rr_product_interlaces))) then
+            return (intro.push (← `(tactic| rr_product_interlaces)), {})
+        let (split, t) ← alignRow r.P r.shift (smallRow P)
+        let main ← `(tactic| refine RealRooted.productSequence_interlaces (P := $(← r.seq 0))
+          ?_ ?_ ?_ $(← r.hrecTerm 0) $t)
+        return (intro ++ split.push (← applyThenSideFull P main), {})) (some log) with
+    | .ok result => return result
+    | .error error => throwError error
   -- a second-order step with an eigen-ODE collapses to a first-order one
   let mut shape := r.shape
   let mut hrec ← match known with
@@ -518,12 +532,13 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       throwError "rr_row_interlaces: the second-order recurrence of {P} must have the form \
         `P (n + s + 1) = A n * (P (n + s))'' + B n * (P (n + s))' + C n * P (n + s)`"
     let euler := ``RealRooted.EulerBidiagonal.interlaces_of_generalStep_rec
-    let o? ← if hints.thm == some euler then pure none else eigenODE? r.P (shift := r.shift)
+    let o? ← if hints.thm == some euler || hints.via == some `eulerStep then pure none
+      else eigenODE? r.P (shift := r.shift)
     let some o := o?
       | if k > 0 || (hints.thm.isSome && hints.thm != some euler) then
           throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` collapses \
             the second-order recurrence of {P} to a first-order one"
-        match ← rowAttempt (eulerStepRoute r P) with
+        match ← rowRoute `eulerStep (eulerStepRoute r P) (some log) with
         | .ok tac => return (pre.push tac, { thm := some euler })
         | .error e => throwError "rr_row_interlaces: no eigen-ODE `A * p'' + β * p' = ev n • p` \
             collapses the second-order recurrence of {P} to a first-order one, and it is not \
@@ -536,36 +551,45 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     hrec := h₁
   -- two-step products `P (n + 2) = q * P n`
   if shape == .lagRight then
+    unless use `twoStep do
+      rowSkip `twoStep m!"not selected by the via hint" (some log)
+      throwError "rr_row_interlaces: the selected route does not handle a two-step product"
     -- `P (n + s + 2) = q * P (n + s)` with `q` independent of `n`; the rows below `s` are
     -- checked one by one
-    let some qf := r.coeffs[0]? | throwError "rr_row_interlaces: missing coefficient"
-    let qBody := match qf with
-      | .lam _ _ b _ => b
-      | e => e
-    if qBody.hasLooseBVars then
-      throwError "rr_row_interlaces: the two-step product of {P} must have the form \
-        `P (n + 2) = q * P n` with `q` independent of `n`"
-    let (split, t) ← alignRow r.P r.shift (smallRow P)
-    pre := pre ++ split
-    let main ← `(tactic|
-      refine RealRooted.twoStepProduct_interlaces (P := $(← r.seq 0)) (q := $(← certTerm qBody))
-        (fun n => by beta_reduce; rw [$(← r.hrecTerm 0) n]; beta_reduce; ring) ?_ ?_ ?_ ?_ $t)
-    evalTactic main
-    for g in ← getGoals do
-      setGoals [g]
-      let ty ← instantiateMVars (← g.getType)
-      if ty.isAppOf ``RealRooted.Interlaces then
-        evalTactic (← `(tactic|
-          (beta_reduce; simp only [Nat.zero_add, Nat.reduceAdd, $P:ident]; rr_interlaces_explicit)))
-      else if ty.isAppOf ``Polynomial.Splits then
-        evalTactic (← `(tactic| rr_splits_explicit))
-      else if ty.ne?.isSome then
-        evalTactic (← `(tactic| rr_ne_zero_explicit))
-      else
-        rowSideGoals P
-    unless (← getGoals).isEmpty do
-      throwError "rr_row_interlaces: could not verify the two-step product conditions for {P}"
-    return (pre.push (← `(tactic| rr_row_interlaces)), {})
+    match ← rowRoute `twoStep (do
+        let some qf := r.coeffs[0]? | throwError "rr_row_interlaces: missing coefficient"
+        let qBody := match qf with
+          | .lam _ _ b _ => b
+          | e => e
+        if qBody.hasLooseBVars then
+          throwError "rr_row_interlaces: the two-step product of {P} must have the form \
+            `P (n + 2) = q * P n` with `q` independent of `n`"
+        let (split, t) ← alignRow r.P r.shift (smallRow P)
+        let pre := pre ++ split
+        let main ← `(tactic|
+          refine RealRooted.twoStepProduct_interlaces (P := $(← r.seq 0))
+            (q := $(← certTerm qBody))
+            (fun n => by beta_reduce; rw [$(← r.hrecTerm 0) n]; beta_reduce; ring)
+            ?_ ?_ ?_ ?_ $t)
+        evalTactic main
+        for g in ← getGoals do
+          setGoals [g]
+          let ty ← instantiateMVars (← g.getType)
+          if ty.isAppOf ``RealRooted.Interlaces then
+            evalTactic (← `(tactic|
+              (beta_reduce; simp only [Nat.zero_add, Nat.reduceAdd, $P:ident];
+                rr_interlaces_explicit)))
+          else if ty.isAppOf ``Polynomial.Splits then
+            evalTactic (← `(tactic| rr_splits_explicit))
+          else if ty.ne?.isSome then
+            evalTactic (← `(tactic| rr_ne_zero_explicit))
+          else
+            rowSideGoals P
+        unless (← getGoals).isEmpty do
+          throwError "rr_row_interlaces: could not verify the two-step product conditions for {P}"
+        return (pre.push (← `(tactic| rr_row_interlaces)), {})) (some log) with
+    | .ok result => return result
+    | .error error => throwError error
   let (split, _) ← withMainContext <| alignRow r.P (r.shift + k) (smallRow P)
   pre := pre ++ split
   let D₀? ← match hints.degree with
@@ -587,14 +611,17 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- one search discharges the side goals shared by the two hypotheses
   let shared ← `(tactic|
       obtain ⟨$hdegI:ident, $hposI:ident⟩ :
-          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧ ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧
+            ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
         forall_and.mp rr_row_natDegree_leadingCoeff_pos_all)
   let defHash := ((← getConstInfo r.P).value?.map (·.hash)).getD 0
   let key := (r.P, defHash, r.shift + k, D₀)
   if (← rowDegreeFailures.get).contains key then
+    rowVeto `core m!"an earlier degree search failed" (some log)
     throwError "rr_row_interlaces: the degrees `{D₀} + n` or the positive leading coefficients \
       of {P} could not be proved (an earlier search failed)"
   if let some why ← rowsProbe r.P r.params (r.shift + k) D₀ then
+    rowVeto `core why (some log)
     throwError "rr_row_interlaces: no interlacing theorem applies to {P} (base degree {D₀}, \
       dropping {k} rows): {why}"
   let mut hoisted ← if (← rowSharedDegreeFailures.get).contains key then pure false
@@ -602,7 +629,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- the two hypotheses separately, before every theorem below asks for them again
   let separate ← `(tactic|
       obtain ⟨$hdegI:ident, $hposI:ident⟩ :
-          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧ ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
+          (∀ $nI:ident, ($Q $nI).natDegree = $Dq + $nI) ∧
+            ∀ $nI:ident, 0 < ($Q $nI).leadingCoeff :=
         ⟨rr_row_natDegree_all, rr_row_leadingCoeff_pos_all⟩)
   if hoisted then pre := pre.push shared
   else if ← rowSucceeds (withMainContext (evalTactic separate)) then
@@ -611,6 +639,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     rowSharedDegreeFailures.modify (·.push key)
   else
     rowDegreeFailures.modify (·.push key)
+    rowVeto `core m!"the degree and positive-leading-coefficient hypotheses failed" (some log)
     throwError "rr_row_interlaces: could not prove the degrees `{D₀} + n` and the positive \
       leading coefficients of {P}; every interlacing theorem needs them"
   let apply' (thm : Name) (extra : Array (TSyntax `Lean.Parser.Term.namedArgument)) :
@@ -630,7 +659,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     else
       [``RealRooted.threeTerm_interlaces_of_eval_nonpos,
         ``RealRooted.threeTerm_interlaces_of_nonnegCoeffs]
-  let plain := if hints.window.isSome || hints.upper.isSome then [] else
+  let plain := if !use `sign || hints.window.isSome || hints.upper.isSome then [] else
     match hints.thm with
     | some t => plain.filter (· == t)
     | none => plain
@@ -640,15 +669,18 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
         thm == ``RealRooted.derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs ||
         thm == ``RealRooted.threeTerm_interlaces_of_nonnegCoeffs
       unless ← plainPlausible r k nonpos do
+        rowVeto `sign m!"the sign conditions fail numerically" (some log)
         failures := failures.push (m!"{thm}", m!"vetoed: the sign conditions fail numerically")
         continue
     let main ← apply' thm #[]
-    match ← rowAttempt (applyThenSideFull P main) with
-    | .ok tac => return (pre.push tac, { thm := some thm, degree := some D₀, drop := (dropHint k) })
+    match ← rowRoute `sign (applyThenSideFull P main) (some log) with
+    | .ok tac =>
+        return (pre.push tac, { thm := some thm, degree := some D₀, drop := dropHint k })
     | .error e => failures := failures.push (m!"{thm}", e)
+  if !use `sign then rowSkip `sign m!"not selected by the via hint" (some log)
   let mut triedWindow := false
   -- root windows `[L, U]` and `(-∞, U]`
-  if shape == .deriv₁ || shape == .lag then
+  if use `window && (shape == .deriv₁ || shape == .lag) then
     let (icc, iic) := if shape == .deriv₁ then
         (``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc,
           ``RealRooted.derivativeRecurrence_interlaces_of_roots_le)
@@ -693,6 +725,8 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
               (← windowPlausible r k D₀ v.1 v.2 .posA) then
             icc := iccPos
           else
+            rowVeto `window
+              m!"the computed rows or the sign conditions rule the window out" (some log)
             failures := failures.push (m!"{if lo.isSome then icc else iic}", m!"vetoed: the \
               computed rows or the sign conditions rule the window out")
             continue
@@ -704,7 +738,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
         | some L => apply' icc (extra ++ #[← `(Lean.Parser.Term.namedArgument| (L := ($L : ℝ))),
             ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))])
         | none => apply' iic #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
-      match ← rowAttempt (applyThenSideFull P main) with
+      match ← rowRoute `window (applyThenSideFull P main) (some log) with
       | .ok tac =>
           let h : RowHints := match lo with
             | some L => { thm := some icc, degree := some D₀, window := some (L, U) }
@@ -717,8 +751,9 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
           failures := failures.push (m!"{if lo.isSome then icc else iic} on {w}", e)
   -- roots in `(-∞, U]` with `A n < 0` allowed beyond `U`, controlled by the degree
   -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree`)
+  if !use `window then rowSkip `window m!"not selected by the via hint" (some log)
   let degWin := ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_of_degree
-  if shape == .deriv₁ && hints.window.isNone &&
+  if use `degreeWindow && shape == .deriv₁ && hints.window.isNone &&
       (hints.thm.isNone || hints.thm == some degWin) then
     let us := match hints.upper with
       | some u => [u]
@@ -734,11 +769,12 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
       if triedWindow then continue
       if hints.upper.isNone && r.shape == .deriv₁ then
         unless ← windowPlausible r k D₀ none uv .degree do
+          rowVeto `degreeWindow m!"the numerical window probe failed" (some log)
           failures := failures.push (m!"{degWin}", m!"vetoed on (-∞, {uv}]")
           continue
       triedWindow := true
       let main ← apply' degWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ)))]
-      match ← rowAttempt (applyThenSideFull P main) with
+      match ← rowRoute `degreeWindow (applyThenSideFull P main) (some log) with
       | .ok tac =>
           return (pre.push tac,
             { thm := some degWin, degree := some D₀, upper := some U, drop := dropHint k })
@@ -746,8 +782,10 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- three-term recurrences: roots in `(-∞, U]` with `b n` allowed to be positive beyond `U`,
   -- controlled by the growth of the leading coefficients
   -- (`RealRooted.threeTerm_interlaces_of_roots_le_of_ratio` with `ρ = 1`)
+  if !use `degreeWindow then
+    rowSkip `degreeWindow m!"not selected by the via hint" (some log)
   let ratioWin := ``RealRooted.threeTerm_interlaces_of_roots_le_of_ratio
-  if shape == .lag && hints.window.isNone &&
+  if use `ratioWindow && shape == .lag && hints.window.isNone &&
       (hints.thm.isNone || hints.thm == some ratioWin) then
     let us ← match hints.upper with
       | some u => pure [u]
@@ -768,13 +806,14 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
         if triedWindow then continue
         if let some uv := uv then
           unless ← ratioWindowPlausible r k uv ρv do
+            rowVeto `ratioWindow m!"the numerical ratio-window probe failed" (some log)
             failures := failures.push (m!"{ratioWin}",
               m!"vetoed on (-∞, {uv}], ρ = {ρv}")
             continue
         triedWindow := true
         let main ← apply' ratioWin #[← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ))),
           ← `(Lean.Parser.Term.namedArgument| (ρ := fun _ => ($ρ : ℝ)))]
-        match ← rowAttempt (applyThenSideFull P main) with
+        match ← rowRoute `ratioWindow (applyThenSideFull P main) (some log) with
         | .ok tac =>
             return (pre.push tac,
               { thm := some ratioWin, degree := some D₀, upper := some U, drop := dropHint k })
@@ -782,8 +821,9 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
   -- three-term recurrences: roots in `[L, U]` with `b n` negative beyond `U`, under a ratio
   -- barrier `0 < ρ ≤ a n`, `ρ ^ 2 ≤ a n ρ + b n` there
   -- (`RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier`)
+  if !use `ratioWindow then rowSkip `ratioWindow m!"not selected by the via hint" (some log)
   let barWin := ``RealRooted.threeTerm_interlaces_of_roots_mem_Icc_of_barrier
-  if !triedWindow && shape == .lag && hints.upper.isNone &&
+  if use `barrierWindow && !triedWindow && shape == .lag && hints.upper.isNone &&
       (hints.thm.isNone || hints.thm == some barWin) then
     -- the first numerically confirmed window and `ρ`, including a rational hinted window
     let mut fits : List (Term × Term × Nat) := []
@@ -797,7 +837,9 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
     else
       match ← barrierFit? r k with
       | some (l, u, ρ) => fits := [(← ratTerm l, ← ratTerm u, if ρ == 1 then 1 else 2)]
-      | none => failures := failures.push (m!"{barWin}", m!"no ratio barrier fits the rows")
+      | none =>
+          rowVeto `barrierWindow m!"no ratio barrier fits the rows" (some log)
+          failures := failures.push (m!"{barWin}", m!"no ratio barrier fits the rows")
     for (lo, U, ρ) in fits do
       if triedWindow then continue
       triedWindow := true
@@ -807,19 +849,24 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
         ← `(Lean.Parser.Term.namedArgument| (U := ($U : ℝ))),
         ← `(Lean.Parser.Term.namedArgument| (ρ := fun _ => ($(rowNumLit ρ) : ℝ))),
         ← `(Lean.Parser.Term.namedArgument| (hρ := $hρ))]
-      match ← rowAttempt (applyThenSideFull P main) with
+      match ← rowRoute `barrierWindow (applyThenSideFull P main) (some log) with
       | .ok tac =>
           return (pre.push tac,
             { thm := some barWin, degree := some D₀, window := some (lo, U), drop := dropHint k })
       | .error e => failures := failures.push (m!"{barWin} on [{lo}, {U}], ρ = {ρ}", e)
   -- root windows whose lower bound is a root of `A n` moving with `n`
   -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div`)
+  if !use `barrierWindow then
+    rowSkip `barrierWindow m!"not selected by the via hint" (some log)
   let movIcc := ``RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div
-  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && known.isNone &&
+  if use `movingWindow && !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ &&
+      known.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movIcc) then
     match ← movingWindow? r k with
-    | none => failures := failures.push (m!"{movIcc}", m!"no moving root window fits the rows")
+    | none =>
+        rowVeto `movingWindow m!"no moving root window fits the rows" (some log)
+        failures := failures.push (m!"{movIcc}", m!"no moving root window fits the rows")
     | some w =>
         triedWindow := true
         let mI := mkIdent `m
@@ -830,25 +877,31 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
           ← `(Lean.Parser.Term.namedArgument| (U := ($(← ratTerm w.u) : ℝ)))]
         let tac ← `(tactic| $main <;> first
           | rr_row_side | rr_row_eval_sign | (intro n; push_cast; first | positivity | nlinarith))
-        match ← rowAttempt (do
+        match ← rowRoute `movingWindow (do
             evalTactic tac
-            unless (← getGoals).isEmpty do throwError "goals remain") with
+            unless (← getGoals).isEmpty do throwError "goals remain") (some log) with
         | .ok _ =>
             let h : RowHints := { thm := some movIcc, degree := some D₀, drop := dropHint k }
             return (pre.push tac, h)
         | .error e => failures := failures.push (m!"{movIcc}", e)
   -- root bounds `U n = p n / q n` moving up with `n`, split at a common root `ρ` of the `A n`
   -- (`RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`)
+  if !use `movingWindow then
+    rowSkip `movingWindow m!"not selected by the via hint" (some log)
   let movUp := ``RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div
-  if !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ && known.isNone &&
+  if use `movingUpper && !triedWindow && shape == .deriv₁ && r.shape == .deriv₁ &&
+      known.isNone &&
       hints.window.isNone &&
       hints.upper.isNone && (hints.thm.isNone || hints.thm == some movUp) then
     match ← movingUpper? r k D₀ with
-    | none => failures := failures.push (m!"{movUp}", m!"no moving upper root bound fits the rows")
+    | none =>
+        rowVeto `movingUpper m!"no moving upper root bound fits the rows" (some log)
+        failures := failures.push (m!"{movUp}", m!"no moving upper root bound fits the rows")
     | some w =>
         triedWindow := true
         let (mI, xI, yI) := (mkIdent `m, mkIdent `x, mkIdent `y)
-        let (aT, bT, dT, ρT) := (← ratTerm w.a, ← ratTerm w.b, ← ratTerm w.d, ← ratTerm w.ρ)
+        let (aT, bT, dT, ρT) :=
+          (← ratTerm w.a, ← ratTerm w.b, ← ratTerm w.d, ← ratTerm w.ρ)
         let pAt (t : Term) : TacticM Term := `(($aT + $bT * $t : ℝ))
         let qAt (t : Term) : TacticM Term := `((1 + $dT * $t : ℝ))
         let n0 ← `(($nI : ℝ))
@@ -895,26 +948,32 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
           case h0 => rr_row_side
           case hW0 => rr_row_side
           case h01 => rr_row_side))
-        match ← rowAttempt (do
+        match ← rowRoute `movingUpper (do
             evalTactic tac
-            unless (← getGoals).isEmpty do throwError "goals remain") with
+            unless (← getGoals).isEmpty do throwError "goals remain") (some log) with
         | .ok _ =>
             let h : RowHints := { thm := some movUp, degree := some D₀, drop := dropHint k }
             return (pre.push tac, h)
         | .error e => failures := failures.push (m!"{movUp}", e)
+  if !use `movingUpper then
+    rowSkip `movingUpper m!"not selected by the via hint" (some log)
   throwRowFailures m!"rr_row_interlaces: no strategy proves the goal for the \
     {shape.describe} recurrence of {P} (base degree {D₀}, dropping {k} rows)" failures
 
 /-- `rr_row_interlaces`: try dropping no row, then one row (the goal
 `Interlaces (P (t + 1)) (P (t + 2))` for sequences whose first two rows have the same degree),
 unless `(drop := k)` is given.  The first failure is reported. -/
-def rowInterlacesCore (hints : RowHints) : TacticM (Cert × RowHints) := do
+def rowInterlacesCore (hints : RowHints) (log? : Option RowAttemptLog := none) :
+    TacticM (Cert × RowHints) := do
+  let log ← match log? with
+    | some log => pure log
+    | none => IO.mkRef #[]
   let ks := match hints.drop with
     | some k => [k]
     | none => [0, 1]
   let mut first? : Option MessageData := none
   for k in ks do
-    match ← rowAttempt (rowInterlacesCoreAt hints k) with
+    match ← rowRoute `core (rowInterlacesCoreAt hints k (log? := some log)) (some log) with
     | .ok res => return res
     | .error e => if first?.isNone then first? := some e
   throwError (first?.getD m!"rr_row_interlaces: no number of rows to drop")
