@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Convex.Deriv
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.FieldTheory.Separable
@@ -21,7 +22,10 @@ value theorem and Vieta's relations).
 * `RealRooted.BigDescents132.Quartic.exists_root_factorization`: the factorization
   `W_s = (X - a)(X - b)((X - U)² + V²)` with the root bounds and the modulus dominance.
 * `RealRooted.BigDescents132.Quartic.eval_eq_zero_iff`, `derivative_signs`, `vieta`,
-  `separable_polynomial`.
+  `separable_polynomial`, and `quarter_lt_of_eval_eq_zero` (the small zero exceeds `1/4`).
+* Over `ℂ`: `map_eq_prod` (the factorization `(X - a)(X - b)(X - λ)(X - conj λ)`),
+  `eq_of_isRoot_of_im_pos` (`λ = U + Vi` is the unique zero in the upper half-plane) and
+  `separable_map`.
 
 The proofs were found by Aristotle (Harmonic) from a statement and proof sketch, and ported.
 -/
@@ -312,5 +316,79 @@ theorem separable_polynomial {s : ℝ} (hs : 1 < s) : (polynomial s).Separable :
     simp [derivative_pow]
     field_simp
     ring
+
+/-! ### The complex zeros -/
+
+/-- Any zero of `W_s` in `(0, 1)` is larger than `1/4` (for `s > 1`): `W_s` is positive on
+`[0, 1/4]`. -/
+theorem quarter_lt_of_eval_eq_zero {s a : ℝ} (hs : 1 < s) (ha0 : 0 < a) (ha1 : a < 1)
+    (h : (polynomial s).eval a = 0) : 1 / 4 < a := by
+  rw [eval_polynomial] at h
+  by_contra hc
+  push Not at hc
+  have h1 : 0 ≤ 1 - 4 * a := by linarith
+  have h2 : (1 - 4 * a) ≤ s ^ 2 * (1 - 4 * a) := by
+    have : 1 ≤ s ^ 2 := by nlinarith
+    nlinarith
+  have h3 : 6 * a ^ 2 ≤ 6 * a ^ 2 * s := by nlinarith [sq_nonneg a]
+  have h4 : 0 < (1 - a) ^ 4 := pow_pos (by linarith) 4
+  nlinarith
+
+/-- Linear factors at distinct points are coprime. -/
+private lemma isCoprime_X_sub_C_X_sub_C {x y : ℂ} (h : x ≠ y) : IsCoprime (X - C x) (X - C y) :=
+  isCoprime_X_sub_C_of_isUnit_sub (sub_ne_zero.mpr h).isUnit
+
+/-- Over `ℂ`, the factorization `(X - a)(X - b)((X - U)^2 + V^2)` splits as
+`(X - a)(X - b)(X - λ)(X - conj λ)` with `λ = U + V i`. -/
+theorem map_eq_prod {s a b U V : ℝ}
+    (h : polynomial s = (X - C a) * (X - C b) * ((X - C U) ^ 2 + C (V ^ 2))) :
+    (polynomial s).map (algebraMap ℝ ℂ) =
+      (X - C (a : ℂ)) * (X - C (b : ℂ)) * (X - C (⟨U, V⟩ : ℂ)) * (X - C (⟨U, -V⟩ : ℂ)) := by
+  rw [h]
+  simp only [Polynomial.map_mul, Polynomial.map_add, Polynomial.map_sub, Polynomial.map_pow,
+    map_X, map_C]
+  have e1 : (⟨U, V⟩ : ℂ) = (U : ℂ) + (V : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp
+  have e2 : (⟨U, -V⟩ : ℂ) = (U : ℂ) - (V : ℂ) * Complex.I := by
+    apply Complex.ext <;> simp
+  rw [e1, e2]
+  simp only [Complex.coe_algebraMap, map_add, map_sub, map_mul, map_pow]
+  have hI : (C Complex.I : ℂ[X]) ^ 2 = -1 := by
+    rw [← map_pow, Complex.I_sq]; simp
+  linear_combination (X - C (a : ℂ)) * (X - C (b : ℂ)) * (C (V : ℂ)) ^ 2 * hI
+
+/-- With `V > 0`, `λ = U + V i` is the unique zero of `W_s` in the open upper half-plane. -/
+theorem eq_of_isRoot_of_im_pos {s a b U V : ℝ} (hV : 0 < V)
+    (h : polynomial s = (X - C a) * (X - C b) * ((X - C U) ^ 2 + C (V ^ 2)))
+    {z : ℂ} (hz : ((polynomial s).map (algebraMap ℝ ℂ)).IsRoot z) (him : 0 < z.im) :
+    z = ⟨U, V⟩ := by
+  rw [map_eq_prod h] at hz
+  simp only [IsRoot, eval_mul, eval_sub, eval_X, eval_C, mul_eq_zero, sub_eq_zero] at hz
+  rcases hz with ((h1 | h1) | h1) | h1
+  · rw [h1] at him; simp at him
+  · rw [h1] at him; simp at him
+  · exact h1
+  · rw [h1] at him; simp at him; linarith
+
+/-- The complexified quartic is separable when `a ≠ b` and `V ≠ 0`. -/
+theorem separable_map {s a b U V : ℝ} (hab : a ≠ b) (hV : V ≠ 0)
+    (h : polynomial s = (X - C a) * (X - C b) * ((X - C U) ^ 2 + C (V ^ 2))) :
+    ((polynomial s).map (algebraMap ℝ ℂ)).Separable := by
+  rw [map_eq_prod h]
+  have hab' : (a : ℂ) ≠ (b : ℂ) := by exact_mod_cast hab
+  have ha1 : (a : ℂ) ≠ ⟨U, V⟩ := fun e => hV (by simpa using (congrArg Complex.im e).symm)
+  have ha2 : (a : ℂ) ≠ ⟨U, -V⟩ := fun e => hV (by simpa using (congrArg Complex.im e).symm)
+  have hb1 : (b : ℂ) ≠ ⟨U, V⟩ := fun e => hV (by simpa using (congrArg Complex.im e).symm)
+  have hb2 : (b : ℂ) ≠ ⟨U, -V⟩ := fun e => hV (by simpa using (congrArg Complex.im e).symm)
+  have h12 : (⟨U, V⟩ : ℂ) ≠ ⟨U, -V⟩ := fun e => hV (by
+    have h : V = -V := congrArg Complex.im e
+    linarith)
+  refine Separable.mul (Separable.mul (Separable.mul (separable_X_sub_C) (separable_X_sub_C)
+    ?_) separable_X_sub_C ?_) separable_X_sub_C ?_
+  · exact isCoprime_X_sub_C_X_sub_C hab'
+  · exact IsCoprime.mul_left (isCoprime_X_sub_C_X_sub_C ha1) (isCoprime_X_sub_C_X_sub_C hb1)
+  · exact IsCoprime.mul_left
+      (IsCoprime.mul_left (isCoprime_X_sub_C_X_sub_C ha2) (isCoprime_X_sub_C_X_sub_C hb2))
+      (isCoprime_X_sub_C_X_sub_C h12)
 
 end RealRooted.BigDescents132.Quartic
