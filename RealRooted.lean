@@ -2144,3 +2144,4 @@ import RealRooted.CombinatorialExamples.WeightedRenewal
 import RealRooted.Tactic.Examples.ParametricRows
 import RealRooted.Tactic.Examples.RowVariableDelay
 import RealRooted.Mathlib.Data.Nat.Choose.Sum
+import RealRooted.Tactic.Examples.RowExplain

@@ -48,6 +48,49 @@ namespace RealRooted.Tactic
 
 initialize registerTraceClass `rr.row
 
+/-- Whether row-tactic front ends print their route attempt log. -/
+register_option rr.row.explain : Bool := {
+  defValue := false
+  descr := "print the route attempt log of each row tactic call"
+}
+
+/-- Whether row-tactic explain tables include heartbeat counts. -/
+register_option rr.row.explain.heartbeats : Bool := {
+  defValue := true
+  descr := "include heartbeat counts in row tactic explain tables"
+}
+
+/-- The outcome of one named row-tactic route. -/
+inductive RowRouteOutcome where
+  /-- The route closed its goal. -/
+  | ok
+  /-- The route ran and failed. -/
+  | failed
+  /-- The route exhausted its heartbeat budget. -/
+  | timedOut
+  /-- A cheap probe rejected the route. -/
+  | vetoed
+  /-- Hints prevented the route from running. -/
+  | skipped
+
+/-- One entry of a row-tactic route attempt log. -/
+structure RowAttemptEntry where
+  /-- The stable route name. -/
+  route : Name
+  /-- How the route finished. -/
+  outcome : RowRouteOutcome
+  /-- The internal heartbeat-counter delta. -/
+  heartbeats : Nat
+  /-- The first line of the failure, veto, or skip reason. -/
+  reason : String
+
+/-- The call-local mutable route attempt log of a row tactic front end. -/
+abbrev RowAttemptLog := IO.Ref (Array RowAttemptEntry)
+
+private inductive RowAttemptError where
+  | failed (message : MessageData)
+  | timedOut (message : MessageData)
+
 /-- Recurrence shapes supported by the recurrence tactics. -/
 inductive RecShape where
   /-- `P (n + 1) = L n * P n` -/
@@ -499,11 +542,10 @@ def recShape? (P : Name) (params : Array Expr := #[]) : MetaM (Option RecShape) 
   | .ok r => return if r.canonical && r.shift == 0 then some r.shape else none
   | .error _ => return none
 
-/-- Run `tac` with a fresh heartbeat budget and without error recovery.  An error that
-`tac` only logs (for instance from a nested `by` block) counts as a failure.  On failure
-restore the state, including the info trees, and return the error: the info trees of the
-failed attempts would otherwise stay alive until the end of the declaration. -/
-def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
+/-- Run `tac` with a fresh heartbeat budget, distinguishing a heartbeat timeout from other
+failures before converting its exception to a message. -/
+private def rowAttemptClassified (tac : TacticM α) :
+    TacticM (Except RowAttemptError α) := do
   let s ← saveState
   let log ← Core.getMessageLog
   Core.resetMessageLog
@@ -514,17 +556,119 @@ def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
       if let some m := new.toList.find? (·.severity == .error) then
         s.restore (restoreInfo := true)
         Core.setMessageLog log
-        return .error m.data
+        return .error (.failed m.data)
       Core.setMessageLog (log ++ new)
       return .ok a)
     (fun e => do
       s.restore (restoreInfo := true)
       Core.setMessageLog log
-      return .error e.toMessageData)
+      let err := if Exception.isMaxHeartbeat e then RowAttemptError.timedOut else .failed
+      return .error (err e.toMessageData))
+
+/-- Run `tac` with a fresh heartbeat budget and without error recovery.  An error that
+`tac` only logs (for instance from a nested `by` block) counts as a failure.  On failure
+restore the state, including the info trees, and return the error: the info trees of the
+failed attempts would otherwise stay alive until the end of the declaration. -/
+def rowAttempt (tac : TacticM α) : TacticM (Except MessageData α) := do
+  match ← rowAttemptClassified tac with
+  | .ok a => return .ok a
+  | .error (.failed message) | .error (.timedOut message) => return .error message
 
 /-- Like `rowAttempt`, returning whether `tac` succeeded. -/
 def rowSucceeds (tac : TacticM Unit) : TacticM Bool := do
   return (← rowAttempt tac) matches .ok _
+
+private def firstMessageLine (message : MessageData) : TacticM String := do
+  return (← message.toString).splitOn "\n" |>.headD ""
+
+private def reserveRowAttempt (log : RowAttemptLog) (name : Name) : IO Nat :=
+  log.modifyGet fun entries =>
+    (entries.size, entries.push ⟨name, .failed, 0, ""⟩)
+
+private def finishRowAttempt (log : RowAttemptLog) (index : Nat)
+    (entry : RowAttemptEntry) : IO Unit :=
+  log.modify fun entries => entries.set! index entry
+
+/-- Run a named row route and append its outcome, reason, and heartbeat cost to the call-local
+attempt log.  With no log this is exactly `rowAttempt`. -/
+def rowRoute (name : Name) (tac : TacticM α) (log? : Option RowAttemptLog := none) :
+    TacticM (Except MessageData α) := do
+  let some log := log? | return ← rowAttempt tac
+  let index ← reserveRowAttempt log name
+  let start ← IO.getNumHeartbeats
+  let result ← rowAttemptClassified tac
+  let heartbeats := (← IO.getNumHeartbeats) - start
+  match result with
+  | .ok a =>
+      finishRowAttempt log index ⟨name, .ok, heartbeats, "-"⟩
+      return .ok a
+  | .error (.failed message) =>
+      finishRowAttempt log index ⟨name, .failed, heartbeats, ← firstMessageLine message⟩
+      return .error message
+  | .error (.timedOut message) =>
+      finishRowAttempt log index ⟨name, .timedOut, heartbeats, ← firstMessageLine message⟩
+      return .error message
+
+/-- Record that a cheap probe vetoed a named route without running it. -/
+def rowVeto (name : Name) (reason : MessageData) (log? : Option RowAttemptLog := none) :
+    TacticM Unit := do
+  if let some log := log? then
+    log.modify (·.push ⟨name, .vetoed, 0, ← firstMessageLine reason⟩)
+
+/-- Record that hints skipped a named route without running it. -/
+def rowSkip (name : Name) (reason : MessageData) (log? : Option RowAttemptLog := none) :
+    TacticM Unit := do
+  if let some log := log? then
+    log.modify (·.push ⟨name, .skipped, 0, ← firstMessageLine reason⟩)
+
+private def RowRouteOutcome.toString : RowRouteOutcome → String
+  | .ok => "ok"
+  | .failed => "failed"
+  | .timedOut => "timedOut"
+  | .vetoed => "vetoed"
+  | .skipped => "skipped"
+
+private def padRowExplain (width : Nat) (value : String) : String :=
+  value ++ String.ofList (List.replicate (width - value.length) ' ')
+
+/-- Print a row-tactic attempt log as an aligned table when `rr.row.explain` is enabled. -/
+def explainRowAttempts (log : RowAttemptLog) : TacticM Unit := do
+  unless (← getOptions).getBool `rr.row.explain false do return
+  let entries ← log.get
+  let routeWidth := entries.foldl (init := "route".length) fun width entry =>
+    max width entry.route.toString.length
+  let outcomeWidth := entries.foldl (init := "outcome".length) fun width entry =>
+    max width entry.outcome.toString.length
+  let showHeartbeats := (← getOptions).getBool `rr.row.explain.heartbeats true
+  let mut lines :=
+    if showHeartbeats then
+      [s!"{padRowExplain routeWidth "route"}  \
+          {padRowExplain outcomeWidth "outcome"}  heartbeats(k)  reason"]
+    else
+      [s!"{padRowExplain routeWidth "route"}  {padRowExplain outcomeWidth "outcome"}  reason"]
+  for entry in entries do
+    let route := padRowExplain routeWidth entry.route.toString
+    let outcome := padRowExplain outcomeWidth entry.outcome.toString
+    let heartbeats := padRowExplain "heartbeats(k)".length
+      (toString (entry.heartbeats / 1000000))
+    lines := lines ++ [if showHeartbeats then
+        s!"{route}  {outcome}  {heartbeats}  {entry.reason}"
+      else s!"{route}  {outcome}  {entry.reason}"]
+  logInfo m!"rr.row explain:\n{String.intercalate "\n" lines}"
+
+/-- Run a row front end with a fresh call-local attempt log and explain it on success or
+failure.  Row tactics called inside it (for side goals or fallbacks) do not print their own
+tables: only the outermost call explains. -/
+def withRowAttemptLog (tac : RowAttemptLog → TacticM α) : TacticM α := do
+  let log ← IO.mkRef #[]
+  tryCatchRuntimeEx
+    (do
+      let result ← withOptions (·.set `rr.row.explain false) (tac log)
+      explainRowAttempts log
+      return result)
+    (fun error => do
+      explainRowAttempts log
+      throw error)
 
 /-- A numeral. -/
 def rowNumLit (n : Nat) : TSyntax `num := Syntax.mkNumLit (toString n)
