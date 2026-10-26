@@ -254,4 +254,38 @@ theorem strictInterl_of_fixedDelay_recurrence
   · lia
   · exact hAB
 
+/-- Nonnegative coefficients for a scaled fixed-delay recurrence. -/
+theorem hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
+    (P : ℕ → ℝ[X]) (a b : ℕ → ℝ) (L : ℕ) (hL : 1 ≤ L)
+    (ha : ∀ n, 0 ≤ a n) (hb : ∀ n, 0 ≤ b n)
+    (hP0 : P 0 = 1)
+    (hrec : ∀ n,
+      P (n + 1) = C (a (n + 1)) * P n + C (b (n + 1)) * X * P (n + 1 - L))
+    (n : ℕ) :
+    HasNonnegCoeffs (P n) := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    rcases n with _ | n
+    · simpa [hP0] using hasNonnegCoeffs_one
+    · have hdelay : n + 1 - L < n + 1 := by lia
+      rw [hrec n]
+      exact (hasNonnegCoeffs_C_mul (ha (n + 1)) (ih n (by lia))).add
+        ((hasNonnegCoeffs_C_mul (hb (n + 1)) hasNonnegCoeffs_X).mul
+          (ih (n + 1 - L) hdelay))
+
+/-- Fixed-delay specialization of the scaled variable-delay theorem. -/
+theorem strictInterl_of_scaled_fixedDelay_recurrence
+    (P : ℕ → ℝ[X]) (a b : ℕ → ℝ) (L : ℕ) (hL : 1 ≤ L)
+    (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n)
+    (hP0 : P 0 = 1)
+    (hrec : ∀ n,
+      P (n + 1) = C (a (n + 1)) * P n + C (b (n + 1)) * X * P (n + 1 - L))
+    {A B : ℕ} (hAB : A ≤ B) (hBA : B ≤ A + L) :
+    StrictInterl (P A) (P B) := by
+  apply strictInterl_of_scaled_variableDelay_recurrence P (fun n ↦ n - L) a b
+    (fun {_ _} _ hij ↦ Nat.sub_le_sub_right hij L) (fun n hn ↦ by lia)
+    ha hb hP0 hrec
+  · lia
+  · exact hAB
+
 end RealRooted

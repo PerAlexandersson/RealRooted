@@ -165,6 +165,7 @@ import RealRooted.Tactic.Examples.RowRegression1689Degree
 import RealRooted.Tactic.Examples.RowRegression1689Interlacing
 import RealRooted.Tactic.Examples.RowStrictInterl
 import RealRooted.Tactic.Examples.RowSubseqDegree
+import RealRooted.Tactic.Examples.RowVariableDelay
 import RealRooted.Tactic.Examples.ScalarDen
 import RealRooted.Tactic.Examples.SecondDerivative
 import RealRooted.Tactic.Examples.SequenceSurvey
