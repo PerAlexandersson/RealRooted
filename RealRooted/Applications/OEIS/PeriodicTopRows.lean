@@ -6,9 +6,9 @@ public import RealRooted.Recurrence.RowModel
 /-!
 # Remaining periodic-top-coefficient rows
 
-This file records the normalized A114580 and A390883 recurrences and closes the A177040
-degree problem.  The A177040 proof uses its exact parity-split coefficient vectors as the
-two states of the multi-lag top-window law.
+This file closes the A177040 degree problem; the A114580 and A390883 degrees are proved in
+the downstream oeis-proofs repository.  The A177040 proof uses its exact parity-split
+coefficient vectors as the two states of the multi-lag top-window law.
 -/
 
 @[expose] public section
@@ -18,42 +18,6 @@ open Polynomial
 namespace RealRooted.Tactic.RowParityDegree
 
 noncomputable section
-
-/-- The normalized downstream A114580 recurrence. -/
-def A114580 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1
-  | 2 => 1 + X
-  | n + 3 =>
-      let r : ℝ := n
-      let q : ℝ := 1 / (5 + r)
-      (C (-2 * q) * X + C ((-8 / 5) * q) * X ^ 2) * (A114580 (n + 2)).derivative
-        + (C (6 * q) * X + C (-6 * q) * X ^ 2) * (A114580 (n + 1)).derivative
-        + (C (2 * q * (4 + r)) + C (q * (7 / 5 + 3 / 5 * r)) * X) * A114580 (n + 2)
-        + (C (-2 * q) + C (q * (34 / 5 + 18 / 5 * r)) * X) * A114580 (n + 1)
-        + (C (q * (-1 - r)) + C (q * (4 / 5 + 4 / 5 * r)) * X
-            + C (q * (1 / 5 + 1 / 5 * r)) * X ^ 2) * A114580 n
-
-/-- The normalized downstream A390883 recurrence. -/
-def A390883 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1
-  | 2 => 1 + 2 * X
-  | n + 3 =>
-      let r : ℝ := n
-      let q : ℝ := 1 / (9 + (4 + r) ^ 2 + 2 * r)
-      (C (9 * q * (4 + r)) + C (q * (91 + 23 * r)) * X
-          + C (q * (17 + 4 * r)) * X ^ 2) * (A390883 (n + 2)).derivative
-        + (C (q * (-90 - 36 * r)) + C (q * (-4 - 2 * r)) * X
-            + C (q * (90 + 36 * r)) * X ^ 2 + C (q * (4 + 2 * r)) * X ^ 3)
-          * (A390883 (n + 1)).derivative
-        + (C (q * (-9 - (4 + r) ^ 2 - 2 * r))
-            + C (q * (-6 - 4 * (4 + r) ^ 2 - 2 * r)) * X) * A390883 (n + 2)
-        + (C (q * (-90 - 23 * r + 11 * (4 + r) ^ 2))
-            + C (q * (-164 - 38 * r + 22 * (4 + r) ^ 2)) * X
-            + C (q * (14 - (4 + r) ^ 2 + 5 * r)) * X ^ 2) * A390883 (n + 1)
-        + (C (q * (468 - 36 * (4 + r) ^ 2 + 144 * r))
-            + C (q * (-468 - 144 * r + 36 * (4 + r) ^ 2)) * X ^ 2) * A390883 n
 
 private lemma A177040_coeff_succ (n k : ℕ) :
     Polynomial.coeff (A177040 (n + 4)) (k + 2) =
