@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.Interlacing.VariableDelay
 public import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.AffineFamily.Basic
 
@@ -119,95 +120,6 @@ theorem pathPowerCliquePolynomial_add_lag (k N : ℕ) (hk : 2 ≤ k) :
   have htop : N + k - 1 - (k - 1) = N := by lia
   rw [hleft, htop, indepPolyOn_pathPowerGraph_range_succ]
 
-private theorem strictInterl_window_of_add_lag
-    (P : ℕ → ℝ[X]) (k : ℕ) (hk : 2 ≤ k)
-    (hbase : ∀ i, i < k → P i = 1)
-    (hrec : ∀ n, P (n + k) = P (n + k - 1) + X * P n)
-    (hnonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hpos : ∀ n, HasPosLeadingCoeff (P n))
-    (hsplits : ∀ n, (P n).Splits) :
-    ∀ n i j, i < j → j < k → StrictInterl (P (n + i)) (P (n + j)) := by
-  intro n
-  induction n with
-  | zero =>
-      intro i j hij hjk
-      rw [zero_add, zero_add, hbase i (by lia), hbase j hjk]
-      exact StrictInterl.refl one_ne_zero Polynomial.Splits.one
-  | succ n ih =>
-      intro i j hij hjk
-      by_cases hnext : j + 1 < k
-      · simpa only [Nat.succ_add, Nat.add_succ] using
-          ih (i + 1) (j + 1) (by lia) hnext
-      · have hj : j + 1 = k := by lia
-        have hi : i + 1 < k := by lia
-        have hleft_top : StrictInterl (P (n + (i + 1))) (P (n + k - 1)) := by
-          have hidx : n + (k - 1) = n + k - 1 := by lia
-          by_cases hitop : i + 1 = k - 1
-          · rw [hitop]
-            rw [← hidx]
-            exact StrictInterl.refl (hpos (n + (k - 1))).ne_zero
-              (hsplits (n + (k - 1)))
-          · rw [← hidx]
-            exact ih (i + 1) (k - 1) (by lia) (by lia)
-        have hzero_left : StrictInterl (P n) (P (n + (i + 1))) := by
-          simpa using ih 0 (i + 1) (by lia) hi
-        have hleft_lag : StrictInterl (P (n + (i + 1))) (X * P n) :=
-          strictInterl_mul_X_of_strictInterl_of_nonneg hzero_left
-            (hnonneg n) (hnonneg (n + (i + 1)))
-        have hsum : StrictInterl (P (n + (i + 1)))
-            ([P (n + k - 1), X * P n] : List ℝ[X]).sum := by
-          apply StrictInterl.sum_left_of_common_left
-          · intro q hq
-            simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-            rcases hq with rfl | rfl
-            · exact hleft_top
-            · exact hleft_lag
-          · exact hpos (n + (i + 1))
-          · intro q hq
-            simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-            rcases hq with rfl | rfl
-            · exact hpos (n + k - 1)
-            · exact (hasPosLeadingCoeff_of_monic monic_X).mul (hpos n)
-          · simp
-        rw [List.sum_cons, List.sum_singleton, ← hrec n] at hsum
-        have hleftidx : Nat.succ n + i = n + (i + 1) := by lia
-        have hrightidx : Nat.succ n + j = n + k := by lia
-        rw [hleftidx, hrightidx]
-        exact hsum
-
-private theorem strictInterl_gap_of_add_lag
-    (P : ℕ → ℝ[X]) (k : ℕ) (hk : 2 ≤ k)
-    (hrec : ∀ n, P (n + k) = P (n + k - 1) + X * P n)
-    (hnonneg : ∀ n, HasNonnegCoeffs (P n))
-    (hpos : ∀ n, HasPosLeadingCoeff (P n))
-    (hsplits : ∀ n, (P n).Splits)
-    (hwindow : ∀ n i j, i < j → j < k →
-      StrictInterl (P (n + i)) (P (n + j))) (n : ℕ) :
-    StrictInterl (P n) (P (n + k)) := by
-  have htop : StrictInterl (P n) (P (n + k - 1)) := by
-    have h := hwindow n 0 (k - 1) (by lia) (by lia)
-    simpa only [add_zero, show n + (k - 1) = n + k - 1 by lia] using h
-  have hself : StrictInterl (P n) (P n) :=
-    StrictInterl.refl (hpos n).ne_zero (hsplits n)
-  have hlag : StrictInterl (P n) (X * P n) :=
-    strictInterl_mul_X_of_strictInterl_of_nonneg hself (hnonneg n) (hnonneg n)
-  have hsum : StrictInterl (P n) ([P (n + k - 1), X * P n] : List ℝ[X]).sum := by
-    apply StrictInterl.sum_left_of_common_left
-    · intro q hq
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
-      · exact htop
-      · exact hlag
-    · exact hpos n
-    · intro q hq
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
-      · exact hpos (n + k - 1)
-      · exact (hasPosLeadingCoeff_of_monic monic_X).mul (hpos n)
-    · simp
-  rw [List.sum_cons, List.sum_singleton, ← hrec n] at hsum
-  exact hsum
-
 /-- **Path-power clique.** If `k ≥ 2`, then `Q(k, N)` strictly interlaces
 `Q(k, N + j)` for every gap `1 ≤ j ≤ k`. -/
 theorem strictInterl_pathPowerCliquePolynomial_add (k N j : ℕ)
@@ -215,26 +127,28 @@ theorem strictInterl_pathPowerCliquePolynomial_add (k N j : ℕ)
     StrictInterl (pathPowerCliquePolynomial k N)
       (pathPowerCliquePolynomial k (N + j)) := by
   let P := pathPowerCliquePolynomial k
-  have hbase : ∀ i, i < k → P i = 1 := by
-    intro i hi
-    exact pathPowerCliquePolynomial_eq_one_of_lt hk hi
-  have hrec : ∀ n, P (n + k) = P (n + k - 1) + X * P n := by
+  let w : ℕ → ℝ := fun n ↦ if k ≤ n then 1 else 0
+  have hw : ∀ n, 0 ≤ w n := by
     intro n
-    exact pathPowerCliquePolynomial_add_lag k n hk
-  have hwindow : ∀ n i l, i < l → l < k →
-      StrictInterl (P (n + i)) (P (n + l)) :=
-    strictInterl_window_of_add_lag P k hk hbase hrec
-      (hasNonnegCoeffs_pathPowerCliquePolynomial k)
-      (hasPosLeadingCoeff_pathPowerCliquePolynomial k)
-      (splits_pathPowerCliquePolynomial k)
-  by_cases hjlt : j < k
-  · simpa [P] using hwindow N 0 j (by lia) hjlt
-  · have hjk : j = k := by lia
-    rw [hjk]
-    exact strictInterl_gap_of_add_lag P k hk hrec
-      (hasNonnegCoeffs_pathPowerCliquePolynomial k)
-      (hasPosLeadingCoeff_pathPowerCliquePolynomial k)
-      (splits_pathPowerCliquePolynomial k) hwindow N
+    dsimp [w]
+    split <;> norm_num
+  have hP0 : P 0 = 1 := pathPowerCliquePolynomial_eq_one_of_lt hk (by lia)
+  have hrec : ∀ n, P (n + 1) = P n + C (w (n + 1)) * X * P (n + 1 - k) := by
+    intro n
+    by_cases hkn : k ≤ n + 1
+    · have hlag := pathPowerCliquePolynomial_add_lag k (n + 1 - k) hk
+      have htop : n + 1 - k + k = n + 1 := by lia
+      have hprev : n + 1 - k + k - 1 = n := by lia
+      simpa [P, w, hkn, htop, hprev] using hlag
+    · have hn : n < k := by lia
+      have hns : n + 1 < k := by lia
+      rw [show P (n + 1) = 1 by
+        exact pathPowerCliquePolynomial_eq_one_of_lt hk hns]
+      rw [show P n = 1 by
+        exact pathPowerCliquePolynomial_eq_one_of_lt hk hn]
+      simp [w, hkn]
+  exact strictInterl_of_fixedDelay_recurrence P w k (by lia) hw hP0 hrec
+    (Nat.lt_add_of_pos_right hjpos).le (Nat.add_le_add_left hj N)
 
 /-- Along a subsequence whose step is at most `k`, degrees grow by at most one. -/
 theorem pathPowerCliquePolynomial_subsequence_natDegree_le (k p c n : ℕ)
