@@ -30,6 +30,7 @@ namespace RealRooted.BigDescents132
 
 variable {R : Type*} [CommSemiring R]
 
+/-- The recursion behind `bigDescentPoly`, before it is sealed by `irreducible_def`. -/
 def bigDescentPolyAux : ℕ → R[X]
   | 0 => 1
   | 1 => 1
@@ -146,10 +147,6 @@ theorem coeff_bigDescentPoly_eq_cast (n k : ℕ) :
 variable {R}
 
 /-! ### Evaluation at zero -/
-
-@[simp]
-theorem eval_zero_bigDescentPoly_zero : (bigDescentPoly 0 : R[X]).eval 0 = 1 := by
-  simp
 
 /-- The constant coefficient of `B_(n+1)` is `n+1`. -/
 theorem eval_zero_bigDescentPoly_succ (n : ℕ) :
