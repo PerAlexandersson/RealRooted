@@ -1425,6 +1425,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Data/Nat/Choose/Sum.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Choose.Sum"
+      ],
+      "note": "Upper-index Vandermonde convolution; would extend Mathlib.Data.Nat.Choose.Sum next to Nat.sum_Icc_choose. Proof found by Aristotle.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Data/Nat/Choose/Nanjundiah.lean"
       ],
       "modules": [
