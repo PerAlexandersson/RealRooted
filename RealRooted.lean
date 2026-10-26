@@ -2147,3 +2147,4 @@ import RealRooted.Mathlib.Data.Nat.Choose.Sum
 import RealRooted.Tactic.Examples.RowExplain
 import RealRooted.Tactic.Examples.RowRoutes
 import RealRooted.Tactic.Row.Routes
+import RealRooted.Tactic.Examples.RowFastFail
