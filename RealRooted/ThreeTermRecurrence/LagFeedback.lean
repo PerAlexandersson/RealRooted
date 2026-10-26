@@ -17,7 +17,7 @@ transition matrix of Brändén's criterion (shift rows and one feedback row
 The rows have no three-term recurrence: their degrees grow by one every `p` steps.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -15,7 +15,7 @@ keep or raise the degree by one, and it allows consecutive rows to share roots. 
 `*_lag_sequence` theorems require an exact degree increase and no common roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

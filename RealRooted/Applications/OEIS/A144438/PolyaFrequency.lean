@@ -11,7 +11,7 @@ real-rootedness of the recurrence-defined Deco Eulerian polynomials.  The base
 recurrence module remains independent of the Pólya-frequency API.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

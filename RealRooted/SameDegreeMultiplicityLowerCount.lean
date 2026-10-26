@@ -41,7 +41,7 @@ coefficients of the near cluster from those of a shifted polynomial whose low
 coefficients are small, via a "polynomial division" coefficient recursion.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 open scoped BigOperators

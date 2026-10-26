@@ -2,4 +2,4 @@ module
 
 public import RealRooted.RankTwoMatching.Endpoint
 
-@[expose] public section
+public section

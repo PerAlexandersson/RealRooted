@@ -9,7 +9,7 @@ public import RealRooted.MultivariateStability.Barrier
 stable polynomial, the ratio `(∂_i p) / p` has nonpositive imaginary part on the upper half-plane.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

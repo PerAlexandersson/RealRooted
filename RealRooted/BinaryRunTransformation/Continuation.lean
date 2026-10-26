@@ -18,7 +18,7 @@ continuation API.  It is the analytic layer used to prevent collisions while
 the scaling parameter increases.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 open scoped ContDiff

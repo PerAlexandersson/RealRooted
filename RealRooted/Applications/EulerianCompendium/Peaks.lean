@@ -13,7 +13,7 @@ the actual interior-peak statistic on permutations. This also supplies the
 exact degree and strict negativity assertions in `thm:permutationPeaks`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial RealRooted
 open scoped BigOperators

@@ -11,4 +11,4 @@ The Hadamard and Schur--Szego route is layered as `Basic`, `Finite`, `Newton`,
 preserves the established import path.
 -/
 
-@[expose] public section
+public section

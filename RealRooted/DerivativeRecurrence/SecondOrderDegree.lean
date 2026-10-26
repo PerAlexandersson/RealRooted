@@ -7,7 +7,7 @@ public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
 public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
-@[expose] public section
+public section
 
 open Polynomial
 

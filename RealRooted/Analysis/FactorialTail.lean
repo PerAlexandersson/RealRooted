@@ -11,7 +11,7 @@ interval forms, together with the strict binomial-factorial ratio obtained
 from descending-factorial monotonicity.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

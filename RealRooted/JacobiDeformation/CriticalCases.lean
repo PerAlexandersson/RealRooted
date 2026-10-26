@@ -22,7 +22,7 @@ double root of `F_0`, its coordinates are roots of `p_m`, and the root kernel
 sign is compared with the second-derivative sign at a double image root.
 -/
 
-@[expose] public section
+public section
 
 open Finset Polynomial
 

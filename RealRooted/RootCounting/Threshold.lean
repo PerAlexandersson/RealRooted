@@ -16,4 +16,4 @@ their parity, log-concave coefficient certificates, sorted-magnitude
 consequences, and derivative signs.
 -/
 
-@[expose] public section
+public section

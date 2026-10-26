@@ -12,7 +12,7 @@ public import RealRooted.PosCombo
 public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Tactic
 
-@[expose] public section
+public section
 
 open Polynomial Topology
 

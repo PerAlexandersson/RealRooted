@@ -16,4 +16,4 @@ This facade exports the algebraic family, root and interlacing theory, and
 the separately layered algebraic and integral orthogonality APIs.
 -/
 
-@[expose] public section
+public section

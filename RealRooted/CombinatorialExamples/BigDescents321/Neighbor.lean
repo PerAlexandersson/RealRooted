@@ -21,7 +21,7 @@ the weights `W_(R,k)(X)` by the ratios `L₁, L₂, L₃`. The difference become
 * `kernelCoord_neighbor_pos`: the inequality above.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

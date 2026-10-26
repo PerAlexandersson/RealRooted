@@ -9,7 +9,7 @@ This file transports the insertion recurrence through the coordinate
 translation `x ↦ 1 + x` used in the stability proof.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

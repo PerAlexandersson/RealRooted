@@ -11,7 +11,7 @@ public import RealRooted.SequenceClosure
 Sequence closure for weak derivative steps and derivative-plus-lag recurrences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

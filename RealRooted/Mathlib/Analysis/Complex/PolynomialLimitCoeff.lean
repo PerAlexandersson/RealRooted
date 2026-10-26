@@ -18,7 +18,7 @@ converge locally uniformly (Weierstrass), and their `k`-th coefficients converge
 `k`-th Taylor coefficient `f⁽ᵏ⁾(0) / k!` of `f`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

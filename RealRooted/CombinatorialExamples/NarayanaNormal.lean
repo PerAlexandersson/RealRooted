@@ -14,7 +14,7 @@ scalar recurrences.  The coefficient distribution of `Q_n` has mean `(n - 1) / 2
 asymptotic normality of the Narayana numbers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

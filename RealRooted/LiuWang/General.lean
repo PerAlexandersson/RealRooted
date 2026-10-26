@@ -16,7 +16,7 @@ simple roots, and then applies `strictInterl_of_eval_mul_derivative_nonpos`: the
 `F(r) f'(r) = b(r) g(r) f'(r) ≤ 0`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

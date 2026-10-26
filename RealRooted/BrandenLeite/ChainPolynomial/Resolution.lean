@@ -10,7 +10,7 @@ This module bridges generic resolvability data to the chain-polynomial
 subdivision operator.  The interlacing induction is deliberately separate.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

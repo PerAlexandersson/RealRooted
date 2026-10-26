@@ -13,7 +13,7 @@ positive-split x-subtraction pencil used by the two-degree factor-return
 branch.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -12,7 +12,7 @@ This file assembles the issue #42 small-positive count route for
 combines it with finite matching, left escape, and escaped-root count lemmas.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

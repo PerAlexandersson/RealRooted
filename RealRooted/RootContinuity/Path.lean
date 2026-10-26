@@ -24,7 +24,7 @@ The main statements are `RealRooted.splits_of_isPreconnected` and its unit-inter
 `RealRooted.splits_of_path`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

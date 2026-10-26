@@ -5,7 +5,7 @@ public import RealRooted.GraceHalfPlane
 public import RealRooted.Hadamard.Cubic
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 
-@[expose] public section
+public section
 
 open Polynomial
 

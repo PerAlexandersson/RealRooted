@@ -23,7 +23,7 @@ and `Polynomial.splits_of_all_roots_real`.
   then `p₀ = 0 ∨ p₀.Splits`.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

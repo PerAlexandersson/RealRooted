@@ -30,7 +30,7 @@ certificate `RealRooted.wronskian_pos_of_pos_at_roots` then makes it positive
 on all of `ℝ`, and the strict converses apply.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

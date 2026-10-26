@@ -13,7 +13,7 @@ The statements concern arbitrary real linear maps; concrete operators belong in
 separate application modules.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

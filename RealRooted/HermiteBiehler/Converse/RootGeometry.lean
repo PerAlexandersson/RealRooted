@@ -12,7 +12,7 @@ real component polynomials to split. The proof compares conjugated root-product
 norms and excludes nonreal roots of either component.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

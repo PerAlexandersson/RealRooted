@@ -17,7 +17,7 @@ come from the author's AlexanderssonFormalizations development; generic theory
 is imported from its existing RealRooted owners.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial RealRooted
 

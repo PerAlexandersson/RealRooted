@@ -13,7 +13,7 @@ Wronskian sign.  The sign selects the interlacing orientation compatible
 with the two-variable pencil `f(z) + w g(z)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

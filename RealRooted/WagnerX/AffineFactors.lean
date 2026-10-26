@@ -6,7 +6,7 @@ public import RealRooted.WagnerX.NonnegativeRoots
 # Wagner-X affine and common-factor transport
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

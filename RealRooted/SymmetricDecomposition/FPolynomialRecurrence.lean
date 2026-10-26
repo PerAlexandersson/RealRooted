@@ -9,7 +9,7 @@ A first-order derivative recurrence for `Q` transforms into a first-order
 derivative recurrence for `fPolynomial n (Q n)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

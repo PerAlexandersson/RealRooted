@@ -10,7 +10,7 @@ Constant-coefficient differential actions compose under multiplication and
 factor across disjoint finite variable blocks.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

@@ -12,7 +12,7 @@ This file turns a PF certificate for the canonical Euler numerator of a
 polynomial-value sequence into a PF certificate for the sequence itself.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

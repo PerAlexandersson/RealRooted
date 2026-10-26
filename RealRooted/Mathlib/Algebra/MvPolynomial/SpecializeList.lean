@@ -14,7 +14,7 @@ This file identifies iterated scalar specialization with a single
 multivariate-polynomial substitution.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

@@ -30,7 +30,7 @@ but need not be irreducible.
   subsequence by compactness.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology Finset
 

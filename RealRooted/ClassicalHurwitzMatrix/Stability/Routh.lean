@@ -15,7 +15,7 @@ coefficient data used when transporting strict Hurwitz stability through one
 Routh step. The analytic preservation theorem is built on these identities.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

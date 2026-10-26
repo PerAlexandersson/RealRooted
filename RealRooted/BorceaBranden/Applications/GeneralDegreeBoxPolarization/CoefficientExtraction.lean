@@ -11,7 +11,7 @@ This file combines finite-variable derivative stability with boundary
 specialization to extract coefficients in one distinguished variable.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

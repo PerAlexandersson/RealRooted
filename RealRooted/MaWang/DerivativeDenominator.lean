@@ -10,7 +10,7 @@ These recurrence wrappers share the scalar-normalization identities used to
 pass from a denominator-fused recurrence to the derivative sequence backend.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

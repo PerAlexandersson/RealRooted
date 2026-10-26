@@ -34,7 +34,7 @@ block bookkeeping goes through `Equiv.sumCompl` and `Matrix.fromBlocks`.
   injective height function into `ℕ`.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

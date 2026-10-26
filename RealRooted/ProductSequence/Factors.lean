@@ -11,7 +11,7 @@ factors, together with the sequence-valued certificates shared by the product
 recurrence layers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

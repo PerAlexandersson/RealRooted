@@ -18,7 +18,7 @@ rows have nonnegative coefficients (`threeTerm_interlaces_of_nonnegCoeffs`).
 nonnegative coefficients.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

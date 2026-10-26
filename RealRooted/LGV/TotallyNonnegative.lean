@@ -17,7 +17,7 @@ about the shape of the path matrix: Toeplitz and Pólya-frequency consequences
 belong in downstream adapters.
 -/
 
-@[expose] public section
+public section
 
 namespace LGV.FinitePathNetwork
 

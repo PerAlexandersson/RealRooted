@@ -16,7 +16,7 @@ This file gives receiver-style rearrangements of Mathlib's coefficient Vieta
 identity that solve directly for an elementary symmetric function of the roots.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

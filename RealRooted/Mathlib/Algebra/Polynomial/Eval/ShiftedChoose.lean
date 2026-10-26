@@ -21,7 +21,7 @@ The proof is a triangular induction on the coefficients.
   equal shifted-binomial sums for all `t ≤ d` are equal.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

@@ -9,7 +9,7 @@ Applications of the positive-spacing telescoping bound to the denominators
 `(k + 1) (k + 2)` that occur after pairing symmetric terms.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

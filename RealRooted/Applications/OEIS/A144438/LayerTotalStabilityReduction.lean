@@ -16,7 +16,7 @@ polynomials have stable ordinary homogenizations.
 This is an exact reduction, not a proof that every total is stable.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

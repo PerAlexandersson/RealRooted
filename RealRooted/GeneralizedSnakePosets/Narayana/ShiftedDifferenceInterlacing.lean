@@ -16,7 +16,7 @@ the combinatorial inputs with the column recurrence
 `G_n - G_{n-1}` (`FiniteSkewBoard.auxiliaryG_sub_hasNonnegCoeffs`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

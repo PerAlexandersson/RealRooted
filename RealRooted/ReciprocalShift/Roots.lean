@@ -10,7 +10,7 @@ The root multiset of `reciprocalShift D p` consists of padding zeros and the
 inverses of the nonzero roots of `p`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

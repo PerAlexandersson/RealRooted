@@ -9,7 +9,7 @@ Duplicate roots in the upper row of an interlacing pair force a common root,
 and the two multiplicities of each real root differ by at most one.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

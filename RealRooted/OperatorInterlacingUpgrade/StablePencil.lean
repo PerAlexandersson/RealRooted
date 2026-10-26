@@ -16,7 +16,7 @@ operator that does not preserve bivariate real stability
 (`binaryRunTransformThree_counterexample`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

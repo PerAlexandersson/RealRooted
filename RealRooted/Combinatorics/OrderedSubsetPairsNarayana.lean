@@ -10,7 +10,7 @@ This module connects the ordered subset-pair ballot count to the `m = 1`
 Narayana coefficient already developed in `RealRooted.NarayanaTransformation`.
 -/
 
-@[expose] public section
+public section
 
 namespace Finset
 

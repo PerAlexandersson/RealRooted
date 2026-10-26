@@ -11,4 +11,4 @@ Finite root-counting, thresholded-root, and sign-change criteria for real
 polynomials.
 -/
 
-@[expose] public section
+public section

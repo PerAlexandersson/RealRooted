@@ -13,7 +13,7 @@ from interlacing and sign-normalized leading coefficients. It also exposes
 the multiset sign and partial-fraction helpers used by the converse theory.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -19,7 +19,7 @@ The converse uses the positivity of the Wronskian `f' g - f g'` forced by a
 positive definite Bézout matrix.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix
 

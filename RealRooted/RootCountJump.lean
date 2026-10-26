@@ -16,7 +16,7 @@ the threshold moves without crossing a root.  This lets us reduce a global
 count bound to the regime of thresholds that are roots of neither polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

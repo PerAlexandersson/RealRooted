@@ -37,7 +37,7 @@ can find `β`, `ev` and `W` from finitely many rows and check the identities wit
 * `div_ofNat_eq_C_mul`: `p / n = C n⁻¹ * p`, to normalize generated coefficients.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This module contains the normalized quadratic/quadratic positive-split
 x-subtraction leaf used by the same-degree right-degree-two endpoint.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

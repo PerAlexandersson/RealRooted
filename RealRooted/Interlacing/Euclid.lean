@@ -20,7 +20,7 @@ consecutive rows interlace once `P 0 ≪ P 1` and `P 1 ≪ q * P 0`
 (`twoStepProduct_interlaces`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

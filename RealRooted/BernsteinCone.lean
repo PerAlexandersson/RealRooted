@@ -12,7 +12,7 @@ roots in `[-1, 0]` has nonnegative coefficients in the Bernstein basis
 `X ^ k * (1 + X) ^ (n - k)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

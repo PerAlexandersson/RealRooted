@@ -5,7 +5,7 @@ public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Su
 
 /-! # Polynomial residue identities at a weighted insertion successor -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

@@ -5,7 +5,7 @@ public import RealRooted.Interlacing.ResidueCriterion
 
 /-! # Degree bookkeeping for the weighted deco transform -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

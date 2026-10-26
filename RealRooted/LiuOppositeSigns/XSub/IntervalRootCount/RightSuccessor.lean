@@ -6,7 +6,7 @@ public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
 # Liu x-subtraction right-successor degree endpoint.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

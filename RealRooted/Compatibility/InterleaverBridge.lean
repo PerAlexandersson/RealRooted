@@ -11,7 +11,7 @@ interleavers, is pairwise compatible: the easy direction of
 Chudnovsky--Seymour.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

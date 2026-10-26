@@ -4,7 +4,7 @@ public import RealRooted.CommonInterleaverTwo
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.SameDegreeCountFromAnalytic
 
-@[expose] public section
+public section
 
 noncomputable section
 

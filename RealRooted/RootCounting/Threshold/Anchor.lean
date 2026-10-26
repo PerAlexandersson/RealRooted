@@ -10,7 +10,7 @@ Independent roots below a threshold bound its count; combined with the parity
 chain this turns a lower bound into an exact index count.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

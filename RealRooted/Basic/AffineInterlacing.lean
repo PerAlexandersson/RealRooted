@@ -11,7 +11,7 @@ lemmas let existing root-list applications transform an interlacing witness
 without reconstructing its sorted lists.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

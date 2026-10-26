@@ -14,7 +14,7 @@ canonical list API uses natural-number positions.  The theorems below record
 the conversion through `Fin.valEmbedding`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.ParkingFunctions
 

@@ -13,7 +13,7 @@ Common-root obstructions, Vandermonde congruence, root-product identities, and
 the forward strict-interlacing-to-positive-definiteness direction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix
 

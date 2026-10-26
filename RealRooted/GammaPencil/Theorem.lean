@@ -18,7 +18,7 @@ gamma components.  Their constant coefficients and nonnegative coefficients
 then select the orientation `StrictInterl (gammaU n) (gammaV n)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

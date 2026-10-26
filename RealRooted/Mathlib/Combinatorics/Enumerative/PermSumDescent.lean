@@ -25,7 +25,7 @@ junction descent made explicit, and invariance under strictly monotone relabelli
   is `σ.descentCount + τ.descentCount + 1`.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

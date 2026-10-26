@@ -10,7 +10,7 @@ subsequences. These identities connect an arbitrary real polynomial to the
 explicit odd/even inputs used by the classical Hurwitz matrix.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

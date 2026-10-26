@@ -22,7 +22,7 @@ spectral sign of `RealRooted.JacobiDeformation.SpectralKernel` from indexed
 node families to arbitrary pairs of quasi-Jacobi roots.
 -/
 
-@[expose] public section
+public section
 
 open Finset Polynomial
 

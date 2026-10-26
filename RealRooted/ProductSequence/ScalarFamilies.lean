@@ -9,7 +9,7 @@ Degree-plateau and alternating scalar/product recurrence shells, including
 left/right factor and tail-start variants.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

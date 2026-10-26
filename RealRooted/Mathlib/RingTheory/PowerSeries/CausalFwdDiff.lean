@@ -15,7 +15,7 @@ The causal forward difference of a coefficient sequence corresponds to
 multiplication by `1 - X`.
 -/
 
-@[expose] public section
+public section
 
 namespace PowerSeries
 

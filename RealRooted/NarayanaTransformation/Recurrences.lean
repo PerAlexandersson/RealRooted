@@ -9,4 +9,4 @@ public import RealRooted.NarayanaTransformation.Recurrences.Interlacing
 Compatibility facade for recurrence identities and their interlacing endpoint.
 -/
 
-@[expose] public section
+public section

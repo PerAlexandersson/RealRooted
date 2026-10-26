@@ -17,7 +17,7 @@ Upstream-shaped coefficient estimates which rule out a negative real root when
 one coefficient term dominates all the others at a positive evaluation point.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

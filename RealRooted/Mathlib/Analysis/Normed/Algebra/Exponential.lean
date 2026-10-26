@@ -16,7 +16,7 @@ endomorphism. It is the nonvanishing step in finite-dimensional semigroup
 arguments.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

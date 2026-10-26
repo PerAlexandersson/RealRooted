@@ -15,7 +15,7 @@ backend `derivLag_strictInterl_and_noCommonRoot` shows that `h_{r+1}` and `h_{r+
 interlace and have no common root.  Consequently all roots of `h_r` are negative and simple.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This module checks concrete coefficient recurrences against the generic
 Wang--Yeh triangular-array criterion.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

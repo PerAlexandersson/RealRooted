@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Basis
 # Falling-factorial inverse transform.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

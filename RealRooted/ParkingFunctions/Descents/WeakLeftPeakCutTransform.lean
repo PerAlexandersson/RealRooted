@@ -13,7 +13,7 @@ example distinguishes this transform from Leander's diagonal-omitting
 transform already for a two-letter alphabet.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

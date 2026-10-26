@@ -2,7 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.PeakValues.Insertion
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

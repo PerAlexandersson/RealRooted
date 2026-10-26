@@ -12,7 +12,7 @@ and proves that they satisfy the ordered cut-compatibility invariant.  It
 contains no preservation claim for later ranks.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

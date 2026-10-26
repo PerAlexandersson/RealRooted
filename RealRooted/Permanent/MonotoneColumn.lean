@@ -19,7 +19,7 @@ identities used by the Ferrers induction; they were independently checked
 with AXLE before integration.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Permanent

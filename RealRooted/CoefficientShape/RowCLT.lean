@@ -9,7 +9,7 @@ This module connects the existing moment calculations for product and
 constant-coefficient three-term recurrences to Harper's coefficient-distribution CLT.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology ProbabilityTheory
 open scoped BigOperators Polynomial

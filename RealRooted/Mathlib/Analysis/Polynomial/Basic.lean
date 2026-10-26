@@ -17,7 +17,7 @@ neighbourhoods of a real number are nontrivial. This is a candidate for
 upstreaming to `Mathlib.Analysis.Polynomial.Basic`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

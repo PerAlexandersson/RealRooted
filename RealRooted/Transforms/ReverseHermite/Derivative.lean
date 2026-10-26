@@ -9,7 +9,7 @@ The basis derivative formula yields the heat-intertwining identity
 `(H p)' = H (p') + (1 / 2) H (p'')`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

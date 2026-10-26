@@ -12,7 +12,7 @@ then every output root is simple.  The multiplicity argument uses
 Kostov--Shapiro, *On Schur--Szegő composition of polynomials*, Theorem 6(ii).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

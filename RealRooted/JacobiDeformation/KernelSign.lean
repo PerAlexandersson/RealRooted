@@ -17,7 +17,7 @@ at `A` to a matrix that is strictly positive at every entry where `A` is.
 The Newton degree may exceed the matrix dimension.
 -/
 
-@[expose] public section
+public section
 
 open Finset Matrix Polynomial
 

@@ -13,7 +13,7 @@ topology.  We combine that fact with the finite source-border chain theorem to
 pass PF and interlacing certificates to strictly lower kernel rows.
 -/
 
-@[expose] public section
+public section
 
 open Filter Matrix Polynomial Topology
 

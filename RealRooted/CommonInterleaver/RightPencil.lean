@@ -15,7 +15,7 @@ public import RealRooted.RootCountJump
 public import RealRooted.RootOrderBridge
 public import RealRooted.WagnerX
 
-@[expose] public section
+public section
 
 open Polynomial
 

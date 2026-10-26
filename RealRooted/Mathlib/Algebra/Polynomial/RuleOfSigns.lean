@@ -16,7 +16,7 @@ This file records the endpoint-sign parity of the zero-filtered coefficient
 list and its consequence for multiplication by a positive linear factor.
 -/
 
-@[expose] public section
+public section
 
 open SignType
 

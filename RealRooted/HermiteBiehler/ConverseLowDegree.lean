@@ -15,7 +15,7 @@ contains the quadratic and Vieta reductions, degree-shape bounds, and explicit
 interlacing inequalities needed by the low-degree endpoint.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -21,7 +21,7 @@ anywhere on the real line.  These are the facts behind the product-recurrence
 OEIS triangles (`P (n + 1) = (a + b X) P n`, possibly with `n`-dependent `a, b`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

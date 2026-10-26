@@ -19,7 +19,7 @@ This module proves the complete root-location conclusion from those signs.
 The signs' derivation from the complex input disk is separate.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

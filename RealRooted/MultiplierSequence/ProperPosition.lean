@@ -12,7 +12,7 @@ interlacing up to orientation (finite Pólya--Schur).  Comparing the sums of the
 fixes the orientation: positive multiplier sequences preserve directed proper position.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

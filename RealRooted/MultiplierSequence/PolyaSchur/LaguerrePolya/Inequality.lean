@@ -11,7 +11,7 @@ This leaf transports the polynomial Laguerre inequality through the locally
 uniform limits in `IsLaguerrePolya`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

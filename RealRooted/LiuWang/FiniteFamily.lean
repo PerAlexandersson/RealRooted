@@ -16,7 +16,7 @@ vacuous: `f = X^2`, `g = X` and `F = X^3 + X^2 + X` satisfy it at zero, but `F` 
 roots.  The theorem below keeps the termwise hypotheses `b i (r) ≤ 0` instead.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

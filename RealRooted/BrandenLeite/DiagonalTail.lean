@@ -13,7 +13,7 @@ polynomials inside the original block are unchanged, so the Nat-indexed chain
 theorems apply to those finite rows.
 -/
 
-@[expose] public section
+public section
 
 open Matrix
 

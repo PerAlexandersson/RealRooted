@@ -14,7 +14,7 @@ This file contains results intended for upstreaming to
 `Mathlib.RingTheory.MvPolynomial.Homogeneous`.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

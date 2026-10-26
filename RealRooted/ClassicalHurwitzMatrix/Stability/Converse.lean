@@ -10,7 +10,7 @@ Positivity of the leading classical Hurwitz determinants is propagated down
 the canonical Routh reduction and then converted back to root location.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

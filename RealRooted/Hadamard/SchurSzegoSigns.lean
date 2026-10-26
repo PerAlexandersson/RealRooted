@@ -26,7 +26,7 @@ The real-rootedness of `P *ₙ Q` (finite Schur–Szegő theorem) is taken as an
 in `schurSzegoComp_roots_sign_counts`; the zero-root statement needs no such hypothesis.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

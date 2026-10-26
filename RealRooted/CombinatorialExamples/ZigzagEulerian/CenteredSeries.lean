@@ -15,7 +15,7 @@ Appendix A.6 in the proof of `thm:zigzagEulerian`. We compare evaluations at
 infinitely many odd integers, using the actual weak-word counting bijection.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -21,7 +21,7 @@ analogues, with `|ν| < λ`, and the scalar recurrences satisfied by `P n (1)`, 
 `P n ''(1)` when `P (n + 2) = a * P (n + 1) + b * P n`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 open scoped Polynomial

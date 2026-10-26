@@ -20,7 +20,7 @@ under this expansion, and splitness of the expansion forces its source roots
 to be nonnegative.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

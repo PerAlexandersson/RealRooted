@@ -9,7 +9,7 @@ module
 
 public import RealRooted.CommonInterleaver.PairBridge
 
-@[expose] public section
+public section
 
 open Polynomial
 

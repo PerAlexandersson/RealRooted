@@ -16,7 +16,7 @@ public import RealRooted.RootOrderBridge
 public import RealRooted.SameDegreeCubicRootCount
 public import RealRooted.SameDegreeQuadraticRootCount
 
-@[expose] public section
+public section
 
 open Polynomial
 

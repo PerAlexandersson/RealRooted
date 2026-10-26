@@ -11,7 +11,7 @@ nonnegativity of each recurrence-defined exact layer.  It makes no claim
 about the sum over different exceptional histories.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

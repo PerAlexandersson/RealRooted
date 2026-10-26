@@ -15,7 +15,7 @@ and more generally that every nonzero polynomial of degree at most one is
 real-rooted.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

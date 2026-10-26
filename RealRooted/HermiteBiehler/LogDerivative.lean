@@ -11,7 +11,7 @@ root factor. It is independent of the Hermite--Biehler interlacing
 arguments.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

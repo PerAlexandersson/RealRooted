@@ -15,7 +15,7 @@ This covers the alternating-runs polynomials A008970, A059427 and A186370, whose
 are peak polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

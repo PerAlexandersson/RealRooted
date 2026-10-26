@@ -13,7 +13,7 @@ This file provides reusable strict-interlacing consequences of multivariate
 real stability for positive weighted common-phase restrictions.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -13,4 +13,4 @@ Compatibility facade for the converse, forward, degree-gap, and
 derivative-preservation layers of Obreschkoff's theorem.
 -/
 
-@[expose] public section
+public section

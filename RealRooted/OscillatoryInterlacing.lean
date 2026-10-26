@@ -12,7 +12,7 @@ interlacing to obtain strict interlacing, simple roots, root-disjointness, and
 positive spectrum for consecutive principal sections.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

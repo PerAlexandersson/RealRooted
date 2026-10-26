@@ -12,7 +12,7 @@ Euler pencil and uses the forced orientation of the resulting degree-growth-one
 pair.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

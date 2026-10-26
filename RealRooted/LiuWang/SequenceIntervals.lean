@@ -8,7 +8,7 @@ public import RealRooted.LiuWang.SequencePositive
 Sequence criteria whose lag sign is certified on a root interval.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -16,7 +16,7 @@ This file separates the ordered real-root theory from the coefficient-ring
 algebra in `RealRooted.EulerOperator.Darboux.Basic`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

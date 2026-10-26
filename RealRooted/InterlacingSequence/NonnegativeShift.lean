@@ -12,7 +12,7 @@ coefficients. Translation preserves both strict and zero-aware interlacing,
 so the same normalization applies to finite interlacing sequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -9,7 +9,7 @@ Translating a split pair far enough makes its coefficients nonnegative, which
 reduces the two-polynomial common-interleaver theorem to the nonnegative case.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

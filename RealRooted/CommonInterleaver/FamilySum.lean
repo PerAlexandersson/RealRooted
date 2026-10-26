@@ -19,7 +19,7 @@ This sequence-independent corollary family was first used in
 `ProofsOeis.CompatibilityFamilies`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -25,7 +25,7 @@ The transfer to the descent enumerators of the separable permutations,
 `strictInterl_descentEnumerator`, is in `RealRooted/SeparablePermutations/Identification.lean`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

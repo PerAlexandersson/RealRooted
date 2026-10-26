@@ -11,7 +11,7 @@ and derives real-rootedness and Pólya-frequency results for matching
 polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

@@ -11,7 +11,7 @@ This file uses block symmetry and the derivative chain rule for noninjective
 renamings to transport partial derivatives through blockwise polarization.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

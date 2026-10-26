@@ -14,7 +14,7 @@ and the root-sum argument supplies one extra root on the lower side, the upper
 root counts are forced to agree by cardinality.
 -/
 
-@[expose] public section
+public section
 
 namespace Multiset
 

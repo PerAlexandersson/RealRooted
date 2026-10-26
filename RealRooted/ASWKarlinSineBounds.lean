@@ -11,7 +11,7 @@ This file contains elementary sign-variation estimates for the sampled sine
 vectors used in Karlin's finite-order sector proof.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

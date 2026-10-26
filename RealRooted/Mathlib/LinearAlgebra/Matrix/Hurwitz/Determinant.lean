@@ -16,7 +16,7 @@ classical Hurwitz matrix. They are kept separate from the entry-definition
 module so consumers of the matrix itself do not inherit determinant imports.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

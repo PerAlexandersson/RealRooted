@@ -10,7 +10,7 @@ This module owns affine Favard theorem APIs whose displayed recurrences have a
 nonzero scalar constant-polynomial denominator.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

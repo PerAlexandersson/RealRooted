@@ -14,7 +14,7 @@ public import Mathlib.Algebra.Polynomial.Eval.Defs
 `p.eval a ≠ 0`.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 variable {R : Type*} [Semiring R]

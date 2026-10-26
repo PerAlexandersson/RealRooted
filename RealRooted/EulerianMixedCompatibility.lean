@@ -19,7 +19,7 @@ partial-fraction, regularization, and common-root-safe arguments.
 `E(c, d) p = (c + (d + 1) X) p + (X - X^2) p'`
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

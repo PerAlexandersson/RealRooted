@@ -25,7 +25,7 @@ spectrum needs the compound-matrix and Perron-Frobenius machinery, but the
 sign of the real eigenvalues only needs the minor expansion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

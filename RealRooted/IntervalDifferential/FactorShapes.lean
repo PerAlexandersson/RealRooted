@@ -16,7 +16,7 @@ These elementary factor lemmas prepare the induction in Appendix C.4 of
 product of two real linear factors or a conjugate-pair factor.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

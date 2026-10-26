@@ -11,7 +11,7 @@ public import RealRooted.AffineFamily
 public import RealRooted.AllCombo
 public import RealRooted.PosCombo
 
-@[expose] public section
+public section
 
 open Polynomial
 

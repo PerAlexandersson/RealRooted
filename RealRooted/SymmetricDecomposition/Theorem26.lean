@@ -9,7 +9,7 @@ The interlacing equivalences, boundary analysis, and ordered-degree bridge
 for the symmetric-decomposition real-rootedness theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

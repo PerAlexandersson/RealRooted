@@ -27,7 +27,7 @@ same-degree case by padding `q` with a linear factor whose root lies above
 inequalities.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

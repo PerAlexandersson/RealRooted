@@ -18,7 +18,7 @@ This file adds a reusable integrability lemma for a polynomial times a
 decaying Gaussian.
 -/
 
-@[expose] public section
+public section
 
 open MeasureTheory
 

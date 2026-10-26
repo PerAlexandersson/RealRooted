@@ -25,7 +25,7 @@ Here `P_n = R(n,n)` is the modified Narayana polynomial and
 `G_n = sum_{i < n} R(n,i)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

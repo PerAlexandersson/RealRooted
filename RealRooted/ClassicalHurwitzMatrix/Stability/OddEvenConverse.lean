@@ -26,7 +26,7 @@ As a consequence, the conformal substitution
 `IsHurwitzStable.isUpperHalfPlaneStable_hermiteBiehlerPolynomial`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

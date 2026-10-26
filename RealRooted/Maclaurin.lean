@@ -20,7 +20,7 @@ For a multiset `t` of `n` real numbers write `e_k = t.esymm k` and `E k = e_k / 
 * G. H. Hardy, J. E. Littlewood, G. Pólya, *Inequalities*, §2.22 (Theorems 51 and 52).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

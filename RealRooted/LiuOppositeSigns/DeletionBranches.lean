@@ -11,7 +11,7 @@ selected by Liu's left or right root-count branch.  The factor-return proof of
 the reverse direction is in `RealRooted.LiuOppositeSigns.FactorReturnAssembly`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

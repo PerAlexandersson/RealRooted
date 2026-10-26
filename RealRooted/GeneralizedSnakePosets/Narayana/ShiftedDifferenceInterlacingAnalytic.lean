@@ -10,7 +10,7 @@ auxiliary-pencil splitness and nonpositive roots, and packages the endpoint-safe
 root-sum orientation as the shifted difference interlacing claim.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

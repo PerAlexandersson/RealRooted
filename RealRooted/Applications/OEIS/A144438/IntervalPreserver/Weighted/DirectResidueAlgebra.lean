@@ -9,7 +9,7 @@ This is the square-root-free form of the block calculation.  The positive
 diagonal weight is `(1-r) * V`, where `V = (-r) * ω`.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

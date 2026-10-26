@@ -18,7 +18,7 @@ real zeros*, Theorem 2.1; Ma–Wang, *q-Eulerian polynomials and polynomials wit
 zeros*, Theorem 2).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

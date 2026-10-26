@@ -34,7 +34,7 @@ and every `m` we have
 The proofs were found by Aristotle (Harmonic) and then ported and cleaned up by hand.
 -/
 
-@[expose] public section
+public section
 
 namespace PowerSeries
 

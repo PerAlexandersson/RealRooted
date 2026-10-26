@@ -16,7 +16,7 @@ This file gives algebraic identities for changing the ambient degree of
 interlacing pair in the PF cone.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

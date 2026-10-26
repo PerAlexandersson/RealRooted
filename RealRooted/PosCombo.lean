@@ -15,7 +15,7 @@ common-left interleaver forward direction, and convex-combination wrapper
 theorems.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

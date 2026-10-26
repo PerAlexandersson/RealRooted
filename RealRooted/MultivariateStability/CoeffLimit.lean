@@ -13,7 +13,7 @@ stability-preserving operators converges coefficientwise.  The proof restricts
 to a complex affine line and applies the existing closed-root limit theorem.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

@@ -8,7 +8,7 @@ public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 Nonnegative-coefficient and interlacing results for the normalized shifted recurrence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

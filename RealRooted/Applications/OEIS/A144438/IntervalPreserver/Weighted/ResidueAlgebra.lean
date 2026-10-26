@@ -5,7 +5,7 @@ public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Re
 
 /-! # Finite residue algebra for the weighted Schur complement -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

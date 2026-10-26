@@ -16,7 +16,7 @@ This file proves genus-one Hadamard factorization for an entire function of expo
 whose zeros are enumerated with multiplicity. It also gives the finite-zero factorization.
 -/
 
-@[expose] public section
+public section
 
 open Complex Filter Topology
 open MeromorphicOn

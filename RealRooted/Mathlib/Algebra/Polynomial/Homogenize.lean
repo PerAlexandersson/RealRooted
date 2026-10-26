@@ -14,7 +14,7 @@ This file supplies root-factor and finite coefficient-sum formulas for
 `Polynomial.homogenize`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

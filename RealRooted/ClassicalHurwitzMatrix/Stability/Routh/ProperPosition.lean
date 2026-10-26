@@ -12,7 +12,7 @@ the odd-degree parity shape, complementing the even-shape theorem in the
 algebraic Routh module.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

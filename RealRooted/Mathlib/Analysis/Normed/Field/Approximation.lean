@@ -18,7 +18,7 @@ This file adds a coefficient-neighborhood form of root continuity intended
 for upstreaming to `Mathlib.Analysis.Normed.Field.Approximation`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open Filter Topology

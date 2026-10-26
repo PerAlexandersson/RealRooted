@@ -10,7 +10,7 @@ interlacing transport for degree-padded reciprocal shifts. Padding
 interlacing and the polynomial-level `StrictInterl` swap live in later modules.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This file adds only the polynomial-amplitude consequences missing from the
 canonical `SortedRoots.rootMags` and `SortedRoots.rootSeq` API.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

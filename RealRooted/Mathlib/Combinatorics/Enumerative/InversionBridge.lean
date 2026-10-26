@@ -15,7 +15,7 @@ public import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
 and occurrences of `12` and `21` together count all `n.choose 2` pairs.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

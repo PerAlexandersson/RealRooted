@@ -13,7 +13,7 @@ coefficients, and specializing an independent right block to zero evaluates
 that block at zero.  Target variables remain unrestricted.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

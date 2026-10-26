@@ -9,7 +9,7 @@ The sign of the reversed Wronskian at the roots of a degree-`n + 1` polynomial
 forces a root of its lower-degree companion in every consecutive root gap.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -9,7 +9,7 @@ Multiplication by a split polynomial after differentiating `X * p` preserves spl
 The sequence form packages the induction used by degree-jump-two rows.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -12,7 +12,7 @@ Narayana polynomials and derives the auxiliary-polynomial coefficient and
 degree consequences of the all-rank recurrence hypothesis.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -57,7 +57,7 @@ Only one case of the induction over crossings is left open, namely a crossing pr
 run of length `≥ 7`; see `PROOF_NOTES.md`, §13.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

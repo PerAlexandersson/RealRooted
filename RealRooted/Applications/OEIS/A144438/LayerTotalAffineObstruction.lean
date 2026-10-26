@@ -12,7 +12,7 @@ valid all-rank invariant must retain quantitative compensation from the normal
 Wronskian rather than prove the two summands independently nonnegative.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

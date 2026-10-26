@@ -10,7 +10,7 @@ The derivative-preservation consequences of the two directions of
 Obreschkoff's theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

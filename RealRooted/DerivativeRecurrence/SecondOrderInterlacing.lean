@@ -13,7 +13,7 @@ Coefficient positivity, strict root negativity, and interlacing for the
 second-order recurrence shared by several OEIS polynomial families.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

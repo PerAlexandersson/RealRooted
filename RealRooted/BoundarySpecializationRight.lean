@@ -10,7 +10,7 @@ Only the finite right block is specialized.  The left block consists of
 spectator variables and may have arbitrary cardinality and arbitrary degrees.
 -/
 
-@[expose] public section
+public section
 
 open Complex
 

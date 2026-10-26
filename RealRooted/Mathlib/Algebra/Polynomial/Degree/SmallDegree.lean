@@ -15,7 +15,7 @@ most two equals `C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0)`. It 
 analogue of `Polynomial.eq_X_add_C_of_natDegree_le_one`.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

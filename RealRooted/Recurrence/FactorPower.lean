@@ -10,7 +10,7 @@ deflated to an ordinary three-term recurrence.  This module contains only the al
 identity; tactic recognition and certificate construction live under `RealRooted.Tactic`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

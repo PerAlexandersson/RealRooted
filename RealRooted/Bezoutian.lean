@@ -12,4 +12,4 @@ With the current root orientation convention, `StrictInterlSameDegree p q`
 corresponds to positive definiteness of `bezoutMatrix n q p`.
 -/
 
-@[expose] public section
+public section

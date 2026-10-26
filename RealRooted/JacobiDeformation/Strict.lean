@@ -31,7 +31,7 @@ applies to the constant derivative and the linear deformation.
   roots for every `δ ≥ 0`, via the unit parameter shift.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

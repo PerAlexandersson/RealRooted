@@ -13,7 +13,7 @@ The normalized derivative at a simple nonzero root equals a product over the
 other roots.  This is the polynomial bridge for finite root-amplitude bounds.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

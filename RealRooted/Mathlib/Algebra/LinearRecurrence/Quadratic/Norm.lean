@@ -16,7 +16,7 @@ The bounds use two supplied characteristic roots. Root existence and
 specialized real or complex estimates remain separate clients.
 -/
 
-@[expose] public section
+public section
 
 namespace LinearRecurrence
 

@@ -10,7 +10,7 @@ same order as their actions on polynomial vectors.  Consequently, ordered-PF
 preservers are closed under multiplication and powers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

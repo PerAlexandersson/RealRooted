@@ -11,7 +11,7 @@ negative root location, positive companion residues, and scaled residue
 energy.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

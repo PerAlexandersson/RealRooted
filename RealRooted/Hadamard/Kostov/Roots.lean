@@ -5,7 +5,7 @@ public import RealRooted.Hadamard.Kostov.Interlacing
 public import RealRooted.Bezoutian.WronskianConverse
 public import RealRooted.Wronskian.Successor.Interlacing
 
-@[expose] public section
+public section
 
 open Polynomial
 

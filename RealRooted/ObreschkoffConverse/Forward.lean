@@ -11,7 +11,7 @@ public import RealRooted.ObreschkoffConverse.Converse
 The interlacing to all-real-rooted pencil half of Obreschkoff's theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

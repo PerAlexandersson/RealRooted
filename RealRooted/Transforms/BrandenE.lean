@@ -14,4 +14,4 @@ Facade for the ordered-Bell transform, its falling-factorial inverse, and its
 Pólya-frequency/interlacing theory.
 -/
 
-@[expose] public section
+public section

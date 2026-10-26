@@ -11,7 +11,7 @@ This module relates `PositiveSplitRootCountPair` to Liu's root-count
 conditions, common interleavers, and compatibility.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

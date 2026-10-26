@@ -5,7 +5,7 @@ public import RealRooted.ProductFamily
 public import RealRooted.GarloffWagner
 public import RealRooted.PosCombo
 
-@[expose] public section
+public section
 
 open Polynomial
 

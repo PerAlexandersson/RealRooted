@@ -24,7 +24,7 @@ Interlacing preservation for `J_n` and `K_n` yields `F ≪ A` and `E ≪ F + E`;
 the common-left cone then closes `F ≪ P + X E`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

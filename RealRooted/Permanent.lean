@@ -9,4 +9,4 @@ This module exports the monotone column permanent theorem and its supporting
 Ferrers and stability theory.
 -/
 
-@[expose] public section
+public section

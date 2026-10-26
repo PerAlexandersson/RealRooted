@@ -14,7 +14,7 @@ This file contains compatibility lemmas intended for upstreaming to
 `Mathlib.Data.Fin.Basic`.
 -/
 
-@[expose] public section
+public section
 
 namespace Fin
 

@@ -16,7 +16,7 @@ public import RealRooted.SameDegreeQuadraticRootCount
 public import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.SuccDegreeRootCrossing
 
-@[expose] public section
+public section
 
 open Polynomial
 

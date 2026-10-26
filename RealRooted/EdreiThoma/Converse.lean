@@ -15,7 +15,7 @@ steps.  It identifies a normalized Pólya-frequency sequence with an Edrei--Thom
 product.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology Complex
 

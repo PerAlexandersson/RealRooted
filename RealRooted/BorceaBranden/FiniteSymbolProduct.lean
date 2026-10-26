@@ -12,7 +12,7 @@ the source/input degree bounds needed for the repeated Lieb--Sokal step.
 Target variables remain unrestricted.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

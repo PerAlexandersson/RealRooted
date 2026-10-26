@@ -11,7 +11,7 @@ Complexified Bezout evaluation excludes nonreal roots and recovers splitness
 of both real polynomials from positive definiteness.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix
 

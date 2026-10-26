@@ -12,4 +12,4 @@ The main result is that if `f` is a real-rooted polynomial of degree at least
 two, then `f.derivative` is real-rooted and interlaces `f`.
 -/
 
-@[expose] public section
+public section

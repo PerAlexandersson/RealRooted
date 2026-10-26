@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Interlacing.ResidueCriterion
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

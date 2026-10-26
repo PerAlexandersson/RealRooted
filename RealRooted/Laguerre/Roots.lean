@@ -25,7 +25,7 @@ recurrence gives the strict and simple-root theory when `-1 < α`; the boundary
 case follows from its explicit factorization by `X`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

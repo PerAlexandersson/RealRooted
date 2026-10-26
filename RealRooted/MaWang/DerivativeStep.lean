@@ -10,7 +10,7 @@ The reusable one-step weak Ma--Wang criteria. Sequence closure and tactic
 elaboration live in separate modules.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

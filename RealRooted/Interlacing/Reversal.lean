@@ -26,7 +26,7 @@ Both are stated as the link `P n = reflect (D₀ + n) (R n)` for a sequence `R` 
 recurrence, so that `R` can be an ordinary recursive definition.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

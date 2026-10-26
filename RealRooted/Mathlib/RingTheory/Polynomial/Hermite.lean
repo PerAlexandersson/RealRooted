@@ -16,7 +16,7 @@ This file extends Mathlib's canonical probabilists' Hermite polynomials with
 the lowering identity and the equivalent three-term recurrence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

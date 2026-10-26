@@ -15,7 +15,7 @@ This file contains small upstream-shaped trigonometric lemmas used by
 RealRooted.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

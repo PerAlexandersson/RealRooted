@@ -8,7 +8,7 @@ public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 Degree and interlacing adapters for recurrences beginning with a quadratic seed.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

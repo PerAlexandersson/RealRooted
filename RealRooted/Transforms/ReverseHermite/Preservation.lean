@@ -12,7 +12,7 @@ simultaneous degree induction proves preservation of the polynomial PF cone
 and of zero-aware interlacing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

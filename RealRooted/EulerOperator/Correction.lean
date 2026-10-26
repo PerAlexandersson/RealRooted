@@ -16,7 +16,7 @@ This file packages common-interleaver arguments for adding a nonnegative
 correction below the Euler successor `thetaPlusOne p`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

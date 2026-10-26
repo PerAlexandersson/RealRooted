@@ -10,7 +10,7 @@ This file connects the multivariate edge-matching polynomial to the existing
 weighted univariate splitness and Pólya-frequency endpoints.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

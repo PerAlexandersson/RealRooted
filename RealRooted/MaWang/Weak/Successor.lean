@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang.Weak.Regularization
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -14,7 +14,7 @@ The same rank-four data also makes the three affine discriminants in the
 rank-two companion/successor-slope interface explicitly nonpositive.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

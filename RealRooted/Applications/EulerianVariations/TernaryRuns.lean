@@ -19,7 +19,7 @@ here; the interlacing and real-rootedness consequences are proved from the
 explicit recurrence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

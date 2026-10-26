@@ -12,7 +12,7 @@ weighted finite Cauchy--Schwarz inequality.  This is the algebraic content of
 the formula for `bᵀ C⁻¹ b`.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 
