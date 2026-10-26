@@ -24,24 +24,6 @@ variable (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r)
 variable (hB : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (B n).eval r ≤ 0)
 variable (hrecB : ∀ n : Nat, P (n + 2) = A n * P (n + 1) + B n * P n)
 
-/-- A supplied recurrence fixes both hidden coefficient families before lookup. -/
-example : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_nonpos_lag_sequence using recurrence := hrecB
-
-/-- The inferred nonpositive-lag shell returns its full real-rooted endpoint. -/
-example : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
-
-/-- The inferred nonpositive-lag shell supports the splitting projection. -/
-example : ∀ n : Nat, (P n).Splits := by
-  rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
-
-/-- The inferred nonpositive-lag shell supports the nonzero projection. -/
-example : ∀ n : Nat, P n ≠ 0 := by rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
-
-/-- The inferred nonpositive-lag shell supports an indexed splitting projection. -/
-example : (P 3).Splits := by rr_lw_nonpos_lag_sequence_realrooted using recurrence := hrecB
-
 variable (_hQ : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (Q n).eval r)
 variable (hnonneg : ∀ n : Nat, HasNonnegCoeffs (P n))
 variable (hR : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → 0 ≤ (R n).eval r)
