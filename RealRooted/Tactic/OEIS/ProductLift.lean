@@ -9,7 +9,7 @@ Parser declarations and dispatch rules for quotient-real-rooted product lifts,
 with explicit factorization and cutoff variants.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

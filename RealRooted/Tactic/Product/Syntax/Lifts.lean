@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Finish
 Syntax for specialized quotient and row-factor lifts.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

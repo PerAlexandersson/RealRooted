@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.Basic
 Parser declarations for one-step Ma--Wang and weak derivative certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

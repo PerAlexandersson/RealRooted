@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Finish
 Syntax for affine, powered, scalar, and product-family recurrences.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

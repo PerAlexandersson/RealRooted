@@ -4,7 +4,7 @@ public import RealRooted.SymmetricDecomposition
 public import RealRooted.CombinatorialExamples.DerangementStatistic
 public import RealRooted.SymmetricDecomposition.DerangementTransform
 
-@[expose] public section
+public section
 
 open Polynomial
 

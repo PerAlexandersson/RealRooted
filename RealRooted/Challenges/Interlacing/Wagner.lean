@@ -80,7 +80,7 @@ This module records the three forms of Wagner's lemma used in the catalog,
 the two nonnegative-combination consequences and the chain proposition.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

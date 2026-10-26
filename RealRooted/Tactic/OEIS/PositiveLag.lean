@@ -11,7 +11,7 @@ certificates. This frontend is independent of denominator normalization and
 the degree-two derivative-lag certificate language.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

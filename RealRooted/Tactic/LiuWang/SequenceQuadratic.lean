@@ -8,7 +8,7 @@ public import RealRooted.Tactic.LiuWang.Step
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -9,7 +9,7 @@ Thin certificate-driven wrappers around the proved stable homogenization
 theorems.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

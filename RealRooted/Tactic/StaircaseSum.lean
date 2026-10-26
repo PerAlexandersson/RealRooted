@@ -9,7 +9,7 @@ Thin wrappers for staircase-weighted sums of interlacing nonnegative
 sequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

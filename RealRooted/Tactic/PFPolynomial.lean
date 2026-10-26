@@ -10,7 +10,7 @@ pointwise sequence identification. The remaining declarations are thin tactic
 wrappers for standard closure operations on `IsPFPolynomial`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

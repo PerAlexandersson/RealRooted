@@ -9,7 +9,7 @@ public import RealRooted.Tactic.PFPolynomial
 Thin wrappers around the Hutchinson--Kurtz coefficient criterion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

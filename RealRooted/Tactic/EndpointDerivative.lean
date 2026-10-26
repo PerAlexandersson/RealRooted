@@ -16,7 +16,7 @@ first adjoins the endpoints and then differentiates. Both steps are handled by
 the weak Ma--Wang criterion and preserve the interval invariant.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

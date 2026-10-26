@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Finish
 Thin wrappers for derivative interlacing and routine derivative side goals.
 -/
 
-@[expose] public section
+public section
 
 open Lean.Elab.Tactic
 open Polynomial

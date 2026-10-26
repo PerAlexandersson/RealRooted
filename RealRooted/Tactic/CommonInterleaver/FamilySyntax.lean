@@ -9,7 +9,7 @@ Parser declarations for Chudnovsky--Seymour four-way certificates and
 pairwise-to-family compatibility upgrades.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

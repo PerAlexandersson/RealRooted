@@ -16,7 +16,7 @@ determinant formula for a strictly increasing family.
 
 public section
 
-@[expose] public section
+public section
 
 namespace Matrix
 

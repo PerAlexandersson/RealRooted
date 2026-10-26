@@ -9,7 +9,7 @@ Thin wrappers for the Branden--Solus `fPolynomial` transport API in
 `RealRooted.SymmetricDecomposition`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

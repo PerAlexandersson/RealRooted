@@ -28,7 +28,7 @@ Initial scope:
 This tactic should fail clearly when a mathematical certificate is missing.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -6,7 +6,7 @@ public import RealRooted.CombinatorialExamples.TypeBEulerian
 public import RealRooted.GeneralizedEulerian.GeneratingFunction
 public import RealRooted.MaWang.DerivativeStep
 
-@[expose] public section
+public section
 
 open Polynomial
 

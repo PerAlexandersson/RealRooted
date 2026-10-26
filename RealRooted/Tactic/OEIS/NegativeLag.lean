@@ -11,7 +11,7 @@ Parser declarations and dispatch rules for global-nonpositive, square, and
 quadratic negative-lag certificates, including denominator normalization.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

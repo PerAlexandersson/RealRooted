@@ -9,7 +9,7 @@ public import RealRooted.Tactic.RootCount.LowDegree
 Parser declarations for same-degree and low-degree root-count certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

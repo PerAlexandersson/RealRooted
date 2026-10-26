@@ -9,7 +9,7 @@ Parser declarations and dispatch rules for alternating scalar/product steps and
 endpoint-pair certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

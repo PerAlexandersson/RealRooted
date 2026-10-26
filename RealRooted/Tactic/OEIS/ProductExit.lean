@@ -9,7 +9,7 @@ Parser declarations and dispatch rules for product recurrences that terminate
 at an identity, a zero root, or a period-two endpoint.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

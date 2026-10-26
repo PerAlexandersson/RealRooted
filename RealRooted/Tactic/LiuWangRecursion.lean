@@ -13,7 +13,7 @@ proofs.  These wrappers expose the same route under names that match the
 backend theorem family.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

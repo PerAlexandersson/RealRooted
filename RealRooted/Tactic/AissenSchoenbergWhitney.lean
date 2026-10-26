@@ -10,7 +10,7 @@ Thin certificate-driven wrappers around the proved forward ASW theorem and
 its standard projections.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

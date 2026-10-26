@@ -17,7 +17,7 @@ hockey-stick identity `Nat.sum_Icc_choose`.  The proof (induction on `n` with Pa
 found by Aristotle (Harmonic).
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

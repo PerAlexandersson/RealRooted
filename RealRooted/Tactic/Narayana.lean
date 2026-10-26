@@ -11,7 +11,7 @@ proper-position theorems.  Each tactic also has a field-free form that infers
 the parameter and degree from the goal.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

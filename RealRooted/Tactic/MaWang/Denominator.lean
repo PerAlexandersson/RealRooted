@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.Sequences
 Elaboration rules for normalized scalar-denominator recurrence certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

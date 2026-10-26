@@ -9,7 +9,7 @@ public import RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax
 Macro expansions for degree-at-most-three pair and family endpoints.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

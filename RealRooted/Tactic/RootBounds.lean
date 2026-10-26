@@ -12,7 +12,7 @@ the root interval `(-∞, 0]`.  This file packages the repeated step from
 it with `rr_sign` for coefficient-sign goals at roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

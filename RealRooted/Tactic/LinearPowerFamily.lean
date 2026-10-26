@@ -10,7 +10,7 @@ Thin tactic wrappers for the fixed linear-power helpers in
 `RealRooted.LinearPowerFamily`.
 -/
 
-@[expose] public section
+public section
 
 open Lean.Elab.Tactic
 open Polynomial

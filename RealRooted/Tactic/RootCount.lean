@@ -16,4 +16,4 @@ upper-endpoint count equal to the normalized zero-endpoint count:
 `card (roots (f + C μ * g) above x) = card (roots f above x)`.
 -/
 
-@[expose] public section
+public section

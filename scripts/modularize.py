@@ -12,11 +12,13 @@ Each file gets the layout already used by the module files of the repository:
 
     /-! module docstring -/
 
-    @[expose] public section
+    @[expose] public section      -- or ``public section``, see below
 
-Every import becomes ``public import``, and the whole file is exposed so that
-importers can still unfold definitions (``rfl``, ``decide``, ``simp``).  Theorem
-bodies are never exported, which is where the rebuild savings come from.
+Every import becomes ``public import``.  Following Mathlib, a file that declares definitions is
+exposed (``@[expose] public section``) so that importers can still unfold them (``rfl``,
+``decide``, ``simp``); a file with only theorems, notation or syntax gets ``public section``,
+since theorem bodies are never exported anyway (that is where the rebuild savings come from).
+``scripts/check_module_system.py`` enforces the second rule.
 Files that already start with ``module`` are left unchanged.  A ``module`` file
 may only import other modules, so convert files bottom-up along the import graph.
 """
@@ -27,6 +29,9 @@ import argparse
 import re
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from check_module_system import DEFINITION  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 IMPORT_RE = re.compile(r"^(?:(public|private)\s+)?(meta\s+)?import\s+\S+")
@@ -78,7 +83,8 @@ def convert(text: str) -> str:
     head = lines[:insert_at]
     while head and head[-1].strip() == "":
         head.pop()
-    head += ["", "@[expose] public section", ""]
+    defines = DEFINITION.search("\n".join(body)) is not None
+    head += ["", "@[expose] public section" if defines else "public section", ""]
     pre = head[: copyright_end + 1]
     rest = head[copyright_end + 1 :]
     while rest and rest[0].strip() == "":

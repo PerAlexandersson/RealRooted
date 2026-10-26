@@ -11,7 +11,7 @@ Parser declarations and dispatch rules for finite-product factor certificates,
 including formula and J1 model endpoints.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

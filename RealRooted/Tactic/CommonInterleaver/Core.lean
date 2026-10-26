@@ -9,7 +9,7 @@ Pointwise sequence wrappers for compatibility, common-interleaver, and
 real-rooted sum theorems.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

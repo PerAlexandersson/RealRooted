@@ -9,7 +9,7 @@ public import RealRooted.Tactic.RootCount.LowDegreeSyntax
 Macro expansions for same-degree and low-degree root-count certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

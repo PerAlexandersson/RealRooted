@@ -21,7 +21,7 @@ numbers.  The proof centers the family and sums a nonnegative cubic certificate.
 is attained when one value occurs once and a second value occurs at all remaining indices.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

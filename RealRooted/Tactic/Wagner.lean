@@ -13,7 +13,7 @@ common-factor transport, and linear-factor cancellation without
 sequence-specific names.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

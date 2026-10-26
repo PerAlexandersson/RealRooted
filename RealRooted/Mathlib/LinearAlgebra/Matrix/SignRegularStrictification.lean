@@ -20,7 +20,7 @@ lets the Gaussian parameter tend to infinity.
 
 public section
 
-@[expose] public section
+public section
 
 open Filter
 open scoped Topology

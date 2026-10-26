@@ -10,7 +10,7 @@ public import RealRooted.Tactic.SideGoals
 Macro expansions for general root-count and local-continuity certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

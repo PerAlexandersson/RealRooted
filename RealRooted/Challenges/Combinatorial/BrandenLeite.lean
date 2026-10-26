@@ -159,4 +159,4 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.BrandenLeite`.
 -/
 
-@[expose] public section
+public section

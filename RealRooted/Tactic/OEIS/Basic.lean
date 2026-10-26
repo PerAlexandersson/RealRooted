@@ -10,7 +10,7 @@ Certificate-family frontends import this module rather than each duplicating
 these term elaborators.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

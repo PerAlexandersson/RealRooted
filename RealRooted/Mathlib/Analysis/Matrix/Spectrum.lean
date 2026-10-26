@@ -22,7 +22,7 @@ lie in `[-1, 1]`, so `(1 + M) / 2` and `(1 - M) / 2` are positive semidefinite.
 * `Matrix.IsHermitian.posSemidef_of_det_one_add_smul_ne_zero`: the determinant criterion above.
 -/
 
-@[expose] public section
+public section
 
 open Matrix
 

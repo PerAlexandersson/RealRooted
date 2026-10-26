@@ -95,6 +95,20 @@ with `<;>`, removed redundant constructors, and cleaned unused hypotheses.
 - Do not mix unrelated formatting cleanup with proof changes.
 - Do not silence linters as a golfing tactic.  Prefer fixing the issue.
 
+## Modules
+
+Every source file is a Lean module; README describes the layout.  When golfing or moving code:
+
+- Keep the section header right: `public section` for a file with only theorems, notation or
+  syntax, `@[expose] public section` (or `@[expose]` on single definitions) once it declares
+  definitions that importers unfold.  `python3 scripts/check_module_system.py --fix` repairs a
+  theorem-only header.
+- Do not expose more to make a proof go through.  If a proof unfolds another file's definition,
+  prefer an API lemma there (`foo_def`, `foo_apply`, a `simp` lemma) to exposing its body.
+- Moving a helper into another file and keeping it `private` hides it from the old users; make it
+  public under a proper name or keep it where it is used.
+- Import tactic modules with plain `import`; `public import` leaks their syntax into importers.
+
 ## Build Discipline
 
 - For a touched Lean file, run the focused module build first:

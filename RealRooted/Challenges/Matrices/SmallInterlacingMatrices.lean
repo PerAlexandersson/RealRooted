@@ -117,7 +117,7 @@ matrices. The affine certificates, the sparse obstruction families and the
 decided tables live in `RealRooted.MatrixInterlacing`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

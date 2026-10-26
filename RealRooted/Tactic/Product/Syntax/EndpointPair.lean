@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Finish
 Syntax for paired endpoint recurrences and their quotient lifts.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

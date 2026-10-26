@@ -243,7 +243,7 @@ is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also the
 <!-- /realrooted-catalog-content -->
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

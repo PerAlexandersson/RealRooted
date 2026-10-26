@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Favard.Direct
 Macro rules for scalar-normalized and raw-affine Favard certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

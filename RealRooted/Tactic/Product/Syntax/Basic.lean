@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Finish
 Syntax shared by factor certificates, generic product recurrences, and model lifts.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

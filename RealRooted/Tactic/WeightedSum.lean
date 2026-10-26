@@ -8,7 +8,7 @@ public import RealRooted.WeightedSum
 Thin wrappers for the finite Wagner weighted-sum APIs.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

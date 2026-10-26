@@ -8,7 +8,7 @@ public import RealRooted.Tactic.RootCount.SequenceCore
 Parser declarations for general root-count and local-continuity certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -15,7 +15,7 @@ is supported by the characterization, while the no-common-root route requires
 a nonzero matrix size.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

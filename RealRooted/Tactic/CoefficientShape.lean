@@ -11,7 +11,7 @@ polynomials.  This file is separate from `RealRooted.Tactic.Finish` so the
 heavier coefficient-shape imports do not affect hot recurrence tactics.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

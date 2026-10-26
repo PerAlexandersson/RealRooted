@@ -13,4 +13,4 @@ public import RealRooted.Tactic.LiuWang.Step
 Compatibility umbrella for the family-scoped Liu--Wang tactic frontends.
 -/
 
-@[expose] public section
+public section
