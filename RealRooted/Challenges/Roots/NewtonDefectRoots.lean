@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CoefficientDominance.NewtonDefectRoots
 
 /-!
@@ -88,7 +90,3 @@ ratio; no bound on the ambient degrees is assumed.
 See [@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.NewtonDefectRoots
-
-end RealRooted.Challenges.NewtonDefectRoots

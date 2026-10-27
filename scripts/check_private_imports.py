@@ -70,6 +70,13 @@ def main(argv):
         proc = subprocess.run([*lake.split(), 'shake', *module_names()], cwd=ROOT,
                               capture_output=True, text=True)
         report = proc.stdout + proc.stderr
+    errors = re.findall(r'^error:.*$', report, re.M)
+    if errors:
+        # e.g. an out-of-date target: shake then reports nothing, which must not pass as clean
+        print('error: `lake shake` did not run cleanly (build the library first):')
+        for l in errors[:20]:
+            print(f'  {l}')
+        return 2
     found = findings(report)
     if '--update' in argv:
         BASELINE.write_text(''.join(f'{l}\n' for l in sorted(found)), encoding='utf-8')

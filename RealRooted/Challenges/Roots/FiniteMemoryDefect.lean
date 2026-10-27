@@ -1,3 +1,5 @@
+module
+
 import RealRooted.FiniteMemory.Defect
 
 /-!
@@ -88,7 +90,3 @@ $3d+K_{n\bmod3}=2n$.
 See [@BogvadHagg2017; @NyandwiHaggKurujyibwamiUwimbabazi2026x].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.FiniteMemoryDefect
-
-end RealRooted.Challenges.FiniteMemoryDefect

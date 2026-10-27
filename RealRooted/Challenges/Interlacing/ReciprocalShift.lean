@@ -1,3 +1,5 @@
+module
+
 import RealRooted.PFPolynomial
 import RealRooted.ReciprocalShift.Interlacing
 import RealRooted.ReciprocalShift.Interlacing.Inversion
@@ -95,7 +97,3 @@ These results were promoted from proofs in the companion OEIS formalization
 project. For background on interlacing and polynomial reversal, see [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.ReciprocalShift
-
-end RealRooted.Challenges.ReciprocalShift

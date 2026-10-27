@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CoefficientDominance.LogConcavity
 import RealRooted.CoefficientDominance.RootGap
 import RealRooted.CoefficientDominance.Symmetric.Finite
@@ -143,7 +145,3 @@ These results were extracted from a formal proof that the rows of
 appears in [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.CoefficientDominance
-
-end RealRooted.Challenges.CoefficientDominance

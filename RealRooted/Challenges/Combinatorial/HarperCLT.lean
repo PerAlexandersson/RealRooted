@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Mathlib.Probability.CoeffDistribution
 import RealRooted.CombinatorialExamples.DerangementsExcNormal
 import RealRooted.CombinatorialExamples.EulerianNormal

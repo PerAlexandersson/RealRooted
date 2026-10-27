@@ -1,3 +1,5 @@
+module
+
 import RealRooted.RootContinuity
 import RealRooted.RootContinuity.Path
 
@@ -162,7 +164,3 @@ The path-transport and root-count results were promoted from the formal proofs f
 [OEIS A176331](https://oeis.org/A176331) in the companion OEIS formalization project.
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.RootContinuity
-
-end RealRooted.Challenges.RootContinuity

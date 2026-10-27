@@ -1,3 +1,5 @@
+module
+
 import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
 import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
 import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
@@ -144,7 +146,3 @@ multiplication, proving both multiplicativity and associativity of $\star_c$.
 See [@Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.UnivariatePoissonStar
-
-end RealRooted.Challenges.UnivariatePoissonStar

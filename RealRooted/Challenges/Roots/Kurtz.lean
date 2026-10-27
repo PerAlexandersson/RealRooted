@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Kurtz
 
 /-!
@@ -55,16 +57,3 @@ Amer. Math. Monthly 99 (1992), 259--263.
 
 This module exposes the reusable theorem implementation in `RealRooted.Kurtz`.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace Kurtz
-
-export RealRooted.Kurtz
-  (PositiveCoeffsUpToDegree
-    KurtzStrictInequalities
-    coefficient_criterion)
-
-end Kurtz
-end Challenges
-end RealRooted

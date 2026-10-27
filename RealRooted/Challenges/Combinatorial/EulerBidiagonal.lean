@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CombinatorialExamples.CentralFactorial
 import RealRooted.CombinatorialExamples.EulerTypeOeis
 import RealRooted.CombinatorialExamples.EulerTypeRows

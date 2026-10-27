@@ -1,3 +1,5 @@
+module
+
 import RealRooted.RootAmplitude.Convex
 import RealRooted.RootAmplitude.Density
 import RealRooted.RootAmplitude.Minimum
@@ -139,7 +141,3 @@ These results were extracted from a formal proof that the rows of
 motivating combinatorial objects are the Stirling complexes [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.RootAmplitude
-
-end RealRooted.Challenges.RootAmplitude

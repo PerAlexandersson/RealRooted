@@ -1,3 +1,5 @@
+module
+
 import RealRooted.MultiplierSequence.ProperPositionPF
 
 /-!
@@ -83,7 +85,3 @@ nonzero splitness properties.
 See [@BorceaBranden2009I; @BorceaBranden2010; @Branden2015].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.ProperPositionPF
-
-end RealRooted.Challenges.ProperPositionPF
