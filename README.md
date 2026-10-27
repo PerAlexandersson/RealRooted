@@ -206,6 +206,9 @@ Source files use the Lean module system, following Mathlib's conventions:
   not rebuild this file's importers (#2086).  `lake shake` lists imports that can be downgraded
   or dropped.  Shake cannot see names inside syntax quotations: a tactic module whose macro
   expands to a theorem must `public import` the module that declares it.
+  CI runs `python3 scripts/check_private_imports.py` after the build: it fails when shake finds
+  a new `public import` that only proofs need.  Accepted exceptions are listed in
+  `scripts/private_imports_baseline.txt` (`--update` rewrites it).
 - A module can only import modules.  Files that cannot be modules yet are listed in
   `scripts/non_module_files.txt` (#2016), and that list may only shrink.
 
