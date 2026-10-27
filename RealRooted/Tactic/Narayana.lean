@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.NarayanaTransformation
-public import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.PFPolynomial
+import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Narayana polynomial tactic frontends

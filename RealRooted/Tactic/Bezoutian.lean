@@ -1,7 +1,8 @@
 module
 
 import RealRooted.Bezoutian.RootEvaluation
-public import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.LowDegree
+public import RealRooted.Bezoutian.MatrixBasics
 
 /-!
 # Bezoutian tactic frontends

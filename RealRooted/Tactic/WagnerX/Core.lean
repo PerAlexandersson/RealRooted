@@ -5,6 +5,14 @@ public import RealRooted.AffineFamily
 public import RealRooted.Tactic.Finish
 public import RealRooted.Tactic.Lookup
 public import RealRooted.WagnerX.ProperPosition
+import RealRooted.Tactic.SideGoals
+import RealRooted.SequenceClosure
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.WeightedSum
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wagner `X`-shift core

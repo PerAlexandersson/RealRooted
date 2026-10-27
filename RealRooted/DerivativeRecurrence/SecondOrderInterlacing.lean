@@ -3,12 +3,13 @@ module
 import RealRooted.Derivative.Interlacing
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
 import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-public import RealRooted.LiuWang.FiniteFamily
+import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
 import RealRooted.WagnerRightSum.Sign
 import RealRooted.Derivative.Algebra
 import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Interlacing for affine-lagged second-order derivative recurrences

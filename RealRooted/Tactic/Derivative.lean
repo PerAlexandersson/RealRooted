@@ -2,6 +2,10 @@ module
 
 public import RealRooted.Derivative
 public import RealRooted.Tactic.Finish
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Derivative tactic frontends

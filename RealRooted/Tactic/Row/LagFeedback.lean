@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.ThreeTermRecurrence.LagFeedback
+import RealRooted.ThreeTermRecurrence.LagFeedback
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ThreeTermRecurrence.LagFeedback
 public meta import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: lag recurrences with a feedback term

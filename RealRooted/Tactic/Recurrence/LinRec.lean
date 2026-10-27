@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Tactic.Recurrence.RowSide
+import RealRooted.Tactic.Recurrence.RowSide
 public import RealRooted.Tactic.Recurrence.LinRecProbe
 public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 public meta import RealRooted.Tactic.Recurrence.RowSide

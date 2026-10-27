@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.SymmetricDecomposition
-public import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Symmetric-decomposition tactic frontends

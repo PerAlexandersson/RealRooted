@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CoefficientShape
 public import RealRooted.Tactic.Finish
+import RealRooted.SequenceClosure
 
 /-!
 # Coefficient-shape finish tactics

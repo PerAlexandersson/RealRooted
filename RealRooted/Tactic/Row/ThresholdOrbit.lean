@@ -3,11 +3,13 @@ module
 public import RealRooted.ThresholdMatrix.Orbit
 public import RealRooted.Tactic.Row.Core
 public import RealRooted.Tactic.Recurrence.RowSide
-public import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.InterlacesExplicit
 public meta import RealRooted.ThresholdMatrix.Orbit
 public meta import RealRooted.Tactic.Row.Core
 public meta import RealRooted.Tactic.Recurrence.RowSide
 public meta import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.ThresholdMatrix.Attr
+public import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: order-three recurrences as threshold-matrix orbits

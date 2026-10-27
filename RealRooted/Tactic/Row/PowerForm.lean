@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.ProductSequence.Interlacing
+import RealRooted.ProductSequence.Interlacing
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ProductSequence.Interlacing
 public meta import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.InterlacesExplicit
 
 /-!
 # Row tactics: rows `c m · F · q ^ (m + e)`

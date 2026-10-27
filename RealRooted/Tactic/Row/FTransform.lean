@@ -1,13 +1,17 @@
 module
 
-public import RealRooted.SymmetricDecomposition.FPolynomialSequence
+import RealRooted.SymmetricDecomposition.FPolynomialSequence
 public import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.DerivativeStep
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.SymmetricDecomposition.FPolynomialSequence
 public meta import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 public meta import RealRooted.MaWang.DerivativeStep
 public meta import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.SideGoals
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.SymmetricDecomposition.FPolynomial
 
 /-!
 # Row tactics: the `f`-polynomial transform

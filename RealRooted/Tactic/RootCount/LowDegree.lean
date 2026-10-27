@@ -1,10 +1,13 @@
 module
 
-public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-public import RealRooted.SameDegreeCountFromAnalytic
-public import RealRooted.SameDegreeCubicSecondRootFromAnalytic
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.SameDegreeCubicSecondRootFromAnalytic
 public import RealRooted.Tactic.RootCount.SequenceCore
-public import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.Compatibility.Pair
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Low-degree root-count endpoints

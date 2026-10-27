@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.Derivative.LinearCombination
+import RealRooted.Derivative.LinearCombination
 public import RealRooted.Tactic.Finish
 public import RealRooted.Tactic.MaWang
-public import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.SideGoals
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.SequenceClosure
+import RealRooted.PosCombo
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Second-derivative tactic shells

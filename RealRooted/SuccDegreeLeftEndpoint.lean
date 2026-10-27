@@ -9,7 +9,7 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.PosCombo
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Tactic
 public import RealRooted.ObreschkoffContinuity
 import RealRooted.Linear

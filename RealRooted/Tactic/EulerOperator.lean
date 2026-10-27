@@ -2,7 +2,12 @@ module
 
 public import RealRooted.AffineFamily
 public import RealRooted.EulerOperator
-public import RealRooted.WagnerRightSum
+import RealRooted.WagnerRightSum
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Euler-operator family lemmas

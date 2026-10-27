@@ -6,6 +6,7 @@ public import RealRooted.Interlacing.ReversalLeftDegree
 public meta import RealRooted.Tactic.Row.Reverse
 public meta import RealRooted.Tactic.Row.FTransform
 public meta import RealRooted.Interlacing.ReversalLeftDegree
+import RealRooted.Interlacing.Reversal
 
 /-!
 # Rational-coefficient reversal route

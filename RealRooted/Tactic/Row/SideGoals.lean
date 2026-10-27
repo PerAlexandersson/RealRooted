@@ -6,7 +6,7 @@ public import RealRooted.ThreeTermRecurrence.Interlacing
 public import RealRooted.ThreeTermRecurrence.HalfGrowth
 public import RealRooted.Tactic.Recurrence
 public import RealRooted.Tactic.Recurrence.Cancel
-public import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.InterlacesExplicit
 public import RealRooted.Tactic.RowClosedForm
 public meta import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 public meta import RealRooted.DerivativeRecurrence.RootWindow
@@ -16,6 +16,10 @@ public meta import RealRooted.Tactic.Recurrence
 public meta import RealRooted.Tactic.Recurrence.Cancel
 public meta import RealRooted.Tactic.InterlacesExplicit
 public meta import RealRooted.Tactic.RowClosedForm
+import RealRooted.Tactic.Recurrence.Degree
+public import RealRooted.Tactic.Recurrence.RowSide
+import RealRooted.Basic.Coefficients
+import RealRooted.Basic.ProperPosition
 
 /-!
 # Row tactics: syntax and side goals

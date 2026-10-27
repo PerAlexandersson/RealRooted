@@ -1,11 +1,13 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 public import RealRooted.Tactic.Finish
 public import RealRooted.Tactic.PFPolynomial
 public import RealRooted.Tactic.Lookup
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
+import RealRooted.SequenceClosure
 
 /-!
 # PF bidiagonal operator shells

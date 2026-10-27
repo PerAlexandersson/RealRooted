@@ -4,6 +4,7 @@ public import RealRooted.Interlacing.Reversal
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.Interlacing.Reversal
 public meta import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: reversed rows

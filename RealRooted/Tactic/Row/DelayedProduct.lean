@@ -4,6 +4,7 @@ public import RealRooted.CubicDiscriminant
 public import RealRooted.Tactic.Row.Subseq
 public meta import RealRooted.CubicDiscriminant
 public meta import RealRooted.Tactic.Row.Subseq
+import RealRooted.Tactic.RowClosedForm
 
 /-!
 # Row tactics: delayed product recurrences

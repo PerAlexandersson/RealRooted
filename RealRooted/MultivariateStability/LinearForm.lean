@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.MultivariateStability
-public import Mathlib.Basic.Complex.BigOperators
+import Mathlib.Basic.Complex.BigOperators
 
 /-!
 # Stable homogeneous linear forms

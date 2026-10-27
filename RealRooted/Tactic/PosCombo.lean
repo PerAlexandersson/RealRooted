@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.AffineFamily
+import RealRooted.PosCombo
+public import RealRooted.ObreschkoffContinuity
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Positive-combination sequence transports
