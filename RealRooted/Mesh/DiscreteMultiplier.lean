@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Linear
+import RealRooted.OrderedRoots
 import RealRooted.WagnerRightSum
 public import RealRooted.Mesh.FiniteDifference
 
