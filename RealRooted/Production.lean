@@ -1521,8 +1521,6 @@ import RealRooted.Tactic.Product
 import RealRooted.Tactic.Product.Interlacing
 import RealRooted.Tactic.Product.Rules
 import RealRooted.Tactic.Product.Syntax
-import RealRooted.Tactic.Product.Syntax.Basic
-import RealRooted.Tactic.Product.Syntax.EndpointPair
 import RealRooted.Tactic.Product.Syntax.Families
 import RealRooted.Tactic.Product.Syntax.Lifts
 import RealRooted.Tactic.ReciprocalShift
