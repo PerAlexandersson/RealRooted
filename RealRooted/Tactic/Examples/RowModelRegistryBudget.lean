@@ -1,9 +1,6 @@
 module
 
 public import RealRooted.Applications.OEIS.A046802
-public import RealRooted.Applications.OEIS.A056939
-public import RealRooted.Applications.OEIS.A111910
-public import RealRooted.Applications.OEIS.A181543
 public import RealRooted.Tactic.RowInterlacing
 
 /-!

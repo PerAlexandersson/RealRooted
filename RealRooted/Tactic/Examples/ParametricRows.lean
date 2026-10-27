@@ -2,8 +2,6 @@ module
 
 public import RealRooted.Applications.BinderVecchi.UniformChow
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
-public import RealRooted.Applications.OEIS.A144438.DecoratedCycle
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
 public import RealRooted.Applications.OEIS.QuarticGamma
 public import RealRooted.Tactic.RowInterlacing
 
@@ -90,23 +88,9 @@ open RealRooted.Applications.OEIS
 
 example : True := by
   fail_if_success
-    have _ {q : ℝ} (hq : 0 < q) (n : ℕ) :
-        (decoratedCycleEulerian q (n + 1)).natDegree = n := by
-      rr_row_natDegree
-  trivial
-
-example : True := by
-  fail_if_success
     have _ {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ) :
         HasNonnegCoeffs (QuarticGamma.polynomial a b n) := by
       rr_row_nonneg_coeffs
-  trivial
-
-example : True := by
-  fail_if_success
-    have _ (w : ℝ) (n : ℕ) :
-        (weightedDecoLagBasis w n).natDegree = n - 1 := by
-      rr_row_natDegree
   trivial
 
 example : True := by

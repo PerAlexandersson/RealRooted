@@ -93,20 +93,8 @@
     "RealRooted.Applications.OEIS.A272471.Recurrence": {
       "max_modules": 2
     },
-    "RealRooted.Applications.OEIS.A144438": {
-      "max_modules": 49
-    },
-    "RealRooted.Applications.OEIS.A144438.Weighted": {
-      "max_modules": 107
-    },
     "RealRooted.GammaPencil.Intertwining": {
       "max_modules": 131
-    },
-    "RealRooted.Applications.OEIS.A144438.Gamma": {
-      "max_modules": 139
-    },
-    "RealRooted.Applications.OEIS.A144438.DecoratedCycle": {
-      "max_modules": 51
     },
     "RealRooted.Applications.OEIS.InversePeaks": {
       "max_modules": 48

@@ -5,23 +5,7 @@ import RealRooted.RootCounting.SignChanges
 import RealRooted.RootCounting.Threshold.Basic
 import RealRooted.MaWang.StrictSigns.RootSigns
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.Polynomial.Splits
 

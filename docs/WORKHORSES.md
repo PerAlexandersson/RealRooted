@@ -163,19 +163,11 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 4 | `RealRooted.Applications.OEIS.decoLayerTotal_one_mvRealStable` | `RealRooted.Applications.OEIS.A144438.LayerTotalStability` | The rank-one recurrence-defined layer total is multivariate real stable. |
 | 4 | `RealRooted.MvRealStable.X` | `RealRooted.MultivariateStability` | Each real coordinate variable is multivariate real stable. |
 | 4 | `RealRooted.MvRealStable.specializeAtList_zero_or_general` | `RealRooted.MultivariateStability.Specialization` | Real stability is preserved, up to the zero polynomial, by specializing an ordered list of coordinates at real values. |
-| 3 | `RealRooted.Applications.OEIS.decoLayerTotal_mvRealStable_iff_bottomTotal` | `RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction` | The homogeneous finite-coordinate layer total is real stable exactly when its multiaffine ordinary-coordinate dehomogenization is real stable. |
-| 3 | `RealRooted.Applications.OEIS.decoLayerTotal_mvRealStable_iff_bottomTotal_isRayleigh` | `RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction` | Stability of the homogeneous layer total is exactly the Rayleigh property of its recurrence-defined ordinary-coordinate form. |
 | 3 | `RealRooted.MvRealStable.C_mul_X_add_C_mul_X` | `RealRooted.MultivariateStability.LinearForm` | A nontrivial nonnegative combination of two coordinate variables is multivariate real stable. |
 | 3 | `RealRooted.MvRealStable.one` | `RealRooted.MultivariateStability` | The real constant polynomial one is multivariate real stable. |
 | 3 | `RealRooted.MvRealStable.specializeAt_zero_or_general` | `RealRooted.MultivariateStability.Specialization` | Real stability is preserved, up to the zero polynomial, by specializing one coordinate at a real value. |
-| 2 | `RealRooted.Applications.OEIS.decoBottomTotal_mvRealStable_iff_isRayleigh` | `RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction` | Stability of the multiaffine bottom total is exactly its Rayleigh property. |
-| 2 | `RealRooted.Applications.OEIS.decoExactLayerDehomogenized_mvRealStable` | `RealRooted.Applications.OEIS.A144438.ExactLayer` | Every dehomogenized exact layer is multivariate real stable. |
-| 2 | `RealRooted.Applications.OEIS.decoLayerTotal_two_mvRealStable` | `RealRooted.Applications.OEIS.A144438.LayerTotalStability` | The rank-two recurrence-defined layer total is multivariate real stable. |
-| 2 | `RealRooted.Applications.OEIS.decoLayerTotal_zero_mvRealStable` | `RealRooted.Applications.OEIS.A144438.LayerTotalStability` | The rank-zero recurrence-defined layer total is multivariate real stable. |
-| 2 | `RealRooted.Applications.OEIS.decoNormalLayerStep_mvRealStable` | `RealRooted.Applications.OEIS.A144438.ExactLayer` | The normal exact-layer operator preserves multivariate real stability. |
 | 2 | `RealRooted.LiuZhang.MvRealStable.morrisElementary` | `RealRooted.MultivariateStability.MorrisEigenfunction` | The elementary product `E_lambda` in Liu--Zhang (4.3) is real stable. |
 | 2 | `RealRooted.MvRealStable.X_add_X` | `RealRooted.MultivariateStability` | The sum of two real coordinate variables is multivariate real stable. |
 | 2 | `RealRooted.MvRealStable.finset_prod` | `RealRooted.MultivariateStability` | A finite product of multivariate real-stable polynomials is real stable. |
@@ -184,10 +176,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 2 | `RealRooted.mvRealStable_iff_commonRotation_dehomogenize` | `RealRooted.HomogeneousStability` | A homogeneous real polynomial is real stable exactly when the complexification of its dehomogenization is common-rotation stable. |
 | 2 | `RealRooted.mvRealStable_of_forall_realAffineLineRestriction` | `RealRooted.AffineLineRestriction` | If every positive-direction real affine restriction is nonzero and real-rooted, then the multivariate polynomial is real stable. |
 | 2 | `RealRooted.peakValuePolynomial_mvRealStable` | `RealRooted.CombinatorialExamples.PeakValues.Stability` | The peak-value enumerator is multivariate real stable in every rank. |
-| 1 | `RealRooted.Applications.OEIS.DecoNormalizedCode.fiberPolynomial_mvRealStable` | `RealRooted.Applications.OEIS.A144438.FiberStability` | Every normalized Deco decoration fiber is multivariate real stable. |
-| 1 | `RealRooted.Applications.OEIS.decoExactLayer_mvRealStable` | `RealRooted.Applications.OEIS.A144438.ExactLayer` | Every history-indexed exact layer is multivariate real stable. |
-| 1 | `RealRooted.Applications.OEIS.decoExceptionalLayerStep_mvRealStable` | `RealRooted.Applications.OEIS.A144438.ExactLayer` | The exceptional exact-layer operator preserves multivariate real stability. |
-| 1 | `RealRooted.Applications.OEIS.decoLayerTotal_mvRealStable_iff_commonRotation_bottomTotal` | `RealRooted.Applications.OEIS.A144438.LayerTotalStructure` | Stability of the homogeneous finite-coordinate layer total is exactly common-rotation stability of its multiaffine ordinary-coordinate dehomogenization. |
 
 ## IsNegativeSimple
 
@@ -281,7 +269,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_same_natDegree` | `RealRooted.Linear` | In the natural positive-leading-coefficient situation, same-degree sums also have positive leading coefficient. |
 | 10 | `MvPolynomial.HasNonnegCoeffs.add` | `RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative` |  |
 | 9 | `MvPolynomial.HasNonnegCoeffs.X` | `RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative` |  |
-| 9 | `RealRooted.Applications.OEIS.HasNonnegCoeffs.weightedDecoTransform` | `RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints` |  |
 | 9 | `RealRooted.HasNonnegCoeffs.add` | `RealRooted.Basic.Coefficients` |  |
 | 9 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
 | 9 | `RealRooted.hasPosLeadingCoeff_of_X_sub_C_mul` | `RealRooted.Linear` |  |
@@ -331,7 +318,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 2 | `RealRooted.LiuOppositeSigns.exists_linear_factor_of_splits_natDegree_one` | `RealRooted.LiuOppositeSigns.PositiveSplitPair` |  |
 | 2 | `RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivativeRecurrence_natDegree` and `derivativeRecurrence_leadingCoeff_pos` from one set of hypotheses. |
 | 2 | `RealRooted.exists_roots_triple_of_splits_natDegree_three` | `RealRooted.SameDegreeCubicRootCount` | A split real cubic factors through an ordered triple of real roots. |
-| 2 | `RealRooted.leadingCoeff_a144696BernsteinImage` | `RealRooted.Applications.OEIS.A144696.Basic` | Every in-range Bernstein image has leading coefficient `2 ^ d`. |
 | 2 | `RealRooted.leadingCoeff_divByMonic_X_sub_C` | `RealRooted.Interlacing.Residue` |  |
 | 2 | `RealRooted.leadingCoeff_mul_coeff_pos_of_roots_neg` | `RealRooted.Hadamard.SchurSzegoSigns` | A nonzero real polynomial with only (real) negative roots has all its coefficients of the sign of the leading coefficient, up to the degree. |
 | 2 | `RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
@@ -428,10 +414,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 4 | `RealRooted.gammaOperator_apply` | `RealRooted.GammaPencil.Basic` |  |
 | 4 | `RealRooted.polarTheta_eq_reciprocalShift_derivative_reciprocalShift` | `RealRooted.EulerOperator` |  |
 | 3 | `PowerSeries.two_mul_mul_derivative_sqrt` | `RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt` | The linear differential equation `2 f (sqrt f)' = f' sqrt f`. |
-| 3 | `RealRooted.Applications.OEIS.A110608.polynomial_succ_normalized` | `RealRooted.Applications.OEIS.A110608` | The corrected normalized derivative recurrence for the model rows. |
-| 3 | `RealRooted.Applications.OEIS.decoEulerian_recurrence` | `RealRooted.Applications.OEIS.A144438` | The defining second-order derivative recurrence. |
-| 3 | `RealRooted.Applications.OEIS.weightedDecoDiagonalCompanion_succ_eq` | `RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic` | The positive-rank weighted diagonal companion formula. |
-| 3 | `RealRooted.Applications.OEIS.weightedDecoEulerian_recurrence` | `RealRooted.Applications.OEIS.A144438.Weighted` | The defining weighted second-order derivative recurrence. |
 | 3 | `RealRooted.eulerOperator_eq_diagonalOperator_natCast` | `RealRooted.MultiplierSequence` | The Euler operator `X d/dX` acts diagonally with multiplier `k`. |
 | 3 | `RealRooted.isNonnegLinearForm_X` | `RealRooted.RowThreshold` |  |
 | 3 | `RealRooted.iterateTDeriv_C_mul` | `RealRooted.IteratedDerivativeShift` |  |
@@ -528,7 +510,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 7 | `MvPolynomial.IsMultiaffine.eq_specializeZero_add_X_mul_pderiv` | `RealRooted.Multiaffine` | A multiaffine polynomial is its zero-specialization in one coordinate plus that coordinate times its partial derivative. |
 | 7 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 7 | `Polynomial.momentPairingBilinForm_apply` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
-| 7 | `RealRooted.Applications.OEIS.rename_dehomogenize_decoLayerTotal_eq_decoBottomTotal` | `RealRooted.Applications.OEIS.A144438.BottomTotal` | Dehomogenizing the finite-coordinate layer total and embedding its ordinary coordinates as positive labels recovers the directly recursive ordinary-coordinate total. |
 | 7 | `RealRooted.gammaTransform_pad_two` | `RealRooted.GammaTransform.Basic` |  |
 | 7 | `RealRooted.narayanaPolynomial_one` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 7 | `RealRooted.weightedSum_ofFn` | `RealRooted.WeightedSum` | Finite-function form of `weightedSum_eq_sum_map`. |
@@ -557,7 +538,6 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 7 | `MvPolynomial.IsMultiaffine.X_mul_of_notMem_vars` | `RealRooted.Multiaffine` | Multiplication by a fresh variable preserves multiaffineness. |
 | 7 | `MvPolynomial.vars_specializeZero_subset_erase` | `RealRooted.Multiaffine` | Zero-specializing a coordinate removes it without introducing any new variables. |
 | 7 | `ParkingFunction.mem_parkingFunctions_iff` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | Membership in `parkingFunctions` is the parking-function predicate. |
-| 7 | `RealRooted.Applications.OEIS.decoLayerTotal_isHomogeneous` | `RealRooted.Applications.OEIS.A144438.LayerTotal` | The recurrence-defined total has the homogeneous degree expected at each rank. |
 | 7 | `RealRooted.MvUpperHalfPlaneStable.mul_X_add_X_pow` | `RealRooted.MultivariateStability` | Multiplication by a power of the sum of two variables preserves stability. |
 | 7 | `RealRooted.OrderedCutCompatible.singleton` | `RealRooted.Compatibility.CutTransform` | For a singleton family, only the two cross relations are genuine input; the diagonal ordered relations follow from endpoint splitness. |
 | 7 | `RealRooted.Polynomial.Splits.isUpperHalfPlaneStable_complexify` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
