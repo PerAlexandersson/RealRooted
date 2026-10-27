@@ -86,6 +86,77 @@ theorem roots_nodup {p : ℝ[X]} {α : ℝ} (h : p.MeshGE α) (hα : 0 < α) :
   have hcoe_nodup : (↑rs : Multiset ℝ).Nodup := Multiset.coe_nodup.mpr hrs_nodup
   simpa [rs, Multiset.sort_eq] using hcoe_nodup
 
+/-- For a positive bound, `MeshGE` is equivalent to splitting with simple roots whose
+pairwise distances are at least the bound. -/
+theorem iff_roots_nodup_pairwise_gap {p : ℝ[X]} {α : ℝ} (hα : 0 < α) :
+    p.MeshGE α ↔ p.Splits ∧ p.roots.Nodup ∧
+      ∀ r ∈ p.roots, ∀ s ∈ p.roots, r ≠ s → α ≤ |r - s| := by
+  let rs := p.roots.sort (· ≤ ·)
+  have hrs : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort p.roots (· ≤ ·)
+  constructor
+  · intro h
+    refine ⟨h.1, h.roots_nodup hα, ?_⟩
+    have hchain : rs.IsChain (fun a b : ℝ => a + α ≤ b) := by
+      rw [List.isChain_iff_getElem]
+      intro i hi
+      have hgap := h.2.2 i (by simpa [rs] using hi)
+      simpa [rs, List.getD_eq_getElem?_getD,
+        List.getElem?_eq_getElem (by lia : i < rs.length),
+        List.getElem?_eq_getElem hi, Option.getD_some] using hgap
+    have htrans : Trans (fun a b : ℝ => a + α ≤ b)
+        (fun a b : ℝ => a + α ≤ b) (fun a b : ℝ => a + α ≤ b) :=
+      ⟨by intro a b c hab hbc; linarith⟩
+    have hpair : rs.Pairwise (fun a b : ℝ => a + α ≤ b) :=
+      @List.IsChain.pairwise ℝ (fun a b : ℝ => a + α ≤ b) rs htrans hchain
+    intro r hr s hs hrs_ne
+    have hr' : r ∈ rs := by simpa [rs] using hr
+    have hs' : s ∈ rs := by simpa [rs] using hs
+    obtain ⟨i, hi, rfl⟩ := List.mem_iff_getElem.mp hr'
+    obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp hs'
+    have hij_ne : i ≠ j := by
+      intro hij
+      subst j
+      exact hrs_ne rfl
+    rcases lt_or_gt_of_ne hij_ne with hij | hji
+    · have hgap := List.pairwise_iff_getElem.mp hpair i j hi hj hij
+      rw [abs_of_nonpos]
+      · linarith
+      · linarith
+    · have hgap := List.pairwise_iff_getElem.mp hpair j i hj hi hji
+      rw [abs_of_nonneg]
+      · linarith
+      · linarith
+  · rintro ⟨hp, hnodup, hgap⟩
+    refine ⟨hp, hα.le, ?_⟩
+    have hrs_nodup : rs.Nodup := by
+      rw [← Multiset.coe_nodup, show (↑rs : Multiset ℝ) = p.roots by simp [rs]]
+      exact hnodup
+    intro i hi
+    have hi0 : i < rs.length := by lia
+    have hne : rs[i] ≠ rs[i + 1] := by
+      intro heq
+      have hij : (⟨i, hi0⟩ : Fin rs.length) = ⟨i + 1, hi⟩ :=
+        hrs_nodup.injective_get heq
+      have := congrArg Fin.val hij
+      simp at this
+    have hmem0 : rs[i] ∈ p.roots := by
+      have hmem : rs[i] ∈ (↑rs : Multiset ℝ) := by
+        simp
+      rwa [show (↑rs : Multiset ℝ) = p.roots by simp [rs]] at hmem
+    have hmem1 : rs[i + 1] ∈ p.roots := by
+      have hmem : rs[i + 1] ∈ (↑rs : Multiset ℝ) := by
+        simp
+      rwa [show (↑rs : Multiset ℝ) = p.roots by simp [rs]] at hmem
+    have hdist := hgap rs[i] hmem0 rs[i + 1] hmem1 hne
+    have hle := List.pairwise_iff_getElem.mp hrs i (i + 1) hi0 hi (by lia)
+    have habs : |rs[i] - rs[i + 1]| = rs[i + 1] - rs[i] := by
+      rw [abs_of_nonpos (sub_nonpos.mpr hle)]
+      ring
+    rw [habs] at hdist
+    simpa [rs, List.getD_eq_getElem?_getD,
+      List.getElem?_eq_getElem hi0, List.getElem?_eq_getElem hi,
+      Option.getD_some] using (show rs[i] + α ≤ rs[i + 1] by linarith)
+
 /-- A polynomial with a repeated root cannot have a positive mesh bound. -/
 theorem not_of_roots_not_nodup {p : ℝ[X]} (hdup : ¬p.roots.Nodup) {α : ℝ}
     (hα : 0 < α) : ¬p.MeshGE α :=
