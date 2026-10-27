@@ -7,6 +7,7 @@ import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.PosCombo
 import RealRooted.Linear
+import Mathlib.Data.List.GetD
 
 /-!
 # Hoster--Stump, Section 2: sequence-level glue

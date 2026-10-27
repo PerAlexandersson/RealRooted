@@ -9,6 +9,7 @@ import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
 import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
 public import RealRooted.HermiteBiehler.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Converse weak Hurwitz criterion

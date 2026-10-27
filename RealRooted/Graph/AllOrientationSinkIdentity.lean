@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Graph.AllOrientationSink
+import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 
 /-!
 # The all-orientation sink indicator identity

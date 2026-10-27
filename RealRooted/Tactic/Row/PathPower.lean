@@ -5,6 +5,8 @@ public import RealRooted.Applications.OEIS.CubicParentRows
 public import RealRooted.EulerOperator.Polar
 public import RealRooted.Tactic.Row.Support
 public import RealRooted.CombinatorialExamples.PathPowerGap
+public import RealRooted.Interlacing.VariableDelay
+public import RealRooted.Linear
 public meta import RealRooted.Applications.OEIS.PathPowerRows
 public meta import RealRooted.Applications.OEIS.CubicParentRows
 public meta import RealRooted.EulerOperator.Polar

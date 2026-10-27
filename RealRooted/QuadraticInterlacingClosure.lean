@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Polynomial.CauchyBound
+public import Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.HermiteBiehler.OrientedPencil
 import RealRooted.CriticalValueContinuation
 import RealRooted.DegreeDropReversal

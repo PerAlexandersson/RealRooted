@@ -4,6 +4,8 @@ public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.SymmetricDecomposition.DerangementTransform
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Combinatorics.Derangements.Basic
+public import Mathlib.Combinatorics.Derangements.Finite
 
 @[expose] public section
 

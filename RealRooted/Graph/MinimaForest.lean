@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Graph.MinimaLocalOrder
 public import RealRooted.Graph.ChordalAcyclicSink
+public import Mathlib.Combinatorics.SimpleGraph.Acyclic
 
 /-!
 # Minima polynomials of forests and acyclic sinks of line graphs

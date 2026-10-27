@@ -1,5 +1,6 @@
 module
 
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.Hyperbolicity
 public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 public import RealRooted.Multiaffine.AffineEulerCore

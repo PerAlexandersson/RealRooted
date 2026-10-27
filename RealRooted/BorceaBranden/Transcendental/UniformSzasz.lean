@@ -4,6 +4,9 @@ import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
 import RealRooted.BoundarySpecializationGeneral
 public import RealRooted.MultivariateStability
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Analysis.Normed.Group.Defs
+public import Mathlib.Topology.Defs.Filter
 
 @[expose] public section
 

@@ -12,6 +12,14 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.RingTheory.SimpleRing.Principal
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound

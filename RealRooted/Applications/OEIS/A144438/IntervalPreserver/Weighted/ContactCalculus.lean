@@ -1,8 +1,11 @@
 module
 
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
 import RealRooted.CriticalValueContinuation
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+import Mathlib.Analysis.Calculus.Deriv.Inv
 
 /-!
 # Calculus for a weighted A144438 contact

@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 public import RealRooted.AllCombo
 public import RealRooted.AffineDerivative
 public import RealRooted.Mathlib.Algebra.Polynomial.Derivative

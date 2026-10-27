@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible

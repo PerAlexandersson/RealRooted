@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.BigOperators.Field
 import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
 public import RealRooted.CombinatorialExamples.BigDescents321.Backward
 import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds

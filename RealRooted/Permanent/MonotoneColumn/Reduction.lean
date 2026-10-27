@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Tactic.LinearCombination
 public import RealRooted.Permanent.Ferrers
 import RealRooted.Permanent.Stability.Cone
 public import RealRooted.BorceaBranden.MultivariateHKO

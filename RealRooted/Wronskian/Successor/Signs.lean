@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Polynomial.Basic
 public import RealRooted.Wronskian.Successor.Gap
 import RealRooted.Bezoutian.RootEvaluation
 public import RealRooted.Basic.Coefficients

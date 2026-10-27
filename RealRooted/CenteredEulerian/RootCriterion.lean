@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CenteredEulerian.Basis
 import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
+import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # The finite weighted-sum criterion (Appendix B.1)

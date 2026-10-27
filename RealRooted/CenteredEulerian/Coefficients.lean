@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CenteredEulerian.Basis
 public import RealRooted.CenteredEulerian.Parity
+import Mathlib.RingTheory.PowerSeries.Inverse
 
 /-!
 # Coefficients of `1/q`, `f/q`, `q`, `q f`, `(f/s)²` and `h = (s/f)²`

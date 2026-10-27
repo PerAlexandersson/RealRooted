@@ -6,6 +6,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 public import RealRooted.Basic.ProperPosition
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Weak principal interlacing for totally nonnegative matrices

@@ -1,6 +1,7 @@
 module
 
 import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.GroupTheory.Perm.Option
 import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
 import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent

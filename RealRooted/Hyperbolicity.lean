@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Analysis.Convex.PathConnected
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import RealRooted.BorceaBranden.Applications.HomogenizeStable
 import RealRooted.HomogeneousComponentStability
 public import RealRooted.HomogeneousStability

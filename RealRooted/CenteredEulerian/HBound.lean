@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+import Mathlib.Analysis.Real.Pi.Bounds
 import RealRooted.CenteredEulerian.ArcsinBound
 public import RealRooted.CenteredEulerian.Majorants
 public import RealRooted.CenteredEulerian.Coefficients

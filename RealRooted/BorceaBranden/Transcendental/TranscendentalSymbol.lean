@@ -1,5 +1,6 @@
 module
 
+import Mathlib.RingTheory.MvPolynomial.Basic
 public import RealRooted.BorceaBranden.Transcendental.PivotConverse
 
 @[expose] public section

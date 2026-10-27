@@ -5,6 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.LinearAlgebra.Matrix.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Basic.Real.Star
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
 import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!

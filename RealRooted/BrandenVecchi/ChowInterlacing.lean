@@ -7,6 +7,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Chow
 import RealRooted.PFPolynomial
 import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.Linear
+import Mathlib.Data.List.GetD
 
 /-!
 # The four-term Chow reflection-interlacing extension

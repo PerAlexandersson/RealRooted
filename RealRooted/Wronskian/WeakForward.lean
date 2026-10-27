@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Interlacing.Residue
 import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian

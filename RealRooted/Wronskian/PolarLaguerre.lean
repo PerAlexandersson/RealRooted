@@ -7,6 +7,7 @@ module
 
 import RealRooted.Wronskian.Algebra
 public import RealRooted.EulerOperator
+public import Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # Degree-weighted and polar Laguerre inequalities

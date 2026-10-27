@@ -8,6 +8,7 @@ import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 import RealRooted.Derivative.Interlacing
 import RealRooted.Linear
 public import RealRooted.Basic.ProperPosition
+import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # OEIS A318107

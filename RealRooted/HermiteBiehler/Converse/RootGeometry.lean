@@ -5,6 +5,7 @@ public import RealRooted.HermiteBiehler.Forward
 public import Mathlib.Basic.Complex.Basic
 public import RealRooted.HermiteBiehler.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Root geometry for the converse Hermite--Biehler theorem

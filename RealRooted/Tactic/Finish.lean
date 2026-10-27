@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.DegreeDropReversal
 public import RealRooted.SequenceClosure
 public import RealRooted.Tactic.Lookup
 public import RealRooted.Tactic.Named

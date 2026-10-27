@@ -1,5 +1,9 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Real.Basic
 import RealRooted.RootCounting.Threshold.LogConcavity
 import RealRooted.RootCounting.Threshold.Signs
 import RealRooted.Basic.Coefficients

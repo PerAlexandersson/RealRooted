@@ -1,5 +1,6 @@
 module
 
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 import RealRooted.HomogeneousStability
 public import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
 public import RealRooted.Multiaffine.AffineEulerCore

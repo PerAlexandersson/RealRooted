@@ -1,5 +1,7 @@
 module
 
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.RootCountLocalConstancy
 public import RealRooted.DegreeIncreasingLocalLowerCount
 public import RealRooted.PositiveParameterLocalLowerCount
 public import RealRooted.RootContinuity

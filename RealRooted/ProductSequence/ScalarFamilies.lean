@@ -1,5 +1,8 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
 import RealRooted.ProductSequence.Lifts
 import RealRooted.ProductSequence.Core
 import RealRooted.ProductSequence.Factors

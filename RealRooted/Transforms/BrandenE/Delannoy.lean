@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import RealRooted.Favard
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots

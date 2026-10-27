@@ -4,6 +4,14 @@ import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 import RealRooted.Wronskian.Algebra
 import RealRooted.Basic.PolynomialFacts
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Order.Interval.Set.Defs
 
 /-!
 # Root exclusion from a second-order polynomial ODE

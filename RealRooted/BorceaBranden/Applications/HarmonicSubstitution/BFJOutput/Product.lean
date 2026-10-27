@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Homogenize
 public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah

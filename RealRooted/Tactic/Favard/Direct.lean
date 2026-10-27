@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.Favard
 public import RealRooted.Tactic.Favard.RowSignSyntax
 
 /-!

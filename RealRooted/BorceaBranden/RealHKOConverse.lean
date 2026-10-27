@@ -1,5 +1,10 @@
 module
 
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Ring
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Instances.RealVectorSpace
 public import RealRooted.BorceaBranden.MultivariateHKO
 public import Mathlib.Topology.Order.IntermediateValue
 

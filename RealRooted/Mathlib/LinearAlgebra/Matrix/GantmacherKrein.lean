@@ -5,7 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Complex.Basic
 import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Data.Fin.Tuple.Sort
 import Mathlib.LinearAlgebra.Eigenspace.Zero
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg

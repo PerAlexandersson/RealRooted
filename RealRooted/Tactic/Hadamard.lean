@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Hadamard
+public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Tactic.Finish
 
 /-!

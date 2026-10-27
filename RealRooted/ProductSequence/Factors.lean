@@ -2,7 +2,6 @@ module
 
 import RealRooted.Linear
 import RealRooted.SequenceClosure
-import RealRooted.CombinatorialExamples.OneDescentGamma
 import Mathlib.Tactic.ReduceModChar
 import Mathlib.Tactic.NormNum.RealSqrt
 import Mathlib.Tactic.NormNum.Prime

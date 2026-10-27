@@ -10,6 +10,7 @@ import RealRooted.Interlacing.Multiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
+public import Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # The weak Wronskian converse

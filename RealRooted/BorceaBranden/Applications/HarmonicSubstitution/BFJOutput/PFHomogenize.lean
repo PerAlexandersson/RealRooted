@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Basic.Coefficients.Multivariate
 import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
 import RealRooted.BorceaBranden.Applications.HomogenizeStable

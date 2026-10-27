@@ -5,6 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.Basic.Real.Star
+import Mathlib.Algebra.Order.Star.Real
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
@@ -12,6 +14,7 @@ public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.LinearAlgebra.Matrix.Transvection
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import Mathlib.Analysis.Real.Sqrt
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg

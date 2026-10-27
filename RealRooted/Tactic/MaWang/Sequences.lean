@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.LiuWangRecursion
 public import RealRooted.Tactic.MaWang.Steps
 
 /-!

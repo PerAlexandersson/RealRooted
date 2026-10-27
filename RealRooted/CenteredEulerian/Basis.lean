@@ -5,6 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.LinearAlgebra.Matrix.SemiringInverse
 import RealRooted.CenteredEulerian.Parity
 public import RealRooted.CenteredEulerian.EulerFormula
 public import RealRooted.CenteredEulerian.FormalArcsin

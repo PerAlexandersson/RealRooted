@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.Matrix.Order
 import RealRooted.MultivariateStability.BarrierStart
 import RealRooted.MultivariateStability.BarrierUpdate
 public import RealRooted.MultivariateStability.Diagonal

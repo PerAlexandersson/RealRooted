@@ -2,8 +2,12 @@ module
 
 import RealRooted.CombinatorialExamples.BigDescents321.Criterion
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import Mathlib.Analysis.Real.Sqrt
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Pow
 public import RealRooted.CombinatorialExamples.BigDescents321.Reference
 public import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 

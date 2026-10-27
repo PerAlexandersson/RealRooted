@@ -12,6 +12,7 @@ import RealRooted.Jacobi
 import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.Bezoutian.RootEvaluation
 import RealRooted.Linear
+import Mathlib.Data.List.GetD
 
 /-!
 # Exceptional-offset Jacobi-node interlacing

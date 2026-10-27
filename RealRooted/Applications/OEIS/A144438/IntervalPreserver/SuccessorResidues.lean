@@ -2,6 +2,14 @@ module
 
 import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
 import RealRooted.Interlacing.ResidueCriterion
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Residues at an A144438 insertion successor

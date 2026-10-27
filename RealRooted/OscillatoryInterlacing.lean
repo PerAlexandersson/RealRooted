@@ -4,6 +4,7 @@ import RealRooted.CauchyInterlacing.Polynomial
 import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 public import RealRooted.Basic.ProperPosition
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Strict principal-section interlacing for oscillatory matrices

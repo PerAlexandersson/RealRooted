@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Data.List.ChainOfFn
 public import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 public import RealRooted.BrandenVecchi.SmirnovChow
 import RealRooted.Mathlib.RingTheory.PowerSeries.Regular

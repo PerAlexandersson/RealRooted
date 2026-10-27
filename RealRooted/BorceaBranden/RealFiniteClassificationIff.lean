@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Data.FunLike.Fintype
 import RealRooted.BorceaBranden.RealFiniteHomotopy
 import RealRooted.BorceaBranden.RealFiniteNecessity
 public import RealRooted.BorceaBranden.RealFiniteClassification

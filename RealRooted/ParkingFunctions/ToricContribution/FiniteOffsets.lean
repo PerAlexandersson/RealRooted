@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Data.List.GetD
 import RealRooted.Jacobi.ParameterInterlacing
 public import RealRooted.OrderedRoots
 import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse

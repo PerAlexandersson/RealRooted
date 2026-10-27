@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Algebra.MvPolynomial.Funext
 import RealRooted.MultivariateStability.Specialization
 public import RealRooted.Multiaffine.TwoCoordinateSlice
 public import RealRooted.LiebSokalPointwise

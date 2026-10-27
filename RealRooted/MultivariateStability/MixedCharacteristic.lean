@@ -1,5 +1,8 @@
 module
 
+import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.Order
 public import RealRooted.DeterminantalStability
 import RealRooted.LiebSokalBoundary
 public import RealRooted.HomogeneousStability
