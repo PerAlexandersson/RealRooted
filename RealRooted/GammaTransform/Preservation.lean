@@ -128,12 +128,16 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
       exact isRealRooted_mul hgqf.1 hgqf.2 hih.1 hih.2
   grind
 
+/-- The gamma transform of a polynomial with nonnegative coefficients has only
+nonpositive roots. -/
 theorem hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγnn : HasNonnegCoeffs γ) :
     HasRootsNonpos (gammaTransform d γ) := by
   intro r hr
   exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaTransform hγnn) r hr
 
+/-- If the minimal gamma transform is nonzero, split, and has only nonpositive
+roots, then its gamma polynomial has the same properties. -/
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     {γ : ℝ[X]}
     (hp_ne : (gammaTransform (2 * γ.natDegree) γ) ≠ 0)
@@ -275,6 +279,8 @@ lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
   intro s hs
   exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaQuadraticFactor hr) s hs
 
+/-- Within the ambient degree bound, the gamma transform of a nonzero split
+polynomial with only nonpositive roots has the same properties. -/
 theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
     (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits) (hγ_nonpos : HasRootsNonpos γ) :
@@ -364,6 +370,9 @@ lemma gammaTransform_minimal_dvd {d : ℕ} {γ : ℝ[X]}
     gammaTransform (2 * γ.natDegree) γ ∣ gammaTransform d γ :=
   Dvd.intro_left _ (gammaTransform_eq_X_add_one_pow_mul_minimal hγdeg).symm
 
+/-- Within the ambient degree bound, if a gamma transform is nonzero, split,
+and has only nonpositive roots, then its gamma polynomial has the same
+properties. -/
 theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
     {d : ℕ} {γ : ℝ[X]} (hγdeg : γ.natDegree ≤ d / 2)
     (hp_ne : (gammaTransform d γ) ≠ 0) (hp_splits : (gammaTransform d γ).Splits)

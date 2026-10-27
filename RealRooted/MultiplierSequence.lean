@@ -290,6 +290,8 @@ theorem jensenPolynomial_sub_sequence (n : ℕ) (gamma delta : ℕ → ℝ) :
   simpa [jensenPolynomial_eq_diagonalOperator_X_add_one_pow] using
     diagonalOperator_sub_sequence gamma delta ((X + 1 : ℝ[X]) ^ n)
 
+/-- A pointwise nonnegative sequence has a Jensen polynomial with nonnegative
+coefficients. -/
 theorem hasNonnegCoeffs_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
     HasNonnegCoeffs (jensenPolynomial n gamma) :=
@@ -458,16 +460,22 @@ def IsFinitePFMultiplierSequence (n : ℕ) (gamma : ℕ → ℝ) : Prop :=
     p.natDegree ≤ n →
     IsPFPolynomial (diagonalOperator gamma p)
 
+/-- A finite multiplier sequence through degree `n` is one through every
+smaller degree `m`. -/
 theorem IsFiniteMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     (hmn : m ≤ n) (h : IsFiniteMultiplierSequence n gamma) :
     IsFiniteMultiplierSequence m gamma :=
   fun {_} hp hsplit => h (hp.trans hmn) hsplit
 
+/-- A finite PF multiplier sequence through degree `n` is one through every
+smaller degree `m`. -/
 theorem IsFinitePFMultiplierSequence.mono {m n : ℕ} {gamma : ℕ → ℝ}
     (hmn : m ≤ n) (h : IsFinitePFMultiplierSequence n gamma) :
     IsFinitePFMultiplierSequence m gamma :=
   fun {_} hp hdeg => h hp (hdeg.trans hmn)
 
+/-- The pointwise product of two finite multiplier sequences through degree
+`n` is again one. -/
 theorem IsFiniteMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
     (hgamma : IsFiniteMultiplierSequence n gamma)
     (hdelta : IsFiniteMultiplierSequence n delta) :
@@ -478,6 +486,8 @@ theorem IsFiniteMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
   · simp_all
   · exact hgamma ((natDegree_diagonalOperator_le delta p).trans hp) hsplit_delta
 
+/-- The pointwise product of two finite PF multiplier sequences through degree
+`n` is again one. -/
 theorem IsFinitePFMultiplierSequence.mul {n : ℕ} {gamma delta : ℕ → ℝ}
     (hgamma : IsFinitePFMultiplierSequence n gamma)
     (hdelta : IsFinitePFMultiplierSequence n delta) :
@@ -496,6 +506,8 @@ theorem isFiniteMultiplierSequence_const_sequence (n : ℕ) (a : ℝ) :
   · rw [diagonalOperator_const_sequence]
     simp_all
 
+/-- A nonnegative constant sequence is a finite PF multiplier sequence through
+every degree. -/
 theorem isFinitePFMultiplierSequence_const_sequence
     {n : ℕ} {a : ℝ} (ha : 0 ≤ a) :
     IsFinitePFMultiplierSequence n (fun _ => a) := by

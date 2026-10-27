@@ -31,6 +31,7 @@ def PosComboRealRooted (f g : ℝ[X]) : Prop :=
 
 namespace PosComboRealRooted
 
+/-- Positive-combination real-rootedness is symmetric in the two polynomials. -/
 lemma comm {f g : ℝ[X]} (hfg : PosComboRealRooted f g) :
     PosComboRealRooted g f := by
   intro lam μ hlam hμ
@@ -62,10 +63,14 @@ lemma C_mul_C_mul_iff {f g : ℝ[X]} {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     PosComboRealRooted (C a * f) (C b * g) ↔ PosComboRealRooted f g := by
   rw [C_mul_left_iff ha, C_mul_right_iff hb]
 
+/-- If `f` and `g` satisfy positive-combination real-rootedness and `μ > 0`, then
+`f + C μ * g` is nonzero and splits. -/
 lemma isRealRooted_add_right {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {μ : ℝ} (hμ : 0 < μ) : ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
   simpa [one_mul, add_comm] using h zero_lt_one hμ
 
+/-- If `f` and `g` satisfy positive-combination real-rootedness and `lam > 0`, then
+`C lam * f + g` is nonzero and splits. -/
 lemma isRealRooted_add_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
     {lam : ℝ} (hlam : 0 < lam) : ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits) := by
   simpa [one_mul] using h hlam zero_lt_one

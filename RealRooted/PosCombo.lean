@@ -332,6 +332,7 @@ lemma reflect_iff_natDegree_le {f g : ℝ[X]} {N : ℕ}
       (Polynomial.natDegree_reflect_le.trans <| by simp_all)
   simp_all
 
+/-- Positive-combination real-rootedness makes `f + g` nonzero and real-rooted. -/
 lemma isRealRooted_add {f g : ℝ[X]} (h : PosComboRealRooted f g) :
     ((f + g) ≠ 0 ∧ (f + g).Splits) := by
   simpa using h zero_lt_one zero_lt_one
@@ -360,12 +361,16 @@ lemma splits_add_right_of_nonneg {f g : ℝ[X]} (h : PosComboRealRooted f g)
   · exact (h.isRealRooted_add_right hμ_pos).2
   · simpa [← hμ_zero] using hf
 
+/-- Strict interlacing and positive leading coefficients imply positive-combination
+real-rootedness. -/
 lemma of_strictInterl {f g : ℝ[X]} (hfg : StrictInterl f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g :=
   fun {_ _} hlam hμ =>
     hfg.isRealRooted_pos_combo hf_pos hg_pos hlam hμ
 
+/-- Positive-combination real-rootedness is equivalent to real-rootedness of every right pencil
+`f + C μ * g` with `μ > 0`. -/
 lemma iff_add_right {f g : ℝ[X]} :
     PosComboRealRooted f g ↔
       ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits) := by
@@ -385,6 +390,8 @@ lemma iff_add_right {f g : ℝ[X]} :
       field_simp
     lia
 
+/-- Positive-combination real-rootedness is equivalent to real-rootedness of every left pencil
+`C lam * f + g` with `lam > 0`. -/
 lemma iff_add_left {f g : ℝ[X]} :
     PosComboRealRooted f g ↔ ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧
       (C lam * f + g).Splits) := by
@@ -398,11 +405,15 @@ lemma iff_add_left {f g : ℝ[X]} :
     intro μ hμ
     simpa [add_comm] using h (lam := μ) hμ
 
+/-- If `f + C μ * g` is nonzero and real-rooted for every `μ > 0`, then `f` and `g` satisfy
+positive-combination real-rootedness. -/
 lemma of_add_right {f g : ℝ[X]}
     (h : ∀ {μ : ℝ}, 0 < μ → ((f + C μ * g) ≠ 0 ∧ (f + C μ * g).Splits)) :
     PosComboRealRooted f g :=
   (iff_add_right (f := f) (g := g)).2 h
 
+/-- If `C lam * f + g` is nonzero and real-rooted for every `lam > 0`, then `f` and `g` satisfy
+positive-combination real-rootedness. -/
 lemma of_add_left {f g : ℝ[X]}
     (h : ∀ {lam : ℝ}, 0 < lam → ((C lam * f + g) ≠ 0 ∧ (C lam * f + g).Splits)) :
     PosComboRealRooted f g :=
@@ -517,6 +528,8 @@ lemma family_pair_left {f g : ℝ[X]} (h : PosComboRealRooted f g)
   rw [add_comm (C lam₁ * f) g, add_comm (C lam₂ * f) g]
   exact family_pair_right (f := g) (g := f) h.comm hlam₁ hlam₂
 
+/-- If `f` and `g` have no common real root, then two right-pencil members with distinct
+parameters have no common real root. -/
 lemma family_no_common_right {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {μ₁ μ₂ : ℝ} (hμ : μ₁ ≠ μ₂) :
@@ -528,6 +541,8 @@ lemma family_no_common_right {f g : ℝ[X]}
   have hg0 : g.eval r = 0 := by grind
   simp_all
 
+/-- If `f` and `g` have no common real root, then two left-pencil members with distinct parameters
+have no common real root. -/
 lemma family_no_common_left {f g : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     {lam₁ lam₂ : ℝ} (hlam : lam₁ ≠ lam₂) :
@@ -538,6 +553,9 @@ lemma family_no_common_left {f g : ℝ[X]}
   simpa [add_comm] using
     family_no_common_right (f := g) (g := f) hno' hlam
 
+/-- Two right-pencil members are coprime if the pair satisfies positive-combination
+real-rootedness, the endpoints have no common real root, and the parameters are distinct and the
+first is positive. -/
 lemma family_isCoprime_right {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -548,6 +566,9 @@ lemma family_isCoprime_right {f g : ℝ[X]}
     (hfg.isRealRooted_add_right hμ₁).2
     (family_no_common_right hno hμ)
 
+/-- Two left-pencil members are coprime if the pair satisfies positive-combination
+real-rootedness, the endpoints have no common real root, and the parameters are distinct and the
+first is positive. -/
 lemma family_isCoprime_left {f g : ℝ[X]}
     (hfg : PosComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)

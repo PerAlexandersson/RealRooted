@@ -90,6 +90,7 @@ end FamilyCompatible
 
 namespace Compatible
 
+/-- Translating both polynomials by the same real number preserves compatibility. -/
 lemma comp_X_add_C {f g : ℝ[X]} (h : Compatible f g) (r : ℝ) :
     Compatible (f.comp (X + C r)) (g.comp (X + C r)) := by
   intro α β hα hβ
@@ -171,11 +172,15 @@ lemma iterateTDeriv {f g : ℝ[X]} (h : Compatible f g)
     exact ⟨RealRooted.iterateTDeriv_ne_zero hrr.1,
       RealRooted.splits_iterateTDeriv heps hrr.2⟩
 
+/-- If `f` and `g` are compatible and `f` has positive leading coefficient, then `f` is nonzero
+and splits. -/
 lemma isRealRooted_left
     {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) : (f ≠ 0 ∧ f.Splits) := by
   rcases h 1 0 (by simp) (by simp) with hzero | hrr <;> simp_all
 
+/-- If `f` and `g` are compatible and `g` has positive leading coefficient, then `g` is nonzero
+and splits. -/
 lemma isRealRooted_right
     {f g : ℝ[X]} (h : Compatible f g)
     (hg_pos : HasPosLeadingCoeff g) : (g ≠ 0 ∧ g.Splits) := by
@@ -262,6 +267,8 @@ theorem natDegree_close
   · simpa using natDegree_right_le_succ h.comm hg_pos hf_pos
   · exact natDegree_right_le_succ h hf_pos hg_pos
 
+/-- Compatibility and positive leading coefficients imply positive-combination
+real-rootedness. -/
 lemma toPosComboRealRooted {f g : ℝ[X]} (h : Compatible f g)
     (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) :
     PosComboRealRooted f g := by
@@ -361,6 +368,8 @@ end Compatible
 
 namespace PosComboRealRooted
 
+/-- Translating both polynomials by the same real number preserves positive-combination
+real-rootedness. -/
 lemma comp_X_add_C {f g : ℝ[X]} (h : PosComboRealRooted f g) (r : ℝ) :
     PosComboRealRooted (f.comp (X + C r)) (g.comp (X + C r)) := by
   intro α β hα hβ

@@ -150,6 +150,8 @@ private theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver_ge_two
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
 
+/-- If every member of `fs` splits and has positive leading coefficient, then pairwise common
+right interleavers upgrade to a single common right interleaver. -/
 theorem hasCommonInterleaver_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)
@@ -220,6 +222,8 @@ private theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver_ge_
       (hpos p hp_mem).ne_zero hp_rr hx_pair hp_deg_lo hp_deg_hi hslot
   lia
 
+/-- If every member of `fs` splits and has positive leading coefficient, then pairwise common left
+interleavers upgrade to a single common left interleaver. -/
 theorem hasCommonLeftInterleaver_of_pairwiseHasCommonLeftInterleaver
     {fs : List ℝ[X]}
     (hrr : ∀ f ∈ fs, f.Splits)

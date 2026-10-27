@@ -1548,33 +1548,6 @@
     "RealRooted.Tactic.CommonInterleaver.Core": {
       "max_modules": 182
     },
-    "RealRooted.Tactic.CommonInterleaver.BasicSyntax": {
-      "max_modules": 183
-    },
-    "RealRooted.Tactic.CommonInterleaver.BasicRules": {
-      "max_modules": 184
-    },
-    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax": {
-      "max_modules": 184
-    },
-    "RealRooted.Tactic.CommonInterleaver.AnalyticRules": {
-      "max_modules": 186
-    },
-    "RealRooted.Tactic.CommonInterleaver.FamilySyntax": {
-      "max_modules": 185
-    },
-    "RealRooted.Tactic.CommonInterleaver.FamilyRules": {
-      "max_modules": 188
-    },
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax": {
-      "max_modules": 186
-    },
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules": {
-      "max_modules": 190
-    },
-    "RealRooted.Tactic.CommonInterleaver": {
-      "max_modules": 191
-    },
     "RealRooted.Tactic.RootCount.SequenceCore": {
       "max_modules": 98
     },
@@ -2171,15 +2144,6 @@
     "RealRooted.Tactic.Product.Syntax",
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic.CommonInterleaver.Core",
-    "RealRooted.Tactic.CommonInterleaver.BasicSyntax",
-    "RealRooted.Tactic.CommonInterleaver.BasicRules",
-    "RealRooted.Tactic.CommonInterleaver.AnalyticSyntax",
-    "RealRooted.Tactic.CommonInterleaver.AnalyticRules",
-    "RealRooted.Tactic.CommonInterleaver.FamilySyntax",
-    "RealRooted.Tactic.CommonInterleaver.FamilyRules",
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeSyntax",
-    "RealRooted.Tactic.CommonInterleaver.LowDegreeRules",
-    "RealRooted.Tactic.CommonInterleaver",
     "RealRooted.Tactic.RootCount.SequenceCore",
     "RealRooted.Tactic.RootCount.LowDegree",
     "RealRooted.Tactic"

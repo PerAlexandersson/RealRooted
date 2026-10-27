@@ -181,6 +181,7 @@ lemma hasNonnegCoeffs_gammaBasisTerm (d i : ℕ) :
   unfold gammaBasisTerm
   exact (hasNonnegCoeffs_X.pow i).mul (hasNonnegCoeffs_X_add_one.pow (d - 2 * i))
 
+/-- The gamma transform preserves coefficientwise nonnegativity. -/
 lemma hasNonnegCoeffs_gammaTransform {d : ℕ} {γ : ℝ[X]} (hγ : HasNonnegCoeffs γ) :
     HasNonnegCoeffs (gammaTransform d γ) := by
   unfold gammaTransform
@@ -231,6 +232,8 @@ lemma gammaTransform_X_mul_two (d : ℕ) (γ : ℝ[X]) :
     · have hs : ¬ n + 1 ≤ (d + 2) / 2 := by lia
       simp [Polynomial.X_mul_monomial, gammaTransform_monomial, h]
 
+/-- If `γ` fits the ambient degree `d`, increasing that degree by two
+multiplies its gamma transform by `(X + 1) ^ 2`. -/
 lemma gammaTransform_pad_two {d : ℕ} {γ : ℝ[X]} (hγ : γ.natDegree ≤ d / 2) :
     gammaTransform (d + 2) γ = (X + 1) ^ 2 * gammaTransform d γ := by
   unfold gammaTransform
@@ -485,6 +488,8 @@ lemma gammaTransform_odd_injective (m : ℕ) {γ δ : ℝ[X]}
   apply mul_left_cancel₀ hX1
   simpa [gammaTransform_odd] using hEq
 
+/-- The gamma transform is injective on polynomials whose degrees are at most
+half the ambient degree. -/
 theorem gammaTransform_injective_of_natDegree_le {d : ℕ} {γ δ : ℝ[X]}
     (hγ : γ.natDegree ≤ d / 2) (hδ : δ.natDegree ≤ d / 2)
     (hEq : gammaTransform d γ = gammaTransform d δ) :
@@ -499,6 +504,8 @@ theorem gammaTransform_injective_of_natDegree_le {d : ℕ} {γ δ : ℝ[X]}
     exact gammaTransform_odd_injective (d / 2)
       hγ hδ hEq'
 
+/-- Within the ambient degree bound, a gamma transform vanishes exactly when
+its gamma polynomial vanishes. -/
 theorem gammaTransform_eq_zero_iff_of_natDegree_le {d : ℕ} {γ : ℝ[X]}
     (hγ : γ.natDegree ≤ d / 2) :
     gammaTransform d γ = 0 ↔ γ = 0 := by

@@ -160,18 +160,22 @@ theorem polarTheta_thetaPlusOne_comm (N : ℕ) (p : ℝ[X]) :
     coeff_polarTheta]
   ring
 
+/-- The operator `theta + 1` preserves coefficientwise nonnegativity. -/
 theorem HasNonnegCoeffs.thetaPlusOne {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (thetaPlusOne p) := by
   intro n
   simpa [coeff_thetaPlusOne] using mul_nonneg (by positivity) (hp n)
 
+/-- The Euler operator preserves coefficientwise nonnegativity. -/
 theorem HasNonnegCoeffs.theta {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (theta p) := by
   intro n
   simpa [coeff_theta] using mul_nonneg (by positivity) (hp n)
 
+/-- The polar-theta operator preserves coefficientwise nonnegativity for
+polynomials of degree at most its level. -/
 theorem HasNonnegCoeffs.polarTheta {N : ℕ} {p : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hdeg : p.natDegree ≤ N) :
     HasNonnegCoeffs (polarTheta N p) := by

@@ -1,17 +1,13 @@
 import RealRooted.Tactic.Examples.A049325RecurrenceSpace
-import RealRooted.Tactic.Examples.AffineDerivative
 import RealRooted.Tactic.Examples.AissenSchoenbergWhitney
-import RealRooted.Tactic.Examples.AllCombo
 import RealRooted.Tactic.Examples.Attr
 import RealRooted.Tactic.Examples.Bezoutian
 import RealRooted.Tactic.Examples.CoefficientShape
 import RealRooted.Tactic.Examples.Combinatorial
-import RealRooted.Tactic.Examples.CommonInterleaver
 import RealRooted.Tactic.Examples.CubicDiscriminant
 import RealRooted.Tactic.Examples.Derivative
 import RealRooted.Tactic.Examples.EndpointDerivative
 import RealRooted.Tactic.Examples.EulerBidiagonalOeis
-import RealRooted.Tactic.Examples.EulerOperator
 import RealRooted.Tactic.Examples.EulerTypeBridges
 import RealRooted.Tactic.Examples.FTransformInterlaces
 import RealRooted.Tactic.Examples.Favard
@@ -24,7 +20,6 @@ import RealRooted.Tactic.Examples.Finish.Interlacing
 import RealRooted.Tactic.Examples.Finish.Sequences
 import RealRooted.Tactic.Examples.FiniteSymbol
 import RealRooted.Tactic.Examples.FiniteSymbolPF
-import RealRooted.Tactic.Examples.GammaRealRoots
 import RealRooted.Tactic.Examples.GeneralizedLaguerre
 import RealRooted.Tactic.Examples.Hadamard
 import RealRooted.Tactic.Examples.HermiteBiehler
@@ -32,7 +27,6 @@ import RealRooted.Tactic.Examples.HermitePoulain
 import RealRooted.Tactic.Examples.HomogenizeStable
 import RealRooted.Tactic.Examples.InterlacesExplicit
 import RealRooted.Tactic.Examples.InterlacingSequence
-import RealRooted.Tactic.Examples.IteratedDerivativeShift
 import RealRooted.Tactic.Examples.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.J1Gap3Reciprocal
@@ -61,7 +55,6 @@ import RealRooted.Tactic.Examples.MaWang.WeakSequences
 import RealRooted.Tactic.Examples.MaWang.XFactorSequences
 import RealRooted.Tactic.Examples.MagnitudeDominated
 import RealRooted.Tactic.Examples.Matrix
-import RealRooted.Tactic.Examples.MultiplierSequence
 import RealRooted.Tactic.Examples.Narayana
 import RealRooted.Tactic.Examples.OEIS
 import RealRooted.Tactic.Examples.OEIS.A219836
@@ -69,7 +62,6 @@ import RealRooted.Tactic.Examples.OEIS.A259454
 import RealRooted.Tactic.Examples.OEIS.A304334
 import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
-import RealRooted.Tactic.Examples.OEIS.CompatCommon
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
 import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
@@ -81,7 +73,6 @@ import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
 import RealRooted.Tactic.Examples.OEIS.NextRows
-import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
 import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
 import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 import RealRooted.Tactic.Examples.OEIS.SecondDerivative
@@ -101,7 +92,6 @@ import RealRooted.Tactic.Examples.OperatorPreservesInterlacing
 import RealRooted.Tactic.Examples.PFBidiagonal
 import RealRooted.Tactic.Examples.PFPolynomial
 import RealRooted.Tactic.Examples.ParametricRows
-import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.Product.Basic
@@ -153,7 +143,6 @@ import RealRooted.Tactic.Examples.SymmetricDecomposition
 import RealRooted.Tactic.Examples.VeroneseSection
 import RealRooted.Tactic.Examples.Wagner
 import RealRooted.Tactic.Examples.WagnerX
-import RealRooted.Tactic.Examples.WeightedSum
 /-!
 # RealRooted tactic examples
 
