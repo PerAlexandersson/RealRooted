@@ -236,22 +236,6 @@ theorem strictInterl_of_interlaces_evalCoeff_neg_same
   strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg fun r hr ↦
     eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr (hb_neg r hr) (hno r hr)
 
-/-- Degree-bounded structured Liu--Wang theorem in the strict-sign/no-common
-regime. -/
-theorem strictInterl_of_interlaces_evalCoeff_neg
-    {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_neg : ∀ r, f.IsRoot r → b.eval r < 0) :
-    StrictInterl f (a * f + b * g) := by
-  rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
-  · exact strictInterl_of_interlaces_evalCoeff_neg_same hgf hg_pos hF_pos hsame hno hb_neg
-  · exact strictInterl_of_interlaces_evalCoeff_neg_succ hgf hg_pos hF_pos hsucc hno hb_neg
-
 lemma natDegree_lt_of_interlaces_degree_lower_bound {f g F : ℝ[X]}
     (hgf : Interlaces g f) (hdeg_lo : f.natDegree ≤ F.natDegree) :
     g.natDegree < F.natDegree := by
@@ -285,7 +269,6 @@ export MaWangInternal
     strictInterl_of_interlaces_endpoint_sign_of_no_crossing
     strictInterl_of_interlaces_evalCoeff_neg_succ
     strictInterl_of_interlaces_evalCoeff_neg_same
-    strictInterl_of_interlaces_evalCoeff_neg
     natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound
     hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound)
 

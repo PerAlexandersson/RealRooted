@@ -8,7 +8,6 @@ public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 public import RealRooted.DerivativeRecurrence.AffineLagStrict
 public import RealRooted.DerivativeRecurrence.QuadraticSeed
-public import RealRooted.DerivativeRecurrence.QuadraticShift
 public import RealRooted.DerivativeRecurrence.SecondOrderDegree
 public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
 public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree

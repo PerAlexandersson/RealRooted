@@ -1194,9 +1194,6 @@
     "RealRooted.LiuWang.OneAddXPositive": {
       "max_modules": 58
     },
-    "RealRooted.LiuWang.Step": {
-      "max_modules": 47
-    },
     "RealRooted.LiuOppositeSigns.RootCount": {
       "max_modules": 18
     },
@@ -1876,7 +1873,6 @@
     "RealRooted.DerivativeRecurrence.AffineLagStrict",
     "RealRooted.LiuWang",
     "RealRooted.LiuWang.OneAddXPositive",
-    "RealRooted.LiuWang.Step",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts",
     "RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail",
