@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Applications.OEIS.A330798
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
 public import RealRooted.Recurrence.RowModel
 
 /-!
@@ -18,6 +18,23 @@ open Polynomial
 namespace RealRooted.Tactic.RowParityDegree
 
 noncomputable section
+
+/-- The downstream A177040 recurrence. -/
+def A177040 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 2 + X
+  | 3 => 3 + X
+  | n + 4 =>
+      let r : ℝ := n
+      (C (2 / 5) * X + C (-2 / 5) * X ^ 2) * (A177040 (n + 3)).derivative
+        + (C (-4 / 5) * X + C (4 / 5) * X ^ 2) * (A177040 (n + 2)).derivative
+        + (C (2 / 5) * X + C (-2 / 5) * X ^ 2) * (A177040 (n + 1)).derivative
+        + (C (-4 / 5) * X + C (4 / 5) * X ^ 2) * (A177040 n).derivative
+        + (C (2 / 5 - 1 / 5 * r) + C (3 / 5 + 1 / 5 * r) * X) * A177040 (n + 3)
+        + (C (2 + 2 / 5 * r) + C (-2 / 5 * r) * X) * A177040 (n + 2)
+        + (C (2 / 5 + 1 / 5 * r) + C (-7 / 5 - 1 / 5 * r) * X) * A177040 (n + 1)
+        + (C (-13 / 5 - 2 / 5 * r) + C (8 / 5 + 2 / 5 * r) * X) * A177040 n
 
 private lemma A177040_coeff_succ (n k : ℕ) :
     Polynomial.coeff (A177040 (n + 4)) (k + 2) =

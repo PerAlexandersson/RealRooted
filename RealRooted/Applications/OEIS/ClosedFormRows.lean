@@ -6,11 +6,9 @@ public import RealRooted.HeilmannLieb
 import RealRooted.Tactic.RowInterlacing
 
 /-!
-# Closed forms for repeated-root OEIS rows
+# Closed forms for selected OEIS rows
 
-This scratch module records the closed-form route for the particularly simple
-multiple-root row A286100.  Its even terms are scalar multiples of powers of
-`X`, and its odd terms vanish.
+This module records closed-form routes for several higher-order recurrence rows.
 -/
 
 @[expose] public section
@@ -20,18 +18,6 @@ open Polynomial
 noncomputable section
 
 namespace RealRooted.ClosedFormRows
-
-/-- The order-four repeated-root row A286100. -/
-def A286100 : ℕ → ℝ[X]
-  | 0 => 2 * X
-  | 1 => 0
-  | 2 => 3 * X ^ 2
-  | 3 => 0
-  | n + 4 => 2 * X * A286100 (n + 2) - X ^ 2 * A286100 n
-
-/-- Every A286100 row splits over the reals. -/
-theorem A286100_splits (n : ℕ) : (A286100 n).Splits := by
-  rr_row_splits
 
 /-- The quartic cofactor for A124376. -/
 def A124376_quartic (k : ℕ) : ℝ[X] :=

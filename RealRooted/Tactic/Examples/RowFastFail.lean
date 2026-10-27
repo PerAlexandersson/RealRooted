@@ -2,7 +2,6 @@ module
 
 public import RealRooted.Applications.EulerianVariations.TernaryRuns
 public import RealRooted.Applications.OEIS.A080721
-public import RealRooted.Applications.OEIS.A144696.Endpoints
 public import RealRooted.Applications.OEIS.LowerReentrantCorner
 import RealRooted.Tactic.RowInterlacing
 
@@ -68,28 +67,10 @@ example : type_of% @Applications.EulerianVariations.ternaryRunPolynomial_strictI
 info: row tactic failed before timeout with the expected route error
 -/
 #guard_msgs in
-example : type_of% @hasNonnegCoeffs_a144696Polynomial := by
-  intro n
-  rr_row_fast_fail nonnegNoStrategy (budget := 500) in rr_row_nonneg_coeffs
-  exact hasNonnegCoeffs_a144696Polynomial n
-
-/--
-info: row tactic failed before timeout with the expected route error
--/
-#guard_msgs in
 example : type_of% @Applications.EulerianVariations.ternaryRunPolynomial_hasNonnegCoeffs := by
   intro n
   rr_row_fast_fail nonnegNoStrategy (budget := 50) in rr_row_nonneg_coeffs
   exact Applications.EulerianVariations.ternaryRunPolynomial_hasNonnegCoeffs n
-
-/--
-info: row tactic failed before timeout with the expected route error
--/
-#guard_msgs in
-example : type_of% @a144696Polynomial_reciprocal_strictInterl := by
-  intro n
-  rr_row_fast_fail strictNoStrategy (budget := 10) in rr_row_strictInterl
-  exact a144696Polynomial_reciprocal_strictInterl n
 
 /--
 info: row tactic failed before timeout with the expected route error

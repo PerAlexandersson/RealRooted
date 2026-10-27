@@ -131,10 +131,8 @@ curated list. Some representative checked theorems:
   (`Challenges.Eulerian`), generalized snake posets
   (`snakeInterlacing_generalizedSnakeRookModel`), peak-value enumerators
   (`peakValuePolynomial_mvRealStable`), the A16634x gamma pencil
-  (`gammaU_strictInterl_gammaV`), the Jacobi deformation and OEIS A132885
-  (`JacobiDeformation.polynomial_strict_package`), and the weighted deco
-  Eulerian transform
-  (`Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg`).
+  (`gammaU_strictInterl_gammaV`), and the Jacobi deformation and OEIS A132885
+  (`JacobiDeformation.polynomial_strict_package`).
 
 Open problems and proof tasks are tracked in
 [GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in

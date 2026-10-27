@@ -69,7 +69,7 @@ theorem evenFactorialJensenWeight_eq (k : ℕ) :
   field_simp
   nlinarith
 
-/-- The double Narayana transform used by A318397 and A367177. -/
+/-- The double Narayana transform used by A318397. -/
 def doubleNarayanaPolynomial (n : ℕ) : ℝ[X] :=
   narayanaTransform 0 (narayanaPolynomial 0 n)
 
