@@ -65,14 +65,11 @@ theorem strictInterl_nonpos_lag_sequence {P : Nat → ℝ[X]}
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine strictInterl_sequence_of_base_and_step hbase ?_
-  intro n hprev
-  have hInter : Interlaces (P n) (P (n + 1)) :=
-    hprev.toInterlaces (hdeg_succ n)
-  have hstep : StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    strictInterl_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n)
-  simpa [← hrec n] using hstep
+  exact (fun _ : (∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) ↦
+    strictInterl_succ_of_recurrence_of_eval_nonpos
+      hbase hpos hrec
+      (fun n ↦ by rw [← hdeg_succ (n + 1)]; lia)
+      (fun n ↦ by rw [← hdeg_succ (n + 1)]) hB_nonpos) hno
 
 /-- Sequence-level Liu--Wang induction where lag nonpositivity may use the
 current row's real-rootedness certificate from the induction state. -/
@@ -86,15 +83,12 @@ theorem strictInterl_nonpos_lag_sequence_of_inductive_nonpos {P : Nat → ℝ[X]
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine strictInterl_sequence_of_base_and_step hbase ?_
-  intro n hprev
-  have hInter : Interlaces (P n) (P (n + 1)) :=
-    hprev.toInterlaces (hdeg_succ n)
-  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
-  have hstep : StrictInterl (P (n + 1)) (A n * P (n + 1) + B n * P n) :=
-    strictInterl_two_of_nonpos_of_recurrence hInter (hpos n) (hrec n)
-      (hpos (n + 2)) (hdeg_succ (n + 1)) (hno n) (hB_nonpos n hsource)
-  simpa [← hrec n] using hstep
+  exact (fun _ : (∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) ↦
+    strictInterl_succ_of_recurrence_of_eval_nonpos_of_splits
+      hbase hpos hrec
+      (fun n ↦ by rw [← hdeg_succ (n + 1)]; lia)
+      (fun n ↦ by rw [← hdeg_succ (n + 1)])
+      (fun n hs ↦ hB_nonpos n ⟨(hpos (n + 1)).ne_zero, hs⟩)) hno
 
 /-- Real-rootedness corollary for sequence-level nonpositive-lag
 Liu--Wang induction. -/

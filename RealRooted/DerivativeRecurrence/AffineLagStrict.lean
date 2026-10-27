@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Derivative.Interlacing
-public import RealRooted.GeneralizedLiuWang
+public import RealRooted.MaWang
 public import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
 
