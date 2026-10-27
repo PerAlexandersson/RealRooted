@@ -2,11 +2,11 @@ module
 
 public import RealRooted.DegreeDropReversal
 public import RealRooted.SequenceClosure
-public import RealRooted.Tactic.Lookup
+import RealRooted.Tactic.Lookup
 public import RealRooted.Tactic.Named
 public import RealRooted.Tactic.RecurrenceEval
-public import RealRooted.Tactic.Sign
-public import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.Sign
+import RealRooted.Tactic.SideGoals
 public meta import RealRooted.SequenceClosure
 public meta import RealRooted.Tactic.Lookup
 public meta import RealRooted.Tactic.Named

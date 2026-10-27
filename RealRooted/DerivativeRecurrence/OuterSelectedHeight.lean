@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Analysis.MeanInequalities
+import Mathlib.Analysis.MeanInequalities
 public import RealRooted.DerivativeRecurrence.RootWindow
 
 /-!

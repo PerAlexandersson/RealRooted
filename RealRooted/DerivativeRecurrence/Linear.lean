@@ -5,6 +5,7 @@ import RealRooted.MaWang.Weak.Endpoint
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.Algebra
 import RealRooted.Linear
+import RealRooted.DerivativeRecurrence.QuadraticDegree
 public import RealRooted.Basic.ProperPosition
 
 public section
@@ -48,41 +49,9 @@ theorem natDegree_of_derivative_linear_pos_const
     (hd_pos : 0 < d) (hc_pos : 0 < c)
     (n : ℕ) :
     (P n).natDegree = n := by
-  have hcoeff := derivative_linear_coeff_succ P a b c hrec
-  have habove : ∀ n N : ℕ, n < N → coeff (P n) N = 0 := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        intro N hN
-        match n with
-        | 0 =>
-            rw [h0, coeff_C]
-            grind
-        | k + 1 =>
-            rcases N with _ | j
-            · lia
-            · grind
-  have htop_pos : ∀ n : ℕ, 0 < coeff (P n) n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | h n ih =>
-        match n with
-        | 0 => simp_all
-        | k + 1 => simp_all
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun N hN ↦ habove n N hN))
-    (ne_of_gt (htop_pos n))
-
-/-- Unit-seed specialization of `natDegree_of_derivative_linear_pos_const`. -/
-theorem natDegree_of_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) = (C b * X) * (P n).derivative + (C a + C c * X) * P n)
-    (hc_pos : 0 < c)
-    (n : ℕ) :
-    (P n).natDegree = n :=
-  natDegree_of_derivative_linear_pos_const P a b c 1 (by grind) hrec
-    (by norm_num) hc_pos n
+  simpa using natDegree_of_quadratic_derivative_bilinear_offset P b 0 a 0 c 0 0
+    (by simpa [h0] using hd_pos) (fun m hm ↦ by simp [h0, coeff_C, hm.ne'])
+    (fun n ↦ by simpa using hrec n) (by simpa using hc_pos) le_rfl n
 
 /-- Consecutive polynomials in a positive first-order linear derivative
 recurrence interlace. -/
@@ -197,18 +166,5 @@ theorem interlaces_of_derivative_linear_pos_const
           hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
         simp_all
   exact (hstrictInterl n).toInterlaces (by grind)
-
-/-- Unit-seed specialization of
-`interlaces_of_derivative_linear_pos_const`. -/
-theorem interlaces_of_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) = (C b * X) * (P n).derivative + (C a + C c * X) * P n)
-    (hdeg : ∀ n, (P n).natDegree = n)
-    (ha_nonneg : 0 ≤ a) (hb_pos : 0 < b) (hc_pos : 0 < c)
-    (n : ℕ) :
-    Interlaces (P n) (P (n + 1)) :=
-  interlaces_of_derivative_linear_pos_const P a b c 1 (by grind) hrec hdeg
-    (by norm_num) ha_nonneg hb_pos hc_pos n
 
 end RealRooted

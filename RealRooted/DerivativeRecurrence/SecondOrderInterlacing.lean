@@ -2,12 +2,14 @@ module
 
 import RealRooted.Derivative.Interlacing
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
-public import RealRooted.LiuWang.FiniteFamily
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
 import RealRooted.WagnerRightSum.Sign
 import RealRooted.Derivative.Algebra
 import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Interlacing for affine-lagged second-order derivative recurrences
@@ -119,19 +121,6 @@ theorem hasNonnegCoeffs_of_affine_lag_second_order_derivative_of_nonneg_lag
   nonneg_coeffs_affine_lag_second_order_derivative_aux ha hc h0 h1 hrec
     (fun m k hmk => (top_affine_lag_second_order_derivative h0 h1 hrec m).2 k hmk) n
 
-/-- The tied-lag nonnegative-coefficient theorem is the specialization
-`c = a`. -/
-theorem hasNonnegCoeffs_of_affine_lag_second_order_derivative
-    (P : ℕ → ℝ[X]) (a : ℝ) (ha : 0 < a)
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C a * X) * P n) :
-    ∀ n, HasNonnegCoeffs (P n) :=
-  hasNonnegCoeffs_of_affine_lag_second_order_derivative_of_nonneg_lag
-    P a a ha.le ha.le h0 h1 hrec
-
 private theorem natDegree_affine_lag_second_order_derivative
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : ∀ n, P (n + 2) =
@@ -179,32 +168,10 @@ theorem root_neg_affine_lag_second_order_derivative_of_nonneg_lag
     rw [Polynomial.IsRoot.def, heval] at hr
     norm_num at hr
 
-private theorem derivative_interlaces_affine_lag_second_order_derivative
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C c * X) * P n) (n : ℕ) (hs : (P (n + 1)).Splits) :
-    Interlaces ((P (n + 1)).derivative) (P (n + 1)) := by
-  have hpos := pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 1)
-  exact interlaces_derivative_of_pos_natDegree hpos.ne_zero hs hpos (by
-    rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec]
-    lia)
-
-private theorem derivative_pos_affine_lag_second_order_derivative
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C c * X) * P n) (n : ℕ) :
-    HasPosLeadingCoeff ((P (n + 1)).derivative) :=
-  (pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 1)).derivative (by
-    rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec]
-    lia)
-
 /-- Adjacent members of an affine-lagged second-order derivative recurrence
 with an independent nonnegative lag strictly interlace and have no common
-real root. -/
+real root.  This is the case `b = a` of
+`strictInterl_and_noCommonRoot_of_quadratic_lag`. -/
 theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
     (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
@@ -213,127 +180,21 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
         (C c * X) * P n) :
     ∀ n, StrictInterl (P n) (P (n + 1)) ∧
-      ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
-  intro n
-  induction n with
-  | zero =>
-      constructor
-      · rw [h0]
-        exact (interlaces_one_linear (by
-          rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec])).toStrictInterl
-      · intro r _ hr0
-        rw [Polynomial.IsRoot.def, h0] at hr0
-        simp at hr0
-  | succ n ih =>
-      obtain ⟨ihstrictInterl, ihno⟩ := ih
-      have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
-        derivative_interlaces_affine_lag_second_order_derivative h0 h1 hrec n ihstrictInterl.2.1.2
-      have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
-        derivative_pos_affine_lag_second_order_derivative h0 h1 hrec n
-      have hV : ∀ r : ℝ, (P (n + 1)).IsRoot r →
-          eval r (C a * X + C (-a) * X ^ 2) ≤ 0 := by
-        intro r hr
-        have hneg := root_neg_affine_lag_second_order_derivative_of_nonneg_lag
-          ha.le hc h0 h1 hrec (n + 1) hr
-        simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow]
-        nlinarith [sq_nonneg r]
-      have hW : ∀ r : ℝ, (P (n + 1)).IsRoot r → eval r (C c * X) ≤ 0 := by
-        intro r hr
-        have hneg := root_neg_affine_lag_second_order_derivative_of_nonneg_lag
-          ha.le hc h0 h1 hrec (n + 1) hr
-        simp only [eval_mul, eval_C, eval_X]
-        exact mul_nonpos_of_nonneg_of_nonpos hc hneg.le
-      have hsum : P (n + 2) =
-          (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-            (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-              (C c * X) * P n := by
-        rw [hrec n]
-        ring
-      have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
-        rw [hsum]
-        exact LiuWang.strictInterl_derivative_lag_of_eval_nonpos
-          ihstrictInterl.2.1.1 ihstrictInterl.2.1.2
-          (pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 1))
-          ihstrictInterl (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
-          (by
-            rw [← hsum]
-            exact pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 2))
-          (by
-            rw [← hsum, natDegree_affine_lag_second_order_derivative h0 h1 hrec,
-              natDegree_affine_lag_second_order_derivative h0 h1 hrec]
-            lia)
-          (by
-            rw [← hsum, natDegree_affine_lag_second_order_derivative h0 h1 hrec,
-              natDegree_affine_lag_second_order_derivative h0 h1 hrec]) hV hW
-      refine ⟨hstrictInterl, ?_⟩
-      intro r hr2 hr1
-      have hrneg : r < 0 :=
-        root_neg_affine_lag_second_order_derivative_of_nonneg_lag
-          ha.le hc h0 h1 hrec (n + 1) hr1
-      have hkey :
-          a * (1 - r) * eval r ((P (n + 1)).derivative) +
-            c * eval r (P n) = 0 := by
-        have h := hr2
-        rw [Polynomial.IsRoot.def, hrec n] at h
-        simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow] at h
-        rw [Polynomial.IsRoot.def] at hr1
-        rw [hr1] at h
-        have hr0 : r ≠ 0 := ne_of_lt hrneg
-        have hfactor :
-            r * (a * (1 - r) * eval r ((P (n + 1)).derivative) +
-              c * eval r (P n)) = 0 := by
-          linarith [h]
-        exact (mul_eq_zero.mp hfactor).resolve_left hr0
-      have hne : eval r (P n) ≠ 0 := fun hroot => ihno r hr1 hroot
-      have hsign : 0 ≤ eval r (P n) * eval r ((P (n + 1)).derivative) :=
-        eval_mul_eval_nonneg_of_strictInterl_right ihstrictInterl hderiv_inter.toStrictInterl
-          (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n) hderiv_pos hr1
-      have hmul :
-          0 ≤ a * (1 - r) *
-            (eval r (P n) * eval r ((P (n + 1)).derivative)) :=
-        mul_nonneg (mul_nonneg ha.le (by linarith)) hsign
-      have hlag_square : 0 ≤ c * (eval r (P n)) ^ 2 :=
-        mul_nonneg hc (sq_nonneg _)
-      have hsum_zero :
-          a * (1 - r) *
-              (eval r (P n) * eval r ((P (n + 1)).derivative)) +
-            c * (eval r (P n)) ^ 2 = 0 := by
-        calc
-          _ = eval r (P n) *
-              (a * (1 - r) * eval r ((P (n + 1)).derivative) +
-                c * eval r (P n)) := by ring
-          _ = 0 := by rw [hkey, mul_zero]
-      have hfirst_zero :
-          a * (1 - r) *
-            (eval r (P n) * eval r ((P (n + 1)).derivative)) = 0 := by
-        linarith
-      have hproduct_zero :
-          eval r (P n) * eval r ((P (n + 1)).derivative) = 0 := by
-        rcases mul_eq_zero.mp hfirst_zero with hprefix | hproduct
-        · rcases mul_eq_zero.mp hprefix with ha0 | hone
-          · exact (ha.ne' ha0).elim
-          · exact ((by linarith : 1 - r ≠ 0) hone).elim
-        · exact hproduct
-      have hderiv_zero : eval r ((P (n + 1)).derivative) = 0 :=
-        (mul_eq_zero.mp hproduct_zero).resolve_left hne
-      have hsimple : HasSimpleRoots (P (n + 1)) :=
-        (ihstrictInterl.hasSimpleRoots_of_no_common_root fun x hx =>
-          ihno x hx.2 hx.1).2
-      exact (hsimple.eval_derivative_ne_zero hr1 hderiv_zero).elim
-
-/-- The original tied-lag theorem is the specialization `c = a` of the
-independent-lag result. -/
-theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative
-    (P : ℕ → ℝ[X]) (a : ℝ) (ha : 0 < a)
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C a * X) * P n) :
-    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
       ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r :=
-  strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-    P a a ha ha.le h0 h1 hrec
+  strictInterl_and_noCommonRoot_of_quadratic_lag P a a c
+    (fun n ↦ C 1 + C ((a + 1) + a * (n : ℝ)) * X) ha ha.le hc
+    (natDegree_affine_lag_second_order_derivative h0 h1 hrec)
+    (pos_leading_affine_lag_second_order_derivative h0 h1 hrec)
+    (fun n _ hr ↦ root_neg_affine_lag_second_order_derivative_of_nonneg_lag
+      ha.le hc h0 h1 hrec n hr)
+    (by
+      rw [h0]
+      exact (interlaces_one_linear (by
+        rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec])).toStrictInterl)
+    (fun r _ hr0 ↦ by
+      rw [Polynomial.IsRoot.def, h0] at hr0
+      simp at hr0)
+    hrec
 
 /-- The rankwise invariants supplied by the independent-lag recurrence
 theorem. -/
@@ -389,42 +250,6 @@ theorem affine_lag_second_order_derivative_certificate_of_nonneg_lag
         ha.le hc h0 h1 hrec n hr,
       hinter, hpair.2, hsimple⟩
 
-/-- Consecutive ranks have degree-difference-one interlacing. -/
-theorem interlaces_affine_lag_second_order_derivative_of_nonneg_lag
-    (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C c * X) * P n) (n : ℕ) :
-    Interlaces (P n) (P (n + 1)) :=
-  (affine_lag_second_order_derivative_certificate_of_nonneg_lag
-    P a c ha hc h0 h1 hrec n).interlaces_succ
-
-/-- Every member of the independent-lag family has simple real roots. -/
-theorem hasSimpleRoots_of_affine_lag_second_order_derivative_of_nonneg_lag
-    (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C c * X) * P n) (n : ℕ) :
-    HasSimpleRoots (P n) :=
-  (affine_lag_second_order_derivative_certificate_of_nonneg_lag
-    P a c ha hc h0 h1 hrec n).simpleRoots
-
-/-- Root multisets in the independent-lag family have no duplicates. -/
-theorem roots_nodup_of_affine_lag_second_order_derivative_of_nonneg_lag
-    (P : ℕ → ℝ[X]) (a c : ℝ) (ha : 0 < a) (hc : 0 ≤ c)
-    (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-        (C c * X) * P n) (n : ℕ) :
-    (P n).roots.Nodup :=
-  (hasSimpleRoots_of_affine_lag_second_order_derivative_of_nonneg_lag
-    P a c ha hc h0 h1 hrec n).roots_nodup
-
 /-- Reversed finite prefixes of an independent-lag family are Sturm
 sequences. -/
 theorem isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
@@ -438,39 +263,8 @@ theorem isSturmSeq_affine_lag_second_order_derivative_of_nonneg_lag
   induction n with
   | zero => simp [IsSturmSeq]
   | succ n ih =>
-      have hinter := interlaces_affine_lag_second_order_derivative_of_nonneg_lag
-        P a c ha hc h0 h1 hrec n
+      have hinter := (affine_lag_second_order_derivative_certificate_of_nonneg_lag
+        P a c ha hc h0 h1 hrec n).interlaces_succ
       simpa [IsSturmSeq, List.range_succ] using And.intro hinter ih
-
-/-- Unit derivative parameter and zero lag, including the boundary `c = 0`.
--/
-theorem strictInterl_and_noCommonRoot_of_unit_affine_zero_lag
-    (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (X - X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1)) :
-    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
-      ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
-  apply strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-    P 1 0 (by norm_num) (by norm_num) h0 h1
-  intro n
-  rw [hrec n]
-  simp only [map_one, map_zero, map_neg]
-  ring_nf
-
-/-- Unit derivative parameter and unit lag. -/
-theorem strictInterl_and_noCommonRoot_of_unit_affine_unit_lag
-    (P : ℕ → ℝ[X]) (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
-    (hrec : ∀ n, P (n + 2) =
-      (X - X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C ((2 : ℝ) + n) * X) * P (n + 1) + X * P n) :
-    ∀ n, StrictInterl (P n) (P (n + 1)) ∧
-      ∀ r : ℝ, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r := by
-  apply strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_nonneg_lag
-    P 1 1 (by norm_num) (by norm_num) h0 h1
-  intro n
-  rw [hrec n]
-  simp only [map_one, map_neg]
-  ring_nf
 
 end RealRooted

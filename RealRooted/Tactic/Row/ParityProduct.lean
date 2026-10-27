@@ -4,6 +4,7 @@ public import RealRooted.ThreeTermRecurrence.ParityProduct
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ThreeTermRecurrence.ParityProduct
 public meta import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.Row.SideGoals
 
 /-!
 # Row tactics: parity products

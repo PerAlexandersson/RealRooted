@@ -2,12 +2,14 @@ module
 
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.RootCountLocalConstancy
-public import RealRooted.DegreeIncreasingLocalLowerCount
-public import RealRooted.PositiveParameterLocalLowerCount
+import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.PositiveParameterLocalLowerCount
 public import RealRooted.RootContinuity
-public import RealRooted.RootCountJump
-public import RealRooted.SmallPositiveParameterCount
-public import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.RootCountJump
+import RealRooted.SmallPositiveParameterCount
+import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.RootSumBounds
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Pointwise root-count sequence transports

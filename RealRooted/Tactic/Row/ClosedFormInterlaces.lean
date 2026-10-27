@@ -2,12 +2,13 @@ module
 
 public import RealRooted.Tactic.RowClosedForm
 public import RealRooted.Interlacing.RemainderCertificate
-public import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.InterlacesExplicit
 public import RealRooted.Tactic.Row.SideGoals
 public meta import RealRooted.Tactic.RowClosedForm
 public meta import RealRooted.Interlacing.RemainderCertificate
 public meta import RealRooted.Tactic.InterlacesExplicit
 public meta import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Basic.ProperPosition
 
 /-!
 # Row tactics: interlacing of closed-form rows `q ^ (D₀ + m) · R m`

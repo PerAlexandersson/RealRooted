@@ -25,7 +25,6 @@ noncomputable section
 
 namespace RealRooted
 
-
 lemma quadratic_derivative_bilinear_coeff_zero_succ
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (hrec : ∀ n, P (n + 1) =
@@ -233,51 +232,6 @@ lemma quadratic_derivative_linear_coeff_zero_succ
     Polynomial.coeff (P (n + 1)) 0 = c * Polynomial.coeff (P n) 0 := by
   simpa using quadratic_derivative_bilinear_coeff_zero_succ P a b c 0 s t
     (by simpa using hrec) n
-
-lemma hasNonnegCoeffs_of_quadratic_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, HasNonnegCoeffs (P n) := by
-  simpa using hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c 0 s t h0
-    (by simpa using hrec) ha hb hc (by positivity) hs hbt
-
-lemma hasPosLeadingCoeff_of_quadratic_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (hs : 0 < s) (hbt : b ≤ t) (n : ℕ) :
-    HasPosLeadingCoeff (P n) := by
-  simpa using hasPosLeadingCoeff_of_quadratic_derivative_bilinear P a b c 0 s t h0
-    (by simpa using hrec) hs hbt n
-
-lemma strictInterl_step_of_quadratic_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hs : 0 < s) (hbt : b ≤ t)
-    (m : ℕ) (hm : 2 ≤ m) (hsp : (P m).Splits) :
-    StrictInterl (P m) (P (m + 1)) := by
-  simpa using strictInterl_step_of_quadratic_derivative_bilinear P a b c 0 s t h0
-    (by simpa using hrec) ha hb hc (by positivity) hs hbt m hm hsp
-
-theorem strictInterl_of_quadratic_derivative_linear
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, StrictInterl (P n) (P (n + 1)) := by
-  simpa using strictInterl_of_quadratic_derivative_bilinear P a b c 0 s t h0
-    (by simpa using hrec) ha hb hc (by positivity) hs hbt
 
 lemma hasNonnegCoeffs_of_quadratic_derivative_linear_offset
     (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)

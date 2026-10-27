@@ -482,7 +482,6 @@ import RealRooted.DerivativeRecurrence.QuadraticDegree
 import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 import RealRooted.DerivativeRecurrence.QuadraticSeed
-import RealRooted.DerivativeRecurrence.QuadraticShift
 import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
@@ -813,10 +812,8 @@ import RealRooted.LiuWang
 import RealRooted.LiuWang.General
 import RealRooted.LiuWang.OneAddXPositive
 import RealRooted.LiuWang.SequenceCore
-import RealRooted.LiuWang.SequenceIntervals
 import RealRooted.LiuWang.SequencePositive
 import RealRooted.LiuWang.SequenceProducts
-import RealRooted.LiuWang.Step
 import RealRooted.LiuWangBenchmark
 import RealRooted.LiuWangRecursion
 import RealRooted.LowerTriangularMatrix
@@ -1809,6 +1806,8 @@ import RealRooted.Mesh.FiniteDifference
 import RealRooted.Mathlib.Algebra.Order.Ring.Lemmas
 import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.HermitePoulain
+import RealRooted.Mesh.DiscreteHermitePoulain
+import RealRooted.Mesh.DiscreteMultiplier
 
 /-!
 # RealRooted production umbrella

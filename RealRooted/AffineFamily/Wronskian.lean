@@ -16,7 +16,7 @@ import RealRooted.PosCombo
 public import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.FolkloreLemma
-public import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta

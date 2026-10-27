@@ -28,7 +28,9 @@ The interlacing backend for this shape is
 ## Main results
 
 * `derivLag_step`: the degree bound and the top coefficient of one step.
-* `derivLag_natDegree`, `derivLag_ne_zero`, `derivLag_leadingCoeff_pos`.
+* `derivLag_natDegree`: the rows have degree `D₀ + d n`.  Nonvanishing and positivity of the
+  leading coefficient are the other components of `twoStep_natDegree_eq_and_leadingCoeff_pos`
+  applied to `derivLag_step`.
 -/
 
 public section
@@ -86,36 +88,6 @@ theorem derivLag_natDegree
     (P n).natDegree = D₀ + d * n :=
   (twoStep_natDegree_eq_and_leadingCoeff_pos (derivLag_step hrec hU hV hW) h0 h1 hc0 hc1
     hα hβ hαβ n).1
-
-/-- The positive-leading-coefficient companion of `derivLag_natDegree`. -/
-theorem derivLag_leadingCoeff_pos
-    (hrec : ∀ n, P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hU : ∀ n, (U n).natDegree ≤ d) (hV : ∀ n, (V n).natDegree ≤ d + 1)
-    (hW : ∀ n, (W n).natDegree ≤ 2 * d)
-    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
-    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d))
-    (hα : ∀ n, 0 ≤ (U n).coeff d + (V n).coeff (d + 1) * ((D₀ + d * (n + 1) : ℕ) : ℝ))
-    (hβ : ∀ n, 0 ≤ (W n).coeff (2 * d))
-    (hαβ : ∀ n, 0 < (U n).coeff d + (V n).coeff (d + 1) * ((D₀ + d * (n + 1) : ℕ) : ℝ) +
-      (W n).coeff (2 * d)) (n : ℕ) :
-    0 < (P n).leadingCoeff :=
-  (twoStep_natDegree_eq_and_leadingCoeff_pos (derivLag_step hrec hU hV hW) h0 h1 hc0 hc1
-    hα hβ hαβ n).2
-
-/-- The nonvanishing companion of `derivLag_natDegree`. -/
-theorem derivLag_ne_zero
-    (hrec : ∀ n, P (n + 2) = U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hU : ∀ n, (U n).natDegree ≤ d) (hV : ∀ n, (V n).natDegree ≤ d + 1)
-    (hW : ∀ n, (W n).natDegree ≤ 2 * d)
-    (h0 : (P 0).natDegree ≤ D₀) (h1 : (P 1).natDegree ≤ D₀ + d)
-    (hc0 : 0 < (P 0).coeff D₀) (hc1 : 0 < (P 1).coeff (D₀ + d))
-    (hα : ∀ n, 0 ≤ (U n).coeff d + (V n).coeff (d + 1) * ((D₀ + d * (n + 1) : ℕ) : ℝ))
-    (hβ : ∀ n, 0 ≤ (W n).coeff (2 * d))
-    (hαβ : ∀ n, 0 < (U n).coeff d + (V n).coeff (d + 1) * ((D₀ + d * (n + 1) : ℕ) : ℝ) +
-      (W n).coeff (2 * d)) (n : ℕ) :
-    P n ≠ 0 :=
-  leadingCoeff_ne_zero.mp
-    (derivLag_leadingCoeff_pos hrec hU hV hW h0 h1 hc0 hc1 hα hβ hαβ n).ne'
 
 section Examples
 

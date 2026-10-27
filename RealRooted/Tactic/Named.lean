@@ -4,6 +4,7 @@ public import RealRooted.Basic
 public import Lean.Elab.Tactic
 public meta import RealRooted.Basic
 public meta import Lean.Elab.Tactic
+import RealRooted.Basic.ProperPosition
 
 /-!
 # Named polynomial helpers

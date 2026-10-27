@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Tactic.Finish
+import RealRooted.SequenceClosure
 
 /-!
 # Preserving-operator sequence tactic

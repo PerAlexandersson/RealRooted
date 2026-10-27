@@ -2,10 +2,11 @@ module
 
 public import RealRooted.QuadraticRoot
 public import RealRooted.Tactic.Recurrence
-public import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.InterlacesExplicit
 public meta import RealRooted.QuadraticRoot
 public meta import RealRooted.Tactic.Recurrence
 public meta import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.Recurrence.LinRecProbe
 
 /-!
 # `rowClosedFormSplits`

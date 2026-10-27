@@ -1,8 +1,17 @@
 module
 
 public import RealRooted.Hadamard
-public import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Tactic.Finish
+import RealRooted.Hadamard.Grace
+import RealRooted.Hadamard.Cubic
+import RealRooted.Hadamard.Newton
+import RealRooted.Hadamard.Finite
+public import RealRooted.Hadamard.Basic
+import RealRooted.Hadamard.Consequences
+import RealRooted.Hadamard.GarloffWagner
+import RealRooted.GarloffWagner.Hadamard
+import RealRooted.Linear
 
 /-!
 # Hadamard and Schur--Szegő family lemmas and automation

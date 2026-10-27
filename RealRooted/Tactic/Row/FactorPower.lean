@@ -2,12 +2,13 @@ module
 
 public import RealRooted.Recurrence.FactorPower
 public import RealRooted.Tactic.Row.Core
-public import RealRooted.Tactic.Row.PowerForm
+import RealRooted.Tactic.Row.PowerForm
 public import RealRooted.Tactic.Row.Subseq
 public meta import RealRooted.Recurrence.FactorPower
 public meta import RealRooted.Tactic.Row.Core
 public meta import RealRooted.Tactic.Row.PowerForm
 public meta import RealRooted.Tactic.Row.Subseq
+public import RealRooted.Tactic.Row.Support
 
 /-!
 # Row tactics: deflating a fixed linear factor

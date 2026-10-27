@@ -2,7 +2,9 @@ module
 
 import RealRooted.Derivative.Algebra
 import RealRooted.Derivative.Interlacing
-public import RealRooted.LiuWang.FiniteFamily
+import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Liu--Wang derivative-lag recursions
@@ -121,108 +123,6 @@ theorem strictInterl_derivative_lag_sequence
     hbase hpos hrec
     (fun n _ r hr => hV_nonpos n r hr)
     (fun n _ r hr => hW_nonpos n r hr)
-    hdeg_succ hno
-
-/-- Sequence-level Liu--Wang induction where the two sign checks are certified
-on an explicit root window. -/
-theorem strictInterl_derivative_lag_sequence_of_root_window
-    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {lo hi : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r)
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ hi n)
-    (hV_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r → r ≤ hi n →
-        (V n).eval r ≤ 0)
-    (hW_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r → r ≤ hi n →
-        (W n).eval r ≤ 0)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-  strictInterl_derivative_lag_sequence
-    hbase hpos hrec
-    (fun n r hr => hV_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
-    (fun n r hr => hW_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
-    hdeg_succ hno
-
-/-- Real-rootedness corollary for derivative-lag Liu--Wang induction where the
-sign checks may use the current row's already proved real-rootedness. -/
-theorem isRealRooted_of_derivative_lag_sequence_of_root_signs
-    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hV_nonpos :
-      ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
-        ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
-    (hW_nonpos :
-      ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
-        ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  have hstrictInterl : ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
-    strictInterl_derivative_lag_sequence_of_root_signs
-      hbase hpos hrec hV_nonpos hW_nonpos hdeg_succ hno
-  intro n
-  cases n with
-  | zero =>
-      exact hbase.1
-  | succ n =>
-      exact (hstrictInterl n).2.1
-
-/-- Real-rootedness corollary for derivative-lag Liu--Wang induction with
-direct root-sign side conditions. -/
-theorem isRealRooted_of_derivative_lag_sequence
-    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hV_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
-    (hW_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_lag_sequence_of_root_signs
-    hbase hpos hrec
-    (fun n _ r hr => hV_nonpos n r hr)
-    (fun n _ r hr => hW_nonpos n r hr)
-    hdeg_succ hno
-
-/-- Real-rootedness corollary for derivative-lag Liu--Wang induction on an
-explicit root window. -/
-theorem isRealRooted_of_derivative_lag_sequence_of_root_window
-    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]} {lo hi : Nat → ℝ}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
-    (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r)
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ hi n)
-    (hV_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r → r ≤ hi n →
-        (V n).eval r ≤ 0)
-    (hW_nonpos :
-      ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → lo n ≤ r → r ≤ hi n →
-        (W n).eval r ≤ 0)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_derivative_lag_sequence
-    hbase hpos hrec
-    (fun n r hr => hV_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
-    (fun n r hr => hW_nonpos n r hr (hroot_lower n r hr) (hroot_upper n r hr))
     hdeg_succ hno
 
 end RealRooted.LiuWang

@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Tactic.Recurrence.LinRec
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Tactic.Recurrence.LinRec
+import RealRooted.Recurrence.RowModel
 public meta import RealRooted.Tactic.Recurrence.LinRec
 public meta import RealRooted.Recurrence.RowModel
+public import RealRooted.Tactic.Recurrence.RowSide
 
 /-!
 # Degree tactics for recurrences

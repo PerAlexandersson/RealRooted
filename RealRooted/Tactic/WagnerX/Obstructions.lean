@@ -1,6 +1,16 @@
 module
 
 public import RealRooted.Tactic.WagnerX.Core
+import RealRooted.Tactic.Finish
+import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.Lookup
+import RealRooted.SequenceClosure
+import RealRooted.AffineFamily.Boundary
+import RealRooted.Derivative.Algebra
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Wagner `X`-shift obstructions

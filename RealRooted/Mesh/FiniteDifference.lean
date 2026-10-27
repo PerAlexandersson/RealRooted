@@ -3,11 +3,12 @@ module
 import RealRooted.HermiteBiehler.Converse.RootGeometry
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 public import RealRooted.Mesh.Basic
-public import RealRooted.RootPolynomial
-public import RealRooted.CommonInterleaver.RootDesc
-public import RealRooted.PFPolynomial.Closure
+import RealRooted.RootPolynomial
+import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.PFPolynomial.Closure
 public import RealRooted.NarayanaTransformation.RootGeometry
-public import RealRooted.OrderedRoots
+import RealRooted.OrderedRoots
+import RealRooted.ObreschkoffConverse.Forward
 
 /-!
 # Mesh and finite differences

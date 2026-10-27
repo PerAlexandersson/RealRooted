@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.GammaRealRoots
+import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma-real-rootedness family lemmas

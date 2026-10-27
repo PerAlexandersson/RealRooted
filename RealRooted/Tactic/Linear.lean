@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.Tactic.Finish
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Linear-polynomial tactic frontends

@@ -4,6 +4,10 @@ public import RealRooted.Tactic.Row.LowerOrder
 public import RealRooted.DerivativeRecurrence.LagWeak
 public meta import RealRooted.Tactic.Row.LowerOrder
 public meta import RealRooted.DerivativeRecurrence.LagWeak
+import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.RowClosedForm
+import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.Recurrence.Shape
 
 /-!
 # Row tactics: derivative-lag recurrences

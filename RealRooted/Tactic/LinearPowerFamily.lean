@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.LinearPowerFamily
+import RealRooted.LinearPowerFamily
 public import RealRooted.Tactic.Finish
+import RealRooted.SequenceClosure
 
 /-!
 # Linear-power family tactic frontends

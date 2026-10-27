@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.DerivativeRecurrence.MultiLagCancel
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.RowModel
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!

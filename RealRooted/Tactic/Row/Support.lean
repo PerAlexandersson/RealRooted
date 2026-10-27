@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Tactic.Row.SideGoals
 public meta import RealRooted.Tactic.Row.SideGoals
+public import RealRooted.Tactic.RowClosedForm
 
 /-!
 # Row tactics: shared support

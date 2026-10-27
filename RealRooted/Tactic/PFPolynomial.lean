@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.ListInterlacing
 
 /-!
 # PF-polynomial tactic frontends and model transport

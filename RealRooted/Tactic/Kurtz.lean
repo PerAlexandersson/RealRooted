@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Kurtz
-public import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.PFPolynomial
+public import RealRooted.PFPolynomial
 
 /-!
 # Kurtz coefficient-criterion tactic frontend

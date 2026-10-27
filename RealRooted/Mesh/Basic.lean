@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.HermiteBiehler.StablePencil
-public import RealRooted.Linear
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Mesh of a real-rooted polynomial
