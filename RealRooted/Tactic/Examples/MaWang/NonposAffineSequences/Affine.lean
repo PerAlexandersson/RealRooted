@@ -215,42 +215,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_lower := hdeg_lo,
     degree_upper := hdeg_hi
 
-/-- Regression: unscaled `(1+X)P'` gets its own sequence wrapper. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = U n * P (n + 1) + (1 + X) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_mw_derivative_one_add_X_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroot_upper,
-    recurrence := hrec,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi
-
-/-- Real-rootedness endpoint for the unscaled `(1+X)P'` sequence wrapper. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = U n * P (n + 1) + (1 + X) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_derivative_one_add_X_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroot_upper,
-    recurrence := hrec,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi
-
 /-- Regression: scalar affine factors may appear with the scalar on the right. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     (hbase : StrictInterl (P 0) (P 1))
@@ -267,42 +231,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]} {c : Nat → ℝ}
     base := hbase,
     pos_lc := hpos,
     coeff_nonneg := hc,
-    root_upper := hroot_upper,
-    recurrence := hrec,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi
-
-/-- Regression: unscaled `(X-1)P'` gets its own sequence wrapper. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = U n * P (n + 1) + (X - 1) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_mw_derivative_X_sub_one_sequence using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroot_upper,
-    recurrence := hrec,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi
-
-/-- Real-rootedness endpoint for the unscaled `(X-1)P'` sequence wrapper. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) = U n * P (n + 1) + (X - 1) * (P (n + 1)).derivative)
-    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
-    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_derivative_X_sub_one_sequence_realrooted using
-    base := hbase,
-    pos_lc := hpos,
     root_upper := hroot_upper,
     recurrence := hrec,
     degree_lower := hdeg_lo,

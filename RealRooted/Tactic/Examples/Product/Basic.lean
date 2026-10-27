@@ -176,34 +176,6 @@ example {p : ℝ[X]} {t : ℝ} (hp : p ≠ 0 ∧ p.Splits) :
   rr_product_factor_C_add_X using
     realrooted := hp
 
-/-- Sequence-level product recurrence with supplied real-rooted factors. -/
-example {P F : Nat → ℝ[X]}
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_factor_sequence using hbase, hfactor, hrec
-
-example {P F : Nat → ℝ[X]}
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    recurrence := hrec
-
-example {P F : Nat → ℝ[X]}
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
-    ∀ n : Nat, (P n).Splits := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    recurrence := hrec
-
 /-- A separate base row can precede an independently factorized tail. -/
 example {P Q F : Nat → ℝ[X]}
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
@@ -238,37 +210,6 @@ example {P Q : Nat → ℝ[X]} {c t : Nat → ℝ}
     quotient_realrooted := fun n => isRealRooted_X_add_C_mul (hquot n),
     factor_realrooted := fun n => isRealRooted_C (hc (n + 1)),
     factorization := hrow
-
-/-- The supplied-factor sequence macro also accepts the factor on the right. -/
-example {P F : Nat → ℝ[X]}
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = P n * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    recurrence := hrec
-
-/-- The recurrence fixes the family and factor; local certificates are inferred. -/
-example {P F Q G : Nat → ℝ[X]}
-    (_hdecoyBase : Q 0 ≠ 0 ∧ (Q 0).Splits)
-    (_hdecoyFactor : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_factor_sequence using recurrence := hrec
-
-/-- Recurrence inference also detects right-factor orientation and projections. -/
-example {P F Q G : Nat → ℝ[X]}
-    (_hdecoyBase : Q 0 ≠ 0 ∧ (Q 0).Splits)
-    (_hdecoyFactor : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
-    (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, P (n + 1) = P n * F n) :
-    ∀ n : Nat, (P n).Splits := by
-  rr_product_factor_sequence using recurrence := hrec
 
 /-- Lag-two product recurrences advance the even and odd subsequences together. -/
 example {P F : Nat → ℝ[X]}
@@ -327,75 +268,6 @@ example {P F : Nat → ℝ[X]}
     base_one := hbase_one,
     factor_realrooted := hfactor,
     recurrence := hrec
-
-/-- Supplied-factor product recurrences can start after finitely many base rows. -/
-example {P F : Nat → ℝ[X]}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    cutoff := N,
-    recurrence := hrec
-
-/-- Tail-start supplied-factor product recurrences accept right factors too. -/
-example {P F : Nat → ℝ[X]}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
-    ∀ n : Nat, (P n).Splits := by
-  rr_product_factor_sequence using
-    base := hbase,
-    factor_realrooted := hfactor,
-    cutoff := N,
-    recurrence := hrec
-
-/-- Tail recurrence inference keeps the cutoff explicit and finds interval certificates. -/
-example {P F Q G : Nat → ℝ[X]}
-    (N : Nat)
-    (_hdecoyBase : ∀ n : Nat, n ≤ N → Q n ≠ 0 ∧ (Q n).Splits)
-    (_hdecoyFactor : ∀ n : Nat, N ≤ n → G n ≠ 0 ∧ (G n).Splits)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n ≠ 0 := by
-  rr_product_factor_sequence using cutoff := N, recurrence := hrec
-
-/-- Explicit tail cutoffs also accept right factors and indexed projections. -/
-example {P F : Nat → ℝ[X]}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
-    (P 3).Splits := by
-  rr_product_factor_sequence using cutoff := N, recurrence := hrec
-
-/-- The recurrence can determine a tail cutoff before certificate lookup. -/
-example {P F Q G : Nat → ℝ[X]}
-    (N : Nat)
-    (_hwrongCutoff : ∀ n : Nat, n ≤ N + 1 → P n ≠ 0 ∧ (P n).Splits)
-    (_hdecoyBase : ∀ n : Nat, n ≤ N → Q n ≠ 0 ∧ (Q n).Splits)
-    (_hdecoyFactor : ∀ n : Nat, N ≤ n → G n ≠ 0 ∧ (G n).Splits)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = F n * P n) :
-    ∀ n : Nat, P n = 0 ∨ (P n).Splits := by
-  rr_product_factor_sequence using recurrence := hrec
-
-/-- Inferred tail cutoffs also accept right factors and indexed projections. -/
-example {P F Q G : Nat → ℝ[X]}
-    (N : Nat)
-    (_hdecoyBase : ∀ n : Nat, n ≤ N → Q n ≠ 0 ∧ (Q n).Splits)
-    (_hdecoyFactor : ∀ n : Nat, N ≤ n → G n ≠ 0 ∧ (G n).Splits)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrec : ∀ n : Nat, N ≤ n → P (n + 1) = P n * F n) :
-    (P 3).Splits := by
-  rr_product_factor_sequence using recurrence := hrec
 
 /-- Direct finite-product formula route. -/
 example {P : Nat → ℝ[X]} {root : Nat → Nat → ℝ}

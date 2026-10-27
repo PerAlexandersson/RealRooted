@@ -435,41 +435,6 @@ macro_rules
             (rr_mw_raw_recurrence_seq $hraw)
             $hdeg_succ $hno))
   | `(tactic|
-      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff := $c:term,
-        coeff_nonneg := $hc:term,
-        coeff_nonpos_of_nonpos := $hV:term,
-        den_nonzero := $hden:term,
-        coeff_eq := $hcoeff:term,
-        raw_recurrence := $hraw:term,
-        degree_lower := $hdeg_lo:term,
-        degree_upper := $hdeg_hi:term) =>
-      `(tactic|
-        exact
-          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hc $hV $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi)
-  | `(tactic|
-      rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff := $c:term,
-        coeff_nonpos_of_nonpos := $hV:term,
-        den_nonzero := $hden:term,
-        coeff_eq := $hcoeff:term,
-        raw_recurrence := $hraw:term,
-        degree_lower := $hdeg_lo:term,
-        degree_upper := $hdeg_hi:term) =>
-      `(tactic|
-        exact
-          RealRooted.MaWang.strictInterl_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg rr_mw_active_nonneg
-            $hV $hden $hcoeff $hraw $hdeg_lo $hdeg_hi)
-  | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto using
         base := $hbase:term,
         pos_lc := $hpos:term,
@@ -647,41 +612,6 @@ macro_rules
           raw_recurrence := $hraw,
           degree_lower := rr_mw_degree_seq $hdeg,
           degree_upper := rr_mw_degree_seq $hdeg)
-  | `(tactic|
-      rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff := $c:term,
-        coeff_nonneg := $hc:term,
-        coeff_nonpos_of_nonpos := $hV:term,
-        den_nonzero := $hden:term,
-        coeff_eq := $hcoeff:term,
-        raw_recurrence := $hraw:term,
-        degree_lower := $hdeg_lo:term,
-        degree_upper := $hdeg_hi:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg $hc $hV $hden $hcoeff
-            $hraw $hdeg_lo $hdeg_hi))
-  | `(tactic|
-      rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        nonneg_coeffs := $hnonneg:term,
-        coeff := $c:term,
-        coeff_nonpos_of_nonpos := $hV:term,
-        den_nonzero := $hden:term,
-        coeff_eq := $hcoeff:term,
-        raw_recurrence := $hraw:term,
-        degree_lower := $hdeg_lo:term,
-        degree_upper := $hdeg_hi:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.MaWang.isRealRooted_of_derivative_nonpos_sequence_den_coeff_of_nonneg_coeffs
-            (c := $c) $hbase $hpos $hnonneg rr_mw_active_nonneg
-            $hV $hden $hcoeff $hraw $hdeg_lo $hdeg_hi))
   | `(tactic|
       rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto using
         base := $hbase:term,

@@ -22,7 +22,6 @@ import RealRooted.Tactic.Wagner
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.EndpointDerivative
-import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
@@ -60,7 +59,6 @@ import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.SymmetricDecomposition
 import RealRooted.Tactic.VeroneseSection
 import RealRooted.Tactic.WeightedSum
-import RealRooted.Tactic.OEIS
 import RealRooted.Tactic.Targets
 
 /-!
