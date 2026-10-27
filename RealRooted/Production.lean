@@ -1949,6 +1949,7 @@ import RealRooted.CombinatorialExamples.RestrictedExponential
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
 import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
 import RealRooted.MultiplierSequence.CoefficientRatio
+import RealRooted.MultiplierSequence.EulerCoefficientRatio
 
 /-!
 # RealRooted production umbrella
