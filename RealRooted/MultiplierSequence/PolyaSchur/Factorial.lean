@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.GarloffWagner.Theorem12
-public import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.GarloffWagner.Theorem12
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.GarloffWagner.Algebra
 
 /-!
 # Factorial coefficient sequences

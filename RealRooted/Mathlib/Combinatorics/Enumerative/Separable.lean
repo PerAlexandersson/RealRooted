@@ -9,8 +9,8 @@ public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
-public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
-public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
+import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
 public import Mathlib.Algebra.Polynomial.Reverse
 
 /-!

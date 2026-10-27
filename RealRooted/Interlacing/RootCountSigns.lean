@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.Assembly
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Strict interlacing from root-count signs

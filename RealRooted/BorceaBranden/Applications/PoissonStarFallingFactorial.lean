@@ -2,6 +2,8 @@ module
 
 public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
 
 /-!
 # Remaining finite consequences of the univariate Poisson product

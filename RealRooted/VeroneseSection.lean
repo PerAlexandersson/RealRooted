@@ -1,10 +1,17 @@
 module
 
-public import RealRooted.AissenSchoenbergWhitney
+import RealRooted.AissenSchoenbergWhitney
 public import RealRooted.HermiteBiehler
 public import RealRooted.WagnerX
 public import Mathlib.RingTheory.PowerSeries.Basic
 public import Mathlib.Analysis.Complex.Polynomial.Basic
+import RealRooted.HermiteBiehler.Hurwitz
+public import RealRooted.HermiteBiehler.OddEven
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Veronese sections

@@ -1,7 +1,15 @@
 module
 
-public import RealRooted.FactorialCompression.Compression
-public import RealRooted.FactorialCompression.Kernel
+import RealRooted.FactorialCompression.Compression
+import RealRooted.FactorialCompression.Kernel
+import RealRooted.Hadamard.SchurSzegoStrict
+import RealRooted.FactorialCompression.CommonKernel
+public import RealRooted.FactorialCompression.Basic
+import RealRooted.Hadamard.SchurSzegoSigns
+import RealRooted.Interlacing.OuterDifference
+public import RealRooted.SimpleRoots
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # The degree-changing factorial compression theorem

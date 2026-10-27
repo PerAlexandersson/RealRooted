@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.LiuWangRecursion
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.RootBounds
-public import RealRooted.SequenceClosure
+import RealRooted.LiuWangRecursion
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.RootBounds
+import RealRooted.SequenceClosure
+import RealRooted.SignEvaluation
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Ma--Wang derivative sequences

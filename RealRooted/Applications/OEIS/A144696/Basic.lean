@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic.Coefficients
-public import RealRooted.DerivativeRecurrence.QuadraticDegree
+import RealRooted.DerivativeRecurrence.QuadraticDegree
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 
 /-!

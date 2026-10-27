@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.Linear
 public import RealRooted.Derivative
 public import RealRooted.WagnerX
 public import RealRooted.Tactic.Attr

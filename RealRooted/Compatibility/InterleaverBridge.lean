@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Compatibility.Basic
 public import RealRooted.CommonInterleaverSeq
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Compatibility from common interleavers

@@ -1,7 +1,14 @@
 module
 
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Pow
 public import RealRooted.BinaryRunTransformation.CriticalValue
-public import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+public import RealRooted.BinaryRunTransformation.Coefficients
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # The binary-run pointing deformation

@@ -5,11 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
+public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 
 /-!
 # Real beta integrals

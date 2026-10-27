@@ -5,11 +5,14 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.BigOperators
+import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.GroupTheory.Perm.Fin
-public import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Data.Sym.Sym2.Init
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Order.Lattice.Nat
 
 /-!
 # Generating polynomials of finite statistics

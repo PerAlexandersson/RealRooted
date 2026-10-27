@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.ProductSequence.Core
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
+import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.Factors
 
 /-!
 # Specialized product-factor recurrence families

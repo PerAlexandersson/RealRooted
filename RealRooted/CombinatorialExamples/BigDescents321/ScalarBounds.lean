@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
+import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
+public import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
 
 /-!
 # The moving interval for `z_n`

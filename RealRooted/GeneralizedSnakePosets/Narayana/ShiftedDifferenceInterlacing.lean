@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-public import RealRooted.GeneralizedSnakePosets.MatrixInduction
-public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+import RealRooted.GeneralizedSnakePosets.MatrixInduction
+import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # The shifted difference interlacing claim for modified Narayana polynomials

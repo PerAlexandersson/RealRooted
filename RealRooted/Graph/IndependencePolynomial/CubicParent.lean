@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.DegreeDropReversal
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.Basic
 
 /-!
 # A cubic parent with real-rooted coefficients

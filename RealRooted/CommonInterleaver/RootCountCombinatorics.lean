@@ -6,13 +6,16 @@ combinatorics extracted from `RealRooted.CommonInterleaverTwo`.
 -/
 module
 
-public import RealRooted.Compatibility.Basic
+import RealRooted.Compatibility.Basic
 public import RealRooted.CommonInterleaver.SameDegreeRootCount
 public import RealRooted.CommonInterleaver.SuccDegreeEndpoint
 public import RealRooted.Derivative
-public import RealRooted.RootCountJump
-public import RealRooted.RootOrderBridge
+import RealRooted.RootCountJump
+import RealRooted.RootOrderBridge
 public import RealRooted.SuccDegreeRootCrossing
+public import RealRooted.Compatibility.Pair
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.Derivative.Interlacing
 
 public section
 

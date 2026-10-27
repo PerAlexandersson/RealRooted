@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.WagnerX
+import RealRooted.WagnerX.ListInterlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wagner sign analysis

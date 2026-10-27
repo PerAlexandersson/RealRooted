@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
-public import RealRooted.Linear
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.Linear
+import RealRooted.MaWang.DerivativeStep
 public import RealRooted.PFPolynomial
 
 /-!

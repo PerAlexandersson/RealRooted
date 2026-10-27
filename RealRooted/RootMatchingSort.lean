@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.LiuOppositeSigns.RootDeletion
-public import RealRooted.Mathlib.Data.Multiset.Rel
+import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.Mathlib.Data.Multiset.Rel
+public import RealRooted.LiuOppositeSigns.RootCount
 
 /-!
 # Sorted root matching

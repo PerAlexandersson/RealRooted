@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.BrandenVecchi.SmirnovInterlacing
-public import RealRooted.ParkingFunctions.Descents.ContentOrbit
+import RealRooted.BrandenVecchi.SmirnovInterlacing
+import RealRooted.ParkingFunctions.Descents.ContentOrbit
 public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-public import RealRooted.ParkingFunctions.Descents.PollakTransfer
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
+public import RealRooted.ParkingFunctions.Descents.Tieless
+public import RealRooted.BrandenVecchi.SmirnovRecurrence
 
 /-!
 # Integral tieless parking-to-Smirnov transfer

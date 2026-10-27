@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Hadamard.Kostov.BernsteinRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 @[expose] public section
 

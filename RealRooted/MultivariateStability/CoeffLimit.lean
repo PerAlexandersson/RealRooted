@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 public import RealRooted.MultivariateStability
 public import Mathlib.Algebra.Order.Antidiag.Finsupp
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Combinatorics.Matroid.Init
+public import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Closed limits of multivariate stable polynomials

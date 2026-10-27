@@ -3,7 +3,9 @@ module
 public import RealRooted.HermiteBiehler.Basic
 public import RealRooted.OperatorPreservesInterlacing
 public import RealRooted.PFPolynomial
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
 
 /-!
 # The univariate Poisson star product

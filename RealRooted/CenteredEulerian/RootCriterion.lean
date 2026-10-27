@@ -6,7 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.Basis
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
+import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # The finite weighted-sum criterion (Appendix B.1)

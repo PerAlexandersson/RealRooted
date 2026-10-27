@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.SimpleRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # The recurrence-defined inverse-peak polynomial family

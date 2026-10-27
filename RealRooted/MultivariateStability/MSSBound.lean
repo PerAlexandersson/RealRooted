@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.MultivariateStability.BarrierStart
-public import RealRooted.MultivariateStability.BarrierUpdate
+public import Mathlib.Analysis.Matrix.Order
+import RealRooted.MultivariateStability.BarrierStart
+import RealRooted.MultivariateStability.BarrierUpdate
 public import RealRooted.MultivariateStability.Diagonal
 public import RealRooted.MultivariateStability.MixedCharacteristic
+public import RealRooted.MultivariateStability.Barrier
+import RealRooted.LiebSokalBoundary
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
 
 @[expose] public section
 

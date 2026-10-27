@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-public import RealRooted.BoundarySpecializationGeneral
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.BoundarySpecializationGeneral
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Coefficient extraction from finite-variable stable polynomials

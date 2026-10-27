@@ -1,10 +1,13 @@
 module
 
-public import RealRooted.BrandenLeite.ZeroConstant
+import RealRooted.BrandenLeite.ZeroConstant
 public import RealRooted.BrandenLeite.TwoKernelAlgebra
 public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
 public import Mathlib.Algebra.Order.Floor.Div
 public import Mathlib.Algebra.Polynomial.Div
+public import RealRooted.BrandenLeite.CompositionRow
+public import RealRooted.PFPolynomial
+import RealRooted.AissenSchoenbergWhitney
 
 /-!
 # Finite supersymmetric composition-row families

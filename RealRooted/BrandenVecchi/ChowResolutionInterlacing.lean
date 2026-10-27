@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.BrandenVecchi.ChowResolution
-public import RealRooted.BrandenVecchi.ChowRowTransform
+import RealRooted.BrandenVecchi.ChowRowTransform
 public import RealRooted.Interlacing.ConeBounds
-public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+public import RealRooted.BrandenVecchi.ReflectionInterlacing
+import RealRooted.PosCombo
 
 /-!
 # Reflection interlacing for resolved Chow rows

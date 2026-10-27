@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.CoefficientDominance.Symmetric.Finite
-public import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.Field.Basic
 
 /-!
 # Sharpened elementary-symmetric bounds

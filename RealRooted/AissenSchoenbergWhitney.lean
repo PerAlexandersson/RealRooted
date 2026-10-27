@@ -2,13 +2,15 @@ module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
 public import RealRooted.ASWKarlinThreshold
-public import RealRooted.ASWKarlinKernel
-public import RealRooted.DegreeDropReversal
+import RealRooted.ASWKarlinKernel
+import RealRooted.DegreeDropReversal
 public import RealRooted.QuadraticRoot
 public import RealRooted.WagnerX
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Basic.Coefficients
+import RealRooted.Basic.PolynomialFacts
 
 @[expose] public section
 

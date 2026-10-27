@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.NarayanaTransformation.Rectangular.Narayana
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.RectangularConvolutionIdentity
+import RealRooted.LiebSokal
 
 /-!
 # Rectangular additive convolution preservation.

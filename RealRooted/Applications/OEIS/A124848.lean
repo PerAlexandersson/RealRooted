@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Topology.Order.IntermediateValue
-public import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Tactic.ComputeDegree
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # OEIS A124848

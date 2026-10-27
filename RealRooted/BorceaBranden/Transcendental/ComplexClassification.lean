@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+import RealRooted.BorceaBranden.Transcendental.PivotForward
+public import RealRooted.BorceaBranden.Transcendental.LambdaBar
+import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 @[expose] public section
 

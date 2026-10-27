@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.GarloffWagner.Iterated
+import RealRooted.Linear
 
 /-!
 # Garloff--Wagner Krein data

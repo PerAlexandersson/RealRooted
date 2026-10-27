@@ -1,11 +1,14 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-public import RealRooted.Mathlib.Data.List.Interleave
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Data.List.Interleave
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Real-rootedness of linear polynomials

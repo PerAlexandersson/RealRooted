@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.Permanent.Ferrers
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Ring
 
 /-!
 # Fractional substitution for the column permanent

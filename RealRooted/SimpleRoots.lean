@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.Basic
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Simple real roots

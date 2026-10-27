@@ -7,7 +7,7 @@ module
 
 public import RealRooted.IntervalDifferential.Basic
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 
 /-!

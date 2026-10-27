@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
+import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
 public import RealRooted.Applications.OEIS.A144438.BottomTotal
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
 
 /-!
 # Bridge from Deco decompositions to the recurrence-defined total

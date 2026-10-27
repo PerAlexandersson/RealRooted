@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.Basic
 public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 /-!
 # Asymptotics of polynomial evaluations

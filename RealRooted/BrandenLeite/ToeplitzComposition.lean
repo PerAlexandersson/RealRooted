@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.BrandenLeite.CompositionRow
-public import RealRooted.BrandenLeite.ConstantDiagonal
+import RealRooted.BrandenLeite.ConstantDiagonal
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 
 /-!
 # Toeplitz chain polynomials and composition rows

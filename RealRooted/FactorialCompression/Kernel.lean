@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.MaWang.Strong
-public import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.MaWang.Strong
+import RealRooted.FactorialCompression.CommonKernel
+public import RealRooted.FactorialCompression.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Geometry of the degree-changing kernel

@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
-public import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Hermite--Biehler consequences of strict Hurwitz stability

@@ -2,6 +2,9 @@ module
 
 public import RealRooted.BrandenLeite.StationaryTiling
 public import RealRooted.InterlacingSequence.NonnegativeShift
+import RealRooted.FiniteFreeRootCount
+import RealRooted.AffineFamily
+import RealRooted.Linear
 
 /-!
 # Positive translations of stationary tiling rows

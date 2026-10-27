@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Compatibility.Affine
+import RealRooted.Compatibility.Affine
 public import RealRooted.Compatibility.CutTransform
 public import RealRooted.SameDegreeQuadraticObstruction
+import RealRooted.AffineFamily
+import RealRooted.QuadraticRoot
 
 /-!
 # Obstruction to the ten-field cut invariant

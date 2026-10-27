@@ -1,5 +1,7 @@
 module
 
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
 public import RealRooted.BorceaBranden.MultivariateHKO
 
 /-!

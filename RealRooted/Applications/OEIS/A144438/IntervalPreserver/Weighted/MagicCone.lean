@@ -1,11 +1,14 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
 public import RealRooted.BernsteinCone.Preserver
 public import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.SymmetricDecomposition.EulerianTransform
-public import RealRooted.WagnerRightSum
+import RealRooted.WagnerRightSum
+import RealRooted.ChudnovskySeymour.Core
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-!
 # The weighted magic cone from its endpoint relation

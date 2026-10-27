@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Choose
-public import Mathlib.Data.Nat.Choose.Bounds
+import Mathlib.Analysis.SpecialFunctions.Choose
+import Mathlib.Data.Nat.Choose.Bounds
+public import Mathlib.Analysis.Normed.Group.Real
 
 /-!
 # Rescaled binomial-coefficient limit

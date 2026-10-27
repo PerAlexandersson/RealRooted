@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.Compatibility.LeanderXOutput
+import RealRooted.Compatibility.LeanderXOutput
+import RealRooted.Compatibility.LeanderOutput
+public import RealRooted.Compatibility.LeanderTransform
+import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.Pair
 
 public section
 

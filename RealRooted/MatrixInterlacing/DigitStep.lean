@@ -1,6 +1,11 @@
 module
 
 public import RealRooted.ThresholdMatrix
+import RealRooted.ThresholdMatrix.Basic
+import RealRooted.MatrixInterlacing.AffinePair
+import RealRooted.AffineProperPosition
+import RealRooted.AffineFamily
+public import RealRooted.InterlacingSequenceBasic
 
 public section
 

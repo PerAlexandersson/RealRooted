@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
 
 /-!
 # Translated peak-value recurrence

@@ -1,10 +1,13 @@
 module
 
 public import RealRooted.HermiteBiehler
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
 public import RealRooted.PFPolynomial
-public import RealRooted.SamePhaseInterlacing
+import RealRooted.SamePhaseInterlacing
+import RealRooted.HermiteBiehler.ConverseLowDegree
+import RealRooted.HermiteBiehler.Forward
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Closure of Pólya-frequency polynomials and interlacing

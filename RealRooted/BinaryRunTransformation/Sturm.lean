@@ -1,12 +1,16 @@
 module
 
 public import RealRooted.BinaryRunTransformation.Coefficients
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-public import RealRooted.Mathlib.Data.Nat.Choose.Cast
-public import RealRooted.ObreschkoffConverse.Forward
-public import RealRooted.RootBounds
-public import RealRooted.ScalarNormalization
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.RootBounds
+import RealRooted.ScalarNormalization
+import RealRooted.SignEvaluation
+public import RealRooted.SimpleRoots
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
 
 /-!
 # Sturm chain of binary-run basis images

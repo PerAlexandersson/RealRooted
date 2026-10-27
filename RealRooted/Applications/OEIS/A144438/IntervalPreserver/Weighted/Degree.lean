@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
-public import RealRooted.Interlacing.ResidueCriterion
+import RealRooted.Interlacing.ResidueCriterion
 
 /-! # Degree bookkeeping for the weighted deco transform -/
 

@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.SignEvaluation
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Shifted quadratic-coefficient derivative recurrences

@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
+import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
 public import RealRooted.SeparablePermutations.Gamma
-public import Mathlib.RingTheory.PowerSeries.WellKnown
+import Mathlib.RingTheory.PowerSeries.WellKnown
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 
 /-!
 # The cubic functional equation for the gamma-polynomials of separable permutations

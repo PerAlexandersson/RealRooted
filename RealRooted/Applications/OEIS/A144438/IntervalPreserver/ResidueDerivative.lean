@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
+import RealRooted.Interlacing.Residue
 
 /-!
 # Differentiating the finite residue expansion

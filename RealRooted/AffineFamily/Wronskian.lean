@@ -7,12 +7,12 @@ by the affine-family high-degree endgame.
 module
 
 public import RealRooted.ProductFamily
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily.Basic
 public import RealRooted.AffineFamily.PositiveFamily
-public import RealRooted.AffineFamily.Boundary
-public import RealRooted.AffineFamily.RootCrossing
-public import RealRooted.PosCombo
+import RealRooted.AffineFamily.Boundary
+import RealRooted.AffineFamily.RootCrossing
+import RealRooted.PosCombo
 public import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.FolkloreLemma
@@ -20,6 +20,9 @@ public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.AllCombo
+import RealRooted.Linear
 
 public section
 

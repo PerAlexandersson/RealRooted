@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.NewtonAux
-public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+import RealRooted.NewtonAux
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # Newton's and Maclaurin's inequalities

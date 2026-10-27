@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CommonInterleaver.RootSelection
+import RealRooted.PosCombo
 
 /-!
 # Finite interlacing-family trees

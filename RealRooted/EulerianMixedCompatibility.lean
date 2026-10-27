@@ -2,11 +2,17 @@ module
 
 public import RealRooted.EulerianMixedCompatibility.Insertion
 public import RealRooted.GarloffWagner
-public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
 public import RealRooted.IteratedDerivativeShift
-public import RealRooted.MaWang.Strong
+import RealRooted.MaWang.Strong
 public import RealRooted.RootContinuity
+import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.PosCombo
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Mixed adjacent Euler compatibility

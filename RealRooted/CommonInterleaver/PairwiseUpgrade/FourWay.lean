@@ -8,7 +8,12 @@ corollaries live in `PairwiseUpgrade.FourWay.Equivalences`.
 -/
 module
 
-public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+import RealRooted.CommonInterleaver.PairwiseUpgrade
+import RealRooted.Compatibility.InterleaverBridge
+public import RealRooted.Compatibility.Basic
+import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.RootDesc
 
 @[expose] public section
 

@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.LinearAlgebra.Span.Basic
-public import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Abel
 
 /-!
 # Triangular linear maps under a unitriangular change of generators

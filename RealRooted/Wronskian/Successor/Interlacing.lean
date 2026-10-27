@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.Wronskian.Successor.Gap
+import RealRooted.Wronskian.Successor.Gap
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Successor-degree Wronskian interlacing

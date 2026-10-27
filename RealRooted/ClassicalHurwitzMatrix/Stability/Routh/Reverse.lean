@@ -1,8 +1,15 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
-public import RealRooted.SamePhaseInterlacing
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+import RealRooted.SamePhaseInterlacing
 public import RealRooted.WagnerX.ProperPosition
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+import RealRooted.HermiteBiehler.Hurwitz
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Reverse stability across one Routh step

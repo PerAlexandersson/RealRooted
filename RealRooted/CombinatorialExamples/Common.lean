@@ -4,6 +4,7 @@ public import RealRooted.Basic
 public import RealRooted.Linear
 public import RealRooted.Derivative
 public import RealRooted.Wagner
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Common Combinatorial Example Lemmas

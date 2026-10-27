@@ -6,6 +6,13 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.FormalArcsin
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.Algebra.Order.Field.Power
+import Mathlib.Algebra.Order.BigOperators.Expect
+import Mathlib.Analysis.Complex.Order
+import Mathlib.Algebra.Order.Algebra
+import Mathlib.Data.EReal.Inv
+import Mathlib.Tactic.Positivity.Finset
 
 /-!
 # Parity of the basic formal series

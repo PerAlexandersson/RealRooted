@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Linear
 
 /-!
 # Jacobi transport for Braun--Jal Narayana inputs

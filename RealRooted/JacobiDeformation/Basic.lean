@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.JacobiDeformation.Pochhammer
+public import RealRooted.Basic.Coefficients
 
 /-!
 # The finite Jacobi deformation polynomial

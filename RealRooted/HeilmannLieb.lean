@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import RealRooted.Graph.MatchingPolynomial
+public import RealRooted.PFPolynomial
 
 /-!
 # Heilmann--Lieb theorem

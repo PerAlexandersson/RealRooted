@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 
 /-!

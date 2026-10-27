@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.RootIncidenceCompact
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
 
 /-!
 # Compact parameter boxes for the weighted first-contact argument

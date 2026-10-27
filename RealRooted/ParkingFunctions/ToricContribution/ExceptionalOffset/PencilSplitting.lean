@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
-public import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.Jacobi.Orthogonality.Integral
+import RealRooted.PosCombo
+import RealRooted.Linear
 
 /-!
 # Exceptional-offset pencil splitting

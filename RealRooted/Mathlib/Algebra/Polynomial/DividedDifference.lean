@@ -6,15 +6,15 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.Eval.Defs
-public import Mathlib.Algebra.Polynomial.Eval.SMul
-public import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Polynomial.Eval.SMul
+import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Data.Fin.Basic
-public import Mathlib.Order.Fin.Clamp
+import Mathlib.Order.Fin.Clamp
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Ring
 public import Lean.Elab.Tactic.Grind
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
 /-!
 # Finite divided differences

@@ -1,8 +1,13 @@
 module
 
 public import RealRooted.MatrixInterlacing
-public import RealRooted.AffineProperPosition
+import RealRooted.AffineProperPosition
 public import RealRooted.VeroneseSection
+import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.SparseTests
+import RealRooted.AffineFamily
+public import RealRooted.AffineFamily.Basic
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Matrix form of the Veronese linear-factor recursion

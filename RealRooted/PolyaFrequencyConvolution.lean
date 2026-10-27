@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 
 @[expose] public section
 

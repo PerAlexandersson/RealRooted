@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+import RealRooted.DerivativeRecurrence.SecondOrderDegree
 
 /-!
 # The deco Eulerian recurrence and OEIS A144438

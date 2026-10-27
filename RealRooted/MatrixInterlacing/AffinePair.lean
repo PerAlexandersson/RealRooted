@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.AffineFamily
+import RealRooted.AffineFamily
+public import RealRooted.AffineFamily.Basic
+import RealRooted.ProductFamily
+public import RealRooted.InterlacingSequenceBasic
 
 @[expose] public section
 

@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!

@@ -1,8 +1,19 @@
 module
 
-public import RealRooted.Jacobi.ParameterInterlacing
+import Mathlib.Data.List.GetD
+import RealRooted.Jacobi.ParameterInterlacing
 public import RealRooted.OrderedRoots
-public import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
+import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+import RealRooted.Jacobi
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.StrictInterleaving
+import RealRooted.MaWang.Strong
+import RealRooted.Derivative.Interlacing
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Root data for the finite toric-contribution offsets

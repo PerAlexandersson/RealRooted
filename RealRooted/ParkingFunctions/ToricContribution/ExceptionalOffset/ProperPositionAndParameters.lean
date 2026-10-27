@@ -1,10 +1,16 @@
 module
 
 public import RealRooted.DegreeDropReversal
-public import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Algebra.Ring.Parity
 public import RealRooted.ObreschkoffConverse
-public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
 public import RealRooted.RootContinuity
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
+import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+public import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Exceptional-offset orientation and distinguished parameters

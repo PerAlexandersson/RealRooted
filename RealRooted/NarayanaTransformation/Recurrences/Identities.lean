@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.NarayanaTransformation.Rectangular
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+import RealRooted.NarayanaTransformation.Rectangular.Narayana
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Generalized Narayana recurrence identities

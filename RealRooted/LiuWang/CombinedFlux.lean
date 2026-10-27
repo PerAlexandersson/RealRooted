@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Combined root flux with repeated-root fallback

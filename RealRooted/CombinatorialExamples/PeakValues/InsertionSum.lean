@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.PeakValues.Insertion
-public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # The fixed-permutation peak-value insertion sum

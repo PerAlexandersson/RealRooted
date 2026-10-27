@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
+public import RealRooted.BorceaBranden.RealFiniteClassificationIff
+import RealRooted.BorceaBranden.Transcendental.SymbolBridge
 
 @[expose] public section
 

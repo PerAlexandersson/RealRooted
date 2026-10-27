@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.MaWang
-public import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.Basic
+import RealRooted.MaWang.StrictSigns.Assembly
 
 /-!
 # Splitness from sign changes

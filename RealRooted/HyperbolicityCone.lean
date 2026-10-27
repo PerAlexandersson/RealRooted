@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.Hyperbolicity
+import RealRooted.Hyperbolicity
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import Mathlib.Analysis.Convex.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Topology.Connected.PathConnected
 
 /-!
 # Gårding: hyperbolicity cones are convex

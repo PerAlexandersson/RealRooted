@@ -1,15 +1,19 @@
 module
 
-public import RealRooted.DerivativeRecurrence.LagWeak
-public import RealRooted.EulerOperator
-public import RealRooted.FiniteFreeRootCount
+import RealRooted.DerivativeRecurrence.LagWeak
+import RealRooted.EulerOperator
+import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard
-public import RealRooted.Interlacing.ReversalCommonFactor
-public import RealRooted.LinearPowerFamily
+import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.LinearPowerFamily
 public import RealRooted.NarayanaTransformation
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.Hadamard.Basic
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.DegreeDropReversal
 
 /-!
 # The A079508 reflected Schur--Szego model

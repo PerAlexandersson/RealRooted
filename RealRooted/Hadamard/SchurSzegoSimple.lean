@@ -3,8 +3,13 @@ module
 public import RealRooted.HermiteBiehler.Basic
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import RealRooted.NewtonAux
-public import RealRooted.Hadamard.SchurSzegoMultiplicity
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Hadamard.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Multiple roots of a Schur–Szegő composition are forced

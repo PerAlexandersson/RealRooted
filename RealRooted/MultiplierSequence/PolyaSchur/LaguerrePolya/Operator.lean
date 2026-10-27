@@ -1,9 +1,9 @@
 module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-public import RealRooted.Hermite.Poulain
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-public import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+import RealRooted.Hermite.Poulain
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 
 /-!
 # Laguerre–Pólya functions of the derivative

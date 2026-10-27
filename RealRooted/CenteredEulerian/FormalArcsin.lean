@@ -11,6 +11,13 @@ public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
+import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.Algebra.Order.Field.Power
+import Mathlib.Algebra.Order.BigOperators.Expect
+import Mathlib.Analysis.Complex.Order
+import Mathlib.Algebra.Order.Algebra
+import Mathlib.Data.EReal.Inv
+import Mathlib.Analysis.Normed.Field.Basic
 
 /-!
 # Formal `√(1-s²)`, `1/√(1-s²)`, `arcsin`, and substitution of `sin`

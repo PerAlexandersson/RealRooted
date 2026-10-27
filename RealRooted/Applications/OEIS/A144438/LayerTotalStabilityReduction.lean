@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStability
-public import RealRooted.Hyperbolicity
-public import RealRooted.MultivariateStability.RayleighConverse
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.Applications.OEIS.A144438.LayerTotalStability
+import RealRooted.Hyperbolicity
+import RealRooted.MultivariateStability.RayleighConverse
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Stability reduction for the Deco layer total

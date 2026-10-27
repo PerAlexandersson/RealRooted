@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.MatrixInterlacing.Action
-public import RealRooted.MatrixInterlacing.AffinePair
+import RealRooted.MatrixInterlacing.AffinePair
+public import RealRooted.AffineFamily.Basic
+import RealRooted.ProductFamily
+public import RealRooted.InterlacingSequenceBasic
 
 public section
 

@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.CombinatorialExamples.PathPowerIndependence
-public import RealRooted.Interlacing.VariableDelay
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.CombinatorialExamples.PathPowerIndependence
+import RealRooted.Interlacing.VariableDelay
+import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.AffineFamily.Basic
+public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Interlacing cliques for powers of paths

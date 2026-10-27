@@ -2,8 +2,8 @@ module
 
 public import Mathlib.Tactic
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Rectangular additive convolution

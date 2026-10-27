@@ -1,16 +1,16 @@
 module
 
 public import Mathlib.Algebra.MvPolynomial.Eval
-public import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.MvPolynomial.CommRing
 public import Mathlib.Algebra.MvPolynomial.Equiv
-public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.Algebra.MvPolynomial.Rename
 public import Mathlib.Algebra.Polynomial.Eval.Coeff
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Complex.Basic
-public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 /-!
 # Multivariate stability

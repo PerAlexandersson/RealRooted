@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.CommonInterleaver.DescPolynomial
+import RealRooted.CommonInterleaver.DescPolynomial
+import RealRooted.CommonInterleaver.Sequence
+import RealRooted.CommonInterleaver.Finite
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.PosCombo
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Common interleavers: finite-family upgrades

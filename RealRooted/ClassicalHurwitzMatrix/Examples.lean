@@ -1,11 +1,15 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
 public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 public import RealRooted.HurwitzMatrix
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Counterexamples and boundary examples for the Hurwitz criterion

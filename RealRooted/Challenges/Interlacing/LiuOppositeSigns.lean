@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.LiuOppositeSigns.CompatibilityCriterion
+import RealRooted.LiuOppositeSigns.CompatibilityCriterion
+import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
 
 /-!
 # Liu's opposite-sign compatibility theorem

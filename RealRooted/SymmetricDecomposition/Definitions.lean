@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Basic
 public import Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Symmetric-decomposition definitions

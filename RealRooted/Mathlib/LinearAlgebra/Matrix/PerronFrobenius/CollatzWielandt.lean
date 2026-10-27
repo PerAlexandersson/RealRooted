@@ -5,12 +5,19 @@ Authors: Matteo Cipollina
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 public import Mathlib.Data.Matrix.Basic
 public import Mathlib.Algebra.Order.AbsoluteValue.Basic
 public import Mathlib.Data.Rat.Floor
 public import Mathlib.Topology.Semicontinuity.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
+public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
+import Mathlib.Analysis.RCLike.Lemmas
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Topology.Semicontinuity.Defs
+public import Mathlib.Order.Filter.Extr
 
 /-!
 # Collatz–Wielandt function and the Perron root

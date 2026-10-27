@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.RankTwoMatching.Enumeration
+import RealRooted.RankTwoMatching.Enumeration
+public import RealRooted.RankTwoMatching.Basic
+public import RealRooted.RankTwoMatching.Model
+public import RealRooted.Graph.MatchingPolynomial
 
 public section
 

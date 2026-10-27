@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
+import RealRooted.NarayanaTransformation.Endpoints
 
 /-!
 # Modified-Narayana PF and base interlacing facts

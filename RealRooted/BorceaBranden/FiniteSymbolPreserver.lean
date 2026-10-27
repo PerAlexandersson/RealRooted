@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.BorceaBranden.FiniteSymbolDegree
-public import RealRooted.BorceaBranden.FiniteSymbolProduct
-public import RealRooted.BorceaBranden.FiniteSymbolReconstruction
-public import RealRooted.BoundarySpecializationRight
-public import RealRooted.LiebSokalPointwise
+import RealRooted.BorceaBranden.FiniteSymbolDegree
+import RealRooted.BorceaBranden.FiniteSymbolProduct
+import RealRooted.BorceaBranden.FiniteSymbolReconstruction
+import RealRooted.BoundarySpecializationRight
+import RealRooted.LiebSokalPointwise
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.MultivariateStability
 
 /-!
 # Finite algebraic symbols preserve stability

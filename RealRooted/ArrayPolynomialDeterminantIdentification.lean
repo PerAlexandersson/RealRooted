@@ -2,7 +2,9 @@ module
 
 public import RealRooted.ArrayPolynomialDeterminantRecurrence
 public import RealRooted.ArrayPolynomialSchur
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.ArrayPolynomialWeights
+public import RealRooted.ArrayPolynomialDeterminant
 
 @[expose] public section
 

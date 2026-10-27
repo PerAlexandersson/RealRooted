@@ -1,10 +1,13 @@
 module
 
-public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.HosterStumpInterlacing
-public import RealRooted.PFPolynomial
-public import RealRooted.ThresholdMatrix.Basic
+import RealRooted.PFPolynomial
+import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.PosCombo
+import RealRooted.Linear
+import Mathlib.Data.List.GetD
 
 /-!
 # Hoster--Stump, Section 2: sequence-level glue

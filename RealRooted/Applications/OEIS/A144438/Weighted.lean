@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Applications.OEIS.A144438
 public import RealRooted.GeneralizedEulerian
+import RealRooted.DerivativeRecurrence.SecondOrderDegree
 
 /-!
 # Weighted deco Eulerian polynomials

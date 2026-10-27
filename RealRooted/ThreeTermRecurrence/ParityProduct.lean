@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Interlacing.Euclid
+import RealRooted.Interlacing.Euclid
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Parity products of two three-term sequences

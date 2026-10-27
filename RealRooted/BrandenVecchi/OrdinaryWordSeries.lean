@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 
 /-!
 # Ordinary words from Smirnov skeletons

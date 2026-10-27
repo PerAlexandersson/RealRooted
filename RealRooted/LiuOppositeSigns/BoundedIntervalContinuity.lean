@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
-public import RealRooted.ReflectedRootCountLocalConstancy
+import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+import RealRooted.ReflectedRootCountLocalConstancy
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.Compatibility.Pair
+public import RealRooted.SimpleRoots
+import RealRooted.PosCombo
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Liu's bounded-interval continuity argument

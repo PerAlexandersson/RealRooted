@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.HosterStump.PosetBasic
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # The `h`-vector determines the `f`-vector

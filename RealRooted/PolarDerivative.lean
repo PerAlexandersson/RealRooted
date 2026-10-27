@@ -2,7 +2,9 @@ module
 
 public import RealRooted.DegreeDropReversal
 public import RealRooted.Derivative.FamilyClosure
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Laguerre's theorem on polar derivatives

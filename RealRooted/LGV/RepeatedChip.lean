@@ -7,8 +7,10 @@ module
 
 public import RealRooted.BrandenLeite.KernelRow
 public import RealRooted.LGV.ChipNetwork.Word
-public import RealRooted.LGV.PolyaFrequency
+import RealRooted.LGV.PolyaFrequency
 public import RealRooted.PFPolynomial
+public import RealRooted.LGV.Toeplitz
+import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
 
 /-!
 # Pólya-frequency rows from repeated chip words

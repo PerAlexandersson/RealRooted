@@ -3,7 +3,11 @@ module
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
-public import RealRooted.MultivariateStability.Specialization
+import RealRooted.MultivariateStability.Specialization
+import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.BorceaBranden.BoundarySpecialization
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # Real boundary consequences of the Lieb--Sokal operator

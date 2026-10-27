@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.Applications.PeakPolynomials.PeakInduction
-public import RealRooted.SymmetricDecomposition.FPolynomial
+import RealRooted.Applications.PeakPolynomials.PeakInduction
+import RealRooted.SymmetricDecomposition.FPolynomial
+import RealRooted.PosCombo
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # A conditional induction step for restricted hit polynomials

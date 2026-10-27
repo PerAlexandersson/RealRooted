@@ -2,6 +2,18 @@ module
 
 public import RealRooted.CommonInterleaverTwo
 public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+public import RealRooted.Compatibility.Basic
+public import RealRooted.AllCombo
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.PosCombo
+import RealRooted.QuadraticRoot
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Examples and counterexamples for common interleavers

@@ -2,9 +2,9 @@ module
 
 public import RealRooted.CombinatorialExamples.Eulerian
 public import RealRooted.GeneralizedEulerian
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import Mathlib.Analysis.Calculus.SmoothSeries
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import Mathlib.Analysis.Calculus.SmoothSeries
 public import Mathlib.Analysis.SpecificLimits.Normed
 public import Mathlib.RingTheory.PowerSeries.Derivative
 

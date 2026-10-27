@@ -2,6 +2,8 @@ module
 
 public import RealRooted.Multiaffine.CoordinateWronskian
 import Mathlib.Tactic.LinearCombination
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+import Mathlib.Algebra.MvPolynomial.CommRing
 
 /-!
 # Finite-index affine Euler cores

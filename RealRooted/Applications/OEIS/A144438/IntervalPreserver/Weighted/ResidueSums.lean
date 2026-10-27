@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Energy
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+import RealRooted.Interlacing.ResidueCriterion
 
 /-! # Endpoint residue sums for the weighted diagonal family -/
 

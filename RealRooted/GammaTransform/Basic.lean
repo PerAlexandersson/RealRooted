@@ -2,6 +2,10 @@ module
 
 public import RealRooted.SymmetricDecomposition
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.SymmetricDecomposition.Decomposition
+public import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Gamma transforms and real-rootedness

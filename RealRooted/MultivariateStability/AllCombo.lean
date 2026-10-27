@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 /-!
 # All-real-combination multivariate stability

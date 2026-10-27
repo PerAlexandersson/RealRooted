@@ -6,8 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.EulerOperator
-public import RealRooted.PosCombo
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Corrections to Euler successors

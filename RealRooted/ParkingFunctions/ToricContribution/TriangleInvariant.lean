@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
 
 /-!
 # The triangular interval-root invariant

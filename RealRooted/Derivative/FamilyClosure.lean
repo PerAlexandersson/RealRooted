@@ -7,7 +7,7 @@ public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
 public import RealRooted.Derivative.Algebra
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 public section

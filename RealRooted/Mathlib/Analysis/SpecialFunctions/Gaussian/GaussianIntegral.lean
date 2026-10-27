@@ -5,11 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 public import Mathlib.Algebra.Polynomial.Inductions
 
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Linarith
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+public import Mathlib.MeasureTheory.Function.L1Space.Integrable
 
 /-!
 # Polynomial factors in Gaussian integrals

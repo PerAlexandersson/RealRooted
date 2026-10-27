@@ -2,7 +2,7 @@ module
 
 public import RealRooted.ASWKarlinThreshold
 public import RealRooted.ASWKarlinVectors
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-!
 # Sign-variation bounds for Karlin sine vectors

@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import RealRooted.ClassicalHurwitzMatrix.Routh
 
 /-!
 # Total nonnegativity under a Routh expansion

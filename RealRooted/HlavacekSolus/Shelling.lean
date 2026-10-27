@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.Core
+import RealRooted.PosCombo
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Shellings and interlacing for simplicial subdivisions

@@ -6,8 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.EulerOperator.Darboux.Basic
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.DerivativeStep
 public import Mathlib.Tactic
+import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing consequences of unit-interval Darboux operators

@@ -9,6 +9,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Tactic.ComputeDegree
 public import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Algebraic formulas for the finite-degree Cayley transform

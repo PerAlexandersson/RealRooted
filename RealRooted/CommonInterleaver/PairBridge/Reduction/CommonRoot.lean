@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.PosCombo
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Linear
 
 /-!
 # Pair bridge assembly: nonnegative common-root induction

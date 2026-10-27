@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.MaWang.Weak.DerivativeSign
 public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Strict interlacing from critical signs

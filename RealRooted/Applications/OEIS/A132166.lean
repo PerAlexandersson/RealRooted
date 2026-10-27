@@ -1,13 +1,15 @@
 module
 
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-public import RealRooted.QuadraticRoot
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.ScalarNormalization
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.QuadraticRoot
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.ScalarNormalization
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # OEIS A132166

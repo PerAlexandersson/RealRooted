@@ -15,14 +15,22 @@ public import RealRooted.AffineFamily.Boundary
 public import RealRooted.AffineFamily.LowDegree
 public import RealRooted.AffineFamily.RootCrossing
 public import RealRooted.AffineFamily.Wronskian
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
 public import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.ObreschkoffConverse
-public import RealRooted.FolkloreLemma
+import RealRooted.FolkloreLemma
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Derivative.Interlacing
+import RealRooted.Linear
+public import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.Basic.PolynomialFacts
 
 public section
 

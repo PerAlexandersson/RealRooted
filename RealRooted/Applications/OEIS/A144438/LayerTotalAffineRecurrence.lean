@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
-public import RealRooted.Multiaffine.AffineCoordinateCriterion
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.Multiaffine.AffineCoordinateCriterion
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Affine-coordinate recurrence for the Deco layer total

@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.EulerBidiagonal.Location
+import RealRooted.EulerBidiagonal.Location
+public import RealRooted.EulerBidiagonal.General
+import RealRooted.Interlacing.RootCountSigns
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Lemma B′: `T q ≪ T ((X - ρ) q)`

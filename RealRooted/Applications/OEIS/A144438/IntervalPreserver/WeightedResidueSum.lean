@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
+import RealRooted.Interlacing.ResidueCriterion
 
 /-!
 # The original-variable weighted residue sum

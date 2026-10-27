@@ -6,7 +6,7 @@ public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
-public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 
 /-!
 # Thresholded polynomial-root counts

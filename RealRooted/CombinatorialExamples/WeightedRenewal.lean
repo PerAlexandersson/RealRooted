@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.CombinatorialExamples.PathPowerClique
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Interlacing.VariableDelay
 
 /-!
 # Weighted renewal polynomials

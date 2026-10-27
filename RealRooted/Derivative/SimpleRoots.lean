@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.IteratedDerivativeShift
-public import RealRooted.SameDegreeDerivative
+import RealRooted.IteratedDerivativeShift
+import RealRooted.SameDegreeDerivative
+public import RealRooted.SimpleRoots
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.RootCounting
+import RealRooted.Derivative.Algebra
 
 /-!
 # Simple roots and strict bounds for derivatives

@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.Hadamard.Finite
+public import RealRooted.Hadamard.Basic
+import RealRooted.NewtonAux
+import RealRooted.Linear
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 public section
 

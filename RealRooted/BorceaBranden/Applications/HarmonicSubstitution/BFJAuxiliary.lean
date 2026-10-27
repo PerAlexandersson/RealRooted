@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
 public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Brändén--Ferroni--Jochemko auxiliary product

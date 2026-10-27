@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.HermiteBiehler.OddEven
 
 /-!
 # Rotation between strict left- and upper-half-plane stability

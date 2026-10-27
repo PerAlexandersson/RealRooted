@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Mathlib.Probability.LocalLimit
-public import RealRooted.PFPolynomial.CoefficientShape
+import RealRooted.Mathlib.Probability.LocalLimit
+import RealRooted.PFPolynomial.CoefficientShape
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Bender's local limit theorem for real-rooted polynomial rows

@@ -1,12 +1,15 @@
 module
 
-public import RealRooted.Hyperbolicity
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import RealRooted.Hyperbolicity
 public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 public import RealRooted.Multiaffine.AffineEulerCore
 public import RealRooted.MultivariateStability.AllCombo
-public import RealRooted.MultivariateStability.DirectionalDerivative
-public import RealRooted.MultivariateStability.HomogeneousPencilWronskian
-public import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.DirectionalDerivative
+import RealRooted.MultivariateStability.HomogeneousPencilWronskian
+import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.Specialization
+import RealRooted.LiebSokalPointwise
 
 /-!
 # Stability of affine Euler cores

@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Wronskian.Successor.Signs
+import RealRooted.Wronskian.Successor.Signs
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Successor-degree Wronskian splitness transfer

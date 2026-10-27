@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.PosCombo
 public import RealRooted.Wagner.NonpositiveRoots
+import RealRooted.Wagner.LeftSum
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wagner challenge entry point

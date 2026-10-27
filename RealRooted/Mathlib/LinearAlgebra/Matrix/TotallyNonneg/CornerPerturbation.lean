@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Corner perturbations of totally nonnegative matrices

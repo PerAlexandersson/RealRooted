@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.Mathlib.Data.List.Interleave
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Strict same-degree interlacing

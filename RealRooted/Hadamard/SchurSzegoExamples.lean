@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Hadamard.Basic
 
 /-!
 # Regression examples for the finite Schur–Szegő composition

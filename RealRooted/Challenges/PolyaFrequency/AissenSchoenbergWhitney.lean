@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.ASWKarlinKernel
-public import RealRooted.AissenSchoenbergWhitney
+import RealRooted.AissenSchoenbergWhitney
 public import RealRooted.PFPolynomial
-public import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.NatCauchyConvolution
 
 /-!
 # Aissen--Schoenberg--Whitney challenge entry point

@@ -1,9 +1,12 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
-public import RealRooted.Favard
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.Favard
+import RealRooted.Interlacing.OuterDifference
 public import Mathlib.Basic.Real.Basic
+public import RealRooted.Favard.Recurrence
+public import Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # The reference Gegenbauer family as a Favard instance

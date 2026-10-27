@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 public import RealRooted.MultivariateStability
 

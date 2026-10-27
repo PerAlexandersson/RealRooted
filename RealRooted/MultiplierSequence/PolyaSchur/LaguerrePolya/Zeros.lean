@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Real zeros of Laguerre--Pólya limits

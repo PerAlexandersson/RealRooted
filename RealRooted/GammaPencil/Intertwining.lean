@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.GammaPencil.Basic
-public import RealRooted.GammaPencil.Invariants
+import RealRooted.GammaPencil.Invariants
 public import RealRooted.GammaTransform.Basic
 
 /-!

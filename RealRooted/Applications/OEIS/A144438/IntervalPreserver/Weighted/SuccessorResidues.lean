@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.SuccessorResidues
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.SuccessorBlock
+import RealRooted.Interlacing.ResidueCriterion
 
 /-! # Polynomial residue identities at a weighted insertion successor -/
 

@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 /-!
 # Descent counts of direct and skew sums

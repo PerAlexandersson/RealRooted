@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.SameDegreeCubicRootCount
-public import RealRooted.SameDegreeCountFromAnalytic
-public import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.SameDegreeCubicRootCount
+import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.LiuOppositeSigns.RootCount
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # The cubic second-root bound from analytic root counts

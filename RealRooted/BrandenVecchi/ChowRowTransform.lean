@@ -1,8 +1,15 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowInterlacing
-public import RealRooted.ReciprocalShift.ProperPosition
-public import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+import RealRooted.BrandenVecchi.ChowInterlacing
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+import RealRooted.BrandenVecchi.ChowInterlacingQuotient
+public import RealRooted.BrandenVecchi.ReflectionInterlacing
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
+import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.PosCombo
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # The generic Chow staircase row transform

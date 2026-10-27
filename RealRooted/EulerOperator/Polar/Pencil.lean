@@ -1,8 +1,17 @@
 module
 
-public import RealRooted.AffineFamily
-public import RealRooted.EulerOperator.Pencil
+import RealRooted.AffineFamily
+import RealRooted.EulerOperator.Pencil
 public import RealRooted.EulerOperator.Polar.ProperPosition
+import RealRooted.EulerOperator.Polar
+public import RealRooted.EulerOperator
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.CommonInterleaver.FamilyUpgrade
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Interlacing polar Euler pencils

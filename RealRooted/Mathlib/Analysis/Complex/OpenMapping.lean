@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.OpenMapping
-public import Mathlib.Analysis.Analytic.Polynomial
+import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Analytic.Polynomial
+public import Mathlib.Analysis.Analytic.Basic
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Defs
 
 /-!
 # Complex consequences of the open mapping theorem

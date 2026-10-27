@@ -1,13 +1,19 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix
-public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
-public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 public import RealRooted.HurwitzMatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+import RealRooted.SamePhaseInterlacing
+public import RealRooted.HermiteBiehler.OddEven
+import RealRooted.HermiteBiehler.Forward
+public import RealRooted.Basic.ProperPosition
 
 public section
 

@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Zero borders of totally nonnegative matrices

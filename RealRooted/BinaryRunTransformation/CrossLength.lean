@@ -1,13 +1,18 @@
 module
 
-public import RealRooted.BalancedRunTransformation.Interlacing
-public import RealRooted.BinaryRunTransformation.Interlacing
-public import RealRooted.BinaryRunTransformation.KernelIdentities
-public import RealRooted.DegreeDropReversal
-public import RealRooted.EulerOperator.Polar.Pencil
-public import RealRooted.Interlacing.OuterDifference
-public import RealRooted.PosCombo
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.BalancedRunTransformation.Interlacing
+import RealRooted.BinaryRunTransformation.Interlacing
+import RealRooted.BinaryRunTransformation.KernelIdentities
+import RealRooted.DegreeDropReversal
+import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.Interlacing.OuterDifference
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.EulerOperator
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.WagnerRightSum
+import RealRooted.Derivative.Algebra
 
 /-!
 # Cross-length transport for the binary-run transformation

@@ -1,6 +1,17 @@
 module
 
-public import RealRooted.SymmetricDecomposition.Decomposition
+import RealRooted.SymmetricDecomposition.Decomposition
+import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.FolkloreLemma
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.DegreeGap
+import RealRooted.PosCombo
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Brändén--Solus Theorem 2.6

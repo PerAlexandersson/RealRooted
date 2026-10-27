@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
-public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineRecurrence
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Obstruction to separate exceptional-Wronskian positivity

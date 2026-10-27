@@ -7,6 +7,7 @@ public import RealRooted.Wagner
 public import RealRooted.RootContinuity
 public import Mathlib.Analysis.Normed.Field.Approximation
 public import Mathlib.Analysis.Complex.Polynomial.Basic
+public import RealRooted.Basic.ProperPosition
 
 public section
 

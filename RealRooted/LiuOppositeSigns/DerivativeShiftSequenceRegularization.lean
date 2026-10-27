@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Compatibility.Basic
+import RealRooted.Compatibility.Basic
 public import RealRooted.Derivative.ShiftSequence
-public import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
-public import RealRooted.Mathlib.Data.Multiset.Rel
+import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
+import RealRooted.Mathlib.Data.Multiset.Rel
+import RealRooted.Derivative.ShiftRootMatching
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.Compatibility.Pair
 
 /-!
 # Finite derivative-shift regularization for Liu's opposite-sign theorem

@@ -2,6 +2,8 @@ module
 
 public import RealRooted.BinaryRunTransformation.Interlacing
 public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.MultivariateStability
 
 /-!
 # The rank-three binary-run transform does not preserve stability

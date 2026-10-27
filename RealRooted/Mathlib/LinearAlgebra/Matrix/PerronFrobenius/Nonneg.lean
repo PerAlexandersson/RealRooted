@@ -5,7 +5,31 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.Measurability.Init
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Perron-Frobenius for general nonnegative matrices

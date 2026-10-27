@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Interlacing.Residue
-public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
-public import RealRooted.Wronskian.Forward
+public import Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Wronskian.Forward
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Weak forward Wronskian orientation

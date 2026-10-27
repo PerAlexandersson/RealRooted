@@ -1,7 +1,9 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Homogenize
 public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
 
 /-!
 # Bilinear BFJ output assembly

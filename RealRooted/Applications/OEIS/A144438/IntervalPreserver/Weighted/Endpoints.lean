@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
-public import RealRooted.BasisTransform
+import RealRooted.BasisTransform
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-! # Endpoint estimates for the weighted diagonal family -/
 

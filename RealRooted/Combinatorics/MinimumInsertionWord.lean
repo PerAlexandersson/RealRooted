@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Data.List.InsertIdx
+import Mathlib.Data.List.InsertIdx
 public import Mathlib.Logic.Equiv.Basic
 
 /-!

@@ -4,6 +4,8 @@ public import RealRooted.SymmetricDecomposition.DerangementTransform
 public import RealRooted.SymmetricDecomposition.EulerianTransform
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
 public import RealRooted.PFPolynomial
+import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 
 /-!
 # Chow and augmented Chow polynomials of uniform matroids

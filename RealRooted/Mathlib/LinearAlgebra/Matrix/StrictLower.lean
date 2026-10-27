@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Ring.GeomSum
+import Mathlib.Algebra.Ring.GeomSum
 public import Mathlib.Data.Matrix.Mul
 
 /-!

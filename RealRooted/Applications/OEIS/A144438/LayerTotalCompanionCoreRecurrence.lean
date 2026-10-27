@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionExtension
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
 
 /-!
 # Successor recurrence for the Deco companion core

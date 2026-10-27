@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.EulerOperator
+import RealRooted.EulerOperator
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard
 public import RealRooted.Interlacing.ReversalCommonFactor
@@ -10,8 +10,12 @@ public import RealRooted.MultiplierSequence.Infinite
 public import RealRooted.MultiplierSequence.JensenAffineTheta
 public import RealRooted.MultiplierSequence.ProperPosition
 public import RealRooted.NarayanaTransformation
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Hadamard.Grace
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Rectangular.Narayana
 
 /-!
 # The A119308 hypergeometric model

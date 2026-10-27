@@ -1,6 +1,14 @@
 module
 
-public import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
+import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
+import RealRooted.FolkloreLemma
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Endpoint-safe shifted difference-interlacing bridge

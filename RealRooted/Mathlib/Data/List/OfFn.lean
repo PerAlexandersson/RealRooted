@@ -6,8 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Data.List.OfFn
-public import Mathlib.Algebra.BigOperators.Fin
-public import RealRooted.Mathlib.Data.Fin.Basic
+import Mathlib.Algebra.BigOperators.Fin
+import RealRooted.Mathlib.Data.Fin.Basic
+public import Mathlib.Data.Fintype.Basic
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Additional lemmas about lists of finite functions

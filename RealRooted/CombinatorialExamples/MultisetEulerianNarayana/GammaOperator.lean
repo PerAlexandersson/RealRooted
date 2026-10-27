@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-public import RealRooted.MaWang.Strong
+import RealRooted.MaWang.Strong
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # The gamma operator for multiset Eulerian--Narayana polynomials

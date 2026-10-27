@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
-public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
+import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing for generalized-Laguerre differential recurrences

@@ -1,9 +1,9 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+import RealRooted.MultiplierSequence.PolyaSchur.Factorial
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-public import RealRooted.MultiplierSequence.PolyaSchur.Limit
+import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
 /-!
 # Reverse Type-I Pólya--Schur bridge

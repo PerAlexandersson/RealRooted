@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.SameDegreeDerivative
-public import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SameDegreeDerivative
+import RealRooted.SameDegreeQuadraticRootCount
 public import RealRooted.CubicDiscriminant
+import RealRooted.SameDegreeQuadraticObstruction
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Degree-three same-degree root-count helpers

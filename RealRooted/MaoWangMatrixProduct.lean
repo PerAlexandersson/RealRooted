@@ -2,6 +2,11 @@ module
 
 public import RealRooted.LowerTriangularMatrix
 public import RealRooted.NarayanaTransformation
+import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.NarayanaTransformation.Rising
+import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Basis
 
 /-!
 # Mao--Wang matrix-product interfaces

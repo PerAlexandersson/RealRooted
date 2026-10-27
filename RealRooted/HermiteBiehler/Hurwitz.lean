@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.Converse
 public import RealRooted.HermiteBiehler.OddEven
+import RealRooted.HermiteBiehler.ConverseLowDegree
 
 /-!
 # Hermite--Biehler to Hurwitz stability

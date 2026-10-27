@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Linear-factor steps in the polynomial PF cone

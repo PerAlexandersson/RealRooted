@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Hadamard.Grace
-public import RealRooted.Hadamard.SchurSzegoMultiplicity
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Hadamard.Grace
+import RealRooted.Hadamard.SchurSzegoMultiplicity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Hadamard.Basic
 
 /-!
 # Sign counts for the finite Schur–Szegő composition

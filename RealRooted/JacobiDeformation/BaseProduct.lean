@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.JacobiDeformation.KernelExpansion
+import RealRooted.JacobiDeformation.KernelExpansion
 public import RealRooted.JacobiDeformation.Appell
 public import RealRooted.JacobiDeformation.ImageProduct
-public import RealRooted.JacobiDeformation.QuasiNodes
+import RealRooted.JacobiDeformation.QuasiNodes
+import RealRooted.Jacobi
+public import RealRooted.JacobiDeformation.BoundaryProjection
 
 /-!
 # The delta-zero Jacobi deformation product

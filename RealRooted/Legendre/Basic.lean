@@ -5,9 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
+import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
 
 import Mathlib.Tactic.NormNum
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+public import Mathlib.RingTheory.Polynomial.ShiftedLegendre
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Shifted Legendre polynomials over the reals

@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.Certificates
-public import RealRooted.IntervalDifferential.Degree
-public import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
+import RealRooted.IntervalDifferential.Certificates
+import RealRooted.IntervalDifferential.Degree
+import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
 public import Mathlib.Tactic
+public import RealRooted.IntervalDifferential.Basic
 
 /-!
 # The three-sign quartic seed

@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.RingTheory.Polynomial.Vieta
+import Mathlib.RingTheory.Polynomial.Vieta
 
 import Mathlib.Tactic.Ring
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Additional Vieta identities

@@ -7,8 +7,8 @@ module
 
 public import RealRooted.IntervalDifferential.Basic
 public import Mathlib.Algebra.Polynomial.Degree.Operations
-public import Mathlib.Algebra.Polynomial.Inductions
-public import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Algebra.Polynomial.Inductions
+import Mathlib.Algebra.Polynomial.Monic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 

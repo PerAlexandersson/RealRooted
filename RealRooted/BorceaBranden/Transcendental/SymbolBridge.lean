@@ -3,6 +3,11 @@ module
 public import RealRooted.BorceaBranden.Transcendental.PivotForward
 public import RealRooted.BorceaBranden.FiniteSymbolClassification
 public import RealRooted.MultivariateStability.Inversion
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
+public import RealRooted.BorceaBranden.Transcendental.LambdaBar
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 @[expose] public section
 

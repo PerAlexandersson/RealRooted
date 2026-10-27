@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.EulerOperator
-public import RealRooted.WagnerX.ProperPosition
+import RealRooted.WagnerX.ProperPosition
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Positive Euler pencils

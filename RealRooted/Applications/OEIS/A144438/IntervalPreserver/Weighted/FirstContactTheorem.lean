@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactBoundary
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
 
 /-!
 # Weighted first-contact theorem

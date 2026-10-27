@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.LiuOppositeSigns.RootCount
+import RealRooted.RootCountJump
+import RealRooted.Linear
 
 /-!
 # Positive-split root-count pairs

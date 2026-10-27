@@ -3,6 +3,12 @@ module
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.MaWang
 public import Mathlib.Tactic
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Colored Set-Partition Polynomials

@@ -7,6 +7,13 @@ public import RealRooted.LiuOppositeSigns.NoCommonRoots
 public import RealRooted.PositiveParameterLocalLowerCount
 public import RealRooted.RootContinuity
 public import RealRooted.RootCountLocalConstancy
+import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.RootCountJump
+import RealRooted.AffineFamily.RootCrossing
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Crossing witnesses for Liu's no-common-root argument

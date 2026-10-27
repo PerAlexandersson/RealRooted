@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Basic.ProperPosition
 public import RealRooted.Basic.RootLists
-public import RealRooted.WagnerX.ListInterlacing
+import RealRooted.WagnerX.ListInterlacing
 
 /-!
 # Interlacing in product sequences

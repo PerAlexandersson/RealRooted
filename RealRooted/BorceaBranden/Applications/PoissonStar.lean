@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.LiebSokalOperator
 
 /-!
 # The Poisson star algebra

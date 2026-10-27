@@ -1,14 +1,19 @@
 module
 
-public import RealRooted.MultiplierSequence.TwoSidedJensen
-public import RealRooted.MultiplierSequence.InvPochhammer
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+import RealRooted.MultiplierSequence.TwoSidedJensen
+import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.CombinatorialExamples.BigDescentsOddBinom
 public import RealRooted.CombinatorialExamples.Narayana
 public import RealRooted.Hadamard
 public import RealRooted.Hadamard.GarloffWagner
 public import RealRooted.NarayanaTransformation
+import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.Hadamard.Basic
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 @[expose] public section
 

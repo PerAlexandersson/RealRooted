@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.Wronskian.OdeRootExclusion
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Wronskian.OdeRootExclusion
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # The row polynomials of OEIS A110608

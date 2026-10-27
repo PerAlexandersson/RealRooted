@@ -3,6 +3,7 @@ module
 public import RealRooted.IteratedDerivativeShift
 public import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.ObreschkoffContinuity
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # All-real-combination real-rootedness

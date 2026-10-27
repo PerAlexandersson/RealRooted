@@ -3,7 +3,7 @@ module
 public import RealRooted.MultivariateStability.JumpSystem
 public import RealRooted.MultivariateStability.LinearForm
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
 public import Mathlib.Analysis.Matrix.Spectrum
 
 /-!

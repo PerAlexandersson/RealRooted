@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.CubicDiscriminant
-public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
 public import RealRooted.QuadraticRoot
-public import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SameDegreeQuadraticRootCount
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.Linear
 
 /-!
 # Liu left-successor x-subtraction base cases

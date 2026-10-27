@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.RootAmplitude.Finite
-public import Mathlib.Algebra.BigOperators.Intervals
+import Mathlib.Algebra.BigOperators.Intervals
 public import Mathlib.Algebra.BigOperators.Group.Finset.Interval
+import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-!
 # Convex finite sequences and root amplitudes

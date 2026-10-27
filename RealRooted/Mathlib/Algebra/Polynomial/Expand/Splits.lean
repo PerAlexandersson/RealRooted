@@ -9,7 +9,10 @@ public import Mathlib.Algebra.Polynomial.Expand
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Tactic
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Splitness under squaring expansion

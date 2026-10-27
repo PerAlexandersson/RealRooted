@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 public import RealRooted.CombinatorialExamples.BigDescents321.Kernel
+import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Gegenbauer coordinates of the transformed polynomials

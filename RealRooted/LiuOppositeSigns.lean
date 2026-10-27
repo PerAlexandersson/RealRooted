@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.RootCountJump
 
 /-!
 # Liu opposite-sign compatibility branches

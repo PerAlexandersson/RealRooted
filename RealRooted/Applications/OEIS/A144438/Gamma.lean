@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.Weighted
-public import RealRooted.GammaPencil.Intertwining
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.GammaPencil.Intertwining
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.GammaPencil.Invariants
+public import RealRooted.GammaPencil.Basic
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma expansion of the weighted deco Eulerian family

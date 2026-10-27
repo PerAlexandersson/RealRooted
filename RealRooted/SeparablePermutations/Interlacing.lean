@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.SeparablePermutations.Gamma
-public import RealRooted.FactorialCompression.DegreeChanging
-public import RealRooted.GammaTransform.StrictLifting
+import RealRooted.FactorialCompression.DegreeChanging
+import RealRooted.GammaTransform.StrictLifting
+import RealRooted.Linear
 
 /-!
 # Strict interlacing for the descent polynomials of separable permutations

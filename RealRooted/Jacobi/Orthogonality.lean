@@ -9,7 +9,7 @@ public import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 public import RealRooted.Favard.Orthogonality
 public import RealRooted.Jacobi.Favard
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
-public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
 
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
@@ -17,6 +17,7 @@ import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.Polynomial.Moment
 
 /-!
 # Finite orthogonality for shifted Jacobi polynomials

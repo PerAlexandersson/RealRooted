@@ -3,6 +3,7 @@ module
 public import RealRooted.Basic
 public import RealRooted.RootOrderBridge
 public import Mathlib.Tactic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Succ-degree root crossing

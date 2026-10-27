@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
-public import Mathlib.Analysis.Polynomial.CauchyBound
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
+import Mathlib.Analysis.Polynomial.CauchyBound
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
 
 /-!
 # Compact root incidence for the weighted parameter family

@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.Bezoutian.WronskianConverse
-public import RealRooted.HermiteBiehler.Converse.RootGeometry
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.HermiteBiehler.Converse.RootGeometry
+import RealRooted.HermiteBiehler.ConverseLowDegree
+import RealRooted.HermiteBiehler.Forward
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wronskian layer for the converse Hermite--Biehler theorem

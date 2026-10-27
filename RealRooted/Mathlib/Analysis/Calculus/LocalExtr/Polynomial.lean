@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Splitting of derivatives of real polynomials

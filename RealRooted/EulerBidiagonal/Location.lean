@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.EulerBidiagonal.ComparisonData
+import RealRooted.EulerBidiagonal.ComparisonData
+public import RealRooted.EulerBidiagonal.General
+import RealRooted.RootCounting.SignChanges
+import RealRooted.Interlacing.RootCountSigns
+import RealRooted.Interlacing.Residue
+import RealRooted.MaWang.StrictSigns.Assembly
 
 /-!
 # Root location for the general Euler step

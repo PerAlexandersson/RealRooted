@@ -3,6 +3,8 @@ module
 public import RealRooted.BorceaBranden.FiniteSymbolBasis
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 public import RealRooted.Multiaffine.ReciprocalRight
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.Funext
 
 /-!
 # The source-reciprocal finite-symbol identity

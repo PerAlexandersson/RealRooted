@@ -1,9 +1,10 @@
 module
 
-public import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.Basic
 public import RealRooted.Basic
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Adjacent strict interlacing for OEIS A259454

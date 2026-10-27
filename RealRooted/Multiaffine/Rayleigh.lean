@@ -1,10 +1,11 @@
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
-public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 public import RealRooted.Multiaffine
 public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Rayleigh differences of multiaffine polynomials

@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Tactic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Determinants of banded lower-Hessenberg matrices

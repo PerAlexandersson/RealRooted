@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalRootStep
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.BlockEnergy
 
 /-! # Finite block identities at a weighted diagonal successor root -/
 

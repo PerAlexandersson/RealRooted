@@ -1,11 +1,15 @@
 module
 
-public import RealRooted.CombinatorialExamples.Touchard
-public import RealRooted.DegreeDropReversal
-public import RealRooted.Interlacing.WindowInduction
-public import RealRooted.ObreschkoffConverse.Derivative
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.CombinatorialExamples.Touchard
+import RealRooted.DegreeDropReversal
+import RealRooted.Interlacing.WindowInduction
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+public import RealRooted.EulerOperator
+public import RealRooted.Touchard
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 @[expose] public section
 

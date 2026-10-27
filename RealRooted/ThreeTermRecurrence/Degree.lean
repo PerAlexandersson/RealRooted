@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.DerivativeRecurrence.Degree
-public import Mathlib.Algebra.Polynomial.Degree.Domain
+import RealRooted.DerivativeRecurrence.Degree
+import Mathlib.Algebra.Polynomial.Degree.Domain
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Degrees of three-term recurrences

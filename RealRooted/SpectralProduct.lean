@@ -1,10 +1,11 @@
 module
 
-public import RealRooted.CauchyInterlacing.Submatrix
+import RealRooted.CauchyInterlacing.Submatrix
 public import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+public import RealRooted.CauchyInterlacing
 
 /-!
 # Finite spectral-product positivity

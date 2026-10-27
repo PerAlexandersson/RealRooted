@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Data.List.Zip
+import Mathlib.Data.List.Zip
 public import Mathlib.Order.Basic
+public import Batteries.Data.List.Basic
+public import Mathlib.Order.Defs.LinearOrder
+public import Aesop.BuiltinRules
 
 /-!
 # List zip lemmas

@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Basic.AffineInterlacing
+import RealRooted.Basic.AffineInterlacing
 public import RealRooted.EulerOperator
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
 public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Finite interlacing-window induction

@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.Interlacing.OuterDifference
+import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Closing consequences for the univariate Poisson product

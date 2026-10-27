@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
-public import Mathlib.Analysis.Complex.Basic
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
+import Mathlib.Analysis.Complex.Basic
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.Analysis.Complex.Norm
 
 /-!
 # Real quadratic recurrence norm bounds from complex roots

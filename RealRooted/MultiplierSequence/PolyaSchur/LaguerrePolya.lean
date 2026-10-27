@@ -3,6 +3,7 @@ module
 public import RealRooted.MultiplierSequence.Infinite
 public import RealRooted.MultiplierSequence.PolyaSchur.Analytic
 public import Mathlib.Analysis.RCLike.Lemmas
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Laguerre--Pólya limits of Jensen polynomials

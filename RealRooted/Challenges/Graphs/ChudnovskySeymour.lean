@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.HeilmannLieb
+import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.ClawFree
 
 public section
 

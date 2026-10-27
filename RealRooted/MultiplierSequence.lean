@@ -2,8 +2,12 @@ module
 
 public import RealRooted.CoefficientShape
 public import RealRooted.CubicDiscriminant
-public import RealRooted.CubicNewton
+import RealRooted.CubicNewton
 public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 @[expose] public section
 

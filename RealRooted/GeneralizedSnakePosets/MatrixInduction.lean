@@ -2,7 +2,13 @@ module
 
 public import RealRooted.GeneralizedSnakePosets.Statements
 public import RealRooted.MatrixInterlacing
-public import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial
+import RealRooted.MatrixInterlacing.AffinePair
+public import RealRooted.MatrixInterlacing.Action
+import RealRooted.AffineFamily
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.Linear
 
 /-!
 # Braun-Jal matrix-induction step

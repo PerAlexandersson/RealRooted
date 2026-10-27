@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Multiaffine.CoordinateWronskian
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 
 /-!
 # Rayleigh criteria for affine coordinate extensions

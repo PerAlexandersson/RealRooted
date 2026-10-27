@@ -2,7 +2,7 @@ module
 
 public import RealRooted.CubicDiscriminant
 public import RealRooted.Graph.IndependencePolynomial.Multivariate
-public import RealRooted.Graph.IndependencePolynomial.Recurrence
+import RealRooted.Graph.IndependencePolynomial.Recurrence
 
 /-!
 # The Leake--Ryder claw-free characterization

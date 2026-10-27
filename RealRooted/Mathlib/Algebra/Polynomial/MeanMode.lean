@@ -6,14 +6,14 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.Splits
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Positivity
-public import Mathlib.Data.Multiset.Fintype
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
+import Mathlib.Data.Multiset.Fintype
+import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
 
 /-!
 # Darroch's mean–mode theorem

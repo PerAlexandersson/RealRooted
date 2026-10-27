@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.RootAmplitude.Separation.Finite
-public import Mathlib.Analysis.SpecialFunctions.Log.Deriv
-public import Mathlib.NumberTheory.ZetaValues
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.NumberTheory.ZetaValues
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-!
 # Euler-product bounds for separated amplitudes

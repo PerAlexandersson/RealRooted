@@ -7,6 +7,7 @@ module
 
 public import RealRooted.Favard.Recurrence
 public import RealRooted.Hermite.Basic
+import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
 
 /-!
 # Favard recurrence for probabilists' Hermite polynomials

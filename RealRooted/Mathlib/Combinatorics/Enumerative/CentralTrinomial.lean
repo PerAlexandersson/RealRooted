@@ -5,15 +5,18 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.BigOperators.NatAntidiagonal
+import Mathlib.Algebra.BigOperators.NatAntidiagonal
 public import Mathlib.Data.Nat.Choose.Basic
-public import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
+import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Data.Finset.NatAntidiagonal
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Central trinomial coefficients

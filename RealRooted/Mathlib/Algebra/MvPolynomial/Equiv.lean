@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Equiv
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Degree bounds for univariate multivariate-polynomial equivalences

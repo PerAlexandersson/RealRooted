@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
-public import RealRooted.IntervalDifferential.UniversalTransfer
-public import RealRooted.IntervalDifferential.MobiusRoots
+import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
+import RealRooted.IntervalDifferential.UniversalTransfer
+import RealRooted.IntervalDifferential.MobiusRoots
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+import RealRooted.IntervalDifferential.Degree
 
 /-!
 # From the centered quotient to the actual zig-zag polynomial

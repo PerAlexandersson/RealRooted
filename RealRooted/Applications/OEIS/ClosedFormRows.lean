@@ -1,9 +1,14 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
 public import RealRooted.HeilmannLieb
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.RowClosedForm
+import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Graph.MatchingPolynomial
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
 # Closed forms for repeated-root OEIS rows

@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.OperatorMatrix.OneThetaXBoards
+import RealRooted.OperatorMatrix.Directed
 
 /-!
 # Singleton boards and counts for the letter alphabet

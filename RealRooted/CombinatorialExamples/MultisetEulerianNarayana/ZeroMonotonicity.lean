@@ -1,7 +1,11 @@
 module
 
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Monotonicity of the zeros of the gamma operator

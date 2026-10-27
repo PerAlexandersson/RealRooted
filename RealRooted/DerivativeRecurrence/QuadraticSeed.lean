@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+import RealRooted.DerivativeRecurrence.QuadraticDegree
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Quadratic-seed derivative recurrences

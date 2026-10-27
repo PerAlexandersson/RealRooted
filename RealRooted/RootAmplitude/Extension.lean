@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.RootAmplitude.Minimum
+import RealRooted.RootAmplitude.Minimum
+public import RealRooted.RootAmplitude.Convex
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Finite extension of root-amplitude sequences

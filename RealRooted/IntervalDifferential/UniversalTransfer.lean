@@ -5,10 +5,36 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.FactorShapes
-public import RealRooted.IntervalDifferential.QuarticBounds
-public import RealRooted.IntervalDifferential.LinearInsertion
-public import RealRooted.IntervalDifferential.QuadraticInsertion
+import RealRooted.IntervalDifferential.FactorShapes
+import RealRooted.IntervalDifferential.QuarticBounds
+import RealRooted.IntervalDifferential.LinearInsertion
+import RealRooted.IntervalDifferential.QuadraticInsertion
+import RealRooted.IntervalDifferential.ParityQuarticFactor
+import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
+import RealRooted.IntervalDifferential.Degree
+import RealRooted.IntervalDifferential.CubicDisk
+public import RealRooted.IntervalDifferential.Basic
+import Mathlib.Analysis.Polynomial.Factorization
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.Polynomial.Basic
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Echelon.Zsqrtd
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Universal transfer for the centered zigzag operator

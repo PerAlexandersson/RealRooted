@@ -1,8 +1,39 @@
 module
 
 public import RealRooted.EdreiThoma.Identities
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+import RealRooted.EdreiThoma.PFSeries
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.RingTheory.PiTensorProduct
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Order.Interval.Finset.Box
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.Complex.Exponential
 
 /-!
 # Edrei--Thoma continuation

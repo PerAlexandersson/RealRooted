@@ -6,7 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.LGV.Toeplitz
-public import RealRooted.LGV.TotallyNonnegative
+import RealRooted.LGV.TotallyNonnegative
+public import LGV.Ordered
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Ordered LGV certificates and Pólya-frequency sequences

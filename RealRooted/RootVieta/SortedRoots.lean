@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.RootVieta
-public import RealRooted.CoefficientDominance.Symmetric.Polynomial
+import RealRooted.RootVieta
+import RealRooted.CoefficientDominance.Symmetric.Polynomial
 public import RealRooted.SortedRoots
+public import RealRooted.CoefficientDominance.Symmetric.Finite
 
 /-!
 # Vieta formulas in terms of sorted root sequences

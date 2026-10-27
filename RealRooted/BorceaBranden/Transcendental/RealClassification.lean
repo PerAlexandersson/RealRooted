@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+public import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
 
 public section
 

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 public import RealRooted.MultiplierSequence.Infinite
 
 /-!

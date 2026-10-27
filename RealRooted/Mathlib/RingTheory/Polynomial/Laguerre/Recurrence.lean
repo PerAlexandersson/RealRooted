@@ -5,11 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Recurrences for generalized Laguerre polynomials

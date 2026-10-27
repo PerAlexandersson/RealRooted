@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Interlacing.Euclid
-public import RealRooted.Interlacing.Reversal
+import RealRooted.Interlacing.Euclid
+import RealRooted.Interlacing.Reversal
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Reversal transport with rescaling and common factors

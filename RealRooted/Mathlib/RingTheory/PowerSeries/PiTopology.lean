@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.RingTheory.PowerSeries.PiTopology
+import Mathlib.RingTheory.PowerSeries.PiTopology
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import Mathlib.Topology.Algebra.Ring.Basic
 
 /-!
 # Coefficientwise limits of powers of power series

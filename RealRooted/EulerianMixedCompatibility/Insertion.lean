@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.Compatibility.Pair
-public import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Euler insertion operator

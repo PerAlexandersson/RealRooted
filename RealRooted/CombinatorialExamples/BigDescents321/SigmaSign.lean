@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
+import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
+public import RealRooted.CombinatorialExamples.BigDescents321.Functionals
 
 /-!
 # The sign of `J*_n`

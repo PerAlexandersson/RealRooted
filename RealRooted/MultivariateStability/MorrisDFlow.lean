@@ -1,10 +1,15 @@
 module
 
 public import RealRooted.MultivariateStability.MorrisBFlow
-public import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
-public import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
-public import RealRooted.MultivariateStability.CoeffLimit
+import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
+import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
+import RealRooted.MultivariateStability.CoeffLimit
 public import Mathlib.Analysis.Normed.Module.TransferInstance
+public import RealRooted.MultivariateStability.MorrisOperator
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
+public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 /-!
 # The Liu--Zhang Morris flow

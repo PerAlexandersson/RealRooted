@@ -2,8 +2,8 @@ module
 
 public import RealRooted.AffineLineRestriction
 public import RealRooted.DeterminantalStability
-public import RealRooted.HomogeneousComponentStability
-public import RealRooted.Hyperbolicity
+import RealRooted.HomogeneousComponentStability
+import RealRooted.Hyperbolicity
 public import RealRooted.HyperbolicityCone
 public import RealRooted.MultivariateStability.Inversion
 public import RealRooted.MultivariateStability.JumpSystem
@@ -12,9 +12,13 @@ public import RealRooted.MultivariateStability.MixedCharacteristic
 public import RealRooted.MultivariateStability.ExpectedCharpoly
 public import RealRooted.MultivariateStability.MSSBound
 public import RealRooted.MultivariateStability.NegativeCorrelation
-public import RealRooted.MultivariateStability.RayleighConverse
-public import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.RayleighConverse
+import RealRooted.MultivariateStability.SamePhase
 public import RealRooted.SpanningTreeStability
+public import RealRooted.SamePhaseStability
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
 /-!
 # Real stability challenge entry point

@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix
-public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
 public import RealRooted.ClassicalHurwitzMatrix.Stability
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Total nonnegativity of the classical Hurwitz matrix

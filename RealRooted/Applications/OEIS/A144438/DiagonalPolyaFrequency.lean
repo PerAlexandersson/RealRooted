@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.DiagonalBridge
-public import RealRooted.Applications.OEIS.A144438.ExactLayerStability
-public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+import RealRooted.Applications.OEIS.A144438.DiagonalBridge
+import RealRooted.Applications.OEIS.A144438.ExactLayerStability
+import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+import RealRooted.MultivariateStability.Diagonal
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
+public import RealRooted.Applications.OEIS.A144438.ExactLayer
 
 /-!
 # Pólya-frequency consequences of the A144438 diagonal bridge

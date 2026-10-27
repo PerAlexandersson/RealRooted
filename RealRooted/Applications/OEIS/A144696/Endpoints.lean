@@ -1,10 +1,17 @@
 module
 
-public import RealRooted.Applications.OEIS.A144696.StrictInterlacing
+import RealRooted.Applications.OEIS.A144696.StrictInterlacing
 public import RealRooted.CommonInterleaver.RootDesc
-public import RealRooted.EulerianCompletion.ProperPosition
+import RealRooted.EulerianCompletion.ProperPosition
 public import RealRooted.GeneralizedEulerian
-public import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.EulerianCompletion
+public import RealRooted.Applications.OEIS.A144696.Basic
+public import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.Linear
 
 /-!
 # Reciprocal endpoint for the A144696 Bernstein-image triangle

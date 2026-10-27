@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Second-order recurrences with an eigen-ODE

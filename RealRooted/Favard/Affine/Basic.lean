@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.Favard
-public import RealRooted.SequenceClosure
+import RealRooted.Favard
+import RealRooted.SequenceClosure
 public import Mathlib.Tactic
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Direct affine Favard recurrences

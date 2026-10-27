@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.GarloffWagner.KreinData
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Linear
 
 /-!
 # Garloff--Wagner Krein expansions

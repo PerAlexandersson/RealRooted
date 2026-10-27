@@ -2,11 +2,17 @@ module
 
 public import RealRooted.Interlacing.WindowInduction
 public import RealRooted.Applications.OEIS.A275442.Bridge.Sign
-public import RealRooted.AffineProperPosition
-public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Interlacing.Residue
-public import RealRooted.LinearPowerFamily
-public import RealRooted.MaWang.Strong
+import RealRooted.AffineProperPosition
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
+import RealRooted.LinearPowerFamily
+import RealRooted.MaWang.Strong
+import RealRooted.Applications.OEIS.A275442.Bridge.Family
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
 
 /-!
 # The real-rootedness recurrence for OEIS A275442

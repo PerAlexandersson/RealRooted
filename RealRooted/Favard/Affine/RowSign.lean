@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Favard.Affine.Basic
-public import RealRooted.ScalarNormalization
+import RealRooted.Favard.Affine.Basic
+import RealRooted.ScalarNormalization
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Row-sign normalized affine Favard recurrences

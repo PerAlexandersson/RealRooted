@@ -2,6 +2,7 @@ module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
 public import Mathlib.Analysis.SpecialFunctions.Exponential
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
 
 /-!
 # Laguerre--Pólya examples

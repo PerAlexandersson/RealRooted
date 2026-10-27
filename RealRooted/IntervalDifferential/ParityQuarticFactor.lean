@@ -5,9 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
+import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
 public import Mathlib.Algebra.Polynomial.Expand
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Tactic
 
 /-!

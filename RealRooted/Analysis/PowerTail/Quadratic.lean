@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.Analysis.PowerTail.Telescoping
+import RealRooted.Analysis.PowerTail.Telescoping
+import RealRooted.Analysis.PowerTail.Bernoulli
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+import Mathlib.Algebra.Order.Algebra
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Order.Ring.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Quadratic-denominator reciprocal-power tails

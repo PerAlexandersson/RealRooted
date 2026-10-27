@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Favard.PathEnvelope
 public import RealRooted.CombinatorialExamples.BigDescents321.Reference
+public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
 
 /-!
 # The backward recurrence at the zeros of `G_k`

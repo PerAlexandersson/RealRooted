@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.DerivativeRecurrence.Interlacing
-public import RealRooted.SameDegreeDerivative
-public import RealRooted.WagnerRightSum.Sign
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.SameDegreeDerivative
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Root windows for derivative recurrences

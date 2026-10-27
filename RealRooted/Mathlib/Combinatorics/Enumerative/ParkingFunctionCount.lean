@@ -6,9 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.Group.Fin.Basic
-public import Mathlib.Data.Finset.Max
-public import Mathlib.Data.Fintype.BigOperators
+import Mathlib.Algebra.Group.Fin.Basic
+import Mathlib.Data.Finset.Max
+import Mathlib.Data.Fintype.BigOperators
 public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
 
 /-!

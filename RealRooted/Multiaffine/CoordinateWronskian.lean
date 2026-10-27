@@ -1,10 +1,13 @@
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
 public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 public import RealRooted.Multiaffine.Rayleigh
 import Mathlib.Tactic.LinearCombination
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.QuadraticDiscriminant
 
 /-!
 # Coordinate Wronskians of multivariate polynomials

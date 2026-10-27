@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Global forward Wronskian bridge

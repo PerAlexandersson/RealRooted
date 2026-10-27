@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Graph.IndependencePolynomial.CubicParent
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Three rows from the cubic parent

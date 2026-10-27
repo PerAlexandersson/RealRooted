@@ -3,8 +3,9 @@ module
 public import RealRooted.RootContinuity
 public import Mathlib.Analysis.Complex.Norm
 public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Continuity bridge for positive combinations

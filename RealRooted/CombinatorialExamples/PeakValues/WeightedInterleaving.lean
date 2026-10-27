@@ -1,7 +1,14 @@
 module
 
-public import RealRooted.CombinatorialExamples.PeakValues.Stability
-public import RealRooted.SamePhaseInterlacing
+import RealRooted.CombinatorialExamples.PeakValues.Stability
+import RealRooted.SamePhaseInterlacing
+import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+import RealRooted.SamePhaseStability.Nonnegative
+public import RealRooted.SamePhaseStability
+public import RealRooted.Multiaffine
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Weighted interleaving of peak-value polynomials

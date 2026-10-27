@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import RealRooted.Combinatorics.ForcedSteps
+import RealRooted.Combinatorics.ForcedSteps
 public import RealRooted.Combinatorics.SortingFixedPoints
 
 /-!

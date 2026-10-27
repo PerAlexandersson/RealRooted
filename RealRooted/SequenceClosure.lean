@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropReversal
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Sequence closure theorems

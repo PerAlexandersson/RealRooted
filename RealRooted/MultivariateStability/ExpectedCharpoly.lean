@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.MultivariateStability.MixedCharacteristic
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Expected characteristic polynomials of rank-one sums

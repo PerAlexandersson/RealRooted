@@ -7,6 +7,9 @@ public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
 public import RealRooted.Derivative.RootCounting
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 @[expose] public section
 

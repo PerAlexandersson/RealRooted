@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BinaryRunTransformation.Coefficients
 public import RealRooted.HermiteBiehler.StablePencil
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Critical values in the binary-run deformation

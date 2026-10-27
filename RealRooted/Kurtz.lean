@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.Basic
 public import RealRooted.MaWang
+import RealRooted.MaWang.StrictSigns.Assembly
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Hutchinson--Kurtz coefficient criterion

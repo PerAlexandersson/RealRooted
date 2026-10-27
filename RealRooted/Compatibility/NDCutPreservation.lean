@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Compatibility.NDCutStateClosure
-public import RealRooted.Compatibility.NDCutThresholdClosure
+import RealRooted.Compatibility.NDCutStateClosure
+import RealRooted.Compatibility.NDCutThresholdClosure
+public import RealRooted.Compatibility.NDCutInvariant
 
 /-!
 # Preservation of the structural N/D cut invariant

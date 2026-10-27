@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
+import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
 public import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
 public import Mathlib.Data.Nat.Fib.Basic
-public import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.NatFib
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 
 /-!
 # Recurrences for the bottom kernel moments

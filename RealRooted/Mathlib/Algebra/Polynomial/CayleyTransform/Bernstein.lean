@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 
 /-!
 # Bernstein expansion through the finite-degree Cayley transform

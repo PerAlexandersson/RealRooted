@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Polynomial.MahlerMeasure
+import Mathlib.Analysis.Polynomial.MahlerMeasure
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Coefficient bounds from the Mahler measure

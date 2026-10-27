@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Data.List.SplitBy
+import Mathlib.Data.List.SplitBy
 public import Mathlib.Data.List.Infix
 
 /-!

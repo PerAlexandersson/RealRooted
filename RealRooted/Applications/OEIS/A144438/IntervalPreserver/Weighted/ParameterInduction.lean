@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTheorem
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTheorem
+import RealRooted.Interlacing.OuterDifference
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.DiagonalInduction
 
 /-!
 # Induction over unequal input-root parameters

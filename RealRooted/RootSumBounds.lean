@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Polynomial.Splits

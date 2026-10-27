@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.TotallyNonnegInterlacing
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
+import RealRooted.TotallyNonnegInterlacing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Singular and reducible principal-interlacing examples

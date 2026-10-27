@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.EulerianCompletion
+public import RealRooted.EulerianMixedCompatibility.Insertion
 
 /-!
 # The deletion-stable family

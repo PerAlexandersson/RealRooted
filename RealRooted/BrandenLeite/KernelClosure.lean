@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.BrandenLeite.DiagonalTail
-public import RealRooted.Hadamard.Grace
-public import RealRooted.PFPolynomial.Closure
+import RealRooted.BrandenLeite.DiagonalTail
+import RealRooted.Hadamard.Grace
+import RealRooted.PFPolynomial.Closure
 public import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.BrandenLeite.SourceBorderKernel
+import RealRooted.WagnerX.ListInterlacing
 
 /-!
 # Coefficient limits of finite kernel rows

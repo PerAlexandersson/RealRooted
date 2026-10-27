@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Ordered deleted-column Plücker identity

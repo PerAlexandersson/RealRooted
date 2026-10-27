@@ -1,10 +1,11 @@
 module
 
 public import RealRooted.JacobiDeformation.RootGeometry
-public import RealRooted.Derivative.SimpleRoots
+import RealRooted.Derivative.SimpleRoots
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
+public import RealRooted.SimpleRoots
 
 /-!
 # The Jacobi image product

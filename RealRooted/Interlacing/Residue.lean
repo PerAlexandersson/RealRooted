@@ -1,10 +1,15 @@
 module
 
 public import RealRooted.Derivative
-public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
 public import RealRooted.WagnerX.AffineFactors
-public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.LinearAlgebra.Lagrange
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Lagrange residues for interlacing polynomials

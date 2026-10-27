@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.RootCounting.Finite
+import RealRooted.RootCounting.Finite
 public import RealRooted.RootCounting.Threshold.Basic
 
 /-!

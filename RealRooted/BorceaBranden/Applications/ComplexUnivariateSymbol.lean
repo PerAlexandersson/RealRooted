@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.UnivariateSymbol
+import RealRooted.BorceaBranden.FiniteSymbolBasis
 
 /-!
 # Complex univariate finite algebraic symbols

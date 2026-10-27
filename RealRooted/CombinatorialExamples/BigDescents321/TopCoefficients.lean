@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.Functionals
+import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
 
 /-!
 # The top coordinates of `R_n`

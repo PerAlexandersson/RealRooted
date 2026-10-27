@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.Derivative
-public import RealRooted.BasisTransform
+import RealRooted.BasisTransform
 public import RealRooted.Transforms.BrandenE.Basic
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Algebra
 
 /-!
 # Binomial-basis images under Brändén's E transform

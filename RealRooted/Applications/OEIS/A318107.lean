@@ -1,8 +1,14 @@
 module
 
-public import RealRooted.EulerOperator.Polar.Pencil
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Wagner.LeftSum
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Derivative.Interlacing
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
+import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # OEIS A318107

@@ -1,12 +1,17 @@
 module
 
-public import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
+import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
 public import RealRooted.CommonInterleaverTwo
-public import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
-public import RealRooted.LiuOppositeSigns.RootCountClosure
-public import RealRooted.LiuOppositeSigns.FactorReturnAssembly
+import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
+import RealRooted.LiuOppositeSigns.RootCountClosure
+import RealRooted.LiuOppositeSigns.FactorReturnAssembly
 public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
 public import RealRooted.ObreschkoffConverse
+public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.CubicDiscriminant
+import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.AllCombo
 
 /-!
 # Liu opposite-sign compatibility theorem

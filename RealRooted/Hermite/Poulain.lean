@@ -2,7 +2,8 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.Derivative
-public import RealRooted.Derivative.LinearCombination
+import RealRooted.Derivative.LinearCombination
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Hermite--Poulain differential operators

@@ -7,8 +7,11 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 public import Mathlib.Combinatorics.Quiver.Path
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 
 /-!
 # Irreducible nonnegative matrices

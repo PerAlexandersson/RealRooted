@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.MultivariateStability.BarrierCross
+import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Convex.Deriv
+import Mathlib.Topology.Perfect
+import RealRooted.MultivariateStability.BarrierCross
+import RealRooted.MultivariateStability.PickRatio
+public import RealRooted.MultivariateStability.Barrier
 
 /-!
 # The MSS barrier update lemma

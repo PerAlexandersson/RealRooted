@@ -1,11 +1,14 @@
 module
 
 public import RealRooted.ObreschkoffConverse
-public import RealRooted.SequenceClosure
-public import RealRooted.WagnerX.NonnegativeRoots
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.SequenceClosure
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Reverse
 public import Mathlib.Tactic
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.AffineDerivative
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Generalized Eulerian polynomials

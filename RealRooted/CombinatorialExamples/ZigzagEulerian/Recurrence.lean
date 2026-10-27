@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
 
 /-!
 # The first-maximum recurrence as a definition

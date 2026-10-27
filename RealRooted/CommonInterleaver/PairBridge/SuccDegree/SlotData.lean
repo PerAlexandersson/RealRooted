@@ -1,6 +1,16 @@
 module
 
 public import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.CommonInterleaver.SuccDegreeEndpoint
+import RealRooted.RootCountJump
+import RealRooted.Compatibility.Basic
+import RealRooted.AffineFamily.Boundary
+import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.CommonInterleaverSeq
+public import RealRooted.ObreschkoffContinuity
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Succ-degree case of the two-polynomial common-interleaver theorem

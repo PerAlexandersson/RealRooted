@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.Theorem37
 public import RealRooted.PFPolynomial
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+import RealRooted.Linear
 
 /-!
 # Chain polynomials of positive constant-diagonal matrices

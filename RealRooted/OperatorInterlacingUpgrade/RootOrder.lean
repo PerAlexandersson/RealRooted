@@ -1,13 +1,17 @@
 module
 
-public import RealRooted.MaWang.Strong
+import RealRooted.MaWang.Strong
 public import RealRooted.OrderedRoots
-public import RealRooted.ObreschkoffConverse.Converse
-public import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.Forward
 public import RealRooted.AllCombo
-public import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.OperatorInterlacingUpgrade
 public import RealRooted.FiniteFreeRootCount
-public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Root-order preservation for monomial-chain operators

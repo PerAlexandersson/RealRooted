@@ -4,7 +4,11 @@ public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Order.BigOperators.Group.List
 public import Mathlib.Algebra.Order.BigOperators.Group.Multiset
 public import Mathlib.Basic.Real.Basic
-public import RealRooted.RootContinuity
+import RealRooted.RootContinuity
+import RealRooted.RootCountFinite
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Local constancy of threshold root counts

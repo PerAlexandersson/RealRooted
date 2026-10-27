@@ -1,16 +1,16 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Ring.Parity
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Convex.Combination
 public import Mathlib.Analysis.Normed.Module.Convex
 public import Mathlib.RingTheory.Polynomial.Vieta
 public import Mathlib.Tactic
 public import Mathlib.Topology.MetricSpace.Basic
-public import RealRooted.Mathlib.Data.Nat.Cast.Basic
-public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Finite apolarity

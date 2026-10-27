@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 
 /-!
 # The heat flow preserves real-rootedness

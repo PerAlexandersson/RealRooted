@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.Graph.AcyclicOrientation
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import Mathlib.Data.Fintype.Sort
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
 
 /-!
 # Acyclic sink polynomials of chordal claw-free graphs

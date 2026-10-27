@@ -1,12 +1,21 @@
 module
 
 public import RealRooted.MaWang
-public import RealRooted.Linear
-public import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.Linear
+import RealRooted.NarayanaTransformation.Recurrences.Identities
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
 public import Mathlib.Tactic
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.Tactic.Recurrence.LinRec
+import RealRooted.DerivativeRecurrence.General
+import RealRooted.Tactic.WagnerX.Frontend
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
 
 /-!
 # Narayana Polynomials

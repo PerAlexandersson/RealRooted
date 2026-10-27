@@ -2,7 +2,8 @@ module
 
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 
 /-!
 # The Bernstein cone of an interval-rooted polynomial

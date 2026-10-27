@@ -1,12 +1,16 @@
 module
 
 public import RealRooted.MaWang
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.CombinatorialExamples.Common
-public import RealRooted.Interlacing.NegativeRoots
+import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.Mathlib.Data.Nat.Choose.Cast
 public import Mathlib.Data.Nat.Choose.Basic
 public import Mathlib.Tactic
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.MaWang.Strong
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # A Liu--Wang benchmark family

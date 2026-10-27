@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.PoissonStar
-public import RealRooted.Hyperbolicity
+import RealRooted.Hyperbolicity
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 
 /-!
 # Stability of Poisson left multiplication

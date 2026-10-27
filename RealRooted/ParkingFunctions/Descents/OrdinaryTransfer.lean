@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-public import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
+import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
 public import RealRooted.ParkingFunctions.Descents.PollakTransfer
+public import RealRooted.ParkingFunctions.Descents.Literal
 
 /-!
 # Integral ordinary parking-function transfer

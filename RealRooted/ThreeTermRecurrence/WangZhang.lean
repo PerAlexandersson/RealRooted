@@ -1,8 +1,8 @@
 module
 
 public import Mathlib
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-public import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 
 /-!
 # Wang–Zhang's affine three-term recurrence

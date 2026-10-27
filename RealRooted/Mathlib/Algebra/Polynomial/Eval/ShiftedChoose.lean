@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Degree.Operations
+import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Polynomials determined by shifted binomial sums

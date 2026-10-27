@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-public import RealRooted.BoundarySpecializationGeneral
+import RealRooted.BoundarySpecializationGeneral
 public import RealRooted.HermiteBiehler.Basic
 
 /-!

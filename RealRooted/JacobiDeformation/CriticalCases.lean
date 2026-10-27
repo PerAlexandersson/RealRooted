@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.JacobiDeformation.CriticalKernelSign
+import RealRooted.JacobiDeformation.CriticalKernelSign
 public import RealRooted.JacobiDeformation.ImageProduct
-public import RealRooted.JacobiDeformation.JacobiLowering
+import RealRooted.JacobiDeformation.JacobiLowering
 public import RealRooted.JacobiDeformation.KernelExpansion
+import RealRooted.Jacobi
+import RealRooted.IteratedDerivativeShift
 
 /-!
 # Strict signs at the critical points of the delta-zero deformation

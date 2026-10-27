@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Combinatorics.ComparisonBottom
-public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Comparison-bottom monomials under minimum insertion

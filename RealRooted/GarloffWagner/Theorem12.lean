@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.GarloffWagner.KreinData
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
 
 public section
 

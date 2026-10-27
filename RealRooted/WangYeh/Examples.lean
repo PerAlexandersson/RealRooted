@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.WangYeh.TriangularMatrix
+import RealRooted.WangYeh.TriangularMatrix
 public import Mathlib.Data.Nat.Choose.Basic
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Wang--Yeh recurrence examples

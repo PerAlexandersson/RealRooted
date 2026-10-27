@@ -2,6 +2,10 @@ module
 
 public import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.VeroneseMatrix
+public import RealRooted.StaircaseSum
+import RealRooted.AffineProperPosition
+import RealRooted.AffineFamily
+import RealRooted.Linear
 
 @[expose] public section
 

@@ -1,11 +1,11 @@
 module
 
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import RealRooted.MultiplierSequence
 public import Mathlib.Analysis.Analytic.OfScalars
-public import Mathlib.Analysis.Normed.Group.Tannery
-public import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
+import Mathlib.Analysis.Normed.Group.Tannery
+import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 
 /-!
 # Rescaled Jensen limits

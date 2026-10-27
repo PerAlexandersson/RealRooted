@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.Weighted
-public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
+import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
+public import RealRooted.PFPolynomial
 
 /-!
 # Pólya-frequency packaging for the A144438 recurrence

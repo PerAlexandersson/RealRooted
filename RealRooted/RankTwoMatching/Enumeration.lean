@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.RankTwoMatching.DisjointEquiv
+public import RealRooted.RankTwoMatching.Model
 
 @[expose] public section
 

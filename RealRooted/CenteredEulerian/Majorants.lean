@@ -6,10 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.RingTheory.PowerSeries.Basic
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Elementary majorant estimates for partial sums of power series

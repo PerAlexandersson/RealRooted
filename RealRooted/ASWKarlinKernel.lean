@@ -4,9 +4,11 @@ public import RealRooted.ASWKarlinMatrix
 public import RealRooted.ASWKarlinThreshold
 public import RealRooted.ASWKarlinVariation
 public import RealRooted.ASWKarlinVectors
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+import RealRooted.ASWKarlinSineBounds
+import RealRooted.Basic.Coefficients
 
 /-!
 # Complex-root kernel vectors for Karlin's matrix

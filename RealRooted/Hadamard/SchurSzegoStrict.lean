@@ -1,15 +1,19 @@
 module
 
-public import RealRooted.CriticalValueContinuation
+import RealRooted.CriticalValueContinuation
 public import RealRooted.EulerOperator
-public import RealRooted.Hadamard.SchurSzegoSigns
+import RealRooted.Hadamard.SchurSzegoSigns
 public import RealRooted.Interlacing.OuterDifference
 public import RealRooted.IteratedDerivativeShift
 public import RealRooted.MaWang.Strong
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.SimpleRoots
-public import RealRooted.Wronskian.Forward
-public import RealRooted.Wronskian.WeakForward
+import RealRooted.Wronskian.Forward
+import RealRooted.Wronskian.WeakForward
+public import RealRooted.Hadamard.Basic
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.Regularization
 
 /-!
 # Strict interlacing under Schur--Szegő composition with a negative-root multiplier

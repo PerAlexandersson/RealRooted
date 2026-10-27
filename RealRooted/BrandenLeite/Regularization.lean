@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial
-public import RealRooted.PFPolynomial
-public import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.PFPolynomial
+import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.NatCauchyConvolution
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Finite binomial regularization of PF sequences

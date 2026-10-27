@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.HomogeneousStability
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import RealRooted.HomogeneousStability
 public import RealRooted.Applications.OEIS.A144438.ExceptionalHistory
 public import RealRooted.Multiaffine.AffineEulerCore
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import RealRooted.LiebSokalPointwise
+public import RealRooted.MultivariateStability
 
 /-!
 # Exact stable layers for the deco construction

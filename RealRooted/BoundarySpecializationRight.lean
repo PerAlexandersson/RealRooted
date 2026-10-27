@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.BorceaBranden.BoundarySpecialization
+import RealRooted.BorceaBranden.BoundarySpecialization
+import RealRooted.LiebSokalPointwise
+public import RealRooted.MultivariateStability
 
 /-!
 # Boundary specialization with unrestricted spectator variables

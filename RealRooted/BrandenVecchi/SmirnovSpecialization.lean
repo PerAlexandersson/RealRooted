@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowSignedWords
+import RealRooted.BrandenVecchi.ChowSignedWords
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.BrandenVecchi.SignedWordEnumerator
+import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
 
 /-!
 # Positive specialization of finite signed words

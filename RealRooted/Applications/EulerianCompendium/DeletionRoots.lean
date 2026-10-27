@@ -1,8 +1,14 @@
 module
 
 public import RealRooted.Applications.EulerianCompendium.DeletionFamily
-public import RealRooted.Compatibility.Three
-public import RealRooted.EulerianMixedCompatibility
+import RealRooted.Compatibility.Three
+import RealRooted.EulerianMixedCompatibility
+import RealRooted.EulerianCompletion
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.Compatibility.Basic
+public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Real-rootedness of the deletion-stable family

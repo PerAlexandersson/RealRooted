@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ContactCalculus
+import RealRooted.CriticalValueContinuation
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
 
 /-!
 # Continuity of the weighted unequal-parameter family

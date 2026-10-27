@@ -3,6 +3,7 @@ module
 public import RealRooted.Applications.OEIS.A144438.ExactLayer
 public import RealRooted.Applications.OEIS.A144438.HistoryExtension
 public import RealRooted.Combinatorics.ComparisonBottomInsertion
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Polynomial recurrences for Deco history fibers

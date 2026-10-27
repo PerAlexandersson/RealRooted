@@ -1,6 +1,11 @@
 module
 
 public import RealRooted.MaWang.Weak.Regularization
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.MaWang.CountBounds
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.GammaPencil.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Coefficient and degree invariants of the gamma pencil

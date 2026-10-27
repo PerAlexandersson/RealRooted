@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.GarloffWagner.Theorem12
-public import RealRooted.PFPolynomial.LinearFactor
+import RealRooted.GarloffWagner.Theorem12
+import RealRooted.PFPolynomial.LinearFactor
 public import RealRooted.Transforms.ReverseHermite.Basic
+import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.PFPolynomial
+public import RealRooted.WeightedSum
 
 /-!
 # PF and interlacing preservation for the reverse-Hermite transform

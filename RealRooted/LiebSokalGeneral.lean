@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
-public import RealRooted.DifferentialBlocks
-public import RealRooted.ElementaryDifferential
-public import RealRooted.LiebSokal
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.DifferentialBlocks
+import RealRooted.ElementaryDifferential
+import RealRooted.LiebSokal
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability
 
 /-!
 # The general Lieb--Sokal theorem

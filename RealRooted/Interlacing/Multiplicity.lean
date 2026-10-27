@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing and root multiplicities

@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
-public import RealRooted.FiniteFreeAdditive.Preservation
-public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+import RealRooted.FiniteFreeAdditive.Preservation
+import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 
 /-!
 # Half-integer additive convolution root preservation

@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Applications.OEIS.A056939
-public import RealRooted.Interlacing.Euclid
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Applications.OEIS.A056939
+import RealRooted.Interlacing.Euclid
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.LinearPowerFamily
+import RealRooted.WagnerX.AffineFactors
+public import RealRooted.Basic.ProperPosition
 
 @[expose] public section
 

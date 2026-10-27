@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
-public import RealRooted.MaWang.Strong
-public import RealRooted.Wronskian.Forward
+import RealRooted.MaWang.Strong
+import RealRooted.Wronskian.Forward
 
 /-!
 # Comparison lemma for Jacobi–Stirling insertions

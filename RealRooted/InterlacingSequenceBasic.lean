@@ -3,6 +3,8 @@ module
 public import RealRooted.Basic
 public import RealRooted.Linear
 public import RealRooted.WagnerX
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing sequences and matrices preserving them

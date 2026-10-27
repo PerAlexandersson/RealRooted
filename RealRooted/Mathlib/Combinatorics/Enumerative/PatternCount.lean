@@ -7,6 +7,8 @@ module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
+import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Data.List.Sublists
 
 /-!
 # Pattern occurrences as a statistic

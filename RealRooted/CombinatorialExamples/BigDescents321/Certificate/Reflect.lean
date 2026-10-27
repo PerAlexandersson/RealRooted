@@ -1,7 +1,8 @@
 module
 
 public import Mathlib.Algebra.Ring.GrindInstances
-public import Mathlib.Algebra.Order.Ring.Cast
+import Mathlib.Algebra.Order.Ring.Cast
+public import Mathlib.Algebra.Order.Ring.Defs
 
 /-!
 # A reflected checker for large polynomial identities

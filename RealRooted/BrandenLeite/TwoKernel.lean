@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.BrandenLeite.KernelClosure
+import RealRooted.BrandenLeite.KernelClosure
 public import RealRooted.BrandenLeite.TwoKernelAlgebra
-public import RealRooted.BrandenLeite.ZeroConstant
+import RealRooted.BrandenLeite.ZeroConstant
+public import RealRooted.PFPolynomial
 
 /-!
 # The two-kernel PF and interlacing theorem

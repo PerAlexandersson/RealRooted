@@ -6,7 +6,10 @@ public import RealRooted.MatrixInterlacing.Converse
 public import RealRooted.MatrixInterlacing.AffinePair
 public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+import RealRooted.AffineProperPosition
+import RealRooted.AffineFamily
+import RealRooted.Linear
 
 /-!
 # Matrix preservation of interlacing sequences

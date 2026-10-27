@@ -1,13 +1,15 @@
 module
 
 public import RealRooted.BinaryRunTransformation.Deformation
-public import RealRooted.CriticalValueContinuation
-public import RealRooted.DegreeDropReversal
-public import RealRooted.Favard
-public import RealRooted.Hadamard.Grace
-public import RealRooted.IteratedDerivativeShift
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.CriticalValueContinuation
+import RealRooted.DegreeDropReversal
+import RealRooted.Favard
+import RealRooted.Hadamard.Grace
+import RealRooted.IteratedDerivativeShift
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import RealRooted.SimpleRoots
+public import RealRooted.Hadamard.Basic
+public import RealRooted.Favard.Recurrence
 
 /-!
 # The small-scale anchor of the binary-run deformation

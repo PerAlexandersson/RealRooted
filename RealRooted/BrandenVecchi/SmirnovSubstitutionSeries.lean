@@ -1,8 +1,9 @@
 module
 
+import Mathlib.Data.List.ChainOfFn
 public import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
 public import RealRooted.BrandenVecchi.SmirnovChow
-public import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 public import Mathlib.RingTheory.PowerSeries.Order
 public import Mathlib.RingTheory.PowerSeries.PiTopology
 

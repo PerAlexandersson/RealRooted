@@ -5,10 +5,15 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Combinatorics.Matroid.Init
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Closed spectral conditions pass to matrix limits

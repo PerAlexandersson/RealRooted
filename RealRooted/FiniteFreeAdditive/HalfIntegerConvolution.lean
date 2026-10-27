@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.FiniteFreeAdditive.HalfInteger
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Generalized half-integer additive convolution

@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
-public import RealRooted.IntervalDifferential.Degree
+import RealRooted.IntervalDifferential.Degree
 
 /-!
 # Degree of the finite centered zig-zag quotient

@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Algebra.Order.Antidiag.Pi
 public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Iterated derivatives of products of powers of linear factors

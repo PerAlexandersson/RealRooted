@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.AffineFamily
+import RealRooted.AffineFamily
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing for affine polynomials

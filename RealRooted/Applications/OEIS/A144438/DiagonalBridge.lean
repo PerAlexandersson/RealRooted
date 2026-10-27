@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438
-public import RealRooted.Applications.OEIS.A144438.TotalBridge
-public import RealRooted.MultivariateStability.Diagonal
+import RealRooted.Applications.OEIS.A144438.TotalBridge
+import RealRooted.MultivariateStability.Diagonal
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
 
 /-!
 # Diagonal bridge for the Deco total

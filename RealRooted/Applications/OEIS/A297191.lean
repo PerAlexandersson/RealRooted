@@ -6,8 +6,12 @@ public import RealRooted.SimpleRoots
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
-public import RealRooted.GammaTransform.TwoStep
-public import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.GammaTransform.TwoStep
+import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
+public import RealRooted.GammaTransform.Basic
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
 
 /-!
 # OEIS A297191

@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Laguerre.Roots
-public import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.Laguerre.Roots
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # The multiplier sequences `1 / (α)_k` and `1 / k!`

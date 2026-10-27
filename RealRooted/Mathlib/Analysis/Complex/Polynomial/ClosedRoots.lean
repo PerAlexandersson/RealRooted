@@ -7,7 +7,9 @@ module
 
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Multiset
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Closed conditions on roots of polynomial limits

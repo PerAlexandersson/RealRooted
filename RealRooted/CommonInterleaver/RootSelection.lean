@@ -2,7 +2,10 @@ module
 
 public import RealRooted.CommonInterleaver.FamilyUpgrade
 public import RealRooted.LiuOppositeSigns.RootCount
-public import RealRooted.WagnerRightSum.Sign
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.PosCombo
+public import RealRooted.WeightedSum
+import RealRooted.Linear
 
 /-!
 # Largest-root selection from a common left interlacer

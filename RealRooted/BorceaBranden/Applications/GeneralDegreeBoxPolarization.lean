@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+import RealRooted.BorceaBranden.FiniteSymbolPreserver
 public import RealRooted.Polarization
+import RealRooted.BorceaBranden.FiniteSymbolDegree
 
 /-!
 # Source diagonalization for a general degree box

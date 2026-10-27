@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.GammaTransform.RootMap
+public import RealRooted.Basic.RootLists
 
 /-!
 # Gamma-transform ordered roots

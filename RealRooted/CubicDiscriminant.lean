@@ -2,11 +2,11 @@ module
 
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Algebra.Polynomial.Div
-public import Mathlib.Algebra.Polynomial.SpecificDegree
+import Mathlib.Algebra.Polynomial.SpecificDegree
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Real.Sqrt
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 public import RealRooted.QuadraticRoot
 
 /-!

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Compatibility.NDCutPreservation
 public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
 
 /-!
 # Structural N/D preservation for the weak-left-peak recurrence

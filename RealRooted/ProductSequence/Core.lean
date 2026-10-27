@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.ProductSequence.Factors
-public import RealRooted.SequenceClosure
+import RealRooted.ProductSequence.Factors
+import RealRooted.SequenceClosure
+import RealRooted.Linear
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Finset.Defs
 
 /-!
 # Generic product-sequence recurrence shells

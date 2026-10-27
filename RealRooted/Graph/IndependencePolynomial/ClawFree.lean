@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
+import RealRooted.Compatibility.Three
+import RealRooted.Linear
 
 /-!
 # Claw-free independence polynomials

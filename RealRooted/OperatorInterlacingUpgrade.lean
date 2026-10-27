@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.GarloffWagner.Theorem12
-public import RealRooted.QuadraticInterlacingClosure
+import RealRooted.GarloffWagner.Theorem12
+import RealRooted.QuadraticInterlacingClosure
+import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.GarloffWagner.KreinData
+import RealRooted.PosCombo
 
 /-!
 # Oriented interlacing upgrades for linear maps

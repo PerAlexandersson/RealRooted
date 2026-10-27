@@ -2,9 +2,11 @@ module
 
 public import RealRooted.BrandenLeite.Regularization
 public import RealRooted.BrandenVecchi.ChowInfinitePF
-public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
-public import RealRooted.QuadraticRoot
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+import RealRooted.QuadraticRoot
+public import RealRooted.BrandenVecchi.SupersymmetricLimits
+public import RealRooted.BrandenVecchi.Chow
 
 /-!
 # Scalar and zero-prefix Chow data

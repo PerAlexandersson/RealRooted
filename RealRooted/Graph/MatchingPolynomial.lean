@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.Recurrence
+import RealRooted.Graph.IndependencePolynomial.Recurrence
 public import Mathlib.Combinatorics.SimpleGraph.LineGraph
 public import Mathlib.Combinatorics.SimpleGraph.Matching
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.ClawFree
 
 /-!
 # Matching-polynomial graph interface

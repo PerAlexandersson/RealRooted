@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.HermiteBiehler.StablePencil
-public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.OperatorInterlacingUpgrade.RootOrder
+public import RealRooted.PFPolynomial
 
 /-!
 # Monomial-chain operators preserve nonnegative stable pencils

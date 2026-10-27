@@ -3,10 +3,12 @@ module
 public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
 public import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
 public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
-public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 public import RealRooted.GeneralizedSnakePosets.SnakeBoard
-public import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.SnakeConstant
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 
 /-!
 # Generalized snake poset challenge entry point

@@ -5,7 +5,32 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+import Mathlib.RingTheory.Radical.NatInt
+import Mathlib.RingTheory.WittVector.IsPoly
+import Mathlib.NumberTheory.SelbergSieve
+import Mathlib.NumberTheory.LucasLehmer
+import Mathlib.NumberTheory.Height.Projectivization
+import Mathlib.NumberTheory.Height.NumberField
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.Geometry.Euclidean.Volume.Basic
+import Mathlib.Data.NNRat.Floor
+import Mathlib.Data.Finset.Functor
+import Mathlib.Combinatorics.Enumerative.DyckWord
+import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Algebra.Order.Interval.Basic
+import Mathlib.Algebra.Order.Floor.Semifield
+import Mathlib.Algebra.Order.Floor.Extended
+import Mathlib.Data.Nat.Choose.Multinomial
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Topology.Sheaves.Init
+import Std.Tactic.BVDecide.Normalize.Prop
+public import Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Coefficient extraction under locally uniform convergence of polynomials

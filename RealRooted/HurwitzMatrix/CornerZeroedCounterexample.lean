@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.HurwitzMatrix
+public import RealRooted.VeroneseSection
 
 /-!
 # A corner-zeroed Hurwitz-minor counterexample

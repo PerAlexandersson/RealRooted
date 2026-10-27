@@ -7,7 +7,7 @@ module
 
 public import RealRooted.AffineFamily
 public import RealRooted.CommonInterleaver.AffineBoundary
-public import RealRooted.CommonInterleaver.IntervalLemmas
+import RealRooted.CommonInterleaver.IntervalLemmas
 public import RealRooted.AllCombo
 public import RealRooted.CommonInterleaverSeq
 public import RealRooted.DegreeDropDivXPrec
@@ -16,6 +16,7 @@ public import RealRooted.PFPolynomial
 public import RealRooted.PosCombo
 public import RealRooted.RootContinuity
 public import RealRooted.SuccDegreeLeftEndpoint
+public import RealRooted.CommonInterleaver.RootSlots.Basic
 
 public section
 

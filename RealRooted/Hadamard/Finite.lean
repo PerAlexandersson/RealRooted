@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Hadamard.Basic
+import RealRooted.Linear
 
 public section
 

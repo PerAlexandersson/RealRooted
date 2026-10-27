@@ -2,10 +2,11 @@ module
 
 public import RealRooted.Gurvits.Univariate
 public import RealRooted.Gurvits.Capacity
-public import RealRooted.MultivariateStability.Specialization
-public import RealRooted.MultivariateStability.LinearForm
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.MultivariateStability.Specialization
+import RealRooted.MultivariateStability.LinearForm
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
 public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Gurvits' capacity inequality and the van der Waerden bound

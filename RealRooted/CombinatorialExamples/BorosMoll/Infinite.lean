@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.BrandenLC.Infinite
-public import RealRooted.CombinatorialExamples.BorosMoll
+import RealRooted.CombinatorialExamples.BorosMoll
+public import RealRooted.CombinatorialExamples.BorosMoll.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Infinite log-concavity of the Boros–Moll rows

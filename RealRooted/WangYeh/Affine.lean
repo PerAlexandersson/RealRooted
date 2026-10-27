@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.HermiteBiehler.Converse.RootGeometry
-public import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.HermiteBiehler.Converse.RootGeometry
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.HermiteBiehler.Forward
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The Wang--Yeh affine real-rootedness criterion

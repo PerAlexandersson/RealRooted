@@ -2,7 +2,11 @@ module
 
 public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 public import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+public import RealRooted.PFPolynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Linear
 
 /-!
 # Coefficient reversal for the A390883 toric contributions

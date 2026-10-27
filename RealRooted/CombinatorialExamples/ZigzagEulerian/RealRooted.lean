@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
-public import RealRooted.CenteredEulerian.ColumnBound
+import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
+import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
+import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
+import RealRooted.CenteredEulerian.ColumnBound
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
 
 /-!
 # Simple negative roots of the zig-zag Eulerian polynomials

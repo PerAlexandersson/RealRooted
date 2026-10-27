@@ -9,6 +9,13 @@ public import RealRooted.CenteredEulerian.EulerAnalytic
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
+public import RealRooted.CenteredEulerian.SeriesBasic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan
+import Mathlib.MeasureTheory.Covering.Besicovitch
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
+import Mathlib.Analysis.PSeries
+import Mathlib.Tactic.Positivity.Finset
 
 /-!
 # The Euler numbers: exact formula and estimates

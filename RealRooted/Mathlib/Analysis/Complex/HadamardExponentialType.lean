@@ -5,9 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 public import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
-public import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
+import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
 
 /-!
 # Hadamard factorization for entire functions of exponential type

@@ -1,10 +1,16 @@
 module
 
 public import RealRooted.Compatibility.InterleaverBridge
-public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 public import RealRooted.GammaRealRoots
-public import RealRooted.DegreeIncreasingLocalLowerCount
-public import RealRooted.SmallPositiveParameterCount
+import RealRooted.DegreeIncreasingLocalLowerCount
+import RealRooted.SmallPositiveParameterCount
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.Pair
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Succ-degree root counts along the closed segment

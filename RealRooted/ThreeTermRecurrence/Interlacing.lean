@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.MaWang
-public import RealRooted.Linear
+import RealRooted.Linear
+import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing for three-term recurrences

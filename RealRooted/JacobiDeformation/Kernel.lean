@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.JacobiDeformation.Pochhammer
 
 /-!
 # Finite Jacobi kernel weights and their Newton expansion

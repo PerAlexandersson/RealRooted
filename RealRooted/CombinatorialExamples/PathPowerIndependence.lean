@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.ClawFree
 
 /-!
 # Independence polynomials of powers of a path

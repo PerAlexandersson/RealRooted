@@ -5,17 +5,18 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.DegreeDropReversal
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.DegreeDropReversal
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-public import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
+import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
 public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Matrix.Order
-public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.Algebra.Ring.Parity
 
 /-!
 # Newton identities and the Hermite--Sylvester criterion

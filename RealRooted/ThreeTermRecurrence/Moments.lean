@@ -1,6 +1,14 @@
 module
 
-public import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
+import Mathlib.Algebra.Order.Field.Power
+import Mathlib.Data.EReal.Inv
+import Mathlib.Topology.MetricSpace.Bounded
+import Mathlib.Topology.Algebra.InfiniteSum.Order
+import Mathlib.Analysis.Normed.Field.Basic
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.Algebra.Polynomial.Derivative
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Mean and variance asymptotics for three-term polynomial recurrences

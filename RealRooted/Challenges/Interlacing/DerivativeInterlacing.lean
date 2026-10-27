@@ -3,9 +3,11 @@ module
 public import RealRooted.Derivative.FamilyClosure
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
 public import RealRooted.PolarDerivative
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.Derivative.RootCounting
-public import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Derivative interlacing challenge entry point

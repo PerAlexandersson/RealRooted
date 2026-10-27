@@ -6,6 +6,7 @@ public import Mathlib.Analysis.Calculus.LocalExtr.Rolle
 public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
+public import RealRooted.Basic.Coefficients
 
 public section
 

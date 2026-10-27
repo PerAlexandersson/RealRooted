@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.DerivativeRecurrence.RootWindow
-public import RealRooted.Basic.AffineInterlacing
-public import RealRooted.Interlacing.NegativeRoots
+import RealRooted.Basic.AffineInterlacing
+import RealRooted.Interlacing.NegativeRoots
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Endpoint root windows

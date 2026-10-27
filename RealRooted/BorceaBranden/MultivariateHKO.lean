@@ -1,11 +1,12 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-public import RealRooted.AffineLineRestriction
-public import RealRooted.HermiteBiehler.Converse.RootGeometry
-public import RealRooted.HermiteBiehler.StablePencil
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.AffineLineRestriction
+import RealRooted.HermiteBiehler.Converse.RootGeometry
+import RealRooted.HermiteBiehler.StablePencil
 public import RealRooted.MultivariateStability.AllCombo
-public import RealRooted.MultivariateStability.Specialization
+import RealRooted.MultivariateStability.Specialization
+import RealRooted.HermiteBiehler.ConverseLowDegree
 
 /-!
 # A multivariate stable-pencil implication

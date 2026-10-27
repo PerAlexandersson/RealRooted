@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ScalarBounds
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ScalarBounds
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-!

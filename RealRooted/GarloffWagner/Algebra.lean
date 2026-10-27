@@ -4,6 +4,7 @@ public import RealRooted.Hadamard.Product
 public import RealRooted.IteratedDerivativeShift
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.WeightedSum
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Garloff--Wagner factorial and differential algebra

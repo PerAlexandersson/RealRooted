@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Graph.MatchingPolynomial.Multivariate
-public import RealRooted.HeilmannLieb
+import RealRooted.HeilmannLieb
+public import RealRooted.PFPolynomial
 
 /-!
 # Multivariate-to-univariate Heilmann--Lieb specializations

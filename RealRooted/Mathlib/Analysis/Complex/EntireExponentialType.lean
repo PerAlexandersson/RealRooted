@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.BorelCaratheodory
-public import Mathlib.Analysis.Complex.HasPrimitives
-public import Mathlib.Analysis.Complex.Liouville
+import Mathlib.Analysis.Complex.BorelCaratheodory
+import Mathlib.Analysis.Complex.HasPrimitives
+import Mathlib.Analysis.Complex.Liouville
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # Entire functions of exponential type

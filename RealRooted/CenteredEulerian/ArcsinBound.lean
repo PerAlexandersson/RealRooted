@@ -6,8 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.Coefficients
-public import Mathlib.Analysis.SpecialFunctions.Sqrt
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.InverseDeriv
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
 
 /-!
 # Partial sums of the arcsine series at `s = 1` are at most `π/2`

@@ -1,9 +1,13 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
-public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
-public import RealRooted.RootCountJump
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.RootCountJump
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.Coefficients
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Liu root-count compatibility foundation

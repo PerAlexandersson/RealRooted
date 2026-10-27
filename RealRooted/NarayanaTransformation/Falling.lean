@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.NarayanaTransformation.Basis
+public import RealRooted.NarayanaTransformation.RootGeometry
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Falling-factorial inverse transform.

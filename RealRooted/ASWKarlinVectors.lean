@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.Real.Cardinality
+import Mathlib.Analysis.Real.Cardinality
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 public import Mathlib.Data.Set.Countable
 

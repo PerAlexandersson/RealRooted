@@ -2,6 +2,8 @@ module
 
 public import RealRooted.MatrixInterlacing
 public import RealRooted.MatrixInterlacing.Composition
+public import RealRooted.MatrixInterlacing.Converse
+import RealRooted.MatrixInterlacing.Preservation
 
 /-!
 # Matrix interlacing challenge entry point

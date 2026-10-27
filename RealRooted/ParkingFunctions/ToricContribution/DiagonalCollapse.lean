@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.EulerOperator.Shift
-public import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Diagonal collapse for the toric-contribution triangle

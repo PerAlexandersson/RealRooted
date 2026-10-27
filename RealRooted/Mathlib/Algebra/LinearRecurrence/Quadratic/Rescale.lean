@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 
 /-!
 # Rescaling quadratic recurrences
