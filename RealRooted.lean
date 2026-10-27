@@ -1875,3 +1875,5 @@ import RealRooted.Mesh.FiniteDifference
 import RealRooted.Mathlib.Algebra.Order.Ring.Lemmas
 import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.HermitePoulain
+import RealRooted.Mesh.DiscreteHermitePoulain
+import RealRooted.Mesh.DiscreteMultiplier
