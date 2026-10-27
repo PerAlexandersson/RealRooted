@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible

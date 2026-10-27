@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Permanent.MonotoneColumn
 
 /-!
@@ -125,7 +127,3 @@ fractional substitution yield the multivariate theorem.
 See [@HaglundOnoWagner1999; @BrandenHaglundVisontaiWagner2011].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.MonotoneColumnPermanent
-
-end RealRooted.Challenges.MonotoneColumnPermanent

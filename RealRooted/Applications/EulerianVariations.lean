@@ -1,5 +1,7 @@
-import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.TernaryRuns
+module
+
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
 
 /-!
 # Applications from the Eulerian variations paper

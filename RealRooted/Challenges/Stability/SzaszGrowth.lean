@@ -1,3 +1,5 @@
+module
+
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate

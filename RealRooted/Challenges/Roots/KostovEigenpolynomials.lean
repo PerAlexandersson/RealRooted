@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Hadamard.Kostov.Eigen
 import RealRooted.Hadamard.Kostov.Roots
 import RealRooted.Hadamard.Kostov.TwoStep
@@ -78,7 +80,3 @@ a compactness argument, Descartes' rule of signs, and a Wronskian argument.
 See [@Kostov2010].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.KostovEigenpolynomials
-
-end RealRooted.Challenges.KostovEigenpolynomials

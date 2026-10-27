@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CombinatorialExamples.PathPowerClique
 import RealRooted.Applications.OEIS.PathPowerRows
 
@@ -168,7 +170,3 @@ OEIS [A193636](https://oeis.org/A193636), [A109955](https://oeis.org/A109955),
 [A116089](https://oeis.org/A116089), and [A277627](https://oeis.org/A277627).
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.PathPowerCliques
-
-end RealRooted.Challenges.PathPowerCliques
