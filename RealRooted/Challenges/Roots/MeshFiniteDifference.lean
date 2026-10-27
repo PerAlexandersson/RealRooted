@@ -1,0 +1,96 @@
+module
+
+import RealRooted.Mesh.Derivative
+import RealRooted.Mesh.DiscreteHermitePoulain
+import RealRooted.Mesh.DiscreteMultiplier
+
+/-!
+# Mesh and finite differences
+
+<!-- realrooted-catalog
+version = 1
+section = "theorems"
+slug = "mesh-finite-difference"
+formalized = "2026-10-27"
+authors = ["Brändén", "Krasikov", "Shapiro"]
+years = [2016]
+
+[[definitions]]
+name = "Polynomial.MeshGE"
+module = "RealRooted.Mesh.Basic"
+label = "Mesh at least α"
+
+[[definitions]]
+name = "RealRooted.meshDifference"
+module = "RealRooted.Mesh.FiniteDifference"
+label = "The finite difference p(x) − λ p(x − α)"
+
+[[definitions]]
+name = "RealRooted.finiteDifferenceOp"
+module = "RealRooted.Mesh.HermitePoulain"
+label = "The finite-difference operator with symbol Q"
+
+[[theorems]]
+name = "Polynomial.MeshGE.sub_C_mul_derivative"
+module = "RealRooted.Mesh.Derivative"
+label = "Riesz: subtracting c p′ does not decrease the mesh"
+
+[[theorems]]
+name = "RealRooted.meshDifference_meshGE"
+module = "RealRooted.Mesh.FiniteDifference"
+label = "Positive finite differences preserve mesh bounds at least their step"
+
+[[theorems]]
+name = "RealRooted.forall_finiteDifferenceOp_meshGE_iff"
+module = "RealRooted.Mesh.DiscreteHermitePoulain"
+label = "Discrete Hermite–Poulain theorem"
+headline = true
+
+[[theorems]]
+name = "RealRooted.meshGE_one_add_X_mul_meshDifference"
+module = "RealRooted.Mesh.DiscreteMultiplier"
+label = "The operator a p + b x (p(x) − p(x − 1)) preserves mesh at least one"
+-->
+
+<!-- realrooted-catalog-content -->
+# Mesh and finite differences
+
+For a real-rooted polynomial $p$, the *mesh* of $p$ is the smallest distance between
+consecutive roots, counted with multiplicity. We write $p \in \mathrm{Mesh}_{\geq \alpha}$
+(`Polynomial.MeshGE p α`) if $p$ is real-rooted and consecutive roots, listed increasingly
+with multiplicity, differ by at least $\alpha \geq 0$. The results below are from
+Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
+setting*, Proc. Amer. Math. Soc. 144 (2016).
+
+**Theorem 1 (Riesz).** If $p \in \mathrm{Mesh}_{\geq \alpha}$ and $c \in \mathbb{R}$, then
+$p - c\,p' \in \mathrm{Mesh}_{\geq \alpha}$.
+
+**Theorem 2.** Let $\alpha, \lambda > 0$ and $\beta \geq \alpha$. If
+$p \in \mathrm{Mesh}_{\geq \beta}$, then the finite difference
+$p(x) - \lambda\, p(x - \alpha)$ lies in $\mathrm{Mesh}_{\geq \beta}$.
+
+**Theorem 3 (discrete Hermite–Poulain).** Let $\alpha > 0$ and let
+$Q(t) = \sum_{k} a_k t^k$ be a real polynomial. The operator
+$$p(x) \longmapsto \sum_k a_k\, p(x - k\alpha)$$
+maps $\mathrm{Mesh}_{\geq \alpha}$ into $\mathrm{Mesh}_{\geq \alpha}$ if and only if
+$Q$ is zero or has only real nonnegative zeros. Sufficiency holds for every mesh bound
+$\beta \geq \alpha$, and it is deduced from Theorem 2. The necessity proof was found by
+Aristotle (Harmonic).
+
+**Theorem 5.** If $a, b \geq 0$, $p \in \mathrm{Mesh}_{\geq 1}$, and $p$ has only
+nonnegative zeros, then
+$$a\,p(x) + b\,x\,\bigl(p(x) - p(x - 1)\bigr)$$
+lies in $\mathrm{Mesh}_{\geq 1}$ and has only nonnegative zeros.
+
+## References
+
+Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
+setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5. Theorem 1 is due to
+Riesz.
+<!-- /realrooted-catalog-content -->
+
+The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,
+`RealRooted.Mesh.FiniteDifference`, `RealRooted.Mesh.HermitePoulain` (sufficiency in
+Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence), and
+`RealRooted.Mesh.DiscreteMultiplier`.
+-/
