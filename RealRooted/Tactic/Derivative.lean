@@ -17,6 +17,8 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- A sequence of splitting polynomials of nonzero degree is pointwise interlaced by its
+derivative. -/
 theorem derivative_sequence_interlaces
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
@@ -24,11 +26,14 @@ theorem derivative_sequence_interlaces
     ∀ i : Nat, Interlaces (P i).derivative (P i) := fun i =>
   RealRooted.derivative_interlaces_of_natDegree_ne_zero (hsplits i) (hdeg i)
 
+/-- The derivative strictly interlaces a splitting polynomial of nonzero degree. -/
 theorem derivative_strictInterl {p : ℝ[X]}
     (hsplits : p.Splits) (hdeg : p.natDegree ≠ 0) :
     StrictInterl p.derivative p :=
   (RealRooted.derivative_interlaces_of_natDegree_ne_zero hsplits hdeg).toStrictInterl
 
+/-- A sequence of splitting polynomials of nonzero degree is pointwise strictly interlaced by
+its derivative. -/
 theorem derivative_sequence_strictInterl
     {P : Nat → ℝ[X]}
     (hsplits : ∀ i : Nat, (P i).Splits)
@@ -36,12 +41,16 @@ theorem derivative_sequence_strictInterl
     ∀ i : Nat, StrictInterl (P i).derivative (P i) := fun i =>
   RealRooted.Tactic.derivative_strictInterl (hsplits i) (hdeg i)
 
+/-- The derivatives of a sequence of polynomials with nonnegative coefficients also have
+nonnegative coefficients. -/
 theorem nonnegCoeffs_sequence_derivative
     {P : Nat → ℝ[X]}
     (hP : ∀ i : Nat, HasNonnegCoeffs (P i)) :
     ∀ i : Nat, HasNonnegCoeffs (P i).derivative := fun i =>
   RealRooted.HasNonnegCoeffs.derivative (hP i)
 
+/-- The derivatives of a sequence with positive leading coefficients and nonzero degrees have
+positive leading coefficients. -/
 theorem pos_lc_sequence_derivative
     {P : Nat → ℝ[X]}
     (hpos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -49,173 +58,12 @@ theorem pos_lc_sequence_derivative
     ∀ i : Nat, HasPosLeadingCoeff (P i).derivative := fun i =>
   RealRooted.HasPosLeadingCoeff.derivative (hpos i) (hdeg i)
 
+/-- The derivatives of a sequence of polynomials of nonzero degree are nonzero. -/
 theorem derivative_sequence_ne_zero
     {P : Nat → ℝ[X]}
     (hdeg : ∀ i : Nat, (P i).natDegree ≠ 0) :
     ∀ i : Nat, (P i).derivative ≠ 0 := fun i =>
   Polynomial.derivative_ne_zero.mpr (hdeg i)
-
-/-- Closes `Interlaces p.derivative p` from `splits : p.Splits` and
-`degree_ne_zero : p.natDegree ≠ 0`. -/
-syntax (name := rr_derivative_interlaces_named)
-  "rr_derivative_interlaces" " using "
-    "splits" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_derivative_interlaces`: the same certificate for every index `i`. -/
-syntax (name := rr_derivative_sequence_interlaces_named)
-  "rr_derivative_sequence_interlaces" " using "
-    "splits" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Variant of `rr_derivative_interlaces` that proves the degree side goal `degree_ne_zero` by
-`rr_close_side`; takes only `splits`. -/
-syntax (name := rr_derivative_interlaces_auto)
-  "rr_derivative_interlaces" " using "
-    "splits" ":=" term :
-  tactic
-
-/-- Closes `StrictInterl p.derivative p` from `splits : p.Splits` and
-`degree_ne_zero : p.natDegree ≠ 0`. -/
-syntax (name := rr_derivative_strict_interl_named)
-  "rr_derivative_strict_interl" " using "
-    "splits" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_derivative_strict_interl`: the same certificate for every index `i`. -/
-syntax (name := rr_derivative_sequence_strict_interl_named)
-  "rr_derivative_sequence_strict_interl" " using "
-    "splits" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Variant of `rr_derivative_strict_interl` that proves the degree side goal `degree_ne_zero`
-by `rr_close_side`; takes only `splits`. -/
-syntax (name := rr_derivative_strict_interl_auto)
-  "rr_derivative_strict_interl" " using "
-    "splits" ":=" term :
-  tactic
-
-/-- Closes `HasNonnegCoeffs p.derivative` from `nonneg_coeffs : HasNonnegCoeffs p`. -/
-syntax (name := rr_nonneg_coeffs_derivative_named)
-  "rr_nonneg_coeffs_derivative" " using "
-    "nonneg_coeffs" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_nonneg_coeffs_derivative`: the same certificate for every index `i`. -/
-syntax (name := rr_nonneg_coeffs_sequence_derivative_named)
-  "rr_nonneg_coeffs_sequence_derivative" " using "
-    "nonneg_coeffs" ":=" term :
-  tactic
-
-/-- Closes `HasPosLeadingCoeff p.derivative` from `pos_lc : HasPosLeadingCoeff p` and
-`degree_ne_zero : p.natDegree ≠ 0`. -/
-syntax (name := rr_pos_lc_derivative_named)
-  "rr_pos_lc_derivative" " using "
-    "pos_lc" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_pos_lc_derivative`: the same certificate for every index `i`. -/
-syntax (name := rr_pos_lc_sequence_derivative_named)
-  "rr_pos_lc_sequence_derivative" " using "
-    "pos_lc" ":=" term ","
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Variant of `rr_pos_lc_derivative` that proves the degree side goal `degree_ne_zero` by
-`rr_close_side`; takes only `pos_lc`. -/
-syntax (name := rr_pos_lc_derivative_auto)
-  "rr_pos_lc_derivative" " using "
-    "pos_lc" ":=" term :
-  tactic
-
-/-- Closes `p.derivative ≠ 0` from `degree_ne_zero : p.natDegree ≠ 0`. -/
-syntax (name := rr_derivative_ne_zero_named)
-  "rr_derivative_ne_zero" " using "
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_derivative_ne_zero`: the same certificate for every index `i`. -/
-syntax (name := rr_derivative_sequence_ne_zero_named)
-  "rr_derivative_sequence_ne_zero" " using "
-    "degree_ne_zero" ":=" term :
-  tactic
-
-/-- Variant of `rr_derivative_ne_zero` that proves the degree side goal `degree_ne_zero` by
-`rr_close_side`. -/
-syntax (name := rr_derivative_ne_zero_auto)
-  "rr_derivative_ne_zero" :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_derivative_interlaces using
-        splits := $hsplits:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.derivative_interlaces_of_natDegree_ne_zero $hsplits $hdeg)
-  | `(tactic|
-      rr_derivative_sequence_interlaces using
-        splits := $hsplits:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_sequence_interlaces $hsplits $hdeg)
-  | `(tactic|
-      rr_derivative_interlaces using
-        splits := $hsplits:term) =>
-      `(tactic|
-        exact RealRooted.derivative_interlaces_of_natDegree_ne_zero $hsplits (by rr_close_side))
-  | `(tactic|
-      rr_derivative_strict_interl using
-        splits := $hsplits:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_strictInterl $hsplits $hdeg)
-  | `(tactic|
-      rr_derivative_sequence_strict_interl using
-        splits := $hsplits:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_sequence_strictInterl $hsplits $hdeg)
-  | `(tactic|
-      rr_derivative_strict_interl using
-        splits := $hsplits:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.derivative_strictInterl $hsplits (by rr_close_side))
-  | `(tactic|
-      rr_nonneg_coeffs_derivative using
-        nonneg_coeffs := $hnn:term) =>
-      `(tactic| exact RealRooted.HasNonnegCoeffs.derivative $hnn)
-  | `(tactic|
-      rr_nonneg_coeffs_sequence_derivative using
-        nonneg_coeffs := $hnn:term) =>
-      `(tactic| exact RealRooted.Tactic.nonnegCoeffs_sequence_derivative $hnn)
-  | `(tactic|
-      rr_pos_lc_derivative using
-        pos_lc := $hpos:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.HasPosLeadingCoeff.derivative $hpos $hdeg)
-  | `(tactic|
-      rr_pos_lc_sequence_derivative using
-        pos_lc := $hpos:term,
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.pos_lc_sequence_derivative $hpos $hdeg)
-  | `(tactic|
-      rr_pos_lc_derivative using
-        pos_lc := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.HasPosLeadingCoeff.derivative $hpos (by rr_close_side))
-  | `(tactic|
-      rr_derivative_ne_zero using
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact Polynomial.derivative_ne_zero.mpr $hdeg)
-  | `(tactic|
-      rr_derivative_sequence_ne_zero using
-        degree_ne_zero := $hdeg:term) =>
-      `(tactic| exact RealRooted.Tactic.derivative_sequence_ne_zero $hdeg)
-  | `(tactic| rr_derivative_ne_zero) =>
-      `(tactic|
-        exact Polynomial.derivative_ne_zero.mpr (by rr_close_side))
 
 end Tactic
 end RealRooted

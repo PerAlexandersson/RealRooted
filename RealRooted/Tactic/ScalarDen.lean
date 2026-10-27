@@ -177,12 +177,6 @@ syntax (name := rr_scalar_exact_or_simpa_add_assoc)
   "rr_scalar_exact_or_simpa_add_assoc" term :
   tactic
 
-/-- Closes the goal by `exact h`, or else by `simpa using h` up to commutativity and associativity
-of addition and associativity of multiplication. -/
-syntax (name := rr_scalar_exact_or_simpa_add_mul_assoc)
-  "rr_scalar_exact_or_simpa_add_mul_assoc" term :
-  tactic
-
 macro_rules
   | `(rr_mw_active_den_at_term $n:term) =>
       `(by rr_mw_active_den_at $n)
@@ -198,13 +192,6 @@ macro_rules
           first
             | exact $h
             | simpa [add_comm, add_left_comm, add_assoc] using $h)
-  | `(tactic| rr_scalar_exact_or_simpa_add_mul_assoc $h:term) =>
-      `(tactic|
-        with_reducible_and_instances
-          first
-            | exact $h
-            | simpa [add_comm, add_left_comm, add_assoc, mul_assoc] using $h)
-
 macro_rules
   | `(tactic|
       rr_scalar_den_norm using

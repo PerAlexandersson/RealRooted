@@ -33,12 +33,8 @@ elab "rr_target_head_in" cs:(ppSpace ident)+ : tactic => withMainContext do
   unless f.isMVar || heads.any f.isConstOf do
     throwError "rr_target_head_in: the goal is not an application of {cs}"
 
-/-- The function `fun n => by simpa using hstep n`: a recurrence-step certificate for every
-`n` from `hstep`. -/
-syntax (name := rr_favard_step_seq) "rr_favard_step_seq " term : term
-
-/-- Variant of `rr_favard_step_seq` that unfolds with `dsimp` first and, if
-`simpa` fails, converts the goal to `hstep n` by `simp` and `ring_nf`. -/
+/-- The function `fun n => by ...` obtained from `hstep n` after unfolding with `dsimp`; if
+`simpa` fails, it converts the goal by `simp` and `ring_nf`. -/
 syntax (name := rr_favard_step_dsimp_seq) "rr_favard_step_dsimp_seq " term : term
 
 /-- The term `by simpa using hP1`: the base certificate for the second row from the hypothesis
@@ -56,8 +52,6 @@ syntax (name := rr_favard_base_lookup_term) "rr_favard_base_lookup_term" : term
 syntax (name := rr_favard_positive_lookup_term) "rr_favard_positive_lookup_term" : term
 
 macro_rules
-  | `(rr_favard_step_seq $hstep:term) =>
-      `(fun n => by simpa using $hstep n)
   | `(rr_favard_step_dsimp_seq $hstep:term) =>
       `(by
         intro n

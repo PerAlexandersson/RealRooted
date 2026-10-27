@@ -16,14 +16,18 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- At every index, the staircase sum at zero equals the ordinary list sum. -/
 theorem staircaseSum_sequence_zero {FS : Nat → List ℝ[X]} :
     ∀ i : Nat, staircaseSum (FS i) 0 = (FS i).sum := fun i =>
   RealRooted.staircaseSum_zero (FS i)
 
+/-- At every index, the staircase sum at the list length equals `X` times the ordinary sum. -/
 theorem staircaseSum_sequence_length {FS : Nat → List ℝ[X]} :
     ∀ i : Nat, staircaseSum (FS i) (FS i).length = X * (FS i).sum := fun i =>
   RealRooted.staircaseSum_length (FS i)
 
+/-- For pointwise nonnegative interlacing lists and valid indices `M i`, the selected entry
+strictly interlaces the corresponding staircase sum. -/
 theorem staircaseSum_sequence_strictInterl
     {FS : Nat → List ℝ[X]} {M : Nat → Nat}
     (hFS : ∀ i : Nat, IsInterlacingSeqNonneg (FS i))
@@ -33,6 +37,8 @@ theorem staircaseSum_sequence_strictInterl
     RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
       (hFS i) (hM i)
 
+/-- For pointwise nonnegative interlacing lists and valid indices `M i`, every corresponding
+staircase sum is nonzero and splits. -/
 theorem staircaseSum_sequence_realrooted
     {FS : Nat → List ℝ[X]} {M : Nat → Nat}
     (hFS : ∀ i : Nat, IsInterlacingSeqNonneg (FS i))
@@ -41,93 +47,6 @@ theorem staircaseSum_sequence_realrooted
       (staircaseSum (FS i) (M i)).Splits := fun i =>
   RealRooted.isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
     (hFS i) (hM i)
-
-/-- Closes `staircaseSum fs 0 = fs.sum`. -/
-syntax (name := rr_staircaseSum_zero_named)
-  "rr_staircaseSum_zero" :
-  tactic
-
-/-- Sequence form of `rr_staircaseSum_zero`: closes `∀ i, staircaseSum (FS i) 0 = (FS i).sum`. -/
-syntax (name := rr_staircaseSum_sequence_zero_named)
-  "rr_staircaseSum_sequence_zero" :
-  tactic
-
-/-- Closes `staircaseSum fs fs.length = X * fs.sum`. -/
-syntax (name := rr_staircaseSum_length_named)
-  "rr_staircaseSum_length" :
-  tactic
-
-/-- Sequence form of `rr_staircaseSum_length`: closes `∀ i, staircaseSum (FS i) (FS i).length =
-X * (FS i).sum`. -/
-syntax (name := rr_staircaseSum_sequence_length_named)
-  "rr_staircaseSum_sequence_length" :
-  tactic
-
-/-- Closes `StrictInterl (fs.get ⟨m, _⟩) (staircaseSum fs m)` from
-`interlacing_nonneg : IsInterlacingSeqNonneg fs` and `index_lt : m < fs.length`. -/
-syntax (name := rr_staircaseSum_strict_interl_named)
-  "rr_staircaseSum_strict_interl" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_staircaseSum_strict_interl`: the same certificate for every index `i`. -/
-syntax (name := rr_staircaseSum_sequence_strict_interl_named)
-  "rr_staircaseSum_sequence_strict_interl" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-/-- Closes `staircaseSum fs m ≠ 0 ∧ (staircaseSum fs m).Splits` from
-`interlacing_nonneg : IsInterlacingSeqNonneg fs` and `index_lt : m < fs.length`. -/
-syntax (name := rr_staircaseSum_realrooted_named)
-  "rr_staircaseSum_realrooted" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_staircaseSum_realrooted`: the same certificate for every index `i`. -/
-syntax (name := rr_staircaseSum_sequence_realrooted_named)
-  "rr_staircaseSum_sequence_realrooted" " using "
-    "interlacing_nonneg" ":=" term ","
-    "index_lt" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic| rr_staircaseSum_zero) =>
-      `(tactic| exact RealRooted.staircaseSum_zero _)
-  | `(tactic| rr_staircaseSum_sequence_zero) =>
-      `(tactic| exact RealRooted.Tactic.staircaseSum_sequence_zero)
-  | `(tactic| rr_staircaseSum_length) =>
-      `(tactic| exact RealRooted.staircaseSum_length _)
-  | `(tactic| rr_staircaseSum_sequence_length) =>
-      `(tactic| exact RealRooted.Tactic.staircaseSum_sequence_length)
-  | `(tactic|
-      rr_staircaseSum_strict_interl using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.strictInterl_get_staircaseSum_of_isInterlacingSeqNonneg
-          $hfs $hm)
-  | `(tactic|
-      rr_staircaseSum_sequence_strict_interl using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.staircaseSum_sequence_strictInterl $hfs $hm)
-  | `(tactic|
-      rr_staircaseSum_realrooted using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.isRealRooted_staircaseSum_of_isInterlacingSeqNonneg
-          $hfs $hm)
-  | `(tactic|
-      rr_staircaseSum_sequence_realrooted using
-        interlacing_nonneg := $hfs:term,
-        index_lt := $hm:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.staircaseSum_sequence_realrooted $hfs $hm)
 
 end Tactic
 end RealRooted
