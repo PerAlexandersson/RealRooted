@@ -1538,12 +1538,7 @@ import RealRooted.Tactic.Recurrence.Shape
 import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
-import RealRooted.Tactic.RootCount.CoreRules
-import RealRooted.Tactic.RootCount.CoreSyntax
 import RealRooted.Tactic.RootCount.LowDegree
-import RealRooted.Tactic.RootCount.LowDegreeRules
-import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag

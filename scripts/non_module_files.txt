@@ -138,7 +138,6 @@ RealRooted/Tactic/Examples/OEIS/DifferentialPreservers.lean
 RealRooted/Tactic/Examples/OEIS/Favard.lean
 RealRooted/Tactic/Examples/OEIS/GammaVeronese.lean
 RealRooted/Tactic/Examples/OEIS/LinearPower.lean
-RealRooted/Tactic/Examples/OEIS/LowDegreeRootCount.lean
 RealRooted/Tactic/Examples/OEIS/PolyaFrequency.lean
 RealRooted/Tactic/Examples/OEIS/PositiveCombinations.lean
 RealRooted/Tactic/Examples/OEIS/ScalarCoeff.lean
@@ -167,10 +166,6 @@ RealRooted/Tactic/Examples/Product/UnsupportedShape.lean
 RealRooted/Tactic/Examples/ReciprocalShift.lean
 RealRooted/Tactic/Examples/RecurrenceIdentification.lean
 RealRooted/Tactic/Examples/RootBounds.lean
-RealRooted/Tactic/Examples/RootCount.lean
-RealRooted/Tactic/Examples/RootCount/Core.lean
-RealRooted/Tactic/Examples/RootCount/Filters.lean
-RealRooted/Tactic/Examples/RootCount/LowDegree.lean
 RealRooted/Tactic/Examples/RowPathPowerK5.lean
 RealRooted/Tactic/Examples/ScalarDen.lean
 RealRooted/Tactic/Examples/SecondDerivative.lean
