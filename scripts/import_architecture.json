@@ -1719,12 +1719,6 @@
     "RealRooted.Tactic.Product.Syntax": {
       "max_modules": 41
     },
-    "RealRooted.Tactic.Product.Syntax.Basic": {
-      "max_modules": 37
-    },
-    "RealRooted.Tactic.Product.Syntax.EndpointPair": {
-      "max_modules": 37
-    },
     "RealRooted.Tactic.Product.Syntax.Families": {
       "max_modules": 37
     },
@@ -2172,8 +2166,6 @@
     "RealRooted.Tactic.MaWang.Denominator",
     "RealRooted.Tactic.MaWang.Factors",
     "RealRooted.Tactic.Product.Rules",
-    "RealRooted.Tactic.Product.Syntax.Basic",
-    "RealRooted.Tactic.Product.Syntax.EndpointPair",
     "RealRooted.Tactic.Product.Syntax.Families",
     "RealRooted.Tactic.Product.Syntax.Lifts",
     "RealRooted.Tactic.Product.Syntax",

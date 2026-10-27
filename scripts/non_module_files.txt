@@ -159,8 +159,6 @@ RealRooted/Tactic/Examples/PosCombo.lean
 RealRooted/Tactic/Examples/PreservingOperatorSequence.lean
 RealRooted/Tactic/Examples/Product.lean
 RealRooted/Tactic/Examples/Product/Basic.lean
-RealRooted/Tactic/Examples/Product/EndpointPair.lean
-RealRooted/Tactic/Examples/Product/Families.lean
 RealRooted/Tactic/Examples/Product/Lifts.lean
 RealRooted/Tactic/Examples/Product/UnsupportedShape.lean
 RealRooted/Tactic/Examples/ReciprocalShift.lean
