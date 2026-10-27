@@ -1808,6 +1808,8 @@ import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.HermitePoulain
 import RealRooted.Mesh.DiscreteHermitePoulain
 import RealRooted.Mesh.DiscreteMultiplier
+import RealRooted.Challenges.Roots.LimitsOfZeros
+import RealRooted.Challenges.Roots.MeshFiniteDifference
 
 /-!
 # RealRooted production umbrella
