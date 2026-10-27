@@ -8,6 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Sequence
 public import Mathlib.RingTheory.Polynomial.Pochhammer
 
+import Mathlib.Algebra.Polynomial.Eval.SMul
 import Mathlib.Tactic.Algebra.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
@@ -120,6 +121,39 @@ theorem exists_linearMap_descPochhammer {R : Type*} [CommRing R] [IsDomain R] (f
     ∃ T : R[X] →ₗ[R] R[X], ∀ i, T (descPochhammer R i) = f i :=
   ⟨(descPochhammerBasis R).constr R f, fun i => by
     simpa using (descPochhammerBasis R).constr_basis R f i⟩
+
+/-- The `0`-th falling-factorial coordinate of a polynomial is its value at `0`. -/
+theorem descPochhammerBasis_repr_zero {R : Type*} [CommRing R] [IsDomain R] (p : R[X]) :
+    (descPochhammerBasis R).repr p 0 = p.eval 0 := by
+  have e : ∀ k, descPochhammerBasis R k = descPochhammer R k := fun k =>
+    descPochhammerBasis_apply k
+  have h : (descPochhammerBasis R).coord 0 = Polynomial.leval (0 : R) := by
+    refine (descPochhammerBasis R).ext fun i => ?_
+    rw [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply, e i,
+      Polynomial.leval_apply, descPochhammer_eval_zero]
+  have := LinearMap.congr_fun h p
+  simpa using this
+
+/-- A polynomial has degree at most `n` iff its coordinates in the falling-factorial basis vanish
+above `n`. -/
+theorem natDegree_le_iff_repr_descPochhammerBasis {R : Type*} [CommRing R] [IsDomain R]
+    {p : R[X]} {n : ℕ} :
+    p.natDegree ≤ n ↔ ∀ k, n < k → (descPochhammerBasis R).repr p k = 0 := by
+  have hspan : Submodule.span R (descPochhammerBasis R '' Set.Iic n) = degreeLE R n := by
+    have := (descPochhammerSequence R).span_degreeLE (m := n) fun i _ => by
+      simp [descPochhammerSequence, (monic_descPochhammer (R := R) i).leadingCoeff]
+    rw [← this]
+    congr 2
+    ext i
+    simp [descPochhammerSequence]
+  rw [natDegree_le_iff_degree_le, ← mem_degreeLE, ← hspan, Module.Basis.mem_span_image]
+  constructor
+  · intro h k hk
+    by_contra hne
+    exact absurd (h (Finset.mem_coe.mpr (Finsupp.mem_support_iff.mpr hne))) (not_le.mpr hk)
+  · intro h k hk
+    by_contra hkn
+    exact (Finsupp.mem_support_iff.mp (Finset.mem_coe.mp hk)) (h k (not_le.mp hkn))
 
 end
 

@@ -4,6 +4,8 @@ import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.DiscreteHermitePoulain
 import RealRooted.Mesh.DiscreteMultiplier
 import RealRooted.Mesh.DiscreteMultiplierSequence
+import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
+import RealRooted.Mesh.FallingFactorial
 
 /-!
 # Mesh and finite differences
@@ -66,6 +68,36 @@ label = "φ(0), φ(1), … is a discrete multiplier sequence for φ with nonposi
 name = "RealRooted.IsDiscreteMultiplierSequence.le_succ"
 module = "RealRooted.Mesh.DiscreteMultiplierSequence"
 label = "Discrete multiplier sequences increase where they are positive"
+
+[[theorems]]
+name = "RealRooted.fallingFactorialMap_meshGE_one"
+module = "RealRooted.Mesh.FallingFactorial"
+label = "Brenti: x^i ↦ [x]_i sends nonnegative zeros to mesh at least one"
+
+[[theorems]]
+name = "RealRooted.neg_one_pow_mul_descPochhammerBasis_repr_nonneg"
+module = "RealRooted.Mesh.FallingFactorial"
+label = "Falling-factorial coefficients alternate in sign"
+
+[[theorems]]
+name = "RealRooted.IsDiscreteMultiplierSequence.nonneg_or_nonpos"
+module = "RealRooted.Mesh.DiscreteMultiplierSequence"
+label = "Nonzero entries of a discrete multiplier sequence share a sign"
+
+[[theorems]]
+name = "RealRooted.isDiscreteMultiplierSequence_iff_adjacent_of_two_nonzero"
+module = "RealRooted.Mesh.DiscreteMultiplierSequence"
+label = "Trivial discrete multiplier sequences"
+
+[[theorems]]
+name = "RealRooted.IsDiscreteMultiplierSequence.isMultiplierSequence"
+module = "RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur"
+label = "Discrete multiplier sequences are multiplier sequences"
+
+[[theorems]]
+name = "RealRooted.not_isDiscreteMultiplierSequence_geometric"
+module = "RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur"
+label = "ρ^i with 0 < ρ < 1 is not a discrete multiplier sequence"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -106,19 +138,34 @@ polynomial in $\mathrm{Mesh}_{\geq 1}$ with only nonnegative zeros to such a pol
 zeros, then $(\varphi(i))_{i \geq 0}$ is a discrete multiplier sequence. The operator is
 $\varphi(x\Delta)$, a composition of the operators of Theorem 5.
 
+**Lemma 10 (Brenti).** The linear map $x^i \mapsto [x]_i$ sends every real-rooted polynomial
+with only nonnegative zeros into $\mathrm{Mesh}_{\geq 1}$, with only nonnegative zeros.
+
+**Lemma 11 and Corollary 3.** If $p = \sum_{i \leq n} a_i [x]_i$ lies in $\mathrm{Mesh}_{\geq 1}$,
+has only nonnegative zeros and $a_n > 0$, then $(-1)^{n-i} a_i \geq 0$ for all $i$. Consequently
+the nonzero entries of a discrete multiplier sequence all have the same sign.
+
+**Proposition 7.** A sequence with at most two nonzero entries is a discrete multiplier sequence
+if and only if its nonzero entries sit at adjacent indices $m, m+1$ and $a_m a_{m+1} \geq 0$.
+
+**Proposition 6.** Every discrete multiplier sequence is a multiplier sequence in the classical
+sense. The converse fails: $(\rho^i)$ with $0 < \rho < 1$ is not a discrete multiplier sequence
+(Remark 2).
+
 **Proposition 12.** If $(a_i)$ is a discrete multiplier sequence and $a_{m+2} > 0$, then
 $a_m \leq a_{m+1}$.
 
 ## References
 
 Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
-setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Corollary 2, and
-Proposition 12. Theorem 1 is due to Riesz.
+setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Lemmas 10 and 11,
+Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,
 `RealRooted.Mesh.FiniteDifference`, `RealRooted.Mesh.HermitePoulain` (sufficiency in
 Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence),
-`RealRooted.Mesh.DiscreteMultiplier` (Theorem 5), and `RealRooted.Mesh.DiscreteMultiplierSequence`
-(Corollary 2, Proposition 12).
+`RealRooted.Mesh.DiscreteMultiplier` (Theorem 5), `RealRooted.Mesh.FallingFactorial` (Lemmas 10
+and 11), `RealRooted.Mesh.DiscreteMultiplierSequence` (Corollaries 2 and 3, Propositions 7 and 12),
+and `RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur` (Proposition 6).
 -/

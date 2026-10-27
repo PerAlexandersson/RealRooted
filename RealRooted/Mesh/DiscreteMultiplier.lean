@@ -164,7 +164,7 @@ private theorem sub_comp_X_sub_C_one_natDegree_coeff {p : ℝ[X]} {m : ℕ}
 
 /-- Proper position of the difference `p - p(X - 1)` with `p(x)` and `p(x - 1)`, for `p` of
 positive leading coefficient and mesh at least one. -/
-private theorem strictInterl_sub_comp_X_sub_C_one {p : ℝ[X]} {m : ℕ}
+theorem strictInterl_sub_comp_X_sub_C_one {p : ℝ[X]} {m : ℕ}
     (hpos : HasPosLeadingCoeff p) (hn : p.natDegree = m + 1) (hmesh : p.MeshGE 1) :
     HasPosLeadingCoeff (p - p.comp (X - C 1)) ∧ (p - p.comp (X - C 1)).natDegree = m ∧
       StrictInterl (p - p.comp (X - C 1)) p ∧
