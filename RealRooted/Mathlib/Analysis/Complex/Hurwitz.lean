@@ -28,6 +28,8 @@ through a point of the product of half-planes and applies the one-variable state
 * `Complex.isClosed_isLimitOfZeros`: liminf limits of zeros form a closed set.
 * `Complex.isLimitOfZeros_of_tendstoLocallyUniformlyOn_ball`: the local zero-producing
   corollary of Hurwitz's theorem.
+* `Complex.isLimitOfZeros_finset_unique_dominant`: Sokal's Theorem 1.5(a), a unique dominant
+  base whose coefficient vanishes at `z₀` without vanishing identically near it.
 * `MvPolynomial.eval_ne_zero_or_eq_zero_of_tendstoLocallyUniformlyOn`: the limit `q` of
   polynomials `p k` with no zeros in `upperHalfPlane τ` has no zeros there, or `q = 0`.
 -/
@@ -1160,6 +1162,85 @@ theorem isLimitOfZeros_finset_two_dominant_closure {κ : Type*}
       exact (ball_subset_ball hδε hzδ)⟩
   change IsLimitOfZeros F z₀
   simpa only [hclosed.closure_eq, Set.mem_ofPred_eq] using hcl
+
+/-- **Unique dominant index.** If the base `β i` strictly dominates every other base at `z₀`, and
+the coefficient `α i` vanishes at `z₀` without vanishing identically near `z₀`, then `z₀` is a
+liminf limit of zeros of `∑ k ∈ s, α k z * β k z ^ n`.
+Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(a). -/
+theorem isLimitOfZeros_finset_unique_dominant {κ : Type*}
+    (s : Finset κ) (α β : κ → ℂ → ℂ) (i : κ) {z₀ : ℂ} (hi : i ∈ s)
+    (hα : ∀ k ∈ s, AnalyticAt ℂ (α k) z₀)
+    (hβ : ∀ k ∈ s, AnalyticAt ℂ (β k) z₀)
+    (hβi0 : β i z₀ ≠ 0)
+    (hsmall : ∀ k ∈ s, k ≠ i → ‖β k z₀‖ < ‖β i z₀‖)
+    (hαi0 : α i z₀ = 0) (hnconst : ¬∀ᶠ z in 𝓝 z₀, α i z = 0) :
+    IsLimitOfZeros (fun n z => ∑ k ∈ s, α k z * β k z ^ n) z₀ := by
+  classical
+  obtain ⟨G, hGdef⟩ : ∃ G : ℕ → ℂ → ℂ, ∀ n z,
+      G n z = α i z + ∑ k ∈ s.erase i, α k z * (β k z / β i z) ^ n :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨r₁, hr₁, h₁⟩ := exists_ball_tendstoUniformlyOn_sum_mul_pow_zero (s.erase i) α
+    (fun k z => β k z / β i z)
+    (fun k hk => (hα k (Finset.mem_of_mem_erase hk)).continuousAt)
+    (fun k hk => ((hβ k (Finset.mem_of_mem_erase hk)).div (hβ i hi) hβi0).continuousAt)
+    (fun k hk => by
+      rw [norm_div]
+      exact (div_lt_one (norm_pos_iff.mpr hβi0)).mpr
+        (hsmall k (Finset.mem_of_mem_erase hk) (Finset.ne_of_mem_erase hk)))
+  have hev : ∀ᶠ z in 𝓝 z₀,
+      (∀ k ∈ s, AnalyticAt ℂ (α k) z ∧ AnalyticAt ℂ (β k) z) ∧ β i z ≠ 0 := by
+    refine ((Filter.eventually_all_finset s).2 fun k hk =>
+      (hα k hk).eventually_analyticAt.and (hβ k hk).eventually_analyticAt).and ?_
+    exact (hβ i hi).continuousAt.eventually_ne hβi0
+  obtain ⟨r₂, hr₂, hball⟩ := Metric.mem_nhds_iff.mp hev
+  have hr : 0 < min r₁ r₂ := lt_min hr₁ hr₂
+  have hballr : ∀ z ∈ ball z₀ (min r₁ r₂), z ∈ ball z₀ r₂ :=
+    fun z hz => ball_subset_ball (min_le_right _ _) hz
+  have hG : ∀ n, DifferentiableOn ℂ (G n) (ball z₀ (min r₁ r₂)) := by
+    intro n z hz
+    obtain ⟨hk, hne⟩ := hball (hballr z hz)
+    refine DifferentiableAt.differentiableWithinAt ?_
+    have hGz : G n = fun w => α i w +
+        ∑ k ∈ s.erase i, α k w * (β k w / β i w) ^ n := funext fun w => hGdef n w
+    rw [hGz]
+    refine DifferentiableAt.add (hk i hi).1.differentiableAt ?_
+    refine DifferentiableAt.fun_sum fun k hk' => ?_
+    have hkk := hk k (Finset.mem_of_mem_erase hk')
+    exact hkk.1.differentiableAt.mul
+      ((hkk.2.div (hk i hi).2 hne).pow n).differentiableAt
+  have hconv : TendstoLocallyUniformlyOn G (α i) atTop (ball z₀ (min r₁ r₂)) := by
+    apply TendstoUniformlyOn.tendstoLocallyUniformlyOn
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    have h₁' := Metric.tendstoUniformlyOn_iff.mp
+      (h₁.mono (ball_subset_ball (min_le_left r₁ r₂))) ε hε
+    filter_upwards [h₁'] with n hn z hz
+    have hnz := hn z hz
+    beta_reduce at hnz
+    rw [dist_eq_norm, zero_sub] at hnz
+    rw [hGdef, dist_eq_norm, sub_add_cancel_left]
+    exact hnz
+  have hnconst' : ¬∀ᶠ z in 𝓝 z₀, α i z = α i z₀ := by
+    intro h
+    apply hnconst
+    filter_upwards [h] with z hz
+    rw [hz, hαi0]
+  have hfac : ∀ z, β i z ≠ 0 → ∀ n : ℕ,
+      ∑ k ∈ s, α k z * β k z ^ n = β i z ^ n * G n z := by
+    intro z hz n
+    have h0 := Finset.sum_erase_add s (fun k => α k z * β k z ^ n) hi
+    have h1 : β i z ^ n * ∑ k ∈ s.erase i, α k z * (β k z / β i z) ^ n =
+        ∑ k ∈ s.erase i, α k z * β k z ^ n := by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [div_pow]
+      field_simp
+    rw [hGdef, mul_add, h1]
+    linear_combination (-1 : ℂ) * h0
+  refine isLimitOfZeros_of_auxiliary (G := G) (g := α i) hr hG hconv hαi0 hnconst' ?_
+  refine Eventually.of_forall fun n z hz hGz => ?_
+  obtain ⟨-, hne⟩ := hball (hballr z hz)
+  rw [hfac z hne n, hGz, mul_zero]
 
 end Complex
 
