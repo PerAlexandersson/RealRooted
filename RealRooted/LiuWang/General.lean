@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.MaWang.Weak.DerivativeSign
+public import RealRooted.LiuWang.CombinedFlux
 
 /-!
 # The Liu--Wang criterion in full generality
@@ -10,10 +10,7 @@ put `F = a f + b g` with `deg f ≤ deg F ≤ deg f + 1` and positive leading co
 is nonpositive at the roots of `f`, then `f ≪ F`.
 
 Here `g ≪ f` may have either shape (`deg g = deg f` or `deg g + 1 = deg f`), and `f`, `g` may
-have common and repeated roots.  The proof removes common roots of `f` and `g` until `f` has
-simple roots, and then applies `strictInterl_of_eval_mul_derivative_nonpos`: the interlacers
-`g` and `f'` of `f` agree in sign at the roots of `f`, so `g(r) f'(r) ≥ 0` and
-`F(r) f'(r) = b(r) g(r) f'(r) ≤ 0`.
+have common and repeated roots. This is the singleton case of the combined-flux criterion.
 -/
 
 public section
@@ -26,48 +23,24 @@ namespace RealRooted.LiuWang
 
 /-- The Liu--Wang criterion when `f` also has positive leading coefficient. -/
 private theorem strictInterl_mul_add_mul_of_eval_nonpos_of_pos {f g a b : ℝ[X]}
-    (hgf : StrictInterl g f) (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hgf : StrictInterl g f) (hf_pos : HasPosLeadingCoeff f)
+    (hg_pos : HasPosLeadingCoeff g)
     (hF_pos : HasPosLeadingCoeff (a * f + b * g))
     (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
     (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
     (hb : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     StrictInterl f (a * f + b * g) := by
-  generalize hn : f.natDegree = n
-  induction n using Nat.strong_induction_on generalizing f g with
-  | h n ih =>
-    subst hn
-    by_cases hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r
-    · have hnodup : f.roots.Nodup := by
-        refine Multiset.nodup_iff_count_le_one.mpr fun r ↦ ?_
-        rw [count_roots]
-        by_cases hr : f.IsRoot r
-        · have hbound := (hgf.rootMultiplicity_bounds r).2
-          rw [rootMultiplicity_eq_zero (hno r hr)] at hbound
-          lia
-        · simp [rootMultiplicity_eq_zero hr]
-      refine strictInterl_of_eval_mul_derivative_nonpos hf_pos hgf.2.1.2 hnodup hF_pos hdeg_lo
-        hdeg_hi fun r hr ↦ ?_
-      have hW := hgf.eval_mul_eval_derivative_nonneg hg_pos hf_pos hr
-      simpa [hr.eq_zero, mul_assoc] using mul_nonpos_of_nonpos_of_nonneg (hb r hr) hW
-    push Not at hno
-    obtain ⟨r, hrf, hrg⟩ := hno
-    obtain ⟨qf, rfl⟩ := dvd_iff_isRoot.mpr hrf
-    obtain ⟨qg, rfl⟩ := dvd_iff_isRoot.mpr hrg
-    have hF_eq : a * ((X - C r) * qf) + b * ((X - C r) * qg) =
-        (X - C r) * (a * qf + b * qg) := by
-      ring
-    rw [hF_eq] at hF_pos hdeg_lo hdeg_hi ⊢
-    have hqf_pos : HasPosLeadingCoeff qf := hasPosLeadingCoeff_of_X_sub_C_mul hf_pos
-    have hqF_pos : HasPosLeadingCoeff (a * qf + b * qg) := hasPosLeadingCoeff_of_X_sub_C_mul hF_pos
-    have hdeg_mul : ∀ p : ℝ[X], p ≠ 0 → ((X - C r) * p).natDegree = p.natDegree + 1 :=
-      fun p hp ↦ by rw [natDegree_mul (X_sub_C_ne_zero r) hp, natDegree_X_sub_C, add_comm]
-    rw [hdeg_mul _ hqf_pos.ne_zero] at hdeg_lo hdeg_hi ih
-    rw [hdeg_mul _ hqF_pos.ne_zero] at hdeg_lo hdeg_hi
-    have hq : StrictInterl qf (a * qf + b * qg) :=
-      ih qf.natDegree (by lia) hgf.of_mul_X_sub_C_both hqf_pos
-        (hasPosLeadingCoeff_of_X_sub_C_mul hg_pos) hqF_pos (by lia) (by lia)
-        (fun s hs ↦ hb s (by simp [hs.eq_zero])) rfl
-    exact hq.mul_common_factor (X_sub_C_ne_zero r) (Splits.X_sub_C r)
+  have h := strictInterl_mul_add_sum_mul_of_combined_flux_of_pos hf_pos hgf.2.1.2
+    (s := ({0} : Finset Unit)) (b := fun _ : Unit ↦ b) (g := fun _ : Unit ↦ g)
+    (fun i hi ↦ by simpa using hgf)
+    (fun i hi ↦ by simpa using hg_pos)
+    (fun r hr ↦ by
+      simp only [Finset.sum_singleton, eval_mul]
+      simpa [mul_assoc] using mul_nonpos_of_nonpos_of_nonneg (hb r hr)
+        (hgf.eval_mul_eval_derivative_nonneg hg_pos hf_pos hr))
+    (fun i hi r hr _ ↦ by simpa using hb r hr)
+    (by simpa using hF_pos) (by simpa using hdeg_lo) (by simpa using hdeg_hi)
+  simpa using h
 
 /-- **Liu--Wang criterion** (Liu--Wang 2007, Theorem 2.1).  Let `g ≪ f` (`StrictInterl g f`,
 of either degree shape) with `g` of positive leading coefficient, and let
@@ -95,6 +68,7 @@ theorem strictInterl_mul_add_mul_of_eval_nonpos {f g a b : ℝ[X]}
       (by rwa [natDegree_neg]) (by rwa [natDegree_neg])
       (fun r hr ↦ hb r (by simpa using hr))
     simpa using h.C_mul_left (a := -1) (by norm_num)
-  · exact strictInterl_mul_add_mul_of_eval_nonpos_of_pos hgf hpos hg_pos hF_pos hdeg_lo hdeg_hi hb
+  · exact strictInterl_mul_add_mul_of_eval_nonpos_of_pos
+      hgf hpos hg_pos hF_pos hdeg_lo hdeg_hi hb
 
 end RealRooted.LiuWang
