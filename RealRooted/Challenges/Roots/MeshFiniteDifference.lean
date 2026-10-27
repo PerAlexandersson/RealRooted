@@ -3,6 +3,7 @@ module
 import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.DiscreteHermitePoulain
 import RealRooted.Mesh.DiscreteMultiplier
+import RealRooted.Mesh.DiscreteMultiplierSequence
 
 /-!
 # Mesh and finite differences
@@ -50,6 +51,21 @@ headline = true
 name = "RealRooted.meshGE_one_add_X_mul_meshDifference"
 module = "RealRooted.Mesh.DiscreteMultiplier"
 label = "The operator a p + b x (p(x) − p(x − 1)) preserves mesh at least one"
+
+[[definitions]]
+name = "RealRooted.IsDiscreteMultiplierSequence"
+module = "RealRooted.Mesh.DiscreteMultiplierSequence"
+label = "Discrete multiplier sequence"
+
+[[theorems]]
+name = "RealRooted.isDiscreteMultiplierSequence_eval"
+module = "RealRooted.Mesh.DiscreteMultiplierSequence"
+label = "φ(0), φ(1), … is a discrete multiplier sequence for φ with nonpositive zeros"
+
+[[theorems]]
+name = "RealRooted.IsDiscreteMultiplierSequence.le_succ"
+module = "RealRooted.Mesh.DiscreteMultiplierSequence"
+label = "Discrete multiplier sequences increase where they are positive"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -82,15 +98,27 @@ nonnegative zeros, then
 $$a\,p(x) + b\,x\,\bigl(p(x) - p(x - 1)\bigr)$$
 lies in $\mathrm{Mesh}_{\geq 1}$ and has only nonnegative zeros.
 
+A sequence $(a_i)$ is a *discrete multiplier sequence* if the linear operator with
+$[x]_i \mapsto a_i [x]_i$ on the falling factorials $[x]_i = x(x-1)\cdots(x-i+1)$ maps every
+polynomial in $\mathrm{Mesh}_{\geq 1}$ with only nonnegative zeros to such a polynomial.
+
+**Corollary 2 (polynomial case).** If $\varphi \neq 0$ is real-rooted with only nonpositive
+zeros, then $(\varphi(i))_{i \geq 0}$ is a discrete multiplier sequence. The operator is
+$\varphi(x\Delta)$, a composition of the operators of Theorem 5.
+
+**Proposition 12.** If $(a_i)$ is a discrete multiplier sequence and $a_{m+2} > 0$, then
+$a_m \leq a_{m+1}$.
+
 ## References
 
 Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
-setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5. Theorem 1 is due to
-Riesz.
+setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Corollary 2, and
+Proposition 12. Theorem 1 is due to Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,
 `RealRooted.Mesh.FiniteDifference`, `RealRooted.Mesh.HermitePoulain` (sufficiency in
-Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence), and
-`RealRooted.Mesh.DiscreteMultiplier`.
+Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence),
+`RealRooted.Mesh.DiscreteMultiplier` (Theorem 5), and `RealRooted.Mesh.DiscreteMultiplierSequence`
+(Corollary 2, Proposition 12).
 -/

@@ -402,7 +402,9 @@ private theorem discreteMultiplier_of_posLeadingCoeff {p : ℝ[X]} {m : ℕ} {a 
     hasOnlyNonnegRoots_add_C_mul_X_mul ha hb hab hpos hn hnn hTpos (by lia) hTnn
       hWpos.ne_zero hWp.1.2⟩
 
-private theorem hasOnlyNonnegRoots_C_mul_iff {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) :
+/-- Multiplication by a nonzero scalar does not change the property of having only nonnegative
+roots. -/
+theorem HasOnlyNonnegRoots.C_mul_iff {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) :
     HasOnlyNonnegRoots (C c * p) ↔ HasOnlyNonnegRoots p := by
   by_cases hp0 : p = 0
   · simp [hp0, HasOnlyNonnegRoots]
@@ -448,7 +450,7 @@ private theorem discreteMultiplier_of_natDegree_ne_zero {p : ℝ[X]} {a b : ℝ}
       ring
     rw [e] at h1 h2
     exact ⟨(Polynomial.MeshGE.C_mul_iff _ 1 (by norm_num)).1 h1,
-      (hasOnlyNonnegRoots_C_mul_iff (by norm_num) _).1 h2⟩
+      (HasOnlyNonnegRoots.C_mul_iff (by norm_num) _).1 h2⟩
   · exact discreteMultiplier_of_posLeadingCoeff ha hb hab hposlc hn hp hnn
 
 /-- BKS 2016, Theorem 5: `p ↦ a p + b X (p - p(X - 1))` with `a, b ≥ 0` preserves real-rooted
@@ -469,7 +471,7 @@ theorem meshGE_one_add_X_mul_meshDifference {p : ℝ[X]} {a b : ℝ} (ha : 0 ≤
     by_cases ha0 : a = 0
     · left
       simp [ha0]
-    · exact (hasOnlyNonnegRoots_C_mul_iff ha0 p).2 hpnn
+    · exact (HasOnlyNonnegRoots.C_mul_iff ha0 p).2 hpnn
   · rcases ha.eq_or_lt with ha0 | ha'
     · rcases hb.eq_or_lt with hb0 | hb'
       · subst ha0
@@ -495,7 +497,7 @@ theorem meshGE_one_add_X_mul_meshDifference_of_nonpos {p : ℝ[X]} {a b : ℝ} (
     ring
   rw [e]
   exact ⟨(Polynomial.MeshGE.C_mul_iff _ 1 (by norm_num)).2 h1,
-    (hasOnlyNonnegRoots_C_mul_iff (by norm_num) _).2 h2⟩
+    (HasOnlyNonnegRoots.C_mul_iff (by norm_num) _).2 h2⟩
 
 end
 
