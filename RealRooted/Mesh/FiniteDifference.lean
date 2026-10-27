@@ -903,7 +903,9 @@ private theorem complex_pencil_ne_zero {f g : ℝ[X]} (hf : f ≠ 0)
   have hlead : f.leadingCoeff = 0 := (mul_eq_zero.mp hmul).resolve_left hw.ne'
   exact (leadingCoeff_ne_zero.mpr hf) hlead
 
-private theorem stablePencil_of_tendsto_eval_of_natDegree_le
+/-- A bounded-degree evaluation limit of stable pencils with nonzero direction is a stable
+pencil (Hurwitz). -/
+theorem IsUpperHalfPlaneStablePencil.of_tendsto_eval_of_natDegree_le
     {f g : ℕ → ℝ[X]} {f₀ g₀ : ℝ[X]} {N : ℕ}
     (hstable : ∀ k, IsUpperHalfPlaneStablePencil (f k) (g k))
     (hfdeg : ∀ k, (f k).natDegree ≤ N)
@@ -966,7 +968,9 @@ private theorem eval_complexify_comp_X_sub_C (p : ℝ[X]) (β : ℝ) (z : ℂ) :
       (complexify p).eval (z - (β : ℂ)) := by
   simp [complexify, Polynomial.map_comp, eval_comp]
 
-private theorem hasOnlyNonnegRoots_of_tendsto_eval_of_natDegree_le
+/-- A bounded-degree evaluation limit of polynomials with only nonnegative roots, which splits,
+has only nonnegative roots. -/
+theorem HasOnlyNonnegRoots.of_tendsto_eval_of_natDegree_le
     {f : ℕ → ℝ[X]} {f₀ : ℝ[X]} {N : ℕ}
     (hf : ∀ k, HasOnlyNonnegRoots (f k))
     (hdeg : ∀ k, (f k).natDegree ≤ N)
@@ -1060,7 +1064,7 @@ theorem meshDifference_meshGE_one {p : ℝ[X]} {α β : ℝ}
       hFeval (z - (β : ℂ))
   have hlim : IsUpperHalfPlaneStablePencil
       ((meshDifference α 1 p).comp (X - C β)) (meshDifference α 1 p) :=
-    stablePencil_of_tendsto_eval_of_natDegree_le hstable hGdeg hFdeg
+    IsUpperHalfPlaneStablePencil.of_tendsto_eval_of_natDegree_le hstable hGdeg hFdeg
       hGeval hFeval hT0
   exact (Polynomial.MeshGE.iff_eq_zero_or_stablePencil hβ).2 (Or.inr hlim)
 
@@ -1201,7 +1205,7 @@ theorem meshDifference_hasOnlyNonnegRoots_one
       (fun k => (complexify (F k)).eval z) Filter.atTop
         (nhds ((complexify (meshDifference α 1 p)).eval z)) :=
     meshDifference_tendsto_eval_complexify p α hlam_lim z
-  exact hasOnlyNonnegRoots_of_tendsto_eval_of_natDegree_le hFnn hFdeg
+  exact HasOnlyNonnegRoots.of_tendsto_eval_of_natDegree_le hFnn hFdeg
     hFeval (meshDifference_meshGE_one hα hpmesh hαβ).1
 
 /-- The nonnegative-zero clause of BKS Theorem 2 for `λ ≥ 1`. -/
