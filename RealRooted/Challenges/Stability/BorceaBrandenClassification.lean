@@ -1,3 +1,5 @@
+module
+
 import RealRooted.BorceaBranden.RealFiniteClassificationIff
 import RealRooted.BorceaBranden.Transcendental.ComplexClassification
 import RealRooted.BorceaBranden.Transcendental.PivotForward
@@ -186,7 +188,3 @@ using specialization and partial differentiation.
 See [@BorceaBranden2009I].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.BorceaBrandenClassification
-
-end RealRooted.Challenges.BorceaBrandenClassification

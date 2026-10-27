@@ -1,3 +1,5 @@
+module
+
 import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 import RealRooted.BorceaBranden.Applications.PoissonStability
@@ -113,39 +115,3 @@ programs. I. Linear operators preserving stability", Invent. Math. 177 (2009),
 
 The proofs use the reusable complex and real-univariate theorem modules.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace BorceaBranden
-
-export RealRooted.BorceaBranden
-  (PreservesComplexStabilityOnDegreeBox
-    shiftedBoxPolynomial
-    shiftedBoxPolynomial_eq_prod
-    mvUpperHalfPlaneStable_shiftedBoxPolynomial
-    HasShiftedBoxPerturbations
-    IsUniformlyDominatedByShiftedBox
-    hasShiftedBoxPerturbations_of_uniformlyDominated
-    uniformlyDominatedByShiftedBox
-    hasShiftedBoxPerturbations
-    specializeRight_algebraicSymbol
-    eval_algebraicSymbol_eq_eval_shiftedBoxPolynomial
-    algebraicSymbol_stable_of_preserves_of_shiftedBox_ne_zero
-    HasStableRankOneRepresentation
-    hasStableRankOneRepresentation_of_range_stableOrZero
-    hasStableRankOneRepresentation_of_preserves_of_shiftedBox_eq_zero
-    rankOne_or_algebraicSymbol_stable_of_preserves_of_perturbations
-    rankOne_or_algebraicSymbol_stable_of_preserves_of_robust_perturbations
-    rankOne_or_algebraicSymbol_stable_of_preserves
-    HasStableRankOneRepresentation.preservesComplexStabilityOnDegreeBox
-    finiteComplexSymbolClassification
-    finiteComplexSymbolIff
-    polynomialInFirstMv
-    finiteAlgebraicSymbol
-    PreservesRealRootedUpTo
-    finiteSymbolTheorem
-    finiteSymbol_preservesRealRootedUpTo)
-
-end BorceaBranden
-end Challenges
-end RealRooted

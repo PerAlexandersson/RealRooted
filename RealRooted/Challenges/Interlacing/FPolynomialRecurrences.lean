@@ -1,3 +1,5 @@
+module
+
 import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 import RealRooted.SymmetricDecomposition.FPolynomialSequence
 
@@ -158,7 +160,3 @@ For the alternating-runs families and their references, see OEIS
 [A186370](https://oeis.org/A186370).
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.FPolynomialRecurrences
-
-end RealRooted.Challenges.FPolynomialRecurrences

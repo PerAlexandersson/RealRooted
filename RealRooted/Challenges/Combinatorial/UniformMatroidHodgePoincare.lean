@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 

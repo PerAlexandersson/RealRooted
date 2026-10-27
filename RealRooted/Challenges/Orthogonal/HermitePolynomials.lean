@@ -1,3 +1,5 @@
+module
+
 import RealRooted.Hermite.Orthogonality.Integral
 import RealRooted.Hermite.Roots
 

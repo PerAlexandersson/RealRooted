@@ -1,4 +1,6 @@
-import RealRooted.CombinatorialExamples.Touchard
+module
+
+public import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.Tactic.Finish
 
 /-!
@@ -6,6 +8,8 @@ import RealRooted.Tactic.Finish
 
 Regression tests against existing combinatorial polynomial families.
 -/
+
+public section
 
 open Polynomial
 

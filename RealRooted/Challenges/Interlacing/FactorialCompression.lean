@@ -1,3 +1,5 @@
+module
+
 import RealRooted.FactorialCompression.DegreeChanging
 import RealRooted.Hadamard.SchurSzegoStrict
 

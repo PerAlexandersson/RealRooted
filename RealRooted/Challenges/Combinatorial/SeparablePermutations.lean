@@ -1,3 +1,5 @@
+module
+
 import RealRooted.SeparablePermutations.Identification
 import RealRooted.SeparablePermutations.Interlacing
 

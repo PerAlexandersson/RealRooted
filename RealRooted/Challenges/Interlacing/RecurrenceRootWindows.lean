@@ -1,3 +1,5 @@
+module
+
 import RealRooted.DerivativeRecurrence.RootWindow
 import RealRooted.ThreeTermRecurrence.LagFeedback
 import RealRooted.ThreeTermRecurrence.ParityProduct
@@ -190,7 +192,3 @@ tactics `rr_row_interlaces` and `rr_row_splits` use these routes.
 See [@LiuWang2007; @Branden2006].
 <!-- /realrooted-catalog-content -->
 -/
-
-namespace RealRooted.Challenges.RecurrenceRootWindows
-
-end RealRooted.Challenges.RecurrenceRootWindows

@@ -1,6 +1,8 @@
-import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
+module
+
+public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+public import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
 
 /-!
 # Narayana inputs for generalized snake posets

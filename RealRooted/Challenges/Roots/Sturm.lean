@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CubicDiscriminant
 import RealRooted.RootCounting.Sturm
 import RealRooted.RootVieta.Newton

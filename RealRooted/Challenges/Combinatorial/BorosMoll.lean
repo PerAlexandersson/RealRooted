@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CombinatorialExamples.BorosMoll
 import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 

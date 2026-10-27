@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg

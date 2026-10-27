@@ -1,3 +1,5 @@
+module
+
 import RealRooted.BrandenVecchi.ChowInfinitePF
 import RealRooted.BrandenVecchi.ChowSignedWords
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
