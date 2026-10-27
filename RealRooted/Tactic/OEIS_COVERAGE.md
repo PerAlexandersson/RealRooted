@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **170 IDs**; **20 formalized**, **136 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **167 IDs**; **17 formalized**, **136 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -121,8 +121,6 @@ Current totals: **170 IDs**; **20 formalized**, **136 shells**, **1 fragments**,
 | A137597 | `shell` | Root window `(-∞, -1]`: `A = X + 1` ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_nonneg_coeffs` | `degree`, `thm` | concrete row definition and proofs of the listed certificates |
 | A142071 | `shell` | A product with the derivative, `P (n + 1) = A * (P n)'` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A144436 | `shell` | `V ≤ 0`, `W < 0` on the negative axis ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A144438 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
-| A144696 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A147644 | `shell` | OEIS , whose recurrence is a product only after three exceptional rows.<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A151775 | `formalized` | import RealRooted.Applications.OEIS.<br>Regression examples for the transfer and the reflected Euler-bidiagonal families. | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
 | A154602 | `shell` | Scaled Bell rows `2ⁿ Bell(n, (t + 1) / 2)`: `v_n(t) = 2 + 2t` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -165,7 +163,6 @@ Current totals: **170 IDs**; **20 formalized**, **136 shells**, **1 fragments**,
 | A271703 | `shell` | The OEIS polynomial sequence, given by a literal second-order derivative recurrence.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A272471 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A272866 | `shell` | A product with a real-rooted quadratic factor ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A275442 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A277627 | `shell` | copied from the downstream row recurrence. | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A286785 | `formalized` | public import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+12 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
 | A297191 | `formalized` | public import RealRooted.Applications.OEIS.<br>namespace<br>+11 additional test intents | `rr_row_model` | `heq` | none |
