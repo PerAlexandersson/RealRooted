@@ -4,7 +4,9 @@ import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.DiscreteHermitePoulain
 import RealRooted.Mesh.DiscreteMultiplier
 import RealRooted.Mesh.DiscreteMultiplierSequence
+import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
 import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
+import RealRooted.Mesh.Limit
 import RealRooted.Mesh.FallingFactorial
 
 /-!
@@ -98,6 +100,11 @@ label = "Discrete multiplier sequences are multiplier sequences"
 name = "RealRooted.not_isDiscreteMultiplierSequence_geometric"
 module = "RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur"
 label = "ρ^i with 0 < ρ < 1 is not a discrete multiplier sequence"
+
+[[theorems]]
+name = "RealRooted.isDiscreteMultiplierSequence_of_isLaguerrePolyaTypeI"
+module = "RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya"
+label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Laguerre–Pólya class"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -134,9 +141,12 @@ A sequence $(a_i)$ is a *discrete multiplier sequence* if the linear operator wi
 $[x]_i \mapsto a_i [x]_i$ on the falling factorials $[x]_i = x(x-1)\cdots(x-i+1)$ maps every
 polynomial in $\mathrm{Mesh}_{\geq 1}$ with only nonnegative zeros to such a polynomial.
 
-**Corollary 2 (polynomial case).** If $\varphi \neq 0$ is real-rooted with only nonpositive
+**Corollary 2.** If $\varphi \neq 0$ is real-rooted with only nonpositive
 zeros, then $(\varphi(i))_{i \geq 0}$ is a discrete multiplier sequence. The operator is
-$\varphi(x\Delta)$, a composition of the operators of Theorem 5.
+$\varphi(x\Delta)$, a composition of the operators of Theorem 5. More generally this holds for
+every $\varphi$ in the Laguerre–Pólya class $\mathcal{L}\text{-}\mathcal{P}^+$ (locally uniform
+limits of polynomials with nonnegative coefficients and only real zeros), because
+$\mathrm{Mesh}_{\geq \alpha}$ is closed under coefficientwise limits of bounded degree.
 
 **Lemma 10 (Brenti).** The linear map $x^i \mapsto [x]_i$ sends every real-rooted polynomial
 with only nonnegative zeros into $\mathrm{Mesh}_{\geq 1}$, with only nonnegative zeros.
@@ -167,5 +177,7 @@ The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.D
 Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence),
 `RealRooted.Mesh.DiscreteMultiplier` (Theorem 5), `RealRooted.Mesh.FallingFactorial` (Lemmas 10
 and 11), `RealRooted.Mesh.DiscreteMultiplierSequence` (Corollaries 2 and 3, Propositions 7 and 12),
-and `RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur` (Proposition 6).
+`RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur` (Proposition 6),
+`RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya` (Corollary 2 in general), and
+`RealRooted.Mesh.Limit`.
 -/
