@@ -12,7 +12,7 @@ This module isolates the root-sign argument for second-order recurrences whose
 lag multiplier is `aₙ X - bₙ`.  Adjacent degrees may stay fixed or rise by one.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

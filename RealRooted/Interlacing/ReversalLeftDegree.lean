@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Interlacing.Reversal
 
-@[expose] public section
+public section
 
 open Polynomial
 

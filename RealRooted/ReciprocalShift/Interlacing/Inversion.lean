@@ -11,7 +11,7 @@ through reciprocal inversion and reversal. Zero-tail padding is deliberately a
 separate layer.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

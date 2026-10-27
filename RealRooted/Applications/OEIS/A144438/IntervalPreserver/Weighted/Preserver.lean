@@ -10,7 +10,7 @@ The weighted A144438 transform sends every nonconstant real polynomial whose
 roots all lie in `[-1, 0]` to a polynomial with simple negative roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

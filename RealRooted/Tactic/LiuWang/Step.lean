@@ -13,7 +13,7 @@ Dispatcher tactics and certificate plumbing for the theorem API in
 RealRooted.LiuWang.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

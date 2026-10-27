@@ -9,7 +9,7 @@ public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
 public import RealRooted.HurwitzMatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -4,7 +4,7 @@ public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.GeneralizedEulerian
 
-@[expose] public section
+public section
 
 open scoped BigOperators Polynomial
 open Polynomial

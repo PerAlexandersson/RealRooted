@@ -10,7 +10,7 @@ public import RealRooted.WagnerX
 Reusable root-bound consequences of splitness and nonnegative coefficients.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

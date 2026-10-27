@@ -8,7 +8,7 @@ public import RealRooted.LiuWang.SequenceIntervals
 Sequence criteria for factored lags and fixed current-row coefficients.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

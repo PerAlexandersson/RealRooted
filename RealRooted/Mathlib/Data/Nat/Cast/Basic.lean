@@ -13,7 +13,7 @@ public import Mathlib.Data.Nat.Cast.Basic
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Cast.Basic`.
 -/
 
-@[expose] public section
+public section
 
 namespace Nat
 

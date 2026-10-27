@@ -10,7 +10,7 @@ root counts. It also contains their degree estimates and the transport of this
 package across common-root deletion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

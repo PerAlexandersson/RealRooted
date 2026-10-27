@@ -16,7 +16,7 @@ This file contains Mathlib-shaped compatibility lemmas for
 `MvPolynomial.uniqueAlgEquiv`.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Favard.DenominatorSyntax
 Parser declarations for row-sign-normalized affine Favard certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

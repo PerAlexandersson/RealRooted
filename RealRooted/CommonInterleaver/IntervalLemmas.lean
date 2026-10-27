@@ -8,7 +8,7 @@ module
 
 public import RealRooted.CommonInterleaverSeq
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

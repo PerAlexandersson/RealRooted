@@ -10,7 +10,7 @@ The generating-function upper bound can retain the leading-product lower bounds
 for all terms other than the distinguished elementary symmetric value.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

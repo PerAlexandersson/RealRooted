@@ -10,7 +10,7 @@ arrowhead secular equation.  It will identify the positive successor residue
 `p(ρ)/q'(ρ)` with the reciprocal squared norm of the root vector.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

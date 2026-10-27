@@ -11,7 +11,7 @@ forward direction fails already for `X` and `-(X ^ 2)`.  The corrected
 theorem is `compatible_iff_rootCountBranchesWithCommon`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

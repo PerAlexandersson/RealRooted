@@ -11,7 +11,7 @@ Generic bridges from an explicitly indexed increasing root family to the
 sorted negative-root-magnitude sequence.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.SortedRoots
 

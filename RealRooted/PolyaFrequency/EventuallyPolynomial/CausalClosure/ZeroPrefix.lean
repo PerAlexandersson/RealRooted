@@ -10,7 +10,7 @@ This leaf combines the positive-initial-value causal closure with the existing
 Pólya-frequency prefix and tail operations.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

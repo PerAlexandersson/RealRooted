@@ -14,7 +14,7 @@ This Mathlib-shaped shim records the multiplication rule for the composite
 constant map from a coefficient ring to polynomials and then to power series.
 -/
 
-@[expose] public section
+public section
 
 namespace PowerSeries
 

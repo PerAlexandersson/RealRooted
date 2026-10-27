@@ -6,7 +6,7 @@ public import RealRooted.Tactic.WagnerX.PositiveLag
 # Translated Wagner `X`-lag recurrences
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

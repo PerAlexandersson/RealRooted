@@ -8,7 +8,7 @@ public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
 public import RealRooted.Derivative.Algebra
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

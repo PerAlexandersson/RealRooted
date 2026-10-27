@@ -19,7 +19,7 @@ the classical entire-function classification is proved, and no analytic
 statement scaffold is introduced.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This file supplies the local nonconstancy input for the open-mapping step in
 Borcea--Brändén, Part II, Lemma 1.4.
 -/
 
-@[expose] public section
+public section
 
 open Filter Metric Set
 open scoped Topology

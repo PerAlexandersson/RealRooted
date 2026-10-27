@@ -12,7 +12,7 @@ clients that only need root geometry do not inherit the coefficient-shape
 dependency closure.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

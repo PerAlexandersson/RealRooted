@@ -18,4 +18,4 @@ Curated entry point for polynomial root-amplitude identities, finite-sequence
 monotonicity and separation criteria, and smallest-root bounds.
 -/
 
-@[expose] public section
+public section

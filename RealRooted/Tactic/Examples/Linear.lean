@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Linear
 Small regression examples for degree-one real-rootedness and interlacing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

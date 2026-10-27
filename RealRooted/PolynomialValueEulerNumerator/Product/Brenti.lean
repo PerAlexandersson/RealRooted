@@ -16,7 +16,7 @@ For a linear factor `X + a` the numerator is `a + (1 - a) X`, which is PF exactl
 then handles the product over the roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

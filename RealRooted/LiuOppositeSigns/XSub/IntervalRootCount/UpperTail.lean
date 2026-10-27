@@ -6,7 +6,7 @@ public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
 # Liu x-subtraction upper exterior-tail root counts.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

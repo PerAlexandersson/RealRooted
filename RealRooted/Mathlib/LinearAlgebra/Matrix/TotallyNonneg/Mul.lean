@@ -22,7 +22,7 @@ is a `module` while `...Determinant.CauchyBinet` is not, and a `module` cannot
 import a non-`module`.  When upstreaming, both belong together.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

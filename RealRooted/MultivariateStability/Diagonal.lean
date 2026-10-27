@@ -10,7 +10,7 @@ This file transfers multivariate real stability to real-rootedness after all
 variables are identified with one univariate coordinate.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

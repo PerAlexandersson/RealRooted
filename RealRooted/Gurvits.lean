@@ -22,7 +22,7 @@ restriction `t ↦ p(t, y)` is real-rooted, so the univariate inequality
 `per A ≥ n! / nⁿ` for doubly stochastic `A` (Egorychev–Falikman).
 -/
 
-@[expose] public section
+public section
 
 open MvPolynomial
 

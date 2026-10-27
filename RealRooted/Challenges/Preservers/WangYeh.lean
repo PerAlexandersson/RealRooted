@@ -112,7 +112,7 @@ The affine criterion lives in `RealRooted.WangYeh.Affine`, the PF preserver in
 `RealRooted.WangYeh.TriangularArray` and `RealRooted.WangYeh.TriangularMatrix`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

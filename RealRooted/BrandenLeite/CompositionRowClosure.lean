@@ -12,7 +12,7 @@ series. The final theorem specializes this fact to the positive-order series
 associated with a convergent family of sequences.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 open scoped PowerSeries.WithPiTopology

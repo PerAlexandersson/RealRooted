@@ -14,7 +14,7 @@ Interlacing equivalences and positive-combination consequences of the
 Brändén--Solus `f`-polynomial transform.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

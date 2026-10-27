@@ -16,7 +16,7 @@ at the roots of `f`.  This lets the weak-sign Ma--Wang and Liu--Wang criteria av
 distinguished interlacer and a no-common-root hypothesis.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

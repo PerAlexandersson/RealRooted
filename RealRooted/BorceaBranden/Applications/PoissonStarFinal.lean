@@ -13,7 +13,7 @@ This file closes the stability equivalences and proves that the step-`c`
 falling-factorial transform conjugates `starC` to ordinary multiplication.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

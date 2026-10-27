@@ -16,7 +16,7 @@ This file contains compatibility lemmas intended for upstreaming to
 `Mathlib.Data.List.OfFn`.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

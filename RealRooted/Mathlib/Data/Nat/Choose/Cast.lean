@@ -14,7 +14,7 @@ public import Mathlib.Tactic
 This file contains small compatibility lemmas for `Mathlib.Data.Nat.Choose.Cast`.
 -/
 
-@[expose] public section
+public section
 
 namespace Nat
 

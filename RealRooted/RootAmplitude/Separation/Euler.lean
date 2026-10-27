@@ -13,7 +13,7 @@ lower bound for that product using the Basel sum.  Keeping this dependency in
 one leaf prevents elementary separation clients from importing zeta theory.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootAmplitude
 

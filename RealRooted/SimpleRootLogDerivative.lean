@@ -15,7 +15,7 @@ p''(r) / p'(r) = 2 · Σ_{z ∈ p.roots.erase r} 1 / (r - z).
 ```
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

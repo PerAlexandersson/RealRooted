@@ -3,7 +3,7 @@ module
 public import RealRooted.SameDegreeDerivative
 public import RealRooted.MaWang.DerivativeStep
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

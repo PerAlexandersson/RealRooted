@@ -50,7 +50,7 @@ do not attack raw scalar long-lag recurrences.  First derive a refined vector
 or production-matrix recurrence.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

@@ -10,4 +10,4 @@ public import RealRooted.WagnerX.AffineFactors
 Compatibility facade for the list-interlacing and polynomial Wagner-X layers.
 -/
 
-@[expose] public section
+public section

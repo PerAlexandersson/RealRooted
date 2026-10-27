@@ -13,7 +13,7 @@ corrected Hurwitz matrix is weakly Hurwitz stable. Together with the forward
 theorem, this gives the corrected nonzero equivalence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

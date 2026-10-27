@@ -15,7 +15,7 @@ closedness with the sign-normalized Hermite--Biehler correspondence to retain
 the orientation of the zero-aware interlacing relation `Interl`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Matrix Polynomial Topology
 

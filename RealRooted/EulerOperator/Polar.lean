@@ -11,7 +11,7 @@ degree box.  This is weaker in hypotheses than PF preservation and is useful
 for transformed polynomial families.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -14,7 +14,7 @@ This file supplies small connections between Mathlib's partition and Young
 diagram APIs.
 -/
 
-@[expose] public section
+public section
 
 namespace Nat.Partition
 

@@ -9,7 +9,7 @@ Macro expansions for compatibility transports, finite-family upgrades, and
 their pointwise sequence forms.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

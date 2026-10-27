@@ -15,7 +15,7 @@ The result supplies the limit step in Karlin's Gaussian approximation argument
 for variation-diminishing matrices.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

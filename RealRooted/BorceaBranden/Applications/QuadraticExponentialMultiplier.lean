@@ -7,7 +7,7 @@ public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 # Coordinatewise quadratic exponential multipliers
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

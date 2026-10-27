@@ -4,7 +4,7 @@ public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.En
 
 /-! # Endpoint residue sums for the weighted diagonal family -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

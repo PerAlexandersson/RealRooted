@@ -10,7 +10,7 @@ This file combines the coefficient-sign and stability interfaces for the
 dehomogenized BFJ coefficient into a polynomial PF certificate.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -117,7 +117,7 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

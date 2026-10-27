@@ -11,7 +11,7 @@ This file combines padded-homogenization stability with the coefficient-sign
 and stability criterion for the BFJ output.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

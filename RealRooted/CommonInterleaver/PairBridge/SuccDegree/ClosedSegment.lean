@@ -15,7 +15,7 @@ out exact upper-count gaps of two, and derivative induction then bounds the
 upper-count difference by one at every common non-root threshold.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ Construction of a polynomial from descending prescribed roots, and the
 root-slot arguments which produce right and left `StrictInterl` witnesses.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

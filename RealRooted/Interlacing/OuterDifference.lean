@@ -18,7 +18,7 @@ paper's two signed relations `g ≺ -f` and `g ≺ h` become the ordered triple
 right of the middle polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

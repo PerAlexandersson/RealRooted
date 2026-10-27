@@ -11,7 +11,7 @@ It contains the common-root inductions and ratio endpoints built on the
 Wronskian and degree-at-most-two converse layers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -14,7 +14,7 @@ This file provides the `Splits` consequences of Rolle's theorem needed by
 the real-rooted polynomial development.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -26,7 +26,7 @@ radius / Gelfand formula).  The uniqueness part follows from uniqueness of limit
 The proof was found by Aristotle (Harmonic).
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

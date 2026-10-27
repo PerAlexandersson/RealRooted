@@ -15,7 +15,7 @@ zero. The bounded composition-row limits preserve both the PF property and
 zero-aware interlacing.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

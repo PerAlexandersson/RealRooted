@@ -16,7 +16,7 @@ polynomial with the zero-parameter specialization of the real shifted Jacobi
 family.
 -/
 
-@[expose] public section
+public section
 
 open Nat
 

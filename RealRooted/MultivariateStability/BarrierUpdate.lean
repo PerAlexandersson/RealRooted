@@ -12,7 +12,7 @@ above its roots, `δ > 0` and `Φ_j p z ≤ 1 − 1/δ`, then `z + δ e_j` is ab
 the monotonicity and convexity of the barriers along coordinate lines (`BarrierCross`).
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

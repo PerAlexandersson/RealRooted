@@ -17,7 +17,7 @@ pencil then place a stable polynomial and its affine Euler core in one
 weakly stable real span.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

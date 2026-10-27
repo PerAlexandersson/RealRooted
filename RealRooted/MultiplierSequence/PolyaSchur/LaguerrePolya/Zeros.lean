@@ -9,7 +9,7 @@ This leaf proves the real-zero closure special to locally uniform limits of
 real splitting polynomials. It is not a general Hurwitz or Rouché theorem.
 -/
 
-@[expose] public section
+public section
 
 open Complex Filter Polynomial Topology
 

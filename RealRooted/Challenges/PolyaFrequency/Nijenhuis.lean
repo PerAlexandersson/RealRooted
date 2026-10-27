@@ -70,7 +70,7 @@ This challenge entry uses ordinary nonattacking rook placements. It is
 separate from the project's non-nesting rook-polynomial model.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

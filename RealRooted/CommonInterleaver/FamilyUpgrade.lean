@@ -9,7 +9,7 @@ The Chudnovsky--Seymour pairwise-to-global common-interleaver upgrades, with
 their right- and left-oriented finite-sum corollaries.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -11,7 +11,7 @@ positive-split translated x-subtraction pencils for the same-degree and
 right-successor branches.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

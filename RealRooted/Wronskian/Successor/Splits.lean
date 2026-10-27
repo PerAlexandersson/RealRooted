@@ -9,7 +9,7 @@ A strict Wronskian sign transfers splitness from a positive-leading polynomial
 to its one-degree-higher companion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

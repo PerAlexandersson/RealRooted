@@ -20,7 +20,7 @@ multiplier sequence by the finite Pólya--Schur theorem.  The remaining sign
 patterns follow by negating `g` or reflecting it in `x ↦ -x`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

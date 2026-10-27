@@ -16,7 +16,7 @@ Multiplication by a nonzero scalar, as a continuous linear map `𝕜 →L[𝕜] 
 with inverse division by the scalar.
 -/
 
-@[expose] public section
+public section
 
 namespace ContinuousLinearMap
 

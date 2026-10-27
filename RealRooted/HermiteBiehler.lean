@@ -10,4 +10,4 @@ The proof is organized into focused modules under `RealRooted.HermiteBiehler`.
 This file preserves the historical all-in-one import.
 -/
 
-@[expose] public section
+public section

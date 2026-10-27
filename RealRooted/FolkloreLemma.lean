@@ -6,7 +6,7 @@ public import RealRooted.Derivative
 public import RealRooted.Wagner
 public import RealRooted.ObreschkoffConverse
 
-@[expose] public section
+public section
 
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 

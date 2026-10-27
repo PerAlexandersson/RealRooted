@@ -17,7 +17,7 @@ family. They isolate an ordinary-point simple-root criterion and a factorized
 second-derivative elimination identity.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

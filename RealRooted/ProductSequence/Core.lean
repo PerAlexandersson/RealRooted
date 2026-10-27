@@ -10,7 +10,7 @@ Reusable induction, finite-product, period-two, and quotient-model shells with
 caller-supplied real-rooted factor certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

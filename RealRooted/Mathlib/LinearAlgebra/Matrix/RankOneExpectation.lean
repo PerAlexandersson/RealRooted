@@ -15,7 +15,7 @@ over a finite distribution of vectors `u` equals `(1 - ∂ₜ) det (M + t A) |_{
 `A = E[u uᵀ]`.  This is the one-variable step of Marcus–Spielman–Srivastava, Theorem 4.1.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

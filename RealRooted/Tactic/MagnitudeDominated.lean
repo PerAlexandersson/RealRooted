@@ -9,7 +9,7 @@ Thin wrappers for magnitude-dominated Ma-Wang / generalized Liu-Wang
 interlacing certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

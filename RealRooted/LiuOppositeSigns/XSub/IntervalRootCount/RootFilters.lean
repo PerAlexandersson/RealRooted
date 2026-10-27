@@ -15,7 +15,7 @@ pencil into local lower bounds for the number of roots in a single gap between
 consecutive left-endpoint roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

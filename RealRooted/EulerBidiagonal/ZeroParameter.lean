@@ -13,7 +13,7 @@ of the Euler step with parameters `1`, `b + 1`, `u (n + 1) + v`, `v`.  Consecuti
 interlace by `generalRowsDep_spec` (A269945 is `θ ^ 2 + X`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

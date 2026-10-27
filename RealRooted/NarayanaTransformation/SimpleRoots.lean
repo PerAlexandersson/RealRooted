@@ -12,7 +12,7 @@ roots for every generalized Narayana polynomial. Derivative interlacing then
 gives the corresponding positive-degree derivative result.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

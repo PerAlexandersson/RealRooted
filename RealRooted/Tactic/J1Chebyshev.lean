@@ -10,4 +10,4 @@ real linear factors.  The tactic syntax is implemented in
 `RealRooted.Tactic.Product`; this file preserves the J1-specific import path.
 -/
 
-@[expose] public section
+public section

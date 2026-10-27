@@ -10,7 +10,7 @@ multivariate polynomials with real coefficients.  Specializing real values may
 annihilate the polynomial, so the natural conclusion is stability or zero.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -15,7 +15,7 @@ This file supplies the permanent analogue of the first-column Laplace
 expansion for determinants.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

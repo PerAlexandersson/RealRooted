@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.SequenceSyntax
 Parser declarations for normalized scalar-denominator recurrence certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

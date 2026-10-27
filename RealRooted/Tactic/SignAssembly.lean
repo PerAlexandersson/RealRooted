@@ -12,7 +12,7 @@ the interior roots, while a left witness and the two end signs give three
 additional roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

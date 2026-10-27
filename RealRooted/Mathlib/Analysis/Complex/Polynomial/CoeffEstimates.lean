@@ -28,7 +28,7 @@ corresponding power series.
   `fun z => ∑' m, c m * ∏ i, z i ^ m i`, and this series converges absolutely.
 -/
 
-@[expose] public section
+public section
 
 open Complex Filter Topology
 

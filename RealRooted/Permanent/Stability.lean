@@ -12,4 +12,4 @@ and fractional-substitution bridge used in the monotone column permanent
 theorem.
 -/
 
-@[expose] public section
+public section

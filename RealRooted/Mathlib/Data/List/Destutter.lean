@@ -14,7 +14,7 @@ This file contains compatibility lemmas intended for upstreaming to
 `Mathlib.Data.List.Destutter`.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

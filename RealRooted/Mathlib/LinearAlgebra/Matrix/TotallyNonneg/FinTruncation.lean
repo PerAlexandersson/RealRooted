@@ -14,7 +14,7 @@ This file transfers total nonnegativity from a compatible family of finite
 principal truncations to a matrix indexed by the natural numbers.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

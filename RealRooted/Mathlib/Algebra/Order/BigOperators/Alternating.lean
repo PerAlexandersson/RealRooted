@@ -16,7 +16,7 @@ This Mathlib-shaped shim gives elementary finite truncation bounds for an
 alternating sum of nonnegative decreasing terms.
 -/
 
-@[expose] public section
+public section
 
 namespace Finset
 

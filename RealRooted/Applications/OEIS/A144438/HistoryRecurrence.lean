@@ -13,7 +13,7 @@ records compatibility with the operator-defined exact layers.  The generic
 minimum-insertion identities remain in the combinatorics namespace.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

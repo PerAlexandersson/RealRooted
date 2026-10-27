@@ -10,7 +10,7 @@ Quotient nonnegativity and a reusable induction principle for eliminating
 shared roots from close-degree positive-combination pairs.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

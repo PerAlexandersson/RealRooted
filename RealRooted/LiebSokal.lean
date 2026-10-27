@@ -10,7 +10,7 @@ theorem used in Gribinski--Marcus, *A rectangular additive convolution for
 polynomials*, Theorem 2.4.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

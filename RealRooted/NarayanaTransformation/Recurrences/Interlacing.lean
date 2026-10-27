@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Recurrences.Identities
 # Generalized Narayana recurrence interlacing
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

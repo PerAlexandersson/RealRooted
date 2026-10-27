@@ -16,7 +16,7 @@ This file records endpoint deletion and repeated endpoint padding for
 ordered root lists do not need to reconstruct an `IsChain` proof.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

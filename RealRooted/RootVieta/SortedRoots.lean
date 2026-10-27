@@ -11,7 +11,7 @@ Coefficients and values of a polynomial with nonzero roots and constant coeffici
 expressed through the reciprocal sorted-root sequence `SortedRoots.rootSeq`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootVieta
 

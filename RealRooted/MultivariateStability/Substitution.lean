@@ -11,7 +11,7 @@ preserver.  It is the `bind₁` form of composition with polynomials whose
 values have positive imaginary part on the upper half-plane.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Hadamard.Finite
 
-@[expose] public section
+public section
 
 open Polynomial
 

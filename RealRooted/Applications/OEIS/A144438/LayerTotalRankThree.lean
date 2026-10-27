@@ -13,7 +13,7 @@ forms in the quotient numerator have discriminant `-359`, so they are strictly
 positive.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

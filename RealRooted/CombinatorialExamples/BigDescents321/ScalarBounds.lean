@@ -12,7 +12,7 @@ the two threshold inequalities, valid for `n ≥ 40`, have excess numerators wit
 coefficients after `n = 40 + s`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BigDescents321
 

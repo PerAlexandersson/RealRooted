@@ -11,7 +11,7 @@ comparison polynomial alternates in sign at them:
 to the right)`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

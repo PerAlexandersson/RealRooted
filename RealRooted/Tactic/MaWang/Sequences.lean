@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.Steps
 Elaboration rules for ordinary derivative and derivative-plus-lag sequences.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

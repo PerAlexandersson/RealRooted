@@ -11,7 +11,7 @@ same-degree interlacing, together with the higher-degree converse from a
 positive Bezout matrix.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix
 

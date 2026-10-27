@@ -10,7 +10,7 @@ every pair of nonnegative polynomials whose positive combinations are
 real-rooted.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ Sequence adapters for recurrences that multiply an independently real-rooted
 factor by an iterate of `tDeriv` applied to the previous row.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

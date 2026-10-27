@@ -14,7 +14,7 @@ This file supplies a small compatibility lemma saying that evaluation is
 unchanged when an assignment is modified outside the polynomial's variables.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

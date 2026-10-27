@@ -10,7 +10,7 @@ Interlacing comparisons for positive shifts of the Euler operator
 `theta p = X * p'` on polynomial PF families.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

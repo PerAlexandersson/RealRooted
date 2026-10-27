@@ -14,7 +14,7 @@ set in `reflectSet n T` number `C(n - k, n - m - 1) * gapMultinomial (m + 1) (T 
 `m = max T`; and only the identity has no descents (`desLeCount_empty`).
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

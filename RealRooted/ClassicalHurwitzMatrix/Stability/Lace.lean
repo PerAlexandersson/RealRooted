@@ -14,7 +14,7 @@ submatrix, shifted by `N ≥ deg F`, of the classical Hurwitz matrix of the reve
 nonnegative (issue #1113).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

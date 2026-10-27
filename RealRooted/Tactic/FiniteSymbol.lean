@@ -9,7 +9,7 @@ Thin explicit and automatic wrappers around the proved multiaffine
 finite-symbol stability theorem.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

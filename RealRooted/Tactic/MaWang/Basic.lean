@@ -15,7 +15,7 @@ Small recurring syntax and macro helpers used by the focused Ma--Wang tactic
 frontends.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

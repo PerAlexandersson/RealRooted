@@ -10,4 +10,4 @@ succ-degree, common-root reduction, and nonnegative-shift layers live in
 dedicated children.
 -/
 
-@[expose] public section
+public section

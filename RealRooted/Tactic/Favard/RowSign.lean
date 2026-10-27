@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Favard.Denominator
 Macro rules for row-sign-normalized affine Favard certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

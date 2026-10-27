@@ -8,7 +8,7 @@ public import RealRooted.InterlacingSequenceBasic
 Thin wrappers for list-level interlacing sequence plumbing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

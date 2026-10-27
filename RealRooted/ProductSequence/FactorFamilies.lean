@@ -9,7 +9,7 @@ First-order affine, monomial-power, scalar-power, and powered-affine recurrence
 shells derived from the generic product-sequence core.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

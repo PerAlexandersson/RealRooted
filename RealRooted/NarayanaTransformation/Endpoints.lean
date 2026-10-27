@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Gamma
 # Narayana transformation final endpoints.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

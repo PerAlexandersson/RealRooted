@@ -9,7 +9,7 @@ public meta import RealRooted.Tactic.RowInterlacing
 The full tactic environment must contain every main theorem named by the generated route table.
 -/
 
-@[expose] public section
+public section
 
 open Lean Elab Command Meta
 

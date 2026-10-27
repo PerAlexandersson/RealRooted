@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Finish
 Thin wrappers for the checked quadratic and cubic discriminant split criteria.
 -/
 
-@[expose] public section
+public section
 
 open Lean.Elab.Tactic
 

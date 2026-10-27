@@ -9,7 +9,7 @@ This file isolates the simultaneous substitution from Section 3 of
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

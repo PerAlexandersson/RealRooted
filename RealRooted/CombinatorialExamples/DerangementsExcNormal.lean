@@ -14,7 +14,7 @@ the factor `1 - X` vanishes, and the values `D_n = d_n(1)` are the derangement n
 Harper's theorem gives asymptotic normality of the excedance statistic on derangements.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

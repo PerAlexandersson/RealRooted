@@ -24,7 +24,7 @@ provides a direct positive-parameter count-equality wrapper for intervals
 starting at `0`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

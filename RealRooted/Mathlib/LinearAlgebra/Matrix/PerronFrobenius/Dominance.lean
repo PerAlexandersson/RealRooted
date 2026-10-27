@@ -44,7 +44,7 @@ Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Dominance.lean
 -/
 
-@[expose] public section
+public section
 
 open Quiver.Path
 namespace Matrix

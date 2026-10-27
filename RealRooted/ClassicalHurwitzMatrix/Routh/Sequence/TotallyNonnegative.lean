@@ -11,7 +11,7 @@ This file iterates the one-step total-nonnegativity implication backward along
 an algebraic Routh sequence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

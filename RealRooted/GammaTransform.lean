@@ -14,4 +14,4 @@ Focused entry point for gamma-transform algebra, Euler derivatives, root maps,
 ordered-root completion, preservation results, and the interlacing bridge.
 -/
 
-@[expose] public section
+public section

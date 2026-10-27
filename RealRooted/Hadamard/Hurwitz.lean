@@ -3,7 +3,7 @@ module
 public import RealRooted.Hadamard.GarloffWagner
 public import RealRooted.HurwitzMatrix
 
-@[expose] public section
+public section
 
 open Polynomial
 

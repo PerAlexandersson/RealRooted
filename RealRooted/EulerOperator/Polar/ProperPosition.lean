@@ -11,7 +11,7 @@ This module combines that identity with the reciprocal-shift interlacing
 swap and derivative preservation.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

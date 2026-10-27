@@ -15,7 +15,7 @@ real-root and interlacing consequences live in the separate real-valued
 `QuadraticInterlacing` module.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ form. This module records the algebraic reduction independently of any chosen
 initial polynomial or real-rootedness argument.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

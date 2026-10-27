@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang.Strong
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -13,7 +13,7 @@ that actually occur.  The one-coordinate analytic step lives in
 rename reflection, and algebraic closure facts.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

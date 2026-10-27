@@ -16,7 +16,7 @@ inputs and handling zero separately. This does not assert a converse for
 arbitrary PF sequences outside the polynomial-value setting.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

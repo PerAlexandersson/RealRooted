@@ -16,4 +16,4 @@ Favard recurrence, real-rootedness, interlacing, simple-root and Sturm theory,
 and the separately layered algebraic and Gaussian integral orthogonality APIs.
 -/
 
-@[expose] public section
+public section

@@ -15,7 +15,7 @@ and `b * c ≤ a * d`, then
 is real-rooted, with the zero polynomial allowed at degenerate parameters.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

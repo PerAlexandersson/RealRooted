@@ -107,7 +107,7 @@ convolution.  The Toeplitz/PF infrastructure remains in
 `RealRooted.AissenSchoenbergWhitney`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

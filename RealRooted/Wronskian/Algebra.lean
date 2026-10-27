@@ -33,7 +33,7 @@ The general algebraic identities are provided by
 the real-rootedness API and belong in this library.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

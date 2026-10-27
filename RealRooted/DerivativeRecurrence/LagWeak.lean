@@ -10,7 +10,7 @@ sequence induction.  Unlike the strict negative-root route, it allows a root
 at zero to persist through every row.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

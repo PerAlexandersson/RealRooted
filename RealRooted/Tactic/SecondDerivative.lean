@@ -12,7 +12,7 @@ This file contains small tactic-facing wrappers for second-derivative
 recurrences that factor as a Ma--Wang step followed by `a + D`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

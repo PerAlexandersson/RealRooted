@@ -19,7 +19,7 @@ operators and generic second-order ODE infrastructure. No root-order or
 orthogonality imports are used here.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

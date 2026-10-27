@@ -18,7 +18,7 @@ of the derivative with `Polynomial.resultant_add_right_deg`, so no characteristi
 is needed.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

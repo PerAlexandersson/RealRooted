@@ -20,7 +20,7 @@ where `T = Nat.centralTrinomial`.  These are the even and odd rows of OEIS
 A132885.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

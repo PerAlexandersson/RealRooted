@@ -12,7 +12,7 @@ Jacobi family. The coefficient algebra and positivity of the recurrence
 coefficients live in `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

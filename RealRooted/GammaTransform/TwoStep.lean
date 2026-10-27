@@ -9,7 +9,7 @@ An adjacent proper-position pair of gamma polynomials lifts through the two
 successive ambient degrees `2n`, `2n + 1`, and `2n + 2`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -9,7 +9,7 @@ Degree and positive-leading-coefficient bookkeeping for positive linear
 combinations of two real polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

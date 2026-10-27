@@ -11,7 +11,7 @@ assumes every member is nonzero.  For polynomials with nonnegative coefficients 
 roots (PF polynomials), zero members are harmless: they contribute nothing to a weighted sum.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

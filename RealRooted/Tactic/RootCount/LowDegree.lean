@@ -12,7 +12,7 @@ Sequence lifts and analytic degree-at-most-three endpoints for root counts,
 upper-threshold counts, and root crossing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

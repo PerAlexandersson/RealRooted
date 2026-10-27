@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Finish
 Thin wrappers for the degree-one real-rootedness and interlacing endpoints.
 -/
 
-@[expose] public section
+public section
 
 open Lean.Elab.Tactic
 open Polynomial

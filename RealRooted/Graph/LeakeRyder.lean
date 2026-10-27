@@ -13,7 +13,7 @@ weights isolate an induced claw.  Its univariate independence polynomial is
 `1 + 4 * X + 3 * X ^ 2 + X ^ 3`, whose cubic discriminant is negative.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

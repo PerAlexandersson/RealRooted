@@ -11,4 +11,4 @@ The theorem-only entry point for weak Ma--Wang derivative recurrences. Tactic
 syntax and elaboration remain in `RealRooted.Tactic.MaWang`.
 -/
 
-@[expose] public section
+public section

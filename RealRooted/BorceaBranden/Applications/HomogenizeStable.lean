@@ -11,7 +11,7 @@ The zero polynomial must be excluded because strict upper-half-plane stability r
 evaluation in the region to be nonzero.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

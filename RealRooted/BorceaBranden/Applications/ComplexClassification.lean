@@ -11,7 +11,7 @@ to the classification interface without creating a cycle between the challenge
 entry point and its univariate compatibility modules.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

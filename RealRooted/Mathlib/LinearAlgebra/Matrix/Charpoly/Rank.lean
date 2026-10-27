@@ -16,7 +16,7 @@ This file records the general relationship between matrix nullity and the
 geometric and algebraic multiplicities of the zero eigenvalue.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

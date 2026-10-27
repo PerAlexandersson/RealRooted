@@ -20,7 +20,7 @@ Garloff--Wagner, Theorem 4(b) (`StrictInterl.interl_hadamardProduct`), and PF po
 the Schur--Malo theorem (`IsPFPolynomial.hadamardProduct`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

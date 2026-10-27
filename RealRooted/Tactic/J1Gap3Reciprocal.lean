@@ -10,7 +10,7 @@ the underlying theorems are `isRealRooted_of_reciprocalShift_sequence` and
 `isRealRooted_of_reciprocalShift_pf_sequence`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

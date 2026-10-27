@@ -10,7 +10,7 @@ This file proves the zero-safe parity sign constraint for an arbitrary
 multiplier sequence and derives the classical four-way PF normalization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

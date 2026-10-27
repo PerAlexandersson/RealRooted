@@ -28,7 +28,7 @@ The interlacing backend for this shape is
 * `derivLag_natDegree`, `derivLag_ne_zero`, `derivLag_leadingCoeff_pos`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

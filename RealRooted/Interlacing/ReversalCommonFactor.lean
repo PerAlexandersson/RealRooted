@@ -10,7 +10,7 @@ This module packages the standard transports needed when a normalized model is p
 rescaled, reversed, and given a fixed real-rooted factor.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

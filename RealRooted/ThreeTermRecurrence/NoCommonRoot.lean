@@ -27,7 +27,7 @@ This file proves it for the two common recurrence shapes.
   proved in the same induction (`derivLag_not_isRoot_of_isRoot_succ`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

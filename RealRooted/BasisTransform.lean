@@ -11,7 +11,7 @@ real-polynomial coefficient-positivity predicate used by the real-rootedness
 library.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

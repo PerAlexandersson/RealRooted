@@ -11,7 +11,7 @@ The bidiagonal consequences live in `BidiagonalSymbol.RealConsequences`.
 This module preserves the older import path and declaration names.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

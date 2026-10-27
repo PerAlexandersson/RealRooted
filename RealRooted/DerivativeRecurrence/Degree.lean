@@ -34,7 +34,7 @@ every row has a positive leading coefficient.
 * `derivativeRecurrence_eval_zero_pos`, `derivRec₂_eval_zero_pos`: positivity of the rows at `0`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

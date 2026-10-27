@@ -18,7 +18,7 @@ identity `risingFactorial_pfaffSaalschutz`, after reflecting the negative
 rising factorials.
 -/
 
-@[expose] public section
+public section
 
 open Finset Polynomial
 

@@ -15,7 +15,7 @@ import Mathlib.Tactic.Linarith
 # Favard recurrence for shifted Jacobi polynomials
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

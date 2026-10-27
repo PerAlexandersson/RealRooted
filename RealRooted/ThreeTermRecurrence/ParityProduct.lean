@@ -19,7 +19,7 @@ are the OEIS rows A158909, A143858 and A092879, whose order-three recurrences ha
 three-term reduction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

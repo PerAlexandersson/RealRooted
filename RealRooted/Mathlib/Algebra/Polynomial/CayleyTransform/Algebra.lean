@@ -16,7 +16,7 @@ public import Mathlib.Tactic.Ring
 Root-factor, injectivity, and binomial-basis formulas over the complex numbers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

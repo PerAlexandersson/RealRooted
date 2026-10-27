@@ -323,7 +323,7 @@ homogenization, top-component and same-phase consequences, and inversion in
 one variable.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped ComplexOrder

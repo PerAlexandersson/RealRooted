@@ -17,7 +17,7 @@ The same computation for the type `B` Eulerian polynomials `generalizedEulerian 
 `n / 2` and, for `n ≥ 2`, variance `(n + 1) / 12`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

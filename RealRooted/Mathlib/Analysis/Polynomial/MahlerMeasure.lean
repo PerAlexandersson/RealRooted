@@ -14,7 +14,7 @@ Upstream-shaped consequences of the standard coefficient/Mahler-measure
 estimate for complex polynomials whose roots lie in the closed unit disk.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This layer translates thresholded root counts into the ascending sequence of
 negative root magnitudes.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

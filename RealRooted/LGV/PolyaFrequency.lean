@@ -17,7 +17,7 @@ remain in LeanLGV; here we only apply their determinant nonnegativity theorem
 to every strict Toeplitz minor.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -2,7 +2,7 @@ module
 
 public import RealRooted.GarloffWagner.Theorem12
 
-@[expose] public section
+public section
 
 open Polynomial
 

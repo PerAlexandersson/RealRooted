@@ -121,7 +121,7 @@ variant.  The sparse test families and the 2-by-2 reduction machinery live in
 `RealRooted.MatrixInterlacing`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ public import RealRooted.SameDegreeCountFromAnalytic
 Common-root recursion and degree-bounded common-interleaver reductions.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

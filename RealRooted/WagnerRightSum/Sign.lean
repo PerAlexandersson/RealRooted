@@ -9,7 +9,7 @@ Product signs, evaluation signs at interlacing roots, intermediate-value
 bridges, and parity-controlled signs outside the root interval.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

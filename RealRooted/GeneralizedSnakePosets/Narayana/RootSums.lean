@@ -11,7 +11,7 @@ and records the obstruction to a uniformly strict negative root bound at the
 endpoint `ν = -1`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

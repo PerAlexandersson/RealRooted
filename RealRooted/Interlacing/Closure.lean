@@ -13,7 +13,7 @@ real linear combination split, and polynomial root continuity passes that
 property to the limit one combination at a time.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

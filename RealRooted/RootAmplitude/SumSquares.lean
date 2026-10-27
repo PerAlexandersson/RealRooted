@@ -13,7 +13,7 @@ lower bound on every amplitude. The final lemma incorporates the elementary
 factor occurring at a negative root.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootAmplitude
 

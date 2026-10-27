@@ -11,7 +11,7 @@ This file proves the coefficientwise nonnegativity of common-phase
 restrictions without importing stability or root-location machinery.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

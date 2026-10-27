@@ -9,7 +9,7 @@ If h ≪ f and h ≪ g with positive leading coefficients, then h ≪ (f + g).
 Includes SumCompatibleLeft for recursive n-summand assembly.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

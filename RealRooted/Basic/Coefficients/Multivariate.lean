@@ -12,7 +12,7 @@ This file connects coefficientwise nonnegativity for multivariate and
 univariate polynomials and records its compatibility with homogenization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

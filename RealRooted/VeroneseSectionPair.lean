@@ -15,7 +15,7 @@ This sequence-independent corollary was first used in
 `ProofsOeis.VeronesePairs`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

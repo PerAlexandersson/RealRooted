@@ -187,14 +187,23 @@ lake exe lint-style                                # Mathlib text style: whitesp
 lake exe runLinter RealRooted                      # Mathlib environment linters (after `lake build`)
 ```
 
-Source files use the Lean module system: after the copyright comment comes `module`, then
-`public import`s, the module docstring and `@[expose] public section`.  `python3
-scripts/modularize.py FILE` converts a new file to this layout.  Theorem bodies are not exported,
-so editing a proof no longer rebuilds the files that import it.  Consequences: a `private`
-declaration is invisible to other files, including tactic expansions there; elaborators,
-`initialize` and simp-set registrations go in a `public meta section`; and a module can only
-import modules.  Files that cannot be modules yet are listed in `scripts/non_module_files.txt`
-(#2016), and that list may only shrink.
+Source files use the Lean module system, following Mathlib's conventions:
+
+- After the copyright comment comes `module`, then the `public import`s and the module
+  docstring.  `python3 scripts/modularize.py FILE` converts a new file to this layout.
+- A file that declares definitions opens `@[expose] public section`, so importers can unfold them
+  (`rfl`, `decide`, `simp [foo]`).  If only some bodies need to be visible, use `public section`
+  and put `@[expose]` on those definitions.  A file with only theorems, notation or syntax opens
+  `public section`: theorem bodies are never exported, so exposing it changes nothing.
+  `scripts/check_module_system.py` enforces this (`--fix` rewrites the header).
+- Theorem bodies are not exported, so editing a proof does not rebuild the files that import it;
+  editing an exposed definition does.  Prefer stating API lemmas (`foo_def`, `foo_apply`, `simp`
+  lemmas) over unfolding another file's definitions.
+- A `private` declaration is invisible to other files, including tactic expansions there.
+  Elaborators, `initialize` and simp-set registrations go in a `public meta section`, and tactic
+  modules are imported with plain `import`, so their syntax does not leak into importers.
+- A module can only import modules.  Files that cannot be modules yet are listed in
+  `scripts/non_module_files.txt` (#2016), and that list may only shrink.
 
 Files under `RealRooted/Mathlib/`, the upstream targets, carry Mathlib's file header: the
 copyright block (`Copyright (c) YYYY Names. All rights reserved.`, the Apache 2.0 line and

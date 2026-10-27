@@ -8,4 +8,4 @@ public import RealRooted.GammaTransform
 Use `RealRooted.GammaTransform` for the focused gamma-transform package.
 -/
 
-@[expose] public section
+public section

@@ -58,7 +58,7 @@ The proof is in `RealRooted.Hermite.Poulain`; the interlacing consequence is in
 `RealRooted.Hermite.PoulainInterlacing`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Challenges

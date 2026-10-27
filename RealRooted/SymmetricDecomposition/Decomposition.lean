@@ -9,7 +9,7 @@ Formula, existence, uniqueness, and compatibility results for the two
 Brändén--Solus symmetric decompositions.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

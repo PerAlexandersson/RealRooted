@@ -9,7 +9,7 @@ Real-rootedness, nonpositive-root, and minimal-degree transport for gamma
 transforms.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 open scoped BigOperators

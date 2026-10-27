@@ -14,7 +14,7 @@ public import Mathlib.Topology.Algebra.Polynomial
 Legacy root-list interlacing algebra used by Wagner's polynomial transports.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

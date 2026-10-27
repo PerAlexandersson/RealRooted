@@ -5,7 +5,7 @@ public import RealRooted.Hadamard.Product
 public import RealRooted.HermiteBiehler.OddEven
 public import RealRooted.PFPolynomial
 
-@[expose] public section
+public section
 
 open Polynomial
 

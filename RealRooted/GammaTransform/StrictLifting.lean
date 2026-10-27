@@ -23,7 +23,7 @@ restated for `StrictInterl`, `HasSimpleRoots` and an explicit no-common-root
 hypothesis.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

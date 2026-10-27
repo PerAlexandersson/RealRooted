@@ -11,7 +11,7 @@ This file applies the explicit odd/even Routh theorem to the canonical parity
 contractions of an arbitrary polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

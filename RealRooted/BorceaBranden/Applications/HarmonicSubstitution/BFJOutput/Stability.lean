@@ -11,7 +11,7 @@ This file derives weak univariate upper-half-plane stability of the
 dehomogenized BFJ coefficient by specializing its second variable to one.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -9,7 +9,7 @@ At an earliest bad expanding box, the time is positive, every root residue
 sign throughout that box is nonnegative, and the selected bad sign vanishes.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

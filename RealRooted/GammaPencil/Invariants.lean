@@ -17,7 +17,7 @@ outside that box both input coefficients vanish (with the even-rank boundary
 canceling exactly).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

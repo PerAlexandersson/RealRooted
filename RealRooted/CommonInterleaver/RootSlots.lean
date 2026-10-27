@@ -9,7 +9,7 @@ Interlacing transport through the root-slot intervals attached to descending
 root sequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

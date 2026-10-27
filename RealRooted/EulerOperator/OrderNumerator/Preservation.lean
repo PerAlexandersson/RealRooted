@@ -11,7 +11,7 @@ The strict and tight parameter regimes have different degree behaviour.  This
 leaf keeps both hypotheses explicit.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

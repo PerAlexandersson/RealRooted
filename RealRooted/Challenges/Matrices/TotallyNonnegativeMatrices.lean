@@ -185,7 +185,7 @@ Cryer theorems for totally nonnegative matrices.  The matrix theory lives in
 and mixing in `RealRooted.MatrixInterlacing.TotallyNonnegative`.
 -/
 
-@[expose] public section
+public section
 
 open Matrix Polynomial
 

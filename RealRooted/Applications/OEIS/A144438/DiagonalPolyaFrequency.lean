@@ -15,7 +15,7 @@ The total conclusions are univariate: they do not assert stability of either
 outer multivariate sum.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

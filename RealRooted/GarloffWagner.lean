@@ -10,4 +10,4 @@ The theorem-route API is layered as `Algebra`, `Iterated`, `KreinData`,
 established import path.
 -/
 
-@[expose] public section
+public section

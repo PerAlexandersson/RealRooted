@@ -12,7 +12,7 @@ public import RealRooted.Hermite.Basic
 # Favard recurrence for probabilists' Hermite polynomials
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

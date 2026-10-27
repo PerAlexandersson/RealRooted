@@ -10,7 +10,7 @@ This file packages the closed-root transport theorem for fixed-degree monic
 polynomial sequences as a right-half-plane stability result.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

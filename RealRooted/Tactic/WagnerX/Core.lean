@@ -12,7 +12,7 @@ public import RealRooted.WagnerX.ProperPosition
 The basic Wagner bridge and derivative-gap recurrence backends.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

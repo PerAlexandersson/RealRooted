@@ -14,7 +14,7 @@ This file records that forming the characteristic matrix commutes with taking
 a principal submatrix along an injective index map.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

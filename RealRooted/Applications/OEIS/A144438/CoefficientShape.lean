@@ -11,7 +11,7 @@ Pólya-frequency certificates.  It uses only the algebraic recurrence family;
 no combinatorial interpretation of A144438 or of the weight is assumed.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

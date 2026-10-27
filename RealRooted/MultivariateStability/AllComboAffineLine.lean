@@ -11,7 +11,7 @@ This module transports zero-aware multivariate real stability and its
 all-real-combinations condition to split univariate affine-line restrictions.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

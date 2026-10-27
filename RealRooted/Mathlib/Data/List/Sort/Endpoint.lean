@@ -15,7 +15,7 @@ This file records the endpoint decomposition of a sorted list bounded above by
 one of its values.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

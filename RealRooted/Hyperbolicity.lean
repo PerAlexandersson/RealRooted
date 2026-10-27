@@ -14,7 +14,7 @@ This file relates Gårding hyperbolicity to multivariate real stability and
 proves boundary hyperbolicity of ordinary homogenization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

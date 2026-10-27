@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Favard.DirectSyntax
 Parser declarations for scalar-normalized and raw-affine Favard certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

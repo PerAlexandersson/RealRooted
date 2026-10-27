@@ -12,7 +12,7 @@ of `q` (with one extra zero to the left when `v > 0` and one positive zero when 
 inputs for locating the roots of `generalStep q` (`EulerBidiagonal.Location`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

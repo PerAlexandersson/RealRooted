@@ -8,7 +8,7 @@ public import RealRooted.Tactic.CommonInterleaver.FamilySyntax
 Parser declarations for degree-at-most-three pair and family endpoints.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

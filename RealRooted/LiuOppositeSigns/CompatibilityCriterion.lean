@@ -17,7 +17,7 @@ combines it with the factor-return reverse direction and common-root deletion
 into the corrected Theorem 2.1, and proves Corollary 2.2.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

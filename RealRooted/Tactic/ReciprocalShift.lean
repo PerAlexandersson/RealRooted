@@ -11,7 +11,7 @@ Transfer real-rootedness from a row family to its degree-padded reciprocal
 reflection.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

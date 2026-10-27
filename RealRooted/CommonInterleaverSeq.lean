@@ -10,7 +10,7 @@ descending-root construction and finite-family upgrades live in dedicated
 children.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

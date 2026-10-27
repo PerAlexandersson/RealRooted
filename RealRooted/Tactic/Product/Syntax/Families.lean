@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Finish
 Syntax for Product side tactics and the retained lift dispatcher.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

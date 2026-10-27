@@ -9,7 +9,7 @@ Linearity of `gammaTransform` under negation and subtraction, and the action of 
 operator `X * d/dX` on a gamma transform.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

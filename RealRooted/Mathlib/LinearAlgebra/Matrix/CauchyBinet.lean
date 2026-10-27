@@ -19,7 +19,7 @@ public import Mathlib.Data.Int.Order.Basic
   `1`, at most one entry `-1` and zeros elsewhere has determinant of absolute value at most one.
 -/
 
-@[expose] public section
+public section
 
 open Finset Matrix
 

@@ -16,7 +16,7 @@ This structural result is a prerequisite for multiaffine stability criteria.
 It does not assert stability of the outer sum.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

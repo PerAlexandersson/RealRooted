@@ -16,7 +16,7 @@ holomorphic functions.  It does not prove analytic root closure of arbitrary
 locally uniform limits.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

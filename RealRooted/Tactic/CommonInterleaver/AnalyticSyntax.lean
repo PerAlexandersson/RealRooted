@@ -9,7 +9,7 @@ Parser declarations for root-count certificates and two-polynomial
 common-interleaver endpoints.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

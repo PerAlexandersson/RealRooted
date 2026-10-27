@@ -11,7 +11,7 @@ input-root parameter varies.  At a zero companion residue, we compute the
 derivative of that residue along the branch.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 open scoped ContDiff

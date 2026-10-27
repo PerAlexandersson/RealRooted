@@ -10,7 +10,7 @@ the finite Braun--Jal recurrence checks, as instances of the row formulas in
 `RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

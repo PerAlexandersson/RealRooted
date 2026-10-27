@@ -11,7 +11,7 @@ roots of the current row gives the sign condition needed by the Ma-Wang /
 generalized Liu-Wang interlacing criteria.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

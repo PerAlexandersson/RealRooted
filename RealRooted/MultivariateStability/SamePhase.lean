@@ -13,7 +13,7 @@ common-phase restriction.  Strictly positive weights follow from affine-line
 restriction; zero weights are obtained by a bounded-degree closed-root limit.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

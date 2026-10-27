@@ -31,7 +31,7 @@ interval.  For `P (n + 1) = A n * (P n)' + B n * P n` this propagates:
   `[L n, U]` with `L` nonincreasing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -12,7 +12,7 @@ of its two largest entries, and hence a logarithmic lower bound on the
 corresponding extreme root gap.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootAmplitude
 

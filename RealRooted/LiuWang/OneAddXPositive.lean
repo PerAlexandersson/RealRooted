@@ -13,7 +13,7 @@ This sequence-independent theorem family was first used in the OEIS proof
 project in ProofsOeis.OneAddXPositive.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

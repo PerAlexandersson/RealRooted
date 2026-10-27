@@ -10,7 +10,7 @@ Thin wrappers for the affine-derivative interlacing theorem
 `C c * f + (1 - X) * f.derivative`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

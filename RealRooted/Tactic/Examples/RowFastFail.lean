@@ -12,7 +12,7 @@ import RealRooted.Tactic.RowInterlacing
 Known unsupported application goals fail with their route error under a tight heartbeat cap.
 -/
 
-@[expose] public section
+public section
 
 open Lean Elab Tactic RealRooted
 

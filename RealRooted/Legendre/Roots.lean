@@ -18,7 +18,7 @@ simple roots in `(-1, 0)`. Consecutive polynomials interlace in both
 orientations.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

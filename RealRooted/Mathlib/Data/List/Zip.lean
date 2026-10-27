@@ -14,7 +14,7 @@ public import Mathlib.Order.Basic
 Small list lemmas that are candidates for upstreaming to Mathlib.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

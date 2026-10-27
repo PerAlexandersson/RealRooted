@@ -34,7 +34,7 @@ adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Uniqueness.lean
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 variable {n : Type*} [Fintype n] [Nonempty n] [DecidableEq n]

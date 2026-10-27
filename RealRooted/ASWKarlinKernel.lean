@@ -16,7 +16,7 @@ For a complex root `z` of a real polynomial, the vector with entries
 matrix.  This is the algebraic input to the finite-order sector argument.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix BigOperators
 

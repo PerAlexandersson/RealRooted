@@ -12,7 +12,7 @@ certificate.  It remains separate from the recurrence module so clients that
 only need root geometry do not inherit the Pólya-frequency dependency closure.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

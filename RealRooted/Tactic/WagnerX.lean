@@ -13,4 +13,4 @@ public import RealRooted.Tactic.WagnerX.Frontend
 Compatibility facade for the recurrence backends, syntax, and macro frontend.
 -/
 
-@[expose] public section
+public section

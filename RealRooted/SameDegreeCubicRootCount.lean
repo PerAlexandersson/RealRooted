@@ -11,7 +11,7 @@ This module records elementary cubic and quartic root-list helpers for
 low-degree root-count routes.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 
