@@ -62,6 +62,12 @@ register_option rr.row.explain.heartbeats : Bool := {
   descr := "include heartbeat counts in row tactic explain tables"
 }
 
+/-- Comma-separated stable route names that row-tactic front ends must skip. -/
+register_option rr.row.disable : String := {
+  defValue := ""
+  descr := "comma-separated row route names to skip"
+}
+
 /-- The outcome of one named row-tactic route. -/
 inductive RowRouteOutcome where
   /-- The route closed its goal. -/
@@ -600,10 +606,24 @@ private def finishRowAttempt (log : RowAttemptLog) (index : Nat)
     (entry : RowAttemptEntry) : IO Unit :=
   log.modify fun entries => entries.set! index entry
 
+private def rowRouteDisabled (name : Name) : TacticM Bool := do
+  let disabled := rr.row.disable.get (← getOptions)
+  return (disabled.splitOn ",").any fun route => route.trimAscii.toString == name.toString
+
+private def recordRowSkip (name : Name) (reason : String)
+    (log? : Option RowAttemptLog) : TacticM Unit := do
+  if let some log := log? then
+    log.modify fun entries =>
+      entries.push ⟨name, activeRowAttemptDepth entries, false, .skipped, 0, reason⟩
+
 /-- Run a named row route and append its outcome, reason, and heartbeat cost to the call-local
 attempt log.  With no log this is exactly `rowAttempt`. -/
 def rowRoute (name : Name) (tac : TacticM α) (log? : Option RowAttemptLog := none) :
     TacticM (Except MessageData α) := do
+  if ← rowRouteDisabled name then
+    let reason := m!"disabled by rr.row.disable"
+    recordRowSkip name "disabled by rr.row.disable" log?
+    return .error reason
   let some log := log? | return ← rowAttempt tac
   let (index, depth) ← reserveRowAttempt log name
   let start ← IO.getNumHeartbeats
@@ -633,10 +653,7 @@ def rowVeto (name : Name) (reason : MessageData) (log? : Option RowAttemptLog :=
 /-- Record that hints skipped a named route without running it. -/
 def rowSkip (name : Name) (reason : MessageData) (log? : Option RowAttemptLog := none) :
     TacticM Unit := do
-  if let some log := log? then
-    let reason ← firstMessageLine reason
-    log.modify fun entries =>
-      entries.push ⟨name, activeRowAttemptDepth entries, false, .skipped, 0, reason⟩
+  recordRowSkip name (← firstMessageLine reason) log?
 
 private def RowRouteOutcome.toString : RowRouteOutcome → String
   | .ok => "ok"

@@ -158,18 +158,4 @@ private def logTaggedCertificates [Monad m] [MonadEnv m] [MonadLog m]
 end Tactic
 end RealRooted
 
-open RealRooted.Tactic
 
-/-- Logs, for each certificate attribute, the number and the names of the declarations tagged
-with it. -/
-syntax (name := rr_certificates_cmd) "#rr_certificates" : command
-
-elab_rules : command
-  | `(command| #rr_certificates) => logTaggedCertificates
-
-/-- Tactic form of `#rr_certificates`: logs the declarations tagged with each certificate
-attribute. -/
-syntax (name := rr_certificates_tac) "rr_certificates" : tactic
-
-elab_rules : tactic
-  | `(tactic| rr_certificates) => logTaggedCertificates

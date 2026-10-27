@@ -8,6 +8,8 @@ pseudo-routes describe probes or nested dispatch rather than a mathematical back
 Enable the attempt table with `set_option rr.row.explain true`. Heartbeat counts are
 shown by default; set `rr.row.explain.heartbeats false` when stable output matters.
 An indented route ran inside its parent, so the parent's heartbeat total includes it.
+Set `rr.row.disable` to a comma-separated list of route names to skip, for example
+`set_option rr.row.disable "pathPower,derivativeXMul"`.
 
 Read each row as a goal shape and its main theorem(s). The route sections record
 side conditions, implementing modules, and regression examples.
@@ -62,12 +64,10 @@ side conditions, implementing modules, and regression examples.
 | 15 | `linearFactors` | (P n).Splits | `productSequence_ne_zero_and_splits` |
 | 16 | `splitFactors` | (P n).Splits | `productSequence_splits` |
 | 17 | `twoStep` | Interlacing, splitting, or degree for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree` |
-| 18 | `shiftedProduct` | (P n).Splits | `productSequence_splits` |
-| 19 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
-| 20 | `prevRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
-| 21 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
-| 22 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
-| 23 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
+| 18 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
+| 19 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
+| 20 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+| 21 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
 
 ## `rr_row_natDegree`
 
@@ -95,10 +95,8 @@ side conditions, implementing modules, and regression examples.
 |---:|---|---|---|
 | 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
 | 2 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
-| 3 | `threeTerm` | HasNonnegCoeffs (P n) | `threeTerm_hasNonnegCoeffs` |
-| 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
-| 5 | `derivative` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs` |
-| 6 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
+| 3 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
+| 4 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
 
 ## `rowInterlacesCoreAt`
 
@@ -252,24 +250,10 @@ side conditions, implementing modules, and regression examples.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
-## `shiftedProduct`
-
-- **Summary:** Reindex a lag-left recurrence as a one-step product sequence.
-- **Side conditions:** Only the preceding row, split factors, and split initial rows.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
-
 ## `nextRow`
 
 - **Summary:** Core interlacing of P t and P (t + 1) splits the left row.
 - **Side conditions:** A core route at the selected drop and split earlier rows.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
-
-## `prevRow`
-
-- **Summary:** Core interlacing of P (t - 1) and P t splits the right row.
-- **Side conditions:** A predecessor, successful core route, and split earlier rows.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
@@ -362,7 +346,7 @@ side conditions, implementing modules, and regression examples.
 - **Summary:** Use a fixed root interval or upper half-line for sign checks.
 - **Side conditions:** Degree laws, initial bounds and interlacing, and window signs.
 - **Module:** `RealRooted.Tactic.Row.Core`
-- **Regression examples:** `RealRooted.Tactic.Examples.RootBounds`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
 ## `degreeWindow`
 
@@ -413,24 +397,10 @@ side conditions, implementing modules, and regression examples.
 - **Module:** `RealRooted.Tactic.Recurrence.LinRec`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowDegreeRoutes`
 
-## `threeTerm`
-
-- **Summary:** Three-term induction preserves coefficient nonnegativity.
-- **Side conditions:** The recurrence, nonnegative multipliers, and two nonnegative bases.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`
-
 ## `secondOrder`
 
 - **Summary:** A second-order derivative recurrence preserves nonnegativity.
 - **Side conditions:** The recurrence, nonnegative multipliers, and a nonnegative base.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`
-
-## `derivative`
-
-- **Summary:** A first-order derivative recurrence preserves nonnegativity.
-- **Side conditions:** A first-order recurrence, nonnegative multipliers, and base.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`
 

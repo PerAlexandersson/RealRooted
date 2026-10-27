@@ -173,23 +173,6 @@ theorem hadamardProduct_sequence_interl {F G P Q : Nat → ℝ[X]}
   fun i =>
     StrictInterl.interl_hadamardProduct
       (hF i) (hG i) (hP i) (hQ i) (hFG i) (hPQ i)
-/-- Closes a Hadamard-product interlacing goal for PF polynomials from
-certificates found in the local context. It tries fixed-right-factor,
-fixed-left-factor, and general PF forms in turn. -/
-syntax (name := rr_hadamard_pf_interl_named)
-  "rr_hadamard_pf_interl" : tactic
-
-macro_rules
-  | `(tactic| rr_hadamard_pf_interl) =>
-      `(tactic|
-        first
-          | exact RealRooted.Interl.hadamardProduct_right
-              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-          | exact RealRooted.Interl.hadamardProduct_left
-              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-          | exact RealRooted.garloffWagnerHadamardPFInterl_of_nonnegStrictInterl
-              rr_lookup_term rr_lookup_term rr_lookup_term rr_lookup_term
-              rr_lookup_term rr_lookup_term)
 
 end Tactic
 end RealRooted

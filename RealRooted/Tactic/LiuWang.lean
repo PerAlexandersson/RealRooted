@@ -1,15 +1,13 @@
 module
 
-public import RealRooted.Tactic.LiuWang.SequenceIntervals
-public import RealRooted.Tactic.LiuWang.SequenceNonpositive
-public import RealRooted.Tactic.LiuWang.SequenceProducts
-public import RealRooted.Tactic.LiuWang.SequenceQuadratic
-public import RealRooted.Tactic.LiuWang.Step
+public import RealRooted.LiuWang
 
 /-!
-# Generalized Liu--Wang tactic package
+# Liu--Wang import shim
 
-Compatibility umbrella for the family-scoped Liu--Wang tactic frontends.
+This compatibility module re-exports the theorem API formerly accompanied by
+specialized Liu--Wang tactics.
 -/
 
 public section
+

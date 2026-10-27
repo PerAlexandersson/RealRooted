@@ -235,22 +235,9 @@
       "pseudo": false
     },
     {
-      "name": "shiftedProduct",
-      "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 18}
-      ],
-      "conclusion": "(P n).Splits",
-      "theorems": ["RealRooted.productSequence_splits"],
-      "module": "RealRooted.Tactic.RowInterlacing",
-      "summary": "Reindex a lag-left recurrence as a one-step product sequence.",
-      "requires": "Only the preceding row, split factors, and split initial rows.",
-      "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
-      "pseudo": false
-    },
-    {
       "name": "nextRow",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 19}
+        {"tactic": "rr_row_splits", "position": 18}
       ],
       "conclusion": "(P n).Splits",
       "theorems": [
@@ -261,23 +248,6 @@
       "module": "RealRooted.Tactic.RowInterlacing",
       "summary": "Core interlacing of P t and P (t + 1) splits the left row.",
       "requires": "A core route at the selected drop and split earlier rows.",
-      "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
-      "pseudo": false
-    },
-    {
-      "name": "prevRow",
-      "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 20}
-      ],
-      "conclusion": "(P n).Splits",
-      "theorems": [
-        "RealRooted.productSequence_interlaces",
-        "RealRooted.derivativeRecurrence_interlaces_of_eval_nonpos",
-        "RealRooted.threeTerm_interlaces_of_eval_nonpos"
-      ],
-      "module": "RealRooted.Tactic.RowInterlacing",
-      "summary": "Core interlacing of P (t - 1) and P t splits the right row.",
-      "requires": "A predecessor, successful core route, and split earlier rows.",
       "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
       "pseudo": false
     },
@@ -303,7 +273,7 @@
     {
       "name": "degreePattern",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 21},
+        {"tactic": "rr_row_splits", "position": 19},
         {"tactic": "rr_row_strictInterl", "position": 3}
       ],
       "conclusion": "(P n).Splits or StrictInterl (P n) (P (n + 1)).",
@@ -323,7 +293,7 @@
       "name": "reversed",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 24},
-        {"tactic": "rr_row_splits", "position": 22}
+        {"tactic": "rr_row_splits", "position": 20}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection.",
       "theorems": [
@@ -376,7 +346,7 @@
       "name": "fTransform",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 10},
-        {"tactic": "rr_row_splits", "position": 23}
+        {"tactic": "rr_row_splits", "position": 21}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images.",
       "theorems": [
@@ -506,7 +476,7 @@
       "module": "RealRooted.Tactic.Row.Core",
       "summary": "Use a fixed root interval or upper half-line for sign checks.",
       "requires": "Degree laws, initial bounds and interlacing, and window signs.",
-      "examples": ["RealRooted.Tactic.Examples.RootBounds"],
+      "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
       "pseudo": false
     },
     {
@@ -617,22 +587,9 @@
       "pseudo": false
     },
     {
-      "name": "threeTerm",
-      "frontEnds": [
-        {"tactic": "rr_row_nonneg_coeffs", "position": 3, "selectable": false}
-      ],
-      "conclusion": "HasNonnegCoeffs (P n)",
-      "theorems": ["RealRooted.threeTerm_hasNonnegCoeffs"],
-      "module": "RealRooted.Tactic.RowInterlacing",
-      "summary": "Three-term induction preserves coefficient nonnegativity.",
-      "requires": "The recurrence, nonnegative multipliers, and two nonnegative bases.",
-      "examples": ["RealRooted.Tactic.Examples.RowNonnegative"],
-      "pseudo": false
-    },
-    {
       "name": "secondOrder",
       "frontEnds": [
-        {"tactic": "rr_row_nonneg_coeffs", "position": 4, "selectable": false}
+        {"tactic": "rr_row_nonneg_coeffs", "position": 3, "selectable": false}
       ],
       "conclusion": "HasNonnegCoeffs (P n)",
       "theorems": ["RealRooted.derivRec₂_hasNonnegCoeffs"],
@@ -643,22 +600,9 @@
       "pseudo": false
     },
     {
-      "name": "derivative",
-      "frontEnds": [
-        {"tactic": "rr_row_nonneg_coeffs", "position": 5, "selectable": false}
-      ],
-      "conclusion": "HasNonnegCoeffs (P n)",
-      "theorems": ["RealRooted.derivativeRecurrence_hasNonnegCoeffs"],
-      "module": "RealRooted.Tactic.RowInterlacing",
-      "summary": "A first-order derivative recurrence preserves nonnegativity.",
-      "requires": "A first-order recurrence, nonnegative multipliers, and base.",
-      "examples": ["RealRooted.Tactic.Examples.RowNonnegative"],
-      "pseudo": false
-    },
-    {
       "name": "derivativeMult",
       "frontEnds": [
-        {"tactic": "rr_row_nonneg_coeffs", "position": 6, "selectable": false}
+        {"tactic": "rr_row_nonneg_coeffs", "position": 4, "selectable": false}
       ],
       "conclusion": "HasNonnegCoeffs (P n)",
       "theorems": ["RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult"],

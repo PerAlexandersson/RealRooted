@@ -3,7 +3,6 @@ import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.AffineDerivative
 import RealRooted.Tactic.Bezoutian
 import RealRooted.Tactic.SideGoals
-import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.SignAssembly
@@ -21,12 +20,10 @@ import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.GeneralizedLaguerre
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.Product.Interlacing
-import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
@@ -45,7 +42,6 @@ import RealRooted.Tactic.J1Chebyshev
 import RealRooted.Tactic.Kurtz
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.SymmetricDecomposition
@@ -65,3 +61,4 @@ degree, root-bound, and sign certificates explicit.
 
 The tactic roadmap is tracked in GitHub issue #1061.
 -/
+

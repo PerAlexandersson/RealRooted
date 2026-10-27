@@ -657,9 +657,9 @@ example (n : ℕ) : (A008299 n).Splits := by
 
 example (n : ℕ) : (A008299 n).Splits := by rr_row_splits (drop := 1) (half := 1)
 example (n : ℕ) : (A180047 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 1)
-example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := prevRow)
+example (n : ℕ) : (A008292 n).Splits := by rr_row_splits
 example (n : ℕ) : (A133080 n).Splits := by rr_row_splits (via := twoStep)
-example (n : ℕ) : (A167194 n).Splits := by rr_row_splits (via := shiftedProduct)
+example (n : ℕ) : (A167194 n).Splits := by rr_row_splits
 example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := linearFactors)
 example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitFactors)
 
@@ -667,8 +667,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 error: rr_row_splits: unknown route foo; the routes are
 variableDelay, derivativeXMul, factorPower, delayedProduct, closedForm, halfGrowth,
 pathPower, lowerOrder, thresholdOrbit, parityProduct, lagFeedback, subseq, linearFactors,
-splitFactors, twoStep, shiftedProduct, nextRow, prevRow, degreePattern, reversed,
-fTransform
+splitFactors, twoStep, nextRow, degreePattern, reversed, fTransform
 -/
 #guard_msgs (whitespace := normalized) in
 example (n : ℕ) : (A008292 n).Splits := by rr_row_splits (via := foo)

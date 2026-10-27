@@ -1,1502 +1,1555 @@
-[["defsWithUnderscore", "rr_certificates_cmd"],
- ["defsWithUnderscore", "rr_certificates_tac"],
- ["defsWithUnderscore", "MvPolynomial.instFintypePerm_realRooted"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_of_cubicResidual"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_cubicResidual"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual"],
- ["defsWithUnderscore",
-  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from"],
- ["defsWithUnderscore", "RealRooted.homogeneousInducedConeRowsAlong_of_pencil"],
- ["defsWithUnderscore", "RealRooted.homogeneousInducedConeRowsAlong_scalar_id"],
- ["defsWithUnderscore", "RealRooted.homogeneousInducedConeRowsAlong_zero_id"],
- ["defsWithUnderscore", "RealRooted.rr_identify_lag_one_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.rr_identify_lag_one_sequence_update_inferred"],
- ["defsWithUnderscore", "RealRooted.rr_identify_lag_three_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.rr_identify_lag_three_sequence_update_inferred"],
- ["defsWithUnderscore", "RealRooted.rr_identify_lag_two_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.rr_identify_lag_two_sequence_update_inferred"],
- ["defsWithUnderscore", "RealRooted.rr_lw_recurrence_seq"],
- ["defsWithUnderscore", "RealRooted.rr_lw_simpa"],
- ["defsWithUnderscore", "RealRooted.rr_recurrence_identification_fact_term"],
- ["defsWithUnderscore", "RealRooted.rr_sign_assembly_gap_two_even_named"],
- ["defsWithUnderscore", "RealRooted.rr_sign_assembly_gap_two_named"],
- ["defsWithUnderscore",
-  "RealRooted.secondDerivativeBidiagonalCubicResidualCertificate_sequence"],
- ["defsWithUnderscore",
-  "RealRooted.secondDerivativeBidiagonalCubicResidualCertificate_sequence_from"],
- ["defsWithUnderscore", "A104978Downstream.A104978_interlaces.fAuxInterlaces"],
- ["defsWithUnderscore",
-  "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"],
- ["defsWithUnderscore", "A108426Downstream.A108426_interlaces.fAuxInterlaces"],
- ["defsWithUnderscore",
-  "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"],
- ["defsWithUnderscore", "A108426Downstream.A108426_interlaces.ratRevAux"],
- ["defsWithUnderscore", "A186370Downstream.A186370_interlaces.fAuxInterlaces"],
- ["defsWithUnderscore", "Nat.Partition.instLE_realRooted"],
- ["defsWithUnderscore", "Nat.Partition.instPartialOrder_realRooted"],
- ["defsWithUnderscore", "RealRooted.ClosedFormRows.A124376_parameters"],
- ["defsWithUnderscore", "RealRooted.ClosedFormRows.A124376_quartic"],
- ["defsWithUnderscore", "RealRooted.ClosedFormRows.A157169_quartic"],
- ["defsWithUnderscore", "RealRooted.ClosedFormRows.A157171_quartic"],
- ["defsWithUnderscore",
-  "RealRooted.FiniteMemory.sharpDefectBridges_residueDefect_of_setGcd_eq_one"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_bezout_pos_def_of_strict_interl_same_degree_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_bezout_strict_interl_of_pos_def_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_bezout_strict_interl_same_degree_of_pos_def_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_close_side"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_coeff"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_coeff_finish"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_coeff_shape_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_coeff_shape_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_coeff_simp"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_degree_eq_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_degree_le_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_eval_simp"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_eval_simp_arith"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_exact_realrooted_or_projection"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_exact_realrooted_pair_sequence_or_projection"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_exact_realrooted_refine_then"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_exact_realrooted_sequence_or_projection"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_active_den_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_affine_param"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_affine_param_den_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_explicit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_affine_param_infer_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_affine_param_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_explicit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_auto_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_base_lookup_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_base_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_base_one_dsimp"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_coeff_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_coeff_at_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_den_raw"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_den_raw_term"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_exact_realrooted_positivity_seq"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_goal_variant_alternatives3"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_goal_variants"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_goal_variants_interlaces"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_goal_variants_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_den_raw_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_den_raw_auto_active_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_param_den_raw_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_param_den_raw_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_den_raw_unit_active_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_param_den_raw_unit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_unit_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_unit_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_positive_lookup_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_refine_positivity_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_favard_step_dsimp_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_sequence_base_step"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_sequence_strict_interl"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_finish_sequence_strict_interl_degree"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_using"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_using_interl"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_using_interlaces_degree"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_finish_using_sequence_branches"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_first_exact"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_first_exact_or_simpa"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_first_realrooted_sequence_or_projection"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_generalized_laguerre_second_derivative_sequence"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_hadamard_pf_interl_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_interlaces_C_mul_linear_pow_succ_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_interlaces_auto_degree"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_interlaces_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_interlaces_with_degree"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_kurtz_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_kurtz_sequence_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_strict_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_strict_same_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_strict_succ_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_two_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_liu_wang_two_strict_branch_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_two_strict_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_two_strict_same_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_liu_wang_two_strict_succ_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lookup"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lookup_attr"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lookup_interlaces_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lookup_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ls4_factorize"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ls4_factorize_finish"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_ls4_plus_current_sequence_expanded_auto"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_ls4_plus_current_sequence_expanded_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ls4_recurrence_factorize"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_shift_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_C_sub_C_mul_X_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_one_add_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_sub_X_pow_three_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_active_den_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_active_nonneg"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_coeff_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_coeff_at_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_coeff_nonneg"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_coeff_nonneg_seq_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_current_CX_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_current_CX_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_current_X_sequence_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_current_X_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_current_X_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_current_one_add_X_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_current_one_add_X_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_exact_realrooted_active_nonneg_seq"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_global_nonpos_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_global_nonpos_sequence_den_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_global_nonpos_sequence_den_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_global_nonpos_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_inner_window_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_inner_window_lag_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_interval_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_interval_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_C_neg_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_const_C_neg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_const_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_const_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_const_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_inner_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_inner_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_quadratic_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_quadratic_side"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_square_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_negative_square_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_split_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_split_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_realrooted_unit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_unit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_den_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_den_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_inferred_of_recurrence"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_nonpos_lag_step_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_one_add_X_one_add_two_X_lag_sequence_interval_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_X_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_X_lag_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_X_mul_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_X_mul_nonneg_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_X_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_X_unit_alias_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_X_unit_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_shift_nonneg_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_shift_nonneg_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_lag_step_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_nonneg_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_t_sequence_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_positive_t_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_t_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_lw_positive_t_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_quadratic_discriminant"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_raw_recurrence_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_lw_refine_active_nonneg_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_same"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_same_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_same_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_succ"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_succ_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_ma_wang_succ_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_filter_ne_zero"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_realrooted"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_realrooted_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_weak"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_weak_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix0_weak_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_matrix_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_active_den_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_active_den_at_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_active_nonneg"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_coeff_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_coeff_at_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_degree_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_den_norm_coeff_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_den_norm_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_den_norm_two_coeff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_X_sub_one_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_X_sub_one_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_X_sub_one_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_X_sub_one_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_one_add_X_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_one_add_X_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_one_add_X_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_C_mul_one_add_X_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_X_one_add_sequence_nonneg_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_X_one_add_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_X_sequence_nonneg_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_X_sequence_nonneg_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_global_nonpos_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_global_nonpos_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_auto_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_auto_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_const_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_const_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_const_sequence_realrooted_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_neg_const_sequence_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_derivative_nonpos"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_degree_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_degree_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_derivative_nonpos_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_derivative_nonpos_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split_active_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_one_add_two_window_sequence_degree_succ_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_one_add_two_window_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_sign_root_upper_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_derivative_sign_roots_nonpos_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_derivative_sign_window_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_sign_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_window_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_sign_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_window_scalar_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_realrooted_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_realrooted_window_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_window_sign_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_auto"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_pos_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_upper_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_raw_recurrence_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_root_sign_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_root_window_linear_facts"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_mw_tail_degree_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_natDegree_from_top_above"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_natDegree_from_top_eq_above"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_natDegree_from_top_pos_above"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_neg_mw_plus_derivative_sequence_expanded_auto"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_neg_mw_plus_derivative_sequence_expanded_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_C"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_C_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_X"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_X_add_C"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_X_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_X_sub_C"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_add"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_pow"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_using_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_using_three"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_using_two"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonneg_coeffs_zero"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonzero"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_nonzero_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pf_using_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pf_using_nonzero_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_C_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_X_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_from_nonneg"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_from_nonzero"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_mul"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_pos_lc_one"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_positivity_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_positivity_seq_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_positivity_term"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_pow_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_pow_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_C_sequence_cutoff_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_lift_C_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_row_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_row_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_X_sequence_cutoff_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_lift_X_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_checked_affine_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_checked_affine_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_auto_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_lift_sequence_auto"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_sequence_auto_cutoff"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_sequence_auto_cutoff_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_product_lift_sequence_auto_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_nonzero"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_nonzero_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_nonzero_seq_from"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_normalize"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_product_two_sequence_variants"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_realrooted"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_realrooted_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_realrooted_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_recurrence_degree"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_recurrence_simpa"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_refine_then"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_root_nonpos_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_root_nonpos_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_root_nonpos_realrooted"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_entry_nonneg"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_entry_nonneg_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_entry_nonneg_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix0"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix0_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix0_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix0_weak"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_weak_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_weak_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_row_threshold_matrix_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_active_den_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_coeff_all_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_coeff_finish"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_den_norm_coeff_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_den_norm_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_den_norm_two_coeff_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_scalar_exact_or_simpa_add_assoc"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_arith"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_ne"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_ne_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_ne_seq_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_ne_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_nonneg"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_nonneg_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_nonneg_seq_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_nonneg_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_pos"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_pos_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_pos_seq_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_pos_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_side_rest"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_factor"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_factor_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_factor_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_factor_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_lower"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_lower_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_lower_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_lower_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_sign_at_roots_nonpos_factor_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_nonpos_term"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_sign_at_roots_sequence_factor_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_sign_at_roots_sequence_factor_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_sequence_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_sequence_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_upper"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_upper_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_upper_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_upper_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_window"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_window_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_at_roots_window_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sign_side"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_splits"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_splits_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_splits_divX"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_C_mul_X"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_C_mul_X_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_C_mul_X_pos"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_C_mul_X_pos_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_X_derivative_X_self"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_X_derivative_X_self_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_cancel_common_linear_factor_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_cancel_common_linear_factor_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_degree_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_degree_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_mul_X"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_mul_X_both"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_mul_X_both_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_strict_interl_mul_X_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_mul_common_factor_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_mul_common_factor_named"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_sequence_realrooted"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_wagner_derivative_gap_lag"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_strict_interl_wagner_derivative_gap_lag_inferred"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_sturm_base"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_wagner_common_right_add_pos_lc_inferred"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.rr_wagner_common_right_add_pos_lc_named"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_wagner_pos"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_wagner_pos_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_wagner_pos_term"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_zero_or_splits"],
- ["defsWithUnderscore", "RealRooted.Tactic.rr_zero_or_splits_auto"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRecurrence_eval"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_cf_field"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_cf_identity"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_favard_active_den_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_favard_coeff_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_find_ode"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_interlaces_explicit"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_linrec_cone_field"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_linrec_field"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_lw_active_den_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_lw_active_nonneg_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_lw_coeff_all"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.tacticRr_lw_derivative_lag_active_den_all"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.tacticRr_lw_derivative_lag_coeff_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_mw_active_den_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_mw_active_nonneg_seq"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_mw_coeff_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_named_interlaces"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_named_nonzero"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_named_realrooted"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_named_splits"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_ne_zero_explicit"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeis"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeisFavard"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeisLiu_wang"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeisMa_wang"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeisMatrix"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeis_active_den_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_oeis_coeff_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_poly_identity"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_product_interlaces"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_product_natDegree"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_roots_explicit"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_closed_form_splits"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.tacticRr_row_derivative_X_mul_splits"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_eval_sign"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_eval_zero_pos"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_field"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_ode"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_path_power_interlaces"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_row_path_power_splits"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_scalar_active_den_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_scalar_coeff_all"],
- ["defsWithUnderscore", "RealRooted.Tactic.tacticRr_splits_explicit"],
- ["defsWithUnderscore", "RealRooted.LGV.RepeatedChip.minorNetwork_certificate"],
- ["defsWithUnderscore", "RealRooted.Tactic.CFI.tacticRr_cf_interlaces"],
- ["defsWithUnderscore", "RealRooted.UnitIntervalGraph.Data.graph_decidableRel"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A008957_interlaces.revAux"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A008957_splits.revAux"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parS"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parT"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parS"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parT"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parS"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parT"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parS"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parT"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A186370_splits.fAux"],
- ["defsWithUnderscore",
-  "RealRooted.Tactic.RowInterlacingExamples.A191935_interlaces.revAux"],
- ["docBlame", "A104978Downstream.A104978_interlaces.fAuxInterlaces"],
- ["docBlame", "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"],
- ["docBlame", "A108426Downstream.A108426_interlaces.fAuxInterlaces"],
- ["docBlame", "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"],
- ["docBlame", "RealRooted.Tactic.instInhabitedClassKind.default"],
- ["docBlame", "RealRooted.Tactic.instInhabitedDegreeClassKind.default"],
- ["docBlame", "A108426Downstream.A108426_interlaces.ratRevAux"],
- ["docBlame", "A186370Downstream.A186370_interlaces.fAuxInterlaces"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A008957_interlaces.revAux"],
- ["docBlame", "RealRooted.Tactic.RowInterlacingExamples.A008957_splits.revAux"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parS"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parT"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parS"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parT"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parS"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parT"],
- ["docBlame", "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parS"],
- ["docBlame", "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parT"],
- ["docBlame", "RealRooted.Tactic.RowInterlacingExamples.A186370_splits.fAux"],
- ["docBlame",
-  "RealRooted.Tactic.RowInterlacingExamples.A191935_interlaces.revAux"],
- ["synTaut", "RealRooted.Tactic.rr_lookup_determined_smoke"],
- ["synTaut", "RealRooted.Tactic.rr_lookup_partial_decoy_smoke"],
- ["tacticAlt", "RealRooted.rr_identify_lag_one_sequence_named"],
- ["tacticAlt", "RealRooted.rr_identify_lag_one_sequence_update_inferred"],
- ["tacticAlt", "RealRooted.rr_identify_lag_three_sequence_named"],
- ["tacticAlt", "RealRooted.rr_identify_lag_three_sequence_update_inferred"],
- ["tacticAlt", "RealRooted.rr_identify_lag_two_sequence_named"],
- ["tacticAlt", "RealRooted.rr_identify_lag_two_sequence_update_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_coeff_shape_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_coeff_shape_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_auto_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_raw_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_auto_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_raw_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_raw_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_raw_prod_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_explicit_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_den_raw_unit_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_affine_param_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_prod_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_explicit_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_affine_param_row_sign_den_raw_unit_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_auto_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_goal_variants"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_goal_variants_interlaces"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_goal_variants_seq"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_auto_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_unit_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_den_raw_unit_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_auto_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_unit_active_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_favard_param_row_sign_den_raw_unit_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_sequence_base_step"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_sequence_strict_interl"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_sequence_strict_interl_degree"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_using"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_using_interl"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_using_interlaces_degree"],
- ["tacticAlt", "RealRooted.Tactic.rr_finish_using_sequence_branches"],
- ["tacticAlt", "RealRooted.Tactic.rr_interlaces_auto_degree"],
- ["tacticAlt", "RealRooted.Tactic.rr_interlaces_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_interlaces_with_degree"],
- ["tacticAlt", "RealRooted.Tactic.rr_liu_wang_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_liu_wang_strict_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_liu_wang_strict_same_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_liu_wang_strict_succ_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_lookup"],
- ["tacticAlt", "RealRooted.Tactic.rr_lookup_attr"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_auto_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_realrooted_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_den_coeff_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_split_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_realrooted_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_negative_square_sequence_den_coeff_split_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_inferred_of_recurrence"],
- ["tacticAlt", "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence"],
- ["tacticAlt", "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_lw_positive_X_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_lw_positive_X_unit_alias_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_same"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_same_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_same_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_succ"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_succ_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_ma_wang_succ_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_filter_ne_zero_weak_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_realrooted"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_realrooted_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_realrooted_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_weak"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_weak_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix0_weak_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_matrix_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_X_one_add_sequence_nonneg_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_X_one_add_sequence_nonneg_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_X_sequence_nonneg_degree_succ_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_X_sequence_nonneg_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_auto_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_auto_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_neg_X_sq_sequence_realrooted_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_nonpos"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_nonpos_degree_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_nonpos_degree_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_nonpos_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_derivative_nonpos_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_nonneg_sign_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split_active_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_nonpos_sequence_den_coeff_realrooted_nonneg_sign_auto_split_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_one_add_two_window_sequence_degree_succ_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_derivative_one_add_two_window_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_sign_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_window_scalar_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_lw_den_coeff_sign_scalar_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_mw_lw_den_coeff_window_scalar_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_realrooted_window_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_lw_derivative_lag_sequence_den_coeff_window_sign_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_auto"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_pos_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_mw_plus_derivative_sequence_expanded_upper_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_natDegree_from_top_above"],
- ["tacticAlt", "RealRooted.Tactic.rr_natDegree_from_top_eq_above"],
- ["tacticAlt", "RealRooted.Tactic.rr_natDegree_from_top_pos_above"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonneg_coeffs"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonneg_coeffs_using_one"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonneg_coeffs_using_three"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonneg_coeffs_using_two"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonzero"],
- ["tacticAlt", "RealRooted.Tactic.rr_nonzero_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_pf_using_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_pf_using_nonzero_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_pos_lc_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_pos_lc_from_nonneg"],
- ["tacticAlt", "RealRooted.Tactic.rr_pos_lc_from_nonzero"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_pow_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_add_X_pow_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_C_add_X_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_add_X_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_C_pow_sequence_auto_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_pow_sequence_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_pow_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_pow_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_C_sequence_auto_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_sequence_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_C_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_row_pow_sequence_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_row_pow_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_X_add_C_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_X_add_C_sequence_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_X_pow_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_X_pow_sequence_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_X_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_X_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_auto_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_affine_pow_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_auto_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_affine_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_affine_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_affine_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_checked_affine_sequence_auto_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_checked_affine_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_auto_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_affine_pow_sequence_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_auto_cutoff_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_auto_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_product_lift_const_first_sequence_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_const_first_sequence_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_sequence_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_sequence_auto_cutoff"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_sequence_auto_cutoff_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_lift_sequence_auto_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_product_two_sequence_variants"],
- ["tacticAlt", "RealRooted.Tactic.rr_realrooted"],
- ["tacticAlt", "RealRooted.Tactic.rr_realrooted_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_root_nonpos_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_root_nonpos_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_root_nonpos_realrooted"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_entry_nonneg"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_entry_nonneg_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_entry_nonneg_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_inferred"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak_inferred"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_filter_ne_zero_weak_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_realrooted_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_weak"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_weak_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix0_weak_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_row_threshold_matrix_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_factor"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_factor_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_factor_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_lower"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_lower_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_upper"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_upper_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_window"],
- ["tacticAlt", "RealRooted.Tactic.rr_sign_at_roots_window_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_splits"],
- ["tacticAlt", "RealRooted.Tactic.rr_splits_auto"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_C_mul_X"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_C_mul_X_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_C_mul_X_pos"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_C_mul_X_pos_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_X_derivative_X_self"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_X_derivative_X_self_inferred"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_cancel_common_linear_factor_inferred"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_cancel_common_linear_factor_named"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_degree_inferred"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_degree_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_evalCoeff_nonpos_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_X"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_X_both"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_X_both_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_X_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_common_factor_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_mul_common_factor_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_strict_interl_wagner_derivative_gap_lag"],
- ["tacticAlt",
-  "RealRooted.Tactic.rr_strict_interl_wagner_derivative_gap_lag_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_wagner_common_right_add_pos_lc_inferred"],
- ["tacticAlt", "RealRooted.Tactic.rr_wagner_common_right_add_pos_lc_named"],
- ["tacticAlt", "RealRooted.Tactic.rr_zero_or_splits"],
- ["tacticAlt", "RealRooted.Tactic.rr_zero_or_splits_auto"],
- ["tacticAlt", "RealRooted.Tactic.tacticRr_oeis"],
- ["tacticAlt", "RealRooted.Tactic.tacticRr_oeisFavard"],
- ["tacticAlt", "RealRooted.Tactic.tacticRr_oeisLiu_wang"],
- ["tacticAlt", "RealRooted.Tactic.tacticRr_oeisMa_wang"],
- ["tacticAlt", "RealRooted.Tactic.tacticRr_oeisMatrix"],
- ["tacticAlt",
-  "RealRooted.Tactic.«tacticRr_product_lift_checked_affine_sequence_autoUsingBase:=_,Quotient_realrooted:=_,Cutoff:=_,Factorization:=_»"],
- ["tacticAlt",
-  "RealRooted.Tactic.«tacticRr_product_lift_checked_affine_sequence_autoUsingQuotient_realrooted:=_,Factorization:=_»"],
- ["tacticAlt",
-  "RealRooted.Tactic.«tacticRr_product_lift_sequence_autoUsingBase:=_,Quotient_realrooted:=_,Cutoff:=_,Factorization:=_»"],
- ["tacticAlt",
-  "RealRooted.Tactic.«tacticRr_product_lift_sequence_autoUsingQuotient_realrooted:=_,Factorization:=_»"],
- ["tacticAlt", "RealRooted.Tactic.«tacticRr_product_two_sequence_variants_,_»"],
- ["unusedArguments", "RealRooted.BrandenLeite.lowerShift_apply"],
- ["unusedArguments", "RealRooted.Tactic.rr_lookup_missing_typeclass_decoy"],
- ["unusedArguments", "RealRooted.Tactic.rr_lookup_typeclass_smoke"]]
+[
+ [
+  "defsWithUnderscore",
+  "MvPolynomial.instFintypePerm_realRooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_of_cubicResidual"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_of_endpoint_cubicResidual"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_cubicResidual"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_cubicResidual_from"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.bidiagonalCubicResidualCertificate_sequence_of_endpoint_cubicResidual_from"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.homogeneousInducedConeRowsAlong_of_pencil"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.homogeneousInducedConeRowsAlong_scalar_id"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.homogeneousInducedConeRowsAlong_zero_id"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.secondDerivativeBidiagonalCubicResidualCertificate_sequence"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.secondDerivativeBidiagonalCubicResidualCertificate_sequence_from"
+ ],
+ [
+  "defsWithUnderscore",
+  "A104978Downstream.A104978_interlaces.fAuxInterlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"
+ ],
+ [
+  "defsWithUnderscore",
+  "A108426Downstream.A108426_interlaces.fAuxInterlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"
+ ],
+ [
+  "defsWithUnderscore",
+  "A108426Downstream.A108426_interlaces.ratRevAux"
+ ],
+ [
+  "defsWithUnderscore",
+  "A186370Downstream.A186370_interlaces.fAuxInterlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "Nat.Partition.instLE_realRooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "Nat.Partition.instPartialOrder_realRooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.ClosedFormRows.A124376_parameters"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.ClosedFormRows.A124376_quartic"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.ClosedFormRows.A157169_quartic"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.ClosedFormRows.A157171_quartic"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.FiniteMemory.sharpDefectBridges_residueDefect_of_setGcd_eq_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_close_side"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_coeff"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_coeff_finish"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_coeff_simp"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_degree_eq_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_degree_le_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_eval_simp"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_eval_simp_arith"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_exact_realrooted_or_projection"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_exact_realrooted_pair_sequence_or_projection"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_exact_realrooted_refine_then"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_exact_realrooted_sequence_or_projection"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_sequence_base_step"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_sequence_strict_interl"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_sequence_strict_interl_degree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_using"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_using_interl"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_using_interlaces_degree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_finish_using_sequence_branches"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_first_exact"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_first_exact_or_simpa"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_first_realrooted_sequence_or_projection"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_interlaces_auto_degree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_interlaces_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_interlaces_with_degree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_strict_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_strict_same_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_strict_succ_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_two_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_two_strict_branch_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_two_strict_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_two_strict_same_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_liu_wang_two_strict_succ_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lookup"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lookup_attr"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lookup_interlaces_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lookup_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_realrooted_shift_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_add_X_lag_sequence_shift_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_C_sub_C_mul_X_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_add_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sq_sub_one_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_C_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_interval_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_C_mul_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_C_sub_C_mul_X_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_C_sub_C_mul_X_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_one_add_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_one_add_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_one_sub_X_one_add_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_one_sub_X_one_add_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_sub_X_pow_three_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_X_sub_X_pow_three_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_CX_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_CX_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_X_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_X_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_one_add_X_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_current_one_add_X_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_inner_window_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_inner_window_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_interval_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_interval_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_affine_inner_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_affine_inner_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_neg_C_mul_one_add_two_X_lag_sequence_realrooted_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_realrooted_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_C_neg_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_sequence_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_sequence_realrooted_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_const_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_inner_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_inner_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_monic_quadratic_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_quadratic_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_quadratic_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_quadratic_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_sequence_realrooted_unit_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_negative_square_sequence_unit_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_den_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_den_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_inferred_of_recurrence"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_step_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_one_add_X_one_add_two_X_lag_sequence_interval_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_one_add_X_one_add_two_X_lag_sequence_realrooted_interval_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_C_mul_X_mul_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_realrooted_shift_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_shift_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_affine_lag_sequence_shift_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_lag_step_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_nonneg_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_nonneg_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_sequence_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_sequence_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_sequence_realrooted_auto_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_lw_positive_t_sequence_realrooted_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_sign_scalar_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_window_scalar_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_sign_scalar_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_window_scalar_named"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_natDegree_from_top_above"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_natDegree_from_top_eq_above"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_natDegree_from_top_pos_above"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_C"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_C_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_X"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_X_add_C"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_X_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_X_sub_C"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_add"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_pow"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_three"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_two"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonneg_coeffs_zero"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonzero"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_nonzero_auto"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_C_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_X_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_auto"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_from_nonneg"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_from_nonzero"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_mul"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_pos_lc_one"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_positivity_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_positivity_seq_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_positivity_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_realrooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_realrooted_auto"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_realrooted_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_recurrence_degree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_recurrence_simpa"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_refine_then"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_arith"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_ne"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_ne_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_ne_seq_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_ne_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_nonneg"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_nonneg_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_nonneg_seq_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_nonneg_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_pos"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_pos_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_pos_seq_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_pos_term"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_rest"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_sign"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_sign_side"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_splits_auto"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_splits_divX"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_strict_interl_mul_X"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_both"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_both_inferred"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_inferred"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_strict_interl_sequence_realrooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_sturm_base"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_zero_or_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_zero_or_splits_auto"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRecurrence_eval"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_cf_field"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_cf_identity"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_favard_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_favard_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_find_ode"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_interlaces_explicit"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_linrec_cone_field"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_linrec_field"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_lw_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_lw_active_nonneg_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_lw_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_lw_derivative_lag_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_lw_derivative_lag_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_mw_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_mw_active_nonneg_seq"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_mw_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_named_interlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_named_nonzero"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_named_realrooted"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_named_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_ne_zero_explicit"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeis"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeisFavard"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeisLiu_wang"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeisMa_wang"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeisMatrix"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeis_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_oeis_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_poly_identity"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_product_interlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_product_natDegree"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_roots_explicit"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_closed_form_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_derivative_X_mul_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_eval_sign"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_eval_zero_pos"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_field"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_ode"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_path_power_interlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_row_path_power_splits"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_scalar_active_den_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_scalar_coeff_all"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.tacticRr_splits_explicit"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.LGV.RepeatedChip.minorNetwork_certificate"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.CFI.tacticRr_cf_interlaces"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.UnitIntervalGraph.Data.graph_decidableRel"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A008957_interlaces.revAux"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A008957_splits.revAux"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parS"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parT"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parS"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parT"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parS"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parT"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parS"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parT"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A186370_splits.fAux"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.RowInterlacingExamples.A191935_interlaces.revAux"
+ ],
+ [
+  "docBlame",
+  "A104978Downstream.A104978_interlaces.fAuxInterlaces"
+ ],
+ [
+  "docBlame",
+  "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"
+ ],
+ [
+  "docBlame",
+  "A108426Downstream.A108426_interlaces.fAuxInterlaces"
+ ],
+ [
+  "docBlame",
+  "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.instInhabitedClassKind.default"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.instInhabitedDegreeClassKind.default"
+ ],
+ [
+  "docBlame",
+  "A108426Downstream.A108426_interlaces.ratRevAux"
+ ],
+ [
+  "docBlame",
+  "A186370Downstream.A186370_interlaces.fAuxInterlaces"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A008957_interlaces.revAux"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A008957_splits.revAux"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parS"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A092879_interlaces.parT"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parS"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A094305_interlaces.parT"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parS"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_interlaces.parT"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parS"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A158909_splits.parT"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A186370_splits.fAux"
+ ],
+ [
+  "docBlame",
+  "RealRooted.Tactic.RowInterlacingExamples.A191935_interlaces.revAux"
+ ],
+ [
+  "synTaut",
+  "RealRooted.Tactic.rr_lookup_determined_smoke"
+ ],
+ [
+  "synTaut",
+  "RealRooted.Tactic.rr_lookup_partial_decoy_smoke"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_sequence_base_step"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_sequence_strict_interl"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_sequence_strict_interl_degree"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_using"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_using_interl"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_using_interlaces_degree"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_finish_using_sequence_branches"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_interlaces_auto_degree"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_interlaces_auto_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_interlaces_with_degree"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_liu_wang_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_liu_wang_strict_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_liu_wang_strict_same_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_liu_wang_strict_succ_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lookup"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lookup_attr"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_inferred_of_recurrence"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_inferred_of_recurrence"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_lw_nonpos_lag_sequence_realrooted_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_sign_scalar_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_realrooted_window_scalar_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_sign_scalar_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_mw_lw_den_coeff_window_scalar_named"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_natDegree_from_top_above"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_natDegree_from_top_eq_above"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_natDegree_from_top_pos_above"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonneg_coeffs"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_one"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_three"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonneg_coeffs_using_two"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonzero"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_nonzero_auto"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_pos_lc_auto"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_pos_lc_from_nonneg"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_pos_lc_from_nonzero"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_realrooted"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_realrooted_auto"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_splits"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_splits_auto"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_strict_interl_mul_X"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_both"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_both_inferred"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_strict_interl_mul_X_inferred"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_zero_or_splits"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.rr_zero_or_splits_auto"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.tacticRr_oeis"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.tacticRr_oeisFavard"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.tacticRr_oeisLiu_wang"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.tacticRr_oeisMa_wang"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.tacticRr_oeisMatrix"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.«tacticRr_product_lift_checked_affine_sequence_autoUsingBase:=_,Quotient_realrooted:=_,Cutoff:=_,Factorization:=_»"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.«tacticRr_product_lift_checked_affine_sequence_autoUsingQuotient_realrooted:=_,Factorization:=_»"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.«tacticRr_product_lift_sequence_autoUsingBase:=_,Quotient_realrooted:=_,Cutoff:=_,Factorization:=_»"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.«tacticRr_product_lift_sequence_autoUsingQuotient_realrooted:=_,Factorization:=_»"
+ ],
+ [
+  "tacticAlt",
+  "RealRooted.Tactic.«tacticRr_product_two_sequence_variants_,_»"
+ ],
+ [
+  "unusedArguments",
+  "RealRooted.BrandenLeite.lowerShift_apply"
+ ],
+ [
+  "unusedArguments",
+  "RealRooted.Tactic.rr_lookup_missing_typeclass_decoy"
+ ],
+ [
+  "unusedArguments",
+  "RealRooted.Tactic.rr_lookup_typeclass_smoke"
+ ]
+]
+

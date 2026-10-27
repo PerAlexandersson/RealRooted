@@ -104,63 +104,6 @@ theorem kurtz_sequence_splits {P : Nat → ℝ[X]}
     ∀ n : Nat, (P n).Splits :=
   pf_sequence_splits (kurtz_sequence_isPFPolynomial hdeg hpos hineq)
 
-/-- Closes `p ≠ 0 ∧ p.Splits` (or a weaker conclusion: `p = 0 ∨ p.Splits`, `IsPFPolynomial p`,
-`p.Splits`, `p ≠ 0` or `HasNonnegCoeffs
-p`) by the Hutchinson--Kurtz coefficient criterion from `degree : 2 ≤
-p.natDegree`, `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i` and `inequalities :
-KurtzStrictInequalities p`. -/
-syntax (name := rr_kurtz_named)
-  "rr_kurtz" " using "
-    "degree" ":=" term ","
-    "positive_coeffs" ":=" term ","
-    "inequalities" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_kurtz`: the same certificate for every row `P n`, with `degree`,
-`positive_coeffs` and `inequalities` for every `P n`. -/
-syntax (name := rr_kurtz_sequence_named)
-  "rr_kurtz_sequence" " using "
-    "degree" ":=" term ","
-    "positive_coeffs" ":=" term ","
-    "inequalities" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_kurtz using
-        degree := $hdeg:term,
-        positive_coeffs := $hpos:term,
-        inequalities := $hineq:term) =>
-      `(tactic|
-        first
-          | exact RealRooted.Kurtz.coefficient_criterion
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_ne_zero_and_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_zero_or_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_isPFPolynomial
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_ne_zero $hpos
-          | exact RealRooted.Tactic.kurtz_hasNonnegCoeffs $hpos)
-  | `(tactic|
-      rr_kurtz_sequence using
-        degree := $hdeg:term,
-        positive_coeffs := $hpos:term,
-        inequalities := $hineq:term) =>
-      `(tactic|
-        first
-          | exact RealRooted.Tactic.kurtz_sequence_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_ne_zero_and_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_zero_or_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_isPFPolynomial
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_nonzero $hpos
-          | exact RealRooted.Tactic.kurtz_sequence_nonneg_coeffs $hpos)
 end Tactic
 end RealRooted
+

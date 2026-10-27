@@ -39,37 +39,5 @@ theorem isRealRooted_of_monomial_tail_sequence
   isRealRooted_of_strictInterl_chain_from_step <| fun n =>
     (monomial_tail_sequence_interlaces hc ha hb hu h0 h1 hstep n).toStrictInterl
 
-namespace Tactic
-
-/-- Closes `Interlaces (C c * (C a + C b * X) ^ n) (C d * (C a + C b * X) ^ (n + 1))` from
-`left_scalar : c`, `right_scalar : d`, `const : a`, `slope : b`, the nonvanishing
-`left_scalar_ne` and `right_scalar_ne`, `slope_pos : 0 < b` and `index : n`. -/
-syntax (name := rr_interlaces_C_mul_linear_pow_succ_named)
-  "rr_interlaces_C_mul_linear_pow_succ" " using "
-    "left_scalar" ":=" term ","
-    "right_scalar" ":=" term ","
-    "const" ":=" term ","
-    "slope" ":=" term ","
-    "left_scalar_ne" ":=" term ","
-    "right_scalar_ne" ":=" term ","
-    "slope_pos" ":=" term ","
-    "index" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_interlaces_C_mul_linear_pow_succ using
-        left_scalar := $c:term,
-        right_scalar := $d:term,
-        const := $a:term,
-        slope := $b:term,
-        left_scalar_ne := $hc:term,
-        right_scalar_ne := $hd:term,
-        slope_pos := $hb:term,
-        index := $n:term) =>
-      `(tactic|
-        simpa only [C_0, C_1, zero_add, one_mul] using
-          RealRooted.interlaces_C_mul_linear_pow_succ
-            $c $d $a $b $hc $hd $hb $n)
-end Tactic
 end RealRooted
+
