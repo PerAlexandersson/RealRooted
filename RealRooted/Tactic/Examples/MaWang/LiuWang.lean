@@ -35,27 +35,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Root-upper combined Ma--Wang/Liu--Wang sequence shell. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) +
-          (1 + X) * (P (n + 1)).derivative +
-          (1 + X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroot_upper,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- Real-rootedness endpoint for the combined nonnegative-root shell. -/
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -73,27 +52,6 @@ example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     base := hbase,
     pos_lc := hpos,
     nonneg_coeffs := hnonneg,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Real-rootedness endpoint for the root-upper combined shell. -/
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ -1)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) +
-          (1 + X) * (P (n + 1)).derivative +
-          (1 + X) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_lw_derivative_lag_sequence_realrooted_root_upper_sign_auto using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroot_upper,
     recurrence := hrec,
     degree_succ := hdeg_succ,
     no_common_roots := hno

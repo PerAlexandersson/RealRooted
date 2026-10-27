@@ -24,32 +24,7 @@ namespace Tactic
 macro "rr_mw_active_nonneg_at " n:term : tactic =>
   `(tactic| rr_scalar_active_nonneg_at $n)
 
-/-- Introduces `n` and closes the scalar nonnegativity side goal at every row by
-`rr_mw_active_nonneg_at n`. -/
-macro "rr_mw_active_nonneg_seq" : tactic =>
-  `(tactic| intro n <;> rr_mw_active_nonneg_at n)
-
-/-- Refines the goal with the term `h` and closes the remaining row-wise nonnegativity side
-goals by `rr_mw_active_nonneg_seq`. -/
-syntax (name := rr_mw_refine_active_nonneg_seq)
-  "rr_mw_refine_active_nonneg_seq " term :
-  tactic
-
-macro_rules
-  | `(tactic| rr_mw_refine_active_nonneg_seq $h:term) =>
-      `(tactic| rr_refine_then $h with rr_mw_active_nonneg_seq)
-
-/-- Variant of `rr_mw_refine_active_nonneg_seq` for real-rootedness goals, using
-`rr_exact_realrooted_refine_then`. -/
-syntax (name := rr_mw_exact_realrooted_active_nonneg_seq)
-  "rr_mw_exact_realrooted_active_nonneg_seq " term :
-  tactic
-
-macro_rules
-  | `(tactic| rr_mw_exact_realrooted_active_nonneg_seq $h:term) =>
-      `(tactic| rr_exact_realrooted_refine_then $h with rr_mw_active_nonneg_seq)
-
-/-- Term form of `rr_mw_active_nonneg_seq`: the function `fun n => by rr_mw_active_nonneg_at n`. -/
+/-- The function `fun n => by rr_mw_active_nonneg_at n`. -/
 syntax (name := rr_mw_active_nonneg) "rr_mw_active_nonneg" : term
 
 macro_rules
