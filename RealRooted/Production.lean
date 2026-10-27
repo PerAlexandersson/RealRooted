@@ -1811,6 +1811,7 @@ import RealRooted.Mesh.DiscreteMultiplier
 import RealRooted.Challenges.Roots.LimitsOfZeros
 import RealRooted.Challenges.Roots.MeshFiniteDifference
 import RealRooted.Mesh.DiscreteMultiplierSequence
+import RealRooted.Mesh.FallingFactorial
 
 /-!
 # RealRooted production umbrella
