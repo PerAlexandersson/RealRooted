@@ -654,7 +654,6 @@ import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
 import RealRooted.PoweredEulerian
-import RealRooted.GeneralizedLiuWang
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.ChainPolynomial
 import RealRooted.GeneralizedSnakePosets.FiniteBoard
