@@ -7,7 +7,6 @@ import RealRooted.Tactic.SideGoals
 import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
 import RealRooted.Tactic.SignAssembly
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
