@@ -68,7 +68,7 @@ private lemma pochhammerModel_ratio {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
   rw [hcast] at hright
   simp only [pochhammerModel,
     coeff_twoSidedJensenPolynomial (reciprocalPochhammer_pos hb),
-    if_pos hk.le, if_pos (by lia : k + 1 ≤ d)]
+    ite_eq_left hk.le, ite_eq_left (by lia : k + 1 ≤ d)]
   linear_combination
     (reciprocalPochhammer a (k + 1) * reciprocalPochhammer b (d - (k + 1)) *
       (a + k)) * hchoose +
@@ -101,7 +101,6 @@ theorem isPFPolynomial_of_pochhammer_coeff_ratio
         have hq := pochhammerModel_ratio ha hb (d := d) (k := k) (by lia)
         have hnonzero : ((k : ℝ) + 1) * (a + k) ≠ 0 := by positivity
         apply mul_left_cancel₀ hnonzero
-        change ((k : ℝ) + 1) * (a + k) * p.coeff (k + 1) = _
         rw [hp, hprev]
         change _ = ((k : ℝ) + 1) * (a + k) * (c * (pochhammerModel d a b).coeff (k + 1))
         linear_combination -c * hq
