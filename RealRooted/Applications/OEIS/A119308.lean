@@ -5,6 +5,7 @@ public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard
 public import RealRooted.Interlacing.ReversalCommonFactor
 public import RealRooted.LinearPowerFamily
+public import RealRooted.MultiplierSequence.EulerCoefficientRatio
 public import RealRooted.MultiplierSequence.InvPochhammer
 public import RealRooted.MultiplierSequence.Infinite
 public import RealRooted.MultiplierSequence.JensenAffineTheta
@@ -135,57 +136,6 @@ private def A119308_model (n : ℕ) : ℝ[X] :=
     (C ((2 * ((n : ℝ) + 2))⁻¹) *
       reciprocalShift n
         (theta (narayanaPolynomial 2 n) + C 2 * narayanaPolynomial 2 n))
-
-private lemma A119308_model_splits (n : ℕ) :
-    (A119308_model n).Splits := by
-  let G : ℝ[X] := narayanaPolynomial 2 n
-  have hG : IsPFPolynomial G := narayanaPolynomialRootLocation 2 n
-  have hX :
-      X * (theta G + C 2 * G) = (X * (X * G)).derivative := by
-    rw [Polynomial.derivative_mul, Polynomial.derivative_mul]
-    simp only [theta, derivative_X, one_mul]
-    rw [show C (2 : ℝ) = (2 : ℝ[X]) from map_ofNat C 2]
-    ring
-  have hthetaTwo : IsPFPolynomial (theta G + C 2 * G) := by
-    apply isPFPolynomial_of_X_mul
-    rw [hX]
-    exact hG.X_mul.X_mul.derivative
-  have hdegG : G.natDegree = n := natDegree_narayanaPolynomial 2 n
-  have hdegThetaTwo : (theta G + C 2 * G).natDegree ≤ n := by
-    rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    simp only [coeff_add, coeff_theta, coeff_C_mul]
-    rw [Polynomial.coeff_eq_zero_of_natDegree_lt (hdegG ▸ hk)]
-    ring
-  have hrecip :
-      IsPFPolynomial
-        (reciprocalShift n (theta G + C 2 * G)) :=
-    reciprocalShift_preserves_pf hthetaTwo hdegThetaTwo
-  have hscale : 0 < (2 * ((n : ℝ) + 2))⁻¹ := by positivity
-  have hscaled :
-      IsPFPolynomial
-        (C ((2 * ((n : ℝ) + 2))⁻¹) *
-          reciprocalShift n (theta G + C 2 * G)) :=
-    hrecip.const_mul hscale
-  have hdegScaled :
-      (C ((2 * ((n : ℝ) + 2))⁻¹) *
-          reciprocalShift n (theta G + C 2 * G)).natDegree ≤ 2 * n + 2 := by
-    calc
-      _ ≤ (reciprocalShift n (theta G + C 2 * G)).natDegree :=
-        Polynomial.natDegree_C_mul_le _ _
-      _ ≤ n := by
-        unfold reciprocalShift
-        exact (Polynomial.natDegree_reflect_le
-          (N := n) (p := theta G + C 2 * G)).trans
-            (max_le le_rfl hdegThetaTwo)
-      _ ≤ 2 * n + 2 := by lia
-  rcases (polarTheta_preserves_pf hscaled hdegScaled).eq_zero_or_splits with
-    hzero | hsplits <;>
-    change
-      (polarTheta (2 * n + 2)
-        (C ((2 * ((n : ℝ) + 2))⁻¹) *
-          reciprocalShift n (theta G + C 2 * G))).Splits <;>
-    simp_all
 
 private lemma A119308_model_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
     (A119308_model n).coeff k =
@@ -1533,6 +1483,52 @@ private lemma recurrencePolynomial_eq_polynomial (n : ℕ) :
     recurrencePolynomial n = polynomial n := by
   rw [A119308_eq_model, polynomial_eq_old_model]
 
+private lemma polynomial_coeff_eq_euler (n k : ℕ) (hk : k ≤ n) :
+    (polynomial n).coeff k = (n + 1).factorial / 2 *
+      (eulerPochhammerPolynomial n [3] [2] [] [(n : ℝ) + 2]).coeff k := by
+  rw [polynomial, coeff_affineThetaJensenPolynomial_of_le n k hk,
+    eulerPochhammerPolynomial_coeff (by simp)
+        (by simpa using (show (0 : ℝ) < n + 2 by positivity)),
+    pochhammerJensenPolynomial,
+    coeff_twoSidedJensenPolynomial (invPochhammerProduct_pos (by simp))]
+  simp only [hk, ite_true, invPochhammerProduct, eulerWeight, eulerProduct,
+    List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one, one_mul,
+    affineThetaLeftWeight, affineThetaRightWeight]
+  rw [Nat.cast_sub hk, Nat.choose_symm hk]
+  ring
+
+/-- The A119308 coefficient ratio has the Euler factor `2n + 2 - k`. -/
+theorem polynomial_coeff_ratio (n k : ℕ) (hk : k < n) :
+    ((k : ℝ) + 1) * (3 + k) * (2 * n + 2 - k) * (polynomial n).coeff (k + 1) =
+      ((n : ℝ) - k) * (n + 1 - k) * (2 * n + 1 - k) * (polynomial n).coeff k := by
+  have h := eulerPochhammerPolynomial_coeff_ratio
+    (lower := [3]) (upper := [2]) (rising := []) (falling := [(n : ℝ) + 2])
+    (by simp) (by simp) (by simpa using (show (0 : ℝ) < n + 2 by positivity)) hk
+  simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one,
+    eulerWeight, eulerProduct, one_mul, Nat.cast_sub hk.le,
+    Nat.cast_sub (by lia : k + 1 ≤ n), Nat.cast_add, Nat.cast_one] at h
+  rw [polynomial_coeff_eq_euler n (k + 1) (by lia), polynomial_coeff_eq_euler n k hk.le]
+  linear_combination ((n + 1).factorial / 2 : ℝ) * h
+
+/-- The common Euler-Pochhammer coefficient certificate proves A119308 is PF. -/
+theorem polynomial_isPF (n : ℕ) : IsPFPolynomial (polynomial n) := by
+  apply isPFPolynomial_of_euler_pochhammer_coeff_ratio
+    (d := n) (lower := [3]) (upper := [2]) (rising := []) (falling := [(n : ℝ) + 2])
+    (by simp) (by simp) (by simp) (by simpa using (show (0 : ℝ) < n + 2 by positivity))
+  · exact (natDegree_affineThetaJensenPolynomial n).le
+  · rw [polynomial_coeff_eq_euler n 0 (Nat.zero_le n),
+      eulerPochhammerPolynomial_coeff (by simp)
+        (by simpa using (show (0 : ℝ) < n + 2 by positivity))]
+    exact mul_pos (by positivity) (mul_pos
+      (eulerWeight_pos (by simp) (by simpa using (show (0 : ℝ) < n + 2 by positivity)) n 0)
+      (pochhammerJensenPolynomial_coeff_pos (by simp) (by simp) (Nat.zero_le n)))
+  · intro k hk
+    have h := polynomial_coeff_ratio n k hk
+    simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one,
+      eulerWeight, eulerProduct, one_mul, Nat.cast_sub hk.le,
+      Nat.cast_sub (by lia : k + 1 ≤ n), Nat.cast_add, Nat.cast_one]
+    linear_combination h
+
 /-- Consecutive A119308 model rows are in directed proper position. -/
 theorem polynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (polynomial n) (polynomial (n + 1)) :=
@@ -1547,7 +1543,7 @@ theorem polynomial_interlaces (n : ℕ) :
 
 /-- Every A119308 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
-  (polynomial_strictInterl_succ n).1.2
+  (polynomial_isPF n).eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id
 
 /-- The A119308 model satisfies the downstream lag-three recurrence. -/
 theorem polynomial_recurrence (n : ℕ) :
@@ -1611,8 +1607,8 @@ theorem A119308_interlaces (n : ℕ) :
 
 /-- Every downstream A119308 recurrence row splits over the reals. -/
 theorem A119308_splits (n : ℕ) : (recurrencePolynomial n).Splits := by
-  rw [A119308_eq_model]
-  exact A119308_model_splits n
+  rw [recurrencePolynomial_eq_polynomial]
+  exact polynomial_splits n
 
 /-- Every downstream A119308 recurrence row is nonzero. -/
 theorem A119308_ne_zero (n : ℕ) : (recurrencePolynomial n) ≠ 0 :=
