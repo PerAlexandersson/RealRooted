@@ -33,10 +33,12 @@ def IsPFPolynomial (p : ℝ[X]) : Prop :=
 
 namespace IsPFPolynomial
 
+/-- A PF polynomial has nonnegative coefficients. -/
 theorem hasNonnegCoeffs {p : ℝ[X]} (hp : IsPFPolynomial p) :
     HasNonnegCoeffs p :=
   hp.1
 
+/-- A PF polynomial is zero or splits over the reals. -/
 theorem eq_zero_or_splits {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p = 0 ∨ p.Splits :=
   hp.2.1
@@ -45,19 +47,23 @@ theorem roots_nonpos {p : ℝ[X]} (hp : IsPFPolynomial p) :
     ∀ r ∈ p.roots, r ≤ 0 :=
   hp.2.2
 
+/-- A nonzero PF polynomial is nonzero and splits over the reals. -/
 theorem ne_zero_and_splits {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hp0 : p ≠ 0) :
     p ≠ 0 ∧ p.Splits := by
   grind [IsPFPolynomial.eq_zero_or_splits]
 
+/-- The zero polynomial is PF. -/
 theorem zero : IsPFPolynomial (0 : ℝ[X]) :=
   ⟨by simp [HasNonnegCoeffs], Or.inl rfl, by simp⟩
 
+/-- A split polynomial with nonnegative coefficients is PF. -/
 theorem of_realRooted_nonneg {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hprr_splits : p.Splits) :
     IsPFPolynomial p :=
   ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_hasNonnegCoeffs hpnn⟩
 
+/-- The constant polynomial `1` is PF. -/
 theorem one : IsPFPolynomial (1 : ℝ[X]) :=
   IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)
 
@@ -70,6 +76,7 @@ theorem of_nonnegCoeffs_eq_zero_or_splits {p : ℝ[X]}
   · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hpnn hsplits
 
+/-- Multiplication by a positive constant preserves the PF property. -/
 theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (C a * p) :=
@@ -77,9 +84,11 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hasNonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
     ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).C_mul a)
 
+/-- A nonnegative constant polynomial is PF. -/
 theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :=
   IsPFPolynomial.of_realRooted_nonneg (hasNonnegCoeffs_C ha) (by simp)
 
+/-- Multiplication by `X` preserves the PF property. -/
 theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) :=
   IsPFPolynomial.of_realRooted_nonneg
@@ -87,6 +96,7 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     ((by simp : (X : ℝ[X]).Splits).mul
       (hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id))
 
+/-- The product of two PF polynomials is PF. -/
 theorem mul {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) :
     IsPFPolynomial (p * q) :=
@@ -211,11 +221,13 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
             _ = ((1 + C (-u)⁻¹ * X) * C (-u)) * q := by rw [hlinear]
             _ = (1 + C (-u)⁻¹ * X) * (C (-u) * q) := by ring
 
+/-- Every natural power of a PF polynomial is PF. -/
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) :=
   IsPFPolynomial.of_realRooted_nonneg (hp.hasNonnegCoeffs.pow n)
     ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).pow n)
 
+/-- The derivative of a PF polynomial is PF. -/
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative :=
@@ -248,6 +260,7 @@ theorem splits_of_forall_pos_add_C_mul
     p.Splits :=
   (of_forall_pos_add_C_mul hpnn hqnn hfamily).ne_zero_and_splits hp0 |>.2
 
+/-- The coefficient sequence of a PF polynomial is a Pólya-frequency sequence. -/
 theorem to_sequence
     {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
@@ -257,6 +270,7 @@ theorem to_sequence
   · have hprr := hp.ne_zero_and_splits hp0
     exact aissenSchoenbergWhitney_reverse hp.hasNonnegCoeffs hprr.2 hp.roots_nonpos
 
+/-- A PF polynomial is in zero-aware proper position with itself. -/
 theorem interl_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl p p :=
   Interl.refl fun hp0 => (hp.ne_zero_and_splits hp0).2
@@ -271,13 +285,16 @@ theorem of_interl_self {p : ℝ[X]}
 
 end IsPFPolynomial
 
+/-- The polynomial `X` is PF. -/
 theorem isPFPolynomial_X : IsPFPolynomial (X : ℝ[X]) := by
   simpa [mul_one] using IsPFPolynomial.one.X_mul
 
+/-- Every natural power of `X` is PF. -/
 theorem isPFPolynomial_X_pow (m : ℕ) :
     IsPFPolynomial ((X : ℝ[X]) ^ m) :=
   isPFPolynomial_X.pow m
 
+/-- The polynomial `X + C a` is PF when `a` is nonnegative. -/
 theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
     IsPFPolynomial (X + C a : ℝ[X]) := by
   have hnn : HasNonnegCoeffs (X + C a : ℝ[X]) := by
@@ -285,6 +302,7 @@ theorem isPFPolynomial_X_add_C {a : ℝ} (ha : 0 ≤ a) :
   exact IsPFPolynomial.of_realRooted_nonneg hnn <| by
     simp
 
+/-- The polynomial `X + 1` is PF. -/
 theorem isPFPolynomial_X_add_one : IsPFPolynomial (X + 1 : ℝ[X]) := by
   simpa using isPFPolynomial_X_add_C (a := 1) zero_le_one
 
@@ -335,6 +353,7 @@ theorem comp_C_mul_X_add_C {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d)
 
 end IsPFPolynomial
 
+/-- Reversal preserves the PF property. -/
 theorem IsPFPolynomial.reverse {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial p.reverse :=
   IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits

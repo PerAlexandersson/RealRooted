@@ -80,7 +80,6 @@ import RealRooted.Tactic.Examples.OEIS.GammaVeronese
 import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 import RealRooted.Tactic.Examples.OEIS.LinearPower
-import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
 import RealRooted.Tactic.Examples.OEIS.NextRows
 import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
 import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
@@ -116,10 +115,6 @@ import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RecurrenceODE
 import RealRooted.Tactic.Examples.RegistryDownstream
 import RealRooted.Tactic.Examples.RootBounds
-import RealRooted.Tactic.Examples.RootCount
-import RealRooted.Tactic.Examples.RootCount.Core
-import RealRooted.Tactic.Examples.RootCount.Filters
-import RealRooted.Tactic.Examples.RootCount.LowDegree
 import RealRooted.Tactic.Examples.RowCancelRho
 import RealRooted.Tactic.Examples.RowCubicParent
 import RealRooted.Tactic.Examples.RowData

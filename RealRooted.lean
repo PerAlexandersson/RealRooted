@@ -1544,7 +1544,6 @@ import RealRooted.Tactic.Examples.OEIS.DifferentialPreservers
 import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.GammaVeronese
 import RealRooted.Tactic.Examples.OEIS.LinearPower
-import RealRooted.Tactic.Examples.OEIS.LowDegreeRootCount
 import RealRooted.Tactic.Examples.OEIS.PolyaFrequency
 import RealRooted.Tactic.Examples.OEIS.PositiveCombinations
 import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
@@ -1575,10 +1574,6 @@ import RealRooted.Tactic.Examples.ReciprocalShift
 import RealRooted.Tactic.Examples.RecurrenceIdentification
 import RealRooted.Tactic.Examples.RecurrenceODE
 import RealRooted.Tactic.Examples.RootBounds
-import RealRooted.Tactic.Examples.RootCount
-import RealRooted.Tactic.Examples.RootCount.Core
-import RealRooted.Tactic.Examples.RootCount.Filters
-import RealRooted.Tactic.Examples.RootCount.LowDegree
 import RealRooted.Tactic.Examples.RowData
 import RealRooted.Tactic.Examples.RowGeneral
 import RealRooted.Tactic.Examples.RowInterlacing
@@ -1668,12 +1663,7 @@ import RealRooted.Tactic.Recurrence.Shape
 import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
-import RealRooted.Tactic.RootCount.CoreRules
-import RealRooted.Tactic.RootCount.CoreSyntax
 import RealRooted.Tactic.RootCount.LowDegree
-import RealRooted.Tactic.RootCount.LowDegreeRules
-import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
