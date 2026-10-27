@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.Mesh.DiscreteMultiplier
-public import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+public import Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.Mesh.FiniteDifference
+
+import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+import RealRooted.Mesh.DiscreteMultiplier
 
 /-!
 # Discrete multiplier sequences
