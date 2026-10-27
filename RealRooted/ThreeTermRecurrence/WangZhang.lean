@@ -1,16 +1,21 @@
 module
 
 public import Mathlib
+public import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 
 /-!
 # Wang–Zhang's affine three-term recurrence
 
 We prove the sufficiency direction of Wang–Zhang, arXiv:1712.06105,
-Theorem 2.1 (RealRooted issue #2067): every row of the affine recurrence
-`W (n + 2) = (a X + b) W (n + 1) + (c X + d) W n` splits over the reals
-when `a, b, c, d > 0` and `a d ≤ b c`.
+Theorem 2.1 (RealRooted issue #2067): for `a, b, c, d > 0`, every row of the affine recurrence
+`W (n + 2) = (a X + b) W (n + 1) + (c X + d) W n` with `W 0 = 1`, `W 1 = X` splits over the
+reals iff `a d ≤ b c` (`forall_splits_iff`).
 
-The proof of sufficiency was found by Aristotle (Harmonic).
+* Sufficiency, `splits_of_affine_two_step`: an explicit root-location argument. The proof was
+  found by Aristotle (Harmonic).
+* Necessity, `exists_not_splits_of_affine_two_step`: the Beraha–Kahane–Weiss two-dominant-root
+  theorem (#2071). Open mapping near the zero `-b/a` of `A = a X + b` gives a nonreal equimodular
+  point, so late rows have nonreal zeros.
 -/
 
 public section
@@ -440,6 +445,309 @@ theorem splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc 
     (W n).Splits := by
   rw [WangZhang.Wseq_eq W h0 h1 hrec n]
   exact WangZhang.Wseq_splits ha hb hc hd habcd n
+
+
+/-! ### Necessity (Beraha–Kahane–Weiss) -/
+
+section Necessity
+
+open Filter Topology Metric Polynomial
+private theorem affine_ratio_not_locally_constant {A B : ℂ → ℂ} {x y z₀ : ℂ}
+    (hA : ∀ z, AnalyticAt ℂ A z) (hB : ∀ z, AnalyticAt ℂ B z)
+    (hAx : A x = 0) (hAy : A y ≠ 0) (hBx : B x ≠ 0) (hBz : B z₀ ≠ 0) :
+    ¬∀ᶠ z in 𝓝 z₀,
+      A z ^ 2 / (-4 * B z) = A z₀ ^ 2 / (-4 * B z₀) := by
+  intro hconst
+  let q₀ : ℂ := A z₀ ^ 2 / (-4 * B z₀)
+  let P : ℂ → ℂ := fun z => A z ^ 2 + 4 * q₀ * B z
+  have hP : AnalyticOnNhd ℂ P Set.univ := by
+    intro z _
+    dsimp [P]
+    fun_prop (disch := assumption)
+  have hBnear : ∀ᶠ z in 𝓝 z₀, B z ≠ 0 :=
+    (hB z₀).continuousAt.eventually_ne hBz
+  have hzero : P =ᶠ[𝓝 z₀] 0 := by
+    filter_upwards [hconst, hBnear] with z hz hBz'
+    have hden : (-4 : ℂ) * B z ≠ 0 := mul_ne_zero (by norm_num) hBz'
+    have heq : A z ^ 2 = q₀ * (-4 * B z) := (div_eq_iff hden).mp hz
+    change P z = 0
+    dsimp [P]
+    linear_combination heq
+  have hglobal := hP.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+    isPreconnected_univ (Set.mem_univ z₀) hzero
+  have hx : 4 * q₀ * B x = 0 := by simpa [P, hAx] using hglobal (Set.mem_univ x)
+  have hq₀ : q₀ = 0 := by
+    have hfour : (4 : ℂ) ≠ 0 := by norm_num
+    exact (mul_eq_zero.mp (mul_eq_zero.mp hx |>.resolve_right hBx)).resolve_left hfour
+  have hy : A y ^ 2 = 0 := by simpa [P, hq₀] using hglobal (Set.mem_univ y)
+  exact (pow_ne_zero 2 hAy) hy
+
+private theorem exists_nonreal_positive_ratio {q : ℂ → ℂ} {x : ℂ} {ρ : ℝ}
+    (hρ : 0 < ρ) (hq : AnalyticAt ℂ q x) (hq0 : q x = 0)
+    (hnconst : ¬∀ᶠ z in 𝓝 x, q z = q x)
+    (hreal : ∀ z ∈ ball x ρ, z.im = 0 →
+      ∀ t : ℝ, 0 < t → q z ≠ (t : ℂ)) :
+    ∃ z ∈ ball x ρ, ∃ t : ℝ, 0 < t ∧ t < 1 ∧ q z = (t : ℂ) ∧ z.im ≠ 0 := by
+  have hmap : 𝓝 (q x) ≤ Filter.map q (𝓝 x) :=
+    (hq.eventually_constant_or_nhds_le_map_nhds).resolve_left hnconst
+  have himage : q '' ball x ρ ∈ 𝓝 (q x) := by
+    apply hmap
+    change q ⁻¹' (q '' ball x ρ) ∈ 𝓝 x
+    exact mem_of_superset (ball_mem_nhds x hρ) (fun z hz => ⟨z, hz, rfl⟩)
+  obtain ⟨η, hη, hηimage⟩ := Metric.mem_nhds_iff.mp himage
+  let t : ℝ := min η 1 / 2
+  have ht0 : 0 < t := by dsimp [t]; positivity
+  have ht1 : t < 1 := by
+    dsimp [t]
+    have := min_le_right η 1
+    linarith
+  have htη : t < η := by
+    dsimp [t]
+    have := min_le_left η 1
+    linarith
+  have htball : (t : ℂ) ∈ ball (q x) η := by
+    rw [hq0, mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs]
+    rw [abs_of_pos ht0]
+    exact htη
+  obtain ⟨z, hz, hqz⟩ := hηimage htball
+  refine ⟨z, hz, t, ht0, ht1, hqz, ?_⟩
+  intro hzim
+  exact hreal z hz hzim t ht0 hqz
+
+private theorem affine_initial_not_locally_zero {A B : ℂ → ℂ} {z₀ : ℂ}
+    (hA : ∀ z, AnalyticAt ℂ A z) (hB : ∀ z, AnalyticAt ℂ B z)
+    (hE0 : (0 : ℂ) ^ 2 - A 0 * 0 - B 0 ≠ 0) :
+    ¬∀ᶠ z in 𝓝 z₀, z ^ 2 - A z * z - B z = 0 := by
+  intro hzero
+  let E : ℂ → ℂ := fun z => z ^ 2 - A z * z - B z
+  have hE : AnalyticOnNhd ℂ E Set.univ := by
+    intro z _
+    dsimp [E]
+    fun_prop (disch := assumption)
+  have hglobal := hE.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+    isPreconnected_univ (Set.mem_univ z₀) hzero
+  exact hE0 (hglobal (Set.mem_univ 0))
+
+/-- Wang--Zhang's necessary condition: if all four affine recurrence coefficients are
+positive and `ad > bc`, some row with initial data `1, X` does not split over `ℝ`.
+This is the necessity direction of Wang--Zhang, arXiv:1712.06105, Theorem 2.1. -/
+theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b)
+    (hc : 0 < c) (hd : 0 < d) (habcd : b * c < a * d)
+    (W : ℕ → ℝ[X]) (h0 : W 0 = 1) (h1 : W 1 = X)
+    (hrec : ∀ n, W (n + 2) = (C a * X + C b) * W (n + 1) +
+      (C c * X + C d) * W n) :
+    ∃ n, ¬(W n).Splits := by
+  let A : ℂ → ℂ := fun z => (a : ℂ) * z + b
+  let B : ℂ → ℂ := fun z => (c : ℂ) * z + d
+  let q : ℂ → ℂ := fun z => A z ^ 2 / (-4 * B z)
+  let xA : ℝ := -b / a
+  let x : ℂ := (xA : ℂ)
+  have hA (z : ℂ) : AnalyticAt ℂ A z := by dsimp [A]; fun_prop
+  have hB (z : ℂ) : AnalyticAt ℂ B z := by dsimp [B]; fun_prop
+  have hAx : A x = 0 := by
+    dsimp [A, x, xA]
+    push_cast
+    field_simp [(ne_of_gt ha)]
+    ring
+  have hA0 : A 0 ≠ 0 := by
+    simp only [A, mul_zero, zero_add]
+    exact_mod_cast hb.ne'
+  have hBxpos : 0 < (B x).re := by
+    have hreal : 0 < d - c * b / a := by
+      apply (sub_pos).mpr
+      apply (div_lt_iff₀ ha).mpr
+      nlinarith [habcd]
+    convert hreal using 1
+    dsimp [B, x, xA]
+    push_cast
+    simp
+    ring
+  have hBx : B x ≠ 0 := by
+    intro heq
+    simp [heq] at hBxpos
+  have hq0 : q x = 0 := by simp [q, hAx]
+  have hqnconst : ¬∀ᶠ z in 𝓝 x, q z = q x :=
+    affine_ratio_not_locally_constant hA hB hAx hA0 hBx hBx
+  have hq : AnalyticAt ℂ q x := by
+    have hden : (-4 : ℂ) * B x ≠ 0 := mul_ne_zero (by norm_num) hBx
+    exact (hA x).pow 2 |>.div (analyticAt_const.mul (hB x)) hden
+  have hBposNear : ∀ᶠ z in 𝓝 x, 0 < (B z).re :=
+    continuousAt_const.eventually_lt
+      (Complex.continuous_re.continuousAt.comp (hB x).continuousAt) hBxpos
+  obtain ⟨ρ, hρ, hBpos⟩ := Metric.mem_nhds_iff.mp hBposNear
+  have hreal (z : ℂ) (hz : z ∈ ball x ρ) (hzim : z.im = 0)
+      (t : ℝ) (ht : 0 < t) : q z ≠ (t : ℂ) := by
+    intro hqz
+    have hBz : B z ≠ 0 := by
+      intro heq
+      have := hBpos hz
+      simp [heq] at this
+    have hden : (-4 : ℂ) * B z ≠ 0 := mul_ne_zero (by norm_num) hBz
+    have heq : A z ^ 2 = (t : ℂ) * (-4 * B z) := (div_eq_iff hden).mp hqz
+    have hzreal : z = (z.re : ℂ) := by
+      apply Complex.ext
+      · simp
+      · simpa using hzim
+    have hAim : (A z).im = 0 := by rw [hzreal]; simp [A]
+    have hEq := congrArg Complex.re heq
+    simp only [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      mul_zero, sub_zero, zero_mul, hAim] at hEq
+    norm_num at hEq
+    have hBzpos : 0 < (B z).re := hBpos hz
+    nlinarith [sq_nonneg (A z).re, mul_pos ht hBzpos]
+  obtain ⟨z₀, hz₀, t, ht0, ht1, hqz₀, hzim⟩ :=
+    exists_nonreal_positive_ratio hρ hq hq0 hqnconst hreal
+  have hBzpos : 0 < (B z₀).re := hBpos hz₀
+  have hBz : B z₀ ≠ 0 := by
+    intro heq
+    simp [heq] at hBzpos
+  have hqnonconst : ¬∀ᶠ z in 𝓝 z₀, q z = q z₀ :=
+    affine_ratio_not_locally_constant hA hB hAx hA0 hBx hBz
+  let D : ℂ → ℂ := fun z => A z ^ 2 + 4 * B z
+  have hqeq : A z₀ ^ 2 = -4 * (t : ℂ) * B z₀ := by
+    have hden : (-4 : ℂ) * B z₀ ≠ 0 := mul_ne_zero (by norm_num) hBz
+    have heq := (div_eq_iff hden).mp hqz₀
+    linear_combination heq
+  have hD0 : D z₀ ≠ 0 := by
+    intro heq
+    have heq' : 4 * (1 - (t : ℂ)) * B z₀ = 0 := by
+      dsimp [D] at heq
+      linear_combination heq - hqeq
+    have h1t : (1 - (t : ℂ)) ≠ 0 := by
+      intro h
+      have : t = 1 := by exact_mod_cast (sub_eq_zero.mp h).symm
+      linarith
+    exact (mul_ne_zero (mul_ne_zero (by norm_num) h1t) hBz) heq'
+  have hD : AnalyticAt ℂ D z₀ := by dsimp [D]; fun_prop (disch := assumption)
+  obtain ⟨ρD, hρD, droot, hdanalytic, hdsq, hd0⟩ :=
+    Complex.exists_ball_analytic_square_root hD hD0
+  let u : ℂ → ℂ := fun z => (A z + droot z) / 2
+  let v : ℂ → ℂ := fun z => (A z - droot z) / 2
+  have hdan : AnalyticAt ℂ droot z₀ := hdanalytic z₀ (mem_ball_self hρD)
+  have hdev : ∀ᶠ z in 𝓝 z₀, droot z ≠ 0 :=
+    hdan.continuousAt.eventually_ne hd0
+  obtain ⟨ρd, hρd, hdnear⟩ := Metric.mem_nhds_iff.mp hdev
+  let η := min ρD ρd
+  have hη : 0 < η := lt_min hρD hρd
+  have hηD : ball z₀ η ⊆ ball z₀ ρD :=
+    ball_subset_ball (min_le_left _ _)
+  have hηd : ball z₀ η ⊆ ball z₀ ρd :=
+    ball_subset_ball (min_le_right _ _)
+  have hrootdata : ∀ z ∈ ball z₀ η,
+      u z + v z = A z ∧ u z * v z = -B z ∧ u z ≠ v z := by
+    intro z hz
+    have hdz : droot z ≠ 0 := hdnear (hηd hz)
+    refine ⟨?_, ?_, ?_⟩
+    · dsimp [u, v]; ring
+    · dsimp [u, v]
+      have hsq := hdsq z (hηD hz)
+      dsimp [D] at hsq
+      linear_combination (-1 / 4 : ℂ) * hsq
+    · intro heq
+      apply hdz
+      dsimp [u, v] at heq
+      linear_combination heq
+  have hE0 : (0 : ℂ) ^ 2 - A 0 * 0 - B 0 ≠ 0 := by
+    have hdC : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
+    simpa [A, B] using neg_ne_zero.mpr hdC
+  have hEgerm : ¬∀ᶠ z in 𝓝 z₀, z ^ 2 - A z * z - B z = 0 :=
+    affine_initial_not_locally_zero hA hB hE0
+  have hfactor (z : ℂ) (hz : z ∈ ball z₀ η) :
+      z ^ 2 - A z * z - B z = (z - u z) * (z - v z) := by
+    have hr := hrootdata z hz
+    linear_combination z * hr.1 - hr.2.1
+  have hcugerm : ¬∀ᶠ z in 𝓝 z₀, z - v z = 0 := by
+    intro h
+    apply hEgerm
+    filter_upwards [h, ball_mem_nhds z₀ hη] with z hz hzball
+    rw [hfactor z hzball]
+    exact mul_eq_zero_of_right _ hz
+  have hcvgerm : ¬∀ᶠ z in 𝓝 z₀, u z - z = 0 := by
+    intro h
+    apply hEgerm
+    filter_upwards [h, ball_mem_nhds z₀ hη] with z hz hzball
+    rw [hfactor z hzball]
+    have : z - u z = 0 := by linear_combination -hz
+    simp [this]
+  have hroots0 := hrootdata z₀ (mem_ball_self hη)
+  have huv : u z₀ ≠ v z₀ := hroots0.2.2
+  have hv0 : v z₀ ≠ 0 := by
+    intro hzero
+    apply hBz
+    have hp := hroots0.2.1
+    simpa [hzero] using hp.symm
+  have heq : ‖u z₀‖ = ‖v z₀‖ :=
+    equimodular_quadratic_roots ht0 ht1 hd0 hqeq
+      (by simpa [D] using hdsq z₀ (mem_ball_self hρD))
+  have hBnear : ∀ᶠ z in 𝓝 z₀, B z ≠ 0 :=
+    (hB z₀).continuousAt.eventually_ne hBz
+  obtain ⟨ρB, hρB, hBball⟩ := Metric.mem_nhds_iff.mp hBnear
+  let ξ := min η ρB
+  have hξ : 0 < ξ := lt_min hη hρB
+  have hξη : ball z₀ ξ ⊆ ball z₀ η :=
+    ball_subset_ball (min_le_left _ _)
+  have hξB : ball z₀ ξ ⊆ ball z₀ ρB :=
+    ball_subset_ball (min_le_right _ _)
+  have hdsqξ (z : ℂ) (hz : z ∈ ball z₀ ξ) :
+      droot z ^ 2 = A z ^ 2 + 4 * B z := by
+    simpa [D] using hdsq z (hηD (hξη hz))
+  have hBξ (z : ℂ) (hz : z ∈ ball z₀ ξ) : B z ≠ 0 :=
+    hBball (hξB hz)
+  have hplus (z : ℂ) (hz : z ∈ ball z₀ ξ) : A z + droot z ≠ 0 := by
+    intro hzero
+    have hu0 : u z = 0 := by simp [u, hzero]
+    have hp := (hrootdata z (hξη hz)).2.1
+    exact hBξ z hz (by simpa [hu0] using hp.symm)
+  have hminus (z : ℂ) (hz : z ∈ ball z₀ ξ) : A z - droot z ≠ 0 := by
+    intro hzero
+    have hvzero : v z = 0 := by simp [v, hzero]
+    have hp := (hrootdata z (hξη hz)).2.1
+    exact hBξ z hz (by simpa [hvzero] using hp.symm)
+  have hratio : ¬∀ᶠ z in 𝓝 z₀, u z / v z = u z₀ / v z₀ := by
+    simpa [u, v] using quadratic_ratio_not_locally_constant hξ hdsqξ
+      hBξ hplus hminus hqnonconst
+  let F : ℕ → ℂ → ℂ := fun n z => ((W n).map Complex.ofRealHom).eval z
+  have hF0 : F 0 = fun _ => 1 := by funext z; simp [F, h0]
+  have hF1 : F 1 = fun z => z := by funext z; simp [F, h1]
+  have hFrec (n : ℕ) (z : ℂ) :
+      F (n + 2) z = A z * F (n + 1) z + B z * F n z := by
+    simp [F, hrec, A, B]
+  have hlim : Complex.IsLimitOfZeros F z₀ :=
+    isLimitOfZeros_two_step_of_roots_closure hη hF0 hF1 hFrec
+      hrootdata analyticAt_const analyticAt_id
+      ((hA z₀).add hdan).div_const ((hA z₀).sub hdan).div_const
+      huv hv0 (by simpa using hcugerm) (by simpa using hcvgerm) heq hratio
+  have hpos : ∀ n, 0 < (W n).eval 1 := by
+    intro n
+    induction n using Nat.twoStepInduction with
+    | zero => simp [h0]
+    | one => simp [h1]
+    | more n ih0 ih1 =>
+        rw [hrec]
+        simp only [eval_add, eval_mul, eval_C, eval_X]
+        have hAp : 0 < a + b := by linarith
+        have hBp : 0 < c + d := by linarith
+        nlinarith [mul_pos hAp ih1, mul_pos hBp ih0]
+  have hnonzero : ∀ᶠ n in atTop, W n ≠ 0 :=
+    Eventually.of_forall fun n hzero => by
+      have := hpos n
+      simp [hzero] at this
+  have hlate := eventually_not_splits_of_nonreal_limit hzim hnonzero hlim
+  exact hlate.exists
+
+end Necessity
+
+/-- **Wang–Zhang, Theorem 2.1.** For `a, b, c, d > 0`, all rows of `W₀ = 1`, `W₁ = X`,
+`W (n+2) = (a X + b) W (n+1) + (c X + d) W n` split over the reals iff `a d ≤ b c`. -/
+theorem forall_splits_iff {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d)
+    (W : ℕ → ℝ[X]) (h0 : W 0 = 1) (h1 : W 1 = X)
+    (hrec : ∀ n, W (n + 2) = (C a * X + C b) * W (n + 1) + (C c * X + C d) * W n) :
+    (∀ n, (W n).Splits) ↔ a * d ≤ b * c := by
+  refine ⟨fun h => ?_, fun h n => splits_of_affine_two_step ha hb hc hd h W h0 h1 hrec n⟩
+  by_contra hlt
+  obtain ⟨n, hn⟩ :=
+    exists_not_splits_of_affine_two_step ha hb hc hd (lt_of_not_ge hlt) W h0 h1 hrec
+  exact hn (h n)
 
 end RealRooted.WangZhang
 
