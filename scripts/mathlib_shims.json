@@ -2724,6 +2724,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/Order/Ring/Lemmas.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Order.Ring.Lemmas"
+      ],
+      "note": "Sign rigidity for nonnegative biaffine forms (issue #1897). Proof found by Aristotle.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/RingTheory/Polynomial/Bernstein.lean"
       ],
       "modules": [
