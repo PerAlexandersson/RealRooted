@@ -1980,3 +1980,5 @@ import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 
 import RealRooted.Mesh.Basic
 import RealRooted.Mesh.FiniteDifference
+import RealRooted.Mathlib.Algebra.Order.Ring.Lemmas
+import RealRooted.Mesh.Derivative
