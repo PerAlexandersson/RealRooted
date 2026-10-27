@@ -6,8 +6,8 @@ public import RealRooted.PFPolynomial
 # PF-polynomial tactic frontends and model transport
 
 The model transport theorem preserves PF rows and consecutive `Interl` through
-pointwise sequence identification. The `rr_pf` frontend dispatches the standard
-consequences of an `IsPFPolynomial` hypothesis.
+pointwise sequence identification. The remaining declarations expose the
+standard consequences of an `IsPFPolynomial` hypothesis directly as theorems.
 -/
 
 public section
@@ -190,40 +190,6 @@ theorem interl_sequence_mul_X_both
     ∀ i : Nat, Interl (X * P i) (X * Q i) := fun i =>
   (hPQ i).mul_X_both
 
-/-- Closes a goal about `p` from `pf : IsPFPolynomial p`, trying in turn `pf`
-itself, `HasNonnegCoeffs p`, `p = 0 ∨ p.Splits`, the nonpositivity of the roots
-of `p`, `p.Splits`, and the PF property of the coefficient sequence of `p`. -/
-syntax (name := rr_pf_using_named)
-  "rr_pf" " using " "pf" ":=" term :
-  tactic
-
-/-- Variant of `rr_pf using ...` that also takes `nonzero : p ≠ 0`, so that it
-can close `p ≠ 0` and `p ≠ 0 ∧ p.Splits`. -/
-syntax (name := rr_pf_using_nonzero_named)
-  "rr_pf" " using "
-    "pf" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic| rr_pf using pf := $hp:term) =>
-      `(tactic|
-        first
-          | exact $hp
-          | exact RealRooted.IsPFPolynomial.hasNonnegCoeffs $hp
-          | exact RealRooted.IsPFPolynomial.eq_zero_or_splits $hp
-          | exact RealRooted.IsPFPolynomial.roots_nonpos $hp
-          | exact RealRooted.Tactic.pf_splits $hp
-          | exact RealRooted.IsPFPolynomial.to_sequence $hp)
-  | `(tactic|
-      rr_pf using
-        pf := $hp:term,
-        nonzero := $hp0:term) =>
-      `(tactic|
-        first
-          | rr_pf using pf := $hp
-          | exact $hp0
-          | exact RealRooted.IsPFPolynomial.ne_zero_and_splits $hp $hp0)
-
 end Tactic
 end RealRooted
+

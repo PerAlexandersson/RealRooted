@@ -32,16 +32,9 @@ theorem strictInterl_derivative_nonpos_sequence {P : Nat → ℝ[X]}
     (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
     (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  refine strictInterl_sequence_of_base_and_step hbase ?_
-  intro n hprev
-  have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := hprev.2.1
-  have hstep :
-      StrictInterl (P (n + 1))
-        (U n * P (n + 1) + V n * (P (n + 1)).derivative) :=
-    strictInterl_derivative_of_nonpos_of_recurrence_of_splits hsource.2
-      (hrec n) (hpos (n + 2)) (hdeg_lo n) (hdeg_hi n)
-      (hpos (n + 1)) (hV_nonpos n)
-  simpa [← hrec n] using hstep
+  exact LiuWang.strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits
+    (W := fun _ ↦ 0) hbase hpos (fun n ↦ by simpa using hrec n)
+    (fun n _ ↦ hV_nonpos n) (by simp) hdeg_lo hdeg_hi
 
 /-- Real-rootedness corollary for sequence-level weak Ma--Wang induction. -/
 theorem isRealRooted_of_derivative_nonpos_sequence {P : Nat → ℝ[X]}

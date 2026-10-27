@@ -1,12 +1,13 @@
 module
 
-public import RealRooted.Tactic.MaWang.Factors
+public import RealRooted.MaWang.Derivative
 
 /-!
-# Ma--Wang tactic frontend
+# Ma--Wang import shim
 
-Compatibility umbrella for the focused Ma--Wang parser and macro-rule modules.
-The theorem-only backend is `RealRooted.MaWang.Derivative`.
+This compatibility module re-exports the theorem API formerly accompanied by
+specialized Ma--Wang tactics.
 -/
 
 public section
+

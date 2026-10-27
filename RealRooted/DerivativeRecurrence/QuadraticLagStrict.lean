@@ -1,7 +1,7 @@
 module
 
 import RealRooted.Derivative.Interlacing
-public import RealRooted.GeneralizedLiuWang
+public import RealRooted.LiuWang.FiniteFamily
 import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
 import RealRooted.MaWang.Strong
@@ -46,8 +46,6 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
   | zero => exact ⟨hbase, hbaseNo⟩
   | succ n ih =>
       obtain ⟨ihstrictInterl, ihno⟩ := ih
-      have hinter : Interlaces (P n) (P (n + 1)) :=
-        ihstrictInterl.toInterlaces (by rw [hdeg, hdeg])
       have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
         interlaces_derivative_of_pos_natDegree (hpos (n + 1)).ne_zero
           ihstrictInterl.2.1.2 (hpos (n + 1)) (by rw [hdeg]; lia)
@@ -65,33 +63,17 @@ theorem strictInterl_and_noCommonRoot_of_quadratic_lag
         exact mul_nonpos_of_nonneg_of_nonpos hc (hroot (n + 1) r hr).le
       have hsum : P (n + 2) =
           Q n * P (n + 1) +
-            polynomialWeightedSum
-              ((C c * X, P n) ::
-                [(C a * X + C (-b) * X ^ 2, (P (n + 1)).derivative)]) := by
+            (C a * X + C (-b) * X ^ 2) * (P (n + 1)).derivative +
+              (C c * X) * P n := by
         rw [hrec n]
-        simp only [polynomialWeightedSum]
         ring
       have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
-        refine strictInterl_generalizedLiuWang_of_no_common
-          hinter (hpos n) ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
-        · intro bg hmem
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hderiv_inter
-        · intro bg hmem
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hderiv_pos
-        · intro bg hmem r hr
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hV r hr
-        · rw [← hsum]
-          exact hpos (n + 2)
-        · rw [← hsum, hdeg, hdeg]
-          lia
-        · rw [← hsum, hdeg, hdeg]
+        exact LiuWang.strictInterl_derivative_lag_of_eval_nonpos
+          ihstrictInterl.2.1.1 ihstrictInterl.2.1.2 (hpos (n + 1))
+          ihstrictInterl (hpos n) (by rw [← hsum]; exact hpos (n + 2))
+          (by rw [← hsum, hdeg, hdeg]; lia)
+          (by rw [← hsum, hdeg, hdeg]) hV hW
       refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hrneg : r < 0 := hroot (n + 1) r hr1

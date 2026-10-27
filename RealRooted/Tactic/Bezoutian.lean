@@ -23,6 +23,8 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- If `p` and `q` have positive leading coefficients and common degree `n`, positive
+definiteness of `bezoutMatrix n q p` implies that both polynomials are nonzero and split. -/
 theorem bezout_realrooted_of_posDef
     {p q : ℝ[X]} {n : Nat}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
@@ -33,6 +35,8 @@ theorem bezout_realrooted_of_posDef
     (strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg).2 hpos
   exact ⟨hstrict.1, hstrict.2.1⟩
 
+/-- A positive-definite Bezout matrix of nonzero size implies that `p` and `q`, whose degrees
+are at most the matrix size, have no common real root. -/
 theorem bezout_no_common_root_of_posDef
     {p q : ℝ[X]} {n : Nat}
     (hn : n ≠ 0) (hp_deg : p.natDegree ≤ n) (hq_deg : q.natDegree ≤ n)
@@ -41,6 +45,8 @@ theorem bezout_no_common_root_of_posDef
   fun r hp hq => bezoutMatrix.no_common_real_root_of_posDef
     hn hq_deg hp_deg hpos r ⟨hq, hp⟩
 
+/-- Pointwise sequence form of the forward same-degree Bezoutian characterization, assuming
+positive leading coefficients and the stated degree equalities at every index. -/
 theorem bezout_sequence_posDef_of_strictInterlSameDegree
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -52,6 +58,8 @@ theorem bezout_sequence_posDef_of_strictInterlSameDegree
   (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).1 (hstrict i)
 
+/-- Pointwise sequence form of the reverse same-degree Bezoutian characterization, assuming
+positive leading coefficients, the stated degree equalities, and positive definiteness. -/
 theorem bezout_sequence_strictInterlSameDegree_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -63,6 +71,8 @@ theorem bezout_sequence_strictInterlSameDegree_of_posDef
   (strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)
 
+/-- Positive leading coefficients, the stated degree equalities, and positive-definite
+Bezout matrices give pointwise strict interlacing. -/
 theorem bezout_sequence_strictInterl_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -74,6 +84,8 @@ theorem bezout_sequence_strictInterl_of_posDef
   ((strictInterlSameDegree_iff_bezoutMatrix_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i)).2 (hpos i)).toStrictInterl
 
+/-- Positive leading coefficients, the stated degree equalities, and positive-definite
+Bezout matrices make both polynomial sequences pointwise nonzero and splitting. -/
 theorem bezout_sequence_realrooted_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hP_pos : ∀ i : Nat, HasPosLeadingCoeff (P i))
@@ -86,6 +98,8 @@ theorem bezout_sequence_realrooted_of_posDef
   bezout_realrooted_of_posDef
     (hP_pos i) (hQ_pos i) (hP_deg i) (hQ_deg i) (hpos i)
 
+/-- Positive-definite Bezout matrices of pointwise nonzero size imply that the two sequences,
+whose degrees are bounded by those sizes, have no common real root at any index. -/
 theorem bezout_sequence_no_common_root_of_posDef
     {d : Nat → Nat} {P Q : Nat → ℝ[X]}
     (hd : ∀ i : Nat, d i ≠ 0)
@@ -95,248 +109,6 @@ theorem bezout_sequence_no_common_root_of_posDef
     ∀ i : Nat, ∀ r : ℝ, (P i).IsRoot r → ¬ (Q i).IsRoot r := fun i =>
   bezout_no_common_root_of_posDef (hd i) (hP_deg i) (hQ_deg i) (hpos i)
 
-/-- Closes `StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef` from
-`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
-`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
-syntax (name := rr_bezout_strict_interl_same_degree_iff_named)
-  "rr_bezout_strict_interl_same_degree_iff" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term :
-  tactic
-
-/-- Closes `(bezoutMatrix n q p).PosDef` from
-`strict_interl_same_degree : StrictInterlSameDegree p q` and `left_pos_lc` and `right_pos_lc`
-(positive leading coefficients of `p` and `q`) and `left_degree : p.natDegree = n` and
-`right_degree : q.natDegree = n`. -/
-syntax (name := rr_bezout_pos_def_of_strict_interl_same_degree_named)
-  "rr_bezout_pos_def_of_strict_interl_same_degree" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "strict_interl_same_degree" ":=" term :
-  tactic
-
-/-- Closes `StrictInterlSameDegree p q` from `pos_def : (bezoutMatrix n q p).PosDef` and
-`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
-`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
-syntax (name := rr_bezout_strict_interl_same_degree_of_pos_def_named)
-  "rr_bezout_strict_interl_same_degree_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Closes `StrictInterl p q` from `pos_def : (bezoutMatrix n q p).PosDef` and
-`left_pos_lc` and `right_pos_lc` (positive leading coefficients of `p` and `q`) and
-`left_degree : p.natDegree = n` and `right_degree : q.natDegree = n`. -/
-syntax (name := rr_bezout_strict_interl_of_pos_def_named)
-  "rr_bezout_strict_interl_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Closes `(p ≠ 0 ∧ p.Splits) ∧ (q ≠ 0 ∧ q.Splits)` from
-`pos_def : (bezoutMatrix n q p).PosDef` and `left_pos_lc` and `right_pos_lc` (positive leading
-coefficients of `p` and `q`) and `left_degree : p.natDegree = n` and
-`right_degree : q.natDegree = n`. -/
-syntax (name := rr_bezout_realrooted_of_pos_def_named)
-  "rr_bezout_realrooted_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Closes `∀ r, p.IsRoot r → ¬ q.IsRoot r` from `size_ne_zero : n ≠ 0`,
-`left_degree_le : p.natDegree ≤ n`, `right_degree_le : q.natDegree ≤ n` and
-`pos_def : (bezoutMatrix n q p).PosDef`. -/
-syntax (name := rr_bezout_no_common_root_of_pos_def_named)
-  "rr_bezout_no_common_root_of_pos_def" " using "
-    "size_ne_zero" ":=" term ","
-    "left_degree_le" ":=" term ","
-    "right_degree_le" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_bezout_pos_def_of_strict_interl_same_degree`: the same certificate for
-every index `i`, with `d i` in place of `n`. -/
-syntax (name := rr_bezout_sequence_pos_def_of_strict_interl_same_degree_named)
-  "rr_bezout_sequence_pos_def_of_strict_interl_same_degree" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "strict_interl_same_degree" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_bezout_strict_interl_same_degree_of_pos_def`: the same certificate for
-every index `i`, with `d i` in place of `n`. -/
-syntax (name := rr_bezout_sequence_strict_interl_same_degree_of_pos_def_named)
-  "rr_bezout_sequence_strict_interl_same_degree_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Sequence form of
-`rr_bezout_strict_interl_of_pos_def`: the same certificate for every index `i`, with `d i` in
-place of `n`. -/
-syntax (name := rr_bezout_sequence_strict_interl_of_pos_def_named)
-  "rr_bezout_sequence_strict_interl_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Sequence form of
-`rr_bezout_realrooted_of_pos_def`: the same certificate for every index `i`, with `d i` in place
-of `n`. -/
-syntax (name := rr_bezout_sequence_realrooted_of_pos_def_named)
-  "rr_bezout_sequence_realrooted_of_pos_def" " using "
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "left_degree" ":=" term ","
-    "right_degree" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-/-- Sequence form of
-`rr_bezout_no_common_root_of_pos_def`: the same certificate for every index `i`, with `d i` in
-place of `n`. -/
-syntax (name := rr_bezout_sequence_no_common_root_of_pos_def_named)
-  "rr_bezout_sequence_no_common_root_of_pos_def" " using "
-    "size_ne_zero" ":=" term ","
-    "left_degree_le" ":=" term ","
-    "right_degree_le" ":=" term ","
-    "pos_def" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_bezout_strict_interl_same_degree_iff using
-        left_pos_lc := $hp_pos:term,
-        right_pos_lc := $hq_pos:term,
-        left_degree := $hp_deg:term,
-        right_degree := $hq_deg:term) =>
-      `(tactic|
-        exact strictInterlSameDegree_iff_bezoutMatrix_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg)
-  | `(tactic|
-      rr_bezout_pos_def_of_strict_interl_same_degree using
-        left_pos_lc := $hp_pos:term,
-        right_pos_lc := $hq_pos:term,
-        left_degree := $hp_deg:term,
-        right_degree := $hq_deg:term,
-        strict_interl_same_degree := $hstrict:term) =>
-      `(tactic|
-        exact (strictInterlSameDegree_iff_bezoutMatrix_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg).1 $hstrict)
-  | `(tactic|
-      rr_bezout_strict_interl_same_degree_of_pos_def using
-        left_pos_lc := $hp_pos:term,
-        right_pos_lc := $hq_pos:term,
-        left_degree := $hp_deg:term,
-        right_degree := $hq_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact (strictInterlSameDegree_iff_bezoutMatrix_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos)
-  | `(tactic|
-      rr_bezout_strict_interl_of_pos_def using
-        left_pos_lc := $hp_pos:term,
-        right_pos_lc := $hq_pos:term,
-        left_degree := $hp_deg:term,
-        right_degree := $hq_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact ((strictInterlSameDegree_iff_bezoutMatrix_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg).2 $hpos).toStrictInterl)
-  | `(tactic|
-      rr_bezout_realrooted_of_pos_def using
-        left_pos_lc := $hp_pos:term,
-        right_pos_lc := $hq_pos:term,
-        left_degree := $hp_deg:term,
-        right_degree := $hq_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_realrooted_of_posDef
-          $hp_pos $hq_pos $hp_deg $hq_deg $hpos)
-  | `(tactic|
-      rr_bezout_no_common_root_of_pos_def using
-        size_ne_zero := $hn:term,
-        left_degree_le := $hp_deg:term,
-        right_degree_le := $hq_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_no_common_root_of_posDef
-          $hn $hp_deg $hq_deg $hpos)
-  | `(tactic|
-      rr_bezout_sequence_pos_def_of_strict_interl_same_degree using
-        left_pos_lc := $hP_pos:term,
-        right_pos_lc := $hQ_pos:term,
-        left_degree := $hP_deg:term,
-        right_degree := $hQ_deg:term,
-        strict_interl_same_degree := $hstrict:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_posDef_of_strictInterlSameDegree
-          $hP_pos $hQ_pos $hP_deg $hQ_deg $hstrict)
-  | `(tactic|
-      rr_bezout_sequence_strict_interl_same_degree_of_pos_def using
-        left_pos_lc := $hP_pos:term,
-        right_pos_lc := $hQ_pos:term,
-        left_degree := $hP_deg:term,
-        right_degree := $hQ_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_strictInterlSameDegree_of_posDef
-          $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
-  | `(tactic|
-      rr_bezout_sequence_strict_interl_of_pos_def using
-        left_pos_lc := $hP_pos:term,
-        right_pos_lc := $hQ_pos:term,
-        left_degree := $hP_deg:term,
-        right_degree := $hQ_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_strictInterl_of_posDef
-          $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
-  | `(tactic|
-      rr_bezout_sequence_realrooted_of_pos_def using
-        left_pos_lc := $hP_pos:term,
-        right_pos_lc := $hQ_pos:term,
-        left_degree := $hP_deg:term,
-        right_degree := $hQ_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_realrooted_of_posDef
-          $hP_pos $hQ_pos $hP_deg $hQ_deg $hpos)
-  | `(tactic|
-      rr_bezout_sequence_no_common_root_of_pos_def using
-        size_ne_zero := $hd:term,
-        left_degree_le := $hP_deg:term,
-        right_degree_le := $hQ_deg:term,
-        pos_def := $hpos:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.bezout_sequence_no_common_root_of_posDef
-          $hd $hP_deg $hQ_deg $hpos)
-
 end Tactic
 end RealRooted
-namespace RealRooted
-namespace Tactic
 
-end Tactic
-end RealRooted

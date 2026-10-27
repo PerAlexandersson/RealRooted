@@ -46,48 +46,5 @@ theorem isRealRooted_of_reciprocalShift_pf_sequence
 
 namespace Tactic
 
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for `P n = reciprocalShift (D n) (R n)`;
-`model_realrooted` gives real-rootedness of `R`, `degree` the bound `(R n).natDegree ≤ D n`, and
-`reciprocal` the identity for `P n`. -/
-syntax (name := rr_reciprocal_shift_sequence)
-  "rr_reciprocal_shift_sequence" " using "
-    "model_realrooted" ":=" term ","
-    "degree" ":=" term ","
-    "reciprocal" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_reciprocal_shift_sequence using
-        model_realrooted := $hmodel:term,
-        degree := $hdegree:term,
-        reciprocal := $hreciprocal:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_reciprocalShift_sequence
-            $hmodel $hdegree $hreciprocal))
-
-/-- PF variant of `rr_reciprocal_shift_sequence`: `model_pf : IsPFPolynomial (R n)` and
-`model_ne : R n ≠ 0` replace `model_realrooted`. -/
-syntax (name := rr_reciprocal_shift_pf_sequence)
-  "rr_reciprocal_shift_pf_sequence" " using "
-    "model_pf" ":=" term ","
-    "model_ne" ":=" term ","
-    "degree" ":=" term ","
-    "reciprocal" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_reciprocal_shift_pf_sequence using
-        model_pf := $hmodel:term,
-        model_ne := $hmodel_ne:term,
-        degree := $hdegree:term,
-        reciprocal := $hreciprocal:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.isRealRooted_of_reciprocalShift_pf_sequence
-            $hmodel $hmodel_ne $hdegree $hreciprocal))
-
 end Tactic
 end RealRooted

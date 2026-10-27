@@ -1,8 +1,8 @@
 module
 
-public import RealRooted.GeneralizedLiuWang
-import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.Algebra
+import RealRooted.Derivative.Interlacing
+public import RealRooted.LiuWang.FiniteFamily
 
 /-!
 # Liu--Wang derivative-lag recursions
@@ -44,38 +44,39 @@ theorem strictInterl_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0)
     (hw_nonpos : ∀ r, f.IsRoot r → w.eval r ≤ 0) :
     StrictInterl f (u * f + v * f.derivative + w * g) := by
-  have hdegf : f.natDegree ≠ 0 := by
-    have := hgf.2.2.1
-    lia
-  have hder : Interlaces f.derivative f := derivative_interlaces_of_natDegree_ne_zero hf hdegf
-  have hder_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative hdegf
-  have hsum_eq :
-      u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)]) =
-        u * f + v * f.derivative + w * g := by
-    simp [polynomialWeightedSum]
-    ring
-  have htail_inter :
-      ∀ bg ∈ [(v, f.derivative)], Interlaces bg.2 f := by simp_all
-  have htail_pos :
-      ∀ bg ∈ [(v, f.derivative)], HasPosLeadingCoeff bg.2 := by simp_all
-  have htail_nonpos :
-      ∀ bg ∈ [(v, f.derivative)], ∀ r : ℝ, f.IsRoot r → bg.1.eval r ≤ 0 := by simp_all
-  have hF_pos_weighted :
-      HasPosLeadingCoeff
-        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) := by simp_all
-  have hdeg_lo_weighted :
-      f.natDegree ≤
-        (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree := by simp_all
-  have hdeg_hi_weighted :
-      (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])).natDegree ≤
-        f.natDegree + 1 := by simp_all
-  have hstrictInterl :
-      StrictInterl f (u * f + polynomialWeightedSum ((w, g) :: [(v, f.derivative)])) :=
-    strictInterl_generalizedLiuWang_of_no_common
-      (f := f) (g := g) (a := u) (b := w) (l := [(v, f.derivative)])
-      hgf hg_pos htail_inter htail_pos htail_nonpos
-      hF_pos_weighted hdeg_lo_weighted hdeg_hi_weighted hno hw_nonpos
-  simp_all
+  exact (fun _ : (∀ r, f.IsRoot r → ¬ g.IsRoot r) ↦
+    strictInterl_derivative_lag_of_eval_nonpos
+      hf_pos.ne_zero hf hf_pos hgf.toStrictInterl hg_pos
+      hF_pos hdeg_lo hdeg_hi hv_nonpos hw_nonpos) hno
+
+/-- General sequence criterion for derivative--lag recurrences.  The degree may
+stay fixed or rise by one, and consecutive rows may share roots. -/
+theorem strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits
+    {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
+    (hbase : StrictInterl (P 0) (P 1))
+    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
+    (hrec : ∀ n : Nat,
+      P (n + 2) =
+        U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n)
+    (hV_nonpos :
+      ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
+        ∀ r, (P (n + 1)).IsRoot r → (V n).eval r ≤ 0)
+    (hW_nonpos :
+      ∀ n : Nat, P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits →
+        ∀ r, (P (n + 1)).IsRoot r → (W n).eval r ≤ 0)
+    (hdeg_lo : ∀ n : Nat, (P (n + 1)).natDegree ≤ (P (n + 2)).natDegree)
+    (hdeg_hi : ∀ n : Nat, (P (n + 2)).natDegree ≤ (P (n + 1)).natDegree + 1) :
+    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
+  intro n
+  induction n with
+  | zero => exact hbase
+  | succ n ih =>
+      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
+      have hstep := strictInterl_derivative_lag_of_eval_nonpos
+        hsource.1 hsource.2 (hpos (n + 1)) ih (hpos n)
+        (hrec n ▸ hpos (n + 2)) (hrec n ▸ hdeg_lo n) (hrec n ▸ hdeg_hi n)
+        (hV_nonpos n hsource) (hW_nonpos n hsource)
+      rwa [← hrec n] at hstep
 
 /-- Sequence-level Liu--Wang induction for derivative-lag recurrences where
 the sign checks may use the current row's already proved real-rootedness. -/
@@ -95,33 +96,11 @@ theorem strictInterl_derivative_lag_sequence_of_root_signs
     (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  intro n
-  induction n with
-  | zero =>
-      simp_all
-  | succ n ih =>
-      have hsource : P (n + 1) ≠ 0 ∧ (P (n + 1)).Splits := ih.2.1
-      have hLag_inter : Interlaces (P n) (P (n + 1)) :=
-        ih.toInterlaces (hdeg_succ n)
-      have hF_pos :
-          HasPosLeadingCoeff
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) := by grind
-      have hdeg_next :
-          (P (n + 1)).natDegree + 1 = (P (n + 2)).natDegree := by simp_all
-      have hdeg_lo :
-          (P (n + 1)).natDegree ≤
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n).natDegree := by grind
-      have hdeg_hi :
-          (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n).natDegree ≤
-            (P (n + 1)).natDegree + 1 := by simp_all
-      have hstep :
-          StrictInterl (P (n + 1))
-            (U n * P (n + 1) + V n * (P (n + 1)).derivative + W n * P n) :=
-        strictInterl_derivative_lag_of_nonpos
-          hsource.2 hLag_inter (hpos n) (hpos (n + 1))
-          hF_pos hdeg_lo hdeg_hi (hno n)
-          (hV_nonpos n hsource) (hW_nonpos n hsource)
-      simp_all
+  exact (fun _ : (∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) ↦
+    strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits
+      hbase hpos hrec hV_nonpos hW_nonpos
+      (fun n ↦ by rw [← hdeg_succ (n + 1)]; lia)
+      (fun n ↦ by rw [← hdeg_succ (n + 1)])) hno
 
 /-- Sequence-level Liu--Wang induction with direct root-sign side conditions. -/
 theorem strictInterl_derivative_lag_sequence

@@ -1,10 +1,8 @@
 import RealRooted.Tactic.Attr
 import RealRooted.Tactic.AllCombo
 import RealRooted.Tactic.AffineDerivative
-import RealRooted.Tactic.AissenSchoenbergWhitney
 import RealRooted.Tactic.Bezoutian
 import RealRooted.Tactic.SideGoals
-import RealRooted.Tactic.ScalarDen
 import RealRooted.Tactic.Sign
 import RealRooted.Tactic.RootBounds
 import RealRooted.Tactic.SignAssembly
@@ -13,24 +11,19 @@ import RealRooted.Tactic.Finish
 import RealRooted.Tactic.StaircaseSum
 import RealRooted.Tactic.CommonInterleaver.Core
 import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative
 import RealRooted.Tactic.EulerOperator
-import RealRooted.Tactic.InterlacingSequence
 import RealRooted.Tactic.Wagner
 import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.EndpointDerivative
 import RealRooted.Tactic.SecondDerivative
 import RealRooted.Tactic.Favard
 import RealRooted.Tactic.LiuWang
 import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.GeneralizedLaguerre
 import RealRooted.Tactic.MagnitudeDominated
 import RealRooted.Tactic.PreservingOperatorSequence
 import RealRooted.Tactic.Product
 import RealRooted.Tactic.Product.Interlacing
-import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.Recurrence
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.RowInterlacing
@@ -39,20 +32,16 @@ import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFPolynomial
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PosCombo
-import RealRooted.Tactic.FiniteSymbol
 import RealRooted.Tactic.FiniteSymbolPF
 import RealRooted.Tactic.Hadamard
 import RealRooted.Tactic.HermiteBiehler
 import RealRooted.Tactic.HermitePoulain
-import RealRooted.Tactic.HomogenizeStable
 import RealRooted.Tactic.IteratedDerivativeShift
 import RealRooted.Tactic.IteratedDerivativeShiftProduct
 import RealRooted.Tactic.J1Chebyshev
-import RealRooted.Tactic.J1Gap3Reciprocal
 import RealRooted.Tactic.Kurtz
 import RealRooted.Tactic.Linear
 import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.Narayana
 import RealRooted.Tactic.SymmetricDecomposition
@@ -72,3 +61,4 @@ degree, root-bound, and sign certificates explicit.
 
 The tactic roadmap is tracked in GitHub issue #1061.
 -/
+

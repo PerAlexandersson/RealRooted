@@ -1,6 +1,5 @@
 module
 
-public import RealRooted.GeneralizedLiuWang
 public import RealRooted.MaWang
 import RealRooted.MaWang.Strong
 public import RealRooted.Basic.Coefficients

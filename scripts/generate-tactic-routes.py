@@ -175,6 +175,8 @@ def render_markdown(routes: list[dict[str, object]]) -> str:
         "Enable the attempt table with `set_option rr.row.explain true`. Heartbeat counts are",
         "shown by default; set `rr.row.explain.heartbeats false` when stable output matters.",
         "An indented route ran inside its parent, so the parent's heartbeat total includes it.",
+        "Set `rr.row.disable` to a comma-separated list of route names to skip, for example",
+        "`set_option rr.row.disable \"pathPower,derivativeXMul\"`.",
         "",
         "Read each row as a goal shape and its main theorem(s). The route sections record",
         "side conditions, implementing modules, and regression examples.",

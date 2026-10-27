@@ -1,13 +1,14 @@
 module
 
-public import RealRooted.Tactic.Product.Rules
-public import RealRooted.Tactic.Product.Syntax
+public import RealRooted.ProductSequence
+public import RealRooted.Tactic.Product.Interlacing
 
 /-!
-# Product-factor tactic frontend
+# Product import shim
 
-Compatibility facade for product-tactic syntax, checked elaboration, and
-macro-rule families backed by `RealRooted.ProductSequence`.
+This compatibility module re-exports the product-sequence theorem API and the
+two product helpers used by the row-tactic core.
 -/
 
 public section
+

@@ -1,9 +1,9 @@
 module
 
-public import RealRooted.GeneralizedLiuWang
+public import RealRooted.LiuWang.General
+import RealRooted.MaWang.Strong
 import RealRooted.RootBounds
 import RealRooted.SignEvaluation
-import RealRooted.MaWang.Strong
 
 /-!
 # Liu--Wang single-step theorem backend
@@ -32,14 +32,9 @@ theorem strictInterl_two_of_nonpos {f g a b : ℝ[X]}
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
     (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
     StrictInterl f (a * f + b * g) := by
-  simpa [polynomialWeightedSum] using
-    (strictInterl_generalizedLiuWang_of_no_common
-      (l := ([] : List (ℝ[X] × ℝ[X])))
-      hgf hg_pos (by simp) (by simp) (by simp)
-      (by simpa [polynomialWeightedSum] using hF_pos)
-      (by simpa [polynomialWeightedSum] using hdeg_lo)
-      (by simpa [polynomialWeightedSum] using hdeg_hi)
-      hno hb_nonpos)
+  exact (fun _ : (∀ r, f.IsRoot r → ¬ g.IsRoot r) ↦
+    strictInterl_mul_add_mul_of_eval_nonpos
+      hgf.toStrictInterl hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos) hno
 
 /-- Liu--Wang step where the target leading-coefficient and degree side goals
 are supplied through a normalized recurrence identity. -/

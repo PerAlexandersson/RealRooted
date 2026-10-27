@@ -25,7 +25,7 @@ examples, without rewriting those examples immediately.
 
 ## OEIS Family A/B targets
 
-These should be the first OEIS-facing targets for `rr_ma_wang`.
+These should be the first OEIS-facing targets for the general row front ends.
 
 - Family A, Eulerian one-step differential examples:
   `A008517`, `A120434`, `A144696`, `A144697`, `A144698`, `A144699`,
@@ -33,33 +33,6 @@ These should be the first OEIS-facing targets for `rr_ma_wang`.
 - Family B, half-line one-step differential examples: the unsigned Laguerre
   regression fixture, `A046089`, `A049352`, `A049353`, `A079621`, `A111578`,
   `A143496`, `A154537`, `A225466`, `A364071`.
-
-## Executable OEIS recurrence test bed
-
-`RealRooted.Tactic.Examples.OEISTestbed` contains the first executable
-sequence-labelled regression tests from the Erik/sqrt2 recurrence survey.
-The examples do not yet formalize the row definitions; they isolate the
-certificate fragments that should be automatic once a sequence-specific file
-provides the recurrence identity, degree facts, root interval, and base cases.
-
-Current test-bed entries:
-
-- Ma--Wang Family A:
-  `A008517`, `A120434`, `A156919`;
-- Ma--Wang Family B and OEIS-stated conjecture targets:
-  `A321966`, `A322944`;
-- Liu--Wang Family E:
-  `A049403`, `A061896`, `A100862`, `A154227`, `A249248`;
-- Narayana/Jacobi Family G:
-  `A001263`, `A091044`, `A145596`, `A178343`;
-- Favard/Chebyshev Family F:
-  `A049310`, `A053117`, `A053120`, `A053122`, `A053124`, `A078812`,
-  `A084930`, `A124038`.
-
-These 22 entries are meant to stay small and executable.  Harder targets such
-as `A390883` should be recorded here, but not forced into this scalar test bed
-until a refinement, companion-vector recurrence, or production-matrix
-certificate is explicit.
 
 ## OEIS Family C/D/H targets
 
@@ -91,7 +64,7 @@ These should drive `rr_liu_wang`.
 
 ## OEIS Family F targets
 
-These should drive `rr_favard`.
+These should drive additional routes in the general row front ends.
 
 - Favard/Chebyshev-style examples:
   `A049310`, `A053117`, `A053120`, `A053122`, `A053124`, `A053125`,

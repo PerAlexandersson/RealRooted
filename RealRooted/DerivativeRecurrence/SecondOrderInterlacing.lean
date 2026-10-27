@@ -2,7 +2,7 @@ module
 
 import RealRooted.Derivative.Interlacing
 import RealRooted.DerivativeRecurrence.SecondOrderDegree
-public import RealRooted.GeneralizedLiuWang
+public import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
 import RealRooted.WagnerRightSum.Sign
@@ -226,10 +226,6 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         simp at hr0
   | succ n ih =>
       obtain ⟨ihstrictInterl, ihno⟩ := ih
-      have hinter : Interlaces (P n) (P (n + 1)) :=
-        ihstrictInterl.toInterlaces (by
-          rw [natDegree_affine_lag_second_order_derivative h0 h1 hrec,
-            natDegree_affine_lag_second_order_derivative h0 h1 hrec])
       have hderiv_inter : Interlaces ((P (n + 1)).derivative) (P (n + 1)) :=
         derivative_interlaces_affine_lag_second_order_derivative h0 h1 hrec n ihstrictInterl.2.1.2
       have hderiv_pos : HasPosLeadingCoeff ((P (n + 1)).derivative) :=
@@ -249,38 +245,26 @@ theorem strictInterl_and_noCommonRoot_of_affine_lag_second_order_derivative_of_n
         exact mul_nonpos_of_nonneg_of_nonpos hc hneg.le
       have hsum : P (n + 2) =
           (C 1 + C ((a + 1) + a * (n : ℝ)) * X) * P (n + 1) +
-            polynomialWeightedSum
-              ((C c * X, P n) ::
-                [(C a * X + C (-a) * X ^ 2, (P (n + 1)).derivative)]) := by
+            (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
+              (C c * X) * P n := by
         rw [hrec n]
-        simp only [polynomialWeightedSum]
         ring
       have hstrictInterl : StrictInterl (P (n + 1)) (P (n + 2)) := by
         rw [hsum]
-        refine strictInterl_generalizedLiuWang_of_no_common
-          hinter (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
-            ?_ ?_ ?_ ?_ ?_ ?_ ihno hW
-        · intro bg hmem
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hderiv_inter
-        · intro bg hmem
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hderiv_pos
-        · intro bg hmem r hr
-          rw [List.mem_singleton] at hmem
-          subst hmem
-          exact hV r hr
-        · rw [← hsum]
-          exact pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 2)
-        · rw [← hsum,
-            natDegree_affine_lag_second_order_derivative h0 h1 hrec,
-            natDegree_affine_lag_second_order_derivative h0 h1 hrec]
-          lia
-        · rw [← hsum,
-            natDegree_affine_lag_second_order_derivative h0 h1 hrec,
-            natDegree_affine_lag_second_order_derivative h0 h1 hrec]
+        exact LiuWang.strictInterl_derivative_lag_of_eval_nonpos
+          ihstrictInterl.2.1.1 ihstrictInterl.2.1.2
+          (pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 1))
+          ihstrictInterl (pos_leading_affine_lag_second_order_derivative h0 h1 hrec n)
+          (by
+            rw [← hsum]
+            exact pos_leading_affine_lag_second_order_derivative h0 h1 hrec (n + 2))
+          (by
+            rw [← hsum, natDegree_affine_lag_second_order_derivative h0 h1 hrec,
+              natDegree_affine_lag_second_order_derivative h0 h1 hrec]
+            lia)
+          (by
+            rw [← hsum, natDegree_affine_lag_second_order_derivative h0 h1 hrec,
+              natDegree_affine_lag_second_order_derivative h0 h1 hrec]) hV hW
       refine ⟨hstrictInterl, ?_⟩
       intro r hr2 hr1
       have hrneg : r < 0 :=

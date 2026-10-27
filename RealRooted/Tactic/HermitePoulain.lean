@@ -18,6 +18,8 @@ namespace Tactic
 
 namespace HermitePoulain
 
+/-- The Hermite--Poulain differential-operator image of two nonzero splitting polynomials splits
+when the image is nonzero. -/
 theorem splits_of_nonzero {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
     (hg : g ≠ 0 ∧ g.Splits)
@@ -30,6 +32,8 @@ theorem splits_of_nonzero {f g : ℝ[X]}
   · exact (hout hzero).elim
   · exact hsplits
 
+/-- Applying each nonzero splitting polynomial in `F` as a differential operator to the
+corresponding nonzero splitting polynomial in `G` gives zero or a splitting polynomial. -/
 theorem sequence_zero_or_splits {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hG : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits) :
@@ -41,6 +45,8 @@ theorem sequence_zero_or_splits {F G : Nat → ℝ[X]}
   RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
     (hF n) (hG n)
 
+/-- Under the hypotheses of `sequence_zero_or_splits`, pointwise nonvanishing of the images
+implies that every image splits. -/
 theorem sequence_splits_of_nonzero {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
     (hG : ∀ n : Nat, G n ≠ 0 ∧ (G n).Splits)
@@ -54,71 +60,6 @@ theorem sequence_splits_of_nonzero {F G : Nat → ℝ[X]}
   splits_of_nonzero (hF n) (hG n) (hout n)
 
 end HermitePoulain
-
-/-- Closes `applyAsDifferentialOperator f g = 0 ∨ (applyAsDifferentialOperator f g).Splits`
-where `operator := f` and `input := g` are real-rooted polynomials (nonzero and splitting). -/
-syntax (name := rr_hermite_poulain_named)
-  "rr_hermite_poulain" " using "
-    "operator" ":=" term ","
-    "input" ":=" term :
-  tactic
-
-/-- Closes `(applyAsDifferentialOperator f g).Splits` where `operator := f` and `input := g` are
-real-rooted polynomials, given also `nonzero : applyAsDifferentialOperator f g ≠ 0`. -/
-syntax (name := rr_hermite_poulain_splits_named)
-  "rr_hermite_poulain_splits" " using "
-    "operator" ":=" term ","
-    "input" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_hermite_poulain`: the same certificate for every index `n`. -/
-syntax (name := rr_hermite_poulain_sequence_named)
-  "rr_hermite_poulain_sequence" " using "
-    "operator" ":=" term ","
-    "input" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_hermite_poulain_splits`: the same certificate for every index `n`. -/
-syntax (name := rr_hermite_poulain_sequence_splits_named)
-  "rr_hermite_poulain_sequence_splits" " using "
-    "operator" ":=" term ","
-    "input" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_hermite_poulain using
-        operator := $hf:term,
-        input := $hg:term) =>
-      `(tactic|
-        exact
-          RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
-            $hf $hg)
-  | `(tactic|
-      rr_hermite_poulain_splits using
-        operator := $hf:term,
-        input := $hg:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.HermitePoulain.splits_of_nonzero
-          $hf $hg $hout)
-  | `(tactic|
-      rr_hermite_poulain_sequence using
-        operator := $hf:term,
-        input := $hg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.HermitePoulain.sequence_zero_or_splits
-          $hf $hg)
-  | `(tactic|
-      rr_hermite_poulain_sequence_splits using
-        operator := $hf:term,
-        input := $hg:term,
-        nonzero := $hout:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.HermitePoulain.sequence_splits_of_nonzero
-          $hf $hg $hout)
 
 end Tactic
 end RealRooted

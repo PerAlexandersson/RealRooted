@@ -16,11 +16,15 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- Positivity of every coefficient up to the natural degree implies that the polynomial is
+nonzero. -/
 theorem kurtz_ne_zero {p : ℝ[X]}
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i) :
     p ≠ 0 :=
   RealRooted.Kurtz.ne_zero_of_kurtz hpos
 
+/-- Positivity of every coefficient up to the natural degree implies nonnegative
+coefficients. -/
 theorem kurtz_hasNonnegCoeffs {p : ℝ[X]}
     (hpos : ∀ i ≤ p.natDegree, 0 < p.coeff i) :
     HasNonnegCoeffs p :=
@@ -56,11 +60,15 @@ theorem kurtz_isPFPolynomial {p : ℝ[X]}
     (kurtz_hasNonnegCoeffs hpos)
     (kurtz_splits hdeg hpos hineq)
 
+/-- Pointwise positivity of every coefficient up to the natural degree makes every polynomial
+in the sequence nonzero. -/
 theorem kurtz_sequence_nonzero {P : Nat → ℝ[X]}
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i) :
     ∀ n : Nat, P n ≠ 0 := fun n =>
   kurtz_ne_zero (hpos n)
 
+/-- Pointwise positivity of every coefficient up to the natural degree gives nonnegative
+coefficients throughout the sequence. -/
 theorem kurtz_sequence_nonneg_coeffs {P : Nat → ℝ[X]}
     (hpos : ∀ n : Nat, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i) :
     ∀ n : Nat, HasNonnegCoeffs (P n) := fun n =>
@@ -96,98 +104,6 @@ theorem kurtz_sequence_splits {P : Nat → ℝ[X]}
     ∀ n : Nat, (P n).Splits :=
   pf_sequence_splits (kurtz_sequence_isPFPolynomial hdeg hpos hineq)
 
-/-- Closes `p ≠ 0 ∧ p.Splits` (or a weaker conclusion: `p = 0 ∨ p.Splits`, `IsPFPolynomial p`,
-`p.Splits`, `p ≠ 0` or `HasNonnegCoeffs
-p`) by the Hutchinson--Kurtz coefficient criterion from `degree : 2 ≤
-p.natDegree`, `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i` and `inequalities :
-KurtzStrictInequalities p`. -/
-syntax (name := rr_kurtz_named)
-  "rr_kurtz" " using "
-    "degree" ":=" term ","
-    "positive_coeffs" ":=" term ","
-    "inequalities" ":=" term :
-  tactic
-
-/-- Closes `p ≠ 0` from `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i`. -/
-syntax (name := rr_kurtz_nonzero_named)
-  "rr_kurtz_nonzero" " using "
-    "positive_coeffs" ":=" term :
-  tactic
-
-/-- Closes `HasNonnegCoeffs p` from `positive_coeffs : ∀ i ≤ p.natDegree, 0 < p.coeff i`. -/
-syntax (name := rr_kurtz_nonneg_coeffs_named)
-  "rr_kurtz_nonneg_coeffs" " using "
-    "positive_coeffs" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_kurtz`: the same certificate for every row `P n`, with `degree`,
-`positive_coeffs` and `inequalities` for every `P n`. -/
-syntax (name := rr_kurtz_sequence_named)
-  "rr_kurtz_sequence" " using "
-    "degree" ":=" term ","
-    "positive_coeffs" ":=" term ","
-    "inequalities" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0` from
-`positive_coeffs : ∀ n, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i`. -/
-syntax (name := rr_kurtz_sequence_nonzero_named)
-  "rr_kurtz_sequence_nonzero" " using "
-    "positive_coeffs" ":=" term :
-  tactic
-
-/-- Closes `∀ n, HasNonnegCoeffs (P n)` from
-`positive_coeffs : ∀ n, ∀ i ≤ (P n).natDegree, 0 < (P n).coeff i`. -/
-syntax (name := rr_kurtz_sequence_nonneg_coeffs_named)
-  "rr_kurtz_sequence_nonneg_coeffs" " using "
-    "positive_coeffs" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_kurtz using
-        degree := $hdeg:term,
-        positive_coeffs := $hpos:term,
-        inequalities := $hineq:term) =>
-      `(tactic|
-        first
-          | exact RealRooted.Kurtz.coefficient_criterion
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_ne_zero_and_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_zero_or_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_isPFPolynomial
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_ne_zero $hpos
-          | exact RealRooted.Tactic.kurtz_hasNonnegCoeffs $hpos)
-  | `(tactic| rr_kurtz_nonzero using positive_coeffs := $hpos:term) =>
-      `(tactic| exact RealRooted.Tactic.kurtz_ne_zero $hpos)
-  | `(tactic| rr_kurtz_nonneg_coeffs using positive_coeffs := $hpos:term) =>
-      `(tactic| exact RealRooted.Tactic.kurtz_hasNonnegCoeffs $hpos)
-  | `(tactic|
-      rr_kurtz_sequence using
-        degree := $hdeg:term,
-        positive_coeffs := $hpos:term,
-        inequalities := $hineq:term) =>
-      `(tactic|
-        first
-          | exact RealRooted.Tactic.kurtz_sequence_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_ne_zero_and_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_zero_or_splits
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_isPFPolynomial
-              $hdeg $hpos $hineq
-          | exact RealRooted.Tactic.kurtz_sequence_nonzero $hpos
-          | exact RealRooted.Tactic.kurtz_sequence_nonneg_coeffs $hpos)
-  | `(tactic| rr_kurtz_sequence_nonzero using positive_coeffs := $hpos:term) =>
-      `(tactic| exact RealRooted.Tactic.kurtz_sequence_nonzero $hpos)
-  | `(tactic| rr_kurtz_sequence_nonneg_coeffs using positive_coeffs := $hpos:term) =>
-      `(tactic| exact RealRooted.Tactic.kurtz_sequence_nonneg_coeffs $hpos)
-
 end Tactic
 end RealRooted
+

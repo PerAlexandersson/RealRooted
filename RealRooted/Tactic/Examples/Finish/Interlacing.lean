@@ -560,23 +560,9 @@ example {p : ℝ[X]} {d : Nat}
     top_eq := htop,
     above := habove
 
-example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_interl using hfg
-
 example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish
 
 example {f g : ℝ[X]} (hfg : StrictInterl f g) : Interl f g := by rr_finish using hfg
-
-example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_strict_interl using hfg
-
-example {P : Nat → ℝ[X]}
-    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_strict_interl using hinter
-
-example {P : Nat → ℝ[X]} {n : Nat}
-    (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
-    StrictInterl (P n) (P (n + 1)) := by
-  rr_strict_interl using hinter
 
 example {P : Nat → ℝ[X]}
     (hinter : ∀ n : Nat, Interlaces (P n) (P (n + 1))) :
@@ -592,13 +578,7 @@ example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish
 
 example {f g : ℝ[X]} (hfg : Interlaces f g) : StrictInterl f g := by rr_finish
 
-example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_interl using hfg
-
 example {f g : ℝ[X]} (hfg : Interlaces f g) : Interl f g := by rr_finish using hfg
-
-example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
-    StrictInterl f g := by
-  rr_strict_interl using hfg, hf, hg
 
 example {f g : ℝ[X]} (hfg : Interl f g) (hf : f ≠ 0) (hg : g ≠ 0) :
     StrictInterl f g := by
