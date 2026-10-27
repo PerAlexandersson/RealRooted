@@ -2105,3 +2105,6 @@ import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 import RealRooted.Mathlib.Data.Fintype.Pigeonhole
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
 import RealRooted.Tactic.Examples.RowFastFail
+import RealRooted.CombinatorialExamples.RestrictedExponential
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
+import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein

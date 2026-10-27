@@ -2721,6 +2721,25 @@
       ],
       "note": "Lasso for paths through an ultimately periodic edge relation (issue #1895). Proof found by Aristotle.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Bernstein.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Bernstein"
+      ],
+      "note": "Bernstein expansions and positivity criterion (issues #1933 and #1937). Proofs found by Aristotle."
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Combinatorics/SimpleGraph/Acyclic.lean"
+      ],
+      "modules": [
+        "Mathlib.Combinatorics.SimpleGraph.Acyclic"
+      ],
+      "note": "Positive diagonal scaling along forests (issue #1901). Proof found by Aristotle.",
+      "speculative": true
     }
   ]
 }
