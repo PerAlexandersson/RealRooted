@@ -1881,3 +1881,4 @@ import RealRooted.Challenges.Roots.LimitsOfZeros
 import RealRooted.Challenges.Roots.MeshFiniteDifference
 import RealRooted.Mesh.DiscreteMultiplierSequence
 import RealRooted.Mesh.FallingFactorial
+import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur

@@ -4,6 +4,7 @@ import RealRooted.Mesh.Derivative
 import RealRooted.Mesh.DiscreteHermitePoulain
 import RealRooted.Mesh.DiscreteMultiplier
 import RealRooted.Mesh.DiscreteMultiplierSequence
+import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
 import RealRooted.Mesh.FallingFactorial
 
 /-!
@@ -87,6 +88,16 @@ label = "Nonzero entries of a discrete multiplier sequence share a sign"
 name = "RealRooted.isDiscreteMultiplierSequence_iff_adjacent_of_two_nonzero"
 module = "RealRooted.Mesh.DiscreteMultiplierSequence"
 label = "Trivial discrete multiplier sequences"
+
+[[theorems]]
+name = "RealRooted.IsDiscreteMultiplierSequence.isMultiplierSequence"
+module = "RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur"
+label = "Discrete multiplier sequences are multiplier sequences"
+
+[[theorems]]
+name = "RealRooted.not_isDiscreteMultiplierSequence_geometric"
+module = "RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur"
+label = "ρ^i with 0 < ρ < 1 is not a discrete multiplier sequence"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -137,6 +148,10 @@ the nonzero entries of a discrete multiplier sequence all have the same sign.
 **Proposition 7.** A sequence with at most two nonzero entries is a discrete multiplier sequence
 if and only if its nonzero entries sit at adjacent indices $m, m+1$ and $a_m a_{m+1} \geq 0$.
 
+**Proposition 6.** Every discrete multiplier sequence is a multiplier sequence in the classical
+sense. The converse fails: $(\rho^i)$ with $0 < \rho < 1$ is not a discrete multiplier sequence
+(Remark 2).
+
 **Proposition 12.** If $(a_i)$ is a discrete multiplier sequence and $a_{m+2} > 0$, then
 $a_m \leq a_{m+1}$.
 
@@ -144,13 +159,13 @@ $a_m \leq a_{m+1}$.
 
 Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
 setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Lemmas 10 and 11,
-Corollaries 2 and 3, and Propositions 7 and 12. Theorem 1 is due to Riesz.
+Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,
 `RealRooted.Mesh.FiniteDifference`, `RealRooted.Mesh.HermitePoulain` (sufficiency in
 Theorem 3), `RealRooted.Mesh.DiscreteHermitePoulain` (necessity and the equivalence),
 `RealRooted.Mesh.DiscreteMultiplier` (Theorem 5), `RealRooted.Mesh.FallingFactorial` (Lemmas 10
-and 11), and `RealRooted.Mesh.DiscreteMultiplierSequence` (Corollaries 2 and 3, Propositions 7
-and 12).
+and 11), `RealRooted.Mesh.DiscreteMultiplierSequence` (Corollaries 2 and 3, Propositions 7 and 12),
+and `RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur` (Proposition 6).
 -/
