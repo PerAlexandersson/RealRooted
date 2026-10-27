@@ -2,6 +2,7 @@ module
 
 public import RealRooted.IteratedDerivativeShift
 public import RealRooted.Tactic.Product
+import RealRooted.SequenceClosure
 
 /-!
 # Iterated derivative-shift product tactic
