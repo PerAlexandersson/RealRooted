@@ -12,7 +12,7 @@ translating the deleted largest root to the origin, the positive right
 combinations of the restored pair are left-successor x-subtraction pencils.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

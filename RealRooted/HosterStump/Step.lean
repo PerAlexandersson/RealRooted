@@ -17,7 +17,7 @@ statements of Lemma 3.8 (rows, columns, diagonal) are proved from the induction 
 and `IsInterlacingDiagram.of_five` assembles the invariant from them by Wagner's chain lemma.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

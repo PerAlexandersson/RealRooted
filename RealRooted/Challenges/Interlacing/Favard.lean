@@ -95,7 +95,7 @@ ring-generic normalized functional and orthogonality theory live in
 analytic classical-family child modules.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

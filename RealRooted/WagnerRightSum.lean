@@ -9,7 +9,7 @@ If f ≪ h and g ≪ h with positive leading coefficients, then (f + g) ≪ h.
 Generalizes to n summands by induction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

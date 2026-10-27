@@ -19,7 +19,7 @@ The construction is due to Zhanhe Zhang (*Factorial compression and strict inter
 SSRN 7510941); the proofs are ported from the draft of Zhang's formalization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This file supplies the coefficientwise induction used by row tactics for a
 finite linear recurrence with arbitrary lags and iterated derivatives.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

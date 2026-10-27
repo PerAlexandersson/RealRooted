@@ -15,7 +15,7 @@ same-degree and successor-degree cases these combinations are the
 positive-split x-subtraction pencils.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

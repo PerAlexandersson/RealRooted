@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Compatibility.Basic
 
-@[expose] public section
+public section
 
 open Polynomial
 

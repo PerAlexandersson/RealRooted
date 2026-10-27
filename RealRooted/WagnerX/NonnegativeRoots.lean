@@ -6,7 +6,7 @@ public import RealRooted.WagnerX.ListInterlacing
 # Wagner-X nonnegative coefficients and roots
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

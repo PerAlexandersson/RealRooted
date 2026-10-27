@@ -119,7 +119,7 @@ The zig-zag theorem asserts simple negative roots, without consecutive interlaci
 <!-- /realrooted-catalog-content -->
 -/
 
-@[expose] public section
+public section
 
 open Polynomial RealRooted
 

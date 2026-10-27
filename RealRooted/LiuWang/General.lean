@@ -13,7 +13,7 @@ Here `g ≪ f` may have either shape (`deg g = deg f` or `deg g + 1 = deg f`), a
 have common and repeated roots. This is the singleton case of the combined-flux criterion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

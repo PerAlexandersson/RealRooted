@@ -111,4 +111,4 @@ theorem and the pencil reformulation. The proofs live in
 `RealRooted.BorceaBranden.MultivariateHKO` and `RealRooted.BorceaBranden.RealHKOConverse`.
 -/
 
-@[expose] public section
+public section

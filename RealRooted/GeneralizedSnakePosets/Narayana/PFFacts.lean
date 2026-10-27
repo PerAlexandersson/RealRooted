@@ -9,7 +9,7 @@ This module contains the shifted/unshifted affine-Narayana wrappers and the
 PF-polynomial consequences used by explicit certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

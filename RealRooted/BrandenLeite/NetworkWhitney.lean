@@ -12,7 +12,7 @@ It is the first step toward the normalized-network uniqueness part of
 Brändén--Saud Leite Theorem 2.1.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BrandenLeite
 

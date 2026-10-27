@@ -18,7 +18,7 @@ the checked cubic seed in Appendix C.3 of
 `alternating_eulerian_shorter_proof.md`.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

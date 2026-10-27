@@ -9,7 +9,7 @@ This file packages the four facts propagated by horizontal interval insertion:
 exact degree, a nonzero value at zero, splitting, and simple roots in `(0,1)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

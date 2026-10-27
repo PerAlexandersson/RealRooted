@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.Denominator
 Elaboration rules for specialized derivative-factor sequence certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

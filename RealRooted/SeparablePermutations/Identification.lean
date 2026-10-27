@@ -6,7 +6,7 @@ public import RealRooted.SeparablePermutations.GammaCubic
 public import RealRooted.SeparablePermutations.Enumerator
 public import RealRooted.SeparablePermutations.Interlacing
 
-@[expose] public section
+public section
 
 open scoped BigOperators Polynomial
 open Polynomial

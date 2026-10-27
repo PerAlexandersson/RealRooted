@@ -18,7 +18,7 @@ heterogeneous composition.  It is intended for upstreaming to
 `Mathlib.Data.Multiset.ZeroCons`.
 -/
 
-@[expose] public section
+public section
 
 namespace Multiset
 

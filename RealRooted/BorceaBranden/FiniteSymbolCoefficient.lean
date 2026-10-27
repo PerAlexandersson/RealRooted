@@ -12,7 +12,7 @@ another removes the differentiated variables when their supports are nested.
 After evaluation at zero, this is the Kronecker delta used in the proof.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

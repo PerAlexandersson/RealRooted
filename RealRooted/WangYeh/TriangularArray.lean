@@ -11,7 +11,7 @@ polynomials, with separate equations at coefficient zero and at successors so
 that no truncated-subtraction boundary convention is hidden.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

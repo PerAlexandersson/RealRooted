@@ -10,4 +10,4 @@ This façade imports the coefficient-ring algebra and the separately layered
 ordered real-root consequences for `RealRooted.darbouxOperator`.
 -/
 
-@[expose] public section
+public section

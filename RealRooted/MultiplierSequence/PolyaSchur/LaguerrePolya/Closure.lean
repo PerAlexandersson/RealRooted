@@ -11,7 +11,7 @@ disc `f` is uniformly approximable by such polynomials.  A diagonal argument the
 the class is closed under locally uniform limits (`IsLaguerrePolya.of_tendstoLocallyUniformly`).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

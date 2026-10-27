@@ -9,7 +9,7 @@ Thin wrappers around the checked Hermite--Biehler forward, converse, and
 odd/even Hurwitz bridges.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

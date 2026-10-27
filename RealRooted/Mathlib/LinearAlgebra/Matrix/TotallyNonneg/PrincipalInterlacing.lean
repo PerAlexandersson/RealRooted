@@ -21,7 +21,7 @@ library. The polynomial interlacing endpoint lives in
 `RealRooted.TotallyNonnegInterlacing`.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

@@ -13,7 +13,7 @@ public import Mathlib.Algebra.Polynomial.Roots
 This file contains polynomial-root lemmas intended for upstreaming to Mathlib.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

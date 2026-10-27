@@ -18,7 +18,7 @@ The parity identity and complex root disk are explicit inputs here.
 quotient and obtains the unconditional paper theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial RealRooted.IntervalDifferential
 

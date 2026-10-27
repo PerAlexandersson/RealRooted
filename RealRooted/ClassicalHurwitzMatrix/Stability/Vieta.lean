@@ -9,7 +9,7 @@ Strict left-half-plane root location forces the next-to-leading coefficient
 to have the same positive sign as a positive leading coefficient.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -19,4 +19,4 @@ This package generalizes theory first used in the OEIS proofs' Cayley
 homogenization and unit-circle coefficient arguments.
 -/
 
-@[expose] public section
+public section

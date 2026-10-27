@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Coefficients
 # Narayana rectangular convolution coefficient transport.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

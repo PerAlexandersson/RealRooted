@@ -9,7 +9,7 @@ The scalar no-bounce theorem rules out common consecutive roots and proves
 that the preceding row and the bridge have opposite signs at every bridge root.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

@@ -10,7 +10,7 @@ public import RealRooted.SignEvaluation
 Reusable two-polynomial Liu--Wang criteria and polynomial sign certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -9,7 +9,7 @@ The one remaining frontend handles an exact-`X` current factor. The former
 theorem wrappers and the OEIS-facing routers have been retired.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

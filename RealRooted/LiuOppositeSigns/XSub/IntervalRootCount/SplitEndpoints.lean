@@ -6,7 +6,7 @@ public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
 # Liu x-subtraction count-to-splitting endpoints.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

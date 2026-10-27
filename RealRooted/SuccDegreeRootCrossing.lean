@@ -12,7 +12,7 @@ root-crossing target and a concrete warning example for the stronger fixed
 orientation route.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

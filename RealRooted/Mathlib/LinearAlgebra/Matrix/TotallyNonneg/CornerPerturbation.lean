@@ -16,7 +16,7 @@ finite matrix preserves total nonnegativity. The determinant update is isolated
 as a general commutative-ring identity.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

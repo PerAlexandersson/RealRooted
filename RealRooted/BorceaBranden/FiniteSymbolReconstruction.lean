@@ -10,7 +10,7 @@ This module completes the algebraic reconstruction step in Borcea--Branden,
 arXiv:0809.0401, Lemma 2.2. Target variables remain unrestricted throughout.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

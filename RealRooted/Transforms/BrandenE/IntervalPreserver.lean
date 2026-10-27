@@ -11,7 +11,7 @@ images of the ordered-Bell coefficient transform. Their checked interlacing
 row therefore instantiates the generic Bernstein-image preserver criterion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

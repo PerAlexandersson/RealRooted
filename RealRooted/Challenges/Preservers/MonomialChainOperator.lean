@@ -78,7 +78,7 @@ the operator perspective is related to [@Branden2011b].
 This module exposes the fully checked monomial-chain upgrade.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

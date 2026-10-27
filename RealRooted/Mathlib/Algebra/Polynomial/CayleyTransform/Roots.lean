@@ -18,7 +18,7 @@ Transport from the vertical line of real part minus one half to the unit circle,
 with the resulting degree, leading-coefficient, and coefficient estimates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -20,7 +20,7 @@ order-three recurrences with characteristic polynomial `(λ - q)³` have this sh
 The explicit root bracketing was found by Aristotle and ported here.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -28,7 +28,7 @@ factorization of a monic polynomial over `ℂ` gives
 by continuity of the determinant in the entries — a contradiction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology Finset
 

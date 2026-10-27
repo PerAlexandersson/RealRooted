@@ -10,7 +10,7 @@ every root of `p`, and `F` has positive leading coefficient and one more degree 
 `p ≪ F` strictly.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

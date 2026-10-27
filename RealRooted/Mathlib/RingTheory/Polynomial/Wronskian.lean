@@ -18,7 +18,7 @@ statements require no real-rootedness assumptions and are candidates for
 upstreaming to `Mathlib.RingTheory.Polynomial.Wronskian`.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

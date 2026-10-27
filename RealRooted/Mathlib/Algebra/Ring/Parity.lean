@@ -14,7 +14,7 @@ public import Mathlib.Tactic
 Elementary parity identities used by polynomial transformations.
 -/
 
-@[expose] public section
+public section
 
 namespace Parity
 

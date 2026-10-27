@@ -15,7 +15,7 @@ More generally, the same perturbation argument works for any interlacer `g` havi
 root with `f`.  The derivative `f'` is the canonical specialization supplied by Rolle's theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

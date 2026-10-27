@@ -12,7 +12,7 @@ kernel `J_n`.  Its increasing-degree range is `deg ≤ (n + 1) / 2`, where the
 basis images `J_{n,0}, J_{n,1}, …` form a Sturm chain.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

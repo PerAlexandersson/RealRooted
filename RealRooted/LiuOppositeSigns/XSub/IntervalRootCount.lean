@@ -19,4 +19,4 @@ It is the compatibility facade for the focused theorem clusters in
 `IntervalRootCount/`.
 -/
 
-@[expose] public section
+public section

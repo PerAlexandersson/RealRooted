@@ -9,7 +9,7 @@ Thin wrappers for `PosComboRealRooted` and positive/nonnegative linear
 combination certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

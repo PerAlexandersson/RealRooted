@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Hadamard.Newton
 
-@[expose] public section
+public section
 
 open Polynomial
 

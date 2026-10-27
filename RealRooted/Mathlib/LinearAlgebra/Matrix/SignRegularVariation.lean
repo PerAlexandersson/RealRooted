@@ -18,7 +18,7 @@ strictification reduces the result to the strict maximal-minor theorem, and
 lower semicontinuity of sign variations passes the bound to the limit.
 -/
 
-@[expose] public section
+public section
 
 open Filter
 

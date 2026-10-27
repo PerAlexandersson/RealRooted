@@ -15,7 +15,7 @@ polynomial to real boundary values preserves upper-half-plane stability up to
 the zero polynomial, without coordinate-degree restrictions.
 -/
 
-@[expose] public section
+public section
 
 open Complex
 

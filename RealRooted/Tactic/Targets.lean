@@ -123,7 +123,7 @@ vector recurrence, production matrix, or lower-order factorization has been
 made explicit.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

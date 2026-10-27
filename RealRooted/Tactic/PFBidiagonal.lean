@@ -15,7 +15,7 @@ stability gives a checked PF-preserver route. The weaker one-sided Jensen
 pencil is proved by finite-free root-count contraction and PF closure.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -15,7 +15,7 @@ opposite side of the gap; cancelling it reduces to the checked quadratic
 separation obstruction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

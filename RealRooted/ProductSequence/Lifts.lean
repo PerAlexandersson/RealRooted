@@ -9,7 +9,7 @@ Real-rootedness transport from quotient or model sequences through scalar,
 monomial, affine, and powered affine row factors.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

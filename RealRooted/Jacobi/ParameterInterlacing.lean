@@ -14,7 +14,7 @@ the A390883 formalization. The first comparison is the derivative case, where
 both parameters increase by one and the degree drops by one.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -11,7 +11,7 @@ This file identifies the BFJ product construction with the canonical Euler
 numerator of a pointwise product of polynomial-value sequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

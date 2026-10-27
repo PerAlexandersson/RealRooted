@@ -10,7 +10,7 @@ pointwise sequence identification. The `rr_pf` frontend dispatches the standard
 consequences of an `IsPFPolynomial` hypothesis.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

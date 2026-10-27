@@ -14,7 +14,7 @@ approximate every Pólya-frequency polynomial by negative-simple polynomials,
 so a linear map preserving the latter class preserves the former as well.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

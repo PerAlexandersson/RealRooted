@@ -14,7 +14,7 @@ The middle multiplier is arbitrary because it vanishes at every root used by
 the generalized Liu--Wang step.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

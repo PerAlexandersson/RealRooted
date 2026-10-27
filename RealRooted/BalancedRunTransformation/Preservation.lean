@@ -11,7 +11,7 @@ This file connects the balanced kernel to the normalized diagonal contraction.
 The contraction backend is shared with the binary-run pointing construction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

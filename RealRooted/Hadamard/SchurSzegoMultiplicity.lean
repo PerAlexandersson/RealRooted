@@ -23,7 +23,7 @@ exactly `m + l - n`.
   that `(X - a)ⁿ⁻ᵈ q *ₙ g = (X + a b)ˡ⁻ᵈ R` with `R(-(a * b)) ≠ 0` whenever `q(a) ≠ 0`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

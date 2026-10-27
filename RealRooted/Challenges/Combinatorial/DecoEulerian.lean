@@ -3,7 +3,7 @@ module
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

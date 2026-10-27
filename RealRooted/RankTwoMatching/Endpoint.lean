@@ -2,7 +2,7 @@ module
 
 public import RealRooted.RankTwoMatching.Enumeration
 
-@[expose] public section
+public section
 
 open Polynomial
 

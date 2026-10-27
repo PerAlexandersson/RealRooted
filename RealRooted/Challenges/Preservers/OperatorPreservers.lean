@@ -8,7 +8,7 @@ public import RealRooted.EulerBidiagonal.Preservation
 public import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.Transforms.ReverseHermite.Preservation
 
-@[expose] public section
+public section
 
 open Polynomial
 

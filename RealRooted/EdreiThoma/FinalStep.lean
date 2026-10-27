@@ -16,7 +16,7 @@ Taylor coefficients then makes its slope real and nonnegative.
 This is the final lemma in Edrei's proof of the converse Aissen--Schoenberg--Whitney theorem.
 -/
 
-@[expose] public section
+public section
 
 open Complex Filter Topology
 

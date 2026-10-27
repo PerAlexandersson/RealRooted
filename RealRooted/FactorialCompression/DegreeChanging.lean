@@ -23,7 +23,7 @@ The theorem is due to Zhanhe Zhang (*Factorial compression and strict interlacin
 SSRN 7510941); the proofs are ported from the draft of Zhang's formalization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

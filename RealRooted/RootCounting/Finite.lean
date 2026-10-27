@@ -11,7 +11,7 @@ Finite-set counting criteria for simple roots, together with elementary index
 arguments used after disjoint root-localization estimates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

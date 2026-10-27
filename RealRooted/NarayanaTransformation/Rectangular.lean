@@ -9,4 +9,4 @@ public import RealRooted.NarayanaTransformation.Rectangular.Preservation
 Compatibility facade for the focused rectangular-convolution layers.
 -/
 
-@[expose] public section
+public section

@@ -17,7 +17,7 @@ Theorem `thm:zigzagEulerian` of the compendium. We combine the actual finite
 word-counting identity with the centered disk bound and the interval transfer.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -38,7 +38,7 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/aux.lean
 -/
 
-@[expose] public section
+public section
 
 open Filter Set Finset Matrix Topology Convex
 

@@ -8,7 +8,7 @@ public import RealRooted.Tactic.Attr
 Smoke tests for certificate attributes and their inspection command.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

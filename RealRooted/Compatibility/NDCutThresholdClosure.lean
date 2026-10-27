@@ -11,7 +11,7 @@ the marker-one threshold theorem applies directly and gives the zero-aware
 interlacing package on the ordered successor cut outputs.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

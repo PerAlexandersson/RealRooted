@@ -11,7 +11,7 @@ polynomial's actual degree and then uses the exact numerator-coefficient
 identity.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

@@ -11,7 +11,7 @@ Pólya-frequency data in the degree range where its coefficients stay
 nonnegative.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

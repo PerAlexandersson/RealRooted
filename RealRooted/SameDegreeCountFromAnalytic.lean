@@ -15,7 +15,7 @@ a no-common positive-combination pair differ by at most one, which gives the
 same-degree case of the two-polynomial common-interleaver theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

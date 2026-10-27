@@ -19,7 +19,7 @@ consecutive minors by Gaussian multiplication, applies the strict
 consecutive-column criterion, and passes to the Gaussian limit.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

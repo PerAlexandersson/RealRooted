@@ -12,7 +12,7 @@ the only matrix-specific input; polynomial interlacing closure remains in
 `RealRooted.Interlacing.Closure`.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

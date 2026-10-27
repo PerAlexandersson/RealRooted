@@ -12,7 +12,7 @@ public import RealRooted.Mathlib.Data.Nat.Cast.Basic
 public import RealRooted.Mathlib.Data.Nat.Choose.Cast
 public import RealRooted.Mathlib.Data.List.Interleave
 
-@[expose] public section
+public section
 
 open Polynomial
 

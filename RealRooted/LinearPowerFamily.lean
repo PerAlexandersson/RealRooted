@@ -16,7 +16,7 @@ whose tail is `C u + C v * X` or `C u * X`, together with the confluent
 interlacing of powers of a single linear factor.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -18,7 +18,7 @@ opposite sign at every interior zero of the linear insertion that is not an
 old root. No root-sum inequality is assumed by the caller.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

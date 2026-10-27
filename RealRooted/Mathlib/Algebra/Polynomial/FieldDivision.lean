@@ -15,7 +15,7 @@ that the roots of `q` are those of `p` with one copy of `r` removed, and that
 `p''(r) = 2 q'(r)`.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

@@ -10,7 +10,7 @@ The thresholded count controls the sign of the normalized derivative at each
 simple negative root.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

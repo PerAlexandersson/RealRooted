@@ -14,7 +14,7 @@ variance slope then implies divergence of the variance, as required by Harper's 
 theorem.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 open scoped BigOperators Polynomial

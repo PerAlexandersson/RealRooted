@@ -9,7 +9,7 @@ This file proves the analytic convex-cone part of Proposition 2.4 in
 Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -14,7 +14,7 @@ public import Mathlib.Data.List.Interleave
 mathlib4#39870).  This file keeps the lemmas that are not upstream yet, and a deprecated alias.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

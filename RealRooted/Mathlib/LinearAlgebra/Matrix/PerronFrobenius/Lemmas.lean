@@ -54,7 +54,7 @@ Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean
 -/
 
-@[expose] public section
+public section
 
 namespace Pi
 

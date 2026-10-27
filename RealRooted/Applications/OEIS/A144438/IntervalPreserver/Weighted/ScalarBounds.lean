@@ -10,7 +10,7 @@ The weighted proof carries the scaled energy `H = w * E`.  This avoids any
 division by `w` and includes the Eulerian endpoint `w = 0`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -2,7 +2,7 @@ module
 
 public import RealRooted.GarloffWagner.KreinExpansion
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -36,7 +36,7 @@ one is a special case; see also Kostov (2010) for the multiplicity of the roots 
 compositions.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

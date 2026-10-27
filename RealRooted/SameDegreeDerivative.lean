@@ -11,7 +11,7 @@ This module records two reusable derivative facts for the same-degree
 positive-combination route in the Chudnovsky--Seymour project.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

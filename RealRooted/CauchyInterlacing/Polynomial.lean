@@ -11,7 +11,7 @@ sorted-root `Interlaces` predicate for characteristic polynomials. Challenge
 entry points remain in `RealRooted.Challenges.CauchyInterlacing`.
 -/
 
-@[expose] public section
+public section
 
 open Matrix Polynomial
 

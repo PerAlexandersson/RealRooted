@@ -8,7 +8,7 @@ public import RealRooted.AllCombo
 Thin wrappers for closure and conversion lemmas around `AllComboRealRooted`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

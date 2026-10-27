@@ -12,7 +12,7 @@ The interior peak positions of `RealRooted.CombinatorialExamples.PeakValues` are
 peak positions is the canonical peak count.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -13,7 +13,7 @@ paired with nonnegativity of the output coefficients; no global sign condition
 is imposed on the two coefficient-weight sequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

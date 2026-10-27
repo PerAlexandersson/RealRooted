@@ -11,7 +11,7 @@ sequences.  The Jensen polynomial of the factorial-weighted coefficient
 sequence is a Garloff--Wagner Schur product with `(X + 1) ^ n`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

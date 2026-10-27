@@ -14,7 +14,7 @@ Wronskians are nonnegative. Thus the first-order obstruction for the full
 recurrence is isolated in the exceptional branch's cross term.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

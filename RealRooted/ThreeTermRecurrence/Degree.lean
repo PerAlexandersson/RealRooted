@@ -33,7 +33,7 @@ as soon as `t` stays positive.  Two regimes cover the OEIS triangles:
   at `0`, from the same two scalar regimes applied to `x n = (P n).eval 0`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

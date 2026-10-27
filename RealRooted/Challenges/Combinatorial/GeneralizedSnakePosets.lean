@@ -157,7 +157,7 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.GeneralizedSnakePosets`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

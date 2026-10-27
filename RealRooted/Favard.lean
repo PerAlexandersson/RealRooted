@@ -4,7 +4,7 @@ public import RealRooted.Favard.Recurrence
 public import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.MaWang
 
-@[expose] public section
+public section
 
 open Polynomial
 

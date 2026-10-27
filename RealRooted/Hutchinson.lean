@@ -22,7 +22,7 @@ polynomials are real-rooted.
   Math. Monthly 99 (1992), 259–263.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

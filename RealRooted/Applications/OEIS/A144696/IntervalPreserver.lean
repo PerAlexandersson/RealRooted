@@ -11,7 +11,7 @@ Consequently, the A144696 basis transform sends every positive-leading
 polynomial whose roots lie in `[-1, 0]` to a PF polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

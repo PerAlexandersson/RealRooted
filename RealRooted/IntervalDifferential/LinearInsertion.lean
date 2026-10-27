@@ -22,7 +22,7 @@ are scalar multiples of those of `F`. These are the signs used in the
 simple-root interval insertion argument.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

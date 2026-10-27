@@ -110,7 +110,7 @@ This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,
 `RealRooted.ShiftLemma` and `RealRooted.FolkloreLemma`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

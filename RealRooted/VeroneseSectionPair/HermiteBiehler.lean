@@ -16,7 +16,7 @@ The normalization hypotheses `j < k < r` are essential: this theorem does
 not cover a shifted coefficient tail represented by an index at least `r`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -21,7 +21,7 @@ public import Mathlib.RingTheory.Localization.Away.Basic
   in an eigenbasis of `A` (the starting point of Weyl's rank-one interlacing).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

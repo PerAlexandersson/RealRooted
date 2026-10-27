@@ -14,7 +14,7 @@ Finite and infinite positive log-concave sequences are controlled by the
 adjacent ratios at a chosen index.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

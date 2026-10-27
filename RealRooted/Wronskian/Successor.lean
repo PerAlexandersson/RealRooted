@@ -10,4 +10,4 @@ This entry point collects root-gap, interlacing, and splitness-transfer results
 for strict Wronskian signs across a one-degree increase.
 -/
 
-@[expose] public section
+public section

@@ -10,7 +10,7 @@ The forward and reverse interlacing transports associated with multiplying
 a polynomial by `X`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

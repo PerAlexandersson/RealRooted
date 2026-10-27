@@ -10,7 +10,7 @@ This module applies the algebraic generalized-Laguerre reduction to the
 bilinear derivative-recurrence interlacing API.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

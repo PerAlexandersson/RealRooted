@@ -13,7 +13,7 @@ has positive leading coefficient, one higher degree, and is in proper
 position with `f`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

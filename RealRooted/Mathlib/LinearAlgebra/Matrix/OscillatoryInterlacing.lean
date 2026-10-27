@@ -16,4 +16,4 @@ RealRooted polynomial endpoint lives in `RealRooted.OscillatoryInterlacing`.
 This file preserves the original public import path.
 -/
 
-@[expose] public section
+public section

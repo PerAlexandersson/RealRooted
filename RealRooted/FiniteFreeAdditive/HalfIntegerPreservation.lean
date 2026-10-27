@@ -13,7 +13,7 @@ and `1 / 2`.  The inputs are degree-bounded split real polynomials with
 nonnegative roots; the output is allowed to be zero.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

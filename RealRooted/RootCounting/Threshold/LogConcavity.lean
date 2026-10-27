@@ -11,7 +11,7 @@ coefficient term dominant. This converts that coefficient certificate into the
 signed evaluation needed by thresholded root counting.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

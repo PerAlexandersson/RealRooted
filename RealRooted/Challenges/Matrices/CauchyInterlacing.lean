@@ -72,7 +72,7 @@ This module records the eigenvalue and characteristic-polynomial forms; Weyl's
 rank-one interlacing is in `RealRooted.CauchyInterlacing.RankOne`.
 -/
 
-@[expose] public section
+public section
 
 open Matrix Polynomial
 

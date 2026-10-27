@@ -12,7 +12,7 @@ This layer combines the exceptional endpoint with the finite offsets, proves
 the Jacobi-node sign evaluations, and packages the all-offset consequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open MeasureTheory Set

@@ -16,4 +16,4 @@ Reusable single-step and sequence-level Liu--Wang criteria. Tactic syntax lives
 in `RealRooted.Tactic.LiuWang`.
 -/
 
-@[expose] public section
+public section

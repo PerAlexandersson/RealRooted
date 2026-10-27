@@ -14,7 +14,7 @@ public import Mathlib.Algebra.Polynomial.Eval.Degree
 its coefficients over `Finset.range n` for any `n` larger than its natural degree.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

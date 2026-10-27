@@ -14,7 +14,7 @@ This upstream-shaped shim transports nonnegativity of the real Laguerre form
 through locally uniform limits of entire functions.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

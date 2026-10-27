@@ -19,7 +19,7 @@ Jacobi differential operator.  It applies over any commutative ring and to any
 moment sequence satisfying the corresponding first-order recurrence.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

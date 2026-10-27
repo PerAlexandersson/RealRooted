@@ -67,4 +67,4 @@ positive Jacobi operator.
 9. `Parity`: the central-trinomial specializations.
 -/
 
-@[expose] public section
+public section

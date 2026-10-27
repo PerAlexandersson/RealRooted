@@ -10,7 +10,7 @@ deletion lemmas used by Liu-style root-count arguments. It is independent of
 positive-leading normalization and of the later left/right branch machinery.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

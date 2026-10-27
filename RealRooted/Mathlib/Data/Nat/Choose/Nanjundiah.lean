@@ -16,7 +16,7 @@ summation interval is important over natural numbers: outside it, truncated
 subtractions can create spurious terms.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

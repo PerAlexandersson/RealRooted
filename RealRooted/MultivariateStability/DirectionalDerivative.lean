@@ -12,7 +12,7 @@ pencil only in its fresh affine coordinate, so it does not require general
 degree-box polarization.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

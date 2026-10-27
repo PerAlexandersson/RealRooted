@@ -19,7 +19,7 @@ quantitative bound is retained for the later limiting argument rather than
 merely producing one unrelated pair with simple roots.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace LiuOppositeSigns

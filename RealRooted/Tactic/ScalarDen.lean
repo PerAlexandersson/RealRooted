@@ -9,7 +9,7 @@ public import RealRooted.Tactic.SideGoals
 Tactic syntax for normalizing recurrences with scalar constant denominators.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

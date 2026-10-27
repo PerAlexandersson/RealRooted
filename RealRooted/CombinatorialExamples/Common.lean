@@ -12,7 +12,7 @@ Shared coefficient, leading-coefficient, and elementary interlacing helpers for
 the combinatorial example files.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

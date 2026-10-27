@@ -10,7 +10,7 @@ This module owns the affine Favard APIs transported through
 `Q n = (-1)^n P n`, including their scalar-denominator variants.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

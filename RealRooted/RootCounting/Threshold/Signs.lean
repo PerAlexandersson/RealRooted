@@ -11,7 +11,7 @@ Applications of dominant coefficients to a far-left evaluation, and a
 splitness criterion expressed through signed evaluations at ordered points.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootCounting
 

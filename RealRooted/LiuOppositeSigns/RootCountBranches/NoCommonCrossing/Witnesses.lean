@@ -15,7 +15,7 @@ This module contains the even-root x-subtraction witness and the
 right-pencil crossing criteria for the odd upper root-count difference.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

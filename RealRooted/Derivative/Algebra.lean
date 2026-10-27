@@ -7,7 +7,7 @@ public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Data.Multiset.Sort
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

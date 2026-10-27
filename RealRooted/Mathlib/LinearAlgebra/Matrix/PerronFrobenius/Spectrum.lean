@@ -153,7 +153,7 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/LinearAlgebra/Matrix/Spectrum.lean
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 open LinearMap Polynomial Module

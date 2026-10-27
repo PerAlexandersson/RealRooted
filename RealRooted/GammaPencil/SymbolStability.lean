@@ -19,7 +19,7 @@ of the residual and, with the factorization from `Symbol`, of the finite
 algebraic symbol.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

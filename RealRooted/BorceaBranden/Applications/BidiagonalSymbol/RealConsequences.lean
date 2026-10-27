@@ -10,7 +10,7 @@ The affine-symbol calculation lives in `BidiagonalSymbol`; this module applies
 the general real finite-symbol preservation theorems to that operator.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -17,7 +17,7 @@ This file supplies the improper integral at zero obtained by differentiating
 the elementary real-power integral with respect to its exponent.
 -/
 
-@[expose] public section
+public section
 
 open Filter MeasureTheory Set Topology
 

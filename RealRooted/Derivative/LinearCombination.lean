@@ -11,7 +11,7 @@ its derivative. These theorem-facing forms are shared by Hermite--Poulain and
 the second-derivative tactic frontend.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -50,7 +50,7 @@ The route here instead **factors out the escaping root(s)** rigorously:
   core.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

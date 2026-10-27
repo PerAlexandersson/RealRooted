@@ -9,7 +9,7 @@ public import RealRooted.Tactic.Finish
 Thin wrappers around the checked finite Schur--Szego and Hadamard PF backends.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

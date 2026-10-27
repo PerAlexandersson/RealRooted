@@ -12,7 +12,7 @@ This file extends the strict forward Wronskian theorems to interlacing
 pairs with common roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

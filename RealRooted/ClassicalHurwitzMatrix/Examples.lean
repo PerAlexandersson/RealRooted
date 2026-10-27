@@ -21,7 +21,7 @@ accepts stable examples rejected by the row orientation, and accepts the boundar
 `1 + X²` and `X`; the zero polynomial shows that the nonzero hypothesis is needed.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

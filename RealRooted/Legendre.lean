@@ -17,4 +17,4 @@ its degree, root-location, simple-root, and consecutive-interlacing theory in
 both the canonical and reflected positive-leading normalizations.
 -/
 
-@[expose] public section
+public section

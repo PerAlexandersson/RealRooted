@@ -2,7 +2,7 @@ module
 
 public import RealRooted.ThresholdMatrix
 
-@[expose] public section
+public section
 
 open Polynomial
 

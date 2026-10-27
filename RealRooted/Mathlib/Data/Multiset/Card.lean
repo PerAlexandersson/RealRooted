@@ -14,7 +14,7 @@ Small cardinality criteria for a multiset to have no duplicate elements.
 These statements are intended for upstreaming to Mathlib.
 -/
 
-@[expose] public section
+public section
 
 namespace Multiset
 

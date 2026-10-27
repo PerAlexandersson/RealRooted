@@ -16,7 +16,7 @@ function explicit and reuse matching certificates from the local context. Contex
 inference does not discover a model family or prove its recurrence.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

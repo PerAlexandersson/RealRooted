@@ -30,7 +30,7 @@ has entrywise nonnegative compounds, so Perron-Frobenius applied to each
 compound controls the products of eigenvalues.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

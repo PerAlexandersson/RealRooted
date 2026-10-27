@@ -15,7 +15,7 @@ An upstream-shaped formula for the derivative at a root of multiplicity one,
 without requiring the polynomial to be monic.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

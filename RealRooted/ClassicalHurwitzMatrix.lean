@@ -13,7 +13,7 @@ matrix, to the odd/even polynomial API. The historical
 conventions remain available under distinct namespace-qualified names.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

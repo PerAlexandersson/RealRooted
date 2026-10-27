@@ -13,7 +13,7 @@ orientation forces normalized equality when neither polynomial has a zero
 root.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

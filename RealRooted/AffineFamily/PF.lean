@@ -11,7 +11,7 @@ For PF polynomials `f` and `g` (nonnegative coefficients, only real roots), dire
 are allowed on both sides.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

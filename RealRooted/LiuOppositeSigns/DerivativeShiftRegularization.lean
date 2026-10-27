@@ -10,7 +10,7 @@ This module proves that sufficiently small common positive derivative shifts
 preserve the no-common-root condition used in Liu's finite root-count descent.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

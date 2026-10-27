@@ -20,4 +20,4 @@ Sequence-independent coefficient, degree, nonvanishing, and interlacing
 theorems for polynomial recurrences involving derivatives.
 -/
 
-@[expose] public section
+public section

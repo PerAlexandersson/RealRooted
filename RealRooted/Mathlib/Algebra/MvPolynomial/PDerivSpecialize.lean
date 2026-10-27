@@ -15,7 +15,7 @@ This file keeps the interaction between partial differentiation and scalar
 specialization separate from the basic specialization API.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

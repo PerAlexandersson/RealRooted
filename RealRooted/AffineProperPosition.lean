@@ -10,7 +10,7 @@ polynomials.  These facts are shared by the Veronese and threshold-matrix
 developments, so they live below both application layers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

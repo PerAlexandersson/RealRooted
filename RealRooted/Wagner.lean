@@ -12,4 +12,4 @@ public import RealRooted.WagnerX
 public import RealRooted.WagnerRightSum
 public import RealRooted.Wagner.LeftSum
 
-@[expose] public section
+public section

@@ -15,7 +15,7 @@ under arbitrarily small pointwise perturbations.  It is the ordered-root limit
 step used after derivative-shift regularization.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace LiuOppositeSigns

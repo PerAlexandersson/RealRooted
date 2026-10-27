@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang.StrictSigns.RootSigns
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

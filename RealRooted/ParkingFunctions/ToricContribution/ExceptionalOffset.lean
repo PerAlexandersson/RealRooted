@@ -9,4 +9,4 @@ Compatibility import for the base-and-moment, pencil-splitting,
 distinguished-parameter, and Jacobi-node interlacing layers.
 -/
 
-@[expose] public section
+public section

@@ -11,4 +11,4 @@ enumeration, bottom-row decomposition, row formulas, finite certificates, and
 auxiliary-polynomial layers used by the Braun--Jal development.
 -/
 
-@[expose] public section
+public section

@@ -10,7 +10,7 @@ public import RealRooted.SimpleRoots
 The strict root-sign version of the differ-by-one Ma--Wang recurrence step.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

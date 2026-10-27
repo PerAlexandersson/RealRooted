@@ -22,7 +22,7 @@ Reference:
 
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

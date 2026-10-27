@@ -12,7 +12,7 @@ the linear coefficient vanishes. Total nonnegativity then kills every odd
 coefficient, while forward ASW controls the remaining even contraction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

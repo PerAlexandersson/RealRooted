@@ -17,7 +17,7 @@ integer-list computation, shows that the two polynomials have no common root, so
 simple roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

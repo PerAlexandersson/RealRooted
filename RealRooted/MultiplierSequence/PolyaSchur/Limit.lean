@@ -12,7 +12,7 @@ degree and converge coefficientwise, so closedness of real splitting passes
 to the limit.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

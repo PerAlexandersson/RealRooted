@@ -3,7 +3,7 @@ module
 public import RealRooted.NarayanaTransformation.Basis
 public import Mathlib.Combinatorics.Enumerative.Stirling
 
-@[expose] public section
+public section
 
 open Polynomial
 

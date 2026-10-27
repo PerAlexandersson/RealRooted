@@ -11,7 +11,7 @@ position results into pair-compatibility lemmas.  The second theorem records
 the directed `X`-marked relation used by ordered affine families.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

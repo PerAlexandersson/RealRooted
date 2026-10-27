@@ -11,7 +11,7 @@ Liu opposite-sign file while providing the cofactor nonnegativity transport
 needed by common-root deletion arguments.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

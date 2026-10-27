@@ -17,7 +17,7 @@ public import RealRooted.PosCombo
 public import RealRooted.RootContinuity
 public import RealRooted.SuccDegreeLeftEndpoint
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -15,7 +15,7 @@ This Mathlib-shaped shim records that a true adjacent relation remains inside
 one block of `List.splitBy`.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

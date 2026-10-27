@@ -11,7 +11,7 @@ to the endpoint parameters `η`, `κ`, and the original-variable residue
 energy.  It is independent of the later spectral/rootwise realization.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

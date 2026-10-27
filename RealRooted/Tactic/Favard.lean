@@ -9,4 +9,4 @@ Compatibility umbrella for the shared syntax and direct, scalar-denominator,
 and row-sign Favard macro-rule frontends.
 -/
 
-@[expose] public section
+public section

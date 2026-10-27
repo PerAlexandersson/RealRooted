@@ -14,7 +14,7 @@ public import Mathlib.Algebra.Polynomial.Taylor
 The Taylor shift `taylor r p = p.comp (X + C r)` commutes with the formal derivative.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

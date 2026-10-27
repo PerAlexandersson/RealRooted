@@ -29,7 +29,7 @@ multiplicity. Since this root multiset is invariant under conjugation, also
 every summand has imaginary part of sign opposite to `w.im`, which is a contradiction.
 -/
 
-@[expose] public section
+public section
 
 open scoped Polynomial ComplexConjugate
 

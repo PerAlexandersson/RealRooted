@@ -12,7 +12,7 @@ two useful normalizations are the original rotated pair and the pair obtained
 by multiplying its Hermite--Biehler polynomial by `i`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

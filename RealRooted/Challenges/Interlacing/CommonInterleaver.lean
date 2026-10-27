@@ -168,7 +168,7 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.CommonInterleaver` and `RealRooted.Compatibility`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

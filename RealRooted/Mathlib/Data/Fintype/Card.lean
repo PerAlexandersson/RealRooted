@@ -18,7 +18,7 @@ predicate, then the ambient cardinality is the parameter cardinality times the
 cardinality of the predicate subtype.
 -/
 
-@[expose] public section
+public section
 
 namespace Fintype
 

@@ -53,7 +53,7 @@ of real-rooted polynomials with nonnegative coefficients are real-rooted or
 zero.  The cyclic matrix construction remains in `RealRooted.VeroneseMatrix`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

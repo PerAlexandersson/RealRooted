@@ -10,7 +10,7 @@ Criteria proving that a real polynomial splits from alternating signs at an
 ordered family of test points.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open Filter Asymptotics

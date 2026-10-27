@@ -10,7 +10,7 @@ The one-step estimate underlying finite telescoping bounds for reciprocal-power
 tails with an arbitrary positive spacing.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

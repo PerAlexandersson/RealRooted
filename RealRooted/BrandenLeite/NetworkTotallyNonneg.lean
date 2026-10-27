@@ -11,7 +11,7 @@ the existing resolution-to-total-nonnegativity theorem.  The direct
 Lindström--Gessel--Viennot determinant proof remains separate work.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BrandenLeite
 

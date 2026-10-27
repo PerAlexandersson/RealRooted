@@ -15,7 +15,7 @@ This is the nonmonic corollary of Mathlib's
 `Polynomial.IsMonicOfDegree.eq_isMonicOfDegree_two_mul_isMonicOfDegree`.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

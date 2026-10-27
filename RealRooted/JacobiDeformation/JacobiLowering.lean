@@ -10,7 +10,7 @@ differential operator and the monic Favard recurrence.  Keeping the lower
 coefficient in terms of `shiftedJacobiSubdiag` preserves its degree-one branch.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

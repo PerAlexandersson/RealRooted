@@ -10,7 +10,7 @@ This file combines the analytic local limit theorem with Harper's central limit 
 coefficient-shape consequences of the Pólya-frequency API.
 -/
 
-@[expose] public section
+public section
 
 open MeasureTheory ProbabilityTheory Filter Topology
 

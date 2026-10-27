@@ -106,7 +106,7 @@ layers live in `RealRooted.Bezoutian`; the successor-degree proof lives in
 `RealRooted.Bezoutian.Successor`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

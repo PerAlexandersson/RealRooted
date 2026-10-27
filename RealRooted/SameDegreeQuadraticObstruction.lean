@@ -19,7 +19,7 @@ root configuration, which is the only way the degree-two same-degree threshold
 root counts can differ by two.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

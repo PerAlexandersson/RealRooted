@@ -11,7 +11,7 @@ Thin wrappers for the proved `theta + 1`, polar-theta, and iterate APIs in
 `RealRooted.EulerOperator`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

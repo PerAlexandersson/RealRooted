@@ -12,7 +12,7 @@ position pair of PF polynomials. The generic list endpoint and inverse-root
 transport facts live in lower layers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

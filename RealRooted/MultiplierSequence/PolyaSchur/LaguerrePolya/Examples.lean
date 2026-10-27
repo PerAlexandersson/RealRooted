@@ -12,7 +12,7 @@ therefore supplies checked Laguerre--Pólya and Type-I witnesses.  It also
 instantiates the reverse Pólya--Schur classification at this classical example.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

@@ -10,7 +10,7 @@ This module keeps the heavier interlacing dependencies separate from the
 algebraic and coefficientwise lowering-Euler API in `EulerianCompletion`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

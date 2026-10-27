@@ -10,7 +10,7 @@ This module transfers arbitrary descent-set weights, and hence exact
 descent-set cardinalities, from words to ordinary parking functions.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.ParkingFunctions
 

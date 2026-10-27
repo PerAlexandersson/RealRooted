@@ -12,7 +12,7 @@ common linear factor.  Coefficientwise signs at every root imply these
 hypotheses, so the result contains the termwise finite-family criterion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

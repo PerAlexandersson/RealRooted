@@ -8,7 +8,7 @@ public import RealRooted.Tactic.MaWang.FactorSyntax
 Elaboration rules for the one-step and short-window certificates.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic

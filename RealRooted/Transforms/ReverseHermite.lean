@@ -11,4 +11,4 @@ Compatibility facade for the algebraic, derivative, and PF-preservation
 layers of the reverse-Hermite transform.
 -/
 
-@[expose] public section
+public section

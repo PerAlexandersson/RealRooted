@@ -15,7 +15,7 @@ not assert a generic upper-derivative interlacer; the needed `StrictInterl d f`
 hypothesis is supplied by the concrete family.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

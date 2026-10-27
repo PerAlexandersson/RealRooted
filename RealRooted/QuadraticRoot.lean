@@ -9,7 +9,7 @@ This file records the elementary fact that a real quadratic with nonnegative
 discriminant has a real root.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

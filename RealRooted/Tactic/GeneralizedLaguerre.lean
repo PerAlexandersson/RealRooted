@@ -10,7 +10,7 @@ A shallow frontend for the checked generalized-Laguerre reduction and its
 adjacent proper-position theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

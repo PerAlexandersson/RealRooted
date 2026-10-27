@@ -29,7 +29,7 @@ degree, equal degree with a nonvanishing top coefficient), the degree of
   `a + b + 1` when `p.natDegree ≤ a + 1` and `q.natDegree ≤ b + 1`.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

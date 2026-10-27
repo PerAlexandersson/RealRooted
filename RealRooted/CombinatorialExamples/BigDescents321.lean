@@ -30,7 +30,7 @@ is the combinatorial interpretation of the recurrence; it is not formalized here
   roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

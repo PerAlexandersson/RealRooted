@@ -12,7 +12,7 @@ positive root-magnitude sequence. The module also provides perturbative and
 outer-region forms of that criterion.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.RootAmplitude
 

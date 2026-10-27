@@ -11,4 +11,4 @@ Curated entry point for the positive-spacing Bernoulli step, its finite
 telescoping consequence, and quadratic-denominator applications.
 -/
 
-@[expose] public section
+public section

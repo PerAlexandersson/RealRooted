@@ -11,7 +11,7 @@ public import Mathlib.Algebra.MvPolynomial.PDeriv
 # Partial derivatives of squarefree monomials
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

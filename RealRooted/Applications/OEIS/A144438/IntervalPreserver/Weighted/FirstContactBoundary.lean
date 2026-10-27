@@ -9,7 +9,7 @@ We turn local nonnegativity on a coordinate interval into the one-sided
 derivative conditions required by the scalar first-contact lemma.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Set Topology
 

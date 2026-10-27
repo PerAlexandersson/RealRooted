@@ -11,7 +11,7 @@ infinite lower-triangular coefficient arrays. The conclusion is stated for the
 full coefficient sequence of each finite row.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

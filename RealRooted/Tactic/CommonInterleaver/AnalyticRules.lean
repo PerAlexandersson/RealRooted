@@ -10,7 +10,7 @@ Macro expansions for root-count certificates and two-polynomial
 common-interleaver endpoints.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

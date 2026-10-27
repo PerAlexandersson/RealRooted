@@ -9,4 +9,4 @@ Re-exports the theorem, syntax, routing-helper, and macro-rule layers of the
 common-interleaver tactic.
 -/
 
-@[expose] public section
+public section

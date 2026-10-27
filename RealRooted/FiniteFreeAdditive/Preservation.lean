@@ -12,7 +12,7 @@ additive convolution into a bounded-degree splitness theorem.  It is
 zero-aware: inputs of degree smaller than the ambient degree may yield zero.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

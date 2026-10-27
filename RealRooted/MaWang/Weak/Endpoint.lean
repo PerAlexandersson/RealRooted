@@ -2,7 +2,7 @@ module
 
 public import RealRooted.LiuWang.General
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -14,7 +14,7 @@ symmetric multiaffine polynomials: a real symmetric multiaffine polynomial is
 real stable exactly when its diagonal is a nonzero real-rooted polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

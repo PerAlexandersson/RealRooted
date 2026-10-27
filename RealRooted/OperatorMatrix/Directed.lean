@@ -14,7 +14,7 @@ interlacing inputs.  These are the differential facts behind the `{1, θ, X}` bl
 classification of operator matrices (issue #1741).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

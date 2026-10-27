@@ -27,7 +27,7 @@ Coordinatewise root order does not imply interlacing for arbitrary pairs: see
 roots is not formalized here.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

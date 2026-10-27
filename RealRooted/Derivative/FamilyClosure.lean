@@ -10,7 +10,7 @@ public import RealRooted.Derivative.Algebra
 public import RealRooted.Derivative.Interlacing
 public import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

@@ -12,7 +12,7 @@ public import RealRooted.Hadamard.SchurSzegoMultiplicity
   is `X²`, so `0 = -(0 * (-1))` has multiplicity `2`, not `m + l - n = 1`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

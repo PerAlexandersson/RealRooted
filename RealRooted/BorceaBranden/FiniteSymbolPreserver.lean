@@ -16,7 +16,7 @@ specialize the remaining non-target variables at zero, and reconstruct the
 operator value.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.BorceaBranden
 

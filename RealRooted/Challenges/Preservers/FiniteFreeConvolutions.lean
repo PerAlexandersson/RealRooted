@@ -154,7 +154,7 @@ This module is a catalog facade. The proofs live in
 `RealRooted.FiniteFreeMultiplicative`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

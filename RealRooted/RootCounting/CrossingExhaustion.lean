@@ -14,7 +14,7 @@ by an external crossing budget, every crossing must be an exact downward jump
 of its full multiplicity.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

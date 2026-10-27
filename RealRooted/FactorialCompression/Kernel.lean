@@ -13,7 +13,7 @@ its degree is `(N + ℓ + 1) / 2`, and (when `N + ℓ ≥ 2`) the common kernel 
 main theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

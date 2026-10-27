@@ -4,7 +4,7 @@ public import RealRooted.BorceaBranden.Transcendental.LambdaBar
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
 public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 
-@[expose] public section
+public section
 
 open Filter Topology
 

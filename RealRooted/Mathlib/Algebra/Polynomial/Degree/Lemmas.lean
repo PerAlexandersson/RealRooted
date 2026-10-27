@@ -14,7 +14,7 @@ Companions of `Polynomial.degree_comp_neg_X`: the coefficients of `p.comp (-X)` 
 `p` with alternating signs, and the natural degree is unchanged.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

@@ -3,7 +3,7 @@ module
 public import RealRooted.MatrixInterlacing.Action
 public import RealRooted.MatrixInterlacing.AffinePair
 
-@[expose] public section
+public section
 
 open Polynomial
 

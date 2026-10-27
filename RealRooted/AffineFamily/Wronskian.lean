@@ -21,7 +21,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -30,7 +30,7 @@ ordered field:
 The proofs are algebraic: no trigonometric parametrization is used.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial.Chebyshev
 

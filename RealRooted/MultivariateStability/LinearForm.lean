@@ -11,7 +11,7 @@ coefficients is multivariate stable.  The variables may be indexed with
 repetition, which makes the result convenient for finite combinatorial sums.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

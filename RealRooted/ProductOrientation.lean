@@ -22,7 +22,7 @@ This sequence-independent orientation criterion was first used in
 `ProofsOeis.ProductOrientation`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

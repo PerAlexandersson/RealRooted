@@ -15,7 +15,7 @@ The formula is multiplied by `sin θ`, so it remains valid at the endpoint
 angles without a nonvanishing assumption.
 -/
 
-@[expose] public section
+public section
 
 namespace LinearRecurrence
 

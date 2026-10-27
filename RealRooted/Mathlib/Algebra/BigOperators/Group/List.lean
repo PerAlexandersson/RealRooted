@@ -15,7 +15,7 @@ A sum of `f` over `List.range n` is the `Finset.range n` sum of `f`, and sums ov
 `List.range' k (q - k)` or a dropped prefix of `List.range q` are `Finset.Ico k q` sums.
 -/
 
-@[expose] public section
+public section
 
 namespace List
 

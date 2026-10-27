@@ -11,7 +11,7 @@ from the PF multiplier convention and transports the resulting
 Laguerre--Pólya witness through the classical alternating-sign convention.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

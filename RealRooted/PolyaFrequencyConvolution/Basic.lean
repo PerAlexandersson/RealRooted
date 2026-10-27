@@ -16,7 +16,7 @@ Cauchy convolution and proves that Pólya-frequency sequences are closed under
 that operation.
 -/
 
-@[expose] public section
+public section
 
 open Matrix
 

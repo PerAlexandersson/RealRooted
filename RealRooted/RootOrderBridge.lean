@@ -10,7 +10,7 @@ This file contains a purely order-theoretic bridge extracted from the
 same-degree Chudnovsky--Seymour root-crossing target.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

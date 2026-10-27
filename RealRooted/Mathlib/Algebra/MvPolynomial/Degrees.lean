@@ -14,7 +14,7 @@ This file contains Mathlib-shaped compatibility lemmas for multivariate
 polynomial degrees.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 
