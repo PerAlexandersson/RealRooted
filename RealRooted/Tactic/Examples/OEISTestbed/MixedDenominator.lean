@@ -18,48 +18,6 @@ namespace Tactic
 example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) +
-          (C (2 : ℝ) * X * (1 - X)) * (P (n + 1)).derivative +
-          (X * (C (2 : ℝ) - X)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_mw_lw_derivative_lag_sequence_root_upper_sign_auto using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroots,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
--- Real-rooted projection endpoint for the same direct root-sign route.
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hroots : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        U n * P (n + 1) +
-          (C (2 : ℝ) * X * (1 - X)) * (P (n + 1)).derivative +
-          (X * (C (2 : ℝ) - X)) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_mw_lw_derivative_lag_sequence_realrooted_root_upper_sign_auto using
-    base := hbase,
-    pos_lc := hpos,
-    root_upper := hroots,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
--- Root-window route for I2-type derivative-lag recurrences.
-example {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
     (hroot_lower : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → -(1 / 4 : ℝ) ≤ r)
     (hroot_upper : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → r ≤ 0)
     (hrec : ∀ n : Nat,

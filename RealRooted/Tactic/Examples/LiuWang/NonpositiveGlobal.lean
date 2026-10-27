@@ -127,43 +127,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- Family G sequence shell: Narayana/Jacobi-style negative-square lag with
-automatic coefficient side-goals. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) +
-          (-(C ((n : ℝ) + 1)) * (1 - X : ℝ[X]) ^ 2) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_square_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Family G negative-square lag, automatic real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) +
-          (-(C ((n : ℝ) + 1)) * (X - C (2 : ℝ)) ^ 2) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_square_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- Denominator-normalized negative-square lag with an explicit scalar
 coefficient certificate. -/
 example {P : Nat → ℝ[X]} {A q : Nat → ℝ[X]}

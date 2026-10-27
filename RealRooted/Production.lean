@@ -1496,7 +1496,6 @@ import RealRooted.Tactic.LiuWang.SequenceNonpositive
 import RealRooted.Tactic.LiuWang.SequenceProducts
 import RealRooted.Tactic.LiuWang.SequenceQuadratic
 import RealRooted.Tactic.LiuWang.Step
-import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.MaWang.Basic
@@ -1513,15 +1512,6 @@ import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.Named
 import RealRooted.Tactic.Narayana
-import RealRooted.Tactic.OEIS
-import RealRooted.Tactic.OEIS.Basic
-import RealRooted.Tactic.OEIS.DerivativeLag
-import RealRooted.Tactic.OEIS.NegativeLag
-import RealRooted.Tactic.OEIS.PositiveLag
-import RealRooted.Tactic.OEIS.ProductExit
-import RealRooted.Tactic.OEIS.ProductFactor
-import RealRooted.Tactic.OEIS.ProductLift
-import RealRooted.Tactic.OEIS.ProductParity
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFPolynomial

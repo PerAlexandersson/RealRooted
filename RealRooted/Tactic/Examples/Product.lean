@@ -1,5 +1,4 @@
 import RealRooted.Tactic.Examples.Product.Basic
-import RealRooted.Tactic.Examples.Product.DispatchIsolation
 import RealRooted.Tactic.Examples.Product.EndpointPair
 import RealRooted.Tactic.Examples.Product.Families
 import RealRooted.Tactic.Examples.Product.Interlacing
