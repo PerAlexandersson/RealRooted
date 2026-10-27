@@ -60,44 +60,5 @@ theorem isRealRooted_of_iteratedTDeriv_product_right_sequence
 
 namespace Tactic
 
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
-`P (n + 1) = F n * iterateTDeriv (eps n) (k n) (P n)` (the factor may also stand on the right);
-`base` is for `P 0`, `factor_realrooted` for every `F n`, and `recurrence` is the recurrence. -/
-syntax (name := rr_iterated_derivative_shift_product_sequence_named)
-  "rr_iterated_derivative_shift_product_sequence" " using "
-    "base" ":=" term ","
-    "factor_realrooted" ":=" term ","
-    "recurrence" ":=" term :
-  tactic
-
-/-- Positional form of
-`rr_iterated_derivative_shift_product_sequence`: the three terms are `base`,
-`factor_realrooted` and `recurrence`, in this order. -/
-syntax (name := rr_iterated_derivative_shift_product_sequence)
-  "rr_iterated_derivative_shift_product_sequence" " using "
-    term ", " term ", " term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_iterated_derivative_shift_product_sequence using
-        base := $hbase:term,
-        factor_realrooted := $hfactor:term,
-        recurrence := $hstep:term) =>
-      `(tactic|
-        rr_product_two_sequence_variants
-          (RealRooted.isRealRooted_of_iteratedTDeriv_product_sequence
-            $hbase $hfactor $hstep),
-          (RealRooted.isRealRooted_of_iteratedTDeriv_product_right_sequence
-            $hbase $hfactor $hstep))
-  | `(tactic|
-      rr_iterated_derivative_shift_product_sequence using
-        $hbase:term, $hfactor:term, $hstep:term) =>
-      `(tactic|
-        rr_iterated_derivative_shift_product_sequence using
-          base := $hbase,
-          factor_realrooted := $hfactor,
-          recurrence := $hstep)
-
 end Tactic
 end RealRooted

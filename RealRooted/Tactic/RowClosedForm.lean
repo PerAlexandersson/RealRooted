@@ -8,14 +8,14 @@ public meta import RealRooted.Tactic.Recurrence
 public meta import RealRooted.Tactic.InterlacesExplicit
 
 /-!
-# `rr_row_closed_form_splits`
+# `rowClosedFormSplits`
 
-`rr_row_closed_form_splits` closes `(P t).Splits` for a sequence `P : ℕ → ℝ[X]` given by a linear
+`rowClosedFormSplits` closes `(P t).Splits` for a sequence `P : ℕ → ℝ[X]` given by a linear
 recurrence `P (n + k) = ∑ j, A j n * P (n + j)` (read by `linRec?`, no derivatives) whose rows,
 after dropping the first `s ≤ 4` rows, are a residual of degree at most two (or a palindromic
-quartic) times a product of
-recurring factors `qᵢ ^ eᵢ m`, where `qᵢ` is a monic irreducible factor of degree at most two with
-nonnegative discriminant and `eᵢ m = D₀ + d * ((m + φ) / p)` is a law with period `p ≤ 4`.
+quartic) times a product of recurring factors `qᵢ ^ eᵢ m`, where `qᵢ` is a monic irreducible
+factor of degree at most two with nonnegative discriminant and
+`eᵢ m = D₀ + d * ((m + φ) / p)` is a law with period `p ≤ 4`.
 
 * **Probe** (`cfPlan?`, exact rational arithmetic in `MetaM`, no elaboration): compute `19` rows
   with `linRecRows?`; factor the coefficients `A j n` and the common factor of the last rows into
@@ -24,11 +24,12 @@ nonnegative discriminant and `eᵢ m = D₀ + d * ((m + φ) / p)` is a law with 
   multiplicity in `A j n`) is consistent and follows a law (`cfFitLaw?`), and check that the
   residual rows `row / ∏ qᵢ ^ eᵢ` have degree at most one (`cfExistential?`) or at most two
   with coefficients polynomial in `m` (`cfExplicit?`).
-* **Existential route**: `∀ m, ∃ c₀ c₁, P (m + s) = (C c₀ + C c₁ * X) * ∏ qᵢ ^ eᵢ m` by induction
-  on the conjunction of `k` consecutive statements; the step uses the recurrence, the coefficient
-  `A j n = α j n * ∏ qᵢ ^ fᵢⱼ` (with `α j n` read symbolically from the definition), the exponent
-  relations by `lia`, and a polynomial identity (`rr_cf_identity`).  The residual splits as a
-  polynomial of degree at most one.
+* **Existential route**:
+  `∀ m, ∃ c₀ c₁, P (m + s) = (C c₀ + C c₁ * X) * ∏ qᵢ ^ eᵢ m` by induction on the
+  conjunction of `k` consecutive statements; the step uses the recurrence, the coefficient
+  `A j n = α j n * ∏ qᵢ ^ fᵢⱼ` (with `α j n` read symbolically from the definition), the
+  exponent relations by `lia`, and a polynomial identity (`rr_cf_identity`). The residual splits
+  as a polynomial of degree at most one.
 * **Explicit route**: the residual `C r₀(m) + C r₁(m) * X + C r₂(m) * X ^ 2` has coefficients
   polynomial in `m`; the identity is proved after clearing denominators (`rr_cf_field`), and the
   residual splits by `RealRooted.splits_C_add_C_mul_X_add_C_mul_X_sq` with a discriminant whose
@@ -37,7 +38,7 @@ nonnegative discriminant and `eᵢ m = D₀ + d * ((m + φ) / p)` is a law with 
 
 Entry points: `RealRooted.Tactic.cfPlan?` (the probe), `RealRooted.Tactic.cfProve` (the proof),
 `RealRooted.Tactic.rowClosedFormSplits : TacticM Unit` (the strategy, to be run under
-`rowSucceeds`), and the tactic `rr_row_closed_form_splits`.
+`rowSucceeds`).
 -/
 
 public meta section
@@ -609,7 +610,7 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
     let mut w1m : Option Term := none
     for t in plan.tms, (a, b) in witness do
       let some lam ← cfAlphaLam? t.2.1 t.2.2.1
-        | throwError "rr_row_closed_form_splits: no symbolic leading coefficient"
+        | throwError "rowClosedFormSplits: no symbolic leading coefficient"
       let lamT ← Term.exprToSyntax lam
       let al : Term ← if s == 0 then `($lamT $nT) else `($lamT ($nT + $(cfNum s)))
       let t0 : Term ← `($al * $a)
@@ -620,8 +621,8 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
       w1m ← match w1m with
         | none => pure (some t1)
         | some x => do pure (some (← `($x + $t1)))
-    let some w0 := w0m | throwError "rr_row_closed_form_splits: no terms"
-    let some w1 := w1m | throwError "rr_row_closed_form_splits: no terms"
+    let some w0 := w0m | throwError "rowClosedFormSplits: no terms"
+    let some w1 := w1m | throwError "rowClosedFormSplits: no terms"
     inner := inner.push (← `(tactic| refine ⟨$w0, $w1, ?_⟩))
   if s > 0 then
     inner := inner.push (← `(tactic| refine
@@ -697,7 +698,7 @@ def cfProve (plan : CFPlan) : TacticM Unit := do
     let hge := mkIdent `rr_hge
     evalTactic (← `(tactic| rcases Nat.lt_or_ge $t $(cfNum s) with $hlt:ident | $hge:ident))
     let gs ← getGoals
-    let [g1, g2] := gs | throwError "rr_row_closed_form_splits: unexpected goals"
+    let [g1, g2] := gs | throwError "rowClosedFormSplits: unexpected goals"
     setGoals [g1]
     evalTactic (← `(tactic| interval_cases $t))
     for g in ← getGoals do
@@ -719,26 +720,15 @@ form, or fail with the reason. -/
 def rowClosedFormSplits : TacticM Unit := withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   unless tgt.isAppOf ``Polynomial.Splits do
-    throwError "rr_row_closed_form_splits: the goal is not `(P t).Splits`"
+    throwError "rowClosedFormSplits: the goal is not `(P t).Splits`"
   let some Pn ← findPolySeqConst? tgt
-    | throwError "rr_row_closed_form_splits: no sequence `P : ℕ → ℝ[X]` in the goal"
+    | throwError "rowClosedFormSplits: no sequence `P : ℕ → ℝ[X]` in the goal"
   let some L ← linRec? Pn
-    | throwError "rr_row_closed_form_splits: the recurrence of {Pn} is not linear"
+    | throwError "rowClosedFormSplits: the recurrence of {Pn} is not linear"
   let some plan ← cfPlan? L
-    | throwError "rr_row_closed_form_splits: the rows of {Pn} do not fit a closed form"
+    | throwError "rowClosedFormSplits: the rows of {Pn} do not fit a closed form"
   cfProve plan
   unless (← getGoals).isEmpty do
-    throwError "rr_row_closed_form_splits: goals remain"
-
-/-- `rr_row_closed_form_splits` closes `(P t).Splits` for a sequence given by a linear
-recurrence whose rows (after dropping at most two) are a residual of degree at most two times
-a product of recurring factors to powers that grow linearly (see `cfPlan?`). -/
-elab "rr_row_closed_form_splits" : tactic => do
-  let run : TacticM Unit := do
-    if (← withMainContext getMainTarget).isForall then evalTactic (← `(tactic| intro))
-    rowClosedFormSplits
-  match ← rowAttempt run with
-  | .ok _ => pure ()
-  | .error e => throwError e
+    throwError "rowClosedFormSplits: goals remain"
 
 end RealRooted.Tactic
