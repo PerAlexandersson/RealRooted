@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.MagnitudeDominated
+import RealRooted.MagnitudeDominated
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Magnitude-dominated lag tactic frontends

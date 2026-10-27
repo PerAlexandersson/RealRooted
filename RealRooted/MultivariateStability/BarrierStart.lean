@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MultivariateStability.Barrier
 public import RealRooted.MultivariateStability.MixedCharacteristic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import RealRooted.DeterminantalStability
 import Mathlib.Algebra.Order.Star.Real
 import Mathlib.Analysis.Matrix.Order

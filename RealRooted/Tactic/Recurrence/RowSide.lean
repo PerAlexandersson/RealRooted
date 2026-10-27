@@ -1,7 +1,7 @@
 module
 
-public import RealRooted.DerivativeRecurrence.Degree
-public import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.Degree
 public import RealRooted.DerivativeRecurrence.SecondOrderODE
 public import RealRooted.DerivativeRecurrence.General
 public import RealRooted.Tactic.Recurrence.ODE

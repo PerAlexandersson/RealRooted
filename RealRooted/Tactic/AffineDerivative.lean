@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.Tactic.Finish
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Affine-derivative family lemmas

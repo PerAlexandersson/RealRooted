@@ -4,6 +4,11 @@ public import RealRooted.EulerBidiagonal.ZeroParameter
 public import RealRooted.Tactic.Row.SideGoals
 public meta import RealRooted.EulerBidiagonal.ZeroParameter
 public meta import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.EulerBidiagonal.DepRows
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Row tactics: the interlacing core

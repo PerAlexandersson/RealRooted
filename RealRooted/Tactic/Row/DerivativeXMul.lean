@@ -6,6 +6,7 @@ public import RealRooted.Tactic.Row.Subseq
 public meta import RealRooted.Derivative.XMulSequence
 public meta import RealRooted.Tactic.Row.Support
 public meta import RealRooted.Tactic.Row.Subseq
+import RealRooted.Tactic.InterlacesExplicit
 
 /-!
 # Row route for a differentiated `X`-multiple

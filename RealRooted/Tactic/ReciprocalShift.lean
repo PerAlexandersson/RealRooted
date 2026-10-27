@@ -2,7 +2,9 @@ module
 
 public import RealRooted.DegreeDropReversal
 public import RealRooted.Tactic.Finish
-public import RealRooted.Tactic.PFPolynomial
+import RealRooted.Tactic.PFPolynomial
+import RealRooted.SequenceClosure
+public import RealRooted.PFPolynomial
 
 /-!
 # Reciprocal-shift tactic

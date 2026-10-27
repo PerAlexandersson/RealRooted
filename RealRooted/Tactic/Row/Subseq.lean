@@ -2,6 +2,15 @@ module
 
 public import RealRooted.Tactic.Row.SideGoals
 public meta import RealRooted.Tactic.Row.SideGoals
+import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.ThreeTermRecurrence.HalfGrowth
+import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.Interlacing.Euclid
+import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
 
 /-!
 # Row tactics: residue subsequences

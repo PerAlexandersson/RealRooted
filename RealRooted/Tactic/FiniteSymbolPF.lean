@@ -5,7 +5,8 @@ public import Mathlib.Tactic.ComputeDegree
 public import RealRooted.MultiplierSequence
 public import RealRooted.MultivariateStability
 public import RealRooted.Tactic.PFBidiagonal
-public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 
 /-!
 # Finite-symbol PF-bidiagonal interface

@@ -2,7 +2,9 @@ module
 
 import RealRooted.Derivative.Algebra
 import RealRooted.Derivative.Interlacing
-public import RealRooted.LiuWang.FiniteFamily
+import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Liu--Wang derivative-lag recursions

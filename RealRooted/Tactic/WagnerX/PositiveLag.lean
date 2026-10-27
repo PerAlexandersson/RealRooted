@@ -1,6 +1,13 @@
 module
 
 public import RealRooted.Tactic.WagnerX.Core
+import RealRooted.Tactic.SideGoals
+import RealRooted.SequenceClosure
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Positive Wagner `X`-lag recurrences

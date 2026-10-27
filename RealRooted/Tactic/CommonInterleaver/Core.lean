@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.ChudnovskySeymour.Core
-public import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.Compatibility.InterleaverBridge
+public import RealRooted.Compatibility.Basic
+import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common-interleaver sequence transports

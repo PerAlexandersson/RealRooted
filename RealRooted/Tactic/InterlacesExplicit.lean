@@ -6,6 +6,7 @@ public import RealRooted.QuadraticRoot
 public meta import RealRooted.Interlacing.Euclid
 public meta import RealRooted.Tactic.Recurrence.ODE
 public meta import RealRooted.QuadraticRoot
+import RealRooted.Basic.ProperPosition
 
 /-!
 # `rr_interlaces_explicit`

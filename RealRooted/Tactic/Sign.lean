@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.SignEvaluation
-public import RealRooted.Tactic.SideGoals
+import RealRooted.Tactic.SideGoals
 
 /-!
 The `rr_sign` tactic is a small arithmetic closer for coefficient-sign side
