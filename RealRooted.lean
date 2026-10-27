@@ -2108,3 +2108,5 @@ import RealRooted.Tactic.Examples.RowFastFail
 import RealRooted.CombinatorialExamples.RestrictedExponential
 import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
 import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import RealRooted.ThreeTermRecurrence.WangZhang
