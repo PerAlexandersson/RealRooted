@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.Algebra.Polynomial.Sequence
 public import Mathlib.RingTheory.Polynomial.Pochhammer
 
 import Mathlib.Tactic.Algebra.Basic
@@ -13,11 +14,15 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
 /-!
-# A duplication identity for descending Pochhammer polynomials
+# Descending Pochhammer polynomials
 
 This Mathlib-shaped shim records an algebraic evaluation identity used by a
 later half-integer convolution calculation.  It does not assert that
 calculation, or any root-preservation consequence.
+
+It also shows that the descending Pochhammer polynomials form a basis of `R[X]`
+(`Polynomial.descPochhammerBasis`), so that a linear map `R[X] → R[X]` is determined by, and can
+be prescribed on, the falling factorials.
 -/
 
 @[expose] public section
@@ -84,6 +89,37 @@ theorem descPochhammerRatio_two_mul {R : Type*} [Field R] [CharZero R]
       rw [← mul_div_mul_comm]
       congr 1
       ring
+
+/-- The descending Pochhammer polynomials as a polynomial sequence: `descPochhammer R i` has
+degree `i`. -/
+def descPochhammerSequence (R : Type*) [Ring R] [Nontrivial R] [NoZeroDivisors R] :
+    Polynomial.Sequence R where
+  elems' := descPochhammer R
+  degree_eq' i := by
+    rw [degree_eq_natDegree (monic_descPochhammer (R := R) i).ne_zero, descPochhammer_natDegree]
+
+/-- The descending Pochhammer polynomials form a basis of `R[X]`. -/
+def descPochhammerBasis (R : Type*) [CommRing R] [IsDomain R] : Module.Basis ℕ R R[X] :=
+  (descPochhammerSequence R).basis fun i => by
+    simp [descPochhammerSequence, (monic_descPochhammer (R := R) i).leadingCoeff]
+
+@[simp]
+theorem descPochhammerBasis_apply {R : Type*} [CommRing R] [IsDomain R] (i : ℕ) :
+    descPochhammerBasis R i = descPochhammer R i :=
+  Polynomial.Sequence.basis_eq_self _ _ _
+
+/-- Two linear maps `R[X] → R[X]` that agree on every falling factorial `descPochhammer R i`
+are equal. -/
+theorem linearMap_ext_descPochhammer {R : Type*} [CommRing R] [IsDomain R]
+    {T S : R[X] →ₗ[R] R[X]} (h : ∀ i, T (descPochhammer R i) = S (descPochhammer R i)) :
+    T = S :=
+  (descPochhammerBasis R).ext fun i => by simpa using h i
+
+/-- A linear map `R[X] → R[X]` can be prescribed on the falling factorials. -/
+theorem exists_linearMap_descPochhammer {R : Type*} [CommRing R] [IsDomain R] (f : ℕ → R[X]) :
+    ∃ T : R[X] →ₗ[R] R[X], ∀ i, T (descPochhammer R i) = f i :=
+  ⟨(descPochhammerBasis R).constr R f, fun i => by
+    simpa using (descPochhammerBasis R).constr_basis R f i⟩
 
 end
 
