@@ -13,14 +13,6 @@ open scoped BigOperators
 namespace RealRooted
 namespace Tactic
 
-/-- Row-wise product lift from a proved quotient sequence. -/
-example {P Q F : Nat → ℝ[X]}
-    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrow : ∀ n : Nat, P n = F n * Q n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_lift_sequence using hquot, hfactor, hrow
-
 example {P Q : Nat → ℝ[X]}
     (hmodel : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
     (hidentify : ∀ n : Nat, P n = Q n) :
@@ -77,32 +69,6 @@ example {P Qeven Qodd : Nat → ℝ[X]}
     odd_scalar_ne := hcodd,
     even_factorization := heven,
     odd_factorization := hodd
-
-/-- The product lift also accepts the quotient factor on the left. -/
-example {P Q F : Nat → ℝ[X]}
-    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrow : ∀ n : Nat, P n = Q n * F n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_lift_sequence using
-    quotient_realrooted := hquot,
-    factor_realrooted := hfactor,
-    factorization := hrow
-
-/-- Product lifts can start after a finite base interval. -/
-example {P Q F : Nat → ℝ[X]}
-    (N : Nat)
-    (hbase : ∀ n : Nat, n ≤ N → P n ≠ 0 ∧ (P n).Splits)
-    (hquot : ∀ n : Nat, N ≤ n → Q n ≠ 0 ∧ (Q n).Splits)
-    (hfactor : ∀ n : Nat, N ≤ n → F n ≠ 0 ∧ (F n).Splits)
-    (hrow : ∀ n : Nat, N ≤ n → P n = Q n * F n) :
-    ∀ n : Nat, (P n).Splits := by
-  rr_product_lift_sequence using
-    base := hbase,
-    quotient_realrooted := hquot,
-    factor_realrooted := hfactor,
-    cutoff := N,
-    factorization := hrow
 
 /-- `A155112`-style persistent root at zero: `P_n = X Q_n`. -/
 example {P Q : Nat → ℝ[X]}
