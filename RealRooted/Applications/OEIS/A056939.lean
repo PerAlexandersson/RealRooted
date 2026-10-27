@@ -1,7 +1,6 @@
 module
 
-public import RealRooted.MultiplierSequence.TwoSidedJensen
-public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.Recurrence.Uniqueness
 public import RealRooted.Recurrence.RowModel
 public import RealRooted.CombinatorialExamples.Narayana
@@ -16,8 +15,9 @@ open RealRooted Polynomial
 /-!
 # The A056939 model
 
-The Schur--Szegő model proves that every row splits.  The public transfer theorem
-identifies any recurrence presentation with the model by lag-two uniqueness.
+The coefficient-ratio criterion proves that every row is PF. The Schur--Szegő
+model identifies the recurrence and its two-sided Jensen form also proves
+consecutive-row interlacing.
 -/
 
 noncomputable section
@@ -278,18 +278,6 @@ private lemma coeff_pred_schurModel (n : ℕ) (hn : 1 ≤ n) :
       (n : ℝ) * ((n : ℝ) + 1) * ((n : ℝ) + 2) / 6 := by
   rw [coeff_schurModel_symm hn, coeff_one_schurModel n hn]
 
-private lemma schurModel_splits (n : ℕ) : (schurModel n).Splits := by
-  rw [schurModel]
-  apply splits_schurSzegoComp_of_isPF n
-    (narayanaPolynomial 1 n) (narayanaPolynomial 2 n)
-    (narayanaPolynomialRootLocation 1 n)
-  · exact narayanaPolynomial_ne_zero 1 n
-  · exact natDegree_narayanaPolynomial_le 1 n
-  · exact narayanaPolynomial_ne_zero 2 n
-  · exact natDegree_narayanaPolynomial_le 2 n
-  · exact (narayanaPolynomialRootLocation 2 n).eq_zero_or_splits.resolve_left
-      (narayanaPolynomial_ne_zero 2 n)
-
 private lemma polynomial_succ_normalized (n : ℕ) :
     polynomial (n + 2) =
       C (3 * (3 * (n : ℝ) + 10) / (((n : ℝ) + 5) * ((n : ℝ) + 6))) *
@@ -468,15 +456,15 @@ private lemma jensenWeight_pos (k : ℕ) : 0 < jensenWeight k := by
   rw [jensenWeight]
   positivity
 
+private lemma jensenWeight_eq_product :
+    jensenWeight = invPochhammerProduct [2, 3] := by
+  funext k
+  simpa [invPochhammerProduct] using jensenWeight_eq k
+
 private lemma jensenWeight_multiplier : IsMultiplierSequence jensenWeight := by
-  have hpf := (isPFMultiplierSequence_inv_ascPochhammer (by norm_num : (0 : ℝ) < 2)).mul
-    (isPFMultiplierSequence_inv_ascPochhammer (by norm_num : (0 : ℝ) < 3))
-  have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
-  rw [show jensenWeight = fun k =>
-      ((ascPochhammer ℝ k).eval 2)⁻¹ * ((ascPochhammer ℝ k).eval 3)⁻¹ by
-    funext k
-    exact jensenWeight_eq k]
-  exact hmult
+  rw [jensenWeight_eq_product]
+  exact (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp
+    (isPFMultiplierSequence_invPochhammerProduct (by norm_num))).1
 
 private def jensenScale (n : ℕ) : ℝ :=
   ((Nat.factorial (n + 1) : ℝ) * (Nat.factorial (n + 2) : ℝ)) / 2
@@ -498,6 +486,33 @@ private lemma schurModel_eq_jensenModel (n : ℕ) :
     field_simp [hfac]
   · rw [coeff_schurModel_eq_zero_of_lt (Nat.lt_of_not_ge hk), ite_eq_right hk,
       mul_zero]
+
+/-- The division-free coefficient ratio with two Pochhammer factors on each side. -/
+theorem polynomial_coeff_ratio {n k : ℕ} (hk : k < n) :
+    ((k : ℝ) + 1) * (2 + k) * (3 + k) * (polynomial n).coeff (k + 1) =
+      ((n : ℝ) - k) * (2 + n - k - 1) * (3 + n - k - 1) *
+        (polynomial n).coeff k := by
+  have hratio := pochhammerJensenPolynomial_coeff_ratio
+    (left := [2, 3]) (right := [2, 3]) (by norm_num) (by norm_num) hk
+  simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one] at hratio
+  rw [polynomial_eq_schur, schurModel_eq_jensenModel, jensenWeight_eq_product]
+  simp only [coeff_C_mul]
+  change ((k : ℝ) + 1) * (2 + k) * (3 + k) *
+      (jensenScale n * (pochhammerJensenPolynomial n [2, 3] [2, 3]).coeff (k + 1)) = _
+  linear_combination jensenScale n * hratio
+
+/-- The parameter-list coefficient-ratio theorem certifies every row as PF. -/
+theorem polynomial_isPF (n : ℕ) : IsPFPolynomial (polynomial n) := by
+  apply isPFPolynomial_of_pochhammer_list_coeff_ratio
+    (left := [2, 3]) (right := [2, 3]) (d := n) (by norm_num) (by norm_num)
+  · rw [polynomial_eq_schur, schurModel_eq_jensenModel,
+      natDegree_C_mul (by rw [jensenScale]; positivity),
+      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos]
+  · rw [polynomial_eq_schur, coeff_zero_schurModel]
+    norm_num
+  · intro k hk
+    simpa only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil,
+      mul_one, mul_assoc] using polynomial_coeff_ratio hk
 
 /-- Consecutive A056939 model rows are in directed proper position. -/
 theorem polynomial_strictInterl_succ (n : ℕ) :
@@ -521,9 +536,8 @@ theorem polynomial_interlaces (n : ℕ) :
       natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos])
 
 /-- Every A056939 model row splits over the reals. -/
-theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
-  rw [polynomial_eq_schur]
-  exact schurModel_splits n
+theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
+  (polynomial_isPF n).eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id
 
 /-- A sequence with the A056939 initial rows and update has split rows. -/
 @[rr_row_model]
