@@ -556,18 +556,17 @@ theorem polynomial_coeff_ratio {n k : ℕ} (hk : k < n) :
       ((n : ℝ) - k) * (2 + n - k - 1) * (3 / 2 + n - k - 1) *
         (polynomial n).coeff k := by
   have hratio := pochhammerJensenPolynomial_coeff_ratio
-    (left := [2, 3 / 2]) (right := [2, 3 / 2]) (by norm_num) (by norm_num) hk
+    (lower := [2, 3 / 2]) (upper := [2, 3 / 2]) (by norm_num) (by norm_num) hk
   simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one] at hratio
   rw [polynomial_eq_schur, schurModel_eq_jensenModel, jensenWeight_eq_product]
   simp only [coeff_C_mul]
-  change ((k : ℝ) + 1) * (2 + k) * (3 / 2 + k) *
-      (jensenScale n * (pochhammerJensenPolynomial n [2, 3 / 2] [2, 3 / 2]).coeff (k + 1)) = _
+  simp only [pochhammerJensenPolynomial] at hratio
   linear_combination jensenScale n * hratio
 
 /-- The parameter-list coefficient-ratio theorem certifies every row as PF. -/
 theorem polynomial_isPF (n : ℕ) : IsPFPolynomial (polynomial n) := by
   apply isPFPolynomial_of_pochhammer_list_coeff_ratio
-    (left := [2, 3 / 2]) (right := [2, 3 / 2]) (d := n) (by norm_num) (by norm_num)
+    (lower := [2, 3 / 2]) (upper := [2, 3 / 2]) (d := n) (by norm_num) (by norm_num)
   · rw [polynomial_eq_schur, schurModel_eq_jensenModel,
       natDegree_C_mul (by rw [jensenScale]; positivity),
       natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos]
