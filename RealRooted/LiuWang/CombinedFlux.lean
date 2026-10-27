@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.MaWang.Weak.DerivativeSign
 
 /-!
 # Combined root flux with repeated-root fallback
@@ -65,27 +65,32 @@ theorem strictInterl_mul_add_sum_mul_of_combined_flux_of_pos
         intro hqf_zero
         rw [hqf_zero, mul_zero] at hdf
         exact hf_pos.ne_zero hdf.symm
-      have hqf_pos : HasPosLeadingCoeff qf :=
-        hf_pos.divByMonic_X_sub_C hrf
+      have hqf_pos : HasPosLeadingCoeff qf := by
+        apply hasPosLeadingCoeff_of_X_sub_C_mul (r := r)
+        simpa [d] using hdf.symm ▸ hf_pos
       have hqf_splits : qf.Splits :=
         (isRealRooted_of_dvd hf_pos.ne_zero hf hqf_ne (by
           refine ⟨d, ?_⟩
           simpa [mul_comm] using hdf.symm)).2
-      have hqg_inter : ∀ i ∈ s, StrictInterl (qg i) qf := by
+      have hri : ∀ i ∈ s, (g i).IsRoot r := by
         intro i hi
-        have hri : (g i).IsRoot r :=
-          (hg i hi).isRoot_of_one_lt_rootMultiplicity hmult
-        simpa [qf, qg, d] using (hg i hi).cofactor_of_common_root hrf hri
-      have hqg_pos : ∀ i ∈ s, HasPosLeadingCoeff (qg i) := by
-        intro i hi
-        have hri : (g i).IsRoot r :=
-          (hg i hi).isRoot_of_one_lt_rootMultiplicity hmult
-        exact (hg_pos i hi).divByMonic_X_sub_C hri
+        have hbound := ((hg i hi).rootMultiplicity_bounds r).2
+        apply (rootMultiplicity_pos (hg i hi).1.1).mp
+        lia
       have hqg_factor : ∀ i ∈ s, d * qg i = g i := by
         intro i hi
-        have hri : (g i).IsRoot r :=
-          (hg i hi).isRoot_of_one_lt_rootMultiplicity hmult
-        simpa [d, qg] using (mul_divByMonic_eq_iff_isRoot.mpr hri)
+        simpa [d, qg] using (mul_divByMonic_eq_iff_isRoot.mpr (hri i hi))
+      have hqg_inter : ∀ i ∈ s, StrictInterl (qg i) qf := by
+        intro i hi
+        have hinter := hg i hi
+        rw [← hqg_factor i hi, ← hdf] at hinter
+        simpa [d] using hinter.of_mul_X_sub_C_both
+      have hqg_pos : ∀ i ∈ s, HasPosLeadingCoeff (qg i) := by
+        intro i hi
+        have hprod : HasPosLeadingCoeff (d * qg i) := by
+          rw [hqg_factor i hi]
+          exact hg_pos i hi
+        exact hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simpa [d] using hprod)
       have hsum_factor : d * (∑ i ∈ s, b i * qg i) = ∑ i ∈ s, b i * g i := by
         rw [Finset.mul_sum]
         apply Finset.sum_congr rfl
