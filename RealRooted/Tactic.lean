@@ -11,7 +11,7 @@ import RealRooted.Tactic.SignAssembly
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.Finish
 import RealRooted.Tactic.StaircaseSum
-import RealRooted.Tactic.CommonInterleaver
+import RealRooted.Tactic.CommonInterleaver.Core
 import RealRooted.Tactic.CoefficientShape
 import RealRooted.Tactic.CubicDiscriminant
 import RealRooted.Tactic.Derivative

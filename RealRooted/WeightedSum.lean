@@ -89,6 +89,7 @@ lemma weightedSum_map_mul_left (a : ℝ) :
   | (b, p) :: ws => by
       simp [weightedSum_map_mul_left a ws, mul_add, map_mul, mul_assoc]
 
+/-- A weighted sum is zero when every weight is zero. -/
 lemma weightedSum_eq_zero_of_forall_coeff_zero :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, ap.1 = 0) →
@@ -107,6 +108,8 @@ private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
     ∀ ap ∈ l, ap.1 = 0 := fun ap hap => by
   grind
 
+/-- A nonnegative weighted sum of positive-leading polynomials has positive
+leading coefficient when at least one weight is positive. -/
 lemma hasPosLeadingCoeff_weightedSum :
     ∀ l : List (ℝ × ℝ[X]),
       (∀ ap ∈ l, 0 ≤ ap.1) →
@@ -250,6 +253,8 @@ lemma hasPosLeadingCoeff {h : ℝ[X]} {l : List (ℝ × ℝ[X])}
     HasPosLeadingCoeff (weightedSum l) :=
   hasPosLeadingCoeff_weightedSum l (nonneg hl) (pos hl) (exists_pos hl)
 
+/-- A left-compatible weighted family is strictly interlaced by its common
+left polynomial. -/
 lemma toStrictInterl {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → StrictInterl h (weightedSum l)
   | _, singleton ha hstrictInterl _ => by

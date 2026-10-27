@@ -184,6 +184,7 @@ lemma nextCoeff_tDeriv (eps : ℝ) (p : ℝ[X]) :
     have hsucc : p.natDegree - 1 + 1 = p.natDegree := by lia
     rw [hsucc, Polynomial.coeff_natDegree]
 
+/-- A derivative shift preserves a positive leading coefficient. -/
 lemma HasPosLeadingCoeff.tDeriv {eps : ℝ} {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (tDeriv eps p) := by
@@ -283,6 +284,7 @@ lemma iterate_derivative_iterateTDeriv (eps : ℝ) (n k : ℕ) (p : ℝ[X]) :
   | succ n ih =>
       rw [iterateTDeriv_succ, iterateTDeriv_succ, iterate_derivative_tDeriv, ih]
 
+/-- A positive derivative shift of a split polynomial is split. -/
 theorem splits_tDeriv {eps : ℝ} {p : ℝ[X]} (heps : 0 < eps) (hp : p.Splits) :
     (tDeriv eps p).Splits := by
   obtain rfl | hp₀ := eq_or_ne p 0
@@ -576,7 +578,7 @@ lemma not_isRoot_tDeriv_of_simple_root
     show p.eval a = 0 from hroot, zero_sub]
   exact neg_ne_zero.mpr (mul_ne_zero heps hp'ne)
 
-/-- Real-rootedness is preserved by iterating T_ε. -/
+/-- Iterating a derivative shift preserves nonzeroness. -/
 lemma iterateTDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} {k : ℕ} (hp : p ≠ 0) :
     iterateTDeriv eps k p ≠ 0 := by
   induction k with
@@ -585,7 +587,7 @@ lemma iterateTDeriv_ne_zero {eps : ℝ} {p : ℝ[X]} {k : ℕ} (hp : p ≠ 0) :
     rw [iterateTDeriv_succ]
     exact tDeriv_ne_zero ih
 
-/-- Real-rootedness is preserved by iterating T_ε. -/
+/-- Iterating a positive derivative shift preserves splitness. -/
 lemma splits_iterateTDeriv {eps : ℝ} {p : ℝ[X]} {k : ℕ} (heps : 0 < eps)
     (hp : p.Splits) : (iterateTDeriv eps k p).Splits := by
   induction k with

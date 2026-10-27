@@ -3,9 +3,9 @@ module
 public import RealRooted.AllCombo
 
 /-!
-# All-combination tactic frontends
+# All-combination sequence transports
 
-Thin wrappers for closure and conversion lemmas around `AllComboRealRooted`.
+Pointwise sequence forms of closure and conversion lemmas for `AllComboRealRooted`.
 -/
 
 public section
@@ -15,28 +15,36 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- Pointwise all-combination real-rootedness and `F i ≠ 0` imply that every `F i` is nonzero and
+splits. -/
 theorem allCombo_sequence_left_realrooted {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hF0 : ∀ i : Nat, F i ≠ 0) :
     ∀ i : Nat, F i ≠ 0 ∧ (F i).Splits := fun i =>
   AllComboRealRooted.isRealRooted_left (hall i) (hF0 i)
 
+/-- Pointwise all-combination real-rootedness and `G i ≠ 0` imply that every `G i` is nonzero and
+splits. -/
 theorem allCombo_sequence_right_realrooted {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hG0 : ∀ i : Nat, G i ≠ 0) :
     ∀ i : Nat, G i ≠ 0 ∧ (G i).Splits := fun i =>
   AllComboRealRooted.isRealRooted_right (hall i) (hG0 i)
 
+/-- Pointwise all-combination real-rootedness implies that every left member splits. -/
 theorem allCombo_sequence_left_splits {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, (F i).Splits := fun i =>
   AllComboRealRooted.left_splits (hall i)
 
+/-- Pointwise all-combination real-rootedness implies that every right member splits. -/
 theorem allCombo_sequence_right_splits {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, (G i).Splits := fun i =>
   AllComboRealRooted.right_splits (hall i)
 
+/-- If every `P i` is a linear combination of an all-combination real-rooted pair, then every
+`P i` splits. -/
 theorem allCombo_sequence_splits_of_eq_combo
     {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
@@ -44,6 +52,8 @@ theorem allCombo_sequence_splits_of_eq_combo
     ∀ i : Nat, (P i).Splits :=
   AllComboRealRooted.splits_sequence_of_eq_combo hall hP
 
+/-- If every nonzero `P i` is a linear combination of an all-combination real-rooted pair, then
+every `P i` is nonzero and splits. -/
 theorem allCombo_sequence_ne_zero_and_splits_of_eq_combo
     {F G P : Nat → ℝ[X]} {a b : Nat → ℝ}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
@@ -52,6 +62,8 @@ theorem allCombo_sequence_ne_zero_and_splits_of_eq_combo
     ∀ i : Nat, P i ≠ 0 ∧ (P i).Splits :=
   AllComboRealRooted.ne_zero_and_splits_sequence_of_eq_combo hall hP hP0
 
+/-- Two pointwise linear recombinations of an all-combination real-rooted pair again form an
+all-combination real-rooted pair. -/
 theorem allCombo_sequence_linear_recombination
     {F G P Q : Nat → ℝ[X]} {a b c d : Nat → ℝ}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
@@ -60,32 +72,39 @@ theorem allCombo_sequence_linear_recombination
     ∀ i : Nat, AllComboRealRooted (P i) (Q i) := fun i =>
   AllComboRealRooted.linear_recombination (hall i) (hP i) (hQ i)
 
+/-- Pointwise all-combination real-rootedness is symmetric. -/
 theorem allCombo_sequence_comm {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, AllComboRealRooted (G i) (F i) := fun i =>
   AllComboRealRooted.comm (hall i)
 
+/-- Pointwise scaling of the left member preserves all-combination real-rootedness. -/
 theorem allCombo_sequence_C_mul_left {F G : Nat → ℝ[X]} (c : Nat → ℝ)
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, AllComboRealRooted (C (c i) * F i) (G i) := fun i =>
   AllComboRealRooted.C_mul_left (c := c i) (hall i)
 
+/-- Pointwise scaling of the right member preserves all-combination real-rootedness. -/
 theorem allCombo_sequence_C_mul_right {F G : Nat → ℝ[X]} (c : Nat → ℝ)
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, AllComboRealRooted (F i) (C (c i) * G i) := fun i =>
   AllComboRealRooted.C_mul_right (c := c i) (hall i)
 
+/-- Multiplying both pointwise members by the same splitting factor preserves all-combination
+real-rootedness. -/
 theorem allCombo_sequence_mul_common_factor {D F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hD : ∀ i : Nat, (D i).Splits) :
     ∀ i : Nat, AllComboRealRooted (D i * F i) (D i * G i) := fun i =>
   AllComboRealRooted.mul_common_factor (hall i) (hD i)
 
+/-- Pointwise differentiation preserves all-combination real-rootedness. -/
 theorem allCombo_sequence_derivative {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat, AllComboRealRooted (F i).derivative (G i).derivative := fun i =>
   AllComboRealRooted.derivative (hall i)
 
+/-- Pointwise iterated differentiation preserves all-combination real-rootedness. -/
 theorem allCombo_sequence_iterate_derivative {F G : Nat → ℝ[X]} (K : Nat → ℕ)
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i)) :
     ∀ i : Nat,
@@ -93,6 +112,8 @@ theorem allCombo_sequence_iterate_derivative {F G : Nat → ℝ[X]} (K : Nat →
         ((Polynomial.derivative^[K i]) (G i)) := fun i =>
   AllComboRealRooted.iterate_derivative (hall i) (K i)
 
+/-- Pointwise `iterateTDeriv` preserves all-combination real-rootedness when every shift is
+positive. -/
 theorem allCombo_sequence_iterateTDeriv
     {F G : Nat → ℝ[X]} (eps : Nat → ℝ) (K : Nat → ℕ)
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
@@ -102,6 +123,8 @@ theorem allCombo_sequence_iterateTDeriv
         (iterateTDeriv (eps i) (K i) (G i)) := fun i =>
   AllComboRealRooted.iterateTDeriv (hall i) (heps i) (K i)
 
+/-- Pointwise all-combination real-rootedness gives positive-combination real-rootedness when both
+members have positive leading coefficient and equal degree. -/
 theorem allCombo_sequence_to_pos_combo_sameDegree {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
@@ -111,6 +134,8 @@ theorem allCombo_sequence_to_pos_combo_sameDegree {F G : Nat → ℝ[X]}
   AllComboRealRooted.toPosComboRealRooted_of_sameDegree
     (hall i) (hF i) (hG i) (hdeg i)
 
+/-- Pointwise all-combination real-rootedness gives positive-combination real-rootedness when the
+right member has positive leading coefficient and larger degree. -/
 theorem allCombo_sequence_to_pos_combo_natDegree_lt {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hG : ∀ i : Nat, HasPosLeadingCoeff (G i))
@@ -119,6 +144,8 @@ theorem allCombo_sequence_to_pos_combo_natDegree_lt {F G : Nat → ℝ[X]}
   AllComboRealRooted.toPosComboRealRooted_of_natDegree_lt
     (hall i) (hG i) (hdeg i)
 
+/-- Pointwise all-combination real-rootedness gives positive-combination real-rootedness when the
+left member has positive leading coefficient and larger degree. -/
 theorem allCombo_sequence_to_pos_combo_natDegree_gt {F G : Nat → ℝ[X]}
     (hall : ∀ i : Nat, AllComboRealRooted (F i) (G i))
     (hF : ∀ i : Nat, HasPosLeadingCoeff (F i))
@@ -126,475 +153,6 @@ theorem allCombo_sequence_to_pos_combo_natDegree_gt {F G : Nat → ℝ[X]}
     ∀ i : Nat, PosComboRealRooted (F i) (G i) := fun i =>
   AllComboRealRooted.toPosComboRealRooted_of_natDegree_gt
     (hall i) (hF i) (hdeg i)
-
-/-- Closes `(C a * f + C b * g).Splits` from `all_combo : AllComboRealRooted f g`, with
-`left_scalar` the real number `a` and `right_scalar` the real number `b`. -/
-syntax (name := rr_all_combo_splits_named)
-  "rr_all_combo_splits" " using "
-    "all_combo" ":=" term ","
-    "left_scalar" ":=" term ","
-    "right_scalar" ":=" term :
-  tactic
-
-/-- Closes `p.Splits` from `all_combo : AllComboRealRooted f g` and
-`eq_combo : p = C a * f + C b * g`. -/
-syntax (name := rr_all_combo_splits_of_eq_combo_named)
-  "rr_all_combo_splits_of_eq_combo" " using "
-    "all_combo" ":=" term ","
-    "eq_combo" ":=" term :
-  tactic
-
-/-- Closes `p ≠ 0 ∧ p.Splits` from `all_combo : AllComboRealRooted f g`,
-`eq_combo : p = C a * f + C b * g` and `nonzero : p ≠ 0`. -/
-syntax (name := rr_all_combo_ne_zero_and_splits_of_eq_combo_named)
-  "rr_all_combo_ne_zero_and_splits_of_eq_combo" " using "
-    "all_combo" ":=" term ","
-    "eq_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_splits_of_eq_combo`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_splits_of_eq_combo_named)
-  "rr_all_combo_sequence_splits_of_eq_combo" " using "
-    "all_combo" ":=" term ","
-    "eq_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_ne_zero_and_splits_of_eq_combo`: the same certificate for every
-index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo_named)
-  "rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo" " using "
-    "all_combo" ":=" term ","
-    "eq_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted p q` from `all_combo : AllComboRealRooted f g`,
-`left_eq_combo : p = C a * f + C b * g` and `right_eq_combo : q = C c * f + C d * g`. -/
-syntax (name := rr_all_combo_linear_recombination_named)
-  "rr_all_combo_linear_recombination" " using "
-    "all_combo" ":=" term ","
-    "left_eq_combo" ":=" term ","
-    "right_eq_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_linear_recombination`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_linear_recombination_named)
-  "rr_all_combo_sequence_linear_recombination" " using "
-    "all_combo" ":=" term ","
-    "left_eq_combo" ":=" term ","
-    "right_eq_combo" ":=" term :
-  tactic
-
-/-- Closes `f ≠ 0 ∧ f.Splits` from `all_combo : AllComboRealRooted f g` and `nonzero : f ≠ 0`. -/
-syntax (name := rr_all_combo_left_realrooted_named)
-  "rr_all_combo_left_realrooted" " using "
-    "all_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_left_realrooted`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_left_realrooted_named)
-  "rr_all_combo_sequence_left_realrooted" " using "
-    "all_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Closes `g ≠ 0 ∧ g.Splits` from `all_combo : AllComboRealRooted f g` and `nonzero : g ≠ 0`. -/
-syntax (name := rr_all_combo_right_realrooted_named)
-  "rr_all_combo_right_realrooted" " using "
-    "all_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_right_realrooted`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_right_realrooted_named)
-  "rr_all_combo_sequence_right_realrooted" " using "
-    "all_combo" ":=" term ","
-    "nonzero" ":=" term :
-  tactic
-
-/-- Closes `f.Splits` from `all_combo : AllComboRealRooted f g`. -/
-syntax (name := rr_all_combo_left_splits_named)
-  "rr_all_combo_left_splits" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_left_splits`: the same certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_left_splits_named)
-  "rr_all_combo_sequence_left_splits" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Closes `g.Splits` from `all_combo : AllComboRealRooted f g`. -/
-syntax (name := rr_all_combo_right_splits_named)
-  "rr_all_combo_right_splits" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_right_splits`: the same certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_right_splits_named)
-  "rr_all_combo_sequence_right_splits" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted g f` from `all_combo : AllComboRealRooted f g`. -/
-syntax (name := rr_all_combo_comm_named)
-  "rr_all_combo_comm" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_comm`: the same certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_comm_named)
-  "rr_all_combo_sequence_comm" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted (C c * f) g` from `all_combo : AllComboRealRooted f g`, for any real
-number `c`. -/
-syntax (name := rr_all_combo_C_mul_left_named)
-  "rr_all_combo_C_mul_left" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_C_mul_left`: closes
-`∀ i, AllComboRealRooted (C (c i) * F i) (G i)` from `scalar : c : Nat → ℝ` and `all_combo`, the
-certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_C_mul_left_named)
-  "rr_all_combo_sequence_C_mul_left" " using "
-    "scalar" ":=" term ","
-    "all_combo" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted f (C c * g)` from `all_combo : AllComboRealRooted f g`, for any real
-number `c`. -/
-syntax (name := rr_all_combo_C_mul_right_named)
-  "rr_all_combo_C_mul_right" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_C_mul_right`: closes
-`∀ i, AllComboRealRooted (F i) (C (c i) * G i)` from `scalar : c : Nat → ℝ` and `all_combo`, the
-certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_C_mul_right_named)
-  "rr_all_combo_sequence_C_mul_right" " using "
-    "scalar" ":=" term ","
-    "all_combo" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted (d * f) (d * g)` from `all_combo : AllComboRealRooted f g` and
-`factor_splits : d.Splits`. -/
-syntax (name := rr_all_combo_mul_common_factor_named)
-  "rr_all_combo_mul_common_factor" " using "
-    "all_combo" ":=" term ","
-    "factor_splits" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_mul_common_factor`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_mul_common_factor_named)
-  "rr_all_combo_sequence_mul_common_factor" " using "
-    "all_combo" ":=" term ","
-    "factor_splits" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted f.derivative g.derivative` from
-`all_combo : AllComboRealRooted f g`. -/
-syntax (name := rr_all_combo_derivative_named)
-  "rr_all_combo_derivative" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_derivative`: the same certificate for every index `i : Nat`. -/
-syntax (name := rr_all_combo_sequence_derivative_named)
-  "rr_all_combo_sequence_derivative" " using " "all_combo" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted (derivative^[n] f) (derivative^[n] g)` from
-`all_combo : AllComboRealRooted f g`, where `index` is the number `n` of derivatives. -/
-syntax (name := rr_all_combo_iterate_derivative_named)
-  "rr_all_combo_iterate_derivative" " using "
-    "all_combo" ":=" term ","
-    "index" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_iterate_derivative`: the same certificate for every index
-`i : Nat`, where `index : K : Nat → ℕ` gives the number `K i` of derivatives taken at index `i`. -/
-syntax (name := rr_all_combo_sequence_iterate_derivative_named)
-  "rr_all_combo_sequence_iterate_derivative" " using "
-    "all_combo" ":=" term ","
-    "index" ":=" term :
-  tactic
-
-/-- Closes `AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g)` from
-`all_combo : AllComboRealRooted f g`, `eps_pos : 0 < eps` and `index`, the number `n` of
-iterations. -/
-syntax (name := rr_all_combo_iterateTDeriv_named)
-  "rr_all_combo_iterateTDeriv" " using "
-    "all_combo" ":=" term ","
-    "eps_pos" ":=" term ","
-    "index" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_iterateTDeriv`: the same certificate for every index `i : Nat`,
-where `eps_pos : ∀ i, 0 < eps i` and `index : K : Nat → ℕ` gives the number `K i` of iterations at
-index `i`. -/
-syntax (name := rr_all_combo_sequence_iterateTDeriv_named)
-  "rr_all_combo_sequence_iterateTDeriv" " using "
-    "all_combo" ":=" term ","
-    "eps_pos" ":=" term ","
-    "index" ":=" term :
-  tactic
-
-/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g` and
-`positive_combos_ne_zero : ∀ lam μ, 0 < lam → 0 < μ → C lam * f + C μ * g ≠ 0`. -/
-syntax (name := rr_all_combo_to_pos_combo_named)
-  "rr_all_combo_to_pos_combo" " using "
-    "all_combo" ":=" term ","
-    "positive_combos_ne_zero" ":=" term :
-  tactic
-
-/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
-`left_pos_lc : HasPosLeadingCoeff f`, `right_pos_lc : HasPosLeadingCoeff g` and
-`degree_eq : f.natDegree = g.natDegree`. -/
-syntax (name := rr_all_combo_to_pos_combo_sameDegree_named)
-  "rr_all_combo_to_pos_combo_sameDegree" " using "
-    "all_combo" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "degree_eq" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_to_pos_combo_sameDegree`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_to_pos_combo_sameDegree_named)
-  "rr_all_combo_sequence_to_pos_combo_sameDegree" " using "
-    "all_combo" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "degree_eq" ":=" term :
-  tactic
-
-/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
-`right_pos_lc : HasPosLeadingCoeff g` and `degree_lt : f.natDegree < g.natDegree`. -/
-syntax (name := rr_all_combo_to_pos_combo_natDegree_lt_named)
-  "rr_all_combo_to_pos_combo_natDegree_lt" " using "
-    "all_combo" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "degree_lt" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_to_pos_combo_natDegree_lt`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_to_pos_combo_natDegree_lt_named)
-  "rr_all_combo_sequence_to_pos_combo_natDegree_lt" " using "
-    "all_combo" ":=" term ","
-    "right_pos_lc" ":=" term ","
-    "degree_lt" ":=" term :
-  tactic
-
-/-- Closes `PosComboRealRooted f g` from `all_combo : AllComboRealRooted f g`,
-`left_pos_lc : HasPosLeadingCoeff f` and `degree_gt : g.natDegree < f.natDegree`. -/
-syntax (name := rr_all_combo_to_pos_combo_natDegree_gt_named)
-  "rr_all_combo_to_pos_combo_natDegree_gt" " using "
-    "all_combo" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "degree_gt" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_all_combo_to_pos_combo_natDegree_gt`: the same certificate for every index
-`i : Nat`. -/
-syntax (name := rr_all_combo_sequence_to_pos_combo_natDegree_gt_named)
-  "rr_all_combo_sequence_to_pos_combo_natDegree_gt" " using "
-    "all_combo" ":=" term ","
-    "left_pos_lc" ":=" term ","
-    "degree_gt" ":=" term :
-  tactic
-
-macro_rules
-  | `(tactic|
-      rr_all_combo_splits using
-        all_combo := $hall:term,
-        left_scalar := $a:term,
-        right_scalar := $b:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.splits $hall $a $b)
-  | `(tactic|
-      rr_all_combo_splits_of_eq_combo using
-        all_combo := $hall:term,
-        eq_combo := $hp:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.splits_of_eq_combo $hall $hp)
-  | `(tactic|
-      rr_all_combo_ne_zero_and_splits_of_eq_combo using
-        all_combo := $hall:term,
-        eq_combo := $hp:term,
-        nonzero := $hp0:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.ne_zero_and_splits_of_eq_combo
-          $hall $hp $hp0)
-  | `(tactic|
-      rr_all_combo_sequence_splits_of_eq_combo using
-        all_combo := $hall:term,
-        eq_combo := $hP:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_splits_of_eq_combo $hall $hP)
-  | `(tactic|
-      rr_all_combo_sequence_ne_zero_and_splits_of_eq_combo using
-        all_combo := $hall:term,
-        eq_combo := $hP:term,
-        nonzero := $hP0:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.allCombo_sequence_ne_zero_and_splits_of_eq_combo
-          $hall $hP $hP0)
-  | `(tactic|
-      rr_all_combo_linear_recombination using
-        all_combo := $hall:term,
-        left_eq_combo := $hp:term,
-        right_eq_combo := $hq:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.linear_recombination
-          $hall $hp $hq)
-  | `(tactic|
-      rr_all_combo_sequence_linear_recombination using
-        all_combo := $hall:term,
-        left_eq_combo := $hP:term,
-        right_eq_combo := $hQ:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.allCombo_sequence_linear_recombination
-          $hall $hP $hQ)
-  | `(tactic|
-      rr_all_combo_left_realrooted using
-        all_combo := $hall:term,
-        nonzero := $hf0:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.isRealRooted_left $hall $hf0)
-  | `(tactic|
-      rr_all_combo_sequence_left_realrooted using
-        all_combo := $hall:term,
-        nonzero := $hf0:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_left_realrooted $hall $hf0)
-  | `(tactic|
-      rr_all_combo_right_realrooted using
-        all_combo := $hall:term,
-        nonzero := $hg0:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.isRealRooted_right $hall $hg0)
-  | `(tactic|
-      rr_all_combo_sequence_right_realrooted using
-        all_combo := $hall:term,
-        nonzero := $hg0:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_right_realrooted $hall $hg0)
-  | `(tactic| rr_all_combo_left_splits using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.left_splits $hall)
-  | `(tactic| rr_all_combo_sequence_left_splits using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_left_splits $hall)
-  | `(tactic| rr_all_combo_right_splits using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.right_splits $hall)
-  | `(tactic| rr_all_combo_sequence_right_splits using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_right_splits $hall)
-  | `(tactic| rr_all_combo_comm using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.comm $hall)
-  | `(tactic| rr_all_combo_sequence_comm using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_comm $hall)
-  | `(tactic| rr_all_combo_C_mul_left using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.C_mul_left $hall)
-  | `(tactic|
-      rr_all_combo_sequence_C_mul_left using
-        scalar := $c:term,
-        all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_C_mul_left $c $hall)
-  | `(tactic| rr_all_combo_C_mul_right using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.C_mul_right $hall)
-  | `(tactic|
-      rr_all_combo_sequence_C_mul_right using
-        scalar := $c:term,
-        all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_C_mul_right $c $hall)
-  | `(tactic|
-      rr_all_combo_mul_common_factor using
-        all_combo := $hall:term,
-        factor_splits := $hd:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.mul_common_factor $hall $hd)
-  | `(tactic|
-      rr_all_combo_sequence_mul_common_factor using
-        all_combo := $hall:term,
-        factor_splits := $hd:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_mul_common_factor $hall $hd)
-  | `(tactic| rr_all_combo_derivative using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.derivative $hall)
-  | `(tactic| rr_all_combo_sequence_derivative using all_combo := $hall:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_derivative $hall)
-  | `(tactic|
-      rr_all_combo_iterate_derivative using
-        all_combo := $hall:term,
-        index := $n:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.iterate_derivative $hall $n)
-  | `(tactic|
-      rr_all_combo_sequence_iterate_derivative using
-        all_combo := $hall:term,
-        index := $n:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_iterate_derivative $n $hall)
-  | `(tactic|
-      rr_all_combo_iterateTDeriv using
-        all_combo := $hall:term,
-        eps_pos := $heps:term,
-        index := $n:term) =>
-      `(tactic| exact RealRooted.AllComboRealRooted.iterateTDeriv $hall $heps $n)
-  | `(tactic|
-      rr_all_combo_sequence_iterateTDeriv using
-        all_combo := $hall:term,
-        eps_pos := $heps:term,
-        index := $n:term) =>
-      `(tactic| exact RealRooted.Tactic.allCombo_sequence_iterateTDeriv
-          _ $n $hall $heps)
-  | `(tactic|
-      rr_all_combo_to_pos_combo using
-        all_combo := $hall:term,
-        positive_combos_ne_zero := $hne:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.toPosComboRealRooted_of_pos_combos_ne_zero
-          $hall $hne)
-  | `(tactic|
-      rr_all_combo_to_pos_combo_sameDegree using
-        all_combo := $hall:term,
-        left_pos_lc := $hf:term,
-        right_pos_lc := $hg:term,
-        degree_eq := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.toPosComboRealRooted_of_sameDegree
-          $hall $hf $hg $hdeg)
-  | `(tactic|
-      rr_all_combo_sequence_to_pos_combo_sameDegree using
-        all_combo := $hall:term,
-        left_pos_lc := $hf:term,
-        right_pos_lc := $hg:term,
-        degree_eq := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.allCombo_sequence_to_pos_combo_sameDegree
-          $hall $hf $hg $hdeg)
-  | `(tactic|
-      rr_all_combo_to_pos_combo_natDegree_lt using
-        all_combo := $hall:term,
-        right_pos_lc := $hg:term,
-        degree_lt := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.toPosComboRealRooted_of_natDegree_lt
-          $hall $hg $hdeg)
-  | `(tactic|
-      rr_all_combo_sequence_to_pos_combo_natDegree_lt using
-        all_combo := $hall:term,
-        right_pos_lc := $hg:term,
-        degree_lt := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.allCombo_sequence_to_pos_combo_natDegree_lt
-          $hall $hg $hdeg)
-  | `(tactic|
-      rr_all_combo_to_pos_combo_natDegree_gt using
-        all_combo := $hall:term,
-        left_pos_lc := $hf:term,
-        degree_gt := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.AllComboRealRooted.toPosComboRealRooted_of_natDegree_gt
-          $hall $hf $hdeg)
-  | `(tactic|
-      rr_all_combo_sequence_to_pos_combo_natDegree_gt using
-        all_combo := $hall:term,
-        left_pos_lc := $hf:term,
-        degree_gt := $hdeg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.allCombo_sequence_to_pos_combo_natDegree_gt
-          $hall $hf $hdeg)
 
 end Tactic
 end RealRooted

@@ -30,6 +30,7 @@ lemma left_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     f.Splits := by
   simpa using hall 1 0
 
+/-- All-combination real-rootedness is symmetric in the two polynomials. -/
 lemma comm {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted g f := by
   intro α β
@@ -40,10 +41,14 @@ lemma right_splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     g.Splits :=
   hall.comm.left_splits
 
+/-- If every real linear combination of `f` and `g` splits and `f ≠ 0`, then `f` is nonzero and
+real-rooted. -/
 lemma isRealRooted_left {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hf0 : f ≠ 0) :
     f ≠ 0 ∧ f.Splits :=
   ⟨hf0, hall.left_splits⟩
 
+/-- If every real linear combination of `f` and `g` splits and `g ≠ 0`, then `g` is nonzero and
+real-rooted. -/
 lemma isRealRooted_right {f g : ℝ[X]} (hall : AllComboRealRooted f g) (hg0 : g ≠ 0) :
     g ≠ 0 ∧ g.Splits :=
   hall.comm.isRealRooted_left hg0
@@ -61,12 +66,14 @@ lemma common_root_reduction
   fun α β ↦ by simpa [hf_def, hg_def, mul_left_comm (C _), ← mul_add,
     splits_mul_iff_right (X_sub_C_ne_zero _) (.X_sub_C _)] using hall α β
 
+/-- Scaling the left member by any real constant preserves all-combination real-rootedness. -/
 lemma C_mul_left
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
     AllComboRealRooted (C c * f) g := by
   intro α β
   simpa [C_mul, mul_assoc, mul_left_comm, mul_comm] using hall (α * c) β
 
+/-- Scaling the right member by any real constant preserves all-combination real-rootedness. -/
 lemma C_mul_right
     {f g : ℝ[X]} {c : ℝ} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f (C c * g) :=
@@ -91,6 +98,8 @@ lemma linear_recombination
   rw [hrewrite]
   exact hall (α * a + β * c) (α * b + β * d)
 
+/-- A polynomial equal to a real linear combination of an all-combination real-rooted pair
+splits. -/
 lemma splits_of_eq_combo
     {f g p : ℝ[X]} {a b : ℝ}
     (hall : AllComboRealRooted f g)
@@ -99,6 +108,8 @@ lemma splits_of_eq_combo
   rw [hp]
   exact hall a b
 
+/-- A nonzero polynomial equal to a real linear combination of an all-combination real-rooted pair
+is nonzero and real-rooted. -/
 lemma ne_zero_and_splits_of_eq_combo
     {f g p : ℝ[X]} {a b : ℝ}
     (hall : AllComboRealRooted f g)
@@ -107,6 +118,7 @@ lemma ne_zero_and_splits_of_eq_combo
     p ≠ 0 ∧ p.Splits :=
   ⟨hp0, hall.splits_of_eq_combo hp⟩
 
+/-- Pointwise linear combinations of all-combination real-rooted pairs split. -/
 theorem splits_sequence_of_eq_combo
     {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
     (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
@@ -114,6 +126,8 @@ theorem splits_sequence_of_eq_combo
     ∀ n : ℕ, (P n).Splits := fun n =>
   (hall n).splits_of_eq_combo (hP n)
 
+/-- Nonzero pointwise linear combinations of all-combination real-rooted pairs are nonzero and
+real-rooted. -/
 theorem ne_zero_and_splits_sequence_of_eq_combo
     {F G P : ℕ → ℝ[X]} {a b : ℕ → ℝ}
     (hall : ∀ n : ℕ, AllComboRealRooted (F n) (G n))
@@ -130,11 +144,13 @@ lemma mul_common_factor
     AllComboRealRooted (d * f) (d * g) :=
   fun α β ↦ by simp [mul_left_comm, ← mul_add, hd, hall α β]
 
+/-- Differentiation preserves all-combination real-rootedness. -/
 lemma derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     AllComboRealRooted f.derivative g.derivative :=
   fun α β ↦ by simpa using Polynomial.Splits.derivative <| hall α β
 
+/-- Iterated differentiation preserves all-combination real-rootedness. -/
 lemma iterate_derivative
     {f g : ℝ[X]} (hall : AllComboRealRooted f g) :
     ∀ n : ℕ,
@@ -144,6 +160,8 @@ lemma iterate_derivative
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       exact (hall.iterate_derivative n).derivative
 
+/-- For every positive `eps`, `iterateTDeriv eps n` preserves all-combination
+real-rootedness. -/
 lemma iterateTDeriv {f g : ℝ[X]} (hall : AllComboRealRooted f g)
     {eps : ℝ} (heps : 0 < eps) (n : ℕ) :
     AllComboRealRooted (iterateTDeriv eps n f) (iterateTDeriv eps n g) :=
@@ -303,6 +321,7 @@ lemma allComboRealRooted_eq_zero_or_isRealRooted_and_hasSimpleRoots_iterateTDeri
 
 namespace AllComboRealRooted
 
+/-- Every real linear combination of an all-combination real-rooted pair splits. -/
 lemma splits {f g : ℝ[X]} (hall : AllComboRealRooted f g) (α β : ℝ) :
     (C α * f + C β * g).Splits :=
   hall α β

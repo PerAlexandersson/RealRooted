@@ -61,7 +61,8 @@ leading coefficient `(c - d) * lc(f)`, since:
 - `coeff ((1 - X) * f') d = -d * lc(f)`   (from `coeff f' (d-1) = d * lc(f)`)
 -/
 
-/-- The coefficient of `X^d` in the affine derivative. -/
+/-- For positive degree `d`, the coefficient of `X^d` in the affine derivative
+is `(c - d)` times the leading coefficient of `f`. -/
 lemma coeff_affineDeriv {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) (c : ℝ) :
     (C c * f + (1 - X) * f.derivative).coeff f.natDegree =
       (c - f.natDegree) * f.leadingCoeff := by
@@ -80,7 +81,8 @@ lemma coeff_affineDeriv {f : ℝ[X]} (hdeg : 1 ≤ f.natDegree) (c : ℝ) :
   rw [hf'd, hXf'd, hcoeff_deriv, hcast, show f.leadingCoeff = f.coeff d from rfl]
   ring
 
-/-- The affine derivative has the same degree as `f`. -/
+/-- The affine derivative of a nonzero positive-degree polynomial has the same
+degree as `f` when `c` differs from that degree. -/
 lemma natDegree_affineDeriv {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegree)
     {c : ℝ} (hc : c ≠ (f.natDegree : ℝ)) :
     (C c * f + (1 - X) * f.derivative).natDegree = f.natDegree := by
@@ -109,14 +111,16 @@ lemma natDegree_affineDeriv {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegre
     rw [coeff_affineDeriv hdeg c]
     exact mul_ne_zero (sub_ne_zero.mpr hc) (leadingCoeff_ne_zero.mpr hf)
 
-/-- Leading coefficient of the affine derivative. -/
+/-- Under the same nonzero, positive-degree, and scalar-not-degree hypotheses,
+the affine derivative has leading coefficient `(c - deg f) * lc(f)`. -/
 lemma leadingCoeff_affineDeriv {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegree)
     {c : ℝ} (hc : c ≠ (f.natDegree : ℝ)) :
     (C c * f + (1 - X) * f.derivative).leadingCoeff =
       (c - f.natDegree) * f.leadingCoeff := by
   rw [Polynomial.leadingCoeff, natDegree_affineDeriv hf hdeg hc, coeff_affineDeriv hdeg c]
 
-/-- The affine derivative is nonzero. -/
+/-- The affine derivative is nonzero when `f` is nonzero of positive degree and
+`c` differs from that degree. -/
 lemma affineDeriv_ne_zero {f : ℝ[X]} (hf : f ≠ 0) (hdeg : 1 ≤ f.natDegree)
     {c : ℝ} (hc : c ≠ (f.natDegree : ℝ)) :
     C c * f + (1 - X) * f.derivative ≠ 0 := by

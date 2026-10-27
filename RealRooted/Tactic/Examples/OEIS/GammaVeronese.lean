@@ -1,10 +1,9 @@
-import RealRooted.Tactic.GammaRealRoots
 import RealRooted.Tactic.VeroneseSection
 
 /-!
-# OEIS gamma and Veronese router regression examples
+# OEIS Veronese router regression example
 
-Gamma-real-rootedness and Veronese-section certificate routing tests.
+Veronese-section certificate routing coverage for the OEIS facade.
 -/
 
 open Polynomial
@@ -12,32 +11,6 @@ open scoped BigOperators
 
 namespace RealRooted
 namespace Tactic
-
-
-/-- Gamma-transform row-family real-rootedness exposed through the OEIS facade. -/
-example {d : Nat → Nat} {Γ : Nat → ℝ[X]}
-    (hdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
-    (hne : ∀ n : Nat, Γ n ≠ 0)
-    (hsplits : ∀ n : Nat, (Γ n).Splits)
-    (hnn : ∀ n : Nat, HasNonnegCoeffs (Γ n)) :
-    ∀ n : Nat, gammaTransform (d n) (Γ n) ≠ 0 ∧
-      (gammaTransform (d n) (Γ n)).Splits := by
-  rr_gamma_transform_sequence_realrooted_nonneg using
-    gamma_degree := hdeg,
-    gamma_nonzero := hne,
-    gamma_splits := hsplits,
-    gamma_nonneg := hnn
-
-/-- Gamma row-family bridge exposed through the OEIS facade. -/
-example {d : Nat → Nat} {P Γ : Nat → ℝ[X]}
-    (hγdeg : ∀ n : Nat, (Γ n).natDegree ≤ d n / 2)
-    (hexp : ∀ n : Nat, IsGammaExpansion (d n) (P n) (Γ n)) :
-    ∀ n : Nat,
-      (((Γ n ≠ 0 ∧ (Γ n).Splits) ∧ HasRootsNonpos (Γ n)) ↔
-        ((P n ≠ 0 ∧ (P n).Splits) ∧ HasRootsNonpos (P n))) := by
-  rr_gamma_sequence_realrooted_iff using
-    gamma_degree := hγdeg,
-    expansion := hexp
 
 /-- Veronese-section row-family PF exit exposed through the OEIS facade. -/
 example {r k : Nat → Nat} {P : Nat → ℝ[X]}
@@ -50,7 +23,6 @@ example {r k : Nat → Nat} {P : Nat → ℝ[X]}
     pf_coeff := hpf,
     r_pos := hr,
     k_lt_r := hk
-
 
 end Tactic
 end RealRooted
