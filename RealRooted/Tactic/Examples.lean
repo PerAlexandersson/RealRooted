@@ -105,8 +105,6 @@ import RealRooted.Tactic.Examples.PosCombo
 import RealRooted.Tactic.Examples.PreservingOperatorSequence
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.Product.Basic
-import RealRooted.Tactic.Examples.Product.EndpointPair
-import RealRooted.Tactic.Examples.Product.Families
 import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Examples.Product.Lifts
 import RealRooted.Tactic.Examples.Product.UnsupportedShape
