@@ -11,7 +11,7 @@ polynomial-in-`X` left factors change roots and belong to separate transform
 or endpoint-factor arguments.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ The reusable one-step weak Ma--Wang criteria. Sequence closure and tactic
 elaboration live in separate modules.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 
@@ -32,18 +32,10 @@ theorem strictInterl_derivative_of_nonpos_of_splits {f u v : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     StrictInterl f (u * f + v * f.derivative) := by
-  rcases Nat.eq_zero_or_pos f.natDegree with hdeg0 | hdegf
-  · have hF0 : u * f + v * f.derivative ≠ 0 := hF_pos.ne_zero
-    rcases Nat.lt_or_ge (u * f + v * f.derivative).natDegree 1 with hF | hF
-    · have hFdeg0 : (u * f + v * f.derivative).natDegree = 0 := by lia
-      refine ⟨⟨hf_pos.ne_zero, hf⟩, ⟨hF0, Splits.of_natDegree_eq_zero hFdeg0⟩,
-        [], [], by simp, by simp, ?_, ?_, Or.inr ⟨rfl, trivial⟩⟩
-      · rw [eq_C_of_natDegree_eq_zero hdeg0, roots_C, Multiset.coe_nil]
-      · rw [eq_C_of_natDegree_eq_zero hFdeg0, roots_C, Multiset.coe_nil]
-    · exact StrictInterl.of_degree_zero_right_of_degree_one hf_pos.ne_zero hf hF0
-        (isRealRooted_of_degree_one (by lia)).2 hdeg0 (by lia)
+  by_cases hdeg0 : f.natDegree = 0
+  · exact StrictInterl.of_natDegree_eq_zero_left hf_pos.ne_zero hdeg0 hF_pos.ne_zero (by lia)
   · have hder : Interlaces f.derivative f :=
-      derivative_interlaces_of_natDegree_ne_zero hf (by lia)
+      derivative_interlaces_of_natDegree_ne_zero hf hdeg0
     have hf'_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
     exact
       strictInterl_of_interlaces_evalCoeff_nonpos

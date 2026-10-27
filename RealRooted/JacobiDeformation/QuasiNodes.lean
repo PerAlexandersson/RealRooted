@@ -12,7 +12,7 @@ The quasi-Jacobi polynomial is a real linear combination of consecutive monic
 Favard polynomials.  Its nodes need not all be interior to the Jacobi interval.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

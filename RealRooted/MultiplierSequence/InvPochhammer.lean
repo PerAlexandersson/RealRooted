@@ -18,7 +18,7 @@ polynomial of `γ` is the sign-reversed generalized Laguerre polynomial
 which is PF for `α - 1 ≥ -1`.  The case `α = 1` is `γ_k = 1 / k!`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

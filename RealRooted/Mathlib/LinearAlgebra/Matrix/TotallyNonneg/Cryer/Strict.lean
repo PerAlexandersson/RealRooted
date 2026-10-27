@@ -18,7 +18,7 @@ strict algebraic component of the finite Cryer route; the non-strict limiting
 argument remains separate.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

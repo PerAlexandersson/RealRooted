@@ -12,7 +12,7 @@ Elementary conversion from a root-free interval in reciprocal scale to a gap
 between consecutive positive magnitudes.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.CoefficientDominance
 

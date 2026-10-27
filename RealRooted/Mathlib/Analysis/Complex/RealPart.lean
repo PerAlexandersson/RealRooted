@@ -24,7 +24,7 @@ of complex numbers across a preconnected set without choosing branches of the sq
   continuous real part that is positive at one point stays above `h`.
 -/
 
-@[expose] public section
+public section
 
 open Complex
 

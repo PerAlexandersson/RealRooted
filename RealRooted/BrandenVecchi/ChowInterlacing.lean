@@ -13,7 +13,7 @@ this harmless duplicate is retained so the result uses the canonical list
 predicate.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -4,19 +4,18 @@ public import RealRooted.MaWang.Weak.Successor
 public import RealRooted.WagnerRightSum.Sign
 
 /-!
-# Interlacing from derivative signs at simple roots
+# Interlacing from weak signs at simple roots
 
 Let `f` be real-rooted with simple roots and positive leading coefficient.  The signs of a
 polynomial `F` at the roots of `f`, measured against the derivative `f'`, determine whether
 `f` is interlaced by `F`: if `F(r) f'(r) ≤ 0` at every root `r` of `f` and
 `deg f ≤ deg F ≤ deg f + 1`, then `f ≪ F`.
 
-The derivative `f'` serves as a canonical interlacer of `f` (Rolle), and it does not vanish
-at the roots of `f`.  This lets the weak-sign Ma--Wang and Liu--Wang criteria avoid both a
-distinguished interlacer and a no-common-root hypothesis.
+More generally, the same perturbation argument works for any interlacer `g` having no common
+root with `f`.  The derivative `f'` is the canonical specialization supplied by Rolle's theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 
@@ -38,7 +37,7 @@ private lemma eval_derivative_ne_zero_of_roots_nodup {f : ℝ[X]} (hf_ne : f ≠
 
 /-- A degree-zero real polynomial is interlaced by any nonzero polynomial of degree at most
 one. -/
-private lemma strictInterl_of_natDegree_eq_zero {f F : ℝ[X]} (hf_ne : f ≠ 0)
+theorem StrictInterl.of_natDegree_eq_zero_left {f F : ℝ[X]} (hf_ne : f ≠ 0)
     (hf_deg : f.natDegree = 0) (hF_ne : F ≠ 0) (hF_deg : F.natDegree ≤ 1) :
     StrictInterl f F := by
   have hf_splits : f.Splits := Splits.of_natDegree_le_one (by lia)
@@ -71,6 +70,43 @@ theorem StrictInterl.eval_mul_eval_derivative_nonneg {g f : ℝ[X]} (hgf : Stric
     (interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hgf.2.1.2 hf_pos
       (by lia)).toStrictInterl hg_pos (hf_pos.derivative hdeg) hr
 
+/-- **Interlacing from weak signs.** Let `g` interlace `f`, with no common roots, and let `F`
+have positive leading coefficient and degree `deg f` or `deg f + 1`. If
+`F(r) g(r) ≤ 0` at every root `r` of `f`, then `f ≪ F` (`StrictInterl f F`).
+
+The real-rootedness of `F` is part of the conclusion: it follows by perturbing `F` to
+`F - δ g`, whose signs at the roots of `f` are strict. -/
+theorem strictInterl_of_interlaces_eval_mul_nonpos {f g F : ℝ[X]}
+    (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
+    (hF_pos : HasPosLeadingCoeff F)
+    (hdeg_lo : f.natDegree ≤ F.natDegree) (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hsign : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0) :
+    StrictInterl f F := by
+  have hF_rr : F ≠ 0 ∧ F.Splits := by
+    refine MaWangInternal.isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf hF_pos hdeg_lo
+      fun {δ} hδ ↦ ?_
+    have hG_pos : HasPosLeadingCoeff (F - C δ * g) :=
+      hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound hgf hdeg_lo hF_pos δ
+    have hG_deg : (F - C δ * g).natDegree = F.natDegree :=
+      natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hdeg_lo δ
+    have hG_sign : ∀ r, f.IsRoot r → (F - C δ * g).eval r * g.eval r < 0 := by
+      intro r hr
+      have hg_ne : g.eval r ≠ 0 := by
+        intro hg_zero
+        exact hno r hr hg_zero
+      simp only [eval_sub, eval_mul, eval_C]
+      nlinarith [hsign r hr, sq_pos_iff.mpr hg_ne]
+    have hG : StrictInterl f (F - C δ * g) := by
+      rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
+      · exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hG_pos
+          (hG_deg.trans hsame) hG_sign
+      · exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hG_pos
+          (hG_deg.trans hsucc) hG_sign
+    exact hG.2.1
+  exact strictInterl_of_interlaces_eval_mul_nonpos_of_no_common hgf hg_pos hF_rr.1 hF_rr.2
+    hF_pos hdeg_lo hdeg_hi (fun r hr hgr ↦ hno r hr hgr) hsign
+
 /-- **Interlacing from derivative signs.**  Let `f` be real-rooted with simple roots and
 positive leading coefficient, and let `F` have positive leading coefficient and degree
 `deg f` or `deg f + 1`.  If `F(r) f'(r) ≤ 0` at every root `r` of `f`, then `f ≪ F`
@@ -86,32 +122,13 @@ theorem strictInterl_of_eval_mul_derivative_nonpos {f F : ℝ[X]}
     (hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r ≤ 0) :
     StrictInterl f F := by
   by_cases hdeg0 : f.natDegree = 0
-  · exact strictInterl_of_natDegree_eq_zero hf_pos.ne_zero hdeg0 hF_pos.ne_zero (by lia)
+  · exact StrictInterl.of_natDegree_eq_zero_left hf_pos.ne_zero hdeg0 hF_pos.ne_zero (by lia)
   have hgf : Interlaces f.derivative f :=
     interlaces_derivative_of_pos_natDegree hf_pos.ne_zero hf_splits hf_pos (by lia)
   have hg_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative hdeg0
   have hder_ne : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0 := fun _ hr ↦
     eval_derivative_ne_zero_of_roots_nodup hf_pos.ne_zero hf_nodup hr
-  have hF_rr : F ≠ 0 ∧ F.Splits := by
-    refine MaWangInternal.isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf hF_pos hdeg_lo
-      fun {δ} hδ ↦ ?_
-    have hG_pos : HasPosLeadingCoeff (F - C δ * f.derivative) :=
-      hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound hgf hdeg_lo hF_pos δ
-    have hG_deg : (F - C δ * f.derivative).natDegree = F.natDegree :=
-      natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hdeg_lo δ
-    have hG_sign : ∀ r, f.IsRoot r →
-        (F - C δ * f.derivative).eval r * f.derivative.eval r < 0 := by
-      intro r hr
-      simp only [eval_sub, eval_mul, eval_C]
-      nlinarith [hsign r hr, sq_pos_iff.mpr (hder_ne r hr)]
-    have hG : StrictInterl f (F - C δ * f.derivative) := by
-      rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
-      · exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hG_pos
-          (hG_deg.trans hsame) hG_sign
-      · exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hG_pos
-          (hG_deg.trans hsucc) hG_sign
-    exact hG.2.1
-  exact strictInterl_of_interlaces_eval_mul_nonpos_of_no_common hgf hg_pos hF_rr.1 hF_rr.2
-    hF_pos hdeg_lo hdeg_hi (fun r hr hder ↦ hder_ne r hr hder) hsign
+  exact strictInterl_of_interlaces_eval_mul_nonpos hgf hg_pos hF_pos hdeg_lo hdeg_hi
+    (fun r hr hder ↦ hder_ne r hr hder) hsign
 
 end RealRooted

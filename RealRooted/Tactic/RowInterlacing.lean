@@ -222,6 +222,7 @@ private structure RowModelCandidate where
   bases : Array (Nat × QPoly)
   offset : Option Nat
   lag : Option Nat
+  recurrence : Option Expr
 
 /-- Recognize the conclusion head without elaborating the transfer theorem. -/
 private def rowModelConclusion? (target : Expr) : Option RowModelConclusion :=
@@ -261,7 +262,8 @@ private partial def rowModelRows (P n e : Expr) : MetaM (Array (Nat × Nat)) := 
 /-- Read the recurrence offset and exact base rows advertised by a transfer theorem. -/
 private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusion)
     (decl : Name) : MetaM
-    (Option (RowModelConclusion × Array (Nat × QPoly) × Option Nat × Option Nat)) := do
+    (Option (RowModelConclusion × Array (Nat × QPoly) × Option Nat × Option Nat ×
+      Option Expr)) := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescope type fun xs conclusion => do
     let some modelConclusion := rowModelConclusion? conclusion | return none
@@ -272,6 +274,7 @@ private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusi
     let mut bases : Array (Nat × QPoly) := #[]
     let mut offset? : Option Nat := none
     let mut lag? : Option Nat := none
+    let mut recurrence? : Option Expr := none
     for x in xs do
       let binderType ← inferType x
       if let some (_, lhs, rhs) := binderType.eq? then
@@ -280,28 +283,68 @@ private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusi
         else if let some i ← rowIndex? P rhs then
           if let some q ← evalQPoly? lhs then bases := bases.push (i, q)
       else if offset?.isNone && binderType.isForall then
-        let recurrence? ← forallTelescope binderType fun ys body => do
+        let shape? ← forallTelescope binderType fun ys body => do
           let some (_, lhs, rhs) := body.eq? | return none
           unless ys.size == 1 && lhs.isApp && lhs.getAppFn == P do return none
           let some offset ← natOffsetOf? ys[0]! lhs.appArg! | return none
           let rows ← rowModelRows P ys[0]! rhs
           unless !rows.isEmpty && rows.all fun row => row.1 < offset do return none
           let lag := rows.foldl (init := 0) fun lag row => max lag (offset - row.1)
-          return some (offset, lag)
-        if let some (offset, lag) := recurrence? then
+          let recurrence ← mkLambdaFVars #[P, ys[0]!] body
+          return some (offset, lag, if recurrence.hasFVar then none else some recurrence)
+        if let some (offset, lag, recurrence) := shape? then
           offset? := some offset
           lag? := some lag
+          recurrence? := recurrence
     unless bases.any (fun b => b.1 == 0) && bases.any (fun b => b.1 == 1) do
       return none
-    return some (modelConclusion, bases, offset?, lag?)
+    return some (modelConclusion, bases, offset?, lag?, recurrence?)
+
+/-- Compare a registered recurrence hypothesis with exact target rows at seven indices.
+A mismatch is a counterexample to the hypothesis of the registered transfer theorem; failure
+to evaluate either side leaves the candidate available. -/
+private def rowModelFingerprintMatches? (P : Name) (candidate : RowModelCandidate) :
+    TacticM (Option Bool) := do
+  let some recurrence := candidate.recurrence | return none
+  let target ← mkConstWithFreshMVarLevels P
+  for n in [0:7] do
+    let statement ← whnfR (mkApp (mkApp recurrence target) (mkNatLit n))
+    let some (_, lhs, rhs) := statement.eq? | return none
+    match ← evalQPoly? lhs, ← evalQPoly? rhs with
+    | some left, some right => unless left.eqv right do return some false
+    | _, _ =>
+        let state ← saveState
+        let result ← rowAttempt do
+          let goal ← mkFreshExprMVar statement
+          setGoals [goal.mvarId!]
+          let unfoldRhs ← match rhs.consumeMData.getAppFn with
+            | .const name _ => `(tactic| unfold $(mkIdent name):ident)
+            | _ => `(tactic| skip)
+          evalTactic (← `(tactic| (
+            simp [$(mkIdent P):ident]
+            $unfoldRhs:tactic
+            rr_cf_identity)))
+        state.restore
+        match result with
+        | .ok _ => pure ()
+        | .error _ => return none
+  return some true
+
+/-- Whether the target sequence and registered theorem share an exact dotted-name component.
+This cheap stable fingerprint orders a family-specific transfer before other models whose
+base rows happen to agree.  It affects only candidate order, never rejection. -/
+private def rowModelNameMatches (P : Name) (candidate : RowModelCandidate) : Bool :=
+  let target := (P.toString.splitOn ".").getLastD ""
+  (candidate.decl.toString.splitOn ".").contains target
 
 /-- The most specific registered models whose conclusion, offset, and exact base rows match. -/
 private def matchingRowModels (decls : Array Name) (P : Name)
-    (search : RowModelSearch) (want : RowModelConclusion) : MetaM (Array RowModelCandidate) := do
+    (search : RowModelSearch) (want : RowModelConclusion) : TacticM (Array RowModelCandidate) := do
   let mut models : Array RowModelCandidate := #[]
   for decl in decls.qsort Name.quickLt do
-    let some (conclusion, bases, offset, lag) ← rowModelBaseRows? search want decl | continue
-    models := models.push { decl, conclusion, bases, offset, lag }
+    let some (conclusion, bases, offset, lag, recurrence) ←
+        rowModelBaseRows? search want decl | continue
+    models := models.push { decl, conclusion, bases, offset, lag, recurrence }
   if models.isEmpty then return #[]
   let recurrence? ← linRec? P
   let rows? ← match recurrence? with
@@ -330,25 +373,38 @@ private def matchingRowModels (decls : Array Name) (P : Name)
   if preliminary.isEmpty then return #[]
   let maxBase := preliminary.foldl (init := 1) fun m model =>
     model.bases.foldl (init := m) fun m base => max m base.1
-  if maxBase ≤ 1 then return preliminary
-  let rows? ← match recurrence? with
-    | some recurrence => linRecRows? recurrence maxBase
-    | none => pure none
-  let rows? ← match rows? with
-    | some rows => pure (some rows)
-    | none => linRecBaseRows? P
-  let some rows := rows? | return #[]
-  let mut candidates : Array RowModelCandidate := #[]
-  for model in preliminary do
-    let basesMatch := model.bases.all fun (i, q) =>
-      match rows[i]? with
-      | some row => row.eqv q
-      | none => false
-    if basesMatch then candidates := candidates.push model
+  let candidates ← if maxBase ≤ 1 then pure preliminary else do
+    let rows? ← match recurrence? with
+      | some recurrence => linRecRows? recurrence maxBase
+      | none => pure none
+    let rows? ← match rows? with
+      | some rows => pure (some rows)
+      | none => linRecBaseRows? P
+    let some rows := rows? | return #[]
+    let mut candidates : Array RowModelCandidate := #[]
+    for model in preliminary do
+      let basesMatch := model.bases.all fun (i, q) =>
+        match rows[i]? with
+        | some row => row.eqv q
+        | none => false
+      if basesMatch then candidates := candidates.push model
+    pure candidates
   if candidates.isEmpty then return #[]
   let maxEvidence := candidates.foldl (init := 0) fun evidence candidate =>
     max evidence candidate.bases.size
-  return candidates.filter fun candidate => candidate.bases.size == maxEvidence
+  let candidates := candidates.filter fun candidate => candidate.bases.size == maxEvidence
+  let mut named : Array RowModelCandidate := #[]
+  let mut exact : Array RowModelCandidate := #[]
+  let mut unknown : Array RowModelCandidate := #[]
+  for candidate in candidates do
+    if rowModelNameMatches P candidate then
+      named := named.push candidate
+    else
+      match ← rowModelFingerprintMatches? P candidate with
+      | some true => exact := exact.push candidate
+      | some false => pure ()
+      | none => unknown := unknown.push candidate
+  return named ++ exact ++ unknown
 
 /-- State for the bounded traversal of definitions used by a model recurrence operator. -/
 private structure RowModelUnfoldState where
@@ -569,7 +625,7 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
   else
     rowSkip `rowModel m!"disabled by hints" (some log)
   if use `halfGrowth && (← isDerivLagGoal) then
-    match ← rowRoute `halfGrowth (derivLagCore false false hints) (some log) with
+    match ← rowRoute `halfGrowth (derivLagCore false false hints (some log)) (some log) with
     | .ok result => return (#[], result)
     | .error error => throwError error
   else if hints.via == some `halfGrowth then
@@ -749,6 +805,29 @@ private def linRecNonneg : TacticM Unit := withMainContext do
       discard <| smallRow P
     setGoals []
 
+/-- Whether exact samples leave open
+`RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult` with the degree bound
+`D₀ + d * n`.  The check tests that theorem's degree, constant-coefficient, and multiplier
+hypotheses.  It is used only for the recurrence read from the goal; unavailable exact data
+never vetoes the route. -/
+private def derivativeMultPlausible (r : RowRec) (D₀ d : Nat) : MetaM Bool := do
+  unless r.shape == .deriv₁ do return true
+  let some L ← linRec? r.P r.params | return true
+  let base := r.shift
+  let some rows ← linRecRows? L (base + 8) | return true
+  let (some af, some bf) := (r.coeffs[0]?, r.coeffs[1]?) | return true
+  for n in [0:9] do
+    let (some a, some b) :=
+      (← r.evalSampleCoeffAt? af n, ← r.evalSampleCoeffAt? bf n) | return true
+    let bound := D₀ + d * n
+    let some row := rows[base + n]? | return true
+    unless row.natDegree ≤ bound && 0 ≤ a.coeff 0 do return false
+    let maxCoeff := max a.coeffs.size b.coeffs.size
+    for i in [0:maxCoeff] do
+      for j in [0:bound + 1] do
+        unless 0 ≤ a.coeff (i + 1) * (j : Rat) + b.coeff i do return false
+  return true
+
 private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContext do
   if let .ok _ ← rowRoute `variableDelay (variableDelayGoal .nonneg) (some log) then return
   if let .ok _ ← rowRoute `cone linRecNonneg (some log) then return
@@ -759,9 +838,10 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
   let (_, t) ← alignRow r.P r.shift (smallRow P)
   let Q ← r.seq 0
   let hrec ← r.hrecTerm 0
-  let mut mains : Array (Name × TSyntax `tactic) := #[]
+  let D₀? ← if r.shape.isLag then pure none else findRowDegree P r.shift r.params
+  let mut mains : Array (Name × Option Nat × TSyntax `tactic) := #[]
   if r.shape.isLag then
-    mains := mains.push (`threeTerm, ← `(tactic|
+    mains := mains.push (`threeTerm, none, ← `(tactic|
       refine RealRooted.threeTerm_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
   else
     -- a second-order recurrence needs a first-order one in the context, such as the
@@ -778,22 +858,28 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
           recs := recs.push (mkIdent d.userName)
     -- or nonnegative multipliers of the second-order recurrence itself
     if r.shape == .deriv₂ then
-      mains := mains.push (`secondOrder, ← `(tactic|
+      mains := mains.push (`secondOrder, none, ← `(tactic|
         refine RealRooted.derivRec₂_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
-    let D₀? ← findRowDegree P r.shift r.params
     for h in recs do
-      mains := mains.push (`derivative, ← `(tactic|
+      mains := mains.push (`derivative, none, ← `(tactic|
         refine RealRooted.derivativeRecurrence_hasNonnegCoeffs (P := $Q) $h ?_ ?_ ?_ $t))
       if let some D₀ := D₀? then
         for d in [1, 0, 2] do
-          mains := mains.push (`derivativeMult, ← `(tactic|
+          mains := mains.push (`derivativeMult, some d, ← `(tactic|
             refine RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult (P := $Q)
               (D₀ := $(rowNumLit D₀)) (d := $(rowNumLit d)) $h ?_ ?_ ?_ ?_ $t))
     if mains.isEmpty then
       throwError "rr_row_nonneg_coeffs: the second-order recurrence of {P} needs a \
         first-order recurrence `∀ n, {P} (n + 1) = A n * ({P} n)' + B n * {P} n` in the context"
   let mut failures := #[]
-  for (route, main) in mains do
+  for (route, d?, main) in mains do
+    if let some d := d? then
+      if let some D₀ := D₀? then
+        unless ← derivativeMultPlausible r D₀ d do
+          rowVeto route m!"an exact degree or coefficient hypothesis is false" (some log)
+          failures := failures.push (m!"{main}",
+            m!"vetoed: an exact degree or coefficient hypothesis is false")
+          continue
     match ← rowRoute route (applyThenSideFull P main) (some log) with
     | .ok _ => return
     | .error e => failures := failures.push (m!"{main}", e)
@@ -1105,7 +1191,7 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
   else
     rowSkip `rowModel m!"disabled by hints" (some log)
   if ← isDerivLagGoal then
-    match ← rowRoute `halfGrowth (derivLagCore true false hints) (some log) with
+    match ← rowRoute `halfGrowth (derivLagCore true false hints (some log)) (some log) with
     | .ok result => return result
     | .error error => throwError error
   discard introIfForall
@@ -1475,6 +1561,28 @@ private def rowSplitsCore (log : RowAttemptLog) (hints : RowHints) : TacticM Row
             return {}
       throwError directError
 
+/-- `some true` when a strict-interlacing target is visibly `StrictInterl (P t) (P (t + 1))`,
+`some false` when it contains a polynomial sequence but is not consecutive rows of the same
+sequence, and `none` when no sequence can be recognized.  Every theorem used by
+the half-growth, degree-pattern, and interlacing-fallback routes has the consecutive-row
+conclusion, so the negative result rejects exactly those routes. -/
+private def strictConsecutiveRows? : TacticM (Option Bool) := do
+  let mut target ← instantiateMVars (← getMainTarget)
+  while target.isForall do target := target.bindingBody!
+  unless target.isAppOf ``RealRooted.StrictInterl do return none
+  let args := target.getAppArgs
+  unless args.size ≥ 2 do return none
+  let lhs := args[args.size - 2]!
+  let rhs := args[args.size - 1]!
+  let some _ ← findPolySeqApp? target | return none
+  let (some left, some right) := (← findPolySeqApp? lhs, ← findPolySeqApp? rhs)
+    | return some false
+  unless lhs.isApp && rhs.isApp && left.name == right.name &&
+      lhs.appFn! == rhs.appFn! do return some false
+  let (leftBase, leftOffset) ← natOffsetParts lhs.appArg!
+  let (rightBase, rightOffset) ← natOffsetParts rhs.appArg!
+  return some (leftBase == rightBase && rightOffset == leftOffset + 1)
+
 /-- `rr_row_strictInterl`, using specialized strict routes before falling back to the general
 interlacing machinery. -/
 private def rowStrictInterlCore (log : RowAttemptLog) (hints : RowHints) : TacticM RowHints := do
@@ -1490,8 +1598,15 @@ private def rowStrictInterlCore (log : RowAttemptLog) (hints : RowHints) : Tacti
     | .error e => failures := failures.push (m!"fixed-delay recurrence", e)
   else
     rowSkip `variableDelay m!"not selected by the via hint" (some log)
+  if (← strictConsecutiveRows?) == some false then
+    for route in [`halfGrowth, `degreePattern, `interlaces] do
+      if hints.via.isNone || hints.via == some route then
+        rowVeto route m!"the goal is not consecutive rows of one polynomial sequence" (some log)
+      else
+        rowSkip route m!"not selected by the via hint" (some log)
+    throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
   if hints.via.isNone || hints.via == some `halfGrowth then
-    match ← rowRoute `halfGrowth (derivLagCore false true hints) (some log) with
+    match ← rowRoute `halfGrowth (derivLagCore false true hints (some log)) (some log) with
     | .ok result => return { result with via := some `halfGrowth }
     | .error e => failures := failures.push (m!"half-growth derivative-lag induction", e)
   else

@@ -10,7 +10,7 @@ Reusable induction and closure theorems for polynomial sequences carrying
 `StrictInterl`, real-rootedness, splitness, and product certificates.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

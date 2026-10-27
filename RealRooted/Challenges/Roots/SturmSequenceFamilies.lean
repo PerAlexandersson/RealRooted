@@ -196,7 +196,7 @@ The families and their interlacing proofs live in
 `RealRooted.CombinatorialExamples`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

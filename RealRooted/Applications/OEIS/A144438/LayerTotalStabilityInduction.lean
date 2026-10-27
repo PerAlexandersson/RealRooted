@@ -10,7 +10,7 @@ companion certificate.  It uses only the recurrence-defined layer totals and
 their exact one-step Rayleigh criterion; no combinatorial model is involved.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

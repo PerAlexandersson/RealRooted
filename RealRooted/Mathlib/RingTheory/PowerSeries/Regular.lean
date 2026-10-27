@@ -14,7 +14,7 @@ This Mathlib-shaped shim records a coefficientwise regularity criterion for
 formal power series over a commutative ring.
 -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

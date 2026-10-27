@@ -241,7 +241,7 @@ multiaffine Lieb–Sokal theorem. The proofs live in `RealRooted.Apolarity`,
 `RealRooted.LiebSokal`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

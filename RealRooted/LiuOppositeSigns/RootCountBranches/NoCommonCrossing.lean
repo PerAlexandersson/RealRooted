@@ -11,7 +11,7 @@ predicate from the cross-owned-gap invariant, and strictly positive
 combinations from compatibility.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

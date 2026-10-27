@@ -10,4 +10,4 @@ Compatibility facade for product-tactic syntax, checked elaboration, and
 macro-rule families backed by `RealRooted.ProductSequence`.
 -/
 
-@[expose] public section
+public section

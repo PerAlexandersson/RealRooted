@@ -15,7 +15,7 @@ preserves real-rootedness, so it transports the theorem to sequences with
 `0 ≤ (-1)^k γ_k`, whose Jensen polynomials have their zeros in `[0, ∞)`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

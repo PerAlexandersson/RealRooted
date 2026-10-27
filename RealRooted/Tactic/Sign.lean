@@ -11,7 +11,7 @@ recurring polynomial-evaluation inequalities once the root interval and scalar
 positivity hypotheses are in the context.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

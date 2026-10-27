@@ -9,7 +9,7 @@ Strict Wronskian signs at the roots of the higher-degree polynomial force
 strict interlacing across a one-degree increase.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

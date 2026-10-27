@@ -15,7 +15,7 @@ with `b`-coefficient `-(α (n + 2) / α n) * b (n + 1) * b n`.  This is nonposit
 when `P` has half growth.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

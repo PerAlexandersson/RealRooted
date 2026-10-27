@@ -14,7 +14,7 @@ cardinality.  These are intended for the issue #42 left-escape argument: if a
 root multiset has sum below `(card : ℝ) * A`, then some root lies below `A`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

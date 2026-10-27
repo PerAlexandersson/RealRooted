@@ -14,7 +14,7 @@ mean `(2n + 1) / 3` and variance `2 (n² - 1) / (9 (2n - 1))`.  Since the polyno
 real-rooted (Bóna; Haglund–Visontai), Harper's theorem gives asymptotic normality.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology ProbabilityTheory
 

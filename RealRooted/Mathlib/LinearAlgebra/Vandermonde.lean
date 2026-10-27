@@ -14,9 +14,9 @@ This file adds the strict positivity consequence of the Vandermonde
 determinant formula for a strictly increasing family.
 -/
 
-@[expose] public section
+public section
 
-@[expose] public section
+public section
 
 namespace Matrix
 

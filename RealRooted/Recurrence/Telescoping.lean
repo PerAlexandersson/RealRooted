@@ -10,7 +10,7 @@ This file isolates the finite telescoping step in a hypergeometric certificate p
 certificate identity and its two boundary values remain ordinary Lean proof obligations.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

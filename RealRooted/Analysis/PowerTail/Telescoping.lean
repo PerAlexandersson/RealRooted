@@ -9,7 +9,7 @@ This layer turns the positive-spacing one-step inequality into a bound for a
 finite reciprocal-power tail.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Analysis.PowerTail
 

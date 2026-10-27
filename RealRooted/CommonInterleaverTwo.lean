@@ -11,4 +11,4 @@ module
 
 public import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
 
-@[expose] public section
+public section

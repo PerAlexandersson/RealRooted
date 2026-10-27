@@ -18,7 +18,7 @@ definition of `complexExpGeneratingFunction`: outside its convergence disc,
 a nonsummable series is assigned the value zero.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

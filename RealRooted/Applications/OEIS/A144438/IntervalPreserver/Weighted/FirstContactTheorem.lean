@@ -10,7 +10,7 @@ and the deletion-to-full residues are positive, every companion residue is
 positive throughout the parameter cube.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

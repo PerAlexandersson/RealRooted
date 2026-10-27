@@ -15,7 +15,7 @@ factor `X - 1`, treating both possible degree cases, and recover
 nonnegative coefficients from the resulting root order.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

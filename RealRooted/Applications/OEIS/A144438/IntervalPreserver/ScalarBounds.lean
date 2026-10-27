@@ -12,7 +12,7 @@ the diagonal argument.  It is kept separate from the spectral construction so
 that the analytic layer can use one checked scalar endpoint.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

@@ -11,7 +11,7 @@ For `h_k` the coefficients of `∑ i ≤ n, f_i X^i (1 - X)^(n - i)` we prove
 identity (1.3)); `fVec_eq_sum_hVec` is the specialization to the `f`-vector of a poset.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

@@ -11,13 +11,14 @@ factors, together with the sequence-valued certificates shared by the product
 recurrence layers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators
 
 namespace RealRooted
 
+/-- The affine polynomial `C s * X + C t` is nonzero and splits when `s ≠ 0`. -/
 lemma isRealRooted_C_mul_X_add_C {s t : ℝ} (hs : s ≠ 0) :
     ((C s * X + C t) ≠ 0 ∧ (C s * X + C t).Splits) := by
   have hd : (C s * X + C t : ℝ[X]).degree = 1 := degree_linear hs
@@ -43,32 +44,42 @@ theorem isRealRooted_C_add_C_mul_X {s t : ℝ} (hs : s ≠ 0) :
     (C t + C s * X : ℝ[X]) ≠ 0 ∧ (C t + C s * X : ℝ[X]).Splits := by
   simpa [add_comm] using isRealRooted_C_mul_X_add_C (s := s) (t := t) hs
 
+/-- If `p` is nonzero and splits and `s ≠ 0`, then `(C s * X + C t) * p` is
+nonzero and splits. -/
 theorem isRealRooted_C_mul_X_add_C_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) :=
   isRealRooted_mul_of_isRealRooted (isRealRooted_C_mul_X_add_C hs) hp
 
+/-- If `p` is nonzero and splits and `s ≠ 0`, then `p * (C s * X + C t)` is
+nonzero and splits. -/
 theorem isRealRooted_mul_C_mul_X_add_C {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     (p * (C s * X + C t) ≠ 0 ∧ (p * (C s * X + C t)).Splits) :=
   isRealRooted_mul_of_isRealRooted hp (isRealRooted_C_mul_X_add_C hs)
 
+/-- If `p` is nonzero and splits and `s ≠ 0`, then `(C t + C s * X) * p` is
+nonzero and splits. -/
 theorem isRealRooted_C_add_C_mul_X_mul {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     ((C t + C s * X) * p ≠ 0 ∧ ((C t + C s * X) * p).Splits) := by
   simpa [add_comm] using isRealRooted_C_mul_X_add_C_mul (p := p) (s := s) (t := t) hp hs
 
+/-- If `p` is nonzero and splits and `s ≠ 0`, then `p * (C t + C s * X)` is
+nonzero and splits. -/
 theorem isRealRooted_mul_C_add_C_mul_X {p : ℝ[X]} {s t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
     (p * (C t + C s * X) ≠ 0 ∧ (p * (C t + C s * X)).Splits) := by
   simpa [add_comm] using isRealRooted_mul_C_mul_X_add_C (p := p) (s := s) (t := t) hp hs
 
+/-- If `p` is nonzero and splits, then `(X + C t) * p` is nonzero and splits. -/
 theorem isRealRooted_X_add_C_mul {p : ℝ[X]} {t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) :
     ((X + C t) * p ≠ 0 ∧ ((X + C t) * p).Splits) := by
   simpa using
     (isRealRooted_C_mul_X_add_C_mul (p := p) (s := 1) (t := t) hp (by norm_num))
 
+/-- If `p` is nonzero and splits, then `p * (X + C t)` is nonzero and splits. -/
 theorem isRealRooted_mul_X_add_C {p : ℝ[X]} {t : ℝ}
     (hp : p ≠ 0 ∧ p.Splits) :
     (p * (X + C t) ≠ 0 ∧ (p * (X + C t)).Splits) := by

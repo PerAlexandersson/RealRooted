@@ -11,7 +11,7 @@ This module contains reusable low-degree root-list splitting helpers used by
 the normalized x-subtraction endpoint leaves.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

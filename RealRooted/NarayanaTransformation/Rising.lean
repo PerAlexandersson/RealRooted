@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Falling
 # Rising-factorial transform preservation.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

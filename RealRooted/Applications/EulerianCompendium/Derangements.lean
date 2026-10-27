@@ -12,7 +12,7 @@ They separate nonvanishing and the sign of real roots from the remaining
 splitting assertion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial RealRooted
 

@@ -15,7 +15,7 @@ The low-coefficient corollary uses the canonical `RootVieta` identities rather
 than introducing another reciprocal-root polynomial.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

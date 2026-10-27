@@ -24,7 +24,7 @@ The proof is by strong induction on `S` using the vertex recurrence
 * C. D. Godsil, *Algebraic Combinatorics*, Chapman & Hall (1993), Chapter 6.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

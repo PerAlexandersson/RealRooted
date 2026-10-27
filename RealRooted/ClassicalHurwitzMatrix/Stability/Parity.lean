@@ -12,7 +12,7 @@ split with nonpositive roots. This module converts that root information back
 to coefficient nonnegativity when their leading coefficients are positive.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

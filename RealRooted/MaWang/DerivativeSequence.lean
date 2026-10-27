@@ -11,7 +11,7 @@ public import RealRooted.SequenceClosure
 Sequence closure for weak derivative steps and derivative-plus-lag recurrences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 
@@ -99,6 +99,12 @@ theorem isRealRooted_of_derivative_one_add_X_mul_one_add_two_mul_X_sequence
         (hroot_lower n r hr) (hroot_upper n r hr))
     hrec hdeg_lo hdeg_hi
 
+/-- Sequence-level Ma--Wang induction for the recurrence
+`P (n + 2) = U n * P (n + 1) + (1 + X) * (P (n + 1)).derivative`.
+
+It assumes strict interlacing of `P 0` and `P 1`, positive leading coefficients,
+that every root of `P (n + 1)` is at most `-1`, and that the degree of each new
+row lies between the degree of the preceding row and its successor. -/
 theorem strictInterl_derivative_one_add_X_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -129,6 +135,12 @@ theorem isRealRooted_of_derivative_one_add_X_sequence
     (fun n r hr => eval_one_add_X_nonpos_of_le_neg_one (hroot_upper n r hr))
     hrec hdeg_lo hdeg_hi
 
+/-- Sequence-level Ma--Wang induction for the recurrence
+`P (n + 2) = U n * P (n + 1) + (X - 1) * (P (n + 1)).derivative`.
+
+It assumes strict interlacing of `P 0` and `P 1`, positive leading coefficients,
+that every root of `P (n + 1)` is at most `1`, and that the degree of each new
+row lies between the degree of the preceding row and its successor. -/
 theorem strictInterl_derivative_X_sub_one_sequence
     {P : Nat → ℝ[X]} {U : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))

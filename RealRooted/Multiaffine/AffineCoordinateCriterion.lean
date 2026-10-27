@@ -12,7 +12,7 @@ packages the endpoint, cross-Wronskian, and quadratic-discriminant conditions
 as a necessary and sufficient criterion for `P + X k * Q` to be Rayleigh.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

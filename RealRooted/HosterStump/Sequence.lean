@@ -14,7 +14,7 @@ partial sums (Lemma 2.3(2),(3)), and the four-polynomial window lemma behind Lem
 all for the zero-aware relation `Interl`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

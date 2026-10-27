@@ -8,7 +8,7 @@ public import RealRooted.LiuWang.SequenceCore
 Sequence criteria for positive linear and affine lag coefficients.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

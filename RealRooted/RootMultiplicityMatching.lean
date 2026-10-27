@@ -13,7 +13,7 @@ neighborhoods of the roots of `f` into one global proximity matching
 submultiset.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

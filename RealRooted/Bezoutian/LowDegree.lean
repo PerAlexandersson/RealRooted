@@ -9,7 +9,7 @@ Degree-zero, linear, and quadratic positive-definiteness equivalences and the
 final all-degree strict Bezoutian characterization.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Matrix
 

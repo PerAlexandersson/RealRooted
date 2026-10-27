@@ -11,7 +11,7 @@ the same finite family proves splitness of the aggregate word enumerator.  The
 checked integral Pollak transfer then gives the parking-function result.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

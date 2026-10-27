@@ -89,7 +89,7 @@ and their combination as an equivalence. The continuity and common-root
 analysis remains in `RealRooted.ObreschkoffConverse`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

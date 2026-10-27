@@ -9,7 +9,7 @@ Thin wrappers for gamma transforms and the gamma-polynomial
 real-rootedness/nonpositive-root bridge.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

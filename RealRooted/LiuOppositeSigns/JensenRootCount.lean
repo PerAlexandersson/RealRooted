@@ -12,7 +12,7 @@ effect of adjoining a factor `X`, which is the bookkeeping step behind the
 two-slot Jensen-pencil root-count band.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -16,7 +16,7 @@ Liu--Wang interlacer, while the derivative term is handled as an additional
 interlacer of the current row.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

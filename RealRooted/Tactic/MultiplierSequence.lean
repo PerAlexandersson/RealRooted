@@ -9,7 +9,7 @@ Thin wrappers for diagonal operators, Jensen polynomials, and finite
 multiplier-sequence preservation facts.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

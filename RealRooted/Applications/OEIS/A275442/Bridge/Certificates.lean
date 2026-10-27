@@ -26,7 +26,7 @@ The certificates were found by exact rational linear programming and are verifie
 `linarith` from the expansions of `A (n+j)` in the four base values `A n, …, A (n+3)`.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS.A275442.Bridge
 

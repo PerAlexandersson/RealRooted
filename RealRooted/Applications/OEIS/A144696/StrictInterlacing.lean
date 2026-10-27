@@ -15,7 +15,7 @@ the Pascal relation. The mutual induction records interlacing, simple
 roots, and absence of common roots on every adjacent edge.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

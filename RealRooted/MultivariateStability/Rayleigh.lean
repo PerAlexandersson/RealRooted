@@ -14,7 +14,7 @@ multiaffine polynomial is Rayleigh, without requiring a finite ambient
 variable type.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

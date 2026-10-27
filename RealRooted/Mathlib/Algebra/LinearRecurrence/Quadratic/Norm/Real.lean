@@ -15,7 +15,7 @@ This transports a real quadratic solution to `ℂ` and applies the generic
 complex-root norm bound.  Root existence remains a separate client concern.
 -/
 
-@[expose] public section
+public section
 
 namespace LinearRecurrence
 

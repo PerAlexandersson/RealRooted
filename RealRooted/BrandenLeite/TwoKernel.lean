@@ -12,7 +12,7 @@ sequences extracted in `ZeroConstant`, apply the finite kernel-limit theorem,
 and identify its rows with the literal two-kernel coefficient polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Filter Matrix Polynomial Topology
 

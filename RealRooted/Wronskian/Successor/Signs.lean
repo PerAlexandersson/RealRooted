@@ -9,7 +9,7 @@ These sign and root-location lemmas supply the lower-to-higher splitness
 transfer for a strict successor-degree Wronskian sign.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -13,7 +13,7 @@ This layer orients the real-rooted exceptional pencil and identifies its two
 distinguished parameters with the adjacent toric-contribution polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open MeasureTheory Set

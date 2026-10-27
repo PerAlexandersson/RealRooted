@@ -10,7 +10,7 @@ root `ρ`, this identifies `q'(ρ)/p(ρ)` with the positive secular norm
 `1 + ∑ (-r)w_r/(ρ-r)²`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

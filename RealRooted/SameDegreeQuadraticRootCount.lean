@@ -28,7 +28,7 @@ Here we prove this in the base case `natDegree = 2`. The core steps are:
 * a finite case analysis on the thresholds yields the root-count bound.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

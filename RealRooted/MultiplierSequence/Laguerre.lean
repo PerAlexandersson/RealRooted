@@ -24,7 +24,7 @@ case follows by factoring `φ = c ∏ (X - ρ_i)`, with every `ρ_i ≤ 0`, and 
 closure of multiplier sequences under products.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

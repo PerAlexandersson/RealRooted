@@ -8,7 +8,7 @@ module
 
 public import RealRooted.CommonInterleaver.PairwiseUpgrade
 
-@[expose] public section
+public section
 
 open Polynomial
 

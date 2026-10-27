@@ -11,7 +11,7 @@ a close pointwise matching of their ascending sorts.  This is the finite
 ordered-root input for limiting interlacing and root-count inequalities.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

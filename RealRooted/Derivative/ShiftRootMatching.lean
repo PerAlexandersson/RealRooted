@@ -12,7 +12,7 @@ multiplicity-aware finite matching API. It provides the root transport needed
 when derivative shifts are used to regularize a compatible polynomial pair.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

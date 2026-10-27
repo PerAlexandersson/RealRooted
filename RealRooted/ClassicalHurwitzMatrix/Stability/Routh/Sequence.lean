@@ -12,7 +12,7 @@ The one-step strict-stability theorem is iterated here by induction on the
 order of the requested leading principal determinant.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

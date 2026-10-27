@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Hadamard.Hurwitz
 
-@[expose] public section
+public section
 
 open Polynomial
 

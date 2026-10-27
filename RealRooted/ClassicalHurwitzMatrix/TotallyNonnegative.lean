@@ -12,7 +12,7 @@ This file extracts the coefficient-sign consequences that follow immediately
 from one-by-one minors of the corrected infinite matrix.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

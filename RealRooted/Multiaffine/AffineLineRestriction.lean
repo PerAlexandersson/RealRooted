@@ -12,7 +12,7 @@ This file connects finite directional derivatives and univariate affine-line
 restrictions to multiaffine Rayleigh differences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

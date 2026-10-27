@@ -16,7 +16,7 @@ algebraic normalization used for the A272471 recurrence.  It does not provide
 Chebyshev closed forms, trigonometric identities, or analytic estimates.
 -/
 
-@[expose] public section
+public section
 
 namespace LinearRecurrence
 

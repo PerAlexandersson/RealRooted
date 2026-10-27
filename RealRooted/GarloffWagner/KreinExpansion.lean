@@ -9,7 +9,7 @@ Positive root-deleted expansions and their Theorem 11 interlacing
 consequences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

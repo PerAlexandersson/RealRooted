@@ -13,7 +13,7 @@ that `exp (-a z²)` is in the Laguerre–Pólya class, so the heat operator `e^{
 real-rooted polynomials to real-rooted polynomials (Pólya; see also Craven–Csordas).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

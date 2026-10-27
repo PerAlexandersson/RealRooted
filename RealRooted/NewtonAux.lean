@@ -13,7 +13,7 @@ This auxiliary file isolates the core analytic content of Newton's inequalities
 for elementary symmetric functions of a finite multiset of real numbers.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

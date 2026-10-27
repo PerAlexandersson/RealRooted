@@ -18,7 +18,7 @@ principal submatrix with the initial vertex deleted.  Iterating this identity
 is the simple-path/cofactor expansion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

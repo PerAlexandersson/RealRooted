@@ -14,7 +14,7 @@ This file records a coefficient-type-generic double-counting lemma for a
 finite family in which every object has a unique successful index.
 -/
 
-@[expose] public section
+public section
 
 namespace Finset
 

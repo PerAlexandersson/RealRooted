@@ -9,7 +9,7 @@ Induct real-rootedness along a sequence whose row operators preserve nonzero
 splitting polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

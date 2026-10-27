@@ -8,7 +8,7 @@ public import RealRooted.IteratedDerivativeShift
 Thin wrappers for `tDeriv` and `iterateTDeriv` preservation facts.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

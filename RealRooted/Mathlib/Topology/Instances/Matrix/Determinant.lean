@@ -14,7 +14,7 @@ public import Mathlib.Topology.Algebra.Ring.Real
 This file exposes the entrywise-continuity interface for finite determinants.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

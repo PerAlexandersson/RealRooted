@@ -12,4 +12,4 @@ Curated entry point for finite multiplicative separation, the universal
 Euler-product estimate, and the bridge from sorted negative polynomial roots.
 -/
 
-@[expose] public section
+public section

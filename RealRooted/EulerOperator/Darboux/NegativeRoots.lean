@@ -15,7 +15,7 @@ Eulerian–Narayana factorization (Zhang–Zhao, Lemma 2.8).  The unit-interval 
 `RealRooted.EulerOperator.Darboux.Interlacing`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

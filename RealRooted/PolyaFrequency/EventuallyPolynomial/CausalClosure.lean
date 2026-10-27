@@ -11,7 +11,7 @@ This opt-in leaf applies the nonsingular finite Cryer closure to finite
 Toeplitz truncations. The zero-prefix case remains separate.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 

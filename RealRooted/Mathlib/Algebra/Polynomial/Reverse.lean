@@ -20,7 +20,7 @@ by the usual nonzero-constant-coefficient formulation, and the calculus of `refl
 `reflect N r` is `reflect N (X (N r - X r'))`.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

@@ -15,7 +15,7 @@ unfold a natural-number or numeral polynomial as `C` of the corresponding scalar
 tagged `@[simp]`.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 variable {R : Type*} [Semiring R] {p : R[X]}

@@ -11,7 +11,7 @@ Deleting any coordinate is reindexed by `Fin.succAbove`, so the induction
 hypothesis applies to every deletion.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set
 

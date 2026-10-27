@@ -148,7 +148,7 @@ derivative steps in `RealRooted.MaWang.DerivativeStep` and
 `RealRooted.MaWang.StrictStep`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -15,7 +15,7 @@ with the Rayleigh Wronskian sign, gives stability of the original polynomial
 up to the zero polynomial.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

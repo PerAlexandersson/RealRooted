@@ -13,7 +13,7 @@ endpoint of a positive interval, the reflected family therefore has constant
 degree, so the existing analytic local-constancy theorem applies.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

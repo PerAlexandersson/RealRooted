@@ -12,7 +12,7 @@ multiplier in each coordinate and composes it with a positive geometric
 rescaling.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

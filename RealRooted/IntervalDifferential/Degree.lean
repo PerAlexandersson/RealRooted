@@ -20,7 +20,7 @@ input by one, with leading coefficient multiplier `degree + 3`. Consequently
 the finite polynomial functional calculus preserves the degree of its input.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

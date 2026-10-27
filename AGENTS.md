@@ -178,7 +178,10 @@ theorem-shape suggestions, or proof repairs:
 ## Workflow
 
 - New source files are Lean modules (`python3 scripts/modularize.py FILE`); README describes
-  the layout and its consequences for `private` declarations and metaprograms.
+  the layout and its consequences for `private` declarations and metaprograms.  Follow Mathlib's
+  exposure convention: `public section` for theorem-only files, `@[expose] public section` (or
+  per-definition `@[expose]`) only where importers unfold definitions; prefer API lemmas to
+  exposing bodies.  `scripts/check_module_system.py` checks the header.
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
   conflicting with the intended API direction.
 - Prefer focused Lake builds for touched Lean modules when a local build owner

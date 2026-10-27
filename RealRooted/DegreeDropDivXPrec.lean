@@ -12,7 +12,7 @@ extra zero root is the rightmost root, a differ-by-one interlacing `StrictInterl
 turns into a same-degree alternation `StrictInterl (g.divX) f`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -14,7 +14,7 @@ This file adds a small compatibility lemma for the product topology on power
 series. It is stated in the namespace of the corresponding Mathlib API.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 open scoped PowerSeries.WithPiTopology

@@ -13,4 +13,4 @@ Curated entry point for finite elementary-symmetric algebra, its positive
 upper bounds, and the polynomial-coefficient bridge.
 -/
 
-@[expose] public section
+public section

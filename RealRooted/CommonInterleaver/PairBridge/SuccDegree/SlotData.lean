@@ -11,7 +11,7 @@ differ by at most one at every threshold, and the descending roots therefore
 weave into a common interleaver.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -6,7 +6,7 @@ public import RealRooted.NarayanaTransformation.Rectangular.Narayana
 # Rectangular additive convolution preservation.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

@@ -19,7 +19,7 @@ ordered-ring consequences of global nonnegativity and nonpositive
 discriminant.
 -/
 
-@[expose] public section
+public section
 
 open Filter
 

@@ -14,7 +14,7 @@ degree-drop endpoint behind issue #42.  The analytic endpoint concerns a family
 infinity become ordinary roots near zero.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

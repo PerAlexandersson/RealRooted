@@ -11,7 +11,7 @@ Boolean lattice of subsets of `range n`,
 `desCount n k (reflectSet n S) = ∑ T ⊆ S, (-1)^|S \ T| desLeCount n k (reflectSet n T)`.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

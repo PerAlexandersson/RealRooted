@@ -12,7 +12,7 @@ nonnegativity.  Every nonnegative common-phase restriction is then a
 Pólya-frequency polynomial and in particular has only nonpositive real roots.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

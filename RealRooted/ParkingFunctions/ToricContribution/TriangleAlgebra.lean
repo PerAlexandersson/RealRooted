@@ -11,7 +11,7 @@ differential equation.  Differentiating that equation gives the vertical edge
 of every Darboux square in the finite-offset triangle.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

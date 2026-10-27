@@ -11,7 +11,7 @@ Nonnegative-coefficient and interlacing results for the general
 linear-multiplier recurrence, including degree offsets.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

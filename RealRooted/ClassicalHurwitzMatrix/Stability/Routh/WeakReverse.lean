@@ -13,7 +13,7 @@ reduced polynomial to obtain strict approximants, applies the strict reverse
 Routh theorem, and passes to the limit through the closed-root API.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter Topology
 

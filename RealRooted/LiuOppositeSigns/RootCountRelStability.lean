@@ -12,7 +12,7 @@ opposite-leading-sign theorem.  They compare root counts only at thresholds
 separated from the original roots and compare the selected largest roots.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

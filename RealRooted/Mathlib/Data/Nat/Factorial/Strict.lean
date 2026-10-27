@@ -15,7 +15,7 @@ This file adds strict forms of monotonicity for descending factorials and the
 factorial product inequality used to compare binomial-factorial weights.
 -/
 
-@[expose] public section
+public section
 
 namespace Nat
 

@@ -261,7 +261,7 @@ Its PF convention includes the zero polynomial and permits nonpositive, rather
 than strictly negative, roots.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

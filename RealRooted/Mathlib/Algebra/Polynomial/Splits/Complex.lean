@@ -15,7 +15,7 @@ public import Mathlib.Analysis.Complex.Polynomial.Basic
 of its image in `ℂ[X]` has zero imaginary part.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

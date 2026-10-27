@@ -8,7 +8,7 @@ public import RealRooted.RootContinuity
 public import Mathlib.Analysis.Normed.Field.Approximation
 public import Mathlib.Analysis.Complex.Polynomial.Basic
 
-@[expose] public section
+public section
 
 -- import RealRooted.AffineDerivative  -- uncomment when AffineDerivative is built
 

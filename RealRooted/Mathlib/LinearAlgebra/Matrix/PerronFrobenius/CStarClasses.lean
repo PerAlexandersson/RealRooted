@@ -37,7 +37,7 @@ Declarations that RealRooted does not use were removed (2026-10-07).
 Original path: MCMC/PF/Analysis/CstarAlgebra/Classes.lean
 -/
 
-@[expose] public section
+public section
 
 open Finset Real Complex Matrix
 

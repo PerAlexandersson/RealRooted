@@ -171,7 +171,7 @@ stability, contraction, anchor, and continuation arguments remain in
 `RealRooted.BinaryRunTransformation`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

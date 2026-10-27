@@ -13,7 +13,7 @@ first-quadrant substitution lemmas and the right-half-plane stability theorem
 from the converse root-geometry proof.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

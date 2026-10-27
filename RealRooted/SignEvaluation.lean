@@ -10,7 +10,7 @@ Reusable arithmetic certificates for the polynomial coefficient shapes used by
 Ma--Wang and Liu--Wang recurrences.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

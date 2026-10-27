@@ -10,7 +10,7 @@ Two adjacent small ratios force a coefficient term to dominate the rest of a
 finite positive log-concave sequence, yielding a root-exclusion certificate.
 -/
 
-@[expose] public section
+public section
 
 open Finset Polynomial
 

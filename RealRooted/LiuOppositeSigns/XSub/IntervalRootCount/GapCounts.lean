@@ -7,7 +7,7 @@ public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Wit
 # Liu x-subtraction adjacent-gap root counts.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

@@ -10,7 +10,7 @@ For a graded simplicial poset, `flagF rk T = fVec rk (max T + 1) * gapMultinomia
 together with a chain in the Boolean interval below `x`.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

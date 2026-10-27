@@ -15,7 +15,7 @@ This Mathlib-shaped lemma is the fixed-degree asymptotic used by rescaled
 Jensen polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Asymptotics Filter Nat Topology
 

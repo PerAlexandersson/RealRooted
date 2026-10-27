@@ -10,7 +10,7 @@ vary continuously with all labeled input-root parameters.  We also package
 joint continuity in the parameters and the evaluation variable.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Topology
 

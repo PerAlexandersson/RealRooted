@@ -39,7 +39,7 @@ the algebra of `logDeriv`, but no argument principle or winding numbers.
 Ported from `real-rooted-oeis-proofs` (`Asymptotics/ArgumentPrinciple`).
 -/
 
-@[expose] public section
+public section
 
 open scoped Real Topology
 open Complex Metric Set

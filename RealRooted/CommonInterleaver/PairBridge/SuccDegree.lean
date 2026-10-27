@@ -9,4 +9,4 @@ Facade for the succ-degree closed-segment module.  The succ-degree
 common-interleaver theorem lives in `SuccDegree.SlotData`.
 -/
 
-@[expose] public section
+public section

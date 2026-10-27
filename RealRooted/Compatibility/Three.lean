@@ -10,7 +10,7 @@ one member of a pair is replaced by a nonnegative sum of two pairwise
 compatible polynomials.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

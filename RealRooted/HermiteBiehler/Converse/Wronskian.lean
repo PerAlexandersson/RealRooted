@@ -11,7 +11,7 @@ then into same-degree or successor-degree interlacing. The later common-root
 induction and ratio endpoints build on this layer.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

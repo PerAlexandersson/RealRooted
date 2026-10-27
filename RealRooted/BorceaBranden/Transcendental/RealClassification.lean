@@ -2,7 +2,7 @@ module
 
 public import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
 
-@[expose] public section
+public section
 
 open Filter Topology
 

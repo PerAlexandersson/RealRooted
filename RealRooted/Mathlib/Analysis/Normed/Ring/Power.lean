@@ -14,7 +14,7 @@ This Mathlib-shaped lemma avoids a `NormOneClass` assumption by retaining a
 fixed right factor instead of bounding a bare power.
 -/
 
-@[expose] public section
+public section
 
 variable {R : Type*} [SeminormedRing R]
 

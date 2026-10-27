@@ -25,4 +25,4 @@ This is the re-export shim for the split interlacing-sequence modules:
 - `MatrixInterlacing`: sparse pairs and matrix preservation (Brändén 7.8.5).
 -/
 
-@[expose] public section
+public section

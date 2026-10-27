@@ -12,7 +12,7 @@ module closes those cases with the same splitness, simplicity, and strict
 negative-root conclusions used in the positive-rank assembly.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

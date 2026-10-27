@@ -10,7 +10,7 @@ This file discharges the total-nonnegativity hypothesis of the conditional
 chain-polynomial theorem by constructing its canonical Whitney resolution.
 -/
 
-@[expose] public section
+public section
 
 open Matrix Polynomial
 

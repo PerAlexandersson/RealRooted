@@ -14,7 +14,7 @@ This file contains a Mathlib-shaped evaluation lemma for multivariate
 polynomials.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

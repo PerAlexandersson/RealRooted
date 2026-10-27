@@ -9,7 +9,7 @@ This module centralizes list and polynomial lemmas for transporting strict
 negative-root bounds through `Interlaces` and same-degree `StrictInterl` relations.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

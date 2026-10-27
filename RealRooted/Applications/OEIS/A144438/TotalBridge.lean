@@ -15,7 +15,7 @@ These are polynomial identities only.  They do not assert stability of the
 outer sum.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

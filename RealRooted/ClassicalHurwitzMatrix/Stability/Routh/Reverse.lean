@@ -11,7 +11,7 @@ This module reconstructs strict Hurwitz stability from a nonterminal stable
 Routh reduction with positive pivot and the natural parity shape.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

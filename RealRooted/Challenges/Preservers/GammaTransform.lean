@@ -143,7 +143,7 @@ The gamma transform lives in `RealRooted.GammaTransform`; the pencil lives in
 `RealRooted.GammaPencil`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

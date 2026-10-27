@@ -5,7 +5,7 @@ public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Di
 
 /-! # Finite block identities at a weighted diagonal successor root -/
 
-@[expose] public section
+public section
 
 open BigOperators
 

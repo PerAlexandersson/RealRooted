@@ -12,7 +12,7 @@ packages the resulting exact companion data.  It does not assert that the
 data is preserved at every rank.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.Applications.OEIS
 

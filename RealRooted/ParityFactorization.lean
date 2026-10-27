@@ -9,7 +9,7 @@ We package a common final step for polynomial sequences whose even and odd
 subsequences factor through two already split families.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

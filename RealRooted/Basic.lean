@@ -11,4 +11,4 @@ public import RealRooted.Basic.Coefficients
 This compatibility facade re-exports the foundational Basic API.
 -/
 
-@[expose] public section
+public section

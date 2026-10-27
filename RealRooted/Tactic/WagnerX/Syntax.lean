@@ -6,7 +6,7 @@ public import RealRooted.Tactic.WagnerX.TranslatedLag
 # Wagner `X`-shift tactic syntax
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

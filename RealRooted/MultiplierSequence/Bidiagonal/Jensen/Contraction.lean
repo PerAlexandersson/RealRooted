@@ -10,7 +10,7 @@ This module turns the Schur--Szegő compatibility contraction into a
 coefficient-bidiagonal PF-preserver theorem, with rowwise variants.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

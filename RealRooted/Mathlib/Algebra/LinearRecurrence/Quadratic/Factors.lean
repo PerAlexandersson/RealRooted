@@ -16,7 +16,7 @@ explicit Vieta factorization of a quadratic recurrence. It deliberately keeps
 coprimality of the polynomial factors as a caller-supplied hypothesis.
 -/
 
-@[expose] public section
+public section
 
 namespace LinearRecurrence
 

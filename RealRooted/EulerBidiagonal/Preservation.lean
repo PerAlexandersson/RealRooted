@@ -14,7 +14,7 @@ Corollary 3.5, arXiv:math/0403364, in its degree-local form from
 `RealRooted.PFPolynomial.PreserverClosure`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

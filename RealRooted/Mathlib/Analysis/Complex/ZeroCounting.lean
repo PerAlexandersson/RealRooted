@@ -24,7 +24,7 @@ the convergence exponent of the zero sequence is at most one.
   `∑ k, ‖z k‖ ^ (-(1 + ε))` converges for every `ε > 0`.
 -/
 
-@[expose] public section
+public section
 
 open Complex Filter Metric Topology
 /- `divisor` in the statements below refers to `MeromorphicOn.divisor`. -/

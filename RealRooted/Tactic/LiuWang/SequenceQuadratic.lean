@@ -8,49 +8,10 @@ public import RealRooted.Tactic.LiuWang.Step
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for
-`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`; the discriminant
-condition is proved by `rr_lw_quadratic_discriminant`, and the arguments are the standard
-certificates `base`, `pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
-syntax (name := rr_lw_negative_monic_quadratic_sequence_auto_named)
-  "rr_lw_negative_monic_quadratic_sequence_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for
-`P (n + 2) = A n * P (n + 1) + (-(X ^ 2 + C (b n) * X + C (c n))) * P n`; the discriminant
-condition is proved by `rr_lw_quadratic_discriminant`, and the arguments are the standard
-certificates `base`, `pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
-syntax (name := rr_lw_negative_monic_quadratic_sequence_realrooted_auto_named)
-  "rr_lw_negative_monic_quadratic_sequence_realrooted_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) *
-X ^ 2 + C (b n) * X + C (c n))) * P n`; the sign conditions are proved by
-`rr_lw_negative_quadratic_side`, and the arguments are the standard certificates `base`,
-`pos_lc`, `recurrence`, `degree_succ` and `no_common_roots`. -/
-syntax (name := rr_lw_negative_quadratic_sequence_auto_named)
-  "rr_lw_negative_quadratic_sequence_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
 
 /-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for `P (n + 2) = A n * P (n + 1) + (-(C (a n) * X ^ 2 +
 C (b n) * X + C (c n))) * P n`; the sign conditions are proved by
@@ -274,39 +235,6 @@ syntax (name := rr_lw_negative_quadratic_sequence_den_coeff_realrooted_auto_spli
   tactic
 
 macro_rules
-  | `(tactic|
-      rr_lw_negative_monic_quadratic_sequence_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_monic_quadratic_lag_sequence
-          $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_monic_quadratic_sequence_realrooted_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_monic_quadratic_lag_sequence
-            $hbase $hpos rr_lw_quadratic_discriminant $hrec $hdeg_succ $hno))
-  | `(tactic|
-      rr_lw_negative_quadratic_sequence_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_quadratic_lag_sequence
-          (hrec := $hrec) $hbase $hpos
-          rr_lw_negative_quadratic_side rr_lw_negative_quadratic_side
-          rr_lw_negative_quadratic_side $hdeg_succ $hno)
   | `(tactic|
       rr_lw_negative_quadratic_sequence_realrooted_auto using
         base := $hbase:term,

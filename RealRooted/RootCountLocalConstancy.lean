@@ -16,7 +16,7 @@ upper root counts on a compact positive parameter interval to a local
 root-continuity statement stated as per-root local lower counts.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

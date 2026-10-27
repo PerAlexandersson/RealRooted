@@ -10,7 +10,7 @@ This file assembles the monomial BFJ formula over two bounded-degree
 polynomials and records its shifted-binomial coefficient identity.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

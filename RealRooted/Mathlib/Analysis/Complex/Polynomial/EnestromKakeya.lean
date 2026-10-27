@@ -16,7 +16,7 @@ positive then every root lies in the annulus `m ≤ ‖z‖ ≤ M`, where `m` an
 `aᵢ / aᵢ₊₁` from below and above.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 

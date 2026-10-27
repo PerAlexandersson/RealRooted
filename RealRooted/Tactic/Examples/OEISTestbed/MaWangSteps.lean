@@ -73,26 +73,6 @@ example {r : ℝ} (hlo : -1 ≤ r) (hhi : r ≤ 0) :
     (C (1 : ℝ) * X + C 1 * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   rr_sign
 
-example {f u : ℝ[X]}
-    (hf : f.Splits)
-    (hlo : ∀ r, f.IsRoot r → -1 ≤ r)
-    (hhi : ∀ r, f.IsRoot r → r ≤ 0)
-    (hdeg_lo : f.natDegree ≤ (u * f + (X * (1 + X)) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (X * (1 + X)) * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (X * (1 + X)) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f) :
-    StrictInterl f (u * f + (X * (1 + X)) * f.derivative) := by
-  rr_mw_derivative_X_one_add_window using
-    splits := hf,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    root_lower := hlo,
-    root_upper := hhi
-
--- `A008970`/`A059427`: `v_n(t)=t-t^3=t(1-t)(1+t)` on `[-1,0]`.
 example {p : ℝ[X]}
     (hlo : ∀ r, p.IsRoot r → -1 ≤ r)
     (hhi : ∀ r, p.IsRoot r → r ≤ 0) :
@@ -124,60 +104,6 @@ example {p : ℝ[X]} (hroots : ∀ r, p.IsRoot r → r ≤ -1) :
   rr_sign_at_roots_upper using hroots
 
 -- Family C2 direct-outer Ma--Wang shell for the `A108426`/`A181996` bucket.
-example {f u : ℝ[X]}
-    (hf : f.Splits)
-    (hroots : ∀ r, f.IsRoot r → r ≤ -1)
-    (hdeg_lo :
-      f.natDegree ≤ (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative).natDegree ≤
-        f.natDegree + 1)
-    (hF_pos :
-      HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f) :
-    StrictInterl f (u * f + (-(C (1 : ℝ)) * X * (1 + X)) * f.derivative) := by
-  rr_mw_derivative_neg_X_one_add_outer_auto using
-    splits := hf,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos,
-    root_upper := hroots
-
--- `A106800`/`A021010`: `v_n(t)=-t^2`.
-example {f u : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg_lo : f.natDegree ≤ (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative).natDegree ≤
-        f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f) :
-    StrictInterl f (u * f + (-(C (1 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq_auto using
-    splits := hf,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos
-
--- `A395972`: `v_n(t)=-2t^2`.
-example {f u : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg_lo : f.natDegree ≤ (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative).natDegree ≤
-        f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f) :
-    StrictInterl f (u * f + (-(C (2 : ℝ)) * X ^ 2) * f.derivative) := by
-  rr_mw_derivative_neg_X_sq_auto using
-    splits := hf,
-    degree_lower := hdeg_lo,
-    degree_upper := hdeg_hi,
-    target_pos_lc := hF_pos,
-    source_pos_lc := hf_pos
-
 
 end Tactic
 end RealRooted

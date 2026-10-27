@@ -14,4 +14,4 @@ Compatibility facade for real-rootedness closure theorems whose rows are
 obtained by multiplying earlier rows by real linear or scalar factors.
 -/
 
-@[expose] public section
+public section

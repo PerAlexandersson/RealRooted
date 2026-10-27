@@ -8,7 +8,7 @@ public import RealRooted.Tactic.LiuWang.Step
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic
@@ -17,8 +17,8 @@ namespace Tactic
 closes `∀ n, StrictInterl (P n) (P (n + 1))` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
 `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and
 `coeff_eq : (d n)⁻¹ * b n = -c n`. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named)
@@ -40,10 +40,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_named)
 closes `∀ n, StrictInterl (P n) (P (n + 1))` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
-and `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and
-`(d n)⁻¹ * b n = -c n` are proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
+and `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`. The scalar side conditions
+`d n ≠ 0` and `(d n)⁻¹ * b n = -c n` are proved automatically. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg" " using "
     "base" ":=" term ","
@@ -61,10 +61,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_scalar_n
 closes `∀ n, StrictInterl (P n) (P (n + 1))` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `root_lower : -1 ≤ r` at
-every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and `coeff_eq : (d n)⁻¹ * b n = -c n`. The
-nonnegativity of `c n` is proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `root_lower : -1 ≤ r` at
+every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and
+`coeff_eq : (d n)⁻¹ * b n = -c n`. The nonnegativity of `c n` is proved automatically. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto" " using "
     "base" ":=" term ","
@@ -83,10 +83,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_nam
 closes `∀ n, StrictInterl (P n) (P (n + 1))` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; and `root_lower : -1 ≤ r`
-at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`,
-as well as the nonnegativity of `c n`, are proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; and `root_lower : -1 ≤ r`
+at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and
+`(d n)⁻¹ * b n = -c n`, as well as the nonnegativity of `c n`, are proved automatically. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto" " using "
     "base" ":=" term ","
@@ -103,8 +103,8 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_nonneg_auto_sca
 closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
 `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and
 `coeff_eq : (d n)⁻¹ * b n = -c n`. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_named)
@@ -126,10 +126,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonn
 closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
-and `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and
-`(d n)⁻¹ * b n = -c n` are proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `coeff_nonneg : 0 ≤ c n`;
+and `root_lower : -1 ≤ r` at every root `r` of `P (n + 1)`. The scalar side conditions
+`d n ≠ 0` and `(d n)⁻¹ * b n = -c n` are proved automatically. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg" " using "
     "base" ":=" term ","
@@ -147,10 +147,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonn
 closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; `root_lower : -1 ≤ r` at
-every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and `coeff_eq : (d n)⁻¹ * b n = -c n`. The
-nonnegativity of `c n` is proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; `root_lower : -1 ≤ r` at
+every root `r` of `P (n + 1)`; `den_nonzero : d n ≠ 0`; and
+`coeff_eq : (d n)⁻¹ * b n = -c n`. The nonnegativity of `c n` is proved automatically. -/
 syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto" " using "
     "base" ":=" term ","
@@ -169,10 +169,10 @@ syntax (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonn
 closes `∀ n, P n ≠ 0 ∧ (P n).Splits` from
 `raw_recurrence : C (d n) * P (n + 2) = C (d n) * (A n * P (n + 1)) + (C (b n) * (1 + X)) * P n`,
 where `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`. The arguments are the standard certificates `base`,
-`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots` (as for
-`rr_lw_positive_X_mul_sequence`), together with `coeff`, the sequence `c`; and `root_lower : -1 ≤ r`
-at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and `(d n)⁻¹ * b n = -c n`,
-as well as the nonnegativity of `c n`, are proved automatically. -/
+`pos_lc`, `nonneg_coeffs`, `raw_recurrence`, `degree_succ` and `no_common_roots`, together with
+`coeff`, the sequence `c`; and `root_lower : -1 ≤ r`
+at every root `r` of `P (n + 1)`. The scalar side conditions `d n ≠ 0` and
+`(d n)⁻¹ * b n = -c n`, as well as the nonnegativity of `c n`, are proved automatically. -/
 syntax
   (name := rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto_scalar_named)
   "rr_lw_neg_C_mul_one_add_X_lag_sequence_den_coeff_realrooted_nonneg_auto" " using "

@@ -12,60 +12,6 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
-/-- The same negative-definite quadratic shell with automatic discriminant
-discharge. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_monic_quadratic_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- Automatic discriminant discharge, real-rootedness endpoint. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) + (-(X ^ 2 + C (2 : ℝ) * X + C (4 : ℝ))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_lw_negative_monic_quadratic_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- The same non-monic negative quadratic shell with automatic side-goal
-discharge. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) +
-          (-(C (2 : ℝ) * X ^ 2 + C (-1 : ℝ) * X + C (1 : ℝ))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_quadratic_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- Real-rootedness endpoint for the same non-monic negative quadratic shell. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -84,24 +30,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-/-- `A010892`-style sequence shell: repeated lag `-(t^2+t+1)`. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) +
-          (-(C (1 : ℝ) * X ^ 2 + C (1 : ℝ) * X + C (1 : ℝ))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_quadratic_sequence_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
 /-- `A049347`-style sequence shell: repeated lag `-(t^2-t+1)`. -/
 example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
@@ -114,24 +42,6 @@ example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
   rr_lw_negative_quadratic_sequence_realrooted_auto using
-    base := hbase,
-    pos_lc := hpos,
-    recurrence := hrec,
-    degree_succ := hdeg_succ,
-    no_common_roots := hno
-
-/-- `A078020`-style sequence shell: repeated lag `-(2t^2+t+1)`. -/
-example {P : Nat → ℝ[X]} {A : Nat → ℝ[X]}
-    (hbase : StrictInterl (P 0) (P 1))
-    (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
-    (hrec : ∀ n : Nat,
-      P (n + 2) =
-        A n * P (n + 1) +
-          (-(C (2 : ℝ) * X ^ 2 + C (1 : ℝ) * X + C (1 : ℝ))) * P n)
-    (hdeg_succ : ∀ n : Nat, (P n).natDegree + 1 = (P (n + 1)).natDegree)
-    (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_lw_negative_quadratic_sequence_auto using
     base := hbase,
     pos_lc := hpos,
     recurrence := hrec,

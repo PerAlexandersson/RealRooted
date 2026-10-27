@@ -9,7 +9,7 @@ Root-sign assembly and common-root descent from all-real-rooted pencils to
 interlacing.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

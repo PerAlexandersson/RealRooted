@@ -161,7 +161,7 @@ live in `RealRooted.HeilmannLieb`, `RealRooted.Graph.IndependencePolynomial.Claw
 and `RealRooted.RankTwoMatching`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -22,7 +22,7 @@ Thus the lower-degree polynomial is on the left, and its roots lie
 between consecutive roots of the polynomial on the right.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -12,4 +12,4 @@ Focused entry point for root exclusion and reciprocal-gap estimates obtained
 from coefficient dominance.
 -/
 
-@[expose] public section
+public section

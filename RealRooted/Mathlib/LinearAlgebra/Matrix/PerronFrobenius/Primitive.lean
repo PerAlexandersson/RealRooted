@@ -22,7 +22,7 @@ adaptations to the pinned Mathlib.  Original path:
 MCMC/PF/LinearAlgebra/Matrix/PerronFrobenius/Primitive.lean
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

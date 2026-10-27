@@ -16,7 +16,7 @@ This file records two root facts for derivatives of split real polynomials.
   root is strictly below `B`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

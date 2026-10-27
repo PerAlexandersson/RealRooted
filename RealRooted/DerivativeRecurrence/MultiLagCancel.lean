@@ -12,7 +12,7 @@ finite window below the proposed degree.  The local step may combine all lags be
 that every coefficient above the target cancels.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

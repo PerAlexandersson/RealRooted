@@ -19,7 +19,7 @@ This records the splitness and simple negative roots of the first four actual
 permutation sums, as in the small cases of `thm:zigzagEulerian`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

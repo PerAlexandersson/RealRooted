@@ -16,7 +16,7 @@ preserver on polynomials of degree at most `n / 2`.  The pair form below is
 the induction interface for transporting both components of the gamma pencil.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

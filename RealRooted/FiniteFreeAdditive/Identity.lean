@@ -14,7 +14,7 @@ polynomials to finite-free additive convolution.  Stability and
 real-rootedness preservation are deliberately left to a later layer.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

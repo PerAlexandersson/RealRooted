@@ -32,7 +32,7 @@ exponential type is the exponential of an affine function.
   axis and `0 < (f 0).re`, then `a` and `b` can be taken real.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

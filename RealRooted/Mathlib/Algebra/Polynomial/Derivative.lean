@@ -33,7 +33,7 @@ the prospective top coefficient does not vanish.
   `q.natDegree ≤ d` and a coarse degree bound `p.natDegree ≤ N < a` holds.
 -/
 
-@[expose] public section
+public section
 
 namespace Polynomial
 variable {R : Type*}

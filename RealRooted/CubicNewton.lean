@@ -16,7 +16,7 @@ These are the exact-degree-three analogues of the degree-two discriminant lemma
 `RealRooted.MultiplierSequence`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

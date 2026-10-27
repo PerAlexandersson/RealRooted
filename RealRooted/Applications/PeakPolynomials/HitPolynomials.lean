@@ -32,7 +32,7 @@ real-rootedness.
   same hypotheses.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -6,7 +6,7 @@ public import RealRooted.Tactic.WagnerX.Core
 # Wagner `X`-shift obstructions
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

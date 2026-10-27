@@ -1,17 +1,13 @@
 import RealRooted.Tactic.Examples.Product.Basic
-import RealRooted.Tactic.Examples.Product.DispatchIsolation
-import RealRooted.Tactic.Examples.Product.EndpointPair
-import RealRooted.Tactic.Examples.Product.Families
 import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Examples.Product.Lifts
 import RealRooted.Tactic.Examples.Product.UnsupportedShape
 import RealRooted.Tactic.Product
 
 /-!
-# `rr_product_factor` examples
+# Product tactic examples
 
-Regression tests for OEIS recurrences where `P_n` is a real linear factor
-times `P_{n-1}`.
+Regression tests for the retained Product automation.
 -/
 
 open Polynomial

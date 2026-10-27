@@ -30,7 +30,7 @@ Applied to the roots of a monic real-rooted polynomial
 * J. M. Steele, *The Cauchy–Schwarz Master Class*, Exercise 5.5.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

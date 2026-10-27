@@ -14,7 +14,7 @@ This file gives the finite-product Leibniz rule for multivariate
 polynomials.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

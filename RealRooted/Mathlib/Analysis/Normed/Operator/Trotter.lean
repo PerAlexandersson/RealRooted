@@ -20,7 +20,7 @@ exponential power series and telescopes the difference of `n`-th powers.
 The proof was found by Aristotle (Harmonic).
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

@@ -9,7 +9,7 @@ Thin wrappers around the finite constant-coefficient differential-operator
 preservation theorem.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

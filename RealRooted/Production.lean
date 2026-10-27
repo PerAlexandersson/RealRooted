@@ -1496,7 +1496,6 @@ import RealRooted.Tactic.LiuWang.SequenceNonpositive
 import RealRooted.Tactic.LiuWang.SequenceProducts
 import RealRooted.Tactic.LiuWang.SequenceQuadratic
 import RealRooted.Tactic.LiuWang.Step
-import RealRooted.Tactic.LiuWangRecursion
 import RealRooted.Tactic.Lookup
 import RealRooted.Tactic.MaWang
 import RealRooted.Tactic.MaWang.Basic
@@ -1513,15 +1512,6 @@ import RealRooted.Tactic.Matrix
 import RealRooted.Tactic.MultiplierSequence
 import RealRooted.Tactic.Named
 import RealRooted.Tactic.Narayana
-import RealRooted.Tactic.OEIS
-import RealRooted.Tactic.OEIS.Basic
-import RealRooted.Tactic.OEIS.DerivativeLag
-import RealRooted.Tactic.OEIS.NegativeLag
-import RealRooted.Tactic.OEIS.PositiveLag
-import RealRooted.Tactic.OEIS.ProductExit
-import RealRooted.Tactic.OEIS.ProductFactor
-import RealRooted.Tactic.OEIS.ProductLift
-import RealRooted.Tactic.OEIS.ProductParity
 import RealRooted.Tactic.OperatorPreservesInterlacing
 import RealRooted.Tactic.PFBidiagonal
 import RealRooted.Tactic.PFPolynomial
@@ -1531,8 +1521,6 @@ import RealRooted.Tactic.Product
 import RealRooted.Tactic.Product.Interlacing
 import RealRooted.Tactic.Product.Rules
 import RealRooted.Tactic.Product.Syntax
-import RealRooted.Tactic.Product.Syntax.Basic
-import RealRooted.Tactic.Product.Syntax.EndpointPair
 import RealRooted.Tactic.Product.Syntax.Families
 import RealRooted.Tactic.Product.Syntax.Lifts
 import RealRooted.Tactic.ReciprocalShift
@@ -1548,12 +1536,7 @@ import RealRooted.Tactic.Recurrence.Shape
 import RealRooted.Tactic.RecurrenceEval
 import RealRooted.Tactic.RecurrenceIdentification
 import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount
-import RealRooted.Tactic.RootCount.CoreRules
-import RealRooted.Tactic.RootCount.CoreSyntax
 import RealRooted.Tactic.RootCount.LowDegree
-import RealRooted.Tactic.RootCount.LowDegreeRules
-import RealRooted.Tactic.RootCount.LowDegreeSyntax
 import RealRooted.Tactic.RootCount.SequenceCore
 import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.DerivLag
@@ -1962,6 +1945,9 @@ import RealRooted.Tactic.Row.Routes
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 import RealRooted.Mathlib.Data.Fintype.Pigeonhole
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
+import RealRooted.CombinatorialExamples.RestrictedExponential
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
+import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
 import RealRooted.MultiplierSequence.CoefficientRatio
 
 /-!

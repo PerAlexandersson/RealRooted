@@ -123,7 +123,7 @@ root-list construction lives in `RealRooted.Derivative.Interlacing`; the
 preservation theorem is proved in `RealRooted.ObreschkoffConverse.Derivative`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

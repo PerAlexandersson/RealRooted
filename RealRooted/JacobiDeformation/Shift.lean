@@ -22,7 +22,7 @@ splitness, and strictly negative roots.  For ranks at least two, a simple PF
 base also gives strict interlacing and simple roots after each shift.
 -/
 
-@[expose] public section
+public section
 
 open Finset Polynomial
 

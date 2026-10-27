@@ -15,7 +15,7 @@ This file contains general-purpose compatibility lemmas intended for eventual
 upstreaming to Mathlib.
 -/
 
-@[expose] public section
+public section
 
 open Filter Metric Set
 open scoped Topology

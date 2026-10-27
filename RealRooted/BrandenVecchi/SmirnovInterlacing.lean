@@ -11,7 +11,7 @@ reversed-last-letter recurrence.  It keeps the zero-aware boundary cases, in
 particular the one-letter alphabet in word lengths at least two.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

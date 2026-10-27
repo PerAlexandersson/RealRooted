@@ -17,7 +17,7 @@ public import RealRooted.Wagner
 public import RealRooted.MaWang
 public import RealRooted.ConvexCombination
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -11,7 +11,7 @@ Analytic constant-shift obstructions and the degree-closeness reduction for
 all-real-rooted polynomial pairs.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

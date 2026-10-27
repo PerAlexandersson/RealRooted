@@ -2,7 +2,7 @@ module
 
 public import RealRooted.HeilmannLieb
 
-@[expose] public section
+public section
 
 open Polynomial
 

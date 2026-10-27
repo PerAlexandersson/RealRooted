@@ -15,7 +15,7 @@ are obtained by a constructive nonsingular-TN approximation and coefficientwise
 closure of weak interlacing.
 -/
 
-@[expose] public section
+public section
 
 open Filter Topology
 

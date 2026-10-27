@@ -7,7 +7,7 @@ public import Mathlib.Algebra.Polynomial.Roots
 # Polynomial coefficients of elementary-symmetric generating products
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

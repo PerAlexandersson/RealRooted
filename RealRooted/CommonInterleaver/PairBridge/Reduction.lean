@@ -8,4 +8,4 @@ public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleave
 Facade for the common-root and common-interleaver reduction layers.
 -/
 
-@[expose] public section
+public section

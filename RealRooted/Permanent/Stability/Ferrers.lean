@@ -10,7 +10,7 @@ This file combines the checked analytic operator with the right-hand side of
 Lemma 3.2 in Brändén--Haglund--Visontai--Wagner, arXiv:1010.2565v2.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Permanent

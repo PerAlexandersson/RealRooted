@@ -11,7 +11,7 @@ The proof uses the Cauchy bound for monic polynomials whose coefficients vary
 continuously over a compact parameter set.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Set Topology
 

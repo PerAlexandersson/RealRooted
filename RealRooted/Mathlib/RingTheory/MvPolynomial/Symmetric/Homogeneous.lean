@@ -12,7 +12,7 @@ public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 # Homogeneity of elementary symmetric polynomials
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

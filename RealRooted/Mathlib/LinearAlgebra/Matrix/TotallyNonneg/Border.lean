@@ -16,7 +16,7 @@ the first row, first column, and trailing block so clients need not commit to a
 particular block-matrix encoding.
 -/
 
-@[expose] public section
+public section
 
 namespace Matrix
 

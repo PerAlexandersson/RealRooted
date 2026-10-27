@@ -13,7 +13,7 @@ extension.  Homogeneity and coefficientwise nonnegativity provide the
 positive leading coefficients needed to orient its univariate restrictions.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

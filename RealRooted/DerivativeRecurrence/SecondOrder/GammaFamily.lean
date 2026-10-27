@@ -19,7 +19,7 @@ ambient degree and the nonzero constant terms of the gamma polynomials. The
 family-specific work remains the hypothesis `hpair`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

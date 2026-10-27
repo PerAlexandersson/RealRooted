@@ -3,7 +3,7 @@ module
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.Tactic.Finish
 
-@[expose] public section
+public section
 
 open Polynomial
 

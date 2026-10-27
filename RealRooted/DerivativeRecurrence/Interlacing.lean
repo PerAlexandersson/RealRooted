@@ -26,7 +26,7 @@ to grow by at most one, so
 degree stays constant on some steps.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

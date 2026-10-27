@@ -9,7 +9,7 @@ Subtracting the Lagrange expansions at zero and one produces exactly the
 weight `1 / ((-r)(1-r))` used by the residue-energy contraction.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial BigOperators
 

@@ -23,7 +23,7 @@ by the same product (`desLeCount_reflectSet`); inclusion–exclusion on both sid
 (`desCount_reflectSet_eq_sum`) gives (1.3).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Finset
 

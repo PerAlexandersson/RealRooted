@@ -12,7 +12,7 @@ The endpoint signs used here are the factorization argument in Ma and Wang,
 ([arXiv:math/0611826](https://arxiv.org/abs/math/0611826)).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

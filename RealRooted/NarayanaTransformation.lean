@@ -26,4 +26,4 @@ Narayana polynomials.  This module is the compatibility facade for the focused
 proof layers in `NarayanaTransformation/`.
 -/
 
-@[expose] public section
+public section

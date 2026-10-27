@@ -15,7 +15,7 @@ This file records the linearity bridge between a coefficient-basis transform
 and a finite Bernstein expansion.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 

@@ -27,7 +27,7 @@ for `∑ ‖ξ j‖`.
   the same right-hand side.
 -/
 
-@[expose] public section
+public section
 
 open Complex
 

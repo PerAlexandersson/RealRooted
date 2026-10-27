@@ -9,4 +9,4 @@ Compatibility umbrella for the focused Ma--Wang parser and macro-rule modules.
 The theorem-only backend is `RealRooted.MaWang.Derivative`.
 -/
 
-@[expose] public section
+public section

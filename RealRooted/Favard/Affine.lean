@@ -11,4 +11,4 @@ Compatibility entry point for the direct, scalar-normalized, and row-sign
 affine Favard theorem APIs.
 -/
 
-@[expose] public section
+public section

@@ -8,7 +8,7 @@ public import RealRooted.Tactic.LiuWang.Step
 Parser declarations and macro implementations for this Liu--Wang tactic family.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 namespace Tactic
@@ -79,36 +79,6 @@ syntax (name := rr_lw_global_nonpos_sequence_den_realrooted_auto_named)
     "lag" ":=" term ","
     ("den_nonzero" ":=" term ",")?
     "raw_recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, StrictInterl (P n) (P (n + 1))` for a Liu--Wang lag recurrence with an arbitrary
-polynomial `A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`;
-`recurrence : ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_square_sequence_auto_named)
-  "rr_lw_negative_square_sequence_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
-    "degree_succ" ":=" term ","
-    "no_common_roots" ":=" term :
-  tactic
-
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` for a Liu--Wang lag recurrence with an arbitrary polynomial
-`A n`, from `base : StrictInterl (P 0) (P 1)`; `pos_lc : ∀ n, HasPosLeadingCoeff (P n)`; `recurrence
-: ∀ n, P (n + 2) = A n * P (n + 1) + (-(C (c n)) * (q n) ^ 2) * P n`;
-`degree_succ : ∀ n, (P n).natDegree + 1 = (P (n + 1)).natDegree`; and
-`no_common_roots : ∀ n r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r`. The omitted certificates are
-supplied automatically: `coeff_nonneg` is closed by `rr_lw_active_nonneg`. -/
-syntax (name := rr_lw_negative_square_sequence_realrooted_auto_named)
-  "rr_lw_negative_square_sequence_realrooted_auto" " using "
-    "base" ":=" term ","
-    "pos_lc" ":=" term ","
-    "recurrence" ":=" term ","
     "degree_succ" ":=" term ","
     "no_common_roots" ":=" term :
   tactic
@@ -561,27 +531,6 @@ macro_rules
               intro n r hr
               rr_sign) $hden $hraw $hdeg_succ $hno);
         rr_exact_realrooted_sequence_or_projection hrr)
-  | `(tactic|
-      rr_lw_negative_square_sequence_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        exact RealRooted.LiuWang.strictInterl_negative_square_lag_sequence
-          $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno)
-  | `(tactic|
-      rr_lw_negative_square_sequence_realrooted_auto using
-        base := $hbase:term,
-        pos_lc := $hpos:term,
-        recurrence := $hrec:term,
-        degree_succ := $hdeg_succ:term,
-        no_common_roots := $hno:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.LiuWang.isRealRooted_of_negative_square_lag_sequence
-            $hbase $hpos rr_lw_active_nonneg $hrec $hdeg_succ $hno))
   | `(tactic|
       rr_lw_negative_square_sequence_den_coeff using
         base := $hbase:term,

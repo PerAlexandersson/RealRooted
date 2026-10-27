@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang.Strong
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 
@@ -10,54 +10,6 @@ noncomputable section
 
 namespace RealRooted.MaWangInternal
 
-/-- Weak-sign Liu--Wang perturbation step: subtracting a small positive constant from the
-coefficient of `g` makes the root-sign condition strict, so the strict mixed theorem applies. -/
-private theorem strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
-    {δ : ℝ} (hδ : 0 < δ) :
-    StrictInterl f ((a * f + b * g) - C δ * g) := by
-  let F : ℝ[X] := a * f + b * g
-  have hdeg_lo' : f.natDegree ≤ F.natDegree := by simpa [F] using hdeg_lo
-  have hFδ_pos : HasPosLeadingCoeff (F - C δ * g) :=
-    hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound hgf hdeg_lo' hF_pos δ
-  have hnat_Fδ : (F - C δ * g).natDegree = F.natDegree :=
-    natDegree_sub_C_mul_eq_of_interlaces_degree_lower_bound hgf hdeg_lo' δ
-  have hroot_sign : ∀ r, f.IsRoot r → (F - C δ * g).eval r * g.eval r < 0 := by
-    intro r hr
-    have hbδ : (b - C δ).eval r < 0 := by
-      rw [Polynomial.eval_sub, Polynomial.eval_C]
-      grind
-    have hEq : F - C δ * g = a * f + (b - C δ) * g := by
-      simp [F, sub_eq_add_neg, add_assoc, right_distrib]
-    rw [hEq]
-    exact eval_mul_right_neg_of_isRoot_of_eval_neg_of_not_isRoot hr hbδ (hno r hr)
-  rcases Nat.le_and_le_add_one_iff.mp ⟨hdeg_lo, hdeg_hi⟩ with hsame | hsucc
-  · exact strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hFδ_pos
-      (hnat_Fδ.trans (by simpa [F] using hsame)) hroot_sign
-  · exact strictInterl_of_interlaces_eval_mul_neg_succ hgf hg_pos hFδ_pos
-      (hnat_Fδ.trans (by simpa [F] using hsucc)) hroot_sign
-
-/-- Real-rootedness for the perturbed weak-sign Liu--Wang combination. -/
-private theorem isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0)
-    {δ : ℝ} (hδ : 0 < δ) :
-    (((a * f + b * g) - C δ * g) ≠ 0 ∧ ((a * f + b * g) - C δ * g).Splits) :=
-  (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ).2.1
 /-- If every positive perturbation `F - C δ * g` is real-rooted, then `F` is
 real-rooted as well. The interlacing hypothesis is only used to keep the degree
 and leading coefficient stable under the subtraction. -/
@@ -183,29 +135,11 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   rw [← hF_eq]
   simp_all [-hF_eq]
 
-/-- Weak-sign Liu--Wang real-rootedness theorem in the no-common-roots regime. -/
-private theorem isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
-    {f g a b : ℝ[X]}
-    (hgf : Interlaces g f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hF_pos : HasPosLeadingCoeff (a * f + b * g))
-    (hdeg_lo : f.natDegree ≤ (a * f + b * g).natDegree)
-    (hdeg_hi : (a * f + b * g).natDegree ≤ f.natDegree + 1)
-    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
-    (hb_nonpos : ∀ r, f.IsRoot r → b.eval r ≤ 0) :
-    ((a * f + b * g) ≠ 0 ∧ (a * f + b * g).Splits) :=
-  isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf hF_pos hdeg_lo fun hδ ↦
-    isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-      hgf hg_pos hF_pos hdeg_lo hdeg_hi hno hb_nonpos hδ
-
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
 export MaWangInternal
-  (strictInterl_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    isRealRooted_sub_C_mul_of_interlaces_evalCoeff_nonpos_of_no_common
-    isRealRooted_of_interlaces_evalCoeff_nonpos_of_no_common
-    isRealRooted_of_interlaces_sub_C_mul_of_forall_pos)
+  (isRealRooted_of_interlaces_sub_C_mul_of_forall_pos)
 
 end RealRooted

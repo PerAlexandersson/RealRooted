@@ -14,7 +14,7 @@ splits, which restores compatibility of the original pair.  The right branch
 follows from the left branch by symmetry.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial Filter
 

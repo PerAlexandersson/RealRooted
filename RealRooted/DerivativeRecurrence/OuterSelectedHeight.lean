@@ -14,7 +14,7 @@ selected slots of the A101280 orbit (issue #1342); the interior slots need an
 orbit-specific invariant, since the generic closures `f + 1 ≼ X Δ` and `Tail ≼ Δ` are false.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators

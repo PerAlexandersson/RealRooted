@@ -11,7 +11,7 @@ the canonical resolution of a lower-unitriangular totally nonnegative matrix.
 All statements retain the zero-polynomial cases explicitly.
 -/
 
-@[expose] public section
+public section
 
 open Matrix Polynomial BigOperators
 

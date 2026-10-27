@@ -15,7 +15,7 @@ keep `2ap' + bp` away from zero there, so no root of `p` lies in `[L, U]`
 once the sign at `U` is fixed (issue #1327).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

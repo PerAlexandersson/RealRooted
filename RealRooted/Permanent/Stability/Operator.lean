@@ -11,7 +11,7 @@ permanent conjecture*, arXiv:1010.2565v2. The repository's pointwise
 Lieb--Sokal theorem proves a weighted form of the operator directly.
 -/
 
-@[expose] public section
+public section
 
 open scoped BigOperators
 

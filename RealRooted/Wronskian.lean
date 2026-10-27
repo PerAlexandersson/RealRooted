@@ -17,4 +17,4 @@ over arbitrary commutative rings in
 `RealRooted.Mathlib.RingTheory.Polynomial.Wronskian`.
 -/
 
-@[expose] public section
+public section

@@ -12,7 +12,7 @@ normalized derivative at a simple negative root, then applies the Euler
 separation bound.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

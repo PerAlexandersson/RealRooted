@@ -10,7 +10,7 @@ The checked terminal-state recurrence is exactly one generic structural cut
 step, so the generic preservation theorem supplies an induction-ready witness.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.ParkingFunctions
 

@@ -9,7 +9,7 @@ Thin wrappers for the fixed-section Veronese APIs in
 `RealRooted.VeroneseSection`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

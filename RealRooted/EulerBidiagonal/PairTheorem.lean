@@ -14,7 +14,7 @@ Let `T = generalStep κ a b u v`.  If `f` and `g` are negative-simple, `deg g = 
 of `g` and evaluates at the roots of `T f`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

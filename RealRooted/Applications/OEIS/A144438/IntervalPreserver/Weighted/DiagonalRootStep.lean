@@ -7,7 +7,7 @@ public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Re
 
 /-! # Root package for one weighted diagonal step -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ the translated factor, denominator-cleared harmonic factor, auxiliary
 product, and distinguished coefficient.
 -/
 
-@[expose] public section
+public section
 
 namespace MvPolynomial
 

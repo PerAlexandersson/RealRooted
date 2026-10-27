@@ -28,7 +28,7 @@ bounds on the characteristic polynomial coefficients bound the degrees of the en
   then every entry has degree at most `k`.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

@@ -10,7 +10,7 @@ This leaf applies the existing canonical-numerator product endpoint after
 deriving its two numerator certificates by causal iteration.
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted
 

@@ -16,7 +16,7 @@ Upstream-shaped bounds that compare a nonnegative sum over `ℤ`, vanishing at
 the central pair, with a natural-indexed majorant on its two tails.
 -/
 
-@[expose] public section
+public section
 
 open Finset
 open scoped BigOperators Topology

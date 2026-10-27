@@ -8,7 +8,7 @@ public import Mathlib.Order.Interval.Finset.Nat
 # Tail contributions to elementary symmetric functions
 -/
 
-@[expose] public section
+public section
 
 namespace RealRooted.CoefficientDominance.Symmetric
 

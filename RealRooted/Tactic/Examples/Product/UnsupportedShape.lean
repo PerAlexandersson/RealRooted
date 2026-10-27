@@ -203,17 +203,6 @@ example {P Q F : Nat → ℝ[X]}
     quotient_realrooted := hquot,
     factorization := hrow
 
-/-- Explicit factor evidence still proves the opaque-factor lift. -/
-example {P Q F : Nat → ℝ[X]}
-    (hquot : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits)
-    (hfactor : ∀ n : Nat, F n ≠ 0 ∧ (F n).Splits)
-    (hrow : ∀ n : Nat, P n = F n * Q n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_product_lift_sequence using
-    quotient_realrooted := hquot,
-    factor_realrooted := hfactor,
-    factorization := hrow
-
 /-- error: rr_product lift auto: unsupported factor; use explicit factor_realrooted -/
 #guard_msgs in
 example {P Q : Nat → ℝ[X]}

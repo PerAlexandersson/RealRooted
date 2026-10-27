@@ -8,7 +8,7 @@ module
 public import RealRooted.ArrayPolynomialSchur
 public import RealRooted.NarayanaTransformation.Endpoints
 
-@[expose] public section
+public section
 
 open Polynomial
 

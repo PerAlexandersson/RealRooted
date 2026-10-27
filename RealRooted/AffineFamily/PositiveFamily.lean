@@ -10,7 +10,7 @@ The affine two-parameter family induces a one-parameter
 `PosComboRealRooted` certificate.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

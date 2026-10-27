@@ -12,7 +12,7 @@ polynomial that is root-free on the closed gap.  Fixed-degree reflection lets
 the root count stay constant even when the original affine pencil drops degree.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 

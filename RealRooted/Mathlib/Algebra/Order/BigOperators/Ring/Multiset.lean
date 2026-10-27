@@ -19,7 +19,7 @@ Additional upstream-shaped inequalities for products of terms in the unit
 interval.
 -/
 
-@[expose] public section
+public section
 
 namespace Multiset
 

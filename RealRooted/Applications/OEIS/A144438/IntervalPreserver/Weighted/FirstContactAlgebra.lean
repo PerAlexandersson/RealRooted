@@ -11,7 +11,7 @@ that the one-sided minimum conditions on a box force every input-root
 parameter to coincide.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 

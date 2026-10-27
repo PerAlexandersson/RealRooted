@@ -10,7 +10,7 @@ This file specializes the monomial-chain operator upgrade to the balanced run
 kernel.
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 
