@@ -23,18 +23,12 @@ namespace Tactic
 `rr_side_nonneg` or else `rr_side_rest`. -/
 syntax (name := rr_sign_side) "rr_sign_side" : tactic
 
-/-- Term form of `rr_sign_side`: elaborates to `by rr_sign_side`. -/
-syntax (name := rr_sign_side_term) "rr_sign_side_term" : term
-
 macro_rules
   | `(tactic| rr_sign_side) =>
       `(tactic|
         first
           | rr_side_nonneg
           | rr_side_rest)
-  | `(rr_sign_side_term) =>
-      `(by rr_sign_side)
-
 end Tactic
 
 

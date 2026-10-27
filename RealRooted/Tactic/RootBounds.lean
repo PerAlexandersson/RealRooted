@@ -38,55 +38,6 @@ syntax (name := rr_root_nonpos_named)
 root certificates from the local context by `assumption`. -/
 syntax (name := rr_root_nonpos_auto) "rr_root_nonpos" : tactic
 
-/-- Sequence form of `rr_root_nonpos`: the same certificate for every index `i : Nat`, without the
-`root` argument. It closes `∀ i r, (P i).IsRoot r → r ≤ 0`. -/
-syntax (name := rr_root_nonpos_sequence_named)
-  "rr_root_nonpos_sequence" " using "
-    "realrooted" ":=" term ","
-    "nonneg" ":=" term :
-  tactic
-
-/-- Closes `r ≤ -a` from `realrooted : p ≠ 0 ∧ p.Splits`,
-`shift_nonneg : HasNonnegCoeffs (p.comp (X - C a))` and `root : p.IsRoot r`. -/
-syntax (name := rr_root_le_neg_shift_named)
-  "rr_root_le_neg_shift" " using "
-    "realrooted" ":=" term ","
-    "shift_nonneg" ":=" term ","
-    "root" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_root_le_neg_shift`: the same certificate for every index `i : Nat`, without
-the `root` argument. It closes `∀ i r, (P i).IsRoot r → r ≤ -(a i)`. -/
-syntax (name := rr_root_le_neg_shift_sequence_named)
-  "rr_root_le_neg_shift_sequence" " using "
-    "realrooted" ":=" term ","
-    "shift_nonneg" ":=" term :
-  tactic
-
-/-- Closes `r ≤ 0` for a root `r` of the derivative from `realrooted : p ≠ 0 ∧ p.Splits`,
-`nonneg : HasNonnegCoeffs p`, `derivative_ne : p.derivative ≠ 0` and
-`root : p.derivative.IsRoot r`. -/
-syntax (name := rr_derivative_root_nonpos_named)
-  "rr_derivative_root_nonpos" " using "
-    "realrooted" ":=" term ","
-    "nonneg" ":=" term ","
-    "derivative_ne" ":=" term ","
-    "root" ":=" term :
-  tactic
-
-/-- Bare form of `rr_derivative_root_nonpos`: takes the four certificates from the local context by
-`assumption`. -/
-syntax (name := rr_derivative_root_nonpos_auto) "rr_derivative_root_nonpos" : tactic
-
-/-- Sequence form of `rr_derivative_root_nonpos`: the same certificate for every index `i : Nat`,
-without the `root` argument. It closes `∀ i r, (P i).derivative.IsRoot r → r ≤ 0`. -/
-syntax (name := rr_derivative_root_nonpos_sequence_named)
-  "rr_derivative_root_nonpos_sequence" " using "
-    "realrooted" ":=" term ","
-    "nonneg" ":=" term ","
-    "derivative_ne" ":=" term :
-  tactic
-
 /-- Positional form of `rr_sign_at_roots using ...`: the same arguments as the named form, in the
 order `realrooted` and `nonneg`. -/
 syntax (name := rr_sign_at_roots)
@@ -269,49 +220,6 @@ macro_rules
               (by assumption) (by assumption) (by assumption)
           | exact RealRooted.root_nonpos_of_ne_zero_of_nonneg_coeffs
               (by assumption) (by assumption) (by assumption))
-  | `(tactic|
-      rr_root_nonpos_sequence using
-        realrooted := $hrr:term,
-        nonneg := $hnn:term) =>
-      `(tactic|
-        exact RealRooted.roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
-          $hrr $hnn)
-  | `(tactic|
-      rr_root_le_neg_shift using
-        realrooted := $hrr:term,
-        shift_nonneg := $hnn:term,
-        root := $hr:term) =>
-      `(tactic|
-        exact RealRooted.root_le_neg_of_realrooted_of_shift_nonneg_coeffs
-          $hrr $hnn $hr)
-  | `(tactic|
-      rr_root_le_neg_shift_sequence using
-        realrooted := $hrr:term,
-        shift_nonneg := $hnn:term) =>
-      `(tactic|
-        exact RealRooted.roots_le_neg_sequence_of_realrooted_of_shift_nonneg_coeffs
-          $hrr $hnn)
-  | `(tactic|
-      rr_derivative_root_nonpos using
-        realrooted := $hrr:term,
-        nonneg := $hnn:term,
-        derivative_ne := $hder_ne:term,
-        root := $hr:term) =>
-      `(tactic|
-        exact RealRooted.derivative_root_nonpos_of_splits_of_nonneg_coeffs
-          ($hrr).2 $hnn $hder_ne $hr)
-  | `(tactic| rr_derivative_root_nonpos) =>
-      `(tactic|
-        exact RealRooted.derivative_root_nonpos_of_realrooted_of_nonneg_coeffs
-          (by assumption) (by assumption) (by assumption) (by assumption))
-  | `(tactic|
-      rr_derivative_root_nonpos_sequence using
-        realrooted := $hrr:term,
-        nonneg := $hnn:term,
-        derivative_ne := $hder_ne:term) =>
-      `(tactic|
-        exact RealRooted.derivative_roots_nonpos_sequence_of_realrooted_of_nonneg_coeffs
-          $hrr $hnn $hder_ne)
   | `(tactic| rr_sign_at_roots using $hrr:term, $hnn:term) =>
       `(tactic|
         exact (rr_sign_at_roots_term $hrr, $hnn))

@@ -23,18 +23,12 @@ namespace RealRooted
 row. -/
 syntax (name := rr_lw_recurrence_seq) "rr_lw_recurrence_seq " term : term
 
-/-- Term `fun n => by simpa only [mul_assoc] using hrec n`, normalizing a recurrence certificate
-`hrec` for every row up to associativity of multiplication. -/
-syntax (name := rr_lw_recurrence_mul_assoc_seq) "rr_lw_recurrence_mul_assoc_seq " term : term
-
 /-- Term `by simpa using h`, normalizing the certificate `h` to the expected form. -/
 syntax (name := rr_lw_simpa) "rr_lw_simpa " term : term
 
 macro_rules
   | `(rr_lw_recurrence_seq $hrec:term) =>
       `(fun n => by simpa using $hrec n)
-  | `(rr_lw_recurrence_mul_assoc_seq $hrec:term) =>
-      `(fun n => by simpa only [mul_assoc] using $hrec n)
   | `(rr_lw_simpa $h:term) =>
       `(by simpa using $h)
 
@@ -47,15 +41,11 @@ macro_rules
   | `(tactic| rr_lw_coeff_nonneg) =>
       `(tactic| rr_side_nonneg)
 
-/-- Term form of `rr_lw_coeff_nonneg`: elaborates to `by rr_lw_coeff_nonneg`. -/
-syntax (name := rr_lw_coeff_nonneg_term) "rr_lw_coeff_nonneg_term" : term
 /-- Term form of the sequence version of `rr_lw_coeff_nonneg`: elaborates to
 `by rr_side_nonneg_seq`. -/
 syntax (name := rr_lw_coeff_nonneg_seq_term) "rr_lw_coeff_nonneg_seq_term" : term
 
 macro_rules
-  | `(rr_lw_coeff_nonneg_term) =>
-      `(by rr_lw_coeff_nonneg)
   | `(rr_lw_coeff_nonneg_seq_term) =>
       `(by rr_side_nonneg_seq)
 

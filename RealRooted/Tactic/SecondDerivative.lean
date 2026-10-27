@@ -307,30 +307,8 @@ syntax (name := rr_ls4_factorize_finish) "rr_ls4_factorize_finish" : tactic
 needed, rewrites with `hrec n` and runs `rr_ls4_factorize`. -/
 syntax (name := rr_ls4_recurrence_factorize) "rr_ls4_recurrence_factorize " term : tactic
 
-/-- Closes `∀ n, P n ≠ 0 ∧ (P n).Splits` (or a projection of it) for
-`P (n + 2) = C (a n) * G n + (G n)'` with `G n = U n * P (n + 1) + V n * (P (n + 1))'`; a
-Ma--Wang step makes `G n` interlace `P (n + 1)` and `a n + D` preserves real-rootedness.
-Arguments: `outer := a`, `base_zero` and `base_one` for `P 0` and `P 1`, `pos_lc` for every `P
-n`, `outer_nonzero : ∀ n, a n ≠ 0`, `inner_pos_lc` for `G n`, `coeff_nonpos` (`V
-n` is nonpositive at the roots of `P (n + 1)`), the factored `recurrence`, and
-`inner_degree_lower` and `inner_degree_upper` (the degree of `G n` lies between that of
-`P (n + 1)` and one more). -/
-syntax (name := rr_mw_plus_derivative_sequence_named)
-  "rr_mw_plus_derivative_sequence" " using "
-    "outer" ":=" term ","
-    "base_zero" ":=" term ","
-    "base_one" ":=" term ","
-    "pos_lc" ":=" term ","
-    "outer_nonzero" ":=" term ","
-    "inner_pos_lc" ":=" term ","
-    "coeff_nonpos" ":=" term ","
-    "recurrence" ":=" term ","
-    "inner_degree_lower" ":=" term ","
-    "inner_degree_upper" ":=" term :
-  tactic
-
-/-- Variant of `rr_mw_plus_derivative_sequence` in which `recurrence` is the expanded recurrence
-in `P`, `P'` and `P''`; it is converted to the factored form by `rr_ls4_recurrence_factorize`. -/
+/-- Applies the derivative-plus-derivative sequence theorem when `recurrence` is expanded in
+`P`, `P'`, and `P''`; `rr_ls4_recurrence_factorize` converts it to the required factored form. -/
 syntax (name := rr_mw_plus_derivative_sequence_expanded_named)
   "rr_mw_plus_derivative_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -338,22 +316,6 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_named)
     "base_one" ":=" term ","
     "pos_lc" ":=" term ","
     "outer_nonzero" ":=" term ","
-    "inner_pos_lc" ":=" term ","
-    "coeff_nonpos" ":=" term ","
-    "recurrence" ":=" term ","
-    "inner_degree_lower" ":=" term ","
-    "inner_degree_upper" ":=" term :
-  tactic
-
-/-- Variant of `rr_mw_plus_derivative_sequence` in which `outer_pos : ∀ n, 0 < a
-n` replaces `outer_nonzero`. -/
-syntax (name := rr_mw_plus_derivative_sequence_pos_named)
-  "rr_mw_plus_derivative_sequence" " using "
-    "outer" ":=" term ","
-    "base_zero" ":=" term ","
-    "base_one" ":=" term ","
-    "pos_lc" ":=" term ","
-    "outer_pos" ":=" term ","
     "inner_pos_lc" ":=" term ","
     "coeff_nonpos" ":=" term ","
     "recurrence" ":=" term ","
@@ -408,25 +370,8 @@ syntax (name := rr_mw_plus_derivative_sequence_expanded_upper_auto)
     "inner_degree_upper" ":=" term :
   tactic
 
-/-- Sign-flipped form of `rr_mw_plus_derivative_sequence`: `inner_neg_lc` says that `-G n` has
-positive leading coefficient and `coeff_nonneg` that `V n` is nonnegative at the roots of `P (n
-+ 1)`. -/
-syntax (name := rr_neg_mw_plus_derivative_sequence_named)
-  "rr_neg_mw_plus_derivative_sequence" " using "
-    "outer" ":=" term ","
-    "base_zero" ":=" term ","
-    "base_one" ":=" term ","
-    "pos_lc" ":=" term ","
-    "outer_nonzero" ":=" term ","
-    "inner_neg_lc" ":=" term ","
-    "coeff_nonneg" ":=" term ","
-    "recurrence" ":=" term ","
-    "inner_degree_lower" ":=" term ","
-    "inner_degree_upper" ":=" term :
-  tactic
-
-/-- Variant of `rr_neg_mw_plus_derivative_sequence` in which `recurrence` is the expanded
-recurrence in `P`, `P'` and `P''`. -/
+/-- Applies the negative-derivative sequence theorem when `recurrence` is expanded in `P`, `P'`,
+and `P''`. -/
 syntax (name := rr_neg_mw_plus_derivative_sequence_expanded_named)
   "rr_neg_mw_plus_derivative_sequence_expanded" " using "
     "outer" ":=" term ","
@@ -688,58 +633,6 @@ macro_rules
           outer_pos_lc := $houter_pos,
           outer_strictInterl := $houter_strictInterl,
           recurrence := $hrec)
-  | `(tactic|
-      rr_mw_plus_derivative_sequence using
-        outer := $a:term,
-        base_zero := $hbase_zero:term,
-        base_one := $hbase_one:term,
-        pos_lc := $hpos:term,
-        outer_nonzero := $ha:term,
-        inner_pos_lc := $hinner_pos:term,
-        coeff_nonpos := $hV:term,
-        recurrence := $hrec:term,
-        inner_degree_lower := $hinner_deg_lo:term,
-        inner_degree_upper := $hinner_deg_hi:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.MaWang.isRealRooted_of_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi))
-  | `(tactic|
-      rr_mw_plus_derivative_sequence using
-        outer := $a:term,
-        base_zero := $hbase_zero:term,
-        base_one := $hbase_one:term,
-        pos_lc := $hpos:term,
-        outer_pos := $ha:term,
-        inner_pos_lc := $hinner_pos:term,
-        coeff_nonpos := $hV:term,
-        recurrence := $hrec:term,
-        inner_degree_lower := $hinner_deg_lo:term,
-        inner_degree_upper := $hinner_deg_hi:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.MaWang.isRealRooted_of_derivative_then_pos_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hinner_pos $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi))
-  | `(tactic|
-      rr_neg_mw_plus_derivative_sequence using
-        outer := $a:term,
-        base_zero := $hbase_zero:term,
-        base_one := $hbase_one:term,
-        pos_lc := $hpos:term,
-        outer_nonzero := $ha:term,
-        inner_neg_lc := $hinner_neg:term,
-        coeff_nonneg := $hV:term,
-        recurrence := $hrec:term,
-        inner_degree_lower := $hinner_deg_lo:term,
-        inner_degree_upper := $hinner_deg_hi:term) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (RealRooted.MaWang.isRealRooted_of_neg_derivative_then_const_add_derivative_sequence
-            $a $hbase_zero $hbase_one $hpos $ha $hinner_neg $hV $hrec
-            $hinner_deg_lo $hinner_deg_hi))
-
 end Tactic
 
 end RealRooted

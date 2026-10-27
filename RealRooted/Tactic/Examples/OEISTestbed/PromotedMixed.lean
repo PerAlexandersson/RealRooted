@@ -31,16 +31,5 @@ example {P : Nat → ℝ[X]}
     degree_succ := hdeg_succ,
     no_common_roots := hno
 
-example {P : Nat → ℝ[X]}
-    (hP0 : P 0 = 1)
-    (hP1 : P 1 = -(X - C (5 : ℝ)))
-    (hstep : ∀ n : Nat, P (n + 2) = -(X - C (5 : ℝ)) * P (n + 1) - P n) :
-    ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
-  rr_favard_const_row_sign_unit using
-    alpha := 5,
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
-
 end Tactic
 end RealRooted

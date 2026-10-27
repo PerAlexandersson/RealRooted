@@ -19,30 +19,6 @@ example {P : Nat → ℝ[X]} {α β : Nat → ℝ}
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   rr_favard using hrec, hbeta
 
-/-- Favard unit-lag Chebyshev row-family route exposed through the OEIS facade. -/
-example {P : Nat → ℝ[X]}
-    (hP0 : P 0 = 1)
-    (hP1 : P 1 = X)
-    (hstep : ∀ n : Nat, P (n + 2) = X * P (n + 1) - P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_favard_const_unit using
-    alpha := 0,
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
-
-/-- Favard row-sign unit-lag route exposed through the OEIS facade. -/
-example {P : Nat → ℝ[X]}
-    (hP0 : P 0 = 1)
-    (hP1 : P 1 = -X)
-    (hstep : ∀ n : Nat, P (n + 2) = -X * P (n + 1) - P n) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits := by
-  rr_favard_const_row_sign_unit using
-    alpha := 0,
-    base_zero := hP0,
-    base_one := hP1,
-    step := hstep
-
 /-- Favard denominator-normalized affine row-family route exposed through the OEIS facade. -/
 example {P : Nat → ℝ[X]}
     (hP0 : P 0 = 1)

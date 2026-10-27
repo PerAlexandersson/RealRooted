@@ -20,6 +20,8 @@ open Polynomial
 namespace RealRooted
 namespace Tactic
 
+/-- Pointwise common-right addition for polynomials with nonpositive roots and positive leading
+coefficients: if `F n` and `G n` both strictly interlace `H n`, then so does their sum. -/
 theorem wagner_commonRight_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
@@ -28,6 +30,8 @@ theorem wagner_commonRight_add_sequence {F G H : Nat → ℝ[X]}
     ∀ n : Nat, StrictInterl (F n + G n) (H n) := fun n =>
   Wagner.commonRight_add (hF n) (hG n) (hFH n) (hGH n)
 
+/-- Pointwise common-left addition for polynomials with nonpositive roots and positive leading
+coefficients: if `H n` strictly interlaces both `F n` and `G n`, it interlaces their sum. -/
 theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n))
@@ -36,66 +40,13 @@ theorem wagner_commonLeft_add_sequence {F G H : Nat → ℝ[X]}
     ∀ n : Nat, StrictInterl (H n) (F n + G n) := fun n =>
   Wagner.commonLeft_add (hF n) (hG n) (hHF n) (hHG n)
 
+/-- Pointwise Wagner equivalence relating `StrictInterl (F n) (G n)` to
+`StrictInterl (G n) (X * F n)` under nonpositive-root and positive-leading hypotheses. -/
 theorem wagner_mulX_iff_sequence {F G : Nat → ℝ[X]}
     (hF : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (F n))
     (hG : ∀ n : Nat, Wagner.HasNonposRootsPosLeading (G n)) :
     ∀ n : Nat, StrictInterl (F n) (G n) ↔ StrictInterl (G n) (X * F n) := fun n =>
   Wagner.mulX_iff (hF n) (hG n)
-
-/-- Closes `StrictInterl (f + g) h` from `left : Wagner.HasNonposRootsPosLeading f`,
-`right` for `g`, `left_interlaces_common : StrictInterl f h` and
-`right_interlaces_common : StrictInterl g h`. -/
-syntax (name := rr_wagner_common_right_add_named)
-  "rr_wagner_common_right_add" " using "
-    "left" ":=" term ","
-    "right" ":=" term ","
-    "left_interlaces_common" ":=" term ","
-    "right_interlaces_common" ":=" term :
-  tactic
-
-/-- Closes `StrictInterl h (f + g)` from `left : Wagner.HasNonposRootsPosLeading f`,
-`right` for `g`, `common_interlaces_left : StrictInterl h f` and
-`common_interlaces_right : StrictInterl h g`. -/
-syntax (name := rr_wagner_common_left_add_named)
-  "rr_wagner_common_left_add" " using "
-    "left" ":=" term ","
-    "right" ":=" term ","
-    "common_interlaces_left" ":=" term ","
-    "common_interlaces_right" ":=" term :
-  tactic
-
-/-- Closes `StrictInterl f g ↔ StrictInterl g (X * f)` from
-`shorter : Wagner.HasNonposRootsPosLeading f` and `longer` for `g`. -/
-syntax (name := rr_wagner_mulX_iff_named)
-  "rr_wagner_mulX_iff" " using "
-    "shorter" ":=" term ","
-    "longer" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_wagner_common_right_add`: the same certificate for every index `n`. -/
-syntax (name := rr_wagner_common_right_add_sequence_named)
-  "rr_wagner_common_right_add_sequence" " using "
-    "left" ":=" term ","
-    "right" ":=" term ","
-    "left_interlaces_common" ":=" term ","
-    "right_interlaces_common" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_wagner_common_left_add`: the same certificate for every index `n`. -/
-syntax (name := rr_wagner_common_left_add_sequence_named)
-  "rr_wagner_common_left_add_sequence" " using "
-    "left" ":=" term ","
-    "right" ":=" term ","
-    "common_interlaces_left" ":=" term ","
-    "common_interlaces_right" ":=" term :
-  tactic
-
-/-- Sequence form of `rr_wagner_mulX_iff`: the same certificate for every index `n`. -/
-syntax (name := rr_wagner_mulX_iff_sequence_named)
-  "rr_wagner_mulX_iff_sequence" " using "
-    "shorter" ":=" term ","
-    "longer" ":=" term :
-  tactic
 
 /-- Closes `StrictInterl (f + g) h` from `left_interlaces_common : StrictInterl f h`,
 `right_interlaces_common : StrictInterl g h` and the positive leading coefficients
@@ -145,54 +96,6 @@ syntax (name := rr_strict_interl_mul_common_factor_inferred)
   "rr_strict_interl_mul_common_factor" : tactic
 
 macro_rules
-  | `(tactic|
-      rr_wagner_common_right_add using
-        left := $hf:term,
-        right := $hg:term,
-        left_interlaces_common := $hfh:term,
-        right_interlaces_common := $hgh:term) =>
-      `(tactic|
-        exact RealRooted.Wagner.commonRight_add
-          $hf $hg $hfh $hgh)
-  | `(tactic|
-      rr_wagner_common_left_add using
-        left := $hf:term,
-        right := $hg:term,
-        common_interlaces_left := $hhf:term,
-        common_interlaces_right := $hhg:term) =>
-      `(tactic|
-        exact RealRooted.Wagner.commonLeft_add
-          $hf $hg $hhf $hhg)
-  | `(tactic|
-      rr_wagner_mulX_iff using
-        shorter := $hf:term,
-        longer := $hg:term) =>
-      `(tactic|
-        exact RealRooted.Wagner.mulX_iff $hf $hg)
-  | `(tactic|
-      rr_wagner_common_right_add_sequence using
-        left := $hf:term,
-        right := $hg:term,
-        left_interlaces_common := $hfh:term,
-        right_interlaces_common := $hgh:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.wagner_commonRight_add_sequence
-          $hf $hg $hfh $hgh)
-  | `(tactic|
-      rr_wagner_common_left_add_sequence using
-        left := $hf:term,
-        right := $hg:term,
-        common_interlaces_left := $hhf:term,
-        common_interlaces_right := $hhg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.wagner_commonLeft_add_sequence
-          $hf $hg $hhf $hhg)
-  | `(tactic|
-      rr_wagner_mulX_iff_sequence using
-        shorter := $hf:term,
-        longer := $hg:term) =>
-      `(tactic|
-        exact RealRooted.Tactic.wagner_mulX_iff_sequence $hf $hg)
   | `(tactic|
       rr_wagner_common_right_add_pos_lc using
         left_interlaces_common := $hfh:term,
