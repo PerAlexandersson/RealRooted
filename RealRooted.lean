@@ -2091,3 +2091,5 @@ import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Finset
 import RealRooted.ThreeTermRecurrence.WangZhang
 import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
+import RealRooted.Mesh.Basic
+import RealRooted.Mesh.FiniteDifference
